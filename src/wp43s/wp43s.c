@@ -73,6 +73,7 @@ int16_t         displayHasNDigits;
 calcRegister_t  result;
 calcRegister_t  opX;
 calcRegister_t  opY;
+calcRegister_t  opZ;
 uint16_t        numberOfLocalRegisters;
 uint16_t        numberOfLocalFlags;
 uint16_t        numberOfNamedRegisters;

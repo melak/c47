@@ -77,6 +77,7 @@ SRC_WP43S                = \
 		log2.c magnitude.c minusOnePow.c multiplication.c power.c \
 		realPart.c sign.c sin.c sqrt.c square.c subtraction.c \
 		swapRealImaginary.c tan.c toPolar.c toRect.c unitVector.c \
+		slvq.c \
 		wp34s.c) \
 	$(addprefix src/wp43s/logicalOps/, \
 		not.c) \
