@@ -121,3 +121,6 @@ tan.txt
 
 ;The standard calculator performance test arcsin(arccos(arctan(tan(cos(sin(9°))))))-9
 trig.txt
+
+slvq_real.txt
+
