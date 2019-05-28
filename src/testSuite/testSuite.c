@@ -102,6 +102,7 @@ const funcTest_t funcTestNoParam[] = {
   {"fnRollUp",               fnRollUp              },
   {"fnSign",                 fnSign                },
   {"fnSin",                  fnSin                 },
+  {"fnSlvq",                 fnSlvq                },
   {"fnSquare",               fnSquare              },
   {"fnSquareRoot",           fnSquareRoot          },
   {"fnSubtract",             fnSubtract            },

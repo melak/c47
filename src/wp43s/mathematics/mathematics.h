@@ -59,5 +59,6 @@
 #include "toPolar.h"
 #include "toRect.h"
 #include "unitVector.h"
+#include "slvq.h"
 #include "wp34s.h"
 

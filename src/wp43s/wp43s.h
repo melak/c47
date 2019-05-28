@@ -482,6 +482,7 @@ extern int16_t          displayHasNDigits;
 extern calcRegister_t   result;
 extern calcRegister_t   opX;
 extern calcRegister_t   opY;
+extern calcRegister_t   opZ;
 extern uint16_t         numberOfLocalRegisters;
 extern uint16_t         numberOfLocalFlags;
 extern uint16_t         numberOfNamedRegisters;
