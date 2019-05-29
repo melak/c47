@@ -18,5 +18,9 @@ src/qspi_crc.h
 ./ttf2RasterFonts
 ./wp43s
 
+# cmake build
 *build*
 .idea
+
+
+
