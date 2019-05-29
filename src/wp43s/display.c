@@ -873,10 +873,12 @@ void complexToDisplayString2(const void *complex, bool_t complex34, char *displa
   }
   else if(complexMode == CM_POLAR) {
     if(complex34) {
-      real34RectangularToPolar(VARIABLE_REAL34_DATA(complex), VARIABLE_IMAG34_DATA(complex), &real, &imag); // imag34 in internal units
+      real34RectangularToPolar(VARIABLE_REAL34_DATA(complex), VARIABLE_IMAG34_DATA(complex), &real, &imag); // imag in radian
+      convertAngle34FromTo(&imag, AM_RADIAN, currentAngularMode);
     }
     else {
-      real16RectangularToPolar(VARIABLE_REAL16_DATA(complex), VARIABLE_IMAG16_DATA(complex), (real16_t *)&real, (real16_t *)&imag); // imag16 in internal units
+      real16RectangularToPolar(VARIABLE_REAL16_DATA(complex), VARIABLE_IMAG16_DATA(complex), (real16_t *)&real, (real16_t *)&imag); // imag16 in radian
+      convertAngle16FromTo((real16_t *)&imag, AM_RADIAN, currentAngularMode);
     }
   }
   else {
@@ -885,7 +887,6 @@ void complexToDisplayString2(const void *complex, bool_t complex34, char *displa
   }
 
   realToDisplayString2(&real, complex34, displayString);
-  realToDisplayString2(&imag, complex34, displayString + i);
 
   if(complexMode == CM_RECTANGULAR) {
     if(strncmp(displayString + stringByteLength(displayString) - 2, NUM_SPACE_HAIR, 2) != 0) {
@@ -902,6 +903,7 @@ void complexToDisplayString2(const void *complex, bool_t complex34, char *displa
 
     strcat(displayString, COMPLEX_UNIT);
     strcat(displayString, PRODUCT_SIGN);
+    realToDisplayString2(&imag, complex34, displayString + i);
     memmove(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
   }
   else { // POLAR
@@ -909,12 +911,11 @@ void complexToDisplayString2(const void *complex, bool_t complex34, char *displa
 
     strcat(displayString, STD_SPACE_4_PER_EM STD_MEASURED_ANGLE STD_SPACE_4_PER_EM);
     if(complex34) {
-      real34Copy(&imag, &angle34);
+      angle34ToDisplayString2(&imag, currentAngularMode, displayString + stringByteLength(displayString));
     }
     else {
-      real16ToReal34((real16_t *)&imag, &angle34);
+      angle16ToDisplayString2((real16_t *)&imag, currentAngularMode, displayString + stringByteLength(displayString));
     }
-    angle34ToDisplayString2(&angle34, currentAngularMode, displayString + stringByteLength(displayString));
   }
 }
 

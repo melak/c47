@@ -2050,12 +2050,14 @@ void closeNim(void) {
 
               real16Copy(REGISTER_REAL16_DATA(REGISTER_X), &magnitude16);
               real16Copy(REGISTER_IMAG16_DATA(REGISTER_X), &theta16);
+              convertAngle16FromTo(&theta16, currentAngularMode, AM_RADIAN);
               if(real16CompareLessThan(&magnitude16, const16_0)) {
                 real16SetPositiveSign(&magnitude16);
                 real16Add(&theta16, const16_pi, &theta16);
                 real16Remainder(&theta16, const16_2pi, &theta16);
               }
               real16PolarToRectangular(&magnitude16, &theta16, REGISTER_REAL16_DATA(REGISTER_X), REGISTER_IMAG16_DATA(REGISTER_X)); // theta16 in radian
+              printf("X = "); printRegisterToConsole(REGISTER_X, 0); printf("\n");
             }
           }
         }

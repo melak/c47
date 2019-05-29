@@ -1,0 +1,47 @@
+;*************************************************************
+;*************************************************************
+;**                                                         **
+;**       arcsin(arccos(arctan(tan(cos(sin(9°))))))-9       **
+;**                                                         **
+;*************************************************************
+;*************************************************************
+
+; Real16 version
+In: FD=0 FI=0 SD=0 RM=0 AM=DEG SL=0 FI=0 NCSD=16 RX=Re16:"9"
+Func: fnSin
+Out:  EC=0
+Func: fnCos
+Out:  EC=0
+Func: fnTan
+Out:  EC=0
+Func: fnArctan
+Out:  EC=0
+Func: fnArccos
+Out:  EC=0
+Func: fnArcsin
+Out:  EC=0
+Func: fnSwapXY
+Out:  EC=0
+Func: fnSubtract
+In:   RX=LonI:"9"
+Out:  EC=0 FI=0 RX=An16:"2.9361e-11":DEG
+
+; Real34 version
+In: FD=0 FI=0 SD=0 RM=0 AM=DEG SL=0 FI=0 NCSD=34 RX=Re34:"9"
+Func: fnSin
+Out:  EC=0
+Func: fnCos
+Out:  EC=0
+Func: fnTan
+Out:  EC=0
+Func: fnArctan
+Out:  EC=0
+Func: fnArccos
+Out:  EC=0
+Func: fnArcsin
+Out:  EC=0
+Func: fnSwapXY
+Out:  EC=0
+Func: fnSubtract
+In:   RX=Re34:"9"
+Out:  EC=0 FI=0 RX=An34:"-4.3565e-29":DEG
