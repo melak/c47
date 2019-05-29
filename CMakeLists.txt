@@ -1,4 +1,3 @@
-
 # This file is part of 43S.
 #
 # 43S is free software: you can redistribute it and/or modify
@@ -32,8 +31,8 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -O2 -s")
 
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
-pkg_check_modules(FREETYPE freetype2)
+pkg_check_modules(GTK3 		REQUIRED gtk+-3.0)
+pkg_check_modules(FREETYPE 	REQUIRED freetype2)
 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/decNumberICU)
@@ -47,21 +46,21 @@ set(TTF2RASTERFONTS_SRC
         src/ttf2RasterFonts/ttf2RasterFonts.c)
 
 set(DECIMAL_SRC
-        decNumberICU/decContext.c decNumberICU/decContext.h
-        decNumberICU/decDouble.c decNumberICU/decDouble.h
-        decNumberICU/decimal128.c decNumberICU/decimal128.h
-        decNumberICU/decimal64.c decNumberICU/decimal64.h
-        decNumberICU/decNumber.c decNumberICU/decNumber.h decNumberICU/decNumberLocal.h
-        decNumberICU/decQuad.c decNumberICU/decQuad.h)
+        decNumberICU/decContext.c 	decNumberICU/decContext.h
+        decNumberICU/decDouble.c 	decNumberICU/decDouble.h
+        decNumberICU/decimal128.c	decNumberICU/decimal128.h
+        decNumberICU/decimal64.c 	decNumberICU/decimal64.h
+        decNumberICU/decNumber.c 	decNumberICU/decNumber.h	decNumberICU/decNumberLocal.h
+        decNumberICU/decQuad.c 		decNumberICU/decQuad.h)
 
 set(GENCONST_SRC
         src/generateConstants/generateConstants.c)
 
 file(GLOB WP43S_SRC
-        src/wp43s/*.h src/wp43s/*.c
-        src/wp43s/mathematics/*.h src/wp43s/mathematics/*.c
-        src/wp43s/browsers/*.h src/wp43s/browsers/*.c
-        src/wp43s/logicalOps/*.h src/wp43s/logicalOps/*.c)
+        src/wp43s/*.h 				src/wp43s/*.c
+        src/wp43s/mathematics/*.h	src/wp43s/mathematics/*.c
+        src/wp43s/browsers/*.h		src/wp43s/browsers/*.c
+        src/wp43s/logicalOps/*.h	src/wp43s/logicalOps/*.c)
 
 set(TESTSUITE_SRC
         src/testSuite/testSuite.c)
@@ -77,15 +76,15 @@ set_source_files_properties(
 #
 add_executable(ttf2RasterFonts ${TTF2RASTERFONTS_SRC})
 
-target_compile_options(ttf2RasterFonts PRIVATE ${GTK3_CFLAGS_OTHER})
-target_include_directories(ttf2RasterFonts PRIVATE ${GTK3_INCLUDE_DIRS})
-target_link_libraries(ttf2RasterFonts PRIVATE ${GTK3_LIBRARIES} ${FREETYPE_LIBRARIES})
-target_link_directories(ttf2RasterFonts PRIVATE ${GTK3_LIBRARY_DIRS})
+target_compile_options(ttf2RasterFonts 		PRIVATE ${GTK3_CFLAGS_OTHER})
+target_include_directories(ttf2RasterFonts	PRIVATE ${GTK3_INCLUDE_DIRS})
+target_link_libraries(ttf2RasterFonts 		PRIVATE ${GTK3_LIBRARIES} ${FREETYPE_LIBRARIES})
+target_link_directories(ttf2RasterFonts 	PRIVATE ${GTK3_LIBRARY_DIRS})
 
 add_custom_command(
-        OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/wp43s/rasterFontsData.c
-        COMMAND ${CMAKE_CURRENT_BINARY_DIR}/ttf2RasterFonts
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+        OUTPUT 				${CMAKE_CURRENT_SOURCE_DIR}/src/wp43s/rasterFontsData.c
+        COMMAND 			${CMAKE_CURRENT_BINARY_DIR}/ttf2RasterFonts
+        WORKING_DIRECTORY 	${CMAKE_CURRENT_SOURCE_DIR})
 
 #
 # Generare Constants
@@ -93,9 +92,10 @@ add_custom_command(
 add_executable(generateConstants ${GENCONST_SRC} ${DECIMAL_SRC})
 
 add_custom_command(
-        OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/wp43s/constantPointers.c ${CMAKE_CURRENT_SOURCE_DIR}/src/wp43s/constantPointers.h
-        COMMAND ${CMAKE_CURRENT_BINARY_DIR}/generateConstants
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+        OUTPUT 				${CMAKE_CURRENT_SOURCE_DIR}/src/wp43s/constantPointers.c 
+							${CMAKE_CURRENT_SOURCE_DIR}/src/wp43s/constantPointers.h
+        COMMAND 			${CMAKE_CURRENT_BINARY_DIR}/generateConstants
+        WORKING_DIRECTORY 	${CMAKE_CURRENT_SOURCE_DIR})
 
 #
 # wp43s
@@ -108,7 +108,8 @@ add_executable(wp43s
         ${CMAKE_CURRENT_SOURCE_DIR}/src/wp43s/rasterFontsData.c)
 
 add_dependencies(wp43s generateConstants ttf2RasterFonts)
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/wp43s_pre.css DESTINATION "${CMAKE_BINARY_DIR}")
+file(COPY 			${CMAKE_CURRENT_SOURCE_DIR}/wp43s_pre.css 
+	 DESTINATION 	"${CMAKE_BINARY_DIR}")
 
 set_target_properties(wp43s PROPERTIES COMPILE_FLAGS "-DPC_BUILD")
 target_compile_options(wp43s PRIVATE ${GTK3_CFLAGS_OTHER})
