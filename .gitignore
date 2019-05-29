@@ -12,6 +12,9 @@ src/qspi_crc.h
 
 !windows\ binaries/wp43.exe
 
+*build*
+.idea
+
 generateConstants
 testSuite
 ttf2RasterFonts
