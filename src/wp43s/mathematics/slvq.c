@@ -207,7 +207,7 @@ static void slvqRe34(void)
     {
         if (real34IsZero(rB) && real34IsZero(rC))
         {
-            // ax^2 = 0
+            // a*x^2 = 0
             // x1 = x2 = 0
             // r = 0;
 
@@ -221,18 +221,18 @@ static void slvqRe34(void)
         }
         else if (real34IsZero(rB) && !real34IsZero(rC))
         {
-            // ax^2 + c = 0
+            // a*x^2 + c = 0
             // x1 = sqrt(-c/a)
             // x2 = -sqrt(-c/a)
-            // r = -4ac
+            // r = -4*a*c
 
             real34_t x;
 
             slvqConvertToReal34(REGISTER_Z);
             int32ToReal34(4, REGISTER_REAL34_DATA(REGISTER_Z));                                      // r = 4
-            real34Multiply(REGISTER_REAL34_DATA(REGISTER_Z), rA, REGISTER_REAL34_DATA(REGISTER_Z));  // r = 4a
-            real34Multiply(REGISTER_REAL34_DATA(REGISTER_Z), rC, REGISTER_REAL34_DATA(REGISTER_Z));  // r = 4ac
-            real34ChangeSign(REGISTER_REAL34_DATA(REGISTER_Z));                                      // r = -4ac
+            real34Multiply(REGISTER_REAL34_DATA(REGISTER_Z), rA, REGISTER_REAL34_DATA(REGISTER_Z));  // r = 4*a
+            real34Multiply(REGISTER_REAL34_DATA(REGISTER_Z), rC, REGISTER_REAL34_DATA(REGISTER_Z));  // r = 4*a*c
+            real34ChangeSign(REGISTER_REAL34_DATA(REGISTER_Z));                                      // r = -4*a*c
 
             real34Divide(rC, rA, &x);           // x = c/a
 
@@ -267,7 +267,7 @@ static void slvqRe34(void)
         }
         else if (!real34IsZero(rB) && real34IsZero(rC))
         {
-            // ax^2 + bx = 0
+            // a*x^2 + b*x = 0
             // x1 = 0 
             // x2 = -b/a
             // r = b^2
@@ -285,16 +285,17 @@ static void slvqRe34(void)
         }
         else // (!real34IsZero(b) && !real34IsZero(c))
         {
-            // a^2 + bx + c = 0
+            // a^2 + b*x + c = 0
 
             real34_t r, tmp, x;
 
             int32ToReal34(4, &tmp);             // tmp = 4
-            real34Multiply(&tmp, rA, &tmp);     // tmp = 4a
-            real34Multiply(&tmp, rC, &tmp);     // tmp = 4ac
+            real34Multiply(&tmp, rA, &tmp);     // tmp = 4*a
+            real34Multiply(&tmp, rC, &tmp);     // tmp = 4*a*c
 
+            // TODO overflow if b > sqrt(MAX_REAL34)
             real34Multiply(rB, rB, &r);         // r = b^2
-            real34Subtract(&r, &tmp, &r);       // r = b^2 - 4ac
+            real34Subtract(&r, &tmp, &r);       // r = b^2 - 4*a*c
 
             slvqConvertToReal34(REGISTER_Z);
             real34Copy(&r, REGISTER_REAL34_DATA(REGISTER_Z));
@@ -302,12 +303,12 @@ static void slvqRe34(void)
             if(real34IsZero(&r))
             {
                 // r = 0
-                // x1 = x2 = -b/2a
+                // x1 = x2 = -b/(2*a)
 
                 int32ToReal34(2, &tmp);         // tmp = 2
                 real34Divide(rB, &tmp, &x);     // x = b/2
-                real34Divide(&x, rA, &x);       // x = b/2a
-                real34ChangeSign(&x);           // x = -b/2a
+                real34Divide(&x, rA, &x);       // x = b/(2*a)
+                real34ChangeSign(&x);           // x = -b/(2*a)
 
                 slvqConvertToReal34(REGISTER_X);
                 real34Copy(&x, REGISTER_REAL34_DATA(REGISTER_X));
@@ -317,46 +318,71 @@ static void slvqRe34(void)
             }
             else if(! real34IsNegative(&r)) 
             {
-                // x1 = (-b + sqrt(r))/2a
-                // x2 = (-b - sqrt(r))/2a
+#if 0
+                // x1 = (-b + sqrt(r))/(2*a)
+                // x2 = (-b - sqrt(r))/(2*a)
 
                 int32ToReal34(2, &tmp);         // tmp = 2
-                real34Multiply(rA, &tmp, &tmp); // tmp = 2a
+                real34Multiply(rA, &tmp, &tmp); // tmp = 2*a
 
-                real34SquareRoot(&r, &r);       // r = sqrt(b^2 - 4ac)
+                real34SquareRoot(&r, &r);       // r = sqrt(b^2 - 4*a*c)
                 real34ChangeSign(rB);           // b = -b
 
                 real34Add(rB, &r, &x);          // x = -b + sqrt(r)
-                real34Divide(&x, &tmp, &x);     // x = (-b + sqrt(r))/2a
+                real34Divide(&x, &tmp, &x);     // x = (-b + sqrt(r))/(2*a)
                 slvqConvertToReal34(REGISTER_X);
                 real34Copy(&x, REGISTER_REAL34_DATA(REGISTER_X));
 
                 real34Subtract(rB, &r, &x);     // x = (-b - sqrt(r)
-                real34Divide(&x, &tmp, &x);     // x = (-b - sqrt(r))/2a
+                real34Divide(&x, &tmp, &x);     // x = (-b - sqrt(r))/(2*a)
                 slvqConvertToReal34(REGISTER_Y);
                 real34Copy(&x, REGISTER_REAL34_DATA(REGISTER_Y));
+#else
+                // x1 = (-b - sign(b) * sqrt(r)) / (2*a)
+                // x2 = c/(a * x1)
+
+                int32ToReal34(2, &tmp);         // tmp = 2
+                real34Multiply(rA, &tmp, &tmp); // tmp = 2*a
+
+                real34SquareRoot(&r, &r);       // r = sqrt(b^2 - 4*a*c)
+                real34ChangeSign(rB);           // b = -b
+
+                if(real34IsNegative(rB))
+                    real34Add(rB, &r, &x);      // x = -b + sqrt(r)
+                else
+                    real34Subtract(rB, &r, &x); // x = -b - sqrt(r)
+
+                real34Divide(&x, &tmp, &x);     // x = (-b - sign(b) * sqrt(r))/(2*a)
+                slvqConvertToReal34(REGISTER_X);
+                real34Copy(&x, REGISTER_REAL34_DATA(REGISTER_X));
+
+                real34Multiply(rA, &x, &x);     // x = a * x
+                real34Divide(rC, &x, &x);       // x = c / (z*x)
+                slvqConvertToReal34(REGISTER_Y);
+                real34Copy(&x, REGISTER_REAL34_DATA(REGISTER_Y));
+#endif
             }
             else if (getFlag(FLAG_CPXRES))
             {
-                real34ChangeSign(&r);            // r = -(b^2 - 4ac)
-                real34SquareRoot(&r, &r);        // r = sqrt(-(b^2 - 4ac))
+                real34ChangeSign(&r);            // r = -(b^2 - 4*a*c)
+                real34SquareRoot(&r, &r);        // r = sqrt(-(b^2 - 4*a*c))
 
                 int32ToReal34(2, &tmp);         // tmp = 2
                 real34Multiply(rA, &tmp, &tmp); // tmp = 2a
 
-                real34Divide(&r, &tmp, &r);     // r = sqrt(-(b^2 - 4ac))/2a
+                real34Divide(&r, &tmp, &r);     // r = sqrt(-(b^2 - 4ac))/(2*a)
 
                 real34ChangeSign(rB);           // b = -b
-                real34Divide(rB, &tmp, &x);     // x = -b/2a
+                real34Divide(rB, &tmp, &x);     // x = -b/(2*a)
 
                 slvqConvertToComplex34(REGISTER_X);
                 real34Copy(&x, REGISTER_REAL34_DATA(REGISTER_X));
-                real34Copy(&r, REGISTER_IMAG34_DATA(REGISTER_X));   // x1 = -b/2a + i sqrt(-(b^2 - 4ac))/2a
+                real34Copy(&r, REGISTER_IMAG34_DATA(REGISTER_X));   // x1 = -b/(2*a) + i sqrt(-(b^2 - 4*a*c))/(2*a)
 
                 slvqConvertToComplex34(REGISTER_Y);
                 real34Copy(&x, REGISTER_REAL34_DATA(REGISTER_Y));
                 real34Copy(&r, REGISTER_IMAG34_DATA(REGISTER_Y));
-                real34ChangeSign(REGISTER_IMAG34_DATA(REGISTER_Y)); // x2 = -b/2a - i sqrt(-(b^2 - 4ac))/2a
+                real34ChangeSign(REGISTER_IMAG34_DATA(REGISTER_Y)); // x2 = -b/(2*a) - i sqrt(-(b^2 - 4*a*c))/(2*a)
             }
             else
                 slvqDomainError();
