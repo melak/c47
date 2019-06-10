@@ -197,7 +197,7 @@ static uint32_t getCoefficientsType()
 
 
 /*
- * SLVQ for Real coefficient.
+ * SLVQ for Real coefficients.
  */
 static void slvqRe34(void)
 {
@@ -391,7 +391,7 @@ static void slvqRe34(void)
 }
 
 /*
- * SLVQ for Complex coefficient.
+ * SLVQ for Complex coefficients.
  */
 static void slvqCo34(void)
 {
@@ -423,9 +423,7 @@ static void slvqCo34(void)
             // x2 = -sqrt(-c/a)
             // r = -4ac
 
-            complex34_t x;
-
-            // TODO: x = ...
+            // TODO
         }
         else if (!complex34IsZero(B) && complex34IsZero(C))
         {

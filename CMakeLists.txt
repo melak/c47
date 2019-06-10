@@ -17,31 +17,36 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(WP43S C)
-set(CMAKE_C_STANDARD 11)
 
-set(CMAKE_C_FLAGS "-march=x86-64 -Wextra -Wall -std=c11 -m64 -fshort-enums -fomit-frame-pointer -DTFM_NO_ASM -DTFM_X86_64 -MMD")
-
+#
+# Configuration
+#
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DOSX")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DOSX")
 endif()
+
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_FLAGS "-march=x86-64 -Wextra -Wall -std=c11 -m64 -fshort-enums -fomit-frame-pointer -DTFM_NO_ASM -DTFM_X86_64 -MMD")
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -g -DEXTRA_INFO_ON_CALC_ERROR")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -O2 -s")
-
-
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK3 		REQUIRED gtk+-3.0)
 pkg_check_modules(FREETYPE 	REQUIRED freetype2)
 
-
+#
+# Include directories
+#
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/decNumberICU)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/wp43s)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/wp43s/mathematics)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/wp43s/browsers)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/wp43s/logicalOps)
 
-
+#
+# Source files
+#
 set(TTF2RASTERFONTS_SRC
         src/ttf2RasterFonts/ttf2RasterFonts.c)
 
