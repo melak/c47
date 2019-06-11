@@ -138,9 +138,9 @@ const int16_t menu_PARTS[]       = { ITM_IP,                        ITM_FP,     
 /*      Menu name                  <----------------------------------------------------------------------------- 6 functions ---------------------------------------------------------------------------->  */
 /*                                 <---------------------------------------------------------------------- 6 f shifted functions ------------------------------------------------------------------------->  */
 /*                                 <---------------------------------------------------------------------- 6 g shifted functions ------------------------------------------------------------------------->  */
-const int16_t menu_PROB[]        = { -MNU_T,                        ITM_XFACT,                  ITM_COMB,                 ITM_PERM,              -MNU_F,                      -MNU_CHI2,
-                                     -MNU_NORML,                    -MNU_LGNRM,                 -MNU_CAUCH,               -MNU_EXPON,            -MNU_LOGIS,                  -MNU_WEIBL,
-                                     -MNU_PHI,                      -MNU_NBIN,                  -MNU_GEOM,                -MNU_HYPER,            -MNU_BINOM,                  -MNU_POISS,
+const int16_t menu_PROB[]        = { -MNU_NORML,                    -MNU_T,                     ITM_COMB,                 ITM_PERM,              -MNU_F,                      -MNU_CHI2,
+                                     -MNU_LGNRM,                    -MNU_CAUCH,                 ITM_NULL,                 -MNU_EXPON,            -MNU_LOGIS,                  -MNU_WEIBL,
+                                     ITM_NULL,                      -MNU_NBIN,                  -MNU_GEOM,                -MNU_HYPER,            -MNU_BINOM,                  -MNU_POISS,
                                      ITM_RAN,                       ITM_SEED,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_GAMMAX                    };
 
 const int16_t menu_t[]           = { ITM_TPX,                       ITM_TX,                     ITM_NULL,                 ITM_NULL,              ITM_TUX,                     ITM_TM1P                      };

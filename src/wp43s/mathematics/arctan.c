@@ -133,7 +133,6 @@ void arctanCo16(void) {
 
   // arctan(z) = i/2 . ln((1 - iz) / (1 + iz))
   complex34_t one_iz;
-  calcRegister_t opY;
 
   convertRegister16To34(opX);
   reallocateRegister(result, dtComplex34, COMPLEX34_SIZE, TAG_NONE);
@@ -241,7 +240,6 @@ void arctanCo34(void) {
 
   // arctan(z) = i/2 . ln((1 - iz) / (1 + iz))
   complex34_t one_iz;
-  calcRegister_t opY;
 
   // calculate iz
   opY = allocateTemporaryRegister();

@@ -887,6 +887,7 @@ void complexToDisplayString2(const void *complex, bool_t complex34, char *displa
   }
 
   realToDisplayString2(&real, complex34, displayString);
+  realToDisplayString2(&imag, complex34, displayString + i);
 
   if(complexMode == CM_RECTANGULAR) {
     if(strncmp(displayString + stringByteLength(displayString) - 2, NUM_SPACE_HAIR, 2) != 0) {
@@ -903,12 +904,9 @@ void complexToDisplayString2(const void *complex, bool_t complex34, char *displa
 
     strcat(displayString, COMPLEX_UNIT);
     strcat(displayString, PRODUCT_SIGN);
-    realToDisplayString2(&imag, complex34, displayString + i);
     memmove(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
   }
   else { // POLAR
-    real34_t angle34;
-
     strcat(displayString, STD_SPACE_4_PER_EM STD_MEASURED_ANGLE STD_SPACE_4_PER_EM);
     if(complex34) {
       angle34ToDisplayString2(&imag, currentAngularMode, displayString + stringByteLength(displayString));

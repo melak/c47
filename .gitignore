@@ -12,15 +12,12 @@ src/qspi_crc.h
 
 !windows\ binaries/wp43.exe
 
-# ./ before the executable files else directories are ignored
-./generateConstants
-./testSuite
-./ttf2RasterFonts
-./wp43s
-
 # cmake build
 *build*
 .idea
 
-
-
+# / before the executable files else directories under src/ are ignored
+/generateConstants
+/testSuite
+/ttf2RasterFonts
+/wp43s

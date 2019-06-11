@@ -132,7 +132,7 @@ extern const real16_t * const const16_me;
 extern const real16_t * const const16_MM;
 extern const real16_t * const const16_mn;
 extern const real16_t * const const16_mnOnmp;
-extern const real16_t * const const16_Mp;
+extern const real16_t * const const16_mPL;
 extern const real16_t * const const16_mp;
 extern const real16_t * const const16_mpOnme;
 extern const real16_t * const const16_mu;

@@ -185,20 +185,8 @@ void fnCvtFromCurrentAngularMode(uint16_t toAngularMode) {
         return;
       }
 
-      if(getRegisterAngularMode(REGISTER_X) == currentAngularMode) {
-        convertAngle16FromTo(REGISTER_REAL16_DATA(REGISTER_X), currentAngularMode, toAngularMode);
-        setRegisterDataType(REGISTER_X, dtAngle16, toAngularMode);
-      }
-      else {
-        displayCalcErrorMessage(24, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          sprintf(errorMessage, "cannot use a angle16 not tagged %s as an input of fnCvtFromCurrentAngularMode", getAngularModeName(currentAngularMode));
-          showInfoDialog("In function fnCvtFromCurrentAngularMode:", errorMessage, NULL, NULL);
-        #endif
-        restoreStack();
-        refreshStack();
-        return;
-      }
+      convertAngle16FromTo(REGISTER_REAL16_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), toAngularMode);
+      setRegisterDataType(REGISTER_X, dtAngle16, toAngularMode);
       break;
 
     case dtAngle34:
@@ -212,20 +200,8 @@ void fnCvtFromCurrentAngularMode(uint16_t toAngularMode) {
         return;
       }
 
-      if(getRegisterAngularMode(REGISTER_X) == currentAngularMode) {
-        convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), currentAngularMode, toAngularMode);
-        setRegisterDataType(REGISTER_X, dtAngle34, toAngularMode);
-      }
-      else {
-        displayCalcErrorMessage(24, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          sprintf(errorMessage, "cannot use a angle34 not tagged %s as an input of fnCvtFromCurrentAngularMode", getAngularModeName(currentAngularMode));
-          showInfoDialog("In function fnCvtFromCurrentAngularMode:", errorMessage, NULL, NULL);
-        #endif
-        restoreStack();
-        refreshStack();
-        return;
-      }
+      convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), toAngularMode);
+      setRegisterDataType(REGISTER_X, dtAngle34, toAngularMode);
       break;
 
     default:
