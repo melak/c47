@@ -421,9 +421,7 @@ static void slvqCo34(void)
             // x2 = -sqrt(-c/a)
             // r = -4ac
 
-
-
-            // TODO
+            // TODO: x = ...
         }
         else if (!complex34IsZero(B) && complex34IsZero(C))
         {
