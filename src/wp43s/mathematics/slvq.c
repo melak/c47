@@ -180,7 +180,6 @@ static uint32_t getCoefficientsType()
            : dtReal34;
 }
 
-
 #define A   opZ
 #define B   opY
 #define C   opX
@@ -194,7 +193,6 @@ static uint32_t getCoefficientsType()
 #define iC   REGISTER_IMAG34_DATA(C)
 
 #define complex34IsZero(regist)    (real34IsZero(REGISTER_REAL34_DATA(regist)) && real34IsZero(REGISTER_IMAG34_DATA(regist)))
-
 
 /*
  * SLVQ for Real coefficients.
@@ -422,6 +420,8 @@ static void slvqCo34(void)
             // x1 = sqrt(-c/a)
             // x2 = -sqrt(-c/a)
             // r = -4ac
+
+
 
             // TODO
         }
