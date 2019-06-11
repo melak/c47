@@ -17,3 +17,6 @@ src/qspi_crc.h
 ./testSuite
 ./ttf2RasterFonts
 ./wp43s
+
+*build*
+.idea
