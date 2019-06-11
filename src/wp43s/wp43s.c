@@ -71,6 +71,8 @@ int16_t         lineTWidth;
 int16_t         rbrRegister;
 int16_t         displayHasNDigits;
 calcRegister_t  result;
+calcRegister_t  result1;
+calcRegister_t  result2;
 calcRegister_t  opX;
 calcRegister_t  opY;
 calcRegister_t  opZ;

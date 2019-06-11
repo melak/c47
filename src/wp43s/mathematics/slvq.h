@@ -19,3 +19,5 @@
  ***********************************************/
 
 void fnSlvq(uint16_t unusedButMandatoryParameter);
+void slvqCo34(void);
+void slvqRe34(void);

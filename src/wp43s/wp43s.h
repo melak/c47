@@ -480,6 +480,8 @@ extern int16_t          lineTWidth;
 extern int16_t          rbrRegister;
 extern int16_t          displayHasNDigits;
 extern calcRegister_t   result;
+extern calcRegister_t   result1;
+extern calcRegister_t   result2;
 extern calcRegister_t   opX;
 extern calcRegister_t   opY;
 extern calcRegister_t   opZ;
