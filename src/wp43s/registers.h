@@ -36,7 +36,7 @@
 #define ERR_REGISTER_LINE REGISTER_Z
 
 #define FIRST_TEMPORARY_REGISTER         2000
-#define NUMBER_OF_TEMPORARY_REGISTERS       8 // 7 are used here: [3] [1/x] [f] [a b/c] [1/x]
+#define NUMBER_OF_TEMPORARY_REGISTERS       9 // 7 are used here: [3] [1/x] [f] [a b/c] [1/x]
 
 #define SAVED_REGISTER_X 3000
 #define SAVED_REGISTER_Y 3001

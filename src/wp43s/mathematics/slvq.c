@@ -20,7 +20,29 @@
 
 #include "wp43s.h"
 
-#define PRINT_RE34(x)    do { printf("\n***** %s = %s\n", #x, real34ToString(&x, tmpStr3000)); } while(0)
+
+static void print(char *name, calcRegister_t regist)
+{
+    uint32_t type = getRegisterDataType(regist);
+    char buffer0[100], buffer1[100];
+
+    switch(type)
+    {
+        case dtComplex34:
+            printf("\n> %s = (%s, %si)\n", name, real34ToString(REGISTER_REAL34_DATA(regist), buffer0),
+                    real34ToString(REGISTER_IMAG34_DATA(regist), buffer1));
+            break;
+
+        case dtReal34:
+            printf("\n> %s = %s\n", name, real34ToString(REGISTER_REAL34_DATA(regist), buffer0));
+            break;
+
+        default:
+            printf("\n> Unsupported type: %d for %s\n", type, name);
+    }
+}
+
+
 
 static uint32_t slvqIsValidRegisterType(calcRegister_t regist)
 {
@@ -107,6 +129,10 @@ static void slvqConvertToReal34(calcRegister_t regist)
             convertRegister16To34(tmp);
             break;
 
+        case dtComplex34:
+            real34Copy(REGISTER_REAL34_DATA(regist), REGISTER_REAL34_DATA(tmp));
+            break;
+
         default:
             displayBugScreen("In function slvqConvertRegisterToReal34: "
                              "the source register to convert must be long, short or real16/34!");
@@ -187,52 +213,67 @@ static uint32_t getCoefficientsType()
 
 typedef void (* func_t)(void);
 
+
+static calcRegister_t backupRegister(calcRegister_t regist)
+{
+    const calcRegister_t tmp = allocateTemporaryRegister();
+
+    if(regist!=-1)
+        copySourceRegisterToDestRegister(regist, tmp);
+
+    return tmp;
+}
+
+static void restoreRegister(calcRegister_t regist, calcRegister_t backup)
+{
+    if(backup!=-1)
+    {
+        if(regist!=-1)
+            copySourceRegisterToDestRegister(backup, regist);
+        freeTemporaryRegister(backup);
+    }
+}
+
 static void execute_function1(func_t function, calcRegister_t x, calcRegister_t dest)
 {
-    const calcRegister_t tmp_x = allocateTemporaryRegister();
-    const calcRegister_t tmp_result = allocateTemporaryRegister();
+    const calcRegister_t tmp_x = backupRegister(x);
+    const calcRegister_t tmp_opX = backupRegister(opX);
+    const calcRegister_t tmp_result = backupRegister(result);
 
-    copySourceRegisterToDestRegister(opX, tmp_x);
-    copySourceRegisterToDestRegister(x, opX);
-
-    copySourceRegisterToDestRegister(result, tmp_result);
+    copySourceRegisterToDestRegister(tmp_x, opX);
+    copySourceRegisterToDestRegister(opX, result); // Some functions use result as opX.
 
     (*function)();
+    const calcRegister_t tmp_execution_result = backupRegister(result);
 
-    copySourceRegisterToDestRegister(result, dest);
+    restoreRegister(x, tmp_x);
+    restoreRegister(opX, tmp_opX);
+    restoreRegister(result, tmp_result);
 
-    copySourceRegisterToDestRegister(tmp_result, result);
-    copySourceRegisterToDestRegister(tmp_x, opX);
-
-    freeTemporaryRegister(tmp_x);
-    freeTemporaryRegister(tmp_result);
+    restoreRegister(dest, tmp_execution_result);
 }
 
 static void execute_function2(func_t function, calcRegister_t x, calcRegister_t y, calcRegister_t dest)
 {
-    const calcRegister_t tmp_x = allocateTemporaryRegister();
-    const calcRegister_t tmp_y = allocateTemporaryRegister();
-    const calcRegister_t tmp_result = allocateTemporaryRegister();
+    const calcRegister_t tmp_x = backupRegister(x);
+    const calcRegister_t tmp_y = backupRegister(y);
+    const calcRegister_t tmp_opX = backupRegister(opX);
+    const calcRegister_t tmp_opY = backupRegister(opY);
+    const calcRegister_t tmp_result = backupRegister(result);
 
-    copySourceRegisterToDestRegister(opX, tmp_x);
-    copySourceRegisterToDestRegister(x, opX);
-
-    copySourceRegisterToDestRegister(opY, tmp_y);
-    copySourceRegisterToDestRegister(y, opY);
-
-    copySourceRegisterToDestRegister(result, tmp_result);
-
-    (*function)();
-
-    copySourceRegisterToDestRegister(result, dest);
-
-    copySourceRegisterToDestRegister(tmp_result, result);
     copySourceRegisterToDestRegister(tmp_x, opX);
     copySourceRegisterToDestRegister(tmp_y, opY);
 
-    freeTemporaryRegister(tmp_x);
-    freeTemporaryRegister(tmp_y);
-    freeTemporaryRegister(tmp_result);
+    (*function)();
+    const calcRegister_t tmp_execution_result = backupRegister(result);
+
+    restoreRegister(x, tmp_x);
+    restoreRegister(y, tmp_y);
+    restoreRegister(opX, tmp_opX);
+    restoreRegister(opY, tmp_opY);
+    restoreRegister(result, tmp_result);
+
+    restoreRegister(dest, tmp_execution_result);
 }
 
 
@@ -455,17 +496,19 @@ void slvqCo34(void)
         slvqCoefficientError();
     else
     {
+        slvqConvertToComplex34(result2);
+        slvqConvertToComplex34(result);
+        slvqConvertToComplex34(result1);
+
         if (complex34IsZero(B) && complex34IsZero(C))
         {
             // ax^2 = 0
             // x1 = x2 = 0
             // r = 0;
 
-            slvqConvertToComplex34(result);
             real34Zero(REGISTER_REAL34_DATA(result));
             real34Zero(REGISTER_IMAG34_DATA(result));    // x1 = 0+0i
 
-            slvqConvertToComplex34(result1);
             real34Zero(REGISTER_REAL34_DATA(result1));
             real34Zero(REGISTER_IMAG34_DATA(result1));   // x2 = 0+0i
 
@@ -479,10 +522,6 @@ void slvqCo34(void)
             // x2 = -sqrt(-c/a)
             // r = -4ac
 
-            slvqConvertToComplex34(result2);
-            slvqConvertToComplex34(result);
-            slvqConvertToComplex34(result1);
-
             int32ToReal34(4, REGISTER_REAL34_DATA(result2));        // r = 4 + i*0
             real34Zero(REGISTER_IMAG34_DATA(result2));
             execute_function2(mulCo34Co34, result2, A, result2);    // r = 4*a
@@ -492,6 +531,7 @@ void slvqCo34(void)
             execute_function2(divCo34Co34, C, A, result);           // x1 = c/a
             execute_function1(chsCo34, result, result);             // x1 = -c/a
             execute_function1(sqrtCo34, result, result);            // x1 = sqrt(-c/a)
+
             execute_function1(chsCo34, result, result1);            // x2 = -sqrt(-c/a)
         }
         else if (!complex34IsZero(B) && complex34IsZero(C))
@@ -501,7 +541,13 @@ void slvqCo34(void)
             // x2 = -b/a
             // r = b^2
 
-            // TODO
+            execute_function2(mulCo34Co34, B, B, result2);          // r = b^2
+
+            real34Zero(REGISTER_REAL34_DATA(result));
+            real34Zero(REGISTER_IMAG34_DATA(result));               // x1 = 0+0i
+
+            execute_function2(divCo34Co34, B, A, result1);          // x2 = b/a
+            execute_function1(chsCo34, result1, result1);           // x2 = -b/a
         }
         else // (!complex34IsZero(B) && !complex34IsZero(C))
         {
@@ -509,6 +555,16 @@ void slvqCo34(void)
 
             // TODO
         }
+
+        /*
+         * If img part is zero then convert to real34.
+         */
+        if(real34IsZero(REGISTER_IMAG34_DATA(result)))
+            slvqConvertToReal34(result);
+        if(real34IsZero(REGISTER_IMAG34_DATA(result1)))
+            slvqConvertToReal34(result1);
+        if(real34IsZero(REGISTER_IMAG34_DATA(result2)))
+            slvqConvertToReal34(result2);
     }
 }
 
