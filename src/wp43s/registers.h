@@ -38,8 +38,8 @@
 #define FIRST_TEMPORARY_REGISTER         2000
 
 // 7 are used here: [3] [1/x] [f] [a b/c] [1/x]
-// 9 are used in SLVQ
-#define NUMBER_OF_TEMPORARY_REGISTERS       9
+// 11 are used in SLVQ
+#define NUMBER_OF_TEMPORARY_REGISTERS       11
 
 #define SAVED_REGISTER_X 3000
 #define SAVED_REGISTER_Y 3001
