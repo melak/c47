@@ -90,7 +90,7 @@
   #define showComplexMode()       {}
   #define showPgmBegin()          {}
   #define showFracMode()          {}
-  #define displayBugScreen(a)     {}
+  #define displayBugScreen(a)     do { printf("\n\nERROR: %s\n", a); abort(); } while(0)
   #define showRealComplexResult() {}
   #define showOverflowCarry()     {}
   #define hideUserMode()          {}
