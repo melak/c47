@@ -14,12 +14,13 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************/ /**
+/********************************************//**
  * \file slvq.c
  ***********************************************/
 
 #include "wp43s.h"
 
+#if 0
 
 static void print(char *name, calcRegister_t regist)
 {
@@ -42,7 +43,7 @@ static void print(char *name, calcRegister_t regist)
     }
 }
 
-
+#endif //
 
 static uint32_t slvqIsValidRegisterType(calcRegister_t regist)
 {
@@ -213,7 +214,9 @@ static uint32_t getCoefficientsType()
 
 typedef void (* func_t)(void);
 
-
+/*
+ * Register Backup
+ */
 static calcRegister_t backupRegister(calcRegister_t regist)
 {
     const calcRegister_t tmp = allocateTemporaryRegister();
@@ -224,6 +227,9 @@ static calcRegister_t backupRegister(calcRegister_t regist)
     return tmp;
 }
 
+/*
+ * Register restore
+ */
 static void restoreRegister(calcRegister_t regist, calcRegister_t backup)
 {
     if(backup!=-1)
@@ -234,6 +240,9 @@ static void restoreRegister(calcRegister_t regist, calcRegister_t backup)
     }
 }
 
+/*
+ * Execute unary function
+ */
 static void execute_function1(func_t function, calcRegister_t x, calcRegister_t dest)
 {
     const calcRegister_t tmp_x = backupRegister(x);
@@ -241,7 +250,7 @@ static void execute_function1(func_t function, calcRegister_t x, calcRegister_t 
     const calcRegister_t tmp_result = backupRegister(result);
 
     copySourceRegisterToDestRegister(tmp_x, opX);
-    copySourceRegisterToDestRegister(opX, result); // Some functions use result as opX.
+    copySourceRegisterToDestRegister(opX, result); // Some unary functions use result as opX.
 
     (*function)();
     const calcRegister_t tmp_execution_result = backupRegister(result);
@@ -253,6 +262,9 @@ static void execute_function1(func_t function, calcRegister_t x, calcRegister_t 
     restoreRegister(dest, tmp_execution_result);
 }
 
+/*
+ * Execute binary function
+ */
 static void execute_function2(func_t function, calcRegister_t x, calcRegister_t y, calcRegister_t dest)
 {
     const calcRegister_t tmp_x = backupRegister(x);
@@ -277,6 +289,7 @@ static void execute_function2(func_t function, calcRegister_t x, calcRegister_t 
 }
 
 
+
 #define A   opZ
 #define B   opY
 #define C   opX
@@ -284,10 +297,6 @@ static void execute_function2(func_t function, calcRegister_t x, calcRegister_t 
 #define rA   REGISTER_REAL34_DATA(A)
 #define rB   REGISTER_REAL34_DATA(B)
 #define rC   REGISTER_REAL34_DATA(C)
-
-#define iA   REGISTER_IMAG34_DATA(A)
-#define iB   REGISTER_IMAG34_DATA(B)
-#define iC   REGISTER_IMAG34_DATA(C)
 
 #define complex34IsZero(regist)    (real34IsZero(REGISTER_REAL34_DATA(regist)) && real34IsZero(REGISTER_IMAG34_DATA(regist)))
 
