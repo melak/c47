@@ -1075,7 +1075,7 @@ decNumber * decNumberExp(decNumber *res, const decNumber *rhs,
 /*                                                                    */
 /* C must have space for set->digits digits.                          */
 /* ------------------------------------------------------------------ */
-/*decNumber * decNumberFMA(decNumber *res, const decNumber *lhs,
+decNumber * decNumberFMA(decNumber *res, const decNumber *lhs,
                          const decNumber *rhs, const decNumber *fhs,
                          decContext *set) {
   uInt status=0;                   // accumulator
@@ -1151,7 +1151,7 @@ decNumber * decNumberExp(decNumber *res, const decNumber *rhs,
   #endif
   return res;
   } // decNumberFMA
-*/
+
 /* ------------------------------------------------------------------ */
 /* decNumberInvert -- invert a Number, digitwise                      */
 /*                                                                    */

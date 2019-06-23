@@ -158,7 +158,7 @@ typedef struct {real34_t x[2];}                           complex34_t;
 #define real451Remainder(operand1, operand2, res)         decNumberRemainder       (res, operand1, operand2, &ctxtReal451)
 #define real16FMA(factor1, factor2, term, res)            decDoubleFMA             (res, factor1,  factor2,  term, &ctxtReal16)
 #define real34FMA(factor1, factor2, term, res)            decQuadFMA               (res, factor1,  factor2,  term, &ctxtReal34)
-
+#define real51FMA(factor1, factor2, term, res)            decNumberFMA             (res, factor1,  factor2,  term, &ctxtReal51)
 
 
 

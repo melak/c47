@@ -298,8 +298,15 @@ static void execute_function2(func_t function, calcRegister_t x, calcRegister_t 
 #define rB   REGISTER_REAL34_DATA(B)
 #define rC   REGISTER_REAL34_DATA(C)
 
+#define iA   REGISTER_IMAG34_DATA(A)
+#define iB   REGISTER_IMAG34_DATA(B)
+#define iC   REGISTER_IMAG34_DATA(C)
+
 #define complex34IsZero(regist)    (real34IsZero(REGISTER_REAL34_DATA(regist)) && real34IsZero(REGISTER_IMAG34_DATA(regist)))
 
+/*
+ * SLVQ for Real coefficients.
+ */
 void slvqRe51(void)
 {
     if(real34IsZero(rA))
@@ -472,206 +479,169 @@ void slvqRe51(void)
     }
 }
 
-/*
- * SLVQ for Real coefficients.
- */
-void slvqRe34(void)
+
+typedef struct {
+    real51_t real;
+    real51_t img;
+} complex51_t;
+
+
+int complex51IsNaN(complex51_t *op)
 {
-    if(real34IsZero(rA))
+    return real51IsNaN(&op->real) || real51IsNaN(&op->img);
+}
+
+void mulCo51(complex51_t *opX, complex51_t *opY, complex51_t *res)
+{
+    if(complex51IsNaN(opX) || complex51IsNaN(opY))
+    {
+        displayCalcErrorMessage(1, ERR_REGISTER_LINE, REGISTER_X);
+#if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        showInfoDialog("In function mulCo51:", "cannot use NaN as an input of x", NULL, NULL);
+#endif
+        return;
+    }
+
+    // imaginary part
+    real51Multiply(&opY->real, &opX->img, &res->img);
+    real51FMA(&opY->img, &opX->real, &res->img, &res->img);
+
+    // real part
+    real51_t tmp;
+    
+    real51Copy(&opY->img, &tmp);
+    real51ChangeSign(&tmp);
+
+    real51Multiply(&tmp, &opX->real, &res->real);
+    real51FMA(&tmp, &opX->img, &res->real, &res->real);
+}
+
+void divCo51(complex51_t *opX, complex51_t *opY, complex51_t *res)
+{
+    if(complex51IsNaN(opX) || complex51IsNaN(opY))
+    {
+        displayCalcErrorMessage(1, ERR_REGISTER_LINE, REGISTER_X);
+#if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        showInfoDialog("In function divCo51:", "cannot use NaN as an input of /", NULL, NULL);
+#endif
+        return;
+    }
+
+    real51_t tmp, tmp1;
+
+    // denominator
+    real51Multiply(&opX->real, &opX->real, &tmp);
+    real51FMA(&opX->img, &opX->img, &tmp, &tmp);
+
+    // real part
+    real51Multiply(&opY->real, &opX->real, &res->real);
+    real51FMA(&opY->img, &opX->img, &res->real, &res->real);
+    real51Divide(&res->real, &tmp, &res->real);
+
+    // imaginary part
+    real51Multiply(&opY->img, &opX->real, &res->img);
+    real51Copy(&opY->real, &tmp1);
+    real51ChangeSign(&tmp1);
+    real51FMA(&tmp1, &opX->img, &res->img, &res->img);
+    real51Divide(&res->img, &tmp, &res->img);
+}
+
+void addCo51(complex51_t *op1, complex51_t *op2, complex51_t *res)
+{
+
+}
+
+void subCo51(complex51_t *op1, complex51_t *op2, complex51_t *res)
+{
+
+}
+
+void chsCo51(complex51_t *op, complex51_t *res)
+{
+
+}
+
+void sqrtCo51(complex51_t *op, complex51_t *res)
+{
+
+}
+
+void zeroCo51(complex51_t *res)
+{
+    real51Zero(&res->real);
+    real51Zero(&res->img);
+}
+
+void int32ToCo51(int real_value, int img_value, complex51_t *res)
+{
+    int32ToReal51(real_value, &res->real);
+    int32ToReal51(img_value, &res->img);
+}
+
+void real34ToCo51(real34_t *real_value, real34_t *img_value, complex51_t *res)
+{
+    real34ToReal51(real_value, &res->real);
+    real34ToReal51(img_value, &res->img);
+}
+
+void slvqCo51(void)
+{
+    if (complex34IsZero(A))
         slvqCoefficientError();
     else
     {
-        if (real34IsZero(rB) && real34IsZero(rC))
+        slvqConvertToComplex34(result);
+        slvqConvertToComplex34(result1);
+        slvqConvertToComplex34(result2);
+
+        if (complex34IsZero(B) && complex34IsZero(C))
         {
-            // a*x^2 = 0
-            //----------
+            // ax^2 = 0
+            //---------
             // x1 = x2 = 0
             // r = 0;
 
-            slvqConvertToReal34(result);
-            slvqConvertToReal34(result1);
-            slvqConvertToReal34(result2);
+            real34Zero(REGISTER_REAL34_DATA(result));
+            real34Zero(REGISTER_IMAG34_DATA(result));               // x1 = 0+0i
 
-            real34Zero(REGISTER_REAL34_DATA(result));   // x1 = 0
-            real34Zero(REGISTER_REAL34_DATA(result1));  // x2 = 0
-            real34Zero(REGISTER_REAL34_DATA(result2));  // r = 0
+            real34Zero(REGISTER_REAL34_DATA(result1));
+            real34Zero(REGISTER_IMAG34_DATA(result1));              // x2 = 0+0i
+
+            real34Zero(REGISTER_REAL34_DATA(result2));
+            real34Zero(REGISTER_IMAG34_DATA(result1));              // r = 0+0i
         }
-        else if (real34IsZero(rB) && !real34IsZero(rC))
+        else if (complex34IsZero(B) && !complex34IsZero(C))
         {
-            // a*x^2 + c = 0
-            //--------------
+            // ax^2 + c = 0
+            //-------------
             // x1 = sqrt(-c/a)
             // x2 = -sqrt(-c/a)
-            // r = -4*a*c
+            // r = -4ac
 
-            real34_t x;
+            complex51_t a, b, c;
 
-            slvqConvertToReal34(result2);
-            int32ToReal34(4, REGISTER_REAL34_DATA(result2));                                   // r = 4
-            real34Multiply(REGISTER_REAL34_DATA(result2), rA, REGISTER_REAL34_DATA(result2));  // r = 4*a
-            real34Multiply(REGISTER_REAL34_DATA(result2), rC, REGISTER_REAL34_DATA(result2));  // r = 4*a*c
-            real34ChangeSign(REGISTER_REAL34_DATA(result2));                                   // r = -4*a*c
+            real34ToCo51(rA, iA, &a);
+            real34ToCo51(rB, iB, &b);
+            real34ToCo51(rC, iC, &c);
 
-            real34Divide(rC, rA, &x);           // x = c/a
+            complex51_t r, x;
 
-            if(real34IsNegative(&x))
-            {
-                real34ChangeSign(&x);                               // x = -c/a
-                real34SquareRoot(&x, &x);                           // x = sqrt(-c/a)
+            int32ToCo51(4, 0, &r);          // r = 4 + i*0
+            mulCo51(&r, &a, &r);            // r = 4*a
+            mulCo51(&r, &c, &r);            // r = 4*a*c
+            chsCo51(&r, &r);                // r = -4*a*c
+            real51ToReal34(&r.real, REGISTER_REAL34_DATA(result2));
+            real51ToReal34(&r.img, REGISTER_IMAG34_DATA(result2));
 
-                slvqConvertToReal34(result);
-                real34Copy(&x, REGISTER_REAL34_DATA(result));       // x1 = sqrt(c/a)
+            divCo51(&c, &a, &x);            // x = c/a
+            chsCo51(&x, &x);                // x = -c/a
+            sqrtCo51(&x, &x);               // x = sqrt(-c/a)
+            real51ToReal34(&x.real, REGISTER_REAL34_DATA(result));
+            real51ToReal34(&x.img, REGISTER_IMAG34_DATA(result));
 
-                real34ChangeSign(&x);                               // x = -sqrt(c/a)
-                slvqConvertToReal34(result1);
-                real34Copy(&x, REGISTER_REAL34_DATA(result1));      // x2 = -sqrt(c/a)
-            }
-            else if (getFlag(FLAG_CPXRES))
-            {
-                real34SquareRoot(&x, &x);                           // x = sqrt(c/a)
-
-                reallocateRegister(result, dtComplex34, COMPLEX34_SIZE, 0);
-                real34Copy(&x, REGISTER_IMAG34_DATA(result));
-                real34Zero(REGISTER_REAL34_DATA(result));
-
-                real34SetNegativeSign(&x);                          // x = -sqrt(c/a)
-
-                reallocateRegister(result1, dtComplex34, COMPLEX34_SIZE, 0);
-                real34Copy(&x, REGISTER_IMAG34_DATA(result1));
-                real34Zero(REGISTER_REAL34_DATA(result1));
-            }
-            else
-                slvqDomainError();
-        }
-        else if (!real34IsZero(rB) && real34IsZero(rC))
-        {
-            // a*x^2 + b*x = 0
-            //----------------
-            // x1 = 0 
-            // x2 = -b/a
-            // r = b^2
-
-            slvqConvertToReal34(result);
-            slvqConvertToReal34(result1);
-            slvqConvertToReal34(result2);
-
-            real34Multiply(rB, rB, REGISTER_REAL34_DATA(result2)); // r = b^2
-
-            real34Zero(REGISTER_REAL34_DATA(result));              // x1 = 0
-
-            real34Divide(rB, rA, REGISTER_REAL34_DATA(result1));   // x2 = b/a
-            real34ChangeSign(REGISTER_REAL34_DATA(result1));       // x2 = -b/a
-        }
-        else // (!real34IsZero(b) && !real34IsZero(c))
-        {
-            // a^2 + b*x + c = 0
-            //------------------
-
-            real34_t r, tmp, x;
-
-            slvqConvertToReal34(result2);
-
-            int32ToReal34(4, &tmp);             // tmp = 4
-            real34Multiply(&tmp, rA, &tmp);     // tmp = 4*a
-            real34Multiply(&tmp, rC, &tmp);     // tmp = 4*a*c
-
-            // TODO overflow if b > sqrt(MAX_REAL34)
-            real34Multiply(rB, rB, &r);         // r = b^2
-            real34Subtract(&r, &tmp, &r);       // r = b^2 - 4*a*c
-
-            real34Copy(&r, REGISTER_REAL34_DATA(result2));
-
-            if(real34IsZero(&r))
-            {
-                // r = 0
-                // x1 = x2 = -b/(2*a)
-
-                slvqConvertToReal34(result);
-                slvqConvertToReal34(result1);
-
-                int32ToReal34(2, &tmp);         // tmp = 2
-                real34Divide(rB, &tmp, &x);     // x = b/2
-                real34Divide(&x, rA, &x);       // x = b/(2*a)
-                real34ChangeSign(&x);           // x = -b/(2*a)
-
-                real34Copy(&x, REGISTER_REAL34_DATA(result));
-                real34Copy(&x, REGISTER_REAL34_DATA(result1));
-            }
-            else if(! real34IsNegative(&r)) 
-            {
-#if 0 // Simple formula
-                // x1 = (-b + sqrt(r))/(2*a)
-                // x2 = (-b - sqrt(r))/(2*a)
-
-                slvqConvertToReal34(result);
-                slvqConvertToReal34(result1);
-
-                int32ToReal34(2, &tmp);         // tmp = 2
-                real34Multiply(rA, &tmp, &tmp); // tmp = 2*a
-
-                real34SquareRoot(&r, &r);       // r = sqrt(b^2 - 4*a*c)
-                real34ChangeSign(rB);           // b = -b
-
-                real34Add(rB, &r, &x);          // x = -b + sqrt(r)
-                real34Divide(&x, &tmp, &x);     // x = (-b + sqrt(r))/(2*a)
-                real34Copy(&x, REGISTER_REAL34_DATA(result));
-
-                real34Subtract(rB, &r, &x);     // x = (-b - sqrt(r)
-                real34Divide(&x, &tmp, &x);     // x = (-b - sqrt(r))/(2*a)
-                real34Copy(&x, REGISTER_REAL34_DATA(result1));
-
-#else // More stable formula
-
-                // x1 = (-b - sign(b) * sqrt(r)) / (2*a)
-                // x2 = c/(a * x1)
-
-                slvqConvertToReal34(result);
-                slvqConvertToReal34(result1);
-
-                int32ToReal34(2, &tmp);         // tmp = 2
-                real34Multiply(rA, &tmp, &tmp); // tmp = 2*a
-
-                real34SquareRoot(&r, &r);       // r = sqrt(b^2 - 4*a*c)
-                real34ChangeSign(rB);           // b = -b
-
-                if(real34IsNegative(rB))
-                    real34Add(rB, &r, &x);      // x = -b + sqrt(r)
-                else
-                    real34Subtract(rB, &r, &x); // x = -b - sqrt(r)
-
-                real34Divide(&x, &tmp, &x);     // x = (-b - sign(b) * sqrt(r))/(2*a)
-                real34Copy(&x, REGISTER_REAL34_DATA(result));
-
-                real34Multiply(rA, &x, &x);     // x = a * x
-                real34Divide(rC, &x, &x);       // x = c / (z*x)
-                real34Copy(&x, REGISTER_REAL34_DATA(result1));
-#endif
-            }
-            else if (getFlag(FLAG_CPXRES))
-            {
-                slvqConvertToComplex34(result);
-                slvqConvertToComplex34(result1);
-
-                real34ChangeSign(&r);            // r = -(b^2 - 4*a*c)
-                real34SquareRoot(&r, &r);        // r = sqrt(-(b^2 - 4*a*c))
-
-                int32ToReal34(2, &tmp);         // tmp = 2
-                real34Multiply(rA, &tmp, &tmp); // tmp = 2a
-
-                real34Divide(&r, &tmp, &r);     // r = sqrt(-(b^2 - 4ac))/(2*a)
-
-                real34ChangeSign(rB);           // b = -b
-                real34Divide(rB, &tmp, &x);     // x = -b/(2*a)
-
-                real34Copy(&x, REGISTER_REAL34_DATA(result));
-                real34Copy(&r, REGISTER_IMAG34_DATA(result));   // x1 = -b/(2*a) + i sqrt(-(b^2 - 4*a*c))/(2*a)
-
-                real34Copy(&x, REGISTER_REAL34_DATA(result1));
-                real34Copy(&r, REGISTER_IMAG34_DATA(result1));
-                real34ChangeSign(REGISTER_IMAG34_DATA(result1)); // x2 = -b/(2*a) - i sqrt(-(b^2 - 4*a*c))/(2*a)
-            }
-            else
-                slvqDomainError();
+            chsCo51(&x, &x);                // x = -sqrt(-c/a)
+            real51ToReal34(&x.real, REGISTER_REAL34_DATA(result1));
+            real51ToReal34(&x.img, REGISTER_IMAG34_DATA(result1));
         }
     }
 }
@@ -702,8 +672,8 @@ void slvqCo34(void)
             real34Zero(REGISTER_REAL34_DATA(result1));
             real34Zero(REGISTER_IMAG34_DATA(result1));              // x2 = 0+0i
 
-            slvqConvertToReal34(result2);
-            real34Zero(REGISTER_REAL34_DATA(result2));              // r = 0
+            real34Zero(REGISTER_REAL34_DATA(result2));
+            real34Zero(REGISTER_IMAG34_DATA(result1));              // r = 0+0i
         }
         else if (complex34IsZero(B) && !complex34IsZero(C))
         {
