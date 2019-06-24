@@ -96,6 +96,7 @@ typedef struct {real34_t x[2];}                           complex34_t;
 #define real451ToReal34(source, destination)              decQuadFromNumber        (destination, source, &ctxtReal34)
 #define real16AbsToReal16(source, destination)            decDoubleCopyAbs         (destination, source)
 #define real34AbsToReal34(source, destination)            decQuadCopyAbs           (destination, source)
+#define real51AbsToReal51(source, destination)            decNumberCopyAbs         (destination, source)
 #define real16ToUInt32(source)                            decDoubleToUInt32        (source,      &ctxtReal16, DEC_ROUND_DOWN)
 #define real34ToUInt32(source)                            decQuadToUInt32          (source,      &ctxtReal34, DEC_ROUND_DOWN)
 #define real51ToUInt32(source)                            decNumberToUInt32        (source,      &ctxtReal51)
@@ -111,6 +112,7 @@ typedef struct {real34_t x[2];}                           complex34_t;
 
 #define real16IsInfinite(source)                          decDoubleIsInfinite      (source)
 #define real34IsInfinite(source)                          decQuadIsInfinite        (source)
+#define real51IsInfinite(source)                          decNumberIsInfinite      (source)
 #define real16IsNaN(source)                               decDoubleIsNaN           (source)
 #define real34IsNaN(source)                               decQuadIsNaN             (source)
 #define real51IsNaN(source)                               decNumberIsNaN           (source)
@@ -123,6 +125,7 @@ typedef struct {real34_t x[2];}                           complex34_t;
 #define real51IsNegative(source)                          decNumberIsNegative      (source)
 #define real16IsPositive(source)                          decDoubleIsPositive      (source)
 #define real34IsPositive(source)                          decQuadIsPositive        (source)
+#define real51IsPositive(source)                          (! decNumberIsNegative(source) && ! decNumberIsZero(source))
 #define real16IsSpecial(source)                           (decDoubleIsNaN(source) || decDoubleIsSignaling(source) || decDoubleIsInfinite(source))
 #define real34IsSpecial(source)                           (decQuadIsNaN(source)   || decQuadIsSignaling(source)   || decQuadIsInfinite(source))
 #define real51IsSpecial(source)                           (decNumberIsSpecial(source))

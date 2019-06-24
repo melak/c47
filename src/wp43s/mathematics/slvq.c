@@ -512,7 +512,7 @@ void mulCo51(complex51_t *opX, complex51_t *opY, complex51_t *res)
     real51Copy(&opY->img, &tmp);
     real51ChangeSign(&tmp);
 
-    real51Multiply(&tmp, &opX->real, &res->real);
+    real51Multiply(&opY->real, &opX->real, &res->real);
     real51FMA(&tmp, &opX->img, &res->real, &res->real);
 }
 
@@ -540,30 +540,110 @@ void divCo51(complex51_t *opX, complex51_t *opY, complex51_t *res)
 
     // imaginary part
     real51Multiply(&opY->img, &opX->real, &res->img);
-    real51Copy(&opY->real, &tmp1);
+    real51Copy(&opY->real, &tmp1);                          // tmp1 = opY->real
     real51ChangeSign(&tmp1);
     real51FMA(&tmp1, &opX->img, &res->img, &res->img);
     real51Divide(&res->img, &tmp, &res->img);
 }
 
-void addCo51(complex51_t *op1, complex51_t *op2, complex51_t *res)
+void addCo51(complex51_t *opX, complex51_t *opY, complex51_t *res)
 {
+    if(complex51IsNaN(opX) || complex51IsNaN(opY))
+    {
+        displayCalcErrorMessage(1, ERR_REGISTER_LINE, REGISTER_X);
+#if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        showInfoDialog("In function divCo51:", "cannot use NaN as an input of /", NULL, NULL);
+#endif
+        return;
+    }
 
+    real51Add(&opX->real, &opY->real, &res->real);
+    real51Add(&opX->img, &opY->img, &res->img);
 }
 
-void subCo51(complex51_t *op1, complex51_t *op2, complex51_t *res)
+void subCo51(complex51_t *opX, complex51_t *opY, complex51_t *res)
 {
+    if(complex51IsNaN(opX) || complex51IsNaN(opY))
+    {
+        displayCalcErrorMessage(1, ERR_REGISTER_LINE, REGISTER_X);
+#if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        showInfoDialog("In function subCo51:", "cannot use NaN as an input of -", NULL, NULL);
+#endif
+        return;
+    }
 
+    real51Subtract(&opX->real, &opY->real, &res->real);
+    real51Subtract(&opX->img, &opY->img, &res->img);
 }
 
-void chsCo51(complex51_t *op, complex51_t *res)
+void chsCo51(complex51_t *opX, complex51_t *res)
 {
+    if(complex51IsNaN(opX))
+    {
+        displayCalcErrorMessage(1, ERR_REGISTER_LINE, REGISTER_X);
+#if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        showInfoDialog("In function chsCo51:", "cannot use NaN as an input of chs", NULL, NULL);
+#endif
+        return;
+    }
 
+    if(!getFlag(FLAG_DANGER)) {
+        if(real51IsInfinite(&opX->real)) {
+            displayCalcErrorMessage(real51IsPositive(&opX->real) ? 5 : 4 , ERR_REGISTER_LINE, REGISTER_X);
+#if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            showInfoDialog("In function chsCo34:", "cannot change infinity sign of real part while D flag is clear", NULL, NULL);
+#endif
+            return;
+        }
+
+        if(real51IsInfinite(&opX->img)) {
+            displayCalcErrorMessage(real51IsPositive(&opX->img) ? 5 : 4 , ERR_REGISTER_LINE, REGISTER_X);
+#if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            showInfoDialog("In function chsCo51:", "cannot change infinity sign of imaginary part while D flag is clear", NULL, NULL);
+#endif
+            return;
+        }
+    }
+
+    real51Copy(&opX->real, &res->real);
+    real51ChangeSign(&res->real);
+
+    real51Copy(&opX->img, &res->img);
+    real51ChangeSign(&res->img);
+
+    if(real51IsZero(&res->real)) {
+        real51SetPositiveSign(&res->real);
+    }
+
+    if(real51IsZero(&res->img)) {
+        real51SetPositiveSign(&res->img);
+    }
 }
 
-void sqrtCo51(complex51_t *op, complex51_t *res)
+void sqrtCo51(complex51_t *opX, complex51_t *res)
 {
+    if(complex51IsNaN(opX))
+    {
+        displayCalcErrorMessage(1, ERR_REGISTER_LINE, REGISTER_X);
+#if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        showInfoDialog("In function sqrtCo51:", "cannot use NaN as an input of sqrt", NULL, NULL);
+#endif
+        return;
+    }
 
+    real34_t real34, img34;
+    real34_t magnitude34, theta34;
+
+    real51ToReal34(&opX->real, &real34);
+    real51ToReal34(&opX->img, &img34);
+
+    real34RectangularToPolar(&real34, &img34, &magnitude34, &theta34);
+    real34SquareRoot(&magnitude34, &magnitude34);
+    real34Multiply(&theta34, const34_0_5, &theta34);
+    real34PolarToRectangular(&magnitude34, &theta34, &real34, &img34);
+
+    real34ToReal51(&real34, &opX->real);
+    real34ToReal51(&img34, &opX->img);
 }
 
 void zeroCo51(complex51_t *res)
@@ -643,6 +723,7 @@ void slvqCo51(void)
             real51ToReal34(&x.real, REGISTER_REAL34_DATA(result1));
             real51ToReal34(&x.img, REGISTER_IMAG34_DATA(result1));
         }
+        // TODO .....
     }
 }
 
@@ -814,7 +895,7 @@ void fnSlvq(uint16_t unusedParamButMandatory)
         slvqCopyToComplex34(REGISTER_Y, opY);
         slvqCopyToComplex34(REGISTER_Z, opZ);
 
-        slvqCo34();
+        slvqCo51();
     }
     else
     {
