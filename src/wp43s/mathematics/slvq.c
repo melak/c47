@@ -479,16 +479,63 @@ void slvqRe51(void)
     }
 }
 
+//=====================================================================================================================
+// Complex 51
+//---------------------------------------------------------------------------------------------------------------------
 
-typedef struct {
+typedef struct
+{
     real51_t real;
     real51_t img;
 } complex51_t;
 
 
+void complex51Print(char *name, complex51_t *value)
+{
+    char buffer0[200], buffer1[200];
+
+    real51ToString(&value->real, buffer0);
+    real51ToString(&value->img, buffer1);
+
+    printf("\n> %s = (%s, %s)\n", name, buffer0, buffer1);
+}
+
+void real51Print(char *name, real51_t *value)
+{
+    char buffer0[200];
+
+    real51ToString(value, buffer0);
+
+    printf("\n> %s = %s\n", name, buffer0);
+}
+
+void complex51Zero(complex51_t *op)
+{
+    real51Zero(&op->real);
+    real51Zero(&op->img);
+}
+
 int complex51IsNaN(complex51_t *op)
 {
     return real51IsNaN(&op->real) || real51IsNaN(&op->img);
+}
+
+void complex51Copy(complex51_t *source, complex51_t *dest)
+{
+    real51Copy(&source->real, &dest->real);
+    real51Copy(&source->img, &dest->img);
+}
+
+void int32ToCo51(int real_value, int img_value, complex51_t *res)
+{
+    int32ToReal51(real_value, &res->real);
+    int32ToReal51(img_value, &res->img);
+}
+
+void real34ToCo51(real34_t *real_value, real34_t *img_value, complex51_t *res)
+{
+    real34ToReal51(real_value, &res->real);
+    real34ToReal51(img_value, &res->img);
 }
 
 void mulCo51(complex51_t *opX, complex51_t *opY, complex51_t *res)
@@ -502,18 +549,26 @@ void mulCo51(complex51_t *opX, complex51_t *opY, complex51_t *res)
         return;
     }
 
+    // opX = (a, b)
+    // opY = (c, d)
+    //
+    // (a, b) * (c, d) = (a*c - b*d, c*b + a*d)
+
+    complex51_t tmp_res;
+
     // imaginary part
-    real51Multiply(&opY->real, &opX->img, &res->img);
-    real51FMA(&opY->img, &opX->real, &res->img, &res->img);
+    real51Multiply(&opY->real, &opX->img, &tmp_res.img);            // c*b
+    real51FMA(&opY->img, &opX->real, &tmp_res.img, &tmp_res.img);   // a*d + c*b
 
     // real part
-    real51_t tmp;
-    
-    real51Copy(&opY->img, &tmp);
-    real51ChangeSign(&tmp);
+    real51Multiply(&opY->real, &opX->real, &tmp_res.real);          // a*c
 
-    real51Multiply(&opY->real, &opX->real, &res->real);
-    real51FMA(&tmp, &opX->img, &res->real, &res->real);
+    real51_t tmp;
+    real51Copy(&opY->img, &tmp);                                    // d
+    real51ChangeSign(&tmp);                                         // -d
+    real51FMA(&tmp, &opX->img, &tmp_res.real, &tmp_res.real);       // a*c - b*d
+
+    complex51Copy(&tmp_res, res);
 }
 
 void divCo51(complex51_t *opX, complex51_t *opY, complex51_t *res)
@@ -527,6 +582,7 @@ void divCo51(complex51_t *opX, complex51_t *opY, complex51_t *res)
         return;
     }
 
+    complex51_t tmp_res;
     real51_t tmp, tmp1;
 
     // denominator
@@ -534,16 +590,18 @@ void divCo51(complex51_t *opX, complex51_t *opY, complex51_t *res)
     real51FMA(&opX->img, &opX->img, &tmp, &tmp);
 
     // real part
-    real51Multiply(&opY->real, &opX->real, &res->real);
-    real51FMA(&opY->img, &opX->img, &res->real, &res->real);
-    real51Divide(&res->real, &tmp, &res->real);
+    real51Multiply(&opY->real, &opX->real, &tmp_res.real);
+    real51FMA(&opY->img, &opX->img, &tmp_res.real, &tmp_res.real);
+    real51Divide(&tmp_res.real, &tmp, &tmp_res.real);
 
     // imaginary part
-    real51Multiply(&opY->img, &opX->real, &res->img);
+    real51Multiply(&opY->img, &opX->real, &tmp_res.img);
     real51Copy(&opY->real, &tmp1);                          // tmp1 = opY->real
     real51ChangeSign(&tmp1);
-    real51FMA(&tmp1, &opX->img, &res->img, &res->img);
-    real51Divide(&res->img, &tmp, &res->img);
+    real51FMA(&tmp1, &opX->img, &tmp_res.img, &tmp_res.img);
+    real51Divide(&tmp_res.img, &tmp, &tmp_res.img);
+
+    complex51Copy(&tmp_res, res);
 }
 
 void addCo51(complex51_t *opX, complex51_t *opY, complex51_t *res)
@@ -605,19 +663,21 @@ void chsCo51(complex51_t *opX, complex51_t *res)
         }
     }
 
-    real51Copy(&opX->real, &res->real);
-    real51ChangeSign(&res->real);
+    complex51_t tmp_res;
 
-    real51Copy(&opX->img, &res->img);
-    real51ChangeSign(&res->img);
+    real51Copy(&opX->real, &tmp_res.real);
+    real51ChangeSign(&tmp_res.real);
 
-    if(real51IsZero(&res->real)) {
-        real51SetPositiveSign(&res->real);
-    }
+    real51Copy(&opX->img, &tmp_res.img);
+    real51ChangeSign(&tmp_res.img);
 
-    if(real51IsZero(&res->img)) {
-        real51SetPositiveSign(&res->img);
-    }
+    if(real51IsZero(&tmp_res.real))
+        real51SetPositiveSign(&tmp_res.real);
+
+    if(real51IsZero(&tmp_res.img))
+        real51SetPositiveSign(&tmp_res.img);
+
+    complex51Copy(&tmp_res, res);
 }
 
 void sqrtCo51(complex51_t *opX, complex51_t *res)
@@ -642,27 +702,11 @@ void sqrtCo51(complex51_t *opX, complex51_t *res)
     real34Multiply(&theta34, const34_0_5, &theta34);
     real34PolarToRectangular(&magnitude34, &theta34, &real34, &img34);
 
-    real34ToReal51(&real34, &opX->real);
-    real34ToReal51(&img34, &opX->img);
+    real34ToReal51(&real34, &res->real);
+    real34ToReal51(&img34, &res->img);
 }
 
-void zeroCo51(complex51_t *res)
-{
-    real51Zero(&res->real);
-    real51Zero(&res->img);
-}
-
-void int32ToCo51(int real_value, int img_value, complex51_t *res)
-{
-    int32ToReal51(real_value, &res->real);
-    int32ToReal51(img_value, &res->img);
-}
-
-void real34ToCo51(real34_t *real_value, real34_t *img_value, complex51_t *res)
-{
-    real34ToReal51(real_value, &res->real);
-    real34ToReal51(img_value, &res->img);
-}
+//=====================================================================================================================
 
 void slvqCo51(void)
 {
@@ -698,32 +742,102 @@ void slvqCo51(void)
             // x2 = -sqrt(-c/a)
             // r = -4ac
 
+            complex51_t a, c, tmp;
+
+            real34ToCo51(rA, iA, &a);
+            real34ToCo51(rC, iC, &c);
+
+            int32ToCo51(4, 0, &tmp);        // r = 4 + i*0
+            mulCo51(&tmp, &a, &tmp);        // r = 4*a
+            mulCo51(&tmp, &c, &tmp);        // r = 4*a*c
+            chsCo51(&tmp, &tmp);            // r = -4*a*c
+            real51ToReal34(&tmp.real, REGISTER_REAL34_DATA(result2));
+            real51ToReal34(&tmp.img, REGISTER_IMAG34_DATA(result2));
+
+            divCo51(&c, &a, &tmp);          // x = c/a
+            chsCo51(&tmp, &tmp);            // x = -c/a
+            sqrtCo51(&tmp, &tmp);           // x = sqrt(-c/a)
+            real51ToReal34(&tmp.real, REGISTER_REAL34_DATA(result));
+            real51ToReal34(&tmp.img, REGISTER_IMAG34_DATA(result));
+
+            chsCo51(&tmp, &tmp);            // x = -sqrt(-c/a)
+            real51ToReal34(&tmp.real, REGISTER_REAL34_DATA(result1));
+            real51ToReal34(&tmp.img, REGISTER_IMAG34_DATA(result1));
+        }
+        else if (!complex34IsZero(B) && complex34IsZero(C))
+        {
+            // ax^2 + bx = 0
+            //--------------
+            // x1 = 0
+            // x2 = -b/a
+            // r = b^2
+
+            complex51_t a, b, tmp;
+
+            real34ToCo51(rA, iA, &a);
+            real34ToCo51(rB, iB, &b);
+
+            mulCo51(&b, &b, &tmp);                      // r = b*b
+            real51ToReal34(&tmp.real, REGISTER_REAL34_DATA(result2));
+            real51ToReal34(&tmp.img, REGISTER_IMAG34_DATA(result2));
+
+            real34Zero(REGISTER_REAL34_DATA(result));
+            real34Zero(REGISTER_IMAG34_DATA(result));   // x1 = 0+0i
+
+            divCo51(&b, &a, &tmp);                      // x2 = b/a
+            chsCo51(&tmp, &tmp);                        // x2 = -b/a
+            real51ToReal34(&tmp.real, REGISTER_REAL34_DATA(result1));
+            real51ToReal34(&tmp.img, REGISTER_IMAG34_DATA(result1));
+        }
+        else // (!complex34IsZero(B) && !complex34IsZero(C))
+        {
+            // a^2 + bx + c = 0
+            //-----------------
+            // r = b^2 - 4*a*c
+            // x1 = (-b - sqrt(r)) / (2*a)
+            // x2 = (-b + sqrt(r)) / (2*a)
+
             complex51_t a, b, c;
 
             real34ToCo51(rA, iA, &a);
             real34ToCo51(rB, iB, &b);
             real34ToCo51(rC, iC, &c);
 
-            complex51_t r, x;
+            complex51_t x, r, tmp;
 
-            int32ToCo51(4, 0, &r);          // r = 4 + i*0
-            mulCo51(&r, &a, &r);            // r = 4*a
-            mulCo51(&r, &c, &r);            // r = 4*a*c
-            chsCo51(&r, &r);                // r = -4*a*c
+            int32ToCo51(4, 0, &r);              // r = 4 + i 0
+            mulCo51(&a, &r, &r);                // r = 4*a
+            mulCo51(&c, &r, &r);                // r = 4*a*c
+            mulCo51(&b, &b, &x);                // x = b^2
+            subCo51(&x, &r, &r);                // r = b^2 - 4*a*c
             real51ToReal34(&r.real, REGISTER_REAL34_DATA(result2));
             real51ToReal34(&r.img, REGISTER_IMAG34_DATA(result2));
 
-            divCo51(&c, &a, &x);            // x = c/a
-            chsCo51(&x, &x);                // x = -c/a
-            sqrtCo51(&x, &x);               // x = sqrt(-c/a)
+            sqrtCo51(&r, &r);                   // r = sqrt(r)
+            chsCo51(&b, &b);                    // b = -b
+            int32ToCo51(2, 0, &tmp);            // tmp = 2 + i 0
+            mulCo51(&tmp, &a, &tmp);            // tmp = 2*a
+
+            subCo51(&b, &r, &x);                // x = -b - sqrt(b^2 - 4*a*c)
+            divCo51(&x, &tmp, &x);              // x = (-b - sqrt(b^2 - 4*a*c))/(2*a)
             real51ToReal34(&x.real, REGISTER_REAL34_DATA(result));
             real51ToReal34(&x.img, REGISTER_IMAG34_DATA(result));
 
-            chsCo51(&x, &x);                // x = -sqrt(-c/a)
+            addCo51(&b, &r, &x);                // x = -b + sqrt(b^2 - 4*a*c)
+            divCo51(&x, &tmp, &x);              // x = (-b + sqrt(b^2 - 4*a*c))/(2*a)
             real51ToReal34(&x.real, REGISTER_REAL34_DATA(result1));
             real51ToReal34(&x.img, REGISTER_IMAG34_DATA(result1));
         }
-        // TODO .....
+
+        /*
+         * If img part is zero then convert to real34.
+         */
+        if(real34IsZero(REGISTER_IMAG34_DATA(result)))
+            slvqConvertToReal34(result);
+        if(real34IsZero(REGISTER_IMAG34_DATA(result1)))
+            slvqConvertToReal34(result1);
+        if(real34IsZero(REGISTER_IMAG34_DATA(result2)))
+            slvqConvertToReal34(result2);
     }
 }
 
