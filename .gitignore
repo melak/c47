@@ -12,11 +12,12 @@ callgrind.out*
 gmon.out
 bin/
 obj/
-*build*/
+#*build*/
 gmp-6.2.0/
 gmp-6.2.0.tar.bz2
 DMCP_build/src
 DMCP_build/decNumberICU
+DMCP_build/build
 
 # used by cLion
 .idea/
@@ -33,3 +34,21 @@ DMCP_build/decNumberICU
 /testTtf2RasterFonts
 /wp43s
 /.vscode
+
+.DS_Store
+*.dSYM
+*\ 2.c
+*\ 3.c
+*\ 4.c
+*\ 5.c
+*\ 6.c
+*\ 7.c
+*\ 8.c
+*\ 9.c
+c_s\ *
+generateCatalogs\ *
+generateConstants\ *
+ttf2Rasterfonts\ *
+.stamp-constantPointers\ *
+.stamp-rasterFontsData\ *
+.stamp-softmenuCatalog\ *

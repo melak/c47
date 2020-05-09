@@ -1,0 +1,14 @@
+#!/bin/bash
+
+PATH=$PATH:/Users/jacomostert/Documents/WP43S/DM42/gcc-arm-none-eabi-8-2019-q3-update/bin
+
+
+#rm ~/.Xauthority
+#killall Xquartz
+#open -a /Applications/Utilities/XQuartz.app/Contents/MacOS/X11
+
+make mrproper
+
+make -j8 V=1
+./wp43s
+
