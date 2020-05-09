@@ -30,3 +30,23 @@
     #endif
   }
 #endif
+
+
+void fnTicks(uint16_t unusedParamButMandatory) {
+#ifndef TESTSUITE_BUILD
+  uint32_t tim;
+  longInteger_t lgInt;
+
+
+  tim = getUptimeMs();
+  tim = tim / 100;
+
+  liftStack();
+  longIntegerInit(lgInt);
+  uIntToLongInteger(tim, lgInt);
+  convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_X);
+  longIntegerFree(lgInt);
+
+  refreshStack();
+#endif
+}

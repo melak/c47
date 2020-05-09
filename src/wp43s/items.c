@@ -30,6 +30,10 @@ void itemToBeCoded(uint16_t unusedParamButMandatory) {
   funcOK = false;
 }
 
+//Temporary. To remove.                                  //JMEXEC vv
+void capture_sequence(char *origin, uint16_t item) {
+   printf("Captured: %4d   /%10s/  (%s)\n",item,indexOfItems[item].itemSoftmenuName, origin);
+}                                                        //JMEXEC ^^
 
 
 #ifndef GENERATE_CATALOGS
@@ -69,6 +73,9 @@ void fnNop(uint16_t unusedParamButMandatory) {
  ***********************************************/
 void runFunction(int16_t func) {
   funcOK = true;
+
+  //Temporary. To remove.                        //JMEXEC
+  capture_sequence("runFunction:", func);        //JMEXEC
 
   if(func >= LAST_ITEM) {
     #ifdef PC_BUILD
@@ -408,6 +415,7 @@ void fnPercentSigma             (uint16_t unusedParamButMandatory) {}
 void fnPercentPlusMG            (uint16_t unusedParamButMandatory) {}
 void fnDeltaPercent             (uint16_t unusedParamButMandatory) {}
 void fnXthRoot                  (uint16_t unusedParamButMandatory) {}
+void fnTicks                    (uint16_t unusedParamButMandatory) {}
 #endif
 
 const item_t indexOfItems[] = {
@@ -1035,7 +1043,7 @@ const item_t indexOfItems[] = {
 /*  619 */  { fnTanh,                      NOPARAM,                     "tanh",                                        "tanh",                                        0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  620 */  { itemToBeCoded,               NOPARAM,                     "TDISP",                                       "TDISP",                                       0,       0,       CAT_FNCT, SLS_UNCHANGED},
 /*  621 */  { itemToBeCoded,               NOPARAM,                     "TEST",                                        "TEST",                                        0,       0,       CAT_MENU, SLS_UNCHANGED},
-/*  622 */  { itemToBeCoded,               NOPARAM,                     "TICKS",                                       "TICKS",                                       0,       0,       CAT_FNCT, SLS_UNCHANGED},
+/*  622 */  { fnTicks,                     NOPARAM,                     "TICKS",                                       "TICKS",                                       0,       0,       CAT_FNCT, SLS_UNCHANGED},
 /*  623 */  { itemToBeCoded,               NOPARAM,                     "TIME",                                        "TIME",                                        0,       0,       CAT_FNCT, SLS_UNCHANGED},
 /*  624 */  { itemToBeCoded,               NOPARAM,                     "TIMER",                                       "TIMER",                                       0,       0,       CAT_FNCT, SLS_UNCHANGED},
 /*  625 */  { itemToBeCoded,               NOPARAM,                     "TIMES",                                       "TIMES",                                       0,       0,       CAT_MENU, SLS_UNCHANGED},

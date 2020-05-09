@@ -18,6 +18,9 @@
  * \file items.h
  ***********************************************/
 
+//TEMPORARY TO REMOVE.
+void capture_sequence(char *origin, uint16_t item);      //JMEXEC
+
 #define NOPARAM       9876
 #define CONFIRMED     9877
 #define NOT_CONFIRMED 9878

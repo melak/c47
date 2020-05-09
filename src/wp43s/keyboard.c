@@ -482,8 +482,8 @@ void processKeyAction(int16_t item) {
           break;
 
         case CM_NIM:
+          keyActionProcessed = true;     //JMEXEC. Moved to before addItemToNimBuffer, to allow addItemToNimBuffer to clear keyActionProcessed if not handled.
           addItemToNimBuffer(item);
-          keyActionProcessed = true;
           break;
 
         case CM_REGISTER_BROWSER:
@@ -575,6 +575,10 @@ void processKeyAction(int16_t item) {
           displayBugScreen(errorMessage);
       }
   }
+  //Temporary. To remove.
+  if(keyActionProcessed) {                          //JMEXEC
+    capture_sequence("keyActionProcessed:", item);  //JMEXEC
+  }                                                 //JMEXEC
 }
 #endif // TESTSUITE_BUILD
 
