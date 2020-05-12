@@ -36,6 +36,7 @@
 #define Y_POSITION_OF_TAM_LINE        Y_POSITION_OF_REGISTER_T_LINE
 #define Y_POSITION_OF_NIM_LINE        Y_POSITION_OF_REGISTER_X_LINE
 #define Y_POSITION_OF_ERR_LINE        Y_POSITION_OF_REGISTER_Z_LINE
+#define Y_POSITION_OF_TRUE_FALSE_LINE Y_POSITION_OF_REGISTER_Z_LINE
 
 /********************************************//**
  * \typedef videoMode_t

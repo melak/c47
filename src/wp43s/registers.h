@@ -34,10 +34,11 @@
 #define REGISTER_K  111
 
 // If one of the 4 next defines is changed: change also xxxLINE in screen.h
-#define AIM_REGISTER_LINE REGISTER_X
-#define TAM_REGISTER_LINE REGISTER_T
-#define NIM_REGISTER_LINE REGISTER_X
-#define ERR_REGISTER_LINE REGISTER_Z
+#define AIM_REGISTER_LINE        REGISTER_X
+#define TAM_REGISTER_LINE        REGISTER_T
+#define NIM_REGISTER_LINE        REGISTER_X
+#define ERR_REGISTER_LINE        REGISTER_Z
+#define TRUE_FALSE_REGISTER_LINE REGISTER_Z
 
 #define SAVED_REGISTER_X    2000
 #define SAVED_REGISTER_Y    2001

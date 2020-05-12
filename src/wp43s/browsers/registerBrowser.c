@@ -33,6 +33,11 @@ void registerBrowser(uint16_t unusedParamButMandatory) {
   int16_t registerNameWidth;
 
   if(calcMode != CM_REGISTER_BROWSER) {
+    if(calcMode == CM_AIM) {
+      cursorEnabled = false;
+      hideCursor();
+    }
+
     previousCalcMode = calcMode;
     calcMode = CM_REGISTER_BROWSER;
   }

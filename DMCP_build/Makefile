@@ -19,7 +19,7 @@ BUILD_DIR = build
 
 # Path to aux build scripts (including trailing /)
 # Leave empty for scripts in PATH
-BIN_DIR =
+BIN_DIR = bin/
 
 ######################################
 # System sources
@@ -168,7 +168,7 @@ $(BUILD_DIR):
 # clean up
 #######################################
 clean:
-	-rm -fR .dep $(BUILD_DIR)/*.o $(BUILD_DIR)/*.lst
+	-rm -fR .dep $(BUILD_DIR)/*.o $(BUILD_DIR)/*.lst $(BUILD_DIR)/*.pgm
 
 
 #######################################

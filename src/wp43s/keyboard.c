@@ -734,6 +734,11 @@ void fnKeyExit(uint16_t unusedParamButMandatory) {
       showSoftmenuCurrentPart();
       oldTime[0] = 0;
       showDateTime();
+      if(calcMode == CM_AIM) {
+        clearRegisterLine(Y_POSITION_OF_AIM_LINE - 4, REGISTER_LINE_HEIGHT);
+        xCursor = showString(aimBuffer, &standardFont, 1, Y_POSITION_OF_AIM_LINE + 6, vmNormal, true, true);
+        cursorEnabled = true;
+      }
       break;
 
     case CM_BUG_ON_SCREEN:

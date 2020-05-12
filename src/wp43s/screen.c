@@ -953,9 +953,10 @@ void resetTemporaryInformation(void) {
     case TI_WEIGHTEDMEANX:
     case TI_WEIGHTEDSAMPLSTDDEV:
     case TI_WEIGHTEDPOPLSTDDEV:
-    case TI_WEIGHTEDSTDERR:
+    case TI_WEIGHTEDSTDERR:    refreshRegisterLine(REGISTER_X); break;
+
     case TI_FALSE:
-    case TI_TRUE:              refreshRegisterLine(REGISTER_X); break;
+    case TI_TRUE:              refreshRegisterLine(TRUE_FALSE_REGISTER_LINE); break;
 
     case TI_SHOW_REGISTER:     refreshRegisterLine(REGISTER_T);
                                if(tmpStr3000[ 300]) refreshRegisterLine(REGISTER_Z);
@@ -1066,16 +1067,14 @@ void refreshRegisterLine(calcRegister_t regist) {
           showString(VERSION, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X), vmNormal, true, true);
         }
 
-        else if(temporaryInformation == TI_FALSE && regist == REGISTER_X) {
+        else if(temporaryInformation == TI_FALSE && regist == TRUE_FALSE_REGISTER_LINE) {
           sprintf(tmpStr3000, "false");
-          w = stringWidth(tmpStr3000, &standardFont, true, true);
-          showString(tmpStr3000, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X), vmNormal, true, true);
+          showString(tmpStr3000, &standardFont, 1, Y_POSITION_OF_TRUE_FALSE_LINE, vmNormal, true, true);
         }
 
-        else if(temporaryInformation == TI_TRUE && regist == REGISTER_X) {
+        else if(temporaryInformation == TI_TRUE && regist == TRUE_FALSE_REGISTER_LINE) {
           sprintf(tmpStr3000, "true");
-          w = stringWidth(tmpStr3000, &standardFont, true, true);
-          showString(tmpStr3000, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X), vmNormal, true, true);
+          showString(tmpStr3000, &standardFont, 1, Y_POSITION_OF_TRUE_FALSE_LINE, vmNormal, true, true);
         }
 
         else if(temporaryInformation == TI_RESET && regist == REGISTER_X) {
@@ -1131,9 +1130,8 @@ void refreshRegisterLine(calcRegister_t regist) {
           prefixWidth = 0;
 
           if(lastErrorCode != 0 && regist == errorMessageRegisterLine) {
-            w = stringWidth(errorMessages[lastErrorCode], &standardFont, true, true);
-            if(w <= SCREEN_WIDTH) {
-              showString(errorMessages[lastErrorCode], &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X), vmNormal, true, true);
+            if(stringWidth(errorMessages[lastErrorCode], &standardFont, true, true) <= SCREEN_WIDTH - 1) {
+              showString(errorMessages[lastErrorCode], &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X), vmNormal, true, true);
             }
             else {
               #if (EXTRA_INFO_ON_CALC_ERROR == 1)

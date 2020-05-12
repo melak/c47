@@ -31,7 +31,7 @@ const calcKey_t kbd_std[37] = {
  {26,   ITM_SQUARE,    ITM_AIM,         ITM_SQUAREROOTX, CHR_CHECK_MARK,  CHR_F,             CHR_CHECK_MARK,  CHR_PHI,       CHR_alpha    },
 
  {31,   ITM_STO,       ITM_ASSIGN,      ITM_SAVE,        ITM_NULL,        CHR_G,             ITM_ASSIGN,      CHR_GAMMA,     ITM_NULL     },
- {32,   ITM_RCL,       ITM_VIEW,        ITM_RBR,         ITM_NULL,        CHR_H,             ITM_NULL,        CHR_CHI,       ITM_HEX      },
+ {32,   ITM_RCL,       ITM_RBR,         ITM_VIEW,        ITM_NULL,        CHR_H,             ITM_RBR,         CHR_CHI,       ITM_HEX      },
  {33,   ITM_Rdown,     ITM_Rup,        -MNU_CPX,         ITM_NULL,        CHR_I,             CHR_DOWN_ARROW,  CHR_IOTA,      ITM_REGI     }, // if f or g are changed: adapt the function btnClicked section if(calcMode == CM_NIM) in keyboard.c. Case H for hexadecimal base
  {34,   KEY_CC,        ITM_MAGNITUDE,   ITM_ANGLE,       ITM_NULL,        CHR_J,             ITM_NULL,        CHR_ETA,       ITM_REGJ     },
  {35,   KEY_f,         ITM_NULL,        ITM_SCRDMP,      KEY_f,           KEY_f,             ITM_NULL,        ITM_SCRDMP,    KEY_f        },
@@ -46,7 +46,7 @@ const calcKey_t kbd_std[37] = {
  {51,   ITM_DIV,       ITM_RMD,         ITM_MOD,         CHR_SLASH,       CHR_N,             CHR_SLASH,       CHR_NU,        ITM_DIV      },
  {52,   CHR_7,        -MNU_CONST,       ITM_NULL,        CHR_7,           CHR_O,             CHR_7,           CHR_OMEGA,     CHR_7        },
  {53,   CHR_8,         ITM_NULL,       -MNU_CFG,         CHR_8,           CHR_P,             CHR_8,           CHR_PI,        CHR_8        },
- {54,   CHR_9,         ITM_NULL,        ITM_RTN,         CHR_9,           CHR_Q,             CHR_9,           ITM_RTN,        CHR_9        },
+ {54,   CHR_9,         ITM_NULL,        ITM_RTN,         CHR_9,           CHR_Q,             CHR_9,           ITM_RTN,       CHR_9        },
  {55,   ITM_XEQ,       ITM_GTO,         ITM_LBL,         ITM_NULL,        ITM_NULL,          ITM_NULL,        ITM_NULL,      ITM_NULL     },
 
  {61,   ITM_MULT,      ITM_XFACT,      -MNU_PROB,        CHR_CROSS,       CHR_R,             CHR_PROD_SIGN,   CHR_RHO,       ITM_MULT     },

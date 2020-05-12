@@ -111,14 +111,8 @@ void fnFb(uint16_t bit) { // bit from 1=LSB to shortIntegerWordSize=MSB
  ***********************************************/
 void fnBc(uint16_t bit) { // bit from 1=LSB to shortIntegerWordSize=MSB
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & ((uint64_t)1 << (bit - 1))) {
-      temporaryInformation = TI_FALSE;
-    }
-    else {
-      temporaryInformation = TI_TRUE;
-    }
-
-    refreshRegisterLine(REGISTER_X);
+    temporaryInformation = (*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & ((uint64_t)1 << (bit - 1)) ? TI_FALSE : TI_TRUE);
+    refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
@@ -139,14 +133,8 @@ void fnBc(uint16_t bit) { // bit from 1=LSB to shortIntegerWordSize=MSB
  ***********************************************/
 void fnBs(uint16_t bit) { // bit from 1=LSB to shortIntegerWordSize=MSB
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & ((uint64_t)1 << (bit - 1))) {
-      temporaryInformation = TI_TRUE;
-    }
-    else {
-      temporaryInformation = TI_FALSE;
-    }
-
-    refreshRegisterLine(REGISTER_X);
+    temporaryInformation = (*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & ((uint64_t)1 << (bit - 1)) ? TI_TRUE : TI_FALSE);
+    refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);

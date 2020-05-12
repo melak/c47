@@ -191,126 +191,80 @@ void fnClFAll(uint16_t unusedParamButMandatory) {
 
 
 void fnIsFlagClear(uint16_t f) {
-  if(getFlag(f)) {
-    temporaryInformation = TI_FALSE;
-  }
-  else {
-    temporaryInformation = TI_TRUE;
-  }
+  temporaryInformation = (getFlag(f) ? TI_FALSE : TI_TRUE);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
-  refreshRegisterLine(REGISTER_X);
+  refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
 }
 
 
 
 void fnIsFlagClearClear(uint16_t f) {
-  if(getFlag(f)) {
-    temporaryInformation = TI_FALSE;
-  }
-  else {
-    temporaryInformation = TI_TRUE;
-  }
-
+  temporaryInformation = (getFlag(f) ? TI_FALSE : TI_TRUE);
   fnClearFlag(f);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
-  refreshRegisterLine(REGISTER_X);
+  refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
 }
 
 
 
 void fnIsFlagClearSet(uint16_t f) {
-  if(getFlag(f)) {
-    temporaryInformation = TI_FALSE;
-  }
-  else {
-    temporaryInformation = TI_TRUE;
-  }
-
+  temporaryInformation = (getFlag(f) ? TI_FALSE : TI_TRUE);
   fnSetFlag(f);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
-  refreshRegisterLine(REGISTER_X);
+  refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
 }
 
 
 
 void fnIsFlagClearFlip(uint16_t f) {
-  if(getFlag(f)) {
-    temporaryInformation = TI_FALSE;
-  }
-  else {
-    temporaryInformation = TI_TRUE;
-  }
-
+  temporaryInformation = (getFlag(f) ? TI_FALSE : TI_TRUE);
   fnFlipFlag(f);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
-  refreshRegisterLine(REGISTER_X);
+  refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
 }
 
 
 
 void fnIsFlagSet(uint16_t f) {
-  if(getFlag(f)) {
-    temporaryInformation = TI_TRUE;
-  }
-  else {
-    temporaryInformation = TI_FALSE;
-  }
+  temporaryInformation = (getFlag(f) ? TI_TRUE : TI_FALSE);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
-  refreshRegisterLine(REGISTER_X);
+  refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
 }
 
 
 
 
 void fnIsFlagSetClear(uint16_t f) {
-  if(getFlag(f)) {
-    temporaryInformation = TI_TRUE;
-  }
-  else {
-    temporaryInformation = TI_FALSE;
-  }
-
+  temporaryInformation = (getFlag(f) ? TI_TRUE : TI_FALSE);
   fnClearFlag(f);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
-  refreshRegisterLine(REGISTER_X);
+  refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
 }
 
 
 
 
 void fnIsFlagSetSet(uint16_t f) {
-  if(getFlag(f)) {
-    temporaryInformation = TI_TRUE;
-  }
-  else {
-    temporaryInformation = TI_FALSE;
-  }
-
+  temporaryInformation = (getFlag(f) ? TI_TRUE : TI_FALSE);
   fnSetFlag(f);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
-  refreshRegisterLine(REGISTER_X);
+  refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
 }
 
 
 
 
 void fnIsFlagSetFlip(uint16_t f) {
-  if(getFlag(f)) {
-    temporaryInformation = TI_TRUE;
-  }
-  else {
-    temporaryInformation = TI_FALSE;
-  }
-
+  temporaryInformation = (getFlag(f) ? TI_TRUE : TI_FALSE);
   fnFlipFlag(f);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
-  refreshRegisterLine(REGISTER_X);
+  refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
 }

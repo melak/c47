@@ -1,0 +1,20 @@
+#!/bin/bash
+
+PATH=$PATH:/opt/local/include/
+PATH=$PATH:/opt/local/
+PATH=$PATH:/Users/jacomostert/Documents/WP43S/DM42/gcc-arm-none-eabi-8-2019-q3-update/bin
+PATH=$PATH:./bin:/arm-eabi/bin
+
+rm -rf decNumberICU
+rm -rf src
+ln -s ../decNumberICU
+ln -s ../src
+
+rm -rf decNumberICU
+rm -rf src
+ln -s ../decNumberICU
+ln -s ../src
+
+make clean
+#make -j8 --silent
+make -j8 --debug

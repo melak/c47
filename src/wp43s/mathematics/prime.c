@@ -142,7 +142,7 @@ void fnIsPrime(uint16_t unusedButMandatoryParameter) {
   longIntegerSetPositiveSign(primeCandidate);
   temporaryInformation = (longIntegerIsPrime(primeCandidate) ? TI_TRUE : TI_FALSE);
   longIntegerFree(primeCandidate);
-  refreshRegisterLine(REGISTER_X);
+  refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
 }
 
 
