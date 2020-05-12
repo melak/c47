@@ -1155,6 +1155,132 @@ void fnUserJM(uint16_t jmUser) {
 #endif
 
 
+  case USER_43D:          //USER
+
+    kbd_usr[0].primary      = ITM_1ONX;
+    kbd_usr[0].fShifted     = ITM_YX;
+    kbd_usr[0].gShifted     = ITM_toINT;
+
+    kbd_usr[1].primary      = ITM_SQUAREROOTX;
+    kbd_usr[1].fShifted     = ITM_SQUARE;
+    kbd_usr[1].gShifted     = KEY_dotD;
+
+    kbd_usr[2].primary      = ITM_LOG10;
+    kbd_usr[2].fShifted     = ITM_10x;
+    kbd_usr[2].gShifted     = ITM_ms;
+
+    kbd_usr[3].primary      = ITM_LN;
+    kbd_usr[3].fShifted     = ITM_EX;
+    kbd_usr[3].gShifted     = ITM_PROFRC;
+
+    kbd_usr[4].primary      = KEY_f;
+    kbd_usr[4].fShifted     = ITM_NULL;
+    kbd_usr[4].gShifted     = ITM_NULL;
+    kbd_usr[4].keyLblAim     = KEY_f;
+    kbd_usr[4].primaryAim     = KEY_f;
+    kbd_usr[4].primaryTam     = KEY_f;
+
+    kbd_usr[5].primary      = KEY_g;
+    kbd_usr[5].fShifted     = ITM_NULL;
+    kbd_usr[5].gShifted     = ITM_NULL;
+    kbd_usr[5].keyLblAim     = KEY_g;
+    kbd_usr[5].primaryAim     = KEY_g;
+    kbd_usr[5].primaryTam     = KEY_g;
+
+    kbd_usr[6].primaryAim     = CHR_E;
+    kbd_usr[7].primaryAim     = CHR_F;
+    kbd_usr[8].primaryAim     = CHR_G;
+    kbd_usr[9].primaryAim     = CHR_H;
+    kbd_usr[10].primaryAim     = CHR_I;
+    kbd_usr[11].primaryAim     = CHR_J;
+
+    kbd_usr[13].primaryAim     = CHR_K;
+    kbd_usr[14].primaryAim     = CHR_L;
+    kbd_usr[15].primaryAim     = CHR_M;
+
+    kbd_usr[17].primaryAim     = CHR_N;
+    kbd_usr[18].primaryAim     = CHR_O;
+    kbd_usr[19].primaryAim     = CHR_P;
+    kbd_usr[20].primaryAim     = CHR_Q;
+    kbd_usr[21].primaryAim     = CHR_R;
+
+    kbd_usr[22].primaryAim     = CHR_S;
+
+    kbd_usr[17].primary     = ITM_SUB;
+    kbd_usr[17].fShifted    = -MNU_STAT;
+    kbd_usr[17].gShifted    = -MNU_SUMS;
+    kbd_usr[17].keyLblAim     = CHR_MINUS;
+    kbd_usr[17].primaryAim     = CHR_PERIOD; //
+    kbd_usr[17].fShiftedAim     = CHR_MINUS;
+    kbd_usr[17].primaryTam     = ITM_SUB;
+
+    kbd_usr[22].primary     = ITM_ADD;
+    kbd_usr[22].fShifted    = -MNU_PROB;
+    kbd_usr[22].gShifted    = -MNU_INTS;
+    kbd_usr[22].keyLblAim     = CHR_PLUS;
+    kbd_usr[22].primaryAim     = CHR_PERIOD; //
+    kbd_usr[22].fShiftedAim     = CHR_PLUS;
+    kbd_usr[22].primaryTam     = ITM_ADD;
+
+    kbd_usr[27].primary     = ITM_MULT;       //ex-f/g
+    kbd_usr[27].fShifted    = -MNU_STK;
+    kbd_usr[27].gShifted    = -MNU_ALPHAFN;
+    kbd_usr[27].keyLblAim     = CHR_CROSS;
+    kbd_usr[27].primaryAim     = CHR_PERIOD; //
+    kbd_usr[27].fShiftedAim     = CHR_CROSS;
+    kbd_usr[27].primaryTam     = ITM_MULT;
+
+    kbd_usr[32].primary     = ITM_DIV;   //ex-exit
+    kbd_usr[32].fShifted    = -MNU_CATALOG;
+    kbd_usr[32].gShifted    = -MNU_PRINT;
+    kbd_usr[32].keyLblAim     = CHR_DIVIDE;
+    kbd_usr[32].primaryAim     = CHR_PERIOD;  //
+    kbd_usr[32].fShiftedAim     = CHR_DIVIDE;
+    kbd_usr[32].gShiftedAim     = CHR_PRINTER;
+    kbd_usr[32].primaryTam     = ITM_DIV;
+
+    kbd_usr[21].primary     = ITM_XEQ;
+    kbd_usr[21].fShifted    = ITM_AIM;
+    kbd_usr[21].gShifted    = ITM_NULL;
+    kbd_usr[21].keyLblAim     = ITM_NULL;
+    kbd_usr[21].primaryAim     = ITM_NULL;  //
+    kbd_usr[21].fShiftedAim     = ITM_NULL;
+    kbd_usr[21].gShiftedAim     = ITM_NULL;
+    kbd_usr[21].primaryTam     = CHR_alpha;
+
+    kbd_usr[26].primary     = KEY_UP1;
+    kbd_usr[26].fShifted    = KEY_BST;
+    kbd_usr[26].gShifted    = ITM_RBR;
+    kbd_usr[26].keyLblAim     = KEY_UP1;
+    kbd_usr[26].primaryAim     = KEY_UP1;  //
+    kbd_usr[26].fShiftedAim     = KEY_BST;
+    kbd_usr[26].gShiftedAim     = ITM_NULL;
+    kbd_usr[26].primaryTam     = KEY_UP1;
+
+    kbd_usr[31].primary     = KEY_DOWN1;
+    kbd_usr[31].fShifted    = KEY_SST;
+    kbd_usr[31].gShifted    = ITM_STATUS;
+    kbd_usr[31].keyLblAim     = KEY_DOWN1;
+    kbd_usr[31].primaryAim     = KEY_DOWN1;  //
+    kbd_usr[31].fShiftedAim     = KEY_SST;
+    kbd_usr[31].gShiftedAim     = ITM_NULL;
+    kbd_usr[31].primaryTam     = KEY_DOWN1;
+
+    kbd_usr[36].primary     = KEY_EXIT1;
+    kbd_usr[36].fShifted    = ITM_OFF;
+    kbd_usr[36].gShifted    = -MNU_IO;
+    kbd_usr[36].keyLblAim     = KEY_EXIT1;
+    kbd_usr[36].primaryAim     = KEY_EXIT1;  //
+    kbd_usr[36].fShiftedAim     = ITM_OFF;
+    kbd_usr[36].primaryTam     = KEY_EXIT1;
+
+    Norm_Key_00_VAR         = ITM_1ONX;
+    fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
+    Show_User_Keys();
+    break;
+
+
+
 
   case USER_SHIFTS:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
     kbd_usr[0].primary     = KEY_USERMODE;

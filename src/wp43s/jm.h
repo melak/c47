@@ -133,6 +133,7 @@ void fnUserJM(uint16_t jmUser);
 #define USER_PRGM        37
 #define USER_USER        38
 #define USER_SIGMAPLUS   39
+#define USER_43D         40
  //last number
 
 
