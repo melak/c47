@@ -964,6 +964,12 @@ void resetTemporaryInformation(void) {
                                if(tmpStr3000[1500]) refreshRegisterLine(REGISTER_X);
                                break;
 
+    case TI_SHOW_REGISTER_BIG: //refresh the complete screen                            //JMSHOW vv
+                               clearScreen(false, true, true);
+                               refreshStack();
+                               showSoftmenuCurrentPart();
+                               break;                                                   //JMSHOW ^^
+
     default:                   sprintf(errorMessage, "In function resetTemporaryInformation: %" FMT8U " is an unexpected value for temporaryInformation!", temporaryInformation);
                                displayBugScreen(errorMessage);
   }
@@ -1125,6 +1131,41 @@ void refreshRegisterLine(calcRegister_t regist) {
 
           real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpStr3000, &standardFont, SCREEN_WIDTH, 34, true, STD_SPACE_PUNCTUATION);
         }
+
+
+                                                                         //JMSHOW vv
+        else if(temporaryInformation == TI_SHOW_REGISTER_BIG) {
+          #define line_h 38
+          switch(regist) {
+            // L1
+            case REGISTER_T: w = stringWidth(tmpStr3000, &numericFont, true, true);
+                             showString(tmpStr3000, &numericFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);
+                             break;
+
+            // L2 & L3
+            case REGISTER_Z: w = stringWidth(tmpStr3000 + 300, &numericFont, true, true);
+                             showString(tmpStr3000 + 300, &numericFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h, vmNormal, true, true);
+                             break;
+
+            // L4 & L5
+            case REGISTER_Y: w = stringWidth(tmpStr3000 + 600, &numericFont, true, true);
+                             showString(tmpStr3000 + 600, &numericFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h*2, vmNormal, true, true);
+                             break;
+
+            // L6 & L7
+            case REGISTER_X: w = stringWidth(tmpStr3000 + 900, &numericFont, true, true);
+                             showString(tmpStr3000 + 900, &numericFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h*3, vmNormal, true, true);
+                             break;
+
+            default: {}
+          }
+
+          if(getRegisterDataType(REGISTER_X) == dtReal34) {
+            real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpStr3000, &numericFont, SCREEN_WIDTH, 34, true, STD_SPACE_PUNCTUATION);
+          }
+        }
+                                                                         //JMSHOW ^^
+
 
         else if(regist < REGISTER_X + displayStack || (lastErrorCode != 0 && regist == errorMessageRegisterLine)) {
           prefixWidth = 0;

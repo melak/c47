@@ -623,6 +623,8 @@ void fnReset(uint16_t confirmation) {
     showOverflowCarry();
     hideUserMode();
 
+    SHOWregis = 9999;                                     //JMSHOW
+
     // Initialization of user key assignments
     xcopy(kbd_usr, kbd_std, sizeof(kbd_std));
 

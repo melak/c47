@@ -81,6 +81,7 @@ int16_t               alphaSelectionMenu;
 int16_t               lastFcnsMenuPos;
 int16_t               lastMenuMenuPos;
 int16_t               lastCnstMenuPos;
+int16_t               SHOWregis;                   //JMSHOW
 uint16_t              numberOfLocalFlags;
 dataBlock_t          *allLocalRegisterPointer;
 dataBlock_t          *allNamedVariablePointer;
@@ -313,6 +314,8 @@ void setupDefaults(void) {
   currentFntScr = 0;
   currentFlgScr = 0;
   currentRegisterBrowserScreen = 9999;
+  SHOWregis = 9999;                                              //JMSHOW
+
 
   softmenuStackPointer = 0;
 
