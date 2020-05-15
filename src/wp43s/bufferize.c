@@ -1078,6 +1078,37 @@ void nimBufferToDisplayBuffer(const char *nimBuffer, char *displayBuffer) {
   }
   nimBuffer++;
 
+  int16_t groupingGapM = groupingGap;                       //JMGAP vv
+  switch(nimNumberPart) {
+    case NP_INT_10:                     // +12345 longint; Do not change groupingGap. Leave at user setting, default 3.
+    case NP_INT_BASE:                   // +123AB#16.    ; Change groupinggap from user selection to this table, for entry
+      switch(lastIntegerBase) {
+        case  0: groupingGap = groupingGapM; break;
+        case  2: groupingGap = 4; break;
+        case  3: groupingGap = 3; break;
+        case  4: groupingGap = 2; break;
+        case  5:
+        case  6:
+        case  7:
+        case  8:
+        case  9:
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15: groupingGap = 3; break;
+        case 16: groupingGap = 2; break;
+        default: break;
+      }
+      break;
+    case NP_INT_16:                     // +123AB.       ; Change to 2 for hex.
+      groupingGap = 2;
+      break;
+    default:
+      break;
+  }                                                         //JMGAP ^^
+
   for(numDigits=0; nimBuffer[numDigits]!=0 && nimBuffer[numDigits]!='e' && nimBuffer[numDigits]!='.' && nimBuffer[numDigits]!=' ' && nimBuffer[numDigits]!='#' && nimBuffer[numDigits]!='+' && nimBuffer[numDigits]!='-'; numDigits++); // The semicolon here is OK
 
   for(source=0, dest=0; source<numDigits; source++) {
@@ -1085,6 +1116,7 @@ void nimBufferToDisplayBuffer(const char *nimBuffer, char *displayBuffer) {
     dest += insertGapIP(displayBuffer + dest, numDigits, source);
   }
 
+  groupingGap = groupingGapM;                               //JMGAP
   displayBuffer[dest] = 0;
 
   if(nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
