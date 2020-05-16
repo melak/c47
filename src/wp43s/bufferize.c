@@ -1823,7 +1823,7 @@ void closeNim(void) {
       }
 
       if(nimNumberPart == NP_COMPLEX_INT_PART && (nimBuffer[lastChar] == 'i' || nimBuffer[lastChar-1]*256 + nimBuffer[lastChar]*256 == 0xa221)) { // complex i or measured angle
-        nimBuffer[++lastChar] = '0';                    //JM. CHANGED FROM "1" to '0'. PLEASE CONSIDER KEEPING IT '0'. IT MAKES NO SENSE DEFAULTING TO 0+1xi IF ABORTING CC ENTRY.
+        nimBuffer[++lastChar] = '0';                    //JMCPX. CHANGED FROM "1" to '0'. PLEASE CONSIDER KEEPING IT '0'. IT MAKES NO SENSE DEFAULTING TO 0+1xi IF ABORTING CC ENTRY.
         nimBuffer[lastChar + 1] = 0;
       }
 

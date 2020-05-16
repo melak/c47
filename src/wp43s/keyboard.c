@@ -580,10 +580,6 @@ void processKeyAction(int16_t item) {
           displayBugScreen(errorMessage);
       }
   }
-  //Temporary. To remove.
-  if(keyActionProcessed) {                          //JMEXEC
-    capture_sequence("keyActionProcessed:", item);  //JMEXEC
-  }                                                 //JMEXEC
 }
 #endif // TESTSUITE_BUILD
 

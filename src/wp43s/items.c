@@ -30,10 +30,6 @@ void itemToBeCoded(uint16_t unusedParamButMandatory) {
   funcOK = false;
 }
 
-//Temporary. To remove.                                  //JMEXEC vv
-void capture_sequence(char *origin, uint16_t item) {
-   printf("Captured: %4d   /%10s/  (%s)\n",item,indexOfItems[item].itemSoftmenuName, origin);
-}                                                        //JMEXEC ^^
 
 
 #ifndef GENERATE_CATALOGS
@@ -73,9 +69,6 @@ void fnNop(uint16_t unusedParamButMandatory) {
  ***********************************************/
 void runFunction(int16_t func) {
   funcOK = true;
-
-  //Temporary. To remove.                        //JMEXEC
-  capture_sequence("runFunction:", func);        //JMEXEC
 
   if(func >= LAST_ITEM) {
     #ifdef PC_BUILD
