@@ -16,7 +16,6 @@
 
 void fnDisplayOvr                      (uint16_t displayOvr);
 void fnProductSign                     (uint16_t productSign);
-void fnRadixMark                       (uint16_t radixMark);
 void fnDisplayFormatFix                (uint16_t displayFormat);
 void fnDisplayFormatSci                (uint16_t displayFormat);
 void fnDisplayFormatEng                (uint16_t displayFormat);

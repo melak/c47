@@ -87,7 +87,7 @@ void xthRootComplex(const real_t *aa, const real_t *bb, const real_t *cc, const 
   realCopy(cc, &c);
   realCopy(dd, &d);
 
-  if(!getFlag(FLAG_DANGER)) {
+  if(!getSystemFlag(FLAG_SPCRES)) {
     if(realIsZero(&c)&&realIsZero(&d)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -140,7 +140,7 @@ void xthRootReal(real_t *yy, real_t *xx, realContext_t *realContext) {
   realCopy(yy, &y);
 
   telltale = 0;
-  if(getFlag(FLAG_DANGER)) {
+  if(getSystemFlag(FLAG_SPCRES)) {
     //0
     if(   ((real34IsZero(&y)                          && (realCompareGreaterEqual(&x, const_0) || (realIsInfinite(&x) && realIsPositive(&x)))))
        || ((realIsInfinite(&y) && realIsPositive(&y)) && (realCompareLessThan(&x, const_0) && (!realIsInfinite(&x))))
@@ -717,7 +717,7 @@ void xthRootCplxShoI(void) {
 void xthRootRealReal(void) {
   real_t x, y;
 
-  if((real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X)) || real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_Y))) && !getFlag(FLAG_DANGER)) {
+  if((real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X)) || real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_Y))) && !getSystemFlag(FLAG_SPCRES)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       showInfoDialog("In function xthRootRealReal:", "cannot use " STD_PLUS_MINUS STD_INFINITY " as X or Y input of xthRoot when flag D is not set", NULL, NULL);

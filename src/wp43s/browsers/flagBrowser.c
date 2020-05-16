@@ -35,6 +35,7 @@ void flagBrowser(uint16_t unusedParamButMandatory) {
   if(calcMode != CM_FLAG_BROWSER) {
     previousCalcMode = calcMode;
     calcMode = CM_FLAG_BROWSER;
+    clearSystemFlag(FLAG_ALPHA);
   }
 
   if(currentFlgScr == 0) { // Init

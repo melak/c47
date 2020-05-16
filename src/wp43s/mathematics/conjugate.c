@@ -78,7 +78,7 @@ void conjCxma(void) {
 
 void conjCplx(void) {
   real34ChangeSign(REGISTER_IMAG34_DATA(REGISTER_X));
-  if(real34IsZero(REGISTER_IMAG34_DATA(REGISTER_X)) && !getFlag(FLAG_DANGER)) {
+  if(real34IsZero(REGISTER_IMAG34_DATA(REGISTER_X)) && !getSystemFlag(FLAG_SPCRES)) {
     real34SetPositiveSign(REGISTER_IMAG34_DATA(REGISTER_X));
   }
 }

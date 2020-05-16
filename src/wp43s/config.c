@@ -29,13 +29,14 @@
  * \return void
  ***********************************************/
 void fnConfigChina(uint16_t unusedParamButMandatory) {
-  radixMark = RM_PERIOD;
+  setSystemFlag(FLAG_DECIMP);
   groupingGap = 4;
   refreshStack();
-  timeFormat = TF_H24;
-  dateFormat = DF_YMD;
-  oldTime[0] = 0;
-  firstGregorianDay = 1949; // JDN of the first day in the Gregorian calendar
+  setSystemFlag(FLAG_TDM);   // time format = 24H
+  clearSystemFlag(FLAG_DMY); // date format
+  clearSystemFlag(FLAG_MDY); // date format
+  setSystemFlag(FLAG_YMD);   // date format
+  firstGregorianDay = 1949;  // JDN of the first day in the Gregorian calendar
 }
 
 
@@ -47,13 +48,14 @@ void fnConfigChina(uint16_t unusedParamButMandatory) {
  * \return void
  ***********************************************/
 void fnConfigEurope(uint16_t unusedParamButMandatory) {
-  radixMark = RM_COMMA;
+  clearSystemFlag(FLAG_DECIMP);
   groupingGap = 3;
   refreshStack();
-  timeFormat = TF_H24;
-  dateFormat = DF_DMY;
-  oldTime[0] = 0;
-  firstGregorianDay = 1582; // JDN of the first day in the Gregorian calendar
+  setSystemFlag(FLAG_TDM);   // time format = 24H
+  clearSystemFlag(FLAG_MDY); // date format
+  clearSystemFlag(FLAG_YMD); // date format
+  setSystemFlag(FLAG_DMY);   // date format
+  firstGregorianDay = 1582;  // JDN of the first day in the Gregorian calendar
 }
 
 
@@ -65,13 +67,14 @@ void fnConfigEurope(uint16_t unusedParamButMandatory) {
  * \return void
  ***********************************************/
 void fnConfigIndia(uint16_t unusedParamButMandatory) {
-  radixMark = RM_PERIOD;
+  setSystemFlag(FLAG_DECIMP);
   groupingGap = 3;
   refreshStack();
-  timeFormat = TF_H24;
-  dateFormat = DF_DMY;
-  oldTime[0] = 0;
-  firstGregorianDay = 1752; // JDN of the first day in the Gregorian calendar
+  setSystemFlag(FLAG_TDM);   // time format = 24H
+  clearSystemFlag(FLAG_MDY); // date format
+  clearSystemFlag(FLAG_YMD); // date format
+  setSystemFlag(FLAG_DMY);   // date format
+  firstGregorianDay = 1752;  // JDN of the first day in the Gregorian calendar
 }
 
 
@@ -83,13 +86,14 @@ void fnConfigIndia(uint16_t unusedParamButMandatory) {
  * \return void
  ***********************************************/
 void fnConfigJapan(uint16_t unusedParamButMandatory) {
-  radixMark = RM_PERIOD;
+  setSystemFlag(FLAG_DECIMP);
   groupingGap = 3;
   refreshStack();
-  timeFormat = TF_H24;
-  dateFormat = DF_YMD;
-  oldTime[0] = 0;
-  firstGregorianDay = 1873; // JDN of the first day in the Gregorian calendar
+  setSystemFlag(FLAG_TDM);   // time format = 24H
+  clearSystemFlag(FLAG_MDY); // date format
+  clearSystemFlag(FLAG_DMY); // date format
+  setSystemFlag(FLAG_YMD);   // date format
+  firstGregorianDay = 1873;  // JDN of the first day in the Gregorian calendar
 }
 
 
@@ -101,13 +105,14 @@ void fnConfigJapan(uint16_t unusedParamButMandatory) {
  * \return void
  ***********************************************/
 void fnConfigUk(uint16_t unusedParamButMandatory) {
-  radixMark = RM_PERIOD;
+  setSystemFlag(FLAG_DECIMP);
   groupingGap = 3;
   refreshStack();
-  timeFormat = TF_H12;
-  dateFormat = DF_DMY;
-  oldTime[0] = 0;
-  firstGregorianDay = 1752; // JDN of the first day in the Gregorian calendar
+  clearSystemFlag(FLAG_TDM); // time format = 12H
+  clearSystemFlag(FLAG_MDY); // date format
+  clearSystemFlag(FLAG_YMD); // date format
+  setSystemFlag(FLAG_DMY);   // date format
+  firstGregorianDay = 1752;  // JDN of the first day in the Gregorian calendar
 }
 
 
@@ -119,13 +124,14 @@ void fnConfigUk(uint16_t unusedParamButMandatory) {
  * \return void
  ***********************************************/
 void fnConfigUsa(uint16_t unusedParamButMandatory) {
-  radixMark = RM_PERIOD;
+  setSystemFlag(FLAG_DECIMP);
   groupingGap = 3;
   refreshStack();
-  timeFormat = TF_H12;
-  dateFormat = DF_MDY;
-  oldTime[0] = 0;
-  firstGregorianDay = 1752; // JDN of the first day in the Gregorian calendar
+  clearSystemFlag(FLAG_TDM); // time format = 12H
+  clearSystemFlag(FLAG_YMD); // date format
+  clearSystemFlag(FLAG_DMY); // date format
+  setSystemFlag(FLAG_MDY);   // date format
+  firstGregorianDay = 1752;  // JDN of the first day in the Gregorian calendar
 }
 
 
@@ -139,17 +145,6 @@ void fnConfigUsa(uint16_t unusedParamButMandatory) {
 void fnIntegerMode(uint16_t mode) {
   shortIntegerMode = mode;
   showIntegerMode();
-  refreshStack();
-}
-
-/********************************************//**
- * \brief Sets the the leading zeros mode in integer mode
- *
- * \param[in] dlz uint16_t
- * \return void
- ***********************************************/
-void fnLeadingZeros(uint16_t dlz) {
-  displayLeadingZeros = dlz;
   refreshStack();
 }
 
@@ -432,46 +427,23 @@ void fnAngularMode(uint16_t am) {
 
 
 
+void fnFractionType(uint16_t unusedParamButMandatory) {
+  if(getSystemFlag(FLAG_FRACT)) {
+    flipSystemFlag(FLAG_PROPFR);
+  }
+  else {
+    setSystemFlag(FLAG_FRACT);
+  }
+}
+
+
+
 void setConfirmationMode(void (*func)(uint16_t)) {
   previousCalcMode = calcMode;
   calcMode = CM_CONFIRMATION;
+  clearSystemFlag(FLAG_ALPHA);
   confirmedFunction = func;
   temporaryInformation = TI_ARE_YOU_SURE;
-  refreshStack();
-}
-
-
-
-/********************************************//**
- * \brief Defines the complex unit i or j
- *
- * \param[in] complexUnit uint16_t
- * \return void
- ***********************************************/
-void fnComplexUnit(uint16_t cu) {
-  complexUnit = cu;
-  refreshStack();
-}
-
-/********************************************//**
- * \brief Defines if an operation result can be complex or not
- *
- * \param[in] complexRes uint16_t
- * \return void
- ***********************************************/
-void fnComplexResult(uint16_t complexResult) {
-  complexResult ? fnSetFlag(FLAG_CPXRES) : fnClearFlag(FLAG_CPXRES);
-}
-
-/********************************************//**
- * \brief Defines the complex display mode: rectangular or polar
- *
- * \param[in] complexMode uint16_t
- * \return void
- ***********************************************/
-void fnComplexMode(uint16_t cm) {
-  complexMode = cm;
-  showComplexMode();
   refreshStack();
 }
 
@@ -594,34 +566,41 @@ void fnReset(uint16_t confirmation) {
 
     fnClAll(CONFIRMED); // Clears pgm and registers
 
-    fnTimeFormat(TF_H24);
+    systemFlags = 0;
+    setSystemFlag(FLAG_TDM);
     fnIntegerMode(SIM_2COMPL);
     fnDisplayFormatAll(0);
     fnDisplayFormatGap(3);
-    fnComplexUnit(CU_I);
+    clearSystemFlag(FLAG_CPXj);
     fnAngularMode(AM_DEGREE);
-    fnDenMode(DM_ANY);
+    setSystemFlag(FLAG_DENANY);
     fnDenMax(0);
     fnDisplayStack(4);
     firstGregorianDay = 1752;
     fnCurveFitting(CF_LINEAR_FITTING);
-    fnLeadingZeros(false);
-    fnProductSign(PS_CROSS);
-    fnRadixMark(RM_PERIOD);
+    clearSystemFlag(FLAG_LEAD0);
+    setSystemFlag(FLAG_MULTx);
+    setSystemFlag(FLAG_DECIMP);
     fnRoundingMode(RM_HALF_EVEN);
-    fnDisplayOvr(DO_SCI);
-    fnStackSize(SS_4);
+    setSystemFlag(FLAG_ALLSCI);
+    setSystemFlag(FLAG_AUTOFF);
+    clearSystemFlag(FLAG_SSIZE8);
     //tDisp = -1;
     fnSetWordSize(64);
-    fnDateFormat(DF_YMD);
-    fnComplexMode(CM_RECTANGULAR);
-    showRealComplexResult();
+    clearSystemFlag(FLAG_MDY); // date format
+    clearSystemFlag(FLAG_DMY); // date format
+    setSystemFlag(FLAG_YMD);   // date format
+    setSystemFlag(FLAG_RECTN);
+    clearSystemFlag(FLAG_CPXRES);
     allocateLocalRegisters(0);
 
-    fractionType = FT_NONE;
+    clearSystemFlag(FLAG_FRACT);
+    clearSystemFlag(FLAG_PROPFR);
+    clearSystemFlag(FLAG_OVERFLOW);
+    clearSystemFlag(FLAG_CARRY);
     STACK_LIFT_DISABLE;
     showOverflowCarry();
-    hideUserMode();
+    clearSystemFlag(FLAG_USER);
 
     SHOWregis = 9999;                                     //JMSHOW
 
@@ -636,6 +615,7 @@ void fnReset(uint16_t confirmation) {
     lastFcnsMenuPos = 0;
     lastMenuMenuPos = 0;
     lastCnstMenuPos = 0;
+    lastSyFlMenuPos = 0;
 
     currentFntScr = 0;
     currentFlgScr = 0;
@@ -672,9 +652,8 @@ void fnReset(uint16_t confirmation) {
     //fnSetFlag( 62);
     //fnSetFlag( 77);
     //fnSetFlag( 85);
-    //fnSetFlag(FLAG_CARRY);
-    //fnSetFlag(FLAG_DANGER);
-    //showOverflowCarry();
+    //setSystemFlag(FLAG_CARRY);
+    //setSystemFlag(FLAG_SPCRES);
 
     //allocateLocalRegisters(2);
     //fnSetFlag(FIRST_LOCAL_REGISTER+0);

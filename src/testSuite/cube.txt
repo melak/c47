@@ -5,7 +5,7 @@
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
-In: FD=0 FI=0 SD=0 RM=0 IM=2compl SS=4 WS=64
+In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
 Func: fnCube
 
 
@@ -13,11 +13,11 @@ Func: fnCube
 ;=======================================
 ; cube(Long Integer) --> Long Integer
 ;=======================================
-In:  AM=DEG SL=0 FI=0 RX=LonI:"5"
-Out: EC=0 FI=0 SL=1 RL=LonI:"5" RX=LonI:"125"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"5"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=LonI:"125"
 
-In:  AM=DEG SL=0 FI=0 RX=LonI:"-3333333333333"
-Out: EC=0 FI=0 SL=1 RL=LonI:"-3333333333333" RX=LonI:"-37037037037025925925925927037037037037"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"-3333333333333"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"-3333333333333" RX=LonI:"-37037037037025925925925927037037037037"
 
 
 
@@ -36,8 +36,8 @@ Out: EC=0 FI=0 SL=1 RL=LonI:"-3333333333333" RX=LonI:"-3703703703702592592592592
 ;=======================================
 ; cube(String) --> Error24
 ;=======================================
-In:  SL=0 RX=Stri:"String test"
-Out: EC=24 SL=0 RX=Stri:"String test"
+In:  FL_ASLIFT=0 RX=Stri:"String test"
+Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 
@@ -56,71 +56,71 @@ Out: EC=24 SL=0 RX=Stri:"String test"
 ;=======================================
 ; cube(Short Integer) --> Error24
 ;=======================================
-In:  SL=0 FI=0 RX=ShoI:"5#7"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"5#7" RX=ShoI:"236#7"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"5#7"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"5#7" RX=ShoI:"236#7"
 
 
 
 ;=======================================
 ; cube(Real34) --> Real34
 ;=======================================
-In:  AM=DEG SL=0 FI=0 RX=Real:"0.0001"
-Out: EC=0 FI=0 SL=1 RL=Real:"0.0001" RX=Real:"1e-12"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.0001" RX=Real:"1e-12"
 
-In:  AM=GRAD SL=0 FI=0 RX=Real:"55.5"
-Out: EC=0 FI=0 SL=1 RL=Real:"55.5" RX=Real:"170953.875"
+In:  AM=GRAD FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"55.5"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"55.5" RX=Real:"170953.875"
 
-In:  AM=DEG SL=0 FI=0 RX=Real:"-89.9999999999"
-Out: EC=0 FI=0 SL=1 RL=Real:"-89.9999999999" RX=Real:"-728999.999997570000000002699999999999"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-89.9999999999"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-89.9999999999" RX=Real:"-728999.999997570000000002699999999999"
 
-In:  AM=DEG SL=0 FI=0 RX=Real:"0.0001":DMS
-Out: EC=0 FI=0 SL=1 RL=Real:"0.0001":DMS RX=Real:"1e-12"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001":DMS
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.0001":DMS RX=Real:"1e-12"
 
-In:  AM=GRAD SL=0 FI=0 RX=Real:"55.5":RAD
-Out: EC=0 FI=0 SL=1 RL=Real:"55.5":RAD RX=Real:"170953.875"
+In:  AM=GRAD FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"55.5":RAD
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"55.5":RAD RX=Real:"170953.875"
 
-In:  AM=DEG SL=0 FI=0 RX=Real:"-89.9999999999":GRAD
-Out: EC=0 FI=0 SL=1 RL=Real:"-89.9999999999":GRAD RX=Real:"-728999.999997570000000002699999999999"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-89.9999999999":GRAD
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-89.9999999999":GRAD RX=Real:"-728999.999997570000000002699999999999"
 
 ; NaN
-In:  SL=0 FI=0 RX=Real:"NaN":RAD
-Out: EC=0 FI=0 SL=1 RL=Real:"NaN":RAD RX=Real:"NaN"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"NaN":RAD
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"NaN":RAD RX=Real:"NaN"
 
-In:  SL=0 FI=0 RX=Real:"NaN"
-Out: EC=0 FI=0 SL=1 RL=Real:"NaN" RX=Real:"NaN"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"NaN"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"NaN" RX=Real:"NaN"
 
 ; Infinity
-In:  SL=0 FI=0 FD=1 RX=Real:"inf"
-Out: EC=0 FI=0 SL=1 RL=Real:"inf" RX=Real:"inf"
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"inf" RX=Real:"inf"
 
-In:  SL=0 FI=0 FD=0 RX=Real:"inf"
-Out: EC=1 FI=0 SL=0 RX=Real:"inf"
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"inf"
+Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"inf"
 
-In:  SL=0 FI=0 FD=1 RX=Real:"-inf"
-Out: EC=0 FI=0 SL=1 RL=Real:"-inf" RX=Real:"-inf"
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"-inf"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-inf" RX=Real:"-inf"
 
-In:  SL=0 FI=0 FD=0 RX=Real:"-inf"
-Out: EC=1 FI=0 SL=0 RX=Real:"-inf"
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"-inf"
+Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-inf"
 
-In:  SL=0 FI=0 FD=1 RX=Real:"inf":DEG
-Out: EC=0 FI=0 SL=1 RL=Real:"inf":DEG RX=Real:"inf"
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf":DEG
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"inf":DEG RX=Real:"inf"
 
-In:  SL=0 FI=0 FD=0 RX=Real:"inf":RAD
-Out: EC=1 FI=0 SL=0 RX=Real:"inf":RAD
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"inf":RAD
+Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"inf":RAD
 
-In:  SL=0 FI=0 FD=1 RX=Real:"-inf":MULTPI
-Out: EC=0 FI=0 SL=1 RL=Real:"-inf":MULTPI RX=Real:"-inf"
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"-inf":MULTPI
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-inf":MULTPI RX=Real:"-inf"
 
-In:  SL=0 FI=0 FD=0 RX=Real:"-inf":GRAD
-Out: EC=1 FI=0 SL=0 RX=Real:"-inf":GRAD
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"-inf":GRAD
+Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-inf":GRAD
 
 
 
 ;=======================================
 ; cube(Complex34) --> Complex34
 ;=======================================
-In:  AM=DEG SL=0 FI=0 RX=Cplx:"6.2 i -7.6"
-Out: EC=0 FI=1 SL=1 RL=Cplx:"6.2 i -7.6" RX=Cplx:"-836.008 i -437.456"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"6.2 i -7.6" RX=Cplx:"-836.008 i -437.456"
 
-In:  AM=DEG SL=0 FI=0 RX=Cplx:"-6.01234567898 i 7.01234567898"
-Out: EC=0 FI=1 SL=1 RL=Cplx:"-6.01234567898 i 7.01234567898" RX=Cplx:"669.598997809690859719184996782709584 i +415.635120354513996436142596782709584"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"-6.01234567898 i 7.01234567898"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"-6.01234567898 i 7.01234567898" RX=Cplx:"669.598997809690859719184996782709584 i +415.635120354513996436142596782709584"

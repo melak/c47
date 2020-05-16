@@ -75,7 +75,7 @@ void arcsinLonI(void) {
       real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
       arcsinCplx();
     }
-    else if(getFlag(FLAG_DANGER)) {
+    else if(getSystemFlag(FLAG_SPCRES)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, currentAngularMode);
       realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
     }
@@ -130,7 +130,7 @@ void arcsinReal(void) {
       arcsinCplx();
       return;
     }
-    else if(getFlag(FLAG_DANGER)) {
+    else if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
     }
     else {

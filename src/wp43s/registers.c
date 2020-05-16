@@ -893,7 +893,7 @@ void fnClearRegisters(uint16_t unusedParamButMandatory) {
     clearRegister(FIRST_LOCAL_REGISTER + regist);
   }
 
-  if(stackSize == SS_4) {
+  if(!getSystemFlag(FLAG_SSIZE8)) { // Stack size = 4
     for(regist=REGISTER_A; regist<=REGISTER_D; regist++) {
       clearRegister(regist);
     }
@@ -950,7 +950,7 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
   }
 
   resultDataType = getRegisterDataType(res);
-  if(getFlag(FLAG_DANGER) == false) {
+  if(getSystemFlag(FLAG_SPCRES) == false) {
     // D is clear: test infinite values and -0 values
     switch(resultDataType) {
       case dtReal34:
@@ -1290,7 +1290,7 @@ printf("fnStoreConfig %" FMT16U "\n", r);
  * \return void
  ***********************************************/
 void fnStoreStack(uint16_t r) {
-  uint16_t size = stackSize==SS_4 ? 4 : 8;
+  uint16_t size = getSystemFlag(FLAG_SSIZE8) ? 8 : 4;
 
   if(r + size >= REGISTER_X) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
@@ -1565,7 +1565,7 @@ printf("fnRecallConfig %" FMT16U "\n", r);
  * \return void
  ***********************************************/
 void fnRecallStack(uint16_t r) {
-  uint16_t size = stackSize==SS_4 ? 4 : 8;
+  uint16_t size = getSystemFlag(FLAG_SSIZE8) ? 8 : 4;
 
   if(r + size >= REGISTER_X) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
@@ -1671,9 +1671,9 @@ int16_t indirectAddressing(calcRegister_t regist, int16_t minValue, int16_t maxV
     if(real34CompareLessThan(REGISTER_REAL34_DATA(regist), const34_0) || real34CompareGreaterEqual(REGISTER_REAL34_DATA(regist), &maxValue34)) {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #ifdef PC_BUILD
-        real34ToString(REGISTER_REAL34_DATA(regist), errorMessage + 200);
-        sprintf(errorMessage, "register %" FMT16S " = %s:", regist, errorMessage + 200);
-        showInfoDialog("In function indirectAddressing:", errorMessage, "this value is negative or too big!", NULL);
+        real34ToString(REGISTER_REAL34_DATA(regist), errorMessage);
+        sprintf(tmpStr3000, "register %" FMT16S " = %s:", regist, errorMessage);
+        showInfoDialog("In function indirectAddressing:", tmpStr3000, "this value is negative or too big!", NULL);
       #endif
       return 9999;
     }
@@ -1687,9 +1687,9 @@ int16_t indirectAddressing(calcRegister_t regist, int16_t minValue, int16_t maxV
     if(longIntegerIsNegative(lgInt) || longIntegerCompareUInt(lgInt, maxValue) >= 0) {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #ifdef PC_BUILD
-        longIntegerToAllocatedString(lgInt, errorMessage + 200, sizeof(errorMessage) - 200);
-        sprintf(errorMessage, "register %" FMT16S " = %s:", regist, errorMessage + 200);
-        showInfoDialog("In function indirectAddressing:", errorMessage, "this value is negative or too big!", NULL);
+        longIntegerToAllocatedString(lgInt, errorMessage, sizeof(errorMessage));
+        sprintf(tmpStr3000, "register %" FMT16S " = %s:", regist, errorMessage);
+        showInfoDialog("In function indirectAddressing:", tmpStr3000, "this value is negative or too big!", NULL);
       #endif
       longIntegerFree(lgInt);
       return 9999;
@@ -1709,9 +1709,9 @@ int16_t indirectAddressing(calcRegister_t regist, int16_t minValue, int16_t maxV
         const font_t *font;
 
         font = &standardFont;
-        shortIntegerToDisplayString(regist, errorMessage + 200, &font);
-        sprintf(errorMessage, "register %" FMT16S " = %s:", regist, errorMessage + 200);
-        showInfoDialog("In function indirectAddressing:", errorMessage, "this value is negative or too big!", NULL);
+        shortIntegerToDisplayString(regist, errorMessage, &font);
+        sprintf(tmpStr3000, "register %" FMT16S " = %s:", regist, errorMessage);
+        showInfoDialog("In function indirectAddressing:", tmpStr3000, "this value is negative or too big!", NULL);
       #endif
       return 9999;
     }

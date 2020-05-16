@@ -35,6 +35,7 @@ void fontBrowser(uint16_t unusedParamButMandatory) {
   if(calcMode != CM_FONT_BROWSER) {
     previousCalcMode = calcMode;
     calcMode = CM_FONT_BROWSER;
+    clearSystemFlag(FLAG_ALPHA);
   }
 
   if(currentFntScr == 0) { // Init

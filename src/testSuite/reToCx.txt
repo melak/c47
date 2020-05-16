@@ -5,7 +5,7 @@
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
-In: FD=0 FI=0 SD=0 RM=0 IM=2compl SS=4 WS=64 CM=POLAR
+In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64 CM=POLAR
 Func: fnReToCx
 
 
@@ -13,95 +13,95 @@ Func: fnReToCx
 ;=======================================
 ; ReToCx(Long Integer, Long Integer) --> Complex34
 ;=======================================
-In:  SL=0 FI=0 RX=LonI:"23" RY=LonI:"42" RZ=LonI:"0" CM=RECT
-Out: EC=0 FI=1 SL=1 RX=Cplx:"42 i 23" RY=LonI:"0"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"23" RY=LonI:"42" RZ=LonI:"0" CM=RECT
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Cplx:"42 i 23" RY=LonI:"0"
 
-In:  SL=0 FI=0 RX=LonI:"23" RY=LonI:"42" RZ=LonI:"0" CM=POLAR AM=DEG
-Out: EC=0 FI=1 SL=1 RX=Cplx:"38.6612038450024937506695783786193796517391378007500926530334718949 i 16.4107073965494977126075527333419592399566370382101471813784750775" RY=LonI:"0"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"23" RY=LonI:"42" RZ=LonI:"0" CM=POLAR AM=DEG
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Cplx:"38.6612038450024937506695783786193796517391378007500926530334718949 i 16.4107073965494977126075527333419592399566370382101471813784750775" RY=LonI:"0"
 
 
 ;=======================================
 ; ReToCx(Long Integer, Short Integer) --> Error
 ;=======================================
-In:  SL=0 FI=0 RX=LonI:"23" RY=ShoI:"42#8" RZ=LonI:"0" CM=RECT
-Out: EC=24 FI=0 SL=0 RX=LonI:"23" RY=ShoI:"42#8"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"23" RY=ShoI:"42#8" RZ=LonI:"0" CM=RECT
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=LonI:"23" RY=ShoI:"42#8"
 
-In:  SL=0 FI=0 RX=LonI:"23" RY=ShoI:"42#8" RZ=LonI:"0" CM=POLAR AM=DEG
-Out: EC=24 FI=0 SL=0 RX=LonI:"23" RY=ShoI:"42#8"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"23" RY=ShoI:"42#8" RZ=LonI:"0" CM=POLAR AM=DEG
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=LonI:"23" RY=ShoI:"42#8"
 
 
 
 ;=======================================
 ; ReToCx(Long Integer, Real34) --> Complex34
 ;=======================================
-In:  SL=0 FI=0 RX=LonI:"23" RY=Real:"42" RZ=LonI:"0" CM=RECT
-Out: EC=0 FI=1 SL=1 RX=Cplx:"42i23" RY=LonI:"0"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"23" RY=Real:"42" RZ=LonI:"0" CM=RECT
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Cplx:"42i23" RY=LonI:"0"
 
-In:  SL=0 FI=0 RX=LonI:"23" RY=Real:"42" RZ=LonI:"0" CM=POLAR AM=DEG
-Out: EC=0 FI=1 SL=1 RX=Cplx:"38.6612038450024937506695783786193796517391378007500926530334718949 i 16.4107073965494977126075527333419592399566370382101471813784750775" RY=LonI:"0"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"23" RY=Real:"42" RZ=LonI:"0" CM=POLAR AM=DEG
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Cplx:"38.6612038450024937506695783786193796517391378007500926530334718949 i 16.4107073965494977126075527333419592399566370382101471813784750775" RY=LonI:"0"
 
 
 
 ;=======================================
 ; ReToCx(Short Integer, Long Integer) --> Error
 ;=======================================
-In:  SL=0 FI=0 RX=ShoI:"23#8" RY=LonI:"42" RZ=LonI:"0" CM=RECT
-Out: EC=24 FI=0 SL=0 RX=ShoI:"23#8" RY=LonI:"42"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"23#8" RY=LonI:"42" RZ=LonI:"0" CM=RECT
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"23#8" RY=LonI:"42"
 
-In:  SL=0 FI=0 RX=ShoI:"23#8" RY=LonI:"42" RZ=LonI:"0" CM=POLAR AM=DEG
-Out: EC=24 FI=0 SL=0 RX=ShoI:"23#8" RY=LonI:"42"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"23#8" RY=LonI:"42" RZ=LonI:"0" CM=POLAR AM=DEG
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"23#8" RY=LonI:"42"
 
 
 
 ;=======================================
 ; ReToCx(Short Integer, Short Integer) --> Error
 ;=======================================
-In:  SL=0 FI=0 RX=ShoI:"23#8" RY=ShoI:"42#8" RZ=LonI:"0" CM=RECT
-Out: EC=24 FI=0 SL=0 RX=ShoI:"23#8" RY=ShoI:"42#8"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"23#8" RY=ShoI:"42#8" RZ=LonI:"0" CM=RECT
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"23#8" RY=ShoI:"42#8"
 
-In:  SL=0 FI=0 RX=ShoI:"23#8" RY=ShoI:"42#8" RZ=LonI:"0" CM=POLAR AM=DEG
-Out: EC=24 FI=0 SL=0 RX=ShoI:"23#8" RY=ShoI:"42#8"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"23#8" RY=ShoI:"42#8" RZ=LonI:"0" CM=POLAR AM=DEG
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"23#8" RY=ShoI:"42#8"
 
 
 
 ;=======================================
 ; ReToCx(Short Integer, Real34) --> Error
 ;=======================================
-In:  SL=0 FI=0 RX=ShoI:"23#8" RY=Real:"42" RZ=LonI:"0" CM=RECT
-Out: EC=24 FI=0 SL=0 RX=ShoI:"23#8" RY=Real:"42"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"23#8" RY=Real:"42" RZ=LonI:"0" CM=RECT
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"23#8" RY=Real:"42"
 
-In:  SL=0 FI=0 RX=ShoI:"23#8" RY=Real:"42" RZ=LonI:"0" CM=POLAR AM=DEG
-Out: EC=24 FI=0 SL=0 RX=ShoI:"23#8" RY=Real:"42"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"23#8" RY=Real:"42" RZ=LonI:"0" CM=POLAR AM=DEG
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"23#8" RY=Real:"42"
 
 
 
 ;=======================================
 ; ReToCx(Real34, Long Integer) --> Complex34
 ;=======================================
-In:  SL=0 FI=0 RX=Real:"23" RY=LonI:"42" RZ=LonI:"0" CM=RECT
-Out: EC=0 FI=1 SL=1 RX=Cplx:"42i23" RY=LonI:"0"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"23" RY=LonI:"42" RZ=LonI:"0" CM=RECT
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Cplx:"42i23" RY=LonI:"0"
 
-In:  SL=0 FI=0 RX=Real:"23" RY=LonI:"42" RZ=LonI:"0" CM=POLAR AM=DEG
-Out: EC=0 FI=1 SL=1 RX=Cplx:"38.6612038450024937506695783786193796517391378007500926530334718949 i 16.4107073965494977126075527333419592399566370382101471813784750775" RY=LonI:"0"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"23" RY=LonI:"42" RZ=LonI:"0" CM=POLAR AM=DEG
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Cplx:"38.6612038450024937506695783786193796517391378007500926530334718949 i 16.4107073965494977126075527333419592399566370382101471813784750775" RY=LonI:"0"
 
 
 
 ;=======================================
 ; ReToCx(Real34, Short Integer) --> Error
 ;=======================================
-In:  SL=0 FI=0 RX=Real:"23" RY=ShoI:"42#8" RZ=LonI:"0" CM=RECT
-Out: EC=24 FI=0 SL=0 RX=Real:"23" RY=ShoI:"42#8"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"23" RY=ShoI:"42#8" RZ=LonI:"0" CM=RECT
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"23" RY=ShoI:"42#8"
 
-In:  SL=0 FI=0 RX=Real:"23" RY=ShoI:"42#8" RZ=LonI:"0" CM=POLAR AM=DEG
-Out: EC=24 FI=0 SL=0 RX=Real:"23" RY=ShoI:"42#8"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"23" RY=ShoI:"42#8" RZ=LonI:"0" CM=POLAR AM=DEG
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"23" RY=ShoI:"42#8"
 
 
 
 ;=======================================
 ; ReToCx(Real34, Real34) --> Complex34
 ;=======================================
-In:  SL=0 FI=0 RX=Real:"23" RY=Real:"42" RZ=LonI:"0" CM=RECT
-Out: EC=0 FI=1 SL=1 RX=Cplx:"42i23" RY=LonI:"0"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"23" RY=Real:"42" RZ=LonI:"0" CM=RECT
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Cplx:"42i23" RY=LonI:"0"
 
-In:  SL=0 FI=0 RX=Real:"23" RY=Real:"42" RZ=LonI:"0" CM=POLAR AM=DEG
-Out: EC=0 FI=1 SL=1 RX=Cplx:"38.6612038450024937506695783786193796517391378007500926530334718949 i 16.4107073965494977126075527333419592399566370382101471813784750775" RY=LonI:"0"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"23" RY=Real:"42" RZ=LonI:"0" CM=POLAR AM=DEG
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Cplx:"38.6612038450024937506695783786193796517391378007500926530334718949 i 16.4107073965494977126075527333419592399566370382101471813784750775" RY=LonI:"0"

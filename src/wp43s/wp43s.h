@@ -102,9 +102,10 @@
   #define displayBugScreen(a)     { printf("\n-----------------------------------------------------------------------\n"); printf("%s\n", a); printf("\n-----------------------------------------------------------------------\n");}
   #define showRealComplexResult() {}
   #define showOverflowCarry()     {}
-  #define hideUserMode()          {}
   #define showDateTime()          {}
   #define showAlphaMode()         {}
+  #define showHideUserMode()      {}
+  #define showHideLowBattery()    {}
 #endif
 
 #include <stdlib.h>
@@ -220,12 +221,6 @@ typedef int16_t calcRegister_t;
 #define OFF                     0
 #define ON                      1
 
-// Denominator mode 2 bits
-#define DM_FIX                  0
-#define DM_FAC                  1
-#define DM_ANY                  2
-#define DM_DENMAX            9999
-
 // Short integer mode 2 bits
 #define SIM_UNSIGN              0
 #define SIM_1COMPL              1
@@ -240,10 +235,6 @@ typedef int16_t calcRegister_t;
 #define DF_SCI                  2
 #define DF_ENG                  3
 
-// Display override 1 bit
-#define DO_SCI                  0
-#define DO_ENG                  1
-
 // Angular mode 3 bits
 #define AM_DEGREE               0 // degree must be 0
 #define AM_GRAD                 1 // grad   must be 1
@@ -251,10 +242,6 @@ typedef int16_t calcRegister_t;
 #define AM_MULTPI               3 // multpi must be 3
 #define AM_DMS                  4 // dms    must be 4
 #define AM_NONE                 5
-
-// Time format 1 bit
-#define TF_H24                  0
-#define TF_H12                  1
 
 // Date format 2 bits
 #define DF_DMY                  0
@@ -283,47 +270,19 @@ typedef int16_t calcRegister_t;
 #define CM_TAM                  2 // Temporary input mode
 #define CM_NIM                  3 // Numeric input mode
 #define CM_ASM                  4 // Alpha selection in FCNS, MENU, and CNST menu
-#define CM_ASSIGN               5 // Assign mode
-#define CM_REGISTER_BROWSER     6 // Register browser
-#define CM_FLAG_BROWSER         7 // Flag browser
-#define CM_FONT_BROWSER         8 // Font browser
-#define CM_ERROR_MESSAGE        9 // Error message in one of the register lines
-#define CM_BUG_ON_SCREEN       10 // Bug message on screen
-#define CM_CONFIRMATION        11 // Waiting for confirmation or canceling
+#define CM_ASM_OVER_TAM         5 // Alpha selection for system flags selection in TAM
+#define CM_ASSIGN               6 // Assign mode
+#define CM_REGISTER_BROWSER     7 // Register browser
+#define CM_FLAG_BROWSER         8 // Flag browser
+#define CM_FONT_BROWSER         9 // Font browser
+#define CM_ERROR_MESSAGE       10 // Error message in one of the register lines
+#define CM_BUG_ON_SCREEN       11 // Bug message on screen
+#define CM_CONFIRMATION        12 // Waiting for confirmation or canceling
 
 // Next character 2 bits
 #define NC_NORMAL               0
 #define NC_SUBSCRIPT            1
 #define NC_SUPERSCRIPT          2
-
-// Complex unit 1 bit
-#define CU_I                    0
-#define CU_J                    1
-#define COMPLEX_UNIT            (complexUnit == CU_I ? STD_i : STD_j)
-
-// Complex mode 1 bit
-#define CM_RECTANGULAR          0
-#define CM_POLAR                1
-
-// Product sign 1 bit
-#define PS_DOT                  0
-#define PS_CROSS                1
-#define PRODUCT_SIGN            (productSign == PS_CROSS ? STD_CROSS : STD_DOT)
-
-// Fraction type 2 bit
-#define FT_NONE                 0 // real
-#define FT_PROPER               1 // a b/c
-#define FT_IMPROPER             2 // d/c
-
-// Radix Mark 1 bit
-#define RM_PERIOD               0
-#define RM_COMMA                1
-#define RADIX34_MARK_CHAR       (radixMark == RM_PERIOD ? '.' : ',')
-#define RADIX34_MARK_STRING     (radixMark == RM_PERIOD ? "." : ",")
-
-// Stack size 1 bit
-#define SS_4                    0
-#define SS_8                    1
 
 // Alpha case 1 bit
 #define AC_UPPER                0
@@ -337,9 +296,10 @@ typedef int16_t calcRegister_t;
 #define TM_VALUE            10001 // TM_VALUE must be the 1st in this list
 #define TM_VALUE_CHB        10002 // same as TM_VALUE but for ->INT (#) change base
 #define TM_REGISTER         10003
-#define TM_FLAG             10004
-#define TM_STORCL           10005
-#define TM_CMP              10006 // TM_CMP must be the last in this list
+#define TM_FLAGR            10004
+#define TM_FLAGW            10005
+#define TM_STORCL           10006
+#define TM_CMP              10007 // TM_CMP must be the last in this list
 
 // NIM number part
 #define NP_EMPTY                0
@@ -384,7 +344,7 @@ typedef int16_t calcRegister_t;
 #define TI_GEOMPOPLSTDDEV      27
 #define TI_GEOMSTDERR          28
 
-#define TI_SHOW_REGISTER_BIG   99    //JM_SHOW temporary high number not to clash with new codes
+#define TI_SHOW_REGISTER_BIG   29    //JM_SHOW
 
 
 // Register browser mode
@@ -406,6 +366,7 @@ typedef int16_t calcRegister_t;
 #define ASM_CNST 1
 #define ASM_FCNS 2
 #define ASM_MENU 3
+#define ASM_SYFL 4
 
 // String comparison type
 #define CMP_CLEANED_STRING_ONLY 1
@@ -496,8 +457,8 @@ typedef int16_t calcRegister_t;
   #define STACK_LIFT_ENABLE  stackLiftEnable();
   #define STACK_LIFT_DISABLE stackLiftDisable();
 #else
-  #define STACK_LIFT_ENABLE  stackLiftEnabled = true;
-  #define STACK_LIFT_DISABLE stackLiftEnabled = false;
+  #define STACK_LIFT_ENABLE  setSystemFlag(FLAG_ASLIFT);
+  #define STACK_LIFT_DISABLE clearSystemFlag(FLAG_ASLIFT);
 #endif
 
 // Variables for the simulator
@@ -576,6 +537,8 @@ extern int16_t               alphaSelectionMenu;
 extern int16_t               lastFcnsMenuPos;
 extern int16_t               lastMenuMenuPos;
 extern int16_t               lastCnstMenuPos;
+extern int16_t               lastSyFlMenuPos;
+extern int16_t               showFunctionNameItem;
 extern int16_t               SHOWregis;                   //JMSHOW
 extern uint16_t              numberOfLocalFlags;
 extern dataBlock_t          *allLocalRegisterPointer;
@@ -598,24 +561,17 @@ extern uint8_t               currentFlgScr;
 extern uint8_t               displayFormat;
 extern uint8_t               displayFormatDigits;
 extern uint8_t               shortIntegerWordSize;
-extern uint8_t               denominatorMode;
 extern uint8_t               significantDigits;
 extern uint8_t               shortIntegerMode;
 extern uint8_t               previousCalcMode;
 extern uint8_t               groupingGap;
-extern uint8_t               dateFormat;
 extern uint8_t               curveFitting;
 extern uint8_t               roundingMode;
 extern uint8_t               calcMode;
 extern uint8_t               nextChar;
-extern uint8_t               complexUnit;
 extern uint8_t               displayStack;
 extern uint8_t               productSign;
-extern uint8_t               fractionType;
-extern uint8_t               radixMark;
 extern uint8_t               displayModeOverride;
-extern uint8_t               stackSize;
-extern uint8_t               complexMode;
 extern uint8_t               alphaCase;
 extern uint8_t               numLinesNumericFont;
 extern uint8_t               numLinesStandardFont;
@@ -625,22 +581,18 @@ extern uint8_t               nimNumberPart;
 extern uint8_t               hexDigits;
 extern uint8_t               lastErrorCode;
 extern uint8_t               serialIOIconEnabled;
-extern uint8_t               timeFormat;
 extern uint8_t               temporaryInformation;
 extern uint8_t               rbrMode;
 extern uint8_t               numScreensNumericFont;
 extern uint8_t               currentAngularMode;
+extern int8_t                showFunctionNameCounter;
 extern bool_t                hourGlassIconEnabled;
 extern bool_t                watchIconEnabled;
-extern bool_t                userModeEnabled;
 extern bool_t                printerIconEnabled;
-extern bool_t                batteryIconEnabled;
 extern bool_t                shiftF;
 extern bool_t                shiftG;
 extern bool_t                shiftStateChanged;
 extern bool_t                showContent;
-extern bool_t                stackLiftEnabled;
-extern bool_t                displayLeadingZeros;
 extern bool_t                savedStackLiftEnabled;
 extern bool_t                rbr1stDigit;
 extern bool_t                updateDisplayValueX;
@@ -650,6 +602,7 @@ extern calcRegister_t        errorRegisterLine;
 extern uint16_t              row[100];
 extern uint64_t              shortIntegerMask;
 extern uint64_t              shortIntegerSignBit;
+extern uint64_t              systemFlags;
 extern glyph_t               glyphNotFound;
 extern char                  transitionSystemOperation[4];
 extern char                  displayValueX[DISPLAY_VALUE_LEN];
@@ -672,6 +625,12 @@ extern pcg32_random_t        pcg32_global;
 #ifdef DMCP_BUILD
   extern bool_t              backToDMCP;
 #endif // DMCP_BUILD
+
+#define MAX_DENMAX           9999
+#define COMPLEX_UNIT         (getSystemFlag(FLAG_CPXj)   ? STD_j     : STD_i)
+#define RADIX34_MARK_CHAR    (getSystemFlag(FLAG_DECIMP) ? '.'       : ',')
+#define RADIX34_MARK_STRING  (getSystemFlag(FLAG_DECIMP) ? "."       : ",")
+#define PRODUCT_SIGN         (getSystemFlag(FLAG_MULTx)  ? STD_CROSS : STD_DOT)
 
 #include "constantPointers.h"
 

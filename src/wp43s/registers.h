@@ -52,7 +52,7 @@
 #define LAST_SAVED_REGISTER 2009
 #define TEMP_REGISTER       2009
 
-#define getStackTop()                      (stackSize == SS_4 ? REGISTER_T : REGISTER_D)
+#define getStackTop()                      (getSystemFlag(FLAG_SSIZE8) ? REGISTER_D : REGISTER_T)
 
 #define freeRegisterData(regist)           freeWp43s((void *)getRegisterDataPointer(regist), TO_BYTES(getRegisterFullSize(regist)))
 

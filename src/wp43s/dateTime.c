@@ -20,27 +20,31 @@
 
 #include "wp43s.h"
 
-/********************************************//**
- * \brief Sets the time format
- *
- * \param[in] timeFormat uint16_t Time format
- * \return void
- ***********************************************/
-void fnTimeFormat(uint16_t tf) {
-  timeFormat = tf;
-  oldTime[0] = 0;
+void fnSetDateFormat(uint16_t dateFormat) {
+  switch(dateFormat) {
+    case ITM_DMY:
+      clearSystemFlag(FLAG_MDY);
+      clearSystemFlag(FLAG_YMD);
+      setSystemFlag(FLAG_DMY);
+      break;
+
+    case ITM_MDY:
+      clearSystemFlag(FLAG_DMY);
+      clearSystemFlag(FLAG_YMD);
+      setSystemFlag(FLAG_MDY);
+      break;
+
+    case ITM_YMD:
+      clearSystemFlag(FLAG_MDY);
+      clearSystemFlag(FLAG_DMY);
+      setSystemFlag(FLAG_YMD);
+      break;
+
+    default: {}
+  }
 }
 
-/********************************************//**
- * \brief Sets the date format
- *
- * \param[in] dateFormat uint16_t Date format
- * \return void
- ***********************************************/
-void fnDateFormat(uint16_t df) {
-  dateFormat = df;
-  oldTime[0] = 0;
-}
+
 
 /********************************************//**
  * \brief Gets the system date
@@ -57,14 +61,14 @@ void getDateString(char *dateString) {
     timeInfo = localtime(&rawTime);
 
     // For the format string : man strftime
-    if(timeFormat == TF_H12) { // 2 digit year
-      if(dateFormat == DF_DMY) {
+    if(!getSystemFlag(FLAG_TDM)) { // time format = 12H ==> 2 digit year
+      if(getSystemFlag(FLAG_DMY)) {
         strftime(dateString, 11, "%d.%m.%y", timeInfo);
       }
-      else if(dateFormat == DF_YMD) {
+      else if(getSystemFlag(FLAG_YMD)) {
         strftime(dateString, 11, "%y-%m-%d", timeInfo);
       }
-      else if(dateFormat == DF_MDY) {
+      else if(getSystemFlag(FLAG_MDY)) {
         strftime(dateString, 11, "%m/%d/%y", timeInfo);
       }
       else {
@@ -72,13 +76,13 @@ void getDateString(char *dateString) {
       }
     }
     else {// 4 digit year
-      if(dateFormat == DF_DMY) {
+      if(getSystemFlag(FLAG_DMY)) {
         strftime(dateString, 11, "%d.%m.%Y", timeInfo);
       }
-      else if(dateFormat == DF_YMD) {
+      else if(getSystemFlag(FLAG_YMD)) {
         strftime(dateString, 11, "%Y-%m-%d", timeInfo);
       }
-      else if(dateFormat == DF_MDY) {
+      else if(getSystemFlag(FLAG_MDY)) {
         strftime(dateString, 11, "%m/%d/%Y", timeInfo);
       }
       else {
@@ -92,14 +96,14 @@ void getDateString(char *dateString) {
     dt_t dateInfo;
 
     rtc_read(&timeInfo, &dateInfo);
-    if(timeFormat == TF_H12) { // 2 digit year
-      if(dateFormat == DF_DMY) {
+    if(!getSystemFlag(FLAG_TDM)) { // 2 digit year
+      if(getSystemFlag(FLAG_DMY)) {
         sprintf(dateString, "%02d.%02d.%02d", dateInfo.day, dateInfo.month, dateInfo.year % 100);
       }
-      else if(dateFormat == DF_YMD) {
+      else if(getSystemFlag(FLAG_YMD)) {
         sprintf(dateString, "%02d-%02d-%02d", dateInfo.year % 100, dateInfo.month, dateInfo.day);
       }
-      else if(dateFormat == DF_MDY) {
+      else if(getSystemFlag(FLAG_MDY)) {
         sprintf(dateString, "%02d/%02d/%02d", dateInfo.month, dateInfo.day, dateInfo.year % 100);
       }
       else {
@@ -107,13 +111,13 @@ void getDateString(char *dateString) {
       }
     }
     else {// 4 digit year
-      if(dateFormat == DF_DMY) {
+      if(getSystemFlag(FLAG_DMY)) {
         sprintf(dateString, "%02d.%02d.%04d", dateInfo.day, dateInfo.month, dateInfo.year);
       }
-      else if(dateFormat == DF_YMD) {
+      else if(getSystemFlag(FLAG_YMD)) {
         sprintf(dateString, "%04d-%02d-%02d", dateInfo.year, dateInfo.month, dateInfo.day);
       }
-      else if(dateFormat == DF_MDY) {
+      else if(getSystemFlag(FLAG_MDY)) {
         sprintf(dateString, "%02d/%02d/%04d", dateInfo.month, dateInfo.day, dateInfo.year);
       }
       else {
@@ -140,7 +144,10 @@ void getTimeString(char *timeString) {
     timeInfo = localtime(&rawTime);
 
     // For the format string : man strftime
-    if(timeFormat == TF_H12) {
+    if(getSystemFlag(FLAG_TDM)) { // time format = 24H
+      strftime(timeString, 8, "%H:%M", timeInfo); // %R don't work on Windows
+    }
+    else {
       strftime(timeString, 8, "%I:%M", timeInfo); // I could use %p but in many locals the AM and PM string are empty
       if(timeInfo->tm_hour >= 12) {
         strcat(timeString, "pm");
@@ -149,9 +156,6 @@ void getTimeString(char *timeString) {
         strcat(timeString, "am");
       }
     }
-    else {
-      strftime(timeString, 8, "%H:%M", timeInfo); // %R don't work on Windows
-    }
   #endif
 
   #ifdef DMCP_BUILD
@@ -159,7 +163,7 @@ void getTimeString(char *timeString) {
     dt_t dateInfo;
 
     rtc_read(&timeInfo, &dateInfo);
-    if(timeFormat == TF_H12) {
+    if(!getSystemFlag(FLAG_TDM)) {
       sprintf(timeString, "%02d:%02d", (timeInfo.hour % 12) == 0 ? 12 : timeInfo.hour % 12, timeInfo.min);
       if(timeInfo.hour >= 12) {
         strcat(timeString, "pm");

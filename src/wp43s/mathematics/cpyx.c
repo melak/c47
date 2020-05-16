@@ -656,7 +656,7 @@ void cpyxShoIShoI(uint16_t combOrPerm) {
             : fact_uint64(y_value) / fact_uint64(y_value - x_value);
 
     if(value > shortIntegerMask) {
-      fnSetFlag(FLAG_OVERFLOW);
+      setSystemFlag(FLAG_OVERFLOW);
     }
 
     convertUInt64ToShortIntegerRegister(0, value, getRegisterTag(REGISTER_X), REGISTER_X);

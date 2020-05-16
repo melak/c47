@@ -35,11 +35,12 @@
 #define TT_NOTHING        10
 
 #ifndef TESTSUITE_BUILD
-  void fnAim                    (uint16_t unusedParamButMandatory);
-  void resetAlphaSelectionBuffer(void);
-  void addItemToBuffer          (uint16_t item);
-  void addItemToNimBuffer       (int16_t item);
-  void tamTransitionSystem      (uint16_t tamEvent);
-  void closeNim                 (void);
-  void nimBufferToDisplayBuffer (const char *nimBuffer, char *displayBuffer);
+  void    fnAim                    (uint16_t unusedParamButMandatory);
+  void    resetAlphaSelectionBuffer(void);
+  void    addItemToBuffer          (uint16_t item);
+  void    addItemToNimBuffer       (int16_t item);
+  void    tamTransitionSystem      (uint16_t tamEvent);
+  void    closeNim                 (void);
+  void    nimBufferToDisplayBuffer (const char *nimBuffer, char *displayBuffer);
+  int16_t getOperation             (void);
 #endif

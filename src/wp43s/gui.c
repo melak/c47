@@ -1378,13 +1378,14 @@ void fnOff(uint16_t unsuedParamButMandatory) {
  * \return void
  ***********************************************/
 void calcModeNormal(void) {
-  if(calcMode == CM_TAM) {
+  if(calcMode == CM_TAM || calcMode == CM_ASM_OVER_TAM) {
     popSoftmenu();
     refreshRegisterLine(TAM_REGISTER_LINE);
     STACK_LIFT_ENABLE;
   }
 
   calcMode = CM_NORMAL;
+  clearSystemFlag(FLAG_ALPHA);
   hideCursor();
   cursorEnabled = false;
   showAlphaMode();
@@ -1408,6 +1409,7 @@ void calcModeAim(uint16_t unusedParamButMandatory) {
   refreshStack();
   showSoftmenu(NULL, -MNU_MyAlpha, true);
   calcMode = CM_AIM;
+  setSystemFlag(FLAG_ALPHA);
   alphaCase = AC_UPPER;
   showAlphaMode();
   nextChar = NC_NORMAL;
@@ -1436,6 +1438,7 @@ void calcModeAsm(void) {
     closeNim();
   }
   calcMode = CM_ASM;
+  clearSystemFlag(FLAG_ALPHA);
   alphaCase = AC_UPPER;
   showAlphaMode();
   nextChar = NC_NORMAL;
@@ -1458,6 +1461,7 @@ void calcModeNim(uint16_t unusedParamButMandatory) {
   saveStack();
 
   calcMode = CM_NIM;
+  clearSystemFlag(FLAG_ALPHA);
 
   liftStack();
   real34Zero(REGISTER_REAL34_DATA(REGISTER_X));
@@ -1491,6 +1495,9 @@ void calcModeTam(void) {
   if(calcMode == CM_NIM) {
     closeNim();
   }
+  else if(calcMode == CM_ASM_OVER_TAM) {
+    popSoftmenu();
+  }
 
   if(tamMode == TM_VALUE || tamMode == TM_VALUE_CHB || tamMode == TM_REGISTER) {
     showSoftmenu(NULL, -MNU_TAM, true);
@@ -1498,7 +1505,7 @@ void calcModeTam(void) {
   else if(tamMode == TM_CMP) {
     showSoftmenu(NULL, -MNU_TAMCMP, true);
   }
-  else if(tamMode == TM_FLAG) {
+  else if(tamMode == TM_FLAGR || tamMode == TM_FLAGW) {
     showSoftmenu(NULL, -MNU_TAMFLAG, true);
   }
   else if(tamMode == TM_STORCL) {
@@ -1511,6 +1518,7 @@ void calcModeTam(void) {
   }
 
   calcMode = CM_TAM;
+  clearSystemFlag(FLAG_ALPHA);
 
   strcat(tamBuffer, " __");
   if(stringWidth(tamBuffer, &standardFont, true, true) + 1 + lineTWidth > SCREEN_WIDTH) {

@@ -20,24 +20,67 @@
 
 #include "wp43s.h"
 
+void systemFlagAction(uint16_t systemFlag) {
+  switch(systemFlag) {
+    case FLAG_YMD:
+    case FLAG_DMY:
+    case FLAG_MDY:
+    case FLAG_TDM:      oldTime[0] = 0;
+                        break;
+
+    case FLAG_DECIMP:
+    case FLAG_LEAD0:
+    case FLAG_CPXj:     refreshStack();
+                        break;
+
+    case FLAG_RECTN:    showComplexMode();
+                        refreshStack();
+                        break;
+
+    case FLAG_CPXRES:   showRealComplexResult();
+                        break;
+
+    case FLAG_FRACT:
+    case FLAG_DENANY:
+    case FLAG_DENFIX:   showFracMode();
+                        refreshStack();
+                        break;
+
+    case FLAG_CARRY:
+    case FLAG_OVERFLOW: showOverflowCarry();
+                        break;
+
+    case FLAG_USER:     showHideUserMode();
+                        break;
+
+    case FLAG_LOWBAT:   showHideLowBattery();
+                        break;
+
+    default: {}
+  }
+}
+
 /********************************************//**
  * \brief Returns the status of a flag
  *
- * \param[in] f uint16_t
+ * \param[in] flag uint16_t
  * \return bool_t
  ***********************************************/
-bool_t getFlag(uint16_t f) {
-  if(f < NUMBER_OF_GLOBAL_FLAGS) {
-    return (flags[f/16] & (1u << (f%16))) != 0;
+bool_t getFlag(uint16_t flag) {
+  if(flag & 0x8000) { // System flag
+    return getSystemFlag(flag);
   }
-  else {
+  else if(flag < NUMBER_OF_GLOBAL_FLAGS) { // Global flag
+    return (flags[flag/16] & (1u << (flag%16))) != 0;
+  }
+  else { // Local flag
     if(numberOfLocalFlags != 0) {
-      f -= NUMBER_OF_GLOBAL_FLAGS;
-      if(f < NUMBER_OF_LOCAL_FLAGS) {
-        return (allLocalRegisterPointer->localFlags & (1u << f)) != 0;
+      flag -= NUMBER_OF_GLOBAL_FLAGS;
+      if(flag < NUMBER_OF_LOCAL_FLAGS) {
+        return (allLocalRegisterPointer->localFlags & (1u << flag)) != 0;
       }
       else {
-        sprintf(errorMessage, "In function getFlag: local flag %" FMT16U " is not defined! Must be from 0 to %d.", f, NUMBER_OF_LOCAL_FLAGS - 1);
+        sprintf(errorMessage, "In function getFlag: local flag %" FMT16U " is not defined! Must be from 0 to %d.", flag, NUMBER_OF_LOCAL_FLAGS - 1);
         displayBugScreen(errorMessage);
       }
     }
@@ -53,30 +96,57 @@ bool_t getFlag(uint16_t f) {
 
 
 /********************************************//**
- * \brief Sets a flag
+ * \brief Returns the status of a system flag
  *
- * \param[in] f uint16_t
+ * \param[in] systemFlag uint16_t
  * \return void
  ***********************************************/
-void fnSetFlag(uint16_t f) {
-  if(f < NUMBER_OF_GLOBAL_FLAGS) {
-    flags[f/16] |= 1u << (f%16);
-
-    if(f == FLAG_CPXRES) {
-      showRealComplexResult();
-    }
-    else if(f == FLAG_OVERFLOW || f == FLAG_CARRY) {
-      showOverflowCarry();
-    }
+void fnGetSystemFlag(uint16_t systemFlag) {
+  if(getSystemFlag(systemFlag)) {
+    temporaryInformation = TI_TRUE;
   }
   else {
+    temporaryInformation = TI_FALSE;
+  }
+
+  refreshRegisterLine(TAM_REGISTER_LINE);
+  refreshRegisterLine(REGISTER_X);
+ }
+
+
+
+/********************************************//**
+ * \brief Sets a flag
+ *
+ * \param[in] flag uint16_t
+ * \return void
+ ***********************************************/
+void fnSetFlag(uint16_t flag) {
+  if(flag & 0x8000) { // System flag
+    if(isSystemFlagWriteProtected(flag)) {
+      temporaryInformation = TI_NO_INFO;
+      displayCalcErrorMessage(ERROR_WRITE_PROTECTED_SYSTEM_FLAG, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "protected system flag (%" FMT16U ")!", flag & 0x3fff);
+        showInfoDialog("In function fnSetFlag:", "Tying to set a write", errorMessage, NULL);
+      #endif
+      return;
+    }
+    else {
+      setSystemFlag(flag);
+    }
+  }
+  else if(flag < NUMBER_OF_GLOBAL_FLAGS) { // Global flag
+    flags[flag/16] |= 1u << (flag%16);
+  }
+  else { // Local flag
     if(numberOfLocalFlags != 0) {
-      f -= NUMBER_OF_GLOBAL_FLAGS;
-      if(f < NUMBER_OF_LOCAL_FLAGS) {
-        allLocalRegisterPointer->localFlags |=  (1u << f);
+      flag -= NUMBER_OF_GLOBAL_FLAGS;
+      if(flag < NUMBER_OF_LOCAL_FLAGS) {
+        allLocalRegisterPointer->localFlags |=  (1u << flag);
       }
       else {
-        sprintf(errorMessage, "In function fnSetFlag: local flag %" FMT16U " is not defined! Must be from 0 to %d.", f, NUMBER_OF_LOCAL_FLAGS - 1);
+        sprintf(errorMessage, "In function fnSetFlag: local flag %" FMT16U " is not defined! Must be from 0 to %d.", flag, NUMBER_OF_LOCAL_FLAGS - 1);
         displayBugScreen(errorMessage);
       }
     }
@@ -95,28 +165,35 @@ void fnSetFlag(uint16_t f) {
 /********************************************//**
  * \brief Clears a flag
  *
- * \param[in] f uint16_t
+ * \param[in] flags uint16_t
  * \return void
  ***********************************************/
-void fnClearFlag(uint16_t f) {
-  if(f < NUMBER_OF_GLOBAL_FLAGS) {
-    flags[f/16] &= ~(1u << (f%16));
-
-    if(f == FLAG_CPXRES) {
-      showRealComplexResult();
+void fnClearFlag(uint16_t flag) {
+  if(flag & 0x8000) { // System flag
+    if(isSystemFlagWriteProtected(flag)) {
+      temporaryInformation = TI_NO_INFO;
+      displayCalcErrorMessage(ERROR_WRITE_PROTECTED_SYSTEM_FLAG, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "protected system flag (%" FMT16U ")!", flag & 0x3fff);
+        showInfoDialog("In function fnClearFlag:", "Tying to clear a write", errorMessage, NULL);
+      #endif
+      return;
     }
-    else if(f == FLAG_OVERFLOW || f == FLAG_CARRY) {
-      showOverflowCarry();
+    else {
+      clearSystemFlag(flag);
     }
   }
-  else {
+  else if(flag < NUMBER_OF_GLOBAL_FLAGS) { // Global flag
+    flags[flag/16] &= ~(1u << (flag%16));
+  }
+  else { // Local flag
     if(numberOfLocalFlags != 0) {
-      f -= NUMBER_OF_GLOBAL_FLAGS;
-      if(f < NUMBER_OF_LOCAL_FLAGS) {
-        allLocalRegisterPointer->localFlags &= ~(1u << f);
+      flag -= NUMBER_OF_GLOBAL_FLAGS;
+      if(flag < NUMBER_OF_LOCAL_FLAGS) {
+        allLocalRegisterPointer->localFlags &= ~(1u << flag);
       }
       else {
-        sprintf(errorMessage, "In function fnClearFlag: local flag %" FMT16U " is not defined! Must be from 0 to %d.", f, NUMBER_OF_LOCAL_FLAGS - 1);
+        sprintf(errorMessage, "In function fnClearFlag: local flag %" FMT16U " is not defined! Must be from 0 to %d.", flag, NUMBER_OF_LOCAL_FLAGS - 1);
         displayBugScreen(errorMessage);
       }
     }
@@ -135,28 +212,35 @@ void fnClearFlag(uint16_t f) {
 /********************************************//**
  * \brief Flips a flag
  *
- * \param[in] f uint16_t
+ * \param[in] flags uint16_t
  * \return void
  ***********************************************/
-void fnFlipFlag(uint16_t f) {
-  if(f < NUMBER_OF_GLOBAL_FLAGS) {
-    flags[f/16] ^=  1u << (f%16);
-
-    if(f == FLAG_CPXRES) {
-      showRealComplexResult();
+void fnFlipFlag(uint16_t flag) {
+  if(flag & 0x8000) { // System flag
+    if(isSystemFlagWriteProtected(flag)) {
+      temporaryInformation = TI_NO_INFO;
+      displayCalcErrorMessage(ERROR_WRITE_PROTECTED_SYSTEM_FLAG, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "protected system flag (%" FMT16U ")!", flag & 0x3fff);
+        showInfoDialog("In function fnFlipFlag:", "Tying to flip a write", errorMessage, NULL);
+      #endif
+      return;
     }
-    else if(f == FLAG_OVERFLOW || f == FLAG_CARRY) {
-      showOverflowCarry();
+    else {
+      flipSystemFlag(flag);
     }
   }
-  else {
+  else if(flag < NUMBER_OF_GLOBAL_FLAGS) { // Global flag
+    flags[flag/16] ^=  1u << (flag%16);
+  }
+  else { // Local flag
     if(numberOfLocalFlags != 0) {
-      f -= NUMBER_OF_GLOBAL_FLAGS;
-      if(f < NUMBER_OF_LOCAL_FLAGS) {
-        allLocalRegisterPointer->localFlags ^=  (1u << f);
+      flag -= NUMBER_OF_GLOBAL_FLAGS;
+      if(flag < NUMBER_OF_LOCAL_FLAGS) {
+        allLocalRegisterPointer->localFlags ^=  (1u << flag);
       }
       else {
-        sprintf(errorMessage, "In function fnFlipFlag: local flag %" FMT16U " is not defined! Must be from 0 to %d.", f, NUMBER_OF_LOCAL_FLAGS - 1);
+        sprintf(errorMessage, "In function fnFlipFlag: local flag %" FMT16U " is not defined! Must be from 0 to %d.", flag, NUMBER_OF_LOCAL_FLAGS - 1);
         displayBugScreen(errorMessage);
       }
     }
@@ -175,7 +259,7 @@ void fnFlipFlag(uint16_t f) {
 /********************************************//**
  * \brief Clear all global and local flags
  *
- * \param[in] f uint16_t
+ * \param[in] flags uint16_t
  * \return void
  ***********************************************/
 void fnClFAll(uint16_t unusedParamButMandatory) {
@@ -190,8 +274,8 @@ void fnClFAll(uint16_t unusedParamButMandatory) {
 
 
 
-void fnIsFlagClear(uint16_t f) {
-  temporaryInformation = (getFlag(f) ? TI_FALSE : TI_TRUE);
+void fnIsFlagClear(uint16_t flag) {
+  temporaryInformation = (getFlag(flag) ? TI_FALSE : TI_TRUE);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
   refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
@@ -199,9 +283,9 @@ void fnIsFlagClear(uint16_t f) {
 
 
 
-void fnIsFlagClearClear(uint16_t f) {
-  temporaryInformation = (getFlag(f) ? TI_FALSE : TI_TRUE);
-  fnClearFlag(f);
+void fnIsFlagClearClear(uint16_t flag) {
+  temporaryInformation = (getFlag(flag) ? TI_FALSE : TI_TRUE);
+  fnClearFlag(flag);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
   refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
@@ -209,9 +293,9 @@ void fnIsFlagClearClear(uint16_t f) {
 
 
 
-void fnIsFlagClearSet(uint16_t f) {
-  temporaryInformation = (getFlag(f) ? TI_FALSE : TI_TRUE);
-  fnSetFlag(f);
+void fnIsFlagClearSet(uint16_t flag) {
+  temporaryInformation = (getFlag(flag) ? TI_FALSE : TI_TRUE);
+  fnSetFlag(flag);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
   refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
@@ -219,9 +303,9 @@ void fnIsFlagClearSet(uint16_t f) {
 
 
 
-void fnIsFlagClearFlip(uint16_t f) {
-  temporaryInformation = (getFlag(f) ? TI_FALSE : TI_TRUE);
-  fnFlipFlag(f);
+void fnIsFlagClearFlip(uint16_t flag) {
+  temporaryInformation = (getFlag(flag) ? TI_FALSE : TI_TRUE);
+  fnFlipFlag(flag);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
   refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
@@ -229,19 +313,8 @@ void fnIsFlagClearFlip(uint16_t f) {
 
 
 
-void fnIsFlagSet(uint16_t f) {
-  temporaryInformation = (getFlag(f) ? TI_TRUE : TI_FALSE);
-
-  refreshRegisterLine(TAM_REGISTER_LINE);
-  refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
-}
-
-
-
-
-void fnIsFlagSetClear(uint16_t f) {
-  temporaryInformation = (getFlag(f) ? TI_TRUE : TI_FALSE);
-  fnClearFlag(f);
+void fnIsFlagSet(uint16_t flag) {
+  temporaryInformation = (getFlag(flag) ? TI_TRUE : TI_FALSE);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
   refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
@@ -250,9 +323,9 @@ void fnIsFlagSetClear(uint16_t f) {
 
 
 
-void fnIsFlagSetSet(uint16_t f) {
-  temporaryInformation = (getFlag(f) ? TI_TRUE : TI_FALSE);
-  fnSetFlag(f);
+void fnIsFlagSetClear(uint16_t flag) {
+  temporaryInformation = (getFlag(flag) ? TI_TRUE : TI_FALSE);
+  fnClearFlag(flag);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
   refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
@@ -261,9 +334,20 @@ void fnIsFlagSetSet(uint16_t f) {
 
 
 
-void fnIsFlagSetFlip(uint16_t f) {
-  temporaryInformation = (getFlag(f) ? TI_TRUE : TI_FALSE);
-  fnFlipFlag(f);
+void fnIsFlagSetSet(uint16_t flag) {
+  temporaryInformation = (getFlag(flag) ? TI_TRUE : TI_FALSE);
+  fnSetFlag(flag);
+
+  refreshRegisterLine(TAM_REGISTER_LINE);
+  refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
+}
+
+
+
+
+void fnIsFlagSetFlip(uint16_t flag) {
+  temporaryInformation = (getFlag(flag) ? TI_TRUE : TI_FALSE);
+  fnFlipFlag(flag);
 
   refreshRegisterLine(TAM_REGISTER_LINE);
   refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);

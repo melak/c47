@@ -75,7 +75,7 @@ void arccoshLonI(void) {
       real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
       arccoshCplx();
     }
-    else if(getFlag(FLAG_DANGER)) {
+    else if(getSystemFlag(FLAG_SPCRES)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
       realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
     }
@@ -127,7 +127,7 @@ void arccoshReal(void) {
       arccoshCplx();
       setRegisterAngularMode(REGISTER_X, AM_NONE);
     }
-    else if(getFlag(FLAG_DANGER)) {
+    else if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
     }
     else {
