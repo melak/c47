@@ -1859,8 +1859,15 @@ void fnShow(uint16_t unusedParamButMandatory) {
 
 void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM from the original fnShow
   uint8_t savedDisplayFormat = displayFormat, savedDisplayFormatDigits = displayFormatDigits;
-  int16_t source, dest, last, d, i;
+  int16_t source, dest, last, d, maxWidth, i;
   real34_t real34;
+  char *separator;
+
+  displayFormat = DF_ALL;
+  displayFormatDigits = 0;
+
+  clearScreen(false, true, false);
+
   #define lowest_SHOW REGISTER_X //0                // Lowest register. Change to 0 for all registers, or use REGISTER_X 
   switch(fnShow_param) {
     case NOPARAM:
@@ -1891,75 +1898,106 @@ void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM fr
     default: 
       break;
   }
-  
 
-  temporaryInformation = TI_SHOW_REGISTER;
-  displayFormat = DF_ALL;
-  displayFormatDigits = 0;
 
-  tmpStr3000[ 300] = 0; // L2
-  tmpStr3000[ 600] = 0; // L3
-  tmpStr3000[ 900] = 0; // L4
-  tmpStr3000[1200] = 0; // L5
-  tmpStr3000[1500] = 0; // L6
-  tmpStr3000[1800] = 0; // L7
+  void SHOW_reset(void){
+    //tmpStr3000[   0] = 0; // L1
+    tmpStr3000[ 300] = 0; // L2
+    tmpStr3000[ 600] = 0; // L3
+    tmpStr3000[ 900] = 0; // L4
+    tmpStr3000[1200] = 0; // L5
+    tmpStr3000[1500] = 0; // L6
+    tmpStr3000[1800] = 0; // L7
 
-  tmpStr3000[   0] = 0; // JM Initialise
-  tmpStr3000[2100] = 0; // JM temp
-  tmpStr3000[2400] = 0; // JM temp
-  
+    temporaryInformation = TI_SHOW_REGISTER;
 
-  clearScreen(false, true, false);
-  tmpStr3000[2100] = 0;
-  if(SHOWregis >= 0 && SHOWregis < 100) {
-    snprintf(tmpStr3000 + 2100, 10, "%d:", SHOWregis);
-  } else
-  switch (SHOWregis) {
-    case REGISTER_X: strcpy(tmpStr3000 + 2100, "X: "); break;
-    case REGISTER_Y: strcpy(tmpStr3000 + 2100, "Y: "); break;
-    case REGISTER_Z: strcpy(tmpStr3000 + 2100, "Z: "); break;
-    case REGISTER_T: strcpy(tmpStr3000 + 2100, "T: "); break;
-    case REGISTER_A: strcpy(tmpStr3000 + 2100, "A: "); break;
-    case REGISTER_B: strcpy(tmpStr3000 + 2100, "B: "); break;
-    case REGISTER_C: strcpy(tmpStr3000 + 2100, "C: "); break;
-    case REGISTER_D: strcpy(tmpStr3000 + 2100, "D: "); break;
-    case REGISTER_L: strcpy(tmpStr3000 + 2100, "L: "); break;
-    case REGISTER_I: strcpy(tmpStr3000 + 2100, "I: "); break;
-    case REGISTER_J: strcpy(tmpStr3000 + 2100, "J: "); break;
-    case REGISTER_K: strcpy(tmpStr3000 + 2100, "K: "); break;
-    default: break;
+    tmpStr3000[   0] = 0; // JM Initialise
+    tmpStr3000[2100] = 0; // JM temp
+    tmpStr3000[2400] = 0; // JM temp
+
+
+    if(SHOWregis >= 0 && SHOWregis < 100) {
+      snprintf(tmpStr3000 + 2100, 10, "%d:", SHOWregis);
+    } else
+    switch (SHOWregis) {
+      case REGISTER_X: strcpy(tmpStr3000 + 2100, "X: "); break;
+      case REGISTER_Y: strcpy(tmpStr3000 + 2100, "Y: "); break;
+      case REGISTER_Z: strcpy(tmpStr3000 + 2100, "Z: "); break;
+      case REGISTER_T: strcpy(tmpStr3000 + 2100, "T: "); break;
+      case REGISTER_A: strcpy(tmpStr3000 + 2100, "A: "); break;
+      case REGISTER_B: strcpy(tmpStr3000 + 2100, "B: "); break;
+      case REGISTER_C: strcpy(tmpStr3000 + 2100, "C: "); break;
+      case REGISTER_D: strcpy(tmpStr3000 + 2100, "D: "); break;
+      case REGISTER_L: strcpy(tmpStr3000 + 2100, "L: "); break;
+      case REGISTER_I: strcpy(tmpStr3000 + 2100, "I: "); break;
+      case REGISTER_J: strcpy(tmpStr3000 + 2100, "J: "); break;
+      case REGISTER_K: strcpy(tmpStr3000 + 2100, "K: "); break;
+      default: break;
+    }
   }
 
+  SHOW_reset();
+  
   switch(getRegisterDataType(SHOWregis)) {
     case dtLongInteger:
+      separator = STD_SPACE_4_PER_EM;
       longIntegerRegisterToDisplayString(SHOWregis, tmpStr3000 + 2103, TMP_STR_LENGTH, 7*400 - 8, 350, STD_SPACE_4_PER_EM);
 
       last = 2100 + stringByteLength(tmpStr3000 + 2100);
       source = 2100;
       dest = 0;
 
-      int16_t maxWidth;
-      char *separator;
-      separator = STD_SPACE_4_PER_EM;
+ 
+      {
+        //printf("2: %d\n",stringGlyphLength(tmpStr3000 + 2100));
+        temporaryInformation = TI_SHOW_REGISTER_BIG;
+        maxWidth = SCREEN_WIDTH - stringWidth("0", &numericFont, true, true);
 
-      int16_t limit;
-      switch(groupingGap) {
-        case 0:
-        case 1:
-        case 2: limit = 97+3; break;
-        case 3: limit = 83+24+3+3; break;  //digits fitting + separators + end line separators (exl last) + text "X: "
-        case 4: limit = 79+16+3+3; break;
-        default: limit = 100;
-      }
+        for(d=0; d<=1800 ; d+=300) {
+          dest = d;
+          while(source < last && stringWidth(tmpStr3000 + d, &numericFont, true, true) <=  maxWidth) {
+            tmpStr3000[dest] = tmpStr3000[source];
+            if(tmpStr3000[dest] & 0x80) {
+              tmpStr3000[++dest] = tmpStr3000[++source];
+            }
+            source++;
+            tmpStr3000[++dest] = 0;
+          }
 
-      if (stringGlyphLength(tmpStr3000 + 2100) > limit) {
+          while (source < last && groupingGap!=0 && !(tmpStr3000[dest-2] & 0x80)) //Not in the last line. Eat away characters at the end to line up the last space.
+            {
+              dest--; 
+              source--;
+            }
+          tmpStr3000[dest] = 0;
+
+          if(!(source < last) && groupingGap!=0 && !(tmpStr3000[dest+0] == *(separator + 0) && (tmpStr3000[dest+1] == *(separator + 1)))) {               //Last line
+            tmpStr3000[dest+0] = *(separator + 0); //0xa0;       //Add a space to the very end to space last line nicely.
+            tmpStr3000[dest+1] = *(separator + 1); //0x05;
+            tmpStr3000[dest+2] = 0;
+            dest+=2;
+          }
+        }
+      }      
+
+      if(stringByteLength(tmpStr3000 + 1200) != 2) { 
+
+        SHOW_reset();
+        longIntegerRegisterToDisplayString(SHOWregis, tmpStr3000 + 2103, TMP_STR_LENGTH, 7*400 - 8, 350, STD_SPACE_4_PER_EM);
+
+        last = 2100 + stringByteLength(tmpStr3000 + 2100);
+        source = 2100;
+        dest = 0;
+
         //printf("1: %d\n",stringGlyphLength(tmpStr3000 + 2100));
+
         if(groupingGap == 0) {
           maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true);
         }
         else {
           maxWidth = SCREEN_WIDTH - stringWidth("0", &standardFont, true, true)*groupingGap - stringWidth(separator, &standardFont, true, true);
         }
+
         for(d=0; d<=1800 ; d+=300) {
           dest = d;
           while(source < last && stringWidth(tmpStr3000 + d, &standardFont, true, true) <= maxWidth) {
@@ -1979,35 +2017,8 @@ void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM fr
           tmpStr3000[dest + 2] = 0;
         }
       } 
-      else {
-        //printf("2: %d\n",stringGlyphLength(tmpStr3000 + 2100));
-        temporaryInformation = TI_SHOW_REGISTER_BIG;
-        maxWidth = SCREEN_WIDTH - stringWidth("0", &numericFont, true, true);
-        for(d=0; d<=1800 ; d+=300) {
-          dest = d;
-          while(source < last && stringWidth(tmpStr3000 + d, &numericFont, true, true) <=  maxWidth) {
-            tmpStr3000[dest] = tmpStr3000[source];
-            if(tmpStr3000[dest] & 0x80) {
-              tmpStr3000[++dest] = tmpStr3000[++source];
-            }
-            source++;
-            tmpStr3000[++dest] = 0;
-          }
 
-          if(source < last && groupingGap!=0) {                  //Not in the last line
-            if(!(tmpStr3000[dest-2] & 0x80)) {dest--; source--;} //Eat away characters at the end to line up the last space
-            if(!(tmpStr3000[dest-2] & 0x80)) {dest--; source--;}
-            if(!(tmpStr3000[dest-2] & 0x80)) {dest--; source--;}
-            tmpStr3000[dest] = 0;
-          }            
-          if(!(source < last) && groupingGap!=0) {               //Last line
-            tmpStr3000[dest+0] = *(separator + 0); //0xa0;                           //Add a space to the very end to space last line nicely.
-            tmpStr3000[dest+1] = *(separator + 1); //0x05;
-            tmpStr3000[dest+2] = 0;
-            dest+=2;
-          }
-        }
-      }      
+
       break;
 
     case dtReal34:
@@ -2115,7 +2126,7 @@ void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM fr
     case dtShortInteger:
       temporaryInformation = TI_SHOW_REGISTER_BIG;
       bool_t displayLeadingZerosMem = displayLeadingZeros;
-//      displayLeadingZeros = true;                        //Change this to have leading zeroes on
+//      displayLeadingZeros = true;                        //Change this to have leading zeroes on temporarily for SHOW. See displayLeadingZerosMem needed for this.
         const font_t *font_tmp;
         font_tmp = &numericFont; //&numericFont;
         shortIntegerToDisplayString(SHOWregis, tmpStr3000 + 2103, &font_tmp);
@@ -2127,16 +2138,13 @@ void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM fr
           while(tmpStr3000[source] !=0 ) {
             if((uint8_t)(tmpStr3000[source]) == 160 && (uint8_t)(tmpStr3000[source+1]) == 39) {
               source++;
-              tmpStr3000[dest]=49;
-              dest++;
+              tmpStr3000[dest++]=49;
             } else
               if((uint8_t)(tmpStr3000[source]) == 162 && (uint8_t)(tmpStr3000[source+1]) == 14) {
                 source++;
-                tmpStr3000[dest]=48;
-                dest++;
+                tmpStr3000[dest++]=48;
               } else {
-                tmpStr3000[dest] = tmpStr3000[source];
-                dest++;
+                tmpStr3000[dest++] = tmpStr3000[source];
               }
             source++;
           }
