@@ -2106,8 +2106,6 @@ void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM fr
 
     case dtShortInteger:
       temporaryInformation = TI_SHOW_REGISTER_BIG;
-      bool_t displayLeadingZerosMem = displayLeadingZeros;
-//    displayLeadingZeros = true;                        //Change this to have leading zeroes on temporarily for SHOW. See displayLeadingZerosMem needed for this.
       const font_t *font_tmp;
       font_tmp = &numericFont; //&numericFont;
       shortIntegerToDisplayString(SHOWregis, tmpStr3000 + 2103, &font_tmp);
@@ -2157,7 +2155,6 @@ void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM fr
           tmpStr3000[dest] = 0;
         }            
       }
-      displayLeadingZeros = displayLeadingZerosMem;
       break;
 
 
