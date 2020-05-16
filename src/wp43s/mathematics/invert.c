@@ -136,7 +136,7 @@ void invertCxma(void) {
  ***********************************************/
 void invertReal(void) {
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_plusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
     }
     else {
@@ -147,7 +147,7 @@ void invertReal(void) {
     }
   }
 
-  else if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X)) && !getFlag(FLAG_DANGER)) {
+  else if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X)) && !getSystemFlag(FLAG_SPCRES)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       showInfoDialog("In function invertReal:", "cannot divide a real34 by " STD_PLUS_MINUS STD_INFINITY " when flag D is not set", NULL, NULL);

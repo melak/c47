@@ -5,13 +5,13 @@
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
-In: FD=0 FI=0 SD=0 RM=0 IM=2compl SS=4 WS=64
+In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
 
 Func: fnStoreIJ
-In:  AM=DEG SL=0 FI=0 RX=LonI:"1" RY=LonI:"2" RL=LonI:"3"
-Out: EC=0 FI=0 SL=1 RX=LonI:"1" RY=LonI:"2" RL=LonI:"3" RI=LonI:"1" RJ=LonI:"2"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"1" RY=LonI:"2" RL=LonI:"3"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=LonI:"1" RY=LonI:"2" RL=LonI:"3" RI=LonI:"1" RJ=LonI:"2"
 
 
 Func: fnRecallIJ
-In:  AM=DEG SL=0 FI=0 RX=LonI:"1" RY=LonI:"2" RL=LonI:"3" RI=LonI:"4" RJ=LonI:"5"
-Out: EC=0 FI=0 SL=1 RX=LonI:"4" RY=LonI:"5" RL=LonI:"1" RI=LonI:"4" RJ=LonI:"5"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"1" RY=LonI:"2" RL=LonI:"3" RI=LonI:"4" RJ=LonI:"5"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=LonI:"4" RY=LonI:"5" RL=LonI:"1" RI=LonI:"4" RJ=LonI:"5"

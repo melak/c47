@@ -47,9 +47,6 @@ typedef enum {
   vmReverse  ///< Reverse mode: white on black background
 } videoMode_t; // 1 bit
 
-int16_t  showFunctionNameItem;
-int8_t   showFunctionNameCounter;
-
 void     fnScreenDump(uint16_t unusedButMandatoryParameter);
 
 #ifdef PC_BUILD

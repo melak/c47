@@ -288,7 +288,7 @@ void divLonIReal(void) {
 
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(realIsZero(&y)) {
-      if(getFlag(FLAG_DANGER)) {
+      if(getSystemFlag(FLAG_SPCRES)) {
         realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
       }
       else {
@@ -299,7 +299,7 @@ void divLonIReal(void) {
       }
     }
     else {
-      if(getFlag(FLAG_DANGER)) {
+      if(getSystemFlag(FLAG_SPCRES)) {
         realToReal34((realIsPositive(&y) ? const_plusInfinity : const_minusInfinity), REGISTER_REAL34_DATA(REGISTER_X));
       }
       else {
@@ -335,7 +335,7 @@ void divRealLonI(void) {
 
   if(realIsZero(&x)) {
     if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_Y))) {
-      if(getFlag(FLAG_DANGER)) {
+      if(getSystemFlag(FLAG_SPCRES)) {
         realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
       }
       else {
@@ -346,7 +346,7 @@ void divRealLonI(void) {
       }
     }
     else {
-      if(getFlag(FLAG_DANGER)) {
+      if(getSystemFlag(FLAG_SPCRES)) {
         realToReal34((real34IsPositive(REGISTER_REAL34_DATA(REGISTER_Y)) ? const_plusInfinity : const_minusInfinity), REGISTER_REAL34_DATA(REGISTER_X));
       }
       else {
@@ -625,7 +625,7 @@ void divShoIReal(void) {
 
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(realIsZero(&y)) {
-      if(getFlag(FLAG_DANGER)) {
+      if(getSystemFlag(FLAG_SPCRES)) {
         realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
       }
       else {
@@ -636,7 +636,7 @@ void divShoIReal(void) {
       }
     }
     else {
-      if(getFlag(FLAG_DANGER)) {
+      if(getSystemFlag(FLAG_SPCRES)) {
         realToReal34((realIsPositive(&y) ? const_plusInfinity : const_minusInfinity), REGISTER_REAL34_DATA(REGISTER_X));
       }
       else {
@@ -672,7 +672,7 @@ void divRealShoI(void) {
 
   if(realIsZero(&x)) {
     if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_Y))) {
-      if(getFlag(FLAG_DANGER)) {
+      if(getSystemFlag(FLAG_SPCRES)) {
         realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
       }
       else {
@@ -683,7 +683,7 @@ void divRealShoI(void) {
       }
     }
     else {
-      if(getFlag(FLAG_DANGER)) {
+      if(getSystemFlag(FLAG_SPCRES)) {
         realToReal34((real34IsPositive(REGISTER_REAL34_DATA(REGISTER_Y)) ? const_plusInfinity : const_minusInfinity), REGISTER_REAL34_DATA(REGISTER_X));
       }
       else {
@@ -772,7 +772,7 @@ void divCplxShoI(void) {
  ***********************************************/
 void divRealReal(void) {
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_Y)) && real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
     }
     else {
@@ -784,7 +784,7 @@ void divRealReal(void) {
   }
 
   else if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34((real34IsPositive(REGISTER_REAL34_DATA(REGISTER_Y)) ? const_plusInfinity : const_minusInfinity), REGISTER_REAL34_DATA(REGISTER_X));
     }
     else {

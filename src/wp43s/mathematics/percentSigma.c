@@ -85,7 +85,7 @@ static bool_t percentSigma(real_t *xReal, real_t *rReal, realContext_t *realCont
   real34ToReal(SIGMA_X, rReal);    // r = Sum(x)
 
   if(realIsZero(rReal)) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realCopy((realIsPositive(rReal) ? const_plusInfinity : const_minusInfinity), rReal);
     }
     else {

@@ -52,10 +52,7 @@ void toggleSerialIO       (void);
 void showPrinter          (void);
 void hidePrinter          (void);
 void togglePrinter        (void);
-void showUserMode         (void);
-void hideUserMode         (void);
-void toggleUserMode       (void);
-void showLowBattery       (void);
-void hideLowBattery       (void);
 void toggleLowBattery     (void);
+void showHideUserMode     (void);
+void showHideLowBattery   (void);
 #endif

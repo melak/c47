@@ -131,7 +131,7 @@ void sincCxma(void) {
 
 void sincReal(void) {
   if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
     }
     else {

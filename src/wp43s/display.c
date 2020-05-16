@@ -48,20 +48,6 @@ void fnProductSign(uint16_t ps) {
 
 
 /********************************************//**
- * \brief Sets the radix mark and refreshes the stack
- *
- * \param[in] radixMark uint16_t Radix mark
- * \return void
- *
- ***********************************************/
-void fnRadixMark(uint16_t rm) {
-  radixMark = rm;
-  refreshStack();
-}
-
-
-
-/********************************************//**
  * \brief Sets the display format FIX and refreshes the stack
  *
  * \param[in] displayFormatN uint16_t Display format
@@ -70,7 +56,7 @@ void fnRadixMark(uint16_t rm) {
 void fnDisplayFormatFix(uint16_t displayFormatN) {
   displayFormat = DF_FIX;
   displayFormatDigits = displayFormatN;
-  fractionType = FT_NONE;
+  clearSystemFlag(FLAG_FRACT);
 
   refreshStack();
 }
@@ -86,7 +72,7 @@ void fnDisplayFormatFix(uint16_t displayFormatN) {
 void fnDisplayFormatSci(uint16_t displayFormatN) {
   displayFormat = DF_SCI;
   displayFormatDigits = displayFormatN;
-  fractionType = FT_NONE;
+  clearSystemFlag(FLAG_FRACT);
 
   refreshStack();
 }
@@ -102,7 +88,7 @@ void fnDisplayFormatSci(uint16_t displayFormatN) {
 void fnDisplayFormatEng(uint16_t displayFormatN) {
   displayFormat = DF_ENG;
   displayFormatDigits = displayFormatN;
-  fractionType = FT_NONE;
+  clearSystemFlag(FLAG_FRACT);
 
   refreshStack();
 }
@@ -117,11 +103,11 @@ void fnDisplayFormatEng(uint16_t displayFormatN) {
  ***********************************************/
 void fnDisplayFormatAll(uint16_t displayFormatN) {
   //if(0 <= displayFormatN && displayFormatN <= 15) {
-    displayFormat = DF_ALL;
-    displayFormatDigits = displayFormatN;
-    fractionType = FT_NONE;
+  displayFormat = DF_ALL;
+  displayFormatDigits = displayFormatN;
+  clearSystemFlag(FLAG_FRACT);
 
-    refreshStack();
+  refreshStack();
 }
 
 
@@ -338,11 +324,11 @@ void realToDisplayString2(const real34_t *real34, char *displayString, int16_t d
   #undef MAX_DIGITS
   #define MAX_DIGITS 37 // 34 + 1 before (used when rounding from 9.999 to 10.000) + 2 after (used for rounding and ENG display mode)
 
-  uint8_t charIndex, valueIndex, digitToRound;
+  uint8_t charIndex, valueIndex, digitToRound=0;
   uint8_t *bcd;
-  int16_t digitsToDisplay, numDigits, digitPointer, firstDigit, lastDigit, i, digitCount, digitsToTruncate, exponent;
+  int16_t digitsToDisplay=0, numDigits, digitPointer, firstDigit, lastDigit, i, digitCount, digitsToTruncate, exponent;
   int32_t sign;
-  bool_t  ovrSCI=false, ovrENG=false, firstDigitAfterPeriod=true;
+  bool_t  firstDigitAfterPeriod=true;
   real34_t value34;
   real_t value;
 
@@ -482,8 +468,6 @@ void realToDisplayString2(const real34_t *real34, char *displayString, int16_t d
     if(exponent >= displayHasNDigits || (displayFormatDigits != 0 && exponent < -(int32_t)displayFormatDigits) || (displayFormatDigits == 0 && exponent < numDigits - displayHasNDigits)) { // Display in SCI or ENG format
       digitsToDisplay = numDigits - 1;
       digitToRound    = firstDigit + digitsToDisplay;
-      ovrSCI = (displayModeOverride == DO_SCI);
-      ovrENG = (displayModeOverride == DO_ENG);
     }
     else { // display all digits without ten exponent factor
       // Number of digits to truncate
@@ -604,8 +588,6 @@ void realToDisplayString2(const real34_t *real34, char *displayString, int16_t d
     if(exponent >= displayHasNDigits || exponent < -(int32_t)displayFormatDigits) { // Display in SCI or ENG format
       digitsToDisplay = displayFormatDigits;
       digitToRound    = min(firstDigit + digitsToDisplay, lastDigit);
-      ovrSCI = (displayModeOverride == DO_SCI);
-      ovrENG = (displayModeOverride == DO_ENG);
     }
     else { // display fix number of digits without ten exponent factor
       // Number of digits to truncate
@@ -734,9 +716,9 @@ void realToDisplayString2(const real34_t *real34, char *displayString, int16_t d
   //////////////
   // SCI mode //
   //////////////
-  if(ovrSCI || displayFormat == DF_SCI) {
+  if(getSystemFlag(FLAG_ALLSCI) || displayFormat == DF_SCI) {
     // Round the displayed number
-    if(!ovrSCI) {
+    if(!getSystemFlag(FLAG_ALLSCI)) {
       digitsToDisplay = displayFormatDigits;
       digitToRound    = min(firstDigit + (int16_t)displayFormatDigits, lastDigit);
     }
@@ -833,9 +815,9 @@ void realToDisplayString2(const real34_t *real34, char *displayString, int16_t d
   //////////////
   // ENG mode //
   //////////////
-  if(ovrENG || displayFormat == DF_ENG) {
+  if(!getSystemFlag(FLAG_ALLSCI) || displayFormat == DF_ENG) {
     // Round the displayed number
-    if(!ovrENG) {
+    if(getSystemFlag(FLAG_ALLSCI)) {
       digitsToDisplay = displayFormatDigits;
       digitToRound    = min(firstDigit + digitsToDisplay, lastDigit);
     }
@@ -985,11 +967,11 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
   real34_t real34, imag34;
   real_t real, imagIc;
 
-  if(complexMode == CM_RECTANGULAR) {
+  if(getSystemFlag(FLAG_RECTN)) { // rectangular mode
     real34Copy(VARIABLE_REAL34_DATA(complex34), &real34);
     real34Copy(VARIABLE_IMAG34_DATA(complex34), &imag34);
   }
-  else if(complexMode == CM_POLAR) {
+  else { // polar mode
     real34ToReal(VARIABLE_REAL34_DATA(complex34), &real);
     real34ToReal(VARIABLE_IMAG34_DATA(complex34), &imagIc);
     realRectangularToPolar(&real, &imagIc, &real, &imagIc, &ctxtReal39); // imagIc in radian
@@ -997,15 +979,11 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
     realToReal34(&real, &real34);
     realToReal34(&imagIc, &imag34);
   }
-  else {
-    sprintf(errorMessage, "In function complexToDisplayString2: %d is an unexpected value for complexMode!", complexMode);
-    displayBugScreen(errorMessage);
-  }
 
   realToDisplayString2(&real34, displayString, displayHasNDigits, limitExponent, separator);
 
   if(updateDisplayValueX) {
-    if(complexMode == CM_RECTANGULAR) {
+    if(getSystemFlag(FLAG_RECTN)) {
       strcat(displayValueX, "i");
     }
     else {
@@ -1015,7 +993,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
 
   realToDisplayString2(&imag34, displayString + i, displayHasNDigits, limitExponent, separator);
 
-  if(complexMode == CM_RECTANGULAR) {
+  if(getSystemFlag(FLAG_RECTN)) { // rectangular mode
     if(strncmp(displayString + stringByteLength(displayString) - 2, STD_SPACE_HAIR, 2) != 0) {
       strcat(displayString, STD_SPACE_HAIR);
     }
@@ -1032,7 +1010,7 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
     strcat(displayString, PRODUCT_SIGN);
     xcopy(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
   }
-  else { // POLAR
+  else { // polar mode
     strcat(displayString, STD_SPACE_4_PER_EM STD_MEASURED_ANGLE STD_SPACE_4_PER_EM);
     angle34ToDisplayString2(&imag34, currentAngularMode, displayString + stringByteLength(displayString), displayHasNDigits, limitExponent, separator);
   }
@@ -1056,7 +1034,7 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
   fraction(regist, &sign, &intPart, &numer, &denom, &lessEqualGreater);
   //printf("result of fraction(...) = %c%" FMT64U " %" FMT64U "/%" FMT64U "\n", sign==-1 ? '-' : ' ', intPart, numer, denom);
 
-  if(fractionType == FT_PROPER) { // a b/c
+  if(getSystemFlag(FLAG_PROPFR)) { // a b/c
     if(updateDisplayValueX) {
       sprintf(displayValueX, "%s%" FMT64U " %" FMT64U "/%" FMT64U, (sign == -1 ? "-" : ""), intPart, numer, denom);
     }
@@ -1354,7 +1332,7 @@ void shortIntegerToDisplayString(calcRegister_t regist, char *displayString, con
   }
 
   // Add leading zeros
-  if(displayLeadingZeros) {
+  if(getSystemFlag(FLAG_LEAD0)) {
          if(base ==  2) bitsPerDigit = 1;
     else if(base ==  4) bitsPerDigit = 2;
     else if(base ==  8) bitsPerDigit = 3;
@@ -1814,22 +1792,28 @@ void fnShow(uint16_t unusedParamButMandatory) {
 
       // +/- i×
       real34Copy(REGISTER_IMAG34_DATA(REGISTER_X), &real34);
-      strcat(tmpStr3000 + 300, (real34IsNegative(&real34) ? "-" : "+"));
-      strcat(tmpStr3000 + 300, COMPLEX_UNIT);
-      strcat(tmpStr3000 + 300, PRODUCT_SIGN);
+      last = 300;
+      while(tmpStr3000[last]) last++;
+      xcopy(tmpStr3000 + last++, (real34IsNegative(&real34) ? "-" : "+"), 1);
+      xcopy(tmpStr3000 + last++, COMPLEX_UNIT, 1);
+      xcopy(tmpStr3000 + last, PRODUCT_SIGN, 3);
 
       // Imaginary part
       real34SetPositiveSign(&real34);
       real34ToDisplayString(&real34, AM_NONE, tmpStr3000 + 600, &standardFont, 2000, 34, false, separator);
 
       if(stringWidth(tmpStr3000 + 300, &standardFont, true, true) + stringWidth(tmpStr3000 + 600, &standardFont, true, true) <= SCREEN_WIDTH) {
-        strncat(tmpStr3000 + 300, tmpStr3000 +  600, 299);
+        last = 300;
+        while(tmpStr3000[last]) last++;
+        xcopy(tmpStr3000 + last, tmpStr3000 + 600,  strlen(tmpStr3000 + 600) + 1);
         tmpStr3000[600] = 0;
       }
 
       if(stringWidth(tmpStr3000, &standardFont, true, true) + stringWidth(tmpStr3000 + 300, &standardFont, true, true) <= SCREEN_WIDTH) {
-        strncat(tmpStr3000, tmpStr3000 +  300, 299);
-        strcpy(tmpStr3000 + 300, tmpStr3000 + 600);
+        last = 0;
+        while(tmpStr3000[last]) last++;
+        xcopy(tmpStr3000 + last, tmpStr3000 +  300, strlen(tmpStr3000 + 300) + 1);
+        xcopy(tmpStr3000 + 300, tmpStr3000 + 600, strlen(tmpStr3000 + 600) + 1);
         tmpStr3000[600] = 0;
       }
       break;

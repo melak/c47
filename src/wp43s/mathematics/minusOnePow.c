@@ -106,10 +106,12 @@ void m1PowShoI(void) {
   uint64_t valueExponent = WP34S_extract_value(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)), &signExponent);
   int32_t odd = valueExponent & 1;
 
-  if(shortIntegerMode == SIM_UNSIGN && odd)
-    fnSetFlag(FLAG_OVERFLOW);
-  else
-    fnClearFlag(FLAG_OVERFLOW);
+  if(shortIntegerMode == SIM_UNSIGN && odd) {
+    setSystemFlag(FLAG_OVERFLOW);
+  }
+  else {
+    clearSystemFlag(FLAG_OVERFLOW);
+  }
 
   *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = WP34S_build_value((uint64_t)1, odd);
 }

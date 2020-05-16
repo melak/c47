@@ -101,8 +101,8 @@
 #define ITM_CLCVAR                      72
 #define ITM_CLFALL                      73
 #define MNU_CLK                         74
-#define ITM_CLK12                       75
-#define ITM_CLK24                       76
+#define ITM_TGLFRT                      75
+#define ITM_0076                        76
 #define ITM_CLLCD                       77
 #define ITM_CLMENU                      78
 #define ITM_CLP                         79
@@ -122,9 +122,9 @@
 #define ITM_cosh                        93
 #define ITM_COV                         94
 #define MNU_CPX                         95
-#define ITM_CPXI                        96
-#define ITM_CPXJ                        97
-#define ITM_CPXRES                      98
+#define ITM_0096                        96
+#define ITM_0097                        97
+#define ITM_0098                        98
 #define MNU_CPXS                        99
 #define ITM_CPX                        100
 #define ITM_CROSS                      101
@@ -145,9 +145,9 @@
 #define ITM_DECOMP                     116
 #define ITM_DEG                        117
 #define ITM_DEGto                      118
-#define ITM_DENANY                     119
-#define ITM_DENFAC                     120
-#define ITM_DENFIX                     121
+#define ITM_0119                       119
+#define ITM_0120                       120
+#define ITM_0121                       121
 #define ITM_DENMAX                     122
 #define MNU_DIGITS                     123
 #define MNU_DSP                        124
@@ -172,7 +172,7 @@
 #define ITM_END                        143
 #define ITM_ENDP                       144
 #define ITM_ENG                        145
-#define ITM_ENGOVR                     146
+#define ITM_0146                       146
 #define ITM_ENORM                      147
 #define ITM_ENTER                      148
 #define ITM_ENTRY                      149
@@ -277,7 +277,7 @@
 #define ITM_IHGtoPA                    248
 #define MNU_LINTS                      249
 #define ITM_IM                         250
-#define ITM_IMPFRC                     251
+#define ITM_0251                       251
 #define ITM_INC                        252
 #define ITM_INDEX                      253
 #define MNU_INFO                       254
@@ -361,8 +361,8 @@
 #define MNU_LOOP                       332
 #define CST_24                         333
 #define ITM_LYtoM                      334
-#define ITM_LZOFF                      335
-#define ITM_LZON                       336
+#define ITM_0335                       335
+#define ITM_0336                       336
 #define ITM_LR                         337
 #define ITM_M2toAC                     338
 #define ITM_M2toACUS                   339
@@ -399,8 +399,8 @@
 #define ITM_MSG                        370
 #define CST_32                         371
 #define CST_33                         372
-#define ITM_MULTCR                     373
-#define ITM_MULTDOT                    374
+#define ITM_0373                       373
+#define ITM_0374                       374
 #define ITM_MULPI                      375
 #define ITM_MVAR                       376
 #define MNU_MyMenu                     377
@@ -490,14 +490,14 @@
 #define ITM_POISSU                     461
 #define ITM_POISSM1                    462
 #define MNU_POISS                      463
-#define ITM_POLAR                      464
+#define ITM_0464                       464
 #define ITM_POPLR                      465
 #define ITM_POWERF                     466
 #define ITM_PRtoDB                     467
 #define ITM_PRCL                       468
 #define ITM_PRIME                      469
 #define MNU_PROB                       470
-#define ITM_PROFRC                     471
+#define ITM_0471                       471
 #define MNU_PROGS                      472
 #define ITM_PSItoPA                    473
 #define ITM_PSTO                       474
@@ -526,14 +526,14 @@
 #define ITM_RCLMAX                     497
 #define ITM_RCLMIN                     498
 #define ITM_RDP                        499
-#define ITM_RDXCOM                     500
-#define ITM_RDXPER                     501
+#define ITM_0500                       500
+#define ITM_0501                       501
 #define CST_41                         502
 #define ITM_RE                         503
-#define ITM_REALRES                    504
+#define ITM_0504                       504
 #define MNU_REALS                      505
 #define ITM_REAL                       506
-#define ITM_RECT                       507
+#define ITM_0507                       507
 #define ITM_REGS                       508
 #define ITM_RECV                       509
 #define ITM_RESET                      510
@@ -573,7 +573,7 @@
 #define CST_48                         544
 #define ITM_SCI                        545
 #define ITM_SCWtoKG                    546
-#define ITM_SCIOVR                     547
+#define ITM_0547                       547
 #define ITM_SDIGS                      548
 #define ITM_SDL                        549
 #define ITM_SDR                        550
@@ -609,8 +609,8 @@
 #define MNU_Solver                     580
 #define ITM_SPEC                       581
 #define ITM_SR                         582
-#define ITM_SSIZE4                     583
-#define ITM_SSIZE8                     584
+#define ITM_0583                       583
+#define ITM_0584                       584
 #define ITM_SSIZE                      585
 #define MNU_STAT                       586
 #define ITM_STATUS                     587
@@ -903,7 +903,7 @@
 #define ITM_TRZtoKGb                   873
 
 #define ITM_FBR                        874
-#define MNU_CFG                        875
+#define ITM_0875                       875
 #define MNU_alpha_omega                876
 #define MNU_ALPHAintl                  877
 #define ITM_REG_X                      878
@@ -1624,8 +1624,49 @@
 #define ITM_M2toHECTARE               1588
 #define MNU_VAR                       1589
 #define MNU_TAMFLAG                   1590
+#define ITM_1591                      1591
+#define SFL_TDM                       1592
+#define SFL_YMD                       1593
+#define SFL_DMY                       1594
+#define SFL_MDY                       1595
+#define SFL_CPXRES                    1596
+#define SFL_CPXj                      1597
+#define SFL_RECTN                     1598
+#define SFL_FRACT                     1599
+#define SFL_PROPFR                    1600
+#define SFL_DENANY                    1601
+#define SFL_DENFIX                    1602
+#define SFL_CARRY                     1603
+#define SFL_OVERFL                    1604
+#define SFL_LEAD0                     1605
+#define SFL_ALPHA                     1606
+#define SFL_alphaCAP                  1607
+#define SFL_RUNTIM                    1608
+#define SFL_RUNIO                     1609
+#define SFL_PRINT                     1610
+#define SFL_TRACE                     1611
+#define SFL_USER                      1612
+#define SFL_LOWBAT                    1613
+#define SFL_SLOW                      1614
+#define SFL_SPCRES                    1615
+#define SFL_SSIZE8                    1616
+#define SFL_QUIET                     1617
+#define SFL_DECIMP                    1618
+#define SFL_MULTx                     1619
+#define SFL_ALLSCI                    1620
+#define SFL_GROW                      1621
+#define SFL_AUTOFF                    1622
+#define SFL_AUTXEQ                    1623
+#define SFL_PRTACT                    1624
+#define SFL_NUMIN                     1625
+#define SFL_ALPIN                     1626
+#define SFL_ASLIFT                    1627
+#define SFL_IGN1ER                    1628
+#define SFL_INTING                    1629
+#define SFL_SOLVING                   1630
+#define SFL_VMDISP                    1631
 
-#define LAST_ITEM                     1591
+#define LAST_ITEM                     1632
 
 #define CHR_PROD_SIGN                 9999
 
@@ -1640,6 +1681,7 @@
 #define CAT_FREE 4 // To identify and find the free items
 #define CAT_RVAR 5 // Reserved variable
 #define CAT_DUPL 6 // Duplicate of another item e.g. acus->m^2
+#define CAT_SYFL 7 // System flags
 typedef struct {
   void     (*func)(uint16_t); ///< Function called to execute the item
   uint16_t param;             ///< 1st parameter to the above function

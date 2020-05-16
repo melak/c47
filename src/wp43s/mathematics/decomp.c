@@ -27,6 +27,7 @@ static void (*const Decomp[9])(void) = {
 };
 
 
+
 /********************************************//**
  * \brief regX ==> regL and DECOMP(regX) ==> regX, regY
  * enables stack lift and refreshes the stack.
@@ -42,9 +43,11 @@ void fnDecomp(uint16_t unusedParamButMandatory) {
 
   Decomp[getRegisterDataType(REGISTER_X)]();
 
-  adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-  adjustResult(REGISTER_Y, false, true, REGISTER_Y, -1, -1);
+  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+  adjustResult(REGISTER_Y, false, false, REGISTER_Y, -1, -1);
 }
+
+
 
 void decompError(void) {
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
@@ -55,99 +58,48 @@ void decompError(void) {
   #endif
 }
 
-/* This function calculates the rest of  division of two real numbers.
- * result = MOD(a, b) = a % b
- */
-static void modReal(real_t *a, real_t *b, real_t *result, realContext_t *realContext) {
-  WP34S_Mod(a, b, result, realContext);
 
-  if(!realIsZero(result) && realGetSign(b) != realGetSign(a)) {
-    realAdd(result, a, result, realContext);
-  }
-}
-
-/* This funtion calculates the GCD of two real numbers.
- * result = GCD(x, y)
- */
-static void gcdReal(real_t *x, real_t *y, real_t *result, realContext_t *realContext) {
-  real_t b, t;
-
-  realCopy(y, &b);                        // b = y
-  realCopy(x, result);                    // result = x
-
-  while(!realIsZero(&b)) {                // b != 0
-    realCopy(&b, &t);                     // t = b;
-    modReal(result, &t, &b, realContext); // b = result mod t
-    realCopy(&t, result);                 // result = t
-  }
-}
-
-#define MAX_EXPANSION_ITERATIONS 1000
 
 void decompReal(void) {
-  real_t x;
-  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+  STACK_LIFT_ENABLE;
+  liftStack();
 
-  if(realIsNaN(&x)) {                                                 // x == NaN
-    realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));        // Denominator = NaN
-    realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_Y));        // Numerator = NaN
+  if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) {
+    realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X)); // Denominator = NaN
+    realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_Y)); // Numerator = NaN
   }
-  else if(realIsInfinite(&x)) {                                       // x == Inf
-    realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));          // Denominator = 0
-    realToReal34(realIsNegative(&x) ? const__1 : const_1, REGISTER_REAL34_DATA(REGISTER_Y)); // Numerator = +/- 1
+  else if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
+    realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X)); // Denominator = 0
+    realToReal34(real34IsNegative(REGISTER_REAL34_DATA(REGISTER_X)) ? const__1 : const_1, REGISTER_REAL34_DATA(REGISTER_Y)); // Numerator = +/- 1
   }
   else {
-    real_t d;                                                         // Denominator
-    real_t n;                                                         // Numerator
-    real_t maxD, z, dOld, t, s;
+    uint32_t savedDenMax = denMax;
+    uint64_t savedSystemFlags = systemFlags;
+    int16_t sign, lessEqualGreater;
+    uint64_t intPart, numer, denom;
+    longInteger_t lgInt;
 
-    int32ToReal(denMax, &maxD);                                       // maxD = (Real)denMax
-    realCopyAbs(&x, &z);                                              // z = abs(x)
+    denMax = MAX_DENMAX;
+    clearSystemFlag(FLAG_PROPFR); // set improper fraction mode
 
-    if(denominatorMode == DM_ANY) {
-      realCopy(const_0, &dOld);                                       // dOld = 0
-      realCopy(const_1, &d);                                          // d = 1
-      /*
-       * Do a partial fraction expansion until the denominator is too large
-       */
-      for(int32_t i = 0; i < MAX_EXPANSION_ITERATIONS; i++) {
-        realToIntegralValue(&z, &t, DEC_ROUND_DOWN, &ctxtReal39);     // t = trunc(z)
-        realSubtract(&z, &t, &s, &ctxtReal39);                        // s = z - t
+    fraction(REGISTER_Y, &sign, &intPart, &numer, &denom, &lessEqualGreater);
 
-        if(realIsZero(&s))                                            // s == 0
-          break;
+    denMax = savedDenMax;
+    systemFlags = savedSystemFlags;
 
-        realDivide(const_1, &s, &z, &ctxtReal39);                     // z = 1/s
-        realToIntegralValue(&z, &s, DEC_ROUND_DOWN, &ctxtReal39);     // s = trunc(z)
-        realMultiply(&s, &d, &t, &ctxtReal39);                        // t = s * d
-        realAdd(&t, &dOld, &s, &ctxtReal39);                          // s = t + dOld (s is new denominator estimate)
+    longIntegerInit(lgInt);
 
-        if(realCompareLessThan(&maxD, &s))                            // maxD < s
-          break;
-
-        realCopy(&d, &dOld);                                          // dOld = d
-        realCopy(&s, &d);                                             // d = s
-      }
+    uIntToLongInteger(numer, lgInt);
+    if(sign == -1) {
+      longIntegerSetNegativeSign(lgInt);
     }
-    else
-      realCopy(&maxD, &d);                                            // d = maxD
+    convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Y);
 
-    realMultiply(&x, &d, &t, &ctxtReal39);                            // t = x * d
-    realToIntegralValue(&t, &n, DEC_ROUND_HALF_UP, &ctxtReal39);      // n = round(t)
+    uIntToLongInteger(denom, lgInt);
+    convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_X);
 
-    if(denominatorMode == DM_FAC) {
-      if(realIsZero(&n)) {                                            // n == 0
-        realCopy(const_1, &d);                                        // d = 1
-      }
-      else {
-        gcdReal(&n, &d, &t, &ctxtReal39);                             // t = gcd(n, d)
-        realDivide(&n, &t, &n, &ctxtReal39);                          // n = n/t
-        realDivide(&d, &t, &d, &ctxtReal39);                          // d = d/t
-      }
-
-    }
-
-    convertRealToLongIntegerRegister(&n, REGISTER_Y, DEC_ROUND_DOWN); // register y = n
-    convertRealToLongIntegerRegister(&d, REGISTER_X, DEC_ROUND_DOWN); // register x = d
+    longIntegerFree(lgInt);
   }
+
+  refreshStack();
 }

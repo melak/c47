@@ -19,6 +19,8 @@
  ***********************************************/
 
 #define MY_ALPHA_MENU    0  // This is the index of the MyAlpha softmenu in the softmenu[] array
+#define TAMFLAG_MENU     1  // This is the index of the TAMFLAG softmenu in the softmenu[] array
+#define SYSFL_MENU       2  // This is the index of the SYSFL   softmenu in the softmenu[] array
 #define SOFTMENU_HEIGHT 23
 
 /********************************************//**

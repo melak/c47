@@ -5,20 +5,20 @@
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
-In: FD=0 FI=0 SD=0 RM=0 IM=2compl SS=4 WS=64
+In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
 Func: fnNeighb
 
 ;=================================================
 ; neighb(Long Integer, Long Integer) --> Long Integer
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=LonI:"3" RY=LonI:"2"
-Out: EC=0 FI=0 SL=1 RL=LonI:"3" RX=LonI:"2"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"3" RY=LonI:"2"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"3" RX=LonI:"2"
 
-In:  AM=DEG SL=0 FI=0 RX=LonI:"3" RY=LonI:"4"
-Out: EC=0 FI=0 SL=1 RL=LonI:"3" RX=LonI:"4"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"3" RY=LonI:"4"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"3" RX=LonI:"4"
 
-In:  AM=DEG SL=0 FI=0 RX=LonI:"3" RY=LonI:"3"
-Out: EC=0 FI=0 SL=1 RL=LonI:"3" RX=LonI:"3"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"3" RY=LonI:"3"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"3" RX=LonI:"3"
 
 
 
@@ -45,14 +45,14 @@ Out: EC=0 FI=0 SL=1 RL=LonI:"3" RX=LonI:"3"
 ;=================================================
 ; neighb(Long Integer, String) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=LonI:"2" RY=Stri:"gdfhgfdh"
-Out: EC=24 FI=0 SL=0 RX=LonI:"2" RY=Stri:"gdfhgfdh"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"2" RY=Stri:"gdfhgfdh"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=LonI:"2" RY=Stri:"gdfhgfdh"
 
 ;=================================================
 ; neighb(String, Long Integer) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Stri:"gdfhgfdh" RY=LonI:"2"
-Out: EC=24 FI=0 SL=0 RX=Stri:"gdfhgfdh" RY=LonI:"2"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Stri:"gdfhgfdh" RY=LonI:"2"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Stri:"gdfhgfdh" RY=LonI:"2"
 
 
 
@@ -79,63 +79,63 @@ Out: EC=24 FI=0 SL=0 RX=Stri:"gdfhgfdh" RY=LonI:"2"
 ;=================================================
 ; neighb(Long Integer, Short Integer) --> Long Integer
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=LonI:"3" RY=ShoI:"2#10"
-Out: EC=0 FI=0 SL=1 RL=LonI:"3" RX=LonI:"2"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"3" RY=ShoI:"2#10"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"3" RX=LonI:"2"
 
-In:  AM=DEG SL=0 FI=0 RX=LonI:"3" RY=ShoI:"4#8"
-Out: EC=0 FI=0 SL=1 RL=LonI:"3" RX=LonI:"4"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"3" RY=ShoI:"4#8"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"3" RX=LonI:"4"
 
-In:  AM=DEG SL=0 FI=0 RX=LonI:"3" RY=ShoI:"3#7"
-Out: EC=0 FI=0 SL=1 RL=LonI:"3" RX=LonI:"3"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"3" RY=ShoI:"3#7"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"3" RX=LonI:"3"
 
 ;=================================================
 ; neighb(Short Integer, Long Integer) --> Short Integer
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=ShoI:"2#10" RY=LonI:"3"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"2#10" RX=ShoI:"3#10"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"2#10" RY=LonI:"3"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"2#10" RX=ShoI:"3#10"
 
-In:  AM=DEG SL=0 FI=0 RX=ShoI:"4#8" RY=LonI:"3"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"4#8" RX=ShoI:"3#8"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"4#8" RY=LonI:"3"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"4#8" RX=ShoI:"3#8"
 
-In:  AM=DEG SL=0 FI=0 RX=ShoI:"3#7" RY=LonI:"3"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"3#7" RX=ShoI:"3#7"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"3#7" RY=LonI:"3"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"3#7" RX=ShoI:"3#7"
 
 
 
 ;=================================================
 ; neighb(Long Integer, Real34) --> Long Integer
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=LonI:"2" RY=Real:"3"
-Out: EC=0 FI=0 SL=1 RL=LonI:"2" RX=LonI:"3"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"2" RY=Real:"3"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"2" RX=LonI:"3"
 
-In:  AM=DEG SL=0 FI=0 RX=LonI:"2" RY=Real:"3":DEG
-Out: EC=0 FI=0 SL=1 RL=LonI:"2" RX=LonI:"3"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"2" RY=Real:"3":DEG
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"2" RX=LonI:"3"
 
 ;=================================================
 ; neighb(Real34, Long Integer) --> Real34
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Real:"3" RY=LonI:"2"
-Out: EC=0 FI=0 SL=1 RL=Real:"3" RX=Real:"2.999999999999999999999999999999999"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=LonI:"2"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"2.999999999999999999999999999999999"
 
-In:  AM=DEG SL=0 FI=0 RX=Real:"3" RY=LonI:"4"
-Out: EC=0 FI=0 SL=1 RL=Real:"3" RX=Real:"3.000000000000000000000000000000001"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=LonI:"4"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"3.000000000000000000000000000000001"
 
-In:  AM=DEG SL=0 FI=0 RX=Real:"3" RY=LonI:"3"
-Out: EC=0 FI=0 SL=1 RL=Real:"3" RX=Real:"3"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=LonI:"3"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"3"
 
 
 
 ;=================================================
 ; neighb(Long Integer, Complex34) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=LonI:"2" RY=Cplx:"3 i 2"
-Out: EC=24 FI=0 SL=0 RX=LonI:"2" RY=Cplx:"3 i 2"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"2" RY=Cplx:"3 i 2"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=LonI:"2" RY=Cplx:"3 i 2"
 
 ;=================================================
 ; neighb(Complex34, Long Integer) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Cplx:"3 i 2" RY=LonI:"2"
-Out: EC=24 FI=0 SL=0 RX=Cplx:"3 i 2" RY=LonI:"2"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=LonI:"2"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=LonI:"2"
 
 
 
@@ -284,8 +284,8 @@ Out: EC=24 FI=0 SL=0 RX=Cplx:"3 i 2" RY=LonI:"2"
 ;=================================================
 ; neighb(String, String) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Stri:"3 +*/i 2" RY=Stri:"gfhjjy i 2juytjuy"
-Out: EC=24 FI=0 SL=0 RX=Stri:"3 +*/i 2" RY=Stri:"gfhjjy i 2juytjuy"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Stri:"3 +*/i 2" RY=Stri:"gfhjjy i 2juytjuy"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Stri:"3 +*/i 2" RY=Stri:"gfhjjy i 2juytjuy"
 
 
 
@@ -312,42 +312,42 @@ Out: EC=24 FI=0 SL=0 RX=Stri:"3 +*/i 2" RY=Stri:"gfhjjy i 2juytjuy"
 ;=================================================
 ; neighb(String, Short Integer) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Stri:"gdfhgfdh" RY=ShoI:"2#5"
-Out: EC=24 FI=0 SL=0 RX=Stri:"gdfhgfdh" RY=ShoI:"2#5"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Stri:"gdfhgfdh" RY=ShoI:"2#5"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Stri:"gdfhgfdh" RY=ShoI:"2#5"
 
 ;=================================================
 ; neighb(Short Integer, String) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=ShoI:"2#13" RY=Stri:"gdfhgfdh"
-Out: EC=24 FI=0 SL=0 RX=ShoI:"2#13" RY=Stri:"gdfhgfdh"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"2#13" RY=Stri:"gdfhgfdh"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"2#13" RY=Stri:"gdfhgfdh"
 
 
 
 ;=================================================
 ; neighb(String, Real34) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Stri:"gdfhgfdh" RY=Real:"2"
-Out: EC=24 FI=0 SL=0 RX=Stri:"gdfhgfdh" RY=Real:"2"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Stri:"gdfhgfdh" RY=Real:"2"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Stri:"gdfhgfdh" RY=Real:"2"
 
 ;=================================================
 ; neighb(Real34, String) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Real:"2" RY=Stri:"gdfhgfdh"
-Out: EC=24 FI=0 SL=0 RX=Real:"2" RY=Stri:"gdfhgfdh"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"2" RY=Stri:"gdfhgfdh"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"2" RY=Stri:"gdfhgfdh"
 
 
 
 ;=================================================
 ; neighb(String, Complex34) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Stri:"3g jiku 2" RY=Cplx:"3 i 2"
-Out: EC=24 FI=0 SL=0 RX=Stri:"3g jiku 2" RY=Cplx:"3 i 2"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Stri:"3g jiku 2" RY=Cplx:"3 i 2"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Stri:"3g jiku 2" RY=Cplx:"3 i 2"
 
 ;=================================================
 ; neighb(Complex34, String) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Cplx:"3 i 2" RY=Stri:"gfhjjy i 2juytjuy"
-Out: EC=24 FI=0 SL=0 RX=Cplx:"3 i 2" RY=Stri:"gfhjjy i 2juytjuy"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=Stri:"gfhjjy i 2juytjuy"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=Stri:"gfhjjy i 2juytjuy"
 
 
 
@@ -436,87 +436,87 @@ Out: EC=24 FI=0 SL=0 RX=Cplx:"3 i 2" RY=Stri:"gfhjjy i 2juytjuy"
 ;=================================================
 ; neighb(Short Integer, Short Integer) --> Short Integer
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=ShoI:"3#5" RY=ShoI:"2#11"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"3#5" RX=ShoI:"2#5"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"3#5" RY=ShoI:"2#11"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"3#5" RX=ShoI:"2#5"
 
-In:  AM=DEG SL=0 FI=0 RX=ShoI:"3#6" RY=ShoI:"4#12"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"3#6" RX=ShoI:"4#6"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"3#6" RY=ShoI:"4#12"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"3#6" RX=ShoI:"4#6"
 
-In:  AM=DEG SL=0 FI=0 RX=ShoI:"3#7" RY=ShoI:"3#13"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"3#7" RX=ShoI:"3#7"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"3#7" RY=ShoI:"3#13"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"3#7" RX=ShoI:"3#7"
 
 
 
 ;=================================================
 ; neighb(Short Integer, Real34) --> Short Integer
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=ShoI:"2#7" RY=Real:"3"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"2#7" RX=ShoI:"3#7"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"2#7" RY=Real:"3"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"2#7" RX=ShoI:"3#7"
 
-In:  AM=DEG SL=0 FI=0 RX=ShoI:"2#11" RY=Real:"3":DEG
-Out: EC=0 FI=0 SL=1 RL=ShoI:"2#11" RX=ShoI:"3#11"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"2#11" RY=Real:"3":DEG
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"2#11" RX=ShoI:"3#11"
 
 ;=================================================
 ; neighb(Real34, Short Integer) --> Real34
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Real:"3" RY=ShoI:"2#3"
-Out: EC=0 FI=0 SL=1 RL=Real:"3" RX=Real:"2.999999999999999999999999999999999"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=ShoI:"2#3"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"2.999999999999999999999999999999999"
 
-In:  AM=DEG SL=0 FI=0 RX=Real:"3" RY=ShoI:"4#5"
-Out: EC=0 FI=0 SL=1 RL=Real:"3" RX=Real:"3.000000000000000000000000000000001"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=ShoI:"4#5"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"3.000000000000000000000000000000001"
 
-In:  AM=DEG SL=0 FI=0 RX=Real:"3" RY=ShoI:"3#6"
-Out: EC=0 FI=0 SL=1 RL=Real:"3" RX=Real:"3"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=ShoI:"3#6"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"3"
 
 
 
 ;=================================================
 ; neighb(Short Integer, Complex34) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=ShoI:"2#5" RY=Cplx:"3 i 2"
-Out: EC=24 FI=0 SL=0 RX=ShoI:"2#5" RY=Cplx:"3 i 2"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"2#5" RY=Cplx:"3 i 2"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"2#5" RY=Cplx:"3 i 2"
 
 ;=================================================
 ; neighb(Complex34, Short Integer) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Cplx:"3 i 2" RY=ShoI:"2#13"
-Out: EC=24 FI=0 SL=0 RX=Cplx:"3 i 2" RY=ShoI:"2#13"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=ShoI:"2#13"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=ShoI:"2#13"
 
 
 
 ;=================================================
 ; neighb(Real34, Real34) --> Real34
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Real:"3" RY=Real:"2"
-Out: EC=0 FI=0 SL=1 RL=Real:"3" RX=Real:"2.999999999999999999999999999999999"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=Real:"2"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"2.999999999999999999999999999999999"
 
-In:  AM=DEG SL=0 FI=0 RX=Real:"3":DEG RY=Real:"2"
-Out: EC=0 FI=0 SL=1 RL=Real:"3":DEG RX=Real:"2.999999999999999999999999999999999":DEG
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3":DEG RY=Real:"2"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3":DEG RX=Real:"2.999999999999999999999999999999999":DEG
 
-In:  AM=DEG SL=0 FI=0 RX=Real:"3" RY=Real:"2":DEG
-Out: EC=0 FI=0 SL=1 RL=Real:"3" RX=Real:"2.999999999999999999999999999999999"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=Real:"2":DEG
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"2.999999999999999999999999999999999"
 
-In:  AM=DEG SL=0 FI=0 RX=Real:"3":DEG RY=Real:"2":GRAD
-Out: EC=0 FI=0 SL=1 RL=Real:"3":DEG RX=Real:"2.999999999999999999999999999999999":DEG
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3":DEG RY=Real:"2":GRAD
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3":DEG RX=Real:"2.999999999999999999999999999999999":DEG
 
 
 
 ;=================================================
 ; neighb(Real34, Complex34) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Real:"2" RY=Cplx:"3 i 2"
-Out: EC=24 FI=0 SL=0 RX=Real:"2" RY=Cplx:"3 i 2"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"2" RY=Cplx:"3 i 2"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"2" RY=Cplx:"3 i 2"
 
 ;=================================================
 ; neighb(Complex34, Real34) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Cplx:"3 i 2" RY=Real:"2"
-Out: EC=24 FI=0 SL=0 RX=Cplx:"3 i 2" RY=Real:"2"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=Real:"2"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=Real:"2"
 
 
 
 ;=================================================
 ; neighb(Complex34, Complex34) --> Error24
 ;=================================================
-In:  AM=DEG SL=0 FI=0 RX=Cplx:"3 i 2" RY=Cplx:"3 i 2"
-Out: EC=24 FI=0 SL=0 RX=Cplx:"3 i 2" RY=Cplx:"3 i 2"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=Cplx:"3 i 2"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=Cplx:"3 i 2"

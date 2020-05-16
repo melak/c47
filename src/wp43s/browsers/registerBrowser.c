@@ -40,6 +40,7 @@ void registerBrowser(uint16_t unusedParamButMandatory) {
 
     previousCalcMode = calcMode;
     calcMode = CM_REGISTER_BROWSER;
+    clearSystemFlag(FLAG_ALPHA);
   }
 
   if(currentRegisterBrowserScreen == 9999) { // Init

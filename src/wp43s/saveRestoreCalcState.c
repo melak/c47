@@ -21,7 +21,7 @@
 #include "wp43s.h"
 
 #ifdef PC_BUILD
-#define BACKUP_VERSION 32  // 32 = Many memory management changes
+#define BACKUP_VERSION 33  // 33 = System flags
 
 void saveCalc(void) {
   size_t size;
@@ -96,40 +96,28 @@ void saveCalc(void) {
   size += fwrite(&displayFormat,                      1, sizeof(displayFormat),                      backup); //printf("%8lu displayFormat\n",                      (unsigned long)size);
   size += fwrite(&displayFormatDigits,                1, sizeof(displayFormatDigits),                backup); //printf("%8lu displayFormatDigits\n",                (unsigned long)size);
   size += fwrite(&shortIntegerWordSize,               1, sizeof(shortIntegerWordSize),               backup); //printf("%8lu shortIntegerWordSize\n",               (unsigned long)size);
-  size += fwrite(&denominatorMode,                    1, sizeof(denominatorMode),                    backup); //printf("%8lu denominatorMode\n",                    (unsigned long)size);
   size += fwrite(&significantDigits,                  1, sizeof(significantDigits),                  backup); //printf("%8lu significantDigits\n",                  (unsigned long)size);
   size += fwrite(&shortIntegerMode,                   1, sizeof(shortIntegerMode),                   backup); //printf("%8lu shortIntegerMode\n",                   (unsigned long)size);
   size += fwrite(&currentAngularMode,                 1, sizeof(currentAngularMode),                 backup); //printf("%8lu currentAngularMode\n",                 (unsigned long)size);
   size += fwrite(&groupingGap,                        1, sizeof(groupingGap),                        backup); //printf("%8lu groupingGap\n",                        (unsigned long)size);
-  size += fwrite(&dateFormat,                         1, sizeof(dateFormat),                         backup); //printf("%8lu dateFormat\n",                         (unsigned long)size);
   size += fwrite(&curveFitting,                       1, sizeof(curveFitting),                       backup); //printf("%8lu curveFitting\n",                       (unsigned long)size);
   size += fwrite(&roundingMode,                       1, sizeof(roundingMode),                       backup); //printf("%8lu roundingMode\n",                       (unsigned long)size);
   size += fwrite(&calcMode,                           1, sizeof(calcMode),                           backup); //printf("%8lu calcMode\n",                           (unsigned long)size);
   size += fwrite(&nextChar,                           1, sizeof(nextChar),                           backup); //printf("%8lu nextChar\n",                           (unsigned long)size);
-  size += fwrite(&complexUnit,                        1, sizeof(complexUnit),                        backup); //printf("%8lu complexUnit\n",                        (unsigned long)size);
-  size += fwrite(&displayLeadingZeros,                1, sizeof(displayLeadingZeros),                backup); //printf("%8lu displayLeadingZeros\n",                (unsigned long)size);
   size += fwrite(&productSign,                        1, sizeof(productSign),                        backup); //printf("%8lu productSign\n",                        (unsigned long)size);
-  size += fwrite(&fractionType,                       1, sizeof(fractionType),                       backup); //printf("%8lu fractionType\n",                       (unsigned long)size);
-  size += fwrite(&radixMark,                          1, sizeof(radixMark),                          backup); //printf("%8lu radixMark\n",                          (unsigned long)size);
   size += fwrite(&displayModeOverride,                1, sizeof(displayModeOverride),                backup); //printf("%8lu displayModeOverride\n",                (unsigned long)size);
-  size += fwrite(&stackSize,                          1, sizeof(stackSize),                          backup); //printf("%8lu stackSize\n",                          (unsigned long)size);
-  size += fwrite(&complexMode,                        1, sizeof(complexMode),                        backup); //printf("%8lu complexMode\n",                        (unsigned long)size);
   size += fwrite(&alphaCase,                          1, sizeof(alphaCase),                          backup); //printf("%8lu alphaCase\n",                          (unsigned long)size);
   size += fwrite(&hourGlassIconEnabled,               1, sizeof(hourGlassIconEnabled),               backup); //printf("%8lu hourGlassIconEnabled\n",               (unsigned long)size);
   size += fwrite(&watchIconEnabled,                   1, sizeof(watchIconEnabled),                   backup); //printf("%8lu watchIconEnabled\n",                   (unsigned long)size);
-  size += fwrite(&userModeEnabled,                    1, sizeof(userModeEnabled),                    backup); //printf("%8lu userModeEnabled\n",                    (unsigned long)size);
   size += fwrite(&serialIOIconEnabled,                1, sizeof(serialIOIconEnabled),                backup); //printf("%8lu serialIOIconEnabled\n",                (unsigned long)size);
   size += fwrite(&printerIconEnabled,                 1, sizeof(printerIconEnabled),                 backup); //printf("%8lu printerIconEnabled\n",                 (unsigned long)size);
-  size += fwrite(&batteryIconEnabled,                 1, sizeof(batteryIconEnabled),                 backup); //printf("%8lu batteryIconEnabled\n",                 (unsigned long)size);
   size += fwrite(&cursorEnabled,                      1, sizeof(cursorEnabled),                      backup); //printf("%8lu cursorEnabled\n",                      (unsigned long)size);
   size += fwrite(&cursorFont,                         1, sizeof(cursorFont),                         backup); //printf("%8lu cursorFont\n",                         (unsigned long)size);
-  size += fwrite(&stackLiftEnabled,                   1, sizeof(stackLiftEnabled),                   backup); //printf("%8lu stackLiftEnabled\n",                   (unsigned long)size);
   size += fwrite(&savedStackLiftEnabled,              1, sizeof(savedStackLiftEnabled),              backup); //printf("%8lu savedStackLiftEnabled\n",              (unsigned long)size);
   size += fwrite(&rbr1stDigit,                        1, sizeof(rbr1stDigit),                        backup); //printf("%8lu rbr1stDigit\n",                        (unsigned long)size);
   size += fwrite(&shiftF,                             1, sizeof(shiftF),                             backup); //printf("%8lu shiftF\n",                             (unsigned long)size);
   size += fwrite(&shiftG,                             1, sizeof(shiftG),                             backup); //printf("%8lu shiftG\n",                             (unsigned long)size);
   size += fwrite(&shiftStateChanged,                  1, sizeof(shiftStateChanged),                  backup); //printf("%8lu shiftStateChanged\n",                  (unsigned long)size);
-  size += fwrite(&timeFormat,                         1, sizeof(timeFormat),                         backup); //printf("%8lu timeFormat\n",                         (unsigned long)size);
   size += fwrite(&tamMode,                            1, sizeof(tamMode),                            backup); //printf("%8lu tamMode\n",                            (unsigned long)size);
   size += fwrite(&rbrMode,                            1, sizeof(rbrMode),                            backup); //printf("%8lu rbrMode\n",                            (unsigned long)size);
   size += fwrite(&showContent,                        1, sizeof(showContent),                        backup); //printf("%8lu showContent\n",                        (unsigned long)size);
@@ -163,11 +151,13 @@ void saveCalc(void) {
   size += fwrite(&lastFcnsMenuPos,                    1, sizeof(lastFcnsMenuPos),                    backup); //printf("%8lu lastFcnsMenuPos\n",                    (unsigned long)size);
   size += fwrite(&lastMenuMenuPos,                    1, sizeof(lastMenuMenuPos),                    backup); //printf("%8lu lastMenuMenuPos\n",                    (unsigned long)size);
   size += fwrite(&lastCnstMenuPos,                    1, sizeof(lastCnstMenuPos),                    backup); //printf("%8lu lastCnstMenuPos\n",                    (unsigned long)size);
+  size += fwrite(&lastSyFlMenuPos,                    1, sizeof(lastSyFlMenuPos),                    backup); //printf("%8lu lastSyFlMenuPos\n",                    (unsigned long)size);
   size += fwrite(&lgCatalogSelection,                 1, sizeof(lgCatalogSelection),                 backup); //printf("%8lu lgCatalogSelection\n",                 (unsigned long)size);
   size += fwrite(displayValueX,                       1, sizeof(displayValueX),                      backup); //printf("%8lu displayValueX\n",                      (unsigned long)size);
   size += fwrite(&pcg32_global,                       1, sizeof(pcg32_global),                       backup); //printf("%8lu pcg32_global\n",                       (unsigned long)size);
   size += fwrite(&exponentLimit,                      1, sizeof(exponentLimit),                      backup); //printf("%8lu exponentLimit\n",                      (unsigned long)size);
   size += fwrite(&keyActionProcessed,                 1, sizeof(keyActionProcessed),                 backup); //printf("%8lu keyActionProcessed\n",                 (unsigned long)size);
+  size += fwrite(&systemFlags,                        1, sizeof(systemFlags),                        backup); //printf("%8lu systemFlags\n",                        (unsigned long)size);
 
   printf("%" FMT32U " bytes saved\n", (uint32_t)size);
 
@@ -256,40 +246,28 @@ void restoreCalc(void) {
     size += fread(&displayFormat,                      1, sizeof(displayFormat),                      backup); //printf("%8lu displayFormat\n",                      (unsigned long)size);
     size += fread(&displayFormatDigits,                1, sizeof(displayFormatDigits),                backup); //printf("%8lu displayFormatDigits\n",                (unsigned long)size);
     size += fread(&shortIntegerWordSize,               1, sizeof(shortIntegerWordSize),               backup); //printf("%8lu shortIntegerWordSize\n",               (unsigned long)size);
-    size += fread(&denominatorMode,                    1, sizeof(denominatorMode),                    backup); //printf("%8lu denominatorMode\n",                    (unsigned long)size);
     size += fread(&significantDigits,                  1, sizeof(significantDigits),                  backup); //printf("%8lu significantDigits\n",                  (unsigned long)size);
     size += fread(&shortIntegerMode,                   1, sizeof(shortIntegerMode),                   backup); //printf("%8lu shortIntegerMode\n",                   (unsigned long)size);
     size += fread(&currentAngularMode,                 1, sizeof(currentAngularMode),                 backup); //printf("%8lu currentAngularMode\n",                 (unsigned long)size);
     size += fread(&groupingGap,                        1, sizeof(groupingGap),                        backup); //printf("%8lu groupingGap\n",                        (unsigned long)size);
-    size += fread(&dateFormat,                         1, sizeof(dateFormat),                         backup); //printf("%8lu dateFormat\n",                         (unsigned long)size);
     size += fread(&curveFitting,                       1, sizeof(curveFitting),                       backup); //printf("%8lu curveFitting\n",                       (unsigned long)size);
     size += fread(&roundingMode,                       1, sizeof(roundingMode),                       backup); //printf("%8lu roundingMode\n",                       (unsigned long)size);
     size += fread(&calcMode,                           1, sizeof(calcMode),                           backup); //printf("%8lu calcMode\n",                           (unsigned long)size);
     size += fread(&nextChar,                           1, sizeof(nextChar),                           backup); //printf("%8lu nextChar\n",                           (unsigned long)size);
-    size += fread(&complexUnit,                        1, sizeof(complexUnit),                        backup); //printf("%8lu complexUnit\n",                        (unsigned long)size);
-    size += fread(&displayLeadingZeros,                1, sizeof(displayLeadingZeros),                backup); //printf("%8lu displayLeadingZeros\n",                (unsigned long)size);
     size += fread(&productSign,                        1, sizeof(productSign),                        backup); //printf("%8lu productSign\n",                        (unsigned long)size);
-    size += fread(&fractionType,                       1, sizeof(fractionType),                       backup); //printf("%8lu fractionType\n",                       (unsigned long)size);
-    size += fread(&radixMark,                          1, sizeof(radixMark),                          backup); //printf("%8lu radixMark\n",                          (unsigned long)size);
     size += fread(&displayModeOverride,                1, sizeof(displayModeOverride),                backup); //printf("%8lu displayModeOverride\n",                (unsigned long)size);
-    size += fread(&stackSize,                          1, sizeof(stackSize),                          backup); //printf("%8lu stackSize\n",                          (unsigned long)size);
-    size += fread(&complexMode,                        1, sizeof(complexMode),                        backup); //printf("%8lu complexMode\n",                        (unsigned long)size);
     size += fread(&alphaCase,                          1, sizeof(alphaCase),                          backup); //printf("%8lu alphaCase\n",                          (unsigned long)size);
     size += fread(&hourGlassIconEnabled,               1, sizeof(hourGlassIconEnabled),               backup); //printf("%8lu hourGlassIconEnabled\n",               (unsigned long)size);
     size += fread(&watchIconEnabled,                   1, sizeof(watchIconEnabled),                   backup); //printf("%8lu watchIconEnabled\n",                   (unsigned long)size);
-    size += fread(&userModeEnabled,                    1, sizeof(userModeEnabled),                    backup); //printf("%8lu userModeEnabled\n",                    (unsigned long)size);
     size += fread(&serialIOIconEnabled,                1, sizeof(serialIOIconEnabled),                backup); //printf("%8lu serialIOIconEnabled\n",                (unsigned long)size);
     size += fread(&printerIconEnabled,                 1, sizeof(printerIconEnabled),                 backup); //printf("%8lu printerIconEnabled\n",                 (unsigned long)size);
-    size += fread(&batteryIconEnabled,                 1, sizeof(batteryIconEnabled),                 backup); //printf("%8lu batteryIconEnabled\n",                 (unsigned long)size);
     size += fread(&cursorEnabled,                      1, sizeof(cursorEnabled),                      backup); //printf("%8lu cursorEnabled\n",                      (unsigned long)size);
     size += fread(&cursorFont,                         1, sizeof(cursorFont),                         backup); //printf("%8lu cursorFont\n",                         (unsigned long)size);
-    size += fread(&stackLiftEnabled,                   1, sizeof(stackLiftEnabled),                   backup); //printf("%8lu stackLiftEnabled\n",                   (unsigned long)size);
     size += fread(&savedStackLiftEnabled,              1, sizeof(savedStackLiftEnabled),              backup); //printf("%8lu savedStackLiftEnabled\n",              (unsigned long)size);
     size += fread(&rbr1stDigit,                        1, sizeof(rbr1stDigit),                        backup); //printf("%8lu rbr1stDigit\n",                        (unsigned long)size);
     size += fread(&shiftF,                             1, sizeof(shiftF),                             backup); //printf("%8lu shiftF\n",                             (unsigned long)size);
     size += fread(&shiftG,                             1, sizeof(shiftG),                             backup); //printf("%8lu shiftG\n",                             (unsigned long)size);
     size += fread(&shiftStateChanged,                  1, sizeof(shiftStateChanged),                  backup); //printf("%8lu shiftStateChanged\n",                  (unsigned long)size);
-    size += fread(&timeFormat,                         1, sizeof(timeFormat),                         backup); //printf("%8lu timeFormat\n",                         (unsigned long)size);
     size += fread(&tamMode,                            1, sizeof(tamMode),                            backup); //printf("%8lu tamMode\n",                            (unsigned long)size);
     size += fread(&rbrMode,                            1, sizeof(rbrMode),                            backup); //printf("%8lu rbrMode\n",                            (unsigned long)size);
     size += fread(&showContent,                        1, sizeof(showContent),                        backup); //printf("%8lu showContent\n",                        (unsigned long)size);
@@ -334,11 +312,13 @@ void restoreCalc(void) {
     size += fread(&lastFcnsMenuPos,                    1, sizeof(lastFcnsMenuPos),                    backup); //printf("%8lu lastFcnsMenuPos\n",                    (unsigned long)size);
     size += fread(&lastMenuMenuPos,                    1, sizeof(lastMenuMenuPos),                    backup); //printf("%8lu lastMenuMenuPos\n",                    (unsigned long)size);
     size += fread(&lastCnstMenuPos,                    1, sizeof(lastCnstMenuPos),                    backup); //printf("%8lu lastCnstMenuPos\n",                    (unsigned long)size);
+    size += fread(&lastSyFlMenuPos,                    1, sizeof(lastSyFlMenuPos),                    backup); //printf("%8lu lastSyFlMenuPos\n",                    (unsigned long)size);
     size += fread(&lgCatalogSelection,                 1, sizeof(lgCatalogSelection),                 backup); //printf("%8lu lgCatalogSelection\n",                 (unsigned long)size);
     size += fread(displayValueX,                       1, sizeof(displayValueX),                      backup); //printf("%8lu displayValueX\n",                      (unsigned long)size);
     size += fread(&pcg32_global,                       1, sizeof(pcg32_global),                       backup); //printf("%8lu pcg32_global\n",                       (unsigned long)size);
     size += fread(&exponentLimit,                      1, sizeof(exponentLimit),                      backup); //printf("%8lu exponentLimit\n",                      (unsigned long)size);
     size += fread(&keyActionProcessed,                 1, sizeof(keyActionProcessed),                 backup); //printf("%8lu keyActionProcessed\n",                 (unsigned long)size);
+    size += fread(&systemFlags,                        1, sizeof(systemFlags),                        backup); //printf("%8lu systemFlags\n",                        (unsigned long)size);
 
     printf("%" FMT32U " bytes restored\n", (uint32_t)size);
 
@@ -356,6 +336,7 @@ void restoreCalc(void) {
     else if(calcMode == CM_TAM)              calcModeTamGui();
     else if(calcMode == CM_NIM)              calcModeNormalGui();
     else if(calcMode == CM_ASM)              calcModeAsm();
+    else if(calcMode == CM_ASM_OVER_TAM)    {calcModeAsm(); calcMode = CM_ASM_OVER_TAM; clearSystemFlag(FLAG_ALPHA);}
     else if(calcMode == CM_REGISTER_BROWSER) calcModeNormalGui();
     else if(calcMode == CM_FLAG_BROWSER)     calcModeNormalGui();
     else if(calcMode == CM_FONT_BROWSER)     calcModeNormalGui();
@@ -367,7 +348,7 @@ void restoreCalc(void) {
     getTimeString(dateTimeString);
     oldTime[0] = 0;
 
-    if(stackLiftEnabled) {
+    if(getSystemFlag(FLAG_ASLIFT)) {
       STACK_LIFT_ENABLE;
     }
     else {

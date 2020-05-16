@@ -195,6 +195,39 @@ int main(int argc, char* argv[]) {
 
   fprintf(catalog, "\n};\n");
 
+
+/*****************/
+/* Catalog SYSFL */
+/*****************/
+  printf("Generating catalog SYSFL\n");
+  fprintf(catalog, "\n\nconst int16_t menu_SYSFL[] = {\n");
+
+  numberOfItems = 0;
+  for(item=1; item<LAST_ITEM; item++) {
+    if(indexOfItems[item].catalog == CAT_SYFL) {
+      itemList[numberOfItems++] = item;
+      if(numberOfItems == MAX_NUMBER_OF_ITEMS) {
+        printf("Array itemList is too small: increase the value of MAX_NUMBER_OF_ITEMS\n");
+        exit(-1);
+      }
+    }
+  }
+
+  qsort(itemList, numberOfItems, sizeof(*itemList), sortItems);
+
+  for(item=0; item<numberOfItems; item++) {
+    fprintf(catalog, "%5d,", itemList[item]);
+    if((item + 1) % 6 == 0) {
+      fprintf(catalog, "\n");
+    }
+  }
+
+  //while(numberOfItems++ % 6 != 0) {
+  //  fprintf(catalog, "%5d,", 0);
+  //}
+
+  fprintf(catalog, "\n};\n");
+
   fclose(catalog);
 
   return 0;

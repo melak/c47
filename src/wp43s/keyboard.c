@@ -40,7 +40,7 @@ void showShiftState(void) {
       else {
         refreshRegisterLine(REGISTER_T);
 
-        if(TAM_REGISTER_LINE == REGISTER_T && (calcMode == CM_TAM || calcMode == CM_ASM)) {
+        if(TAM_REGISTER_LINE == REGISTER_T && (calcMode == CM_TAM || calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM)) {
           showString(tamBuffer, &standardFont, 25, Y_POSITION_OF_TAM_LINE + 6, vmNormal, true, true);
         }
       }
@@ -104,7 +104,7 @@ int16_t determineFunctionKeyItem(const char *data) {
       }
 
       if(item == CHR_PROD_SIGN) {
-        item = (productSign == PS_CROSS ? CHR_DOT : CHR_CROSS);
+        item = (getSystemFlag(FLAG_MULTx) ? CHR_DOT : CHR_CROSS);
       }
     }
   }
@@ -200,9 +200,16 @@ void btnFnReleased(void *notUsed, void *data) {
         if(calcMode == CM_ASM) {
           calcModeNormal();
         }
+        else if(calcMode == CM_ASM_OVER_TAM) {
+          indexOfItems[getOperation()].func(indexOfItems[item].param);
+          calcModeNormal();
+          return;
+        }
 
         if(item < 0) { // softmenu
-          showSoftmenu(NULL, item, true);
+          if(item != -MNU_SYSFL || calcMode != CM_TAM || transitionSystemState == 0) {
+            showSoftmenu(NULL, item, true);
+          }
         }
         else if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (CHR_0<=item && item<=CHR_F)) {
           addItemToNimBuffer(item);
@@ -236,7 +243,7 @@ int16_t determineItem(const char *data) {
   int16_t result;
   const calcKey_t *key;
 
-  key = userModeEnabled ? (kbd_usr + (*data - '0')*10 + *(data+1) - '0') : (kbd_std + (*data - '0')*10 + *(data+1) - '0');
+  key = getSystemFlag(FLAG_USER) ? (kbd_usr + (*data - '0')*10 + *(data+1) - '0') : (kbd_std + (*data - '0')*10 + *(data+1) - '0');
 
   allowScreenUpdate = true;
 
@@ -247,7 +254,7 @@ int16_t determineItem(const char *data) {
   }
 
   // Shift f pressed and shift g not active
-  if(key->primary == KEY_f && !shiftG && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_TAM || calcMode == CM_NIM || calcMode == CM_ASM)) {
+  if(key->primary == KEY_f && !shiftG && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_TAM || calcMode == CM_NIM || calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM)) {
     resetTemporaryInformation();
 
     if(lastErrorCode != 0) {
@@ -264,7 +271,7 @@ int16_t determineItem(const char *data) {
   }
 
   // Shift g pressed and shift f not active
-  else if(key->primary == KEY_g && !shiftF && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_TAM || calcMode == CM_NIM || calcMode == CM_ASM)) {
+  else if(key->primary == KEY_g && !shiftF && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_TAM || calcMode == CM_NIM || calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM)) {
     resetTemporaryInformation();
 
     if(lastErrorCode != 0) {
@@ -285,7 +292,7 @@ int16_t determineItem(const char *data) {
              shiftG ? key->gShifted :
                       key->primary;
   }
-  else if(calcMode == CM_AIM || calcMode == CM_ASM) {
+  else if(calcMode == CM_AIM || calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM) {
     result = shiftF ? key->fShiftedAim :
              shiftG ? key->gShiftedAim :
                       key->primaryAim;
@@ -300,7 +307,7 @@ int16_t determineItem(const char *data) {
   }
 
   if(result == CHR_PROD_SIGN) {
-    result = (productSign == PS_DOT ? CHR_DOT : CHR_CROSS);
+    result = (getSystemFlag(FLAG_MULTx) ? CHR_CROSS : CHR_DOT);
   }
 
   resetShiftState();
@@ -470,6 +477,7 @@ void processKeyAction(int16_t item) {
           break;
 
         case CM_ASM:
+        case CM_ASM_OVER_TAM:
           if(alphaCase==AC_LOWER && (CHR_A<=item && item<=CHR_Z)) {
             addItemToBuffer(item + 26);
             keyActionProcessed = true;
@@ -645,6 +653,7 @@ void fnKeyEnter(uint16_t unusedParamButMandatory) {
       break;
 
     case CM_ASM:
+    case CM_ASM_OVER_TAM:
     case CM_REGISTER_BROWSER:
     case CM_FLAG_BROWSER:
     case CM_FONT_BROWSER:
@@ -725,6 +734,13 @@ void fnKeyExit(uint16_t unusedParamButMandatory) {
       calcModeNormal();
       break;
 
+    case CM_ASM_OVER_TAM:
+      transitionSystemState = 0;
+      calcModeTam();
+      sprintf(tamBuffer, "%s __", indexOfItems[getOperation()].itemCatalogName);
+      tamTransitionSystem(TT_NOTHING);
+      break;
+
     case CM_REGISTER_BROWSER:
     case CM_FLAG_BROWSER:
     case CM_FONT_BROWSER:
@@ -801,6 +817,7 @@ void fnKeyCC(uint16_t unusedParamButMandatory) {
       break;
 
     case CM_ASM:
+    case CM_ASM_OVER_TAM:
       break;
 
     case CM_REGISTER_BROWSER:
@@ -864,6 +881,9 @@ void fnKeyBackspace(uint16_t unusedParamButMandatory) {
       addItemToBuffer(KEY_BACKSPACE);
       break;
 
+    case CM_ASM_OVER_TAM:
+      break;
+
     case CM_REGISTER_BROWSER:
     case CM_FLAG_BROWSER:
     case CM_FONT_BROWSER:
@@ -914,6 +934,7 @@ void fnKeyUp(uint16_t unusedParamButMandatory) {
     case CM_AIM:
     case CM_NIM:
     case CM_ASM:
+    case CM_ASM_OVER_TAM:
       resetAlphaSelectionBuffer();
       if(softmenuStackPointer > 0  && softmenuStack[softmenuStackPointer - 1].softmenu != MY_ALPHA_MENU) {
         int16_t sm = softmenu[softmenuStack[softmenuStackPointer - 1].softmenu].menuId;
@@ -1012,6 +1033,7 @@ void fnKeyDown(uint16_t unusedParamButMandatory) {
     case CM_AIM:
     case CM_NIM:
     case CM_ASM:
+    case CM_ASM_OVER_TAM:
       resetAlphaSelectionBuffer();
       if(softmenuStackPointer > 0  && softmenuStack[softmenuStackPointer - 1].softmenu != MY_ALPHA_MENU) {
         int16_t sm = softmenu[softmenuStack[softmenuStackPointer - 1].softmenu].menuId;
@@ -1106,8 +1128,8 @@ void fnKeyDotD(uint16_t unusedParamButMandatory) {
   #ifndef TESTSUITE_BUILD
   switch(calcMode) {
     case CM_NORMAL:
-      if(fractionType != FT_NONE) {
-        fractionType = FT_NONE;
+      if(getSystemFlag(FLAG_FRACT)) {
+        clearSystemFlag(FLAG_FRACT);
         refreshStack();
       }
       else {

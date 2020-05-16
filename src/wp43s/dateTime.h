@@ -18,8 +18,7 @@
  * \file dateTime.h
  ***********************************************/
 
-void fnTimeFormat (uint16_t timeFormat);
-void fnDateFormat (uint16_t dateFormat);
-void getDateString(char *dateString);
-void getTimeString(char *timeString);
-void _gettimeofday(void);
+void fnSetDateFormat(uint16_t dateFormat);
+void getDateString  (char *dateString);
+void getTimeString  (char *timeString);
+void _gettimeofday  (void);

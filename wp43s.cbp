@@ -305,6 +305,9 @@
 		<Unit filename="src/testSuite/debug.txt">
 			<Option target="testSuite" />
 		</Unit>
+		<Unit filename="src/testSuite/decomp.txt">
+			<Option target="testSuite" />
+		</Unit>
 		<Unit filename="src/testSuite/deltaPercent.txt">
 			<Option target="testSuite" />
 		</Unit>
@@ -519,6 +522,9 @@
 			<Option target="testSuite" />
 		</Unit>
 		<Unit filename="src/testSuite/power_time.txt">
+			<Option target="testSuite" />
+		</Unit>
+		<Unit filename="src/testSuite/pyx.txt">
 			<Option target="testSuite" />
 		</Unit>
 		<Unit filename="src/testSuite/reToCx.txt">

@@ -53,7 +53,8 @@ const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /* 29 */  "Item to be coded",
 /* 30 */  "Function to be coded for that data type",
 /* 31 */  "Input data types do not match",
-/* 32 */  "Bad input" // This error is not in the ReM and could theorically not happen
+/* 32 */  "This system flag is write protected",
+/* 33 */  "Bad input" // This error is not in the ReM and could theorically not happen
 };
 
 
@@ -165,6 +166,7 @@ void displayBugScreen(const char *msg) {
 
     previousCalcMode = calcMode;
     calcMode = CM_BUG_ON_SCREEN;
+    clearSystemFlag(FLAG_ALPHA);
     cursorEnabled = false;
     hideCursor();
 

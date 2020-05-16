@@ -125,7 +125,7 @@ void arctanCxma(void) {
 
 void arctanReal(void) {
   if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       if(real34IsPositive(REGISTER_REAL34_DATA(REGISTER_X))) {
         realToReal34(const_1on2, REGISTER_REAL34_DATA(REGISTER_X));
       }
