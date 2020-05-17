@@ -275,7 +275,7 @@ void setupDefaults(void) {
   systemFlags = 0;
   displayFormat = DF_ALL;
   displayFormatDigits = 0;
-  setSystemFlag(FLAG_TDM); // time format = 24H
+  setSystemFlag(FLAG_TDM24); // time format = 24H
   clearSystemFlag(FLAG_CPXj);
   fnAngularMode(AM_DEGREE);
   setSystemFlag(FLAG_DENANY);

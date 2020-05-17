@@ -38,7 +38,7 @@ void showDateTime(void) {
   getDateString(dateTimeString);
   x = showString(dateTimeString, &standardFont, X_DATE, 0, vmNormal, true, true);
 
-  x = showGlyph(getSystemFlag(FLAG_TDM) ? STD_SPACE_FIGURE : STD_SPACE_3_PER_EM, &standardFont, x, 0, vmNormal, true, true); // is 0+0+8 pixel wide
+  x = showGlyph(getSystemFlag(FLAG_TDM24) ? STD_SPACE_FIGURE : STD_SPACE_3_PER_EM, &standardFont, x, 0, vmNormal, true, true); // is 0+0+8 pixel wide
 
   getTimeString(dateTimeString);
   showString(dateTimeString, &standardFont, x, 0, vmNormal, true, false);

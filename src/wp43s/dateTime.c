@@ -61,7 +61,7 @@ void getDateString(char *dateString) {
     timeInfo = localtime(&rawTime);
 
     // For the format string : man strftime
-    if(!getSystemFlag(FLAG_TDM)) { // time format = 12H ==> 2 digit year
+    if(!getSystemFlag(FLAG_TDM24)) { // time format = 12H ==> 2 digit year
       if(getSystemFlag(FLAG_DMY)) {
         strftime(dateString, 11, "%d.%m.%y", timeInfo);
       }
@@ -96,7 +96,7 @@ void getDateString(char *dateString) {
     dt_t dateInfo;
 
     rtc_read(&timeInfo, &dateInfo);
-    if(!getSystemFlag(FLAG_TDM)) { // 2 digit year
+    if(!getSystemFlag(FLAG_TDM24)) { // 2 digit year
       if(getSystemFlag(FLAG_DMY)) {
         sprintf(dateString, "%02d.%02d.%02d", dateInfo.day, dateInfo.month, dateInfo.year % 100);
       }
@@ -144,7 +144,7 @@ void getTimeString(char *timeString) {
     timeInfo = localtime(&rawTime);
 
     // For the format string : man strftime
-    if(getSystemFlag(FLAG_TDM)) { // time format = 24H
+    if(getSystemFlag(FLAG_TDM24)) { // time format = 24H
       strftime(timeString, 8, "%H:%M", timeInfo); // %R don't work on Windows
     }
     else {
@@ -163,7 +163,7 @@ void getTimeString(char *timeString) {
     dt_t dateInfo;
 
     rtc_read(&timeInfo, &dateInfo);
-    if(!getSystemFlag(FLAG_TDM)) {
+    if(!getSystemFlag(FLAG_TDM24)) {
       sprintf(timeString, "%02d:%02d", (timeInfo.hour % 12) == 0 ? 12 : timeInfo.hour % 12, timeInfo.min);
       if(timeInfo.hour >= 12) {
         strcat(timeString, "pm");

@@ -32,7 +32,7 @@
 
 // Bit 15 (MSB) is always set for a system flag
 // If bit 14 is set the system flag is read only for the user
-#define FLAG_TDM      0x8000
+#define FLAG_TDM24    0x8000
 #define FLAG_YMD      0xc001
 #define FLAG_DMY      0xc002
 #define FLAG_MDY      0xc003

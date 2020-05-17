@@ -25,11 +25,12 @@ void systemFlagAction(uint16_t systemFlag) {
     case FLAG_YMD:
     case FLAG_DMY:
     case FLAG_MDY:
-    case FLAG_TDM:      oldTime[0] = 0;
+    case FLAG_TDM24:    oldTime[0] = 0;
                         break;
 
     case FLAG_DECIMP:
     case FLAG_LEAD0:
+    case FLAG_MULTx:
     case FLAG_CPXj:     refreshStack();
                         break;
 

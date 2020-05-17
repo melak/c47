@@ -32,7 +32,7 @@ void fnConfigChina(uint16_t unusedParamButMandatory) {
   setSystemFlag(FLAG_DECIMP);
   groupingGap = 4;
   refreshStack();
-  setSystemFlag(FLAG_TDM);   // time format = 24H
+  setSystemFlag(FLAG_TDM24); // time format = 24H
   clearSystemFlag(FLAG_DMY); // date format
   clearSystemFlag(FLAG_MDY); // date format
   setSystemFlag(FLAG_YMD);   // date format
@@ -51,7 +51,7 @@ void fnConfigEurope(uint16_t unusedParamButMandatory) {
   clearSystemFlag(FLAG_DECIMP);
   groupingGap = 3;
   refreshStack();
-  setSystemFlag(FLAG_TDM);   // time format = 24H
+  setSystemFlag(FLAG_TDM24); // time format = 24H
   clearSystemFlag(FLAG_MDY); // date format
   clearSystemFlag(FLAG_YMD); // date format
   setSystemFlag(FLAG_DMY);   // date format
@@ -70,7 +70,7 @@ void fnConfigIndia(uint16_t unusedParamButMandatory) {
   setSystemFlag(FLAG_DECIMP);
   groupingGap = 3;
   refreshStack();
-  setSystemFlag(FLAG_TDM);   // time format = 24H
+  setSystemFlag(FLAG_TDM24); // time format = 24H
   clearSystemFlag(FLAG_MDY); // date format
   clearSystemFlag(FLAG_YMD); // date format
   setSystemFlag(FLAG_DMY);   // date format
@@ -89,7 +89,7 @@ void fnConfigJapan(uint16_t unusedParamButMandatory) {
   setSystemFlag(FLAG_DECIMP);
   groupingGap = 3;
   refreshStack();
-  setSystemFlag(FLAG_TDM);   // time format = 24H
+  setSystemFlag(FLAG_TDM24); // time format = 24H
   clearSystemFlag(FLAG_MDY); // date format
   clearSystemFlag(FLAG_DMY); // date format
   setSystemFlag(FLAG_YMD);   // date format
@@ -108,11 +108,11 @@ void fnConfigUk(uint16_t unusedParamButMandatory) {
   setSystemFlag(FLAG_DECIMP);
   groupingGap = 3;
   refreshStack();
-  clearSystemFlag(FLAG_TDM); // time format = 12H
-  clearSystemFlag(FLAG_MDY); // date format
-  clearSystemFlag(FLAG_YMD); // date format
-  setSystemFlag(FLAG_DMY);   // date format
-  firstGregorianDay = 1752;  // JDN of the first day in the Gregorian calendar
+  clearSystemFlag(FLAG_TDM24); // time format = 12H
+  clearSystemFlag(FLAG_MDY);   // date format
+  clearSystemFlag(FLAG_YMD);   // date format
+  setSystemFlag(FLAG_DMY);     // date format
+  firstGregorianDay = 1752;    // JDN of the first day in the Gregorian calendar
 }
 
 
@@ -127,11 +127,11 @@ void fnConfigUsa(uint16_t unusedParamButMandatory) {
   setSystemFlag(FLAG_DECIMP);
   groupingGap = 3;
   refreshStack();
-  clearSystemFlag(FLAG_TDM); // time format = 12H
-  clearSystemFlag(FLAG_YMD); // date format
-  clearSystemFlag(FLAG_DMY); // date format
-  setSystemFlag(FLAG_MDY);   // date format
-  firstGregorianDay = 1752;  // JDN of the first day in the Gregorian calendar
+  clearSystemFlag(FLAG_TDM24); // time format = 12H
+  clearSystemFlag(FLAG_YMD);   // date format
+  clearSystemFlag(FLAG_DMY);   // date format
+  setSystemFlag(FLAG_MDY);     // date format
+  firstGregorianDay = 1752;    // JDN of the first day in the Gregorian calendar
 }
 
 
@@ -567,7 +567,7 @@ void fnReset(uint16_t confirmation) {
     fnClAll(CONFIRMED); // Clears pgm and registers
 
     systemFlags = 0;
-    setSystemFlag(FLAG_TDM);
+    setSystemFlag(FLAG_TDM24);
     fnIntegerMode(SIM_2COMPL);
     fnDisplayFormatAll(0);
     fnDisplayFormatGap(3);

@@ -224,7 +224,7 @@ void supNumberToDisplayString(int32_t supNumber, char *displayString, char *disp
         displayString[1] += digit-4;
       }
 
-      if(greaterThan9999 && supNumber > 0 && groupingGap != 0 && ((++digitCount) % groupingGap) == 0) {
+      if(insertGap && greaterThan9999 && supNumber > 0 && groupingGap != 0 && ((++digitCount) % groupingGap) == 0) {
         xcopy(displayString + 2, displayString, stringByteLength(displayString) + 1);
         *(displayString)     = *(separator);
         *(displayString + 1) = *(separator + 1);

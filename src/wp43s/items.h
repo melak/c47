@@ -1625,7 +1625,7 @@
 #define MNU_VAR                       1589
 #define MNU_TAMFLAG                   1590
 #define ITM_1591                      1591
-#define SFL_TDM                       1592
+#define SFL_TDM24                     1592
 #define SFL_YMD                       1593
 #define SFL_DMY                       1594
 #define SFL_MDY                       1595

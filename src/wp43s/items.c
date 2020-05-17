@@ -2015,7 +2015,7 @@ const item_t indexOfItems[] = {
 /* 1589 */  { itemToBeCoded,               NOPARAM,                     "VAR",                                         "VAR",                                         0,       0,       CAT_MENU, SLS_UNCHANGED},
 /* 1590 */  { itemToBeCoded,               NOPARAM,                     "",                                            "TamFlag",                                     0,       0,       CAT_NONE, SLS_UNCHANGED},
 /* 1591 */  { itemToBeCoded,               NOPARAM,                     "1591",                                        "1591",                                        0,       0,       CAT_FREE, SLS_UNCHANGED},
-/* 1592 */  { fnGetSystemFlag,             FLAG_TDM,                    "TDM",                                         "TDM",                                         0,       0,       CAT_SYFL, SLS_UNCHANGED},
+/* 1592 */  { fnGetSystemFlag,             FLAG_TDM24,                  "TDM24",                                       "TDM24",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED},
 /* 1593 */  { fnGetSystemFlag,             FLAG_YMD,                    "YMD",                                         "YMD",                                         0,       0,       CAT_SYFL, SLS_UNCHANGED},
 /* 1594 */  { fnGetSystemFlag,             FLAG_DMY,                    "DMY",                                         "DMY",                                         0,       0,       CAT_SYFL, SLS_UNCHANGED},
 /* 1595 */  { fnGetSystemFlag,             FLAG_MDY,                    "MDY",                                         "MDY",                                         0,       0,       CAT_SYFL, SLS_UNCHANGED},
