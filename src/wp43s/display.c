@@ -1933,7 +1933,15 @@ void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM fr
  
       { //printf("2: %d\n",stringGlyphLength(tmpStr3000 + 2100));
         temporaryInformation = TI_SHOW_REGISTER_BIG;
-        maxWidth = SCREEN_WIDTH - stringWidth("0", &numericFont, true, true);
+        if(groupingGap == 0) {
+          maxWidth = SCREEN_WIDTH - stringWidth("0", &numericFont, true, true);
+        }
+        else {
+          char tmp[4];
+          strcpy(tmp,"0");
+          strcat(tmp,separator);
+          maxWidth = SCREEN_WIDTH - stringWidth(tmp , &numericFont, true, true);          //Add the separator that gets added to the last character
+        }
 
         for(d=0; d<=1800 ; d+=300) {
           dest = d;
