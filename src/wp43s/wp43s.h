@@ -344,7 +344,7 @@ typedef int16_t calcRegister_t;
 #define TI_GEOMPOPLSTDDEV      27
 #define TI_GEOMSTDERR          28
 
-#define TI_SHOW_REGISTER_BIG   29    //JM_SHOW
+#define TI_SHOW_REGISTER_BIG   29    //JMSHOW
 
 
 // Register browser mode
