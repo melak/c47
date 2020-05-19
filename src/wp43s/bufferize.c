@@ -1083,23 +1083,23 @@ void nimBufferToDisplayBuffer(const char *nimBuffer, char *displayBuffer) {
 
   int16_t groupingGapM = groupingGap;                       //JMGAP vv
   switch(nimNumberPart) {
-    case NP_INT_10:                     // +12345 longint; Do not change groupingGap. Leave at user setting, default 3.
+    case NP_INT_10:                     // +12345
     case NP_INT_BASE:                   // +123AB#16.    ; Change groupinggap from user selection to this table, for entry
       switch(lastIntegerBase) {
         case  0: groupingGap = groupingGapM; break;
         case  2: groupingGap = 4; break;
         case  3: groupingGap = 3; break;
         case  4: groupingGap = 2; break;
-        case  5:
-        case  6:
-        case  7:
-        case  8:
-        case  9:
-        case 10:
-        case 11:
-        case 12:
-        case 13:
-        case 14:
+        case  5: // 3
+        case  6: // 3
+        case  7: // 3
+        case  8: // 3
+        case  9: // 3
+        case 10: // 3
+        case 11: // 3
+        case 12: // 3
+        case 13: // 3
+        case 14: // 3
         case 15: groupingGap = 3; break;
         case 16: groupingGap = 2; break;
         default: break;
@@ -1108,7 +1108,7 @@ void nimBufferToDisplayBuffer(const char *nimBuffer, char *displayBuffer) {
     case NP_INT_16:                     // +123AB.       ; Change to 2 for hex.
       groupingGap = 2;
       break;
-    default:
+    default:                            //               ; For anything else don't change groupingGap
       break;
   }                                                         //JMGAP ^^
 

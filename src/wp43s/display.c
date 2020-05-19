@@ -2042,12 +2042,13 @@ void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM fr
         }
       }
   
-      // +/- i×
-      real34Copy(REGISTER_IMAG34_DATA(SHOWregis), &real34);
-      strcat(tmpStr3000 + 300, (real34IsNegative(&real34) ? "-" : "+"));
-      strcat(tmpStr3000 + 300, COMPLEX_UNIT);
-      strcat(tmpStr3000 + 300, PRODUCT_SIGN);
-  
+      real34Copy(REGISTER_IMAG34_DATA(REGISTER_X), &real34);
+      last = 300;
+      while(tmpStr3000[last]) last++;
+      xcopy(tmpStr3000 + last++, (real34IsNegative(&real34) ? "-" : "+"), 1);
+      xcopy(tmpStr3000 + last++, COMPLEX_UNIT, 1);
+      xcopy(tmpStr3000 + last, PRODUCT_SIGN, 3);
+
       // Imaginary part
       real34SetPositiveSign(&real34);
       real34ToDisplayString(&real34, AM_NONE, tmpStr3000 + 600, &numericFont, 2000, 34, false, separator);
@@ -2057,18 +2058,22 @@ void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM fr
         }
       }
   
-      strncat(tmpStr3000 + 300, tmpStr3000 +  600, 299); //add +i. and imag
+      last = 300;                                              //add +i. and imag
+      while(tmpStr3000[last]) last++;
+      xcopy(tmpStr3000 + last, tmpStr3000 + 600,  strlen(tmpStr3000 + 600) + 1);
       tmpStr3000[600] = 0;
 
       if(stringWidth(tmpStr3000, &numericFont, true, true) + stringWidth(tmpStr3000 + 300, &numericFont, true, true) <= 2*SCREEN_WIDTH) {
         strncat(tmpStr3000, tmpStr3000 +  300, 299);
         tmpStr3000[300] = 0;
-      }
   
-      strncat(tmpStr3000 + 2103, tmpStr3000 + 0, 299-3);  //COPY REAL
+      last = 2103;                                            //COPY REAL
+      while(tmpStr3000[last]) last++;
+      xcopy(tmpStr3000 + last, tmpStr3000 + 0,  strlen(tmpStr3000 + 0) + 1);
       tmpStr3000[0] = 0;
-  
-      strcpy(tmpStr3000 + 2400, tmpStr3000 + 300);        //COPY IMAG
+
+      last = 2400;                                            //COPY IMAG
+      xcopy(tmpStr3000 + last, tmpStr3000 + 300,  strlen(tmpStr3000 + 300) + 1);
       tmpStr3000[300] = 0;
   
       last = 2100 + stringByteLength(tmpStr3000 + 2100);
@@ -2100,22 +2105,21 @@ void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM fr
       }
   
       if (tmpStr3000[300]==0) {                          //shift up if line is empty
-        strcpy(tmpStr3000 + 300, tmpStr3000 + 600);
-        strcpy(tmpStr3000 + 600, tmpStr3000 + 900);
+        xcopy(tmpStr3000 + 300, tmpStr3000 + 600,  min(300,strlen(tmpStr3000 + 600) + 1));
+        xcopy(tmpStr3000 + 600, tmpStr3000 + 900,  min(300,strlen(tmpStr3000 + 900) + 1));
         tmpStr3000[900] = 0;
       }
   
       if (tmpStr3000[600]==0) {                          //shift up if line is empty
-        strcpy(tmpStr3000 + 600, tmpStr3000 + 900);
+        xcopy(tmpStr3000 + 600, tmpStr3000 + 900,  min(300,strlen(tmpStr3000 + 900) + 1));
         tmpStr3000[900] = 0;
       }
       break;
 
-
     case dtShortInteger:
       temporaryInformation = TI_SHOW_REGISTER_BIG;
       const font_t *font_tmp;
-      font_tmp = &numericFont; //&numericFont;
+      font_tmp = &numericFont;
       shortIntegerToDisplayString(SHOWregis, tmpStr3000 + 2103, &font_tmp);
 
     
@@ -2167,7 +2171,6 @@ void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM fr
 
 
     case dtString:
-
       temporaryInformation = TI_SHOW_REGISTER_BIG;
       strcpy(tmpStr3000 + 2103, "'");
       strncat(tmpStr3000 + 2100, REGISTER_STRING_DATA(SHOWregis), stringByteLength(REGISTER_STRING_DATA(SHOWregis)) + 1);
@@ -2221,6 +2224,7 @@ void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM fr
         showInfoDialog("In function fnShow:", errorMessage, NULL, NULL);
       #endif
       return;
+    }
   }
 
 
@@ -2239,6 +2243,7 @@ void fnShow(uint16_t fnShow_param) {                // Heavily modified by JM fr
  
   displayFormat = savedDisplayFormat;
   displayFormatDigits = savedDisplayFormatDigits;
+
 
 }
 

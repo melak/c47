@@ -247,10 +247,10 @@ int16_t determineItem(const char *data) {
 
   allowScreenUpdate = true;
 
-  switch(key->primary) {                              //JMSHOW
+  switch(key->primary) {                              //JMSHOW vv
     case      KEY_UP:
     case      KEY_DOWN: break;
-    default:  SHOWregis = 9999; break;     
+    default:  SHOWregis = 9999; break;                //JMSHOW vv
   }
 
   // Shift f pressed and shift g not active
@@ -927,7 +927,9 @@ void fnKeyUp(uint16_t unusedParamButMandatory) {
   #ifndef TESTSUITE_BUILD
   int16_t itemShift;
 
-  if(calcMode == CM_NORMAL && softmenuStackPointer == 0)  {fnShow(1);}             //JMSHOW
+  if(calcMode == CM_NORMAL && softmenuStackPointer == 0) {   //JMSHOW vv
+    fnShow(1);
+  }                                                          //JMSHOW ^^
 
   switch(calcMode) {
     case CM_NORMAL:
@@ -1026,7 +1028,9 @@ void fnKeyDown(uint16_t unusedParamButMandatory) {
   #ifndef TESTSUITE_BUILD
   int16_t itemShift;
 
-  if(calcMode == CM_NORMAL && softmenuStackPointer == 0)  {fnShow(2);}             //JMSHOW
+  if(calcMode == CM_NORMAL && softmenuStackPointer == 0) {   //JMSHOW
+    fnShow(2);
+  }                                                          //JMSHOW
 
   switch(calcMode) {
     case CM_NORMAL:
