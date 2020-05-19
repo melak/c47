@@ -233,8 +233,6 @@ void flagBrowser(uint16_t unusedParamButMandatory) {
     oneSystemFlag(FLAG_SPCRES,  "SPCRES",         &line, &firstFlag);
     oneSystemFlag(FLAG_SSIZE8,  "SSIZE8",         &line, &firstFlag);
     oneSystemFlag(FLAG_QUIET,   "QUIET",          &line, &firstFlag);
-    oneSystemFlag(FLAG_DECIMP,  "DECIM.",         &line, &firstFlag);
-    oneSystemFlag(FLAG_MULTx,   "MULT" STD_CROSS, &line, &firstFlag);
     oneSystemFlag(FLAG_ALLSCI,  "ALLSCI",         &line, &firstFlag);
     oneSystemFlag(FLAG_GROW,    "GROW",           &line, &firstFlag);
     oneSystemFlag(FLAG_AUTOFF,  "AUTOFF",         &line, &firstFlag);
@@ -242,7 +240,6 @@ void flagBrowser(uint16_t unusedParamButMandatory) {
     oneSystemFlag(FLAG_PRTACT,  "PRTACT",         &line, &firstFlag);
     oneSystemFlag(FLAG_NUMIN,   "NUM.IN",         &line, &firstFlag);
     oneSystemFlag(FLAG_ALPIN,   "ALP.IN",         &line, &firstFlag);
-    oneSystemFlag(FLAG_ASLIFT,  "ASLIFT",         &line, &firstFlag);
     oneSystemFlag(FLAG_IGN1ER,  "IGN1ER",         &line, &firstFlag);
     oneSystemFlag(FLAG_INTING,  "INTING",         &line, &firstFlag);
     oneSystemFlag(FLAG_SOLVING, "SOLVING",        &line, &firstFlag);

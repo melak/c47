@@ -1194,7 +1194,7 @@ void refreshRegisterLine(calcRegister_t regist) {
                 lastBase[3] = 0;
               }
               else {
-                lastBase[1] = '0' + (lastIntegerBase - 10);
+                lastBase[1] = '0' + lastIntegerBase;
                 lastBase[2] = 0;
               }
               wLastBase = stringWidth(lastBase, &numericFont, true, true);

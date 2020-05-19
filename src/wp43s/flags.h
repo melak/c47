@@ -75,11 +75,11 @@
 
 #define isSystemFlagWriteProtected(sf)  ((sf & 0x4000) != 0)
 #define getSystemFlag(sf)               ((systemFlags &   ((uint64_t)1 << (sf & 0x3fff))) != 0)
-#define setSystemFlag(sf)               { systemFlags |=  ((uint64_t)1 << (sf & 0x3fff)); systemFlagAction(sf); }
-#define clearSystemFlag(sf)             { systemFlags &= ~((uint64_t)1 << (sf & 0x3fff)); systemFlagAction(sf); }
-#define flipSystemFlag(sf)              { systemFlags ^=  ((uint64_t)1 << (sf & 0x3fff)); systemFlagAction(sf); }
+#define setSystemFlag(sf)               { systemFlags |=  ((uint64_t)1 << (sf & 0x3fff)); systemFlagAction(sf, 1); }
+#define clearSystemFlag(sf)             { systemFlags &= ~((uint64_t)1 << (sf & 0x3fff)); systemFlagAction(sf, 0); }
+#define flipSystemFlag(sf)              { systemFlags ^=  ((uint64_t)1 << (sf & 0x3fff)); systemFlagAction(sf, 2); }
 
-void   systemFlagAction  (uint16_t systemFlag);
+void   systemFlagAction  (uint16_t systemFlag, uint16_t action);
 bool_t getFlag           (uint16_t flag);
 void   fnGetSystemFlag   (uint16_t systemFlag);
 void   fnSetFlag         (uint16_t flag);

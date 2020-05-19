@@ -21,7 +21,7 @@
 #include "wp43s.h"
 
 #ifdef PC_BUILD
-#define BACKUP_VERSION 33  // 33 = System flags
+#define BACKUP_VERSION 34  // 34 = Lettered flags ovelapping system flags
 
 void saveCalc(void) {
   size_t size;
