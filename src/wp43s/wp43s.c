@@ -82,6 +82,7 @@ int16_t               lastFcnsMenuPos;
 int16_t               lastMenuMenuPos;
 int16_t               lastCnstMenuPos;
 int16_t               lastSyFlMenuPos;
+int16_t               lastAIntMenuPos;
 int16_t               showFunctionNameItem;
 int16_t               SHOWregis;                   //JMSHOW
 uint16_t              numberOfLocalFlags;
@@ -360,6 +361,7 @@ void setupDefaults(void) {
   lastMenuMenuPos = 0;
   lastCnstMenuPos = 0;
   lastSyFlMenuPos = 0;
+  lastAIntMenuPos = 0;
 
   exponentLimit = 6145;
 

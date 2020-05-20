@@ -616,6 +616,7 @@ void fnReset(uint16_t confirmation) {
     lastMenuMenuPos = 0;
     lastCnstMenuPos = 0;
     lastSyFlMenuPos = 0;
+    lastAIntMenuPos = 0;
 
     currentFntScr = 0;
     currentFlgScr = 0;

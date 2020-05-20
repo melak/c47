@@ -208,7 +208,7 @@ void showOverflowCarry(void) {
  * \return void
  ***********************************************/
 void showAlphaMode(void) {
-  if(calcMode == CM_AIM || calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM) {
+  if(calcMode == CM_AIM || calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM) {
     if(alphaCase == AC_UPPER) {
       showString(STD_ALPHA, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
       setSystemFlag(FLAG_alphaCAP);

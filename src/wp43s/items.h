@@ -1109,7 +1109,7 @@
 #define CHR_OE                        1077
 #define CHR_1078                      1078
 #define CHR_1079                      1079
-#define CHR_1080                      1080
+#define CHR_S_SHARP                   1080
 #define CHR_S_ACUTE                   1081
 #define CHR_S_CARON                   1082
 #define CHR_S_CEDILLA                 1083
@@ -1682,6 +1682,8 @@
 #define CAT_RVAR 5 // Reserved variable
 #define CAT_DUPL 6 // Duplicate of another item e.g. acus->m^2
 #define CAT_SYFL 7 // System flags
+#define CAT_AINT 8 // Upper case alpha_INTL
+#define CAT_aint 9 // Lower case alpha_intl
 typedef struct {
   void     (*func)(uint16_t); ///< Function called to execute the item
   uint16_t param;             ///< 1st parameter to the above function

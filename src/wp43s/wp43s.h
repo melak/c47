@@ -271,13 +271,14 @@ typedef int16_t calcRegister_t;
 #define CM_NIM                  3 // Numeric input mode
 #define CM_ASM                  4 // Alpha selection in FCNS, MENU, and CNST menu
 #define CM_ASM_OVER_TAM         5 // Alpha selection for system flags selection in TAM
-#define CM_ASSIGN               6 // Assign mode
-#define CM_REGISTER_BROWSER     7 // Register browser
-#define CM_FLAG_BROWSER         8 // Flag browser
-#define CM_FONT_BROWSER         9 // Font browser
-#define CM_ERROR_MESSAGE       10 // Error message in one of the register lines
-#define CM_BUG_ON_SCREEN       11 // Bug message on screen
-#define CM_CONFIRMATION        12 // Waiting for confirmation or canceling
+#define CM_ASM_OVER_AIM         6 // Alpha selection for system flags selection in TAM
+#define CM_ASSIGN               7 // Assign mode
+#define CM_REGISTER_BROWSER     8 // Register browser
+#define CM_FLAG_BROWSER         9 // Flag browser
+#define CM_FONT_BROWSER        10 // Font browser
+#define CM_ERROR_MESSAGE       11 // Error message in one of the register lines
+#define CM_BUG_ON_SCREEN       12 // Bug message on screen
+#define CM_CONFIRMATION        13 // Waiting for confirmation or canceling
 
 // Next character 2 bits
 #define NC_NORMAL               0
@@ -367,6 +368,8 @@ typedef int16_t calcRegister_t;
 #define ASM_FCNS 2
 #define ASM_MENU 3
 #define ASM_SYFL 4
+#define ASM_AINT 5
+#define ASM_aint 6
 
 // String comparison type
 #define CMP_CLEANED_STRING_ONLY 1
@@ -538,6 +541,7 @@ extern int16_t               lastFcnsMenuPos;
 extern int16_t               lastMenuMenuPos;
 extern int16_t               lastCnstMenuPos;
 extern int16_t               lastSyFlMenuPos;
+extern int16_t               lastAIntMenuPos;
 extern int16_t               showFunctionNameItem;
 extern int16_t               SHOWregis;                   //JMSHOW
 extern uint16_t              numberOfLocalFlags;

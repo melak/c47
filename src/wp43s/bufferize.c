@@ -262,7 +262,7 @@ void addItemToBuffer(uint16_t item) {
       }
     }
 
-    else if(calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM) {
+    else if(calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM) {
       int32_t firstItem = 0, pos;
 
       if(item == KEY_BACKSPACE) {

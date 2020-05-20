@@ -341,6 +341,7 @@ void debugNIM(void) {
     if(cm == CM_NIM)              return "NIM         ";
     if(cm == CM_ASM)              return "ASM         ";
     if(cm == CM_ASM_OVER_TAM)     return "ASM.OVR.TAM ";
+    if(cm == CM_ASM_OVER_AIM)     return "ASM.OVR.AIM ";
     if(cm == CM_ASSIGN)           return "ASSIGN      ";
     if(cm == CM_REGISTER_BROWSER) return "REG.BROWSER ";
     if(cm == CM_FLAG_BROWSER)     return "FLAG.BROWSER";

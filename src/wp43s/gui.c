@@ -1404,21 +1404,28 @@ void calcModeNormal(void) {
  * \return void
  ***********************************************/
 void calcModeAim(uint16_t unusedParamButMandatory) {
-  saveStack();
-  liftStack();
-  refreshStack();
-  showSoftmenu(NULL, -MNU_MyAlpha, true);
+  if(calcMode == CM_ASM_OVER_AIM) {
+    popSoftmenu();
+  }
+  else {
+    showSoftmenu(NULL, -MNU_MyAlpha, true);
+    alphaCase = AC_UPPER;
+    showAlphaMode();
+    nextChar = NC_NORMAL;
+
+    saveStack();
+    liftStack();
+    refreshStack();
+
+    clearRegisterLine(Y_POSITION_OF_AIM_LINE - 4, REGISTER_LINE_HEIGHT);
+    xCursor = 1;
+    yCursor = Y_POSITION_OF_AIM_LINE + 6;
+    cursorFont = CF_STANDARD;
+    cursorEnabled = true;
+  }
+
   calcMode = CM_AIM;
   setSystemFlag(FLAG_ALPHA);
-  alphaCase = AC_UPPER;
-  showAlphaMode();
-  nextChar = NC_NORMAL;
-
-  clearRegisterLine(Y_POSITION_OF_AIM_LINE - 4, REGISTER_LINE_HEIGHT);
-  xCursor = 1;
-  yCursor = Y_POSITION_OF_AIM_LINE + 6;
-  cursorFont = CF_STANDARD;
-  cursorEnabled = true;
 
   #ifdef PC_BUILD
     calcModeAimGui();
@@ -1437,11 +1444,15 @@ void calcModeAsm(void) {
   if(calcMode == CM_NIM) {
     closeNim();
   }
+
+  if(calcMode != CM_AIM) {
+    alphaCase = AC_UPPER;
+    showAlphaMode();
+    nextChar = NC_NORMAL;
+  }
+
   calcMode = CM_ASM;
   clearSystemFlag(FLAG_ALPHA);
-  alphaCase = AC_UPPER;
-  showAlphaMode();
-  nextChar = NC_NORMAL;
   resetAlphaSelectionBuffer();
 
   #ifdef PC_BUILD

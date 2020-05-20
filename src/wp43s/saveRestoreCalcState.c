@@ -21,7 +21,7 @@
 #include "wp43s.h"
 
 #ifdef PC_BUILD
-#define BACKUP_VERSION 34  // 34 = Lettered flags ovelapping system flags
+#define BACKUP_VERSION 35  // 35 = alphaINTL becomes a catalog
 
 void saveCalc(void) {
   size_t size;
@@ -152,6 +152,7 @@ void saveCalc(void) {
   size += fwrite(&lastMenuMenuPos,                    1, sizeof(lastMenuMenuPos),                    backup); //printf("%8lu lastMenuMenuPos\n",                    (unsigned long)size);
   size += fwrite(&lastCnstMenuPos,                    1, sizeof(lastCnstMenuPos),                    backup); //printf("%8lu lastCnstMenuPos\n",                    (unsigned long)size);
   size += fwrite(&lastSyFlMenuPos,                    1, sizeof(lastSyFlMenuPos),                    backup); //printf("%8lu lastSyFlMenuPos\n",                    (unsigned long)size);
+  size += fwrite(&lastAIntMenuPos,                    1, sizeof(lastAIntMenuPos),                    backup); //printf("%8lu lastAIntMenuPos\n",                    (unsigned long)size);
   size += fwrite(&lgCatalogSelection,                 1, sizeof(lgCatalogSelection),                 backup); //printf("%8lu lgCatalogSelection\n",                 (unsigned long)size);
   size += fwrite(displayValueX,                       1, sizeof(displayValueX),                      backup); //printf("%8lu displayValueX\n",                      (unsigned long)size);
   size += fwrite(&pcg32_global,                       1, sizeof(pcg32_global),                       backup); //printf("%8lu pcg32_global\n",                       (unsigned long)size);
@@ -313,6 +314,7 @@ void restoreCalc(void) {
     size += fread(&lastMenuMenuPos,                    1, sizeof(lastMenuMenuPos),                    backup); //printf("%8lu lastMenuMenuPos\n",                    (unsigned long)size);
     size += fread(&lastCnstMenuPos,                    1, sizeof(lastCnstMenuPos),                    backup); //printf("%8lu lastCnstMenuPos\n",                    (unsigned long)size);
     size += fread(&lastSyFlMenuPos,                    1, sizeof(lastSyFlMenuPos),                    backup); //printf("%8lu lastSyFlMenuPos\n",                    (unsigned long)size);
+    size += fread(&lastAIntMenuPos,                    1, sizeof(lastAIntMenuPos),                    backup); //printf("%8lu lastAIntMenuPos\n",                    (unsigned long)size);
     size += fread(&lgCatalogSelection,                 1, sizeof(lgCatalogSelection),                 backup); //printf("%8lu lgCatalogSelection\n",                 (unsigned long)size);
     size += fread(displayValueX,                       1, sizeof(displayValueX),                      backup); //printf("%8lu displayValueX\n",                      (unsigned long)size);
     size += fread(&pcg32_global,                       1, sizeof(pcg32_global),                       backup); //printf("%8lu pcg32_global\n",                       (unsigned long)size);
@@ -337,6 +339,7 @@ void restoreCalc(void) {
     else if(calcMode == CM_NIM)              calcModeNormalGui();
     else if(calcMode == CM_ASM)              calcModeAsm();
     else if(calcMode == CM_ASM_OVER_TAM)    {calcModeAsm(); calcMode = CM_ASM_OVER_TAM; clearSystemFlag(FLAG_ALPHA);}
+    else if(calcMode == CM_ASM_OVER_AIM)    {calcModeAsm(); calcMode = CM_ASM_OVER_AIM; clearSystemFlag(FLAG_ALPHA);}
     else if(calcMode == CM_REGISTER_BROWSER) calcModeNormalGui();
     else if(calcMode == CM_FLAG_BROWSER)     calcModeNormalGui();
     else if(calcMode == CM_FONT_BROWSER)     calcModeNormalGui();

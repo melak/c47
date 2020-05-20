@@ -411,7 +411,7 @@ gboolean refreshScreen(gpointer data) {// This function is called every 100 ms b
   }
 
   // Alpha selection timer
-  if((calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM) && alphaSelectionTimer != 0 && (getUptimeMs()-alphaSelectionTimer) > 3000) { // More than 3 seconds elapsed since last keypress
+  if((calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM) && alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000) { // More than 3 seconds elapsed since last keypress
     resetAlphaSelectionBuffer();
   }
 
@@ -454,7 +454,7 @@ void refreshScreen(void) {// This function is called roughly every 100 ms from t
   }
 
   // Alpha selection timer
-  if((calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM) && alphaSelectionTimer != 0 && (getUptimeMs()-alphaSelectionTimer) > 3000) { // More than 3 seconds elapsed since last keypress
+  if((calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM) && alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000) { // More than 3 seconds elapsed since last keypress
     resetAlphaSelectionBuffer();
   }
 }
