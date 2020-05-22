@@ -584,6 +584,15 @@ void setVariableNamePointer(calcRegister_t regist, void *namePointer) {
  * \return void
  ***********************************************/
 void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
+  if(numberOfRegistersToAllocate > 100) {
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "You can allocate up to 100 registers, you requested %" FMT16U, numberOfRegistersToAllocate);
+      showInfoDialog("In function allocateLocalRegisters:", errorMessage, NULL, NULL);
+    #endif
+    return;
+  }
+
   if(numberOfRegistersToAllocate != allLocalRegisterPointer->numberOfLocalRegisters) { // There is something to do
     uint16_t numRegs, r;
 

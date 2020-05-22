@@ -1406,10 +1406,14 @@ void calcModeNormal(void) {
 void calcModeAim(uint16_t unusedParamButMandatory) {
   if(calcMode == CM_ASM_OVER_AIM) {
     popSoftmenu();
+    calcMode = CM_AIM;
   }
   else {
-    showSoftmenu(NULL, -MNU_MyAlpha, true);
+    if(softmenuStackPointer == 0) {
+      showSoftmenu(NULL, -MNU_MyAlpha, false);
+    }
     alphaCase = AC_UPPER;
+    calcMode = CM_AIM;
     showAlphaMode();
     nextChar = NC_NORMAL;
 
@@ -1424,7 +1428,6 @@ void calcModeAim(uint16_t unusedParamButMandatory) {
     cursorEnabled = true;
   }
 
-  calcMode = CM_AIM;
   setSystemFlag(FLAG_ALPHA);
 
   #ifdef PC_BUILD

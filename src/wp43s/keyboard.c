@@ -206,8 +206,9 @@ void btnFnReleased(void *notUsed, void *data) {
           return;
         }
         else if(calcMode == CM_ASM_OVER_AIM) {
-          calcModeAim(NOPARAM);
+          calcMode = CM_AIM;
           addItemToBuffer(item);
+          calcMode = CM_ASM_OVER_AIM;
           return;
         }
 
@@ -725,6 +726,9 @@ void fnKeyExit(uint16_t unusedParamButMandatory) {
       }
       else {
        popSoftmenu();
+       if(softmenuStackPointer == 0) {
+         showSoftmenu(NULL, -MNU_MyAlpha, false);
+       }
       }
       break;
 

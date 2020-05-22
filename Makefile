@@ -123,7 +123,10 @@ GENERATED_SOURCES = $(GEN_SRC_CONSTANTPOINTERS) $(GEN_SRC_RASTERFONTSDATA) $(GEN
 
 STAMP_FILES = .stamp-constantPointers .stamp-rasterFontsData .stamp-softmenuCatalog
 
-all: wp43s
+all: 	wp43s
+ifeq '$(detected_OS)' 'Darwin'
+	rsync -u wp43s MacOs\ binaries
+endif
 
 rebuild:
 	$(MAKE) mrproper

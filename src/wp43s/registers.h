@@ -61,7 +61,7 @@
 ///////////////////////////////////////////////////////
 // Register numbering:
 //    0 to  111 global resisters
-//  112 to  199 local registers (.00 to .87)
+//  112 to  211 local registers (from .00 to .99) this are 100 local registers but TAM allows only a parameter from 0 to 99 (without indirection)
 // 1000 to 1999 named variables
 // 2000 to 2009 saved stack registers (UNDO item)
 
