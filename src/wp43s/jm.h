@@ -133,7 +133,7 @@ void fnUserJM(uint16_t jmUser);
 #define USER_PRGM        37
 #define USER_USER        38
 #define USER_SIGMAPLUS   39
-#define USER_43D         40
+#define USER_V43         40
  //last number
 
 
@@ -163,7 +163,6 @@ void fnASSIGN       (int16_t JM_ASN_MODE, int16_t tempkey);
 #define ID_43S                  0    //JM Input Default
 #define ID_DP                   2    //JM Input Default
 #define ID_CPXDP                4    //JM Input Default
-#define ID_43D                  5    //JM Input Default
 #define ID_SI                   6    //JM Input Default
 #define ID_LI                   7    //JM Input Default
 

@@ -1786,7 +1786,7 @@
 #define ITM_H_REPLCA                  1746   //JMHOME
 #define ITM_H_FIXED                   1747   //JMHOME
 #define Not_used1748                  1748
-#define ITM_USER_43D                     1749
+#define ITM_USER_V43                     1749
 #define ITM_EE_D2Y                    1750   //JM EE
 #define ITM_EE_Y2D                    1751   //JM EE
 #define ITM_EE_A2S                    1752   //JM EE

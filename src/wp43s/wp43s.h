@@ -19,6 +19,9 @@
  ***********************************************/
 
 //#define SWAP_LAYOUTS    //SWAP THE BELOW TWO DEFINES TO HAVE THE DM42 VERSION ON SIMULATOR
+#define V43               //Can only be defined if SWAP LAYOUTS is not set
+#define S43               //Can only be defined if SWAP LAYOUTS is not set. Activates only the colour bands on the simulator screen
+
 #define TMP_STR_LENGTH      3000          //JMMAX 3000+ extra to make sure
 
 #ifndef wp43s_H_INCLUDED
@@ -71,6 +74,8 @@
   #ifdef SWAP_LAYOUTS
       #define JM_LAYOUT_2_DM42_STRICT    //DM42 compatible layout. Temporary SWAP. Change here for screen picture.
       #undef  JM_LAYOUT_1A
+      #undef  V43
+      #undef  S43
       #define JM_LAYOUT_SHOW_BLUES       //ONLY DEFINE IF BLUE MUST BE DISPLAYED. TEMPORARY FOR CREATING AN EMU FOR THE LAYOUT42
   #endif
 
