@@ -89,7 +89,7 @@ void lnLonI(void) {
   convertLongIntegerRegisterToLongInteger(REGISTER_X, lgInt);
 
   if(longIntegerIsZero(lgInt)) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
       realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
     }
@@ -117,7 +117,7 @@ void lnLonI(void) {
       realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
       realToReal34(const_pi, REGISTER_IMAG34_DATA(REGISTER_X));
     }
-    else if(getFlag(FLAG_DANGER)) {
+    else if(getSystemFlag(FLAG_SPCRES)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
       realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
     }
@@ -153,7 +153,7 @@ void lnShoI(void) {
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
 
   if(realIsZero(&x)) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
     }
     else {
@@ -175,7 +175,7 @@ void lnShoI(void) {
       realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
       realToReal34(const_pi, REGISTER_IMAG34_DATA(REGISTER_X));
     }
-    else if(getFlag(FLAG_DANGER)) {
+    else if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
     }
     else {
@@ -191,7 +191,7 @@ void lnShoI(void) {
 
 void lnReal(void) {
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
     }
     else {
@@ -203,7 +203,7 @@ void lnReal(void) {
   }
 
   else if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
-    if(!getFlag(FLAG_DANGER)) {
+    if(!getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         showInfoDialog("In function lnReal:", "cannot use " STD_PLUS_MINUS STD_INFINITY " as X input of ln when flag D is not set", NULL, NULL);
@@ -240,7 +240,7 @@ void lnReal(void) {
       realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
       realToReal34(const_pi, REGISTER_IMAG34_DATA(REGISTER_X));
     }
-    else if(getFlag(FLAG_DANGER)) {
+    else if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
     }
     else {
@@ -257,7 +257,7 @@ void lnReal(void) {
 
 void lnCplx(void) {
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X)) && real34IsZero(REGISTER_IMAG34_DATA(REGISTER_X))) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
       real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
     }

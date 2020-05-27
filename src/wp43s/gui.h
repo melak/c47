@@ -45,7 +45,7 @@
 
 #ifdef PC_BUILD
   void setupUI          (void);
-  void moveLabels       (void);
+  void moveLabels       (void);     //JM Keep here
   void calcModeNormalGui(void);
   void calcModeAimGui   (void);
   void calcModeTamGui   (void);

@@ -196,13 +196,13 @@ void addItemToBuffer(uint16_t item) {
     if(calcMode == CM_AIM) {
       item = convertItemToSubOrSup(item, nextChar);
 
-      if(stringByteLength(aimBuffer) + stringByteLength(indexOfItems[item].itemSoftmenuName) >= AIM_BUFFER_LENGTH) {
+      if(stringByteLength(aimBuffer) + stringByteLength(indexOfItems[item].itemSoftmenuName) >= AIM_BUFFER_LENGTH) { /// TODO this error should never happen but who knows!
         sprintf(errorMessage, "In function addItemToBuffer: the AIM input buffer is full! %d bytes for now", AIM_BUFFER_LENGTH);
         displayBugScreen(errorMessage);
       }
       else {
         strncpy(aimBuffer + stringNextGlyph(aimBuffer, stringLastGlyph(aimBuffer)), indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
-        if(stringWidth(aimBuffer, &standardFont, true, true) >= SCREEN_WIDTH-9) {
+        if(stringWidth(aimBuffer, &standardFont, true, true) > SCREEN_WIDTH - 8) { // 8 is the width of the cursor
           btnClicked(NULL, "16"); // back space
           #ifdef PC_BUILD
             showInfoDialog("In function addItemToBuffer:", "the aimBuffer string is too wide!", NULL, NULL);
@@ -220,7 +220,7 @@ void addItemToBuffer(uint16_t item) {
         tamTransitionSystem(TT_OPERATION);
       }
       else if(tamFunction == ITM_toINT && item == ITM_ST_D) {
-          tamTransitionSystem(TT_BASE10);
+        tamTransitionSystem(TT_BASE10);
       }
       else if(tamFunction == ITM_toINT && item == ITM_HEX) {
         tamTransitionSystem(TT_BASE16);
@@ -254,12 +254,15 @@ void addItemToBuffer(uint16_t item) {
         #endif
         tamTransitionSystem(TT_NOTHING);
       }
+      else if((tamMode == TM_FLAGR || tamMode == TM_FLAGW)) {
+        tamTransitionSystem(TT_NOTHING);
+      }
       else {
         tamTransitionSystem(TT_NOTHING);
       }
     }
 
-    else if(calcMode == CM_ASM) {
+    else if(calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM) {
       int32_t firstItem = 0, pos;
 
       if(item == KEY_BACKSPACE) {
@@ -908,7 +911,7 @@ void addItemToNimBuffer(int16_t item) {
       }
       break;
 
-    default : {}
+    default : keyActionProcessed = false;        //JMEXEC. Added because keyActionProcessed must be cleared if it falls through unprocessed.
   }
 
   if(done) {
@@ -985,7 +988,7 @@ void addItemToNimBuffer(int16_t item) {
         nimNumberPart = savedNimNumberPart;
 
         // Complex "separator"
-        if(complexMode == CM_RECTANGULAR) {
+        if(getSystemFlag(FLAG_RECTN)) {
           if(strncmp(nimBufferDisplay + stringByteLength(nimBufferDisplay) - 2, STD_SPACE_HAIR, 2) != 0) {
             strcat(nimBufferDisplay, STD_SPACE_HAIR);
           }
@@ -1041,7 +1044,7 @@ void addItemToNimBuffer(int16_t item) {
         displayBugScreen(errorMessage);
     }
 
-    if(radixMark == RM_COMMA) {
+    if(!getSystemFlag(FLAG_DECIMP)) {
       for(index=stringByteLength(nimBufferDisplay) - 1; index>0; index--) {
         if(nimBufferDisplay[index] == '.') {
           nimBufferDisplay[index] = ',';
@@ -1106,29 +1109,29 @@ void nimBufferToDisplayBuffer(const char *nimBuffer, char *displayBuffer) {
 
   int16_t groupingGapM = groupingGap;                       //JMGAP vv
   switch(nimNumberPart) {
-    case NP_INT_10:                     // +12345 longint
-    case NP_INT_BASE:                   // +123AB#16
+    case NP_INT_10:                     // +12345 longint; Do not change groupingGap. Leave at user setting, default 3.
+    case NP_INT_BASE:                   // +123AB#16.    ; Change groupinggap from user selection to this table, for entry
       switch(lastIntegerBase) {
         case  0: groupingGap = groupingGapM; break;
         case  2: groupingGap = 4; break;
         case  3: groupingGap = 3; break;
         case  4: groupingGap = 2; break;
-        case  5: groupingGap = 3; break;
-        case  6: groupingGap = 3; break;
-        case  7: groupingGap = 3; break;
-        case  8: groupingGap = 3; break;
-        case  9: groupingGap = 3; break;
-        case 10: groupingGap = 3; break;
-        case 11: groupingGap = 3; break;
-        case 12: groupingGap = 3; break;
-        case 13: groupingGap = 3; break;
-        case 14: groupingGap = 3; break;
+        case  5:
+        case  6:
+        case  7:
+        case  8:
+        case  9:
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
         case 15: groupingGap = 3; break;
         case 16: groupingGap = 2; break;
         default: break;
       }
       break;
-    case NP_INT_16:                     // +123AB
+    case NP_INT_16:                     // +123AB.       ; Change to 2 for hex.
       groupingGap = 2;
       break;
     default:
@@ -1275,7 +1278,7 @@ void tamTransitionSystem(uint16_t tamTransition) {
 
         case TT_DOT :
           if(tamMode != TM_VALUE && tamMode != TM_VALUE_CHB) {
-            if((tamMode == TM_FLAG && numberOfLocalFlags > 0) || (tamMode != TM_FLAG && allLocalRegisterPointer->numberOfLocalRegisters != 0)) {
+            if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && numberOfLocalFlags > 0) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && allLocalRegisterPointer->numberOfLocalRegisters != 0)) {
               sprintf(tamBuffer, "%s .__", indexOfItems[getOperation()].itemCatalogName);
               transitionSystemState = 3;
             }
@@ -1399,8 +1402,8 @@ void tamTransitionSystem(uint16_t tamTransition) {
       switch(tamTransition) {
         case TT_DIGIT :
           tamNumber = tamDigit;
-          if((tamMode == TM_FLAG && tamNumber < numberOfLocalFlags) || (tamMode != TM_FLAG && tamNumber < allLocalRegisterPointer->numberOfLocalRegisters)) {
-            if((tamMode == TM_FLAG && tamNumber*10 >= numberOfLocalFlags) || (tamMode != TM_FLAG && tamNumber*10 >= allLocalRegisterPointer->numberOfLocalRegisters)) {
+          if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber < numberOfLocalFlags) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber < allLocalRegisterPointer->numberOfLocalRegisters)) {
+            if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber*10 >= numberOfLocalFlags) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber*10 >= allLocalRegisterPointer->numberOfLocalRegisters)) {
               indexOfItems[getOperation()].func(tamNumber + FIRST_LOCAL_REGISTER);
               calcModeNormal();
               return;
@@ -1429,7 +1432,7 @@ void tamTransitionSystem(uint16_t tamTransition) {
       // 0 <= tamNumber < numberOfLocalRegisters  in the case of a register parameter
       switch(tamTransition) {
         case TT_DIGIT :
-          if((tamMode == TM_FLAG && tamNumber*10 + tamDigit < numberOfLocalFlags) || (tamMode != TM_FLAG && tamNumber*10 + tamDigit < allLocalRegisterPointer->numberOfLocalRegisters)) {
+          if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber*10 + tamDigit < numberOfLocalFlags) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber*10 + tamDigit < allLocalRegisterPointer->numberOfLocalRegisters)) {
             indexOfItems[getOperation()].func(tamNumber*10 + tamDigit + FIRST_LOCAL_REGISTER);
             calcModeNormal();
             return;
@@ -1528,8 +1531,8 @@ void tamTransitionSystem(uint16_t tamTransition) {
       switch(tamTransition) {
         case TT_DIGIT :
           tamNumber = tamDigit;
-          if((tamMode == TM_FLAG && tamNumber < numberOfLocalFlags) || (tamMode != TM_FLAG && tamNumber < allLocalRegisterPointer->numberOfLocalRegisters)) {
-            if((tamMode == TM_FLAG && tamNumber*10 >= numberOfLocalFlags) || (tamMode != TM_FLAG && tamNumber*10 >= allLocalRegisterPointer->numberOfLocalRegisters)) {
+          if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber < numberOfLocalFlags) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber < allLocalRegisterPointer->numberOfLocalRegisters)) {
+            if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber*10 >= numberOfLocalFlags) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber*10 >= allLocalRegisterPointer->numberOfLocalRegisters)) {
               value = indirectAddressing(tamNumber + FIRST_LOCAL_REGISTER, tamNumberMin, tamNumberMax);
 
               if(lastErrorCode == 0) {
@@ -1561,7 +1564,7 @@ void tamTransitionSystem(uint16_t tamTransition) {
       // 0 <= tamNumber < numberOfLocalRegisters
       switch(tamTransition) {
         case TT_DIGIT :
-          if((tamMode == TM_FLAG && tamNumber*10 + tamDigit < numberOfLocalFlags) || (tamMode != TM_FLAG && tamNumber*10 + tamDigit < allLocalRegisterPointer->numberOfLocalRegisters)) {
+          if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber*10 + tamDigit < numberOfLocalFlags) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber*10 + tamDigit < allLocalRegisterPointer->numberOfLocalRegisters)) {
             value = indirectAddressing(tamNumber*10 + tamDigit + FIRST_LOCAL_REGISTER, tamNumberMin, tamNumberMax);
 
             if(lastErrorCode == 0) {
@@ -1809,7 +1812,7 @@ void tamTransitionSystem(uint16_t tamTransition) {
   }
 
   if(stringWidth(tamBuffer, &standardFont, true, true) + 1 + lineTWidth > SCREEN_WIDTH) {
-    clearRegisterLine(Y_POSITION_OF_TAM_LINE, 32);
+    clearRegisterLine(TAM_REGISTER_LINE, false, false);
   }
   showString(tamBuffer, &standardFont, 25, Y_POSITION_OF_TAM_LINE + 6, vmNormal, true, true);
 }
@@ -1862,7 +1865,7 @@ void closeNim(void) {
       }
 
       if(nimNumberPart == NP_COMPLEX_INT_PART && (nimBuffer[lastChar] == 'i' || nimBuffer[lastChar-1]*256 + nimBuffer[lastChar]*256 == 0xa221)) { // complex i or measured angle
-        nimBuffer[++lastChar] = '0'; //Change from 1 to 0 to make imaginary part rather default to 0 if EXIT is pressed
+        nimBuffer[++lastChar] = '0';                    //JMCPX. CHANGED FROM "1" to '0'. PLEASE CONSIDER KEEPING IT '0'. IT MAKES NO SENSE DEFAULTING TO 0+1xi IF ABORTING CC ENTRY.
         nimBuffer[lastChar + 1] = 0;
       }
 
@@ -2089,7 +2092,7 @@ void closeNim(void) {
           numer   = atoi(nimBuffer + posSpace + 1);
           denom   = atoi(nimBuffer + posSlash + 1);
 
-          if(denom == 0 && !getFlag(FLAG_DANGER)) {
+          if(denom == 0 && !getSystemFlag(FLAG_SPCRES)) {
             displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
             #if (EXTRA_INFO_ON_CALC_ERROR == 1)
               showInfoDialog("In function parseNimString:", "the denominator of the fraction should not be 0!", "Unless D flag (Danger) is set.", NULL);
@@ -2107,8 +2110,13 @@ void closeNim(void) {
             real34SetNegativeSign(REGISTER_REAL34_DATA(REGISTER_X));
           }
 
-          if(fractionType == FT_NONE) {
-            fractionType = (integer == 0 ? FT_IMPROPER : FT_PROPER); // d/c or a b/c
+          if(!getSystemFlag(FLAG_FRACT)) {
+            if(integer == 0) {
+              clearSystemFlag(FLAG_PROPFR); // d/c
+            }
+            else {
+              setSystemFlag(FLAG_PROPFR); // a b/c
+            }
           }
         }
         else if(nimNumberPart == NP_COMPLEX_INT_PART || nimNumberPart == NP_COMPLEX_FLOAT_PART || nimNumberPart == NP_COMPLEX_EXPONENT) {
@@ -2130,7 +2138,7 @@ void closeNim(void) {
             real34SetNegativeSign(REGISTER_IMAG34_DATA(REGISTER_X));
           }
 
-          if(complexMode == CM_POLAR) {
+          if(!getSystemFlag(FLAG_RECTN)) { // polar mode
             if(real34CompareEqual(REGISTER_REAL34_DATA(REGISTER_X), const34_0)) {
               real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
             }

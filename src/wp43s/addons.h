@@ -1,18 +1,20 @@
-/* This file is part of 43S.
+/* This file is part of WP 43S.
  *
- * 43S is free software: you can redistribute it and/or modify
+ * WP 43S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * 43S is distributed in the hope that it will be useful,
+ * WP 43S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
+ * along with WP 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* ADDITIONAL C43 functions and routines */
 
 /********************************************//**
  * \file arctan.h
@@ -33,4 +35,6 @@ void fnJMdown       (uint16_t unusedParamButMandatory);
 void fnJM_2SI       (uint16_t unusedParamButMandatory);
 
 //for display.c
-void exponentToUnitDisplayString(int32_t exponent, char *displayString, bool_t nimMode, const char *separator);
+void fnDisplayFormatSigFig      (uint16_t displayFormatN);
+void fnDisplayFormatUnit        (uint16_t displayFormatN);
+void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode, const char *separator);

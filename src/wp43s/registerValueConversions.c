@@ -296,8 +296,6 @@ void convertRealToLongInteger(const real_t *re, longInteger_t lgInt, enum roundi
   if(sign) {
     longIntegerChangeSign(lgInt);
   }
-
-  convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_X);
 }
 
 

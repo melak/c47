@@ -230,7 +230,7 @@ static int32_t WP34S_calc_overflow(uint64_t xv, uint64_t yv, int32_t neg) {
       return 0;
   }
 
-  fnSetFlag(FLAG_OVERFLOW);
+  setSystemFlag(FLAG_OVERFLOW);
 
   return 1;
 }
@@ -308,7 +308,7 @@ uint64_t WP34S_intAdd(uint64_t y, uint64_t x) {
   uint64_t sum;
   int32_t overflow;
 
-  fnClearFlag(FLAG_OVERFLOW);
+  clearSystemFlag(FLAG_OVERFLOW);
   if(termXSign == termYSign) {
     overflow = WP34S_calc_overflow(termX, termY, termXSign);
   }
@@ -320,10 +320,12 @@ uint64_t WP34S_intAdd(uint64_t y, uint64_t x) {
     const uint64_t x2 = (x & shortIntegerSignBit)?-(x ^ shortIntegerSignBit):x;
     const uint64_t y2 = (y & shortIntegerSignBit)?-(y ^ shortIntegerSignBit):y;
 
-    if(overflow)
-      fnSetFlag(FLAG_CARRY);
-    else
-      fnClearFlag(FLAG_CARRY);
+    if(overflow) {
+      setSystemFlag(FLAG_CARRY);
+    }
+    else {
+      clearSystemFlag(FLAG_CARRY);
+    }
 
     sum = y2 + x2;
     if(sum & shortIntegerSignBit) {
@@ -336,14 +338,14 @@ uint64_t WP34S_intAdd(uint64_t y, uint64_t x) {
     sum = y + x;
 
     if(maskedSum < (y & shortIntegerMask)) {
-      fnSetFlag(FLAG_CARRY);
+      setSystemFlag(FLAG_CARRY);
 
       if(shortIntegerMode == SIM_1COMPL) {
         sum++;
       }
     }
     else {
-      fnClearFlag(FLAG_CARRY);
+      clearSystemFlag(FLAG_CARRY);
     }
   }
   return sum & shortIntegerMask;
@@ -356,7 +358,7 @@ uint64_t WP34S_intSubtract(uint64_t y, uint64_t x) {
   uint64_t termY = WP34S_extract_value(y, &termYSign);
   uint64_t difference;
 
-  fnClearFlag(FLAG_OVERFLOW);
+  clearSystemFlag(FLAG_OVERFLOW);
   if(termXSign != termYSign) {
     WP34S_calc_overflow(termX, termY, termYSign);
   }
@@ -364,10 +366,12 @@ uint64_t WP34S_intSubtract(uint64_t y, uint64_t x) {
   if(shortIntegerMode == SIM_SIGNMT) {
     int64_t x2, y2;
 
-    if((termXSign == 0 && termYSign == 0 && termX > termY) || (termXSign != 0 && termYSign != 0 && termX < termY))
-      fnSetFlag(FLAG_CARRY);
-    else
-      fnClearFlag(FLAG_CARRY);
+    if((termXSign == 0 && termYSign == 0 && termX > termY) || (termXSign != 0 && termYSign != 0 && termX < termY)) {
+      setSystemFlag(FLAG_CARRY);
+    }
+    else {
+      clearSystemFlag(FLAG_CARRY);
+    }
 
     x2 = (x & shortIntegerSignBit)?-(x ^ shortIntegerSignBit):x;
     y2 = (y & shortIntegerSignBit)?-(y ^ shortIntegerSignBit):y;
@@ -381,9 +385,9 @@ uint64_t WP34S_intSubtract(uint64_t y, uint64_t x) {
     difference = y - x;
 
     if((uint64_t)y < (uint64_t)x) {
-      fnSetFlag(FLAG_CARRY);
+      setSystemFlag(FLAG_CARRY);
       if(shortIntegerMode == SIM_UNSIGN) {
-        fnSetFlag(FLAG_OVERFLOW);
+        setSystemFlag(FLAG_OVERFLOW);
       }
 
       if(shortIntegerMode == SIM_1COMPL) {
@@ -391,7 +395,7 @@ uint64_t WP34S_intSubtract(uint64_t y, uint64_t x) {
       }
     }
     else {
-      fnClearFlag(FLAG_CARRY);
+      clearSystemFlag(FLAG_CARRY);
     }
   }
   return difference & shortIntegerMask;
@@ -407,10 +411,12 @@ uint64_t WP34S_intMultiply(uint64_t y, uint64_t x) {
 
   product = WP34S_multiply_with_overflow(multiplier, multiplicand, &overflow);
 
-  if(overflow)
-    fnSetFlag(FLAG_OVERFLOW);
-  else
-    fnClearFlag(FLAG_OVERFLOW);
+  if(overflow) {
+    setSystemFlag(FLAG_OVERFLOW);
+  }
+  else {
+    clearSystemFlag(FLAG_OVERFLOW);
+  }
 
   if(shortIntegerMode == SIM_UNSIGN) {
     return product;
@@ -447,20 +453,22 @@ uint64_t WP34S_intDivide(uint64_t y, uint64_t x) {
     return 0;
   }
 
-  fnClearFlag(FLAG_OVERFLOW);
+  clearSystemFlag(FLAG_OVERFLOW);
   quotient = (dividend / divisor) & shortIntegerMask;
   // Set carry if there is a remainder
-  if(quotient * divisor != dividend)
-    fnSetFlag(FLAG_CARRY);
-  else
-    fnClearFlag(FLAG_CARRY);
+  if(quotient * divisor != dividend) {
+    setSystemFlag(FLAG_CARRY);
+  }
+  else {
+    clearSystemFlag(FLAG_CARRY);
+  }
 
   if(shortIntegerMode != SIM_UNSIGN) {
     if(quotient & shortIntegerSignBit)
-      fnSetFlag(FLAG_CARRY);
+      setSystemFlag(FLAG_CARRY);
     // Special case for 0x8000...00 / -1 in 2's complement
     if(shortIntegerMode == SIM_2COMPL && divisorSign && divisor == 1 && y == shortIntegerSignBit) {
-      fnSetFlag(FLAG_OVERFLOW);
+      setSystemFlag(FLAG_OVERFLOW);
     }
   }
   return WP34S_build_value(quotient, divisorSign ^ dividendSign);
@@ -473,11 +481,11 @@ uint64_t WP34S_intSqr(uint64_t x) {
 
 uint64_t WP34S_intCube(uint64_t x) {
   int64_t y = WP34S_intMultiply(x, x);
-  int32_t overflow = (getFlag(FLAG_OVERFLOW) == ON ? 1 : 0);
+  int32_t overflow = (getSystemFlag(FLAG_OVERFLOW) == ON ? 1 : 0);
 
   y = WP34S_intMultiply(x, y);
   if(overflow) {
-    fnSetFlag(FLAG_OVERFLOW);
+    setSystemFlag(FLAG_OVERFLOW);
   }
   return y;
 }
@@ -534,11 +542,11 @@ uint64_t WP34S_intChs(uint64_t x) {
   uint64_t value = WP34S_extract_value(x, &signValue);
 
   if(shortIntegerMode == SIM_UNSIGN || (shortIntegerMode == SIM_2COMPL && x == shortIntegerSignBit)) {
-    fnSetFlag(FLAG_OVERFLOW);
+    setSystemFlag(FLAG_OVERFLOW);
     return (-(int64_t)value) & shortIntegerMask;
   }
 
-  fnClearFlag(FLAG_OVERFLOW);
+  clearSystemFlag(FLAG_OVERFLOW);
   return WP34S_build_value(value, !signValue);
 }
 
@@ -572,10 +580,12 @@ uint64_t WP34S_intSqrt(uint64_t x) {
       nn1--;
     }
 
-    if(nn0 != value)
-      fnSetFlag(FLAG_CARRY);
-    else
-      fnClearFlag(FLAG_CARRY);
+    if(nn0 != value) {
+      setSystemFlag(FLAG_CARRY);
+    }
+    else {
+      clearSystemFlag(FLAG_CARRY);
+    }
   }
   return WP34S_build_value(nn1, signValue);
 }
@@ -585,9 +595,9 @@ uint64_t WP34S_intAbs(uint64_t x) {
   int32_t signValue;
   uint64_t value = WP34S_extract_value(x, &signValue);
 
-  fnClearFlag(FLAG_OVERFLOW);
+  clearSystemFlag(FLAG_OVERFLOW);
   if(shortIntegerMode == SIM_2COMPL && x == shortIntegerSignBit) {
-    fnSetFlag(FLAG_OVERFLOW);
+    setSystemFlag(FLAG_OVERFLOW);
     return x;
   }
   return WP34S_build_value(value, 0);
@@ -644,10 +654,12 @@ static uint64_t WP34S_int_power_helper(uint64_t base, uint64_t exponent, int32_t
     }
   }
 
-  if(overflow)
-    fnSetFlag(FLAG_OVERFLOW);
-  else
-    fnClearFlag(FLAG_OVERFLOW);
+  if(overflow) {
+    setSystemFlag(FLAG_OVERFLOW);
+  }
+  else {
+    clearSystemFlag(FLAG_OVERFLOW);
+  }
 
   return power;
 }
@@ -665,11 +677,11 @@ uint64_t WP34S_intPower(uint64_t b, uint64_t e) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       showInfoDialog("In function WP34S_intPower: Cannot calculate 0^0!", NULL, NULL, NULL);
     #endif
-    fnSetFlag(FLAG_OVERFLOW);
+    setSystemFlag(FLAG_OVERFLOW);
     return 0;
   }
-  fnClearFlag(FLAG_CARRY);
-  fnClearFlag(FLAG_OVERFLOW);
+  clearSystemFlag(FLAG_CARRY);
+  clearSystemFlag(FLAG_OVERFLOW);
 
   if(exponent == 0) {
     return 1;
@@ -679,7 +691,7 @@ uint64_t WP34S_intPower(uint64_t b, uint64_t e) {
   }
 
   if(exponentSign) {
-    fnSetFlag(FLAG_CARRY);
+    setSystemFlag(FLAG_CARRY);
     return 0;
   }
 
@@ -695,11 +707,13 @@ uint64_t WP34S_int2pow(uint64_t exp) {
   uint64_t exponent = WP34S_extract_value(exp, &signExponent);
   uint32_t wordSize = shortIntegerWordSize;
 
-  fnClearFlag(FLAG_OVERFLOW);
-  if(signExponent && exponent == 1)
-    fnSetFlag(FLAG_CARRY);
-  else
-    fnClearFlag(FLAG_CARRY);
+  clearSystemFlag(FLAG_OVERFLOW);
+  if(signExponent && exponent == 1) {
+    setSystemFlag(FLAG_CARRY);
+  }
+  else {
+    clearSystemFlag(FLAG_CARRY);
+  }
 
   if(signExponent && exponent != 0) {
     return 0;
@@ -709,12 +723,14 @@ uint64_t WP34S_int2pow(uint64_t exp) {
     wordSize--;
   }
   if(exponent >= wordSize) {
-    if(exponent == wordSize)
-      fnSetFlag(FLAG_CARRY);
-    else
-      fnClearFlag(FLAG_CARRY);
+    if(exponent == wordSize) {
+      setSystemFlag(FLAG_CARRY);
+    }
+    else {
+      clearSystemFlag(FLAG_CARRY);
+    }
 
-    fnSetFlag(FLAG_OVERFLOW);
+    setSystemFlag(FLAG_OVERFLOW);
     return 0;
   }
   return 1LL << (uint32_t)(exponent & 0xff);
@@ -728,14 +744,14 @@ uint64_t WP34S_int10pow(uint64_t x) {
   uint64_t exponent = WP34S_extract_value(x, &sx);
   int32_t overflow = 0;
 
-  fnClearFlag(FLAG_CARRY);
+  clearSystemFlag(FLAG_CARRY);
   if(exponent == 0) {
-    fnClearFlag(FLAG_OVERFLOW);
+    clearSystemFlag(FLAG_OVERFLOW);
     return 1;
   }
 
   if(sx) {
-    fnSetFlag(FLAG_CARRY);
+    setSystemFlag(FLAG_CARRY);
     return 0;
   }
 
@@ -761,10 +777,12 @@ uint64_t WP34S_intLog2(uint64_t x) {
     return 0;
   }
 
-  if(value & (value - 1))
-    fnSetFlag(FLAG_CARRY);
-  else
-    fnClearFlag(FLAG_CARRY);
+  if(value & (value - 1)) {
+    setSystemFlag(FLAG_CARRY);
+  }
+  else {
+    clearSystemFlag(FLAG_CARRY);
+  }
 
   if(value != 0) {
     while(value >>= 1) {
@@ -800,10 +818,12 @@ uint64_t WP34S_intLog10(uint64_t x) {
     value /= 10;
   }
 
-  if(c || value != 1)
-    fnSetFlag(FLAG_CARRY);
-  else
-    fnClearFlag(FLAG_CARRY);
+  if(c || value != 1) {
+    setSystemFlag(FLAG_CARRY);
+  }
+  else {
+    clearSystemFlag(FLAG_CARRY);
+  }
 
   return WP34S_build_value(r, signValue);
 }
@@ -884,7 +904,7 @@ void intmsks(uint32_t arg, enum rarg op)
   int64_t x;
   uint32_t i;
   int64_t (*f)(int64_t);
-  const int32_t carry = (getFlag(FLAG_CARRY) == ON ? 1 : 0);
+  const int32_t carry = (getSystemFlag(FLAG_CARRY) == ON ? 1 : 0);
 
   lift();
 
@@ -1167,7 +1187,7 @@ int64_t intRecv(int64_t x)
  */
 int32_t save_flags(void)
  {
-  return (getFlag(FLAG_OVERFLOW) == ON ? 2 : 0) | (getFlag(FLAG_CARRY) == ON ? 1 : 0);
+  return (getSystemFlag(FLAG_OVERFLOW) == ON ? 2 : 0) | (getSystemFlag(FLAG_CARRY) == ON ? 1 : 0);
  }
 
 void restore_flags(int32_t co)
@@ -1264,7 +1284,7 @@ int64_t intMax(int64_t y, int64_t x)
 int64_t intMAdd(int64_t z, int64_t y, int64_t x)
  {
   int64_t t = intMultiply(x, y);
-  const int32_t of = (getFlag(FLAG_OVERFLOW) == ON ? 1 : 0);
+  const int32_t of = (getSystemFlag(FLAG_OVERFLOW) == ON ? 1 : 0);
 
   t = intAdd(t, z);
   if(of)
@@ -1650,7 +1670,7 @@ int64_t intRR(int64_t x)
 
 int64_t intRLC(int64_t x)
  {
-  const int32_t cin = (getFlag(FLAG_CARRY) == ON ? 1 : 0);
+  const int32_t cin = (getSystemFlag(FLAG_CARRY) == ON ? 1 : 0);
   set_carry((shortIntegerSignBit & x)?1:0);
 
   return (intLSL(x) | cin) & shortIntegerMask;
@@ -1658,7 +1678,7 @@ int64_t intRLC(int64_t x)
 
 int64_t intRRC(int64_t x)
  {
-  const int32_t cin = (getFlag(FLAG_CARRY) == ON ? 1 : 0);
+  const int32_t cin = (getSystemFlag(FLAG_CARRY) == ON ? 1 : 0);
 
   set_carry(x&1);
   x = intLSR(x);

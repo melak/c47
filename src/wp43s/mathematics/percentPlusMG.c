@@ -85,7 +85,7 @@ static bool_t percentPlusMGReal(real_t *xReal, real_t *yReal, real_t *rReal, rea
    * Check x and y
    */
   if(realCompareEqual(xReal, const_100) && realIsZero(yReal)) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realCopy(const_NaN, rReal);
     }
     else {
@@ -98,7 +98,7 @@ static bool_t percentPlusMGReal(real_t *xReal, real_t *yReal, real_t *rReal, rea
   }
   else if(realCompareEqual(xReal, const_100))
   {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realCopy((realIsPositive(yReal) ? const_plusInfinity : const_minusInfinity), rReal);
     }
     else {

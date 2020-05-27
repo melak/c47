@@ -99,7 +99,7 @@ void chsShoI(void) {
 
 
 void chsReal(void) {
-  if(!getFlag(FLAG_DANGER) && real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
+  if(!getSystemFlag(FLAG_SPCRES) && real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
     displayCalcErrorMessage(real34IsPositive(REGISTER_REAL34_DATA(REGISTER_X)) ? ERROR_OVERFLOW_MINUS_INF : ERROR_OVERFLOW_PLUS_INF , ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       showInfoDialog("In function chsReal:", "cannot change infinity sign while D flag is clear", NULL, NULL);
@@ -109,7 +109,7 @@ void chsReal(void) {
 
   real34ChangeSign(REGISTER_REAL34_DATA(REGISTER_X));
 
-  if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X)) && !getFlag(FLAG_DANGER)) {
+  if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X)) && !getSystemFlag(FLAG_SPCRES)) {
     real34SetPositiveSign(REGISTER_REAL34_DATA(REGISTER_X));
   }
 }
@@ -117,7 +117,7 @@ void chsReal(void) {
 
 
 void chsCplx(void) {
-  if(!getFlag(FLAG_DANGER)) {
+  if(!getSystemFlag(FLAG_SPCRES)) {
     if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
       displayCalcErrorMessage(real34IsPositive(REGISTER_REAL34_DATA(REGISTER_X)) ? ERROR_OVERFLOW_MINUS_INF : ERROR_OVERFLOW_PLUS_INF , ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -137,11 +137,11 @@ void chsCplx(void) {
 
   complex34ChangeSign(REGISTER_COMPLEX34_DATA(REGISTER_X));
 
-  if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X)) && !getFlag(FLAG_DANGER)) {
+  if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X)) && !getSystemFlag(FLAG_SPCRES)) {
     real34SetPositiveSign(REGISTER_REAL34_DATA(REGISTER_X));
   }
 
-  if(real34IsZero(REGISTER_IMAG34_DATA(REGISTER_X)) && !getFlag(FLAG_DANGER)) {
+  if(real34IsZero(REGISTER_IMAG34_DATA(REGISTER_X)) && !getSystemFlag(FLAG_SPCRES)) {
     real34SetPositiveSign(REGISTER_IMAG34_DATA(REGISTER_X));
   }
 }

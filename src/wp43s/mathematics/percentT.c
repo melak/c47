@@ -86,7 +86,7 @@ static bool_t percentTReal(real_t *xReal, real_t *yReal, real_t *rReal, realCont
    * Check x and y
    */
   if(realIsZero(xReal) && realIsZero(yReal)) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realCopy(const_NaN, rReal);
     }
     else {
@@ -99,7 +99,7 @@ static bool_t percentTReal(real_t *xReal, real_t *yReal, real_t *rReal, realCont
   }
   else if(realIsZero(yReal))
   {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realCopy((realIsPositive(xReal) ? const_plusInfinity : const_minusInfinity), rReal);
     }
     else {

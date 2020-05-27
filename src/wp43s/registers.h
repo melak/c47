@@ -34,10 +34,11 @@
 #define REGISTER_K  111
 
 // If one of the 4 next defines is changed: change also xxxLINE in screen.h
-#define AIM_REGISTER_LINE REGISTER_X
-#define TAM_REGISTER_LINE REGISTER_T
-#define NIM_REGISTER_LINE REGISTER_X
-#define ERR_REGISTER_LINE REGISTER_Z
+#define AIM_REGISTER_LINE        REGISTER_X
+#define TAM_REGISTER_LINE        REGISTER_T
+#define NIM_REGISTER_LINE        REGISTER_X
+#define ERR_REGISTER_LINE        REGISTER_Z
+#define TRUE_FALSE_REGISTER_LINE REGISTER_Z
 
 #define SAVED_REGISTER_X    2000
 #define SAVED_REGISTER_Y    2001
@@ -51,7 +52,7 @@
 #define LAST_SAVED_REGISTER 2009
 #define TEMP_REGISTER       2009
 
-#define getStackTop()                      (stackSize == SS_4 ? REGISTER_T : REGISTER_D)
+#define getStackTop()                      (getSystemFlag(FLAG_SSIZE8) ? REGISTER_D : REGISTER_T)
 
 #define freeRegisterData(regist)           freeWp43s((void *)getRegisterDataPointer(regist), TO_BYTES(getRegisterFullSize(regist)))
 
@@ -60,7 +61,7 @@
 ///////////////////////////////////////////////////////
 // Register numbering:
 //    0 to  111 global resisters
-//  112 to  199 local registers (.00 to .87)
+//  112 to  211 local registers (from .00 to .99) this are 100 local registers but TAM allows only a parameter from 0 to 99 (without indirection)
 // 1000 to 1999 named variables
 // 2000 to 2009 saved stack registers (UNDO item)
 

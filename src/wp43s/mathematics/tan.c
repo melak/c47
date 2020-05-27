@@ -95,7 +95,7 @@ void tanLonI(void) {
   longIntegerAngleReduction(REGISTER_X, currentAngularMode, &tan);
   WP34S_Cvt2RadSinCosTan(&tan, currentAngularMode, &sin, &cos, &tan, &ctxtReal39);
 
-  if(realIsZero(&cos) && !getFlag(FLAG_DANGER)) {
+  if(realIsZero(&cos) && !getSystemFlag(FLAG_SPCRES)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       showInfoDialog("In function tanLonI:", "X = " STD_PLUS_MINUS "90" STD_DEGREE, NULL, NULL);
@@ -138,7 +138,7 @@ void tanReal(void) {
     xAngularMode = getRegisterAngularMode(REGISTER_X);
     WP34S_Cvt2RadSinCosTan(&tan, (xAngularMode == AM_NONE ? currentAngularMode : xAngularMode), &sin, &cos, &tan, &ctxtReal39);
 
-    if(realIsZero(&cos) && !getFlag(FLAG_DANGER)) {
+    if(realIsZero(&cos) && !getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         showInfoDialog("In function tanReal:", "X = " STD_PLUS_MINUS "90" STD_DEGREE, NULL, NULL);

@@ -22,23 +22,6 @@
 
 
 
-/********************************************//**
- * \brief Sets the denominator mode
- *
- * \param[in] denMode uint16_t Denominator mode
- * \return void
- ***********************************************/
-void fnDenMode(uint16_t denMode) {
-  denominatorMode = denMode;
-
-  fnRefreshRadioState(RB_DM, denMode);                                          //dr
-
-  showFracMode();
-  refreshStack();
-}
-
-
-
 void fnDenMax(uint16_t unusedParamButMandatory) {
   real_t reX;
 
@@ -75,7 +58,7 @@ void fnDenMax(uint16_t unusedParamButMandatory) {
   }
 
   if(realIsSpecial(&reX) || realCompareLessThan(&reX, const_1) || realCompareGreaterEqual(&reX, const_9999)) {
-    denMax = DM_DENMAX;
+    denMax = MAX_DENMAX;
   }
   else {
     int32_t den;
@@ -108,25 +91,16 @@ void fnDenMax(uint16_t unusedParamButMandatory) {
  * \return void
  ***********************************************/
 void fnToggleFractionType(uint16_t unusedParamButMandatory) {
-  switch(fractionType) {
-    case FT_NONE:
-      fractionType = FT_PROPER;
-      break;
-
-    case FT_PROPER:
-      fractionType = FT_IMPROPER;
-      break;
-
-    case FT_IMPROPER:
-      fractionType = FT_PROPER;
-      break;
-
-    default: {}
+  if(getSystemFlag(FLAG_FRACT)) {
+    flipSystemFlag(FLAG_PROPFR);
+  }
+  else {
+    setSystemFlag(FLAG_FRACT);
   }
 
 //fnRefreshRadioState(RB_FT, fractionType);                                     //dr
-  fnRefreshComboxState(CB_JC, JC_IMPROPER, fractionType == FT_IMPROPER);        //dr
-  fnRefreshComboxState(CB_JC, JC_PROPER, fractionType == FT_PROPER);            //dr
+  fnRefreshComboxState(CB_JC, JC_IMPROPER, !getSystemFlag(FLAG_PROPFR)); //fractionType == FT_IMPROPER);        //dr
+  fnRefreshComboxState(CB_JC, JC_PROPER,   getSystemFlag(FLAG_PROPFR)); //fractionType == FT_PROPER);            //dr
 
   refreshStack();
 }
@@ -189,7 +163,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
   //*******************
   //* Any denominator *
   //*******************
-  if(denominatorMode == DM_ANY) {
+  if(getSystemFlag(FLAG_DENANY)) { // denominator up to DENMAX
     uint64_t iPart[20], ex, bestNumer=0, bestDenom=1;
     uint32_t invalidOperation;
     int16_t i, j;
@@ -303,7 +277,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
   //*******************
   //* Fix denominator *
   //*******************
-  else if(denominatorMode == DM_FIX) {
+  else if(getSystemFlag(FLAG_DENFIX)) { // denominator is DENMAX
     *denom = denMax;
 
     uInt32ToReal34(denMax, &delta);
@@ -314,7 +288,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
   //******************************
   //* Factors of max denominator *
   //******************************
-  else if(denominatorMode == DM_FAC) {
+  else { // deniminator is a factor of DENMAX
     uint64_t bestNumer=0, bestDenom=1;
 
     real34_t temp4;
@@ -342,18 +316,6 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
 
     *numer = bestNumer;
     *denom = bestDenom;
-  }
-
-  else {
-    sprintf(errorMessage, "In function fraction: %d is an unexpected value for denominatorMode!", denominatorMode);
-    displayBugScreen(errorMessage);
-    *sign             = 0;
-    *intPart          = 0;
-    *numer            = 0;
-    *denom            = 0;
-    *lessEqualGreater = 0;
-
-    return;
   }
 
   // The register value
@@ -385,7 +347,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
     *lessEqualGreater = 1;
   }
 
-  if(fractionType == FT_IMPROPER) { // d/c
+  if(!getSystemFlag(FLAG_PROPFR)) { // d/c
     *numer += *denom * *intPart;
     *intPart = 0;
   }

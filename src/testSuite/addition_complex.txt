@@ -6,7 +6,7 @@
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
-In: FD=0 FI=0 SD=0 RM=0 IM=2compl SS=4 WS=64
+In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
 Func: fnAdd
 
 
@@ -29,17 +29,17 @@ Func: fnAdd
 ;=======================================
 ; Complex34 + Complex34 --> Complex34
 ;=======================================
-In:  SL=0 FI=0 RY=Cplx:"123.456 i -6.78" RX=Cplx:"-12540 i 7.541235"
-Out: EC=0 FI=1 SL=1 RL=Cplx:"-12540 i 7.541235" RX=Cplx:"-12416.544 i 0.761235"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RY=Cplx:"123.456 i -6.78" RX=Cplx:"-12540 i 7.541235"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"-12540 i 7.541235" RX=Cplx:"-12416.544 i 0.761235"
 
-In:  SL=0 FI=0 RY=Cplx:"NaN i -6.78" RX=Cplx:"-12540 i 7.541235"
-Out: EC=0 FI=1 SL=1 RL=Cplx:"-12540 i 7.541235" RX=Cplx:"NaN i 0.761235"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RY=Cplx:"NaN i -6.78" RX=Cplx:"-12540 i 7.541235"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"-12540 i 7.541235" RX=Cplx:"NaN i 0.761235"
 
-In:  SL=1 FI=0 RY=Cplx:"123.456 i NaN" RX=Cplx:"-12540 i 7.541235"
-Out: EC=0 FI=1 SL=1 RL=Cplx:"-12540 i 7.541235" RX=Cplx:"-12416.544 i NaN"
+In:  FL_ASLIFT=1 FL_CPXRES=0 RY=Cplx:"123.456 i NaN" RX=Cplx:"-12540 i 7.541235"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"-12540 i 7.541235" RX=Cplx:"-12416.544 i NaN"
 
-In:  SL=0 FI=0 RY=Cplx:"123.456 i -6.78" RX=Cplx:"NaN i 7.541235"
-Out: EC=0 FI=1 SL=1 RL=Cplx:"NaN i 7.541235" RX=Cplx:"NaN i 0.761235"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RY=Cplx:"123.456 i -6.78" RX=Cplx:"NaN i 7.541235"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"NaN i 7.541235" RX=Cplx:"NaN i 0.761235"
 
-In:  SL=1 FI=0 RY=Cplx:"123.456 i -6.78" RX=Cplx:"-12540 i NaN"
-Out: EC=0 FI=1 SL=1 RL=Cplx:"-12540 i NaN" RX=Cplx:"-12416.544 i NaN"
+In:  FL_ASLIFT=1 FL_CPXRES=0 RY=Cplx:"123.456 i -6.78" RX=Cplx:"-12540 i NaN"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"-12540 i NaN" RX=Cplx:"-12416.544 i NaN"

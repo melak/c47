@@ -111,7 +111,7 @@ void gammaLonI(void) {
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
 
   if(realIsInfinite(&x)) {
-    if(!getFlag(FLAG_DANGER)) {
+    if(!getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         showInfoDialog("In function gammaLonI:", "cannot use " STD_PLUS_MINUS STD_INFINITY " as X input of gamma when flag D is not set", NULL, NULL);
@@ -124,7 +124,7 @@ void gammaLonI(void) {
   }
 
   if(realCompareLessEqual(&x, const_0)) { // x <= 0 and is an integer
-    if(!getFlag(FLAG_DANGER)) {
+    if(!getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         showInfoDialog("In function gammaLonI:", "cannot use a negative integer as X input of gamma when flag D is not set", NULL, NULL);
@@ -149,7 +149,7 @@ void lnGammaLonI(void) {
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
 
   if(realIsInfinite(&x)) {
-    if(!getFlag(FLAG_DANGER)) {
+    if(!getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         showInfoDialog("In function lnGammaLonI:", "cannot use " STD_PLUS_MINUS STD_INFINITY " as X input of gamma when flag D is not set", NULL, NULL);
@@ -162,7 +162,7 @@ void lnGammaLonI(void) {
   }
 
   if(realCompareLessEqual(&x, const_0)) { // x <= 0 and is an integer
-    if(!getFlag(FLAG_DANGER)) {
+    if(!getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         showInfoDialog("In function lnGammaLonI:", "cannot use a negative integer as X input of gamma when flag D is not set", NULL, NULL);
@@ -184,7 +184,7 @@ void gammaReal(void) {
   setRegisterAngularMode(REGISTER_X, AM_NONE);
 
   if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
-    if(!getFlag(FLAG_DANGER)) {
+    if(!getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         showInfoDialog("In function gammaReal:", "cannot use " STD_PLUS_MINUS STD_INFINITY " as X input of gamma when flag D is not set", NULL, NULL);
@@ -197,7 +197,7 @@ void gammaReal(void) {
   }
 
   if(real34CompareLessEqual(REGISTER_REAL34_DATA(REGISTER_X), const34_0) && real34IsAnInteger(REGISTER_REAL34_DATA(REGISTER_X))) {
-    if(!getFlag(FLAG_DANGER)) {
+    if(!getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         showInfoDialog("In function gammaReal:", "cannot use a negative integer as X input of gamma when flag D is not set", NULL, NULL);
@@ -225,7 +225,7 @@ void lnGammaReal(void) {
   setRegisterAngularMode(REGISTER_X, AM_NONE);
 
   if(realIsInfinite(&xReal)) {
-    if(!getFlag(FLAG_DANGER)) {
+    if(!getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         showInfoDialog("In function lngammaReal:", "cannot use " STD_PLUS_MINUS STD_INFINITY " as X input of lngamma when flag D is not set", NULL, NULL);
@@ -239,7 +239,7 @@ void lnGammaReal(void) {
 
   if(realCompareLessEqual(&xReal, const_0)) { // x <= 0
     if(realIsAnInteger(&xReal)) {
-      if(!getFlag(FLAG_DANGER)) {
+      if(!getSystemFlag(FLAG_SPCRES)) {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           showInfoDialog("In function lngammaReal:", "cannot use a negative integer as X input of lngamma when flag D is not set", NULL, NULL);

@@ -1,18 +1,20 @@
-/* This file is part of 43C.
+/* This file is part of WP 43S.
  *
- * 43C is free software: you can redistribute it and/or modify
+ * WP 43S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * 43C is distributed in the hope that it will be useful,
+ * WP 43S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with 43C.  If not, see <http://www.gnu.org/licenses/>.
+ * along with WP 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* ADDITIONAL C43 functions and routines */
 
 /********************************************//**
  * \file keyboardTweak.c
@@ -31,20 +33,31 @@ uint32_t    timerLastCalled;
 
 
 
+void showAlphaModeonGui(void) {
+  if(calcMode == CM_AIM || calcMode == CM_ASM || CM_ASM_OVER_TAM || CM_ASM_OVER_AIM)    //vv dr JM
+  {
+    showAlphaMode();
+    #ifdef PC_BUILD     //dr - new AIM
+      calcModeAimGui();
+    #endif
+  }                                               //^^
+}
+
+
+
+
 void fnKeyCase(uint16_t unusedParamButMandatory) {    //JM CASE JM CAPS
   #ifndef TESTSUITE_BUILD
-  if(alphaCase == AC_LOWER) {
-    alphaCase = AC_UPPER;
-  } else {
-    alphaCase = AC_LOWER;
-  }
+    if(alphaCase == AC_LOWER) {
+      alphaCase = AC_UPPER;
+    } else {
+      alphaCase = AC_LOWER;
+    }
 
-  showAlphaMode();                                                          //JM CASE JM CAPS
-#ifdef PC_BUILD     //dr - new AIM
-    calcModeAimGui();
-#endif
-  showSoftmenuCurrentPart();
-  setCatalogLastPos();
+    showAlphaModeonGui(); //dr JM, see keyboardtweaks
+
+    showSoftmenuCurrentPart();
+    setCatalogLastPos();
   #endif
 }
 
@@ -188,6 +201,51 @@ void fg_processing_jm(void) {
 
 
 
+void  Check_Assign_in_progress(int16_t * result, int16_t tempkey) {
+  //JM ASSIGN - GET FUNCTION NUMBER          // Check if JM ASSIGN IS IN PROGRESS AND CAPTURE THE FUNCTION AND KEY TO BE ASSIGNED
+  if(JM_ASN_MODE == 32766) {                 // GET FUNCTION NUMBER: If seek is pressed, a function can be chosen and pressed.
+    JM_ASN_MODE = *result;                   // The result is the function number, item number, asnd is placed in
+    fnKEYSELECT();                           // Place in auto trigger register, ready for next keypress
+    *result = KEY_EXIT1;                     // EXIT key to exit when done and cancel shifts
+  }
+  //JM ASSIGN - GET KEY & ASSIGN MEMORY FUNCTION JM_ASN_MODE // JM_ASN_MODE contains the command to be put on a key. 0 if not active
+  else if(JM_ASN_MODE != 0) {                // GET KEY
+    fnASSIGN(JM_ASN_MODE, tempkey);          // CHECKS FOR INVALID KEYS IN HERE
+    JM_ASN_MODE = 0;                         // Catchall - cancel the mode once it had the opportunity to be handled. Whether handled or not.
+    *result = KEY_EXIT1;                     // EXIT key to exit when done and cancel shifts
+  }
+  //JM NORMKEY _ CHANGE NORMAL MODE KEY SIGMA+ TO SOMETHING ELSE vv
+  else if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (!getSystemFlag(FLAG_USER) && !shiftF && !shiftG && ( tempkey == 0) )) {
+    *result = Norm_Key_00_VAR;
+  }
+}
+
+
+/*
+  //JM ASSIGN - GET FUNCTION NUMBER --------------------------------------------------------------------------------
+  if(JM_ASN_MODE == 32766) {            //JM Check if JM ASSIGN IS IN PROGRESS AND CAPTURE THE FUNCTION AND KEY TO BE ASSIGNED
+                                        //JM GET FUNCTION NUMBER: If seek is pressed, a function can be chosen and pressed.
+    JM_ASN_MODE = result;               //JM The result is the function number, item number, asnd is placed in
+    fnKEYSELECT();                           //JM Place in auto trigger register, ready for next keypress
+    result = KEY_EXIT1;                      //JM EXIT key to exit when done and cancel shifts
+  }
+
+  //JM ASSIGN - GET KEY & ASSIGN MEMORY FUNCTION JM_ASN_MODE
+                                             //JM JM_ASN_MODE contains the command to be put on a key. 0 if not active
+  else if(JM_ASN_MODE != 0) {                //JM GET KEY
+    fnASSIGN(JM_ASN_MODE, stringToKeyNumber(data));          //JM CHECKS FOR INVALID KEYS IN HERE
+    JM_ASN_MODE = 0;                         //JM Catchall - cancel the mode once it had the opportunity to be handled. Whether handled or not.
+    result = KEY_EXIT1;                       //JM EXIT key to exit when done and cancel shifts
+  }
+
+  //JM NORMKEY _ CHANGE NORMAL MODE KEY SIGMA+ TO SOMETHING ELSE vv
+  else if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (!getSystemFlag(FLAG_USER) && !shiftF && !shiftG && ( stringToKeyNumber(data) == 0) )) {
+    //printf("%d", stringToKeyNumber(data));
+    result = Norm_Key_00_VAR;
+  } //JM ^^
+  //JM    ^^^^^^^^^^^^^^^^^^^^^^^^^^^ --------------------------------------------------------------------------------
+*/
+
 
 
 
@@ -209,9 +267,9 @@ bool_t func_lookup(int16_t fn, int16_t itemShift, int16_t *funk) {
       //The problem was at this point menu_A_HOME[ix0+ix] could be -1.
       //Which means kbd_std or kbd_usr[-1] is looked up.
   
-      if(menu_A_HOME[ix0+ix] < 100) {ix_fn = !userModeEnabled ? (kbd_std[menu_A_HOME[ix0+ix]    ].primary ) : (kbd_usr[menu_A_HOME[ix0+ix]    ].primary );}  else           
-      if(menu_A_HOME[ix0+ix] < 200) {ix_fn = !userModeEnabled ? (kbd_std[menu_A_HOME[ix0+ix]-100].fShifted) : (kbd_usr[menu_A_HOME[ix0+ix]-100].fShifted);}  else
-      if(menu_A_HOME[ix0+ix] < 300) {ix_fn = !userModeEnabled ? (kbd_std[menu_A_HOME[ix0+ix]-200].gShifted) : (kbd_usr[menu_A_HOME[ix0+ix]-200].gShifted);}  else
+      if(menu_A_HOME[ix0+ix] < 100) {ix_fn = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[ix0+ix]    ].primary ) : (kbd_usr[menu_A_HOME[ix0+ix]    ].primary );}  else           
+      if(menu_A_HOME[ix0+ix] < 200) {ix_fn = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[ix0+ix]-100].fShifted) : (kbd_usr[menu_A_HOME[ix0+ix]-100].fShifted);}  else
+      if(menu_A_HOME[ix0+ix] < 300) {ix_fn = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[ix0+ix]-200].gShifted) : (kbd_usr[menu_A_HOME[ix0+ix]-200].gShifted);}  else
       if(menu_A_HOME[ix0+ix]>= 300) {ix_fn = -9999;}
       //printf("--> MNU_HOME:%d (current menu %d): first item ix0:%d + ix:%d\n",MNU_HOME, ix_sm,ix0,ix);
       //printf("    menu_A_HOME looked up key:%d menu_HOME original softkey function: %d\n", menu_A_HOME[ix0+ix], menu_HOME[ix0+ix]);
@@ -220,7 +278,7 @@ bool_t func_lookup(int16_t fn, int16_t itemShift, int16_t *funk) {
       //printf(   "  %s\n", indexOfItems[ix_fn].itemSoftmenuName );
   
       //Handle normal mode key change in dynamic HOME menu
-      if(ix_fn != -9999 && ix == 0 && !userModeEnabled && menu_A_HOME[ix0+ix] == 0 && (calcMode == CM_NORMAL || calcMode == CM_NIM) && (Norm_Key_00_VAR != kbd_std[0].primary)){
+      if(ix_fn != -9999 && ix == 0 && !getSystemFlag(FLAG_USER) && menu_A_HOME[ix0+ix] == 0 && (calcMode == CM_NORMAL || calcMode == CM_NIM) && (Norm_Key_00_VAR != kbd_std[0].primary)){
         ix_fn = Norm_Key_00_VAR;
         tmp = true;
       }
@@ -236,7 +294,7 @@ bool_t func_lookup(int16_t fn, int16_t itemShift, int16_t *funk) {
       //printf("    Function on key: %d. Use this function: %d %s\n", ix_fn, (userModeEnabled && (menu_A_HOME[ix0+ix]!=-1)), indexOfItems[ix_fn].itemSoftmenuName );
 */  
       *funk = ix_fn;
-      return ix_fn != -9999 && ((userModeEnabled) || (!userModeEnabled && tmp));
+      return ix_fn != -9999 && ((getSystemFlag(FLAG_USER)) || (!getSystemFlag(FLAG_USER) && tmp));
     }
     return false;
   }
@@ -245,7 +303,53 @@ bool_t func_lookup(int16_t fn, int16_t itemShift, int16_t *funk) {
 
 
 
+void Setup_MultiPresses(int16_t result){
+  JM_auto_doublepress_enabled = 0;                       //JM TIMER CLRDROP. Autodrop mean double click normal key.
+  int16_t tmp = 0;
+  switch(result) {
+    case KEY_BACKSPACE: tmp = ITM_DROP; break;      //Set up longpress
+    case ITM_CHS      : tmp = ITM_XexY; break;
+    default:;
+  }
+  if(tmp != 0){
+    if(fnTimerGetStatus(TO_CL_DROP) == TMR_RUNNING) {
+      JM_auto_doublepress_enabled = tmp;
+    }
+    fnTimerStart(TO_CL_DROP, TO_CL_DROP, JM_CLRDROP_TIMER);       
+  }
+  fnTimerStop(TO_FG_LONG);                                  //dr
+  fnTimerStop(TO_FN_LONG);                                  //dr
+}
 
+
+
+void Check_MultiPresses(int16_t * result){
+  int16_t tmp = 0;
+  if(calcMode == CM_NORMAL) {
+    switch(*result) {
+      case KEY_BACKSPACE: tmp = ITM_CLSTK; break;      //Set up longpress
+      case ITM_CHS      : tmp = ITM_XexY;  break;
+      default:;
+    }
+    if(tmp !=0) {     //if backspace 
+      JM_auto_longpress_enabled = tmp;
+      fnTimerStart(TO_CL_LONG, TO_CL_LONG, JM_TO_CL_LONG);    //dr
+      if(JM_auto_doublepress_enabled != 0) {
+         hideFunctionName();    
+         restoreStack();
+         showFunctionName(JM_auto_doublepress_enabled, 10);  //JM CLRDROP
+         #ifdef PC_BUILD
+           refreshScreen(NULL);            //JM CLRDROP
+         #elif DMCP_BUILD
+           refreshScreen();                //JM CLRDROP
+         #endif
+         *result = JM_auto_doublepress_enabled;
+         fnTimerStop(TO_CL_DROP);         //JM TIMER CLRDROP ON DOUBLE BACKSPACE
+         STACK_LIFT_ENABLE;               //JM TIMER CLRDROP ON DOUBLE BACKSPACE
+      }                                  //JM TIMER CLRDROP ON DOUBLE BACKSPACE
+    }
+  }
+}
 
 
 
@@ -356,10 +460,10 @@ void FN_cancel() {
 
 //*************----------*************------- FN KEY PRESSED -------***************-----------------
 #ifdef PC_BUILD                                                           //JM LONGPRESS FN
-void btnFnPressed(GtkWidget *w, gpointer data) { 
+void btnFnPressed_StateMachine(GtkWidget *w, gpointer data) { 
 #endif
 #ifdef DMCP_BUILD
-void btnFnPressed(void *w, void *data) {
+void btnFnPressed_StateMachine(void *w, void *data) {
 #endif
   bool_t exexute_double_g;
   bool_t double_click_detected;
@@ -384,7 +488,7 @@ void btnFnPressed(void *w, void *data) {
     underline_softkey(FN_key_pressed-38, 3, false);   //Purposely in row 3 which does not exist, just to activate the clear previous line
     sprintf(charKey, "%c", FN_key_pressed + 11);
     hideFunctionName();
-    clearRegisterLine(Y_POSITION_OF_REGISTER_T_LINE - 4, REGISTER_LINE_HEIGHT); //JM FN clear the previous shift function name
+    clearRegisterLine(REGISTER_T, true,false); //JM FN clear the previous shift function name
     refreshRegisterLine(REGISTER_T);
 
     //IF 2-->3 is longer than double click time, then move back to state 1
@@ -459,12 +563,15 @@ void btnFnPressed(void *w, void *data) {
 
 
 
+
+
+
 //*************----------*************------- FN KEY RELEASED -------***************-----------------
 #ifdef PC_BUILD                                                             //JM LONGPRESS FN
-void btnFnReleased(GtkWidget *w, gpointer data) {                           //JM LONGPRESS FN
+void btnFnReleased_StateMachine(GtkWidget *w, gpointer data) {              //JM LONGPRESS FN
 #endif
 #ifdef DMCP_BUILD
-void btnFnReleased(void *w, void *data) {
+void btnFnReleased_StateMachine(void *w, void *data) {
 #endif
 #ifdef INLINE_TEST
   if(testEnabled) { fnSwStart(2); }     //dr
@@ -494,7 +601,7 @@ void btnFnReleased(void *w, void *data) {
     underline_softkey(FN_key_pressed-38, 3, false);   //Purposely in row 3 which does not exist, just to activate the clear previous line
     sprintf(charKey, "%c", FN_key_pressed + 11);
     hideFunctionName();
-    clearRegisterLine(Y_POSITION_OF_REGISTER_T_LINE - 4, REGISTER_LINE_HEIGHT); //JM FN clear the previous shift function name
+    clearRegisterLine(REGISTER_T, true,false);  //JM FN clear the previous shift function name
     refreshRegisterLine(REGISTER_T);
 
     if(!FN_timed_out_to_NOP && fnTimerGetStatus(TO_FN_EXEC) != TMR_RUNNING) {
@@ -508,15 +615,13 @@ void btnFnReleased(void *w, void *data) {
   if(testEnabled) { fnSwStop(2); }      //dr
 #endif
 }
-//JM btnFnClicked is called by gui.c keyPressed
-//JM btnFnClicked is called by wp43s.c program_main
 
 
 
 void execFnTimeout(uint16_t key) {                          //dr - delayed call of the primary function key
   char charKey[3];
   sprintf(charKey, "%c", key + 11);
-  int16_t fn = *((char *)charKey) - '0';
+//  int16_t fn = *((char *)charKey) - '0';
 
   if(calcMode != CM_CONFIRMATION) {
     allowScreenUpdate = true;
@@ -525,27 +630,15 @@ void execFnTimeout(uint16_t key) {                          //dr - delayed call 
       lastErrorCode = 0;
       refreshStack();
     }
-
     if(softmenuStackPointer > 0) {
       if(calcMode == CM_ASM) {
         calcModeNormal();
       }
-
-      if(shiftF) {
-        resetShiftState();
-        executeFunction(fn,  6);
-      }
-      else if(shiftG) {
-        resetShiftState();
-        executeFunction(fn, 12);
-      }
-      else {
-        executeFunction(fn, 0);
-      }
+      executeFunction((char *)charKey);
     }
     else {
       resetShiftState();
-      executeFunction(fn, 0);          //JM FN NOMENU KEYS
+      executeFunction((char *)charKey);          //JM FN NOMENU KEYS
     }
   }
 }
@@ -558,14 +651,6 @@ void shiftCutoff(uint16_t unusedParamButMandatory) {        //dr - press shift t
 
 
 //---------------------------------------------------------------
-
-
-
-
-
-
-
-
 
 
 #endif

@@ -1,18 +1,21 @@
-/* This file is part of 43C.
+/* This file is part of WP 43S.
  *
- * 43C is free software: you can redistribute it and/or modify
+ * WP 43S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * 43C is distributed in the hope that it will be useful,
+ * WP 43S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with 43C.  If not, see <http://www.gnu.org/licenses/>.
+ * along with WP 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* ADDITIONAL C43 functions and routines */
+
 
 /********************************************//**
  * \file keyboardTweak.h
@@ -23,6 +26,7 @@
 //extern uint32_t nextTimerRefresh;
 //#endif
 
+void     showAlphaModeonGui   (void);
 void     fnKeyCase            (uint16_t unusedParamButMandatory);
 
 
@@ -32,22 +36,33 @@ void 	 DOT_F();
 void 	 DOT_G();
 void 	 DOT_F_clear();
 void 	 DOT_G_clear();
-void     show_f_jm   (void);
-void     show_g_jm   (void);
-void     clear_fg_jm (void);
-void     fg_processing_jm(void);
-bool_t   func_lookup    (int16_t fn, int16_t itemShift, int16_t *funk);
-void     execFnTimeout  (uint16_t key);                         //dr - delayed call of the primary function key
-void     shiftCutoff    (uint16_t unusedParamButMandatory);     //dr - press shift three times within one second to call HOME timer
-int16_t  nameFunction   (int16_t fn, int16_t itemShift);   //JM LONGPRESS FN
+void     show_f_jm           (void);
+void     show_g_jm           (void);
+void     clear_fg_jm         (void);
+void     fg_processing_jm    (void);
+void Check_Assign_in_progress(int16_t  * result, int16_t tempkey);
+
+bool_t   func_lookup         (int16_t  fn, int16_t itemShift, int16_t *funk);
+void     execFnTimeout       (uint16_t key                    );                         //dr - delayed call of the primary function key
+void     shiftCutoff         (uint16_t unusedParamButMandatory);     //dr - press shift three times within one second to call HOME timer
+void     Check_MultiPresses  (int16_t  * result               );
+void     Setup_MultiPresses  (int16_t  result                 );
+int16_t  nameFunction        (int16_t  fn, int16_t itemShift  );   //JM LONGPRESS FN
+
 #endif
 
 #ifdef PC_BUILD
-gboolean refreshTimer         (gpointer data);
+gboolean refreshTimer              (gpointer data);
+void     btnFnPressed_StateMachine (GtkWidget *w, gpointer data);
+void     btnFnReleased_StateMachine(GtkWidget *w, gpointer data);
+
 #endif
 #ifdef DMCP_BUILD
-void     refreshTimer         (void);
+void     refreshTimer              (void);
+void     btnFnPressed_StateMachine (void *w, void *data);
+void     btnFnReleased_StateMachine(void *w, void *data);
 #endif
+
 void     fnTimerReset         (void);
 void     fnTimerDummyTest     (uint16_t param);
 void     fnTimerConfig        (uint8_t nr, void(*func)(uint16_t), uint16_t param/*, uint32_t time*/);
@@ -56,6 +71,7 @@ void     fnTimerStop          (uint8_t nr);                                     
 void     fnTimerExec          (uint8_t nr);                                     // Execute Timer, 0..n-1
 void     fnTimerDel           (uint8_t nr);                                     // Delete Timer, 0..n-1
 uint8_t  fnTimerGetStatus     (uint8_t nr);
+
 
 
 /********************************************//**

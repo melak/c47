@@ -103,7 +103,7 @@ void fnRandomI(uint16_t unusedParamButMandatory) {
   longIntegerToUInt(regX, maxRand);
   longIntegerAddUInt(mini, boundedRand(maxRand), maxi);
 
-  stackLiftEnabled = true;
+  STACK_LIFT_ENABLE;
   liftStack();
   convertLongIntegerToLongIntegerRegister(maxi, REGISTER_X);
 

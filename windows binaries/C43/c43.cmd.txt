@@ -1,0 +1,22 @@
+Procedure to link the C43 simulator to the Windows CALC key on the keyboard:
+
+Create a folder on a easy to access place, i.e. C:\C43
+Copy all required simulator files there, whic are at the time of writing:
+
+c43.cmd
+c43.cmd.txt (this file)
+c43.reg
+c43.exe
+C43_StandardFont.ttf
+dm42l_L1.png
+c43_pre.css
+buildnote.txt
+
+Edit the c43.cmd file to contain reference to the correct folder, default being c:\C43\c43.exe
+Edit the c43.reg file to refer to the correct folder, default being c:\C43
+Double click the C43.reg file, and confirm adding to the registry.
+
+Now, Calc should call the batch file c43.cmd, which will start the c43.exe simulator.
+
+Jaymos
+2020-05-20

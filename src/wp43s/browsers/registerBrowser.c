@@ -33,8 +33,14 @@ void registerBrowser(uint16_t unusedParamButMandatory) {
   int16_t registerNameWidth;
 
   if(calcMode != CM_REGISTER_BROWSER) {
+    if(calcMode == CM_AIM) {
+      cursorEnabled = false;
+      hideCursor();
+    }
+
     previousCalcMode = calcMode;
     calcMode = CM_REGISTER_BROWSER;
+    clearSystemFlag(FLAG_ALPHA);
   }
 
   if(currentRegisterBrowserScreen == 9999) { // Init
@@ -108,10 +114,7 @@ void registerBrowser(uint16_t unusedParamButMandatory) {
         }
         else if(getRegisterDataType(regist) == dtShortInteger) {
           if(showContent) {
-            const font_t *font;
-
-            font = &standardFont;
-            shortIntegerToDisplayString(regist, tmpStr3000, &font);
+            shortIntegerToDisplayString(regist, tmpStr3000, false);
           }
           else {
             strcpy(tmpStr3000, "64 bits := 8 bytes");
@@ -119,9 +122,9 @@ void registerBrowser(uint16_t unusedParamButMandatory) {
         }
         else if(getRegisterDataType(regist) == dtString) {
           if(showContent) {
-            strcpy(tmpStr3000, "'");
+            strcpy(tmpStr3000, STD_LEFT_SINGLE_QUOTE);
             strncat(tmpStr3000, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
-            strcat(tmpStr3000, "'");
+            strcat(tmpStr3000, STD_RIGHT_SINGLE_QUOTE);
             if(stringWidth(tmpStr3000, &standardFont, false, true) >= SCREEN_WIDTH - 12 - registerNameWidth) { // 12 is the width of STD_ELLIPSIS
               tmpStr3000[stringLastGlyph(tmpStr3000)] = 0;
               while(stringWidth(tmpStr3000, &standardFont, false, true) >= SCREEN_WIDTH - 12 - registerNameWidth) { // 12 is the width of STD_ELLIPSIS
@@ -188,10 +191,7 @@ void registerBrowser(uint16_t unusedParamButMandatory) {
             }
             else if(getRegisterDataType(regist) == dtShortInteger) {
               if(showContent) {
-                const font_t *font;
-
-                font = &standardFont;
-                shortIntegerToDisplayString(regist, tmpStr3000, &font);
+                shortIntegerToDisplayString(regist, tmpStr3000, false);
               }
               else {
                 strcpy(tmpStr3000, "64 bits := 4+8 bytes");
@@ -199,9 +199,9 @@ void registerBrowser(uint16_t unusedParamButMandatory) {
             }
             else if(getRegisterDataType(regist) == dtString) {
               if(showContent) {
-                strcpy(tmpStr3000, "'");
+                strcpy(tmpStr3000, STD_LEFT_SINGLE_QUOTE);
                 strncat(tmpStr3000, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
-                strcat(tmpStr3000, "'");
+                strcat(tmpStr3000, STD_RIGHT_SINGLE_QUOTE);
                 if(stringWidth(tmpStr3000, &standardFont, false, true) >= SCREEN_WIDTH - 12 - registerNameWidth) { // 12 is the width of STD_ELLIPSIS
                   tmpStr3000[stringLastGlyph(tmpStr3000)] = 0;
                   while(stringWidth(tmpStr3000, &standardFont, false, true) >= SCREEN_WIDTH - 12 - registerNameWidth) { // 12 is the width of STD_ELLIPSIS

@@ -4,9 +4,7 @@
 ;   In:   specifies the input parameters
 ;   Out:  specifies the expected output values
 ;
-;   Fn   Flag n from 0 to 112: 0 or 1
-;   Fx   Flag x in A,B,C,D,I,J,K,L,T,X,Y,Z: 0 or 1
-;   SL   Stack Lift status: 0 or 1
+;   FL_n Flag n from 0 to 112, A,B,C,D,I,J,K,L,T,X,Y,Z, or name: 0 or 1
 ;   IM   Integer Mode: 1COMPL, 2COMPL, UNSIGN or SIGNMT
 ;   AM   Angular Mode: DEG, DMS, GRAD, RAD, MULTPI
 ;   SS   Stack Size: 4 or 8
@@ -15,9 +13,9 @@
 ;   SD   Significant digits: 0 to 34
 ;   EC   Error Code: 0=no error or form 1 to 28
 ;   CM   Complex Mode: RECT or POLAR
+;   GAP  gap setting
 ;   Rn   Register n from 0 to 211
 ;   Rx   Register x in A,B,C,D,I,J,K,L,T,X,Y,Z
-;   GAP  gap setting
 ;      type after equal sign: LonI is a  Long Integer
 ;                             Stri is a  String
 ;                             ShoI is a  Short Integer

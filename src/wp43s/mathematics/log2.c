@@ -76,7 +76,7 @@ void log2LonI(void) {
   convertLongIntegerRegisterToLongInteger(REGISTER_X, lgInt);
 
   if(longIntegerIsZero(lgInt)) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
       realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
     }
@@ -107,7 +107,7 @@ void log2LonI(void) {
       realDivide(const_pi, const_ln2, &x, &ctxtReal39);
       realToReal34(&x, REGISTER_IMAG34_DATA(REGISTER_X));
     }
-    else if(getFlag(FLAG_DANGER)) {
+    else if(getSystemFlag(FLAG_SPCRES)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
       realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
     }
@@ -146,7 +146,7 @@ void log2Real(void) {
   real_t a;
 
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
     }
     else {
@@ -158,7 +158,7 @@ void log2Real(void) {
   }
 
   else if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
-    if(!getFlag(FLAG_DANGER)) {
+    if(!getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         showInfoDialog("In function log2Real:", "cannot use " STD_PLUS_MINUS STD_INFINITY " as X input of log2 when flag D is not set", NULL, NULL);
@@ -197,7 +197,7 @@ void log2Real(void) {
       realDivide(const_pi, const_ln2, &a, &ctxtReal39);
       realToReal34(&a, REGISTER_IMAG34_DATA(REGISTER_X));
     }
-    else if(getFlag(FLAG_DANGER)) {
+    else if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
     }
     else {
@@ -214,7 +214,7 @@ void log2Real(void) {
 
 void log2Cplx(void) {
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X)) && real34IsZero(REGISTER_IMAG34_DATA(REGISTER_X))) {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
       real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
     }

@@ -81,7 +81,7 @@ static void percentMRR() {
   real_t q;
 
   if (realIsZero(&xReal) && realIsZero(&yReal)) {
-    if (getFlag(FLAG_DANGER)) {
+    if (getSystemFlag(FLAG_SPCRES)) {
       realCopy(const_NaN, &q);
     } else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -91,7 +91,7 @@ static void percentMRR() {
       return;
     }
   } else if (realIsZero(&yReal)) {
-    if (getFlag(FLAG_DANGER)) {
+    if (getSystemFlag(FLAG_SPCRES)) {
       realCopy((realIsPositive(&xReal) ? const_plusInfinity : const_minusInfinity), &q);
     } else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);

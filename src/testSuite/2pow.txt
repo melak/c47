@@ -5,7 +5,7 @@
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
-In: FD=0 FI=0 SD=0 RM=0 IM=2compl SS=4 WS=64
+In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
 Func: fn2Pow
 
 
@@ -13,8 +13,8 @@ Func: fn2Pow
 ;=======================================
 ; 2 ^ Long Integer --> Long Integer
 ;=======================================
-In:  SL=0 FI=0 RX=LonI:"5"
-Out: EC=0 FI=0 SL=1 RL=LonI:"5" RX=LonI:"32"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"5"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=LonI:"32"
 
 
 
@@ -33,8 +33,8 @@ Out: EC=0 FI=0 SL=1 RL=LonI:"5" RX=LonI:"32"
 ;=======================================
 ; 2 ^ String
 ;=======================================
-In:  SL=0 RX=Stri:"String test"
-Out: EC=24 SL=0 RX=Stri:"String test"
+In:  FL_ASLIFT=0 RX=Stri:"String test"
+Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 
@@ -53,57 +53,57 @@ Out: EC=24 SL=0 RX=Stri:"String test"
 ;=======================================
 ; 2 ^ Short Integer
 ;=======================================
-In:  SL=0 FI=0 RX=ShoI:"5#7"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"5#7" RX=ShoI:"44#7"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"5#7"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"5#7" RX=ShoI:"44#7"
 
 
 
 ;=======================================
 ; 2 ^ Real34 --> Real34
 ;=======================================
-In:  SL=0 FI=0 RX=Real:"5.32564"
-Out: EC=0 FI=0 SL=1 RL=Real:"5.32564" RX=Real:"40.103048372087834132570932853369126851122204895332564878807037"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"5.32564"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"5.32564" RX=Real:"40.103048372087834132570932853369126851122204895332564878807037"
 
-In:  SL=0 FI=0 RX=Real:"-5.32564"
-Out: EC=0 FI=0 SL=1 RL=Real:"-5.32564" RX=Real:"0.024935760262454538904231471290017846532765016635927886729848699"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-5.32564"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-5.32564" RX=Real:"0.024935760262454538904231471290017846532765016635927886729848699"
 
-In:  SL=0 FI=0 RX=Real:"5.32564":DMS
-Out: EC=0 FI=0 SL=1 RL=Real:"5.32564":DMS RX=Real:"40.103048372087834132570932853369126851122204895332564878807037"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"5.32564":DMS
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"5.32564":DMS RX=Real:"40.103048372087834132570932853369126851122204895332564878807037"
 
-In:  SL=0 FI=0 RX=Real:"-5.32564":GRAD
-Out: EC=0 FI=0 SL=1 RL=Real:"-5.32564":GRAD RX=Real:"0.024935760262454538904231471290017846532765016635927886729848699"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-5.32564":GRAD
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-5.32564":GRAD RX=Real:"0.024935760262454538904231471290017846532765016635927886729848699"
 
 ; NaN
-In:  SL=0 FI=0 RX=Real:"NaN":RAD
-Out: EC=0 FI=0 SL=1 RL=Real:"NaN":RAD RX=Real:"NaN"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"NaN":RAD
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"NaN":RAD RX=Real:"NaN"
 
-In:  SL=0 FI=0 RX=Real:"NaN"
-Out: EC=0 FI=0 SL=1 RL=Real:"NaN" RX=Real:"NaN"
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"NaN"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"NaN" RX=Real:"NaN"
 
 ; Infinity
-In:  SL=0 FI=0 FD=1 RX=Real:"inf"
-Out: EC=0 FI=0 SL=1 RL=Real:"inf" RX=Real:"inf"
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"inf" RX=Real:"inf"
 
-In:  SL=0 FI=0 FD=0 RX=Real:"inf"
-Out: EC=1 FI=0 SL=0 RX=Real:"inf"
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"inf"
+Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"inf"
 
-In:  SL=0 FI=0 FD=1 RX=Real:"-inf"
-Out: EC=0 FI=0 SL=1 RL=Real:"-inf" RX=Real:"0"
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"-inf"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-inf" RX=Real:"0"
 
-In:  SL=0 FI=0 FD=0 RX=Real:"-inf"
-Out: EC=1 FI=0 SL=0 RX=Real:"-inf"
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"-inf"
+Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-inf"
 
-In:  SL=0 FI=0 FD=1 RX=Real:"inf":DEG
-Out: EC=0 FI=0 SL=1 RL=Real:"inf":DEG RX=Real:"inf"
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf":DEG
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"inf":DEG RX=Real:"inf"
 
-In:  SL=0 FI=0 FD=0 RX=Real:"inf":RAD
-Out: EC=1 FI=0 SL=0 RX=Real:"inf":RAD
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"inf":RAD
+Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"inf":RAD
 
-In:  SL=0 FI=0 FD=1 RX=Real:"-inf":MULTPI
-Out: EC=0 FI=0 SL=1 RL=Real:"-inf":MULTPI RX=Real:"0"
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"-inf":MULTPI
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-inf":MULTPI RX=Real:"0"
 
-In:  SL=0 FI=0 FD=0 RX=Real:"-inf":GRAD
-Out: EC=1 FI=0 SL=0 RX=Real:"-inf":GRAD
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"-inf":GRAD
+Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-inf":GRAD
 
 
 

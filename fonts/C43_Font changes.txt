@@ -1,0 +1,68 @@
+2019-11-27 Started new WP43C / C43 Font files
+
+2019-11-27 Added 6 last glyphs in font. Copied from 2019-07-07 previous font, into the new WP43C font.
+           JM Added 6 Greek glyphs to WP43S_StandardFont.ttf.
+           - "\x83\xd8" 03D8   Ϙ  GREEK LETTER ARCHAIC KOPPA
+           - "\x83\xd9" 03D9   ϙ  GREEK SMALL LETTER ARCHAIC KOPPA   
+           - "\x83\xdc" 03DC   Ϝ  GREEK LETTER DIGAMMA
+           - "\x83\xdd" 03DD   ϝ  GREEK SMALL LETTER DIGAMMA
+           - "\x83\xe0" 03E0   Ϡ  GREEK LETTER SAMPI
+           - "\x83\xe1" 03E1   ϡ  GREEK SMALL LETTER SAMPI
+
+WP43S font:
+
+2019-12-31 Updated copyright information in both ttf files:
+           2019 ==> 2020
+
+2020-03-07 Changed glyph U+21CD (undo)
+           New WP43S_StandardFont.ttf generated.
+           
+2020-04-03 Changed characters U+2422 and U+2423 in Standard font.
+           Added U+2421 and U+2430 ... 33.
+           New WP43S_StandardFont.ttf generated.
+
+WP43C font:           
+2020-04-04 Copied 6 last glyphs in font from 2019-11-27 previous font, into the new WP43S font.
+           JM 6 Greek glyphs to WP43S_StandardFont.ttf.
+           - "\x83\xd8" 03D8   Ϙ  GREEK LETTER ARCHAIC KOPPA
+           - "\x83\xd9" 03D9   ϙ  GREEK SMALL LETTER ARCHAIC KOPPA   
+           - "\x83\xdc" 03DC   Ϝ  GREEK LETTER DIGAMMA
+           - "\x83\xdd" 03DD   ϝ  GREEK SMALL LETTER DIGAMMA
+           - "\x83\xe0" 03E0   Ϡ  GREEK LETTER SAMPI
+           - "\x83\xe1" 03E1   ϡ  GREEK SMALL LETTER SAMPI
+
+           - Copied the undo "u-turn" glyph back from previous font
+
+WP43S font:
+2020-04-10 Changed characters U+2430 and U+2433 in Standard font.
+           Added characters U+2018 and U+2019 in Numeric font.
+
+           New WP43S_NumericFont.ttf generated.
+           New WP43S_StandardFont.ttf generated.
+
+
+WP43C font:
+2020-04-10 Copied 6 last glyphs in font from 2019-11-27 previous font, into the new WP43S font.
+           JM 6 Greek glyphs to WP43S_StandardFont.ttf.
+           - "\x83\xd8" 03D8   Ϙ  GREEK LETTER ARCHAIC KOPPA
+           - "\x83\xd9" 03D9   ϙ  GREEK SMALL LETTER ARCHAIC KOPPA   
+           - "\x83\xdc" 03DC   Ϝ  GREEK LETTER DIGAMMA
+           - "\x83\xdd" 03DD   ϝ  GREEK SMALL LETTER DIGAMMA
+           - "\x83\xe0" 03E0   Ϡ  GREEK LETTER SAMPI
+           - "\x83\xe1" 03E1   ϡ  GREEK SMALL LETTER SAMPI
+
+2020-05-23 Renamed the modified WP43S fonts to C43 fonts, to maintain the differences easier.
+           When new WP43S fonts come out, the easiest procedure is to
+           1. Copy the new WP43S...ttf files to C43...ttf files
+           2. From the old C43 font files, copy the last 6 glyphs including the descriptions to the new C43 fonts.
+           3. Add the contents of C43_sortingOrder_additions.csv to the bottom of sortingOrder.csv.
+
+WP43S font:
+020-05-23 Removed U+00B9 from both fonts.
+           Removed U+21C8 and U+21CA from standard font.
+           Added U+222D (triple integral), U+2230 (volume integral),
+           and U+2222 (spherical angle).
+           Swapped glyphs 1/2 and 1/4 (U+00BC is 1/4 and U+00BD is 1/2).
+           New WP43S_NumericFont.ttf generated.
+           New WP43S_StandardFont.ttf generated.
+

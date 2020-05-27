@@ -7,6 +7,11 @@ PATH=$PATH:/Users/jacomostert/Documents/WP43S/DM42/gcc-arm-none-eabi-8-2019-q3-u
 #killall Xquartz
 #open -a /Applications/Utilities/XQuartz.app/Contents/MacOS/X11
 
+rm "wp43c 2" "wp43c 3" "wp43c 4" "wp43c 5" "wp43c 6" "wp43c 7" "wp43c 8" "wp43c 9" "wp43c 10" "wp43c 11"
+rm "generateConstants 2" "generateConstants 3" "generateConstants 4" "generateConstants 5" "generateConstants 6" "generateConstants 7" "generateConstants 8" "generateConstants 9" "generateConstants 10" "generateConstants 11"
+rm "generateCatalogs 2" "generateCatalogs 3" "generateCatalogs 4" "generateCatalogs 5" "generateCatalogs 6" "generateCatalogs 7" "generateCatalogs 8" "generateCatalogs 9" "generateCatalogs 10" "generateCatalogs 11"
+rm ./wp43c
+
 make -j8 V=1
 ./wp43c
 

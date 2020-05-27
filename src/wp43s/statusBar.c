@@ -38,7 +38,7 @@ void showDateTime(void) {
   getDateString(dateTimeString);
   x = showString(dateTimeString, &standardFont, X_DATE, 0, vmNormal, true, true);
 
-  x = showGlyph(timeFormat==TF_H12 ? STD_SPACE_3_PER_EM : STD_SPACE_FIGURE, &standardFont, x, 0, vmNormal, true, true); // is 0+0+8 pixel wide
+  x = showGlyph(getSystemFlag(FLAG_TDM24) ? STD_SPACE_FIGURE : STD_SPACE_3_PER_EM, &standardFont, x, 0, vmNormal, true, true); // is 0+0+8 pixel wide
 
   getTimeString(dateTimeString);
   showString(dateTimeString, &standardFont, x, 0, vmNormal, true, false);
@@ -53,7 +53,7 @@ void showDateTime(void) {
  * \return void
  ***********************************************/
 void showRealComplexResult(void) {
-  if(getFlag(FLAG_CPXRES)) {
+  if(getSystemFlag(FLAG_CPXRES)) {
     showGlyph(STD_COMPLEX_C, &standardFont, X_REAL_COMPLEX, 0, vmNormal, true, false); // Complex C is 0+8+3 pixel wide
   }
   else {
@@ -70,11 +70,11 @@ void showRealComplexResult(void) {
  * \return void
  ***********************************************/
 void showComplexMode(void) {
-  if(complexMode == CM_POLAR) {
-   showGlyph(STD_SUN,           &standardFont, X_COMPLEX_MODE, 0, vmNormal, true, true); // Sun         is 0+12+2 pixel wide
-  }
-  else {
+  if(getSystemFlag(FLAG_RECTN)) { // rectangular mode
    showGlyph(STD_RIGHT_ANGLE,   &standardFont, X_COMPLEX_MODE, 0, vmNormal, true, true); // Right angle is 0+12+2 pixel wide
+  }
+  else { // polar mode
+   showGlyph(STD_SUN,           &standardFont, X_COMPLEX_MODE, 0, vmNormal, true, true); // Sun         is 0+12+2 pixel wide
   }
 }
 
@@ -130,24 +130,22 @@ void showFracMode(void) {
 
   showString(STD_SPACE_EM STD_SPACE_EM STD_SPACE_EM STD_SPACE_EM STD_SPACE_EM, &standardFont, X_INTEGER_MODE-12*5, 0, vmNormal, true, true); // STD_SPACE_EM is 0+0+12 pixel wide
 
-  if(denominatorMode == DM_ANY && denMax == DM_DENMAX) {
+  if(getSystemFlag(FLAG_DENANY) && denMax == MAX_DENMAX) {
     showString("/max", &standardFont, X_FRAC_MODE, 0, vmNormal, true, true);
   }
   else {
-    if((denominatorMode==DM_ANY && denMax!=DM_DENMAX) || denominatorMode==DM_FIX || denominatorMode==DM_FAC) {
+    if((getSystemFlag(FLAG_DENANY) && denMax!=MAX_DENMAX) || !getSystemFlag(FLAG_DENANY)) {
       sprintf(tmpStr3000, "/%" FMT32U, denMax);
       x = showString(tmpStr3000, &standardFont, X_FRAC_MODE, 0, vmNormal, true, true);
     }
 
-    if(denominatorMode == DM_FIX) {
-     showGlyphCode('f',  &standardFont, x, 0, vmNormal, true, true); // f is 0+7+3 pixel wide
-    }
-    else if(denominatorMode == DM_FAC) {
-     showString(PRODUCT_SIGN, &standardFont, x, 0, vmNormal, true, true); // STD_DOT is 0+3+2 pixel wide and STD_CROSS is 0+7+2 pixel wide
-    }
-    else if(denominatorMode != DM_ANY) {
-      sprintf(errorMessage, "In function showFracMode: %" FMT8U " is an unexpected value for denominatorMode!", denominatorMode);
-      displayBugScreen(errorMessage);
+    if(!getSystemFlag(FLAG_DENANY)) {
+      if(getSystemFlag(FLAG_DENFIX)) {
+       showGlyphCode('f',  &standardFont, x, 0, vmNormal, true, true); // f is 0+7+3 pixel wide
+      }
+      else {
+       showString(PRODUCT_SIGN, &standardFont, x, 0, vmNormal, true, true); // STD_DOT is 0+3+2 pixel wide and STD_CROSS is 0+7+2 pixel wide
+      }
     }
   }
 }
@@ -184,7 +182,7 @@ void showOverflowCarry(void) {
 
   showGlyph(STD_OVERFLOW_CARRY, &standardFont, X_OVERFLOW_CARRY, 0, vmNormal, true, false); // STD_OVERFLOW_CARRY is 0+6+3 pixel wide
 
-  if(!getFlag(FLAG_OVERFLOW)) { // Overflow flag is cleared
+  if(!getSystemFlag(FLAG_OVERFLOW)) { // Overflow flag is cleared
     for(x=X_OVERFLOW_CARRY; x<X_OVERFLOW_CARRY+6; x++) {
       for(y=2; y<=8; y++) {
         clearPixel(x, y);
@@ -192,7 +190,7 @@ void showOverflowCarry(void) {
     }
   }
 
-  if(!getFlag(FLAG_CARRY)) { // Carry flag is cleared
+  if(!getSystemFlag(FLAG_CARRY)) { // Carry flag is cleared
     for(x=X_OVERFLOW_CARRY; x<X_OVERFLOW_CARRY+6; x++) {
       for(y=12; y<=18; y++) {
         clearPixel(x, y);
@@ -210,16 +208,19 @@ void showOverflowCarry(void) {
  * \return void
  ***********************************************/
 void showAlphaMode(void) {
-  if(calcMode == CM_AIM || calcMode == CM_ASM) {
+  if(calcMode == CM_AIM || calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM) {
     if(alphaCase == AC_UPPER) {
       showString(STD_ALPHA, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
+      setSystemFlag(FLAG_alphaCAP);
     }
     else {
       showString(STD_alpha, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_alpha is 0+9+2 pixel wide
+      clearSystemFlag(FLAG_alphaCAP);
     }
   }
   else {
     showGlyphCode(' ',  &standardFont, X_ALPHA_MODE, 0, vmNormal, true, true); // is 0+0+10 pixel wide
+    clearSystemFlag(FLAG_alphaCAP);
   }
 }
 
@@ -423,101 +424,35 @@ void togglePrinter(void) {
 
 
 /********************************************//**
- * \brief Displays the battery icon in the status bar
+ * \brief Shows or hides the battery icon in the status bar
  *
  * \param void
  * \return void
  ***********************************************/
-void showLowBattery(void) {
-  batteryIconEnabled = true;
-  showGlyph(STD_BATTERY, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+10+2 pixel wide
-}
-
-
-
-/********************************************//**
- * \brief Hides the battery icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void hideLowBattery(void) {
-  batteryIconEnabled = false;
-  showGlyphCode(' ', &standardFont, X_BATTERY, 0, vmNormal, true, true); // is 10 pixel wide
-}
-
-
-
-/********************************************//**
- * \brief Toggles the battery icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void toggleLowBattery(void) {
-  if(batteryIconEnabled) {
-    showGlyphCode(' ',     &standardFont, X_BATTERY, 0, vmNormal, true, true);  // is 10 pixel wide
-  }
-  else {
+void showHideLowBattery(void) {
+  if(getSystemFlag(FLAG_LOWBAT)) {
     showGlyph(STD_BATTERY, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+10+2 pixel wide
   }
-  batteryIconEnabled = !batteryIconEnabled;
-}
-
-
-
-/********************************************//**
- * \brief Displays the user mode icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void showUserMode(void) {
-  userModeEnabled = true;
-  showGlyph(STD_USER_MODE, &standardFont, X_USER_MODE, 0, vmNormal, false, false); // STD_USER_MODE is 0+12+2 pixel wide
-
-  #ifdef PC_BUILD
-    if(calcMode == CM_NORMAL) calcModeNormalGui();
-    else if(calcMode == CM_AIM) calcModeAimGui();
-    else if(calcMode == CM_TAM) calcModeTamGui();
-  #endif
-}
-
-
-
-/********************************************//**
- * \brief Hides the user mode icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void hideUserMode(void) {
-  userModeEnabled = false;
-  showString(STD_SPACE_EM, &standardFont, X_USER_MODE, 0, vmNormal, true, true);   // STD_SPACE_EM is 12 pixel wide
-
-  #ifdef PC_BUILD
-    if(calcMode == CM_NORMAL) calcModeNormalGui();
-    else if(calcMode == CM_AIM) calcModeAimGui();
-    else if(calcMode == CM_TAM) calcModeTamGui();
-  #endif
-}
-
-
-
-/********************************************//**
- * \brief Toggles the user mode icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void toggleUserMode(void) {
-  if(userModeEnabled) {
-    showString(STD_SPACE_EM, &standardFont, X_USER_MODE, 0, vmNormal, true, true);   // STD_SPACE_EM is 12 pixel wide
-  }
   else {
+    showGlyphCode(' ',     &standardFont, X_BATTERY, 0, vmNormal, true, true);  // is 10 pixel wide
+  }
+}
+
+
+
+/********************************************//**
+ * \brief Shows or hides the user mode icon in the status bar
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void showHideUserMode(void) {
+  if(getSystemFlag(FLAG_USER)) {
     showGlyph(STD_USER_MODE, &standardFont, X_USER_MODE, 0, vmNormal, false, false); // STD_USER_MODE is 0+12+2 pixel wide
   }
-  userModeEnabled = !userModeEnabled;
+  else {
+    showString(STD_SPACE_EM, &standardFont, X_USER_MODE, 0, vmNormal, true, true);   // STD_SPACE_EM is 12 pixel wide
+  }
 
   #ifdef PC_BUILD
     showSoftmenuCurrentPart();                       //JM TOCHECK. Suspect in here to force icon update in Gui

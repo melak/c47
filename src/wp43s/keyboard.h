@@ -29,8 +29,8 @@ void fnKeyUp         (uint16_t unusedParamButMandatory);
 void fnKeyDown       (uint16_t unusedParamButMandatory);
 void fnKeyDotD       (uint16_t unusedParamButMandatory);
 
-void executeFunction(int16_t fn, int16_t itemShift);   //JM copied here
-
+//void executeFunction(int16_t fn, int16_t itemShift);   //JM copied here
+void executeFunction(const char *data);
 
 #define ST_0_INIT     0     //STATE 0 INIT             //JM vv FN-DOUBLE
 #define ST_1_PRESS1   1     //STATE 1 FIRST PRESS

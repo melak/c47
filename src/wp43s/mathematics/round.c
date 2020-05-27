@@ -142,15 +142,12 @@ void roundReal(void) {
   refreshRegisterLine(REGISTER_X);
   updateDisplayValueX = false;
 
-  if(fractionType == FT_NONE) {
-    stringToReal34(displayValueX, REGISTER_REAL34_DATA(REGISTER_X));
-  }
-  else {
+  if(getSystemFlag(FLAG_FRACT)) {
     int16_t endOfIntegerPart, slashPos;
     real34_t numerator, denominator;
 
     endOfIntegerPart = -1;
-    if(fractionType == FT_PROPER) { // a b/c
+    if(getSystemFlag(FLAG_PROPFR)) { // a b/c
       while(displayValueX[++endOfIntegerPart] != ' '); // The ending ; is OK here
       displayValueX[endOfIntegerPart] = 0;
       stringToReal34(displayValueX, REGISTER_REAL34_DATA(REGISTER_X));
@@ -171,6 +168,9 @@ void roundReal(void) {
     else {
       real34Add(REGISTER_REAL34_DATA(REGISTER_X), &numerator, REGISTER_REAL34_DATA(REGISTER_X));
     }
+  }
+  else {
+    stringToReal34(displayValueX, REGISTER_REAL34_DATA(REGISTER_X));
   }
 }
 

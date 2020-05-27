@@ -1,18 +1,20 @@
-/* This file is part of 43S.
+/* This file is part of WP 43S.
  *
- * 43S is free software: you can redistribute it and/or modify
+ * WP 43S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * 43S is distributed in the hope that it will be useful,
+ * WP 43S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
+ * along with WP 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* ADDITIONAL C43 functions and routines */
 
 /********************************************//**
  * \file addons.c
@@ -89,7 +91,9 @@ void fnArg_all(uint16_t unusedParamButMandatory) {
 void fnToPolar2(uint16_t unusedParamButMandatory) {
   //saveStack();       //Not savestack because fnToPolar already has savestack and fnComplexMode does not need.
   if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-    fnComplexMode(CM_POLAR);
+//    fnComplexMode(CM_POLAR);
+      fnClearFlag(FLAG_RECTN);
+
   }
   else
     fnToPolar(0);
@@ -100,7 +104,8 @@ void fnToPolar2(uint16_t unusedParamButMandatory) {
 void fnToRect2(uint16_t unusedParamButMandatory) {
   //saveStack();       //Not savestack because fnToRect already has savestack and fnComplexMode does not need.
   if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-      fnComplexMode(CM_RECTANGULAR);
+ //     fnComplexMode(CM_RECTANGULAR);
+      fnSetFlag(FLAG_RECTN);
     }
     else
       fnToRect(0);
@@ -403,6 +408,47 @@ void fnJM_2SI(uint16_t unusedParamButMandatory) {       //Convert Real to Longin
 
 
 
+/********************************************//**
+ * \Set SIGFIG mode
+ *
+ * FROM DISPLAY.C
+ ***********************************************/
+void fnDisplayFormatSigFig(uint16_t displayFormatN) {   //DONE          //JM SIGFIG
+  displayFormat = DF_FIX;
+  displayFormatDigits = displayFormatN;
+  clearSystemFlag(FLAG_FRACT);
+  SigFigMode = displayFormatN;                                    //JM SIGFIG
+  UNITDisplay = false;                                            //JM SIGFIG display Reset
+
+  fnRefreshRadioState(RB_DI, DF_SF);
+
+  refreshStack();
+}                                                                 //JM SIGFIG
+
+
+
+/********************************************//**
+ * \Set UNIT mode
+ *
+ * FROM DISPLAY.C
+ ***********************************************/
+void fnDisplayFormatUnit(uint16_t displayFormatN) {    //DONE           //JM UNIT
+  displayFormat = DF_ENG;
+  displayFormatDigits = displayFormatN;
+  clearSystemFlag(FLAG_FRACT);
+  SigFigMode = 0;                                                 //JM UNIT Sigfig works in FIX mode and it makes not sense in UNIT (ENG) mode
+  UNITDisplay = true;                                             //JM UNIT display
+
+  fnRefreshRadioState(RB_DI, DF_UN);
+// Convert longint to real, to force UNIT to work. 
+//  if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
+//    convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+//  }
+  refreshStack();
+}                                                                 //JM UNIT
+
+
+
 /* JM UNIT********************************************//**                                                JM UNIT
  * \brief Adds the power of 10 using numeric font to displayString                                        JM UNIT
  *        Converts to units like m, M, k, etc.                                                            JM UNIT
@@ -410,7 +456,7 @@ void fnJM_2SI(uint16_t unusedParamButMandatory) {       //Convert Real to Longin
  * \param[in]  exponent int32_t Power of 10 to format                                                     JM UNIT
  * \return void                                                                                           JM UNIT
  ***********************************************                                                          JM UNIT */
-void exponentToUnitDisplayString(int32_t exponent, char *displayString, bool_t nimMode, const char *separator) {               //JM UNIT
+void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode, const char *separator) {               //JM UNIT
   if     (exponent == -15) { displayString[0] = ' '; displayString[1] = 'f'; displayString[2] = 0; }    //JM UNIT
   else if(exponent == -12) { displayString[0] = ' '; displayString[1] = 'p'; displayString[2] = 0; }    //JM UNIT
   else if(exponent == -9 ) { displayString[0] = ' '; displayString[1] = 'n'; displayString[2] = 0; }    //JM UNIT
@@ -428,11 +474,11 @@ void exponentToUnitDisplayString(int32_t exponent, char *displayString, bool_t n
     displayString[0] = 0;                                                                               //JM UNIT
     if(nimMode) {                                                                                       //JM UNIT
       if(exponent != 0) {                                                                               //JM UNIT
-        supNumberToDisplayString(exponent, displayString, NULL, false, separator);                                 //JM UNIT
+        supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                 //JM UNIT
       }                                                                                                 //JM UNIT
     }                                                                                                   //JM UNIT
     else {                                                                                              //JM UNIT
-      supNumberToDisplayString(exponent, displayString, NULL, false, separator);                                   //JM UNIT
+      supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                   //JM UNIT
     }                                                                                                   //JM UNIT
   }                                                                                                     //JM UNIT
 }                                                                                                       //JM UNIT

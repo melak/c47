@@ -5,7 +5,7 @@
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
-In: FD=0 FI=0 SD=0 RM=0 IM=2compl SS=4 WS=64
+In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
 Func: fnMirror
 
 
@@ -13,8 +13,8 @@ Func: fnMirror
 ;=======================================
 ; mirror(Long Integer) --> Error24
 ;=======================================
-In:  AM=DEG SL=0 FI=0 RX=LonI:"-5"
-Out: EC=24 SL=0 RX=LonI:"-5"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"-5"
+Out: EC=24 FL_ASLIFT=0 RX=LonI:"-5"
 
 
 
@@ -33,8 +33,8 @@ Out: EC=24 SL=0 RX=LonI:"-5"
 ;=======================================
 ; mirror(String) --> Error24
 ;=======================================
-In:  SL=0 RX=Stri:"String test"
-Out: EC=24 SL=0 RX=Stri:"String test"
+In:  FL_ASLIFT=0 RX=Stri:"String test"
+Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 
@@ -53,33 +53,33 @@ Out: EC=24 SL=0 RX=Stri:"String test"
 ;=======================================
 ; mirror(Short Integer) --> Short Integer
 ;=======================================
-In:  SL=0 FI=0 WS=8 IM=2compl RX=ShoI:"10110#2"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"10110#2" RX=ShoI:"1101000#2"
+In:  FL_ASLIFT=0 FL_CPXRES=0 WS=8 IM=2compl RX=ShoI:"10110#2"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"10110#2" RX=ShoI:"1101000#2"
 
-In:  SL=0 FI=0 WS=64 IM=UNSIGN RX=ShoI:"5#7"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"5#7" RX=ShoI:"26433012565141064246353#7"
+In:  FL_ASLIFT=0 FL_CPXRES=0 WS=64 IM=UNSIGN RX=ShoI:"5#7"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"5#7" RX=ShoI:"26433012565141064246353#7"
 
-In:  SL=0 FI=0 WS=13 IM=UNSIGN RX=ShoI:"5#7"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"5#7" RX=ShoI:"20633#7"
+In:  FL_ASLIFT=0 FL_CPXRES=0 WS=13 IM=UNSIGN RX=ShoI:"5#7"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"5#7" RX=ShoI:"20633#7"
 
-In:  SL=0 FI=0 WS=13 IM=SIGNMT RX=ShoI:"5#7"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"5#7" RX=ShoI:"-2662#7"
+In:  FL_ASLIFT=0 FL_CPXRES=0 WS=13 IM=SIGNMT RX=ShoI:"5#7"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"5#7" RX=ShoI:"-2662#7"
 
-In:  SL=0 FI=0 WS=64 IM=SIGNMT RX=ShoI:"5#7"
-Out: EC=0 FI=0 SL=1 RL=ShoI:"5#7" RX=ShoI:"-4062001653563012164052#7"
+In:  FL_ASLIFT=0 FL_CPXRES=0 WS=64 IM=SIGNMT RX=ShoI:"5#7"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"5#7" RX=ShoI:"-4062001653563012164052#7"
 
 
 
 ;=======================================
 ; mirror(Real34) --> Long Integer
 ;=======================================
-In:  AM=DEG SL=0 FI=0 RX=Real:"0.0001"
-Out: EC=24 SL=0 RX=Real:"0.0001"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001"
+Out: EC=24 FL_ASLIFT=0 RX=Real:"0.0001"
 
 
 
 ;=======================================
 ; mirror(Complex34) --> Error24
 ;=======================================
-In:  AM=DEG SL=0 FI=0 RX=Cplx:"6.2 i -7.6"
-Out: EC=24 SL=0 RX=Cplx:"6.2 i -7.6"
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
+Out: EC=24 FL_ASLIFT=0 RX=Cplx:"6.2 i -7.6"

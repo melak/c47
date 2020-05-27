@@ -41,10 +41,10 @@ void fnAsr(uint16_t numberOfShifts) {
     for(i=1; i<=numberOfShifts; i++) {
       if(i == numberOfShifts) {
         if(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & 1) {
-          fnSetFlag(FLAG_CARRY);
+          setSystemFlag(FLAG_CARRY);
         }
         else {
-          fnClearFlag(FLAG_CARRY);
+          clearSystemFlag(FLAG_CARRY);
         }
       }
 
@@ -81,10 +81,10 @@ void fnSl(uint16_t numberOfShifts) {
     for(i=1; i<=numberOfShifts; i++) {
       if(i == numberOfShifts) {
         if(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & shortIntegerSignBit) {
-          fnSetFlag(FLAG_CARRY);
+          setSystemFlag(FLAG_CARRY);
         }
         else {
-          fnClearFlag(FLAG_CARRY);
+          clearSystemFlag(FLAG_CARRY);
         }
       }
 
@@ -121,10 +121,10 @@ void fnSr(uint16_t numberOfShifts) {
     for(i=1; i<=numberOfShifts; i++) {
       if(i == numberOfShifts) {
         if(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & 1) {
-          fnSetFlag(FLAG_CARRY);
+          setSystemFlag(FLAG_CARRY);
         }
         else {
-          fnClearFlag(FLAG_CARRY);
+          clearSystemFlag(FLAG_CARRY);
         }
       }
 
@@ -163,10 +163,10 @@ void fnRl(uint16_t numberOfShifts) {
       sign = (*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & shortIntegerSignBit) >> (shortIntegerWordSize - 1);
       if(i == numberOfShifts) {
         if(sign) {
-          fnSetFlag(FLAG_CARRY);
+          setSystemFlag(FLAG_CARRY);
         }
         else {
-          fnClearFlag(FLAG_CARRY);
+          clearSystemFlag(FLAG_CARRY);
         }
       }
 
@@ -203,10 +203,10 @@ void fnRr(uint16_t numberOfShifts) {
     for(i=1; i<=numberOfShifts; i++) {
       if(i == numberOfShifts) {
         if(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & 1) {
-          fnSetFlag(FLAG_CARRY);
+          setSystemFlag(FLAG_CARRY);
         }
         else {
-          fnClearFlag(FLAG_CARRY);
+          clearSystemFlag(FLAG_CARRY);
         }
       }
 
@@ -241,7 +241,7 @@ void fnRlc(uint16_t numberOfShifts) {
     saveStack();
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
-    carry = getFlag(FLAG_CARRY);
+    carry = getSystemFlag(FLAG_CARRY);
     for(i=1; i<=numberOfShifts; i++) {
       sign = (*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & shortIntegerSignBit) >> (shortIntegerWordSize - 1);
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = (*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) << 1) | carry;
@@ -249,10 +249,10 @@ void fnRlc(uint16_t numberOfShifts) {
     }
 
     if(carry) {
-      fnSetFlag(FLAG_CARRY);
+      setSystemFlag(FLAG_CARRY);
     }
     else {
-      fnClearFlag(FLAG_CARRY);
+      clearSystemFlag(FLAG_CARRY);
     }
 
     refreshRegisterLine(REGISTER_X);
@@ -283,7 +283,7 @@ void fnRrc(uint16_t numberOfShifts) {
     saveStack();
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
-    carry = getFlag(FLAG_CARRY);
+    carry = getSystemFlag(FLAG_CARRY);
     for(i=1; i<=numberOfShifts; i++) {
       lsb = *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & 1;
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = (*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) >> 1) | (carry << (shortIntegerWordSize - 1));
@@ -291,10 +291,10 @@ void fnRrc(uint16_t numberOfShifts) {
     }
 
     if(carry) {
-      fnSetFlag(FLAG_CARRY);
+      setSystemFlag(FLAG_CARRY);
     }
     else {
-      fnClearFlag(FLAG_CARRY);
+      clearSystemFlag(FLAG_CARRY);
     }
 
     refreshRegisterLine(REGISTER_X);

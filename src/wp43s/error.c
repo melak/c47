@@ -53,7 +53,10 @@ const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /* 29 */  "Item to be coded",
 /* 30 */  "Function to be coded for that data type",
 /* 31 */  "Input data types do not match",
-/* 32 */  "Bad input" // This error is not in the ReM and could theorically not happen
+/* 32 */  "This system flag is write protected",
+/* 33 */  "Output would exceed 196 characters",
+/* 34 */  "This does not work with an empty string",
+/* 35 */  "Bad input" // This error is not in the ReM and could theorically not happen
 };
 
 
@@ -100,7 +103,7 @@ void showInfoDialog(const char *m1, const char *m2, const char *m3, const char *
   }
 
   gtk_widget_set_name(dialog, "errorBox");
-  gtk_window_set_title(GTK_WINDOW(dialog), "WP 43C error message");    //JM 43C
+  gtk_window_set_title(GTK_WINDOW(dialog), "WP C43 error message");    //JM C43
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
 }
@@ -165,6 +168,7 @@ void displayBugScreen(const char *msg) {
 
     previousCalcMode = calcMode;
     calcMode = CM_BUG_ON_SCREEN;
+    clearSystemFlag(FLAG_ALPHA);
     cursorEnabled = false;
     hideCursor();
 

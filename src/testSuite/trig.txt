@@ -7,7 +7,7 @@
 ;*************************************************************
 
 ; Real34 version
-In: FD=0 FI=0 SD=0 RM=0 AM=DEG SL=0 FI=0 RX=Real:"9"
+In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"9"
 Func: fnSin
 Out:  EC=0
 Func: fnCos
@@ -24,4 +24,4 @@ Func: fnSwapXY
 Out:  EC=0
 Func: fnSubtract
 In:   RX=Real:"9"
-Out:  EC=0 FI=0 RX=Real:"-6.2465e-29":DEG
+Out:  EC=0 FL_CPXRES=0 RX=Real:"-6.2465e-29":DEG

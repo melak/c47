@@ -33,6 +33,3 @@ typedef struct {
   int16_t gShiftedAim; ///< ID of the g shifted AIM function: greek letters
   int16_t primaryTam;  ///< ID of the primary TAM function of the key
 } calcKey_t;
-
-
-void fnUserMode(uint16_t unusedParamButMandatory);

@@ -1,7 +1,8 @@
 *.o
 *.d
 *.bin
-*.exe
+#*.exe
+wp*.exe
 *.layout
 *.depend
 202*bmp
@@ -47,7 +48,6 @@ DMCP_build/build
 
 # Visual Studio 2019 cache/options directory
 .vs/
-
 
 !*/compil*
 !*Make*

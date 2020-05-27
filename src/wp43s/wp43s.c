@@ -19,6 +19,7 @@
  ***********************************************/
 
 //#define JMSHOWCODES
+//#define _43S_SHOWCODES
 
 
 #include "wp43s.h"
@@ -35,7 +36,7 @@
   int16_t            debugWindow;
   uint32_t           *screenData;
   bool_t             screenChange;
-  char               debugString[10000];   //JMMAX Why is this permanent?
+  char               debugString[10000];
   #if (DEBUG_REGISTER_L == 1)
     GtkWidget        *lblRegisterL1;
     GtkWidget        *lblRegisterL2;
@@ -49,6 +50,7 @@ dataBlock_t          *ram;
 bool_t                allowScreenUpdate;
 bool_t                funcOK;
 bool_t                keyActionProcessed;
+const font_t         *fontForShortInteger;
 
 // Variables stored in RAM
 realContext_t         ctxtReal34;   //   34 digits
@@ -60,7 +62,7 @@ realContext_t         ctxtReal1071; // 1071 digits: used in radian angle reducti
 uint16_t              flags[7];
 char                  tmpStr3000[TMP_STR_LENGTH];
 char                  errorMessage[ERROR_MESSAGE_LENGTH];
-char                  aimBuffer[AIM_BUFFER_LENGTH];
+char                  aimBuffer[AIM_BUFFER_LENGTH]; /// TODO may be aimBuffer and nimBuffer can be merged
 char                  nimBuffer[NIM_BUFFER_LENGTH];
 char                  nimBufferDisplay[NIM_BUFFER_LENGTH];
 char                  tamBuffer[TAM_BUFFER_LENGTH];
@@ -84,6 +86,10 @@ int16_t               alphaSelectionMenu;
 int16_t               lastFcnsMenuPos;
 int16_t               lastMenuMenuPos;
 int16_t               lastCnstMenuPos;
+int16_t               lastSyFlMenuPos;
+int16_t               lastAIntMenuPos;
+int16_t               showFunctionNameItem;
+int16_t               SHOWregis;                   //JMSHOW
 uint16_t              numberOfLocalFlags;
 dataBlock_t          *allLocalRegisterPointer;
 dataBlock_t          *allNamedVariablePointer;
@@ -105,24 +111,17 @@ uint8_t               currentFlgScr;
 uint8_t               displayFormat;
 uint8_t               displayFormatDigits;
 uint8_t               shortIntegerWordSize;
-uint8_t               denominatorMode;
 uint8_t               significantDigits;
 uint8_t               shortIntegerMode;
 uint8_t               previousCalcMode;
 uint8_t               groupingGap;
-uint8_t               dateFormat;
 uint8_t               curveFitting;
 uint8_t               roundingMode;
 uint8_t               calcMode;
 uint8_t               nextChar;
-uint8_t               complexUnit;
 uint8_t               displayStack;
 uint8_t               productSign;
-uint8_t               fractionType;
-uint8_t               radixMark;
 uint8_t               displayModeOverride;
-uint8_t               stackSize;
-uint8_t               complexMode;
 uint8_t               alphaCase;
 uint8_t               numLinesNumericFont;
 uint8_t               numLinesStandardFont;
@@ -132,54 +131,48 @@ uint8_t               nimNumberPart;
 uint8_t               hexDigits;
 uint8_t               lastErrorCode;
 uint8_t               serialIOIconEnabled;
-uint8_t               timeFormat;
 uint8_t               temporaryInformation;
 uint8_t               rbrMode;
 uint8_t               numScreensNumericFont;
 uint8_t               currentAngularMode;
-
-
-bool_t               jm_FG_LINE;                              //JM Screen / keyboard operation setup
-bool_t               jm_FG_DOTS;                              //JM Screen / keyboard operation setup
-bool_t               jm_G_DOUBLETAP;                          //JM Screen / keyboard operation setup
-bool_t               jm_VECT;                                 //JM GRAPH
-bool_t               jm_HOME_SUM;                             //JMHOME
-bool_t               jm_HOME_MIR;                             //JMHOME
-bool_t               jm_HOME_FIX;                             //JMHOME
-uint8_t              SigFigMode;                              //JM SIGFIG
-bool_t               eRPN;                                    //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
-bool_t               HOME3;                                   //JM HOME Create a flag to enable or disable triple shift HOME3.
-bool_t               ShiftTimoutMode;                         //JM SHIFT Create a flag to enable or disable SHIFT TIMER CANCEL.
-bool_t               Home3TimerMode;                          //JM HOME Create a flag to enable or disable HOME TIMER CANCEL.
-bool_t               UNITDisplay;                             //JM UNITDisplay
-bool_t               SH_BASE_HOME;                            //JM BASEHOME
-bool_t               SH_BASE_AHOME;                           //JM BASEHOME
-int16_t              Norm_Key_00_VAR;                         //JM USER NORMAL
-uint8_t              Input_Default;                           //JM Input Default
-float                graph_xmin;                              //JM Graph
-float                graph_xmax;                              //JM Graph
-float                graph_ymin;                              //JM Graph
-float                graph_ymax;                              //JM Graph
-float                graph_dx;                                //JM Graph
-float                graph_dy;                                //JM Graph
-#ifdef INLINE_TEST                      //vv dr
-bool_t               testEnabled;
-uint16_t             testBitset;
-#endif                                  //^^
-radiocb_t            indexOfRadioCbItems[MAX_RADIO_CB_ITEMS];                   //vv dr build RadioButton, CheckBox
-//uint16_t           cntOfRadioCbItems;                                         //^^
+int8_t                showFunctionNameCounter;
+bool_t                jm_FG_LINE;                              //JM Screen / keyboard operation setup
+bool_t                jm_FG_DOTS;                              //JM Screen / keyboard operation setup
+bool_t                jm_G_DOUBLETAP;                          //JM Screen / keyboard operation setup
+bool_t                jm_VECT;                                 //JM GRAPH
+bool_t                jm_HOME_SUM;                             //JMHOME
+bool_t                jm_HOME_MIR;                             //JMHOME
+bool_t                jm_HOME_FIX;                             //JMHOME
+uint8_t               SigFigMode;                              //JM SIGFIG
+bool_t                eRPN;                                    //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
+bool_t                HOME3;                                   //JM HOME Create a flag to enable or disable triple shift HOME3.
+bool_t                ShiftTimoutMode;                         //JM SHIFT Create a flag to enable or disable SHIFT TIMER CANCEL.
+bool_t                Home3TimerMode;                          //JM HOME Create a flag to enable or disable HOME TIMER CANCEL.
+bool_t                UNITDisplay;                             //JM UNITDisplay
+bool_t                SH_BASE_HOME;                            //JM BASEHOME
+bool_t                SH_BASE_AHOME;                           //JM BASEHOME
+int16_t               Norm_Key_00_VAR;                         //JM USER NORMAL
+uint8_t               Input_Default;                           //JM Input Default
+float                 graph_xmin;                              //JM Graph
+float                 graph_xmax;                              //JM Graph
+float                 graph_ymin;                              //JM Graph
+float                 graph_ymax;                              //JM Graph
+float                 graph_dx;                                //JM Graph
+float                 graph_dy;                                //JM Graph
+#ifdef INLINE_TEST                                             //vv dr
+bool_t                testEnabled;                             //
+uint16_t              testBitset;                              //
+#endif                                                         //^^
+radiocb_t            indexOfRadioCbItems[MAX_RADIO_CB_ITEMS];  //vv dr build RadioButton, CheckBox
+//uint16_t           cntOfRadioCbItems;                        //^^
 
 bool_t                hourGlassIconEnabled;
 bool_t                watchIconEnabled;
-bool_t                userModeEnabled;
 bool_t                printerIconEnabled;
-bool_t                batteryIconEnabled;
 bool_t                shiftF;
 bool_t                shiftG;
-//bool_t             shiftStateChanged; //dr
+//bool_t             shiftStateChanged;                        //dr
 bool_t                showContent;
-bool_t                stackLiftEnabled;
-bool_t                displayLeadingZeros;
 bool_t                savedStackLiftEnabled;
 bool_t                rbr1stDigit;
 bool_t                updateDisplayValueX;
@@ -189,6 +182,7 @@ calcRegister_t        errorRegisterLine;
 uint16_t              row[100];
 uint64_t              shortIntegerMask;
 uint64_t              shortIntegerSignBit;
+uint64_t              systemFlags;
 glyph_t               glyphNotFound = {.charCode = 0x0000, .colsBeforeGlyph = 0, .colsGlyph = 13, .colsAfterGlyph = 0, .rowsGlyph = 19};
 char                  transitionSystemOperation[4];
 char                  displayValueX[DISPLAY_VALUE_LEN];
@@ -209,15 +203,14 @@ real39_t              const *angle90;
 real39_t              const *angle45;
 pcg32_random_t        pcg32_global = PCG32_INITIALIZER;
 #ifdef DMCP_BUILD
-
-  #ifdef JMSHOWCODES 
-  int8_t               telltale_pos;       //JM Test
-  int8_t               telltale_lastkey;   //JM Test
-  #endif
-  bool_t               backToDMCP;
-  uint32_t             nextTimerRefresh;  // timer substitute for refreshTimer()                    //dr
-  uint32_t             nextScreenRefresh; // timer substitute for refreshScreen(), which does cursor blinking and other stuff
-  #define TIMER_IDX_SCREEN_REFRESH 0      // use timer 0 to wake up for screen refresh
+  #ifdef JMSHOWCODES                                           //JM Test
+    int8_t            telltale_pos;                            //JM Test
+    int8_t            telltale_lastkey;                        //JM Test
+  #endif                                                       //JM Test 
+  uint32_t            nextTimerRefresh;                        //dr timer substitute for refreshTimer()                    //dr
+  bool_t              backToDMCP;
+  uint32_t            nextScreenRefresh; // timer substitute for refreshScreen(), which does cursor blinking and other stuff
+  #define TIMER_IDX_SCREEN_REFRESH 0     // use timer 0 to wake up for screen refresh
 #endif // DMCP_BUILD
 
 
@@ -247,7 +240,7 @@ void setupDefaults(void) {
   #endif
 
 //JM Where commented, fnReset is over-writing the content of setupdefaults. fnReset is in config.c
-         //JM vv bug: Overwritten by fnReset
+         //JM vv note: Overwritten by fnReset
   // Initialization of user key assignments
   xcopy(kbd_usr, kbd_std, sizeof(kbd_std));
   //kbd_usr[ 0].keyLblAim   = CHR_A_GRAVE;
@@ -259,12 +252,12 @@ void setupDefaults(void) {
   //kbd_usr[19].fShifted    = ITM_SW;
   //kbd_usr[19].gShifted    = ITM_SXY;
   //kbd_usr[20].gShifted    = ITM_LYtoM;
-         //JM ^^ bug: Overwritten by fnReset
+         //JM ^^ note: Overwritten by fnReset
 
-  // initialize the RadaioButton/Checkbox items
-  fnRebuildRadioState();                                                        //dr build RadioButton, CheckBox
+  // initialize the RadioButton/Checkbox items
+  fnRebuildRadioState();                                       //dr build RadioButton, CheckBox
 
-  // initialize the 112 global registers
+  // initialize the global registers
   for(calcRegister_t regist=0; regist<FIRST_LOCAL_REGISTER; regist++) {
     setRegisterDataType(regist, dtReal34, AM_NONE);
     memPtr = allocWp43s(TO_BYTES(REAL34_SIZE));
@@ -322,114 +315,119 @@ void setupDefaults(void) {
   statisticalSumsPointer = NULL;
 
 //JM Where commented, fnReset is over-writing the content of setupdefaults. fnReset is in config.c
-  fnSetWordSize(64); // word size from 1 to 64               //JM bug: Overwritten by fnReset
-  fnIntegerMode(SIM_2COMPL);                                 //JM bug: Overwritten by fnReset
+  fnSetWordSize(64); // word size from 1 to 64                 //JM note: Overwritten by fnReset
+  fnIntegerMode(SIM_2COMPL);                                   //JM note: Overwritten by fnReset
 
-  groupingGap = 3;                                           //JM bug: Overwritten by fnReset. equivalent function, not directly set.
+  groupingGap = 3;                                             //JM note: Overwritten by fnReset. equivalent function, not directly set.
 
-  displayFormat = DF_ALL;                                    //JM bug: Overwritten by fnReset. equivalent function, not directly set.
-  displayFormatDigits = 0;                                   //JM bug: Overwritten by fnReset. equivalent function, not directly set.
-  fnTimeFormat(TF_H24);                                      //JM bug: Overwritten by fnReset
-  fnComplexUnit(CU_I);                                       //JM bug: Overwritten by fnReset
-  fnAngularMode(AM_DEGREE);                                  //JM bug: Overwritten by fnReset
-  fnDenMode(DM_ANY);                                         //JM bug: Overwritten by fnReset
-  denMax = DM_DENMAX;
-  fnCurveFitting(CF_LINEAR_FITTING);                         //JM bug: Overwritten by fnReset
-  fnLeadingZeros(false);                                     //JM bug: Overwritten by fnReset
-  fnProductSign(PS_CROSS);                                   //JM bug: Overwritten by fnReset
-  fractionType = FT_NONE;                                    //JM bug: Overwritten by fnReset
-  fnRadixMark(RM_PERIOD);                                    //JM bug: Overwritten by fnReset
-  fnComplexResult(true);                        //JM change: //JM bug: Overwritten by fnReset. CPXRES set default
-  fnComplexMode(CM_RECTANGULAR);                             //JM bug: Overwritten by fnReset
-  fnDisplayOvr(DO_SCI);                                      //JM bug: Overwritten by fnReset
-  fnStackSize(SS_8);                            //JM change: //JM bug: Overwritten by fnReset. SSTACK Stack size 8 default. Tired of changing it every time I reset. Was SS_4 before.
-  fnDateFormat(DF_YMD);                                      //JM bug: Overwritten by fnReset
-  showFracMode();
+  systemFlags = 0;
+  displayFormat = DF_ALL;
+  displayFormatDigits = 0;
+  setSystemFlag(FLAG_TDM24); // time format = 24H
+  clearSystemFlag(FLAG_CPXj);
+  fnAngularMode(AM_DEGREE);
+  setSystemFlag(FLAG_DENANY);
+  denMax = MAX_DENMAX;
+  fnCurveFitting(CF_LINEAR_FITTING);
+  clearSystemFlag(FLAG_LEAD0);
+  setSystemFlag(FLAG_MULTx);
+  clearSystemFlag(FLAG_FRACT);
+  clearSystemFlag(FLAG_PROPFR);
+  setSystemFlag(FLAG_PROPFR);
+  setSystemFlag(FLAG_DECIMP);
+  setSystemFlag(FLAG_CPXRES);                                  //JM default
+  setSystemFlag(FLAG_RECTN);
+  setSystemFlag(FLAG_ALLSCI);
+  setSystemFlag(FLAG_AUTOFF);
+  clearSystemFlag(FLAG_SSIZE8);
+  clearSystemFlag(FLAG_MDY); // date format
+  clearSystemFlag(FLAG_DMY); // date format
+  setSystemFlag(FLAG_YMD);   // date format
   significantDigits = 0;
-  fnRoundingMode(RM_HALF_EVEN); // DEC_ROUND_HALF_EVEN.      //JM bug: Overwritten by fnReset
-  fnDisplayStack(4);                                         //JM bug: Overwritten by fnReset
+  fnRoundingMode(RM_HALF_EVEN); // DEC_ROUND_HALF_EVEN.        //JM note: Overwritten by fnReset
+  fnDisplayStack(4);                                           //JM note: Overwritten by fnReset
 
   showDateTime();
 
   shiftF = false;
   shiftG = false;
-//shiftStateChanged = false;            //dr
+//shiftStateChanged = false;                                   //dr
 
-  jm_FG_LINE = true;                                             //JM Screen / keyboard operation setup
-  jm_FG_DOTS = false;                                            //JM Screen / keyboard operation setup
-  jm_G_DOUBLETAP = false;                                        //JM Screen / keyboard operation setup
-
-  jm_VECT = false;                                               //JM Screen / keyboard operation setup
-  jm_HOME_SUM = false;                                           //JMHOME
-  jm_HOME_MIR = true;                                            //JMHOME
-  jm_HOME_FIX = false;                                           //JMHOME
-#if defined(DMCP_BUILD) || defined(JM_LAYOUT_2_DM42_STRICT)              //JM LAYOUT 2. DM42 STRICT.
-  jm_HOME_SUM = false;                                           //JMHOME
-  jm_HOME_MIR = true;                                            //JMHOME
-  jm_HOME_FIX = false;                                           //JMHOME
-#endif
-  ULFL = false;                                                  //JM Underline
-  ULGL = false;                                                  //JM Underline
-  FN_state = ST_0_INIT;                                          //JM FN-DOUBLE
-  FN_key_pressed = 0;                                            //JM LONGPRESS FN
-  FN_key_pressed_last = 0;
-  FN_timeouts_in_progress = false;                               //JM LONGPRESS FN
-  Shft_timeouts = false;                                         //JM SHIFT NEW
-  FN_timed_out_to_RELEASE_EXEC = false;                          //JM LONGPRESS FN
-  FN_timed_out_to_NOP = false;                                   //JM LONGPRESS FN
-  SigFigMode = 0;                                                //JM SIGFIG Default 0.
-  eRPN = false;                                                  //JM eRPN Default. Create a flag to enable or disable eRPN. See bufferize.c
-  HOME3 = true;                                                  //JM HOME Default. Create a flag to enable or disable triple shift HOME3.
-  ShiftTimoutMode = true;                                        //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER CANCEL.
-  Home3TimerMode = true;                                         //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER MODE FOR HOME.
-  UNITDisplay = false;                                           //JM HOME Default. Create a flag to enable or disable UNIT display
-#ifdef INLINE_TEST                      //vv dr
-  testEnabled = false;
-  testBitset = 0x0000;
-#endif                                  //^^
-  SH_BASE_HOME   = true;
-  SH_BASE_AHOME  = true;
-  Norm_Key_00_VAR  = ITM_SIGMAPLUS;
-  Input_Default =  ID_43S;                                       //JM Input Default
-  graph_xmin = -3*3.14159;                                       //JM GRAPH
-  graph_xmax = +3*3.14159;                                       //JM GRAPH
-  graph_ymin = -2;                                               //JM GRAPH
-  graph_ymax = +2;                                               //JM GRAPH
-  graph_dx   = 0;                                                //JM GRAPH
-  graph_dy   = 0;                                                //JM GRAPH
-  strcpy(filename_csv,"DEFAULT.CSV");                            //JMCSV
-  tmp__32=0;                                                     //JMCSV
-  mem__32=0;                                                     //JMCSV
-  SHOWregis = 9999;                                              //JM
+  jm_FG_LINE = true;                                           //JM Screen / keyboard operation setup
+  jm_FG_DOTS = false;                                          //JM Screen / keyboard operation setup
+  jm_G_DOUBLETAP = false;                                      //JM Screen / keyboard operation setup
+  jm_VECT = false;                                             //JM Screen / keyboard operation setup
+  jm_HOME_SUM = false;                                         //JMHOME
+  jm_HOME_MIR = true;                                          //JMHOME
+  jm_HOME_FIX = false;                                         //JMHOME
+  #if defined(DMCP_BUILD) || defined(JM_LAYOUT_2_DM42_STRICT)  //JM LAYOUT 2. DM42 STRICT.
+    jm_HOME_SUM = false;                                       //JMHOME
+    jm_HOME_MIR = true;                                        //JMHOME
+    jm_HOME_FIX = false;                                       //JMHOME
+  #endif
+  ULFL = false;                                                //JM Underline
+  ULGL = false;                                                //JM Underline
+  FN_state = ST_0_INIT;                                        //JM FN-DOUBLE
+  FN_key_pressed = 0;                                          //JM LONGPRESS FN
+  FN_key_pressed_last = 0;                                     //JM LONGPRESS FN
+  FN_timeouts_in_progress = false;                             //JM LONGPRESS FN
+  Shft_timeouts = false;                                       //JM SHIFT NEW
+  FN_timed_out_to_RELEASE_EXEC = false;                        //JM LONGPRESS FN
+  FN_timed_out_to_NOP = false;                                 //JM LONGPRESS FN
+  SigFigMode = 0;                                              //JM SIGFIG Default 0.
+  eRPN = false;                                                //JM eRPN Default. Create a flag to enable or disable eRPN. See bufferize.c
+  HOME3 = true;                                                //JM HOME Default. Create a flag to enable or disable triple shift HOME3.
+  ShiftTimoutMode = true;                                      //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER CANCEL.
+  Home3TimerMode = true;                                       //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER MODE FOR HOME.
+  UNITDisplay = false;                                         //JM HOME Default. Create a flag to enable or disable UNIT display
+#ifdef INLINE_TEST                                             //vv dr
+  testEnabled = false;                                         //dr
+  testBitset = 0x0000;                                         //dr
+#endif                                                         //^^
+  SH_BASE_HOME   = true;                                       //JM
+  SH_BASE_AHOME  = true;                                       //JM
+  Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM
+  Input_Default =  ID_43S;                                     //JM Input Default
+  graph_xmin = -3*3.14159;                                     //JM GRAPH
+  graph_xmax = +3*3.14159;                                     //JM GRAPH
+  graph_ymin = -2;                                             //JM GRAPH
+  graph_ymax = +2;                                             //JM GRAPH
+  graph_dx   = 0;                                              //JM GRAPH
+  graph_dy   = 0;                                              //JM GRAPH
+  strcpy(filename_csv,"DEFAULT.CSV");                          //JMCSV
+  tmp__32=0;                                                   //JMCSV
+  mem__32=0;                                                   //JMCSV
   
   
-  softmenuStackPointer_MEM = 0;                                  //JM HOME temporary flag to remember and restore state
+  softmenuStackPointer_MEM = 0;                                //JM HOME temporary flag to remember and restore state
 
-  JM_SHIFT_HOME_TIMER1 = 1;                                      //JM TIMER
-  JM_ASN_MODE = 0;                                               //JM ASSIGN
-  //Load_HOME(); //JMHOMEDEMO: NOTE REMOVE comments TO MAKE JMHOME DEMO WORK
+  JM_SHIFT_HOME_TIMER1 = 1;                                    //JM TIMER
+  JM_ASN_MODE = 0;                                             //JM ASSIGN
+  //Load_HOME();                                               //JMHOMEDEMO: NOTE REMOVE comments TO MAKE JMHOME DEMO WORK
+  telltale = 0;                                                //JMGRAPH MEM
+  #ifndef TESTSUITE_BUILD                                      //JM
+    clear_ul();                                                //JMUL
+  #endif // TESTSUITE_BUILD                                    //JM
 
-  telltale = 0;                                                  //JMGRAPH MEM
-  
   #ifndef TESTSUITE_BUILD
-    clear_ul();                                                  //JMUL
     showShiftState();
   #endif // TESTSUITE_BUILD
 
   currentFntScr = 0;
   currentFlgScr = 0;
   currentRegisterBrowserScreen = 9999;
+  SHOWregis = 9999;                                            //JMSHOW
+
 
   softmenuStackPointer = 0;
 
   aimBuffer[0] = 0;
 
 
-  fnClearFlag(FLAG_OVERFLOW);
-  fnClearFlag(FLAG_CARRY);
-  showOverflowCarry();
+  clearSystemFlag(FLAG_OVERFLOW);
+  clearSystemFlag(FLAG_CARRY);
 
-  fnSetFlag(FLAG_CPXRES);                //JM change: Also overwritten by fnReset. CPXRES set default
+  fnSetFlag(FLAG_CPXRES);                                      //JM change: Also overwritten by fnReset. CPXRES set default
   showRealComplexResult();
 
   showAlphaMode();
@@ -449,7 +447,7 @@ void setupDefaults(void) {
 
   allowScreenUpdate = true;
 
-  hideUserMode();
+  clearSystemFlag(FLAG_USER);
 
   gammaLanczosCoefficients = (real51_t *)const_gammaC01;
 
@@ -466,11 +464,14 @@ void setupDefaults(void) {
   lastFcnsMenuPos = 0;
   lastMenuMenuPos = 0;
   lastCnstMenuPos = 0;
+  lastSyFlMenuPos = 0;
+  lastAIntMenuPos = 0;
 
-  exponentLimit = 6145;             //JMMAX
+  exponentLimit = 6145;                                        //JMMAX
 
   #ifdef TESTSUITE_BUILD
     calcMode = CM_NORMAL;
+    clearSystemFlag(FLAG_ALPHA);
   #else
     calcModeNormal();
   #endif // TESTSUITE_BUILD
@@ -549,8 +550,8 @@ int main(int argc, char* argv[]) {
   restoreCalc();
   //fnReset(CONFIRMED);
 
-  gdk_threads_add_timeout(LCD_REFRESH_TIMEOUT, refreshScreen, NULL); // refreshScreen is called every 100 ms
-  fnTimerReset();                                                                         //vv dr timeouts for kb handling
+  gdk_threads_add_timeout(LCD_REFRESH_TIMEOUT, refreshScreen, NULL); //dr refreshScreen is called every 100 ms //vv
+  fnTimerReset();                                                    //dr timeouts for kb handling
   fnTimerConfig(TO_FG_LONG, refreshFn, TO_FG_LONG/*, 580*/);
   fnTimerConfig(TO_CL_LONG, refreshFn, TO_CL_LONG/*, 500*/);
   fnTimerConfig(TO_FG_TIMR, refreshFn, TO_FG_TIMR/*, 4000*/);
@@ -558,8 +559,8 @@ int main(int argc, char* argv[]) {
   fnTimerConfig(TO_FN_EXEC, execFnTimeout, 0/*, 150*/);
   fnTimerConfig(TO_3S_CTFF, shiftCutoff, TO_3S_CTFF/*, 600*/);
   fnTimerConfig(TO_CL_DROP, fnTimerDummyTest, TO_CL_DROP/*, 500*/);
-//fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV/*, 6000*/);  // no keyboard scan boost for emulator
-  gdk_threads_add_timeout(5, refreshTimer, NULL); // refreshTimer is called every 5 ms    //^^
+//fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV/*, 6000*/);  //dr no keyboard scan boost for emulator
+  gdk_threads_add_timeout(5, refreshTimer, NULL);                     //dr refreshTimer is called every 5 ms    //^^
 
   gtk_main();
 
@@ -571,7 +572,7 @@ int main(int argc, char* argv[]) {
 void program_main(void) {
   int key = 0;
   char charKey[3];
-//bool_t wp43sKbdLayout;                                                        //dr - no keymap is used
+//bool_t wp43sKbdLayout;                                       //dr - no keymap is used
 
   wp43sMemInBytes = 0;
   gmpMemInBytes = 0;
@@ -581,7 +582,7 @@ void program_main(void) {
   //program_init();
 
   lcd_clear_buf();
-/*lcd_putsAt(t24, 4, "Press the bottom left key.");                  //vv dr - no keymap is used
+/*lcd_putsAt(t24, 4, "Press the bottom left key.");            //vv dr - no keymap is used
   lcd_refresh();
   while(key != 33 && key != 37) {
     key = key_pop();
@@ -594,12 +595,12 @@ void program_main(void) {
   wp43sKbdLayout = (key == 37); // bottom left key
   key = 0;
 
-  lcd_clear_buf();*/                                                            //^^
+  lcd_clear_buf();*/                                           //^^
   setupDefaults();
-  #ifdef JMSHOWCODES 
-  telltale_lastkey = 0;                                          //JM test
-  telltale_pos = 0;                                              //JM test
-  #endif
+  #ifdef JMSHOWCODES                                           //JM test
+  telltale_lastkey = 0;                                        //JM test
+  telltale_pos = 0;                                            //JM test
+  #endif                                                       //JM test
 
 /*longInteger_t li;
 longIntegerInit(li);
@@ -626,10 +627,10 @@ longIntegerFree(li);*/
 
   backToDMCP = false;
 
-  fnTimerReset();       //JM Suspects timers not resetting. Duplicating reset. Trying no response on first FN bug.
-  lcd_forced_refresh();
-  nextScreenRefresh = sys_current_ms()+LCD_REFRESH_TIMEOUT;
-  fnTimerReset();                                                                         //vv dr timeouts for kb handling
+  fnTimerReset();                                              //JM Suspects timers not resetting. Duplicating reset. Trying no response on first FN bug.
+  lcd_forced_refresh();                                        //JM 
+  nextScreenRefresh = sys_current_ms()+LCD_REFRESH_TIMEOUT;    //dr
+  fnTimerReset();                                              //vv dr timeouts for kb handling
   fnTimerConfig(TO_FG_LONG, refreshFn, TO_FG_LONG/*, 580*/);
   fnTimerConfig(TO_CL_LONG, refreshFn, TO_CL_LONG/*, 500*/);
   fnTimerConfig(TO_FG_TIMR, refreshFn, TO_FG_TIMR/*, 4000*/);
@@ -638,7 +639,7 @@ longIntegerFree(li);*/
   fnTimerConfig(TO_3S_CTFF, shiftCutoff, TO_3S_CTFF/*, 600*/);
   fnTimerConfig(TO_CL_DROP, fnTimerDummyTest, TO_CL_DROP/*, 500*/);
   fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV/*, 6000*/);
-  nextTimerRefresh = 0;                                                                   //vv
+  nextTimerRefresh = 0;                                        //vv
 
   // Status flags:
   //   ST(STAT_PGM_END)   - Indicates that program should go to off state (set by auto off timer)
@@ -649,8 +650,7 @@ longIntegerFree(li);*/
     if(ST(STAT_PGM_END) && ST(STAT_SUSPENDED)) { // Already in off mode and suspended
       CLR_ST(STAT_RUNNING);
       sys_sleep();
-    }
-    else if ((!ST(STAT_PGM_END) && key_empty())) {          // Just wait if no keys available.
+    } else if ((!ST(STAT_PGM_END) && key_empty())) {         // Just wait if no keys available.
       uint32_t sleepTime = max(1, nextScreenRefresh - sys_current_ms());        //vv dr timer without DMCP timer
       if(nextTimerRefresh != 0) {
         uint32_t timeoutTime = max(1, nextTimerRefresh - sys_current_ms());
@@ -663,7 +663,7 @@ longIntegerFree(li);*/
         sleepTime = min(sleepTime, 15);
       }                                                                         //^^
       CLR_ST(STAT_RUNNING);
-      sys_timer_start(TIMER_IDX_SCREEN_REFRESH, max(1, sleepTime));                           // wake up for screen refresh
+      sys_timer_start(TIMER_IDX_SCREEN_REFRESH, max(1, sleepTime));             //dr wake up for screen refresh
       sys_sleep();
       sys_timer_disable(TIMER_IDX_SCREEN_REFRESH);
     }
@@ -712,10 +712,17 @@ longIntegerFree(li);*/
     // == 0 -> Key released
     key = key_pop();
 
-    if(sys_last_key() == 44 ) {                                 //JM DISP for special SCREEN DUMP key code. Supposed to be 16 but shift decoding done already to 44
-      resetShiftState();                                        // to avoid f or g top left of the screen
-      fnScreenDump(0);
-    }
+   #ifdef _43S_SHOWCODES 
+    //The 3 lines below to see in the top left screen corner the pressed keycode
+    char sysLastKeyCh[5];
+    sprintf(sysLastKeyCh, "%2d", sys_last_key());
+    showString(sysLastKeyCh, &standardFont, 0, 0, vmReverse, true, true);
+   #endif
+
+    if(sys_last_key() == 44 ) {                                //JM DISP for special SCREEN DUMP key code. To be 16 but shift decoding already to 44
+      resetShiftState();                                       //JM to avoid f or g top left of the screen
+      fnScreenDump(0);                                         //JM
+    }                                                          //JM
    
    #ifdef JMSHOWCODES 
     //Show key codes
@@ -736,11 +743,11 @@ longIntegerFree(li);*/
 
     if(38 <= key && key <=43) {
       sprintf(charKey, "%c", key+11);
-      btnFnPressed(NULL, charKey);
+      btnFnPressed(NULL, charKey);                             //JM Changed from Clicked to Pressed
       lcd_refresh_dma();
     }
-    else if(key == 0 && FN_key_pressed != 0) {    //JM, key=0 is release, therefore there must have been a press before that. If the press was a FN key, FN_key_pressed > 0 when it comes back here for release.
-      btnFnReleased(NULL,NULL);                   //    in short, it can only execute release after there was a FN press.
+    else if(key == 0 && FN_key_pressed != 0) {                 //JM, key=0 is release, therefore there must have been a press before that. If the press was a FN key, FN_key_pressed > 0 when it comes back here for release.
+      btnFnReleased(NULL,NULL);                                //    in short, it can only execute FN release after there was a FN press.
       lcd_refresh_dma();
     }
     else if(1 <= key && key <= 37) {
@@ -753,14 +760,14 @@ longIntegerFree(li);*/
       lcd_refresh_dma();
     }
 
-    if(key >= 0) {
-      fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV);
+    if(key >= 0) {                                             //JM dr
+      fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV);     //JM dr
     }
 
     uint32_t now = sys_current_ms();
-    if(nextTimerRefresh != 0 && nextTimerRefresh <= now) {            //vv dr Timer
+    if(nextTimerRefresh != 0 && nextTimerRefresh <= now) {     //vv dr Timer
       refreshTimer();
-    }                                                                 //^^
+    }                                                          //^^
     now = sys_current_ms();
     if(nextScreenRefresh <= now) {
       nextScreenRefresh += LCD_REFRESH_TIMEOUT;

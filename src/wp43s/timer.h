@@ -21,3 +21,6 @@
 #ifndef TESTSUITE_BUILD
   uint32_t getUptimeMs(void);
 #endif
+
+  void     fnTicks    (uint16_t unusedParamButMandatory);
+

@@ -87,7 +87,7 @@ static bool_t deltaPercentReal(real_t *xReal, real_t *yReal, real_t *rReal, real
    * Check x and y
    */
   if(realIsZero(xReal) && realCompareEqual(xReal, yReal)) {
-      if(getFlag(FLAG_DANGER)) {
+      if(getSystemFlag(FLAG_SPCRES)) {
         realCopy(const_NaN, rReal);
       }
       else {
@@ -100,7 +100,7 @@ static bool_t deltaPercentReal(real_t *xReal, real_t *yReal, real_t *rReal, real
   }
   else if(realIsZero(yReal))
   {
-    if(getFlag(FLAG_DANGER)) {
+    if(getSystemFlag(FLAG_SPCRES)) {
       realCopy((realCompareAbsGreaterThan(xReal, yReal) ? const_plusInfinity : const_minusInfinity),rReal);
     }
     else {

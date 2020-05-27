@@ -75,7 +75,7 @@ SRC_WP43S                = \
 		fonts.c fractions.c gui.c integers.c items.c keyboard.c keyboardTweak.c \
 		rasterFontsData.c radioButtonCatalog.c registerValueConversions.c registers.c \
 		saveRestoreCalcState.c screen.c softmenus.c sort.c stack.c \
-		stats.c statusBar.c textfiles.c timer.c \
+		stats.c statusBar.c stringFuncs.c textfiles.c timer.c \
 		wp43s.c memory.c) \
 	$(addprefix src/wp43s/mathematics/, \
 		10pow.c 2pow.c addition.c agm.c arccos.c arccosh.c arcsin.c arcsinh.c arctan.c arctanh.c \
@@ -124,7 +124,12 @@ GENERATED_SOURCES = $(GEN_SRC_CONSTANTPOINTERS) $(GEN_SRC_RASTERFONTSDATA) $(GEN
 
 STAMP_FILES = .stamp-constantPointers .stamp-rasterFontsData .stamp-softmenuCatalog
 
-all: wp43c
+all: 	wp43c
+ifeq '$(detected_OS)' 'Darwin'
+	rsync -u wp43c MacOs\ binaries
+	rsync -u c43_pre.css MacOs\ binaries
+	rsync -u dm42l_L1.png MacOs\ binaries
+endif
 
 rebuild:
 	$(MAKE) mrproper
@@ -234,7 +239,8 @@ src/ttf2RasterFonts/%.o: src/ttf2RasterFonts/%.c
 	@echo -e "\n====> src/ttf2RasterFonts/%.o: $@ <===="
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
-.stamp-rasterFontsData: $(TTF2RASTERFONTS_APP) fonts/WP43S_NumericFont.ttf fonts/WP43S_StandardFont.ttf
+.stamp-rasterFontsData: $(TTF2RASTERFONTS_APP) fonts/C43___NumericFont.ttf fonts/C43___StandardFont.ttf
+#.stamp-rasterFontsData: $(TTF2RASTERFONTS_APP) fonts/WP43S_NumericFont.ttf fonts/WP43S_StandardFont.ttf
 	@echo -e "\n====> running $(TTF2RASTERFONTS_APP) <===="
 	./$(TTF2RASTERFONTS_APP) > /dev/null
 	touch $@

@@ -18,7 +18,7 @@
  * \file jmgraph.c Graphing module
  ***********************************************/
 
-/* ADDITIONAL WP43C functions and routines */
+/* ADDITIONAL C43 functions and routines */
 
 
 #include "wp43s.h"

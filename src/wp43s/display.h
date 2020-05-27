@@ -16,7 +16,6 @@
 
 void fnDisplayOvr                      (uint16_t displayOvr);
 void fnProductSign                     (uint16_t productSign);
-void fnRadixMark                       (uint16_t radixMark);
 void fnDisplayFormatFix                (uint16_t displayFormat);
 void fnDisplayFormatSci                (uint16_t displayFormat);
 void fnDisplayFormatEng                (uint16_t displayFormat);
@@ -30,7 +29,7 @@ void complex34ToDisplayString          (const complex34_t *complex34, char *disp
 void complex34ToDisplayString2         (const complex34_t *complex34, char *displayString, int16_t displayHasNDigits, bool_t limitExponent, const char *separator);
 void fractionToDisplayString           (calcRegister_t regist, char *displayString);
 void angle34ToDisplayString2           (const real34_t *angle34, uint8_t mode, char *displayString, int16_t displayHasNDigits, bool_t limitExponent, const char *separator);
-void shortIntegerToDisplayString       (calcRegister_t regist, char *displayString, const font_t **font);
+void shortIntegerToDisplayString       (calcRegister_t regist, char *displayString, bool_t determineFont);
 void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayString, int32_t strLg, int16_t maxWidth, int16_t maxExp, const char *separator);
 void dateToDisplayString               (calcRegister_t regist, char *displayString);
 void timeToDisplayString               (calcRegister_t regist, char *displayString);
@@ -39,4 +38,3 @@ void supNumberToDisplayString          (int32_t supNumber, char *displayString, 
 void subNumberToDisplayString          (int32_t subNumber, char *displayString, char *displayValueString);
 void longIntegerToAllocatedString      (const longInteger_t lgInt, char *str, int32_t strLg);
 void fnShow_SCROLL                	   (uint16_t fnShow_param);    //JMSHOW
-int16_t SHOWregis;                                            //JMSHOW

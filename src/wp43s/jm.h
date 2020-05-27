@@ -17,7 +17,7 @@
 //wp43s.h
 
 
-/* ADDITIONAL WP43C functions and routines */
+/* ADDITIONAL C43 functions and routines */
 
 /*
 Modes available in the mode menu:
@@ -32,6 +32,32 @@ Modes available in the mode menu:
 7. HOME
 8. ALPHAHOME
 */
+
+// Radix Mark 1 bit
+ #define RM_PERIOD               103
+ #define RM_COMMA                104
+// Time format 1 bit
+#define TF_H24                  105
+#define TF_H12                  106
+// Complex unit 1 bit
+#define CU_I                    107
+#define CU_J                    108
+// Product sign 1 bit
+#define PS_DOT                  109
+#define PS_CROSS                110
+// Stack size 1 bit
+#define SS_4                    111
+#define SS_8                    112
+// Complex mode 1 bit
+ #define CM_RECTANGULAR          113
+ #define CM_POLAR                114
+
+
+
+
+//This is to allow the cursors to change the case. Normal on 43S. Off on C43
+#define arrowCasechange    false
+
 
 
 
@@ -52,8 +78,8 @@ uint8_t softmenuStackPointer_MEM; //For popping on and off the HOME menu
 
 
 //keyboard.c  screen.c
-bool_t JM_auto_drop_enabled;                      //JM TIMER CLRDROP
-bool_t JM_auto_clstk_enabled;                     //JM TIMER CLRDROP
+int16_t JM_auto_doublepress_enabled;              //JM TIMER CLRDROP //drop
+int16_t JM_auto_longpress_enabled;                //JM TIMER CLRDROP //clstk
 
 uint8_t JM_SHIFT_HOME_TIMER1;                     //Local to keyboard.c, but defined here
 int16_t JM_ASN_MODE;                              //JM ASSIGN
@@ -112,7 +138,7 @@ void fnGetSigmaAssignToX(uint16_t unusedParamButMandatory);
 void fnJMup(uint16_t unusedParamButMandatory);
 void fnJMdown(uint16_t unusedParamButMandatory);
 void fnJM_2SI(uint16_t unusedParamButMandatory);
-void fnInfo(bool_t Info);
+//void fnInfo(bool_t Info);
 
 void fnJM(uint16_t JM_OPCODE);
 void fnUserJM(uint16_t jmUser);
@@ -190,10 +216,6 @@ void fnASSIGN       (int16_t JM_ASN_MODE, int16_t tempkey);
 #define JC_H_MIR               25    //JMHOME
 #define JC_H_FIX               26    //JMHOME
 
-
-//items.c
-void fnDisplayFormatSigFig(uint16_t displayFormatN);
-void fnDisplayFormatUnit(uint16_t displayFormatN);
 
 #ifdef PC_BUILD
 //keyboard.c

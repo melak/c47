@@ -1,31 +1,33 @@
-/* This file is part of 43S.
+/* This file is part of WP 43S.
  *
- * 43S is free software: you can redistribute it and/or modify
+ * WP 43S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * 43S is distributed in the hope that it will be useful,
+ * WP 43S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <htempp://www.gnu.org/licenses/>.
+ * along with WP 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* ADDITIONAL C43 functions and routines */
+
 
 /********************************************//** //JM
  * \file jmgraph.c Graphing module
  ***********************************************/
 
-/* ADDITIONAL WP43C functions and routines */
+/* ADDITIONAL C43 functions and routines */
 
 
 #include "wp43s.h"
 #include "math.h"
 
-char                 filename_csv[60];                        //JM_CSV
-uint32_t             tmp__32;                                 //JM_CSV
+char                 filename_csv[40]; //JMMAX                //JM_CSV Changed from 60 to 40 to save 20 bytes.
 uint32_t             mem__32;                                 //JM_CSV
 
 
@@ -327,8 +329,10 @@ char line[100];               /* Line buffer */
 
 
 
+
 int16_t test_xy(float x, float y){
 char line[100];               /* Line buffer */
+uint32_t             tmp__32;                                 //JM_CSV
 
     FIL fil;                      /* File object */
     FRESULT fr;                   /* FatFs return code */
