@@ -1202,7 +1202,7 @@ void fnUserJM(uint16_t jmUser) {
 
     kbd_usr[3].primary      = ITM_LN;
     kbd_usr[3].fShifted     = ITM_EX;
-    kbd_usr[3].gShifted     = ITM_PROFRC;
+    kbd_usr[3].gShifted     = ITM_TGLFRT;
 
     kbd_usr[4].primary      = KEY_f;
     kbd_usr[4].fShifted     = ITM_NULL;
