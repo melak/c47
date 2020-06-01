@@ -44,6 +44,39 @@ static int sortItems(void const *a, void const *b)
 
 
 
+void sortOneCatalog(const char *menuName, char catalogType) {
+  printf("Generating catalog %s\n", menuName);
+  fprintf(catalog, "const int16_t menu_%s[] = {\n", menuName);
+
+  numberOfItems = 0;
+  for(item=1; item<LAST_ITEM; item++) {
+    if(indexOfItems[item].catalog == catalogType && strcmp(indexOfItems[item].itemCatalogName, "CATALOG") && strcmp(indexOfItems[item].itemCatalogName, "MENUS")) { // CATALOG and MENUS are not in another catalog
+      itemList[numberOfItems++] = item;
+      if(numberOfItems == MAX_NUMBER_OF_ITEMS) {
+        printf("Array itemList is too small: increase the value of MAX_NUMBER_OF_ITEMS\n");
+        exit(-1);
+      }
+    }
+  }
+
+  qsort(itemList, numberOfItems, sizeof(*itemList), sortItems);
+
+  for(item=0; item<numberOfItems; item++) {
+    fprintf(catalog, "%5d,", itemList[item] * (catalogType == CAT_MENU ? -1 : 1)); // Menus are negative
+    if((item + 1) % 6 == 0) {
+      fprintf(catalog, "\n");
+    }
+  }
+
+  //while(numberOfItems++ % 6 != 0) {
+  //  fprintf(catalog, "%5d,", 0);
+  //}
+
+  fprintf(catalog, "\n};\n");
+}
+
+
+
 #ifdef __APPLE__
 int main(int argc, char* argv[]) {
     // we take the directory where the application is as the root for this application.
@@ -97,235 +130,13 @@ int main(int argc, char* argv[]) {
   fprintf(catalog, "/*<---- 6 f shifted functions ---->*/\n");
   fprintf(catalog, "/*<---- 6 g shifted functions ---->*/\n");
 
-/****************/
-/* Catalog FCNS */
-/****************/
-  printf("Generating catalog FCNS\n");
-  fprintf(catalog, "const int16_t menu_FCNS[] = {\n");
-
-  numberOfItems = 0;
-  for(item=1; item<LAST_ITEM; item++) {
-    if(indexOfItems[item].catalog == CAT_FNCT) {
-      itemList[numberOfItems++] = item;
-      if(numberOfItems == MAX_NUMBER_OF_ITEMS) {
-        printf("Array itemList is too small: increase the value of MAX_NUMBER_OF_ITEMS\n");
-        exit(-1);
-      }
-    }
-  }
-
-  qsort(itemList, numberOfItems, sizeof(*itemList), sortItems);
-
-  for(item=0; item<numberOfItems; item++) {
-    fprintf(catalog, "%5d,", itemList[item]);
-    if((item + 1) % 6 == 0) {
-      fprintf(catalog, "\n");
-    }
-  }
-
-  //while(numberOfItems++ % 6 != 0) {
-  //  fprintf(catalog, "%5d,", 0);
-  //}
-
-  fprintf(catalog, "\n};\n");
-
-
-/*****************/
-/* Catalog CONST */
-/*****************/
-  printf("Generating catalog CONST\n");
-  fprintf(catalog, "\n\nconst int16_t menu_CONST[] = {\n");
-
-  numberOfItems = 0;
-  for(item=1; item<LAST_ITEM; item++) {
-    if(indexOfItems[item].catalog == CAT_CNST) {
-      itemList[numberOfItems++] = item;
-      if(numberOfItems == MAX_NUMBER_OF_ITEMS) {
-        printf("Array itemList is too small: increase the value of MAX_NUMBER_OF_ITEMS\n");
-        exit(-1);
-      }
-    }
-  }
-
-  qsort(itemList, numberOfItems, sizeof(*itemList), sortItems);
-
-  for(item=0; item<numberOfItems; item++) {
-    fprintf(catalog, "%5d,", itemList[item]);
-    if((item + 1) % 6 == 0) {
-      fprintf(catalog, "\n");
-    }
-  }
-
-  //while(numberOfItems++ % 6 != 0) {
-  //  fprintf(catalog, "%5d,", 0);
-  //}
-
-  fprintf(catalog, "\n};\n");
-
-
-/*****************/
-/* Catalog MENUS */
-/*****************/
-  printf("Generating catalog MENUS\n");
-  fprintf(catalog, "\n\nconst int16_t menu_MENUS[] = {\n");
-
-  numberOfItems = 0;
-  for(item=1; item<LAST_ITEM; item++) {
-    if(indexOfItems[item].catalog == CAT_MENU && strcmp(indexOfItems[item].itemCatalogName, "CATALOG") && strcmp(indexOfItems[item].itemCatalogName, "MENUS")) {
-      itemList[numberOfItems++] = item;
-      if(numberOfItems == MAX_NUMBER_OF_ITEMS) {
-        printf("Array itemList is too small: increase the value of MAX_NUMBER_OF_ITEMS\n");
-        exit(-1);
-      }
-    }
-  }
-
-  qsort(itemList, numberOfItems, sizeof(*itemList), sortItems);
-
-  for(item=0; item<numberOfItems; item++) {
-    fprintf(catalog, "%5d,", -itemList[item]); // Minus because menus are negative
-    if((item + 1) % 6 == 0) {
-      fprintf(catalog, "\n");
-    }
-  }
-
-  //while(numberOfItems++ % 6 != 0) {
-  //  fprintf(catalog, "%5d,", 0);
-  //}
-
-  fprintf(catalog, "\n};\n");
-
-
-/*****************/
-/* Catalog SYSFL */
-/*****************/
-  printf("Generating catalog SYSFL\n");
-  fprintf(catalog, "\n\nconst int16_t menu_SYSFL[] = {\n");
-
-  numberOfItems = 0;
-  for(item=1; item<LAST_ITEM; item++) {
-    if(indexOfItems[item].catalog == CAT_SYFL) {
-      itemList[numberOfItems++] = item;
-      if(numberOfItems == MAX_NUMBER_OF_ITEMS) {
-        printf("Array itemList is too small: increase the value of MAX_NUMBER_OF_ITEMS\n");
-        exit(-1);
-      }
-    }
-  }
-
-  qsort(itemList, numberOfItems, sizeof(*itemList), sortItems);
-
-  for(item=0; item<numberOfItems; item++) {
-    fprintf(catalog, "%5d,", itemList[item]);
-    if((item + 1) % 6 == 0) {
-      fprintf(catalog, "\n");
-    }
-  }
-
-  //while(numberOfItems++ % 6 != 0) {
-  //  fprintf(catalog, "%5d,", 0);
-  //}
-
-  fprintf(catalog, "\n};\n");
-
-
-/**********************/
-/* Catalog alpha_INTL */
-/**********************/
-  printf("Generating catalog alpha_INTL\n");
-  fprintf(catalog, "\n\nconst int16_t menu_alpha_INTL[] = {\n");
-
-  numberOfItems = 0;
-  for(item=1; item<LAST_ITEM; item++) {
-    if(indexOfItems[item].catalog == CAT_AINT) {
-      itemList[numberOfItems++] = item;
-      if(numberOfItems == MAX_NUMBER_OF_ITEMS) {
-        printf("Array itemList is too small: increase the value of MAX_NUMBER_OF_ITEMS\n");
-        exit(-1);
-      }
-    }
-  }
-
-  qsort(itemList, numberOfItems, sizeof(*itemList), sortItems);
-
-  for(item=0; item<numberOfItems; item++) {
-    fprintf(catalog, "%5d,", itemList[item]);
-    if((item + 1) % 6 == 0) {
-      fprintf(catalog, "\n");
-    }
-  }
-
-  //while(numberOfItems++ % 6 != 0) {
-  //  fprintf(catalog, "%5d,", 0);
-  //}
-
-  fprintf(catalog, "\n};\n");
-
-
-/**********************/
-/* Catalog alpha_intl */
-/**********************/
-  printf("Generating catalog alpha_intl\n");
-  fprintf(catalog, "\n\nconst int16_t menu_alpha_intl[] = {\n");
-
-  numberOfItems = 0;
-  for(item=1; item<LAST_ITEM; item++) {
-    if(indexOfItems[item].catalog == CAT_aint) {
-      itemList[numberOfItems++] = item;
-      if(numberOfItems == MAX_NUMBER_OF_ITEMS) {
-        printf("Array itemList is too small: increase the value of MAX_NUMBER_OF_ITEMS\n");
-        exit(-1);
-      }
-    }
-  }
-
-  qsort(itemList, numberOfItems, sizeof(*itemList), sortItems);
-
-  for(item=0; item<numberOfItems; item++) {
-    fprintf(catalog, "%5d,", itemList[item]);
-    if((item + 1) % 6 == 0) {
-      fprintf(catalog, "\n");
-    }
-  }
-
-  //while(numberOfItems++ % 6 != 0) {
-  //  fprintf(catalog, "%5d,", 0);
-  //}
-
-  fprintf(catalog, "\n};\n");
-
-
-/******************/
-/* Catalog REGIST */
-/******************/
-  printf("Generating catalog REGIST\n");
-  fprintf(catalog, "\n\nconst int16_t menu_REGIST[] = {\n");
-
-  numberOfItems = 0;
-  for(item=1; item<LAST_ITEM; item++) {
-    if(indexOfItems[item].catalog == CAT_REGS) {
-      itemList[numberOfItems++] = item;
-      if(numberOfItems == MAX_NUMBER_OF_ITEMS) {
-        printf("Array itemList is too small: increase the value of MAX_NUMBER_OF_ITEMS\n");
-        exit(-1);
-      }
-    }
-  }
-
-  qsort(itemList, numberOfItems, sizeof(*itemList), sortItems);
-
-  for(item=0; item<numberOfItems; item++) {
-    fprintf(catalog, "%5d,", itemList[item]);
-    if((item + 1) % 6 == 0) {
-      fprintf(catalog, "\n");
-    }
-  }
-
-  //while(numberOfItems++ % 6 != 0) {
-  //  fprintf(catalog, "%5d,", 0);
-  //}
-
-  fprintf(catalog, "\n};\n");
+  sortOneCatalog("FCNS",       CAT_FNCT);
+  sortOneCatalog("CONST",      CAT_CNST);
+  sortOneCatalog("MENUS",      CAT_MENU);
+  sortOneCatalog("SYSFL",      CAT_SYFL);
+  sortOneCatalog("alpha_INTL", CAT_AINT);
+  sortOneCatalog("alpha_intl", CAT_aint);
+  sortOneCatalog("REGIST",     CAT_REGS);
 
   fclose(catalog);
 

@@ -597,7 +597,7 @@ void fnReset(uint16_t confirmation) {
     setSystemFlag(FLAG_MULTx);
     setSystemFlag(FLAG_DECIMP);
     fnRoundingMode(RM_HALF_EVEN);
-    setSystemFlag(FLAG_ALLSCI);
+    clearSystemFlag(FLAG_ALLENG);
     setSystemFlag(FLAG_AUTOFF);
     setSystemFlag(FLAG_SSIZE8);                                //JM Default
     //tDisp = -1;
@@ -605,7 +605,7 @@ void fnReset(uint16_t confirmation) {
     clearSystemFlag(FLAG_MDY); // date format
     clearSystemFlag(FLAG_DMY); // date format
     setSystemFlag(FLAG_YMD);   // date format
-    setSystemFlag(FLAG_RECTN);
+    clearSystemFlag(FLAG_POLAR);
     setSystemFlag(FLAG_CPXRES);                                //JM Default
     allocateLocalRegisters(0);
 

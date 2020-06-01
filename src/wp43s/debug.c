@@ -39,10 +39,10 @@ char * getDataTypeName(uint16_t dt, bool_t article, bool_t padWithBlanks) {
     if(dt == dtShortInteger    ) return "a short integer      ";
     if(dt == dtReal34          ) return "a real34             ";
     if(dt == dtComplex34       ) return "a complex34          ";
+    if(dt == dtConfig          ) return "a config             ";
     //if(dt == dtLabel           ) return "a label              ";
     //if(dt == dtSystemInteger   ) return "a system integer     ";
     //if(dt == dtFlags           ) return "a flags              ";
-    //if(dt == dtConfig          ) return "a config             ";
     //if(dt == dtPgmStep         ) return "a pgm step           ";
     //if(dt == dtDirectory       ) return "a directory          ";
     return                              "a ???                ";
@@ -57,10 +57,10 @@ char * getDataTypeName(uint16_t dt, bool_t article, bool_t padWithBlanks) {
     if(dt == dtShortInteger    ) return "a short integer";
     if(dt == dtReal34          ) return "a real34";
     if(dt == dtComplex34       ) return "a complex34";
+    if(dt == dtConfig          ) return "a config";
     //if(dt == dtLabel           ) return "a label";
     //if(dt == dtSystemInteger   ) return "a system integer";
     //if(dt == dtFlags           ) return "a flags";
-    //if(dt == dtConfig          ) return "a config";
     //if(dt == dtPgmStep         ) return "a pgm step";
     //if(dt == dtDirectory       ) return "a directory";
     return                              "a ???";
@@ -75,10 +75,10 @@ char * getDataTypeName(uint16_t dt, bool_t article, bool_t padWithBlanks) {
     if(dt == dtShortInteger    ) return "short integer        ";
     if(dt == dtReal34          ) return "real34               ";
     if(dt == dtComplex34       ) return "complex34            ";
+    if(dt == dtConfig          ) return "config               ";
     //if(dt == dtLabel           ) return "label                ";
     //if(dt == dtSystemInteger   ) return "system integer       ";
     //if(dt == dtFlags           ) return "flags                ";
-    //if(dt == dtConfig          ) return "config               ";
     //if(dt == dtPgmStep         ) return "pgm step             ";
     //if(dt == dtDirectory       ) return "directory            ";
     return                              "???                  ";
@@ -93,10 +93,10 @@ char * getDataTypeName(uint16_t dt, bool_t article, bool_t padWithBlanks) {
     if(dt == dtShortInteger    ) return "short integer";
     if(dt == dtReal34          ) return "real34";
     if(dt == dtComplex34       ) return "complex34";
+    if(dt == dtConfig          ) return "config";
     //if(dt == dtLabel           ) return "label";
     //if(dt == dtSystemInteger   ) return "system integer";
     //if(dt == dtFlags           ) return "flags";
-    //if(dt == dtConfig          ) return "config";
     //if(dt == dtPgmStep         ) return "pgm step";
     //if(dt == dtDirectory       ) return "directory";
     return                              "???";
@@ -345,6 +345,7 @@ void debugNIM(void) {
     if(cm == CM_ASSIGN)           return "ASSIGN      ";
     if(cm == CM_REGISTER_BROWSER) return "REG.BROWSER ";
     if(cm == CM_FLAG_BROWSER)     return "FLAG.BROWSER";
+    if(cm == CM_FLAG_BROWSER_OLD) return "FLG.BRWR.OLD";    //JM
     if(cm == CM_FONT_BROWSER)     return "FONT.BROWSER";
     if(cm == CM_ERROR_MESSAGE)    return "ERROR.MSG   ";
     if(cm == CM_BUG_ON_SCREEN)    return "BUG.ON.SCR  ";
@@ -574,6 +575,10 @@ void debugNIM(void) {
       longIntegerRegisterToDisplayString(regist, string + n, sizeof(string) - n, SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION);
     }
 
+    else if(getRegisterDataType(regist) == dtConfig) {
+      sprintf(string + n, "Calculator configuration");
+    }
+
     else {
       sprintf(string + n, "data type %s not supported for now!", getRegisterDataTypeName(regist, false, false));
     }
@@ -795,7 +800,7 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "FLAG_RECTN (complex mode)                 = %s = %s",     getBooleanName(getSystemFlag(FLAG_RECTN)), getTimeFormatName(getSystemFlag(FLAG_RECTN)));
+        sprintf(string, "FLAG_POLAR (complex mode)                 = %s = %s",     getBooleanName(getSystemFlag(FLAG_POLAR)), getTimeFormatName(getSystemFlag(FLAG_POLAR)));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
@@ -1514,7 +1519,7 @@ void dumpScreenToConsole(void) {
 
 
 
-#if defined(PC_BUILD )|| defined(TESTSUITE_BUILD)
+#if defined(PC_BUILD ) || defined(TESTSUITE_BUILD)
 void testRegisters(const char *text) {
   calcRegister_t i;
   bool_t situationIsBad;

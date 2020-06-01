@@ -100,7 +100,7 @@ const calcKey_t kbd_std[37] = {
  {54,   CHR_9,           -MNU_MATX,       -MNU_XFN,      CHR_9,          CHR_R,             CHR_9,           CHR_RHO,       CHR_9        }, //JM
  {55,   ITM_DIV,         -MNU_STAT,       -MNU_SUMS,     CHR_DIVIDE,     CHR_S,             CHR_DIVIDE,      CHR_SIGMA,     ITM_DIV      }, //JM
 
- {61,   KEY_DOWN1,        KEY_SST,         ITM_STATUS,   KEY_DOWN1,      KEY_DOWN1,         KEY_SST,         CHR_case,      KEY_DOWN1    }, //JM
+ {61,   KEY_DOWN1,        KEY_SST,         ITM_FLGSV,    KEY_DOWN1,      KEY_DOWN1,         KEY_SST,         CHR_case,      KEY_DOWN1    }, //JM
  {62,   CHR_4,            ITM_AIM,        -MNU_CLK,      CHR_4,          CHR_T,             CHR_4,           CHR_TAU,       CHR_4        }, //JM
  {63,   CHR_5,           -MNU_ANGLECONV,  -MNU_UNITCONV, CHR_5,          CHR_U,             CHR_5,           CHR_PHI,       CHR_5        }, //JM
  {64,   CHR_6,           -MNU_FLAGS,      -MNU_BITS,     CHR_6,          CHR_V,             CHR_6,           CHR_PSI,       CHR_6        }, //JM
@@ -149,7 +149,7 @@ const calcKey_t kbd_std[37] = {
  {54,   CHR_9,           -MNU_MATX,       -MNU_XFN,      CHR_9,          CHR_R,            CHR_9,           CHR_RHO,       CHR_9        }, //JM
  {55,   ITM_DIV,         -MNU_STAT,       -MNU_SUMS,     CHR_DIVIDE,     CHR_S,            CHR_DIVIDE,      CHR_SIGMA,     ITM_DIV      }, //JM
 
- {61,   KEY_DOWN1,        KEY_SST,         ITM_STATUS,   KEY_DOWN1,      KEY_DOWN1,        KEY_SST,         CHR_case,      KEY_DOWN1    }, //JM
+ {61,   KEY_DOWN1,        KEY_SST,         ITM_FLGSV,    KEY_DOWN1,      KEY_DOWN1,        KEY_SST,         CHR_case,      KEY_DOWN1    }, //JM
  {62,   CHR_4,           -MNU_BASE,       -MNU_CLK,      CHR_4,          CHR_T,            CHR_4,           CHR_TAU,       CHR_4        }, //JM
  {63,   CHR_5,           -MNU_ANGLECONV,  -MNU_UNITCONV, CHR_5,          CHR_U,            CHR_5,           CHR_PHI,       CHR_5        }, //JM
  {64,   CHR_6,           -MNU_FLAGS,      -MNU_BITS,     CHR_6,          CHR_V,            CHR_6,           CHR_PSI,       CHR_6        }, //JM

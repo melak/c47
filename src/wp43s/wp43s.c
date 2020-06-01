@@ -66,6 +66,7 @@ char                  aimBuffer[AIM_BUFFER_LENGTH]; /// TODO may be aimBuffer an
 char                  nimBuffer[NIM_BUFFER_LENGTH];
 char                  nimBufferDisplay[NIM_BUFFER_LENGTH];
 char                  tamBuffer[TAM_BUFFER_LENGTH];
+char                  asmBuffer[5];
 char                  oldTime[8];
 char                  dateTimeString[12];
 softmenuStack_t       softmenuStack[7];
@@ -103,6 +104,7 @@ uint32_t              denMax;
 uint32_t              lastIntegerBase;
 uint32_t              alphaSelectionTimer;
 uint8_t               softmenuStackPointer;
+uint8_t               softmenuStackPointerBeforeAIM;
 uint8_t               transitionSystemState;
 uint8_t               cursorBlinkCounter;
 uint8_t               numScreensStandardFont;
@@ -336,8 +338,8 @@ void setupDefaults(void) {
   setSystemFlag(FLAG_PROPFR);
   setSystemFlag(FLAG_DECIMP);
   setSystemFlag(FLAG_CPXRES);                                  //JM default
-  setSystemFlag(FLAG_RECTN);
-  setSystemFlag(FLAG_ALLSCI);
+  clearSystemFlag(FLAG_POLAR);
+  clearSystemFlag(FLAG_ALLENG);
   setSystemFlag(FLAG_AUTOFF);
   clearSystemFlag(FLAG_SSIZE8);
   clearSystemFlag(FLAG_MDY); // date format
@@ -573,6 +575,7 @@ void program_main(void) {
   int key = 0;
   char charKey[3];
 //bool_t wp43sKbdLayout;                                       //dr - no keymap is used
+//uint16_t currentVolumeSetting, savedVoluleSetting;           //JM not - used for beep signaling screen shot
 
   wp43sMemInBytes = 0;
   gmpMemInBytes = 0;

@@ -21,7 +21,6 @@
 #include "wp43s.h"
 
 
-
 /********************************************//**
  * \brief returns the data type of a register
  *
@@ -584,10 +583,10 @@ void setVariableNamePointer(calcRegister_t regist, void *namePointer) {
  * \return void
  ***********************************************/
 void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
-  if(numberOfRegistersToAllocate > 100) {
+  if(numberOfRegistersToAllocate > 99) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "You can allocate up to 100 registers, you requested %" FMT16U, numberOfRegistersToAllocate);
+      sprintf(errorMessage, "You can allocate up to 99 registers, you requested %" FMT16U, numberOfRegistersToAllocate);
       showInfoDialog("In function allocateLocalRegisters:", errorMessage, NULL, NULL);
     #endif
     return;
@@ -948,6 +947,7 @@ uint16_t getRegisterFullSize(calcRegister_t regist) {
     case dtShortInteger: return SHORT_INTEGER_SIZE;
     case dtReal34:       return REAL34_SIZE;
     case dtComplex34:    return COMPLEX34_SIZE;
+    case dtConfig:       return CONFIG_SIZE;
 
     default:
       sprintf(errorMessage, "In function getRegisterFullSize: data type %s is unknown!", getDataTypeName(getRegisterDataType(regist), false, false));
@@ -1409,13 +1409,24 @@ void fnStoreMax(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnStoreConfig(uint16_t r) {
-#ifdef PC_BUILD
-printf("fnStoreConfig %" FMT16U "\n", r);
-#endif
-  displayCalcErrorMessage(ERROR_ITEM_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
-  #ifdef PC_BUILD
-    showInfoDialog("In function fnStoreConfig:", "To be coded", NULL, NULL);
-  #endif
+  reallocateRegister(r, dtConfig, CONFIG_SIZE, AM_NONE);
+  dtConfigDescriptor_t *configToStore = REGISTER_CONFIG_DATA(r);
+  
+  storeToDtConfigDescriptor(shortIntegerMode);
+  storeToDtConfigDescriptor(shortIntegerWordSize);
+  storeToDtConfigDescriptor(displayFormat);
+  storeToDtConfigDescriptor(displayFormatDigits);
+  storeToDtConfigDescriptor(groupingGap);
+  storeToDtConfigDescriptor(currentAngularMode);
+  storeToDtConfigDescriptor(denMax);
+  storeToDtConfigDescriptor(displayStack);
+  storeToDtConfigDescriptor(firstGregorianDay);
+  storeToDtConfigDescriptor(curveFitting);
+  storeToDtConfigDescriptor(roundingMode);  
+  storeToDtConfigDescriptor(systemFlags);
+  xcopy(configToStore->kbd_usr, kbd_usr, sizeof(kbd_usr));
+
+  storeToDtConfigDescriptor(Norm_Key_00_VAR);                                //JMCFG
 }
 
 
@@ -1684,13 +1695,60 @@ void fnRecallMax(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnRecallConfig(uint16_t r) {
-#ifdef PC_BUILD
-printf("fnRecallConfig %" FMT16U "\n", r);
-#endif
-  displayCalcErrorMessage(ERROR_ITEM_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
-  #ifdef PC_BUILD
-    showInfoDialog("In function fnRecallConfig:", "To be coded", NULL, NULL);
-  #endif
+  if (getRegisterDataType(r) == dtConfig) {
+    dtConfigDescriptor_t *configToRecall = REGISTER_CONFIG_DATA(r);
+
+    xcopy(kbd_usr, configToRecall->kbd_usr, sizeof(kbd_usr));
+    recallFromDtConfigDescriptor(shortIntegerMode);
+    recallFromDtConfigDescriptor(shortIntegerWordSize);
+    recallFromDtConfigDescriptor(displayFormat);
+    recallFromDtConfigDescriptor(displayFormatDigits);
+    recallFromDtConfigDescriptor(groupingGap);
+    recallFromDtConfigDescriptor(currentAngularMode);
+    recallFromDtConfigDescriptor(denMax);
+    recallFromDtConfigDescriptor(displayStack);
+    recallFromDtConfigDescriptor(firstGregorianDay);
+    recallFromDtConfigDescriptor(curveFitting);
+    recallFromDtConfigDescriptor(roundingMode);
+
+    setSystemFlagToRecalled(FLAG_TDM24);
+    setSystemFlagToRecalled(FLAG_DMY);
+    setSystemFlagToRecalled(FLAG_MDY);
+    setSystemFlagToRecalled(FLAG_YMD);
+    setSystemFlagToRecalled(FLAG_CPXRES);
+    setSystemFlagToRecalled(FLAG_POLAR);
+    setSystemFlagToRecalled(FLAG_FRACT);
+    setSystemFlagToRecalled(FLAG_PROPFR);
+    setSystemFlagToRecalled(FLAG_DENANY);
+    setSystemFlagToRecalled(FLAG_DENFIX);
+    setSystemFlagToRecalled(FLAG_LEAD0);
+    setSystemFlagToRecalled(FLAG_TRACE);
+    setSystemFlagToRecalled(FLAG_USER);
+    setSystemFlagToRecalled(FLAG_SLOW);
+    setSystemFlagToRecalled(FLAG_SPCRES);
+    setSystemFlagToRecalled(FLAG_SSIZE8);
+    setSystemFlagToRecalled(FLAG_QUIET);
+    setSystemFlagToRecalled(FLAG_DECIMP);
+    setSystemFlagToRecalled(FLAG_ALLENG);
+    setSystemFlagToRecalled(FLAG_GROW);
+    setSystemFlagToRecalled(FLAG_AUTOFF);
+    setSystemFlagToRecalled(FLAG_AUTXEQ);
+    setSystemFlagToRecalled(FLAG_IGN1ER);
+
+    recallFromDtConfigDescriptor(Norm_Key_00_VAR);
+
+    refreshStack();
+    showAngularMode();
+    showIntegerMode();
+  }
+
+  else {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "data type %s cannot be used to recall a configuration!", getRegisterDataTypeName(r, false, false));
+        showInfoDialog("In function fnRecallConfig:", errorMessage, NULL, NULL);
+      #endif
+  }
 }
 
 

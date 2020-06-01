@@ -74,6 +74,7 @@ typedef struct {real34_t real, imag;}                     complex34_t;
 #define REAL51_SIZE                                       TO_BLOCKS(sizeof(real51_t))
 #define REAL1071_SIZE                                     TO_BLOCKS(sizeof(real1071_t))
 #define COMPLEX34_SIZE                                    TO_BLOCKS(sizeof(complex34_t))
+#define CONFIG_SIZE                                       TO_BLOCKS(sizeof(dtConfigDescriptor_t))
 
 #define POINTER_TO_LOCAL_REGISTER(a)                      ((registerDescriptor_t *)(allLocalRegisterPointer + 1 + (a)))
 
@@ -88,6 +89,8 @@ typedef struct {real34_t real, imag;}                     complex34_t;
 #define REGISTER_COMPLEX34_DATA(a)                        ((complex34_t *)(getRegisterDataPointer(a)))
 
 #define REGISTER_STRING_DATA(a)                           ((char        *)(getRegisterDataPointer(a) + 1)) // Memory pointer to the string of a register
+
+#define REGISTER_CONFIG_DATA(a)                           ((dtConfigDescriptor_t *)(getRegisterDataPointer(a)))
 
 #define REGISTER_SHORT_INTEGER_DATA(a)                    ((uint64_t    *)(getRegisterDataPointer(a)))
 #define VARIABLE_REAL34_DATA(a)                           ((real34_t    *)(a))

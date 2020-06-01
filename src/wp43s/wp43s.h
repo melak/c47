@@ -350,6 +350,7 @@ typedef int16_t calcRegister_t;
 #define CM_ERROR_MESSAGE       11 // Error message in one of the register lines
 #define CM_BUG_ON_SCREEN       12 // Bug message on screen
 #define CM_CONFIRMATION        13 // Waiting for confirmation or canceling
+#define CM_FLAG_BROWSER_OLD    99 // Flag browser old                                      //JM
 
 // Next character 2 bits
 #define NC_NORMAL               0
@@ -593,6 +594,7 @@ extern char                  aimBuffer[AIM_BUFFER_LENGTH];
 extern char                  nimBuffer[NIM_BUFFER_LENGTH];
 extern char                  nimBufferDisplay[NIM_BUFFER_LENGTH];
 extern char                  tamBuffer[TAM_BUFFER_LENGTH];
+extern char                  asmBuffer[5];
 extern char                  oldTime[8];
 extern char                  dateTimeString[12];
 extern softmenuStack_t       softmenuStack[7];
@@ -630,6 +632,7 @@ extern uint32_t              denMax;
 extern uint32_t              lastIntegerBase;
 extern uint32_t              alphaSelectionTimer;
 extern uint8_t               softmenuStackPointer;
+extern uint8_t               softmenuStackPointerBeforeAIM;
 extern uint8_t               transitionSystemState;
 extern uint8_t               cursorBlinkCounter;
 extern uint8_t               numScreensStandardFont;

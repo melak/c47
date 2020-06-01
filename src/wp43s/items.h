@@ -1632,7 +1632,7 @@
 #define SFL_MDY                       1595
 #define SFL_CPXRES                    1596
 #define SFL_CPXj                      1597
-#define SFL_RECTN                     1598
+#define SFL_POLAR                     1598
 #define SFL_FRACT                     1599
 #define SFL_PROPFR                    1600
 #define SFL_DENANY                    1601
@@ -1654,7 +1654,7 @@
 #define SFL_QUIET                     1617
 #define SFL_DECIMP                    1618
 #define SFL_MULTx                     1619
-#define SFL_ALLSCI                    1620
+#define SFL_ALLENG                    1620
 #define SFL_GROW                      1621
 #define SFL_AUTOFF                    1622
 #define SFL_AUTXEQ                    1623
@@ -1775,7 +1775,7 @@
 #define CHR_sampi                     1735   //JM GREEK
 #define CHR_case                      1736   //JM CAPS
 #define KEY_HASH                      1737   //JM BASE ## test
-#define Not_used1738                  1738   //JM
+#define MNU_XEQ                       1738   //JM EXEC
 #define ITM_op_a                      1739   //JM OPERATORS
 #define ITM_op_a2                     1740   //JM OPERATORS
 #define ITM_op_j                      1741   //JM OPERATORS
@@ -2010,7 +2010,7 @@
 #define ITM_RDXPER                    1967   //JM Replacements
 #define ITM_SSIZE8                    1968
 #define ITM_RECT                      1969   //JM Replacements
-#define ITM_1970                      1970
+#define ITM_FLGSV                     1970
 
 #define LAST_ITEM                     1971   //JM
 

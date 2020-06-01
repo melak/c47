@@ -20,7 +20,6 @@ void fnDisplayFormatFix                (uint16_t displayFormat);
 void fnDisplayFormatSci                (uint16_t displayFormat);
 void fnDisplayFormatEng                (uint16_t displayFormat);
 void fnDisplayFormatAll                (uint16_t displayFormat);
-//void fnDisplayFormatDsp                (uint16_t displayFormat);
 void fnDisplayFormatGap                (uint16_t gap);
 void fnShow                            (uint16_t unusedParamButMandatory);
 void real34ToDisplayString             (const real34_t *real34, uint32_t tag, char *displayString, const font_t *font, int16_t maxWidth, int16_t displayHasNDigits, bool_t limitExponent, const char *separator);

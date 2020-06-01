@@ -172,7 +172,6 @@ void fnStrtoX       (char aimBuffer[]);
 void fnStrInputReal34 (char inp1[]);
 void fnStrInputLongint(char inp1[]);
 void fnRCL          (int16_t inp);
-void Show_User_Keys (void);
 void fnKEYSELECT    (void);
 void fnASSIGN       (int16_t JM_ASN_MODE, int16_t tempkey);
 //void JM_convertReal34ToShortInteger(uint16_t confirmation);

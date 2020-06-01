@@ -27,6 +27,10 @@
 extern const int16_t menu_FCNS[];
 extern const int16_t menu_CONST[];
 extern const int16_t menu_MENUS[];
+extern const int16_t menu_SYSFL[];
+extern const int16_t menu_alpha_INTL[];
+extern const int16_t menu_alpha_intl[];
+extern const int16_t menu_REGIST[];
 extern const softmenu_t softmenu[];
 char line[100000], lastInParameters[10000], fileName[1000], filePath[1000], filePathName[2000], registerExpectedAndValue[1000], realString[1000];
 int32_t lineNumber, numTestsFile, numTestsTotal, failedTests;
@@ -550,11 +554,11 @@ void setParameter(char *p) {
   //Setting Complex mode
   else if(strcmp(l, "CM") == 0) {
     if(strcmp(r, "RECT") == 0) {
-      setSystemFlag(FLAG_RECTN);
+      clearSystemFlag(FLAG_POLAR);
       //printf("  Set complex mode to RECT\n");
     }
     else if(strcmp(r, "POLAR") == 0) {
-      clearSystemFlag(FLAG_RECTN);
+      setSystemFlag(FLAG_POLAR);
       //printf("  Set complex mode to POLAR\n");
     }
     else {
@@ -1243,13 +1247,13 @@ void checkExpectedOutParameter(char *p) {
   //Checking complex mode
   else if(strcmp(l, "CM") == 0) {
     if(strcmp(r, "RECT") == 0) {
-      if(!getSystemFlag(FLAG_RECTN)) {
+      if(getSystemFlag(FLAG_POLAR)) {
         printf("\ncomplex mode should be RECT but it is not!\n");
         abortTest();
       }
     }
     else if(strcmp(r, "POLAR") == 0) {
-      if(getSystemFlag(FLAG_RECTN)) {
+      if(!getSystemFlag(FLAG_POLAR)) {
         printf("\ncomplex mode should be POLAR but it is not!\n");
         abortTest();
       }
@@ -1968,7 +1972,8 @@ void checkOneCatalogSorting(const int16_t *catalog, int16_t catalogId, const cha
 
   for(i=1; i<nbElements; i++) {
     if((cmp = compareString(indexOfItems[abs(catalog[i - 1])].itemCatalogName, indexOfItems[abs(catalog[i])].itemCatalogName, CMP_EXTENSIVE)) >= 0) {
-      printf("In catalog %s, element %d (item %d) should be after element %d (item %d). cmp = %d\n", catalogName, i - 1, catalog[i - 1], i, catalog[i], cmp);
+      printf("In catalog %s, element %d (item %d) should be after element %d (item %d). cmp = %d\n",
+                         catalogName, i - 1,  catalog[i - 1],             i,       catalog[i],cmp);
       //exit(1);
     }
   }
@@ -1977,10 +1982,14 @@ void checkOneCatalogSorting(const int16_t *catalog, int16_t catalogId, const cha
 
 
 void checkCatalogsSorting(void) {
-  //compareString(indexOfItems[234].itemCatalogName, indexOfItems[245].itemCatalogName, CMP_EXTENSIVE);
-  checkOneCatalogSorting(menu_FCNS,  MNU_FCNS,  "FCNS");
-  checkOneCatalogSorting(menu_CONST, MNU_CONST, "CONST");
-  checkOneCatalogSorting(menu_MENUS, MNU_MENUS, "MENUS");
+  //compareString(indexOfItems[1048].itemCatalogName, indexOfItems[1049].itemCatalogName, CMP_EXTENSIVE);
+  checkOneCatalogSorting(menu_FCNS,       MNU_FCNS,      "FCNS");
+  checkOneCatalogSorting(menu_CONST,      MNU_CONST,     "CONST");
+  checkOneCatalogSorting(menu_MENUS,      MNU_MENUS,     "MENUS");
+  checkOneCatalogSorting(menu_SYSFL,      MNU_SYSFL,     "SYS.FL");
+  checkOneCatalogSorting(menu_alpha_INTL, MNU_ALPHAINTL, "alphaINTL");
+  checkOneCatalogSorting(menu_alpha_intl, MNU_ALPHAintl, "alphaIntl");
+  checkOneCatalogSorting(menu_REGIST,     MNU_REGIST,    "REGIST");
 }
 
 

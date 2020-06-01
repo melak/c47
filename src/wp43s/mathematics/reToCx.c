@@ -43,7 +43,7 @@ void fnReToCx(uint16_t unusedParamButMandatory) {
     fnRefreshComboxState(CB_JC, JC_BCR, true);                                  //dr
 
     xIsAReal = true;
-    if(!getSystemFlag(FLAG_RECTN)) { // polar mode
+    if(getSystemFlag(FLAG_POLAR)) { // polar mode
       if(dataTypeX == dtReal34 && getRegisterAngularMode(REGISTER_X) != AM_NONE) {
         convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), AM_RADIAN);
         setRegisterAngularMode(REGISTER_X, AM_NONE);
@@ -68,10 +68,7 @@ void fnReToCx(uint16_t unusedParamButMandatory) {
     real34Copy(REGISTER_REAL34_DATA(REGISTER_X), VARIABLE_IMAG34_DATA(&temp));
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, AM_NONE);
 
-    if(getSystemFlag(FLAG_RECTN)) { // rectangular mode
-      complex34Copy(&temp, REGISTER_COMPLEX34_DATA(REGISTER_X));
-    }
-    else { // polar mode
+    if(getSystemFlag(FLAG_POLAR)) { // polar mode
       if(real34CompareEqual(VARIABLE_REAL34_DATA(&temp), const34_0)) {
         real34Zero(VARIABLE_IMAG34_DATA(&temp));
       }
@@ -92,6 +89,9 @@ void fnReToCx(uint16_t unusedParamButMandatory) {
         realToReal34(&magnitude, REGISTER_REAL34_DATA(REGISTER_X));
         realToReal34(&theta,     REGISTER_IMAG34_DATA(REGISTER_X));
       }
+    }
+    else { // rectangular mode
+      complex34Copy(&temp, REGISTER_COMPLEX34_DATA(REGISTER_X));
     }
 
     fnDropY(NOPARAM);

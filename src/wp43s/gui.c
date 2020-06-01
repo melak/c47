@@ -4186,6 +4186,8 @@ void calcModeAim(uint16_t unusedParamButMandatory) {
   if(!SH_BASE_AHOME) {  //TOCHECK
 //    showSoftmenu(NULL, -MNU_MyAlpha, false);      //JM ALPHA-HOME  Change to initialize the menu stack. it was true.
   //  softmenuStackPointer_MEM = -1;                //JM ALPHA-HOME  Initialize also the pointer
+
+    softmenuStackPointerBeforeAIM = softmenuStackPointer;
     if(softmenuStackPointer == 0) {
       showSoftmenu(NULL, -MNU_MyAlpha, false);
     }
@@ -4298,32 +4300,44 @@ void calcModeTam(void) {
     popSoftmenu();
   }
 
-  if(tamMode == TM_VALUE || tamMode == TM_VALUE_CHB || tamMode == TM_REGISTER) {
-    showSoftmenu(NULL, -MNU_TAM, true);
+  switch(tamMode) {
+    case TM_VALUE:
+    case TM_VALUE_CHB:
+    case TM_REGISTER:
+      showSoftmenu(NULL, -MNU_TAM, true);
+      break;
+
+    case TM_CMP:
+      showSoftmenu(NULL, -MNU_TAMCMP, true);
+      break;
+
+    case TM_FLAGR:
+    case TM_FLAGW:
+      if(calcMode != CM_ASM_OVER_TAM) {
+        showSoftmenu(NULL, -MNU_TAMFLAG, true);
+      }
+      break;
+
+    case TM_STORCL:
+      showSoftmenu(NULL, -MNU_TAMSTORCL, true);
+      break;
+
+    default:
+      sprintf(errorMessage, "In function calcModeTam: %" FMT8U " is an unexpected value for tamMode!", tamMode);
+      displayBugScreen(errorMessage);
+      return;
   }
-  else if(tamMode == TM_CMP) {
-    showSoftmenu(NULL, -MNU_TAMCMP, true);
-  }
-  else if(tamMode == TM_FLAGR || tamMode == TM_FLAGW) {
-    showSoftmenu(NULL, -MNU_TAMFLAG, true);
-  }
-  else if(tamMode == TM_STORCL) {
-    showSoftmenu(NULL, -MNU_TAMSTORCL, true);
-  }
-  else {
-    sprintf(errorMessage, "In function calcModeTam: %" FMT8U " is an unexpected value for tamMode!", tamMode);
-    displayBugScreen(errorMessage);
-    return;
+
+  if(calcMode != CM_ASM_OVER_TAM) {
+    strcat(tamBuffer, " __");
+    if(stringWidth(tamBuffer, &standardFont, true, true) + 1 + lineTWidth > SCREEN_WIDTH) {
+      clearRegisterLine(REGISTER_T, true, false);
+    }
+    showString(tamBuffer, &standardFont, 25, Y_POSITION_OF_TAM_LINE + 6, vmNormal, true, true);
   }
 
   calcMode = CM_TAM;
   clearSystemFlag(FLAG_ALPHA);
-
-  strcat(tamBuffer, " __");
-  if(stringWidth(tamBuffer, &standardFont, true, true) + 1 + lineTWidth > SCREEN_WIDTH) {
-    clearRegisterLine(REGISTER_T, true, false);
-  }
-  showString(tamBuffer, &standardFont, 25, Y_POSITION_OF_TAM_LINE + 6, vmNormal, true, true);
 
   transitionSystemState = 0;
   tamCurrentOperation = 0;

@@ -370,7 +370,7 @@ const int16_t menu_TamStoRcl[]   = { ITM_INDIRECTION,               -MNU_VAR,   
                                      ITM_dddEL,                     ITM_dddIJ,                  ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 const int16_t menu_MyMenu[]      = { ITM_cos                                                                                                                                                                };
 
-const int16_t menu_CFG[]         = { ITM_SF,                        ITM_CF,                   ITM_SSIZE4,               ITM_SSIZE8,            ITM_CB_CPXRES,               ITM_CB_LEADING_ZERO,
+const int16_t menu_CFG[]         = { ITM_NULL,                      ITM_NULL,                   ITM_SSIZE4,               ITM_SSIZE8,            ITM_CB_CPXRES,               ITM_CB_LEADING_ZERO,
                                      ITM_CPXI,                      ITM_CPXJ,                   ITM_NULL,               ITM_NULL,            ITM_NULL,                  ITM_NULL,                         //JM sequence change
                                      ITM_MULTCR,                    ITM_MULTDOT,                ITM_RM,                   ITM_NULL,             ITM_NULL,                  ITM_NULL,                         //JM sequence change
 
@@ -439,7 +439,17 @@ const int16_t menu_ASN[]         = {
  */
       };
 
+const int16_t menu_XEQ[]         = { 
+                                     ITM_XEQ,                       ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
+                                     ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
+                                     ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL      };
+
+
 //##################################################################################################################################################################################################################################
+//#################################  -1     : softmenu contents not dynamically changing 
+//#################################   0- 36 : softmenu contents copied from key number Primary 0-36
+//################################# 100-136 : softmenu contents copied from key number f 0-36
+//################################# 200-236 : softmenu contents copied from key number g 0-36
 const int16_t menu_A_HOME[360]   = { -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1,               //HOME  0
                                      -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1,               //HOME -1  (Dn = -)
                                      -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1,               //HOME -2
@@ -619,9 +629,9 @@ const int16_t menu_ST_GRAPH[]        = {
 
 const int16_t menu_ALPHA[]        = {
           /*-1------*/                                                                                                                                                                                            //JM ALPHA
-/* 03 */                             -MNU_MyAlpha,                  -MNU_ALPHA_OMEGA,           -MNU_alpha_omega,         -MNU_ALPHADOT,        -MNU_ALPHAMATH,               -MNU_ALPHAINTL,                     //JM
-                                     ITM_ASSIGN,                    KEY_USERMODE,               -MNU_ASN,                 -MNU_CATALOG,          -MNU_MODE,                   ITM_NULL,                           //JM 
-                                     ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };    //JM
+/* 03 */                             -MNU_MyAlpha,                  -MNU_ALPHA_OMEGA,           -MNU_A_Z,                -MNU_ALPHADOT,         -MNU_ALPHAMATH,               -MNU_ALPHAINTL,                     //JM
+                                     CHR_case,                      -MNU_alpha_omega,           -MNU_a_z,                -MNU_CATALOG,          -MNU_MODE,                    -MNU_FLAGS,                           //JM 
+                                     ITM_ASSIGN,                     KEY_USERMODE,              -MNU_ASN,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };    //JM
 
 #include "softmenuCatalogs.h"
 
@@ -726,6 +736,7 @@ const softmenu_t softmenu[] = {
   {.menuId = -MNU_TAMSTORCL,   .numItems = sizeof(menu_TamStoRcl  )/sizeof(int16_t), .softkeyItem = menu_TamStoRcl   },
   {.menuId = -MNU_ASN_N,       .numItems = sizeof(menu_ASN_N      )/sizeof(int16_t), .softkeyItem = menu_ASN_N       },  //JM USER NORMAL
   {.menuId = -MNU_ASN,         .numItems = sizeof(menu_ASN        )/sizeof(int16_t), .softkeyItem = menu_ASN         },  //JM USER
+  {.menuId = -MNU_XEQ,         .numItems = sizeof(menu_XEQ        )/sizeof(int16_t), .softkeyItem = menu_XEQ         },  //JM EXEC
   {.menuId = -MNU_HOME,        .numItems = sizeof(menu_HOME       )/sizeof(int16_t), .softkeyItem = menu_HOME        },  //JM HOME
   {.menuId = -MNU_GRAPH,       .numItems = sizeof(menu_GRAPH      )/sizeof(int16_t), .softkeyItem = menu_GRAPH       },  //JM GRAPH
   {.menuId = -MNU_ST_GRAPH,    .numItems = sizeof(menu_ST_GRAPH   )/sizeof(int16_t), .softkeyItem = menu_ST_GRAPH    },  //JM GRAPH
@@ -1543,7 +1554,7 @@ void popSoftmenu(void) {
   if(softmenuStackPointer > 0) {
     if(alphaSelectionMenu != ASM_NONE) {
       alphaSelectionMenu = ASM_NONE;
-      if(calcMode != CM_ASM_OVER_AIM) {
+      if(calcMode != CM_ASM_OVER_AIM && calcMode != CM_ASM_OVER_TAM) {
         calcModeNormal();
       }
     }

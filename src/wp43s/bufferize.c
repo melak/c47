@@ -177,7 +177,7 @@ int32_t findFirstItem(const char *twoLetters) {
 void resetAlphaSelectionBuffer(void) {
   lgCatalogSelection = 0;
   alphaSelectionTimer = 0;
-  tamBuffer[0] = 0;
+  asmBuffer[0] = 0;
 }
 
 
@@ -273,17 +273,17 @@ void addItemToBuffer(uint16_t item) {
       else {
         if(stringGlyphLength(indexOfItems[item].itemSoftmenuName) == 1) {
           pos = lgCatalogSelection++;
-          if(tamBuffer[pos] != 0) {
+          if(asmBuffer[pos] != 0) {
             pos++;
           }
 
-          tamBuffer[pos++] = indexOfItems[item].itemSoftmenuName[0];
+          asmBuffer[pos++] = indexOfItems[item].itemSoftmenuName[0];
           if(indexOfItems[item].itemSoftmenuName[0] & 0x80) { // 2 bytes
-            tamBuffer[pos++] = indexOfItems[item].itemSoftmenuName[1];
+            asmBuffer[pos++] = indexOfItems[item].itemSoftmenuName[1];
           }
-          tamBuffer[pos] = 0;
+          asmBuffer[pos] = 0;
 
-          firstItem = findFirstItem(tamBuffer);
+          firstItem = findFirstItem(asmBuffer);
         }
       }
 
@@ -911,7 +911,7 @@ void addItemToNimBuffer(int16_t item) {
       }
       break;
 
-    default : keyActionProcessed = false;        //JMEXEC. Added because keyActionProcessed must be cleared if it falls through unprocessed.
+    default : keyActionProcessed = false;
   }
 
   if(done) {
@@ -988,7 +988,13 @@ void addItemToNimBuffer(int16_t item) {
         nimNumberPart = savedNimNumberPart;
 
         // Complex "separator"
-        if(getSystemFlag(FLAG_RECTN)) {
+        if(getSystemFlag(FLAG_POLAR)) { // polar mode
+          strcat(nimBufferDisplay, STD_SPACE_4_PER_EM STD_MEASURED_ANGLE STD_SPACE_4_PER_EM);
+          if(nimBuffer[imaginaryMantissaSignLocation] == '-') {
+            strcat(nimBufferDisplay, "-");
+          }
+        }
+        else { // rectangular mode
           if(strncmp(nimBufferDisplay + stringByteLength(nimBufferDisplay) - 2, STD_SPACE_HAIR, 2) != 0) {
             strcat(nimBufferDisplay, STD_SPACE_HAIR);
           }
@@ -1001,12 +1007,6 @@ void addItemToNimBuffer(int16_t item) {
           }
           strcat(nimBufferDisplay, COMPLEX_UNIT);
           strcat(nimBufferDisplay, PRODUCT_SIGN);
-        }
-        else {
-          strcat(nimBufferDisplay, STD_SPACE_4_PER_EM STD_MEASURED_ANGLE STD_SPACE_4_PER_EM);
-          if(nimBuffer[imaginaryMantissaSignLocation] == '-') {
-            strcat(nimBufferDisplay, "-");
-          }
         }
 
         // Imaginary part
@@ -2138,7 +2138,7 @@ void closeNim(void) {
             real34SetNegativeSign(REGISTER_IMAG34_DATA(REGISTER_X));
           }
 
-          if(!getSystemFlag(FLAG_RECTN)) { // polar mode
+          if(getSystemFlag(FLAG_POLAR)) { // polar mode
             if(real34CompareEqual(REGISTER_REAL34_DATA(REGISTER_X), const34_0)) {
               real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
             }

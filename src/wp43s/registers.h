@@ -52,11 +52,15 @@
 #define LAST_SAVED_REGISTER 2009
 #define TEMP_REGISTER       2009
 
-#define getStackTop()                      (getSystemFlag(FLAG_SSIZE8) ? REGISTER_D : REGISTER_T)
+#define getStackTop()                         (getSystemFlag(FLAG_SSIZE8) ? REGISTER_D : REGISTER_T)
 
-#define freeRegisterData(regist)           freeWp43s((void *)getRegisterDataPointer(regist), TO_BYTES(getRegisterFullSize(regist)))
+#define freeRegisterData(regist)              freeWp43s((void *)getRegisterDataPointer(regist), TO_BYTES(getRegisterFullSize(regist)))
 
+#define storeToDtConfigDescriptor(config)     (configToStore->config = config)
+#define recallFromDtConfigDescriptor(config)  (config = configToRecall->config)
 
+#define getRecalledSystemFlag(sf)             ((configToRecall->systemFlags &   ((uint64_t)1 << (sf & 0x3fff))) != 0)
+#define setSystemFlagToRecalled(sf)           (getRecalledSystemFlag(sf)) ? (setSystemFlag(sf)) : (clearSystemFlag(sf))
 
 ///////////////////////////////////////////////////////
 // Register numbering:
@@ -83,10 +87,27 @@ typedef enum {
   //dtLabel           = 12,  ///< Label
   //dtSystemInteger   = 13,  ///< System integer (64 bits)
   //dtFlags           = 14,  ///< Flags
-  //dtConfig          = 15,  ///< Configuration
+  dtConfig          = 15,  ///< Configuration
   //dtPgmStep         = 16,  ///< Program step
   //dtDirectory       = 17,  ///< Program
 } dataType_t; // 4 bits (NOT 5 BITS)
+
+typedef struct {
+    uint8_t   shortIntegerMode;
+    uint8_t   shortIntegerWordSize;
+    uint8_t   displayFormat;
+    uint8_t   displayFormatDigits;
+    uint8_t   groupingGap;
+    uint8_t   currentAngularMode;
+    uint8_t   displayStack;
+    uint8_t   curveFitting;
+    uint8_t   roundingMode;
+    uint32_t  denMax;
+    uint32_t  firstGregorianDay;
+    uint64_t  systemFlags;
+    calcKey_t kbd_usr[37];
+    int16_t   Norm_Key_00_VAR;                                                     //JMCFG
+} dtConfigDescriptor_t;
 
 typedef union {
   uint32_t descriptor;

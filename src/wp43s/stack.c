@@ -171,6 +171,99 @@ void fnDisplayStack(uint16_t numberOfStackLines) {
 
 
 /********************************************//**
+ * \brief Swaps X with the target register
+ *
+ * \param[in] regist uint16_t
+ * \return void
+ ***********************************************/
+void fnSwapX(uint16_t regist) {
+  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
+    copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER);
+    copySourceRegisterToDestRegister(regist, REGISTER_X);
+    copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
+    refreshStack();
+  } 
+
+  #ifdef PC_BUILD
+  else {
+    sprintf(errorMessage, "local register .%02u", regist - FIRST_LOCAL_REGISTER);
+    showInfoDialog("In function fnSwapX:", errorMessage, "is not defined!", NULL);
+  }
+  #endif
+}
+
+
+
+/********************************************//**
+ * \brief Swaps Y with the target register
+ *
+ * \param[in] regist uint16_t
+ * \return void
+ ***********************************************/
+void fnSwapY(uint16_t regist) {
+  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
+    copySourceRegisterToDestRegister(REGISTER_Y, TEMP_REGISTER);
+    copySourceRegisterToDestRegister(regist, REGISTER_Y);
+    copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
+    refreshStack();
+  } 
+
+  #ifdef PC_BUILD
+  else {
+    sprintf(errorMessage, "local register .%02u", regist - FIRST_LOCAL_REGISTER);
+    showInfoDialog("In function fnSwapY:", errorMessage, "is not defined!", NULL);
+  }
+  #endif
+}
+
+
+/********************************************//**
+ * \brief Swaps Z with the target register
+ *
+ * \param[in] regist uint16_t
+ * \return void
+ ***********************************************/
+void fnSwapZ(uint16_t regist) {
+  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
+    copySourceRegisterToDestRegister(REGISTER_Z, TEMP_REGISTER);
+    copySourceRegisterToDestRegister(regist, REGISTER_Z);
+    copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
+    refreshStack();
+  } 
+
+  #ifdef PC_BUILD
+  else {
+    sprintf(errorMessage, "local register .%02u", regist - FIRST_LOCAL_REGISTER);
+    showInfoDialog("In function fnSwapZ:", errorMessage, "is not defined!", NULL);
+  }
+  #endif
+}
+
+
+/********************************************//**
+ * \brief Swaps T with the target register
+ *
+ * \param[in] regist uint16_t
+ * \return void
+ ***********************************************/
+void fnSwapT(uint16_t regist) {
+  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
+    copySourceRegisterToDestRegister(REGISTER_T, TEMP_REGISTER);
+    copySourceRegisterToDestRegister(regist, REGISTER_T);
+    copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
+    refreshStack();
+  } 
+
+  #ifdef PC_BUILD
+  else {
+    sprintf(errorMessage, "local register .%02u", regist - FIRST_LOCAL_REGISTER);
+    showInfoDialog("In function fnSwapT:", errorMessage, "is not defined!", NULL);
+  }
+  #endif
+}
+
+
+/********************************************//**
  * \brief Swaps X and Y and refreshes the stack
  *
  * \param[in] unusedParamButMandatory uint16_t

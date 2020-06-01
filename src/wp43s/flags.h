@@ -38,7 +38,7 @@
 #define FLAG_MDY      0xc003
 #define FLAG_CPXRES   0x8004
 #define FLAG_CPXj     0x8005
-#define FLAG_RECTN    0x8006
+#define FLAG_POLAR    0x8006
 #define FLAG_FRACT    0x8007
 #define FLAG_PROPFR   0x8008
 #define FLAG_DENANY   0x8009
@@ -60,7 +60,7 @@
 #define FLAG_QUIET    0x8019
 #define FLAG_DECIMP   0x801a
 #define FLAG_MULTx    0x801b
-#define FLAG_ALLSCI   0x801c
+#define FLAG_ALLENG   0x801c
 #define FLAG_GROW     0x801d
 #define FLAG_AUTOFF   0x801e
 #define FLAG_AUTXEQ   0x801f

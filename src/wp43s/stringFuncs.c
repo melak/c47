@@ -85,7 +85,7 @@ void fnAlphaToX(uint16_t regist) {
     longIntegerAddUInt(lgInt, char2, lgInt);
   }
 
-  convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_X);
+  convertLongIntegerToShortIntegerRegister(lgInt, 16, REGISTER_X);
   longIntegerFree(lgInt);
 
   if(!getSystemFlag(FLAG_ASLIFT) || regist != getStackTop()) {

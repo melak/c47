@@ -99,16 +99,31 @@ static void cpyxDataTypeError(uint16_t unused) {
 //-----------------------------------------------------------------------------
 
 static void cyxReal(real_t *y, real_t *x, real_t *result, realContext_t *realContext) {
-  realSubtract(y, x, result, realContext);        // t = y - x
-  WP34S_Factorial(result, result, realContext);   // t = (y - x)!
+  //realSubtract(y, x, result, realContext);        // t = y - x
+  //WP34S_Factorial(result, result, realContext);   // t = (y - x)!
 
-  WP34S_Factorial(y, y, realContext);             // y = y!
+  //WP34S_Factorial(y, y, realContext);             // y = y!
 
-  WP34S_Factorial(x, x, realContext);             // x = x!
+  //WP34S_Factorial(x, x, realContext);             // x = x!
 
-  realMultiply(x, result, result, realContext);   // t = x! * (y - x)!
+  //realMultiply(x, result, result, realContext);   // t = x! * (y - x)!
 
-  realDivide(y, result, result, realContext);     // t = y! / [x! * (y - x)!]
+  //realDivide(y, result, result, realContext);     // t = y! / [x! * (y - x)!]
+
+  realSubtract(y, x, result, realContext);
+  realAdd(result, const_1, result, realContext);
+  WP34S_LnGamma(result, result, realContext);       // r = ln((y-x)!)
+
+  realAdd(x, const_1, x, realContext);
+  WP34S_LnGamma(x, x, realContext);                 // x = ln(x!)
+
+  realAdd(y, const_1, y, realContext);
+  WP34S_LnGamma(y, y, realContext);                 // y = ln(y!)
+
+  realSubtract(y, result, result, realContext);
+  realSubtract(result, x, result, realContext);     // r = ln(y!) - ln((y-x)!) - ln(x!)
+
+  realExp(result, result, realContext);             // r = y! / ((y-x)! × x!)
 }
 
 static void cyxLong(longInteger_t y, longInteger_t x, longInteger_t result) {
@@ -131,29 +146,45 @@ static void cyxLong(longInteger_t y, longInteger_t x, longInteger_t result) {
 }
 
 static void cyxCplx(real_t *yReal, real_t *yImag, real_t *xReal, real_t *xImag, real_t *rReal, real_t *rImag, realContext_t *realContext) {
-  realSubtract(yReal, xReal, rReal, realContext);                           // r = y - x
+  realSubtract(yReal, xReal, rReal, realContext);                // r = y - x
   realSubtract(yImag, xImag, rImag, realContext);
 
-  realAdd(rReal, const_1, rReal, realContext);                              // r = t + 1
-  WP34S_ComplexGamma(rReal, rImag, rReal, rImag, realContext);              // r = Gamma(t + 1) = (y - x)!
+  realAdd(rReal, const_1, rReal, realContext);                   // r = t + 1
+  WP34S_ComplexLnGamma(rReal, rImag, rReal, rImag, realContext); // r = lnGamma(t + 1) = ln((y - x)!)
 
-  realAdd(xReal, const_1, xReal, realContext);                              // x = x + 1
-  WP34S_ComplexGamma(xReal, xImag, xReal, xImag, realContext);              // x = Gamma(x + 1) = x!
+  realAdd(xReal, const_1, xReal, realContext);                   // x = x + 1
+  WP34S_ComplexLnGamma(xReal, xImag, xReal, xImag, realContext); // x = lnGamma(x + 1) = ln(x!)
 
-  realAdd(yReal, const_1, yReal, realContext);                              // y = y + 1
-  WP34S_ComplexGamma(yReal, yImag, yReal, yImag, realContext);              // y = Gamma(y + 1) = y!
+  realAdd(yReal, const_1, yReal, realContext);                   // y = y + 1
+  WP34S_ComplexLnGamma(yReal, yImag, yReal, yImag, realContext); // y = lnGamma(y + 1) = ln(y!)
 
-  mulComplexComplex(rReal, rImag, xReal, xImag, rReal, rImag, realContext); // r = x! * (y - x)!
-  divComplexComplex(yReal, yImag, rReal, rImag, rReal, rImag, realContext); // r = y! / [x! * (y - x)!]
+  realSubtract(yReal, rReal, rReal, realContext);                // r = ln(y!) - ln((y - x)!)
+  realSubtract(yImag, rImag, rImag, realContext);
+
+  realSubtract(rReal, xReal, rReal, realContext);                // r = ln(y!) - ln((y - x)!) - ln(x!)
+  realSubtract(rImag, xImag, rImag, realContext);
+
+  expComplex(rReal, rImag, rReal, rImag, realContext);           // r = y! / ((y-x)! × x!)
 }
 
 static void pyxReal(real_t *y, real_t *x, real_t *result, realContext_t *realContext) {
-  realSubtract(y, x, result, realContext);      // t = y - x
-  WP34S_Factorial(result, result, realContext); // t = (y - x)!
+  //realSubtract(y, x, result, realContext);      // t = y - x
+  //WP34S_Factorial(result, result, realContext); // t = (y - x)!
 
-  WP34S_Factorial(y, y, realContext);           // y = y!
+  //WP34S_Factorial(y, y, realContext);           // y = y!
 
-  realDivide(y, result, result, realContext);   // t = y! / (y - x)!
+  //realDivide(y, result, result, realContext);   // t = y! / (y - x)!
+
+  realSubtract(y, x, result, realContext);
+  realAdd(result, const_1, result, realContext);
+  WP34S_LnGamma(result, result, realContext);     // r = ln((y-x)!)
+
+  realAdd(y, const_1, y, realContext);
+  WP34S_LnGamma(y, y, realContext);               // y = ln(y!)
+
+  realSubtract(y, result, result, realContext);   // r = ln(y!) - ln((y-x)!)
+
+  realExp(result, result, realContext);           // r = y! / (y-x)!
 }
 
 static void pyxLong(longInteger_t y, longInteger_t x, longInteger_t result) {
@@ -170,16 +201,19 @@ static void pyxLong(longInteger_t y, longInteger_t x, longInteger_t result) {
 }
 
 static void pyxCplx(real_t *yReal, real_t *yImag, real_t *xReal, real_t *xImag, real_t *rReal, real_t *rImag, realContext_t *realContext) {
-  realSubtract(yReal, xReal, rReal, realContext);                           // r = y - x
+  realSubtract(yReal, xReal, rReal, realContext);                // r = y - x
   realSubtract(yImag, xImag, rImag, realContext);
 
-  realAdd(rReal, const_1, rReal, realContext);                              // r = t + 1
-  WP34S_ComplexGamma(rReal, rImag, rReal, rImag, realContext);              // r = Gamma(t + 1) = (y - x)!
+  realAdd(rReal, const_1, rReal, realContext);                   // r = t + 1
+  WP34S_ComplexLnGamma(rReal, rImag, rReal, rImag, realContext); // r = lnGamma(t + 1) = ln((y - x)!)
 
-  realAdd(yReal, const_1, yReal, realContext);                              // y = y + 1
-  WP34S_ComplexGamma(yReal, yImag, yReal, yImag, realContext);              // y = Gamma(y + 1) = y!
+  realAdd(yReal, const_1, yReal, realContext);                   // y = y + 1
+  WP34S_ComplexLnGamma(yReal, yImag, yReal, yImag, realContext); // y = lnGamma(y + 1) = ln(y!)
 
-  divComplexComplex(yReal, yImag, rReal, rImag, rReal, rImag, realContext); // r = y! / (y - x)!
+  realSubtract(yReal, rReal, rReal, realContext);                // r = ln(y!) - ln((y - x)!)
+  realSubtract(yImag, rImag, rImag, realContext);
+
+  expComplex(rReal, rImag, rReal, rImag, realContext);           // r = y! / (y-x)!
 }
 
 //=============================================================================

@@ -304,12 +304,15 @@ bool_t func_lookup(int16_t fn, int16_t itemShift, int16_t *funk) {
 
 
 void Setup_MultiPresses(int16_t result){
-  JM_auto_doublepress_enabled = 0;                       //JM TIMER CLRDROP. Autodrop mean double click normal key.
+  JM_auto_doublepress_enabled = 0;                   //JM TIMER CLRDROP. Autodrop mean double click normal key.
   int16_t tmp = 0;
-  switch(result) {
-    case KEY_BACKSPACE: tmp = ITM_DROP; break;      //Set up longpress
-    case ITM_CHS      : tmp = ITM_XexY; break;
-    default:;
+  if(calcMode == CM_NORMAL) {
+    switch(result) {
+      case KEY_BACKSPACE: tmp = ITM_DROP; break;      //Set up backspace double click to DROP
+      case ITM_XEQ      : tmp = -MNU_XEQ; break;      //XEQ XEQMENU
+      //case ITM_CHS      : tmp = ITM_XexY; break;      //sample on CHS, operating X<>Y. XEQ must still be created.
+      default:;
+    }
   }
   if(tmp != 0){
     if(fnTimerGetStatus(TO_CL_DROP) == TMR_RUNNING) {
@@ -317,38 +320,59 @@ void Setup_MultiPresses(int16_t result){
     }
     fnTimerStart(TO_CL_DROP, TO_CL_DROP, JM_CLRDROP_TIMER);       
   }
-  fnTimerStop(TO_FG_LONG);                                  //dr
-  fnTimerStop(TO_FN_LONG);                                  //dr
+  fnTimerStop(TO_FG_LONG);                          //dr
+  fnTimerStop(TO_FN_LONG);                          //dr
 }
 
 
 
-void Check_MultiPresses(int16_t * result){
+void Check_MultiPresses(int16_t * result){          //Set up longpress
   int16_t tmp = 0;
+
   if(calcMode == CM_NORMAL) {
     switch(*result) {
-      case KEY_BACKSPACE: tmp = ITM_CLSTK; break;      //Set up longpress
-      case ITM_CHS      : tmp = ITM_XexY;  break;
+      case KEY_BACKSPACE: tmp = ITM_CLSTK; break;   //backspace longpress to CLSTK
+      case ITM_XEQ      : tmp = -MNU_XEQ;  break;   //XEQ longpress to XEQMENU 
+      //case ITM_CHS      : tmp = ITM_XexY;  break;   //sample on CHS, operating X<>Y. XEQ must still be created.
       default:;
     }
-    if(tmp !=0) {     //if backspace 
-      JM_auto_longpress_enabled = tmp;
-      fnTimerStart(TO_CL_LONG, TO_CL_LONG, JM_TO_CL_LONG);    //dr
-      if(JM_auto_doublepress_enabled != 0) {
-         hideFunctionName();    
-         restoreStack();
-         showFunctionName(JM_auto_doublepress_enabled, 10);  //JM CLRDROP
-         #ifdef PC_BUILD
-           refreshScreen(NULL);            //JM CLRDROP
-         #elif DMCP_BUILD
-           refreshScreen();                //JM CLRDROP
-         #endif
-         *result = JM_auto_doublepress_enabled;
-         fnTimerStop(TO_CL_DROP);         //JM TIMER CLRDROP ON DOUBLE BACKSPACE
-         STACK_LIFT_ENABLE;               //JM TIMER CLRDROP ON DOUBLE BACKSPACE
-      }                                  //JM TIMER CLRDROP ON DOUBLE BACKSPACE
-    }
   }
+
+  if(tmp == 0 && (calcMode == CM_NORMAL || calcMode == CM_NIM)) {
+    if (*result == kbd_usr[ 0].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[ 0].fShifted) : (kbd_usr[ 0].fShifted); } else
+    if (*result == kbd_usr[ 1].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[ 1].fShifted) : (kbd_usr[ 1].fShifted); } else
+    if (*result == kbd_usr[ 2].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[ 2].fShifted) : (kbd_usr[ 2].fShifted); } else
+    if (*result == kbd_usr[ 3].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[ 3].fShifted) : (kbd_usr[ 3].fShifted); } else
+    if (*result == kbd_usr[ 4].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[ 4].fShifted) : (kbd_usr[ 4].fShifted); } else
+    if (*result == kbd_usr[ 5].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[ 5].fShifted) : (kbd_usr[ 5].fShifted); } else
+    if (*result == kbd_usr[ 6].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[ 6].fShifted) : (kbd_usr[ 6].fShifted); } else
+    if (*result == kbd_usr[ 7].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[ 7].fShifted) : (kbd_usr[ 7].fShifted); } else
+    if (*result == kbd_usr[ 8].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[ 8].fShifted) : (kbd_usr[ 8].fShifted); } else
+    if (*result == kbd_usr[ 9].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[ 9].fShifted) : (kbd_usr[ 9].fShifted); } else
+    if (*result == kbd_usr[10].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[10].fShifted) : (kbd_usr[10].fShifted); } else
+    if (*result == kbd_usr[11].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[11].fShifted) : (kbd_usr[11].fShifted); } else
+    if (*result == kbd_usr[12].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[12].fShifted) : (kbd_usr[12].fShifted); } else
+    if (*result == kbd_usr[13].primary)  { tmp =  !getSystemFlag(FLAG_USER) ? (kbd_std[13].fShifted) : (kbd_usr[13].fShifted); }
+  }
+
+  if(tmp !=0) {                                      //if activated key pressed 
+    JM_auto_longpress_enabled = tmp;
+    fnTimerStart(TO_CL_LONG, TO_CL_LONG, JM_TO_CL_LONG);    //dr
+    if(JM_auto_doublepress_enabled != 0) {
+       hideFunctionName();    
+       restoreStack();
+       showFunctionName(JM_auto_doublepress_enabled, 10);  //JM CLRDROP
+       #ifdef PC_BUILD
+         refreshScreen(NULL);            //JM CLRDROP
+       #elif DMCP_BUILD
+         refreshScreen();                //JM CLRDROP
+       #endif
+       *result = JM_auto_doublepress_enabled;
+       fnTimerStop(TO_CL_DROP);         //JM TIMER CLRDROP ON DOUBLE BACKSPACE
+       STACK_LIFT_ENABLE;               //JM TIMER CLRDROP ON DOUBLE BACKSPACE
+    }                                  //JM TIMER CLRDROP ON DOUBLE BACKSPACE
+  }
+
 }
 
 

@@ -1208,12 +1208,15 @@ void hideCursor(void) {
  * \return void
  ***********************************************/
 void showFunctionName(int16_t item, int8_t counter) {
+  char padding[20];                                          //JM
   showFunctionNameItem = item;
   showFunctionNameCounter = counter;
-  if(stringWidth(indexOfItems[abs(item)].itemCatalogName, &standardFont, true, true) + /*1*/ 20 + lineTWidth > SCREEN_WIDTH) {                //JM
+  strcpy(padding,indexOfItems[abs(item)].itemCatalogName);  //JM
+  strcat(padding,"   ");                                    //JM
+  if(stringWidth(padding, &standardFont, true, true) + /*1*/ 20 + lineTWidth > SCREEN_WIDTH) {                //JM
     clearRegisterLine(REGISTER_T, true, false);
   }
-  showString(indexOfItems[abs(item)].itemCatalogName, &standardFont, /*1*/ 20, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true);      //JM
+  showString(padding, &standardFont, /*1*/ 20, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true);      //JM
 }
 
 
@@ -1230,7 +1233,7 @@ void hideFunctionName(void) {
   showFunctionNameItem = 0;
   showFunctionNameCounter = 0;
   refreshRegisterLine(REGISTER_T);
-  if(calcMode == CM_TAM) {
+  if(calcMode == CM_TAM || calcMode == CM_ASM_OVER_TAM) {
     if(stringWidth(tamBuffer, &standardFont, true, true) + 1 + lineTWidth > SCREEN_WIDTH) {
       clearRegisterLine(TAM_REGISTER_LINE, false, false);
     }
@@ -1526,8 +1529,6 @@ void refreshRegisterLine(calcRegister_t regist) {
 
             default: {}
           }
-
-          real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpStr3000, &standardFont, SCREEN_WIDTH, 34, true, STD_SPACE_PUNCTUATION);
         }
 
 
@@ -1888,7 +1889,7 @@ void refreshRegisterLine(calcRegister_t regist) {
             }
 
 
-            if(temporaryInformation == TI_ABC) {                             //JM EE \/
+            else if(temporaryInformation == TI_ABC) {                             //JM EE \/
               if(regist == REGISTER_X) {
                 strcpy(prefix, "c" STD_SPACE_FIGURE "=");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
@@ -1935,13 +1936,13 @@ void refreshRegisterLine(calcRegister_t regist) {
 
             if(prefixWidth > 0) {
               if(regist == REGISTER_X) {
-                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_X), vmNormal, true, true);
+                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_X)+6, vmNormal, true, true);
               } else
               if(regist == REGISTER_Y) {
-                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_Y), vmNormal, true, true);
+                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_Y)+6, vmNormal, true, true);
               } else
               if(regist == REGISTER_Z) {
-                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_Z_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_Z), vmNormal, true, true);
+                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_Z_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_Z)+6, vmNormal, true, true);
               }
             }
                                                                        //JM EE ^
@@ -2009,13 +2010,13 @@ void refreshRegisterLine(calcRegister_t regist) {
 
             if(prefixWidth > 0) {
               if(regist == REGISTER_X) {
-                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_X), vmNormal, true, true);
+                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_X)+6, vmNormal, true, true);
               } else
               if(regist == REGISTER_Y) {
-                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_Y), vmNormal, true, true);
+                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_Y)+6, vmNormal, true, true);
               } else
               if(regist == REGISTER_Z) {
-                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_Z_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_Z), vmNormal, true, true);
+                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_Z_LINE + TEMPORARY_INFO_OFFSET - REGISTER_LINE_HEIGHT*(regist - REGISTER_Z)+6, vmNormal, true, true);
               }
             }
                                                                        //JM EE ^

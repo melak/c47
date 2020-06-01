@@ -336,7 +336,7 @@ void fnRebuildRadioState() {
 //  464     { ITM_POLAR,            CM_POLAR,               RB_CM },  //fnComplexMode
 //  507     { ITM_RECT,             CM_RECTANGULAR,         RB_CM },  //fnComplexMode
   uint8_t complexMode = 0;
-  if(getSystemFlag(FLAG_RECTN)) complexMode=CM_RECTANGULAR; else complexMode=CM_POLAR; 
+  if(!getSystemFlag(FLAG_POLAR)) complexMode=CM_RECTANGULAR; else complexMode=CM_POLAR; 
   fnRefreshRadioState(RB_CM, complexMode);
 //   96     { ITM_CPXI,             CU_I,                   RB_CU },  //fnComplexUnit
 //   97     { ITM_CPXJ,             CU_J,                   RB_CU },  //fnComplexUnit 
@@ -455,7 +455,7 @@ void fnRebuildRadioState() {
 
 #ifdef DEBUG
   printf("RB_AM, currentAngularMode          %d %d\n",RB_AM, currentAngularMode       );
-  printf("RB_CM, getSystemFlag(FLAG_RECTN)   %d %d\n",RB_CM, getSystemFlag(FLAG_RECTN));
+  printf("RB_CM, !getSystemFlag(FLAG_POLAR)   %d %d\n",RB_CM, !getSystemFlag(FLAG_POLAR));
   printf("RB_CU, getSystemFlag(FLAG_CPXj)    %d %d\n",RB_CU, getSystemFlag(FLAG_CPXj) );
   printf("RB_DF, dateFormat                  %d %d\n",RB_DF, dateFormat              );
   printf("RB_DI, displayFormat               %d %d\n",RB_DI, df );
