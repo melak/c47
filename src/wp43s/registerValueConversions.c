@@ -75,8 +75,14 @@ void convertLongIntegerRegisterToReal(calcRegister_t source, real_t *destination
   longInteger_t lgInt;
 
   convertLongIntegerRegisterToLongInteger(source, lgInt);
-  longIntegerToAllocatedString(lgInt, tmpStr3000, TMP_STR_LENGTH);
+  convertLongIntegerToReal(lgInt, destination, ctxt);
   longIntegerFree(lgInt);
+}
+
+
+
+void convertLongIntegerToReal(longInteger_t source, real_t *destination, realContext_t *ctxt) {
+  longIntegerToAllocatedString(source, tmpStr3000, TMP_STR_LENGTH);
   stringToReal(tmpStr3000, destination, ctxt);
 }
 

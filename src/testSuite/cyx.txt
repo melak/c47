@@ -128,13 +128,13 @@ Out: EC=0  FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"5#10" RX=ShoI:"252#10"
 ; Error case: ERROR_OUT_OF_RANGE
 ;=======================================
 In:  FL_ASLIFT=0 RY=LonI:"451" RX=LonI:"10"
-Out: EC=8 FL_ASLIFT=0 RY=LonI:"451" RX=LonI:"10"
+Out: EC=0 FL_ASLIFT=1 RL=LonI:"10" RX=LonI:"86768429390920242680"
 
 In:  FL_ASLIFT=0 RY=LonI:"10" RX=LonI:"451"
 Out: EC=8 FL_ASLIFT=0 RY=LonI:"10" RX=LonI:"451"
 
 In:  FL_ASLIFT=0 RY=ShoI:"21#10" RX=ShoI:"2#10"
-Out: EC=8 FL_ASLIFT=0 RY=ShoI:"21#10" RX=ShoI:"2#10"
+Out: EC=0 FL_ASLIFT=1 RL=ShoI:"2#10" RX=ShoI:"210#10"
 
 In:  FL_ASLIFT=0 RY=ShoI:"2#10" RX=ShoI:"21#10"
 Out: EC=8 FL_ASLIFT=0 RY=ShoI:"2#10" RX=ShoI:"21#10"
@@ -143,16 +143,16 @@ Out: EC=8 FL_ASLIFT=0 RY=ShoI:"2#10" RX=ShoI:"21#10"
 ; Error case: ERROR_INVALID_DATA_INPUT_FOR_OP
 ;=======================================
 In:  FL_ASLIFT=0  RY=LonI:"10" RX=LonI:"450"
-Out: EC=24 FL_ASLIFT=0 RY=LonI:"10" RX=LonI:"450"
+Out: EC=8 FL_ASLIFT=0 RY=LonI:"10" RX=LonI:"450"
 
 In:  FL_ASLIFT=0  RY=ShoI:"10#10" RX=LonI:"450"
-Out: EC=24 FL_ASLIFT=0 RY=ShoI:"10#10" RX=LonI:"450"
+Out: EC=8 FL_ASLIFT=0 RY=ShoI:"10#10" RX=LonI:"450"
 
 In:  FL_ASLIFT=0  RY=LonI:"10" RX=ShoI:"20#10"
-Out: EC=24 FL_ASLIFT=0 RY=LonI:"10" RX=ShoI:"20#10"
+Out: EC=8 FL_ASLIFT=0 RY=LonI:"10" RX=ShoI:"20#10"
 
 In:  FL_ASLIFT=0  RY=ShoI:"10#10" RX=ShoI:"20#10"
-Out: EC=24 FL_ASLIFT=0 RY=ShoI:"10#10" RX=ShoI:"20#10"
+Out: EC=8 FL_ASLIFT=0 RY=ShoI:"10#10" RX=ShoI:"20#10"
 
 In:  FL_ASLIFT=0  RY=ShoI:"10#10" RX=Stri:"ABC"
 Out: EC=24 FL_ASLIFT=0 RY=ShoI:"10#10" RX=Stri:"ABC"
@@ -161,20 +161,20 @@ Out: EC=24 FL_ASLIFT=0 RY=ShoI:"10#10" RX=Stri:"ABC"
 ; Error case: ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN
 ;=======================================
 In:  FL_ASLIFT=0 RY=LonI:"-50" RX=LonI:"-10"
-Out: EC=1 FL_ASLIFT=0 RY=LonI:"-50" RX=LonI:"-10"
+Out: EC=8 FL_ASLIFT=0 RY=LonI:"-50" RX=LonI:"-10"
 
 In:  FL_ASLIFT=0 RY=LonI:"-50" RX=LonI:"10"
-Out: EC=1 FL_ASLIFT=0 RY=LonI:"-50" RX=LonI:"10"
+Out: EC=8 FL_ASLIFT=0 RY=LonI:"-50" RX=LonI:"10"
 
 In:  FL_ASLIFT=0 RY=LonI:"50" RX=LonI:"-10"
-Out: EC=1 FL_ASLIFT=0 RY=LonI:"50" RX=LonI:"-10"
+Out: EC=8 FL_ASLIFT=0 RY=LonI:"50" RX=LonI:"-10"
 
 In:  FL_ASLIFT=0 RY=ShoI:"-50#10" RX=LonI:"-10"
-Out: EC=1 FL_ASLIFT=0 RY=ShoI:"-50#10" RX=LonI:"-10"
+Out: EC=8 FL_ASLIFT=0 RY=ShoI:"-50#10" RX=LonI:"-10"
 
 In:  FL_ASLIFT=0 RY=LonI:"50" RX=ShoI:"-10#10"
-Out: EC=1 FL_ASLIFT=0 RY=LonI:"50" RX=ShoI:"-10#10"
+Out: EC=8 FL_ASLIFT=0 RY=LonI:"50" RX=ShoI:"-10#10"
 
 In:  FL_ASLIFT=0 RY=ShoI:"-50#10" RX=ShoI:"-10#10"
-Out: EC=1 FL_ASLIFT=0 RY=ShoI:"-50#10" RX=ShoI:"-10#10"
+Out: EC=8 FL_ASLIFT=0 RY=ShoI:"-50#10" RX=ShoI:"-10#10"
 

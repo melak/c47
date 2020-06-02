@@ -41,8 +41,6 @@ void (* const cpyx[9][9])(uint16_t) = {
 //-----------------------------------------------------------------------------
 
 #define DOMAIN_ERROR            1
-#define INVALID_DATA_CMP_ERROR  2
-#define DATA_OUT_OF_RANGE_ERROR 3
 
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
 
@@ -58,25 +56,6 @@ void (* const cpyx[9][9])(uint16_t) = {
 
 #endif // EXTRA_INFO_ON_CALC_ERROR
 
-
-static void cpyxError(uint16_t error) {
-  switch(error) {
-    case DOMAIN_ERROR:
-        displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-        EXTRA_INFO_MESSAGE("cannot calculate Cyx/Pyx, y and x must be greater or equal than zero.");
-        break;
-
-    case INVALID_DATA_CMP_ERROR:
-        displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-        EXTRA_INFO_MESSAGE("cannot calculate Cyx/Pyx, y must be greater or equal than x.");
-        break;
-
-    case DATA_OUT_OF_RANGE_ERROR:
-        displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-        EXTRA_INFO_MESSAGE("cannot calculate Cyx/Pyx, the limit for Long is 450 and for Short is 20.");
-        break;
-  }
-}
 
 /********************************************//**
  * \brief Data type error in Cyx
@@ -99,16 +78,7 @@ static void cpyxDataTypeError(uint16_t unused) {
 //-----------------------------------------------------------------------------
 
 static void cyxReal(real_t *y, real_t *x, real_t *result, realContext_t *realContext) {
-  //realSubtract(y, x, result, realContext);        // t = y - x
-  //WP34S_Factorial(result, result, realContext);   // t = (y - x)!
-
-  //WP34S_Factorial(y, y, realContext);             // y = y!
-
-  //WP34S_Factorial(x, x, realContext);             // x = x!
-
-  //realMultiply(x, result, result, realContext);   // t = x! * (y - x)!
-
-  //realDivide(y, result, result, realContext);     // t = y! / [x! * (y - x)!]
+  bool_t inputAreIntegers = (realIsAnInteger(x) && realIsAnInteger(y));
 
   realSubtract(y, x, result, realContext);
   realAdd(result, const_1, result, realContext);
@@ -124,25 +94,50 @@ static void cyxReal(real_t *y, real_t *x, real_t *result, realContext_t *realCon
   realSubtract(result, x, result, realContext);     // r = ln(y!) - ln((y-x)!) - ln(x!)
 
   realExp(result, result, realContext);             // r = y! / ((y-x)! × x!)
+
+  if(inputAreIntegers && !realIsAnInteger(result)) {
+    realToIntegralValue(result, result, DEC_ROUND_HALF_UP, realContext);
+  }
 }
 
 static void cyxLong(longInteger_t y, longInteger_t x, longInteger_t result) {
-  uint32_t temp;
+  if(longIntegerCompareInt(x, 400) <= 0) {
+    uint32_t loops, counter;
 
-  longIntegerSubtract(y, x, result);      // t = y - x
+    longIntegerToUInt(x, loops);
+    longIntegerSubtractUInt(y, --loops, result);
+    longIntegerCopy(result, y);
+    counter = 1;
+    while(counter <= loops) {
+      counter++;
+      longIntegerAddUInt(y, 1, y);
+      longIntegerMultiply(result, y, result);
+      longIntegerDivideUInt(result, counter, result);
+    }
+  }
+  else {
+    real_t xReal, yReal, resultReal;
 
-  longIntegerToUInt(result, temp);
-  longIntegerFactorial(temp , result);    // t = (y - x)!
+    convertLongIntegerToReal(x, &xReal, &ctxtReal75);
+    convertLongIntegerToReal(y, &yReal, &ctxtReal75);
 
-  longIntegerToUInt(y, temp);
-  longIntegerFactorial(temp, y);          // y = y!
+    realSubtract(&yReal, &xReal, &resultReal, &ctxtReal75);
+    realAdd(&resultReal, const_1, &resultReal, &ctxtReal75);
+    WP34S_LnGamma(&resultReal, &resultReal, &ctxtReal75);       // r = ln((y-x)!)
 
-  longIntegerToUInt(x, temp);
-  longIntegerFactorial(temp, x);          // x = x!
+    realAdd(&xReal, const_1, &xReal, &ctxtReal75);
+    WP34S_LnGamma(&xReal, &xReal, &ctxtReal75);                 // x = ln(x!)
 
-  longIntegerMultiply(x, result, result); // t = x! * (y - x)!
+    realAdd(&yReal, const_1, &yReal, &ctxtReal75);
+    WP34S_LnGamma(&yReal, &yReal, &ctxtReal75);                 // y = ln(y!)
 
-  longIntegerDivide(y, result, result);   // t = y! / [x! * (y - x)!]
+    realSubtract(&yReal, &resultReal, &resultReal, &ctxtReal75);
+    realSubtract(&resultReal, &xReal, &resultReal, &ctxtReal75); // r = ln(y!) - ln((y-x)!) - ln(x!)
+
+    realExp(&resultReal, &resultReal, &ctxtReal75);             // r = y! / ((y-x)! × x!)
+
+    convertRealToLongInteger(&resultReal, result, DEC_ROUND_HALF_UP);
+  }
 }
 
 static void cyxCplx(real_t *yReal, real_t *yImag, real_t *xReal, real_t *xImag, real_t *rReal, real_t *rImag, realContext_t *realContext) {
@@ -168,12 +163,7 @@ static void cyxCplx(real_t *yReal, real_t *yImag, real_t *xReal, real_t *xImag, 
 }
 
 static void pyxReal(real_t *y, real_t *x, real_t *result, realContext_t *realContext) {
-  //realSubtract(y, x, result, realContext);      // t = y - x
-  //WP34S_Factorial(result, result, realContext); // t = (y - x)!
-
-  //WP34S_Factorial(y, y, realContext);           // y = y!
-
-  //realDivide(y, result, result, realContext);   // t = y! / (y - x)!
+  bool_t inputAreIntegers = (realIsAnInteger(x) && realIsAnInteger(y));
 
   realSubtract(y, x, result, realContext);
   realAdd(result, const_1, result, realContext);
@@ -185,19 +175,44 @@ static void pyxReal(real_t *y, real_t *x, real_t *result, realContext_t *realCon
   realSubtract(y, result, result, realContext);   // r = ln(y!) - ln((y-x)!)
 
   realExp(result, result, realContext);           // r = y! / (y-x)!
+
+  if(inputAreIntegers && !realIsAnInteger(result)) {
+    realToIntegralValue(result, result, DEC_ROUND_HALF_UP, realContext);
+  }
 }
 
 static void pyxLong(longInteger_t y, longInteger_t x, longInteger_t result) {
-  uint32_t temp;
+  if(longIntegerCompareInt(x, 400) <= 0) {
+    uint32_t loops;
 
-  longIntegerSubtract(y, x, result);    // t = y-x
-  longIntegerToUInt(result, temp);
-  longIntegerFactorial(temp, result);   // t = (y-x)!
+    longIntegerToUInt(x, loops);
+    longIntegerSubtractUInt(y, --loops, result);
+    longIntegerCopy(result, y);
+    while(loops-- > 0) {
+      longIntegerAddUInt(y, 1, y);
+      longIntegerMultiply(result, y, result);
+    }
+  }
+  else {
+    real_t xReal, yReal, resultReal;
 
-  longIntegerToUInt(y, temp);
-  longIntegerFactorial(temp, y);        // y = y!
+    convertLongIntegerToReal(x, &xReal, &ctxtReal75);
+    convertLongIntegerToReal(y, &yReal, &ctxtReal75);
 
-  longIntegerDivide(y, result, result); // t = y! / (y -x)!
+    realSubtract(&yReal, &xReal, &resultReal, &ctxtReal75);
+    realAdd(&resultReal, const_1, &resultReal, &ctxtReal75);
+    WP34S_LnGamma(&resultReal, &resultReal, &ctxtReal75);       // r = ln((y-x)!)
+
+    realAdd(&yReal, const_1, &yReal, &ctxtReal75);
+    WP34S_LnGamma(&yReal, &yReal, &ctxtReal75);                 // y = ln(y!)
+
+    realSubtract(&yReal, &resultReal, &resultReal, &ctxtReal75);
+    realSubtract(&resultReal, &xReal, &resultReal, &ctxtReal75); // r = ln(y!) - ln((y-x)!)
+
+    realExp(&resultReal, &resultReal, &ctxtReal75);             // r = y! / (y-x)!
+
+    convertRealToLongInteger(&resultReal, result, DEC_ROUND_HALF_UP);
+  }
 }
 
 static void pyxCplx(real_t *yReal, real_t *yImag, real_t *xReal, real_t *xImag, real_t *rReal, real_t *rImag, realContext_t *realContext) {
@@ -272,20 +287,16 @@ void cpyxLonILonI(uint16_t combOrPerm) {
   convertLongIntegerRegisterToLongInteger(REGISTER_X, x);
   convertLongIntegerRegisterToLongInteger(REGISTER_Y, y);
 
-  if(longIntegerIsNegative(x) || longIntegerIsNegative(y)) {
-    cpyxError(DOMAIN_ERROR);
-  }
-  else if(longIntegerCompareUInt(x, 450) > 0 || longIntegerCompareUInt(y, 450) > 0) {
-    cpyxError(DATA_OUT_OF_RANGE_ERROR);
-  }
-  else if(longIntegerCompare(y, x) < 0) {
-    cpyxError(INVALID_DATA_CMP_ERROR);
+  if(longIntegerIsNegative(x) || longIntegerIsNegative(y) || longIntegerCompare(y, x) < 0) {
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    EXTRA_INFO_MESSAGE("cannot calculate Cyx/Pyx, conditions: x>=0, y>=0, and x<=y.");
   }
   else {
     longInteger_t t;
     longIntegerInit(t);
 
-    (combOrPerm == CP_COMBINATION) ? cyxLong(y, x, t) : pyxLong(y, x, t);
+    (combOrPerm == CP_COMBINATION) ? cyxLong(y, x, t)
+                                   : pyxLong(y, x, t);
 
     convertLongIntegerToLongIntegerRegister(t, REGISTER_X);
     longIntegerFree(t);
@@ -308,7 +319,8 @@ void cpyxLonIReal(uint16_t combOrPerm) {
   convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal75);
 
   if(realIsNegative(&x) || realIsNegative(&y)) {
-    cpyxError(DOMAIN_ERROR);
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    EXTRA_INFO_MESSAGE("cannot calculate Cyx/Pyx, conditions: x>=0, y>=0, and x<=y.");
   }
   else {
     real_t t;
@@ -336,7 +348,8 @@ void cpyxLonICplx(uint16_t combOrPerm) {
   convertLongIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal39);
   real34ToReal(const34_0, &yImag);
 
-  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39) : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
+  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39)
+                                 : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
   realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
   realToReal34(&tImag, REGISTER_IMAG34_DATA(REGISTER_X));
@@ -354,20 +367,16 @@ void cpyxLonIShoI(uint16_t combOrPerm) {
   convertShortIntegerRegisterToLongInteger(REGISTER_X, x);
   convertLongIntegerRegisterToLongInteger(REGISTER_Y, y);
 
-  if(longIntegerIsNegative(x) || longIntegerIsNegative(y)) {
-    cpyxError(DOMAIN_ERROR);
-  }
-  else if(longIntegerCompareUInt(x, 450) > 0 || longIntegerCompareUInt(y, 450) > 0) {
-    cpyxError(DATA_OUT_OF_RANGE_ERROR);
-  }
-  else if(longIntegerCompare(y, x) < 0) {
-    cpyxError(INVALID_DATA_CMP_ERROR);
+  if(longIntegerIsNegative(x) || longIntegerIsNegative(y) || longIntegerCompare(y, x) < 0) {
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    EXTRA_INFO_MESSAGE("cannot calculate Cyx/Pyx, conditions: x>=0, y>=0, and x<=y.");
   }
   else {
     longInteger_t t;
     longIntegerInit(t);
 
-    (combOrPerm == CP_COMBINATION) ? cyxLong(y, x, t) : pyxLong(y, x, t);
+    (combOrPerm == CP_COMBINATION) ? cyxLong(y, x, t)
+                                   : pyxLong(y, x, t);
 
     convertLongIntegerToLongIntegerRegister(t, REGISTER_X);
     longIntegerFree(t);
@@ -393,13 +402,15 @@ void cpyxRealLonI(uint16_t combOrPerm) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
   convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
 
-  if(realIsNegative(&x) || realIsNegative(&y)) {
-    cpyxError(DOMAIN_ERROR);
+  if(realIsNegative(&x) || realIsNegative(&y) || realCompareGreaterThan(&x, &y)) {
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    EXTRA_INFO_MESSAGE("cannot calculate Cyx/Pyx, conditions: x>=0, y>=0, and x<=y.");
   }
   else {
     real_t t;
 
-    (combOrPerm == CP_COMBINATION) ? cyxReal(&y, &x, &t, &ctxtReal39) : pyxReal(&y, &x, &t, &ctxtReal39);
+    (combOrPerm == CP_COMBINATION) ? cyxReal(&y, &x, &t, &ctxtReal39)
+                                   : pyxReal(&y, &x, &t, &ctxtReal39);
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
     realToReal34(&t, REGISTER_REAL34_DATA(REGISTER_X));
@@ -419,13 +430,15 @@ void cpyxRealReal(uint16_t combOrPerm) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
 
-  if(realIsNegative(&x) || realIsNegative(&y)) {
-    cpyxError(DOMAIN_ERROR);
+  if(realIsNegative(&x) || realIsNegative(&y) || realCompareGreaterThan(&x, &y)) {
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    EXTRA_INFO_MESSAGE("cannot calculate Cyx/Pyx, conditions: x>=0, y>=0, and x<=y.");
   }
   else {
     real_t t;
 
-    (combOrPerm == CP_COMBINATION) ? cyxReal(&y, &x, &t, &ctxtReal39) : pyxReal(&y, &x, &t, &ctxtReal39);
+    (combOrPerm == CP_COMBINATION) ? cyxReal(&y, &x, &t, &ctxtReal39)
+                                   : pyxReal(&y, &x, &t, &ctxtReal39);
 
     realToReal34(&t, REGISTER_REAL34_DATA(REGISTER_X));
     setRegisterAngularMode(REGISTER_X, AM_NONE);
@@ -448,7 +461,8 @@ void cpyxRealCplx(uint16_t combOrPerm) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
   real34ToReal(const34_0, &yImag);
 
-  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39) : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
+  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39)
+                                 : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
   realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
   realToReal34(&tImag, REGISTER_IMAG34_DATA(REGISTER_X));
@@ -466,13 +480,15 @@ void cpyxRealShoI(uint16_t combOrPerm) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
   convertShortIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
 
-  if(realIsNegative(&x) || realIsNegative(&y)) {
-    cpyxError(DOMAIN_ERROR);
+  if(realIsNegative(&x) || realIsNegative(&y) || realCompareGreaterThan(&x, &y)) {
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    EXTRA_INFO_MESSAGE("cannot calculate Cyx/Pyx, conditions: x>=0, y>=0, and x<=y.");
   }
   else {
     real_t t;
 
-    (combOrPerm == CP_COMBINATION) ? cyxReal(&y, &x, &t, &ctxtReal39) : pyxReal(&y, &x, &t, &ctxtReal39);
+    (combOrPerm == CP_COMBINATION) ? cyxReal(&y, &x, &t, &ctxtReal39)
+                                   : pyxReal(&y, &x, &t, &ctxtReal39);
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
     realToReal34(&t, REGISTER_REAL34_DATA(REGISTER_X));
@@ -500,7 +516,8 @@ void cpyxCplxLonI(uint16_t combOrPerm) {
   convertLongIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal39);
   real34ToReal(const34_0, &xImag);
 
-  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39) : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
+  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39)
+                                 : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, AM_NONE);
   realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
@@ -523,7 +540,8 @@ void cpyxCplxReal(uint16_t combOrPerm) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
   real34ToReal(const34_0, &xImag);
 
-  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39) : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
+  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39)
+                                 : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, AM_NONE);
   realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
@@ -546,7 +564,8 @@ void cpyxCplxCplx(uint16_t combOrPerm) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
-  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39) : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
+  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39)
+                                 : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
   realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
   realToReal34(&tImag, REGISTER_IMAG34_DATA(REGISTER_X));
@@ -568,7 +587,8 @@ void cpyxCplxShoI(uint16_t combOrPerm) {
   convertShortIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal39);
   real34ToReal(const34_0, &xImag);
 
-  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39) : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
+  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39)
+                                 : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, AM_NONE);
   realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
@@ -591,20 +611,16 @@ void cpyxShoILonI(uint16_t combOrPerm) {
   convertLongIntegerRegisterToLongInteger(REGISTER_X, x);
   convertShortIntegerRegisterToLongInteger(REGISTER_Y, y);
 
-  if(longIntegerIsNegative(x) || longIntegerIsNegative(y)) {
-    cpyxError(DOMAIN_ERROR);
-  }
-  else if(longIntegerCompareUInt(x, 450) > 0 || longIntegerCompareUInt(y, 450) > 0) {
-    cpyxError(DATA_OUT_OF_RANGE_ERROR);
-  }
-  else if(longIntegerCompare(y, x) < 0) {
-    cpyxError(INVALID_DATA_CMP_ERROR);
+  if(longIntegerIsNegative(x) || longIntegerIsNegative(y) || longIntegerCompare(y, x) < 0) {
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    EXTRA_INFO_MESSAGE("cannot calculate Cyx/Pyx, y and x must be greater or equal than zero.");
   }
   else {
     longInteger_t t;
     longIntegerInit(t);
 
-    (combOrPerm == CP_COMBINATION) ? cyxLong(y, x, t) : pyxLong(y, x, t);
+    (combOrPerm == CP_COMBINATION) ? cyxLong(y, x, t)
+                                   : pyxLong(y, x, t);
 
     convertLongIntegerToLongIntegerRegister(t, REGISTER_X);
     longIntegerFree(t);
@@ -626,13 +642,15 @@ void cpyxShoIReal(uint16_t combOrPerm) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
   convertShortIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
 
-  if(realIsNegative(&x) || realIsNegative(&y)) {
-    cpyxError(DOMAIN_ERROR);
+  if(realIsNegative(&x) || realIsNegative(&y) || realCompareGreaterThan(&x, &y)) {
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    EXTRA_INFO_MESSAGE("cannot calculate Cyx/Pyx, conditions: x>=0, y>=0, and x<=y.");
   }
   else {
     real_t t;
 
-    (combOrPerm == CP_COMBINATION) ? cyxReal(&y, &x, &t, &ctxtReal39) : pyxReal(&y, &x, &t, &ctxtReal39);
+    (combOrPerm == CP_COMBINATION) ? cyxReal(&y, &x, &t, &ctxtReal39)
+                                   : pyxReal(&y, &x, &t, &ctxtReal39);
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
     realToReal34(&t, REGISTER_REAL34_DATA(REGISTER_X));
@@ -656,7 +674,8 @@ void cpyxShoICplx(uint16_t combOrPerm) {
   convertShortIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal39);
   real34ToReal(const34_0, &yImag);
 
-  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39) : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
+  (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39)
+                                 : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
   realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
   realToReal34(&tImag, REGISTER_IMAG34_DATA(REGISTER_X));
@@ -669,31 +688,33 @@ void cpyxShoICplx(uint16_t combOrPerm) {
  * \return void
  ***********************************************/
 void cpyxShoIShoI(uint16_t combOrPerm) {
-  int16_t x_sign, y_sign;
-  uint64_t x_value, y_value;
+  longInteger_t x, y;
 
-  convertShortIntegerRegisterToUInt64(REGISTER_X, &x_sign, &x_value);
-  convertShortIntegerRegisterToUInt64(REGISTER_Y, &y_sign, &y_value);
+  convertShortIntegerRegisterToLongInteger(REGISTER_X, x);
+  convertShortIntegerRegisterToLongInteger(REGISTER_Y, y);
 
-  if(x_sign==1 || y_sign==1) {
-    cpyxError(DOMAIN_ERROR);
-  }
-  else if(x_value > 20 || y_value > 20) {
-    cpyxError(DATA_OUT_OF_RANGE_ERROR);
-  }
-  else if(y_value < x_value) {
-    cpyxError(INVALID_DATA_CMP_ERROR);
+  if(longIntegerIsNegative(x) || longIntegerIsNegative(y) || longIntegerCompare(y, x) < 0) {
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    EXTRA_INFO_MESSAGE("cannot calculate Cyx/Pyx, y and x must be greater or equal than zero.");
   }
   else {
-    uint64_t value = (combOrPerm == CP_COMBINATION)
-            ? fact_uint64(y_value) / ( fact_uint64(x_value) * fact_uint64(y_value - x_value))
-            : fact_uint64(y_value) / fact_uint64(y_value - x_value);
+    longInteger_t t;
+    longIntegerInit(t);
 
-    if(value > shortIntegerMask) {
+    (combOrPerm == CP_COMBINATION) ? cyxLong(y, x, t)
+                                   : pyxLong(y, x, t);
+
+    convertLongIntegerToShortIntegerRegister(t, getRegisterShortIntegerBase(REGISTER_Y), REGISTER_X);
+
+    convertShortIntegerRegisterToLongInteger(REGISTER_X, x);
+    if(longIntegerCompare(t, x) != 0) {
       setSystemFlag(FLAG_OVERFLOW);
     }
 
-    convertUInt64ToShortIntegerRegister(0, value, getRegisterTag(REGISTER_X), REGISTER_X);
+    longIntegerFree(t);
   }
+
+  longIntegerFree(x);
+  longIntegerFree(y);
 }
 

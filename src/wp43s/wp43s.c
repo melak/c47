@@ -178,6 +178,7 @@ bool_t                showContent;
 bool_t                savedStackLiftEnabled;
 bool_t                rbr1stDigit;
 bool_t                updateDisplayValueX;
+bool_t                AlphaSelectionBufferTimerRunning;        //JM
 calcKey_t             kbd_usr[37];
 calcRegister_t        errorMessageRegisterLine;
 calcRegister_t        errorRegisterLine;

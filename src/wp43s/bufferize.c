@@ -174,11 +174,59 @@ int32_t findFirstItem(const char *twoLetters) {
 }
 
 
+
+
+#ifndef TESTSUITE_BUILD                          //JMvv
+void light_ASB_icon(void) {
+  uint8_t ix = 0;
+  while(ix < 9) {
+    setPixel(X_ALPHA_MODE+ix,   19);
+    setPixel(X_ALPHA_MODE+ix,   18);
+    ix++;
+  }
+}
+
+void kill_ASB_icon(void) {
+  uint8_t ix = 0;
+  while(ix < 9) {
+    clearPixel(X_ALPHA_MODE+ix,   19);
+    clearPixel(X_ALPHA_MODE+ix,   18);
+    ix++;
+  }
+}
+#endif                                           //JM^^
+
+
 void resetAlphaSelectionBuffer(void) {
   lgCatalogSelection = 0;
   alphaSelectionTimer = 0;
   asmBuffer[0] = 0;
+  AlphaSelectionBufferTimerRunning = false;     //JMvv
+#ifndef TESTSUITE_BUILD
+  kill_ASB_icon();
+#endif                                          //JM^^
 }
+
+
+bool_t timeoutAlphaSelectionBuffer(void) {       //JM
+  if(alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000){
+    resetAlphaSelectionBuffer();
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void startAlphaSelectionBuffer(void) {           //JM
+  alphaSelectionTimer = getUptimeMs();
+  AlphaSelectionBufferTimerRunning = true;
+#ifndef TESTSUITE_BUILD
+  light_ASB_icon();
+#endif
+}
+
+
+
 
 
 
@@ -290,7 +338,7 @@ void addItemToBuffer(uint16_t item) {
       softmenuStack[softmenuStackPointer-1].firstItem = firstItem;
       showSoftmenuCurrentPart();
       setCatalogLastPos();
-      alphaSelectionTimer = getUptimeMs();
+      startAlphaSelectionBuffer();               //JM
     }
 
     else if(calcMode == CM_NIM) {

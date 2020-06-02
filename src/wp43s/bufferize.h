@@ -38,6 +38,8 @@
 #ifndef TESTSUITE_BUILD
   void    fnAim                    (uint16_t unusedParamButMandatory);
   void    resetAlphaSelectionBuffer(void);
+  bool_t  timeoutAlphaSelectionBuffer(void);           //JM
+  void    startAlphaSelectionBuffer  (void);           //JM
   void    addItemToBuffer          (uint16_t item);
   void    addItemToNimBuffer       (int16_t item);
   void    tamTransitionSystem      (uint16_t tamEvent);
