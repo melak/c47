@@ -22,18 +22,19 @@
 
 static void dataTtypeError(void);
 
-static void (* const functionMatrix[9][9])(void) = {
-// regX |    regY ==>    1               2                3               4               5               6               7               8               9
-//      V                Long integer    Real34           Complex34       Time            Date            String          Real34 mat      Complex34 mat   Short integer
-/*  1 Long integer  */ {percentLonILonI, percentRealLonI, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError },
-/*  2 Real34        */ {percentLonIReal, percentRealReal, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError },
-/*  3 Complex34     */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError },
-/*  4 Time          */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError },
-/*  5 Date          */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError },
-/*  6 String        */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError },
-/*  7 Real34 mat    */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError },
-/*  8 Complex34 mat */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError },
-/*  9 Short integer */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError }
+static void (* const functionMatrix[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>    1               2                3               4               5               6               7               8               9               10
+//      V                Long integer    Real34           Complex34       Time            Date            String          Real34 mat      Complex34 mat   Short integer   Config data
+/*  1 Long integer  */ {percentLonILonI, percentRealLonI, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError},
+/*  2 Real34        */ {percentLonIReal, percentRealReal, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError},
+/*  3 Complex34     */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError},
+/*  4 Time          */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError},
+/*  5 Date          */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError},
+/*  6 String        */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError},
+/*  7 Real34 mat    */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError},
+/*  8 Complex34 mat */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError},
+/*  9 Short integer */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError},
+/* 10 Config data   */ {dataTtypeError,  dataTtypeError,  dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError, dataTtypeError}
 };
 
 //=============================================================================

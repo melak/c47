@@ -25,18 +25,19 @@
 
 
 
-void (* const logicalXor[9][9])(void) = {
-// regX |    regY ==>   1            2            3           4           5           6           7           8            9
-//      V               Long integer Real34       Complex34   Time        Date        String      Real34 mat  Complex34 m  Short integer
-/*  1 Long integer  */ {xorLonILonI, xorRealLonI, xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError31 },
-/*  2 Real34        */ {xorLonIReal, xorRealReal, xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError31 },
-/*  3 Complex34     */ {xorError24,  xorError24,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError24 },
-/*  4 Time          */ {xorError24,  xorError24,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError24 },
-/*  5 Date          */ {xorError24,  xorError24,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError24 },
-/*  6 String        */ {xorError24,  xorError24,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError24 },
-/*  7 Real34 mat    */ {xorError24,  xorError24,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError24 },
-/*  8 Complex34 mat */ {xorError24,  xorError24,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError24 },
-/*  9 Short integer */ {xorError31,  xorError31,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorShoIShoI}
+void (* const logicalXor[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>   1            2            3           4           5           6           7           8            9             10
+//      V               Long integer Real34       Complex34   Time        Date        String      Real34 mat  Complex34 m  Short integer Config data
+/*  1 Long integer  */ {xorLonILonI, xorRealLonI, xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError31,   xorError24},
+/*  2 Real34        */ {xorLonIReal, xorRealReal, xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError31,   xorError24},
+/*  3 Complex34     */ {xorError24,  xorError24,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError24,   xorError24},
+/*  4 Time          */ {xorError24,  xorError24,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError24,   xorError24},
+/*  5 Date          */ {xorError24,  xorError24,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError24,   xorError24},
+/*  6 String        */ {xorError24,  xorError24,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError24,   xorError24},
+/*  7 Real34 mat    */ {xorError24,  xorError24,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError24,   xorError24},
+/*  8 Complex34 mat */ {xorError24,  xorError24,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError24,   xorError24},
+/*  9 Short integer */ {xorError31,  xorError31,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorShoIShoI,  xorError24},
+/* 10 Config data   */ {xorError24,  xorError24,  xorError24, xorError24, xorError24, xorError24, xorError24, xorError24,  xorError24,   xorError24}
 };
 
 

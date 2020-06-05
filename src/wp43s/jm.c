@@ -49,6 +49,45 @@ void fnComplexMode(uint16_t cm) {
 */
 
 
+void reset_jm_defaults(void) {
+    SHOWregis = 9999;                                          //JMSHOW
+
+    //JM defaults vv: CONFIG STO/RCL
+    SigFigMode = 0;                                              //JM SIGFIG Default 0.
+    eRPN = true;                 //TEMPORARY FOR TESTING         //JM eRPN Default. Create a flag to enable or disable eRPN. See bufferize.c
+    HOME3 = true;                                                //JM HOME Default. Create a flag to enable or disable triple shift HOME3.
+    ShiftTimoutMode = true;                                      //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER CANCEL.
+    Home3TimerMode = true;                                       //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER MODE FOR HOME.
+    UNITDisplay = false;                                         //JM HOME Default. Create a flag to enable or disable UNIT display
+    SH_BASE_HOME   = true;                                       //JM
+    SH_BASE_AHOME  = true;                                       //JM
+    Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM
+    Input_Default =  ID_43S;                                     //JM Input Default
+    jm_FG_LINE = true;                                           //JM Screen / keyboard operation setup
+    jm_FG_DOTS = false;                                          //JM Screen / keyboard operation setup
+    jm_G_DOUBLETAP = false;                                      //JM Screen / keyboard operation setup
+    graph_xmin = -3*3.14159265;                                //JM GRAPH
+    graph_xmax = +3*3.14159265;                                //JM GRAPH
+    graph_ymin = -2;                                           //JM GRAPH
+    graph_ymax = +2;                                           //JM GRAPH
+    graph_dx   = 0;                                            //JM GRAPH
+    graph_dy   = 0;                                            //JM GRAPH
+    jm_VECT = false;                                           //JM Screen / keyboard operation setup
+    jm_HOME_SUM = false;                                       //JMHOME
+    jm_HOME_MIR = true;                                        //JMHOME
+    jm_HOME_FIX = false;                                       //JMHOME
+    #if defined(DMCP_BUILD) || defined(JM_LAYOUT_2_DM42_STRICT)//JM LAYOUT 2. DM42 STRICT.
+    jm_HOME_SUM = false;                                       //JMHOME
+    jm_HOME_MIR = true;                                        //JMHOME
+    jm_HOME_FIX = false;                                       //JMHOME
+    #endif
+    setSystemFlag(FLAG_SPCRES)                                 //JM default infinity etc.
+    //JM defaults ^^
+}
+
+
+
+
 /********************************************//**
  * SEEMS TO BE WORKING. CALLED FROM ## in BASE
  *
@@ -169,14 +208,11 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
 
 
 
-
-
-
-   case RM_COMMA:               //DONR
+   case RX_COMMA:               //DONR
      fnClearFlag(FLAG_DECIMP);
      break;
 
-   case RM_PERIOD:               //DONR
+   case RX_PERIOD:               //DONR
      fnSetFlag(FLAG_DECIMP);
      break;
 
@@ -196,24 +232,20 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
      fnSetFlag(FLAG_CPXj);
      break;
 
-  case JC_BLZ:                                              //JM bit LeadingZeros
-    fnFlipFlag(FLAG_LEAD0);                                       //dr
-    break;
+   case PS_DOT:
+     fnClearFlag(FLAG_MULTx);
+     break;
 
    case PS_CROSS:               //DONR
      fnSetFlag(FLAG_MULTx);
      break;
 
-   case PS_DOT:
-     fnClearFlag(FLAG_MULTx);
+   case SS_4:                 //DONE
+     fnClearFlag(FLAG_SSIZE8);
      break;
 
    case SS_8:          //DONE
      fnSetFlag(FLAG_SSIZE8);
-     break;
-
-   case SS_4:                 //DONE
-     fnClearFlag(FLAG_SSIZE8);
      break;
 
    case CM_RECTANGULAR:          //DONE
@@ -224,10 +256,23 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
      fnSetFlag(FLAG_POLAR);
      break;
 
+   case DO_SCI:
+     fnClearFlag(FLAG_ALLENG);
+     break;
+
+   case DO_ENG:
+     fnSetFlag(FLAG_ALLENG);
+     break;
+
+
+
+   case JC_BLZ:                                              //JM bit LeadingZeros
+     fnFlipFlag(FLAG_LEAD0);                                       //dr
+     break;
+
    case JC_BCR:                                              //JM bit ComplexResult
      fnFlipFlag(FLAG_CPXRES);                                     //dr
      break;
-
 
 
 

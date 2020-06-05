@@ -1804,7 +1804,7 @@
 #define ITM_EE_STO_V_Z                1764   //JM EE
 #define ITM_EE_X2BAL                  1765   //JM EE
 #define KEY_COMPLEX                   1766   //JM CPX
-#define Not_used1767                  1767
+#define ITM_RNG                       1767   //JM RANGE
 #define KEY_TYPCON_UP                 1768   //JM CPX
 #define KEY_TYPCON_DN                 1769   //JM CPX
 #define ITM_HOMEx3T                   1770   //JM HOME.3T
@@ -1984,7 +1984,7 @@
 #define ITM_DEMO6                     1941   //JM USER
 #define MNU_ST_GRAPH                  1942   //JM USER
 #define ITM_VECT                      1943   //JMVECT
-#define ITM_TOFILE                    1944   //TOFILE
+#define ITM_1944                      1944
 #define ITM_P_ALLREGS                 1945   //JM Print all regs
 #define ITM_SI_f                      1946   //JM PRE UNIT
 #define ITM_SI_G                      1947   //JM PRE UNIT
@@ -2011,8 +2011,10 @@
 #define ITM_SSIZE8                    1968
 #define ITM_RECT                      1969   //JM Replacements
 #define ITM_FLGSV                     1970
+#define ITM_SCIOVR                    1971   //JM Replacements
+#define ITM_ENGOVR                    1972   //JM Replacements
 
-#define LAST_ITEM                     1971   //JM
+#define LAST_ITEM                     1973   //JM
 
 #define CHR_PROD_SIGN                 9999
 

@@ -137,6 +137,14 @@ void registerBrowser(uint16_t unusedParamButMandatory) {
             sprintf(tmpStr3000, "%" FMT32U " character%s := 4+%" FMT32U " bytes", (uint32_t)stringGlyphLength(REGISTER_STRING_DATA(regist)), stringGlyphLength(REGISTER_STRING_DATA(regist))==1 ? "" : "s", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
           }
         }
+        else if(getRegisterDataType(regist) == dtConfig) {
+          if(showContent) {
+            strcpy(tmpStr3000, "Configuration data");
+          }
+          else {
+            sprintf(tmpStr3000, "%d bytes", (int16_t)TO_BYTES(CONFIG_SIZE));
+          }
+        }
         else {
           sprintf(tmpStr3000, "Data type %s: to be coded", getDataTypeName(getRegisterDataType(regist), false, true));
         }
@@ -212,6 +220,14 @@ void registerBrowser(uint16_t unusedParamButMandatory) {
               }
               else {
                 sprintf(tmpStr3000, "%" FMT32U " character%s := 4+4+%" FMT32U " bytes", (uint32_t)stringGlyphLength(REGISTER_STRING_DATA(regist)), stringGlyphLength(REGISTER_STRING_DATA(regist))==1 ? "" : "s", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+              }
+            }
+            else if(getRegisterDataType(regist) == dtConfig) {
+              if(showContent) {
+                strcpy(tmpStr3000, "Configuration data");
+              }
+              else {
+                sprintf(tmpStr3000, "%d bytes", (int16_t)TO_BYTES(CONFIG_SIZE));
               }
             }
             else {

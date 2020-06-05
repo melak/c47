@@ -53,7 +53,7 @@
 #define ERROR_WRITE_PROTECTED_SYSTEM_FLAG  32
 #define ERROR_STRING_WOULD_BE_TOO_LONG     33
 #define ERROR_EMPTY_STRING                 34
-#define ERROR_BAD_INPUT                    35 // This error is not in the ReM and could theorically not happen
+#define ERROR_BAD_INPUT                    35 // This error is not in ReM and cannot occur (theoretically).
 
 #define NUMBER_OF_ERROR_CODES              36
 

@@ -25,18 +25,19 @@
 
 
 
-void (* const logicalXnor[9][9])(void) = {
-// regX |    regY ==>   1            2            3           4           5           6           7           8            9
-//      V               Long integer Real34       Complex34   Time        Date        String      Real34 mat  Complex34 m  Short integer
-/*  1 Long integer  */ {xnorLonILonI, xnorRealLonI, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError31 },
-/*  2 Real34        */ {xnorLonIReal, xnorRealReal, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError31 },
-/*  3 Complex34     */ {xnorError24,  xnorError24,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError24 },
-/*  4 Time          */ {xnorError24,  xnorError24,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError24 },
-/*  5 Date          */ {xnorError24,  xnorError24,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError24 },
-/*  6 String        */ {xnorError24,  xnorError24,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError24 },
-/*  7 Real34 mat    */ {xnorError24,  xnorError24,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError24 },
-/*  8 Complex34 mat */ {xnorError24,  xnorError24,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError24 },
-/*  9 Short integer */ {xnorError31,  xnorError31,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorShoIShoI}
+void (* const logicalXnor[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>   1             2             3            4            5            6            7            8             9             10
+//      V               Long integer  Real34        Complex34    Time         Date         String       Real34 mat   Complex34 m   Short integer Config data
+/*  1 Long integer  */ {xnorLonILonI, xnorRealLonI, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError31,  xnorError24},
+/*  2 Real34        */ {xnorLonIReal, xnorRealReal, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError31,  xnorError24},
+/*  3 Complex34     */ {xnorError24,  xnorError24,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError24,  xnorError24},
+/*  4 Time          */ {xnorError24,  xnorError24,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError24,  xnorError24},
+/*  5 Date          */ {xnorError24,  xnorError24,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError24,  xnorError24},
+/*  6 String        */ {xnorError24,  xnorError24,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError24,  xnorError24},
+/*  7 Real34 mat    */ {xnorError24,  xnorError24,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError24,  xnorError24},
+/*  8 Complex34 mat */ {xnorError24,  xnorError24,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError24,  xnorError24},
+/*  9 Short integer */ {xnorError31,  xnorError31,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorShoIShoI, xnorError24},
+/* 10 Config data   */ {xnorError24,  xnorError24,  xnorError24, xnorError24, xnorError24, xnorError24, xnorError24, xnorError24,  xnorError24,  xnorError24}
 };
 
 

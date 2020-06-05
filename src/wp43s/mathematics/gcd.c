@@ -22,18 +22,19 @@
 
 
 
-void (* const gcd[9][9])(void) = {
-// regX |    regY ==>   1            2         3         4         5         6         7          8           9
-//      V               Long integer Real34    Complex34 Time      Date      String    Real34 mat Complex34 m Short integer
-/*  1 Long integer  */ {gcdLonILonI, gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdShoILonI},
-/*  2 Real34        */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError   },
-/*  3 Complex34     */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError   },
-/*  4 Time          */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError   },
-/*  5 Date          */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError   },
-/*  6 String        */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError   },
-/*  7 Real34 mat    */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError   },
-/*  8 Complex34 mat */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError   },
-/*  9 Short integer */ {gcdLonIShoI, gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdShoIShoI}
+void (* const gcd[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>   1            2         3         4         5         6         7          8           9             10
+//      V               Long integer Real34    Complex34 Time      Date      String    Real34 mat Complex34 m Short integer Config data
+/*  1 Long integer  */ {gcdLonILonI, gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdShoILonI,  gcdError},
+/*  2 Real34        */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError,     gcdError},
+/*  3 Complex34     */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError,     gcdError},
+/*  4 Time          */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError,     gcdError},
+/*  5 Date          */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError,     gcdError},
+/*  6 String        */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError,     gcdError},
+/*  7 Real34 mat    */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError,     gcdError},
+/*  8 Complex34 mat */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError,     gcdError},
+/*  9 Short integer */ {gcdLonIShoI, gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdShoIShoI,  gcdError},
+/* 10 Config data   */ {gcdError,    gcdError, gcdError, gcdError, gcdError, gcdError, gcdError,  gcdError,   gcdError,     gcdError}
 };
 
 

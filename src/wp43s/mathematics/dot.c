@@ -23,18 +23,19 @@
 static void dotDataTypeError(void);
 
 
-void (* const dot[9][9])(void) = {
-// regX |    regY ==>    1                  2                  3                  4                  5                  6                  7                  8                  9
-//      V                Long integer       Real34             Complex34          Time               Date               String             Real34 mat         Complex34 mat      Short integer
-/*  1 Long integer  */ { dotDataTypeError,  dotDataTypeError,  dotCplxLonI,       dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError },
-/*  2 Real34        */ { dotDataTypeError,  dotDataTypeError,  dotCplxReal,       dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError },
-/*  3 Complex34     */ { dotLonICplx,       dotRealCplx,       dotCplxCplx,       dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotShoICplx      },
-/*  4 Time          */ { dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError },
-/*  5 Date          */ { dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError },
-/*  6 String        */ { dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError },
-/*  7 Real34 mat    */ { dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotRemaRema,       dotCpmaRema,       dotDataTypeError },
-/*  8 Complex34 mat */ { dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotRemaCpma,       dotCpmaCpma,       dotDataTypeError },
-/*  9 Short integer */ { dotDataTypeError,  dotDataTypeError,  dotCplxShoI,       dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError }
+void (* const dot[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>    1                  2                  3                  4                  5                  6                  7                  8                  9                 10
+//      V                Long integer       Real34             Complex34          Time               Date               String             Real34 mat         Complex34 mat      Short integer     Config data
+/*  1 Long integer  */ { dotDataTypeError,  dotDataTypeError,  dotCplxLonI,       dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError, dotDataTypeError},
+/*  2 Real34        */ { dotDataTypeError,  dotDataTypeError,  dotCplxReal,       dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError, dotDataTypeError},
+/*  3 Complex34     */ { dotLonICplx,       dotRealCplx,       dotCplxCplx,       dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotShoICplx,      dotDataTypeError},
+/*  4 Time          */ { dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError, dotDataTypeError},
+/*  5 Date          */ { dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError, dotDataTypeError},
+/*  6 String        */ { dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError, dotDataTypeError},
+/*  7 Real34 mat    */ { dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotRemaRema,       dotCpmaRema,       dotDataTypeError, dotDataTypeError},
+/*  8 Complex34 mat */ { dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotRemaCpma,       dotCpmaCpma,       dotDataTypeError, dotDataTypeError},
+/*  9 Short integer */ { dotDataTypeError,  dotDataTypeError,  dotCplxShoI,       dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError, dotDataTypeError},
+/* 10 Config data   */ { dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError,  dotDataTypeError, dotDataTypeError}
 };
 
 

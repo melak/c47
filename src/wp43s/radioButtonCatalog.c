@@ -31,31 +31,31 @@ const radiocb_eeprom_t indexOfRadioCbEepromItems[] = {
 /*  229 */  { ITM_GRAD,             AM_GRAD,                RB_AM },  //fnAngularMode
 /*  375 */  { ITM_MULPI,            AM_MULTPI,              RB_AM },  //fnAngularMode
 /*  483 */  { ITM_RAD,              AM_RADIAN,              RB_AM },  //fnAngularMode
-/*  464 */  { ITM_POLAR,            CM_POLAR,               RB_CM },  //fnComplexMode
-/*  507 */  { ITM_RECT,             CM_RECTANGULAR,         RB_CM },  //fnComplexMode
-/*   96 */  { ITM_CPXI,             CU_I,                   RB_CU },  //fnComplexUnit
-/*   97 */  { ITM_CPXJ,             CU_J,                   RB_CU },  //fnComplexUnit
-/*   44 */ // { ITM_BESTF,            CF_BEST_FITTING,        RB_CF },  //fnCurveFitting
-/*  161 */ // { ITM_EXPF,             CF_EXPONENTIAL_FITTING, RB_CF },  //fnCurveFitting
-/*  308 */ // { ITM_LINF,             CF_LINEAR_FITTING,      RB_CF },  //fnCurveFitting
-/*  325 */ // { ITM_LOGF,             CF_LOGARITHMIC_FITTING, RB_CF },  //fnCurveFitting
-/*  466 */ // { ITM_POWERF,           CF_POWER_FITTING,       RB_CF },  //fnCurveFitting
-/*  136 */  { ITM_DMY,              DF_DMY,                 RB_DF },  //fnDateFormat
-/*  383 */  { ITM_MDY,              DF_MDY,                 RB_DF },  //fnDateFormat
-/*  700 */  { ITM_YMD,              DF_YMD,                 RB_DF },  //fnDateFormat
-/*  119 */ // { ITM_DENANY,           DM_ANY,                 RB_DM },  //fnDenMode
-/*  120 */ // { ITM_DENFAC,           DM_FAC,                 RB_DM },  //fnDenMode
-/*  121 */ // { ITM_DENFIX,           DM_FIX,                 RB_DM },  //fnDenMode
+/*  464 */  { ITM_POLAR,            CM_POLAR,               RB_CM },  //**fnComplexMode
+/*  507 */  { ITM_RECT,             CM_RECTANGULAR,         RB_CM },  //**fnComplexMode
+/*   96 */  { ITM_CPXI,             CU_I,                   RB_CU },  //**fnComplexUnit
+/*   97 */  { ITM_CPXJ,             CU_J,                   RB_CU },  //**fnComplexUnit
+/*   44 */  { ITM_BESTF,            CF_BEST_FITTING,        RB_CF },  //fnCurveFitting
+/*  161 */  { ITM_EXPF,             CF_EXPONENTIAL_FITTING, RB_CF },  //fnCurveFitting
+/*  308 */  { ITM_LINF,             CF_LINEAR_FITTING,      RB_CF },  //fnCurveFitting
+/*  325 */  { ITM_LOGF,             CF_LOGARITHMIC_FITTING, RB_CF },  //fnCurveFitting
+/*  466 */  { ITM_POWERF,           CF_POWER_FITTING,       RB_CF },  //fnCurveFitting
+/*  136 */  { ITM_DMY,              DF_DMY,                 RB_DF },  //fnSetDateFormat
+/*  383 */  { ITM_MDY,              DF_MDY,                 RB_DF },  //fnSetDateFormat
+/*  700 */  { ITM_YMD,              DF_YMD,                 RB_DF },  //fnSetDateFormat
+/*  119 */ // { ITM_DENANY,           DM_ANY,                 RB_DM },  //**fnDenMode
+/*  120 */ // { ITM_DENFAC,           DM_FAC,                 RB_DM },  //**fnDenMode
+/*  121 */ // { ITM_DENFIX,           DM_FIX,                 RB_DM },  //**fnDenMode
 /*   20 */  { ITM_ALL,              DF_ALL,                 RB_DI },  //fnDisplayFormatAll
 /*  145 */  { ITM_ENG,              DF_ENG,                 RB_DI },  //fnDisplayFormatEng
 /*  185 */  { ITM_FIX,              DF_FIX,                 RB_DI },  //fnDisplayFormatFix
 /*  545 */  { ITM_SCI,              DF_SCI,                 RB_DI },  //fnDisplayFormatSci
 /* 1682 */  { ITM_SIGFIG,           DF_SF,                  RB_DI },  //fnDisplayFormatSigFig
 /* 1693 */  { ITM_UNIT,             DF_UN,                  RB_DI },  //fnDisplayFormatUnit
-/*  146 */ // { ITM_ENGOVR,           DO_ENG,                 RB_DO },  //fnDisplayOvr
-/*  547 */ // { ITM_SCIOVR,           DO_SCI,                 RB_DO },  //fnDisplayOvr
-/*  251 */ // { ITM_IMPFRC,           JC_IMPROPER,            CB_JC },  //fnToggleFractionType
-/*  471 */ // { ITM_PROFRC,           JC_PROPER,              CB_JC },  //fnToggleFractionType
+/*  146 */  { ITM_ENGOVR,           DO_ENG,                 RB_DO },  //**fnDisplayOvr
+/*  547 */  { ITM_SCIOVR,           DO_SCI,                 RB_DO },  //**fnDisplayOvr
+/*  251 */ // { ITM_IMPFRC,           JC_IMPROPER,            CB_JC },  //**fnToggleFractionType
+/*  471 */ // { ITM_PROFRC,           JC_PROPER,              CB_JC },  //**fnToggleFractionType
 /* 1905 */  { ITM_INP_DEF_43S,      ID_43S,                 RB_ID },  //fnInDefault
 /* 1910 */  { ITM_INP_DEF_CPXDP,    ID_CPXDP,               RB_ID },  //fnInDefault
 /* 1907 */  { ITM_INP_DEF_DP,       ID_DP,                  RB_ID },  //fnInDefault
@@ -65,18 +65,18 @@ const radiocb_eeprom_t indexOfRadioCbEepromItems[] = {
 /*    7 */  { ITM_2COMPL,           SIM_2COMPL,             RB_IM },  //fnIntegerMode
 /*  567 */  { ITM_SIGNMT,           SIM_SIGNMT,             RB_IM },  //fnIntegerMode
 /*  645 */  { ITM_UNSIGN,           SIM_UNSIGN,             RB_IM },  //fnIntegerMode
-/*  373 */  { ITM_MULTCR,           PS_CROSS,               RB_PS },  //fnProductSign
-/*  374 */  { ITM_MULTDOT,          PS_DOT,                 RB_PS },  //fnProductSign
-/*  500 */  { ITM_RDXCOM,           RM_COMMA,               RB_RM },  //fnRadixMark
-/*  501 */  { ITM_RDXPER,           RM_PERIOD,              RB_RM },  //fnRadixMark
+/*  373 */  { ITM_MULTCR,           PS_CROSS,               RB_PS },  //**fnProductSign
+/*  374 */  { ITM_MULTDOT,          PS_DOT,                 RB_PS },  //**fnProductSign
+/*  500 */  { ITM_RDXCOM,           RX_COMMA,               RB_RM },  //**fnRadixMark
+/*  501 */  { ITM_RDXPER,           RX_PERIOD,              RB_RM },  //**fnRadixMark
 /* 1689 */  { ITM_WS8,              8,                      RB_WS },  //fnSetWordSize
 /* 1690 */  { ITM_WS16,             16,                     RB_WS },  //fnSetWordSize
 /* 1691 */  { ITM_WS32,             32,                     RB_WS },  //fnSetWordSize
 /* 1692 */  { ITM_WS64,             64,                     RB_WS },  //fnSetWordSize
-/*  583 */  { ITM_SSIZE4,           SS_4,                   RB_SS },  //fnStackSize
-/*  584 */  { ITM_SSIZE8,           SS_8,                   RB_SS },  //fnStackSize
-/*   75 */  { ITM_CLK12,            TF_H12,                 RB_TF },  //fnTimeFormat
-/*   76 */  { ITM_CLK24,            TF_H24,                 RB_TF },  //fnTimeFormat
+/*  583 */  { ITM_SSIZE4,           SS_4,                   RB_SS },  //**fnStackSize
+/*  584 */  { ITM_SSIZE8,           SS_8,                   RB_SS },  //**fnStackSize
+/*   75 */  { ITM_CLK12,            TF_H12,                 RB_TF },  //**fnTimeFormat
+/*   76 */  { ITM_CLK24,            TF_H24,                 RB_TF },  //**fnTimeFormat
 /* 1899 */  { ITM_U_KEY_ALPHA,      ITM_AIM,                RB_SA },  //fnSigmaAssign
 /* 1897 */  { ITM_U_KEY_PRGM,       ITM_PR,                 RB_SA },  //fnSigmaAssign
 /* 1895 */  { ITM_U_KEY_SIGMA,      ITM_SIGMAPLUS,          RB_SA },  //fnSigmaAssign
@@ -238,6 +238,10 @@ int16_t fnItemShowValue(int16_t item) {
     result = shortIntegerWordSize;
     break;
 
+  case ITM_RNG:   //  
+    result = exponentLimit;
+    break;
+
   default:
     if(indexOfItems[itemNr].func == itemToBeCoded) {
       result = ITEM_NOT_CODED;
@@ -297,6 +301,17 @@ void use_base_glyphs(char* tmp1, int16_t xx) {                         //Needs n
     add_digitglyph_to_tmp2(tmp2, xx % 10);
     strcat(tmp1, tmp2);
   }
+  else if(xx ==999) {
+    add_digitglyph_to_tmp2(tmp2, 9);   strcat(tmp1, tmp2);
+    add_digitglyph_to_tmp2(tmp2, 9);   strcat(tmp1, tmp2);
+    add_digitglyph_to_tmp2(tmp2, 9);   strcat(tmp1, tmp2);
+  }
+  else if(xx ==6145) {
+    add_digitglyph_to_tmp2(tmp2, 6);   strcat(tmp1, tmp2);
+    add_digitglyph_to_tmp2(tmp2, 1);   strcat(tmp1, tmp2);
+    add_digitglyph_to_tmp2(tmp2, 4);   strcat(tmp1, tmp2);
+    add_digitglyph_to_tmp2(tmp2, 5);   strcat(tmp1, tmp2);
+  }
   else {
     snprintf(tmp1, 12, "%d", xx);
   }
@@ -333,36 +348,32 @@ void fnRebuildRadioState() {
 //  375     { ITM_MULPI,            AM_MULTPI,              RB_AM },  //fnAngularMode
 //  483     { ITM_RAD,              AM_RADIAN,              RB_AM },  //fnAngularMode
   fnRefreshRadioState(RB_AM, currentAngularMode);
-//  464     { ITM_POLAR,            CM_POLAR,               RB_CM },  //fnComplexMode
-//  507     { ITM_RECT,             CM_RECTANGULAR,         RB_CM },  //fnComplexMode
-  uint8_t complexMode = 0;
-  if(!getSystemFlag(FLAG_POLAR)) complexMode=CM_RECTANGULAR; else complexMode=CM_POLAR; 
-  fnRefreshRadioState(RB_CM, complexMode);
-//   96     { ITM_CPXI,             CU_I,                   RB_CU },  //fnComplexUnit
-//   97     { ITM_CPXJ,             CU_J,                   RB_CU },  //fnComplexUnit 
-  uint8_t complexUnit = 0;
-  if(getSystemFlag(FLAG_CPXj)) complexUnit=CU_J; else complexUnit=CU_I; 
-  fnRefreshRadioState(RB_CU, complexUnit);
+//  464     { ITM_POLAR,            CM_POLAR,               RB_CM },  //**fnComplexMode
+//  507     { ITM_RECT,             CM_RECTANGULAR,         RB_CM },  //**fnComplexMode
+  uint8_t cm = CM_RECTANGULAR;
+  if(getSystemFlag(FLAG_POLAR)) cm = CM_POLAR;
+  fnRefreshRadioState(RB_CM, cm);
+//   96     { ITM_CPXI,             CU_I,                   RB_CU },  //**fnComplexUnit
+//   97     { ITM_CPXJ,             CU_J,                   RB_CU },  //**fnComplexUnit 
+  uint8_t cu = CU_I;
+  if(getSystemFlag(FLAG_CPXj)) cu = CU_J;
+  fnRefreshRadioState(RB_CU, cu);
 //   44     { ITM_BESTF,            CF_BEST_FITTING,        RB_CF },  //fnCurveFitting
 //  161     { ITM_EXPF,             CF_EXPONENTIAL_FITTING, RB_CF },  //fnCurveFitting
 //  308     { ITM_LINF,             CF_LINEAR_FITTING,      RB_CF },  //fnCurveFitting
 //  325     { ITM_LOGF,             CF_LOGARITHMIC_FITTING, RB_CF },  //fnCurveFitting
 //  466     { ITM_POWERF,           CF_POWER_FITTING,       RB_CF },  //fnCurveFitting
-//  fnRefreshRadioState(RB_CF, curveFitting);
-//  136     { ITM_DMY,              DF_DMY,                 RB_DF },  //fnDateFormat
-//  383     { ITM_MDY,              DF_MDY,                 RB_DF },  //fnDateFormat
-//  700     { ITM_YMD,              DF_YMD,                 RB_DF },  //fnDateFormat
-  uint8_t dateFormat = 0;
-  if(getSystemFlag(FLAG_DMY)) 
-    dateFormat=DF_DMY; 
-  else if (getSystemFlag(FLAG_MDY)) 
-    dateFormat=DF_MDY; 
-  else if(getSystemFlag(FLAG_YMD)) 
-    dateFormat=DF_YMD;
-  fnRefreshRadioState(RB_DF, dateFormat);
-//  119     { ITM_DENANY,           DM_ANY,                 RB_DM },  //fnDenMode
-//  120     { ITM_DENFAC,           DM_FAC,                 RB_DM },  //fnDenMode
-//  121     { ITM_DENFIX,           DM_FIX,                 RB_DM },  //fnDenMode
+  fnRefreshRadioState(RB_CF, curveFitting);
+//  136     { ITM_DMY,              DF_DMY,                 RB_DF },  //fnSetDateFormat
+//  383     { ITM_MDY,              DF_MDY,                 RB_DF },  //fnSetDateFormat
+//  700     { ITM_YMD,              DF_YMD,                 RB_DF },  //fnSetDateFormat
+  uint8_t dateF = DF_YMD;
+  if     (getSystemFlag(FLAG_DMY)) dateF = DF_DMY; 
+  else if(getSystemFlag(FLAG_MDY)) dateF = DF_MDY; 
+  fnRefreshRadioState(RB_DF, dateF);
+//  119     { ITM_DENANY,           DM_ANY,                 RB_DM },  //**fnDenMode
+//  120     { ITM_DENFAC,           DM_FAC,                 RB_DM },  //**fnDenMode
+//  121     { ITM_DENFIX,           DM_FIX,                 RB_DM },  //**fnDenMode
 //  fnRefreshRadioState(RB_DM, denominatorMode);
 //   20     { ITM_ALL,              DF_ALL,                 RB_DI },  //fnDisplayFormatAll
 //  145     { ITM_ENG,              DF_ENG,                 RB_DI },  //fnDisplayFormatEng
@@ -374,11 +385,13 @@ void fnRebuildRadioState() {
   if(df == DF_FIX && SigFigMode != 0) { df = DF_SF; }
   if(df == DF_ENG && UNITDisplay) { df = DF_UN; }
   fnRefreshRadioState(RB_DI, df);
-//  146     { ITM_ENGOVR,           DO_ENG,                 RB_DO },  //fnDisplayOvr
-//  547     { ITM_SCIOVR,           DO_SCI,                 RB_DO },  //fnDisplayOvr
-//  fnRefreshRadioState(RB_DO, displayModeOverride);
-//  251     { ITM_IMPFRC,           JC_IMPROPER,            CB_JC },  //fnToggleFractionType
-//  471     { ITM_PROFRC,           JC_PROPER,              CB_JC },  //fnToggleFractionType
+//  146     { ITM_ENGOVR,           DO_ENG,                 RB_DO },  //**fnDisplayOvr
+//  547     { ITM_SCIOVR,           DO_SCI,                 RB_DO },  //**fnDisplayOvr
+  uint8_t dispO = DO_SCI;
+  if(getSystemFlag(FLAG_ALLENG)) dispO = DO_ENG;
+  fnRefreshRadioState(RB_DO, dispO);
+//  251     { ITM_IMPFRC,           JC_IMPROPER,            CB_JC },  //**fnToggleFractionType
+//  471     { ITM_PROFRC,           JC_PROPER,              CB_JC },  //**fnToggleFractionType
 //fnRefreshRadioState(RB_FT, fractionType);
 //  fnRefreshComboxState(CB_JC, JC_IMPROPER, fractionType == FT_IMPROPER);
 //  fnRefreshComboxState(CB_JC, JC_PROPER, fractionType == FT_PROPER);
@@ -393,24 +406,32 @@ void fnRebuildRadioState() {
 //  567     { ITM_SIGNMT,           SIM_SIGNMT,             RB_IM },  //fnIntegerMode
 //  645     { ITM_UNSIGN,           SIM_UNSIGN,             RB_IM },  //fnIntegerMode
   fnRefreshRadioState(RB_IM, shortIntegerMode);
-//  373     { ITM_MULTCR,           PS_CROSS,               RB_PS },  //fnProductSign
-//  374     { ITM_MULTDOT,          PS_DOT,                 RB_PS },  //fnProductSign
-  fnRefreshRadioState(RB_PS, getSystemFlag(FLAG_MULTx));
-//  500     { ITM_RDXCOM,           RM_COMMA,               RB_RM },  //fnRadixMark
-//  501     { ITM_RDXPER,           RM_PERIOD,              RB_RM },  //fnRadixMark
-  fnRefreshRadioState(RB_RM, getSystemFlag(FLAG_DECIMP));
+//  373     { ITM_MULTCR,           PS_CROSS,               RB_PS },  //**fnProductSign
+//  374     { ITM_MULTDOT,          PS_DOT,                 RB_PS },  //**fnProductSign
+  uint8_t prodS = PS_DOT;
+  if(getSystemFlag(FLAG_MULTx)) prodS = PS_CROSS;
+  fnRefreshRadioState(RB_PS, prodS);
+//  500     { ITM_RDXCOM,           RX_COMMA,               RB_RM },  //**fnRadixMark
+//  501     { ITM_RDXPER,           RX_PERIOD,              RB_RM },  //**fnRadixMark
+  uint8_t rdixM = RX_COMMA;
+  if(getSystemFlag(FLAG_DECIMP)) rdixM = RX_PERIOD;
+  fnRefreshRadioState(RB_RM, rdixM);
 // 1689     { ITM_WS8,              8,                      RB_WS },  //fnSetWordSize
 // 1690     { ITM_WS16,             16,                     RB_WS },  //fnSetWordSize
 // 1691     { ITM_WS32,             32,                     RB_WS },  //fnSetWordSize
 // 1692     { ITM_WS64,             64,                     RB_WS },  //fnSetWordSize
   fnRefreshRadioState(RB_WS, shortIntegerWordSize);
-//  583     { ITM_SSIZE4,           SS_4,                   RB_SS },  //fnStackSize
-//  584     { ITM_SSIZE8,           SS_8,                   RB_SS },  //fnStackSize
-  fnRefreshRadioState(RB_SS, getSystemFlag(FLAG_SSIZE8));
-//   75     { ITM_CLK12,            TF_H12,                 RB_TF },  //fnTimeFormat
-//   76     { ITM_CLK24,            TF_H24,                 RB_TF },  //fnTimeFormat
-  fnRefreshRadioState(RB_TF, getSystemFlag(FLAG_TDM24));
-  // 1899     { ITM_U_KEY_ALPHA,      ITM_AIM,                RB_SA },  //fnSigmaAssign
+//  583     { ITM_SSIZE4,           SS_4,                   RB_SS },  //**fnStackSize
+//  584     { ITM_SSIZE8,           SS_8,                   RB_SS },  //**fnStackSize
+  uint8_t stckS = SS_4;
+  if(getSystemFlag(FLAG_SSIZE8)) stckS = SS_8;
+  fnRefreshRadioState(RB_SS, stckS);
+//   75     { ITM_CLK12,            TF_H12,                 RB_TF },  //**fnTimeFormat
+//   76     { ITM_CLK24,            TF_H24,                 RB_TF },  //**fnTimeFormat
+  uint8_t timeF = TF_H12;
+  if(getSystemFlag(FLAG_TDM24)) timeF = TF_H24;
+  fnRefreshRadioState(RB_TF, timeF);
+// 1899     { ITM_U_KEY_ALPHA,      ITM_AIM,                RB_SA },  //fnSigmaAssign
 // 1897     { ITM_U_KEY_PRGM,       ITM_PR,                 RB_SA },  //fnSigmaAssign
 // 1895     { ITM_U_KEY_SIGMA,      ITM_SIGMAPLUS,          RB_SA },  //fnSigmaAssign
 // 1891     { ITM_U_KEY_CC,         KEY_CC,                 RB_SA },  //fnSigmaAssign

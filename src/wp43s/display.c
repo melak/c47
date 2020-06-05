@@ -26,13 +26,13 @@
  * \param[in] displayOvr uint16_t Display override mode
  * \return void
  ***********************************************/
-void fnDisplayOvr(uint16_t displayOvr) {
+/***void fnDisplayOvr(uint16_t displayOvr) {
   displayModeOverride = displayOvr;
 
-//  fnRefreshRadioState(RB_DO, displayOvr);                                       //dr
+  fnRefreshRadioState(RB_DO, displayOvr);                                       //dr
 
   refreshStack();
-}
+}***/
 
 
 
@@ -42,14 +42,14 @@ void fnDisplayOvr(uint16_t displayOvr) {
  * \param[in] productSign uint16_t Product sign
  * \return void
  ***********************************************/
-void fnProductSign(uint16_t ps) {
+/***void fnProductSign(uint16_t ps) {
   productSign = ps;
 
   fnRefreshRadioState(RB_PS, ps);                                               //dr
 
   showFracMode();
   refreshStack();
-}
+}***/
 
 
 

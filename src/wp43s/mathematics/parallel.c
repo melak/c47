@@ -22,18 +22,19 @@
 
 
 
-void (* const parallel[9][9])(void) = {
-// regX |    regY ==>   1                 2                 3                 4              5              6              7              8              9
-//      V               Long integer      Real34            Complex34         Time           Date           String         Real34 mat     Complex34 m    Short integer
-/*  1 Long integer  */ {parallelLonILonI, parallelRealLonI, parallelCplxLonI, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
-/* 11 Real34        */ {parallelLonIReal, parallelRealReal, parallelCplxReal, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
-/* 12 Complex34     */ {parallelLonICplx, parallelRealCplx, parallelCplxCplx, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
-/*  5 Time          */ {parallelError,    parallelError,    parallelError,    parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
-/*  6 Date          */ {parallelError,    parallelError,    parallelError,    parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
-/*  7 String        */ {parallelError,    parallelError,    parallelError,    parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
-/*  8 Real34 mat    */ {parallelError,    parallelError,    parallelError,    parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
-/*  9 Complex34 mat */ {parallelError,    parallelError,    parallelError,    parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
-/* 10 Short integer */ {parallelError,    parallelError,    parallelError,    parallelError, parallelError, parallelError, parallelError, parallelError, parallelError}
+void (* const parallel[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>   1                 2                 3                 4              5              6              7              8              9              10
+//      V               Long integer      Real34            Complex34         Time           Date           String         Real34 mat     Complex34 m    Short integer  Config data
+/*  1 Long integer  */ {parallelLonILonI, parallelRealLonI, parallelCplxLonI, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
+/*  2 Real34        */ {parallelLonIReal, parallelRealReal, parallelCplxReal, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
+/*  3 Complex34     */ {parallelLonICplx, parallelRealCplx, parallelCplxCplx, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
+/*  4 Time          */ {parallelError,    parallelError,    parallelError,    parallelError, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
+/*  5 Date          */ {parallelError,    parallelError,    parallelError,    parallelError, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
+/*  6 String        */ {parallelError,    parallelError,    parallelError,    parallelError, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
+/*  7 Real34 mat    */ {parallelError,    parallelError,    parallelError,    parallelError, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
+/*  8 Complex34 mat */ {parallelError,    parallelError,    parallelError,    parallelError, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
+/*  9 Short integer */ {parallelError,    parallelError,    parallelError,    parallelError, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError},
+/* 10 Config data   */ {parallelError,    parallelError,    parallelError,    parallelError, parallelError, parallelError, parallelError, parallelError, parallelError, parallelError}
 };
 
 

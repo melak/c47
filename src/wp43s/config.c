@@ -495,6 +495,7 @@ void fnRange(uint16_t unusedParamButMandatory) {
 
   longIntegerFree(longInt);
   refreshStack();
+  showSoftmenuCurrentPart();                       //JM
 }
 
 
@@ -617,23 +618,8 @@ void fnReset(uint16_t confirmation) {
     showOverflowCarry();
     clearSystemFlag(FLAG_USER);
 
-    SHOWregis = 9999;                                          //JMSHOW
-    graph_xmin = -3*3.14159265;                                //JM GRAPH
-    graph_xmax = +3*3.14159265;                                //JM GRAPH
-    graph_ymin = -2;                                           //JM GRAPH
-    graph_ymax = +2;                                           //JM GRAPH
-    graph_dx   = 0;                                            //JM GRAPH
-    graph_dy   = 0;                                            //JM GRAPH
-    jm_VECT = false;                                           //JM Screen / keyboard operation setup
-    jm_HOME_SUM = false;                                       //JMHOME
-    jm_HOME_MIR = true;                                        //JMHOME
-    jm_HOME_FIX = false;                                       //JMHOME
-    #if defined(DMCP_BUILD) || defined(JM_LAYOUT_2_DM42_STRICT)//JM LAYOUT 2. DM42 STRICT.
-    jm_HOME_SUM = false;                                       //JMHOME
-    jm_HOME_MIR = true;                                        //JMHOME
-    jm_HOME_FIX = false;                                       //JMHOME
-    #endif
-    setSystemFlag(FLAG_SPCRES)                                 //JM default infinity etc.
+    showRealComplexResult();                                   //JM, from wp43s.c
+    reset_jm_defaults();
 
     // Initialization of user key assignments
     xcopy(kbd_usr, kbd_std, sizeof(kbd_std));

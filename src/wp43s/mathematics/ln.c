@@ -22,10 +22,10 @@
 
 
 
-void (* const ln[9])(void) = {
-// regX ==> 1            2       3         4        5        6        7          8           9
-//          Long integer Real34  complex34 Time     Date     String   Real34 mat Complex34 m Short integer
-            lnLonI,      lnReal, lnCplx,   lnError, lnError, lnError, lnRema,    lnCxma,     lnShoI
+void (* const ln[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX ==> 1            2       3         4        5        6        7          8           9             10
+//          Long integer Real34  complex34 Time     Date     String   Real34 mat Complex34 m Short integer Config data
+            lnLonI,      lnReal, lnCplx,   lnError, lnError, lnError, lnRema,    lnCxma,     lnShoI,       lnError
 };
 
 

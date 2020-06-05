@@ -90,7 +90,7 @@ void fnDenMax(uint16_t unusedParamButMandatory) {
  * \param[in] fractionType uint16_t Fraction type
  * \return void
  ***********************************************/
-void fnToggleFractionType(uint16_t unusedParamButMandatory) {
+/***void fnToggleFractionType(uint16_t unusedParamButMandatory) {
   if(getSystemFlag(FLAG_FRACT)) {
     flipSystemFlag(FLAG_PROPFR);
   }
@@ -103,7 +103,7 @@ void fnToggleFractionType(uint16_t unusedParamButMandatory) {
   fnRefreshComboxState(CB_JC, JC_PROPER,   getSystemFlag(FLAG_PROPFR)); //fractionType == FT_PROPER);            //dr
 
   refreshStack();
-}
+}***/
 
 
 

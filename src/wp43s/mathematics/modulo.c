@@ -22,18 +22,19 @@
 
 
 
-void (* const mod[9][9])(void) = {
-// regX |    regY ==>   1            2            3          4         5         6         7          8           9
-//      V               Long integer Real34       Complex34  Time      Date      String    Real34 mat Complex34 m Short integer
-/*  1 Long integer  */ {modLonILonI, modRealLonI, modError,  modError, modError, modError, modError,  modError,   modShoILonI},
-/*  2 Real34        */ {modLonIReal, modRealReal, modError,  modError, modError, modError, modError,  modError,   modShoIReal},
-/*  3 Complex34     */ {modError,    modError,    modError,  modError, modError, modError, modError,  modError,   modError   },
-/*  4 Time          */ {modError,    modError,    modError,  modError, modError, modError, modError,  modError,   modError   },
-/*  5 Date          */ {modError,    modError,    modError,  modError, modError, modError, modError,  modError,   modError   },
-/*  6 String        */ {modError,    modError,    modError,  modError, modError, modError, modError,  modError,   modError   },
-/*  7 Real34 mat    */ {modError,    modError,    modError,  modError, modError, modError, modError,  modError,   modError   },
-/*  8 Complex34 mat */ {modError,    modError,    modError,  modError, modError, modError, modError,  modError,   modError   },
-/*  9 Short integer */ {modLonIShoI, modRealShoI, modError,  modError, modError, modError, modError,  modError,   modShoIShoI}
+void (* const mod[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>   1            2            3          4         5         6         7          8           9             10
+//      V               Long integer Real34       Complex34  Time      Date      String    Real34 mat Complex34 m Short integer Config data
+/*  1 Long integer  */ {modLonILonI, modRealLonI, modError,  modError, modError, modError, modError,  modError,   modShoILonI,  modError},
+/*  2 Real34        */ {modLonIReal, modRealReal, modError,  modError, modError, modError, modError,  modError,   modShoIReal,  modError},
+/*  3 Complex34     */ {modError,    modError,    modError,  modError, modError, modError, modError,  modError,   modError,     modError},
+/*  4 Time          */ {modError,    modError,    modError,  modError, modError, modError, modError,  modError,   modError,     modError},
+/*  5 Date          */ {modError,    modError,    modError,  modError, modError, modError, modError,  modError,   modError,     modError},
+/*  6 String        */ {modError,    modError,    modError,  modError, modError, modError, modError,  modError,   modError,     modError},
+/*  7 Real34 mat    */ {modError,    modError,    modError,  modError, modError, modError, modError,  modError,   modError,     modError},
+/*  8 Complex34 mat */ {modError,    modError,    modError,  modError, modError, modError, modError,  modError,   modError,     modError},
+/*  9 Short integer */ {modLonIShoI, modRealShoI, modError,  modError, modError, modError, modError,  modError,   modShoIShoI,  modError},
+/* 10 Config data   */ {modError,    modError,    modError,  modError, modError, modError, modError,  modError,   modError,     modError}
 };
 
 

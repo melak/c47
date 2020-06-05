@@ -104,7 +104,7 @@ void fnFb(uint16_t bit) { // bit from 1=LSB to shortIntegerWordSize=MSB
 
 
 /********************************************//**
- * \brief BC(regX)
+ * \brief bit clear in register X
  *
  * \param[in] unusedParamButMandatory uint16_t
  * \return void
@@ -126,7 +126,7 @@ void fnBc(uint16_t bit) { // bit from 1=LSB to shortIntegerWordSize=MSB
 
 
 /********************************************//**
- * \brief BS(regX)
+ * \brief bit set in register X
  *
  * \param[in] unusedParamButMandatory uint16_t
  * \return void

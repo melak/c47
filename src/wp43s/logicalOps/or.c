@@ -25,18 +25,19 @@
 
 
 
-void (* const logicalOr[9][9])(void) = {
-// regX |    regY ==>   1            2            3          4          5          6          7           8            9
-//      V               Long integer Real34       Complex34  Time       Date       String     Real34 mat  Complex34 m  Short integer
-/*  1 Long integer  */ {orLonILonI,  orRealLonI,  orError24, orError24, orError24, orError24, orError24,  orError24,   orError31 },
-/*  2 Real34        */ {orLonIReal,  orRealReal,  orError24, orError24, orError24, orError24, orError24,  orError24,   orError31 },
-/*  3 Complex34     */ {orError24,   orError24,   orError24, orError24, orError24, orError24, orError24,  orError24,   orError24 },
-/*  4 Time          */ {orError24,   orError24,   orError24, orError24, orError24, orError24, orError24,  orError24,   orError24 },
-/*  5 Date          */ {orError24,   orError24,   orError24, orError24, orError24, orError24, orError24,  orError24,   orError24 },
-/*  6 String        */ {orError24,   orError24,   orError24, orError24, orError24, orError24, orError24,  orError24,   orError24 },
-/*  7 Real34 mat    */ {orError24,   orError24,   orError24, orError24, orError24, orError24, orError24,  orError24,   orError24 },
-/*  8 Complex34 mat */ {orError24,   orError24,   orError24, orError24, orError24, orError24, orError24,  orError24,   orError24 },
-/*  9 Short integer */ {orError31,   orError31,   orError24, orError24, orError24, orError24, orError24,  orError24,   orShoIShoI}
+void (* const logicalOr[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>   1            2            3          4          5          6          7           8            9             10
+//      V               Long integer Real34       Complex34  Time       Date       String     Real34 mat  Complex34 m  Short integer Config data
+/*  1 Long integer  */ {orLonILonI,  orRealLonI,  orError24, orError24, orError24, orError24, orError24,  orError24,   orError31,    orError24},
+/*  2 Real34        */ {orLonIReal,  orRealReal,  orError24, orError24, orError24, orError24, orError24,  orError24,   orError31,    orError24},
+/*  3 Complex34     */ {orError24,   orError24,   orError24, orError24, orError24, orError24, orError24,  orError24,   orError24,    orError24},
+/*  4 Time          */ {orError24,   orError24,   orError24, orError24, orError24, orError24, orError24,  orError24,   orError24,    orError24},
+/*  5 Date          */ {orError24,   orError24,   orError24, orError24, orError24, orError24, orError24,  orError24,   orError24,    orError24},
+/*  6 String        */ {orError24,   orError24,   orError24, orError24, orError24, orError24, orError24,  orError24,   orError24,    orError24},
+/*  7 Real34 mat    */ {orError24,   orError24,   orError24, orError24, orError24, orError24, orError24,  orError24,   orError24,    orError24},
+/*  8 Complex34 mat */ {orError24,   orError24,   orError24, orError24, orError24, orError24, orError24,  orError24,   orError24,    orError24},
+/*  9 Short integer */ {orError31,   orError31,   orError24, orError24, orError24, orError24, orError24,  orError24,   orShoIShoI,   orError24},
+/* 10 Config data   */ {orError24,   orError24,   orError24, orError24, orError24, orError24, orError24,  orError24,   orError24,    orError24}
 };
 
 

@@ -51,6 +51,7 @@
   char * getComplexModeName                 (bool_t cm);
   char * getAlphaCaseName                   (uint16_t ac);
   char * getCursorFontName                  (uint16_t cf);
+  char * getSystemFlagName                  (uint16_t sf);
   void   memoryDump                         (bool_t bitFields, bool_t globalFlags, bool_t globalRegisters, bool_t localFlags, bool_t FIRSTLOCALREGISTERs, bool_t otherVars);
 #endif
 

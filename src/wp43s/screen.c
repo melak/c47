@@ -170,6 +170,10 @@ void copyRegisterToClipboardString(calcRegister_t regist, char *clipboardString)
       }
       break;
 
+    case dtConfig:
+      xcopy(tmpStr3000, "Configuration data", 19);
+      break;
+
     default:
       sprintf(tmpStr3000, "In function copyRegisterXToClipboard, the data type %" FMT32U " is unknown! Please try to reproduce and submit a bug.", getRegisterDataType(regist));
   }
@@ -475,9 +479,10 @@ void refreshScreen(void) {// This function is called roughly every 100 ms from t
   // Alpha selection timer
   if(AlphaSelectionBufferTimerRunning) {         //JMvv
     if(calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM) { // More than 3 seconds elapsed since last keypress
-    timeoutAlphaSelectionBuffer();               //JM^^
+      timeoutAlphaSelectionBuffer();             //JM^^
     }
   }
+}
 #endif
 
 
@@ -1441,6 +1446,11 @@ void refreshRegisterLine(calcRegister_t regist) {
               longIntegerRegisterToDisplayString(REGISTER_L, string2, sizeof(string2), SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION);
             }
 
+            else if(getRegisterDataType(REGISTER_L) == dtConfig) {
+              strcat(string1, "Configuration data");
+              string2[0] = 0;
+            }
+
             else {
               sprintf(string2, "data type %s not supported for now!", getRegisterDataTypeName(REGISTER_L, false, false));
             }
@@ -2116,6 +2126,13 @@ void refreshRegisterLine(calcRegister_t regist) {
               lineWidth = w;
               showString(tmpStr3000, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, false, true);
             }
+          }
+
+          else if(getRegisterDataType(regist) == dtConfig) {
+            sprintf(tmpStr3000, "Configuration data");
+            w = stringWidth(tmpStr3000, &numericFont, false, true);
+            lineWidth = w;
+            showString(tmpStr3000, &numericFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X), vmNormal, false, true);
           }
 
           else {

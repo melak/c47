@@ -22,18 +22,19 @@
 
 
 
-void (* const addition[9][9])(void) = {
-// regX |    regY ==>   1            2            3            4            5            6            7            8            9
-//      V               Long integer Real34       Complex34    Time         Date         String       Real34 mat   Complex34 m  Short integer
-/*  1 Long integer  */ {addLonILonI, addRealLonI, addCplxLonI, addTimeLonI, addDateLonI, addStriLonI, addError,    addError,    addShoILonI},
-/*  2 Real34        */ {addLonIReal, addRealReal, addCplxReal, addTimeReal, addDateReal, addStriReal, addError,    addError,    addShoIReal},
-/*  3 Complex34     */ {addLonICplx, addRealCplx, addCplxCplx, addError,    addError,    addStriCplx, addError,    addError,    addShoICplx},
-/*  4 Time          */ {addLonITime, addRealTime, addError,    addTimeTime, addError,    addStriTime, addError,    addError,    addError   },
-/*  5 Date          */ {addLonIDate, addRealDate, addError,    addError,    addError,    addStriDate, addError,    addError,    addError   },
-/*  6 String        */ {addError,    addError,    addError,    addError,    addError,    addStriStri, addError,    addError,    addError   },
-/*  7 Real34 mat    */ {addError,    addError,    addError,    addError,    addError,    addStriRema, addRemaRema, addCxmaRema, addError   },
-/*  8 Complex34 mat */ {addError,    addError,    addError,    addError,    addError,    addStriCxma, addRemaCxma, addCxmaCxma, addError   },
-/*  9 Short integer */ {addLonIShoI, addRealShoI, addCplxShoI, addError,    addError,    addStriShoI, addError,    addError,    addShoIShoI}
+void (* const addition[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>   1            2            3            4            5            6            7            8            9             10
+//      V               Long integer Real34       Complex34    Time         Date         String       Real34 mat   Complex34 m  Short integer Config data
+/*  1 Long integer  */ {addLonILonI, addRealLonI, addCplxLonI, addTimeLonI, addDateLonI, addStriLonI, addError,    addError,    addShoILonI,  addError},
+/*  2 Real34        */ {addLonIReal, addRealReal, addCplxReal, addTimeReal, addDateReal, addStriReal, addError,    addError,    addShoIReal,  addError},
+/*  3 Complex34     */ {addLonICplx, addRealCplx, addCplxCplx, addError,    addError,    addStriCplx, addError,    addError,    addShoICplx,  addError},
+/*  4 Time          */ {addLonITime, addRealTime, addError,    addTimeTime, addError,    addStriTime, addError,    addError,    addError,     addError},
+/*  5 Date          */ {addLonIDate, addRealDate, addError,    addError,    addError,    addStriDate, addError,    addError,    addError,     addError},
+/*  6 String        */ {addError,    addError,    addError,    addError,    addError,    addStriStri, addError,    addError,    addError,     addError},
+/*  7 Real34 mat    */ {addError,    addError,    addError,    addError,    addError,    addStriRema, addRemaRema, addCxmaRema, addError,     addError},
+/*  8 Complex34 mat */ {addError,    addError,    addError,    addError,    addError,    addStriCxma, addRemaCxma, addCxmaCxma, addError,     addError},
+/*  9 Short integer */ {addLonIShoI, addRealShoI, addCplxShoI, addError,    addError,    addStriShoI, addError,    addError,    addShoIShoI,  addError},
+/* 10 Config data   */ {addError,    addError,    addError,    addError,    addError,    addError,    addError,    addError,    addError,     addError}
 };
 
 

@@ -25,18 +25,19 @@
 
 
 
-void (* const logicalAnd[9][9])(void) = {
-// regX |    regY ==>   1            2            3           4           5           6           7           8            9
-//      V               Long integer Real34       Complex34   Time        Date        String      Real34 mat  Complex34 m  Short integer
-/*  1 Long integer  */ {andLonILonI, andRealLonI, andError24, andError24, andError24, andError24, andError24, andError24,  andError31 },
-/*  2 Real34        */ {andLonIReal, andRealReal, andError24, andError24, andError24, andError24, andError24, andError24,  andError31 },
-/*  3 Complex34     */ {andError24,  andError24,  andError24, andError24, andError24, andError24, andError24, andError24,  andError24 },
-/*  4 Time          */ {andError24,  andError24,  andError24, andError24, andError24, andError24, andError24, andError24,  andError24 },
-/*  5 Date          */ {andError24,  andError24,  andError24, andError24, andError24, andError24, andError24, andError24,  andError24 },
-/*  6 String        */ {andError24,  andError24,  andError24, andError24, andError24, andError24, andError24, andError24,  andError24 },
-/*  7 Real34 mat    */ {andError24,  andError24,  andError24, andError24, andError24, andError24, andError24, andError24,  andError24 },
-/*  8 Complex34 mat */ {andError24,  andError24,  andError24, andError24, andError24, andError24, andError24, andError24,  andError24 },
-/*  9 Short integer */ {andError31,  andError31,  andError24, andError24, andError24, andError24, andError24, andError24,  andShoIShoI}
+void (* const logicalAnd[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>   1            2            3           4           5           6           7           8            9             10
+//      V               Long integer Real34       Complex34   Time        Date        String      Real34 mat  Complex34 m  Short integer Config data
+/*  1 Long integer  */ {andLonILonI, andRealLonI, andError24, andError24, andError24, andError24, andError24, andError24,  andError31,   andError24},
+/*  2 Real34        */ {andLonIReal, andRealReal, andError24, andError24, andError24, andError24, andError24, andError24,  andError31,   andError24},
+/*  3 Complex34     */ {andError24,  andError24,  andError24, andError24, andError24, andError24, andError24, andError24,  andError24,   andError24},
+/*  4 Time          */ {andError24,  andError24,  andError24, andError24, andError24, andError24, andError24, andError24,  andError24,   andError24},
+/*  5 Date          */ {andError24,  andError24,  andError24, andError24, andError24, andError24, andError24, andError24,  andError24,   andError24},
+/*  6 String        */ {andError24,  andError24,  andError24, andError24, andError24, andError24, andError24, andError24,  andError24,   andError24},
+/*  7 Real34 mat    */ {andError24,  andError24,  andError24, andError24, andError24, andError24, andError24, andError24,  andError24,   andError24},
+/*  8 Complex34 mat */ {andError24,  andError24,  andError24, andError24, andError24, andError24, andError24, andError24,  andError24,   andError24},
+/*  9 Short integer */ {andError31,  andError31,  andError24, andError24, andError24, andError24, andError24, andError24,  andShoIShoI,  andError24},
+/* 10 Config data   */ {andError24,  andError24,  andError24, andError24, andError24, andError24, andError24, andError24,  andError24,   andError24}
 };
 
 

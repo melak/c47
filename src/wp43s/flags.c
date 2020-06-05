@@ -135,36 +135,38 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
 
 
 
-  if(getSystemFlag(systemFlag))                                     //JM vv
+  if(getSystemFlag(systemFlag)) {                                     //JM vv
     switch (systemFlag) {              //SET
-      case FLAG_DMY:     fnRefreshRadioState (RB_DF,DF_DMY);break;
-      case FLAG_MDY:     fnRefreshRadioState (RB_DF,DF_MDY);break;
-      case FLAG_YMD:     fnRefreshRadioState (RB_DF,DF_YMD);break;
+      case FLAG_YMD:     fnRefreshRadioState (RB_DF, DF_YMD); break;
+      case FLAG_DMY:     fnRefreshRadioState (RB_DF, DF_DMY); break;
+      case FLAG_MDY:     fnRefreshRadioState (RB_DF, DF_MDY); break;
 
-      case FLAG_DECIMP:  fnRefreshRadioState (RB_RM, RM_PERIOD);refreshStack();break;
-      case FLAG_TDM24:   fnRefreshRadioState (RB_TF,TF_H24);break;
-      case FLAG_CPXj:    fnRefreshRadioState (RB_CU,CU_J); refreshStack();break;
-      case FLAG_LEAD0:   fnRefreshComboxState(CB_JC, JC_BLZ, true); refreshStack();break;
-      case FLAG_MULTx:   fnRefreshRadioState (RB_PS, PS_CROSS);break;
-      case FLAG_SSIZE8:  fnRefreshRadioState (RB_SS, SS_8);break;
-      case FLAG_POLAR:   fnRefreshRadioState (RB_CM, CM_POLAR); showComplexMode(); refreshStack();    break;
-      case FLAG_CPXRES:  fnRefreshComboxState(CB_JC, JC_BCR, true);showRealComplexResult(); break;
+      case FLAG_TDM24:   fnRefreshRadioState (RB_TF, TF_H24); break;
+      case FLAG_CPXRES:  fnRefreshComboxState(CB_JC, JC_BCR, true); showRealComplexResult(); break;
+      case FLAG_CPXj:    fnRefreshRadioState (RB_CU, CU_J); refreshStack(); break;
+      case FLAG_POLAR:   fnRefreshRadioState (RB_CM, CM_POLAR); showComplexMode(); refreshStack(); break;
+      case FLAG_LEAD0:   fnRefreshComboxState(CB_JC, JC_BLZ, true); refreshStack(); break;
+      case FLAG_SSIZE8:  fnRefreshRadioState (RB_SS, SS_8); break;
+      case FLAG_DECIMP:  fnRefreshRadioState (RB_RM, RX_PERIOD); refreshStack(); break;
+      case FLAG_MULTx:   fnRefreshRadioState (RB_PS, PS_CROSS); break;
+      case FLAG_ALLENG:  fnRefreshRadioState (RB_DO, DO_ENG); break;
       default:;
     }
-    else
-      switch (systemFlag) {          //RESET
-      case FLAG_DECIMP:  fnRefreshRadioState (RB_RM, RM_COMMA);refreshStack();break;
-      case FLAG_TDM24:   fnRefreshRadioState (RB_TF, TF_H12);break;
-      case FLAG_CPXj:    fnRefreshRadioState (RB_CU, CU_I); refreshStack();break;
-      case FLAG_LEAD0:   fnRefreshComboxState(CB_JC, JC_BLZ, false); refreshStack();break;
-      case FLAG_MULTx:   fnRefreshRadioState (RB_PS, PS_DOT);break;
-      case FLAG_SSIZE8:  fnRefreshRadioState (RB_SS, SS_4);break;
-      case FLAG_POLAR:   fnRefreshRadioState (RB_CM, CM_RECTANGULAR); showComplexMode(); refreshStack();break;
-      case FLAG_CPXRES:  fnRefreshComboxState(CB_JC, JC_BCR, false);showRealComplexResult();break;
+  }
+  else {
+    switch (systemFlag) {          //RESET
+      case FLAG_TDM24:   fnRefreshRadioState (RB_TF, TF_H12); break;
+      case FLAG_CPXRES:  fnRefreshComboxState(CB_JC, JC_BCR, false); showRealComplexResult(); break;
+      case FLAG_CPXj:    fnRefreshRadioState (RB_CU, CU_I); refreshStack(); break;
+      case FLAG_POLAR:   fnRefreshRadioState (RB_CM, CM_RECTANGULAR); showComplexMode(); refreshStack(); break;
+      case FLAG_LEAD0:   fnRefreshComboxState(CB_JC, JC_BLZ, false); refreshStack(); break;
+      case FLAG_SSIZE8:  fnRefreshRadioState (RB_SS, SS_4); break;
+      case FLAG_DECIMP:  fnRefreshRadioState (RB_RM, RX_COMMA); refreshStack(); break;
+      case FLAG_MULTx:   fnRefreshRadioState (RB_PS, PS_DOT); break;
+      case FLAG_ALLENG:  fnRefreshRadioState (RB_DO, DO_SCI); break;
       default:;
     }                                                            //JM vv
-
-
+  }
 
 
 
@@ -248,6 +250,7 @@ void fnSetFlag(uint16_t flag) {
   }
   else if(flag < NUMBER_OF_GLOBAL_FLAGS) { // Global flag
     switch(flag) {
+      case FLAG_A: setSystemFlag(FLAG_ALLENG);   break;
       case FLAG_B: setSystemFlag(FLAG_OVERFLOW); break;
       case FLAG_C: setSystemFlag(FLAG_CARRY);    break;
       case FLAG_D: setSystemFlag(FLAG_SPCRES);   break;
@@ -304,6 +307,7 @@ void fnClearFlag(uint16_t flag) {
   }
   else if(flag < NUMBER_OF_GLOBAL_FLAGS) { // Global flag
     switch(flag) {
+      case FLAG_A: clearSystemFlag(FLAG_ALLENG);   break;
       case FLAG_B: clearSystemFlag(FLAG_OVERFLOW); break;
       case FLAG_C: clearSystemFlag(FLAG_CARRY);    break;
       case FLAG_D: clearSystemFlag(FLAG_SPCRES);   break;
@@ -360,6 +364,7 @@ void fnFlipFlag(uint16_t flag) {
   }
   else if(flag < NUMBER_OF_GLOBAL_FLAGS) { // Global flag
     switch(flag) {
+      case FLAG_A: flipSystemFlag(FLAG_ALLENG);   break;
       case FLAG_B: flipSystemFlag(FLAG_OVERFLOW); break;
       case FLAG_C: flipSystemFlag(FLAG_CARRY);    break;
       case FLAG_D: flipSystemFlag(FLAG_SPCRES);   break;

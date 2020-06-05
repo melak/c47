@@ -84,29 +84,54 @@ typedef enum {
   dtReal34Matrix    =  6,  ///< Double precision vector or matrix
   dtComplex34Matrix =  7,  ///< Double precision complex vector or matrix
   dtShortInteger    =  8,  ///< Short integer (64 bit)
-  //dtLabel           = 12,  ///< Label
-  //dtSystemInteger   = 13,  ///< System integer (64 bits)
-  //dtFlags           = 14,  ///< Flags
-  dtConfig          = 15,  ///< Configuration
-  //dtPgmStep         = 16,  ///< Program step
-  //dtDirectory       = 17,  ///< Program
+  dtConfig          =  9,  ///< Configuration
+  //dtLabel           = 10,  ///< Label
+  //dtSystemInteger   = 11,  ///< System integer (64 bits)
+  //dtFlags           = 12,  ///< Flags
+  //dtPgmStep         = 13,  ///< Program step
+  //dtDirectory       = 14,  ///< Program
 } dataType_t; // 4 bits (NOT 5 BITS)
 
 typedef struct {
-    uint8_t   shortIntegerMode;
-    uint8_t   shortIntegerWordSize;
-    uint8_t   displayFormat;
-    uint8_t   displayFormatDigits;
-    uint8_t   groupingGap;
-    uint8_t   currentAngularMode;
-    uint8_t   displayStack;
-    uint8_t   curveFitting;
-    uint8_t   roundingMode;
-    uint32_t  denMax;
-    uint32_t  firstGregorianDay;
-    uint64_t  systemFlags;
-    calcKey_t kbd_usr[37];
-    int16_t   Norm_Key_00_VAR;                                                     //JMCFG
+  uint8_t   shortIntegerMode;
+  uint8_t   shortIntegerWordSize;
+  uint8_t   displayFormat;
+  uint8_t   displayFormatDigits;
+  uint8_t   groupingGap;
+  uint8_t   currentAngularMode;
+  uint8_t   displayStack;
+  uint8_t   curveFitting;
+  uint8_t   roundingMode;
+  uint32_t  denMax;
+  uint32_t  firstGregorianDay;
+  uint64_t  systemFlags;
+  calcKey_t kbd_usr[37];
+
+  //    int16_t   Norm_Key_00_VAR;                                           //JMCFGvv
+  uint8_t SigFigMode;
+  bool_t eRPN;
+  bool_t HOME3;
+  bool_t ShiftTimoutMode;
+  bool_t Home3TimerMode;
+  bool_t UNITDisplay;
+  bool_t SH_BASE_HOME;
+  bool_t SH_BASE_AHOME;
+  int16_t Norm_Key_00_VAR;
+  uint8_t Input_Default;
+  bool_t jm_FG_LINE;
+  bool_t jm_FG_DOTS;
+  bool_t jm_G_DOUBLETAP;
+  float graph_xmin;
+  float graph_xmax;
+  float graph_ymin;
+  float graph_ymax;
+  float graph_dx;
+  float graph_dy;
+  bool_t jm_VECT;
+  bool_t jm_HOME_SUM;
+  bool_t jm_HOME_MIR;
+  bool_t jm_HOME_FIX;                                                        //JMCFG^^
+
 } dtConfigDescriptor_t;
 
 typedef union {

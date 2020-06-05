@@ -22,18 +22,19 @@
 
 
 
-void (* const division[9][9])(void) = {
-// regX |    regY ==>   1            2            3            4            5         6         7            8            9
-//      V               Long integer Real34       Complex34    Time         Date      String    Real34 mat   Complex34 m  Short integer
-/*  1 Long integer  */ {divLonILonI, divRealLonI, divCplxLonI, divTimeLonI, divError, divError, divRemaLonI, divCxmaLonI, divShoILonI},
-/*  2 Real34        */ {divLonIReal, divRealReal, divCplxReal, divTimeReal, divError, divError, divRemaReal, divCxmaReal, divShoIReal},
-/*  3 Complex34     */ {divLonICplx, divRealCplx, divCplxCplx, divError,    divError, divError, divRemaCplx, divCxmaCplx, divShoICplx},
-/*  4 Time          */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError   },
-/*  5 Date          */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError   },
-/*  6 String        */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError   },
-/*  7 Real34 mat    */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError   },
-/*  8 Complex34 mat */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError   },
-/*  9 Short integer */ {divLonIShoI, divRealShoI, divCplxShoI, divTimeShoI, divError, divError, divRemaShoI, divCxmaShoI, divShoIShoI}
+void (* const division[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>   1            2            3            4            5         6         7            8            9             10
+//      V               Long integer Real34       Complex34    Time         Date      String    Real34 mat   Complex34 m  Short integer Config data
+/*  1 Long integer  */ {divLonILonI, divRealLonI, divCplxLonI, divTimeLonI, divError, divError, divRemaLonI, divCxmaLonI, divShoILonI,  divError},
+/*  2 Real34        */ {divLonIReal, divRealReal, divCplxReal, divTimeReal, divError, divError, divRemaReal, divCxmaReal, divShoIReal,  divError},
+/*  3 Complex34     */ {divLonICplx, divRealCplx, divCplxCplx, divError,    divError, divError, divRemaCplx, divCxmaCplx, divShoICplx,  divError},
+/*  4 Time          */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError,     divError},
+/*  5 Date          */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError,     divError},
+/*  6 String        */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError,     divError},
+/*  7 Real34 mat    */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError,     divError},
+/*  8 Complex34 mat */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError,     divError},
+/*  9 Short integer */ {divLonIShoI, divRealShoI, divCplxShoI, divTimeShoI, divError, divError, divRemaShoI, divCxmaShoI, divShoIShoI,  divError},
+/* 10 Config data   */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError,     divError}
 };
 
 

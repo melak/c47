@@ -22,18 +22,19 @@
 
 
 
-void (* const idivr[9][9])(void) = {
-// regX |    regY ==>   1              2              3           4           5           6           7           8            9
-//      V               Long integer   Real34         Complex34   Time        Date        String      Real34 mat  Complex34 m  Short integer
-/*  1 Long integer  */ {idivrLonILonI, idivrRealLonI, idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrShoILonI},
-/*  2 Real34        */ {idivrLonIReal, idivrRealReal, idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrShoIReal},
-/*  3 Complex34     */ {idivrError,    idivrError,    idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrError   },
-/*  4 Time          */ {idivrError,    idivrError,    idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrError   },
-/*  5 Date          */ {idivrError,    idivrError,    idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrError   },
-/*  6 String        */ {idivrError,    idivrError,    idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrError   },
-/*  7 Real34 mat    */ {idivrError,    idivrError,    idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrError   },
-/*  8 Complex34 mat */ {idivrError,    idivrError,    idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrError   },
-/*  9 Short integer */ {idivrLonIShoI, idivrRealShoI, idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrShoIShoI}
+void (* const idivr[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>   1              2              3           4           5           6           7           8            9              10
+//      V               Long integer   Real34         Complex34   Time        Date        String      Real34 mat  Complex34 m  Short integer  Config data
+/*  1 Long integer  */ {idivrLonILonI, idivrRealLonI, idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrShoILonI, idivrError},
+/*  2 Real34        */ {idivrLonIReal, idivrRealReal, idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrShoIReal, idivrError},
+/*  3 Complex34     */ {idivrError,    idivrError,    idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrError,    idivrError},
+/*  4 Time          */ {idivrError,    idivrError,    idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrError,    idivrError},
+/*  5 Date          */ {idivrError,    idivrError,    idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrError,    idivrError},
+/*  6 String        */ {idivrError,    idivrError,    idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrError,    idivrError},
+/*  7 Real34 mat    */ {idivrError,    idivrError,    idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrError,    idivrError},
+/*  8 Complex34 mat */ {idivrError,    idivrError,    idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrError,    idivrError},
+/*  9 Short integer */ {idivrLonIShoI, idivrRealShoI, idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrShoIShoI, idivrError},
+/* 10 Config data   */ {idivrError,    idivrError,    idivrError, idivrError, idivrError, idivrError, idivrError, idivrError,  idivrError,    idivrError}
 };
 
 

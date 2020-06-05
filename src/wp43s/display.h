@@ -14,8 +14,8 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-void fnDisplayOvr                      (uint16_t displayOvr);
-void fnProductSign                     (uint16_t productSign);
+//**void fnDisplayOvr                      (uint16_t displayOvr);
+//**void fnProductSign                     (uint16_t productSign);
 void fnDisplayFormatFix                (uint16_t displayFormat);
 void fnDisplayFormatSci                (uint16_t displayFormat);
 void fnDisplayFormatEng                (uint16_t displayFormat);

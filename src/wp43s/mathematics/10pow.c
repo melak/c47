@@ -22,10 +22,10 @@
 
 
 
-void (* const tenPow[9])(void) = {
-// regX ==> 1            2           3           4            5            6            7           8           9
-//          Long integer Real34      Complex34   Time         Date         String       Real34 mat  Complex34 m Short integer
-            tenPowLonI,  tenPowReal, tenPowCplx, tenPowError, tenPowError, tenPowError, tenPowRema, tenPowCxma, tenPowShoI
+void (* const tenPow[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX ==> 1            2           3           4            5            6            7           8           9             10
+//          Long integer Real34      Complex34   Time         Date         String       Real34 mat  Complex34 m Short integer Config data
+            tenPowLonI,  tenPowReal, tenPowCplx, tenPowError, tenPowError, tenPowError, tenPowRema, tenPowCxma, tenPowShoI,   tenPowError
 };
 
 

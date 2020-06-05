@@ -252,6 +252,12 @@ void stringToUtf8(const char *str, uint8_t *utf8) {
   int16_t  len;
 
   len = stringGlyphLength(str);
+
+  if(len == 0) {
+    *utf8 = 0;
+    return;
+  }
+
   for(int16_t i=0; i<len; i++) {
     if(*str & 0x80) {
       codePointToUtf8(((uint8_t)*str & 0x7F) * 256u + (uint8_t)str[1], utf8);

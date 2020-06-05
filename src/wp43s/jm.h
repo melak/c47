@@ -34,8 +34,8 @@ Modes available in the mode menu:
 */
 
 // Radix Mark 1 bit
- #define RM_PERIOD               103
- #define RM_COMMA                104
+#define RX_PERIOD               103
+#define RX_COMMA                104
 // Time format 1 bit
 #define TF_H24                  105
 #define TF_H12                  106
@@ -49,8 +49,11 @@ Modes available in the mode menu:
 #define SS_4                    111
 #define SS_8                    112
 // Complex mode 1 bit
- #define CM_RECTANGULAR          113
- #define CM_POLAR                114
+#define CM_RECTANGULAR          113
+#define CM_POLAR                114
+// Display override 1 bit
+#define DO_SCI                  115
+#define DO_ENG                  116
 
 
 
@@ -73,6 +76,8 @@ Modes available in the mode menu:
 
 #define JM_TO_3S_CTFF 	   600   //ms TO_3S_CTFF
 #define JM_TO_KB_ACTV      6000  //ms TO_KB_ACTV
+
+void reset_jm_defaults(void);
 
 uint8_t softmenuStackPointer_MEM; //For popping on and off the HOME menu
 

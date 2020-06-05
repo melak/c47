@@ -22,10 +22,10 @@
 
 
 
-void (* const logBase2[9])(void) = {
-// regX ==> 1            2         3         4          5          6          7          8           9
-//          Long integer Real34    complex34 Time       Date       String     Real34 mat Complex34 m Short integer
-            log2LonI,    log2Real, log2Cplx, log2Error, log2Error, log2Error, log2Rema,  log2Cxma,   log2ShoI
+void (* const logBase2[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX ==> 1            2         3         4          5          6          7          8           9             10
+//          Long integer Real34    complex34 Time       Date       String     Real34 mat Complex34 m Short integer Config data
+            log2LonI,    log2Real, log2Cplx, log2Error, log2Error, log2Error, log2Rema,  log2Cxma,   log2ShoI,     log2Error
 };
 
 

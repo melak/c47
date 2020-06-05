@@ -22,10 +22,10 @@
 
 
 
-void (* const Sinh[9])(void) = {
-// regX ==> 1            2         3         4          5          6          7          8           9
-//          Long integer Real34    Complex34 Time       Date       String     Real34 mat Complex34 m Short integer
-            sinhLonI,    sinhReal, sinhCplx, sinhError, sinhError, sinhError, sinhRema,  sinhCxma,   sinhError
+void (* const Sinh[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX ==> 1            2         3         4          5          6          7          8           9             10
+//          Long integer Real34    Complex34 Time       Date       String     Real34 mat Complex34 m Short integer Config data
+            sinhLonI,    sinhReal, sinhCplx, sinhError, sinhError, sinhError, sinhRema,  sinhCxma,   sinhError,    sinhError
 };
 
 

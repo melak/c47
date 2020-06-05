@@ -188,6 +188,7 @@ typedef int16_t calcRegister_t;
 
 #define NUMBER_OF_DISPLAY_DIGITS 16
 #define MAX_LONG_INTEGER_SIZE_IN_BITS 9965 //9965   // 43S:3328 //JMMAX
+#define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS   10
 #define MAX_FACTORIAL                 1000 //1142   // 43S: 450 //JMMAX
 
                                // bits  digits  43S     x digits   x! digits
@@ -275,7 +276,7 @@ typedef int16_t calcRegister_t;
 #else
 #define LCD_REFRESH_TIMEOUT   100 //timeout for lcd refresh in ms
 #endif 
-#define MAX_RADIO_CB_ITEMS     60 //73  //JMMAX                                             //dr build RadioButton, CheckBox
+#define MAX_RADIO_CB_ITEMS     67 //73  //JMMAX                                             //dr build RadioButton, CheckBox
 
 // timer nr for FG and FN use
 #define TO_FG_LONG              0
@@ -417,9 +418,7 @@ typedef int16_t calcRegister_t;
 #define TI_GEOMSAMPLSTDDEV     26
 #define TI_GEOMPOPLSTDDEV      27
 #define TI_GEOMSTDERR          28
-
 #define TI_SHOW_REGISTER_BIG   99    //JM_SHOW temporary high number not to clash with new codes
-
 
 // Register browser mode
 #define RBR_GLOBAL              0
@@ -571,10 +570,10 @@ extern const char           *errorMessages[NUMBER_OF_ERROR_CODES];
 extern const calcKey_t       kbd_std[37];
 extern const font_t          standardFont, numericFont;
 extern const font_t         *fontForShortInteger;
-extern void                  (* const addition[9][9])(void);
-extern void                  (* const subtraction[9][9])(void);
-extern void                  (* const multiplication[9][9])(void);
-extern void                  (* const division[9][9])(void);
+extern void                  (* const addition[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void);
+extern void                  (* const subtraction[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void);
+extern void                  (* const multiplication[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void);
+extern void                  (* const division[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void);
 extern const softmenu_t      softmenu[];
 
 // Variables stored in RAM
@@ -672,9 +671,9 @@ extern bool_t                watchIconEnabled;
 extern bool_t                printerIconEnabled;
 extern bool_t                shiftF;
 extern bool_t                shiftG;
-//extern bool_t             shiftStateChanged;    //dr
-extern radiocb_t            indexOfRadioCbItems[MAX_RADIO_CB_ITEMS];            //vv dr build RadioButton, CheckBox
-//extern uint16_t           cntOfRadioCbItems;                                  //^^
+//extern bool_t              shiftStateChanged;    //dr
+extern radiocb_t             indexOfRadioCbItems[MAX_RADIO_CB_ITEMS];            //vv dr build RadioButton, CheckBox
+//extern uint16_t            cntOfRadioCbItems;                                  //^^
 extern bool_t                showContent;
 extern bool_t                savedStackLiftEnabled;
 extern bool_t                rbr1stDigit;

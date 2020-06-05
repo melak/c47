@@ -22,18 +22,19 @@
 
 
 
-void (* const idiv[9][9])(void) = {
-// regX |    regY ==>   1             2             3          4          5          6          7          8           9
-//      V               Long integer  Real34        Complex34  Time       Date       String     Real34 mat Complex34 m Short integer
-/*  1 Long integer  */ {idivLonILonI, idivRealLonI, idivError, idivError, idivError, idivError, idivError, idivError,  idivShoILonI},
-/*  2 Real34        */ {idivLonIReal, idivRealReal, idivError, idivError, idivError, idivError, idivError, idivError,  idivShoIReal},
-/*  3 Complex34     */ {idivError,    idivError,    idivError, idivError, idivError, idivError, idivError, idivError,  idivError   },
-/*  4 Time          */ {idivError,    idivError,    idivError, idivError, idivError, idivError, idivError, idivError,  idivError   },
-/*  5 Date          */ {idivError,    idivError,    idivError, idivError, idivError, idivError, idivError, idivError,  idivError   },
-/*  6 String        */ {idivError,    idivError,    idivError, idivError, idivError, idivError, idivError, idivError,  idivError   },
-/*  7 Real34 mat    */ {idivError,    idivError,    idivError, idivError, idivError, idivError, idivError, idivError,  idivError   },
-/*  8 Complex34 mat */ {idivError,    idivError,    idivError, idivError, idivError, idivError, idivError, idivError,  idivError   },
-/*  9 Short integer */ {idivLonIShoI, idivRealShoI, idivError, idivError, idivError, idivError, idivError, idivError,  idivShoIShoI}
+void (* const idiv[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>   1             2             3          4          5          6          7          8           9             10
+//      V               Long integer  Real34        Complex34  Time       Date       String     Real34 mat Complex34 m Short integer Config data
+/*  1 Long integer  */ {idivLonILonI, idivRealLonI, idivError, idivError, idivError, idivError, idivError, idivError,  idivShoILonI, idivError},
+/*  2 Real34        */ {idivLonIReal, idivRealReal, idivError, idivError, idivError, idivError, idivError, idivError,  idivShoIReal, idivError},
+/*  3 Complex34     */ {idivError,    idivError,    idivError, idivError, idivError, idivError, idivError, idivError,  idivError,    idivError},
+/*  4 Time          */ {idivError,    idivError,    idivError, idivError, idivError, idivError, idivError, idivError,  idivError,    idivError},
+/*  5 Date          */ {idivError,    idivError,    idivError, idivError, idivError, idivError, idivError, idivError,  idivError,    idivError},
+/*  6 String        */ {idivError,    idivError,    idivError, idivError, idivError, idivError, idivError, idivError,  idivError,    idivError},
+/*  7 Real34 mat    */ {idivError,    idivError,    idivError, idivError, idivError, idivError, idivError, idivError,  idivError,    idivError},
+/*  8 Complex34 mat */ {idivError,    idivError,    idivError, idivError, idivError, idivError, idivError, idivError,  idivError,    idivError},
+/*  9 Short integer */ {idivLonIShoI, idivRealShoI, idivError, idivError, idivError, idivError, idivError, idivError,  idivShoIShoI, idivError},
+/* 10 Config data   */ {idivError,    idivError,    idivError, idivError, idivError, idivError, idivError, idivError,  idivError,    idivError}
 };
 
 

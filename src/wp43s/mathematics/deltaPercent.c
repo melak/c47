@@ -22,18 +22,19 @@
 
 static void dataTypeError(void);
 
-static void (* const functionMatrix[9][9])(void) = {
-// regX |    regY ==>    1                     2                     3              4              5              6              7              8              9
-//      V                Long integer          Real34                Complex34      Time           Date           String         Real34 mat     Complex34 mat  Short integer
-/*  1 Long integer  */ { deltaPercentLonILonI, deltaPercentRealLonI, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError },
-/*  2 Real34        */ { deltaPercentLonIReal, deltaPercentRealReal, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError },
-/*  3 Complex34     */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError },
-/*  4 Time          */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError },
-/*  5 Date          */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError },
-/*  6 String        */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError },
-/*  7 Real34 mat    */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError },
-/*  8 Complex34 mat */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError },
-/*  9 Short integer */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError }
+static void (* const functionMatrix[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>    1                     2                     3              4              5              6              7              8              9              10
+//      V                Long integer          Real34                Complex34      Time           Date           String         Real34 mat     Complex34 mat  Short integer  Config data
+/*  1 Long integer  */ { deltaPercentLonILonI, deltaPercentRealLonI, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError},
+/*  2 Real34        */ { deltaPercentLonIReal, deltaPercentRealReal, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError},
+/*  3 Complex34     */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError},
+/*  4 Time          */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError},
+/*  5 Date          */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError},
+/*  6 String        */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError},
+/*  7 Real34 mat    */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError},
+/*  8 Complex34 mat */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError},
+/*  9 Short integer */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError},
+/* 10 Config data   */ { dataTypeError,        dataTypeError,        dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError}
 };
 
 //=============================================================================

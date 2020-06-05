@@ -22,18 +22,19 @@
 #include "wp43s.h"
 
 
-void (* const xthRoot[9][9])(void) = {
-// regX |    regY ==>   1                2                3                4             5             6             7                8                9
-//      V               Long integer     Real34           Complex34        Time          Date          String        Real34 mat       Complex34 m      Short integer
-/*  1 Long integer  */ {xthRootLonILonI, xthRootRealLonI, xthRootCplxLonI, xthRootError, xthRootError, xthRootError, xthRootRemaLonI, xthRootCxmaLonI, xthRootShoILonI},
-/*  2 Real34        */ {xthRootLonIReal, xthRootRealReal, xthRootCplxReal, xthRootError, xthRootError, xthRootError, xthRootRemaReal, xthRootCxmaReal, xthRootShoIReal},
-/*  3 Complex34     */ {xthRootLonICplx, xthRootRealCplx, xthRootCplxCplx, xthRootError, xthRootError, xthRootError, xthRootRemaCplx, xthRootCxmaCplx, xthRootShoICplx},
-/*  4 Time          */ {xthRootError,    xthRootError,    xthRootError,    xthRootError, xthRootError, xthRootError, xthRootError,    xthRootError,    xthRootError   },
-/*  5 Date          */ {xthRootError,    xthRootError,    xthRootError,    xthRootError, xthRootError, xthRootError, xthRootError,    xthRootError,    xthRootError   },
-/*  6 String        */ {xthRootError,    xthRootError,    xthRootError,    xthRootError, xthRootError, xthRootError, xthRootError,    xthRootError,    xthRootError   },
-/*  7 Real34 mat    */ {xthRootError,    xthRootError,    xthRootError,    xthRootError, xthRootError, xthRootError, xthRootError,    xthRootError,    xthRootError   },
-/*  8 Complex34 mat */ {xthRootError,    xthRootError,    xthRootError,    xthRootError, xthRootError, xthRootError, xthRootError,    xthRootError,    xthRootError   },
-/*  9 Short integer */ {xthRootLonIShoI, xthRootRealShoI, xthRootCplxShoI, xthRootError, xthRootError, xthRootError, xthRootRemaShoI, xthRootCxmaShoI, xthRootShoIShoI}
+void (* const xthRoot[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>   1                2                3                4             5             6             7                8                9                10
+//      V               Long integer     Real34           Complex34        Time          Date          String        Real34 mat       Complex34 m      Short integer    ConfigData
+/*  1 Long integer  */ {xthRootLonILonI, xthRootRealLonI, xthRootCplxLonI, xthRootError, xthRootError, xthRootError, xthRootRemaLonI, xthRootCxmaLonI, xthRootShoILonI, xthRootError},
+/*  2 Real34        */ {xthRootLonIReal, xthRootRealReal, xthRootCplxReal, xthRootError, xthRootError, xthRootError, xthRootRemaReal, xthRootCxmaReal, xthRootShoIReal, xthRootError},
+/*  3 Complex34     */ {xthRootLonICplx, xthRootRealCplx, xthRootCplxCplx, xthRootError, xthRootError, xthRootError, xthRootRemaCplx, xthRootCxmaCplx, xthRootShoICplx, xthRootError},
+/*  4 Time          */ {xthRootError,    xthRootError,    xthRootError,    xthRootError, xthRootError, xthRootError, xthRootError,    xthRootError,    xthRootError,    xthRootError},
+/*  5 Date          */ {xthRootError,    xthRootError,    xthRootError,    xthRootError, xthRootError, xthRootError, xthRootError,    xthRootError,    xthRootError,    xthRootError},
+/*  6 String        */ {xthRootError,    xthRootError,    xthRootError,    xthRootError, xthRootError, xthRootError, xthRootError,    xthRootError,    xthRootError,    xthRootError},
+/*  7 Real34 mat    */ {xthRootError,    xthRootError,    xthRootError,    xthRootError, xthRootError, xthRootError, xthRootError,    xthRootError,    xthRootError,    xthRootError},
+/*  8 Complex34 mat */ {xthRootError,    xthRootError,    xthRootError,    xthRootError, xthRootError, xthRootError, xthRootError,    xthRootError,    xthRootError,    xthRootError},
+/*  9 Short integer */ {xthRootLonIShoI, xthRootRealShoI, xthRootCplxShoI, xthRootError, xthRootError, xthRootError, xthRootRemaShoI, xthRootCxmaShoI, xthRootShoIShoI, xthRootError},
+/* 10 Config data   */ {xthRootError,    xthRootError,    xthRootError,    xthRootError, xthRootError, xthRootError, xthRootError,    xthRootError,    xthRootError,    xthRootError}
 };
 
 

@@ -22,18 +22,19 @@
 
 
 
-void (* const rmd[9][9])(void) = {
-// regX |    regY ==>   1            2            3         4         5         6         7          8           9
-//      V               Long integer Real34       Complex34 Time      Date      String    Real34 mat Complex34 m Short integer
-/*  1 Long integer  */ {rmdLonILonI, rmdRealLonI, rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdShoILonI},
-/*  2 Real34        */ {rmdLonIReal, rmdRealReal, rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdShoIReal},
-/*  3 Complex34     */ {rmdError,    rmdError,    rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdError   },
-/*  4 Time          */ {rmdError,    rmdError,    rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdError   },
-/*  5 Date          */ {rmdError,    rmdError,    rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdError   },
-/*  6 String        */ {rmdError,    rmdError,    rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdError   },
-/*  7 Real34 mat    */ {rmdError,    rmdError,    rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdError   },
-/*  8 Complex34 mat */ {rmdError,    rmdError,    rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdError   },
-/*  9 Short integer */ {rmdLonIShoI, rmdRealShoI, rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdShoIShoI}
+void (* const rmd[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX |    regY ==>   1            2            3         4         5         6         7          8           9             10
+//      V               Long integer Real34       Complex34 Time      Date      String    Real34 mat Complex34 m Short integer Config data
+/*  1 Long integer  */ {rmdLonILonI, rmdRealLonI, rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdShoILonI,  rmdError},
+/*  2 Real34        */ {rmdLonIReal, rmdRealReal, rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdShoIReal,  rmdError},
+/*  3 Complex34     */ {rmdError,    rmdError,    rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdError,     rmdError},
+/*  4 Time          */ {rmdError,    rmdError,    rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdError,     rmdError},
+/*  5 Date          */ {rmdError,    rmdError,    rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdError,     rmdError},
+/*  6 String        */ {rmdError,    rmdError,    rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdError,     rmdError},
+/*  7 Real34 mat    */ {rmdError,    rmdError,    rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdError,     rmdError},
+/*  8 Complex34 mat */ {rmdError,    rmdError,    rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdError,     rmdError},
+/*  9 Short integer */ {rmdLonIShoI, rmdRealShoI, rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdShoIShoI,  rmdError},
+/* 10 Config data   */ {rmdError,    rmdError,    rmdError, rmdError, rmdError, rmdError, rmdError,  rmdError,   rmdError,     rmdError}
 };
 
 

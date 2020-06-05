@@ -22,10 +22,10 @@
 
 
 
-void (* const fp[9])(void) = {
-// regX ==> 1            2       3         4        5        6        7          8           9
-//          Long integer Real34  Complex34 Time     Date     String   Real34 mat Complex34 m Short integer
-            fpLonI,      fpReal, fpError,  fpError, fpError, fpError, fpRema,    fpError,    fpShoI
+void (* const fp[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX ==> 1            2       3         4        5        6        7          8           9             10
+//          Long integer Real34  Complex34 Time     Date     String   Real34 mat Complex34 m Short integer Config data
+            fpLonI,      fpReal, fpError,  fpError, fpError, fpError, fpRema,    fpError,    fpShoI,       fpError
 };
 
 
