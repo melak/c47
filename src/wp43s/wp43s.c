@@ -165,8 +165,6 @@ float                 graph_dy;                                //JM Graph
 bool_t                testEnabled;                             //
 uint16_t              testBitset;                              //
 #endif                                                         //^^
-radiocb_t            indexOfRadioCbItems[MAX_RADIO_CB_ITEMS];  //vv dr build RadioButton, CheckBox
-//uint16_t           cntOfRadioCbItems;                        //^^
 
 bool_t                hourGlassIconEnabled;
 bool_t                watchIconEnabled;
@@ -256,9 +254,6 @@ void setupDefaults(void) {
   //kbd_usr[19].gShifted    = ITM_SXY;
   //kbd_usr[20].gShifted    = ITM_LYtoM;
          //JM ^^ note: Overwritten by fnReset
-
-  // initialize the RadioButton/Checkbox items
-  fnRebuildRadioState();                                       //dr build RadioButton, CheckBox
 
   // initialize the global registers
   for(calcRegister_t regist=0; regist<FIRST_LOCAL_REGISTER; regist++) {
@@ -396,11 +391,9 @@ void setupDefaults(void) {
   currentFlgScr = 0;
   currentRegisterBrowserScreen = 9999;
 
-
   softmenuStackPointer = 0;
 
   aimBuffer[0] = 0;
-
 
   showAlphaMode();
 

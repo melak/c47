@@ -31,10 +31,10 @@ const radiocb_eeprom_t indexOfRadioCbEepromItems[] = {
 /*  229 */  { ITM_GRAD,             AM_GRAD,                RB_AM },  //fnAngularMode
 /*  375 */  { ITM_MULPI,            AM_MULTPI,              RB_AM },  //fnAngularMode
 /*  483 */  { ITM_RAD,              AM_RADIAN,              RB_AM },  //fnAngularMode
-/*  464 */  { ITM_POLAR,            CM_POLAR,               RB_CM },  //**fnComplexMode
-/*  507 */  { ITM_RECT,             CM_RECTANGULAR,         RB_CM },  //**fnComplexMode
-/*   96 */  { ITM_CPXI,             CU_I,                   RB_CU },  //**fnComplexUnit
-/*   97 */  { ITM_CPXJ,             CU_J,                   RB_CU },  //**fnComplexUnit
+/* 1965 */  { ITM_POLAR,            CM_POLAR,               RB_CM },  //fnSetSetJM          /*  464 */ //fnComplexMode
+/* 1969 */  { ITM_RECT,             CM_RECTANGULAR,         RB_CM },  //fnSetSetJM          /*  507 */ //fnComplexMode
+/* 1960 */  { ITM_CPXI,             CU_I,                   RB_CU },  //fnSetSetJM          /*   96 */ //fnComplexUnit
+/* 1961 */  { ITM_CPXJ,             CU_J,                   RB_CU },  //fnSetSetJM          /*   97 */ //fnComplexUnit
 /*   44 */  { ITM_BESTF,            CF_BEST_FITTING,        RB_CF },  //fnCurveFitting
 /*  161 */  { ITM_EXPF,             CF_EXPONENTIAL_FITTING, RB_CF },  //fnCurveFitting
 /*  308 */  { ITM_LINF,             CF_LINEAR_FITTING,      RB_CF },  //fnCurveFitting
@@ -43,19 +43,19 @@ const radiocb_eeprom_t indexOfRadioCbEepromItems[] = {
 /*  136 */  { ITM_DMY,              DF_DMY,                 RB_DF },  //fnSetDateFormat
 /*  383 */  { ITM_MDY,              DF_MDY,                 RB_DF },  //fnSetDateFormat
 /*  700 */  { ITM_YMD,              DF_YMD,                 RB_DF },  //fnSetDateFormat
-/*  119 */ // { ITM_DENANY,           DM_ANY,                 RB_DM },  //**fnDenMode
-/*  120 */ // { ITM_DENFAC,           DM_FAC,                 RB_DM },  //**fnDenMode
-/*  121 */ // { ITM_DENFIX,           DM_FIX,                 RB_DM },  //**fnDenMode
+/*  119 */ // { ITM_DENANY,           DM_ANY,                 RB_DM },  //  --fnDenMode
+/*  120 */ // { ITM_DENFAC,           DM_FAC,                 RB_DM },  //  --fnDenMode
+/*  121 */ // { ITM_DENFIX,           DM_FIX,                 RB_DM },  //  --fnDenMode
 /*   20 */  { ITM_ALL,              DF_ALL,                 RB_DI },  //fnDisplayFormatAll
 /*  145 */  { ITM_ENG,              DF_ENG,                 RB_DI },  //fnDisplayFormatEng
 /*  185 */  { ITM_FIX,              DF_FIX,                 RB_DI },  //fnDisplayFormatFix
 /*  545 */  { ITM_SCI,              DF_SCI,                 RB_DI },  //fnDisplayFormatSci
 /* 1682 */  { ITM_SIGFIG,           DF_SF,                  RB_DI },  //fnDisplayFormatSigFig
 /* 1693 */  { ITM_UNIT,             DF_UN,                  RB_DI },  //fnDisplayFormatUnit
-/*  146 */  { ITM_ENGOVR,           DO_ENG,                 RB_DO },  //**fnDisplayOvr
-/*  547 */  { ITM_SCIOVR,           DO_SCI,                 RB_DO },  //**fnDisplayOvr
-/*  251 */ // { ITM_IMPFRC,           JC_IMPROPER,            CB_JC },  //**fnToggleFractionType
-/*  471 */ // { ITM_PROFRC,           JC_PROPER,              CB_JC },  //**fnToggleFractionType
+/* 1972 */  { ITM_ENGOVR,           DO_ENG,                 RB_DO },  //fnSetSetJM          /*  146 */ //fnDisplayOvr
+/* 1971 */  { ITM_SCIOVR,           DO_SCI,                 RB_DO },  //fnSetSetJM          /*  547 */ //fnDisplayOvr
+/*  251 */ // { ITM_IMPFRC,           JC_IMPROPER,            CB_JC },  //  --fnToggleFractionType
+/*  471 */ // { ITM_PROFRC,           JC_PROPER,              CB_JC },  //  --fnToggleFractionType
 /* 1905 */  { ITM_INP_DEF_43S,      ID_43S,                 RB_ID },  //fnInDefault
 /* 1910 */  { ITM_INP_DEF_CPXDP,    ID_CPXDP,               RB_ID },  //fnInDefault
 /* 1907 */  { ITM_INP_DEF_DP,       ID_DP,                  RB_ID },  //fnInDefault
@@ -65,18 +65,18 @@ const radiocb_eeprom_t indexOfRadioCbEepromItems[] = {
 /*    7 */  { ITM_2COMPL,           SIM_2COMPL,             RB_IM },  //fnIntegerMode
 /*  567 */  { ITM_SIGNMT,           SIM_SIGNMT,             RB_IM },  //fnIntegerMode
 /*  645 */  { ITM_UNSIGN,           SIM_UNSIGN,             RB_IM },  //fnIntegerMode
-/*  373 */  { ITM_MULTCR,           PS_CROSS,               RB_PS },  //**fnProductSign
-/*  374 */  { ITM_MULTDOT,          PS_DOT,                 RB_PS },  //**fnProductSign
-/*  500 */  { ITM_RDXCOM,           RX_COMMA,               RB_RM },  //**fnRadixMark
-/*  501 */  { ITM_RDXPER,           RX_PERIOD,              RB_RM },  //**fnRadixMark
+/* 1962 */  { ITM_MULTCR,           PS_CROSS,               RB_PS },  //fnSetSetJM          /*  373 */ //fnProductSign
+/* 1963 */  { ITM_MULTDOT,          PS_DOT,                 RB_PS },  //fnSetSetJM          /*  374 */ //fnProductSign
+/* 1966 */  { ITM_RDXCOM,           RX_COMMA,               RB_RX },  //fnSetSetJM          /*  500 */ //fnRadixMark
+/* 1967 */  { ITM_RDXPER,           RX_PERIOD,              RB_RX },  //fnSetSetJM          /*  501 */ //fnRadixMark
 /* 1689 */  { ITM_WS8,              8,                      RB_WS },  //fnSetWordSize
 /* 1690 */  { ITM_WS16,             16,                     RB_WS },  //fnSetWordSize
 /* 1691 */  { ITM_WS32,             32,                     RB_WS },  //fnSetWordSize
 /* 1692 */  { ITM_WS64,             64,                     RB_WS },  //fnSetWordSize
-/*  583 */  { ITM_SSIZE4,           SS_4,                   RB_SS },  //**fnStackSize
-/*  584 */  { ITM_SSIZE8,           SS_8,                   RB_SS },  //**fnStackSize
-/*   75 */  { ITM_CLK12,            TF_H12,                 RB_TF },  //**fnTimeFormat
-/*   76 */  { ITM_CLK24,            TF_H24,                 RB_TF },  //**fnTimeFormat
+/* 1964 */  { ITM_SSIZE4,           SS_4,                   RB_SS },  //fnSetSetJM          /*  583 */ //fnStackSize
+/* 1968 */  { ITM_SSIZE8,           SS_8,                   RB_SS },  //fnSetSetJM          /*  584 */ //fnStackSize
+/* 1958 */  { ITM_CLK12,            TF_H12,                 RB_TF },  //fnSetSetJM          /*   75 */ //fnTimeFormat
+/* 1959 */  { ITM_CLK24,            TF_H24,                 RB_TF },  //fnSetSetJM          /*   76 */ //fnTimeFormat
 /* 1899 */  { ITM_U_KEY_ALPHA,      ITM_AIM,                RB_SA },  //fnSigmaAssign
 /* 1897 */  { ITM_U_KEY_PRGM,       ITM_PR,                 RB_SA },  //fnSigmaAssign
 /* 1895 */  { ITM_U_KEY_SIGMA,      ITM_SIGMAPLUS,          RB_SA },  //fnSigmaAssign
@@ -86,6 +86,7 @@ const radiocb_eeprom_t indexOfRadioCbEepromItems[] = {
 /* 1744 */  { ITM_BASE_AHOME,       JC_BASE_AHOME,          CB_JC },  //fnSetSetJM
 /* 1742 */  { ITM_BASE_HOME,        JC_BASE_HOME,           CB_JC },  //fnSetSetJM
 /* 1695 */  { ITM_CB_CPXRES,        JC_BCR,                 CB_JC },  //fnSetSetJM
+/* 1748 */  { ITM_CB_SPCRES,        JC_BSR,                 CB_JC },  //fnSetSetJM
 /* 1696 */  { ITM_CB_LEADING_ZERO,  JC_BLZ,                 CB_JC },  //fnSetSetJM
 /* 1678 */  { ITM_ERPN,             JC_ERPN,                CB_JC },  //fnSetSetJM
 /* 1909 */  { ITM_FG_DOTS,          JC_FG_DOTS,             CB_JC },  //fnSetSetJM
@@ -115,10 +116,243 @@ int8_t fnCbIsSet(int16_t item) {
       result = indexOfRadioCbItems[i].state;
     }
   }*/
-  size_t n = min(nbrOfElements(indexOfRadioCbEepromItems), MAX_RADIO_CB_ITEMS);
+
+//size_t n = min(nbrOfElements(indexOfRadioCbEepromItems), MAX_RADIO_CB_ITEMS);
+  size_t n = nbrOfElements(indexOfRadioCbEepromItems);
   for(uint8_t i=0; i < n; i++) {
     if(indexOfRadioCbEepromItems[i].itemNr == itemNr) {
-      result = indexOfRadioCbItems[i].state;
+//    result = indexOfRadioCbItems[i].state;
+      bool_t is_cb = false;
+      uint8_t rb_param = 0;
+      bool_t cb_param =  false;
+
+      switch (indexOfRadioCbEepromItems[i].radioButton)
+      {
+      case RB_AM:
+        {
+          rb_param = currentAngularMode;
+        }
+        break;
+
+      case RB_CM:
+        {
+          if(getSystemFlag(FLAG_POLAR)) { rb_param = CM_POLAR; }
+          else { rb_param = CM_RECTANGULAR; }
+        }
+        break;
+
+      case RB_CU:
+        {
+          if(getSystemFlag(FLAG_CPXj)) { rb_param = CU_J; }
+          else { rb_param = CU_I; }
+        }
+        break;
+
+      case RB_CF:
+        {
+          rb_param = curveFitting;
+        }
+        break;
+
+      case RB_DF:
+        {
+          if     (getSystemFlag(FLAG_YMD)) { rb_param = DF_YMD; }
+          else if(getSystemFlag(FLAG_DMY)) { rb_param = DF_DMY; }
+          else                             { rb_param = DF_MDY; }
+        }
+        break;
+
+      case RB_DI:
+        {
+          rb_param = displayFormat;
+          if(rb_param == DF_FIX && SigFigMode != 0) { rb_param = DF_SF; }
+          if(rb_param == DF_ENG && UNITDisplay)     { rb_param = DF_UN; }
+        }
+        break;
+
+      case RB_DO:
+        {
+          if(getSystemFlag(FLAG_ALLENG)) { rb_param = DO_ENG; }
+          else { rb_param = DO_SCI; }
+        }
+        break;
+
+      case RB_ID:
+        {
+          rb_param = Input_Default;
+        }
+        break;
+
+      case RB_IM:
+        {
+          rb_param = shortIntegerMode;
+        }
+        break;
+
+      case RB_PS:
+        {
+          if(getSystemFlag(FLAG_MULTx)) { rb_param = PS_CROSS; }
+          else { rb_param = PS_DOT; }
+        }
+        break;
+
+      case RB_RX:
+        {
+          if(getSystemFlag(FLAG_DECIMP)) { rb_param = RX_PERIOD; }
+          else { rb_param = RX_COMMA; }
+        }
+        break;
+
+      case RB_WS:
+        {
+          rb_param = shortIntegerWordSize;
+        }
+        break;
+
+      case RB_SS:
+        {
+          if(getSystemFlag(FLAG_SSIZE8)) { rb_param = SS_8; }
+          else { rb_param = SS_4; }
+        }
+        break;
+
+      case RB_TF:
+        {
+          if(getSystemFlag(FLAG_TDM24)) { rb_param = TF_H24; }
+          else { rb_param = TF_H12; }
+        }
+        break;
+
+      case RB_SA:
+        {
+          rb_param = Norm_Key_00_VAR;
+        }
+        break;
+
+      case CB_JC:
+        {
+          is_cb = true;
+
+          switch (indexOfRadioCbEepromItems[i].param)
+          {
+          case JC_BASE_AHOME:
+            {
+              cb_param = SH_BASE_AHOME;
+            }
+            break;
+
+          case JC_BASE_HOME:
+            {
+              cb_param = SH_BASE_HOME;
+            }
+            break;
+
+          case JC_BCR:
+            {
+              cb_param = getSystemFlag(FLAG_CPXRES);
+            }
+            break;
+
+          case JC_BSR:                                     //JMvv
+            {
+              cb_param = getSystemFlag(FLAG_SPCRES);
+            }
+            break;                                         //JM^^
+
+          case JC_BLZ:
+            {
+              cb_param = getSystemFlag(FLAG_LEAD0);
+            }
+            break;
+
+          case JC_ERPN:
+            {
+              cb_param = eRPN;
+            }
+            break;
+
+          case JC_FG_DOTS:
+            {
+              cb_param = jm_FG_DOTS;
+            }
+            break;
+
+          case JC_FG_LINE:
+            {
+              cb_param = jm_FG_LINE;
+            }
+            break;
+
+          case JC_G_DOUBLETAP:
+            {
+              cb_param = jm_G_DOUBLETAP;
+            }
+            break;
+
+          case JC_HOME_TRIPLE:
+            {
+              cb_param = HOME3;
+            }
+            break;
+
+          case JC_SH_3T:
+            {
+              cb_param = Home3TimerMode;
+            }
+            break;
+
+          case JC_SHFT_4s:
+            {
+              cb_param = ShiftTimoutMode;
+            }
+            break;
+
+          case JC_VECT:
+            {
+              cb_param = jm_VECT;
+            }
+            break;
+
+          case JC_H_SUM:
+            {
+              cb_param = jm_HOME_SUM;
+            }
+            break;
+
+          case JC_H_MIR:
+            {
+              cb_param = jm_HOME_MIR;
+            }
+            break;
+
+          case JC_H_FIX:
+            {
+              cb_param = jm_HOME_FIX;
+            }
+            break;
+#ifdef INLINE_TEST
+          case DR_ITM_TST:
+            {
+              cb_param = testEnabled;
+            }
+            break;
+#endif
+          default:
+            break;
+          }
+        }
+        break;
+
+      default:
+        break;
+      }
+
+      if(is_cb) {
+        result = cb_param ? CB_TRUE : CB_FALSE;
+      }
+      else {
+        result = (indexOfRadioCbEepromItems[i].param == rb_param) ? RB_TRUE : RB_FALSE; 
+      }
     }
   }
 
@@ -140,7 +374,8 @@ void fnRefreshRadioState(char rb, uint16_t mode) {
       //indexOfRadioCbItems[i].state = indexOfRadioCbItems[i].param == mode;
     }
   }*/
-  size_t n = min(nbrOfElements(indexOfRadioCbEepromItems), MAX_RADIO_CB_ITEMS);
+
+/*size_t n = min(nbrOfElements(indexOfRadioCbEepromItems), MAX_RADIO_CB_ITEMS);
   for(uint8_t i=0; i < n; i++) {
     if(indexOfRadioCbEepromItems[i].radioButton == rb) {
       uint8_t cb = (indexOfRadioCbEepromItems[i].param == mode) ? RB_TRUE : RB_FALSE;
@@ -151,7 +386,11 @@ void fnRefreshRadioState(char rb, uint16_t mode) {
 #endif
       }
     }
-  }
+  }*/
+
+#ifndef TESTSUITE_BUILD
+  showSoftmenuCurrentPart();
+#endif
 }
 
 
@@ -168,7 +407,8 @@ void fnRefreshComboxState(char rb, uint16_t param, bool_t state) {
       }
     }
   }*/
-  size_t n = min(nbrOfElements(indexOfRadioCbEepromItems), MAX_RADIO_CB_ITEMS);
+
+/*size_t n = min(nbrOfElements(indexOfRadioCbEepromItems), MAX_RADIO_CB_ITEMS);
   for(uint8_t i=0; i < n; i++) {
     if((indexOfRadioCbEepromItems[i].radioButton == rb) && (indexOfRadioCbEepromItems[i].param == param)) {
       uint8_t cb = state ? CB_TRUE : CB_FALSE;
@@ -179,7 +419,11 @@ void fnRefreshComboxState(char rb, uint16_t param, bool_t state) {
 #endif
       }
     }
-  }
+  }*/
+
+#ifndef TESTSUITE_BUILD
+  showSoftmenuCurrentPart();
+#endif
 }
 
 
@@ -340,7 +584,7 @@ char* figlabel(const char* label, int16_t showValue) {      //JM
 }                                                           //JM ^^
 
 
-
+/*******
 void fnRebuildRadioState() {
 //  117     { ITM_DEG,              AM_DEGREE,              RB_AM },  //fnAngularMode
 //  134     { ITM_DMS,              AM_DMS,                 RB_AM },  //fnAngularMode
@@ -348,13 +592,13 @@ void fnRebuildRadioState() {
 //  375     { ITM_MULPI,            AM_MULTPI,              RB_AM },  //fnAngularMode
 //  483     { ITM_RAD,              AM_RADIAN,              RB_AM },  //fnAngularMode
   fnRefreshRadioState(RB_AM, currentAngularMode);
-//  464     { ITM_POLAR,            CM_POLAR,               RB_CM },  //**fnComplexMode
-//  507     { ITM_RECT,             CM_RECTANGULAR,         RB_CM },  //**fnComplexMode
+//  464     { ITM_POLAR,            CM_POLAR,               RB_CM },  //  --fnComplexMode
+//  507     { ITM_RECT,             CM_RECTANGULAR,         RB_CM },  //  --fnComplexMode
   uint8_t cm = CM_RECTANGULAR;
   if(getSystemFlag(FLAG_POLAR)) cm = CM_POLAR;
   fnRefreshRadioState(RB_CM, cm);
-//   96     { ITM_CPXI,             CU_I,                   RB_CU },  //**fnComplexUnit
-//   97     { ITM_CPXJ,             CU_J,                   RB_CU },  //**fnComplexUnit 
+//   96     { ITM_CPXI,             CU_I,                   RB_CU },  //  --fnComplexUnit
+//   97     { ITM_CPXJ,             CU_J,                   RB_CU },  //  --fnComplexUnit 
   uint8_t cu = CU_I;
   if(getSystemFlag(FLAG_CPXj)) cu = CU_J;
   fnRefreshRadioState(RB_CU, cu);
@@ -371,9 +615,9 @@ void fnRebuildRadioState() {
   if     (getSystemFlag(FLAG_DMY)) dateF = DF_DMY; 
   else if(getSystemFlag(FLAG_MDY)) dateF = DF_MDY; 
   fnRefreshRadioState(RB_DF, dateF);
-//  119     { ITM_DENANY,           DM_ANY,                 RB_DM },  //**fnDenMode
-//  120     { ITM_DENFAC,           DM_FAC,                 RB_DM },  //**fnDenMode
-//  121     { ITM_DENFIX,           DM_FIX,                 RB_DM },  //**fnDenMode
+//  119     { ITM_DENANY,           DM_ANY,                 RB_DM },  //  --fnDenMode
+//  120     { ITM_DENFAC,           DM_FAC,                 RB_DM },  //  --fnDenMode
+//  121     { ITM_DENFIX,           DM_FIX,                 RB_DM },  //  --fnDenMode
 //  fnRefreshRadioState(RB_DM, denominatorMode);
 //   20     { ITM_ALL,              DF_ALL,                 RB_DI },  //fnDisplayFormatAll
 //  145     { ITM_ENG,              DF_ENG,                 RB_DI },  //fnDisplayFormatEng
@@ -385,13 +629,13 @@ void fnRebuildRadioState() {
   if(df == DF_FIX && SigFigMode != 0) { df = DF_SF; }
   if(df == DF_ENG && UNITDisplay) { df = DF_UN; }
   fnRefreshRadioState(RB_DI, df);
-//  146     { ITM_ENGOVR,           DO_ENG,                 RB_DO },  //**fnDisplayOvr
-//  547     { ITM_SCIOVR,           DO_SCI,                 RB_DO },  //**fnDisplayOvr
+//  146     { ITM_ENGOVR,           DO_ENG,                 RB_DO },  //  --fnDisplayOvr
+//  547     { ITM_SCIOVR,           DO_SCI,                 RB_DO },  //  --fnDisplayOvr
   uint8_t dispO = DO_SCI;
   if(getSystemFlag(FLAG_ALLENG)) dispO = DO_ENG;
   fnRefreshRadioState(RB_DO, dispO);
-//  251     { ITM_IMPFRC,           JC_IMPROPER,            CB_JC },  //**fnToggleFractionType
-//  471     { ITM_PROFRC,           JC_PROPER,              CB_JC },  //**fnToggleFractionType
+//  251     { ITM_IMPFRC,           JC_IMPROPER,            CB_JC },  //  --fnToggleFractionType
+//  471     { ITM_PROFRC,           JC_PROPER,              CB_JC },  //  --fnToggleFractionType
 //fnRefreshRadioState(RB_FT, fractionType);
 //  fnRefreshComboxState(CB_JC, JC_IMPROPER, fractionType == FT_IMPROPER);
 //  fnRefreshComboxState(CB_JC, JC_PROPER, fractionType == FT_PROPER);
@@ -406,28 +650,28 @@ void fnRebuildRadioState() {
 //  567     { ITM_SIGNMT,           SIM_SIGNMT,             RB_IM },  //fnIntegerMode
 //  645     { ITM_UNSIGN,           SIM_UNSIGN,             RB_IM },  //fnIntegerMode
   fnRefreshRadioState(RB_IM, shortIntegerMode);
-//  373     { ITM_MULTCR,           PS_CROSS,               RB_PS },  //**fnProductSign
-//  374     { ITM_MULTDOT,          PS_DOT,                 RB_PS },  //**fnProductSign
+//  373     { ITM_MULTCR,           PS_CROSS,               RB_PS },  //  --fnProductSign
+//  374     { ITM_MULTDOT,          PS_DOT,                 RB_PS },  //  --fnProductSign
   uint8_t prodS = PS_DOT;
   if(getSystemFlag(FLAG_MULTx)) prodS = PS_CROSS;
   fnRefreshRadioState(RB_PS, prodS);
-//  500     { ITM_RDXCOM,           RX_COMMA,               RB_RM },  //**fnRadixMark
-//  501     { ITM_RDXPER,           RX_PERIOD,              RB_RM },  //**fnRadixMark
+//  500     { ITM_RDXCOM,           RX_COMMA,               RB_RX },  //  --fnRadixMark
+//  501     { ITM_RDXPER,           RX_PERIOD,              RB_RX },  //  --fnRadixMark
   uint8_t rdixM = RX_COMMA;
   if(getSystemFlag(FLAG_DECIMP)) rdixM = RX_PERIOD;
-  fnRefreshRadioState(RB_RM, rdixM);
+  fnRefreshRadioState(RB_RX, rdixM);
 // 1689     { ITM_WS8,              8,                      RB_WS },  //fnSetWordSize
 // 1690     { ITM_WS16,             16,                     RB_WS },  //fnSetWordSize
 // 1691     { ITM_WS32,             32,                     RB_WS },  //fnSetWordSize
 // 1692     { ITM_WS64,             64,                     RB_WS },  //fnSetWordSize
   fnRefreshRadioState(RB_WS, shortIntegerWordSize);
-//  583     { ITM_SSIZE4,           SS_4,                   RB_SS },  //**fnStackSize
-//  584     { ITM_SSIZE8,           SS_8,                   RB_SS },  //**fnStackSize
+//  583     { ITM_SSIZE4,           SS_4,                   RB_SS },  //  --fnStackSize
+//  584     { ITM_SSIZE8,           SS_8,                   RB_SS },  //  --fnStackSize
   uint8_t stckS = SS_4;
   if(getSystemFlag(FLAG_SSIZE8)) stckS = SS_8;
   fnRefreshRadioState(RB_SS, stckS);
-//   75     { ITM_CLK12,            TF_H12,                 RB_TF },  //**fnTimeFormat
-//   76     { ITM_CLK24,            TF_H24,                 RB_TF },  //**fnTimeFormat
+//   75     { ITM_CLK12,            TF_H12,                 RB_TF },  //  --fnTimeFormat
+//   76     { ITM_CLK24,            TF_H24,                 RB_TF },  //  --fnTimeFormat
   uint8_t timeF = TF_H12;
   if(getSystemFlag(FLAG_TDM24)) timeF = TF_H24;
   fnRefreshRadioState(RB_TF, timeF);
@@ -442,9 +686,11 @@ void fnRebuildRadioState() {
   fnRefreshComboxState(CB_JC, JC_BASE_AHOME, SH_BASE_AHOME);
 // 1742     { ITM_BASE_HOME,        JC_BASE_HOME,           CB_JC },  //fnSetSetJM
   fnRefreshComboxState(CB_JC, JC_BASE_HOME, SH_BASE_HOME);
-// 1695 */  { ITM_CB_CPXRES,        JC_BCR,                 CB_JC },  //fnSetSetJM
+// 1695     { ITM_CB_CPXRES,        JC_BCR,                 CB_JC },  //fnSetSetJM
   fnRefreshComboxState(CB_JC, JC_BCR, getSystemFlag(FLAG_CPXRES));
 // 1696     { ITM_CB_LEADING_ZERO,  JC_BLZ,                 CB_JC },  //fnSetSetJM
+  fnRefreshComboxState(CB_JC, JC_BSR, getSystemFlag(FLAG_SPCRES));
+// 1748     { ITM_CB_LEADING_ZERO,  JC_BLZ,                 CB_JC },  //fnSetSetJM
   fnRefreshComboxState(CB_JC, JC_BLZ, getSystemFlag(FLAG_LEAD0));
 // 1678     { ITM_ERPN,             JC_ERPN,                CB_JC },  //fnSetSetJM
   fnRefreshComboxState(CB_JC, JC_ERPN, eRPN);
@@ -483,7 +729,7 @@ void fnRebuildRadioState() {
   printf("RB_ID, Input_Default               %d %d\n",RB_ID, Input_Default);
   printf("RB_IM, shortIntegerMode            %d %d\n",RB_IM, shortIntegerMode);
   printf("RB_PS, getSystemFlag(FLAG_MULTx)   %d %d\n",RB_PS, getSystemFlag(FLAG_MULTx));
-  printf("RB_RM, getSystemFlag(FLAG_DECIMP)  %d %d\n",RB_RM, getSystemFlag(FLAG_DECIMP));
+  printf("RB_RX, getSystemFlag(FLAG_DECIMP)  %d %d\n",RB_RX, getSystemFlag(FLAG_DECIMP));
   printf("RB_WS, shortIntegerWordSize)       %d %d\n",RB_WS, shortIntegerWordSize);
   printf("RB_SS, getSystemFlag(FLAG_SSIZE8)  %d %d\n",RB_SS, getSystemFlag(FLAG_SSIZE8));
   printf("RB_TF, getSystemFlag(FLAG_TDM24)   %d %d\n",RB_TF, getSystemFlag(FLAG_TDM24));
@@ -491,6 +737,7 @@ void fnRebuildRadioState() {
   printf("CB_JC, JC_BASE_AHOME, SH_BASE_AHOME        %d %d %d\n",CB_JC, JC_BASE_AHOME, SH_BASE_AHOME);
   printf("CB_JC, JC_BASE_HOME, SH_BASE_HOME          %d %d %d\n",CB_JC, JC_BASE_HOME, SH_BASE_HOME);
   printf("CB_JC, JC_BCR, getSystemFlag(FLAG_CPXRES)  %d %d %d\n",CB_JC, JC_BCR, getSystemFlag(FLAG_CPXRES));
+  printf("CB_JC, JC_BSR, getSystemFlag(FLAG_SPCRES)  %d %d %d\n",CB_JC, JC_BSR, getSystemFlag(FLAG_SPCRES));
   printf("CB_JC, JC_BLZ, getSystemFlag(FLAG_LEAD0)   %d %d %d\n",CB_JC, JC_BLZ, getSystemFlag(FLAG_LEAD0));
   printf("CB_JC, JC_ERPN, eRPN                       %d %d %d\n",CB_JC, JC_ERPN, eRPN);
   printf("CB_JC, JC_FG_DOTS, jm_FG_DOTS              %d %d %d\n", CB_JC, JC_FG_DOTS, jm_FG_DOTS);
@@ -513,7 +760,7 @@ void fnRebuildRadioState() {
   printf("Nbr of RadioButton/Checkbox  %6" FMTSIZE " (MAX_RADIO_CB_ITEMS set to %d)\n",n,MAX_RADIO_CB_ITEMS);
 #endif
 }
-
+*******/
 
 /*******
 void fnRebuildRadioState() {
@@ -701,7 +948,7 @@ void fnRebuildRadioState() {
       rb.itemNr = k;
       rb.param = indexOfItems[k].param;
       rb.state = (radixMark == rb.param) ? 1 : 0;
-      rb.radioButton = RB_RM;
+      rb.radioButton = RB_RX;
       if(i<MAX_RADIO_CB_ITEMS) {
         indexOfRadioCbItems[i] = rb;
       }
@@ -829,6 +1076,10 @@ void fnRebuildRadioState() {
       case JC_BCR:
         rb.state = getFlag(FLAG_CPXRES)? 3 : 2;
         break;
+
+      case JC_BSR:                                 //JM
+        rb.state = getFlag(FLAG_SPCRES)? 3 : 2;
+        break;                                     //JM
 
       case JC_BLZ:
         rb.state = displayLeadingZeros? 3 : 2;

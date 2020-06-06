@@ -495,7 +495,9 @@ void fnRange(uint16_t unusedParamButMandatory) {
 
   longIntegerFree(longInt);
   refreshStack();
+#ifndef TESTSUITE_BUILD
   showSoftmenuCurrentPart();                       //JM
+#endif
 }
 
 
@@ -638,9 +640,6 @@ void fnReset(uint16_t confirmation) {
     currentFntScr = 0;
     currentFlgScr = 0;
     currentRegisterBrowserScreen = 9999;
-
-    // initialize the RadioButton/Checkbox items
-    fnRebuildRadioState();                                     //dr build RadioButton, Checkbox
 
     #ifndef TESTSUITE_BUILD
       while(softmenuStackPointer > 0) {

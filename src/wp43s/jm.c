@@ -274,6 +274,9 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
      fnFlipFlag(FLAG_CPXRES);                                     //dr
      break;
 
+   case JC_BSR:                                              //JM bit ComplexResult
+     fnFlipFlag(FLAG_SPCRES);                                     //dr
+     break;
 
 
   default:
@@ -1145,7 +1148,25 @@ void fnJM(uint16_t JM_OPCODE) {
     longIntegerFree(lgInt);
     #endif
 
- } 
+ } else
+
+ if(JM_OPCODE == 47) {                                         // CALL SETTINGS
+    #ifndef TESTSUITE_BUILD
+    runFunction(ITM_FF);
+
+/*    int16_t m;
+    m = 0;
+    while(softmenu[m].menuId != 0) {
+      if(softmenu[m].menuId == ITM_CFG) {
+       break;
+      }
+      m++;
+    }
+    pushSoftmenu(m);
+*/
+    showSoftmenu(NULL, -MNU_SYSFL, true);
+    #endif
+  }
 
 
 

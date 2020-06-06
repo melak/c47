@@ -382,7 +382,6 @@ void restoreCalc(void) {
 
     fclose(backup);
     printf("End of calc's restoration\n");
-    fnRebuildRadioState();                                                      //dr build RadioButton, CheckBox
 
     #if (DEBUG_REGISTER_L == 1)
       //if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {

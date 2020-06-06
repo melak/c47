@@ -208,6 +208,7 @@ void fnASSIGN       (int16_t JM_ASN_MODE, int16_t tempkey);
 #define JC_BLZ                 10    // CB LeadingZeros
 #define JC_PROPER              11    // CB FractionType
 #define JC_IMPROPER            12    // CB FractionType
+#define JC_BSR                 13    // CB SpecialResult
 #define JM_INP_DFLT            15    // Input_Default
 
 #define JC_FG_LINE             20    // screen setup

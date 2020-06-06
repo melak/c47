@@ -1785,7 +1785,7 @@
 #define ITM_H_SUMRY                   1745   //JMHOME
 #define ITM_H_REPLCA                  1746   //JMHOME
 #define ITM_H_FIXED                   1747   //JMHOME
-#define Not_used1748                  1748
+#define ITM_CB_SPCRES                 1748
 #define ITM_USER_V43                     1749
 #define ITM_EE_D2Y                    1750   //JM EE
 #define ITM_EE_Y2D                    1751   //JM EE
@@ -1997,7 +1997,7 @@
 #define ITM_LISTXY                    1954   //JMSTAT
 #define ITM_toPOL2                    1955   //JM
 #define ITM_toREC2                    1956   //JM
-#define MNU_CFG                       1957   //JM Replacements
+#define ITM_CFG                       1957   //JM Replacements
 #define ITM_CLK12                     1958   //JM Replacements
 #define ITM_CLK24                     1959   //JM Replacements
 #define ITM_CPXI                      1960

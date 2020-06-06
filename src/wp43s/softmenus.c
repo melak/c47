@@ -65,12 +65,13 @@ const int16_t menu_CPX[]         = { ITM_RE,                        ITM_IM,     
                         /*KEY_CC1 removed this one*/
 
 const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
-                                     ITM_ROUND,                     ITM_ROUNDI,                 ITM_RDP,                  ITM_RSD,               ITM_SCIOVR,                  ITM_ENGOVR,                        //JM added CFG
-                                     ITM_DSTACK,                    ITM_GAP,                    ITM_NULL,                 ITM_NULL,              ITM_RECT,                    ITM_POLAR,                           //JM added SIGFIG & UNIT
+                                     ITM_ROUND,                     ITM_ROUNDI,                 ITM_RDP,                  ITM_RSD,               ITM_NULL,                    ITM_NULL,                           //JM 
+                                     ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM 
 
-                                     ITM_CPXI,                      ITM_CPXJ,                   ITM_SSIZE4,               ITM_SSIZE8,            ITM_MULTCR,                  ITM_MULTDOT,
-                                     ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_RNG,                     ITM_GETRANGE,                          //JM sequence change
-                                     ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    -MNU_CFG,                         //JM sequence change
+
+                                     ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_DSTACK,               ITM_CB_LEADING_ZERO,   ITM_MULTCR,                  ITM_MULTDOT,                        //JM 
+                                     ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_CPXI,                    ITM_CPXJ,                           //JM 
+                                     ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM 
 
                                      ITM_SETCHN,                    ITM_SETEUR,                 ITM_SETIND,               ITM_SETJPN,            ITM_SETUK,                   ITM_SETUSA,                    
                                      ITM_CLK12,                     ITM_CLK24,                  ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
@@ -134,14 +135,19 @@ const int16_t menu_M_EDIT[]      = { CHR_LEFT_ARROW,                CHR_UP_ARROW
 const int16_t menu_M_EDITN[]     = { CHR_LEFT_ARROW,                CHR_UP_ARROW,               ITM_M_OLD,                ITM_M_GOTO,            CHR_DOWN_ARROW,              CHR_RIGHT_ARROW,
                                      ITM_M_INSR,                    ITM_NULL,                   ITM_M_DELR,               ITM_NULL,              ITM_M_WRAP,                  ITM_M_GROW                    };
 
-const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_RAD,                    ITM_GRAD,                 ITM_MULPI,             ITM_DMS,                     ITM_CB_CPXRES,
-                                     ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_INP_DEF_SI,              ITM_CB_LEADING_ZERO,                           //JM
+const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_RAD,                    ITM_GRAD,                 ITM_MULPI,             ITM_DMS,                     ITM_CFG,
+                                     ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                       //JM sequence change
 #ifndef DMCP_BUILD
-                                     ITM_NULL,                      ITM_ERPN,                   ITM_SETSIG,               ITM_RM,                ITM_RECT,                    ITM_POLAR,                         //JM modifoed
+                                     ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_RECT,                    ITM_POLAR,                         //JM modifoed
 #endif
 #ifdef DMCP_BUILD
-                                     ITM_SYSTEM,                    ITM_ERPN,                   ITM_SETSIG,               ITM_RM,                ITM_RECT,                    ITM_POLAR,                     
+                                     ITM_SYSTEM,                    ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_RECT,                    ITM_POLAR,                     
 #endif
+
+                                     ITM_SSIZE4,                    ITM_SSIZE8,                 ITM_CB_CPXRES,            ITM_CB_SPCRES,         ITM_NULL,                    ITM_CFG,                       //JM sequence change
+                                     ITM_ERPN,                      ITM_RNG,                    ITM_SETSIG,               ITM_RM,                ITM_NULL,                    ITM_NULL,                      //JM sequence change
+                                     ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_INP_DEF_SI,              ITM_NULL,                      //JM
+
 
 #if !defined(DMCP_BUILD) && defined (INLINE_TEST)                               //vv dr
                                      ITM_BASE_HOME,                 ITM_BASE_AHOME,             -MNU_INL_TST,             ITM_FG_LINE,           ITM_FG_DOTS,                 ITM_G_DOUBLETAP,                    //JM
@@ -387,22 +393,6 @@ const int16_t menu_TamStoRcl[]   = { ITM_INDIRECTION,               -MNU_VAR,   
                                      ITM_Config,                    ITM_Stack,                  ITM_NULL,                 ITM_NULL,              ITM_Max,                     ITM_Min,
                                      ITM_dddEL,                     ITM_dddIJ,                  ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 const int16_t menu_MyMenu[]      = { ITM_cos                                                                                                                                                                };
-
-const int16_t menu_CFG[]         = { ITM_NULL,                      ITM_NULL,                   ITM_SSIZE4,               ITM_SSIZE8,            ITM_CB_CPXRES,               ITM_CB_LEADING_ZERO,
-                                     ITM_CPXI,                      ITM_CPXJ,                   ITM_NULL,               ITM_NULL,            ITM_NULL,                  ITM_NULL,                         //JM sequence change
-                                     ITM_MULTCR,                    ITM_MULTDOT,                ITM_RM,                   ITM_NULL,             ITM_NULL,                  ITM_NULL,                         //JM sequence change
-
-                                     ITM_SETCHN,                    ITM_SETEUR,                 ITM_SETIND,               ITM_SETJPN,            ITM_SETUK,                   ITM_SETUSA,                    
-                                     ITM_CLK12,                     ITM_CLK24,                  ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
-                                     ITM_RDXPER,                    ITM_RDXCOM,                 ITM_GAP,                  ITM_DMY,               ITM_YMD,                     ITM_MDY,
-
-
-#if !defined(DMCP_BUILD) && defined (INLINE_TEST)                               //vv dr
-                                     ITM_BASE_HOME,                 ITM_BASE_AHOME,             -MNU_INL_TST,             ITM_FG_LINE,           ITM_FG_DOTS,                 ITM_G_DOUBLETAP,                    //JM
-#else                                                                           //^^
-                                     ITM_BASE_HOME,                 ITM_BASE_AHOME,             ITM_NULL,                 ITM_FG_LINE,           ITM_FG_DOTS,                 ITM_G_DOUBLETAP,                    //JM
-#endif                                                                          //dr
-                                     -MNU_ASN,                      ITM_NULL,                   ITM_NULL,                 ITM_HOMEx3,            ITM_HOMEx3T,                 ITM_SHTIM                      };   //JM
 
 const int16_t menu_BASE[]        = { CHR_A,                         CHR_B,                      CHR_C,                    CHR_D,                 CHR_E,                       CHR_F, 
                                      ITM_toSI,                      KEY_HASH,                   ITM_2HEX,                 ITM_2DEC,              ITM_2OCT,             	      ITM_2BIN,                           //JM BASE MENU ADDED
@@ -685,7 +675,6 @@ const softmenu_t softmenu[] = {
   {.menuId = -MNU_M_EDIT,      .numItems = sizeof(menu_M_EDIT     )/sizeof(int16_t), .softkeyItem = menu_M_EDIT      },
   {.menuId = -MNU_M_EDITN,     .numItems = sizeof(menu_M_EDITN    )/sizeof(int16_t), .softkeyItem = menu_M_EDITN     },
   {.menuId = -MNU_MODE,        .numItems = sizeof(menu_MODE       )/sizeof(int16_t), .softkeyItem = menu_MODE        },
-  {.menuId = -MNU_CFG,         .numItems = sizeof(menu_CFG        )/sizeof(int16_t), .softkeyItem = menu_CFG         },
   {.menuId = -MNU_PARTS,       .numItems = sizeof(menu_PARTS      )/sizeof(int16_t), .softkeyItem = menu_PARTS       },
   {.menuId = -MNU_PROB,        .numItems = sizeof(menu_PROB       )/sizeof(int16_t), .softkeyItem = menu_PROB        },
   {.menuId = -MNU_T,           .numItems = sizeof(menu_t          )/sizeof(int16_t), .softkeyItem = menu_t           },
@@ -1452,13 +1441,10 @@ void showSoftmenuCurrentPart(void) {
         
         else                                                                   //JMvv
         if(softmenu[m].menuId == -MNU_SYSFL) {
-          //printf("%s %d %d\n",indexOfItems[item%10000].itemCatalogName, indexOfItems[item%10000].param, getSystemFlag(indexOfItems[item%10000].param));
-          if(getSystemFlag(indexOfItems[item%10000].param)) {
-            showSoftkey(indexOfItems[item%10000].itemCatalogName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, CB_TRUE, -1);
-          } 
-          else {
-            showSoftkey(indexOfItems[item%10000].itemCatalogName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, CB_FALSE, -1);
-          }
+          if(indexOfItems[item%10000].itemCatalogName[0] == 0)
+            showSoftkey(indexOfItems[item%10000].itemCatalogName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue);
+          else
+            showSoftkey(indexOfItems[item%10000].itemCatalogName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, getSystemFlag(indexOfItems[item%10000].param) ?  CB_TRUE : CB_FALSE, -1);
         }                                                                      //JM^^
 
         else if(item == 9999) {

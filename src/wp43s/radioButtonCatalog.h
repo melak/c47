@@ -34,7 +34,7 @@ int8_t   fnCbIsSet             (int16_t item);
 void     fnRefreshRadioState   (char rb, uint16_t mode);
 void     fnRefreshComboxState  (char rb, uint16_t param, bool_t state);
 int16_t  fnItemShowValue       (int16_t item);
-void     fnRebuildRadioState   (void);
+//void   fnRebuildRadioState   (void);
 char*    figlabel              (const char* label, int16_t showValue);
 
 
@@ -54,7 +54,7 @@ char*    figlabel              (const char* label, int16_t showValue);
 #define RB_FT   ')' // FractionType
 #define RB_IM   '*' // IntegerMode
 #define RB_PS   '+' // ProductSign
-#define RB_RM   ',' // RadixMark
+#define RB_RX   ',' // RadixMark
 #define RB_SS   '-' // StackSize
 #define RB_TF   '.' // TimeFormat
 #define RB_WS   '/' // WordSize

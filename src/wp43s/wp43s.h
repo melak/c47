@@ -115,6 +115,7 @@
   #define registerBrowser fnNop
   #define flagBrowser     fnNop
   #define fontBrowser     fnNop
+  #define flagBrowser_old fnNop      //JM
   #define refreshRegisterLine(a)  {}
   #define clearScreen(a, b, c)    {}
   #define toggleUserMode()        {}
@@ -130,7 +131,7 @@
   #define showAlphaMode()         {}
   #define showHideUserMode()      {}
   #define showHideLowBattery()    {}
-  #define JM_LAYOUT_1A               //Preferred layout
+  #define JM_LAYOUT_1A               //JM Preferred layout
 #endif
 
 #ifndef TESTSUITE_BUILD                 //vv dr
@@ -276,7 +277,6 @@ typedef int16_t calcRegister_t;
 #else
 #define LCD_REFRESH_TIMEOUT   100 //timeout for lcd refresh in ms
 #endif 
-#define MAX_RADIO_CB_ITEMS     67 //73  //JMMAX                                             //dr build RadioButton, CheckBox
 
 // timer nr for FG and FN use
 #define TO_FG_LONG              0
@@ -672,8 +672,6 @@ extern bool_t                printerIconEnabled;
 extern bool_t                shiftF;
 extern bool_t                shiftG;
 //extern bool_t              shiftStateChanged;    //dr
-extern radiocb_t             indexOfRadioCbItems[MAX_RADIO_CB_ITEMS];            //vv dr build RadioButton, CheckBox
-//extern uint16_t            cntOfRadioCbItems;                                  //^^
 extern bool_t                showContent;
 extern bool_t                savedStackLiftEnabled;
 extern bool_t                rbr1stDigit;

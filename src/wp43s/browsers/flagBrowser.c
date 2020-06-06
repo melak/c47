@@ -342,11 +342,11 @@ void flagBrowser_old(uint16_t unusedParamButMandatory) {           //Returned fr
       	case 102: strcpy(tmpStr3000, "   102.Z"); break;
       	case 103: strcpy(tmpStr3000, " TRACE.T"); break;
       	case 104: strcpy(tmpStr3000, "ALLENG.A"); break;
-      	case 105: strcpy(tmpStr3000, "OVRFLO.B"); break;
+      	case 105: strcpy(tmpStr3000, " OVRFL.B"); break;
       	case 106: strcpy(tmpStr3000, " CARRY.C"); break;
       	case 107: strcpy(tmpStr3000, "SPCRES.D"); break;
-      	case 108: strcpy(tmpStr3000, " LEAD0.E"); break;
-      	case 109: strcpy(tmpStr3000, "CPXRES.F"); break;
+      	case 108: strcpy(tmpStr3000, " LEAD0.L"); break;
+      	case 109: strcpy(tmpStr3000, "CPXRES.I"); break;
       	case 110: strcpy(tmpStr3000, "   110.J"); break;
       	case 111: strcpy(tmpStr3000, "   111.K"); break;
       	default:  sprintf(tmpStr3000,"   %d ", f);break;

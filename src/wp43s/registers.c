@@ -1786,8 +1786,7 @@ void fnRecallConfig(uint16_t r) {
     recallFromDtConfigDescriptor(jm_VECT);          
     recallFromDtConfigDescriptor(jm_HOME_SUM);      
     recallFromDtConfigDescriptor(jm_HOME_MIR);      
-    recallFromDtConfigDescriptor(jm_HOME_FIX);
-    fnRebuildRadioState();                                                     //JMCFG^^ //dr build RadioButton, CheckBox
+    recallFromDtConfigDescriptor(jm_HOME_FIX);                                 //JMCFG^^
 
 
     refreshStack();
