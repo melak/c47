@@ -1327,12 +1327,12 @@ void fnUserJM(uint16_t jmUser) {
     kbd_usr[27].keyLblAim     = CHR_CROSS;
     kbd_usr[27].primaryAim     = CHR_W;
     kbd_usr[27].fShiftedAim     = CHR_CROSS;
-    kbd_usr[27].gShiftedAim     = MNU_ALPHAINTL;  //??
+    kbd_usr[27].gShiftedAim     = ITM_NULL;
     kbd_usr[27].primaryTam     = ITM_MULT;
 
     kbd_usr[31].primary     = KEY_DOWN1;
     kbd_usr[31].fShifted    = KEY_SST;
-    kbd_usr[31].gShifted    = ITM_STATUS;
+    kbd_usr[31].gShifted    = ITM_FLGSV;
     kbd_usr[31].keyLblAim     = KEY_DOWN1;
     kbd_usr[31].primaryAim     = KEY_DOWN1;  //arrow
     kbd_usr[31].fShiftedAim     = KEY_SST;
