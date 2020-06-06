@@ -209,6 +209,18 @@
   /* JM removed "text-decoration: underline;" and changed from "background:  $bezelBackground;" */
 }
 
+#AimfShiftedUnderline {
+  background:  $menubackground;
+  text-decoration: underline;
+  color:       $fGold;
+  font-family: WP43S_StandardFont;
+  font-style:  normal;
+  font-weight: normal;
+  font-size:   18px;  
+  padding:     0px;
+  /* JM added label; changed from "background:  $bezelBackground;" */
+}
+
 #gShifted {
   background:  $bezelBackground;
   color:       $gBlue;
