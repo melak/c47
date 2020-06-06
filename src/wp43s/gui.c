@@ -41,7 +41,7 @@ GtkWidget *btn21,   *btn22,   *btn23,   *btn24,   *btn25,   *btn26;
 GtkWidget *lbl21F,  *lbl22F,  *lbl23F,  *lbl24F,  *lbl25F,  *lbl26F;
 GtkWidget *lbl21G,  *lbl22G,  *lbl23G,  *lbl24G,  *lbl25G,  *lbl26G;
 GtkWidget *lbl21L,  *lbl22L,  *lbl23L,  *lbl24L,  *lbl25L,  *lbl26L;
-GtkWidget *lbl21H,                                          *lbl26H;
+GtkWidget *lbl21H;
 GtkWidget *lbl21Gr, *lbl22Gr, *lbl23Gr, *lbl24Gr, *lbl25Gr, *lbl26Gr;
 GtkWidget *btn21A,  *btn22A,  *btn23A,  *btn24A,  *btn25A,  *btn26A;    //dr - new AIM
 GtkWidget *lbl21Fa, *lbl22Fa, *lbl23Fa;                                 //JM
@@ -1059,7 +1059,6 @@ void hideAllWidgets(void) {
   gtk_widget_hide(lbl25L);
   gtk_widget_hide(lbl26F);
   gtk_widget_hide(lbl26G);
-  gtk_widget_hide(lbl26H);
   gtk_widget_hide(lbl26L);
   gtk_widget_hide(lbl21Gr);
   gtk_widget_hide(lbl22Gr);
@@ -2172,7 +2171,6 @@ void calcModeNormalGui(void) {
   gtk_widget_show(lbl26L);
   gtk_widget_show(lbl26F);
   gtk_widget_show(lbl26G);
-  gtk_widget_show(lbl26H);
 
   gtk_widget_show(btn31);
   gtk_widget_show(btn32);
@@ -3082,7 +3080,6 @@ void setupUI(void) {
   lbl23L  = gtk_label_new("");
   lbl24L  = gtk_label_new("");
   lbl25L  = gtk_label_new("");
-  lbl26H  = gtk_label_new("\u2713"); // Checkmark
   lbl26L  = gtk_label_new("");
   lbl21Gr = gtk_label_new("");
   lbl22Gr = gtk_label_new("");
