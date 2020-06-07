@@ -1322,6 +1322,12 @@
 			<Option target="wp43s_debug" />
 			<Option target="testSuite" />
 		</Unit>
+		<Unit filename="src/wp43s/mathematics/expMOne.c">
+			<Option compilerVar="CC" />
+			<Option target="wp43s" />
+			<Option target="wp43s_debug" />
+			<Option target="testSuite" />
+		</Unit>
 		<Unit filename="src/wp43s/mathematics/exp.h">
 			<Option target="wp43s" />
 			<Option target="wp43s_debug" />
@@ -1460,6 +1466,12 @@
 			<Option target="testSuite" />
 		</Unit>
 		<Unit filename="src/wp43s/mathematics/ln.c">
+			<Option compilerVar="CC" />
+			<Option target="wp43s" />
+			<Option target="wp43s_debug" />
+			<Option target="testSuite" />
+		</Unit>
+		<Unit filename="src/wp43s/mathematics/lnPOne.c">
 			<Option compilerVar="CC" />
 			<Option target="wp43s" />
 			<Option target="wp43s_debug" />

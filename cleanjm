@@ -1,0 +1,256 @@
+#!/bin/bash
+
+PATH=$PATH:/Users/jacomostert/Documents/WP43S/DM42/gcc-arm-none-eabi-8-2019-q3-update/bin
+
+
+cd ./DMCP_build
+make clean
+cd ..
+
+make -j8 V=1 clean_all
+rm ./backup.bin
+rm ./wp43c
+rm ./wp43s
+rm ./DMCP_build/build/*
+
+make -j8 V=1 mrproper
+
+
+find *.dSYM -type f -name "*.dSYM" -exec rm {} \;
+find . -type f -name "WP43S\ *.elf" -exec rm {} \;
+find . -type f -name "rasterFontsData\ *.c" -exec rm {} \;
+
+
+find . -type f -name "generateCatalogs\ 1" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 2" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 3" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 4" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 5" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 6" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 7" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 8" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 9" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 10" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 11" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 12" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 13" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 14" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 15" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 16" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 17" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 18" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 19" -exec rm {} \;
+find . -type f -name "generateCatalogs\ 20" -exec rm {} \;
+
+find . -type f -name "* 2.css" -exec rm {} \;
+find . -type f -name "* 3.css" -exec rm {} \;
+find . -type f -name "* 4.css" -exec rm {} \;
+find . -type f -name "* 5.css" -exec rm {} \;
+find . -type f -name "* 6.css" -exec rm {} \;
+find . -type f -name "* 7.css" -exec rm {} \;
+find . -type f -name "* 8.css" -exec rm {} \;
+find . -type f -name "* 9.css" -exec rm {} \;
+find . -type f -name "* 10.css" -exec rm {} \;
+find . -type f -name "* 11.css" -exec rm {} \;
+find . -type f -name "* 12.css" -exec rm {} \;
+find . -type f -name "* 13.css" -exec rm {} \;
+find . -type f -name "* 14.css" -exec rm {} \;
+find . -type f -name "* 15.css" -exec rm {} \;
+find . -type f -name "* 16.css" -exec rm {} \;
+find . -type f -name "* 17.css" -exec rm {} \;
+find . -type f -name "* 18.css" -exec rm {} \;
+find . -type f -name "* 19.css" -exec rm {} \;
+find . -type f -name "* 20.css" -exec rm {} \;
+
+find . -type f -name "* 2.txt" -exec rm {} \;
+find . -type f -name "* 3.txt" -exec rm {} \;
+find . -type f -name "* 4.txt" -exec rm {} \;
+find . -type f -name "* 5.txt" -exec rm {} \;
+find . -type f -name "* 6.txt" -exec rm {} \;
+find . -type f -name "* 7.txt" -exec rm {} \;
+find . -type f -name "* 8.txt" -exec rm {} \;
+find . -type f -name "* 9.txt" -exec rm {} \;
+find . -type f -name "* 10.txt" -exec rm {} \;
+find . -type f -name "* 11.txt" -exec rm {} \;
+find . -type f -name "* 12.txt" -exec rm {} \;
+find . -type f -name "* 13.txt" -exec rm {} \;
+find . -type f -name "* 14.txt" -exec rm {} \;
+find . -type f -name "* 15.txt" -exec rm {} \;
+find . -type f -name "* 16.txt" -exec rm {} \;
+find . -type f -name "* 17.txt" -exec rm {} \;
+find . -type f -name "* 18.txt" -exec rm {} \;
+find . -type f -name "* 19.txt" -exec rm {} \;
+find . -type f -name "* 20.txt" -exec rm {} \;
+
+find . -type f -name "* 2.o" -exec rm {} \;
+find . -type f -name "* 3.o" -exec rm {} \;
+find . -type f -name "* 4.o" -exec rm {} \;
+find . -type f -name "* 5.o" -exec rm {} \;
+find . -type f -name "* 6.o" -exec rm {} \;
+find . -type f -name "* 7.o" -exec rm {} \;
+find . -type f -name "* 8.o" -exec rm {} \;
+find . -type f -name "* 9.o" -exec rm {} \;
+find . -type f -name "* 10.o" -exec rm {} \;
+find . -type f -name "* 11.o" -exec rm {} \;
+find . -type f -name "* 12.o" -exec rm {} \;
+find . -type f -name "* 13.o" -exec rm {} \;
+find . -type f -name "* 14.o" -exec rm {} \;
+find . -type f -name "* 15.o" -exec rm {} \;
+find . -type f -name "* 16.o" -exec rm {} \;
+find . -type f -name "* 17.o" -exec rm {} \;
+find . -type f -name "* 18.o" -exec rm {} \;
+find . -type f -name "* 19.o" -exec rm {} \;
+find . -type f -name "* 20.o" -exec rm {} \;
+
+find . -type f -name "* 2.d" -exec rm {} \;
+find . -type f -name "* 3.d" -exec rm {} \;
+find . -type f -name "* 4.d" -exec rm {} \;
+find . -type f -name "* 5.d" -exec rm {} \;
+find . -type f -name "* 6.d" -exec rm {} \;
+find . -type f -name "* 7.d" -exec rm {} \;
+find . -type f -name "* 8.d" -exec rm {} \;
+find . -type f -name "* 9.d" -exec rm {} \;
+find . -type f -name "* 10.d" -exec rm {} \;
+find . -type f -name "* 11.d" -exec rm {} \;
+find . -type f -name "* 12.d" -exec rm {} \;
+find . -type f -name "* 13.d" -exec rm {} \;
+find . -type f -name "* 14.d" -exec rm {} \;
+find . -type f -name "* 15.d" -exec rm {} \;
+find . -type f -name "* 16.d" -exec rm {} \;
+find . -type f -name "* 17.d" -exec rm {} \;
+find . -type f -name "* 18.d" -exec rm {} \;
+find . -type f -name "* 19.d" -exec rm {} \;
+find . -type f -name "* 20.d" -exec rm {} \;
+
+
+cd ./src
+cd ./wp43s
+
+
+rm "rasterFontsData 2.c" "rasterFontsData 3.c" "rasterFontsData 4.c" "rasterFontsData 5.c" "rasterFontsData 6.c" "rasterFontsData 7.c" "rasterFontsData 8.c" "rasterFontsData 9.c" "rasterFontsData 10.c" "rasterFontsData 11.c"
+rm "addons 2.c" "addons 3.c" "addons 4.c" "addons 5.c" "addons 6.c" "addons 7.c" "addons 8.c" "addons 9.c" "addons 10.c" "addons 11.c"
+rm "textfiles 2.c" "textfiles 3.c" "textfiles 4.c" "textfiles 5.c" "textfiles 6.c" "textfiles 7.c" "textfiles 8.c" "textfiles 9.c" "textfiles 10.c" "textfiles 11.c"
+
+rm "textfiles 2.o" "textfiles 3.o" "textfiles 4.o" "textfiles 5.o" "textfiles 6.o" "textfiles 7.o" "textfiles 8.o" "textfiles 9.o" "textfiles 10.o" "textfiles 11.o"
+rm "rasterFontsData 2.o" "rasterFontsData 3.o" "rasterFontsData 4.o" "rasterFontsData 5.o" "rasterFontsData 6.o" "rasterFontsData 7.o" "rasterFontsData 8.o" "rasterFontsData 9.o" "rasterFontsData 10.o" "rasterFontsData 11.o"
+rm "addons 2.o" "addons 3.o" "addons 4.o" "addons 5.o" "addons 6.o" "addons 7.o" "addons 8.o" "addons 9.o" "addons 10.o" "addons 11.o"
+rm "assign 2.o" "assign 3.o" "assign 4.o" "assign 5.o" "assign 6.o" "assign 7.o" "assign 8.o" "assign 9.o" "assign 10.o" "assign 11.o"
+rm "bufferize 2.o" "bufferize 3.o" "bufferize 4.o" "bufferize 5.o" "bufferize 6.o" "bufferize 7.o" "bufferize 8.o" "bufferize 9.o" "bufferize 10.o" "bufferize 11.o"
+rm "charString 2.o" "charString 3.o" "charString 4.o" "charString 5.o" "charString 6.o" "charString 7.o" "charString 8.o" "charString 9.o" "charString 10.o" "charString 11.o"
+rm "config 2.o" "config 3.o" "config 4.o" "config 5.o" "config 6.o" "config 7.o" "config 8.o" "config 9.o" "config 10.o" "config 11.o"
+rm "constantPointers 2.o" "constantPointers 3.o" "constantPointers 4.o" "constantPointers 5.o" "constantPointers 6.o" "constantPointers 7.o" "constantPointers 8.o" "constantPointers 9.o" "constantPointers 10.o" "constantPointers 11.o"
+rm "constants 2.o" "constants 3.o" "constants 4.o" "constants 5.o" "constants 6.o" "constants 7.o" "constants 8.o" "constants 9.o" "constants 10.o" "constants 11.o"
+rm "conversionAngles 2.o" "conversionAngles 3.o" "conversionAngles 4.o" "conversionAngles 5.o" "conversionAngles 6.o" "conversionAngles 7.o" "conversionAngles 8.o" "conversionAngles 9.o" "conversionAngles 10.o" "conversionAngles 11.o"
+rm "conversionUnits 2.o" "conversionUnits 3.o" "conversionUnits 4.o" "conversionUnits 5.o" "conversionUnits 6.o" "conversionUnits 7.o" "conversionUnits 8.o" "conversionUnits 9.o" "conversionUnits 10.o" "conversionUnits 11.o"
+rm "curveFitting 2.o" "curveFitting 3.o" "curveFitting 4.o" "curveFitting 5.o" "curveFitting 6.o" "curveFitting 7.o" "curveFitting 8.o" "curveFitting 9.o" "curveFitting 10.o" "curveFitting 11.o"
+rm "dateTime 2.o" "dateTime 3.o" "dateTime 4.o" "dateTime 5.o" "dateTime 6.o" "dateTime 7.o" "dateTime 8.o" "dateTime 9.o" "dateTime 10.o" "dateTime 11.o"
+rm "debug 2.o" "debug 3.o" "debug 4.o" "debug 5.o" "debug 6.o" "debug 7.o" "debug 8.o" "debug 9.o" "debug 10.o" "debug 11.o"
+rm "display 2.o" "display 3.o" "display 4.o" "display 5.o" "display 6.o" "display 7.o" "display 8.o" "display 9.o" "display 10.o" "display 11.o"
+rm "error 2.o" "error 3.o" "error 4.o" "error 5.o" "error 6.o" "error 7.o" "error 8.o" "error 9.o" "error 10.o" "error 11.o"
+rm "flags 2.o" "flags 3.o" "flags 4.o" "flags 5.o" "flags 6.o" "flags 7.o" "flags 8.o" "flags 9.o" "flags 10.o" "flags 11.o"
+rm "fonts 2.o" "fonts 3.o" "fonts 4.o" "fonts 5.o" "fonts 6.o" "fonts 7.o" "fonts 8.o" "fonts 9.o" "fonts 10.o" "fonts 11.o"
+rm "fractions 2.o" "fractions 3.o" "fractions 4.o" "fractions 5.o" "fractions 6.o" "fractions 7.o" "fractions 8.o" "fractions 9.o" "fractions 10.o" "fractions 11.o"
+rm "gui 2.o" "gui 3.o" "gui 4.o" "gui 5.o" "gui 6.o" "gui 7.o" "gui 8.o" "gui 9.o" "gui 10.o" "gui 11.o"
+rm "integers 2.o" "integers 3.o" "integers 4.o" "integers 5.o" "integers 6.o" "integers 7.o" "integers 8.o" "integers 9.o" "integers 10.o" "integers 11.o"
+rm "items 2.o" "items 3.o" "items 4.o" "items 5.o" "items 6.o" "items 7.o" "items 8.o" "items 9.o" "items 10.o" "items 11.o"
+rm "jm 2.o" "jm 3.o" "jm 4.o" "jm 5.o" "jm 6.o" "jm 7.o" "jm 8.o" "jm 9.o" "jm 10.o" "jm 11.o"
+rm "keyboard 2.o" "keyboard 3.o" "keyboard 4.o" "keyboard 5.o" "keyboard 6.o" "keyboard 7.o" "keyboard 8.o" "keyboard 9.o" "keyboard 10.o" "keyboard 11.o"
+rm "memory 2.o" "memory 3.o" "memory 4.o" "memory 5.o" "memory 6.o" "memory 7.o" "memory 8.o" "memory 9.o" "memory 10.o" "memory 11.o"
+rm "rasterFontsData 2.o" "rasterFontsData 3.o" "rasterFontsData 4.o" "rasterFontsData 5.o" "rasterFontsData 6.o" "rasterFontsData 7.o" "rasterFontsData 8.o" "rasterFontsData 9.o" "rasterFontsData 10.o" "rasterFontsData 11.o"
+rm "registerValueConversions 2.o" "registerValueConversions 3.o" "registerValueConversions 4.o" "registerValueConversions 5.o" "registerValueConversions 6.o" "registerValueConversions 7.o" "registerValueConversions 8.o" "registerValueConversions 9.o" "registerValueConversions 10.o" "registerValueConversions 11.o"
+rm "registers 2.o" "registers 3.o" "registers 4.o" "registers 5.o" "registers 6.o" "registers 7.o" "registers 8.o" "registers 9.o" "registers 10.o" "registers 11.o"
+rm "saveRestoreCalcState 2.o" "saveRestoreCalcState 3.o" "saveRestoreCalcState 4.o" "saveRestoreCalcState 5.o" "saveRestoreCalcState 6.o" "saveRestoreCalcState 7.o" "saveRestoreCalcState 8.o" "saveRestoreCalcState 9.o" "saveRestoreCalcState 10.o" "saveRestoreCalcState 11.o"
+rm "screen 2.o" "screen 3.o" "screen 4.o" "screen 5.o" "screen 6.o" "screen 7.o" "screen 8.o" "screen 9.o" "screen 10.o" "screen 11.o"
+rm "softmenus 2.o" "softmenus 3.o" "softmenus 4.o" "softmenus 5.o" "softmenus 6.o" "softmenus 7.o" "softmenus 8.o" "softmenus 9.o" "softmenus 10.o" "softmenus 11.o"
+rm "sort 2.o" "sort 3.o" "sort 4.o" "sort 5.o" "sort 6.o" "sort 7.o" "sort 8.o" "sort 9.o" "sort 10.o" "sort 11.o"
+rm "stack 2.o" "stack 3.o" "stack 4.o" "stack 5.o" "stack 6.o" "stack 7.o" "stack 8.o" "stack 9.o" "stack 10.o" "stack 11.o"
+rm "stats 2.o" "stats 3.o" "stats 4.o" "stats 5.o" "stats 6.o" "stats 7.o" "stats 8.o" "stats 9.o" "stats 10.o" "stats 11.o"
+rm "statusBar 2.o" "statusBar 3.o" "statusBar 4.o" "statusBar 5.o" "statusBar 6.o" "statusBar 7.o" "statusBar 8.o" "statusBar 9.o" "statusBar 10.o" "statusBar 11.o"
+rm "timer 2.o" "timer 3.o" "timer 4.o" "timer 5.o" "timer 6.o" "timer 7.o" "timer 8.o" "timer 9.o" "timer 10.o" "timer 11.o"
+rm "wp43s 2.o" "wp43s 3.o" "wp43s 4.o" "wp43s 5.o" "wp43s 6.o" "wp43s 7.o" "wp43s 8.o" "wp43s 9.o" "wp43s 10.o" "wp43s 11.o"
+
+rm "assign 2.d" "assign 3.d" "assign 4.d" "assign 5.d" "assign 6.d" "assign 7.d" "assign 8.d" "assign 9.d" "assign 10.d" "assign 11.d"
+rm "bufferize 2.d" "bufferize 3.d" "bufferize 4.d" "bufferize 5.d" "bufferize 6.d" "bufferize 7.d" "bufferize 8.d" "bufferize 9.d" "bufferize 10.d" "bufferize 11.d"
+rm "charString 2.d" "charString 3.d" "charString 4.d" "charString 5.d" "charString 6.d" "charString 7.d" "charString 8.d" "charString 9.d" "charString 10.d" "charString 11.d"
+rm "config 2.d" "config 3.d" "config 4.d" "config 5.d" "config 6.d" "config 7.d" "config 8.d" "config 9.d" "config 10.d" "config 11.d"
+rm "constantPointers 2.d" "constantPointers 3.d" "constantPointers 4.d" "constantPointers 5.d" "constantPointers 6.d" "constantPointers 7.d" "constantPointers 8.d" "constantPointers 9.d" "constantPointers 10.d" "constantPointers 11.d"
+rm "constants 2.d" "constants 3.d" "constants 4.d" "constants 5.d" "constants 6.d" "constants 7.d" "constants 8.d" "constants 9.d" "constants 10.d" "constants 11.d"
+rm "conversionAngles 2.d" "conversionAngles 3.d" "conversionAngles 4.d" "conversionAngles 5.d" "conversionAngles 6.d" "conversionAngles 7.d" "conversionAngles 8.d" "conversionAngles 9.d" "conversionAngles 10.d" "conversionAngles 11.d"
+rm "conversionUnits 2.d" "conversionUnits 3.d" "conversionUnits 4.d" "conversionUnits 5.d" "conversionUnits 6.d" "conversionUnits 7.d" "conversionUnits 8.d" "conversionUnits 9.d" "conversionUnits 10.d" "conversionUnits 11.d"
+rm "curveFitting 2.d" "curveFitting 3.d" "curveFitting 4.d" "curveFitting 5.d" "curveFitting 6.d" "curveFitting 7.d" "curveFitting 8.d" "curveFitting 9.d" "curveFitting 10.d" "curveFitting 11.d"
+rm "dateTime 2.d" "dateTime 3.d" "dateTime 4.d" "dateTime 5.d" "dateTime 6.d" "dateTime 7.d" "dateTime 8.d" "dateTime 9.d" "dateTime 10.d" "dateTime 11.d"
+rm "debug 2.d" "debug 3.d" "debug 4.d" "debug 5.d" "debug 6.d" "debug 7.d" "debug 8.d" "debug 9.d" "debug 10.d" "debug 11.d"
+rm "display 2.d" "display 3.d" "display 4.d" "display 5.d" "display 6.d" "display 7.d" "display 8.d" "display 9.d" "display 10.d" "display 11.d"
+rm "error 2.d" "error 3.d" "error 4.d" "error 5.d" "error 6.d" "error 7.d" "error 8.d" "error 9.d" "error 10.d" "error 11.d"
+rm "flags 2.d" "flags 3.d" "flags 4.d" "flags 5.d" "flags 6.d" "flags 7.d" "flags 8.d" "flags 9.d" "flags 10.d" "flags 11.d"
+rm "fonts 2.d" "fonts 3.d" "fonts 4.d" "fonts 5.d" "fonts 6.d" "fonts 7.d" "fonts 8.d" "fonts 9.d" "fonts 10.d" "fonts 11.d"
+rm "fractions 2.d" "fractions 3.d" "fractions 4.d" "fractions 5.d" "fractions 6.d" "fractions 7.d" "fractions 8.d" "fractions 9.d" "fractions 10.d" "fractions 11.d"
+rm "gui 2.d" "gui 3.d" "gui 4.d" "gui 5.d" "gui 6.d" "gui 7.d" "gui 8.d" "gui 9.d" "gui 10.d" "gui 11.d"
+rm "integers 2.d" "integers 3.d" "integers 4.d" "integers 5.d" "integers 6.d" "integers 7.d" "integers 8.d" "integers 9.d" "integers 10.d" "integers 11.d"
+rm "items 2.d" "items 3.d" "items 4.d" "items 5.d" "items 6.d" "items 7.d" "items 8.d" "items 9.d" "items 10.d" "items 11.d"
+rm "jm 2.d" "jm 3.d" "jm 4.d" "jm 5.d" "jm 6.d" "jm 7.d" "jm 8.d" "jm 9.d" "jm 10.d" "jm 11.d"
+rm "keyboard 2.d" "keyboard 3.d" "keyboard 4.d" "keyboard 5.d" "keyboard 6.d" "keyboard 7.d" "keyboard 8.d" "keyboard 9.d" "keyboard 10.d" "keyboard 11.d"
+rm "memory 2.d" "memory 3.d" "memory 4.d" "memory 5.d" "memory 6.d" "memory 7.d" "memory 8.d" "memory 9.d" "memory 10.d" "memory 11.d"
+rm "rasterFontsData 2.d" "rasterFontsData 3.d" "rasterFontsData 4.d" "rasterFontsData 5.d" "rasterFontsData 6.d" "rasterFontsData 7.d" "rasterFontsData 8.d" "rasterFontsData 9.d" "rasterFontsData 10.d" "rasterFontsData 11.d"
+rm "registerValueConversions 2.d" "registerValueConversions 3.d" "registerValueConversions 4.d" "registerValueConversions 5.d" "registerValueConversions 6.d" "registerValueConversions 7.d" "registerValueConversions 8.d" "registerValueConversions 9.d" "registerValueConversions 10.d" "registerValueConversions 11.d"
+rm "registers 2.d" "registers 3.d" "registers 4.d" "registers 5.d" "registers 6.d" "registers 7.d" "registers 8.d" "registers 9.d" "registers 10.d" "registers 11.d"
+rm "saveRestoreCalcState 2.d" "saveRestoreCalcState 3.d" "saveRestoreCalcState 4.d" "saveRestoreCalcState 5.d" "saveRestoreCalcState 6.d" "saveRestoreCalcState 7.d" "saveRestoreCalcState 8.d" "saveRestoreCalcState 9.d" "saveRestoreCalcState 10.d" "saveRestoreCalcState 11.d"
+rm "screen 2.d" "screen 3.d" "screen 4.d" "screen 5.d" "screen 6.d" "screen 7.d" "screen 8.d" "screen 9.d" "screen 10.d" "screen 11.d"
+rm "softmenus 2.d" "softmenus 3.d" "softmenus 4.d" "softmenus 5.d" "softmenus 6.d" "softmenus 7.d" "softmenus 8.d" "softmenus 9.d" "softmenus 10.d" "softmenus 11.d"
+rm "sort 2.d" "sort 3.d" "sort 4.d" "sort 5.d" "sort 6.d" "sort 7.d" "sort 8.d" "sort 9.d" "sort 10.d" "sort 11.d"
+rm "stack 2.d" "stack 3.d" "stack 4.d" "stack 5.d" "stack 6.d" "stack 7.d" "stack 8.d" "stack 9.d" "stack 10.d" "stack 11.d"
+rm "stats 2.d" "stats 3.d" "stats 4.d" "stats 5.d" "stats 6.d" "stats 7.d" "stats 8.d" "stats 9.d" "stats 10.d" "stats 11.d"
+rm "statusBar 2.d" "statusBar 3.d" "statusBar 4.d" "statusBar 5.d" "statusBar 6.d" "statusBar 7.d" "statusBar 8.d" "statusBar 9.d" "statusBar 10.d" "statusBar 11.d"
+rm "timer 2.d" "timer 3.d" "timer 4.d" "timer 5.d" "timer 6.d" "timer 7.d" "timer 8.d" "timer 9.d" "timer 10.d" "timer 11.d"
+rm "wp43s 2.d" "wp43s 3.d" "wp43s 4.d" "wp43s 5.d" "wp43s 6.d" "wp43s 7.d" "wp43s 8.d" "wp43s 9.d" "wp43s 10.d" "wp43s 11.d"
+
+rm "fractions.ts 2.d" "fractions.ts 3.d" "fractions.ts 4.d" "fractions.ts 5.d" "fractions.ts 6.d" "fractions.ts 7.d" "fractions.ts 8.d" "fractions.ts 9.d" "fractions.ts 10.d" "fractions.ts.d"
+rm "gui.ts 2.d" "gui.ts 3.d" "gui.ts 4.d" "gui.ts 5.d" "gui.ts 6.d" "gui.ts 7.d" "gui.ts 8.d" "gui.ts 9.d" "gui.ts 10.d" "gui.ts.d"
+rm "integers.ts 2.d" "integers.ts 3.d" "integers.ts 4.d" "integers.ts 5.d" "integers.ts 6.d" "integers.ts 7.d" "integers.ts 8.d" "integers.ts 9.d" "integers.ts 10.d" "integers.ts.d"
+rm "items.ts 2.d" "items.ts 3.d" "items.ts 4.d" "items.ts 5.d" "items.ts 6.d" "items.ts 7.d" "items.ts 8.d" "items.ts 9.d" "items.ts 10.d" "items.ts.d"
+rm "keyboard.ts 2.d" "keyboard.ts 3.d" "keyboard.ts 4.d" "keyboard.ts 5.d" "keyboard.ts 6.d" "keyboard.ts 7.d" "keyboard.ts 8.d" "keyboard.ts 9.d" "keyboard.ts 10.d" "keyboard.ts.d"
+rm "memory.ts 2.d" "memory.ts 3.d" "memory.ts 4.d" "memory.ts 5.d" "memory.ts 6.d" "memory.ts 7.d" "memory.ts 8.d" "memory.ts 9.d" "memory.ts 10.d" "memory.ts.d"
+rm "rasterFontsData.ts 2.d" "rasterFontsData.ts 3.d" "rasterFontsData.ts 4.d" "rasterFontsData.ts 5.d" "rasterFontsData.ts 6.d" "rasterFontsData.ts 7.d" "rasterFontsData.ts 8.d" "rasterFontsData.ts 9.d" "rasterFontsData.ts 10.d" "rasterFontsData.ts.d"
+rm "registers.ts 2.d" "registers.ts 3.d" "registers.ts 4.d" "registers.ts 5.d" "registers.ts 6.d" "registers.ts 7.d" "registers.ts 8.d" "registers.ts 9.d" "registers.ts 10.d" "registers.ts.d"
+rm "registerValueConversions.ts 2.d" "registerValueConversions.ts 3.d" "registerValueConversions.ts 4.d" "registerValueConversions.ts 5.d" "registerValueConversions.ts 6.d" "registerValueConversions.ts 7.d" "registerValueConversions.ts 8.d" "registerValueConversions.ts 9.d" "registerValueConversions.ts 10.d" "registerValueConversions.ts.d"
+rm "saveRestoreCalcState.ts 2.d" "saveRestoreCalcState.ts 3.d" "saveRestoreCalcState.ts 4.d" "saveRestoreCalcState.ts 5.d" "saveRestoreCalcState.ts 6.d" "saveRestoreCalcState.ts 7.d" "saveRestoreCalcState.ts 8.d" "saveRestoreCalcState.ts 9.d" "saveRestoreCalcState.ts 10.d" "saveRestoreCalcState.ts.d"
+rm "screen.ts 2.d" "screen.ts 3.d" "screen.ts 4.d" "screen.ts 5.d" "screen.ts 6.d" "screen.ts 7.d" "screen.ts 8.d" "screen.ts 9.d" "screen.ts 10.d" "screen.ts.d"
+rm "softmenus.ts 2.d" "softmenus.ts 3.d" "softmenus.ts 4.d" "softmenus.ts 5.d" "softmenus.ts 6.d" "softmenus.ts 7.d" "softmenus.ts 8.d" "softmenus.ts 9.d" "softmenus.ts 10.d" "softmenus.ts.d"
+rm "sort.ts 2.d" "sort.ts 3.d" "sort.ts 4.d" "sort.ts 5.d" "sort.ts 6.d" "sort.ts 7.d" "sort.ts 8.d" "sort.ts 9.d" "sort.ts 10.d" "sort.ts.d"
+rm "stack.ts 2.d" "stack.ts 3.d" "stack.ts 4.d" "stack.ts 5.d" "stack.ts 6.d" "stack.ts 7.d" "stack.ts 8.d" "stack.ts 9.d" "stack.ts 10.d" "stack.ts.d"
+rm "stats.ts 2.d" "stats.ts 3.d" "stats.ts 4.d" "stats.ts 5.d" "stats.ts 6.d" "stats.ts 7.d" "stats.ts 8.d" "stats.ts 9.d" "stats.ts 10.d" "stats.ts.d"
+rm "statusBar.ts 2.d" "statusBar.ts 3.d" "statusBar.ts 4.d" "statusBar.ts 5.d" "statusBar.ts 6.d" "statusBar.ts 7.d" "statusBar.ts 8.d" "statusBar.ts 9.d" "statusBar.ts 10.d" "statusBar.ts.d"
+rm "timer.ts 2.d" "timer.ts 3.d" "timer.ts 4.d" "timer.ts 5.d" "timer.ts 6.d" "timer.ts 7.d" "timer.ts 8.d" "timer.ts 9.d" "timer.ts 10.d" "timer.ts.d"
+rm "wp43s 2.d" "wp43s 3.d" "wp43s 4.d" "wp43s 5.d" "wp43s 6.d" "wp43s 7.d" "wp43s 8.d" "wp43s 9.d" "wp43s 10.d" "wp43s.d"
+rm *.d
+rm *.o
+
+cd ./mathematics
+rm *.d
+rm *.o
+cd ../logicalOps
+rm *.d
+rm *.o
+cd ../browsers
+rm *.d
+rm *.o
+cd ..
+
+rm "rasterFontsData.c"
+
+cd ..
+cd ..
+
+rm "generateConstants" "generateConstants 2" "generateConstants 3" "generateConstants 4" "generateConstants 5" "generateConstants 6" "generateConstants 7" "generateConstants 8" "generateConstants 9" "generateConstants 10" "generateConstants 11"
+rm "ttf2RasterFonts" "ttf2RasterFonts 2" "ttf2RasterFonts 3" "ttf2RasterFonts 4" "ttf2RasterFonts 5" "ttf2RasterFonts 6" "ttf2RasterFonts 7" "ttf2RasterFonts 8" "ttf2RasterFonts 9" "ttf2RasterFonts 10" "ttf2RasterFonts 11"
+rm "wp43c" "wp43c 2" "wp43c 3" "wp43c 4" "wp43c 5" "wp43c 6" "wp43c 7" "wp43c 8" "wp43c 9" "wp43c 10" "wp43c 11"
+rm "testSuite" "testSuite 2" "testSuite 3" "testSuite 4" "testSuite 5" "testSuite 6" "testSuite 7" "testSuite 8" "testSuite 9" "testSuite 10"
+rm "backup 2.bin" "backup 3.bin" "backup 4.bin" "backup 5.bin" "backup 6.bin" "backup 7.bin" "backup 8.bin" "backup 9.bin" "backup 10.bin"
+rm "wp43s" "wp43s 2" "wp43s 3" "wp43s 4" "wp43s 5" "wp43s 6" "wp43s 7" "wp43s 8" "wp43s 9" "wp43s 10" "wp43s 11"
+
+
+cd ./DMCP_build
+make clean
+cd ..
+
+

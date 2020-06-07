@@ -171,6 +171,7 @@ void fnAngularMode              (uint16_t unusedParamButMandatory) {}
 void fnDenMode                  (uint16_t unusedParamButMandatory) {}
 void fnDenMax                   (uint16_t unusedParamButMandatory) {}
 void fnExp                      (uint16_t unusedParamButMandatory) {}
+void fnExpM1                    (uint16_t unusedParamButMandatory) {}
 void fnExpt                     (uint16_t unusedParamButMandatory) {}
 void fnMant                     (uint16_t unusedParamButMandatory) {}
 void fnCxToRe                   (uint16_t unusedParamButMandatory) {}
@@ -242,6 +243,7 @@ void fnGetIntegerSignMode       (uint16_t unusedParamButMandatory) {}
 void fnLog2                     (uint16_t unusedParamButMandatory) {}
 void fnLog10                    (uint16_t unusedParamButMandatory) {}
 void fnLn                       (uint16_t unusedParamButMandatory) {}
+void fnLnP1                     (uint16_t unusedParamButMandatory) {}
 void fnLnGamma                  (uint16_t unusedParamButMandatory) {}
 void fnGamma                    (uint16_t unusedParamButMandatory) {}
 void fnIDiv                     (uint16_t unusedParamButMandatory) {}
@@ -598,7 +600,7 @@ const item_t indexOfItems[] = {
 /*  165 */  { itemToBeCoded,               NOPARAM,                     "Expon" STD_SUP_MINUS_1,                       "Expon" STD_SUP_MINUS_1,                       0,       0,       CAT_FNCT, SLS_UNCHANGED},
 /*  166 */  { itemToBeCoded,               NOPARAM,                     "Expon:",                                      "Expon:",                                      0,       0,       CAT_MENU, SLS_UNCHANGED},
 /*  167 */  { fnExpt,                      NOPARAM,                     "EXPT",                                        "EXPT",                                        0,       0,       CAT_FNCT, SLS_ENABLED  },
-/*  168 */  { itemToBeCoded,               NOPARAM,                     "e" STD_SUP_x "-1",                            "e" STD_SUP_x "-1",                            0,       0,       CAT_FNCT, SLS_ENABLED  },
+/*  168 */  { fnExpM1,                     NOPARAM,                     "e" STD_SUP_x "-1",                            "e" STD_SUP_x "-1",                            0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  169 */  { itemToBeCoded,               NOPARAM,                     "e/m" STD_SUB_e,                               "e/m" STD_SUB_e,                               0,       0,       CAT_NONE, SLS_ENABLED  },
 /*  170 */  { itemToBeCoded,               NOPARAM,                     "E:",                                          "E:",                                          0,       0,       CAT_MENU, SLS_UNCHANGED},
 /*  171 */  { fnConstant,                  9,                           "F",                                           "F",                                           0,       0,       CAT_CNST, SLS_ENABLED  },
@@ -742,7 +744,7 @@ const item_t indexOfItems[] = {
 /*  309 */  { fnLj,                        NOPARAM,                     "LJ",                                          "LJ",                                          0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  310 */  { fnLn,                        NOPARAM,                     "LN",                                          "ln",                                          0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  311 */  { itemToBeCoded,               NOPARAM,                     "L" STD_SUB_m ,                                "L" STD_SUB_m ,                                0,       0,       CAT_FNCT, SLS_UNCHANGED},
-/*  312 */  { itemToBeCoded,               NOPARAM,                     "LN(1+x)",                                     "ln 1+x",                                      0,       0,       CAT_FNCT, SLS_ENABLED  },
+/*  312 */  { fnLnP1,                      NOPARAM,                     "LN(1+x)",                                     "ln 1+x",                                      0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  313 */  { itemToBeCoded,               NOPARAM,                     "L" STD_SUB_m STD_SUB_alpha,                   "L" STD_SUB_m STD_SUB_alpha,                   0,       0,       CAT_FNCT, SLS_UNCHANGED},
 /*  314 */  { itemToBeCoded,               NOPARAM,                     "LN" STD_beta,                                 "ln" STD_beta,                                 0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  315 */  { fnLnGamma,                   NOPARAM,                     "LN" STD_GAMMA,                                "ln" STD_GAMMA,                                0,       0,       CAT_FNCT, SLS_ENABLED  },

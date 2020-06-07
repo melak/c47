@@ -144,12 +144,14 @@ mant
 expt
 
 exp
+expMOne
 10pow
 2pow
 minusOnePow
 log10
 log2
 ln
+lnPOne
 
 arccos
 arcsin
