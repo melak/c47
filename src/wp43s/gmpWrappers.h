@@ -89,6 +89,7 @@
 #define longIntegerLcm(op1, op2, result)                                  mpz_lcm     (result, op1, op2)
 
 #define longIntegerFactorial(op, result)                                  mpz_fac_ui(result, op)
+#define longIntegerIsPrime(currentNumber)                                 mpz_probab_prime_p(currentNumber, 25)
 #define longIntegerNextPrime(currentNumber, nextPrime)                    mpz_nextprime(nextPrime, currentNumber)
 
 
