@@ -106,7 +106,7 @@ void lnP1LonI(void) {
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        showInfoDialog("In function lnP1LonI:", "cannot calculate Ln(0)", NULL, NULL);
+        showInfoDialog("In function lnP1LonI:", "cannot calculate Ln(0) in Ln(1 + x)", NULL, NULL);
       #endif
     }
   }
@@ -171,7 +171,7 @@ void lnP1ShoI(void) {
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        showInfoDialog("In function lnShoI:", "cannot calculate Ln(0)", NULL, NULL);
+        showInfoDialog("In function lnP1ShoI:", "cannot calculate Ln(0) in Ln(1 + x)", NULL, NULL);
       #endif
     }
   }
@@ -193,7 +193,7 @@ void lnP1ShoI(void) {
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        showInfoDialog("In function lnShoI:", "cannot calculate Ln of a negative number when CPXRES is not set!", NULL, NULL);
+        showInfoDialog("In function lnP1ShoI:", "cannot calculate Ln of a negative number when CPXRES is not set!", NULL, NULL);
       #endif
     }
   }
@@ -212,7 +212,7 @@ void lnP1Real(void) {
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        showInfoDialog("In function lnReal:", "cannot calculate Ln(0)", NULL, NULL);
+        showInfoDialog("In function lnP1Real:", "cannot calculate Ln(0) in Ln(1 + x)", NULL, NULL);
       #endif
     }
   }
@@ -221,7 +221,7 @@ void lnP1Real(void) {
     if(!getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        showInfoDialog("In function lnReal:", "cannot use " STD_PLUS_MINUS STD_INFINITY " as X input of ln when flag D is not set", NULL, NULL);
+        showInfoDialog("In function lnP1Real:", "cannot use " STD_PLUS_MINUS STD_INFINITY " as X input of ln(x+1) when flag D is not set", NULL, NULL);
       #endif
       return;
     }
@@ -261,7 +261,7 @@ void lnP1Real(void) {
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        showInfoDialog("In function lnReal:", "cannot calculate Ln of a negative number when CPXRES is not set!", NULL, NULL);
+        showInfoDialog("In function lnP1Real:", "cannot calculate Ln of a negative number when CPXRES is not set!", NULL, NULL);
       #endif
     }
   }
@@ -282,7 +282,7 @@ void lnP1Cplx(void) {
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        showInfoDialog("In function lnCplx:", "cannot calculate Ln(0)", NULL, NULL);
+        showInfoDialog("In function lnP1Cplx:", "cannot calculate Ln(0) in Ln(1 + x)", NULL, NULL);
       #endif
     }
   }
@@ -292,7 +292,7 @@ void lnP1Cplx(void) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
     real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
-    lnP1Complex(&xReal, &xImag, &xReal, &xImag, &ctxtReal39);
+    lnP1Complex(&xReal, &xImag, &xReal, &xImag, &ctxtReal75);
 
     realToReal34(&xReal, REGISTER_REAL34_DATA(REGISTER_X));
     realToReal34(&xImag, REGISTER_IMAG34_DATA(REGISTER_X));

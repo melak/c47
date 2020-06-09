@@ -67,21 +67,18 @@ void fnExpM1(uint16_t unusedParamButMandatory) {
 
 
 
+
 void expM1Complex(const real_t *real, const real_t *imag, real_t *resReal, real_t *resImag, realContext_t *realContext) {
   real_t expa, sin, cos;
 
   if(realIsZero(imag)) {
     if(realIsInfinite(real) && realIsNegative(real)) {
-      realSubtract(const_0,const_1,resReal,realContext);
+      realCopy(const__1, resReal);
       realZero(resImag);
       return;
     }
-    if(realCompareAbsGreaterThan(real, const_10000)){
-      realExp(real, resReal, realContext);
-      realSubtract(resReal, const_1, resReal, realContext);
-    } else {
-      WP34S_ExpM1(real, resReal, realContext);
-    }
+    realExp(real, resReal, realContext);
+    realSubtract(resReal, const_1, resReal, realContext);
     realZero(resImag);
     return;
   }
@@ -92,17 +89,13 @@ void expM1Complex(const real_t *real, const real_t *imag, real_t *resReal, real_
     return;
   }
 
-// if(realCompareAbsGreaterThan(real, const_10000) || realIsInfinite(real) ){
-   realExp(real, &expa, realContext);
-// } else {
-//   WP34S_ExpM1(real, &expa, realContext);
-  // realAdd(&expa, const_1, &expa, realContext);
-// }
+
+
+ realExp(real, &expa, realContext);
  WP34S_Cvt2RadSinCosTan(imag, AM_RADIAN, &sin, &cos, NULL, realContext);
  realMultiply(&expa, &cos, resReal, realContext);
  realMultiply(&expa, &sin, resImag, realContext);
  realSubtract(resReal, const_1, resReal, realContext);
-
 }
 
 
@@ -118,12 +111,8 @@ void expM1LonI(void) {
   real_t a;
 
   convertLongIntegerRegisterToReal(REGISTER_X, &a, &ctxtReal39);
-  if(realCompareAbsGreaterThan(&a, const_10000)|| realIsInfinite(&a) ){
-    realExp(&a, &a, &ctxtReal39);
-    realSubtract(&a, const_1, &a, &ctxtReal39);
-  } else {
-    WP34S_ExpM1(&a, &a, &ctxtReal39);
-  }
+  realExp(&a, &a, &ctxtReal39);
+  realSubtract(&a, const_1, &a, &ctxtReal39);
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
   realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
 }
@@ -146,12 +135,8 @@ void expM1ShoI(void) {
   real_t x;
 
   convertShortIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
-  if(realCompareAbsGreaterThan(&x, const_10000)){
-    realExp(&x, &x, &ctxtReal39);
-    realSubtract(&x, const_1, &x, &ctxtReal39);
-  } else {
-    WP34S_ExpM1(&x, &x, &ctxtReal39);
-  }
+  realExp(&x, &x, &ctxtReal39);
+  realSubtract(&x, const_1, &x, &ctxtReal39);
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
   realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
 }
@@ -172,19 +157,16 @@ void expM1Real(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
 
   if(realIsInfinite(&x) && realIsNegative(&x)) {
-    realSubtract(const_0,const_1,&x,&ctxtReal39);
+    realCopy(const__1, &x);
   } else
     if(realIsInfinite(&x) && realIsPositive(&x)) {
         realCopy(const_plusInfinity, &x);
     } else
       if(realIsSpecial(&x)) {
         realCopy(const_NaN, &x);
-      } else
-        if(realCompareAbsGreaterThan(&x, const_10000) || realIsInfinite(&x) ) {
-          realExp(&x, &x, &ctxtReal39);
-          realSubtract(&x, const_1, &x, &ctxtReal39);
-        } else {
-          WP34S_ExpM1(&x, &x, &ctxtReal39);
+      } else {
+          realExp(&x, &x, &ctxtReal51);
+          realSubtract(&x, const_1, &x, &ctxtReal51);
         }
   realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
   setRegisterAngularMode(REGISTER_X, AM_NONE);
@@ -198,127 +180,10 @@ void expM1Cplx(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &zReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &zImag);
 
-  expM1Complex(&zReal, &zImag, &zReal, &zImag, &ctxtReal51);
+  expM1Complex(&zReal, &zImag, &zReal, &zImag, &ctxtReal75);
 
   realToReal34(&zReal, REGISTER_REAL34_DATA(REGISTER_X));
   realToReal34(&zImag, REGISTER_IMAG34_DATA(REGISTER_X));
 }
 
-
-
-
-#ifdef RRR
-//**********************
-  real_t x;
-
-  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
-  WP34S_Tanh(&x, &x, &ctxtReal39);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
-  setRegisterAngularMode(REGISTER_X, AM_NONE);
-}
-
-
-void   WP34S_Ln1P            (const real_t *x, real_t *res, realContext_t *realContext);
-void   WP34S_ExpM1           (const real_t *x, real_t *res, realContext_t *realContext);
-
-
-
-void WP34S_Tanh(const real_t *x, real_t *res, realContext_t *realContext) {
-  if(realIsNaN(x)) {
-    realCopy(const_NaN, res);
-  }
-  else if(realCompareAbsGreaterThan(x, const_47)) { // equals 1 to 39 digits
-    realCopy((realIsPositive(x) ? const_1 : const__1), res);
-  }
-  else {
-    real_t a, b;
-
-    realAdd(x, x, &a, realContext);        // a = 2x
-    WP34S_ExpM1(&a, &b, realContext);      // b = exp(2x) - 1
-    realAdd(&b, const_2, &a, realContext); // a = exp(2x) - 1 + 2 = exp(2x) + 1
-    realDivide(&b, &a, res, realContext);  // res = (exp(2x) - 1) / (exp(2x) + 1)
-  }
-}
-
-
-
-
-/* ln(1+x) */
-void WP34S_Ln1P(const real_t *x, real_t *res, realContext_t *realContext) {
-  real_t u, v, w;
-
-  if(realIsSpecial(x) || realIsZero(x)) {
-    realCopy(x, res);
-  }
-  else {
-    realAdd(x, const_1, &u, realContext);       // u = x+1
-    realSubtract(&u, const_1, &v, realContext); // v = x
-    if(realIsZero(&v)) {
-      realCopy(x, res);
-    }
-    else {
-      realDivide(x, &v, &w, realContext);
-      WP34S_Ln(&u, &v, realContext);
-      realMultiply(&v, &w, res, realContext);
-    }
-  }
-}
-
-
-
-/* exp(x)-1 */
-void WP34S_ExpM1(const real_t *x, real_t *res, realContext_t *realContext) {
-  real_t u, v, w;
-
-  if(realIsInfinite(x)) {
-    if(realIsPositive(x)) {
-      realCopy(const_plusInfinity, res);
-    }
-    else {
-      realCopy(const__1, res);
-    }
-  }
-
-  realExp(x, &u, realContext);
-  realSubtract(&u, const_1, &v, realContext);
-  if(realIsZero(&v)) { // |x| is very little
-    realCopy(x, res);
-  }
-  else {
-    if(realCompareEqual(&v, const__1)) {
-      realCopy(const__1, res);
-    }
-    else {
-      realMultiply(&v, x, &w, realContext);
-      WP34S_Ln(&u, &v, realContext);
-      realDivide(&w, &v, res, realContext);
-    }
-  }
-}
-
-
-void arcsinhReal(void) {
-  real_t x, xSquared;
-
-  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
-
-  if(realIsInfinite(&x) && realIsNegative(&x)) {
-    realCopy(const_minusInfinity, &x);
-  }
-  else {
-    // arcsinh(x) = ln(x + sqrt(x² + 1))
-    realMultiply(&x, &x, &xSquared, &ctxtReal51);
-    realAdd(&xSquared, const_1, &xSquared, &ctxtReal51);
-    realSquareRoot(&xSquared, &xSquared, &ctxtReal51);
-    realAdd(&xSquared, &x, &x, &ctxtReal51);
-    WP34S_Ln(&x, &x, &ctxtReal51);
-  }
-
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
-  setRegisterAngularMode(REGISTER_X, AM_NONE);
-}
-
-
-
-#endif
 

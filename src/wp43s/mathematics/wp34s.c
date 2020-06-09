@@ -157,7 +157,11 @@ void WP34S_SinCosTanTaylor(const real_t *a, bool_t swap, real_t *sinOut, real_t 
   int32_t cmp, savedContextDigits;
 
   savedContextDigits = realContext->digits;
-  realContext->digits = 51;
+  if(realContext->digits > 51) {
+    realContext->digits = 75;
+  } else {
+    realContext->digits = 51;
+  }
 
   realCopy(a, &angle);
   realMultiply(&angle, &angle, &a2, realContext);
@@ -166,7 +170,7 @@ void WP34S_SinCosTanTaylor(const real_t *a, bool_t swap, real_t *sinOut, real_t 
   uInt32ToReal(1, &sin);
   uInt32ToReal(1, &cos);
 
-  for(i=1; !(finSin && finCos) && i < 1000; i++) {
+  for(i=1; !(finSin && finCos) && i <  (realContext->digits <= 51 ? 1000 : 1200); i++) {
     odd = i & 1;
 
     realAdd(&j, const_1, &j, realContext);
@@ -718,11 +722,21 @@ void WP34S_Ln(const real_t *xin, real_t *res, realContext_t *realContext) {
   realMultiply(&v, &v, &m, realContext);
   realCopy(const_3, &i);
 
+  real_t err;
+  if(realContext->digits > 51) {
+    realMultiply(const_1e_37,const_1e_37,&err,realContext);
+  } else   
+  if(realContext->digits > 39) {
+    realCopy(const_1e_49,&err);
+  } else {
+    realCopy(const_1e_37,&err);
+  }
+
   for(;;) {
     realMultiply(&m, &n, &n, realContext);
     realDivide(&n, &i, &e, realContext);
     realAdd(&v, &e, &w, realContext);
-    if(WP34S_RelativeError(&w, &v, const_1e_37, realContext)) {
+    if(WP34S_RelativeError(&w, &v, &err/*const_1e_37*/, realContext)) {
       break;
     }
     realCopy(&w, &v);
