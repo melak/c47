@@ -27,6 +27,7 @@
 #define SLS_UNCHANGED 2
 
 
+
 #define ITM_NULL                         0
 #define ITM_CtoF                         1
 #define ITM_FtoC                         2
@@ -1786,7 +1787,7 @@
 #define ITM_H_REPLCA                  1746   //JMHOME
 #define ITM_H_FIXED                   1747   //JMHOME
 #define ITM_CB_SPCRES                 1748
-#define ITM_USER_V43                     1749
+#define ITM_USER_V43                  1749   //V43
 #define ITM_EE_D2Y                    1750   //JM EE
 #define ITM_EE_Y2D                    1751   //JM EE
 #define ITM_EE_A2S                    1752   //JM EE
@@ -2013,8 +2014,11 @@
 #define ITM_FLGSV                     1970
 #define ITM_SCIOVR                    1971   //JM Replacements
 #define ITM_ENGOVR                    1972   //JM Replacements
+#define ITM_USER_V43MIN               1973   //V43
+#define ITM_USER_SHIFTS2              1974   //V43
+#define ITM_USER_HOME                 1975   //JM USER
 
-#define LAST_ITEM                     1973   //JM
+#define LAST_ITEM                     1976   //JM
 
 #define CHR_PROD_SIGN                 9999
 

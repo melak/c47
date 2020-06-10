@@ -440,7 +440,7 @@ void setupDefaults(void) {
   #endif // TESTSUITE_BUILD
 
   #if defined(PC_BUILD) || defined (TESTSUITE_BUILD)
-    debugMemAllocation = false;
+    debugMemAllocation = true;
   #endif
 }
 
@@ -540,10 +540,7 @@ void program_main(void) {
 
   wp43sMemInBytes = 0;
   gmpMemInBytes = 0;
-  //mp_set_memory_functions(allocGmp, reallocGmp, freeGmp);
-
-  // Initialization
-  //program_init();
+  mp_set_memory_functions(allocGmp, reallocGmp, freeGmp);
 
   lcd_clear_buf();
 /*lcd_putsAt(t24, 4, "Press the bottom left key.");            //vv dr - no keymap is used
@@ -772,7 +769,7 @@ int main(int argc, char* argv[]) {
 
   wp43sMemInBytes = 0;
   gmpMemInBytes = 0;
-  //mp_set_memory_functions(allocGmp, reallocGmp, freeGmp);
+  mp_set_memory_functions(allocGmp, reallocGmp, freeGmp);
 
   setupDefaults();
 

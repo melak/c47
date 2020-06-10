@@ -153,11 +153,16 @@ void WP34S_Cvt2RadSinCosTan(const real_t *an, uint32_t angularMode, real_t *sinO
 void WP34S_SinCosTanTaylor(const real_t *a, bool_t swap, real_t *sinOut, real_t *cosOut, real_t *tanOut, realContext_t *realContext) { // a in radian
   real_t angle, a2, t, j, z, sin, cos, compare;
   int i, odd;
-  bool_t finSin = (sinOut == NULL), finCos = (cosOut == NULL);
+  bool_t endSin = (sinOut == NULL), endCos = (cosOut == NULL);
   int32_t cmp, savedContextDigits;
 
   savedContextDigits = realContext->digits;
-  realContext->digits = 51;
+  if(realContext->digits > 51) {
+    realContext->digits = 75;
+  }
+  else {
+    realContext->digits = 51;
+  }
 
   realCopy(a, &angle);
   realMultiply(&angle, &angle, &a2, realContext);
@@ -166,14 +171,14 @@ void WP34S_SinCosTanTaylor(const real_t *a, bool_t swap, real_t *sinOut, real_t 
   uInt32ToReal(1, &sin);
   uInt32ToReal(1, &cos);
 
-  for(i=1; !(finSin && finCos) && i < 1000; i++) {
+  for(i=1; !(endSin && endCos) && i<1000; i++) { // i goes up to 31 max in the test suite
     odd = i & 1;
 
     realAdd(&j, const_1, &j, realContext);
     realDivide(&a2, &j, &z, realContext);
     realMultiply(&t, &z, &t, realContext);
 
-    if(!finCos) {
+    if(!endCos) {
       realCopy(&cos, &z);
 
       if(odd) {
@@ -185,13 +190,13 @@ void WP34S_SinCosTanTaylor(const real_t *a, bool_t swap, real_t *sinOut, real_t 
 
       realCompare(&cos, &z, &compare, realContext);
       realToInt32(&compare, cmp);
-      finCos = (cmp == 0);
+      endCos = (cmp == 0);
     }
 
     realAdd(&j, const_1, &j, realContext);
     realDivide(&t, &j, &t, realContext);
 
-    if(!finSin) {
+    if(!endSin) {
       realCopy(&sin, &z);
 
       if(odd) {
@@ -203,7 +208,7 @@ void WP34S_SinCosTanTaylor(const real_t *a, bool_t swap, real_t *sinOut, real_t 
 
       realCompare(&sin, &z, &compare, realContext);
       realToInt32(&compare, cmp);
-      finSin = (cmp == 0);
+      endSin = (cmp == 0);
     }
   }
 
@@ -718,11 +723,14 @@ void WP34S_Ln(const real_t *xin, real_t *res, realContext_t *realContext) {
   realMultiply(&v, &v, &m, realContext);
   realCopy(const_3, &i);
 
+  int32ToReal(1 - realContext->digits, &t); // t is the exponent
+  realPower(const_10, &t, &z, realContext); // z is the max error
+
   for(;;) {
     realMultiply(&m, &n, &n, realContext);
     realDivide(&n, &i, &e, realContext);
     realAdd(&v, &e, &w, realContext);
-    if(WP34S_RelativeError(&w, &v, const_1e_37, realContext)) {
+    if(WP34S_RelativeError(&w, &v, &z, realContext)) {
       break;
     }
     realCopy(&w, &v);

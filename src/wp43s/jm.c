@@ -1236,7 +1236,48 @@ void fnUserJM(uint16_t jmUser) {
 #endif
 
 
+  case USER_V43LT:
+
+    fnUserJM(USER_V43);
+
+    kbd_usr[6].primary      = KEY_f;
+    kbd_usr[6].fShifted     = ITM_NULL;
+    kbd_usr[6].gShifted     = ITM_NULL;
+    kbd_usr[6].keyLblAim     = KEY_f;
+    kbd_usr[6].primaryAim     = KEY_f;
+     kbd_usr[6].fShiftedAim     = ITM_NULL;
+     kbd_usr[6].gShiftedAim     = ITM_NULL;
+    kbd_usr[6].primaryTam     = KEY_f;
+
+    kbd_usr[7].primary      = KEY_g;
+    kbd_usr[7].fShifted     = ITM_NULL;
+    kbd_usr[7].gShifted     = ITM_NULL;
+    kbd_usr[7].keyLblAim     = KEY_g;
+    kbd_usr[7].primaryAim     = KEY_g;
+     kbd_usr[7].fShiftedAim     = ITM_NULL;
+     kbd_usr[7].gShiftedAim     = ITM_NULL;
+    kbd_usr[7].primaryTam     = KEY_g;
+
+
+    kbd_usr[4].primary    = ITM_STO;
+    kbd_usr[4].fShifted   = ITM_MAGNITUDE;
+    kbd_usr[4].gShifted   = ITM_ANGLE;
+    kbd_usr[4].primaryAim     = CHR_E;
+
+    kbd_usr[5].primary    = ITM_RCL;
+    kbd_usr[5].fShifted   = ITM_PC;
+    kbd_usr[5].gShifted   = ITM_DELTAPC;
+    kbd_usr[5].primaryAim     = CHR_F;
+
+    Norm_Key_00_VAR        = KEY_USERMODE;
+    fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
+    fnSetFlag(FLAG_USER);
+    break;
+
+
   case USER_V43:          //USER
+
+    fnUserJM(USER_RESET);
 
     kbd_usr[0].primary      = ITM_1ONX;
     kbd_usr[0].fShifted     = ITM_YX;
@@ -1297,7 +1338,7 @@ void fnUserJM(uint16_t jmUser) {
 
     kbd_usr[21].primary     = ITM_XEQ;
     kbd_usr[21].fShifted    = ITM_AIM;
-    kbd_usr[21].gShifted    = ITM_NULL;
+    kbd_usr[21].gShifted    = KEY_USERMODE;
     kbd_usr[21].keyLblAim     = ITM_NULL;
     kbd_usr[21].primaryAim     = CHR_R;
     kbd_usr[21].fShiftedAim     = ITM_NULL;
@@ -1365,6 +1406,9 @@ void fnUserJM(uint16_t jmUser) {
 
 
   case USER_SHIFTS:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
+  
+    fnUserJM(USER_RESET);
+  
     kbd_usr[0].primary     = KEY_USERMODE;
     kbd_usr[9].primary     = -MNU_TRI;
     kbd_usr[9].fShifted    = KEY_USERMODE;
@@ -1380,6 +1424,31 @@ void fnUserJM(uint16_t jmUser) {
     fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
     fnSetFlag(FLAG_USER);
     break;
+
+  //LEFT SHIFTS Not used, and disabled from KEYS menu
+  case USER_SHIFTS2:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
+    kbd_usr[0].primary     = KEY_USERMODE;
+    kbd_usr[9].primary     = -MNU_TRI;
+    kbd_usr[9].fShifted    = KEY_USERMODE;
+
+    kbd_usr[10].primary    = ITM_STO;
+    kbd_usr[10].fShifted   = ITM_MAGNITUDE;
+    kbd_usr[10].gShifted   = ITM_ANGLE;
+    kbd_usr[11].primary    = ITM_RCL;
+    kbd_usr[11].fShifted   = ITM_PC;
+    kbd_usr[11].gShifted   = ITM_DELTAPC;
+
+    kbd_usr[6].primary    = KEY_f;
+    kbd_usr[6].fShifted   = ITM_NULL;
+    kbd_usr[6].gShifted   = ITM_NULL;
+    kbd_usr[7].primary    = KEY_g;
+    kbd_usr[7].fShifted   = ITM_NULL;
+    kbd_usr[7].gShifted   = ITM_NULL;
+    Norm_Key_00_VAR        = KEY_USERMODE;
+    fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
+    fnSetFlag(FLAG_USER);
+    break;
+
 
 
   case USER_SIGMAPLUS:                                              //USER_DEFAULTS FOR USER: E+ E+
@@ -1399,6 +1468,13 @@ void fnUserJM(uint16_t jmUser) {
   case USER_USER:                                              //USER_DEFAULTS FOR USER: E+ USER
     kbd_usr[0].primary     = KEY_USERMODE;
     Norm_Key_00_VAR        = KEY_USERMODE;
+    fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
+    fnSetFlag(FLAG_USER);
+    break;
+
+  case USER_HOME:                                              //USER_DEFAULTS FOR USER: E+ USER
+    kbd_usr[0].primary     = -MNU_HOME;
+    Norm_Key_00_VAR        = -MNU_HOME;
     fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
     fnSetFlag(FLAG_USER);
     break;
@@ -1482,7 +1558,7 @@ void fnKEYSELECT(void) {                                        //JM ASSIGN - RE
 //gets here only after valid function and any key is selected
 void fnASSIGN(int16_t JM_ASN_MODE, int16_t tempkey) {           //JM ASSIGN - REMEMBER NEXT KEYBOARD FUNCTION
   switch(tempkey) {
-    case 0:              //Only allowable re-assigned keys in the case statement
+    case 0:
     case 1:
     case 2:
     case 3:

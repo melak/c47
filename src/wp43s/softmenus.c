@@ -288,9 +288,9 @@ const int16_t menu_alpha_omega[] = { CHR_alpha,                     CHR_beta,   
                                      CHR_alpha_TONOS,               CHR_epsilon_TONOS,          CHR_eta_TONOS,            CHR_iotaTON,           CHR_iota_DIALYTIKA_TONOS,    ITM_NULL,                           //JM modified greek sequence
                                      CHR_iota_DIALYTIKA,            CHR_omicron_TONOS,          CHR_upsilon_TONOS,        CHR_upsilon_DIALYTIKA, CHR_upsilon_DIALYTIKA_TONOS, CHR_omega_TONOS               };
 
-const int16_t menu_AngleConv[]   = { ITM_toDEG,                     ITM_toRAD,                  ITM_toGRAD,               ITM_toMULpi,           ITM_toDMS,                   -MNU_UNITCONV,                      //JM mod
-                                     ITM_DEGto,                     ITM_RADto,                  ITM_GRADto,               ITM_MULPIto,           ITM_DMSto,                   ITM_NULL,
-                                     ITM_DtoR,                      ITM_RtoD,                   ITM_toHMS,                ITM_ms,                ITM_DtoDMS,                  ITM_DMStoD                    };    //JM Added H.MS
+const int16_t menu_AngleConv[]   = { ITM_toDEG,                     ITM_toRAD,                  ITM_toGRAD,               ITM_toMULpi,           ITM_toDMS,                   ITM_toHMS,                      //JM mod
+                                     ITM_DEGto,                     ITM_RADto,                  ITM_GRADto,               ITM_MULPIto,           ITM_DMSto,                   ITM_ms,
+                                     ITM_DtoR,                      ITM_RtoD,                   ITM_DtoDMS,               ITM_DMStoD,            ITM_NULL,                    -MNU_UNITCONV                 };    //JM Added H.MS
 
 /*      Menu name                  <----------------------------------------------------------------------------- 6 functions ---------------------------------------------------------------------------->  */
 /*                                 <---------------------------------------------------------------------- 6 f shifted functions ------------------------------------------------------------------------->  */
@@ -417,9 +417,9 @@ const int16_t menu_ASN_N[]       = {
                                      -MNU_ASN,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_SH_NORM_E,               ITM_GET_NORM_E                };    //JM USER NAORMAL MODE
 
 const int16_t menu_ASN[]         = { 
-                                     ITM_USER_DEFAULTS,             ITM_USER_COMPLEX,           ITM_USER_SHIFTS,          ITM_USER_RESET,        ITM_NULL,                    KEY_USERMODE,         /*ITM_JM_ASN*/
-                                     ITM_USER_ALPHA,                ITM_USER_CC,                ITM_USER_GSHFT,           ITM_USER_MYM,          ITM_NULL,                    ITM_JM_SEEK,
-                                     ITM_USER_PRGM,                 ITM_USER_USER,              ITM_USER_V43,             ITM_USER_SIGMAPLUS,    ITM_NULL,                    -MNU_ASN_N,
+                                     ITM_USER_DEFAULTS,             ITM_USER_COMPLEX,           ITM_NULL,                 ITM_USER_SHIFTS,      ITM_USER_RESET,              KEY_USERMODE,         /*ITM_JM_ASN*/
+                                     ITM_USER_ALPHA,                ITM_USER_CC,                ITM_USER_GSHFT,           ITM_USER_MYM,          ITM_USER_V43,                ITM_JM_SEEK,
+                                     ITM_USER_PRGM,                 ITM_USER_USER,              ITM_USER_HOME,            ITM_USER_SIGMAPLUS,    ITM_USER_V43MIN,             -MNU_ASN_N,
                                                                           
                                      K_00U,                         K_01U,                      K_02U,                    K_03U,                 K_04U,                       K_05U,  //JM USER
                                      Kf00U,                         Kf01U,                      Kf02U,                    Kf03U,                 Kf04U,                       Kf05U,  //JM USER
@@ -487,7 +487,7 @@ const int16_t menu_A_HOME[360]   = { -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1
 const int16_t menu_HOME[360]        = { //JMHOMEDEMO: NOTE REMOVE CONST TO MAKE JMHOME DEMO WORK
 /*HOME0 */
 /*0x18*/                             ITM_SIGMAMINUS,      ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EX,           ITM_XFACT,                        //JM HOME
-                                     ITM_toREC2,          ITM_toPOL2,      ITM_PARALLEL,      KEY_CC,           ITM_MAGNITUDE,    ITM_ANGLE,                          //JM HOME
+                                     ITM_MAGNITUDE,       ITM_ANGLE,       ITM_PARALLEL,      KEY_CC,           ITM_toREC2,       ITM_toPOL2,                        //JM HOME
                                      ITM_DEG,             ITM_RAD,         ITM_DMS,           ITM_op_j,         ITM_RECT,         ITM_POLAR,                          //JM HOME
 /*HOME-1*/                                                                                                                                                             //JM HOME
 /*1*18*/                             ITM_SIGMAMINUS,      ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EX,           ITM_XFACT,                        //JM HOME
@@ -495,8 +495,8 @@ const int16_t menu_HOME[360]        = { //JMHOMEDEMO: NOTE REMOVE CONST TO MAKE 
                                      ITM_SF,              ITM_CF,          ITM_RL,            ITM_RR,           ITM_RMD,          ITM_IDIV,                           //JM HOME
 /*HOME-2*/                                                                                                                                                             //JM HOME
 /*2*18*/                             ITM_SIGMAMINUS,      ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EX,           ITM_XFACT,                        //JM HOME
-                                     -MNU_TRI,            -MNU_EXP,        -MNU_CPX,          -MNU_XFN,         -MNU_MyMenu,      -MNU_EE,                            //JM HOME
-                                     -MNU_CONST,          ITM_RBR,         ITM_STATUS,        ITM_H_SUMRY,      ITM_H_REPLCA,     ITM_H_FIXED,                        //JM HOME
+                                     -MNU_TRI,            -MNU_CPX,        -MNU_EXP,          -MNU_XFN,         -MNU_MyMenu,      -MNU_EE,                            //JM HOME
+                                     -MNU_CONST,          ITM_RBR,         ITM_FLGSV,         ITM_H_SUMRY,      ITM_H_REPLCA,     ITM_H_FIXED,                        //JM HOME
                                        
 
 // 03 -- 09 HAAKON SUGGESTIONS OF FULL REPLICA

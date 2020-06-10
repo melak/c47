@@ -700,13 +700,14 @@ void cpyxShoIShoI(uint16_t combOrPerm) {
   }
   else {
     longInteger_t t;
-    longIntegerInit(t);
 
+    longIntegerInit(t);
     (combOrPerm == CP_COMBINATION) ? cyxLong(y, x, t)
                                    : pyxLong(y, x, t);
 
     convertLongIntegerToShortIntegerRegister(t, getRegisterShortIntegerBase(REGISTER_Y), REGISTER_X);
 
+    longIntegerFree(x); // Because convertShortIntegerRegisterToLongInteger reinits the long integer
     convertShortIntegerRegisterToLongInteger(REGISTER_X, x);
     if(longIntegerCompare(t, x) != 0) {
       setSystemFlag(FLAG_OVERFLOW);
