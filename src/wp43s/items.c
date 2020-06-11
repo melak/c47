@@ -2452,6 +2452,7 @@ const item_t indexOfItems[] = {
 /* 1973 */  { fnUserJM,                    USER_V43LT,                  "V43 LT",                                      "V43 LT",                                      0,       0,       CAT_NONE, SLS_UNCHANGED},   //J=V43
 /* 1974 */  { fnUserJM,                    USER_SHIFTS2,                "LT SHFT",                                     "LT SHFT",                                     0,       0,       CAT_NONE, SLS_UNCHANGED},   //J=V43
 /* 1975 */  { fnUserJM,                    USER_HOME,                   "U" STD_SIGMA STD_DOT "HOME",                  "U" STD_SIGMA STD_DOT "HOME",                  0,       0,       CAT_NONE, SLS_UNCHANGED},
+/* 1976 */  { fnUserJM,                    USER_43S,                    "WP43S",                                       "WP43S",                                       0,       0,       CAT_NONE, SLS_UNCHANGED},   //J=V43
 
-/* 1976 */  { itemToBeCoded,               NOPARAM,                     "",                                            "Last item",                                   0,       0,       CAT_NONE, SLS_UNCHANGED}       //JM
+/* 1977 */  { itemToBeCoded,               NOPARAM,                     "",                                            "Last item",                                   0,       0,       CAT_NONE, SLS_UNCHANGED}       //JM
 };

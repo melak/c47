@@ -168,6 +168,7 @@ void fnUserJM(uint16_t jmUser);
 #define USER_SHIFTS2     41
 #define USER_HOME        42
 #define USER_V43LT       43
+#define USER_43S         44
  //last number
 
 
