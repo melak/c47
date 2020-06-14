@@ -1852,6 +1852,42 @@ void tamTransitionSystem(uint16_t tamTransition) {
       break;
 
     //////////////////////////////
+    // OP ____
+    case 16:
+      switch(tamTransition) {
+        case TT_LETTER :
+          if (tamLetteredRegister >= REGISTER_X && tamLetteredRegister <= REGISTER_T) {
+            for (int i = 4; i > 0; i--) {
+              if (tamBuffer[strlen(tamBuffer)-i] == '_') {
+                tamBuffer[strlen(tamBuffer)-i] = "xyzt"[tamLetteredRegister-REGISTER_X];
+                if (i == 1) {
+                  indexOfItems[getOperation()].func(NOPARAM);
+                  calcModeNormal();
+                  return;
+                }
+                break;
+              }
+            }
+          }
+          break;
+        case TT_BACKSPACE :
+          for (int i = 1; i <= 5; i++) {
+            if (i == 5) {
+                calcModeNormal();
+                return;
+                break;
+              }
+            if (tamBuffer[strlen(tamBuffer)-i] != '_') {
+              tamBuffer[strlen(tamBuffer)-i] = '_';
+              break;
+            }
+          }
+          break;
+      }
+      break;
+          
+      
+    //////////////////////////////
     // This should never happen
     default :
       sprintf(errorMessage, "In function tamTransitionSystem: unknown state %" FMT16U " of the TAM transition system! This should never happen!", transitionSystemState);
@@ -1864,8 +1900,6 @@ void tamTransitionSystem(uint16_t tamTransition) {
   }
   showString(tamBuffer, &standardFont, 25, Y_POSITION_OF_TAM_LINE + 6, vmNormal, true, true);
 }
-
-
 
 void closeNim(void) {
   if(nimNumberPart == NP_INT_10) {                //JM Input default type vv

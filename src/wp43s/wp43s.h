@@ -374,7 +374,8 @@ typedef int16_t calcRegister_t;
 #define TM_FLAGR            10004
 #define TM_FLAGW            10005
 #define TM_STORCL           10006
-#define TM_CMP              10007 // TM_CMP must be the last in this list
+#define TM_SHUFFLE          10007
+#define TM_CMP              10008 // TM_CMP must be the last in this list
 
 // NIM number part
 #define NP_EMPTY                0

@@ -4516,15 +4516,19 @@ void calcModeNim(uint16_t unusedParamButMandatory) {
  * \brief Sets the calc mode to temporary alpha mode
  *
  * \param[in] tamMode int16_t    TAM mode
- *                               TAM       = general operation code
- *                               TAMCMP    = comparison operationcode
- *                               TAMSTORCL = STO or RCL operation code
+ *                               TAM        = general operation code
+ *                               TAMCMP     = comparison operation code
+ *                               TAMSTORCL  = STO or RCL operation code
+ *                               TAMSHUFFLE = Shuffle Registers operation code
  * \param[in] opCode const char* Operation code
  * \param[in] minN int16_t       Min value in TAM mode
  * \param[in] maxN int16_t       Max value in TAM mode
  * \return void
  ***********************************************/
 void calcModeTam(void) {
+  
+  transitionSystemState = 0;
+  
   if(calcMode == CM_NIM) {
     closeNim();
   }
@@ -4553,6 +4557,10 @@ void calcModeTam(void) {
     case TM_STORCL:
       showSoftmenu(NULL, -MNU_TAMSTORCL, true);
       break;
+      
+    case TM_SHUFFLE:
+      showSoftmenu(NULL, -MNU_TAMSHUFFLE, true);
+      break;
 
     default:
       sprintf(errorMessage, "In function calcModeTam: %" FMT8U " is an unexpected value for tamMode!", tamMode);
@@ -4561,7 +4569,13 @@ void calcModeTam(void) {
   }
 
   if(calcMode != CM_ASM_OVER_TAM) {
-    strcat(tamBuffer, " __");
+    if (tamMode != TM_SHUFFLE) {
+      strcat(tamBuffer, " __");
+    } 
+    else {
+      strcat(tamBuffer, " ____");
+      transitionSystemState = 16;
+    }
     if(stringWidth(tamBuffer, &standardFont, true, true) + 1 + lineTWidth > SCREEN_WIDTH) {
       clearRegisterLine(REGISTER_T, true, false);
     }
@@ -4571,7 +4585,7 @@ void calcModeTam(void) {
   calcMode = CM_TAM;
   clearSystemFlag(FLAG_ALPHA);
 
-  transitionSystemState = 0;
+
   tamCurrentOperation = 0;
 
   #ifdef PC_BUILD

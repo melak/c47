@@ -26,6 +26,7 @@ void fnSwapY       (uint16_t regist);
 void fnSwapZ       (uint16_t regist);
 void fnSwapT       (uint16_t regist);
 void fnSwapXY      (uint16_t unusedParamButMandatory);
+void fnShuffle     (uint16_t unusedParamButMandatory);
 void fnFillStack   (uint16_t unusedParamButMandatory);
 void fnGetStackSize(uint16_t unusedParamButMandatory);
 void fnClearStack  (uint16_t unusedParamButMandatory);

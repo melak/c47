@@ -27,7 +27,6 @@
 #define SLS_UNCHANGED 2
 
 
-
 #define ITM_NULL                         0
 #define ITM_CtoF                         1
 #define ITM_FtoC                         2
@@ -1667,7 +1666,7 @@
 #define SFL_INTING                    1629
 #define SFL_SOLVING                   1630
 #define SFL_VMDISP                    1631
-#define Not_used1632                  1632
+#define MNU_TAMSHUFFLE                1632
 #define Not_used1633                  1633
 #define Not_used1634                  1634
 #define Not_used1635                  1635
