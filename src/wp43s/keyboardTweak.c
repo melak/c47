@@ -36,7 +36,7 @@ uint32_t    timerLastCalled;
 void showAlphaModeonGui(void) {
   if(calcMode == CM_AIM || calcMode == CM_ASM || CM_ASM_OVER_TAM || CM_ASM_OVER_AIM)    //vv dr JM
   {
-    showAlphaMode();
+    showHideAlphaMode();
     #ifdef PC_BUILD     //dr - new AIM
       calcModeAimGui();
     #endif
@@ -400,7 +400,7 @@ int16_t nameFunction(int16_t fn, int16_t itemShift) {                       //JM
 /*XXX*/
 
       if(func == CHR_PROD_SIGN) {
-        func = (productSign == PS_CROSS ? CHR_DOT : CHR_CROSS);
+        func = (getSystemFlag(FLAG_MULTx) ? CHR_DOT : CHR_CROSS);
       }
 
       if(func < 0) {

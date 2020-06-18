@@ -92,3 +92,4 @@ void fnCvtHectareM2 (uint16_t multiplyDivide);
 // ...
 void fnCvtRatioDb   (uint16_t multiplyDivide);
 void fnCvtDbRatio   (uint16_t multiplyDivide);
+void fnCvtLbfftNm   (uint16_t multiplyDivide);

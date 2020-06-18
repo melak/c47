@@ -31,7 +31,7 @@ uint32_t getRegisterDataType(calcRegister_t regist) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
     return reg[regist].dataType;
   }
-  else if(regist < 1000) { // Local register
+  else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
       regist -= FIRST_LOCAL_REGISTER;
       if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
@@ -53,7 +53,7 @@ uint32_t getRegisterDataType(calcRegister_t regist) {
   }
   else if(regist < SAVED_REGISTER_X) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
-      regist -= 1000;
+      regist -= FIRST_NAMED_VARIABLE;
       if(regist < allNamedVariablePointer->numberOfNamedVariables) {
         return POINTER_TO_NAMED_VARIABLE(regist)->dataType;
       }
@@ -100,7 +100,7 @@ dataBlock_t *getRegisterDataPointer(calcRegister_t regist) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
     return TO_PCMEMPTR(reg[regist].dataPointer);
   }
-  else if(regist < 1000) { // Local register
+  else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
       regist -= FIRST_LOCAL_REGISTER;
       if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
@@ -122,7 +122,7 @@ dataBlock_t *getRegisterDataPointer(calcRegister_t regist) {
   }
   else if(regist < SAVED_REGISTER_X) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
-      regist -= 1000;
+      regist -= FIRST_NAMED_VARIABLE;
       if(regist < allNamedVariablePointer->numberOfNamedVariables) {
         return TO_PCMEMPTR(POINTER_TO_NAMED_VARIABLE(regist)->dataPointer);
       }
@@ -170,7 +170,7 @@ uint32_t getRegisterTag(calcRegister_t regist) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
     return reg[regist].tag;
   }
-  else if(regist < 1000) { // Local register
+  else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
       regist -= FIRST_LOCAL_REGISTER;
       if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
@@ -192,7 +192,7 @@ uint32_t getRegisterTag(calcRegister_t regist) {
   }
   else if(regist < SAVED_REGISTER_X) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
-      regist -= 1000;
+      regist -= FIRST_NAMED_VARIABLE;
       if(regist < allNamedVariablePointer->numberOfNamedVariables) {
         return POINTER_TO_NAMED_VARIABLE(regist)->tag;
       }
@@ -236,9 +236,9 @@ uint32_t getRegisterTag(calcRegister_t regist) {
  * \return uint16_t            Length in blocks
  ***********************************************/
 uint16_t getVariableNameLength(calcRegister_t regist) {
-  if(1000 <= regist && regist <= 1999) { // Named variable
+  if(FIRST_NAMED_VARIABLE <= regist && regist <= FIRST_NAMED_VARIABLE + 999) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
-      regist -= 1000;
+      regist -= FIRST_NAMED_VARIABLE;
       if(regist < allNamedVariablePointer->numberOfNamedVariables) {
         return POINTER_TO_POINTER_TO_NAMED_VARIABLE_NAME(regist)->variableNameLen;
       }
@@ -269,9 +269,9 @@ uint16_t getVariableNameLength(calcRegister_t regist) {
  * \return char*               Pointer to the name
  ***********************************************/
 char *getVariableNamePointer(calcRegister_t regist) {
-  if(1000 <= regist && regist <= 1999) { // Named variable
+  if(FIRST_NAMED_VARIABLE <= regist && regist <= FIRST_NAMED_VARIABLE + 999) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
-      regist -= 1000;
+      regist -= FIRST_NAMED_VARIABLE;
       if(regist < allNamedVariablePointer->numberOfNamedVariables) {
         return TO_PCMEMPTR(POINTER_TO_POINTER_TO_NAMED_VARIABLE_NAME(regist)->ptrToVariableName);
       }
@@ -308,7 +308,7 @@ void setRegisterDataType(calcRegister_t regist, uint16_t dataType, uint32_t tag)
     reg[regist].dataType = dataType;
     reg[regist].tag = tag;
   }
-  else if(regist < 1000) { // Local register
+  else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
       regist -= FIRST_LOCAL_REGISTER;
       if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
@@ -331,7 +331,7 @@ void setRegisterDataType(calcRegister_t regist, uint16_t dataType, uint32_t tag)
   }
   else if(regist < SAVED_REGISTER_X) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
-      regist -= 1000;
+      regist -= FIRST_NAMED_VARIABLE;
       if(regist < allNamedVariablePointer->numberOfNamedVariables) {
         POINTER_TO_NAMED_VARIABLE(regist)->dataType = dataType;
         POINTER_TO_NAMED_VARIABLE(regist)->tag = tag;
@@ -382,7 +382,7 @@ void setRegisterDataPointer(calcRegister_t regist, void *memPtr) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
     reg[regist].dataPointer = dataPointer;
   }
-  else if(regist < 1000) { // Local register
+  else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
       regist -= FIRST_LOCAL_REGISTER;
       if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
@@ -404,7 +404,7 @@ void setRegisterDataPointer(calcRegister_t regist, void *memPtr) {
   }
   else if(regist < SAVED_REGISTER_X) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
-      regist -= 1000u;
+      regist -= FIRST_NAMED_VARIABLE;
       if(regist < allNamedVariablePointer->numberOfNamedVariables) {
         POINTER_TO_NAMED_VARIABLE(regist)->dataPointer = dataPointer;
       }
@@ -454,7 +454,7 @@ void setRegisterTag(calcRegister_t regist, uint32_t tag) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
     reg[regist].tag = tag;
   }
-  else if(regist < 1000) { // Local register
+  else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
       regist -= FIRST_LOCAL_REGISTER;
       if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
@@ -476,7 +476,7 @@ void setRegisterTag(calcRegister_t regist, uint32_t tag) {
   }
   else if(regist < SAVED_REGISTER_X) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
-      regist -= 1000u;
+      regist -= FIRST_NAMED_VARIABLE;
       if(regist < allNamedVariablePointer->numberOfNamedVariables) {
         POINTER_TO_NAMED_VARIABLE(regist)->tag = tag;
       }
@@ -520,9 +520,9 @@ void setRegisterTag(calcRegister_t regist, uint32_t tag) {
  * \return void
  ***********************************************/
 void setVariableNameLength(calcRegister_t regist, uint16_t length) {
-  if(1000 <= regist && regist <= 1999) { // Named variable
+  if(FIRST_NAMED_VARIABLE <= regist && regist <= FIRST_NAMED_VARIABLE + 999) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
-      regist -= 1000;
+      regist -= FIRST_NAMED_VARIABLE;
       if(regist < allNamedVariablePointer->numberOfNamedVariables) {
         POINTER_TO_POINTER_TO_NAMED_VARIABLE_NAME(regist)->variableNameLen = length;
       }
@@ -553,9 +553,9 @@ void setVariableNameLength(calcRegister_t regist, uint16_t length) {
  * \return void
  ***********************************************/
 void setVariableNamePointer(calcRegister_t regist, void *namePointer) {
-  if(1000 <= regist && regist <= 1999) { // Named variable
+  if(FIRST_NAMED_VARIABLE <= regist && regist <= FIRST_NAMED_VARIABLE + 999) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
-      regist -= 1000;
+      regist -= FIRST_NAMED_VARIABLE;
       if(regist < allNamedVariablePointer->numberOfNamedVariables) {
         POINTER_TO_POINTER_TO_NAMED_VARIABLE_NAME(regist)->ptrToVariableName = TO_WP43SMEMPTR(namePointer);
       }
@@ -726,11 +726,11 @@ void allocateNamedVariable(const char *variableName) {
     allNamedVariablePointer = reallocWp43s(allNamedVariablePointer, TO_BYTES(1), TO_BYTES(3)); // 3 blocks: 1 for the number of named variables, 1 for the register descriptor, and 1 for the pointer to the variable name
     allNamedVariablePointer->numberOfNamedVariables = 1;
 
-    regist = 1000;
+    regist = FIRST_NAMED_VARIABLE;
   }
   else {
     regist = allNamedVariablePointer->numberOfNamedVariables;
-    if(regist == 999u) {
+    if(regist == 999) {
       #ifdef PC_BUILD
         showInfoDialog("In function allocateNamedVariable:", "you can allocate up to", "999 named variables!", NULL);
       #endif
@@ -740,7 +740,7 @@ void allocateNamedVariable(const char *variableName) {
     reallocWp43s(allNamedVariablePointer, TO_BYTES(1u + 2u*allNamedVariablePointer->numberOfNamedVariables), TO_BYTES(1u + 2u*(allNamedVariablePointer->numberOfNamedVariables + 1)));
     (allNamedVariablePointer->numberOfNamedVariables)++;
 
-    regist += 1000;
+    regist += FIRST_NAMED_VARIABLE;
   }
 
   // The new named variable is a real34 initialized to 0.0
@@ -815,7 +815,7 @@ void setRegisterMaxDataLength(calcRegister_t regist, uint16_t maxDataLen) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
     ((dataBlock_t *)TO_PCMEMPTR(reg[regist].dataPointer))->dataMaxLength = maxDataLen;
   }
-  else if(regist < 1000) { // Local register
+  else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
       if(regist-FIRST_LOCAL_REGISTER < allLocalRegisterPointer->numberOfLocalRegisters) {
         getRegisterDataPointer(regist)->dataMaxLength = maxDataLen;
@@ -836,11 +836,11 @@ void setRegisterMaxDataLength(calcRegister_t regist, uint16_t maxDataLen) {
   }
   else if(regist < SAVED_REGISTER_X) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
-      if(regist-1000 < allNamedVariablePointer->numberOfNamedVariables) {
+      if(regist - FIRST_NAMED_VARIABLE < allNamedVariablePointer->numberOfNamedVariables) {
         getRegisterDataPointer(regist)->dataMaxLength = maxDataLen;
       }
       else {
-        sprintf(errorMessage, "In function setRegisterMaxDataLength: named variable %" FMT16S " is not defined! Must be from 0 to %" FMT16U, regist - 1000, allNamedVariablePointer->numberOfNamedVariables - 1);
+        sprintf(errorMessage, "In function setRegisterMaxDataLength: named variable %" FMT16S " is not defined! Must be from 0 to %" FMT16U, regist - FIRST_NAMED_VARIABLE, allNamedVariablePointer->numberOfNamedVariables - 1);
         displayBugScreen(errorMessage);
       }
     }
@@ -880,7 +880,7 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
     return ((dataBlock_t *)TO_PCMEMPTR(reg[regist].dataPointer))->dataMaxLength;
   }
-  else if(regist < 1000) { // Local register
+  else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
       if(regist-FIRST_LOCAL_REGISTER < allLocalRegisterPointer->numberOfLocalRegisters) {
         return ((dataBlock_t *)TO_PCMEMPTR(POINTER_TO_LOCAL_REGISTER(regist)->dataPointer))->dataMaxLength;
@@ -898,11 +898,11 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
   }
   else if(regist < SAVED_REGISTER_X) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables != 0) {
-      if(regist-1000 < allNamedVariablePointer->numberOfNamedVariables) {
+      if(regist - FIRST_NAMED_VARIABLE < allNamedVariablePointer->numberOfNamedVariables) {
         return ((dataBlock_t *)TO_PCMEMPTR(POINTER_TO_NAMED_VARIABLE(regist)->dataPointer))->dataMaxLength;
       }
       else {
-        sprintf(errorMessage, "In function getRegisterMaxDataLength: named variable %" FMT16S " is not defined! Must be from 0 to %" FMT16U, regist - 1000, allNamedVariablePointer->numberOfNamedVariables - 1);
+        sprintf(errorMessage, "In function getRegisterMaxDataLength: named variable %" FMT16S " is not defined! Must be from 0 to %" FMT16U, regist - FIRST_NAMED_VARIABLE, allNamedVariablePointer->numberOfNamedVariables - 1);
         displayBugScreen(errorMessage);
       }
     }
@@ -2197,7 +2197,7 @@ void printRegisterDescriptorToConsole(calcRegister_t regist) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
     descriptor = reg[regist];
   }
-  else if(regist < 1000) { // Local register
+  else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
       regist -= FIRST_LOCAL_REGISTER;
       if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
@@ -2205,15 +2205,15 @@ void printRegisterDescriptorToConsole(calcRegister_t regist) {
       }
     }
   }
-  else if(regist < SAVED_REGISTER_X) { // Named variable
+  else if(regist < FIRST_SAVED_STACK_REGISTER) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
-      regist -= 1000u;
+      regist -= FIRST_NAMED_VARIABLE;
       if(regist < allNamedVariablePointer->numberOfNamedVariables) {
         descriptor = *POINTER_TO_NAMED_VARIABLE(regist);
       }
     }
   }
-  else if(regist < 3000) { // Saved stack register
+  else if(regist < FIRST_SAVED_STACK_REGISTER + 10) { // Saved stack register
     if(regist <= LAST_SAVED_REGISTER) {
       descriptor = savedStackRegister[regist - SAVED_REGISTER_X];
     }

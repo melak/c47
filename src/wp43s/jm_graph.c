@@ -262,7 +262,7 @@ void graph_sigmaplus(int8_t plusminus, real_t *xx, real_t *yy) {    //Called fro
   } else {
     //Convert from real to int
     realToString(SIGMA_N, tmpStr3000);
-    cnt = atoi (tmpStr3000);
+    cnt = stringToInt16 (tmpStr3000);
     #ifdef STATDEBUG
     printf("Count: %s, %d\n",tmpStr3000,cnt);
     #endif
@@ -617,7 +617,7 @@ void graph_plotmem(void) {
     if(plotmode != _VECT) {
       //Convert from real to int
       realToString(SIGMA_N, tmpStr3000);
-      statnum = atoi (tmpStr3000);
+      statnum = stringToInt16 (tmpStr3000);
     } else {
       statnum = ix_count;
     }
@@ -960,7 +960,7 @@ void fnStatList(uint16_t unusedParamButMandatory) {
     if(plotmode != _VECT) {
       //Convert from real to int
       realToString(SIGMA_N, tmpStr3000);
-      statnum = atoi (tmpStr3000);
+      statnum = stringToInt16 (tmpStr3000);
     } else {
       statnum = ix_count;
     }

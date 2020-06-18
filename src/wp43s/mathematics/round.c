@@ -91,7 +91,7 @@ void roundLonI(void) {
     displayValueX[posE] = 0;
     stringToLongInteger(displayValueX, 10, lgInt);
 
-    pos = atoi(displayValueX + posE + 1);
+    pos = stringToInt32(displayValueX + posE + 1);
     while(pos >= 9) {
       longIntegerMultiplyUInt(lgInt, 1000000000, lgInt);
       pos -= 9;
@@ -159,8 +159,8 @@ void roundReal(void) {
     slashPos = endOfIntegerPart++;
     while(displayValueX[++slashPos] != '/'); // The ending ; is OK here
     displayValueX[slashPos++] = 0;
-    int32ToReal34(atoi(displayValueX + endOfIntegerPart), &numerator);
-    int32ToReal34(atoi(displayValueX + slashPos), &denominator);
+    int32ToReal34(stringToInt32(displayValueX + endOfIntegerPart), &numerator);
+    int32ToReal34(stringToInt32(displayValueX + slashPos), &denominator);
     real34Divide(&numerator, &denominator, &numerator);
     if(displayValueX[0] == '-') {
       real34Subtract(REGISTER_REAL34_DATA(REGISTER_X), &numerator, REGISTER_REAL34_DATA(REGISTER_X));

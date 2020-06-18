@@ -24,6 +24,32 @@
 
 #ifndef TESTSUITE_BUILD
 /********************************************//**
+ * \brief Refreshes the status bar
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void refreshStatusBar(void) {
+  showDateTime();
+  showRealComplexResult();
+  showComplexMode();
+  showAngularMode();
+  showFracMode();
+  showIntegerMode();
+  showOverflowCarry();
+  showHideAlphaMode();
+  showHideHourGlass();
+  showHidePgmBegin();
+  showHideWatch();
+  showHideSerialIO();
+  showHidePrinter();
+  showHideUserMode();
+  showHideLowBattery();
+}
+
+
+
+/********************************************//**
  * \brief Displays date and time in the status bar
  *
  * \param void
@@ -202,12 +228,12 @@ void showOverflowCarry(void) {
 
 
 /********************************************//**
- * \brief Displays the alpha mode
+ * \brief Shows or hides the alpha mode
  *
  * \param void
  * \return void
  ***********************************************/
-void showAlphaMode(void) {
+void showHideAlphaMode(void) {
   if(calcMode == CM_AIM || calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM) {
     if(alphaCase == AC_UPPER) {
       showString(STD_ALPHA, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
@@ -227,60 +253,29 @@ void showAlphaMode(void) {
 
 
 /********************************************//**
- * \brief Displays the hourglass icon in the status bar
+ * \brief Shows or hides the hourglass icon in the status bar
  *
  * \param void
  * \return void
  ***********************************************/
-void showHourGlass(void) {
-  if(!hourGlassIconEnabled) {
-    hourGlassIconEnabled = true;
+void showHideHourGlass(void) {
+  if(hourGlassIconEnabled) {
     showGlyph(STD_HOURGLASS, &standardFont, X_HOURGLASS, 0, vmNormal, true, false); // is 0+11+3 pixel wide
-  }
-}
-
-
-
-/********************************************//**
- * \brief Hides the hourglass icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void hideHourGlass(void) {
-  if(hourGlassIconEnabled) {
-    hourGlassIconEnabled = false;
-    showGlyph(STD_SPACE_EM, &standardFont, X_HOURGLASS, 0, vmNormal, true, true); // STD_SPACE_EM is 12 pixel wide
-  }
-}
-
-
-
-/********************************************//**
- * \brief Toggles the hourglass icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void toggleHourGlass(void) {
-  if(hourGlassIconEnabled) {
-    showGlyph(STD_SPACE_EM,  &standardFont, X_HOURGLASS, 0, vmNormal, true, true);  // STD_SPACE_EM is 12 pixel wide
   }
   else {
-    showGlyph(STD_HOURGLASS, &standardFont, X_HOURGLASS, 0, vmNormal, true, false); // is 0+11+3 pixel wide
+    showGlyph(STD_SPACE_EM,  &standardFont, X_HOURGLASS, 0, vmNormal, true, true);  // STD_SPACE_EM is 12 pixel wide
   }
-  hourGlassIconEnabled = !hourGlassIconEnabled;
 }
 
 
 
 /********************************************//**
- * \brief Displays or hides the program begin icon in the status bar
+ * \brief Shows or hides the program begin icon in the status bar
  *
  * \param void
  * \return void
  ***********************************************/
-void showPgmBegin(void) {
+void showHidePgmBegin(void) {
   if(programCounter == 0) {
     showGlyph(STD_PGM_BEGIN, &standardFont, X_PROGRAM_BEGIN, 0, vmNormal, true, false); // is 0+10+3 pixel wide
   }
@@ -292,149 +287,51 @@ void showPgmBegin(void) {
 
 
 /********************************************//**
- * \brief Displays the watch icon in the status bar
+ * \brief Shows or hides the watch icon in the status bar
  *
  * \param void
  * \return void
  ***********************************************/
-void showWatch(void) {
-  watchIconEnabled = true;
-  showGlyph(STD_WATCH, &standardFont, X_WATCH, 0, vmNormal, true, false); // is 0+13+1 pixel wide
-}
-
-
-
-/********************************************//**
- * \brief Hides the watch icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void hideWatch(void) {
-  watchIconEnabled = false;
-  showString(STD_SPACE_EM STD_SPACE_HAIR, &standardFont, X_WATCH, 0, vmNormal, true, true); // STD_SPACE_EM is 12 pixel wide
-}
-
-
-
-/********************************************//**
- * \brief Toggles the watch icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void toggleWatch(void) {
+void showHideWatch(void) {
   if(watchIconEnabled) {
-    showString(STD_SPACE_EM STD_SPACE_HAIR, &standardFont, X_WATCH, 0, vmNormal, true, true);  // STD_SPACE_EM is 12 pixel wide
-  }
-  else {
     showGlyph(STD_WATCH,                    &standardFont, X_WATCH, 0, vmNormal, true, false); // is 0+13+1 pixel wide
   }
-  watchIconEnabled = !watchIconEnabled;
-}
-
-
-
-/********************************************//**
- * \brief Displays the serial I/O icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void showSerialIO(void) {
-  serialIOIconEnabled = true;
-  showGlyph(STD_SERIAL_IO, &standardFont, X_SERIAL_IO, 0, vmNormal, true, false); // is 0+8+3 pixel wide
-}
-
-
-
-/********************************************//**
- * \brief Hides the serial I/O icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void hideSerialIO(void) {
-  serialIOIconEnabled = false;
-  showGlyphCode(' ', &standardFont, X_SERIAL_IO, 0, vmNormal, true, true); // is 10 pixel wide
-}
-
-
-
-/********************************************//**
- * \brief Toggles the serial I/O icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void toggleSerialIO(void) {
-  if(serialIOIconEnabled) {
-    showGlyphCode(' ',       &standardFont, X_SERIAL_IO, 0, vmNormal, true, true);  // is 10 pixel wide
-  }
   else {
+    showString(STD_SPACE_EM STD_SPACE_HAIR, &standardFont, X_WATCH, 0, vmNormal, true, true);  // STD_SPACE_EM is 12 pixel wide
+  }
+}
+
+
+
+/********************************************//**
+ * \brief Shows or hides the serial I/O icon in the status bar
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void showHideSerialIO(void) {
+  if(serialIOIconEnabled) {
     showGlyph(STD_SERIAL_IO, &standardFont, X_SERIAL_IO, 0, vmNormal, true, false); // is 0+8+3 pixel wide
   }
-  serialIOIconEnabled = !serialIOIconEnabled;
-}
-
-
-
-/********************************************//**
- * \brief Displays the printer icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void showPrinter(void) {
-  printerIconEnabled = true;
-  showGlyph(STD_PRINTER, &standardFont, X_PRINTER, 0, vmNormal, true, false); // is 0+12+3 pixel wide
-}
-
-
-
-/********************************************//**
- * \brief Hides the printer icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void hidePrinter(void) {
-  printerIconEnabled = false;
-  showString(STD_SPACE_EM, &standardFont, X_PRINTER, 0, vmNormal, true, true); // STD_SPACE_EM is 12 pixel wide
-}
-
-
-
-/********************************************//**
- * \brief Toggles the printer icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void togglePrinter(void) {
-  if(printerIconEnabled) {
-    showString(STD_SPACE_EM, &standardFont, X_PRINTER, 0, vmNormal, true, true);  // STD_SPACE_EM is 12 pixel wide
-  }
   else {
+    showGlyphCode(' ',       &standardFont, X_SERIAL_IO, 0, vmNormal, true, true);  // is 10 pixel wide
+  }
+}
+
+
+
+/********************************************//**
+ * \brief Shows or hides the printer icon in the status bar
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void showHidePrinter(void) {
+  if(printerIconEnabled) {
     showGlyph(STD_PRINTER,   &standardFont, X_PRINTER, 0, vmNormal, true, false); // is 0+12+3 pixel wide
   }
-  printerIconEnabled = !printerIconEnabled;
-}
-
-
-
-/********************************************//**
- * \brief Shows or hides the battery icon in the status bar
- *
- * \param void
- * \return void
- ***********************************************/
-void showHideLowBattery(void) {
-  if(getSystemFlag(FLAG_LOWBAT)) {
-    showGlyph(STD_BATTERY, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+10+2 pixel wide
-  }
   else {
-    showGlyphCode(' ',     &standardFont, X_BATTERY, 0, vmNormal, true, true);  // is 10 pixel wide
+    showString(STD_SPACE_EM, &standardFont, X_PRINTER, 0, vmNormal, true, true);  // STD_SPACE_EM is 12 pixel wide
   }
 }
 
@@ -460,5 +357,22 @@ void showHideUserMode(void) {
     else if(calcMode == CM_AIM || calcMode == CM_ASM_OVER_AIM) calcModeAimGui();
     else if(calcMode == CM_TAM || calcMode == CM_ASM_OVER_TAM) calcModeTamGui();
   #endif
+}
+
+
+
+/********************************************//**
+ * \brief Shows or hides the battery icon in the status bar
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void showHideLowBattery(void) {
+  if(getSystemFlag(FLAG_LOWBAT)) {
+    showGlyph(STD_BATTERY, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+10+2 pixel wide
+  }
+  else {
+    showGlyphCode(' ',     &standardFont, X_BATTERY, 0, vmNormal, true, true);  // is 10 pixel wide
+  }
 }
 #endif

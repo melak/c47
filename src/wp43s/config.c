@@ -541,7 +541,7 @@ void fnClAll(uint16_t confirmation) {
 
     // Clear flags
     for(int32_t sixteenFlags=0; sixteenFlags<7; sixteenFlags++) { // 7 times uint16_t = 112 flags
-      flags[sixteenFlags] = 0;
+      globalFlags[sixteenFlags] = 0;
     }
 
     temporaryInformation = TI_NO_INFO;
@@ -558,7 +558,7 @@ void fnClPAll(uint16_t confirmation) {
     //printf("Running CLPALL\n");
     // TODO: actually clear all programs
     programCounter = 0;
-    showPgmBegin();
+    showHidePgmBegin();
     temporaryInformation = TI_NO_INFO;
   }
 }
@@ -619,6 +619,14 @@ void fnReset(uint16_t confirmation) {
     STACK_LIFT_DISABLE;
     showOverflowCarry();
     clearSystemFlag(FLAG_USER);
+    clearSystemFlag(FLAG_LOWBAT);
+
+    hourGlassIconEnabled = false;
+    programCounter = 0;
+    watchIconEnabled = false;
+    serialIOIconEnabled = false;
+    printerIconEnabled = false;
+    refreshStatusBar();
 
     showRealComplexResult();                                   //JM, from wp43s.c
     reset_jm_defaults();
@@ -637,7 +645,7 @@ void fnReset(uint16_t confirmation) {
     lastSyFlMenuPos = 0;
     lastAIntMenuPos = 0;
 
-    currentFntScr = 0;
+    initFontBrowser();
     currentFlgScr = 0;
     currentRegisterBrowserScreen = 9999;
 

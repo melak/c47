@@ -200,6 +200,7 @@ const funcTest_t funcTestCvt[] = {
   {"fnCvtInchM",      fnCvtInchM     },
   {"fnCvtInhgPa",     fnCvtInhgPa    },
   {"fnCvtLbfN",       fnCvtLbfN      },
+  {"fnCvtLbfftNm",    fnCvtLbfftNm   },
   {"fnCvtLbKg",       fnCvtLbKg      },
   {"fnCvtLyM",        fnCvtLyM       },
   {"fnCvtMiM",        fnCvtMiM       },

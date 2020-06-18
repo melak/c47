@@ -31,6 +31,7 @@
 #define X_BATTERY        389
 
 #ifndef TESTSUITE_BUILD
+void refreshStatusBar     (void);
 void showDateTime         (void);
 void showRealComplexResult(void);
 void showComplexMode      (void);
@@ -38,21 +39,12 @@ void showAngularMode      (void);
 void showFracMode         (void);
 void showIntegerMode      (void);
 void showOverflowCarry    (void);
-void showAlphaMode        (void);
-void showHourGlass        (void);
-void hideHourGlass        (void);
-void toggleHourGlass      (void);
-void showPgmBegin         (void);
-void showWatch            (void);
-void hideWatch            (void);
-void toggleWatch          (void);
-void showSerialIO         (void);
-void hideSerialIO         (void);
-void toggleSerialIO       (void);
-void showPrinter          (void);
-void hidePrinter          (void);
-void togglePrinter        (void);
-void toggleLowBattery     (void);
+void showHideAlphaMode    (void);
+void showHideHourGlass    (void);
+void showHidePgmBegin     (void);
+void showHideWatch        (void);
+void showHideSerialIO     (void);
+void showHidePrinter      (void);
 void showHideUserMode     (void);
 void showHideLowBattery   (void);
 #endif

@@ -20,5 +20,6 @@
 #define NUMBER_OF_STANDARD_FONT_LINES_PER_SCREEN  8
 
 #ifndef TESTSUITE_BUILD
-void fontBrowser(uint16_t unusedParamButMandatory);
+  void initFontBrowser(void);
+  void fontBrowser    (uint16_t unusedParamButMandatory);
 #endif

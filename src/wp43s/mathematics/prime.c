@@ -69,7 +69,7 @@ static bool_t longIntegerIsPrime1(longInteger_t primeCandidate) {
 
   #if defined(PC_BUILD) || defined(DMCP_BUILD)
   if(calcMode == CM_NORMAL) {
-    showHourGlass();
+    hourGlassIconEnabled = true;
     #ifdef PC_BUILD
       refreshScreen(NULL);
     #else
@@ -111,7 +111,8 @@ static bool_t longIntegerIsPrime1(longInteger_t primeCandidate) {
       longIntegerFree(mod);
       #if defined(PC_BUILD) || defined(DMCP_BUILD)
         if(calcMode == CM_NORMAL) {
-          hideHourGlass();
+          hourGlassIconEnabled = false;
+          showHideHourGlass();
         }
       #endif
       return false;
@@ -125,7 +126,8 @@ static bool_t longIntegerIsPrime1(longInteger_t primeCandidate) {
   longIntegerFree(mod);
   #if defined(PC_BUILD) || defined(DMCP_BUILD)
     if(calcMode == CM_NORMAL) {
-      hideHourGlass();
+      hourGlassIconEnabled = false;
+      showHideHourGlass();
     }
   #endif
   return true;
@@ -157,6 +159,8 @@ void fnIsPrime(uint16_t unusedButMandatoryParameter) {
   }
 
   longIntegerSetPositiveSign(primeCandidate);
+  hourGlassIconEnabled = true;
+  showHideHourGlass();
   //temporaryInformation = (longIntegerIsPrime1(primeCandidate) ? TI_TRUE : TI_FALSE);
   //temporaryInformation = (longIntegerIsPrime2(primeCandidate) ? TI_TRUE : TI_FALSE);
 //printf("Before longIntegerIsPrime()\n");
@@ -164,6 +168,8 @@ void fnIsPrime(uint16_t unusedButMandatoryParameter) {
 //printf("After  longIntegerIsPrime()\n");
   longIntegerFree(primeCandidate);
   refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
+  hourGlassIconEnabled = false;
+  showHideHourGlass();
 }
 
 
@@ -199,7 +205,11 @@ void fnNextPrime(uint16_t unusedButMandatoryParameter) {
 
   longIntegerSetPositiveSign(currentNumber);
 
+  hourGlassIconEnabled = true;
+  showHideHourGlass();
   longIntegerNextPrime(currentNumber, nextPrime);
+  hourGlassIconEnabled = false;
+  showHideHourGlass();
 
   if(getRegisterDataType(REGISTER_L) == dtShortInteger) {
     convertLongIntegerToShortIntegerRegister(nextPrime, getRegisterShortIntegerBase(REGISTER_L), REGISTER_X);

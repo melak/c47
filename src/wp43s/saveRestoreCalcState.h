@@ -18,7 +18,16 @@
  * \file saveRestoreCalcState.h
  ***********************************************/
 
-#ifdef PC_BUILD
-  void saveCalc         (void);
-  void restoreCalc      (void);
+#if defined(PC_BUILD) || defined(DMCP_BUILD)
+  void   saveCalc      (void);
+  void   restoreCalc   (void);
 #endif
+
+void     fnSave        (uint16_t unusedParamButMandatory);
+void     fnLoad        (uint16_t loadMode);
+uint8_t  stringToUint8 (const char *str);
+uint16_t stringToUint16(const char *str);
+uint32_t stringToUint32(const char *str);
+uint64_t stringToUint64(const char *str);
+int16_t  stringToInt16 (const char *str);
+int32_t  stringToInt32 (const char *str);

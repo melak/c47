@@ -166,10 +166,14 @@ void fnClPAll                   (uint16_t unusedParamButMandatory) {}
 void fnClSigma                  (uint16_t unusedParamButMandatory) {}
 void fnClearStack               (uint16_t unusedParamButMandatory) {}
 void fnClearRegisters           (uint16_t unusedParamButMandatory) {}
+void fnTimeFormat               (uint16_t unusedParamButMandatory) {}
 void fnSetDateFormat            (uint16_t unusedParamButMandatory) {}
+void fnComplexUnit              (uint16_t unusedParamButMandatory) {}
+void fnComplexMode              (uint16_t unusedParamButMandatory) {}
 void fnComplexResult            (uint16_t unusedParamButMandatory) {}
 void fnConjugate                (uint16_t unusedParamButMandatory) {}
 void fnAngularMode              (uint16_t unusedParamButMandatory) {}
+void fnDenMode                  (uint16_t unusedParamButMandatory) {}
 void fnDenMax                   (uint16_t unusedParamButMandatory) {}
 void fnExp                      (uint16_t unusedParamButMandatory) {}
 void fnExpM1                    (uint16_t unusedParamButMandatory) {}
@@ -220,6 +224,7 @@ void fnRecallMult               (uint16_t unusedParamButMandatory) {}
 void fnRecallDiv                (uint16_t unusedParamButMandatory) {}
 void fnRecallMin                (uint16_t unusedParamButMandatory) {}
 void fnRecallMax                (uint16_t unusedParamButMandatory) {}
+void fnRadixMark                (uint16_t unusedParamButMandatory) {}
 void fnReset                    (uint16_t unusedParamButMandatory) {}
 void fnRealPart                 (uint16_t unusedParamButMandatory) {}
 void fnRmd                      (uint16_t unusedParamButMandatory) {}
@@ -234,6 +239,7 @@ void fnConfigIndia              (uint16_t unusedParamButMandatory) {}
 void fnConfigJapan              (uint16_t unusedParamButMandatory) {}
 void fnConfigUk                 (uint16_t unusedParamButMandatory) {}
 void fnConfigUsa                (uint16_t unusedParamButMandatory) {}
+void fnToggleFractionType       (uint16_t unusedParamButMandatory) {}
 void fnLcm                      (uint16_t unusedParamButMandatory) {}
 void fnSign                     (uint16_t unusedParamButMandatory) {}
 void fnSlvq                     (uint16_t unusedParamButMandatory) {}
@@ -271,6 +277,7 @@ void fnGetRoundingMode          (uint16_t unusedParamButMandatory) {}
 void fnSetWordSize              (uint16_t unusedParamButMandatory) {}
 void fnGetWordSize              (uint16_t unusedParamButMandatory) {}
 void fnGetStackSize             (uint16_t unusedParamButMandatory) {}
+void fnStackSize                (uint16_t unusedParamButMandatory) {}
 void fnStore                    (uint16_t unusedParamButMandatory) {}
 void fnStoreConfig              (uint16_t unusedParamButMandatory) {}
 void fnStoreElement             (uint16_t unusedParamButMandatory) {}
@@ -338,6 +345,7 @@ void fnCvtFToC                  (uint16_t unusedParamButMandatory) {}
 void fnCvtNmiM                  (uint16_t unusedParamButMandatory) {}
 void fnCvtPsiPa                 (uint16_t unusedParamButMandatory) {}
 void fnCvtShortcwtKg            (uint16_t unusedParamButMandatory) {}
+void fnCvtLbfftNm               (uint16_t unusedParamButMandatory) {}
 void fnCvtRadToDeg              (uint16_t unusedParamButMandatory) {}
 void fnCvtFromCurrentAngularMode(uint16_t unusedParamButMandatory) {}
 void fnCvtYearS                 (uint16_t unusedParamButMandatory) {}
@@ -424,6 +432,8 @@ void fnAlphaPos                 (uint16_t unusedParamButMandatory) {}
 void fnXToAlpha                 (uint16_t unusedParamButMandatory) {}
 void fnAlphaToX                 (uint16_t unusedParamButMandatory) {}
 void fnTicks                    (uint16_t unusedParamButMandatory) {}
+void fnSave                     (uint16_t unusedParamButMandatory) {}
+void fnLoad                     (uint16_t unusedParamButMandatory) {}
 void fnJM                       (uint16_t unusedParamButMandatory) {}           //vv JM
 void fnCvtmmhgPa                (uint16_t unusedParamButMandatory) {}
 void fnSetSetJM                 (uint16_t unusedParamButMandatory) {}
@@ -462,8 +472,7 @@ void flagBrowser_old            (uint16_t unusedParamButMandatory) {}         //
 
 const item_t indexOfItems[] = {
 //            *func                        param                        itemCatalogName (also FN DISPLAY (NOP))        itemSoftmenuName                               catalog.  stackLiftStatus   //JM
-//            function                     parameter                    item in catalog                                item in softmenu                               CATALOG   stackLift
-
+//            function                     parameter                    item in catalog                                item in softmenu                               TAM min  TAM max  CATALOG   stackLift
 /*    0 */  { itemToBeCoded,               NOPARAM,                     "",                                            "0000",                                        0,       0,       CAT_NONE, SLS_UNCHANGED},
 /*    1 */  { fnCvtCToF,                   NOPARAM,                     STD_DEGREE "C" STD_RIGHT_ARROW STD_DEGREE "F", STD_DEGREE "C" STD_RIGHT_ARROW STD_DEGREE "F",   0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*    2 */  { fnCvtFToC,                   NOPARAM,                     STD_DEGREE "F" STD_RIGHT_ARROW STD_DEGREE "C", STD_DEGREE "F" STD_RIGHT_ARROW STD_DEGREE "C",   0,       0,       CAT_FNCT, SLS_ENABLED  },
@@ -560,8 +569,8 @@ const item_t indexOfItems[] = {
 /*   93 */  { fnCosh,                      NOPARAM,                     "cosh",                                        "cosh",                                        0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*   94 */  { itemToBeCoded,               NOPARAM,                     "COV",                                         "cov",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED},
 /*   95 */  { itemToBeCoded,               NOPARAM,                     "CPX",                                         "CPX",                                         0,       0,       CAT_MENU, SLS_UNCHANGED},
-/*   96 */  { itemToBeCoded,               NOPARAM,                     "0096",                                        "0096",                                        0,       0,       CAT_FREE, SLS_UNCHANGED},
-/*   97 */  { itemToBeCoded,               NOPARAM,                     "0097",                                        "0097",                                        0,       0,       CAT_FREE, SLS_UNCHANGED},
+/*   96 */  { fnCvtLbfftNm,                multiply,                    "lbft" STD_RIGHT_ARROW "Nm",                   "lbf" STD_CROSS "ft",                          0,       0,       CAT_FNCT, SLS_ENABLED  },
+/*   97 */  { fnCvtLbfftNm,                multiply,                    "lbft" STD_RIGHT_ARROW "Nm",                   STD_RIGHT_ARROW " Nm",                         0,       0,       CAT_DUPL, SLS_ENABLED  },
 /*   98 */  { itemToBeCoded,               NOPARAM,                     "0098",                                        "0098",                                        0,       0,       CAT_FREE, SLS_UNCHANGED},
 /*   99 */  { itemToBeCoded,               NOPARAM,                     "CPXS",                                        "CPXS",                                        0,       0,       CAT_MENU, SLS_UNCHANGED},
 /*  100 */  { itemToBeCoded,               NOPARAM,                     "CPX?",                                        "CPX?",                                        0,       0,       CAT_FNCT, SLS_UNCHANGED},
@@ -583,8 +592,8 @@ const item_t indexOfItems[] = {
 /*  116 */  { fnDecomp,                    NOPARAM,                     "DECOMP",                                      "DECOMP",                                      0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  117 */  { fnAngularMode,               AM_DEGREE,                   "DEG",                                         "DEG",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED},
 /*  118 */  { fnCvtToCurrentAngularMode,   AM_DEGREE,                   "DEG" STD_RIGHT_ARROW,                         "DEG" STD_RIGHT_ARROW,                         0,       0,       CAT_FNCT, SLS_ENABLED  },
-/*  119 */  { itemToBeCoded,               NOPARAM,                     "0119",                                        "0119",                                        0,       0,       CAT_FREE, SLS_UNCHANGED},
-/*  120 */  { itemToBeCoded,               NOPARAM,                     "0120",                                        "0120",                                        0,       0,       CAT_FREE, SLS_UNCHANGED},
+/*  119 */  { fnCvtLbfftNm,                divide,                      "Nm" STD_RIGHT_ARROW "lbft",                   "Nm " STD_RIGHT_ARROW,                         0,       0,       CAT_FNCT, SLS_ENABLED  },
+/*  120 */  { fnCvtLbfftNm,                divide,                      "Nm" STD_RIGHT_ARROW "lbft",                   "lbf" STD_CROSS "ft",                          0,       0,       CAT_DUPL, SLS_ENABLED  },
 /*  121 */  { itemToBeCoded,               NOPARAM,                     "0121",                                        "0121",                                        0,       0,       CAT_FREE, SLS_UNCHANGED},
 /*  122 */  { fnDenMax,                    NOPARAM,                     "DENMAX",                                      "DENMAX",                                      0,       0,       CAT_FNCT, SLS_UNCHANGED},
 /*  123 */  { itemToBeCoded,               NOPARAM,                     "DIGITS",                                      "DIGITS",                                      0,       0,       CAT_MENU, SLS_UNCHANGED},
@@ -780,11 +789,11 @@ const item_t indexOfItems[] = {
 /*  313 */  { itemToBeCoded,               NOPARAM,                     "L" STD_SUB_m STD_SUB_alpha,                   "L" STD_SUB_m STD_SUB_alpha,                   0,       0,       CAT_FNCT, SLS_UNCHANGED},
 /*  314 */  { itemToBeCoded,               NOPARAM,                     "LN" STD_beta,                                 "ln" STD_beta,                                 0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  315 */  { fnLnGamma,                   NOPARAM,                     "LN" STD_GAMMA,                                "ln" STD_GAMMA,                                0,       0,       CAT_FNCT, SLS_ENABLED  },
-/*  316 */  { itemToBeCoded,               NOPARAM,                     "LOAD",                                        "LOAD",                                        0,       0,       CAT_FNCT, SLS_UNCHANGED},
-/*  317 */  { itemToBeCoded,               NOPARAM,                     "LOADP",                                       "LOADP",                                       0,       0,       CAT_FNCT, SLS_UNCHANGED},
-/*  318 */  { itemToBeCoded,               NOPARAM,                     "LOADR",                                       "LOADR",                                       0,       0,       CAT_FNCT, SLS_UNCHANGED},
-/*  319 */  { itemToBeCoded,               NOPARAM,                     "LOADSS",                                      "LOADSS",                                      0,       0,       CAT_FNCT, SLS_UNCHANGED},
-/*  320 */  { itemToBeCoded,               NOPARAM,                     "LOAD" STD_SIGMA,                              "LOAD" STD_SIGMA,                              0,       0,       CAT_FNCT, SLS_UNCHANGED},
+/*  316 */  { fnLoad,                      LM_ALL,                      "LOAD",                                        "LOAD",                                        0,       0,       CAT_FNCT, SLS_UNCHANGED},
+/*  317 */  { fnLoad,                      LM_PROGRAMS,                 "LOADP",                                       "LOADP",                                       0,       0,       CAT_FNCT, SLS_UNCHANGED},
+/*  318 */  { fnLoad,                      LM_REGISTERS,                "LOADR",                                       "LOADR",                                       0,       0,       CAT_FNCT, SLS_UNCHANGED},
+/*  319 */  { fnLoad,                      LM_SYSTEM_STATE,             "LOADSS",                                      "LOADSS",                                      0,       0,       CAT_FNCT, SLS_UNCHANGED},
+/*  320 */  { fnLoad,                      LM_SUMS,                     "LOAD" STD_SIGMA,                              "LOAD" STD_SIGMA,                              0,       0,       CAT_FNCT, SLS_UNCHANGED},
 /*  321 */  { allocateLocalRegisters,      TM_VALUE,                    "LocR",                                        "LocR",                                        0,      99,       CAT_FNCT, SLS_UNCHANGED},
 /*  322 */  { fnGetLocR,                   NOPARAM,                     "LocR?",                                       "LocR?",                                       0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  323 */  { fnLog10,                     NOPARAM     /*# JM #*/,      "LOG" STD_SUB_10,                              "LOG",                                         0,       0,       CAT_FNCT, SLS_ENABLED  },   //JM Change lg to LOG
@@ -1006,7 +1015,7 @@ const item_t indexOfItems[] = {
 /*  539 */  { fnConstant,                  44,                          "R" STD_SUB_EARTH,                             "R" STD_SUB_EARTH,                             0,       0,       CAT_CNST, SLS_ENABLED  },
 /*  540 */  { fnSampleStdDev,              NOPARAM,                     "s",                                           "s",                                           0,       0,       CAT_FNCT, SLS_UNCHANGED},
 /*  541 */  { fnConstant,                  45,                          "Sa",                                          "Sa",                                          0,       0,       CAT_CNST, SLS_ENABLED  },
-/*  542 */  { itemToBeCoded,               NOPARAM,                     "SAVE",                                        "SAVE",                                        0,       0,       CAT_FNCT, SLS_UNCHANGED},
+/*  542 */  { fnSave,                      NOPARAM,                     "SAVE",                                        "SAVE",                                        0,       0,       CAT_FNCT, SLS_UNCHANGED},
 /*  543 */  { fnSb,                        TM_VALUE,                    "SB",                                          "SB",                                          1,      64,       CAT_FNCT, SLS_ENABLED  },
 /*  544 */  { fnConstant,                  46,                          "Sb",                                          "Sb",                                          0,       0,       CAT_CNST, SLS_ENABLED  },
 /*  545 */  { fnDisplayFormatSci,          TM_VALUE,                    "SCI",                                         "SCI",                                         0,      15,       CAT_FNCT, SLS_UNCHANGED},
@@ -1135,7 +1144,7 @@ const item_t indexOfItems[] = {
 /*  668 */  { fnCvtHpukW,                  divide,                      "W" STD_RIGHT_ARROW "hp" STD_UK,               "W" STD_RIGHT_ARROW "hp" STD_UK,               0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  669 */  { fnSquare,                    NOPARAM,                     "x" STD_SUP_2,                                 "x" STD_SUP_2,                                 0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  670 */  { fnCube,                      NOPARAM,                     "x" STD_SUP_3,                                 "x" STD_SUP_3,                                 0,       0,       CAT_FNCT, SLS_ENABLED  },
-/*  671 */  { fnRecall,                    TM_STORCL,                   "XEQ",                                         "XEQ",                                         0,      99,       CAT_FNCT, SLS_UNCHANGED},   //TEMPORARY PLACEHOLDER FOR XEQ
+/*  671 */  { fnRecall,                    TM_STORCL    /*# JM #*/,     "XEQ",                                         "XEQ",                                         0,      99,       CAT_FNCT, SLS_UNCHANGED},   //TEMPORARY PLACEHOLDER FOR XEQ
 /*  672 */  { fnLogicalXnor,               NOPARAM,                     "XNOR",                                        "XNOR",                                        0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  673 */  { fnLogicalXor,                NOPARAM,                     "XOR",                                         "XOR",                                         0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  674 */  { fnMeanXY,                    NOPARAM,                     STD_x_BAR,                                     STD_x_BAR,                                     0,       0,       CAT_FNCT, SLS_ENABLED  },
@@ -1266,7 +1275,7 @@ const item_t indexOfItems[] = {
 /*  799 */  { fnCvtDegToDms,               NOPARAM,                     "D" STD_RIGHT_ARROW "D.MS",                    "D" STD_RIGHT_ARROW "D.MS",                    0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  800 */  { itemToBeCoded,               NOPARAM,                     STD_UP_ARROW "Lim",                            STD_UP_ARROW "Lim",                            0,       0,       CAT_RVAR, SLS_UNCHANGED},
 /*  801 */  { itemToBeCoded,               NOPARAM,                     STD_DOWN_ARROW "Lim",                          STD_DOWN_ARROW "Lim",                          0,       0,       CAT_RVAR, SLS_UNCHANGED},
-/*  802 */  { fnShuffle,                   TM_SHUFFLE,                  STD_LEFT_RIGHT_ARROWS,                         STD_LEFT_RIGHT_ARROWS,                         0,       0,       CAT_FNCT, SLS_DISABLED },
+/*  802 */  { fnShuffle,                   TM_SHUFFLE,                  STD_LEFT_RIGHT_ARROWS,                         STD_LEFT_RIGHT_ARROWS,                         0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  803 */  { fnPercent,                   NOPARAM,                     "%",                                           "%",                                           0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  804 */  { fnPercentMRR,                NOPARAM,                     "%MRR",                                        "%MRR",                                        0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  805 */  { fnPercentT,                  NOPARAM,                     "%T",                                          "%T",                                          0,       0,       CAT_FNCT, SLS_ENABLED  },

@@ -59,7 +59,7 @@ realContext_t         ctxtReal51;   //   51 digits: used for 34 digits intermedi
 realContext_t         ctxtReal75;   //   75 digits: used in SLVQ
 realContext_t         ctxtReal1071; // 1071 digits: used in radian angle reduction
 //realContext_t         ctxtReal2139; // 2139 digits: used for really big modulo
-uint16_t              flags[7];
+uint16_t              globalFlags[7];
 char                  tmpStr3000[TMP_STR_LENGTH];
 char                  errorMessage[ERROR_MESSAGE_LENGTH];
 char                  aimBuffer[AIM_BUFFER_LENGTH]; /// TODO may be aimBuffer and nimBuffer can be merged
@@ -92,6 +92,7 @@ int16_t               lastAIntMenuPos;
 int16_t               showFunctionNameItem;
 int16_t               SHOWregis;                   //JMSHOW
 uint16_t              numberOfLocalFlags;
+uint16_t              glyphRow[NUMBER_OF_GLYPH_ROWS];
 dataBlock_t          *allLocalRegisterPointer;
 dataBlock_t          *allNamedVariablePointer;
 dataBlock_t          *statisticalSumsPointer;
@@ -122,8 +123,6 @@ uint8_t               roundingMode;
 uint8_t               calcMode;
 uint8_t               nextChar;
 uint8_t               displayStack;
-uint8_t               productSign;
-uint8_t               displayModeOverride;
 uint8_t               alphaCase;
 uint8_t               numLinesNumericFont;
 uint8_t               numLinesStandardFont;
@@ -180,7 +179,6 @@ bool_t                AlphaSelectionBufferTimerRunning;        //JM
 calcKey_t             kbd_usr[37];
 calcRegister_t        errorMessageRegisterLine;
 calcRegister_t        errorRegisterLine;
-uint16_t              row[100];
 uint64_t              shortIntegerMask;
 uint64_t              shortIntegerSignBit;
 uint64_t              systemFlags;
@@ -203,6 +201,7 @@ real39_t              const *angle180;
 real39_t              const *angle90;
 real39_t              const *angle45;
 pcg32_random_t        pcg32_global = PCG32_INITIALIZER;
+const char            digits[17] = "0123456789ABCDEF";
 #ifdef DMCP_BUILD
   #ifdef JMSHOWCODES                                           //JM Test
     int8_t            telltale_pos;                            //JM Test
@@ -231,14 +230,7 @@ void setupDefaults(void) {
   freeBlocks[0].sizeInBlocks = RAM_SIZE;
 
   glyphNotFound.data   = malloc(38);
-  #ifndef __APPLE__
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wstringop-truncation"
-  #endif
-  strncpy(glyphNotFound.data, "\xff\xf8\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\xff\xf8", 38);
-  #ifndef __APPLE__
-    #pragma GCC diagnostic pop
-  #endif
+  xcopy(glyphNotFound.data, "\xff\xf8\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\xff\xf8", 38);
 
 //JM Where commented, fnReset is over-writing the content of setupdefaults. fnReset is in config.c
          //JM vv note: Overwritten by fnReset
@@ -344,12 +336,17 @@ void setupDefaults(void) {
   clearSystemFlag(FLAG_OVERFLOW);
   clearSystemFlag(FLAG_CARRY);
   clearSystemFlag(FLAG_USER);
+  clearSystemFlag(FLAG_LOWBAT);
+
+  hourGlassIconEnabled = false;
+  programCounter = 0;
+  watchIconEnabled = false;
+  serialIOIconEnabled = false;
+  printerIconEnabled = false;
 
   significantDigits = 0;
   fnRoundingMode(RM_HALF_EVEN); // DEC_ROUND_HALF_EVEN.        //JM note: Overwritten by fnReset
   fnDisplayStack(4);                                           //JM note: Overwritten by fnReset
-
-  showDateTime();
 
   shiftF = false;
   shiftG = false;
@@ -387,18 +384,13 @@ void setupDefaults(void) {
     showShiftState();
   #endif // TESTSUITE_BUILD
 
-  currentFntScr = 0;
+  initFontBrowser();
   currentFlgScr = 0;
   currentRegisterBrowserScreen = 9999;
 
   softmenuStackPointer = 0;
 
   aimBuffer[0] = 0;
-
-  showAlphaMode();
-
-  programCounter = 0;
-  showPgmBegin();
 
   cursorBlinkCounter = 0;
 
@@ -408,6 +400,7 @@ void setupDefaults(void) {
 
   lastErrorCode = 0;
 
+  refreshStatusBar();
   refreshStack();
 
   allowScreenUpdate = true;

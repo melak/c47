@@ -81,7 +81,6 @@ void copyRegisterToClipboardString(calcRegister_t regist, char *clipboardString)
   int16_t base, sign, n;
   uint64_t shortInt;
   char tmp2[TMP_STR_LENGTH];                           //JMCSV
-  static const char digits[17] = "0123456789ABCDEF";
 
   switch(getRegisterDataType(regist)) {
     case dtLongInteger:
@@ -433,7 +432,7 @@ gboolean refreshScreen(gpointer data) {// This function is called every 100 ms b
 
   // Alpha selection timer
   if(AlphaSelectionBufferTimerRunning) {         //JMvv
-    if(calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM) { // More than 3 seconds elapsed since last keypress
+    if(calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM /* && alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000*/) { // More than 3 seconds elapsed since last keypress
     timeoutAlphaSelectionBuffer();               //JM^^
     }
   }
@@ -478,7 +477,7 @@ void refreshScreen(void) {// This function is called roughly every 100 ms from t
 
   // Alpha selection timer
   if(AlphaSelectionBufferTimerRunning) {         //JMvv
-    if(calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM) { // More than 3 seconds elapsed since last keypress
+    if(calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM /* && alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000*/) { // More than 3 seconds elapsed since last keypress
       timeoutAlphaSelectionBuffer();             //JM^^
     }
   }
@@ -1349,7 +1348,9 @@ void resetTemporaryInformation(void) {
     case TI_RESET:
     case TI_ARE_YOU_SURE:
     case TI_VERSION:
-    //case TI_WHO:                                                                          //JM
+    //case TI_WHO:
+    case TI_SAVED:
+    case TI_BACKUP_RESTORED:
     case TI_WEIGHTEDMEANX:
     case TI_WEIGHTEDSAMPLSTDDEV:
     case TI_WEIGHTEDPOPLSTDDEV:
@@ -1501,6 +1502,14 @@ void refreshRegisterLine(calcRegister_t regist) {
           sprintf(tmpStr3000, "Data, programs, and definitions cleared");
           w = stringWidth(tmpStr3000, &standardFont, true, true);
           showString(tmpStr3000, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+        }
+
+        else if(temporaryInformation == TI_SAVED && regist == REGISTER_X) {
+          showString("Saved", &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+        }
+
+        else if(temporaryInformation == TI_BACKUP_RESTORED && regist == REGISTER_X) {
+          showString("Backup restored", &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
         }
 
         else if(temporaryInformation == TI_SHOW_REGISTER) {

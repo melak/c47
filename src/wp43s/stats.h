@@ -23,4 +23,5 @@
 void fnSigma                     (uint16_t plusMinus);
 void fnStatSum                   (uint16_t sum);
 void fnSumXY                     (uint16_t unusedParamButMandatory);
-int checkMinimumDataPoints       (const real_t *n);
+int  checkMinimumDataPoints      (const real_t *n);
+void initStatisticalSums         (void);

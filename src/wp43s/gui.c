@@ -4394,7 +4394,7 @@ void calcModeNormal(void) {
   clearSystemFlag(FLAG_ALPHA);
   hideCursor();
   cursorEnabled = false;
-  showAlphaMode();
+  showHideAlphaMode();
 
   #ifdef PC_BUILD
     calcModeNormalGui();
@@ -4430,7 +4430,7 @@ void calcModeAim(uint16_t unusedParamButMandatory) {
   }
     alphaCase = AC_UPPER;
     calcMode = CM_AIM;
-    showAlphaMode();
+    showHideAlphaMode();
     nextChar = NC_NORMAL;
 
     saveStack();
@@ -4466,7 +4466,7 @@ void calcModeAsm(void) {
 
   if(calcMode != CM_AIM) {
     alphaCase = AC_UPPER;
-    showAlphaMode();
+    showHideAlphaMode();
     nextChar = NC_NORMAL;
   }
 
@@ -4526,9 +4526,8 @@ void calcModeNim(uint16_t unusedParamButMandatory) {
  * \return void
  ***********************************************/
 void calcModeTam(void) {
-  
   transitionSystemState = 0;
-  
+
   if(calcMode == CM_NIM) {
     closeNim();
   }
@@ -4557,7 +4556,7 @@ void calcModeTam(void) {
     case TM_STORCL:
       showSoftmenu(NULL, -MNU_TAMSTORCL, true);
       break;
-      
+
     case TM_SHUFFLE:
       showSoftmenu(NULL, -MNU_TAMSHUFFLE, true);
       break;
@@ -4571,7 +4570,7 @@ void calcModeTam(void) {
   if(calcMode != CM_ASM_OVER_TAM) {
     if (tamMode != TM_SHUFFLE) {
       strcat(tamBuffer, " __");
-    } 
+    }
     else {
       strcat(tamBuffer, " ____");
       transitionSystemState = 16;

@@ -34,8 +34,8 @@ const calcKey_t kbd_std[37] = {
  {26,   ITM_SQUARE,    ITM_AIM,         ITM_SQUAREROOTX, CHR_CHECK_MARK,  CHR_F,             CHR_CHECK_MARK,  CHR_PHI,       CHR_alpha    },
 
  {31,   ITM_STO,       ITM_ASSIGN,      ITM_SAVE,        ITM_NULL,        CHR_G,             ITM_ASSIGN,      CHR_GAMMA,     ITM_NULL     },
- {32,   ITM_RCL,       ITM_RBR,         ITM_VIEW,        ITM_NULL,        CHR_H,             ITM_RBR,         CHR_CHI,       ITM_HEX      },
- {33,   ITM_Rdown,     ITM_Rup,        -MNU_CPX,         ITM_NULL,        CHR_I,             CHR_DOWN_ARROW,  CHR_IOTA,      ITM_REGI     }, // if f or g are changed: adapt the function btnClicked section if(calcMode == CM_NIM) in keyboard.c. Case H for hexadecimal base
+ {32,   ITM_RCL,       ITM_RBR,         ITM_VIEW,        ITM_NULL,        CHR_H,             ITM_RBR,         CHR_CHI,       ITM_HEX      }, // if f or g are changed: adapt the function btnClicked section if(calcMode == CM_NIM) in keyboard.c. Case H for hexadecimal base
+ {33,   ITM_Rdown,     ITM_Rup,        -MNU_CPX,         ITM_NULL,        CHR_I,             CHR_DOWN_ARROW,  CHR_IOTA,      ITM_REGI     },
  {34,   KEY_CC,        ITM_MAGNITUDE,   ITM_ANGLE,       ITM_NULL,        CHR_J,             ITM_NULL,        CHR_ETA,       ITM_REGJ     },
  {35,   KEY_f,         ITM_NULL,        ITM_SCRDMP,      KEY_f,           KEY_f,             ITM_NULL,        ITM_SCRDMP,    KEY_f        },
  {36,   KEY_g,         KEY_USERMODE,    ITM_NULL,        KEY_g,           KEY_g,             KEY_USERMODE,    ITM_NULL,      KEY_g        },

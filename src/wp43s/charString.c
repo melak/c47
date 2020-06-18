@@ -214,42 +214,125 @@ int32_t stringGlyphLength(const char *str) {
 /********************************************//**
  * \brief Converts an unicode code point to utf8
  *
- * \param[in] codePoint uint32_t Unicode code point
- * \param[in] utf8 uint8_t*      utf8 string
+ * \param[in]  codePoint uint32_t Unicode code point
+ * \param[out] utf8 uint8_t*      utf8 string
  * \return void
  ***********************************************/
-void codePointToUtf8(uint32_t codePoint, uint8_t *utf8) { // code point must be from 0x0 to 0x10FFFF
+void codePointToUtf8(uint32_t codePoint, uint8_t *utf8) { // WP43S supports only unicode code points from 0x0000 to 0x7FFF
   if(codePoint <= 0x00007F) {
     utf8[0] = codePoint;
     utf8[1] = 0;
     utf8[2] = 0;
     utf8[3] = 0;
+    utf8[4] = 0;
   }
+
   else if(codePoint <= 0x0007FF) {
-    utf8[0] = 0xC0 | ((codePoint >> 6) & 0x1F);
-    utf8[1] = 0x80 | ((codePoint     ) & 0x3F);
+    utf8[0] = 0xC0 | (codePoint >> 6);
+    utf8[1] = 0x80 | (codePoint &  0x3F);
     utf8[2] = 0;
     utf8[3] = 0;
+    utf8[4] = 0;
   }
-  else if(codePoint <= 0x00FFFF) {
-    utf8[0] = 0xE0 | ((codePoint >> 12) & 0x0F);
+
+  else /*if(codePoint <= 0x00FFFF)*/ {
+    utf8[0] = 0xE0 |  (codePoint >> 12);
     utf8[1] = 0x80 | ((codePoint >>  6) & 0x3F);
     utf8[2] = 0x80 | ((codePoint      ) & 0x3F);
     utf8[3] = 0;
+    utf8[4] = 0;
   }
-  else {
-    utf8[0] = 0xF0 | ((codePoint >> 18) & 0x07);
+
+  /*else if(codePoint <= 0x1FFFFF) {
+    utf8[0] = 0xF0 |  (codePoint >> 18);
     utf8[1] = 0x80 | ((codePoint >> 12) & 0x3F);
     utf8[2] = 0x80 | ((codePoint >>  6) & 0x3F);
     utf8[3] = 0x80 | ((codePoint      ) & 0x3F);
+    utf8[4] = 0;
   }
 
-  utf8[4] = 0;
+  else if(codePoint <= 0x3FFFFFF) {
+    utf8[0] = 0xF8 |  (codePoint >> 24);
+    utf8[1] = 0x80 | ((codePoint >> 18) & 0x3F);
+    utf8[2] = 0x80 | ((codePoint >> 12) & 0x3F);
+    utf8[3] = 0x80 | ((codePoint >>  6) & 0x3F);
+    utf8[4] = 0x80 | ((codePoint      ) & 0x3F);
+    utf8[5] = 0;
+  }
+
+  else if(codePoint <= 0x7FFFFFFF) {
+    utf8[0] = 0xFC |  (codePoint >> 30);
+    utf8[1] = 0x80 | ((codePoint >> 24) & 0x3F);
+    utf8[2] = 0x80 | ((codePoint >> 18) & 0x3F);
+    utf8[3] = 0x80 | ((codePoint >> 12) & 0x3F);
+    utf8[4] = 0x80 | ((codePoint >>  6) & 0x3F);
+    utf8[5] = 0x80 | ((codePoint      ) & 0x3F);
+    utf8[6] = 0;
+  }*/
 }
 
 
+
+/********************************************//**
+ * \brief Converts one utf8 char to an unicode code point
+ *
+ * \param[in]  utf8 uint8_t*      utf8 string
+ * \param[out] codePoint uint32_t Unicode code point
+ * \return void
+ ***********************************************/
+uint32_t utf8ToCodePoint(const uint8_t *utf8, uint32_t *codePoint) { // WP43S supports only unicode code points from 0x0000 to 0x7FFF
+  if((*utf8 & 0x80) == 0) {
+    *codePoint = *utf8;
+    return 1;
+  }
+
+  else if((*utf8 & 0xE0) == 0xC0) {
+    *codePoint =  (*utf8       & 0x1F) << 6;
+    *codePoint |= (*(utf8 + 1) & 0x3F);
+    return 2;
+  }
+
+  else /*if((*utf8 & 0xF0) == 0xE0)*/ {
+    *codePoint =  (*utf8       & 0x0F) << 12;
+    *codePoint |= (*(utf8 + 1) & 0x3F) <<  6;
+    *codePoint |= (*(utf8 + 2) & 0x3F);
+    return 3;
+  }
+
+  /*else if((*utf8 & 0xF8) == 0xF0) {
+    *codePoint =  (*utf8       & 0x07) << 18;
+    *codePoint |= (*(utf8 + 1) & 0x3F) << 12;
+    *codePoint |= (*(utf8 + 2) & 0x3F) <<  6;
+    *codePoint |= (*(utf8 + 3) & 0x3F);
+    return 4;
+  }
+
+  else if((*utf8 & 0xFC) == 0xF8) {
+    *codePoint =  (*utf8       & 0x03) << 24;
+    *codePoint |= (*(utf8 + 1) & 0x3F) << 18;
+    *codePoint |= (*(utf8 + 2) & 0x3F) << 12;
+    *codePoint |= (*(utf8 + 3) & 0x3F) <<  6;
+    *codePoint |= (*(utf8 + 4) & 0x3F);
+    return 5;
+  }
+
+  else if((*utf8 & 0xFE) == 0xFC) {
+    *codePoint =  (*utf8       & 0x01) << 30;
+    *codePoint |= (*(utf8 + 1) & 0x3F) << 24;
+    *codePoint |= (*(utf8 + 2) & 0x3F) << 18;
+    *codePoint |= (*(utf8 + 3) & 0x3F) << 12;
+    *codePoint |= (*(utf8 + 4) & 0x3F) <<  6;
+    *codePoint |= (*(utf8 + 5) & 0x3F);
+    return 6;
+  }*/
+
+  return 0;
+}
+
+
+
 void stringToUtf8(const char *str, uint8_t *utf8) {
-  int16_t  len;
+  int16_t len;
 
   len = stringGlyphLength(str);
 
@@ -273,4 +356,23 @@ void stringToUtf8(const char *str, uint8_t *utf8) {
       *utf8 = 0;
     }
   }
+}
+
+
+
+void utf8ToString(const uint8_t *utf8, char *str) {
+  uint32_t codePoint;
+
+  while(*utf8) {
+    utf8 += utf8ToCodePoint(utf8, &codePoint);
+    if(codePoint < 0x0080) {
+      *(str++) = codePoint;
+    }
+    else {
+      codePoint |= 0x8000;
+      *(str++) = codePoint >> 8;
+      *(str++) = codePoint & 0x00FF;
+    }
+  }
+  *str = 0;
 }

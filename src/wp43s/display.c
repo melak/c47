@@ -20,37 +20,6 @@
 
 #include "wp43s.h"
 
-/********************************************//**
- * \brief Sets the display override mode and refreshes the stack
- *
- * \param[in] displayOvr uint16_t Display override mode
- * \return void
- ***********************************************/
-/***void fnDisplayOvr(uint16_t displayOvr) {
-  displayModeOverride = displayOvr;
-
-  fnRefreshRadioState(RB_DO, displayOvr);                                       //dr
-
-  refreshStack();
-}***/
-
-
-
-/********************************************//**
- * \brief Sets the product sign and refreshes the stack
- *
- * \param[in] productSign uint16_t Product sign
- * \return void
- ***********************************************/
-/***void fnProductSign(uint16_t ps) {
-  productSign = ps;
-
-  fnRefreshRadioState(RB_PS, ps);                                               //dr
-
-  showFracMode();
-  refreshStack();
-}***/
-
 
 
 /********************************************//**
@@ -1339,7 +1308,6 @@ void angle34ToDisplayString2(const real34_t *angle34, uint8_t mode, char *displa
 void shortIntegerToDisplayString(calcRegister_t regist, char *displayString, bool_t determineFont) {
   int16_t i, j, k, unit, gap, digit, bitsPerDigit, maxDigits, base;
   uint64_t number, sign;
-  static const char digits[17] = "0123456789ABCDEF";
 
   base    = getRegisterTag(regist);
   number  = *(REGISTER_SHORT_INTEGER_DATA(regist));

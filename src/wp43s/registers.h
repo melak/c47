@@ -18,7 +18,9 @@
  * \file registers.h
  ***********************************************/
 
-#define FIRST_LOCAL_REGISTER 112
+#define FIRST_LOCAL_REGISTER        112
+#define FIRST_NAMED_VARIABLE       1000
+#define FIRST_SAVED_STACK_REGISTER 2000
 
 #define REGISTER_X  100
 #define REGISTER_Y  101

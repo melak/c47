@@ -18,11 +18,14 @@
  * \file charString.h
  ***********************************************/
 
-int16_t stringLastGlyph  (const char *str);
-int16_t stringNextGlyph  (const char *str, int16_t pos);
-int32_t stringByteLength (const char *str);
-int32_t stringGlyphLength(const char *str);
-int16_t stringWidth      (const char *str, const font_t *font, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows);
-void    stringToUtf8     (const char *str, uint8_t *utf8);
-void    codePointToUtf8  (uint32_t codePoint, uint8_t *utf8);
+int16_t  stringLastGlyph  (const char *str);
+int16_t  stringNextGlyph  (const char *str, int16_t pos);
+int32_t  stringByteLength (const char *str);
+int32_t  stringGlyphLength(const char *str);
+int16_t  stringWidth      (const char *str, const font_t *font, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows);
+void     codePointToUtf8  (uint32_t codePoint, uint8_t *utf8);
+uint32_t utf8ToCodePoint  (const uint8_t *utf8, uint32_t *codePoint);
+void     stringToUtf8     (const char *str, uint8_t *utf8);
+void     utf8ToString     (const uint8_t *utf8, char *str);
+
 uint8_t compressWidth;                                      //JM compressWidth

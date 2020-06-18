@@ -182,7 +182,7 @@ void fnSwapX(uint16_t regist) {
     copySourceRegisterToDestRegister(regist, REGISTER_X);
     copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
     refreshStack();
-  } 
+  }
 
   #ifdef PC_BUILD
   else {
@@ -206,7 +206,7 @@ void fnSwapY(uint16_t regist) {
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
     refreshStack();
-  } 
+  }
 
   #ifdef PC_BUILD
   else {
@@ -229,7 +229,7 @@ void fnSwapZ(uint16_t regist) {
     copySourceRegisterToDestRegister(regist, REGISTER_Z);
     copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
     refreshStack();
-  } 
+  }
 
   #ifdef PC_BUILD
   else {
@@ -252,7 +252,7 @@ void fnSwapT(uint16_t regist) {
     copySourceRegisterToDestRegister(regist, REGISTER_T);
     copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
     refreshStack();
-  } 
+  }
 
   #ifdef PC_BUILD
   else {
@@ -286,23 +286,25 @@ void fnSwapXY(uint16_t unusedParamButMandatory) {
  * \return void
  ***********************************************/
 void fnShuffle(uint16_t unusedParamButMandatory) {
+  saveStack();
 
-  saveStack(); 
-  
-  for (int i = 0; i < 4; i++) {
-    if (tamBuffer[strlen(tamBuffer) - 4 + i] == 'x') {
+  for(int i=0; i<4; i++) {
+    if(tamBuffer[strlen(tamBuffer) - 4 + i] == 'x') {
       copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X + i);
-    } else if (tamBuffer[strlen(tamBuffer) - 4  + i] == 'y') {
+    }
+    else if(tamBuffer[strlen(tamBuffer) - 4  + i] == 'y') {
       copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_X + i);
-    } else if (tamBuffer[strlen(tamBuffer) - 4 + i] == 'z') {
+    }
+    else if(tamBuffer[strlen(tamBuffer) - 4 + i] == 'z') {
       copySourceRegisterToDestRegister(SAVED_REGISTER_Z, REGISTER_X + i);
-    } else if (tamBuffer[strlen(tamBuffer) - 4 + i] == 't') {
+    }
+    else if(tamBuffer[strlen(tamBuffer) - 4 + i] == 't') {
       copySourceRegisterToDestRegister(SAVED_REGISTER_T, REGISTER_X + i);
     }
   }
-  
+
   refreshStack();
-  
+
 }
 
 

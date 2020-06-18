@@ -24,50 +24,67 @@
 
 #ifndef TESTSUITE_BUILD
 /********************************************//**
+ * \brief The font browser application initialisation
+ *
+ * \param[in] unusedParamButMandatory uint16_t
+ * \return void
+ ***********************************************/
+void initFontBrowser(void) {
+  uint16_t g;
+
+  numLinesNumericFont  = 0;
+  for(g=0; g<numericFont.numberOfGlyphs;) {
+    glyphRow[numLinesNumericFont] = numericFont.glyphs[g].charCode & 0xfff0;
+    while(g<numericFont.numberOfGlyphs && ((numericFont.glyphs[g].charCode&0xfff0) == glyphRow[numLinesNumericFont])) {
+      g++;
+    }
+    numLinesNumericFont++;
+  }
+
+  numScreensNumericFont = numLinesNumericFont / NUMBER_OF_NUMERIC_FONT_LINES_PER_SCREEN;
+  if(numLinesNumericFont % NUMBER_OF_NUMERIC_FONT_LINES_PER_SCREEN != 0) {
+    numScreensNumericFont++;
+  }
+
+  numLinesStandardFont  = 0;
+  for(g=0; g<standardFont.numberOfGlyphs;) {
+    glyphRow[numLinesNumericFont + numLinesStandardFont] = standardFont.glyphs[g].charCode & 0xfff0;
+    while(g<standardFont.numberOfGlyphs && ((standardFont.glyphs[g].charCode&0xfff0) == glyphRow[numLinesNumericFont + numLinesStandardFont])) {
+      g++;
+    }
+    numLinesStandardFont++;
+  }
+
+  numScreensStandardFont = numLinesStandardFont / NUMBER_OF_STANDARD_FONT_LINES_PER_SCREEN;
+  if(numLinesStandardFont % NUMBER_OF_STANDARD_FONT_LINES_PER_SCREEN != 0) {
+    numScreensStandardFont++;
+  }
+
+  currentFntScr = 1;
+
+  #ifdef PC_BUILD
+    if(numLinesNumericFont + numLinesStandardFont > NUMBER_OF_GLYPH_ROWS) {
+      printf("In file wp43s.h NUMBER_OF_GLYPH_ROWS must be increased from %d to %d\n", NUMBER_OF_GLYPH_ROWS, numLinesNumericFont + numLinesStandardFont);
+      exit(-1);
+    }
+  #endif // PC_BUILD
+}
+
+
+
+/********************************************//**
  * \brief The font browser application
  *
  * \param[in] unusedParamButMandatory uint16_t
  * \return void
  ***********************************************/
 void fontBrowser(uint16_t unusedParamButMandatory) {
-  uint16_t x, y, g, first;
+  uint16_t x, y, first;
 
   if(calcMode != CM_FONT_BROWSER) {
     previousCalcMode = calcMode;
     calcMode = CM_FONT_BROWSER;
     clearSystemFlag(FLAG_ALPHA);
-  }
-
-  if(currentFntScr == 0) { // Init
-    currentFntScr = 1;
-
-    numLinesNumericFont  = 0;
-    for(g=0; g<numericFont.numberOfGlyphs;) {
-      row[numLinesNumericFont] = numericFont.glyphs[g].charCode & 0xfff0;
-      while(g<numericFont.numberOfGlyphs && ((numericFont.glyphs[g].charCode&0xfff0) == row[numLinesNumericFont])) {
-        g++;
-      }
-      numLinesNumericFont++;
-    }
-
-    numScreensNumericFont = numLinesNumericFont / NUMBER_OF_NUMERIC_FONT_LINES_PER_SCREEN;
-    if(numLinesNumericFont % NUMBER_OF_NUMERIC_FONT_LINES_PER_SCREEN != 0) {
-      numScreensNumericFont++;
-    }
-
-    numLinesStandardFont  = 0;
-    for(g=0; g<standardFont.numberOfGlyphs;) {
-      row[numLinesNumericFont + numLinesStandardFont] = standardFont.glyphs[g].charCode & 0xfff0;
-      while(g<standardFont.numberOfGlyphs && ((standardFont.glyphs[g].charCode&0xfff0) == row[numLinesNumericFont + numLinesStandardFont])) {
-        g++;
-      }
-      numLinesStandardFont++;
-    }
-
-    numScreensStandardFont = numLinesStandardFont / NUMBER_OF_STANDARD_FONT_LINES_PER_SCREEN;
-    if(numLinesStandardFont % NUMBER_OF_STANDARD_FONT_LINES_PER_SCREEN != 0) {
-      numScreensStandardFont++;
-    }
   }
 
   if(currentFntScr>=1 && currentFntScr<=numScreensNumericFont) { // Numeric font
@@ -82,10 +99,10 @@ void fontBrowser(uint16_t unusedParamButMandatory) {
 
     first = (currentFntScr-1) * NUMBER_OF_NUMERIC_FONT_LINES_PER_SCREEN;
     for(y=first; y<min(currentFntScr * NUMBER_OF_NUMERIC_FONT_LINES_PER_SCREEN, numLinesNumericFont); y++) {
-      sprintf(tmpStr3000, "%04X", row[y]<0x8000 ? row[y] : row[y]-0x8000);
+      sprintf(tmpStr3000, "%04X", glyphRow[y]<0x8000 ? glyphRow[y] : glyphRow[y]-0x8000);
       showString(tmpStr3000, &standardFont, 5, NUMERIC_FONT_HEIGHT*(y-first)+43, vmNormal, false, false);
       for(x=0; x<=15; x++) {
-        showGlyphCode(row[y]+x, &numericFont, 46+20*x, NUMERIC_FONT_HEIGHT*(y-first)+40, vmNormal, false, false);
+        showGlyphCode(glyphRow[y]+x, &numericFont, 46+20*x, NUMERIC_FONT_HEIGHT*(y-first)+40, vmNormal, false, false);
       }
     }
 
@@ -112,10 +129,10 @@ void fontBrowser(uint16_t unusedParamButMandatory) {
 
     first = numLinesNumericFont + (currentFntScr-numScreensNumericFont-1) * NUMBER_OF_STANDARD_FONT_LINES_PER_SCREEN;
     for(y=first; y<min(numLinesNumericFont + (currentFntScr-numScreensNumericFont) * NUMBER_OF_STANDARD_FONT_LINES_PER_SCREEN, numLinesNumericFont+numLinesStandardFont); y++) {
-      sprintf(tmpStr3000, "%04X", row[y]<0x8000 ? row[y] : row[y]-0x8000);
+      sprintf(tmpStr3000, "%04X", glyphRow[y]<0x8000 ? glyphRow[y] : glyphRow[y]-0x8000);
       showString(tmpStr3000, &standardFont, 5, STANDARD_FONT_HEIGHT*(y-first)+40, vmNormal, false, false);
       for(x=0; x<=15; x++) {
-        showGlyphCode(row[y]+x, &standardFont, 50+20*x, STANDARD_FONT_HEIGHT*(y-first)+40, vmNormal, false, false);
+        showGlyphCode(glyphRow[y]+x, &standardFont, 50+20*x, STANDARD_FONT_HEIGHT*(y-first)+40, vmNormal, false, false);
       }
     }
 

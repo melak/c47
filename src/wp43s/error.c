@@ -56,7 +56,8 @@ const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /* 32 */  "This system flag is write protected",
 /* 33 */  "Output would exceed 196 characters",
 /* 34 */  "This does not work with an empty string",
-/* 35 */  "Bad input" // This error is not in ReM and cannot occur (theoretically).
+/* 35 */  "No backup data found",
+/* 36 */  "Bad input" // This error is not in ReM and cannot occur (theoretically).
 };
 
 

@@ -20,18 +20,41 @@
 
 #include "wp43s.h"
 
-#ifdef PC_BUILD
-#define BACKUP_VERSION 38  // 38 = added asmBuffer
+#define BACKUP_VERSION         39  // 39 = removed screenData
+#define START_REGISTER_VALUE 1522
 
+static void save(const void *buffer, uint32_t size, void *stream) {
+  #ifdef DMCP_BUILD
+    UINT bytesWritten;
+    f_write(stream, buffer, size, &bytesWritten);
+  #else
+    fwrite(buffer, 1, size, stream);
+  #endif
+}
+
+
+
+static uint32_t restore(void *buffer, uint32_t size, void *stream) {
+  #ifdef DMCP_BUILD
+    UINT bytesRead;
+    f_read(stream, buffer, size, &bytesRead);
+    return(bytesRead);
+  #else
+    return(fread(buffer, 1, size, stream));
+  #endif
+}
+
+
+
+#ifdef PC_BUILD
 void saveCalc(void) {
-  size_t size;
   uint32_t backupVersion = BACKUP_VERSION;
   uint32_t ramSize       = RAM_SIZE;
   uint32_t ramPtr;
   FILE *backup;
 
   backup = fopen("backup.bin", "wb");
-  if (backup == NULL) {
+  if(backup == NULL) {
     printf("Cannot save calc's memory in file backup.bin!\n");
     exit(0);
   }
@@ -44,151 +67,143 @@ void saveCalc(void) {
   printf("Begin of calc's backup\n");
 
 
-  size  = fwrite(&backupVersion,                      1, sizeof(backupVersion),                      backup); //printf("%8lu backupVersion\n",                      (unsigned long)size);
-  size += fwrite(&ramSize,                            1, sizeof(ramSize),                            backup); //printf("%8lu ramSize\n",                            (unsigned long)size);
-  size += fwrite(ram,                                 1, TO_BYTES(RAM_SIZE),                         backup); //printf("%8lu ram\n",                                (unsigned long)size);
-  size += fwrite(freeBlocks,                          1, MAX_FREE_BLOCKS * sizeof(freeBlock_t),      backup); //printf("%8lu freeBlocks\n",                         (unsigned long)size);
-  size += fwrite(&numberOfFreeBlocks,                 1, sizeof(numberOfFreeBlocks),                 backup); //printf("%8lu numberOfFreeBlocks\n",                 (unsigned long)size);
-  size += fwrite(flags,                               1, sizeof(flags),                              backup); //printf("%8lu flags\n",                              (unsigned long)size);
-  size += fwrite(tmpStr3000,                          1, TMP_STR_LENGTH,                             backup); //printf("%8lu tmpStr3000\n",                         (unsigned long)size);
-  size += fwrite(errorMessage,                        1, ERROR_MESSAGE_LENGTH,                       backup); //printf("%8lu errorMessage\n",                       (unsigned long)size);
-  size += fwrite(aimBuffer,                           1, AIM_BUFFER_LENGTH,                          backup); //printf("%8lu aimBuffer\n",                          (unsigned long)size);
-  size += fwrite(nimBuffer,                           1, NIM_BUFFER_LENGTH,                          backup); //printf("%8lu nimBuffer\n",                          (unsigned long)size);
-  size += fwrite(nimBufferDisplay,                    1, NIM_BUFFER_LENGTH,                          backup); //printf("%8lu nimBufferDisplay\n",                   (unsigned long)size);
-  size += fwrite(tamBuffer,                           1, TAM_BUFFER_LENGTH,                          backup); //printf("%8lu tamBuffer\n",                          (unsigned long)size);
-  size += fwrite(asmBuffer,                           1, sizeof(asmBuffer),                          backup); //printf("%8lu asmBuffer\n",                          (unsigned long)size);
-  size += fwrite(oldTime,                             1, 8,                                          backup); //printf("%8lu oldTime\n",                            (unsigned long)size);
-  size += fwrite(dateTimeString,                      1, 12,                                         backup); //printf("%8lu dateTimeString\n",                     (unsigned long)size);
-  size += fwrite(softmenuStack,                       1, sizeof(softmenuStack),                      backup); //printf("%8lu softmenuStack\n",                      (unsigned long)size);
-  size += fwrite(reg,                                 1, sizeof(reg),                                backup); //printf("%8lu reg\n",                                (unsigned long)size);
-  size += fwrite(savedStackRegister,                  1, sizeof(savedStackRegister),                 backup); //printf("%8lu savedStackRegister\n",                 (unsigned long)size);
-  size += fwrite(kbd_usr,                             1, sizeof(kbd_usr),                            backup); //printf("%8lu kbd_usr\n",                            (unsigned long)size);
-  size += fwrite(row,                                 1, sizeof(row),                                backup); //printf("%8lu row\n",                                (unsigned long)size);
-  size += fwrite(transitionSystemOperation,           1, sizeof(transitionSystemOperation),          backup); //printf("%8lu transitionSystemOperation\n",          (unsigned long)size);
-  size += fwrite(screenData,                          1, 4 * screenStride * SCREEN_HEIGHT,           backup); //printf("%8lu screenData\n",                         (unsigned long)size);
-  size += fwrite(&tamFunction,                        1, sizeof(tamFunction),                        backup); //printf("%8lu tamFunction\n",                        (unsigned long)size);
-  size += fwrite(&tamNumber,                          1, sizeof(tamNumber),                          backup); //printf("%8lu tamNumber\n",                          (unsigned long)size);
-  size += fwrite(&tamNumberMin,                       1, sizeof(tamNumberMin),                       backup); //printf("%8lu tamNumberMin\n",                       (unsigned long)size);
-  size += fwrite(&tamNumberMax,                       1, sizeof(tamNumberMax),                       backup); //printf("%8lu tamNumberMax\n",                       (unsigned long)size);
-  size += fwrite(&tamDigit,                           1, sizeof(tamDigit),                           backup); //printf("%8lu tamDigit\n",                           (unsigned long)size);
-  size += fwrite(&tamOperation,                       1, sizeof(tamOperation),                       backup); //printf("%8lu tamOperation\n",                       (unsigned long)size);
-  size += fwrite(&tamLetteredRegister,                1, sizeof(tamLetteredRegister),                backup); //printf("%8lu tamLetteredRegister\n",                (unsigned long)size);
-  size += fwrite(&tamCurrentOperation,                1, sizeof(tamCurrentOperation),                backup); //printf("%8lu tamCurrentOperation\n",                (unsigned long)size);
-  size += fwrite(&rbrRegister,                        1, sizeof(rbrRegister),                        backup); //printf("%8lu rbrRegister\n",                        (unsigned long)size);
-  size += fwrite(&numberOfLocalFlags,                 1, sizeof(numberOfLocalFlags),                 backup); //printf("%8lu numberOfLocalFlags\n",                 (unsigned long)size);
+  save(&backupVersion,                      sizeof(backupVersion),                      backup);
+  save(&ramSize,                            sizeof(ramSize),                            backup);
+  save(ram,                                 TO_BYTES(RAM_SIZE),                         backup);
+  save(freeBlocks,                          MAX_FREE_BLOCKS * sizeof(freeBlock_t),      backup);
+  save(&numberOfFreeBlocks,                 sizeof(numberOfFreeBlocks),                 backup);
+  save(globalFlags,                         sizeof(globalFlags),                        backup);
+  save(tmpStr3000,                          TMP_STR_LENGTH,                             backup);
+  save(errorMessage,                        ERROR_MESSAGE_LENGTH,                       backup);
+  save(aimBuffer,                           AIM_BUFFER_LENGTH,                          backup);
+  save(nimBuffer,                           NIM_BUFFER_LENGTH,                          backup);
+  save(nimBufferDisplay,                    NIM_BUFFER_LENGTH,                          backup);
+  save(tamBuffer,                           TAM_BUFFER_LENGTH,                          backup);
+  save(asmBuffer,                           sizeof(asmBuffer),                          backup);
+  save(oldTime,                             8,                                          backup);
+  save(dateTimeString,                      12,                                         backup);
+  save(softmenuStack,                       sizeof(softmenuStack),                      backup);
+  save(reg,                                 sizeof(reg),                                backup);
+  save(savedStackRegister,                  sizeof(savedStackRegister),                 backup);
+  save(kbd_usr,                             sizeof(kbd_usr),                            backup);
+  save(transitionSystemOperation,           sizeof(transitionSystemOperation),          backup);
+  save(&tamFunction,                        sizeof(tamFunction),                        backup);
+  save(&tamNumber,                          sizeof(tamNumber),                          backup);
+  save(&tamNumberMin,                       sizeof(tamNumberMin),                       backup);
+  save(&tamNumberMax,                       sizeof(tamNumberMax),                       backup);
+  save(&tamDigit,                           sizeof(tamDigit),                           backup);
+  save(&tamOperation,                       sizeof(tamOperation),                       backup);
+  save(&tamLetteredRegister,                sizeof(tamLetteredRegister),                backup);
+  save(&tamCurrentOperation,                sizeof(tamCurrentOperation),                backup);
+  save(&rbrRegister,                        sizeof(rbrRegister),                        backup);
+  save(&numberOfLocalFlags,                 sizeof(numberOfLocalFlags),                 backup);
   ramPtr = TO_WP43SMEMPTR(allLocalRegisterPointer);
-  size += fwrite(&ramPtr,                             1, sizeof(ramPtr),                             backup); //printf("%8lu ramPtr\n",                             (unsigned long)size);
+  save(&ramPtr,                             sizeof(ramPtr),                             backup);
   ramPtr = TO_WP43SMEMPTR(allNamedVariablePointer);
-  size += fwrite(&ramPtr,                             1, sizeof(ramPtr),                             backup); //printf("%8lu ramPtr\n",                             (unsigned long)size);
+  save(&ramPtr,                             sizeof(ramPtr),                             backup);
   ramPtr = TO_WP43SMEMPTR(statisticalSumsPointer);
-  size += fwrite(&ramPtr,                             1, sizeof(ramPtr),                             backup); //printf("%8lu ramPtr\n",                             (unsigned long)size);
-  size += fwrite(&programCounter,                     1, sizeof(programCounter),                     backup); //printf("%8lu programCounter\n",                     (unsigned long)size);
-  size += fwrite(&xCursor,                            1, sizeof(xCursor),                            backup); //printf("%8lu xCursor\n",                            (unsigned long)size);
-  size += fwrite(&yCursor,                            1, sizeof(yCursor),                            backup); //printf("%8lu yCursor\n",                            (unsigned long)size);
-  size += fwrite(&firstGregorianDay,                  1, sizeof(firstGregorianDay),                  backup); //printf("%8lu firstGregorianDay\n",                  (unsigned long)size);
-  size += fwrite(&denMax,                             1, sizeof(denMax),                             backup); //printf("%8lu denMax\n",                             (unsigned long)size);
-  size += fwrite(&softmenuStackPointer,               1, sizeof(softmenuStackPointer),               backup); //printf("%8lu softmenuStackPointer\n",               (unsigned long)size);
-  size += fwrite(&softmenuStackPointerBeforeAIM,      1, sizeof(softmenuStackPointerBeforeAIM),      backup); //printf("%8lu softmenuStackPointerBeforeAIM\n",      (unsigned long)size);
-  size += fwrite(&transitionSystemState,              1, sizeof(transitionSystemState),              backup); //printf("%8lu transitionSystemState\n",              (unsigned long)size);
-  size += fwrite(&cursorBlinkCounter,                 1, sizeof(cursorBlinkCounter),                 backup); //printf("%8lu cursorBlinkCounter\n",                 (unsigned long)size);
-  size += fwrite(&currentRegisterBrowserScreen,       1, sizeof(currentRegisterBrowserScreen),       backup); //printf("%8lu currentRegisterBrowserScreen\n",       (unsigned long)size);
-  size += fwrite(&SHOWregis,                          1, sizeof(SHOWregis),                          backup); //printf("%8lu SHOWregis\n",                          (unsigned long)size);
-  size += fwrite(&currentFntScr,                      1, sizeof(currentFntScr),                      backup); //printf("%8lu currentFntScr\n",                      (unsigned long)size);
-  size += fwrite(&currentFlgScr,                      1, sizeof(currentFlgScr),                      backup); //printf("%8lu currentFlgScr\n",                      (unsigned long)size);
-  size += fwrite(&displayFormat,                      1, sizeof(displayFormat),                      backup); //printf("%8lu displayFormat\n",                      (unsigned long)size);
-  size += fwrite(&displayFormatDigits,                1, sizeof(displayFormatDigits),                backup); //printf("%8lu displayFormatDigits\n",                (unsigned long)size);
-  size += fwrite(&shortIntegerWordSize,               1, sizeof(shortIntegerWordSize),               backup); //printf("%8lu shortIntegerWordSize\n",               (unsigned long)size);
-  size += fwrite(&significantDigits,                  1, sizeof(significantDigits),                  backup); //printf("%8lu significantDigits\n",                  (unsigned long)size);
-  size += fwrite(&shortIntegerMode,                   1, sizeof(shortIntegerMode),                   backup); //printf("%8lu shortIntegerMode\n",                   (unsigned long)size);
-  size += fwrite(&currentAngularMode,                 1, sizeof(currentAngularMode),                 backup); //printf("%8lu currentAngularMode\n",                 (unsigned long)size);
-  size += fwrite(&groupingGap,                        1, sizeof(groupingGap),                        backup); //printf("%8lu groupingGap\n",                        (unsigned long)size);
-  size += fwrite(&curveFitting,                       1, sizeof(curveFitting),                       backup); //printf("%8lu curveFitting\n",                       (unsigned long)size);
-  size += fwrite(&roundingMode,                       1, sizeof(roundingMode),                       backup); //printf("%8lu roundingMode\n",                       (unsigned long)size);
-  size += fwrite(&calcMode,                           1, sizeof(calcMode),                           backup); //printf("%8lu calcMode\n",                           (unsigned long)size);
-  size += fwrite(&nextChar,                           1, sizeof(nextChar),                           backup); //printf("%8lu nextChar\n",                           (unsigned long)size);
-  size += fwrite(&productSign,                        1, sizeof(productSign),                        backup); //printf("%8lu productSign\n",                        (unsigned long)size);
-  size += fwrite(&displayModeOverride,                1, sizeof(displayModeOverride),                backup); //printf("%8lu displayModeOverride\n",                (unsigned long)size);
-  size += fwrite(&alphaCase,                          1, sizeof(alphaCase),                          backup); //printf("%8lu alphaCase\n",                          (unsigned long)size);
-  size += fwrite(&hourGlassIconEnabled,               1, sizeof(hourGlassIconEnabled),               backup); //printf("%8lu hourGlassIconEnabled\n",               (unsigned long)size);
-  size += fwrite(&watchIconEnabled,                   1, sizeof(watchIconEnabled),                   backup); //printf("%8lu watchIconEnabled\n",                   (unsigned long)size);
-  size += fwrite(&serialIOIconEnabled,                1, sizeof(serialIOIconEnabled),                backup); //printf("%8lu serialIOIconEnabled\n",                (unsigned long)size);
-  size += fwrite(&printerIconEnabled,                 1, sizeof(printerIconEnabled),                 backup); //printf("%8lu printerIconEnabled\n",                 (unsigned long)size);
-  size += fwrite(&cursorEnabled,                      1, sizeof(cursorEnabled),                      backup); //printf("%8lu cursorEnabled\n",                      (unsigned long)size);
-  size += fwrite(&cursorFont,                         1, sizeof(cursorFont),                         backup); //printf("%8lu cursorFont\n",                         (unsigned long)size);
-  size += fwrite(&savedStackLiftEnabled,              1, sizeof(savedStackLiftEnabled),              backup); //printf("%8lu savedStackLiftEnabled\n",              (unsigned long)size);
-  size += fwrite(&rbr1stDigit,                        1, sizeof(rbr1stDigit),                        backup); //printf("%8lu rbr1stDigit\n",                        (unsigned long)size);
-  size += fwrite(&shiftF,                             1, sizeof(shiftF),                             backup); //printf("%8lu shiftF\n",                             (unsigned long)size);
-  size += fwrite(&shiftG,                             1, sizeof(shiftG),                             backup); //printf("%8lu shiftG\n",                             (unsigned long)size);
-//  size += fwrite(&shiftStateChanged,                  1, sizeof(shiftStateChanged),                  backup); //printf("%8lu shiftStateChanged\n",                  (unsigned long)size);
-  size += fwrite(&tamMode,                            1, sizeof(tamMode),                            backup); //printf("%8lu tamMode\n",                            (unsigned long)size);
-  size += fwrite(&rbrMode,                            1, sizeof(rbrMode),                            backup); //printf("%8lu rbrMode\n",                            (unsigned long)size);
-  size += fwrite(&showContent,                        1, sizeof(showContent),                        backup); //printf("%8lu showContent\n",                        (unsigned long)size);
-  size += fwrite(&numScreensNumericFont,              1, sizeof(numScreensNumericFont),              backup); //printf("%8lu numScreensNumericFont\n",              (unsigned long)size);
-  size += fwrite(&numLinesNumericFont,                1, sizeof(numLinesNumericFont),                backup); //printf("%8lu numLinesNumericFont\n",                (unsigned long)size);
-  size += fwrite(&numLinesStandardFont,               1, sizeof(numLinesStandardFont),               backup); //printf("%8lu numLinesStandardFont\n",               (unsigned long)size);
-  size += fwrite(&numScreensStandardFont,             1, sizeof(numScreensStandardFont),             backup); //printf("%8lu numScreensStandardFont\n",             (unsigned long)size);
-  size += fwrite(&previousCalcMode,                   1, sizeof(previousCalcMode),                   backup); //printf("%8lu previousCalcMode\n",                   (unsigned long)size);
-  size += fwrite(&lastErrorCode,                      1, sizeof(lastErrorCode),                      backup); //printf("%8lu lastErrorCode\n",                      (unsigned long)size);
-  size += fwrite(&nimNumberPart,                      1, sizeof(nimNumberPart),                      backup); //printf("%8lu nimNumberPart\n",                      (unsigned long)size);
-  size += fwrite(&displayStack,                       1, sizeof(displayStack),                       backup); //printf("%8lu displayStack\n",                       (unsigned long)size);
-  size += fwrite(&hexDigits,                          1, sizeof(hexDigits),                          backup); //printf("%8lu hexDigits\n",                          (unsigned long)size);
-  size += fwrite(&errorMessageRegisterLine,           1, sizeof(errorMessageRegisterLine),           backup); //printf("%8lu errorMessageRegisterLine\n",           (unsigned long)size);
-  size += fwrite(&errorRegisterLine,                  1, sizeof(errorRegisterLine),                  backup); //printf("%8lu errorRegisterLine\n",                  (unsigned long)size);
-  size += fwrite(&shortIntegerMask,                   1, sizeof(shortIntegerMask),                   backup); //printf("%8lu shortIntegerMask\n",                   (unsigned long)size);
-  size += fwrite(&shortIntegerSignBit,                1, sizeof(shortIntegerSignBit),                backup); //printf("%8lu shortIntegerSignBit\n",                (unsigned long)size);
-  size += fwrite(&temporaryInformation,               1, sizeof(temporaryInformation),               backup); //printf("%8lu temporaryInformation\n",               (unsigned long)size);
-  size += fwrite(&glyphNotFound,                      1, sizeof(glyphNotFound),                      backup); //printf("%8lu glyphNotFound\n",                      (unsigned long)size);
-  size += fwrite(&allowScreenUpdate,                  1, sizeof(allowScreenUpdate),                  backup); //printf("%8lu allowScreenUpdate\n",                  (unsigned long)size);
-  size += fwrite(&funcOK,                             1, sizeof(funcOK),                             backup); //printf("%8lu funcOK\n",                             (unsigned long)size);
-  size += fwrite(&screenChange,                       1, sizeof(screenChange),                       backup); //printf("%8lu screenChange\n",                       (unsigned long)size);
-  size += fwrite(&exponentSignLocation,               1, sizeof(exponentSignLocation),               backup); //printf("%8lu exponentSignLocation\n",               (unsigned long)size);
-  size += fwrite(&denominatorLocation,                1, sizeof(denominatorLocation),                backup); //printf("%8lu denominatorLocation\n",                (unsigned long)size);
-  size += fwrite(&imaginaryExponentSignLocation,      1, sizeof(imaginaryExponentSignLocation),      backup); //printf("%8lu imaginaryExponentSignLocation\n",      (unsigned long)size);
-  size += fwrite(&imaginaryMantissaSignLocation,      1, sizeof(imaginaryMantissaSignLocation),      backup); //printf("%8lu imaginaryMantissaSignLocation\n",      (unsigned long)size);
-  size += fwrite(&lineTWidth,                         1, sizeof(lineTWidth),                         backup); //printf("%8lu lineTWidth\n",                         (unsigned long)size);
-  size += fwrite(&lastIntegerBase,                    1, sizeof(lastIntegerBase),                    backup); //printf("%8lu lastIntegerBase\n",                    (unsigned long)size);
-  size += fwrite(&wp43sMemInBytes,                    1, sizeof(wp43sMemInBytes),                    backup); //printf("%8lu wp43sMemInBytes\n",                    (unsigned long)size);
-  size += fwrite(&gmpMemInBytes,                      1, sizeof(gmpMemInBytes),                      backup); //printf("%8lu gmpMemInBytes\n",                      (unsigned long)size);
-  size += fwrite(&alphaSelectionMenu,                 1, sizeof(alphaSelectionMenu),                 backup); //printf("%8lu alphaSelectionMenu\n",                 (unsigned long)size);
-  size += fwrite(&lastFcnsMenuPos,                    1, sizeof(lastFcnsMenuPos),                    backup); //printf("%8lu lastFcnsMenuPos\n",                    (unsigned long)size);
-  size += fwrite(&lastMenuMenuPos,                    1, sizeof(lastMenuMenuPos),                    backup); //printf("%8lu lastMenuMenuPos\n",                    (unsigned long)size);
-  size += fwrite(&lastCnstMenuPos,                    1, sizeof(lastCnstMenuPos),                    backup); //printf("%8lu lastCnstMenuPos\n",                    (unsigned long)size);
-  size += fwrite(&lastSyFlMenuPos,                    1, sizeof(lastSyFlMenuPos),                    backup); //printf("%8lu lastSyFlMenuPos\n",                    (unsigned long)size);
-  size += fwrite(&lastAIntMenuPos,                    1, sizeof(lastAIntMenuPos),                    backup); //printf("%8lu lastAIntMenuPos\n",                    (unsigned long)size);
-  size += fwrite(&lgCatalogSelection,                 1, sizeof(lgCatalogSelection),                 backup); //printf("%8lu lgCatalogSelection\n",                 (unsigned long)size);
-  size += fwrite(displayValueX,                       1, sizeof(displayValueX),                      backup); //printf("%8lu displayValueX\n",                      (unsigned long)size);
-  size += fwrite(&pcg32_global,                       1, sizeof(pcg32_global),                       backup); //printf("%8lu pcg32_global\n",                       (unsigned long)size);
-  size += fwrite(&exponentLimit,                      1, sizeof(exponentLimit),                      backup); //printf("%8lu exponentLimit\n",                      (unsigned long)size);
-  size += fwrite(&keyActionProcessed,                 1, sizeof(keyActionProcessed),                 backup); //printf("%8lu keyActionProcessed\n",                 (unsigned long)size);
-  size += fwrite(&systemFlags,                        1, sizeof(systemFlags),                        backup); //printf("%8lu systemFlags\n",                        (unsigned long)size);
+  save(&ramPtr,                             sizeof(ramPtr),                             backup);
+  save(&programCounter,                     sizeof(programCounter),                     backup);
+  save(&xCursor,                            sizeof(xCursor),                            backup);
+  save(&yCursor,                            sizeof(yCursor),                            backup);
+  save(&firstGregorianDay,                  sizeof(firstGregorianDay),                  backup);
+  save(&denMax,                             sizeof(denMax),                             backup);
+  save(&softmenuStackPointer,               sizeof(softmenuStackPointer),               backup);
+  save(&softmenuStackPointerBeforeAIM,      sizeof(softmenuStackPointerBeforeAIM),      backup);
+  save(&transitionSystemState,              sizeof(transitionSystemState),              backup);
+  save(&cursorBlinkCounter,                 sizeof(cursorBlinkCounter),                 backup);
+  save(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen),       backup);
+  save(&currentFntScr,                      sizeof(currentFntScr),                      backup);
+  save(&currentFlgScr,                      sizeof(currentFlgScr),                      backup);
+  save(&displayFormat,                      sizeof(displayFormat),                      backup);
+  save(&displayFormatDigits,                sizeof(displayFormatDigits),                backup);
+  save(&shortIntegerWordSize,               sizeof(shortIntegerWordSize),               backup);
+  save(&significantDigits,                  sizeof(significantDigits),                  backup);
+  save(&shortIntegerMode,                   sizeof(shortIntegerMode),                   backup);
+  save(&currentAngularMode,                 sizeof(currentAngularMode),                 backup);
+  save(&groupingGap,                        sizeof(groupingGap),                        backup);
+  save(&curveFitting,                       sizeof(curveFitting),                       backup);
+  save(&roundingMode,                       sizeof(roundingMode),                       backup);
+  save(&calcMode,                           sizeof(calcMode),                           backup);
+  save(&nextChar,                           sizeof(nextChar),                           backup);
+  save(&alphaCase,                          sizeof(alphaCase),                          backup);
+  save(&hourGlassIconEnabled,               sizeof(hourGlassIconEnabled),               backup);
+  save(&watchIconEnabled,                   sizeof(watchIconEnabled),                   backup);
+  save(&serialIOIconEnabled,                sizeof(serialIOIconEnabled),                backup);
+  save(&printerIconEnabled,                 sizeof(printerIconEnabled),                 backup);
+  save(&cursorEnabled,                      sizeof(cursorEnabled),                      backup);
+  save(&cursorFont,                         sizeof(cursorFont),                         backup);
+  save(&savedStackLiftEnabled,              sizeof(savedStackLiftEnabled),              backup);
+  save(&rbr1stDigit,                        sizeof(rbr1stDigit),                        backup);
+  save(&shiftF,                             sizeof(shiftF),                             backup);
+  save(&shiftG,                             sizeof(shiftG),                             backup);
+  //  save(&shiftStateChanged,                  sizeof(shiftStateChanged),                  backup);
+  save(&tamMode,                            sizeof(tamMode),                            backup);
+  save(&rbrMode,                            sizeof(rbrMode),                            backup);
+  save(&showContent,                        sizeof(showContent),                        backup);
+  save(&numScreensNumericFont,              sizeof(numScreensNumericFont),              backup);
+  save(&numLinesNumericFont,                sizeof(numLinesNumericFont),                backup);
+  save(&numLinesStandardFont,               sizeof(numLinesStandardFont),               backup);
+  save(&numScreensStandardFont,             sizeof(numScreensStandardFont),             backup);
+  save(&previousCalcMode,                   sizeof(previousCalcMode),                   backup);
+  save(&lastErrorCode,                      sizeof(lastErrorCode),                      backup);
+  save(&nimNumberPart,                      sizeof(nimNumberPart),                      backup);
+  save(&displayStack,                       sizeof(displayStack),                       backup);
+  save(&hexDigits,                          sizeof(hexDigits),                          backup);
+  save(&errorMessageRegisterLine,           sizeof(errorMessageRegisterLine),           backup);
+  save(&errorRegisterLine,                  sizeof(errorRegisterLine),                  backup);
+  save(&shortIntegerMask,                   sizeof(shortIntegerMask),                   backup);
+  save(&shortIntegerSignBit,                sizeof(shortIntegerSignBit),                backup);
+  save(&temporaryInformation,               sizeof(temporaryInformation),               backup);
+  save(&glyphNotFound,                      sizeof(glyphNotFound),                      backup);
+  save(&allowScreenUpdate,                  sizeof(allowScreenUpdate),                  backup);
+  save(&funcOK,                             sizeof(funcOK),                             backup);
+  save(&screenChange,                       sizeof(screenChange),                       backup);
+  save(&exponentSignLocation,               sizeof(exponentSignLocation),               backup);
+  save(&denominatorLocation,                sizeof(denominatorLocation),                backup);
+  save(&imaginaryExponentSignLocation,      sizeof(imaginaryExponentSignLocation),      backup);
+  save(&imaginaryMantissaSignLocation,      sizeof(imaginaryMantissaSignLocation),      backup);
+  save(&lineTWidth,                         sizeof(lineTWidth),                         backup);
+  save(&lastIntegerBase,                    sizeof(lastIntegerBase),                    backup);
+  save(&wp43sMemInBytes,                    sizeof(wp43sMemInBytes),                    backup);
+  save(&gmpMemInBytes,                      sizeof(gmpMemInBytes),                      backup);
+  save(&alphaSelectionMenu,                 sizeof(alphaSelectionMenu),                 backup);
+  save(&lastFcnsMenuPos,                    sizeof(lastFcnsMenuPos),                    backup);
+  save(&lastMenuMenuPos,                    sizeof(lastMenuMenuPos),                    backup);
+  save(&lastCnstMenuPos,                    sizeof(lastCnstMenuPos),                    backup);
+  save(&lastSyFlMenuPos,                    sizeof(lastSyFlMenuPos),                    backup);
+  save(&lastAIntMenuPos,                    sizeof(lastAIntMenuPos),                    backup);
+  save(&lgCatalogSelection,                 sizeof(lgCatalogSelection),                 backup);
+  save(displayValueX,                       sizeof(displayValueX),                      backup);
+  save(&pcg32_global,                       sizeof(pcg32_global),                       backup);
+  save(&exponentLimit,                      sizeof(exponentLimit),                      backup);
+  save(&keyActionProcessed,                 sizeof(keyActionProcessed),                 backup);
+  save(&systemFlags,                        sizeof(systemFlags),                        backup);
 
-  size += fwrite(&eRPN,                               1, sizeof(eRPN),                               backup); //JM eRPN //printf("%8lu eRPN\n",                     (unsigned long)size);
-  size += fwrite(&HOME3,                              1, sizeof(HOME3),                              backup); //JM HOME //printf("%8lu HOME3\n",                    (unsigned long)size);
-  size += fwrite(&ShiftTimoutMode,                    1, sizeof(ShiftTimoutMode),                    backup); //JM SHIFT //printf("%8lu ShiftTimoutMode\n",         (unsigned long)size);
-  size += fwrite(&UNITDisplay,                        1, sizeof(UNITDisplay),                        backup); //JM UNIT //printf("%8lu HOME3\n",                    (unsigned long)size);
-  size += fwrite(&SigFigMode,                         1, sizeof(SigFigMode),                         backup); //JM SIGFIG //printf("%8lu SIGFIG\n",                 (unsigned long)size);
-  size += fwrite(&SH_BASE_HOME,                       1, sizeof(SH_BASE_HOME  ),                     backup); //JMSH_BASE_HOME                                      (unsigned long)size);
-  size += fwrite(&SH_BASE_AHOME,                      1, sizeof(SH_BASE_AHOME ),                     backup); //JMSH_BASE_AHOME                                     (unsigned long)size);
-  size += fwrite(&Home3TimerMode,                     1, sizeof(Home3TimerMode),                     backup); //JM SHIFT //printf("%8lu Home3TimerMode\n",          (unsigned long)size);
-  size += fwrite(&Norm_Key_00_VAR,                    1, sizeof(Norm_Key_00_VAR),                    backup); //JM SHIFT //printf("%8lu Norm_Key_00_VAR\n",         (unsigned long)size);
-  size += fwrite(&Input_Default,                      1, sizeof(Input_Default),                      backup); //JM SHIFT //printf("%8lu Input_Default\n",           (unsigned long)size);
-  size += fwrite(&jm_FG_LINE,                         1, sizeof(jm_FG_LINE),                         backup); //JM jm_FG_LINE //printf("%8lu jm_FG_LINE\n",         (unsigned long)size);
-  size += fwrite(&jm_FG_DOTS,                         1, sizeof(jm_FG_DOTS),                         backup); //JM jm_FG_DOTS //printf("%8lu jm_FG_DOTS\n",         (unsigned long)size);
-  size += fwrite(&jm_G_DOUBLETAP,                     1, sizeof(jm_G_DOUBLETAP),                     backup); //JM jm_G_DOUBLETAP //printf("%8lu jm_G_DOUBLETAP\n", (unsigned long)size);
-  size += fwrite(&jm_VECT,                            1, sizeof(jm_VECT),                            backup); //JM jm_VECT //printf("%8lu jm_G_DOUBLETAP\n", (unsigned long)size);
-  size += fwrite(&jm_HOME_SUM,                        1, sizeof(jm_HOME_SUM),                        backup); //JM jm_HOME_SUM //printf("%8lu jm_HOME_SUM\n",       (unsigned long)size);
-  size += fwrite(&jm_HOME_MIR,                        1, sizeof(jm_HOME_MIR),                        backup); //JM jm_HOME_MIR //printf("%8lu jm_HOME_MIR\n",       (unsigned long)size);
-  size += fwrite(&jm_HOME_FIX,                        1, sizeof(jm_HOME_FIX),                        backup); //JM jm_HOME_FIX //printf("%8lu jm_HOME_FIX\n",       (unsigned long)size);
+  save(&eRPN,                               sizeof(eRPN),                               backup);
+  save(&HOME3,                              sizeof(HOME3),                              backup);
+  save(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode),                    backup);
+  save(&UNITDisplay,                        sizeof(UNITDisplay),                        backup);
+  save(&SigFigMode,                         sizeof(SigFigMode),                         backup);
+  save(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     backup);
+  save(&SH_BASE_AHOME,                      sizeof(SH_BASE_AHOME ),                     backup);
+  save(&Home3TimerMode,                     sizeof(Home3TimerMode),                     backup);
+  save(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    backup);
+  save(&Input_Default,                      sizeof(Input_Default),                      backup);
+  save(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         backup);
+  save(&jm_FG_DOTS,                         sizeof(jm_FG_DOTS),                         backup);
+  save(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     backup);
+  save(&jm_VECT,                            sizeof(jm_VECT),                            backup);
+  save(&jm_HOME_SUM,                        sizeof(jm_HOME_SUM),                        backup);
+  save(&jm_HOME_MIR,                        sizeof(jm_HOME_MIR),                        backup);
+  save(&jm_HOME_FIX,                        sizeof(jm_HOME_FIX),                        backup);
+  save(&graph_xmin,                         sizeof(graph_xmin),                         backup);
+  save(&graph_xmax,                         sizeof(graph_xmax),                         backup);
+  save(&graph_ymin,                         sizeof(graph_ymin),                         backup);
+  save(&graph_ymax,                         sizeof(graph_ymax),                         backup);
+  save(&graph_dx  ,                         sizeof(graph_dx  ),                         backup);
+  save(&graph_dy  ,                         sizeof(graph_dy  ),                         backup);
 
-  size += fwrite(&graph_xmin,                         1, sizeof(graph_xmin),                         backup); //JM graph_xmin //printf("%8lu graph_xmin\n", (unsigned long)size);
-  size += fwrite(&graph_xmax,                         1, sizeof(graph_xmax),                         backup); //JM graph_xmax //printf("%8lu graph_xmax\n", (unsigned long)size);
-  size += fwrite(&graph_ymin,                         1, sizeof(graph_ymin),                         backup); //JM graph_ymin //printf("%8lu graph_ymin\n", (unsigned long)size);
-  size += fwrite(&graph_ymax,                         1, sizeof(graph_ymax),                         backup); //JM graph_ymax //printf("%8lu graph_ymax\n", (unsigned long)size);
-  size += fwrite(&graph_dx  ,                         1, sizeof(graph_dx  ),                         backup); //JM graph_dx   //printf("%8lu graph_dx  \n", (unsigned long)size);
-  size += fwrite(&graph_dy  ,                         1, sizeof(graph_dy  ),                         backup); //JM graph_dy   //printf("%8lu graph_dy  \n", (unsigned long)size);
-
-
-  printf("%" FMT32U " bytes saved\n", (uint32_t)size);
 
   fclose(backup);
   printf("End of calc's backup\n");
@@ -197,19 +212,18 @@ void saveCalc(void) {
 
 
 void restoreCalc(void) {
-  size_t size;
   uint32_t backupVersion, ramSize, ramPtr;
   FILE *backup;
 
   backup = fopen("backup.bin", "rb");
-  if (backup == NULL) {
+  if(backup == NULL) {
     printf("Cannot restore calc's memory from file backup.bin! Performing RESET\n");
     fnReset(CONFIRMED);
     return;
   }
 
-  size  = fread(&backupVersion,                      1, sizeof(backupVersion),                      backup); //printf("%8lu backupVersion\n",                      (unsigned long)size);
-  size += fread(&ramSize,                            1, sizeof(ramSize),                            backup); //printf("%8lu ramSize\n",                            (unsigned long)size);
+  restore(&backupVersion,                      sizeof(backupVersion),                      backup);
+  restore(&ramSize,                            sizeof(ramSize),                            backup);
   if(backupVersion != BACKUP_VERSION || ramSize != RAM_SIZE) {
     fclose(backup);
 
@@ -225,160 +239,145 @@ void restoreCalc(void) {
   else {
     printf("Begin of calc's restoration\n");
 
-    size += fread(ram,                                 1, TO_BYTES(RAM_SIZE),                         backup); //printf("%8lu ram\n",                                (unsigned long)size);
-    size += fread(freeBlocks,                          1, MAX_FREE_BLOCKS * sizeof(freeBlock_t),      backup); //printf("%8lu freeBlocks\n",                         (unsigned long)size);
-    size += fread(&numberOfFreeBlocks,                 1, sizeof(numberOfFreeBlocks),                 backup); //printf("%8lu numberOfFreeBlocks\n",                 (unsigned long)size);
-    size += fread(flags,                               1, sizeof(flags),                              backup); //printf("%8lu flags\n",                              (unsigned long)size);
-    size += fread(tmpStr3000,                          1, TMP_STR_LENGTH,                             backup); //printf("%8lu tmpStr3000\n",                         (unsigned long)size);
-    size += fread(errorMessage,                        1, ERROR_MESSAGE_LENGTH,                       backup); //printf("%8lu errorMessage\n",                       (unsigned long)size);
-    size += fread(aimBuffer,                           1, AIM_BUFFER_LENGTH,                          backup); //printf("%8lu aimBuffer\n",                          (unsigned long)size);
-    size += fread(nimBuffer,                           1, NIM_BUFFER_LENGTH,                          backup); //printf("%8lu nimBuffer\n",                          (unsigned long)size);
-    size += fread(nimBufferDisplay,                    1, NIM_BUFFER_LENGTH,                          backup); //printf("%8lu nimBufferDisplay\n",                   (unsigned long)size);
-    size += fread(tamBuffer,                           1, TAM_BUFFER_LENGTH,                          backup); //printf("%8lu tamBuffer\n",                          (unsigned long)size);
-    size += fread(asmBuffer,                           1, sizeof(asmBuffer),                          backup); //printf("%8lu asmBuffer\n",                          (unsigned long)size);
-    size += fread(oldTime,                             1, 8,                                          backup); //printf("%8lu oldTime\n",                            (unsigned long)size);
-    size += fread(dateTimeString,                      1, 12,                                         backup); //printf("%8lu dateTimeString\n",                     (unsigned long)size);
-    size += fread(softmenuStack,                       1, sizeof(softmenuStack),                      backup); //printf("%8lu softmenuStack\n",                      (unsigned long)size);
-    size += fread(reg,                                 1, sizeof(reg),                                backup); //printf("%8lu reg\n",                                (unsigned long)size);
-    size += fread(savedStackRegister,                  1, sizeof(savedStackRegister),                 backup); //printf("%8lu savedStackRegister\n",                 (unsigned long)size);
-    size += fread(kbd_usr,                             1, sizeof(kbd_usr),                            backup); //printf("%8lu kbd_usr\n",                            (unsigned long)size);
-    size += fread(row,                                 1, sizeof(row),                                backup); //printf("%8lu row\n",                                (unsigned long)size);
-    size += fread(transitionSystemOperation,           1, sizeof(transitionSystemOperation),          backup); //printf("%8lu transitionSystemOperation\n",          (unsigned long)size);
-    size += fread(screenData,                          1, 4 * screenStride * SCREEN_HEIGHT,           backup); //printf("%8lu screenData\n",                         (unsigned long)size);
-    size += fread(&tamFunction,                        1, sizeof(tamFunction),                        backup); //printf("%8lu tamFunction\n",                        (unsigned long)size);
-    size += fread(&tamNumber,                          1, sizeof(tamNumber),                          backup); //printf("%8lu tamNumber\n",                          (unsigned long)size);
-    size += fread(&tamNumberMin,                       1, sizeof(tamNumberMin),                       backup); //printf("%8lu tamNumberMin\n",                       (unsigned long)size);
-    size += fread(&tamNumberMax,                       1, sizeof(tamNumberMax),                       backup); //printf("%8lu tamNumberMax\n",                       (unsigned long)size);
-    size += fread(&tamDigit,                           1, sizeof(tamDigit),                           backup); //printf("%8lu tamDigit\n",                           (unsigned long)size);
-    size += fread(&tamOperation,                       1, sizeof(tamOperation),                       backup); //printf("%8lu tamOperation\n",                       (unsigned long)size);
-    size += fread(&tamLetteredRegister,                1, sizeof(tamLetteredRegister),                backup); //printf("%8lu tamLetteredRegister\n",                (unsigned long)size);
-    size += fread(&tamCurrentOperation,                1, sizeof(tamCurrentOperation),                backup); //printf("%8lu tamCurrentOperation\n",                (unsigned long)size);
-    size += fread(&rbrRegister,                        1, sizeof(rbrRegister),                        backup); //printf("%8lu rbrRegister\n",                        (unsigned long)size);
-    size += fread(&numberOfLocalFlags,                 1, sizeof(numberOfLocalFlags),                 backup); //printf("%8lu numberOfLocalFlags\n",                 (unsigned long)size);
-    size += fread(&ramPtr,                             1, sizeof(ramPtr),                             backup); //printf("%8lu ramPtr\n",                             (unsigned long)size);
+    restore(ram,                                 TO_BYTES(RAM_SIZE),                         backup);
+    restore(freeBlocks,                          MAX_FREE_BLOCKS * sizeof(freeBlock_t),      backup);
+    restore(&numberOfFreeBlocks,                 sizeof(numberOfFreeBlocks),                 backup);
+    restore(globalFlags,                         sizeof(globalFlags),                        backup);
+    restore(tmpStr3000,                          TMP_STR_LENGTH,                             backup);
+    restore(errorMessage,                        ERROR_MESSAGE_LENGTH,                       backup);
+    restore(aimBuffer,                           AIM_BUFFER_LENGTH,                          backup);
+    restore(nimBuffer,                           NIM_BUFFER_LENGTH,                          backup);
+    restore(nimBufferDisplay,                    NIM_BUFFER_LENGTH,                          backup);
+    restore(tamBuffer,                           TAM_BUFFER_LENGTH,                          backup);
+    restore(asmBuffer,                           sizeof(asmBuffer),                          backup);
+    restore(oldTime,                             8,                                          backup);
+    restore(dateTimeString,                      12,                                         backup);
+    restore(softmenuStack,                       sizeof(softmenuStack),                      backup);
+    restore(reg,                                 sizeof(reg),                                backup);
+    restore(savedStackRegister,                  sizeof(savedStackRegister),                 backup);
+    restore(kbd_usr,                             sizeof(kbd_usr),                            backup);
+    restore(transitionSystemOperation,           sizeof(transitionSystemOperation),          backup);
+    restore(&tamFunction,                        sizeof(tamFunction),                        backup);
+    restore(&tamNumber,                          sizeof(tamNumber),                          backup);
+    restore(&tamNumberMin,                       sizeof(tamNumberMin),                       backup);
+    restore(&tamNumberMax,                       sizeof(tamNumberMax),                       backup);
+    restore(&tamDigit,                           sizeof(tamDigit),                           backup);
+    restore(&tamOperation,                       sizeof(tamOperation),                       backup);
+    restore(&tamLetteredRegister,                sizeof(tamLetteredRegister),                backup);
+    restore(&tamCurrentOperation,                sizeof(tamCurrentOperation),                backup);
+    restore(&rbrRegister,                        sizeof(rbrRegister),                        backup);
+    restore(&numberOfLocalFlags,                 sizeof(numberOfLocalFlags),                 backup);
+    restore(&ramPtr,                             sizeof(ramPtr),                             backup);
     allLocalRegisterPointer = TO_PCMEMPTR(ramPtr);
-    size += fread(&ramPtr,                             1, sizeof(ramPtr),                             backup); //printf("%8lu ramPtr\n",                             (unsigned long)size);
+    restore(&ramPtr,                             sizeof(ramPtr),                             backup);
     allNamedVariablePointer = TO_PCMEMPTR(ramPtr);
-    size += fread(&ramPtr,                             1, sizeof(ramPtr),                             backup); //printf("%8lu ramPtr\n",                             (unsigned long)size);
+    restore(&ramPtr,                             sizeof(ramPtr),                             backup);
     statisticalSumsPointer = TO_PCMEMPTR(ramPtr);
-    size += fread(&programCounter,                     1, sizeof(programCounter),                     backup); //printf("%8lu programCounter\n",                     (unsigned long)size);
-    size += fread(&xCursor,                            1, sizeof(xCursor),                            backup); //printf("%8lu xCursor\n",                            (unsigned long)size);
-    size += fread(&yCursor,                            1, sizeof(yCursor),                            backup); //printf("%8lu yCursor\n",                            (unsigned long)size);
-    size += fread(&firstGregorianDay,                  1, sizeof(firstGregorianDay),                  backup); //printf("%8lu firstGregorianDay\n",                  (unsigned long)size);
-    size += fread(&denMax,                             1, sizeof(denMax),                             backup); //printf("%8lu denMax\n",                             (unsigned long)size);
-    size += fread(&softmenuStackPointer,               1, sizeof(softmenuStackPointer),               backup); //printf("%8lu softmenuStackPointer\n",               (unsigned long)size);
-    size += fread(&softmenuStackPointerBeforeAIM,      1, sizeof(softmenuStackPointerBeforeAIM),      backup); //printf("%8lu softmenuStackPointerBeforeAIM\n",      (unsigned long)size);
-    size += fread(&transitionSystemState,              1, sizeof(transitionSystemState),              backup); //printf("%8lu transitionSystemState\n",              (unsigned long)size);
-    size += fread(&cursorBlinkCounter,                 1, sizeof(cursorBlinkCounter),                 backup); //printf("%8lu cursorBlinkCounter\n",                 (unsigned long)size);
-    size += fread(&currentRegisterBrowserScreen,       1, sizeof(currentRegisterBrowserScreen),       backup); //printf("%8lu currentRegisterBrowserScreen\n",       (unsigned long)size);
-    size += fread(&SHOWregis,                          1, sizeof(SHOWregis),                          backup); //printf("%8lu SHOWregis\n",                          (unsigned long)size);
-    size += fread(&currentFntScr,                      1, sizeof(currentFntScr),                      backup); //printf("%8lu currentFntScr\n",                      (unsigned long)size);
-    size += fread(&currentFlgScr,                      1, sizeof(currentFlgScr),                      backup); //printf("%8lu currentFlgScr\n",                      (unsigned long)size);
-    size += fread(&displayFormat,                      1, sizeof(displayFormat),                      backup); //printf("%8lu displayFormat\n",                      (unsigned long)size);
-    size += fread(&displayFormatDigits,                1, sizeof(displayFormatDigits),                backup); //printf("%8lu displayFormatDigits\n",                (unsigned long)size);
-    size += fread(&shortIntegerWordSize,               1, sizeof(shortIntegerWordSize),               backup); //printf("%8lu shortIntegerWordSize\n",               (unsigned long)size);
-    size += fread(&significantDigits,                  1, sizeof(significantDigits),                  backup); //printf("%8lu significantDigits\n",                  (unsigned long)size);
-    size += fread(&shortIntegerMode,                   1, sizeof(shortIntegerMode),                   backup); //printf("%8lu shortIntegerMode\n",                   (unsigned long)size);
-    size += fread(&currentAngularMode,                 1, sizeof(currentAngularMode),                 backup); //printf("%8lu currentAngularMode\n",                 (unsigned long)size);
-    size += fread(&groupingGap,                        1, sizeof(groupingGap),                        backup); //printf("%8lu groupingGap\n",                        (unsigned long)size);
-    size += fread(&curveFitting,                       1, sizeof(curveFitting),                       backup); //printf("%8lu curveFitting\n",                       (unsigned long)size);
-    size += fread(&roundingMode,                       1, sizeof(roundingMode),                       backup); //printf("%8lu roundingMode\n",                       (unsigned long)size);
-    size += fread(&calcMode,                           1, sizeof(calcMode),                           backup); //printf("%8lu calcMode\n",                           (unsigned long)size);
-    size += fread(&nextChar,                           1, sizeof(nextChar),                           backup); //printf("%8lu nextChar\n",                           (unsigned long)size);
-    size += fread(&productSign,                        1, sizeof(productSign),                        backup); //printf("%8lu productSign\n",                        (unsigned long)size);
-    size += fread(&displayModeOverride,                1, sizeof(displayModeOverride),                backup); //printf("%8lu displayModeOverride\n",                (unsigned long)size);
-    size += fread(&alphaCase,                          1, sizeof(alphaCase),                          backup); //printf("%8lu alphaCase\n",                          (unsigned long)size);
-    size += fread(&hourGlassIconEnabled,               1, sizeof(hourGlassIconEnabled),               backup); //printf("%8lu hourGlassIconEnabled\n",               (unsigned long)size);
-    size += fread(&watchIconEnabled,                   1, sizeof(watchIconEnabled),                   backup); //printf("%8lu watchIconEnabled\n",                   (unsigned long)size);
-    size += fread(&serialIOIconEnabled,                1, sizeof(serialIOIconEnabled),                backup); //printf("%8lu serialIOIconEnabled\n",                (unsigned long)size);
-    size += fread(&printerIconEnabled,                 1, sizeof(printerIconEnabled),                 backup); //printf("%8lu printerIconEnabled\n",                 (unsigned long)size);
-    size += fread(&cursorEnabled,                      1, sizeof(cursorEnabled),                      backup); //printf("%8lu cursorEnabled\n",                      (unsigned long)size);
-    size += fread(&cursorFont,                         1, sizeof(cursorFont),                         backup); //printf("%8lu cursorFont\n",                         (unsigned long)size);
-    size += fread(&savedStackLiftEnabled,              1, sizeof(savedStackLiftEnabled),              backup); //printf("%8lu savedStackLiftEnabled\n",              (unsigned long)size);
-    size += fread(&rbr1stDigit,                        1, sizeof(rbr1stDigit),                        backup); //printf("%8lu rbr1stDigit\n",                        (unsigned long)size);
-    size += fread(&shiftF,                             1, sizeof(shiftF),                             backup); //printf("%8lu shiftF\n",                             (unsigned long)size);
-    size += fread(&shiftG,                             1, sizeof(shiftG),                             backup); //printf("%8lu shiftG\n",                             (unsigned long)size);
-//    size += fread(&shiftStateChanged,                  1, sizeof(shiftStateChanged),                  backup); //printf("%8lu shiftStateChanged\n",                  (unsigned long)size);
-    size += fread(&tamMode,                            1, sizeof(tamMode),                            backup); //printf("%8lu tamMode\n",                            (unsigned long)size);
-    size += fread(&rbrMode,                            1, sizeof(rbrMode),                            backup); //printf("%8lu rbrMode\n",                            (unsigned long)size);
-    size += fread(&showContent,                        1, sizeof(showContent),                        backup); //printf("%8lu showContent\n",                        (unsigned long)size);
-    size += fread(&numScreensNumericFont,              1, sizeof(numScreensNumericFont),              backup); //printf("%8lu numScreensNumericFont\n",              (unsigned long)size);
-    size += fread(&numLinesNumericFont,                1, sizeof(numLinesNumericFont),                backup); //printf("%8lu numLinesNumericFont\n",                (unsigned long)size);
-    size += fread(&numLinesStandardFont,               1, sizeof(numLinesStandardFont),               backup); //printf("%8lu numLinesStandardFont\n",               (unsigned long)size);
-    size += fread(&numScreensStandardFont,             1, sizeof(numScreensStandardFont),             backup); //printf("%8lu numScreensStandardFont\n",             (unsigned long)size);
-    size += fread(&previousCalcMode,                   1, sizeof(previousCalcMode),                   backup); //printf("%8lu previousCalcMode\n",                   (unsigned long)size);
-    size += fread(&lastErrorCode,                      1, sizeof(lastErrorCode),                      backup); //printf("%8lu lastErrorCode\n",                      (unsigned long)size);
-    size += fread(&nimNumberPart,                      1, sizeof(nimNumberPart),                      backup); //printf("%8lu nimNumberPart\n",                      (unsigned long)size);
-    size += fread(&displayStack,                       1, sizeof(displayStack),                       backup); //printf("%8lu displayStack\n",                       (unsigned long)size);
-    size += fread(&hexDigits,                          1, sizeof(hexDigits),                          backup); //printf("%8lu hexDigits\n",                          (unsigned long)size);
-    size += fread(&errorMessageRegisterLine,           1, sizeof(errorMessageRegisterLine),           backup); //printf("%8lu errorMessageRegisterLine\n",           (unsigned long)size);
-    size += fread(&errorRegisterLine,                  1, sizeof(errorRegisterLine),                  backup); //printf("%8lu errorRegisterLine\n",                  (unsigned long)size);
-    size += fread(&shortIntegerMask,                   1, sizeof(shortIntegerMask),                   backup); //printf("%8lu shortIntegerMask\n",                   (unsigned long)size);
-    size += fread(&shortIntegerSignBit,                1, sizeof(shortIntegerSignBit),                backup); //printf("%8lu shortIntegerSignBit\n",                (unsigned long)size);
-    size += fread(&temporaryInformation,               1, sizeof(temporaryInformation),               backup); //printf("%8lu temporaryInformation\n",               (unsigned long)size);
+    restore(&programCounter,                     sizeof(programCounter),                     backup);
+    restore(&xCursor,                            sizeof(xCursor),                            backup);
+    restore(&yCursor,                            sizeof(yCursor),                            backup);
+    restore(&firstGregorianDay,                  sizeof(firstGregorianDay),                  backup);
+    restore(&denMax,                             sizeof(denMax),                             backup);
+    restore(&softmenuStackPointer,               sizeof(softmenuStackPointer),               backup);
+    restore(&softmenuStackPointerBeforeAIM,      sizeof(softmenuStackPointerBeforeAIM),      backup);
+    restore(&transitionSystemState,              sizeof(transitionSystemState),              backup);
+    restore(&cursorBlinkCounter,                 sizeof(cursorBlinkCounter),                 backup);
+    restore(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen),       backup);
+    restore(&currentFntScr,                      sizeof(currentFntScr),                      backup);
+    restore(&currentFlgScr,                      sizeof(currentFlgScr),                      backup);
+    restore(&displayFormat,                      sizeof(displayFormat),                      backup);
+    restore(&displayFormatDigits,                sizeof(displayFormatDigits),                backup);
+    restore(&shortIntegerWordSize,               sizeof(shortIntegerWordSize),               backup);
+    restore(&significantDigits,                  sizeof(significantDigits),                  backup);
+    restore(&shortIntegerMode,                   sizeof(shortIntegerMode),                   backup);
+    restore(&currentAngularMode,                 sizeof(currentAngularMode),                 backup);
+    restore(&groupingGap,                        sizeof(groupingGap),                        backup);
+    restore(&curveFitting,                       sizeof(curveFitting),                       backup);
+    restore(&roundingMode,                       sizeof(roundingMode),                       backup);
+    restore(&calcMode,                           sizeof(calcMode),                           backup);
+    restore(&nextChar,                           sizeof(nextChar),                           backup);
+    restore(&alphaCase,                          sizeof(alphaCase),                          backup);
+    restore(&hourGlassIconEnabled,               sizeof(hourGlassIconEnabled),               backup);
+    restore(&watchIconEnabled,                   sizeof(watchIconEnabled),                   backup);
+    restore(&serialIOIconEnabled,                sizeof(serialIOIconEnabled),                backup);
+    restore(&printerIconEnabled,                 sizeof(printerIconEnabled),                 backup);
+    restore(&cursorEnabled,                      sizeof(cursorEnabled),                      backup);
+    restore(&cursorFont,                         sizeof(cursorFont),                         backup);
+    restore(&savedStackLiftEnabled,              sizeof(savedStackLiftEnabled),              backup);
+    restore(&rbr1stDigit,                        sizeof(rbr1stDigit),                        backup);
+    restore(&shiftF,                             sizeof(shiftF),                             backup);
+    restore(&shiftG,                             sizeof(shiftG),                             backup);
+//    restore(&shiftStateChanged,                  sizeof(shiftStateChanged),                  backup);
+    restore(&tamMode,                            sizeof(tamMode),                            backup);
+    restore(&rbrMode,                            sizeof(rbrMode),                            backup);
+    restore(&showContent,                        sizeof(showContent),                        backup);
+    restore(&numScreensNumericFont,              sizeof(numScreensNumericFont),              backup);
+    restore(&numLinesNumericFont,                sizeof(numLinesNumericFont),                backup);
+    restore(&numLinesStandardFont,               sizeof(numLinesStandardFont),               backup);
+    restore(&numScreensStandardFont,             sizeof(numScreensStandardFont),             backup);
+    restore(&previousCalcMode,                   sizeof(previousCalcMode),                   backup);
+    restore(&lastErrorCode,                      sizeof(lastErrorCode),                      backup);
+    restore(&nimNumberPart,                      sizeof(nimNumberPart),                      backup);
+    restore(&displayStack,                       sizeof(displayStack),                       backup);
+    restore(&hexDigits,                          sizeof(hexDigits),                          backup);
+    restore(&errorMessageRegisterLine,           sizeof(errorMessageRegisterLine),           backup);
+    restore(&errorRegisterLine,                  sizeof(errorRegisterLine),                  backup);
+    restore(&shortIntegerMask,                   sizeof(shortIntegerMask),                   backup);
+    restore(&shortIntegerSignBit,                sizeof(shortIntegerSignBit),                backup);
+    restore(&temporaryInformation,               sizeof(temporaryInformation),               backup);
 
-    size += fread(&glyphNotFound,                      1, sizeof(glyphNotFound),                      backup); //printf("%8lu glyphNotFound\n",                      (unsigned long)size);
+    restore(&glyphNotFound,                      sizeof(glyphNotFound),                      backup);
     glyphNotFound.data   = malloc(38);
-    #ifndef __APPLE__
-      #pragma GCC diagnostic push
-      #pragma GCC diagnostic ignored "-Wstringop-truncation"
-    #endif
-    strncpy(glyphNotFound.data, "\xff\xf8\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\xff\xf8", 38);
-    #ifndef __APPLE__
-      #pragma GCC diagnostic pop
-    #endif
+    xcopy(glyphNotFound.data, "\xff\xf8\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\x80\x08\xff\xf8", 38);
 
-    size += fread(&allowScreenUpdate,                  1, sizeof(allowScreenUpdate),                  backup); //printf("%8lu allowScreenUpdate\n",                  (unsigned long)size);
-    size += fread(&funcOK,                             1, sizeof(funcOK),                             backup); //printf("%8lu funcOK\n",                             (unsigned long)size);
-    size += fread(&screenChange,                       1, sizeof(screenChange),                       backup); //printf("%8lu screenChange\n",                       (unsigned long)size);
-    size += fread(&exponentSignLocation,               1, sizeof(exponentSignLocation),               backup); //printf("%8lu exponentSignLocation\n",               (unsigned long)size);
-    size += fread(&denominatorLocation,                1, sizeof(denominatorLocation),                backup); //printf("%8lu denominatorLocation\n",                (unsigned long)size);
-    size += fread(&imaginaryExponentSignLocation,      1, sizeof(imaginaryExponentSignLocation),      backup); //printf("%8lu imaginaryExponentSignLocation\n",      (unsigned long)size);
-    size += fread(&imaginaryMantissaSignLocation,      1, sizeof(imaginaryMantissaSignLocation),      backup); //printf("%8lu imaginaryMantissaSignLocation\n",      (unsigned long)size);
-    size += fread(&lineTWidth,                         1, sizeof(lineTWidth),                         backup); //printf("%8lu lineTWidth\n",                         (unsigned long)size);
-    size += fread(&lastIntegerBase,                    1, sizeof(lastIntegerBase),                    backup); //printf("%8lu lastIntegerBase\n",                    (unsigned long)size);
-    size += fread(&wp43sMemInBytes,                    1, sizeof(wp43sMemInBytes),                    backup); //printf("%8lu wp43sMemInBytes\n",                    (unsigned long)size);
-    size += fread(&gmpMemInBytes,                      1, sizeof(gmpMemInBytes),                      backup); //printf("%8lu gmpMemInBytes\n",                      (unsigned long)size);
-    size += fread(&alphaSelectionMenu,                 1, sizeof(alphaSelectionMenu),                 backup); //printf("%8lu alphaSelectionMenu\n",                 (unsigned long)size);
-    size += fread(&lastFcnsMenuPos,                    1, sizeof(lastFcnsMenuPos),                    backup); //printf("%8lu lastFcnsMenuPos\n",                    (unsigned long)size);
-    size += fread(&lastMenuMenuPos,                    1, sizeof(lastMenuMenuPos),                    backup); //printf("%8lu lastMenuMenuPos\n",                    (unsigned long)size);
-    size += fread(&lastCnstMenuPos,                    1, sizeof(lastCnstMenuPos),                    backup); //printf("%8lu lastCnstMenuPos\n",                    (unsigned long)size);
-    size += fread(&lastSyFlMenuPos,                    1, sizeof(lastSyFlMenuPos),                    backup); //printf("%8lu lastSyFlMenuPos\n",                    (unsigned long)size);
-    size += fread(&lastAIntMenuPos,                    1, sizeof(lastAIntMenuPos),                    backup); //printf("%8lu lastAIntMenuPos\n",                    (unsigned long)size);
-    size += fread(&lgCatalogSelection,                 1, sizeof(lgCatalogSelection),                 backup); //printf("%8lu lgCatalogSelection\n",                 (unsigned long)size);
-    size += fread(displayValueX,                       1, sizeof(displayValueX),                      backup); //printf("%8lu displayValueX\n",                      (unsigned long)size);
-    size += fread(&pcg32_global,                       1, sizeof(pcg32_global),                       backup); //printf("%8lu pcg32_global\n",                       (unsigned long)size);
-    size += fread(&exponentLimit,                      1, sizeof(exponentLimit),                      backup); //printf("%8lu exponentLimit\n",                      (unsigned long)size);
-    size += fread(&keyActionProcessed,                 1, sizeof(keyActionProcessed),                 backup); //printf("%8lu keyActionProcessed\n",                 (unsigned long)size);
-    size += fread(&systemFlags,                        1, sizeof(systemFlags),                        backup); //printf("%8lu systemFlags\n",                        (unsigned long)size);
+    restore(&allowScreenUpdate,                  sizeof(allowScreenUpdate),                  backup);
+    restore(&funcOK,                             sizeof(funcOK),                             backup);
+    restore(&screenChange,                       sizeof(screenChange),                       backup);
+    restore(&exponentSignLocation,               sizeof(exponentSignLocation),               backup);
+    restore(&denominatorLocation,                sizeof(denominatorLocation),                backup);
+    restore(&imaginaryExponentSignLocation,      sizeof(imaginaryExponentSignLocation),      backup);
+    restore(&imaginaryMantissaSignLocation,      sizeof(imaginaryMantissaSignLocation),      backup);
+    restore(&lineTWidth,                         sizeof(lineTWidth),                         backup);
+    restore(&lastIntegerBase,                    sizeof(lastIntegerBase),                    backup);
+    restore(&wp43sMemInBytes,                    sizeof(wp43sMemInBytes),                    backup);
+    restore(&gmpMemInBytes,                      sizeof(gmpMemInBytes),                      backup);
+    restore(&alphaSelectionMenu,                 sizeof(alphaSelectionMenu),                 backup);
+    restore(&lastFcnsMenuPos,                    sizeof(lastFcnsMenuPos),                    backup);
+    restore(&lastMenuMenuPos,                    sizeof(lastMenuMenuPos),                    backup);
+    restore(&lastCnstMenuPos,                    sizeof(lastCnstMenuPos),                    backup);
+    restore(&lastSyFlMenuPos,                    sizeof(lastSyFlMenuPos),                    backup);
+    restore(&lastAIntMenuPos,                    sizeof(lastAIntMenuPos),                    backup);
+    restore(&lgCatalogSelection,                 sizeof(lgCatalogSelection),                 backup);
+    restore(displayValueX,                       sizeof(displayValueX),                      backup);
+    restore(&pcg32_global,                       sizeof(pcg32_global),                       backup);
+    restore(&exponentLimit,                      sizeof(exponentLimit),                      backup);
+    restore(&keyActionProcessed,                 sizeof(keyActionProcessed),                 backup);
+    restore(&systemFlags,                        sizeof(systemFlags),                        backup);
 
-    size += fread(&eRPN,                               1, sizeof(eRPN),                               backup); //JM eRPN //printf("%8lu eRPN\n",                     (unsigned long)size);
-    size += fread(&HOME3,                              1, sizeof(HOME3),                              backup); //JM HOME //printf("%8lu HOME3\n",                    (unsigned long)size);
-    size += fread(&ShiftTimoutMode,                    1, sizeof(ShiftTimoutMode),                    backup); //JM SHIFT //printf("%8lu ShiftTimoutMode\n",         (unsigned long)size);
-    size += fread(&UNITDisplay,                        1, sizeof(UNITDisplay),                        backup); //JM UNIT //printf("%8lu HOME3\n",                    (unsigned long)size);
-    size += fread(&SigFigMode,                         1, sizeof(SigFigMode),                         backup); //JM SIGFIG //printf("%8lu SIGFIG\n",                 (unsigned long)size);
-    size += fread(&SH_BASE_HOME,                       1, sizeof(SH_BASE_HOME  ),                     backup); //JMSH_BASE_HOME                                      (unsigned long)size);
-    size += fread(&SH_BASE_AHOME,                      1, sizeof(SH_BASE_AHOME ),                     backup); //JMSH_BASE_AHOME                                     (unsigned long)size);
-    size += fread(&Home3TimerMode,                     1, sizeof(Home3TimerMode),                     backup); //JM SHIFT //printf("%8lu Home3TimerMode\n",          (unsigned long)size);
-    size += fread(&Norm_Key_00_VAR,                    1, sizeof(Norm_Key_00_VAR),                    backup); //JM SHIFT //printf("%8lu Norm_Key_00_VAR\n",         (unsigned long)size);
-    size += fread(&Input_Default,                      1, sizeof(Input_Default),                      backup); //JM SHIFT //printf("%8lu Input_Default\n",           (unsigned long)size);
-    size += fread(&jm_FG_LINE,                         1, sizeof(jm_FG_LINE),                         backup); //JM jm_FG_LINE //printf("%8lu jm_FG_LINE\n",         (unsigned long)size);
-    size += fread(&jm_FG_DOTS,                         1, sizeof(jm_FG_DOTS),                         backup); //JM jm_FG_DOTS //printf("%8lu jm_FG_DOTS\n",         (unsigned long)size);
-    size += fread(&jm_G_DOUBLETAP,                     1, sizeof(jm_G_DOUBLETAP),                     backup); //JM jm_G_DOUBLETAP //printf("%8lu jm_G_DOUBLETAP\n", (unsigned long)size);
-    size += fread(&jm_VECT,                            1, sizeof(jm_VECT),                            backup); //JM jm_VECT //printf("%8lu jm_VECT\n",               (unsigned long)size);
-    size += fread(&jm_HOME_SUM,                        1, sizeof(jm_HOME_SUM),                        backup); //JM jm_HOME_SUM //printf("%8lu jm_HOME_SUM\n",       (unsigned long)size);
-    size += fread(&jm_HOME_MIR,                        1, sizeof(jm_HOME_MIR),                        backup); //JM jm_HOME_MIR //printf("%8lu jm_HOME_MIR\n",       (unsigned long)size);
-    size += fread(&jm_HOME_FIX,                        1, sizeof(jm_HOME_FIX),                        backup); //JM jm_HOME_FIX //printf("%8lu jm_HOME_FIX\n",       (unsigned long)size);
+    restore(&eRPN,                               sizeof(eRPN),                               backup);
+    restore(&HOME3,                              sizeof(HOME3),                              backup);
+    restore(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode),                    backup);
+    restore(&UNITDisplay,                        sizeof(UNITDisplay),                        backup);
+    restore(&SigFigMode,                         sizeof(SigFigMode),                         backup);
+    restore(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     backup);
+    restore(&SH_BASE_AHOME,                      sizeof(SH_BASE_AHOME ),                     backup);
+    restore(&Home3TimerMode,                     sizeof(Home3TimerMode),                     backup);
+    restore(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    backup);
+    restore(&Input_Default,                      sizeof(Input_Default),                      backup);
+    restore(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         backup);
+    restore(&jm_FG_DOTS,                         sizeof(jm_FG_DOTS),                         backup);
+    restore(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     backup);
+    restore(&jm_VECT,                            sizeof(jm_VECT),                            backup);
+    restore(&jm_HOME_SUM,                        sizeof(jm_HOME_SUM),                        backup);
+    restore(&jm_HOME_MIR,                        sizeof(jm_HOME_MIR),                        backup);
+    restore(&jm_HOME_FIX,                        sizeof(jm_HOME_FIX),                        backup);
+    restore(&graph_xmin,                         sizeof(graph_xmin),                         backup);
+    restore(&graph_xmax,                         sizeof(graph_xmax),                         backup);
+    restore(&graph_ymin,                         sizeof(graph_ymin),                         backup);
+    restore(&graph_ymax,                         sizeof(graph_ymax),                         backup);
+    restore(&graph_dx  ,                         sizeof(graph_dx  ),                         backup);
+    restore(&graph_dy  ,                         sizeof(graph_dy  ),                         backup);
 
-    size += fread(&graph_xmin,                         1, sizeof(graph_xmin),                         backup); //JM graph_xmin //printf("%8lu graph_xmin\n", (unsigned long)size);
-    size += fread(&graph_xmax,                         1, sizeof(graph_xmax),                         backup); //JM graph_xmax //printf("%8lu graph_xmax\n", (unsigned long)size);
-    size += fread(&graph_ymin,                         1, sizeof(graph_ymin),                         backup); //JM graph_ymin //printf("%8lu graph_ymin\n", (unsigned long)size);
-    size += fread(&graph_ymax,                         1, sizeof(graph_ymax),                         backup); //JM graph_ymax //printf("%8lu graph_ymax\n", (unsigned long)size);
-    size += fread(&graph_dx  ,                         1, sizeof(graph_dx  ),                         backup); //JM graph_dx   //printf("%8lu graph_dx  \n", (unsigned long)size);
-    size += fread(&graph_dy  ,                         1, sizeof(graph_dy  ),                         backup); //JM graph_dy   //printf("%8lu graph_dy  \n", (unsigned long)size);
-
-
-    printf("%" FMT32U " bytes restored\n", (uint32_t)size);
 
     fclose(backup);
     printf("End of calc's restoration\n");
@@ -405,8 +404,10 @@ void restoreCalc(void) {
       displayBugScreen(errorMessage);
     }
 
-    getTimeString(dateTimeString);
-    oldTime[0] = 0;
+    clearScreen(true, true, true);
+    refreshStatusBar();
+    refreshStack();
+    showSoftmenuCurrentPart();
 
     if(getSystemFlag(FLAG_ASLIFT)) {
       STACK_LIFT_ENABLE;
@@ -417,3 +418,699 @@ void restoreCalc(void) {
   }
 }
 #endif
+
+
+static void registerToSaveString(calcRegister_t regist) {
+  longInteger_t lgInt;
+  int16_t sign;
+  uint64_t value;
+  char *str, *cfg;
+
+  switch(getRegisterDataType(regist)) {
+    case dtLongInteger:
+      convertLongIntegerRegisterToLongInteger(regist, lgInt);
+      longIntegerToAllocatedString(lgInt, tmpStr3000 + START_REGISTER_VALUE, TMP_STR_LENGTH - START_REGISTER_VALUE - 1);
+      longIntegerFree(lgInt);
+      strcpy(nimBuffer, "LonI");
+      break;
+
+    case dtString:
+      stringToUtf8(REGISTER_STRING_DATA(regist), (uint8_t *)(tmpStr3000 + START_REGISTER_VALUE));
+      strcpy(nimBuffer, "Stri");
+      break;
+
+    case dtShortInteger:
+      convertShortIntegerRegisterToUInt64(regist, &sign, &value);
+      sprintf(tmpStr3000 + START_REGISTER_VALUE, "%c%" FMT64U " %" FMT32U, sign ? '-' : '+', value, getRegisterShortIntegerBase(regist));
+      strcpy(nimBuffer, "ShoI");
+      break;
+
+    case dtReal34:
+      real34ToString(REGISTER_REAL34_DATA(regist), tmpStr3000 + START_REGISTER_VALUE);
+      switch(getRegisterAngularMode(regist)) {
+        case AM_DEGREE:
+          strcpy(nimBuffer, "Real:DEG");
+          break;
+
+        case AM_GRAD:
+          strcpy(nimBuffer, "Real:GRAD");
+          break;
+
+        case AM_RADIAN:
+          strcpy(nimBuffer, "Real:RAD");
+          break;
+
+        case AM_MULTPI:
+          strcpy(nimBuffer, "Real:MULTPI");
+          break;
+
+        case AM_DMS:
+          strcpy(nimBuffer, "Real:DMS");
+          break;
+
+        case AM_NONE:
+          strcpy(nimBuffer, "Real");
+          break;
+
+        default:
+          strcpy(nimBuffer, "Real:???");
+          break;
+      }
+      break;
+
+    case dtComplex34:
+      real34ToString(REGISTER_REAL34_DATA(regist), tmpStr3000 + START_REGISTER_VALUE);
+      strcat(tmpStr3000 + START_REGISTER_VALUE, " ");
+      real34ToString(REGISTER_IMAG34_DATA(regist), tmpStr3000 + START_REGISTER_VALUE + strlen(tmpStr3000 + START_REGISTER_VALUE));
+      strcpy(nimBuffer, "Cplx");
+      break;
+
+    case dtConfig:
+      for(str=tmpStr3000 + START_REGISTER_VALUE, cfg=(char *)REGISTER_CONFIG_DATA(regist), value=0; value<sizeof(dtConfigDescriptor_t); value++, cfg++, str+=2) {
+        sprintf(str, "%02X", *cfg);
+      }
+      strcpy(nimBuffer, "Conf");
+      break;
+
+    default:
+      strcpy(tmpStr3000 + START_REGISTER_VALUE, "???");
+      strcpy(nimBuffer, "????");
+  }
+}
+
+
+
+void fnSave(uint16_t unusedParamButMandatory) {
+  calcRegister_t regist;
+  uint32_t i;
+
+  #ifdef DMCP_BUILD
+    FIL backupStruct;
+    FIL *backup = &backupStruct;
+    FRESULT result;
+
+    sys_disk_write_enable(1);
+    check_create_dir("SAVFILES");
+    result = f_open(backup, "SAVFILES\\wp43s.sav", FA_CREATE_ALWAYS | FA_WRITE);
+    if(result != FR_OK) {
+      sys_disk_write_enable(0);
+  #else
+    FILE *backup;
+
+    backup = fopen("wp43s.sav", "wb");
+    if(backup == NULL) {
+      printf("Cannot SAVE in file wp43s.sav!\n");
+  #endif
+      return;
+    }
+
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wrestrict"
+
+  // Global registers
+  sprintf(tmpStr3000, "GLOBAL_REGISTERS\n%" FMT16U "\n", FIRST_LOCAL_REGISTER);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  for(regist=0; regist<FIRST_LOCAL_REGISTER; regist++) {
+    registerToSaveString(regist);
+    sprintf(tmpStr3000, "R%03" FMT16S "\n%s\n%s\n", regist, nimBuffer, tmpStr3000 + START_REGISTER_VALUE);
+    save(tmpStr3000, strlen(tmpStr3000), backup);
+  }
+
+  // Global flags
+  strcpy(tmpStr3000, "GLOBAL_FLAGS\n");
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "%" FMT16U " %" FMT16U " %" FMT16U " %" FMT16U " %" FMT16U " %" FMT16U " %" FMT16U "\n",
+                       globalFlags[0],
+                                   globalFlags[1],
+                                               globalFlags[2],
+                                                           globalFlags[3],
+                                                                       globalFlags[4],
+                                                                                   globalFlags[5],
+                                                                                               globalFlags[6]);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+
+  // Local registers
+  sprintf(tmpStr3000, "LOCAL_REGISTERS\n%" FMT16U "\n", allLocalRegisterPointer->numberOfLocalRegisters);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  for(i=0; i<allLocalRegisterPointer->numberOfLocalRegisters; i++) {
+    registerToSaveString(FIRST_LOCAL_REGISTER + i);
+    sprintf(tmpStr3000, "R.%02" FMT32U "\n%s\n%s\n", i, nimBuffer, tmpStr3000 + START_REGISTER_VALUE);
+    save(tmpStr3000, strlen(tmpStr3000), backup);
+  }
+
+  // Local flags
+  if(allLocalRegisterPointer->numberOfLocalRegisters) {
+    sprintf(tmpStr3000, "LOCAL_FLAGS\n%" FMT16U "\n", allLocalRegisterPointer->localFlags);
+    save(tmpStr3000, strlen(tmpStr3000), backup);
+  }
+
+  // Named variables
+  sprintf(tmpStr3000, "NAMED_VARIABLES\n%" FMT16U "\n", allNamedVariablePointer->numberOfNamedVariables);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  for(i=0; i<allNamedVariablePointer->numberOfNamedVariables; i++) {
+    registerToSaveString(FIRST_NAMED_VARIABLE + i);
+    sprintf(tmpStr3000, "%s\n%s\n%s\n", "name", nimBuffer, tmpStr3000 + START_REGISTER_VALUE);
+    save(tmpStr3000, strlen(tmpStr3000), backup);
+  }
+
+  // Statistical sums
+  sprintf(tmpStr3000, "STATISTICAL_SUMS\n%" FMT16U "\n", statisticalSumsPointer ? NUMBER_OF_STATISTICAL_SUMS : 0);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  for(i=0; i<(statisticalSumsPointer ? NUMBER_OF_STATISTICAL_SUMS : 0); i++) {
+    realToString(statisticalSumsPointer + i, tmpStr3000 + START_REGISTER_VALUE);
+    sprintf(tmpStr3000, "%s\n", tmpStr3000 + START_REGISTER_VALUE);
+    save(tmpStr3000, strlen(tmpStr3000), backup);
+  }
+  #pragma GCC diagnostic pop
+
+  // System flags
+  sprintf(tmpStr3000, "SYSTEM_FLAGS\n%" FMT64U "\n", systemFlags);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+
+  // Keyboard assignments
+  sprintf(tmpStr3000, "KEYBOARD_ASSIGNMENTS\n37\n");
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  for(i=0; i<37; i++) {
+    sprintf(tmpStr3000, "%" FMT16S " %" FMT16S " %" FMT16S " %" FMT16S " %" FMT16S " %" FMT16S " %" FMT16S " %" FMT16S " %" FMT16S "\n",
+                         kbd_usr[i].keyId,
+                                     kbd_usr[i].primary,
+                                                 kbd_usr[i].fShifted,
+                                                             kbd_usr[i].gShifted,
+                                                                         kbd_usr[i].keyLblAim,
+                                                                                     kbd_usr[i].primaryAim,
+                                                                                                 kbd_usr[i].fShiftedAim,
+                                                                                                             kbd_usr[i].gShiftedAim,
+                                                                                                                         kbd_usr[i].primaryTam);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  }
+
+  // Other configuration stuff
+  sprintf(tmpStr3000, "OTHER_CONFIGURATION_STUFF\n14\n");
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "firstGregorianDay\n1582 10 15\n");
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "denMax\n%" FMT32U "\n", denMax);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "displayFormat\n%" FMT8U "\n", displayFormat);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "displayFormatDigits\n%" FMT8U "\n", displayFormatDigits);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "shortIntegerWordSize\n%" FMT8U "\n", shortIntegerWordSize);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "shortIntegerMode\n%" FMT8U "\n", shortIntegerMode);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "significantDigits\n%" FMT8U "\n", significantDigits);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "currentAngularMode\n%" FMT8U "\n", currentAngularMode);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "groupingGap\n%" FMT8U "\n", groupingGap);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "curveFitting\n%" FMT8U "\n", curveFitting);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "roundingMode\n%" FMT8U "\n", roundingMode);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "displayStack\n%" FMT8U "\n", displayStack);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "rngState\n%" FMT64U " %" FMT64U "\n", pcg32_global.state, pcg32_global.inc);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+  sprintf(tmpStr3000, "exponentLimit\n%" FMT16S "\n", exponentLimit);
+  save(tmpStr3000, strlen(tmpStr3000), backup);
+
+  #ifdef DMCP_BUILD
+    f_close(backup);
+    sys_disk_write_enable(0);
+  #else
+    fclose(backup);
+  #endif
+
+  temporaryInformation = TI_SAVED;
+  refreshStack();
+}
+
+
+
+static void readLine(void *stream, char *line) {
+  restore(line, 1, stream);
+  while(*line == '\n' || *line == '\r') {
+    restore(line, 1, stream);
+  }
+
+  while(*line != '\n' && *line != '\r') {
+    restore(++line, 1, stream);
+  }
+
+  *line = 0;
+}
+
+
+
+uint8_t stringToUint8(const char *str) {
+  uint8_t value = 0;
+
+
+  while('0' <= *str && *str <= '9') {
+    value = value*10 + (*(str++) - '0');
+  }
+
+  return value;
+}
+
+
+
+uint16_t stringToUint16(const char *str) {
+  uint16_t value = 0;
+
+
+  while('0' <= *str && *str <= '9') {
+    value = value*10 + (*(str++) - '0');
+  }
+
+  return value;
+}
+
+
+
+uint32_t stringToUint32(const char *str) {
+  uint32_t value = 0;
+
+  while('0' <= *str && *str <= '9') {
+    value = value*10 + (*(str++) - '0');
+  }
+
+  return value;
+}
+
+
+
+uint64_t stringToUint64(const char *str) {
+  uint64_t value = 0;
+
+  while('0' <= *str && *str <= '9') {
+    value = value*10 + (*(str++) - '0');
+  }
+
+  return value;
+}
+
+
+
+int16_t stringToInt16(const char *str) {
+  int16_t value = 0;
+  bool_t sign = false;
+
+  if(*str == '-') {
+    str++;
+    sign = true;
+  }
+  else if(*str == '+') {
+    str++;
+  }
+
+  while('0' <= *str && *str <= '9') {
+    value = value*10 + (*(str++) - '0');
+  }
+
+  if(sign) {
+    value = -value;
+  }
+  return value;
+}
+
+
+
+int32_t stringToInt32(const char *str) {
+  int32_t value = 0;
+  bool_t sign = false;
+
+  if(*str == '-') {
+    str++;
+    sign = true;
+  }
+  else if(*str == '+') {
+    str++;
+  }
+
+  while('0' <= *str && *str <= '9') {
+    value = value*10 + (*(str++) - '0');
+  }
+
+  if(sign) {
+    value = -value;
+  }
+  return value;
+}
+
+
+
+static void restoreRegister(calcRegister_t regist, char *type, char *value) {
+  uint32_t tag = AM_NONE;
+
+  if(type[4] == ':') {
+         if(type[5] == 'D' && type[6] == 'E') tag = AM_DEGREE;
+    else if(type[5] == 'D' && type[6] == 'M') tag = AM_DMS;
+    else if(type[5] == 'G')                   tag = AM_GRAD;
+    else if(type[5] == 'R')                   tag = AM_RADIAN;
+    else if(type[5] == 'M')                   tag = AM_MULTPI;
+    else                                      tag = AM_NONE;
+
+    reallocateRegister(regist, dtReal34, REAL34_SIZE, tag);
+    stringToReal34(value, REGISTER_REAL34_DATA(regist));
+  }
+
+  else if(strcmp(type, "Real") == 0) {
+    reallocateRegister(regist, dtReal34, REAL34_SIZE, tag);
+    stringToReal34(value, REGISTER_REAL34_DATA(regist));
+  }
+
+  else if(strcmp(type, "LonI") == 0) {
+    longInteger_t lgInt;
+
+    longIntegerInit(lgInt);
+    stringToLongInteger(value, 10, lgInt);
+    convertLongIntegerToLongIntegerRegister(lgInt, regist);
+    longIntegerFree(lgInt);
+  }
+
+  else if(strcmp(type, "Stri") == 0) {
+    int32_t len;
+
+    utf8ToString((uint8_t *)value, errorMessage);
+    len = stringByteLength(errorMessage) + 1;
+    reallocateRegister(regist, dtString, TO_BLOCKS(len), AM_NONE);
+    xcopy(REGISTER_STRING_DATA(regist), errorMessage, len);
+  }
+
+  else if(strcmp(type, "ShoI") == 0) {
+    uint16_t sign = (value[0] == '-' ? 1 : 0);
+    uint64_t val  = stringToUint64(value + 1);
+
+    while(*value != ' ') value++;
+    while(*value == ' ') value++;
+    uint32_t base = stringToUint32(value);
+
+    convertUInt64ToShortIntegerRegister(sign, val, base, regist);
+  }
+
+  else if(strcmp(type, "Cplx") == 0) {
+    char *imaginaryPart;
+
+    reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, AM_NONE);
+    imaginaryPart = value;
+    while(*imaginaryPart != ' ') imaginaryPart++;
+    *(imaginaryPart++) = 0;
+    stringToReal34(value, REGISTER_REAL34_DATA(regist));
+    stringToReal34(imaginaryPart, REGISTER_IMAG34_DATA(regist));
+  }
+
+  else if(strcmp(type, "Conf") == 0) {
+    char *cfg;
+
+    reallocateRegister(regist, dtConfig, CONFIG_SIZE, AM_NONE);
+    for(cfg=(char *)REGISTER_CONFIG_DATA(regist), tag=0; tag<sizeof(dtConfigDescriptor_t); tag++, value+=2, cfg++) {
+      *cfg = ((*value >= 'A' ? *value - 'A' + 10 : *value - '0') << 8) | (*(value + 1) >= 'A' ? *(value + 1) - 'A' + 10 : *(value + 1) - '0');
+    }
+  }
+
+  else {
+    sprintf(errorMessage, "In function restoreRegister: Date type %s is to be coded!", type);
+    displayBugScreen(errorMessage);
+  }
+}
+
+
+
+static void restoreOneSection(void *stream, uint16_t loadMode) {
+  int16_t i, numberOfRegs;
+  calcRegister_t regist;
+  char *str;
+
+  readLine(stream, tmpStr3000);
+
+  if(strcmp(tmpStr3000, "GLOBAL_REGISTERS") == 0) {
+    readLine(stream, tmpStr3000); // Number of global registers
+    numberOfRegs = stringToInt16(tmpStr3000);
+    for(i=0; i<numberOfRegs; i++) {
+      readLine(stream, tmpStr3000); // Register number
+      regist = stringToInt16(tmpStr3000 + 1);
+      readLine(stream, nimBuffer); // Register data type
+      readLine(stream, tmpStr3000); // Register value
+
+      if(loadMode == LM_ALL || (loadMode == LM_REGISTERS && regist < REGISTER_X) || (loadMode == LM_SYSTEM_STATE && regist >= REGISTER_X)) {
+        restoreRegister(regist, nimBuffer, tmpStr3000);
+      }
+    }
+  }
+
+  else if(strcmp(tmpStr3000, "GLOBAL_FLAGS") == 0) {
+    readLine(stream, tmpStr3000); // Global flags
+    if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+      str = tmpStr3000;
+      globalFlags[0] = stringToUint16(str);
+
+      while(*str != ' ') str++;
+      while(*str == ' ') str++;
+      globalFlags[1] = stringToUint16(str);
+
+      while(*str != ' ') str++;
+      while(*str == ' ') str++;
+      globalFlags[2] = stringToUint16(str);
+
+      while(*str != ' ') str++;
+      while(*str == ' ') str++;
+      globalFlags[3] = stringToUint16(str);
+
+      while(*str != ' ') str++;
+      while(*str == ' ') str++;
+      globalFlags[4] = stringToUint16(str);
+
+      while(*str != ' ') str++;
+      while(*str == ' ') str++;
+      globalFlags[5] = stringToUint16(str);
+
+      while(*str != ' ') str++;
+      while(*str == ' ') str++;
+      globalFlags[6] = stringToUint16(str);
+    }
+  }
+
+  else if(strcmp(tmpStr3000, "LOCAL_REGISTERS") == 0) {
+    readLine(stream, tmpStr3000); // Number of local registers
+    numberOfRegs = stringToInt16(tmpStr3000);
+    if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
+      allocateLocalRegisters(numberOfRegs);
+    }
+
+    for(i=0; i<numberOfRegs; i++) {
+      readLine(stream, tmpStr3000); // Register number
+      regist = stringToInt16(tmpStr3000 + 2) + FIRST_LOCAL_REGISTER;
+      readLine(stream, nimBuffer); // Register data type
+      readLine(stream, tmpStr3000); // Register value
+
+      if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
+        restoreRegister(regist, nimBuffer, tmpStr3000);
+      }
+    }
+
+    if(numberOfRegs > 0) {
+      readLine(stream, tmpStr3000); // LOCAL_FLAGS
+      readLine(stream, tmpStr3000); // LOCAL_FLAGS
+      if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
+        allLocalRegisterPointer->localFlags = stringToUint16(tmpStr3000);
+      }
+    }
+  }
+
+  else if(strcmp(tmpStr3000, "NAMED_VARIABLES") == 0) {
+    readLine(stream, tmpStr3000); // Number of named variables
+    numberOfRegs = stringToInt16(tmpStr3000);
+    for(i=0; i<numberOfRegs; i++) {
+      readLine(stream, tmpStr3000 + 2900); // Variable name
+      readLine(stream, nimBuffer); // Variable data type
+      readLine(stream, tmpStr3000); // Variable value
+
+      if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+        printf("Variable %s ", tmpStr3000 + 2900);
+        printf("%s = ", nimBuffer);
+        printf("%s\n", tmpStr3000);
+      }
+    }
+  }
+
+  else if(strcmp(tmpStr3000, "STATISTICAL_SUMS") == 0) {
+    readLine(stream, tmpStr3000); // Number of statistical sums
+    numberOfRegs = stringToInt16(tmpStr3000);
+    if(numberOfRegs > 0 && (loadMode == LM_ALL || loadMode == LM_SUMS)) {
+      initStatisticalSums();
+    }
+
+    for(i=0; i<numberOfRegs; i++) {
+      readLine(stream, tmpStr3000); // statistical sum
+      if(loadMode == LM_ALL || loadMode == LM_SUMS) {
+        stringToReal(tmpStr3000, (real_t *)(statisticalSumsPointer + REAL_SIZE * i), &ctxtReal75);
+      }
+    }
+  }
+
+  else if(strcmp(tmpStr3000, "SYSTEM_FLAGS") == 0) {
+    readLine(stream, tmpStr3000); // Global flags
+    if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+      systemFlags = stringToUint64(tmpStr3000);
+    }
+  }
+
+  else if(strcmp(tmpStr3000, "KEYBOARD_ASSIGNMENTS") == 0) {
+    readLine(stream, tmpStr3000); // Number of keys
+    numberOfRegs = stringToInt16(tmpStr3000);
+    for(i=0; i<numberOfRegs; i++) {
+      readLine(stream, tmpStr3000); // key
+      if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+        str = tmpStr3000;
+        kbd_usr[i].keyId = stringToUint16(str);
+
+        while(*str != ' ') str++;
+        while(*str == ' ') str++;
+        kbd_usr[i].primary = stringToUint16(str);
+
+        while(*str != ' ') str++;
+        while(*str == ' ') str++;
+        kbd_usr[i].fShifted = stringToUint16(str);
+
+        while(*str != ' ') str++;
+        while(*str == ' ') str++;
+        kbd_usr[i].gShifted = stringToUint16(str);
+
+        while(*str != ' ') str++;
+        while(*str == ' ') str++;
+        kbd_usr[i].keyLblAim = stringToUint16(str);
+
+        while(*str != ' ') str++;
+        while(*str == ' ') str++;
+        kbd_usr[i].primaryAim = stringToUint16(str);
+
+        while(*str != ' ') str++;
+        while(*str == ' ') str++;
+        kbd_usr[i].fShiftedAim = stringToUint16(str);
+
+        while(*str != ' ') str++;
+        while(*str == ' ') str++;
+        kbd_usr[i].gShiftedAim = stringToUint16(str);
+
+        while(*str != ' ') str++;
+        while(*str == ' ') str++;
+        kbd_usr[i].primaryTam = stringToUint16(str);
+      }
+    }
+  }
+
+  else if(strcmp(tmpStr3000, "OTHER_CONFIGURATION_STUFF") == 0) {
+    readLine(stream, tmpStr3000); // Number params
+    numberOfRegs = stringToInt16(tmpStr3000);
+    for(i=0; i<numberOfRegs; i++) {
+      readLine(stream, nimBuffer); // param
+      readLine(stream, tmpStr3000); // value
+      if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+        if(strcmp(nimBuffer, "firstGregorianDay") == 0) {
+        }
+        else if(strcmp(nimBuffer, "denMax") == 0) {
+          denMax = stringToUint32(tmpStr3000);
+          if(denMax < 1 || denMax > MAX_DENMAX) {
+            denMax = MAX_DENMAX;
+          }
+        }
+        else if(strcmp(nimBuffer, "displayFormat") == 0) {
+          displayFormat = stringToUint8(tmpStr3000);
+        }
+        else if(strcmp(nimBuffer, "displayFormatDigits") == 0) {
+          displayFormatDigits = stringToUint8(tmpStr3000);
+        }
+        else if(strcmp(nimBuffer, "shortIntegerWordSize") == 0) {
+          shortIntegerWordSize = stringToUint8(tmpStr3000);
+        }
+        else if(strcmp(nimBuffer, "shortIntegerMode") == 0) {
+          shortIntegerMode = stringToUint8(tmpStr3000);
+        }
+        else if(strcmp(nimBuffer, "significantDigits") == 0) {
+          significantDigits = stringToUint8(tmpStr3000);
+        }
+        else if(strcmp(nimBuffer, "currentAngularMode") == 0) {
+          currentAngularMode = stringToUint8(tmpStr3000);
+        }
+        else if(strcmp(nimBuffer, "groupingGap") == 0) {
+          groupingGap = stringToUint8(tmpStr3000);
+        }
+        else if(strcmp(nimBuffer, "curveFitting") == 0) {
+          curveFitting = stringToUint8(tmpStr3000);
+        }
+        else if(strcmp(nimBuffer, "roundingMode") == 0) {
+          roundingMode = stringToUint8(tmpStr3000);
+        }
+        else if(strcmp(nimBuffer, "displayStack") == 0) {
+          displayStack = stringToUint8(tmpStr3000);
+        }
+        else if(strcmp(nimBuffer, "rngState") == 0) {
+          pcg32_global.state = stringToUint64(tmpStr3000);
+          str = tmpStr3000;
+          while(*str != ' ') str++;
+          while(*str == ' ') str++;
+          pcg32_global.inc = stringToUint64(str);
+        }
+        else if(strcmp(nimBuffer, "exponentLimit") == 0) {
+          exponentLimit = stringToInt16(tmpStr3000);
+        }
+      }
+    }
+  }
+}
+
+
+
+void fnLoad(uint16_t loadMode) {
+  #ifdef DMCP_BUILD
+    FIL backupStruct;
+    FIL *backup = &backupStruct;
+
+    if(f_open(backup, "SAVFILES\\wp43s.sav", FA_READ) != FR_OK) {
+  #else
+    FILE *backup;
+
+    if((backup = fopen("wp43s.sav", "rb")) == NULL) {
+  #endif
+      displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        showInfoDialog("In function fnLoad: cannot find or read backup data file wp43s.sav", NULL, NULL, NULL);
+        return;
+      #endif
+    }
+
+  restoreOneSection(backup, loadMode); // GLOBAL_REGISTERS
+  restoreOneSection(backup, loadMode); // GLOBAL_FLAGS
+  restoreOneSection(backup, loadMode); // LOCAL_REGISTERS
+  restoreOneSection(backup, loadMode); // NAMED_VARIABLES
+  restoreOneSection(backup, loadMode); // STATISTICAL_SUMS
+  restoreOneSection(backup, loadMode); // SYSTEM_FLAGS
+  restoreOneSection(backup, loadMode); // KEYBOARD_ASSIGNMENTS
+  restoreOneSection(backup, loadMode); // OTHER_CONFIGURATION_STUFF
+
+  #ifdef DMCP_BUILD
+    f_close(backup);
+  #else
+    fclose(backup);
+  #endif
+
+  #ifndef TESTSUITE_BUILD
+    clearScreen(true, true, true);
+    refreshStatusBar();
+    if(loadMode == LM_ALL) {
+      temporaryInformation = TI_BACKUP_RESTORED;
+    }
+    refreshStack();
+    showSoftmenuCurrentPart();
+  #endif
+
+  if(getSystemFlag(FLAG_ASLIFT)) {
+    STACK_LIFT_ENABLE;
+  }
+  else {
+   STACK_LIFT_DISABLE;
+  }
+}

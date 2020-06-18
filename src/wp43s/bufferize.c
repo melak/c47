@@ -249,7 +249,7 @@ void addItemToBuffer(uint16_t item) {
         displayBugScreen(errorMessage);
       }
       else {
-        strncpy(aimBuffer + stringNextGlyph(aimBuffer, stringLastGlyph(aimBuffer)), indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+        xcopy(aimBuffer + stringNextGlyph(aimBuffer, stringLastGlyph(aimBuffer)), indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
         if(stringWidth(aimBuffer, &standardFont, true, true) > SCREEN_WIDTH - 8) { // 8 is the width of the cursor
           btnClicked(NULL, "16"); // back space
           #ifdef PC_BUILD
@@ -471,7 +471,7 @@ void addItemToNimBuffer(int16_t item) {
               strcat(nimBuffer, "0");
             }
 
-            if(atoi(nimBuffer + exponentSignLocation) > exponentLimit || atoi(nimBuffer + exponentSignLocation) < -exponentLimit) {
+            if(stringToInt16(nimBuffer + exponentSignLocation) > exponentLimit || stringToInt16(nimBuffer + exponentSignLocation) < -exponentLimit) {
               nimBuffer[strlen(nimBuffer) - 1] = 0;
             }
           }
@@ -482,7 +482,7 @@ void addItemToNimBuffer(int16_t item) {
 
             strcat(nimBuffer, indexOfItems[item].itemSoftmenuName);
 
-            if(atoi(nimBuffer + exponentSignLocation) > exponentLimit || atoi(nimBuffer + exponentSignLocation) < -exponentLimit) {
+            if(stringToInt16(nimBuffer + exponentSignLocation) > exponentLimit || stringToInt16(nimBuffer + exponentSignLocation) < -exponentLimit) {
               nimBuffer[strlen(nimBuffer) - 1] = 0;
             }
           }
@@ -496,14 +496,14 @@ void addItemToNimBuffer(int16_t item) {
               nimBuffer[denominatorLocation] = 0;
             }
 
-            if(atoi(nimBuffer + denominatorLocation) > 9999) {
+            if(stringToInt32(nimBuffer + denominatorLocation) > 9999) {
               nimBuffer[strlen(nimBuffer) - 1] = 0;
             }
           }
           else {
             strcat(nimBuffer, indexOfItems[item].itemSoftmenuName);
 
-            if(atoi(nimBuffer + denominatorLocation) > 9999) {
+            if(stringToInt32(nimBuffer + denominatorLocation) > 9999) {
               nimBuffer[strlen(nimBuffer) - 1] = 0;
             }
           }
@@ -534,7 +534,7 @@ void addItemToNimBuffer(int16_t item) {
               strcat(nimBuffer, "0");
             }
 
-            if(atoi(nimBuffer + imaginaryExponentSignLocation) > exponentLimit || atoi(nimBuffer + imaginaryExponentSignLocation) < -exponentLimit) {
+            if(stringToInt16(nimBuffer + imaginaryExponentSignLocation) > exponentLimit || stringToInt16(nimBuffer + imaginaryExponentSignLocation) < -exponentLimit) {
               nimBuffer[strlen(nimBuffer) - 1] = 0;
             }
           }
@@ -545,7 +545,7 @@ void addItemToNimBuffer(int16_t item) {
 
             strcat(nimBuffer, indexOfItems[item].itemSoftmenuName);
 
-            if(atoi(nimBuffer + imaginaryExponentSignLocation) > exponentLimit || atoi(nimBuffer + imaginaryExponentSignLocation) < -exponentLimit) {
+            if(stringToInt16(nimBuffer + imaginaryExponentSignLocation) > exponentLimit || stringToInt16(nimBuffer + imaginaryExponentSignLocation) < -exponentLimit) {
               nimBuffer[strlen(nimBuffer) - 1] = 0;
             }
           }
@@ -981,7 +981,7 @@ void addItemToNimBuffer(int16_t item) {
       case NP_REAL_EXPONENT : // +12345.678e+3
         nimBufferToDisplayBuffer(nimBuffer, nimBufferDisplay + 2);
 
-        exponentToDisplayString(atoi(nimBuffer + exponentSignLocation), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
+        exponentToDisplayString(stringToInt32(nimBuffer + exponentSignLocation), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
         if(nimBuffer[exponentSignLocation + 1] == 0 && nimBuffer[exponentSignLocation] == '-') {
           strcat(nimBufferDisplay, STD_SUP_MINUS);
         }
@@ -995,13 +995,13 @@ void addItemToNimBuffer(int16_t item) {
         strcat(nimBufferDisplay, STD_SPACE_4_PER_EM);
 
         for(index=2; nimBuffer[index]!=' '; index++); // The ending semi colon is OK here
-        supNumberToDisplayString(atoi(nimBuffer + index + 1), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
+        supNumberToDisplayString(stringToInt32(nimBuffer + index + 1), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
 
         strcat(nimBufferDisplay, "/");
 
         for(; nimBuffer[index]!='/'; index++); // The ending semi colon is OK here
         if(nimBuffer[++index] != 0) {
-          subNumberToDisplayString(atoi(nimBuffer + index), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL);
+          subNumberToDisplayString(stringToInt32(nimBuffer + index), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL);
         }
         break;
 
@@ -1024,7 +1024,7 @@ void addItemToNimBuffer(int16_t item) {
         nimBufferToDisplayBuffer(nimBuffer, nimBufferDisplay + 2);
 
         if(nimNumberPart == NP_REAL_EXPONENT) {
-          exponentToDisplayString(atoi(nimBuffer + exponentSignLocation), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
+          exponentToDisplayString(stringToInt32(nimBuffer + exponentSignLocation), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
           if(nimBuffer[exponentSignLocation + 1] == 0 && nimBuffer[exponentSignLocation] == '-') {
             strcat(nimBufferDisplay, STD_SUP_MINUS);
           }
@@ -1074,7 +1074,7 @@ void addItemToNimBuffer(int16_t item) {
           nimBufferToDisplayBuffer(nimBuffer + imaginaryMantissaSignLocation + 1, nimBufferDisplay + stringByteLength(nimBufferDisplay));
 
           if(nimNumberPart == NP_REAL_EXPONENT) {
-            exponentToDisplayString(atoi(nimBuffer + imaginaryExponentSignLocation), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
+            exponentToDisplayString(stringToInt32(nimBuffer + imaginaryExponentSignLocation), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
             if(nimBuffer[imaginaryExponentSignLocation + 1] == 0 && nimBuffer[imaginaryExponentSignLocation] == '-') {
               strcat(nimBufferDisplay, STD_SUP_MINUS);
             }
@@ -1856,11 +1856,11 @@ void tamTransitionSystem(uint16_t tamTransition) {
     case 16:
       switch(tamTransition) {
         case TT_LETTER :
-          if (tamLetteredRegister >= REGISTER_X && tamLetteredRegister <= REGISTER_T) {
-            for (int i = 4; i > 0; i--) {
-              if (tamBuffer[strlen(tamBuffer)-i] == '_') {
+          if(tamLetteredRegister >= REGISTER_X && tamLetteredRegister <= REGISTER_T) {
+            for(int i = 4; i > 0; i--) {
+              if(tamBuffer[strlen(tamBuffer)-i] == '_') {
                 tamBuffer[strlen(tamBuffer)-i] = "xyzt"[tamLetteredRegister-REGISTER_X];
-                if (i == 1) {
+                if(i == 1) {
                   indexOfItems[getOperation()].func(NOPARAM);
                   calcModeNormal();
                   return;
@@ -1871,13 +1871,13 @@ void tamTransitionSystem(uint16_t tamTransition) {
           }
           break;
         case TT_BACKSPACE :
-          for (int i = 1; i <= 5; i++) {
-            if (i == 5) {
+          for(int i = 1; i <= 5; i++) {
+            if(i == 5) {
                 calcModeNormal();
                 return;
                 break;
               }
-            if (tamBuffer[strlen(tamBuffer)-i] != '_') {
+            if(tamBuffer[strlen(tamBuffer)-i] != '_') {
               tamBuffer[strlen(tamBuffer)-i] = '_';
               break;
             }
@@ -1885,8 +1885,8 @@ void tamTransitionSystem(uint16_t tamTransition) {
           break;
       }
       break;
-          
-      
+
+
     //////////////////////////////
     // This should never happen
     default :
@@ -1990,7 +1990,7 @@ void closeNim(void) {
             }
           }
 
-          base = atoi(nimBuffer + posHash + 1);
+          base = stringToInt32(nimBuffer + posHash + 1);
           if(base < 2 || base > 16) {
             displayCalcErrorMessage(ERROR_INVALID_INTEGER_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
             #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -2170,9 +2170,9 @@ void closeNim(void) {
 
           nimBuffer[posSpace] = 0;
           nimBuffer[posSlash] = 0;
-          integer = atoi(nimBuffer + 1);
-          numer   = atoi(nimBuffer + posSpace + 1);
-          denom   = atoi(nimBuffer + posSlash + 1);
+          integer = stringToInt32(nimBuffer + 1);
+          numer   = stringToInt32(nimBuffer + posSpace + 1);
+          denom   = stringToInt32(nimBuffer + posSlash + 1);
 
           if(denom == 0 && !getSystemFlag(FLAG_SPCRES)) {
             displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);

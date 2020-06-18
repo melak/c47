@@ -769,12 +769,6 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "displayModeOverride                       = %6u = %s",    displayModeOverride,  getDisplayOvrName(displayModeOverride));
-        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
-        gtk_widget_show(lbl1[row++]);
-      }
-
-      if(row < DEBUG_LINES) {
         sprintf(string, "groupingGap                               = %6u",         groupingGap);
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
@@ -836,12 +830,6 @@ void debugNIM(void) {
 
       if(row < DEBUG_LINES) {
         sprintf(string, "FLAG_LEAD.0                               = %s",          getBooleanName(getSystemFlag(FLAG_CPXj)));
-        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
-        gtk_widget_show(lbl1[row++]);
-      }
-
-      if(row < DEBUG_LINES) {
-        sprintf(string, "productSign                               = %6u = %s",    productSign,          getProductSignName(productSign));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }

@@ -65,7 +65,7 @@ const int16_t menu_CPX[]         = { ITM_RE,                        ITM_IM,     
                         /*KEY_CC1 removed this one*/
 
 const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_SCI,                    ITM_ENG,                  ITM_ALL,               ITM_SIGFIG,                  ITM_UNIT,
-                                     ITM_ROUND,                     ITM_ROUNDI,                 ITM_RDP,                  ITM_RSD,               ITM_NULL,                    ITM_NULL,                           //JM 
+                                     ITM_SDL,                       ITM_SDR,                    ITM_ROUND,                ITM_ROUNDI,            ITM_RDP,                     ITM_RSD,                            //JM 
                                      ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM 
 
 
@@ -145,7 +145,7 @@ const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_RAD,    
 #endif
 
                                      ITM_SSIZE4,                    ITM_SSIZE8,                 ITM_CB_CPXRES,            ITM_CB_SPCRES,         ITM_NULL,                    ITM_CFG,                       //JM sequence change
-                                     ITM_ERPN,                      ITM_RNG,                    ITM_SETSIG,               ITM_RM,                ITM_NULL,                    ITM_NULL,                      //JM sequence change
+                                     ITM_ERPN,                      ITM_RNG,                    ITM_SETSIG,               ITM_RM,                ITM_DENMAX,                  ITM_NULL,                      //JM sequence change
                                      ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_INP_DEF_SI,              ITM_NULL,                      //JM
 
 
@@ -298,8 +298,8 @@ const int16_t menu_AngleConv[]   = { ITM_toDEG,                     ITM_toRAD,  
 const int16_t menu_UnitConv[]    = { -MNU_CONVE,                    -MNU_CONVP,                 ITM_NULL,                 -MNU_CONVFP,           -MNU_CONVM,                  -MNU_CONVX,
                                      ITM_CtoF,                      ITM_FtoC,                   ITM_NULL,                 ITM_NULL,              -MNU_CONVV,                  -MNU_CONVA,
                                      ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
-                                     10000+ITM_PRtoDBc,             10000+ITM_DBtoPRc,          ITM_NULL,                 ITM_NULL,              10000+ITM_FRtoDBc,           10000+ITM_DBtoFRc,
-                                     30000+ITM_PRtoDBb,             30000+ITM_DBtoPRb,          ITM_NULL,                 ITM_NULL,              30000+ITM_FRtoDBb,           30000+ITM_DBtoFRb,
+                                     10000+ITM_PRtoDBc,             10000+ITM_DBtoPRc,          10000+ITM_NMtoLBFFTb,     10000+ITM_LBFFTtoNMb,  10000+ITM_FRtoDBc,           10000+ITM_DBtoFRc,
+                                     30000+ITM_PRtoDBb,             30000+ITM_DBtoPRb,          20000+ITM_NMtoLBFFT,      20000+ITM_LBFFTtoNM,   30000+ITM_FRtoDBb,           30000+ITM_DBtoFRb,
                                      20000+ITM_PRtoDB,              20000+ITM_DBtoPR,           ITM_NULL,                 ITM_NULL,              20000+ITM_FRtoDB,            20000+ITM_DBtoFR              };
 
 const int16_t menu_ConvE[]       = { ITM_CALtoJ,                    ITM_JtoCAL,                 ITM_BTUtoJ,               ITM_JtoBTU,            ITM_WHtoJ,                   ITM_JtoWH                     };

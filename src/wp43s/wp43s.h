@@ -118,17 +118,17 @@
   #define flagBrowser_old fnNop      //JM
   #define refreshRegisterLine(a)  {}
   #define clearScreen(a, b, c)    {}
-  #define toggleUserMode()        {}
+  #define showHideUserMode()      {}
   #define showIntegerMode()       {}
   #define showAngularMode()       {}
   #define showComplexMode()       {}
-  #define showPgmBegin()          {}
+  #define showHidePgmBegin()      {}
   #define showFracMode()          {}
   #define displayBugScreen(a)     { printf("\n-----------------------------------------------------------------------\n"); printf("%s\n", a); printf("\n-----------------------------------------------------------------------\n");}
   #define showRealComplexResult() {}
   #define showOverflowCarry()     {}
   #define showDateTime()          {}
-  #define showAlphaMode()         {}
+  #define showHideAlphaMode()     {}
   #define showHideUserMode()      {}
   #define showHideLowBattery()    {}
   #define JM_LAYOUT_1A               //JM Preferred layout
@@ -264,7 +264,7 @@ typedef int16_t calcRegister_t;
 //#define modulo(n, d)            ((n)%(d)<0 ? ((d)<0 ? (n)%(d) - (d) : (n)%(d) + (d)) : (n)%(d)) // modulo(n,d) = rmd(n,d) (+ |d| if rmd(n,d)<0)  thus the result is always >= 0
 #define modulo(n, d)            ((n)%(d)<0 ? (n)%(d)+(d) : (n)%(d))                             // This version works only if d > 0
 
-#define NUMBER_OF_CONSTANTS_39   175+2     //JM+2
+#define NUMBER_OF_CONSTANTS_39   176+2     //JM+2
 #define NUMBER_OF_CONSTANTS_51    30
 #define NUMBER_OF_CONSTANTS_1071   1
 #define NUMBER_OF_CONSTANTS_34     7
@@ -419,6 +419,8 @@ typedef int16_t calcRegister_t;
 #define TI_GEOMSAMPLSTDDEV     26
 #define TI_GEOMPOPLSTDDEV      27
 #define TI_GEOMSTDERR          28
+#define TI_SAVED               29
+#define TI_BACKUP_RESTORED     30
 #define TI_SHOW_REGISTER_BIG   99    //JM_SHOW temporary high number not to clash with new codes
 
 // Register browser mode
@@ -451,6 +453,13 @@ typedef int16_t calcRegister_t;
 // Combination / permutation
 #define CP_PERMUTATION 0
 #define CP_COMBINATION 1
+
+// Load mode
+#define LM_ALL          0
+#define LM_PROGRAMS     1
+#define LM_REGISTERS    2
+#define LM_SUMS         3
+#define LM_SYSTEM_STATE 4
 
 // Statistical sums
 #define NUMBER_OF_STATISTICAL_SUMS 23
@@ -584,11 +593,12 @@ extern realContext_t         ctxtReal51;   //   51 digits: used for 34 digits in
 extern realContext_t         ctxtReal75;   //   75 digits: used in SLVQ
 extern realContext_t         ctxtReal1071; // 1071 digits: used in radian angle reduction
 //extern realContext_t         ctxtReal2139; // 2139 digits: used for really big modulo
-extern uint16_t              flags[7];
+extern uint16_t              globalFlags[7];
 //#define TMP_STR_LENGTH              3000 //Move to beginning of file due to errors
 #define ERROR_MESSAGE_LENGTH           384 //512          //JMMAX Temporarily reduced - ORG:512.
 #define DISPLAY_VALUE_LEN               80
 #define MAX_NUMBER_OF_GLYPHS_IN_STRING 196
+#define NUMBER_OF_GLYPH_ROWS           106  //JM
 extern char                  tmpStr3000[TMP_STR_LENGTH];
 extern char                  errorMessage[ERROR_MESSAGE_LENGTH];
 extern char                  aimBuffer[AIM_BUFFER_LENGTH];
@@ -621,6 +631,7 @@ extern int16_t               lastAIntMenuPos;
 extern int16_t               showFunctionNameItem;
 extern int16_t               SHOWregis;                   //JMSHOW
 extern uint16_t              numberOfLocalFlags;
+extern uint16_t              glyphRow[NUMBER_OF_GLYPH_ROWS];
 extern dataBlock_t          *allLocalRegisterPointer;
 extern dataBlock_t          *allNamedVariablePointer;
 extern dataBlock_t          *statisticalSumsPointer;
@@ -651,8 +662,6 @@ extern uint8_t               roundingMode;
 extern uint8_t               calcMode;
 extern uint8_t               nextChar;
 extern uint8_t               displayStack;
-extern uint8_t               productSign;
-extern uint8_t               displayModeOverride;
 extern uint8_t               alphaCase;
 extern uint8_t               numLinesNumericFont;
 extern uint8_t               numLinesStandardFont;
@@ -681,7 +690,6 @@ extern bool_t                AlphaSelectionBufferTimerRunning;                  
 extern calcKey_t             kbd_usr[37];
 extern calcRegister_t        errorMessageRegisterLine;
 extern calcRegister_t        errorRegisterLine;
-extern uint16_t              row[100];
 extern uint64_t              shortIntegerMask;
 extern uint64_t              shortIntegerSignBit;
 extern uint64_t              systemFlags;
@@ -704,6 +712,7 @@ extern real39_t       const *angle180;
 extern real39_t       const *angle90;
 extern real39_t       const *angle45;
 extern pcg32_random_t        pcg32_global;
+extern const char            digits[17];
 #ifdef DMCP_BUILD
   extern bool_t              backToDMCP;
   extern uint32_t             nextTimerRefresh;   //dr
