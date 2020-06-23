@@ -314,6 +314,10 @@ void copyAllRegistersToClipboard(void) {
         case 20: strcpy(sumName, STD_SIGMA "(1/y" STD_SUP_2 ")       "); break;
         case 21: strcpy(sumName, STD_SIGMA "(x" STD_SUP_3 ")         "); break;
         case 22: strcpy(sumName, STD_SIGMA "(x" STD_SUP_4 ")         "); break;
+        case 23: strcpy(sumName,           "(x max)       "           ); break;
+        case 24: strcpy(sumName,           "(y max)       "           ); break;
+        case 25: strcpy(sumName,           "(x min)       "           ); break;
+        case 26: strcpy(sumName,           "(y min)       "           ); break;
         default: strcpy(sumName,           "?              "          );
       }
 
@@ -979,6 +983,8 @@ void resetTemporaryInformation(void) {
     case TI_GEOMMEANX_GEOMMEANY:
     case TI_HARMMEANX_HARMMEANY:
     case TI_RMSMEANX_RMSMEANY:
+    case TI_MAXX_MAXY:
+    case TI_MINX_MINY:
     case TI_SAMPLSTDDEV:
     case TI_POPLSTDDEV:
     case TI_STDERR:
@@ -1482,6 +1488,28 @@ void refreshRegisterLine(calcRegister_t regist) {
                 }
                 else if(regist == REGISTER_Y) {
                     strcpy(prefix, STD_y_BAR STD_SUB_R STD_SUB_M STD_SUB_S STD_SPACE_FIGURE "=");
+                    prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+                }
+            }
+
+            else if(temporaryInformation == TI_MAXX_MAXY) {
+                if(regist == REGISTER_X) {
+                    strcpy(prefix, "x" STD_SUB_M STD_SUB_A STD_SUB_X STD_SPACE_FIGURE "=");
+                    prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+                }
+                else if(regist == REGISTER_Y) {
+                    strcpy(prefix, "y" STD_SUB_M STD_SUB_A STD_SUB_X STD_SPACE_FIGURE "=");
+                    prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+                }
+            }
+
+            else if(temporaryInformation == TI_MINX_MINY) {
+                if(regist == REGISTER_X) {
+                    strcpy(prefix, "x" STD_SUB_M STD_SUB_I STD_SUB_N STD_SPACE_FIGURE "=");
+                    prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+                }
+                else if(regist == REGISTER_Y) {
+                    strcpy(prefix, "y" STD_SUB_M STD_SUB_I STD_SUB_N STD_SPACE_FIGURE "=");
                     prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
                 }
             }

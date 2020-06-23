@@ -66,6 +66,7 @@
 #include "magnitude.h"
 #include "mant.h"
 #include "max.h"
+#include "maxmin.h"
 #include "mean.h"
 #include "min.h"
 #include "minusOnePow.h"

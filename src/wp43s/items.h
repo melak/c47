@@ -526,8 +526,8 @@
 #define ITM_RCLMAX                     497
 #define ITM_RCLMIN                     498
 #define ITM_RDP                        499
-#define ITM_0500                       500
-#define ITM_0501                       501
+#define ITM_XMAX                       500
+#define ITM_XMIN                       501
 #define CST_41                         502
 #define ITM_RE                         503
 #define ITM_0504                       504

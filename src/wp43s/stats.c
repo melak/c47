@@ -55,6 +55,10 @@ void initStatisticalSums(void) {
     for(int32_t sum=0; sum<NUMBER_OF_STATISTICAL_SUMS; sum++) {
       realZero((real_t *)(statisticalSumsPointer + REAL_SIZE * sum));
     }
+  realCopy(const_minusInfinity, MAX_X);
+  realCopy(const_plusInfinity , MIN_X);
+  realCopy(const_minusInfinity, MAX_Y);
+  realCopy(const_plusInfinity , MIN_Y);
   }
 }
 
@@ -186,6 +190,22 @@ void fnSigma(uint16_t plusMinus) {
       // sigma 1/y
       realDivide(const_1, &y, &tmpReal1, realContext);
       realAdd(SIGMA_1onY, &tmpReal1, SIGMA_1onY, realContext);
+
+      // max x
+      if(realCompareGreaterThan(&x, MAX_X))
+        realCopy(&x, MAX_X);
+
+      // max y
+      if(realCompareGreaterThan(&y, MAX_Y))
+        realCopy(&y, MAX_Y);
+
+      // min x
+      if(realCompareLessThan(&x, MIN_X))
+        realCopy(&x, MIN_X);
+
+      // min y
+      if(realCompareLessThan(&y, MIN_Y))
+        realCopy(&y, MIN_Y);
     }
     else { // SIGMA-
       // n

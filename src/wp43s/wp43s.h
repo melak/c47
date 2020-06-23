@@ -342,17 +342,19 @@ typedef int16_t calcRegister_t;
 #define TI_WEIGHTEDMEANX       17
 #define TI_HARMMEANX_HARMMEANY 18
 #define TI_RMSMEANX_RMSMEANY   19
-#define TI_WEIGHTEDSAMPLSTDDEV 20
-#define TI_WEIGHTEDPOPLSTDDEV  21
-#define TI_WEIGHTEDSTDERR      22
-#define TI_SAMPLSTDDEV         23
-#define TI_POPLSTDDEV          24
-#define TI_STDERR              25
-#define TI_GEOMSAMPLSTDDEV     26
-#define TI_GEOMPOPLSTDDEV      27
-#define TI_GEOMSTDERR          28
-#define TI_SAVED               29
-#define TI_BACKUP_RESTORED     30
+#define TI_MAXX_MAXY           20
+#define TI_MINX_MINY           21
+#define TI_WEIGHTEDSAMPLSTDDEV 22
+#define TI_WEIGHTEDPOPLSTDDEV  23
+#define TI_WEIGHTEDSTDERR      24
+#define TI_SAMPLSTDDEV         25
+#define TI_POPLSTDDEV          26
+#define TI_STDERR              27
+#define TI_GEOMSAMPLSTDDEV     28
+#define TI_GEOMPOPLSTDDEV      29
+#define TI_GEOMSTDERR          30
+#define TI_SAVED               31
+#define TI_BACKUP_RESTORED     32
 
 // Register browser mode
 #define RBR_GLOBAL              0
@@ -393,7 +395,7 @@ typedef int16_t calcRegister_t;
 #define LM_SYSTEM_STATE 4
 
 // Statistical sums
-#define NUMBER_OF_STATISTICAL_SUMS 23
+#define NUMBER_OF_STATISTICAL_SUMS 27
 #define SIGMA_N      ((real_t *)(statisticalSumsPointer))
 #define SIGMA_X      ((real_t *)(statisticalSumsPointer + REAL_SIZE))
 #define SIGMA_Y      ((real_t *)(statisticalSumsPointer + REAL_SIZE *  2))
@@ -417,6 +419,10 @@ typedef int16_t calcRegister_t;
 #define SIGMA_1onY2  ((real_t *)(statisticalSumsPointer + REAL_SIZE * 20))
 #define SIGMA_X3     ((real_t *)(statisticalSumsPointer + REAL_SIZE * 21))
 #define SIGMA_X4     ((real_t *)(statisticalSumsPointer + REAL_SIZE * 22))
+#define MAX_X        ((real_t *)(statisticalSumsPointer + REAL_SIZE * 23))
+#define MAX_Y        ((real_t *)(statisticalSumsPointer + REAL_SIZE * 24))
+#define MIN_X        ((real_t *)(statisticalSumsPointer + REAL_SIZE * 25))
+#define MIN_Y        ((real_t *)(statisticalSumsPointer + REAL_SIZE * 26))
 
 #if defined(__arm__)
   #define FMT64U  "llu"

@@ -379,6 +379,8 @@ void fnGeometricMeanXY          (uint16_t unusedParamButMandatory) {}
 void fnWeightedMeanX            (uint16_t unusedParamButMandatory) {}
 void fnHarmonicMeanXY           (uint16_t unusedParamButMandatory) {}
 void fnRMSMeanXY                (uint16_t unusedParamButMandatory) {}
+void fnMAXXY                    (uint16_t unusedParamButMandatory) {}
+void fnMINXY                    (uint16_t unusedParamButMandatory) {}
 void fnWeightedSampleStdDev     (uint16_t unusedParamButMandatory) {}
 void fnWeightedPopulationStdDev (uint16_t unusedParamButMandatory) {}
 void fnWeightedStandardError    (uint16_t unusedParamButMandatory) {}
@@ -937,8 +939,8 @@ const item_t indexOfItems[] = {
 /*  497 */  { fnRecallMax,                 NOPARAM,                     "RCL" STD_UP_ARROW,                            "Max",                                         0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  498 */  { fnRecallMin,                 NOPARAM,                     "RCL" STD_DOWN_ARROW,                          "Min",                                         0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  499 */  { itemToBeCoded,               NOPARAM,                     "RDP",                                         "RDP",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED},
-/*  500 */  { itemToBeCoded,               NOPARAM,                     "0500",                                        "0500",                                        0,       0,       CAT_FREE, SLS_UNCHANGED},
-/*  501 */  { itemToBeCoded,               NOPARAM,                     "0501",                                        "0501",                                        0,       0,       CAT_FREE, SLS_UNCHANGED},
+/*  500 */  { fnMAXXY,                     NOPARAM,                     "x" STD_SUB_M STD_SUB_A STD_SUB_X,             "x" STD_SUB_M STD_SUB_A STD_SUB_X,             0,       0,       CAT_FNCT, SLS_ENABLED  },
+/*  501 */  { fnMINXY,                     NOPARAM,                     "x" STD_SUB_M STD_SUB_I STD_SUB_N,             "x" STD_SUB_M STD_SUB_I STD_SUB_N,             0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  502 */  { fnConstant,                  39,                          "r" STD_SUB_e,                                 "r" STD_SUB_e,                                 0,       0,       CAT_CNST, SLS_ENABLED  },
 /*  503 */  { fnRealPart,                  NOPARAM,                     "Re",                                          "Re",                                          0,       0,       CAT_FNCT, SLS_ENABLED  },
 /*  504 */  { itemToBeCoded,               NOPARAM,                     "0504",                                        "0504",                                        0,       0,       CAT_FREE, SLS_UNCHANGED},
