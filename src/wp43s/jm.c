@@ -436,12 +436,12 @@ void XEQMENU_Selection(uint16_t selection, char *line1, bool_t exec) {
     case  4:import_string_from_filename(line1,"XEQM04","XEQLBL 04 ~MP2281 TICKS \"2\" EXIT \"2281\" Y^X \"1\" - PRIME? X<>Y TICKS X<>Y - \"10\" / " ); displaywords(line1); execute_string(line1,exec); break;
     case  5:import_string_from_filename(line1,"XEQM05","XEQLBL 05 ~MP3217 TICKS \"2\" EXIT \"3217\" Y^X \"1\" - PRIME? X<>Y TICKS X<>Y - \"10\" / " ); displaywords(line1); execute_string(line1,exec); break;
     case  6:import_string_from_filename(line1,"XEQM06","XEQLBL 06 ~CUBE3 \"569936821221962380720\" EXIT \"3\" Y^X \"569936821113563493509\" CHS EXIT \"3\" Y^X \"472715493453327032\" CHS EXIT \"3\" Y^X + + "); displaywords(line1); execute_string(line1,exec); break;
-    case  7:import_string_from_filename(line1,"XEQM07","XEQLBL 07 ~LOOP TICKS STO \"01\" \"50\" 10^X \"4\" EXIT STO \"00\"  DROP LBL M1 NPRIME ENTER DEC \"00\" GTO_SZ M1 DROP TICKS RCL \"01\" - \"10\" / ALPHA \"SECONDS FOR FOUR PRIMES\" EXIT EXIT "); displaywords(line1); execute_string(line1,exec); break;
+    case  7:import_string_from_filename(line1,"XEQM07","XEQLBL 07 XEQM07 "); displaywords(line1); execute_string(line1,exec); break;
     case  8:import_string_from_filename(line1,"XEQM08","XEQLBL 08 XEQM08 "); displaywords(line1); execute_string(line1,exec); break;
     case  9:import_string_from_filename(line1,"XEQM09","XEQLBL 09 XEQM09 "); displaywords(line1); execute_string(line1,exec); break;
     case 10:import_string_from_filename(line1,"XEQM10","XEQLBL 10 XEQM10 "); displaywords(line1); execute_string(line1,exec); break;
     case 11:import_string_from_filename(line1,"XEQM11","XEQLBL 11 XEQM11 "); displaywords(line1); execute_string(line1,exec); break;
-    case 12:import_string_from_filename(line1,"XEQM12","XEQLBL 12 ~CUBE42 \"80538738812075974\" CHS EXIT \"80435758145817515\" EXIT \"12602123297335631\" EXIT  "); displaywords(line1); execute_string(line1,exec); break;
+    case 12:import_string_from_filename(line1,"XEQM12","XEQLBL 12 XEQM12 "); displaywords(line1); execute_string(line1,exec); break;
     case 13:import_string_from_filename(line1,"XEQM13","XEQLBL 13 XEQM13 "); displaywords(line1); execute_string(line1,exec); break;
     case 14:import_string_from_filename(line1,"XEQM14","XEQLBL 14 XEQM14 "); displaywords(line1); execute_string(line1,exec); break;
     case 15:import_string_from_filename(line1,"XEQM15","XEQLBL 15 XEQM15 "); displaywords(line1); execute_string(line1,exec); break;
@@ -469,7 +469,7 @@ void reset_jm_defaults(void) {
 
     //JM defaults vv: CONFIG STO/RCL
     SigFigMode = 0;                                              //JM SIGFIG Default 0.
-    eRPN = true;                 //TEMPORARY FOR TESTING         //JM eRPN Default. Create a flag to enable or disable eRPN. See bufferize.c
+    eRPN = false;                                                //JM eRPN Default. Create a flag to enable or disable eRPN. See bufferize.c
     HOME3 = true;                                                //JM HOME Default. Create a flag to enable or disable triple shift HOME3.
     ShiftTimoutMode = true;                                      //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER CANCEL.
     Home3TimerMode = true;                                       //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER MODE FOR HOME.

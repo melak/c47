@@ -1,5 +1,5 @@
 XEQLBL 13 TSTxr04     //RE-BINDS THE TEXT TO THE SOFTMENU
-                      //PROGRAM TO PLOT 20 PRIME NUMBER CALC TIMES ON A LINE
+                      //PROGRAM TO PLOT 40 EMPTY LOOP CALC TIMES ON A GRAPH
 CLSUM                 //CLEAR STATS DATA
            
 "40" STO "00"         //CHOOSE LOOP COUNTER STARTING AT nn=40 AND DECREMENTS TO 0
@@ -23,15 +23,14 @@ SUM+
 DSZ "00"              //DSZ, DECREMENT AND SKIP NEXT COMMAND IF RESULT WAS ZERO
 GTO M1                //THE GTO IS SKIPPED IF THE RESULT WAS 0          
 PLOT                  //PLOTS THE STATS DATA
-SNAP
 RETURN                //STOPS PROCESSING
 
 //-------------------------------------------------------------------------------------
-LBL M4                // X = 0 TO 19 COUNTER
-RCL "04" *            // X = 0 TO 19*r04
+LBL M4                // X = 0 TO 39 COUNTER
+RCL "04" *            // X = 0 TO 39*r04
 ENTER                 // RETAIN ACTUAL X FOR GRAPH
 10^X
-//NEXTP 
+//NEXTP               //REMOVED NEXT PRIME, TO TEST THE TIMES NEEDED BY ONLY THE LOOPING PGM
 STO "05"              //STO last prime just to check
 DROP
 

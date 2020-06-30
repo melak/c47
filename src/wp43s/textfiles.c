@@ -87,7 +87,7 @@ void stackregister_csv_out(int16_t reg_b, int16_t reg_e) {
 void fnP_All_Regs(uint16_t unusedParamButMandatory){
   #if defined (DMCP_BUILD)
   check_create_dir("DATA");  
-  make_date_filename(filename_csv,"/DATA/",".REGS.TSV");
+  make_date_filename(filename_csv,"DATA\\",".REGS.TSV");
   #endif
 
 
@@ -360,7 +360,7 @@ char line[100];               /* Line buffer */
 int16_t export_string_to_file(const char line1[TMP_STR_LENGTH]) {
 char dirfile[40];
     //Create file name
-    strcpy(dirfile,"/PROGRAMS/C43_LOG.TXT");
+    strcpy(dirfile,"PROGRAMS\\C43_LOG.TXT");
     sprintf(tmpStr3000,"%s%s",line1,CSV_NEWLINE);
     check_create_dir("PROGRAMS");      
     if(export_append_string_to_file(tmpStr3000, dirfile) != 0) {
@@ -379,7 +379,7 @@ void make_TSV_dir_name(void){
     if ((mem__32 == 0) || (tmp__32 > mem__32 + 120000)) {
       //Create file name
       check_create_dir("DATA");  
-      make_date_filename(filename_csv,"/DATA/",".STAT.TSV");
+      make_date_filename(filename_csv,"DATA\\",".STAT.TSV");
       check_create_dir("DATA");  
     }
     mem__32 = tmp__32;
@@ -409,15 +409,22 @@ char line[TMP_STR_LENGTH];        /* Line buffer */
 
     //Create file name
     check_create_dir("PROGRAMS");  
-    strcpy(filename_csv,"/PROGRAMS/");
+    strcpy(filename_csv,"PROGRAMS\\");
     strcat(filename_csv,filename);
     strcat(filename_csv,".TXT");
     
     /* Opens an existing file. */
-    fr = f_open(&fil, filename_csv, FA_READ | FA_OPEN_EXISTING);
-    if (fr) {
-      sprintf(line,"File read open error ID003--> %d    \n",fr);
-      print_linestr(line,false);
+    fr = f_open(&fil, filename_csv, FA_READ );   //| FA_OPEN_EXISTING
+    if (fr != FR_OK) {
+      if(fr == 4) {
+        sprintf(line,"File not found PGM--> %d    \n",fr);
+        print_linestr(line,false);
+        sprintf(line,"File: %s \n",filename_csv);
+        print_linestr(line,false);
+      } else {
+        sprintf(line,"File read open error ID004 PGM--> %d    \n",fr);        
+        print_linestr(line,false);
+      }
       f_close(&fil);
       //return (int)fr;
       strcpy(line1, fallback);
@@ -579,13 +586,17 @@ int16_t export_append_line(char *inputstring){
 
   fr = fputs(inputstring, outfile);
 
-  if (fr == 0) {
-    sprintf(line,"export_string_to_file: Write error--> %d %s\n",fr,inputstring);            
-    //print_linestr(line,false);
-    printf(line);
-    fclose(outfile);
-    return (int)fr;
-  } else {
+  #if !defined(__MINGW64__)
+    if (fr == 0) {
+      sprintf(line,"export_string_to_file: Write error--> %d %s\n",fr,inputstring);            
+      //print_linestr(line,false);
+      printf(line);
+      fclose(outfile);
+      return (int)fr;
+    } 
+    else
+  #endif
+  {
     printf("Exported to %s: %s\n",filename_csv,inputstring);
     fclose(outfile);
   }

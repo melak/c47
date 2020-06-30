@@ -74,13 +74,43 @@ All the below: because both Last x and savestack does not work due to multiple s
 //fnArg for real and longints in addition to the standard complex. Simply returns 0 angle
 
 void fnArg_all(uint16_t unusedParamButMandatory) {
+longInteger_t li;
 
-  if(getRegisterDataType(REGISTER_X) == dtReal34 || getRegisterDataType(REGISTER_X) == dtLongInteger) {       //JM vv add the obvious case that a number has 0 degrees. Why error for this.
+  if(getRegisterDataType(REGISTER_X) == dtReal34 || getRegisterDataType(REGISTER_X) == dtLongInteger) {       //JM vv add the obvious case that a number has 0/180 degrees. Why error for this.
 
-	reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, currentAngularMode);
-	realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
 
-	adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+    if(getRegisterDataType(REGISTER_X) == dtLongInteger) { 
+      convertLongIntegerRegisterToLongInteger(REGISTER_X, li);
+      if(longIntegerIsPositive(li) || longIntegerIsZero(li)) {
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
+        realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
+        convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), AM_DEGREE, currentAngularMode);
+        setRegisterAngularMode(REGISTER_X, currentAngularMode);
+      } 
+      else if(longIntegerIsNegative(li)) {
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
+        realToReal34(const_180, REGISTER_REAL34_DATA(REGISTER_X));
+        convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), AM_DEGREE, currentAngularMode);
+        setRegisterAngularMode(REGISTER_X, currentAngularMode);
+      }
+      longIntegerFree(li);
+    } 
+    else
+    if(getRegisterDataType(REGISTER_X) == dtReal34) { 
+      if(real34IsPositive(REGISTER_REAL34_DATA(REGISTER_X)) || real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))){
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
+        realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
+        convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), AM_DEGREE, currentAngularMode);
+        setRegisterAngularMode(REGISTER_X, currentAngularMode);
+      } 
+    else if(real34IsNegative(REGISTER_REAL34_DATA(REGISTER_X))) {
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
+        realToReal34(const_180, REGISTER_REAL34_DATA(REGISTER_X));
+        convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), AM_DEGREE, currentAngularMode);
+        setRegisterAngularMode(REGISTER_X, currentAngularMode);
+      }
+    }
+  	adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
   else 
   	fnArg(0);

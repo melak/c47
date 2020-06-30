@@ -1,5 +1,5 @@
 XEQLBL 18 PRIM_LP   //RE-BINDS THE TEXT TO THE SOFTMENU 18, i.e. G[FN6]
-//PROGRAM TO GENERATE FIRST THE 4 PRIMES AFTER 1E100//
+                    //PROGRAM TO DEMO DSZ AND GOTO. GET FIRST 4 PRIMES AFTER 1E100 TO STACK
 
 CLSTK                      /CLEAR STACK
 TICKS                      /GET CURRENT TIME IN 0.1 SECOND UNITS
@@ -7,20 +7,26 @@ STO "01"
         
 GTO M2        
 LBL M1                     //CREATE LOOPING LABEL M1 to M4 ONLY
-NPRIME        
+NEXTP                      //NEXT PRIME
 ENTER        
-DEC "00"        
-GTO_SZ M1                  //GTO_SZ does: GOTO LABEL IF RESULT OF DEC nn OR INC nn IN REG nn IS NOT ZERO
+DSZ "00"        
+GTO M1                     //DSZ GOTO LABEL IF RESULT OF DEC nn IS NOT ZERO
         
 DROP                       //DROPS EXTRA PRIME IN X
 TICKS                      //GET CLOCK STATUS
 RCL "01"                   //GET OLD CLOCK STATUS
 -                          //SUBTRACT
-"10" /                      //DIVIDE BY 10 TO GET SECONDS
+"10" /                     //DIVIDE BY 10 TO GET SECONDS
 
 ALPHA                      //CHANGE TO ALPHA MODE
-"SECONDS FOR FOUR PRIMES"  //SEND TEXT TO C43
+"TIME "  //SEND TEXT TO C43
 EXIT EXIT                  //EXIT FROM ALPHA MODE
+X<>Y
++
+ALPHA                      //CHANGE TO ALPHA MODE
+" SECONDS FOR FOUR PRIMES"  //SEND TEXT TO C43
+EXIT EXIT                  //EXIT FROM ALPHA MODE
++
 ALPHA                      //CHANGE TO ALPHA MODE
 "ARROW UP AND DOWN TO START SHOW"
 EXIT EXIT                  //SENT TO C43
