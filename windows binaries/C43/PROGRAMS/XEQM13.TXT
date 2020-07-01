@@ -1,0 +1,41 @@
+XEQLBL 13 TSTxr04     //RE-BINDS THE TEXT TO THE SOFTMENU
+                      //PROGRAM TO PLOT 40 EMPTY LOOP CALC TIMES ON A GRAPH
+CLSUM                 //CLEAR STATS DATA
+           
+"40" STO "00"         //CHOOSE LOOP COUNTER STARTING AT nn=40 AND DECREMENTS TO 0
+STO "02"              //LOOP COUNTER START VALUE
+   
+LBL M1                //CREATE LOOPING LABEL. FOUR LABELS AVAILABLE M1, M2, M3, M4   
+TICKS STO "01"        //GET CURRENT TIME IN 0.1 SECOND UNITS
+
+RCL "02"              //GET THE START VALUE OF THE LOOP COUNTER nn
+RCL "00" -            //REVERSE THE X RANGE TO 1 TO nn
+
+XEQ M4                //CALL SUBROUTINE TO PRODUCE Y AND X. NO NESTING POSSIBLE.
+
+TICKS                 //GET CLOCK STATUS
+RCL "01" -            //GET STORED CLOCK STATUS. SUBTRACT TO GET EXPIRED TIME
+"10" /                //DIVIDE BY 10 TO GET SECONDS
+
+X<>Y                  //TO ENSURE CORRECT ORDER FOR E+
+SUM+
+
+DSZ "00"              //DSZ, DECREMENT AND SKIP NEXT COMMAND IF RESULT WAS ZERO
+GTO M1                //THE GTO IS SKIPPED IF THE RESULT WAS 0          
+PLOT                  //PLOTS THE STATS DATA
+RETURN                //STOPS PROCESSING
+
+//-------------------------------------------------------------------------------------
+LBL M4                // X = 0 TO 39 COUNTER
+RCL "04" *            // X = 0 TO 39*r04
+ENTER                 // RETAIN ACTUAL X FOR GRAPH
+10^X
+//NEXTP               //REMOVED NEXT PRIME, TO TEST THE TIMES NEEDED BY ONLY THE LOOPING PGM
+STO "05"              //STO last prime just to check
+DROP
+
+RTN                   //RETURN TO MAIN PROGRAM
+
+END                   //OPTIONAL END OF PROCESSING MARKER. NOTHING AFTER THIS GETS PARSED.
+
+

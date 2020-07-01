@@ -1,14 +1,3 @@
-# WP43C
-
-This fork of the WP43S project is to make the user interface of the calculator closer to that of the HP42S, at least from the keyboard point of view. Additionally, it is to make it work on the DM42 hardware without a key change.
-
-Two options for the C43 are being developed:
-
-  Version L1 needs only a keyboard overlay for the yellow and blue shifted functions.
-
-  Version L42 (a.k.a. L2) needs no keyboard overlay as almost all DM42 yellow labels are maintained. On L42 the blue functions are provided on a soft menu.
-
-
 # WP43S
 
 This project is to develop firmware for a pocket calculator that is a super-set of the legendary HP-42S RPN Scientific.  

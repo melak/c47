@@ -1,0 +1,47 @@
+XEQLBL 18 PRIM_LP   //RE-BINDS THE TEXT TO THE SOFTMENU 18, i.e. G[FN6]
+                    //PROGRAM TO DEMO DSZ AND GOTO. GET FIRST 4 PRIMES AFTER 1E100 TO STACK
+
+CLSTK                      /CLEAR STACK
+TICKS                      /GET CURRENT TIME IN 0.1 SECOND UNITS
+STO "01"        
+        
+GTO M2        
+LBL M1                     //CREATE LOOPING LABEL M1 to M4 ONLY
+NEXTP                      //NEXT PRIME
+ENTER        
+DSZ "00"        
+GTO M1                     //DSZ GOTO LABEL IF RESULT OF DEC nn IS NOT ZERO
+        
+DROP                       //DROPS EXTRA PRIME IN X
+TICKS                      //GET CLOCK STATUS
+RCL "01"                   //GET OLD CLOCK STATUS
+-                          //SUBTRACT
+"10" /                     //DIVIDE BY 10 TO GET SECONDS
+
+ALPHA                      //CHANGE TO ALPHA MODE
+"TIME "  //SEND TEXT TO C43
+EXIT EXIT                  //EXIT FROM ALPHA MODE
+X<>Y
++
+ALPHA                      //CHANGE TO ALPHA MODE
+" SECONDS FOR FOUR PRIMES"  //SEND TEXT TO C43
+EXIT EXIT                  //EXIT FROM ALPHA MODE
++
+ALPHA                      //CHANGE TO ALPHA MODE
+"ARROW UP AND DOWN TO START SHOW"
+EXIT EXIT                  //SENT TO C43
+RETURN                     //STOPS EXECUTION
+
+
+//GOTO SUBROUTINES:
+//=================
+
+LBL M2                     //FOUR LABELS EXIST: M1, M2, M3, M4
+"100" 10^X                 //CREATE STARTING VALUE 1E100
+"4" EXIT                   //LOOP COUNTER IS IN r00. WILL EXEC FOR ITERATIONS 4, 3, 2, 1, and will skip from 0
+STO "00"               
+DROP                       //GET RID OF COUNTER IN X ON STACK
+GTO M1               
+               
+                          
+END                        //OPTIONAL END STATEMENT. NO PROCESSING BEYOND THIS.

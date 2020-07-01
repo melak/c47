@@ -1,0 +1,94 @@
+2020-06-30
+C43 Changes from the WP43S
+
+
+HP42S inspired:
+
+Primary and f key layout a reminder to HP42S and DM42.
+BASE menu with HEX, DEC, etc. and short integer shortcuts, and A-F.
+LastX on keyboard.
+Stack displays X..T have constant digit size.
+Settings in the MODE and DISP menus, duplicated in WP43S system flags.
+Setting status displayed on soft menu buttons, i.e. on/off, selected, or value.
+WP 43S system flags indicate current state and can be directly changed.
+
+Large digits where possible:
+
+SHOW displays large digits when possible. 
+Stack display always uses large digits for all numbers.
+SHOW changes to small font size for very long integers.
+SHOW and stack use small font size for alphanumeric text, due to limited large characters available.
+
+Shift savers:
+
+The 14 yellow math functions f[Σ+] through f[X<>Y] are accessible without shift by long press.
+Soft menu f and g items are accessible by long press of the FN key with an underline indicating the function selected.
+Double tap backspace does CLX.
+Long press backspace does CLSTK.
+Long press XEQ does the XEQM menu.
+With no soft menu present, FN keys do the yellow text underneath (I>, y^x, x^2, 10^x, e^x & x√y).
+With no soft menu present, Up/Dn goes to SHOW and scrolls through the registers X, Y,...L.
+Triple click shift button does the HOME menu.
+Long press shift button cycles f, g & HOME menu.
+
+Single shift f/g: 
+
+One press for f, two presses for g, three presses within the second for HOME.
+Alternative layout on the bezel plate with f on COS and g on TAN.
+
+KEYS menu:
+
+KEYS, new C43 soft menu for assigned keys, 
+Pre-set key assignment layouts with shift keys and alpha keys options.
+Pre-set key assignment layouts for DM42, V43, WP43S and C43 ALT key layouts.
+Σ+ key assignment in both normal and in user modes.
+
+XEQM menu:
+
+XEQM, new C43 soft menu, accessed by long press of XEQ.
+Custom menu with 18 user soft menu items.
+Configured by basic RPN script in 18 text files.
+Scripting includes GOTO, XEQ, DSZ & ISZ looping functions.
+Configuration by 18 text files in the PROGRAMS folder on the flash drive. 
+XEQM independent from WP 43S “MyMenu”, which will also be supported. 
+
+HOME menu:
+
+HOME, new C43 soft menu, accessed by shift key and g[7].
+HOME menu combines useful functions together in one menu.
+Four softmenu screens with useful interactive mode functions grouped together.
+SI prefix shortcut multipliers f, p, µ, m, k, M, G, T.
+Keyboard help: keyboard functions mirrored in soft menus in three ways.
+Useful also for DM42 without labels.
+
+STAT: 
+
+Σ+ entry stores 400 x,y pairs for plotting (16 digit reals to save space).
+Σ+ entry recorded in tab separated TSV files in the DATA folder on the flash drive.
+LISTXY function shows the last 10 x,y pairs entered.
+Σ+ key can be re-configured. Σ- key is replaced with I>. Both Σ+ and Σ-- are available in STAT menu.
+
+General:
+
+g[Dn] FLGS browser shows all 100 global flags at once.
+Up/Dn in flags browser cycles to the new STATUS screens.
+DISP: SIG n displays n+1 significant digits (eg. 𝛑/100 in SIG2 shows 0.031 4, compared to FIX2 which shows 0.03).
+DISP: UNIT n postfixes SI multipliers (f, p, µ, m, k, M, G, T) to the stack display (eg. 𝛑/100 in UNIT2 shows 31.4 m).
+Soft menus contain all functions, including those located on the keyboard.
+Intuitive grouping of binary/hex digits while entering numbers.
+Setting for large or small digit font.
+Double click on FN for g[FN].
+eRPN setting, like the new style RPN on HP20B and 30B (eRPN does not duplicate X upon entry, like RPL does).
+
+Error savers:
+
+>R & >P does not error if X contains a complex number, instead it sets the POLAR flag accordingly, i.e. changes RECT/POLAR mode.
+>I rounds reals and allows rounding of integers without error.
+Angle (arg) is allowed for reals or integer numbers without error.
+
+Functions:
+
+>I key added in place of Σ-, rounds and toggles between long and short integer types. 
+d.ms key on g[LOG] changed to .ms, which toggles between d.ms, h.ms and the current angular mode (not working yet).
+d.ms moved to MODE, to be together with DEG, RAD, etc.
+EE function menus including star/delta, sequence components, 3-phase impedances, all operating on either real or complex numbers. Requests for custom menus for other disciplines welcome.

@@ -7,16 +7,17 @@ c43.cmd
 c43.cmd.txt (this file)
 c43.reg
 c43.exe
-C43_StandardFont.ttf
+C43___StandardFont.ttf
 dm42l_L1.png
 c43_pre.css
 buildnote.txt
+PROGRAMS (note the directory with contents must be copied as is)
 
-Edit the c43.cmd file to contain reference to the correct folder, default being c:\C43\c43.exe
-Edit the c43.reg file to refer to the correct folder, default being c:\C43
+Edit the c43.cmd file to contain reference to the correct folder, the default folder being c:\C43\c43.exe
+Edit the c43.reg file to refer to the correct folder, the default being c:\C43
 Double click the C43.reg file, and confirm adding to the registry.
 
-Now, Calc should call the batch file c43.cmd, which will start the c43.exe simulator.
+Now, the Calc key on the PC keyboard should call the batch file c43.cmd, which will start the c43.exe simulator.
 
 Jaymos
 2020-05-20
