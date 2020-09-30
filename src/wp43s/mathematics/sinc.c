@@ -64,6 +64,50 @@ void fnSinc(uint16_t unusedParamButMandatory) {
 
 
 
+void fnSincpi(uint16_t unusedParamButMandatory) {            //JM vv
+  real34_t x;
+  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+
+  switch(getRegisterDataType(REGISTER_X)) {
+    case dtLongInteger:
+      if(longIntegerIsZeroRegister(REGISTER_X)) {
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
+        realToReal34(const_1, REGISTER_REAL34_DATA(REGISTER_X));
+      } else {
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
+        realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
+      }
+      adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
+      return;
+
+      break;
+
+    case dtReal34:
+      if(getRegisterAngularMode(REGISTER_X) == AM_NONE) {
+        real34ToIntegralValue(REGISTER_REAL34_DATA(REGISTER_X), &x, DEC_ROUND_DOWN);
+        real34Subtract(REGISTER_REAL34_DATA(REGISTER_X), &x , &x);
+        if(real34IsZero(&x)) {
+          reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
+          realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
+          adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
+          return;
+        }
+      }
+      if(getRegisterAngularMode(REGISTER_X) == AM_NONE) {
+        setRegisterAngularMode(REGISTER_X, AM_MULTPI);
+      }
+      break;
+    default: break;
+  }
+  
+  Sinc[getRegisterDataType(REGISTER_X)]();
+
+  adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
+}                                                            //JM ^^
+
+
+
+
 void sincComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t *resImag, realContext_t *realContext) {
   // sin(a + ib) = sin(a)*cosh(b) + i*cos(a)*sinh(b)
   // sinc (a + ib) = sin(a + ib) / (a + ib), for the allowable conditions

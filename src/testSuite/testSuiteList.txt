@@ -161,6 +161,7 @@ cos
 sin
 tan
 sinc
+sincpi
 
 arccosh
 arcsinh

@@ -1,0 +1,119 @@
+;*************************************************************
+;*************************************************************
+;**                                                         **
+;**                          sincpi                         **
+;**                                                         **
+;*************************************************************
+;*************************************************************
+In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
+Func: fnSincpi
+
+
+
+;=======================================
+; sincpi(Long Integer) --> Real34
+;=======================================
+In:  AM=RAD FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"5"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=Real:"0"
+
+In:  AM=RAD FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"3605"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"3605" RX=Real:"0"
+
+In:  AM=RAD FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"-3595"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"-3595" RX=Real:"0"
+
+In:  AM=RAD FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001" RX=Real:"0"
+
+In:  AM=RAD FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"-314159265358979323846264338327950300314159265358979323846264338327950"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"-314159265358979323846264338327950300314159265358979323846264338327950" RX=Real:"0"
+
+
+
+;=======================================
+; sinc(Time)
+;=======================================
+
+
+
+;=======================================
+; sinc(Date)
+;=======================================
+
+
+
+;=======================================
+; sinc(String) --> Error24
+;=======================================
+In:  FL_ASLIFT=0 RX=Stri:"String test"
+Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
+
+
+
+;=======================================
+; sinc(Real16 Matrix)
+;=======================================
+
+
+
+;=======================================
+; sinc(Complex16 Matrix)
+;=======================================
+
+
+
+;=======================================
+; sinc(Short Integer) --> Error24
+;=======================================
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"5#7"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"5#7"
+
+
+
+;=======================================
+; sinc(Real34) --> Real34
+;=======================================
+;In:  AM=RAD FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001"
+;Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.0001" RX=Real:"0.9999999835506594126919779728593888366342895938658835096197814403"
+
+;In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001":RAD
+;Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.0001":RAD RX=Real:"1"
+
+In:  AM=GRAD FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001":DEG
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.0001":DEG RX=Real:"0.999999999999492304300355562994232458671966591944724390947855"
+
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.0001" RX=Real:"0.9999999835506594126919779728593888366342895938658835096197814403"
+
+; NaN
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"NaN":RAD
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"NaN":RAD RX=Real:"NaN"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"NaN"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"NaN" RX=Real:"NaN"
+
+; Infinity
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf":DEG
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"inf":DEG RX=Real:"0"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf":MULTPI
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"inf":MULTPI RX=Real:"0"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"-inf":RAD
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-inf":RAD RX=Real:"0"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"inf" RX=Real:"0"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"inf" RX=Real:"0"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"-inf"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-inf" RX=Real:"0"
+
+
+;=======================================
+; sinc(Complex34) --> Complex34
+;=======================================
+In:  AM=RAD FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"6.2 i -7.6" RX=Cplx:"73.30765508782941569717089533225506 i -70.72657028341247985391812865164582"
