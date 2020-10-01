@@ -15,7 +15,7 @@
  */
 
 /********************************************//**
- * \file sinc.c
+ * \file sincpi.c
  ***********************************************/
 // Coded by JM, based on sin.c
 
@@ -23,67 +23,76 @@
 
 
 
-void (* const Sinc[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
-// regX ==> 1            2         3         4          5          6          7          8           9             10
-//          Long integer Real34    Complex34 Time       Date       String     Real34 mat Complex34 m Short integer ConfigData
-            sincLonI,    sincReal, sincCplx, sincError, sincError, sincError, sincRema,  sincCxma,   sincError,    sincError
+void (* const Sincpi[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+// regX ==> 1            2           3           4            5            6            7            8             9               10
+//          Long integer Real34      Complex34   Time         Date         String       Real34 mat   Complex34 m   Short integer   ConfigData
+            sincpiLonI,  sincpiReal, sincpiCplx, sincpiError, sincpiError, sincpiError, sincpiRema,  sincpiCxma,   sincpiError,    sincpiError
 };
 
 
 
 /********************************************//**
- * \brief Data type error in sinc
+ * \brief Data type error in sincpi
  *
  * \param void
  * \return void
  ***********************************************/
-void sincError(void) {
+void sincpiError(void) {
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-    sprintf(errorMessage, "cannot calculate Sinc for %s", getRegisterDataTypeName(REGISTER_X, true, false));
-    moreInfoOnError("In function fnSinc:", errorMessage, NULL, NULL);
+    sprintf(errorMessage, "cannot calculate Sincpi for %s", getRegisterDataTypeName(REGISTER_X, true, false));
+    moreInfoOnError("In function fnSincpi:", errorMessage, NULL, NULL);
   #endif
 }
 
 
 
 /********************************************//**
- * \brief regX ==> regL and sinc(regX) ==> regX
+ * \brief regX ==> regL and sincpi(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
  * \param[in] unusedParamButMandatory uint16_t
  * \return void
  ***********************************************/
-void fnSinc(uint16_t unusedParamButMandatory) {
+void fnSincpi(uint16_t unusedParamButMandatory) {
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
-  Sinc[getRegisterDataType(REGISTER_X)]();
+  Sincpi[getRegisterDataType(REGISTER_X)]();
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
 }
 
 
-
-void sincComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t *resImag, realContext_t *realContext) {
+void sincpiComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t *resImag, realContext_t *realContext) {
   // sin(a + ib) = sin(a)*cosh(b) + i*cos(a)*sinh(b)
-  // sinc (a + ib) = sin(a + ib) / (a + ib), for the allowable conditions
+  // sinc(a + ib) = sin(a + ib) / (a + ib), for the allowable conditions
   real_t sina, cosa, sinhb, coshb;
   real_t rr,sinReal;
   real_t ii,sinImag;
+  real_t rmdr;
 
 
 //  fnCvtFromCurrentAngularMode(AM_RADIAN);
 
   realCopy(real, &rr);
   realCopy(imag, &ii);
+  realDivideRemainder(&rr, const_1, &rmdr, realContext);
 
   if(realIsZero(&rr) && realIsZero(&ii)) {
     realCopy(const_1, resReal);
     realCopy(const_0, resImag);
   }
+  else
+  if(realIsZero(&rmdr) && realIsZero(&ii)) {
+    realCopy(const_0, resReal);
+    realCopy(const_0, resImag);
+  }
   else {
-    WP34S_Cvt2RadSinCosTan(real, AM_RADIAN, &sina, &cosa, NULL, realContext);
-    WP34S_SinhCosh(imag, &sinhb, &coshb, realContext);
+    realMultiply(&rr, const_pi, &rr, realContext);
+    realMultiply(&ii, const_pi, &ii, realContext);
+
+    WP34S_Cvt2RadSinCosTan(&rr, AM_RADIAN, &sina, &cosa, NULL, realContext);
+    WP34S_SinhCosh(&ii, &sinhb, &coshb, realContext);
 
     realMultiply(&sina, &coshb, resReal, realContext);
     realMultiply(&cosa, &sinhb, resImag, realContext);
@@ -96,39 +105,36 @@ void sincComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t
 
 
 
-void sincLonI(void) {
-  real_t x, sine;
+void sincpiLonI(void) {
 
-  convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
-
-  if(realIsZero(&x)) {
-    realCopy(const_1, &x);
+  if(longIntegerIsZeroRegister(REGISTER_X)) {
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
+    realToReal34(const_1, REGISTER_REAL34_DATA(REGISTER_X));
+  } else {
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
+    realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
   }
-  else {
-    longIntegerAngleReduction(REGISTER_X, AM_RADIAN, &x);
-    WP34S_Cvt2RadSinCosTan(&x, AM_RADIAN, &sine, NULL, NULL, &ctxtReal39);
-    realDivide(&sine, &x, &x, &ctxtReal39);
-  }
-
-  reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
 }
 
 
 
-void sincRema(void) {
+void sincpiRema(void) {
   fnToBeCoded();
 }
 
 
 
-void sincCxma(void) {
+void sincpiCxma(void) {
   fnToBeCoded();
 }
 
 
 
-void sincReal(void) {
+
+
+
+
+void sincpiReal(void) {
   if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(getSystemFlag(FLAG_SPCRES)) {
       realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
@@ -136,26 +142,31 @@ void sincReal(void) {
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        moreInfoOnError("In function sincReal:", "cannot divide a real34 by " STD_PLUS_MINUS STD_INFINITY " when flag D is not set", NULL, NULL);
+        moreInfoOnError("In function sincpiReal:", "cannot divide a real34 by " STD_PLUS_MINUS STD_INFINITY " when flag D is not set", NULL, NULL);
       #endif
       return;
     }
   }
 
   else {
-    real_t x, sine;
-    uint32_t registerAngularMode;
+    real_t x, xx, sine;
 
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+    realToIntegralValue(&x, &xx, DEC_ROUND_DOWN, &ctxtReal39);
+    realSubtract(&x, &xx , &xx, &ctxtReal39);
 
     if(realIsZero(&x)) {
       realCopy(const_1, &x);
     }
+    else
+    if(realIsZero(&xx)) {
+      realCopy(const_0, &x);
+    }
     else {
-      registerAngularMode = getRegisterAngularMode(REGISTER_X);
-      if(registerAngularMode != AM_NONE) {
-        convertAngleFromTo(&x, registerAngularMode, AM_RADIAN, &ctxtReal39);
+      if(getRegisterAngularMode(REGISTER_X) == AM_NONE) {
+        setRegisterAngularMode(REGISTER_X, AM_MULTPI);
       }
+      convertAngleFromTo(&x, getRegisterAngularMode(REGISTER_X), AM_RADIAN, &ctxtReal39);
       WP34S_Cvt2RadSinCosTan(&x, AM_RADIAN, &sine, NULL, NULL, &ctxtReal39);
       realDivide(&sine, &x, &x, &ctxtReal39);
     }
@@ -167,13 +178,13 @@ void sincReal(void) {
 
 
 
-void sincCplx(void) {
+void sincpiCplx(void) {
   real_t zReal, zImag;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &zReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &zImag);
 
-  sincComplex(&zReal, &zImag, &zReal, &zImag, &ctxtReal39);
+  sincpiComplex(&zReal, &zImag, &zReal, &zImag, &ctxtReal39);
 
   realToReal34(&zReal, REGISTER_REAL34_DATA(REGISTER_X));
   realToReal34(&zImag, REGISTER_IMAG34_DATA(REGISTER_X));

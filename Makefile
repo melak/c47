@@ -84,7 +84,7 @@ SRC_WP43S                = \
 		imaginaryPart.c integerPart.c invert.c lcm.c ln.c lnPOne.c log10.c logxy.c lnbeta.c \
 		log2.c magnitude.c mant.c max.c mean.c min.c minusOnePow.c modulo.c multiplication.c neighb.c parallel.c pcg_basic.c \
 		percent.c percentMRR.c percentPlusMG.c percentSigma.c percentT.c power.c prime.c \
-		random.c realPart.c remainder.c reToCx.c round.c roundi.c shiftDigits.c sign.c sin.c sinc.c sinh.c slvq.c square.c squareRoot.c \
+		random.c realPart.c remainder.c reToCx.c round.c roundi.c shiftDigits.c sign.c sin.c sinc.c sincpi.c sinh.c slvq.c square.c squareRoot.c \
 		subtraction.c swapRealImaginary.c tan.c tanh.c toPolar.c toRect.c ulp.c unitVector.c xthRoot.c\
 		variance.c wp34s.c) \
 	$(addprefix src/wp43s/logicalOps/, \

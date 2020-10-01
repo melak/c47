@@ -17,13 +17,13 @@
 /********************************************//**
  * \file sinc.h
  ***********************************************/
-// Coded by JM, based on sin.h
+// Coded by JM, based on sinc.h
 
-void fnSinc  (uint16_t unusedParamButMandatory);
-void sincError(void);
-void sincLonI (void);
-void sincRema (void);
-void sincCxma (void);
-void sincReal (void);
-void sincCplx (void);
-void sincComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t *resImag, realContext_t *realContext);
+void fnSincpi(uint16_t unusedParamButMandatory);
+void sincpiError(void);
+void sincpiLonI (void);
+void sincpiRema (void);
+void sincpiCxma (void);
+void sincpiReal (void);
+void sincpiCplx (void);
+void sincpiComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t *resImag, realContext_t *realContext);

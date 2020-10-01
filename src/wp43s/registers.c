@@ -970,7 +970,8 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
         else if(real34IsZero(REGISTER_REAL34_DATA(res))) {
           real34SetPositiveSign(REGISTER_REAL34_DATA(res));
         }
-        else if(real34IsInfinite(REGISTER_IMAG34_DATA(res))) {
+
+        if(real34IsInfinite(REGISTER_IMAG34_DATA(res))) {
           displayCalcErrorMessage(real34IsPositive(REGISTER_IMAG34_DATA(res)) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF , ERR_REGISTER_LINE, res);
         }
         else if(real34IsZero(REGISTER_IMAG34_DATA(res))) {

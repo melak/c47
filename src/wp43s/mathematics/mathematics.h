@@ -94,6 +94,7 @@
 #include "sign.h"
 #include "sin.h"
 #include "sinc.h"
+#include "sincpi.h"
 #include "sinh.h"
 #include "slvq.h"
 #include "square.h"
