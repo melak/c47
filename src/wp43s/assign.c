@@ -90,8 +90,8 @@ const calcKey_t kbd_std[37] = {
        
  {41,   ITM_ENTER,        KEY_COMPLEX,    -MNU_CPX,      ITM_ENTER,      ITM_ENTER,         ITM_NULL,        ITM_NULL,      ITM_ENTER    }, //JM
  {42,   ITM_XexY,         ITM_LASTX,       ITM_Rup,      CHR_ex,         CHR_M,             CHR_ex,          CHR_MU,        ITM_NULL     }, //JM
- {43,   ITM_CHS,         -MNU_MODE,       -MNU_EXP,      CHR_PLUS_MINUS, CHR_N,             CHR_PLUS_MINUS,  CHR_NU,        ITM_NULL     }, //JM
- {44,   ITM_EXPONENT,    -MNU_DSP,        -MNU_FIN,      ITM_NULL,       CHR_O,             CHR_UP_ARROW,    CHR_OMICRON,   ITM_NULL     }, //JM
+ {43,   ITM_CHS,         -MNU_MODE,     -MNU_STK,      CHR_PLUS_MINUS, CHR_N,             CHR_PLUS_MINUS,  CHR_NU,        ITM_NULL     }, //JM
+ {44,   ITM_EXPONENT,    -MNU_DSP,      -MNU_EXP,      ITM_NULL,       CHR_O,             CHR_UP_ARROW,    CHR_OMICRON,   ITM_NULL     }, //JM
  {45,   KEY_BACKSPACE,    KEY_UNDO,       -MNU_CLR,      KEY_BACKSPACE,  KEY_BACKSPACE,     KEY_UNDO,       -MNU_CLR,       KEY_BACKSPACE}, //JM
                   
  {51,   KEY_UP1,          KEY_BST,         ITM_RBR,      KEY_UP1,        KEY_UP1,           CHR_caseUP,     -MNU_ALPHA,     KEY_UP1      }, //JM
@@ -110,7 +110,7 @@ const calcKey_t kbd_std[37] = {
  {72,   CHR_1,            ITM_ASSIGN,     -MNU_ASN,      CHR_1,          CHR_X,             CHR_1,           CHR_XI,        CHR_1        }, //JM
  {73,   CHR_2,            KEY_USERMODE,   -MNU_LOOP,     CHR_2,          CHR_Y,             CHR_2,           CHR_UPSILON,   CHR_2        }, //JM
  {74,   CHR_3,           -MNU_PARTS,      -MNU_TEST,     CHR_3,          CHR_Z,             CHR_3,           CHR_ZETA,      CHR_3        }, //JM
- {75,   ITM_SUB,         -MNU_STK,        -MNU_ALPHAFN,  CHR_MINUS,      CHR_UNDERSCORE,    CHR_MINUS,       CHR_SAMPI,     ITM_SUB      }, //JM
+ {75,   ITM_SUB,       -MNU_FIN,        -MNU_ALPHAFN,  CHR_MINUS,      CHR_UNDERSCORE,    CHR_MINUS,       CHR_SAMPI,     ITM_SUB      }, //JM
 
  {81,   KEY_EXIT1,        ITM_OFF,        -MNU_PRINT,    KEY_EXIT1,      KEY_EXIT1,         ITM_OFF,         CHR_PRINTER,   KEY_EXIT1    }, //JM
  {82,   CHR_0,            ITM_VIEW,       ITM_TIMER,     CHR_0,          CHR_COLON,         CHR_0,          -MNU_ALPHA,     CHR_0        }, //JM
