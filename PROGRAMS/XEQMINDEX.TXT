@@ -12,7 +12,7 @@ XEQM12:Binet Fibonacci Plot;
 XEQM13:TRAPZ;
 XEQM16:Fibonacci Formulas;
 XEQM17:Plot random deviations from linear;
-XEQM18:CalculatorTest;
+XEQM18:ExponentialCurve;
 
 
 // C43 XEQM softkey index file 
