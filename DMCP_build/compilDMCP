@@ -23,4 +23,4 @@ make clean
 make -j8 --silent
 #make -j8 --debug
 
-mv build/WP43S.pgm build/WP43C.pgm
+#mv build/WP43S.pgm build/WP43C.pgm #done in makefile JM

@@ -1,8 +1,5 @@
 XEQM01:HELP;
 XEQM02:Battery usage plot;
-XEQM03:Mersenne Prime 2203;
-XEQM04:Mersenne Prime 2281;
-XEQM05:Mersenne Prime 3217;
 XEQM06:CUBEs3;
 XEQM07:Gudermannian;
 XEQM08:Pythagoras Hypotenuse;
@@ -12,7 +9,7 @@ XEQM12:Binet Fibonacci Plot;
 XEQM13:TRAPZ;
 XEQM16:Fibonacci Formulas;
 XEQM17:Plot random deviations from linear;
-XEQM18:CalculatorTest;
+XEQM18:ExponentialCurve;
 
 
 // C43 XEQM softkey index file 

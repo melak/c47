@@ -1,4 +1,4 @@
-8 Nov 2020 release pre-alpha REL46
+24 Nov 2020 release pre-alpha REL47
 
 
 
@@ -52,6 +52,8 @@ Notes:
 16. Try the new FIFO on all softmenus
 
 17. Try the STAST/PLOT menu system. DEMO data is availble. Scroll down using Dn.
+
+18. Try the key label changes!
 
 ---
 

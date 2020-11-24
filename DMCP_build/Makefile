@@ -164,6 +164,11 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 $(BUILD_DIR):
 	mkdir -p $@
 
+all:
+	-rsync -u $(BUILD_DIR)/WP43S.pgm $(BUILD_DIR)/WP43C.pgm 
+	-rsync -u $(BUILD_DIR)/WP43C.pgm ../DM42\ binary
+
+
 #######################################
 # clean up
 #######################################
