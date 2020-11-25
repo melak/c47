@@ -104,7 +104,7 @@ bool_t FN_handle_timed_out_to_EXEC;
 
 
 // Confirmation Y or N changed from original WP43S because the alpha keys order changed
-#define ITEM_CONF_Y CHR_2 
+#define ITEM_CONF_Y ITM_2 
 #define ITEM_CONF_N ITM_CHS
 
 // Define the second tagline

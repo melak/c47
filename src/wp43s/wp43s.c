@@ -255,10 +255,10 @@ void setupDefaults(void) {
          //JM vv note: Overwritten by fnReset
   // Initialization of user key assignments
   xcopy(kbd_usr, kbd_std, sizeof(kbd_std));
-  //kbd_usr[ 0].keyLblAim   = CHR_A_GRAVE;
-  //kbd_usr[ 0].fShiftedAim = CHR_A_GRAVE;
-  //kbd_usr[ 4].keyLblAim   = CHR_E_ACUTE;
-  //kbd_usr[ 4].fShiftedAim = CHR_E_ACUTE;
+  //kbd_usr[ 0].keyLblAim   = ITM_A_GRAVE;
+  //kbd_usr[ 0].fShiftedAim = ITM_A_GRAVE;
+  //kbd_usr[ 4].keyLblAim   = ITM_E_ACUTE;
+  //kbd_usr[ 4].fShiftedAim = ITM_E_ACUTE;
   //kbd_usr[18].fShifted    = -MNU_VARS;
   //kbd_usr[18].gShifted    = CST_54;
   //kbd_usr[19].fShifted    = ITM_SW;
