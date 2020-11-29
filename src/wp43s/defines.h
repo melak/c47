@@ -21,6 +21,8 @@
 #define SWAP_LAYOUTS    //JM SWAP THE BELOW TWO DEFINES TO HAVE THE DM42 VERSION ON SIMULATOR
 #undef  SWAP_LAYOUTS
 
+   #define BLUES_WHEN_SWAPPED        //JM Only applicable if SWAPLAYOUTS is defined. Otherwise ignored
+   #undef  BLUES_WHEN_SWAPPED
 
 //*********************************
 // JM VARIOUS OPTIONS
@@ -252,7 +254,10 @@
   #ifdef SWAP_LAYOUTS
       #define JM_LAYOUT_2_DM42_STRICT    //DM42 compatible layout. Temporary SWAP. Change here for screen picture.
       #undef  JM_LAYOUT_1A
-      #define JM_LAYOUT_SHOW_BLUES       //ONLY DEFINE IF BLUE MUST BE DISPLAYED. TEMPORARY FOR CREATING AN EMU FOR THE LAYOUT42
+      #undef  JM_LAYOUT_SHOW_BLUES       //ONLY DEFINE IF BLUE MUST BE DISPLAYED. TEMPORARY FOR CREATING AN EMU FOR THE LAYOUT42
+      #ifdef BLUES_WHEN_SWAPPED
+        #define JM_LAYOUT_SHOW_BLUES       //ONLY DEFINE IF BLUE MUST BE DISPLAYED. TEMPORARY FOR CREATING AN EMU FOR THE LAYOUT42
+      #endif
   #endif
 #endif
 
