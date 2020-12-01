@@ -18,7 +18,7 @@
  * \file arctanh.h
  ***********************************************/
 
-void fnArctanh   (uint16_t unusedParamButMandatory);
+void fnArctanh   (uint16_t unusedButMandatoryParameter);
 void arctanhError(void);
 void arctanhLonI (void);
 void arctanhRema (void);

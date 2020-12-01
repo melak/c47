@@ -52,23 +52,23 @@ void convertLongIntegerRegisterToReal34Register(calcRegister_t source, calcRegis
   longInteger_t lgInt;
 
   convertLongIntegerRegisterToLongInteger(source, lgInt);
-  longIntegerToAllocatedString(lgInt, tmpStr3000, TMP_STR_LENGTH);
+  longIntegerToAllocatedString(lgInt, tmpString, TMP_STR_LENGTH);
   longIntegerFree(lgInt);
   reallocateRegister(destination, dtReal34, REAL34_SIZE, AM_NONE);
-  stringToReal34(tmpStr3000, REGISTER_REAL34_DATA(destination));
+  stringToReal34(tmpString, REGISTER_REAL34_DATA(destination));
 }
 
 
-
+/* never used
 void convertLongIntegerRegisterToReal34(calcRegister_t source, real34_t *destination) {
   longInteger_t lgInt;
 
   convertLongIntegerRegisterToLongInteger(source, lgInt);
-  longIntegerToAllocatedString(lgInt, tmpStr3000, TMP_STR_LENGTH);
+  longIntegerToAllocatedString(lgInt, tmpString, TMP_STR_LENGTH);
   longIntegerFree(lgInt);
-  stringToReal34(tmpStr3000, destination);
+  stringToReal34(tmpString, destination);
 }
-
+*/
 
 
 void convertLongIntegerRegisterToReal(calcRegister_t source, real_t *destination, realContext_t *ctxt) {
@@ -82,8 +82,8 @@ void convertLongIntegerRegisterToReal(calcRegister_t source, real_t *destination
 
 
 void convertLongIntegerToReal(longInteger_t source, real_t *destination, realContext_t *ctxt) {
-  longIntegerToAllocatedString(source, tmpStr3000, TMP_STR_LENGTH);
-  stringToReal(tmpStr3000, destination, ctxt);
+  longIntegerToAllocatedString(source, tmpString, TMP_STR_LENGTH);
+  stringToReal(tmpString, destination, ctxt);
 }
 
 
@@ -94,15 +94,15 @@ void convertLongIntegerToShortIntegerRegister(longInteger_t lgInt, uint32_t base
     *(REGISTER_SHORT_INTEGER_DATA(destination)) = 0;
   }
   else {
-    #ifdef DMCP_BUILD // 32 bits
-      uint64_t i64 = *(uint32_t *)(lgInt->_mp_d);
-      if(abs(lgInt->_mp_size > 1)) {
-        i64 |= (int64_t)(*(((uint32_t *)(lgInt->_mp_d)) + 1)) << 32;
+    #ifdef OS32BIT // 32 bit
+      uint64_t u64 = *(uint32_t *)(lgInt->_mp_d);
+      if(abs(lgInt->_mp_size) > 1) {
+        u64 |= (int64_t)(*(((uint32_t *)(lgInt->_mp_d)) + 1)) << 32;
       }
-      *(REGISTER_SHORT_INTEGER_DATA(destination)) = i64 & shortIntegerMask;
-    #else // 64 bits
+      *(REGISTER_SHORT_INTEGER_DATA(destination)) = u64 & shortIntegerMask;
+    #else // 64 bit
       *(REGISTER_SHORT_INTEGER_DATA(destination)) = *(uint64_t *)(lgInt->_mp_d) & shortIntegerMask;
-    #endif
+    #endif // OS32BIT
     if(longIntegerIsNegative(lgInt)) {
       *(REGISTER_SHORT_INTEGER_DATA(destination)) = WP34S_intChs(*(REGISTER_SHORT_INTEGER_DATA(destination)));
     }
@@ -362,17 +362,17 @@ void realToUInt32(const real_t *re, enum rounding mode, uint32_t *value32, bool_
 
   *overflow = false;
 
-  #ifdef DMCP_BUILD // 32 bits
+  #ifdef OS32BIT // 32 bit
     *value32 = (lgInt->_mp_size == 0 ? 0 : lgInt->_mp_d[0]);
     if(sign || lgInt->_mp_size > 1) {
       *overflow = true;
     }
-  #else // 64 bits
+  #else // 64 bit
     *value32 = (lgInt->_mp_size == 0 ? 0 : lgInt->_mp_d[0] & 0x00000000ffffffffULL);
     if(sign || lgInt->_mp_size > 1 || lgInt->_mp_d[0] & 0xffffffff00000000ULL) {
       *overflow = true;
     }
-  #endif
+  #endif // OS32BIT
 
   longIntegerFree(lgInt);
 }

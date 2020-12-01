@@ -41,7 +41,7 @@ void realPartError(void) {
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     sprintf(errorMessage, "cannot calculate Re for %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnRealPart:", errorMessage, NULL, NULL);
-  #endif
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 }
 
 
@@ -50,10 +50,10 @@ void realPartError(void) {
  * \brief regX ==> regL and Re(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnRealPart(uint16_t unusedParamButMandatory) {
+void fnRealPart(uint16_t unusedButMandatoryParameter) {
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
   realPart[getRegisterDataType(REGISTER_X)]();
@@ -71,11 +71,11 @@ void realPartCxma(void) {
 
 
 void realPartCplx(void) {
-  real34_t realPart;
+  real34_t rp;
 
-  real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &realPart);
+  real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &rp);
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, AM_NONE);
-  real34Copy(&realPart, REGISTER_REAL34_DATA(REGISTER_X));
+  real34Copy(&rp, REGISTER_REAL34_DATA(REGISTER_X));
 }
 
 

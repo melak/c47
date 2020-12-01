@@ -52,12 +52,23 @@ else
 	CFLAGS += -O2
 endif
 
-ifeq ($(RASPBERRY),YES)
-        CFLAGS += -Wextra -Wall -std=c11 -DPC_BUILD -MMD -DRASPBERRY
-else
-        CFLAGS += -Wextra -Wall -std=c11 -DPC_BUILD -MMD -m64 -fshort-enums
+ifeq ($(RASPBERRY),YES32)
+        CFLAGS += -Wextra -Wall -std=c11 -DPC_BUILD -DOS32BIT -DRASPBERRY -MMD
+endif
+
+ifeq ($(RASPBERRY),YES64)
+        CFLAGS += -Wextra -Wall -std=c11 -DPC_BUILD -DOS64BIT -DRASPBERRY -MMD -fshort-enums
+endif
+
+ifeq ($(RASPBERRY),NO32)
+        CFLAGS += -Wextra -Wall -std=c11 -DPC_BUILD -DOS32BIT -MMD
+endif
+
+ifeq ($(RASPBERRY),NO64)
+        CFLAGS += -Wextra -Wall -std=c11 -DPC_BUILD -DOS64BIT -MMD -fshort-enums -m64
         LDFLAGS += -m64
 endif
+
 CFLAGS += `pkg-config --cflags freetype2` `pkg-config --cflags gtk+-3.0`
 
 LDFLAGS += -lgmp -lm `pkg-config --libs freetype2` `pkg-config --libs gtk+-3.0`
@@ -87,6 +98,8 @@ SRC_WP43S                = \
 		random.c realPart.c remainder.c reToCx.c round.c roundi.c shiftDigits.c sign.c sin.c sinc.c sincpi.c sinh.c slvq.c square.c squareRoot.c \
 		subtraction.c swapRealImaginary.c tan.c tanh.c toPolar.c toRect.c ulp.c unitVector.c xthRoot.c\
 		variance.c wp34s.c) \
+	$(addprefix src/wp43s/programming/, \
+		decode.c lblGtoXeq.c manage.c nextStep.c) \
 	$(addprefix src/wp43s/logicalOps/, \
 		and.c countBits.c mask.c nand.c nor.c not.c or.c rotateBits.c setClearFlipBits.c xnor.c xor.c) \
 	$(addprefix src/wp43s/browsers/, \
@@ -158,6 +171,7 @@ mrproper: clean_all
 	rm -f $(TESTTTF2RASTERFONTS_APP)
 	rm -f $(WP43S_APP)
 	rm -f $(TESTSUITE_APP)
+	rm -f gmon.out
 
 
 clean_decNumberICU:

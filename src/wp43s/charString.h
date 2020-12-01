@@ -27,3 +27,4 @@ void     codePointToUtf8  (uint32_t codePoint, uint8_t *utf8);
 uint32_t utf8ToCodePoint  (const uint8_t *utf8, uint32_t *codePoint);
 void     stringToUtf8     (const char *str, uint8_t *utf8);
 void     utf8ToString     (const uint8_t *utf8, char *str);
+void    *xcopy            (void *dest, const void *source, int n);

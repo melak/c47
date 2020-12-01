@@ -37,7 +37,7 @@
  #include "decDouble.h"
  #include "decQuad.h"
  #include "decNumberWrappers.h"
-#endif
+#endif // (IBM_DECIMAL == 1)
 
 realContext_t ctxtReal34, ctxtReal39, ctxtReal51, ctxtReal1071;
 
@@ -383,10 +383,10 @@ void generateAllConstants(void) {
   #if (MMHG_PA_133_3224 == 1)
     generateConstantArray("MmhgToPa",    "+1.333224000000000000000000000000000000000000000000000000e+02"); // cnst124      pascal = mm.Hg × 133.3224
     generateConstantArray("InhgToPa",    "+3.386388960000000000000000000000000000000000000000000000e+03"); // cnst125      pascal = in.Hg × 133.3224 × 25.4
-  #else
+  #else // (MMHG_PA_133_3224 == 0)
     generateConstantArray("MmhgToPa",    "+1.333223874150000000000000000000000000000000000000000000e+02"); // cnst124      pascal = mm.Hg × 13.5951 × 9.80665
     generateConstantArray("InhgToPa",    "+3.386388640341000000000000000000000000000000000000000000e+03"); // cnst125      pascal = in.Hg × 13.5951 × 9.80665 × 2.54
-  #endif
+  #endif // (MMHG_PA_133_3224 == 1)
   generateConstantArray("PsiToPa",       "+6.894757293168361336722673445346890693781387562775125550e+03"); // cnst126      pascal = psi × 0.45359237 × 9.80665 / 0.0254²
   generateConstantArray("BarToPa",       "+1.000000000000000000000000000000000000000000000000000000e+05"); // cnst127      pascal = bar  × 100000
   generateConstantArray("AtmToPa",       "+1.013250000000000000000000000000000000000000000000000000e+05"); // cnst128      pascal = atm × 101325
@@ -724,23 +724,23 @@ void generateAllConstants(void) {
 
 
 #ifdef __APPLE__
-int main(int argc, char* argv[]) {
-    // we take the directory where the application is as the root for this application.
-    // in argv[0] is the application itself. We strip the name of the app by searching for the last '/':
-    if (argc>=1) {
-      char *curdir = malloc(1000);
-      // find last /:
-      char *s = strrchr(argv[0], '/');
-      if (s != 0) {
-        // take the directory before the appname:
-        strncpy(curdir, argv[0], s-argv[0]);
-        chdir(curdir);
-        free(curdir);
+  int main(int argc, char* argv[]) {
+      // we take the directory where the application is as the root for this application.
+      // in argv[0] is the application itself. We strip the name of the app by searching for the last '/':
+      if (argc>=1) {
+        char *curdir = malloc(1000);
+        // find last /:
+        char *s = strrchr(argv[0], '/');
+        if (s != 0) {
+          // take the directory before the appname:
+          strncpy(curdir, argv[0], s-argv[0]);
+          chdir(curdir);
+          free(curdir);
+        }
       }
-    }
-#else
-int main(void) {
-#endif
+#else // !__APPLE__
+  int main(void) {
+#endif // __APPLE__
 
   decContextDefault(&ctxtReal34,   DEC_INIT_DECQUAD);
   decContextDefault(&ctxtReal39,   DEC_INIT_DECQUAD);

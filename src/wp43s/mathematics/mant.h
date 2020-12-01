@@ -18,7 +18,7 @@
  * \file mant.h
  ***********************************************/
 
-void fnMant   (uint16_t unusedParamButMandatory);
+void fnMant   (uint16_t unusedButMandatoryParameter);
 void mantError(void);
 void mantLonI (void);
 void mantReal (void);

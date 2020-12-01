@@ -18,7 +18,7 @@
  * \file round.h
  ***********************************************/
 
-void fnRound   (uint16_t unusedParamButMandatory);
+void fnRound   (uint16_t unusedButMandatoryParameter);
 void roundError(void);
 void roundLonI (void);
 void roundTime (void);

@@ -25,7 +25,7 @@
  * \brief regX ==> regL and SDL(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnSdl(uint16_t numberOfShifts) {
@@ -43,7 +43,7 @@ void fnSdl(uint16_t numberOfShifts) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot SDL %s", getRegisterDataTypeName(REGISTER_X, true, false));
       moreInfoOnError("In function fnSdl:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
@@ -53,7 +53,7 @@ void fnSdl(uint16_t numberOfShifts) {
  * \brief regX ==> regL and SDR(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnSdr(uint16_t numberOfShifts) {
@@ -72,7 +72,7 @@ void fnSdr(uint16_t numberOfShifts) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot SDR %s", getRegisterDataTypeName(REGISTER_X, true, false));
       moreInfoOnError("In function fnSdr:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 

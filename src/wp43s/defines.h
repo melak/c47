@@ -117,7 +117,9 @@
 #define NUMBER_OF_ERROR_CODES                     37
 
 #define NUMBER_OF_GLOBAL_FLAGS                   112
-#define NUMBER_OF_LOCAL_FLAGS                     16 // Could be 32 because 32 bits are available
+#define FIRST_LOCAL_FLAG                         112 // There are 112 global flag from 0 to 111
+#define NUMBER_OF_LOCAL_FLAGS                     16 // Could be  32 because 32 bits are available
+#define LAST_LOCAL_FLAG                          128 // Could be 144 because 32 bits are available
 
 // Global flags
 #define FLAG_X                                   100
@@ -136,13 +138,13 @@
 // System flags
 // Bit 15 (MSB) is always set for a system flag
 // If bit 14 is set the system flag is read only for the user
-#define FLAG_TDM24                            0x8000
-#define FLAG_YMD                              0xc001
-#define FLAG_DMY                              0xc002
-#define FLAG_MDY                              0xc003
+#define FLAG_TDM24                            0x8000 // The system flags
+#define FLAG_YMD                              0xc001 // MUST be in the same
+#define FLAG_DMY                              0xc002 // order as the items
+#define FLAG_MDY                              0xc003 // in items.c and items.h
 #define FLAG_CPXRES                           0x8004
-#define FLAG_CPXj                             0x8005
-#define FLAG_POLAR                            0x8006
+#define FLAG_CPXj                             0x8005 // And TDM24 MUST be
+#define FLAG_POLAR                            0x8006 // the first.
 #define FLAG_FRACT                            0x8007
 #define FLAG_PROPFR                           0x8008
 #define FLAG_DENANY                           0x8009
@@ -242,6 +244,7 @@
 #define REGISTER_J                               110
 #define REGISTER_K                               111
 #define FIRST_LOCAL_REGISTER                     112 // There are 112 global registers from 0 to 111
+#define LAST_LOCAL_REGISTER                      210 // There are maximum 99 local registers from 112 to 210 (.00 to .98)
 #define FIRST_NAMED_VARIABLE                    1000
 #define FIRST_SAVED_STACK_REGISTER              2000
 #define SAVED_REGISTER_X                        2000
@@ -281,12 +284,15 @@
 #define TEMPORARY_INFO_OFFSET                     10 // Vertical offset for temporary informations. I find 4 looks better
 #define REGISTER_LINE_HEIGHT                      36 //
 
+#define MS_INIT                                    0 // Initializes the softmenu stack
+#define MS_PUSH                                    1 // Pushes the softmenu on the stack
+
 #define Y_POSITION_OF_REGISTER_T_LINE             24 // 135 - REGISTER_LINE_HEIGHT*(registerNumber - REGISTER_X)
 #define Y_POSITION_OF_REGISTER_Z_LINE             60
 #define Y_POSITION_OF_REGISTER_Y_LINE             96
 #define Y_POSITION_OF_REGISTER_X_LINE            132
 
-#define MY_ALPHA_MENU                              0  // This is the index of the MyAlpha   softmenu in the softmenu[] array
+#define NUMBER_OF_DYNAMIC_SOFTMENUS               15
 #define SOFTMENU_HEIGHT                           23
 
 // Horizontal offsets in the status bar
@@ -315,10 +321,10 @@
     #define LINEBREAK                         "\n\r"
   #elif defined(__APPLE__)
     #define LINEBREAK                         "\r\n"
-  #else
+  #else // Unsupported OS
     #error Only Linux, MacOS, and Windows MINGW64 are supported for now
-  #endif
-#endif
+  #endif // OS
+#endif // PC_BUILD
 
 #define NUMBER_OF_DISPLAY_DIGITS                  16
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
@@ -381,21 +387,25 @@
 #define RM_CEIL                                    5
 #define RM_FLOOR                                   6
 
-// Calc mode 4 bits
+// Calc mode 5 bits
 #define CM_NORMAL                                  0 // Normal operation
 #define CM_AIM                                     1 // Alpha input mode
-#define CM_TAM                                     2 // Temporary input mode
+#define CM_TAM                                     2 // Temporary alpha mode
 #define CM_NIM                                     3 // Numeric input mode
 #define CM_ASM                                     4 // Alpha selection in FCNS, MENU, and CNST menu
-#define CM_ASM_OVER_TAM                            5 // Alpha selection for system flags selection in TAM
-#define CM_ASM_OVER_AIM                            6 // Alpha selection for system flags selection in TAM
-#define CM_ASSIGN                                  7 // Assign mode
-#define CM_REGISTER_BROWSER                        8 // Register browser
-#define CM_FLAG_BROWSER                            9 // Flag browser
-#define CM_FONT_BROWSER                           10 // Font browser
-#define CM_ERROR_MESSAGE                          11 // Error message in one of the register lines
-#define CM_BUG_ON_SCREEN                          12 // Bug message on screen
-#define CM_CONFIRMATION                           13 // Waiting for confirmation or canceling
+#define CM_ASM_OVER_TAM                            5 // Alpha selection in TAM
+#define CM_ASM_OVER_TAM_OVER_PEM                   6 // Alpha selection in TAM over PEM
+#define CM_ASM_OVER_AIM                            7 // Alpha selection in AIM
+#define CM_ASM_OVER_PEM                            8 // Alpha selection in PEM
+#define CM_TAM_OVER_PEM                            9 // Temporary alpha mode when PEM is active
+#define CM_ASSIGN                                 10 // Assign mode
+#define CM_REGISTER_BROWSER                       11 // Register browser
+#define CM_FLAG_BROWSER                           12 // Flag browser
+#define CM_FONT_BROWSER                           13 // Font browser
+#define CM_ERROR_MESSAGE                          14 // Error message in one of the register lines
+#define CM_BUG_ON_SCREEN                          15 // Bug message on screen
+#define CM_CONFIRMATION                           16 // Waiting for confirmation or canceling
+#define CM_PEM                                    17 // Program entry mode
 
 // Next character in AIM 2 bits
 #define NC_NORMAL                                  0
@@ -414,7 +424,8 @@
 #define TM_FLAGW                               10005
 #define TM_STORCL                              10006
 #define TM_SHUFFLE                             10007
-#define TM_CMP                                 10008 // TM_CMP must be the last in this list
+#define TM_LABEL                               10008
+#define TM_CMP                                 10009 // TM_CMP must be the last in this list
 
 // NIM number part
 #define NP_EMPTY                                   0
@@ -485,6 +496,7 @@
 #define ASM_SYFL                                   4
 #define ASM_AINT                                   5
 #define ASM_aint                                   6
+#define ASM_PROG                                   7
 
 // String comparison type
 #define CMP_CLEANED_STRING_ONLY                    1
@@ -535,9 +547,6 @@
 #define SIGMA_YMIN   ((real_t *)(statisticalSumsPointer + REAL_SIZE * 25))
 #define SIGMA_YMAX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * 26))
 
-#define TMP_STR_LENGTH                          3000
-#define ERROR_MESSAGE_LENGTH                     512
-#define DISPLAY_VALUE_LEN                         80
 #define MAX_NUMBER_OF_GLYPHS_IN_STRING           196
 #define NUMBER_OF_GLYPH_ROWS                     100 // Used in the font browser application
 
@@ -549,7 +558,42 @@
 
 #define CONFIG_SIZE            TO_BLOCKS(sizeof(dtConfigDescriptor_t))
 
+// Type of constant stored in a program
+#define BINARY_SHORT_INTEGER                       1
+#define BINARY_LONG_INTEGER                        2
+#define BINARY_REAL34                              3
+#define BINARY_ANGLE34                             4
+#define BINARY_COMPLEX34                           5
+#define BINARY_DATE                                6
+#define BINARY_TIME                                7
+#define STRING_SHORT_INTEGER                       8
+#define STRING_LONG_INTEGER                        9
+#define STRING_REAL34                             10
+#define STRING_ANGLE34                            11
+#define STRING_COMPLEX34                          12
+#define STRING_TIME                               13
+#define STRING_DATE                               14
 
+// OP parameter special values
+#define VALUE_0                                  251
+#define VALUE_1                                  252
+#define STRING_LABEL_VARIABLE                    253
+#define INDIRECT_REGISTER                        254
+#define INDIRECT_VARIABLE                        255
+
+// OP parameter type
+#define PARAM_DECLARE_LABEL                        1
+#define PARAM_LABEL                                2
+#define PARAM_REGISTER                             3
+#define PARAM_FLAG                                 4
+#define PARAM_NUMBER                               5
+#define PARAM_COMPARE                              6
+
+
+#ifndef DMCP_BUILD
+  #define LCD_SET_VALUE                            0 // Black pixel
+  #define LCD_EMPTY_VALUE                        255 // White (or empty) pixel
+#endif // DMCP_BUILD
 
 
 //******************************
@@ -586,7 +630,12 @@
 #define RADIX34_MARK_CHAR                    (getSystemFlag(FLAG_DECIMP) ? '.'       : ',')
 #define RADIX34_MARK_STRING                  (getSystemFlag(FLAG_DECIMP) ? "."       : ",")
 #define PRODUCT_SIGN                         (getSystemFlag(FLAG_MULTx)  ? STD_CROSS : STD_DOT)
+#define clearScreen()                        lcd_fill_rect(0, 0, SCREEN_WIDTH, 240, LCD_SET_VALUE)
 
+#ifdef DMCP_BUILD
+  #define setBlackPixel(x, y)                bitblt24(x, 1, y, 1, BLT_OR,   BLT_NONE)
+  #define setWhitePixel(x, y)                bitblt24(x, 1, y, 1, BLT_ANDN, BLT_NONE)
+#endif // DMCP_BUILD
 
 //************************
 //* Macros for debugging *

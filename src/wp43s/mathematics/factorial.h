@@ -18,7 +18,7 @@
  * \file factorial.h
  ***********************************************/
 
-void fnFactorial(uint16_t unusedParamButMandatory);
+void fnFactorial(uint16_t unusedButMandatoryParameter);
 void factError  (void);
 void factLonI   (void);
 void factShoI   (void);

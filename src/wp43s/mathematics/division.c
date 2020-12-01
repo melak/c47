@@ -42,7 +42,7 @@ void (* const division[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYP
 /********************************************//**
  * \brief Data type error in division
  *
- * \param[in] unusedParamButMandatory
+ * \param[in] unusedButMandatoryParameter
  * \return void
  ***********************************************/
 void divError(void) {
@@ -51,7 +51,7 @@ void divError(void) {
     sprintf(errorMessage, "cannot divide %s", getRegisterDataTypeName(REGISTER_Y, true, false));
     sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "by %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnDivide:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
-  #endif
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 }
 
 
@@ -60,10 +60,10 @@ void divError(void) {
  * \brief regX ==> regL and regY ÷ regX ==> regX
  * Drops Y, enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory
+ * \param[in] unusedButMandatoryParameter
  * \return void
  ***********************************************/
-void fnDivide(uint16_t unusedParamButMandatory) {
+void fnDivide(uint16_t unusedButMandatoryParameter) {
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
   division[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
@@ -180,7 +180,7 @@ void divLonILonI(void) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function divLonILonI:", "cannot divide a long integer by 0", NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
   else {
     longInteger_t y, quotient, remainder;
@@ -231,7 +231,7 @@ void divLonIShoI(void) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function divLonIShoI:", "cannot divide a long integer by 0", NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
   else {
     longIntegerDivideQuotientRemainder(a, c, a, c);
@@ -261,7 +261,7 @@ void divShoILonI(void) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function divShoILonI:", "cannot divide a short integer by 0", NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
   else {
     longIntegerDivideQuotientRemainder(a, c, a, c);
@@ -295,7 +295,7 @@ void divLonIReal(void) {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function divLonIReal:", "cannot divide 0 by 0", NULL, NULL);
-        #endif
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
     }
     else {
@@ -306,7 +306,7 @@ void divLonIReal(void) {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function divLonIReal:", "cannot divide a long integer by 0", NULL, NULL);
-        #endif
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
     }
   }
@@ -342,7 +342,7 @@ void divRealLonI(void) {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function divLonIReal:", "cannot divide 0 by 0", NULL, NULL);
-        #endif
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
     }
     else {
@@ -353,7 +353,7 @@ void divRealLonI(void) {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function divLonIReal:", "cannot divide a real34 by 0", NULL, NULL);
-        #endif
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
     }
   }
@@ -601,7 +601,7 @@ void divShoIShoI(void) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function divShoIShoI:", "cannot divide a short integer by 0", NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
   else {
     *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = WP34S_intDivide(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_Y)), *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)));
@@ -632,7 +632,7 @@ void divShoIReal(void) {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function divShoIReal:", "cannot divide 0 by 0", NULL, NULL);
-        #endif
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
     }
     else {
@@ -643,7 +643,7 @@ void divShoIReal(void) {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function divShoIReal:", "cannot divide a short integer by 0", NULL, NULL);
-        #endif
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
     }
   }
@@ -679,7 +679,7 @@ void divRealShoI(void) {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function divRealShoI:", "cannot divide 0 by 0", NULL, NULL);
-        #endif
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
     }
     else {
@@ -690,7 +690,7 @@ void divRealShoI(void) {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function divRealShoI:", "cannot divide a real34 by 0", NULL, NULL);
-        #endif
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
     }
   }
@@ -779,7 +779,7 @@ void divRealReal(void) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function divRealReal:", "cannot divide 0 by 0", NULL, NULL);
-      #endif
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
 
@@ -791,7 +791,7 @@ void divRealReal(void) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function divRealReal:", "cannot divide a real34 by 0", NULL, NULL);
-      #endif
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
 

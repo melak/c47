@@ -14,13 +14,13 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-void fnDisplayFormatFix                (uint16_t displayFormat);
-void fnDisplayFormatSci                (uint16_t displayFormat);
-void fnDisplayFormatEng                (uint16_t displayFormat);
-void fnDisplayFormatAll                (uint16_t displayFormat);
-//void fnDisplayFormatDsp                (uint16_t displayFormat);
+void fnDisplayFormatFix                (uint16_t displayFormatN);
+void fnDisplayFormatSci                (uint16_t displayFormatN);
+void fnDisplayFormatEng                (uint16_t displayFormatN);
+void fnDisplayFormatAll                (uint16_t displayFormatN);
+//void fnDisplayFormatDsp                (uint16_t displayFormatN);
 void fnDisplayFormatGap                (uint16_t gap);
-void fnShow                            (uint16_t unusedParamButMandatory);
+void fnShow                            (uint16_t unusedButMandatoryParameter);
 void real34ToDisplayString             (const real34_t *real34, uint32_t tag, char *displayString, const font_t *font, int16_t maxWidth, int16_t displayHasNDigits, bool_t limitExponent, const char *separator);
 void realToDisplayString2              (const real34_t *real34, char *displayString, int16_t displayHasNDigits, bool_t limitExponent, const char *separator);
 void complex34ToDisplayString          (const complex34_t *complex34, char *displayString, const font_t *font, int16_t maxWidth, int16_t displayHasNDigits, bool_t limitExponent, const char *separator);
@@ -34,4 +34,4 @@ void timeToDisplayString               (calcRegister_t regist, char *displayStri
 void exponentToDisplayString           (int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode, const char *separator);
 void supNumberToDisplayString          (int32_t supNumber, char *displayString, char *displayValueString, bool_t insertGap, const char *separator);
 void subNumberToDisplayString          (int32_t subNumber, char *displayString, char *displayValueString);
-void longIntegerToAllocatedString      (const longInteger_t lgInt, char *str, int32_t strLg);
+void longIntegerToAllocatedString      (const longInteger_t lgInt, char *str, int32_t strLen);

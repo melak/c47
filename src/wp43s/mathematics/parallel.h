@@ -18,7 +18,7 @@
  * \file parallel.h
  ***********************************************/
 
-void fnParallel      (uint16_t unusedParamButMandatory);
+void fnParallel      (uint16_t unusedButMandatoryParameter);
 void parallelError   (void);
 
 //      RegYRegX

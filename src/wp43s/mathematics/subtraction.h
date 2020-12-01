@@ -18,7 +18,7 @@
  * \file subtraction.h
  ***********************************************/
 
-void fnSubtract (uint16_t unusedParamButMandatory);
+void fnSubtract (uint16_t unusedButMandatoryParameter);
 void subError   (void);
 
 //      RegYRegX

@@ -18,7 +18,7 @@
  * \file arcsinh.h
  ***********************************************/
 
-void fnArcsinh   (uint16_t unusedParamButMandatory);
+void fnArcsinh   (uint16_t unusedButMandatoryParameter);
 void arcsinhError(void);
 void arcsinhLonI (void);
 void arcsinhRema (void);

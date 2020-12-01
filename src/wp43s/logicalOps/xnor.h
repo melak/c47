@@ -18,7 +18,7 @@
  * \file xnor.h
  ***********************************************/
 
-void fnLogicalXnor(uint16_t unusedParamButMandatory);
+void fnLogicalXnor(uint16_t unusedButMandatoryParameter);
 void xnorError24  (void);
 void xnorError31  (void);
 void xnorLonILonI (void);

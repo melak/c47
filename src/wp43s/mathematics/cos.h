@@ -18,7 +18,7 @@
  * \file cos.h
  ***********************************************/
 
-void fnCos   (uint16_t unusedParamButMandatory);
+void fnCos   (uint16_t unusedButMandatoryParameter);
 void cosError(void);
 void cosLonI (void);
 void cosRema (void);

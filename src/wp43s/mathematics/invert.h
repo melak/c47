@@ -18,7 +18,7 @@
  * \file invert.h
  ***********************************************/
 
-void fnInvert   (uint16_t unusedParamButMandatory);
+void fnInvert   (uint16_t unusedButMandatoryParameter);
 void invertError(void);
 void invertLonI (void);
 void invertRema (void);

@@ -18,7 +18,7 @@
  * \file xor.h
  ***********************************************/
 
-void fnLogicalXor(uint16_t unusedParamButMandatory);
+void fnLogicalXor(uint16_t unusedButMandatoryParameter);
 void xorError24  (void);
 void xorError31  (void);
 void xorLonILonI (void);

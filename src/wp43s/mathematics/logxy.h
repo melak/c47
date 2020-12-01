@@ -18,7 +18,7 @@
  * \file logxy.h
  ***********************************************/
 
-void fnLogXY   (uint16_t unusedParamButMandatory);
+void fnLogXY   (uint16_t unusedButMandatoryParameter);
 
 void logxyError(void);
 

@@ -18,7 +18,7 @@
  * \file arccos.h
  ***********************************************/
 
-void fnArccos   (uint16_t unusedParamButMandatory);
+void fnArccos   (uint16_t unusedButMandatoryParameter);
 void arccosError(void);
 void arccosLonI (void);
 void arccosRema (void);

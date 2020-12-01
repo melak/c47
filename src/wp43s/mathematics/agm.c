@@ -21,7 +21,7 @@
 #include "wp43s.h"
 
 
-void fnAgm(uint16_t unusedParamButMandatory) {
+void fnAgm(uint16_t unusedButMandatoryParameter) {
   bool_t realInput=true;
   real_t aReal, bReal, cReal;
   real_t aImag, bImag, cImag;
@@ -44,7 +44,7 @@ void fnAgm(uint16_t unusedParamButMandatory) {
                         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
                           sprintf(errorMessage, "cannot calculate AGM with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
                           moreInfoOnError("In function fnAgm:", errorMessage, NULL, NULL);
-                        #endif
+                        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
                         return;
   }
 
@@ -66,7 +66,7 @@ void fnAgm(uint16_t unusedParamButMandatory) {
                         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
                           sprintf(errorMessage, "cannot calculate AGM with %s in Y", getRegisterDataTypeName(REGISTER_Y, true, false));
                           moreInfoOnError("In function fnAgm:", errorMessage, NULL, NULL);
-                        #endif
+                        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
                         return;
   }
 
@@ -74,7 +74,7 @@ void fnAgm(uint16_t unusedParamButMandatory) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnAgm:", "cannot use negative X and Y as input of AGM", NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
 

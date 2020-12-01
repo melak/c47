@@ -18,7 +18,7 @@
  * \file not.h
  ***********************************************/
 
-void fnLogicalNot(uint16_t unusedParamButMandatory);
+void fnLogicalNot(uint16_t unusedButMandatoryParameter);
 void notError    (void);
 void notLonI     (void);
 void notShoI     (void);

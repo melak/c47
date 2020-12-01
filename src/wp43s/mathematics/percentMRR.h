@@ -18,4 +18,4 @@
  * \file percentMRR.h
  ***********************************************/
 
-void fnPercentMRR(uint16_t unusedParamButMandatory);
+void fnPercentMRR(uint16_t unusedButMandatoryParameter);

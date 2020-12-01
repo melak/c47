@@ -18,7 +18,7 @@
  * \file lcm.h
  ***********************************************/
 
-void fnLcm      (uint16_t unusedParamButMandatory);
+void fnLcm      (uint16_t unusedButMandatoryParameter);
 void lcmError   (void);
 
 //      RegYRegX

@@ -199,7 +199,7 @@ char * getShortIntegerModeName(uint16_t im) {
 }
 
 
-
+/* Never used
 void debugNIM(void) {
   if     (nimNumberPart == NP_EMPTY               ) printf("nimNumberPart = NP_EMPTY               \n");
   else if(nimNumberPart == NP_INT_10              ) printf("nimNumberPart = NP_INT_10              \n");
@@ -213,7 +213,7 @@ void debugNIM(void) {
   else if(nimNumberPart == NP_COMPLEX_EXPONENT    ) printf("nimNumberPart = NP_COMPLEX_EXPONENT    \n");
   else                                              printf("nimNumberPart = NP_???                 \n");
 }
-
+*/
 
 
 #if (DEBUG_PANEL == 1)
@@ -319,20 +319,23 @@ void debugNIM(void) {
    * \return char*          Name of the calc mode
    ***********************************************/
   char * getCalcModeName(uint16_t cm) {
-    if(cm == CM_AIM)              return "AIM         ";
-    if(cm == CM_NORMAL)           return "NORMAL      ";
-    if(cm == CM_TAM)              return "TAM         ";
-    if(cm == CM_NIM)              return "NIM         ";
-    if(cm == CM_ASM)              return "ASM         ";
-    if(cm == CM_ASM_OVER_TAM)     return "ASM.OVR.TAM ";
-    if(cm == CM_ASM_OVER_AIM)     return "ASM.OVR.AIM ";
-    if(cm == CM_ASSIGN)           return "ASSIGN      ";
-    if(cm == CM_REGISTER_BROWSER) return "REG.BROWSER ";
-    if(cm == CM_FLAG_BROWSER)     return "FLAG.BROWSER";
-    if(cm == CM_FONT_BROWSER)     return "FONT.BROWSER";
-    if(cm == CM_ERROR_MESSAGE)    return "ERROR.MSG   ";
-    if(cm == CM_BUG_ON_SCREEN)    return "BUG.ON.SCR  ";
-    if(cm == CM_CONFIRMATION)     return "CONFIRMATION";
+    if(cm == CM_AIM)                   return "AIM         ";
+    if(cm == CM_NORMAL)                return "NORMAL      ";
+    if(cm == CM_TAM)                   return "TAM         ";
+    if(cm == CM_TAM_OVER_PEM)          return "TAM.OVR.PEM ";
+    if(cm == CM_NIM)                   return "NIM         ";
+    if(cm == CM_ASM)                   return "ASM         ";
+    if(cm == CM_ASM_OVER_TAM)          return "ASM.OVR.TAM ";
+    if(cm == CM_ASM_OVER_TAM_OVER_PEM) return "ASM.TAM.PEM ";
+    if(cm == CM_ASM_OVER_AIM)          return "ASM.OVR.AIM ";
+    if(cm == CM_ASM_OVER_PEM)          return "ASM.OVR.PEM ";
+    if(cm == CM_ASSIGN)                return "ASSIGN      ";
+    if(cm == CM_REGISTER_BROWSER)      return "REG.BROWSER ";
+    if(cm == CM_FLAG_BROWSER)          return "FLAG.BROWSER";
+    if(cm == CM_FONT_BROWSER)          return "FONT.BROWSER";
+    if(cm == CM_ERROR_MESSAGE)         return "ERROR.MSG   ";
+    if(cm == CM_BUG_ON_SCREEN)         return "BUG.ON.SCR  ";
+    if(cm == CM_CONFIRMATION)          return "CONFIRMATION";
 
     return "???         ";
   }
@@ -377,49 +380,7 @@ void debugNIM(void) {
    * \return char*          Name of the system flag
    ***********************************************/
   char * getSystemFlagName(uint16_t sf) {
-    if(sf == FLAG_TDM24)    return "TDM24";
-    if(sf == FLAG_YMD)      return "YMD";
-    if(sf == FLAG_DMY)      return "DMY";
-    if(sf == FLAG_MDY)      return "MDY";
-    if(sf == FLAG_CPXRES)   return "CPXRES";
-    if(sf == FLAG_CPXj)     return "CPXf";
-    if(sf == FLAG_POLAR)    return "POLAR";
-    if(sf == FLAG_FRACT)    return "FRACT";
-    if(sf == FLAG_PROPFR)   return "PROPFR";
-    if(sf == FLAG_DENANY)   return "DENANY";
-    if(sf == FLAG_DENFIX)   return "DENFIX";
-    if(sf == FLAG_CARRY)    return "CARRY";
-    if(sf == FLAG_OVERFLOW) return "OVERFLOW";
-    if(sf == FLAG_LEAD0)    return "LEAD.0";
-    if(sf == FLAG_ALPHA)    return "ALPHA";
-    if(sf == FLAG_alphaCAP) return STD_alpha "CAP";
-    if(sf == FLAG_RUNTIM)   return "RUNTIM";
-    if(sf == FLAG_RUNIO)    return "RUNIO";
-    if(sf == FLAG_PRINT)    return "PRINT";
-    if(sf == FLAG_TRACE)    return "TRACE";
-    if(sf == FLAG_USER)     return "USER";
-    if(sf == FLAG_LOWBAT)   return "LOWBAT";
-    if(sf == FLAG_SLOW)     return "SLOW";
-    if(sf == FLAG_SPCRES)   return "SPCRES";
-    if(sf == FLAG_SSIZE8)   return "SSIZE8";
-    if(sf == FLAG_QUIET)    return "QUIET";
-    if(sf == FLAG_DECIMP)   return "DECIM.";
-    if(sf == FLAG_MULTx)    return "MULT" STD_CROSS;
-    if(sf == FLAG_ALLENG)   return "ALLENG";
-    if(sf == FLAG_GROW)     return "GROW";
-    if(sf == FLAG_AUTOFF)   return "AUTOF";
-    if(sf == FLAG_AUTXEQ)   return "AUTXEQ";
-    if(sf == FLAG_PRTACT)   return "PRTACT";
-    if(sf == FLAG_NUMIN)    return "NUM.IN";
-    if(sf == FLAG_ALPIN)    return "ALP.IN";
-    if(sf == FLAG_ASLIFT)   return "ASLIFT";
-    if(sf == FLAG_IGN1ER)   return "IGN1ER";
-    if(sf == FLAG_INTING)   return "INTING";
-    if(sf == FLAG_SOLVING)  return "SOLVING";
-    if(sf == FLAG_USB)      return "USB";
-    if(sf == FLAG_VMDISP)   return "VMDISP";
-
-    return "???        ";
+    return indexOfItems[SFL_TDM24 + (sf & 0x3fff)].itemCatalogName;
   }
 
 
@@ -642,13 +603,13 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "TO_WP43SMEMPTR(allLocalRegisterPointer)   = %6u",        TO_WP43SMEMPTR(allLocalRegisterPointer));
+        sprintf(string, "TO_WP43SMEMPTR(allLocalRegisterPointer)   = %6d",        TO_WP43SMEMPTR(allLocalRegisterPointer));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "TO_WP43SMEMPTR(statisticalSumsPointer)    = %6u",         TO_WP43SMEMPTR(statisticalSumsPointer));
+        sprintf(string, "TO_WP43SMEMPTR(statisticalSumsPointer)    = %6d",         TO_WP43SMEMPTR(statisticalSumsPointer));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
@@ -660,7 +621,7 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "TO_WP43SMEMPTR(allNamedVariablePointer)   = %6u",        TO_WP43SMEMPTR(allNamedVariablePointer));
+        sprintf(string, "TO_WP43SMEMPTR(allNamedVariablePointer)   = %6d",        TO_WP43SMEMPTR(allNamedVariablePointer));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
@@ -703,12 +664,6 @@ void debugNIM(void) {
 
       if(row < DEBUG_LINES) {
         sprintf(string, "denMax                                    = %6u\n",       denMax);
-        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
-        gtk_widget_show(lbl1[row++]);
-      }
-
-      if(row < DEBUG_LINES) {
-        sprintf(string, "PC                                        = %6u",         programCounter);
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
@@ -822,13 +777,13 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "hourGlassIconEnabled                      = %6u = %s",    hourGlassIconEnabled, getBooleanName(hourGlassIconEnabled));
+        sprintf(string, "hourGlassIconEnabled                      = %6d = %s",    hourGlassIconEnabled, getBooleanName(hourGlassIconEnabled));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "watchIconEnabled                          = %6u = %s",    watchIconEnabled,     getBooleanName(watchIconEnabled));
+        sprintf(string, "watchIconEnabled                          = %6d = %s",    watchIconEnabled,     getBooleanName(watchIconEnabled));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
@@ -840,13 +795,13 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "serialIOIconEnabled                       = %6u = %s",    serialIOIconEnabled,  getBooleanName(serialIOIconEnabled));
+        sprintf(string, "serialIOIconEnabled                       = %6d = %s",    serialIOIconEnabled,  getBooleanName(serialIOIconEnabled));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "printerIconEnabled                        = %6u = %s",    printerIconEnabled,   getBooleanName(printerIconEnabled));
+        sprintf(string, "printerIconEnabled                        = %6d = %s",    printerIconEnabled,   getBooleanName(printerIconEnabled));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
@@ -894,13 +849,13 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "shiftF                                    = %6u = %s",    shiftF,               getBooleanName(shiftF));
+        sprintf(string, "shiftF                                    = %6d = %s",    shiftF,               getBooleanName(shiftF));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "shiftG                                    = %6u = %s\n",  shiftG,               getBooleanName(shiftG));
+        sprintf(string, "shiftG                                    = %6d = %s\n",  shiftG,               getBooleanName(shiftG));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
@@ -930,7 +885,7 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "currentRegisterBrowserScreen              = %6u",         currentRegisterBrowserScreen);
+        sprintf(string, "currentRegisterBrowserScreen              = %6d",         currentRegisterBrowserScreen);
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
@@ -948,7 +903,7 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "showContent                               = %6u = %s",    showContent,          getBooleanName(showContent));
+        sprintf(string, "showContent                               = %6d = %s",    showContent,          getBooleanName(showContent));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
@@ -1421,7 +1376,7 @@ void debugNIM(void) {
   void chkHexaStringClicked(GtkWidget* w, gpointer data) {
     refreshDebugPanel();
   }
-#endif
+#endif // (DEBUG_PANEL == 1)
 
 
 
@@ -1519,244 +1474,244 @@ void debugNIM(void) {
     xcopy(strchr(str, '\0'), str + 64, strlen(str + 64) + 1);
     strcat(str, "i");
   }
-#endif
+#endif // DEBUG_PANEL == 1 || DEBUG_REGISTER_L == 1
 
 #ifdef PC_BUILD
-void dumpScreenToConsole(void) {
-  int x, y;
+  void dumpScreenToConsole(void) {
+    int x, y;
 
-  for(y = 0; y < SCREEN_HEIGHT; y++) {
-    for(x = 0; x < SCREEN_WIDTH; x++) {
-      if(*(screenData + y*screenStride + x) == ON_PIXEL) {
-        printf("#");
+    for(y = 0; y < SCREEN_HEIGHT; y++) {
+      for(x = 0; x < SCREEN_WIDTH; x++) {
+        if(*(screenData + y*screenStride + x) == ON_PIXEL) {
+          printf("#");
+        }
+        else {
+          printf(" ");
+        }
       }
-      else {
-        printf(" ");
-      }
+      printf("\n");
     }
-    printf("\n");
   }
-}
-#endif
+#endif // PC_BUILD
 
 
 
 #if defined(PC_BUILD ) || defined(TESTSUITE_BUILD)
-void testRegisters(const char *text) {
-  calcRegister_t i;
-  bool_t situationIsBad;
+  void testRegisters(const char *text) {
+    calcRegister_t i;
+    bool_t situationIsBad;
 
-  situationIsBad = false;
-  for(i=0; i<FIRST_LOCAL_REGISTER; i++) {
-    if(TO_WP43SMEMPTR(getRegisterDataPointer(i)) >= RAM_SIZE) {
-      situationIsBad = true;
-      break;
-    }
-
-    if(getRegisterDataType(i) == dtString || getRegisterDataType(i) == dtLongInteger) {
-      if(getRegisterMaxDataLength(i) >= RAM_SIZE) {
-        situationIsBad = true;
-        break;
-      }
-    }
-  }
-
-  if(situationIsBad) {
-    printf("\nsituation is bad %s\n", text);
+    situationIsBad = false;
     for(i=0; i<FIRST_LOCAL_REGISTER; i++) {
       if(TO_WP43SMEMPTR(getRegisterDataPointer(i)) >= RAM_SIZE) {
-        printf("register %d    ptr=%u\n", i, TO_WP43SMEMPTR(getRegisterDataPointer(i)));
+        situationIsBad = true;
+        break;
       }
 
       if(getRegisterDataType(i) == dtString || getRegisterDataType(i) == dtLongInteger) {
         if(getRegisterMaxDataLength(i) >= RAM_SIZE) {
-          printf("register %d    ptr=%u     dataLen=%u (%u %u)\n", i, TO_WP43SMEMPTR(getRegisterDataPointer(i)), TO_BYTES(getRegisterMaxDataLength(i)), TO_BYTES(getRegisterMaxDataLength(i)), TO_BYTES(getRegisterMaxDataLength(i)+1));
+          situationIsBad = true;
+          break;
         }
       }
     }
-    exit(0);
-  }
-}
 
+    if(situationIsBad) {
+      printf("\nsituation is bad %s\n", text);
+      for(i=0; i<FIRST_LOCAL_REGISTER; i++) {
+        if(TO_WP43SMEMPTR(getRegisterDataPointer(i)) >= RAM_SIZE) {
+          printf("register %d    ptr=%d\n", i, TO_WP43SMEMPTR(getRegisterDataPointer(i)));
+        }
 
-
-void memoryDump2(const char *text) {
-  int32_t i;
-  uint32_t dataType;
-  calcRegister_t regist;
-
-//  if(debug) {
-//    debugCounter++;
-    printf("\n\n%s\nTotal memory = %d bytes = %d blocks\n", text, TO_BYTES(RAM_SIZE), RAM_SIZE);
-    printf("Free blocks (%" PRId32 "):\n", numberOfFreeMemoryRegions);
-
-    for(i=0; i<numberOfFreeMemoryRegions; i++) {
-      printf("  %2" PRId32 " starting at %5" PRIu16 ": %5" PRIu16 " blocks = %6" PRIu32 " bytes\n", i, freeMemoryRegions[i].address, freeMemoryRegions[i].sizeInBlocks, TO_BYTES((uint32_t)freeMemoryRegions[i].sizeInBlocks));
+        if(getRegisterDataType(i) == dtString || getRegisterDataType(i) == dtLongInteger) {
+          if(getRegisterMaxDataLength(i) >= RAM_SIZE) {
+            printf("register %d    ptr=%d     dataLen=%d (%d %d)\n", i, TO_WP43SMEMPTR(getRegisterDataPointer(i)), TO_BYTES(getRegisterMaxDataLength(i)), TO_BYTES(getRegisterMaxDataLength(i)), TO_BYTES(getRegisterMaxDataLength(i)+1));
+          }
+        }
+      }
+      exit(0);
     }
+  }
 
-    printf("Reg  Num DescrAddr DataType                    DataInfo    DataPtr FullDataLen Content\n");
 
-    regist = REGISTER_X;
-    dataType = reg[regist].dataType;
-    printf(" X  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
 
-    regist = REGISTER_Y;
-    dataType = reg[regist].dataType;
-    printf(" Y  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+  void memoryDump2(const char *text) {
+    int32_t i;
+    uint32_t dataType;
+    calcRegister_t regist;
 
-    regist = REGISTER_Z;
-    dataType = reg[regist].dataType;
-    printf(" Z  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+  //  if(debug) {
+  //    debugCounter++;
+      printf("\n\n%s\nTotal memory = %d bytes = %d blocks\n", text, TO_BYTES(RAM_SIZE), RAM_SIZE);
+      printf("Free blocks (%" PRId32 "):\n", numberOfFreeMemoryRegions);
 
-    regist = REGISTER_T;
-    dataType = reg[regist].dataType;
-    printf(" T  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      for(i=0; i<numberOfFreeMemoryRegions; i++) {
+        printf("  %2" PRId32 " starting at %5" PRIu16 ": %5" PRIu16 " blocks = %6" PRIu32 " bytes\n", i, freeMemoryRegions[i].address, freeMemoryRegions[i].sizeInBlocks, TO_BYTES((uint32_t)freeMemoryRegions[i].sizeInBlocks));
+      }
 
-    printf("----------------------------------------------------------------------------------------------------------------------------------------\n");
+      printf("Reg  Num DescrAddr DataType                    DataInfo    DataPtr FullDataLen Content\n");
 
-    regist = REGISTER_A;
-    dataType = reg[regist].dataType;
-    printf(" A  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = REGISTER_X;
+      dataType = reg[regist].dataType;
+      printf(" X  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    regist = REGISTER_B;
-    dataType = reg[regist].dataType;
-    printf(" B  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = REGISTER_Y;
+      dataType = reg[regist].dataType;
+      printf(" Y  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    regist = REGISTER_C;
-    dataType = reg[regist].dataType;
-    printf(" C  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = REGISTER_Z;
+      dataType = reg[regist].dataType;
+      printf(" Z  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    regist = REGISTER_D;
-    dataType = reg[regist].dataType;
-    printf(" D  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = REGISTER_T;
+      dataType = reg[regist].dataType;
+      printf(" T  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    printf("----------------------------------------------------------------------------------------------------------------------------------------\n");
+      printf("----------------------------------------------------------------------------------------------------------------------------------------\n");
 
-    regist = REGISTER_L;
-    dataType = reg[regist].dataType;
-    printf(" L  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = REGISTER_A;
+      dataType = reg[regist].dataType;
+      printf(" A  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    regist = REGISTER_I;
-    dataType = reg[regist].dataType;
-    printf(" I  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = REGISTER_B;
+      dataType = reg[regist].dataType;
+      printf(" B  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    regist = REGISTER_J;
-    dataType = reg[regist].dataType;
-    printf(" J  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = REGISTER_C;
+      dataType = reg[regist].dataType;
+      printf(" C  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    regist = REGISTER_K;
-    dataType = reg[regist].dataType;
-    printf(" K  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = REGISTER_D;
+      dataType = reg[regist].dataType;
+      printf(" D  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    printf("----------------------------------------------------------------------------------------------------------------------------------------\n");
+      printf("----------------------------------------------------------------------------------------------------------------------------------------\n");
 
-    regist = SAVED_REGISTER_X;
-    dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
-    printf("SX  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = REGISTER_L;
+      dataType = reg[regist].dataType;
+      printf(" L  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    regist = SAVED_REGISTER_Y;
-    dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
-    printf("SY  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = REGISTER_I;
+      dataType = reg[regist].dataType;
+      printf(" I  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    regist = SAVED_REGISTER_Z;
-    dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
-    printf("SZ  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = REGISTER_J;
+      dataType = reg[regist].dataType;
+      printf(" J  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    regist = SAVED_REGISTER_T;
-    dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
-    printf("ST  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = REGISTER_K;
+      dataType = reg[regist].dataType;
+      printf(" K  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), reg[regist].tag, getRegisterTagName(regist, true), reg[regist].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    printf("----------------------------------------------------------------------------------------------------------------------------------------\n");
+      printf("----------------------------------------------------------------------------------------------------------------------------------------\n");
 
-    regist = SAVED_REGISTER_A;
-    dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
-    printf("SA  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = SAVED_REGISTER_X;
+      dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
+      printf("SX  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    regist = SAVED_REGISTER_B;
-    dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
-    printf("SB  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = SAVED_REGISTER_Y;
+      dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
+      printf("SY  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    regist = SAVED_REGISTER_C;
-    dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
-    printf("SC  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = SAVED_REGISTER_Z;
+      dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
+      printf("SZ  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    regist = SAVED_REGISTER_D;
-    dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
-    printf("SD  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
+      regist = SAVED_REGISTER_T;
+      dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
+      printf("ST  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-    regist = SAVED_REGISTER_L;
-    dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
-    printf("SL  %4d           %2u=%s %5u=%s %5u   %5u       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
-    printRegisterToConsole(regist, "", "\n");
-//  }
-}
+      printf("----------------------------------------------------------------------------------------------------------------------------------------\n");
 
-///////////////////////////////
-// Stack smashing detection
-void stackCheck(const unsigned char *begin, const unsigned char *end, int size, const char *where) {
-   int i, corrupted = 0;
+      regist = SAVED_REGISTER_A;
+      dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
+      printf("SA  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
 
-   for(i=0; i<size; i++) {
-     if(*(begin + i) != 0xaa) {
-       printf("Stack begin corrupted: begin[%d]=0x%02x at %s\n", i, begin[i], where);
-       corrupted = 1;
+      regist = SAVED_REGISTER_B;
+      dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
+      printf("SB  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
+
+      regist = SAVED_REGISTER_C;
+      dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
+      printf("SC  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
+
+      regist = SAVED_REGISTER_D;
+      dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
+      printf("SD  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
+
+      regist = SAVED_REGISTER_L;
+      dataType = savedStackRegister[regist - SAVED_REGISTER_X].dataType;
+      printf("SL  %4d           %2u=%s %5u=%s %5u   %5d       ", regist, dataType, getDataTypeName(dataType, false, true), savedStackRegister[regist - SAVED_REGISTER_X].tag, getRegisterTagName(regist, true), savedStackRegister[regist - SAVED_REGISTER_X].dataPointer, TO_BYTES(getRegisterFullSize(regist)));
+      printRegisterToConsole(regist, "", "\n");
+  //  }
+  }
+
+  ///////////////////////////////
+  // Stack smashing detection
+  void stackCheck(const unsigned char *begin, const unsigned char *end, int size, const char *where) {
+     int i, corrupted = 0;
+
+     for(i=0; i<size; i++) {
+       if(*(begin + i) != 0xaa) {
+         printf("Stack begin corrupted: begin[%d]=0x%02x at %s\n", i, begin[i], where);
+         corrupted = 1;
+       }
      }
-   }
 
-   for(i=0; i<size; i++) {
-     if(*(end + i) != 0xaa) {
-       printf("Stack end corrupted: end[%d]=0x%02x at %s\n", i, end[i], where);
-       corrupted = 1;
+     for(i=0; i<size; i++) {
+       if(*(end + i) != 0xaa) {
+         printf("Stack end corrupted: end[%d]=0x%02x at %s\n", i, end[i], where);
+         corrupted = 1;
+       }
      }
-   }
 
-   if(corrupted) {
-     exit(0xBAD);
-   }
-}
+     if(corrupted) {
+       exit(0xBAD);
+     }
+  }
 
 
-void initStackCheck(unsigned char *begin, unsigned char *end, int size) {
-  memset(begin, 0xaa, size);
-  memset(end,   0xaa, size);
-}
+  void initStackCheck(unsigned char *begin, unsigned char *end, int size) {
+    memset(begin, 0xaa, size);
+    memset(end,   0xaa, size);
+  }
 
-//////////////////////////////////////////////////
-// Example of stack smashing tests in a function
-void stackSmashingTest(void) {
-                                              unsigned char stackEnd[10000]; // First declaration
-  int v1, v2, v3;
-                                              unsigned char stackBegin[10000]; // Last declaration
+  //////////////////////////////////////////////////
+  // Example of stack smashing tests in a function
+  void stackSmashingTest(void) {
+                                                unsigned char stackEnd[10000]; // First declaration
+    int v1, v2, v3;
+                                                unsigned char stackBegin[10000]; // Last declaration
 
-                                              initStackCheck(stackBegin, stackEnd, 10000);
+                                                initStackCheck(stackBegin, stackEnd, 10000);
 
-  v1 = 1;
-                                              stackCheck(stackBegin, stackEnd, 10000, "after v1 = ...");
-  v2 = v1 + 1;
-                                              stackCheck(stackBegin, stackEnd, 10000, "after v2 = ...");
-  v3 = v2 + 2;
-                                              stackCheck(stackBegin, stackEnd, 10000, "after v3 = ...");
-  printf("v1=%d v2=%d v3=%d\n", v1, v2, v3);
-                                              stackCheck(stackBegin, stackEnd, 10000, "after printf(...");
-}
-#endif
+    v1 = 1;
+                                                stackCheck(stackBegin, stackEnd, 10000, "after v1 = ...");
+    v2 = v1 + 1;
+                                                stackCheck(stackBegin, stackEnd, 10000, "after v2 = ...");
+    v3 = v2 + 2;
+                                                stackCheck(stackBegin, stackEnd, 10000, "after v3 = ...");
+    printf("v1=%d v2=%d v3=%d\n", v1, v2, v3);
+                                                stackCheck(stackBegin, stackEnd, 10000, "after printf(...");
+  }
+#endif // PC_BUILD || TESTSUITE_BUILD

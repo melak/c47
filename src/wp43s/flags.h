@@ -14,6 +14,11 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/********************************************//**
+ * \file flags.h
+ ***********************************************/
+
+
 void   systemFlagAction        (uint16_t systemFlag, uint16_t action);
 void   synchronizeLetteredFlags(void);
 bool_t getFlag                 (uint16_t flag);
@@ -21,7 +26,7 @@ void   fnGetSystemFlag         (uint16_t systemFlag);
 void   fnSetFlag               (uint16_t flag);
 void   fnClearFlag             (uint16_t flag);
 void   fnFlipFlag              (uint16_t flag);
-void   fnClFAll                (uint16_t unusedParamButMandatory);
+void   fnClFAll                (uint16_t unusedButMandatoryParameter);
 void   fnIsFlagClear           (uint16_t flag);
 void   fnIsFlagSet             (uint16_t flag);
 void   fnIsFlagClearClear      (uint16_t flag);

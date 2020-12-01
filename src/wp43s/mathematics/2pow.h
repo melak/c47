@@ -18,7 +18,7 @@
  * \file 2pow.h
  ***********************************************/
 
-void fn2Pow     (uint16_t unusedParamButMandatory);
+void fn2Pow     (uint16_t unusedButMandatoryParameter);
 void twoPowError(void);
 void twoPowLonI (void);
 void twoPowRema (void);

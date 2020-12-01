@@ -18,7 +18,7 @@
  * \file idiv.h
  ***********************************************/
 
-void fnIDiv(uint16_t unusedParamButMandatory);
+void fnIDiv(uint16_t unusedButMandatoryParameter);
 void idivError(void);
 
 //      RegYRegX

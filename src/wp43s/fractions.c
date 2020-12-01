@@ -22,7 +22,7 @@
 
 
 
-void fnDenMax(uint16_t unusedParamButMandatory) {
+void fnDenMax(uint16_t unusedButMandatoryParameter) {
   real_t reX;
 
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
@@ -40,7 +40,7 @@ void fnDenMax(uint16_t unusedParamButMandatory) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnDenMax:", getRegisterDataTypeName(REGISTER_X, true, false), "cannot be converted!", NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     undo();
     return;
   }
@@ -49,7 +49,7 @@ void fnDenMax(uint16_t unusedParamButMandatory) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnDenMax:", "cannot use NaN as X input of fnDenMax", NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     undo();
     return;
   }
@@ -78,23 +78,6 @@ void fnDenMax(uint16_t unusedParamButMandatory) {
 
 
 
-/********************************************//**
- * \brief Sets the fraction type
- *
- * \param[in] fractionType uint16_t Fraction type
- * \return void
- ***********************************************/
-void fnToggleFractionType(uint16_t unusedParamButMandatory) {
-  if(getSystemFlag(FLAG_FRACT)) {
-    flipSystemFlag(FLAG_PROPFR);
-  }
-  else {
-    setSystemFlag(FLAG_FRACT);
-  }
-}
-
-
-
 void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t *numer, uint64_t *denom, int16_t *lessEqualGreater) {
   // temp0 = fractional_part(absolute_value(real number))
   // temp1 = continued fraction calculation --> factional_part(1 / temp1)  initialized with temp0
@@ -107,10 +90,10 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
     real34Copy(REGISTER_REAL34_DATA(regist), &temp0);
   }
   else {
-    #ifdef PC_BUILD
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "%s cannot be shown as a fraction!", getRegisterDataTypeName(regist, true, false));
       moreInfoOnError("In function fraction:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     *sign             = 0;
     *intPart          = 0;
     *numer            = 0;

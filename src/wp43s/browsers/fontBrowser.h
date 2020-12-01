@@ -16,5 +16,5 @@
 
 #ifndef TESTSUITE_BUILD
   void initFontBrowser(void);
-  void fontBrowser    (uint16_t unusedParamButMandatory);
-#endif
+  void fontBrowser    (uint16_t unusedButMandatoryParameter);
+#endif // TESTSUITE_BUILD

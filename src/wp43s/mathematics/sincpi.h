@@ -19,7 +19,7 @@
  ***********************************************/
 // Coded by JM, based on sinc.h
 
-void fnSincpi(uint16_t unusedParamButMandatory);
+void fnSincpi(uint16_t unusedButMandatoryParameter);
 void sincpiError(void);
 void sincpiLonI (void);
 void sincpiRema (void);

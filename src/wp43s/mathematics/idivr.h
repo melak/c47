@@ -18,7 +18,7 @@
  * \file idivr.h
  ***********************************************/
 
-void fnIDivR(uint16_t unusedParamButMandatory);
+void fnIDivR(uint16_t unusedButMandatoryParameter);
 void idivrError(void);
 
 //      RegYRegX

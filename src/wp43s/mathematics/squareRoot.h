@@ -18,7 +18,7 @@
  * \file sqrt.h
  ***********************************************/
 
-void fnSquareRoot(uint16_t unusedParamButMandatory);
+void fnSquareRoot(uint16_t unusedButMandatoryParameter);
 void sqrtError   (void);
 void sqrtLonI    (void);
 void sqrtRema    (void);

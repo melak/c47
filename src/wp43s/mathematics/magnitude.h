@@ -18,7 +18,7 @@
  * \file magnitude.h
  ***********************************************/
 
-void fnMagnitude   (uint16_t unusedParamButMandatory);
+void fnMagnitude   (uint16_t unusedButMandatoryParameter);
 void magnitudeError(void);
 void magnitudeLonI (void);
 void magnitudeRema (void);

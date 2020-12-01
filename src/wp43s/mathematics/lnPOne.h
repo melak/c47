@@ -19,7 +19,7 @@
  ***********************************************/
 // Coded by JM, based on ln.h
 
-void fnLnP1   (uint16_t unusedParamButMandatory);
+void fnLnP1   (uint16_t unusedButMandatoryParameter);
 void lnP1Error(void);
 void lnP1LonI (void);
 void lnP1Rema (void);

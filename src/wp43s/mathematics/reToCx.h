@@ -18,4 +18,4 @@
  * \file reToCx.h
  ***********************************************/
 
-void fnReToCx(uint16_t unusedParamButMandatory);
+void fnReToCx(uint16_t unusedButMandatoryParameter);

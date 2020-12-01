@@ -31,7 +31,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-  The software and related material is released as “NOMAS”  (NOt MAnufacturer Supported).
+  The software and related material is released as “NOMAS”  (NOt MAnufacturer Supported). 
 
   1. Info is released to assist customers using, exploring and extending the product
   2. Do NOT contact the manufacturer with questions, seeking support, etc. regarding
@@ -192,7 +192,7 @@ int lcd_textToWidthR(disp_stat_t * ds, const char* text, int expected_width, int
 void lcd_writeTextWidth(disp_stat_t * ds, const char* text);
 
 // Get text which fits in expected width *without breaking words*
-// - word could be broken in the middle only when is placed single long word on line
+// - word could be broken in the middle only when is placed single long word on line 
 int lcd_textForWidth(disp_stat_t * ds, const char* text, int expected_width, int * plen);
 
 
@@ -320,6 +320,8 @@ typedef struct {
   uint32_t * timer2_counter;
   uint32_t * timer3_counter;
 
+  void_fn_t * msc_end_cb;
+
 } sys_sdb_t;
 
 
@@ -342,6 +344,8 @@ typedef struct {
 #define timer2_counter  (sdb.timer2_counter)
 #define timer3_counter  (sdb.timer3_counter)
 
+#define msc_end_cb      (sdb.msc_end_cb)
+
 
 #define t20             (sdb.pds_t20)
 #define t24             (sdb.pds_t24)
@@ -352,11 +356,11 @@ typedef struct {
 
 // ----------------------------------
 
-#define PLATFORM_VERSION "3.19"
+#define PLATFORM_VERSION "3.20"
 
 // System interface version
 #define PLATFORM_IFC_CNR   3
-#define PLATFORM_IFC_VER  14
+#define PLATFORM_IFC_VER  15
 
 // STATIC_ASSERT ...
 #define ASSERT_CONCAT_(a, b) a##b
@@ -420,8 +424,12 @@ void set_reset_state_file(const char * str);
 
 
 // ==== USB functions
+int switch_usb_powered_freq();
 int usb_powered();
-
+void usb_acm_on();
+int usb_is_on();
+void usb_turn_off();
+void acm_puts(const char *str);
 
 // Aux buf
 #define AUX_BUF_SIZE (5*512)
@@ -454,7 +462,7 @@ int read_key(int *k1, int *k2);
 
 
 /////////////////////////////////
-// Low level diagnostics
+// Low level diagnostics 
 /////////////////////////////////
 
 void suspended_bg_key_read();
@@ -496,10 +504,18 @@ void rtc_cancel_alarm();
 
 
 
+// QSPI User area
+int qspi_user_write(uint8_t *data, int size, int offset, int erase);
+uint8_t * qspi_user_addr();
+int qspi_user_size();
+
+
+
+
 // ----------------------------------
 
 
-// Printer
+// Printer 
 #define PRINT_GRA_LN  1
 #define PRINT_TXT_LN  0
 
@@ -799,7 +815,7 @@ int run_menu_item_sys(uint8_t line_id);
 #define VAL_ST(x)       VAL(x,calc_state)
 #define CLR_ST(x)       CLR(x,calc_state)
 #define SET_ST(x)       SET(x,calc_state)
-#define SETMSK_ST(x,m)  SETMSK(x,m,calc_state)
+#define SETMSK_ST(x,m)  SETMSK(x,m,calc_state) 
 #define SETBY_ST(c,x)   SETBY(c,x,calc_state)
 
 
@@ -838,8 +854,9 @@ int run_menu_item_sys(uint8_t line_id);
 #define OFFIMG_DIR     "/OFFIMG"
 
 // Help
-#define HELP_INDEX "/HELP/index.htm"
-
+#define HELP_INDEX     "/HELP/index.htm"
+#define HELP_DIR       "/HELP"
+#define HELP_EXT_MASK  "*.htm*"
 
 // Screenshot
 int create_screenshot(int report_error);
@@ -916,7 +933,7 @@ int sys_timer_active(int timer_ix);
 int sys_timer_timeout(int timer_ix);
 
 // Millisecond delay
-void sys_delay(uint32_t ms_delay);
+void sys_delay(uint32_t ms_delay); 
 
 // Current systick count
 uint32_t sys_tick_count();

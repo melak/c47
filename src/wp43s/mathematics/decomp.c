@@ -34,10 +34,10 @@ static void (*const Decomp[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * Decomposes x (after converting it to an improper fraction, if applicable), returning a stack with
  * [denominator(x), numerator(x)]
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnDecomp(uint16_t unusedParamButMandatory) {
+void fnDecomp(uint16_t unusedButMandatoryParameter) {
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
   Decomp[getRegisterDataType(REGISTER_X)]();
@@ -52,9 +52,9 @@ void decompError(void) {
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
 
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-  sprintf(errorMessage, "cannot calculate Decomp for %s", getRegisterDataTypeName(REGISTER_X, true, false));
-  moreInfoOnError("In function fnDecomp:", errorMessage, NULL, NULL);
-  #endif
+    sprintf(errorMessage, "cannot calculate Decomp for %s", getRegisterDataTypeName(REGISTER_X, true, false));
+    moreInfoOnError("In function fnDecomp:", errorMessage, NULL, NULL);
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 }
 
 
@@ -73,7 +73,7 @@ void decompReal(void) {
   }
   else {
     uint32_t savedDenMax = denMax;
-    uint64_t savedSystemFlags = systemFlags;
+    uint64_t ssf = systemFlags;
     int16_t sign, lessEqualGreater;
     uint64_t intPart, numer, denom;
     longInteger_t lgInt;
@@ -84,7 +84,7 @@ void decompReal(void) {
     fraction(REGISTER_Y, &sign, &intPart, &numer, &denom, &lessEqualGreater);
 
     denMax = savedDenMax;
-    systemFlags = savedSystemFlags;
+    systemFlags = ssf;
 
     longIntegerInit(lgInt);
 

@@ -18,8 +18,8 @@
  * \file cpyx.h
  ***********************************************/
 
-void fnCyx(uint16_t unusedParamButMandatory);
-void fnPyx(uint16_t unusedParamButMandatory);
+void fnCyx(uint16_t unusedButMandatoryParameter);
+void fnPyx(uint16_t unusedButMandatoryParameter);
 
 /*
  * When combOrPerm == CP_COMBINATION => Cyx

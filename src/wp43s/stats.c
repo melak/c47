@@ -25,7 +25,7 @@
  * \brief Verifies that the statistical registers are allocated and that there are enough data
  * An appropriate error message is displayed if either condition fails
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return bool_t
  ***********************************************/
 bool_t checkMinimumDataPoints(const real_t *n) {
@@ -33,7 +33,7 @@ bool_t checkMinimumDataPoints(const real_t *n) {
     displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkMinimumDataPoints:", "There is no statistical data available!", NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return false;
   }
 
@@ -41,7 +41,7 @@ bool_t checkMinimumDataPoints(const real_t *n) {
     displayCalcErrorMessage(ERROR_TOO_FEW_DATA, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkMinimumDataPoints:", "There is insufficient statistical data available!", NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return false;
   }
 
@@ -50,11 +50,9 @@ bool_t checkMinimumDataPoints(const real_t *n) {
 
 
 void initStatisticalSums(void) {
-  int32_t sum;
-
   if(statisticalSumsPointer == NULL) {
     statisticalSumsPointer = allocWp43s(NUMBER_OF_STATISTICAL_SUMS * TO_BYTES(REAL_SIZE));
-    for(sum=0; sum<NUMBER_OF_STATISTICAL_SUMS - 4; sum++) {
+    for(int32_t sum=0; sum<NUMBER_OF_STATISTICAL_SUMS - 4; sum++) {
       realZero((real_t *)(statisticalSumsPointer + REAL_SIZE * sum));
     }
 
@@ -67,10 +65,19 @@ void initStatisticalSums(void) {
 
 
 
+void fnClSigma(uint16_t unusedButMandatoryParameter) {
+  if(statisticalSumsPointer != NULL) {
+    freeWp43s(statisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * TO_BYTES(REAL_SIZE));
+    statisticalSumsPointer = NULL;
+  }
+}
+
+
+
 /********************************************//**
  * \brief Adds a value to the statistic registers
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnSigma(uint16_t plusMinus) {
@@ -309,7 +316,7 @@ void fnSigma(uint16_t plusMinus) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use (%s, %s) as statistical data!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false), getDataTypeName(getRegisterDataType(REGISTER_Y), false, false));
       moreInfoOnError("In function fnSigma:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
@@ -328,10 +335,10 @@ void fnStatSum(uint16_t sum) {
  * \brief SUM ==> regX, regY
  * regX = SUM x, regY = SUM y
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnSumXY(uint16_t unusedParamButMandatory) {
+void fnSumXY(uint16_t unusedButMandatoryParameter) {
   if(checkMinimumDataPoints(const_1)) {
     liftStack();
     setSystemFlag(FLAG_ASLIFT);
@@ -350,10 +357,10 @@ void fnSumXY(uint16_t unusedParamButMandatory) {
  * \brief Xmin ==> regX, regY
  * regX = min x, regY = min y
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnXmin(uint16_t unusedParamButMandatory) {
+void fnXmin(uint16_t unusedButMandatoryParameter) {
   if(checkMinimumDataPoints(const_1)) {
     liftStack();
     setSystemFlag(FLAG_ASLIFT);
@@ -372,10 +379,10 @@ void fnXmin(uint16_t unusedParamButMandatory) {
  * \brief Xmax ==> regX, regY
  * regX = max x, regY = max y
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnXmax(uint16_t unusedParamButMandatory) {
+void fnXmax(uint16_t unusedButMandatoryParameter) {
   if(checkMinimumDataPoints(const_1)) {
     liftStack();
     setSystemFlag(FLAG_ASLIFT);

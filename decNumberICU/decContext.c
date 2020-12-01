@@ -26,9 +26,9 @@
 #include "decNumberLocal.h"   // decNumber local types, etc.
 
 /* compile-time endian tester [assumes sizeof(Int)>1] */
-static  const  Int mfcone=1;                       // constant 1
-static  const  Flag *mfctop=(const Flag *)&mfcone; // -> top byte
-#define LITEND *mfctop        // named flag; 1=little-endian
+//static  const  Int mfcone=1;                       // constant 1
+//static  const  Flag *mfctop=(const Flag *)&mfcone; // -> top byte
+//#define LITEND *mfctop        // named flag; 1=little-endian
 
 /* ------------------------------------------------------------------ */
 /* round-for-reround digits                                           */
@@ -373,7 +373,7 @@ const char *decContextStatusToString(const decContext *context) {
 /*                                                                    */
 /* No error is possible.                                              */
 /* ------------------------------------------------------------------ */
-Int decContextTestEndian(Flag quiet) {
+/*Int decContextTestEndian(Flag quiet) {
   Int res=0;                  // optimist
   uInt dle=(uInt)DECLITEND;   // unsign
   if (dle>1) dle=1;           // ensure 0 or 1
@@ -392,7 +392,7 @@ Int decContextTestEndian(Flag quiet) {
     }
   return res;
   } // decContextTestEndian
-
+*/
 /* ------------------------------------------------------------------ */
 /* decContextTestSavedStatus -- test bits in saved status             */
 /*                                                                    */

@@ -18,7 +18,7 @@
  * \file ceil.h
  ***********************************************/
 
-void fnCeil   (uint16_t unusedParamButMandatory);
+void fnCeil   (uint16_t unusedButMandatoryParameter);
 void ceilError(void);
 void ceilLonI (void);
 void ceilRema (void);

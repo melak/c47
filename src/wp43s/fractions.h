@@ -18,6 +18,5 @@
  * \file fractions.h
  ***********************************************/
 
-void fnDenMax            (uint16_t unusedParamButMandatory);
-void fnToggleFractionType(uint16_t ft);
+void fnDenMax            (uint16_t unusedButMandatoryParameter);
 void fraction            (calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t *numer, uint64_t *denom, int16_t *lessEqualGreater);

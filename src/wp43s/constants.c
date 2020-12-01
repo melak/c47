@@ -27,26 +27,26 @@
  * \brief Replaces the X content with the selected
  * constant. Enables \b stack \b lift and refreshes the stack
  *
- * \param[in] cnst uint16_t Index of the constant to store in X
+ * \param[in] constant uint16_t Index of the constant to store in X
  * \return void
  ***********************************************/
-void fnConstant(const uint16_t cnst) {
+void fnConstant(const uint16_t constant) {
   liftStack();
 
-  if(cnst < NUMBER_OF_CONSTANTS_39) { // 39 digit constants
-    realToReal34((real_t *)(constants + cnst * TO_BYTES(REAL39_SIZE)), REGISTER_REAL34_DATA(REGISTER_X));
+  if(constant < NUMBER_OF_CONSTANTS_39) { // 39 digit constants
+    realToReal34((real_t *)(constants + constant * TO_BYTES(REAL39_SIZE)), REGISTER_REAL34_DATA(REGISTER_X));
   }
-  else if(cnst < NUMBER_OF_CONSTANTS_39 + NUMBER_OF_CONSTANTS_51) { // 51 digit constants (gamma coefficients)
+  else if(constant < NUMBER_OF_CONSTANTS_39 + NUMBER_OF_CONSTANTS_51) { // 51 digit constants (gamma coefficients)
     realToReal34((real_t *)(constants + NUMBER_OF_CONSTANTS_39 * TO_BYTES(REAL39_SIZE)
-                                      + (cnst - NUMBER_OF_CONSTANTS_39) * TO_BYTES(REAL51_SIZE)), REGISTER_REAL34_DATA(REGISTER_X));
+                                      + (constant - NUMBER_OF_CONSTANTS_39) * TO_BYTES(REAL51_SIZE)), REGISTER_REAL34_DATA(REGISTER_X));
   }
-  else if(cnst < NUMBER_OF_CONSTANTS_39 + NUMBER_OF_CONSTANTS_51 + NUMBER_OF_CONSTANTS_1071) { // 1071 digit constant
+  else if(constant < NUMBER_OF_CONSTANTS_39 + NUMBER_OF_CONSTANTS_51 + NUMBER_OF_CONSTANTS_1071) { // 1071 digit constant
     realToReal34((real_t *)(constants + NUMBER_OF_CONSTANTS_39 * TO_BYTES(REAL39_SIZE) + NUMBER_OF_CONSTANTS_51 * TO_BYTES(REAL51_SIZE)
-                                      + (cnst - NUMBER_OF_CONSTANTS_39 - NUMBER_OF_CONSTANTS_51) * TO_BYTES(REAL1071_SIZE)), REGISTER_REAL34_DATA(REGISTER_X));
+                                      + (constant - NUMBER_OF_CONSTANTS_39 - NUMBER_OF_CONSTANTS_51) * TO_BYTES(REAL1071_SIZE)), REGISTER_REAL34_DATA(REGISTER_X));
   }
   else { // 34 digit constants
     real34Copy((real_t *)(constants + NUMBER_OF_CONSTANTS_39 * TO_BYTES(REAL39_SIZE) + NUMBER_OF_CONSTANTS_51 * TO_BYTES(REAL51_SIZE) + NUMBER_OF_CONSTANTS_1071 * TO_BYTES(REAL1071_SIZE)
-                                    + (cnst - NUMBER_OF_CONSTANTS_39 - NUMBER_OF_CONSTANTS_51 - NUMBER_OF_CONSTANTS_1071) * TO_BYTES(REAL34_SIZE)), REGISTER_REAL34_DATA(REGISTER_X));
+                                    + (constant - NUMBER_OF_CONSTANTS_39 - NUMBER_OF_CONSTANTS_51 - NUMBER_OF_CONSTANTS_1071) * TO_BYTES(REAL34_SIZE)), REGISTER_REAL34_DATA(REGISTER_X));
   }
 
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
@@ -59,10 +59,10 @@ void fnConstant(const uint16_t cnst) {
  * to diameter ratio pi: 3,1415926. Enables \b stack
  * \b lift and refreshes the stack.
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnPi(uint16_t unusedParamButMandatory) {
+void fnPi(uint16_t unusedButMandatoryParameter) {
   liftStack();
 
   realToReal34(const_pi, REGISTER_REAL34_DATA(REGISTER_X));

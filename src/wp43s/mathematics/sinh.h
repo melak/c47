@@ -18,7 +18,7 @@
  * \file sinh.h
  ***********************************************/
 
-void fnSinh   (uint16_t unusedParamButMandatory);
+void fnSinh   (uint16_t unusedButMandatoryParameter);
 void sinhError(void);
 void sinhLonI (void);
 void sinhRema (void);

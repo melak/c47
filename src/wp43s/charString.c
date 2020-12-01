@@ -67,10 +67,10 @@ int16_t stringWidth(const char *str, const font_t *font, bool_t withLeadingEmpty
         printf("\n---------------------------------------------------------------------------\n"
                  "In function stringWidth: %d is an unexpected value returned by findGlyph!"
                "/n---------------------------------------------------------------------------\n", glyphId);
-      #else
+      #else // !GENERATE_CATALOGS
         sprintf(errorMessage, "In function stringWidth: %d is an unexpected value returned by findGlyph!", glyphId);
         displayBugScreen(errorMessage);
-      #endif
+      #endif // GENERATE_CATALOGS
       return 0;
     }
 
@@ -128,15 +128,13 @@ int16_t stringNextGlyph(const char *str, int16_t pos) {
  * \return int16_t              Pointer to the last glyph
  ***********************************************/
 int16_t stringLastGlyph(const char *str) {
-  int16_t lastGlyph, next, lg;
-
-  next = 0;
+  int16_t lastGlyph;
 
   if(str == NULL) {
     lastGlyph = -1;
   }
   else {
-    lg = stringByteLength(str);
+    int16_t lg = stringByteLength(str), next = 0;
     for(lastGlyph=0;;) {
       if(lastGlyph >= lg) {
         next = lg;
@@ -328,7 +326,6 @@ uint32_t utf8ToCodePoint(const uint8_t *utf8, uint32_t *codePoint) { // WP43S su
 }
 
 
-
 void stringToUtf8(const char *str, uint8_t *utf8) {
   int16_t len;
 
@@ -357,7 +354,6 @@ void stringToUtf8(const char *str, uint8_t *utf8) {
 }
 
 
-
 void utf8ToString(const uint8_t *utf8, char *str) {
   uint32_t codePoint;
 
@@ -373,4 +369,23 @@ void utf8ToString(const uint8_t *utf8, char *str) {
     }
   }
   *str = 0;
+}
+
+
+void *xcopy(void *dest, const void *source, int n) {
+  char       *pDest   = (char *)dest;
+  const char *pSource = (char *)source;
+
+  if(pSource > pDest) {
+    while(n--) {
+      *pDest++ = *pSource++;
+    }
+  }
+  else if(pSource < pDest) {
+    while(n--) {
+      pDest[n] = pSource[n];
+    }
+  }
+
+  return dest;
 }

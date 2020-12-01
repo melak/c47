@@ -18,7 +18,7 @@
  * \file sin.h
  ***********************************************/
 
-void fnSin   (uint16_t unusedParamButMandatory);
+void fnSin   (uint16_t unusedButMandatoryParameter);
 void sinError(void);
 void sinLonI (void);
 void sinRema (void);

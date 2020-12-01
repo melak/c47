@@ -42,7 +42,7 @@ void sincpiError(void) {
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     sprintf(errorMessage, "cannot calculate Sincpi for %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnSincpi:", errorMessage, NULL, NULL);
-  #endif
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 }
 
 
@@ -51,10 +51,10 @@ void sincpiError(void) {
  * \brief regX ==> regL and sincpi(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnSincpi(uint16_t unusedParamButMandatory) {
+void fnSincpi(uint16_t unusedButMandatoryParameter) {
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
   Sincpi[getRegisterDataType(REGISTER_X)]();
@@ -66,13 +66,7 @@ void fnSincpi(uint16_t unusedParamButMandatory) {
 void sincpiComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t *resImag, realContext_t *realContext) {
   // sin(a + ib) = sin(a)*cosh(b) + i*cos(a)*sinh(b)
   // sinc(a + ib) = sin(a + ib) / (a + ib), for the allowable conditions
-  real_t sina, cosa, sinhb, coshb;
-  real_t rr,sinReal;
-  real_t ii,sinImag;
-  real_t rmdr;
-
-
-  //fnCvtFromCurrentAngularMode(AM_RADIAN);
+  real_t rr, ii, rmdr;
 
   realCopy(real, &rr);
   realCopy(imag, &ii);
@@ -87,6 +81,8 @@ void sincpiComplex(const real_t *real, const real_t *imag, real_t *resReal, real
     realCopy(const_0, resImag);
   }
   else {
+    real_t sina, cosa, sinhb, coshb, sinR, sinImag;
+
     realMultiply(&rr, const_pi, &rr, realContext);
     realMultiply(&ii, const_pi, &ii, realContext);
 
@@ -96,9 +92,9 @@ void sincpiComplex(const real_t *real, const real_t *imag, real_t *resReal, real
     realMultiply(&sina, &coshb, resReal, realContext);
     realMultiply(&cosa, &sinhb, resImag, realContext);
 
-    realCopy(resReal, &sinReal);
+    realCopy(resReal, &sinR);
     realCopy(resImag, &sinImag);
-    divComplexComplex(&sinReal, &sinImag, &rr, &ii, resReal, resImag, realContext);
+    divComplexComplex(&sinR, &sinImag, &rr, &ii, resReal, resImag, realContext);
   }
 }
 
@@ -143,7 +139,7 @@ void sincpiReal(void) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function sincpiReal:", "cannot divide a real34 by " STD_PLUS_MINUS STD_INFINITY " when flag D is not set", NULL, NULL);
-      #endif
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
   }

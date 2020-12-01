@@ -19,7 +19,7 @@
  ***********************************************/
 // Coded by JM, based on power.h
 
-void fnXthRoot      (uint16_t unusedParamButMandatory);
+void fnXthRoot      (uint16_t unusedButMandatoryParameter);
 void xthRootError   (void);
 
 //      RegYRegX

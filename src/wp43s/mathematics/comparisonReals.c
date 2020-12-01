@@ -61,14 +61,14 @@ bool_t real34CompareGreaterEqual(const real34_t *number1, const real34_t *number
 }
 
 
-
+/* never used
 bool_t real34CompareGreaterThan(const real34_t *number1, const real34_t *number2) {
   real34_t compare;
 
   real34Compare(number1, number2, &compare);
   return real34ToInt32(&compare) > 0;
 }
-
+*/
 
 
 bool_t real34CompareLessEqual(const real34_t *number1, const real34_t *number2) {
@@ -101,7 +101,7 @@ bool_t realCompareAbsGreaterThan(const real_t *number1, const real_t *number2) {
 }
 
 
-
+/*
 bool_t realCompareAbsGreaterEqual(const real_t *number1, const real_t *number2) {
   real_t num1, num2;
   int32_t cmp;
@@ -112,7 +112,7 @@ bool_t realCompareAbsGreaterEqual(const real_t *number1, const real_t *number2) 
   realToInt32(&num2, cmp);
   return cmp >= 0;
 }
-
+*/
 
 
 bool_t realCompareAbsLessThan(const real_t *number1, const real_t *number2) {
@@ -224,12 +224,12 @@ int16_t realIdenticalDigits(real_t *a, real_t *b) {
     return 0;
   }
 
-  realGetCoefficient(a, tmpStr3000);
-  realGetCoefficient(b, tmpStr3000 + TMP_STR_LENGTH/2);
+  realGetCoefficient(a, tmpString);
+  realGetCoefficient(b, tmpString + TMP_STR_LENGTH/2);
   smallest = min(a->digits, b->digits);
   counter = 0;
 
-  while(counter < smallest && tmpStr3000[counter] == tmpStr3000[TMP_STR_LENGTH/2 + counter]) {
+  while(counter < smallest && tmpString[counter] == tmpString[TMP_STR_LENGTH/2 + counter]) {
     counter++;
   }
 

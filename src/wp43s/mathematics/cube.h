@@ -18,7 +18,7 @@
  * \file cube.h
  ***********************************************/
 
-void fnCube   (uint16_t unusedParamButMandatory);
+void fnCube   (uint16_t unusedButMandatoryParameter);
 void cubeError(void);
 void cubeLonI (void);
 void cubeRema (void);

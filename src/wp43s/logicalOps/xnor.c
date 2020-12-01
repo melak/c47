@@ -54,7 +54,7 @@ void xnorError24(void) {
     sprintf(errorMessage, "%s XNOR %s", getRegisterDataTypeName(REGISTER_Y, false, false), getRegisterDataTypeName(REGISTER_X, false, false));
     sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "data type of one of the XNOR parameters is not allowed");
     moreInfoOnError("In function xnorError24:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
-  #endif
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 }
 
 void xnorError31(void) {
@@ -63,7 +63,7 @@ void xnorError31(void) {
     sprintf(errorMessage, "%s XNOR %s", getRegisterDataTypeName(REGISTER_Y, false, false), getRegisterDataTypeName(REGISTER_X, false, false));
     sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "XNOR doesn't allow mixing data types real/long integer and short integer");
     moreInfoOnError("In function xnorError31:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
-  #endif
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 }
 
 
@@ -72,10 +72,10 @@ void xnorError31(void) {
  * \brief regX ==> regL XNOR regY ÷ regX ==> regX
  * Drops Y, enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory
+ * \param[in] unusedButMandatoryParameter
  * \return void
  ***********************************************/
-void fnLogicalXnor(uint16_t unusedParamButMandatory) {
+void fnLogicalXnor(uint16_t unusedButMandatoryParameter) {
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
   logicalXnor[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();

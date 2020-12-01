@@ -18,7 +18,7 @@
  * \file lnbeta.h
  ***********************************************/
 
-void fnLnBeta      (uint16_t unusedParamButMandatory);
+void fnLnBeta      (uint16_t unusedButMandatoryParameter);
 
 void lnbetaError   (void);
 

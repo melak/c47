@@ -23,221 +23,215 @@
 
 
 #ifndef TESTSUITE_BUILD
-/********************************************//**
- * \brief The register browser
- *
- * \param[in] unusedParamButMandatory uint16_t
- * \return void
- ***********************************************/
-void registerBrowser(uint16_t unusedParamButMandatory) {
-  int16_t registerNameWidth;
+  /********************************************//**
+   * \brief The register browser
+   *
+   * \param[in] unusedButMandatoryParameter uint16_t
+   * \return void
+   ***********************************************/
+  void registerBrowser(uint16_t unusedButMandatoryParameter) {
+    int16_t registerNameWidth;
 
-  if(calcMode != CM_REGISTER_BROWSER) {
-    if(calcMode == CM_AIM) {
-      hideCursor();
-      cursorEnabled = false;
+    if(calcMode != CM_REGISTER_BROWSER) {
+      if(calcMode == CM_AIM) {
+        hideCursor();
+        cursorEnabled = false;
+      }
+
+      previousCalcMode = calcMode;
+      calcMode = CM_REGISTER_BROWSER;
+      clearSystemFlag(FLAG_ALPHA);
+      return;
     }
 
-    previousCalcMode = calcMode;
-    calcMode = CM_REGISTER_BROWSER;
-    clearSystemFlag(FLAG_ALPHA);
-    return;
-  }
+    if(currentRegisterBrowserScreen == 9999) { // Init
+      currentRegisterBrowserScreen = REGISTER_X;
+      rbrMode = RBR_GLOBAL;
+      showContent = true;
+      rbr1stDigit = true;
+    }
 
-  if(currentRegisterBrowserScreen == 9999) { // Init
-    currentRegisterBrowserScreen = REGISTER_X;
-    rbrMode = RBR_GLOBAL;
-    showContent = true;
-    rbr1stDigit = true;
-  }
+    if(rbrMode == RBR_GLOBAL) { // Global registers
+      for(int16_t row=0; row<10; row++) {
+        calcRegister_t regist = (currentRegisterBrowserScreen + row) % FIRST_LOCAL_REGISTER;
+        switch(regist) {
+          case REGISTER_X: strcpy(tmpString, "X:"); break;
+          case REGISTER_Y: strcpy(tmpString, "Y:"); break;
+          case REGISTER_Z: strcpy(tmpString, "Z:"); break;
+          case REGISTER_T: strcpy(tmpString, "T:"); break;
+          case REGISTER_A: strcpy(tmpString, "A:"); break;
+          case REGISTER_B: strcpy(tmpString, "B:"); break;
+          case REGISTER_C: strcpy(tmpString, "C:"); break;
+          case REGISTER_D: strcpy(tmpString, "D:"); break;
+          case REGISTER_L: strcpy(tmpString, "L:"); break;
+          case REGISTER_I: strcpy(tmpString, "I:"); break;
+          case REGISTER_J: strcpy(tmpString, "J:"); break;
+          case REGISTER_K: strcpy(tmpString, "K:"); break;
+          default: sprintf(tmpString, "R%02d:", regist);
+        }
 
-  if(rbrMode == RBR_GLOBAL) { // Global registers
-    calcRegister_t regist;
-    for(int16_t row=0; row<10; row++) {
-      regist = (currentRegisterBrowserScreen + row) % FIRST_LOCAL_REGISTER;
-      switch(regist) {
-        case REGISTER_X: strcpy(tmpStr3000, "X:"); break;
-        case REGISTER_Y: strcpy(tmpStr3000, "Y:"); break;
-        case REGISTER_Z: strcpy(tmpStr3000, "Z:"); break;
-        case REGISTER_T: strcpy(tmpStr3000, "T:"); break;
-        case REGISTER_A: strcpy(tmpStr3000, "A:"); break;
-        case REGISTER_B: strcpy(tmpStr3000, "B:"); break;
-        case REGISTER_C: strcpy(tmpStr3000, "C:"); break;
-        case REGISTER_D: strcpy(tmpStr3000, "D:"); break;
-        case REGISTER_L: strcpy(tmpStr3000, "L:"); break;
-        case REGISTER_I: strcpy(tmpStr3000, "I:"); break;
-        case REGISTER_J: strcpy(tmpStr3000, "J:"); break;
-        case REGISTER_K: strcpy(tmpStr3000, "K:"); break;
-        default: sprintf(tmpStr3000, "R%02d:", regist);
-      }
+        // register name or number
+        registerNameWidth = showString(tmpString, &standardFont, 1, 219 - 22 * row, vmNormal, false, true);
 
-      // register name or number
-      registerNameWidth = showString(tmpStr3000, &standardFont, 1, 219 - 22 * row, vmNormal, false, true);
+        if(   (regist <  REGISTER_X && regist % 5 == 4)
+           || (regist >= REGISTER_X && regist % 4 == 3)) {
+          lcd_fill_rect(0, 218 - 22 * row, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
+        }
 
-      if(   (regist <  REGISTER_X && regist % 5 == 4)
-         || (regist >= REGISTER_X && regist % 4 == 3)) {
-        for(int16_t x=0; x<SCREEN_WIDTH; x++) {
-          setPixel(x, 218 - 22 * row);
-        }
-      }
-
-      if(getRegisterDataType(regist) == dtReal34) {
-        if(showContent) {
-          real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpStr3000, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, STD_SPACE_4_PER_EM);
-        }
-        else {
-          sprintf(tmpStr3000, "%d bytes", (int16_t)TO_BYTES(REAL34_SIZE));
-        }
-      }
-      else if(getRegisterDataType(regist) == dtComplex34) {
-        if(showContent) {
-          complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpStr3000, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, STD_SPACE_4_PER_EM);
-        }
-        else {
-          sprintf(tmpStr3000, "%d bytes", (int16_t)TO_BYTES(COMPLEX34_SIZE));
-        }
-      }
-      else if(getRegisterDataType(regist) == dtLongInteger) {
-        if(showContent) {
-          if(getRegisterLongIntegerSign(regist) == LI_NEGATIVE) {
-            longIntegerRegisterToDisplayString(regist, tmpStr3000, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, STD_SPACE_4_PER_EM);
+        if(getRegisterDataType(regist) == dtReal34) {
+          if(showContent) {
+            real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, STD_SPACE_4_PER_EM);
           }
           else {
-            longIntegerRegisterToDisplayString(regist, tmpStr3000, TMP_STR_LENGTH, SCREEN_WIDTH - 9 - registerNameWidth, 50, STD_SPACE_4_PER_EM);
+            sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(REAL34_SIZE));
           }
         }
-        else {
-          sprintf(tmpStr3000, "%" PRIu32 " bits := 4+%" PRIu32 " bytes", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)) * 8, (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+        else if(getRegisterDataType(regist) == dtComplex34) {
+          if(showContent) {
+            complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, STD_SPACE_4_PER_EM);
+          }
+          else {
+            sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(COMPLEX34_SIZE));
+          }
         }
-      }
-      else if(getRegisterDataType(regist) == dtShortInteger) {
-        if(showContent) {
-          shortIntegerToDisplayString(regist, tmpStr3000, false);
-        }
-        else {
-          strcpy(tmpStr3000, "64 bits := 8 bytes");
-        }
-      }
-      else if(getRegisterDataType(regist) == dtString) {
-        if(showContent) {
-          strcpy(tmpStr3000, STD_LEFT_SINGLE_QUOTE);
-          strncat(tmpStr3000, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
-          strcat(tmpStr3000, STD_RIGHT_SINGLE_QUOTE);
-          if(stringWidth(tmpStr3000, &standardFont, false, true) >= SCREEN_WIDTH - 12 - registerNameWidth) { // 12 is the width of STD_ELLIPSIS
-            tmpStr3000[stringLastGlyph(tmpStr3000)] = 0;
-            while(stringWidth(tmpStr3000, &standardFont, false, true) >= SCREEN_WIDTH - 12 - registerNameWidth) { // 12 is the width of STD_ELLIPSIS
-              tmpStr3000[stringLastGlyph(tmpStr3000)] = 0;
+        else if(getRegisterDataType(regist) == dtLongInteger) {
+          if(showContent) {
+            if(getRegisterLongIntegerSign(regist) == LI_NEGATIVE) {
+              longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, STD_SPACE_4_PER_EM);
             }
-           strcat(tmpStr3000 + stringByteLength(tmpStr3000), STD_ELLIPSIS);
+            else {
+              longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 9 - registerNameWidth, 50, STD_SPACE_4_PER_EM);
+            }
+          }
+          else {
+            sprintf(tmpString, "%" PRIu32 " bits := 4+%" PRIu32 " bytes", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)) * 8, (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+          }
+        }
+        else if(getRegisterDataType(regist) == dtShortInteger) {
+          if(showContent) {
+            shortIntegerToDisplayString(regist, tmpString, false);
+          }
+          else {
+            strcpy(tmpString, "64 bits := 8 bytes");
+          }
+        }
+        else if(getRegisterDataType(regist) == dtString) {
+          if(showContent) {
+            strcpy(tmpString, STD_LEFT_SINGLE_QUOTE);
+            strncat(tmpString, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
+            strcat(tmpString, STD_RIGHT_SINGLE_QUOTE);
+            if(stringWidth(tmpString, &standardFont, false, true) >= SCREEN_WIDTH - 12 - registerNameWidth) { // 12 is the width of STD_ELLIPSIS
+              tmpString[stringLastGlyph(tmpString)] = 0;
+              while(stringWidth(tmpString, &standardFont, false, true) >= SCREEN_WIDTH - 12 - registerNameWidth) { // 12 is the width of STD_ELLIPSIS
+                tmpString[stringLastGlyph(tmpString)] = 0;
+              }
+             strcat(tmpString + stringByteLength(tmpString), STD_ELLIPSIS);
+            }
+          }
+          else {
+            sprintf(tmpString, "%" PRIu32 " character%s := 4+%" PRIu32 " bytes", (uint32_t)stringGlyphLength(REGISTER_STRING_DATA(regist)), stringGlyphLength(REGISTER_STRING_DATA(regist))==1 ? "" : "s", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+          }
+        }
+        else if(getRegisterDataType(regist) == dtConfig) {
+          if(showContent) {
+            strcpy(tmpString, "Configuration data");
+          }
+          else {
+            sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(CONFIG_SIZE));
           }
         }
         else {
-          sprintf(tmpStr3000, "%" PRIu32 " character%s := 4+%" PRIu32 " bytes", (uint32_t)stringGlyphLength(REGISTER_STRING_DATA(regist)), stringGlyphLength(REGISTER_STRING_DATA(regist))==1 ? "" : "s", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+          sprintf(tmpString, "Data type %s: to be coded", getDataTypeName(getRegisterDataType(regist), false, true));
         }
-      }
-      else if(getRegisterDataType(regist) == dtConfig) {
-        if(showContent) {
-          strcpy(tmpStr3000, "Configuration data");
-        }
-        else {
-          sprintf(tmpStr3000, "%d bytes", (int16_t)TO_BYTES(CONFIG_SIZE));
-        }
-      }
-      else {
-        sprintf(tmpStr3000, "Data type %s: to be coded", getDataTypeName(getRegisterDataType(regist), false, true));
-      }
 
-      showString(tmpStr3000, &standardFont, SCREEN_WIDTH - stringWidth(tmpStr3000, &standardFont, false, true) - 1, 219-22*row, vmNormal, false, true);
+        showString(tmpString, &standardFont, SCREEN_WIDTH - stringWidth(tmpString, &standardFont, false, true) - 1, 219-22*row, vmNormal, false, true);
+      }
     }
-  }
 
-  else if(rbrMode == RBR_LOCAL) { // Local registers
-    if(allLocalRegisterPointer->numberOfLocalRegisters != 0) { // Local registers are allocated
-      calcRegister_t regist;
-      for(int16_t row=0; row<10; row++) {
-        regist = currentRegisterBrowserScreen + row;
-        if(regist - FIRST_LOCAL_REGISTER < allLocalRegisterPointer->numberOfLocalRegisters) {
-          sprintf(tmpStr3000, "R.%02d:", regist);
+    else if(rbrMode == RBR_LOCAL) { // Local registers
+      if(allLocalRegisterPointer->numberOfLocalRegisters != 0) { // Local registers are allocated
+        for(int16_t row=0; row<10; row++) {
+          calcRegister_t regist = currentRegisterBrowserScreen + row;
+          if(regist - FIRST_LOCAL_REGISTER < allLocalRegisterPointer->numberOfLocalRegisters) {
+            sprintf(tmpString, "R.%02d:", regist);
 
-          // register number
-          registerNameWidth = showString(tmpStr3000, &standardFont, 1, 219 - 22 * row, vmNormal, true, true);
+            // register number
+            registerNameWidth = showString(tmpString, &standardFont, 1, 219 - 22 * row, vmNormal, true, true);
 
-          if(   (regist <  REGISTER_X && regist % 5 == 4)
-             || (regist >= REGISTER_X && regist % 4 == 3)) {
-            for(int16_t x=0; x<SCREEN_WIDTH; x++) {
-              setPixel(x, 218 - 22 * row);
+            if(   (regist <  REGISTER_X && regist % 5 == 4)
+               || (regist >= REGISTER_X && regist % 4 == 3)) {
+              lcd_fill_rect(0, 218 - 22 * row, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
             }
-          }
 
-          if(getRegisterDataType(regist) == dtReal34) {
-            if(showContent) {
-              real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpStr3000, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, STD_SPACE_4_PER_EM);
+            if(getRegisterDataType(regist) == dtReal34) {
+              if(showContent) {
+                real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, STD_SPACE_4_PER_EM);
+              }
+              else {
+                sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(REAL34_SIZE));
+              }
             }
-            else {
-              sprintf(tmpStr3000, "%d bytes", (int16_t)TO_BYTES(REAL34_SIZE));
+            else if(getRegisterDataType(regist) == dtComplex34) {
+              if(showContent) {
+                complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, STD_SPACE_4_PER_EM);
+              }
+              else {
+                sprintf(tmpString, "4+%d bytes", (int16_t)TO_BYTES(COMPLEX34_SIZE));
+              }
             }
-          }
-          else if(getRegisterDataType(regist) == dtComplex34) {
-            if(showContent) {
-              complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpStr3000, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, STD_SPACE_4_PER_EM);
+            else if(getRegisterDataType(regist) == dtLongInteger) {
+              if(showContent) {
+                longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, STD_SPACE_4_PER_EM);
+              }
+              else {
+                sprintf(tmpString, "%" PRIu32 " bits := 4+4+%" PRIu32 " bytes", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)) * 8, (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+              }
             }
-            else {
-              sprintf(tmpStr3000, "4+%d bytes", (int16_t)TO_BYTES(COMPLEX34_SIZE));
+            else if(getRegisterDataType(regist) == dtShortInteger) {
+              if(showContent) {
+                shortIntegerToDisplayString(regist, tmpString, false);
+              }
+              else {
+                strcpy(tmpString, "64 bits := 4+8 bytes");
+              }
             }
-          }
-          else if(getRegisterDataType(regist) == dtLongInteger) {
-            if(showContent) {
-              longIntegerRegisterToDisplayString(regist, tmpStr3000, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, STD_SPACE_4_PER_EM);
-            }
-            else {
-              sprintf(tmpStr3000, "%" PRIu32 " bits := 4+4+%" PRIu32 " bytes", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)) * 8, (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
-            }
-          }
-          else if(getRegisterDataType(regist) == dtShortInteger) {
-            if(showContent) {
-              shortIntegerToDisplayString(regist, tmpStr3000, false);
-            }
-            else {
-              strcpy(tmpStr3000, "64 bits := 4+8 bytes");
-            }
-          }
-          else if(getRegisterDataType(regist) == dtString) {
-            if(showContent) {
-              strcpy(tmpStr3000, STD_LEFT_SINGLE_QUOTE);
-              strncat(tmpStr3000, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
-              strcat(tmpStr3000, STD_RIGHT_SINGLE_QUOTE);
-              if(stringWidth(tmpStr3000, &standardFont, false, true) >= SCREEN_WIDTH - 12 - registerNameWidth) { // 12 is the width of STD_ELLIPSIS
-                tmpStr3000[stringLastGlyph(tmpStr3000)] = 0;
-                while(stringWidth(tmpStr3000, &standardFont, false, true) >= SCREEN_WIDTH - 12 - registerNameWidth) { // 12 is the width of STD_ELLIPSIS
-                  tmpStr3000[stringLastGlyph(tmpStr3000)] = 0;
+            else if(getRegisterDataType(regist) == dtString) {
+              if(showContent) {
+                strcpy(tmpString, STD_LEFT_SINGLE_QUOTE);
+                strncat(tmpString, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
+                strcat(tmpString, STD_RIGHT_SINGLE_QUOTE);
+                if(stringWidth(tmpString, &standardFont, false, true) >= SCREEN_WIDTH - 12 - registerNameWidth) { // 12 is the width of STD_ELLIPSIS
+                  tmpString[stringLastGlyph(tmpString)] = 0;
+                  while(stringWidth(tmpString, &standardFont, false, true) >= SCREEN_WIDTH - 12 - registerNameWidth) { // 12 is the width of STD_ELLIPSIS
+                    tmpString[stringLastGlyph(tmpString)] = 0;
+                  }
+                 strcat(tmpString + stringByteLength(tmpString), STD_ELLIPSIS);
                 }
-               strcat(tmpStr3000 + stringByteLength(tmpStr3000), STD_ELLIPSIS);
+              }
+              else {
+                sprintf(tmpString, "%" PRIu32 " character%s := 4+4+%" PRIu32 " bytes", (uint32_t)stringGlyphLength(REGISTER_STRING_DATA(regist)), stringGlyphLength(REGISTER_STRING_DATA(regist))==1 ? "" : "s", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+              }
+            }
+            else if(getRegisterDataType(regist) == dtConfig) {
+              if(showContent) {
+                strcpy(tmpString, "Configuration data");
+              }
+              else {
+                sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(CONFIG_SIZE));
               }
             }
             else {
-              sprintf(tmpStr3000, "%" PRIu32 " character%s := 4+4+%" PRIu32 " bytes", (uint32_t)stringGlyphLength(REGISTER_STRING_DATA(regist)), stringGlyphLength(REGISTER_STRING_DATA(regist))==1 ? "" : "s", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+              sprintf(tmpString, "Data type %s: to be coded", getDataTypeName(getRegisterDataType(regist), false, true));
             }
-          }
-          else if(getRegisterDataType(regist) == dtConfig) {
-            if(showContent) {
-              strcpy(tmpStr3000, "Configuration data");
-            }
-            else {
-              sprintf(tmpStr3000, "%d bytes", (int16_t)TO_BYTES(CONFIG_SIZE));
-            }
-          }
-          else {
-            sprintf(tmpStr3000, "Data type %s: to be coded", getDataTypeName(getRegisterDataType(regist), false, true));
-          }
 
-          showString(tmpStr3000, &standardFont, SCREEN_WIDTH - stringWidth(tmpStr3000, &standardFont, false, true), 219 - 22 * row, vmNormal, false, true);
+            showString(tmpString, &standardFont, SCREEN_WIDTH - stringWidth(tmpString, &standardFont, false, true), 219 - 22 * row, vmNormal, false, true);
+          }
         }
       }
-    }
-    else { // no local register allocated
-      rbrMode = RBR_GLOBAL;
-      registerBrowser(NOPARAM);
+      else { // no local register allocated
+        rbrMode = RBR_GLOBAL;
+        registerBrowser(NOPARAM);
+      }
     }
   }
-}
-#endif
+#endif // TESTSUITE_BUILD

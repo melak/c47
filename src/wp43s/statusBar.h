@@ -36,7 +36,7 @@
   void showHideUserMode       (void);
   #ifdef DMCP_BUILD
     void showHideUsbLowBattery(void);
-  #else
+  #else // !DMCP_BUILD
     void showHideStackLift    (void);
   #endif // DMCP_BUILD
-#endif // not TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD

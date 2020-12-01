@@ -18,7 +18,7 @@
  * \file or.h
  ***********************************************/
 
-void fnLogicalOr(uint16_t unusedParamButMandatory);
+void fnLogicalOr(uint16_t unusedButMandatoryParameter);
 void orError24  (void);
 void orError31  (void);
 void orLonILonI (void);

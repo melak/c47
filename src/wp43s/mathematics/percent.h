@@ -18,7 +18,7 @@
  * \file percent.h
  ***********************************************/
 
-void fnPercent(uint16_t unusedParamButMandatory);
+void fnPercent(uint16_t unusedButMandatoryParameter);
 
 void percentLonILonI(void);
 void percentLonIReal(void);

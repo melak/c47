@@ -18,7 +18,7 @@
  * \file division.h
  ***********************************************/
 
-void fnDivide(uint16_t unusedParamButMandatory);
+void fnDivide(uint16_t unusedButMandatoryParameter);
 void divError(void);
 
 void divComplexComplex(const real_t *numerReal, const real_t *numerImag, const real_t *denomReal, const real_t *denomImag,    real_t *quotientReal, real_t *quotientImag, realContext_t *realContext);

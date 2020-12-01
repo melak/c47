@@ -18,8 +18,8 @@
  * \file gamma.h
  ***********************************************/
 
-void fnGamma     (uint16_t unusedParamButMandatory);
-void fnLnGamma   (uint16_t unusedParamButMandatory);
+void fnGamma     (uint16_t unusedButMandatoryParameter);
+void fnLnGamma   (uint16_t unusedButMandatoryParameter);
 
 void gammaError  (void);
 void lnGammaError(void);

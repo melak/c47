@@ -26,7 +26,7 @@
  * \brief MASKL n ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnMaskl(uint16_t numberOfBits) {
@@ -35,7 +35,7 @@ void fnMaskl(uint16_t numberOfBits) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot calculate MASKL(%d) word size is %d", numberOfBits, shortIntegerWordSize);
       moreInfoOnError("In function fnMaskl:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
   else {
     uint64_t mask;
@@ -59,7 +59,7 @@ void fnMaskl(uint16_t numberOfBits) {
  * \brief MASKR n ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnMaskr(uint16_t numberOfBits) {
@@ -68,7 +68,7 @@ void fnMaskr(uint16_t numberOfBits) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot calculate MASKR(%d) word size is %d", numberOfBits, shortIntegerWordSize);
       moreInfoOnError("In function fnMaskr:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
   else {
     uint64_t mask;

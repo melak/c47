@@ -18,7 +18,7 @@
  * \file floor.h
  ***********************************************/
 
-void fnFloor   (uint16_t unusedParamButMandatory);
+void fnFloor   (uint16_t unusedButMandatoryParameter);
 void floorError(void);
 void floorLonI (void);
 void floorRema (void);

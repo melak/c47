@@ -18,12 +18,12 @@
  * \file mean.h
  ***********************************************/
 
-void fnWeightedSampleStdDev(uint16_t unusedParamButMandatory);
-void fnWeightedPopulationStdDev(uint16_t unusedParamButMandatory);
-void fnWeightedStandardError(uint16_t unusedParamButMandatory);
-void fnSampleStdDev(uint16_t unusedParamButMandatory);
-void fnPopulationStdDev(uint16_t unusedParamButMandatory);
-void fnStandardError(uint16_t unusedParamButMandatory);
-void fnGeometricSampleStdDev(uint16_t unusedParamButMandatory);
-void fnGeometricPopulationStdDev(uint16_t unusedParamButMandatory);
-void fnGeometricStandardError(uint16_t unusedParamButMandatory);
+void fnWeightedSampleStdDev(uint16_t unusedButMandatoryParameter);
+void fnWeightedPopulationStdDev(uint16_t unusedButMandatoryParameter);
+void fnWeightedStandardError(uint16_t unusedButMandatoryParameter);
+void fnSampleStdDev(uint16_t unusedButMandatoryParameter);
+void fnPopulationStdDev(uint16_t unusedButMandatoryParameter);
+void fnStandardError(uint16_t unusedButMandatoryParameter);
+void fnGeometricSampleStdDev(uint16_t unusedButMandatoryParameter);
+void fnGeometricPopulationStdDev(uint16_t unusedButMandatoryParameter);
+void fnGeometricStandardError(uint16_t unusedButMandatoryParameter);

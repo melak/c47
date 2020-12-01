@@ -18,7 +18,7 @@
  * \file cosh.h
  ***********************************************/
 
-void fnCosh   (uint16_t unusedParamButMandatory);
+void fnCosh   (uint16_t unusedButMandatoryParameter);
 void coshError(void);
 void coshLonI (void);
 void coshRema (void);

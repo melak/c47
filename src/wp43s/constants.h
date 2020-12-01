@@ -21,4 +21,4 @@
 
 
 void fnConstant(const uint16_t constant);
-void fnPi      (uint16_t unusedParamButMandatory);
+void fnPi      (uint16_t unusedButMandatoryParameter);

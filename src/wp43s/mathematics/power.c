@@ -42,7 +42,7 @@ void (* const power[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_
 /********************************************//**
  * \brief Data type error in power
  *
- * \param[in] unusedParamButMandatory
+ * \param[in] unusedButMandatoryParameter
  * \return void
  ***********************************************/
 void powError(void) {
@@ -51,7 +51,7 @@ void powError(void) {
     sprintf(errorMessage, "cannot raise %s", getRegisterDataTypeName(REGISTER_Y, true, false));
     sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "to %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnPower:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
-  #endif
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 }
 
 
@@ -60,10 +60,10 @@ void powError(void) {
  * \brief regX ==> regL and regY ^ regX ==> regX
  * Drops Y, enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory
+ * \param[in] unusedButMandatoryParameter
  * \return void
  ***********************************************/
-void fnPower(uint16_t unusedParamButMandatory) {
+void fnPower(uint16_t unusedButMandatoryParameter) {
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
   power[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
@@ -93,7 +93,7 @@ void powLonILonI(void) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function powLonILonI: Cannot calculate 0^0!", NULL, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
     longIntegerFree(base);
     longIntegerFree(exponent);
@@ -546,42 +546,40 @@ void powCplxReal(void) {
 /*
  * Calculate y^x for complex numbers.
  */
-uint8_t PowerComplex(const real_t *yReal, const real_t *yImag, const real_t *xReal, const real_t *xImag,
-                     real_t *rReal, real_t *rImag, realContext_t *realContext)
-{
-    uint8_t errorCode = ERROR_NONE;
+uint8_t PowerComplex(const real_t *yReal, const real_t *yImag, const real_t *xReal, const real_t *xImag, real_t *rReal, real_t *rImag, realContext_t *realContext) {
+  uint8_t errorCode = ERROR_NONE;
 
-    if(realIsInfinite(yReal) || realIsInfinite(yImag)) {
-        if(realIsZero(xReal) && realIsZero(xImag)) {
-            realCopy(const_NaN, rReal);
-            realCopy(const_NaN, rImag);
-        }
-        else {
-            realCopy(const_plusInfinity, rReal);
-            realCopy(const_plusInfinity, rImag);
-        }
-    }
-    else {
-        real_t theta;
-        real_t tmp;
+  if(realIsInfinite(yReal) || realIsInfinite(yImag)) {
+      if(realIsZero(xReal) && realIsZero(xImag)) {
+          realCopy(const_NaN, rReal);
+          realCopy(const_NaN, rImag);
+      }
+      else {
+          realCopy(const_plusInfinity, rReal);
+          realCopy(const_plusInfinity, rImag);
+      }
+  }
+  else {
+      real_t theta;
+      real_t tmp;
 
-        realRectangularToPolar(yReal, yImag, rReal, &theta, realContext);
-        WP34S_Ln(rReal, rReal, realContext);
+      realRectangularToPolar(yReal, yImag, rReal, &theta, realContext);
+      WP34S_Ln(rReal, rReal, realContext);
 
-        realMultiply(rReal, xImag, rImag, realContext);
-        realFMA(&theta, xReal, rImag, rImag, realContext);
-        realChangeSign(&theta);
+      realMultiply(rReal, xImag, rImag, realContext);
+      realFMA(&theta, xReal, rImag, rImag, realContext);
+      realChangeSign(&theta);
 
-        realMultiply(rReal, xReal, rReal, realContext);
-        realFMA(&theta, xImag, rReal, rReal, realContext);
+      realMultiply(rReal, xReal, rReal, realContext);
+      realFMA(&theta, xImag, rReal, rReal, realContext);
 
-        realExp(rReal, &tmp, realContext);
-        realPolarToRectangular(const_1, rImag, rReal, rImag, realContext);
-        realMultiply(&tmp, rImag, rImag, realContext);
-        realMultiply(&tmp, rReal, rReal, realContext);
-    }
+      realExp(rReal, &tmp, realContext);
+      realPolarToRectangular(const_1, rImag, rReal, rImag, realContext);
+      realMultiply(&tmp, rImag, rImag, realContext);
+      realMultiply(&tmp, rReal, rReal, realContext);
+  }
 
-    return errorCode;
+  return errorCode;
 }
 
 /********************************************//**
@@ -591,28 +589,27 @@ uint8_t PowerComplex(const real_t *yReal, const real_t *yImag, const real_t *xRe
  * \return void
  ***********************************************/
 void powCplxCplx(void) {
+  real_t yReal, yImag, xReal, xImag;
 
-    real_t yReal, yImag, xReal, xImag;
+  real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
+  real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &yImag);
+  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
+  real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
-    real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &yImag);
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
-    real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
+  real_t rReal, rImag;
 
-    real_t rReal, rImag;
+  uint8_t errorCode = PowerComplex(&yReal, &yImag, &xReal, &xImag, &rReal, &rImag, &ctxtReal39);
 
-    uint8_t errorCode = PowerComplex(&yReal, &yImag, &xReal, &xImag, &rReal, &rImag, &ctxtReal39);
-
-    if(errorCode!=ERROR_NONE) {
-        displayCalcErrorMessage(errorCode, ERR_REGISTER_LINE, REGISTER_X);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "cannot raise %s", getRegisterDataTypeName(REGISTER_Y, true, false));
-        sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "to %s", getRegisterDataTypeName(REGISTER_X, true, false));
-        moreInfoOnError("In function fnPower:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
-#endif
-    }
-    else {
-        realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-        realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
-    }
+  if(errorCode!=ERROR_NONE) {
+    displayCalcErrorMessage(errorCode, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "cannot raise %s", getRegisterDataTypeName(REGISTER_Y, true, false));
+      sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "to %s", getRegisterDataTypeName(REGISTER_X, true, false));
+      moreInfoOnError("In function fnPower:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+  else {
+    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+    realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  }
 }

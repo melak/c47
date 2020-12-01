@@ -18,8 +18,8 @@
  * \file fib.h
  ***********************************************/
 
-void fnGd   (uint16_t unusedParamButMandatory);
-void fnInvGd(uint16_t unusedParamButMandatory);
+void fnGd   (uint16_t unusedButMandatoryParameter);
+void fnInvGd(uint16_t unusedButMandatoryParameter);
 
 void gdTypeError(uint16_t gdOrInvGd);
 void gdLonI (uint16_t gdOrInvGd);

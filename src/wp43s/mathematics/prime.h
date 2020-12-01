@@ -20,5 +20,5 @@
 
 #include "wp43s.h"
 
-void fnIsPrime  (uint16_t unusedParamButMandatory);
-void fnNextPrime(uint16_t unusedParamButMandatory);
+void fnIsPrime  (uint16_t unusedButMandatoryParameter);
+void fnNextPrime(uint16_t unusedButMandatoryParameter);

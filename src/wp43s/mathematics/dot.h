@@ -18,7 +18,7 @@
  * \file dot.h
  ***********************************************/
 
-void fnDot(uint16_t unusedParamButMandatory);
+void fnDot(uint16_t unusedButMandatoryParameter);
 
 void dotRealCplx(void);
 void dotLonICplx(void);

@@ -18,7 +18,7 @@
  * \file roundi.h
  ***********************************************/
 
-void fnRoundi   (uint16_t unusedParamButMandatory);
+void fnRoundi   (uint16_t unusedButMandatoryParameter);
 void roundiError(void);
 void roundiRema (void);
 void roundiReal (void);

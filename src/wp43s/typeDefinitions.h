@@ -51,17 +51,17 @@ typedef struct {
  * \brief Structure keeping the informations for one glyph
  ***********************************************/
 typedef struct {
-  uint16_t charCode;        ///< Unicode code point
-  int8_t   colsBeforeGlyph; ///< Number of empty columns before the glyph
-  int8_t   colsGlyph;       ///< Number of columns of the glyph
-  int8_t   colsAfterGlyph;  ///< Number of empty columns afer the glyph
-  int8_t   rowsAboveGlyph;  ///< Number of empty rows above the glyph
-  int8_t   rowsGlyph;       ///< Number of rows of the glyph
-  int8_t   rowsBelowGlyph;  ///< Number of empty rows below the glypg
-  int16_t  rank1;           ///< Rank of the replacement glyph
-  int16_t  rank2;           ///< Rank of the glyph
-  char     *data;           ///< Hexadecimal data representing the glyph.
-                            ///< There are rowsGlyph x (colsGlyph rounded up to 8 bit boundary) bytes
+  uint16_t charCode;         ///< Unicode code point
+  uint8_t  colsBeforeGlyph;  ///< Number of empty columns before the glyph
+  uint8_t  colsGlyph;        ///< Number of columns of the glyph
+  uint8_t  colsAfterGlyph;   ///< Number of empty columns afer the glyph
+  uint8_t  rowsAboveGlyph;   ///< Number of empty rows above the glyph
+  uint8_t  rowsGlyph;        ///< Number of rows of the glyph
+  uint8_t  rowsBelowGlyph;   ///< Number of empty rows below the glypg
+  int16_t  rank1;            ///< Rank of the replacement glyph
+  int16_t  rank2;            ///< Rank of the glyph
+  char     *data;            ///< Hexadecimal data representing the glyph.
+                             ///< There are rowsGlyph x (colsGlyph rounded up to 8 bit boundary) bytes
 } glyph_t;
 
 
@@ -70,9 +70,9 @@ typedef struct {
  * \brief Font description
  ***********************************************/
 typedef struct {
-  int8_t  id;             ///< 0=numeric 1=standard
-  int16_t numberOfGlyphs; ///< Number of glyphs in the font
-  glyph_t glyphs[];       ///< Pointer to the glyph description structure
+  int8_t  id;              ///< 0=numeric 1=standard
+  uint16_t numberOfGlyphs; ///< Number of glyphs in the font
+  glyph_t glyphs[];        ///< Pointer to the glyph description structure
 } font_t;
 
 
@@ -185,10 +185,21 @@ typedef enum {
  * \brief Structure keeping the informations for one softmenu
  ***********************************************/
 typedef struct {
-  int16_t menuId;             ///< ID of the menu. The ID is always negative and -ID must be in the indexOfItems area
+  int16_t menuItem;           ///< ID of the menu. The item is always negative and -item must be in the indexOfItems area
   int16_t numItems;           ///< Number of items in the softmenu (must be a multiple of 6 for now)
   const int16_t *softkeyItem; ///< Pointer to the first item of the menu
 } softmenu_t;
+
+
+/********************************************//**
+ * \struct dynamicSoftmenu_t
+ * \brief Structure keeping the informations for one variable softmenu
+ ***********************************************/
+typedef struct {
+  int16_t menuItem;           ///< ID of the menu. The item is always negative and -item must be in the indexOfItems area
+  int16_t numItems;           ///< Number of items in the dynamic softmenu (must be a multiple of 6 for now)
+  uint8_t *menuContent;       ///< Pointer to the menu content
+} dynamicSoftmenu_t;
 
 
 /********************************************//**
@@ -196,8 +207,8 @@ typedef struct {
  * \brief Stack of softmenus
  ***********************************************/
 typedef struct {
-  int16_t softmenu;  ///< Softmenu ID
-  int16_t firstItem; ///< Current first item on the screen (unshifted F1 = bottom left)
+  int16_t softmenuId; ///< Softmenu ID = rank in dynamicSoftmenu or softmenu
+  int16_t firstItem;  ///< Current first item on the screen (unshifted F1 = bottom left)
 } softmenuStack_t;
 
 
@@ -233,3 +244,25 @@ typedef struct {
   uint8_t  stackLiftStatus;   ///< Stack lift status after item execution.
   uint8_t  undoStatus;        ///< Undo status after item execution.
 } item_t;
+
+
+/********************************************//**
+ * \typedef labelList_t
+ * \brief Structure keeping the information for a program label
+ ***********************************************/
+typedef struct {
+  int16_t  program;             ///< Program id: <0 for FLASH and >0 for RAM
+  int32_t  followingStep;       ///< Step number following the label: <0 for a local label and >0 for a global label
+  uint8_t  *labelPointer;       ///< Pointer to the byte after the 0x01 op code (LBL)
+  uint8_t  *instructionPointer; ///< Pointer to the instructiuon following the label
+} labelList_t;
+
+
+/********************************************//**
+ * \typedef programList_t
+ * \brief Structure keeping the information for a program
+ ***********************************************/
+typedef struct {
+  int32_t  step;                ///< (Step number + 1) of the program begin: <0 for a FLASH program and >0 for a RAM program
+  uint8_t  *instructionPointer; ///< Pointer to the program begin
+} programList_t;

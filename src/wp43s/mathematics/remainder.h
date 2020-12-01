@@ -18,7 +18,7 @@
  * \file remainder.h
  ***********************************************/
 
-void fnRmd(uint16_t unusedParamButMandatory);
+void fnRmd(uint16_t unusedButMandatoryParameter);
 void rmdError(void);
 
 //      RegYRegX

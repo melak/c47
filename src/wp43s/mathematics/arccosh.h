@@ -18,7 +18,7 @@
  * \file arccosh.h
  ***********************************************/
 
-void fnArccosh   (uint16_t unusedParamButMandatory);
+void fnArccosh   (uint16_t unusedButMandatoryParameter);
 void arccoshError(void);
 void arccoshLonI (void);
 void arccoshRema (void);

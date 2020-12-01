@@ -41,7 +41,7 @@ void factError(void) {
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     sprintf(errorMessage, "cannot calculate x! for %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnFactorial:", errorMessage, NULL, NULL);
-  #endif
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 }
 
 
@@ -50,10 +50,10 @@ void factError(void) {
  * \brief regX ==> regL and fact(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnFactorial(uint16_t unusedParamButMandatory) {
+void fnFactorial(uint16_t unusedButMandatoryParameter) {
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
   fact[getRegisterDataType(REGISTER_X)]();
@@ -64,7 +64,7 @@ void fnFactorial(uint16_t unusedParamButMandatory) {
 
 
 void factLonI(void) {
-  longInteger_t x, fact;
+  longInteger_t x, f;
 
   convertLongIntegerRegisterToLongInteger(REGISTER_X, x);
 
@@ -72,9 +72,9 @@ void factLonI(void) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       longIntegerRegisterToDisplayString(REGISTER_X, errorMessage, sizeof(errorMessage), SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION);
-      sprintf(tmpStr3000, "cannot calculate factorial(%s)", errorMessage);
-      moreInfoOnError("In function factLonI:", tmpStr3000, NULL, NULL);
-    #endif
+      sprintf(tmpString, "cannot calculate factorial(%s)", errorMessage);
+      moreInfoOnError("In function factLonI:", tmpString, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     longIntegerFree(x);
     return;
   }
@@ -83,9 +83,9 @@ void factLonI(void) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       longIntegerRegisterToDisplayString(REGISTER_X, errorMessage, sizeof(errorMessage), SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION);
-      sprintf(tmpStr3000, "cannot calculate factorial(%s), the limit is 450, it's to ensure that the 3328 bits limit is not exceeded", errorMessage);
-      moreInfoOnError("In function factLonI:", tmpStr3000, NULL, NULL);
-    #endif
+      sprintf(tmpString, "cannot calculate factorial(%s), the limit is 450, it's to ensure that the 3328 bits limit is not exceeded", errorMessage);
+      moreInfoOnError("In function factLonI:", tmpString, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     longIntegerFree(x);
     return;
   }
@@ -95,20 +95,20 @@ void factLonI(void) {
   longIntegerToUInt(x, n);
   #if (__linux__ == 1)
     //The more precise formula below is: (n*ln(n) - n + (ln(8n³ + 4n² + n + 1/30))/6 + ln(pi)/2) / ln(2)
-    longIntegerInitSizeInBits(fact, 1 + (uint32_t)((n * log(n) - n) / log(2)));
-    uIntToLongInteger(1, fact);
+    longIntegerInitSizeInBits(f, 1 + (uint32_t)((n * log(n) - n) / log(2)));
+    uIntToLongInteger(1, f);
     for(uint32_t i=2; i<=n; i++) {
-      longIntegerMultiplyUInt(fact, i, fact);
+      longIntegerMultiplyUInt(f, i, f);
     }
-  #else
-    longIntegerInit(fact);
-    longIntegerFactorial(n, fact); //TODO why this line fails?
-  #endif
+  #else // (__linux__ == 0)
+    longIntegerInit(f);
+    longIntegerFactorial(n, f); //TODO why this line fails?
+  #endif // __linux__ == 1
 
 
-  convertLongIntegerToLongIntegerRegister(fact, REGISTER_X);
+  convertLongIntegerToLongIntegerRegister(f, REGISTER_X);
 
-  longIntegerFree(fact);
+  longIntegerFree(f);
   longIntegerFree(x);
 }
 
@@ -136,9 +136,9 @@ void factShoI(void) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       longIntegerRegisterToDisplayString(REGISTER_X, errorMessage, sizeof(errorMessage), SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION);
-      sprintf(tmpStr3000, "cannot calculate factorial(%s)", errorMessage);
-      moreInfoOnError("In function factShoI:", tmpStr3000, NULL, NULL);
-    #endif
+      sprintf(tmpString, "cannot calculate factorial(%s)", errorMessage);
+      moreInfoOnError("In function factShoI:", tmpString, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
 
@@ -146,19 +146,18 @@ void factShoI(void) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       longIntegerRegisterToDisplayString(REGISTER_X, errorMessage, sizeof(errorMessage), SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION);
-      sprintf(tmpStr3000, "cannot calculate factorial(%s)", errorMessage);
-      moreInfoOnError("In function factShoI:", tmpStr3000, NULL, NULL);
-    #endif
+      sprintf(tmpString, "cannot calculate factorial(%s)", errorMessage);
+      moreInfoOnError("In function factShoI:", tmpString, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
 
-  uint64_t fact = fact_uint64(value);
-
-  if(fact > shortIntegerMask) {
+  uint64_t f = fact_uint64(value);
+  if(f > shortIntegerMask) {
     setSystemFlag(FLAG_OVERFLOW);
   }
 
-  convertUInt64ToShortIntegerRegister(0, fact, getRegisterTag(REGISTER_X), REGISTER_X);
+  convertUInt64ToShortIntegerRegister(0, f, getRegisterTag(REGISTER_X), REGISTER_X);
 }
 
 

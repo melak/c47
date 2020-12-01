@@ -77,28 +77,28 @@ static void calculateStandardDeviation(const real_t *sumX2, const real_t *sumX,
 }
 
 /* Standard deviation (sample and population) and standard error for arithmetic mean */
-void fnSampleStdDev(uint16_t unusedParamButMandatory) {
+void fnSampleStdDev(uint16_t unusedButMandatoryParameter) {
   calculateStandardDeviation(SIGMA_X2, SIGMA_X, SIGMA_N, SIGMA_Y2, SIGMA_Y, 1, 0, 0, TI_SAMPLSTDDEV);
 }
 
-void fnPopulationStdDev(uint16_t unusedParamButMandatory) {
+void fnPopulationStdDev(uint16_t unusedButMandatoryParameter) {
   calculateStandardDeviation(SIGMA_X2, SIGMA_X, SIGMA_N, SIGMA_Y2, SIGMA_Y, 0, 0, 0, TI_POPLSTDDEV);
 }
 
-void fnStandardError(uint16_t unusedParamButMandatory) {
+void fnStandardError(uint16_t unusedButMandatoryParameter) {
   calculateStandardDeviation(SIGMA_X2, SIGMA_X, SIGMA_N, SIGMA_Y2, SIGMA_Y, 1, 1, 0, TI_STDERR);
 }
 
 /* Standard deviation (sample and population) and standard error for geometric mean */
-void fnGeometricSampleStdDev(uint16_t unusedParamButMandatory) {
+void fnGeometricSampleStdDev(uint16_t unusedButMandatoryParameter) {
   calculateStandardDeviation(SIGMA_ln2X, SIGMA_lnX, SIGMA_N, SIGMA_ln2Y, SIGMA_lnY, 1, 0, 1, TI_GEOMSAMPLSTDDEV);
 }
 
-void fnGeometricPopulationStdDev(uint16_t unusedParamButMandatory) {
+void fnGeometricPopulationStdDev(uint16_t unusedButMandatoryParameter) {
   calculateStandardDeviation(SIGMA_ln2X, SIGMA_lnX, SIGMA_N, SIGMA_ln2Y, SIGMA_lnY, 0, 0, 1, TI_GEOMPOPLSTDDEV);
 }
 
-void fnGeometricStandardError(uint16_t unusedParamButMandatory) {
+void fnGeometricStandardError(uint16_t unusedButMandatoryParameter) {
   calculateStandardDeviation(SIGMA_ln2X, SIGMA_lnX, SIGMA_N, SIGMA_ln2Y, SIGMA_lnY, 1, 1, 1, TI_GEOMSTDERR);
 }
 
@@ -113,14 +113,14 @@ static void calculateWeightedStandardDeviation(int sample, int rootn, int exp, i
   }
 }
 
-void fnWeightedSampleStdDev(uint16_t unusedParamButMandatory) {
+void fnWeightedSampleStdDev(uint16_t unusedButMandatoryParameter) {
   calculateWeightedStandardDeviation(1, 0, 0, TI_WEIGHTEDSAMPLSTDDEV);
 }
 
-void fnWeightedPopulationStdDev(uint16_t unusedParamButMandatory) {
+void fnWeightedPopulationStdDev(uint16_t unusedButMandatoryParameter) {
   calculateWeightedStandardDeviation(0, 0, 0, TI_WEIGHTEDPOPLSTDDEV);
 }
 
-void fnWeightedStandardError(uint16_t unusedParamButMandatory) {
+void fnWeightedStandardError(uint16_t unusedButMandatoryParameter) {
   calculateWeightedStandardDeviation(1, 1, 0, TI_WEIGHTEDSTDERR);
 }

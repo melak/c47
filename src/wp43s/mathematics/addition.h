@@ -18,7 +18,7 @@
  * \file addition.h
  ***********************************************/
 
-void fnAdd      (uint16_t unusedParamButMandatory);
+void fnAdd      (uint16_t unusedButMandatoryParameter);
 void addError   (void);
 
 //      RegYRegX

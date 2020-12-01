@@ -18,7 +18,7 @@
  * \file log2.h
  ***********************************************/
 
-void  fnLog2   (uint16_t unusedParamButMandatory);
+void  fnLog2   (uint16_t unusedButMandatoryParameter);
 void  log2Error(void);
 void  log2LonI (void);
 void  log2Rema (void);

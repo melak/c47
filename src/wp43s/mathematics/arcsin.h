@@ -18,7 +18,7 @@
  * \file arcsin.h
  ***********************************************/
 
-void fnArcsin   (uint16_t unusedParamButMandatory);
+void fnArcsin   (uint16_t unusedButMandatoryParameter);
 void arcsinError(void);
 void arcsinLonI (void);
 void arcsinRema (void);

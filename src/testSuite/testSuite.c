@@ -797,7 +797,7 @@ void setParameter(char *p) {
       r[strlen(r) - 1] = 0;
 
       // replace , with .
-      for(int i=0; i<(int)strlen(r); i++) {
+      for(i=0; i<(int)strlen(r); i++) {
         if(r[i] == ',') r[i] = '.';
       }
 
@@ -861,12 +861,12 @@ void setParameter(char *p) {
       while(imag[strlen(imag) - 1] == ' ') imag[strlen(imag) - 1] = 0;
 
       // replace , with . in the real part
-      for(int i=0; i<(int)strlen(real); i++) {
+      for(i=0; i<(int)strlen(real); i++) {
         if(real[i] == ',') real[i] = '.';
       }
 
       // replace , with . in the imaginary part
-      for(int i=0; i<(int)strlen(imag); i++) {
+      for(i=0; i<(int)strlen(imag); i++) {
         if(imag[i] == ',') imag[i] = '.';
       }
 
@@ -900,13 +900,13 @@ void setParameter(char *p) {
 
 void inParameters(char *token) {
   char parameter[2000];
-  int32_t index, lg;
+  int32_t lg;
 
   strReplace(token, "inf", "9e9999");
 
   while(*token == ' ') token++;
   while(*token != 0) {
-    index = 0;
+    int32_t index = 0;
     while(*token != ' ' && *token != 0) {
       if(*token == '"') { // Inside a string
         lg = endOfString(token) - token;
@@ -929,8 +929,8 @@ void inParameters(char *token) {
 void checkRegisterType(calcRegister_t regist, char letter, uint32_t expectedDataType, uint32_t expectedTag) {
   if(getRegisterDataType(regist) != expectedDataType) {
     if(letter == 0) {
-      printf("\nRegister %u should be %s but it is %s!\n", regist, getDataTypeName(expectedDataType, true, false), getDataTypeName(getRegisterDataType(regist), true, false));
-      printf("R%u = ", regist);
+      printf("\nRegister %d should be %s but it is %s!\n", regist, getDataTypeName(expectedDataType, true, false), getDataTypeName(getRegisterDataType(regist), true, false));
+      printf("R%d = ", regist);
     }
     else {
       printf("\nRegister %c should be %s but it is %s!\n", letter, getDataTypeName(expectedDataType, true, false), getDataTypeName(getRegisterDataType(regist), true, false));
@@ -943,8 +943,8 @@ void checkRegisterType(calcRegister_t regist, char letter, uint32_t expectedData
   if(getRegisterTag(regist) != expectedTag) {
     if(getRegisterDataType(regist) == dtShortInteger) {
       if(letter == 0) {
-        printf("\nRegister %u is a short integer base %u but it should be base %u!\n", regist, expectedTag, getRegisterShortIntegerBase(regist));
-        printf("R%u = ", regist);
+        printf("\nRegister %d is a short integer base %u but it should be base %u!\n", regist, expectedTag, getRegisterShortIntegerBase(regist));
+        printf("R%d = ", regist);
       }
       else {
         printf("\nRegister %c is a short integer base %u but it should be base %u!\n", letter, expectedTag, getRegisterShortIntegerBase(regist));
@@ -955,8 +955,8 @@ void checkRegisterType(calcRegister_t regist, char letter, uint32_t expectedData
     }
     else if(getRegisterDataType(regist) == dtReal34) {
       if(letter == 0) {
-        printf("\nRegister %u should be a real tagged %s but it is tagged %s!\n", regist, getAngularModeName(expectedTag), getAngularModeName(getRegisterAngularMode(regist)));
-        printf("R%u = ", regist);
+        printf("\nRegister %d should be a real tagged %s but it is tagged %s!\n", regist, getAngularModeName(expectedTag), getAngularModeName(getRegisterAngularMode(regist)));
+        printf("R%d = ", regist);
       }
       else {
         printf("\nRegister %c should be a real tagged %s but it is tagged %s!\n", letter, getAngularModeName(expectedTag), getAngularModeName(getRegisterAngularMode(regist)));
@@ -967,11 +967,11 @@ void checkRegisterType(calcRegister_t regist, char letter, uint32_t expectedData
     }
     else if(getRegisterDataType(regist) == dtLongInteger) {
       if(letter == 0) {
-        printf("\nRegister %u should be a long integer tagged %d but it is tagged %d!\n", regist, expectedTag, getRegisterLongIntegerSign(regist));
-        printf("R%u = ", regist);
+        printf("\nRegister %d should be a long integer tagged %u but it is tagged %u!\n", regist, expectedTag, getRegisterLongIntegerSign(regist));
+        printf("R%d = ", regist);
       }
       else {
-        printf("\nRegister %c should be a long integer tagged %d but it is tagged %d!\n", letter, expectedTag, getRegisterLongIntegerSign(regist));
+        printf("\nRegister %c should be a long integer tagged %u but it is tagged %u!\n", letter, expectedTag, getRegisterLongIntegerSign(regist));
         printf("R%c = ", letter);
       }
       printRegisterToConsole(regist, "", "\n");
@@ -1031,7 +1031,7 @@ int relativeErrorReal34(real34_t *expectedValue34, real34_t *value34, char *numb
 
 void wrongRegisterValue(calcRegister_t regist, char letter, char *expectedValue) {
   if(letter == 0) {
-    printf("\nRegister %u value should be ", regist);
+    printf("\nRegister %d value should be ", regist);
   }
   else {
     printf("\nRegister %c value should be ", letter);
@@ -1047,7 +1047,7 @@ void expectedAndShouldBeValue(calcRegister_t regist, char letter, char *expected
   char str[300];
 
   if(letter == 0) {
-    sprintf(expectedAndValue, "\nRegister %u value should be ", regist);
+    sprintf(expectedAndValue, "\nRegister %d value should be ", regist);
   }
   else {
     sprintf(expectedAndValue, "\nRegister %c value should be ", letter);
@@ -1522,7 +1522,7 @@ void checkExpectedOutParameter(char *p) {
       r[strlen(r) - 1] = 0;
 
       // replace , with .
-      for(int i=0; i<(int)strlen(r); i++) {
+      for(i=0; i<(int)strlen(r); i++) {
         if(r[i] == ',') r[i] = '.';
       }
 
@@ -1539,8 +1539,9 @@ void checkExpectedOutParameter(char *p) {
       checkRegisterType(regist, letter, dtString, AM_NONE);
       getString(r + 1);
 
-      char *expected, *is, stringUtf8[200];
+      char *expected, *is;
       if(stringByteLength(r + 1) != stringByteLength(REGISTER_STRING_DATA(regist))) {
+        char stringUtf8[200];
         stringToUtf8(REGISTER_STRING_DATA(regist), (uint8_t *)stringUtf8);
         printf("\nThe 2 strings are not of the same size.\nRegister string: %s\n", stringUtf8);
         for(i=0, is=REGISTER_STRING_DATA(regist); i<=stringByteLength(REGISTER_STRING_DATA(regist)); i++, is++) {
@@ -1631,12 +1632,12 @@ void checkExpectedOutParameter(char *p) {
       while(imag[strlen(imag) - 1] == ' ') imag[strlen(imag) - 1] = 0;
 
       // replace , with . in the real part
-      for(int i=0; i<(int)strlen(real); i++) {
+      for(i=0; i<(int)strlen(real); i++) {
         if(real[i] == ',') real[i] = '.';
       }
 
       // replace , with . in the imaginary part
-      for(int i=0; i<(int)strlen(imag); i++) {
+      for(i=0; i<(int)strlen(imag); i++) {
         if(imag[i] == ',') imag[i] = '.';
       }
 
@@ -1675,13 +1676,13 @@ void checkExpectedOutParameter(char *p) {
 
 void outParameters(char *token) {
   char parameter[2000];
-  int32_t index, lg;
+  int32_t lg;
 
   strReplace(token, "inf", "9e9999");
 
   while(*token == ' ') token++;
   while(*token != 0) {
-    index = 0;
+    int32_t index = 0;
     while(*token != ' ' && *token != 0) {
       if(*token == '"') { // Inside a string
         lg = endOfString(token) - token;
@@ -1969,10 +1970,10 @@ void processOneFile(void) {
 
 
 void checkOneCatalogSorting(const int16_t *catalog, int16_t catalogId, const char *catalogName) {
-  int32_t i, nbElements, cmp;
+  int32_t i, nbElements;
 
-  for(nbElements=0, i=0; softmenu[i].menuId; i++) {
-    if(softmenu[i].menuId == -catalogId) {
+  for(nbElements=0, i=0; softmenu[i].menuItem; i++) {
+    if(softmenu[i].menuItem == -catalogId) {
       nbElements = softmenu[i].numItems;
       break;
     }
@@ -1985,6 +1986,7 @@ void checkOneCatalogSorting(const int16_t *catalog, int16_t catalogId, const cha
   printf("Checking sort order of catalog %s (%d elements)\n", catalogName, nbElements);
 
   for(i=1; i<nbElements; i++) {
+    int32_t cmp;
     if((cmp = compareString(indexOfItems[abs(catalog[i - 1])].itemCatalogName, indexOfItems[abs(catalog[i])].itemCatalogName, CMP_EXTENSIVE)) >= 0) {
       printf("In catalog %s, element %d (item %d) should be after element %d (item %d). cmp = %d\n",
                          catalogName, i - 1,  catalog[i - 1],             i,       catalog[i],cmp);

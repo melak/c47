@@ -18,7 +18,7 @@
  * \file cubeRoot.h
  ***********************************************/
 
-void fnCubeRoot(uint16_t unusedParamButMandatory);
+void fnCubeRoot(uint16_t unusedButMandatoryParameter);
 void curtError  (void);
 void curtLonI   (void);
 void curtRema   (void);

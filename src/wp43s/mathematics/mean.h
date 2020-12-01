@@ -18,8 +18,8 @@
  * \file mean.h
  ***********************************************/
 
-void fnMeanXY             (uint16_t unusedParamButMandatory);
-void fnGeometricMeanXY    (uint16_t unusedParamButMandatory);
-void fnWeightedMeanX      (uint16_t unusedParamButMandatory);
-void fnHarmonicMeanXY     (uint16_t unusedParamButMandatory);
-void fnRMSMeanXY          (uint16_t unusedParamButMandatory);
+void fnMeanXY             (uint16_t unusedButMandatoryParameter);
+void fnGeometricMeanXY    (uint16_t unusedButMandatoryParameter);
+void fnWeightedMeanX      (uint16_t unusedButMandatoryParameter);
+void fnHarmonicMeanXY     (uint16_t unusedButMandatoryParameter);
+void fnRMSMeanXY          (uint16_t unusedButMandatoryParameter);

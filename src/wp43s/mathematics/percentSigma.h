@@ -18,7 +18,7 @@
  * \file percentSigma.h
  ***********************************************/
 
-void fnPercentSigma(uint16_t unusedParamButMandatory);
+void fnPercentSigma(uint16_t unusedButMandatoryParameter);
 
 void percentSigmaLonI(void);
 void percentSigmaReal(void);

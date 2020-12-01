@@ -18,7 +18,7 @@
  * \file swapRealImaginary.h
  ***********************************************/
 
-void fnSwapRealImaginary(uint16_t unusedParamButMandatory);
+void fnSwapRealImaginary(uint16_t unusedButMandatoryParameter);
 void swapReImError      (void);
 void swapReImCxma       (void);
 void swapReImCplx       (void);

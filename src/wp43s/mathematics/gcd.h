@@ -18,7 +18,7 @@
  * \file gcd.h
  ***********************************************/
 
-void fnGcd      (uint16_t unusedParamButMandatory);
+void fnGcd      (uint16_t unusedButMandatoryParameter);
 void gcdError   (void);
 
 //      RegYRegX

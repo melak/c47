@@ -23,10 +23,10 @@
 /********************************************//**
  * \brief Dummy function for an item to be coded
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void itemToBeCoded(uint16_t unusedParamButMandatory) {
+void itemToBeCoded(uint16_t unusedButMandatoryParameter) {
   funcOK = false;
 }
 
@@ -36,430 +36,438 @@ void itemToBeCoded(uint16_t unusedParamButMandatory) {
 /********************************************//**
  * \brief Dummy function for a function (part of an item) to be coded
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnToBeCoded(void) {
   displayCalcErrorMessage(ERROR_FUNCTION_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
   #ifdef PC_BUILD
     moreInfoOnError("Function to be coded", "for that data type(s)!", NULL, NULL);
-  #endif
+  #endif // PC_BUILD
 }
-#endif
+#endif // GENERATE_CATALOGS
 
 
 
 /********************************************//**
  * \brief No OPeration
  *
- * \param  unusedParamButMandatory uint16_t
+ * \param  unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnNop(uint16_t unusedParamButMandatory) {
+void fnNop(uint16_t unusedButMandatoryParameter) {
 }
 
 
 #if !defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
-void reallyRunFunction(int16_t func, uint16_t param) {
-  if(indexOfItems[func].undoStatus == US_ENABLED) {
-    saveForUndo();
-  }
-  else if(indexOfItems[func].undoStatus == US_CANCEL) {
-    thereIsSomethingToUndo = false;
-  }
-
-  indexOfItems[func].func(param);
-
-  if(indexOfItems[func].stackLiftStatus == SLS_DISABLED) {
-    clearSystemFlag(FLAG_ASLIFT);
-  }
-  else if(indexOfItems[func].stackLiftStatus == SLS_ENABLED) {
-    setSystemFlag(FLAG_ASLIFT);
-  }
-
-  #ifdef PC_BUILD
-    refreshLcd(NULL);
-  #endif
-}
-
-
-
-/********************************************//**
- * \brief Runs a function
- *
- * \param[in] fn int16_t Index in the indexOfItems area of the function to run
- * \return void
- ***********************************************/
-void runFunction(int16_t func) {
-  funcOK = true;
-
-  if(func >= LAST_ITEM) {
-    #ifdef PC_BUILD
-      sprintf(errorMessage, "item (%" PRId16 ") must be below LAST_ITEM", func);
-      moreInfoOnError("In function runFunction:", errorMessage, NULL, NULL);
-    #endif
-  }
-
-  if(calcMode != CM_ASM_OVER_TAM) {
-    tamMode = indexOfItems[func].param;
-  }
-
-  if(calcMode != CM_TAM && calcMode != CM_ASM_OVER_TAM && TM_VALUE <= tamMode && tamMode <= TM_CMP) {
-    tamFunction = func;
-    strcpy(tamBuffer, indexOfItems[func].itemSoftmenuName);
-    tamNumberMin = indexOfItems[func].tamMin;
-    tamNumberMax = indexOfItems[func].tamMax;
-
-    if(func == ITM_CNST) {
-      tamNumberMax = NUMBER_OF_CONSTANTS_39 + NUMBER_OF_CONSTANTS_51 + NUMBER_OF_CONSTANTS_1071 + NUMBER_OF_CONSTANTS_34;
+  void reallyRunFunction(int16_t func, uint16_t param) {
+    if(indexOfItems[func].undoStatus == US_ENABLED) {
+      saveForUndo();
+    }
+    else if(indexOfItems[func].undoStatus == US_CANCEL) {
+      thereIsSomethingToUndo = false;
     }
 
-    calcModeTam();
-    return;
-  }
+    indexOfItems[func].func(param);
 
-  reallyRunFunction(func, indexOfItems[func].param);
+    if(indexOfItems[func].stackLiftStatus == SLS_DISABLED) {
+      clearSystemFlag(FLAG_ASLIFT);
+    }
+    else if(indexOfItems[func].stackLiftStatus == SLS_ENABLED) {
+      setSystemFlag(FLAG_ASLIFT);
+    }
 
-  if(!funcOK) {
-    displayCalcErrorMessage(ERROR_ITEM_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
     #ifdef PC_BUILD
-      sprintf(errorMessage, "%" PRId16 " = %s", func, indexOfItems[func].itemCatalogName);
-      moreInfoOnError("In function runFunction:", "Item not implemented", errorMessage, "to be coded");
-    #endif
+      refreshLcd(NULL);
+    #endif // PC_BUILD
   }
-}
 
-#endif
+
+
+  /********************************************//**
+   * \brief Runs a function
+   *
+   * \param[in] fn int16_t Index in the indexOfItems area of the function to run
+   * \return void
+   ***********************************************/
+  void runFunction(int16_t func) {
+    funcOK = true;
+
+    #ifdef PC_BUILD
+      if(func >= LAST_ITEM) {
+        sprintf(errorMessage, "item (%" PRId16 ") must be below LAST_ITEM", func);
+        moreInfoOnError("In function runFunction:", errorMessage, NULL, NULL);
+      }
+    #endif // PC_BUILD
+
+    if(calcMode != CM_ASM_OVER_TAM && calcMode != CM_ASM_OVER_TAM_OVER_PEM) {
+      tamMode = indexOfItems[func].param;
+    }
+
+    if(calcMode != CM_TAM && calcMode != CM_TAM_OVER_PEM && calcMode != CM_ASM_OVER_TAM && calcMode != CM_ASM_OVER_TAM_OVER_PEM && TM_VALUE <= tamMode && tamMode <= TM_CMP) {
+      tamFunction = func;
+      strcpy(tamBuffer, indexOfItems[func].itemSoftmenuName);
+      tamNumberMin = indexOfItems[func].tamMin;
+      tamNumberMax = indexOfItems[func].tamMax;
+
+      if(func == ITM_CNST) {
+        tamNumberMax = NUMBER_OF_CONSTANTS_39 + NUMBER_OF_CONSTANTS_51 + NUMBER_OF_CONSTANTS_1071 + NUMBER_OF_CONSTANTS_34 - 1;
+      }
+
+      calcModeTam();
+      return;
+    }
+
+    if(calcMode == CM_PEM) {
+      insertStepInProgram(func);
+      return;
+    }
+
+    reallyRunFunction(func, indexOfItems[func].param);
+
+    if(!funcOK) {
+      displayCalcErrorMessage(ERROR_ITEM_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
+      #ifdef PC_BUILD
+        sprintf(errorMessage, "%" PRId16 " = %s", func, indexOfItems[func].itemCatalogName);
+        moreInfoOnError("In function runFunction:", "Item not implemented", errorMessage, "to be coded");
+      #endif // PC_BUILD
+    }
+  }
+#endif // !TESTSUITE_BUILD && !GENERATE_CATALOGS
 
 #ifdef GENERATE_CATALOGS
-void registerBrowser            (uint16_t unusedParamButMandatory) {}
-void flagBrowser                (uint16_t unusedParamButMandatory) {}
-void fontBrowser                (uint16_t unusedParamButMandatory) {}
-void fnPow10                    (uint16_t unusedParamButMandatory) {}
-void fnIntegerMode              (uint16_t unusedParamButMandatory) {}
-void fnConstant                 (uint16_t unusedParamButMandatory) {}
-void fnInvert                   (uint16_t unusedParamButMandatory) {}
-void fn2Pow                     (uint16_t unusedParamButMandatory) {}
-void fn10Pow                    (uint16_t unusedParamButMandatory) {}
-void fnCubeRoot                 (uint16_t unusedParamButMandatory) {}
-void fnMagnitude                (uint16_t unusedParamButMandatory) {}
-void fnAgm                      (uint16_t unusedParamButMandatory) {}
-void fnDisplayFormatAll         (uint16_t unusedParamButMandatory) {}
-void fnDisplayFormatFix         (uint16_t unusedParamButMandatory) {}
-void fnDisplayFormatSci         (uint16_t unusedParamButMandatory) {}
-void fnDisplayFormatEng         (uint16_t unusedParamButMandatory) {}
-void fnDisplayFormatGap         (uint16_t unusedParamButMandatory) {}
-void fnArccos                   (uint16_t unusedParamButMandatory) {}
-void fnArccosh                  (uint16_t unusedParamButMandatory) {}
-void fnArcsin                   (uint16_t unusedParamButMandatory) {}
-void fnArcsinh                  (uint16_t unusedParamButMandatory) {}
-void fnArctan                   (uint16_t unusedParamButMandatory) {}
-void fnArctanh                  (uint16_t unusedParamButMandatory) {}
-void fnCos                      (uint16_t unusedParamButMandatory) {}
-void fnCosh                     (uint16_t unusedParamButMandatory) {}
-void fnSin                      (uint16_t unusedParamButMandatory) {}
-void fnSinc                     (uint16_t unusedParamButMandatory) {}
-void fnSincpi                   (uint16_t unusedParamButMandatory) {}
-void fnSinh                     (uint16_t unusedParamButMandatory) {}
-void fnTan                      (uint16_t unusedParamButMandatory) {}
-void fnTanh                     (uint16_t unusedParamButMandatory) {}
-void fnDrop                     (uint16_t unusedParamButMandatory) {}
-void fnDropY                    (uint16_t unusedParamButMandatory) {}
-void fnBatteryVoltage           (uint16_t unusedParamButMandatory) {}
-void fnCurveFitting             (uint16_t unusedParamButMandatory) {}
-void fnCeil                     (uint16_t unusedParamButMandatory) {}
-void fnFloor                    (uint16_t unusedParamButMandatory) {}
-void fnClearFlag                (uint16_t unusedParamButMandatory) {}
-void fnFlipFlag                 (uint16_t unusedParamButMandatory) {}
-void fnSetFlag                  (uint16_t unusedParamButMandatory) {}
-void fnClAll                    (uint16_t unusedParamButMandatory) {}
-void fnClX                      (uint16_t unusedParamButMandatory) {}
-void fnClFAll                   (uint16_t unusedParamButMandatory) {}
-void fnClPAll                   (uint16_t unusedParamButMandatory) {}
-void fnClSigma                  (uint16_t unusedParamButMandatory) {}
-void fnClearStack               (uint16_t unusedParamButMandatory) {}
-void fnClearRegisters           (uint16_t unusedParamButMandatory) {}
-void fnTimeFormat               (uint16_t unusedParamButMandatory) {}
-void fnSetDateFormat            (uint16_t unusedParamButMandatory) {}
-void fnComplexUnit              (uint16_t unusedParamButMandatory) {}
-void fnComplexMode              (uint16_t unusedParamButMandatory) {}
-void fnComplexResult            (uint16_t unusedParamButMandatory) {}
-void fnConjugate                (uint16_t unusedParamButMandatory) {}
-void fnAngularMode              (uint16_t unusedParamButMandatory) {}
-void fnDenMode                  (uint16_t unusedParamButMandatory) {}
-void fnDenMax                   (uint16_t unusedParamButMandatory) {}
-void fnExp                      (uint16_t unusedParamButMandatory) {}
-void fnExpM1                    (uint16_t unusedParamButMandatory) {}
-void fnExpt                     (uint16_t unusedParamButMandatory) {}
-void fnMant                     (uint16_t unusedParamButMandatory) {}
-void fnCxToRe                   (uint16_t unusedParamButMandatory) {}
-void fnReToCx                   (uint16_t unusedParamButMandatory) {}
-void fnFillStack                (uint16_t unusedParamButMandatory) {}
-void fnIsFlagClear              (uint16_t unusedParamButMandatory) {}
-void fnIsFlagClearClear         (uint16_t unusedParamButMandatory) {}
-void fnIsFlagClearFlip          (uint16_t unusedParamButMandatory) {}
-void fnIsFlagClearSet           (uint16_t unusedParamButMandatory) {}
-void fnIsFlagSet                (uint16_t unusedParamButMandatory) {}
-void fnIsFlagSetClear           (uint16_t unusedParamButMandatory) {}
-void fnIsFlagSetFlip            (uint16_t unusedParamButMandatory) {}
-void fnIsFlagSetSet             (uint16_t unusedParamButMandatory) {}
-void fnKeyEnter                 (uint16_t unusedParamButMandatory) {}
-void fnKeyExit                  (uint16_t unusedParamButMandatory) {}
-void fnKeyUp                    (uint16_t unusedParamButMandatory) {}
-void fnKeyDown                  (uint16_t unusedParamButMandatory) {}
-void fnKeyDotD                  (uint16_t unusedParamButMandatory) {}
-void fnKeyCC                    (uint16_t unusedParamButMandatory) {}
-void fnKeyBackspace             (uint16_t unusedParamButMandatory) {}
-void fnDisplayStack             (uint16_t unusedParamButMandatory) {}
-void fnFreeFlashMemory          (uint16_t unusedParamButMandatory) {}
-void fnFreeMemory               (uint16_t unusedParamButMandatory) {}
-void fnFp                       (uint16_t unusedParamButMandatory) {}
-void fnIp                       (uint16_t unusedParamButMandatory) {}
-void allocateLocalRegisters     (uint16_t unusedParamButMandatory) {}
-void fnLeadingZeros             (uint16_t unusedParamButMandatory) {}
-void fnNeighb                   (uint16_t unusedParamButMandatory) {}
-void fnGcd                      (uint16_t unusedParamButMandatory) {}
-void fnMin                      (uint16_t unusedParamButMandatory) {}
-void fnMax                      (uint16_t unusedParamButMandatory) {}
-void fnStatSum                  (uint16_t unusedParamButMandatory) {}
-void fnIsPrime                  (uint16_t unusedParamButMandatory) {}
-void fnRandom                   (uint16_t unusedParamButMandatory) {}
-void fnRandomI                  (uint16_t unusedParamButMandatory) {}
-void fnImaginaryPart            (uint16_t unusedParamButMandatory) {}
-void fnRecall                   (uint16_t unusedParamButMandatory) {}
-void fnRecallConfig             (uint16_t unusedParamButMandatory) {}
-void fnRecallElement            (uint16_t unusedParamButMandatory) {}
-void fnRecallIJ                 (uint16_t unusedParamButMandatory) {}
-void fnRecallStack              (uint16_t unusedParamButMandatory) {}
-void fnRecallAdd                (uint16_t unusedParamButMandatory) {}
-void fnRecallSub                (uint16_t unusedParamButMandatory) {}
-void fnRecallMult               (uint16_t unusedParamButMandatory) {}
-void fnRecallDiv                (uint16_t unusedParamButMandatory) {}
-void fnRecallMin                (uint16_t unusedParamButMandatory) {}
-void fnRecallMax                (uint16_t unusedParamButMandatory) {}
-void fnRadixMark                (uint16_t unusedParamButMandatory) {}
-void fnReset                    (uint16_t unusedParamButMandatory) {}
-void fnRealPart                 (uint16_t unusedParamButMandatory) {}
-void fnRmd                      (uint16_t unusedParamButMandatory) {}
-void fnRound                    (uint16_t unusedParamButMandatory) {}
-void fnRoundi                   (uint16_t unusedParamButMandatory) {}
-void fnRollDown                 (uint16_t unusedParamButMandatory) {}
-void fnRollUp                   (uint16_t unusedParamButMandatory) {}
-void fnSeed                     (uint16_t unusedParamButMandatory) {}
-void fnConfigChina              (uint16_t unusedParamButMandatory) {}
-void fnConfigEurope             (uint16_t unusedParamButMandatory) {}
-void fnConfigIndia              (uint16_t unusedParamButMandatory) {}
-void fnConfigJapan              (uint16_t unusedParamButMandatory) {}
-void fnConfigUk                 (uint16_t unusedParamButMandatory) {}
-void fnConfigUsa                (uint16_t unusedParamButMandatory) {}
-void fnToggleFractionType       (uint16_t unusedParamButMandatory) {}
-void fnLcm                      (uint16_t unusedParamButMandatory) {}
-void fnSign                     (uint16_t unusedParamButMandatory) {}
-void fnSlvq                     (uint16_t unusedParamButMandatory) {}
-void fnGetIntegerSignMode       (uint16_t unusedParamButMandatory) {}
-void fnLog2                     (uint16_t unusedParamButMandatory) {}
-void fnLog10                    (uint16_t unusedParamButMandatory) {}
-void fnLn                       (uint16_t unusedParamButMandatory) {}
-void fnLogXY                    (uint16_t unusedParamButMandatory) {}
-void fnLnP1                     (uint16_t unusedParamButMandatory) {}
-void fnLnGamma                  (uint16_t unusedParamButMandatory) {}
-void fnLnBeta                   (uint16_t unusedParamButMandatory) {}
-void fnBeta                     (uint16_t unusedParamButMandatory) {}
-void fnGamma                    (uint16_t unusedParamButMandatory) {}
-void fnIDiv                     (uint16_t unusedParamButMandatory) {}
-void fnIDivR                    (uint16_t unusedParamButMandatory) {}
-void fnMirror                   (uint16_t unusedParamButMandatory) {}
-void fnMod                      (uint16_t unusedParamButMandatory) {}
-void fnPower                    (uint16_t unusedParamButMandatory) {}
-void fnPi                       (uint16_t unusedParamButMandatory) {}
-void fnUserMode                 (uint16_t unusedParamButMandatory) {}
-void fnParallel                 (uint16_t unusedParamButMandatory) {}
-void fnSquareRoot               (uint16_t unusedParamButMandatory) {}
-void fnSubtract                 (uint16_t unusedParamButMandatory) {}
-void fnChangeSign               (uint16_t unusedParamButMandatory) {}
-void fnM1Pow                    (uint16_t unusedParamButMandatory) {}
-void backToSystem               (uint16_t unusedParamButMandatory) {}
-void fnMultiply                 (uint16_t unusedParamButMandatory) {}
-void fnChangeBase               (uint16_t unusedParamButMandatory) {}
-void fnToPolar                  (uint16_t unusedParamButMandatory) {}
-void fnToRect                   (uint16_t unusedParamButMandatory) {}
-void fnDivide                   (uint16_t unusedParamButMandatory) {}
-void fnAdd                      (uint16_t unusedParamButMandatory) {}
-void fnSigma                    (uint16_t unusedParamButMandatory) {}
-void fnXLessThan                (uint16_t unusedParamButMandatory) {}
-void fnGetLocR                  (uint16_t unusedParamButMandatory) {}
-void fnSwapRealImaginary        (uint16_t unusedParamButMandatory) {}
-void fnGetRoundingMode          (uint16_t unusedParamButMandatory) {}
-void fnSetWordSize              (uint16_t unusedParamButMandatory) {}
-void fnGetWordSize              (uint16_t unusedParamButMandatory) {}
-void fnGetStackSize             (uint16_t unusedParamButMandatory) {}
-void fnStackSize                (uint16_t unusedParamButMandatory) {}
-void fnStore                    (uint16_t unusedParamButMandatory) {}
-void fnStoreConfig              (uint16_t unusedParamButMandatory) {}
-void fnStoreElement             (uint16_t unusedParamButMandatory) {}
-void fnStoreIJ                  (uint16_t unusedParamButMandatory) {}
-void fnStoreStack               (uint16_t unusedParamButMandatory) {}
-void fnStoreAdd                 (uint16_t unusedParamButMandatory) {}
-void fnStoreSub                 (uint16_t unusedParamButMandatory) {}
-void fnStoreMult                (uint16_t unusedParamButMandatory) {}
-void fnStoreDiv                 (uint16_t unusedParamButMandatory) {}
-void fnStoreMax                 (uint16_t unusedParamButMandatory) {}
-void fnStoreMin                 (uint16_t unusedParamButMandatory) {}
-void fnUlp                      (uint16_t unusedParamButMandatory) {}
-void fnUnitVector               (uint16_t unusedParamButMandatory) {}
-void fnVersion                  (uint16_t unusedParamButMandatory) {}
-void fnSquare                   (uint16_t unusedParamButMandatory) {}
-void fnCube                     (uint16_t unusedParamButMandatory) {}
-void fnFactorial                (uint16_t unusedParamButMandatory) {}
-void fnSwapX                    (uint16_t unusedParamButMandatory) {}
-void fnSwapY                    (uint16_t unusedParamButMandatory) {}
-void fnSwapZ                    (uint16_t unusedParamButMandatory) {}
-void fnSwapT                    (uint16_t unusedParamButMandatory) {}
-void fnSwapXY                   (uint16_t unusedParamButMandatory) {}
-void fnShuffle                  (uint16_t unusedParamButMandatory) {}
-void fnWho                      (uint16_t unusedParamButMandatory) {}
-void fnGetSignificantDigits     (uint16_t unusedParamButMandatory) {}
-void fnSdl                      (uint16_t unusedParamButMandatory) {}
-void fnSdr                      (uint16_t unusedParamButMandatory) {}
-void fnCvtToCurrentAngularMode  (uint16_t unusedParamButMandatory) {}
-void fnCvtAcreM2                (uint16_t unusedParamButMandatory) {}
-void fnCvtAcreusM2              (uint16_t unusedParamButMandatory) {}
-void fnCvtAtmPa                 (uint16_t unusedParamButMandatory) {}
-void fnCvtAuM                   (uint16_t unusedParamButMandatory) {}
-void fnCvtBarPa                 (uint16_t unusedParamButMandatory) {}
-void fnCvtBtuJ                  (uint16_t unusedParamButMandatory) {}
-void fnCvtCalJ                  (uint16_t unusedParamButMandatory) {}
-void fnCvtCwtKg                 (uint16_t unusedParamButMandatory) {}
-void fnCvtFtM                   (uint16_t unusedParamButMandatory) {}
-void fnCvtDegToRad              (uint16_t unusedParamButMandatory) {}
-void fnCvtSfeetM                (uint16_t unusedParamButMandatory) {}
-void fnCvtFlozukM3              (uint16_t unusedParamButMandatory) {}
-void fnCvtFlozusM3              (uint16_t unusedParamButMandatory) {}
-void fnCvtGalukM3               (uint16_t unusedParamButMandatory) {}
-void fnCvtGalusM3               (uint16_t unusedParamButMandatory) {}
-void fnCvtDbRatio               (uint16_t unusedParamButMandatory) {}
-void fnCvtRatioDb               (uint16_t unusedParamButMandatory) {}
-void fnCvtHpeW                  (uint16_t unusedParamButMandatory) {}
-void fnCvtHpmW                  (uint16_t unusedParamButMandatory) {}
-void fnCvtHpukW                 (uint16_t unusedParamButMandatory) {}
-void fnCvtInhgPa                (uint16_t unusedParamButMandatory) {}
-void fnCvtMmhgPa                (uint16_t unusedParamButMandatory) {}
-void fnCvtInchM                 (uint16_t unusedParamButMandatory) {}
-void fnCvtWhJ                   (uint16_t unusedParamButMandatory) {}
-void fnCvtLbKg                  (uint16_t unusedParamButMandatory) {}
-void fnCvtOzKg                  (uint16_t unusedParamButMandatory) {}
-void fnCvtStoneKg               (uint16_t unusedParamButMandatory) {}
-void fnCvtShorttonKg            (uint16_t unusedParamButMandatory) {}
-void fnCvtTrozKg                (uint16_t unusedParamButMandatory) {}
-void fnCvtLbfN                  (uint16_t unusedParamButMandatory) {}
-void fnCvtMiM                   (uint16_t unusedParamButMandatory) {}
-void fnCvtLyM                   (uint16_t unusedParamButMandatory) {}
-void fnCvtTonKg                 (uint16_t unusedParamButMandatory) {}
-void fnCvtTorrPa                (uint16_t unusedParamButMandatory) {}
-void fnCvtYardM                 (uint16_t unusedParamButMandatory) {}
-void fnCvtPcM                   (uint16_t unusedParamButMandatory) {}
-void fnCvtPointM                (uint16_t unusedParamButMandatory) {}
-void fnCvtCToF                  (uint16_t unusedParamButMandatory) {}
-void fnCvtFToC                  (uint16_t unusedParamButMandatory) {}
-void fnCvtNmiM                  (uint16_t unusedParamButMandatory) {}
-void fnCvtPsiPa                 (uint16_t unusedParamButMandatory) {}
-void fnCvtShortcwtKg            (uint16_t unusedParamButMandatory) {}
-void fnCvtLbfftNm               (uint16_t unusedParamButMandatory) {}
-void fnCvtRadToDeg              (uint16_t unusedParamButMandatory) {}
-void fnCvtFromCurrentAngularMode(uint16_t unusedParamButMandatory) {}
-void fnCvtYearS                 (uint16_t unusedParamButMandatory) {}
-void fnCvtCaratKg               (uint16_t unusedParamButMandatory) {}
-void fnCvtQuartM3               (uint16_t unusedParamButMandatory) {}
-void fnCvtDmsToDeg              (uint16_t unusedParamButMandatory) {}
-void fnCvtFathomM               (uint16_t unusedParamButMandatory) {}
-void fnCvtBarrelM3              (uint16_t unusedParamButMandatory) {}
-void fnCvtHectareM2             (uint16_t unusedParamButMandatory) {}
-void fnCvtDegToDms              (uint16_t unusedParamButMandatory) {}
-void addItemToBuffer            (uint16_t unusedParamButMandatory) {}
-void fnOff                      (uint16_t unusedParamButMandatory) {}
-void fnAim                      (uint16_t unusedParamButMandatory) {}
-void fnShow                     (uint16_t unusedParamButMandatory) {}
-void fnLastX                    (uint16_t unusedParamButMandatory) {}
-void fnCyx                      (uint16_t unusedParamButMandatory) {}
-void fnPyx                      (uint16_t unusedParamButMandatory) {}
-void fnToReal                   (uint16_t unusedParamButMandatory) {}
-void fnDec                      (uint16_t unusedParamButMandatory) {}
-void fnInc                      (uint16_t unusedParamButMandatory) {}
-void fncountBits                (uint16_t unusedParamButMandatory) {}
-void fnLogicalNot               (uint16_t unusedParamButMandatory) {}
-void fnLogicalAnd               (uint16_t unusedParamButMandatory) {}
-void fnLogicalNand              (uint16_t unusedParamButMandatory) {}
-void fnLogicalOr                (uint16_t unusedParamButMandatory) {}
-void fnLogicalNor               (uint16_t unusedParamButMandatory) {}
-void fnLogicalXor               (uint16_t unusedParamButMandatory) {}
-void fnLogicalXnor              (uint16_t unusedParamButMandatory) {}
-void fnDecomp                   (uint16_t unusedParamButMandatory) {}
-void fnSumXY                    (uint16_t unusedParamButMandatory) {}
-void fnMeanXY                   (uint16_t unusedParamButMandatory) {}
-void fnGeometricMeanXY          (uint16_t unusedParamButMandatory) {}
-void fnWeightedMeanX            (uint16_t unusedParamButMandatory) {}
-void fnHarmonicMeanXY           (uint16_t unusedParamButMandatory) {}
-void fnRMSMeanXY                (uint16_t unusedParamButMandatory) {}
-void fnWeightedSampleStdDev     (uint16_t unusedParamButMandatory) {}
-void fnWeightedPopulationStdDev (uint16_t unusedParamButMandatory) {}
-void fnWeightedStandardError    (uint16_t unusedParamButMandatory) {}
-void fnSampleStdDev             (uint16_t unusedParamButMandatory) {}
-void fnPopulationStdDev         (uint16_t unusedParamButMandatory) {}
-void fnStandardError            (uint16_t unusedParamButMandatory) {}
-void fnGeometricSampleStdDev    (uint16_t unusedParamButMandatory) {}
-void fnGeometricPopulationStdDev(uint16_t unusedParamButMandatory) {}
-void fnGeometricStandardError   (uint16_t unusedParamButMandatory) {}
-void fnMaskl                    (uint16_t unusedParamButMandatory) {}
-void fnMaskr                    (uint16_t unusedParamButMandatory) {}
-void fnAsr                      (uint16_t unusedParamButMandatory) {}
-void fnCb                       (uint16_t unusedParamButMandatory) {}
-void fnSb                       (uint16_t unusedParamButMandatory) {}
-void fnFb                       (uint16_t unusedParamButMandatory) {}
-void fnBs                       (uint16_t unusedParamButMandatory) {}
-void fnBc                       (uint16_t unusedParamButMandatory) {}
-void fnSl                       (uint16_t unusedParamButMandatory) {}
-void fnRl                       (uint16_t unusedParamButMandatory) {}
-void fnRlc                      (uint16_t unusedParamButMandatory) {}
-void fnSr                       (uint16_t unusedParamButMandatory) {}
-void fnRr                       (uint16_t unusedParamButMandatory) {}
-void fnRrc                      (uint16_t unusedParamButMandatory) {}
-void fnLj                       (uint16_t unusedParamButMandatory) {}
-void fnRj                       (uint16_t unusedParamButMandatory) {}
-void fnCountBits                (uint16_t unusedParamButMandatory) {}
-void fnNextPrime                (uint16_t unusedParamButMandatory) {}
-void fnScreenDump               (uint16_t unusedParamButMandatory) {}
-void fnArg                      (uint16_t unusedParamButMandatory) {}
-void fnRange                    (uint16_t unusedParamButMandatory) {}
-void fnGetRange                 (uint16_t unusedParamButMandatory) {}
-void fnDot                      (uint16_t unusedParamButMandatory) {}
-void fnCross                    (uint16_t unusedParamButMandatory) {}
-void fnPercent                  (uint16_t unusedParamButMandatory) {}
-void fnPercentMRR               (uint16_t unusedParamButMandatory) {}
-void fnPercentT                 (uint16_t unusedParamButMandatory) {}
-void fnPercentSigma             (uint16_t unusedParamButMandatory) {}
-void fnPercentPlusMG            (uint16_t unusedParamButMandatory) {}
-void fnDeltaPercent             (uint16_t unusedParamButMandatory) {}
-void fnXthRoot                  (uint16_t unusedParamButMandatory) {}
-void fnGetSystemFlag            (uint16_t unusedParamButMandatory) {}
-void fnFractionType             (uint16_t unusedParamButMandatory) {}
-void fnAlphaLeng                (uint16_t unusedParamButMandatory) {}
-void fnAlphaSR                  (uint16_t unusedParamButMandatory) {}
-void fnAlphaSL                  (uint16_t unusedParamButMandatory) {}
-void fnAlphaRR                  (uint16_t unusedParamButMandatory) {}
-void fnAlphaRL                  (uint16_t unusedParamButMandatory) {}
-void fnAlphaPos                 (uint16_t unusedParamButMandatory) {}
-void fnXToAlpha                 (uint16_t unusedParamButMandatory) {}
-void fnAlphaToX                 (uint16_t unusedParamButMandatory) {}
-void fnTicks                    (uint16_t unusedParamButMandatory) {}
-void fnSave                     (uint16_t unusedParamButMandatory) {}
-void fnLoad                     (uint16_t unusedParamButMandatory) {}
-void fnUndo                     (uint16_t unusedParamButMandatory) {}
-void fnXmax                     (uint16_t unusedParamButMandatory) {}
-void fnXmin                     (uint16_t unusedParamButMandatory) {}
-void fnFib                      (uint16_t unusedParamButMandatory) {}
-void fnGd                       (uint16_t unusedParamButMandatory) {}
-void fnInvGd                    (uint16_t unusedParamButMandatory) {}
-#endif
+  void registerBrowser            (uint16_t unusedButMandatoryParameter) {}
+  void flagBrowser                (uint16_t unusedButMandatoryParameter) {}
+  void fontBrowser                (uint16_t unusedButMandatoryParameter) {}
+  void fnPow10                    (uint16_t unusedButMandatoryParameter) {}
+  void fnIntegerMode              (uint16_t unusedButMandatoryParameter) {}
+  void fnConstant                 (uint16_t unusedButMandatoryParameter) {}
+  void fnInvert                   (uint16_t unusedButMandatoryParameter) {}
+  void fn2Pow                     (uint16_t unusedButMandatoryParameter) {}
+  void fn10Pow                    (uint16_t unusedButMandatoryParameter) {}
+  void fnCubeRoot                 (uint16_t unusedButMandatoryParameter) {}
+  void fnMagnitude                (uint16_t unusedButMandatoryParameter) {}
+  void fnAgm                      (uint16_t unusedButMandatoryParameter) {}
+  void fnDisplayFormatAll         (uint16_t unusedButMandatoryParameter) {}
+  void fnDisplayFormatFix         (uint16_t unusedButMandatoryParameter) {}
+  void fnDisplayFormatSci         (uint16_t unusedButMandatoryParameter) {}
+  void fnDisplayFormatEng         (uint16_t unusedButMandatoryParameter) {}
+  void fnDisplayFormatGap         (uint16_t unusedButMandatoryParameter) {}
+  void fnArccos                   (uint16_t unusedButMandatoryParameter) {}
+  void fnArccosh                  (uint16_t unusedButMandatoryParameter) {}
+  void fnArcsin                   (uint16_t unusedButMandatoryParameter) {}
+  void fnArcsinh                  (uint16_t unusedButMandatoryParameter) {}
+  void fnArctan                   (uint16_t unusedButMandatoryParameter) {}
+  void fnArctanh                  (uint16_t unusedButMandatoryParameter) {}
+  void fnCos                      (uint16_t unusedButMandatoryParameter) {}
+  void fnCosh                     (uint16_t unusedButMandatoryParameter) {}
+  void fnSin                      (uint16_t unusedButMandatoryParameter) {}
+  void fnSinc                     (uint16_t unusedButMandatoryParameter) {}
+  void fnSincpi                   (uint16_t unusedButMandatoryParameter) {}
+  void fnSinh                     (uint16_t unusedButMandatoryParameter) {}
+  void fnTan                      (uint16_t unusedButMandatoryParameter) {}
+  void fnTanh                     (uint16_t unusedButMandatoryParameter) {}
+  void fnDrop                     (uint16_t unusedButMandatoryParameter) {}
+  void fnDropY                    (uint16_t unusedButMandatoryParameter) {}
+  void fnBatteryVoltage           (uint16_t unusedButMandatoryParameter) {}
+  void fnCurveFitting             (uint16_t unusedButMandatoryParameter) {}
+  void fnCeil                     (uint16_t unusedButMandatoryParameter) {}
+  void fnFloor                    (uint16_t unusedButMandatoryParameter) {}
+  void fnClearFlag                (uint16_t unusedButMandatoryParameter) {}
+  void fnFlipFlag                 (uint16_t unusedButMandatoryParameter) {}
+  void fnSetFlag                  (uint16_t unusedButMandatoryParameter) {}
+  void fnClAll                    (uint16_t unusedButMandatoryParameter) {}
+  void fnClX                      (uint16_t unusedButMandatoryParameter) {}
+  void fnClFAll                   (uint16_t unusedButMandatoryParameter) {}
+  void fnClPAll                   (uint16_t unusedButMandatoryParameter) {}
+  void fnClSigma                  (uint16_t unusedButMandatoryParameter) {}
+  void fnClearStack               (uint16_t unusedButMandatoryParameter) {}
+  void fnClearRegisters           (uint16_t unusedButMandatoryParameter) {}
+  void fnTimeFormat               (uint16_t unusedButMandatoryParameter) {}
+  void fnSetDateFormat            (uint16_t unusedButMandatoryParameter) {}
+  void fnComplexUnit              (uint16_t unusedButMandatoryParameter) {}
+  void fnComplexMode              (uint16_t unusedButMandatoryParameter) {}
+  void fnComplexResult            (uint16_t unusedButMandatoryParameter) {}
+  void fnConjugate                (uint16_t unusedButMandatoryParameter) {}
+  void fnAngularMode              (uint16_t unusedButMandatoryParameter) {}
+  void fnDenMode                  (uint16_t unusedButMandatoryParameter) {}
+  void fnDenMax                   (uint16_t unusedButMandatoryParameter) {}
+  void fnExp                      (uint16_t unusedButMandatoryParameter) {}
+  void fnExpM1                    (uint16_t unusedButMandatoryParameter) {}
+  void fnExpt                     (uint16_t unusedButMandatoryParameter) {}
+  void fnMant                     (uint16_t unusedButMandatoryParameter) {}
+  void fnCxToRe                   (uint16_t unusedButMandatoryParameter) {}
+  void fnReToCx                   (uint16_t unusedButMandatoryParameter) {}
+  void fnFillStack                (uint16_t unusedButMandatoryParameter) {}
+  void fnIsFlagClear              (uint16_t unusedButMandatoryParameter) {}
+  void fnIsFlagClearClear         (uint16_t unusedButMandatoryParameter) {}
+  void fnIsFlagClearFlip          (uint16_t unusedButMandatoryParameter) {}
+  void fnIsFlagClearSet           (uint16_t unusedButMandatoryParameter) {}
+  void fnIsFlagSet                (uint16_t unusedButMandatoryParameter) {}
+  void fnIsFlagSetClear           (uint16_t unusedButMandatoryParameter) {}
+  void fnIsFlagSetFlip            (uint16_t unusedButMandatoryParameter) {}
+  void fnIsFlagSetSet             (uint16_t unusedButMandatoryParameter) {}
+  void fnKeyEnter                 (uint16_t unusedButMandatoryParameter) {}
+  void fnKeyExit                  (uint16_t unusedButMandatoryParameter) {}
+  void fnKeyUp                    (uint16_t unusedButMandatoryParameter) {}
+  void fnKeyDown                  (uint16_t unusedButMandatoryParameter) {}
+  void fnKeyDotD                  (uint16_t unusedButMandatoryParameter) {}
+  void fnKeyCC                    (uint16_t unusedButMandatoryParameter) {}
+  void fnKeyBackspace             (uint16_t unusedButMandatoryParameter) {}
+  void fnDisplayStack             (uint16_t unusedButMandatoryParameter) {}
+  void fnFreeFlashMemory          (uint16_t unusedButMandatoryParameter) {}
+  void fnFreeMemory               (uint16_t unusedButMandatoryParameter) {}
+  void fnFp                       (uint16_t unusedButMandatoryParameter) {}
+  void fnIp                       (uint16_t unusedButMandatoryParameter) {}
+  void allocateLocalRegisters     (uint16_t unusedButMandatoryParameter) {}
+  void fnLeadingZeros             (uint16_t unusedButMandatoryParameter) {}
+  void fnNeighb                   (uint16_t unusedButMandatoryParameter) {}
+  void fnGcd                      (uint16_t unusedButMandatoryParameter) {}
+  void fnMin                      (uint16_t unusedButMandatoryParameter) {}
+  void fnMax                      (uint16_t unusedButMandatoryParameter) {}
+  void fnStatSum                  (uint16_t unusedButMandatoryParameter) {}
+  void fnIsPrime                  (uint16_t unusedButMandatoryParameter) {}
+  void fnRandom                   (uint16_t unusedButMandatoryParameter) {}
+  void fnRandomI                  (uint16_t unusedButMandatoryParameter) {}
+  void fnImaginaryPart            (uint16_t unusedButMandatoryParameter) {}
+  void fnRecall                   (uint16_t unusedButMandatoryParameter) {}
+  void fnRecallConfig             (uint16_t unusedButMandatoryParameter) {}
+  void fnRecallElement            (uint16_t unusedButMandatoryParameter) {}
+  void fnRecallIJ                 (uint16_t unusedButMandatoryParameter) {}
+  void fnRecallStack              (uint16_t unusedButMandatoryParameter) {}
+  void fnRecallAdd                (uint16_t unusedButMandatoryParameter) {}
+  void fnRecallSub                (uint16_t unusedButMandatoryParameter) {}
+  void fnRecallMult               (uint16_t unusedButMandatoryParameter) {}
+  void fnRecallDiv                (uint16_t unusedButMandatoryParameter) {}
+  void fnRecallMin                (uint16_t unusedButMandatoryParameter) {}
+  void fnRecallMax                (uint16_t unusedButMandatoryParameter) {}
+  void fnRadixMark                (uint16_t unusedButMandatoryParameter) {}
+  void fnReset                    (uint16_t unusedButMandatoryParameter) {}
+  void fnRealPart                 (uint16_t unusedButMandatoryParameter) {}
+  void fnRmd                      (uint16_t unusedButMandatoryParameter) {}
+  void fnRound                    (uint16_t unusedButMandatoryParameter) {}
+  void fnRoundi                   (uint16_t unusedButMandatoryParameter) {}
+  void fnRollDown                 (uint16_t unusedButMandatoryParameter) {}
+  void fnRollUp                   (uint16_t unusedButMandatoryParameter) {}
+  void fnSeed                     (uint16_t unusedButMandatoryParameter) {}
+  void fnConfigChina              (uint16_t unusedButMandatoryParameter) {}
+  void fnConfigEurope             (uint16_t unusedButMandatoryParameter) {}
+  void fnConfigIndia              (uint16_t unusedButMandatoryParameter) {}
+  void fnConfigJapan              (uint16_t unusedButMandatoryParameter) {}
+  void fnConfigUk                 (uint16_t unusedButMandatoryParameter) {}
+  void fnConfigUsa                (uint16_t unusedButMandatoryParameter) {}
+  void fnLcm                      (uint16_t unusedButMandatoryParameter) {}
+  void fnSign                     (uint16_t unusedButMandatoryParameter) {}
+  void fnSlvq                     (uint16_t unusedButMandatoryParameter) {}
+  void fnGetIntegerSignMode       (uint16_t unusedButMandatoryParameter) {}
+  void fnLog2                     (uint16_t unusedButMandatoryParameter) {}
+  void fnLog10                    (uint16_t unusedButMandatoryParameter) {}
+  void fnLn                       (uint16_t unusedButMandatoryParameter) {}
+  void fnLogXY                    (uint16_t unusedButMandatoryParameter) {}
+  void fnLnP1                     (uint16_t unusedButMandatoryParameter) {}
+  void fnLnGamma                  (uint16_t unusedButMandatoryParameter) {}
+  void fnLnBeta                   (uint16_t unusedButMandatoryParameter) {}
+  void fnBeta                     (uint16_t unusedButMandatoryParameter) {}
+  void fnGamma                    (uint16_t unusedButMandatoryParameter) {}
+  void fnIDiv                     (uint16_t unusedButMandatoryParameter) {}
+  void fnIDivR                    (uint16_t unusedButMandatoryParameter) {}
+  void fnMirror                   (uint16_t unusedButMandatoryParameter) {}
+  void fnMod                      (uint16_t unusedButMandatoryParameter) {}
+  void fnPower                    (uint16_t unusedButMandatoryParameter) {}
+  void fnPi                       (uint16_t unusedButMandatoryParameter) {}
+  void fnUserMode                 (uint16_t unusedButMandatoryParameter) {}
+  void fnParallel                 (uint16_t unusedButMandatoryParameter) {}
+  void fnSquareRoot               (uint16_t unusedButMandatoryParameter) {}
+  void fnSubtract                 (uint16_t unusedButMandatoryParameter) {}
+  void fnChangeSign               (uint16_t unusedButMandatoryParameter) {}
+  void fnM1Pow                    (uint16_t unusedButMandatoryParameter) {}
+  void backToSystem               (uint16_t unusedButMandatoryParameter) {}
+  void fnMultiply                 (uint16_t unusedButMandatoryParameter) {}
+  void fnChangeBase               (uint16_t unusedButMandatoryParameter) {}
+  void fnToPolar                  (uint16_t unusedButMandatoryParameter) {}
+  void fnToRect                   (uint16_t unusedButMandatoryParameter) {}
+  void fnDivide                   (uint16_t unusedButMandatoryParameter) {}
+  void fnAdd                      (uint16_t unusedButMandatoryParameter) {}
+  void fnSigma                    (uint16_t unusedButMandatoryParameter) {}
+  void fnXLessThan                (uint16_t unusedButMandatoryParameter) {}
+  void fnGetLocR                  (uint16_t unusedButMandatoryParameter) {}
+  void fnSwapRealImaginary        (uint16_t unusedButMandatoryParameter) {}
+  void fnGetRoundingMode          (uint16_t unusedButMandatoryParameter) {}
+  void fnSetWordSize              (uint16_t unusedButMandatoryParameter) {}
+  void fnGetWordSize              (uint16_t unusedButMandatoryParameter) {}
+  void fnGetStackSize             (uint16_t unusedButMandatoryParameter) {}
+  void fnStackSize                (uint16_t unusedButMandatoryParameter) {}
+  void fnStore                    (uint16_t unusedButMandatoryParameter) {}
+  void fnStoreConfig              (uint16_t unusedButMandatoryParameter) {}
+  void fnStoreElement             (uint16_t unusedButMandatoryParameter) {}
+  void fnStoreIJ                  (uint16_t unusedButMandatoryParameter) {}
+  void fnStoreStack               (uint16_t unusedButMandatoryParameter) {}
+  void fnStoreAdd                 (uint16_t unusedButMandatoryParameter) {}
+  void fnStoreSub                 (uint16_t unusedButMandatoryParameter) {}
+  void fnStoreMult                (uint16_t unusedButMandatoryParameter) {}
+  void fnStoreDiv                 (uint16_t unusedButMandatoryParameter) {}
+  void fnStoreMax                 (uint16_t unusedButMandatoryParameter) {}
+  void fnStoreMin                 (uint16_t unusedButMandatoryParameter) {}
+  void fnUlp                      (uint16_t unusedButMandatoryParameter) {}
+  void fnUnitVector               (uint16_t unusedButMandatoryParameter) {}
+  void fnVersion                  (uint16_t unusedButMandatoryParameter) {}
+  void fnSquare                   (uint16_t unusedButMandatoryParameter) {}
+  void fnCube                     (uint16_t unusedButMandatoryParameter) {}
+  void fnFactorial                (uint16_t unusedButMandatoryParameter) {}
+  void fnSwapX                    (uint16_t unusedButMandatoryParameter) {}
+  void fnSwapY                    (uint16_t unusedButMandatoryParameter) {}
+  void fnSwapZ                    (uint16_t unusedButMandatoryParameter) {}
+  void fnSwapT                    (uint16_t unusedButMandatoryParameter) {}
+  void fnSwapXY                   (uint16_t unusedButMandatoryParameter) {}
+  void fnShuffle                  (uint16_t unusedButMandatoryParameter) {}
+  void fnWho                      (uint16_t unusedButMandatoryParameter) {}
+  void fnGetSignificantDigits     (uint16_t unusedButMandatoryParameter) {}
+  void fnSdl                      (uint16_t unusedButMandatoryParameter) {}
+  void fnSdr                      (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtToCurrentAngularMode  (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtAcreM2                (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtAcreusM2              (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtAtmPa                 (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtAuM                   (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtBarPa                 (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtBtuJ                  (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtCalJ                  (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtCwtKg                 (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtFtM                   (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtDegToRad              (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtSfeetM                (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtFlozukM3              (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtFlozusM3              (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtGalukM3               (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtGalusM3               (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtDbRatio               (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtRatioDb               (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtHpeW                  (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtHpmW                  (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtHpukW                 (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtInhgPa                (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtMmhgPa                (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtInchM                 (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtWhJ                   (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtLbKg                  (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtOzKg                  (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtStoneKg               (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtShorttonKg            (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtTrozKg                (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtLbfN                  (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtMiM                   (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtLyM                   (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtTonKg                 (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtTorrPa                (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtYardM                 (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtPcM                   (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtPointM                (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtCToF                  (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtFToC                  (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtNmiM                  (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtPsiPa                 (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtShortcwtKg            (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtLbfftNm               (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtRadToDeg              (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtFromCurrentAngularMode(uint16_t unusedButMandatoryParameter) {}
+  void fnCvtYearS                 (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtCaratKg               (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtQuartM3               (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtDmsToDeg              (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtFathomM               (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtBarrelM3              (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtHectareM2             (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtDegToDms              (uint16_t unusedButMandatoryParameter) {}
+  void addItemToBuffer            (uint16_t unusedButMandatoryParameter) {}
+  void fnOff                      (uint16_t unusedButMandatoryParameter) {}
+  void fnAim                      (uint16_t unusedButMandatoryParameter) {}
+  void fnShow                     (uint16_t unusedButMandatoryParameter) {}
+  void fnLastX                    (uint16_t unusedButMandatoryParameter) {}
+  void fnCyx                      (uint16_t unusedButMandatoryParameter) {}
+  void fnPyx                      (uint16_t unusedButMandatoryParameter) {}
+  void fnToReal                   (uint16_t unusedButMandatoryParameter) {}
+  void fnDec                      (uint16_t unusedButMandatoryParameter) {}
+  void fnInc                      (uint16_t unusedButMandatoryParameter) {}
+  void fncountBits                (uint16_t unusedButMandatoryParameter) {}
+  void fnLogicalNot               (uint16_t unusedButMandatoryParameter) {}
+  void fnLogicalAnd               (uint16_t unusedButMandatoryParameter) {}
+  void fnLogicalNand              (uint16_t unusedButMandatoryParameter) {}
+  void fnLogicalOr                (uint16_t unusedButMandatoryParameter) {}
+  void fnLogicalNor               (uint16_t unusedButMandatoryParameter) {}
+  void fnLogicalXor               (uint16_t unusedButMandatoryParameter) {}
+  void fnLogicalXnor              (uint16_t unusedButMandatoryParameter) {}
+  void fnDecomp                   (uint16_t unusedButMandatoryParameter) {}
+  void fnSumXY                    (uint16_t unusedButMandatoryParameter) {}
+  void fnMeanXY                   (uint16_t unusedButMandatoryParameter) {}
+  void fnGeometricMeanXY          (uint16_t unusedButMandatoryParameter) {}
+  void fnWeightedMeanX            (uint16_t unusedButMandatoryParameter) {}
+  void fnHarmonicMeanXY           (uint16_t unusedButMandatoryParameter) {}
+  void fnRMSMeanXY                (uint16_t unusedButMandatoryParameter) {}
+  void fnWeightedSampleStdDev     (uint16_t unusedButMandatoryParameter) {}
+  void fnWeightedPopulationStdDev (uint16_t unusedButMandatoryParameter) {}
+  void fnWeightedStandardError    (uint16_t unusedButMandatoryParameter) {}
+  void fnSampleStdDev             (uint16_t unusedButMandatoryParameter) {}
+  void fnPopulationStdDev         (uint16_t unusedButMandatoryParameter) {}
+  void fnStandardError            (uint16_t unusedButMandatoryParameter) {}
+  void fnGeometricSampleStdDev    (uint16_t unusedButMandatoryParameter) {}
+  void fnGeometricPopulationStdDev(uint16_t unusedButMandatoryParameter) {}
+  void fnGeometricStandardError   (uint16_t unusedButMandatoryParameter) {}
+  void fnMaskl                    (uint16_t unusedButMandatoryParameter) {}
+  void fnMaskr                    (uint16_t unusedButMandatoryParameter) {}
+  void fnAsr                      (uint16_t unusedButMandatoryParameter) {}
+  void fnCb                       (uint16_t unusedButMandatoryParameter) {}
+  void fnSb                       (uint16_t unusedButMandatoryParameter) {}
+  void fnFb                       (uint16_t unusedButMandatoryParameter) {}
+  void fnBs                       (uint16_t unusedButMandatoryParameter) {}
+  void fnBc                       (uint16_t unusedButMandatoryParameter) {}
+  void fnSl                       (uint16_t unusedButMandatoryParameter) {}
+  void fnRl                       (uint16_t unusedButMandatoryParameter) {}
+  void fnRlc                      (uint16_t unusedButMandatoryParameter) {}
+  void fnSr                       (uint16_t unusedButMandatoryParameter) {}
+  void fnRr                       (uint16_t unusedButMandatoryParameter) {}
+  void fnRrc                      (uint16_t unusedButMandatoryParameter) {}
+  void fnLj                       (uint16_t unusedButMandatoryParameter) {}
+  void fnRj                       (uint16_t unusedButMandatoryParameter) {}
+  void fnCountBits                (uint16_t unusedButMandatoryParameter) {}
+  void fnNextPrime                (uint16_t unusedButMandatoryParameter) {}
+  void fnScreenDump               (uint16_t unusedButMandatoryParameter) {}
+  void fnArg                      (uint16_t unusedButMandatoryParameter) {}
+  void fnRange                    (uint16_t unusedButMandatoryParameter) {}
+  void fnGetRange                 (uint16_t unusedButMandatoryParameter) {}
+  void fnDot                      (uint16_t unusedButMandatoryParameter) {}
+  void fnCross                    (uint16_t unusedButMandatoryParameter) {}
+  void fnPercent                  (uint16_t unusedButMandatoryParameter) {}
+  void fnPercentMRR               (uint16_t unusedButMandatoryParameter) {}
+  void fnPercentT                 (uint16_t unusedButMandatoryParameter) {}
+  void fnPercentSigma             (uint16_t unusedButMandatoryParameter) {}
+  void fnPercentPlusMG            (uint16_t unusedButMandatoryParameter) {}
+  void fnDeltaPercent             (uint16_t unusedButMandatoryParameter) {}
+  void fnXthRoot                  (uint16_t unusedButMandatoryParameter) {}
+  void fnGetSystemFlag            (uint16_t unusedButMandatoryParameter) {}
+  void fnFractionType             (uint16_t unusedButMandatoryParameter) {}
+  void fnAlphaLeng                (uint16_t unusedButMandatoryParameter) {}
+  void fnAlphaSR                  (uint16_t unusedButMandatoryParameter) {}
+  void fnAlphaSL                  (uint16_t unusedButMandatoryParameter) {}
+  void fnAlphaRR                  (uint16_t unusedButMandatoryParameter) {}
+  void fnAlphaRL                  (uint16_t unusedButMandatoryParameter) {}
+  void fnAlphaPos                 (uint16_t unusedButMandatoryParameter) {}
+  void fnXToAlpha                 (uint16_t unusedButMandatoryParameter) {}
+  void fnAlphaToX                 (uint16_t unusedButMandatoryParameter) {}
+  void fnTicks                    (uint16_t unusedButMandatoryParameter) {}
+  void fnSave                     (uint16_t unusedButMandatoryParameter) {}
+  void fnLoad                     (uint16_t unusedButMandatoryParameter) {}
+  void fnUndo                     (uint16_t unusedButMandatoryParameter) {}
+  void fnXmax                     (uint16_t unusedButMandatoryParameter) {}
+  void fnXmin                     (uint16_t unusedButMandatoryParameter) {}
+  void fnFib                      (uint16_t unusedButMandatoryParameter) {}
+  void fnGd                       (uint16_t unusedButMandatoryParameter) {}
+  void fnInvGd                    (uint16_t unusedButMandatoryParameter) {}
+  void fnClP                      (uint16_t unusedButMandatoryParameter) {}
+  void fnPem                      (uint16_t unusedButMandatoryParameter) {}
+  void fnGoto                     (uint16_t unusedButMandatoryParameter) {}
+  void fnGotoDot                  (uint16_t unusedButMandatoryParameter) {}
+  void fnDynamicMenu              (uint16_t unusedButMandatoryParameter) {}
+#endif // GENERATE_CATALOGS
 
 const item_t indexOfItems[] = {
 
@@ -467,9 +475,9 @@ const item_t indexOfItems[] = {
 /*    0 */  { itemToBeCoded,               NOPARAM,                     "",                                            "0000",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED}, // ITM_NULL
 
 // Items from 1 to 127 are 1 byte OP codes
-/*    1 */  { itemToBeCoded,               NOPARAM,                     "LBL",                                         "LBL",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
-/*    2 */  { itemToBeCoded,               NOPARAM,                     "GTO",                                         "GTO",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
-/*    3 */  { itemToBeCoded,               NOPARAM,                     "XEQ",                                         "XEQ",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
+/*    1 */  { itemToBeCoded,               TM_LABEL,                    "LBL",                                         "LBL",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
+/*    2 */  { fnGoto,                      TM_LABEL,                    "GTO",                                         "GTO",                                         0,      99,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
+/*    3 */  { itemToBeCoded,               TM_LABEL,                    "XEQ",                                         "XEQ",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
 /*    4 */  { itemToBeCoded,               NOPARAM,                     "RTN",                                         "RTN",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
 /*    5 */  { itemToBeCoded,               NOPARAM,                     "ISE",                                         "ISE",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
 /*    6 */  { itemToBeCoded,               NOPARAM,                     "ISG",                                         "ISG",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
@@ -581,7 +589,7 @@ const item_t indexOfItems[] = {
 /*  111 */  { fnSetFlag,                   TM_FLAGW,                    "SF",                                          "SF",                                          0,      99,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
 /*  112 */  { fnFlipFlag,                  TM_FLAGW,                    "FF",                                          "FF",                                          0,      99,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
 /*  113 */  { fnSincpi,                    NOPARAM,                     "sinc" STD_pi,                                 "sinc" STD_pi,                                 0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
-/*  114 */  { itemToBeCoded,               NOPARAM,                     "0114",                                        "0114",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
+/*  114 */  { itemToBeCoded,               NOPARAM,                     "LITT",                                        "LITT",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED}, // Litteral in a PGM
 /*  115 */  { itemToBeCoded,               NOPARAM,                     "0115",                                        "0115",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  116 */  { itemToBeCoded,               NOPARAM,                     "0116",                                        "0116",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  117 */  { itemToBeCoded,               NOPARAM,                     "0117",                                        "0117",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
@@ -677,8 +685,8 @@ const item_t indexOfItems[] = {
 /*  203 */  { fnConstant,                  75,                          STD_omega,                                     STD_omega,                                     0,       0,       CAT_CNST, SLS_ENABLED  , US_ENABLED  },
 /*  204 */  { fnConstant,                  76,                          "-" STD_INFINITY,                              "-" STD_INFINITY,                              0,       0,       CAT_CNST, SLS_ENABLED  , US_ENABLED  },
 /*  205 */  { fnConstant,                  77,                          STD_INFINITY,                                  STD_INFINITY,                                  0,       0,       CAT_CNST, SLS_ENABLED  , US_ENABLED  },
-/*  206 */  { itemToBeCoded,               NOPARAM,                     "#",                                           "#",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  207 */  { fnConstant,                  TM_VALUE,                    "CNST",                                        "CNST",                                        0,      99,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
+/*  206 */  { itemToBeCoded,               78,                          "#",                                           "#",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  207 */  { fnConstant,                  TM_VALUE,                    "CNST",                                        "CNST",                                        0,     215,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  }, // 215 is replaced at run time by NUMBER_OF_CONSTANTS_39 + NUMBER_OF_CONSTANTS_51 + NUMBER_OF_CONSTANTS_1071 + NUMBER_OF_CONSTANTS_34 - 1
 /*  208 */  { itemToBeCoded,               NOPARAM,                     "0208",                                        "0208",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  209 */  { itemToBeCoded,               NOPARAM,                     "0209",                                        "0209",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  210 */  { itemToBeCoded,               NOPARAM,                     "0210",                                        "0210",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
@@ -936,47 +944,47 @@ const item_t indexOfItems[] = {
 
 
 // System flags
-/*  453 */  { fnGetSystemFlag,             FLAG_USB,                    "USB",                                         "USB",                                         0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  454 */  { fnGetSystemFlag,             FLAG_TDM24,                  "TDM24",                                       "TDM24",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  455 */  { fnGetSystemFlag,             FLAG_YMD,                    "YMD",                                         "YMD",                                         0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  456 */  { fnGetSystemFlag,             FLAG_DMY,                    "DMY",                                         "DMY",                                         0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  457 */  { fnGetSystemFlag,             FLAG_MDY,                    "MDY",                                         "MDY",                                         0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  458 */  { fnGetSystemFlag,             FLAG_CPXRES,                 "CPXRES",                                      "CPXRES",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  459 */  { fnGetSystemFlag,             FLAG_CPXj,                   "CPXj",                                        "CPXj",                                        0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  460 */  { fnGetSystemFlag,             FLAG_POLAR,                  "POLAR",                                       "POLAR",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  461 */  { fnGetSystemFlag,             FLAG_FRACT,                  "FRACT",                                       "FRACT",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  462 */  { fnGetSystemFlag,             FLAG_PROPFR,                 "PROPFR",                                      "PROPFR",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  463 */  { fnGetSystemFlag,             FLAG_DENANY,                 "DENANY",                                      "DENANY",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  464 */  { fnGetSystemFlag,             FLAG_DENFIX,                 "DENFIX",                                      "DENFIX",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  465 */  { fnGetSystemFlag,             FLAG_CARRY,                  "CARRY",                                       "CARRY",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  466 */  { fnGetSystemFlag,             FLAG_OVERFLOW,               "OVERFL",                                      "OVERFL",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  467 */  { fnGetSystemFlag,             FLAG_LEAD0,                  "LEAD.0",                                      "LEAD.0",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  468 */  { fnGetSystemFlag,             FLAG_ALPHA,                  "ALPHA",                                       "ALPHA",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  469 */  { fnGetSystemFlag,             FLAG_alphaCAP,               STD_alpha "CAP",                               STD_alpha "CAP",                               0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  470 */  { fnGetSystemFlag,             FLAG_RUNTIM,                 "RUNTIM",                                      "RUNTIM",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  471 */  { fnGetSystemFlag,             FLAG_RUNIO,                  "RUNIO",                                       "RUNIO",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  472 */  { fnGetSystemFlag,             FLAG_PRINT,                  "PRINT",                                       "PRINT",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  473 */  { fnGetSystemFlag,             FLAG_TRACE,                  "TRACE",                                       "TRACE",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  474 */  { fnGetSystemFlag,             FLAG_USER,                   "USER",                                        "USER",                                        0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  475 */  { fnGetSystemFlag,             FLAG_LOWBAT,                 "LOWBAT",                                      "LOWBAT",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  476 */  { fnGetSystemFlag,             FLAG_SLOW,                   "SLOW",                                        "SLOW",                                        0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  477 */  { fnGetSystemFlag,             FLAG_SPCRES,                 "SPCRES",                                      "SPCRES",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  478 */  { fnGetSystemFlag,             FLAG_SSIZE8,                 "SSIZE8",                                      "SSIZE8",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  479 */  { fnGetSystemFlag,             FLAG_QUIET,                  "QUIET",                                       "QUIET",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  480 */  { fnGetSystemFlag,             FLAG_DECIMP,                 "DECIM.",                                      "DECIM.",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  481 */  { fnGetSystemFlag,             FLAG_MULTx,                  "MULT" STD_CROSS,                              "MULT" STD_CROSS,                              0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  482 */  { fnGetSystemFlag,             FLAG_ALLENG,                 "ALLENG",                                      "ALLENG",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  483 */  { fnGetSystemFlag,             FLAG_GROW,                   "GROW",                                        "GROW",                                        0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  484 */  { fnGetSystemFlag,             FLAG_AUTOFF,                 "AUTOFF",                                      "AUTOFF",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  485 */  { fnGetSystemFlag,             FLAG_AUTXEQ,                 "AUTXEQ",                                      "AUTXEQ",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  486 */  { fnGetSystemFlag,             FLAG_PRTACT,                 "PRTACT",                                      "PRTACT",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  487 */  { fnGetSystemFlag,             FLAG_NUMIN,                  "NUM.IN",                                      "NUM.IN",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  488 */  { fnGetSystemFlag,             FLAG_ALPIN,                  "ALP.IN",                                      "ALP.IN",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  489 */  { fnGetSystemFlag,             FLAG_ASLIFT,                 "ASLIFT",                                      "ASLIFT",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  490 */  { fnGetSystemFlag,             FLAG_IGN1ER,                 "IGN1ER",                                      "IGN1ER",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  491 */  { fnGetSystemFlag,             FLAG_INTING,                 "INTING",                                      "INTING",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  492 */  { fnGetSystemFlag,             FLAG_SOLVING,                "SOLVING",                                     "SOLVING",                                     0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
-/*  493 */  { fnGetSystemFlag,             FLAG_VMDISP,                 "VMDISP",                                      "VMDISP",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  453 */  { fnGetSystemFlag,             FLAG_TDM24,                  "TDM24",                                       "TDM24",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED}, // The system flags,
+/*  454 */  { fnGetSystemFlag,             FLAG_YMD,                    "YMD",                                         "YMD",                                         0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED}, // items from 453 to 493,
+/*  455 */  { fnGetSystemFlag,             FLAG_DMY,                    "DMY",                                         "DMY",                                         0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED}, // MUST be in the same
+/*  456 */  { fnGetSystemFlag,             FLAG_MDY,                    "MDY",                                         "MDY",                                         0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED}, // order as the flag
+/*  457 */  { fnGetSystemFlag,             FLAG_CPXRES,                 "CPXRES",                                      "CPXRES",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED}, // number (8 LSB) defined
+/*  458 */  { fnGetSystemFlag,             FLAG_CPXj,                   "CPXj",                                        "CPXj",                                        0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED}, // in defines.h
+/*  459 */  { fnGetSystemFlag,             FLAG_POLAR,                  "POLAR",                                       "POLAR",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  460 */  { fnGetSystemFlag,             FLAG_FRACT,                  "FRACT",                                       "FRACT",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED}, // And TDM24 MUST be
+/*  461 */  { fnGetSystemFlag,             FLAG_PROPFR,                 "PROPFR",                                      "PROPFR",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED}, // the first.
+/*  462 */  { fnGetSystemFlag,             FLAG_DENANY,                 "DENANY",                                      "DENANY",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  463 */  { fnGetSystemFlag,             FLAG_DENFIX,                 "DENFIX",                                      "DENFIX",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  464 */  { fnGetSystemFlag,             FLAG_CARRY,                  "CARRY",                                       "CARRY",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  465 */  { fnGetSystemFlag,             FLAG_OVERFLOW,               "OVERFL",                                      "OVERFL",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  466 */  { fnGetSystemFlag,             FLAG_LEAD0,                  "LEAD.0",                                      "LEAD.0",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  467 */  { fnGetSystemFlag,             FLAG_ALPHA,                  "ALPHA",                                       "ALPHA",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  468 */  { fnGetSystemFlag,             FLAG_alphaCAP,               STD_alpha "CAP",                               STD_alpha "CAP",                               0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  469 */  { fnGetSystemFlag,             FLAG_RUNTIM,                 "RUNTIM",                                      "RUNTIM",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  470 */  { fnGetSystemFlag,             FLAG_RUNIO,                  "RUNIO",                                       "RUNIO",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  471 */  { fnGetSystemFlag,             FLAG_PRINT,                  "PRINT",                                       "PRINT",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  472 */  { fnGetSystemFlag,             FLAG_TRACE,                  "TRACE",                                       "TRACE",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  473 */  { fnGetSystemFlag,             FLAG_USER,                   "USER",                                        "USER",                                        0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  474 */  { fnGetSystemFlag,             FLAG_LOWBAT,                 "LOWBAT",                                      "LOWBAT",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  475 */  { fnGetSystemFlag,             FLAG_SLOW,                   "SLOW",                                        "SLOW",                                        0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  476 */  { fnGetSystemFlag,             FLAG_SPCRES,                 "SPCRES",                                      "SPCRES",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  477 */  { fnGetSystemFlag,             FLAG_SSIZE8,                 "SSIZE8",                                      "SSIZE8",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  478 */  { fnGetSystemFlag,             FLAG_QUIET,                  "QUIET",                                       "QUIET",                                       0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  479 */  { fnGetSystemFlag,             FLAG_DECIMP,                 "DECIM.",                                      "DECIM.",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  480 */  { fnGetSystemFlag,             FLAG_MULTx,                  "MULT" STD_CROSS,                              "MULT" STD_CROSS,                              0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  481 */  { fnGetSystemFlag,             FLAG_ALLENG,                 "ALLENG",                                      "ALLENG",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  482 */  { fnGetSystemFlag,             FLAG_GROW,                   "GROW",                                        "GROW",                                        0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  483 */  { fnGetSystemFlag,             FLAG_AUTOFF,                 "AUTOFF",                                      "AUTOFF",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  484 */  { fnGetSystemFlag,             FLAG_AUTXEQ,                 "AUTXEQ",                                      "AUTXEQ",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  485 */  { fnGetSystemFlag,             FLAG_PRTACT,                 "PRTACT",                                      "PRTACT",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  486 */  { fnGetSystemFlag,             FLAG_NUMIN,                  "NUM.IN",                                      "NUM.IN",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  487 */  { fnGetSystemFlag,             FLAG_ALPIN,                  "ALP.IN",                                      "ALP.IN",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  488 */  { fnGetSystemFlag,             FLAG_ASLIFT,                 "ASLIFT",                                      "ASLIFT",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  489 */  { fnGetSystemFlag,             FLAG_IGN1ER,                 "IGN1ER",                                      "IGN1ER",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  490 */  { fnGetSystemFlag,             FLAG_INTING,                 "INTING",                                      "INTING",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  491 */  { fnGetSystemFlag,             FLAG_SOLVING,                "SOLVING",                                     "SOLVING",                                     0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  492 */  { fnGetSystemFlag,             FLAG_VMDISP,                 "VMDISP",                                      "VMDISP",                                      0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
+/*  493 */  { fnGetSystemFlag,             FLAG_USB,                    "USB",                                         "USB",                                         0,       0,       CAT_SYFL, SLS_UNCHANGED, US_UNCHANGED},
 /*  494 */  { itemToBeCoded,               NOPARAM,                     "0494",                                        "0494",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  495 */  { itemToBeCoded,               NOPARAM,                     "0495",                                        "0495",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  496 */  { itemToBeCoded,               NOPARAM,                     "0496",                                        "0496",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1003,321 +1011,321 @@ const item_t indexOfItems[] = {
 
 
 // Bufferized items
-/*  517 */  { addItemToBuffer,             REGISTER_A,                  "ST.A",                                        "ST.A",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED},
-/*  518 */  { addItemToBuffer,             REGISTER_B,                  "ST.B",                                        "ST.B",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED},
-/*  519 */  { addItemToBuffer,             REGISTER_C,                  "ST.C",                                        "ST.C",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED},
-/*  520 */  { addItemToBuffer,             REGISTER_D,                  "ST.D",                                        "ST.D",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED},
-/*  521 */  { addItemToBuffer,             REGISTER_T,                  "ST.T",                                        "ST.T",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED},
-/*  522 */  { addItemToBuffer,             REGISTER_X,                  "ST.X",                                        "ST.X",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED},
-/*  523 */  { addItemToBuffer,             REGISTER_Y,                  "ST.Y",                                        "ST.Y",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED},
-/*  524 */  { addItemToBuffer,             REGISTER_Z,                  "ST.Z",                                        "ST.Z",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED},
-/*  525 */  { addItemToBuffer,             ITM_INDIRECTION,             STD_RIGHT_ARROW,                               STD_RIGHT_ARROW,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  526 */  { addItemToBuffer,             REGISTER_X,                  "REG_X",                                       "X",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED}, // The order
-/*  527 */  { addItemToBuffer,             REGISTER_Y,                  "REG_Y",                                       "Y",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED}, // of these 8
-/*  528 */  { addItemToBuffer,             REGISTER_Z,                  "REG_Z",                                       "Z",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED}, // lines MUST
-/*  529 */  { addItemToBuffer,             REGISTER_T,                  "REG_T",                                       "T",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED}, // be kept as
-/*  530 */  { addItemToBuffer,             REGISTER_A,                  "REG_A",                                       "A",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // is. Do not
-/*  531 */  { addItemToBuffer,             REGISTER_B,                  "REG_B",                                       "B",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // put them in
-/*  532 */  { addItemToBuffer,             REGISTER_C,                  "REG_C",                                       "C",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // alphabetical
-/*  533 */  { addItemToBuffer,             REGISTER_D,                  "REG_D",                                       "D",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // order!
-/*  534 */  { addItemToBuffer,             REGISTER_L,                  "REG_L",                                       "L",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED},
-/*  535 */  { addItemToBuffer,             REGISTER_I,                  "REG_I",                                       "I",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED},
-/*  536 */  { addItemToBuffer,             REGISTER_J,                  "REG_J",                                       "J",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED},
-/*  537 */  { addItemToBuffer,             REGISTER_K,                  "REG_K",                                       "K",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED},
-/*  538 */  { addItemToBuffer,             CHR_0,                       "",                                            "0",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  539 */  { addItemToBuffer,             CHR_1,                       "",                                            "1",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  540 */  { addItemToBuffer,             CHR_2,                       "",                                            "2",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  541 */  { addItemToBuffer,             CHR_3,                       "",                                            "3",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  542 */  { addItemToBuffer,             CHR_4,                       "",                                            "4",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  543 */  { addItemToBuffer,             CHR_5,                       "",                                            "5",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  544 */  { addItemToBuffer,             CHR_6,                       "",                                            "6",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  545 */  { addItemToBuffer,             CHR_7,                       "",                                            "7",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  546 */  { addItemToBuffer,             CHR_8,                       "",                                            "8",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  547 */  { addItemToBuffer,             CHR_9,                       "",                                            "9",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  548 */  { addItemToBuffer,             CHR_A,                       "A",                                           "A",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  549 */  { addItemToBuffer,             CHR_B,                       "B",                                           "B",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  550 */  { addItemToBuffer,             CHR_C,                       "C",                                           "C",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  551 */  { addItemToBuffer,             CHR_D,                       "D",                                           "D",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  552 */  { addItemToBuffer,             CHR_E,                       "E",                                           "E",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  553 */  { addItemToBuffer,             CHR_F,                       "F",                                           "F",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  554 */  { addItemToBuffer,             CHR_G,                       "G",                                           "G",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  555 */  { addItemToBuffer,             CHR_H,                       "H",                                           "H",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  556 */  { addItemToBuffer,             CHR_I,                       "I",                                           "I",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  557 */  { addItemToBuffer,             CHR_J,                       "J",                                           "J",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  558 */  { addItemToBuffer,             CHR_K,                       "K",                                           "K",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  559 */  { addItemToBuffer,             CHR_L,                       "L",                                           "L",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  560 */  { addItemToBuffer,             CHR_M,                       "M",                                           "M",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  561 */  { addItemToBuffer,             CHR_N,                       "N",                                           "N",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  562 */  { addItemToBuffer,             CHR_O,                       "O",                                           "O",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  563 */  { addItemToBuffer,             CHR_P,                       "P",                                           "P",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  564 */  { addItemToBuffer,             CHR_Q,                       "Q",                                           "Q",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  565 */  { addItemToBuffer,             CHR_R,                       "R",                                           "R",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  566 */  { addItemToBuffer,             CHR_S,                       "S",                                           "S",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  567 */  { addItemToBuffer,             CHR_T,                       "T",                                           "T",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  568 */  { addItemToBuffer,             CHR_U,                       "U",                                           "U",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  569 */  { addItemToBuffer,             CHR_V,                       "V",                                           "V",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  570 */  { addItemToBuffer,             CHR_W,                       "W",                                           "W",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  571 */  { addItemToBuffer,             CHR_X,                       "X",                                           "X",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  572 */  { addItemToBuffer,             CHR_Y,                       "Y",                                           "Y",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  573 */  { addItemToBuffer,             CHR_Z,                       "Z",                                           "Z",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  574 */  { addItemToBuffer,             CHR_a,                       "a",                                           "a",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  575 */  { addItemToBuffer,             CHR_b,                       "b",                                           "b",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  576 */  { addItemToBuffer,             CHR_c,                       "c",                                           "c",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  577 */  { addItemToBuffer,             CHR_d,                       "d",                                           "d",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  578 */  { addItemToBuffer,             CHR_e,                       "e",                                           "e",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  579 */  { addItemToBuffer,             CHR_f,                       "f",                                           "f",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  580 */  { addItemToBuffer,             CHR_g,                       "g",                                           "g",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  581 */  { addItemToBuffer,             CHR_h,                       "h",                                           "h",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  582 */  { addItemToBuffer,             CHR_i,                       "i",                                           "i",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  583 */  { addItemToBuffer,             CHR_j,                       "j",                                           "j",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  584 */  { addItemToBuffer,             CHR_k,                       "k",                                           "k",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  585 */  { addItemToBuffer,             CHR_l,                       "l",                                           "l",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  586 */  { addItemToBuffer,             CHR_m,                       "m",                                           "m",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  587 */  { addItemToBuffer,             CHR_n,                       "n",                                           "n",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  588 */  { addItemToBuffer,             CHR_o,                       "o",                                           "o",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  589 */  { addItemToBuffer,             CHR_p,                       "p",                                           "p",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  590 */  { addItemToBuffer,             CHR_q,                       "q",                                           "q",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  591 */  { addItemToBuffer,             CHR_r,                       "r",                                           "r",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  592 */  { addItemToBuffer,             CHR_s,                       "s",                                           "s",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  593 */  { addItemToBuffer,             CHR_t,                       "t",                                           "t",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  594 */  { addItemToBuffer,             CHR_u,                       "u",                                           "u",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  595 */  { addItemToBuffer,             CHR_v,                       "v",                                           "v",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  596 */  { addItemToBuffer,             CHR_w,                       "w",                                           "w",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  597 */  { addItemToBuffer,             CHR_x,                       "x",                                           "x",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  598 */  { addItemToBuffer,             CHR_y,                       "y",                                           "y",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  599 */  { addItemToBuffer,             CHR_z,                       "z",                                           "z",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  600 */  { addItemToBuffer,             CHR_ALPHA,                   "",                                            STD_ALPHA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  517 */  { addItemToBuffer,             REGISTER_X,                  "ST.X",                                        "ST.X",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // The
+/*  518 */  { addItemToBuffer,             REGISTER_Y,                  "ST.Y",                                        "ST.Y",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // order
+/*  519 */  { addItemToBuffer,             REGISTER_Z,                  "ST.Z",                                        "ST.Z",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // of these
+/*  520 */  { addItemToBuffer,             REGISTER_T,                  "ST.T",                                        "ST.T",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // 12 lines
+/*  521 */  { addItemToBuffer,             REGISTER_A,                  "ST.A",                                        "ST.A",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // Must be
+/*  522 */  { addItemToBuffer,             REGISTER_B,                  "ST.B",                                        "ST.B",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // kept as
+/*  523 */  { addItemToBuffer,             REGISTER_C,                  "ST.C",                                        "ST.C",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // is.
+/*  524 */  { addItemToBuffer,             REGISTER_D,                  "ST.D",                                        "ST.D",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // Do not
+/*  525 */  { addItemToBuffer,             REGISTER_L,                  "REG_L",                                       "L",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // put them
+/*  526 */  { addItemToBuffer,             REGISTER_I,                  "REG_I",                                       "I",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // in a
+/*  527 */  { addItemToBuffer,             REGISTER_J,                  "REG_J",                                       "J",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // different
+/*  528 */  { addItemToBuffer,             REGISTER_K,                  "REG_K",                                       "K",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // order!
+/*  529 */  { addItemToBuffer,             ITM_INDIRECTION,             STD_RIGHT_ARROW,                               STD_RIGHT_ARROW,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  530 */  { addItemToBuffer,             REGISTER_X,                  "REG_X",                                       "X",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED}, // The order
+/*  531 */  { addItemToBuffer,             REGISTER_Y,                  "REG_Y",                                       "Y",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED}, // of these 8
+/*  532 */  { addItemToBuffer,             REGISTER_Z,                  "REG_Z",                                       "Z",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED}, // lines MUST
+/*  533 */  { addItemToBuffer,             REGISTER_T,                  "REG_T",                                       "T",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED}, // be kept as
+/*  534 */  { addItemToBuffer,             REGISTER_A,                  "REG_A",                                       "A",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // is. Do not
+/*  535 */  { addItemToBuffer,             REGISTER_B,                  "REG_B",                                       "B",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // put them in
+/*  536 */  { addItemToBuffer,             REGISTER_C,                  "REG_C",                                       "C",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // alphabetical
+/*  537 */  { addItemToBuffer,             REGISTER_D,                  "REG_D",                                       "D",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // order!
+/*  538 */  { addItemToBuffer,             ITM_0,                       "",                                            "0",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  539 */  { addItemToBuffer,             ITM_1,                       "",                                            "1",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  540 */  { addItemToBuffer,             ITM_2,                       "",                                            "2",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  541 */  { addItemToBuffer,             ITM_3,                       "",                                            "3",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  542 */  { addItemToBuffer,             ITM_4,                       "",                                            "4",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  543 */  { addItemToBuffer,             ITM_5,                       "",                                            "5",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  544 */  { addItemToBuffer,             ITM_6,                       "",                                            "6",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  545 */  { addItemToBuffer,             ITM_7,                       "",                                            "7",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  546 */  { addItemToBuffer,             ITM_8,                       "",                                            "8",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  547 */  { addItemToBuffer,             ITM_9,                       "",                                            "9",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  548 */  { addItemToBuffer,             ITM_A,                       "A",                                           "A",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  549 */  { addItemToBuffer,             ITM_B,                       "B",                                           "B",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  550 */  { addItemToBuffer,             ITM_C,                       "C",                                           "C",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  551 */  { addItemToBuffer,             ITM_D,                       "D",                                           "D",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  552 */  { addItemToBuffer,             ITM_E,                       "E",                                           "E",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  553 */  { addItemToBuffer,             ITM_F,                       "F",                                           "F",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  554 */  { addItemToBuffer,             ITM_G,                       "G",                                           "G",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  555 */  { addItemToBuffer,             ITM_H,                       "H",                                           "H",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  556 */  { addItemToBuffer,             ITM_I,                       "I",                                           "I",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  557 */  { addItemToBuffer,             ITM_J,                       "J",                                           "J",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  558 */  { addItemToBuffer,             ITM_K,                       "K",                                           "K",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  559 */  { addItemToBuffer,             ITM_L,                       "L",                                           "L",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  560 */  { addItemToBuffer,             ITM_M,                       "M",                                           "M",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  561 */  { addItemToBuffer,             ITM_N,                       "N",                                           "N",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  562 */  { addItemToBuffer,             ITM_O,                       "O",                                           "O",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  563 */  { addItemToBuffer,             ITM_P,                       "P",                                           "P",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  564 */  { addItemToBuffer,             ITM_Q,                       "Q",                                           "Q",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  565 */  { addItemToBuffer,             ITM_R,                       "R",                                           "R",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  566 */  { addItemToBuffer,             ITM_S,                       "S",                                           "S",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  567 */  { addItemToBuffer,             ITM_T,                       "T",                                           "T",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  568 */  { addItemToBuffer,             ITM_U,                       "U",                                           "U",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  569 */  { addItemToBuffer,             ITM_V,                       "V",                                           "V",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  570 */  { addItemToBuffer,             ITM_W,                       "W",                                           "W",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  571 */  { addItemToBuffer,             ITM_X,                       "X",                                           "X",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  572 */  { addItemToBuffer,             ITM_Y,                       "Y",                                           "Y",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  573 */  { addItemToBuffer,             ITM_Z,                       "Z",                                           "Z",                                           0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  574 */  { addItemToBuffer,             ITM_a,                       "a",                                           "a",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  575 */  { addItemToBuffer,             ITM_b,                       "b",                                           "b",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  576 */  { addItemToBuffer,             ITM_c,                       "c",                                           "c",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  577 */  { addItemToBuffer,             ITM_d,                       "d",                                           "d",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  578 */  { addItemToBuffer,             ITM_e,                       "e",                                           "e",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  579 */  { addItemToBuffer,             ITM_f,                       "f",                                           "f",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  580 */  { addItemToBuffer,             ITM_g,                       "g",                                           "g",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  581 */  { addItemToBuffer,             ITM_h,                       "h",                                           "h",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  582 */  { addItemToBuffer,             ITM_i,                       "i",                                           "i",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  583 */  { addItemToBuffer,             ITM_j,                       "j",                                           "j",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  584 */  { addItemToBuffer,             ITM_k,                       "k",                                           "k",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  585 */  { addItemToBuffer,             ITM_l,                       "l",                                           "l",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  586 */  { addItemToBuffer,             ITM_m,                       "m",                                           "m",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  587 */  { addItemToBuffer,             ITM_n,                       "n",                                           "n",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  588 */  { addItemToBuffer,             ITM_o,                       "o",                                           "o",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  589 */  { addItemToBuffer,             ITM_p,                       "p",                                           "p",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  590 */  { addItemToBuffer,             ITM_q,                       "q",                                           "q",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  591 */  { addItemToBuffer,             ITM_r,                       "r",                                           "r",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  592 */  { addItemToBuffer,             ITM_s,                       "s",                                           "s",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  593 */  { addItemToBuffer,             ITM_t,                       "t",                                           "t",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  594 */  { addItemToBuffer,             ITM_u,                       "u",                                           "u",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  595 */  { addItemToBuffer,             ITM_v,                       "v",                                           "v",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  596 */  { addItemToBuffer,             ITM_w,                       "w",                                           "w",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  597 */  { addItemToBuffer,             ITM_x,                       "x",                                           "x",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  598 */  { addItemToBuffer,             ITM_y,                       "y",                                           "y",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  599 */  { addItemToBuffer,             ITM_z,                       "z",                                           "z",                                           0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  600 */  { addItemToBuffer,             ITM_ALPHA,                   "",                                            STD_ALPHA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  601 */  { itemToBeCoded,               NOPARAM,                     "0601",                                        "0601",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  602 */  { addItemToBuffer,             CHR_BETA,                    "",                                            STD_BETA,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  603 */  { addItemToBuffer,             CHR_GAMMA,                   "",                                            STD_GAMMA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  604 */  { addItemToBuffer,             CHR_DELTA,                   "",                                            STD_DELTA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  605 */  { addItemToBuffer,             CHR_EPSILON,                 "",                                            STD_EPSILON,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  602 */  { addItemToBuffer,             ITM_BETA,                    "",                                            STD_BETA,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  603 */  { addItemToBuffer,             ITM_GAMMA,                   "",                                            STD_GAMMA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  604 */  { addItemToBuffer,             ITM_DELTA,                   "",                                            STD_DELTA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  605 */  { addItemToBuffer,             ITM_EPSILON,                 "",                                            STD_EPSILON,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  606 */  { itemToBeCoded,               NOPARAM,                     "0606",                                        "0606",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  607 */  { addItemToBuffer,             CHR_ZETA,                    "",                                            STD_ZETA,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  608 */  { addItemToBuffer,             CHR_ETA,                     "",                                            STD_ETA,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  607 */  { addItemToBuffer,             ITM_ZETA,                    "",                                            STD_ZETA,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  608 */  { addItemToBuffer,             ITM_ETA,                     "",                                            STD_ETA,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  609 */  { itemToBeCoded,               NOPARAM,                     "0609",                                        "0609",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  610 */  { addItemToBuffer,             CHR_THETA,                   "",                                            STD_THETA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  611 */  { addItemToBuffer,             CHR_IOTA,                    "",                                            STD_IOTA,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  610 */  { addItemToBuffer,             ITM_THETA,                   "",                                            STD_THETA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  611 */  { addItemToBuffer,             ITM_IOTA,                    "",                                            STD_IOTA,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  612 */  { itemToBeCoded,               NOPARAM,                     "0612",                                        "0612",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  613 */  { itemToBeCoded,               NOPARAM,                     "0613",                                        "0613",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  614 */  { addItemToBuffer,             CHR_IOTA_DIALYTIKA,          "",                                            STD_IOTA_DIALYTIKA,                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  615 */  { addItemToBuffer,             CHR_KAPPA,                   "",                                            STD_KAPPA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  616 */  { addItemToBuffer,             CHR_LAMBDA,                  "",                                            STD_LAMBDA,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  617 */  { addItemToBuffer,             CHR_MU,                      "",                                            STD_MU,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  618 */  { addItemToBuffer,             CHR_NU,                      "",                                            STD_NU,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  619 */  { addItemToBuffer,             CHR_XI,                      "",                                            STD_XI,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  620 */  { addItemToBuffer,             CHR_OMICRON,                 "",                                            STD_OMICRON,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  614 */  { addItemToBuffer,             ITM_IOTA_DIALYTIKA,          "",                                            STD_IOTA_DIALYTIKA,                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  615 */  { addItemToBuffer,             ITM_KAPPA,                   "",                                            STD_KAPPA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  616 */  { addItemToBuffer,             ITM_LAMBDA,                  "",                                            STD_LAMBDA,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  617 */  { addItemToBuffer,             ITM_MU,                      "",                                            STD_MU,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  618 */  { addItemToBuffer,             ITM_NU,                      "",                                            STD_NU,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  619 */  { addItemToBuffer,             ITM_XI,                      "",                                            STD_XI,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  620 */  { addItemToBuffer,             ITM_OMICRON,                 "",                                            STD_OMICRON,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  621 */  { itemToBeCoded,               NOPARAM,                     "0621",                                        "0621",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  622 */  { addItemToBuffer,             CHR_PI,                      "",                                            STD_PI,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  623 */  { addItemToBuffer,             CHR_RHO,                     "",                                            STD_RHO,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  624 */  { addItemToBuffer,             CHR_SIGMA,                   "",                                            STD_SIGMA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  622 */  { addItemToBuffer,             ITM_PI,                      "",                                            STD_PI,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  623 */  { addItemToBuffer,             ITM_RHO,                     "",                                            STD_RHO,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  624 */  { addItemToBuffer,             ITM_SIGMA,                   "",                                            STD_SIGMA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  625 */  { itemToBeCoded,               NOPARAM,                     "0625",                                        "0625",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  626 */  { addItemToBuffer,             CHR_TAU,                     "",                                            STD_TAU,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  627 */  { addItemToBuffer,             CHR_UPSILON,                 "",                                            STD_UPSILON,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  626 */  { addItemToBuffer,             ITM_TAU,                     "",                                            STD_TAU,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  627 */  { addItemToBuffer,             ITM_UPSILON,                 "",                                            STD_UPSILON,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  628 */  { itemToBeCoded,               NOPARAM,                     "0628",                                        "0628",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  629 */  { addItemToBuffer,             CHR_UPSILON_DIALYTIKA,       "",                                            STD_UPSILON_DIALYTIKA,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  629 */  { addItemToBuffer,             ITM_UPSILON_DIALYTIKA,       "",                                            STD_UPSILON_DIALYTIKA,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  630 */  { itemToBeCoded,               NOPARAM,                     "0630",                                        "0630",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  631 */  { addItemToBuffer,             CHR_PHI,                     "",                                            STD_PHI,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  632 */  { addItemToBuffer,             CHR_CHI,                     "",                                            STD_CHI,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  633 */  { addItemToBuffer,             CHR_PSI,                     "",                                            STD_PSI,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  634 */  { addItemToBuffer,             CHR_OMEGA,                   "",                                            STD_OMEGA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  631 */  { addItemToBuffer,             ITM_PHI,                     "",                                            STD_PHI,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  632 */  { addItemToBuffer,             ITM_CHI,                     "",                                            STD_CHI,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  633 */  { addItemToBuffer,             ITM_PSI,                     "",                                            STD_PSI,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  634 */  { addItemToBuffer,             ITM_OMEGA,                   "",                                            STD_OMEGA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  635 */  { itemToBeCoded,               NOPARAM,                     "0635",                                        "0635",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  636 */  { addItemToBuffer,             CHR_alpha,                   "",                                            STD_alpha,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  637 */  { addItemToBuffer,             CHR_alpha_TONOS,             "",                                            STD_alpha_TONOS,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  638 */  { addItemToBuffer,             CHR_beta,                    "",                                            STD_beta,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  639 */  { addItemToBuffer,             CHR_gamma,                   "",                                            STD_gamma,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  640 */  { addItemToBuffer,             CHR_delta,                   "",                                            STD_delta,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  641 */  { addItemToBuffer,             CHR_epsilon,                 "",                                            STD_epsilon,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  642 */  { addItemToBuffer,             CHR_epsilon_TONOS,           "",                                            STD_epsilon_TONOS,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  643 */  { addItemToBuffer,             CHR_zeta,                    "",                                            STD_zeta,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  644 */  { addItemToBuffer,             CHR_eta,                     "",                                            STD_eta,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  645 */  { addItemToBuffer,             CHR_eta_TONOS,               "",                                            STD_eta_TONOS,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  646 */  { addItemToBuffer,             CHR_theta,                   "",                                            STD_theta,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  647 */  { addItemToBuffer,             CHR_iota,                    "",                                            STD_iota,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  648 */  { addItemToBuffer,             CHR_iotaTON,                 "",                                            STD_iota_TONOS,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  649 */  { addItemToBuffer,             CHR_iota_DIALYTIKA_TONOS,    "",                                            STD_iota_DIALYTIKA_TONOS,                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  650 */  { addItemToBuffer,             CHR_iota_DIALYTIKA,          "",                                            STD_iota_DIALYTIKA,                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  651 */  { addItemToBuffer,             CHR_kappa,                   "",                                            STD_kappa,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  652 */  { addItemToBuffer,             CHR_lambda,                  "",                                            STD_lambda,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  653 */  { addItemToBuffer,             CHR_mu,                      "",                                            STD_mu,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  654 */  { addItemToBuffer,             CHR_nu,                      "",                                            STD_nu,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  655 */  { addItemToBuffer,             CHR_xi,                      "",                                            STD_xi,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  656 */  { addItemToBuffer,             CHR_omicron,                 "",                                            STD_omicron,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  657 */  { addItemToBuffer,             CHR_omicron_TONOS,           "",                                            STD_omicron_TONOS,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  658 */  { addItemToBuffer,             CHR_pi,                      "",                                            STD_pi,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  659 */  { addItemToBuffer,             CHR_rho,                     "",                                            STD_rho,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  660 */  { addItemToBuffer,             CHR_sigma,                   "",                                            STD_sigma,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  661 */  { addItemToBuffer,             CHR_sigma_end,               "",                                            STD_sigma_end,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  662 */  { addItemToBuffer,             CHR_tau,                     "",                                            STD_tau,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  663 */  { addItemToBuffer,             CHR_upsilon,                 "",                                            STD_upsilon,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  664 */  { addItemToBuffer,             CHR_upsilon_TONOS,           "",                                            STD_upsilon_TONOS,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  665 */  { addItemToBuffer,             CHR_upsilon_DIALYTIKA,       "",                                            STD_upsilon_DIALYTIKA,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  666 */  { addItemToBuffer,             CHR_upsilon_DIALYTIKA_TONOS, "",                                            STD_upsilon_DIALYTIKA_TONOS,                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  667 */  { addItemToBuffer,             CHR_phi,                     "",                                            STD_phi,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  668 */  { addItemToBuffer,             CHR_chi,                     "",                                            STD_chi,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  669 */  { addItemToBuffer,             CHR_psi,                     "",                                            STD_psi,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  670 */  { addItemToBuffer,             CHR_omega,                   "",                                            STD_omega,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  671 */  { addItemToBuffer,             CHR_omega_TONOS,             "",                                            STD_omega_TONOS,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  636 */  { addItemToBuffer,             ITM_alpha,                   "",                                            STD_alpha,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  637 */  { addItemToBuffer,             ITM_alpha_TONOS,             "",                                            STD_alpha_TONOS,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  638 */  { addItemToBuffer,             ITM_beta,                    "",                                            STD_beta,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  639 */  { addItemToBuffer,             ITM_gamma,                   "",                                            STD_gamma,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  640 */  { addItemToBuffer,             ITM_delta,                   "",                                            STD_delta,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  641 */  { addItemToBuffer,             ITM_epsilon,                 "",                                            STD_epsilon,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  642 */  { addItemToBuffer,             ITM_epsilon_TONOS,           "",                                            STD_epsilon_TONOS,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  643 */  { addItemToBuffer,             ITM_zeta,                    "",                                            STD_zeta,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  644 */  { addItemToBuffer,             ITM_eta,                     "",                                            STD_eta,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  645 */  { addItemToBuffer,             ITM_eta_TONOS,               "",                                            STD_eta_TONOS,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  646 */  { addItemToBuffer,             ITM_theta,                   "",                                            STD_theta,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  647 */  { addItemToBuffer,             ITM_iota,                    "",                                            STD_iota,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  648 */  { addItemToBuffer,             ITM_iotaTON,                 "",                                            STD_iota_TONOS,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  649 */  { addItemToBuffer,             ITM_iota_DIALYTIKA_TONOS,    "",                                            STD_iota_DIALYTIKA_TONOS,                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  650 */  { addItemToBuffer,             ITM_iota_DIALYTIKA,          "",                                            STD_iota_DIALYTIKA,                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  651 */  { addItemToBuffer,             ITM_kappa,                   "",                                            STD_kappa,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  652 */  { addItemToBuffer,             ITM_lambda,                  "",                                            STD_lambda,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  653 */  { addItemToBuffer,             ITM_mu,                      "",                                            STD_mu,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  654 */  { addItemToBuffer,             ITM_nu,                      "",                                            STD_nu,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  655 */  { addItemToBuffer,             ITM_xi,                      "",                                            STD_xi,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  656 */  { addItemToBuffer,             ITM_omicron,                 "",                                            STD_omicron,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  657 */  { addItemToBuffer,             ITM_omicron_TONOS,           "",                                            STD_omicron_TONOS,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  658 */  { addItemToBuffer,             ITM_pi,                      "",                                            STD_pi,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  659 */  { addItemToBuffer,             ITM_rho,                     "",                                            STD_rho,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  660 */  { addItemToBuffer,             ITM_sigma,                   "",                                            STD_sigma,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  661 */  { addItemToBuffer,             ITM_sigma_end,               "",                                            STD_sigma_end,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  662 */  { addItemToBuffer,             ITM_tau,                     "",                                            STD_tau,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  663 */  { addItemToBuffer,             ITM_upsilon,                 "",                                            STD_upsilon,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  664 */  { addItemToBuffer,             ITM_upsilon_TONOS,           "",                                            STD_upsilon_TONOS,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  665 */  { addItemToBuffer,             ITM_upsilon_DIALYTIKA,       "",                                            STD_upsilon_DIALYTIKA,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  666 */  { addItemToBuffer,             ITM_upsilon_DIALYTIKA_TONOS, "",                                            STD_upsilon_DIALYTIKA_TONOS,                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  667 */  { addItemToBuffer,             ITM_phi,                     "",                                            STD_phi,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  668 */  { addItemToBuffer,             ITM_chi,                     "",                                            STD_chi,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  669 */  { addItemToBuffer,             ITM_psi,                     "",                                            STD_psi,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  670 */  { addItemToBuffer,             ITM_omega,                   "",                                            STD_omega,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  671 */  { addItemToBuffer,             ITM_omega_TONOS,             "",                                            STD_omega_TONOS,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  672 */  { itemToBeCoded,               NOPARAM,                     "0672",                                        "0672",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  673 */  { itemToBeCoded,               NOPARAM,                     "0673",                                        "0673",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  674 */  { itemToBeCoded,               NOPARAM,                     "0674",                                        "0674",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  675 */  { itemToBeCoded,               NOPARAM,                     "0675",                                        "0675",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  676 */  { itemToBeCoded,               NOPARAM,                     "0676",                                        "0676",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  677 */  { itemToBeCoded,               NOPARAM,                     "0677",                                        "0677",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  678 */  { addItemToBuffer,             CHR_A_MACRON,                STD_A_MACRON,                                  STD_A_MACRON,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  679 */  { addItemToBuffer,             CHR_A_ACUTE,                 STD_A_ACUTE,                                   STD_A_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  680 */  { addItemToBuffer,             CHR_A_BREVE,                 STD_A_BREVE,                                   STD_A_BREVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  681 */  { addItemToBuffer,             CHR_A_GRAVE,                 STD_A_GRAVE,                                   STD_A_GRAVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  682 */  { addItemToBuffer,             CHR_A_DIARESIS,              STD_A_DIARESIS,                                STD_A_DIARESIS,                                0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  683 */  { addItemToBuffer,             CHR_A_TILDE,                 STD_A_TILDE,                                   STD_A_TILDE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  684 */  { addItemToBuffer,             CHR_A_CIRC,                  STD_A_CIRC,                                    STD_A_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  685 */  { addItemToBuffer,             CHR_A_RING,                  STD_A_RING,                                    STD_A_RING,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  686 */  { addItemToBuffer,             CHR_AE,                      STD_AE,                                        STD_AE,                                        0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  687 */  { addItemToBuffer,             CHR_A_OGONEK,                STD_A_OGONEK,                                  STD_A_OGONEK,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  688 */  { addItemToBuffer,             CHR_C_ACUTE,                 STD_C_ACUTE,                                   STD_C_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  689 */  { addItemToBuffer,             CHR_C_CARON,                 STD_C_CARON,                                   STD_C_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  690 */  { addItemToBuffer,             CHR_C_CEDILLA,               STD_C_CEDILLA,                                 STD_C_CEDILLA,                                 0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  691 */  { addItemToBuffer,             CHR_D_STROKE,                STD_D_STROKE,                                  STD_D_STROKE,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  692 */  { addItemToBuffer,             CHR_D_CARON,                 STD_D_CARON,                                   STD_D_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  693 */  { addItemToBuffer,             CHR_E_MACRON,                STD_E_MACRON,                                  STD_E_MACRON,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  694 */  { addItemToBuffer,             CHR_E_ACUTE,                 STD_E_ACUTE,                                   STD_E_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  695 */  { addItemToBuffer,             CHR_E_BREVE,                 STD_E_BREVE,                                   STD_E_BREVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  696 */  { addItemToBuffer,             CHR_E_GRAVE,                 STD_E_GRAVE,                                   STD_E_GRAVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  697 */  { addItemToBuffer,             CHR_E_DIARESIS,              STD_E_DIARESIS,                                STD_E_DIARESIS,                                0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  698 */  { addItemToBuffer,             CHR_E_CIRC,                  STD_E_CIRC,                                    STD_E_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  699 */  { addItemToBuffer,             CHR_E_OGONEK,                STD_E_OGONEK,                                  STD_E_OGONEK,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  700 */  { addItemToBuffer,             CHR_G_BREVE,                 STD_G_BREVE,                                   STD_G_BREVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  678 */  { addItemToBuffer,             ITM_A_MACRON,                STD_A_MACRON,                                  STD_A_MACRON,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  679 */  { addItemToBuffer,             ITM_A_ACUTE,                 STD_A_ACUTE,                                   STD_A_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  680 */  { addItemToBuffer,             ITM_A_BREVE,                 STD_A_BREVE,                                   STD_A_BREVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  681 */  { addItemToBuffer,             ITM_A_GRAVE,                 STD_A_GRAVE,                                   STD_A_GRAVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  682 */  { addItemToBuffer,             ITM_A_DIARESIS,              STD_A_DIARESIS,                                STD_A_DIARESIS,                                0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  683 */  { addItemToBuffer,             ITM_A_TILDE,                 STD_A_TILDE,                                   STD_A_TILDE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  684 */  { addItemToBuffer,             ITM_A_CIRC,                  STD_A_CIRC,                                    STD_A_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  685 */  { addItemToBuffer,             ITM_A_RING,                  STD_A_RING,                                    STD_A_RING,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  686 */  { addItemToBuffer,             ITM_AE,                      STD_AE,                                        STD_AE,                                        0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  687 */  { addItemToBuffer,             ITM_A_OGONEK,                STD_A_OGONEK,                                  STD_A_OGONEK,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  688 */  { addItemToBuffer,             ITM_C_ACUTE,                 STD_C_ACUTE,                                   STD_C_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  689 */  { addItemToBuffer,             ITM_C_CARON,                 STD_C_CARON,                                   STD_C_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  690 */  { addItemToBuffer,             ITM_C_CEDILLA,               STD_C_CEDILLA,                                 STD_C_CEDILLA,                                 0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  691 */  { addItemToBuffer,             ITM_D_STROKE,                STD_D_STROKE,                                  STD_D_STROKE,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  692 */  { addItemToBuffer,             ITM_D_CARON,                 STD_D_CARON,                                   STD_D_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  693 */  { addItemToBuffer,             ITM_E_MACRON,                STD_E_MACRON,                                  STD_E_MACRON,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  694 */  { addItemToBuffer,             ITM_E_ACUTE,                 STD_E_ACUTE,                                   STD_E_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  695 */  { addItemToBuffer,             ITM_E_BREVE,                 STD_E_BREVE,                                   STD_E_BREVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  696 */  { addItemToBuffer,             ITM_E_GRAVE,                 STD_E_GRAVE,                                   STD_E_GRAVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  697 */  { addItemToBuffer,             ITM_E_DIARESIS,              STD_E_DIARESIS,                                STD_E_DIARESIS,                                0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  698 */  { addItemToBuffer,             ITM_E_CIRC,                  STD_E_CIRC,                                    STD_E_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  699 */  { addItemToBuffer,             ITM_E_OGONEK,                STD_E_OGONEK,                                  STD_E_OGONEK,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  700 */  { addItemToBuffer,             ITM_G_BREVE,                 STD_G_BREVE,                                   STD_G_BREVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
 /*  701 */  { itemToBeCoded,               NOPARAM,                     "0701",                                        "0701",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  702 */  { addItemToBuffer,             CHR_I_MACRON,                STD_I_MACRON,                                  STD_I_MACRON,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  703 */  { addItemToBuffer,             CHR_I_ACUTE,                 STD_I_ACUTE,                                   STD_I_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  704 */  { addItemToBuffer,             CHR_I_BREVE,                 STD_I_BREVE,                                   STD_I_BREVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  705 */  { addItemToBuffer,             CHR_I_GRAVE,                 STD_I_GRAVE,                                   STD_I_GRAVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  706 */  { addItemToBuffer,             CHR_I_DIARESIS,              STD_I_DIARESIS,                                STD_I_DIARESIS,                                0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  707 */  { addItemToBuffer,             CHR_I_CIRC,                  STD_I_CIRC,                                    STD_I_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  708 */  { addItemToBuffer,             CHR_I_OGONEK,                STD_I_OGONEK,                                  STD_I_OGONEK,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  709 */  { addItemToBuffer,             CHR_I_DOT,                   STD_I_DOT,                                     STD_I_DOT,                                     0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  710 */  { addItemToBuffer,             CHR_I_DOTLESS,               "I",                                           "I",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  711 */  { addItemToBuffer,             CHR_L_STROKE,                STD_L_STROKE,                                  STD_L_STROKE,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  712 */  { addItemToBuffer,             CHR_L_ACUTE,                 STD_L_ACUTE,                                   STD_L_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  713 */  { addItemToBuffer,             CHR_L_APOSTROPHE,            STD_L_APOSTROPHE,                              STD_L_APOSTROPHE,                              0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  714 */  { addItemToBuffer,             CHR_N_ACUTE,                 STD_N_ACUTE,                                   STD_N_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  715 */  { addItemToBuffer,             CHR_N_CARON,                 STD_N_CARON,                                   STD_N_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  716 */  { addItemToBuffer,             CHR_N_TILDE,                 STD_N_TILDE,                                   STD_N_TILDE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  717 */  { addItemToBuffer,             CHR_O_MACRON,                STD_O_MACRON,                                  STD_O_MACRON,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  718 */  { addItemToBuffer,             CHR_O_ACUTE,                 STD_O_ACUTE,                                   STD_O_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  719 */  { addItemToBuffer,             CHR_O_BREVE,                 STD_O_BREVE,                                   STD_O_BREVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  720 */  { addItemToBuffer,             CHR_O_GRAVE,                 STD_O_GRAVE,                                   STD_O_GRAVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  721 */  { addItemToBuffer,             CHR_O_DIARESIS,              STD_O_DIARESIS,                                STD_O_DIARESIS,                                0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  722 */  { addItemToBuffer,             CHR_O_TILDE,                 STD_O_TILDE,                                   STD_O_TILDE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  723 */  { addItemToBuffer,             CHR_O_CIRC,                  STD_O_CIRC,                                    STD_O_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  724 */  { addItemToBuffer,             CHR_O_STROKE,                STD_O_STROKE,                                  STD_O_STROKE,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  725 */  { addItemToBuffer,             CHR_OE,                      STD_OE,                                        STD_OE,                                        0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  702 */  { addItemToBuffer,             ITM_I_MACRON,                STD_I_MACRON,                                  STD_I_MACRON,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  703 */  { addItemToBuffer,             ITM_I_ACUTE,                 STD_I_ACUTE,                                   STD_I_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  704 */  { addItemToBuffer,             ITM_I_BREVE,                 STD_I_BREVE,                                   STD_I_BREVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  705 */  { addItemToBuffer,             ITM_I_GRAVE,                 STD_I_GRAVE,                                   STD_I_GRAVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  706 */  { addItemToBuffer,             ITM_I_DIARESIS,              STD_I_DIARESIS,                                STD_I_DIARESIS,                                0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  707 */  { addItemToBuffer,             ITM_I_CIRC,                  STD_I_CIRC,                                    STD_I_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  708 */  { addItemToBuffer,             ITM_I_OGONEK,                STD_I_OGONEK,                                  STD_I_OGONEK,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  709 */  { addItemToBuffer,             ITM_I_DOT,                   STD_I_DOT,                                     STD_I_DOT,                                     0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  710 */  { addItemToBuffer,             ITM_I_DOTLESS,               "I",                                           "I",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  711 */  { addItemToBuffer,             ITM_L_STROKE,                STD_L_STROKE,                                  STD_L_STROKE,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  712 */  { addItemToBuffer,             ITM_L_ACUTE,                 STD_L_ACUTE,                                   STD_L_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  713 */  { addItemToBuffer,             ITM_L_APOSTROPHE,            STD_L_APOSTROPHE,                              STD_L_APOSTROPHE,                              0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  714 */  { addItemToBuffer,             ITM_N_ACUTE,                 STD_N_ACUTE,                                   STD_N_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  715 */  { addItemToBuffer,             ITM_N_CARON,                 STD_N_CARON,                                   STD_N_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  716 */  { addItemToBuffer,             ITM_N_TILDE,                 STD_N_TILDE,                                   STD_N_TILDE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  717 */  { addItemToBuffer,             ITM_O_MACRON,                STD_O_MACRON,                                  STD_O_MACRON,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  718 */  { addItemToBuffer,             ITM_O_ACUTE,                 STD_O_ACUTE,                                   STD_O_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  719 */  { addItemToBuffer,             ITM_O_BREVE,                 STD_O_BREVE,                                   STD_O_BREVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  720 */  { addItemToBuffer,             ITM_O_GRAVE,                 STD_O_GRAVE,                                   STD_O_GRAVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  721 */  { addItemToBuffer,             ITM_O_DIARESIS,              STD_O_DIARESIS,                                STD_O_DIARESIS,                                0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  722 */  { addItemToBuffer,             ITM_O_TILDE,                 STD_O_TILDE,                                   STD_O_TILDE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  723 */  { addItemToBuffer,             ITM_O_CIRC,                  STD_O_CIRC,                                    STD_O_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  724 */  { addItemToBuffer,             ITM_O_STROKE,                STD_O_STROKE,                                  STD_O_STROKE,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  725 */  { addItemToBuffer,             ITM_OE,                      STD_OE,                                        STD_OE,                                        0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
 /*  726 */  { itemToBeCoded,               NOPARAM,                     "0726",                                        "0726",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  727 */  { itemToBeCoded,               NOPARAM,                     "0727",                                        "0727",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  728 */  { addItemToBuffer,             CHR_S_SHARP,                 STD_s_SHARP,                                   STD_s_SHARP,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  729 */  { addItemToBuffer,             CHR_S_ACUTE,                 STD_S_ACUTE,                                   STD_S_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  730 */  { addItemToBuffer,             CHR_S_CARON,                 STD_S_CARON,                                   STD_S_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  731 */  { addItemToBuffer,             CHR_S_CEDILLA,               STD_S_CEDILLA,                                 STD_S_CEDILLA,                                 0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  732 */  { addItemToBuffer,             CHR_T_CARON,                 STD_T_CARON,                                   STD_T_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  733 */  { addItemToBuffer,             CHR_T_CEDILLA,               STD_T_CEDILLA,                                 STD_T_CEDILLA,                                 0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  734 */  { addItemToBuffer,             CHR_U_MACRON,                STD_U_MACRON,                                  STD_U_MACRON,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  735 */  { addItemToBuffer,             CHR_U_ACUTE,                 STD_U_ACUTE,                                   STD_U_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  736 */  { addItemToBuffer,             CHR_U_BREVE,                 STD_U_BREVE,                                   STD_U_BREVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  737 */  { addItemToBuffer,             CHR_U_GRAVE,                 STD_U_GRAVE,                                   STD_U_GRAVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  738 */  { addItemToBuffer,             CHR_U_DIARESIS,              STD_U_DIARESIS,                                STD_U_DIARESIS,                                0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  739 */  { addItemToBuffer,             CHR_U_TILDE,                 STD_U_TILDE,                                   STD_U_TILDE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  740 */  { addItemToBuffer,             CHR_U_CIRC,                  STD_U_CIRC,                                    STD_U_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  741 */  { addItemToBuffer,             CHR_U_RING,                  STD_U_RING,                                    STD_U_RING,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  742 */  { addItemToBuffer,             CHR_W_CIRC,                  STD_W_CIRC,                                    STD_W_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  728 */  { addItemToBuffer,             ITM_S_SHARP,                 STD_s_SHARP,                                   STD_s_SHARP,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  729 */  { addItemToBuffer,             ITM_S_ACUTE,                 STD_S_ACUTE,                                   STD_S_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  730 */  { addItemToBuffer,             ITM_S_CARON,                 STD_S_CARON,                                   STD_S_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  731 */  { addItemToBuffer,             ITM_S_CEDILLA,               STD_S_CEDILLA,                                 STD_S_CEDILLA,                                 0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  732 */  { addItemToBuffer,             ITM_T_CARON,                 STD_T_CARON,                                   STD_T_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  733 */  { addItemToBuffer,             ITM_T_CEDILLA,               STD_T_CEDILLA,                                 STD_T_CEDILLA,                                 0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  734 */  { addItemToBuffer,             ITM_U_MACRON,                STD_U_MACRON,                                  STD_U_MACRON,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  735 */  { addItemToBuffer,             ITM_U_ACUTE,                 STD_U_ACUTE,                                   STD_U_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  736 */  { addItemToBuffer,             ITM_U_BREVE,                 STD_U_BREVE,                                   STD_U_BREVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  737 */  { addItemToBuffer,             ITM_U_GRAVE,                 STD_U_GRAVE,                                   STD_U_GRAVE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  738 */  { addItemToBuffer,             ITM_U_DIARESIS,              STD_U_DIARESIS,                                STD_U_DIARESIS,                                0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  739 */  { addItemToBuffer,             ITM_U_TILDE,                 STD_U_TILDE,                                   STD_U_TILDE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  740 */  { addItemToBuffer,             ITM_U_CIRC,                  STD_U_CIRC,                                    STD_U_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  741 */  { addItemToBuffer,             ITM_U_RING,                  STD_U_RING,                                    STD_U_RING,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  742 */  { addItemToBuffer,             ITM_W_CIRC,                  STD_W_CIRC,                                    STD_W_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
 /*  743 */  { itemToBeCoded,               NOPARAM,                     "0743",                                        "0743",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  744 */  { itemToBeCoded,               NOPARAM,                     "0744",                                        "0744",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  745 */  { itemToBeCoded,               NOPARAM,                     "0745",                                        "0745",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  746 */  { addItemToBuffer,             CHR_Y_CIRC,                  STD_Y_CIRC,                                    STD_Y_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  747 */  { addItemToBuffer,             CHR_Y_ACUTE,                 STD_Y_ACUTE,                                   STD_Y_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  748 */  { addItemToBuffer,             CHR_Y_DIARESIS,              STD_Y_DIARESIS,                                STD_Y_DIARESIS,                                0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  749 */  { addItemToBuffer,             CHR_Z_ACUTE,                 STD_Z_ACUTE,                                   STD_Z_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  750 */  { addItemToBuffer,             CHR_Z_CARON,                 STD_Z_CARON,                                   STD_Z_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  751 */  { addItemToBuffer,             CHR_Z_DOT,                   STD_Z_DOT,                                     STD_Z_DOT,                                     0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  746 */  { addItemToBuffer,             ITM_Y_CIRC,                  STD_Y_CIRC,                                    STD_Y_CIRC,                                    0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  747 */  { addItemToBuffer,             ITM_Y_ACUTE,                 STD_Y_ACUTE,                                   STD_Y_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  748 */  { addItemToBuffer,             ITM_Y_DIARESIS,              STD_Y_DIARESIS,                                STD_Y_DIARESIS,                                0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  749 */  { addItemToBuffer,             ITM_Z_ACUTE,                 STD_Z_ACUTE,                                   STD_Z_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  750 */  { addItemToBuffer,             ITM_Z_CARON,                 STD_Z_CARON,                                   STD_Z_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  751 */  { addItemToBuffer,             ITM_Z_DOT,                   STD_Z_DOT,                                     STD_Z_DOT,                                     0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
 /*  752 */  { itemToBeCoded,               NOPARAM,                     "0752",                                        "0752",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  753 */  { itemToBeCoded,               NOPARAM,                     "0753",                                        "0753",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  754 */  { itemToBeCoded,               NOPARAM,                     "0754",                                        "0754",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  755 */  { itemToBeCoded,               NOPARAM,                     "0755",                                        "0755",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  756 */  { itemToBeCoded,               NOPARAM,                     "0756",                                        "0756",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  757 */  { itemToBeCoded,               NOPARAM,                     "0757",                                        "0757",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  758 */  { addItemToBuffer,             CHR_a_MACRON,                STD_a_MACRON,                                  STD_a_MACRON,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  759 */  { addItemToBuffer,             CHR_a_ACUTE,                 STD_a_ACUTE,                                   STD_a_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  760 */  { addItemToBuffer,             CHR_a_BREVE,                 STD_a_BREVE,                                   STD_a_BREVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  761 */  { addItemToBuffer,             CHR_a_GRAVE,                 STD_a_GRAVE,                                   STD_a_GRAVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  762 */  { addItemToBuffer,             CHR_a_DIARESIS,              STD_a_DIARESIS,                                STD_a_DIARESIS,                                0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  763 */  { addItemToBuffer,             CHR_a_TILDE,                 STD_a_TILDE,                                   STD_a_TILDE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  764 */  { addItemToBuffer,             CHR_a_CIRC,                  STD_a_CIRC,                                    STD_a_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  765 */  { addItemToBuffer,             CHR_a_RING,                  STD_a_RING,                                    STD_a_RING,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  766 */  { addItemToBuffer,             CHR_ae,                      STD_ae,                                        STD_ae,                                        0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  767 */  { addItemToBuffer,             CHR_a_OGONEK,                STD_a_OGONEK,                                  STD_a_OGONEK,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  768 */  { addItemToBuffer,             CHR_c_ACUTE,                 STD_c_ACUTE,                                   STD_c_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  769 */  { addItemToBuffer,             CHR_c_CARON,                 STD_c_CARON,                                   STD_c_CARON,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  770 */  { addItemToBuffer,             CHR_c_CEDILLA,               STD_c_CEDILLA,                                 STD_c_CEDILLA,                                 0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  771 */  { addItemToBuffer,             CHR_d_STROKE,                STD_d_STROKE,                                  STD_d_STROKE,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  772 */  { addItemToBuffer,             CHR_d_APOSTROPHE,            STD_d_APOSTROPHE,                              STD_d_APOSTROPHE,                              0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  773 */  { addItemToBuffer,             CHR_e_MACRON,                STD_e_MACRON,                                  STD_e_MACRON,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  774 */  { addItemToBuffer,             CHR_e_ACUTE,                 STD_e_ACUTE,                                   STD_e_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  775 */  { addItemToBuffer,             CHR_e_BREVE,                 STD_e_BREVE,                                   STD_e_BREVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  776 */  { addItemToBuffer,             CHR_e_GRAVE,                 STD_e_GRAVE,                                   STD_e_GRAVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  777 */  { addItemToBuffer,             CHR_e_DIARESIS,              STD_e_DIARESIS,                                STD_e_DIARESIS,                                0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  778 */  { addItemToBuffer,             CHR_e_CIRC,                  STD_e_CIRC,                                    STD_e_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  779 */  { addItemToBuffer,             CHR_e_OGONEK,                STD_e_OGONEK,                                  STD_e_OGONEK,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  780 */  { addItemToBuffer,             CHR_g_BREVE,                 STD_g_BREVE,                                   STD_g_BREVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  781 */  { addItemToBuffer,             CHR_h_STROKE,                "",                                            STD_h_STROKE,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  782 */  { addItemToBuffer,             CHR_i_MACRON,                STD_i_MACRON,                                  STD_i_MACRON,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  783 */  { addItemToBuffer,             CHR_i_ACUTE,                 STD_i_ACUTE,                                   STD_i_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  784 */  { addItemToBuffer,             CHR_i_BREVE,                 STD_i_BREVE,                                   STD_i_BREVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  785 */  { addItemToBuffer,             CHR_i_GRAVE,                 STD_i_GRAVE,                                   STD_i_GRAVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  786 */  { addItemToBuffer,             CHR_i_DIARESIS,              STD_i_DIARESIS,                                STD_i_DIARESIS,                                0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  787 */  { addItemToBuffer,             CHR_i_CIRC,                  STD_i_CIRC,                                    STD_i_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  788 */  { addItemToBuffer,             CHR_i_OGONEK,                STD_i_OGONEK,                                  STD_i_OGONEK,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  789 */  { addItemToBuffer,             CHR_i_DOT,                   "i",                                           "i",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  790 */  { addItemToBuffer,             CHR_i_DOTLESS,               STD_i_DOTLESS,                                 STD_i_DOTLESS,                                 0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  791 */  { addItemToBuffer,             CHR_l_STROKE,                STD_l_STROKE,                                  STD_l_STROKE,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  792 */  { addItemToBuffer,             CHR_l_ACUTE,                 STD_l_ACUTE,                                   STD_l_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  793 */  { addItemToBuffer,             CHR_l_APOSTROPHE,            STD_l_APOSTROPHE,                              STD_l_APOSTROPHE,                              0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  794 */  { addItemToBuffer,             CHR_n_ACUTE,                 STD_n_ACUTE,                                   STD_n_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  795 */  { addItemToBuffer,             CHR_n_CARON,                 STD_n_CARON,                                   STD_n_CARON,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  796 */  { addItemToBuffer,             CHR_n_TILDE,                 STD_n_TILDE,                                   STD_n_TILDE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  797 */  { addItemToBuffer,             CHR_o_MACRON,                STD_o_MACRON,                                  STD_o_MACRON,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  798 */  { addItemToBuffer,             CHR_o_ACUTE,                 STD_o_ACUTE,                                   STD_o_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  799 */  { addItemToBuffer,             CHR_o_BREVE,                 STD_o_BREVE,                                   STD_o_BREVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  800 */  { addItemToBuffer,             CHR_o_GRAVE,                 STD_o_GRAVE,                                   STD_o_GRAVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  801 */  { addItemToBuffer,             CHR_o_DIARESIS,              STD_o_DIARESIS,                                STD_o_DIARESIS,                                0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  802 */  { addItemToBuffer,             CHR_o_TILDE,                 STD_o_TILDE,                                   STD_o_TILDE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  803 */  { addItemToBuffer,             CHR_o_CIRC,                  STD_o_CIRC,                                    STD_o_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  804 */  { addItemToBuffer,             CHR_o_STROKE,                STD_o_STROKE,                                  STD_o_STROKE,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  805 */  { addItemToBuffer,             CHR_oe,                      STD_oe,                                        STD_oe,                                        0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  806 */  { addItemToBuffer,             CHR_r_CARON,                 STD_r_CARON,                                   STD_r_CARON,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  807 */  { addItemToBuffer,             CHR_r_ACUTE,                 STD_r_ACUTE,                                   STD_r_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  808 */  { addItemToBuffer,             CHR_s_SHARP,                 STD_s_SHARP,                                   STD_s_SHARP,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  809 */  { addItemToBuffer,             CHR_s_ACUTE,                 STD_s_ACUTE,                                   STD_s_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  810 */  { addItemToBuffer,             CHR_s_CARON,                 STD_s_CARON,                                   STD_s_CARON,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  811 */  { addItemToBuffer,             CHR_s_CEDILLA,               STD_s_CEDILLA,                                 STD_s_CEDILLA,                                 0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  812 */  { addItemToBuffer,             CHR_t_APOSTROPHE,            STD_t_APOSTROPHE,                              STD_t_APOSTROPHE,                              0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  813 */  { addItemToBuffer,             CHR_t_CEDILLA,               STD_t_CEDILLA,                                 STD_t_CEDILLA,                                 0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  814 */  { addItemToBuffer,             CHR_u_MACRON,                STD_u_MACRON,                                  STD_u_MACRON,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  815 */  { addItemToBuffer,             CHR_u_ACUTE,                 STD_u_ACUTE,                                   STD_u_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  816 */  { addItemToBuffer,             CHR_u_BREVE,                 STD_u_BREVE,                                   STD_u_BREVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  817 */  { addItemToBuffer,             CHR_u_GRAVE,                 STD_u_GRAVE,                                   STD_u_GRAVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  818 */  { addItemToBuffer,             CHR_u_DIARESIS,              STD_u_DIARESIS,                                STD_u_DIARESIS,                                0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  819 */  { addItemToBuffer,             CHR_u_TILDE,                 STD_u_TILDE,                                   STD_u_TILDE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  820 */  { addItemToBuffer,             CHR_u_CIRC,                  STD_u_CIRC,                                    STD_u_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  821 */  { addItemToBuffer,             CHR_u_RING,                  STD_u_RING,                                    STD_u_RING,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  822 */  { addItemToBuffer,             CHR_w_CIRC,                  STD_w_CIRC,                                    STD_w_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  823 */  { addItemToBuffer,             CHR_x_BAR,                   "",                                            STD_x_BAR,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  824 */  { addItemToBuffer,             CHR_x_CIRC,                  "",                                            STD_x_CIRC,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  825 */  { addItemToBuffer,             CHR_y_BAR,                   "",                                            STD_y_BAR,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  826 */  { addItemToBuffer,             CHR_y_CIRC,                  STD_y_CIRC,                                    STD_y_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  827 */  { addItemToBuffer,             CHR_y_ACUTE,                 STD_y_ACUTE,                                   STD_y_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  828 */  { addItemToBuffer,             CHR_y_DIARESIS,              STD_y_DIARESIS,                                STD_y_DIARESIS,                                0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  829 */  { addItemToBuffer,             CHR_z_ACUTE,                 STD_z_ACUTE,                                   STD_z_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  830 */  { addItemToBuffer,             CHR_z_CARON,                 STD_z_CARON,                                   STD_z_CARON,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  831 */  { addItemToBuffer,             CHR_z_DOT,                   STD_z_DOT,                                     STD_z_DOT,                                     0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  758 */  { addItemToBuffer,             ITM_a_MACRON,                STD_a_MACRON,                                  STD_a_MACRON,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  759 */  { addItemToBuffer,             ITM_a_ACUTE,                 STD_a_ACUTE,                                   STD_a_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  760 */  { addItemToBuffer,             ITM_a_BREVE,                 STD_a_BREVE,                                   STD_a_BREVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  761 */  { addItemToBuffer,             ITM_a_GRAVE,                 STD_a_GRAVE,                                   STD_a_GRAVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  762 */  { addItemToBuffer,             ITM_a_DIARESIS,              STD_a_DIARESIS,                                STD_a_DIARESIS,                                0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  763 */  { addItemToBuffer,             ITM_a_TILDE,                 STD_a_TILDE,                                   STD_a_TILDE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  764 */  { addItemToBuffer,             ITM_a_CIRC,                  STD_a_CIRC,                                    STD_a_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  765 */  { addItemToBuffer,             ITM_a_RING,                  STD_a_RING,                                    STD_a_RING,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  766 */  { addItemToBuffer,             ITM_ae,                      STD_ae,                                        STD_ae,                                        0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  767 */  { addItemToBuffer,             ITM_a_OGONEK,                STD_a_OGONEK,                                  STD_a_OGONEK,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  768 */  { addItemToBuffer,             ITM_c_ACUTE,                 STD_c_ACUTE,                                   STD_c_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  769 */  { addItemToBuffer,             ITM_c_CARON,                 STD_c_CARON,                                   STD_c_CARON,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  770 */  { addItemToBuffer,             ITM_c_CEDILLA,               STD_c_CEDILLA,                                 STD_c_CEDILLA,                                 0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  771 */  { addItemToBuffer,             ITM_d_STROKE,                STD_d_STROKE,                                  STD_d_STROKE,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  772 */  { addItemToBuffer,             ITM_d_APOSTROPHE,            STD_d_APOSTROPHE,                              STD_d_APOSTROPHE,                              0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  773 */  { addItemToBuffer,             ITM_e_MACRON,                STD_e_MACRON,                                  STD_e_MACRON,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  774 */  { addItemToBuffer,             ITM_e_ACUTE,                 STD_e_ACUTE,                                   STD_e_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  775 */  { addItemToBuffer,             ITM_e_BREVE,                 STD_e_BREVE,                                   STD_e_BREVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  776 */  { addItemToBuffer,             ITM_e_GRAVE,                 STD_e_GRAVE,                                   STD_e_GRAVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  777 */  { addItemToBuffer,             ITM_e_DIARESIS,              STD_e_DIARESIS,                                STD_e_DIARESIS,                                0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  778 */  { addItemToBuffer,             ITM_e_CIRC,                  STD_e_CIRC,                                    STD_e_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  779 */  { addItemToBuffer,             ITM_e_OGONEK,                STD_e_OGONEK,                                  STD_e_OGONEK,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  780 */  { addItemToBuffer,             ITM_g_BREVE,                 STD_g_BREVE,                                   STD_g_BREVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  781 */  { addItemToBuffer,             ITM_h_STROKE,                "",                                            STD_h_STROKE,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  782 */  { addItemToBuffer,             ITM_i_MACRON,                STD_i_MACRON,                                  STD_i_MACRON,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  783 */  { addItemToBuffer,             ITM_i_ACUTE,                 STD_i_ACUTE,                                   STD_i_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  784 */  { addItemToBuffer,             ITM_i_BREVE,                 STD_i_BREVE,                                   STD_i_BREVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  785 */  { addItemToBuffer,             ITM_i_GRAVE,                 STD_i_GRAVE,                                   STD_i_GRAVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  786 */  { addItemToBuffer,             ITM_i_DIARESIS,              STD_i_DIARESIS,                                STD_i_DIARESIS,                                0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  787 */  { addItemToBuffer,             ITM_i_CIRC,                  STD_i_CIRC,                                    STD_i_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  788 */  { addItemToBuffer,             ITM_i_OGONEK,                STD_i_OGONEK,                                  STD_i_OGONEK,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  789 */  { addItemToBuffer,             ITM_i_DOT,                   "i",                                           "i",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  790 */  { addItemToBuffer,             ITM_i_DOTLESS,               STD_i_DOTLESS,                                 STD_i_DOTLESS,                                 0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  791 */  { addItemToBuffer,             ITM_l_STROKE,                STD_l_STROKE,                                  STD_l_STROKE,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  792 */  { addItemToBuffer,             ITM_l_ACUTE,                 STD_l_ACUTE,                                   STD_l_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  793 */  { addItemToBuffer,             ITM_l_APOSTROPHE,            STD_l_APOSTROPHE,                              STD_l_APOSTROPHE,                              0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  794 */  { addItemToBuffer,             ITM_n_ACUTE,                 STD_n_ACUTE,                                   STD_n_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  795 */  { addItemToBuffer,             ITM_n_CARON,                 STD_n_CARON,                                   STD_n_CARON,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  796 */  { addItemToBuffer,             ITM_n_TILDE,                 STD_n_TILDE,                                   STD_n_TILDE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  797 */  { addItemToBuffer,             ITM_o_MACRON,                STD_o_MACRON,                                  STD_o_MACRON,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  798 */  { addItemToBuffer,             ITM_o_ACUTE,                 STD_o_ACUTE,                                   STD_o_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  799 */  { addItemToBuffer,             ITM_o_BREVE,                 STD_o_BREVE,                                   STD_o_BREVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  800 */  { addItemToBuffer,             ITM_o_GRAVE,                 STD_o_GRAVE,                                   STD_o_GRAVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  801 */  { addItemToBuffer,             ITM_o_DIARESIS,              STD_o_DIARESIS,                                STD_o_DIARESIS,                                0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  802 */  { addItemToBuffer,             ITM_o_TILDE,                 STD_o_TILDE,                                   STD_o_TILDE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  803 */  { addItemToBuffer,             ITM_o_CIRC,                  STD_o_CIRC,                                    STD_o_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  804 */  { addItemToBuffer,             ITM_o_STROKE,                STD_o_STROKE,                                  STD_o_STROKE,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  805 */  { addItemToBuffer,             ITM_oe,                      STD_oe,                                        STD_oe,                                        0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  806 */  { addItemToBuffer,             ITM_r_CARON,                 STD_r_CARON,                                   STD_r_CARON,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  807 */  { addItemToBuffer,             ITM_r_ACUTE,                 STD_r_ACUTE,                                   STD_r_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  808 */  { addItemToBuffer,             ITM_s_SHARP,                 STD_s_SHARP,                                   STD_s_SHARP,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  809 */  { addItemToBuffer,             ITM_s_ACUTE,                 STD_s_ACUTE,                                   STD_s_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  810 */  { addItemToBuffer,             ITM_s_CARON,                 STD_s_CARON,                                   STD_s_CARON,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  811 */  { addItemToBuffer,             ITM_s_CEDILLA,               STD_s_CEDILLA,                                 STD_s_CEDILLA,                                 0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  812 */  { addItemToBuffer,             ITM_t_APOSTROPHE,            STD_t_APOSTROPHE,                              STD_t_APOSTROPHE,                              0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  813 */  { addItemToBuffer,             ITM_t_CEDILLA,               STD_t_CEDILLA,                                 STD_t_CEDILLA,                                 0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  814 */  { addItemToBuffer,             ITM_u_MACRON,                STD_u_MACRON,                                  STD_u_MACRON,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  815 */  { addItemToBuffer,             ITM_u_ACUTE,                 STD_u_ACUTE,                                   STD_u_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  816 */  { addItemToBuffer,             ITM_u_BREVE,                 STD_u_BREVE,                                   STD_u_BREVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  817 */  { addItemToBuffer,             ITM_u_GRAVE,                 STD_u_GRAVE,                                   STD_u_GRAVE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  818 */  { addItemToBuffer,             ITM_u_DIARESIS,              STD_u_DIARESIS,                                STD_u_DIARESIS,                                0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  819 */  { addItemToBuffer,             ITM_u_TILDE,                 STD_u_TILDE,                                   STD_u_TILDE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  820 */  { addItemToBuffer,             ITM_u_CIRC,                  STD_u_CIRC,                                    STD_u_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  821 */  { addItemToBuffer,             ITM_u_RING,                  STD_u_RING,                                    STD_u_RING,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  822 */  { addItemToBuffer,             ITM_w_CIRC,                  STD_w_CIRC,                                    STD_w_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  823 */  { addItemToBuffer,             ITM_x_BAR,                   "",                                            STD_x_BAR,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  824 */  { addItemToBuffer,             ITM_x_CIRC,                  "",                                            STD_x_CIRC,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  825 */  { addItemToBuffer,             ITM_y_BAR,                   "",                                            STD_y_BAR,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  826 */  { addItemToBuffer,             ITM_y_CIRC,                  STD_y_CIRC,                                    STD_y_CIRC,                                    0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  827 */  { addItemToBuffer,             ITM_y_ACUTE,                 STD_y_ACUTE,                                   STD_y_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  828 */  { addItemToBuffer,             ITM_y_DIARESIS,              STD_y_DIARESIS,                                STD_y_DIARESIS,                                0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  829 */  { addItemToBuffer,             ITM_z_ACUTE,                 STD_z_ACUTE,                                   STD_z_ACUTE,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  830 */  { addItemToBuffer,             ITM_z_CARON,                 STD_z_CARON,                                   STD_z_CARON,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  831 */  { addItemToBuffer,             ITM_z_DOT,                   STD_z_DOT,                                     STD_z_DOT,                                     0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
 /*  832 */  { itemToBeCoded,               NOPARAM,                     "0832",                                        "0832",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  833 */  { itemToBeCoded,               NOPARAM,                     "0833",                                        "0833",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  834 */  { itemToBeCoded,               NOPARAM,                     "0834",                                        "0834",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1327,13 +1335,13 @@ const item_t indexOfItems[] = {
 /*  838 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_alpha,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  839 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_delta,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  840 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_mu,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  841 */  { addItemToBuffer,             CHR_SUB_SUN,                 "",                                            STD_SUB_SUN,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  841 */  { addItemToBuffer,             ITM_SUB_SUN,                 "",                                            STD_SUB_SUN,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  842 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_SUN_b,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  843 */  { addItemToBuffer,             CHR_SUB_EARTH,               "",                                            STD_SUB_EARTH,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  843 */  { addItemToBuffer,             ITM_SUB_EARTH,               "",                                            STD_SUB_EARTH,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  844 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_EARTH_b,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  845 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_PLUS,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  846 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_MINUS,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  847 */  { addItemToBuffer,             CHR_SUB_INFINITY,            "",                                            STD_SUB_INFINITY,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  847 */  { addItemToBuffer,             ITM_SUB_INFINITY,            "",                                            STD_SUB_INFINITY,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  848 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_0,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  849 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_1,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  850 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_2,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1371,7 +1379,7 @@ const item_t indexOfItems[] = {
 /*  882 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_X,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  883 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_Y,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  884 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_Z,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  885 */  { addItemToBuffer,             CHR_SUB_E_OUTLINE,           "",                                            STD_SUB_E_OUTLINE,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  885 */  { addItemToBuffer,             ITM_SUB_E_OUTLINE,           "",                                            STD_SUB_E_OUTLINE,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  886 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_a,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  887 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_b,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  888 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_c,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1408,9 +1416,9 @@ const item_t indexOfItems[] = {
 /*  919 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUB_x_b,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  920 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUP_PLUS,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  921 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUP_MINUS,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  922 */  { addItemToBuffer,             CHR_SUP_MINUS_1,             "",                                            STD_SUP_MINUS_1,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  923 */  { addItemToBuffer,             CHR_SUP_INFINITY,            "",                                            STD_SUP_INFINITY,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  924 */  { addItemToBuffer,             CHR_SUP_ASTERISK,            "",                                            STD_SUP_ASTERISK,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  922 */  { addItemToBuffer,             ITM_SUP_MINUS_1,             "",                                            STD_SUP_MINUS_1,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  923 */  { addItemToBuffer,             ITM_SUP_INFINITY,            "",                                            STD_SUP_INFINITY,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  924 */  { addItemToBuffer,             ITM_SUP_ASTERISK,            "",                                            STD_SUP_ASTERISK,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  925 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUP_0,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  926 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUP_1,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  927 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUP_2,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1422,77 +1430,77 @@ const item_t indexOfItems[] = {
 /*  933 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUP_8,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  934 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUP_9,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  935 */  { itemToBeCoded,               NOPARAM,                     "0935",                                        "0935",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  936 */  { addItemToBuffer,             CHR_SUP_T,                   "",                                            STD_SUP_T,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  936 */  { addItemToBuffer,             ITM_SUP_T,                   "",                                            STD_SUP_T,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  937 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUP_a,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  938 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUP_f,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  939 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUP_g,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  940 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUP_h,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  941 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUP_r,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  942 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SUP_x,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  943 */  { addItemToBuffer,             CHR_SPACE,                   "",                                            STD_SPACE,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  944 */  { addItemToBuffer,             CHR_EXCLAMATION_MARK,        "",                                            STD_EXCLAMATION_MARK,                          0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  945 */  { addItemToBuffer,             CHR_DOUBLE_QUOTE,            "",                                            STD_DOUBLE_QUOTE,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  946 */  { addItemToBuffer,             CHR_NUMBER_SIGN,             "",                                            STD_NUMBER_SIGN,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  947 */  { addItemToBuffer,             CHR_DOLLAR,                  "",                                            STD_DOLLAR,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  948 */  { addItemToBuffer,             CHR_PERCENT,                 "",                                            STD_PERCENT,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  949 */  { addItemToBuffer,             CHR_AMPERSAND,               "",                                            STD_AMPERSAND,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  950 */  { addItemToBuffer,             CHR_QUOTE,                   "",                                            STD_QUOTE,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  951 */  { addItemToBuffer,             CHR_LEFT_PARENTHESIS,        "",                                            STD_LEFT_PARENTHESIS,                          0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  952 */  { addItemToBuffer,             CHR_RIGHT_PARENTHESIS,       "",                                            STD_RIGHT_PARENTHESIS,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  953 */  { addItemToBuffer,             CHR_ASTERISK,                "",                                            STD_ASTERISK,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  943 */  { addItemToBuffer,             ITM_SPACE,                   "",                                            STD_SPACE,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  944 */  { addItemToBuffer,             ITM_EXCLAMATION_MARK,        "",                                            STD_EXCLAMATION_MARK,                          0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  945 */  { addItemToBuffer,             ITM_DOUBLE_QUOTE,            "",                                            STD_DOUBLE_QUOTE,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  946 */  { addItemToBuffer,             ITM_NUMBER_SIGN,             "",                                            STD_NUMBER_SIGN,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  947 */  { addItemToBuffer,             ITM_DOLLAR,                  "",                                            STD_DOLLAR,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  948 */  { addItemToBuffer,             ITM_PERCENT,                 "",                                            STD_PERCENT,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  949 */  { addItemToBuffer,             ITM_AMPERSAND,               "",                                            STD_AMPERSAND,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  950 */  { addItemToBuffer,             ITM_QUOTE,                   "",                                            STD_QUOTE,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  951 */  { addItemToBuffer,             ITM_LEFT_PARENTHESIS,        "",                                            STD_LEFT_PARENTHESIS,                          0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  952 */  { addItemToBuffer,             ITM_RIGHT_PARENTHESIS,       "",                                            STD_RIGHT_PARENTHESIS,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  953 */  { addItemToBuffer,             ITM_ASTERISK,                "",                                            STD_ASTERISK,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  954 */  { itemToBeCoded,               NOPARAM,                     "0954",                                        "0954",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/*  955 */  { addItemToBuffer,             CHR_PLUS,                    "",                                            STD_PLUS,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  956 */  { addItemToBuffer,             CHR_COMMA,                   "",                                            STD_COMMA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  957 */  { addItemToBuffer,             CHR_MINUS,                   "",                                            STD_MINUS,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  958 */  { addItemToBuffer,             CHR_PERIOD,                  "",                                            STD_PERIOD,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  959 */  { addItemToBuffer,             CHR_SLASH,                   "",                                            STD_SLASH,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  960 */  { addItemToBuffer,             CHR_COLON,                   "",                                            STD_COLON,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  961 */  { addItemToBuffer,             CHR_SEMICOLON,               "",                                            STD_SEMICOLON,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  962 */  { addItemToBuffer,             CHR_LESS_THAN,               "",                                            STD_LESS_THAN,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  963 */  { addItemToBuffer,             CHR_EQUAL,                   "",                                            STD_EQUAL,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  964 */  { addItemToBuffer,             CHR_GREATER_THAN,            "",                                            STD_GREATER_THAN,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  965 */  { addItemToBuffer,             CHR_QUESTION_MARK,           "",                                            STD_QUESTION_MARK,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  966 */  { addItemToBuffer,             CHR_AT,                      "",                                            STD_AT,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  967 */  { addItemToBuffer,             CHR_LEFT_SQUARE_BRACKET,     "",                                            STD_LEFT_SQUARE_BRACKET,                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  968 */  { addItemToBuffer,             CHR_BACK_SLASH,              "",                                            STD_BACK_SLASH,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  969 */  { addItemToBuffer,             CHR_RIGHT_SQUARE_BRACKET,    "",                                            STD_RIGHT_SQUARE_BRACKET,                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  970 */  { addItemToBuffer,             CHR_CIRCUMFLEX,              "",                                            STD_CIRCUMFLEX,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  971 */  { addItemToBuffer,             CHR_UNDERSCORE,              "",                                            STD_UNDERSCORE,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  972 */  { addItemToBuffer,             CHR_LEFT_CURLY_BRACKET,      "",                                            STD_LEFT_CURLY_BRACKET,                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  973 */  { addItemToBuffer,             CHR_PIPE,                    "",                                            STD_PIPE,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  974 */  { addItemToBuffer,             CHR_RIGHT_CURLY_BRACKET,     "",                                            STD_RIGHT_CURLY_BRACKET,                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  975 */  { addItemToBuffer,             CHR_TILDE,                   "",                                            STD_TILDE,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  976 */  { addItemToBuffer,             CHR_INVERTED_EXCLAMATION_MARK, "",                                          STD_INVERTED_EXCLAMATION_MARK,                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  955 */  { addItemToBuffer,             ITM_PLUS,                    "",                                            STD_PLUS,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  956 */  { addItemToBuffer,             ITM_COMMA,                   "",                                            STD_COMMA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  957 */  { addItemToBuffer,             ITM_MINUS,                   "",                                            STD_MINUS,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  958 */  { addItemToBuffer,             ITM_PERIOD,                  "",                                            STD_PERIOD,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  959 */  { addItemToBuffer,             ITM_SLASH,                   "",                                            STD_SLASH,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  960 */  { addItemToBuffer,             ITM_COLON,                   "",                                            STD_COLON,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  961 */  { addItemToBuffer,             ITM_SEMICOLON,               "",                                            STD_SEMICOLON,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  962 */  { addItemToBuffer,             ITM_LESS_THAN,               "",                                            STD_LESS_THAN,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  963 */  { addItemToBuffer,             ITM_EQUAL,                   "",                                            STD_EQUAL,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  964 */  { addItemToBuffer,             ITM_GREATER_THAN,            "",                                            STD_GREATER_THAN,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  965 */  { addItemToBuffer,             ITM_QUESTION_MARK,           "",                                            STD_QUESTION_MARK,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  966 */  { addItemToBuffer,             ITM_AT,                      "",                                            STD_AT,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  967 */  { addItemToBuffer,             ITM_LEFT_SQUARE_BRACKET,     "",                                            STD_LEFT_SQUARE_BRACKET,                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  968 */  { addItemToBuffer,             ITM_BACK_SLASH,              "",                                            STD_BACK_SLASH,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  969 */  { addItemToBuffer,             ITM_RIGHT_SQUARE_BRACKET,    "",                                            STD_RIGHT_SQUARE_BRACKET,                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  970 */  { addItemToBuffer,             ITM_CIRCUMFLEX,              "",                                            STD_CIRCUMFLEX,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  971 */  { addItemToBuffer,             ITM_UNDERSCORE,              "",                                            STD_UNDERSCORE,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  972 */  { addItemToBuffer,             ITM_LEFT_CURLY_BRACKET,      "",                                            STD_LEFT_CURLY_BRACKET,                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  973 */  { addItemToBuffer,             ITM_PIPE,                    "",                                            STD_PIPE,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  974 */  { addItemToBuffer,             ITM_RIGHT_CURLY_BRACKET,     "",                                            STD_RIGHT_CURLY_BRACKET,                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  975 */  { addItemToBuffer,             ITM_TILDE,                   "",                                            STD_TILDE,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  976 */  { addItemToBuffer,             ITM_INVERTED_EXCLAMATION_MARK, "",                                          STD_INVERTED_EXCLAMATION_MARK,                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  977 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_CENT,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  978 */  { addItemToBuffer,             CHR_POUND,                   "",                                            STD_POUND,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  979 */  { addItemToBuffer,             CHR_YEN,                     "",                                            STD_YEN,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  980 */  { addItemToBuffer,             CHR_SECTION,                 "",                                            STD_SECTION,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  978 */  { addItemToBuffer,             ITM_POUND,                   "",                                            STD_POUND,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  979 */  { addItemToBuffer,             ITM_YEN,                     "",                                            STD_YEN,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  980 */  { addItemToBuffer,             ITM_SECTION,                 "",                                            STD_SECTION,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  981 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_OVERFLOW_CARRY,                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  982 */  { addItemToBuffer,             CHR_LEFT_DOUBLE_ANGLE,       "",                                            STD_LEFT_DOUBLE_ANGLE,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  983 */  { addItemToBuffer,             CHR_NOT,                     "",                                            STD_NOT,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  982 */  { addItemToBuffer,             ITM_LEFT_DOUBLE_ANGLE,       "",                                            STD_LEFT_DOUBLE_ANGLE,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  983 */  { addItemToBuffer,             ITM_NOT,                     "",                                            STD_NOT,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  984 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_DEGREE,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  985 */  { addItemToBuffer,             CHR_PLUS_MINUS,              "",                                            STD_PLUS_MINUS,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  985 */  { addItemToBuffer,             ITM_PLUS_MINUS,              "",                                            STD_PLUS_MINUS,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  986 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_mu_b,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  987 */  { addItemToBuffer,             CHR_DOT,                     "",                                            STD_DOT,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  987 */  { addItemToBuffer,             ITM_DOT,                     "",                                            STD_DOT,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  988 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_ORDINAL,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  989 */  { addItemToBuffer,             CHR_RIGHT_DOUBLE_ANGLE,      "",                                            STD_RIGHT_DOUBLE_ANGLE,                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  989 */  { addItemToBuffer,             ITM_RIGHT_DOUBLE_ANGLE,      "",                                            STD_RIGHT_DOUBLE_ANGLE,                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  990 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_ONE_HALF,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  991 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_ONE_QUARTER,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  992 */  { addItemToBuffer,             CHR_INVERTED_QUESTION_MARK,  "",                                            STD_INVERTED_QUESTION_MARK,                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  992 */  { addItemToBuffer,             ITM_INVERTED_QUESTION_MARK,  "",                                            STD_INVERTED_QUESTION_MARK,                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  993 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_ETH,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  994 */  { addItemToBuffer,             CHR_CROSS,                   "",                                            STD_CROSS,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  994 */  { addItemToBuffer,             ITM_CROSS,                   "",                                            STD_CROSS,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  995 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_eth,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  996 */  { addItemToBuffer,             CHR_DIVIDE,                  "",                                            STD_DIVIDE,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  997 */  { addItemToBuffer,             CHR_E_DOT,                   STD_E_DOT,                                     STD_E_DOT,                                     0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/*  998 */  { addItemToBuffer,             CHR_e_DOT,                   STD_e_DOT,                                     STD_e_DOT,                                     0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/*  999 */  { addItemToBuffer,             NOPARAM,                     STD_E_CARON,                                   STD_E_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/* 1000 */  { addItemToBuffer,             NOPARAM,                     STD_e_CARON,                                   STD_e_CARON,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/* 1001 */  { addItemToBuffer,             CHR_R_ACUTE,                 STD_R_ACUTE,                                   STD_R_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/* 1002 */  { addItemToBuffer,             CHR_R_CARON,                 STD_R_CARON,                                   STD_R_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/* 1003 */  { addItemToBuffer,             CHR_U_OGONEK,                STD_U_OGONEK,                                  STD_U_OGONEK,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
-/* 1004 */  { addItemToBuffer,             CHR_u_OGONEK,                STD_u_OGONEK,                                  STD_u_OGONEK,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
-/* 1005 */  { addItemToBuffer,             CHR_y_UNDER_ROOT,            "",                                            STD_y_UNDER_ROOT,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1006 */  { addItemToBuffer,             CHR_x_UNDER_ROOT,            "",                                            STD_x_UNDER_ROOT,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  996 */  { addItemToBuffer,             ITM_OBELUS,                  "",                                            STD_DIVIDE,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/*  997 */  { addItemToBuffer,             ITM_E_DOT,                   STD_E_DOT,                                     STD_E_DOT,                                     0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/*  998 */  { addItemToBuffer,             ITM_e_DOT,                   STD_e_DOT,                                     STD_e_DOT,                                     0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/*  999 */  { addItemToBuffer,             ITM_E_CARON,                 STD_E_CARON,                                   STD_E_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/* 1000 */  { addItemToBuffer,             ITM_e_CARON,                 STD_e_CARON,                                   STD_e_CARON,                                   0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/* 1001 */  { addItemToBuffer,             ITM_R_ACUTE,                 STD_R_ACUTE,                                   STD_R_ACUTE,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/* 1002 */  { addItemToBuffer,             ITM_R_CARON,                 STD_R_CARON,                                   STD_R_CARON,                                   0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/* 1003 */  { addItemToBuffer,             ITM_U_OGONEK,                STD_U_OGONEK,                                  STD_U_OGONEK,                                  0,       0,       CAT_AINT, SLS_UNCHANGED, US_UNCHANGED},
+/* 1004 */  { addItemToBuffer,             ITM_u_OGONEK,                STD_u_OGONEK,                                  STD_u_OGONEK,                                  0,       0,       CAT_aint, SLS_UNCHANGED, US_UNCHANGED},
+/* 1005 */  { addItemToBuffer,             ITM_y_UNDER_ROOT,            "",                                            STD_y_UNDER_ROOT,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1006 */  { addItemToBuffer,             ITM_x_UNDER_ROOT,            "",                                            STD_x_UNDER_ROOT,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1007 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SPACE_EM,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1008 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SPACE_3_PER_EM,                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1009 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SPACE_4_PER_EM,                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1510,20 +1518,20 @@ const item_t indexOfItems[] = {
 /* 1021 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_DOUBLE_HIGH_QUOTE,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1022 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_ELLIPSIS,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1023 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_ONE,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1024 */  { addItemToBuffer,             CHR_EURO,                    "",                                            STD_EURO,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1025 */  { addItemToBuffer,             CHR_COMPLEX_C,               "",                                            STD_COMPLEX_C,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1024 */  { addItemToBuffer,             ITM_EURO,                    "",                                            STD_EURO,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1025 */  { addItemToBuffer,             ITM_COMPLEX_C,               "",                                            STD_COMPLEX_C,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1026 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_PLANCK,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1027 */  { addItemToBuffer,             CHR_PLANCK_2PI,              "",                                            STD_PLANCK_2PI,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1027 */  { addItemToBuffer,             ITM_PLANCK_2PI,              "",                                            STD_PLANCK_2PI,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1028 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_NATURAL_N,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1029 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_RATIONAL_Q,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1030 */  { addItemToBuffer,             CHR_REAL_R,                  "",                                            STD_REAL_R,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1031 */  { addItemToBuffer,             CHR_LEFT_ARROW,              "",                                            STD_LEFT_ARROW,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1032 */  { addItemToBuffer,             CHR_UP_ARROW,                "",                                            STD_UP_ARROW,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1030 */  { addItemToBuffer,             ITM_REAL_R,                  "",                                            STD_REAL_R,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1031 */  { addItemToBuffer,             ITM_LEFT_ARROW,              "",                                            STD_LEFT_ARROW,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1032 */  { addItemToBuffer,             ITM_UP_ARROW,                "",                                            STD_UP_ARROW,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1033 */  { itemToBeCoded,               NOPARAM,                     "1033",                                        "1033",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1034 */  { addItemToBuffer,             CHR_RIGHT_ARROW,             "",                                            STD_RIGHT_ARROW,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1035 */  { addItemToBuffer,             CHR_DOWN_ARROW,              "",                                            STD_DOWN_ARROW,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1034 */  { addItemToBuffer,             ITM_RIGHT_ARROW,             "",                                            STD_RIGHT_ARROW,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1035 */  { addItemToBuffer,             ITM_DOWN_ARROW,              "",                                            STD_DOWN_ARROW,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1036 */  { itemToBeCoded,               NOPARAM,                     "1036",                                        "1036",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1037 */  { addItemToBuffer,             CHR_SERIAL_IO,               "",                                            STD_SERIAL_IO,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1037 */  { addItemToBuffer,             ITM_SERIAL_IO,               "",                                            STD_SERIAL_IO,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1038 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_RIGHT_SHORT_ARROW,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1039 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_LEFT_RIGHT_ARROWS,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1040 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_BST,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1535,7 +1543,7 @@ const item_t indexOfItems[] = {
 /* 1046 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_PARTIAL_DIFF,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1047 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_THERE_EXISTS,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1048 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_THERE_DOES_NOT_EXIST,                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1049 */  { addItemToBuffer,             CHR_EMPTY_SET,               "",                                            STD_EMPTY_SET,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1049 */  { addItemToBuffer,             ITM_EMPTY_SET,               "",                                            STD_EMPTY_SET,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1050 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_INCREMENT,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1051 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_NABLA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1052 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_ELEMENT_OF,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1550,49 +1558,49 @@ const item_t indexOfItems[] = {
 /* 1061 */  { itemToBeCoded,               NOPARAM,                     "1061",                                        "1061",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1062 */  { itemToBeCoded,               NOPARAM,                     "1062",                                        "1062",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1063 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_RING,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1064 */  { addItemToBuffer,             CHR_BULLET,                  "",                                            STD_BULLET,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1065 */  { addItemToBuffer,             CHR_SQUARE_ROOT,             "",                                            STD_SQUARE_ROOT,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1066 */  { addItemToBuffer,             CHR_CUBE_ROOT,               "",                                            STD_CUBE_ROOT,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1067 */  { addItemToBuffer,             CHR_xTH_ROOT,                "",                                            STD_xTH_ROOT,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1064 */  { addItemToBuffer,             ITM_BULLET,                  "",                                            STD_BULLET,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1065 */  { addItemToBuffer,             ITM_SQUARE_ROOT,             "",                                            STD_SQUARE_ROOT,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1066 */  { addItemToBuffer,             ITM_CUBE_ROOT,               "",                                            STD_CUBE_ROOT,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1067 */  { addItemToBuffer,             ITM_xTH_ROOT,                "",                                            STD_xTH_ROOT,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1068 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_PROPORTIONAL,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1069 */  { addItemToBuffer,             CHR_INFINITY,                "",                                            STD_INFINITY,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1070 */  { addItemToBuffer,             CHR_RIGHT_ANGLE,             "",                                            STD_RIGHT_ANGLE,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1069 */  { addItemToBuffer,             ITM_INFINITY,                "",                                            STD_INFINITY,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1070 */  { addItemToBuffer,             ITM_RIGHT_ANGLE,             "",                                            STD_RIGHT_ANGLE,                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1071 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_ANGLE,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1072 */  { addItemToBuffer,             CHR_MEASURED_ANGLE,          "",                                            STD_MEASURED_ANGLE,                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1072 */  { addItemToBuffer,             ITM_MEASURED_ANGLE,          "",                                            STD_MEASURED_ANGLE,                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1073 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_DIVIDES,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1074 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_DOES_NOT_DIVIDE,                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1075 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_PARALLEL,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1076 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_NOT_PARALLEL,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1077 */  { addItemToBuffer,             CHR_AND,                     "",                                            STD_AND,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1078 */  { addItemToBuffer,             CHR_OR,                      "",                                            STD_OR,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1077 */  { addItemToBuffer,             ITM_AND,                     "",                                            STD_AND,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1078 */  { addItemToBuffer,             ITM_OR,                      "",                                            STD_OR,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1079 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_INTERSECTION,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1080 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_UNION,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1081 */  { addItemToBuffer,             CHR_INTEGRAL,                "",                                            STD_INTEGRAL,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1081 */  { addItemToBuffer,             ITM_INTEGRAL_SIGN,           "",                                            STD_INTEGRAL,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1082 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_DOUBLE_INTEGRAL,                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1083 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_CONTOUR_INTEGRAL,                          0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1084 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_SURFACE_INTEGRAL,                          0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1085 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_RATIO,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1086 */  { addItemToBuffer,             CHR_CHECK_MARK,              "",                                            STD_CHECK_MARK,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1086 */  { addItemToBuffer,             ITM_CHECK_MARK,              "",                                            STD_CHECK_MARK,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1087 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_ASYMPOTICALLY_EQUAL,                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1088 */  { addItemToBuffer,             CHR_ALMOST_EQUAL,            "",                                            STD_ALMOST_EQUAL,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1089 */  { addItemToBuffer,             CHR_COLON_EQUALS,            "",                                            STD_COLON_EQUALS,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1090 */  { addItemToBuffer,             CHR_CORRESPONDS_TO,          "",                                            STD_CORRESPONDS_TO,                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1091 */  { addItemToBuffer,             CHR_ESTIMATES,               "",                                            STD_ESTIMATES,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1092 */  { addItemToBuffer,             CHR_NOT_EQUAL,               "",                                            STD_NOT_EQUAL,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1088 */  { addItemToBuffer,             ITM_ALMOST_EQUAL,            "",                                            STD_ALMOST_EQUAL,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1089 */  { addItemToBuffer,             ITM_COLON_EQUALS,            "",                                            STD_COLON_EQUALS,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1090 */  { addItemToBuffer,             ITM_CORRESPONDS_TO,          "",                                            STD_CORRESPONDS_TO,                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1091 */  { addItemToBuffer,             ITM_ESTIMATES,               "",                                            STD_ESTIMATES,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1092 */  { addItemToBuffer,             ITM_NOT_EQUAL,               "",                                            STD_NOT_EQUAL,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1093 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_IDENTICAL_TO,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1094 */  { addItemToBuffer,             CHR_LESS_EQUAL,              "",                                            STD_LESS_EQUAL,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1095 */  { addItemToBuffer,             CHR_GREATER_EQUAL,           "",                                            STD_GREATER_EQUAL,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1094 */  { addItemToBuffer,             ITM_LESS_EQUAL,              "",                                            STD_LESS_EQUAL,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1095 */  { addItemToBuffer,             ITM_GREATER_EQUAL,           "",                                            STD_GREATER_EQUAL,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1096 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_MUCH_LESS,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1097 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_MUCH_GREATER,                              0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1098 */  { addItemToBuffer,             CHR_SUN,                     "",                                            STD_SUN,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1098 */  { addItemToBuffer,             ITM_SUN,                     "",                                            STD_SUN,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1099 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_DOWN_TACK,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1100 */  { addItemToBuffer,             CHR_PERPENDICULAR,           "",                                            STD_PERPENDICULAR,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1100 */  { addItemToBuffer,             ITM_PERPENDICULAR,           "",                                            STD_PERPENDICULAR,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1101 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_XOR,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1102 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_NAND,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1103 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_NOR,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1104 */  { addItemToBuffer,             CHR_WATCH,                   "",                                            STD_WATCH,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1105 */  { addItemToBuffer,             CHR_HOURGLASS,               "",                                            STD_HOURGLASS,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1106 */  { addItemToBuffer,             CHR_PRINTER,                 "",                                            STD_PRINTER,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1104 */  { addItemToBuffer,             ITM_WATCH,                   "",                                            STD_WATCH,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1105 */  { addItemToBuffer,             ITM_HOURGLASS,               "",                                            STD_HOURGLASS,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1106 */  { addItemToBuffer,             ITM_PRINTER,                 "",                                            STD_PRINTER,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1107 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_MAT_TL,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1108 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_MAT_ML,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1109 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_MAT_BL,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1606,13 +1614,13 @@ const item_t indexOfItems[] = {
 /* 1117 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_CURSOR,                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1118 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_PERIOD34,                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1119 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_COMMA34,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1120 */  { addItemToBuffer,             CHR_BATTERY,                 "",                                            STD_BATTERY,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1121 */  { addItemToBuffer,             CHR_PGM_BEGIN,               "",                                            STD_PGM_BEGIN,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1122 */  { addItemToBuffer,             CHR_USER_MODE,               "",                                            STD_USER_MODE,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1120 */  { addItemToBuffer,             ITM_BATTERY,                 "",                                            STD_BATTERY,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1121 */  { addItemToBuffer,             ITM_PGM_BEGIN,               "",                                            STD_PGM_BEGIN,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1122 */  { addItemToBuffer,             ITM_USER_MODE,               "",                                            STD_USER_MODE,                                 0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1123 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_UK,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1124 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_US,                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1125 */  { addItemToBuffer,             CHR_NEG_EXCLAMATION_MARK,    "",                                            STD_NEG_EXCLAMATION_MARK,                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1126 */  { addItemToBuffer,             CHR_ex,                      "",                                            STD_LEFT_RIGHT_ARROWS,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1125 */  { addItemToBuffer,             ITM_NEG_EXCLAMATION_MARK,    "",                                            STD_NEG_EXCLAMATION_MARK,                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1126 */  { addItemToBuffer,             ITM_ex,                      "",                                            STD_LEFT_RIGHT_ARROWS,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1127 */  { addItemToBuffer,             ITM_Max,                     "",                                            "Max",                                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1128 */  { addItemToBuffer,             ITM_Min,                     "",                                            "Min",                                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1129 */  { addItemToBuffer,             ITM_Config,                  "",                                            "Config",                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1622,25 +1630,25 @@ const item_t indexOfItems[] = {
 /* 1133 */  { itemToBeCoded,               NOPARAM,                     "",                                            "0.",                                          0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1134 */  { itemToBeCoded,               NOPARAM,                     "",                                            "1.",                                          0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1135 */  { addItemToBuffer,             ITM_EXPONENT,                "",                                            "E",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1136 */  { addItemToBuffer,             ITM_MA11,                    "",                                            STD_a_DIARESIS,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1137 */  { addItemToBuffer,             ITM_MA12,                    "",                                            STD_o_DIARESIS,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1138 */  { addItemToBuffer,             ITM_MA13,                    "",                                            STD_u_DIARESIS,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1139 */  { addItemToBuffer,             ITM_MA14,                    "",                                            "",                                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1140 */  { addItemToBuffer,             ITM_MA15,                    "",                                            "sch",                                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1141 */  { addItemToBuffer,             ITM_MA16,                    "",                                            STD_s_SHARP,                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1142 */  { addItemToBuffer,             ITM_MA21,                    "",                                            "not",                                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1143 */  { addItemToBuffer,             ITM_MA22,                    "",                                            "edi-",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1144 */  { addItemToBuffer,             ITM_MA23,                    "",                                            "table",                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1145 */  { addItemToBuffer,             ITM_MA24,                    "",                                            "for",                                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1146 */  { addItemToBuffer,             ITM_MA25,                    "",                                            "now",                                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1147 */  { addItemToBuffer,             ITM_MA26,                    "",                                            "",                                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1148 */  { addItemToBuffer,             ITM_MA31,                    "",                                            "",                                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1149 */  { addItemToBuffer,             ITM_MA32,                    "",                                            "",                                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1150 */  { addItemToBuffer,             ITM_MA33,                    "",                                            "",                                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1151 */  { addItemToBuffer,             ITM_MA34,                    "",                                            "",                                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1152 */  { addItemToBuffer,             ITM_MA35,                    "",                                            "",                                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1153 */  { addItemToBuffer,             ITM_MA36,                    "",                                            "",                                            0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1154 */  { addItemToBuffer,             NOPARAM,                     "HEX",                                         "H",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1136 */  { addItemToBuffer,             NOPARAM,                     "HEX",                                         "H",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1137 */  { itemToBeCoded,               NOPARAM,                     "1137",                                        "1137",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1138 */  { itemToBeCoded,               NOPARAM,                     "1138",                                        "1138",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1139 */  { itemToBeCoded,               NOPARAM,                     "1139",                                        "1139",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1140 */  { itemToBeCoded,               NOPARAM,                     "1140",                                        "1140",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1141 */  { itemToBeCoded,               NOPARAM,                     "1141",                                        "1141",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1142 */  { itemToBeCoded,               NOPARAM,                     "1142",                                        "1142",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1143 */  { itemToBeCoded,               NOPARAM,                     "1143",                                        "1143",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1144 */  { itemToBeCoded,               NOPARAM,                     "1144",                                        "1144",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1145 */  { itemToBeCoded,               NOPARAM,                     "1145",                                        "1145",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1146 */  { itemToBeCoded,               NOPARAM,                     "1146",                                        "1146",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1147 */  { itemToBeCoded,               NOPARAM,                     "1147",                                        "1147",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1148 */  { itemToBeCoded,               NOPARAM,                     "1148",                                        "1148",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1149 */  { itemToBeCoded,               NOPARAM,                     "1149",                                        "1149",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1150 */  { itemToBeCoded,               NOPARAM,                     "1150",                                        "1150",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1151 */  { itemToBeCoded,               NOPARAM,                     "1151",                                        "1151",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1152 */  { itemToBeCoded,               NOPARAM,                     "1152",                                        "1152",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1153 */  { itemToBeCoded,               NOPARAM,                     "1153",                                        "1153",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1154 */  { itemToBeCoded,               NOPARAM,                     "1154",                                        "1154",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1155 */  { itemToBeCoded,               NOPARAM,                     "1155",                                        "1155",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1156 */  { itemToBeCoded,               NOPARAM,                     "1156",                                        "1156",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1157 */  { itemToBeCoded,               NOPARAM,                     "1157",                                        "1157",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1672,8 +1680,8 @@ const item_t indexOfItems[] = {
 /* 1180 */  { itemToBeCoded,               NOPARAM,                     "PMT",                                         "PMT",                                         0,       0,       CAT_RVAR, SLS_UNCHANGED, US_UNCHANGED},
 /* 1181 */  { itemToBeCoded,               NOPARAM,                     "PV",                                          "PV",                                          0,       0,       CAT_RVAR, SLS_UNCHANGED, US_UNCHANGED},
 /* 1182 */  { itemToBeCoded,               NOPARAM,                     "REGS",                                        "REGS",                                        0,       0,       CAT_RVAR, SLS_UNCHANGED, US_UNCHANGED},
-/* 1183 */  { itemToBeCoded,               NOPARAM,                     STD_UP_ARROW "Lim",                            STD_UP_ARROW "Lim",                            0,       0,       CAT_RVAR, SLS_UNCHANGED, US_UNCHANGED},
-/* 1184 */  { itemToBeCoded,               NOPARAM,                     STD_DOWN_ARROW "Lim",                          STD_DOWN_ARROW "Lim",                          0,       0,       CAT_RVAR, SLS_UNCHANGED, US_UNCHANGED},
+/* 1183 */  { itemToBeCoded,               NOPARAM,                     STD_UP_ARROW STD_UP_ARROW "Lim",               STD_UP_ARROW STD_UP_ARROW "Lim",               0,       0,       CAT_RVAR, SLS_UNCHANGED, US_UNCHANGED},
+/* 1184 */  { itemToBeCoded,               NOPARAM,                     STD_DOWN_ARROW STD_DOWN_ARROW "Lim",           STD_DOWN_ARROW STD_DOWN_ARROW "Lim",           0,       0,       CAT_RVAR, SLS_UNCHANGED, US_UNCHANGED},
 /* 1185 */  { itemToBeCoded,               NOPARAM,                     "1185",                                        "1185",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1186 */  { itemToBeCoded,               NOPARAM,                     "1186",                                        "1186",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1187 */  { itemToBeCoded,               NOPARAM,                     "1187",                                        "1187",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1871,14 +1879,14 @@ const item_t indexOfItems[] = {
 /* 1366 */  { itemToBeCoded,               NOPARAM,                     STD_alpha "INTL",                              STD_alpha "INTL",                              0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED},
 /* 1367 */  { itemToBeCoded,               NOPARAM,                     STD_alpha "MATH",                              STD_alpha "MATH",                              0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED},
 /* 1368 */  { itemToBeCoded,               NOPARAM,                     STD_alpha ".FN",                               STD_alpha ".FN",                               0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED},
-/* 1369 */  { itemToBeCoded,               NOPARAM,                     STD_ALPHA STD_ELLIPSIS STD_OMEGA,              STD_ALPHA STD_ELLIPSIS STD_OMEGA,              0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED},
-/* 1370 */  { itemToBeCoded,               NOPARAM,                     STD_alpha STD_BULLET,                          STD_alpha STD_BULLET,                          0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED},
+/* 1369 */  { itemToBeCoded,               NOPARAM,                     STD_ALPHA STD_ELLIPSIS STD_OMEGA,              STD_ALPHA STD_ELLIPSIS STD_OMEGA,              0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED}, // Upper case greek letters
+/* 1370 */  { itemToBeCoded,               NOPARAM,                     STD_alpha STD_BULLET,                          STD_alpha STD_BULLET,                          0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED}, // Upper case intl letters
 /* 1371 */  { itemToBeCoded,               NOPARAM,                     "SYS.FL",                                      "SYS.FL",                                      0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED},
 /* 1372 */  { itemToBeCoded,               NOPARAM,                     STD_INTEGRAL "f",                              STD_INTEGRAL "f",                              0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED},
 /* 1373 */  { itemToBeCoded,               NOPARAM,                     STD_INTEGRAL "fdx",                            STD_INTEGRAL "fdx",                            0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED},
 /* 1374 */  { itemToBeCoded,               NOPARAM,                     STD_MEASURED_ANGLE STD_RIGHT_ARROW,            STD_MEASURED_ANGLE STD_RIGHT_ARROW,            0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED},
-/* 1375 */  { itemToBeCoded,               NOPARAM,                     STD_alpha STD_ELLIPSIS STD_omega,              STD_alpha STD_ELLIPSIS STD_omega,              0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED}, // Small greek letters
-/* 1376 */  { itemToBeCoded,               NOPARAM,                     STD_alpha "intl",                              STD_alpha "intl",                              0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED}, // Small intl letters
+/* 1375 */  { itemToBeCoded,               NOPARAM,                     STD_alpha STD_ELLIPSIS STD_omega,              STD_alpha STD_ELLIPSIS STD_omega,              0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED}, // Lower case greek letters
+/* 1376 */  { itemToBeCoded,               NOPARAM,                     STD_alpha "intl",                              STD_alpha "intl",                              0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED}, // lower case intl letters
 /* 1377 */  { itemToBeCoded,               NOPARAM,                     "",                                            "Tam",                                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1378 */  { itemToBeCoded,               NOPARAM,                     "",                                            "TamCmp",                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1379 */  { itemToBeCoded,               NOPARAM,                     "",                                            "TamStoRcl",                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1886,9 +1894,9 @@ const item_t indexOfItems[] = {
 /* 1381 */  { itemToBeCoded,               NOPARAM,                     "VAR",                                         "VAR",                                         0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED},
 /* 1382 */  { itemToBeCoded,               NOPARAM,                     "",                                            "TamFlag",                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1383 */  { itemToBeCoded,               NOPARAM,                     "",                                            "TamShuffle",                                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1384 */  { itemToBeCoded,               NOPARAM,                     "1384",                                        "1384",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1385 */  { itemToBeCoded,               NOPARAM,                     "1385",                                        "1385",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1386 */  { itemToBeCoded,               NOPARAM,                     "1386",                                        "1386",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1384 */  { itemToBeCoded,               NOPARAM,                     "PROG",                                        "PROG",                                        0,       0,       CAT_MENU, SLS_UNCHANGED, US_UNCHANGED},
+/* 1385 */  { itemToBeCoded,               NOPARAM,                     "",                                            "TamLabel",                                    0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1386 */  { fnDynamicMenu,               NOPARAM,                     "",                                            "DYNMNU",                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1387 */  { itemToBeCoded,               NOPARAM,                     "1387",                                        "1387",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1388 */  { itemToBeCoded,               NOPARAM,                     "1388",                                        "1388",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1389 */  { itemToBeCoded,               NOPARAM,                     "1389",                                        "1389",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
@@ -1919,10 +1927,10 @@ const item_t indexOfItems[] = {
 /* 1412 */  { fnFractionType,              NOPARAM,                     "a b/c",                                       "a b/c",                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1413 */  { itemToBeCoded,               NOPARAM,                     "CLLCD",                                       "CLLCD",                                       0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
 /* 1414 */  { itemToBeCoded,               NOPARAM,                     "CLMENU",                                      "CLMENU",                                      0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
-/* 1415 */  { itemToBeCoded,               NOPARAM,                     "CLP",                                         "CLP",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
-/* 1416 */  { fnClPAll,                    NOT_CONFIRMED,               "CLPALL",                                      "CLPall",                                      0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
-/* 1417 */  { fnClearRegisters,            NOPARAM,                     "CLREGS",                                      "CLREGS",                                      0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
-/* 1418 */  { fnClearStack,                NOPARAM,                     "CLSTK",                                       "CLSTK",                                       0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
+/* 1415 */  { fnClP,                       NOPARAM,                     "CLP",                                         "CLP",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED, US_CANCEL   },
+/* 1416 */  { fnClPAll,                    NOT_CONFIRMED,               "CLPALL",                                      "CLPall",                                      0,       0,       CAT_FNCT, SLS_UNCHANGED, US_CANCEL   },
+/* 1417 */  { fnClearRegisters,            NOT_CONFIRMED,               "CLREGS",                                      "CLREGS",                                      0,       0,       CAT_FNCT, SLS_UNCHANGED, US_CANCEL   },
+/* 1418 */  { fnClearStack,                NOPARAM,                     "CLSTK",                                       "CLSTK",                                       0,       0,       CAT_FNCT, SLS_UNCHANGED, US_CANCEL   },
 /* 1419 */  { fnClSigma,                   NOPARAM,                     "CL" STD_SIGMA,                                "CL" STD_SIGMA,                                0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
 /* 1420 */  { fnCyx,                       NOPARAM,                     "COMB",                                        "C" STD_SUB_y STD_SUB_x,                       0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
 /* 1421 */  { fnConjugate,                 NOPARAM,                     "CONJ",                                        "conj",                                        0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
@@ -1976,7 +1984,7 @@ const item_t indexOfItems[] = {
 /* 1469 */  { fnInvGd,                     NOPARAM,                     "g" STD_SUB_d STD_SUP_MINUS_1,                 "g" STD_SUB_d STD_SUP_MINUS_1,                 0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
 /* 1470 */  { fnAngularMode,               AM_GRAD,                     "GRAD",                                        "GRAD",                                        0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
 /* 1471 */  { fnCvtToCurrentAngularMode,   AM_GRAD,                     "GRAD" STD_RIGHT_ARROW,                        "GRAD" STD_RIGHT_ARROW,                        0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
-/* 1472 */  { itemToBeCoded,               NOPARAM,                     "GTO.",                                        "GTO.",                                        0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
+/* 1472 */  { fnGotoDot,                   NOPARAM,                     "GTO.",                                        "GTO.",                                        0,   32766,       CAT_FNCT, SLS_UNCHANGED, US_CANCEL   },
 /* 1473 */  { itemToBeCoded,               NOPARAM,                     "H" STD_SUB_n,                                 "H" STD_SUB_n,                                 0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
 /* 1474 */  { itemToBeCoded,               NOPARAM,                     "H" STD_SUB_n STD_SUB_P,                       "H" STD_SUB_n STD_SUB_P,                       0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
 /* 1475 */  { fnImaginaryPart,             NOPARAM,                     "Im",                                          "Im",                                          0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
@@ -2220,11 +2228,11 @@ const item_t indexOfItems[] = {
 /* 1712 */  { fontBrowser,                 NOPARAM,                     "FBR",                                         "FBR",                                         0,       0,       CAT_FNCT, SLS_UNCHANGED, US_UNCHANGED}, // Font browser
 
 /* 1713 */  { fnUndo,                      NOPARAM,                     "UNDO",                                        STD_UNDO,                                      0,       0,       CAT_FNCT, SLS_UNCHANGED, US_UNCHANGED},
-/* 1714 */  { itemToBeCoded,               NOPARAM,                     "P/R",                                         "P/R",                                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1714 */  { fnPem,                       NOPARAM,                     "P/R",                                         "P/R",                                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_CANCEL   },
 /* 1715 */  { itemToBeCoded,               NOPARAM,                     "R/S",                                         "R/S",                                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1716 */  { itemToBeCoded,               NOPARAM,                     "",                                            "Not",                                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1717 */  { itemToBeCoded,               NOPARAM,                     "",                                            "yet",                                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1718 */  { itemToBeCoded,               NOPARAM,                     "",                                            "defined",                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1716 */  { itemToBeCoded,               NOPARAM,                     "1716",                                        "1716",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1717 */  { itemToBeCoded,               NOPARAM,                     "1717",                                        "1717",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1718 */  { itemToBeCoded,               NOPARAM,                     "1718",                                        "1718",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1719 */  { fnFlipFlag,                  FLAG_USER,                   "USER",                                        "USER",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1720 */  { fnKeyCC,                     NOPARAM,                     "CC",                                          "CC",                                          0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1721 */  { itemToBeCoded,               NOPARAM,                     "",                                            "f",                                           0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},

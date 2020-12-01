@@ -3,11 +3,10 @@ CPUINFO=/proc/cpuinfo
 if [ -f $CPUINFO ]; then
 	grep -q Raspberry $CPUINFO
 	if [ $? = 0 ]; then
-  		echo YES
+  		echo "YES$(./32or64bit.c)"
 	else
-  		echo NO
+  		echo "NO$(./32or64bit.c)"
 	fi
 else
-	echo NO
+	echo "NO$(./32or64bit.c)"
 fi
-

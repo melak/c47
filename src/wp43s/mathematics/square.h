@@ -18,7 +18,7 @@
  * \file square.h
  ***********************************************/
 
-void fnSquare   (uint16_t unusedParamButMandatory);
+void fnSquare   (uint16_t unusedButMandatoryParameter);
 void squareError(void);
 void squareLonI (void);
 void squareRema (void);

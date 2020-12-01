@@ -19,7 +19,7 @@
  ***********************************************/
 // Coded by JM, based on exp.h
 
-void fnExpM1   (uint16_t unusedParamButMandatory);
+void fnExpM1   (uint16_t unusedButMandatoryParameter);
 void expM1Error(void);
 void expM1LonI (void);
 void expM1Rema (void);

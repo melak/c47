@@ -20,7 +20,7 @@
 
 #include "wp43s.h"
 
-void fnMax(uint16_t unusedParamButMandatory) {
+void fnMax(uint16_t unusedButMandatoryParameter) {
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
   registerMax(REGISTER_X, REGISTER_Y, REGISTER_X);

@@ -18,7 +18,7 @@
  * \file fib.h
  ***********************************************/
 
-void fnFib   (uint16_t unusedParamButMandatory);
+void fnFib   (uint16_t unusedButMandatoryParameter);
 void fibError(void);
 void fibLonI (void);
 void fibReal (void);

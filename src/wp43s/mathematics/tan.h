@@ -18,7 +18,7 @@
  * \file tan.h
  ***********************************************/
 
-void fnTan                    (uint16_t unusedParamButMandatory);
+void fnTan                    (uint16_t unusedButMandatoryParameter);
 void longIntegerAngleReduction(calcRegister_t regist, uint8_t angularMode, real_t *reducedAngle);
 void tanError                 (void);
 void tanLonI                  (void);

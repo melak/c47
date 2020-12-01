@@ -18,7 +18,7 @@
  * \file tanh.h
  ***********************************************/
 
-void fnTanh   (uint16_t unusedParamButMandatory);
+void fnTanh   (uint16_t unusedButMandatoryParameter);
 void tanhError(void);
 void tanhLonI (void);
 void tanhRema (void);

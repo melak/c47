@@ -18,7 +18,7 @@
  * \file nand.h
  ***********************************************/
 
-void fnLogicalNand(uint16_t unusedParamButMandatory);
+void fnLogicalNand(uint16_t unusedButMandatoryParameter);
 void nandError24  (void);
 void nandError31  (void);
 void nandLonILonI (void);

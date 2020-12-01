@@ -38,7 +38,7 @@ static void unitConversion(const real_t * const coefficient, uint16_t multiplyDi
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function unitConversion:", getRegisterDataTypeName(REGISTER_X, true, false), "cannot be converted!", NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     undo();
     return;
   }
@@ -61,10 +61,10 @@ static void unitConversion(const real_t * const coefficient, uint16_t multiplyDi
  * \brief Converts °Celcius to °Fahrenheit: (°Celcius * 1,8) + 32.
  * Refreshes the stack. This is the exact formula.
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnCvtCToF(uint16_t unusedParamButMandatory) {
+void fnCvtCToF(uint16_t unusedButMandatoryParameter) {
   real_t reX;
 
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
@@ -80,7 +80,7 @@ void fnCvtCToF(uint16_t unusedParamButMandatory) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnCvtCToF:", getRegisterDataTypeName(REGISTER_X, true, false), "cannot be converted!", NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     undo();
     return;
   }
@@ -98,10 +98,10 @@ void fnCvtCToF(uint16_t unusedParamButMandatory) {
  * \brief Converts °Fahrenheit to °Celcius: (°Fahrenheit - 32) / 1,8.
  * Refreshes the stack. This is the exact formula.
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnCvtFToC(uint16_t unusedParamButMandatory) {
+void fnCvtFToC(uint16_t unusedButMandatoryParameter) {
   real_t reX;
 
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
@@ -117,7 +117,7 @@ void fnCvtFToC(uint16_t unusedParamButMandatory) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnCvtFToC:", getRegisterDataTypeName(REGISTER_X, true, false), "cannot be converted!", NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     undo();
     return;
   }
@@ -356,7 +356,7 @@ void fnCvtLbfftNm(uint16_t multiplyDivide) {
  * \brief Converts power or field ratio to dB
  * dB = (10 or 20) * log10((power or field) ratio) this is the exact formula
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnCvtRatioDb(uint16_t tenOrTwenty) { // ten: power ratio   twenty: field ratio
@@ -375,7 +375,7 @@ void fnCvtRatioDb(uint16_t tenOrTwenty) { // ten: power ratio   twenty: field ra
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnCvtRatioDb:", getRegisterDataTypeName(REGISTER_X, true, false), "cannot be converted!", NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     undo();
     return;
   }
@@ -394,7 +394,7 @@ void fnCvtRatioDb(uint16_t tenOrTwenty) { // ten: power ratio   twenty: field ra
  * \brief Converts dB to power or field ratio
  * (power or field) ratio = 10^(dB / 10 or 20) this is the exact formula
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnCvtDbRatio(uint16_t tenOrTwenty) { // ten: power ratio   twenty: field ratio
@@ -413,7 +413,7 @@ void fnCvtDbRatio(uint16_t tenOrTwenty) { // ten: power ratio   twenty: field ra
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnCvtRatioDb:", getRegisterDataTypeName(REGISTER_X, true, false), "cannot be converted!", NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     undo();
     return;
   }

@@ -23,11 +23,12 @@ bool_t  real34CompareAbsGreaterEqual(const real34_t *number1, const real34_t *nu
 bool_t  real34CompareAbsLessThan    (const real34_t *number1, const real34_t *number2);
 bool_t  real34CompareEqual          (const real34_t *number1, const real34_t *number2);
 bool_t  real34CompareGreaterEqual   (const real34_t *number1, const real34_t *number2);
-bool_t  real34CompareGreaterThan    (const real34_t *number1, const real34_t *number2);
+//bool_t  real34CompareGreaterThan    (const real34_t *number1, const real34_t *number2); never used
 bool_t  real34CompareLessEqual      (const real34_t *number1, const real34_t *number2);
 bool_t  real34CompareLessThan       (const real34_t *number1, const real34_t *number2);
 
 bool_t  realCompareAbsGreaterThan   (const real_t *number1, const real_t *number2);
+//bool_t  realCompareAbsGreaterEqual  (const real_t *number1, const real_t *number2); never used
 bool_t  realCompareAbsLessThan      (const real_t *number1, const real_t *number2);
 bool_t  realCompareEqual            (const real_t *number1, const real_t *number2);
 bool_t  realCompareGreaterEqual     (const real_t *number1, const real_t *number2);

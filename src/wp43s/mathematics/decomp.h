@@ -18,7 +18,7 @@
  * \file decomp.h
  ***********************************************/
 
-void fnDecomp(uint16_t unusedParamButMandatory);
+void fnDecomp(uint16_t unusedButMandatoryParameter);
 
 void decompError(void);
 void decompReal(void);

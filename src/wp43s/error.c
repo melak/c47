@@ -63,50 +63,50 @@ const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 
 
 #ifdef PC_BUILD
-/********************************************//**
- * \brief Displays an error message like a pop up
- *
- * \param[in] m1 const char* 1st part of the message
- * \param[in] m2 const char* 2nd part of the message
- * \param[in] m3 const char* 3rd part of the message
- * \param[in] m4 const char* 4th part of the message
- * \return void
- ***********************************************/
-void moreInfoOnError(const char *m1, const char *m2, const char *m3, const char *m4) {
-  uint8_t utf8m1[2000], utf8m2[2000], utf8m3[2000], utf8m4[2000];
+  /********************************************//**
+   * \brief Displays an error message like a pop up
+   *
+   * \param[in] m1 const char* 1st part of the message
+   * \param[in] m2 const char* 2nd part of the message
+   * \param[in] m3 const char* 3rd part of the message
+   * \param[in] m4 const char* 4th part of the message
+   * \return void
+   ***********************************************/
+  void moreInfoOnError(const char *m1, const char *m2, const char *m3, const char *m4) {
+    uint8_t utf8m1[2000], utf8m2[2000], utf8m3[2000], utf8m4[2000];
 
-  if(m1 == NULL) {
-    stringToUtf8("No error message available!", utf8m1);
-    printf("\n%s\n", utf8m1);
+    if(m1 == NULL) {
+      stringToUtf8("No error message available!", utf8m1);
+      printf("\n%s\n", utf8m1);
+    }
+    else if(m2 == NULL) {
+      stringToUtf8(m1, utf8m1);
+      printf("\n%s\n\n", utf8m1);
+    }
+    else if(m3 == NULL) {
+      stringToUtf8(m1, utf8m1);
+      stringToUtf8(m2, utf8m2);
+      printf("\n%s\n%s\n\n", utf8m1, utf8m2);
+    }
+    else if(m4 == NULL) {
+      stringToUtf8(m1, utf8m1);
+      stringToUtf8(m2, utf8m2);
+      stringToUtf8(m3, utf8m3);
+      printf("\n%s\n%s\n%s\n\n", utf8m1, utf8m2, utf8m3);
+    }
+    else {
+      stringToUtf8(m1, utf8m1);
+      stringToUtf8(m2, utf8m2);
+      stringToUtf8(m3, utf8m3);
+      stringToUtf8(m4, utf8m4);
+      printf("\n%s\n%s\n%s\n%s\n\n", utf8m1, utf8m2, utf8m3, utf8m4);
+    }
   }
-  else if(m2 == NULL) {
-    stringToUtf8(m1, utf8m1);
-    printf("\n%s\n\n", utf8m1);
-  }
-  else if(m3 == NULL) {
-    stringToUtf8(m1, utf8m1);
-    stringToUtf8(m2, utf8m2);
-    printf("\n%s\n%s\n\n", utf8m1, utf8m2);
-  }
-  else if(m4 == NULL) {
-    stringToUtf8(m1, utf8m1);
-    stringToUtf8(m2, utf8m2);
-    stringToUtf8(m3, utf8m3);
-    printf("\n%s\n%s\n%s\n\n", utf8m1, utf8m2, utf8m3);
-  }
-  else {
-    stringToUtf8(m1, utf8m1);
-    stringToUtf8(m2, utf8m2);
-    stringToUtf8(m3, utf8m3);
-    stringToUtf8(m4, utf8m4);
-    printf("\n%s\n%s\n%s\n%s\n\n", utf8m1, utf8m2, utf8m3, utf8m4);
-  }
-}
-#endif
+#endif // PC_BUILD
 
 
 void displayCalcErrorMessage(uint8_t errorCode, calcRegister_t errMessageRegisterLine, calcRegister_t errRegisterLine) {
-  if(errorCode >= NUMBER_OF_ERROR_CODES || errorCode <= 0) {
+  if(errorCode >= NUMBER_OF_ERROR_CODES || errorCode == 0) {
     sprintf(errorMessage, "In function displayCalcErrorMessage: %d is an unexpected value for errorCode!", errorCode);
     displayBugScreen(errorMessage);
   }
@@ -130,90 +130,78 @@ void displayCalcErrorMessage(uint8_t errorCode, calcRegister_t errMessageRegiste
 
 
 #ifndef TESTSUITE_BUILD
-void nextWord(const char *str, int16_t *pos, char *word) {
-  int16_t i = 0;
+  void nextWord(const char *str, int16_t *pos, char *word) {
+    int16_t i = 0;
 
-  while(str[*pos] != 0 && str[*pos] != ' ') {
-    word[i++] = str[(*pos)++];
+    while(str[*pos] != 0 && str[*pos] != ' ') {
+      word[i++] = str[(*pos)++];
+    }
+
+    word[i] = 0;
+
+    while(str[*pos] == ' ') {
+      (*pos)++;
+    }
   }
 
-  word[i] = 0;
-
-  while(str[*pos] != 0 && str[*pos] == ' ') {
-    (*pos)++;
-  }
-}
 
 
+  /********************************************//**
+   * \brief Displays an error message.
+   *        When this happens it's likely a bug!
+   *
+   * \param[in] message char* The message
+   * \return void
+   ***********************************************/
+  void displayBugScreen(const char *msg) {
+    if(calcMode != CM_BUG_ON_SCREEN) {
+      int16_t y, pos;
+      char line[100], word[50], message[1000];
+      bool_t firstWordOfLine;
 
-/********************************************//**
- * \brief Displays an error message.
- *        When this happens it's likely a bug!
- *
- * \param[in] message char* The message
- * \return void
- ***********************************************/
-void displayBugScreen(const char *msg) {
-  if(calcMode != CM_BUG_ON_SCREEN) {
-    int16_t y, pos;
-    char line[100], word[50], message[1000];
-    bool_t firstWordOfLine;
+      previousCalcMode = calcMode;
+      calcMode = CM_BUG_ON_SCREEN;
+      clearSystemFlag(FLAG_ALPHA);
+      hideCursor();
+      cursorEnabled = false;
 
-    previousCalcMode = calcMode;
-    calcMode = CM_BUG_ON_SCREEN;
-    clearSystemFlag(FLAG_ALPHA);
-    hideCursor();
-    cursorEnabled = false;
+      lcd_fill_rect(0, 20, SCREEN_WIDTH, 220, LCD_SET_VALUE);
 
-    #ifdef PC_BUILD
-      int16_t x;
+      y = 20;
+      showString("This is most likely a bug in the firmware!", &standardFont, 1, y, vmNormal, true, false);
+      y += 20;
 
-      for(y=20; y<SCREEN_HEIGHT; y++) {
-        for(x=0; x<SCREEN_WIDTH; x++) {
-          clearPixel(x, y);
-        }
-      }
-    #endif
+      strcpy(message, msg);
+      strcat(message, " Try to reproduce this and report a bug. Press EXIT to leave." );
 
-    #if DMCP_BUILD
-      lcd_fill_rect(0, 20, SCREEN_WIDTH, 220, 0);
-    #endif
-
-    y = 20;
-    showString("This is most likely a bug in the firmware!", &standardFont, 1, y, vmNormal, true, false);
-    y += 20;
-
-    strcpy(message, msg);
-    strcat(message, " Try to reproduce this and report a bug. Press EXIT to leave." );
-
-    pos = 0;
-    line[0] = 0;
-    firstWordOfLine = true;
-
-    nextWord(message, &pos, word);
-    while(word[0] != 0) {
-      if(stringWidth(line, &standardFont, true, true) + (firstWordOfLine ? 0 : 4) + stringWidth(word, &standardFont, true, true) >= SCREEN_WIDTH) { // 4 is the width of STD_SPACE_PUNCTUATION
-        showString(line, &standardFont, 1, y, vmNormal, true, false);
-        y += 20;
-        line[0] = 0;
-        firstWordOfLine = true;
-      }
-
-      if(firstWordOfLine) {
-        strcpy(line, word);
-        firstWordOfLine = false;
-      }
-      else {
-        strcat(line, STD_SPACE_PUNCTUATION);
-        strcat(line, word);
-      }
+      pos = 0;
+      line[0] = 0;
+      firstWordOfLine = true;
 
       nextWord(message, &pos, word);
-    }
+      while(word[0] != 0) {
+        if(stringWidth(line, &standardFont, true, true) + (firstWordOfLine ? 0 : 4) + stringWidth(word, &standardFont, true, true) >= SCREEN_WIDTH) { // 4 is the width of STD_SPACE_PUNCTUATION
+          showString(line, &standardFont, 1, y, vmNormal, true, false);
+          y += 20;
+          line[0] = 0;
+          firstWordOfLine = true;
+        }
 
-    if(line[0] != 0) {
-      showString(line, &standardFont, 1, y, vmNormal, true, false);
+        if(firstWordOfLine) {
+          strcpy(line, word);
+          firstWordOfLine = false;
+        }
+        else {
+          strcat(line, STD_SPACE_PUNCTUATION);
+          strcat(line, word);
+        }
+
+        nextWord(message, &pos, word);
+      }
+
+      if(line[0] != 0) {
+        showString(line, &standardFont, 1, y, vmNormal, true, false);
+      }
     }
   }
-}
-#endif
+#endif // !TESTSUITE_BUILD

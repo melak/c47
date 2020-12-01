@@ -19,8 +19,8 @@
  ***********************************************/
 
 // Temperature
-void fnCvtCToF      (uint16_t unusedParamButMandatory);
-void fnCvtFToC      (uint16_t unusedParamButMandatory);
+void fnCvtCToF      (uint16_t unusedButMandatoryParameter);
+void fnCvtFToC      (uint16_t unusedButMandatoryParameter);
 
 // Duration
 void fnCvtYearS     (uint16_t multiplyDivide);
@@ -84,6 +84,6 @@ void fnCvtAcreusM2  (uint16_t multiplyDivide);
 void fnCvtHectareM2 (uint16_t multiplyDivide);
 
 // ...
-void fnCvtRatioDb   (uint16_t multiplyDivide);
-void fnCvtDbRatio   (uint16_t multiplyDivide);
+void fnCvtRatioDb   (uint16_t tenOrTwenty);
+void fnCvtDbRatio   (uint16_t tenOrTwenty);
 void fnCvtLbfftNm   (uint16_t multiplyDivide);

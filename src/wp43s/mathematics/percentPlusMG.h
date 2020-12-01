@@ -18,7 +18,7 @@
  * \file percentPlusMG.h
  ***********************************************/
 
-void fnPercentPlusMG(uint16_t unusedParamButMandatory);
+void fnPercentPlusMG(uint16_t unusedButMandatoryParameter);
 
 void percentPlusMGLonILonI(void);
 void percentPlusMGLonIReal(void);

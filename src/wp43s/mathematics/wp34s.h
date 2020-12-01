@@ -33,11 +33,12 @@ void   WP34S_LnGamma         (const real_t *x, real_t *res, realContext_t *realC
 void   WP34S_Gamma           (const real_t *x, real_t *res, realContext_t *realContext);
 void   WP34S_Ln              (const real_t *x, real_t *res, realContext_t *realContext);
 void   WP34S_Log10           (const real_t *x, real_t *res, realContext_t *realContext);
+//void   WP34S_Log2            (const real_t *x, real_t *res, realContext_t *realContext); never used
 void   WP34S_Logxy           (const real_t *yin, const real_t *xin, real_t *res, realContext_t *realContext);
 void   WP34S_SinhCosh        (const real_t *x, real_t *sinOut, real_t *cosOut, realContext_t *realContext);
 void   WP34S_Tanh            (const real_t *x, real_t *res, realContext_t *realContext);
-void   WP34S_ArcSinh         (const real_t *x, real_t *res, realContext_t *realContext);
-void   WP34S_ArcCosh         (const real_t *x, real_t *res, realContext_t *realContext);
+//void   WP34S_ArcSinh         (const real_t *x, real_t *res, realContext_t *realContext); never used
+//void   WP34S_ArcCosh         (const real_t *x, real_t *res, realContext_t *realContext); never used
 void   WP34S_ArcTanh         (const real_t *x, real_t *res, realContext_t *realContext);
 void   WP34S_Ln1P            (const real_t *x, real_t *res, realContext_t *realContext);
 void   WP34S_ExpM1           (const real_t *x, real_t *res, realContext_t *realContext);
@@ -46,4 +47,3 @@ void   WP34S_ComplexLnGamma  (const real_t *zinReal, const real_t *zinImag, real
 void   WP34S_Mod             (const real_t *x, const real_t *y, real_t *res, realContext_t *realContext);
 //void   WP34S_BigMod          (const real_t *x, const real_t *y, real_t *res);
 bool_t WP34S_RelativeError   (const real_t *x, const real_t *y, const real_t *tol, realContext_t *realContext);
-void   *xcopy                (void *dest, const void *source, int n);

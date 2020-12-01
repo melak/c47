@@ -18,7 +18,7 @@
  * \file nor.h
  ***********************************************/
 
-void fnLogicalNor(uint16_t unusedParamButMandatory);
+void fnLogicalNor(uint16_t unusedButMandatoryParameter);
 void norError24  (void);
 void norError31  (void);
 void norLonILonI (void);

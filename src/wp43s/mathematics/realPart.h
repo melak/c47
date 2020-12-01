@@ -18,7 +18,7 @@
  * \file realPart.h
  ***********************************************/
 
-void fnRealPart   (uint16_t unusedParamButMandatory);
+void fnRealPart   (uint16_t unusedButMandatoryParameter);
 void realPartError(void);
 void realPartCxma (void);
 void realPartCplx (void);

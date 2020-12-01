@@ -20,22 +20,22 @@
 
 void showShiftState  (void);
 void processKeyAction(int16_t item);
-void fnKeyEnter      (uint16_t unusedParamButMandatory);
-void fnKeyExit       (uint16_t unusedParamButMandatory);
-void fnKeyCC         (uint16_t unusedParamButMandatory);
-void fnKeyBackspace  (uint16_t unusedParamButMandatory);
-void fnKeyUp         (uint16_t unusedParamButMandatory);
-void fnKeyDown       (uint16_t unusedParamButMandatory);
-void fnKeyDotD       (uint16_t unusedParamButMandatory);
+void fnKeyEnter      (uint16_t unusedButMandatoryParameter);
+void fnKeyExit       (uint16_t unusedButMandatoryParameter);
+void fnKeyCC         (uint16_t unusedButMandatoryParameter);
+void fnKeyBackspace  (uint16_t unusedButMandatoryParameter);
+void fnKeyUp         (uint16_t unusedButMandatoryParameter);
+void fnKeyDown       (uint16_t unusedButMandatoryParameter);
+void fnKeyDotD       (uint16_t unusedButMandatoryParameter);
 
 #ifdef PC_BUILD
-  void btnFnClicked  (GtkWidget *w, gpointer data);
-  void btnFnPressed  (GtkWidget *w, GdkEvent *event, gpointer data);
-  void btnFnReleased (GtkWidget *w, GdkEvent *event, gpointer data);
-  void btnClicked    (GtkWidget *w, gpointer data);
-  void btnPressed    (GtkWidget *w, GdkEvent *event, gpointer data);
-  void btnReleased   (GtkWidget *w, GdkEvent *event, gpointer data);
-#endif
+  void btnFnClicked  (GtkWidget *notUsed, gpointer data);
+  void btnFnPressed  (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+  void btnFnReleased (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+  void btnClicked    (GtkWidget *notUsed, gpointer data);
+  void btnPressed    (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+  void btnReleased   (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+#endif // PC_BUILD
 
 #ifdef DMCP_BUILD
   void btnFnPressed (void *data);

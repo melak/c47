@@ -30,7 +30,7 @@ uint32_t boundedRand(uint32_t s) { // random integer in [0 , s)
   uint32_t l = (uint32_t) m;
 
   if(l < s) {
-    uint32_t t = -s % s;
+    uint32_t t = (-s) % s;
     while(l < t) {
       x = pcg32_random_r(&pcg32_global);
       m = (uint64_t) x *(uint64_t)s;
@@ -42,7 +42,7 @@ uint32_t boundedRand(uint32_t s) { // random integer in [0 , s)
 
 
 
-void fnRandomI(uint16_t unusedParamButMandatory) {
+void fnRandomI(uint16_t unusedButMandatoryParameter) {
   longInteger_t regX, regY, mini, maxi;
   uint32_t maxRand;
   int32_t cmp;
@@ -52,7 +52,7 @@ void fnRandomI(uint16_t unusedParamButMandatory) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot RANI# with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
       moreInfoOnError("In function fnRandomI:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
 
@@ -61,7 +61,7 @@ void fnRandomI(uint16_t unusedParamButMandatory) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot RANI# with %s in Y", getRegisterDataTypeName(REGISTER_Y, true, false));
       moreInfoOnError("In function fnRandomI:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
 
@@ -73,7 +73,7 @@ void fnRandomI(uint16_t unusedParamButMandatory) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnRandomI:", "cannot RANI# with X = Y", NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
 
@@ -94,7 +94,7 @@ void fnRandomI(uint16_t unusedParamButMandatory) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnRandomI:", "cannot RANI# with |X - Y| >= 2^32", NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
 
@@ -116,7 +116,7 @@ void fnRandomI(uint16_t unusedParamButMandatory) {
 /////////////////////////////////////////////////////////////////////////////
 // Method for pseudo random number generation: http://www.pcg-random.org/
 
-void fnRandom(uint16_t unusedParamButMandatory) {
+void fnRandom(uint16_t unusedButMandatoryParameter) {
   real_t x1, x2;
 
   uInt32ToReal(boundedRand(100000000),  &x1);
@@ -137,7 +137,7 @@ void fnRandom(uint16_t unusedParamButMandatory) {
 
 
 
-void fnSeed(uint16_t unusedParamButMandatory) {
+void fnSeed(uint16_t unusedButMandatoryParameter) {
   uint64_t seed=0, sequ=0;
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {
@@ -157,7 +157,7 @@ void fnSeed(uint16_t unusedParamButMandatory) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot use %s as a seed for the RNG!\n it must be a SP or DP real or a long integer", getDataTypeName(getRegisterDataType(REGISTER_X), true, false));
       moreInfoOnError("In function fnSeed:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
 
@@ -165,10 +165,10 @@ void fnSeed(uint16_t unusedParamButMandatory) {
     #ifdef TESTSUITE_BUILD
       seed = 0xDeadBeef;
       sequ = 0xBadCafeFace;
-    #else
+    #else // !TESTSUITE_BUILD
       seed = (((uint64_t)getUptimeMs()) << 32) + (uint64_t)getFreeRamMemory();
       sequ = (((uint64_t)getUptimeMs()) << 32) + (uint64_t)getFreeFlash();
-    #endif
+    #endif // TESTSUITE_BUILD
   }
 
   pcg32_srandom(seed, sequ);

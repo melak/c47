@@ -18,7 +18,7 @@
  * \file modulo.h
  ***********************************************/
 
-void fnMod(uint16_t unusedParamButMandatory);
+void fnMod(uint16_t unusedButMandatoryParameter);
 void modError(void);
 
 //      RegYRegX

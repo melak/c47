@@ -22,12 +22,12 @@
 
 void     fnCvtToCurrentAngularMode  (uint16_t fromAngularMode);
 void     fnCvtFromCurrentAngularMode(uint16_t toAngularMode);
-void     fnCvtDegToRad              (uint16_t unusedParamButMandatory);
-void     fnCvtDegToDms              (uint16_t unusedParamButMandatory);
-void     fnCvtDmsToDeg              (uint16_t unusedParamButMandatory);
-void     fnCvtRadToDeg              (uint16_t unusedParamButMandatory);
+void     fnCvtDegToRad              (uint16_t unusedButMandatoryParameter);
+void     fnCvtDegToDms              (uint16_t unusedButMandatoryParameter);
+void     fnCvtDmsToDeg              (uint16_t unusedButMandatoryParameter);
+void     fnCvtRadToDeg              (uint16_t unusedButMandatoryParameter);
 void     convertAngle34FromTo       (real34_t *angle34, uint32_t fromAngularMode, uint32_t toAngularMode);
 void     convertAngleFromTo         (real_t *angle, uint32_t fromAngularMode, uint32_t toAngularMode, realContext_t *realContext);
-void     checkDms34                 (real34_t *angleDms);
+void     checkDms34                 (real34_t *angle34Dms);
 uint32_t getInfiniteComplexAngle    (real_t *x, real_t *y);
 void     setInfiniteComplexAngle    (uint32_t angle, real_t *x, real_t *y);

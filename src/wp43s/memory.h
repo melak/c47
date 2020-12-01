@@ -18,21 +18,22 @@
  * \file memory.h
  ***********************************************/
 
-void    *wp43sAllocate  (size_t sizeInBytes);
-void    *wp43sReallocate(void *pcMemPtr, size_t oldSizeInBytes, size_t newSizeInBytes);
-void    wp43sFree       (void *pcMemPtr, size_t sizeInBytes);
+void    *wp43sAllocate     (size_t sizeInBytes);
+void    *wp43sReallocate   (void *pcMemPtr, size_t oldSizeInBytes, size_t newSizeInBytes);
+void    wp43sFree          (void *pcMemPtr, size_t sizeInBytes);
 
 // The 6 followoing functions are only there to know who allocates and frees memory
-void    *allocWp43s     (size_t sizeInBytes);
-void    *reallocWp43s   (void *pcMemPtr, size_t oldSizeInBytes, size_t newSizeInBytes);
-void    freeWp43s       (void *pcMemPtr, size_t sizeInBytes);
+void    *allocWp43s        (size_t sizeInBytes);
+void    *reallocWp43s      (void *pcMemPtr, size_t oldSizeInBytes, size_t newSizeInBytes);
+void    freeWp43s          (void *pcMemPtr, size_t sizeInBytes);
 
-void    *allocGmp       (size_t sizeInBytes);
-void    *reallocGmp     (void *pcMemPtr, size_t oldSizeInBytes, size_t newSizeInBytes);
-void    freeGmp         (void *pcMemPtr, size_t sizeInBytes);
+void    *allocGmp          (size_t sizeInBytes);
+void    *reallocGmp        (void *pcMemPtr, size_t oldSizeInBytes, size_t newSizeInBytes);
+void    freeGmp            (void *pcMemPtr, size_t sizeInBytes);
 
-int32_t getFreeRamMemory(void);
+int32_t getFreeRamMemory   (void);
+void    resizeProgramMemory(uint16_t newSizeInBlocks);
 
 #ifndef DMCP_BUILD
-  void    debugMemory(void);
-#endif
+  void    debugMemory      (const char *message);
+#endif // DMCP_BUILD

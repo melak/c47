@@ -66,17 +66,17 @@ uint32_t pcg32_random_r(pcg32_random_t* rng)
     uint32_t rot = oldstate >> 59u;
     return (xorshifted >> rot) | (xorshifted << ((-rot) & 31));
 }
-
+/*
 uint32_t pcg32_random()
 {
     return pcg32_random_r(&pcg32_global);
 }
-
+*/
 
 // pcg32_boundedrand(bound):
 // pcg32_boundedrand_r(rng, bound):
 //     Generate a uniformly distributed number, r, where 0 <= r < bound
-
+/* never used
 uint32_t pcg32_boundedrand_r(pcg32_random_t* rng, uint32_t bound)
 {
     // To avoid bias, we need to make the range of the RNG a multiple of
@@ -108,10 +108,10 @@ uint32_t pcg32_boundedrand_r(pcg32_random_t* rng, uint32_t bound)
             return r % bound;
     }
 }
-
-
+*/
+/*
 uint32_t pcg32_boundedrand(uint32_t bound)
 {
     return pcg32_boundedrand_r(&pcg32_global, bound);
 }
-
+*/

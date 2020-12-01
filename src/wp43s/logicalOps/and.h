@@ -18,7 +18,7 @@
  * \file and.h
  ***********************************************/
 
-void fnLogicalAnd(uint16_t unusedParamButMandatory);
+void fnLogicalAnd(uint16_t unusedButMandatoryParameter);
 void andError24  (void);
 void andError31  (void);
 void andLonILonI (void);

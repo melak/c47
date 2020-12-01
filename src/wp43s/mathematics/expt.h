@@ -18,7 +18,7 @@
  * \file expt.h
  ***********************************************/
 
-void fnExpt   (uint16_t unusedParamButMandatory);
+void fnExpt   (uint16_t unusedButMandatoryParameter);
 void exptError(void);
 void exptLonI (void);
 void exptReal (void);

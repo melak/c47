@@ -152,7 +152,7 @@ void WP34S_Cvt2RadSinCosTan(const real_t *an, uint32_t angularMode, real_t *sinO
 // Calculate sin, cos by Taylor series and tan by division
 void WP34S_SinCosTanTaylor(const real_t *a, bool_t swap, real_t *sinOut, real_t *cosOut, real_t *tanOut, realContext_t *realContext) { // a in radian
   real_t angle, a2, t, j, z, sin, cos, compare;
-  int i, odd;
+  int i;
   bool_t endSin = (sinOut == NULL), endCos = (cosOut == NULL);
   int32_t cmp, savedContextDigits;
 
@@ -172,7 +172,7 @@ void WP34S_SinCosTanTaylor(const real_t *a, bool_t swap, real_t *sinOut, real_t 
   uInt32ToReal(1, &cos);
 
   for(i=1; !(endSin && endCos) && i<1000; i++) { // i goes up to 31 max in the test suite
-    odd = i & 1;
+    int odd = i & 1;
 
     realAdd(&j, const_1, &j, realContext);
     realDivide(&a2, &j, &z, realContext);
@@ -768,11 +768,11 @@ void WP34S_Log(const real_t *xin, const real_t *base, real_t *res, realContext_t
 }
 
 
-
+/* never used
 void WP34S_Log2(const real_t *xin, real_t *res, realContext_t *realContext) {
   WP34S_Log(xin, const_ln2, res, realContext);
 }
-
+*/
 
 
 void WP34S_Log10(const real_t *xin, real_t *res, realContext_t *realContext) {
@@ -869,7 +869,7 @@ void WP34S_Tanh(const real_t *x, real_t *res, realContext_t *realContext) {
 }
 
 
-
+/* never used
 void WP34S_ArcSinh(const real_t *x, real_t *res, realContext_t *realContext) {
   real_t a;
 
@@ -882,9 +882,9 @@ void WP34S_ArcSinh(const real_t *x, real_t *res, realContext_t *realContext) {
   realMultiply(x, &a, &a, realContext);  // y = x * (x / (sqrt(x²+1)+1) + 1)
   WP34S_Ln1P(&a, res, realContext);      // res = ln(1 + (x * (x / (sqrt(x²+1)+1) + 1)))
 }
+*/
 
-
-
+/* never used
 void WP34S_ArcCosh(const real_t *xin, real_t *res, realContext_t *realContext) {
   real_t x, z;
 
@@ -895,7 +895,7 @@ void WP34S_ArcCosh(const real_t *xin, real_t *res, realContext_t *realContext) {
   realAdd(res, &x, &z, realContext);           // z = x + sqrt(x²-1)
   WP34S_Ln(&z, res, realContext);              // res = ln(x + sqrt(x²-1))
 }
-
+*/
 
 
 void WP34S_ArcTanh(const real_t *x, real_t *res, realContext_t *realContext) {
@@ -1123,22 +1123,3 @@ void WP34S_Mod(const real_t *x, const real_t *y, real_t *res, realContext_t *rea
 // realDivideRemainder(x, y, &out, &ctxtReal2139);
 // realPlus((real_t *)&out, res, realContext);
 //}
-
-
-void *xcopy(void *dest, const void *source, int n) {
-  char       *pDest   = (char *)dest;
-  const char *pSource = (char *)source;
-
-  if(pSource > pDest) {
-    while(n--) {
-      *pDest++ = *pSource++;
-    }
-  }
-  else if(pSource < pDest) {
-    while(n--) {
-      pDest[n] = pSource[n];
-    }
-  }
-
-  return dest;
-}

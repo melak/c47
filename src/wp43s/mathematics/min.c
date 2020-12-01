@@ -20,7 +20,7 @@
 
 #include "wp43s.h"
 
-void fnMin(uint16_t unusedParamButMandatory) {
+void fnMin(uint16_t unusedButMandatoryParameter) {
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
   registerMin(REGISTER_X, REGISTER_Y, REGISTER_X);

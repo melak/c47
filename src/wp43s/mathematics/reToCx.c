@@ -25,10 +25,10 @@
  * \brief regX ==> regL and regY+i*regX ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnReToCx(uint16_t unusedParamButMandatory) {
+void fnReToCx(uint16_t unusedButMandatoryParameter) {
   uint32_t dataTypeX = getRegisterDataType(REGISTER_X);
   uint32_t dataTypeY = getRegisterDataType(REGISTER_Y);
   bool_t xIsAReal;
@@ -44,19 +44,16 @@ void fnReToCx(uint16_t unusedParamButMandatory) {
       if(dataTypeX == dtReal34 && getRegisterAngularMode(REGISTER_X) != AM_NONE) {
         convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), AM_RADIAN);
         setRegisterAngularMode(REGISTER_X, AM_NONE);
-        dataTypeX = dtReal34;
         xIsAReal = false;
       }
     }
 
     if(dataTypeX == dtLongInteger) {
       convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
-      dataTypeX = dtReal34;
     }
 
     if(dataTypeY == dtLongInteger) {
       convertLongIntegerRegisterToReal34Register(REGISTER_Y, REGISTER_Y);
-      dataTypeY = dtReal34;
     }
 
     complex34_t temp;
@@ -100,6 +97,6 @@ void fnReToCx(uint16_t unusedParamButMandatory) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "You cannot use Re->Cx with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
       moreInfoOnError("In function fnReToCx:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }

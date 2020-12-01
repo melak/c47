@@ -18,4 +18,4 @@
  * \file cxToRe.h
  ***********************************************/
 
-void fnCxToRe(uint16_t unusedParamButMandatory);
+void fnCxToRe(uint16_t unusedButMandatoryParameter);

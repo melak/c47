@@ -18,7 +18,7 @@
  * \file changeSign.h
  ***********************************************/
 
-void fnChangeSign(uint16_t unusedParamButMandatory);
+void fnChangeSign(uint16_t unusedButMandatoryParameter);
 void chsError    (void);
 
 //      RegX

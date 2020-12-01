@@ -18,7 +18,7 @@
  * \file percentT.h
  ***********************************************/
 
-void fnDeltaPercent(uint16_t unusedParamButMandatory);
+void fnDeltaPercent(uint16_t unusedButMandatoryParameter);
 
 void deltaPercentLonILonI(void);
 void deltaPercentLonIReal(void);

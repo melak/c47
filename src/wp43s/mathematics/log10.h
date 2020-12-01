@@ -18,7 +18,7 @@
  * \file log10.h
  ***********************************************/
 
-void   fnLog10   (uint16_t unusedParamButMandatory);
+void   fnLog10   (uint16_t unusedButMandatoryParameter);
 void   log10Error(void);
 void   log10LonI (void);
 void   log10Rema (void);

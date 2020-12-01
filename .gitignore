@@ -18,7 +18,7 @@ wp43s.dSYM
 gmp-6.2.0/
 gmp-6.2.0.tar.bz2
 DMCP_build/src
-DMCP_build/decNumberICU
+DMCP_build/decNumberICU/
 DMCP_build/build
 
 # used by cLion

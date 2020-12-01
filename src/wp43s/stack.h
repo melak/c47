@@ -14,22 +14,22 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-void fnClX         (uint16_t unusedParamButMandatory);
-void fnDrop        (uint16_t unusedParamButMandatory);
+void fnClX         (uint16_t unusedButMandatoryParameter);
+void fnDrop        (uint16_t unusedButMandatoryParameter);
 void liftStack     (void);
-void fnDropY       (uint16_t unusedParamButMandatory);
-void fnRollUp      (uint16_t unusedParamButMandatory);
-void fnRollDown    (uint16_t unusedParamButMandatory);
+void fnDropY       (uint16_t unusedButMandatoryParameter);
+void fnRollUp      (uint16_t unusedButMandatoryParameter);
+void fnRollDown    (uint16_t unusedButMandatoryParameter);
 void fnDisplayStack(uint16_t numberOfStackLines);
 void fnSwapX       (uint16_t regist);
 void fnSwapY       (uint16_t regist);
 void fnSwapZ       (uint16_t regist);
 void fnSwapT       (uint16_t regist);
-void fnSwapXY      (uint16_t unusedParamButMandatory);
-void fnShuffle     (uint16_t unusedParamButMandatory);
-void fnFillStack   (uint16_t unusedParamButMandatory);
-void fnGetStackSize(uint16_t unusedParamButMandatory);
-void fnClearStack  (uint16_t unusedParamButMandatory);
-void fnUndo        (uint16_t unusedParamButMandatory);
+void fnSwapXY      (uint16_t unusedButMandatoryParameter);
+void fnShuffle     (uint16_t unusedButMandatoryParameter);
+void fnFillStack   (uint16_t unusedButMandatoryParameter);
+void fnGetStackSize(uint16_t unusedButMandatoryParameter);
+void fnClearStack  (uint16_t unusedButMandatoryParameter);
+void fnUndo        (uint16_t unusedButMandatoryParameter);
 void saveForUndo   (void);
 void undo          (void);

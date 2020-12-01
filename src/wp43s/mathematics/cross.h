@@ -18,7 +18,7 @@
  * \file cross.h
  ***********************************************/
 
-void fnCross(uint16_t unusedParamButMandatory);
+void fnCross(uint16_t unusedButMandatoryParameter);
 
 void crossRealCplx(void);
 void crossLonICplx(void);

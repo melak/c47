@@ -33,7 +33,7 @@ void (* const invert[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
 /********************************************//**
  * \brief Data type error in invert
  *
- * \param[in] unusedParamButMandatory
+ * \param[in] unusedButMandatoryParameter
  * \return void
  ***********************************************/
 void invertError(void) {
@@ -41,7 +41,7 @@ void invertError(void) {
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     sprintf(errorMessage, "cannot invert %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnInvert:", errorMessage, NULL, NULL);
-  #endif
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 }
 
 
@@ -50,10 +50,10 @@ void invertError(void) {
  * \brief regX ==> regL and 1 ÷ regX ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory
+ * \param[in] unusedButMandatoryParameter
  * \return void
  ***********************************************/
-void fnInvert(uint16_t unusedParamButMandatory) {
+void fnInvert(uint16_t unusedButMandatoryParameter) {
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
   invert[getRegisterDataType(REGISTER_X)]();
@@ -78,7 +78,7 @@ void invertLonI(void) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function invertLonI:", "cannot divide a long integer by 0", NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
   else {
     longInteger_t quotient, remainder, one;
@@ -96,8 +96,8 @@ void invertLonI(void) {
     else {
       real_t reX;
 
-      longIntegerToAllocatedString(a, tmpStr3000, TMP_STR_LENGTH);
-      stringToReal(tmpStr3000, &reX, &ctxtReal39);
+      longIntegerToAllocatedString(a, tmpString, TMP_STR_LENGTH);
+      stringToReal(tmpString, &reX, &ctxtReal39);
 
       realDivide(const_1, &reX, &reX, &ctxtReal39);
 
@@ -142,7 +142,7 @@ void invertReal(void) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function invertReal:", "cannot divide a real34 by 0", NULL, NULL);
-      #endif
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
 
@@ -150,7 +150,7 @@ void invertReal(void) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function invertReal:", "cannot divide a real34 by " STD_PLUS_MINUS STD_INFINITY " when flag D is not set", NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 
   else {

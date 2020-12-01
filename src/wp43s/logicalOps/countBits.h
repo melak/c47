@@ -18,6 +18,6 @@
  * \file countBits.h
  ***********************************************/
 
-void fnCountBits(uint16_t unusedParamButMandatory);
+void fnCountBits(uint16_t unusedButMandatoryParameter);
 void countBitsError    (void);
 void countBitsShoI     (void);

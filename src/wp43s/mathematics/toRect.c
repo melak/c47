@@ -22,7 +22,7 @@
 
 
 
-void fnToRect(uint16_t unusedParamButMandatory) {
+void fnToRect(uint16_t unusedButMandatoryParameter) {
   uint32_t dataTypeX, dataTypeY, yAngularMode;
   real_t x, y;
 
@@ -75,12 +75,12 @@ void fnToRect(uint16_t unusedParamButMandatory) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot convert (%s, %s) to rectangular coordinates!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false), getDataTypeName(getRegisterDataType(REGISTER_Y), false, false));
       moreInfoOnError("In function fnToRect:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
 
-
+/* never used
 void real34PolarToRectangular(const real34_t *magnitude34, const real34_t *theta34, real34_t *real34, real34_t *imag34) {
   real_t real, imag, magnitude, theta;
 
@@ -92,7 +92,7 @@ void real34PolarToRectangular(const real34_t *magnitude34, const real34_t *theta
   realToReal34(&real, real34);
   realToReal34(&imag, imag34);
 }
-
+*/
 
 void realPolarToRectangular(const real_t *mag, const real_t *the, real_t *real, real_t *imag, realContext_t *realContext) {
   ///////////////////////////////////////////

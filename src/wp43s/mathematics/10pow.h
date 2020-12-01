@@ -18,7 +18,7 @@
  * \file 10pow.h
  ***********************************************/
 
-void fn10Pow    (uint16_t unusedParamButMandatory);
+void fn10Pow    (uint16_t unusedButMandatoryParameter);
 void tenPowError(void);
 void tenPowLonI (void);
 void tenPowRema (void);

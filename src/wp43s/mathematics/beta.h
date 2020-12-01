@@ -18,7 +18,7 @@
  * \file beta.h
  ***********************************************/
 
-void fnBeta      (uint16_t unusedParamButMandatory);
+void fnBeta      (uint16_t unusedButMandatoryParameter);
 
 void betaError   (void);
 

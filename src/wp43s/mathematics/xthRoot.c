@@ -42,7 +42,7 @@ void (* const xthRoot[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPE
 /********************************************//**
  * \brief Data type error in xthRoot
  *
- * \param[in] unusedParamButMandatory
+ * \param[in] unusedButMandatoryParameter
  * \return void
  ***********************************************/
 void xthRootError(void) {
@@ -51,7 +51,7 @@ void xthRootError(void) {
     sprintf(errorMessage, "cannot obtain xthRoot of %s", getRegisterDataTypeName(REGISTER_Y, true, false));
     sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "to %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnRoot:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
-  #endif
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 }
 
 
@@ -60,10 +60,10 @@ void xthRootError(void) {
  * \brief regX ==> regL and regY ^ (1/regX) ==> regX
  * Drops Y, enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory
+ * \param[in] unusedButMandatoryParameter
  * \return void
  ***********************************************/
-void fnXthRoot(uint16_t unusedParamButMandatory) {
+void fnXthRoot(uint16_t unusedButMandatoryParameter) {
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
   xthRoot[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
@@ -92,7 +92,7 @@ void xthRootComplex(const real_t *aa, const real_t *bb, const real_t *cc, const 
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function xthRootComplexComplex: 0th Root is not defined!", NULL, NULL, NULL);
-      #endif
+      #endif //  (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
      }
     else {
@@ -195,7 +195,7 @@ void xthRootReal(real_t *yy, real_t *xx, realContext_t *realContext) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function xthRootRealReal: 0th Root is not defined!", NULL, NULL, NULL);
-      #endif
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
     else {
@@ -225,7 +225,7 @@ void xthRootReal(real_t *yy, real_t *xx, realContext_t *realContext) {
           displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
           #if (EXTRA_INFO_ON_CALC_ERROR == 1)
             moreInfoOnError("In function xthRootRealReal:", "cannot do complex xthRoots when CPXRES is not set", NULL, NULL);
-          #endif
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
           return;
         }
         else {
@@ -252,7 +252,7 @@ void xthRootReal(real_t *yy, real_t *xx, realContext_t *realContext) {
             displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
             #if (EXTRA_INFO_ON_CALC_ERROR == 1)
               moreInfoOnError("In function xthRootRealReal:", "cannot do complex xthRoots when CPXRES is not set", NULL, NULL);
-            #endif
+            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
             return;
           }
           else {
@@ -300,7 +300,7 @@ void xthRootLonILonI(void) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function xthRootLonILonI: Cannot divide by 0!", NULL, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     longIntegerFree(base);
     longIntegerFree(exponent);
     return;
@@ -349,10 +349,10 @@ void xthRootLonILonI(void) {
     }
   }
 
-  longIntegerToAllocatedString(exponent, tmpStr3000, TMP_STR_LENGTH);
-  stringToReal(tmpStr3000, &x, &ctxtReal39);
-  longIntegerToAllocatedString(base, tmpStr3000, TMP_STR_LENGTH);
-  stringToReal(tmpStr3000, &y, &ctxtReal39);
+  longIntegerToAllocatedString(exponent, tmpString, TMP_STR_LENGTH);
+  stringToReal(tmpString, &x, &ctxtReal39);
+  longIntegerToAllocatedString(base, tmpString, TMP_STR_LENGTH);
+  stringToReal(tmpString, &y, &ctxtReal39);
 
   longIntegerFree(base);
   longIntegerFree(exponent);
@@ -721,7 +721,7 @@ void xthRootRealReal(void) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function xthRootRealReal:", "cannot use " STD_PLUS_MINUS STD_INFINITY " as X or Y input of xthRoot when flag D is not set", NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
 

@@ -18,7 +18,7 @@
  * \file ln.h
  ***********************************************/
 
-void fnLn   (uint16_t unusedParamButMandatory);
+void fnLn   (uint16_t unusedButMandatoryParameter);
 void lnError(void);
 void lnLonI (void);
 void lnRema (void);

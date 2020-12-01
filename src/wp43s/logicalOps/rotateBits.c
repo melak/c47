@@ -26,7 +26,7 @@
  * \brief regX ==> regL and ASR(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnAsr(uint16_t numberOfShifts) {
@@ -55,7 +55,7 @@ void fnAsr(uint16_t numberOfShifts) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot ASR %s", getRegisterDataTypeName(REGISTER_X, true, false));
       moreInfoOnError("In function fnAsr:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
@@ -65,7 +65,7 @@ void fnAsr(uint16_t numberOfShifts) {
  * \brief regX ==> regL and SL(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnSl(uint16_t numberOfShifts) {
@@ -92,7 +92,7 @@ void fnSl(uint16_t numberOfShifts) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot SL %s", getRegisterDataTypeName(REGISTER_X, true, false));
       moreInfoOnError("In function fnSl:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
@@ -102,7 +102,7 @@ void fnSl(uint16_t numberOfShifts) {
  * \brief regX ==> regL and SR(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnSr(uint16_t numberOfShifts) {
@@ -129,7 +129,7 @@ void fnSr(uint16_t numberOfShifts) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot SR %s", getRegisterDataTypeName(REGISTER_X, true, false));
       moreInfoOnError("In function fnSr:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
@@ -139,7 +139,7 @@ void fnSr(uint16_t numberOfShifts) {
  * \brief regX ==> regL and RL(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnRl(uint16_t numberOfShifts) {
@@ -168,7 +168,7 @@ void fnRl(uint16_t numberOfShifts) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot RL %s", getRegisterDataTypeName(REGISTER_X, true, false));
       moreInfoOnError("In function fnRl:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
@@ -178,7 +178,7 @@ void fnRl(uint16_t numberOfShifts) {
  * \brief regX ==> regL and RR(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnRr(uint16_t numberOfShifts) {
@@ -205,7 +205,7 @@ void fnRr(uint16_t numberOfShifts) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot RR %s", getRegisterDataTypeName(REGISTER_X, true, false));
       moreInfoOnError("In function fnRr:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
@@ -215,7 +215,7 @@ void fnRr(uint16_t numberOfShifts) {
  * \brief regX ==> regL and RLC(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnRlc(uint16_t numberOfShifts) {
@@ -244,7 +244,7 @@ void fnRlc(uint16_t numberOfShifts) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot RLC %s", getRegisterDataTypeName(REGISTER_X, true, false));
       moreInfoOnError("In function fnRlc:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
@@ -254,7 +254,7 @@ void fnRlc(uint16_t numberOfShifts) {
  * \brief regX ==> regL and RRC(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnRrc(uint16_t numberOfShifts) {
@@ -283,7 +283,7 @@ void fnRrc(uint16_t numberOfShifts) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot RRC %s", getRegisterDataTypeName(REGISTER_X, true, false));
       moreInfoOnError("In function fnRrc:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
@@ -293,7 +293,7 @@ void fnRrc(uint16_t numberOfShifts) {
  * \brief regX ==> regL and LJ(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnLj(uint16_t numberOfShifts) {
@@ -322,7 +322,7 @@ void fnLj(uint16_t numberOfShifts) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot LJ %s", getRegisterDataTypeName(REGISTER_X, true, false));
       moreInfoOnError("In function fnLj:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
@@ -332,7 +332,7 @@ void fnLj(uint16_t numberOfShifts) {
  * \brief regX ==> regL and RJ(regX) ==> regX
  * enables stack lift and refreshes the stack
  *
- * \param[in] unusedParamButMandatory uint16_t
+ * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
 void fnRj(uint16_t numberOfShifts) {
@@ -361,7 +361,7 @@ void fnRj(uint16_t numberOfShifts) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "cannot RJ %s", getRegisterDataTypeName(REGISTER_X, true, false));
       moreInfoOnError("In function fnRj:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
@@ -370,13 +370,12 @@ void fnRj(uint16_t numberOfShifts) {
 void fnMirror(uint16_t unusedButMandatoryParameter) {
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
     uint64_t x, r=0;
-    uint32_t i;
 
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
     x = *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X));
     if(x != 0) {
-      for(i=0; i<shortIntegerWordSize; i++) {
+      for(uint32_t i=0; i<shortIntegerWordSize; i++) {
         if(x & (1LL << i)) {
           r |= 1LL << (shortIntegerWordSize-i-1);
         }
@@ -391,6 +390,6 @@ void fnMirror(uint16_t unusedButMandatoryParameter) {
     #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "the input type %s is not allowed for MIRROR!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false));
       moreInfoOnError("In function fnMirror:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }

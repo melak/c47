@@ -96,7 +96,7 @@ int16_t findGlyph(const font_t *font, uint16_t charCode) {
  ***********************************************/
 void generateNotFoundGlyph(int16_t font, uint16_t charCode) {
   int16_t i;
-  int8_t  nibble1, nibble2;
+  uint8_t  nibble1, nibble2;
 
 
   if(charCode >= 0x8000) {

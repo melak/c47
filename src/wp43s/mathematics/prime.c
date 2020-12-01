@@ -68,16 +68,16 @@ static bool_t longIntegerIsPrime1(longInteger_t primeCandidate) {
   }
 
   #if defined(PC_BUILD) || defined(DMCP_BUILD)
-  if(calcMode == CM_NORMAL) {
-    hourGlassIconEnabled = true;
-    showHideHourGlass();
-    #ifdef PC_BUILD
-      refreshLcd(NULL);
-    #else
-      lcd_refresh();
-    #endif // PC_BUILD
-  }
-  #endif
+    if(calcMode == CM_NORMAL) {
+      hourGlassIconEnabled = true;
+      showHideHourGlass();
+      #ifdef PC_BUILD
+        refreshLcd(NULL);
+      #else // !PC_BUILD
+        lcd_refresh();
+      #endif // PC_BUILD
+    }
+  #endif // PC_BUILD || DMCP_BUILD
 
   longIntegerInit(primeCandidateMinus1);
   longIntegerInit(s);
@@ -144,7 +144,7 @@ void fnIsPrime(uint16_t unusedButMandatoryParameter) {
     #if(EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "the input type %s is not allowed for PRIME?!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false));
       moreInfoOnError("In function fnIsPrime:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 
   longIntegerSetPositiveSign(primeCandidate);
@@ -152,7 +152,7 @@ void fnIsPrime(uint16_t unusedButMandatoryParameter) {
   showHideHourGlass();
   #ifdef DMCP_BUILD
     lcd_refresh();
-  #else
+  #else // !DMCP_BUILD
     refreshLcd(NULL);
   #endif // DMCP_BUILD
   //temporaryInformation = (longIntegerIsPrime1(primeCandidate) ? TI_TRUE : TI_FALSE);
@@ -183,10 +183,10 @@ void fnNextPrime(uint16_t unusedButMandatoryParameter) {
 
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if(EXTRA_INFO_ON_CALC_ERROR == 1)
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "the input type %s is not allowed for PRIME?!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false));
       moreInfoOnError("In function fnIsPrime:", errorMessage, NULL, NULL);
-    #endif
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
@@ -197,7 +197,7 @@ void fnNextPrime(uint16_t unusedButMandatoryParameter) {
   showHideHourGlass();
   #ifdef DMCP_BUILD
     lcd_refresh();
-  #else
+  #else // !DMCP_BUILD
     refreshLcd(NULL);
   #endif // DMCP_BUILD
   longIntegerNextPrime(currentNumber, nextPrime);
