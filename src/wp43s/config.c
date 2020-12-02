@@ -631,15 +631,15 @@ void fnReset(uint16_t confirmation) {
 
     //JM Default USER
     fnUserJM(USER_RESET);                                      //JM USER
-//    kbd_usr[0].primary     = KEY_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
+//    kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].fShifted    = KEY_TYPCON_DN;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 
     // The following lines are test data
-    //kbd_usr[ 0].keyLblAim   = CHR_A_GRAVE;
-    //kbd_usr[ 0].fShiftedAim = CHR_A_GRAVE;
-    //kbd_usr[ 4].keyLblAim   = CHR_E_ACUTE;
-    //kbd_usr[ 4].fShiftedAim = CHR_E_ACUTE;
+    //kbd_usr[ 0].keyLblAim   = ITM_A_GRAVE;
+    //kbd_usr[ 0].fShiftedAim = ITM_A_GRAVE;
+    //kbd_usr[ 4].keyLblAim   = ITM_E_ACUTE;
+    //kbd_usr[ 4].fShiftedAim = ITM_E_ACUTE;
     //kbd_usr[18].fShifted    = -MNU_VARS;
     //kbd_usr[18].gShifted    = CST_54;
     //kbd_usr[19].fShifted    = ITM_SW;
@@ -679,9 +679,19 @@ void fnReset(uint16_t confirmation) {
     #endif
 
     //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
-    fnStrtoX("C43_29-Working, 2020-11-24");
+    fnStrtoX("C43 Rel48 Working, 2020-12-02");
     fnStore(102);
     fnDrop(0);
+
+    #ifdef JM_LAYOUT_1A
+    fnStrtoX("LAYOUT1 (Main C43 template)");
+    #endif
+    #ifdef JM_LAYOUT_2_DM42_STRICT
+    fnStrtoX("LAYOUT42 (DM42 compatible)");
+    #endif
+    fnStore(103);
+    fnDrop(0);
+
 
     //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
     fnStrtoX("Reg 11,12 & 13 have: The 3 cubes = 3.");

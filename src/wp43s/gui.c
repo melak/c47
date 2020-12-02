@@ -1742,16 +1742,16 @@ void labelCaptionNormal(const calcKey_t *key, GtkWidget *button, GtkWidget *lblF
   if((key->primary == ITM_AIM && getSystemFlag(FLAG_USER) && calcMode == CM_NORMAL ) || (!getSystemFlag(FLAG_USER) && key->primary == ITM_SIGMAPLUS && calcMode == CM_NORMAL && Norm_Key_00_VAR == ITM_AIM)) {
     gtk_widget_set_name(button, "AlphaKey");                 //JMALPHA Colour the alpha key gold if assigned.
   }
-  else if(key->primary == KEY_f) {
+  else if(key->primary == ITM_SHIFTf) {
     gtk_widget_set_name(button, "calcKeyF");
   }
-  else if(key->primary == KEY_g  || (key->primary == ITM_SIGMAPLUS && Norm_Key_00_VAR == KEY_g) ) {
+  else if(key->primary == ITM_SHIFTg  || (key->primary == ITM_SIGMAPLUS && Norm_Key_00_VAR == ITM_SHIFTg) ) {
     gtk_widget_set_name(button, "calcKeyG");
   }
   else if(key->primary == KEY_fg) {
     gtk_widget_set_name(button, "calcKeyFG");
   }
-  else if((key->primary >= CHR_0 && key->primary <= CHR_9) || key->primary == CHR_PERIOD) {
+  else if((key->primary >= ITM_0 && key->primary <= ITM_9) || key->primary == ITM_PERIOD) {
     gtk_widget_set_name(button, "calcNumericKey");
   }
   else if(strcmp((char *)lbl, "÷") == 0 && key->keyId == 55) {      //JM increase the font size of the operators to the numeric key size
@@ -1879,7 +1879,7 @@ void labelCaptionAim(const calcKey_t *key, GtkWidget *button, GtkWidget *lblGree
     lbl[0] = 0;
   }
 
-if(key->primaryAim == CHR_SPACE) {
+if(key->primaryAim == ITM_SPACE) {
     lbl[0]=0xC2;          //JM SPACE the space character is not in the font. \rather use . . for space.
     lbl[1]=0xB7;          //JM SPACE
     lbl[2]='_';           //JM SPACE
@@ -1888,7 +1888,7 @@ if(key->primaryAim == CHR_SPACE) {
     lbl[5]=0;             //JM SPACE
 }
   else {
-    if(alphaCase == AC_LOWER && (CHR_A <= key->primaryAim && key->primaryAim <= CHR_Z)) {
+    if(alphaCase == AC_LOWER && (ITM_A <= key->primaryAim && key->primaryAim <= ITM_Z)) {
         stringToUtf8(indexOfItems[key->primaryAim + 26].itemSoftmenuName, lbl);
     }
     else {
@@ -1905,10 +1905,10 @@ if(key->primaryAim == CHR_SPACE) {
   gtk_button_set_label(GTK_BUTTON(button), (gchar *)lbl);
 
 //Specify the different categories of coloured zones
-  if(key->keyLblAim == KEY_f) {
+  if(key->keyLblAim == ITM_SHIFTf) {
     gtk_widget_set_name(button, "calcKeyF");
   }
-  else if(key->keyLblAim == KEY_g) {
+  else if(key->keyLblAim == ITM_SHIFTg) {
     gtk_widget_set_name(button, "calcKeyG");
   }
   else if(key->keyLblAim == KEY_fg) {                                 //JM 
@@ -1916,7 +1916,7 @@ if(key->primaryAim == CHR_SPACE) {
   }
   else {
     /*        //vv dr - new AIM
-    if((key->fShiftedAim == key->keyLblAim || key->fShiftedAim == CHR_PROD_SIGN) && key->keyLblAim != ITM_NULL) {
+    if((key->fShiftedAim == key->keyLblAim || key->fShiftedAim == ITM_PROD_SIGN) && key->keyLblAim != ITM_NULL) {
       gtk_widget_set_name(button, "calcKeyGoldenBorder");
     }
     else {*/  //^^
@@ -1926,7 +1926,7 @@ if(key->primaryAim == CHR_SPACE) {
 
 
 //Convert Greek CAPITAL and LOWER case to UTF !
-  if((CHR_ALPHA <= key->gShiftedAim && key->gShiftedAim <= CHR_OMEGA) || (CHR_QOPPA <= key->gShiftedAim && key->gShiftedAim <= CHR_SAMPI)) {   //JM GREEK. Add extra 36 char greek range
+  if((ITM_ALPHA <= key->gShiftedAim && key->gShiftedAim <= ITM_OMEGA) || (ITM_QOPPA <= key->gShiftedAim && key->gShiftedAim <= ITM_SAMPI)) {   //JM GREEK. Add extra 36 char greek range
   /*stringToUtf8(indexOfItems[key->gShiftedAim].itemSoftmenuName, lbl);  //vv dr - new AIM
     lbl[2] = ' ';
     lbl[3] = 0;
@@ -1954,7 +1954,7 @@ if(key->primaryAim == CHR_SPACE) {
 //JM  }
 
 /* JM TEST PROCEDURE TO TEST DISPLAY
-  else if(key->gShiftedAim == CHR_DIGAMMA ) {
+  else if(key->gShiftedAim == ITM_DIGAMMA ) {
     lbl[0] = 0xCF;
     lbl[1] = 0x9C;
     lbl[2] = 32;
@@ -2030,10 +2030,10 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
     gtk_button_set_label(GTK_BUTTON(button), "÷");           //JM DIV
   }                                                          //JM
 
-  if(key->primaryTam == KEY_f) {
+  if(key->primaryTam == ITM_SHIFTf) {
     gtk_widget_set_name(button, "calcKeyF");
   }
-  else if(key->primaryTam == KEY_g) {
+  else if(key->primaryTam == ITM_SHIFTg) {
     gtk_widget_set_name(button, "calcKeyG");
   }
   else if(key->primaryTam == KEY_fg) {                              //JM
@@ -2325,13 +2325,13 @@ void calcModeAimGui(void) {
   hideAllWidgets();
 
 //  labelCaptionAimFa(keys, lbl21Fa);                     //vv dr - new AIM
-  labelCaptionAimFaChr(   keys,   lbl21Fa, CHR_ALPHA);          //JM new
+  labelCaptionAimFaChr(   keys,   lbl21Fa, ITM_ALPHA);          //JM new
   labelCaptionAim(keys++, btn21A, lbl21Gr, lbl21L);     //vv dr - new AIM
 //  labelCaptionAimFa(keys, lbl22Fa);                     //vv dr - new AIM
-  labelCaptionAimFaChr(   keys,   lbl22Fa, CHR_NUMBER_SIGN);          //JM new
+  labelCaptionAimFaChr(   keys,   lbl22Fa, ITM_NUMBER_SIGN);          //JM new
   labelCaptionAim(keys++, btn22A, lbl22Gr, lbl22L);
 //  labelCaptionAimFa(keys, lbl23Fa);                     //vv dr - new AIM
-  labelCaptionAimFaChr(   keys,   lbl23Fa, CHR_SQUARE_ROOT);          //JM
+  labelCaptionAimFaChr(   keys,   lbl23Fa, ITM_SQUARE_ROOT);          //JM
   labelCaptionAim(keys++, btn23A, lbl23Gr, lbl23L);
   labelCaptionAim(keys++, btn24A, lbl24Gr, lbl24L);
   labelCaptionAim(keys++, btn25A, lbl25Gr, lbl25L);
@@ -2346,9 +2346,9 @@ void calcModeAimGui(void) {
   labelCaptionAim(keys++, btn36A, lbl36Gr, lbl36L);     //^^
 
   labelCaptionAim(keys++, btn41,  lbl41Gr, lbl41L);
-  labelCaptionAimFaChr(   keys,   lbl42Fa, CHR_ex);     //vv dr - new AIM
+  labelCaptionAimFaChr(   keys,   lbl42Fa, ITM_ex);     //vv dr - new AIM
   labelCaptionAim(keys++, btn42A, lbl42Gr, lbl42L);
-  labelCaptionAimFaChr(   keys,   lbl43Fa, CHR_PLUS_MINUS);
+  labelCaptionAimFaChr(   keys,   lbl43Fa, ITM_PLUS_MINUS);
   labelCaptionAim(keys++, btn43A, lbl43Gr, lbl43L);
   labelCaptionAim(keys++, btn44A, lbl44Gr, lbl44L);     //^^
   labelCaptionAim(keys++, btn45,  lbl45Gr, lbl45L);

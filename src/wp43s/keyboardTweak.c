@@ -274,13 +274,13 @@ void  Check_Assign_in_progress(int16_t * result, int16_t tempkey) {
   if(JM_ASN_MODE == 32766) {                 // GET FUNCTION NUMBER: If seek is pressed, a function can be chosen and pressed.
     JM_ASN_MODE = *result;                   // The result is the function number, item number, asnd is placed in
     fnKEYSELECT();                           // Place in auto trigger register, ready for next keypress
-    *result = KEY_EXIT1;                     // EXIT key to exit when done and cancel shifts
+    *result = ITM_EXIT1;                     // EXIT key to exit when done and cancel shifts
   }
   //JM ASSIGN - GET KEY & ASSIGN MEMORY FUNCTION JM_ASN_MODE // JM_ASN_MODE contains the command to be put on a key. 0 if not active
   else if(JM_ASN_MODE != 0) {                // GET KEY
     fnASSIGN(JM_ASN_MODE, tempkey);          // CHECKS FOR INVALID KEYS IN HERE
     JM_ASN_MODE = 0;                         // Catchall - cancel the mode once it had the opportunity to be handled. Whether handled or not.
-    *result = KEY_EXIT1;                     // EXIT key to exit when done and cancel shifts
+    *result = ITM_EXIT1;                     // EXIT key to exit when done and cancel shifts
   }
   //JM NORMKEY _ CHANGE NORMAL MODE KEY SIGMA+ TO SOMETHING ELSE vv
   else if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (!getSystemFlag(FLAG_USER) && !shiftF && !shiftG && ( tempkey == 0) )) {
@@ -295,7 +295,7 @@ void  Check_Assign_in_progress(int16_t * result, int16_t tempkey) {
                                         //JM GET FUNCTION NUMBER: If seek is pressed, a function can be chosen and pressed.
     JM_ASN_MODE = result;               //JM The result is the function number, item number, asnd is placed in
     fnKEYSELECT();                           //JM Place in auto trigger register, ready for next keypress
-    result = KEY_EXIT1;                      //JM EXIT key to exit when done and cancel shifts
+    result = ITM_EXIT1;                      //JM EXIT key to exit when done and cancel shifts
   }
 
   //JM ASSIGN - GET KEY & ASSIGN MEMORY FUNCTION JM_ASN_MODE
@@ -303,7 +303,7 @@ void  Check_Assign_in_progress(int16_t * result, int16_t tempkey) {
   else if(JM_ASN_MODE != 0) {                //JM GET KEY
     fnASSIGN(JM_ASN_MODE, stringToKeyNumber(data));          //JM CHECKS FOR INVALID KEYS IN HERE
     JM_ASN_MODE = 0;                         //JM Catchall - cancel the mode once it had the opportunity to be handled. Whether handled or not.
-    result = KEY_EXIT1;                       //JM EXIT key to exit when done and cancel shifts
+    result = ITM_EXIT1;                       //JM EXIT key to exit when done and cancel shifts
   }
 
   //JM NORMKEY _ CHANGE NORMAL MODE KEY SIGMA+ TO SOMETHING ELSE vv
@@ -366,7 +366,7 @@ void Setup_MultiPresses(int16_t result){
   int16_t tmp = 0;
   if(calcMode == CM_NORMAL) {
     switch(result) {
-      case KEY_BACKSPACE: tmp = ITM_DROP; break;      //Set up backspace double click to DROP
+      case ITM_BACKSPACE: tmp = ITM_DROP; break;      //Set up backspace double click to DROP
       //case ITM_XEQ      : tmp = -MNU_XXEQ; break;      //XEQ XEQMENU, removed as it does not properly work on double clieck. It still accesses XEQ
       //case ITM_CHS      : tmp = ITM_XexY; break;      //sample on CHS, operating X<>Y. XEQ must still be created.
       default:;
@@ -423,8 +423,8 @@ void Check_MultiPresses(int16_t * result, int8_t key_no){          //Set up long
   if(calcMode == CM_NORMAL) {
     switch(*result) {
       case ITM_XEQ      : longpressDelayedkey2=longpressDelayedkey1;   longpressDelayedkey1 = -MNU_XXEQ; break;    //XEQ longpress to XEQMENU 
-      case KEY_BACKSPACE: longpressDelayedkey2=longpressDelayedkey1;   longpressDelayedkey1 = ITM_CLSTK; break;    //backspace longpress to CLSTK
-      case KEY_EXIT1    :                                              longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
+      case ITM_BACKSPACE: longpressDelayedkey2=longpressDelayedkey1;   longpressDelayedkey1 = ITM_CLSTK; break;    //backspace longpress to CLSTK
+      case ITM_EXIT1    :                                              longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
       //case ITM_CHS    :                                              longpressDelayedkey1 = ITM_XexY;  break;     //sample on CHS, operating X<>Y. XEQ must still be created.
       default:;
     }
@@ -433,16 +433,16 @@ void Check_MultiPresses(int16_t * result, int8_t key_no){          //Set up long
 	  if(calcMode == CM_NIM) {
 	    switch(*result) {
 	      case ITM_XEQ      : longpressDelayedkey2=longpressDelayedkey1; longpressDelayedkey1 = -MNU_XXEQ; break;    //XEQ longpress to XEQMENU 
-	      case KEY_BACKSPACE:                                            longpressDelayedkey1 = ITM_CLN;   break;    //BACKSPACE longpress clears input buffer
-        case KEY_EXIT1    :                                            longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
+	      case ITM_BACKSPACE:                                            longpressDelayedkey1 = ITM_CLN;   break;    //BACKSPACE longpress clears input buffer
+        case ITM_EXIT1    :                                            longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
 	      default:;
 	    }
 	  } else
 
 		  if(calcMode == CM_AIM) {
 		    switch(*result) {
-          case KEY_BACKSPACE:                                          longpressDelayedkey1 = ITM_CLA;   break;     //BACKSPACE longpress clears input buffer
-          case KEY_EXIT1    :                                          longpressDelayedkey1 = ITM_CLAIM; break;     //EXIT longpress DOES CLAIM
+          case ITM_BACKSPACE:                                          longpressDelayedkey1 = ITM_CLA;   break;     //BACKSPACE longpress clears input buffer
+          case ITM_EXIT1    :                                          longpressDelayedkey1 = ITM_CLAIM; break;     //EXIT longpress DOES CLAIM
 		      default:;
 		    }
 		  }
@@ -487,8 +487,8 @@ int16_t nameFunction(int16_t fn, int16_t itemShift) {                       //JM
       }
 /*XXX*/
 
-      if(func == CHR_PROD_SIGN) {
-        func = (getSystemFlag(FLAG_MULTx) ? CHR_DOT : CHR_CROSS);
+      if(func == ITM_PROD_SIGN) {
+        func = (getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS);
       }
 
       if(func < 0) {
@@ -1394,12 +1394,12 @@ void fnT_ARROW(uint16_t command) {
 
 
 
-     case KEY_UP1 /*HOME */ :
+     case ITM_UP1 /*HOME */ :
         T_cursorPos = 0;
         break;
 
 
-     case KEY_DOWN1 /*END*/ :
+     case ITM_DOWN1 /*END*/ :
         T_cursorPos = stringByteLength(aimBuffer) - 1;
         T_cursorPos = stringNextGlyph(aimBuffer, T_cursorPos);
         fnT_ARROW(ITM_T_RIGHT_ARROW);

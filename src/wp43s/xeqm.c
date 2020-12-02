@@ -37,17 +37,17 @@ void capture_sequence(char *origin, uint16_t item) {
       case  ITM_XexY: strcpy(ll,"X<>Y"); break;
       case  ITM_YX:   strcpy(ll,"Y^X" ); break;
       case  ITM_DIV:  strcpy(ll,"/"   ); break;
-      case  CHR_0:        ll[0]=48; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
-      case  CHR_1:        ll[0]=49; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
-      case  CHR_2:        ll[0]=50; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
-      case  CHR_3:        ll[0]=51; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
-      case  CHR_4:        ll[0]=52; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
-      case  CHR_5:        ll[0]=53; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
-      case  CHR_6:        ll[0]=54; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
-      case  CHR_7:        ll[0]=55; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
-      case  CHR_8:        ll[0]=56; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
-      case  CHR_9:        ll[0]=57; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
-      case  CHR_PERIOD:   ll[0]=46; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break; //.
+      case  ITM_0:        ll[0]=48; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
+      case  ITM_1:        ll[0]=49; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
+      case  ITM_2:        ll[0]=50; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
+      case  ITM_3:        ll[0]=51; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
+      case  ITM_4:        ll[0]=52; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
+      case  ITM_5:        ll[0]=53; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
+      case  ITM_6:        ll[0]=54; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
+      case  ITM_7:        ll[0]=55; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
+      case  ITM_8:        ll[0]=56; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
+      case  ITM_9:        ll[0]=57; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break;
+      case  ITM_PERIOD:   ll[0]=46; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break; //.
       case  ITM_EXPONENT: ll[0]=69; strcpy(line1,"   \""); strcat(line1,ll); strcat(line1,"\" "); break; //E
       default: { strcpy(ll,indexOfItems[item].itemSoftmenuName);
                }  
@@ -96,16 +96,16 @@ void runkey(int16_t item){
 void sendkeys(const char aa[]) {
   int16_t ix = 0;
   while (aa[ix]!=0) {
-    if(aa[ix]>=65 && aa[ix]<= 90){runkey(CHR_A+aa[ix]-65);} else //A..Z
-    if(aa[ix]>=97 && aa[ix]<=122){runkey(CHR_A+aa[ix]-65-32);} else //a..z converted to A..Z
-    if(aa[ix]>=48 && aa[ix]<= 57){runkey(CHR_0+aa[ix]-48);} else //0..9
+    if(aa[ix]>=65 && aa[ix]<= 90){runkey(ITM_A+aa[ix]-65);} else //A..Z
+    if(aa[ix]>=97 && aa[ix]<=122){runkey(ITM_A+aa[ix]-65-32);} else //a..z converted to A..Z
+    if(aa[ix]>=48 && aa[ix]<= 57){runkey(ITM_0+aa[ix]-48);} else //0..9
     switch (aa[ix]) {
-      case 46:  runkey(CHR_PERIOD); break; //.
+      case 46:  runkey(ITM_PERIOD); break; //.
       case 69:  runkey(ITM_EXPONENT); break; //E
       case 101: runkey(ITM_EXPONENT); break; //e
       case 45:  runkey(ITM_SUB); break; //-
       case 43:  runkey(ITM_ADD); break; //+
-      case 32:  runkey(CHR_SPACE); break; //space
+      case 32:  runkey(ITM_SPACE); break; //space
       case 35:  runkey(ITM_toINT); break; //#
       default:;
     }
@@ -272,10 +272,10 @@ void execute_string(const char *inputstring, bool_t exec1) {
                       if (strcompare(commandnumber,"CHS" )) {sprintf(commandnumber,"%d", ITM_CHS);} else
                       if (strcompare(commandnumber,"*" )) {sprintf(commandnumber,"%d", ITM_MULT);} else
                       if (strcompare(commandnumber,"/" )) {sprintf(commandnumber,"%d", ITM_DIV);} else
-                      if (strcompare(commandnumber,"EXIT" )) {sprintf(commandnumber,"%d", KEY_EXIT1);} else
+                      if (strcompare(commandnumber,"EXIT" )) {sprintf(commandnumber,"%d", ITM_EXIT1);} else
                       if (strcompare(commandnumber,"SUM+" )) {sprintf(commandnumber,"%d", ITM_SIGMAPLUS);} else
                       if (strcompare(commandnumber,"NEXTP" )) {sprintf(commandnumber,"%d", ITM_NEXTP);} else
-                      if (strcompare(commandnumber,"PI" )) {sprintf(commandnumber,"%d", ITM_pi);} else
+                      if (strcompare(commandnumber,"PI" )) {sprintf(commandnumber,"%d", ITM_CONSTpi);} else
                       if (strcompare(commandnumber,"RAN#" )) {sprintf(commandnumber,"%d", ITM_RAN);} else
                       if (strcompare(commandnumber,"e" )) {sprintf(commandnumber,"%d", CST_08);} else
                       if (strcompare(commandnumber,"PHI" )) {sprintf(commandnumber,"%d", CST_74);} else
@@ -305,7 +305,7 @@ void execute_string(const char *inputstring, bool_t exec1) {
                       if (strcompare(commandnumber,"CUBRT" )) {sprintf(commandnumber,"%d", ITM_CUBEROOT);} else
                       if (strcompare(commandnumber,"XRTY" )) {sprintf(commandnumber,"%d", ITM_XTHROOT);} else
                       if (strcompare(commandnumber,"2^X" )) {sprintf(commandnumber,"%d", ITM_2X);} else
-                      if (strcompare(commandnumber,"E^X" )) {sprintf(commandnumber,"%d", ITM_EX);} else
+                      if (strcompare(commandnumber,"E^X" )) {sprintf(commandnumber,"%d", ITM_EXP);} else
                       if (strcompare(commandnumber,"E^X-1" )) {sprintf(commandnumber,"%d", ITM_EX1);} else
                       if (strcompare(commandnumber,"10^X" )) {sprintf(commandnumber,"%d", ITM_10x);} else
                       if (strcompare(commandnumber,"LOG2" )) {sprintf(commandnumber,"%d", ITM_LOG2);} else
@@ -349,7 +349,7 @@ void execute_string(const char *inputstring, bool_t exec1) {
                       if (strcompare(commandnumber,"NEIGHB" )) {sprintf(commandnumber,"%d", ITM_NEIGHB);} else
                       if (strcompare(commandnumber,"NEXTP" )) {sprintf(commandnumber,"%d", ITM_NEXTP);} else
                       if (strcompare(commandnumber,"X!" )) {sprintf(commandnumber,"%d", ITM_XFACT);} else
-                      if (strcompare(commandnumber,"PI" )) {sprintf(commandnumber,"%d", ITM_pi);} else
+                      if (strcompare(commandnumber,"PI" )) {sprintf(commandnumber,"%d", ITM_CONSTpi);} else
                       if (strcompare(commandnumber,"FF" )) {sprintf(commandnumber,"%d", ITM_FF);} else
                       if (strcompare(commandnumber,"SINCPI" )) {sprintf(commandnumber,"%d", ITM_sincpi);} else
                       if (strcompare(commandnumber,"c" )) {sprintf(commandnumber,"%d", CST_05);} else
@@ -360,13 +360,13 @@ void execute_string(const char *inputstring, bool_t exec1) {
                       if (strcompare(commandnumber,"PHI" )) {sprintf(commandnumber,"%d", CST_74);} else
                       if (strcompare(commandnumber,"-INFINITY" )) {sprintf(commandnumber,"%d", CST_77);} else
                       if (strcompare(commandnumber,"INFINITY" )) {sprintf(commandnumber,"%d", CST_78);} else
-                      if (strcompare(commandnumber,"NOT" )) {sprintf(commandnumber,"%d", ITM_NOT);} else
-                      if (strcompare(commandnumber,"AND" )) {sprintf(commandnumber,"%d", ITM_AND);} else
-                      if (strcompare(commandnumber,"OR" )) {sprintf(commandnumber,"%d", ITM_OR);} else
-                      if (strcompare(commandnumber,"XOR" )) {sprintf(commandnumber,"%d", ITM_XOR);} else
-                      if (strcompare(commandnumber,"NAND" )) {sprintf(commandnumber,"%d", ITM_NAND);} else
-                      if (strcompare(commandnumber,"NOR" )) {sprintf(commandnumber,"%d", ITM_NOR);} else
-                      if (strcompare(commandnumber,"XNOR" )) {sprintf(commandnumber,"%d", ITM_XNOR);} else
+                      if (strcompare(commandnumber,"NOT" )) {sprintf(commandnumber,"%d", ITM_LOGICALNOT);} else
+                      if (strcompare(commandnumber,"AND" )) {sprintf(commandnumber,"%d", ITM_LOGICALAND);} else
+                      if (strcompare(commandnumber,"OR" )) {sprintf(commandnumber,"%d", ITM_LOGICALOR);} else
+                      if (strcompare(commandnumber,"XOR" )) {sprintf(commandnumber,"%d", ITM_LOGICALXOR);} else
+                      if (strcompare(commandnumber,"NAND" )) {sprintf(commandnumber,"%d", ITM_LOGICALNAND);} else
+                      if (strcompare(commandnumber,"NOR" )) {sprintf(commandnumber,"%d", ITM_LOGICALNOR);} else
+                      if (strcompare(commandnumber,"XNOR" )) {sprintf(commandnumber,"%d", ITM_LOGICALXNOR);} else
                       if (strcompare(commandnumber,"BS?" )) {sprintf(commandnumber,"%d", ITM_BS);} else
                       if (strcompare(commandnumber,"BC?" )) {sprintf(commandnumber,"%d", ITM_BC);} else
                       if (strcompare(commandnumber,"CB" )) {sprintf(commandnumber,"%d", ITM_CB);} else
@@ -445,13 +445,13 @@ void execute_string(const char *inputstring, bool_t exec1) {
                       if (strcompare(commandnumber,"CLSUM" )) {sprintf(commandnumber,"%d", ITM_CLSIGMA);} else
                       if (strcompare(commandnumber,"COMB" )) {sprintf(commandnumber,"%d", ITM_COMB);} else
                       if (strcompare(commandnumber,"CONJ" )) {sprintf(commandnumber,"%d", ITM_CONJ);} else
-                      if (strcompare(commandnumber,"CROSS" )) {sprintf(commandnumber,"%d", ITM_CROSS);} else
+                      if (strcompare(commandnumber,"CROSS" )) {sprintf(commandnumber,"%d", ITM_CROSS_PROD);} else
                       if (strcompare(commandnumber,"CX>RE" )) {sprintf(commandnumber,"%d", ITM_CXtoRE);} else
                       if (strcompare(commandnumber,"DECOMP" )) {sprintf(commandnumber,"%d", ITM_DECOMP);} else
                       if (strcompare(commandnumber,"DEG" )) {sprintf(commandnumber,"%d", ITM_DEG);} else
                       if (strcompare(commandnumber,"DEG>" )) {sprintf(commandnumber,"%d", ITM_DEGto);} else
                       if (strcompare(commandnumber,"DENMAX" )) {sprintf(commandnumber,"%d", ITM_DENMAX);} else
-                      if (strcompare(commandnumber,"DOT" )) {sprintf(commandnumber,"%d", ITM_DOT);} else
+                      if (strcompare(commandnumber,"DOT" )) {sprintf(commandnumber,"%d", ITM_DOT_PROD);} else
                       if (strcompare(commandnumber,"D.MS" )) {sprintf(commandnumber,"%d", ITM_DMS);} else
                       if (strcompare(commandnumber,"D.MS>" )) {sprintf(commandnumber,"%d", ITM_DMSto);} else
                       if (strcompare(commandnumber,"D>R" )) {sprintf(commandnumber,"%d", ITM_DtoR);} else
@@ -533,7 +533,7 @@ void execute_string(const char *inputstring, bool_t exec1) {
                       if (strcompare(commandnumber,">RAD" )) {sprintf(commandnumber,"%d", ITM_toRAD);} else
                       if (strcompare(commandnumber,">REAL" )) {sprintf(commandnumber,"%d", ITM_toREAL);} else
                       if (strcompare(commandnumber,"D>D.MS" )) {sprintf(commandnumber,"%d", ITM_DtoDMS);} else
-                      if (strcompare(commandnumber,"<>" )) {sprintf(commandnumber,"%d", ITM_ex);} else
+                      if (strcompare(commandnumber,"<>" )) {sprintf(commandnumber,"%d", ITM_SHUFFLE);} else
                       if (strcompare(commandnumber,"%" )) {sprintf(commandnumber,"%d", ITM_PC);} else
                       if (strcompare(commandnumber,"%MRR" )) {sprintf(commandnumber,"%d", ITM_PCMRR);} else
                       if (strcompare(commandnumber,"%T" )) {sprintf(commandnumber,"%d", ITM_PCT);} else
@@ -542,10 +542,10 @@ void execute_string(const char *inputstring, bool_t exec1) {
                       if (strcompare(commandnumber,"PARL" )) {sprintf(commandnumber,"%d", ITM_PARALLEL);} else
                       if (strcompare(commandnumber,"ARG" )) {sprintf(commandnumber,"%d", ITM_ANGLE);} else
                       if (strcompare(commandnumber,"MULPI>" )) {sprintf(commandnumber,"%d", ITM_MULPIto);} else
-                      if (strcompare(commandnumber,"CC" )) {sprintf(commandnumber,"%d", KEY_CC);} else
-                      if (strcompare(commandnumber,"EXIT" )) {sprintf(commandnumber,"%d", KEY_EXIT1);} else
+                      if (strcompare(commandnumber,"CC" )) {sprintf(commandnumber,"%d", ITM_CC);} else
+                      if (strcompare(commandnumber,"EXIT" )) {sprintf(commandnumber,"%d", ITM_EXIT1);} else
                       if (strcompare(commandnumber,"ALPHA" )) {sprintf(commandnumber,"%d", ITM_AIM);} else
-                      if (strcompare(commandnumber,"DOTD" )) {sprintf(commandnumber,"%d", KEY_dotD);} else
+                      if (strcompare(commandnumber,"DOTD" )) {sprintf(commandnumber,"%d", ITM_dotD);} else
                       if (strcompare(commandnumber,"D.MS>D" )) {sprintf(commandnumber,"%d", ITM_DMStoD);} else
                       if (strcompare(commandnumber,"X_HARM" )) {sprintf(commandnumber,"%d", ITM_XH);} else
                       if (strcompare(commandnumber,"X_RMS" )) {sprintf(commandnumber,"%d", ITM_XRMS);} else
@@ -999,10 +999,10 @@ void testprogram_12(uint16_t unusedParamButMandatory){
 
     runkey(ITM_TICKS); //622
     runkey(684);       //X<>Y
-    sendkeys("2"); runkey(KEY_EXIT1); //EXIT
+    sendkeys("2"); runkey(ITM_EXIT1); //EXIT
     runkey(684);   //X<>Y
     runkey(698);   //Y^X
-    sendkeys("1"); runkey(KEY_EXIT1); //EXIT
+    sendkeys("1"); runkey(ITM_EXIT1); //EXIT
     runkey(780);   //-
     runkey(589);   sendkeys("00"); //STO 00
     runkey(469);   //PRIME?
@@ -1233,7 +1233,7 @@ void fnCln(uint16_t unusedParamButMandatory){
     last_CM=252;
     refreshRegisterLine(REGISTER_X);        //JM Execute here, to make sure that the 5/2 line check is done
     last_CM=253;
-    addItemToNimBuffer(CHR_0);
+    addItemToNimBuffer(ITM_0);
   #endif
 }
 

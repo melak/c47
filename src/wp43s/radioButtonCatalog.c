@@ -90,8 +90,8 @@ const radiocb_eeprom_t indexOfRadioCbEepromItems[] = {
 /* 1899 */  { ITM_U_KEY_ALPHA,      ITM_AIM,                RB_SA },  //fnSigmaAssign
 /* 1897 */  { ITM_U_KEY_PRGM,       ITM_PR,                 RB_SA },  //fnSigmaAssign
 /* 1895 */  { ITM_U_KEY_SIGMA,      ITM_SIGMAPLUS,          RB_SA },  //fnSigmaAssign
-/* 1891 */  { ITM_U_KEY_CC,         KEY_CC,                 RB_SA },  //fnSigmaAssign
-/* 1889 */  { ITM_U_KEY_USER,       KEY_USERMODE,           RB_SA },  //fnSigmaAssign
+/* 1891 */  { ITM_U_KEY_CC,         ITM_CC,                 RB_SA },  //fnSigmaAssign
+/* 1889 */  { ITM_U_KEY_USER,       ITM_USERMODE,           RB_SA },  //fnSigmaAssign
 /* 1893 */  { ITM_U_KEY_MM,         -MNU_MyMenu,            RB_SA },  //fnSigmaAssign
 /* 1744 */  { ITM_BASE_AHOME,       JC_BASE_AHOME,          CB_JC },  //fnSetSetJM
 /* 1742 */  { ITM_BASE_HOME,        JC_BASE_HOME,           CB_JC },  //fnSetSetJM
@@ -804,8 +804,8 @@ void fnRebuildRadioState() {
 // 1899     { ITM_U_KEY_ALPHA,      ITM_AIM,                RB_SA },  //fnSigmaAssign
 // 1897     { ITM_U_KEY_PRGM,       ITM_PR,                 RB_SA },  //fnSigmaAssign
 // 1895     { ITM_U_KEY_SIGMA,      ITM_SIGMAPLUS,          RB_SA },  //fnSigmaAssign
-// 1891     { ITM_U_KEY_CC,         KEY_CC,                 RB_SA },  //fnSigmaAssign
-// 1889     { ITM_U_KEY_USER,       KEY_USERMODE,           RB_SA },  //fnSigmaAssign
+// 1891     { ITM_U_KEY_CC,         ITM_CC,                 RB_SA },  //fnSigmaAssign
+// 1889     { ITM_U_KEY_USER,       ITM_USERMODE,           RB_SA },  //fnSigmaAssign
 // 1893     { ITM_U_KEY_MM,         -MNU_MyMenu,            RB_SA },  //fnSigmaAssign
   fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
 // 1744     { ITM_BASE_AHOME,       JC_BASE_AHOME,          CB_JC },  //fnSetSetJM

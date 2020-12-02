@@ -968,10 +968,10 @@ void fnJM(uint16_t JM_OPCODE) {
 void fnUserJM(uint16_t jmUser) {
   switch(jmUser) {
   case USER_DEFAULTS:                                           //USER_DEFAULTS FOR USER: E+ CC
-    kbd_usr[0].primary     = KEY_CC;
+    kbd_usr[0].primary     = ITM_CC;
     kbd_usr[0].fShifted    = ITM_RI;
     kbd_usr[0].gShifted    = ITM_LI;
-    Norm_Key_00_VAR        = KEY_CC;
+    Norm_Key_00_VAR        = ITM_CC;
     fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
     fnSetFlag(FLAG_USER);
     break;
@@ -979,7 +979,7 @@ void fnUserJM(uint16_t jmUser) {
 
 #if defined (JM_LAYOUT_1A)  && !defined (TESTSUITE_BUILD)                          //JM LAYOUT 1A.
   case USER_COMPLEX:                                            //USER_COMPLEX FOR USER: U^ ENTER^ CC
-    kbd_usr[12].fShifted   = KEY_CC;                            //JM Changed CPX menu therefore USER MODE changes
+    kbd_usr[12].fShifted   = ITM_CC;                            //JM Changed CPX menu therefore USER MODE changes
     kbd_usr[0].primary     = -MNU_MyMenu;
     kbd_usr[0].fShifted    = ITM_RI;
     kbd_usr[0].gShifted    = ITM_LI;
@@ -989,8 +989,8 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
   case USER_CC:                                            //USER_COMPLEX FOR USER: U^ ENTER^ CC
-    kbd_usr[0].primary     = KEY_CC;
-    Norm_Key_00_VAR        = KEY_CC;
+    kbd_usr[0].primary     = ITM_CC;
+    Norm_Key_00_VAR        = ITM_CC;
     fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
     fnSetFlag(FLAG_USER);
     break;
@@ -998,7 +998,7 @@ void fnUserJM(uint16_t jmUser) {
 
 #if defined (JM_LAYOUT_2_DM42_STRICT) && !defined (TESTSUITE_BUILD)              //JM LAYOUT 42
   case USER_COMPLEX:                                            //USER_COMPLEX FOR USER: U^ ENTER^ CC
-    //kbd_usr[12].gShifted   = KEY_CC;
+    //kbd_usr[12].gShifted   = ITM_CC;
     kbd_usr[0].primary     = -MNU_MyMenu;
     kbd_usr[0].fShifted    = ITM_RI;
     kbd_usr[0].gShifted    = ITM_LI;
@@ -1008,8 +1008,8 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
   case USER_CC:                                            //USER_COMPLEX FOR USER: U^ ENTER^ CC
-    kbd_usr[0].primary     = KEY_CC;
-    Norm_Key_00_VAR        = KEY_CC;
+    kbd_usr[0].primary     = ITM_CC;
+    Norm_Key_00_VAR        = ITM_CC;
     fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
     fnSetFlag(FLAG_USER);
     break;
@@ -1020,36 +1020,36 @@ void fnUserJM(uint16_t jmUser) {
 
     fnUserJM(USER_V43);
 
-    kbd_usr[6].primary      = KEY_f;
+    kbd_usr[6].primary      = ITM_SHIFTf;
     kbd_usr[6].fShifted     = ITM_NULL;
     kbd_usr[6].gShifted     = ITM_NULL;
-    kbd_usr[6].keyLblAim     = KEY_f;
-    kbd_usr[6].primaryAim     = KEY_f;
+    kbd_usr[6].keyLblAim     = ITM_SHIFTf;
+    kbd_usr[6].primaryAim     = ITM_SHIFTf;
      kbd_usr[6].fShiftedAim     = ITM_NULL;
      kbd_usr[6].gShiftedAim     = ITM_NULL;
-    kbd_usr[6].primaryTam     = KEY_f;
+    kbd_usr[6].primaryTam     = ITM_SHIFTf;
 
-    kbd_usr[7].primary      = KEY_g;
+    kbd_usr[7].primary      = ITM_SHIFTg;
     kbd_usr[7].fShifted     = ITM_NULL;
     kbd_usr[7].gShifted     = ITM_NULL;
-    kbd_usr[7].keyLblAim     = KEY_g;
-    kbd_usr[7].primaryAim     = KEY_g;
+    kbd_usr[7].keyLblAim     = ITM_SHIFTg;
+    kbd_usr[7].primaryAim     = ITM_SHIFTg;
      kbd_usr[7].fShiftedAim     = ITM_NULL;
      kbd_usr[7].gShiftedAim     = ITM_NULL;
-    kbd_usr[7].primaryTam     = KEY_g;
+    kbd_usr[7].primaryTam     = ITM_SHIFTg;
 
 
     kbd_usr[4].primary    = ITM_STO;
     kbd_usr[4].fShifted   = ITM_MAGNITUDE;
     kbd_usr[4].gShifted   = ITM_ANGLE;
-    kbd_usr[4].primaryAim     = CHR_E;
+    kbd_usr[4].primaryAim     = ITM_E;
 
     kbd_usr[5].primary    = ITM_RCL;
     kbd_usr[5].fShifted   = ITM_PC;
     kbd_usr[5].gShifted   = ITM_DELTAPC;
-    kbd_usr[5].primaryAim     = CHR_F;
+    kbd_usr[5].primaryAim     = ITM_F;
 
-    Norm_Key_00_VAR        = KEY_USERMODE;
+    Norm_Key_00_VAR        = ITM_USERMODE;
     fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
     fnSetFlag(FLAG_USER);
     break;
@@ -1069,113 +1069,113 @@ void fnUserJM(uint16_t jmUser) {
 
     kbd_usr[2].primary      = ITM_LOG10;
     kbd_usr[2].fShifted     = ITM_10x;
-    kbd_usr[2].gShifted     = KEY_dotD;
+    kbd_usr[2].gShifted     = ITM_dotD;
 
     kbd_usr[3].primary      = ITM_LN;
-    kbd_usr[3].fShifted     = ITM_EX;
+    kbd_usr[3].fShifted     = ITM_EXP;
     kbd_usr[3].gShifted     = ITM_TGLFRT;
 
-    kbd_usr[4].primary      = KEY_f;
+    kbd_usr[4].primary      = ITM_SHIFTf;
     kbd_usr[4].fShifted     = ITM_NULL;
     kbd_usr[4].gShifted     = ITM_NULL;
-    kbd_usr[4].keyLblAim     = KEY_f;
-    kbd_usr[4].primaryAim     = KEY_f;
+    kbd_usr[4].keyLblAim     = ITM_SHIFTf;
+    kbd_usr[4].primaryAim     = ITM_SHIFTf;
      kbd_usr[4].fShiftedAim     = ITM_NULL;
      kbd_usr[4].gShiftedAim     = ITM_NULL;
-    kbd_usr[4].primaryTam     = KEY_f;
+    kbd_usr[4].primaryTam     = ITM_SHIFTf;
 
-    kbd_usr[5].primary      = KEY_g;
+    kbd_usr[5].primary      = ITM_SHIFTg;
     kbd_usr[5].fShifted     = ITM_NULL;
     kbd_usr[5].gShifted     = ITM_NULL;
-    kbd_usr[5].keyLblAim     = KEY_g;
-    kbd_usr[5].primaryAim     = KEY_g;
+    kbd_usr[5].keyLblAim     = ITM_SHIFTg;
+    kbd_usr[5].primaryAim     = ITM_SHIFTg;
      kbd_usr[5].fShiftedAim     = ITM_NULL;
      kbd_usr[5].gShiftedAim     = ITM_NULL;
-    kbd_usr[5].primaryTam     = KEY_g;
+    kbd_usr[5].primaryTam     = ITM_SHIFTg;
 
-    kbd_usr[6].primaryAim     = CHR_E;
-    kbd_usr[7].primaryAim     = CHR_F;
-    kbd_usr[8].primaryAim     = CHR_G;
-    kbd_usr[9].primaryAim     = CHR_H;
-    kbd_usr[10].primaryAim     = CHR_I;
-    kbd_usr[11].primaryAim     = CHR_J;
+    kbd_usr[6].primaryAim     = ITM_E;
+    kbd_usr[7].primaryAim     = ITM_F;
+    kbd_usr[8].primaryAim     = ITM_G;
+    kbd_usr[9].primaryAim     = ITM_H;
+    kbd_usr[10].primaryAim     = ITM_I;
+    kbd_usr[11].primaryAim     = ITM_J;
 
-    kbd_usr[13].primaryAim     = CHR_K;
-    kbd_usr[14].primaryAim     = CHR_L;
-    kbd_usr[15].primaryAim     = CHR_M;
+    kbd_usr[13].primaryAim     = ITM_K;
+    kbd_usr[14].primaryAim     = ITM_L;
+    kbd_usr[15].primaryAim     = ITM_M;
 
     kbd_usr[17].primary     = ITM_SUB;
     kbd_usr[17].fShifted    = -MNU_STAT;
     kbd_usr[17].gShifted    = -MNU_SUMS;
-    kbd_usr[17].keyLblAim     = CHR_MINUS;
-    kbd_usr[17].primaryAim     = CHR_N;
-    kbd_usr[17].fShiftedAim     = CHR_MINUS;
+    kbd_usr[17].keyLblAim     = ITM_MINUS;
+    kbd_usr[17].primaryAim     = ITM_N;
+    kbd_usr[17].fShiftedAim     = ITM_MINUS;
     kbd_usr[17].primaryTam     = ITM_SUB;
 
-    kbd_usr[18].primaryAim     = CHR_O;
-    kbd_usr[19].primaryAim     = CHR_P;
-    kbd_usr[20].primaryAim     = CHR_Q;
+    kbd_usr[18].primaryAim     = ITM_O;
+    kbd_usr[19].primaryAim     = ITM_P;
+    kbd_usr[20].primaryAim     = ITM_Q;
 
     kbd_usr[21].primary     = ITM_XEQ;
     kbd_usr[21].fShifted    = ITM_AIM;
-    kbd_usr[21].gShifted    = KEY_USERMODE;
+    kbd_usr[21].gShifted    = ITM_USERMODE;
     kbd_usr[21].keyLblAim     = ITM_NULL;
-    kbd_usr[21].primaryAim     = CHR_R;
+    kbd_usr[21].primaryAim     = ITM_R;
     kbd_usr[21].fShiftedAim     = ITM_NULL;
     kbd_usr[21].gShiftedAim     = ITM_NULL;
-    kbd_usr[21].primaryTam     = CHR_alpha;
+    kbd_usr[21].primaryTam     = ITM_alpha;
 
     kbd_usr[22].primary     = ITM_ADD;
     kbd_usr[22].fShifted    = -MNU_PROB;
     kbd_usr[22].gShifted    = -MNU_INTS;
-    kbd_usr[22].keyLblAim     = CHR_PLUS;
-    kbd_usr[22].primaryAim     = CHR_S;
-    kbd_usr[22].fShiftedAim     = CHR_PLUS;
+    kbd_usr[22].keyLblAim     = ITM_PLUS;
+    kbd_usr[22].primaryAim     = ITM_S;
+    kbd_usr[22].fShiftedAim     = ITM_PLUS;
     kbd_usr[22].primaryTam     = ITM_ADD;
 
-    kbd_usr[26].primary     = KEY_UP1;
-    kbd_usr[26].fShifted    = KEY_BST;
+    kbd_usr[26].primary     = ITM_UP1;
+    kbd_usr[26].fShifted    = ITM_BST;
     kbd_usr[26].gShifted    = ITM_RBR;
-    kbd_usr[26].keyLblAim     = KEY_UP1;
-    kbd_usr[26].primaryAim     = KEY_UP1;  //arrow
+    kbd_usr[26].keyLblAim     = ITM_UP1;
+    kbd_usr[26].primaryAim     = ITM_UP1;  //arrow
     kbd_usr[26].fShiftedAim     = CHR_caseUP;
     kbd_usr[26].gShiftedAim     = ITM_NULL;
-    kbd_usr[26].primaryTam     = KEY_UP1;
+    kbd_usr[26].primaryTam     = ITM_UP1;
 
     kbd_usr[27].primary     = ITM_MULT;       //ex-f/g
     kbd_usr[27].fShifted    = -MNU_STK;
     kbd_usr[27].gShifted    = -MNU_ALPHAFN;
-    kbd_usr[27].keyLblAim     = CHR_CROSS;
-    kbd_usr[27].primaryAim     = CHR_W;
-    kbd_usr[27].fShiftedAim     = CHR_CROSS;
+    kbd_usr[27].keyLblAim     = ITM_CROSS;
+    kbd_usr[27].primaryAim     = ITM_W;
+    kbd_usr[27].fShiftedAim     = ITM_CROSS;
     kbd_usr[27].gShiftedAim     = ITM_NULL;
     kbd_usr[27].primaryTam     = ITM_MULT;
 
-    kbd_usr[31].primary     = KEY_DOWN1;
-    kbd_usr[31].fShifted    = KEY_SST;
+    kbd_usr[31].primary     = ITM_DOWN1;
+    kbd_usr[31].fShifted    = ITM_SST;
     kbd_usr[31].gShifted    = ITM_FLGSV;
-    kbd_usr[31].keyLblAim     = KEY_DOWN1;
-    kbd_usr[31].primaryAim     = KEY_DOWN1;  //arrow
+    kbd_usr[31].keyLblAim     = ITM_DOWN1;
+    kbd_usr[31].primaryAim     = ITM_DOWN1;  //arrow
     kbd_usr[31].fShiftedAim     = CHR_caseDN;
     kbd_usr[31].gShiftedAim     = ITM_NULL;
-    kbd_usr[31].primaryTam     = KEY_DOWN1;
+    kbd_usr[31].primaryTam     = ITM_DOWN1;
 
     kbd_usr[32].primary     = ITM_DIV;   //ex-exit
     kbd_usr[32].fShifted    = -MNU_CATALOG;
     kbd_usr[32].gShifted    = -MNU_PRINT;
-    kbd_usr[32].keyLblAim     = CHR_DIVIDE;
-    kbd_usr[32].primaryAim     = CHR_SPACE;
-    kbd_usr[32].fShiftedAim     = CHR_DIVIDE;
-    kbd_usr[32].gShiftedAim     = CHR_PRINTER;
+    kbd_usr[32].keyLblAim     = ITM_OBELUS;
+    kbd_usr[32].primaryAim     = ITM_SPACE;
+    kbd_usr[32].fShiftedAim     = ITM_OBELUS;
+    kbd_usr[32].gShiftedAim     = ITM_PRINTER;
     kbd_usr[32].primaryTam     = ITM_DIV;
 
-    kbd_usr[36].primary     = KEY_EXIT1;
+    kbd_usr[36].primary     = ITM_EXIT1;
     kbd_usr[36].fShifted    = ITM_OFF;
     kbd_usr[36].gShifted    = -MNU_IO;
-    kbd_usr[36].keyLblAim     = KEY_EXIT1;
-    kbd_usr[36].primaryAim     = KEY_EXIT1;  //
+    kbd_usr[36].keyLblAim     = ITM_EXIT1;
+    kbd_usr[36].primaryAim     = ITM_EXIT1;  //
     kbd_usr[36].fShiftedAim     = ITM_OFF;
-    kbd_usr[36].primaryTam     = KEY_EXIT1;
+    kbd_usr[36].primaryTam     = ITM_EXIT1;
 
     Norm_Key_00_VAR         = ITM_1ONX;
     fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
@@ -1185,43 +1185,43 @@ void fnUserJM(uint16_t jmUser) {
 
   case USER_DM42:
     fnUserJM(USER_RESET);
-    kbd_usr[0].primary=ITM_SIGMAPLUS;kbd_usr[0].fShifted=ITM_SIGMAMINUS;kbd_usr[0].gShifted=ITM_TGLFRT;kbd_usr[0].keyLblAim=ITM_NULL;kbd_usr[0].primaryAim=CHR_A;kbd_usr[0].fShiftedAim=-MNU_ALPHAINTL;kbd_usr[0].gShiftedAim=CHR_ALPHA;kbd_usr[0].primaryTam=ITM_ST_A;
-    kbd_usr[1].primary=ITM_1ONX;kbd_usr[1].fShifted=ITM_YX;kbd_usr[1].gShifted=ITM_HASH_JM/*ITM_toINT*/;kbd_usr[1].keyLblAim=CHR_NUMBER_SIGN;kbd_usr[1].primaryAim=CHR_B;kbd_usr[1].fShiftedAim=CHR_NUMBER_SIGN;kbd_usr[1].gShiftedAim=CHR_BETA;kbd_usr[1].primaryTam=ITM_ST_B;
-    kbd_usr[2].primary=ITM_SQUAREROOTX;kbd_usr[2].fShifted=ITM_SQUARE;kbd_usr[2].gShifted=ITM_ms;kbd_usr[2].keyLblAim=CHR_CHECK_MARK;kbd_usr[2].primaryAim=CHR_C;kbd_usr[2].fShiftedAim=CHR_CHECK_MARK;kbd_usr[2].gShiftedAim=CHR_CHI;kbd_usr[2].primaryTam=ITM_ST_C;
-    kbd_usr[3].primary=ITM_LOG10;kbd_usr[3].fShifted=ITM_10x;kbd_usr[3].gShifted=KEY_dotD;kbd_usr[3].keyLblAim=ITM_NULL;kbd_usr[3].primaryAim=CHR_D;kbd_usr[3].fShiftedAim=ITM_NULL;kbd_usr[3].gShiftedAim=CHR_DELTA;kbd_usr[3].primaryTam=ITM_ST_D;
-    kbd_usr[4].primary=ITM_LN;kbd_usr[4].fShifted=ITM_EX;kbd_usr[4].gShifted=ITM_toREC2;kbd_usr[4].keyLblAim=ITM_NULL;kbd_usr[4].primaryAim=CHR_E;kbd_usr[4].fShiftedAim=ITM_NULL;kbd_usr[4].gShiftedAim=CHR_EPSILON;kbd_usr[4].primaryTam=ITM_NULL;
-    kbd_usr[5].primary=ITM_XEQ;kbd_usr[5].fShifted=ITM_GTO;kbd_usr[5].gShifted=ITM_toPOL2;kbd_usr[5].keyLblAim=ITM_NULL;kbd_usr[5].primaryAim=CHR_F;kbd_usr[5].fShiftedAim=ITM_NULL;kbd_usr[5].gShiftedAim=CHR_DIGAMMA;kbd_usr[5].primaryTam=CHR_alpha;
-    kbd_usr[6].primary=ITM_STO;kbd_usr[6].fShifted=KEY_COMPLEX;kbd_usr[6].gShifted=ITM_MAGNITUDE;kbd_usr[6].keyLblAim=ITM_NULL;kbd_usr[6].primaryAim=CHR_G;kbd_usr[6].fShiftedAim=ITM_NULL;kbd_usr[6].gShiftedAim=CHR_GAMMA;kbd_usr[6].primaryTam=ITM_NULL;
-    kbd_usr[7].primary=ITM_RCL;kbd_usr[7].fShifted=ITM_PC;kbd_usr[7].gShifted=ITM_ANGLE;kbd_usr[7].keyLblAim=ITM_NULL;kbd_usr[7].primaryAim=CHR_H;kbd_usr[7].fShiftedAim=ITM_NULL;kbd_usr[7].gShiftedAim=CHR_ETA;kbd_usr[7].primaryTam=ITM_HEX;
-    kbd_usr[8].primary=ITM_Rdown;kbd_usr[8].fShifted=ITM_pi;kbd_usr[8].gShifted=ITM_XTHROOT     ;kbd_usr[8].keyLblAim=ITM_NULL;kbd_usr[8].primaryAim=CHR_I;kbd_usr[8].fShiftedAim=CHR_DOWN_ARROW;kbd_usr[8].gShiftedAim=CHR_IOTA;kbd_usr[8].primaryTam=ITM_REGI;
-    kbd_usr[9].primary=ITM_sin;kbd_usr[9].fShifted=ITM_arcsin;kbd_usr[9].gShifted=KEY_CC     ;kbd_usr[9].keyLblAim=ITM_NULL;kbd_usr[9].primaryAim=CHR_J;kbd_usr[9].fShiftedAim=CHR_case;kbd_usr[9].gShiftedAim=CHR_THETA;kbd_usr[9].primaryTam=ITM_REGJ;
-    kbd_usr[10].primary=ITM_cos;kbd_usr[10].fShifted=ITM_arccos;kbd_usr[10].gShifted=ITM_LBL;kbd_usr[10].keyLblAim=ITM_NULL;kbd_usr[10].primaryAim=CHR_K;kbd_usr[10].fShiftedAim=ITM_NULL;kbd_usr[10].gShiftedAim=CHR_KAPPA;kbd_usr[10].primaryTam=ITM_REGK;
-    kbd_usr[11].primary=ITM_tan;kbd_usr[11].fShifted=ITM_arctan;kbd_usr[11].gShifted=ITM_RTN;kbd_usr[11].keyLblAim=ITM_NULL;kbd_usr[11].primaryAim=CHR_L;kbd_usr[11].fShiftedAim=ITM_NULL;kbd_usr[11].gShiftedAim=CHR_LAMBDA;kbd_usr[11].primaryTam=ITM_REGL;
+    kbd_usr[0].primary=ITM_SIGMAPLUS;kbd_usr[0].fShifted=ITM_SIGMAMINUS;kbd_usr[0].gShifted=ITM_TGLFRT;kbd_usr[0].keyLblAim=ITM_NULL;kbd_usr[0].primaryAim=ITM_A;kbd_usr[0].fShiftedAim=-MNU_ALPHAINTL;kbd_usr[0].gShiftedAim=ITM_ALPHA;kbd_usr[0].primaryTam=ITM_ST_A;
+    kbd_usr[1].primary=ITM_1ONX;kbd_usr[1].fShifted=ITM_YX;kbd_usr[1].gShifted=ITM_HASH_JM/*ITM_toINT*/;kbd_usr[1].keyLblAim=ITM_NUMBER_SIGN;kbd_usr[1].primaryAim=ITM_B;kbd_usr[1].fShiftedAim=ITM_NUMBER_SIGN;kbd_usr[1].gShiftedAim=ITM_BETA;kbd_usr[1].primaryTam=ITM_ST_B;
+    kbd_usr[2].primary=ITM_SQUAREROOTX;kbd_usr[2].fShifted=ITM_SQUARE;kbd_usr[2].gShifted=ITM_ms;kbd_usr[2].keyLblAim=ITM_CHECK_MARK;kbd_usr[2].primaryAim=ITM_C;kbd_usr[2].fShiftedAim=ITM_CHECK_MARK;kbd_usr[2].gShiftedAim=ITM_CHI;kbd_usr[2].primaryTam=ITM_ST_C;
+    kbd_usr[3].primary=ITM_LOG10;kbd_usr[3].fShifted=ITM_10x;kbd_usr[3].gShifted=ITM_dotD;kbd_usr[3].keyLblAim=ITM_NULL;kbd_usr[3].primaryAim=ITM_D;kbd_usr[3].fShiftedAim=ITM_NULL;kbd_usr[3].gShiftedAim=ITM_DELTA;kbd_usr[3].primaryTam=ITM_ST_D;
+    kbd_usr[4].primary=ITM_LN;kbd_usr[4].fShifted=ITM_EXP;kbd_usr[4].gShifted=ITM_toREC2;kbd_usr[4].keyLblAim=ITM_NULL;kbd_usr[4].primaryAim=ITM_E;kbd_usr[4].fShiftedAim=ITM_NULL;kbd_usr[4].gShiftedAim=ITM_EPSILON;kbd_usr[4].primaryTam=ITM_NULL;
+    kbd_usr[5].primary=ITM_XEQ;kbd_usr[5].fShifted=ITM_GTO;kbd_usr[5].gShifted=ITM_toPOL2;kbd_usr[5].keyLblAim=ITM_NULL;kbd_usr[5].primaryAim=ITM_F;kbd_usr[5].fShiftedAim=ITM_NULL;kbd_usr[5].gShiftedAim=ITM_DIGAMMA;kbd_usr[5].primaryTam=ITM_alpha;
+    kbd_usr[6].primary=ITM_STO;kbd_usr[6].fShifted=KEY_COMPLEX;kbd_usr[6].gShifted=ITM_MAGNITUDE;kbd_usr[6].keyLblAim=ITM_NULL;kbd_usr[6].primaryAim=ITM_G;kbd_usr[6].fShiftedAim=ITM_NULL;kbd_usr[6].gShiftedAim=ITM_GAMMA;kbd_usr[6].primaryTam=ITM_NULL;
+    kbd_usr[7].primary=ITM_RCL;kbd_usr[7].fShifted=ITM_PC;kbd_usr[7].gShifted=ITM_ANGLE;kbd_usr[7].keyLblAim=ITM_NULL;kbd_usr[7].primaryAim=ITM_H;kbd_usr[7].fShiftedAim=ITM_NULL;kbd_usr[7].gShiftedAim=ITM_ETA;kbd_usr[7].primaryTam=ITM_HEX;
+    kbd_usr[8].primary=ITM_Rdown;kbd_usr[8].fShifted=ITM_CONSTpi;kbd_usr[8].gShifted=ITM_XTHROOT     ;kbd_usr[8].keyLblAim=ITM_NULL;kbd_usr[8].primaryAim=ITM_I;kbd_usr[8].fShiftedAim=ITM_DOWN_ARROW;kbd_usr[8].gShiftedAim=ITM_IOTA;kbd_usr[8].primaryTam=ITM_REGI;
+    kbd_usr[9].primary=ITM_sin;kbd_usr[9].fShifted=ITM_arcsin;kbd_usr[9].gShifted=ITM_CC     ;kbd_usr[9].keyLblAim=ITM_NULL;kbd_usr[9].primaryAim=ITM_J;kbd_usr[9].fShiftedAim=CHR_case;kbd_usr[9].gShiftedAim=ITM_THETA;kbd_usr[9].primaryTam=ITM_REGJ;
+    kbd_usr[10].primary=ITM_cos;kbd_usr[10].fShifted=ITM_arccos;kbd_usr[10].gShifted=ITM_LBL;kbd_usr[10].keyLblAim=ITM_NULL;kbd_usr[10].primaryAim=ITM_K;kbd_usr[10].fShiftedAim=ITM_NULL;kbd_usr[10].gShiftedAim=ITM_KAPPA;kbd_usr[10].primaryTam=ITM_REGK;
+    kbd_usr[11].primary=ITM_tan;kbd_usr[11].fShifted=ITM_arctan;kbd_usr[11].gShifted=ITM_RTN;kbd_usr[11].keyLblAim=ITM_NULL;kbd_usr[11].primaryAim=ITM_L;kbd_usr[11].fShiftedAim=ITM_NULL;kbd_usr[11].gShiftedAim=ITM_LAMBDA;kbd_usr[11].primaryTam=ITM_REGL;
     kbd_usr[12].primary=ITM_ENTER;kbd_usr[12].fShifted=ITM_AIM;kbd_usr[12].gShifted=-MNU_CPX;kbd_usr[12].keyLblAim=ITM_ENTER;kbd_usr[12].primaryAim=ITM_ENTER;kbd_usr[12].fShiftedAim=ITM_NULL;kbd_usr[12].gShiftedAim=ITM_NULL;kbd_usr[12].primaryTam=ITM_ENTER;
-    kbd_usr[13].primary=ITM_XexY;kbd_usr[13].fShifted=ITM_LASTX;kbd_usr[13].gShifted=ITM_Rup     ;kbd_usr[13].keyLblAim=CHR_ex;kbd_usr[13].primaryAim=CHR_M;kbd_usr[13].fShiftedAim=CHR_ex;kbd_usr[13].gShiftedAim=CHR_MU;kbd_usr[13].primaryTam=ITM_NULL;
-    kbd_usr[14].primary=ITM_CHS;kbd_usr[14].fShifted=-MNU_MODE;kbd_usr[14].gShifted     =    -MNU_STK     ;kbd_usr[14].keyLblAim=CHR_PLUS_MINUS;kbd_usr[14].primaryAim=CHR_N;kbd_usr[14].fShiftedAim=CHR_PLUS_MINUS;kbd_usr[14].gShiftedAim=CHR_NU;kbd_usr[14].primaryTam=ITM_NULL;
-    kbd_usr[15].primary=ITM_EXPONENT;kbd_usr[15].fShifted=-MNU_DSP;kbd_usr[15].gShifted =    -MNU_EXP     ;kbd_usr[15].keyLblAim=ITM_NULL;kbd_usr[15].primaryAim=CHR_O;kbd_usr[15].fShiftedAim=CHR_UP_ARROW;kbd_usr[15].gShiftedAim=CHR_OMICRON;kbd_usr[15].primaryTam=ITM_NULL;
-    kbd_usr[16].primary=KEY_BACKSPACE;kbd_usr[16].fShifted=-MNU_CLR;kbd_usr[16].gShifted=KEY_UNDO;kbd_usr[16].keyLblAim=KEY_BACKSPACE;kbd_usr[16].primaryAim=KEY_BACKSPACE;kbd_usr[16].fShiftedAim=-MNU_CLR;kbd_usr[16].gShiftedAim=KEY_UNDO;kbd_usr[16].primaryTam=KEY_BACKSPACE;
-    kbd_usr[17].primary=KEY_UP1;kbd_usr[17].fShifted=KEY_BST;kbd_usr[17].gShifted=ITM_RBR;kbd_usr[17].keyLblAim=KEY_UP1;kbd_usr[17].primaryAim=KEY_UP1;kbd_usr[17].fShiftedAim=CHR_caseUP;kbd_usr[17].gShiftedAim=-MNU_ALPHA;kbd_usr[17].primaryTam=KEY_UP1;
-    kbd_usr[18].primary=CHR_7;kbd_usr[18].fShifted=-MNU_EQN;kbd_usr[18].gShifted=-MNU_INFO;kbd_usr[18].keyLblAim=CHR_7;kbd_usr[18].primaryAim=CHR_P;kbd_usr[18].fShiftedAim=CHR_7;kbd_usr[18].gShiftedAim=CHR_PI;kbd_usr[18].primaryTam=CHR_7;
-    kbd_usr[19].primary=CHR_8;kbd_usr[19].fShifted=-MNU_ADV;kbd_usr[19].gShifted=-MNU_CONST;kbd_usr[19].keyLblAim=CHR_8;kbd_usr[19].primaryAim=CHR_Q;kbd_usr[19].fShiftedAim=CHR_8;kbd_usr[19].gShiftedAim=CHR_QOPPA;kbd_usr[19].primaryTam=CHR_8;
-    kbd_usr[20].primary=CHR_9;kbd_usr[20].fShifted=-MNU_MATX;kbd_usr[20].gShifted=-MNU_XFN;kbd_usr[20].keyLblAim=CHR_9;kbd_usr[20].primaryAim=CHR_R;kbd_usr[20].fShiftedAim=CHR_9;kbd_usr[20].gShiftedAim=CHR_RHO;kbd_usr[20].primaryTam=CHR_9;
-    kbd_usr[21].primary=ITM_DIV;kbd_usr[21].fShifted=-MNU_STAT;kbd_usr[21].gShifted=-MNU_SUMS;kbd_usr[21].keyLblAim=CHR_DIVIDE;kbd_usr[21].primaryAim=CHR_S;kbd_usr[21].fShiftedAim=CHR_DIVIDE;kbd_usr[21].gShiftedAim=CHR_SIGMA;kbd_usr[21].primaryTam=ITM_DIV;
-    kbd_usr[22].primary=KEY_DOWN1;kbd_usr[22].fShifted=KEY_SST;kbd_usr[22].gShifted=ITM_FLGSV;kbd_usr[22].keyLblAim=KEY_DOWN1;kbd_usr[22].primaryAim=KEY_DOWN1;kbd_usr[22].fShiftedAim=CHR_caseDN;kbd_usr[22].gShiftedAim=CHR_case;kbd_usr[22].primaryTam=KEY_DOWN1;
-    kbd_usr[23].primary=CHR_4;kbd_usr[23].fShifted=-MNU_BASE;kbd_usr[23].gShifted=  -MNU_FIN;kbd_usr[23].keyLblAim=CHR_4;kbd_usr[23].primaryAim=CHR_T;kbd_usr[23].fShiftedAim=CHR_4;kbd_usr[23].gShiftedAim=CHR_TAU;kbd_usr[23].primaryTam=CHR_4;
-    kbd_usr[24].primary=CHR_5;kbd_usr[24].fShifted=-MNU_ANGLECONV;kbd_usr[24].gShifted=-MNU_UNITCONV;kbd_usr[24].keyLblAim=CHR_5;kbd_usr[24].primaryAim=CHR_U;kbd_usr[24].fShiftedAim=CHR_5;kbd_usr[24].gShiftedAim=CHR_PHI;kbd_usr[24].primaryTam=CHR_5;
-    kbd_usr[25].primary=CHR_6;kbd_usr[25].fShifted=-MNU_FLAGS;kbd_usr[25].gShifted=-MNU_BITS;kbd_usr[25].keyLblAim=CHR_6;kbd_usr[25].primaryAim=CHR_V;kbd_usr[25].fShiftedAim=CHR_6;kbd_usr[25].gShiftedAim=CHR_PSI;kbd_usr[25].primaryTam=CHR_6;
-    kbd_usr[26].primary=ITM_MULT;kbd_usr[26].fShifted=-MNU_PROB;kbd_usr[26].gShifted=-MNU_INTS;kbd_usr[26].keyLblAim=CHR_CROSS;kbd_usr[26].primaryAim=CHR_W;kbd_usr[26].fShiftedAim=CHR_CROSS;kbd_usr[26].gShiftedAim=CHR_OMEGA;kbd_usr[26].primaryTam=ITM_MULT;
+    kbd_usr[13].primary=ITM_XexY;kbd_usr[13].fShifted=ITM_LASTX;kbd_usr[13].gShifted=ITM_Rup     ;kbd_usr[13].keyLblAim=ITM_ex;kbd_usr[13].primaryAim=ITM_M;kbd_usr[13].fShiftedAim=ITM_ex;kbd_usr[13].gShiftedAim=ITM_MU;kbd_usr[13].primaryTam=ITM_NULL;
+    kbd_usr[14].primary=ITM_CHS;kbd_usr[14].fShifted=-MNU_MODE;kbd_usr[14].gShifted     =    -MNU_STK     ;kbd_usr[14].keyLblAim=ITM_PLUS_MINUS;kbd_usr[14].primaryAim=ITM_N;kbd_usr[14].fShiftedAim=ITM_PLUS_MINUS;kbd_usr[14].gShiftedAim=ITM_NU;kbd_usr[14].primaryTam=ITM_NULL;
+    kbd_usr[15].primary=ITM_EXPONENT;kbd_usr[15].fShifted=-MNU_DSP;kbd_usr[15].gShifted =    -MNU_EXP     ;kbd_usr[15].keyLblAim=ITM_NULL;kbd_usr[15].primaryAim=ITM_O;kbd_usr[15].fShiftedAim=ITM_UP_ARROW;kbd_usr[15].gShiftedAim=ITM_OMICRON;kbd_usr[15].primaryTam=ITM_NULL;
+    kbd_usr[16].primary=ITM_BACKSPACE;kbd_usr[16].fShifted=-MNU_CLR;kbd_usr[16].gShifted=ITM_UNDO;kbd_usr[16].keyLblAim=ITM_BACKSPACE;kbd_usr[16].primaryAim=ITM_BACKSPACE;kbd_usr[16].fShiftedAim=-MNU_CLR;kbd_usr[16].gShiftedAim=ITM_UNDO;kbd_usr[16].primaryTam=ITM_BACKSPACE;
+    kbd_usr[17].primary=ITM_UP1;kbd_usr[17].fShifted=ITM_BST;kbd_usr[17].gShifted=ITM_RBR;kbd_usr[17].keyLblAim=ITM_UP1;kbd_usr[17].primaryAim=ITM_UP1;kbd_usr[17].fShiftedAim=CHR_caseUP;kbd_usr[17].gShiftedAim=-MNU_ALPHA;kbd_usr[17].primaryTam=ITM_UP1;
+    kbd_usr[18].primary=ITM_7;kbd_usr[18].fShifted=-MNU_EQN;kbd_usr[18].gShifted=-MNU_INFO;kbd_usr[18].keyLblAim=ITM_7;kbd_usr[18].primaryAim=ITM_P;kbd_usr[18].fShiftedAim=ITM_7;kbd_usr[18].gShiftedAim=ITM_PI;kbd_usr[18].primaryTam=ITM_7;
+    kbd_usr[19].primary=ITM_8;kbd_usr[19].fShifted=-MNU_ADV;kbd_usr[19].gShifted=-MNU_CONST;kbd_usr[19].keyLblAim=ITM_8;kbd_usr[19].primaryAim=ITM_Q;kbd_usr[19].fShiftedAim=ITM_8;kbd_usr[19].gShiftedAim=ITM_QOPPA;kbd_usr[19].primaryTam=ITM_8;
+    kbd_usr[20].primary=ITM_9;kbd_usr[20].fShifted=-MNU_MATX;kbd_usr[20].gShifted=-MNU_XFN;kbd_usr[20].keyLblAim=ITM_9;kbd_usr[20].primaryAim=ITM_R;kbd_usr[20].fShiftedAim=ITM_9;kbd_usr[20].gShiftedAim=ITM_RHO;kbd_usr[20].primaryTam=ITM_9;
+    kbd_usr[21].primary=ITM_DIV;kbd_usr[21].fShifted=-MNU_STAT;kbd_usr[21].gShifted=-MNU_SUMS;kbd_usr[21].keyLblAim=ITM_OBELUS;kbd_usr[21].primaryAim=ITM_S;kbd_usr[21].fShiftedAim=ITM_OBELUS;kbd_usr[21].gShiftedAim=ITM_SIGMA;kbd_usr[21].primaryTam=ITM_DIV;
+    kbd_usr[22].primary=ITM_DOWN1;kbd_usr[22].fShifted=ITM_SST;kbd_usr[22].gShifted=ITM_FLGSV;kbd_usr[22].keyLblAim=ITM_DOWN1;kbd_usr[22].primaryAim=ITM_DOWN1;kbd_usr[22].fShiftedAim=CHR_caseDN;kbd_usr[22].gShiftedAim=CHR_case;kbd_usr[22].primaryTam=ITM_DOWN1;
+    kbd_usr[23].primary=ITM_4;kbd_usr[23].fShifted=-MNU_BASE;kbd_usr[23].gShifted=  -MNU_FIN;kbd_usr[23].keyLblAim=ITM_4;kbd_usr[23].primaryAim=ITM_T;kbd_usr[23].fShiftedAim=ITM_4;kbd_usr[23].gShiftedAim=ITM_TAU;kbd_usr[23].primaryTam=ITM_4;
+    kbd_usr[24].primary=ITM_5;kbd_usr[24].fShifted=-MNU_ANGLECONV;kbd_usr[24].gShifted=-MNU_UNITCONV;kbd_usr[24].keyLblAim=ITM_5;kbd_usr[24].primaryAim=ITM_U;kbd_usr[24].fShiftedAim=ITM_5;kbd_usr[24].gShiftedAim=ITM_PHI;kbd_usr[24].primaryTam=ITM_5;
+    kbd_usr[25].primary=ITM_6;kbd_usr[25].fShifted=-MNU_FLAGS;kbd_usr[25].gShifted=-MNU_BITS;kbd_usr[25].keyLblAim=ITM_6;kbd_usr[25].primaryAim=ITM_V;kbd_usr[25].fShiftedAim=ITM_6;kbd_usr[25].gShiftedAim=ITM_PSI;kbd_usr[25].primaryTam=ITM_6;
+    kbd_usr[26].primary=ITM_MULT;kbd_usr[26].fShifted=-MNU_PROB;kbd_usr[26].gShifted=-MNU_INTS;kbd_usr[26].keyLblAim=ITM_CROSS;kbd_usr[26].primaryAim=ITM_W;kbd_usr[26].fShiftedAim=ITM_CROSS;kbd_usr[26].gShiftedAim=ITM_OMEGA;kbd_usr[26].primaryTam=ITM_MULT;
     kbd_usr[27].primary=KEY_fg;kbd_usr[27].fShifted=ITM_NULL;kbd_usr[27].gShifted=ITM_NULL;kbd_usr[27].keyLblAim=KEY_fg;kbd_usr[27].primaryAim=KEY_fg;kbd_usr[27].fShiftedAim=ITM_NULL;kbd_usr[27].gShiftedAim=ITM_NULL;kbd_usr[27].primaryTam=KEY_fg;
-    kbd_usr[28].primary=CHR_1;kbd_usr[28].fShifted=ITM_ASSIGN;kbd_usr[28].gShifted=-MNU_ASN;kbd_usr[28].keyLblAim=CHR_1;kbd_usr[28].primaryAim=CHR_X;kbd_usr[28].fShiftedAim=CHR_1;kbd_usr[28].gShiftedAim=CHR_XI;kbd_usr[28].primaryTam=CHR_1;
-    kbd_usr[29].primary=CHR_2;kbd_usr[29].fShifted=KEY_USERMODE;kbd_usr[29].gShifted=-MNU_LOOP;kbd_usr[29].keyLblAim=CHR_2;kbd_usr[29].primaryAim=CHR_Y;kbd_usr[29].fShiftedAim=CHR_2;kbd_usr[29].gShiftedAim=CHR_UPSILON;kbd_usr[29].primaryTam=CHR_2;
-    kbd_usr[30].primary=CHR_3;kbd_usr[30].fShifted=-MNU_PFN;kbd_usr[30].gShifted=-MNU_TEST;kbd_usr[30].keyLblAim=CHR_3;kbd_usr[30].primaryAim=CHR_Z;kbd_usr[30].fShiftedAim=CHR_3;kbd_usr[30].gShiftedAim=CHR_ZETA;kbd_usr[30].primaryTam=CHR_3;
-    kbd_usr[31].primary=ITM_SUB;kbd_usr[31].fShifted=-MNU_IO;kbd_usr[31].gShifted=-MNU_ALPHAFN;kbd_usr[31].keyLblAim=CHR_MINUS;kbd_usr[31].primaryAim=CHR_UNDERSCORE;kbd_usr[31].fShiftedAim=CHR_MINUS;kbd_usr[31].gShiftedAim=CHR_SAMPI;kbd_usr[31].primaryTam=ITM_SUB;
-    kbd_usr[32].primary=KEY_EXIT1;kbd_usr[32].fShifted=ITM_OFF;kbd_usr[32].gShifted=-MNU_PRINT;kbd_usr[32].keyLblAim=KEY_EXIT1;kbd_usr[32].primaryAim=KEY_EXIT1;kbd_usr[32].fShiftedAim=ITM_OFF;kbd_usr[32].gShiftedAim=CHR_PRINTER;kbd_usr[32].primaryTam=KEY_EXIT1;
-    kbd_usr[33].primary=CHR_0;kbd_usr[33].fShifted=-MNU_HOME;kbd_usr[33].gShifted=ITM_TIMER;kbd_usr[33].keyLblAim=CHR_0;kbd_usr[33].primaryAim=CHR_COLON;kbd_usr[33].fShiftedAim=CHR_0;kbd_usr[33].gShiftedAim=-MNU_ALPHA;kbd_usr[33].primaryTam=CHR_0;
-    kbd_usr[34].primary=CHR_PERIOD;kbd_usr[34].fShifted=ITM_SHOW;kbd_usr[34].gShifted=ITM_VIEW;kbd_usr[34].keyLblAim=CHR_PERIOD;kbd_usr[34].primaryAim=CHR_COMMA;kbd_usr[34].fShiftedAim=CHR_PERIOD;kbd_usr[34].gShiftedAim=-MNU_ALPHADOT;kbd_usr[34].primaryTam=CHR_PERIOD;
-    kbd_usr[35].primary=ITM_RS;kbd_usr[35].fShifted=ITM_PR;kbd_usr[35].gShifted  =  -MNU_CLK    ;kbd_usr[35].keyLblAim=ITM_NULL;kbd_usr[35].primaryAim=CHR_QUESTION_MARK;kbd_usr[35].fShiftedAim=CHR_SLASH;kbd_usr[35].gShiftedAim=-MNU_ALPHAMATH;kbd_usr[35].primaryTam=ITM_NULL;
-    kbd_usr[36].primary=ITM_ADD;kbd_usr[36].fShifted=-MNU_CATALOG;kbd_usr[36].gShifted=-MNU_PARTS;kbd_usr[36].keyLblAim=CHR_PLUS;kbd_usr[36].primaryAim=CHR_SPACE;kbd_usr[36].fShiftedAim=CHR_PLUS;kbd_usr[36].gShiftedAim=-MNU_ALPHAINTL;kbd_usr[36].primaryTam=ITM_ADD;
+    kbd_usr[28].primary=ITM_1;kbd_usr[28].fShifted=ITM_ASSIGN;kbd_usr[28].gShifted=-MNU_ASN;kbd_usr[28].keyLblAim=ITM_1;kbd_usr[28].primaryAim=ITM_X;kbd_usr[28].fShiftedAim=ITM_1;kbd_usr[28].gShiftedAim=ITM_XI;kbd_usr[28].primaryTam=ITM_1;
+    kbd_usr[29].primary=ITM_2;kbd_usr[29].fShifted=ITM_USERMODE;kbd_usr[29].gShifted=-MNU_LOOP;kbd_usr[29].keyLblAim=ITM_2;kbd_usr[29].primaryAim=ITM_Y;kbd_usr[29].fShiftedAim=ITM_2;kbd_usr[29].gShiftedAim=ITM_UPSILON;kbd_usr[29].primaryTam=ITM_2;
+    kbd_usr[30].primary=ITM_3;kbd_usr[30].fShifted=-MNU_PFN;kbd_usr[30].gShifted=-MNU_TEST;kbd_usr[30].keyLblAim=ITM_3;kbd_usr[30].primaryAim=ITM_Z;kbd_usr[30].fShiftedAim=ITM_3;kbd_usr[30].gShiftedAim=ITM_ZETA;kbd_usr[30].primaryTam=ITM_3;
+    kbd_usr[31].primary=ITM_SUB;kbd_usr[31].fShifted=-MNU_IO;kbd_usr[31].gShifted=-MNU_ALPHAFN;kbd_usr[31].keyLblAim=ITM_MINUS;kbd_usr[31].primaryAim=ITM_UNDERSCORE;kbd_usr[31].fShiftedAim=ITM_MINUS;kbd_usr[31].gShiftedAim=ITM_SAMPI;kbd_usr[31].primaryTam=ITM_SUB;
+    kbd_usr[32].primary=ITM_EXIT1;kbd_usr[32].fShifted=ITM_OFF;kbd_usr[32].gShifted=-MNU_PRINT;kbd_usr[32].keyLblAim=ITM_EXIT1;kbd_usr[32].primaryAim=ITM_EXIT1;kbd_usr[32].fShiftedAim=ITM_OFF;kbd_usr[32].gShiftedAim=ITM_PRINTER;kbd_usr[32].primaryTam=ITM_EXIT1;
+    kbd_usr[33].primary=ITM_0;kbd_usr[33].fShifted=-MNU_HOME;kbd_usr[33].gShifted=ITM_TIMER;kbd_usr[33].keyLblAim=ITM_0;kbd_usr[33].primaryAim=ITM_COLON;kbd_usr[33].fShiftedAim=ITM_0;kbd_usr[33].gShiftedAim=-MNU_ALPHA;kbd_usr[33].primaryTam=ITM_0;
+    kbd_usr[34].primary=ITM_PERIOD;kbd_usr[34].fShifted=ITM_SHOW;kbd_usr[34].gShifted=ITM_VIEW;kbd_usr[34].keyLblAim=ITM_PERIOD;kbd_usr[34].primaryAim=ITM_COMMA;kbd_usr[34].fShiftedAim=ITM_PERIOD;kbd_usr[34].gShiftedAim=-MNU_ALPHADOT;kbd_usr[34].primaryTam=ITM_PERIOD;
+    kbd_usr[35].primary=ITM_RS;kbd_usr[35].fShifted=ITM_PR;kbd_usr[35].gShifted  =  -MNU_CLK    ;kbd_usr[35].keyLblAim=ITM_NULL;kbd_usr[35].primaryAim=ITM_QUESTION_MARK;kbd_usr[35].fShiftedAim=ITM_SLASH;kbd_usr[35].gShiftedAim=-MNU_ALPHAMATH;kbd_usr[35].primaryTam=ITM_NULL;
+    kbd_usr[36].primary=ITM_ADD;kbd_usr[36].fShifted=-MNU_CATALOG;kbd_usr[36].gShifted=-MNU_PARTS;kbd_usr[36].keyLblAim=ITM_PLUS;kbd_usr[36].primaryAim=ITM_SPACE;kbd_usr[36].fShiftedAim=ITM_PLUS;kbd_usr[36].gShiftedAim=-MNU_ALPHAINTL;kbd_usr[36].primaryTam=ITM_ADD;
     fnSetFlag(FLAG_USER);
     break;
 
@@ -1229,86 +1229,86 @@ void fnUserJM(uint16_t jmUser) {
 
   case USER_43S:          //USER
     fnUserJM(USER_RESET);
-    kbd_usr[0].primary=ITM_1ONX;  kbd_usr[0].fShifted=ITM_TGLFRT;   kbd_usr[0].gShifted=-MNU_ALPHAFN;   kbd_usr[0].keyLblAim=ITM_NULL;  kbd_usr[0].primaryAim=CHR_A;  kbd_usr[0].fShiftedAim=-MNU_ALPHAINTL;  kbd_usr[0].gShiftedAim=CHR_ALPHA;   kbd_usr[0].primaryTam=ITM_ST_A; 
-    kbd_usr[1].primary=ITM_YX;  kbd_usr[1].fShifted=ITM_HASH_JM/*ITM_toINT*/;  kbd_usr[1].gShifted=-MNU_EXP;   kbd_usr[1].keyLblAim=CHR_NUMBER_SIGN;   kbd_usr[1].primaryAim=CHR_B;  kbd_usr[1].fShiftedAim=CHR_NUMBER_SIGN;   kbd_usr[1].gShiftedAim=CHR_BETA;  kbd_usr[1].primaryTam=ITM_ST_B; 
-    kbd_usr[2].primary=-MNU_TRI;  kbd_usr[2].fShifted=ITM_DMS;  kbd_usr[2].gShifted=ITM_pi;   kbd_usr[2].keyLblAim=ITM_NULL;  kbd_usr[2].primaryAim=CHR_C;  kbd_usr[2].fShiftedAim=ITM_NULL;  kbd_usr[2].gShiftedAim=CHR_GAMMA;   kbd_usr[2].primaryTam=ITM_ST_C; 
-    kbd_usr[3].primary=ITM_LN;  kbd_usr[3].fShifted=KEY_dotD;   kbd_usr[3].gShifted=ITM_LOG10;  kbd_usr[3].keyLblAim=ITM_NULL;  kbd_usr[3].primaryAim=CHR_D;  kbd_usr[3].fShiftedAim=ITM_NULL;  kbd_usr[3].gShiftedAim=CHR_DELTA;   kbd_usr[3].primaryTam=ITM_ST_D; 
-    kbd_usr[4].primary=ITM_EX;  kbd_usr[4].fShifted=ITM_toHMS;  kbd_usr[4].gShifted=ITM_10x;  kbd_usr[4].keyLblAim=ITM_NULL;  kbd_usr[4].primaryAim=CHR_E;  kbd_usr[4].fShiftedAim=ITM_NULL;  kbd_usr[4].gShiftedAim=CHR_EPSILON;   kbd_usr[4].primaryTam=ITM_NULL; 
-    kbd_usr[5].primary=ITM_SQUARE;  kbd_usr[5].fShifted=ITM_AIM;  kbd_usr[5].gShifted=ITM_SQUAREROOTX;  kbd_usr[5].keyLblAim=CHR_CHECK_MARK;  kbd_usr[5].primaryAim=CHR_F;  kbd_usr[5].fShiftedAim=CHR_CHECK_MARK;  kbd_usr[5].gShiftedAim=CHR_PHI;   kbd_usr[5].primaryTam=CHR_alpha; 
-    kbd_usr[6].primary=ITM_STO;   kbd_usr[6].fShifted=ITM_ASSIGN;   kbd_usr[6].gShifted=ITM_SAVE;   kbd_usr[6].keyLblAim=ITM_NULL;  kbd_usr[6].primaryAim=CHR_G;  kbd_usr[6].fShiftedAim=ITM_ASSIGN;  kbd_usr[6].gShiftedAim=CHR_GAMMA;   kbd_usr[6].primaryTam=ITM_NULL; 
-    kbd_usr[7].primary=ITM_RCL;   kbd_usr[7].fShifted=ITM_RBR;  kbd_usr[7].gShifted=ITM_VIEW;   kbd_usr[7].keyLblAim=ITM_NULL;  kbd_usr[7].primaryAim=CHR_H;  kbd_usr[7].fShiftedAim=ITM_RBR;   kbd_usr[7].gShiftedAim=CHR_CHI;   kbd_usr[7].primaryTam=ITM_HEX; 
-    kbd_usr[8].primary=ITM_Rdown;   kbd_usr[8].fShifted=ITM_Rup;  kbd_usr[8].gShifted=-MNU_CPX;   kbd_usr[8].keyLblAim=ITM_NULL;  kbd_usr[8].primaryAim=CHR_I;  kbd_usr[8].fShiftedAim=CHR_DOWN_ARROW;  kbd_usr[8].gShiftedAim=CHR_IOTA;  kbd_usr[8].primaryTam=ITM_REGI; 
-    kbd_usr[9].primary=KEY_CC;  kbd_usr[9].fShifted=ITM_MAGNITUDE;  kbd_usr[9].gShifted=ITM_ANGLE;  kbd_usr[9].keyLblAim=ITM_NULL;  kbd_usr[9].primaryAim=CHR_J;  kbd_usr[9].fShiftedAim=ITM_NULL;  kbd_usr[9].gShiftedAim=CHR_ETA;   kbd_usr[9].primaryTam=ITM_REGJ; 
-    kbd_usr[10].primary=KEY_f;  kbd_usr[10].fShifted=ITM_NULL;  kbd_usr[10].gShifted=ITM_NULL;  kbd_usr[10].keyLblAim=KEY_f;  kbd_usr[10].primaryAim=KEY_f;   kbd_usr[10].fShiftedAim=ITM_NULL;   kbd_usr[10].gShiftedAim=ITM_SCRDMP;   kbd_usr[10].primaryTam=KEY_f; 
-    kbd_usr[11].primary=KEY_g;  kbd_usr[11].fShifted=ITM_NULL;  kbd_usr[11].gShifted=ITM_NULL;  kbd_usr[11].keyLblAim=KEY_g;  kbd_usr[11].primaryAim=KEY_g;   kbd_usr[11].fShiftedAim=KEY_USERMODE;   kbd_usr[11].gShiftedAim=ITM_NULL;   kbd_usr[11].primaryTam=KEY_g; 
+    kbd_usr[0].primary=ITM_1ONX;  kbd_usr[0].fShifted=ITM_TGLFRT;   kbd_usr[0].gShifted=-MNU_ALPHAFN;   kbd_usr[0].keyLblAim=ITM_NULL;  kbd_usr[0].primaryAim=ITM_A;  kbd_usr[0].fShiftedAim=-MNU_ALPHAINTL;  kbd_usr[0].gShiftedAim=ITM_ALPHA;   kbd_usr[0].primaryTam=ITM_ST_A; 
+    kbd_usr[1].primary=ITM_YX;  kbd_usr[1].fShifted=ITM_HASH_JM/*ITM_toINT*/;  kbd_usr[1].gShifted=-MNU_EXP;   kbd_usr[1].keyLblAim=ITM_NUMBER_SIGN;   kbd_usr[1].primaryAim=ITM_B;  kbd_usr[1].fShiftedAim=ITM_NUMBER_SIGN;   kbd_usr[1].gShiftedAim=ITM_BETA;  kbd_usr[1].primaryTam=ITM_ST_B; 
+    kbd_usr[2].primary=-MNU_TRI;  kbd_usr[2].fShifted=ITM_DMS;  kbd_usr[2].gShifted=ITM_CONSTpi;   kbd_usr[2].keyLblAim=ITM_NULL;  kbd_usr[2].primaryAim=ITM_C;  kbd_usr[2].fShiftedAim=ITM_NULL;  kbd_usr[2].gShiftedAim=ITM_GAMMA;   kbd_usr[2].primaryTam=ITM_ST_C; 
+    kbd_usr[3].primary=ITM_LN;  kbd_usr[3].fShifted=ITM_dotD;   kbd_usr[3].gShifted=ITM_LOG10;  kbd_usr[3].keyLblAim=ITM_NULL;  kbd_usr[3].primaryAim=ITM_D;  kbd_usr[3].fShiftedAim=ITM_NULL;  kbd_usr[3].gShiftedAim=ITM_DELTA;   kbd_usr[3].primaryTam=ITM_ST_D; 
+    kbd_usr[4].primary=ITM_EXP;  kbd_usr[4].fShifted=ITM_toHMS;  kbd_usr[4].gShifted=ITM_10x;  kbd_usr[4].keyLblAim=ITM_NULL;  kbd_usr[4].primaryAim=ITM_E;  kbd_usr[4].fShiftedAim=ITM_NULL;  kbd_usr[4].gShiftedAim=ITM_EPSILON;   kbd_usr[4].primaryTam=ITM_NULL; 
+    kbd_usr[5].primary=ITM_SQUARE;  kbd_usr[5].fShifted=ITM_AIM;  kbd_usr[5].gShifted=ITM_SQUAREROOTX;  kbd_usr[5].keyLblAim=ITM_CHECK_MARK;  kbd_usr[5].primaryAim=ITM_F;  kbd_usr[5].fShiftedAim=ITM_CHECK_MARK;  kbd_usr[5].gShiftedAim=ITM_PHI;   kbd_usr[5].primaryTam=ITM_alpha; 
+    kbd_usr[6].primary=ITM_STO;   kbd_usr[6].fShifted=ITM_ASSIGN;   kbd_usr[6].gShifted=ITM_SAVE;   kbd_usr[6].keyLblAim=ITM_NULL;  kbd_usr[6].primaryAim=ITM_G;  kbd_usr[6].fShiftedAim=ITM_ASSIGN;  kbd_usr[6].gShiftedAim=ITM_GAMMA;   kbd_usr[6].primaryTam=ITM_NULL; 
+    kbd_usr[7].primary=ITM_RCL;   kbd_usr[7].fShifted=ITM_RBR;  kbd_usr[7].gShifted=ITM_VIEW;   kbd_usr[7].keyLblAim=ITM_NULL;  kbd_usr[7].primaryAim=ITM_H;  kbd_usr[7].fShiftedAim=ITM_RBR;   kbd_usr[7].gShiftedAim=ITM_CHI;   kbd_usr[7].primaryTam=ITM_HEX; 
+    kbd_usr[8].primary=ITM_Rdown;   kbd_usr[8].fShifted=ITM_Rup;  kbd_usr[8].gShifted=-MNU_CPX;   kbd_usr[8].keyLblAim=ITM_NULL;  kbd_usr[8].primaryAim=ITM_I;  kbd_usr[8].fShiftedAim=ITM_DOWN_ARROW;  kbd_usr[8].gShiftedAim=ITM_IOTA;  kbd_usr[8].primaryTam=ITM_REGI; 
+    kbd_usr[9].primary=ITM_CC;  kbd_usr[9].fShifted=ITM_MAGNITUDE;  kbd_usr[9].gShifted=ITM_ANGLE;  kbd_usr[9].keyLblAim=ITM_NULL;  kbd_usr[9].primaryAim=ITM_J;  kbd_usr[9].fShiftedAim=ITM_NULL;  kbd_usr[9].gShiftedAim=ITM_ETA;   kbd_usr[9].primaryTam=ITM_REGJ; 
+    kbd_usr[10].primary=ITM_SHIFTf;  kbd_usr[10].fShifted=ITM_NULL;  kbd_usr[10].gShifted=ITM_NULL;  kbd_usr[10].keyLblAim=ITM_SHIFTf;  kbd_usr[10].primaryAim=ITM_SHIFTf;   kbd_usr[10].fShiftedAim=ITM_NULL;   kbd_usr[10].gShiftedAim=ITM_SCRDMP;   kbd_usr[10].primaryTam=ITM_SHIFTf; 
+    kbd_usr[11].primary=ITM_SHIFTg;  kbd_usr[11].fShifted=ITM_NULL;  kbd_usr[11].gShifted=ITM_NULL;  kbd_usr[11].keyLblAim=ITM_SHIFTg;  kbd_usr[11].primaryAim=ITM_SHIFTg;   kbd_usr[11].fShiftedAim=ITM_USERMODE;   kbd_usr[11].gShiftedAim=ITM_NULL;   kbd_usr[11].primaryTam=ITM_SHIFTg; 
     kbd_usr[12].primary=ITM_ENTER;  kbd_usr[12].fShifted=ITM_STATUS;  kbd_usr[12].gShifted=ITM_DROP;  kbd_usr[12].keyLblAim=ITM_ENTER;  kbd_usr[12].primaryAim=ITM_ENTER;   kbd_usr[12].fShiftedAim=ITM_STATUS;   kbd_usr[12].gShiftedAim=ITM_DROP;   kbd_usr[12].primaryTam=ITM_ENTER; 
-    kbd_usr[13].primary=ITM_XexY;   kbd_usr[13].fShifted=ITM_FILL;  kbd_usr[13].gShifted=-MNU_STK;  kbd_usr[13].keyLblAim=CHR_ex;   kbd_usr[13].primaryAim=CHR_K;   kbd_usr[13].fShiftedAim=CHR_ex;   kbd_usr[13].gShiftedAim=CHR_KAPPA;  kbd_usr[13].primaryTam=ITM_REGK; 
-    kbd_usr[14].primary=ITM_CHS;  kbd_usr[14].fShifted=ITM_DELTAPC;   kbd_usr[14].gShifted=-MNU_FIN;  kbd_usr[14].keyLblAim=CHR_PLUS_MINUS;   kbd_usr[14].primaryAim=CHR_L;   kbd_usr[14].fShiftedAim=CHR_PLUS_MINUS;   kbd_usr[14].gShiftedAim=CHR_LAMBDA;   kbd_usr[14].primaryTam=ITM_REGL; 
-    kbd_usr[15].primary=ITM_EXPONENT;   kbd_usr[15].fShifted=ITM_SHOW;  kbd_usr[15].gShifted=-MNU_DSP;  kbd_usr[15].keyLblAim=ITM_NULL;   kbd_usr[15].primaryAim=CHR_M;   kbd_usr[15].fShiftedAim=CHR_UP_ARROW;   kbd_usr[15].gShiftedAim=CHR_MU;   kbd_usr[15].primaryTam=ITM_NULL; 
-    kbd_usr[16].primary=KEY_BACKSPACE;  kbd_usr[16].fShifted= KEY_UNDO;   kbd_usr[16].gShifted=-MNU_CLR;  kbd_usr[16].keyLblAim=KEY_BACKSPACE;  kbd_usr[16].primaryAim=KEY_BACKSPACE;   kbd_usr[16].fShiftedAim=KEY_UNDO;   kbd_usr[16].gShiftedAim=-MNU_CLR;   kbd_usr[16].primaryTam=KEY_BACKSPACE; 
-    kbd_usr[17].primary=ITM_DIV;  kbd_usr[17].fShifted=ITM_RMD;   kbd_usr[17].gShifted=ITM_MOD;   kbd_usr[17].keyLblAim=CHR_SLASH;  kbd_usr[17].primaryAim=CHR_N;   kbd_usr[17].fShiftedAim=CHR_SLASH;  kbd_usr[17].gShiftedAim=CHR_NU;   kbd_usr[17].primaryTam=ITM_DIV; 
-    kbd_usr[18].primary=CHR_7;  kbd_usr[18].fShifted=-MNU_CONST;  kbd_usr[18].gShifted=-MNU_ASN;  kbd_usr[18].keyLblAim=CHR_7;  kbd_usr[18].primaryAim=CHR_O;   kbd_usr[18].fShiftedAim=CHR_7;  kbd_usr[18].gShiftedAim=CHR_OMEGA;  kbd_usr[18].primaryTam=CHR_7; 
-    kbd_usr[19].primary=CHR_8;  kbd_usr[19].fShifted=KEY_USERMODE;  kbd_usr[19].gShifted=ITM_SCRDMP;  kbd_usr[19].keyLblAim=CHR_8;  kbd_usr[19].primaryAim=CHR_P;   kbd_usr[19].fShiftedAim=CHR_8;  kbd_usr[19].gShiftedAim=CHR_PI;   kbd_usr[19].primaryTam=CHR_8; 
-    kbd_usr[20].primary=CHR_9;  kbd_usr[20].fShifted=-MNU_HOME;   kbd_usr[20].gShifted=ITM_RTN;   kbd_usr[20].keyLblAim=CHR_9;  kbd_usr[20].primaryAim=CHR_Q;   kbd_usr[20].fShiftedAim=CHR_9;  kbd_usr[20].gShiftedAim=ITM_RTN;  kbd_usr[20].primaryTam=CHR_9; 
+    kbd_usr[13].primary=ITM_XexY;   kbd_usr[13].fShifted=ITM_FILL;  kbd_usr[13].gShifted=-MNU_STK;  kbd_usr[13].keyLblAim=ITM_ex;   kbd_usr[13].primaryAim=ITM_K;   kbd_usr[13].fShiftedAim=ITM_ex;   kbd_usr[13].gShiftedAim=ITM_KAPPA;  kbd_usr[13].primaryTam=ITM_REGK; 
+    kbd_usr[14].primary=ITM_CHS;  kbd_usr[14].fShifted=ITM_DELTAPC;   kbd_usr[14].gShifted=-MNU_FIN;  kbd_usr[14].keyLblAim=ITM_PLUS_MINUS;   kbd_usr[14].primaryAim=ITM_L;   kbd_usr[14].fShiftedAim=ITM_PLUS_MINUS;   kbd_usr[14].gShiftedAim=ITM_LAMBDA;   kbd_usr[14].primaryTam=ITM_REGL; 
+    kbd_usr[15].primary=ITM_EXPONENT;   kbd_usr[15].fShifted=ITM_SHOW;  kbd_usr[15].gShifted=-MNU_DSP;  kbd_usr[15].keyLblAim=ITM_NULL;   kbd_usr[15].primaryAim=ITM_M;   kbd_usr[15].fShiftedAim=ITM_UP_ARROW;   kbd_usr[15].gShiftedAim=ITM_MU;   kbd_usr[15].primaryTam=ITM_NULL; 
+    kbd_usr[16].primary=ITM_BACKSPACE;  kbd_usr[16].fShifted= ITM_UNDO;   kbd_usr[16].gShifted=-MNU_CLR;  kbd_usr[16].keyLblAim=ITM_BACKSPACE;  kbd_usr[16].primaryAim=ITM_BACKSPACE;   kbd_usr[16].fShiftedAim=ITM_UNDO;   kbd_usr[16].gShiftedAim=-MNU_CLR;   kbd_usr[16].primaryTam=ITM_BACKSPACE; 
+    kbd_usr[17].primary=ITM_DIV;  kbd_usr[17].fShifted=ITM_RMD;   kbd_usr[17].gShifted=ITM_MOD;   kbd_usr[17].keyLblAim=ITM_SLASH;  kbd_usr[17].primaryAim=ITM_N;   kbd_usr[17].fShiftedAim=ITM_SLASH;  kbd_usr[17].gShiftedAim=ITM_NU;   kbd_usr[17].primaryTam=ITM_DIV; 
+    kbd_usr[18].primary=ITM_7;  kbd_usr[18].fShifted=-MNU_CONST;  kbd_usr[18].gShifted=-MNU_ASN;  kbd_usr[18].keyLblAim=ITM_7;  kbd_usr[18].primaryAim=ITM_O;   kbd_usr[18].fShiftedAim=ITM_7;  kbd_usr[18].gShiftedAim=ITM_OMEGA;  kbd_usr[18].primaryTam=ITM_7; 
+    kbd_usr[19].primary=ITM_8;  kbd_usr[19].fShifted=ITM_USERMODE;  kbd_usr[19].gShifted=ITM_SCRDMP;  kbd_usr[19].keyLblAim=ITM_8;  kbd_usr[19].primaryAim=ITM_P;   kbd_usr[19].fShiftedAim=ITM_8;  kbd_usr[19].gShiftedAim=ITM_PI;   kbd_usr[19].primaryTam=ITM_8; 
+    kbd_usr[20].primary=ITM_9;  kbd_usr[20].fShifted=-MNU_HOME;   kbd_usr[20].gShifted=ITM_RTN;   kbd_usr[20].keyLblAim=ITM_9;  kbd_usr[20].primaryAim=ITM_Q;   kbd_usr[20].fShiftedAim=ITM_9;  kbd_usr[20].gShiftedAim=ITM_RTN;  kbd_usr[20].primaryTam=ITM_9; 
     kbd_usr[21].primary=ITM_XEQ;  kbd_usr[21].fShifted=ITM_GTO;   kbd_usr[21].gShifted=ITM_LBL;   kbd_usr[21].keyLblAim=ITM_NULL;   kbd_usr[21].primaryAim=ITM_NULL;  kbd_usr[21].fShiftedAim=ITM_NULL;   kbd_usr[21].gShiftedAim=ITM_NULL;   kbd_usr[21].primaryTam=ITM_NULL; 
-    kbd_usr[22].primary=ITM_MULT;   kbd_usr[22].fShifted=ITM_XFACT;   kbd_usr[22].gShifted=-MNU_PROB;   kbd_usr[22].keyLblAim=CHR_CROSS;  kbd_usr[22].primaryAim=CHR_R;   kbd_usr[22].fShiftedAim=CHR_PROD_SIGN;  kbd_usr[22].gShiftedAim=CHR_RHO;  kbd_usr[22].primaryTam=ITM_MULT; 
-    kbd_usr[23].primary=CHR_4;  kbd_usr[23].fShifted=-MNU_STAT;   kbd_usr[23].gShifted=-MNU_SUMS;   kbd_usr[23].keyLblAim=CHR_4;  kbd_usr[23].primaryAim=CHR_S;   kbd_usr[23].fShiftedAim=CHR_4;  kbd_usr[23].gShiftedAim=CHR_SIGMA;  kbd_usr[23].primaryTam=CHR_4; 
-    kbd_usr[24].primary=CHR_5;  kbd_usr[24].fShifted=ITM_toREC;   kbd_usr[24].gShifted=ITM_toPOL;   kbd_usr[24].keyLblAim=CHR_5;  kbd_usr[24].primaryAim=CHR_T;   kbd_usr[24].fShiftedAim=CHR_5;  kbd_usr[24].gShiftedAim=CHR_TAU;  kbd_usr[24].primaryTam=CHR_5; 
-    kbd_usr[25].primary=CHR_6;  kbd_usr[25].fShifted=-MNU_UNITCONV;   kbd_usr[25].gShifted=-MNU_ANGLECONV;  kbd_usr[25].keyLblAim=CHR_6;  kbd_usr[25].primaryAim=CHR_U;   kbd_usr[25].fShiftedAim=CHR_6;  kbd_usr[25].gShiftedAim=CHR_THETA;  kbd_usr[25].primaryTam=CHR_6; 
-    kbd_usr[26].primary=KEY_UP1;  kbd_usr[26].fShifted=KEY_BST;   kbd_usr[26].gShifted=-MNU_FLAGS;  kbd_usr[26].keyLblAim=KEY_UP1;  kbd_usr[26].primaryAim=KEY_UP1;   kbd_usr[26].fShiftedAim=KEY_BST;  kbd_usr[26].gShiftedAim=-MNU_FLAGS;   kbd_usr[26].primaryTam=KEY_UP1; 
-    kbd_usr[27].primary=ITM_SUB;  kbd_usr[27].fShifted=-MNU_BITS;   kbd_usr[27].gShifted=-MNU_INTS;   kbd_usr[27].keyLblAim=CHR_MINUS;  kbd_usr[27].primaryAim=CHR_V;   kbd_usr[27].fShiftedAim=CHR_MINUS;  kbd_usr[27].gShiftedAim=-MNU_ALPHAMATH;   kbd_usr[27].primaryTam=ITM_SUB; 
-    kbd_usr[28].primary=CHR_1;  kbd_usr[28].fShifted=-MNU_ADV;  kbd_usr[28].gShifted=-MNU_EQN;  kbd_usr[28].keyLblAim=CHR_1;  kbd_usr[28].primaryAim=CHR_W;   kbd_usr[28].fShiftedAim=CHR_1;  kbd_usr[28].gShiftedAim=CHR_PSI;  kbd_usr[28].primaryTam=CHR_1; 
-    kbd_usr[29].primary=CHR_2;  kbd_usr[29].fShifted=-MNU_MATX;   kbd_usr[29].gShifted=-MNU_XFN;  kbd_usr[29].keyLblAim=CHR_2;  kbd_usr[29].primaryAim=CHR_X;   kbd_usr[29].fShiftedAim=CHR_2;  kbd_usr[29].gShiftedAim=CHR_XI;   kbd_usr[29].primaryTam=CHR_2; 
-    kbd_usr[30].primary=CHR_3;  kbd_usr[30].fShifted=ITM_TIMER;   kbd_usr[30].gShifted=-MNU_CLK;  kbd_usr[30].keyLblAim=CHR_3;  kbd_usr[30].primaryAim=CHR_Y;   kbd_usr[30].fShiftedAim=CHR_3;  kbd_usr[30].gShiftedAim=CHR_UPSILON;  kbd_usr[30].primaryTam=CHR_3; 
-    kbd_usr[31].primary=KEY_DOWN1;  kbd_usr[31].fShifted=KEY_SST;   kbd_usr[31].gShifted=-MNU_MODE;   kbd_usr[31].keyLblAim=KEY_DOWN1;  kbd_usr[31].primaryAim=KEY_DOWN1;   kbd_usr[31].fShiftedAim=KEY_SST;  kbd_usr[31].gShiftedAim=-MNU_MODE;  kbd_usr[31].primaryTam=KEY_DOWN1; 
-    kbd_usr[32].primary=ITM_ADD;  kbd_usr[32].fShifted=-MNU_IO;   kbd_usr[32].gShifted=-MNU_PRINT;  kbd_usr[32].keyLblAim=CHR_PLUS;   kbd_usr[32].primaryAim=CHR_Z;   kbd_usr[32].fShiftedAim=CHR_PLUS;   kbd_usr[32].gShiftedAim=CHR_ZETA;   kbd_usr[32].primaryTam=ITM_ADD; 
-    kbd_usr[33].primary=CHR_0;  kbd_usr[33].fShifted=-MNU_LOOP;   kbd_usr[33].gShifted=-MNU_TEST;   kbd_usr[33].keyLblAim=CHR_0;  kbd_usr[33].primaryAim=ITM_NULL;  kbd_usr[33].fShiftedAim=CHR_0;  kbd_usr[33].gShiftedAim=CHR_PRINTER;  kbd_usr[33].primaryTam=CHR_0; 
-    kbd_usr[34].primary=CHR_PERIOD;   kbd_usr[34].fShifted=-MNU_PARTS;  kbd_usr[34].gShifted=-MNU_INFO;   kbd_usr[34].keyLblAim=CHR_PERIOD;   kbd_usr[34].primaryAim=CHR_COMMA;   kbd_usr[34].fShiftedAim=CHR_PERIOD;   kbd_usr[34].gShiftedAim=-MNU_ALPHADOT;  kbd_usr[34].primaryTam=CHR_PERIOD; 
-    kbd_usr[35].primary=ITM_RS;   kbd_usr[35].fShifted=ITM_PR;  kbd_usr[35].gShifted=-MNU_PFN;  kbd_usr[35].keyLblAim=ITM_NULL;   kbd_usr[35].primaryAim=CHR_SPACE;   kbd_usr[35].fShiftedAim=ITM_NULL;   kbd_usr[35].gShiftedAim=ITM_NULL;   kbd_usr[35].primaryTam=ITM_NULL; 
-    kbd_usr[36].primary=KEY_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].gShifted=ITM_OFF;   kbd_usr[36].keyLblAim=KEY_EXIT1;  kbd_usr[36].primaryAim=KEY_EXIT1;   kbd_usr[36].fShiftedAim=-MNU_CATALOG;   kbd_usr[36].gShiftedAim=ITM_OFF;  kbd_usr[36].primaryTam=KEY_EXIT1; 
+    kbd_usr[22].primary=ITM_MULT;   kbd_usr[22].fShifted=ITM_XFACT;   kbd_usr[22].gShifted=-MNU_PROB;   kbd_usr[22].keyLblAim=ITM_CROSS;  kbd_usr[22].primaryAim=ITM_R;   kbd_usr[22].fShiftedAim=ITM_PROD_SIGN;  kbd_usr[22].gShiftedAim=ITM_RHO;  kbd_usr[22].primaryTam=ITM_MULT; 
+    kbd_usr[23].primary=ITM_4;  kbd_usr[23].fShifted=-MNU_STAT;   kbd_usr[23].gShifted=-MNU_SUMS;   kbd_usr[23].keyLblAim=ITM_4;  kbd_usr[23].primaryAim=ITM_S;   kbd_usr[23].fShiftedAim=ITM_4;  kbd_usr[23].gShiftedAim=ITM_SIGMA;  kbd_usr[23].primaryTam=ITM_4; 
+    kbd_usr[24].primary=ITM_5;  kbd_usr[24].fShifted=ITM_toREC;   kbd_usr[24].gShifted=ITM_toPOL;   kbd_usr[24].keyLblAim=ITM_5;  kbd_usr[24].primaryAim=ITM_T;   kbd_usr[24].fShiftedAim=ITM_5;  kbd_usr[24].gShiftedAim=ITM_TAU;  kbd_usr[24].primaryTam=ITM_5; 
+    kbd_usr[25].primary=ITM_6;  kbd_usr[25].fShifted=-MNU_UNITCONV;   kbd_usr[25].gShifted=-MNU_ANGLECONV;  kbd_usr[25].keyLblAim=ITM_6;  kbd_usr[25].primaryAim=ITM_U;   kbd_usr[25].fShiftedAim=ITM_6;  kbd_usr[25].gShiftedAim=ITM_THETA;  kbd_usr[25].primaryTam=ITM_6; 
+    kbd_usr[26].primary=ITM_UP1;  kbd_usr[26].fShifted=ITM_BST;   kbd_usr[26].gShifted=-MNU_FLAGS;  kbd_usr[26].keyLblAim=ITM_UP1;  kbd_usr[26].primaryAim=ITM_UP1;   kbd_usr[26].fShiftedAim=ITM_BST;  kbd_usr[26].gShiftedAim=-MNU_FLAGS;   kbd_usr[26].primaryTam=ITM_UP1; 
+    kbd_usr[27].primary=ITM_SUB;  kbd_usr[27].fShifted=-MNU_BITS;   kbd_usr[27].gShifted=-MNU_INTS;   kbd_usr[27].keyLblAim=ITM_MINUS;  kbd_usr[27].primaryAim=ITM_V;   kbd_usr[27].fShiftedAim=ITM_MINUS;  kbd_usr[27].gShiftedAim=-MNU_ALPHAMATH;   kbd_usr[27].primaryTam=ITM_SUB; 
+    kbd_usr[28].primary=ITM_1;  kbd_usr[28].fShifted=-MNU_ADV;  kbd_usr[28].gShifted=-MNU_EQN;  kbd_usr[28].keyLblAim=ITM_1;  kbd_usr[28].primaryAim=ITM_W;   kbd_usr[28].fShiftedAim=ITM_1;  kbd_usr[28].gShiftedAim=ITM_PSI;  kbd_usr[28].primaryTam=ITM_1; 
+    kbd_usr[29].primary=ITM_2;  kbd_usr[29].fShifted=-MNU_MATX;   kbd_usr[29].gShifted=-MNU_XFN;  kbd_usr[29].keyLblAim=ITM_2;  kbd_usr[29].primaryAim=ITM_X;   kbd_usr[29].fShiftedAim=ITM_2;  kbd_usr[29].gShiftedAim=ITM_XI;   kbd_usr[29].primaryTam=ITM_2; 
+    kbd_usr[30].primary=ITM_3;  kbd_usr[30].fShifted=ITM_TIMER;   kbd_usr[30].gShifted=-MNU_CLK;  kbd_usr[30].keyLblAim=ITM_3;  kbd_usr[30].primaryAim=ITM_Y;   kbd_usr[30].fShiftedAim=ITM_3;  kbd_usr[30].gShiftedAim=ITM_UPSILON;  kbd_usr[30].primaryTam=ITM_3; 
+    kbd_usr[31].primary=ITM_DOWN1;  kbd_usr[31].fShifted=ITM_SST;   kbd_usr[31].gShifted=-MNU_MODE;   kbd_usr[31].keyLblAim=ITM_DOWN1;  kbd_usr[31].primaryAim=ITM_DOWN1;   kbd_usr[31].fShiftedAim=ITM_SST;  kbd_usr[31].gShiftedAim=-MNU_MODE;  kbd_usr[31].primaryTam=ITM_DOWN1; 
+    kbd_usr[32].primary=ITM_ADD;  kbd_usr[32].fShifted=-MNU_IO;   kbd_usr[32].gShifted=-MNU_PRINT;  kbd_usr[32].keyLblAim=ITM_PLUS;   kbd_usr[32].primaryAim=ITM_Z;   kbd_usr[32].fShiftedAim=ITM_PLUS;   kbd_usr[32].gShiftedAim=ITM_ZETA;   kbd_usr[32].primaryTam=ITM_ADD; 
+    kbd_usr[33].primary=ITM_0;  kbd_usr[33].fShifted=-MNU_LOOP;   kbd_usr[33].gShifted=-MNU_TEST;   kbd_usr[33].keyLblAim=ITM_0;  kbd_usr[33].primaryAim=ITM_NULL;  kbd_usr[33].fShiftedAim=ITM_0;  kbd_usr[33].gShiftedAim=ITM_PRINTER;  kbd_usr[33].primaryTam=ITM_0; 
+    kbd_usr[34].primary=ITM_PERIOD;   kbd_usr[34].fShifted=-MNU_PARTS;  kbd_usr[34].gShifted=-MNU_INFO;   kbd_usr[34].keyLblAim=ITM_PERIOD;   kbd_usr[34].primaryAim=ITM_COMMA;   kbd_usr[34].fShiftedAim=ITM_PERIOD;   kbd_usr[34].gShiftedAim=-MNU_ALPHADOT;  kbd_usr[34].primaryTam=ITM_PERIOD; 
+    kbd_usr[35].primary=ITM_RS;   kbd_usr[35].fShifted=ITM_PR;  kbd_usr[35].gShifted=-MNU_PFN;  kbd_usr[35].keyLblAim=ITM_NULL;   kbd_usr[35].primaryAim=ITM_SPACE;   kbd_usr[35].fShiftedAim=ITM_NULL;   kbd_usr[35].gShiftedAim=ITM_NULL;   kbd_usr[35].primaryTam=ITM_NULL; 
+    kbd_usr[36].primary=ITM_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].gShifted=ITM_OFF;   kbd_usr[36].keyLblAim=ITM_EXIT1;  kbd_usr[36].primaryAim=ITM_EXIT1;   kbd_usr[36].fShiftedAim=-MNU_CATALOG;   kbd_usr[36].gShiftedAim=ITM_OFF;  kbd_usr[36].primaryTam=ITM_EXIT1; 
     fnSetFlag(FLAG_USER);
     break;
 
 
   case USER_C43:          //USER
     fnUserJM(USER_RESET);
-    kbd_usr[0].primary=ITM_SIGMAPLUS;   kbd_usr[0].fShifted=ITM_RI;   kbd_usr[0].gShifted=ITM_TGLFRT;   kbd_usr[0].keyLblAim=ITM_NULL;  kbd_usr[0].primaryAim=CHR_A;  kbd_usr[0].fShiftedAim=-MNU_ALPHAINTL;  kbd_usr[0].gShiftedAim=CHR_ALPHA;   kbd_usr[0].primaryTam=ITM_ST_A; 
-    kbd_usr[1].primary=ITM_1ONX;  kbd_usr[1].fShifted=ITM_YX;   kbd_usr[1].gShifted=ITM_HASH_JM/*ITM_toINT*/;  kbd_usr[1].keyLblAim=CHR_NUMBER_SIGN;   kbd_usr[1].primaryAim=CHR_B;  kbd_usr[1].fShiftedAim=CHR_NUMBER_SIGN;   kbd_usr[1].gShiftedAim=CHR_BETA;  kbd_usr[1].primaryTam=ITM_ST_B; 
-    kbd_usr[2].primary=ITM_SQUAREROOTX;   kbd_usr[2].fShifted=ITM_SQUARE;   kbd_usr[2].gShifted=ITM_ms;   kbd_usr[2].keyLblAim=CHR_CHECK_MARK;  kbd_usr[2].primaryAim=CHR_C;  kbd_usr[2].fShiftedAim=CHR_CHECK_MARK;  kbd_usr[2].gShiftedAim=CHR_CHI;   kbd_usr[2].primaryTam=ITM_ST_C; 
-    kbd_usr[3].primary=ITM_LOG10;   kbd_usr[3].fShifted=ITM_10x;  kbd_usr[3].gShifted=KEY_dotD;   kbd_usr[3].keyLblAim=ITM_NULL;  kbd_usr[3].primaryAim=CHR_D;  kbd_usr[3].fShiftedAim=ITM_NULL;  kbd_usr[3].gShiftedAim=CHR_DELTA;   kbd_usr[3].primaryTam=ITM_ST_D; 
-    kbd_usr[4].primary=ITM_LN;  kbd_usr[4].fShifted=ITM_EX;   kbd_usr[4].gShifted=ITM_toREC2;   kbd_usr[4].keyLblAim=ITM_NULL;  kbd_usr[4].primaryAim=CHR_E;  kbd_usr[4].fShiftedAim=ITM_NULL;  kbd_usr[4].gShiftedAim=CHR_EPSILON;   kbd_usr[4].primaryTam=ITM_NULL; 
-    kbd_usr[5].primary=ITM_XEQ;   kbd_usr[5].fShifted=ITM_AIM;  kbd_usr[5].gShifted=ITM_toPOL2;   kbd_usr[5].keyLblAim=ITM_NULL;  kbd_usr[5].primaryAim=CHR_F;  kbd_usr[5].fShiftedAim=ITM_NULL;  kbd_usr[5].gShiftedAim=CHR_DIGAMMA;   kbd_usr[5].primaryTam=CHR_alpha; 
-    kbd_usr[6].primary=ITM_STO;   kbd_usr[6].fShifted=ITM_MAGNITUDE;  kbd_usr[6].gShifted=ITM_ANGLE;  kbd_usr[6].keyLblAim=ITM_NULL;  kbd_usr[6].primaryAim=CHR_G;  kbd_usr[6].fShiftedAim=ITM_NULL;  kbd_usr[6].gShiftedAim=CHR_GAMMA;   kbd_usr[6].primaryTam=ITM_NULL; 
-    kbd_usr[7].primary=ITM_RCL;   kbd_usr[7].fShifted=ITM_PC;   kbd_usr[7].gShifted=ITM_DELTAPC;  kbd_usr[7].keyLblAim=ITM_NULL;  kbd_usr[7].primaryAim=CHR_H;  kbd_usr[7].fShiftedAim=ITM_NULL;  kbd_usr[7].gShiftedAim=CHR_ETA;   kbd_usr[7].primaryTam=ITM_HEX; 
-    kbd_usr[8].primary=ITM_Rdown;   kbd_usr[8].fShifted=ITM_pi;   kbd_usr[8].gShifted=ITM_XTHROOT;  kbd_usr[8].keyLblAim=ITM_NULL;  kbd_usr[8].primaryAim=CHR_I;  kbd_usr[8].fShiftedAim=CHR_DOWN_ARROW;  kbd_usr[8].gShiftedAim=CHR_IOTA;  kbd_usr[8].primaryTam=ITM_REGI; 
-    kbd_usr[9].primary=ITM_sin;   kbd_usr[9].fShifted=ITM_arcsin;   kbd_usr[9].gShifted=ITM_GTO;  kbd_usr[9].keyLblAim=ITM_NULL;  kbd_usr[9].primaryAim=CHR_J;  kbd_usr[9].fShiftedAim=CHR_case;  kbd_usr[9].gShiftedAim=CHR_THETA;   kbd_usr[9].primaryTam=ITM_REGJ; 
-    kbd_usr[10].primary=ITM_cos;  kbd_usr[10].fShifted=ITM_arccos;  kbd_usr[10].gShifted=ITM_LBL;   kbd_usr[10].keyLblAim=ITM_NULL;   kbd_usr[10].primaryAim=CHR_K;   kbd_usr[10].fShiftedAim=ITM_NULL;   kbd_usr[10].gShiftedAim=CHR_KAPPA;  kbd_usr[10].primaryTam=ITM_REGK; 
-    kbd_usr[11].primary=ITM_tan;  kbd_usr[11].fShifted=ITM_arctan;  kbd_usr[11].gShifted=ITM_RTN;   kbd_usr[11].keyLblAim=ITM_NULL;   kbd_usr[11].primaryAim=CHR_L;   kbd_usr[11].fShiftedAim=ITM_NULL;   kbd_usr[11].gShiftedAim=CHR_LAMBDA;   kbd_usr[11].primaryTam=ITM_REGL; 
+    kbd_usr[0].primary=ITM_SIGMAPLUS;   kbd_usr[0].fShifted=ITM_RI;   kbd_usr[0].gShifted=ITM_TGLFRT;   kbd_usr[0].keyLblAim=ITM_NULL;  kbd_usr[0].primaryAim=ITM_A;  kbd_usr[0].fShiftedAim=-MNU_ALPHAINTL;  kbd_usr[0].gShiftedAim=ITM_ALPHA;   kbd_usr[0].primaryTam=ITM_ST_A; 
+    kbd_usr[1].primary=ITM_1ONX;  kbd_usr[1].fShifted=ITM_YX;   kbd_usr[1].gShifted=ITM_HASH_JM/*ITM_toINT*/;  kbd_usr[1].keyLblAim=ITM_NUMBER_SIGN;   kbd_usr[1].primaryAim=ITM_B;  kbd_usr[1].fShiftedAim=ITM_NUMBER_SIGN;   kbd_usr[1].gShiftedAim=ITM_BETA;  kbd_usr[1].primaryTam=ITM_ST_B; 
+    kbd_usr[2].primary=ITM_SQUAREROOTX;   kbd_usr[2].fShifted=ITM_SQUARE;   kbd_usr[2].gShifted=ITM_ms;   kbd_usr[2].keyLblAim=ITM_CHECK_MARK;  kbd_usr[2].primaryAim=ITM_C;  kbd_usr[2].fShiftedAim=ITM_CHECK_MARK;  kbd_usr[2].gShiftedAim=ITM_CHI;   kbd_usr[2].primaryTam=ITM_ST_C; 
+    kbd_usr[3].primary=ITM_LOG10;   kbd_usr[3].fShifted=ITM_10x;  kbd_usr[3].gShifted=ITM_dotD;   kbd_usr[3].keyLblAim=ITM_NULL;  kbd_usr[3].primaryAim=ITM_D;  kbd_usr[3].fShiftedAim=ITM_NULL;  kbd_usr[3].gShiftedAim=ITM_DELTA;   kbd_usr[3].primaryTam=ITM_ST_D; 
+    kbd_usr[4].primary=ITM_LN;  kbd_usr[4].fShifted=ITM_EXP;   kbd_usr[4].gShifted=ITM_toREC2;   kbd_usr[4].keyLblAim=ITM_NULL;  kbd_usr[4].primaryAim=ITM_E;  kbd_usr[4].fShiftedAim=ITM_NULL;  kbd_usr[4].gShiftedAim=ITM_EPSILON;   kbd_usr[4].primaryTam=ITM_NULL; 
+    kbd_usr[5].primary=ITM_XEQ;   kbd_usr[5].fShifted=ITM_AIM;  kbd_usr[5].gShifted=ITM_toPOL2;   kbd_usr[5].keyLblAim=ITM_NULL;  kbd_usr[5].primaryAim=ITM_F;  kbd_usr[5].fShiftedAim=ITM_NULL;  kbd_usr[5].gShiftedAim=ITM_DIGAMMA;   kbd_usr[5].primaryTam=ITM_alpha; 
+    kbd_usr[6].primary=ITM_STO;   kbd_usr[6].fShifted=ITM_MAGNITUDE;  kbd_usr[6].gShifted=ITM_ANGLE;  kbd_usr[6].keyLblAim=ITM_NULL;  kbd_usr[6].primaryAim=ITM_G;  kbd_usr[6].fShiftedAim=ITM_NULL;  kbd_usr[6].gShiftedAim=ITM_GAMMA;   kbd_usr[6].primaryTam=ITM_NULL; 
+    kbd_usr[7].primary=ITM_RCL;   kbd_usr[7].fShifted=ITM_PC;   kbd_usr[7].gShifted=ITM_DELTAPC;  kbd_usr[7].keyLblAim=ITM_NULL;  kbd_usr[7].primaryAim=ITM_H;  kbd_usr[7].fShiftedAim=ITM_NULL;  kbd_usr[7].gShiftedAim=ITM_ETA;   kbd_usr[7].primaryTam=ITM_HEX; 
+    kbd_usr[8].primary=ITM_Rdown;   kbd_usr[8].fShifted=ITM_CONSTpi;   kbd_usr[8].gShifted=ITM_XTHROOT;  kbd_usr[8].keyLblAim=ITM_NULL;  kbd_usr[8].primaryAim=ITM_I;  kbd_usr[8].fShiftedAim=ITM_DOWN_ARROW;  kbd_usr[8].gShiftedAim=ITM_IOTA;  kbd_usr[8].primaryTam=ITM_REGI; 
+    kbd_usr[9].primary=ITM_sin;   kbd_usr[9].fShifted=ITM_arcsin;   kbd_usr[9].gShifted=ITM_GTO;  kbd_usr[9].keyLblAim=ITM_NULL;  kbd_usr[9].primaryAim=ITM_J;  kbd_usr[9].fShiftedAim=CHR_case;  kbd_usr[9].gShiftedAim=ITM_THETA;   kbd_usr[9].primaryTam=ITM_REGJ; 
+    kbd_usr[10].primary=ITM_cos;  kbd_usr[10].fShifted=ITM_arccos;  kbd_usr[10].gShifted=ITM_LBL;   kbd_usr[10].keyLblAim=ITM_NULL;   kbd_usr[10].primaryAim=ITM_K;   kbd_usr[10].fShiftedAim=ITM_NULL;   kbd_usr[10].gShiftedAim=ITM_KAPPA;  kbd_usr[10].primaryTam=ITM_REGK; 
+    kbd_usr[11].primary=ITM_tan;  kbd_usr[11].fShifted=ITM_arctan;  kbd_usr[11].gShifted=ITM_RTN;   kbd_usr[11].keyLblAim=ITM_NULL;   kbd_usr[11].primaryAim=ITM_L;   kbd_usr[11].fShiftedAim=ITM_NULL;   kbd_usr[11].gShiftedAim=ITM_LAMBDA;   kbd_usr[11].primaryTam=ITM_REGL; 
     kbd_usr[12].primary=ITM_ENTER;  kbd_usr[12].fShifted=KEY_COMPLEX;   kbd_usr[12].gShifted=-MNU_CPX;  kbd_usr[12].keyLblAim=ITM_ENTER;  kbd_usr[12].primaryAim=ITM_ENTER;   kbd_usr[12].fShiftedAim=ITM_NULL;   kbd_usr[12].gShiftedAim=ITM_NULL;   kbd_usr[12].primaryTam=ITM_ENTER; 
-    kbd_usr[13].primary=ITM_XexY;   kbd_usr[13].fShifted=ITM_LASTX;   kbd_usr[13].gShifted=ITM_Rup;  kbd_usr[13].keyLblAim=CHR_ex;   kbd_usr[13].primaryAim=CHR_M;   kbd_usr[13].fShiftedAim=CHR_ex;   kbd_usr[13].gShiftedAim=CHR_MU;   kbd_usr[13].primaryTam=ITM_NULL; 
-    kbd_usr[14].primary=ITM_CHS;  kbd_usr[14].fShifted=-MNU_MODE;   kbd_usr[14].gShifted=-MNU_EXP;   kbd_usr[14].keyLblAim=CHR_PLUS_MINUS;   kbd_usr[14].primaryAim=CHR_N;   kbd_usr[14].fShiftedAim=CHR_PLUS_MINUS;   kbd_usr[14].gShiftedAim=CHR_NU;   kbd_usr[14].primaryTam=ITM_NULL; 
-    kbd_usr[15].primary=ITM_EXPONENT;   kbd_usr[15].fShifted=-MNU_DSP;  kbd_usr[15].gShifted=-MNU_FIN;  kbd_usr[15].keyLblAim=ITM_NULL;   kbd_usr[15].primaryAim=CHR_O;   kbd_usr[15].fShiftedAim=CHR_UP_ARROW;   kbd_usr[15].gShiftedAim=CHR_OMICRON;  kbd_usr[15].primaryTam=ITM_NULL; 
-    kbd_usr[16].primary=KEY_BACKSPACE;  kbd_usr[16].fShifted=KEY_UNDO;  kbd_usr[16].gShifted=-MNU_CLR;  kbd_usr[16].keyLblAim=KEY_BACKSPACE;  kbd_usr[16].primaryAim=KEY_BACKSPACE;   kbd_usr[16].fShiftedAim=KEY_UNDO;   kbd_usr[16].gShiftedAim=-MNU_CLR;   kbd_usr[16].primaryTam=KEY_BACKSPACE; 
-    kbd_usr[17].primary=KEY_UP1;  kbd_usr[17].fShifted=KEY_BST;   kbd_usr[17].gShifted=ITM_RBR;   kbd_usr[17].keyLblAim=KEY_UP1;  kbd_usr[17].primaryAim=KEY_UP1;   kbd_usr[17].fShiftedAim=CHR_caseUP;  kbd_usr[17].gShiftedAim=-MNU_ALPHA;   kbd_usr[17].primaryTam=KEY_UP1; 
-    kbd_usr[18].primary=CHR_7;  kbd_usr[18].fShifted=-MNU_EQN;  kbd_usr[18].gShifted=-MNU_HOME;   kbd_usr[18].keyLblAim=CHR_7;  kbd_usr[18].primaryAim=CHR_P;   kbd_usr[18].fShiftedAim=CHR_7;  kbd_usr[18].gShiftedAim=CHR_PI;   kbd_usr[18].primaryTam=CHR_7; 
-    kbd_usr[19].primary=CHR_8;  kbd_usr[19].fShifted=-MNU_ADV;  kbd_usr[19].gShifted=-MNU_CONST;  kbd_usr[19].keyLblAim=CHR_8;  kbd_usr[19].primaryAim=CHR_Q;   kbd_usr[19].fShiftedAim=CHR_8;  kbd_usr[19].gShiftedAim=CHR_QOPPA;  kbd_usr[19].primaryTam=CHR_8; 
-    kbd_usr[20].primary=CHR_9;  kbd_usr[20].fShifted=-MNU_MATX;   kbd_usr[20].gShifted=-MNU_XFN;  kbd_usr[20].keyLblAim=CHR_9;  kbd_usr[20].primaryAim=CHR_R;   kbd_usr[20].fShiftedAim=CHR_9;  kbd_usr[20].gShiftedAim=CHR_RHO;  kbd_usr[20].primaryTam=CHR_9; 
-    kbd_usr[21].primary=ITM_DIV;  kbd_usr[21].fShifted=-MNU_STAT;   kbd_usr[21].gShifted=-MNU_SUMS;   kbd_usr[21].keyLblAim=CHR_DIVIDE;   kbd_usr[21].primaryAim=CHR_S;   kbd_usr[21].fShiftedAim=CHR_DIVIDE;   kbd_usr[21].gShiftedAim=CHR_SIGMA;  kbd_usr[21].primaryTam=ITM_DIV; 
-    kbd_usr[22].primary=KEY_DOWN1;  kbd_usr[22].fShifted=KEY_SST;   kbd_usr[22].gShifted=ITM_FLGSV;   kbd_usr[22].keyLblAim=KEY_DOWN1;  kbd_usr[22].primaryAim=KEY_DOWN1;   kbd_usr[22].fShiftedAim=CHR_caseDN;  kbd_usr[22].gShiftedAim=CHR_case;   kbd_usr[22].primaryTam=KEY_DOWN1; 
-    kbd_usr[23].primary=CHR_4;  kbd_usr[23].fShifted=-MNU_BASE;   kbd_usr[23].gShifted=-MNU_CLK;  kbd_usr[23].keyLblAim=CHR_4;  kbd_usr[23].primaryAim=CHR_T;   kbd_usr[23].fShiftedAim=CHR_4;  kbd_usr[23].gShiftedAim=CHR_TAU;  kbd_usr[23].primaryTam=CHR_4; 
-    kbd_usr[24].primary=CHR_5;  kbd_usr[24].fShifted=-MNU_ANGLECONV;  kbd_usr[24].gShifted=-MNU_UNITCONV;   kbd_usr[24].keyLblAim=CHR_5;  kbd_usr[24].primaryAim=CHR_U;   kbd_usr[24].fShiftedAim=CHR_5;  kbd_usr[24].gShiftedAim=CHR_PHI;  kbd_usr[24].primaryTam=CHR_5; 
-    kbd_usr[25].primary=CHR_6;  kbd_usr[25].fShifted=-MNU_FLAGS;  kbd_usr[25].gShifted=-MNU_BITS;   kbd_usr[25].keyLblAim=CHR_6;  kbd_usr[25].primaryAim=CHR_V;   kbd_usr[25].fShiftedAim=CHR_6;  kbd_usr[25].gShiftedAim=CHR_PSI;  kbd_usr[25].primaryTam=CHR_6; 
-    kbd_usr[26].primary=ITM_MULT;   kbd_usr[26].fShifted=-MNU_PROB;   kbd_usr[26].gShifted=-MNU_INTS;   kbd_usr[26].keyLblAim=CHR_CROSS;  kbd_usr[26].primaryAim=CHR_W;   kbd_usr[26].fShiftedAim=CHR_CROSS;  kbd_usr[26].gShiftedAim=CHR_OMEGA;  kbd_usr[26].primaryTam=ITM_MULT; 
+    kbd_usr[13].primary=ITM_XexY;   kbd_usr[13].fShifted=ITM_LASTX;   kbd_usr[13].gShifted=ITM_Rup;  kbd_usr[13].keyLblAim=ITM_ex;   kbd_usr[13].primaryAim=ITM_M;   kbd_usr[13].fShiftedAim=ITM_ex;   kbd_usr[13].gShiftedAim=ITM_MU;   kbd_usr[13].primaryTam=ITM_NULL; 
+    kbd_usr[14].primary=ITM_CHS;  kbd_usr[14].fShifted=-MNU_MODE;   kbd_usr[14].gShifted=-MNU_EXP;   kbd_usr[14].keyLblAim=ITM_PLUS_MINUS;   kbd_usr[14].primaryAim=ITM_N;   kbd_usr[14].fShiftedAim=ITM_PLUS_MINUS;   kbd_usr[14].gShiftedAim=ITM_NU;   kbd_usr[14].primaryTam=ITM_NULL; 
+    kbd_usr[15].primary=ITM_EXPONENT;   kbd_usr[15].fShifted=-MNU_DSP;  kbd_usr[15].gShifted=-MNU_FIN;  kbd_usr[15].keyLblAim=ITM_NULL;   kbd_usr[15].primaryAim=ITM_O;   kbd_usr[15].fShiftedAim=ITM_UP_ARROW;   kbd_usr[15].gShiftedAim=ITM_OMICRON;  kbd_usr[15].primaryTam=ITM_NULL; 
+    kbd_usr[16].primary=ITM_BACKSPACE;  kbd_usr[16].fShifted=ITM_UNDO;  kbd_usr[16].gShifted=-MNU_CLR;  kbd_usr[16].keyLblAim=ITM_BACKSPACE;  kbd_usr[16].primaryAim=ITM_BACKSPACE;   kbd_usr[16].fShiftedAim=ITM_UNDO;   kbd_usr[16].gShiftedAim=-MNU_CLR;   kbd_usr[16].primaryTam=ITM_BACKSPACE; 
+    kbd_usr[17].primary=ITM_UP1;  kbd_usr[17].fShifted=ITM_BST;   kbd_usr[17].gShifted=ITM_RBR;   kbd_usr[17].keyLblAim=ITM_UP1;  kbd_usr[17].primaryAim=ITM_UP1;   kbd_usr[17].fShiftedAim=CHR_caseUP;  kbd_usr[17].gShiftedAim=-MNU_ALPHA;   kbd_usr[17].primaryTam=ITM_UP1; 
+    kbd_usr[18].primary=ITM_7;  kbd_usr[18].fShifted=-MNU_EQN;  kbd_usr[18].gShifted=-MNU_HOME;   kbd_usr[18].keyLblAim=ITM_7;  kbd_usr[18].primaryAim=ITM_P;   kbd_usr[18].fShiftedAim=ITM_7;  kbd_usr[18].gShiftedAim=ITM_PI;   kbd_usr[18].primaryTam=ITM_7; 
+    kbd_usr[19].primary=ITM_8;  kbd_usr[19].fShifted=-MNU_ADV;  kbd_usr[19].gShifted=-MNU_CONST;  kbd_usr[19].keyLblAim=ITM_8;  kbd_usr[19].primaryAim=ITM_Q;   kbd_usr[19].fShiftedAim=ITM_8;  kbd_usr[19].gShiftedAim=ITM_QOPPA;  kbd_usr[19].primaryTam=ITM_8; 
+    kbd_usr[20].primary=ITM_9;  kbd_usr[20].fShifted=-MNU_MATX;   kbd_usr[20].gShifted=-MNU_XFN;  kbd_usr[20].keyLblAim=ITM_9;  kbd_usr[20].primaryAim=ITM_R;   kbd_usr[20].fShiftedAim=ITM_9;  kbd_usr[20].gShiftedAim=ITM_RHO;  kbd_usr[20].primaryTam=ITM_9; 
+    kbd_usr[21].primary=ITM_DIV;  kbd_usr[21].fShifted=-MNU_STAT;   kbd_usr[21].gShifted=-MNU_SUMS;   kbd_usr[21].keyLblAim=ITM_OBELUS;   kbd_usr[21].primaryAim=ITM_S;   kbd_usr[21].fShiftedAim=ITM_OBELUS;   kbd_usr[21].gShiftedAim=ITM_SIGMA;  kbd_usr[21].primaryTam=ITM_DIV; 
+    kbd_usr[22].primary=ITM_DOWN1;  kbd_usr[22].fShifted=ITM_SST;   kbd_usr[22].gShifted=ITM_FLGSV;   kbd_usr[22].keyLblAim=ITM_DOWN1;  kbd_usr[22].primaryAim=ITM_DOWN1;   kbd_usr[22].fShiftedAim=CHR_caseDN;  kbd_usr[22].gShiftedAim=CHR_case;   kbd_usr[22].primaryTam=ITM_DOWN1; 
+    kbd_usr[23].primary=ITM_4;  kbd_usr[23].fShifted=-MNU_BASE;   kbd_usr[23].gShifted=-MNU_CLK;  kbd_usr[23].keyLblAim=ITM_4;  kbd_usr[23].primaryAim=ITM_T;   kbd_usr[23].fShiftedAim=ITM_4;  kbd_usr[23].gShiftedAim=ITM_TAU;  kbd_usr[23].primaryTam=ITM_4; 
+    kbd_usr[24].primary=ITM_5;  kbd_usr[24].fShifted=-MNU_ANGLECONV;  kbd_usr[24].gShifted=-MNU_UNITCONV;   kbd_usr[24].keyLblAim=ITM_5;  kbd_usr[24].primaryAim=ITM_U;   kbd_usr[24].fShiftedAim=ITM_5;  kbd_usr[24].gShiftedAim=ITM_PHI;  kbd_usr[24].primaryTam=ITM_5; 
+    kbd_usr[25].primary=ITM_6;  kbd_usr[25].fShifted=-MNU_FLAGS;  kbd_usr[25].gShifted=-MNU_BITS;   kbd_usr[25].keyLblAim=ITM_6;  kbd_usr[25].primaryAim=ITM_V;   kbd_usr[25].fShiftedAim=ITM_6;  kbd_usr[25].gShiftedAim=ITM_PSI;  kbd_usr[25].primaryTam=ITM_6; 
+    kbd_usr[26].primary=ITM_MULT;   kbd_usr[26].fShifted=-MNU_PROB;   kbd_usr[26].gShifted=-MNU_INTS;   kbd_usr[26].keyLblAim=ITM_CROSS;  kbd_usr[26].primaryAim=ITM_W;   kbd_usr[26].fShiftedAim=ITM_CROSS;  kbd_usr[26].gShiftedAim=ITM_OMEGA;  kbd_usr[26].primaryTam=ITM_MULT; 
     kbd_usr[27].primary=KEY_fg;   kbd_usr[27].fShifted=ITM_NULL;  kbd_usr[27].gShifted=ITM_NULL;  kbd_usr[27].keyLblAim=KEY_fg;   kbd_usr[27].primaryAim=KEY_fg;  kbd_usr[27].fShiftedAim=ITM_NULL;   kbd_usr[27].gShiftedAim=ITM_NULL;   kbd_usr[27].primaryTam=KEY_fg; 
-    kbd_usr[28].primary=CHR_1;  kbd_usr[28].fShifted=ITM_ASSIGN;  kbd_usr[28].gShifted=-MNU_ASN;  kbd_usr[28].keyLblAim=CHR_1;  kbd_usr[28].primaryAim=CHR_X;   kbd_usr[28].fShiftedAim=CHR_1;  kbd_usr[28].gShiftedAim=CHR_XI;   kbd_usr[28].primaryTam=CHR_1; 
-    kbd_usr[29].primary=CHR_2;  kbd_usr[29].fShifted=KEY_USERMODE;  kbd_usr[29].gShifted=-MNU_LOOP;   kbd_usr[29].keyLblAim=CHR_2;  kbd_usr[29].primaryAim=CHR_Y;   kbd_usr[29].fShiftedAim=CHR_2;  kbd_usr[29].gShiftedAim=CHR_UPSILON;  kbd_usr[29].primaryTam=CHR_2; 
-    kbd_usr[30].primary=CHR_3;  kbd_usr[30].fShifted=-MNU_PARTS;  kbd_usr[30].gShifted=-MNU_TEST;   kbd_usr[30].keyLblAim=CHR_3;  kbd_usr[30].primaryAim=CHR_Z;   kbd_usr[30].fShiftedAim=CHR_3;  kbd_usr[30].gShiftedAim=CHR_ZETA;   kbd_usr[30].primaryTam=CHR_3; 
-    kbd_usr[31].primary=ITM_SUB;  kbd_usr[31].fShifted=-MNU_STK;  kbd_usr[31].gShifted=-MNU_ALPHAFN;  kbd_usr[31].keyLblAim=CHR_MINUS;  kbd_usr[31].primaryAim=CHR_UNDERSCORE;  kbd_usr[31].fShiftedAim=CHR_MINUS;  kbd_usr[31].gShiftedAim=CHR_SAMPI;  kbd_usr[31].primaryTam=ITM_SUB; 
-    kbd_usr[32].primary=KEY_EXIT1;  kbd_usr[32].fShifted=ITM_OFF;   kbd_usr[32].gShifted=-MNU_PRINT;  kbd_usr[32].keyLblAim=KEY_EXIT1;  kbd_usr[32].primaryAim=KEY_EXIT1;   kbd_usr[32].fShiftedAim=ITM_OFF;  kbd_usr[32].gShiftedAim=CHR_PRINTER;  kbd_usr[32].primaryTam=KEY_EXIT1; 
-    kbd_usr[33].primary=CHR_0;  kbd_usr[33].fShifted=ITM_VIEW;  kbd_usr[33].gShifted=ITM_TIMER;   kbd_usr[33].keyLblAim=CHR_0;  kbd_usr[33].primaryAim=CHR_COLON;   kbd_usr[33].fShiftedAim=CHR_0;  kbd_usr[33].gShiftedAim=-MNU_ALPHA;   kbd_usr[33].primaryTam=CHR_0; 
-    kbd_usr[34].primary=CHR_PERIOD;   kbd_usr[34].fShifted=ITM_SHOW;  kbd_usr[34].gShifted=-MNU_INFO;   kbd_usr[34].keyLblAim=CHR_PERIOD;   kbd_usr[34].primaryAim=CHR_COMMA;   kbd_usr[34].fShiftedAim=CHR_PERIOD;   kbd_usr[34].gShiftedAim=-MNU_ALPHADOT;  kbd_usr[34].primaryTam=CHR_PERIOD; 
-    kbd_usr[35].primary=ITM_RS;   kbd_usr[35].fShifted=ITM_PR;  kbd_usr[35].gShifted=-MNU_PFN;  kbd_usr[35].keyLblAim=ITM_NULL;   kbd_usr[35].primaryAim=CHR_QUESTION_MARK;   kbd_usr[35].fShiftedAim=CHR_SLASH;  kbd_usr[35].gShiftedAim=-MNU_ALPHAMATH;   kbd_usr[35].primaryTam=ITM_NULL; 
-    kbd_usr[36].primary=ITM_ADD;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].gShifted=-MNU_IO;   kbd_usr[36].keyLblAim=CHR_PLUS;   kbd_usr[36].primaryAim=CHR_SPACE;   kbd_usr[36].fShiftedAim=CHR_PLUS;   kbd_usr[36].gShiftedAim=-MNU_ALPHAINTL;   kbd_usr[36].primaryTam=ITM_ADD; 
+    kbd_usr[28].primary=ITM_1;  kbd_usr[28].fShifted=ITM_ASSIGN;  kbd_usr[28].gShifted=-MNU_ASN;  kbd_usr[28].keyLblAim=ITM_1;  kbd_usr[28].primaryAim=ITM_X;   kbd_usr[28].fShiftedAim=ITM_1;  kbd_usr[28].gShiftedAim=ITM_XI;   kbd_usr[28].primaryTam=ITM_1; 
+    kbd_usr[29].primary=ITM_2;  kbd_usr[29].fShifted=ITM_USERMODE;  kbd_usr[29].gShifted=-MNU_LOOP;   kbd_usr[29].keyLblAim=ITM_2;  kbd_usr[29].primaryAim=ITM_Y;   kbd_usr[29].fShiftedAim=ITM_2;  kbd_usr[29].gShiftedAim=ITM_UPSILON;  kbd_usr[29].primaryTam=ITM_2; 
+    kbd_usr[30].primary=ITM_3;  kbd_usr[30].fShifted=-MNU_PARTS;  kbd_usr[30].gShifted=-MNU_TEST;   kbd_usr[30].keyLblAim=ITM_3;  kbd_usr[30].primaryAim=ITM_Z;   kbd_usr[30].fShiftedAim=ITM_3;  kbd_usr[30].gShiftedAim=ITM_ZETA;   kbd_usr[30].primaryTam=ITM_3; 
+    kbd_usr[31].primary=ITM_SUB;  kbd_usr[31].fShifted=-MNU_STK;  kbd_usr[31].gShifted=-MNU_ALPHAFN;  kbd_usr[31].keyLblAim=ITM_MINUS;  kbd_usr[31].primaryAim=ITM_UNDERSCORE;  kbd_usr[31].fShiftedAim=ITM_MINUS;  kbd_usr[31].gShiftedAim=ITM_SAMPI;  kbd_usr[31].primaryTam=ITM_SUB; 
+    kbd_usr[32].primary=ITM_EXIT1;  kbd_usr[32].fShifted=ITM_OFF;   kbd_usr[32].gShifted=-MNU_PRINT;  kbd_usr[32].keyLblAim=ITM_EXIT1;  kbd_usr[32].primaryAim=ITM_EXIT1;   kbd_usr[32].fShiftedAim=ITM_OFF;  kbd_usr[32].gShiftedAim=ITM_PRINTER;  kbd_usr[32].primaryTam=ITM_EXIT1; 
+    kbd_usr[33].primary=ITM_0;  kbd_usr[33].fShifted=ITM_VIEW;  kbd_usr[33].gShifted=ITM_TIMER;   kbd_usr[33].keyLblAim=ITM_0;  kbd_usr[33].primaryAim=ITM_COLON;   kbd_usr[33].fShiftedAim=ITM_0;  kbd_usr[33].gShiftedAim=-MNU_ALPHA;   kbd_usr[33].primaryTam=ITM_0; 
+    kbd_usr[34].primary=ITM_PERIOD;   kbd_usr[34].fShifted=ITM_SHOW;  kbd_usr[34].gShifted=-MNU_INFO;   kbd_usr[34].keyLblAim=ITM_PERIOD;   kbd_usr[34].primaryAim=ITM_COMMA;   kbd_usr[34].fShiftedAim=ITM_PERIOD;   kbd_usr[34].gShiftedAim=-MNU_ALPHADOT;  kbd_usr[34].primaryTam=ITM_PERIOD; 
+    kbd_usr[35].primary=ITM_RS;   kbd_usr[35].fShifted=ITM_PR;  kbd_usr[35].gShifted=-MNU_PFN;  kbd_usr[35].keyLblAim=ITM_NULL;   kbd_usr[35].primaryAim=ITM_QUESTION_MARK;   kbd_usr[35].fShiftedAim=ITM_SLASH;  kbd_usr[35].gShiftedAim=-MNU_ALPHAMATH;   kbd_usr[35].primaryTam=ITM_NULL; 
+    kbd_usr[36].primary=ITM_ADD;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].gShifted=-MNU_IO;   kbd_usr[36].keyLblAim=ITM_PLUS;   kbd_usr[36].primaryAim=ITM_SPACE;   kbd_usr[36].fShiftedAim=ITM_PLUS;   kbd_usr[36].gShiftedAim=-MNU_ALPHAINTL;   kbd_usr[36].primaryTam=ITM_ADD; 
     fnSetFlag(FLAG_USER);
     break;
 
@@ -1318,27 +1318,27 @@ void fnUserJM(uint16_t jmUser) {
   
     fnUserJM(USER_C43);
   
-    kbd_usr[0].primary     = KEY_USERMODE;
+    kbd_usr[0].primary     = ITM_USERMODE;
     kbd_usr[9].primary     = -MNU_TRI;
-    kbd_usr[9].fShifted    = KEY_USERMODE;
+    kbd_usr[9].fShifted    = ITM_USERMODE;
        //kbd_usr[9].gShifted    = ITM_RTN;
        //kbd_usr[9].fShifted    = ITM_NULL;
-    kbd_usr[10].primary    = KEY_f;
+    kbd_usr[10].primary    = ITM_SHIFTf;
     kbd_usr[10].fShifted   = ITM_NULL;
     kbd_usr[10].gShifted   = ITM_NULL;
-    kbd_usr[11].primary    = KEY_g;
+    kbd_usr[11].primary    = ITM_SHIFTg;
     kbd_usr[11].fShifted   = ITM_NULL;
     kbd_usr[11].gShifted   = ITM_NULL;
-    Norm_Key_00_VAR        = KEY_USERMODE;
+    Norm_Key_00_VAR        = ITM_USERMODE;
     fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
     fnSetFlag(FLAG_USER);
     break;
 
   //LEFT SHIFTS Not used, and disabled from KEYS menu
   case USER_SHIFTS2:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
-    kbd_usr[0].primary     = KEY_USERMODE;
+    kbd_usr[0].primary     = ITM_USERMODE;
     kbd_usr[9].primary     = -MNU_TRI;
-    kbd_usr[9].fShifted    = KEY_USERMODE;
+    kbd_usr[9].fShifted    = ITM_USERMODE;
 
     kbd_usr[10].primary    = ITM_STO;
     kbd_usr[10].fShifted   = ITM_MAGNITUDE;
@@ -1347,13 +1347,13 @@ void fnUserJM(uint16_t jmUser) {
     kbd_usr[11].fShifted   = ITM_PC;
     kbd_usr[11].gShifted   = ITM_DELTAPC;
 
-    kbd_usr[6].primary    = KEY_f;
+    kbd_usr[6].primary    = ITM_SHIFTf;
     kbd_usr[6].fShifted   = ITM_NULL;
     kbd_usr[6].gShifted   = ITM_NULL;
-    kbd_usr[7].primary    = KEY_g;
+    kbd_usr[7].primary    = ITM_SHIFTg;
     kbd_usr[7].fShifted   = ITM_NULL;
     kbd_usr[7].gShifted   = ITM_NULL;
-    Norm_Key_00_VAR        = KEY_USERMODE;
+    Norm_Key_00_VAR        = ITM_USERMODE;
     fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
     fnSetFlag(FLAG_USER);
     break;
@@ -1375,8 +1375,8 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
   case USER_USER:                                              //USER_DEFAULTS FOR USER: E+ USER
-    kbd_usr[0].primary     = KEY_USERMODE;
-    Norm_Key_00_VAR        = KEY_USERMODE;
+    kbd_usr[0].primary     = ITM_USERMODE;
+    Norm_Key_00_VAR        = ITM_USERMODE;
     fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
     fnSetFlag(FLAG_USER);
     break;
@@ -1403,10 +1403,10 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
   case USER_GSHFT:                                           //USER_DEFAULTS FOR USER: E+ SHIFT G
-    kbd_usr[0].primary     = KEY_g;
+    kbd_usr[0].primary     = ITM_SHIFTg;
     kbd_usr[0].gShifted    = ITM_NULL;
     kbd_usr[0].fShifted    = ITM_NULL;
-    Norm_Key_00_VAR        = KEY_g;
+    Norm_Key_00_VAR        = ITM_SHIFTg;
     fnRefreshRadioState(RB_SA, Norm_Key_00_VAR);
     fnSetFlag(FLAG_USER);
     break;
@@ -1420,7 +1420,7 @@ void fnUserJM(uint16_t jmUser) {
 
 /*
   case JM_ASSIGN:                 //A non 0 and non 32766 value means the FN NUMBER is in JM_ASSIGN, AND KEYBOARD.C will wait for a key to be assigned to                                     //USER_RESET 27
-    JM_ASN_MODE = KEY_CC;         //TEMPORARY TEST FUNCTION
+    JM_ASN_MODE = ITM_CC;         //TEMPORARY TEST FUNCTION
     break;
 */
 
@@ -1446,7 +1446,7 @@ void fnUserJM(uint16_t jmUser) {
 
 
 void fnKEYSELECT(void) {                                        //JM ASSIGN - REMEMBER NEXT KEYBOARD FUNCTION
-  if(JM_ASN_MODE == KEY_EXIT1 || JM_ASN_MODE == KEY_BACKSPACE) {
+  if(JM_ASN_MODE == ITM_EXIT1 || JM_ASN_MODE == ITM_BACKSPACE) {
     JM_ASN_MODE = 0;
     #ifndef TESTSUITE_BUILD
         clearScreen_old(false,true,false);
