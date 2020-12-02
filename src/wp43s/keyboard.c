@@ -1167,11 +1167,10 @@ void fnKeyBackspace(uint16_t unusedParamButMandatory) {
           }
           aimBuffer[ix+lg]=0;                          //end new buffer
 //mod     T_cursorPos_tmp = showString(aimBuffer + T_cursorPos, &standardFont, xCursor + 6 /*Normally 8, reduced either side by 1*/, Y_POSITION_OF_AIM_LINE + 6, vmNormal, true, true);
-printf("newXCursor=%d  T_cursorPos=%d  stringLastGlyph(aimBuffer)=%d\n",newXCursor,T_cursorPos,stringLastGlyph(aimBuffer));
+          //printf("newXCursor=%d  T_cursorPos=%d  stringLastGlyph(aimBuffer)=%d\n",newXCursor,T_cursorPos,stringLastGlyph(aimBuffer));
           if(T_cursorPos <= 1 + stringLastGlyph(aimBuffer)) {
             fnT_ARROW(ITM_T_LEFT_ARROW);                               //move cursor one left
           }
-printf("newXCursor=%d  T_cursorPos=%d  stringLastGlyph(aimBuffer)=%d\n",newXCursor,T_cursorPos,stringLastGlyph(aimBuffer));
 //JMCURSOR^^
       }
       break;
