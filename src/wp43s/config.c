@@ -679,9 +679,19 @@ void fnReset(uint16_t confirmation) {
     #endif
 
     //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
-    fnStrtoX("C43_29-Working, 2020-11-24");
+    fnStrtoX("C43 Rel48 Working, 2020-12-02");
     fnStore(102);
     fnDrop(0);
+
+    #ifdef JM_LAYOUT_1A
+    fnStrtoX("LAYOUT1 (Main C43 template)");
+    #endif
+    #ifdef JM_LAYOUT_2_DM42_STRICT
+    fnStrtoX("LAYOUT42 (DM42 compatible)");
+    #endif
+    fnStore(103);
+    fnDrop(0);
+
 
     //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
     fnStrtoX("Reg 11,12 & 13 have: The 3 cubes = 3.");
