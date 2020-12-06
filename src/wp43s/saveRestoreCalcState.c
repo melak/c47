@@ -224,6 +224,7 @@ void saveCalc(void) {
   save(&MY_ALPHA_MENU,                      sizeof(MY_ALPHA_MENU),                      backup);   //JM ^^
   save(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP),               backup);   //JM ^^
   save(&ListXYposition,                     sizeof(ListXYposition),                     backup);   //JM ^^
+  save(&numLock,                            sizeof(numLock),                            backup);   //JM ^^
 
 
   fclose(backup);
@@ -419,6 +420,7 @@ void restoreCalc(void) {
     restore(&MY_ALPHA_MENU,                      sizeof(MY_ALPHA_MENU),                      backup);   //JM ^^
     restore(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP),               backup);   //JM ^^
     restore(&ListXYposition,                     sizeof(ListXYposition),                     backup);   //JM ^^
+    restore(&numLock,                            sizeof(numLock),                            backup);   //JM ^^
 
 
     fclose(backup);

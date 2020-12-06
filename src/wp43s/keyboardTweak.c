@@ -45,6 +45,7 @@ void fnCase(uint16_t Param) {
     case 0:  processKeyAction(CHR_case); break;
     case 1:  if(alphaCase == AC_LOWER)  { processKeyAction(CHR_case); } break;
     case 2:  if(alphaCase == AC_UPPER)  { processKeyAction(CHR_case); } break;
+    case 3:  processKeyAction(CHR_num); break;
     default: break;
   }
 

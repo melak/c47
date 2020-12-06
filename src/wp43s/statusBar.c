@@ -284,6 +284,11 @@ void showOverflowCarry(void) {
  ***********************************************/
 void showHideAlphaMode(void) {
   if(calcMode == CM_AIM || calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM) {
+
+    if(numLock) {
+      showString(STD_num, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
+    } 
+    else
     if(alphaCase == AC_UPPER) {
       showString(STD_ALPHA, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
       setSystemFlag(FLAG_alphaCAP);
@@ -292,6 +297,7 @@ void showHideAlphaMode(void) {
       showString(STD_alpha, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_alpha is 0+9+2 pixel wide
       clearSystemFlag(FLAG_alphaCAP);
     }
+
   }
   else {
     showGlyphCode(' ',  &standardFont, X_ALPHA_MODE, 0, vmNormal, true, true); // is 0+0+10 pixel wide

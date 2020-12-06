@@ -52,7 +52,7 @@ GtkWidget *lbl31L,  *lbl32L,  *lbl33L,  *lbl34L,  *lbl35L,  *lbl36L;
 GtkWidget                     *lbl33H;                                  //JMALPHA2 Removed lbl34H, to be replaced with lbl34Fa
 GtkWidget *lbl31Gr, *lbl32Gr, *lbl33Gr, *lbl34Gr, *lbl35Gr, *lbl36Gr;
 GtkWidget *btn31A,  *btn32A,  *btn33A,  *btn34A,  *btn35A,  *btn36A;    //dr - new AIM
-GtkWidget                               *lbl34Fa;                                 //JMALPHA2
+GtkWidget                               *lbl34Fa, *lbl35Fa;                                 //JMALPHA2
 
 GtkWidget *btn41,   *btn42,   *btn43,   *btn44,   *btn45;
 GtkWidget *lbl41F,  *lbl42F,  *lbl43F,  *lbl44F,  *lbl45F;
@@ -130,34 +130,54 @@ static gint destroyCalc(GtkWidget* w, GdkEventAny* e, gpointer data) {
 
 //JM ALPHA SECTION FOR ALPHAMODE - LOWER CASE PC LETTER INPUT. USE LETTER
 void btnClicked_LC(GtkWidget *w, gpointer data) {
+  bool_t numLock_MEM;
+  numLock_MEM = numLock;
+  numLock = false;
   btnClicked(w, data);
+  numLock = numLock_MEM;
+  refreshStatusBar();
 }
 
 
 //JM ALPHA SECTION FOR ALPHAMODE -  UPPER CASE PC LETTER INPUT. INVERT 43C CASE. USE LETTER.
 void btnClicked_UC(GtkWidget *w, gpointer data) {
   uint8_t alphaCase_MEM;
+  bool_t numLock_MEM;
   alphaCase_MEM = alphaCase;
+  numLock_MEM = numLock;
   if(alphaCase == AC_UPPER) {alphaCase = AC_LOWER;}
   else if(alphaCase == AC_LOWER) {alphaCase = AC_UPPER;}
+  numLock = false;
   btnClicked(w, data);
   alphaCase = alphaCase_MEM;
+  numLock = numLock_MEM;
+  refreshStatusBar();
 }
 
 
 //JM NUMERIC SECTION FOR ALPHAMODE - FORCE Numeral - Numbers from PC --> produce numbers.
 void btnClicked_NU(GtkWidget *w, gpointer data) {
+  bool_t numLock_MEM;
+  numLock_MEM = numLock;
+  numLock = false;
   shiftF = true;       //JM
   shiftG = false;      //JM
   btnClicked(w, data);
+  numLock = numLock_MEM;
+  refreshStatusBar();
 }
 
 //Shifted numbers !@#$%^&*() from PC --> activate shift and use numnber 1234567890. Restore case.
 void btnClicked_SNU(GtkWidget *w, gpointer data) {
+  bool_t numLock_MEM;
+  numLock_MEM = numLock;
+  numLock = false;
   shiftF = false;       //JM
   shiftG = true;        //JM
   btnClicked(NULL, "34");     //Alphadot
   //Only : is working at this point
+  numLock = numLock_MEM;
+  refreshStatusBar();
 }
 
 
@@ -1122,6 +1142,7 @@ void hideAllWidgets(void) {
   gtk_widget_hide(lbl35Gr);
   gtk_widget_hide(lbl36Gr);
   gtk_widget_hide(lbl34Fa); //JMALPHA2
+  gtk_widget_hide(lbl35Fa); //JMALPHA2
 
   gtk_widget_hide(btn41);
   gtk_widget_hide(btn42);
@@ -1427,6 +1448,8 @@ void moveLabels(void) {
   gtk_fixed_move(GTK_FIXED(grid), lbl35G, (2*xPos+KEY_WIDTH_1+lblF.width+GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);
   gtk_widget_get_preferred_size(  lbl35Gr, NULL, &lblG);                                                               //JM !! GR
   gtk_fixed_move(GTK_FIXED(grid), lbl35Gr, xPos+KEY_WIDTH_1*2/3,                              yPos - Y_OFFSET_GREEK);  //JM !! GR
+  gtk_widget_get_preferred_size(  lbl35Fa, NULL, &lblF);                                                                          //vv JMALPHA2
+  gtk_fixed_move(GTK_FIXED(grid), lbl35Fa, (2*xPos+2*KEY_WIDTH_1+2)/2 + 2, yPos);    //JMALPHA2 SPECIAL Position for template on the side. 
 
   xPos += DELTA_KEYS_X;
   gtk_widget_get_preferred_size(  lbl36F, NULL, &lblF);
@@ -2342,6 +2365,7 @@ void calcModeAimGui(void) {
   labelCaptionAim(keys++, btn33A, lbl33Gr, lbl33L);
   labelCaptionAimFaChr(   keys,   lbl34Fa, CHR_case);          //JMALPHA2 new
   labelCaptionAim(keys++, btn34A, lbl34Gr, lbl34L);
+  labelCaptionAimFaChr(   keys,   lbl35Fa, CHR_num);          //JMALPHA2 new
   labelCaptionAim(keys++, btn35A, lbl35Gr, lbl35L);
   labelCaptionAim(keys++, btn36A, lbl36Gr, lbl36L);     //^^
 
@@ -2439,6 +2463,7 @@ void calcModeAimGui(void) {
   gtk_widget_show(btn35A);
   gtk_widget_show(btn36A);      //^^
   gtk_widget_show(lbl34Fa);    //JMALPHA2
+  gtk_widget_show(lbl35Fa);    //JMALPHA2
 
   //gtk_widget_show(lbl31F);  JM
   //gtk_widget_show(lbl31L);    //dr - new AIM
@@ -3166,6 +3191,7 @@ void setupUI(void) {
   lbl35F  = gtk_label_new("");
   lbl36F  = gtk_label_new("");
   lbl34Fa  = gtk_label_new("");  //JMALPHA2
+  lbl35Fa  = gtk_label_new("");  //JMALPHA2
   lbl31G  = gtk_label_new("");
   lbl32G  = gtk_label_new("");
   lbl33G  = gtk_label_new("");
@@ -3237,6 +3263,7 @@ void setupUI(void) {
   gtk_fixed_put(GTK_FIXED(grid), lbl33F,  0, 0);
   gtk_fixed_put(GTK_FIXED(grid), lbl34F,  0, 0);
   gtk_fixed_put(GTK_FIXED(grid), lbl34Fa, 0, 0);            //JMALPHA2
+  gtk_fixed_put(GTK_FIXED(grid), lbl35Fa, 0, 0);            //JMALPHA2
   gtk_fixed_put(GTK_FIXED(grid), lbl35F,  0, 0);
   gtk_fixed_put(GTK_FIXED(grid), lbl36F,  0, 0);
   gtk_fixed_put(GTK_FIXED(grid), lbl31G,  0, 0);
@@ -4094,6 +4121,7 @@ void calcModeAim(uint16_t unusedParamButMandatory) {
   }
 
     alphaCase = AC_UPPER;
+    numLock = false;
     calcMode = CM_AIM;
     nextChar = NC_NORMAL;
 
@@ -4128,6 +4156,7 @@ void calcModeAsm(void) {
 
   if(calcMode != CM_AIM) {
     alphaCase = AC_UPPER;
+    numLock = false;
     nextChar = NC_NORMAL;
   }
 

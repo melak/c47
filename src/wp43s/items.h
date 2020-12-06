@@ -2207,8 +2207,9 @@
 #define ITM_DIFF                      2185   //GRAPH
 #define ITM_RMS                       2186   //GRAPH
 #define ITM_SHADE                     2187   //GRAPH
+#define CHR_num                       2188
 
-#define LAST_ITEM                     2188   //JM
+#define LAST_ITEM                     2189   //JM
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

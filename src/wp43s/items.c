@@ -2792,6 +2792,7 @@ const item_t indexOfItems[] = {
 /* 2185 */  { fnPdiff,                     NOPARAM,                     STD_DELTA "y/" STD_DELTA "x",                  STD_DELTA "y/" STD_DELTA "x",                  0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},//GRAPH
 /* 2186 */  { fnPrms,                      NOPARAM,                     "RMS",                                         "RMS",                                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},//GRAPH
 /* 2187 */  { fnPshade,                    NOPARAM,                     "SHADE",                                       "SHADE",                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},//GRAPH
+/* 2188 */  { fnCase,                      3,                           "",                                            STD_num,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},//JM CASE
 
-/* 2188 */  { itemToBeCoded,               NOPARAM,                     "",                                            "Last item",                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 2189 */  { itemToBeCoded,               NOPARAM,                     "",                                            "Last item",                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 };

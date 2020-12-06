@@ -536,6 +536,22 @@ void btnReleased(void *data) {
 }
 
 
+int16_t numKey(int16_t item) {                    //JMvv
+  switch(item) {
+    case ITM_P: return ITM_7; break;
+    case ITM_Q: return ITM_8; break;
+    case ITM_R: return ITM_9; break;
+    case ITM_T: return ITM_4; break;
+    case ITM_U: return ITM_5; break;
+    case ITM_V: return ITM_6; break;
+    case ITM_X: return ITM_1; break;
+    case ITM_Y: return ITM_2; break;
+    case ITM_Z: return ITM_3; break;
+    case ITM_COLON:      return ITM_0; break;
+    case ITM_COMMA:      return ITM_PERIOD; break;
+    default:             return 0;
+  }
+}                                                 //JM^^
 
 /********************************************//**
  * \brief A calc button was pressed
@@ -621,7 +637,16 @@ void processKeyAction(int16_t item) {
       }
       break;
 
+    case CHR_num: {
+      alphaCase = AC_UPPER;
+      numLock = !numLock;
+      showAlphaModeonGui(); //dr JM, see keyboardtweaks
+      keyActionProcessed = true;
+      }
+      break;
+
     case CHR_case: {
+      numLock = false;
       int16_t sm = softmenu[softmenuStack[softmenuStackPointer - 1].softmenu].menuId;                                      //JMvv
       if(alphaCase == AC_LOWER) {
         alphaCase = AC_UPPER;
@@ -656,7 +681,14 @@ void processKeyAction(int16_t item) {
           break;
 
         case CM_AIM:
-          if(alphaCase == AC_LOWER && (ITM_A <= item && item <= ITM_Z)) {
+          if(numLock) {                           //JMvv
+            if(numKey(item)>0) {
+              addItemToBuffer(numKey(item));
+            }
+            keyActionProcessed = true;
+          }                                       //JM^^
+
+          else if(alphaCase == AC_LOWER && (ITM_A <= item && item <= ITM_Z)) {
             addItemToBuffer(item + 26);
             keyActionProcessed = true;
           }

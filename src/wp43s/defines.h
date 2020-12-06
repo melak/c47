@@ -24,7 +24,7 @@
    #undef  BLUES_WHEN_SWAPPED
 
 #define SWAP_TO_L1_ON_DM42           //JM Normally L2 in on DM42
-//#undef  SWAP_TO_L1_ON_DM42
+#undef  SWAP_TO_L1_ON_DM42
 
 //*********************************
 // JM VARIOUS OPTIONS
@@ -103,7 +103,7 @@
 //*************************
 //* Other defines         *
 //*************************
-#define YEARMONTH                                 "2020.11"
+#define YEARMONTH                                 "2020.12"
 #define VERSION                                   "Pre-alpha" STD_SPACE_3_PER_EM "version" STD_SPACE_3_PER_EM YEARMONTH
 #define COPYRIGHT                                 "The WP43S team"
 #define WHO                                       "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM "v0.1" STD_SPACE_3_PER_EM YEARMONTH STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter" STD_SPACE_3_PER_EM "&" STD_SPACE_3_PER_EM "Martin"

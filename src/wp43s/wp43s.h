@@ -316,6 +316,7 @@ extern uint8_t               calcMode;
 extern uint8_t               nextChar;
 extern uint8_t               displayStack;
 extern uint8_t               displayStackSHOIDISP;        //JM SHOIDISP
+extern bool_t                numLock;                     //JM
 extern uint8_t               alphaCase;
 extern uint8_t               numLinesNumericFont;
 extern uint8_t               numLinesStandardFont;

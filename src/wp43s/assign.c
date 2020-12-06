@@ -85,7 +85,7 @@ const calcKey_t kbd_std[37] = {
  {32,   ITM_RCL,          ITM_PC,          ITM_DELTAPC,  ITM_NULL,       ITM_H,             ITM_NULL,        ITM_ETA,       ITM_HEX      }, //JM
  {33,   ITM_Rdown,        ITM_CONSTpi,          ITM_XTHROOT,  ITM_NULL,       ITM_I,             ITM_DOWN_ARROW,  ITM_IOTA,      ITM_REGI     }, // if f or g are changed: adapt the function btnClicked section if(calcMode == CM_NIM) in keyboard.c. Case H for hexadecimal base
  {34,   ITM_sin,          ITM_arcsin,      ITM_GTO,      ITM_NULL,       ITM_J,             CHR_case,        ITM_THETA,     ITM_REGJ     }, //JM
- {35,   ITM_cos,          ITM_arccos,      ITM_LBL,      ITM_NULL,       ITM_K,             ITM_NULL,        ITM_KAPPA,     ITM_REGK     }, //JM
+ {35,   ITM_cos,          ITM_arccos,      ITM_LBL,      ITM_NULL,       ITM_K,             CHR_num,         ITM_KAPPA,     ITM_REGK     }, //JM
  {36,   ITM_tan,          ITM_arctan,      ITM_RTN,      ITM_NULL,       ITM_L,             ITM_NULL,        ITM_LAMBDA,    ITM_REGL     }, //JM
        
  {41,   ITM_ENTER,        KEY_COMPLEX,    -MNU_CPX,      ITM_ENTER,      ITM_ENTER,         ITM_NULL,        ITM_NULL,      ITM_ENTER    }, //JM
@@ -132,9 +132,9 @@ const calcKey_t kbd_std[37] = {
  
  {31,   ITM_STO,          KEY_COMPLEX,     ITM_MAGNITUDE, ITM_NULL,       ITM_G,            ITM_NULL,        ITM_GAMMA,     ITM_NULL     }, //JM
  {32,   ITM_RCL,          ITM_PC,          ITM_ANGLE,     ITM_NULL,       ITM_H,            ITM_NULL,        ITM_ETA,       ITM_HEX      }, //JM
- {33,   ITM_Rdown,        ITM_CONSTpi,          ITM_XTHROOT,   ITM_NULL,       ITM_I,            ITM_DOWN_ARROW,  ITM_IOTA,      ITM_REGI     }, // if f or g are changed: adapt the function btnClicked section if(calcMode == CM_NIM) in keyboard.c. Case H for hexadecimal base
+ {33,   ITM_Rdown,        ITM_CONSTpi,     ITM_XTHROOT,   ITM_NULL,       ITM_I,            ITM_DOWN_ARROW,  ITM_IOTA,      ITM_REGI     }, // if f or g are changed: adapt the function btnClicked section if(calcMode == CM_NIM) in keyboard.c. Case H for hexadecimal base
  {34,   ITM_sin,          ITM_arcsin,      ITM_CC,        ITM_NULL,       ITM_J,            CHR_case,        ITM_THETA,     ITM_REGJ     }, //JM
- {35,   ITM_cos,          ITM_arccos,      ITM_LBL,       ITM_NULL,       ITM_K,            ITM_NULL,        ITM_KAPPA,     ITM_REGK     }, //JM
+ {35,   ITM_cos,          ITM_arccos,      ITM_LBL,       ITM_NULL,       ITM_K,            CHR_num,         ITM_KAPPA,     ITM_REGK     }, //JM
  {36,   ITM_tan,          ITM_arctan,      ITM_RTN,       ITM_NULL,       ITM_L,            ITM_NULL,        ITM_LAMBDA,    ITM_REGL     }, //JM
        
  {41,   ITM_ENTER,        ITM_AIM,        -MNU_CPX,      ITM_ENTER,      ITM_ENTER,        ITM_NULL,        ITM_NULL,      ITM_ENTER    }, //JM
