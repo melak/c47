@@ -438,49 +438,6 @@ void realToDisplayString2(const real34_t *real34, char *displayString, int16_t d
     return;
   }
 
-//JM /* ***************************************      SIGFIG ********************************** */
-//    SigFigMode                                                                      //JM SIGFIG
-                                                                                      //JM SIGFIG
-    uint8_t  SigFig;                                                                  //JM SIGFIG
-    SigFig = SigFigMode + 1;                                                          //JM SIGFIG
-                                                                                      //JM SIGFIG
-    uint8_t  SigFigTmp;                                                               //JM SIGFIG
-    uint8_t  SigFigCnt;                                                               //JM SIGFIG
-                                                                                      //JM SIGFIG
-  if(SigFigMode >= 1) {                                                               //JM SIGFIG 0 is disabled
-                                                                                      //JM SIGFIG
-   SigFigTmp = firstDigit + SigFig - 1;                                               //JM SIGFIG
-                                                                                      //JM SIGFIG
-  //JM SIGFIG - Round the displayed number                                            //JM SIGFIG
-   if(bcd[SigFigTmp + 1] >= 5) {                                                      //JM SIGFIG
-      bcd[SigFigTmp]++;                                                               //JM SIGFIG
-   }                                                                                  //JM SIGFIG
-                                                                                      //JM SIGFIG
-  //JM SIGFIG - Transfer the carry                                                    //JM SIGFIG
-    while(bcd[SigFigTmp] == 10) {                                                     //JM SIGFIG
-      bcd[SigFigTmp--] = 0;                                                           //JM SIGFIG
-      bcd[SigFigTmp]++;                                                               //JM SIGFIG
-    }                                                                                 //JM SIGFIG
-                                                                                      //JM SIGFIG
-  //JM SIGFIG - Case when 9.9999 rounds to 10.0000                                    //JM SIGFIG
-    if(SigFigTmp < firstDigit) {                                                      //JM SIGFIG
-      firstDigit--;                                                                   //JM SIGFIG
-      lastDigit = firstDigit;                                                         //JM SIGFIG
-      numDigits = 1;                                                                  //JM SIGFIG
-      exponent++;                                                                     //JM SIGFIG
-    }                                                                                 //JM SIGFIG
-                                                                                      //JM SIGFIG
-  //JM SIGFIG - blank out non-sig digits to the right                                 //JM SIGFIG
-    if(firstDigit + SigFig <= lastDigit) {                                            //JM SIGFIG
-       for (digitCount = firstDigit + SigFig; digitCount <= lastDigit; digitCount++) {  //JM SIGFIG
-        bcd[digitCount] = 0;                                                          //JM SIGFIG
-        }                                                                             //JM SIGFIG
-    }                                                                                 //JM SIGFIG
-  }                                                                                   //JM SIGFIG
-//JM /* ***************************************        SIGFIG ******************************** */
-
-
-
   charIndex = 0;
   valueIndex = (updateDisplayValueX ? strlen(displayValueX) : 0);
 
@@ -618,31 +575,49 @@ void realToDisplayString2(const real34_t *real34, char *displayString, int16_t d
     }
     else { // display fix number of digits without ten exponent factor
       // Number of digits to truncate
-      digitsToTruncate = max(numDigits - (int16_t)displayFormatDigits - exponent - 1, 0);
+
+      int displayFormatDigits_active;                                    //JM SIGFIGNEW vv
+      if(SigFigMode >= 1) {
+        displayFormatDigits_active =  max((SigFigMode+1)-exponent-1,0);    //Convert SIG to FIX.
+        digitToRound = firstDigit + SigFigMode;
+      } else {
+        displayFormatDigits_active = displayFormatDigits;
+        digitToRound = lastDigit;
+      }                                                                  //JM SIGFIGNEW ^^
+
+      digitsToTruncate = max(numDigits - (int16_t)displayFormatDigits_active - exponent - 1, 0);   //JM SIGFIGNEW hackpoint
       numDigits -= digitsToTruncate;
       lastDigit -= digitsToTruncate;
 
-      if(SigFigMode == 0) {                       //JM SIGFIG vv
       // Round the displayed number
-      if(bcd[lastDigit+1] >= 5) {
-        bcd[lastDigit]++;
+      if(bcd[digitToRound+1] >= 5) {
+        bcd[digitToRound]++;
       }
 
       // Transfert the carry
-      while(bcd[lastDigit] == 10) {
-        bcd[lastDigit--] = 0;
+      while(bcd[digitToRound] == 10) {
+        bcd[digitToRound--] = 0;
         numDigits--;
-        bcd[lastDigit]++;
+        bcd[digitToRound]++;
       }
 
       // Case when 9.9999 rounds to 10.0000
-      if(lastDigit < firstDigit) {
+      if(digitToRound < firstDigit) {
         firstDigit--;
         lastDigit = firstDigit;
         numDigits = 1;
         exponent++;
       }
-      }                                           //JM SIGFIG ^^
+
+
+      //JM SIGFIG - blank out non-sig digits to the right                                 //JM SIGFIGNEW vv
+      if(SigFigMode>=1) {
+        if((SigFigMode+1)-exponent-1 < 0) {
+           for (digitCount = firstDigit + (SigFigMode+1); digitCount <= lastDigit; digitCount++) {
+            bcd[digitCount] = 0;
+            }
+        }
+      }                                                                                   //JM SIGFIG
 
       // The sign
       if(sign) {
@@ -677,7 +652,6 @@ void realToDisplayString2(const real34_t *real34, char *displayString, int16_t d
           }
         }
 
-        if(SigFigMode != 0) { lastDigit = firstDigit + SigFigMode; }                          //JM SIGFIG: Neg exponent
 
         // Significant digits
         for(digitPointer=firstDigit; digitPointer<=lastDigit; digitPointer++, digitCount--) {
@@ -691,9 +665,8 @@ void realToDisplayString2(const real34_t *real34, char *displayString, int16_t d
           }
         }
 
-        if(SigFigMode == 0) {                                                                 //JM SIGFIG: Not required to pad more zerooes, as all sigfig zeroes are included above
         // Zeros after last significant digit
-        for(i=1; i<=(int16_t)displayFormatDigits+exponent+1-numDigits; i++, digitCount--) {
+        for(i=1; i<=(int16_t)displayFormatDigits_active+exponent+1-numDigits; i++, digitCount--) {   //JM SIGFIGNEW hackpoint
           if(groupingGap!=0 && digitCount%(uint16_t)groupingGap==0) {
             xcopy(displayString + charIndex, separator, 2);
             charIndex += 2;
@@ -703,18 +676,14 @@ void realToDisplayString2(const real34_t *real34, char *displayString, int16_t d
             displayValueX[valueIndex++] = '0';
           }
         }
-        }                                                                                     //JM SIGFIG ^
       }
       else { // zero or positive exponent
-        SigFigTmp = 0;                                                                        //JM SIGFIG
-        SigFigCnt = 0;                                                                        //JM SIGFIG
-        for(digitCount=exponent, digitPointer=firstDigit; digitPointer<=firstDigit + min(exponent + (int16_t)displayFormatDigits, 15); digitPointer++, digitCount--) {
+        for(digitCount=exponent, digitPointer=firstDigit; digitPointer<=firstDigit + min(exponent + (int16_t)displayFormatDigits_active, 15); digitPointer++, digitCount--) {   //JM SIGFIGNEW hackpoint
           if(digitCount!=-1 && digitCount!=exponent && groupingGap!=0 && modulo(digitCount, (uint16_t)groupingGap) == (uint16_t)groupingGap - 1) {
             xcopy(displayString + charIndex, separator, 2);
             charIndex += 2;
           }
 
-          if((SigFigMode == 0) || (SigFigTmp == 0) || (SigFigTmp == 1 && SigFigCnt+1 <= SigFig)) {  //JM SIGFIG: Put '0' unless number of sigfig digits already reached
           // Significant digit or zero
           if(digitPointer <= lastDigit) {
             displayString[charIndex++] = '0' + bcd[digitPointer];
@@ -728,12 +697,9 @@ void realToDisplayString2(const real34_t *real34, char *displayString, int16_t d
               displayValueX[valueIndex++] = '0';
             }
           }
-            SigFigCnt++;                                                                       //JM SIGFIG
-          }                                                                                    //JM SIGFIG
 
           // Radix mark
           if(digitCount == 0) {
-            SigFigTmp = 1;                                                                     //JM SIGFIG Set flag to signal decimal point was reached.
             displayString[charIndex] = 0;
             strcat(displayString, RADIX34_MARK_STRING);
             charIndex++;
@@ -1613,6 +1579,7 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
       }
     }
   }
+
   if(stringWidth(displayString, allowLARGELI && jm_LARGELI ? &numericFont : &standardFont, false, false) > maxWidth) {      //JM
     char exponentString[14], lastRemovedDigit;
     int16_t lastChar, stringStep, tenExponent;

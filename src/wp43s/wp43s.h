@@ -105,8 +105,13 @@
   #define SHOW_MEMORY_STATUS 0
   #undef  EXTRA_INFO_ON_CALC_ERROR
   #define EXTRA_INFO_ON_CALC_ERROR 0
-  #undef  JM_LAYOUT_1A
-  #define JM_LAYOUT_2_DM42_STRICT    //DM42 compatible layout
+  #ifndef SWAP_TO_L1_ON_DM42
+    #undef  JM_LAYOUT_1A
+    #define JM_LAYOUT_2_DM42_STRICT    //DM42 compatible layout
+  #else
+    #define JM_LAYOUT_1A
+    #undef  JM_LAYOUT_2_DM42_STRICT    //DM42 compatible layout
+  #endif
 #endif
 
 #if defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
