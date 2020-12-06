@@ -345,7 +345,16 @@
 
   #ifdef DMCP_BUILD
     void btnPressed(void *data) {
-      int16_t item = determineItem((char *)data);
+      int16_t item;
+
+      if(keyAutoRepeat) {
+        //beep(880, 50);
+        item = previousItem;
+      }
+      else {
+        item = determineItem((char *)data);
+        previousItem = item;
+      }
 
       showFunctionNameItem = 0;
       if(item != ITM_NOP && item != ITM_NULL) {
@@ -405,6 +414,18 @@
       refreshScreen();
     }
   #endif // DMCP_BUILD
+
+
+  static void exitPEM(void) {
+    if(freeProgramBytes >= 4) { // Push the programs to the end of RAM
+      uint32_t newProgramSize = (uint32_t)((uint8_t *)(ram + RAM_SIZE) - beginOfProgramMemory) - (freeProgramBytes & 0xfffc);
+      currentStep        += (freeProgramBytes & 0xfffc);
+      firstDisplayedStep += (freeProgramBytes & 0xfffc);
+      freeProgramBytes &= 0x03;
+      resizeProgramMemory(TO_BLOCKS(newProgramSize));
+      scanLabelsAndPrograms();
+    }
+  }
 
 
 
@@ -608,6 +629,15 @@
             break;
 
           case CM_PEM:
+            if(item == ITM_PR) {
+              exitPEM();
+              calcModeNormal();
+              keyActionProcessed = true;
+            }
+            else if(item == ITM_OFF) {
+              fnOff(NOPARAM);
+              keyActionProcessed = true;
+            }
             break;
 
           default:
@@ -616,7 +646,67 @@
         }
     }
   }
-#endif // TESTSUITE_BUILD
+
+
+
+  static void menuUp(void) {
+    int16_t menuId = softmenuStack[softmenuStackPointer].softmenuId;
+    int16_t sm = softmenu[menuId].menuItem;
+    if((sm == -MNU_alpha_omega || sm == -MNU_ALPHAintl) && alphaCase == AC_LOWER) {
+      alphaCase = AC_UPPER;
+      softmenuStack[softmenuStackPointer].softmenuId--; // Switch to the upper case menu
+    }
+    else if((sm == -MNU_ALPHADOT || sm == -MNU_ALPHAMATH) && alphaCase == AC_LOWER) {
+      alphaCase = AC_UPPER;
+    }
+    else {
+      int16_t itemShift = (alphaSelectionMenu == ASM_NONE ? 18 : 6);
+
+      if((softmenuStack[softmenuStackPointer].firstItem + itemShift) < (menuId < NUMBER_OF_DYNAMIC_SOFTMENUS ? dynamicSoftmenu[menuId].numItems : softmenu[menuId].numItems)) {
+        softmenuStack[softmenuStackPointer].firstItem += itemShift;
+      }
+      else {
+        softmenuStack[softmenuStackPointer].firstItem = 0;
+      }
+
+      setCatalogLastPos();
+    }
+  }
+
+
+
+  static void menuDown(void) {
+    int16_t menuId = softmenuStack[softmenuStackPointer].softmenuId;
+    int16_t sm = softmenu[menuId].menuItem;
+    if((sm == -MNU_ALPHA_OMEGA || sm == -MNU_ALPHAINTL) && alphaCase == AC_UPPER) {
+      alphaCase = AC_LOWER;
+      softmenuStack[softmenuStackPointer].softmenuId++; // Switch to the lower case menu
+    }
+    else if((sm == -MNU_ALPHADOT || sm == -MNU_ALPHAMATH) && alphaCase == AC_UPPER) {
+      alphaCase = AC_LOWER;
+    }
+    else {
+      int16_t itemShift = (alphaSelectionMenu == ASM_NONE ? 18 : 6);
+
+      if((softmenuStack[softmenuStackPointer].firstItem - itemShift) >= 0) {
+        softmenuStack[softmenuStackPointer].firstItem -= itemShift;
+      }
+      else if((softmenuStack[softmenuStackPointer].firstItem - itemShift) >= -5) {
+        softmenuStack[softmenuStackPointer].firstItem = 0;
+      }
+      else {
+        if(menuId < NUMBER_OF_DYNAMIC_SOFTMENUS) {
+          softmenuStack[softmenuStackPointer].firstItem = ((dynamicSoftmenu[menuId].numItems - 1)/6) / (itemShift/6) * itemShift;
+        }
+        else {
+          softmenuStack[softmenuStackPointer].firstItem = ((       softmenu[menuId].numItems - 1)/6) / (itemShift/6) * itemShift;
+        }
+      }
+
+      setCatalogLastPos();
+    }
+  }
+#endif // !TESTSUITE_BUILD
 
 
 
@@ -698,7 +788,7 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
         sprintf(errorMessage, "In function fnKeyEnter: unexpected calcMode value (%" PRIu8 ") while processing key ENTER!", calcMode);
         displayBugScreen(errorMessage);
     }
-  #endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -763,15 +853,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           break;
         }
 
-        if(freeProgramBytes >= 4) { // Push the programs to the end of RAM
-          uint32_t newProgramSize = (uint32_t)((uint8_t *)(ram + RAM_SIZE) - beginOfProgramMemory) - (freeProgramBytes & 0xfffc);
-          currentStep        += (freeProgramBytes & 0xfffc);
-          firstDisplayedStep += (freeProgramBytes & 0xfffc);
-          freeProgramBytes &= 0x03;
-          resizeProgramMemory(TO_BLOCKS(newProgramSize));
-          scanLabelsAndPrograms();
-        }
-
+        exitPEM();
         calcModeNormal();
         break;
 
@@ -812,7 +894,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         sprintf(errorMessage, "In function fnKeyExit: unexpected calcMode value (%" PRIu8 ") while processing key EXIT!", calcMode);
         displayBugScreen(errorMessage);
     }
-  #endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -867,7 +949,7 @@ void fnKeyCC(uint16_t unusedButMandatoryParameter) {
         sprintf(errorMessage, "In function fnKeyCC: unexpected calcMode value (%" PRIu8 ") while processing key CC!", calcMode);
         displayBugScreen(errorMessage);
     }
-  #endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -952,36 +1034,8 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         sprintf(errorMessage, "In function fnKeyBackspace: unexpected calcMode value (%" PRIu8 ") while processing key BACKSPACE!", calcMode);
         displayBugScreen(errorMessage);
     }
-  #endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
-
-
-
-#ifndef TESTSUITE_BUILD
-  static void menuUp(void) {
-    int16_t menuId = softmenuStack[softmenuStackPointer].softmenuId;
-    int16_t sm = softmenu[menuId].menuItem;
-    if((sm == -MNU_alpha_omega || sm == -MNU_ALPHAintl) && alphaCase == AC_LOWER) {
-      alphaCase = AC_UPPER;
-      softmenuStack[softmenuStackPointer].softmenuId--; // Switch to the upper case menu
-    }
-    else if((sm == -MNU_ALPHADOT || sm == -MNU_ALPHAMATH) && alphaCase == AC_LOWER) {
-      alphaCase = AC_UPPER;
-    }
-    else {
-      int16_t itemShift = (alphaSelectionMenu == ASM_NONE ? 18 : 6);
-
-      if((softmenuStack[softmenuStackPointer].firstItem + itemShift) < (menuId < NUMBER_OF_DYNAMIC_SOFTMENUS ? dynamicSoftmenu[menuId].numItems : softmenu[menuId].numItems)) {
-        softmenuStack[softmenuStackPointer].firstItem += itemShift;
-      }
-      else {
-        softmenuStack[softmenuStackPointer].firstItem = 0;
-      }
-
-      setCatalogLastPos();
-    }
-  }
-#endif // TESTSUITE_BUILD
 
 
 
@@ -1065,44 +1119,8 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         sprintf(errorMessage, "In function fnKeyUp: unexpected calcMode value (%" PRIu8 ") while processing key UP!", calcMode);
         displayBugScreen(errorMessage);
     }
-  #endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
-
-
-
-#ifndef TESTSUITE_BUILD
-  static void menuDown(void) {
-    int16_t menuId = softmenuStack[softmenuStackPointer].softmenuId;
-    int16_t sm = softmenu[menuId].menuItem;
-    if((sm == -MNU_ALPHA_OMEGA || sm == -MNU_ALPHAINTL) && alphaCase == AC_UPPER) {
-      alphaCase = AC_LOWER;
-      softmenuStack[softmenuStackPointer].softmenuId++; // Switch to the lower case menu
-    }
-    else if((sm == -MNU_ALPHADOT || sm == -MNU_ALPHAMATH) && alphaCase == AC_UPPER) {
-      alphaCase = AC_LOWER;
-    }
-    else {
-      int16_t itemShift = (alphaSelectionMenu == ASM_NONE ? 18 : 6);
-
-      if((softmenuStack[softmenuStackPointer].firstItem - itemShift) >= 0) {
-        softmenuStack[softmenuStackPointer].firstItem -= itemShift;
-      }
-      else if((softmenuStack[softmenuStackPointer].firstItem - itemShift) >= -5) {
-        softmenuStack[softmenuStackPointer].firstItem = 0;
-      }
-      else {
-        if(menuId < NUMBER_OF_DYNAMIC_SOFTMENUS) {
-          softmenuStack[softmenuStackPointer].firstItem = ((dynamicSoftmenu[menuId].numItems - 1)/6) / (itemShift/6) * itemShift;
-        }
-        else {
-          softmenuStack[softmenuStackPointer].firstItem = ((       softmenu[menuId].numItems - 1)/6) / (itemShift/6) * itemShift;
-        }
-      }
-
-      setCatalogLastPos();
-    }
-  }
-#endif // TESTSUITE_BUILD
 
 
 
@@ -1187,7 +1205,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         sprintf(errorMessage, "In function fnKeyDown: unexpected calcMode value (%" PRIu8 ") while processing key DOWN!", calcMode);
         displayBugScreen(errorMessage);
     }
-  #endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -1225,5 +1243,5 @@ void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
         sprintf(errorMessage, "In function fnKeyDotD: unexpected calcMode value (%" PRIu8 ") while processing key .d!", calcMode);
         displayBugScreen(errorMessage);
     }
-  #endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }

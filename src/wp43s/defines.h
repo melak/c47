@@ -44,7 +44,7 @@
 //*************************
 //* Other defines         *
 //*************************
-#define YEARMONTH                                 "2020.11"
+#define YEARMONTH                                 "2020.12"
 #define VERSION                                   "Pre-alpha" STD_SPACE_3_PER_EM "version" STD_SPACE_3_PER_EM YEARMONTH
 #define COPYRIGHT                                 "The WP43S team"
 #define WHO                                       "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM "v0.1" STD_SPACE_3_PER_EM YEARMONTH STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter" STD_SPACE_3_PER_EM "&" STD_SPACE_3_PER_EM "Martin"
@@ -280,9 +280,9 @@
 #define SCREEN_HEIGHT                            240 // Height of the screen
 #define ON_PIXEL                            0x303030 // blue red green
 #define OFF_PIXEL                           0xe0e0e0 // blue red green
-#define SOFTMENU_STACK_SIZE                        7 // Maximum is 14 else we need to increase LENGTH_SOFTMENUSTKPTR
+#define SOFTMENU_STACK_SIZE                        7
 #define TEMPORARY_INFO_OFFSET                     10 // Vertical offset for temporary informations. I find 4 looks better
-#define REGISTER_LINE_HEIGHT                      36 //
+#define REGISTER_LINE_HEIGHT                      36
 
 #define MS_INIT                                    0 // Initializes the softmenu stack
 #define MS_PUSH                                    1 // Pushes the softmenu on the stack
@@ -635,6 +635,7 @@
 #ifdef DMCP_BUILD
   #define setBlackPixel(x, y)                bitblt24(x, 1, y, 1, BLT_OR,   BLT_NONE)
   #define setWhitePixel(x, y)                bitblt24(x, 1, y, 1, BLT_ANDN, BLT_NONE)
+  #define beep(frequence, length)            {while(get_beep_volume() < 11) beep_volume_up(); start_buzzer_freq(frequence * 1000); sys_delay(length); stop_buzzer();}
 #endif // DMCP_BUILD
 
 //************************

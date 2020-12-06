@@ -19,4 +19,4 @@
  ***********************************************/
 
 void fnGoto   (uint16_t label);
-void fnGotoDot(uint16_t stepNumber);
+void fnGotoDot(uint16_t globalStepNumber);

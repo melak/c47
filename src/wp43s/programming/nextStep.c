@@ -619,27 +619,67 @@ uint8_t *findPreviousStep(uint8_t *step) {
 
 
 void fnBst(uint16_t unusedButMandatoryParameter) {
-  if(firstDisplayedStepNumber > 0 && currentStepNumber <= firstDisplayedStepNumber + 3) {
-    firstDisplayedStepNumber--;
-    firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-  }
+  //  - currentProgramNumber
+  //  - currentLocalStepNumber
+  //  - firstDisplayedLocalStepNumber
+  //  - firstDisplayedStep
+  if(currentLocalStepNumber > 1) {
+    if(firstDisplayedLocalStepNumber > 0 && currentLocalStepNumber <= firstDisplayedLocalStepNumber + 3) {
+      if(--firstDisplayedLocalStepNumber != 0) {
+        firstDisplayedStep = findPreviousStep(firstDisplayedStep);
+      }
+    }
 
-  if(currentStepNumber != 0) {
-    currentStepNumber--;
+    if(currentLocalStepNumber > 1) {
+      currentLocalStepNumber--;
+    }
+  }
+  else {
+    uint16_t numberOfSteps = programList[currentProgramNumber].step - programList[currentProgramNumber - 1].step;
+    currentLocalStepNumber = numberOfSteps;
+    if(numberOfSteps <= 6) {
+      firstDisplayedLocalStepNumber = 0;
+      firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
+    }
+    else {
+      firstDisplayedLocalStepNumber = numberOfSteps - 6;
+      firstDisplayedStep = findPreviousStep(programList[currentProgramNumber].instructionPointer);
+      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
+      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
+      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
+      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
+      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
+      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
+    }
   }
 }
 
 
 
 void fnSst(uint16_t unusedButMandatoryParameter) {
-  if(currentStepNumber++ >= 3) {
-    if(!programListEnd) {
-      firstDisplayedStepNumber++;
-      firstDisplayedStep = findNextStep(firstDisplayedStep);
+  uint16_t numberOfSteps = programList[currentProgramNumber].step - programList[currentProgramNumber - 1].step;
+
+  if(currentLocalStepNumber < numberOfSteps) {
+    if(currentLocalStepNumber++ >= 3) {
+      if(!programListEnd) {
+        if(++firstDisplayedLocalStepNumber > 1) {
+          firstDisplayedStep = findNextStep(firstDisplayedStep);
+        }
+      }
+    }
+
+    if(firstDisplayedLocalStepNumber + 7 > numberOfSteps) {
+      if(numberOfSteps <= 6) {
+        firstDisplayedLocalStepNumber = 0;
+      }
+      else {
+        firstDisplayedLocalStepNumber = numberOfSteps - 6;
+      }
     }
   }
-
-  if(currentStepNumber > firstDisplayedStepNumber + numberOfStepsOnScreen) {
-    currentStepNumber = firstDisplayedStepNumber + numberOfStepsOnScreen;
+  else {
+    currentLocalStepNumber = 1;
+    firstDisplayedLocalStepNumber = 0;
+    firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
   }
 }

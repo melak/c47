@@ -1011,14 +1011,14 @@ const item_t indexOfItems[] = {
 
 
 // Bufferized items
-/*  517 */  { addItemToBuffer,             REGISTER_X,                  "ST.X",                                        "ST.X",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // The
-/*  518 */  { addItemToBuffer,             REGISTER_Y,                  "ST.Y",                                        "ST.Y",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // order
-/*  519 */  { addItemToBuffer,             REGISTER_Z,                  "ST.Z",                                        "ST.Z",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // of these
-/*  520 */  { addItemToBuffer,             REGISTER_T,                  "ST.T",                                        "ST.T",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // 12 lines
-/*  521 */  { addItemToBuffer,             REGISTER_A,                  "ST.A",                                        "ST.A",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // Must be
-/*  522 */  { addItemToBuffer,             REGISTER_B,                  "ST.B",                                        "ST.B",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // kept as
-/*  523 */  { addItemToBuffer,             REGISTER_C,                  "ST.C",                                        "ST.C",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // is.
-/*  524 */  { addItemToBuffer,             REGISTER_D,                  "ST.D",                                        "ST.D",                                        0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // Do not
+/*  517 */  { addItemToBuffer,             REGISTER_X,                  "X",                                           "X",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // The
+/*  518 */  { addItemToBuffer,             REGISTER_Y,                  "Y",                                           "Y",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // order
+/*  519 */  { addItemToBuffer,             REGISTER_Z,                  "Z",                                           "Z",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // of these
+/*  520 */  { addItemToBuffer,             REGISTER_T,                  "T",                                           "T",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // 12 lines
+/*  521 */  { addItemToBuffer,             REGISTER_A,                  "A",                                           "A",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // Must be
+/*  522 */  { addItemToBuffer,             REGISTER_B,                  "B",                                           "B",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // kept as
+/*  523 */  { addItemToBuffer,             REGISTER_C,                  "C",                                           "C",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // is.
+/*  524 */  { addItemToBuffer,             REGISTER_D,                  "D",                                           "D",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // Do not
 /*  525 */  { addItemToBuffer,             REGISTER_L,                  "REG_L",                                       "L",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // put them
 /*  526 */  { addItemToBuffer,             REGISTER_I,                  "REG_I",                                       "I",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // in a
 /*  527 */  { addItemToBuffer,             REGISTER_J,                  "REG_J",                                       "J",                                           0,       0,       CAT_REGS, SLS_UNCHANGED, US_UNCHANGED}, // different

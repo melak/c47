@@ -23,17 +23,24 @@
 
 #ifndef DMCP_BUILD
   void listPrograms(void) {
-    uint16_t i, numberOfBytesInStep, stepNumber = 0;
+    uint16_t i, numberOfBytesInStep, stepNumber = 0, programNumber = 0;
     uint8_t *nextStep, *step;
 
     printf("\nProgram listing");
-    printf("\nStep   Bytes         OP");
-    step = beginOfCurrentProgram;
+    step = beginOfProgramMemory;
     while(step) {
+      if(step == programList[programNumber].instructionPointer) {
+        programNumber++;
+        if(programNumber != 1) {
+          printf("\n------------------------------------------------------------");
+        }
+        printf("\nPgm Step   Bytes         OP");
+      }
+
       nextStep = findNextStep(step);
       if(nextStep) {
         numberOfBytesInStep = (uint16_t)(nextStep - step);
-        printf("\n%4d  ", stepNumber++); fflush(stdout);
+        printf("\n%02d  %4d  ", programNumber, ++stepNumber - programList[programNumber - 1].step + 1); fflush(stdout);
 
         for(i=0; i<numberOfBytesInStep; i++) {
           printf(" %02x", *(step + i)); fflush(stdout);
@@ -49,7 +56,7 @@
           }
 
           if(i%4 == 3 && i != numberOfBytesInStep - 1) {
-            printf("\n      "); fflush(stdout);
+            printf("\n          "); fflush(stdout);
           }
         }
 
@@ -75,11 +82,11 @@
 
 
   void listLabelsAndPrograms(void) {
-    printf("\nModified content of labelList\n");
+    printf("\nContent of labelList\n");
     printf("num program  step label\n");
     for(int i=0; i<numberOfLabels; i++) {
-      printf("%3d%8d%6d ", i, labelList[i].program, abs(labelList[i].followingStep));
-      if(labelList[i].followingStep < 0) { // Local label
+      printf("%3d%8d%6d ", i, labelList[i].program, labelList[i].step);
+      if(labelList[i].step < 0) { // Local label
         if(*(labelList[i].labelPointer) < 100) {
           printf("%02d\n", *(labelList[i].labelPointer));
         }
@@ -95,35 +102,7 @@
       }
     }
 
-    printf("\nraw content of labelList\n");
-    printf("num program  step label\n");
-    for(int i=0; i<numberOfLabels; i++) {
-      printf("%3d%8d%6d ", i, labelList[i].program, labelList[i].followingStep);
-      if(labelList[i].followingStep < 0) { // Local label
-        if(*(labelList[i].labelPointer) < 100) {
-          printf("%02d\n", *(labelList[i].labelPointer));
-        }
-        else if(*(labelList[i].labelPointer) < 110) {
-          printf("%c\n", *(labelList[i].labelPointer) - 100 + 'A');
-        }
-      }
-      else { // Global label
-        xcopy(tmpString + 100, labelList[i].labelPointer + 1, *(labelList[i].labelPointer));
-        tmpString[100 + *(labelList[i].labelPointer)] = 0;
-        stringToUtf8(tmpString + 100, (uint8_t *)tmpString);
-        printf("'%s'\n", tmpString);
-      }
-    }
-
-    printf("\nModified content of programList\n");
-    printf("program  step OP\n");
-    for(int i=0; i<numberOfPrograms; i++) {
-      decodeOneStep(programList[i].instructionPointer);
-      stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
-      printf("%7d %5d %s\n", i + 1, programList[i].step - 1, tmpString);
-    }
-
-    printf("\nRaw content of programList\n");
+    printf("\nContent of programList\n");
     printf("program  step OP\n");
     for(int i=0; i<numberOfPrograms; i++) {
       decodeOneStep(programList[i].instructionPointer);
@@ -147,7 +126,7 @@ void getIndirectRegister(uint8_t *paramAddress, const char *op) {
     sprintf(tmpString, "%s " STD_RIGHT_ARROW "%02u", op, opParam);
   }
   else if(opParam <= REGISTER_K) { // Lettered register from X to K
-    sprintf(tmpString, "%s " STD_RIGHT_ARROW "%s", op, indexOfItems[ITM_ST_X + opParam - REGISTER_X].itemSoftmenuName);
+    sprintf(tmpString, "%s " STD_RIGHT_ARROW "%s", op, indexOfItems[ITM_STACK_X + opParam - REGISTER_X].itemSoftmenuName);
   }
   else if(opParam <= LAST_LOCAL_REGISTER) { // Local register from .00 to .98
     sprintf(tmpString, "%s " STD_RIGHT_ARROW ".%02d", op, opParam - FIRST_LOCAL_REGISTER);
@@ -220,7 +199,7 @@ void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
            sprintf(tmpString, "%s %02u", op, opParam);
          }
          else if(opParam <= REGISTER_K) { // Lettered register from X to K
-           sprintf(tmpString, "%s %s", op, indexOfItems[ITM_ST_X + opParam - REGISTER_X].itemSoftmenuName);
+           sprintf(tmpString, "%s %s", op, indexOfItems[ITM_STACK_X + opParam - REGISTER_X].itemSoftmenuName);
          }
          else if(opParam <= LAST_LOCAL_REGISTER) { // Local register from .00 to .98
            sprintf(tmpString, "%s .%02d", op, opParam - FIRST_LOCAL_REGISTER);
@@ -248,7 +227,7 @@ void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
            sprintf(tmpString, "%s %02u", op, opParam);
          }
          else if(opParam <= REGISTER_K) { // Lettered flag from X to K
-           sprintf(tmpString, "%s %s", op, indexOfItems[ITM_ST_X + opParam - REGISTER_X].itemSoftmenuName);
+           sprintf(tmpString, "%s %s", op, indexOfItems[ITM_STACK_X + opParam - REGISTER_X].itemSoftmenuName);
          }
          else if(opParam <= LAST_LOCAL_FLAG) { // Local flag from .00 to .15 (or .31)
            sprintf(tmpString, "%s .%02d", op, opParam - FIRST_LOCAL_FLAG);
@@ -287,7 +266,7 @@ void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
            sprintf(tmpString, "%s %02u", op, opParam);
          }
          else if(opParam <= REGISTER_K) { // Lettered register from X to K
-           sprintf(tmpString, "%s %s", op, indexOfItems[ITM_ST_X + opParam - REGISTER_X].itemSoftmenuName);
+           sprintf(tmpString, "%s %s", op, indexOfItems[ITM_STACK_X + opParam - REGISTER_X].itemSoftmenuName);
          }
          else if(opParam <= LAST_LOCAL_REGISTER) { // Local register from .00 to .98
            sprintf(tmpString, "%s .%02d", op, opParam - FIRST_LOCAL_REGISTER);

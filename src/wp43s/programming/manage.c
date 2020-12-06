@@ -24,50 +24,51 @@
 // In this example the RAM is 16384 blocks (from 0 to 16383) of 4 bytes = 65536 bytes.
 // The program memory occupies the end of the RAM area.
 //
-//  +-----+----+----+----------+
-//  |Block|Step|Code|    OP    |
-//  +-----+----+----+----------+
-//  |16374|  0 |   1| LBL 'P1' | <-- beginOfProgramMemory
-//  |     |    | 253|          |
-//  |     |    |   2|          |
-//  |     |    | 'P'|          |
-//  |16375|    | '1'|          |  ^
-//  |     |  1 | 114| 1.       |  | 1 block = 4 bytes
-//  |     |    |   6|          |  |
-//  |     |    |   1|          |  v
-//  |16376|    | '1'|          |
-//  |     |  2 |  95| +        | <-- firstDisplayedStep
-//  |     |  3 | 133| END      |
-//  |     |    | 168|          |
-//  |16377|  4 |   1| LBL 'P2' | <-- beginOfCurrentProgram
-//  |     |    | 253|          |
-//  |     |    |   2|          |
-//  |     |    | 'P'|          |
-//  |16378|    | '2'|          |
-//  |     |  5 | 114| 22.      | <-- currentStep       this inequality is always true: beginOfCurrentProgram ≤ currentStep < endOfCurrentProgram
-//  |     |    |   6|          |
-//  |     |    |   2|          |
-//  |16379|    | '2'|          |
-//  |     |    | '2'|          |
-//  |     |  6 |  95| +        |
-//  |     |  7 | 133| END      |
-//  |16380|    | 168|          |
-//  |     |  8 |   2| LBL 'P3' | <-- endOfCurrentProgram
-//  |     |    | 253|          |
-//  |     |    |   2|          |
-//  |16381|    | 'P'|          |
-//  |     |    | '3'|          |
-//  |     |  9 | 114| 3.       |
-//  |     |    |   6|          |
-//  |16382|    |   1|          |
-//  |     |    | '3'|          |
-//  |     | 10 |  95| +        |
-//  |     | 11 | 133| END      |
-//  |16383|    | 168|          |
-//  |     |    | 255| .END.    | <-- firstFreeProgramByte
-//  |     |    | 255|          |
-//  |     |    |   ?|          | free byte     This byte is the end of the RAM area
-//  +-----+----+----+----------+
+//  +-----+------+----+----------+
+//  |Block| Step |Code|    OP    |
+//  |     |loc/gl|    |          |
+//  +-----+------+----+----------+
+//  |16374| 1/ 1 |   1| LBL 'P1' | <-- beginOfProgramMemory
+//  |     |      | 253|          |
+//  |     |      |   2|          |
+//  |     |      | 'P'|          |
+//  |16375|      | '1'|          |  ^
+//  |     | 2/ 2 | 114| 1.       |  | 1 block = 4 bytes
+//  |     |      |   6|          |  |
+//  |     |      |   1|          |  v
+//  |16376|      | '1'|          |
+//  |     | 3/ 3 |  95| +        |
+//  |     | 4/ 4 | 133| END      |
+//  |     |      | 168|          |
+//  |16377| 1/ 5 |   1| LBL 'P2' | <-- beginOfCurrentProgram  <-- firstDisplayedStep   firstDisplayedStepNumber = 5   firstDisplayedLocalStepNumber = 1
+//  |     |      | 253|          |
+//  |     |      |   2|          |
+//  |     |      | 'P'|          |
+//  |16378|      | '2'|          |
+//  |     | 2/ 6 | 114| 22.      | <-- currentStep       this inequality is always true: beginOfCurrentProgram ≤ currentStep < endOfCurrentProgram
+//  |     |      |   6|          |     currentStepNumber = 6   currentLocalStepNumber = 2
+//  |     |      |   2|          |     currentProgramNumber = 2
+//  |16379|      | '2'|          |
+//  |     |      | '2'|          |
+//  |     | 3/ 7 |  95| +        |
+//  |     | 4/ 8 | 133| END      |
+//  |16380|      | 168|          |
+//  |     | 1/ 9 |   2| LBL 'P3' | <-- endOfCurrentProgram
+//  |     |      | 253|          |
+//  |     |      |   2|          |
+//  |16381|      | 'P'|          |
+//  |     |      | '3'|          |
+//  |     | 2/10 | 114| 3.       |
+//  |     |      |   6|          |
+//  |16382|      |   1|          |
+//  |     |      | '3'|          |
+//  |     | 3/11 |  95| +        |
+//  |     | 4/12 | 133| END      |
+//  |16383| 5/13 | 168|          |
+//  |     |      | 255| .END.    | <-- firstFreeProgramByte
+//  |     |      | 255|          |
+//  |     |      |   ?|          | free byte     This byte is the end of the RAM area
+//  +-----+------+----+----------+
 //
 //  freeProgramBytes = 1
 
@@ -105,17 +106,17 @@ void scanLabelsAndPrograms(void) {
   programList[0].instructionPointer = step;
   programList[0].step = (0 + 1);
   numberOfPrograms = 1;
-  stepNumber = 0;
+  stepNumber = 1;
   while(*step != 255 || *(step + 1) != 255) { // .END.
     nextStep = findNextStep(step);
     if(*step == 1) { // LBL
       labelList[numberOfLabels].program = numberOfPrograms;
       if(*(step + 1) <= 109) { // Local label
-        labelList[numberOfLabels].followingStep = -(stepNumber + 1);
+        labelList[numberOfLabels].step = -stepNumber;
         labelList[numberOfLabels].labelPointer = step + 1;
       }
       else { // Global label
-        labelList[numberOfLabels].followingStep = stepNumber + 1;
+        labelList[numberOfLabels].step = stepNumber;
         labelList[numberOfLabels].labelPointer = step + 2;
       }
 
@@ -125,7 +126,7 @@ void scanLabelsAndPrograms(void) {
 
     if((*step & 0x7f) == (ITM_END >> 8) && *(step + 1) == (ITM_END & 0xff)) { // END
       programList[numberOfPrograms].instructionPointer = step + 2;
-      programList[numberOfPrograms].step = stepNumber + 2;
+      programList[numberOfPrograms].step = stepNumber + 1;
       numberOfPrograms++;
     }
 
@@ -155,16 +156,17 @@ void fnClPAll(uint16_t confirmation) {
   }
   else {
     resizeProgramMemory(1); // 1 block for an empty program
-    *(beginOfProgramMemory + 0) = (ITM_END >> 8) | 0x80;
-    *(beginOfProgramMemory + 1) =  ITM_END       & 0xff;
-    *(beginOfProgramMemory + 2) = 255; // .END.
-    *(beginOfProgramMemory + 3) = 255; // .END.
-    firstFreeProgramByte        = beginOfProgramMemory + 2;
-    freeProgramBytes            = 0;
-    currentStep                 = beginOfProgramMemory;
-    firstDisplayedStep          = beginOfProgramMemory;
-    firstDisplayedStepNumber    = 0;
-    temporaryInformation        = TI_NO_INFO;
+    *(beginOfProgramMemory + 0)   = (ITM_END >> 8) | 0x80;
+    *(beginOfProgramMemory + 1)   =  ITM_END       & 0xff;
+    *(beginOfProgramMemory + 2)   = 255; // .END.
+    *(beginOfProgramMemory + 3)   = 255; // .END.
+    firstFreeProgramByte          = beginOfProgramMemory + 2;
+    freeProgramBytes              = 0;
+    currentStep                   = beginOfProgramMemory;
+    firstDisplayedStep            = beginOfProgramMemory;
+    firstDisplayedLocalStepNumber = 0;
+    currentLocalStepNumber        = 1;
+    temporaryInformation          = TI_NO_INFO;
     scanLabelsAndPrograms();
   }
 }
@@ -176,54 +178,30 @@ void fnClP(uint16_t unusedButMandatoryParameter) {
     fnClPAll(CONFIRMED);
   }
   else {
-    int16_t i = 0;
-
-    while(programList[i].instructionPointer != beginOfCurrentProgram) {
-      i++;
-    }
-
-    if(*programList[i + 1].instructionPointer == 255 && *(programList[i + 1].instructionPointer + 1) == 255) { // The last program of the list will be deleted
-      currentStepNumber        = programList[i - 1].step - 1;
-      firstDisplayedStepNumber = currentStepNumber;
-      currentStep              = programList[i - 1].instructionPointer;
-    }
-    else {
-      currentStepNumber        = programList[i].step - 1;
-      firstDisplayedStepNumber = currentStepNumber;
-      currentStep              = programList[i].instructionPointer;
-    }
+    uint16_t savedCurrentProgramNumber = currentProgramNumber;
 
     deleteStepsFromTo(beginOfCurrentProgram, endOfCurrentProgram);
-    firstDisplayedStep = beginOfCurrentProgram;
+    scanLabelsAndPrograms();
 
-    if(firstDisplayedStepNumber >= 3) {
-      firstDisplayedStepNumber -= 3;
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
+    if(savedCurrentProgramNumber >= numberOfPrograms) { // The last program
+      fnGotoDot(programList[numberOfPrograms - 2].step);
     }
-    else if(firstDisplayedStepNumber >= 2) {
-      firstDisplayedStepNumber -= 2;
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-    }
-    else if(firstDisplayedStepNumber >= 1) {
-      firstDisplayedStepNumber -= 1;
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
+    else { // Not the last program
+      fnGotoDot(programList[savedCurrentProgramNumber - 1].step);
     }
   }
 }
 
 
 
-void defineCurrentProgramFromCurrentStepNumber(void) {
+void defineCurrentProgramFromGlobalStepNumber(uint16_t globalStepNumber) {
   currentProgramNumber = 0;
-  while(currentStepNumber >= programList[currentProgramNumber].step - 1) {
+  while(globalStepNumber >= programList[currentProgramNumber].step) {
     currentProgramNumber++;
   }
 
-  endOfCurrentProgram = programList[currentProgramNumber--].instructionPointer;
-  beginOfCurrentProgram = programList[currentProgramNumber].instructionPointer;
+  endOfCurrentProgram = programList[currentProgramNumber].instructionPointer;
+  beginOfCurrentProgram = programList[currentProgramNumber - 1].instructionPointer;
 }
 
 
@@ -234,34 +212,23 @@ void defineCurrentProgramFromCurrentStep(void) {
     currentProgramNumber++;
   }
 
-  endOfCurrentProgram = programList[currentProgramNumber--].instructionPointer;
-  beginOfCurrentProgram = programList[currentProgramNumber].instructionPointer;
+  endOfCurrentProgram = programList[currentProgramNumber].instructionPointer;
+  beginOfCurrentProgram = programList[currentProgramNumber - 1].instructionPointer;
 }
-
-
-
-#ifndef TESTSUITE_BUILD
-  static uint32_t programLengthInByte(uint8_t *step, uint32_t *steps) {
-    //if(step == beginOfCurrentProgram || step == endOfCurrentProgram) {
-      for(int i=0; i<numberOfPrograms; i++) {
-       if(programList[i].instructionPointer == step) {
-         *steps = programList[i + 1].step - programList[i].step;
-         return (programList[i + 1].instructionPointer - programList[i].instructionPointer);
-       }
-      }
-    //}
-
-    *steps = 0;
-    return 0;
-  }
-#endif // TESTSUITE_BUILD
 
 
 
 void fnPem(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
-    uint32_t x, len,steps;
-    uint16_t line;
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // For this function to work properly we need the following variables set properly:
+    //  - currentProgramNumber
+    //  - currentLocalStepNumber
+    //  - firstDisplayedLocalStepNumber
+    //  - firstDisplayedStep
+    //
+    uint32_t currentStepNumber, firstDisplayedStepNumber;
+    uint16_t line, firstLine;
     uint8_t *step, *nextStep;
     bool_t lblOrEnd;
 
@@ -270,35 +237,46 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       return;
     }
 
-    step = firstDisplayedStep;
-    programListEnd = false;
+    if(currentLocalStepNumber == 0) {
+      currentLocalStepNumber = 1;
+    }
+    currentStepNumber        = currentLocalStepNumber        + programList[currentProgramNumber - 1].step - 1;
+    firstDisplayedStepNumber = firstDisplayedLocalStepNumber + programList[currentProgramNumber - 1].step - 1;
+    step                     = firstDisplayedStep;
+    programListEnd           = false;
+    lastProgramListEnd       = false;
 
-    for(line=0; line<7; line++) {
+    if(firstDisplayedLocalStepNumber == 0) {
+      uint32_t numberOfSteps = (uint32_t)(programList[currentProgramNumber].step - programList[currentProgramNumber - 1].step);
+      sprintf(tmpString, "{ Prgm #%d: %" PRIu32 " bytes / %" PRIu32 " step%s }", currentProgramNumber, (uint32_t)(programList[currentProgramNumber].instructionPointer - programList[currentProgramNumber - 1].instructionPointer),
+                                                                               numberOfSteps, numberOfSteps == 1 ? "" : "s");
+      showString(tmpString, &standardFont, 2, Y_POSITION_OF_REGISTER_T_LINE, vmNormal,  false, false);
+      firstLine = 1;
+    }
+    else {
+      firstLine = 0;
+    }
+
+    for(line=firstLine; line<7; line++) {
       nextStep = findNextStep(step);
       uint16_t stepSize = (uint16_t)(nextStep - step);
-      sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM "%s%u", firstDisplayedStepNumber + line, stepSize >= 10 ? "" : STD_SPACE_FIGURE, stepSize);
+      sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM "%s%u", firstDisplayedLocalStepNumber + line, stepSize >= 10 ? "" : STD_SPACE_FIGURE, stepSize);
       if(firstDisplayedStepNumber + line == currentStepNumber) {
         tamOverPemYPos = Y_POSITION_OF_REGISTER_T_LINE + 21*line;
         showString(tmpString, &standardFont, 1, tamOverPemYPos, vmReverse, false, true);
         currentStep = step;
-        if(currentStep < beginOfCurrentProgram || currentStep >= endOfCurrentProgram) { // currentSetep is outside the current program
-          defineCurrentProgramFromCurrentStep();
-        }
       }
       else {
         showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21*line, vmNormal,  false, true);
       }
       lblOrEnd = (*step == ITM_LBL) || ((*step == ((ITM_END >> 8) | 0x80)) && (*(step + 1) == (ITM_END & 0xff)));
       decodeOneStep(step);
-      x = showString(tmpString, &standardFont, lblOrEnd ? 45+20 : 75+20, Y_POSITION_OF_REGISTER_T_LINE + 21*line, vmNormal,  false, false);
-      len = programLengthInByte(step, &steps);
-      if(len != 0) {
-        sprintf(tmpString, "{%" PRIu32 "b;%" PRIu32 "s}", len, steps);
-        showString(tmpString, &standardFont, x + 10, Y_POSITION_OF_REGISTER_T_LINE + 21*line, vmNormal,  false, false);
-      }
-      numberOfStepsOnScreen = line;
-      if(((*step == ((ITM_END >> 8) | 0x80)) && (*(step + 1) == (ITM_END & 0xff))) && ((*nextStep == 255 && *(nextStep + 1) == 255))) {
+      showString(tmpString, &standardFont, lblOrEnd ? 45+20 : 75+20, Y_POSITION_OF_REGISTER_T_LINE + 21*line, vmNormal,  false, false);
+      if((*step == ((ITM_END >> 8) | 0x80)) && (*(step + 1) == (ITM_END & 0xff))) {
         programListEnd = true;
+        if(*nextStep == 255 && *(nextStep + 1) == 255) {
+          lastProgramListEnd = true;
+        }
         break;
       }
       step = nextStep;

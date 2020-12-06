@@ -20,7 +20,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         48  // added beginOfProgramMemory
+#define BACKUP_VERSION         49  // Changed the way programs are displayed
 #define START_REGISTER_VALUE 1522
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -192,9 +192,10 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     ramPtr = (uint32_t)((void *)currentStep - TO_PCMEMPTR(TO_WP43SMEMPTR(currentStep)));
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // currentStep offset within block
     save(&freeProgramBytes,                   sizeof(freeProgramBytes),                   BACKUP);
-    save(&firstDisplayedStepNumber,           sizeof(firstDisplayedStepNumber),           BACKUP);
-    save(&currentStepNumber,                  sizeof(currentStepNumber),                  BACKUP);
+    save(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber),      BACKUP);
+    save(&currentLocalStepNumber,             sizeof(currentLocalStepNumber),             BACKUP);
     save(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
+    save(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
     save(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
 
     fclose(BACKUP);
@@ -355,15 +356,17 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // currentStep offset within block
       currentStep += ramPtr;
       restore(&freeProgramBytes,                   sizeof(freeProgramBytes),                   BACKUP);
-      restore(&firstDisplayedStepNumber,           sizeof(firstDisplayedStepNumber),           BACKUP);
-      restore(&currentStepNumber,                  sizeof(currentStepNumber),                  BACKUP);
+      restore(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber),      BACKUP);
+      restore(&currentLocalStepNumber,             sizeof(currentLocalStepNumber),             BACKUP);
       restore(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
+      restore(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
       restore(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
 
       scanLabelsAndPrograms();
+      defineCurrentProgramFromGlobalStepNumber(currentLocalStepNumber + programList[currentProgramNumber - 1].step - 1);
 
       #if (DEBUG_REGISTER_L == 1)
         refreshRegisterLine(REGISTER_X); // to show L register

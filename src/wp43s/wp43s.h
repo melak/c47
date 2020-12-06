@@ -237,6 +237,7 @@
   extern bool_t                rbr1stDigit;
   extern bool_t                updateDisplayValueX;
   extern bool_t                thereIsSomethingToUndo;
+  extern bool_t                lastProgramListEnd;
   extern bool_t                programListEnd;
   extern bool_t                serialIOIconEnabled;
   extern bool_t                neverUsed;
@@ -345,13 +346,12 @@
   extern uint16_t              numberOfLocalFlags;
   extern uint16_t              glyphRow[NUMBER_OF_GLYPH_ROWS];
   extern uint16_t              freeProgramBytes;
-  extern uint16_t              firstDisplayedStepNumber;
+  extern uint16_t              firstDisplayedLocalStepNumber;
   extern uint16_t              numberOfLabels;
   extern uint16_t              numberOfPrograms;
   extern uint16_t              tamMode;
-  extern uint16_t              currentStepNumber;
+  extern uint16_t              currentLocalStepNumber;
   extern uint16_t              currentProgramNumber;
-  extern uint16_t              numberOfStepsOnScreen;
 
   extern int32_t               numberOfFreeMemoryRegions;
   extern int32_t               lgCatalogSelection;
@@ -374,6 +374,7 @@
   #ifdef DMCP_BUILD
     extern bool_t              backToDMCP;
     extern int                 keyAutoRepeat; // Key repetition
+    extern int16_t             previousItem;
   #endif // DMCP_BUILD
 
   #include "constantPointers.h"

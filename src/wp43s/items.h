@@ -556,14 +556,14 @@
 
 
 // Bufferized items
-#define ITM_ST_X                       517
-#define ITM_ST_Y                       518
-#define ITM_ST_Z                       519
-#define ITM_ST_T                       520
-#define ITM_ST_A                       521
-#define ITM_ST_B                       522
-#define ITM_ST_C                       523
-#define ITM_ST_D                       524
+#define ITM_STACK_X                    517
+#define ITM_STACK_Y                    518
+#define ITM_STACK_Z                    519
+#define ITM_STACK_T                    520
+#define ITM_STACK_A                    521
+#define ITM_STACK_B                    522
+#define ITM_STACK_C                    523
+#define ITM_STACK_D                    524
 #define ITM_REG_L                      525
 #define ITM_REG_I                      526
 #define ITM_REG_J                      527

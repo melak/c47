@@ -252,7 +252,7 @@ typedef struct {
  ***********************************************/
 typedef struct {
   int16_t  program;             ///< Program id: <0 for FLASH and >0 for RAM
-  int32_t  followingStep;       ///< Step number following the label: <0 for a local label and >0 for a global label
+  int32_t  step;                ///< Step number of the label: <0 for a local label and >0 for a global label
   uint8_t  *labelPointer;       ///< Pointer to the byte after the 0x01 op code (LBL)
   uint8_t  *instructionPointer; ///< Pointer to the instructiuon following the label
 } labelList_t;

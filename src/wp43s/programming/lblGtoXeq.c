@@ -23,13 +23,13 @@
 
 
 void fnGoto(uint16_t label) {
-  if(calcMode == CM_TAM || calcMode == CM_ASM_OVER_TAM) {
+  if(calcMode == CM_TAM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_TAM_OVER_PEM) {
     if(dynamicMenuItem >= 0) {
       fnGotoDot(label);
       return;
     }
 
-    // Local Label
+    // Local Label 00 to 99 and A, B, C, D, I, and J
     if(label < REGISTER_X || (label != REGISTER_L && REGISTER_A <= label && label <= REGISTER_J)) {
       switch(label) {
         case REGISTER_A: label = 100 - 'A' + 'A'; break;
@@ -43,8 +43,8 @@ void fnGoto(uint16_t label) {
 
       // Search for local label
       for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
-        if(labelList[lbl].program - 1 == currentProgramNumber && labelList[lbl].followingStep < 0 && *(labelList[lbl].labelPointer) == label) { // Is in the current program and is a local label and is the searched label
-          fnGotoDot(-labelList[lbl].followingStep - 1);
+        if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer) == label) { // Is in the current program and is a local label and is the searched label
+          fnGotoDot(-labelList[lbl].step);
           return;
         }
       }
@@ -70,8 +70,8 @@ void fnGoto(uint16_t label) {
       }
 
       for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
-        if(labelList[lbl].followingStep > 0 && *(labelList[lbl].labelPointer) == 1 && *(labelList[lbl].labelPointer + 1) == label) { // Is a global label and is the searched label
-          fnGotoDot(labelList[lbl].followingStep - 1);
+        if(labelList[lbl].step > 0 && *(labelList[lbl].labelPointer) == 1 && *(labelList[lbl].labelPointer + 1) == label) { // Is a global label and is the searched label
+          fnGotoDot(labelList[lbl].step);
           return;
         }
       }
@@ -88,7 +88,7 @@ void fnGoto(uint16_t label) {
 
 
 
-void fnGotoDot(uint16_t stepNumber) {
+void fnGotoDot(uint16_t globalStepNumber) {
   if(dynamicMenuItem >= 0) {
     if(dynamicMenuItem >= dynamicSoftmenu[softmenuStack[softmenuStackPointer].softmenuId].numItems) {
       return;
@@ -106,42 +106,55 @@ void fnGotoDot(uint16_t stepNumber) {
 
     int16_t c, len = stringByteLength((char *)labelName);
     for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
-      if(labelList[lbl].followingStep > 0 && *labelList[lbl].labelPointer == len) { // It's a global label and the length is OK
+      if(labelList[lbl].step > 0 && *labelList[lbl].labelPointer == len) { // It's a global label and the length is OK
         for(c=0; c<len; c++) {
           if(labelName[c] != labelList[lbl].labelPointer[c + 1]) {
             break;
           }
         }
         if(c == len) {
-          stepNumber = labelList[lbl].followingStep - 1;
+          globalStepNumber = labelList[lbl].step;
           break;
         }
       }
     }
   }
 
-  currentStepNumber = stepNumber;
-
-  defineCurrentProgramFromCurrentStepNumber();
+  defineCurrentProgramFromGlobalStepNumber(globalStepNumber);
+  currentLocalStepNumber = globalStepNumber - programList[currentProgramNumber - 1].step + 1;
 
   uint8_t *stepPointer = beginOfCurrentProgram;
-  stepNumber = programList[currentProgramNumber].step - 1;
+  globalStepNumber = 1;
   while(true) {
-    if(stepNumber == currentStepNumber) {
+    if(globalStepNumber == currentLocalStepNumber) {
       currentStep = stepPointer;
       break;
     }
 
     stepPointer = findNextStep(stepPointer);
-    stepNumber++;
+    globalStepNumber++;
   }
 
-  if(currentStepNumber >= 3) {
-    firstDisplayedStepNumber = currentStepNumber - 3;
-    firstDisplayedStep = findPreviousStep(findPreviousStep(findPreviousStep(currentStep)));
+  if(currentLocalStepNumber >= 3) {
+    firstDisplayedLocalStepNumber = currentLocalStepNumber - 3;
+    firstDisplayedStep = findPreviousStep(findPreviousStep(currentStep));
+    if(firstDisplayedLocalStepNumber != 0) {
+      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
+    }
+    uint16_t numberOfSteps = programList[currentProgramNumber].step - programList[currentProgramNumber - 1].step;
+    if(firstDisplayedLocalStepNumber + 6 > numberOfSteps) {
+      for(int i=3+currentLocalStepNumber-numberOfSteps; i>0; i--) {
+        if(firstDisplayedLocalStepNumber > 0) {
+          firstDisplayedLocalStepNumber--;
+        }
+        if(firstDisplayedStep > programList[currentProgramNumber - 1].instructionPointer) {
+          firstDisplayedStep = findPreviousStep(firstDisplayedStep);
+        }
+      }
+    }
   }
   else {
-    firstDisplayedStepNumber = 0;
-    firstDisplayedStep = beginOfProgramMemory;
+    firstDisplayedLocalStepNumber = 0;
+    firstDisplayedStep = beginOfCurrentProgram;
   }
 }
