@@ -283,19 +283,74 @@ void showOverflowCarry(void) {
  * \return void
  ***********************************************/
 void showHideAlphaMode(void) {
+  int status=0;
   if(calcMode == CM_AIM || calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_AIM) {
 
-    if(numLock) {
-      showString(STD_num, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
-    } 
-    else
+    if(numLock && !shiftF && !shiftG) {
+                 if     (nextChar == NC_SUBSCRIPT)   status = 1;
+                 else if(nextChar == NC_SUPERSCRIPT) status = 2;
+                 else                                status = 3;
+    }
+    if(!numLock && shiftF) {
+                 if     (nextChar == NC_SUBSCRIPT)   status = 4;
+                 else if(nextChar == NC_SUPERSCRIPT) status = 5;
+                 else                                status = 6;      
+    }
     if(alphaCase == AC_UPPER) {
-      showString(STD_ALPHA, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
       setSystemFlag(FLAG_alphaCAP);
+    
+      if(shiftG) {
+                 if     (nextChar == NC_SUBSCRIPT)   status = 7;
+                 else if(nextChar == NC_SUPERSCRIPT) status = 8;
+                 else                                status = 9;
+      }
+      if(!shiftG && !shiftF && !numLock) {
+                 if     (nextChar == NC_SUBSCRIPT)   status = 10;
+                 else if(nextChar == NC_SUPERSCRIPT) status = 11;
+                 else                                status = 12;
+      }
     }
     else {
-      showString(STD_alpha, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_alpha is 0+9+2 pixel wide
       clearSystemFlag(FLAG_alphaCAP);
+
+      if(shiftG) {
+                 if     (nextChar == NC_SUBSCRIPT)   status = 13;
+                 else if(nextChar == NC_SUPERSCRIPT) status = 14;
+                 else                                status = 15;
+      }
+      if(!shiftG && !shiftF && !numLock) {
+                 if     (nextChar == NC_SUBSCRIPT)   status = 16;
+                 else if(nextChar == NC_SUPERSCRIPT) status = 17;
+                 else                                status = 18;
+      }
+    }
+
+    if(status >0 && status <=18) showGlyphCode(' ',    &standardFont, X_ALPHA_MODE, 0, vmNormal, true, true); // is 0+0+10 pixel wide
+    switch(status) {
+      case  1: showString(STD_SUB_N, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub    // STD_ALPHA is 0+9+2 pixel wide
+      case  2: showString(STD_SUB_N, &standardFont, X_ALPHA_MODE,-12, vmNormal, true, false); break; //sup   
+      case  3: showString(STD_num,   &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
+      
+      case  4: showString(STD_SUB_n, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub   
+      case  5: showString(STD_SUB_n, &standardFont, X_ALPHA_MODE,-12, vmNormal, true, false); break; //sup   
+      case  6: showString(STD_n,     &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
+      
+      case  7: showString(STD_OMEGA, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sub   
+      case  8: showString(STD_OMEGA, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sup   
+      case  9: showString(STD_OMEGA, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
+      
+      case 10: showString(STD_SUB_A, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub   
+      case 11: showString(STD_SUB_A, &standardFont, X_ALPHA_MODE, -12, vmNormal, true, false); break; //sup   //not possible
+      case 12: showString(STD_A    , &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
+
+      case 13: showString(STD_omega, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sub   
+      case 14: showString(STD_omega, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sup   
+      case 15: showString(STD_omega, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
+      
+      case 16: showString(STD_SUB_a, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub   
+      case 17: showString(STD_SUB_a, &standardFont, X_ALPHA_MODE, -12, vmNormal, true, false); break; //sup    //not possible 
+      case 18: showString(STD_a    , &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
+      default:;
     }
 
   }

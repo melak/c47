@@ -4121,6 +4121,7 @@ void calcModeAim(uint16_t unusedParamButMandatory) {
   }
 
     alphaCase = AC_UPPER;
+    nextChar = NC_NORMAL;
     numLock = false;
     calcMode = CM_AIM;
     nextChar = NC_NORMAL;

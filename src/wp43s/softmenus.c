@@ -441,27 +441,27 @@ const int16_t menu_ASN[]         = {
                                                                           
                                      USER_PRIM00U,                         USER_PRIM01U,                      USER_PRIM02U,                    USER_PRIM03U,                 USER_PRIM04U,                       USER_PRIM05U,  //JM USER
                                      USER_SFTf00U,                         USER_SFTf01U,                      USER_SFTf02U,                    USER_SFTf03U,                 USER_SFTf04U,                       USER_SFTf05U,  //JM USER
-                                     Kg00U,                         Kg01U,                      Kg02U,                    Kg03U,                 Kg04U,                       Kg05U,  //JM USER
+                                     USER_SFTg00U,                         USER_SFTg01U,                      USER_SFTg02U,                    USER_SFTg03U,                 USER_SFTg04U,                       USER_SFTg05U,  //JM USER
                                                                                                                            
                                      USER_PRIM06U,                         USER_PRIM07U,                      USER_PRIM08U,                    USER_PRIM09U,                 USER_PRIM10U,                       USER_PRIM11U,  //JM USER
                                      USER_SFTf06U,                         USER_SFTf07U,                      USER_SFTf08U,                    USER_SFTf09U,                 USER_SFTf10U,                       USER_SFTf11U,  //JM USER
-                                     Kg06U,                         Kg07U,                      Kg08U,                    Kg09U,                 Kg10U,                       Kg11U,  //JM USER
+                                     USER_SFTg06U,                         USER_SFTg07U,                      USER_SFTg08U,                    USER_SFTg09U,                 USER_SFTg10U,                       USER_SFTg11U,  //JM USER
                                                                                                                            
                                      USER_PRIM12U,                         USER_PRIM13U,                      USER_PRIM14U,                    USER_PRIM15U,                 USER_PRIM16U,                       ITM_NULL,  //JM USER
                                      USER_SFTf12U,                         USER_SFTf13U,                      USER_SFTf14U,                    USER_SFTf15U,                 USER_SFTf16U,                       ITM_NULL,  //JM USER
-                                     Kg12U,                         Kg13U,                      Kg14U,                    Kg15U,                 Kg16U,                       ITM_NULL,  //JM USER
+                                     USER_SFTg12U,                         USER_SFTg13U,                      USER_SFTg14U,                    USER_SFTg15U,                 USER_SFTg16U,                       ITM_NULL,  //JM USER
 /*                                   USER_PRIM17U,                         USER_PRIM18U,                      USER_PRIM19U,                    USER_PRIM20U,                 USER_PRIM21U,                       ITM_NULL,  //JM USER
                                      USER_SFTf17U,                         USER_SFTf18U,                      USER_SFTf19U,                    USER_SFTf20U,                 USER_SFTf21U,                       ITM_NULL,  //JM USER
-                                     Kg17U,                         Kg18U,                      Kg19U,                    Kg20U,                 Kg21U,                       ITM_NULL,  //JM USER
+                                     USER_SFTg17U,                         USER_SFTg18U,                      USER_SFTg19U,                    USER_SFTg20U,                 USER_SFTg21U,                       ITM_NULL,  //JM USER
                                      USER_PRIM22U,                         USER_PRIM23U,                      USER_PRIM24U,                    USER_PRIM25U,                 USER_PRIM26U,                       ITM_NULL,  //JM USER
                                      USER_SFTf22U,                         USER_SFTf23U,                      USER_SFTf24U,                    USER_SFTf25U,                 USER_SFTf26U,                       ITM_NULL,  //JM USER
-                                     Kg22U,                         Kg23U,                      Kg24U,                    Kg25U,                 Kg26U,                       ITM_NULL,  //JM USER
+                                     USER_SFTg22U,                         USER_SFTg23U,                      USER_SFTg24U,                    USER_SFTg25U,                 USER_SFTg26U,                       ITM_NULL,  //JM USER
                                      USER_PRIM27U,                         USER_PRIM28U,                      USER_PRIM29U,                    USER_PRIM30U,                 USER_PRIM31U,                       ITM_NULL,  //JM USER
                                      USER_SFTf27U,                         USER_SFTf28U,                      USER_SFTf29U,                    USER_SFTf30U,                 USER_SFTf31U,                       ITM_NULL,  //JM USER
-                                     Kg27U,                         Kg28U,                      Kg29U,                    Kg30U,                 Kg31U,                       ITM_NULL,  //JM USER
+                                     USER_SFTg27U,                         USER_SFTg28U,                      USER_SFTg29U,                    USER_SFTg30U,                 USER_SFTg31U,                       ITM_NULL,  //JM USER
                                      USER_PRIM32U,                         USER_PRIM33U,                      USER_PRIM34U,                    USER_PRIM35U,                 USER_PRIM36U,                       ITM_NULL,  //JM USER
                                      USER_SFTf32U,                         USER_SFTf33U,                      USER_SFTf34U,                    USER_SFTf35U,                 USER_SFTf36U,                       ITM_NULL,  //JM USER
-                                     Kg32U,                         Kg33U,                      Kg34U,                    Kg35U,                 Kg36U,                       ITM_NULL   //JM USER
+                                     USER_SFTg32U,                         USER_SFTg33U,                      USER_SFTg34U,                    USER_SFTg35U,                 USER_SFTg36U,                       ITM_NULL   //JM USER
  */
       };
 

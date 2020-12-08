@@ -38,21 +38,6 @@ uint32_t    timerLastCalled;
 
 
 
-void fnCase(uint16_t Param) {
-  #ifndef TESTSUITE_BUILD
-  switch (Param) {
-
-    case 0:  processKeyAction(CHR_case); break;
-    case 1:  if(alphaCase == AC_LOWER)  { processKeyAction(CHR_case); } break;
-    case 2:  if(alphaCase == AC_UPPER)  { processKeyAction(CHR_case); } break;
-    case 3:  processKeyAction(CHR_num); break;
-    default: break;
-  }
-
-  #endif
-}
-
-
 void showAlphaModeonGui(void) {
   if(calcMode == CM_AIM || calcMode == CM_ASM || CM_ASM_OVER_TAM || CM_ASM_OVER_AIM)    //vv dr JM
   {
@@ -78,14 +63,17 @@ void showShiftState(void) {
     if(shiftF) {          //SEE screen.c:refreshScreen
       showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
       show_f_jm();
+      showHideAlphaMode();
     }
     else if(shiftG) {     //SEE screen.c:refreshScreen
       showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
       show_g_jm();
+      showHideAlphaMode();
     }
     else {
       showGlyph(" ", &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // space clears the f and g
       clear_fg_jm();
+      showHideAlphaMode();
     }
   }
 #endif
@@ -233,6 +221,7 @@ void fg_processing_jm(void) {
               }
               else {
                 if(calcMode == CM_AIM) {                                                                                      //JM shifts
+                  processKeyAction(CHR_num);
                 }
                 else {                                                                                                        //JM SHIFTS
                   showSoftmenu(NULL, -MNU_HOME, true);                                                                        //JM shifts  //JM ALPHA-HOME
