@@ -662,7 +662,7 @@ void processKeyAction(int16_t item) {
 /*JM*/      if(numLock)  { } else
 /*JM*/      if(alphaCase == AC_LOWER)  { processKeyAction(CHR_case); } else
 /*JM*/      if(alphaCase == AC_UPPER)  { processKeyAction(CHR_numL); }
-
+/*JM*/      nextChar = NC_NORMAL;
       keyActionProcessed = true;
       break;
 
@@ -671,14 +671,14 @@ void processKeyAction(int16_t item) {
 
 /*JM*/      if(numLock)  { alphaCase = AC_UPPER; processKeyAction(CHR_numU); } else
 /*JM*/      if(alphaCase == AC_UPPER)  { processKeyAction(CHR_case); } 
-
+/*JM*/      nextChar = NC_NORMAL;
       keyActionProcessed = true;
       break;
 
     case CHR_case:
 /*JM*/      numLock = false;
       int16_t sm = softmenu[softmenuStack[softmenuStackPointer - 1].softmenu].menuId;                                      //JMvv
-      nextChar = NC_NORMAL;
+/*JM*/      nextChar = NC_NORMAL;
       if(alphaCase == AC_LOWER) {
         alphaCase = AC_UPPER;
         if(sm == -MNU_alpha_omega || sm == -MNU_ALPHAintl) {
