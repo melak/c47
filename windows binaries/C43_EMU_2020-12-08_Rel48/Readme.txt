@@ -1,4 +1,4 @@
-24 Nov 2020 release pre-alpha REL47
+08 dec 2020 release pre-alpha REL48
 
 
 
@@ -54,6 +54,8 @@ Notes:
 17. Try the STAST/PLOT menu system. DEMO data is availble. Scroll down using Dn.
 
 18. Try the key label changes!
+
+19. We fiddled a lot with the text modes, i.e. superscript, subscript, num lock and caps lock. The intention is to retire the yellow commands around I, J, K & O. The intention is to concentrate these around the cursors usinf multi-modes.
 
 ---
 

@@ -1139,7 +1139,7 @@ void fnUserJM(uint16_t jmUser) {
     kbd_usr[26].keyLblAim     = ITM_UP1;
     kbd_usr[26].primaryAim     = ITM_UP1;  //arrow
     kbd_usr[26].fShiftedAim     = CHR_caseUP;
-    kbd_usr[26].gShiftedAim     = CHR_numL;
+    kbd_usr[26].gShiftedAim     = ITM_UP_ARROW;
     kbd_usr[26].primaryTam     = ITM_UP1;
 
     kbd_usr[27].primary     = ITM_MULT;       //ex-f/g
@@ -1157,7 +1157,7 @@ void fnUserJM(uint16_t jmUser) {
     kbd_usr[31].keyLblAim     = ITM_DOWN1;
     kbd_usr[31].primaryAim     = ITM_DOWN1;  //arrow
     kbd_usr[31].fShiftedAim     = CHR_caseDN;
-    kbd_usr[31].gShiftedAim     = CHR_numU;
+    kbd_usr[31].gShiftedAim     = ITM_DOWN_ARROW;
     kbd_usr[31].primaryTam     = ITM_DOWN1;
 
     kbd_usr[32].primary     = ITM_DIV;   //ex-exit

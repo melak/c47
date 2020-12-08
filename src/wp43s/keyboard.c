@@ -536,22 +536,6 @@ void btnReleased(void *data) {
 }
 
 
-int16_t numKey(int16_t item) {                    //JMvv
-  switch(item) {
-    case ITM_P: return ITM_7; break;
-    case ITM_Q: return ITM_8; break;
-    case ITM_R: return ITM_9; break;
-    case ITM_T: return ITM_4; break;
-    case ITM_U: return ITM_5; break;
-    case ITM_V: return ITM_6; break;
-    case ITM_X: return ITM_1; break;
-    case ITM_Y: return ITM_2; break;
-    case ITM_Z: return ITM_3; break;
-    case ITM_COLON:      return ITM_0; break;
-    case ITM_COMMA:      return ITM_PERIOD; break;
-    default:             return 0;
-  }
-}                                                 //JM^^
 
 /********************************************//**
  * \brief A calc button was pressed
@@ -649,7 +633,7 @@ void processKeyAction(int16_t item) {
       break;
 
     case CHR_num:
-/*JM*/      alphaCase = AC_UPPER;
+      alphaCase = AC_UPPER;
       numLock = !numLock;
       if(!numLock) { nextChar = NC_NORMAL;}
       showAlphaModeonGui(); //dr JM, see keyboardtweaks
@@ -657,28 +641,24 @@ void processKeyAction(int16_t item) {
       break;
 
     case CHR_caseUP:
-//      if(alphaCase == AC_LOWER)  { processKeyAction(CHR_case); }
-
-/*JM*/      if(numLock)  { } else
-/*JM*/      if(alphaCase == AC_LOWER)  { processKeyAction(CHR_case); } else
-/*JM*/      if(alphaCase == AC_UPPER)  { processKeyAction(CHR_numL); }
-/*JM*/      nextChar = NC_NORMAL;
+      if(numLock)  { } else
+      if(alphaCase == AC_LOWER)  { processKeyAction(CHR_case); } else
+      if(alphaCase == AC_UPPER)  { processKeyAction(CHR_numL); }
+      nextChar = NC_NORMAL;
       keyActionProcessed = true;
       break;
 
     case CHR_caseDN:
-//      if(alphaCase == AC_UPPER)  { processKeyAction(CHR_case); }
-
-/*JM*/      if(numLock)  { alphaCase = AC_UPPER; processKeyAction(CHR_numU); } else
-/*JM*/      if(alphaCase == AC_UPPER)  { processKeyAction(CHR_case); } 
-/*JM*/      nextChar = NC_NORMAL;
+      if(numLock)  { alphaCase = AC_UPPER; processKeyAction(CHR_numU); } else
+      if(alphaCase == AC_UPPER)  { processKeyAction(CHR_case); } 
+      nextChar = NC_NORMAL;
       keyActionProcessed = true;
       break;
 
     case CHR_case:
-/*JM*/      numLock = false;
+      numLock = false;
       int16_t sm = softmenu[softmenuStack[softmenuStackPointer - 1].softmenu].menuId;                                      //JMvv
-/*JM*/      nextChar = NC_NORMAL;
+      nextChar = NC_NORMAL;
       if(alphaCase == AC_LOWER) {
         alphaCase = AC_UPPER;
         if(sm == -MNU_alpha_omega || sm == -MNU_ALPHAintl) {
@@ -691,7 +671,6 @@ void processKeyAction(int16_t item) {
         }
       }
       showAlphaModeonGui(); //dr JM, see keyboardtweaks
-//JMXX      showSoftmenuCurrentPart();
       keyActionProcessed = true;
       break;                                                                                                               //JM^^
 

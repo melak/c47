@@ -32,7 +32,7 @@ void fnAim(uint16_t unusedParamButMandatory) {
 
 
 uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
-/*JM*/ //if(!numLock)  nextChar = NC_NORMAL;
+/*JM*/ //nextChar = NC_NORMAL;
 
   if(subOrSup == NC_SUBSCRIPT) {
     switch(item) {
