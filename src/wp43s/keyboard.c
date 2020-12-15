@@ -708,6 +708,13 @@ void processKeyAction(int16_t item) {
               case ITM_UP_ARROW   : item1 = 0; if(nextChar == NC_NORMAL) nextChar = NC_SUPERSCRIPT; else if(nextChar == NC_SUBSCRIPT) nextChar = NC_NORMAL; break;
               case CHR_num        : item1 = 0;          break;
               case CHR_case       : item1 = 0;          break;
+              case ITM_O          : item1 = ITM_EEXCHR; break; //STD_SUB_E_OUTLINE
+
+              case ITM_S          : item1 = ITM_OBELUS; break;
+              case ITM_W          : item1 = ITM_MULT;   break;
+              case ITM_UNDERSCORE : item1 = ITM_SUB;    break;
+              case ITM_SPACE      : item1 = ITM_ADD;    break;
+
               default: 
                    printf("^^^^ In AIM not handled %d\n",item);
                    item1 = item;

@@ -2792,6 +2792,7 @@ const item_t indexOfItems[] = {
 /* 2188 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_num,                                       0,       0,       CAT_FNCT, SLS_UNCHANGED, US_UNCHANGED},//JM CASE
 /* 2189 */  { itemToBeCoded,               NOPARAM,                     "NLock",                                       "NLock",                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},//JM CASE
 /* 2190 */  { itemToBeCoded,               NOPARAM,                     "NUlock",                                      "NUlock",                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},//JM CASE
+/* 2191 */  { addItemToBuffer,             ITM_EEXCHR,                  STD_SUB_E_OUTLINE,                             STD_SUB_E_OUTLINE,                             0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 
-/* 2191 */  { itemToBeCoded,               NOPARAM,                     "",                                            "Last item",                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 2192 */  { itemToBeCoded,               NOPARAM,                     "",                                            "Last item",                                   0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 };

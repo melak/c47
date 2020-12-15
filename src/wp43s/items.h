@@ -2210,8 +2210,9 @@
 #define CHR_num                       2188   //JM CAPS
 #define CHR_numL                      2189   //JM CAPS
 #define CHR_numU                      2190   //JM CAPS
+#define ITM_EEXCHR                    2191
 
-#define LAST_ITEM                     2191   //JM
+#define LAST_ITEM                     2192   //JM
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
