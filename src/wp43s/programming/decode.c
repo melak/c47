@@ -301,11 +301,11 @@ void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
 }
 
 
-void decodeLITT(uint8_t *litteralAddress) {
-  switch(*(uint8_t *)(litteralAddress++)) {
+static void decodeLiteral(uint8_t *literalAddress) {
+  switch(*(uint8_t *)(literalAddress++)) {
     case BINARY_SHORT_INTEGER:
-      reallocateRegister(TEMP_REGISTER, dtShortInteger, SHORT_INTEGER_SIZE, *(uint8_t *)(litteralAddress++));
-      xcopy(REGISTER_DATA(TEMP_REGISTER), litteralAddress, TO_BYTES(SHORT_INTEGER_SIZE));
+      reallocateRegister(TEMP_REGISTER, dtShortInteger, SHORT_INTEGER_SIZE, *(uint8_t *)(literalAddress++));
+      xcopy(REGISTER_DATA(TEMP_REGISTER), literalAddress, TO_BYTES(SHORT_INTEGER_SIZE));
       shortIntegerToDisplayString(TEMP_REGISTER, tmpString, false);
       break;
 
@@ -313,15 +313,11 @@ void decodeLITT(uint8_t *litteralAddress) {
     //  break;
 
     case BINARY_REAL34:
-      real34ToDisplayString((real34_t *)litteralAddress, AM_NONE, tmpString, &standardFont, 9999, 34, false, STD_SPACE_4_PER_EM);
-      break;
-
-    case BINARY_ANGLE34:
-      real34ToDisplayString((real34_t *)(litteralAddress + 1), (uint32_t)*(uint8_t *)(litteralAddress), tmpString, &standardFont, 400, 34, false, STD_SPACE_4_PER_EM);
+      real34ToDisplayString((real34_t *)literalAddress, AM_NONE, tmpString, &standardFont, 9999, 34, false, STD_SPACE_4_PER_EM);
       break;
 
     case BINARY_COMPLEX34:
-      complex34ToDisplayString((complex34_t *)litteralAddress, tmpString, &standardFont, 9999, 34, false, STD_SPACE_4_PER_EM);
+      complex34ToDisplayString((complex34_t *)literalAddress, tmpString, &standardFont, 9999, 34, false, STD_SPACE_4_PER_EM);
       break;
 
     //case BINARY_DATE:
@@ -331,16 +327,16 @@ void decodeLITT(uint8_t *litteralAddress) {
     //  break;
 
     case STRING_SHORT_INTEGER:
-      getStringLabelOrVariableName(litteralAddress + 1);
+      getStringLabelOrVariableName(literalAddress + 1);
       #pragma GCC diagnostic push
       #pragma GCC diagnostic ignored "-Wrestrict"
       sprintf(tmpString, "%s", tmpString + 1000);
       #pragma GCC diagnostic pop
-      sprintf(tmpString + strlen(tmpString), "#%u", *litteralAddress);
+      sprintf(tmpString + strlen(tmpString), "#%u", *literalAddress);
       break;
 
     case STRING_LONG_INTEGER:
-      getStringLabelOrVariableName(litteralAddress);
+      getStringLabelOrVariableName(literalAddress);
       #pragma GCC diagnostic push
       #pragma GCC diagnostic ignored "-Wrestrict"
       sprintf(tmpString, "%s", tmpString + 1000);
@@ -348,7 +344,7 @@ void decodeLITT(uint8_t *litteralAddress) {
       break;
 
     case STRING_REAL34:
-      getStringLabelOrVariableName(litteralAddress);
+      getStringLabelOrVariableName(literalAddress);
       #pragma GCC diagnostic push
       #pragma GCC diagnostic ignored "-Wrestrict"
       sprintf(tmpString, "%s", tmpString + 1000);
@@ -358,27 +354,8 @@ void decodeLITT(uint8_t *litteralAddress) {
       }
       break;
 
-    case STRING_ANGLE34:
-      getStringLabelOrVariableName(litteralAddress + 1);
-      xcopy(tmpString, tmpString + 1000, strlen(tmpString + 1000) + 1);
-      if(strchr(tmpString, 'e') == NULL && strchr(tmpString, '.') == NULL) {
-        strcat(tmpString, RADIX34_MARK_STRING);
-      }
-      switch(*litteralAddress) {
-        case AM_DEGREE: strcat(tmpString, STD_DEGREE);
-                        break;
-        case AM_GRAD:   strcat(tmpString, STD_SUP_g);
-                        break;
-        case AM_MULTPI: strcat(tmpString, STD_pi);
-                        break;
-        case AM_RADIAN: strcat(tmpString, STD_SUP_r);
-                        break;
-        default:        strcat(tmpString, "?");
-      }
-      break;
-
     case STRING_COMPLEX34:
-      getStringLabelOrVariableName(litteralAddress);
+      getStringLabelOrVariableName(literalAddress);
       #pragma GCC diagnostic push
       #pragma GCC diagnostic ignored "-Wrestrict"
       xcopy(tmpString, tmpString + 1000, strlen(tmpString + 1000) + 1);
@@ -386,7 +363,7 @@ void decodeLITT(uint8_t *litteralAddress) {
       break;
 
     case STRING_LABEL_VARIABLE:
-      getStringLabelOrVariableName(litteralAddress);
+      getStringLabelOrVariableName(literalAddress);
       #pragma GCC diagnostic push
       #pragma GCC diagnostic ignored "-Wrestrict"
       sprintf(tmpString, STD_LEFT_SINGLE_QUOTE "%s" STD_RIGHT_SINGLE_QUOTE, tmpString + 1000);
@@ -401,7 +378,7 @@ void decodeLITT(uint8_t *litteralAddress) {
 
     default: {
       #ifndef DMCP_BUILD
-        printf("\nERROR: %u is not an acceptable parameter for ITM_LITT!\n", *(uint8_t *)(litteralAddress - 1));
+        printf("\nERROR: %u is not an acceptable parameter for ITM_LITERAL!\n", *(uint8_t *)(literalAddress - 1));
       #endif // !DMCP_BUILD
     }
   }
@@ -422,6 +399,10 @@ void decodeOneStep(uint8_t *step) {
       decodeOp(step, indexOfItems[item8].itemCatalogName, PARAM_LABEL);
       break;
 
+    case ITM_PAUSE:       //  38
+      decodeOp(step, indexOfItems[item8].itemCatalogName, PARAM_NUMBER);
+      break;
+
     case ITM_ISE:         //   5
     case ITM_ISG:         //   6
     case ITM_ISZ:         //   7
@@ -434,17 +415,17 @@ void decodeOneStep(uint8_t *step) {
     case ITM_STOSUB:      //  46
     case ITM_STOMULT:     //  47
     case ITM_STODIV:      //  48
-    case ITM_STOMAX:      //  49
-    case ITM_STOMIN:      //  50
     case ITM_RCL:         //  51
     case ITM_RCLADD:      //  52
     case ITM_RCLSUB:      //  53
     case ITM_RCLMULT:     //  54
     case ITM_RCLDIV:      //  55
-    case ITM_RCLMAX:      //  56
-    case ITM_RCLMIN:      //  57
+    case ITM_CONVG:       //  56
+    case ITM_KEYQ:        //  77
     case ITM_DEC:         //  91
     case ITM_INC:         //  92
+    case ITM_VIEW:        // 101
+    case ITM_Xex:         // 127
       decodeOp(step, indexOfItems[item8].itemCatalogName, PARAM_REGISTER);
       break;
 
@@ -485,11 +466,13 @@ void decodeOneStep(uint8_t *step) {
     case ITM_ENTER:       //  35
     case ITM_XexY:        //  36
     case ITM_DROP:        //  37
-    case ITM_DROPY:       //  38
     case ITM_Rup:         //  39
     case ITM_Rdown:       //  40
     case ITM_CLX:         //  41
     case ITM_FILL:        //  42
+    case ITM_COMB:        //  49
+    case ITM_PERM:        //  50
+    case ITM_ENTRY:       //  57
     case ITM_SQUARE:      //  58
     case ITM_CUBE:        //  59
     case ITM_YX:          //  60
@@ -498,18 +481,17 @@ void decodeOneStep(uint8_t *step) {
     case ITM_XTHROOT:     //  63
     case ITM_2X:          //  64
     case ITM_EXP:         //  65
-    case ITM_EX1:         //  66
+    case ITM_ROUND:       //  66
     case ITM_10x:         //  67
     case ITM_LOG2:        //  68
     case ITM_LN:          //  69
-    case ITM_LN1X:        //  70
+    case ITM_STOP:        //  70
     case ITM_LOG10:       //  71
     case ITM_LOGXY:       //  72
     case ITM_1ONX:        //  73
     case ITM_cos:         //  74
     case ITM_cosh:        //  75
     case ITM_sin:         //  76
-    case ITM_sinc:        //  77
     case ITM_sinh:        //  78
     case ITM_tan:         //  79
     case ITM_tanh:        //  80
@@ -531,7 +513,6 @@ void decodeOneStep(uint8_t *step) {
     case ITM_MULT:        //  98
     case ITM_DIV:         //  99
     case ITM_IDIV:        // 100
-    case ITM_IDIVR:       // 101
     case ITM_MOD:         // 102
     case ITM_MAX:         // 103
     case ITM_MIN:         // 104
@@ -540,12 +521,24 @@ void decodeOneStep(uint8_t *step) {
     case ITM_NEXTP:       // 107
     case ITM_XFACT:       // 108
     case ITM_CONSTpi:     // 109
-    case ITM_sincpi:      // 113
+    case ITM_M_SQR:       // 113
+    case ITM_toDEG:       // 115
+    case ITM_toDMS:       // 116
+    case ITM_toGRAD:      // 117
+    case ITM_toMULpi:     // 118
+    case ITM_toRAD:       // 119
+    case ITM_DtoR:        // 120
+    case ITM_RtoD:        // 121
+    case ITM_RMD:         // 122
+    case ITM_LOGICALNOT:  // 123
+    case ITM_LOGICALAND:  // 124
+    case ITM_LOGICALOR:   // 125
+    case ITM_LOGICALXOR:  // 126
       sprintf(tmpString, "%s", indexOfItems[item8].itemCatalogName);
       break;
 
-    case ITM_LITT:        // 114
-       decodeLITT(step);
+    case ITM_LITERAL:     // 114
+       decodeLiteral(step);
        break;
 
     default:
@@ -559,6 +552,17 @@ void decodeOneStep(uint8_t *step) {
       item16 = ((uint16_t)(item8 & 0x7F) << 8) | *(uint8_t *)(step++);
       switch(item16) {
         case ITM_CNST:        //   207
+        case ITM_RL:          //   400
+        case ITM_RLC:         //   401
+        case ITM_RR:          //   402
+        case ITM_RRC:         //   403
+        case ITM_SL:          //   404
+        case ITM_SR:          //   405
+        case ITM_ASR:         //   406
+        case ITM_MASKL:       //   409
+        case ITM_MASKR:       //   410
+        case ITM_SDL:         //   413
+        case ITM_SDR:         //   414
         case ITM_ALL:         //  1400
         case ITM_ENG:         //  1450
         case ITM_FIX:         //  1463
@@ -567,9 +571,27 @@ void decodeOneStep(uint8_t *step) {
           decodeOp(step, indexOfItems[item16].itemCatalogName, PARAM_NUMBER);
           break;
 
+        case ITM_STOMAX:      //  1420
+        case ITM_RCLMAX:      //  1422
+        case ITM_RCLMIN:      //  1452
+        case ITM_STOMIN:      //  1535
         case ITM_VIEW:        //  1622
         case ITM_Xex:         //  1636
           decodeOp(step, indexOfItems[item16].itemCatalogName, PARAM_REGISTER);
+          break;
+
+        case ITM_FCC:         //   386
+        case ITM_FCS:         //   387
+        case ITM_FCF:         //   388
+        case ITM_FSC:         //   389
+        case ITM_FSS:         //   390
+        case ITM_FSF:         //   391
+        case ITM_BS:          //   395
+        case ITM_BC:          //   396
+        case ITM_CB:          //   397
+        case ITM_SB:          //   398
+        case ITM_FB:          //   399
+          decodeOp(step, indexOfItems[item16].itemCatalogName, PARAM_FLAG);
           break;
 
         case CST_01:          //   128
@@ -803,15 +825,52 @@ void decodeOneStep(uint8_t *step) {
         case ITM_PAtoATMb:    //   369
         case ITM_HECTAREtoM2: //   370
         case ITM_M2toHECTARE: //   371
+        case ITM_LOGICALNAND: //   392
+        case ITM_LOGICALNOR:  //   393
+        case ITM_LOGICALXNOR: //   394
+        case ITM_LJ:          //   407
+        case ITM_RJ:          //   408
+        case ITM_MIRROR:      //   411
+        case ITM_NUMB:        //   412
+        case ITM_SIGMAPLUS:   //   423
+        case ITM_SIGMAMINUS:  //   424
+        case ITM_NSIGMA:      //   425
+        case ITM_SIGMAx:      //   426
+        case ITM_SIGMAy:      //   427
+        case ITM_SIGMAx2:     //   428
+        case ITM_SIGMAx2y:    //   429
+        case ITM_SIGMAy2:     //   430
+        case ITM_SIGMAxy:     //   431
+        case ITM_SIGMAlnxy:   //   432
+        case ITM_SIGMAlnx:    //   433
+        case ITM_SIGMAln2x:   //   434
+        case ITM_SIGMAylnx:   //   435
+        case ITM_SIGMAlny:    //   436
+        case ITM_SIGMAln2y:   //   437
+        case ITM_SIGMAxlny:   //   438
+        case ITM_SIGMAlnyonx: //   439
+        case ITM_SIGMAx2ony:  //   440
+        case ITM_SIGMA1onx:   //   441
+        case ITM_SIGMA1onx2:  //   442
+        case ITM_SIGMAxony:   //   443
+        case ITM_SIGMA1ony:   //   444
+        case ITM_SIGMA1ony2:  //   445
+        case ITM_SIGMAx3:     //   446
+        case ITM_SIGMAx4:     //   447
 
         case ITM_CLREGS:      //  1417
         case ITM_CLSTK:       //  1418
         case ITM_END:         //  1448
+        case ITM_sinc:        //  1490
+        case ITM_sincpi:      //  1530
         case ITM_NOP:         //  1532
+        case ITM_DROPY:       //  1534
         case ITM_RAN:         //  1549
+        case ITM_EX1:         //  1565
         case ITM_SIGN:        //  1590
-        case ITM_STOP:        //  1604
+        case ITM_LN1X:        //  1604
         case ITM_TICKS:       //  1610
+        case ITM_IDIVR:       //  1622
           sprintf(tmpString, "%s%s", item16 <= CST_79 ? "# " : "", indexOfItems[item16].itemCatalogName);
           break;
 

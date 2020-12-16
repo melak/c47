@@ -22,6 +22,7 @@
 //*********************************
 //* General configuration defines *
 //*********************************
+#define DEBUG_INSTEAD_STATUS_BAR         0 // Debug data instead of the status bar
 #define EXTRA_INFO_ON_CALC_ERROR         1 // Print extra information on the console about an error
 #define DEBUG_PANEL                      1 // Showing registers, local registers, saved stack registers, flags, statistical sums, ... in a debug panel
 #define DEBUG_REGISTER_L                 1 // Showing register L content on the PC GUI
@@ -280,12 +281,9 @@
 #define SCREEN_HEIGHT                            240 // Height of the screen
 #define ON_PIXEL                            0x303030 // blue red green
 #define OFF_PIXEL                           0xe0e0e0 // blue red green
-#define SOFTMENU_STACK_SIZE                        7
+#define SOFTMENU_STACK_SIZE                        8
 #define TEMPORARY_INFO_OFFSET                     10 // Vertical offset for temporary informations. I find 4 looks better
 #define REGISTER_LINE_HEIGHT                      36
-
-#define MS_INIT                                    0 // Initializes the softmenu stack
-#define MS_PUSH                                    1 // Pushes the softmenu on the stack
 
 #define Y_POSITION_OF_REGISTER_T_LINE             24 // 135 - REGISTER_LINE_HEIGHT*(registerNumber - REGISTER_X)
 #define Y_POSITION_OF_REGISTER_Z_LINE             60
@@ -387,25 +385,18 @@
 #define RM_CEIL                                    5
 #define RM_FLOOR                                   6
 
-// Calc mode 5 bits
+// Calc mode 4 bits
 #define CM_NORMAL                                  0 // Normal operation
 #define CM_AIM                                     1 // Alpha input mode
-#define CM_TAM                                     2 // Temporary alpha mode
-#define CM_NIM                                     3 // Numeric input mode
-#define CM_ASM                                     4 // Alpha selection in FCNS, MENU, and CNST menu
-#define CM_ASM_OVER_TAM                            5 // Alpha selection in TAM
-#define CM_ASM_OVER_TAM_OVER_PEM                   6 // Alpha selection in TAM over PEM
-#define CM_ASM_OVER_AIM                            7 // Alpha selection in AIM
-#define CM_ASM_OVER_PEM                            8 // Alpha selection in PEM
-#define CM_TAM_OVER_PEM                            9 // Temporary alpha mode when PEM is active
-#define CM_ASSIGN                                 10 // Assign mode
-#define CM_REGISTER_BROWSER                       11 // Register browser
-#define CM_FLAG_BROWSER                           12 // Flag browser
-#define CM_FONT_BROWSER                           13 // Font browser
-#define CM_ERROR_MESSAGE                          14 // Error message in one of the register lines
-#define CM_BUG_ON_SCREEN                          15 // Bug message on screen
-#define CM_CONFIRMATION                           16 // Waiting for confirmation or canceling
-#define CM_PEM                                    17 // Program entry mode
+#define CM_NIM                                     2 // Numeric input mode
+#define CM_PEM                                     3 // Program entry mode
+#define CM_ASSIGN                                  4 // Assign mode
+#define CM_REGISTER_BROWSER                        5 // Register browser
+#define CM_FLAG_BROWSER                            6 // Flag browser
+#define CM_FONT_BROWSER                            7 // Font browser
+#define CM_ERROR_MESSAGE                           8 // Error message in one of the register lines
+#define CM_BUG_ON_SCREEN                           9 // Bug message on screen
+#define CM_CONFIRMATION                           10 // Waiting for confirmation or canceling
 
 // Next character in AIM 2 bits
 #define NC_NORMAL                                  0
@@ -489,14 +480,15 @@
 #define DBG_TMP_SAVED_STACK_REGISTERS              6
 
 // alpha selection menus
-#define ASM_NONE                                   0
-#define ASM_CNST                                   1
-#define ASM_FCNS                                   2
-#define ASM_MENU                                   3
-#define ASM_SYFL                                   4
-#define ASM_AINT                                   5
-#define ASM_aint                                   6
-#define ASM_PROG                                   7
+#define CATALOG_NONE                               0 // CATALOG_NONE must be 0
+#define CATALOG_CNST                               1
+#define CATALOG_FCNS                               2
+#define CATALOG_MENU                               3
+#define CATALOG_SYFL                               4
+#define CATALOG_AINT                               5
+#define CATALOG_aint                               6
+#define CATALOG_PROG                               7
+#define NUMBER_OF_CATALOGS                         8
 
 // String comparison type
 #define CMP_CLEANED_STRING_ONLY                    1
@@ -562,17 +554,15 @@
 #define BINARY_SHORT_INTEGER                       1
 #define BINARY_LONG_INTEGER                        2
 #define BINARY_REAL34                              3
-#define BINARY_ANGLE34                             4
-#define BINARY_COMPLEX34                           5
-#define BINARY_DATE                                6
-#define BINARY_TIME                                7
-#define STRING_SHORT_INTEGER                       8
-#define STRING_LONG_INTEGER                        9
-#define STRING_REAL34                             10
-#define STRING_ANGLE34                            11
-#define STRING_COMPLEX34                          12
-#define STRING_TIME                               13
-#define STRING_DATE                               14
+#define BINARY_COMPLEX34                           4
+#define BINARY_DATE                                5
+#define BINARY_TIME                                6
+#define STRING_SHORT_INTEGER                       7
+#define STRING_LONG_INTEGER                        8
+#define STRING_REAL34                              9
+#define STRING_COMPLEX34                          10
+#define STRING_TIME                               11
+#define STRING_DATE                               12
 
 // OP parameter special values
 #define VALUE_0                                  251

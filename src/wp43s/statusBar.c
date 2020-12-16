@@ -30,25 +30,30 @@
    * \return void
    ***********************************************/
   void refreshStatusBar(void) {
-    showDateTime();
-    showRealComplexResult();
-    showComplexMode();
-    showAngularMode();
-    showFracMode();
-    showIntegerMode();
-    showOverflowCarry();
-    showHideAlphaMode();
-    showHideHourGlass();
-    showHidePgmBegin();
-    showHideWatch();
-    showHideSerialIO();
-    showHidePrinter();
-    showHideUserMode();
-    #ifdef DMCP_BUILD
-      showHideUsbLowBattery();
-    #else // !DMCP_BUILD
-      showHideStackLift();
-    #endif // DMCP_BUILD
+    #if (DEBUG_INSTEAD_STATUS_BAR == 1)
+      sprintf(tmpString, "%s%d %s/%s  mnu:%s fi:%d", catalog ? "asm:" : "", catalog, tamMode ? "/tam" : "", getCalcModeName(calcMode),indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemCatalogName, softmenuStack[0].firstItem);
+      showString(tmpString, &standardFont, X_DATE, 0, vmNormal, true, true);
+    #else // DEBUG_INSTEAD_STATUS_BAR != 1
+      showDateTime();
+      showRealComplexResult();
+      showComplexMode();
+      showAngularMode();
+      showFracMode();
+      showIntegerMode();
+      showOverflowCarry();
+      showHideAlphaMode();
+      showHideHourGlass();
+      showHidePgmBegin();
+      showHideWatch();
+      showHideSerialIO();
+      showHidePrinter();
+      showHideUserMode();
+      #ifdef DMCP_BUILD
+        showHideUsbLowBattery();
+      #else // !DMCP_BUILD
+        showHideStackLift();
+      #endif // DMCP_BUILD
+    #endif // DEBUG_INSTEAD_STATUS_BAR == 1
   }
 
 
@@ -60,14 +65,10 @@
    * \return void
    ***********************************************/
   void showDateTime(void) {
-    uint32_t x;
-
-    showGlyph(STD_SPACE_EM, &standardFont, X_REAL_COMPLEX - 12, 0, vmNormal, true, true); // Clear garbage after time STD_SPACE_EM is 0+0+12 pixel wide
-    showGlyph(STD_SPACE_EM, &standardFont, X_REAL_COMPLEX - 24, 0, vmNormal, true, true); // Clear garbage after time STD_SPACE_EM is 0+0+12 pixel wide
+    lcd_fill_rect(0, 0, X_REAL_COMPLEX, 20, LCD_SET_VALUE);
 
     getDateString(dateTimeString);
-    x = showString(dateTimeString, &standardFont, X_DATE, 0, vmNormal, true, true);
-
+    uint32_t x = showString(dateTimeString, &standardFont, X_DATE, 0, vmNormal, true, true);
     x = showGlyph(getSystemFlag(FLAG_TDM24) ? STD_SPACE_FIGURE : STD_SPACE_3_PER_EM, &standardFont, x, 0, vmNormal, true, true); // is 0+0+8 pixel wide
 
     getTimeString(dateTimeString);
@@ -118,32 +119,27 @@
    *
    ***********************************************/
   void showAngularMode(void) {
-    uint32_t x;
+    uint32_t x = 0;
 
-    x = showGlyph(STD_MEASURED_ANGLE, &standardFont, X_ANGULAR_MODE, 0, vmNormal, true, true); // Angle is 0+9+3 pixel wide
+    x = showGlyph(STD_MEASURED_ANGLE, &standardFont, X_ANGULAR_MODE, 0, vmNormal, true, true); // Angle is 0+9 pixel wide
 
     if(currentAngularMode == AM_DEGREE) {
-      x = showGlyph(STD_DEGREE,             &standardFont, x, 0, vmNormal, true, true); // °  is 0+6+2 pixel wide
-      showGlyph(STD_SPACE_HAIR,             &standardFont, x, 0, vmNormal, true, true); //    is 0+0+1 pixel wide
+      showGlyph(STD_DEGREE,             &standardFont, x, 0, vmNormal, true, false); // °  is 0+6 pixel wide
     }
     else if(currentAngularMode == AM_GRAD) {
-      x = showGlyph(STD_SUP_g,              &standardFont, x, 0, vmNormal, true, true); // g  is 0+6+2 pixel wide
-      showGlyph(STD_SPACE_HAIR,             &standardFont, x, 0, vmNormal, true, true); //    is 0+0+1 pixel wide
+      showGlyph(STD_SUP_g,              &standardFont, x, 0, vmNormal, true, false); // g  is 0+6 pixel wide
     }
     else if(currentAngularMode == AM_RADIAN) {
-      x = showGlyph(STD_SUP_r,              &standardFont, x, 0, vmNormal, true, true); // r  is 0+6+2 pixel wide
-      showGlyph(STD_SPACE_HAIR,             &standardFont, x, 0, vmNormal, true, true); //    is 0+0+1 pixel wide
+      showGlyph(STD_SUP_r,              &standardFont, x, 0, vmNormal, true, false); // r  is 0+6 pixel wide
     }
     else if(currentAngularMode == AM_MULTPI) {
-      showGlyph(STD_pi,                     &standardFont, x, 0, vmNormal, true, true); // pi is 0+9+2 pixel wide
+      showGlyph(STD_pi,                     &standardFont, x, 0, vmNormal, true, false); // pi is 0+9 pixel wide
     }
     else if(currentAngularMode == AM_DMS) {
-      x = showGlyph(STD_RIGHT_DOUBLE_QUOTE, &standardFont, x, 0, vmNormal, true, true); // "  is 0+6+2 pixel wide
-      showGlyph(STD_SPACE_HAIR,             &standardFont, x, 0, vmNormal, true, true); //    is 0+0+1 pixel wide
+      showGlyph(STD_RIGHT_DOUBLE_QUOTE, &standardFont, x, 0, vmNormal, true, false); // "  is 0+6 pixel wide
     }
     else {
-      sprintf(errorMessage, "In function showAngularMode: %" PRIu8 " is an unexpected value for currentAngularMode!", currentAngularMode);
-      displayBugScreen(errorMessage);
+      showGlyph(STD_QUESTION_MARK, &standardFont, x, 0, vmNormal, true, false); // ?
     }
   }
 
@@ -156,25 +152,23 @@
    * \return void
    ***********************************************/
   void showFracMode(void) {
-    showString(STD_SPACE_EM STD_SPACE_EM STD_SPACE_EM STD_SPACE_EM STD_SPACE_EM, &standardFont, X_INTEGER_MODE-12*5, 0, vmNormal, true, true); // STD_SPACE_EM is 0+0+12 pixel wide
-
     if(getSystemFlag(FLAG_DENANY) && denMax == MAX_DENMAX) {
       showString("/max", &standardFont, X_FRAC_MODE, 0, vmNormal, true, true);
     }
     else {
       uint32_t x = 0;
 
-      if((getSystemFlag(FLAG_DENANY) && denMax!=MAX_DENMAX) || !getSystemFlag(FLAG_DENANY)) {
+      if((getSystemFlag(FLAG_DENANY) && denMax != MAX_DENMAX) || !getSystemFlag(FLAG_DENANY)) {
         sprintf(errorMessage, "/%" PRIu32, denMax);
         x = showString(errorMessage, &standardFont, X_FRAC_MODE, 0, vmNormal, true, true);
       }
 
       if(!getSystemFlag(FLAG_DENANY)) {
         if(getSystemFlag(FLAG_DENFIX)) {
-         showGlyphCode('f',  &standardFont, x, 0, vmNormal, true, true); // f is 0+7+3 pixel wide
+          showGlyphCode('f',  &standardFont, x, 0, vmNormal, true, false); // f is 0+7+3 pixel wide
         }
         else {
-         showString(PRODUCT_SIGN, &standardFont, x, 0, vmNormal, true, true); // STD_DOT is 0+3+2 pixel wide and STD_CROSS is 0+7+2 pixel wide
+          showString(PRODUCT_SIGN, &standardFont, x, 0, vmNormal, true, false); // STD_DOT is 0+3+2 pixel wide and STD_CROSS is 0+7+2 pixel wide
         }
       }
     }
@@ -228,7 +222,7 @@
    * \return void
    ***********************************************/
   void showHideAlphaMode(void) {
-    if(calcMode == CM_AIM || calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_TAM_OVER_PEM || calcMode == CM_ASM_OVER_AIM || calcMode == CM_ASM_OVER_PEM) {
+    if(calcMode == CM_AIM || catalog) {
       if(alphaCase == AC_UPPER) {
         showString(STD_ALPHA, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
         setSystemFlag(FLAG_alphaCAP);
@@ -239,7 +233,6 @@
       }
     }
     else {
-      showGlyphCode(' ',  &standardFont, X_ALPHA_MODE, 0, vmNormal, true, true); // is 0+0+10 pixel wide
       clearSystemFlag(FLAG_alphaCAP);
     }
   }
@@ -256,9 +249,6 @@
     if(hourGlassIconEnabled) {
       showGlyph(STD_HOURGLASS, &standardFont, X_HOURGLASS, 0, vmNormal, true, false); // is 0+11+3 pixel wide
     }
-    else {
-      showGlyph(STD_SPACE_EM,  &standardFont, X_HOURGLASS, 0, vmNormal, true, true);  // STD_SPACE_EM is 12 pixel wide
-    }
   }
 
 
@@ -272,9 +262,6 @@
   void showHidePgmBegin(void) {
     if(currentStep == beginOfCurrentProgram) {
       showGlyph(STD_PGM_BEGIN, &standardFont, X_PROGRAM_BEGIN, 0, vmNormal, true, false); // is 0+10+3 pixel wide
-    }
-    else {
-      showString(STD_SPACE_EM, &standardFont, X_PROGRAM_BEGIN, 0, vmNormal, true, true); // STD_SPACE_EM is 12 pixel wide
     }
   }
 
@@ -290,9 +277,6 @@
     if(watchIconEnabled) {
       showGlyph(STD_WATCH,                    &standardFont, X_WATCH, 0, vmNormal, true, false); // is 0+13+1 pixel wide
     }
-    else {
-      showString(STD_SPACE_EM STD_SPACE_HAIR, &standardFont, X_WATCH, 0, vmNormal, true, true);  // STD_SPACE_EM is 12 pixel wide
-    }
   }
 
 
@@ -306,9 +290,6 @@
   void showHideSerialIO(void) {
     if(serialIOIconEnabled) {
       showGlyph(STD_SERIAL_IO, &standardFont, X_SERIAL_IO, 0, vmNormal, true, false); // is 0+8+3 pixel wide
-    }
-    else {
-      showGlyphCode(' ',       &standardFont, X_SERIAL_IO, 0, vmNormal, true, true);  // is 10 pixel wide
     }
   }
 
@@ -324,9 +305,6 @@
     if(printerIconEnabled) {
       showGlyph(STD_PRINTER,   &standardFont, X_PRINTER, 0, vmNormal, true, false); // is 0+12+3 pixel wide
     }
-    else {
-      showString(STD_SPACE_EM, &standardFont, X_PRINTER, 0, vmNormal, true, true);  // STD_SPACE_EM is 12 pixel wide
-    }
   }
 
 
@@ -341,9 +319,6 @@
     if(getSystemFlag(FLAG_USER)) {
       showGlyph(STD_USER_MODE, &standardFont, X_USER_MODE, 0, vmNormal, false, false); // STD_USER_MODE is 0+12+2 pixel wide
     }
-    else {
-      showString(STD_SPACE_EM, &standardFont, X_USER_MODE, 0, vmNormal, true, true);   // STD_SPACE_EM is 12 pixel wide
-    }
   }
 
 
@@ -357,14 +332,11 @@
      ***********************************************/
     void showHideUsbLowBattery(void) {
       if(getSystemFlag(FLAG_USB)) {
-        showGlyph(STD_USB, &standardFont, X_BATTERY, 0, vmNormal, true, true); // is 0+9+2 pixel wide
+        showGlyph(STD_USB, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+9+2 pixel wide
       }
       else {
         if(getSystemFlag(FLAG_LOWBAT)) {
           showGlyph(STD_BATTERY, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+10+1 pixel wide
-        }
-        else {
-          showGlyphCode(' ',     &standardFont, X_BATTERY, 0, vmNormal, true, true);  // is 10 pixel wide
         }
       }
     }

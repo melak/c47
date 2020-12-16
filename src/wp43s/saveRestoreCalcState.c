@@ -20,7 +20,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         49  // Changed the way programs are displayed
+#define BACKUP_VERSION         50  // Changed menu management
 #define START_REGISTER_VALUE 1522
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -107,8 +107,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&yCursor,                            sizeof(yCursor),                            BACKUP);
     save(&firstGregorianDay,                  sizeof(firstGregorianDay),                  BACKUP);
     save(&denMax,                             sizeof(denMax),                             BACKUP);
-    save(&softmenuStackPointer,               sizeof(softmenuStackPointer),               BACKUP);
-    save(&softmenuStackPointerBeforeAIM,      sizeof(softmenuStackPointerBeforeAIM),      BACKUP);
     save(&transitionSystemState,              sizeof(transitionSystemState),              BACKUP);
     save(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen),       BACKUP);
     save(&currentFntScr,                      sizeof(currentFntScr),                      BACKUP);
@@ -160,13 +158,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&lastIntegerBase,                    sizeof(lastIntegerBase),                    BACKUP);
     save(&wp43sMemInBytes,                    sizeof(wp43sMemInBytes),                    BACKUP);
     save(&gmpMemInBytes,                      sizeof(gmpMemInBytes),                      BACKUP);
-    save(&alphaSelectionMenu,                 sizeof(alphaSelectionMenu),                 BACKUP);
-    save(&lastFcnsMenuPos,                    sizeof(lastFcnsMenuPos),                    BACKUP);
-    save(&lastMenuMenuPos,                    sizeof(lastMenuMenuPos),                    BACKUP);
-    save(&lastCnstMenuPos,                    sizeof(lastCnstMenuPos),                    BACKUP);
-    save(&lastSyFlMenuPos,                    sizeof(lastSyFlMenuPos),                    BACKUP);
-    save(&lastAIntMenuPos,                    sizeof(lastAIntMenuPos),                    BACKUP);
-    save(&lastProgMenuPos,                    sizeof(lastProgMenuPos),                    BACKUP);
+    save(&catalog,                            sizeof(catalog),                            BACKUP);
+    save(&lastCatalogPosition,                sizeof(lastCatalogPosition),                BACKUP);
     save(&lgCatalogSelection,                 sizeof(lgCatalogSelection),                 BACKUP);
     save(displayValueX,                       sizeof(displayValueX),                      BACKUP);
     save(&pcg32_global,                       sizeof(pcg32_global),                       BACKUP);
@@ -197,6 +190,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
     save(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
     save(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
+    save(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop),              BACKUP);
 
     fclose(BACKUP);
     printf("End of calc's backup\n");
@@ -267,8 +261,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&yCursor,                            sizeof(yCursor),                            BACKUP);
       restore(&firstGregorianDay,                  sizeof(firstGregorianDay),                  BACKUP);
       restore(&denMax,                             sizeof(denMax),                             BACKUP);
-      restore(&softmenuStackPointer,               sizeof(softmenuStackPointer),               BACKUP);
-      restore(&softmenuStackPointerBeforeAIM,      sizeof(softmenuStackPointerBeforeAIM),      BACKUP);
       restore(&transitionSystemState,              sizeof(transitionSystemState),              BACKUP);
       restore(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen),       BACKUP);
       restore(&currentFntScr,                      sizeof(currentFntScr),                      BACKUP);
@@ -324,13 +316,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&lastIntegerBase,                    sizeof(lastIntegerBase),                    BACKUP);
       restore(&wp43sMemInBytes,                    sizeof(wp43sMemInBytes),                    BACKUP);
       restore(&gmpMemInBytes,                      sizeof(gmpMemInBytes),                      BACKUP);
-      restore(&alphaSelectionMenu,                 sizeof(alphaSelectionMenu),                 BACKUP);
-      restore(&lastFcnsMenuPos,                    sizeof(lastFcnsMenuPos),                    BACKUP);
-      restore(&lastMenuMenuPos,                    sizeof(lastMenuMenuPos),                    BACKUP);
-      restore(&lastCnstMenuPos,                    sizeof(lastCnstMenuPos),                    BACKUP);
-      restore(&lastSyFlMenuPos,                    sizeof(lastSyFlMenuPos),                    BACKUP);
-      restore(&lastAIntMenuPos,                    sizeof(lastAIntMenuPos),                    BACKUP);
-      restore(&lastProgMenuPos,                    sizeof(lastProgMenuPos),                    BACKUP);
+      restore(&catalog,                            sizeof(catalog),                            BACKUP);
+      restore(&lastCatalogPosition,                sizeof(lastCatalogPosition),                BACKUP);
       restore(&lgCatalogSelection,                 sizeof(lgCatalogSelection),                 BACKUP);
       restore(displayValueX,                       sizeof(displayValueX),                      BACKUP);
       restore(&pcg32_global,                       sizeof(pcg32_global),                       BACKUP);
@@ -361,6 +348,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
       restore(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
       restore(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
+      restore(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop),              BACKUP);
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
@@ -375,14 +363,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       #if (SCREEN_800X480 == 1)
         if(calcMode == CM_NORMAL)                     {}
         else if(calcMode == CM_AIM)                   {cursorEnabled = true;}
-        else if(calcMode == CM_TAM)                   {}
-        else if(calcMode == CM_TAM_OVER_PEM)          {}
         else if(calcMode == CM_NIM)                   {cursorEnabled = true;}
-        else if(calcMode == CM_ASM)                   {}
-        else if(calcMode == CM_ASM_OVER_TAM)          {clearSystemFlag(FLAG_ALPHA);}
-        else if(calcMode == CM_ASM_OVER_TAM_OVER_PEM) {clearSystemFlag(FLAG_ALPHA);}
-        else if(calcMode == CM_ASM_OVER_AIM)          {clearSystemFlag(FLAG_ALPHA);}
-        else if(calcMode == CM_ASM_OVER_PEM)          {clearSystemFlag(FLAG_ALPHA);}
         else if(calcMode == CM_REGISTER_BROWSER)      {}
         else if(calcMode == CM_FLAG_BROWSER)          {}
         else if(calcMode == CM_FONT_BROWSER)          {}
@@ -393,14 +374,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         }
       #else // (SCREEN_800X480 == 0)
         if(calcMode == CM_NORMAL)                      calcModeNormalGui();
-        else if(calcMode == CM_AIM)                   {calcModeAimGui(); cursorEnabled = true;}
-        else if(calcMode == CM_TAM)                    calcModeTamGui();
-        else if(calcMode == CM_TAM_OVER_PEM)           calcModeTamGui();
+        else if(calcMode == CM_AIM)                   {calcModeAimGui();    cursorEnabled = true;}
         else if(calcMode == CM_NIM)                   {calcModeNormalGui(); cursorEnabled = true;}
-        else if(calcMode == CM_ASM)                    calcModeAsm();
-        else if(calcMode == CM_ASM_OVER_TAM)          {calcModeAsm(); calcMode = CM_ASM_OVER_TAM;          clearSystemFlag(FLAG_ALPHA);}
-        else if(calcMode == CM_ASM_OVER_TAM_OVER_PEM) {calcModeAsm(); calcMode = CM_ASM_OVER_TAM_OVER_PEM; clearSystemFlag(FLAG_ALPHA);}
-        else if(calcMode == CM_ASM_OVER_AIM)          {calcModeAsm(); calcMode = CM_ASM_OVER_AIM;          clearSystemFlag(FLAG_ALPHA);}
         else if(calcMode == CM_REGISTER_BROWSER)       calcModeNormalGui();
         else if(calcMode == CM_FLAG_BROWSER)           calcModeNormalGui();
         else if(calcMode == CM_FONT_BROWSER)           calcModeNormalGui();
@@ -410,6 +385,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
           displayBugScreen(errorMessage);
         }
       #endif // (SCREEN_800X480 == 1)
+        if(catalog) {
+          clearSystemFlag(FLAG_ALPHA);
+        }
 
       refreshScreen();
     }

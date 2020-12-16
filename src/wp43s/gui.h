@@ -19,23 +19,25 @@
  ***********************************************/
 
 #ifndef TESTSUITE_BUILD
-  void fnOff              (uint16_t unsuedParamButMandatory);
-  void calcModeNormal     (void);
-  void calcModeAsm        (void);
-  void calcModeTam        (void);
-  void calcModeAim        (uint16_t unusedButMandatoryParameter);
-  void calcModeNim        (uint16_t unusedButMandatoryParameter);
+  void fnOff                       (uint16_t unsuedParamButMandatory);
+  void calcModeNormal              (void);
+  void calcModeAim                 (uint16_t unusedButMandatoryParameter);
+  void calcModeNim                 (uint16_t unusedButMandatoryParameter);
+  void enterAsmModeIfMenuIsACatalog(int16_t id);
+  void enterTamMode                (void);
+  void leaveAsmMode                (void);
+  void leaveTamMode                (void);
 #endif // TESTSUITE_BUILD
 
 #ifdef PC_BUILD
-  void setupUI            (void);
+  void setupUI                     (void);
   #if (SCREEN_800X480 == 0)
-    void calcModeNormalGui(void);
-    void calcModeAimGui   (void);
-    void calcModeTamGui   (void);
+    void calcModeNormalGui         (void);
+    void calcModeAimGui            (void);
+    void calcModeTamGui            (void);
   #endif // SCREEN_800X480
 #endif // PC_BUILD
 
 #ifndef DMCP_BUILD
-  void strReplace         (char *haystack, const char *needle, const char *newNeedle);
+  void strReplace                  (char *haystack, const char *needle, const char *newNeedle);
 #endif // DMCP_BUILD

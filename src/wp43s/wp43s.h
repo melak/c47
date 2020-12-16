@@ -259,7 +259,7 @@
   extern dataBlock_t          *savedStatisticalSumsPointer;
   extern dataBlock_t          *ram;
 
-  extern softmenuStack_t       softmenuStack[7];
+  extern softmenuStack_t       softmenuStack[SOFTMENU_STACK_SIZE];
   extern calcKey_t             kbd_usr[37];
   extern calcRegister_t        errorMessageRegisterLine;
   extern glyph_t               glyphNotFound;
@@ -277,9 +277,6 @@
   extern char                  oldTime[8];
   extern char                  dateTimeString[12];
   extern char                  displayValueX[DISPLAY_VALUE_LEN];
-
-  extern int8_t                softmenuStackPointer;
-  extern int8_t                softmenuStackPointerBeforeAIM;
 
   extern uint8_t               transitionSystemState;
   extern uint8_t               numScreensStandardFont;
@@ -325,13 +322,8 @@
   extern int16_t               currentRegisterBrowserScreen;
   extern int16_t               lineTWidth;
   extern int16_t               rbrRegister;
-  extern int16_t               alphaSelectionMenu;
-  extern int16_t               lastFcnsMenuPos;
-  extern int16_t               lastMenuMenuPos;
-  extern int16_t               lastCnstMenuPos;
-  extern int16_t               lastSyFlMenuPos;
-  extern int16_t               lastAIntMenuPos;
-  extern int16_t               lastProgMenuPos;
+  extern int16_t               catalog;
+  extern int16_t               lastCatalogPosition[NUMBER_OF_CATALOGS];
   extern int16_t               showFunctionNameItem;
   extern int16_t               exponentSignLocation;
   extern int16_t               denominatorLocation;
@@ -341,6 +333,7 @@
   extern int16_t               showFunctionNameCounter;
   extern int16_t               dynamicMenuItem;
   extern int16_t              *menu_RAM;
+  extern int16_t               numberOfTamMenusToPop;
 
   extern uint16_t              globalFlags[7];
   extern uint16_t              numberOfLocalFlags;

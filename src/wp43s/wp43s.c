@@ -84,7 +84,7 @@ dataBlock_t          *statisticalSumsPointer;
 dataBlock_t          *savedStatisticalSumsPointer;
 dataBlock_t          *ram = NULL;
 
-softmenuStack_t       softmenuStack[7];
+softmenuStack_t       softmenuStack[SOFTMENU_STACK_SIZE];
 calcKey_t             kbd_usr[37];
 calcRegister_t        errorMessageRegisterLine;
 glyph_t               glyphNotFound = {.charCode = 0x0000, .colsBeforeGlyph = 0, .colsGlyph = 13, .colsAfterGlyph = 0, .rowsGlyph = 19, .data = NULL};
@@ -102,9 +102,6 @@ char                  asmBuffer[5];
 char                  oldTime[8];
 char                  dateTimeString[12];
 char                  displayValueX[DISPLAY_VALUE_LEN];
-
-int8_t                softmenuStackPointer;
-int8_t                softmenuStackPointerBeforeAIM;
 
 uint8_t               transitionSystemState;
 uint8_t               numScreensStandardFont;
@@ -150,13 +147,8 @@ int16_t               tamCurrentOperation;
 int16_t               currentRegisterBrowserScreen;
 int16_t               lineTWidth;
 int16_t               rbrRegister;
-int16_t               alphaSelectionMenu;
-int16_t               lastFcnsMenuPos;
-int16_t               lastMenuMenuPos;
-int16_t               lastCnstMenuPos;
-int16_t               lastSyFlMenuPos;
-int16_t               lastAIntMenuPos;
-int16_t               lastProgMenuPos;
+int16_t               catalog;
+int16_t               lastCatalogPosition[NUMBER_OF_CATALOGS];
 int16_t               showFunctionNameItem;
 int16_t               exponentSignLocation;
 int16_t               denominatorLocation;
@@ -166,6 +158,7 @@ int16_t               exponentLimit;
 int16_t               showFunctionNameCounter;
 int16_t               dynamicMenuItem;
 int16_t              *menu_RAM;
+int16_t               numberOfTamMenusToPop;
 
 uint16_t              globalFlags[7];
 uint16_t              numberOfLocalFlags;
@@ -255,8 +248,6 @@ size_t                wp43sMemInBytes;
     setupUI();
 
     restoreCalc();
-listPrograms();
-listLabelsAndPrograms();
     refreshScreen();
 
     gdk_threads_add_timeout(SCREEN_REFRESH_PERIOD, refreshLcd, NULL); // refreshLcd is called every SCREEN_REFRESH_PERIOD ms

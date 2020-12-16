@@ -23,7 +23,7 @@
 
 
 void fnGoto(uint16_t label) {
-  if(calcMode == CM_TAM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_TAM_OVER_PEM) {
+  if(tamMode) {
     if(dynamicMenuItem >= 0) {
       fnGotoDot(label);
       return;
@@ -90,11 +90,11 @@ void fnGoto(uint16_t label) {
 
 void fnGotoDot(uint16_t globalStepNumber) {
   if(dynamicMenuItem >= 0) {
-    if(dynamicMenuItem >= dynamicSoftmenu[softmenuStack[softmenuStackPointer].softmenuId].numItems) {
+    if(dynamicMenuItem >= dynamicSoftmenu[softmenuStack[0].softmenuId].numItems) {
       return;
     }
 
-    uint8_t *labelName = dynamicSoftmenu[softmenuStack[softmenuStackPointer].softmenuId].menuContent;
+    uint8_t *labelName = dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent;
     while(dynamicMenuItem > 0) {
       labelName += stringByteLength((char *)labelName) + 1;
       dynamicMenuItem--;

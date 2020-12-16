@@ -385,7 +385,9 @@
     getTimeString(dateTimeString);
     if(strcmp(dateTimeString, oldTime)) {
       strcpy(oldTime, dateTimeString);
-      showDateTime();
+      #if (DEBUG_INSTEAD_STATUS_BAR != 1)
+        showDateTime();
+      #endif // (DEBUG_INSTEAD_STATUS_BAR != 1)
     }
 
     // If LCD has changed: update the GTK screen
@@ -401,7 +403,7 @@
     }
 
     // Alpha selection timer
-    if((calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_TAM_OVER_PEM || calcMode == CM_ASM_OVER_AIM || calcMode == CM_ASM_OVER_PEM) && alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000) { // More than 3 seconds elapsed since last keypress
+    if(catalog && alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000) { // More than 3 seconds elapsed since last keypress
       resetAlphaSelectionBuffer();
     }
 
@@ -435,7 +437,9 @@
     getTimeString(dateTimeString);
     if(strcmp(dateTimeString, oldTime)) {
       strcpy(oldTime, dateTimeString);
-      showDateTime();
+      #if (DEBUG_INSTEAD_STATUS_BAR != 1)
+        showDateTime();
+      #endif // (DEBUG_INSTEAD_STATUS_BAR != 1)
 
       if(!getSystemFlag(FLAG_AUTOFF)) {
         reset_auto_off();
@@ -478,7 +482,7 @@
     }
 
     // Alpha selection timer
-    if((calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_TAM_OVER_PEM || calcMode == CM_ASM_OVER_AIM || calcMode == CM_ASM_OVER_PEM) && alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000) { // More than 3 seconds elapsed since last keypress
+    if(catalog && alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000) { // More than 3 seconds elapsed since last keypress
       resetAlphaSelectionBuffer();
     }
   }
@@ -497,7 +501,7 @@
      ***********************************************/
     void setBlackPixel(uint32_t x, uint32_t y) {
       if(x>=SCREEN_WIDTH || y>=SCREEN_HEIGHT) {
-        printf("In function setBlackPixel: x=%u, y=%u outside the screen!\n", x, y);
+        //printf("In function setBlackPixel: x=%u, y=%u outside the screen!\n", x, y);
         return;
       }
 
@@ -516,7 +520,7 @@
      ***********************************************/
     void setWhitePixel(uint32_t x, uint32_t y) {
       if(x>=SCREEN_WIDTH || y>=SCREEN_HEIGHT) {
-        printf("In function setWhitePixel: x=%u, y=%u outside the screen!\n", x, y);
+        //printf("In function setWhitePixel: x=%u, y=%u outside the screen!\n", x, y);
         return;
       }
 
@@ -530,7 +534,7 @@
       uint32_t line, col, pixelColor, *pixel, endX = x + dx, endY = y + dy;
 
       if(endX > SCREEN_WIDTH || endY > SCREEN_HEIGHT) {
-        printf("In function lcd_fill_rect: x=%u, y=%u, dx=%u, dy=%u, val=%d outside the screen!\n", x, y, dx, dy, val);
+        //printf("In function lcd_fill_rect: x=%u, y=%u, dx=%u, dy=%u, val=%d outside the screen!\n", x, y, dx, dy, val);
         return;
       }
 
@@ -1023,7 +1027,7 @@
           }
         }
 
-        else if(regist == AIM_REGISTER_LINE && (calcMode == CM_AIM || calcMode == CM_ASM_OVER_AIM)) {
+        else if(regist == AIM_REGISTER_LINE && calcMode == CM_AIM) {
           if(stringWidth(aimBuffer, &standardFont, true, true) < SCREEN_WIDTH - 8) { // 8 is the standard font cursor width
             xCursor = showString(aimBuffer, &standardFont, 1, Y_POSITION_OF_NIM_LINE + 6, vmNormal, true, true);
             yCursor = Y_POSITION_OF_NIM_LINE + 6;
@@ -1415,48 +1419,48 @@
       showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
     }
 
-    if(calcMode == CM_TAM || calcMode == CM_ASM_OVER_TAM) {
-      if(shiftF || shiftG) {
-        lcd_fill_rect(18, Y_POSITION_OF_TAM_LINE, 120, 32, LCD_SET_VALUE);
+    if(tamMode) {
+      if(calcMode == CM_PEM) { // Variable line to display TAM informations
+        lcd_fill_rect(45+20, tamOverPemYPos, 168, 20, LCD_SET_VALUE);
+        showString(tamBuffer, &standardFont, 75+20, tamOverPemYPos, vmNormal,  false, false);
       }
-      else {
-        lcd_fill_rect(0, Y_POSITION_OF_TAM_LINE, 138, 32, LCD_SET_VALUE);
+      else { // Fixed line to display TAM informations
+        if(shiftF || shiftG) {
+          lcd_fill_rect(18, Y_POSITION_OF_TAM_LINE, 120, 32, LCD_SET_VALUE);
+        }
+        else {
+          lcd_fill_rect(0, Y_POSITION_OF_TAM_LINE, 138, 32, LCD_SET_VALUE);
+        }
+        showString(tamBuffer, &standardFont, 18, Y_POSITION_OF_TAM_LINE + 6, vmNormal, true, true);
       }
-      showString(tamBuffer, &standardFont, 18, Y_POSITION_OF_TAM_LINE + 6, vmNormal, true, true);
-    }
-    else if(calcMode == CM_TAM_OVER_PEM || calcMode == CM_ASM_OVER_TAM_OVER_PEM) {
-      lcd_fill_rect(45+20, tamOverPemYPos, 168, 20, LCD_SET_VALUE);
-      showString(tamBuffer, &standardFont, 75+20, tamOverPemYPos, vmNormal,  false, false);
     }
   }
 
 
 
   void refreshScreen(void) {
+    clearScreen();
     switch(calcMode) {
       case CM_FLAG_BROWSER:
-        clearScreen();
+        //clearScreen();
         flagBrowser(NOPARAM);
         refreshStatusBar();
         break;
 
       case CM_FONT_BROWSER:
-        clearScreen();
+        //clearScreen();
         fontBrowser(NOPARAM);
         refreshStatusBar();
         break;
 
       case CM_REGISTER_BROWSER:
-        clearScreen();
+        //clearScreen();
         registerBrowser(NOPARAM);
         refreshStatusBar();
         break;
 
       case CM_PEM:
-      case CM_ASM_OVER_PEM:
-      case CM_TAM_OVER_PEM:
-      case CM_ASM_OVER_TAM_OVER_PEM:
-        clearScreen();
+        //clearScreen();
         showSoftmenuCurrentPart();
         fnPem(NOPARAM);
         displayShiftAndTamBuffer();
@@ -1465,15 +1469,11 @@
 
       case CM_NORMAL:
       case CM_AIM:
-      case CM_TAM:
       case CM_NIM:
-      case CM_ASM:
-      case CM_ASM_OVER_TAM:
-      case CM_ASM_OVER_AIM:
       case CM_ASSIGN:
       case CM_ERROR_MESSAGE:
       case CM_CONFIRMATION:
-        clearScreen();
+        //clearScreen();
 
         // The ordering of the 4 lines below is important for SHOW (temporaryInformation == TI_SHOW_REGISTER)
         refreshRegisterLine(REGISTER_T);

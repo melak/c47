@@ -232,7 +232,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
     uint8_t *step, *nextStep;
     bool_t lblOrEnd;
 
-    if(calcMode != CM_PEM && calcMode != CM_ASM_OVER_PEM && calcMode != CM_TAM_OVER_PEM && calcMode != CM_ASM_OVER_TAM_OVER_PEM) {
+    if(calcMode != CM_PEM) {
       calcMode = CM_PEM;
       return;
     }
@@ -257,21 +257,44 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       firstLine = 0;
     }
 
+    int lineOffset = 0;
     for(line=firstLine; line<7; line++) {
       nextStep = findNextStep(step);
-      uint16_t stepSize = (uint16_t)(nextStep - step);
-      sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM "%s%u", firstDisplayedLocalStepNumber + line, stepSize >= 10 ? "" : STD_SPACE_FIGURE, stepSize);
-      if(firstDisplayedStepNumber + line == currentStepNumber) {
-        tamOverPemYPos = Y_POSITION_OF_REGISTER_T_LINE + 21*line;
+      //uint16_t stepSize = (uint16_t)(nextStep - step);
+      sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset);
+      if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber) {
+        tamOverPemYPos = Y_POSITION_OF_REGISTER_T_LINE + 21 * line;
         showString(tmpString, &standardFont, 1, tamOverPemYPos, vmReverse, false, true);
         currentStep = step;
       }
       else {
-        showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21*line, vmNormal,  false, true);
+        showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal,  false, true);
       }
       lblOrEnd = (*step == ITM_LBL) || ((*step == ((ITM_END >> 8) | 0x80)) && (*(step + 1) == (ITM_END & 0xff)));
       decodeOneStep(step);
-      showString(tmpString, &standardFont, lblOrEnd ? 45+20 : 75+20, Y_POSITION_OF_REGISTER_T_LINE + 21*line, vmNormal,  false, false);
+
+      // Split long lines
+      int numberOfExtraLines = 0;
+      int offset = 0;
+      while(offset <= 1500 && stringWidth(tmpString + offset, &standardFont, false, false) > 337) {
+        numberOfExtraLines++;
+        xcopy(tmpString + 2100, tmpString + offset, stringByteLength(tmpString + offset) + 1);
+        while(stringWidth(tmpString + offset, &standardFont, false, false) > 337) {
+          tmpString[offset + stringLastGlyph(tmpString + offset)] = 0;
+        }
+        xcopy(tmpString + offset + 300, tmpString + 2100 + stringByteLength(tmpString + offset), stringByteLength(tmpString + 2100 + stringByteLength(tmpString + offset)) + 1);
+        offset += 300;
+      }
+
+      showString(tmpString, &standardFont, lblOrEnd ? 42 : 62, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal,  false, false);
+      offset = 300;
+      while(numberOfExtraLines && line <= 5) {
+        showString(tmpString + offset, &standardFont, 62, Y_POSITION_OF_REGISTER_T_LINE + 21 * (++line), vmNormal,  false, false);
+        numberOfExtraLines--;
+        offset += 300;
+        lineOffset++;
+      }
+
       if((*step == ((ITM_END >> 8) | 0x80)) && (*(step + 1) == (ITM_END & 0xff))) {
         programListEnd = true;
         if(*nextStep == 255 && *(nextStep + 1) == 255) {

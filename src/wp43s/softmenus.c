@@ -248,7 +248,7 @@ const int16_t menu_ConvE[]       = { ITM_CALtoJ,                    ITM_JtoCAL, 
 
 const int16_t menu_ConvP[]       = { ITM_HPEtoW,                    ITM_WtoHPE,                 ITM_HPUKtoW,              ITM_WtoHPUK,           ITM_HPMtoW,                  ITM_WtoHPM                    };
 
-const int16_t menu_ConvFP[]      = { ITM_LBFtoN,                    ITM_NtoLBF,                 ITM_BARtoPA,              ITM_PAtoBAR,           ITM_PSItoPA,                 ITM_PAtoPSI,
+const int16_t menu_ConvFP[]      = { ITM_LBFtoN,                    ITM_NtoLBF,                 ITM_PAtoBAR,              ITM_BARtoPA,           ITM_PSItoPA,                 ITM_PAtoPSI,
                                      10000+ITM_IHGtoPAb,            10000+ITM_PAtoIHGb,         10000+ITM_TORtoPAb,       10000+ITM_PAtoTORb,    10000+ITM_ATMtoPA,           10000+ITM_PAtoATM,
                                      20000+ITM_IHGtoPA,             20000+ITM_PAtoIHG,          20000+ITM_TORtoPA,        20000+ITM_PAtoTOR,     20000+ITM_ATMtoPAb,          20000+ITM_PAtoATMb,
                                      ITM_NULL,                      ITM_NULL,                   10000+ITM_MMHGtoPAb,      10000+ITM_PAtoMMHGb,   ITM_NULL,                    ITM_NULL,
@@ -460,16 +460,15 @@ uint8_t *getNthString(uint8_t *ptr, int16_t n) { // Starting with string 0 (the 
 
 
 void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
-  printf("fnDynamicMenu:\n       softmenuId = %d\n  dynamicMenuItem = %d\n", softmenuStack[softmenuStackPointer].softmenuId, dynamicMenuItem);
+  printf("fnDynamicMenu:\n       softmenuId = %d\n  dynamicMenuItem = %d\n", softmenuStack[0].softmenuId, dynamicMenuItem);
 }
 
 
 
 #ifndef TESTSUITE_BUILD
-  static int sortMenu(void const *a, void const *b)
-   {
+  static int sortMenu(void const *a, void const *b) {
     return compareString(a, b, CMP_EXTENSIVE);
-   }
+  }
 
 
 
@@ -686,7 +685,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
    * \return void
    ***********************************************/
   void showSoftmenuCurrentPart(void) {
-    int16_t x, y, yDotted=0, currentFirstItem, item, numberOfItems, m = softmenuStack[softmenuStackPointer].softmenuId;
+    int16_t x, y, yDotted=0, currentFirstItem, item, numberOfItems, m = softmenuStack[0].softmenuId;
     bool_t dottedTopLine;
 
     if(m < NUMBER_OF_DYNAMIC_SOFTMENUS) { // Dynamic softmenu
@@ -696,7 +695,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     else { // Static softmenu
       numberOfItems = softmenu[m].numItems;
     }
-    currentFirstItem = softmenuStack[softmenuStackPointer].firstItem;
+    currentFirstItem = softmenuStack[0].firstItem;
 
     if(numberOfItems <= 18) {
       dottedTopLine = false;
@@ -813,194 +812,69 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 
   /********************************************//**
-   * \brief Initializes the softmenu stack with a
-   * softmenu and displays it's first part
-   *
-   * \param[in] softmenuId int16_t Softmenu ID
-   * \return void
-   ***********************************************/
-  void initSoftmenuStack(int16_t softmenuId) {
-    softmenuStack[0].softmenuId = softmenuId;
-    softmenuStack[0].firstItem = (alphaSelectionMenu == ASM_CNST ? lastCnstMenuPos :
-                                 (alphaSelectionMenu == ASM_FCNS ? lastFcnsMenuPos :
-                                 (alphaSelectionMenu == ASM_MENU ? lastMenuMenuPos :
-                                 (alphaSelectionMenu == ASM_SYFL ? lastSyFlMenuPos :
-                                 (alphaSelectionMenu == ASM_AINT ? lastAIntMenuPos :
-                                 (alphaSelectionMenu == ASM_aint ? lastAIntMenuPos :
-                                 (alphaSelectionMenu == ASM_PROG ? lastProgMenuPos :
-                                  0)))))));
-    softmenuStackPointer = 0;
-  }
-
-
-
-  /********************************************//**
    * \brief Pushes a new softmenu on the softmenu stack
-   * and displays it's first part
    *
    * \param[in] softmenuId int16_t Softmenu ID
    * \return void
    ***********************************************/
-  void pushSoftmenu(int16_t softmenuId) {
-    softmenuStackPointer++;
-    if(softmenuStackPointer < SOFTMENU_STACK_SIZE) {
-      softmenuStack[softmenuStackPointer].softmenuId = softmenuId;
-      softmenuStack[softmenuStackPointer].firstItem = (alphaSelectionMenu == ASM_CNST ? lastCnstMenuPos :
-                                                      (alphaSelectionMenu == ASM_FCNS ? lastFcnsMenuPos :
-                                                      (alphaSelectionMenu == ASM_MENU ? lastMenuMenuPos :
-                                                      (alphaSelectionMenu == ASM_SYFL ? lastSyFlMenuPos :
-                                                      (alphaSelectionMenu == ASM_AINT ? lastAIntMenuPos :
-                                                      (alphaSelectionMenu == ASM_aint ? lastAIntMenuPos :
-                                                      (alphaSelectionMenu == ASM_PROG ? lastProgMenuPos :
-                                                       0)))))));
+  static void pushSoftmenu(int16_t softmenuId) {
+    int i;
+
+    if(softmenuStack[0].softmenuId == softmenuId) { // The menu to push on the stack is already displayed
+      return;
     }
-    else {
-      softmenuStackPointer--;
-      displayBugScreen("In function pushSoftmenu: the softmenu stack is full! Please increase the value of #define SOFTMENU_STACK_SIZE in defines.h");
+
+    for(i=0; i<SOFTMENU_STACK_SIZE; i++) { // Searching the stack for the menu to push on the stack
+      if(softmenuStack[i].softmenuId == softmenuId) { // if found, remove it
+        xcopy(softmenuStack + 1, softmenuStack, i * sizeof(softmenuStack_t));
+        break;
+      }
     }
+
+    if(i == SOFTMENU_STACK_SIZE) { // The menu to push was not found on the stack
+      xcopy(softmenuStack + 1, softmenuStack, (SOFTMENU_STACK_SIZE - 1) * sizeof(softmenuStack_t)); // shifting the entire stack
+    }
+
+
+    softmenuStack[0].softmenuId = softmenuId;
+    softmenuStack[0].firstItem = lastCatalogPosition[catalog];
   }
 
 
 
   /********************************************//**
    * \brief Pops a softmenu from the softmenu stack
-   * and display it's current part or clear the
-   * softmenu area of the screen if there's nothing
-   * to pop.
    *
    * \param[in] softmenu int16_t Softmenu number
    * \return void
    ***********************************************/
   void popSoftmenu(void) {
-    if(alphaSelectionMenu != ASM_NONE) {
-      alphaSelectionMenu = ASM_NONE;
-      if(calcMode != CM_ASM_OVER_AIM && calcMode != CM_ASM_OVER_TAM && calcMode != CM_ASM_OVER_TAM_OVER_PEM && calcMode != CM_PEM) {
-        calcModeNormal();
-      }
-    }
-    softmenuStackPointer--;
+    xcopy(softmenuStack, softmenuStack + 1, (SOFTMENU_STACK_SIZE - 1) * sizeof(softmenuStack_t)); // shifting the entire stack
+    memset(softmenuStack + SOFTMENU_STACK_SIZE - 1, 0, sizeof(softmenuStack_t)); // Put MyMenu in the last stack element
 
-    if(softmenuStackPointer <= 0) { // There is always a softmenu to display
-      softmenuStack[0].softmenuId = (calcMode == CM_AIM ? 1 : 0); // 1=MyAlpha and 0=MyMenu
-      softmenuStack[0].firstItem = 0;
-      softmenuStackPointer = 0;
+    if(softmenuStack[0].softmenuId == 0 && calcMode == CM_AIM) { // MyMenu displayed and in AIM
+      softmenuStack[0].softmenuId = 1; // MyAlpha
+    }
+    else if(softmenuStack[0].softmenuId == 1 && calcMode != CM_AIM) { // MyAlpha displayed and not in AIM
+      softmenuStack[0].softmenuId = 0; // MyMenu
     }
   }
 
 
 
   /********************************************//**
-   * \brief Displays a softmenu. One of the 2 first
-   * parameter must be null and one must not be null
+   * \brief Displays a softmenu.
    *
-   * \param[in] menu const char* Name of softmenu
    * \param[in] id int16_t       ID of softmenu
-   * \param[in] initOrPushOnMenuStack int16_t  * MS_INIT initialize the softmenu stack
-   *                                           * MS_PUSH push the softmenu on the stack
    * \return void
    ***********************************************/
-  void showSoftmenu(const char *menu, int16_t id, int16_t initOrPushOnMenuStack) {
+  void showSoftmenu(int16_t id) {
     int16_t m;
 
-    switch(-id) {
-      case MNU_FCNS:
-        alphaSelectionMenu = ASM_FCNS;
-        if(calcMode == CM_PEM) {
-          calcModeAsm();
-          calcMode = CM_ASM_OVER_PEM;
-          clearSystemFlag(FLAG_ALPHA);
-        }
-        else {
-          calcModeAsm();
-        }
-        break;
+    enterAsmModeIfMenuIsACatalog(id);
 
-      case MNU_CONST:
-        alphaSelectionMenu = ASM_CNST;
-        if(calcMode == CM_PEM) {
-          calcModeAsm();
-          calcMode = CM_ASM_OVER_PEM;
-          clearSystemFlag(FLAG_ALPHA);
-        }
-        else {
-          calcModeAsm();
-        }
-        break;
-
-      case MNU_MENUS:
-        alphaSelectionMenu = ASM_MENU;
-        calcModeAsm();
-        break;
-
-      case MNU_SYSFL:
-        alphaSelectionMenu = ASM_SYFL;
-        if(calcMode == CM_TAM) {
-          calcModeAsm();
-          calcMode = CM_ASM_OVER_TAM;
-          clearSystemFlag(FLAG_ALPHA);
-        }
-        else if(calcMode == CM_TAM_OVER_PEM) {
-          calcModeAsm();
-          calcMode = CM_ASM_OVER_TAM_OVER_PEM;
-          clearSystemFlag(FLAG_ALPHA);
-        }
-        else {
-          calcModeAsm();
-        }
-        break;
-
-      case MNU_ALPHAINTL:
-        alphaSelectionMenu = ASM_AINT;
-        if(calcMode == CM_AIM) {
-          calcModeAsm();
-          calcMode = CM_ASM_OVER_AIM;
-          clearSystemFlag(FLAG_ALPHA);
-        }
-        else {
-          calcModeAsm();
-        }
-        break;
-
-      case MNU_ALPHAintl:
-        alphaSelectionMenu = ASM_aint;
-        if(calcMode == CM_AIM) {
-          calcModeAsm();
-          calcMode = CM_ASM_OVER_AIM;
-          clearSystemFlag(FLAG_ALPHA);
-        }
-        else {
-          calcModeAsm();
-        }
-        break;
-
-      case MNU_PROG:
-        alphaSelectionMenu = ASM_PROG;
-        if(calcMode == CM_PEM) {
-          calcModeAsm();
-          calcMode = CM_ASM_OVER_PEM;
-          clearSystemFlag(FLAG_ALPHA);
-        }
-        else if(calcMode == CM_TAM) {
-          calcModeAsm();
-          calcMode = CM_ASM_OVER_TAM;
-          clearSystemFlag(FLAG_ALPHA);
-        }
-        else if(calcMode == CM_TAM_OVER_PEM) {
-          calcModeAsm();
-          calcMode = CM_ASM_OVER_TAM_OVER_PEM;
-          clearSystemFlag(FLAG_ALPHA);
-        }
-        else {
-          calcModeAsm();
-        }
-        break;
-
-      default:
-        alphaSelectionMenu = ASM_NONE;
-    }
-
-    if((menu != NULL && id != 0) || (menu == NULL && id == 0)) {
-      displayBugScreen("In function showSoftmenu: one parameter must be 0 and one parameter must not be 0!");
+    if(id == 0) {
+      displayBugScreen("In function showSoftmenu: id must not be 0!");
       return;
     }
 
@@ -1011,68 +885,36 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       id = -MNU_alpha_omega;
     }
 
-    if((id == 0 && !strcmp(menu, STD_alpha "INTL")) && alphaCase == AC_LOWER) { // alphaINTL
-      id = -MNU_ALPHAintl;
-    }
-    else if((id == 0 && !strcmp(menu, STD_ALPHA STD_ELLIPSIS STD_OMEGA)) && alphaCase == AC_LOWER) { // alpha...omega
-      id = -MNU_alpha_omega;
-    }
-
     m = 0;
+    while(softmenu[m].menuItem != 0) {
+      if(softmenu[m].menuItem == id) {
+       break;
+      }
+      m++;
+    }
 
-    if(id != 0) { // Search by ID
-      while(softmenu[m].menuItem != 0) {
-        if(softmenu[m].menuItem == id) {
-         break;
-        }
-        m++;
-      }
-    }
-    else { // Search by name
-      while(softmenu[m].menuItem != 0) {
-        if(strcmp(indexOfItems[-softmenu[m].menuItem].itemSoftmenuName, menu) == 0) {
-          break;
-        }
-        m++;
-      }
-    }
     if(softmenu[m].menuItem == 0) {
-      if(menu == NULL) {
-        sprintf(errorMessage, "In function showSoftmenu: softmenu %" PRId16 " not found!", id);
-        displayBugScreen(errorMessage);
-      }
-      else {
-        sprintf(errorMessage, "In function showSoftmenu: softmenu %s not found!", menu);
-        displayBugScreen(errorMessage);
-      }
+      sprintf(errorMessage, "In function showSoftmenu: softmenu %" PRId16 " not found!", id);
+      displayBugScreen(errorMessage);
     }
     else {
-      if(calcMode == CM_NORMAL || calcMode == CM_NIM || calcMode == CM_ASM || calcMode == CM_ASM_OVER_TAM || calcMode == CM_ASM_OVER_TAM_OVER_PEM || calcMode == CM_ASM_OVER_AIM || calcMode == CM_ASM_OVER_PEM || calcMode == CM_AIM || calcMode == CM_PEM) {
-        if(initOrPushOnMenuStack) {
-          pushSoftmenu(m);
-        }
-        else {
-          initSoftmenuStack(m);
-        }
+      if(tamMode) {
+        numberOfTamMenusToPop++;
       }
-      else if(calcMode == CM_TAM || calcMode == CM_TAM_OVER_PEM) {
-      }
-      else {
-        sprintf(errorMessage, "In fuction showSoftMenu: %" PRIu8 " is an unexpected value for calcMode!", calcMode);
-        displayBugScreen(errorMessage);
-      }
+      pushSoftmenu(m);
     }
   }
 
 
 
   void setCatalogLastPos(void) {
-         if(alphaSelectionMenu == ASM_CNST) lastCnstMenuPos = softmenuStack[softmenuStackPointer].firstItem;
-    else if(alphaSelectionMenu == ASM_FCNS) lastFcnsMenuPos = softmenuStack[softmenuStackPointer].firstItem;
-    else if(alphaSelectionMenu == ASM_MENU) lastMenuMenuPos = softmenuStack[softmenuStackPointer].firstItem;
-    else if(alphaSelectionMenu == ASM_SYFL) lastSyFlMenuPos = softmenuStack[softmenuStackPointer].firstItem;
-    else if(alphaSelectionMenu == ASM_AINT) lastAIntMenuPos = softmenuStack[softmenuStackPointer].firstItem;
-    else if(alphaSelectionMenu == ASM_aint) lastAIntMenuPos = softmenuStack[softmenuStackPointer].firstItem;
-    else if(alphaSelectionMenu == ASM_PROG) lastProgMenuPos = softmenuStack[softmenuStackPointer].firstItem;
+    lastCatalogPosition[catalog] = (catalog ? softmenuStack[0].firstItem : 0);
+
+    if(catalog == CATALOG_AINT) {
+      lastCatalogPosition[CATALOG_aint] = softmenuStack[0].firstItem;
+    }
+    else if(catalog == CATALOG_aint) {
+      lastCatalogPosition[CATALOG_AINT] = softmenuStack[0].firstItem;
+    }
   }
 #endif // !TESTSUITE_BUILD
