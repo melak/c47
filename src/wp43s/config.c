@@ -679,7 +679,7 @@ void fnReset(uint16_t confirmation) {
     #endif
 
     //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
-    fnStrtoX("Rel48a, Lock tests, pre-PEM-XEQ, 2020-12-08");
+    fnStrtoX("Rel48b, EEX added, pre-PEM-XEQ, 2020-12-15");
     fnStore(102);
     fnDrop(0);
 

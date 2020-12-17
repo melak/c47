@@ -558,6 +558,7 @@ void processKeyAction(int16_t item) {
       keyActionProcessed = true;   //JM move this to before fnKeyBackspace to allow fnKeyBackspace to cancel it if needed to allow this function via timing out to NOP, and this is incorporated with the CLRDROP
       fnKeyBackspace(NOPARAM);
       if(calcMode == CM_NIM || calcMode == CM_AIM) refreshRegisterLine(NIM_REGISTER_LINE); //JM No if needed, it does nothing if not in NIM. TO DISPLAY NUMBER KEYPRESS DIRECTLY AFTER PRESS, NOT ONLY UPON RELEASE          break;
+      if(calcMode == CM_NORMAL) keyActionProcessed = false;    //JM Force NOP text display of backspace 
       break;
 
     case ITM_UP1:
