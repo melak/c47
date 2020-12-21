@@ -104,7 +104,7 @@
             }
           }
           else {
-            sprintf(tmpString, "%" PRIu32 " bits := 4+%" PRIu32 " bytes", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)) * 8, (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+            sprintf(tmpString, "%" PRIu32 " bits " STD_CORRESPONDS_TO " 4+%" PRIu32 " bytes", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)) * 8, (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
           }
         }
         else if(getRegisterDataType(regist) == dtShortInteger) {
@@ -112,7 +112,7 @@
             shortIntegerToDisplayString(regist, tmpString, false);
           }
           else {
-            strcpy(tmpString, "64 bits := 8 bytes");
+            strcpy(tmpString, "64 bits " STD_CORRESPONDS_TO " 8 bytes");
           }
         }
         else if(getRegisterDataType(regist) == dtString) {
@@ -129,7 +129,7 @@
             }
           }
           else {
-            sprintf(tmpString, "%" PRIu32 " character%s := 4+%" PRIu32 " bytes", (uint32_t)stringGlyphLength(REGISTER_STRING_DATA(regist)), stringGlyphLength(REGISTER_STRING_DATA(regist))==1 ? "" : "s", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+            sprintf(tmpString, "%" PRIu32 " character%s " STD_CORRESPONDS_TO " 4+%" PRIu32 " bytes", (uint32_t)stringGlyphLength(REGISTER_STRING_DATA(regist)), stringGlyphLength(REGISTER_STRING_DATA(regist))==1 ? "" : "s", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
           }
         }
         else if(getRegisterDataType(regist) == dtConfig) {
@@ -184,7 +184,7 @@
                 longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, STD_SPACE_4_PER_EM);
               }
               else {
-                sprintf(tmpString, "%" PRIu32 " bits := 4+4+%" PRIu32 " bytes", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)) * 8, (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+                sprintf(tmpString, "%" PRIu32 " bits " STD_CORRESPONDS_TO " 4+4+%" PRIu32 " bytes", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)) * 8, (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
               }
             }
             else if(getRegisterDataType(regist) == dtShortInteger) {
@@ -192,7 +192,7 @@
                 shortIntegerToDisplayString(regist, tmpString, false);
               }
               else {
-                strcpy(tmpString, "64 bits := 4+8 bytes");
+                strcpy(tmpString, "64 bits " STD_CORRESPONDS_TO " 4+8 bytes");
               }
             }
             else if(getRegisterDataType(regist) == dtString) {
@@ -209,7 +209,7 @@
                 }
               }
               else {
-                sprintf(tmpString, "%" PRIu32 " character%s := 4+4+%" PRIu32 " bytes", (uint32_t)stringGlyphLength(REGISTER_STRING_DATA(regist)), stringGlyphLength(REGISTER_STRING_DATA(regist))==1 ? "" : "s", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+                sprintf(tmpString, "%" PRIu32 " character%s " STD_CORRESPONDS_TO " 4+4+%" PRIu32 " bytes", (uint32_t)stringGlyphLength(REGISTER_STRING_DATA(regist)), stringGlyphLength(REGISTER_STRING_DATA(regist))==1 ? "" : "s", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
               }
             }
             else if(getRegisterDataType(regist) == dtConfig) {
