@@ -498,9 +498,7 @@ void fnClAll(uint16_t confirmation) {
     // TODO: clear (or delete) named variables
 
     // Clear global flags
-    for(int32_t sixteenFlags=0; sixteenFlags<7; sixteenFlags++) { // 7 times uint16_t = 112 flags
-      globalFlags[sixteenFlags] = 0;
-    }
+    fnClFAll(NOPARAM);
 
     temporaryInformation = TI_NO_INFO;
   }

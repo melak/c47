@@ -347,21 +347,14 @@ void fnFlipFlag(uint16_t flag) {
 
 
 /********************************************//**
- * \brief Clear all global and local flags
+ * \brief Clear all global from 00 to 99 and the local flags
  *
  * \param[in] flags uint16_t
  * \return void
  ***********************************************/
 void fnClFAll(uint16_t unusedButMandatoryParameter) {
-  memset(globalFlags, 0, sizeof(globalFlags));
-  clearSystemFlag(FLAG_ALLENG);
-  clearSystemFlag(FLAG_OVERFLOW);
-  clearSystemFlag(FLAG_CARRY);
-  clearSystemFlag(FLAG_SPCRES);
-  clearSystemFlag(FLAG_CPXRES);
-  clearSystemFlag(FLAG_LEAD0);
-  clearSystemFlag(FLAG_TRACE);
-  clearSystemFlag(FLAG_POLAR);
+  memset(globalFlags, 0, sizeof(globalFlags) - sizeof(uint16_t)); // Clear flags from 00 to 95
+  globalFlags[6] &= 0xfff0; // Clear flags from 96 to 99
 
   if(numberOfLocalFlags != 0) {
     allLocalRegisterPointer->localFlags = 0;
