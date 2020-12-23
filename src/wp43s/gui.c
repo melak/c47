@@ -1493,11 +1493,16 @@
    * \return void
    ***********************************************/
   void leaveAsmMode(void) {
-    catalog = CATALOG_NONE;
-
     if(tamMode) {
+      uint16_t savedTamMode = tamMode;
+      leaveTamMode();
+      tamMode = savedTamMode;
+      strcpy(tamBuffer, indexOfItems[tamFunction].itemSoftmenuName);
       enterTamMode();
       return;
+    }
+    else {
+      catalog = CATALOG_NONE;
     }
 
     #if defined(PC_BUILD) && (SCREEN_800X480 == 0)

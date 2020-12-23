@@ -26,7 +26,7 @@ void   fnGetSystemFlag         (uint16_t systemFlag);
 void   fnSetFlag               (uint16_t flag);
 void   fnClearFlag             (uint16_t flag);
 void   fnFlipFlag              (uint16_t flag);
-void   fnClFAll                (uint16_t unusedButMandatoryParameter);
+void   fnClFAll                (uint16_t confirmation);
 void   fnIsFlagClear           (uint16_t flag);
 void   fnIsFlagSet             (uint16_t flag);
 void   fnIsFlagClearClear      (uint16_t flag);

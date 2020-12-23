@@ -352,12 +352,17 @@ void fnFlipFlag(uint16_t flag) {
  * \param[in] flags uint16_t
  * \return void
  ***********************************************/
-void fnClFAll(uint16_t unusedButMandatoryParameter) {
-  memset(globalFlags, 0, sizeof(globalFlags) - sizeof(uint16_t)); // Clear flags from 00 to 95
-  globalFlags[6] &= 0xfff0; // Clear flags from 96 to 99
+void fnClFAll(uint16_t confirmation) {
+  if(confirmation == NOT_CONFIRMED) {
+    setConfirmationMode(fnClAll);
+  }
+  else {
+    memset(globalFlags, 0, sizeof(globalFlags) - sizeof(uint16_t)); // Clear flags from 00 to 95
+    globalFlags[6] &= 0xfff0; // Clear flags from 96 to 99
 
-  if(numberOfLocalFlags != 0) {
-    allLocalRegisterPointer->localFlags = 0;
+    if(numberOfLocalFlags != 0) {
+      allLocalRegisterPointer->localFlags = 0;
+    }
   }
 }
 
