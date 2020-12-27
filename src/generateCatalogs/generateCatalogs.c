@@ -19,14 +19,10 @@
  ***********************************************/
 
 #include "wp43s.h"
+#include <unistd.h>
 
 bool_t  funcOK;
 glyph_t glyphNotFound = {.charCode = 0x0000, .colsBeforeGlyph = 0, .colsGlyph = 13, .colsAfterGlyph = 0, .rowsGlyph = 19, .data = NULL};
-
-#ifdef __APPLE__
-  // needed for chdir:
-  #include<unistd.h>
-#endif // __APPLE__
 
 #define MAX_NUMBER_OF_ITEMS 1000
 FILE *catalogFile;
@@ -77,8 +73,13 @@ void sortOneCatalog(const char *menuName, char catalogType) {
 
 
 
-#ifdef __APPLE__
-  int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
+    #ifdef CODEBLOCKS_OVER_SCORE // Since December 27th 2020 when running in code::blocks, we are no more in the correct directory! Why?
+      (*strstr(argv[0], "/bin/")) = 0;
+      chdir(argv[0]);
+    #endif // CODEBLOCKS_OVER_SCORE
+
+  #ifdef __APPLE__
     // we take the directory where the application is as the root for this application.
     // in argv[0] is the application itself. We strip the name of the app by searching for the last '/':
     if (argc>=1) {
@@ -92,9 +93,7 @@ void sortOneCatalog(const char *menuName, char catalogType) {
         free(curdir);
       }
     }
-#else // !__APPLE__
-  int main(void) {
-#endif // __APPLE__
+  #endif // __APPLE__
 
   catalogFile = fopen("src/wp43s/softmenuCatalogs.h", "wb");
   if(catalogFile == NULL) {

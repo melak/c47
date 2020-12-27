@@ -23,11 +23,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#ifdef __APPLE__
-  // needed for chdir:
-  #include<unistd.h>
-#endif // __APPLE__
+#include <unistd.h>
 
 #include "defines.h"
 
@@ -723,24 +719,27 @@ void generateAllConstants(void) {
 }
 
 
-#ifdef __APPLE__
-  int main(int argc, char* argv[]) {
-      // we take the directory where the application is as the root for this application.
-      // in argv[0] is the application itself. We strip the name of the app by searching for the last '/':
-      if (argc>=1) {
-        char *curdir = malloc(1000);
-        // find last /:
-        char *s = strrchr(argv[0], '/');
-        if (s != 0) {
-          // take the directory before the appname:
-          strncpy(curdir, argv[0], s-argv[0]);
-          chdir(curdir);
-          free(curdir);
-        }
+int main(int argc, char* argv[]) {
+  #ifdef CODEBLOCKS_OVER_SCORE // Since December 27th 2020 when running in code::blocks, we are no more in the correct directory! Why?
+    (*strstr(argv[0], "/bin/")) = 0;
+    chdir(argv[0]);
+  #endif // CODEBLOCKS_OVER_SCORE
+
+  #ifdef __APPLE__
+    // we take the directory where the application is as the root for this application.
+    // in argv[0] is the application itself. We strip the name of the app by searching for the last '/':
+    if (argc>=1) {
+      char *curdir = malloc(1000);
+      // find last /:
+      char *s = strrchr(argv[0], '/');
+      if (s != 0) {
+        // take the directory before the appname:
+        strncpy(curdir, argv[0], s-argv[0]);
+        chdir(curdir);
+        free(curdir);
       }
-#else // !__APPLE__
-  int main(void) {
-#endif // __APPLE__
+    }
+   #endif // __APPLE__
 
   decContextDefault(&ctxtReal34,   DEC_INIT_DECQUAD);
   decContextDefault(&ctxtReal39,   DEC_INIT_DECQUAD);

@@ -1247,7 +1247,7 @@
 
           case TT_DOT :
             if(tamMode != TM_VALUE && tamMode != TM_VALUE_CHB) {
-              if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && numberOfLocalFlags > 0) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && allLocalRegisterPointer->numberOfLocalRegisters != 0)) {
+              if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && currentLocalFlags != NULL) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && currentLocalRegisters != NULL)) {
                 sprintf(tamBuffer, "%s .__", indexOfItems[getOperation()].itemCatalogName);
                 transitionSystemState = 3;
               }
@@ -1314,7 +1314,7 @@
             return;
 
           case TT_DOT :
-            if(allLocalRegisterPointer->numberOfLocalRegisters != 0) {
+            if(currentLocalRegisters != NULL) {
               sprintf(tamBuffer, "%s .__", indexOfItems[getOperation()].itemCatalogName);
               transitionSystemState = 10;
             }
@@ -1360,13 +1360,13 @@
       // OP .__
       case 3 :
         // Here we are sure that:
-        // numberOfLocalFlags     > 0 in the case of a flag parameter
-        // numberOfLocalRegisters > 0 in the case of a register parameter
+        // currentLocalFlags != NULL                                in the case of a flag parameter
+        // currentSubroutineLevelData[1].numberOfLocalRegisters > 0 in the case of a register parameter
         switch(tamEvent) {
           case TT_DIGIT :
             tamNumber = tamDigit;
-            if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber < numberOfLocalFlags) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber < allLocalRegisterPointer->numberOfLocalRegisters)) {
-              if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber*10 >= numberOfLocalFlags) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber*10 >= allLocalRegisterPointer->numberOfLocalRegisters)) {
+            if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber < NUMBER_OF_LOCAL_FLAGS) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber < currentSubroutineLevelData[1].numberOfLocalRegisters)) {
+              if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber*10 >= NUMBER_OF_LOCAL_FLAGS) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber*10 >= currentSubroutineLevelData[1].numberOfLocalRegisters)) {
                 reallyRunFunction(getOperation(), tamNumber + FIRST_LOCAL_REGISTER);
                 leaveTamMode();
               }
@@ -1390,11 +1390,11 @@
       // OP .d_
       case 4 :
         // Here we are sure that:
-        // 0 <= tamNumber < numberOfLocalFlags      in the case of a flag parameter
-        // 0 <= tamNumber < numberOfLocalRegisters  in the case of a register parameter
+        // 0 <= tamNumber < NUMBER_OF_LOCAL_FLAGS                                in the case of a flag parameter
+        // 0 <= tamNumber < currentSubroutineLevelData[1].numberOfLocalRegisters in the case of a register parameter
         switch(tamEvent) {
           case TT_DIGIT :
-            if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber*10 + tamDigit < numberOfLocalFlags) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber*10 + tamDigit < allLocalRegisterPointer->numberOfLocalRegisters)) {
+            if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber*10 + tamDigit < NUMBER_OF_LOCAL_FLAGS) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber*10 + tamDigit < currentSubroutineLevelData[1].numberOfLocalRegisters)) {
               reallyRunFunction(getOperation(), tamNumber*10 + tamDigit + FIRST_LOCAL_REGISTER);
               leaveTamMode();
             }
@@ -1437,7 +1437,7 @@
             return;
 
           case TT_DOT :
-            if(allLocalRegisterPointer->numberOfLocalRegisters != 0) {
+            if(currentLocalRegisters != NULL) {
               sprintf(tamBuffer, "%s " STD_RIGHT_ARROW ".__", indexOfItems[getOperation()].itemCatalogName);
               transitionSystemState = 7;
             }
@@ -1487,12 +1487,12 @@
       // OP -->.__
       case 7 :
         // Here we are sure that:
-        // numberOfLocalRegisters > 0
+        // currentSubroutineLevelData[1].numberOfLocalRegisters > 0
         switch(tamEvent) {
           case TT_DIGIT :
             tamNumber = tamDigit;
-            if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber < numberOfLocalFlags) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber < allLocalRegisterPointer->numberOfLocalRegisters)) {
-              if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber*10 >= numberOfLocalFlags) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber*10 >= allLocalRegisterPointer->numberOfLocalRegisters)) {
+            if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber < NUMBER_OF_LOCAL_FLAGS) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber < currentSubroutineLevelData[1].numberOfLocalRegisters)) {
+              if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber*10 >= NUMBER_OF_LOCAL_FLAGS) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber*10 >= currentSubroutineLevelData[1].numberOfLocalRegisters)) {
                 value = indirectAddressing(tamNumber + FIRST_LOCAL_REGISTER, tamNumberMin, tamNumberMax);
 
                 if(lastErrorCode == 0) { // value is between tamNumberMin and tamNumberMax
@@ -1520,10 +1520,10 @@
       // OP -->.d_
       case 8 :
         // Here we are sure that:
-        // 0 <= tamNumber < numberOfLocalRegisters
+        // 0 <= tamNumber < currentSubroutineLevelData[1].numberOfLocalRegisters
         switch(tamEvent) {
           case TT_DIGIT :
-            if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber*10 + tamDigit < numberOfLocalFlags) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber*10 + tamDigit < allLocalRegisterPointer->numberOfLocalRegisters)) {
+            if(((tamMode == TM_FLAGR || tamMode == TM_FLAGW) && tamNumber*10 + tamDigit < NUMBER_OF_LOCAL_FLAGS) || ((tamMode != TM_FLAGR && tamMode != TM_FLAGW) && tamNumber*10 + tamDigit < currentSubroutineLevelData[1].numberOfLocalRegisters)) {
               value = indirectAddressing(tamNumber*10 + tamDigit + FIRST_LOCAL_REGISTER, tamNumberMin, tamNumberMax);
 
               if(lastErrorCode == 0) { // value is between tamNumberMin and tamNumberMax
@@ -1578,14 +1578,14 @@
       // OPo .__
       case 10 :
         // Here we are sure that:
-        // numberOfLocalRegisters > 0
+        // currentSubroutineLevelData[1].numberOfLocalRegisters > 0
         switch(tamEvent) {
           case TT_DIGIT :
             tamNumber = tamDigit;
-            if(tamNumber < allLocalRegisterPointer->numberOfLocalRegisters) {
+            if(tamNumber < currentSubroutineLevelData[1].numberOfLocalRegisters) {
               if(tamNumber > tamNumberMax) {
               }
-              else if(tamNumber*10 >= allLocalRegisterPointer->numberOfLocalRegisters) {
+              else if(tamNumber*10 >= currentSubroutineLevelData[1].numberOfLocalRegisters) {
                 reallyRunFunction(getOperation(), tamNumber + FIRST_LOCAL_REGISTER);
                 leaveTamMode();
               }
@@ -1610,14 +1610,14 @@
       case 11 :
         switch(tamEvent) {
           case TT_DIGIT :
-            if(tamNumber*10 + tamDigit < allLocalRegisterPointer->numberOfLocalRegisters) {
+            if(tamNumber*10 + tamDigit < currentSubroutineLevelData[1].numberOfLocalRegisters) {
               reallyRunFunction(getOperation(), tamNumber*10 + tamDigit + FIRST_LOCAL_REGISTER);
               leaveTamMode();
             }
             return;
 
           case TT_ENTER :
-            if(tamNumber < allLocalRegisterPointer->numberOfLocalRegisters) {
+            if(tamNumber < currentSubroutineLevelData[1].numberOfLocalRegisters) {
               reallyRunFunction(getOperation(), tamNumber + FIRST_LOCAL_REGISTER);
               leaveTamMode();
             }
@@ -1637,7 +1637,7 @@
       case 12 :
         switch(tamEvent) {
           case TT_LETTER :
-            regist = indirectAddressing(tamLetteredRegister, 0, FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters);
+            regist = indirectAddressing(tamLetteredRegister, 0, FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters);
 
             if(lastErrorCode == 0) { // regist is between tamNumberMin and tamNumberMax
               reallyRunFunction(getOperation(), regist);
@@ -1655,7 +1655,7 @@
             return;
 
           case TT_DOT :
-            if(allLocalRegisterPointer->numberOfLocalRegisters != 0) {
+            if(currentLocalRegisters != NULL) {
               sprintf(tamBuffer, "%s " STD_RIGHT_ARROW ".__", indexOfItems[getOperation()].itemCatalogName);
               transitionSystemState = 14;
             }
@@ -1675,7 +1675,7 @@
       case 13 :
         switch(tamEvent) {
           case TT_DIGIT :
-            regist = indirectAddressing(tamNumber*10 + tamDigit, 0, FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters);
+            regist = indirectAddressing(tamNumber*10 + tamDigit, 0, FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters);
 
             if(lastErrorCode == 0) { // regist is between tamNumberMin and tamNumberMax
               reallyRunFunction(getOperation(), regist);
@@ -1684,7 +1684,7 @@
             return;
 
           case TT_ENTER :
-            regist = indirectAddressing(tamNumber, 0, FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters);
+            regist = indirectAddressing(tamNumber, 0, FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters);
 
             if(lastErrorCode == 0) { // regist is between tamNumberMin and tamNumberMax
               reallyRunFunction(getOperation(), regist);
@@ -1708,7 +1708,7 @@
         // numberOfLocalRegisters > 0
         switch(tamEvent) {
           case TT_DIGIT :
-            if(tamDigit < allLocalRegisterPointer->numberOfLocalRegisters) {
+            if(tamDigit < currentSubroutineLevelData[1].numberOfLocalRegisters) {
               tamNumber = tamDigit;
               sprintf(tamBuffer, "%s " STD_RIGHT_ARROW ".%d_", indexOfItems[getOperation()].itemCatalogName, tamNumber);
               transitionSystemState = 15;
@@ -1729,8 +1729,8 @@
       case 15 :
         switch(tamEvent) {
           case TT_DIGIT :
-            if(tamNumber*10 + tamDigit < allLocalRegisterPointer->numberOfLocalRegisters) {
-              regist = indirectAddressing(tamNumber*10 + tamDigit + FIRST_LOCAL_REGISTER, 0, FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters);
+            if(tamNumber*10 + tamDigit < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+              regist = indirectAddressing(tamNumber*10 + tamDigit + FIRST_LOCAL_REGISTER, 0, FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters);
 
               if(lastErrorCode == 0) { // regist is between tamNumberMin and tamNumberMax
                 reallyRunFunction(getOperation(), regist);
@@ -1740,7 +1740,7 @@
             return;
 
           case TT_ENTER :
-            regist = indirectAddressing(tamNumber + FIRST_LOCAL_REGISTER, 0, FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters);
+            regist = indirectAddressing(tamNumber + FIRST_LOCAL_REGISTER, 0, FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters);
 
             if(lastErrorCode == 0) { // regist is between tamNumberMin and tamNumberMax
               reallyRunFunction(getOperation(), regist);

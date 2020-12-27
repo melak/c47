@@ -39,35 +39,10 @@ void         fnClearRegisters                (uint16_t confirmation);
 void         fnGetLocR                       (uint16_t unusedButMandatoryParameter);
 void         adjustResult                    (calcRegister_t result, bool_t dropY, bool_t setCpxRes, calcRegister_t op1, calcRegister_t op2, calcRegister_t op3);
 void         copySourceRegisterToDestRegister(calcRegister_t rSource, calcRegister_t rDest);
-void         fnStore                         (uint16_t r);
-void         fnStoreAdd                      (uint16_t r);
-void         fnStoreSub                      (uint16_t r);
-void         fnStoreMult                     (uint16_t r);
-void         fnStoreDiv                      (uint16_t r);
-void         fnStoreMin                      (uint16_t r);
-void         fnStoreMax                      (uint16_t r);
-void         fnStoreConfig                   (uint16_t r);
-void         fnStoreStack                    (uint16_t r);
-void         fnStoreElement                  (uint16_t unusedButMandatoryParameter);
-void         fnStoreIJ                       (uint16_t unusedButMandatoryParameter);
-void         fnRecall                        (uint16_t r);
-void         fnLastX                         (uint16_t unusedButMandatoryParameter);
-void         fnRecallAdd                     (uint16_t r);
-void         fnRecallSub                     (uint16_t r);
-void         fnRecallMult                    (uint16_t r);
-void         fnRecallDiv                     (uint16_t r);
-void         fnRecallMin                     (uint16_t r);
-void         fnRecallMax                     (uint16_t r);
-void         fnRecallConfig                  (uint16_t r);
-void         fnRecallStack                   (uint16_t r);
-void         fnRecallElement                 (uint16_t unusedButMandatoryParameter);
-void         fnRecallIJ                      (uint16_t unusedButMandatoryParameter);
 void         fnXLessThan                     (uint16_t unusedButMandatoryParameter);
 int16_t      indirectAddressing              (calcRegister_t regist, int16_t minValue, int16_t maxValue);
 void         reallocateRegister              (calcRegister_t regist, uint32_t dataType, uint16_t dataSizeWithoutDataLenBlocks, uint32_t tag);
 void         fnToReal                        (uint16_t unusedButMandatoryParameter);
-void         fnDec                           (uint16_t r);
-void         fnInc                           (uint16_t r);
 #ifndef DMCP_BUILD
   void       printReal34ToConsole            (const real34_t *value, const char *before, const char *after);
   void       printRealToConsole              (const real_t *value, const char *before, const char *after);
@@ -88,15 +63,3 @@ void         fnInc                           (uint16_t r);
 #ifdef TESTSUITE_BUILD
   void    printRegisterToString           (calcRegister_t regist, char *registerContent);
 #endif // TESTSUITE_BUILD
-
-
-//=============================================================================
-// Register Comparison and Min/Max functions
-//-----------------------------------------------------------------------------
-
-bool_t registerCmp(calcRegister_t reg1, calcRegister_t reg2, int8_t *result);
-void registerCmpError(calcRegister_t regist1, calcRegister_t regist2);
-
-void registerMax(calcRegister_t reg1, calcRegister_t reg2, calcRegister_t dest);
-void registerMin(calcRegister_t reg1, calcRegister_t reg2, calcRegister_t dest);
-

@@ -29,18 +29,18 @@
  ***********************************************/
 uint32_t getRegisterDataType(calcRegister_t regist) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
-    return reg[regist].dataType;
+    return globalRegister[regist].dataType;
   }
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
-    if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
+    if(currentLocalRegisters != NULL) {
       regist -= FIRST_LOCAL_REGISTER;
-      if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
+      if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
         return POINTER_TO_LOCAL_REGISTER(regist)->dataType;
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16, regist);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, allLocalRegisterPointer->numberOfLocalRegisters - 1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
           moreInfoOnError("In function getRegisterDataType:", errorMessage, "is not defined!", errorMessage + ERROR_MESSAGE_LENGTH/2);
         }
       #endif // PC_BUILD
@@ -69,8 +69,8 @@ uint32_t getRegisterDataType(calcRegister_t regist) {
       displayBugScreen("In function getRegisterDataType: no named variables defined!");
     }
   }
-  else if(regist < 3000) { // Saved stack register
-    if(regist <= LAST_SAVED_REGISTER) {
+  else if(regist < 3000) { // Saved stack register or temporary register
+    if(regist <= LAST_SAVED_STACK_REGISTER + 1) {
       return savedStackRegister[regist - SAVED_REGISTER_X].dataType;
     }
     #ifdef PC_BUILD
@@ -98,18 +98,18 @@ uint32_t getRegisterDataType(calcRegister_t regist) {
  ***********************************************/
 dataBlock_t *getRegisterDataPointer(calcRegister_t regist) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
-    return TO_PCMEMPTR(reg[regist].dataPointer);
+    return TO_PCMEMPTR(globalRegister[regist].pointerToRegisterData);
   }
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
-    if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
+    if(currentLocalRegisters != NULL) {
       regist -= FIRST_LOCAL_REGISTER;
-      if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
-        return TO_PCMEMPTR(POINTER_TO_LOCAL_REGISTER(regist)->dataPointer);
+      if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+        return TO_PCMEMPTR(POINTER_TO_LOCAL_REGISTER(regist)->pointerToRegisterData);
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16, regist);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, allLocalRegisterPointer->numberOfLocalRegisters-1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
           moreInfoOnError("In function getRegisterDataPointer:", errorMessage, "is not defined!", errorMessage + ERROR_MESSAGE_LENGTH/2);
         }
       #endif // PC_BUILD
@@ -124,7 +124,7 @@ dataBlock_t *getRegisterDataPointer(calcRegister_t regist) {
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
       regist -= FIRST_NAMED_VARIABLE;
       if(regist < allNamedVariablePointer->numberOfNamedVariables) {
-        return TO_PCMEMPTR(POINTER_TO_NAMED_VARIABLE(regist)->dataPointer);
+        return TO_PCMEMPTR(POINTER_TO_NAMED_VARIABLE(regist)->pointerToRegisterData);
       }
       #ifdef PC_BUILD
         else {
@@ -138,9 +138,9 @@ dataBlock_t *getRegisterDataPointer(calcRegister_t regist) {
       displayBugScreen("In function getRegisterDataPointer: no named variables defined!");
     }
   }
-  else if(regist < 3000) { // Saved stack register
-    if(regist <= LAST_SAVED_REGISTER) {
-      return TO_PCMEMPTR(savedStackRegister[regist - SAVED_REGISTER_X].dataPointer);
+  else if(regist < 3000) { // Saved stack register or temporary register
+    if(regist <= LAST_SAVED_STACK_REGISTER + 1) {
+      return TO_PCMEMPTR(savedStackRegister[regist - SAVED_REGISTER_X].pointerToRegisterData);
     }
     #ifdef PC_BUILD
       else {
@@ -168,18 +168,18 @@ dataBlock_t *getRegisterDataPointer(calcRegister_t regist) {
  ***********************************************/
 uint32_t getRegisterTag(calcRegister_t regist) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
-    return reg[regist].tag;
+    return globalRegister[regist].tag;
   }
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
-    if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
+    if(currentLocalRegisters != NULL) {
       regist -= FIRST_LOCAL_REGISTER;
-      if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
+      if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
         return POINTER_TO_LOCAL_REGISTER(regist)->tag;
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16, regist);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, allLocalRegisterPointer->numberOfLocalRegisters - 1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
           moreInfoOnError("In function getRegisterTag:", errorMessage, "is not defined!", errorMessage + ERROR_MESSAGE_LENGTH/2);
         }
       #endif // PC_BUILD
@@ -208,8 +208,8 @@ uint32_t getRegisterTag(calcRegister_t regist) {
       displayBugScreen("In function getRegisterTag: no named variables defined!");
     }
   }
-  else if(regist < 3000) { // Saved stack register
-    if(regist <= LAST_SAVED_REGISTER) {
+  else if(regist < 3000) { // Saved stack register or temporary register
+    if(regist <= LAST_SAVED_STACK_REGISTER + 1) {
       return savedStackRegister[regist - SAVED_REGISTER_X].tag;
     }
     #ifdef PC_BUILD
@@ -305,20 +305,20 @@ char *getVariableNamePointer(calcRegister_t regist) {
  ***********************************************/
 void setRegisterDataType(calcRegister_t regist, uint16_t dataType, uint32_t tag) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
-    reg[regist].dataType = dataType;
-    reg[regist].tag = tag;
+    globalRegister[regist].dataType = dataType;
+    globalRegister[regist].tag = tag;
   }
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
-    if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
+    if(currentLocalRegisters != NULL) {
       regist -= FIRST_LOCAL_REGISTER;
-      if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
+      if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
         POINTER_TO_LOCAL_REGISTER(regist)->dataType = dataType;
         POINTER_TO_LOCAL_REGISTER(regist)->tag = tag;
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16, regist);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, allLocalRegisterPointer->numberOfLocalRegisters - 1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
           moreInfoOnError("In function setRegisterDataType:", errorMessage, "is not defined!", errorMessage + ERROR_MESSAGE_LENGTH/2);
         }
       #endif // PC_BUILD
@@ -348,8 +348,8 @@ void setRegisterDataType(calcRegister_t regist, uint16_t dataType, uint32_t tag)
       displayBugScreen("In function setRegisterDataType: no named variables defined!");
     }
   }
-  else if(regist < 3000) { // Saved stack register
-    if(regist <= LAST_SAVED_REGISTER) {
+  else if(regist < 3000) { // Saved stack register or temporary register
+    if(regist <= LAST_SAVED_STACK_REGISTER + 1) {
       savedStackRegister[regist - SAVED_REGISTER_X].dataType = dataType;
       savedStackRegister[regist - SAVED_REGISTER_X].tag = tag;
     }
@@ -380,18 +380,18 @@ void setRegisterDataPointer(calcRegister_t regist, void *memPtr) {
   uint32_t dataPointer = TO_WP43SMEMPTR(memPtr);
 
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
-    reg[regist].dataPointer = dataPointer;
+    globalRegister[regist].pointerToRegisterData = dataPointer;
   }
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
-    if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
+    if(currentLocalRegisters != NULL) {
       regist -= FIRST_LOCAL_REGISTER;
-      if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
-        POINTER_TO_LOCAL_REGISTER(regist)->dataPointer = dataPointer;
+      if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+        POINTER_TO_LOCAL_REGISTER(regist)->pointerToRegisterData = dataPointer;
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16, regist);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, allLocalRegisterPointer->numberOfLocalRegisters - 1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
           moreInfoOnError("In function setRegisterDataPointer:", errorMessage, "is not defined!", errorMessage + ERROR_MESSAGE_LENGTH/2);
         }
       #endif // PC_BUILD
@@ -406,7 +406,7 @@ void setRegisterDataPointer(calcRegister_t regist, void *memPtr) {
     if(allNamedVariablePointer->numberOfNamedVariables > 0) {
       regist -= FIRST_NAMED_VARIABLE;
       if(regist < allNamedVariablePointer->numberOfNamedVariables) {
-        POINTER_TO_NAMED_VARIABLE(regist)->dataPointer = dataPointer;
+        POINTER_TO_NAMED_VARIABLE(regist)->pointerToRegisterData = dataPointer;
       }
       #ifdef PC_BUILD
         else {
@@ -422,9 +422,9 @@ void setRegisterDataPointer(calcRegister_t regist, void *memPtr) {
       }
     #endif // PC_BUILD
   }
-  else if(regist < 3000) { // Saved stack register
-    if(regist <= LAST_SAVED_REGISTER) {
-      savedStackRegister[regist - SAVED_REGISTER_X].dataPointer = dataPointer;
+  else if(regist < 3000) { // Saved stack register or temporary register
+    if(regist <= LAST_SAVED_STACK_REGISTER + 1) {
+      savedStackRegister[regist - SAVED_REGISTER_X].pointerToRegisterData = dataPointer;
     }
     #ifdef PC_BUILD
       else {
@@ -452,18 +452,18 @@ void setRegisterDataPointer(calcRegister_t regist, void *memPtr) {
  ***********************************************/
 void setRegisterTag(calcRegister_t regist, uint32_t tag) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
-    reg[regist].tag = tag;
+    globalRegister[regist].tag = tag;
   }
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
-    if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
+    if(currentLocalRegisters != NULL) {
       regist -= FIRST_LOCAL_REGISTER;
-      if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
+      if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
         POINTER_TO_LOCAL_REGISTER(regist)->tag = tag;
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16, regist);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, allLocalRegisterPointer->numberOfLocalRegisters - 1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
           moreInfoOnError("In function setRegisterDataInfo:", errorMessage, "is not defined!", errorMessage + ERROR_MESSAGE_LENGTH/2);
         }
       #endif // PC_BUILD
@@ -492,8 +492,8 @@ void setRegisterTag(calcRegister_t regist, uint32_t tag) {
       displayBugScreen("In function setRegisterDataInfo: no named variables defined!");
     }
    }
-  else if(regist < 3000) { // Saved stack register
-    if(regist <= LAST_SAVED_REGISTER) {
+  else if(regist < 3000) { // Saved stack register or temporary register
+    if(regist <= LAST_SAVED_STACK_REGISTER + 1) {
       savedStackRegister[regist - SAVED_REGISTER_X].tag = tag;
     }
     #ifdef PC_BUILD
@@ -592,64 +592,51 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
     return;
   }
 
-  if(numberOfRegistersToAllocate != allLocalRegisterPointer->numberOfLocalRegisters) { // There is something to do
-    uint16_t r;
+  uint16_t r;
+  if(currentLocalFlags == NULL) {
+    // 1st allocation of local registers in this level of subroutine
+    currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 12, 16 + 4*numberOfRegistersToAllocate);
 
-    if(numberOfRegistersToAllocate == 0) { // free the allocated memory for the local registers
-      uint16_t numRegs = allLocalRegisterPointer->numberOfLocalRegisters;
-
-      // free memory allocated to the data of the local registers
-      for(r=FIRST_LOCAL_REGISTER; r<FIRST_LOCAL_REGISTER+numRegs; r++) {
-        freeRegisterData(r);
-      }
-
-      allLocalRegisterPointer->numberOfLocalRegisters = 0; // This must be done before the freeMemory call
-      numberOfLocalFlags = 0;
-      reallocWp43s(allLocalRegisterPointer, TO_BYTES(numRegs + 1), TO_BYTES(1)); // +1 for the fags
-      allLocalRegisterPointer->numberOfLocalRegisters = 0;
-      allLocalRegisterPointer->localFlags = 0;
+    // All the new local registers are real34s initialized to 0.0
+    for(r=FIRST_LOCAL_REGISTER; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
+      setRegisterDataType(r, dtReal34, AM_NONE);
+      setRegisterDataPointer(r, allocWp43s(TO_BYTES(REAL34_SIZE)));
+      real34Zero(REGISTER_REAL34_DATA(r));
     }
+  }
+  else if(numberOfRegistersToAllocate != currentSubroutineLevelData[1].numberOfLocalRegisters) {
+    // The number of allocated local registers changes
 
-    else if(allLocalRegisterPointer->numberOfLocalRegisters == 0) { // Allocate memory
-      allLocalRegisterPointer = reallocWp43s(allLocalRegisterPointer, TO_BYTES(1), TO_BYTES(1u + numberOfRegistersToAllocate));
-      allLocalRegisterPointer->numberOfLocalRegisters = numberOfRegistersToAllocate;
-      numberOfLocalFlags = NUMBER_OF_LOCAL_FLAGS;
-
-      // clear all local flags
-      allLocalRegisterPointer->localFlags = 0;
+    if(numberOfRegistersToAllocate > currentSubroutineLevelData[1].numberOfLocalRegisters) {
+      currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 16, 16 + 4*numberOfRegistersToAllocate);
 
       // All the new local registers are real34s initialized to 0.0
-      for(r=FIRST_LOCAL_REGISTER; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
+      for(r=FIRST_LOCAL_REGISTER+currentSubroutineLevelData[1].numberOfLocalRegisters; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
         setRegisterDataType(r, dtReal34, AM_NONE);
         setRegisterDataPointer(r, allocWp43s(TO_BYTES(REAL34_SIZE)));
         real34Zero(REGISTER_REAL34_DATA(r));
       }
     }
-
-    else if(numberOfRegistersToAllocate > allLocalRegisterPointer->numberOfLocalRegisters) { // increase the number of local register
-      reallocWp43s(allLocalRegisterPointer,  TO_BYTES(1u + allLocalRegisterPointer->numberOfLocalRegisters), TO_BYTES(1u + numberOfRegistersToAllocate));
-
-      uint16_t oldNumRegs = allLocalRegisterPointer->numberOfLocalRegisters;
-      allLocalRegisterPointer->numberOfLocalRegisters = numberOfRegistersToAllocate;
-
-      // All the new local registers are real16s initialized to 0.0
-      for(r=FIRST_LOCAL_REGISTER+oldNumRegs; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
-        setRegisterDataType(r, dtReal34, AM_NONE);
-        setRegisterDataPointer(r, allocWp43s(TO_BYTES(REAL34_SIZE)));
-        real34Zero(REGISTER_REAL34_DATA(r));
-      }
-    }
-
-    else { // reduce the number of local register
+    else {
       // free memory allocated to the data of the deleted local registers
-      for(r=allLocalRegisterPointer->numberOfLocalRegisters - 1; r>=numberOfRegistersToAllocate; r--) {
+      for(r=currentSubroutineLevelData[1].numberOfLocalRegisters - 1; r>=numberOfRegistersToAllocate; r--) {
         freeRegisterData(FIRST_LOCAL_REGISTER + r);
       }
 
       // free memory allocated to the deleted local registers
-      freeWp43s(allLocalRegisterPointer + 1u + numberOfRegistersToAllocate, TO_BYTES(allLocalRegisterPointer->numberOfLocalRegisters - numberOfRegistersToAllocate));
-      allLocalRegisterPointer->numberOfLocalRegisters = numberOfRegistersToAllocate; // This must be done after the freeMemory call
+      freeWp43s(currentLocalRegisters + numberOfRegistersToAllocate, TO_BYTES(currentSubroutineLevelData[1].numberOfLocalRegisters - numberOfRegistersToAllocate));
     }
+  }
+  else {
+    return;
+  }
+
+  currentSubroutineLevelData[1].numberOfLocalRegisters = numberOfRegistersToAllocate;
+  if(currentSubroutineLevelData[1].level == 0) {
+    allSubroutineLevels.ptrToSubroutineLevel0Data = TO_WP43SMEMPTR(currentSubroutineLevelData);
+  }
+  else {
+    ((dataBlock_t *)(TO_PCMEMPTR(currentSubroutineLevelData[2].ptrToPreviousLevel)))[2].ptrToNextLevel = TO_WP43SMEMPTR(currentSubroutineLevelData);
   }
 }
 
@@ -720,17 +707,17 @@ void allocateNamedVariable(const char *variableName) {
  ***********************************************/
 void setRegisterMaxDataLength(calcRegister_t regist, uint16_t maxDataLen) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
-    ((dataBlock_t *)TO_PCMEMPTR(reg[regist].dataPointer))->dataMaxLength = maxDataLen;
+    ((dataBlock_t *)TO_PCMEMPTR(globalRegister[regist].pointerToRegisterData))->dataMaxLength = maxDataLen;
   }
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
-    if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
-      if(regist-FIRST_LOCAL_REGISTER < allLocalRegisterPointer->numberOfLocalRegisters) {
+    if(currentLocalRegisters != NULL) {
+      if(regist-FIRST_LOCAL_REGISTER < currentSubroutineLevelData[1].numberOfLocalRegisters) {
         getRegisterDataPointer(regist)->dataMaxLength = maxDataLen;
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16 " is not defined!", regist - FIRST_LOCAL_REGISTER);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, allLocalRegisterPointer->numberOfLocalRegisters - 1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
           moreInfoOnError("In function setRegisterMaxDataLength:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
         }
       #endif // PC_BUILD
@@ -757,8 +744,8 @@ void setRegisterMaxDataLength(calcRegister_t regist, uint16_t maxDataLen) {
       }
     #endif // PC_BUILD
   }
-  else if(regist < 3000) { // Saved stack register
-    if(regist <= LAST_SAVED_REGISTER) {
+  else if(regist < 3000) { // Saved stack register or temporary register
+    if(regist <= LAST_SAVED_STACK_REGISTER + 1) {
       getRegisterDataPointer(regist)->dataMaxLength = maxDataLen;
     }
     else {
@@ -785,15 +772,15 @@ void setRegisterMaxDataLength(calcRegister_t regist, uint16_t maxDataLen) {
  ***********************************************/
 uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
   if(regist < FIRST_LOCAL_REGISTER) { // Global register
-    return ((dataBlock_t *)TO_PCMEMPTR(reg[regist].dataPointer))->dataMaxLength;
+    return ((dataBlock_t *)TO_PCMEMPTR(globalRegister[regist].pointerToRegisterData))->dataMaxLength;
   }
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
-    if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
-      if(regist-FIRST_LOCAL_REGISTER < allLocalRegisterPointer->numberOfLocalRegisters) {
-        return ((dataBlock_t *)TO_PCMEMPTR(POINTER_TO_LOCAL_REGISTER(regist)->dataPointer))->dataMaxLength;
+    if(currentLocalRegisters != NULL) {
+      if(regist-FIRST_LOCAL_REGISTER < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+        return ((dataBlock_t *)TO_PCMEMPTR(POINTER_TO_LOCAL_REGISTER(regist)->pointerToRegisterData))->dataMaxLength;
       }
       else {
-        sprintf(errorMessage, "In function getRegisterMaxDataLength: local register %" PRId16 " is not defined! Must be from 0 to %" PRIu16, regist - FIRST_LOCAL_REGISTER, allLocalRegisterPointer->numberOfLocalRegisters - 1);
+        sprintf(errorMessage, "In function getRegisterMaxDataLength: local register %" PRId16 " is not defined! Must be from 0 to %" PRIu16, regist - FIRST_LOCAL_REGISTER, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
         displayBugScreen(errorMessage);
       }
     }
@@ -806,7 +793,7 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
   else if(regist < SAVED_REGISTER_X) { // Named variable
     if(allNamedVariablePointer->numberOfNamedVariables != 0) {
       if(regist - FIRST_NAMED_VARIABLE < allNamedVariablePointer->numberOfNamedVariables) {
-        return ((dataBlock_t *)TO_PCMEMPTR(POINTER_TO_NAMED_VARIABLE(regist)->dataPointer))->dataMaxLength;
+        return ((dataBlock_t *)TO_PCMEMPTR(POINTER_TO_NAMED_VARIABLE(regist)->pointerToRegisterData))->dataMaxLength;
       }
       else {
         sprintf(errorMessage, "In function getRegisterMaxDataLength: named variable %" PRId16 " is not defined! Must be from 0 to %" PRIu16, regist - FIRST_NAMED_VARIABLE, allNamedVariablePointer->numberOfNamedVariables - 1);
@@ -819,9 +806,9 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
       }
     #endif // PC_BUILD
   }
-  else if(regist < 3000) { // Saved stack register
-    if(regist <= LAST_SAVED_REGISTER) {
-      return ((dataBlock_t *)TO_PCMEMPTR(savedStackRegister[regist - SAVED_REGISTER_X].dataPointer))->dataMaxLength;
+  else if(regist < 3000) { // Saved stack register or temporary register
+    if(regist <= LAST_SAVED_STACK_REGISTER + 1) {
+      return ((dataBlock_t *)TO_PCMEMPTR(savedStackRegister[regist - SAVED_REGISTER_X].pointerToRegisterData))->dataMaxLength;
     }
     else {
       sprintf(errorMessage, "In function getRegisterMaxDataLength: saved stack register %" PRId16 " is not defined! Must be from 0 to 7!", regist - SAVED_REGISTER_X);
@@ -902,7 +889,7 @@ void fnClearRegisters(uint16_t confirmation) {
       clearRegister(regist);
     }
 
-    for(regist=0; regist<allLocalRegisterPointer->numberOfLocalRegisters; regist++) {
+    for(regist=0; regist<currentSubroutineLevelData[1].numberOfLocalRegisters; regist++) {
       clearRegister(FIRST_LOCAL_REGISTER + regist);
     }
 
@@ -932,7 +919,7 @@ void fnGetLocR(uint16_t unusedButMandatoryParameter) {
   liftStack();
 
   longIntegerInit(locR);
-  uIntToLongInteger(allLocalRegisterPointer->numberOfLocalRegisters, locR);
+  uIntToLongInteger(currentSubroutineLevelData[1].numberOfLocalRegisters, locR);
   convertLongIntegerToLongIntegerRegister(locR, REGISTER_X);
   longIntegerFree(locR);
 }
@@ -1076,592 +1063,6 @@ void copySourceRegisterToDestRegister(calcRegister_t sourceRegister, calcRegiste
 
 
 /********************************************//**
- * \brief Stores X in an other register
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
-void fnStore(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_X, regist);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnStore:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Adds X to a register
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
-void fnStoreAdd(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
-    copySourceRegisterToDestRegister(regist, REGISTER_Y);
-    if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
-      *(REGISTER_SHORT_INTEGER_DATA(REGISTER_Y)) &= shortIntegerMask;
-    }
-
-    addition[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
-
-    copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
-    copySourceRegisterToDestRegister(REGISTER_X, regist);
-    copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
-
-    adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnStorePlus:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Subtracts X from a register
- *
- * \param[in] registerNumber calcRegister_t
- * \return void
- ***********************************************/
-void fnStoreSub(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
-    copySourceRegisterToDestRegister(regist, REGISTER_Y);
-    if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
-      *(REGISTER_SHORT_INTEGER_DATA(REGISTER_Y)) &= shortIntegerMask;
-    }
-
-    subtraction[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
-
-    copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
-    copySourceRegisterToDestRegister(REGISTER_X, regist);
-    copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
-
-    adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnStoreSub:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Multiplies a register by X
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
-void fnStoreMult(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
-    copySourceRegisterToDestRegister(regist, REGISTER_Y);
-    if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
-      *(REGISTER_SHORT_INTEGER_DATA(REGISTER_Y)) &= shortIntegerMask;
-    }
-
-    multiplication[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
-
-    copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
-    copySourceRegisterToDestRegister(REGISTER_X, regist);
-    copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
-
-    adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnStoreMult:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Divides a register by X
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
-void fnStoreDiv(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
-    copySourceRegisterToDestRegister(regist, REGISTER_Y);
-    if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
-      *(REGISTER_SHORT_INTEGER_DATA(REGISTER_Y)) &= shortIntegerMask;
-    }
-
-    division[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
-
-    copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
-    copySourceRegisterToDestRegister(REGISTER_X, regist);
-    copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
-
-    adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnStoreDiv:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Keeps in a register min(X, register)
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
-void fnStoreMin(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    registerMin(REGISTER_X, regist, regist);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnStoreMin:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Keeps in a register max(X, register)
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
-void fnStoreMax(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    registerMax(REGISTER_X, regist, regist);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnStoreMax:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Stores the configuration
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnStoreConfig(uint16_t regist) {
-  reallocateRegister(regist, dtConfig, CONFIG_SIZE, AM_NONE);
-  dtConfigDescriptor_t *configToStore = REGISTER_CONFIG_DATA(regist);
-
-  storeToDtConfigDescriptor(shortIntegerMode);
-  storeToDtConfigDescriptor(shortIntegerWordSize);
-  storeToDtConfigDescriptor(displayFormat);
-  storeToDtConfigDescriptor(displayFormatDigits);
-  storeToDtConfigDescriptor(groupingGap);
-  storeToDtConfigDescriptor(currentAngularMode);
-  storeToDtConfigDescriptor(denMax);
-  storeToDtConfigDescriptor(displayStack);
-  storeToDtConfigDescriptor(firstGregorianDay);
-  storeToDtConfigDescriptor(roundingMode);
-  storeToDtConfigDescriptor(systemFlags);
-  xcopy(configToStore->kbd_usr, kbd_usr, sizeof(kbd_usr));
-}
-
-
-
-/********************************************//**
- * \brief Stores the stack
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnStoreStack(uint16_t regist) {
-  uint16_t size = getSystemFlag(FLAG_SSIZE8) ? 8 : 4;
-
-  if(regist + size >= REGISTER_X) {
-    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "Cannot execute STOS, destination register is out of range: %d", regist);
-      moreInfoOnError("In function fnStoreStack:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-  else {
-    for(int i=0; i<size; i++) {
-      copySourceRegisterToDestRegister(REGISTER_X + i, regist + i);
-    }
-  }
-}
-
-
-
-/********************************************//**
- * \brief Stores X in the element I,J of a matrix
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnStoreElement(uint16_t unusedButMandatoryParameter) {
-  #ifdef PC_BUILD
-    printf("fnStoreElement\n");
-  #endif // PC_BUILD
-
-  displayCalcErrorMessage(ERROR_ITEM_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
-  #ifdef PC_BUILD
-    moreInfoOnError("In function fnStoreElement:", "To be coded", NULL, NULL);
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Stores X and Y in the indexes I and J
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnStoreIJ(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_I);
-  copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_J);
-}
-
-
-
-/********************************************//**
- * \brief Recalls a register in X
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnRecall(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    if(REGISTER_X <= regist && regist <= getStackTop()) {
-      copySourceRegisterToDestRegister(regist, TEMP_REGISTER);
-      liftStack();
-      copySourceRegisterToDestRegister(TEMP_REGISTER, REGISTER_X);
-    }
-    else {
-      liftStack();
-      copySourceRegisterToDestRegister(regist, REGISTER_X);
-      if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-        *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
-      }
-    }
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnRecall:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Recalls register L in X
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
-void fnLastX(uint16_t unusedButMandatoryParameter) {
-  fnRecall(REGISTER_L);
-}
-
-
-
-/********************************************//**
- * \brief Adds a register to X
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnRecallAdd(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-    copySourceRegisterToDestRegister(regist, REGISTER_X);
-    if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-      *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
-    }
-
-    addition[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
-
-    copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
-
-    adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnRecallPlus:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Subtracts a register from X
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnRecallSub(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-    copySourceRegisterToDestRegister(regist, REGISTER_X);
-    if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-      *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
-    }
-
-    subtraction[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
-
-    copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
-
-    adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnRecallSub:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Multiplies X by a register
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnRecallMult(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-    copySourceRegisterToDestRegister(regist, REGISTER_X);
-    if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-      *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
-    }
-
-    multiplication[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
-
-    copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
-
-    adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnRecallMult:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Divides X by a register
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnRecallDiv(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-    copySourceRegisterToDestRegister(regist, REGISTER_X);
-    if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-      *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
-    }
-
-    division[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
-
-    copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
-
-    adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnRecallDiv:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Keeps in X min(X, register)
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnRecallMin(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
-    registerMin(REGISTER_X, regist, REGISTER_X);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnRecallMin:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Keeps in X max(X, register)
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnRecallMax(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
-    registerMax(REGISTER_X, regist, REGISTER_X);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnReallMax:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Recalls a configuration
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnRecallConfig(uint16_t regist) {
-  if(getRegisterDataType(regist) == dtConfig) {
-    dtConfigDescriptor_t *configToRecall = REGISTER_CONFIG_DATA(regist);
-
-    xcopy(kbd_usr, configToRecall->kbd_usr, sizeof(kbd_usr));
-    recallFromDtConfigDescriptor(shortIntegerMode);
-    recallFromDtConfigDescriptor(shortIntegerWordSize);
-    recallFromDtConfigDescriptor(displayFormat);
-    recallFromDtConfigDescriptor(displayFormatDigits);
-    recallFromDtConfigDescriptor(groupingGap);
-    recallFromDtConfigDescriptor(currentAngularMode);
-    recallFromDtConfigDescriptor(denMax);
-    recallFromDtConfigDescriptor(displayStack);
-    recallFromDtConfigDescriptor(firstGregorianDay);
-    recallFromDtConfigDescriptor(roundingMode);
-    recallFromDtConfigDescriptor(systemFlags);
-    synchronizeLetteredFlags();
-  }
-
-  else {
-    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "data type %s cannot be used to recall a configuration!", getRegisterDataTypeName(regist, false, false));
-      moreInfoOnError("In function fnRecallConfig:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-}
-
-
-
-/********************************************//**
- * \brief Recalls a stack
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnRecallStack(uint16_t regist) {
-  uint16_t size = getSystemFlag(FLAG_SSIZE8) ? 8 : 4;
-
-  if(regist + size >= REGISTER_X) {
-    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "Cannot execute RCLS, destination register is out of range: %d", regist);
-      moreInfoOnError("In function fnRecallStack:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-  else {
-    int i;
-
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
-
-    for(i=0; i<size; i++) {
-      copySourceRegisterToDestRegister(regist + i, REGISTER_X + i);
-    }
-
-    for(i=0; i<4; i++) {
-      adjustResult(REGISTER_X + i, false, true, REGISTER_X + i, -1, -1);
-    }
-  }
-}
-
-
-
-/********************************************//**
- * \brief Recalls the matrix element I,J in X
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnRecallElement(uint16_t unusedButMandatoryParameter) {
-  #ifdef PC_BUILD
-    printf("fnRecallElement\n");
-  #endif // PC_BUILD
-
-  displayCalcErrorMessage(ERROR_ITEM_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
-  #ifdef PC_BUILD
-    moreInfoOnError("In function fnRecallElement:", "To be coded", NULL, NULL);
-  #endif // PC_BUILD
-}
-
-
-
-/********************************************//**
- * \brief Recalls the indexes I and J in X and Y
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
-void fnRecallIJ(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
-
-  copySourceRegisterToDestRegister(REGISTER_I, REGISTER_X);
-  copySourceRegisterToDestRegister(REGISTER_J, REGISTER_Y);
-
-  adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-  adjustResult(REGISTER_Y, false, true, REGISTER_Y, -1, -1);
-}
-
-
-
-/********************************************//**
  * \brief Tests if X is less than an other register
  *
  * \param[in] unusedButMandatoryParameter uint16_t
@@ -1688,7 +1089,7 @@ void fnXLessThan(uint16_t unusedButMandatoryParameter) {
 int16_t indirectAddressing(calcRegister_t regist, int16_t minValue, int16_t maxValue) {
   int16_t value;
 
-  if(regist >= FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
+  if(regist >= FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     #ifdef PC_BUILD
       sprintf(errorMessage, "local indirection register .%02d", regist - FIRST_LOCAL_REGISTER);
@@ -1975,18 +1376,18 @@ int16_t indirectAddressing(calcRegister_t regist, int16_t minValue, int16_t maxV
 
 
   void printRegisterDescriptorToConsole(calcRegister_t regist) {
-    registerDescriptor_t descriptor;
+    registerHeader_t registerHeader;
 
-    descriptor.descriptor = 0xFFFFFFFF;
+    registerHeader.descriptor = 0xFFFFFFFF;
 
     if(regist < FIRST_LOCAL_REGISTER) { // Global register
-      descriptor = reg[regist];
+      registerHeader = globalRegister[regist];
     }
     else if(regist < FIRST_NAMED_VARIABLE) { // Local register
-      if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
+      if(currentSubroutineLevelData[1].numberOfLocalRegisters > 0) {
         regist -= FIRST_LOCAL_REGISTER;
-        if(regist < allLocalRegisterPointer->numberOfLocalRegisters) {
-          descriptor = *POINTER_TO_LOCAL_REGISTER(regist);
+        if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+          registerHeader = *POINTER_TO_LOCAL_REGISTER(regist);
         }
       }
     }
@@ -1994,24 +1395,22 @@ int16_t indirectAddressing(calcRegister_t regist, int16_t minValue, int16_t maxV
       if(allNamedVariablePointer->numberOfNamedVariables > 0) {
         regist -= FIRST_NAMED_VARIABLE;
         if(regist < allNamedVariablePointer->numberOfNamedVariables) {
-          descriptor = *POINTER_TO_NAMED_VARIABLE(regist);
+          registerHeader = *POINTER_TO_NAMED_VARIABLE(regist);
         }
       }
     }
-    else if(regist < FIRST_SAVED_STACK_REGISTER + 10) { // Saved stack register
-      if(regist <= LAST_SAVED_REGISTER) {
-        descriptor = savedStackRegister[regist - SAVED_REGISTER_X];
-      }
+    else if(regist <= LAST_SAVED_STACK_REGISTER + 1) { // Saved stack register or temporary register
+      registerHeader = savedStackRegister[regist - SAVED_REGISTER_X];
     }
 
     printf("Header informations of register %d\n", regist);
-    printf("    reg ptr   = %u\n", descriptor.dataPointer);
-    printf("    data type = %u = %s\n", descriptor.dataType, getDataTypeName(descriptor.dataType, false, false));
-    if(descriptor.dataType == dtLongInteger || descriptor.dataType == dtString) {
-      printf("    data ptr  = %u\n", descriptor.dataPointer + 1);
-      printf("    data size = %" PRIu32 "\n", *(uint32_t *)TO_PCMEMPTR(reg[regist].dataPointer));
+    printf("    reg ptr   = %u\n", registerHeader.pointerToRegisterData);
+    printf("    data type = %u = %s\n", registerHeader.dataType, getDataTypeName(registerHeader.dataType, false, false));
+    if(registerHeader.dataType == dtLongInteger || registerHeader.dataType == dtString) {
+      printf("    data ptr  = %u\n", registerHeader.pointerToRegisterData + 1);
+      printf("    data size = %" PRIu32 "\n", *(uint32_t *)TO_PCMEMPTR(globalRegister[regist].pointerToRegisterData));
     }
-    printf("    tag       = %u\n", descriptor.tag);
+    printf("    tag       = %u\n", registerHeader.tag);
   }
 
 
@@ -2103,318 +1502,5 @@ void fnToReal(uint16_t unusedButMandatoryParameter) {
         moreInfoOnError("In function fnToReal:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
-  }
-}
-
-//=============================================================================
-// Inc and Dec functions
-//-----------------------------------------------------------------------------
-
-static void incError(uint16_t regist, uint8_t flag) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, regist);
-
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-    sprintf(errorMessage, "Cannot increment/decrement, incompatible type.");
-    moreInfoOnError("In function inc/dec:", errorMessage, NULL, NULL);
-  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-}
-
-static void incLonI(uint16_t regist, uint8_t flag) {
-  longInteger_t r;
-
-  convertLongIntegerRegisterToLongInteger(regist, r);
-
-  (flag==INC_FLAG) ? longIntegerAddUInt(r, 1, r) : longIntegerSubtractUInt(r, 1, r);
-
-  convertLongIntegerToLongIntegerRegister(r, regist);
-
-  longIntegerFree(r);
-}
-
-static void incReal(uint16_t regist, uint8_t flag) {
-  real_t r;
-
-  real34ToReal(REGISTER_REAL34_DATA(regist), &r);
-  (flag==INC_FLAG) ? realAdd(&r, const_1, &r, &ctxtReal39) : realSubtract(&r, const_1, &r, &ctxtReal39);
-
-  realToReal34(&r, REGISTER_REAL34_DATA(regist));
-}
-
-static void incCplx(uint16_t regist, uint8_t flag) {
-  real_t r_real;
-
-  real34ToReal(REGISTER_REAL34_DATA(regist), &r_real);
-
-  (flag==INC_FLAG) ? realAdd(&r_real, const_1, &r_real, &ctxtReal39) : realSubtract(&r_real, const_1, &r_real, &ctxtReal39);
-
-  realToReal34(&r_real, REGISTER_REAL34_DATA(regist));
-}
-
-static void incShoI(uint16_t regist, uint8_t flag) {
-  int16_t r_sign;
-  uint64_t r_value;
-
-  convertShortIntegerRegisterToUInt64(regist, &r_sign, &r_value);
-
-  if(r_sign)  // regiter regist negative
-    (flag!=INC_FLAG) ? r_value++ : r_value--;
-  else        // register regist positive
-    (flag==INC_FLAG) ? r_value++ : r_value--;
-
-  convertUInt64ToShortIntegerRegister(r_sign, r_value, getRegisterTag(regist), regist);
-}
-
-static void (* const increment[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(uint16_t, uint8_t) = {
-// reg ==>   1            2        3         4         5         6         7          8            9              10
-//           Long integer Real34   Complex34 Time      Date      String    Real34 mat Complex34 m  Short integer  Config data
-             incLonI,     incReal, incCplx,  incError, incError, incError, incError,  incError,    incShoI,       incError
-};
-
-
-
-/********************************************//**
- * \brief Decrement a register
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
-void fnDec(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    increment[getRegisterDataType(regist)](regist, DEC_FLAG);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnDec:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-/********************************************//**
- * \brief Increment a register
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
-void fnInc(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
-    increment[getRegisterDataType(regist)](regist, INC_FLAG);
-  }
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnInc:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
-}
-
-//=============================================================================
-// Register Min/Max functions
-//-----------------------------------------------------------------------------
-
-static void registerCmpLonILonI(calcRegister_t regist1, calcRegister_t regist2, int8_t *result) {
-  // regist1 = Long Integer, regist2 = Long Integer
-
-  longInteger_t r1, r2;
-
-  convertLongIntegerRegisterToLongInteger(regist1, r1);
-  convertLongIntegerRegisterToLongInteger(regist2, r2);
-
-  int8_t value = longIntegerCompare(r1, r2);
-
-  longIntegerFree(r1);
-  longIntegerFree(r2);
-
-  *result = value;
-}
-
-static void registerCmpLonIShoI(calcRegister_t regist1, calcRegister_t regist2, int8_t *result) {
-  // regist1 = Long Integer, regist2 = Short Integer
-
-  longInteger_t r1, r2;
-
-  convertLongIntegerRegisterToLongInteger(regist1, r1);
-  convertShortIntegerRegisterToLongInteger(regist2, r2);
-
-  int8_t value = longIntegerCompare(r1, r2);
-
-  longIntegerFree(r1);
-  longIntegerFree(r2);
-
-  *result = value;
-}
-
-static void registerCmpLonIReal(calcRegister_t regist1, calcRegister_t regist2, int8_t *result) {
-  // regist1 = Long Integer, regist2 = Real
-
-  real_t r1, r2;
-
-  convertLongIntegerRegisterToReal(regist1, &r1, &ctxtReal39);
-  real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &r2);
-
-  if(realCompareEqual(&r1, &r2))
-    *result = 0;
-  else
-    *result = realCompareGreaterThan(&r1, &r2) ? 1 : -1;
-}
-
-static void registerCmpTimeTime(calcRegister_t regist1, calcRegister_t regist2, int8_t *result) {
-  fnToBeCoded();
-}
-
-static void registerCmpDateDate(calcRegister_t regist1, calcRegister_t regist2, int8_t *result) {
-  fnToBeCoded();
-}
-
-static void registerCmpStriStri(calcRegister_t regist1, calcRegister_t regist2, int8_t *result) {
- *result = compareString(REGISTER_STRING_DATA(regist1), REGISTER_STRING_DATA(regist2), CMP_EXTENSIVE);
-}
-
-static void registerCmpShoILonI(calcRegister_t regist1, calcRegister_t regist2, int8_t *result) {
-  // regist1 = Short Integer, regist2 = Long Integer
-
-  longInteger_t r1, r2;
-
-  convertShortIntegerRegisterToLongInteger(regist1, r1);
-  convertLongIntegerRegisterToLongInteger(regist2, r2);
-
-  int8_t value = longIntegerCompare(r1, r2);
-
-  longIntegerFree(r1);
-  longIntegerFree(r2);
-
-  *result = value;
-}
-
-static void registerCmpShoIShoI(calcRegister_t regist1, calcRegister_t regist2, int8_t *result) {
-  // regist1 = Short Integer, regist2 = Short Integer
-
-  longInteger_t r1, r2;
-
-  convertShortIntegerRegisterToLongInteger(regist1, r1);
-  convertShortIntegerRegisterToLongInteger(regist2, r2);
-
-  int8_t value = longIntegerCompare(r1, r2);
-
-  longIntegerFree(r1);
-  longIntegerFree(r2);
-
-  *result = value;
-}
-
-static void registerCmpShoIReal(calcRegister_t regist1, calcRegister_t regist2, int8_t *result) {
-  // regist1 = Short Integer, regist2 = Real
-
-  real_t r1, r2;
-
-  convertShortIntegerRegisterToReal(regist1, &r1, &ctxtReal39);
-  real34ToReal(REGISTER_REAL34_DATA(regist2), &r2);
-
-  if(realCompareEqual(&r1, &r2))
-    *result = 0;
-  else
-    *result = realCompareGreaterThan(&r1, &r2) ? 1 : -1;
-}
-
-static void registerCmpRealLonI(calcRegister_t regist1, calcRegister_t regist2, int8_t *result) {
-  // regist1 = Real, regist2 = Long Integer
-
-  real_t r1, r2;
-
-  real34ToReal(REGISTER_REAL34_DATA(regist1), &r1);
-  convertLongIntegerRegisterToReal(regist2, &r2, &ctxtReal39);
-
-  if(realCompareEqual(&r1, &r2))
-    *result = 0;
-  else
-    *result = realCompareGreaterThan(&r1, &r2) ? 1 : -1;
-}
-
-static void registerCmpRealShoI(calcRegister_t regist1, calcRegister_t regist2, int8_t *result) {
-  // regist1 = Real, regist2 = Short Integer
-
-  real_t r1, r2;
-
-  real34ToReal(REGISTER_REAL34_DATA(regist1), &r1);
-  convertShortIntegerRegisterToReal(regist2, &r2, &ctxtReal39);
-
-  if(realCompareEqual(&r1, &r2))
-    *result = 0;
-  else
-    *result = realCompareGreaterThan(&r1, &r2) ? 1 : -1;
-}
-
-static void registerCmpRealReal(calcRegister_t regist1, calcRegister_t regist2, int8_t *result) {
-  // regist1 = Real, regist2 = Real
-
-  real_t r1, r2;
-
-  real34ToReal(REGISTER_REAL34_DATA(regist1), &r1);
-  real34ToReal(REGISTER_REAL34_DATA(regist2), &r2);
-
-  if(realCompareEqual(&r1, &r2))
-    *result = 0;
-  else
-    *result = realCompareGreaterThan(&r1, &r2) ? 1 : -1;
-}
-
-static void (* const cmpFunc[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(calcRegister_t reg1, calcRegister_t reg2, int8_t*) = {
-// reg1 |    reg2 ==>    1                    2                    3          4                    5                    6                    7              8               9                    10
-//      V                Long integer         Real34               Complex34  Time                 Date                 String               Real34 mat     Complex34 mat   Short integer        Config data
-/*  1 Long integer  */ { registerCmpLonILonI, registerCmpLonIReal, NULL,      NULL,                NULL,                NULL,                NULL,          NULL,           registerCmpLonIShoI, NULL},
-/*  2 Real34        */ { registerCmpRealLonI, registerCmpRealReal, NULL,      NULL,                NULL,                NULL,                NULL,          NULL,           registerCmpRealShoI, NULL},
-/*  3 Complex34     */ { NULL,                NULL,                NULL,      NULL,                NULL,                NULL,                NULL,          NULL,           NULL,                NULL},
-/*  4 Time          */ { NULL,                NULL,                NULL,      registerCmpTimeTime, NULL,                NULL,                NULL,          NULL,           NULL,                NULL},
-/*  5 Date          */ { NULL,                NULL,                NULL,      NULL,                registerCmpDateDate, NULL,                NULL,          NULL,           NULL,                NULL},
-/*  6 String        */ { NULL,                NULL,                NULL,      NULL,                NULL,                registerCmpStriStri, NULL,          NULL,           NULL,                NULL},
-/*  7 Real34 mat    */ { NULL,                NULL,                NULL,      NULL,                NULL,                NULL,                NULL,          NULL,           NULL,                NULL},
-/*  8 Complex34 mat */ { NULL,                NULL,                NULL,      NULL,                NULL,                NULL,                NULL,          NULL,           NULL,                NULL},
-/*  9 Short integer */ { registerCmpShoILonI, registerCmpShoIReal, NULL,      NULL,                NULL,                NULL,                NULL,          NULL,           registerCmpShoIShoI, NULL},
-/* 10 Config data   */ { NULL,                NULL,                NULL,      NULL,                NULL,                NULL,                NULL,          NULL,           NULL,                NULL}
-};
-
-void registerCmpError(calcRegister_t regist1, calcRegister_t regist2) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-    sprintf(errorMessage, "cannot get compare: %s", getRegisterDataTypeName(regist1, true, false));
-    sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "and %s", getRegisterDataTypeName(regist2, true, false));
-    moreInfoOnError("In function registerCmp:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
-  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-}
-
-bool_t registerCmp(calcRegister_t reg1, calcRegister_t reg2, int8_t *result) {
-  void (*func)(calcRegister_t, calcRegister_t, int8_t*) = cmpFunc[getRegisterDataType(reg1)][getRegisterDataType(reg2)];
-
-  if(func == NULL)
-    return false;
-
-  func(reg1, reg2, result);
-
-  return true;
-}
-
-void registerMax(calcRegister_t reg1, calcRegister_t reg2, calcRegister_t dest) {
-  int8_t result = 0;
-
-  if(!registerCmp(reg1, reg2, &result))
-    registerCmpError(reg1, reg2);
-  else if(result != 0) {
-    copySourceRegisterToDestRegister(result>0 ? reg1 : reg2, dest);
-    if(getRegisterDataType(dest) == dtShortInteger) {
-      *(REGISTER_SHORT_INTEGER_DATA(dest)) &= shortIntegerMask;
-    }
-  }
-}
-
-void registerMin(calcRegister_t reg1, calcRegister_t reg2, calcRegister_t dest) {
-  int8_t result = 0;
-
-  if(!registerCmp(reg1, reg2, &result))
-    registerCmpError(reg1, reg2);
-  else if(result != 0) {
-    copySourceRegisterToDestRegister(result>0 ? reg2 : reg1, dest);
-    if(getRegisterDataType(dest) == dtShortInteger) {
-      *(REGISTER_SHORT_INTEGER_DATA(dest)) &= shortIntegerMask;
-    }
   }
 }

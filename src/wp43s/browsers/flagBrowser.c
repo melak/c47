@@ -113,13 +113,21 @@
         }
       }
 
-      if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
-        // Local registers
-        if(allLocalRegisterPointer->numberOfLocalRegisters == 1) {
-          strcpy(tmpString + CHARS_PER_LINE * ++line, "1 local register is allocated.");
+      if(currentLocalFlags == NULL) {
+        sprintf(tmpString + CHARS_PER_LINE * ++line, "No local flags and registers are allocated.");
+      }
+      else {
+        if(currentLocalRegisters == NULL) {
+          sprintf(tmpString + CHARS_PER_LINE * ++line, "No local registers are allocated.");
         }
         else {
-          sprintf(tmpString + CHARS_PER_LINE * ++line, "%" PRIu16 " local registers are allocated.", allLocalRegisterPointer->numberOfLocalRegisters);
+          // Local registers
+          if(currentSubroutineLevelData[1].numberOfLocalRegisters == 1) {
+            strcpy(tmpString + CHARS_PER_LINE * ++line, "1 local register is allocated.");
+          }
+          else {
+            sprintf(tmpString + CHARS_PER_LINE * ++line, "%" PRIu16 " local registers are allocated.", currentSubroutineLevelData[1].numberOfLocalRegisters);
+          }
         }
 
         // Local flags
@@ -151,9 +159,6 @@
             }
           }
         }
-      }
-      else {
-        sprintf(tmpString + CHARS_PER_LINE * ++line, "No local registers are allocated.");
       }
 
       // Empty line

@@ -26,109 +26,112 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
 
   switch(paramMode) {
     case PARAM_DECLARE_LABEL:
-         if(opParam <= 109) { // Local labels from 00 to 99 and from A to J
-           return step;
-         }
-         else if(opParam == STRING_LABEL_VARIABLE) {
-           return step + *step + 1;
-         }
-         else {
-           #ifndef DMCP_BUILD
-             printf("\nIn function countOpBytes case PARAM_DECLARE_LABEL: opParam %u is not a valid label!\n", opParam);
-           #endif // !DMCP_BUILD
-           return NULL;
-         }
+      if(opParam <= 109) { // Local labels from 00 to 99 and from A to J
+        return step;
+      }
+      else if(opParam == STRING_LABEL_VARIABLE) {
+        return step + *step + 1;
+      }
+      else {
+        #ifndef DMCP_BUILD
+          printf("\nIn function countOpBytes case PARAM_DECLARE_LABEL: opParam %u is not a valid label!\n", opParam);
+        #endif // !DMCP_BUILD
+        return NULL;
+      }
 
     case PARAM_LABEL:
-         if(opParam <= 109) { // Local labels from 00 to 99 and from A to J
-           return step;
-         }
-         else if(opParam == STRING_LABEL_VARIABLE || opParam == INDIRECT_VARIABLE) {
-           return step + *step + 1;
-         }
-         else if(opParam == INDIRECT_REGISTER) {
-           return step + 1;
-         }
-         else {
-           #ifndef DMCP_BUILD
-             printf("\nIn function countOpBytes: case PARAM_LABEL, %u is not a valid parameter!", opParam);
-           #endif // !DMCP_BUILD
-           return NULL;
-         }
+      if(opParam <= 109) { // Local labels from 00 to 99 and from A to J
+        return step;
+      }
+      else if(opParam == STRING_LABEL_VARIABLE || opParam == INDIRECT_VARIABLE) {
+        return step + *step + 1;
+      }
+      else if(opParam == INDIRECT_REGISTER) {
+        return step + 1;
+      }
+      else {
+        #ifndef DMCP_BUILD
+          printf("\nIn function countOpBytes: case PARAM_LABEL, %u is not a valid parameter!", opParam);
+        #endif // !DMCP_BUILD
+        return NULL;
+      }
 
     case PARAM_REGISTER:
-         if(opParam <= LAST_LOCAL_REGISTER) { // Global registers from 00 to 99, lettered registers from X to K, and local registers from .00 to .98
-           return step;
-         }
-         else if(opParam == STRING_LABEL_VARIABLE || opParam == INDIRECT_VARIABLE) {
-           return step + *step + 1;
-         }
-         else if(opParam == INDIRECT_REGISTER) {
-           return step + 1;
-         }
-         else {
-           #ifndef DMCP_BUILD
-             printf("\nIn function countOpBytes: case PARAM_REGISTER, %u is not a valid parameter!", opParam);
-           #endif // !DMCP_BUILD
-           return NULL;
-         }
+      if(opParam <= LAST_LOCAL_REGISTER) { // Global registers from 00 to 99, lettered registers from X to K, and local registers from .00 to .98
+        return step;
+      }
+      else if(opParam == STRING_LABEL_VARIABLE || opParam == INDIRECT_VARIABLE) {
+        return step + *step + 1;
+      }
+      else if(opParam == INDIRECT_REGISTER) {
+        return step + 1;
+      }
+      else {
+        #ifndef DMCP_BUILD
+          printf("\nIn function countOpBytes: case PARAM_REGISTER, %u is not a valid parameter!", opParam);
+        #endif // !DMCP_BUILD
+        return NULL;
+      }
 
     case PARAM_FLAG:
-         if(opParam <= LAST_LOCAL_FLAG) { // Global flags from 00 to 99, lettered flags from X to K, and local flags from .00 to .15 (or .31)
-           return step;
-         }
-         else if(opParam == INDIRECT_REGISTER) {
-           return step + 1;
-         }
-         else if(opParam == INDIRECT_VARIABLE) {
-           return step + *step + 1;
-         }
-         else {
-           #ifndef DMCP_BUILD
-             printf("\nIn function countOpBytes: case PARAM_FLAG, %u is not a valid parameter!", opParam);
-           #endif // !DMCP_BUILD
-           return NULL;
-         }
+      if(opParam <= LAST_LOCAL_FLAG) { // Global flags from 00 to 99, lettered flags from X to K, and local flags from .00 to .15 (or .31)
+        return step;
+      }
+      else if(opParam == INDIRECT_REGISTER) {
+        return step + 1;
+      }
+      else if(opParam == INDIRECT_VARIABLE) {
+        return step + *step + 1;
+      }
+      else {
+        #ifndef DMCP_BUILD
+          printf("\nIn function countOpBytes: case PARAM_FLAG, %u is not a valid parameter!", opParam);
+        #endif // !DMCP_BUILD
+        return NULL;
+      }
 
-    case PARAM_NUMBER:
-         if(opParam <= 99) { // Value from 0 to 99
-           return step;
-         }
-         else if(opParam == INDIRECT_REGISTER) {
-           return step + 1;
-         }
-         else if(opParam == INDIRECT_VARIABLE) {
-           return step + *step + 1;
-         }
-         else {
-           #ifndef DMCP_BUILD
-             printf("\nIn function countOpBytes: case PARAM_NUMBER, %u is not a valid parameter!", opParam);
-           #endif // !DMCP_BUILD
-           return NULL;
-         }
+    case PARAM_NUMBER_8:
+      if(opParam <= 99) { // Value from 0 to 99
+        return step;
+      }
+      else if(opParam == INDIRECT_REGISTER) {
+        return step + 1;
+      }
+      else if(opParam == INDIRECT_VARIABLE) {
+        return step + *step + 1;
+      }
+      else {
+        #ifndef DMCP_BUILD
+          printf("\nIn function countOpBytes: case PARAM_NUMBER, %u is not a valid parameter!", opParam);
+        #endif // !DMCP_BUILD
+        return NULL;
+      }
+
+    case PARAM_NUMBER_16:
+      return step + 1;
 
     case PARAM_COMPARE:
-         if(opParam <= LAST_LOCAL_REGISTER || opParam == VALUE_0 || opParam == VALUE_1) { // Global registers from 00 to 99, lettered registers from X to K, and local registers from .00 to .98 OR value 0 OR value 1
-           return step;
-         }
-         else if(opParam == STRING_LABEL_VARIABLE || opParam == INDIRECT_VARIABLE) {
-           return step + *step + 1;
-         }
-         else if(opParam == INDIRECT_REGISTER) {
-           return step + 1;
-         }
-         else {
-           #ifndef DMCP_BUILD
-             printf("\nIn function countOpBytes: case PARAM_COMPARE, %u is not a valid parameter!", opParam);
-           #endif // !DMCP_BUILD
-           return NULL;
-         }
+      if(opParam <= LAST_LOCAL_REGISTER || opParam == VALUE_0 || opParam == VALUE_1) { // Global registers from 00 to 99, lettered registers from X to K, and local registers from .00 to .98 OR value 0 OR value 1
+        return step;
+      }
+      else if(opParam == STRING_LABEL_VARIABLE || opParam == INDIRECT_VARIABLE) {
+        return step + *step + 1;
+      }
+      else if(opParam == INDIRECT_REGISTER) {
+        return step + 1;
+      }
+      else {
+        #ifndef DMCP_BUILD
+          printf("\nIn function countOpBytes: case PARAM_COMPARE, %u is not a valid parameter!", opParam);
+        #endif // !DMCP_BUILD
+        return NULL;
+      }
 
     default:
-         #ifndef DMCP_BUILD
-           printf("\nIn function countOpBytes: paramMode %u is not valid!\n", paramMode);
-         #endif // !DMCP_BUILD
-         return NULL;
+      #ifndef DMCP_BUILD
+        printf("\nIn function countOpBytes: paramMode %u is not valid!\n", paramMode);
+      #endif // !DMCP_BUILD
+      return NULL;
   }
 }
 
@@ -186,7 +189,7 @@ uint8_t *findNextStep(uint8_t *step) {
       return countOpBytes(step, PARAM_LABEL);
 
     case ITM_PAUSE:       //  38
-      return countOpBytes(step, PARAM_NUMBER);
+      return countOpBytes(step, PARAM_NUMBER_8);
 
     case ITM_ISE:         //   5
     case ITM_ISG:         //   6
@@ -343,12 +346,16 @@ uint8_t *findNextStep(uint8_t *step) {
         case ITM_MASKR:       //   410
         case ITM_SDL:         //   413
         case ITM_SDR:         //   414
+        case ITM_AGRAPH:      //  1399
         case ITM_ALL:         //  1400
         case ITM_ENG:         //  1450
         case ITM_FIX:         //  1463
         case ITM_LocR:        //  1504
         case ITM_SCI:         //  1577
-          return countOpBytes(step, PARAM_NUMBER);
+          return countOpBytes(step, PARAM_NUMBER_8);
+
+        case ITM_BESTF:       //  1287
+          return countOpBytes(step, PARAM_NUMBER_16);
 
         case ITM_STOMAX:      //  1420
         case ITM_RCLMAX:      //  1422
@@ -635,6 +642,77 @@ uint8_t *findNextStep(uint8_t *step) {
         case ITM_SIGMA1ony2:  //   445
         case ITM_SIGMAx3:     //   446
         case ITM_SIGMAx4:     //   447
+        case ITM_BINOMP:      //  1198
+        case ITM_BINOM:       //  1199
+        case ITM_BINOMU:      //  1200
+        case ITM_BINOMM1:     //  1201
+        case ITM_CAUCHP:      //  1203
+        case ITM_CAUCH:       //  1204
+        case ITM_CAUCHU:      //  1205
+        case ITM_CAUCHM1:     //  1206
+        case ITM_EXPONP:      //  1208
+        case ITM_EXPON:       //  1209
+        case ITM_EXPONU:      //  1210
+        case ITM_EXPONM1:     //  1211
+        case ITM_FPX:         //  1213
+        case ITM_FX:          //  1214
+        case ITM_FUX:         //  1215
+        case ITM_FM1P:        //  1216
+        case ITM_GEOMP:       //  1218
+        case ITM_GEOM:        //  1219
+        case ITM_GEOMU:       //  1220
+        case ITM_GEOMM1:      //  1221
+        case ITM_HYPERP:      //  1223
+        case ITM_HYPER:       //  1224
+        case ITM_HYPERU:      //  1225
+        case ITM_HYPERM1:     //  1226
+        case ITM_LGNRMP:      //  1228
+        case ITM_LGNRM:       //  1229
+        case ITM_LGNRMU:      //  1230
+        case ITM_LGNRMM1:     //  1231
+        case ITM_LOGISP:      //  1233
+        case ITM_LOGIS:       //  1234
+        case ITM_LOGISU:      //  1235
+        case ITM_LOGISM1:     //  1236
+        case ITM_NBINP:       //  1238
+        case ITM_NBIN:        //  1239
+        case ITM_NBINU:       //  1240
+        case ITM_NBINM1:      //  1241
+        case ITM_NORMLP:      //  1243
+        case ITM_NORML:       //  1244
+        case ITM_NORMLU:      //  1245
+        case ITM_NORMLM1:     //  1246
+        case ITM_POISSP:      //  1248
+        case ITM_POISS:       //  1249
+        case ITM_POISSU:      //  1250
+        case ITM_POISSM1:     //  1251
+        case ITM_TPX:         //  1253
+        case ITM_TX:          //  1254
+        case ITM_TUX:         //  1255
+        case ITM_TM1P:        //  1256
+        case ITM_WEIBLP:      //  1258
+        case ITM_WEIBL:       //  1259
+        case ITM_WEIBLU:      //  1260
+        case ITM_WEIBLM1:     //  1261
+        case ITM_chi2Px:      //  1263
+        case ITM_chi2x:       //  1264
+        case ITM_chi2ux:      //  1265
+        case ITM_chi2M1:      //  1266
+        case ITM_EXPF:        //  1288
+        case ITM_LINF:        //  1289
+        case ITM_LOGF:        //  1290
+        case ITM_ORTHOF:      //  1291
+        case ITM_POWERF:      //  1292
+        case ITM_GAUSSF:      //  1293
+        case ITM_CAUCHF:      //  1294
+        case ITM_PARABF:      //  1295
+        case ITM_HYPF:        //  1296
+        case ITM_ROOTF:       //  1297
+        case ITM_1COMPL:      //  1394
+        case ITM_SNAP:        //  1395
+        case ITM_2COMPL:      //  1396
+        case ITM_ABS:         //  1397
+        case ITM_AGM:         //  1398
 
         case ITM_CLREGS:      //  1417
         case ITM_CLSTK:       //  1418

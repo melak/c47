@@ -130,18 +130,18 @@ typedef struct {
 
 
 /********************************************//**
- * \typedef registerDescriptor_t
+ * \typedef registerHeader_t
  * \brief 32 bits describing the register
  ***********************************************/
 typedef union {
   uint32_t descriptor;
   struct {
-    uint32_t dataPointer     : 16; ///< Memory block number
-    uint32_t dataType        :  4; ///< dtLongInteger, dtReal16, ...
-    uint32_t tag             :  5; ///< Short integer base or angular mode
-    uint32_t notUsed         :  7; ///< 7 free bits
+    uint32_t pointerToRegisterData : 16; ///< Memory block number
+    uint32_t dataType              :  4; ///< dtLongInteger, dtReal16, ...
+    uint32_t tag                   :  5; ///< Short integer base, real34 angular mode, or long integer sign
+    uint32_t notUsed               :  7; ///< 7 bits free
   };
-} registerDescriptor_t;
+} registerHeader_t;
 
 
 // Header for datatype string, long integer, and matrix
@@ -151,21 +151,34 @@ typedef union {
  ***********************************************/
 typedef union {
   uint32_t data;
+  uint32_t localFlags;
   struct {
-    uint16_t dataMaxLength;          ///< String max length (includind terminating \0) in blocks or Long integer max length in blocks
-    uint16_t numberOfNamedVariables; ///< Number of existing named variables
+    uint16_t dataMaxLength;               ///< String max length (includind terminating \0) in blocks or Long integer max length in blocks
+    uint16_t numberOfNamedVariables;      ///< Number of existing named variables
   };
   struct {
-    uint16_t variableNameLen;        ///< Size of the name in blocs: 1 to 4, up to 15 bytes = 7 double byte glyphs + trailing 0
-    uint16_t ptrToVariableName;      ///< Pointer to the name of the variable
+    uint16_t variableNameLen;             ///< Size of the name in blocs: 1 to 4, up to 15 bytes = 7 double byte glyphs + trailing 0
+    uint16_t ptrToVariableName;           ///< Pointer to the name of the variable
   };
   struct {
-    uint16_t localFlags;             ///< 16 local flags
-    uint16_t numberOfLocalRegisters; ///< Number of declared local registers
+    uint16_t matrixLines;                 ///< Number of lines in the matrix
+    uint16_t matrixColumns;               ///< Number of columns in the matrix
   };
   struct {
-    uint16_t matrixLines;            ///< Number of lines in the matrix
-    uint16_t matrixColumns;          ///< Number of columns in the matrix
+    uint16_t numberOfSubroutineLevels;    ///< Number of subroutine levels
+    uint16_t ptrToSubroutineLevel0Data;   ///< Number of subroutine levels
+  };
+  struct {
+    int16_t  returnProgramNumber;         ///< return program number >0 if in RAM and <0 if in FLASH
+    uint16_t returnLocalStep;             ///< Return local step number in program number
+  };
+  struct {
+    uint16_t numberOfLocalRegisters;      ///< Number of allocated local registers
+    uint16_t level;                       ///< Subroutine level
+  };
+  struct {
+    uint16_t ptrToNextLevel;              ///< Pointer to next level of subroutine data
+    uint16_t ptrToPreviousLevel;          ///< Pointer to previous level of subroutine data
   };
 } dataBlock_t;
 

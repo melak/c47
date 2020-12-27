@@ -119,8 +119,8 @@
 
 #define NUMBER_OF_GLOBAL_FLAGS                   112
 #define FIRST_LOCAL_FLAG                         112 // There are 112 global flag from 0 to 111
-#define NUMBER_OF_LOCAL_FLAGS                     16 // Could be  32 because 32 bits are available
-#define LAST_LOCAL_FLAG                          128 // Could be 144 because 32 bits are available
+#define NUMBER_OF_LOCAL_FLAGS                     32
+#define LAST_LOCAL_FLAG                          143
 
 // Global flags
 #define FLAG_X                                   100
@@ -244,6 +244,8 @@
 #define REGISTER_I                               109
 #define REGISTER_J                               110
 #define REGISTER_K                               111
+#define LAST_GLOBAL_REGISTER                     111
+#define NUMBER_OF_GLOBAL_REGISTERS               112 // There are 112 global registers from 0 to 111
 #define FIRST_LOCAL_REGISTER                     112 // There are 112 global registers from 0 to 111
 #define LAST_LOCAL_REGISTER                      210 // There are maximum 99 local registers from 112 to 210 (.00 to .98)
 #define FIRST_NAMED_VARIABLE                    1000
@@ -257,7 +259,8 @@
 #define SAVED_REGISTER_C                        2006
 #define SAVED_REGISTER_D                        2007
 #define SAVED_REGISTER_L                        2008
-#define LAST_SAVED_REGISTER                     2009
+#define LAST_SAVED_STACK_REGISTER               2008
+#define NUMBER_OF_SAVED_STACK_REGISTERS            9 // 2000 to 2008
 #define TEMP_REGISTER                           2009
 
 
@@ -546,7 +549,6 @@
 
 #define SCREEN_REFRESH_PERIOD                    500 // in milliseconds
 #define RAM_SIZE                               16384 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
-#define WP43S_NULL                             65535 // NULL pointer
 
 #define CONFIG_SIZE            TO_BLOCKS(sizeof(dtConfigDescriptor_t))
 
@@ -576,8 +578,9 @@
 #define PARAM_LABEL                                2
 #define PARAM_REGISTER                             3
 #define PARAM_FLAG                                 4
-#define PARAM_NUMBER                               5
-#define PARAM_COMPARE                              6
+#define PARAM_NUMBER_8                             5
+#define PARAM_NUMBER_16                            6
+#define PARAM_COMPARE                              7
 
 
 #ifndef DMCP_BUILD
@@ -608,6 +611,7 @@
 #define getRecalledSystemFlag(sf)            ((configToRecall->systemFlags &   ((uint64_t)1 << (sf & 0x3fff))) != 0)
 #define TO_BLOCKS(n)                         (((n) + 3) >> 2)
 #define TO_BYTES(n)                          ((n) << 2)
+#define WP43S_NULL                           65535 // NULL pointer
 #define TO_PCMEMPTR(p)                       ((void *)((p) == WP43S_NULL ? NULL : ram + (p)))
 #define TO_WP43SMEMPTR(p)                    ((p) == NULL ? WP43S_NULL : (uint16_t)((dataBlock_t *)(p) - ram))
 #define min(a,b)                             ((a)<(b)?(a):(b))
@@ -632,15 +636,15 @@
 //* Macros for debugging *
 //************************
 #define TEST_REG(r, comment) { \
-                               if(reg[r].dataPointer >= 500) { \
+                               if(globalRegister[r].dataPointer >= 500) { \
                                  uint32_t a, b; \
                                  a = 1; \
                                  b = 0; \
-                                 printf("\n=====> BAD  REGISTER %d DATA POINTER: %u <===== %s\n", r, reg[r].dataPointer, comment); \
-                                 reg[r].dataType = a/b; \
+                                 printf("\n=====> BAD  REGISTER %d DATA POINTER: %u <===== %s\n", r, globalRegister[r].dataPointer, comment); \
+                                 globalRegister[r].dataType = a/b; \
                                } \
                                else { \
-                                 printf("\n=====> good register %d data pointer: %u <===== %s\n", r, reg[r].dataPointer, comment); \
+                                 printf("\n=====> good register %d data pointer: %u <===== %s\n", r, globalRegister[r].dataPointer, comment); \
                                } \
                              }
 

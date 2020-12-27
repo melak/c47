@@ -400,7 +400,7 @@
   #endif // DMCP_BUILD
 
 
-  static void exitPEM(void) {
+  void leavePem(void) {
     if(freeProgramBytes >= 4) { // Push the programs to the end of RAM
       uint32_t newProgramSize = (uint32_t)((uint8_t *)(ram + RAM_SIZE) - beginOfProgramMemory) - (freeProgramBytes & 0xfffc);
       currentStep        += (freeProgramBytes & 0xfffc);
@@ -526,7 +526,7 @@
               if(item == ITM_PERIOD) {
                 rbr1stDigit = true;
                 if(rbrMode == RBR_GLOBAL) {
-                  if(allLocalRegisterPointer->numberOfLocalRegisters > 0) {
+                  if(currentLocalRegisters != NULL) {
                     rbrMode = RBR_LOCAL;
                     currentRegisterBrowserScreen = FIRST_LOCAL_REGISTER;
                   }
@@ -577,7 +577,7 @@
                     currentRegisterBrowserScreen = rbrRegister;
                   }
                   else {
-                    rbrRegister = (rbrRegister >= allLocalRegisterPointer->numberOfLocalRegisters ? 0 : rbrRegister);
+                    rbrRegister = (rbrRegister >= currentSubroutineLevelData[1].numberOfLocalRegisters ? 0 : rbrRegister);
                     currentRegisterBrowserScreen = FIRST_LOCAL_REGISTER + rbrRegister;
                   }
                 }
@@ -610,7 +610,7 @@
 
             case CM_PEM:
               if(item == ITM_PR) {
-                exitPEM();
+                leavePem();
                 calcModeNormal();
                 keyActionProcessed = true;
               }
@@ -826,7 +826,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           break;
         }
 
-        exitPEM();
+        leavePem();
         calcModeNormal();
         break;
 
@@ -1039,7 +1039,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen + 1, FIRST_LOCAL_REGISTER);
         }
         else if(rbrMode == RBR_LOCAL) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER + 1, allLocalRegisterPointer->numberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER + 1, currentSubroutineLevelData[1].numberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
         }
         else if(rbrMode == RBR_NAMED) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_NAMED_VARIABLE + 1, allNamedVariablePointer->numberOfNamedVariables) + FIRST_NAMED_VARIABLE;
@@ -1119,7 +1119,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - 1, FIRST_LOCAL_REGISTER);
         }
         else if(rbrMode == RBR_LOCAL) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER - 1, allLocalRegisterPointer->numberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER - 1, currentSubroutineLevelData[1].numberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
         }
         else if(rbrMode == RBR_NAMED) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - 1000 - 1, allNamedVariablePointer->numberOfNamedVariables) + 1000;

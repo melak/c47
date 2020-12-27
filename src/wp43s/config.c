@@ -8064,6 +8064,270 @@ void addTestPrograms(void) {
     *(currentStep++) = 'a';
     *(currentStep++) = 'r';
 
+    *(currentStep++) = (ITM_BINOMP >> 8) | 0x80;
+    *(currentStep++) =  ITM_BINOMP       & 0xff;
+
+    *(currentStep++) = (ITM_BINOM >> 8) | 0x80;
+    *(currentStep++) =  ITM_BINOM       & 0xff;
+
+    *(currentStep++) = (ITM_BINOMU >> 8) | 0x80;
+    *(currentStep++) =  ITM_BINOMU       & 0xff;
+
+    *(currentStep++) = (ITM_BINOMM1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_BINOMM1       & 0xff;
+
+    *(currentStep++) = (ITM_CAUCHP >> 8) | 0x80;
+    *(currentStep++) =  ITM_CAUCHP       & 0xff;
+
+    *(currentStep++) = (ITM_CAUCH >> 8) | 0x80;
+    *(currentStep++) =  ITM_CAUCH       & 0xff;
+
+    *(currentStep++) = (ITM_CAUCHU >> 8) | 0x80;
+    *(currentStep++) =  ITM_CAUCHU       & 0xff;
+
+    *(currentStep++) = (ITM_CAUCHM1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_CAUCHM1       & 0xff;
+
+    *(currentStep++) = (ITM_EXPONP >> 8) | 0x80;
+    *(currentStep++) =  ITM_EXPONP       & 0xff;
+
+    *(currentStep++) = (ITM_EXPON >> 8) | 0x80;
+    *(currentStep++) =  ITM_EXPON       & 0xff;
+
+    *(currentStep++) = (ITM_EXPONU >> 8) | 0x80;
+    *(currentStep++) =  ITM_EXPONU       & 0xff;
+
+    *(currentStep++) = (ITM_EXPONM1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_EXPONM1       & 0xff;
+
+    *(currentStep++) = (ITM_FPX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FPX       & 0xff;
+
+    *(currentStep++) = (ITM_FX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FX       & 0xff;
+
+    *(currentStep++) = (ITM_FUX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FUX       & 0xff;
+
+    *(currentStep++) = (ITM_FM1P >> 8) | 0x80;
+    *(currentStep++) =  ITM_FM1P       & 0xff;
+
+    *(currentStep++) = (ITM_GEOMP >> 8) | 0x80;
+    *(currentStep++) =  ITM_GEOMP       & 0xff;
+
+    *(currentStep++) = (ITM_GEOM>> 8) | 0x80;
+    *(currentStep++) =  ITM_GEOM       & 0xff;
+
+    *(currentStep++) = (ITM_GEOMU >> 8) | 0x80;
+    *(currentStep++) =  ITM_GEOMU       & 0xff;
+
+    *(currentStep++) = (ITM_GEOMM1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_GEOMM1       & 0xff;
+
+    *(currentStep++) = (ITM_HYPERP >> 8) | 0x80;
+    *(currentStep++) =  ITM_HYPERP       & 0xff;
+
+    *(currentStep++) = (ITM_HYPER >> 8) | 0x80;
+    *(currentStep++) =  ITM_HYPER       & 0xff;
+
+    *(currentStep++) = (ITM_HYPERU >> 8) | 0x80;
+    *(currentStep++) =  ITM_HYPERU       & 0xff;
+
+    *(currentStep++) = (ITM_HYPERM1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_HYPERM1       & 0xff;
+
+    *(currentStep++) = (ITM_LGNRMP >> 8) | 0x80;
+    *(currentStep++) =  ITM_LGNRMP       & 0xff;
+
+    *(currentStep++) = (ITM_LGNRM>> 8) | 0x80;
+    *(currentStep++) =  ITM_LGNRM       & 0xff;
+
+    *(currentStep++) = (ITM_LGNRMU >> 8) | 0x80;
+    *(currentStep++) =  ITM_LGNRMU       & 0xff;
+
+    *(currentStep++) = (ITM_LGNRMM1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_LGNRMM1       & 0xff;
+
+    *(currentStep++) = (ITM_LOGISP >> 8) | 0x80;
+    *(currentStep++) =  ITM_LOGISP       & 0xff;
+
+    *(currentStep++) = (ITM_LOGIS>> 8) | 0x80;
+    *(currentStep++) =  ITM_LOGIS       & 0xff;
+
+    *(currentStep++) = (ITM_LOGISU >> 8) | 0x80;
+    *(currentStep++) =  ITM_LOGISU       & 0xff;
+
+    *(currentStep++) = (ITM_LOGISM1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_LOGISM1       & 0xff;
+
+    *(currentStep++) = (ITM_NBINP >> 8) | 0x80;
+    *(currentStep++) =  ITM_NBINP       & 0xff;
+
+    *(currentStep++) = (ITM_NBIN>> 8) | 0x80;
+    *(currentStep++) =  ITM_NBIN       & 0xff;
+
+    *(currentStep++) = (ITM_NBINU >> 8) | 0x80;
+    *(currentStep++) =  ITM_NBINU       & 0xff;
+
+    *(currentStep++) = (ITM_NBINM1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_NBINM1       & 0xff;
+
+    *(currentStep++) = (ITM_NORMLP >> 8) | 0x80;
+    *(currentStep++) =  ITM_NORMLP       & 0xff;
+
+    *(currentStep++) = (ITM_NORML>> 8) | 0x80;
+    *(currentStep++) =  ITM_NORML       & 0xff;
+
+    *(currentStep++) = (ITM_NORMLU >> 8) | 0x80;
+    *(currentStep++) =  ITM_NORMLU       & 0xff;
+
+    *(currentStep++) = (ITM_NORMLM1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_NORMLM1       & 0xff;
+
+    *(currentStep++) = (ITM_POISSP >> 8) | 0x80;
+    *(currentStep++) =  ITM_POISSP       & 0xff;
+
+    *(currentStep++) = (ITM_POISS>> 8) | 0x80;
+    *(currentStep++) =  ITM_POISS       & 0xff;
+
+    *(currentStep++) = (ITM_POISSU >> 8) | 0x80;
+    *(currentStep++) =  ITM_POISSU       & 0xff;
+
+    *(currentStep++) = (ITM_POISSM1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_POISSM1       & 0xff;
+
+    *(currentStep++) = (ITM_TPX >> 8) | 0x80;
+    *(currentStep++) =  ITM_TPX       & 0xff;
+
+    *(currentStep++) = (ITM_TX >> 8) | 0x80;
+    *(currentStep++) =  ITM_TX       & 0xff;
+
+    *(currentStep++) = (ITM_TUX >> 8) | 0x80;
+    *(currentStep++) =  ITM_TUX       & 0xff;
+
+    *(currentStep++) = (ITM_TM1P >> 8) | 0x80;
+    *(currentStep++) =  ITM_TM1P       & 0xff;
+
+    *(currentStep++) = (ITM_WEIBLP >> 8) | 0x80;
+    *(currentStep++) =  ITM_WEIBLP       & 0xff;
+
+    *(currentStep++) = (ITM_WEIBL>> 8) | 0x80;
+    *(currentStep++) =  ITM_WEIBL       & 0xff;
+
+    *(currentStep++) = (ITM_WEIBLU >> 8) | 0x80;
+    *(currentStep++) =  ITM_WEIBLU       & 0xff;
+
+    *(currentStep++) = (ITM_WEIBLM1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_WEIBLM1       & 0xff;
+
+    *(currentStep++) = (ITM_chi2Px >> 8) | 0x80;
+    *(currentStep++) =  ITM_chi2Px       & 0xff;
+
+    *(currentStep++) = (ITM_chi2x>> 8) | 0x80;
+    *(currentStep++) =  ITM_chi2x       & 0xff;
+
+    *(currentStep++) = (ITM_chi2ux >> 8) | 0x80;
+    *(currentStep++) =  ITM_chi2ux       & 0xff;
+
+    *(currentStep++) = (ITM_chi2M1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_chi2M1       & 0xff;
+
+    *(currentStep++) = (ITM_BESTF >> 8) | 0x80;
+    *(currentStep++) =  ITM_BESTF       & 0xff;
+    *(currentStep++) = 20;
+    *(currentStep++) = 01;
+
+    *(currentStep++) = (ITM_EXPF >> 8) | 0x80;
+    *(currentStep++) =  ITM_EXPF       & 0xff;
+
+    *(currentStep++) = (ITM_LINF >> 8) | 0x80;
+    *(currentStep++) =  ITM_LINF       & 0xff;
+
+    *(currentStep++) = (ITM_LOGF >> 8) | 0x80;
+    *(currentStep++) =  ITM_LOGF       & 0xff;
+
+    *(currentStep++) = (ITM_ORTHOF >> 8) | 0x80;
+    *(currentStep++) =  ITM_ORTHOF       & 0xff;
+
+    *(currentStep++) = (ITM_POWERF >> 8) | 0x80;
+    *(currentStep++) =  ITM_POWERF       & 0xff;
+
+    *(currentStep++) = (ITM_GAUSSF >> 8) | 0x80;
+    *(currentStep++) =  ITM_GAUSSF       & 0xff;
+
+    *(currentStep++) = (ITM_CAUCHF >> 8) | 0x80;
+    *(currentStep++) =  ITM_CAUCHF       & 0xff;
+
+    *(currentStep++) = (ITM_PARABF >> 8) | 0x80;
+    *(currentStep++) =  ITM_PARABF       & 0xff;
+
+    *(currentStep++) = (ITM_HYPF >> 8) | 0x80;
+    *(currentStep++) =  ITM_HYPF       & 0xff;
+
+    *(currentStep++) = (ITM_ROOTF >> 8) | 0x80;
+    *(currentStep++) =  ITM_ROOTF       & 0xff;
+
+    *(currentStep++) = (ITM_1COMPL >> 8) | 0x80;
+    *(currentStep++) =  ITM_1COMPL       & 0xff;
+
+    *(currentStep++) = (ITM_SNAP >> 8) | 0x80;
+    *(currentStep++) =  ITM_SNAP       & 0xff;
+
+    *(currentStep++) = (ITM_2COMPL >> 8) | 0x80;
+    *(currentStep++) =  ITM_2COMPL       & 0xff;
+
+    *(currentStep++) = (ITM_ABS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ABS       & 0xff;
+
+    *(currentStep++) = (ITM_AGM >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGM       & 0xff;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
     *(currentStep++) = (ITM_END >> 8) | 0x80;
     *(currentStep++) =  ITM_END       & 0xff;
   }
@@ -8091,6 +8355,8 @@ void addTestPrograms(void) {
     printf("freeProgramBytes = %u\n", freeProgramBytes);
 
     scanLabelsAndPrograms();
+    leavePem();
+    printf("freeProgramBytes = %u\n", freeProgramBytes);
     listPrograms();
     listLabelsAndPrograms();
   #endif // !DMCP_BUILD
@@ -8173,8 +8439,8 @@ void fnReset(uint16_t confirmation) {
       real34Zero(memPtr);
     }
 
-    // initialize the 9+1 saved stack registers
-    for(calcRegister_t regist=SAVED_REGISTER_X; regist<=LAST_SAVED_REGISTER; regist++) {
+    // initialize the 9 saved stack registers + 1 temporary register
+    for(calcRegister_t regist=FIRST_SAVED_STACK_REGISTER; regist<=LAST_SAVED_STACK_REGISTER + 1; regist++) {
       setRegisterDataType(regist, dtReal34, AM_NONE);
       memPtr = allocWp43s(TO_BYTES(REAL34_SIZE));
       setRegisterDataPointer(regist, memPtr);
@@ -8189,10 +8455,17 @@ void fnReset(uint16_t confirmation) {
     allNamedVariablePointer->numberOfNamedVariables = 0;
 
     // allocate space for the local register list
-    allLocalRegisterPointer = allocWp43s(TO_BYTES(1)); //  1 block for the number of local registers and the local flags
-    numberOfLocalFlags = 0;
-    allLocalRegisterPointer->numberOfLocalRegisters = 0;
-    allLocalRegisterPointer->localFlags = 0;
+    allSubroutineLevels.numberOfSubroutineLevels = 0;
+    currentSubroutineLevelData = allocWp43s(12);
+    allSubroutineLevels.ptrToSubroutineLevel0Data = TO_WP43SMEMPTR(currentSubroutineLevelData);
+    currentSubroutineLevelData[0].returnProgramNumber = 0;
+    currentSubroutineLevelData[0].returnLocalStep = 0;
+    currentSubroutineLevelData[1].numberOfLocalRegisters = 65535; // No local register and no local flags
+    currentSubroutineLevelData[1].level = 0;
+    currentSubroutineLevelData[2].ptrToNextLevel = WP43S_NULL;
+    currentSubroutineLevelData[2].ptrToPreviousLevel = WP43S_NULL;
+    currentLocalFlags = NULL;
+    currentLocalRegisters = NULL;
 
     #ifdef PC_BUILD
       debugWindow = DBG_REGISTERS;

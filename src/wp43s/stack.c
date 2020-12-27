@@ -58,7 +58,7 @@ void fnDrop(uint16_t unusedButMandatoryParameter) {
 
   freeRegisterData(REGISTER_X);
   for(calcRegister_t regist=REGISTER_X; regist<getStackTop(); regist++) {
-    reg[regist] = reg[regist + 1];
+    globalRegister[regist] = globalRegister[regist + 1];
   }
 
   sizeInBytes = TO_BYTES(getRegisterFullSize(getStackTop()));
@@ -80,7 +80,7 @@ void liftStack(void) {
   if(getSystemFlag(FLAG_ASLIFT)) {
     freeRegisterData(getStackTop());
     for(uint16_t i=getStackTop(); i>REGISTER_X; i--) {
-      reg[i] = reg[i-1];
+      globalRegister[i] = globalRegister[i-1];
     }
   }
   else {
@@ -104,7 +104,7 @@ void fnDropY(uint16_t unusedButMandatoryParameter) {
 
   freeRegisterData(REGISTER_Y);
   for(uint16_t i=REGISTER_Y; i<getStackTop(); i++) {
-    reg[i] = reg[i+1];
+    globalRegister[i] = globalRegister[i+1];
   }
 
   sizeInBytes = TO_BYTES(getRegisterFullSize(getStackTop()));
@@ -121,12 +121,12 @@ void fnDropY(uint16_t unusedButMandatoryParameter) {
  * \return void
  ***********************************************/
 void fnRollUp(uint16_t unusedButMandatoryParameter) {
-  registerDescriptor_t savedRegister = reg[getStackTop()];
+  registerHeader_t savedRegisterHeader = globalRegister[getStackTop()];
 
   for(uint16_t i=getStackTop(); i>REGISTER_X; i--) {
-    reg[i] = reg[i-1];
+    globalRegister[i] = globalRegister[i-1];
   }
-  reg[REGISTER_X] = savedRegister;
+  globalRegister[REGISTER_X] = savedRegisterHeader;
 }
 
 
@@ -138,12 +138,12 @@ void fnRollUp(uint16_t unusedButMandatoryParameter) {
  * \return void
  ***********************************************/
 void fnRollDown(uint16_t unusedButMandatoryParameter) {
-  registerDescriptor_t savedRegister = reg[REGISTER_X];
+  registerHeader_t savedRegisterHeader = globalRegister[REGISTER_X];
 
   for(uint16_t i=REGISTER_X; i<getStackTop(); i++) {
-    reg[i] = reg[i+1];
+    globalRegister[i] = globalRegister[i+1];
   }
-  reg[getStackTop()] = savedRegister;
+  globalRegister[getStackTop()] = savedRegisterHeader;
 }
 
 
@@ -167,7 +167,7 @@ void fnDisplayStack(uint16_t numberOfStackLines) {
  * \return void
  ***********************************************/
 void fnSwapX(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER);
     copySourceRegisterToDestRegister(regist, REGISTER_X);
     copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
@@ -190,7 +190,7 @@ void fnSwapX(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnSwapY(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_Y, TEMP_REGISTER);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
@@ -212,7 +212,7 @@ void fnSwapY(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnSwapZ(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_Z, TEMP_REGISTER);
     copySourceRegisterToDestRegister(regist, REGISTER_Z);
     copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
@@ -234,7 +234,7 @@ void fnSwapZ(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnSwapT(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + allLocalRegisterPointer->numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_T, TEMP_REGISTER);
     copySourceRegisterToDestRegister(regist, REGISTER_T);
     copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
@@ -256,10 +256,10 @@ void fnSwapT(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnSwapXY(uint16_t unusedButMandatoryParameter) {
-  registerDescriptor_t savedRegister = reg[REGISTER_X];
+  registerHeader_t savedRegisterHeader = globalRegister[REGISTER_X];
 
-  reg[REGISTER_X] = reg[REGISTER_Y];
-  reg[REGISTER_Y] = savedRegister;
+  globalRegister[REGISTER_X] = globalRegister[REGISTER_Y];
+  globalRegister[REGISTER_Y] = savedRegisterHeader;
 }
 
 /********************************************//**

@@ -37,3 +37,7 @@ void    resizeProgramMemory(uint16_t newSizeInBlocks);
 #ifndef DMCP_BUILD
   void    debugMemory      (const char *message);
 #endif // DMCP_BUILD
+
+#ifdef PC_BUILD
+  void ramDump(void);
+#endif // PC_BUILD

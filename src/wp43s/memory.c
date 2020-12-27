@@ -356,3 +356,33 @@ void resizeProgramMemory(uint16_t newSizeInBlocks) {
   beginOfProgramMemory = newProgramMemoryPointer;
   //debugMemory("resizeProgramMemory : end");
 }
+
+
+#ifdef PC_BUILD
+  void ramDump(void) {
+    for(calcRegister_t regist=0; regist<FIRST_LOCAL_REGISTER; regist++) {
+      printf("Global register      %4u: dataPointer=(block %5u)       dataType=%2u=%s           tag=%2u=%s\n", regist, globalRegister[regist].pointerToRegisterData, globalRegister[regist].dataType, getDataTypeName(globalRegister[regist].dataType, false, true), globalRegister[regist].tag, getRegisterTagName(regist, true));
+    }
+
+    //if(currentNumberOfLocalRegisters) {
+    //  printf("Saved stack register %4u: dataPointer=(block %5u)       dataType=%2u=%s           tag=%2u=%s\n", regist, globalRegister[regist].pointerToRegisterData, globalRegister[regist].dataType, getDataTypeName(globalRegister[regist].dataType, false, true), globalRegister[regist].tag, getRegisterTagName(regist, true));
+    //}
+
+    for(calcRegister_t regist=FIRST_SAVED_STACK_REGISTER; regist<=LAST_SAVED_STACK_REGISTER + 1; regist++) {
+
+    }
+
+    fprintf(stdout, "| block | hex               dec | hec      dec | hex  dec |\n");
+    for(uint16_t block=0; block<RAM_SIZE*0+8; block++) {
+      fprintf(stdout, "+-------+-----------------------+--------------+----------+\n");
+      fprintf(stdout, "| %5u | %08x = %10u | %04x = %5u | %02x = %3u |\n", block, *(uint32_t *)(ram + block), *(uint32_t *)(ram + block), *(uint16_t *)(ram + block), *(uint16_t *)(ram + block), *(uint8_t *)(ram + block), *(uint8_t *)(ram + block));
+      //fprintf(stdout, "|       |                       |              +----------+\n");
+      fprintf(stdout, "|       |                       |              | %02x = %3u |\n", *((uint8_t *)(ram + block) + 1), *((uint8_t *)(ram + block) + 1));
+      //fprintf(stdout, "|       |                       +--------------+----------+\n");
+      fprintf(stdout, "|       |                       | %04x = %5u | %02x = %3u |\n", *((uint16_t *)(ram + block) + 1), *((uint16_t *)(ram + block) + 1), *((uint8_t *)(ram + block) + 2), *((uint8_t *)(ram + block) + 2));
+      //fprintf(stdout, "|       |                       |              +----------+\n");
+      fprintf(stdout, "|       |                       |              | %02x = %3u |\n", *((uint8_t *)(ram + block) + 3), *((uint8_t *)(ram + block) + 3));
+    }
+    fprintf(stdout, "+-------+-----------------------+--------------+----------+\n");
+  }
+#endif // PC_BUILD

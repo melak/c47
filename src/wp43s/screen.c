@@ -284,7 +284,7 @@
       copyRegisterToClipboardString(regist, ptr);
     }
 
-    for(int32_t regist=allLocalRegisterPointer->numberOfLocalRegisters-1; regist>=0; --regist) {
+    for(int32_t regist=currentSubroutineLevelData[1].numberOfLocalRegisters-1; regist>=0; --regist) {
       ptr += strlen(ptr);
       sprintf(ptr, LINEBREAK "R.%02d = ", regist);
       ptr += strlen(ptr);
@@ -501,7 +501,7 @@
      ***********************************************/
     void setBlackPixel(uint32_t x, uint32_t y) {
       if(x>=SCREEN_WIDTH || y>=SCREEN_HEIGHT) {
-        //printf("In function setBlackPixel: x=%u, y=%u outside the screen!\n", x, y);
+        printf("In function setBlackPixel: x=%u, y=%u outside the screen!\n", x, y);
         return;
       }
 
@@ -520,7 +520,7 @@
      ***********************************************/
     void setWhitePixel(uint32_t x, uint32_t y) {
       if(x>=SCREEN_WIDTH || y>=SCREEN_HEIGHT) {
-        //printf("In function setWhitePixel: x=%u, y=%u outside the screen!\n", x, y);
+        printf("In function setWhitePixel: x=%u, y=%u outside the screen!\n", x, y);
         return;
       }
 
@@ -534,7 +534,7 @@
       uint32_t line, col, pixelColor, *pixel, endX = x + dx, endY = y + dy;
 
       if(endX > SCREEN_WIDTH || endY > SCREEN_HEIGHT) {
-        //printf("In function lcd_fill_rect: x=%u, y=%u, dx=%u, dy=%u, val=%d outside the screen!\n", x, y, dx, dy, val);
+        printf("In function lcd_fill_rect: x=%u, y=%u, dx=%u, dy=%u, val=%d outside the screen!\n", x, y, dx, dy, val);
         return;
       }
 

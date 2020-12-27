@@ -1448,7 +1448,7 @@
 
 
 #define ITM_1COMPL                    1394
-#define ITM_SCRDMP                    1395
+#define ITM_SNAP                      1395
 #define ITM_2COMPL                    1396
 #define ITM_ABS                       1397
 #define ITM_AGM                       1398
