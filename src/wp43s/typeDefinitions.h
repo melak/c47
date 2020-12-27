@@ -173,7 +173,8 @@ typedef union {
     uint16_t returnLocalStep;             ///< Return local step number in program number
   };
   struct {
-    uint16_t numberOfLocalRegisters;      ///< Number of allocated local registers
+    uint8_t numberOfLocalFlags;           ///< Number of allocated local flags
+    uint8_t numberOfLocalRegisters;       ///< Number of allocated local registers
     uint16_t level;                       ///< Subroutine level
   };
   struct {

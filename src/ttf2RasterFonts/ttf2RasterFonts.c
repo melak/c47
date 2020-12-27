@@ -307,7 +307,10 @@ void exportCStructure(char const *ttfName) {
   FT_Done_Face(face);
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 int main(int argc, char* argv[]) {
+  #pragma GCC diagnostic pop
   #ifdef CODEBLOCKS_OVER_SCORE // Since December 27th 2020 when running in code::blocks, we are no more in the correct directory! Why?
     (*strstr(argv[0], "/bin/")) = 0;
     chdir(argv[0]);

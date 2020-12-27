@@ -507,14 +507,14 @@ void fnClAll(uint16_t confirmation) {
 
 
 void addTestPrograms(void) {
-  uint32_t numberOfBytesForTheTestPrograms = 2048 * 4; // Multiple of 4
+  uint32_t numberOfBytesForTheTestPrograms = 32 * 4; // Multiple of 4
 
   resizeProgramMemory(TO_BLOCKS(numberOfBytesForTheTestPrograms));
   firstDisplayedStep            = beginOfProgramMemory;
   currentStep                   = beginOfProgramMemory;
   currentLocalStepNumber        = 1;
   firstDisplayedLocalStepNumber = 0;
-
+/*
   { // Prime number checker
     // 1
     *(currentStep++) = ITM_LBL;
@@ -2401,7 +2401,7 @@ void addTestPrograms(void) {
     *(currentStep++) = (ITM_END >> 8) | 0x80;
     *(currentStep++) =  ITM_END       & 0xff;
   }
-
+*/
   { // Speed test. See: https://forum.swissmicros.com/viewtopic.php?p=17308
     // 1
     *(currentStep++) = ITM_LBL;
@@ -2568,7 +2568,7 @@ void addTestPrograms(void) {
     *(currentStep++) = (ITM_END >> 8) | 0x80;
     *(currentStep++) =  ITM_END       & 0xff;
   }
-
+/*
   { // OM page 204
     // 1
     *(currentStep++) = ITM_LBL;
@@ -8331,7 +8331,7 @@ void addTestPrograms(void) {
     *(currentStep++) = (ITM_END >> 8) | 0x80;
     *(currentStep++) =  ITM_END       & 0xff;
   }
-
+*/
   firstFreeProgramByte = currentStep;
 
   *(currentStep++) = 255; // .END.
@@ -8455,12 +8455,13 @@ void fnReset(uint16_t confirmation) {
     allNamedVariablePointer->numberOfNamedVariables = 0;
 
     // allocate space for the local register list
-    allSubroutineLevels.numberOfSubroutineLevels = 0;
+    allSubroutineLevels.numberOfSubroutineLevels = 1;
     currentSubroutineLevelData = allocWp43s(12);
     allSubroutineLevels.ptrToSubroutineLevel0Data = TO_WP43SMEMPTR(currentSubroutineLevelData);
     currentSubroutineLevelData[0].returnProgramNumber = 0;
     currentSubroutineLevelData[0].returnLocalStep = 0;
-    currentSubroutineLevelData[1].numberOfLocalRegisters = 65535; // No local register and no local flags
+    currentSubroutineLevelData[1].numberOfLocalRegisters = 0; // No local register
+    currentSubroutineLevelData[1].numberOfLocalFlags = 0; // No local flags
     currentSubroutineLevelData[1].level = 0;
     currentSubroutineLevelData[2].ptrToNextLevel = WP43S_NULL;
     currentSubroutineLevelData[2].ptrToPreviousLevel = WP43S_NULL;

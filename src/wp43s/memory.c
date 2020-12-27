@@ -361,19 +361,59 @@ void resizeProgramMemory(uint16_t newSizeInBlocks) {
 #ifdef PC_BUILD
   void ramDump(void) {
     for(calcRegister_t regist=0; regist<FIRST_LOCAL_REGISTER; regist++) {
-      printf("Global register      %4u: dataPointer=(block %5u)       dataType=%2u=%s           tag=%2u=%s\n", regist, globalRegister[regist].pointerToRegisterData, globalRegister[regist].dataType, getDataTypeName(globalRegister[regist].dataType, false, true), globalRegister[regist].tag, getRegisterTagName(regist, true));
+      printf("Global register    %3u: dataPointer=(block %5u)     dataType=%2u=%s       tag=%2u=%s\n",
+                                 regist,                 globalRegister[regist].pointerToRegisterData,
+                                                                           globalRegister[regist].dataType,
+                                                                               getDataTypeName(globalRegister[regist].dataType, false, true),
+                                                                                            globalRegister[regist].tag,
+                                                                                                getRegisterTagName(regist, true));
     }
 
-    //if(currentNumberOfLocalRegisters) {
-    //  printf("Saved stack register %4u: dataPointer=(block %5u)       dataType=%2u=%s           tag=%2u=%s\n", regist, globalRegister[regist].pointerToRegisterData, globalRegister[regist].dataType, getDataTypeName(globalRegister[regist].dataType, false, true), globalRegister[regist].tag, getRegisterTagName(regist, true));
-    //}
-
-    for(calcRegister_t regist=FIRST_SAVED_STACK_REGISTER; regist<=LAST_SAVED_STACK_REGISTER + 1; regist++) {
-
+    for(calcRegister_t regist=0; regist<NUMBER_OF_SAVED_STACK_REGISTERS + 1; regist++) {
+      printf("SavStk register   %4u: dataPointer=(block %5u)     dataType=%2u=%s       tag=%2u=%s\n",
+                                regist + FIRST_SAVED_STACK_REGISTER,
+                                                        savedStackRegister[regist].pointerToRegisterData,
+                                                                          savedStackRegister[regist].dataType,
+                                                                              getDataTypeName(savedStackRegister[regist].dataType, false, true),
+                                                                                           savedStackRegister[regist].tag,
+                                                                                               getRegisterTagName(regist + FIRST_SAVED_STACK_REGISTER, true));
     }
 
-    fprintf(stdout, "| block | hex               dec | hec      dec | hex  dec |\n");
-    for(uint16_t block=0; block<RAM_SIZE*0+8; block++) {
+    printf("\nallSubroutineLevels: numberOfSubroutineLevels=%u  ptrToSubroutineLevel0Data=%u\n", allSubroutineLevels.numberOfSubroutineLevels, allSubroutineLevels.ptrToSubroutineLevel0Data);
+    printf("  Level rtnPgm rtnStep nbrLocalFlags nbrLocRegs level     next previous\n");
+    currentSubroutineLevelData = TO_PCMEMPTR(allSubroutineLevels.ptrToSubroutineLevel0Data);
+    currentLocalFlags = (currentSubroutineLevelData[1].numberOfLocalFlags == 0 ? NULL : currentSubroutineLevelData + 2);
+    currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData[1].numberOfLocalRegisters == 0 ? NULL : (dataBlock_t *)(currentSubroutineLevelData + (currentLocalFlags == NULL ? 3 : 4)));
+    for(int level=0; level<allSubroutineLevels.numberOfSubroutineLevels; level++) {
+      printf("  %5d %6d %7u %13u %10u %5u %8u %8u\n",
+                level,
+                    currentSubroutineLevelData[0].returnProgramNumber,
+                        currentSubroutineLevelData[0].returnLocalStep,
+                            currentSubroutineLevelData[1].numberOfLocalFlags,
+                                 currentSubroutineLevelData[1].numberOfLocalRegisters,
+                                      currentSubroutineLevelData[1].level,
+                                          currentSubroutineLevelData[2].ptrToNextLevel,
+                                              currentSubroutineLevelData[2].ptrToPreviousLevel);
+
+      for(calcRegister_t regist=0; regist<currentSubroutineLevelData[1].numberOfLocalRegisters; regist++) {
+        printf("        Local register     .%2u: dataPointer=(block %5u)       dataType=%2u=%s           tag=%2u=%s\n",
+                                            regist + FIRST_LOCAL_REGISTER,
+                                                                    currentLocalRegisters[regist].pointerToRegisterData,
+                                                                                        currentLocalRegisters[regist].dataType,
+                                                                                            getDataTypeName(currentLocalRegisters[regist].dataType, false, true),
+                                                                                                             currentLocalRegisters[regist].tag,
+                                                                                                                 getRegisterTagName(regist + FIRST_LOCAL_REGISTER, true));
+      }
+
+      if(currentSubroutineLevelData[2].ptrToNextLevel != WP43S_NULL) {
+        currentSubroutineLevelData = TO_PCMEMPTR(currentSubroutineLevelData[2].ptrToNextLevel);
+        currentLocalFlags = (currentSubroutineLevelData[1].numberOfLocalFlags == 0 ? NULL : currentSubroutineLevelData + 2);
+        currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData[1].numberOfLocalRegisters == 0 ? NULL : (dataBlock_t *)(currentSubroutineLevelData + (currentLocalFlags == NULL ? 3 : 4)));
+      }
+    }
+
+    fprintf(stdout, "\n| block | hex               dec | hec      dec | hex  dec |\n");
+    for(uint16_t block=0; block<RAM_SIZE; block++) {
       fprintf(stdout, "+-------+-----------------------+--------------+----------+\n");
       fprintf(stdout, "| %5u | %08x = %10u | %04x = %5u | %02x = %3u |\n", block, *(uint32_t *)(ram + block), *(uint32_t *)(ram + block), *(uint16_t *)(ram + block), *(uint16_t *)(ram + block), *(uint8_t *)(ram + block), *(uint8_t *)(ram + block));
       //fprintf(stdout, "|       |                       |              +----------+\n");

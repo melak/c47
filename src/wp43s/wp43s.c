@@ -77,13 +77,13 @@ realContext_t         ctxtReal1071; // 1071 digits: used in radian angle reducti
 
 registerHeader_t      globalRegister[NUMBER_OF_GLOBAL_REGISTERS];
 registerHeader_t      savedStackRegister[NUMBER_OF_SAVED_STACK_REGISTERS + 1]; // +1 for the temporary register
+registerHeader_t     *currentLocalRegisters;
 
 dataBlock_t           allSubroutineLevels;
 dataBlock_t          *allNamedVariablePointer;
 dataBlock_t          *statisticalSumsPointer;
 dataBlock_t          *savedStatisticalSumsPointer;
 dataBlock_t          *ram = NULL;
-dataBlock_t          *currentLocalRegisters;
 dataBlock_t          *currentLocalFlags;
 dataBlock_t          *currentSubroutineLevelData;
 
