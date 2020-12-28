@@ -149,10 +149,10 @@
     }
 
     else if(rbrMode == RBR_LOCAL) { // Local registers
-      if(currentSubroutineLevelData[1].numberOfLocalRegisters != 0) { // Local registers are allocated
+      if(currentNumberOfLocalRegisters != 0) { // Local registers are allocated
         for(int16_t row=0; row<10; row++) {
           calcRegister_t regist = currentRegisterBrowserScreen + row;
-          if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+          if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
             sprintf(tmpString, "R.%02d:", regist);
 
             // register number

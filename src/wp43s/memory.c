@@ -359,6 +359,371 @@ void resizeProgramMemory(uint16_t newSizeInBlocks) {
 
 
 #ifdef PC_BUILD
+  static void findBlockUsage(uint16_t block) {
+    tmpString[0] = 0;
+
+    for(int i=0; i<=LAST_GLOBAL_REGISTER; i++) {
+      if(globalRegister[i].pointerToRegisterData == block) {
+        sprintf(tmpString, "Global register %02d data: %s", i, getDataTypeName(globalRegister[i].dataType, false, false));
+        return;
+      }
+    }
+
+    for(int i=0; i<NUMBER_OF_SAVED_STACK_REGISTERS + 1; i++) {
+      if(savedStackRegister[i].pointerToRegisterData == block) {
+        sprintf(tmpString, "Saved stack register %d data: %s", i + FIRST_SAVED_STACK_REGISTER, getDataTypeName(savedStackRegister[i].dataType, false, false));
+        return;
+      }
+    }
+
+    dataBlock_t *savedCurrerntSubroutineLevelData = currentSubroutineLevelData;
+    currentSubroutineLevelData = TO_PCMEMPTR(allSubroutineLevels.ptrToSubroutineLevel0Data);
+
+    while(currentSubroutineLevelData) {
+      if(TO_WP43SMEMPTR(currentSubroutineLevelData) == block) {
+        sprintf(tmpString, "Subroutine level %u data", currentSubroutineLevel);
+        currentSubroutineLevelData = savedCurrerntSubroutineLevelData;
+        return;
+      }
+
+      if(currentNumberOfLocalFlags != 0 && TO_WP43SMEMPTR(currentSubroutineLevelData + 3) == block) {
+        sprintf(tmpString, "Subroutine level %u local flags", currentSubroutineLevel);
+        currentSubroutineLevelData = savedCurrerntSubroutineLevelData;
+        return;
+      }
+
+      for(int i=0; i<currentNumberOfLocalRegisters; i++) {
+        if(TO_WP43SMEMPTR(currentSubroutineLevelData + 4 + i) == block) {
+          sprintf(tmpString, "Subroutine level %u local register .%02d header", currentSubroutineLevel, i);
+          currentSubroutineLevelData = savedCurrerntSubroutineLevelData;
+          return;
+        }
+
+        if(((registerHeader_t *)(currentSubroutineLevelData + 4 + i))->pointerToRegisterData == block) {
+          sprintf(tmpString, "Subroutine level %u local register .%02d data: %s", currentSubroutineLevel, i, getDataTypeName(((registerHeader_t *)(currentSubroutineLevelData + 4 + i))->dataType, false, false));
+          currentSubroutineLevelData = savedCurrerntSubroutineLevelData;
+          return;
+        }
+      }
+
+      currentSubroutineLevelData = TO_PCMEMPTR(currentPtrToNextLevel);
+    }
+
+    currentSubroutineLevelData = savedCurrerntSubroutineLevelData;
+
+    if(TO_WP43SMEMPTR(beginOfProgramMemory) == block) {
+      sprintf(tmpString, "Begin of program memory");
+      return;
+    }
+
+    if(TO_WP43SMEMPTR(allNamedVariablePointer) == block) {
+      sprintf(tmpString, "All named variables");
+      return;
+    }
+
+    if(statisticalSumsPointer != NULL) {
+      if(TO_WP43SMEMPTR(SIGMA_N) == block) {
+        sprintf(tmpString, "real75 n data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_X) == block) {
+        sprintf(tmpString, "real75 Σx data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_Y) == block) {
+        sprintf(tmpString, "real75 Σy data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_Y) == block) {
+        sprintf(tmpString, "real75 Σy data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_X2) == block) {
+        sprintf(tmpString, "real75 Σx² data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_X2Y) == block) {
+        sprintf(tmpString, "real75 Σx²y data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_Y2) == block) {
+        sprintf(tmpString, "real75 Σy² data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_XY) == block) {
+        sprintf(tmpString, "real75 Σxy data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_lnXlnY) == block) {
+        sprintf(tmpString, "real75 Σlnxlny data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_lnX) == block) {
+        sprintf(tmpString, "real75 Σlnx data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_ln2X) == block) {
+        sprintf(tmpString, "real75 Σln²x data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_YlnX) == block) {
+        sprintf(tmpString, "real75 Σylnx data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_lnY) == block) {
+        sprintf(tmpString, "real75 Σlny data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_ln2Y) == block) {
+        sprintf(tmpString, "real75 Σln²y data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_XlnY) == block) {
+        sprintf(tmpString, "real75 Σxlny data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_lnYonX) == block) {
+        sprintf(tmpString, "real75 Σlny/x data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_X2onY) == block) {
+        sprintf(tmpString, "real75 Σx²/y data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_1onX) == block) {
+        sprintf(tmpString, "real75 Σ1/x data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_1onX2) == block) {
+        sprintf(tmpString, "real75 Σ1/x² data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_XonY) == block) {
+        sprintf(tmpString, "real75 Σx/y data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_1onY) == block) {
+        sprintf(tmpString, "real75 Σ1/y data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_1onY2) == block) {
+        sprintf(tmpString, "real75 Σ1/y² data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_X3) == block) {
+        sprintf(tmpString, "real75 Σx³ data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_X4) == block) {
+        sprintf(tmpString, "real75 Σx⁴ data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_XMIN) == block) {
+        sprintf(tmpString, "real75 xmin data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_XMAX) == block) {
+        sprintf(tmpString, "real75 xmax data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_YMIN) == block) {
+        sprintf(tmpString, "real75 ymin data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_YMAX) == block) {
+        sprintf(tmpString, "real75 ymax data");
+        return;
+      }
+    }
+
+    if(savedStatisticalSumsPointer != NULL) {
+      int32_t shift = (savedStatisticalSumsPointer - statisticalSumsPointer);
+      if(TO_WP43SMEMPTR(SIGMA_N) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo n data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_X) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σx data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_Y) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σy data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_Y) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σy data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_X2) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σx² data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_X2Y) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σx²y data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_Y2) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σy² data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_XY) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σxy data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_lnXlnY) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σlnxlny data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_lnX) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σlnx data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_ln2X) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σln²x data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_YlnX) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σylnx data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_lnY) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σlny data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_ln2Y) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σln²y data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_XlnY) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σxlny data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_lnYonX) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σlny/x data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_X2onY) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σx²/y data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_1onX) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σ1/x data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_1onX2) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σ1/x² data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_XonY) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σx/y data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_1onY) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σ1/y data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_1onY2) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σ1/y² data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_X3) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σx³ data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_X4) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo Σx⁴ data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_XMIN) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo xmin data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_XMAX) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo xmax data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_YMIN) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo ymin data");
+        return;
+      }
+
+      if(TO_WP43SMEMPTR(SIGMA_YMAX) + shift == block) {
+        sprintf(tmpString, "real75 saved for undo ymax data");
+        return;
+      }
+    }
+
+    for(int i=0; i<numberOfFreeMemoryRegions; i++) {
+      if(freeMemoryRegions[i].address == block && freeMemoryRegions[i].sizeInBlocks == 1) {
+        sprintf(tmpString, "Free memory block %d: 1 block", i);
+        return;
+      }
+
+      if(freeMemoryRegions[i].address == block) {
+        sprintf(tmpString, "Free memory block %d begin: %u blocks", i, freeMemoryRegions[i].sizeInBlocks);
+        return;
+      }
+
+      if(freeMemoryRegions[i].address + freeMemoryRegions[i].sizeInBlocks - 1 == block) {
+        sprintf(tmpString, "Free memory block %d end: %u blocks", i, freeMemoryRegions[i].sizeInBlocks);
+        return;
+      }
+    }
+  }
+
   void ramDump(void) {
     for(calcRegister_t regist=0; regist<FIRST_LOCAL_REGISTER; regist++) {
       printf("Global register    %3u: dataPointer=(block %5u)     dataType=%2u=%s       tag=%2u=%s\n",
@@ -382,20 +747,20 @@ void resizeProgramMemory(uint16_t newSizeInBlocks) {
     printf("\nallSubroutineLevels: numberOfSubroutineLevels=%u  ptrToSubroutineLevel0Data=%u\n", allSubroutineLevels.numberOfSubroutineLevels, allSubroutineLevels.ptrToSubroutineLevel0Data);
     printf("  Level rtnPgm rtnStep nbrLocalFlags nbrLocRegs level     next previous\n");
     currentSubroutineLevelData = TO_PCMEMPTR(allSubroutineLevels.ptrToSubroutineLevel0Data);
-    currentLocalFlags = (currentSubroutineLevelData[1].numberOfLocalFlags == 0 ? NULL : currentSubroutineLevelData + 2);
-    currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData[1].numberOfLocalRegisters == 0 ? NULL : (dataBlock_t *)(currentSubroutineLevelData + (currentLocalFlags == NULL ? 3 : 4)));
+    currentLocalFlags = (currentNumberOfLocalFlags == 0 ? NULL : currentSubroutineLevelData + 2);
+    currentLocalRegisters = (registerHeader_t *)(currentNumberOfLocalRegisters == 0 ? NULL : currentSubroutineLevelData + (currentLocalFlags == NULL ? 3 : 4));
     for(int level=0; level<allSubroutineLevels.numberOfSubroutineLevels; level++) {
       printf("  %5d %6d %7u %13u %10u %5u %8u %8u\n",
                 level,
-                    currentSubroutineLevelData[0].returnProgramNumber,
-                        currentSubroutineLevelData[0].returnLocalStep,
-                            currentSubroutineLevelData[1].numberOfLocalFlags,
-                                 currentSubroutineLevelData[1].numberOfLocalRegisters,
-                                      currentSubroutineLevelData[1].level,
-                                          currentSubroutineLevelData[2].ptrToNextLevel,
-                                              currentSubroutineLevelData[2].ptrToPreviousLevel);
+                    currentReturnProgramNumber,
+                        currentReturnLocalStep,
+                            currentNumberOfLocalFlags,
+                                 currentNumberOfLocalRegisters,
+                                      currentSubroutineLevel,
+                                          currentPtrToNextLevel,
+                                              currentPtrToPreviousLevel);
 
-      for(calcRegister_t regist=0; regist<currentSubroutineLevelData[1].numberOfLocalRegisters; regist++) {
+      for(calcRegister_t regist=0; regist<currentNumberOfLocalRegisters; regist++) {
         printf("        Local register     .%2u: dataPointer=(block %5u)       dataType=%2u=%s           tag=%2u=%s\n",
                                             regist + FIRST_LOCAL_REGISTER,
                                                                     currentLocalRegisters[regist].pointerToRegisterData,
@@ -405,17 +770,19 @@ void resizeProgramMemory(uint16_t newSizeInBlocks) {
                                                                                                                  getRegisterTagName(regist + FIRST_LOCAL_REGISTER, true));
       }
 
-      if(currentSubroutineLevelData[2].ptrToNextLevel != WP43S_NULL) {
-        currentSubroutineLevelData = TO_PCMEMPTR(currentSubroutineLevelData[2].ptrToNextLevel);
-        currentLocalFlags = (currentSubroutineLevelData[1].numberOfLocalFlags == 0 ? NULL : currentSubroutineLevelData + 2);
-        currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData[1].numberOfLocalRegisters == 0 ? NULL : (dataBlock_t *)(currentSubroutineLevelData + (currentLocalFlags == NULL ? 3 : 4)));
+      if(currentPtrToNextLevel != WP43S_NULL) {
+        currentSubroutineLevelData = TO_PCMEMPTR(currentPtrToNextLevel);
+        currentLocalFlags = (currentNumberOfLocalFlags == 0 ? NULL : currentSubroutineLevelData + 2);
+        currentLocalRegisters = (registerHeader_t *)(currentNumberOfLocalRegisters == 0 ? NULL : currentSubroutineLevelData + (currentLocalFlags == NULL ? 3 : 4));
       }
     }
 
     fprintf(stdout, "\n| block | hex               dec | hec      dec | hex  dec |\n");
     for(uint16_t block=0; block<RAM_SIZE; block++) {
       fprintf(stdout, "+-------+-----------------------+--------------+----------+\n");
-      fprintf(stdout, "| %5u | %08x = %10u | %04x = %5u | %02x = %3u |\n", block, *(uint32_t *)(ram + block), *(uint32_t *)(ram + block), *(uint16_t *)(ram + block), *(uint16_t *)(ram + block), *(uint8_t *)(ram + block), *(uint8_t *)(ram + block));
+      fprintf(stdout, "| %5u | %08x = %10u | %04x = %5u | %02x = %3u |  ", block, *(uint32_t *)(ram + block), *(uint32_t *)(ram + block), *(uint16_t *)(ram + block), *(uint16_t *)(ram + block), *(uint8_t *)(ram + block), *(uint8_t *)(ram + block));
+      findBlockUsage(block);
+      fprintf(stdout, "%s\n", tmpString);
       //fprintf(stdout, "|       |                       |              +----------+\n");
       fprintf(stdout, "|       |                       |              | %02x = %3u |\n", *((uint8_t *)(ram + block) + 1), *((uint8_t *)(ram + block) + 1));
       //fprintf(stdout, "|       |                       +--------------+----------+\n");

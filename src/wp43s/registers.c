@@ -34,13 +34,13 @@ uint32_t getRegisterDataType(calcRegister_t regist) {
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(currentLocalRegisters != NULL) {
       regist -= FIRST_LOCAL_REGISTER;
-      if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+      if(regist < currentNumberOfLocalRegisters) {
         return POINTER_TO_LOCAL_REGISTER(regist)->dataType;
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16, regist);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentNumberOfLocalRegisters - 1);
           moreInfoOnError("In function getRegisterDataType:", errorMessage, "is not defined!", errorMessage + ERROR_MESSAGE_LENGTH/2);
         }
       #endif // PC_BUILD
@@ -103,13 +103,13 @@ dataBlock_t *getRegisterDataPointer(calcRegister_t regist) {
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(currentLocalRegisters != NULL) {
       regist -= FIRST_LOCAL_REGISTER;
-      if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+      if(regist < currentNumberOfLocalRegisters) {
         return TO_PCMEMPTR(POINTER_TO_LOCAL_REGISTER(regist)->pointerToRegisterData);
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16, regist);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentNumberOfLocalRegisters - 1);
           moreInfoOnError("In function getRegisterDataPointer:", errorMessage, "is not defined!", errorMessage + ERROR_MESSAGE_LENGTH/2);
         }
       #endif // PC_BUILD
@@ -173,13 +173,13 @@ uint32_t getRegisterTag(calcRegister_t regist) {
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(currentLocalRegisters != NULL) {
       regist -= FIRST_LOCAL_REGISTER;
-      if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+      if(regist < currentNumberOfLocalRegisters) {
         return POINTER_TO_LOCAL_REGISTER(regist)->tag;
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16, regist);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentNumberOfLocalRegisters - 1);
           moreInfoOnError("In function getRegisterTag:", errorMessage, "is not defined!", errorMessage + ERROR_MESSAGE_LENGTH/2);
         }
       #endif // PC_BUILD
@@ -311,14 +311,14 @@ void setRegisterDataType(calcRegister_t regist, uint16_t dataType, uint32_t tag)
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(currentLocalRegisters != NULL) {
       regist -= FIRST_LOCAL_REGISTER;
-      if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+      if(regist < currentNumberOfLocalRegisters) {
         POINTER_TO_LOCAL_REGISTER(regist)->dataType = dataType;
         POINTER_TO_LOCAL_REGISTER(regist)->tag = tag;
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16, regist);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentNumberOfLocalRegisters - 1);
           moreInfoOnError("In function setRegisterDataType:", errorMessage, "is not defined!", errorMessage + ERROR_MESSAGE_LENGTH/2);
         }
       #endif // PC_BUILD
@@ -385,13 +385,13 @@ void setRegisterDataPointer(calcRegister_t regist, void *memPtr) {
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(currentLocalRegisters != NULL) {
       regist -= FIRST_LOCAL_REGISTER;
-      if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+      if(regist < currentNumberOfLocalRegisters) {
         POINTER_TO_LOCAL_REGISTER(regist)->pointerToRegisterData = dataPointer;
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16, regist);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentNumberOfLocalRegisters - 1);
           moreInfoOnError("In function setRegisterDataPointer:", errorMessage, "is not defined!", errorMessage + ERROR_MESSAGE_LENGTH/2);
         }
       #endif // PC_BUILD
@@ -457,13 +457,13 @@ void setRegisterTag(calcRegister_t regist, uint32_t tag) {
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(currentLocalRegisters != NULL) {
       regist -= FIRST_LOCAL_REGISTER;
-      if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+      if(regist < currentNumberOfLocalRegisters) {
         POINTER_TO_LOCAL_REGISTER(regist)->tag = tag;
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16, regist);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentNumberOfLocalRegisters - 1);
           moreInfoOnError("In function setRegisterDataInfo:", errorMessage, "is not defined!", errorMessage + ERROR_MESSAGE_LENGTH/2);
         }
       #endif // PC_BUILD
@@ -596,6 +596,11 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
   if(currentLocalFlags == NULL) {
     // 1st allocation of local registers in this level of subroutine
     currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 12, 16 + 4*numberOfRegistersToAllocate);
+    currentLocalFlags = currentSubroutineLevelData + 3;
+    currentLocalFlags->localFlags = 0;
+    currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData + 4);
+    currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
+    currentNumberOfLocalFlags = NUMBER_OF_LOCAL_FLAGS;
 
     // All the new local registers are real34s initialized to 0.0
     for(r=FIRST_LOCAL_REGISTER; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
@@ -604,14 +609,17 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
       real34Zero(REGISTER_REAL34_DATA(r));
     }
   }
-  else if(numberOfRegistersToAllocate != currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  else if(numberOfRegistersToAllocate != currentNumberOfLocalRegisters) {
     // The number of allocated local registers changes
-
-    if(numberOfRegistersToAllocate > currentSubroutineLevelData[1].numberOfLocalRegisters) {
-      currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 16, 16 + 4*numberOfRegistersToAllocate);
+    if(numberOfRegistersToAllocate > currentNumberOfLocalRegisters) {
+      uint8_t oldNumberOfLocalRegisters = currentNumberOfLocalRegisters;
+      currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 16 + 4*currentNumberOfLocalRegisters, 16 + 4*numberOfRegistersToAllocate);
+      currentLocalFlags = currentSubroutineLevelData + 3;
+      currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData + 4);
+      currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
 
       // All the new local registers are real34s initialized to 0.0
-      for(r=FIRST_LOCAL_REGISTER+currentSubroutineLevelData[1].numberOfLocalRegisters; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
+      for(r=FIRST_LOCAL_REGISTER+oldNumberOfLocalRegisters; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
         setRegisterDataType(r, dtReal34, AM_NONE);
         setRegisterDataPointer(r, allocWp43s(TO_BYTES(REAL34_SIZE)));
         real34Zero(REGISTER_REAL34_DATA(r));
@@ -619,24 +627,25 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
     }
     else {
       // free memory allocated to the data of the deleted local registers
-      for(r=currentSubroutineLevelData[1].numberOfLocalRegisters - 1; r>=numberOfRegistersToAllocate; r--) {
+      for(r=numberOfRegistersToAllocate; r<currentNumberOfLocalRegisters; r++) {
         freeRegisterData(FIRST_LOCAL_REGISTER + r);
       }
 
-      // free memory allocated to the deleted local registers
-      freeWp43s(currentLocalRegisters + numberOfRegistersToAllocate, TO_BYTES(currentSubroutineLevelData[1].numberOfLocalRegisters - numberOfRegistersToAllocate));
+      currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 16 + 4*currentNumberOfLocalRegisters, 16 + 4*numberOfRegistersToAllocate);
+      currentLocalFlags = currentSubroutineLevelData + 3;
+      currentLocalRegisters = (numberOfRegistersToAllocate == 0 ? NULL : (registerHeader_t *)(currentSubroutineLevelData + 4));
+      currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
     }
   }
   else {
     return;
   }
 
-  currentSubroutineLevelData[1].numberOfLocalRegisters = numberOfRegistersToAllocate;
-  if(currentSubroutineLevelData[1].level == 0) {
+  if(currentSubroutineLevel == 0) {
     allSubroutineLevels.ptrToSubroutineLevel0Data = TO_WP43SMEMPTR(currentSubroutineLevelData);
   }
   else {
-    ((dataBlock_t *)(TO_PCMEMPTR(currentSubroutineLevelData[2].ptrToPreviousLevel)))[2].ptrToNextLevel = TO_WP43SMEMPTR(currentSubroutineLevelData);
+    ((dataBlock_t *)(TO_PCMEMPTR(currentPtrToPreviousLevel)))[2].ptrToNextLevel = TO_WP43SMEMPTR(currentSubroutineLevelData);
   }
 }
 
@@ -711,13 +720,13 @@ void setRegisterMaxDataLength(calcRegister_t regist, uint16_t maxDataLen) {
   }
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(currentLocalRegisters != NULL) {
-      if(regist-FIRST_LOCAL_REGISTER < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+      if(regist-FIRST_LOCAL_REGISTER < currentNumberOfLocalRegisters) {
         getRegisterDataPointer(regist)->dataMaxLength = maxDataLen;
       }
       #ifdef PC_BUILD
         else {
           sprintf(errorMessage, "local register %" PRId16 " is not defined!", regist - FIRST_LOCAL_REGISTER);
-          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
+          sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "Must be from 0 to %" PRIu16, currentNumberOfLocalRegisters - 1);
           moreInfoOnError("In function setRegisterMaxDataLength:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
         }
       #endif // PC_BUILD
@@ -776,11 +785,11 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
   }
   else if(regist < FIRST_NAMED_VARIABLE) { // Local register
     if(currentLocalRegisters != NULL) {
-      if(regist-FIRST_LOCAL_REGISTER < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+      if(regist-FIRST_LOCAL_REGISTER < currentNumberOfLocalRegisters) {
         return ((dataBlock_t *)TO_PCMEMPTR(POINTER_TO_LOCAL_REGISTER(regist)->pointerToRegisterData))->dataMaxLength;
       }
       else {
-        sprintf(errorMessage, "In function getRegisterMaxDataLength: local register %" PRId16 " is not defined! Must be from 0 to %" PRIu16, regist - FIRST_LOCAL_REGISTER, currentSubroutineLevelData[1].numberOfLocalRegisters - 1);
+        sprintf(errorMessage, "In function getRegisterMaxDataLength: local register %" PRId16 " is not defined! Must be from 0 to %" PRIu16, regist - FIRST_LOCAL_REGISTER, currentNumberOfLocalRegisters - 1);
         displayBugScreen(errorMessage);
       }
     }
@@ -889,7 +898,7 @@ void fnClearRegisters(uint16_t confirmation) {
       clearRegister(regist);
     }
 
-    for(regist=0; regist<currentSubroutineLevelData[1].numberOfLocalRegisters; regist++) {
+    for(regist=0; regist<currentNumberOfLocalRegisters; regist++) {
       clearRegister(FIRST_LOCAL_REGISTER + regist);
     }
 
@@ -919,7 +928,7 @@ void fnGetLocR(uint16_t unusedButMandatoryParameter) {
   liftStack();
 
   longIntegerInit(locR);
-  uIntToLongInteger(currentSubroutineLevelData[1].numberOfLocalRegisters, locR);
+  uIntToLongInteger(currentNumberOfLocalRegisters, locR);
   convertLongIntegerToLongIntegerRegister(locR, REGISTER_X);
   longIntegerFree(locR);
 }
@@ -1089,7 +1098,7 @@ void fnXLessThan(uint16_t unusedButMandatoryParameter) {
 int16_t indirectAddressing(calcRegister_t regist, int16_t minValue, int16_t maxValue) {
   int16_t value;
 
-  if(regist >= FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist >= FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     #ifdef PC_BUILD
       sprintf(errorMessage, "local indirection register .%02d", regist - FIRST_LOCAL_REGISTER);
@@ -1384,9 +1393,9 @@ int16_t indirectAddressing(calcRegister_t regist, int16_t minValue, int16_t maxV
       registerHeader = globalRegister[regist];
     }
     else if(regist < FIRST_NAMED_VARIABLE) { // Local register
-      if(currentSubroutineLevelData[1].numberOfLocalRegisters > 0) {
+      if(currentNumberOfLocalRegisters > 0) {
         regist -= FIRST_LOCAL_REGISTER;
-        if(regist < currentSubroutineLevelData[1].numberOfLocalRegisters) {
+        if(regist < currentNumberOfLocalRegisters) {
           registerHeader = *POINTER_TO_LOCAL_REGISTER(regist);
         }
       }

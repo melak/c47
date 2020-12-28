@@ -48,7 +48,7 @@ void incDecError(uint16_t regist, uint8_t flag) {
  * \return void
  ***********************************************/
 void fnDec(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     incDec[getRegisterDataType(regist)](regist, DEC_FLAG);
   }
 
@@ -69,7 +69,7 @@ void fnDec(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnInc(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     incDec[getRegisterDataType(regist)](regist, INC_FLAG);
   }
 

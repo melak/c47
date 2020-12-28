@@ -548,7 +548,7 @@
 #define MAX_DENMAX                              9999 // Biggest denominator in fraction display mode
 
 #define SCREEN_REFRESH_PERIOD                    500 // in milliseconds
-#define RAM_SIZE                                1024 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
+#define RAM_SIZE                               16384 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
 
 #define CONFIG_SIZE            TO_BLOCKS(sizeof(dtConfigDescriptor_t))
 
@@ -625,6 +625,13 @@
 #define RADIX34_MARK_STRING                  (getSystemFlag(FLAG_DECIMP) ? "."       : ",")
 #define PRODUCT_SIGN                         (getSystemFlag(FLAG_MULTx)  ? STD_CROSS : STD_DOT)
 #define clearScreen()                        lcd_fill_rect(0, 0, SCREEN_WIDTH, 240, LCD_SET_VALUE)
+#define currentReturnProgramNumber           (currentSubroutineLevelData[0].returnProgramNumber)
+#define currentReturnLocalStep               (currentSubroutineLevelData[0].returnLocalStep)
+#define currentNumberOfLocalFlags            (currentSubroutineLevelData[1].numberOfLocalFlags)
+#define currentNumberOfLocalRegisters        (currentSubroutineLevelData[1].numberOfLocalRegisters)
+#define currentSubroutineLevel               (currentSubroutineLevelData[1].subroutineLevel)
+#define currentPtrToNextLevel                (currentSubroutineLevelData[2].ptrToNextLevel)
+#define currentPtrToPreviousLevel            (currentSubroutineLevelData[2].ptrToPreviousLevel)
 
 #ifdef DMCP_BUILD
   #define setBlackPixel(x, y)                bitblt24(x, 1, y, 1, BLT_OR,   BLT_NONE)

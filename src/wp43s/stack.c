@@ -167,7 +167,7 @@ void fnDisplayStack(uint16_t numberOfStackLines) {
  * \return void
  ***********************************************/
 void fnSwapX(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER);
     copySourceRegisterToDestRegister(regist, REGISTER_X);
     copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
@@ -190,7 +190,7 @@ void fnSwapX(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnSwapY(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_Y, TEMP_REGISTER);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
@@ -212,7 +212,7 @@ void fnSwapY(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnSwapZ(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_Z, TEMP_REGISTER);
     copySourceRegisterToDestRegister(regist, REGISTER_Z);
     copySourceRegisterToDestRegister(TEMP_REGISTER, regist);
@@ -234,7 +234,7 @@ void fnSwapZ(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnSwapT(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_T, TEMP_REGISTER);
     copySourceRegisterToDestRegister(regist, REGISTER_T);
     copySourceRegisterToDestRegister(TEMP_REGISTER, regist);

@@ -20,7 +20,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         50  // Changed menu management
+#define BACKUP_VERSION         51  // Changed local register management
 #define START_REGISTER_VALUE 1522
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -384,7 +384,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         }
 
       refreshScreen();
-      ramDump();
     }
   }
 #endif // PC_BUILD
@@ -520,9 +519,9 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   save(tmpString, strlen(tmpString), BACKUP);
 
   // Local registers
-  sprintf(tmpString, "LOCAL_REGISTERS\n%" PRIu16 "\n", currentSubroutineLevelData[1].numberOfLocalRegisters);
+  sprintf(tmpString, "LOCAL_REGISTERS\n%" PRIu16 "\n", currentNumberOfLocalRegisters);
   save(tmpString, strlen(tmpString), BACKUP);
-  for(i=0; i<currentSubroutineLevelData[1].numberOfLocalRegisters; i++) {
+  for(i=0; i<currentNumberOfLocalRegisters; i++) {
     registerToSaveString(FIRST_LOCAL_REGISTER + i);
     sprintf(tmpString, "R.%02" PRIu32 "\n%s\n%s\n", i, aimBuffer, tmpString + START_REGISTER_VALUE);
     save(tmpString, strlen(tmpString), BACKUP);

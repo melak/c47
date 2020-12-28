@@ -29,7 +29,7 @@
  * \return void
  ***********************************************/
 void fnRecall(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     if(REGISTER_X <= regist && regist <= getStackTop()) {
       copySourceRegisterToDestRegister(regist, TEMP_REGISTER);
       liftStack();
@@ -72,7 +72,7 @@ void fnLastX(uint16_t unusedButMandatoryParameter) {
  * \return void
  ***********************************************/
 void fnRecallAdd(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
     copySourceRegisterToDestRegister(regist, REGISTER_X);
@@ -103,7 +103,7 @@ void fnRecallAdd(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnRecallSub(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
     copySourceRegisterToDestRegister(regist, REGISTER_X);
@@ -134,7 +134,7 @@ void fnRecallSub(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnRecallMult(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
     copySourceRegisterToDestRegister(regist, REGISTER_X);
@@ -165,7 +165,7 @@ void fnRecallMult(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnRecallDiv(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
     copySourceRegisterToDestRegister(regist, REGISTER_X);
@@ -196,7 +196,7 @@ void fnRecallDiv(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnRecallMin(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     registerMin(REGISTER_X, regist, REGISTER_X);
   }
@@ -217,7 +217,7 @@ void fnRecallMin(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnRecallMax(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     registerMax(REGISTER_X, regist, REGISTER_X);
   }

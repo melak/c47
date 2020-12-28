@@ -284,7 +284,7 @@
       copyRegisterToClipboardString(regist, ptr);
     }
 
-    for(int32_t regist=currentSubroutineLevelData[1].numberOfLocalRegisters-1; regist>=0; --regist) {
+    for(int32_t regist=currentNumberOfLocalRegisters-1; regist>=0; --regist) {
       ptr += strlen(ptr);
       sprintf(ptr, LINEBREAK "R.%02d = ", regist);
       ptr += strlen(ptr);

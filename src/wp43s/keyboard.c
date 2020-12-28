@@ -577,7 +577,7 @@
                     currentRegisterBrowserScreen = rbrRegister;
                   }
                   else {
-                    rbrRegister = (rbrRegister >= currentSubroutineLevelData[1].numberOfLocalRegisters ? 0 : rbrRegister);
+                    rbrRegister = (rbrRegister >= currentNumberOfLocalRegisters ? 0 : rbrRegister);
                     currentRegisterBrowserScreen = FIRST_LOCAL_REGISTER + rbrRegister;
                   }
                 }
@@ -1039,7 +1039,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen + 1, FIRST_LOCAL_REGISTER);
         }
         else if(rbrMode == RBR_LOCAL) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER + 1, currentSubroutineLevelData[1].numberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER + 1, currentNumberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
         }
         else if(rbrMode == RBR_NAMED) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_NAMED_VARIABLE + 1, allNamedVariablePointer->numberOfNamedVariables) + FIRST_NAMED_VARIABLE;
@@ -1119,7 +1119,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - 1, FIRST_LOCAL_REGISTER);
         }
         else if(rbrMode == RBR_LOCAL) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER - 1, currentSubroutineLevelData[1].numberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER - 1, currentNumberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
         }
         else if(rbrMode == RBR_NAMED) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - 1000 - 1, allNamedVariablePointer->numberOfNamedVariables) + 1000;

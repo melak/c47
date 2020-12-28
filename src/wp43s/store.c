@@ -29,7 +29,7 @@
  * \return void
  ***********************************************/
 void fnStore(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_X, regist);
   }
   #ifdef PC_BUILD
@@ -49,7 +49,7 @@ void fnStore(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnStoreAdd(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
@@ -81,7 +81,7 @@ void fnStoreAdd(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnStoreSub(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
@@ -113,7 +113,7 @@ void fnStoreSub(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnStoreMult(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
@@ -145,7 +145,7 @@ void fnStoreMult(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnStoreDiv(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
@@ -177,7 +177,7 @@ void fnStoreDiv(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnStoreMin(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     registerMin(REGISTER_X, regist, regist);
   }
   #ifdef PC_BUILD
@@ -197,7 +197,7 @@ void fnStoreMin(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnStoreMax(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters) {
+  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     registerMax(REGISTER_X, regist, regist);
   }
   #ifdef PC_BUILD

@@ -175,7 +175,7 @@ typedef union {
   struct {
     uint8_t numberOfLocalFlags;           ///< Number of allocated local flags
     uint8_t numberOfLocalRegisters;       ///< Number of allocated local registers
-    uint16_t level;                       ///< Subroutine level
+    uint16_t subroutineLevel;             ///< Subroutine level
   };
   struct {
     uint16_t ptrToNextLevel;              ///< Pointer to next level of subroutine data

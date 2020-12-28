@@ -1032,12 +1032,12 @@ void debugNIM(void) {
 
       row = 0;
       gtk_label_set_label(GTK_LABEL(lbl1[row]), "Regis Type                  Address    Size");
-      sprintf(string, "Content of the %" PRIu16 " local registers", currentSubroutineLevelData[1].numberOfLocalRegisters);
+      sprintf(string, "Content of the %" PRIu16 " local registers", currentNumberOfLocalRegisters);
       gtk_label_set_label(GTK_LABEL(lbl2[row]), string);
       gtk_widget_show(lbl1[row]);
       gtk_widget_show(lbl2[row++]);
 
-      for(uint16_t i=FIRST_LOCAL_REGISTER; i<FIRST_LOCAL_REGISTER + currentSubroutineLevelData[1].numberOfLocalRegisters; i++) {
+      for(uint16_t i=FIRST_LOCAL_REGISTER; i<FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters; i++) {
         if(row < DEBUG_LINES) {
           sprintf(string, ".%02d   %s %7d %7d", i-FIRST_LOCAL_REGISTER, getRegisterDataTypeName(i, false, true), TO_WP43SMEMPTR(getRegisterDataPointer(i)), TO_BYTES(getRegisterFullSize(i)));
           gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
