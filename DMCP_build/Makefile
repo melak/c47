@@ -33,7 +33,7 @@ ASM_SOURCES = DMCP/startup_pgm.s
 #######################################
 
 # Includes
-C_INCLUDES += -Isrc/wp43s -IdecNumberICU -Igmp-6.2.1
+C_INCLUDES += -Isrc/wp43s -IdecNumberICU -Igmp-6.2.0
 
 # C sources
 C_SOURCES += decNumberICU/decContext.c
@@ -63,7 +63,7 @@ C_DEFS += -DDMCP_BUILD
 
 # Libraries
 #LIBS += lib/gcc111libbid_hard.a
-LIBS += gmp-6.2.1/.libs/libgmp.a
+LIBS += gmp-6.2.0/.libs/libgmp.a
 
 
 #######################################
