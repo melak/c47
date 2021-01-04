@@ -306,9 +306,27 @@ void convertAngleFromTo(real_t *angle, uint32_t fromAngularMode, uint32_t toAngu
   switch(fromAngularMode) {
     case AM_DEGREE:
       switch(toAngularMode) {
-        case AM_GRAD:   realDivide(  angle, const_9on10,   angle, realContext); break;
         case AM_RADIAN: realDivide(  angle, const_180onPi, angle, realContext); break;
         case AM_MULTPI: realDivide(  angle, const_180,     angle, realContext); break;
+        case AM_GRAD:   realDivide(  angle, const_9on10,   angle, realContext); break;
+        default: {}
+      }
+      break;
+
+    case AM_RADIAN:
+      switch(toAngularMode) {
+        case AM_DEGREE: realMultiply(angle, const_180onPi, angle, realContext); break;
+        case AM_MULTPI: realDivide(  angle, const_pi,      angle, realContext); break;
+        case AM_GRAD:   realMultiply(angle, const_200onPi, angle, realContext); break;
+        default: {}
+      }
+      break;
+
+    case AM_MULTPI:
+      switch(toAngularMode) {
+        case AM_DEGREE: realMultiply(angle, const_180,     angle, realContext); break;
+        case AM_RADIAN: realMultiply(angle, const_pi,      angle, realContext); break;
+        case AM_GRAD:   realMultiply(angle, const_200,     angle, realContext); break;
         default: {}
       }
       break;
@@ -318,24 +336,6 @@ void convertAngleFromTo(real_t *angle, uint32_t fromAngularMode, uint32_t toAngu
         case AM_DEGREE: realMultiply(angle, const_9on10,   angle, realContext); break;
         case AM_RADIAN: realDivide(  angle, const_200onPi, angle, realContext); break;
         case AM_MULTPI: realDivide(  angle, const_200,     angle, realContext); break;
-        default: {}
-      }
-      break;
-
-    case AM_RADIAN:
-      switch(toAngularMode) {
-        case AM_DEGREE: realMultiply(angle, const_180onPi, angle, realContext); break;
-        case AM_GRAD:   realMultiply(angle, const_200onPi, angle, realContext); break;
-        case AM_MULTPI: realDivide(  angle, const_pi,      angle, realContext); break;
-        default: {}
-      }
-      break;
-
-    case AM_MULTPI:
-      switch(toAngularMode) {
-        case AM_DEGREE: realMultiply(angle, const_180,     angle, realContext); break;
-        case AM_GRAD:   realMultiply(angle, const_200,     angle, realContext); break;
-        case AM_RADIAN: realMultiply(angle, const_pi,      angle, realContext); break;
         default: {}
       }
       break;

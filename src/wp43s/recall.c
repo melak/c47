@@ -31,9 +31,9 @@
 void fnRecall(uint16_t regist) {
   if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     if(REGISTER_X <= regist && regist <= getStackTop()) {
-      copySourceRegisterToDestRegister(regist, TEMP_REGISTER);
+      copySourceRegisterToDestRegister(regist, TEMP_REGISTER_1);
       liftStack();
-      copySourceRegisterToDestRegister(TEMP_REGISTER, REGISTER_X);
+      copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_X);
     }
     else {
       liftStack();

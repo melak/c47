@@ -1203,9 +1203,9 @@ void angle34ToDisplayString2(const real34_t *angle34, uint8_t mode, char *displa
     realToDisplayString2(angle34, displayString, displayHasNDigits, limitExponent, separator);
 
          if(mode == AM_DEGREE) strcat(displayString, STD_DEGREE);
-    else if(mode == AM_GRAD)   strcat(displayString, STD_SUP_g);
-    else if(mode == AM_MULTPI) strcat(displayString, STD_pi);
     else if(mode == AM_RADIAN) strcat(displayString, STD_SUP_r);
+    else if(mode == AM_MULTPI) strcat(displayString, STD_pi);
+    else if(mode == AM_GRAD)   strcat(displayString, STD_SUP_g);
     else {
       strcat(displayString, "?");
       sprintf(errorMessage, "In function angle34ToDisplayString2: %" PRIu8 " is an unexpected value for mode!", mode);
@@ -1635,7 +1635,7 @@ void longIntegerToAllocatedString(const longInteger_t lgInt, char *str, int32_t 
   }
 
   if(strLen < stringLen) {
-    sprintf(errorMessage, "In function longIntegerToAllocatedString: the string str (%" PRId32 " bytes) is too small to hold the base 10 representation of lgInt, %" PRId32 " are needed!\n", strLen, stringLen);
+    sprintf(errorMessage, "In function longIntegerToAllocatedString: the string str (%" PRId32 " bytes) is too small to hold the base 10 representation of lgInt, %" PRId32 " are needed!", strLen, stringLen);
     displayBugScreen(errorMessage);
     return;
   }
@@ -1767,15 +1767,15 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
       if(stringWidth(tmpString + 300, &standardFont, true, true) + stringWidth(tmpString + 600, &standardFont, true, true) <= SCREEN_WIDTH) {
         last = 300;
         while(tmpString[last]) last++;
-        xcopy(tmpString + last, tmpString + 600,  strlen(tmpString + 600) + 1);
+        xcopy(tmpString + last, tmpString + 600, strlen(tmpString + 600) + 1);
         tmpString[600] = 0;
       }
 
       if(stringWidth(tmpString, &standardFont, true, true) + stringWidth(tmpString + 300, &standardFont, true, true) <= SCREEN_WIDTH) {
         last = 0;
         while(tmpString[last]) last++;
-        xcopy(tmpString + last, tmpString +  300, strlen(tmpString + 300) + 1);
-        xcopy(tmpString + 300, tmpString + 600, strlen(tmpString + 600) + 1);
+        xcopy(tmpString + last, tmpString + 300, strlen(tmpString + 300) + 1);
+        xcopy(tmpString + 300,  tmpString + 600, strlen(tmpString + 600) + 1);
         tmpString[600] = 0;
       }
       break;

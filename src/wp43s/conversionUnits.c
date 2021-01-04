@@ -301,6 +301,36 @@ void fnCvtFathomM(uint16_t multiplyDivide) {
 }
 
 
+void fnCvtLiM(uint16_t multiplyDivide) {
+  unitConversion(const_LiToM, multiplyDivide);
+}
+
+
+void fnCvtChiM(uint16_t multiplyDivide) {
+  unitConversion(const_3, multiplyDivide);
+}
+
+
+void fnCvtYinM(uint16_t multiplyDivide) {
+  unitConversion(const_YinToM, multiplyDivide);
+}
+
+
+void fnCvtCunM(uint16_t multiplyDivide) {
+  unitConversion(const_CunToM, multiplyDivide);
+}
+
+
+void fnCvtZhangM(uint16_t multiplyDivide) {
+  unitConversion(const_ZhangToM, multiplyDivide);
+}
+
+
+void fnCvtFenM(uint16_t multiplyDivide) {
+  unitConversion(const_FenToM, multiplyDivide);
+}
+
+
 void fnCvtGalukM3(uint16_t multiplyDivide) {
   unitConversion(const_GalukToM3, multiplyDivide);
 }
@@ -343,6 +373,11 @@ void fnCvtAcreusM2(uint16_t multiplyDivide) {
 
 void fnCvtHectareM2(uint16_t multiplyDivide) {
   unitConversion(const_10000, multiplyDivide);
+}
+
+
+void fnCvtMuM2(uint16_t multiplyDivide) {
+  unitConversion(const_MuToM2, multiplyDivide);
 }
 
 

@@ -69,9 +69,9 @@
     switch(angularMode) {
       case AM_DEGREE: strcpy(string, STD_DEGREE); break;
       case AM_DMS:    strcpy(string, "d.ms");     break;
-      case AM_GRAD:   strcpy(string, "g");        break;
       case AM_RADIAN: strcpy(string, "r");        break;
       case AM_MULTPI: strcpy(string, STD_pi);     break;
+      case AM_GRAD:   strcpy(string, "g");        break;
       case AM_NONE:   break;
       default:        strcpy(string, "?");
     }
@@ -87,7 +87,7 @@
     switch(getRegisterDataType(regist)) {
       case dtLongInteger:
         convertLongIntegerRegisterToLongInteger(regist, lgInt);
-        longIntegerToAllocatedString(lgInt, tmpString, sizeof(tmpString));
+        longIntegerToAllocatedString(lgInt, tmpString, TMP_STR_LENGTH);
         longIntegerFree(lgInt);
         break;
 
@@ -100,7 +100,7 @@
         break;
 
       case dtString:
-        xcopy(tmpString + TMP_STR_LENGTH/2, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist))+1);
+        xcopy(tmpString + TMP_STR_LENGTH/2, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
         stringToUtf8(tmpString + TMP_STR_LENGTH/2, (uint8_t *)tmpString);
         break;
 
@@ -867,7 +867,7 @@
         #if (SHOW_MEMORY_STATUS == 1)
           char string[1000];
 
-          sprintf(string, "%" PRId32 " bytes free (%" PRId32 " region%s), 43S %" PRIu64 " bytes, GMP %" PRIu64 " bytes -> should always be 0", getFreeRamMemory(), numberOfFreeMemoryRegions, numberOfFreeMemoryRegions==1 ? "" : "s", (uint64_t)wp43sMemInBytes, (uint64_t)gmpMemInBytes);
+          sprintf(string, "%" PRId32 " bytes free (%" PRId32 " region%s), 43S %" PRIu64 " bytes, GMP %" PRIu64 " bytes -> should always be 0", getFreeRamMemory(), numberOfFreeMemoryRegions, numberOfFreeMemoryRegions==1 ? "" : "s", TO_BYTES((uint64_t)wp43sMemInBlocks), (uint64_t)gmpMemInBytes);
           stringToUtf8(string, (uint8_t *)tmpStr);
           gtk_label_set_label(GTK_LABEL(lblMemoryStatus), tmpStr);
           gtk_widget_show(lblMemoryStatus);

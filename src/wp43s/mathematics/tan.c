@@ -36,8 +36,8 @@ void longIntegerAngleReduction(calcRegister_t regist, uint8_t angularMode, real_
   switch(angularMode) {
     case AM_DEGREE:
     case AM_DMS:    oneTurn = 360; break;
-    case AM_GRAD:   oneTurn = 400; break;
     case AM_MULTPI: oneTurn =   2; break;
+    case AM_GRAD:   oneTurn = 400; break;
     default:        oneTurn =   0;
   }
 

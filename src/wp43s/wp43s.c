@@ -21,182 +21,183 @@
 #include "wp43s.h"
 
 #if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
-  bool_t             debugMemAllocation;
+  bool_t              debugMemAllocation;
 #endif // PC_BUILD || TESTSUITE_BUILD
 #ifdef PC_BUILD
-  bool_t             calcLandscape;
-  bool_t             calcAutoLandscapePortrait;
-  GtkWidget          *screen;
-  GtkWidget          *frmCalc;
-  int16_t            screenStride;
-  int16_t            debugWindow;
-  uint32_t           *screenData;
-  bool_t             screenChange;
-  char               debugString[10000];
+  bool_t              calcLandscape;
+  bool_t              calcAutoLandscapePortrait;
+  GtkWidget           *screen;
+  GtkWidget           *frmCalc;
+  int16_t             screenStride;
+  int16_t             debugWindow;
+  uint32_t            *screenData;
+  bool_t              screenChange;
+  char                debugString[10000];
   #if (DEBUG_REGISTER_L == 1)
-    GtkWidget        *lblRegisterL1;
-    GtkWidget        *lblRegisterL2;
+    GtkWidget         *lblRegisterL1;
+    GtkWidget         *lblRegisterL2;
   #endif // (DEBUG_REGISTER_L == 1)
   #if (SHOW_MEMORY_STATUS == 1)
-    GtkWidget        *lblMemoryStatus;
+    GtkWidget         *lblMemoryStatus;
   #endif // (SHOW_MEMORY_STATUS == 1)
 #endif // PC_BUILD
 
-const font_t         *fontForShortInteger;
-const font_t         *cursorFont;
-const char            digits[17] = "0123456789ABCDEF";
-real51_t              const *gammaLanczosCoefficients;
-real39_t              const *angle180;
-real39_t              const *angle90;
-real39_t              const *angle45;
-void                  (*confirmedFunction)(uint16_t);
+const font_t          *fontForShortInteger;
+const font_t          *cursorFont;
+const char             digits[17] = "0123456789ABCDEF";
+real51_t               const *gammaLanczosCoefficients;
+real39_t               const *angle180;
+real39_t               const *angle90;
+real39_t               const *angle45;
+void                   (*confirmedFunction)(uint16_t);
 
 // Variables stored in RAM
-bool_t                funcOK;
-bool_t                keyActionProcessed;
-bool_t                hourGlassIconEnabled;
-bool_t                watchIconEnabled;
-bool_t                printerIconEnabled;
-bool_t                shiftF;
-bool_t                shiftG;
-bool_t                showContent;
-bool_t                rbr1stDigit;
-bool_t                updateDisplayValueX;
-bool_t                thereIsSomethingToUndo;
-bool_t                lastProgramListEnd;
-bool_t                programListEnd;
-bool_t                serialIOIconEnabled;
-bool_t                neverUsed;
+bool_t                 funcOK;
+bool_t                 keyActionProcessed;
+bool_t                 hourGlassIconEnabled;
+bool_t                 watchIconEnabled;
+bool_t                 printerIconEnabled;
+bool_t                 shiftF;
+bool_t                 shiftG;
+bool_t                 showContent;
+bool_t                 rbr1stDigit;
+bool_t                 updateDisplayValueX;
+bool_t                 thereIsSomethingToUndo;
+bool_t                 lastProgramListEnd;
+bool_t                 programListEnd;
+bool_t                 serialIOIconEnabled;
+bool_t                 neverUsed;
 
-realContext_t         ctxtReal34;   //   34 digits
-realContext_t         ctxtReal39;   //   39 digits: used for 34 digits intermediate calculations
-realContext_t         ctxtReal51;   //   51 digits: used for 34 digits intermediate calculations
-realContext_t         ctxtReal75;   //   75 digits: used in SLVQ
-realContext_t         ctxtReal1071; // 1071 digits: used in radian angle reduction
-//realContext_t         ctxtReal2139; // 2139 digits: used for really big modulo
+realContext_t          ctxtReal34;   //   34 digits
+realContext_t          ctxtReal39;   //   39 digits: used for 34 digits intermediate calculations
+realContext_t          ctxtReal51;   //   51 digits: used for 34 digits intermediate calculations
+realContext_t          ctxtReal75;   //   75 digits: used in SLVQ
+realContext_t          ctxtReal1071; // 1071 digits: used in radian angle reduction
+//realContext_t          ctxtReal2139; // 2139 digits: used for really big modulo
 
-registerHeader_t      globalRegister[NUMBER_OF_GLOBAL_REGISTERS];
-registerHeader_t      savedStackRegister[NUMBER_OF_SAVED_STACK_REGISTERS + 1]; // +1 for the temporary register
-registerHeader_t     *currentLocalRegisters;
+registerHeader_t       globalRegister[NUMBER_OF_GLOBAL_REGISTERS];
+registerHeader_t       savedStackRegister[NUMBER_OF_SAVED_STACK_REGISTERS + NUMBER_OF_TEMP_REGISTERS];
+registerHeader_t      *currentLocalRegisters;
 
-dataBlock_t           allSubroutineLevels;
-dataBlock_t          *allNamedVariablePointer;
-dataBlock_t          *statisticalSumsPointer;
-dataBlock_t          *savedStatisticalSumsPointer;
-dataBlock_t          *ram = NULL;
-dataBlock_t          *currentLocalFlags;
-dataBlock_t          *currentSubroutineLevelData;
+dataBlock_t            allSubroutineLevels;
+dataBlock_t           *statisticalSumsPointer;
+dataBlock_t           *savedStatisticalSumsPointer;
+dataBlock_t           *ram = NULL;
+dataBlock_t           *currentLocalFlags;
+dataBlock_t           *currentSubroutineLevelData;
 
-softmenuStack_t       softmenuStack[SOFTMENU_STACK_SIZE];
-calcKey_t             kbd_usr[37];
-calcRegister_t        errorMessageRegisterLine;
-glyph_t               glyphNotFound = {.charCode = 0x0000, .colsBeforeGlyph = 0, .colsGlyph = 13, .colsAfterGlyph = 0, .rowsGlyph = 19, .data = NULL};
-freeMemoryRegion_t    freeMemoryRegions[MAX_FREE_REGION];
-pcg32_random_t        pcg32_global = PCG32_INITIALIZER;
-labelList_t          *labelList = NULL;
-programList_t        *programList = NULL;
+namedVariableHeader_t *allNamedVariables;
+softmenuStack_t        softmenuStack[SOFTMENU_STACK_SIZE];
+calcKey_t              kbd_usr[37];
+calcRegister_t         errorMessageRegisterLine;
+glyph_t                glyphNotFound = {.charCode = 0x0000, .colsBeforeGlyph = 0, .colsGlyph = 13, .colsAfterGlyph = 0, .rowsGlyph = 19, .data = NULL};
+freeMemoryRegion_t     freeMemoryRegions[MAX_FREE_REGION];
+pcg32_random_t         pcg32_global = PCG32_INITIALIZER;
+labelList_t           *labelList = NULL;
+programList_t         *programList = NULL;
 
-char                 *tmpString = NULL;
-char                 *errorMessage;
-char                 *aimBuffer; // aimBuffer is also used for NIM
-char                 *nimBufferDisplay;
-char                 *tamBuffer;
-char                  asmBuffer[5];
-char                  oldTime[8];
-char                  dateTimeString[12];
-char                  displayValueX[DISPLAY_VALUE_LEN];
+char                  *tmpString = NULL;
+char                  *errorMessage;
+char                  *aimBuffer; // aimBuffer is also used for NIM
+char                  *nimBufferDisplay;
+char                  *tamBuffer;
+char                   asmBuffer[5];
+char                   oldTime[8];
+char                   dateTimeString[12];
+char                   displayValueX[DISPLAY_VALUE_LEN];
 
-uint8_t               transitionSystemState;
-uint8_t               numScreensStandardFont;
-uint8_t               currentFntScr;
-uint8_t               currentFlgScr;
-uint8_t               displayFormat;
-uint8_t               displayFormatDigits;
-uint8_t               shortIntegerWordSize;
-uint8_t               significantDigits;
-uint8_t               shortIntegerMode;
-uint8_t               previousCalcMode;
-uint8_t               groupingGap;
-uint8_t               roundingMode;
-uint8_t               calcMode;
-uint8_t               nextChar;
-uint8_t               displayStack;
-uint8_t               alphaCase;
-uint8_t               numLinesNumericFont;
-uint8_t               numLinesStandardFont;
-uint8_t               cursorEnabled;
-uint8_t               nimNumberPart;
-uint8_t               hexDigits;
-uint8_t               lastErrorCode;
-uint8_t               temporaryInformation;
-uint8_t               rbrMode;
-uint8_t               numScreensNumericFont;
-uint8_t               currentAngularMode;
-uint8_t              *beginOfProgramMemory;
-uint8_t              *beginOfCurrentProgram;
-uint8_t              *endOfCurrentProgram;
-uint8_t              *firstFreeProgramByte;
-uint8_t              *firstDisplayedStep;
-uint8_t              *currentStep;
+uint8_t                transitionSystemState;
+uint8_t                numScreensStandardFont;
+uint8_t                currentFntScr;
+uint8_t                currentFlgScr;
+uint8_t                displayFormat;
+uint8_t                displayFormatDigits;
+uint8_t                shortIntegerWordSize;
+uint8_t                significantDigits;
+uint8_t                shortIntegerMode;
+uint8_t                previousCalcMode;
+uint8_t                groupingGap;
+uint8_t                roundingMode;
+uint8_t                calcMode;
+uint8_t                nextChar;
+uint8_t                displayStack;
+uint8_t                alphaCase;
+uint8_t                numLinesNumericFont;
+uint8_t                numLinesStandardFont;
+uint8_t                cursorEnabled;
+uint8_t                nimNumberPart;
+uint8_t                hexDigits;
+uint8_t                lastErrorCode;
+uint8_t                temporaryInformation;
+uint8_t                rbrMode;
+uint8_t                numScreensNumericFont;
+uint8_t                currentAngularMode;
+uint8_t               *beginOfProgramMemory;
+uint8_t               *beginOfCurrentProgram;
+uint8_t               *endOfCurrentProgram;
+uint8_t               *firstFreeProgramByte;
+uint8_t               *firstDisplayedStep;
+uint8_t               *currentStep;
 
-int16_t               tamFunction;
-int16_t               tamNumber;
-int16_t               tamNumberMin;
-int16_t               tamNumberMax;
-int16_t               tamDigit;
-int16_t               tamOperation;
-int16_t               tamLetteredRegister;
-int16_t               tamCurrentOperation;
-int16_t               currentRegisterBrowserScreen;
-int16_t               lineTWidth;
-int16_t               rbrRegister;
-int16_t               catalog;
-int16_t               lastCatalogPosition[NUMBER_OF_CATALOGS];
-int16_t               showFunctionNameItem;
-int16_t               exponentSignLocation;
-int16_t               denominatorLocation;
-int16_t               imaginaryExponentSignLocation;
-int16_t               imaginaryMantissaSignLocation;
-int16_t               exponentLimit;
-int16_t               showFunctionNameCounter;
-int16_t               dynamicMenuItem;
-int16_t              *menu_RAM;
-int16_t               numberOfTamMenusToPop;
+int16_t                tamFunction;
+int16_t                tamNumber;
+int16_t                tamNumberMin;
+int16_t                tamNumberMax;
+int16_t                tamDigit;
+int16_t                tamOperation;
+int16_t                tamLetteredRegister;
+int16_t                tamCurrentOperation;
+int16_t                currentRegisterBrowserScreen;
+int16_t                lineTWidth;
+int16_t                rbrRegister;
+int16_t                catalog;
+int16_t                lastCatalogPosition[NUMBER_OF_CATALOGS];
+int16_t                showFunctionNameItem;
+int16_t                exponentSignLocation;
+int16_t                denominatorLocation;
+int16_t                imaginaryExponentSignLocation;
+int16_t                imaginaryMantissaSignLocation;
+int16_t                exponentLimit;
+int16_t                showFunctionNameCounter;
+int16_t                dynamicMenuItem;
+int16_t               *menu_RAM;
+int16_t                numberOfTamMenusToPop;
 
-uint16_t              globalFlags[7];
-uint16_t              freeProgramBytes;
-uint16_t              glyphRow[NUMBER_OF_GLYPH_ROWS];
-uint16_t              firstDisplayedLocalStepNumber;
-uint16_t              numberOfLabels;
-uint16_t              numberOfPrograms;
-uint16_t              tamMode;
-uint16_t              currentLocalStepNumber;
-uint16_t              currentProgramNumber;
+uint16_t               globalFlags[7];
+uint16_t               freeProgramBytes;
+uint16_t               glyphRow[NUMBER_OF_GLYPH_ROWS];
+uint16_t               firstDisplayedLocalStepNumber;
+uint16_t               numberOfLabels;
+uint16_t               numberOfPrograms;
+uint16_t               numberOfNamedVariables;
+uint16_t               tamMode;
+uint16_t               currentLocalStepNumber;
+uint16_t               currentProgramNumber;
 
-int32_t               numberOfFreeMemoryRegions;
-int32_t               lgCatalogSelection;
+int32_t                numberOfFreeMemoryRegions;
+int32_t                lgCatalogSelection;
 
-uint32_t              firstGregorianDay;
-uint32_t              denMax;
-uint32_t              lastIntegerBase;
-uint32_t              alphaSelectionTimer;
-uint32_t              xCursor;
-uint32_t              yCursor;
-uint32_t              tamOverPemYPos;
+uint32_t               firstGregorianDay;
+uint32_t               denMax;
+uint32_t               lastIntegerBase;
+uint32_t               alphaSelectionTimer;
+uint32_t               xCursor;
+uint32_t               yCursor;
+uint32_t               tamOverPemYPos;
 
-uint64_t              shortIntegerMask;
-uint64_t              shortIntegerSignBit;
-uint64_t              systemFlags;
-uint64_t              savedSystemFlags;
+uint64_t               shortIntegerMask;
+uint64_t               shortIntegerSignBit;
+uint64_t               systemFlags;
+uint64_t               savedSystemFlags;
 
-size_t                gmpMemInBytes;
-size_t                wp43sMemInBytes;
+size_t                 gmpMemInBytes;
+size_t                 wp43sMemInBlocks;
 
 #ifdef DMCP_BUILD
-  bool_t              backToDMCP;
-  int                 keyAutoRepeat;
-  int16_t             previousItem;
-  uint32_t            nextScreenRefresh; // timer substitute for refreshLcd(), which does cursor blinking and other stuff
+  bool_t               backToDMCP;
+  int                  keyAutoRepeat;
+  int16_t              previousItem;
+  uint32_t             nextScreenRefresh; // timer substitute for refreshLcd(), which does cursor blinking and other stuff
 #endif // DMCP_BUILD
 
 
@@ -223,7 +224,7 @@ size_t                wp43sMemInBytes;
       }
     #endif // __APPLE__
 
-    wp43sMemInBytes = 0;
+    wp43sMemInBlocks = 0;
     gmpMemInBytes = 0;
     mp_set_memory_functions(allocGmp, reallocGmp, freeGmp);
 
@@ -274,7 +275,7 @@ ramDump();
     bool_t wp43sKbdLayout;
     uint16_t currentVolumeSetting, savedVoluleSetting; // used for beep signaling screen shot
 
-    wp43sMemInBytes = 0;
+    wp43sMemInBlocks = 0;
     gmpMemInBytes = 0;
     mp_set_memory_functions(allocGmp, reallocGmp, freeGmp);
 
@@ -644,7 +645,7 @@ ramDump();
       }
     #endif // __APPLE__
 
-    wp43sMemInBytes = 0;
+    wp43sMemInBlocks = 0;
     gmpMemInBytes = 0;
     mp_set_memory_functions(allocGmp, reallocGmp, freeGmp);
 

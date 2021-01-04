@@ -51,7 +51,7 @@ bool_t checkMinimumDataPoints(const real_t *n) {
 
 void initStatisticalSums(void) {
   if(statisticalSumsPointer == NULL) {
-    statisticalSumsPointer = allocWp43s(NUMBER_OF_STATISTICAL_SUMS * TO_BYTES(REAL_SIZE));
+    statisticalSumsPointer = allocWp43s(NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
     for(int32_t sum=0; sum<NUMBER_OF_STATISTICAL_SUMS - 4; sum++) {
       realZero((real_t *)(statisticalSumsPointer + REAL_SIZE * sum));
     }
@@ -67,7 +67,7 @@ void initStatisticalSums(void) {
 
 void fnClSigma(uint16_t unusedButMandatoryParameter) {
   if(statisticalSumsPointer != NULL) {
-    freeWp43s(statisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * TO_BYTES(REAL_SIZE));
+    freeWp43s(statisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
     statisticalSumsPointer = NULL;
   }
 }

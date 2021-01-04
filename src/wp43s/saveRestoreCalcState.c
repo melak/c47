@@ -93,7 +93,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&tamLetteredRegister,                sizeof(tamLetteredRegister),                BACKUP);
     save(&tamCurrentOperation,                sizeof(tamCurrentOperation),                BACKUP);
     save(&rbrRegister,                        sizeof(rbrRegister),                        BACKUP);
-    ramPtr = TO_WP43SMEMPTR(allNamedVariablePointer);
+    ramPtr = TO_WP43SMEMPTR(allNamedVariables);
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
     ramPtr = TO_WP43SMEMPTR(statisticalSumsPointer);
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
@@ -152,7 +152,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&imaginaryMantissaSignLocation,      sizeof(imaginaryMantissaSignLocation),      BACKUP);
     save(&lineTWidth,                         sizeof(lineTWidth),                         BACKUP);
     save(&lastIntegerBase,                    sizeof(lastIntegerBase),                    BACKUP);
-    save(&wp43sMemInBytes,                    sizeof(wp43sMemInBytes),                    BACKUP);
+    save(&wp43sMemInBlocks,                   sizeof(wp43sMemInBlocks),                   BACKUP);
     save(&gmpMemInBytes,                      sizeof(gmpMemInBytes),                      BACKUP);
     save(&catalog,                            sizeof(catalog),                            BACKUP);
     save(&lastCatalogPosition,                sizeof(lastCatalogPosition),                BACKUP);
@@ -245,7 +245,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&tamCurrentOperation,                sizeof(tamCurrentOperation),                BACKUP);
       restore(&rbrRegister,                        sizeof(rbrRegister),                        BACKUP);
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
-      allNamedVariablePointer = TO_PCMEMPTR(ramPtr);
+      allNamedVariables = TO_PCMEMPTR(ramPtr);
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
       statisticalSumsPointer = TO_PCMEMPTR(ramPtr);
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
@@ -307,7 +307,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&imaginaryMantissaSignLocation,      sizeof(imaginaryMantissaSignLocation),      BACKUP);
       restore(&lineTWidth,                         sizeof(lineTWidth),                         BACKUP);
       restore(&lastIntegerBase,                    sizeof(lastIntegerBase),                    BACKUP);
-      restore(&wp43sMemInBytes,                    sizeof(wp43sMemInBytes),                    BACKUP);
+      restore(&wp43sMemInBlocks,                   sizeof(wp43sMemInBlocks),                   BACKUP);
       restore(&gmpMemInBytes,                      sizeof(gmpMemInBytes),                      BACKUP);
       restore(&catalog,                            sizeof(catalog),                            BACKUP);
       restore(&lastCatalogPosition,                sizeof(lastCatalogPosition),                BACKUP);
@@ -421,8 +421,8 @@ static void registerToSaveString(calcRegister_t regist) {
           strcpy(aimBuffer, "Real:DEG");
           break;
 
-        case AM_GRAD:
-          strcpy(aimBuffer, "Real:GRAD");
+        case AM_DMS:
+          strcpy(aimBuffer, "Real:DMS");
           break;
 
         case AM_RADIAN:
@@ -433,8 +433,8 @@ static void registerToSaveString(calcRegister_t regist) {
           strcpy(aimBuffer, "Real:MULTPI");
           break;
 
-        case AM_DMS:
-          strcpy(aimBuffer, "Real:DMS");
+        case AM_GRAD:
+          strcpy(aimBuffer, "Real:GRAD");
           break;
 
         case AM_NONE:
@@ -534,9 +534,9 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   }
 
   // Named variables
-  sprintf(tmpString, "NAMED_VARIABLES\n%" PRIu16 "\n", allNamedVariablePointer->numberOfNamedVariables);
+  sprintf(tmpString, "NAMED_VARIABLES\n%" PRIu16 "\n", numberOfNamedVariables);
   save(tmpString, strlen(tmpString), BACKUP);
-  for(i=0; i<allNamedVariablePointer->numberOfNamedVariables; i++) {
+  for(i=0; i<numberOfNamedVariables; i++) {
     registerToSaveString(FIRST_NAMED_VARIABLE + i);
     sprintf(tmpString, "%s\n%s\n%s\n", "name", aimBuffer, tmpString + START_REGISTER_VALUE);
     save(tmpString, strlen(tmpString), BACKUP);
@@ -753,9 +753,9 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
   if(type[4] == ':') {
          if(type[5] == 'D' && type[6] == 'E') tag = AM_DEGREE;
     else if(type[5] == 'D' && type[6] == 'M') tag = AM_DMS;
-    else if(type[5] == 'G')                   tag = AM_GRAD;
     else if(type[5] == 'R')                   tag = AM_RADIAN;
     else if(type[5] == 'M')                   tag = AM_MULTPI;
+    else if(type[5] == 'G')                   tag = AM_GRAD;
     else                                      tag = AM_NONE;
 
     reallocateRegister(regist, dtReal34, REAL34_SIZE, tag);

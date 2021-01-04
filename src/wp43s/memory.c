@@ -33,7 +33,7 @@ int32_t getFreeRamMemory(void) {
 
 #ifndef DMCP_BUILD
   void debugMemory(const char *message) {
-    printf("\n%s\nWP43S owns %6" PRIu64 " bytes and GMP owns %6" PRIu64 " bytes (%" PRId32 " bytes free)\n", message, (uint64_t)wp43sMemInBytes, (uint64_t)gmpMemInBytes, getFreeRamMemory());
+    printf("\n%s\nWP43S owns %6" PRIu64 " bytes and GMP owns %6" PRIu64 " bytes (%" PRId32 " bytes free)\n", message, (uint64_t)TO_BYTES(wp43sMemInBlocks), (uint64_t)gmpMemInBytes, getFreeRamMemory());
     printf("    Addr   Size\n");
     for(int i=0; i<numberOfFreeMemoryRegions; i++) {
       printf("%2d%6u%7u\n", i, freeMemoryRegions[i].address, freeMemoryRegions[i].sizeInBlocks);
@@ -46,48 +46,43 @@ int32_t getFreeRamMemory(void) {
 
 
 
-void *allocWp43s(size_t sizeInBytes) {
+void *allocWp43s(size_t sizeInBlocks) {
   #ifndef DMCP_BUILD
     //if(debugMemAllocation) printf("allocWp43s\n");
   #endif // !DMCP_BUILD
 
-  sizeInBytes = TO_BYTES(TO_BLOCKS(sizeInBytes));
-  wp43sMemInBytes += sizeInBytes;
+  wp43sMemInBlocks += sizeInBlocks;
 
   #ifndef DMCP_BUILD
-    //if(debugMemAllocation) printf("WP43S claims %6" PRIu64 " bytes\n", sizeInBytes);
+    //if(debugMemAllocation) printf("WP43S claims %6" PRIu64 " blocks\n", sizeInBlocks);
   #endif // !DMCP_BUILD
-  return wp43sAllocate(sizeInBytes);
+  return wp43sAllocate(sizeInBlocks);
 }
 
-void *reallocWp43s(void *pcMemPtr, size_t oldSizeInBytes, size_t newSizeInBytes) {
+void *reallocWp43s(void *pcMemPtr, size_t oldSizeInBlocks, size_t newSizeInBlocks) {
   #ifndef DMCP_BUILD
     //if(debugMemAllocation) printf("reallocWp43s\n");
   #endif // !DMCP_BUILD
 
-  newSizeInBytes = TO_BYTES(TO_BLOCKS(newSizeInBytes));
-  oldSizeInBytes = TO_BYTES(TO_BLOCKS(oldSizeInBytes));
-
-  wp43sMemInBytes += newSizeInBytes - oldSizeInBytes;
+  wp43sMemInBlocks += newSizeInBlocks - oldSizeInBlocks;
 
   #ifndef DMCP_BUILD
-    //if(debugMemAllocation) printf("WP43S claimed %6" PRIu64 " bytes, freed %6" PRIu64 " bytes and holds now %6" PRIu64 " bytes\n", (uint64_t)newSizeInBytes, (uint64_t)oldSizeInBytes, (uint64_t)wp43sMemInBytes);
+    //if(debugMemAllocation) printf("WP43S claimed %6" PRIu64 " blocks, freed %6" PRIu64 " blocks and holds now %6" PRIu64 " blocks\n", (uint64_t)newSizeInBlocks, (uint64_t)oldSizeInBlocks, (uint64_t)wp43sMemInBlocks);
   #endif // !DMCP_BUILD
-  return wp43sReallocate(pcMemPtr, oldSizeInBytes, newSizeInBytes);
+  return wp43sReallocate(pcMemPtr, oldSizeInBlocks, newSizeInBlocks);
 }
 
-void freeWp43s(void *pcMemPtr, size_t sizeInBytes) {
+void freeWp43s(void *pcMemPtr, size_t sizeInBlocks) {
   #ifndef DMCP_BUILD
     //if(debugMemAllocation) printf("freeWp43s\n");
   #endif // !DMCP_BUILD
 
-  sizeInBytes = TO_BYTES(TO_BLOCKS(sizeInBytes));
-  wp43sMemInBytes -= sizeInBytes;
+  wp43sMemInBlocks -= sizeInBlocks;
 
   #ifndef DMCP_BUILD
-    //if(debugMemAllocation) printf("WP43S frees  %6" PRIu64 " bytes\n", sizeInBytes);
+    //if(debugMemAllocation) printf("WP43S frees  %6" PRIu64 " blocks\n", sizeInBlocks);
   #endif // !DMCP_BUILD
-  wp43sFree(pcMemPtr, sizeInBytes);
+  wp43sFree(pcMemPtr, sizeInBlocks);
 }
 
 
@@ -105,7 +100,7 @@ void *allocGmp(size_t sizeInBytes) {
   #ifndef DMCP_BUILD
     //if(debugMemAllocation) printf("GMP claimed %6" PRIu64 " bytes and holds now %6" PRIu64 " bytes\n", (uint64_t)sizeInBytes, (uint64_t)gmpMemInBytes);
   #endif // !DMCP_BUILD
-  //return wp43sAllocate(sizeInBytes);
+  //return wp43sAllocate(TO_BLOCKS(sizeInBytes));
   return malloc(sizeInBytes);
 }
 
@@ -122,7 +117,7 @@ void *reallocGmp(void *pcMemPtr, size_t oldSizeInBytes, size_t newSizeInBytes) {
   #ifndef DMCP_BUILD
     //if(debugMemAllocation) printf("GMP claimed %6" PRIu64 " bytes, freed %6" PRIu64 " bytes and holds now %6" PRIu64 " bytes\n", (uint64_t)newSizeInBytes, (uint64_t)oldSizeInBytes, (uint64_t)gmpMemInBytes);
   #endif // !DMCP_BUILD
-  //return wp43sReallocate(pcMemPtr, oldSizeInBytes, newSizeInBytes);
+  //return wp43sReallocate(pcMemPtr, TO_BLOCKS(oldSizeInBytes), TO_BLOCKS(newSizeInBytes));
   return realloc(pcMemPtr, newSizeInBytes);
 }
 
@@ -137,7 +132,7 @@ void freeGmp(void *pcMemPtr, size_t sizeInBytes) {
   #ifndef DMCP_BUILD
     //if(debugMemAllocation) printf("GMP freed   %6" PRIu64 " bytes and holds now %6" PRIu64 " bytes\n", (uint64_t)sizeInBytes, (uint64_t)gmpMemInBytes);
   #endif // !DMCP_BUILD
-  //wp43sFree(pcMemPtr, sizeInBytes);
+  //wp43sFree(pcMemPtr, TO_BLOCKS(sizeInBytes));
   free(pcMemPtr);
 }
 
@@ -145,11 +140,14 @@ void freeGmp(void *pcMemPtr, size_t sizeInBytes) {
 
 
 
-void *wp43sAllocate(size_t sizeInBytes) {
-  uint16_t sizeInBlocks = (sizeInBytes == 0 ? 1 : TO_BLOCKS(sizeInBytes));
+void *wp43sAllocate(size_t sizeInBlocks) {
   uint16_t minSizeInBlocks = 65535u, minBlock = WP43S_NULL;
   int i;
   void *pcMemPtr;
+
+  if(sizeInBlocks == 0) {
+    sizeInBlocks = 1;
+  }
 
   #ifndef DMCP_BUILD
     //if(debugMemAllocation) printf("Allocating %" PRIu64 " bytes (%" PRIu16 " blocks)\n", (uint64_t)TO_BYTES(sizeInBlocks), sizeInBlocks);
@@ -163,7 +161,7 @@ void *wp43sAllocate(size_t sizeInBytes) {
         //if(debugMemAllocation) printf("The block found is the size of the one claimed at address %u\n", freeMemoryRegions[i].address);
       #endif // !DMCP_BUILD
       pcMemPtr = TO_PCMEMPTR(freeMemoryRegions[i].address);
-      xcopy(freeMemoryRegions + i, freeMemoryRegions + i + 1, (numberOfFreeMemoryRegions-i-1) * sizeof(freeMemoryRegion_t));
+      xcopy(freeMemoryRegions + i, freeMemoryRegions + i + 1, (numberOfFreeMemoryRegions - i - 1) * sizeof(freeMemoryRegion_t));
       numberOfFreeMemoryRegions--;
       //debugMemory("wp43sAllocate: found a memory region with the exact requested size!");
       return pcMemPtr;
@@ -198,33 +196,31 @@ void *wp43sAllocate(size_t sizeInBytes) {
   return pcMemPtr;
 }
 
-void *wp43sReallocate(void *pcMemPtr, size_t oldSizeInBytes, size_t newSizeInBytes) {
+void *wp43sReallocate(void *pcMemPtr, size_t oldSizeInBlocks, size_t newSizeInBlocks) {
   void *newMemPtr;
 
   // GMP never calls realloc with pcMemPtr beeing NULL
-  if(oldSizeInBytes == 0) {
-    oldSizeInBytes = 1;
+  if(oldSizeInBlocks == 0) {
+    oldSizeInBlocks = 1;
   }
 
-  if(newSizeInBytes == 0) {
-    newSizeInBytes = 1;
+  if(newSizeInBlocks == 0) {
+    newSizeInBlocks = 1;
   }
 
-  newSizeInBytes = TO_BYTES(TO_BLOCKS(newSizeInBytes));
-  oldSizeInBytes = TO_BYTES(TO_BLOCKS(oldSizeInBytes));
   #ifndef DMCP_BUILD
-    //printf("Allocating %zd bytes and freeing %zd bytes\n", newSizeInBytes, oldSizeInBytes);
+    //printf("Allocating %zd bytes and freeing %zd blocks\n", newSizeInBlocks, oldSizeInBlocks);
   #endif // !DMCP_BUILD
 
-  newMemPtr = wp43sAllocate(newSizeInBytes);
-  xcopy(newMemPtr, pcMemPtr, min(newSizeInBytes, oldSizeInBytes));
-  wp43sFree(pcMemPtr, oldSizeInBytes);
+  newMemPtr = wp43sAllocate(newSizeInBlocks);
+  xcopy(newMemPtr, pcMemPtr, TO_BYTES(min(newSizeInBlocks, oldSizeInBlocks)));
+  wp43sFree(pcMemPtr, oldSizeInBlocks);
 
   return newMemPtr;
 }
 
-void wp43sFree(void *pcMemPtr, size_t sizeInBytes) {
-  uint16_t ramPtr, sizeInBlocks, addr;
+void wp43sFree(void *pcMemPtr, size_t sizeInBlocks) {
+  uint16_t ramPtr, addr;
   int32_t i, j;
   bool_t done;
 
@@ -233,11 +229,10 @@ void wp43sFree(void *pcMemPtr, size_t sizeInBytes) {
     return;
   }
 
-  if(sizeInBytes == 0) {
-    sizeInBytes = 1;
+  if(sizeInBlocks == 0) {
+    sizeInBlocks = 1;
   }
   ramPtr = TO_WP43SMEMPTR(pcMemPtr);
-  sizeInBlocks = TO_BLOCKS(sizeInBytes);
   #ifndef DMCP_BUILD
     //printf("Freeing %zd bytes\n", TO_BYTES(sizeInBlocks));
   #endif // !DMCP_BUILD
@@ -262,7 +257,7 @@ void wp43sFree(void *pcMemPtr, size_t sizeInBytes) {
     if(freeMemoryRegions[i].address + freeMemoryRegions[i].sizeInBlocks == ramPtr) {
       freeMemoryRegions[i].sizeInBlocks += sizeInBlocks;
       if(done) {
-        xcopy(freeMemoryRegions + j, freeMemoryRegions + j + 1, (numberOfFreeMemoryRegions-j-1) * sizeof(freeMemoryRegion_t));
+        xcopy(freeMemoryRegions + j, freeMemoryRegions + j + 1, (numberOfFreeMemoryRegions - j - 1) * sizeof(freeMemoryRegion_t));
         numberOfFreeMemoryRegions--;
       }
       else {
@@ -292,7 +287,7 @@ void wp43sFree(void *pcMemPtr, size_t sizeInBytes) {
     }
 
     if(i < numberOfFreeMemoryRegions) {
-      xcopy(freeMemoryRegions + i + 1, freeMemoryRegions + i, (numberOfFreeMemoryRegions-i) * sizeof(freeMemoryRegion_t));
+      xcopy(freeMemoryRegions + i + 1, freeMemoryRegions + i, (numberOfFreeMemoryRegions - i) * sizeof(freeMemoryRegion_t));
     }
 
     freeMemoryRegions[i].address = ramPtr;
@@ -362,16 +357,60 @@ void resizeProgramMemory(uint16_t newSizeInBlocks) {
   static void findBlockUsage(uint16_t block) {
     tmpString[0] = 0;
 
-    for(int i=0; i<=LAST_GLOBAL_REGISTER; i++) {
-      if(globalRegister[i].pointerToRegisterData == block) {
-        sprintf(tmpString, "Global register %02d data: %s", i, getDataTypeName(globalRegister[i].dataType, false, false));
+    for(int i=0; i<NUMBER_OF_RESERVED_VARIABLES; i++) {
+      if(allReservedVariables[i].header.pointerToRegisterData == block) {
+        int j;
+        for(j=1; j<=*(allReservedVariables[i].reservedVariableName); j++) {
+          tmpString[99 + j] = allReservedVariables[i].reservedVariableName[j];
+        }
+        tmpString[99 + j] = 0;
+        stringToUtf8(tmpString + 100, (uint8_t *)errorMessage);
+        sprintf(tmpString, "Reserved variable %s data: %s (%u)", errorMessage, getDataTypeName(allReservedVariables[i].header.dataType, false, false), getRegisterFullSize(i + FIRST_RESERVED_VARIABLE));
         return;
       }
     }
 
-    for(int i=0; i<NUMBER_OF_SAVED_STACK_REGISTERS + 1; i++) {
+    for(int i=0; i<=LAST_GLOBAL_REGISTER; i++) {
+      if(globalRegister[i].pointerToRegisterData == block) {
+        sprintf(tmpString, "Global register %02d data: %s (%u)", i, getDataTypeName(globalRegister[i].dataType, false, false), getRegisterFullSize(i));
+        return;
+      }
+    }
+
+    for(int i=0; i<NUMBER_OF_SAVED_STACK_REGISTERS; i++) {
       if(savedStackRegister[i].pointerToRegisterData == block) {
-        sprintf(tmpString, "Saved stack register %d data: %s", i + FIRST_SAVED_STACK_REGISTER, getDataTypeName(savedStackRegister[i].dataType, false, false));
+        sprintf(tmpString, "Saved stack register %d data: %s (%u)", i + FIRST_SAVED_STACK_REGISTER, getDataTypeName(savedStackRegister[i].dataType, false, false), getRegisterFullSize(i + FIRST_SAVED_STACK_REGISTER));
+        return;
+      }
+    }
+
+    for(int i=NUMBER_OF_SAVED_STACK_REGISTERS; i<NUMBER_OF_SAVED_STACK_REGISTERS + NUMBER_OF_TEMP_REGISTERS; i++) {
+      if(savedStackRegister[i].pointerToRegisterData == block) {
+        sprintf(tmpString, "Temporary register %d data: %s (%u)", i + FIRST_SAVED_STACK_REGISTER, getDataTypeName(savedStackRegister[i].dataType, false, false), getRegisterFullSize(i + FIRST_SAVED_STACK_REGISTER));
+        return;
+      }
+    }
+
+    for(int i=0; i<numberOfNamedVariables; i++) {
+      if(TO_WP43SMEMPTR(allNamedVariables + i) == block) {
+        int j;
+        for(j=1; j<=*(allNamedVariables[i].variableName); j++) {
+          tmpString[99 + j] = allNamedVariables[i].variableName[j];
+        }
+        tmpString[99 + j] = 0;
+        stringToUtf8(tmpString + 100, (uint8_t *)errorMessage);
+        sprintf(tmpString, "Named variable %d header: %s %s (%u)", i, errorMessage, getDataTypeName(allNamedVariables[i].header.dataType, false, false), getRegisterFullSize(i + FIRST_NAMED_VARIABLE));
+        return;
+      }
+
+      if(allNamedVariables[i].header.pointerToRegisterData == block) {
+        int j;
+        for(j=1; j<=*(allNamedVariables[i].variableName); j++) {
+          tmpString[99 + j] = allNamedVariables[i].variableName[j];
+        }
+        tmpString[99 + j] = 0;
+        stringToUtf8(tmpString + 100, (uint8_t *)errorMessage);
+        sprintf(tmpString, "Named variable %d data: %s %s (%u)", i, errorMessage, getDataTypeName(allNamedVariables[i].header.dataType, false, false), getRegisterFullSize(i + FIRST_NAMED_VARIABLE));
         return;
       }
     }
@@ -381,20 +420,20 @@ void resizeProgramMemory(uint16_t newSizeInBlocks) {
 
     while(currentSubroutineLevelData) {
       if(TO_WP43SMEMPTR(currentSubroutineLevelData) == block) {
-        sprintf(tmpString, "Subroutine level %u data", currentSubroutineLevel);
+        sprintf(tmpString, "Subroutine level %u data (3)", currentSubroutineLevel);
         currentSubroutineLevelData = savedCurrerntSubroutineLevelData;
         return;
       }
 
       if(currentNumberOfLocalFlags != 0 && TO_WP43SMEMPTR(currentSubroutineLevelData + 3) == block) {
-        sprintf(tmpString, "Subroutine level %u local flags", currentSubroutineLevel);
+        sprintf(tmpString, "Subroutine level %u local flags (1)", currentSubroutineLevel);
         currentSubroutineLevelData = savedCurrerntSubroutineLevelData;
         return;
       }
 
       for(int i=0; i<currentNumberOfLocalRegisters; i++) {
         if(TO_WP43SMEMPTR(currentSubroutineLevelData + 4 + i) == block) {
-          sprintf(tmpString, "Subroutine level %u local register .%02d header", currentSubroutineLevel, i);
+          sprintf(tmpString, "Subroutine level %u local register .%02d header (1)", currentSubroutineLevel, i);
           currentSubroutineLevelData = savedCurrerntSubroutineLevelData;
           return;
         }
@@ -416,7 +455,7 @@ void resizeProgramMemory(uint16_t newSizeInBlocks) {
       return;
     }
 
-    if(TO_WP43SMEMPTR(allNamedVariablePointer) == block) {
+    if(TO_WP43SMEMPTR(allNamedVariables) == block) {
       sprintf(tmpString, "All named variables");
       return;
     }
@@ -708,17 +747,17 @@ void resizeProgramMemory(uint16_t newSizeInBlocks) {
 
     for(int i=0; i<numberOfFreeMemoryRegions; i++) {
       if(freeMemoryRegions[i].address == block && freeMemoryRegions[i].sizeInBlocks == 1) {
-        sprintf(tmpString, "Free memory block %d: 1 block", i);
+        sprintf(tmpString, "Free memory block %d: (1)", i);
         return;
       }
 
       if(freeMemoryRegions[i].address == block) {
-        sprintf(tmpString, "Free memory block %d begin: %u blocks", i, freeMemoryRegions[i].sizeInBlocks);
+        sprintf(tmpString, "Free memory block %d begin: (%u)", i, freeMemoryRegions[i].sizeInBlocks);
         return;
       }
 
       if(freeMemoryRegions[i].address + freeMemoryRegions[i].sizeInBlocks - 1 == block) {
-        sprintf(tmpString, "Free memory block %d end: %u blocks", i, freeMemoryRegions[i].sizeInBlocks);
+        sprintf(tmpString, "Free memory block %d end: (%u)", i, freeMemoryRegions[i].sizeInBlocks);
         return;
       }
     }
@@ -734,7 +773,7 @@ void resizeProgramMemory(uint16_t newSizeInBlocks) {
                                                                                                 getRegisterTagName(regist, true));
     }
 
-    for(calcRegister_t regist=0; regist<NUMBER_OF_SAVED_STACK_REGISTERS + 1; regist++) {
+    for(calcRegister_t regist=0; regist<NUMBER_OF_SAVED_STACK_REGISTERS + NUMBER_OF_TEMP_REGISTERS; regist++) {
       printf("SavStk register   %4u: dataPointer=(block %5u)     dataType=%2u=%s       tag=%2u=%s\n",
                                 regist + FIRST_SAVED_STACK_REGISTER,
                                                         savedStackRegister[regist].pointerToRegisterData,

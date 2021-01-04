@@ -530,13 +530,13 @@
                     rbrMode = RBR_LOCAL;
                     currentRegisterBrowserScreen = FIRST_LOCAL_REGISTER;
                   }
-                  else if(allNamedVariablePointer->numberOfNamedVariables > 0) {
+                  else if(numberOfNamedVariables > 0) {
                     rbrMode = RBR_NAMED;
                     currentRegisterBrowserScreen = FIRST_NAMED_VARIABLE;
                   }
                 }
                 else if(rbrMode == RBR_LOCAL) {
-                  if(allNamedVariablePointer->numberOfNamedVariables > 0) {
+                  if(numberOfNamedVariables > 0) {
                     rbrMode = RBR_NAMED;
                     currentRegisterBrowserScreen = FIRST_NAMED_VARIABLE;
                   }
@@ -1042,7 +1042,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER + 1, currentNumberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
         }
         else if(rbrMode == RBR_NAMED) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_NAMED_VARIABLE + 1, allNamedVariablePointer->numberOfNamedVariables) + FIRST_NAMED_VARIABLE;
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_NAMED_VARIABLE + 1, numberOfNamedVariables) + FIRST_NAMED_VARIABLE;
         }
         else {
           sprintf(errorMessage, "In function fnKeyUp: unexpected case while processing key UP! %" PRIu8 " is an unexpected value for rbrMode.", rbrMode);
@@ -1122,7 +1122,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER - 1, currentNumberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
         }
         else if(rbrMode == RBR_NAMED) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - 1000 - 1, allNamedVariablePointer->numberOfNamedVariables) + 1000;
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - 1000 - 1, numberOfNamedVariables) + 1000;
         }
         else {
           sprintf(errorMessage, "In function fnKeyDown: unexpected case while processing key DOWN! %" PRIu8 " is an unexpected value for rbrMode.", rbrMode);

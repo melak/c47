@@ -334,6 +334,9 @@ uint8_t *findNextStep(uint8_t *step) {
 
       item16 = ((uint16_t)(item8 & 0x7F) << 8) | *(step++);
       switch(item16) {
+        case ITM_LBLQ:        //  1493
+          return countOpBytes(step, PARAM_LABEL);
+
         case ITM_CNST:        //   207
         case ITM_RL:          //   400
         case ITM_RLC:         //   401
@@ -348,8 +351,13 @@ uint8_t *findNextStep(uint8_t *step) {
         case ITM_SDR:         //   414
         case ITM_AGRAPH:      //  1399
         case ITM_ALL:         //  1400
+        case ITM_BACK:        //  1402
+        case ITM_DSTACK:      //  1440
         case ITM_ENG:         //  1450
+        case ITM_ERR:         //  1458
         case ITM_FIX:         //  1463
+        case ITM_GAP:         //  1467
+        case ITM_KEY:         //  1487
         case ITM_LocR:        //  1504
         case ITM_SCI:         //  1577
           return countOpBytes(step, PARAM_NUMBER_8);
@@ -357,9 +365,11 @@ uint8_t *findNextStep(uint8_t *step) {
         case ITM_BESTF:       //  1287
           return countOpBytes(step, PARAM_NUMBER_16);
 
+        case ITM_CASE:        //  1408
         case ITM_STOMAX:      //  1420
         case ITM_RCLMAX:      //  1422
         case ITM_RCLMIN:      //  1452
+        case ITM_KTYP:        //  1491
         case ITM_STOMIN:      //  1535
         case ITM_VIEW:        //  1622
         case ITM_Xex:         //  1636
@@ -713,20 +723,105 @@ uint8_t *findNextStep(uint8_t *step) {
         case ITM_2COMPL:      //  1396
         case ITM_ABS:         //  1397
         case ITM_AGM:         //  1398
-
+        case ITM_BATT:        //  1403
+        case ITM_BEEP:        //  1404
+        case ITM_BEGINP:      //  1405
+        case ITM_BN:          //  1406
+        case ITM_BNS:         //  1407
+        case ITM_CLCVAR:      //  1410
+        case ITM_CLFALL:      //  1411
+        case ITM_CLLCD:       //  1413
+        case ITM_CLMENU:      //  1414
         case ITM_CLREGS:      //  1417
         case ITM_CLSTK:       //  1418
+        case ITM_CLSIGMA:     //  1419
+        case ITM_CONJ:        //  1421
+        case ITM_CORR:        //  1423
+        case ITM_COV:         //  1424
+        case ITM_BESTFQ:      //  1425
+        case ITM_CXtoRE:      //  1427
+        case ITM_DATE:        //  1428
+        case ITM_DATEto:      //  1429
+        case ITM_DAY:         //  1430
+        case ITM_DBLR:        //  1431
+        case ITM_DBLMULT:     //  1432
+        case ITM_DBLDIV:      //  1433
+        case ITM_DECOMP:      //  1434
+        case ITM_DEG:         //  1435
+        case ITM_DEGto:       //  1436
+        case ITM_SA:          //  1437
+        case ITM_DENMAX:      //  1438
+        case ITM_DOT_PROD:    //  1439
+        case ITM_DMS:         //  1441
+        case ITM_DMSto:       //  1442
+        case ITM_DMY:         //  1443
+        case ITM_DtoJ:        //  1444
+        case ITM_EIGVAL:      //  1446
+        case ITM_EIGVEC:      //  1447
         case ITM_END:         //  1448
+        case ITM_ENDP:        //  1449
+        case ITM_ENORM:       //  1451
+        case ITM_EQ_DEL:      //  1453
+        case ITM_EQ_EDI:      //  1454
+        case ITM_EQ_NEW:      //  1455
+        case ITM_ERF:         //  1456
+        case ITM_ERFC:        //  1457
+        case ITM_EXITALL:     //  1459
+        case ITM_EXPT:        //  1460
+        case ITM_FIB:         //  1462
+        case ITM_GD:          //  1468
+        case ITM_GDM1:        //  1469
+        case ITM_GRAD:        //  1470
+        case ITM_GRADto:      //  1471
+        case ITM_HN:          //  1473
+        case ITM_HNP:         //  1474
+        case ITM_IM:          //  1475
+        case ITM_IXYZ:        //  1477
+        case ITM_IGAMMAP:     //  1478
+        case ITM_IGAMMAQ:     //  1479
+        case ITM_JYX:         //  1482
+        case ITM_JUL_GREG:    //  1485
+        case ITM_JtoD:        //  1486
         case ITM_sinc:        //  1490
+        case ITM_LASTX:       //  1492
+        case ITM_LEAP:        //  1494
+        case ITM_Lm:          //  1495
+        case ITM_LmALPHA:     //  1496
+        case ITM_LNBETA:      //  1497
+        case ITM_LNGAMMA:     //  1498
+        case ITM_LOADR:       //  1501
+        case ITM_LOADSS:      //  1502
+        case ITM_LOADSIGMA:   //  1503
+        case ITM_LocRQ:       //  1505
+        case ITM_LR:          //  1506
+        case ITM_MANT:        //  1507
+        case ITM_MEM:         //  1509
+        case ITM_MENU:        //  1510
+        case ITM_MONTH:       //  1511
+        case ITM_MSG:         //  1512
+        case ITM_MULPI:       //  1513
+        case ITM_M_DELR:      //  1515
+        case ITM_M_DIMQ:      //  1517
+        case ITM_MDY:         //  1518
+        case ITM_M_GET:       //  1521
         case ITM_sincpi:      //  1530
         case ITM_NOP:         //  1532
+        case ITM_OFF:         //  1533
         case ITM_DROPY:       //  1534
+        case ITM_PIXEL:       //  1538
+        case ITM_PLOT:        //  1539
+        case ITM_Pn:          //  1540
+        case ITM_POINT:       //  1541
+        case ITM_LOADV:       //  1542
+        case ITM_POPLR:       //  1543
+
         case ITM_RAN:         //  1549
         case ITM_EX1:         //  1565
         case ITM_SIGN:        //  1590
         case ITM_LN1X:        //  1604
         case ITM_TICKS:       //  1610
         case ITM_IDIVR:       //  1622
+        case ITM_MULPIto:     //  1697
           return step;
 
         case 0x7fff:          // 32767 .END.

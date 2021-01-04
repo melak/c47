@@ -69,6 +69,12 @@ void fnCvtSfeetM    (uint16_t multiplyDivide);
 void fnCvtYardM     (uint16_t multiplyDivide);
 void fnCvtPointM    (uint16_t multiplyDivide);
 void fnCvtFathomM   (uint16_t multiplyDivide);
+void fnCvtLiM       (uint16_t multiplyDivide);
+void fnCvtChiM      (uint16_t multiplyDivide);
+void fnCvtYinM      (uint16_t multiplyDivide);
+void fnCvtCunM      (uint16_t multiplyDivide);
+void fnCvtZhangM    (uint16_t multiplyDivide);
+void fnCvtFenM      (uint16_t multiplyDivide);
 
 // Volume
 void fnCvtGalukM3   (uint16_t multiplyDivide);
@@ -82,6 +88,7 @@ void fnCvtBarrelM3  (uint16_t multiplyDivide);
 void fnCvtAcreM2    (uint16_t multiplyDivide);
 void fnCvtAcreusM2  (uint16_t multiplyDivide);
 void fnCvtHectareM2 (uint16_t multiplyDivide);
+void fnCvtMuM2      (uint16_t multiplyDivide);
 
 // ...
 void fnCvtRatioDb   (uint16_t tenOrTwenty);

@@ -62,16 +62,16 @@ void WP34S_Cvt2RadSinCosTan(const real_t *an, uint32_t angularMode, real_t *sinO
       WP34S_Mod(&angle, const_360,     &angle, realContext); // mod(angle, 360°) --> angle
       break;
 
-    case AM_GRAD:
-      WP34S_Mod(&angle, const_400,     &angle, realContext); // mod(angle, 400g) --> angle
-      break;
-
     case AM_RADIAN:
       WP34S_Mod(&angle, const1071_2pi, &angle, realContext); // mod(angle, 2pi) --> angle
       break;
 
     case AM_MULTPI:
       WP34S_Mod(&angle, const_2,       &angle, realContext); // mod(angle, 2) --> angle
+      break;
+
+    case AM_GRAD:
+      WP34S_Mod(&angle, const_400,     &angle, realContext); // mod(angle, 400g) --> angle
       break;
 
     default: {}

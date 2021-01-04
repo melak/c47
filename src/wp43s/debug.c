@@ -137,8 +137,8 @@ char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
         case AM_DEGREE:             return "degree  ";
         case AM_DMS:                return "dms     ";
         case AM_RADIAN:             return "radian  ";
-        case AM_GRAD:               return "grad    ";
         case AM_MULTPI:             return "multPi  ";
+        case AM_GRAD:               return "grad    ";
         case AM_NONE:               return "none    ";
         default:                    return "???     ";
       }
@@ -174,9 +174,9 @@ char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
 char * getAngularModeName(uint16_t angularMode) {
   if(angularMode == AM_DEGREE) return "degree";
   if(angularMode == AM_DMS   ) return "d.ms  ";
-  if(angularMode == AM_GRAD  ) return "grad  ";
-  if(angularMode == AM_MULTPI) return "multPi";
   if(angularMode == AM_RADIAN) return "radian";
+  if(angularMode == AM_MULTPI) return "multPi";
+  if(angularMode == AM_GRAD  ) return "grad  ";
   if(angularMode == AM_NONE)   return "none  ";
 
   return "???   ";
@@ -525,11 +525,12 @@ void debugNIM(void) {
     char     string[3000], *p, tmpStr[1000];
     uint16_t i, k, n=0;
 
-    if(1000 <= regist && regist < 1000 + allNamedVariablePointer->numberOfNamedVariables) { // Named variable
-      n = stringByteLength(getVariableNamePointer(regist));
-      for(i=0, p=getVariableNamePointer(regist); i<=n; i++, p++) {
+    if(FIRST_NAMED_VARIABLE <= regist && regist <= FIRST_NAMED_VARIABLE + numberOfNamedVariables) { // Named variable
+      n = allNamedVariables[regist - FIRST_NAMED_VARIABLE].variableName[0];
+      for(i=0, p=(char *)(allNamedVariables[regist - FIRST_NAMED_VARIABLE].variableName) + 1; i<n; i++, p++) {
         string[i] = *p;
       }
+      string[i] = 0;
 
       strcat(string, STD_SPACE_3_PER_EM "=" STD_SPACE_3_PER_EM);
       n = stringByteLength(string);
@@ -617,13 +618,7 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "numberOfNamedVariables                    = %6u",         allNamedVariablePointer->numberOfNamedVariables);
-        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
-        gtk_widget_show(lbl1[row++]);
-      }
-
-      if(row < DEBUG_LINES) {
-        sprintf(string, "TO_WP43SMEMPTR(allNamedVariablePointer)   = %6d",        TO_WP43SMEMPTR(allNamedVariablePointer));
+        sprintf(string, "numberOfNamedVariables                    = %6u",         numberOfNamedVariables);
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }
@@ -1290,12 +1285,12 @@ void debugNIM(void) {
 
       row = 0;
       gtk_label_set_label(GTK_LABEL(lbl1[row]), "Regis Type                  Address    Size");
-      sprintf(string, "Content of the %" PRIu16 " named variables", allNamedVariablePointer->numberOfNamedVariables);
+      sprintf(string, "Content of the %" PRIu16 " named variables", numberOfNamedVariables);
       gtk_label_set_label(GTK_LABEL(lbl2[row]), string);
       gtk_widget_show(lbl1[row]);
       gtk_widget_show(lbl2[row++]);
 
-      for(uint16_t i=1000; i<1000+allNamedVariablePointer->numberOfNamedVariables; i++) {
+      for(uint16_t i=1000; i<1000 + numberOfNamedVariables; i++) {
         if(row < DEBUG_LINES) {
           sprintf(string, "%03d   %s %7d %7d", i-1000, getRegisterDataTypeName(i, false, true), TO_WP43SMEMPTR(getRegisterDataPointer(i)), TO_BYTES(getRegisterFullSize(i)));
           gtk_label_set_label(GTK_LABEL(lbl1[row]), string);

@@ -139,7 +139,8 @@ typedef union {
     uint32_t pointerToRegisterData : 16; ///< Memory block number
     uint32_t dataType              :  4; ///< dtLongInteger, dtReal16, ...
     uint32_t tag                   :  5; ///< Short integer base, real34 angular mode, or long integer sign
-    uint32_t notUsed               :  7; ///< 7 bits free
+    uint32_t readOnly              :  1; ///< The register or variable is readOnly if this field is 1 (used for system named variables)
+    uint32_t notUsed               :  6; ///< 6 bits free
   };
 } registerHeader_t;
 
@@ -152,36 +153,70 @@ typedef union {
 typedef union {
   uint32_t data;
   uint32_t localFlags;
+
   struct {
-    uint16_t dataMaxLength;               ///< String max length (includind terminating \0) in blocks or Long integer max length in blocks
-    uint16_t numberOfNamedVariables;      ///< Number of existing named variables
+    uint16_t dataMaxLength;             ///< String max length (includind terminating \0) in blocks or Long integer max length in blocks
+    uint16_t dummy;                     ///< Dummy
   };
+
   struct {
-    uint16_t variableNameLen;             ///< Size of the name in blocs: 1 to 4, up to 15 bytes = 7 double byte glyphs + trailing 0
-    uint16_t ptrToVariableName;           ///< Pointer to the name of the variable
+    uint16_t variableNameLen;           ///< Size of the name in blocs: 1 to 4, up to 15 bytes = 7 double byte glyphs + trailing 0
+    uint16_t ptrToVariableName;         ///< Pointer to the name of the variable
   };
+
   struct {
-    uint16_t matrixLines;                 ///< Number of lines in the matrix
-    uint16_t matrixColumns;               ///< Number of columns in the matrix
+    uint16_t matrixRows;                ///< Number of rows in the matrix
+    uint16_t matrixColumns;             ///< Number of columns in the matrix
   };
+
   struct {
-    uint16_t numberOfSubroutineLevels;    ///< Number of subroutine levels
-    uint16_t ptrToSubroutineLevel0Data;   ///< Number of subroutine levels
+    uint16_t numberOfSubroutineLevels;  ///< Number of subroutine levels
+    uint16_t ptrToSubroutineLevel0Data; ///< Pointer to subroutine level 0 data
   };
+
   struct {
-    int16_t  returnProgramNumber;         ///< return program number >0 if in RAM and <0 if in FLASH
-    uint16_t returnLocalStep;             ///< Return local step number in program number
+    uint16_t numberOfNamedVariables;    ///< Number of named variables
+    uint16_t ptrToNamedVariablesList;   ///< Pointer to the named variable list
   };
+
   struct {
-    uint8_t numberOfLocalFlags;           ///< Number of allocated local flags
-    uint8_t numberOfLocalRegisters;       ///< Number of allocated local registers
-    uint16_t subroutineLevel;             ///< Subroutine level
+    int16_t  returnProgramNumber;       ///< return program number >0 if in RAM and <0 if in FLASH
+    uint16_t returnLocalStep;           ///< Return local step number in program number
   };
+
   struct {
-    uint16_t ptrToNextLevel;              ///< Pointer to next level of subroutine data
-    uint16_t ptrToPreviousLevel;          ///< Pointer to previous level of subroutine data
+    uint8_t  numberOfLocalFlags;        ///< Number of allocated local flags
+    uint8_t  numberOfLocalRegisters;    ///< Number of allocated local registers
+    uint16_t subroutineLevel;           ///< Subroutine level
+  };
+
+  struct {
+    uint16_t ptrToNextLevel;            ///< Pointer to next level of subroutine data
+    uint16_t ptrToPreviousLevel;        ///< Pointer to previous level of subroutine data
   };
 } dataBlock_t;
+
+
+// Header for named variables
+/********************************************//**
+ * \typedef namedVariableHeader_t
+ * \brief Named variable header
+ ***********************************************/
+typedef struct {
+  registerHeader_t header;  ///< Header
+  uint8_t variableName[16]; ///< Variable name
+} namedVariableHeader_t;
+
+
+// Header for system named variables
+/********************************************//**
+ * \typedef reservedVariableHeader_t
+ * \brief Reserved variable header
+ ***********************************************/
+typedef struct {
+  registerHeader_t header;         ///< Header
+  uint8_t reservedVariableName[8]; ///< Variable name
+} reservedVariableHeader_t;
 
 
 /********************************************//**

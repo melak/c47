@@ -18,14 +18,14 @@
  * \file memory.h
  ***********************************************/
 
-void    *wp43sAllocate     (size_t sizeInBytes);
-void    *wp43sReallocate   (void *pcMemPtr, size_t oldSizeInBytes, size_t newSizeInBytes);
-void    wp43sFree          (void *pcMemPtr, size_t sizeInBytes);
+void    *wp43sAllocate     (size_t sizeInBlocks);
+void    *wp43sReallocate   (void *pcMemPtr, size_t oldSizeInBlocks, size_t newSizeInBlocks);
+void    wp43sFree          (void *pcMemPtr, size_t sizeInBlocks);
 
 // The 6 followoing functions are only there to know who allocates and frees memory
-void    *allocWp43s        (size_t sizeInBytes);
-void    *reallocWp43s      (void *pcMemPtr, size_t oldSizeInBytes, size_t newSizeInBytes);
-void    freeWp43s          (void *pcMemPtr, size_t sizeInBytes);
+void    *allocWp43s        (size_t sizeInBlocks);
+void    *reallocWp43s      (void *pcMemPtr, size_t oldSizeInBlocks, size_t newSizeInBlocks);
+void    freeWp43s          (void *pcMemPtr, size_t sizeInBlocks);
 
 void    *allocGmp          (size_t sizeInBytes);
 void    *reallocGmp        (void *pcMemPtr, size_t oldSizeInBytes, size_t newSizeInBytes);

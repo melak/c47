@@ -23,23 +23,23 @@
 //This variable is to store in flash memory
 const calcKey_t kbd_std[37] = {
 //keyId primary        fShifted         gShifted         keyLblAim        primaryAim         fShiftedAim      gShiftedAim    primaryTam
- {21,   ITM_1ONX,      ITM_TGLFRT,     -MNU_ALPHAFN,     ITM_NULL,        ITM_A,            -MNU_ALPHAINTL,   ITM_ALPHA,     ITM_STACK_A  },
- {22,   ITM_YX,        ITM_toINT,      -MNU_EXP,         ITM_NUMBER_SIGN, ITM_B,             ITM_NUMBER_SIGN, ITM_BETA,      ITM_STACK_B  },
- {23,  -MNU_TRI,       ITM_DMS,         ITM_CONSTpi,     ITM_NULL,        ITM_C,             ITM_NULL,        ITM_GAMMA,     ITM_STACK_C  },
- {24,   ITM_LN,        ITM_dotD,        ITM_LOG10,       ITM_NULL,        ITM_D,             ITM_NULL,        ITM_DELTA,     ITM_STACK_D  }, // if f or g are changed: adapt the function btnClicked section if(calcMode == CM_NIM) in keyboard.c. Case D for decimal base
+ {21,   ITM_1ONX,      ITM_TGLFRT,     -MNU_ALPHAFN,     ITM_NULL,        ITM_A,            -MNU_ALPHAINTL,   ITM_ALPHA,     ITM_REG_A    },
+ {22,   ITM_YX,        ITM_toINT,      -MNU_EXP,         ITM_NUMBER_SIGN, ITM_B,             ITM_NUMBER_SIGN, ITM_BETA,      ITM_REG_B    },
+ {23,  -MNU_TRI,       ITM_DMS,         ITM_CONSTpi,     ITM_NULL,        ITM_C,             ITM_NULL,        ITM_GAMMA,     ITM_REG_C    },
+ {24,   ITM_LN,        ITM_dotD,        ITM_LOG10,       ITM_NULL,        ITM_D,             ITM_NULL,        ITM_DELTA,     ITM_REG_D    }, // if f or g are changed: adapt the function btnClicked section if(calcMode == CM_NIM) in keyboard.c. Case D for decimal base
  {25,   ITM_EXP,       ITM_toHMS,       ITM_10x,         ITM_NULL,        ITM_E,             ITM_NULL,        ITM_EPSILON,   ITM_NULL     },
  {26,   ITM_SQUARE,    ITM_AIM,         ITM_SQUAREROOTX, ITM_CHECK_MARK,  ITM_F,             ITM_CHECK_MARK,  ITM_PHI,       ITM_alpha    },
 
  {31,   ITM_STO,       ITM_ASSIGN,      ITM_SAVE,        ITM_NULL,        ITM_G,             ITM_ASSIGN,      ITM_GAMMA,     ITM_NULL     },
  {32,   ITM_RCL,       ITM_RBR,         ITM_VIEW,        ITM_NULL,        ITM_H,             ITM_RBR,         ITM_CHI,       ITM_HEX      }, // if f or g are changed: adapt the function btnClicked section if(calcMode == CM_NIM) in keyboard.c. Case H for hexadecimal base
- {33,   ITM_Rdown,     ITM_Rup,        -MNU_CPX,         ITM_NULL,        ITM_I,             ITM_DOWN_ARROW,  ITM_IOTA,      ITM_REGI     },
- {34,   ITM_CC,        ITM_MAGNITUDE,   ITM_ANGLE,       ITM_NULL,        ITM_J,             ITM_NULL,        ITM_ETA,       ITM_REGJ     },
+ {33,   ITM_Rdown,     ITM_Rup,        -MNU_CPX,         ITM_NULL,        ITM_I,             ITM_DOWN_ARROW,  ITM_IOTA,      ITM_REG_I    },
+ {34,   ITM_CC,        ITM_MAGNITUDE,   ITM_ANGLE,       ITM_NULL,        ITM_J,             ITM_NULL,        ITM_ETA,       ITM_REG_J    },
  {35,   ITM_SHIFTf,    ITM_NULL,        ITM_SNAP,        ITM_SHIFTf,      ITM_SHIFTf,        ITM_NULL,        ITM_SNAP,      ITM_SHIFTf   },
  {36,   ITM_SHIFTg,    ITM_USERMODE,    ITM_NULL,        ITM_SHIFTg,      ITM_SHIFTg,        ITM_USERMODE,    ITM_NULL,      ITM_SHIFTg   },
 
  {41,   ITM_ENTER,     ITM_STATUS,      ITM_DROP,        ITM_ENTER,       ITM_ENTER,         ITM_STATUS,      ITM_DROP,      ITM_ENTER    },
- {42,   ITM_XexY,      ITM_FILL,       -MNU_STK,         ITM_ex,          ITM_K,             ITM_ex,          ITM_KAPPA,     ITM_REGK     },
- {43,   ITM_CHS,       ITM_DELTAPC,    -MNU_FIN,         ITM_PLUS_MINUS,  ITM_L,             ITM_PLUS_MINUS,  ITM_LAMBDA,    ITM_REGL     },
+ {42,   ITM_XexY,      ITM_FILL,       -MNU_STK,         ITM_ex,          ITM_K,             ITM_ex,          ITM_KAPPA,     ITM_REG_K    },
+ {43,   ITM_CHS,       ITM_DELTAPC,    -MNU_FIN,         ITM_PLUS_MINUS,  ITM_L,             ITM_PLUS_MINUS,  ITM_LAMBDA,    ITM_REG_L    },
  {44,   ITM_EXPONENT,  ITM_SHOW,       -MNU_DSP,         ITM_NULL,        ITM_M,             ITM_UP_ARROW,    ITM_MU,        ITM_NULL     },
  {45,   ITM_BACKSPACE, ITM_UNDO,       -MNU_CLR,         ITM_BACKSPACE,   ITM_BACKSPACE,     ITM_UNDO,       -MNU_CLR,       ITM_BACKSPACE},
 
