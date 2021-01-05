@@ -6562,6 +6562,48 @@ void addTestPrograms(void) {
     *(currentStep++) = (ITM_M2toHECTARE >> 8) | 0x80;
     *(currentStep++) =  ITM_M2toHECTARE       & 0xff;
 
+    *(currentStep++) = (ITM_MUtoM2 >> 8) | 0x80;
+    *(currentStep++) =  ITM_MUtoM2       & 0xff;
+
+    *(currentStep++) = (ITM_M2toMU >> 8) | 0x80;
+    *(currentStep++) =  ITM_M2toMU       & 0xff;
+
+    *(currentStep++) = (ITM_LItoM >> 8) | 0x80;
+    *(currentStep++) =  ITM_LItoM       & 0xff;
+
+    *(currentStep++) = (ITM_MtoLI >> 8) | 0x80;
+    *(currentStep++) =  ITM_MtoLI       & 0xff;
+
+    *(currentStep++) = (ITM_CHItoM >> 8) | 0x80;
+    *(currentStep++) =  ITM_CHItoM       & 0xff;
+
+    *(currentStep++) = (ITM_MtoCHI >> 8) | 0x80;
+    *(currentStep++) =  ITM_MtoCHI       & 0xff;
+
+    *(currentStep++) = (ITM_YINtoM >> 8) | 0x80;
+    *(currentStep++) =  ITM_YINtoM       & 0xff;
+
+    *(currentStep++) = (ITM_MtoYIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_MtoYIN       & 0xff;
+
+    *(currentStep++) = (ITM_CUNtoM >> 8) | 0x80;
+    *(currentStep++) =  ITM_CUNtoM       & 0xff;
+
+    *(currentStep++) = (ITM_MtoCUN >> 8) | 0x80;
+    *(currentStep++) =  ITM_MtoCUN       & 0xff;
+
+    *(currentStep++) = (ITM_ZHANGtoM >> 8) | 0x80;
+    *(currentStep++) =  ITM_ZHANGtoM       & 0xff;
+
+    *(currentStep++) = (ITM_MtoZHANG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MtoZHANG       & 0xff;
+
+    *(currentStep++) = (ITM_FENtoM >> 8) | 0x80;
+    *(currentStep++) =  ITM_FENtoM       & 0xff;
+
+    *(currentStep++) = (ITM_MtoFEN >> 8) | 0x80;
+    *(currentStep++) =  ITM_MtoFEN       & 0xff;
+
     *(currentStep++) = (ITM_FCC >> 8) | 0x80;
     *(currentStep++) =  ITM_FCC       & 0xff;
     *(currentStep++) = 0;

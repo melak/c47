@@ -846,6 +846,20 @@ void decodeOneStep(uint8_t *step) {
         case ITM_PAtoATMb:    //   369
         case ITM_HECTAREtoM2: //   370
         case ITM_M2toHECTARE: //   371
+        case ITM_MUtoM2:      //   372
+        case ITM_M2toMU:      //   373
+        case ITM_LItoM:       //   374
+        case ITM_MtoLI:       //   375
+        case ITM_CHItoM:      //   376
+        case ITM_MtoCHI:      //   377
+        case ITM_YINtoM:      //   378
+        case ITM_MtoYIN:      //   379
+        case ITM_CUNtoM:      //   380
+        case ITM_MtoCUN:      //   381
+        case ITM_ZHANGtoM:    //   382
+        case ITM_MtoZHANG:    //   383
+        case ITM_FENtoM:      //   384
+        case ITM_MtoFEN:      //   385
         case ITM_LOGICALNAND: //   392
         case ITM_LOGICALNOR:  //   393
         case ITM_LOGICALXNOR: //   394

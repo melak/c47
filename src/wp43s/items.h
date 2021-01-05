@@ -409,8 +409,8 @@
 #define ITM_MtoYIN                     379
 #define ITM_CUNtoM                     380
 #define ITM_MtoCUN                     381
-#define ITM_ZHAtoM                     382
-#define ITM_MtoZHA                     383
+#define ITM_ZHANGtoM                   382
+#define ITM_MtoZHANG                   383
 #define ITM_FENtoM                     384
 #define ITM_MtoFEN                     385
 
