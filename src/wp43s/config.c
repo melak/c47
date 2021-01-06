@@ -6595,8 +6595,14 @@ void addTestPrograms(void) {
     *(currentStep++) = (ITM_ZHANGtoM >> 8) | 0x80;
     *(currentStep++) =  ITM_ZHANGtoM       & 0xff;
 
+    *(currentStep++) = (ITM_ZHANGtoMb >> 8) | 0x80;
+    *(currentStep++) =  ITM_ZHANGtoMb       & 0xff;
+
     *(currentStep++) = (ITM_MtoZHANG >> 8) | 0x80;
     *(currentStep++) =  ITM_MtoZHANG       & 0xff;
+
+    *(currentStep++) = (ITM_MtoZHANGb >> 8) | 0x80;
+    *(currentStep++) =  ITM_MtoZHANGb       & 0xff;
 
     *(currentStep++) = (ITM_FENtoM >> 8) | 0x80;
     *(currentStep++) =  ITM_FENtoM       & 0xff;
