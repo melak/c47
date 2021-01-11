@@ -585,7 +585,8 @@
 #define MAX_DENMAX                              9999 // Biggest denominator in fraction display mode
 
 #define SCREEN_REFRESH_PERIOD                    500 // in milliseconds
-#define RAM_SIZE                                1024 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
+#define RAM_SIZE                               16384 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
+//#define RAM_SIZE                                3072 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
 
 #define CONFIG_SIZE            TO_BLOCKS(sizeof(dtConfigDescriptor_t))
 

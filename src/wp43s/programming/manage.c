@@ -312,59 +312,61 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
 void insertStepInProgram(int16_t func) {
   switch(func) {
     case ITM_GTO:          //    2
-    case ITM_GTOP:         // 1472
+    case ITM_GTOP:         // 1482
       #ifndef DMCP_BUILD
         stringToUtf8(indexOfItems[func].itemCatalogName, (uint8_t *)tmpString);
         printf("insertStepInProgram: %s\n", tmpString);
       #endif // DMCP_BUILD
       break;
 
-    case ITM_CLP:          // 1415
+    case ITM_CLP:          // 1425
       fnClP(NOPARAM);
       break;
 
-    case ITM_CLPALL:       // 1416
+    case ITM_CLPALL:       // 1426
       fnClPAll(NOT_CONFIRMED);
       break;
 
-    case ITM_BST:          // 1724
+    case ITM_BST:          // 1734
       fnBst(NOPARAM);
       break;
 
-    case ITM_SST:          // 1726
+    case ITM_SST:          // 1736
       fnSst(NOPARAM);
       break;
 
     // Not programmable
-    case ITM_ASSIGN:       // 1401
-    case ITM_CLALL:        // 1409
-    case ITM_CLREGS:       // 1417
-    case ITM_EQ_DEL:       // 1453
-    case ITM_EQ_EDI:       // 1454
-    case ITM_EQ_NEW:       // 1455
-    case ITM_LOAD:         // 1499
-    case ITM_LOADP:        // 1500
-    case ITM_LOADR:        // 1501
-    case ITM_LOADSS:       // 1502
-    case ITM_LOADSIGMA:    // 1503
-    case ITM_LOADV:        // 1542
-    case ITM_M_DELR:       // 1515
-    case ITM_M_EDI:        // 1519
-    case ITM_M_EDIN:       // 1520
-    case ITM_M_GOTO:       // 1522
-    case ITM_M_GROW:       // 1523
-    case ITM_M_INSR:       // 1524
-    case ITM_M_OLD:        // 1527
-    case ITM_M_WRAP:       // 1531
-    case ITM_PSTO:         // 1545
-    case ITM_RBR:          // 1550
-    case ITM_RESET:        // 1558
-    case ITM_SAVE:         // 1576
-    case ITM_STATUS:       // 1600
-    case ITM_TIMER:        // 1612
-    case ITM_FBR:          // 1712
-    case ITM_UNDO:         // 1713
-    case ITM_SYSTEM:       // 1733
+    case ITM_ASSIGN:       // 1411
+    case ITM_CLALL:        // 1419
+    case ITM_CLREGS:       // 1427
+    case ITM_EQ_DEL:       // 1463
+    case ITM_EQ_EDI:       // 1464
+    case ITM_EQ_NEW:       // 1465
+    case ITM_LOAD:         // 1509
+    case ITM_LOADP:        // 1510
+    case ITM_LOADR:        // 1511
+    case ITM_LOADSS:       // 1512
+    case ITM_LOADSIGMA:    // 1513
+    case ITM_M_DELR:       // 1525
+    case ITM_M_EDI:        // 1529
+    case ITM_M_EDIN:       // 1530
+    case ITM_M_GOTO:       // 1532
+    case ITM_M_GROW:       // 1533
+    case ITM_M_INSR:       // 1534
+    case ITM_M_OLD:        // 1537
+    case ITM_M_WRAP:       // 1541
+    case ITM_LOADV:        // 1552
+    case ITM_PSTO:         // 1555
+    case ITM_RBR:          // 1560
+    case ITM_RESET:        // 1568
+    case ITM_SAVE:         // 1586
+    case ITM_STATUS:       // 1610
+    case ITM_TIMER:        // 1622
+    case ITM_VERS:         // 1631
+    case ITM_WHO:          // 1634
+    case ITM_FBR:          // 1722
+    case ITM_UNDO:         // 1723
+    case ITM_SYSTEM:       // 1743
       break;
 
     default: {
