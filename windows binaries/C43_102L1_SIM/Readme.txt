@@ -1,4 +1,4 @@
-10 Jan 2021 release pre-alpha REL101-POC.
+20 Jan 2021 release pre-alpha REL102.
 
 This is the pre-alpha version of the C43 modifications made on top of the WP43S prelim alpha emulator. Do not expect it to work. It probably does not.
 
@@ -40,6 +40,8 @@ Notes:
 11d. Longpress backspace clear alpha buffer
 11e. STAT / PLOT. DEMO data is availble. Scroll down using Dn.
 11f. Alpha entry.
+
+7. Specifically, the numlock and capslock shifts have been modified.
 
 ---
 

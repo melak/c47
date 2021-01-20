@@ -42,8 +42,12 @@
 //Verbose options
 #define VERBOSE_LEVEL 0            //JM 0 = no text; 1 = essential text; 2 = extra debugging: on calc screen
 
-#define PC_BUILD_TELLTALE            //JM verbose on PC
+#define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
 #undef  PC_BUILD_TELLTALE
+
+
+#define PC_BUILD_VERBOSE1            //JM verbose XEQM basic operation on PC
+#undef  PC_BUILD_VERBOSE1
 
 #define PC_BUILD_VERBOSE2            //JM verbose XEQM detailed operation on PC, via central jm_show_comment1 function
 #undef  PC_BUILD_VERBOSE2
@@ -734,7 +738,8 @@
 #define SCREEN_REFRESH_PERIOD                    100 // 500 // in milliseconds //JM timeout for lcd refresh in ms 100
 #endif
 
-#define RAM_SIZE                               2048 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
+#define RAM_SIZE                               16384 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
+//#define RAM_SIZE                               3072 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
 
 #define CONFIG_SIZE            TO_BLOCKS(sizeof(dtConfigDescriptor_t))
 

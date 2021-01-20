@@ -3,6 +3,7 @@
 *.bin
 *.exe
 wp*.exe
+!windows\ binaries/C43_*/c43.exe
 *.layout
 *.depend
 202*bmp
@@ -30,7 +31,7 @@ DMCP_build/build
 # used by cLion
 .idea/
 
-!windows\ binaries/wp43.exe
+!windows\ binaries/wp43s.exe
 !DM42\ binary/keymap.bin
 !DMCP_build/bin
 

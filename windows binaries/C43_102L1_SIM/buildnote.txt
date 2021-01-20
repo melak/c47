@@ -1,0 +1,3 @@
+2f0ddcd5:
+---------
+Reduced verbose XEQM; removed Martin's test program: see addTestPrograms in config.c; fixed bug in shifted gui display; Improved medium font display a little;

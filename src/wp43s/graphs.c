@@ -680,9 +680,7 @@ void graph_axis (void){
 
   if(PLOT_INTG && !invalid_intg) {
     snprintf(tmpString, TMP_STR_LENGTH, "  Trapezoid integral");
-    miniC = 1;
-    showString(tmpString, &numericFont, 1, ypos, vmNormal, true, true);  //JM
-    miniC = 0;
+    showStringC43(tmpString, numSmall, nocompress, 1, ypos, vmNormal, true, true);  //JM
     plotintbig( 5, ypos+4+4-2 );
     plotrect(5+4-1, (ypos+4+4-2+2)-1, 5+4+2, (ypos+4+4-2+2)+2);
     ypos += 20;
@@ -690,18 +688,14 @@ void graph_axis (void){
 
   if(PLOT_DIFF && !invalid_diff) {
     snprintf(tmpString, TMP_STR_LENGTH, "  Num. differential");
-    miniC = 1;
-    showString(tmpString, &numericFont, 1, ypos, vmNormal, true, true);  //JM
-    miniC = 0;
+    showStringC43(tmpString, numSmall, nocompress, 1, ypos, vmNormal, true, true);  //JM
     plotdeltabig( 6, ypos+4+4-2);
     ypos += 20;
   }
 
   if(PLOT_RMS && !invalid_rms) {
     snprintf(tmpString, TMP_STR_LENGTH, "  RMSy");
-    miniC = 1;
-    showString(tmpString, &numericFont, 1, ypos, vmNormal, true, true);  //JM
-    miniC = 0;
+    showStringC43(tmpString, numSmall, nocompress, 1, ypos, vmNormal, true, true);  //JM
     plotrms( 6, ypos+4+4-2);
     plotrect(6-1, (ypos+4+4-2)-1, 6+2, (ypos+4+4-2)+2);
     ypos += 20;

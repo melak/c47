@@ -570,9 +570,6 @@ const item_t indexOfItems[] = {
 
 
 
-
-
-
 /*    0 */  { itemToBeCoded,               NOPARAM,                     "",                                            "0000",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED}, // ITM_NULL
 
 // Items from 1 to 127 are 1 byte OP codes
@@ -965,9 +962,9 @@ const item_t indexOfItems[] = {
 /*  380 */  { fnCvtCunM,                   divide,                      "c" STD_u_GRAVE "n" STD_RIGHT_ARROW "m",       "c" STD_u_GRAVE "n" STD_RIGHT_ARROW "m",       0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
 /*  381 */  { fnCvtCunM,                   multiply,                    "m" STD_RIGHT_ARROW "c" STD_u_GRAVE "n",       "m" STD_RIGHT_ARROW "c" STD_u_GRAVE "n",       0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
 /*  382 */  { fnCvtZhangM,                 divide,                      "zh" STD_a_GRAVE "ng" STD_RIGHT_ARROW "m",     "zh" STD_a_GRAVE "ng",                         0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
-/*  383 */  { fnCvtZhangM,                 divide,                      "zh" STD_a_GRAVE "ng" STD_RIGHT_ARROW "m",     STD_RIGHT_ARROW " m",                          0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
+/*  383 */  { fnCvtZhangM,                 divide,                      "zh" STD_a_GRAVE "ng" STD_RIGHT_ARROW "m",     STD_RIGHT_ARROW " m",                          0,       0,       CAT_DUPL, SLS_ENABLED  , US_ENABLED  },
 /*  384 */  { fnCvtZhangM,                 multiply,                    "m" STD_RIGHT_ARROW "zh" STD_a_GRAVE "ng",     "m " STD_RIGHT_ARROW,                          0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
-/*  385 */  { fnCvtZhangM,                 multiply,                    "m" STD_RIGHT_ARROW "zh" STD_a_GRAVE "ng",     "zh" STD_a_GRAVE "ng",                         0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
+/*  385 */  { fnCvtZhangM,                 multiply,                    "m" STD_RIGHT_ARROW "zh" STD_a_GRAVE "ng",     "zh" STD_a_GRAVE "ng",                         0,       0,       CAT_DUPL, SLS_ENABLED  , US_ENABLED  },
 /*  386 */  { fnCvtFenM,                   divide,                      "f" STD_e_MACRON "n" STD_RIGHT_ARROW "m",      "f" STD_e_MACRON "n" STD_RIGHT_ARROW "m",      0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
 /*  387 */  { fnCvtFenM,                   multiply,                    "m" STD_RIGHT_ARROW "f" STD_e_MACRON "n",      "m" STD_RIGHT_ARROW "f" STD_e_MACRON "n",      0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
 /*  388 */  { itemToBeCoded,               NOPARAM,                     "0388",                                        "0388",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
@@ -980,7 +977,7 @@ const item_t indexOfItems[] = {
 /*  395 */  { itemToBeCoded,               NOPARAM,                     "0395",                                        "0395",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 
 
-// Flag
+// Flag, bit, rotation, and logical OPs
 /*  396 */  { fnIsFlagClearClear,          TM_FLAGW,                    "FC?C",                                        "FC?C",                                        0,      99,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
 /*  397 */  { fnIsFlagClearSet,            TM_FLAGW,                    "FC?S",                                        "FC?S",                                        0,      99,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
 /*  398 */  { fnIsFlagClearFlip,           TM_FLAGW,                    "FC?F",                                        "FC?F",                                        0,      99,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
@@ -1213,7 +1210,7 @@ const item_t indexOfItems[] = {
 /*  616 */  { itemToBeCoded,               NOPARAM,                     "0616",                                        "0616",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
 /*  617 */  { addItemToBuffer,             ITM_ZETA,                    "",                                            STD_ZETA,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  618 */  { addItemToBuffer,             ITM_ETA,                     "",                                            STD_ETA,                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/*  619 */  { itemToBeCoded,               NOPARAM,                     "0619",                                        "0619",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
+/*  619 */  { itemToBeCoded,               NOPARAM,                     "0619",                                        "0619",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  620 */  { addItemToBuffer,             ITM_THETA,                   "",                                            STD_THETA,                                     0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  621 */  { addItemToBuffer,             ITM_IOTA,                    "",                                            STD_IOTA,                                      0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /*  622 */  { itemToBeCoded,               NOPARAM,                     "0622",                                        "0622",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
@@ -2126,7 +2123,7 @@ const item_t indexOfItems[] = {
 /* 1515 */  { fnGetLocR,                   NOPARAM,                     "LocR?",                                       "LocR?",                                       0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
 /* 1516 */  { itemToBeCoded,               NOPARAM,                     "L.R.",                                        "L.R.",                                        0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
 /* 1517 */  { fnMant,                      NOPARAM,                     "MANT",                                        "MANT",                                        0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
-/* 1518 */  { itemToBeCoded,               NOPARAM,                     "1518",                                        "1518",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1518 */  { itemToBeCoded,               NOPARAM,                     "1518",                                        "1518",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_ENABLED  },
 /* 1519 */  { fnFreeMemory,                NOPARAM,                     "MEM?",                                        "MEM?",                                        0,       0,       CAT_FNCT, SLS_ENABLED  , US_ENABLED  },
 /* 1520 */  { itemToBeCoded,               NOPARAM,                     "MENU",                                        "MENU",                                        0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
 /* 1521 */  { itemToBeCoded,               NOPARAM,                     "MONTH",                                       "MONTH",                                       0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
@@ -2349,7 +2346,7 @@ const item_t indexOfItems[] = {
 /* 1736 */  { itemToBeCoded,               NOPARAM,                     "SST",                                         STD_HAMBURGER STD_SST,                         0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1737 */  { fnKeyExit,                   NOPARAM,                     "EXIT",                                        "EXIT",                                        0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1738 */  { fnKeyBackspace,              NOPARAM,                     "BKSPC",                                       STD_LEFT_ARROW,                                0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
-/* 1739 */  { itemToBeCoded,               NOPARAM,                     "",                                            STD_PRINTER "x",                               0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
+/* 1739 */  { itemToBeCoded,               NOPARAM,                     "1739",                                        "1739",                                        0,       0,       CAT_FREE, SLS_UNCHANGED, US_ENABLED  },
 /* 1740 */  { fnAim,                       NOPARAM/*#JM#*/,             "AIM",                                         "ALPHA",                                       0,       0,       CAT_NONE, SLS_UNCHANGED, US_ENABLED  },//JM
 /* 1741 */  { fnKeyDotD,                   NOPARAM,                     ".d",                                          ".d",                                          0,       0,       CAT_NONE, SLS_UNCHANGED, US_UNCHANGED},
 /* 1742 */  { fnShow_SCROLL,               NOPARAM/*#JM#*/,             "SHOW",                                        "SHOW",                                        0,       0,       CAT_FNCT, SLS_UNCHANGED, US_ENABLED  },
@@ -2371,7 +2368,7 @@ const item_t indexOfItems[] = {
 
 
 
-
+//Jaymos C43 extensions
 /* 1756 */  { fnSetSetJM,                  JC_FG_LINE,                  "fg" STD_SPACE_3_PER_EM "LINE",                "fg" STD_SPACE_3_PER_EM "LINE",                0,       0,       CAT_FNCT, SLS_UNCHANGED, US_UNCHANGED},//JM UNDERLINING
 /* 1757 */  { fnSetSetJM,                  JC_NO_BASE_SCREEN,           "NO" STD_SPACE_3_PER_EM "BASE",                "NO" STD_SPACE_3_PER_EM "BASE",                0,       0,       CAT_FNCT, SLS_UNCHANGED, US_UNCHANGED},//JM NOBASE MENU SETTING
 /* 1758 */  { fnSetSetJM,                  JC_G_DOUBLETAP,              "G" STD_SPACE_3_PER_EM "2TAP",                 "G" STD_SPACE_3_PER_EM "2TAP",                 0,       0,       CAT_FNCT, SLS_UNCHANGED, US_UNCHANGED},//JM KEY TAP DOUBLE SETTING

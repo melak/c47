@@ -19,6 +19,8 @@
  ***********************************************/
 
 
+
+
 #define ITM_NULL                         0
 
 // Items from 1 to 127 are 1 byte OP codes
@@ -312,11 +314,11 @@
 #define ITM_WtoHPM                     281
 #define ITM_HPUKtoW                    282
 #define ITM_WtoHPUK                    283
-#define ITM_IHGtoPA                    284
-#define ITM_IHGtoPAb                   285
-#define ITM_PAtoIHG                    286
-#define ITM_PAtoIHGb                   287
-#define ITM_INtoM                      288
+#define ITM_INCHHGtoPA                 284
+#define ITM_INCHHGtoPAb                285
+#define ITM_PAtoINCHHG                 286
+#define ITM_PAtoINCHHGb                287
+#define ITM_INCHtoM                    288
 #define ITM_MtoINCH                    289
 #define ITM_WHtoJ                      290
 #define ITM_JtoWH                      291
@@ -362,8 +364,8 @@
 #define ITM_NMItoM                     331
 #define ITM_MtoPC                      332
 #define ITM_PCtoM                      333
-#define ITM_MtoPOINTb                  334
-#define ITM_MtoPOINT                   335
+#define ITM_MtoPOINT                   334
+#define ITM_MtoPOINTb                  335
 #define ITM_MtoPOINTc                  336
 #define ITM_POINTtoM                   337
 #define ITM_POINTtoMb                  338
@@ -1449,13 +1451,13 @@
 #define MNU_PROG                      1394
 #define MNU_TAMLABEL                  1395
 #define MNU_DYNAMIC                   1396
-#define ITM_1397                      1397
-#define ITM_1398                      1398
-#define ITM_1399                      1399
-#define ITM_1400                      1400
-#define ITM_1401                      1401
-#define ITM_1402                      1402
-#define ITM_1403                      1403
+#define MNU_1397                      1397
+#define MNU_1398                      1398
+#define MNU_1399                      1399
+#define MNU_1400                      1400
+#define MNU_1401                      1401
+#define MNU_1402                      1402
+#define MNU_1403                      1403
 
 
 #define ITM_1COMPL                    1404
@@ -1795,7 +1797,7 @@
 #define ITM_SST                       1736
 #define ITM_EXIT1                     1737
 #define ITM_BACKSPACE                 1738
-#define ITM_PRTX                      1739
+#define ITM_1739                      1739
 #define ITM_AIM                       1740
 #define ITM_dotD                      1741
 #define ITM_SHOW                      1742

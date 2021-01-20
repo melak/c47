@@ -300,11 +300,11 @@ void showFracMode(void) {
         showGlyphCode(' ',    &standardFont, X_ALPHA_MODE, 0, vmNormal, true, true); // is 0+0+10 pixel wide
         switch(status) {
           case  1: showString(STD_SUB_N, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub    // STD_ALPHA is 0+9+2 pixel wide
-          case  2: showString(STD_SUB_N, &standardFont, X_ALPHA_MODE,-12, vmNormal, true, false); break; //sup   
+          case  2: showString(STD_SUB_N, &standardFont, X_ALPHA_MODE,-11, vmNormal, true, false); break; //sup   
           case  3: showString(STD_num,   &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
         
           case  4: showString(STD_SUB_n, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub   
-          case  5: showString(STD_SUB_n, &standardFont, X_ALPHA_MODE,-12, vmNormal, true, false); break; //sup   
+          case  5: showString(STD_SUB_n, &standardFont, X_ALPHA_MODE,-11, vmNormal, true, false); break; //sup   
           case  6: showString(STD_n,     &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
           
           case  7: showString(STD_OMEGA, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sub   
@@ -312,7 +312,7 @@ void showFracMode(void) {
           case  9: showString(STD_OMEGA, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
           
           case 10: showString(STD_SUB_A, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub   
-          case 11: showString(STD_SUB_A, &standardFont, X_ALPHA_MODE, -12, vmNormal, true, false); break; //sup   //not possible
+          case 11: showString(STD_SUB_A, &standardFont, X_ALPHA_MODE, -11, vmNormal, true, false); break; //sup   //not possible
           case 12: showString(STD_A    , &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
     
           case 13: showString(STD_omega, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sub   
@@ -320,7 +320,7 @@ void showFracMode(void) {
           case 15: showString(STD_omega, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
           
           case 16: showString(STD_SUB_a, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub   
-          case 17: showString(STD_SUB_a, &standardFont, X_ALPHA_MODE, -12, vmNormal, true, false); break; //sup    //not possible 
+          case 17: showString(STD_SUB_a, &standardFont, X_ALPHA_MODE, -11, vmNormal, true, false); break; //sup    //not possible 
           case 18: showString(STD_a    , &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
           default:;
         }

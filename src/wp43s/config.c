@@ -516,7 +516,7 @@ void fnClAll(uint16_t confirmation) {
 
 
 void addTestPrograms(void) {
-  uint32_t numberOfBytesForTheTestPrograms = 5700; // Multiple of 4
+  uint32_t numberOfBytesForTheTestPrograms = 8356; // Multiple of 4
 
   resizeProgramMemory(TO_BLOCKS(numberOfBytesForTheTestPrograms));
   firstDisplayedStep            = beginOfProgramMemory;
@@ -2510,7 +2510,7 @@ void addTestPrograms(void) {
     *(currentStep++) =  ITM_END       & 0xff;
   }
 
-  { // Factorial: the recursive way ReM page 258
+  { // Factorial: the recursive way ReM page 261
     // 1
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
@@ -2520,8 +2520,8 @@ void addTestPrograms(void) {
     *(currentStep++) = 'M';
     *(currentStep++) = 'p';
     *(currentStep++) = '2';
-    *(currentStep++) = '5';
-    *(currentStep++) = '8';
+    *(currentStep++) = '6';
+    *(currentStep++) = '1';
 
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
@@ -2578,7 +2578,7 @@ void addTestPrograms(void) {
     *(currentStep++) =  ITM_END       & 0xff;
   }
 
-  { // OM page 204
+  { // OM page 203
     // 1
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
@@ -2588,7 +2588,7 @@ void addTestPrograms(void) {
     *(currentStep++) = 'p';
     *(currentStep++) = '2';
     *(currentStep++) = '0';
-    *(currentStep++) = '4';
+    *(currentStep++) = '3';
 
     *(currentStep++) = ITM_SQUARE;
 
@@ -2603,7 +2603,7 @@ void addTestPrograms(void) {
     *(currentStep++) =  ITM_END       & 0xff;
   }
 
-  { // OM page 207
+  { // OM page 206
     // 1
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
@@ -2613,7 +2613,7 @@ void addTestPrograms(void) {
     *(currentStep++) = 'p';
     *(currentStep++) = '2';
     *(currentStep++) = '0';
-    *(currentStep++) = '7';
+    *(currentStep++) = '6';
 
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
@@ -2735,7 +2735,7 @@ void addTestPrograms(void) {
     *(currentStep++) =  ITM_END       & 0xff;
   }
 
-  { // OM page 220
+  { // OM page 218
     // 1
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
@@ -2744,8 +2744,8 @@ void addTestPrograms(void) {
     *(currentStep++) = 'M';
     *(currentStep++) = 'p';
     *(currentStep++) = '2';
-    *(currentStep++) = '2';
-    *(currentStep++) = '0';
+    *(currentStep++) = '1';
+    *(currentStep++) = '8';
 
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
@@ -2862,7 +2862,7 @@ void addTestPrograms(void) {
     *(currentStep++) =  ITM_END       & 0xff;
   }
 
-  { // OM page 221
+  { // OM page 220
     // 1
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
@@ -2872,7 +2872,7 @@ void addTestPrograms(void) {
     *(currentStep++) = 'p';
     *(currentStep++) = '2';
     *(currentStep++) = '2';
-    *(currentStep++) = '1';
+    *(currentStep++) = '0';
 
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
@@ -2927,8 +2927,7 @@ void addTestPrograms(void) {
     *(currentStep++) = ITM_GTO;
     *(currentStep++) = 100 + 'B' - 'A'; // B
 
-    *(currentStep++) = (ITM_Xex >> 8) | 0x80;
-    *(currentStep++) =  ITM_Xex       & 0xff;
+    *(currentStep++) = ITM_Xex;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = REGISTER_L;
 
@@ -2948,7 +2947,7 @@ void addTestPrograms(void) {
     *(currentStep++) =  ITM_END       & 0xff;
   }
 
-  { // OM page 226
+  { // OM page 225
     // 1
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
@@ -2958,7 +2957,7 @@ void addTestPrograms(void) {
     *(currentStep++) = 'p';
     *(currentStep++) = '2';
     *(currentStep++) = '2';
-    *(currentStep++) = '6';
+    *(currentStep++) = '5';
 
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
@@ -2970,7 +2969,7 @@ void addTestPrograms(void) {
     *(currentStep++) = 'l';
 
     *(currentStep++) = ITM_LITERAL;
-    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = STRING_REAL34;
     *(currentStep++) = 2; // String length
     *(currentStep++) = '.';
     *(currentStep++) = '5';
@@ -2983,7 +2982,7 @@ void addTestPrograms(void) {
     *(currentStep++) = 't';
 
     *(currentStep++) = ITM_LITERAL;
-    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = STRING_REAL34;
     *(currentStep++) = 4; // String length
     *(currentStep++) = '.';
     *(currentStep++) = '0';
@@ -2996,7 +2995,7 @@ void addTestPrograms(void) {
     *(currentStep++) = 'b';
 
     *(currentStep++) = ITM_LITERAL;
-    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = STRING_REAL34;
     *(currentStep++) = 3; // String length
     *(currentStep++) = '1';
     *(currentStep++) = 'e';
@@ -3008,7 +3007,7 @@ void addTestPrograms(void) {
     *(currentStep++) = 'f';
 
     *(currentStep++) = ITM_LITERAL;
-    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = STRING_REAL34;
     *(currentStep++) = 1; // String length
     *(currentStep++) = '0';
 
@@ -3068,7 +3067,7 @@ void addTestPrograms(void) {
     *(currentStep++) = ITM_DROP;
 
     *(currentStep++) = ITM_LITERAL;
-    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = STRING_REAL34;
     *(currentStep++) = 1; // String length
     *(currentStep++) = '2';
 
@@ -3158,6 +3157,290 @@ void addTestPrograms(void) {
     *(currentStep++) = 1;
 
     // 42
+    *(currentStep++) = (ITM_END >> 8) | 0x80;
+    *(currentStep++) =  ITM_END       & 0xff;
+  }
+
+  { // OM page 227
+    // 1
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 6; // String length
+    *(currentStep++) = 'O';
+    *(currentStep++) = 'M';
+    *(currentStep++) = 'p';
+    *(currentStep++) = '2';
+    *(currentStep++) = '2';
+    *(currentStep++) = '7';
+
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 4; // String length
+    *(currentStep++) = 'O';
+    *(currentStep++) = 's';
+    *(currentStep++) = 'c';
+    *(currentStep++) = 'i';
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_REAL34;
+    *(currentStep++) = 2; // String length
+    *(currentStep++) = '.';
+    *(currentStep++) = '2';
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = STD_DELTA[0];
+    *(currentStep++) = STD_DELTA[1];
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_REAL34;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = '1';
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 2; // String length
+    *(currentStep++) = STD_alpha[0];
+    *(currentStep++) = STD_alpha[1];
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_REAL34;
+    *(currentStep++) = 2; // String length
+    *(currentStep++) = '.';
+    *(currentStep++) = '5';
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 2; // String length
+    *(currentStep++) = STD_beta[0];
+    *(currentStep++) = STD_beta[1];
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_REAL34;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = '1';
+
+    // 10
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 2; // String length
+    *(currentStep++) = STD_gamma[0];
+    *(currentStep++) = STD_gamma[1];
+
+    *(currentStep++) = (ITM_RAD >> 8) | 0x80;
+    *(currentStep++) =  ITM_RAD       & 0xff;
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_REAL34;
+    *(currentStep++) = 2; // String length
+    *(currentStep++) = '.';
+    *(currentStep++) = '3';
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 2; // String length
+    *(currentStep++) = STD_omega[0];
+    *(currentStep++) = STD_omega[1];
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_REAL34;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = '1';
+    *(currentStep++) = '.';
+    *(currentStep++) = '5';
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 'f';
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_REAL34;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = '0';
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 5; // String length
+    *(currentStep++) = 'd';
+    *(currentStep++) = 'f';
+    *(currentStep++) = '/';
+    *(currentStep++) = 'd';
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = 1;
+
+    // 20
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 2; // String length
+    *(currentStep++) = STD_omega[0];
+    *(currentStep++) = STD_omega[1];
+
+    *(currentStep++) = ITM_MULT;
+
+    *(currentStep++) = ITM_sin;
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 2; // String length
+    *(currentStep++) = STD_gamma[0];
+    *(currentStep++) = STD_gamma[1];
+
+    *(currentStep++) = ITM_MULT;
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 2; // String length
+    *(currentStep++) = STD_beta[0];
+    *(currentStep++) = STD_beta[1];
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 5; // String length
+    *(currentStep++) = 'd';
+    *(currentStep++) = 'f';
+    *(currentStep++) = '/';
+    *(currentStep++) = 'd';
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_MULT;
+
+    *(currentStep++) = ITM_SUB;
+
+    // 30
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 2; // String length
+    *(currentStep++) = STD_alpha[0];
+    *(currentStep++) = STD_alpha[1];
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 'f';
+
+    *(currentStep++) = ITM_MULT;
+
+    *(currentStep++) = ITM_SUB;
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_XGT;
+    *(currentStep++) = VALUE_0;
+
+    *(currentStep++) = ITM_GTO;
+    *(currentStep++) = 2;
+
+    *(currentStep++) = ITM_DROP;
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = '2';
+
+    *(currentStep++) = ITM_DIV;
+
+    // 40
+    *(currentStep++) = ITM_GTO;
+    *(currentStep++) = 3;
+
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = 2;
+
+    *(currentStep++) = ITM_DROP;
+
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = 3;
+
+    *(currentStep++) = ITM_RCLMULT;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = STD_DELTA[0];
+    *(currentStep++) = STD_DELTA[1];
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_STOADD;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 5; // String length
+    *(currentStep++) = 'd';
+    *(currentStep++) = 'f';
+    *(currentStep++) = '/';
+    *(currentStep++) = 'd';
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = STD_DELTA[0];
+    *(currentStep++) = STD_DELTA[1];
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_STOADD;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_RCLMULT;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 5; // String length
+    *(currentStep++) = 'd';
+    *(currentStep++) = 'f';
+    *(currentStep++) = '/';
+    *(currentStep++) = 'd';
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_STOSUB;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 'f';
+
+    // 50
+    *(currentStep++) = ITM_VIEW;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_STOP;
+
+    *(currentStep++) = ITM_VIEW;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 'f';
+
+    *(currentStep++) = ITM_STOP;
+
+    *(currentStep++) = ITM_VIEW;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 5; // String length
+    *(currentStep++) = 'd';
+    *(currentStep++) = 'f';
+    *(currentStep++) = '/';
+    *(currentStep++) = 'd';
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_STOP;
+
+    *(currentStep++) = ITM_GTO;
+    *(currentStep++) = 1;
+
+    // 57
     *(currentStep++) = (ITM_END >> 8) | 0x80;
     *(currentStep++) =  ITM_END       & 0xff;
   }
@@ -6307,23 +6590,20 @@ void addTestPrograms(void) {
     *(currentStep++) = (ITM_WtoHPUK >> 8) | 0x80;
     *(currentStep++) =  ITM_WtoHPUK       & 0xff;
 
-    *(currentStep++) = (ITM_IHGtoPA >> 8) | 0x80;
-    *(currentStep++) =  ITM_IHGtoPA       & 0xff;
+    *(currentStep++) = (ITM_INCHHGtoPA >> 8) | 0x80;
+    *(currentStep++) =  ITM_INCHHGtoPA       & 0xff;
 
-    *(currentStep++) = (ITM_IHGtoPA >> 8) | 0x80;
-    *(currentStep++) =  ITM_IHGtoPA       & 0xff;
+    *(currentStep++) = (ITM_INCHHGtoPAb >> 8) | 0x80;
+    *(currentStep++) =  ITM_INCHHGtoPAb       & 0xff;
 
-    *(currentStep++) = (ITM_IHGtoPAb >> 8) | 0x80;
-    *(currentStep++) =  ITM_IHGtoPAb       & 0xff;
+    *(currentStep++) = (ITM_PAtoINCHHG >> 8) | 0x80;
+    *(currentStep++) =  ITM_PAtoINCHHG       & 0xff;
 
-    *(currentStep++) = (ITM_PAtoIHG >> 8) | 0x80;
-    *(currentStep++) =  ITM_PAtoIHG       & 0xff;
+    *(currentStep++) = (ITM_PAtoINCHHGb >> 8) | 0x80;
+    *(currentStep++) =  ITM_PAtoINCHHGb       & 0xff;
 
-    *(currentStep++) = (ITM_PAtoIHGb >> 8) | 0x80;
-    *(currentStep++) =  ITM_PAtoIHGb       & 0xff;
-
-    *(currentStep++) = (ITM_INtoM >> 8) | 0x80;
-    *(currentStep++) =  ITM_INtoM       & 0xff;
+    *(currentStep++) = (ITM_INCHtoM >> 8) | 0x80;
+    *(currentStep++) =  ITM_INCHtoM       & 0xff;
 
     *(currentStep++) = (ITM_MtoINCH >> 8) | 0x80;
     *(currentStep++) =  ITM_MtoINCH       & 0xff;
@@ -6460,11 +6740,14 @@ void addTestPrograms(void) {
     *(currentStep++) = (ITM_PCtoM >> 8) | 0x80;
     *(currentStep++) =  ITM_PCtoM       & 0xff;
 
+    *(currentStep++) = (ITM_MtoPOINT >> 8) | 0x80;
+    *(currentStep++) =  ITM_MtoPOINT       & 0xff;
+
     *(currentStep++) = (ITM_MtoPOINTb >> 8) | 0x80;
     *(currentStep++) =  ITM_MtoPOINTb       & 0xff;
 
-    *(currentStep++) = (ITM_MtoPOINT >> 8) | 0x80;
-    *(currentStep++) =  ITM_MtoPOINT       & 0xff;
+    *(currentStep++) = (ITM_MtoPOINTc >> 8) | 0x80;
+    *(currentStep++) =  ITM_MtoPOINTc       & 0xff;
 
     *(currentStep++) = (ITM_POINTtoM >> 8) | 0x80;
     *(currentStep++) =  ITM_POINTtoM       & 0xff;
@@ -7823,304 +8106,6 @@ void addTestPrograms(void) {
     *(currentStep++) = (ITM_SIGMAx4 >> 8) | 0x80;
     *(currentStep++) =  ITM_SIGMAx4       & 0xff;
 
-    *(currentStep++) = (ITM_DROPY >> 8) | 0x80;
-    *(currentStep++) =  ITM_DROPY       & 0xff;
-
-    *(currentStep++) = (ITM_EX1 >> 8) | 0x80;
-    *(currentStep++) =  ITM_EX1       & 0xff;
-
-    *(currentStep++) = (ITM_LN1X >> 8) | 0x80;
-    *(currentStep++) =  ITM_LN1X       & 0xff;
-
-    *(currentStep++) = (ITM_IDIVR >> 8) | 0x80;
-    *(currentStep++) =  ITM_IDIVR       & 0xff;
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = 0;
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = 99;
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = REGISTER_X;
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = FIRST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = LAST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = STRING_LABEL_VARIABLE;
-    *(currentStep++) = 3;
-    *(currentStep++) = 'V';
-    *(currentStep++) = 'a';
-    *(currentStep++) = 'r';
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 0;
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 99;
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_X;
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = FIRST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = LAST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMAX       & 0xff;
-    *(currentStep++) = INDIRECT_VARIABLE;
-    *(currentStep++) = 3;
-    *(currentStep++) = 'V';
-    *(currentStep++) = 'a';
-    *(currentStep++) = 'r';
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = 0;
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = 99;
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = REGISTER_X;
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = FIRST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = LAST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = STRING_LABEL_VARIABLE;
-    *(currentStep++) = 3;
-    *(currentStep++) = 'V';
-    *(currentStep++) = 'a';
-    *(currentStep++) = 'r';
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 0;
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 99;
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_X;
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = FIRST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = LAST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_RCLMIN       & 0xff;
-    *(currentStep++) = INDIRECT_VARIABLE;
-    *(currentStep++) = 3;
-    *(currentStep++) = 'V';
-    *(currentStep++) = 'a';
-    *(currentStep++) = 'r';
-
-    *(currentStep++) = (ITM_sinc >> 8) | 0x80;
-    *(currentStep++) =  ITM_sinc       & 0xff;
-
-    *(currentStep++) = (ITM_sincpi >> 8) | 0x80;
-    *(currentStep++) =  ITM_sincpi       & 0xff;
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = 0;
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = 99;
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = REGISTER_X;
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = FIRST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = LAST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = STRING_LABEL_VARIABLE;
-    *(currentStep++) = 3;
-    *(currentStep++) = 'V';
-    *(currentStep++) = 'a';
-    *(currentStep++) = 'r';
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 0;
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 99;
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_X;
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = FIRST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = LAST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMAX       & 0xff;
-    *(currentStep++) = INDIRECT_VARIABLE;
-    *(currentStep++) = 3;
-    *(currentStep++) = 'V';
-    *(currentStep++) = 'a';
-    *(currentStep++) = 'r';
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = 0;
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = 99;
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = REGISTER_X;
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = FIRST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = LAST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = STRING_LABEL_VARIABLE;
-    *(currentStep++) = 3;
-    *(currentStep++) = 'V';
-    *(currentStep++) = 'a';
-    *(currentStep++) = 'r';
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 0;
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 99;
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_X;
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = FIRST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = LAST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
-    *(currentStep++) =  ITM_STOMIN       & 0xff;
-    *(currentStep++) = INDIRECT_VARIABLE;
-    *(currentStep++) = 3;
-    *(currentStep++) = 'V';
-    *(currentStep++) = 'a';
-    *(currentStep++) = 'r';
-
     *(currentStep++) = (ITM_BINOMP >> 8) | 0x80;
     *(currentStep++) =  ITM_BINOMP       & 0xff;
 
@@ -8384,6 +8369,3456 @@ void addTestPrograms(void) {
     *(currentStep++) = 'V';
     *(currentStep++) = 'a';
     *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALL       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALL       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_ALL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALL       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_BACK       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_BACK       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_BACK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_BACK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_BACK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_BACK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_BACK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_BACK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_BACK       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_BATT >> 8) | 0x80;
+    *(currentStep++) =  ITM_BATT       & 0xff;
+
+    *(currentStep++) = (ITM_BEEP >> 8) | 0x80;
+    *(currentStep++) =  ITM_BEEP       & 0xff;
+
+    *(currentStep++) = (ITM_BEGINP >> 8) | 0x80;
+    *(currentStep++) =  ITM_BEGINP       & 0xff;
+
+    *(currentStep++) = (ITM_BN >> 8) | 0x80;
+    *(currentStep++) =  ITM_BN       & 0xff;
+
+    *(currentStep++) = (ITM_BNS >> 8) | 0x80;
+    *(currentStep++) =  ITM_BNS       & 0xff;
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_CASE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CASE       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_CLCVAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_CLCVAR       & 0xff;
+
+    *(currentStep++) = (ITM_CLFALL >> 8) | 0x80;
+    *(currentStep++) =  ITM_CLFALL       & 0xff;
+
+    *(currentStep++) = (ITM_TGLFRT >> 8) | 0x80;
+    *(currentStep++) =  ITM_TGLFRT       & 0xff;
+
+    *(currentStep++) = (ITM_CLLCD >> 8) | 0x80;
+    *(currentStep++) =  ITM_CLLCD       & 0xff;
+
+    *(currentStep++) = (ITM_CLMENU >> 8) | 0x80;
+    *(currentStep++) =  ITM_CLMENU       & 0xff;
+
+    *(currentStep++) = (ITM_CLREGS >> 8) | 0x80;
+    *(currentStep++) =  ITM_CLREGS       & 0xff;
+
+    *(currentStep++) = (ITM_CLSTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_CLSTK       & 0xff;
+
+    *(currentStep++) = (ITM_CLSIGMA >> 8) | 0x80;
+    *(currentStep++) =  ITM_CLSIGMA       & 0xff;
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMAX       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_CONJ >> 8) | 0x80;
+    *(currentStep++) =  ITM_CONJ       & 0xff;
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMAX       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_CORR >> 8) | 0x80;
+    *(currentStep++) =  ITM_CORR       & 0xff;
+
+    *(currentStep++) = (ITM_COV >> 8) | 0x80;
+    *(currentStep++) =  ITM_COV       & 0xff;
+
+    *(currentStep++) = (ITM_BESTFQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_BESTFQ       & 0xff;
+
+    *(currentStep++) = (ITM_CROSS_PROD >> 8) | 0x80;
+    *(currentStep++) =  ITM_CROSS_PROD       & 0xff;
+
+    *(currentStep++) = (ITM_CXtoRE >> 8) | 0x80;
+    *(currentStep++) =  ITM_CXtoRE       & 0xff;
+
+    *(currentStep++) = (ITM_DATE >> 8) | 0x80;
+    *(currentStep++) =  ITM_DATE       & 0xff;
+
+    *(currentStep++) = (ITM_DATEto >> 8) | 0x80;
+    *(currentStep++) =  ITM_DATEto       & 0xff;
+
+    *(currentStep++) = (ITM_DAY >> 8) | 0x80;
+    *(currentStep++) =  ITM_DAY       & 0xff;
+
+    *(currentStep++) = (ITM_DBLR >> 8) | 0x80;
+    *(currentStep++) =  ITM_DBLR       & 0xff;
+
+    *(currentStep++) = (ITM_DBLMULT >> 8) | 0x80;
+    *(currentStep++) =  ITM_DBLMULT       & 0xff;
+
+    *(currentStep++) = (ITM_DBLDIV >> 8) | 0x80;
+    *(currentStep++) =  ITM_DBLDIV       & 0xff;
+
+    *(currentStep++) = (ITM_DECOMP >> 8) | 0x80;
+    *(currentStep++) =  ITM_DECOMP       & 0xff;
+
+    *(currentStep++) = (ITM_DEG >> 8) | 0x80;
+    *(currentStep++) =  ITM_DEG       & 0xff;
+
+    *(currentStep++) = (ITM_DEGto >> 8) | 0x80;
+    *(currentStep++) =  ITM_DEGto       & 0xff;
+
+    *(currentStep++) = (ITM_SA >> 8) | 0x80;
+    *(currentStep++) =  ITM_SA       & 0xff;
+
+    *(currentStep++) = (ITM_DENMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_DENMAX       & 0xff;
+
+    *(currentStep++) = (ITM_DOT_PROD >> 8) | 0x80;
+    *(currentStep++) =  ITM_DOT_PROD       & 0xff;
+
+    *(currentStep++) = (ITM_DSTACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSTACK       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_DSTACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSTACK       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_DSTACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSTACK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_DSTACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSTACK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_DSTACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSTACK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_DSTACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSTACK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_DSTACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSTACK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_DSTACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSTACK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_DSTACK >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSTACK       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_DMS >> 8) | 0x80;
+    *(currentStep++) =  ITM_DMS       & 0xff;
+
+    *(currentStep++) = (ITM_DMSto >> 8) | 0x80;
+    *(currentStep++) =  ITM_DMSto       & 0xff;
+
+    *(currentStep++) = (ITM_DMY >> 8) | 0x80;
+    *(currentStep++) =  ITM_DMY       & 0xff;
+
+    *(currentStep++) = (ITM_DtoJ >> 8) | 0x80;
+    *(currentStep++) =  ITM_DtoJ       & 0xff;
+
+    *(currentStep++) = (ITM_EIGVAL >> 8) | 0x80;
+    *(currentStep++) =  ITM_EIGVAL       & 0xff;
+
+    *(currentStep++) = (ITM_EIGVEC >> 8) | 0x80;
+    *(currentStep++) =  ITM_EIGVEC       & 0xff;
+
+    *(currentStep++) = (ITM_ENDP >> 8) | 0x80;
+    *(currentStep++) =  ITM_ENDP       & 0xff;
+
+    *(currentStep++) = (ITM_ENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ENG       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ENG       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_ENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ENG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ENG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ENG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ENG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ENG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ENG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ENG       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ENORM >> 8) | 0x80;
+    *(currentStep++) =  ITM_ENORM       & 0xff;
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLMIN       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ERF >> 8) | 0x80;
+    *(currentStep++) =  ITM_ERF       & 0xff;
+
+    *(currentStep++) = (ITM_ERFC >> 8) | 0x80;
+    *(currentStep++) =  ITM_ERFC       & 0xff;
+
+    *(currentStep++) = (ITM_ERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ERR       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ERR       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_ERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ERR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ERR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ERR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ERR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ERR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ERR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ERR       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_EXITALL >> 8) | 0x80;
+    *(currentStep++) =  ITM_EXITALL       & 0xff;
+
+    *(currentStep++) = (ITM_EXPT >> 8) | 0x80;
+    *(currentStep++) =  ITM_EXPT       & 0xff;
+
+    *(currentStep++) = (ITM_FIB >> 8) | 0x80;
+    *(currentStep++) =  ITM_FIB       & 0xff;
+
+    *(currentStep++) = (ITM_FIX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FIX       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_FIX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FIX       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_FIX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FIX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_FIX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FIX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_FIX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FIX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_FIX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FIX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_FIX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FIX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_FIX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FIX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_FIX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FIX       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_FLASH >> 8) | 0x80;
+    *(currentStep++) =  ITM_FLASH       & 0xff;
+
+    *(currentStep++) = (ITM_FQX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FQX       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = 'L';
+    *(currentStep++) = 'b';
+    *(currentStep++) = 'l';
+
+    *(currentStep++) = (ITM_FQX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FQX       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_FQX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FQX       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_FQX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FQX       & 0xff;
+    *(currentStep++) = 'A' - 'A' + 100; // A
+
+    *(currentStep++) = (ITM_FQX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FQX       & 0xff;
+    *(currentStep++) = 'J' - 'A' + 100; // J
+
+    *(currentStep++) = (ITM_FDQX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FDQX       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = 'L';
+    *(currentStep++) = 'b';
+    *(currentStep++) = 'l';
+
+    *(currentStep++) = (ITM_FDQX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FDQX       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_FDQX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FDQX       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_FDQX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FDQX       & 0xff;
+    *(currentStep++) = 'A' - 'A' + 100; // A
+
+    *(currentStep++) = (ITM_FDQX >> 8) | 0x80;
+    *(currentStep++) =  ITM_FDQX       & 0xff;
+    *(currentStep++) = 'J' - 'A' + 100; // J
+
+    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
+    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
+    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
+    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
+    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
+    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
+    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
+    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
+    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_GAP >> 8) | 0x80;
+    *(currentStep++) =  ITM_GAP       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_GD >> 8) | 0x80;
+    *(currentStep++) =  ITM_GD       & 0xff;
+
+    *(currentStep++) = (ITM_GDM1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_GDM1       & 0xff;
+
+    *(currentStep++) = (ITM_GRAD >> 8) | 0x80;
+    *(currentStep++) =  ITM_GRAD       & 0xff;
+
+    *(currentStep++) = (ITM_GRADto >> 8) | 0x80;
+    *(currentStep++) =  ITM_GRADto       & 0xff;
+
+    *(currentStep++) = (ITM_HN >> 8) | 0x80;
+    *(currentStep++) =  ITM_HN       & 0xff;
+
+    *(currentStep++) = (ITM_HNP >> 8) | 0x80;
+    *(currentStep++) =  ITM_HNP       & 0xff;
+
+    *(currentStep++) = (ITM_IM >> 8) | 0x80;
+    *(currentStep++) =  ITM_IM       & 0xff;
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 5; // String length
+    *(currentStep++) = 'M';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 't';
+    *(currentStep++) = '_';
+    *(currentStep++) = 'A';
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = 'A' - 'A' + 100; // A
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = 'J' - 'A' + 100; // J
+
+    *(currentStep++) = (ITM_IXYZ >> 8) | 0x80;
+    *(currentStep++) =  ITM_IXYZ       & 0xff;
+
+    *(currentStep++) = (ITM_IGAMMAP >> 8) | 0x80;
+    *(currentStep++) =  ITM_IGAMMAP       & 0xff;
+
+    *(currentStep++) = (ITM_IGAMMAQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_IGAMMAQ       & 0xff;
+
+    *(currentStep++) = (ITM_IPLUS >> 8) | 0x80;
+    *(currentStep++) =  ITM_IPLUS       & 0xff;
+
+    *(currentStep++) = (ITM_IMINUS >> 8) | 0x80;
+    *(currentStep++) =  ITM_IMINUS       & 0xff;
+
+    *(currentStep++) = (ITM_JYX >> 8) | 0x80;
+    *(currentStep++) =  ITM_JYX       & 0xff;
+
+    *(currentStep++) = (ITM_JPLUS >> 8) | 0x80;
+    *(currentStep++) =  ITM_JPLUS       & 0xff;
+
+    *(currentStep++) = (ITM_JMINUS >> 8) | 0x80;
+    *(currentStep++) =  ITM_JMINUS       & 0xff;
+
+    *(currentStep++) = (ITM_JUL_GREG >> 8) | 0x80;
+    *(currentStep++) =  ITM_JUL_GREG       & 0xff;
+
+    *(currentStep++) = (ITM_JtoD >> 8) | 0x80;
+    *(currentStep++) =  ITM_JtoD       & 0xff;
+
+    *(currentStep++) = (ITM_KEY >> 8) | 0x80;
+    *(currentStep++) =  ITM_KEY       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_KEY >> 8) | 0x80;
+    *(currentStep++) =  ITM_KEY       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_KEY >> 8) | 0x80;
+    *(currentStep++) =  ITM_KEY       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_KEY >> 8) | 0x80;
+    *(currentStep++) =  ITM_KEY       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_KEY >> 8) | 0x80;
+    *(currentStep++) =  ITM_KEY       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_KEY >> 8) | 0x80;
+    *(currentStep++) =  ITM_KEY       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_KEY >> 8) | 0x80;
+    *(currentStep++) =  ITM_KEY       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_KEY >> 8) | 0x80;
+    *(currentStep++) =  ITM_KEY       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_KEY >> 8) | 0x80;
+    *(currentStep++) =  ITM_KEY       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_sinc >> 8) | 0x80;
+    *(currentStep++) =  ITM_sinc       & 0xff;
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_KTYP >> 8) | 0x80;
+    *(currentStep++) =  ITM_KTYP       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_LASTX >> 8) | 0x80;
+    *(currentStep++) =  ITM_LASTX       & 0xff;
+
+    *(currentStep++) = (ITM_LBLQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_LBLQ       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = 'L';
+    *(currentStep++) = 'b';
+    *(currentStep++) = 'l';
+
+    *(currentStep++) = (ITM_LBLQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_LBLQ       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_LBLQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_LBLQ       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_LBLQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_LBLQ       & 0xff;
+    *(currentStep++) = 'A' - 'A' + 100; // A
+
+    *(currentStep++) = (ITM_LBLQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_LBLQ       & 0xff;
+    *(currentStep++) = 'J' - 'A' + 100; // J
+
+    *(currentStep++) = (ITM_LEAP >> 8) | 0x80;
+    *(currentStep++) =  ITM_LEAP       & 0xff;
+
+    *(currentStep++) = (ITM_Lm >> 8) | 0x80;
+    *(currentStep++) =  ITM_Lm       & 0xff;
+
+    *(currentStep++) = (ITM_LmALPHA >> 8) | 0x80;
+    *(currentStep++) =  ITM_LmALPHA       & 0xff;
+
+    *(currentStep++) = (ITM_LNBETA >> 8) | 0x80;
+    *(currentStep++) =  ITM_LNBETA       & 0xff;
+
+    *(currentStep++) = (ITM_LNGAMMA >> 8) | 0x80;
+    *(currentStep++) =  ITM_LNGAMMA       & 0xff;
+
+    *(currentStep++) = (ITM_LocR >> 8) | 0x80;
+    *(currentStep++) =  ITM_LocR       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_LocR >> 8) | 0x80;
+    *(currentStep++) =  ITM_LocR       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_LocR >> 8) | 0x80;
+    *(currentStep++) =  ITM_LocR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_LocR >> 8) | 0x80;
+    *(currentStep++) =  ITM_LocR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_LocR >> 8) | 0x80;
+    *(currentStep++) =  ITM_LocR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_LocR >> 8) | 0x80;
+    *(currentStep++) =  ITM_LocR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_LocR >> 8) | 0x80;
+    *(currentStep++) =  ITM_LocR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_LocR >> 8) | 0x80;
+    *(currentStep++) =  ITM_LocR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_LocR >> 8) | 0x80;
+    *(currentStep++) =  ITM_LocR       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_LocRQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_LocRQ       & 0xff;
+
+    *(currentStep++) = (ITM_LR >> 8) | 0x80;
+    *(currentStep++) =  ITM_LR       & 0xff;
+
+    *(currentStep++) = (ITM_MANT >> 8) | 0x80;
+    *(currentStep++) =  ITM_MANT       & 0xff;
+
+    *(currentStep++) = (ITM_MEM >> 8) | 0x80;
+    *(currentStep++) =  ITM_MEM       & 0xff;
+
+    *(currentStep++) = (ITM_MENU >> 8) | 0x80;
+    *(currentStep++) =  ITM_MENU       & 0xff;
+
+    *(currentStep++) = (ITM_MONTH >> 8) | 0x80;
+    *(currentStep++) =  ITM_MONTH       & 0xff;
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+
+    *(currentStep++) = (ITM_MULPI >> 8) | 0x80;
+    *(currentStep++) =  ITM_MULPI       & 0xff;
+
+    *(currentStep++) = (ITM_MVAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_MVAR       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_M_DIM >> 8) | 0x80;
+    *(currentStep++) =  ITM_M_DIM       & 0xff;
+
+    *(currentStep++) = (ITM_M_DIMQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_M_DIMQ       & 0xff;
+
+    *(currentStep++) = (ITM_MDY >> 8) | 0x80;
+    *(currentStep++) =  ITM_MDY       & 0xff;
+
+    *(currentStep++) = (ITM_M_GET >> 8) | 0x80;
+    *(currentStep++) =  ITM_M_GET       & 0xff;
+
+    *(currentStep++) = (ITM_M_LU >> 8) | 0x80;
+    *(currentStep++) =  ITM_M_LU       & 0xff;
+
+    *(currentStep++) = (ITM_M_NEW >> 8) | 0x80;
+    *(currentStep++) =  ITM_M_NEW       & 0xff;
+
+    *(currentStep++) = (ITM_M_PUT >> 8) | 0x80;
+    *(currentStep++) =  ITM_M_PUT       & 0xff;
+
+    *(currentStep++) = (ITM_M_RR >> 8) | 0x80;
+    *(currentStep++) =  ITM_M_RR       & 0xff;
+
+    *(currentStep++) = (ITM_sincpi >> 8) | 0x80;
+    *(currentStep++) =  ITM_sincpi       & 0xff;
+
+    *(currentStep++) = (ITM_NOP >> 8) | 0x80;
+    *(currentStep++) =  ITM_NOP       & 0xff;
+
+    *(currentStep++) = (ITM_OFF >> 8) | 0x80;
+    *(currentStep++) =  ITM_OFF       & 0xff;
+
+    *(currentStep++) = (ITM_DROPY >> 8) | 0x80;
+    *(currentStep++) =  ITM_DROPY       & 0xff;
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOMIN       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_PGMINT >> 8) | 0x80;
+    *(currentStep++) =  ITM_PGMINT       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = 'L';
+    *(currentStep++) = 'b';
+    *(currentStep++) = 'l';
+
+    *(currentStep++) = (ITM_PGMINT >> 8) | 0x80;
+    *(currentStep++) =  ITM_PGMINT       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PGMINT >> 8) | 0x80;
+    *(currentStep++) =  ITM_PGMINT       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_PGMINT >> 8) | 0x80;
+    *(currentStep++) =  ITM_PGMINT       & 0xff;
+    *(currentStep++) = 'A' - 'A' + 100; // A
+
+    *(currentStep++) = (ITM_PGMINT >> 8) | 0x80;
+    *(currentStep++) =  ITM_PGMINT       & 0xff;
+    *(currentStep++) = 'J' - 'A' + 100; // J
+
+    *(currentStep++) = (ITM_PGMSLV >> 8) | 0x80;
+    *(currentStep++) =  ITM_PGMSLV       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = 'L';
+    *(currentStep++) = 'b';
+    *(currentStep++) = 'l';
+
+    *(currentStep++) = (ITM_PGMSLV >> 8) | 0x80;
+    *(currentStep++) =  ITM_PGMSLV       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PGMSLV >> 8) | 0x80;
+    *(currentStep++) =  ITM_PGMSLV       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_PGMSLV >> 8) | 0x80;
+    *(currentStep++) =  ITM_PGMSLV       & 0xff;
+    *(currentStep++) = 'A' - 'A' + 100; // A
+
+    *(currentStep++) = (ITM_PGMSLV >> 8) | 0x80;
+    *(currentStep++) =  ITM_PGMSLV       & 0xff;
+    *(currentStep++) = 'J' - 'A' + 100; // J
+
+    *(currentStep++) = (ITM_PIXEL >> 8) | 0x80;
+    *(currentStep++) =  ITM_PIXEL       & 0xff;
+
+    *(currentStep++) = (ITM_PLOT >> 8) | 0x80;
+    *(currentStep++) =  ITM_PLOT       & 0xff;
+
+    *(currentStep++) = (ITM_Pn >> 8) | 0x80;
+    *(currentStep++) =  ITM_Pn       & 0xff;
+
+    *(currentStep++) = (ITM_POINT >> 8) | 0x80;
+    *(currentStep++) =  ITM_POINT       & 0xff;
+
+    *(currentStep++) = (ITM_POPLR >> 8) | 0x80;
+    *(currentStep++) =  ITM_POPLR       & 0xff;
+
+    *(currentStep++) = (ITM_PRCL >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRCL       & 0xff;
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PUTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PUTK       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_RAD >> 8) | 0x80;
+    *(currentStep++) =  ITM_RAD       & 0xff;
+
+    *(currentStep++) = (ITM_RADto >> 8) | 0x80;
+    *(currentStep++) =  ITM_RADto       & 0xff;
+
+    *(currentStep++) = (ITM_RAN >> 8) | 0x80;
+    *(currentStep++) =  ITM_RAN       & 0xff;
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLCFG       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_RCLEL >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLEL       & 0xff;
+
+    *(currentStep++) = (ITM_RCLIJ >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLIJ       & 0xff;
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RCLS >> 8) | 0x80;
+    *(currentStep++) =  ITM_RCLS       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_RDP >> 8) | 0x80;
+    *(currentStep++) =  ITM_RDP       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RDP >> 8) | 0x80;
+    *(currentStep++) =  ITM_RDP       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_RDP >> 8) | 0x80;
+    *(currentStep++) =  ITM_RDP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RDP >> 8) | 0x80;
+    *(currentStep++) =  ITM_RDP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_RDP >> 8) | 0x80;
+    *(currentStep++) =  ITM_RDP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_RDP >> 8) | 0x80;
+    *(currentStep++) =  ITM_RDP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_RDP >> 8) | 0x80;
+    *(currentStep++) =  ITM_RDP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RDP >> 8) | 0x80;
+    *(currentStep++) =  ITM_RDP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RDP >> 8) | 0x80;
+    *(currentStep++) =  ITM_RDP       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_RE >> 8) | 0x80;
+    *(currentStep++) =  ITM_RE       & 0xff;
+
+    *(currentStep++) = (ITM_RECV >> 8) | 0x80;
+    *(currentStep++) =  ITM_RECV       & 0xff;
+
+    *(currentStep++) = (ITM_REtoCX >> 8) | 0x80;
+    *(currentStep++) =  ITM_REtoCX       & 0xff;
+
+    *(currentStep++) = (ITM_REexIM >> 8) | 0x80;
+    *(currentStep++) =  ITM_REexIM       & 0xff;
+
+    *(currentStep++) = (ITM_RM >> 8) | 0x80;
+    *(currentStep++) =  ITM_RM       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RM >> 8) | 0x80;
+    *(currentStep++) =  ITM_RM       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_RM >> 8) | 0x80;
+    *(currentStep++) =  ITM_RM       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RM >> 8) | 0x80;
+    *(currentStep++) =  ITM_RM       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_RM >> 8) | 0x80;
+    *(currentStep++) =  ITM_RM       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_RM >> 8) | 0x80;
+    *(currentStep++) =  ITM_RM       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_RM >> 8) | 0x80;
+    *(currentStep++) =  ITM_RM       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RM >> 8) | 0x80;
+    *(currentStep++) =  ITM_RM       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RM >> 8) | 0x80;
+    *(currentStep++) =  ITM_RM       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_RMQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_RMQ       & 0xff;
+
+    *(currentStep++) = (ITM_RNORM >> 8) | 0x80;
+    *(currentStep++) =  ITM_RNORM       & 0xff;
+
+    *(currentStep++) = (ITM_EX1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_EX1       & 0xff;
+
+    *(currentStep++) = (ITM_ROUNDI >> 8) | 0x80;
+    *(currentStep++) =  ITM_ROUNDI       & 0xff;
+
+    *(currentStep++) = (ITM_RSD >> 8) | 0x80;
+    *(currentStep++) =  ITM_RSD       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RSD >> 8) | 0x80;
+    *(currentStep++) =  ITM_RSD       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_RSD >> 8) | 0x80;
+    *(currentStep++) =  ITM_RSD       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_RSD >> 8) | 0x80;
+    *(currentStep++) =  ITM_RSD       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_RSD >> 8) | 0x80;
+    *(currentStep++) =  ITM_RSD       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_RSD >> 8) | 0x80;
+    *(currentStep++) =  ITM_RSD       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_RSD >> 8) | 0x80;
+    *(currentStep++) =  ITM_RSD       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RSD >> 8) | 0x80;
+    *(currentStep++) =  ITM_RSD       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_RSD >> 8) | 0x80;
+    *(currentStep++) =  ITM_RSD       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_RSUM >> 8) | 0x80;
+    *(currentStep++) =  ITM_RSUM       & 0xff;
+
+    *(currentStep++) = (ITM_RTNP1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_RTNP1       & 0xff;
+
+    *(currentStep++) = (ITM_R_CLR >> 8) | 0x80;
+    *(currentStep++) =  ITM_R_CLR       & 0xff;
+
+    *(currentStep++) = (ITM_R_COPY >> 8) | 0x80;
+    *(currentStep++) =  ITM_R_COPY       & 0xff;
+
+    *(currentStep++) = (ITM_R_SORT >> 8) | 0x80;
+    *(currentStep++) =  ITM_R_SORT       & 0xff;
+
+    *(currentStep++) = (ITM_R_SWAP >> 8) | 0x80;
+    *(currentStep++) =  ITM_R_SWAP       & 0xff;
+
+    *(currentStep++) = (ITM_STDDEVWEIGHTED >> 8) | 0x80;
+    *(currentStep++) =  ITM_STDDEVWEIGHTED       & 0xff;
+
+    *(currentStep++) = (ITM_SCI >> 8) | 0x80;
+    *(currentStep++) =  ITM_SCI       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_SCI >> 8) | 0x80;
+    *(currentStep++) =  ITM_SCI       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_SCI >> 8) | 0x80;
+    *(currentStep++) =  ITM_SCI       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_SCI >> 8) | 0x80;
+    *(currentStep++) =  ITM_SCI       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_SCI >> 8) | 0x80;
+    *(currentStep++) =  ITM_SCI       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_SCI >> 8) | 0x80;
+    *(currentStep++) =  ITM_SCI       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_SCI >> 8) | 0x80;
+    *(currentStep++) =  ITM_SCI       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_SCI >> 8) | 0x80;
+    *(currentStep++) =  ITM_SCI       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_SDIGS >> 8) | 0x80;
+    *(currentStep++) =  ITM_SDIGS       & 0xff;
+
+    *(currentStep++) = (ITM_SEED >> 8) | 0x80;
+    *(currentStep++) =  ITM_SEED       & 0xff;
+
+    *(currentStep++) = (ITM_SEND >> 8) | 0x80;
+    *(currentStep++) =  ITM_SEND       & 0xff;
+
+    *(currentStep++) = (ITM_SETCHN >> 8) | 0x80;
+    *(currentStep++) =  ITM_SETCHN       & 0xff;
+
+    *(currentStep++) = (ITM_SETDAT >> 8) | 0x80;
+    *(currentStep++) =  ITM_SETDAT       & 0xff;
+
+    *(currentStep++) = (ITM_SETEUR >> 8) | 0x80;
+    *(currentStep++) =  ITM_SETEUR       & 0xff;
+
+    *(currentStep++) = (ITM_SETIND >> 8) | 0x80;
+    *(currentStep++) =  ITM_SETIND       & 0xff;
+
+    *(currentStep++) = (ITM_SETJPN >> 8) | 0x80;
+    *(currentStep++) =  ITM_SETJPN       & 0xff;
+
+    *(currentStep++) = (ITM_SETSIG >> 8) | 0x80;
+    *(currentStep++) =  ITM_SETSIG       & 0xff;
+
+    *(currentStep++) = (ITM_SETTIM >> 8) | 0x80;
+    *(currentStep++) =  ITM_SETTIM       & 0xff;
+
+    *(currentStep++) = (ITM_SETUK >> 8) | 0x80;
+    *(currentStep++) =  ITM_SETUK       & 0xff;
+
+    *(currentStep++) = (ITM_SETUSA >> 8) | 0x80;
+    *(currentStep++) =  ITM_SETUSA       & 0xff;
+
+    *(currentStep++) = (ITM_SIGN >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIGN       & 0xff;
+
+    *(currentStep++) = (ITM_SIGNMT >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIGNMT       & 0xff;
+
+    *(currentStep++) = (ITM_SIM_EQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIM_EQ       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_SIM_EQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIM_EQ       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_SIM_EQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIM_EQ       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_SIM_EQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIM_EQ       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_SIM_EQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIM_EQ       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_SIM_EQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIM_EQ       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_SIM_EQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIM_EQ       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_SIM_EQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIM_EQ       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
+    *(currentStep++) =  ITM_SKIP       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
+    *(currentStep++) =  ITM_SKIP       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
+    *(currentStep++) =  ITM_SKIP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
+    *(currentStep++) =  ITM_SKIP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
+    *(currentStep++) =  ITM_SKIP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
+    *(currentStep++) =  ITM_SKIP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
+    *(currentStep++) =  ITM_SKIP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
+    *(currentStep++) =  ITM_SKIP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_SLVQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_SLVQ       & 0xff;
+
+    *(currentStep++) = (ITM_SM >> 8) | 0x80;
+    *(currentStep++) =  ITM_SM       & 0xff;
+
+    *(currentStep++) = (ITM_ISM >> 8) | 0x80;
+    *(currentStep++) =  ITM_ISM       & 0xff;
+
+    *(currentStep++) = (ITM_SMW >> 8) | 0x80;
+    *(currentStep++) =  ITM_SMW       & 0xff;
+
+    *(currentStep++) = (ITM_SOLVE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SOLVE       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = 'L';
+    *(currentStep++) = 'b';
+    *(currentStep++) = 'l';
+
+    *(currentStep++) = (ITM_SOLVE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SOLVE       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_SOLVE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SOLVE       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_SOLVE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SOLVE       & 0xff;
+    *(currentStep++) = 'A' - 'A' + 100; // A
+
+    *(currentStep++) = (ITM_SOLVE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SOLVE       & 0xff;
+    *(currentStep++) = 'J' - 'A' + 100; // J
+
+    *(currentStep++) = (ITM_SSIZE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SSIZE       & 0xff;
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOCFG >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOCFG       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_STOEL >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOEL       & 0xff;
+
+    *(currentStep++) = (ITM_STOIJ >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOIJ       & 0xff;
+
+    *(currentStep++) = (ITM_LN1X >> 8) | 0x80;
+    *(currentStep++) =  ITM_LN1X       & 0xff;
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_STOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_STOS       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_SUM >> 8) | 0x80;
+    *(currentStep++) =  ITM_SUM       & 0xff;
+
+    *(currentStep++) = (ITM_SW >> 8) | 0x80;
+    *(currentStep++) =  ITM_SW       & 0xff;
+
+    *(currentStep++) = (ITM_SXY >> 8) | 0x80;
+    *(currentStep++) =  ITM_SXY       & 0xff;
+
+    *(currentStep++) = (ITM_TDISP >> 8) | 0x80;
+    *(currentStep++) =  ITM_TDISP       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_TDISP >> 8) | 0x80;
+    *(currentStep++) =  ITM_TDISP       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_TDISP >> 8) | 0x80;
+    *(currentStep++) =  ITM_TDISP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_TDISP >> 8) | 0x80;
+    *(currentStep++) =  ITM_TDISP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_TDISP >> 8) | 0x80;
+    *(currentStep++) =  ITM_TDISP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_TDISP >> 8) | 0x80;
+    *(currentStep++) =  ITM_TDISP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_TDISP >> 8) | 0x80;
+    *(currentStep++) =  ITM_TDISP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_TDISP >> 8) | 0x80;
+    *(currentStep++) =  ITM_TDISP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_TICKS >> 8) | 0x80;
+    *(currentStep++) =  ITM_TICKS       & 0xff;
+
+    *(currentStep++) = (ITM_TIME >> 8) | 0x80;
+    *(currentStep++) =  ITM_TIME       & 0xff;
+
+    *(currentStep++) = (ITM_Tn >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tn       & 0xff;
+
+    *(currentStep++) = (ITM_TONE >> 8) | 0x80;
+    *(currentStep++) =  ITM_TONE       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_TONE >> 8) | 0x80;
+    *(currentStep++) =  ITM_TONE       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_TONE >> 8) | 0x80;
+    *(currentStep++) =  ITM_TONE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_TONE >> 8) | 0x80;
+    *(currentStep++) =  ITM_TONE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_TONE >> 8) | 0x80;
+    *(currentStep++) =  ITM_TONE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_TONE >> 8) | 0x80;
+    *(currentStep++) =  ITM_TONE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_TONE >> 8) | 0x80;
+    *(currentStep++) =  ITM_TONE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_TONE >> 8) | 0x80;
+    *(currentStep++) =  ITM_TONE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_Tex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Tex       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ULP >> 8) | 0x80;
+    *(currentStep++) =  ITM_ULP       & 0xff;
+
+    *(currentStep++) = (ITM_Un >> 8) | 0x80;
+    *(currentStep++) =  ITM_Un       & 0xff;
+
+    *(currentStep++) = (ITM_UNITV >> 8) | 0x80;
+    *(currentStep++) =  ITM_UNITV       & 0xff;
+
+    *(currentStep++) = (ITM_UNSIGN >> 8) | 0x80;
+    *(currentStep++) =  ITM_UNSIGN       & 0xff;
+
+    *(currentStep++) = (ITM_VARMNU >> 8) | 0x80;
+    *(currentStep++) =  ITM_VARMNU       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = 'L';
+    *(currentStep++) = 'b';
+    *(currentStep++) = 'l';
+
+    *(currentStep++) = (ITM_VARMNU >> 8) | 0x80;
+    *(currentStep++) =  ITM_VARMNU       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_VARMNU >> 8) | 0x80;
+    *(currentStep++) =  ITM_VARMNU       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_VARMNU >> 8) | 0x80;
+    *(currentStep++) =  ITM_VARMNU       & 0xff;
+    *(currentStep++) = 'A' - 'A' + 100; // A
+
+    *(currentStep++) = (ITM_VARMNU >> 8) | 0x80;
+    *(currentStep++) =  ITM_VARMNU       & 0xff;
+    *(currentStep++) = 'J' - 'A' + 100; // J
+
+    *(currentStep++) = (ITM_IDIVR >> 8) | 0x80;
+    *(currentStep++) =  ITM_IDIVR       & 0xff;
+
+    *(currentStep++) = (ITM_WDAY >> 8) | 0x80;
+    *(currentStep++) =  ITM_WDAY       & 0xff;
+
+    *(currentStep++) = (ITM_WM >> 8) | 0x80;
+    *(currentStep++) =  ITM_WM       & 0xff;
+
+    *(currentStep++) = (ITM_WP >> 8) | 0x80;
+    *(currentStep++) =  ITM_WP       & 0xff;
+
+    *(currentStep++) = (ITM_WM1 >> 8) | 0x80;
+    *(currentStep++) =  ITM_WM1       & 0xff;
+
+    *(currentStep++) = (ITM_WSIZE >> 8) | 0x80;
+    *(currentStep++) =  ITM_WSIZE       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_WSIZE >> 8) | 0x80;
+    *(currentStep++) =  ITM_WSIZE       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_WSIZE >> 8) | 0x80;
+    *(currentStep++) =  ITM_WSIZE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_WSIZE >> 8) | 0x80;
+    *(currentStep++) =  ITM_WSIZE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_WSIZE >> 8) | 0x80;
+    *(currentStep++) =  ITM_WSIZE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_WSIZE >> 8) | 0x80;
+    *(currentStep++) =  ITM_WSIZE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_WSIZE >> 8) | 0x80;
+    *(currentStep++) =  ITM_WSIZE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_WSIZE >> 8) | 0x80;
+    *(currentStep++) =  ITM_WSIZE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_WSIZEQ >> 8) | 0x80;
+    *(currentStep++) =  ITM_WSIZEQ       & 0xff;
+
+    *(currentStep++) = (ITM_XBAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_XBAR       & 0xff;
+
+    *(currentStep++) = (ITM_XG >> 8) | 0x80;
+    *(currentStep++) =  ITM_XG       & 0xff;
+
+    *(currentStep++) = (ITM_XW >> 8) | 0x80;
+    *(currentStep++) =  ITM_XW       & 0xff;
+
+    *(currentStep++) = (ITM_XCIRC >> 8) | 0x80;
+    *(currentStep++) =  ITM_XCIRC       & 0xff;
+
+    *(currentStep++) = (ITM_XtoDATE >> 8) | 0x80;
+    *(currentStep++) =  ITM_XtoDATE       & 0xff;
+
+    *(currentStep++) = (ITM_XtoALPHA >> 8) | 0x80;
+    *(currentStep++) =  ITM_XtoALPHA       & 0xff;
+
+    *(currentStep++) = (ITM_YEAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_YEAR       & 0xff;
+
+    *(currentStep++) = (ITM_YCIRC >> 8) | 0x80;
+    *(currentStep++) =  ITM_YCIRC       & 0xff;
+
+    *(currentStep++) = (ITM_YMD >> 8) | 0x80;
+    *(currentStep++) =  ITM_YMD       & 0xff;
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_Yex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Yex       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_Zex >> 8) | 0x80;
+    *(currentStep++) =  ITM_Zex       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHALENG >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHALENG       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_XMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_XMAX       & 0xff;
+
+    *(currentStep++) = (ITM_XMIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_XMIN       & 0xff;
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHAPOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAPOS       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHARL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARL       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHARR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHARR       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHASL >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASL       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHASR >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHASR       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_ALPHAtoX >> 8) | 0x80;
+    *(currentStep++) =  ITM_ALPHAtoX       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_BETAXY >> 8) | 0x80;
+    *(currentStep++) =  ITM_BETAXY       & 0xff;
+
+    *(currentStep++) = (ITM_gammaXY >> 8) | 0x80;
+    *(currentStep++) =  ITM_gammaXY       & 0xff;
+
+    *(currentStep++) = (ITM_GAMMAXY >> 8) | 0x80;
+    *(currentStep++) =  ITM_GAMMAXY       & 0xff;
+
+    *(currentStep++) = (ITM_GAMMAX >> 8) | 0x80;
+    *(currentStep++) =  ITM_GAMMAX       & 0xff;
+
+    *(currentStep++) = (ITM_deltaX >> 8) | 0x80;
+    *(currentStep++) =  ITM_deltaX       & 0xff;
+
+    *(currentStep++) = (ITM_DELTAPC >> 8) | 0x80;
+    *(currentStep++) =  ITM_DELTAPC       & 0xff;
+
+    *(currentStep++) = (ITM_SCATTFACT >> 8) | 0x80;
+    *(currentStep++) =  ITM_SCATTFACT       & 0xff;
+
+    *(currentStep++) = (ITM_SCATTFACTm >> 8) | 0x80;
+    *(currentStep++) =  ITM_SCATTFACTm       & 0xff;
+
+    *(currentStep++) = (ITM_SCATTFACTp >> 8) | 0x80;
+    *(currentStep++) =  ITM_SCATTFACTp       & 0xff;
+
+    *(currentStep++) = (ITM_zetaX >> 8) | 0x80;
+    *(currentStep++) =  ITM_zetaX       & 0xff;
+
+    *(currentStep++) = (ITM_PIn >> 8) | 0x80;
+    *(currentStep++) =  ITM_PIn       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = 'L';
+    *(currentStep++) = 'b';
+    *(currentStep++) = 'l';
+
+    *(currentStep++) = (ITM_PIn >> 8) | 0x80;
+    *(currentStep++) =  ITM_PIn       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PIn >> 8) | 0x80;
+    *(currentStep++) =  ITM_PIn       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_PIn >> 8) | 0x80;
+    *(currentStep++) =  ITM_PIn       & 0xff;
+    *(currentStep++) = 'A' - 'A' + 100; // A
+
+    *(currentStep++) = (ITM_PIn >> 8) | 0x80;
+    *(currentStep++) =  ITM_PIn       & 0xff;
+    *(currentStep++) = 'J' - 'A' + 100; // J
+
+    *(currentStep++) = (ITM_SIGMAn >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIGMAn       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = 'L';
+    *(currentStep++) = 'b';
+    *(currentStep++) = 'l';
+
+    *(currentStep++) = (ITM_SIGMAn >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIGMAn       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_SIGMAn >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIGMAn       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_SIGMAn >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIGMAn       & 0xff;
+    *(currentStep++) = 'A' - 'A' + 100; // A
+
+    *(currentStep++) = (ITM_SIGMAn >> 8) | 0x80;
+    *(currentStep++) =  ITM_SIGMAn       & 0xff;
+    *(currentStep++) = 'J' - 'A' + 100; // J
+
+    *(currentStep++) = (ITM_STDDEV >> 8) | 0x80;
+    *(currentStep++) =  ITM_STDDEV       & 0xff;
+
+    *(currentStep++) = (ITM_STDDEVPOP >> 8) | 0x80;
+    *(currentStep++) =  ITM_STDDEVPOP       & 0xff;
+
+    *(currentStep++) = (ITM_RANI >> 8) | 0x80;
+    *(currentStep++) =  ITM_RANI       & 0xff;
+
+    *(currentStep++) = (ITM_PRINTERX >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERX       & 0xff;
+
+    *(currentStep++) = (ITM_RANGE >> 8) | 0x80;
+    *(currentStep++) =  ITM_RANGE       & 0xff;
+
+    *(currentStep++) = (ITM_GETRANGE >> 8) | 0x80;
+    *(currentStep++) =  ITM_GETRANGE       & 0xff;
+
+    *(currentStep++) = (ITM_M1X >> 8) | 0x80;
+    *(currentStep++) =  ITM_M1X       & 0xff;
+
+    *(currentStep++) = (ITM_XMOD >> 8) | 0x80;
+    *(currentStep++) =  ITM_XMOD       & 0xff;
+
+    *(currentStep++) = (ITM_toDATE >> 8) | 0x80;
+    *(currentStep++) =  ITM_toDATE       & 0xff;
+
+    *(currentStep++) = (ITM_toHR >> 8) | 0x80;
+    *(currentStep++) =  ITM_toHR       & 0xff;
+
+    *(currentStep++) = (ITM_toHMS >> 8) | 0x80;
+    *(currentStep++) =  ITM_toHMS       & 0xff;
+
+    *(currentStep++) = (ITM_toINT >> 8) | 0x80;
+    *(currentStep++) =  ITM_toINT       & 0xff;
+
+    *(currentStep++) = (ITM_toPOL >> 8) | 0x80;
+    *(currentStep++) =  ITM_toPOL       & 0xff;
+
+    *(currentStep++) = (ITM_toREAL >> 8) | 0x80;
+    *(currentStep++) =  ITM_toREAL       & 0xff;
+
+    *(currentStep++) = (ITM_toREC >> 8) | 0x80;
+    *(currentStep++) =  ITM_toREC       & 0xff;
+
+    *(currentStep++) = (ITM_DtoDMS >> 8) | 0x80;
+    *(currentStep++) =  ITM_DtoDMS       & 0xff;
+
+    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
+    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PC >> 8) | 0x80;
+    *(currentStep++) =  ITM_PC       & 0xff;
+
+    *(currentStep++) = (ITM_PCMRR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PCMRR       & 0xff;
+
+    *(currentStep++) = (ITM_PCT >> 8) | 0x80;
+    *(currentStep++) =  ITM_PCT       & 0xff;
+
+    *(currentStep++) = (ITM_PCSIGMA >> 8) | 0x80;
+    *(currentStep++) =  ITM_PCSIGMA       & 0xff;
+
+    *(currentStep++) = (ITM_PCPMG >> 8) | 0x80;
+    *(currentStep++) =  ITM_PCPMG       & 0xff;
+
+    *(currentStep++) = (ITM_INTEGRAL >> 8) | 0x80;
+    *(currentStep++) =  ITM_INTEGRAL       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = 'L';
+    *(currentStep++) = 'b';
+    *(currentStep++) = 'l';
+
+    *(currentStep++) = (ITM_INTEGRAL >> 8) | 0x80;
+    *(currentStep++) =  ITM_INTEGRAL       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_INTEGRAL >> 8) | 0x80;
+    *(currentStep++) =  ITM_INTEGRAL       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_INTEGRAL >> 8) | 0x80;
+    *(currentStep++) =  ITM_INTEGRAL       & 0xff;
+    *(currentStep++) = 'A' - 'A' + 100; // A
+
+    *(currentStep++) = (ITM_INTEGRAL >> 8) | 0x80;
+    *(currentStep++) =  ITM_INTEGRAL       & 0xff;
+    *(currentStep++) = 'J' - 'A' + 100; // J
+
+    *(currentStep++) = (ITM_PMOD >> 8) | 0x80;
+    *(currentStep++) =  ITM_PMOD       & 0xff;
+
+    *(currentStep++) = (ITM_M_DET >> 8) | 0x80;
+    *(currentStep++) =  ITM_M_DET       & 0xff;
+
+    *(currentStep++) = (ITM_PARALLEL >> 8) | 0x80;
+    *(currentStep++) =  ITM_PARALLEL       & 0xff;
+
+    *(currentStep++) = (ITM_M_TRANSP >> 8) | 0x80;
+    *(currentStep++) =  ITM_M_TRANSP       & 0xff;
+
+    *(currentStep++) = (ITM_M_INV >> 8) | 0x80;
+    *(currentStep++) =  ITM_M_INV       & 0xff;
+
+    *(currentStep++) = (ITM_ANGLE >> 8) | 0x80;
+    *(currentStep++) =  ITM_ANGLE       & 0xff;
+
+    *(currentStep++) = (ITM_MULPIto >> 8) | 0x80;
+    *(currentStep++) =  ITM_MULPIto       & 0xff;
+
+    *(currentStep++) = (ITM_PRINTERADV >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERADV       & 0xff;
+
+    *(currentStep++) = (ITM_PRINTERCHAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERCHAR       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PRINTERCHAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERCHAR       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_PRINTERCHAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERCHAR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PRINTERCHAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERCHAR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_PRINTERCHAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERCHAR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_PRINTERCHAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERCHAR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_PRINTERCHAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERCHAR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PRINTERCHAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERCHAR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PRINTERDLAY >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERDLAY       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PRINTERDLAY >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERDLAY       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_PRINTERDLAY >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERDLAY       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PRINTERDLAY >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERDLAY       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_PRINTERDLAY >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERDLAY       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_PRINTERDLAY >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERDLAY       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_PRINTERDLAY >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERDLAY       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PRINTERDLAY >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERDLAY       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PRINTERLCD >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERLCD       & 0xff;
+
+    *(currentStep++) = (ITM_PRINTERMODE >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERMODE       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PRINTERMODE >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERMODE       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_PRINTERMODE >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERMODE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PRINTERMODE >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERMODE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_PRINTERMODE >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERMODE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_PRINTERMODE >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERMODE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_PRINTERMODE >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERMODE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PRINTERMODE >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERMODE       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PRINTERPROG >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERPROG       & 0xff;
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PRINTERR >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERR       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_PRINTERREGS >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERREGS       & 0xff;
+
+    *(currentStep++) = (ITM_PRINTERSTK >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERSTK       & 0xff;
+
+    *(currentStep++) = (ITM_PRINTERTAB >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERTAB       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PRINTERTAB >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERTAB       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_PRINTERTAB >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERTAB       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_PRINTERTAB >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERTAB       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_PRINTERTAB >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERTAB       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_PRINTERTAB >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERTAB       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_PRINTERTAB >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERTAB       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PRINTERTAB >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERTAB       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_PRINTERUSER >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERUSER       & 0xff;
+
+    *(currentStep++) = (ITM_PRINTERWIDTH >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERWIDTH       & 0xff;
+
+    *(currentStep++) = (ITM_PRINTERSIGMA >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERSIGMA       & 0xff;
+
+    *(currentStep++) = (ITM_PRINTERHASH >> 8) | 0x80;
+    *(currentStep++) =  ITM_PRINTERHASH       & 0xff;
+
+    *(currentStep++) = (ITM_SHOW >> 8) | 0x80;
+    *(currentStep++) =  ITM_SHOW       & 0xff;
+
+    *(currentStep++) = (ITM_DMStoD >> 8) | 0x80;
+    *(currentStep++) =  ITM_DMStoD       & 0xff;
+
+    *(currentStep++) = (ITM_VANGLE >> 8) | 0x80;
+    *(currentStep++) =  ITM_VANGLE       & 0xff;
+
+    *(currentStep++) = (ITM_XH >> 8) | 0x80;
+    *(currentStep++) =  ITM_XH       & 0xff;
+
+    *(currentStep++) = (ITM_XRMS >> 8) | 0x80;
+    *(currentStep++) =  ITM_XRMS       & 0xff;
+
+    *(currentStep++) = (ITM_ACOS >> 8) | 0x80;
+    *(currentStep++) =  ITM_ACOS       & 0xff;
+
+    *(currentStep++) = (ITM_ASIN >> 8) | 0x80;
+    *(currentStep++) =  ITM_ASIN       & 0xff;
+
+    *(currentStep++) = (ITM_ATAN >> 8) | 0x80;
+    *(currentStep++) =  ITM_ATAN       & 0xff;
+
+    *(currentStep++) = (ITM_DET >> 8) | 0x80;
+    *(currentStep++) =  ITM_DET       & 0xff;
+
+    *(currentStep++) = (ITM_INVRT >> 8) | 0x80;
+    *(currentStep++) =  ITM_INVRT       & 0xff;
+
+    *(currentStep++) = (ITM_TRANS >> 8) | 0x80;
+    *(currentStep++) =  ITM_TRANS       & 0xff;
 
     *(currentStep++) = (ITM_END >> 8) | 0x80;
     *(currentStep++) =  ITM_END       & 0xff;
@@ -8778,7 +12213,7 @@ void fnReset(uint16_t confirmation) {
 
 
 
-#define VERSION1 "_101a_KB_POC"
+#define VERSION1 "_102_KB_POC"
 
     #ifdef JM_LAYOUT_1A
       #define L1L2    "L1"
@@ -8796,13 +12231,15 @@ void fnReset(uint16_t confirmation) {
     fnDrop(0);
   
     #ifdef JM_LAYOUT_1A
-    fnStrtoX("C43 L1 layout for main C43 template");
+    fnStrtoX("C43 L1: main C43 template");
     #endif
     #ifdef JM_LAYOUT_2_DM42_STRICT
-    fnStrtoX("C43 L42 layout for unmodified DM42");
+    fnStrtoX("C43 L42: unmodified DM42");
     #endif
     fnStore(103);
     fnDrop(0);
+    fnDrop(0);
+    fnStrtoX("C43 LARGE TEXT");
 
 #ifdef NOT_NEEDED
     //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS

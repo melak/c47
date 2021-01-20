@@ -49,6 +49,10 @@ int16_t  nameFunction        (int16_t  fn, int16_t itemShift  );   //JM LONGPRES
 
 #endif
 
+uint16_t numlockReplacements(uint16_t item, bool_t NL, bool_t SHFT);
+bool_t keyReplacements(uint16_t item, uint16_t * item1, bool_t NL, bool_t SHFT);
+
+
 #ifdef PC_BUILD
 gboolean refreshTimer         (gpointer data);
 void     btnFnPressed_StateMachine (GtkWidget *unused, gpointer data);

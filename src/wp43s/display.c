@@ -2265,6 +2265,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
       #if defined (VERBOSE_SCREEN) && defined (PC_BUILD)
         printf("SHOW:String\n");
       #endif //VERBOSE_SCREEN
+
       SHOW_reset();
       temporaryInformation = TI_SHOW_REGISTER_BIG; //First try one line of big font.
       offset = 0;
@@ -2273,27 +2274,27 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
       strcat(tmpString + 2100, "'");
       strcat(tmpString + 2100, REGISTER_STRING_DATA(SHOWregis));//, stringByteLength(REGISTER_STRING_DATA(SHOWregis)) + 4+1);
       strcat(tmpString + 2100, "'");
+      while(thereIsANextLine) {
         xcopy(tmpString + offset, tmpString + bytesProcessed, stringByteLength(tmpString + bytesProcessed) + 1);
         thereIsANextLine = false;
-        maxiC = 1;
         #if defined VERBOSE_SCREEN && defined PC_BUILD
           uint32_t tmp = 0;
           printf("^^^0 %4u",tmp);
-          printf("^^^^$$ %s %d\n",tmpString + 2100,stringWidth(tmpString + 2100, &numericFont, false, true));
+          printf("^^^^$$ %s %d\n",tmpString + 2100,stringWidthC43(tmpString + 2100, stdnumEnlarge, nocompress, false, true));
         #endif //VERBOSE_SCREEN
-        while(!thereIsANextLine && (stringWidth(tmpString + offset, &numericFont, false, true) >= SCREEN_WIDTH)) {
+        while(stringWidthC43(tmpString + offset, stdnumEnlarge, nocompress, false, true) >= SCREEN_WIDTH) {
           tmpString[offset + stringLastGlyph(tmpString + offset)] = 0;
           thereIsANextLine = true;
           #if defined (VERBOSE_SCREEN) && defined (PC_BUILD)
             printf("^^^A %4u",tmp++);
-            printf("^^^^$$ %s %d\n",tmpString + offset,stringWidth(tmpString + offset, &numericFont, false, true));
+            printf("^^^^$$ %s %d\n",tmpString + offset,stringWidthC43(tmpString + offset, stdnumEnlarge, nocompress, false, true));
           #endif //VERBOSE_SCREEN
         }
-        maxiC = 0;
+        bytesProcessed += stringByteLength(tmpString + offset);
         offset += 300;
         tmpString[offset] = 0;
-        if(!thereIsANextLine) break; //else continue on the small font
-
+      }
+      if(offset <= 1200) break; //else continue on the small font
 
 
       SHOW_reset();
@@ -2330,73 +2331,6 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
       }
       break;
 
-
-/*
-    case dtString:
-
-      temporaryInformation = TI_SHOW_REGISTER_BIG;
-      strcpy(tmpString + 2103, "'");
-      strncat(tmpString + 2100, REGISTER_STRING_DATA(SHOWregis), stringByteLength(REGISTER_STRING_DATA(SHOWregis)) + 1);
-      strcat(tmpString + 2100, "'");
-      last = 2100 + stringByteLength(tmpString + 2100);
-      source = 2100;
-      for(d=0; d<=1200 ; d+=300) {
-        dest = d;
-        while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
-          tmpString[dest] = tmpString[source];
-          if(tmpString[dest] & 0x80) {
-            tmpString[++dest] = tmpString[++source];
-          }
-          source++;
-          tmpString[++dest] = 0;
-        }
-      }
-
-      if(tmpString[1200] != 0) {
-        SHOW_reset();
-        strcpy(tmpString + 2103, "'");
-        strncat(tmpString + 2100, REGISTER_STRING_DATA(SHOWregis), stringByteLength(REGISTER_STRING_DATA(SHOWregis)) + 1);
-        strcat(tmpString + 2100, "'");
-        last = 2100 + stringByteLength(tmpString + 2100);
-        source = 2100;
-        dest = 0;
-        for(d=0; d<=1800 ; d+=300) {
-          dest = d;
-          while(source < last && stringWidth(tmpString + d, &standardFont, true, true) <= SCREEN_WIDTH - 8*2) {
-            tmpString[dest] = tmpString[source];
-            if(tmpString[dest] & 0x80) {
-              tmpString[++dest] = tmpString[++source];
-            }
-            source++;
-            tmpString[++dest] = 0;
-          }
-        }
-        if(source < last) { // The string is too long
-        xcopy(tmpString + dest - 2, STD_ELLIPSIS, 2);
-        xcopy(tmpString + dest, STD_SPACE_6_PER_EM, 2);
-        tmpString[dest + 2] = 0;
-        }
-      }
-      break;
-*/
-/*
-    case dtString:
-      offset = 0;
-      thereIsANextLine = true;
-      bytesProcessed = 0;
-      while(thereIsANextLine) {
-        xcopy(tmpString + offset, REGISTER_STRING_DATA(REGISTER_X) + bytesProcessed, stringByteLength(REGISTER_STRING_DATA(REGISTER_X) + bytesProcessed) + 1);
-        thereIsANextLine = false;
-        while(stringWidth(tmpString + offset, &standardFont, false, true) >= SCREEN_WIDTH) {
-          tmpString[offset + stringLastGlyph(tmpString + offset)] = 0;
-          thereIsANextLine = true;
-        }
-        bytesProcessed += stringByteLength(tmpString + offset);
-        offset += 300;
-        tmpString[offset] = 0;
-      }
-      break;
-*/
 
     case dtConfig:
       xcopy(tmpString, "Configuration data", 19);

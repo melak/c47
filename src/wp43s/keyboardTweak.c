@@ -397,6 +397,7 @@ void Check_MultiPresses(int16_t * result, int8_t key_no){          //Set up long
 		    switch(*result) {
           case ITM_BACKSPACE:                                          longpressDelayedkey1 = ITM_CLA;   break;     //BACKSPACE longpress clears input buffer
           case ITM_EXIT1    :                                          longpressDelayedkey1 = ITM_CLAIM; break;     //EXIT longpress DOES CLAIM
+          case ITM_ENTER    :                                          longpressDelayedkey1 = ITM_XEDIT; break;
 		      default:;
 		    }
 		  }
@@ -728,7 +729,87 @@ void shiftCutoff(uint16_t unusedButMandatoryParameter) {        //dr - press shi
 //---------------------------------------------------------------
 
 
-#endif
+#endif //TESTSUITE_BUILD
+
+
+
+
+uint16_t numlockReplacements(uint16_t item, bool_t NL, bool_t SHFT) {
+  uint16_t item1 = 0;
+  if(ITM_A +26 <= item && item <= ITM_Z +26) 
+    {if(keyReplacements(item-26, &item1, NL, SHFT)) return item1;else return item;}
+  else
+    {if(keyReplacements(item, &item1, NL, SHFT)) return item1;else return item;}
+}
+
+
+//Note item1 MUST be set to 0 prior to calling.
+bool_t keyReplacements(uint16_t item, uint16_t * item1, bool_t NL, bool_t SHFT) {
+
+                if(NL && !SHFT) {                           //JMvv Numlock translation: Assumes lower case  is NOT active
+                  switch(item) {
+                    case ITM_P             : * item1 = ITM_7;      break;
+                    case ITM_Q             : * item1 = ITM_8;      break;
+                    case ITM_R             : * item1 = ITM_9;      break;
+                    case ITM_T             : * item1 = ITM_4;      break;
+                    case ITM_U             : * item1 = ITM_5;      break;
+                    case ITM_V             : * item1 = ITM_6;      break;
+                    case ITM_X             : * item1 = ITM_1;      break;
+                    case ITM_Y             : * item1 = ITM_2;      break;
+                    case ITM_Z             : * item1 = ITM_3;      break;
+                    case CHR_num           : * item1 = 0;          break;
+                    case CHR_case          : * item1 = 0;          break;
+                    case ITM_O             : * item1 = ITM_EEXCHR; break; //STD_SUB_E_OUTLINE
+                    case ITM_S             : * item1 = ITM_OBELUS; break;
+                    case ITM_W             : * item1 = ITM_MULT;   break;
+                    case ITM_UNDERSCORE    : * item1 = ITM_MINUS;  break;
+                    case ITM_SPACE         : * item1 = ITM_PLUS;   break;
+                    case ITM_QUESTION_MARK : * item1 = ITM_SLASH;  break;
+                    case ITM_COMMA         : * item1 = ITM_PERIOD; break;
+                    case ITM_COLON         : * item1 = ITM_0;      break;
+
+                    default: 
+                         #ifdef PC_BUILD
+                           jm_show_comment("^^^^processKeyAction1/keyReplacements:CM_AIM: Numlock active but number not handled");
+                         #endif //PC_BUILD
+//                       item1 = item;     //this is the non-number character which is now handled below.
+                         break;
+                  }
+                } else
+
+                if(NL && SHFT) {                           //JMvv Numlock translation: Assumes lower case  is NOT active
+                  switch(item) {
+                    case ITM_MINUS  : * item1 = ITM_UNDERSCORE   ;  break;
+                    case ITM_PLUS   : * item1 = ITM_SPACE        ;  break;
+                    case ITM_SLASH  : * item1 = ITM_QUESTION_MARK;  break;
+                    case ITM_PERIOD : * item1 = ITM_COMMA        ;  break;
+                    case ITM_0      : * item1 = ITM_COLON        ;  break;
+
+                    default: 
+                         #ifdef PC_BUILD
+                           jm_show_comment("^^^^processKeyAction2/keyReplacements:CM_AIM: Numlock active but number not handled");
+                         #endif //PC_BUILD
+//                       item1 = item;     //this is the non-number character which is now handled below.
+                         break;
+                  }
+                } else//JM Exception, to change 0 to ";", when !NL & SHFT-0
+
+                if(!NL && SHFT) {                           //JMvv Numlock translation: Assumes lower case  is NOT active
+                  switch(item) {
+                    case ITM_0      : * item1 = ITM_SEMICOLON        ;  break;
+                    default: 
+                         #ifdef PC_BUILD
+                           jm_show_comment("^^^^processKeyAction3/keyReplacements:CM_AIM: Numlock active but number not handled");
+                         #endif //PC_BUILD
+//                       item1 = item;     //this is the non-number character which is now handled below.
+                         break;
+                  }
+                }
+
+
+                return *item1 != 0;
+}
+
 
 
 
@@ -1275,7 +1356,6 @@ bool_t emptyKeyBuffer()
 
 void fnT_ARROW(uint16_t command) {
 #ifndef TESTSUITE_BUILD
-  const font_t *font;
   uint16_t ixx;
   uint16_t current_cursor_x_old;
   uint16_t current_cursor_y_old;
@@ -1314,22 +1394,13 @@ void fnT_ARROW(uint16_t command) {
 
 
      case ITM_T_UP_ARROW /*UP */ :                      //JMCURSOR try make the cursor upo be more accurate. Add up the char widths...
-        if(combinationFonts == 2) {
-          font = &numericFont;                             //JM ENLARGE
-        } else {
-          font = &standardFont;                             //JM ENLARGE
-        }
-
         ixx = 0;
         current_cursor_x_old = current_cursor_x;
         current_cursor_y_old = current_cursor_y;
-//        fnT_ARROW(ITM_T_RIGHT_ARROW);
         fnT_ARROW(ITM_T_RIGHT_ARROW);
         while(ixx < 75 && (current_cursor_x >= current_cursor_x_old+5 || current_cursor_y == current_cursor_y_old)) {
           fnT_ARROW(ITM_T_LEFT_ARROW);
-          //if((ixx>33 && combinationFonts==0) || (ixx>25 && combinationFonts!=0))  refreshScreen();
-          showStringEd(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, font, 1, -100, vmNormal, true, true, true);  //display up to the cursor
-
+          showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
 
           //printf("###^^^ %d %d %d %d %d\n",ixx,current_cursor_x, current_cursor_x_old, current_cursor_y, current_cursor_y_old);
           ixx++;
@@ -1338,21 +1409,13 @@ void fnT_ARROW(uint16_t command) {
 
 
      case ITM_T_DOWN_ARROW /*DN*/ :
-        if(combinationFonts == 2) {
-          font = &numericFont;                             //JM ENLARGE
-        } else {
-          font = &standardFont;                             //JM ENLARGE
-        }
-
         ixx = 0;
         current_cursor_x_old = current_cursor_x;
         current_cursor_y_old = current_cursor_y;
-//        fnT_ARROW(ITM_T_LEFT_ARROW);
         fnT_ARROW(ITM_T_LEFT_ARROW);
         while(ixx < 75 && (current_cursor_x+5 <= current_cursor_x_old || current_cursor_y == current_cursor_y_old)) {
           fnT_ARROW(ITM_T_RIGHT_ARROW);
-          //if((ixx>33 && combinationFonts==0) || (ixx>25 && combinationFonts!=0))  refreshScreen();
-          showStringEd(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, font, 1, -100, vmNormal, true, true, true);  //display up to the cursor
+          showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
           ixx++;
 
           //printf("###^^^ %d %d %d %d %d\n",ixx,current_cursor_x, current_cursor_x_old, current_cursor_y, current_cursor_y_old);
