@@ -1,5 +1,38 @@
-/build/
-/dep/gmp-6.2.0/
+.stamp-constantPointers
+.stamp-rasterFontsData
+.stamp-softmenuCatalog
+.stamp-testPgms
+*gmp-6.2.0/
+*gmp-6.2.0.tar.bz2
+*gmp-6.2.1/
+*gmp-6.2.1.tar.bz2
+# *DMCP_build/*
+*.o
+*.d
+*.lst
+*build*/
+# /build/
+# /dep/gmp-6.2.0/
+# !DM42\ binary/keymap.bin
+# !DM42\ binary/testPgms.bin
+# !DM42\ binary/WP43S_qspi.bin
+# #!DMCP_build/bin
+# !binaries/windows/wp43s.exe
+# !binaries/dmcp/testPgms.bin
+# /generateConstants
+# /generateCatalogs
+# /generateTestPgms
+# 
+# 
+!binaries/dmcp/WP43S*
+!binaries/dmcp/C43*
+!binaries/dmcp/WP43C*
+!binaries/dmcp/WP43S.pgm
+!binaries/dmcp/
+
+
+############################
+
 /bin
 /obj
 
@@ -18,12 +51,16 @@ wp43s.dSYM
 # used by cLion
 .idea/
 
+
 !binaries/dmcp/keymap.bin
 !binaries/dmcp/WP43S_qspi.bin
 !res/dmcp/testPgms.bin
 
 # / before the executable files else directories under src/ are ignored
 /testSuite
+/ttf2RasterFonts
 /testTtf2RasterFonts
 /wp43s
 /.vscode
+
+
