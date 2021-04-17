@@ -22,6 +22,7 @@
 #include "items.h"
 
 #include "wp43s.h"
+#include <stdlib.h>
 
 
 #pragma GCC diagnostic push

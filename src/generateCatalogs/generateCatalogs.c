@@ -20,6 +20,7 @@
 
 #include "items.h"
 #include "sort.h"
+#include <stdlib.h>
 #include <unistd.h>
 
 #include "wp43s.h"
