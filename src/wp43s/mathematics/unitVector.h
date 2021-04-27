@@ -30,5 +30,7 @@ void unitVectorError(void);
 #define unitVectorError typeError
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 void unitVectorCplx (void);
+void unitVectorRema (void);
+void unitVectorCxma (void);
 
 #endif // UNITVECTOR_H

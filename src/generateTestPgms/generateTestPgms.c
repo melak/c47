@@ -18,6 +18,7 @@
  * \file generateTestPgms.c
  ***********************************************/
 
+#include <stdlib.h>
 #include "fonts.h"
 #include "items.h"
 
@@ -25,10 +26,7 @@
 #include <stdlib.h>
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
 int main(int argc, char* argv[]) {
-  #pragma GCC diagnostic pop
   #ifdef CODEBLOCKS_OVER_SCORE // Since December 27th 2020 when running in code::blocks, we are no longer in the correct directory! Why?
     (*strstr(argv[0], "/bin/")) = 0;
     chdir(argv[0]);
@@ -37,6 +35,11 @@ int main(int argc, char* argv[]) {
   uint8_t memory[65536], *currentStep;
   FILE *testPgms;
   uint32_t sizeOfPgms;
+
+  if(argc < 2) {
+    printf("Usage: generateTestPgms <output file>\n");
+    return 1;
+  }
 
   memset(memory, 0, 65536);
   currentStep = memory;
@@ -11356,9 +11359,9 @@ int main(int argc, char* argv[]) {
   *(currentStep++) = 255; // .END.
   *(currentStep++) = 255; // .END.
 
-  testPgms = fopen("res/dmcp/testPgms.bin", "wb");
+  testPgms = fopen(argv[1], "wb");
   if(testPgms == NULL) {
-    fprintf(stderr, "Cannot create file res/dmcp/testPgms.bin\n");
+    fprintf(stderr, "Cannot create file %s\n", argv[1]);
     exit(1);
   }
 
@@ -11367,7 +11370,7 @@ int main(int argc, char* argv[]) {
   fwrite(memory,      1, sizeOfPgms,         testPgms);
   fclose(testPgms);
 
-  printf("Test programs generated in\ndirectory: res/dmcp\nfile:      testPgms.bin\n");
+  printf("Test programs generated: %s\n", argv[1]);
 
   return 0;
 }

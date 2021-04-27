@@ -23,7 +23,9 @@
 #include "constantPointers.h"
 #include "debug.h"
 #include "error.h"
+#include "fonts.h"
 #include "items.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -280,7 +282,28 @@ void dotCplxShoI(void) {
  * \return void
  ***********************************************/
 void dotRemaRema(void) {
-  itemToBeCoded(0);
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t y, x;
+  real34_t res;
+
+  linkToRealMatrixRegister(REGISTER_Y, &y);
+  linkToRealMatrixRegister(REGISTER_X, &x);
+
+  if((realVectorSize(&y) == 0) || (realVectorSize(&x) == 0) || (realVectorSize(&y) != realVectorSize(&x))) {
+    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "numbers of elements of %d" STD_CROSS "%d-matrix to %d" STD_CROSS "%d-matrix mismatch",
+              x.header.matrixRows, x.header.matrixColumns,
+              y.header.matrixRows, y.header.matrixColumns);
+      moreInfoOnError("In function dotRemaRema:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+  else {
+    dotRealVectors(&y, &x, &res);
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    real34Copy(&res, REGISTER_REAL34_DATA(REGISTER_X));
+  }
+#endif // TESTSUITE_BUILD
 }
 
 /********************************************//**

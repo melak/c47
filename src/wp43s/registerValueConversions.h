@@ -56,4 +56,9 @@ void convertLongIntegerRegisterToTimeRegister        (calcRegister_t source, cal
 void convertDateRegisterToReal34Register             (calcRegister_t source, calcRegister_t destination);
 void convertReal34RegisterToDateRegister             (calcRegister_t source, calcRegister_t destination);
 
+#ifndef TESTSUITE_BUILD
+  void convertReal34MatrixRegisterToReal34Matrix     (calcRegister_t regist, real34Matrix_t *matrix);
+  void convertReal34MatrixToReal34MatrixRegister     (const real34Matrix_t *matrix, calcRegister_t regist);
+#endif // TESTSUITE_BUILD
+
 #endif // REGISTERVALUECONVERSIONS_H

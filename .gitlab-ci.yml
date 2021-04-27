@@ -64,6 +64,15 @@ testSuite:
   tags:
     - linux
 
+codeDocs:
+  stage: test
+  script:
+    - apt-get update -qq
+    - apt-get install -qq -y doxygen python3-pip
+    - python3 -m pip install sphinx breathe furo
+    - cd docs/code
+    - make html
+
 upload:
   stage: upload
   image: curlimages/curl:latest
@@ -91,8 +100,8 @@ release:
   script:
     - |
       release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
-        --assets-link "{\"name\":\"Windows simulator\",\"url\":\"${PACKAGE_REGISTRY_URL}/wp43s-windows-${CI_COMMIT_TAG}.zip\"}" \
-        --assets-link "{\"name\":\"DM42 Firmware\",\"url\":\"${PACKAGE_REGISTRY_URL}/wp43s-dm42-${CI_COMMIT_TAG}.zip\"}" \
+        --assets-link "{\"name\":\"Windows Simulator\",\"url\":\"${PACKAGE_REGISTRY_URL}/wp43s-windows-${CI_COMMIT_TAG}.zip\"}" \
+        --assets-link "{\"name\":\"Firmware for DM42\",\"url\":\"${PACKAGE_REGISTRY_URL}/wp43s-dm42-${CI_COMMIT_TAG}.zip\"}" \
         --assets-link "{\"name\":\"Reference Manual\",\"url\":\"${PACKAGE_REGISTRY_URL}/wp43s-reference-manual-${CI_COMMIT_TAG}.pdf\"}" \
         --assets-link "{\"name\":\"Owner's Manual\",\"url\":\"${PACKAGE_REGISTRY_URL}/wp43s-owners-manual-${CI_COMMIT_TAG}.pdf\"}"
   tags:

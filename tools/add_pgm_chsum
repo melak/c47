@@ -6,9 +6,11 @@ pgm=$2
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	# Host is Mac: use gfind for GNU version
 	FIND=gfind
+	TAC=gtac
 else
 	# Assume host is Linux: find is GNU version
 	FIND=find
+	TAC=tac
 fi
 
 # -- Functions ------------
@@ -33,7 +35,7 @@ checkutils() {
 toint() {
 	local x
 	x=`printf "%08x" "0x$1" |
-		sed -e 's|\(..\)|\1@|g' | tr '@' '\012' | tac | tr -d '\012' |
+		sed -e 's|\(..\)|\1@|g' | tr '@' '\012' | $TAC | tr -d '\012' |
 		sed -e 's|\(..\)|@\1|g' | sed -e 's|@|\\\x|g'`
 	printf "$x"
 }
@@ -56,7 +58,7 @@ dumppgm() {
 
 # -- MAIN ------------------
 
-checkutils sha1sum sed tac dd printf $FIND type
+checkutils sha1sum sed $TAC dd printf $FIND type
 
 if [ ! -f "$bin" ]; then
 	echo "ERROR: Cannot $FIND program binary '$bin'"

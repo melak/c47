@@ -725,14 +725,16 @@ void generateAllConstants(void) {
 }
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
 int main(int argc, char* argv[]) {
-  #pragma GCC diagnostic pop
   #ifdef CODEBLOCKS_OVER_SCORE // Since December 27th 2020 when running in code::blocks, we are no longer in the correct directory! Why?
     (*strstr(argv[0], "/bin/")) = 0;
     chdir(argv[0]);
   #endif // CODEBLOCKS_OVER_SCORE
+
+  if(argc < 3) {
+    printf("Usage: generateConstants <c file> <h file>\n");
+    return 1;
+  }
 
   decContextDefault(&ctxtReal34,   DEC_INIT_DECQUAD);
   decContextDefault(&ctxtReal39,   DEC_INIT_DECQUAD);
@@ -757,9 +759,9 @@ int main(int argc, char* argv[]) {
   generateAllConstants();
 
 
-  constantsH = fopen("src/wp43s/constantPointers.h", "wb");
+  constantsH = fopen(argv[2], "wb");
   if(constantsH == NULL) {
-    fprintf(stderr, "Cannot create file src/wp43s/constantPointers.h\n");
+    fprintf(stderr, "Cannot create file %s\n", argv[2]);
     exit(1);
   }
 
@@ -803,9 +805,9 @@ int main(int argc, char* argv[]) {
 
 
 
-  constantsC = fopen("src/wp43s/constantPointers.c", "wb");
+  constantsC = fopen(argv[1], "wb");
   if(constantsC == NULL) {
-    fprintf(stderr, "Cannot create file src/wp43s/constantPointers.c\n");
+    fprintf(stderr, "Cannot create file %s\n", argv[1]);
     exit(1);
   }
 

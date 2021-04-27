@@ -29,6 +29,7 @@
 #include "mathematics/comparisonReals.h"
 #include "mathematics/toPolar.h"
 #include "mathematics/toRect.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "screen.h"
@@ -187,7 +188,7 @@ void rsdTime(uint16_t digits) {
 
 
 void rsdRema(uint16_t digits) {
-  fnToBeCoded();
+  elementwiseRema_UInt16(rsdReal, digits);
 }
 
 

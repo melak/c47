@@ -28,6 +28,7 @@
 #include "fonts.h"
 #include "integers.h"
 #include "items.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -576,7 +577,29 @@ void addStriStri(void) {
  * \return void
  ***********************************************/
 void addStriRema(void) {
-  fnToBeCoded();
+  int16_t len1, len2;
+
+  real34MatrixToDisplayString(REGISTER_X, tmpString);
+
+  if(stringGlyphLength(REGISTER_STRING_DATA(REGISTER_Y)) + stringGlyphLength(tmpString) > MAX_NUMBER_OF_GLYPHS_IN_STRING) {
+    displayCalcErrorMessage(ERROR_STRING_WOULD_BE_TOO_LONG, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "the resulting string would be %d (Y %d + X %d) characters long. Maximum is %d",
+                                                           stringGlyphLength(REGISTER_STRING_DATA(REGISTER_Y)) + stringGlyphLength(tmpString),
+                                                                 stringGlyphLength(REGISTER_STRING_DATA(REGISTER_Y)),
+                                                                        stringGlyphLength(tmpString),  MAX_NUMBER_OF_GLYPHS_IN_STRING);
+      moreInfoOnError("In function addStriRema:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+  else {
+    len1 = stringByteLength(REGISTER_STRING_DATA(REGISTER_Y));
+    len2 = stringByteLength(tmpString) + 1;
+
+    reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(len1 + len2), amNone);
+
+    xcopy(REGISTER_STRING_DATA(REGISTER_X)       , REGISTER_STRING_DATA(REGISTER_Y), len1);
+    xcopy(REGISTER_STRING_DATA(REGISTER_X) + len1, tmpString,                        len2);
+  }
 }
 
 
@@ -706,7 +729,28 @@ void addStriCplx(void) {
  * \return void
  ***********************************************/
 void addRemaRema(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t y, x;
+
+  linkToRealMatrixRegister(REGISTER_Y, &y);
+  convertReal34MatrixRegisterToReal34Matrix(REGISTER_X, &x);
+
+  addRealMatrices(&y, &x, &x);
+  if(x.matrixElements) {
+    convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "cannot add %d" STD_CROSS "%d-matrix to %d" STD_CROSS "%d-matrix",
+              x.header.matrixRows, x.header.matrixColumns,
+              y.header.matrixRows, y.header.matrixColumns);
+      moreInfoOnError("In function addRemaRema:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+
+  realMatrixFree(&x);
+#endif // TESTSUITE_BUILD
 }
 
 

@@ -27,6 +27,7 @@
 #include "fonts.h"
 #include "items.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -128,7 +129,7 @@ void expM1LonI(void) {
 
 
 void expM1Rema(void) {
-  fnToBeCoded();
+  elementwiseRema(expM1Real);
 }
 
 

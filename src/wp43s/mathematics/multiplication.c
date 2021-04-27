@@ -24,8 +24,10 @@
 #include "conversionAngles.h"
 #include "debug.h"
 #include "error.h"
+#include "fonts.h"
 #include "integers.h"
 #include "items.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -208,7 +210,28 @@ void mulTimeLonI(void) {
  * \return void
  ***********************************************/
 void mulLonIRema(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t matrix, res;
+  real_t y, x;
+  uint16_t rows, cols;
+  int32_t i;
+
+  convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+
+  linkToRealMatrixRegister(REGISTER_X, &matrix);
+  rows = matrix.header.matrixRows;
+  cols = matrix.header.matrixColumns;
+
+  realMatrixInit(&res, rows, cols);
+  for(i = 0; i < cols * rows; ++i) {
+    real34ToReal(&matrix.matrixElements[i], &x);
+    realMultiply(&y, &x, &x, &ctxtReal39);
+    realToReal34(&x, &res.matrixElements[i]);
+  }
+
+  convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+  realMatrixFree(&res);
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -220,7 +243,28 @@ void mulLonIRema(void) {
  * \return void
  ***********************************************/
 void mulRemaLonI(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t matrix, res;
+  real_t y, x;
+  uint16_t rows, cols;
+  int32_t i;
+
+  convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+
+  linkToRealMatrixRegister(REGISTER_Y, &matrix);
+  rows = matrix.header.matrixRows;
+  cols = matrix.header.matrixColumns;
+
+  realMatrixInit(&res, rows, cols);
+  for(i = 0; i < cols * rows; ++i) {
+    real34ToReal(&matrix.matrixElements[i], &y);
+    realMultiply(&y, &x, &y, &ctxtReal39);
+    realToReal34(&y, &res.matrixElements[i]);
+  }
+
+  convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+  realMatrixFree(&res);
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -506,7 +550,27 @@ void mulRealTime(void) {
  * \return void
  ***********************************************/
 void mulRemaRema(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t y, x, res;
+
+  linkToRealMatrixRegister(REGISTER_Y, &y);
+  linkToRealMatrixRegister(REGISTER_X, &x);
+
+  multiplyRealMatrices(&y, &x, &res);
+  if(res.matrixElements) {
+    convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+    realMatrixFree(&res);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "cannot multiply %d" STD_CROSS "%d-matrix and %d" STD_CROSS "%d-matrix",
+              y.header.matrixRows, y.header.matrixColumns,
+              x.header.matrixRows, x.header.matrixColumns);
+      moreInfoOnError("In function mulRemaRema:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -542,7 +606,28 @@ void mulCxmaRema(void) {
  * \return void
  ***********************************************/
 void mulRemaShoI(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t matrix, res;
+  real_t y, x;
+  uint16_t rows, cols;
+  int32_t i;
+
+  convertShortIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+
+  linkToRealMatrixRegister(REGISTER_Y, &matrix);
+  rows = matrix.header.matrixRows;
+  cols = matrix.header.matrixColumns;
+
+  realMatrixInit(&res, rows, cols);
+  for(i = 0; i < cols * rows; ++i) {
+    real34ToReal(&matrix.matrixElements[i], &y);
+    realMultiply(&y, &x, &y, &ctxtReal39);
+    realToReal34(&y, &res.matrixElements[i]);
+  }
+
+  convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+  realMatrixFree(&res);
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -554,7 +639,28 @@ void mulRemaShoI(void) {
  * \return void
  ***********************************************/
 void mulShoIRema(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t matrix, res;
+  real_t y, x;
+  uint16_t rows, cols;
+  int32_t i;
+
+  convertShortIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+
+  linkToRealMatrixRegister(REGISTER_X, &matrix);
+  rows = matrix.header.matrixRows;
+  cols = matrix.header.matrixColumns;
+
+  realMatrixInit(&res, rows, cols);
+  for(i = 0; i < cols * rows; ++i) {
+    real34ToReal(&matrix.matrixElements[i], &x);
+    realMultiply(&y, &x, &x, &ctxtReal39);
+    realToReal34(&x, &res.matrixElements[i]);
+  }
+
+  convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+  realMatrixFree(&res);
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -566,7 +672,17 @@ void mulShoIRema(void) {
  * \return void
  ***********************************************/
 void mulRemaReal(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t matrix;
+  if(getRegisterAngularMode(REGISTER_Y) == amNone) {
+    linkToRealMatrixRegister(REGISTER_Y, &matrix);
+    multiplyRealMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_X), &matrix);
+    convertReal34MatrixToReal34MatrixRegister(&matrix, REGISTER_X);
+  }
+  else {
+    mulError();
+  }
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -578,7 +694,16 @@ void mulRemaReal(void) {
  * \return void
  ***********************************************/
 void mulRealRema(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t matrix;
+  if(getRegisterAngularMode(REGISTER_X) == amNone) {
+    linkToRealMatrixRegister(REGISTER_X, &matrix);
+    multiplyRealMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_Y), &matrix);
+  }
+  else {
+    mulError();
+  }
+#endif // TESTSUITE_BUILD
 }
 
 

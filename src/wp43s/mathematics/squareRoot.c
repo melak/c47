@@ -29,6 +29,7 @@
 #include "items.h"
 #include "mathematics/toPolar.h"
 #include "mathematics/toRect.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -120,7 +121,7 @@ void sqrtLonI(void) {
 
 
 void sqrtRema(void) {
-  fnToBeCoded();
+  elementwiseRema(sqrtReal);
 }
 
 

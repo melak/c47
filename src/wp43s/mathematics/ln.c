@@ -28,6 +28,7 @@
 #include "items.h"
 #include "mathematics/toPolar.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -147,7 +148,7 @@ void lnLonI(void) {
 
 
 void lnRema(void) {
-  fnToBeCoded();
+  elementwiseRema(lnReal);
 }
 
 

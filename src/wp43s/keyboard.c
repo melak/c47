@@ -28,7 +28,9 @@
 #include "flags.h"
 #include "gui.h"
 #include "items.h"
+#include "matrix.h"
 #include "memory.h"
+#include "plotstat.h"
 #include "programming/manage.h"
 #include "programming/nextStep.h"
 #include "recall.h"
@@ -254,7 +256,7 @@
     key = getSystemFlag(FLAG_USER) ? (kbd_usr + (*data - '0')*10 + *(data+1) - '0') : (kbd_std + (*data - '0')*10 + *(data+1) - '0');
 
     // Shift f pressed and shift g not active
-    if(key->primary == ITM_SHIFTf && !shiftG && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_PEM)) {
+    if(key->primary == ITM_SHIFTf && !shiftG && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT)) {
       temporaryInformation = TI_NO_INFO;
       lastErrorCode = 0;
       shiftF = !shiftF;
@@ -262,7 +264,7 @@
     }
 
     // Shift g pressed and shift f not active
-    else if(key->primary == ITM_SHIFTg && !shiftF && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_PEM)) {
+    else if(key->primary == ITM_SHIFTg && !shiftF && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT)) {
       temporaryInformation = TI_NO_INFO;
       lastErrorCode = 0;
       shiftG = !shiftG;
@@ -278,7 +280,7 @@
     else if(tam.mode) {
       result = key->primaryTam; // No shifted function in TAM
     }
-    else if(calcMode == CM_NORMAL || calcMode == CM_NIM || calcMode == CM_FONT_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_REGISTER_BROWSER || calcMode == CM_BUG_ON_SCREEN || calcMode == CM_CONFIRMATION || calcMode == CM_PEM) {
+    else if(calcMode == CM_NORMAL || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_FONT_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_REGISTER_BROWSER || calcMode == CM_BUG_ON_SCREEN || calcMode == CM_CONFIRMATION || calcMode == CM_PEM || calcMode == CM_PLOT_STAT) {
       result = shiftF ? key->fShifted :
                shiftG ? key->gShifted :
                         key->primary;
@@ -574,6 +576,11 @@
               addItemToNimBuffer(item);
               break;
 
+            case CM_MIM:
+              addItemToBuffer(item);
+              keyActionProcessed = true;
+              break;
+
             case CM_REGISTER_BROWSER:
               if(item == ITM_PERIOD) {
                 rbr1stDigit = true;
@@ -643,6 +650,12 @@
             case CM_ERROR_MESSAGE:
             case CM_BUG_ON_SCREEN:
               keyActionProcessed = true;
+              break;
+
+            case CM_PLOT_STAT:
+              if(item == ITM_EXIT || item == ITM_BACKSPACE) {
+                fnPlotClose(0);
+              }
               break;
 
             case CM_CONFIRMATION:
@@ -737,7 +750,6 @@
           softmenuStack[0].firstItem = ((       softmenu[menuId].numItems - 1)/6) / (itemShift/6) * itemShift;
         }
       }
-
       setCatalogLastPos();
     }
   }
@@ -787,6 +799,10 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
         }
         break;
 
+      case CM_MIM:
+        mimEnter(false);
+        break;
+
       case CM_NIM:
         closeNim();
 
@@ -804,6 +820,7 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
       case CM_FONT_BROWSER:
       case CM_ERROR_MESSAGE:
       case CM_BUG_ON_SCREEN:
+      case CM_PLOT_STAT:
         break;
 
       case CM_CONFIRMATION:
@@ -867,6 +884,13 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         addItemToNimBuffer(ITM_EXIT);
         break;
 
+      case CM_MIM:
+        mimEnter(true);
+        mimFinalize();
+        calcModeNormal();
+        popSoftmenu(); // close softmenu dedicated for the MIM
+        break;
+
       case CM_PEM:
         if(softmenuStack[0].softmenuId > 1) { // not MyMenu and not MyAlpha
           popSoftmenu();
@@ -887,6 +911,14 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_BUG_ON_SCREEN:
         calcMode = previousCalcMode;
+        break;
+
+      case CM_PLOT_STAT:
+        lastPlotMode = PLOT_NOTHING;
+        plotSelection = 0;
+        calcMode = CM_NORMAL;
+        fnUndo(0);
+        popSoftmenu();
         break;
 
       case CM_CONFIRMATION:
@@ -942,6 +974,7 @@ void fnKeyCC(uint16_t unusedButMandatoryParameter) {
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
       case CM_FONT_BROWSER:
+      case CM_PLOT_STAT:
         break;
 
       default:
@@ -997,6 +1030,10 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         addItemToNimBuffer(ITM_BACKSPACE);
         break;
 
+      case CM_MIM:
+        mimAddNumber(ITM_BACKSPACE);
+        break;
+
       //case CM_ASM_OVER_NORMAL:
       //  addItemToBuffer(ITM_BACKSPACE);
       //  break;
@@ -1008,6 +1045,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_BUG_ON_SCREEN:
+      case CM_PLOT_STAT:
         calcMode = previousCalcMode;
         break;
 
@@ -1060,9 +1098,13 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       case CM_NORMAL:
       case CM_AIM:
       case CM_NIM:
+      case CM_PLOT_STAT:
         resetAlphaSelectionBuffer();
         if(currentSoftmenuScrolls()) {
           menuUp();
+        }
+        if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
+          fnPlotStat(PLOT_NXT);
         }
         else {
           alphaCase = AC_UPPER;
@@ -1143,9 +1185,13 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
       case CM_NORMAL:
       case CM_AIM:
       case CM_NIM:
+      case CM_PLOT_STAT:
         resetAlphaSelectionBuffer();
         if(currentSoftmenuScrolls()) {
           menuDown();
+        }
+        if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
+          fnPlotStat(PLOT_REV); //REVERSE
         }
         else {
           alphaCase = AC_LOWER;
@@ -1223,6 +1269,7 @@ void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
       case CM_FONT_BROWSER:
+      case CM_PLOT_STAT:
         break;
 
       default:

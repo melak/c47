@@ -58,6 +58,7 @@ bool_t                 programListEnd;
 bool_t                 serialIOIconEnabled;
 bool_t                 neverUsed;
 
+realContext_t          ctxtRealShort;//   limited digits: used for higher speed internal real calcs
 realContext_t          ctxtReal34;   //   34 digits
 realContext_t          ctxtReal39;   //   39 digits: used for 34 digits intermediate calculations
 realContext_t          ctxtReal51;   //   51 digits: used for 34 digits intermediate calculations
@@ -156,6 +157,10 @@ uint16_t               numberOfPrograms;
 uint16_t               numberOfNamedVariables;
 uint16_t               currentLocalStepNumber;
 uint16_t               currentProgramNumber;
+uint16_t               lrSelection;
+uint16_t               lrChosen;
+uint16_t               lastPlotMode;
+uint16_t               plotSelection;
 
 int32_t                numberOfFreeMemoryRegions;
 int32_t                lgCatalogSelection;
@@ -569,6 +574,8 @@ size_t                 wp43sMemInBlocks;
   #include "testSuite.h"
 
   int main(int argc, char* argv[]) {
+    int exitCode;
+
     #ifdef CODEBLOCKS_OVER_SCORE // Since December 27th 2020 when running in code::blocks, we are no longer in the correct directory! Why?
       (*strstr(argv[0], "/bin/")) = 0;
       chdir(argv[0]);
@@ -616,10 +623,10 @@ size_t                 wp43sMemInBlocks;
     */
 
 
-    processTests();
+    exitCode = processTests();
     printf("The memory owned by GMP should be 0 bytes. Else report a bug please!\n");
     debugMemory("End of testsuite");
 
-    return 0;
+    return exitCode;
   }
 #endif // TESTSUITE_BUILD

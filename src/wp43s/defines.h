@@ -50,6 +50,21 @@
 #endif // __linux__ == 1
 
 
+#define DEBUG_STAT                       0 // PLOT & STATS verbose level can be 0, 1 or 2 (more)
+#if (DEBUG_STAT == 0)
+  #undef STATDEBUG
+  #undef STATDEBUG_VERBOSE
+#endif
+#if (DEBUG_STAT == 1)
+  #define STATDEBUG
+  #undef STATDEBUG_VERBOSE
+#endif
+#if (DEBUG_STAT == 2)
+  #define STATDEBUG
+  #define STATDEBUG_VERBOSE
+#endif
+
+	
 
 //*************************
 //* Other defines         *
@@ -409,6 +424,26 @@
 #define CF_GAUSS_FITTING                         256
 #define CF_ORTHOGONAL_FITTING                    512
 
+// Curve fitting excluding all other curve fitting bits, 10 bits
+#define CF_LINEAR_FITTING_EX                     (~CF_LINEAR_FITTING) & 0x01FF
+#define CF_EXPONENTIAL_FITTING_EX                (~CF_EXPONENTIAL_FITTING) & 0x01FF     
+#define CF_LOGARITHMIC_FITTING_EX                (~CF_LOGARITHMIC_FITTING) & 0x01FF
+#define CF_POWER_FITTING_EX                      (~CF_POWER_FITTING) & 0x03FF 
+#define CF_ROOT_FITTING_EX                       (~CF_ROOT_FITTING) & 0x01FF      
+#define CF_HYPERBOLIC_FITTING_EX                 (~CF_HYPERBOLIC_FITTING) & 0x01FF      
+#define CF_PARABOLIC_FITTING_EX                  (~CF_PARABOLIC_FITTING) & 0x01FF     
+#define CF_CAUCHY_FITTING_EX                     (~CF_CAUCHY_FITTING) & 0x01FF  
+#define CF_GAUSS_FITTING_EX                      (~CF_GAUSS_FITTING) & 0x01FF 
+#define CF_ORTHOGONAL_FITTING_EX                 (~CF_ORTHOGONAL_FITTING) & 0x01FF       
+
+// Plot curve fitting 3 bits
+#define PLOT_ORTHOF                                0
+#define PLOT_NXT                                   1
+#define PLOT_REV                                   2
+#define PLOT_LR                                    3
+#define PLOT_START                                 4
+#define PLOT_NOTHING                               5
+
 // Rounding mode 3 bits
 #define RM_HALF_EVEN                               0
 #define RM_HALF_UP                                 1
@@ -427,9 +462,11 @@
 #define CM_REGISTER_BROWSER                        5 // Register browser
 #define CM_FLAG_BROWSER                            6 // Flag browser
 #define CM_FONT_BROWSER                            7 // Font browser
-#define CM_ERROR_MESSAGE                           8 // Error message in one of the register lines
-#define CM_BUG_ON_SCREEN                           9 // Bug message on screen
-#define CM_CONFIRMATION                           10 // Waiting for confirmation or canceling
+#define CM_PLOT_STAT                               8 // Plot stats mode
+#define CM_ERROR_MESSAGE                           9 // Error message in one of the register lines
+#define CM_BUG_ON_SCREEN                          10 // Bug message on screen
+#define CM_CONFIRMATION                           11 // Waiting for confirmation or canceling
+#define CM_MIM                                    12 // Matrix imput mode tbd reorder
 
 // Next character in AIM 2 bits
 #define NC_NORMAL                                  0
@@ -447,9 +484,10 @@
 #define TM_FLAGR                               10004
 #define TM_FLAGW                               10005
 #define TM_STORCL                              10006
-#define TM_SHUFFLE                             10007
-#define TM_LABEL                               10008
-#define TM_CMP                                 10009 // TM_CMP must be the last in this list
+#define TM_M_DIM                               10007
+#define TM_SHUFFLE                             10008
+#define TM_LABEL                               10009
+#define TM_CMP                                 10010 // TM_CMP must be the last in this list
 
 // NIM number part
 #define NP_EMPTY                                   0
@@ -498,6 +536,15 @@
 #define TI_XMIN_YMIN                              31
 #define TI_XMAX_YMAX                              32
 #define TI_DAY_OF_WEEK                            33
+#define TI_SXY                                    34
+#define TI_COV                                    35
+#define TI_CORR                                   36
+#define TI_SMI                                    37
+#define TI_LR                                     38
+#define TI_CALCX                                  39
+#define TI_CALCY                                  40
+#define TI_CALCX2                                 41
+#define TI_STATISTIC_LR                           42
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed
@@ -554,34 +601,63 @@
 #define LM_SYSTEM_STATE                            5
 
 // Statistical sums TODO: optimize size of SIGMA_N, _X, _Y, _XMIN, _XMAX, _YMIN, and _YMAX. Thus, saving 2×(7×60 - 4 - 6×16) = 640 bytes
-#define NUMBER_OF_STATISTICAL_SUMS                27
+#define SUM_X                                      1
+#define SUM_Y                                      2
+#define SUM_X2                                     3
+#define SUM_X2Y                                    4
+#define SUM_Y2                                     5
+#define SUM_XY                                     6
+#define SUM_lnXlnY                                 7
+#define SUM_lnX                                    8
+#define SUM_ln2X                                   9
+#define SUM_YlnX                                  10
+#define SUM_lnY                                   11
+#define SUM_ln2Y                                  12
+#define SUM_XlnY                                  13
+#define SUM_X2lnY                                 14
+#define SUM_lnYonX                                15
+#define SUM_X2onY                                 16
+#define SUM_1onX                                  17
+#define SUM_1onX2                                 18
+#define SUM_XonY                                  19
+#define SUM_1onY                                  20
+#define SUM_1onY2                                 21
+#define SUM_X3                                    22
+#define SUM_X4                                    23
+#define SUM_XMIN                                  24
+#define SUM_XMAX                                  25
+#define SUM_YMIN                                  26
+#define SUM_YMAX                                  27
+
+#define NUMBER_OF_STATISTICAL_SUMS                28
 #define SIGMA_N      ((real_t *)(statisticalSumsPointer)) // could be a 32 bit unsigned integer
-#define SIGMA_X      ((real_t *)(statisticalSumsPointer + REAL_SIZE)) // could be a real34
-#define SIGMA_Y      ((real_t *)(statisticalSumsPointer + REAL_SIZE *  2)) // could be a real34
-#define SIGMA_X2     ((real_t *)(statisticalSumsPointer + REAL_SIZE *  3))
-#define SIGMA_X2Y    ((real_t *)(statisticalSumsPointer + REAL_SIZE *  4))
-#define SIGMA_Y2     ((real_t *)(statisticalSumsPointer + REAL_SIZE *  5))
-#define SIGMA_XY     ((real_t *)(statisticalSumsPointer + REAL_SIZE *  6))
-#define SIGMA_lnXlnY ((real_t *)(statisticalSumsPointer + REAL_SIZE *  7))
-#define SIGMA_lnX    ((real_t *)(statisticalSumsPointer + REAL_SIZE *  8))
-#define SIGMA_ln2X   ((real_t *)(statisticalSumsPointer + REAL_SIZE *  9))
-#define SIGMA_YlnX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * 10))
-#define SIGMA_lnY    ((real_t *)(statisticalSumsPointer + REAL_SIZE * 11))
-#define SIGMA_ln2Y   ((real_t *)(statisticalSumsPointer + REAL_SIZE * 12))
-#define SIGMA_XlnY   ((real_t *)(statisticalSumsPointer + REAL_SIZE * 13))
-#define SIGMA_lnYonX ((real_t *)(statisticalSumsPointer + REAL_SIZE * 14))
-#define SIGMA_X2onY  ((real_t *)(statisticalSumsPointer + REAL_SIZE * 15))
-#define SIGMA_1onX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * 16))
-#define SIGMA_1onX2  ((real_t *)(statisticalSumsPointer + REAL_SIZE * 17))
-#define SIGMA_XonY   ((real_t *)(statisticalSumsPointer + REAL_SIZE * 18))
-#define SIGMA_1onY   ((real_t *)(statisticalSumsPointer + REAL_SIZE * 19))
-#define SIGMA_1onY2  ((real_t *)(statisticalSumsPointer + REAL_SIZE * 20))
-#define SIGMA_X3     ((real_t *)(statisticalSumsPointer + REAL_SIZE * 21))
-#define SIGMA_X4     ((real_t *)(statisticalSumsPointer + REAL_SIZE * 22))
-#define SIGMA_XMIN   ((real_t *)(statisticalSumsPointer + REAL_SIZE * 23)) // could be a real34
-#define SIGMA_XMAX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * 24)) // could be a real34
-#define SIGMA_YMIN   ((real_t *)(statisticalSumsPointer + REAL_SIZE * 25)) // could be a real34
-#define SIGMA_YMAX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * 26)) // could be a real34
+#define SIGMA_X      ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_X     )) // could be a real34
+#define SIGMA_Y      ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_Y     )) // could be a real34
+#define SIGMA_X2     ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_X2    ))
+#define SIGMA_X2Y    ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_X2Y   ))
+#define SIGMA_Y2     ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_Y2    ))
+#define SIGMA_XY     ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_XY    ))
+#define SIGMA_lnXlnY ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_lnXlnY))
+#define SIGMA_lnX    ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_lnX   ))
+#define SIGMA_ln2X   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_ln2X  ))
+#define SIGMA_YlnX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_YlnX  ))
+#define SIGMA_lnY    ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_lnY   ))
+#define SIGMA_ln2Y   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_ln2Y  ))
+#define SIGMA_XlnY   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_XlnY  ))
+#define SIGMA_X2lnY  ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_X2lnY ))
+#define SIGMA_lnYonX ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_lnYonX))
+#define SIGMA_X2onY  ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_X2onY ))
+#define SIGMA_1onX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_1onX  ))
+#define SIGMA_1onX2  ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_1onX2 ))
+#define SIGMA_XonY   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_XonY  ))
+#define SIGMA_1onY   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_1onY  ))
+#define SIGMA_1onY2  ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_1onY2 ))
+#define SIGMA_X3     ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_X3    ))
+#define SIGMA_X4     ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_X4    ))
+#define SIGMA_XMIN   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_XMIN  )) // could be a real34
+#define SIGMA_XMAX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_XMAX  )) // could be a real34
+#define SIGMA_YMIN   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_YMIN  )) // could be a real34
+#define SIGMA_YMAX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_YMAX  )) // could be a real34
 
 #define MAX_NUMBER_OF_GLYPHS_IN_STRING           196
 #define NUMBER_OF_GLYPH_ROWS                     100 // Used in the font browser application
@@ -639,6 +715,8 @@
 #define CHECK_VALUE_SPECIAL                        4
 #define CHECK_VALUE_NAN                            5
 #define CHECK_VALUE_INFINITY                       6
+#define CHECK_VALUE_MATRIX                         7
+#define CHECK_VALUE_MATRIX_SQUARE                  8
 
 #define OPMOD_MULTIPLY                             0
 #define OPMOD_POWER                                1

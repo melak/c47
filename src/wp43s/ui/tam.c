@@ -247,7 +247,7 @@
     }
     else if(item == ITM_alpha) {
       // Only allow alpha mode for registers at the moment - we will implement labels later
-      if(!tam.digitsSoFar && !tam.dot && !valueParameter && tam.mode == TM_STORCL) {
+      if(!tam.digitsSoFar && !tam.dot && !valueParameter && (tam.mode == TM_STORCL || tam.mode == TM_M_DIM)) {
         tam.alpha = true;
         setSystemFlag(FLAG_ALPHA);
         aimBuffer[0] = 0;
@@ -404,7 +404,7 @@
           value += FIRST_LOCAL_REGISTER;
         }
         if(tam.indirect) {
-          value = indirectAddressing(value, (tam.mode == TM_STORCL), min, max);
+          value = indirectAddressing(value, (tam.mode == TM_STORCL || tam.mode == TM_M_DIM), min, max);
           run = (lastErrorCode == 0);
         }
         if(tam.function == ITM_GTOP) {
@@ -418,12 +418,18 @@
         else if(run) {
           reallyRunFunction(_tamOperation(), value);
         }
-        tamLeaveMode();
+        if(_tamOperation() == ITM_M_GOTO_ROW) {
+          tamLeaveMode();
+          tamEnterMode(ITM_M_GOTO_COLUMN);
+        }
+        else {
+          tamLeaveMode();
+        }
       }
     }
     else {
       char *buffer = (forcedVar ? forcedVar : aimBuffer);
-      bool_t tryAllocate = (tam.function == ITM_STO && !tam.indirect);
+      bool_t tryAllocate = ((tam.function == ITM_STO || tam.function == ITM_M_DIM) && !tam.indirect);
       int16_t value;
       if(tryAllocate) {
         value = findOrAllocateNamedVariable(buffer);
@@ -440,7 +446,7 @@
       }
       aimBuffer[0] = 0;
       if(tam.indirect && value != INVALID_VARIABLE) {
-        value = indirectAddressing(value, (tam.mode == TM_STORCL), min, max);
+        value = indirectAddressing(value, (tam.mode == TM_STORCL || tam.mode == TM_M_DIM), min, max);
         if(lastErrorCode != 0) {
           value = INVALID_VARIABLE;
         }
@@ -448,7 +454,13 @@
       if(value != INVALID_VARIABLE) {
         reallyRunFunction(_tamOperation(), value);
       }
-      tamLeaveMode();
+      if(_tamOperation() == ITM_M_GOTO_ROW) {
+        tamLeaveMode();
+        tamEnterMode(ITM_M_GOTO_COLUMN);
+      }
+      else {
+        tamLeaveMode();
+      }
     }
   }
 
@@ -482,6 +494,7 @@
       case TM_VALUE:
       case TM_VALUE_CHB:
       case TM_REGISTER:
+      case TM_M_DIM:
         showSoftmenu(-MNU_TAM);
         break;
 

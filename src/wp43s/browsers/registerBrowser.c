@@ -160,6 +160,15 @@
             sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(REAL34_SIZE));
           }
         }
+        else if(getRegisterDataType(regist) == dtReal34Matrix) {
+          if(showContent) {
+            real34MatrixToDisplayString(regist, tmpString);
+          }
+          else {
+            dataBlock_t* dblock = REGISTER_REAL34_MATRIX_DBLOCK(regist);
+            sprintf(tmpString, "%" PRIu16 " element%s " STD_CORRESPONDS_TO " 4+%" PRIu32 " bytes", dblock->matrixRows * dblock->matrixColumns, (dblock->matrixRows * dblock->matrixColumns)==1 ? "" : "s", (uint32_t)TO_BYTES(dblock->matrixRows * dblock->matrixColumns * REAL34_SIZE));
+          }
+        }
         else if(getRegisterDataType(regist) == dtConfig) {
           if(showContent) {
             strcpy(tmpString, "Configuration data");
@@ -254,6 +263,15 @@
               }
               else {
                 sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(REAL34_SIZE));
+              }
+            }
+            else if(getRegisterDataType(regist) == dtReal34Matrix) {
+              if(showContent) {
+                real34MatrixToDisplayString(regist, tmpString);
+              }
+              else {
+                dataBlock_t* dblock = REGISTER_REAL34_MATRIX_DBLOCK(regist);
+                sprintf(tmpString, "%" PRIu16 " element%s " STD_CORRESPONDS_TO " 4+%" PRIu32 " bytes", dblock->matrixRows * dblock->matrixColumns, (dblock->matrixRows * dblock->matrixColumns)==1 ? "" : "s", (uint32_t)TO_BYTES(dblock->matrixRows * dblock->matrixColumns * REAL34_SIZE));
               }
             }
             else if(getRegisterDataType(regist) == dtConfig) {

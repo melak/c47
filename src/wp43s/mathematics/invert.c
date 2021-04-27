@@ -27,6 +27,7 @@
 #include "fonts.h"
 #include "items.h"
 #include "mathematics/division.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -59,7 +60,7 @@ void invertError(void) {
 
 
 /********************************************//**
- * \brief regX ==> regL and 1 ÷ regX ==> regX
+ * \brief regX ==> regL and 1 Ã· regX ==> regX
  * enables stack lift and refreshes the stack
  *
  * \param[in] unusedButMandatoryParameter
@@ -76,7 +77,7 @@ void fnInvert(uint16_t unusedButMandatoryParameter) {
 
 
 /********************************************//**
- * \brief 1 ÷ X(long integer) ==> X(long integer or real16)
+ * \brief 1 Ã· X(long integer) ==> X(long integer or real16)
  *
  * \param void
  * \return void
@@ -128,7 +129,7 @@ void invertLonI(void) {
 
 
 void invertRema(void) {
-  fnToBeCoded();
+  elementwiseRema(invertReal);
 }
 
 
@@ -140,7 +141,7 @@ void invertCxma(void) {
 
 
 /********************************************//**
- * \brief 1 ÷ X(real34) ==> X(real34)
+ * \brief 1 Ã· X(real34) ==> X(real34)
  *
  * \param void
  * \return void
@@ -174,7 +175,7 @@ void invertReal(void) {
 
 
 /********************************************//**
- * \brief 1 ÷ X(complex34) ==> X(complex34)
+ * \brief 1 Ã· X(complex34) ==> X(complex34)
  *
  * \param void
  * \return void

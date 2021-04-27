@@ -48,10 +48,10 @@ fi
 echo "" >> build/version.h
 echo "#endif // VERSION_H" >> build/version.h
 
-if cmp -s "build/version.h" "src/wp43s/version.h"; then
+if cmp -s "build/version.h" "build/generated/version.h"; then
   printf "====> Version file unchanged <====\n"
 else
   printf "====> Version file changed <====\n"
   printf "Updating version file\n"
-  cp build/version.h src/wp43s/version.h
+  cp build/version.h build/generated/version.h
 fi

@@ -30,6 +30,7 @@
 #include "mathematics/rsd.h"
 #include "mathematics/toPolar.h"
 #include "mathematics/toRect.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "screen.h"
@@ -150,7 +151,7 @@ void rdpTime(uint16_t digits) {
 
 
 void rdpRema(uint16_t digits) {
-  fnToBeCoded();
+  elementwiseRema_UInt16(rdpReal, digits);
 }
 
 

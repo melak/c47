@@ -48,12 +48,16 @@ void divTimeTime(void);
 
 //      RegYRegX
 void divRemaLonI(void);
+void divRemaRema(void);
+void divRemaCxma(void);
 void divRemaShoI(void);
 void divRemaReal(void);
 void divRemaCplx(void);
 
 //      RegYRegX
 void divCxmaLonI(void);
+void divCxmaRema(void);
+void divCxmaCxma(void);
 void divCxmaShoI(void);
 void divCxmaReal(void);
 void divCxmaCplx(void);

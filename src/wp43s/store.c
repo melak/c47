@@ -21,8 +21,11 @@
 #include "store.h"
 
 #include "charString.h"
+#include "debug.h"
 #include "error.h"
 #include "mathematics/compare.h"
+#include "matrix.h"
+#include "registerValueConversions.h"
 #include "registers.h"
 
 #include "wp43s.h"
@@ -48,6 +51,65 @@ bool_t regInRange(uint16_t regist) {
 #endif
   return inRange;
 }
+
+
+
+#ifndef TESTSUITE_BUILD
+static bool_t storeElementReal(real34Matrix_t *matrix) {
+  const int16_t i = getIRegisterAsInt(true);
+  const int16_t j = getJRegisterAsInt(true);
+
+  if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
+    convertLongIntegerRegisterToReal34(REGISTER_X, &matrix->matrixElements[i * matrix->header.matrixColumns + j]);
+  }
+  else if(getRegisterDataType(REGISTER_X) == dtReal34) {
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &matrix->matrixElements[i * matrix->header.matrixColumns + j]);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "Cannot store %s in a matrix", getRegisterDataTypeName(REGISTER_X, true, false));
+      moreInfoOnError("In function storeElementReal:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return false;
+  }
+  return true;
+}
+
+
+
+static bool_t storeIjReal(real34Matrix_t *matrix) {
+  if(getRegisterDataType(REGISTER_X) == dtLongInteger && getRegisterDataType(REGISTER_Y) == dtLongInteger) {
+    longInteger_t i, j;
+    convertLongIntegerRegisterToLongInteger(REGISTER_Y, i);
+    convertLongIntegerRegisterToLongInteger(REGISTER_X, j);
+    if(longIntegerCompareInt(i, 0) > 0 && longIntegerCompareUInt(i, matrix->header.matrixRows) <= 0 && longIntegerCompareInt(j, 0) > 0 && longIntegerCompareUInt(j, matrix->header.matrixColumns) <= 0) {
+      copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_I);
+      copySourceRegisterToDestRegister(REGISTER_X, REGISTER_J);
+    }
+    else {
+      uint16_t row, col;
+      longIntegerToUInt(i, row);
+      longIntegerToUInt(j, col);
+      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "(%" PRIu16 ", %" PRIu16 ") out of range", row, col);
+        moreInfoOnError("In function storeIJReal:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
+    longIntegerFree(i);
+    longIntegerFree(j);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "Cannot store %s in a matrix", getRegisterDataTypeName(REGISTER_X, true, false));
+      moreInfoOnError("In function storeIJReal:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+  return false;
+}
+#endif // TESTSUITE_BUILD
 
 
 
@@ -255,14 +317,9 @@ void fnStoreStack(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnStoreElement(uint16_t unusedButMandatoryParameter) {
-  #ifdef PC_BUILD
-    printf("fnStoreElement\n");
-  #endif // PC_BUILD
-
-  displayCalcErrorMessage(ERROR_ITEM_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
-  #ifdef PC_BUILD
-    moreInfoOnError("In function fnStoreElement:", "To be coded", NULL, NULL);
-  #endif // PC_BUILD
+#ifndef TESTSUITE_BUILD
+  callByIndexedMatrix(storeElementReal, NULL);
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -274,6 +331,7 @@ void fnStoreElement(uint16_t unusedButMandatoryParameter) {
  * \return void
  ***********************************************/
 void fnStoreIJ(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_I);
-  copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_J);
+#ifndef TESTSUITE_BUILD
+  callByIndexedMatrix(storeIjReal, NULL);
+#endif // TESTSUITE_BUILD
 }

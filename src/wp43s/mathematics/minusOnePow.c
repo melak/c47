@@ -29,6 +29,7 @@
 #include "items.h"
 #include "mathematics/cos.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -103,7 +104,7 @@ void m1PowLonI(void) {
 
 
 void m1PowRema(void) {
-  fnToBeCoded();
+  elementwiseRema(m1PowReal);
 }
 
 

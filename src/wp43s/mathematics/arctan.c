@@ -28,6 +28,7 @@
 #include "items.h"
 #include "mathematics/toPolar.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -89,7 +90,7 @@ void arctanLonI(void) {
 
 
 void arctanRema(void) {
-  fnToBeCoded();
+  elementwiseRema(arctanReal);
 }
 
 

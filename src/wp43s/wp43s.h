@@ -91,6 +91,8 @@
   extern const font_t                   *fontForShortInteger;
   extern const font_t                   *cursorFont;
   extern const char                      digits[17];
+  extern real34Matrix_t                  openMatrixMIMPointer;
+  extern uint16_t                        matrixIndex;
   extern void                            (* const addition[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void);
   extern void                            (* const subtraction[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void);
   extern void                            (* const multiplication[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void);
@@ -120,6 +122,7 @@
   extern bool_t                 serialIOIconEnabled;
   extern bool_t                 neverUsed;
 
+  extern realContext_t          ctxtRealShort;//   Limited digits: used for high speed internal calcs
   extern realContext_t          ctxtReal34;   //   34 digits
   extern realContext_t          ctxtReal39;   //   39 digits: used for 34 digits intermediate calculations
   extern realContext_t          ctxtReal51;   //   51 digits: used for 34 digits intermediate calculations
@@ -228,7 +231,11 @@
   extern uint16_t               numberOfNamedVariables;
   extern uint16_t               currentLocalStepNumber;
   extern uint16_t               currentProgramNumber;
-
+  extern uint16_t               lrSelection;
+  extern uint16_t               lrChosen;
+  extern uint16_t               lastPlotMode;
+  extern uint16_t               plotSelection;
+  
   extern int32_t                numberOfFreeMemoryRegions;
   extern int32_t                lgCatalogSelection;
 

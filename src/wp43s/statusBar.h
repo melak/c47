@@ -28,6 +28,7 @@
   void showAngularMode        (void);
   void showFracMode           (void);
   void showIntegerMode        (void);
+  void showMatrixMode         (void);
   void showOverflowCarry      (void);
   void showHideAlphaMode      (void);
   void showHideHourGlass      (void);

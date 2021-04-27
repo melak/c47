@@ -27,6 +27,7 @@
 #include "items.h"
 #include "mathematics/division.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -126,7 +127,7 @@ void tanLonI(void) {
 
 
 void tanRema(void) {
-  fnToBeCoded();
+  elementwiseRema(tanReal);
 }
 
 

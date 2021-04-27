@@ -35,6 +35,7 @@
 #include "mathematics/comparisonReals.h"
 #include "mathematics/toRect.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "saveRestoreCalcState.h"
@@ -305,6 +306,49 @@
 
       else if(calcMode == CM_NIM) {
         addItemToNimBuffer(item);
+      }
+
+      //Probably wrong place for this function?! Should Arrow be processed in buffercize.c in this case? //Switch statement better.
+      else if(calcMode == CM_MIM) {
+        if (item == ITM_RIGHT_ARROW) {
+          mimEnter(true);
+          setJRegisterAsInt(true, getJRegisterAsInt(true) + 1);
+        }
+        else if (item == ITM_LEFT_ARROW) {
+          mimEnter(true);
+          setJRegisterAsInt(true, getJRegisterAsInt(true) - 1);
+        }
+        else if (item == ITM_UP_ARROW) {
+          mimEnter(true);
+          setIRegisterAsInt(true, getIRegisterAsInt(true) - 1);
+        }
+        else if (item == ITM_DOWN_ARROW) {
+          mimEnter(true);
+          setIRegisterAsInt(true, getIRegisterAsInt(true) + 1);
+        }
+        refreshScreen();
+
+      switch(item) {
+        case ITM_EXPONENT :
+        case ITM_PERIOD :
+
+        case ITM_0 :
+        case ITM_1 :
+        case ITM_2 :
+        case ITM_3 :
+        case ITM_4 :
+        case ITM_5 :
+        case ITM_6 :
+        case ITM_7 :
+        case ITM_8 :
+        case ITM_9 :
+
+        case ITM_CHS : // +/-
+
+        mimAddNumber(item);
+        break;
+
+        }
       }
 
       else if(calcMode != CM_AIM && (item >= ITM_A && item <= ITM_F)) {

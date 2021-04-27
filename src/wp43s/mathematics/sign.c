@@ -25,6 +25,7 @@
 #include "integers.h"
 #include "items.h"
 #include "mathematics/unitVector.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -97,7 +98,7 @@ void signLonI(void) {
 
 
 void signRema(void) {
-  fnToBeCoded();
+  elementwiseRema(signReal);
 }
 
 

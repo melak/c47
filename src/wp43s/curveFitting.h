@@ -22,6 +22,21 @@
 
 #include <stdint.h>
 
-void fnCurveFitting(uint16_t curveFitting);
+#include "wp43s.h"
+
+#define useFLOAT   0
+#define useREAL4   4
+#define useREAL39 39
+
+
+extern   realContext_t           *realContext;
+void     fnCurveFitting          (uint16_t curveFitting);
+void     processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, real_t *aa0, real_t *aa1, real_t *aa2);
+void     fnProcessLR             (uint16_t unusedButMandatoryParameter);
+uint16_t lrCountOnes             (uint16_t curveFitting);
+void     yIsFnx                  (uint8_t  USEFLOAT, uint16_t selection, double x, double *y, double a0, double a1, double a2, real_t *XX, real_t *YY, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2);
+void     fnYIsFnx                (uint16_t unusedButMandatoryParameter);
+void     fnXIsFny                (uint16_t unusedButMandatoryParameter);
+void     fnCurveFittingLR        (uint16_t unusedButMandatoryParameter);
 
 #endif // CURVEFITTING_H

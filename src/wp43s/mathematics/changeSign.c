@@ -24,6 +24,7 @@
 #include "error.h"
 #include "integers.h"
 #include "items.h"
+#include "matrix.h"
 #include "registers.h"
 
 #include "wp43s.h"
@@ -80,7 +81,7 @@ void chsLonI(void) {
 
 
 void chsRema(void) {
-  fnToBeCoded();
+  elementwiseRema(chsReal);
 }
 
 

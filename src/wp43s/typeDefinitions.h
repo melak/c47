@@ -21,6 +21,7 @@
 #define TYPEDEFINITIONS_H
 
 #include <stdint.h>
+#include "decNumberWrappers.h"
 
 /********************************************//**
  * \union multiplyDivide_t
@@ -297,6 +298,14 @@ typedef enum {
  ***********************************************/
 typedef int16_t calcRegister_t;
 
+/********************************************//**
+ * \typedef real34Matrix_t
+ * \brief A type for real34Matrix
+ ***********************************************/
+typedef struct {
+   dataBlock_t header;
+   real34_t    *matrixElements;
+} real34Matrix_t;
 
 /********************************************//**
  * \typedef item_t

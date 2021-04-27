@@ -28,6 +28,7 @@
 #include "items.h"
 #include "mathematics/toPolar.h"
 #include "mathematics/toRect.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -106,7 +107,7 @@ void curtLonI(void) {
 
 
 void curtRema(void) {
-  fnToBeCoded();
+  elementwiseRema(curtReal);
 }
 
 

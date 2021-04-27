@@ -116,7 +116,7 @@ void addBit(int bit) {
   }
 }
 
-void exportCStructure(char const *ttfName) {
+void exportCStructure(const char *fontsPath, const char *ttfName) {
   FT_Face   face;
   FT_UInt   glyphIndex;
   FT_ULong  charCode;
@@ -133,7 +133,7 @@ void exportCStructure(char const *ttfName) {
   /////////////////////
   // Open the face 0 //
   /////////////////////
-  sprintf(path, "res/fonts/%s", ttfName);
+  sprintf(path, "%s/%s", fontsPath, ttfName);
   if((error = FT_New_Face(library, path, 0, &face)) != FT_Err_Ok) {
     fprintf(stderr, "Error during face creation from file %s\n", path);
     fprintf(stderr, "Error %d : %s\n", error, getErrorMessage(error));
@@ -310,33 +310,17 @@ void exportCStructure(char const *ttfName) {
   FT_Done_Face(face);
 }
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-int main(int argc, char* argv[]) {
-  #pragma GCC diagnostic pop
-  #ifdef CODEBLOCKS_OVER_SCORE // Since December 27th 2020 when running in code::blocks, we are no longer in the correct directory! Why?
-    (*strstr(argv[0], "/bin/")) = 0;
-    chdir(argv[0]);
-  #endif // CODEBLOCKS_OVER_SCORE
-
+void processFiles(const char *fontsPath, const char *outputFile) {
   ////////////////
   // Open files //
   ////////////////
-  #if (__linux__ == 1)
-    sortingOrder = fopen("res/fonts/sortingOrder.csv", "rb");
-    cFile        = fopen("src/wp43s/rasterFontsData.c", "wb");
-  #elif defined(__MINGW64__)
-    sortingOrder = fopen("res/fonts\\sortingOrder.csv", "rb");
-    cFile        = fopen("src\\wp43s\\rasterFontsData.c", "wb");
-  #elif defined(__APPLE__)
-    sortingOrder = fopen("res/fonts/sortingOrder.csv", "rb");
-    cFile        = fopen("src/wp43s/rasterFontsData.c", "wb");
-  #else // Unsupported OS
-    #error Only Linux, MacOS and Windows MINGW64 are supported for now
-  #endif // OS
+  char sortingOrderPath[200];
+  sprintf(sortingOrderPath, "%s/%s", fontsPath, "sortingOrder.csv");
+  sortingOrder = fopen(sortingOrderPath, "rb");
+  cFile        = fopen(outputFile, "wb");
 
   if(sortingOrder == NULL) {
-    fprintf(stderr, "Cannot open file res/fonts/sortingOrder.csv\n");
+    fprintf(stderr, "Cannot open file %s\n", sortingOrderPath);
     exit(1);
   }
 
@@ -408,8 +392,8 @@ int main(int argc, char* argv[]) {
   ///////////////////////////
   // Generate the C arrays //
   ///////////////////////////
-  exportCStructure("WP43S_NumericFont.ttf");
-  exportCStructure("WP43S_StandardFont.ttf");
+  exportCStructure(fontsPath, "WP43S_NumericFont.ttf");
+  exportCStructure(fontsPath, "WP43S_StandardFont.ttf");
 
   fclose(cFile);
 
@@ -417,6 +401,20 @@ int main(int argc, char* argv[]) {
   // Close the freetype library //
   ////////////////////////////////
   FT_Done_FreeType(library);
+}
+
+int main(int argc, char* argv[]) {
+  #ifdef CODEBLOCKS_OVER_SCORE // Since December 27th 2020 when running in code::blocks, we are no longer in the correct directory! Why?
+    (*strstr(argv[0], "/bin/")) = 0;
+    chdir(argv[0]);
+  #endif // CODEBLOCKS_OVER_SCORE
+
+  if(argc < 3) {
+    printf("Usage: ttf2RasterFonts <font dir> <output file>\n");
+    return 1;
+  }
+
+  processFiles(argv[1], argv[2]);
 
   return 0;
 }

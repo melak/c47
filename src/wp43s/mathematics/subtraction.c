@@ -23,9 +23,11 @@
 #include "conversionAngles.h"
 #include "debug.h"
 #include "error.h"
+#include "fonts.h"
 #include "integers.h"
 #include "items.h"
 #include "mathematics/addition.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -425,7 +427,28 @@ void subDateReal(void) {
  * \return void
  ***********************************************/
 void subRemaRema(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t y, x;
+
+  linkToRealMatrixRegister(REGISTER_Y, &y);
+  convertReal34MatrixRegisterToReal34Matrix(REGISTER_X, &x);
+
+  subtractRealMatrices(&y, &x, &x);
+  if(x.matrixElements) {
+    convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "cannot subtract %d" STD_CROSS "%d-matrix from %d" STD_CROSS "%d-matrix",
+              x.header.matrixRows, x.header.matrixColumns,
+              y.header.matrixRows, y.header.matrixColumns);
+      moreInfoOnError("In function subRemaRema:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+
+  realMatrixFree(&x);
+#endif // TESTSUITE_BUILD
 }
 
 

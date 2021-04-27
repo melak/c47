@@ -36,36 +36,14 @@ void fnCvtToCurrentAngularMode(uint16_t fromAngularMode) {
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
-      if(fromAngularMode == currentAngularMode) {
-        convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
-        setRegisterAngularMode(REGISTER_X, currentAngularMode);
-      }
-      else {
-        displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          sprintf(errorMessage, "input angle (longint) default must be ADM = %s!", getAngularModeName(currentAngularMode));
-          moreInfoOnError("In function fnCvtToCurrentAngularMode:", errorMessage, NULL, NULL);
-        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-        return;
-      }
+      convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+      convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), fromAngularMode, currentAngularMode);
+      setRegisterAngularMode(REGISTER_X, currentAngularMode);
       break;
 
     case dtReal34:
-      if(getRegisterAngularMode(REGISTER_X) == amNone) {
-        setRegisterAngularMode(REGISTER_X, currentAngularMode);
-      }
-      if(getRegisterAngularMode(REGISTER_X) == fromAngularMode) {
-        convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), fromAngularMode, currentAngularMode);
-        setRegisterAngularMode(REGISTER_X, currentAngularMode);
-      }
-      else {
-        displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          sprintf(errorMessage, "input angle34 must be tagged %s!", getAngularModeName(fromAngularMode));
-          moreInfoOnError("In function fnCvtToCurrentAngularMode:", errorMessage, NULL, NULL);
-        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-        return;
-      }
+      convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), fromAngularMode, currentAngularMode);
+      setRegisterAngularMode(REGISTER_X, currentAngularMode);
       break;
 
     default:

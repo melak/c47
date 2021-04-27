@@ -26,6 +26,7 @@
 #include "integers.h"
 #include "items.h"
 #include "mathematics/multiplication.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -89,7 +90,7 @@ void cubeLonI(void) {
 
 
 void cubeRema(void) {
-  fnToBeCoded();
+  elementwiseRema(cubeReal);
 }
 
 

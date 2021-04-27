@@ -30,6 +30,7 @@
 #include "mathematics/division.h"
 #include "mathematics/tan.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -132,7 +133,7 @@ void sincLonI(void) {
 
 
 void sincRema(void) {
-  fnToBeCoded();
+  elementwiseRema(sincReal);
 }
 
 

@@ -748,14 +748,16 @@ void setRegisterMaxDataLength(calcRegister_t regist, uint16_t maxDataLen) {
  * \return Number of blocks
  ***********************************************/
 uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
+  dataBlock_t *db = NULL;
+
   if(regist <= LAST_GLOBAL_REGISTER) { // Global register
-    return ((dataBlock_t *)TO_PCMEMPTR(globalRegister[regist].pointerToRegisterData))->dataMaxLength;
+      db = (dataBlock_t *)TO_PCMEMPTR(globalRegister[regist].pointerToRegisterData);
   }
 
   else if(regist <= LAST_LOCAL_REGISTER) { // Local register
     if(currentLocalRegisters != NULL) {
       if(regist-FIRST_LOCAL_REGISTER < currentNumberOfLocalRegisters) {
-        return ((dataBlock_t *)TO_PCMEMPTR(POINTER_TO_LOCAL_REGISTER(regist)->pointerToRegisterData))->dataMaxLength;
+        db = (dataBlock_t *)TO_PCMEMPTR(POINTER_TO_LOCAL_REGISTER(regist)->pointerToRegisterData);
       }
       else {
         sprintf(errorMessage, "In function getRegisterMaxDataLength: local register %" PRId16 " is not defined! Must be from 0 to %" PRIu8, (uint16_t)(regist - FIRST_LOCAL_REGISTER), (uint8_t)(currentNumberOfLocalRegisters - 1));
@@ -770,14 +772,14 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
   }
 
   else if(regist <= LAST_TEMP_REGISTER) { // Saved stack register or temporary register
-    return ((dataBlock_t *)TO_PCMEMPTR(savedStackRegister[regist - FIRST_SAVED_STACK_REGISTER].pointerToRegisterData))->dataMaxLength;
+    db = (dataBlock_t *)TO_PCMEMPTR(savedStackRegister[regist - FIRST_SAVED_STACK_REGISTER].pointerToRegisterData);
   }
 
   else if(regist <= LAST_NAMED_VARIABLE) { // Named variable
     if(numberOfNamedVariables != 0) {
       regist -= FIRST_NAMED_VARIABLE;
       if(regist < numberOfNamedVariables) {
-        return ((dataBlock_t *)TO_PCMEMPTR(allNamedVariables[regist].header.pointerToRegisterData))->dataMaxLength;
+        db = (dataBlock_t *)TO_PCMEMPTR(allNamedVariables[regist].header.pointerToRegisterData);
       }
       else {
         sprintf(errorMessage, "In function getRegisterMaxDataLength: named variable %" PRId16 " is not defined! Must be from 0 to %" PRIu16, regist, (uint16_t)(numberOfNamedVariables - 1));
@@ -793,7 +795,7 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
 
   else if(regist <= LAST_RESERVED_VARIABLE) { // System named variable
     regist -= FIRST_RESERVED_VARIABLE;
-    return ((dataBlock_t *)TO_PCMEMPTR(allReservedVariables[regist].header.pointerToRegisterData))->dataMaxLength;
+    db = (dataBlock_t *)TO_PCMEMPTR(allReservedVariables[regist].header.pointerToRegisterData);
   }
 
   else {
@@ -801,6 +803,14 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
     displayBugScreen(errorMessage);
   }
 
+  if(db) {
+    if(getRegisterDataType(regist) == dtReal34Matrix || getRegisterDataType(regist) == dtComplex34Matrix) {
+      return db->matrixRows * db->matrixColumns;
+    }
+    else {
+      return db->dataMaxLength;
+    }
+  }
   return 0;
 }
 
@@ -822,8 +832,8 @@ uint16_t getRegisterFullSize(calcRegister_t regist) {
     case dtTime:            return REAL34_SIZE;
     case dtDate:            return REAL34_SIZE;
     case dtString:          return getRegisterDataPointer(regist)->dataMaxLength + 1;
-    case dtReal34Matrix:    return getRegisterDataPointer(regist)->matrixRows * getRegisterDataPointer(regist)->matrixColumns * REAL34_SIZE + 1;
-    case dtComplex34Matrix: return getRegisterDataPointer(regist)->matrixRows * getRegisterDataPointer(regist)->matrixColumns * COMPLEX34_SIZE + 1;
+    case dtReal34Matrix:    return TO_BLOCKS((getRegisterDataPointer(regist)->matrixRows * getRegisterDataPointer(regist)->matrixColumns) * sizeof(real34_t)) + 1; break;
+    case dtComplex34Matrix: return TO_BLOCKS((getRegisterDataPointer(regist)->matrixRows * getRegisterDataPointer(regist)->matrixColumns) * sizeof(complex34_t)) + 1; break;
     case dtShortInteger:    return SHORT_INTEGER_SIZE;
     case dtReal34:          return REAL34_SIZE;
     case dtComplex34:       return COMPLEX34_SIZE;
@@ -1030,8 +1040,8 @@ void copySourceRegisterToDestRegister(calcRegister_t sourceRegister, calcRegiste
       case dtTime:            sizeInBlocks = REAL34_SIZE;                                           break;
       case dtDate:            sizeInBlocks = REAL34_SIZE;                                           break;
       case dtString:          sizeInBlocks = getRegisterDataPointer(sourceRegister)->dataMaxLength; break;
-      //case dtReal16Matrix:
-      //case dtComplex16Matrix:
+      case dtReal34Matrix:    sizeInBlocks = TO_BLOCKS((getRegisterDataPointer(sourceRegister)->matrixRows * getRegisterDataPointer(sourceRegister)->matrixColumns) * sizeof(real34_t)); break;
+      case dtComplex34Matrix: sizeInBlocks = TO_BLOCKS((getRegisterDataPointer(sourceRegister)->matrixRows * getRegisterDataPointer(sourceRegister)->matrixColumns) * sizeof(complex34_t)); break;
       case dtShortInteger:    sizeInBlocks = SHORT_INTEGER_SIZE;                                    break;
       case dtReal34:          sizeInBlocks = REAL34_SIZE;                                           break;
       case dtComplex34:       sizeInBlocks = COMPLEX34_SIZE;                                        break;
@@ -1045,7 +1055,19 @@ void copySourceRegisterToDestRegister(calcRegister_t sourceRegister, calcRegiste
     reallocateRegister(destRegister, getRegisterDataType(sourceRegister), sizeInBlocks, amNone);
   }
 
-  xcopy(REGISTER_DATA(destRegister), REGISTER_DATA(sourceRegister), TO_BYTES(getRegisterFullSize(sourceRegister)));
+  switch(getRegisterDataType(sourceRegister)) {
+    case dtReal34Matrix:
+      xcopy(REGISTER_REAL34_MATRIX_DBLOCK(destRegister), REGISTER_REAL34_MATRIX_DBLOCK(sourceRegister), sizeof(dataBlock_t));
+      xcopy(REGISTER_REAL34_MATRIX_M_ELEMENTS(destRegister), REGISTER_REAL34_MATRIX_M_ELEMENTS(sourceRegister),
+        getRegisterDataPointer(sourceRegister)->matrixRows * getRegisterDataPointer(sourceRegister)->matrixColumns * TO_BYTES(REAL34_SIZE));
+      break;
+    //case dtComplex34Matrix:
+      // to be coded
+      //break;
+
+    default:
+      xcopy(REGISTER_DATA(destRegister), REGISTER_DATA(sourceRegister), TO_BYTES(getRegisterFullSize(sourceRegister)));
+  }
   setRegisterTag(destRegister, getRegisterTag(sourceRegister));
 }
 
@@ -1488,7 +1510,7 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
     sprintf(errorMessage, "In function reallocateRegister: %" PRIu16 " is an unexpected numByte value for a date! It should be REAL34_SIZE=%" PRIu16 "!", dataSizeWithoutDataLenBlocks, (uint16_t)REAL34_SIZE);
     displayBugScreen(errorMessage);
   }
-  else if(dataType == dtString) {
+  else if(dataType == dtString || dataType == dtReal34Matrix || dataType == dtComplex34Matrix) {
     dataSizeWithDataLenBlocks = dataSizeWithoutDataLenBlocks + 1; // +1 for the max length of the string
   }
   else if(dataType == dtLongInteger) {
@@ -1498,7 +1520,7 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
     dataSizeWithDataLenBlocks = dataSizeWithoutDataLenBlocks + 1; // +1 for the max length of the data
   }
 
-  if(getRegisterDataType(regist) != dataType || ((getRegisterDataType(regist) == dtString || getRegisterDataType(regist) == dtLongInteger) && getRegisterMaxDataLength(regist) != dataSizeWithoutDataLenBlocks)) {
+  if(getRegisterDataType(regist) != dataType || ((getRegisterDataType(regist) == dtString || getRegisterDataType(regist) == dtLongInteger || getRegisterDataType(regist) == dtReal34Matrix || getRegisterDataType(regist) == dtComplex34Matrix) && getRegisterMaxDataLength(regist) != dataSizeWithoutDataLenBlocks)) {
     freeRegisterData(regist);
     setRegisterDataPointer(regist, allocWp43s(dataSizeWithDataLenBlocks));
     setRegisterDataType(regist, dataType, tag);

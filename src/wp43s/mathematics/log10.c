@@ -29,6 +29,7 @@
 #include "items.h"
 #include "mathematics/toPolar.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -138,7 +139,7 @@ void log10LonI(void) {
 
 
 void log10Rema(void) {
-  fnToBeCoded();
+  elementwiseRema(log10Real);
 }
 
 

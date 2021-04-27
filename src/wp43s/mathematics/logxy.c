@@ -28,6 +28,7 @@
 #include "mathematics/division.h"
 #include "mathematics/ln.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -388,7 +389,7 @@ void logxyShoIShoI(void) {
 
 
 void logxyRemaLonI(void) {
-  fnToBeCoded();
+  elementwiseRemaLonI(logxyRealLonI);
 }
 
 
@@ -400,7 +401,7 @@ void logxyCxmaLonI(void) {
 
 
 void logxyRemaReal(void) {
-  fnToBeCoded();
+  elementwiseRemaReal(logxyRealReal);
 }
 
 
@@ -424,7 +425,7 @@ void logxyCxmaCplx(void) {
 
 
 void logxyRemaShoI(void) {
-  fnToBeCoded();
+  elementwiseRemaShoI(logxyRealShoI);
 }
 
 

@@ -174,6 +174,114 @@ char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
 }
 
 
+/********************************************//**
+ * \brief Returns the single name of a curvefitting mode, or ??? if multiple names are defined in bits
+ * \param[in] am uint16_t curvefitting mode
+ * \return char*          Name of the curvefitting mode
+ ***********************************************/
+char * getCurveFitModeName(uint16_t selection) {          //Can be only one bit. ??? if invalid.
+    switch( selection & 0x03FF ){
+      case CF_LINEAR_FITTING:      return "Linear     ";
+      case CF_EXPONENTIAL_FITTING: return "Exponential";
+      case CF_LOGARITHMIC_FITTING: return "Logarithmic";
+      case CF_POWER_FITTING:       return "Power      ";
+      case CF_ROOT_FITTING:        return "Root       ";
+      case CF_HYPERBOLIC_FITTING:  return "Hyperbolic ";
+      case CF_PARABOLIC_FITTING:   return "Parabolic  ";
+      case CF_CAUCHY_FITTING:      return "Cauchy peak";
+      case CF_GAUSS_FITTING:       return "Gauss peak ";
+      case CF_ORTHOGONAL_FITTING:  return "Orthogonal ";
+      default: return "???        "; break;
+    }
+  }
+
+
+/********************************************//**
+ * \brief Remove trailing spaces from the curvefitting mode name
+ *
+ ***********************************************/
+char * eatSpacesEnd(const char * ss) {
+  static char tmp_names[20];
+  int8_t ix;
+  strcpy(tmp_names,ss);
+  ix = stringByteLength(ss)-1;
+  while( ix > 0 ){
+    if(ss[ix]==' ') {
+      tmp_names[ix]=0;
+    }
+    else {
+      break;
+    }
+    ix--;
+  }
+  return tmp_names;
+}
+
+
+/********************************************//**
+ * \brief Remove spaces from the curvefitting mode name
+ *
+ ***********************************************/
+char * eatSpacesMid(const char * ss) {
+  static char tmp_names[20];
+  char tt[50];
+  strcpy(tt,ss);
+  int8_t ix=0,iy=0;
+  tmp_names[0]=0; 
+  while( tt[ix] != 0 && ix < 50){
+    if(tt[ix]!=' ') tmp_names[iy++]=tt[ix];
+    ix++;
+  }
+  tmp_names[iy]=0;
+  tmp_names[iy++]=0;
+  return tmp_names;
+}
+
+
+/********************************************//**
+ * \brief Returns all selected names of the curve fit types
+ * \note that a single bit EXCLUDES a method
+ *
+ * \param[in] dt uint16_t Data type
+ * \return char*          Name of the curvefit type
+ ***********************************************/
+char * getCurveFitModeNames(uint16_t selection) {
+  uint16_t ix;
+  errorMessage[0]=0;
+  for(ix = 0; ix < 10; ix++) {
+    if(selection & (1 << ix)) {
+      strcat(errorMessage, errorMessage[0] == 0 ? "" : " ");
+      strcat(errorMessage, eatSpacesEnd(getCurveFitModeName(1 << ix)));
+    }
+  }
+  if(errorMessage[0]==0) return "???        ";
+  return errorMessage;
+}
+
+
+/********************************************//**
+ * \brief Returns the formula of a curvefitting mode
+ *
+ * \param[in] am uint16_t curvefitting mode
+ * \return char*          Formula of the curvefitting mode
+ ***********************************************/
+char * getCurveFitModeFormula(uint16_t selection) {          //Can be only one bit. ??? if invalid.
+    switch( selection & 0x03FF ){
+      case CF_LINEAR_FITTING:      return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
+      case CF_EXPONENTIAL_FITTING: return "a" STD_SUB_0 STD_SPACE_3_PER_EM "e^(a" STD_SUB_1 "x)";
+      case CF_LOGARITHMIC_FITTING: return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "ln(x)";
+      case CF_POWER_FITTING:       return "a" STD_SUB_0 STD_SPACE_3_PER_EM "x^a" STD_SUB_1 ;
+      case CF_ROOT_FITTING:        return "a" STD_SUB_0 STD_SPACE_3_PER_EM "a" STD_SUB_1 "^(1/x)";
+      case CF_HYPERBOLIC_FITTING:  return "(a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x)" STD_SUP_MINUS_1;
+      case CF_PARABOLIC_FITTING:   return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x" STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_2 "x" STD_SUP_2;
+      case CF_CAUCHY_FITTING:      return STD_LEFT_SQUARE_BRACKET "a" STD_SUB_0 "(x+a" STD_SUB_1 ")" STD_SUP_2 "+a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET STD_SUP_MINUS_1;
+      case CF_GAUSS_FITTING:       return "a" STD_SUB_0 "e^" STD_LEFT_SQUARE_BRACKET  "(x-a" STD_SUB_1 ")" STD_SUP_2 "/a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET;
+      case CF_ORTHOGONAL_FITTING:  return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
+      default: return "???        "; break;
+    }
+  }
+
+
 
 /********************************************//**
  * \brief Returns the name of a angular mode
@@ -337,6 +445,7 @@ void debugNIM(void) {
     if(cm == CM_REGISTER_BROWSER)      return "reg.bro";
     if(cm == CM_FLAG_BROWSER)          return "flg.bro";
     if(cm == CM_FONT_BROWSER)          return "fnt.bro";
+    if(cm == CM_PLOT_STAT)             return "plot.st";
     if(cm == CM_ERROR_MESSAGE)         return "err.msg";
     if(cm == CM_BUG_ON_SCREEN)         return "bug.scr";
     if(cm == CM_CONFIRMATION)          return "confirm";
@@ -357,6 +466,7 @@ void debugNIM(void) {
     if(tmm == TM_REGISTER)  return "Register";
     if(tmm == TM_CMP)       return "Compare ";
     if(tmm == TM_STORCL)    return "STORCL  ";
+    if(tmm == TM_M_DIM)     return "M_DIM   ";
 
     return "???     ";
   }
@@ -603,6 +713,11 @@ void debugNIM(void) {
 
     else if(getRegisterDataType(regist) == dtConfig) {
       sprintf(string + n, "Configuration data");
+    }
+
+    else if(getRegisterDataType(regist) == dtReal34Matrix) {
+      dataBlock_t* dblock = REGISTER_REAL34_MATRIX_DBLOCK(regist);
+      sprintf(string + n, "Real Matrix of Size [%" PRIu16" x %" PRIu16" Matrix]", dblock->matrixRows, dblock->matrixColumns);
     }
 
     else {
@@ -1199,6 +1314,14 @@ void debugNIM(void) {
         gtk_label_set_label(GTK_LABEL(lbl2[row]), string);
         gtk_widget_show(lbl2[row++]);
 
+        sprintf(string, STD_SIGMA "(x" STD_SUP_2 "ln(y))");
+        stringToUtf8(string, (uint8_t *)(string + 50));
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string + 50);
+        gtk_widget_show(lbl1[row]);
+        formatRealDebug(string, SIGMA_X2lnY);
+        gtk_label_set_label(GTK_LABEL(lbl2[row]), string);
+        gtk_widget_show(lbl2[row++]);
+
         sprintf(string, STD_SIGMA "(ln(y)/x)");
         stringToUtf8(string, (uint8_t *)(string + 50));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string + 50);
@@ -1399,7 +1522,7 @@ void debugNIM(void) {
 
 
 
-#if (DEBUG_PANEL == 1) || (DEBUG_REGISTER_L == 1)
+#if (DEBUG_PANEL == 1) || (DEBUG_REGISTER_L == 1) || (DEBUG_STAT >= 1)
   /********************************************//**
    * \brief Formats a real34 for the debug window
    *

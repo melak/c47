@@ -30,7 +30,9 @@
 #include "gui.h"
 #include "items.h"
 #include "keyboard.h"
+#include "matrix.h"
 #include "memory.h"
+#include "plotstat.h"
 #include "programming/manage.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -651,6 +653,8 @@ void fnReset(uint16_t confirmation) {
     memset(nimBufferDisplay, 0, NIM_BUFFER_LENGTH);
     memset(tamBuffer,        0, TAM_BUFFER_LENGTH);
 
+    graph_setupmemory();
+
     // Empty program initialization
     beginOfProgramMemory          = (uint8_t *)(ram + freeMemoryRegions[0].sizeInBlocks);
     currentStep                   = beginOfProgramMemory;
@@ -754,11 +758,20 @@ void fnReset(uint16_t confirmation) {
     ((dataBlock_t *)memPtr)->matrixColumns = 1;
     real34Zero(memPtr + 4);
 
+    #ifndef TESTSUITE_BUILD
+      matrixIndex = INVALID_VARIABLE; // Unset matrix index
+    #endif // TESTSUITE_BUILD
+
+
     #ifdef PC_BUILD
       debugWindow = DBG_REGISTERS;
     #endif // PC_BUILD
 
     decContextDefault(&ctxtReal34, DEC_INIT_DECQUAD);
+
+    decContextDefault(&ctxtRealShort, DEC_INIT_DECSINGLE);
+    ctxtRealShort.digits = 6;
+    ctxtRealShort.traps  = 0;
 
     decContextDefault(&ctxtReal39, DEC_INIT_DECQUAD);
     ctxtReal39.digits = 39;
@@ -782,6 +795,10 @@ void fnReset(uint16_t confirmation) {
 
     statisticalSumsPointer = NULL;
     savedStatisticalSumsPointer = NULL;
+    lrSelection = CF_LINEAR_FITTING;
+    lrChosen    = 0;
+    lastPlotMode = PLOT_NOTHING;
+    plotSelection = 0;
 
     shortIntegerMode = SIM_2COMPL;
     fnSetWordSize(64);
@@ -839,6 +856,7 @@ void fnReset(uint16_t confirmation) {
     #ifdef TESTSUITE_BUILD
       calcMode = CM_NORMAL;
     #else // TESTSUITE_BUILD
+      if(calcMode == CM_MIM) mimFinalize();
       calcModeNormal();
     #endif // TESTSUITE_BUILD
 

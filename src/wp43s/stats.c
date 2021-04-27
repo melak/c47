@@ -27,6 +27,7 @@
 #include "mathematics/comparisonReals.h"
 #include "mathematics/wp34s.h"
 #include "memory.h"
+#include "plotstat.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "stack.h"
@@ -74,6 +75,9 @@ void initStatisticalSums(void) {
     realCopy(const_minusInfinity, SIGMA_XMAX);
     realCopy(const_minusInfinity, SIGMA_YMAX);
   }
+  if(telltale != MEM_INITIALIZED) {
+    graph_setupmemory();
+  }
 }
 
 
@@ -82,6 +86,12 @@ void fnClSigma(uint16_t unusedButMandatoryParameter) {
   if(statisticalSumsPointer != NULL) {
     freeWp43s(statisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
     statisticalSumsPointer = NULL;
+    graph_end();                            // release plot memory
+    lrSelection = CF_LINEAR_FITTING;        // linear regression selection
+    lrChosen = 0;                           // linear regression selection
+    lastPlotMode = PLOT_NOTHING;            // last selected  plotmode
+    plotSelection = 0;                      // Currently selected linear regression mode
+    PLOT_ZOOM = 0;                          // Currently selected plot zoom level
   }
 }
 
@@ -218,6 +228,10 @@ void fnSigma(uint16_t plusMinus) {
       realMultiply(&tmpReal1, &x, &tmpReal1, realContext);
       realAdd(SIGMA_XlnY, &tmpReal1, SIGMA_XlnY, realContext);
 
+      // sigma x²ln(y)
+      realMultiply(&tmpReal1, &x, &tmpReal1, realContext);
+      realAdd(SIGMA_X2lnY, &tmpReal1, SIGMA_X2lnY, realContext);
+
       // sigma 1/x
       realDivide(const_1, &x, &tmpReal1, realContext);
       realAdd(SIGMA_1onX, &tmpReal1, SIGMA_1onX, realContext);
@@ -229,6 +243,8 @@ void fnSigma(uint16_t plusMinus) {
       // sigma 1/y
       realDivide(const_1, &y, &tmpReal1, realContext);
       realAdd(SIGMA_1onY, &tmpReal1, SIGMA_1onY, realContext);
+
+      graph_sigmaplus(+1, &x, &y);
     }
     else { // SIGMA-
       // n
@@ -309,6 +325,10 @@ void fnSigma(uint16_t plusMinus) {
       realMultiply(&tmpReal1, &x, &tmpReal1, realContext);
       realSubtract(SIGMA_XlnY, &tmpReal1, SIGMA_XlnY, realContext);
 
+      // sigma x²ln(y)
+      realMultiply(&tmpReal1, &x, &tmpReal1, realContext);
+      realAdd(SIGMA_X2lnY, &tmpReal1, SIGMA_X2lnY, realContext);
+
       // sigma 1/x
       realDivide(const_1, &x, &tmpReal1, realContext);
       realSubtract(SIGMA_1onX, &tmpReal1, SIGMA_1onX, realContext);
@@ -320,6 +340,8 @@ void fnSigma(uint16_t plusMinus) {
       // sigma 1/y
       realDivide(const_1, &y, &tmpReal1, realContext);
       realSubtract(SIGMA_1onY, &tmpReal1, SIGMA_1onY, realContext);
+
+      graph_sigmaplus(-1, &x, &y);
     }
 
     temporaryInformation = TI_STATISTIC_SUMS;

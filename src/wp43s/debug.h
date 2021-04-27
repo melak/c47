@@ -65,17 +65,23 @@
   void   memoryDump                         (bool_t bitFields, bool_t globalFlags, bool_t globalRegisters, bool_t localFlags, bool_t FIRSTLOCALREGISTERs, bool_t otherVars);
 #endif // (DEBUG_PANEL == 1)
 
-#if (DEBUG_PANEL == 1) || (DEBUG_REGISTER_L == 1)
+#if (DEBUG_PANEL == 1) || (DEBUG_REGISTER_L == 1) || (DEBUG_STAT >= 1)
   void   formatReal34Debug                  (char *str, real34_t *real34);
   void   formatRealDebug                    (char *str, real_t *real);
   void   formatComplex34Debug               (char *str, void *addr);
-#endif // (DEBUG_PANEL == 1) || (DEBUG_REGISTER_L == 1)
+#endif // (DEBUG_PANEL == 1) || (DEBUG_REGISTER_L == 1)  || (DEBUG_STAT >= 1)
 
 char *getDataTypeName                     (uint16_t dt, bool_t article, bool_t padWithBlanks);
 char *getRegisterDataTypeName             (calcRegister_t regist, bool_t article, bool_t padWithBlanks);
 char *getRegisterTagName                  (calcRegister_t regist, bool_t padWithBlanks);
 char *getShortIntegerModeName             (uint16_t im);
 char *getAngularModeName                  (angularMode_t angularMode);
+char *getCurveFitModeName                 (uint16_t selection);
+char *getCurveFitModeNames                (uint16_t selection);
+char *getCurveFitModeFormula              (uint16_t selection);
+char *eatSpacesEnd                        (const char * ss);
+char *eatSpacesMid                        (const char * ss);
+
 //void  debugNIM                            (void); Never used
 
 #ifdef PC_BUILD

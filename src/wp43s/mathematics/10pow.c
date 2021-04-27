@@ -27,6 +27,7 @@
 #include "integers.h"
 #include "items.h"
 #include "mathematics/toRect.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -130,7 +131,7 @@ void tenPowLonI(void) {
 
 
 void tenPowRema(void) {
-  fnToBeCoded();
+  elementwiseRema(tenPowReal);
 }
 
 

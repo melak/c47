@@ -48,6 +48,7 @@ void checkValueError(uint16_t unusedButMandatoryParameter) {
 static void checkReal(uint16_t mode) {
   switch(mode) {
     case CHECK_VALUE_COMPLEX:
+    case CHECK_VALUE_MATRIX:
       temporaryInformation = TI_FALSE;
       return;
     case CHECK_VALUE_REAL:
@@ -84,7 +85,39 @@ void checkValueLonI(uint16_t mode) {
 
 
 void checkValueRema(uint16_t mode) {
-  fnToBeCoded();
+  const int32_t elements = (int32_t)REGISTER_REAL34_MATRIX_DBLOCK(REGISTER_X)->matrixRows * (int32_t)REGISTER_REAL34_MATRIX_DBLOCK(REGISTER_X)->matrixColumns;
+  switch(mode) {
+    case CHECK_VALUE_MATRIX:
+      temporaryInformation = TI_TRUE;
+      return;
+    case CHECK_VALUE_MATRIX_SQUARE:
+      temporaryInformation = (REGISTER_REAL34_MATRIX_DBLOCK(REGISTER_X)->matrixRows == REGISTER_REAL34_MATRIX_DBLOCK(REGISTER_X)->matrixColumns) ? TI_TRUE : TI_FALSE;
+      return;
+    case CHECK_VALUE_COMPLEX:
+      temporaryInformation = TI_FALSE;
+      return;
+    case CHECK_VALUE_REAL:
+      temporaryInformation = TI_TRUE;
+      return;
+    case CHECK_VALUE_SPECIAL: // true if any elements is special
+      temporaryInformation = TI_FALSE;
+      if(getSystemFlag(FLAG_SPCRES)) {
+        for(int i = 0; i < elements; ++i)
+          if(real34IsSpecial(REGISTER_REAL34_MATRIX_M_ELEMENTS(REGISTER_X) + i))
+            temporaryInformation = TI_TRUE;
+      }
+      return;
+    case CHECK_VALUE_NAN:
+      temporaryInformation = TI_FALSE;
+      if(getSystemFlag(FLAG_SPCRES)) {
+        for(int i = 0; i < elements; ++i)
+          if(real34IsNaN(REGISTER_REAL34_MATRIX_M_ELEMENTS(REGISTER_X) + i))
+            temporaryInformation = TI_TRUE;
+      }
+      return;
+    default:
+      checkValueError(mode);
+  }
 }
 
 
@@ -170,6 +203,9 @@ void checkValueCplx(uint16_t mode) {
       return;
     case CHECK_VALUE_NAN:
       temporaryInformation = (getSystemFlag(FLAG_SPCRES) && (real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X)) || real34IsNaN(REGISTER_IMAG34_DATA(REGISTER_X)))) ? TI_TRUE : TI_FALSE;
+      return;
+    case CHECK_VALUE_MATRIX:
+      temporaryInformation = TI_FALSE;
       return;
     default:
       checkValueError(mode);

@@ -2329,7 +2329,7 @@ void checkCatalogsSorting(void) {
 
 
 
-void processTests(void) {
+int processTests(void) {
   FILE *fileList;
 
   checkCatalogsSorting();
@@ -2361,4 +2361,6 @@ void processTests(void) {
   printf("* %6d TESTS PASSED SUCCESSFULLY *\n", numTestsTotal);
   printf("* %6d TEST%c FAILED              *\n", failedTests, failedTests == 1 ? ' ' : 'S');
   printf("************************************\n");
+
+  return numTestsTotal > 0;
 }

@@ -23,6 +23,7 @@
 #include "debug.h"
 #include "error.h"
 #include "items.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -72,7 +73,7 @@ void fnRoundi(uint16_t unusedButMandatoryParameter) {
 
 
 void roundiRema(void) {
-  fnToBeCoded();
+  elementwiseRema(roundiReal);
 }
 
 

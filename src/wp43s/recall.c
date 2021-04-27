@@ -25,12 +25,28 @@
 #include "error.h"
 #include "flags.h"
 #include "mathematics/compare.h"
+#include "matrix.h"
 #include "memory.h"
+#include "registerValueConversions.h"
 #include "registers.h"
 #include "stack.h"
 #include "store.h"
 
 #include "wp43s.h"
+
+
+
+#ifndef TESTSUITE_BUILD
+static bool_t recallElementReal(real34Matrix_t *matrix) {
+  const int16_t i = getIRegisterAsInt(true);
+  const int16_t j = getJRegisterAsInt(true);
+
+  liftStack();
+  reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+  real34Copy(&matrix->matrixElements[i * matrix->header.matrixColumns + j], REGISTER_REAL34_DATA(REGISTER_X));
+  return false;
+}
+#endif // TESTSUITE_BUILD
 
 
 
@@ -277,14 +293,9 @@ void fnRecallStack(uint16_t regist) {
  * \return void
  ***********************************************/
 void fnRecallElement(uint16_t unusedButMandatoryParameter) {
-  #ifdef PC_BUILD
-    printf("fnRecallElement\n");
-  #endif // PC_BUILD
-
-  displayCalcErrorMessage(ERROR_ITEM_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
-  #ifdef PC_BUILD
-    moreInfoOnError("In function fnRecallElement:", "To be coded", NULL, NULL);
-  #endif // PC_BUILD
+#ifndef TESTSUITE_BUILD
+  callByIndexedMatrix(recallElementReal, NULL);
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -296,11 +307,37 @@ void fnRecallElement(uint16_t unusedButMandatoryParameter) {
  * \return void
  ***********************************************/
 void fnRecallIJ(uint16_t unusedButMandatoryParameter) {
+#ifndef TESTSUITE_BUILD
+  longInteger_t zero;
+  longIntegerInit(zero);
+
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
 
-  copySourceRegisterToDestRegister(REGISTER_I, REGISTER_X);
-  copySourceRegisterToDestRegister(REGISTER_J, REGISTER_Y);
+  liftStack();
+  liftStack();
+
+  if(matrixIndex == INVALID_VARIABLE || !regInRange(matrixIndex) || !((getRegisterDataType(matrixIndex) == dtReal34Matrix) || (getRegisterDataType(matrixIndex) == dtComplex34Matrix))) {
+    convertLongIntegerToLongIntegerRegister(zero, REGISTER_Y);
+    convertLongIntegerToLongIntegerRegister(zero, REGISTER_X);
+  }
+  else {
+    if(getRegisterDataType(REGISTER_I) == dtLongInteger)
+      copySourceRegisterToDestRegister(REGISTER_I, REGISTER_Y);
+    else if(getRegisterDataType(REGISTER_I) == dtReal34)
+      convertReal34ToLongIntegerRegister(REGISTER_REAL34_DATA(REGISTER_I), REGISTER_Y, DEC_ROUND_DOWN);
+    else
+      convertLongIntegerToLongIntegerRegister(zero, REGISTER_Y);
+    if(getRegisterDataType(REGISTER_J) == dtLongInteger)
+      copySourceRegisterToDestRegister(REGISTER_J, REGISTER_X);
+    else if(getRegisterDataType(REGISTER_J) == dtReal34)
+      convertReal34ToLongIntegerRegister(REGISTER_REAL34_DATA(REGISTER_J), REGISTER_X, DEC_ROUND_DOWN);
+    else
+      convertLongIntegerToLongIntegerRegister(zero, REGISTER_X);
+  }
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
   adjustResult(REGISTER_Y, false, true, REGISTER_Y, -1, -1);
+
+  longIntegerFree(zero);
+#endif // TESTSUITE_BUILD
 }

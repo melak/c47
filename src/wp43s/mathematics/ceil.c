@@ -24,6 +24,7 @@
 #include "error.h"
 #include "fonts.h"
 #include "items.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -78,7 +79,7 @@ void ceilLonI(void) {
 
 
 void ceilRema(void) {
-  fnToBeCoded();
+  elementwiseRema(ceilReal);
 }
 
 

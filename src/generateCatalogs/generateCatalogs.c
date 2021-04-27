@@ -103,9 +103,14 @@ int main(int argc, char* argv[]) {
     chdir(argv[0]);
   #endif // CODEBLOCKS_OVER_SCORE
 
-  catalogFile = fopen("src/wp43s/softmenuCatalogs.h", "wb");
+  if(argc < 2) {
+    printf("Usage: generateCatalogs <output file>\n");
+    return 1;
+  }
+
+  catalogFile = fopen(argv[1], "wb");
   if(catalogFile == NULL) {
-    fprintf(stderr, "Cannot create file src/wp43s/softmenuCatalogs.h\n");
+    fprintf(stderr, "Cannot create file %s\n", argv[1]);
     exit(1);
   }
 

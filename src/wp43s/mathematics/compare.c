@@ -27,6 +27,7 @@
 #include "mathematics/comparisonReals.h"
 #include "mathematics/round.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "sort.h"
@@ -314,13 +315,36 @@ static void compareRegisters(uint16_t regist, uint8_t mode) {
   int8_t result;
 
   if((regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) || (regist == TEMP_REGISTER_1)) {
+  #ifndef TESTSUITE_BUILD
     // Compare matrices
-    if((mode == COMPARE_MODE_EQUAL || mode == COMPARE_MODE_NOT_EQUAL) && (getRegisterDataType(REGISTER_X) == dtReal34Matrix || getRegisterDataType(REGISTER_X) == dtComplex34Matrix) && (getRegisterDataType(regist) == dtReal34Matrix || getRegisterDataType(regist) == dtComplex34Matrix)) {
+    if((mode == COMPARE_MODE_EQUAL || mode == COMPARE_MODE_NOT_EQUAL) && getRegisterDataType(REGISTER_X) == dtReal34Matrix && getRegisterDataType(regist) == dtReal34Matrix) {
+      real34Matrix_t x, r;
+      linkToRealMatrixRegister(REGISTER_X, &x);
+      linkToRealMatrixRegister(regist, &r);
+      if(x.header.matrixRows == r.header.matrixRows && x.header.matrixColumns == r.header.matrixColumns) {
+        temporaryInformation = TI_TRUE;
+        for(int i = 0; i < x.header.matrixRows * x.header.matrixColumns; ++i) {
+          if(!real34CompareEqual(&x.matrixElements[i], &r.matrixElements[i])) {
+            temporaryInformation = TI_FALSE;
+            break;
+          }
+        }
+      }
+      else {
+        temporaryInformation = TI_FALSE;
+      }
+      if(mode == COMPARE_MODE_NOT_EQUAL) {
+        if(temporaryInformation == TI_TRUE) temporaryInformation = TI_FALSE;
+        else                                temporaryInformation = TI_TRUE;
+      }
+    }
+    else if((mode == COMPARE_MODE_EQUAL || mode == COMPARE_MODE_NOT_EQUAL) && (getRegisterDataType(REGISTER_X) == dtReal34Matrix || getRegisterDataType(REGISTER_X) == dtComplex34Matrix) && (getRegisterDataType(regist) == dtReal34Matrix || getRegisterDataType(regist) == dtComplex34Matrix)) {
       fnToBeCoded();
     }
-
+    else
+  #endif // !TESTSUITE_BUILD
     // Compare complex numbers
-    else if((mode == COMPARE_MODE_EQUAL || mode == COMPARE_MODE_NOT_EQUAL) && (getRegisterDataType(REGISTER_X) == dtComplex34 || getRegisterDataType(regist) == dtComplex34)) {
+    if((mode == COMPARE_MODE_EQUAL || mode == COMPARE_MODE_NOT_EQUAL) && (getRegisterDataType(REGISTER_X) == dtComplex34 || getRegisterDataType(regist) == dtComplex34)) {
       if(getRegisterDataType(REGISTER_X) == getRegisterDataType(regist)) { // == dtComplex34
         temporaryInformation = (real34CompareEqual(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(regist)) && real34CompareEqual(REGISTER_IMAG34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(regist))) ? TI_TRUE : TI_FALSE;
       }
@@ -386,7 +410,25 @@ void fnXNotEqual(uint16_t regist) {
 }
 
 static void almostEqualMatrix(uint16_t regist) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  if(getRegisterDataType(REGISTER_X) == dtReal34Matrix && getRegisterDataType(regist) == dtReal34Matrix) {
+    real34Matrix_t x, r;
+    convertReal34MatrixRegisterToReal34Matrix(REGISTER_X, &x);
+    convertReal34MatrixRegisterToReal34Matrix(regist, &r);
+    roundRema();
+    fnSwapX(regist);
+    roundRema();
+    fnSwapX(regist);
+    compareRegisters(regist, COMPARE_MODE_EQUAL);
+    convertReal34MatrixToReal34MatrixRegister(&r, regist);
+    convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
+    realMatrixFree(&r);
+    realMatrixFree(&x);
+  }
+  else {
+    fnToBeCoded();
+  }
+#endif // !TESTSUITE_BUILD
 }
 
 static void almostEqualScalar(uint16_t regist) {

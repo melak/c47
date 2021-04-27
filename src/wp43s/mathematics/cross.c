@@ -23,7 +23,9 @@
 #include "constantPointers.h"
 #include "debug.h"
 #include "error.h"
+#include "fonts.h"
 #include "items.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -279,7 +281,26 @@ void crossCplxShoI(void) {
  * \return void
  ***********************************************/
 void crossRemaRema(void) {
-  itemToBeCoded(0);
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t y, x, res;
+
+  linkToRealMatrixRegister(REGISTER_Y, &y);
+  linkToRealMatrixRegister(REGISTER_X, &x);
+
+  if((realVectorSize(&y) == 0) || (realVectorSize(&x) == 0) || (realVectorSize(&y) > 3) || (realVectorSize(&x) > 3)) {
+    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "invalid numbers of elements of %d" STD_CROSS "%d-matrix to %d" STD_CROSS "%d-matrix",
+              x.header.matrixRows, x.header.matrixColumns,
+              y.header.matrixRows, y.header.matrixColumns);
+      moreInfoOnError("In function dotRemaRema:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+  else {
+    crossRealVectors(&y, &x, &res);
+    convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+  }
+#endif // TESTSUITE_BUILD
 }
 
 /********************************************//**

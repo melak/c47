@@ -26,7 +26,9 @@
 #include "items.h"
 #include "mathematics/tan.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
+#include "registerValueConversions.h"
 
 #include "wp43s.h"
 
@@ -99,7 +101,7 @@ void sinLonI(void) {
 
 
 void sinRema(void) {
-  fnToBeCoded();
+  elementwiseRema(sinReal);
 }
 
 

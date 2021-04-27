@@ -1930,7 +1930,10 @@ void timeToDisplayString(calcRegister_t regist, char *displayString, bool_t igno
   }
 }
 
-
+void real34MatrixToDisplayString(calcRegister_t regist, char *displayString) {
+  dataBlock_t* dblock = REGISTER_REAL34_MATRIX_DBLOCK(regist);
+  sprintf(displayString, "[%" PRIu16 STD_CROSS "%" PRIu16" Matrix]", dblock->matrixRows, dblock->matrixColumns);
+}
 
 void fnShow(uint16_t unusedButMandatoryParameter) {
   uint8_t savedDisplayFormat = displayFormat, savedDisplayFormatDigits = displayFormatDigits;

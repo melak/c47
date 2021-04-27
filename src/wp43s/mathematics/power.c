@@ -30,6 +30,7 @@
 #include "mathematics/toPolar.h"
 #include "mathematics/toRect.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -272,7 +273,7 @@ void powCplxLonI(void) {
  * \return void
  ***********************************************/
 void powRemaLonI(void) {
-  fnToBeCoded();
+  elementwiseRemaLonI(powRealLonI);
 }
 
 
@@ -284,7 +285,7 @@ void powRemaLonI(void) {
  * \return void
  ***********************************************/
 void powRemaShoI(void) {
-  fnToBeCoded();
+  elementwiseRemaShoI(powRealShoI);
 }
 
 
@@ -296,7 +297,7 @@ void powRemaShoI(void) {
  * \return void
  ***********************************************/
 void powRemaReal(void) {
-  fnToBeCoded();
+  elementwiseRemaReal(powRealReal);
 }
 
 

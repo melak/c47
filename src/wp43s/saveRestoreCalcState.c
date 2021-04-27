@@ -27,7 +27,9 @@
 #include "flags.h"
 #include "gui.h"
 #include "items.h"
+#include "matrix.h"
 #include "memory.h"
+#include "plotstat.h"
 #include "programming/manage.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -37,7 +39,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         51  // Changed local register management
+#define BACKUP_VERSION         55  // Added x_min
 #define START_REGISTER_VALUE 1522
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -207,6 +209,45 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
     save(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
     save(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop),              BACKUP);
+    save(&lrSelection,                        sizeof(lrSelection),                        BACKUP);
+    save(&lrChosen,                           sizeof(lrChosen),                           BACKUP);
+    save(&lastPlotMode,                       sizeof(lastPlotMode),                       BACKUP);
+    save(&plotSelection,                      sizeof(plotSelection),                      BACKUP);
+
+    save(&graph_dx,                           sizeof(graph_dx),                           BACKUP);
+    save(&graph_dy,                           sizeof(graph_dy),                           BACKUP);
+    save(&extentx,                            sizeof(extentx),                            BACKUP);
+    save(&extenty,                            sizeof(extenty),                            BACKUP);
+    save(&jm_VECT,                            sizeof(jm_VECT),                            BACKUP);
+    save(&jm_NVECT,                           sizeof(jm_NVECT),                           BACKUP);
+    save(&jm_SCALE,                           sizeof(jm_SCALE),                           BACKUP);
+    save(&Aspect_Square,                      sizeof(Aspect_Square),                      BACKUP);
+    save(&PLOT_LINE,                          sizeof(PLOT_LINE),                          BACKUP);
+    save(&PLOT_CROSS,                         sizeof(PLOT_CROSS),                         BACKUP);
+    save(&PLOT_BOX,                           sizeof(PLOT_BOX),                           BACKUP);
+    save(&PLOT_INTG,                          sizeof(PLOT_INTG),                          BACKUP);
+    save(&PLOT_DIFF,                          sizeof(PLOT_DIFF),                          BACKUP);
+    save(&PLOT_RMS,                           sizeof(PLOT_RMS),                           BACKUP);
+    save(&PLOT_SHADE,                         sizeof(PLOT_SHADE),                         BACKUP);
+    save(&PLOT_AXIS,                          sizeof(PLOT_AXIS),                          BACKUP);
+    save(&PLOT_ZMX,                           sizeof(PLOT_ZMX),                           BACKUP);
+    save(&PLOT_ZMY,                           sizeof(PLOT_ZMY),                           BACKUP);
+    save(&PLOT_ZOOM,                          sizeof(PLOT_ZOOM),                          BACKUP);
+    save(&plotmode,                           sizeof(plotmode),                           BACKUP);
+    save(&tick_int_x,                         sizeof(tick_int_x),                         BACKUP);
+    save(&tick_int_y,                         sizeof(tick_int_y),                         BACKUP);
+    save(&x_min,                              sizeof(x_min),                              BACKUP);
+    save(&x_max,                              sizeof(x_max),                              BACKUP);
+    save(&y_min,                              sizeof(y_min),                              BACKUP);
+    save(&y_max,                              sizeof(y_max),                              BACKUP);
+    save(&xzero,                              sizeof(xzero),                              BACKUP);
+    save(&yzero,                              sizeof(yzero),                              BACKUP);
+    save(gr_x,                                LIM*sizeof(graphtype),                      BACKUP);
+    save(gr_y,                                LIM*sizeof(graphtype),                      BACKUP);
+    save(&telltale,                           sizeof(telltale),                           BACKUP);
+    save(&ix_count,                           sizeof(ix_count),                           BACKUP);
+    save(&matrixIndex,                        sizeof(matrixIndex),                        BACKUP);
+
 
     fclose(BACKUP);
     printf("End of calc's backup\n");
@@ -363,6 +404,44 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
       restore(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
       restore(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop),              BACKUP);
+      restore(&lrSelection,                        sizeof(lrSelection),                        BACKUP);
+      restore(&lrChosen,                           sizeof(lrChosen),                           BACKUP);
+      restore(&lastPlotMode,                       sizeof(lastPlotMode),                       BACKUP);
+      restore(&plotSelection,                      sizeof(plotSelection),                      BACKUP);
+
+      restore(&graph_dx,                           sizeof(graph_dx),                           BACKUP);
+      restore(&graph_dy,                           sizeof(graph_dy),                           BACKUP);
+      restore(&extentx,                            sizeof(extentx),                            BACKUP);
+      restore(&extenty,                            sizeof(extenty),                            BACKUP);
+      restore(&jm_VECT,                            sizeof(jm_VECT),                            BACKUP);
+      restore(&jm_NVECT,                           sizeof(jm_NVECT),                           BACKUP);
+      restore(&jm_SCALE,                           sizeof(jm_SCALE),                           BACKUP);
+      restore(&Aspect_Square,                      sizeof(Aspect_Square),                      BACKUP);
+      restore(&PLOT_LINE,                          sizeof(PLOT_LINE),                          BACKUP);
+      restore(&PLOT_CROSS,                         sizeof(PLOT_CROSS),                         BACKUP);
+      restore(&PLOT_BOX,                           sizeof(PLOT_BOX),                           BACKUP);
+      restore(&PLOT_INTG,                          sizeof(PLOT_INTG),                          BACKUP);
+      restore(&PLOT_DIFF,                          sizeof(PLOT_DIFF),                          BACKUP);
+      restore(&PLOT_RMS,                           sizeof(PLOT_RMS),                           BACKUP);
+      restore(&PLOT_SHADE,                         sizeof(PLOT_SHADE),                         BACKUP);
+      restore(&PLOT_AXIS,                          sizeof(PLOT_AXIS),                          BACKUP);
+      restore(&PLOT_ZMX,                           sizeof(PLOT_ZMX),                           BACKUP);
+      restore(&PLOT_ZMY,                           sizeof(PLOT_ZMY),                           BACKUP);
+      restore(&PLOT_ZOOM,                          sizeof(PLOT_ZOOM),                          BACKUP);
+      restore(&plotmode,                           sizeof(plotmode),                           BACKUP);
+      restore(&tick_int_x,                         sizeof(tick_int_x),                         BACKUP);
+      restore(&tick_int_y,                         sizeof(tick_int_y),                         BACKUP);
+      restore(&x_min,                              sizeof(x_min),                              BACKUP);
+      restore(&x_max,                              sizeof(x_max),                              BACKUP);
+      restore(&y_min,                              sizeof(y_min),                              BACKUP);
+      restore(&y_max,                              sizeof(y_max),                              BACKUP);
+      restore(&xzero,                              sizeof(xzero),                              BACKUP);
+      restore(&yzero,                              sizeof(yzero),                              BACKUP);
+      restore(gr_x,                                LIM*sizeof(graphtype),                      BACKUP);
+      restore(gr_y,                                LIM*sizeof(graphtype),                      BACKUP);
+      restore(&telltale,                           sizeof(telltale),                           BACKUP);
+      restore(&ix_count,                           sizeof(ix_count),                           BACKUP);
+      restore(&matrixIndex,                        sizeof(matrixIndex),                        BACKUP);
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
@@ -383,6 +462,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_FLAG_BROWSER)          {}
         else if(calcMode == CM_FONT_BROWSER)          {}
         else if(calcMode == CM_PEM)                   {}
+        else if(calcMode == CM_PLOT_STAT)             {}
+        else if(calcMode == CM_MIM)                   {mimRestore();}
         else {
           sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
           displayBugScreen(errorMessage);
@@ -395,6 +476,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_FLAG_BROWSER)           calcModeNormalGui();
         else if(calcMode == CM_FONT_BROWSER)           calcModeNormalGui();
         else if(calcMode == CM_PEM)                    calcModeNormalGui();
+        else if(calcMode == CM_PLOT_STAT)              calcModeNormalGui();
+        else if(calcMode == CM_MIM)                   {calcModeNormalGui(); mimRestore();}
         else {
           sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
           displayBugScreen(errorMessage);
@@ -642,6 +725,24 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "exponentLimit\n%" PRId16 "\n", exponentLimit);
   save(tmpString, strlen(tmpString), BACKUP);
+
+
+  // Graph memory                                  //vv GRAPH MEMORY RESTORE
+  sprintf(tmpString, "STAT_GRAPH_DATA\n%u\n",LIM*2+2);
+  save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "%u\n",ix_count);
+  save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "%E\n",telltale);
+  save(tmpString, strlen(tmpString), BACKUP);
+  for(i=0; i<LIM; i++) {
+    sprintf(tmpString, "%E\n",gr_x[i]);
+    save(tmpString, strlen(tmpString), BACKUP);
+    sprintf(tmpString, "%E\n",gr_y[i]);
+    save(tmpString, strlen(tmpString), BACKUP);
+  }
+  // Graph memory                                  //^^ GRAPH MEMORY RESTORE
+
+
 
   #ifdef DMCP_BUILD
     f_close(BACKUP);
@@ -1109,6 +1210,27 @@ static void restoreOneSection(void *stream, uint16_t loadMode) {
       }
     }
   }
+
+  // Graph memory                                  //vv GRAPH MEMORY RESTORE
+  else if(strcmp(tmpString, "STAT_GRAPH_DATA") == 0) {
+    char* end;
+    readLine(stream, tmpString); // Number of params
+
+    readLine(stream, tmpString); // ix_count
+    ix_count = stringToInt16(tmpString);
+    readLine(stream, tmpString); // telltale
+    telltale = strtod(tmpString, &end);
+    graph_setupmemory();
+    for(i=0; i<LIM; i++) {
+      readLine(stream, tmpString);
+      gr_x[i] = strtod(tmpString, &end);
+      readLine(stream, tmpString);
+      gr_y[i] = strtod(tmpString, &end);
+      //printf("^^^^### %u %f %f \n",i,gr_x[i],gr_y[i]);
+    }
+  }
+  // Graph memory                                  //^^ GRAPH MEMORY RESTORE
+
 }
 
 
@@ -1143,6 +1265,7 @@ void fnLoad(uint16_t loadMode) {
   restoreOneSection(BACKUP, loadMode); // KEYBOARD_ASSIGNMENTS
   restoreOneSection(BACKUP, loadMode); // PROGRAMS
   restoreOneSection(BACKUP, loadMode); // OTHER_CONFIGURATION_STUFF
+  restoreOneSection(BACKUP, loadMode); // Graph memory
 
   #ifdef DMCP_BUILD
     f_close(BACKUP);

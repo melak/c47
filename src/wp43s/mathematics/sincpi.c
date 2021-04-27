@@ -29,6 +29,7 @@
 #include "items.h"
 #include "mathematics/division.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -128,7 +129,7 @@ void sincpiLonI(void) {
 
 
 void sincpiRema(void) {
-  fnToBeCoded();
+  elementwiseRema(sincpiReal);
 }
 
 

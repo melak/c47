@@ -24,8 +24,10 @@
 #include "debug.h"
 #include "error.h"
 #include "conversionAngles.h"
+#include "fonts.h"
 #include "integers.h"
 #include "items.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -42,8 +44,8 @@ TO_QSPI void (* const division[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_
 /*  4 Time          */ {divError,    divError,    divError,    divTimeTime, divError, divError, divError,    divError,    divError,     divError},
 /*  5 Date          */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError,     divError},
 /*  6 String        */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError,     divError},
-/*  7 Real34 mat    */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError,     divError},
-/*  8 Complex34 mat */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError,     divError},
+/*  7 Real34 mat    */ {divError,    divError,    divError,    divError,    divError, divError, divRemaRema, divCxmaRema, divError,     divError},
+/*  8 Complex34 mat */ {divError,    divError,    divError,    divError,    divError, divError, divRemaCxma, divCxmaCxma, divError,     divError},
 /*  9 Short integer */ {divLonIShoI, divRealShoI, divCplxShoI, divTimeShoI, divError, divError, divRemaShoI, divCxmaShoI, divShoIShoI,  divError},
 /* 10 Config data   */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError,     divError}
 };
@@ -642,6 +644,88 @@ void divTimeTime(void) {
  * \return void
  ***********************************************/
 void divRemaLonI(void) {
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t matrix, res;
+  real_t y, x;
+  uint16_t rows, cols;
+  int32_t i;
+
+  convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+  if(!getSystemFlag(FLAG_SPCRES) && realIsZero(&x)) {
+    displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      moreInfoOnError("In function divRemaLonI:", "cannot divide by 0", NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+
+  else {
+    linkToRealMatrixRegister(REGISTER_Y, &matrix);
+    rows = matrix.header.matrixRows;
+    cols = matrix.header.matrixColumns;
+
+    realMatrixInit(&res, rows, cols);
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(&matrix.matrixElements[i], &y);
+      realDivide(&y, &x, &y, &ctxtReal39);
+      realToReal34(&y, &res.matrixElements[i]);
+    }
+
+    convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+    realMatrixFree(&res);
+  }
+#endif // TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(real16 matrix) ÷ X(real16 matrix) ==> X(real16 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void divRemaRema(void) {
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t y, x, res;
+
+  linkToRealMatrixRegister(REGISTER_Y, &y);
+  linkToRealMatrixRegister(REGISTER_X, &x);
+
+  if(y.header.matrixColumns != x.header.matrixRows || y.header.matrixColumns != x.header.matrixColumns || x.header.matrixRows != x.header.matrixColumns) {
+    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "cannot divide %d" STD_CROSS "%d-matrix and %d" STD_CROSS "%d-matrix",
+              y.header.matrixRows, y.header.matrixColumns,
+              x.header.matrixRows, x.header.matrixColumns);
+      moreInfoOnError("In function divRemaRema:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+  else {
+    divideRealMatrices(&y, &x, &res);
+    if(res.matrixElements) {
+      convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+      realMatrixFree(&res);
+    }
+    else {
+      displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot divide by a singular matrix");
+        moreInfoOnError("In function divRemaRema:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
+  }
+#endif // TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(real16 matrix) ÷ X(complex16 matrix) ==> X(complex16 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void divRemaCxma(void) {
   fnToBeCoded();
 }
 
@@ -654,7 +738,36 @@ void divRemaLonI(void) {
  * \return void
  ***********************************************/
 void divRemaShoI(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t matrix, res;
+  real_t y, x;
+  uint16_t rows, cols;
+  int32_t i;
+
+  convertShortIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+  if(!getSystemFlag(FLAG_SPCRES) && realIsZero(&x)) {
+    displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      moreInfoOnError("In function divRemaShoI:", "cannot divide by 0", NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+
+  else {
+    linkToRealMatrixRegister(REGISTER_Y, &matrix);
+    rows = matrix.header.matrixRows;
+    cols = matrix.header.matrixColumns;
+
+    realMatrixInit(&res, rows, cols);
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(&matrix.matrixElements[i], &y);
+      realDivide(&y, &x, &y, &ctxtReal39);
+      realToReal34(&y, &res.matrixElements[i]);
+    }
+
+    convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+    realMatrixFree(&res);
+  }
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -666,7 +779,23 @@ void divRemaShoI(void) {
  * \return void
  ***********************************************/
 void divRemaReal(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  real34Matrix_t matrix;
+  if(!getSystemFlag(FLAG_SPCRES) && real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
+    displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      moreInfoOnError("In function divRemaReal:", "cannot divide by 0", NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+  else if(getRegisterAngularMode(REGISTER_Y) == amNone) {
+    linkToRealMatrixRegister(REGISTER_Y, &matrix);
+    divideRealMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_X), &matrix);
+    convertReal34MatrixToReal34MatrixRegister(&matrix, REGISTER_X);
+  }
+  else {
+    divError();
+  }
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -694,6 +823,30 @@ void divRemaCplx(void) {
  * \return void
  ***********************************************/
 void divCxmaLonI(void) {
+  fnToBeCoded();
+}
+
+
+
+/********************************************//**
+ * \brief Y(complex16 matrix) ÷ X(real16 matrix) ==> X(complex16 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void divCxmaRema(void) {
+  fnToBeCoded();
+}
+
+
+
+/********************************************//**
+ * \brief Y(complex16 matrix) ÷ X(complex16 matrix) ==> X(complex16 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void divCxmaCxma(void) {
   fnToBeCoded();
 }
 

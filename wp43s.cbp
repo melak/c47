@@ -1041,13 +1041,13 @@
 			<Option target="wp43s_debug" />
 			<Option target="testSuite" />
 		</Unit>
-		<Unit filename="src/wp43s/constantPointers.c">
+		<Unit filename="src/generated/constantPointers.c">
 			<Option compilerVar="CC" />
 			<Option target="wp43s" />
 			<Option target="wp43s_debug" />
 			<Option target="testSuite" />
 		</Unit>
-		<Unit filename="src/wp43s/constantPointers.h">
+		<Unit filename="src/generated/constantPointers.h">
 			<Option target="wp43s" />
 			<Option target="wp43s_debug" />
 			<Option target="testSuite" />
@@ -2871,7 +2871,7 @@
 			<Option target="wp43s_debug" />
 			<Option target="testSuite" />
 		</Unit>
-		<Unit filename="src/wp43s/rasterFontsData.c">
+		<Unit filename="src/generated/rasterFontsData.c">
 			<Option compilerVar="CC" />
 			<Option target="wp43s" />
 			<Option target="wp43s_debug" />
@@ -2934,7 +2934,7 @@
 			<Option target="wp43s_debug" />
 			<Option target="testSuite" />
 		</Unit>
-		<Unit filename="src/wp43s/softmenuCatalogs.h">
+		<Unit filename="src/generated/softmenuCatalogs.h">
 			<Option target="wp43s" />
 			<Option target="wp43s_debug" />
 			<Option target="testSuite" />
@@ -2981,6 +2981,17 @@
 			<Option target="testSuite" />
 		</Unit>
 		<Unit filename="src/wp43s/stats.h">
+			<Option target="wp43s" />
+			<Option target="wp43s_debug" />
+			<Option target="testSuite" />
+		</Unit>
+		<Unit filename="src/wp43s/plotstat.c">
+			<Option compilerVar="CC" />
+			<Option target="wp43s" />
+			<Option target="wp43s_debug" />
+			<Option target="testSuite" />
+		</Unit>
+		<Unit filename="src/wp43s/plotstat.h">
 			<Option target="wp43s" />
 			<Option target="wp43s_debug" />
 			<Option target="testSuite" />
@@ -3047,7 +3058,7 @@
 			<Option target="wp43s_debug" />
 			<Option target="testSuite" />
 		</Unit>
-		<Unit filename="src/wp43s/version.h">
+		<Unit filename="src/generated/version.h">
 			<Option target="wp43s" />
 			<Option target="wp43s_debug" />
 			<Option target="testSuite" />
