@@ -468,9 +468,10 @@ void plotline(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn) {               
  }
 
 void plotline2(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn) {                   // Plots line from xo,yo to xn,yn; uses temporary x1,y1
+#define offset 0.55f
    pixelline(xo,yo,xn,yn,1);
-   pixelline((uint16_t)(round((float)(xo))),(uint16_t)(round((float)(yo-0.5f))),(uint16_t)(round((float)(xn))),(uint16_t)(round((float)(yn+0.5f))),1);
-   pixelline((uint16_t)(round((float)(xo))),(uint16_t)(round((float)(yo+0.5f))),(uint16_t)(round((float)(xn))),(uint16_t)(round((float)(yn-0.5f))),1);
+   pixelline(xo-1,yo,xn-1,yn,1);
+   pixelline(xo,yo-1,xn,yn-1,1);
  }
 
 
@@ -478,8 +479,8 @@ void plotline2(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn) {              
 
 
 
-
-void pixelline(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn, bool_t vmNormal) { // Plots line from xo,yo to xn,yn; uses temporary x1,y1
+/*
+void pixelline_org(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn, bool_t vmNormal) { // Plots line from xo,yo to xn,yn; uses temporary x1,y1
     uint16_t x1;  //range 0-399
     uint8_t  y1;  //range 0-239
     #if defined STATDEBUG_VERBOSE && defined PC_BUILD
@@ -516,19 +517,56 @@ void pixelline(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn, bool_t vmNormal
       }
     }
   }
+*/
+
+
+
+/*
+//Bresenham variable width - not really working well. glitchy.
+  //http://members.chello.at/~easyfilter/bresenham.html
+void pixelline_width(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn, bool_t vmNormal)                 //Bresenham line width: plotLineWidth
+{ 
+#define thres 0.0f
+float wd = 1.0f;
+   int dx = abs(xn-xo), sx = xo < xn ? 1 : -1; 
+   int dy = abs(yn-yo), sy = yo < yn ? 1 : -1; 
+   int err = dx-dy, e2, x2, y2;                                // error value e_xy
+   float ed = dx+dy == 0 ? 1 : sqrt((float)dx*dx+(float)dy*dy);
+   
+   for (wd = (wd+1)/2; ; ) {                                   // pixel loop
+      if(abs(err-dx+dy)/ed-wd+1>thres) {if(vmNormal) placePixel(xo,yo); else removePixel(xo,yo);}
+      e2 = err; x2 = xo;
+      if (2*e2 >= -dx) {                                           // x step
+         for (e2 += dy, y2 = yo; e2 < ed*wd && (yn != y2 || dx > dy); e2 += dx)
+            if(abs(e2)/ed-wd+1>thres) {if(vmNormal) placePixel(xo, y2 += sy); else removePixel(xo, y2 += sy);}
+         if (xo == xn) break;
+         e2 = err; err -= dy; xo += sx; 
+      } 
+      if (2*e2 <= dy) {                                            // y step
+         for (e2 = dx-e2; e2 < ed*wd && (xn != x2 || dx < dy); e2 += dy)
+            if(abs(e2)/ed-wd+1>thres) {if(vmNormal) placePixel(x2 += sx, yo); else removePixel(x2 += sx, yo);}
+         if (yo == yn) break;
+         err += dx; yo += sy; 
+      }
+   }
+}
+*/
+
+
+
 
 
 
 
 //Exhange the name of this routine with pixelline() above to try Bresenham
-void pixelline_bresenham(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn, bool_t vmNormal) { // Plots line from xo,yo to xn,yn; uses temporary x1,y1
+void pixelline(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn, bool_t vmNormal) { // Plots line from xo,yo to xn,yn; uses temporary x1,y1
     #if defined STATDEBUG_VERBOSE && defined PC_BUILD
       printf("pixelline: xo,yo,xn,yn: %d %d   %d %d \n",xo,yo,xn,yn);
     #endif
 
    //Bresenham line drawing: Pauli's link. Also here: http://forum.6502.org/viewtopic.php?f=10&t=2247&start=555
-   int dx =  abs(xn-xo), sx = xo<xn ? 1 : -1;
-   int dy = -abs(yn-yo), sy = yo<yn ? 1 : -1;
+   int dx =  abs((int)(xn)-(int)(xo)), sx = xo<xn ? 1 : -1;
+   int dy = -abs((int)(yn)-(int)(yo)), sy = yo<yn ? 1 : -1;
    int err = dx+dy, e2; /* error value e_xy */
  
    for(;;){  /* loop */
@@ -540,7 +578,7 @@ void pixelline_bresenham(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn, bool_
    }
 
 
-/* Annother Bresenham example
+/* Another Bresenham example
     //Bresenham line draw algo. https://stackoverflow.com/questions/62651042/how-to-implement-bresenhams-line-algorithm-in-c-when-trying-to-draw-a-line-in-b
     int dx = abs((int)(xn - xo)), sx = xo < xn ? 1 : -1;
     int dy = abs((int)(yn - yo)), sy = yo < yn ? 1 : -1;
@@ -1225,56 +1263,35 @@ graph_axis();
       #endif //STATDEBUG
       return;
     }
-    uint16_t  ix;
+    double  ix;
     uint16_t  xo = 0, xn, xN = 0; 
     uint8_t   yo = 0, yn, yN = 0;
     double    x = x_min; 
     double    y = 0.0;
-    int16_t   factor = 5;
-    int16_t   Intervals = numberIntervals * factor; //increase resulution in beginning and end of graph, to get a better starting and ending point in y
+    int16_t   Intervals = numberIntervals; //increase resulution in beginning and end of graph, to get a better starting and ending point in y
     uint16_t  iterations = 0;
-    int16_t   jumpMonitor = 0;
-    bool_t    onScreen = false;
 
-    for (ix = 0; iterations < 1000 && x < x_max+(x_max-x_min)*0.5 && xN < SCREEN_WIDTH; ++ix) {       //Variable accuracy line plot
-      iterations++;
-
-
-          if(abs(yN-yo) > 10 && Intervals == numberIntervals && onScreen){
-            if(jumpMonitor <= 2) jumpMonitor++;
-          } else if(((abs(yN-yo) < 2) && (Intervals > numberIntervals)) || !onScreen){
-            if(jumpMonitor > -factor) jumpMonitor--;
-          }
-
-          if( !(y > y_min+0.05f*(y_max-y_min) && y < y_max-0.05f*(y_max-y_min)) || !(x > x_min+0.05f*(x_max-x_min) && x < x_max-0.05f*(x_max-x_min)) ) {
-            jumpMonitor = 10;
-          } else
-          if(jumpMonitor >= 1 && Intervals == numberIntervals) {
-            ix = max(1,(ix-2))*factor;                  //backtrack a little
-            Intervals = numberIntervals * factor;       //increase accuracy and time to complete, if a jump in y is found
-            jumpMonitor = 0;
-          } else
-          if(jumpMonitor <= -factor && Intervals > numberIntervals) {
-            ix = max(1,(uint16_t)(ix/factor)-1*0);       //backtrack a little
-            Intervals = numberIntervals;
-            jumpMonitor = 0;
-          }
-
-      x = (double)x_min + (double)(x_max-x_min)/(double)Intervals * (double)ix;
-      if(USEFLOATING != 0) {
-        //TODO create REAL from x (double) if REALS will be used
-        sprintf(ss,"%f",x); stringToReal(ss,&XX,&ctxtReal39);
-      }
-      yIsFnx( USEFLOATING, selection, x, &y, a0, a1, a2, &XX, &YY, RR, SMI, aa0, aa1, aa2);
-
+    for (ix = (double)x_min; iterations < 2000 && x < x_max+(x_max-x_min)*0.5 && xN != SCREEN_WIDTH-1; iterations++) {       //Variable accuracy line plot
+      
       xo = xN;
       yo = yN;
-      xN = screen_window_x(x_min,(graphtype)x,x_max);
-      yN = screen_window_y(y_min,(graphtype)y,y_max);
 
-      if(ix > 0) {  //Allow for starting values to accumulate in the registers at ix = 0
+      for(int xx =1; xx<50; xx++) {
+        x = ix + (double)(x_max-x_min)/(double)(Intervals) * (double)(1.0/(double)xx );
+        if(USEFLOATING != 0) {
+          //TODO create REAL from x (double) if REALS will be used
+          sprintf(ss,"%f",x); stringToReal(ss,&XX,&ctxtReal39);
+        }
+        yIsFnx( USEFLOATING, selection, x, &y, a0, a1, a2, &XX, &YY, RR, SMI, aa0, aa1, aa2);
+        xN = screen_window_x(x_min,(graphtype)x,x_max);
+        yN = screen_window_y(y_min,(graphtype)y,y_max);
+        if(abs((int)yN-(int)yo)<=2 && abs((int)xN-(int)xo)<=2) break;
+      }
+      ix = x;
+
+      if(iterations > 0) {  //Allow for starting values to accumulate in the registers at ix = 0
         #if defined STATDEBUG && defined PC_BUILD
-          printf("plotting graph: jm:%i iter:%u ix:%d I.vals:%u ==>xmin:%f (x:%f) xmax:%f ymin:%f (y:%f) ymax:%f xN:%d yN:%d \n",jumpMonitor,iterations,ix,Intervals,x_min,x,x_max,y_min,y,y_max,  xN,yN);
+          printf("plotting graph: jm:%i iter:%u ix:%f I.vals:%u ==>xmin:%f (x:%f) xmax:%f ymin:%f (y:%f) ymax:%f xN:%d yN:%d \n",jumpMonitor,iterations,ix,Intervals,x_min,x,x_max,y_min,y,y_max,  xN,yN);
         #endif
         int16_t minN_y,minN_x;
         if (!Aspect_Square) {minN_y = SCREEN_NONSQ_HMIN; minN_x = 0;}
@@ -1282,7 +1299,6 @@ graph_axis();
 
         #define tol 4
         if(xN<SCREEN_WIDTH_GRAPH && xN>minN_x && yN<SCREEN_HEIGHT_GRAPH-tol && yN>minN_y) {
-          onScreen = true;
           yn = yN;
           xn = xN;
           #if defined STATDEBUG_VERBOSE && defined PC_BUILD
@@ -1297,7 +1313,6 @@ graph_axis();
           }
         } 
         else {
-          onScreen = false;
           #if defined STATDEBUG && defined PC_BUILD
             printf("Not plotted line: (%u %u) ",xN,yN);
             if(!(xN < SCREEN_WIDTH_GRAPH ))  printf("x>>%u ",SCREEN_WIDTH_GRAPH); else
@@ -1325,11 +1340,13 @@ graph_axis();
       } else {
         strcpy(ss,"y="); strcat(ss,getCurveFitModeFormula(selection)); showString(          ss, &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc * index++ -7 +autoshift, vmNormal, false, false);        
       }
-
-      if(selection != CF_ORTHOGONAL_FITTING) {
+      
+      if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT_STAT) {
         sprintf(ss,"%d",(int)nn);              showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -2 +autoshift, vmNormal, false, false);
         sprintf(ss, STD_SPACE_PUNCTUATION STD_SPACE_PUNCTUATION "n=");                     showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++ -2 +autoshift, vmNormal, false, false);
+      }
 
+      if(selection != CF_ORTHOGONAL_FITTING) {
         eformat_eng2(ss,"",a0,3,"");           showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
         strcpy(ss,"a" STD_SUB_0 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
 
@@ -1358,7 +1375,9 @@ graph_axis();
         eformat_fix3(ss,"",a1);                showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
         strcpy(ss,"a" STD_SUB_1 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_STAT) {
-          eformat_eng2(ss,"",smi,3,"");        showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  +1 +autoshift, vmNormal, false, false);
+          if(nn>=30) {
+            eformat_eng2(ss,"",smi,3,"");      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  +1 +autoshift, vmNormal, false, false);
+          }
           strcpy(ss,"s" STD_SUB_m STD_SUB_i "=");showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   +1 +autoshift, vmNormal, false, false);
         } else {
           eformat(ss,"",rr,4,"");              showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  +2  +autoshift, vmNormal, false, false);      

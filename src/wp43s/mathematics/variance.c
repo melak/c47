@@ -234,9 +234,10 @@ void fnStatSMI(real_t *SMI){
     realMultiply(&SX,&SX,&SX2,realContext);               //   --> sx^2
     realMultiply(&SY,&SY,&SY2,realContext);               //   --> sy^2
     realMultiply(&RR,&RR,&RR2,realContext);               //   --> r^2
-    realSubtract(const_1,&RR2,&SS,realContext);           //  sqrt[ (1-r) / [(r.SY2 - SX) (1-r)] * SX2.SY2 ]
+    realSubtract(const_1,&RR2,&SS,realContext);           //  sqrt[ (1-r^2) / (r^2.SY2 - SX^2) * SX2.SY2 ]
+
     realMultiply(&RR2,&SY2,&TT,realContext);
-    realAdd     (&TT,&SX,&TT,realContext);
+    realAdd     (&TT,&SX2,&TT,realContext);
     realDivide  (&SS,&TT,&UU,realContext);
     realMultiply(&UU,&SX2,&UU,realContext);
     realMultiply(&UU,&SY2,&UU,realContext);               //  --> smi2
@@ -245,8 +246,9 @@ void fnStatSMI(real_t *SMI){
 }
 
 void fnMinExpStdDev(uint16_t unusedButMandatoryParameter){ //smi
-  real_t SMI,RR,aa0,aa1,aa2;
-  if(checkMinimumDataPoints(const_2)) {
+  real_t SMI,RR,aa0,aa1,aa2,const_30;
+  uInt32ToReal(30,&const_30);
+  if(checkMinimumDataPoints(&const_30)) {
     lrChosen = CF_ORTHOGONAL_FITTING;                      //force to ORTHOF only
     lrSelection = CF_ORTHOGONAL_FITTING;
     processCurvefitSelection(lrChosen,&RR,&SMI,&aa0,&aa1,&aa2);
@@ -257,4 +259,50 @@ void fnMinExpStdDev(uint16_t unusedButMandatoryParameter){ //smi
     temporaryInformation = TI_SMI;
   }
 }
+
+
+/********************************************//**
+ * \brief s(a) ==> regX, regY
+ * regX = s(a0), regY = s(a1)
+ *
+ * \param[in] unusedButMandatoryParameter uint16_t
+ * \return void
+ ***********************************************/
+void fnStatSa(uint16_t unusedButMandatoryParameter) {
+  realContext_t *realContext = &ctxtReal75; // Summation data with 75 digits
+  real_t SA0,SA1,RR,SXY,SX,SY,RR2,SX2,SY2,UU,SS,TT;
+  if(checkMinimumDataPoints(const_2)) {
+    fnStatR       (&RR,&SXY,&SX,&SY);
+    realMultiply  (&SX,&SX,&SX2,realContext);               //   --> sx^2
+    realMultiply  (&SY,&SY,&SY2,realContext);               //   --> sy^2
+    realMultiply  (&RR,&RR,&RR2,realContext);               //   --> r^2
+
+    realSubtract  (const_1,&RR2,&SS,realContext);
+    realSubtract  (SIGMA_N,const_2,&TT,realContext);
+    realDivide    (&SS,&TT,&UU,realContext);
+    realSquareRoot(&UU,&UU,&ctxtReal39);
+    realMultiply  (&UU,&SY,&UU,&ctxtReal39);
+    realDivide    (&UU,&SX,&SA1,&ctxtReal39);
+
+    realSubtract  (SIGMA_N,const_1,&SS,realContext);
+    realDivide    (&SS,SIGMA_N,&SS,realContext);
+    realMultiply  (&SS,&SX2,&SS,realContext);
+    realDivide    (SIGMA_X,SIGMA_N,&UU,realContext);         //MX
+    realMultiply  (&UU,&UU,&UU,realContext);                 //MX2
+    realAdd       (&SS,&UU,&SS,realContext);
+    realSquareRoot(&SS,&SS,&ctxtReal39);
+    realMultiply  (&SS,&SA1,&SA0,&ctxtReal39);
+
+    liftStack();
+    setSystemFlag(FLAG_ASLIFT);
+    liftStack();
+
+    realToReal34(&SA0, REGISTER_REAL34_DATA(REGISTER_X));
+    realToReal34(&SA1, REGISTER_REAL34_DATA(REGISTER_Y));
+    temporaryInformation = TI_SA;
+  }
+
+}
+
+
 

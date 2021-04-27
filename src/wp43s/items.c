@@ -600,9 +600,10 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnF_R                       (uint16_t unusedButMandatoryParameter) {}
   void fnF_I                       (uint16_t unusedButMandatoryParameter) {}
   void fnProcessLR                 (uint16_t unusedButMandatoryParameter) {}
-  void fnPlotZoom                  (uint16_t unusedButMandatoryParameter) {} //Temporary
+  void fnPlotZoom                  (uint16_t unusedButMandatoryParameter) {}
   void fnYIsFnx                    (uint16_t unusedButMandatoryParameter) {}
   void fnXIsFny                    (uint16_t unusedButMandatoryParameter) {}
+  void fnStatSa                    (uint16_t unusedButMandatoryParameter) {}
   void fnCurveFittingLR            (uint16_t unusedButMandatoryParameter) {}
   void fnLogNormalP                (uint16_t unusedButMandatoryParameter) {}
   void fnLogNormalL                (uint16_t unusedButMandatoryParameter) {}
@@ -2163,7 +2164,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1444 */  { fnDecomp,                     NOPARAM,                     "DECOMP",                                      "DECOMP",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1445 */  { fnAngularMode,                amDegree,                    "DEG",                                         "DEG",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1446 */  { fnCvtToCurrentAngularMode,    amDegree,                    "DEG" STD_RIGHT_ARROW,                         "DEG" STD_RIGHT_ARROW,                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
-/* 1447 */  { itemToBeCoded,                NOPARAM,                     "s(a)",                                        "s(a)",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
+/* 1447 */  { fnStatSa,                     NOPARAM,                     "s(a)",                                        "s(a)",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1448 */  { fnDenMax,                     NOPARAM,                     "DENMAX",                                      "DENMAX",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1449 */  { fnDot,                        NOPARAM,                     "DOT",                                         "dot",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1450 */  { fnDisplayStack,               TM_VALUE,                    "DSTACK",                                      "DSTACK",                                      (1 << TAM_MAX_BITS) |     4, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },

@@ -1292,6 +1292,17 @@ static const char *versionStr = "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM
             }
           }
 
+          else if(temporaryInformation == TI_SA) {
+            if(regist == REGISTER_X) {
+              strcpy(prefix, "s(a" STD_SUB_0 ")" STD_SPACE_FIGURE "=");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_Y) {
+              strcpy(prefix, "s(a" STD_SUB_1 ")" STD_SPACE_FIGURE "=");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
           else if(temporaryInformation == TI_MEANX_MEANY) {
             if(regist == REGISTER_X) {
               strcpy(prefix, STD_x_BAR STD_SPACE_FIGURE "=");
