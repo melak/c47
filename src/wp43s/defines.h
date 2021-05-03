@@ -751,7 +751,8 @@
   #define setBlackPixel(x, y)                bitblt24(x, 1, y, 1, BLT_OR,   BLT_NONE)
   #define setWhitePixel(x, y)                bitblt24(x, 1, y, 1, BLT_ANDN, BLT_NONE)
   #define beep(frequence, length)            {while(get_beep_volume() < 11) beep_volume_up(); start_buzzer_freq(frequence * 1000); sys_delay(length); stop_buzzer();}
-  #define TO_QSPI                            __attribute__ ((section(".qspi")))
+  #define TO_QSPI
+//  #define TO_QSPI                            __attribute__ ((section(".qspi")))
 #endif // !DMCP_BUILD
 
 

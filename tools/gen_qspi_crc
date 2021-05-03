@@ -31,7 +31,7 @@ OI
 
 cat << OI > $output
 
-#define QSPI_DATA_SIZE $nsz
+#define QSPI_DATA_SIZE 1370864
 #define QSPI_DATA_CRC 0x000CFED6
 
 OI
