@@ -24,8 +24,10 @@
 #include "debug.h"
 #include "error.h"
 #include "flags.h"
+#include "fonts.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "memory.h"
 #include "plotstat.h"
 #include "registers.h"
@@ -33,6 +35,129 @@
 #include "stack.h"
 
 #include "wp43s.h"
+
+
+static void addSigma(real_t *x, real_t *y) {
+  real_t tmpReal1, tmpReal2, tmpReal3;
+  realContext_t *realContext = &ctxtReal75; // Summation data with 75 digits
+
+  // xmin
+  if(realCompareLessThan(x, SIGMA_XMIN)) {
+    realCopy(x, SIGMA_XMIN);
+  }
+
+  // xmax
+  if(realCompareGreaterThan(x, SIGMA_XMAX)) {
+    realCopy(x, SIGMA_XMAX);
+  }
+
+  // ymin
+  if(realCompareLessThan(y, SIGMA_YMIN)) {
+    realCopy(y, SIGMA_YMIN);
+  }
+
+  // ymax
+  if(realCompareGreaterThan(y, SIGMA_YMAX)) {
+    realCopy(y, SIGMA_YMAX);
+  }
+
+  // n
+  realAdd(SIGMA_N, const_1, SIGMA_N, realContext);
+
+  // sigma x
+  realAdd(SIGMA_X, x, SIGMA_X, realContext);
+
+  // sigma y
+  realAdd(SIGMA_Y, y, SIGMA_Y, realContext);
+
+  // sigma x²
+  realMultiply(x, x, &tmpReal1, realContext);
+  realAdd(SIGMA_X2, &tmpReal1, SIGMA_X2, realContext);
+
+  // sigma x³
+  realMultiply(&tmpReal1, x, &tmpReal2, realContext);
+  realAdd(SIGMA_X3, &tmpReal2, SIGMA_X3, realContext);
+
+  // sigma x⁴
+  realMultiply(&tmpReal2, x, &tmpReal2, realContext);
+  realAdd(SIGMA_X4, &tmpReal2, SIGMA_X4, realContext);
+
+  // sigma x²y
+  realMultiply(&tmpReal1, y, &tmpReal2, realContext);
+  realAdd(SIGMA_X2Y, &tmpReal2, SIGMA_X2Y, realContext);
+
+  // sigma x²/y
+  realDivide(&tmpReal1, y, &tmpReal2, realContext);
+  realAdd(SIGMA_X2onY, &tmpReal2, SIGMA_X2onY, realContext);
+
+  // sigma 1/x²
+  realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
+  realAdd(SIGMA_1onX2, &tmpReal2, SIGMA_1onX2, realContext);
+
+  // sigma y²
+  realMultiply(y, y, &tmpReal1, realContext);
+  realAdd(SIGMA_Y2, &tmpReal1, SIGMA_Y2, realContext);
+
+  // sigma 1/y²
+  realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
+  realAdd(SIGMA_1onY2, &tmpReal2, SIGMA_1onY2, realContext);
+
+  // sigma xy
+  realMultiply(x, y, &tmpReal1, realContext);
+  realAdd(SIGMA_XY, &tmpReal1, SIGMA_XY, realContext);
+
+  // sigma ln(x)
+  WP34S_Ln(x, &tmpReal1, realContext);
+  realCopy(&tmpReal1 ,&tmpReal3);
+  realAdd(SIGMA_lnX, &tmpReal1, SIGMA_lnX, realContext);
+
+  // sigma ln²(x)
+  realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
+  realAdd(SIGMA_ln2X, &tmpReal2, SIGMA_ln2X, realContext);
+
+  // sigma yln(x)
+  realMultiply(&tmpReal1, y, &tmpReal1, realContext);
+  realAdd(SIGMA_YlnX, &tmpReal1, SIGMA_YlnX, realContext);
+
+  // sigma ln(y)
+  WP34S_Ln(y, &tmpReal1, realContext);
+  realAdd(SIGMA_lnY, &tmpReal1, SIGMA_lnY, realContext);
+
+  // sigma ln(x)×ln(y)
+  realMultiply(&tmpReal3, &tmpReal1, &tmpReal3, realContext);
+  realAdd(SIGMA_lnXlnY, &tmpReal3, SIGMA_lnXlnY, realContext);
+
+  // sigma ln(y)/x
+  realDivide(&tmpReal1, x, &tmpReal2, realContext);
+  realAdd(SIGMA_lnYonX, &tmpReal2, SIGMA_lnYonX, realContext);
+
+  // sigma ln²(y)
+  realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
+  realAdd(SIGMA_ln2Y, &tmpReal2, SIGMA_ln2Y, realContext);
+
+  // sigma xln(y)
+  realMultiply(&tmpReal1, x, &tmpReal1, realContext);
+  realAdd(SIGMA_XlnY, &tmpReal1, SIGMA_XlnY, realContext);
+
+  // sigma x²ln(y)
+  realMultiply(&tmpReal1, x, &tmpReal1, realContext);
+  realAdd(SIGMA_X2lnY, &tmpReal1, SIGMA_X2lnY, realContext);
+
+  // sigma 1/x
+  realDivide(const_1, x, &tmpReal1, realContext);
+  realAdd(SIGMA_1onX, &tmpReal1, SIGMA_1onX, realContext);
+
+  // sigma x/y
+  realDivide(x, y, &tmpReal1, realContext);
+  realAdd(SIGMA_XonY, &tmpReal1, SIGMA_XonY, realContext);
+
+  // sigma 1/y
+  realDivide(const_1, y, &tmpReal1, realContext);
+  realAdd(SIGMA_1onY, &tmpReal1, SIGMA_1onY, realContext);
+
+  graph_sigmaplus(+1, x, y);
+}
+
 
 
 /********************************************//**
@@ -130,121 +255,7 @@ void fnSigma(uint16_t plusMinus) {
     }
 
     if(plusMinus == 1) { // SIGMA+
-      // xmin
-      if(realCompareLessThan(&x, SIGMA_XMIN)) {
-        realCopy(&x, SIGMA_XMIN);
-      }
-
-      // xmax
-      if(realCompareGreaterThan(&x, SIGMA_XMAX)) {
-        realCopy(&x, SIGMA_XMAX);
-      }
-
-      // ymin
-      if(realCompareLessThan(&y, SIGMA_YMIN)) {
-        realCopy(&y, SIGMA_YMIN);
-      }
-
-      // ymax
-      if(realCompareGreaterThan(&y, SIGMA_YMAX)) {
-        realCopy(&y, SIGMA_YMAX);
-      }
-
-      // n
-      realAdd(SIGMA_N, const_1, SIGMA_N, realContext);
-
-      // sigma x
-      realAdd(SIGMA_X, &x, SIGMA_X, realContext);
-
-      // sigma y
-      realAdd(SIGMA_Y, &y, SIGMA_Y, realContext);
-
-      // sigma x²
-      realMultiply(&x, &x, &tmpReal1, realContext);
-      realAdd(SIGMA_X2, &tmpReal1, SIGMA_X2, realContext);
-
-      // sigma x³
-      realMultiply(&tmpReal1, &x, &tmpReal2, realContext);
-      realAdd(SIGMA_X3, &tmpReal2, SIGMA_X3, realContext);
-
-      // sigma x⁴
-      realMultiply(&tmpReal2, &x, &tmpReal2, realContext);
-      realAdd(SIGMA_X4, &tmpReal2, SIGMA_X4, realContext);
-
-      // sigma x²y
-      realMultiply(&tmpReal1, &y, &tmpReal2, realContext);
-      realAdd(SIGMA_X2Y, &tmpReal2, SIGMA_X2Y, realContext);
-
-      // sigma x²/y
-      realDivide(&tmpReal1, &y, &tmpReal2, realContext);
-      realAdd(SIGMA_X2onY, &tmpReal2, SIGMA_X2onY, realContext);
-
-      // sigma 1/x²
-      realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
-      realAdd(SIGMA_1onX2, &tmpReal2, SIGMA_1onX2, realContext);
-
-      // sigma y²
-      realMultiply(&y, &y, &tmpReal1, realContext);
-      realAdd(SIGMA_Y2, &tmpReal1, SIGMA_Y2, realContext);
-
-      // sigma 1/y²
-      realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
-      realAdd(SIGMA_1onY2, &tmpReal2, SIGMA_1onY2, realContext);
-
-      // sigma xy
-      realMultiply(&x, &y, &tmpReal1, realContext);
-      realAdd(SIGMA_XY, &tmpReal1, SIGMA_XY, realContext);
-
-      // sigma ln(x)
-      WP34S_Ln(&x, &tmpReal1, realContext);
-      realCopy(&tmpReal1 ,&tmpReal3);
-      realAdd(SIGMA_lnX, &tmpReal1, SIGMA_lnX, realContext);
-
-      // sigma ln²(x)
-      realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
-      realAdd(SIGMA_ln2X, &tmpReal2, SIGMA_ln2X, realContext);
-
-      // sigma yln(x)
-      realMultiply(&tmpReal1, &y, &tmpReal1, realContext);
-      realAdd(SIGMA_YlnX, &tmpReal1, SIGMA_YlnX, realContext);
-
-      // sigma ln(y)
-      WP34S_Ln(&y, &tmpReal1, realContext);
-      realAdd(SIGMA_lnY, &tmpReal1, SIGMA_lnY, realContext);
-
-      // sigma ln(x)×ln(y)
-      realMultiply(&tmpReal3, &tmpReal1, &tmpReal3, realContext);
-      realAdd(SIGMA_lnXlnY, &tmpReal3, SIGMA_lnXlnY, realContext);
-
-      // sigma ln(y)/x
-      realDivide(&tmpReal1, &x, &tmpReal2, realContext);
-      realAdd(SIGMA_lnYonX, &tmpReal2, SIGMA_lnYonX, realContext);
-
-      // sigma ln²(y)
-      realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
-      realAdd(SIGMA_ln2Y, &tmpReal2, SIGMA_ln2Y, realContext);
-
-      // sigma xln(y)
-      realMultiply(&tmpReal1, &x, &tmpReal1, realContext);
-      realAdd(SIGMA_XlnY, &tmpReal1, SIGMA_XlnY, realContext);
-
-      // sigma x²ln(y)
-      realMultiply(&tmpReal1, &x, &tmpReal1, realContext);
-      realAdd(SIGMA_X2lnY, &tmpReal1, SIGMA_X2lnY, realContext);
-
-      // sigma 1/x
-      realDivide(const_1, &x, &tmpReal1, realContext);
-      realAdd(SIGMA_1onX, &tmpReal1, SIGMA_1onX, realContext);
-
-      // sigma x/y
-      realDivide(&x, &y, &tmpReal1, realContext);
-      realAdd(SIGMA_XonY, &tmpReal1, SIGMA_XonY, realContext);
-
-      // sigma 1/y
-      realDivide(const_1, &y, &tmpReal1, realContext);
-      realAdd(SIGMA_1onY, &tmpReal1, SIGMA_1onY, realContext);
-
-      graph_sigmaplus(+1, &x, &y);
+      addSigma(&x, &y);
     }
     else { // SIGMA-
       // n
@@ -346,6 +357,39 @@ void fnSigma(uint16_t plusMinus) {
 
     temporaryInformation = TI_STATISTIC_SUMS;
   }
+#ifndef TESTSUITE_BUILD
+  else if(getRegisterDataType(REGISTER_X) == dtReal34Matrix && plusMinus == 1) {
+    real34Matrix_t matrix;
+    linkToRealMatrixRegister(REGISTER_X, &matrix);
+
+    if(matrix.header.matrixColumns == 2) {
+      if(statisticalSumsPointer == NULL) {
+        initStatisticalSums();
+      }
+
+      copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+      for(uint16_t i = 0; i < matrix.header.matrixRows; ++i) {
+        real34ToReal(&matrix.matrixElements[i * 2    ], &y);
+        real34ToReal(&matrix.matrixElements[i * 2 + 1], &x);
+        addSigma(&x, &y);
+      }
+
+      liftStack();
+      reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);
+      realToReal34(&y, REGISTER_REAL34_DATA(REGISTER_Y));
+      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      temporaryInformation = TI_STATISTIC_SUMS;
+    }
+    else {
+      displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot use %" PRIu16 STD_CROSS "%" PRId16 "-matrix as statistical data!", matrix.header.matrixRows, matrix.header.matrixColumns);
+        moreInfoOnError("In function fnSigma:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
+  }
+#endif // TESTSUITE_BUILD
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)

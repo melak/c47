@@ -576,26 +576,10 @@ size_t                 wp43sMemInBlocks;
   int main(int argc, char* argv[]) {
     int exitCode;
 
-    #ifdef CODEBLOCKS_OVER_SCORE // Since December 27th 2020 when running in code::blocks, we are no longer in the correct directory! Why?
-      (*strstr(argv[0], "/bin/")) = 0;
-      chdir(argv[0]);
-    #endif // CODEBLOCKS_OVER_SCORE
-
-    #ifdef __APPLE__
-      // we take the directory where the application is as the root for this application.
-      // in argv[0] is the application itself. We strip the name of the app by searching for the last '/':
-      if(argc>=1) {
-        char *curdir = malloc(1000);
-        // find last /:
-        char *s = strrchr(argv[0], '/');
-        if(s != 0) {
-          // take the directory before the appname:
-          strncpy(curdir, argv[0], s-argv[0]);
-          chdir(curdir);
-          free(curdir);
-        }
-      }
-    #endif // __APPLE__
+    if(argc < 2) {
+      printf("Usage: testSuite <list file>\n");
+      return 1;
+    }
 
     wp43sMemInBlocks = 0;
     gmpMemInBytes = 0;
@@ -623,7 +607,7 @@ size_t                 wp43sMemInBlocks;
     */
 
 
-    exitCode = processTests();
+    exitCode = processTests(argv[1]);
     printf("The memory owned by GMP should be 0 bytes. Else report a bug please!\n");
     debugMemory("End of testsuite");
 

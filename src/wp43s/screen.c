@@ -48,12 +48,10 @@
 
 #include "wp43s.h"
 
-//static const char *whoStr = "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM "v" VERSION_SHORT STD_SPACE_3_PER_EM VERSION_DATE STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter" STD_SPACE_3_PER_EM "&" STD_SPACE_3_PER_EM "Martin";
-//static const char *versionStr = "Pre-alpha" STD_SPACE_3_PER_EM "version" STD_SPACE_3_PER_EM VERSION_DATE;
-static const char *whoStr = "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter" STD_SPACE_3_PER_EM "&" STD_SPACE_3_PER_EM "Martin";
-static const char *versionStr = "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM VERSION_STRING;
-
 #ifndef TESTSUITE_BUILD
+  static const char *whoStr = "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter" STD_SPACE_3_PER_EM "&" STD_SPACE_3_PER_EM "Martin";
+  static const char *versionStr = "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM VERSION_STRING;
+
   /* Names of day of week */
   TO_QSPI static const char *nameOfWday_en[8] = {"invalid day of week",                                   "Monday",            "Tuesday",                     "Wednesday",               "Thursday",           "Friday",             "Saturday",             "Sunday"};
   /*
@@ -1030,22 +1028,8 @@ static const char *versionStr = "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM
         const uint16_t rows = matrix.header.matrixRows;
         const uint16_t cols = matrix.header.matrixColumns;
         bool_t smallFont = ((rows >= 4) || (cols >= 4) || (displayFormat != DF_ALL && displayFormatDigits > 3));
-        for(int i = 0; i < rows; i++) {
-          for(int j = 0; j< cols; j++) {
-            bool_t neg = real34IsNegative(&matrix.matrixElements[i*cols+j]);
-            tmpString[0] = neg ? '-' : ' '; tmpString[1] = 0;
-            real34SetPositiveSign(&matrix.matrixElements[i*cols+j]);
-            real34ToDisplayString(&matrix.matrixElements[i*cols+j], amNone, tmpString, &numericFont, MATRIX_LINE_WIDTH_LARGE - 20, 4, true, STD_SPACE_4_PER_EM);
-            if(neg) real34SetNegativeSign(&matrix.matrixElements[i*cols+j]);
-            if(stringWidth(tmpString, &numericFont, true, true) + 1 > MATRIX_LINE_WIDTH_LARGE - 20) {
-              smallFont = true;
-              goto realMatFontDetermined;
-            }
-            if(j == 3) break;
-          }
-          if(i == 4) break;
-        }
-        realMatFontDetermined:
+        int16_t dummyVal[25] = {};
+        if(getRealMatrixColumnWidths(&matrix, &numericFont, dummyVal, dummyVal + 4, dummyVal + 24) > (MATRIX_LINE_WIDTH_LARGE * 3 - 20)) smallFont = true;
         if(rows == 2 && cols > 1 && !smallFont) displayStack = 3;
         if(rows == 3 && cols > 1) displayStack = smallFont ? 3 : 2;
         if(rows >= 4 && cols > 1) displayStack = 2;
@@ -1738,7 +1722,7 @@ static const char *versionStr = "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM
       }
     }
 
-    if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
+    if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || calcMode == CM_MIM) {
       displayStack = origDisplayStack;
     }
   }

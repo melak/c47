@@ -66,16 +66,16 @@ TO_QSPI const font_t numericFont = {
      .data="\x08\x00\x49\x00\x2a\x00\x1c\x00\xff\x80\x1c\x00\x2a\x00\x49\x00\x08\x00"},
 
     // PLUS SIGN
-    {.charCode=0x002b, .colsBeforeGlyph= 0, .colsGlyph=12, .colsAfterGlyph= 3, .rowsAboveGlyph=12, .rowsGlyph=12, .rowsBelowGlyph= 8, .rank1=  0, .rank2=  0,
-     .data="\x06\x00\x06\x00\x06\x00\x06\x00\x06\x00\xff\xf0\xff\xf0\x06\x00\x06\x00\x06\x00\x06\x00\x06\x00"},
+    {.charCode=0x002b, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph=12, .rowsGlyph=13, .rowsBelowGlyph= 7, .rank1=  0, .rank2=  0,
+     .data="\x07\x00\x07\x00\x07\x00\x07\x00\x07\x00\xff\xf8\xff\xf8\xff\xf8\x07\x00\x07\x00\x07\x00\x07\x00\x07\x00"},
 
     // COMMA
     {.charCode=0x002c, .colsBeforeGlyph= 0, .colsGlyph= 5, .colsAfterGlyph= 3, .rowsAboveGlyph=23, .rowsGlyph= 9, .rowsBelowGlyph= 0, .rank1=  0, .rank2=  0,
      .data="\x70\xf8\xf8\xf8\x78\x38\x30\x30\x60"},
 
     // HYPHEN-MINUS
-    {.charCode=0x002d, .colsBeforeGlyph= 0, .colsGlyph=12, .colsAfterGlyph= 3, .rowsAboveGlyph=17, .rowsGlyph= 3, .rowsBelowGlyph=12, .rank1=  0, .rank2=  0,
-     .data="\xff\xf0\xff\xf0\xff\xf0"},
+    {.charCode=0x002d, .colsBeforeGlyph= 0, .colsGlyph=13, .colsAfterGlyph= 3, .rowsAboveGlyph=17, .rowsGlyph= 3, .rowsBelowGlyph=12, .rank1=  0, .rank2=  0,
+     .data="\xff\xf8\xff\xf8\xff\xf8"},
 
     // FULL STOP
     {.charCode=0x002e, .colsBeforeGlyph= 0, .colsGlyph= 5, .colsAfterGlyph= 3, .rowsAboveGlyph=23, .rowsGlyph= 5, .rowsBelowGlyph= 4, .rank1=  0, .rank2=  0,
@@ -1239,7 +1239,7 @@ TO_QSPI const font_t standardFont = {
   .glyphs = {
 
     // SPACE
-    {.charCode=0x0020, .colsBeforeGlyph= 0, .colsGlyph= 0, .colsAfterGlyph=10, .rowsAboveGlyph= 0, .rowsGlyph= 0, .rowsBelowGlyph=20, .rank1=  1, .rank2=  1,
+    {.charCode=0x0020, .colsBeforeGlyph= 0, .colsGlyph= 0, .colsAfterGlyph= 8, .rowsAboveGlyph= 0, .rowsGlyph= 0, .rowsBelowGlyph=20, .rank1=  1, .rank2=  1,
      .data=""},
 
     // EXCLAMATION MARK

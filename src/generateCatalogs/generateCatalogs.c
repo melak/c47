@@ -48,7 +48,9 @@ static int sortItems(void const *a, void const *b)
 
 
 void sortOneCatalog(const char *menuName, int catalogType, int16_t generationType) {
+#ifdef DEBUG
   printf("Generating catalog %s\n", menuName);
+#endif
   fprintf(catalogFile, "TO_QSPI const int16_t menu_%s[] = {\n", menuName);
 
   numberOfItems = 0;

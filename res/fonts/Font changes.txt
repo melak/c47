@@ -158,3 +158,6 @@
 
 2020-08-19 Changed USB symbol U+2434 (1 pixel narrower)
            New WP43S_StandardFont.ttf generated.
+
+2021-05-02 Made + and - 16 pixels wide (1 pixel wider) in NumericFont
+           Reduced the space (U+0020) down to 8 pixels wide.

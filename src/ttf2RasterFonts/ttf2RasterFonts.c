@@ -168,7 +168,9 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
   }
 
   fontName[0] |= 0x20; // 1st letter lower case
+#ifdef DEBUG
   printf("fontName=<%s>\n", fontName);
+#endif
 
 
   //////////////////////////////////////////////////////////////
@@ -190,8 +192,10 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
   //////////////////////
   // Face infomations //
   //////////////////////
+#ifdef DEBUG
   printf("There are %3d glyphs in face 0 of %s\n", numberOfGlyphs,  ttfName);
   printf("ascender=%d descender=%d\n", face->ascender/onePixelSize, face->descender/onePixelSize);
+#endif
 
   ///////////////////////////////////////
   // Go thru all glyphs to render them //
@@ -219,7 +223,9 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
       }
 
       FT_Get_Glyph_Name(face, glyphIndex, glyphName, 100);
+#ifdef DEBUG
       printf("glyphIndex=%4d   charCode=0x%04x   %s\n", glyphIndex, (unsigned int)(charCodes[cc]>=0x0080 ? charCodes[cc]|0x8000 : charCodes[cc]), glyphName);
+#endif
 
       if((error = FT_Load_Glyph(face, glyphIndex, FT_LOAD_RENDER)) != FT_Err_Ok) {
         fprintf(stderr, "warning: failed FT_Load_Glyph 0x%04x\n", (unsigned int)charCodes[cc]);
@@ -248,7 +254,9 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
         rank1 = 0;
         rank2 = 0;
       }
+#ifdef DEBUG
       printf("rank1: %3d    rank2: %3d\n", rank1, rank2);
+#endif
 
       //////////////////////////
       // Columns in the glyph //
@@ -260,7 +268,9 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
         colsGlyph += colsBeforeGlyph;
         colsBeforeGlyph = 0;
       }
+#ifdef DEBUG
       printf("Columns: %2d %2d %2d\n", colsBeforeGlyph, colsGlyph, colsAfterGlyph);
+#endif
 
       ///////////////////////
       // Rows in the glyph //
@@ -272,7 +282,9 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
         rowsGlyph += rowsAboveGlyph;
         rowsAboveGlyph = 0;
       }
+#ifdef DEBUG
       printf("Rows   : %2d %2d %2d\n", rowsAboveGlyph, rowsGlyph, rowsBelowGlyph);
+#endif
 
       //////////////////////
       // Render the glyph //
@@ -288,11 +300,15 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
 
         for(x=0; x<colsGlyph; x++) {
           bit = face->glyph->bitmap.buffer[y * face->glyph->bitmap.width + x] >= 128 ? 1 : 0;
+#ifdef DEBUG
           putchar(bit == 1 ? '#' : '.');
+#endif
           addBit(bit);
         }
 
+#ifdef DEBUG
         putchar('\n');
+#endif
         while(numBits != 0) {
           addBit(0);
         }
@@ -404,11 +420,6 @@ void processFiles(const char *fontsPath, const char *outputFile) {
 }
 
 int main(int argc, char* argv[]) {
-  #ifdef CODEBLOCKS_OVER_SCORE // Since December 27th 2020 when running in code::blocks, we are no longer in the correct directory! Why?
-    (*strstr(argv[0], "/bin/")) = 0;
-    chdir(argv[0]);
-  #endif // CODEBLOCKS_OVER_SCORE
-
   if(argc < 3) {
     printf("Usage: ttf2RasterFonts <font dir> <output file>\n");
     return 1;

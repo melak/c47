@@ -73,6 +73,7 @@ void       fnEditLinearEquationMatrixX    (uint16_t unusedParamButMandatory);
   void     mimFinalize                    (void);
   void     mimRestore                     (void);
   void     showRealMatrix                 (const real34Matrix_t *matrix);
+  int16_t  getRealMatrixColumnWidths      (const real34Matrix_t *matrix, const font_t *font, int16_t *colWidth, int16_t *rPadWidth, int16_t *digits);
 
   void     getMatrixFromRegister          (calcRegister_t regist);
 

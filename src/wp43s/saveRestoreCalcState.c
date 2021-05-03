@@ -713,7 +713,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "significantDigits\n%" PRIu8 "\n", significantDigits);
   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "currentAngularMode\n%" PRIu8 "\n", currentAngularMode);
+  sprintf(tmpString, "currentAngularMode\n%" PRIu8 "\n", (uint8_t)currentAngularMode);
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "groupingGap\n%" PRIu8 "\n", groupingGap);
   save(tmpString, strlen(tmpString), BACKUP);

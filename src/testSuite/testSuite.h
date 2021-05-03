@@ -47,7 +47,7 @@ void abortTest                (void);
 void standardizeLine          (void);
 void processLine              (void);
 void processOneFile           (void);
-int  processTests             (void);
+int  processTests             (const char *listPath);
 int  relativeErrorReal34      (real34_t *expectedValue34, real34_t *value34, char *numberPart, calcRegister_t regist, char letter);
 void wrongRegisterValue       (calcRegister_t regist, char letter, char *expectedValue);
 void expectedAndShouldBeValue (calcRegister_t regist, char letter, char *expectedValue, char *expectedAndValue);

@@ -227,7 +227,6 @@ agm
 
 decomp
 
-matrix
 dot
 cross
 

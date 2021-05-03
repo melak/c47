@@ -1235,6 +1235,88 @@
 
 
 
+  void closeNimWithFraction(real34_t *dest) {
+    int16_t i, posSpace, posSlash, lg;
+    int32_t integer, numer, denom;
+    real34_t temp;
+
+    // Set Fraction mode
+    if(!getSystemFlag(FLAG_FRACT)) {
+      setSystemFlag(FLAG_FRACT);
+    }
+
+    lg = strlen(aimBuffer);
+
+    posSpace = 0;
+    for(i=2; i<lg; i++) {
+      if(aimBuffer[i] == ' ') {
+        posSpace = i;
+        break;
+      }
+    }
+
+    for(i=1; i<posSpace; i++) {
+      if(aimBuffer[i]<'0' || aimBuffer[i]>'9') { // This should never happen
+        displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          moreInfoOnError("In function parseNimString:", "there is a non numeric character in the integer part of the fraction!", NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        return;
+      }
+    }
+
+    posSlash = 0;
+    for(i=posSpace+2; i<lg; i++) {
+      if(aimBuffer[i] == '/') {
+        posSlash = i;
+        break;
+      }
+    }
+
+    for(i=posSpace+1; i<posSlash; i++) {
+      if(aimBuffer[i]<'0' || aimBuffer[i]>'9') { // This should never happen
+       displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+         moreInfoOnError("In function parseNimString:", "there is a non numeric character in the numerator part of the fraction!", NULL, NULL);
+       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+       return;
+      }
+    }
+
+    for(i=posSlash+1; i<lg; i++) {
+      if(aimBuffer[i]<'0' || aimBuffer[i]>'9') {
+        displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          moreInfoOnError("In function parseNimString:", "there is a non numeric character in the denominator part of the fraction!", NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        return;
+      }
+    }
+
+    aimBuffer[posSpace] = 0;
+    aimBuffer[posSlash] = 0;
+    integer = stringToInt32(aimBuffer + 1);
+    numer   = stringToInt32(aimBuffer + posSpace + 1);
+    denom   = stringToInt32(aimBuffer + posSlash + 1);
+
+    if(denom == 0 && !getSystemFlag(FLAG_SPCRES)) {
+      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        moreInfoOnError("In function parseNimString:", "the denominator of the fraction should not be 0!", "Unless D flag (Danger) is set.", NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
+
+    int32ToReal34(numer, dest);
+    int32ToReal34(denom, &temp);
+    real34Divide(dest, &temp, dest);
+    int32ToReal34(integer, &temp);
+    real34Add(dest, &temp, dest);
+    if(aimBuffer[0] == '-') {
+      real34SetNegativeSign(dest);
+    }
+  }
+
   void closeNim(void) {
     setSystemFlag(FLAG_ASLIFT);
     if((nimNumberPart == NP_INT_10 || nimNumberPart == NP_INT_16) && lastIntegerBase != 0) {
@@ -1429,86 +1511,8 @@
             stringToReal34(aimBuffer, REGISTER_REAL34_DATA(REGISTER_X));
           }
           else if(nimNumberPart == NP_FRACTION_DENOMINATOR) {
-            int16_t i, posSpace, posSlash, lg;
-            int32_t integer, numer, denom;
-            real34_t temp;
-
-            // Set Fraction mode
-            if(!getSystemFlag(FLAG_FRACT)) {
-              setSystemFlag(FLAG_FRACT);
-            }
-
-            lg = strlen(aimBuffer);
-
-            posSpace = 0;
-            for(i=2; i<lg; i++) {
-              if(aimBuffer[i] == ' ') {
-                posSpace = i;
-                break;
-              }
-            }
-
-            for(i=1; i<posSpace; i++) {
-              if(aimBuffer[i]<'0' || aimBuffer[i]>'9') { // This should never happen
-                displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-                #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                  moreInfoOnError("In function parseNimString:", "there is a non numeric character in the integer part of the fraction!", NULL, NULL);
-                #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-                return;
-              }
-            }
-
-            posSlash = 0;
-            for(i=posSpace+2; i<lg; i++) {
-              if(aimBuffer[i] == '/') {
-                posSlash = i;
-                break;
-              }
-            }
-
-            for(i=posSpace+1; i<posSlash; i++) {
-              if(aimBuffer[i]<'0' || aimBuffer[i]>'9') { // This should never happen
-               displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-               #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                 moreInfoOnError("In function parseNimString:", "there is a non numeric character in the numerator part of the fraction!", NULL, NULL);
-               #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-               return;
-              }
-            }
-
-            for(i=posSlash+1; i<lg; i++) {
-              if(aimBuffer[i]<'0' || aimBuffer[i]>'9') {
-                displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-                #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                  moreInfoOnError("In function parseNimString:", "there is a non numeric character in the denominator part of the fraction!", NULL, NULL);
-                #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-                return;
-              }
-            }
-
-            aimBuffer[posSpace] = 0;
-            aimBuffer[posSlash] = 0;
-            integer = stringToInt32(aimBuffer + 1);
-            numer   = stringToInt32(aimBuffer + posSpace + 1);
-            denom   = stringToInt32(aimBuffer + posSlash + 1);
-
-            if(denom == 0 && !getSystemFlag(FLAG_SPCRES)) {
-              displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                moreInfoOnError("In function parseNimString:", "the denominator of the fraction should not be 0!", "Unless D flag (Danger) is set.", NULL);
-              #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-              return;
-            }
-
             reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-            int32ToReal34(numer, REGISTER_REAL34_DATA(REGISTER_X));
-            int32ToReal34(denom, &temp);
-            real34Divide(REGISTER_REAL34_DATA(REGISTER_X), &temp, REGISTER_REAL34_DATA(REGISTER_X));
-            int32ToReal34(integer, &temp);
-            real34Add(REGISTER_REAL34_DATA(REGISTER_X), &temp, REGISTER_REAL34_DATA(REGISTER_X));
-            if(aimBuffer[0] == '-') {
-              real34SetNegativeSign(REGISTER_REAL34_DATA(REGISTER_X));
-            }
+            closeNimWithFraction(REGISTER_REAL34_DATA(REGISTER_X));
           }
           else if(nimNumberPart == NP_COMPLEX_INT_PART || nimNumberPart == NP_COMPLEX_FLOAT_PART || nimNumberPart == NP_COMPLEX_EXPONENT) {
             int16_t imaginarySign;

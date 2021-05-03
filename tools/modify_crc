@@ -1,8 +1,8 @@
 #!/bin/bash
 
-pgm=$1
-
-q=build/dmcp/${pgm}_qspi.bin
+forcecrc32=$1
+input=$2
+output=$3
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
         # Host is Mac: use gstat for GNU version
@@ -19,15 +19,16 @@ filesize() {
 }
 
 
-if [ ! -f "$q" ];then
-	echo "ERROR: Missing qspi file '$q'"
+if [ ! -f "$input" ];then
+	echo "ERROR: Missing qspi file '$input'"
 	exit 1
 fi
 
-sz=`filesize $q`
+sz=`filesize $input`
 
-dir=`dirname $q`
+dir=`dirname $input`
 
-echo -n -e '\x00\x00\x00\x00' >> $q
-$dir/forcecrc32 $q $sz 000CFED6
+cp $input $output
+echo -n -e '\x00\x00\x00\x00' >> $output
+$forcecrc32 $output $sz 000CFED6
 

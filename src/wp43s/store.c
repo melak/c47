@@ -88,9 +88,11 @@ static bool_t storeIjReal(real34Matrix_t *matrix) {
       copySourceRegisterToDestRegister(REGISTER_X, REGISTER_J);
     }
     else {
-      uint16_t row, col;
-      longIntegerToUInt(i, row);
-      longIntegerToUInt(j, col);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        uint16_t row, col;
+        longIntegerToUInt(i, row);
+        longIntegerToUInt(j, col);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "(%" PRIu16 ", %" PRIu16 ") out of range", row, col);

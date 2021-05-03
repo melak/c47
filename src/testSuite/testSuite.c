@@ -43,6 +43,7 @@
 #include "stats.h"
 #include "store.h"
 #include <string.h>
+#include <libgen.h>
 
 #include "wp43s.h"
 
@@ -57,7 +58,7 @@ extern const int16_t menu_alpha_INTL[];
 extern const int16_t menu_alpha_intl[];
 extern const int16_t menu_REGIST[];
 extern const softmenu_t softmenu[];
-char line[100000], lastInParameters[10000], fileName[1000], filePath[1000], filePathName[2000], registerExpectedAndValue[1000], realString[1000];
+char line[100000], lastInParameters[10000], fileName[1000], *filePath, filePathName[2000], registerExpectedAndValue[1000], realString[1000];
 int32_t lineNumber, numTestsFile, numTestsTotal, failedTests;
 int32_t functionIndex, funcType, correctSignificantDigits;
 void (*funcNoParam)(uint16_t);
@@ -2329,18 +2330,17 @@ void checkCatalogsSorting(void) {
 
 
 
-int processTests(void) {
+int processTests(const char *listPath) {
   FILE *fileList;
+  char *listPathDup = strdup(listPath);
+  filePath = dirname(listPathDup);
 
   checkCatalogsSorting();
 
   numTestsTotal = 0;
   failedTests = 0;
 
-  strcpy(filePath, "src/testSuite"); // without trailing /
-
-  sprintf(filePathName, "%s/testSuiteList.txt", filePath);
-  fileList = fopen(filePathName, "rb");
+  fileList = fopen(listPath, "rb");
   if(fileList == NULL) {
     printf("Cannot open file testSuiteList.txt!\n");
     exit(-1);
@@ -2362,5 +2362,7 @@ int processTests(void) {
   printf("* %6d TEST%c FAILED              *\n", failedTests, failedTests == 1 ? ' ' : 'S');
   printf("************************************\n");
 
-  return numTestsTotal > 0;
+  free(listPathDup);
+
+  return failedTests > 0;
 }

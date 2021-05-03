@@ -971,6 +971,10 @@ void fnKeyCC(uint16_t unusedButMandatoryParameter) {
         addItemToNimBuffer(ITM_CC);
         break;
 
+      case CM_MIM:
+        itemToBeCoded(NOPARAM);
+        break;
+
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
       case CM_FONT_BROWSER:
@@ -1148,6 +1152,9 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         }
         break;
 
+      case CM_MIM:
+        break;
+
       default:
         sprintf(errorMessage, "In function fnKeyUp: unexpected calcMode value (%" PRIu8 ") while processing key UP!", calcMode);
         displayBugScreen(errorMessage);
@@ -1235,6 +1242,9 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         }
         break;
 
+      case CM_MIM:
+        break;
+
       default:
         sprintf(errorMessage, "In function fnKeyDown: unexpected calcMode value (%" PRIu8 ") while processing key DOWN!", calcMode);
         displayBugScreen(errorMessage);
@@ -1270,6 +1280,7 @@ void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
       case CM_FLAG_BROWSER:
       case CM_FONT_BROWSER:
       case CM_PLOT_STAT:
+      case CM_MIM:
         break;
 
       default:
