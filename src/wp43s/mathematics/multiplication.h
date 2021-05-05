@@ -20,8 +20,8 @@
 #ifndef MULTIPLICATION_H
 #define MULTIPLICATION_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnMultiply (uint16_t unusedButMandatoryParameter);

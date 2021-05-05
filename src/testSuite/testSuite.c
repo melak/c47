@@ -35,6 +35,7 @@
 #include "items.h"
 #include "logicalOps/logicalOps.h"
 #include "mathematics/mathematics.h"
+#include "memory.h"
 #include "recall.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -2365,4 +2366,45 @@ int processTests(const char *listPath) {
   free(listPathDup);
 
   return failedTests > 0;
+}
+
+int main(int argc, char* argv[]) {
+  int exitCode;
+
+  if(argc < 2) {
+    printf("Usage: testSuite <list file>\n");
+    return 1;
+  }
+
+  wp43sMemInBlocks = 0;
+  gmpMemInBytes = 0;
+  mp_set_memory_functions(allocGmp, reallocGmp, freeGmp);
+
+  fnReset(CONFIRMED);
+
+  /*
+  longInteger_t li;
+  longIntegerInit(li);
+  uIntToLongInteger(1, li);
+  convertLongIntegerToLongIntegerRegister(li, REGISTER_Z);
+  uIntToLongInteger(2, li);
+  convertLongIntegerToLongIntegerRegister(li, REGISTER_Y);
+  uIntToLongInteger(2203, li);
+  convertLongIntegerToLongIntegerRegister(li, REGISTER_X);
+  fnPower(NOPARAM);
+  fnSwapXY(NOPARAM);
+  fnSubtract(NOPARAM);
+  printf("a\n");
+  fnIsPrime(NOPARAM);
+  printf("b\n");
+  longIntegerFree(li);
+  return 0;
+  */
+
+
+  exitCode = processTests(argv[1]);
+  printf("The memory owned by GMP should be 0 bytes. Else report a bug please!\n");
+  debugMemory("End of testsuite");
+
+  return exitCode;
 }

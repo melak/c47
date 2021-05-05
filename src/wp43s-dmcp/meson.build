@@ -43,13 +43,13 @@ wp43s_pre_qspi = custom_target(
   build_by_default : false,
   input            : [wp43s_pre_qspi_incorrect_crc],
   output           : 'WP43S_pre_qspi.bin',
-  command          : [modify_crc, forcecrc32, '@INPUT@', '@OUTPUT@'])
+  command          : [bash, modify_crc, forcecrc32, '@INPUT@', '@OUTPUT@'])
 generated_qspi_crc_h = custom_target(
   'generated_qspi_crc.h',
   build_by_default : false,
   input            : [wp43s_pre_qspi],
   output           : 'generated_qspi_crc.h',
-  command          : [gen_qspi_crc, '@INPUT@', '@OUTPUT@'])
+  command          : [bash, gen_qspi_crc, '@INPUT@', '@OUTPUT@'])
 
 # Second pass building the ELF including the correct qspi_crc.h
 wp43s_elf = executable(
@@ -73,7 +73,7 @@ wp43s_pgm = custom_target(
   build_by_default : false,
   input            : [wp43s_flash],
   output           : 'WP43S.pgm',
-  command          : [add_pgm_chsum, '@INPUT@', '@OUTPUT@'])
+  command          : [bash, add_pgm_chsum, '@INPUT@', '@OUTPUT@'])
 wp43s_qspi_incorrect_crc = custom_target(
   'WP43S_qspi_incorrect_crc.bin',
   build_by_default : false,
@@ -85,6 +85,6 @@ wp43s_qspi = custom_target(
   build_by_default : false,
   input            : [wp43s_qspi_incorrect_crc],
   output           : 'WP43S_qspi.bin',
-  command          : [modify_crc, forcecrc32, '@INPUT@', '@OUTPUT@'])
+  command          : [bash, modify_crc, forcecrc32, '@INPUT@', '@OUTPUT@'])
 
 alias_target('dmcp', wp43s_pgm, wp43s_qspi)

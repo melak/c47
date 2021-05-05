@@ -20,7 +20,7 @@
 #ifndef INTEGERS_H
 #define INTEGERS_H
 
-#include "gmpWrappers.h"
+#include "longIntegerType.h"
 #include <stdint.h>
 
 void     fnChangeBase                (uint16_t base);

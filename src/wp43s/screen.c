@@ -14,10 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file screen.c Screen related functions
- ***********************************************/
-
 #include "screen.h"
 
 #include "browsers/browsers.h"
@@ -65,14 +61,6 @@
 
 
 #ifdef PC_BUILD
-  /********************************************//**
-   * \brief Draws the calc's screen on the PC window widget
-   *
-   * \param[in] widget GtkWidget* Not used
-   * \param[in] cr cairo_t*
-   * \param[in] data gpointer     Not used
-   * \return gboolean
-   ***********************************************/
   gboolean drawScreen(GtkWidget *widget, cairo_t *cr, gpointer data) {
     cairo_surface_t *imageSurface;
 
@@ -392,18 +380,6 @@
 
 
 
-  /********************************************//**
-   * \brief Refreshes calc's screen. This function is
-   * called every SCREEN_REFRESH_PERIOD ms by a GTK timer.
-   * * make the cursor blink if needed
-   * * refresh date and time in the status bar if needed
-   * * refresh the whole screen if needed
-   *
-   * \param[in] data gpointer Not used
-   * \return gboolean         What will happen next?
-   *                          * true  = timer will call this function again
-   *                          * false = timer stops calling this function
-   ***********************************************/
   gboolean refreshLcd(gpointer unusedData) { // This function is called every SCREEN_REFRESH_PERIOD ms by a GTK timer
     // Cursor blinking
     static bool_t cursorBlink=true;
@@ -538,13 +514,6 @@
 
 #ifndef TESTSUITE_BUILD
   #ifndef DMCP_BUILD
-    /********************************************//**
-     * \brief Sets a black pixel on the screen.
-     *
-     * \param[in] x uint32_t x coordinate from 0 (left) to 399 (right)
-     * \param[in] y uint32_t y coordinate from 0 (top) to 239 (bottom)
-     * \return void
-     ***********************************************/
     void setBlackPixel(uint32_t x, uint32_t y) {
       if(x>=SCREEN_WIDTH || y>=SCREEN_HEIGHT) {
         printf("In function setBlackPixel: x=%u, y=%u outside the screen!\n", x, y);
@@ -557,13 +526,6 @@
 
 
 
-    /********************************************//**
-     * \brief Sets a white pixel on the screen.
-     *
-     * \param[in] x uint32_t x coordinate from 0 (left) to 399 (right)
-     * \param[in] y uint32_t y coordinate from 0 (top) to 239 (bottom)
-     * \return void
-     ***********************************************/
     void setWhitePixel(uint32_t x, uint32_t y) {
       if(x>=SCREEN_WIDTH || y>=SCREEN_HEIGHT) {
         printf("In function setWhitePixel: x=%u, y=%u outside the screen!\n", x, y);
@@ -597,18 +559,6 @@
 
 
 
-  /********************************************//**
-   * \brief Displays a glyph using it's Unicode code point
-   *
-   * \param[in] charCode uint16_t      Unicode code point of the glyph to display
-   * \param[in] font font_t*           Font to use
-   * \param[in] x uint32_t             x coordinate where to display the glyph
-   * \param[in] y uint32_t             y coordinate where to display the glyph
-   * \param[in] videoMode videoMode_t  Video mode normal or reverse
-   * \param[in] showLeadingCols bool_t Display the leading empty columns
-   * \param[in] showEndingCols bool_t  Display the ending empty columns
-   * \return uint32_t                  x coordinate for the next glyph
-   ***********************************************/
   uint32_t showGlyphCode(uint16_t charCode, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
     uint32_t  col, row, xGlyph, endingCols;
     int32_t glyphId;
@@ -678,13 +628,12 @@
 
 
 
-  /********************************************//**
-   * \brief Returns the character code from the first glyph of a string
+  /* Returns the character code from the first glyph of a string.
    *
-   * \param[in]     ch     const char* String whose first glyph is to extract
-   * \param[in,out] offset uint16_t*   Offset which is updated, or null if zero and no update
-   * \return               uint16_t    Character code for that glyph
-   ***********************************************/
+   * \param[in]     ch     String whose first glyph is to extract
+   * \param[in,out] offset Offset which is updated, or null if zero and no update
+   * \return Character code for that glyph
+   */
   static uint16_t charCodeFromString(const char *ch, uint16_t *offset) {
     uint16_t charCode;
     uint16_t loffset = (offset != 0) ? *offset : 0;
@@ -701,34 +650,20 @@
 
 
 
-  /********************************************//**
-   * \brief Displays the first glyph of a string
-   *
-   * \param[in] ch const char*         String whose first glyph is to display
-   * \param[in] font font_t*           Font to use
-   * \param[in] x int16_t              x coordinate where to display the glyph
-   * \param[in] y int16_t              y coordinate where to display the glyph
-   * \param[in] videoMode videoMode_t  Video mode normal or reverse
-   * \param[in] showLeadingCols bool_t Display the leading empty columns
-   * \param[in] showEndingCols bool_t  Display the ending empty columns
-   * \return uint32_t                  x coordinate for the next glyph
-   ***********************************************/
   uint32_t showGlyph(const char *ch, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
     return showGlyphCode(charCodeFromString(ch, 0), font, x, y, videoMode, showLeadingCols, showEndingCols);
   }
 
 
 
-  /********************************************//**
-   * \brief Finds the cols and rows for a glyph
+  /* Finds the cols and rows for a glyph.
    *
    * \param[in]     ch     const char*   String whose first glyph is to find the bounds for
    * \param[in,out] offset uint16_t*     Offset for string or null if zero should be used
    * \param[in]     font   const font_t* Font to use
    * \param[out]    col    uint32_t*     Number of columns for the glyph
    * \param[out]    row    uint32_t*     Number of rows for the glyph
-   * \return               void
-   ***********************************************/
+   */
   static void getGlyphBounds(const char *ch, uint16_t *offset, const font_t *font, uint32_t *col, uint32_t *row) {
     int32_t        glyphId;
     const glyph_t *glyph;
@@ -746,18 +681,6 @@
 
 
 
-  /********************************************//**
-   * \brief Displays a 0 terminated string
-   *
-   * \param[in] string const char*     String whose first glyph is to display
-   * \param[in] font font_t*           Font to use
-   * \param[in] x uint32_t             x coordinate where to display the glyph
-   * \param[in] y uint32_t             y coordinate where to display the glyph
-   * \param[in] videoMode videoMode_t  Video mode normal or reverse
-   * \param[in] showLeadingCols bool_t Display the leading empty columns
-   * \param[in] showEndingCols bool_t  Display the ending empty columns
-   * \return uint32_t                  x coordinate for the next glyph
-   ***********************************************/
   uint32_t showString(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
     uint16_t ch, lg;
     bool_t   slc, sec;
@@ -790,15 +713,13 @@
 
 
 
-  /********************************************//**
-   * \brief Finds the cols and rows for a string if showing leading and ending columns
+  /* Finds the cols and rows for a string if showing leading and ending columns.
    *
    * \param[in]  ch   const char*   String to find the bounds of
    * \param[in]  font const font_t* Font to use
    * \param[out] col  uint32_t*     Number of columns for the string
    * \param[out] row  uint32_t*     Number of rows for the string
-   * \return void
-   ***********************************************/
+   */
   static void getStringBounds(const char *string, const font_t *font, uint32_t *col, uint32_t *row) {
     uint16_t ch = 0;
     uint32_t lcol, lrow;
@@ -816,12 +737,6 @@
 
 
 
-  /********************************************//**
-   * \brief Hides the cursor
-   *
-   * \param void
-   * \return void
-   ***********************************************/
   void hideCursor(void) {
     if(cursorEnabled) {
       if(cursorFont == &standardFont) {
@@ -835,15 +750,6 @@
 
 
 
-  /********************************************//**
-   * \brief Displays the function of the
-   * currently pressed button in the
-   * upper left corner of the T register line
-   *
-   * \param[in] item     int16_t  Item ID to show
-   * \param[in] counter  int8_t   number of 1/10 seconds until NOP
-   * \return void
-   ***********************************************/
   void showFunctionName(int16_t item, int16_t delayInMs) {
     uint32_t fcol, frow, gcol, grow;
     char *functionName;
@@ -870,14 +776,6 @@
 
 
 
-  /********************************************//**
-   * \brief Hides the function name in the
-   * upper left corner of the T register line
-   * and clears the counter
-   *
-   * \param void
-   * \return void
-   ***********************************************/
   void hideFunctionName(void) {
     uint32_t col, row;
     getStringBounds(indexOfItems[abs(showFunctionNameItem)].itemCatalogName, &standardFont, &col, &row);
@@ -888,12 +786,6 @@
 
 
 
-  /********************************************//**
-   * \brief Clears one register line
-   *
-   * \param[in] yStart int16_t y coordinate from where starting to clear
-   * \return void
-   ***********************************************/
   void clearRegisterLine(calcRegister_t regist, bool_t clearTop, bool_t clearBottom) {
     if(REGISTER_X <= regist && regist <= REGISTER_T) {
       uint32_t yStart = Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X);
@@ -917,12 +809,6 @@
 
 
 
-  /********************************************//**
-   * \brief Displays one register line
-   *
-   * \param[in] regist int16_t Register line to display
-   * \return void
-   ***********************************************/
   void refreshRegisterLine(calcRegister_t regist) {
     int16_t w, wLastBaseNumeric, wLastBaseStandard, prefixWidth, lineWidth = 0;
     bool_t prefixPre = true;

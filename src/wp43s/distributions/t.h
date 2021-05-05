@@ -20,7 +20,7 @@
 #ifndef T_H
 #define T_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnT_P   (uint16_t unusedButMandatoryParameter);

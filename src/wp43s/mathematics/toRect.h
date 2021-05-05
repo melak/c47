@@ -20,7 +20,7 @@
 #ifndef TORECT_H
 #define TORECT_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnToRect                (uint16_t unusedButMandatoryParameter);

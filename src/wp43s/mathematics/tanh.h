@@ -20,8 +20,8 @@
 #ifndef TANH_H
 #define TANH_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnTanh   (uint16_t unusedButMandatoryParameter);

@@ -27,13 +27,7 @@
 
 #include "defines.h"
 
-#if (IBM_DECIMAL == 1)
- #include "decimal128.h"
- #include "decimal64.h"
- #include "decDouble.h"
- #include "decQuad.h"
- #include "decNumberWrappers.h"
-#endif // (IBM_DECIMAL == 1)
+#include "realType.h"
 
 realContext_t ctxtReal34, ctxtReal39, ctxtReal51, ctxtReal1071;
 
@@ -800,7 +794,7 @@ int main(int argc, char* argv[]) {
   fprintf(constantsH, "#ifndef CONSTANTPOINTERS_H\n");
   fprintf(constantsH, "#define CONSTANTPOINTERS_H\n\n");
 
-  fprintf(constantsH, "#include \"decNumberWrappers.h\"\n");
+  fprintf(constantsH, "#include \"realType.h\"\n");
   fprintf(constantsH, "#include <stdint.h>\n\n");
 
   fprintf(constantsH, "%s", defines);

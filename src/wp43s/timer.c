@@ -14,10 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file timer.c The timer application
- ***********************************************/
-
 #include "timer.h"
 
 #include "registerValueConversions.h"

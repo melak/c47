@@ -20,8 +20,8 @@
 #ifndef SIN_H
 #define SIN_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnSin   (uint16_t unusedButMandatoryParameter);

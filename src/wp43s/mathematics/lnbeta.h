@@ -20,8 +20,8 @@
 #ifndef LNBETA_H
 #define LNBETA_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnLnBeta      (uint16_t unusedButMandatoryParameter);

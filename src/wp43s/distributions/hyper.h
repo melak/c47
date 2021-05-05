@@ -20,7 +20,7 @@
 #ifndef HYPER_H
 #define HYPER_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnHypergeometricP  (uint16_t unusedButMandatoryParameter);

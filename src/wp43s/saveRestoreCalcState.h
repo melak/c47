@@ -14,9 +14,9 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
+/**
  * \file saveRestoreCalcState.h
- ***********************************************/
+ */
 #ifndef SAVERESTORECALCSTATE_H
 #define SAVERESTORECALCSTATE_H
 

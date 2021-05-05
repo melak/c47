@@ -20,8 +20,8 @@
 #ifndef EXP_H
 #define EXP_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnExp   (uint16_t unusedButMandatoryParameter);

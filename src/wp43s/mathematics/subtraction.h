@@ -33,7 +33,6 @@ void subError   (void);
 //      RegYRegX
 void subLonILonI(void);
 void subLonITime(void);
-void subLonIDate(void);
 void subLonIShoI(void);
 void subLonIReal(void);
 void subLonICplx(void);

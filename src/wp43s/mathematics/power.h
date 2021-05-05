@@ -20,8 +20,8 @@
 #ifndef POWER_H
 #define POWER_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnPower    (uint16_t unusedButMandatoryParameter);

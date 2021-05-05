@@ -20,8 +20,8 @@
 #ifndef FIB_H
 #define FIB_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnFib   (uint16_t unusedButMandatoryParameter);

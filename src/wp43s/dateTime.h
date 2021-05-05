@@ -20,7 +20,7 @@
 #ifndef DATETIME_H
 #define DATETIME_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include "typeDefinitions.h"
 #include <stdint.h>
 

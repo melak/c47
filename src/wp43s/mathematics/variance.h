@@ -20,7 +20,7 @@
 #ifndef VARIANCE_H
 #define VARIANCE_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnWeightedSampleStdDev     (uint16_t unusedButMandatoryParameter);

@@ -14,16 +14,12 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file wp43s.c
- ***********************************************/
-
 #include "wp43s.h"
 
 #include "config.h"
-#include "gmpWrappers.h"
 #include "items.h"
 #include "keyboard.h"
+#include "longIntegerType.h"
 #include "memory.h"
 #include "screen.h"
 
@@ -569,48 +565,3 @@ size_t                 wp43sMemInBlocks;
     }
   }
 #endif // DMCP_BUILD
-
-#ifdef TESTSUITE_BUILD
-  #include "testSuite.h"
-
-  int main(int argc, char* argv[]) {
-    int exitCode;
-
-    if(argc < 2) {
-      printf("Usage: testSuite <list file>\n");
-      return 1;
-    }
-
-    wp43sMemInBlocks = 0;
-    gmpMemInBytes = 0;
-    mp_set_memory_functions(allocGmp, reallocGmp, freeGmp);
-
-    fnReset(CONFIRMED);
-
-    /*
-    longInteger_t li;
-    longIntegerInit(li);
-    uIntToLongInteger(1, li);
-    convertLongIntegerToLongIntegerRegister(li, REGISTER_Z);
-    uIntToLongInteger(2, li);
-    convertLongIntegerToLongIntegerRegister(li, REGISTER_Y);
-    uIntToLongInteger(2203, li);
-    convertLongIntegerToLongIntegerRegister(li, REGISTER_X);
-    fnPower(NOPARAM);
-    fnSwapXY(NOPARAM);
-    fnSubtract(NOPARAM);
-    printf("a\n");
-    fnIsPrime(NOPARAM);
-    printf("b\n");
-    longIntegerFree(li);
-    return 0;
-    */
-
-
-    exitCode = processTests(argv[1]);
-    printf("The memory owned by GMP should be 0 bytes. Else report a bug please!\n");
-    debugMemory("End of testsuite");
-
-    return exitCode;
-  }
-#endif // TESTSUITE_BUILD

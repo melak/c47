@@ -33,6 +33,7 @@
 #include "mathematics/toPolar.h"
 #include "mathematics/toRect.h"
 #include "mathematics/wp34s.h"
+#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -513,7 +514,7 @@ void xthRootCplxLonI(void) {
  * \return void
  ***********************************************/
 void xthRootRemaLonI(void) {
-  fnToBeCoded();
+  elementwiseRemaLonI(xthRootRealLonI);
 }
 
 
@@ -525,7 +526,7 @@ void xthRootRemaLonI(void) {
  * \return void
  ***********************************************/
 void xthRootRemaShoI(void) {
-  fnToBeCoded();
+  elementwiseRemaShoI(xthRootRealShoI);
 }
 
 
@@ -537,7 +538,7 @@ void xthRootRemaShoI(void) {
  * \return void
  ***********************************************/
 void xthRootRemaReal(void) {
-  fnToBeCoded();
+  elementwiseRemaReal(xthRootRealReal);
 }
 
 

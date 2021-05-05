@@ -25,7 +25,7 @@
 #ifndef CONSTANTPOINTERS_H
 #define CONSTANTPOINTERS_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 #define CONST_00    0

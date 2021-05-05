@@ -14,29 +14,29 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
+/**
  * \file typeDefinitions.h
- ***********************************************/
+ */
 #ifndef TYPEDEFINITIONS_H
 #define TYPEDEFINITIONS_H
 
+#include "realType.h"
 #include <stdint.h>
-#include "decNumberWrappers.h"
 
-/********************************************//**
+/**
  * \union multiplyDivide_t
- * \brief used for unit conversions
- ***********************************************/
+ * Used for unit conversions.
+ */
 typedef enum {
   multiply,
   divide
 } multiplyDivide_t;
 
 
-/********************************************//**
+/**
  * \struct calcKey_t
- * \brief Structure keeping the informations for one key
- ***********************************************/
+ * Structure keeping the informations for one key.
+ */
 typedef struct {
   int16_t keyId;       ///< ID of the key
   int16_t primary;     ///< ID of the primary function of the key
@@ -50,10 +50,10 @@ typedef struct {
 } calcKey_t;
 
 
-/********************************************//**
- * \typedef glyph_t
- * \brief Structure keeping the informations for one glyph
- ***********************************************/
+/**
+ * \struct glyph_t
+ * Structure keeping the informations for one glyph.
+ */
 typedef struct {
   uint16_t charCode;         ///< Unicode code point
   uint8_t  colsBeforeGlyph;  ///< Number of empty columns before the glyph
@@ -69,10 +69,10 @@ typedef struct {
 } glyph_t;
 
 
-/********************************************//**
- * \typedef font_t
- * \brief Font description
- ***********************************************/
+/**
+ * \struct font_t
+ * Font description.
+ */
 typedef struct {
   int8_t  id;              ///< 0=numeric 1=standard
   uint16_t numberOfGlyphs; ///< Number of glyphs in the font
@@ -80,20 +80,20 @@ typedef struct {
 } font_t;
 
 
-/********************************************//**
- * \typedef freeMemoryRegion_t
- * \brief Keeps track of free memory regions
- ***********************************************/
+/**
+ * \struct freeMemoryRegion_t
+ * Keeps track of free memory regions.
+ */
 typedef struct {
   uint16_t address;      ///< Address of the free memory region
   uint16_t sizeInBlocks; ///< Sise in blocks of the free memory region
 } freeMemoryRegion_t;
 
 
-/********************************************//**
- * \typedef dataType_t
- * \brief Different data types
- ***********************************************/
+/**
+ * \enum dataType_t
+ * Different data types.
+ */
 typedef enum {
   dtLongInteger     =  0,  ///< Z arbitrary precision integer
   dtReal34          =  1,  ///< R double precision real (128 bits)
@@ -113,10 +113,10 @@ typedef enum {
 } dataType_t; // 4 bits (NOT 5 BITS)
 
 
-/********************************************//**
- * \typedef angularMode_t
- * \brief angular units
- ***********************************************/
+/**
+ * \enum angularMode_t
+ * Angular units.
+ */
 typedef enum {
   amRadian =  0, // radian must be 0  | This is because of the tables
   amMultPi =  1, // multpi must be 1  | angle45, angle90, and angle180
@@ -128,10 +128,10 @@ typedef enum {
 } angularMode_t;
 
 
-/********************************************//**
- * \typedef dtConfigDescriptor_t
- * \brief Configuration for STOCFG and RCLCFG
- ***********************************************/
+/**
+ * \struct dtConfigDescriptor_t
+ * Configuration for STOCFG and RCLCFG.
+ */
 typedef struct {
   uint8_t       shortIntegerMode;
   uint8_t       shortIntegerWordSize;
@@ -150,10 +150,10 @@ typedef struct {
 } dtConfigDescriptor_t;
 
 
-/********************************************//**
- * \typedef registerHeader_t
- * \brief 32 bits describing the register
- ***********************************************/
+/**
+ * \union registerHeader_t
+ * 32 bits describing the register.
+ */
 typedef union {
   uint32_t descriptor;
   struct {
@@ -166,11 +166,10 @@ typedef union {
 } registerHeader_t;
 
 
-// Header for datatype string, long integer, and matrix
-/********************************************//**
- * \typedef dataBlock_t
- * \brief Different kind of data blocks
- ***********************************************/
+/**
+ * \union dataBlock_t
+ * Header for datatypes: string, long integer, and matrix.
+ */
 typedef union {
   uint32_t data;
   uint32_t localFlags;
@@ -218,42 +217,40 @@ typedef union {
 } dataBlock_t;
 
 
-// Header for named variables
-/********************************************//**
- * \typedef namedVariableHeader_t
- * \brief Named variable header
- ***********************************************/
+/**
+ * \struct namedVariableHeader_t
+ * Header for named variables.
+ */
 typedef struct {
   registerHeader_t header;  ///< Header
   uint8_t variableName[16]; ///< Variable name
 } namedVariableHeader_t;
 
 
-// Header for system named variables
-/********************************************//**
- * \typedef reservedVariableHeader_t
- * \brief Reserved variable header
- ***********************************************/
+/**
+ * \struct reservedVariableHeader_t
+ * Header for system named variables.
+ */
 typedef struct {
   registerHeader_t header;         ///< Header
   uint8_t reservedVariableName[8]; ///< Variable name
 } reservedVariableHeader_t;
 
 
-/********************************************//**
- * \typedef videoMode_t
- * \brief Video mode: normal video or reverse video
- ***********************************************/
+/**
+ * \enum videoMode_t
+ * Video mode: normal video or reverse video.
+ */
 typedef enum {
   vmNormal,  ///< Normal mode: black on white background
   vmReverse  ///< Reverse mode: white on black background
 } videoMode_t; // 1 bit
 
 
-/********************************************//**
+/**
  * \struct softmenu_t
- * \brief Structure keeping the informations for one softmenu
- ***********************************************/
+ * Structure keeping the informations for one softmenu.
+ */
 typedef struct {
   int16_t menuItem;           ///< ID of the menu. The item is always negative and -item must be in the indexOfItems area
   int16_t numItems;           ///< Number of items in the softmenu (must be a multiple of 6 for now)
@@ -261,10 +258,10 @@ typedef struct {
 } softmenu_t;
 
 
-/********************************************//**
+/**
  * \struct dynamicSoftmenu_t
- * \brief Structure keeping the informations for one variable softmenu
- ***********************************************/
+ * Structure keeping the informations for one variable softmenu.
+ */
 typedef struct {
   int16_t menuItem;           ///< ID of the menu. The item is always negative and -item must be in the indexOfItems area
   int16_t numItems;           ///< Number of items in the dynamic softmenu (must be a multiple of 6 for now)
@@ -272,45 +269,45 @@ typedef struct {
 } dynamicSoftmenu_t;
 
 
-/********************************************//**
+/**
  * \struct softmenuStack_t
- * \brief Stack of softmenus
- ***********************************************/
+ * Stack of softmenus.
+ */
 typedef struct {
   int16_t softmenuId; ///< Softmenu ID = rank in dynamicSoftmenu or softmenu
   int16_t firstItem;  ///< Current first item on the screen (unshifted F1 = bottom left)
 } softmenuStack_t;
 
 
-/********************************************//**
- * \typedef bool_t
- * \brief Boolean type
- ***********************************************/
+/**
+ * \enum bool_t
+ * Boolean type.
+ */
 typedef enum {
   false = 0,     ///< Value for false
   true  = !false ///< Value for true
 } bool_t; // 1 bit
 
 
-/********************************************//**
+/**
  * \typedef calcRegister_t
- * \brief A type for calculator registers
- ***********************************************/
+ * A type for calculator registers.
+ */
 typedef int16_t calcRegister_t;
 
-/********************************************//**
- * \typedef real34Matrix_t
- * \brief A type for real34Matrix
- ***********************************************/
+/**
+ * \struct real34Matrix_t
+ * A type for real34Matrix.
+ */
 typedef struct {
    dataBlock_t header;
    real34_t    *matrixElements;
 } real34Matrix_t;
 
-/********************************************//**
- * \typedef item_t
- * \brief Structure keeping the information for one item
- ***********************************************/
+/**
+ * \struct item_t
+ * Structure keeping the information for one item.
+ */
 typedef struct {
   void     (*func)(uint16_t); ///< Function called to execute the item
   uint16_t param;             ///< 1st parameter to the above function
@@ -326,10 +323,10 @@ typedef struct {
 } item_t;
 
 
-/********************************************//**
- * \typedef labelList_t
- * \brief Structure keeping the information for a program label
- ***********************************************/
+/**
+ * \struct labelList_t
+ * Structure keeping the information for a program label.
+ */
 typedef struct {
   int16_t  program;             ///< Program id: <0 for FLASH and >0 for RAM
   int32_t  step;                ///< Step number of the label: <0 for a local label and >0 for a global label
@@ -338,10 +335,10 @@ typedef struct {
 } labelList_t;
 
 
-/********************************************//**
- * \typedef programList_t
- * \brief Structure keeping the information for a program
- ***********************************************/
+/**
+ * \struct programList_t
+ * Structure keeping the information for a program.
+ */
 typedef struct {
   int32_t  step;                ///< (Step number + 1) of the program begin: <0 for a FLASH program and >0 for a RAM program
   uint8_t  *instructionPointer; ///< Pointer to the program begin

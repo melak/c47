@@ -14,9 +14,9 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
+/**
  * \file stringFuncs.h
- ***********************************************/
+ */
 #ifndef STRINGFUNCS_H
 #define STRINGFUNCS_H
 

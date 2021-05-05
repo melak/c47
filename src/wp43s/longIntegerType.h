@@ -14,18 +14,16 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file gmpWrappers.h
- ***********************************************/
-#ifndef GMPWRAPPERS_H
-#define GMPWRAPPERS_H
+/**
+ * \file longIntegerType.h
+ */
+#ifndef LONGINTEGERTYPE_H
+#define LONGINTEGERTYPE_H
 
 #include "defines.h"
 
-#if (LIBGMP == 1)
 #include <gmp.h>
 #include <stdlib.h>
-
 
 #define longInteger_t                                                     mpz_t
 #define REGISTER_LONG_INTEGER_DATA(a)                                     ((void *)(getRegisterDataPointer(a) + 1)) // Memory pointer to the long integer of a register
@@ -162,6 +160,4 @@
 //
 //#define longIntegerFactorial(op, result)                                  mpz_fac_ui(result, op)
 
-#endif // (LIBGMP == 1)
-
-#endif // GMPWRAPPERS_H
+#endif // LONGINTEGERTYPE_H

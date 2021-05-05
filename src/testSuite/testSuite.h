@@ -18,7 +18,7 @@
  * \file testSuite.h
  ***********************************************/
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include "typeDefinitions.h"
 #include <stdint.h>
 

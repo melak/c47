@@ -20,7 +20,7 @@
 #ifndef OPMOD_H
 #define OPMOD_H
 
-#include "gmpWrappers.h"
+#include "longIntegerType.h"
 #include <stdint.h>
 
 void fnMulMod          (uint16_t unusedButMandatoryParameter);

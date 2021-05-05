@@ -20,7 +20,7 @@
 #ifndef CHI2_H
 #define CHI2_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include "typeDefinitions.h"
 #include <stdint.h>
 

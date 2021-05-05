@@ -20,8 +20,8 @@
 #ifndef ZETA_H
 #define ZETA_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnZeta     (uint16_t unusedButMandatoryParameter);

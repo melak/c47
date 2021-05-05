@@ -20,7 +20,7 @@
 #ifndef GD_H
 #define GD_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnGd   (uint16_t unusedButMandatoryParameter);

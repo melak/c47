@@ -20,7 +20,7 @@
 #ifndef RSD_H
 #define RSD_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include "typeDefinitions.h"
 #include <stdint.h>
 

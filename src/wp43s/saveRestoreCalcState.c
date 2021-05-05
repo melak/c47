@@ -14,10 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file saveRestoreCalcState.c
- ***********************************************/
-
 #include "saveRestoreCalcState.h"
 
 #include "charString.h"
@@ -560,6 +556,23 @@ static void registerToSaveString(calcRegister_t regist) {
       strcpy(aimBuffer, "Cplx");
       break;
 
+    case dtTime:
+      real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
+      strcpy(aimBuffer, "Time");
+      break;
+
+    case dtDate:
+      real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
+      strcpy(aimBuffer, "Date");
+      break;
+
+#ifndef TESTSUITE_BUILD
+    case dtReal34Matrix:
+      sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns);
+      strcpy(aimBuffer, "Rema");
+      break;
+#endif // TESTSUITE_BUILD
+
     case dtConfig:
       for(str=tmpRegisterString, cfg=(char *)REGISTER_CONFIG_DATA(regist), value=0; value<sizeof(dtConfigDescriptor_t); value++, cfg++, str+=2) {
         sprintf(str, "%02X", *cfg);
@@ -571,6 +584,19 @@ static void registerToSaveString(calcRegister_t regist) {
       strcpy(tmpRegisterString, "???");
       strcpy(aimBuffer, "????");
   }
+}
+
+
+static void saveMatrixElements(calcRegister_t regist, void *stream) {
+#ifndef TESTSUITE_BUILD
+  if(getRegisterDataType(regist) == dtReal34Matrix) {
+    for(uint32_t element = 0; element < REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
+      real34ToString(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + element, tmpString);
+      strcat(tmpString, "\n");
+      save(tmpString, strlen(tmpString), stream);
+    }
+  }
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -606,6 +632,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
     registerToSaveString(regist);
     sprintf(tmpString, "R%03" PRId16 "\n%s\n%s\n", regist, aimBuffer, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
+    saveMatrixElements(regist, BACKUP);
   }
 
   // Global flags
@@ -628,6 +655,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
     registerToSaveString(FIRST_LOCAL_REGISTER + i);
     sprintf(tmpString, "R.%02" PRIu32 "\n%s\n%s\n", i, aimBuffer, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
+    saveMatrixElements(FIRST_LOCAL_REGISTER + i, BACKUP);
   }
 
   // Local flags
@@ -643,6 +671,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
     registerToSaveString(FIRST_NAMED_VARIABLE + i);
     sprintf(tmpString, "%s\n%s\n%s\n", "name", aimBuffer, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
+    saveMatrixElements(FIRST_NAMED_VARIABLE + i, BACKUP);
   }
 
   // Statistical sums
@@ -889,6 +918,16 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
     stringToReal34(value, REGISTER_REAL34_DATA(regist));
   }
 
+  else if(strcmp(type, "Time") == 0) {
+    reallocateRegister(regist, dtTime, REAL34_SIZE, amNone);
+    stringToReal34(value, REGISTER_REAL34_DATA(regist));
+  }
+
+  else if(strcmp(type, "Date") == 0) {
+    reallocateRegister(regist, dtDate, REAL34_SIZE, amNone);
+    stringToReal34(value, REGISTER_REAL34_DATA(regist));
+  }
+
   else if(strcmp(type, "LonI") == 0) {
     longInteger_t lgInt;
 
@@ -929,6 +968,22 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
     stringToReal34(imaginaryPart, REGISTER_IMAG34_DATA(regist));
   }
 
+#ifndef TESTSUITE_BUILD
+  else if(strcmp(type, "Rema") == 0) {
+    char *numOfCols;
+    uint16_t rows, cols;
+
+    numOfCols = value;
+    while(*numOfCols != ' ') numOfCols++;
+    *(numOfCols++) = 0;
+    rows = stringToUint16(value);
+    cols = stringToUint16(numOfCols);
+    reallocateRegister(regist, dtReal34Matrix, REAL34_SIZE * rows * cols, amNone);
+    REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows = rows;
+    REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns = cols;
+  }
+#endif // TESTSUITE_BUILD
+
   else if(strcmp(type, "Conf") == 0) {
     char *cfg;
 
@@ -942,6 +997,45 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
     sprintf(errorMessage, "In function restoreRegister: Date type %s is to be coded!", type);
     displayBugScreen(errorMessage);
   }
+}
+
+
+static void restoreMatrixData(calcRegister_t regist, void *stream) {
+#ifndef TESTSUITE_BUILD
+  uint16_t rows, cols;
+  uint32_t i;
+
+  if(getRegisterDataType(regist) == dtReal34Matrix) {
+    rows = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows;
+    cols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
+
+    for(i = 0; i < rows * cols; ++i) {
+      readLine(stream, tmpString);
+      stringToReal34(tmpString, REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i);
+    }
+  }
+#endif // TESTSUITE_BUILD
+}
+
+
+static void skipMatrixData(char *type, char *value, void *stream) {
+#ifndef TESTSUITE_BUILD
+  uint16_t rows, cols;
+  uint32_t i;
+  char *numOfCols;
+
+  if(strcmp(type, "Rema") == 0) {
+    numOfCols = value;
+    while(*numOfCols != ' ') numOfCols++;
+    *(numOfCols++) = 0;
+    rows = stringToUint16(value);
+    cols = stringToUint16(numOfCols);
+
+    for(i = 0; i < rows * cols; ++i) {
+      readLine(stream, tmpString);
+    }
+  }
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -964,6 +1058,10 @@ static void restoreOneSection(void *stream, uint16_t loadMode) {
 
       if(loadMode == LM_ALL || (loadMode == LM_REGISTERS && regist < REGISTER_X)) {
         restoreRegister(regist, aimBuffer, tmpString);
+        restoreMatrixData(regist, stream);
+      }
+      else {
+        skipMatrixData(aimBuffer, tmpString, stream);
       }
     }
   }
@@ -1015,6 +1113,10 @@ static void restoreOneSection(void *stream, uint16_t loadMode) {
 
       if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
         restoreRegister(regist, aimBuffer, tmpString);
+        restoreMatrixData(regist, stream);
+      }
+      else {
+        skipMatrixData(aimBuffer, tmpString, stream);
       }
     }
 
@@ -1040,6 +1142,7 @@ static void restoreOneSection(void *stream, uint16_t loadMode) {
         //printf("%s = ", aimBuffer);
         //printf("%s\n", tmpString);
       }
+      skipMatrixData(aimBuffer, tmpString, stream);
     }
   }
 

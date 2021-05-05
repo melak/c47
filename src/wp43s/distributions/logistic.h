@@ -20,7 +20,7 @@
 #ifndef LOGISTIC_H
 #define LOGISTIC_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnLogisticP     (uint16_t unusedButMandatoryParameter);

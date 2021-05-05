@@ -14,21 +14,19 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file decNumberWrappers.h
- ***********************************************/
-#ifndef DECNUMBERWRAPPERS_H
-#define DECNUMBERWRAPPERS_H
+/**
+ * \file realType.h
+ */
+#ifndef REALTYPE_H
+#define REALTYPE_H
 
 #include "defines.h"
-
-#if (IBM_DECIMAL == 1)
 
 #include "decimal128.h"
 #include "decimal64.h"
 #include "decDouble.h"
 #include "decQuad.h"
-#include "decNumberWrappers.h"
+#include "realType.h"
 extern int decGetInt(const decNumber *x); // Because decNumberToInt32 seems buggy! Needs more investigation
 
 typedef struct {
@@ -222,6 +220,4 @@ typedef struct {
 #define stringToReal(source, destination, ctxt)                decNumberFromString      (destination, source, ctxt)
 #define uInt32ToReal(source, destination)                      decNumberFromUInt32      (destination, source)
 
-#endif // (IBM_DECIMAL == 1)
-
-#endif // DECNUMBERWRAPPERS_H
+#endif // REALTYPE_H

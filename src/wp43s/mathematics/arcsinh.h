@@ -20,8 +20,8 @@
 #ifndef ARCSINH_H
 #define ARCSINH_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnArcsinh   (uint16_t unusedButMandatoryParameter);

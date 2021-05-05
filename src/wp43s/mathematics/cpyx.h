@@ -20,7 +20,7 @@
 #ifndef CPYX_H
 #define CPYX_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnCyx(uint16_t unusedButMandatoryParameter);

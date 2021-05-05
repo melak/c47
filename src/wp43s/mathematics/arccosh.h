@@ -20,8 +20,8 @@
 #ifndef ARCCOSH_H
 #define ARCCOSH_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnArccosh   (uint16_t unusedButMandatoryParameter);

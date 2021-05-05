@@ -20,7 +20,7 @@
 #ifndef EXPONENTIAL_H
 #define EXPONENTIAL_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnExponentialP  (uint16_t unusedButMandatoryParameter);

@@ -20,7 +20,7 @@
 #ifndef GEOMETRIC_H
 #define GEOMETRIC_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnGeometricP           (uint16_t unusedButMandatoryParameter);

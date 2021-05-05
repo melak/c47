@@ -20,8 +20,8 @@
 #ifndef TAN_H
 #define TAN_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include "typeDefinitions.h"
 #include <stdint.h>
 

@@ -20,7 +20,7 @@
 #ifndef COMPARISONREALS_H
 #define COMPARISONREALS_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include "typeDefinitions.h"
 #include <stdint.h>
 

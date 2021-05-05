@@ -14,9 +14,9 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
+/**
  * \file wp43s.h
- ***********************************************/
+ */
 
 #ifndef WP43S_H
 #define WP43S_H
@@ -55,8 +55,8 @@
     #include <dmcp.h>
   #endif // DMCP_BUILD
 
-  #include "decNumberWrappers.h"
   #include "mathematics/pcg_basic.h"
+  #include "realType.h"
   #include "typeDefinitions.h"
 
   // Variables for the simulator

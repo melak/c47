@@ -20,7 +20,7 @@
 #ifndef NORMAL_H
 #define NORMAL_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnNormalP   (uint16_t unusedButMandatoryParameter);

@@ -20,7 +20,7 @@
 #ifndef TOPOLAR_H
 #define TOPOLAR_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnToPolar               (uint16_t unusedButMandatoryParameter);

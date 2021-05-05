@@ -14,10 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file stats.c Statistical functions
- ***********************************************/
-
 #include "stats.h"
 
 #include "constantPointers.h"
@@ -160,13 +156,6 @@ static void addSigma(real_t *x, real_t *y) {
 
 
 
-/********************************************//**
- * \brief Verifies that the statistical registers are allocated and that there are enough data
- * An appropriate error message is displayed if either condition fails
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return bool_t
- ***********************************************/
 bool_t checkMinimumDataPoints(const real_t *n) {
   if(statisticalSumsPointer == NULL) {
     displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
@@ -222,12 +211,6 @@ void fnClSigma(uint16_t unusedButMandatoryParameter) {
 
 
 
-/********************************************//**
- * \brief Adds a value to the statistic registers
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
 void fnSigma(uint16_t plusMinus) {
   real_t tmpReal1, tmpReal2, tmpReal3, x, y;
   realContext_t *realContext = &ctxtReal75; // Summation data with 75 digits
@@ -410,13 +393,6 @@ void fnStatSum(uint16_t sum) {
 
 
 
-/********************************************//**
- * \brief SUM ==> regX, regY
- * regX = SUM x, regY = SUM y
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
 void fnSumXY(uint16_t unusedButMandatoryParameter) {
   if(checkMinimumDataPoints(const_1)) {
     liftStack();
@@ -432,13 +408,6 @@ void fnSumXY(uint16_t unusedButMandatoryParameter) {
 
 
 
-/********************************************//**
- * \brief Xmin ==> regX, regY
- * regX = min x, regY = min y
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
 void fnXmin(uint16_t unusedButMandatoryParameter) {
   if(checkMinimumDataPoints(const_1)) {
     liftStack();
@@ -454,13 +423,6 @@ void fnXmin(uint16_t unusedButMandatoryParameter) {
 
 
 
-/********************************************//**
- * \brief Xmax ==> regX, regY
- * regX = max x, regY = max y
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
 void fnXmax(uint16_t unusedButMandatoryParameter) {
   if(checkMinimumDataPoints(const_1)) {
     liftStack();

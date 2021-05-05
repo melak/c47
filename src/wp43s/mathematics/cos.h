@@ -20,8 +20,8 @@
 #ifndef COS_H
 #define COS_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnCos   (uint16_t unusedButMandatoryParameter);

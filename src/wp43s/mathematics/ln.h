@@ -20,8 +20,8 @@
 #ifndef LN_H
 #define LN_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnLn   (uint16_t unusedButMandatoryParameter);

@@ -14,10 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/****************************************************//**
- * \file sort.c Comparing 2 strings, sorting strings
- *******************************************************/
-
 #include "sort.h"
 
 #include "charString.h"

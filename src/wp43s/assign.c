@@ -14,10 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file assign.c
- ***********************************************/
-
 #include "assign.h"
 
 #include "items.h"

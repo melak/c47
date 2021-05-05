@@ -14,10 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file plotstat.c
- ***********************************************/
-
 #include "plotstat.h"
 
 #include "charString.h"
@@ -916,12 +912,8 @@ void eformat_fix3 (char* s02, const char* s01, double inreal) {
 
 
 
-/********************************************//**
- * \brief Remove trailing zeroes from float strings
- *
- ***********************************************/
-
-char * eatZeroesEnd(const char * ss) {
+// Remove trailing zeroes from float strings
+static char * eatZeroesEnd(const char * ss) {
   int8_t ix;
   strcpy(tmp_names1,ss);
   ix = stringByteLength(tmp_names1)-1;

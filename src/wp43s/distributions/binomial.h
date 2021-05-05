@@ -20,7 +20,7 @@
 #ifndef BINOMIAL_H
 #define BINOMIAL_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnBinomialP           (uint16_t unusedButMandatoryParameter);

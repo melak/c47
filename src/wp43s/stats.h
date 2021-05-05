@@ -14,22 +14,53 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file stats.h Statistical functions
- ***********************************************/
+/**
+ * \file stats.h
+ * Statistical functions.
+ */
 #ifndef STATS_H
 #define STATS_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include "typeDefinitions.h"
 #include <stdint.h>
 
+/**
+ * Adds a value to the statistic registers.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
 void   fnSigma               (uint16_t plusMinus);
 void   fnStatSum             (uint16_t sum);
+/**
+ * SUM ==> regX, regY.
+ * regX = SUM x, regY = SUM y
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
 void   fnSumXY               (uint16_t unusedButMandatoryParameter);
+/**
+ * Xmin ==> regX, regY.
+ * regX = min x, regY = min y
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
 void   fnXmin                (uint16_t unusedButMandatoryParameter);
+/**
+ * Xmax ==> regX, regY.
+ * regX = max x, regY = max y
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
 void   fnXmax                (uint16_t unusedButMandatoryParameter);
 void   fnClSigma             (uint16_t unusedButMandatoryParameter);
+/**
+ * Verifies that the statistical registers are allocated and that there are enough data.
+ * An appropriate error message is displayed if either condition fails.
+ *
+ * \param[in] unusedButMandatoryParameter
+ * \return bool_t
+ */
 bool_t checkMinimumDataPoints(const real_t *n);
 void   initStatisticalSums   (void);
 

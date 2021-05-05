@@ -14,9 +14,10 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
+/**
  * \file sort.h
- ***********************************************/
+ * Comparing 2 strings, sorting strings.
+ */
 #ifndef SORT_H
 #define SORT_H
 

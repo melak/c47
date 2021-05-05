@@ -25,16 +25,16 @@
 #include "charString.h"
 #include "constantPointers.h"
 #include "debug.h"
-#include "decNumberWrappers.h"
 #include "defines.h"
 #include "display.h"
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
-#include "gmpWrappers.h"
 #include "items.h"
+#include "longIntegerType.h"
 #include "mathematics/comparisonReals.h"
 #include "memory.h"
+#include "realType.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "screen.h"
@@ -1472,8 +1472,8 @@ smallFont:
 }
 
 int16_t getRealMatrixColumnWidths(const real34Matrix_t *matrix, const font_t *font, int16_t *colWidth, int16_t *rPadWidth, int16_t *digits) {
-  const int rows = matrix->header.matrixRows;
-  const int cols = matrix->header.matrixColumns;
+  const int rows = matrix->header.matrixColumns == 1 ? 1 : matrix->header.matrixRows;
+  const int cols = matrix->header.matrixColumns == 1 ? matrix->header.matrixRows : matrix->header.matrixColumns;
   const int maxCols = cols > 4 ? 4 : cols;
   const int maxRows = rows > 5 ? 5 : rows;
   const bool_t forEditor = matrix == &openMatrixMIMPointer;

@@ -27,7 +27,8 @@ linux:
   stage: build
   script:
     - apt-get update -qq
-    - apt-get install -qq -y git pkg-config build-essential meson libgtk-3-dev libgmp-dev
+    - apt-get install -qq -y git python3-pip ninja-build pkg-config build-essential libgtk-3-dev libgmp-dev
+    - python3 -m pip install meson
     - make sim
   tags:
     - linux
@@ -44,11 +45,11 @@ windows:
     - wp43s_windows
 
 dm42:
-  image: ubuntu:hirsute
   stage: build
   script:
     - apt-get update -qq
-    - apt-get install -qq -y git pkg-config build-essential meson zip libgtk-3-dev libgmp-dev gcc-arm-none-eabi
+    - apt-get install -qq -y git python3-pip ninja-build pkg-config build-essential zip libgtk-3-dev libgmp-dev gcc-arm-none-eabi
+    - python3 -m pip install meson
     - make dist_dm42
   artifacts:
     expire_in: 1 day
@@ -61,7 +62,8 @@ testSuite:
   stage: test
   script:
     - apt-get update -qq
-    - apt-get install -qq -y git pkg-config build-essential meson libgtk-3-dev libgmp-dev
+    - apt-get install -qq -y git python3-pip ninja-build pkg-config build-essential libgtk-3-dev libgmp-dev
+    - python3 -m pip install meson
     - make test
   tags:
     - linux
@@ -70,8 +72,8 @@ codeDocs:
   stage: test
   script:
     - apt-get update -qq
-    - apt-get install -qq -y git pkg-config build-essential meson libgtk-3-dev libgmp-dev doxygen python3-pip
-    - python3 -m pip install Sphinx breathe furo
+    - apt-get install -qq -y git python3-pip ninja-build pkg-config build-essential libgtk-3-dev libgmp-dev doxygen
+    - python3 -m pip install meson Sphinx breathe furo
     - make docs
 
 upload:

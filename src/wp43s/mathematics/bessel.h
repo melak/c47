@@ -20,7 +20,7 @@
 #ifndef BESSEL_H
 #define BESSEL_H
 
-#include "decNumberWrappers.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnBessel            (uint16_t unusedButMandatoryParameter);

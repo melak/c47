@@ -21,8 +21,8 @@
 #define LNPONE_H
 // Coded by JM, based on ln.h
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnLnP1   (uint16_t unusedButMandatoryParameter);

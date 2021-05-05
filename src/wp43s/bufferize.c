@@ -14,10 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file bufferize.c
- ***********************************************/
-
 #include "bufferize.h"
 
 #include "charString.h"
@@ -246,12 +242,6 @@
 
 
 
-  /********************************************//**
-   * \brief Adds an item to the alpha buffer
-   *
-   * \param[in] item uint16_t
-   * \return void
-   ***********************************************/
   void addItemToBuffer(uint16_t item) {
     if(item == NOPARAM) {
       displayBugScreen("In function addItemToBuffer: item should not be NOPARAM=7654!");

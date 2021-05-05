@@ -21,8 +21,8 @@
 #define EXPMONE_H
 // Coded by JM, based on exp.h
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnExpM1   (uint16_t unusedButMandatoryParameter);

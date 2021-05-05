@@ -14,18 +14,24 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
+/**
  * \file bufferize.h
- ***********************************************/
+ */
 #ifndef BUFFERIZE_H
 #define BUFFERIZE_H
 
 #include <stdint.h>
-#include "decNumberWrappers.h"
+#include "realType.h"
 
 #ifndef TESTSUITE_BUILD
   void    fnAim                    (uint16_t unusedButMandatoryParameter);
   void    resetAlphaSelectionBuffer(void);
+
+  /**
+   * Adds an item to the alpha buffer.
+   *
+   * \param[in] item item to add to the buffer
+   */
   void    addItemToBuffer          (uint16_t item);
   void    addItemToNimBuffer       (int16_t item);
   void    closeNimWithFraction     (real34_t *dest);

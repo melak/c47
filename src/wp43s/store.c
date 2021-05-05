@@ -14,10 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file store.c
- ***********************************************/
-
 #include "store.h"
 
 #include "charString.h"
@@ -115,12 +111,6 @@ static bool_t storeIjReal(real34Matrix_t *matrix) {
 
 
 
-/********************************************//**
- * \brief Stores X in an other register
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
 void fnStore(uint16_t regist) {
   if(regInRange(regist)) {
     copySourceRegisterToDestRegister(REGISTER_X, regist);
@@ -129,12 +119,6 @@ void fnStore(uint16_t regist) {
 
 
 
-/********************************************//**
- * \brief Adds X to a register
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
 void fnStoreAdd(uint16_t regist) {
   if(regInRange(regist)) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
@@ -155,12 +139,6 @@ void fnStoreAdd(uint16_t regist) {
 
 
 
-/********************************************//**
- * \brief Subtracts X from a register
- *
- * \param[in] registerNumber calcRegister_t
- * \return void
- ***********************************************/
 void fnStoreSub(uint16_t regist) {
   if(regInRange(regist)) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
@@ -181,12 +159,6 @@ void fnStoreSub(uint16_t regist) {
 
 
 
-/********************************************//**
- * \brief Multiplies a register by X
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
 void fnStoreMult(uint16_t regist) {
   if(regInRange(regist)) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
@@ -207,12 +179,6 @@ void fnStoreMult(uint16_t regist) {
 
 
 
-/********************************************//**
- * \brief Divides a register by X
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
 void fnStoreDiv(uint16_t regist) {
   if(regInRange(regist)) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
@@ -233,12 +199,6 @@ void fnStoreDiv(uint16_t regist) {
 
 
 
-/********************************************//**
- * \brief Keeps in a register min(X, register)
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
 void fnStoreMin(uint16_t regist) {
   if(regInRange(regist)) {
     registerMin(REGISTER_X, regist, regist);
@@ -247,12 +207,6 @@ void fnStoreMin(uint16_t regist) {
 
 
 
-/********************************************//**
- * \brief Keeps in a register max(X, register)
- *
- * \param[in] registerNumber uint16_t
- * \return void
- ***********************************************/
 void fnStoreMax(uint16_t regist) {
   if(regInRange(regist)) {
     registerMax(REGISTER_X, regist, regist);
@@ -261,12 +215,6 @@ void fnStoreMax(uint16_t regist) {
 
 
 
-/********************************************//**
- * \brief Stores the configuration
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
 void fnStoreConfig(uint16_t regist) {
   reallocateRegister(regist, dtConfig, CONFIG_SIZE, amNone);
   dtConfigDescriptor_t *configToStore = REGISTER_CONFIG_DATA(regist);
@@ -287,12 +235,6 @@ void fnStoreConfig(uint16_t regist) {
 
 
 
-/********************************************//**
- * \brief Stores the stack
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
 void fnStoreStack(uint16_t regist) {
   uint16_t size = getSystemFlag(FLAG_SSIZE8) ? 8 : 4;
 
@@ -312,12 +254,6 @@ void fnStoreStack(uint16_t regist) {
 
 
 
-/********************************************//**
- * \brief Stores X in the element I,J of a matrix
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
 void fnStoreElement(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   callByIndexedMatrix(storeElementReal, NULL);
@@ -326,12 +262,6 @@ void fnStoreElement(uint16_t unusedButMandatoryParameter) {
 
 
 
-/********************************************//**
- * \brief Stores X and Y in the indexes I and J
- *
- * \param[in] regist uint16_t
- * \return void
- ***********************************************/
 void fnStoreIJ(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   callByIndexedMatrix(storeIjReal, NULL);

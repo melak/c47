@@ -21,8 +21,8 @@
 #define SINC_H
 // Coded by JM, based on sin.h
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnSinc  (uint16_t unusedButMandatoryParameter);

@@ -21,8 +21,8 @@
 #define SINCPI_H
 // Coded by JM, based on sinc.h
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnSincpi(uint16_t unusedButMandatoryParameter);

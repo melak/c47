@@ -14,16 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file softmenus.c List of softmenus and related functions.
- * The numbers refer to the index of items in items.c
- * *         item <     0  ==>  sub menu
- * *     0 < item <  9999  ==>  item with top and bottom line
- * * 10000 < item < 19999  ==>  item without top line
- * * 20000 < item < 29999  ==>  item without bottom line
- * * 30000 < item < 39999  ==>  item without top and bottom line
- ***********************************************/
-
 #include "softmenus.h"
 
 #include "charString.h"
@@ -37,6 +27,14 @@
 #include <stdlib.h>
 
 #include "wp43s.h"
+
+/* The numbers refer to the index of items in items.c
+ *         item <     0  ==>  sub menu
+ *     0 < item <  9999  ==>  item with top and bottom line
+ * 10000 < item < 19999  ==>  item without top line
+ * 20000 < item < 29999  ==>  item without bottom line
+ * 30000 < item < 39999  ==>  item without top and bottom line
+ */
 
 /*      Menu name                           <----------------------------------------------------------------------------- 6 functions ---------------------------------------------------------------------------->  */
 /*                                          <---------------------------------------------------------------------- 6 f shifted functions ------------------------------------------------------------------------->  */
@@ -650,18 +648,6 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 
 
-  /********************************************//**
-   * \brief Displays one softkey
-   *
-   * \param[in] l const char*         Text to display
-   * \param[in] xSoftkey int16_t      x location of softkey: from 0 (left) to 5 (right)
-   * \param[in] ySoftKey int16_t      y location of softkey: from 0 (bottom) to 2 (top)
-   * \param[in] videoMode videoMode_t Video mode normal or reverse
-   * \param[in] topLineDotted bool_t  Is the item's top line dotted
-   * \param[in] topLine bool_t        Draw a top line
-   * \param[in] bottomLine bool_t     Draw a bottom line
-   * \return void
-   ***********************************************/
   void showSoftkey(const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine) {
     int16_t x1, y1, x2, y2;
     int16_t w;
@@ -727,12 +713,6 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 
 
-  /********************************************//**
-   * \brief Displays the current part of the displayed softmenu
-   *
-   * \param void
-   * \return void
-   ***********************************************/
   void showSoftmenuCurrentPart(void) {
     int16_t x, y, yDotted=0, currentFirstItem, item, numberOfItems, m = softmenuStack[0].softmenuId;
     bool_t dottedTopLine;
@@ -863,12 +843,10 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 
 
-  /********************************************//**
-   * \brief Pushes a new softmenu on the softmenu stack
+  /* Pushes a new softmenu on the softmenu stack.
    *
-   * \param[in] softmenuId int16_t Softmenu ID
-   * \return void
-   ***********************************************/
+   * \param[in] softmenuId Softmenu ID
+   */
   static void pushSoftmenu(int16_t softmenuId) {
     int i;
 
@@ -894,12 +872,6 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 
 
-  /********************************************//**
-   * \brief Pops a softmenu from the softmenu stack
-   *
-   * \param[in] softmenu int16_t Softmenu number
-   * \return void
-   ***********************************************/
   void popSoftmenu(void) {
     xcopy(softmenuStack, softmenuStack + 1, (SOFTMENU_STACK_SIZE - 1) * sizeof(softmenuStack_t)); // shifting the entire stack
     memset(softmenuStack + SOFTMENU_STACK_SIZE - 1, 0, sizeof(softmenuStack_t)); // Put MyMenu in the last stack element
@@ -916,12 +888,6 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 
 
-  /********************************************//**
-   * \brief Displays a softmenu.
-   *
-   * \param[in] id int16_t       ID of softmenu
-   * \return void
-   ***********************************************/
   void showSoftmenu(int16_t id) {
     int16_t m;
 

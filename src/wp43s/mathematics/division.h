@@ -20,8 +20,8 @@
 #ifndef DIVISION_H
 #define DIVISION_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnDivide(uint16_t unusedButMandatoryParameter);

@@ -20,8 +20,8 @@
 #ifndef ARCTAN_H
 #define ARCTAN_H
 
-#include "decNumberWrappers.h"
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnArctan   (uint16_t unusedButMandatoryParameter);
