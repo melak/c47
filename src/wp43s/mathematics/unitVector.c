@@ -20,9 +20,11 @@
 
 #include "mathematics/unitVector.h"
 
+#include "constantPointers.h"
 #include "debug.h"
 #include "error.h"
 #include "items.h"
+#include "mathematics/division.h"
 #include "matrix.h"
 #include "registers.h"
 
@@ -114,5 +116,28 @@ void unitVectorRema(void) {
 
 
 void unitVectorCxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t matrix;
+  real_t real, imag, sum;
+
+  linkToComplexMatrixRegister(REGISTER_X, &matrix);
+
+  realZero(&sum);
+  for(int i = 0; i < matrix.header.matrixRows * matrix.header.matrixColumns; ++i) {
+    real34ToReal(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]), &real);
+    realMultiply(&real, &real, &real, &ctxtReal39);
+    realAdd(&sum, &real, &sum, &ctxtReal39);
+    real34ToReal(VARIABLE_IMAG34_DATA(&matrix.matrixElements[i]), &imag);
+    realMultiply(&imag, &imag, &imag, &ctxtReal39);
+    realAdd(&sum, &imag, &sum, &ctxtReal39);
+  }
+  realSquareRoot(&sum, &sum, &ctxtReal39);
+  for(int i = 0; i < matrix.header.matrixRows * matrix.header.matrixColumns; ++i) {
+    real34ToReal(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]), &real);
+    real34ToReal(VARIABLE_IMAG34_DATA(&matrix.matrixElements[i]), &imag);
+    divComplexComplex(&real, &imag, &sum, const_0, &real, &imag, &ctxtReal39);
+    realToReal34(&real, VARIABLE_REAL34_DATA(&matrix.matrixElements[i]));
+    realToReal34(&imag, VARIABLE_IMAG34_DATA(&matrix.matrixElements[i]));
+  }
+#endif // TESTSUITE_BUILD
 }

@@ -14,10 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file fractions.c
- ***********************************************/
-
 #include "fractions.h"
 
 #include "constantPointers.h"

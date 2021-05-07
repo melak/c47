@@ -636,9 +636,9 @@
         switch(nimNumberPart) {
           case NP_INT_10 :
             strcat(aimBuffer, "."); // no break here
-            #ifndef __APPLE__
+            #ifndef OSX
               __attribute__ ((fallthrough));
-            #endif // !__APPLE__
+            #endif // !OSX
           case NP_REAL_FLOAT_PART :
             strcat(aimBuffer, "e+");
             exponentSignLocation = strlen(aimBuffer) - 1;
@@ -649,9 +649,9 @@
 
           case NP_COMPLEX_INT_PART :
             strcat(aimBuffer, "."); // no break here
-            #ifndef __APPLE__
+            #ifndef OSX
               __attribute__ ((fallthrough));
-            #endif // !__APPLE__
+            #endif // !OSX
           case NP_COMPLEX_FLOAT_PART :
             strcat(aimBuffer, "e+");
             imaginaryExponentSignLocation = strlen(aimBuffer) - 1;
@@ -758,9 +758,9 @@
 
           case NP_INT_10 :
             strcat(aimBuffer, "."); // no break here
-            #ifndef __APPLE__
+            #ifndef OSX
               __attribute__ ((fallthrough));
-            #endif // !__APPLE__
+            #endif // !OSX
 
           case NP_REAL_FLOAT_PART :
             imaginaryMantissaSignLocation = strlen(aimBuffer);
@@ -1307,6 +1307,47 @@
     }
   }
 
+  void closeNimWithComplex(real34_t *dest_r, real34_t *dest_i) {
+    int16_t imaginarySign;
+
+    if(aimBuffer[imaginaryMantissaSignLocation] == '+') {
+      imaginarySign = 1;
+    }
+    else {
+      imaginarySign = -1;
+    }
+    aimBuffer[imaginaryMantissaSignLocation] = 0;
+
+    stringToReal34(aimBuffer, dest_r);
+
+    stringToReal34(aimBuffer + imaginaryMantissaSignLocation + 2, dest_i);
+    if(imaginarySign == -1) {
+      real34SetNegativeSign(dest_i);
+    }
+
+    if(getSystemFlag(FLAG_POLAR)) { // polar mode
+      if(real34CompareEqual(dest_r, const34_0)) {
+        real34Zero(dest_i);
+      }
+      else {
+        real_t magnitude, theta;
+
+        real34ToReal(dest_r, &magnitude);
+        real34ToReal(dest_i, &theta);
+        convertAngleFromTo(&theta, currentAngularMode, amRadian, &ctxtReal39);
+        if(realCompareLessThan(&magnitude, const_0)) {
+          realSetPositiveSign(&magnitude);
+          realAdd(&theta, const_pi, &theta, &ctxtReal39);
+          WP34S_Mod(&theta, const1071_2pi, &theta, &ctxtReal39);
+        }
+        realPolarToRectangular(&magnitude, &theta, &magnitude, &theta, &ctxtReal39); // theta in radian
+        realToReal34(&magnitude, dest_r);
+        realToReal34(&theta,     dest_i);
+      }
+    }
+    fnSetFlag(FLAG_CPXRES);
+  }
+
   void closeNim(void) {
     setSystemFlag(FLAG_ASLIFT);
     if((nimNumberPart == NP_INT_10 || nimNumberPart == NP_INT_16) && lastIntegerBase != 0) {
@@ -1505,45 +1546,8 @@
             closeNimWithFraction(REGISTER_REAL34_DATA(REGISTER_X));
           }
           else if(nimNumberPart == NP_COMPLEX_INT_PART || nimNumberPart == NP_COMPLEX_FLOAT_PART || nimNumberPart == NP_COMPLEX_EXPONENT) {
-            int16_t imaginarySign;
-
-            if(aimBuffer[imaginaryMantissaSignLocation] == '+') {
-              imaginarySign = 1;
-            }
-            else {
-              imaginarySign = -1;
-            }
-            aimBuffer[imaginaryMantissaSignLocation] = 0;
-
             reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-            stringToReal34(aimBuffer, REGISTER_REAL34_DATA(REGISTER_X));
-
-            stringToReal34(aimBuffer + imaginaryMantissaSignLocation + 2, REGISTER_IMAG34_DATA(REGISTER_X));
-            if(imaginarySign == -1) {
-              real34SetNegativeSign(REGISTER_IMAG34_DATA(REGISTER_X));
-            }
-
-            if(getSystemFlag(FLAG_POLAR)) { // polar mode
-              if(real34CompareEqual(REGISTER_REAL34_DATA(REGISTER_X), const34_0)) {
-                real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
-              }
-              else {
-                real_t magnitude, theta;
-
-                real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &magnitude);
-                real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &theta);
-                convertAngleFromTo(&theta, currentAngularMode, amRadian, &ctxtReal39);
-                if(realCompareLessThan(&magnitude, const_0)) {
-                  realSetPositiveSign(&magnitude);
-                  realAdd(&theta, const_pi, &theta, &ctxtReal39);
-                  WP34S_Mod(&theta, const1071_2pi, &theta, &ctxtReal39);
-                }
-                realPolarToRectangular(&magnitude, &theta, &magnitude, &theta, &ctxtReal39); // theta in radian
-                realToReal34(&magnitude, REGISTER_REAL34_DATA(REGISTER_X));
-                realToReal34(&theta,     REGISTER_IMAG34_DATA(REGISTER_X));
-              }
-            }
-            fnSetFlag(FLAG_CPXRES);
+            closeNimWithComplex(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
           }
           else {
             sprintf(errorMessage, "In function closeNIM: %d is an unexpected nimNumberPart value!", nimNumberPart);

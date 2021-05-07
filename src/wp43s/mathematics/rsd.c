@@ -194,7 +194,7 @@ void rsdRema(uint16_t digits) {
 
 
 void rsdCxma(uint16_t digits) {
-  fnToBeCoded();
+  elementwiseCxma_UInt16(rsdCplx, digits);
 }
 
 

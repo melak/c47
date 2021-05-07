@@ -96,7 +96,7 @@ void arctanRema(void) {
 
 
 void arctanCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(arctanCplx);
 }
 
 

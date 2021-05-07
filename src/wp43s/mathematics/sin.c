@@ -107,7 +107,7 @@ void sinRema(void) {
 
 
 void sinCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(sinCplx);
 }
 
 

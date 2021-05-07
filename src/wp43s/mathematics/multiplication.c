@@ -212,23 +212,11 @@ void mulTimeLonI(void) {
 void mulLonIRema(void) {
 #ifndef TESTSUITE_BUILD
   real34Matrix_t matrix, res;
-  real_t y, x;
-  uint16_t rows, cols;
-  int32_t i;
+  real_t y;
 
   convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
-
   linkToRealMatrixRegister(REGISTER_X, &matrix);
-  rows = matrix.header.matrixRows;
-  cols = matrix.header.matrixColumns;
-
-  realMatrixInit(&res, rows, cols);
-  for(i = 0; i < cols * rows; ++i) {
-    real34ToReal(&matrix.matrixElements[i], &x);
-    realMultiply(&y, &x, &x, &ctxtReal39);
-    realToReal34(&x, &res.matrixElements[i]);
-  }
-
+  _multiplyRealMatrix(&matrix, &y, &res, &ctxtReal39);
   convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
   realMatrixFree(&res);
 #endif // TESTSUITE_BUILD
@@ -245,23 +233,11 @@ void mulLonIRema(void) {
 void mulRemaLonI(void) {
 #ifndef TESTSUITE_BUILD
   real34Matrix_t matrix, res;
-  real_t y, x;
-  uint16_t rows, cols;
-  int32_t i;
+  real_t x;
 
   convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
-
   linkToRealMatrixRegister(REGISTER_Y, &matrix);
-  rows = matrix.header.matrixRows;
-  cols = matrix.header.matrixColumns;
-
-  realMatrixInit(&res, rows, cols);
-  for(i = 0; i < cols * rows; ++i) {
-    real34ToReal(&matrix.matrixElements[i], &y);
-    realMultiply(&y, &x, &y, &ctxtReal39);
-    realToReal34(&y, &res.matrixElements[i]);
-  }
-
+  _multiplyRealMatrix(&matrix, &x, &res, &ctxtReal39);
   convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
   realMatrixFree(&res);
 #endif // TESTSUITE_BUILD
@@ -276,7 +252,16 @@ void mulRemaLonI(void) {
  * \return void
  ***********************************************/
 void mulLonICxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t matrix, res;
+  real_t y;
+
+  convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+  linkToComplexMatrixRegister(REGISTER_X, &matrix);
+  _multiplyComplexMatrix(&matrix, &y, const_0, &res, &ctxtReal39);
+  convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
+  complexMatrixFree(&res);
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -288,7 +273,16 @@ void mulLonICxma(void) {
  * \return void
  ***********************************************/
 void mulCxmaLonI(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t matrix, res;
+  real_t y;
+
+  convertLongIntegerRegisterToReal(REGISTER_X, &y, &ctxtReal39);
+  linkToComplexMatrixRegister(REGISTER_Y, &matrix);
+  _multiplyComplexMatrix(&matrix, &y, const_0, &res, &ctxtReal39);
+  convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
+  complexMatrixFree(&res);
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -582,7 +576,10 @@ void mulRemaRema(void) {
  * \return void
  ***********************************************/
 void mulRemaCxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
+  mulCxmaCxma();
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -594,7 +591,10 @@ void mulRemaCxma(void) {
  * \return void
  ***********************************************/
 void mulCxmaRema(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_X, REGISTER_X);
+  mulCxmaCxma();
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -608,23 +608,11 @@ void mulCxmaRema(void) {
 void mulRemaShoI(void) {
 #ifndef TESTSUITE_BUILD
   real34Matrix_t matrix, res;
-  real_t y, x;
-  uint16_t rows, cols;
-  int32_t i;
+  real_t x;
 
   convertShortIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
-
   linkToRealMatrixRegister(REGISTER_Y, &matrix);
-  rows = matrix.header.matrixRows;
-  cols = matrix.header.matrixColumns;
-
-  realMatrixInit(&res, rows, cols);
-  for(i = 0; i < cols * rows; ++i) {
-    real34ToReal(&matrix.matrixElements[i], &y);
-    realMultiply(&y, &x, &y, &ctxtReal39);
-    realToReal34(&y, &res.matrixElements[i]);
-  }
-
+  _multiplyRealMatrix(&matrix, &x, &res, &ctxtReal39);
   convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
   realMatrixFree(&res);
 #endif // TESTSUITE_BUILD
@@ -641,23 +629,12 @@ void mulRemaShoI(void) {
 void mulShoIRema(void) {
 #ifndef TESTSUITE_BUILD
   real34Matrix_t matrix, res;
-  real_t y, x;
-  uint16_t rows, cols;
-  int32_t i;
+  real_t y;
 
   convertShortIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
 
   linkToRealMatrixRegister(REGISTER_X, &matrix);
-  rows = matrix.header.matrixRows;
-  cols = matrix.header.matrixColumns;
-
-  realMatrixInit(&res, rows, cols);
-  for(i = 0; i < cols * rows; ++i) {
-    real34ToReal(&matrix.matrixElements[i], &x);
-    realMultiply(&y, &x, &x, &ctxtReal39);
-    realToReal34(&x, &res.matrixElements[i]);
-  }
-
+  _multiplyRealMatrix(&matrix, &y, &res, &ctxtReal39);
   convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
   realMatrixFree(&res);
 #endif // TESTSUITE_BUILD
@@ -715,7 +692,10 @@ void mulRealRema(void) {
  * \return void
  ***********************************************/
 void mulRemaCplx(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
+  mulCxmaCplx();
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -727,7 +707,10 @@ void mulRemaCplx(void) {
  * \return void
  ***********************************************/
 void mulCplxRema(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_X, REGISTER_X);
+  mulCplxCxma();
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -743,7 +726,27 @@ void mulCplxRema(void) {
  * \return void
  ***********************************************/
 void mulCxmaCxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t y, x, res;
+
+  linkToComplexMatrixRegister(REGISTER_Y, &y);
+  linkToComplexMatrixRegister(REGISTER_X, &x);
+
+  multiplyComplexMatrices(&y, &x, &res);
+  if(res.matrixElements) {
+    convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
+    complexMatrixFree(&res);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "cannot multiply %d" STD_CROSS "%d-matrix and %d" STD_CROSS "%d-matrix",
+              y.header.matrixRows, y.header.matrixColumns,
+              x.header.matrixRows, x.header.matrixColumns);
+      moreInfoOnError("In function mulCxmaCxma:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -755,7 +758,10 @@ void mulCxmaCxma(void) {
  * \return void
  ***********************************************/
 void mulCxmaShoI(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+  mulCxmaReal();
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -767,7 +773,10 @@ void mulCxmaShoI(void) {
  * \return void
  ***********************************************/
 void mulShoICxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  convertShortIntegerRegisterToReal34Register(REGISTER_Y, REGISTER_Y);
+  mulRealCxma();
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -779,7 +788,12 @@ void mulShoICxma(void) {
  * \return void
  ***********************************************/
 void mulCxmaReal(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t matrix;
+  linkToComplexMatrixRegister(REGISTER_Y, &matrix);
+  multiplyComplexMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_X), const34_0, &matrix);
+  convertComplex34MatrixToComplex34MatrixRegister(&matrix, REGISTER_X);
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -791,7 +805,11 @@ void mulCxmaReal(void) {
  * \return void
  ***********************************************/
 void mulRealCxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t matrix;
+  linkToComplexMatrixRegister(REGISTER_X, &matrix);
+  multiplyComplexMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_Y), const34_0, &matrix);
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -803,7 +821,12 @@ void mulRealCxma(void) {
  * \return void
  ***********************************************/
 void mulCxmaCplx(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t matrix;
+  linkToComplexMatrixRegister(REGISTER_Y, &matrix);
+  multiplyComplexMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X), &matrix);
+  convertComplex34MatrixToComplex34MatrixRegister(&matrix, REGISTER_X);
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -815,7 +838,11 @@ void mulCxmaCplx(void) {
  * \return void
  ***********************************************/
 void mulCplxCxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t matrix;
+  linkToComplexMatrixRegister(REGISTER_X, &matrix);
+  multiplyComplexMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_Y), REGISTER_IMAG34_DATA(REGISTER_Y), &matrix);
+#endif // TESTSUITE_BUILD
 }
 
 

@@ -110,7 +110,7 @@ void m1PowRema(void) {
 
 
 void m1PowCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(m1PowCplx);
 }
 
 

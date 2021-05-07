@@ -24,14 +24,14 @@
   #pragma GCC diagnostic ignored "-Wunused-parameter"
 
 
-  #if (__linux__ == 1)
+  #ifdef LINUX
     #include <math.h>
-  #endif // (__linux__ == 1)
+  #endif // LINUX
 
-  #ifdef __APPLE__
+  #ifdef OSX
     // needed by chdir
     #include <unistd.h>
-  #endif // __APPLE__
+  #endif // OSX
 
   #ifdef PC_BUILD
     #include <glib.h>
@@ -39,9 +39,9 @@
     #include <gdk/gdk.h>
   #endif // PC_BUILD
 
-  #ifdef __MINGW64__
+  #ifdef WIN32
     #include <locale.h>
-  #endif // __MINGW64__
+  #endif // WIN32
 
   #ifdef DMCP_BUILD
     #define DBG_PRINT
@@ -91,7 +91,7 @@
   extern const font_t                   *fontForShortInteger;
   extern const font_t                   *cursorFont;
   extern const char                      digits[17];
-  extern real34Matrix_t                  openMatrixMIMPointer;
+  extern any34Matrix_t                   openMatrixMIMPointer;
   extern uint16_t                        matrixIndex;
   extern void                            (* const addition[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void);
   extern void                            (* const subtraction[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void);

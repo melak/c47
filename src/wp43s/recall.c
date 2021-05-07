@@ -42,6 +42,16 @@ static bool_t recallElementReal(real34Matrix_t *matrix) {
   real34Copy(&matrix->matrixElements[i * matrix->header.matrixColumns + j], REGISTER_REAL34_DATA(REGISTER_X));
   return false;
 }
+
+static bool_t recallElementComplex(complex34Matrix_t *matrix) {
+  const int16_t i = getIRegisterAsInt(true);
+  const int16_t j = getJRegisterAsInt(true);
+
+  liftStack();
+  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+  complex34Copy(&matrix->matrixElements[i * matrix->header.matrixColumns + j], REGISTER_COMPLEX34_DATA(REGISTER_X));
+  return false;
+}
 #endif // TESTSUITE_BUILD
 
 
@@ -224,7 +234,7 @@ void fnRecallStack(uint16_t regist) {
 
 void fnRecallElement(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
-  callByIndexedMatrix(recallElementReal, NULL);
+  callByIndexedMatrix(recallElementReal, recallElementComplex);
 #endif // TESTSUITE_BUILD
 }
 

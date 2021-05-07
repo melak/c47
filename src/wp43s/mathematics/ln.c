@@ -154,7 +154,7 @@ void lnRema(void) {
 
 
 void lnCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(lnCplx);
 }
 
 

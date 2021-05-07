@@ -118,7 +118,7 @@ void arccoshRema(void) {
 
 
 void arccoshCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(arccoshCplx);
 }
 
 

@@ -137,7 +137,7 @@ void tenPowRema(void) {
 
 
 void tenPowCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(tenPowCplx);
 }
 
 

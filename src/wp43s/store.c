@@ -72,6 +72,33 @@ static bool_t storeElementReal(real34Matrix_t *matrix) {
   return true;
 }
 
+static bool_t storeElementComplex(complex34Matrix_t *matrix) {
+  const int16_t i = getIRegisterAsInt(true);
+  const int16_t j = getJRegisterAsInt(true);
+
+  if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
+    convertLongIntegerRegisterToReal34(REGISTER_X, VARIABLE_REAL34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
+    real34Zero(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
+  }
+  else if(getRegisterDataType(REGISTER_X) == dtReal34) {
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), VARIABLE_REAL34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
+    real34Zero(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
+  }
+  else if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), VARIABLE_REAL34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
+    real34Copy(REGISTER_IMAG34_DATA(REGISTER_X), VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
+  }
+  else {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "Cannot store %s in a matrix", getRegisterDataTypeName(REGISTER_X, true, false));
+      moreInfoOnError("In function storeElementReal:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return false;
+  }
+  return true;
+}
+
 
 
 static bool_t storeIjReal(real34Matrix_t *matrix) {
@@ -106,6 +133,10 @@ static bool_t storeIjReal(real34Matrix_t *matrix) {
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
   return false;
+}
+
+static bool_t storeIjComplex(complex34Matrix_t *matrix) {
+  return storeIjReal((real34Matrix_t *)matrix);
 }
 #endif // TESTSUITE_BUILD
 
@@ -256,7 +287,7 @@ void fnStoreStack(uint16_t regist) {
 
 void fnStoreElement(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
-  callByIndexedMatrix(storeElementReal, NULL);
+  callByIndexedMatrix(storeElementReal, storeElementComplex);
 #endif // TESTSUITE_BUILD
 }
 
@@ -264,6 +295,6 @@ void fnStoreElement(uint16_t unusedButMandatoryParameter) {
 
 void fnStoreIJ(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
-  callByIndexedMatrix(storeIjReal, NULL);
+  callByIndexedMatrix(storeIjReal, storeIjComplex);
 #endif // TESTSUITE_BUILD
 }

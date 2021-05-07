@@ -122,7 +122,7 @@ void expRema(void) {
 
 
 void expCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(expCplx);
 }
 
 

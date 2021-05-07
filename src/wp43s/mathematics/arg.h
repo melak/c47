@@ -31,5 +31,6 @@ void argError   (void);
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 void argReal    (void);
 void argCplx    (void);
+void argCxma    (void);
 
 #endif // ARG_H

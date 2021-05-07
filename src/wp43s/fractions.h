@@ -14,9 +14,9 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
+/**
  * \file fractions.h
- ***********************************************/
+ */
 #ifndef FRACTIONS_H
 #define FRACTIONS_H
 

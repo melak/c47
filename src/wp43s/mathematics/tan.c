@@ -133,7 +133,7 @@ void tanRema(void) {
 
 
 void tanCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(tanCplx);
 }
 
 

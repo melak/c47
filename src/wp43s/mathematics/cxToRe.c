@@ -25,6 +25,8 @@
 #include "conversionAngles.h"
 #include "flags.h"
 #include "mathematics/toPolar.h"
+#include "matrix.h"
+#include "registerValueConversions.h"
 #include "registers.h"
 #include "stack.h"
 
@@ -62,6 +64,37 @@ void fnCxToRe(uint16_t unusedButMandatoryParameter) {
       temporaryInformation = TI_RE_IM;
     }
   }
+
+#ifndef TESTSUITE_BUILD
+  else if(dataTypeX == dtComplex34Matrix) {
+    complex34Matrix_t cMat;
+    real34Matrix_t rMat, iMat;
+
+    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+
+    linkToComplexMatrixRegister(REGISTER_X, &cMat);
+    realMatrixInit(&rMat, cMat.header.matrixRows, cMat.header.matrixColumns);
+    realMatrixInit(&iMat, cMat.header.matrixRows, cMat.header.matrixColumns);
+
+    for(uint16_t i = 0; i < cMat.header.matrixRows * cMat.header.matrixColumns; ++i) {
+      if(getSystemFlag(FLAG_POLAR)) { // polar mode
+        real34RectangularToPolar(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), &rMat.matrixElements[i], &iMat.matrixElements[i]);
+        convertAngle34FromTo(&iMat.matrixElements[i], amRadian, currentAngularMode);
+      }
+      else { // rectangular mode
+        real34Copy(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), &rMat.matrixElements[i]);
+        real34Copy(VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), &iMat.matrixElements[i]);
+      }
+    }
+
+    setSystemFlag(FLAG_ASLIFT);
+    liftStack();
+    convertReal34MatrixToReal34MatrixRegister(&rMat, REGISTER_Y);
+    convertReal34MatrixToReal34MatrixRegister(&iMat, REGISTER_X);
+    realMatrixFree(&rMat);
+    realMatrixFree(&iMat);
+  }
+#endif // TESTSUITE_BUILD
 
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation

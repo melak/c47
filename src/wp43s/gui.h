@@ -14,9 +14,9 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
+/**
  * \file gui.h
- ***********************************************/
+ */
 #ifndef GUI_H
 #define GUI_H
 
@@ -25,14 +25,36 @@
 
 #ifndef TESTSUITE_BUILD
   void fnOff                       (uint16_t unsuedParamButMandatory);
+  /**
+   * Sets the calc mode to normal.
+   */
   void calcModeNormal              (void);
+  /**
+   * Sets the calc mode to alpha input mode.
+   *
+   * \param[in] unusedButMandatoryParameter
+   */
   void calcModeAim                 (uint16_t unusedButMandatoryParameter);
+  /**
+   * Sets the calc mode to number input mode.
+   *
+   * \param[in] unusedButMandatoryParameter
+   */
   void calcModeNim                 (uint16_t unusedButMandatoryParameter);
+  /**
+   * Sets the calc mode to alpha selection menu if needed.
+   */
   void enterAsmModeIfMenuIsACatalog(int16_t id);
+  /**
+   * Leaves the alpha selection mode.
+   */
   void leaveAsmMode                (void);
 #endif // TESTSUITE_BUILD
 
 #ifdef PC_BUILD
+  /**
+   * Creates the calc's GUI window with all the widgets.
+   */
   void setupUI                     (void);
   #if (SCREEN_800X480 == 0)
     void calcModeNormalGui         (void);

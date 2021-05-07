@@ -93,7 +93,7 @@ void squareRema(void) {
 
 
 void squareCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(squareCplx);
 }
 
 

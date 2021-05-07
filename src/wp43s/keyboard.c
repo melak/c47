@@ -14,10 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file keyboard.c Keyboard management
- ***********************************************/
-
 #include "keyboard.h"
 
 #include "bufferize.h"
@@ -91,13 +87,6 @@
 
 
 
-  /********************************************//**
-   * \brief Simulate a function key click.
-   *
-   * \param notUsed GtkWidget* The button to pass to btnFnPressed and btnFnReleased
-   * \param data gpointer String containing the key ID
-   * \return void
-   ***********************************************/
   #ifdef PC_BUILD
     void btnFnClicked(GtkWidget *notUsed, gpointer data) {
       GdkEvent mouseButton;
@@ -110,13 +99,6 @@
 
 
 
-  /********************************************//**
-   * \brief A calc function key was pressed
-   *
-   * \param notUsed GtkWidget*
-   * \param data gpointer pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
-   * \return void
-   ***********************************************/
   #ifdef PC_BUILD
     void btnFnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       if(event->button.button == 2) { // Middle click
@@ -165,13 +147,6 @@
 
 
 
-  /********************************************//**
-   * \brief A calc function key was released
-   *
-   * \param notUsed GtkWidget*
-   * \param data gpointer pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
-   * \return void
-   ***********************************************/
   #ifdef PC_BUILD
     void btnFnReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
   #endif // PC_BUILD
@@ -302,13 +277,6 @@
 
 
 
-  /********************************************//**
-   * \brief Simulate a button click.
-   *
-   * \param notUsed GtkWidget* The button to pass to btnPressed and btnReleased
-   * \param data gpointer String containing the key ID
-   * \return void
-   ***********************************************/
   #ifdef PC_BUILD
     void btnClicked(GtkWidget *notUsed, gpointer data) {
       GdkEvent mouseButton;
@@ -329,13 +297,6 @@
 
 
 
-  /********************************************//**
-   * \brief A calc button was pressed
-   *
-   * \param notUsed GtkWidget*
-   * \param data gpointer pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
-   * \return void
-   ***********************************************/
   #ifdef PC_BUILD
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       if(event->type == GDK_DOUBLE_BUTTON_PRESS || event->type == GDK_TRIPLE_BUTTON_PRESS) { // return unprocessed for double or triple click
@@ -385,13 +346,6 @@
 
 
 
-  /********************************************//**
-   * \brief A calc button was released
-   *
-   * \param notUsed GtkWidget*
-   * \param data gpointer pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
-   * \return void
-   ***********************************************/
   #ifdef PC_BUILD
     void btnReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
   #endif // PC_BUILD
@@ -470,13 +424,6 @@
 
 
 
-  /********************************************//**
-   * \brief A calc button was pressed
-   *
-   * \param w GtkWidget*
-   * \param data gpointer pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
-   * \return void
-   ***********************************************/
   void processKeyAction(int16_t item) {
     keyActionProcessed = false;
 
@@ -757,12 +704,6 @@
 
 
 
-/********************************************//**
- * \brief Processing ENTER key
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
 void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
     switch(calcMode) {
@@ -837,12 +778,6 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
 
 
 
-/********************************************//**
- * \brief Processing EXIT key
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
 void fnKeyExit(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
     if(catalog) {
@@ -935,12 +870,6 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
 
 
-/********************************************//**
- * \brief Processing CC key
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
 void fnKeyCC(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
     uint32_t dataTypeX;
@@ -958,6 +887,12 @@ void fnKeyCC(uint16_t unusedButMandatoryParameter) {
         else if(dataTypeX == dtComplex34) {
           runFunction(ITM_CXtoRE);
         }
+        else if(dataTypeX == dtReal34Matrix && dataTypeY == dtReal34Matrix) {
+          runFunction(ITM_REtoCX);
+        }
+        else if(dataTypeX == dtComplex34Matrix) {
+          runFunction(ITM_CXtoRE);
+        }
         else {
           displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
           #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -972,7 +907,7 @@ void fnKeyCC(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_MIM:
-        itemToBeCoded(NOPARAM);
+        mimAddNumber(ITM_CC);
         break;
 
       case CM_REGISTER_BROWSER:
@@ -990,12 +925,6 @@ void fnKeyCC(uint16_t unusedButMandatoryParameter) {
 
 
 
-/********************************************//**
- * \brief Processing BACKSPACE key
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
 void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
     uint16_t lg;
@@ -1074,12 +1003,6 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
 
 
-/********************************************//**
- * \brief Processing UP key
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
 void fnKeyUp(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
     if(tam.mode && !catalog) {
@@ -1164,12 +1087,6 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
 
 
 
-/********************************************//**
- * \brief Processing DOWN key
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
 void fnKeyDown(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
     if(tam.mode && !catalog) {
@@ -1254,12 +1171,6 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
 
 
 
-/********************************************//**
- * \brief Processing .d key
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
 void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
     switch(calcMode) {

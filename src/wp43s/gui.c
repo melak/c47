@@ -14,10 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file gui.c
- ***********************************************/
-
 #include "gui.h"
 
 #include "bufferize.h"
@@ -378,13 +374,8 @@
 
 #ifdef PC_BUILD
   #if (SCREEN_800X480 == 0)
-    /********************************************//**
-     * \brief Reads the CSS file to configure the calc's GUI style
-     *
-     * \param void
-     * \return void
-     ***********************************************/
-    void prepareCssData(void) {
+    /* Reads the CSS file to configure the calc's GUI style. */
+    static void prepareCssData(void) {
       FILE *cssFile;
       char *toReplace, *replaceWith, needle[100], newNeedle[100];
       int  fileLg;
@@ -450,7 +441,7 @@
 
 
 
-    void labelCaptionNormal(const calcKey_t *key, GtkWidget *button) {
+    static void labelCaptionNormal(const calcKey_t *key, GtkWidget *button) {
       if(key->primary == ITM_SHIFTf) {
         gtk_widget_set_name(button, "calcKeyF");
       }
@@ -464,7 +455,7 @@
 
 
 
-    void labelCaptionAim(const calcKey_t *key, GtkWidget *button) {
+    static void labelCaptionAim(const calcKey_t *key, GtkWidget *button) {
       if(key->keyLblAim == ITM_SHIFTf) {
         gtk_widget_set_name(button, "calcKeyF");
       }
@@ -729,12 +720,6 @@
   #endif // (SCREEN_800X480 == 0)
 
 
-  /********************************************//**
-   * \brief Creates the calc's GUI window with all the widgets
-   *
-   * \param void
-   * \return void
-   ***********************************************/
   void setupUI(void) {
     #if (SCREEN_800X480 == 0)
       int             xPos, yPos;
@@ -1402,11 +1387,17 @@
     shiftF = false;
     shiftG = false;
 
-    if(openMatrixMIMPointer.matrixElements) {
-      realMatrixFree(&openMatrixMIMPointer);
-    }
-
     #ifdef PC_BUILD
+      if(getRegisterDataType(matrixIndex) != INVALID_VARIABLE) {
+        if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
+          if(openMatrixMIMPointer.realMatrix.matrixElements)
+          realMatrixFree(&openMatrixMIMPointer.realMatrix);
+        }
+        else if(getRegisterDataType(matrixIndex) == dtComplex34Matrix) {
+          if(openMatrixMIMPointer.complexMatrix.matrixElements)
+          complexMatrixFree(&openMatrixMIMPointer.complexMatrix);
+        }
+      }
       saveCalc();
       gtk_main_quit();
     #endif // PC_BUILD
@@ -1418,12 +1409,6 @@
 
 
 
-  /********************************************//**
-   * \brief Sets the calc mode to normal
-   *
-   * \param void
-   * \return void
-   ***********************************************/
   void calcModeNormal(void) {
     calcMode = CM_NORMAL;
 
@@ -1442,12 +1427,6 @@
 
 
 
-  /********************************************//**
-   * \brief Sets the calc mode to alpha input mode
-   *
-   * \param[in] unusedButMandatoryParameter uint16_t
-   * \return void
-   ***********************************************/
   void calcModeAim(uint16_t unusedButMandatoryParameter) {
     alphaCase = AC_UPPER;
     nextChar = NC_NORMAL;
@@ -1476,11 +1455,6 @@
 
 
 
-  /********************************************//**
-   * \brief Sets the calc mode to alpha selection menu if needed
-   *
-   * \return void
-   ***********************************************/
   void enterAsmModeIfMenuIsACatalog(int16_t id) {
     switch(-id) {
       case MNU_FCNS:      catalog = CATALOG_FCNS;    break;
@@ -1522,11 +1496,6 @@
 
 
 
-  /********************************************//**
-   * \brief Leaves the alpha selection mode
-   *
-   * \return void
-   ***********************************************/
   void leaveAsmMode(void) {
     catalog = CATALOG_NONE;
 
@@ -1545,12 +1514,6 @@
 
 
 
-  /********************************************//**
-   * \brief Sets the calc mode to number input mode
-   *
-   * \param[in] unusedButMandatoryParameter uint16_t
-   * \return void
-   ***********************************************/
   void calcModeNim(uint16_t unusedButMandatoryParameter) {
     saveForUndo();
 

@@ -23,6 +23,7 @@
 #include "debug.h"
 #include "error.h"
 #include "items.h"
+#include "matrix.h"
 #include "registers.h"
 
 #include "wp43s.h"
@@ -69,7 +70,18 @@ void fnConjugate(uint16_t unusedButMandatoryParameter) {
 
 
 void conjCxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t cMat;
+
+  linkToComplexMatrixRegister(REGISTER_X, &cMat);
+
+  for(uint16_t i = 0; i < cMat.header.matrixRows * cMat.header.matrixColumns; ++i) {
+    real34ChangeSign(VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]));
+    if(real34IsZero(VARIABLE_IMAG34_DATA(&cMat.matrixElements[i])) && !getSystemFlag(FLAG_SPCRES)) {
+      real34SetPositiveSign(VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]));
+    }
+  }
+#endif // TESTSUITE_BUILD
 }
 
 

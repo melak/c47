@@ -127,7 +127,7 @@ void sqrtRema(void) {
 
 
 void sqrtCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(sqrtCplx);
 }
 
 

@@ -135,7 +135,7 @@ void sincpiRema(void) {
 
 
 void sincpiCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(sincpiCplx);
 }
 
 

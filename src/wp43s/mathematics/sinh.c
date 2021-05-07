@@ -94,7 +94,7 @@ void sinhRema(void) {
 
 
 void sinhCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(sinhCplx);
 }
 
 

@@ -135,7 +135,7 @@ void invertRema(void) {
 
 
 void invertCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(invertCplx);
 }
 
 

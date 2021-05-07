@@ -14,9 +14,9 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
+/**
  * \file keyboard.h
- ***********************************************/
+ */
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
@@ -29,20 +29,91 @@
 void leavePem        (void);
 void showShiftState  (void);
 void processKeyAction(int16_t item);
+/**
+ * Processing ENTER key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
 void fnKeyEnter      (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing EXIT key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
 void fnKeyExit       (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing CC key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
 void fnKeyCC         (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing BACKSPACE key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
 void fnKeyBackspace  (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing UP key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
 void fnKeyUp         (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing DOWN key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
 void fnKeyDown       (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing .d key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
 void fnKeyDotD       (uint16_t unusedButMandatoryParameter);
 
 #ifdef PC_BUILD
+  /**
+   * Simulate a function key click.
+   *
+   * \param notUsed The button to pass to btnFnPressed and btnFnReleased
+   * \param data String containing the key ID
+   */
   void btnFnClicked  (GtkWidget *notUsed, gpointer data);
+  /**
+   * A calc function key was pressed.
+   *
+   * \param notUsed
+   * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
+   */
   void btnFnPressed  (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+  /**
+   * A calc function key was released.
+   *
+   * \param notUsed
+   * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
+   */
   void btnFnReleased (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+  /**
+   * Simulate a button click.
+   *
+   * \param notUsed The button to pass to btnPressed and btnReleased
+   * \param data String containing the key ID
+   */
   void btnClicked    (GtkWidget *notUsed, gpointer data);
+  /**
+   * A calc button was pressed.
+   *
+   * \param notUsed
+   * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
+   */
   void btnPressed    (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+  /**
+   * A calc button was released.
+   *
+   * \param notUsed
+   * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
+   */
   void btnReleased   (GtkWidget *notUsed, GdkEvent *event, gpointer data);
 #endif // PC_BUILD
 

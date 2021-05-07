@@ -720,8 +720,11 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
   }
 
   if(db) {
-    if(getRegisterDataType(regist) == dtReal34Matrix || getRegisterDataType(regist) == dtComplex34Matrix) {
-      return db->matrixRows * db->matrixColumns;
+    if(getRegisterDataType(regist) == dtReal34Matrix) {
+      return db->matrixRows * db->matrixColumns * REAL34_SIZE;
+    }
+    else if(getRegisterDataType(regist) == dtComplex34Matrix) {
+      return db->matrixRows * db->matrixColumns * COMPLEX34_SIZE;
     }
     else {
       return db->dataMaxLength;
@@ -945,9 +948,11 @@ void copySourceRegisterToDestRegister(calcRegister_t sourceRegister, calcRegiste
       xcopy(REGISTER_REAL34_MATRIX_M_ELEMENTS(destRegister), REGISTER_REAL34_MATRIX_M_ELEMENTS(sourceRegister),
         getRegisterDataPointer(sourceRegister)->matrixRows * getRegisterDataPointer(sourceRegister)->matrixColumns * TO_BYTES(REAL34_SIZE));
       break;
-    //case dtComplex34Matrix:
-      // to be coded
-      //break;
+    case dtComplex34Matrix:
+      xcopy(REGISTER_COMPLEX34_MATRIX_DBLOCK(destRegister), REGISTER_COMPLEX34_MATRIX_DBLOCK(sourceRegister), sizeof(dataBlock_t));
+      xcopy(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(destRegister), REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(sourceRegister),
+        getRegisterDataPointer(sourceRegister)->matrixRows * getRegisterDataPointer(sourceRegister)->matrixColumns * TO_BYTES(COMPLEX34_SIZE));
+      break;
 
     default:
       xcopy(REGISTER_DATA(destRegister), REGISTER_DATA(sourceRegister), TO_BYTES(getRegisterFullSize(sourceRegister)));
@@ -1382,7 +1387,17 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
     freeRegisterData(regist);
     setRegisterDataPointer(regist, allocWp43s(dataSizeWithDataLenBlocks));
     setRegisterDataType(regist, dataType, tag);
-    setRegisterMaxDataLength(regist, dataSizeWithDataLenBlocks - (dataType == dtString || dataType == dtLongInteger ? 1 : 0));
+    if(dataType == dtReal34Matrix) {
+      REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows = 1;
+      REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns = dataSizeWithoutDataLenBlocks / REAL34_SIZE;
+    }
+    else if(dataType == dtComplex34Matrix) {
+      REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows = 1;
+      REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns = dataSizeWithoutDataLenBlocks / COMPLEX34_SIZE;
+    }
+    else {
+      setRegisterMaxDataLength(regist, dataSizeWithDataLenBlocks - (dataType == dtString || dataType == dtLongInteger ? 1 : 0));
+    }
   }
   else {
     setRegisterTag(regist, tag);

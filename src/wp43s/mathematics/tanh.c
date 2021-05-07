@@ -95,7 +95,7 @@ void tanhRema(void) {
 
 
 void tanhCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(tanhCplx);
 }
 
 

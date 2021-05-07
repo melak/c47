@@ -143,7 +143,7 @@ void arctanhRema(void) {
 
 
 void arctanhCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(arctanhCplx);
 }
 
 

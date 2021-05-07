@@ -157,7 +157,7 @@ void rdpRema(uint16_t digits) {
 
 
 void rdpCxma(uint16_t digits) {
-  fnToBeCoded();
+  elementwiseCxma_UInt16(rdpCplx, digits);
 }
 
 

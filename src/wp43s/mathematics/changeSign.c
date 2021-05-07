@@ -87,7 +87,7 @@ void chsRema(void) {
 
 
 void chsCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(chsCplx);
 }
 
 

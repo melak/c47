@@ -309,7 +309,10 @@ void powRemaReal(void) {
  * \return void
  ***********************************************/
 void powRemaCplx(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
+  powCxmaCplx();
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -325,7 +328,7 @@ void powRemaCplx(void) {
  * \return void
  ***********************************************/
 void powCxmaLonI(void) {
-  fnToBeCoded();
+  elementwiseCxmaLonI(powCplxLonI);
 }
 
 
@@ -337,7 +340,7 @@ void powCxmaLonI(void) {
  * \return void
  ***********************************************/
 void powCxmaShoI(void) {
-  fnToBeCoded();
+  elementwiseCxmaShoI(powCplxShoI);
 }
 
 
@@ -349,7 +352,7 @@ void powCxmaShoI(void) {
  * \return void
  ***********************************************/
 void powCxmaReal(void) {
-  fnToBeCoded();
+  elementwiseCxmaReal(powCplxReal);
 }
 
 
@@ -361,7 +364,7 @@ void powCxmaReal(void) {
  * \return void
  ***********************************************/
 void powCxmaCplx(void) {
-  fnToBeCoded();
+  elementwiseCxmaCplx(powCplxCplx);
 }
 
 

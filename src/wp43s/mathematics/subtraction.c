@@ -448,7 +448,10 @@ void subRemaRema(void) {
  * \return void
  ***********************************************/
 void subRemaCxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
+  subCxmaCxma();
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -460,7 +463,10 @@ void subRemaCxma(void) {
  * \return void
  ***********************************************/
 void subCxmaRema(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_X, REGISTER_X);
+  subCxmaCxma();
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -476,7 +482,28 @@ void subCxmaRema(void) {
  * \return void
  ***********************************************/
 void subCxmaCxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t y, x;
+
+  linkToComplexMatrixRegister(REGISTER_Y, &y);
+  convertComplex34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
+
+  subtractComplexMatrices(&y, &x, &x);
+  if(x.matrixElements) {
+    convertComplex34MatrixToComplex34MatrixRegister(&x, REGISTER_X);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "cannot add %d" STD_CROSS "%d-matrix to %d" STD_CROSS "%d-matrix",
+              x.header.matrixRows, x.header.matrixColumns,
+              y.header.matrixRows, y.header.matrixColumns);
+      moreInfoOnError("In function addRemaRema:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+
+  complexMatrixFree(&x);
+#endif // TESTSUITE_BUILD
 }
 
 

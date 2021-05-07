@@ -24,6 +24,7 @@
 #include "error.h"
 #include "fonts.h"
 #include "items.h"
+#include "matrix.h"
 #include "registers.h"
 
 #include "wp43s.h"
@@ -69,7 +70,18 @@ void fnSwapRealImaginary(uint16_t unusedButMandatoryParameter) {
 
 
 void swapReImCxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t cMat;
+  real34_t tmp;
+
+  linkToComplexMatrixRegister(REGISTER_X, &cMat);
+
+  for(uint16_t i = 0; i < cMat.header.matrixRows * cMat.header.matrixColumns; ++i) {
+    real34Copy(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), &tmp);
+    real34Copy(VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), VARIABLE_REAL34_DATA(&cMat.matrixElements[i]));
+    real34Copy(&tmp                                         , VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]));
+  }
+#endif // TESTSUITE_BUILD
 }
 
 

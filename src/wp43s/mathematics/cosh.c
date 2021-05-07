@@ -94,7 +94,7 @@ void coshRema(void) {
 
 
 void coshCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(coshCplx);
 }
 
 

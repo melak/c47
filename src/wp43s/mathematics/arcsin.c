@@ -126,7 +126,7 @@ void arcsinRema(void) {
 
 
 void arcsinCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(arcsinCplx);
 }
 
 

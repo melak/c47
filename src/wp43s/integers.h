@@ -14,9 +14,9 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
+/**
  * \file integers.h
- ***********************************************/
+ */
 #ifndef INTEGERS_H
 #define INTEGERS_H
 

@@ -25,7 +25,9 @@
 #include "integers.h"
 #include "items.h"
 #include "matrix.h"
+#include "registerValueConversions.h"
 #include "registers.h"
+#include "toPolar.h"
 
 #include "wp43s.h"
 
@@ -84,7 +86,21 @@ void magnitudeRema(void) {
 
 
 void magnitudeCxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t cMat;
+  real34Matrix_t rMat;
+  real34_t dummy;
+
+  linkToComplexMatrixRegister(REGISTER_X, &cMat);
+  realMatrixInit(&rMat, cMat.header.matrixRows, cMat.header.matrixColumns);
+
+  for(uint16_t i = 0; i < cMat.header.matrixRows * cMat.header.matrixColumns; ++i) {
+    real34RectangularToPolar(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), &rMat.matrixElements[i], &dummy);
+  }
+
+  convertReal34MatrixToReal34MatrixRegister(&rMat, REGISTER_X);
+  realMatrixFree(&rMat);
+#endif // TESTSUITE_BUILD
 }
 
 

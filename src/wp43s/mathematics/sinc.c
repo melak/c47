@@ -139,7 +139,7 @@ void sincRema(void) {
 
 
 void sincCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(sincCplx);
 }
 
 

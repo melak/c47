@@ -134,7 +134,7 @@ void roundRema(void) {
 
 
 void roundCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(roundCplx);
 }
 
 

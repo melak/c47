@@ -571,6 +571,11 @@ static void registerToSaveString(calcRegister_t regist) {
       sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns);
       strcpy(aimBuffer, "Rema");
       break;
+
+    case dtComplex34Matrix:
+      sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns);
+      strcpy(aimBuffer, "Cxma");
+      break;
 #endif // TESTSUITE_BUILD
 
     case dtConfig:
@@ -592,6 +597,15 @@ static void saveMatrixElements(calcRegister_t regist, void *stream) {
   if(getRegisterDataType(regist) == dtReal34Matrix) {
     for(uint32_t element = 0; element < REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
       real34ToString(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + element, tmpString);
+      strcat(tmpString, "\n");
+      save(tmpString, strlen(tmpString), stream);
+    }
+  }
+  else if(getRegisterDataType(regist) == dtComplex34Matrix) {
+    for(uint32_t element = 0; element < REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
+      real34ToString(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString);
+      strcat(tmpString, " ");
+      real34ToString(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString + strlen(tmpString));
       strcat(tmpString, "\n");
       save(tmpString, strlen(tmpString), stream);
     }
@@ -982,6 +996,20 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
     REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows = rows;
     REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns = cols;
   }
+
+  else if(strcmp(type, "Cxma") == 0) {
+    char *numOfCols;
+    uint16_t rows, cols;
+
+    numOfCols = value;
+    while(*numOfCols != ' ') numOfCols++;
+    *(numOfCols++) = 0;
+    rows = stringToUint16(value);
+    cols = stringToUint16(numOfCols);
+    reallocateRegister(regist, dtComplex34Matrix, COMPLEX34_SIZE * rows * cols, amNone);
+    REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows = rows;
+    REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns = cols;
+  }
 #endif // TESTSUITE_BUILD
 
   else if(strcmp(type, "Conf") == 0) {
@@ -1014,6 +1042,22 @@ static void restoreMatrixData(calcRegister_t regist, void *stream) {
       stringToReal34(tmpString, REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i);
     }
   }
+
+  if(getRegisterDataType(regist) == dtComplex34Matrix) {
+    rows = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows;
+    cols = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns;
+
+    for(i = 0; i < rows * cols; ++i) {
+      char *imaginaryPart;
+
+      readLine(stream, tmpString);
+      imaginaryPart = tmpString;
+      while(*imaginaryPart != ' ') imaginaryPart++;
+      *(imaginaryPart++) = 0;
+      stringToReal34(tmpString,     VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+      stringToReal34(imaginaryPart, VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+    }
+  }
 #endif // TESTSUITE_BUILD
 }
 
@@ -1024,7 +1068,7 @@ static void skipMatrixData(char *type, char *value, void *stream) {
   uint32_t i;
   char *numOfCols;
 
-  if(strcmp(type, "Rema") == 0) {
+  if(strcmp(type, "Rema") == 0 || strcmp(type, "Cxma") == 0) {
     numOfCols = value;
     while(*numOfCols != ' ') numOfCols++;
     *(numOfCols++) = 0;

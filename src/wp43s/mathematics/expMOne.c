@@ -135,7 +135,7 @@ void expM1Rema(void) {
 
 
 void expM1Cxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(expM1Cplx);
 }
 
 

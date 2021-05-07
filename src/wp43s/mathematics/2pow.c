@@ -137,7 +137,7 @@ void twoPowRema(void) {
 
 
 void twoPowCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(twoPowCplx);
 }
 
 

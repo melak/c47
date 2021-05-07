@@ -129,7 +129,7 @@ void arccosRema(void) {
 
 
 void arccosCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(arccosCplx);
 }
 
 

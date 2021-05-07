@@ -339,7 +339,27 @@ static void compareRegisters(uint16_t regist, uint8_t mode) {
       }
     }
     else if((mode == COMPARE_MODE_EQUAL || mode == COMPARE_MODE_NOT_EQUAL) && (getRegisterDataType(REGISTER_X) == dtReal34Matrix || getRegisterDataType(REGISTER_X) == dtComplex34Matrix) && (getRegisterDataType(regist) == dtReal34Matrix || getRegisterDataType(regist) == dtComplex34Matrix)) {
-      fnToBeCoded();
+      complex34Matrix_t x, r;
+      if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix) linkToComplexMatrixRegister(REGISTER_X, &x); else convertReal34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
+      if(getRegisterDataType(regist)     == dtComplex34Matrix) linkToComplexMatrixRegister(regist,     &r); else convertReal34MatrixRegisterToComplex34Matrix(regist,     &r);
+      if(x.header.matrixRows == r.header.matrixRows && x.header.matrixColumns == r.header.matrixColumns) {
+        temporaryInformation = TI_TRUE;
+        for(int i = 0; i < x.header.matrixRows * x.header.matrixColumns; ++i) {
+          if((!real34CompareEqual(VARIABLE_REAL34_DATA(&x.matrixElements[i]), VARIABLE_REAL34_DATA(&r.matrixElements[i]))) || (!real34CompareEqual(VARIABLE_IMAG34_DATA(&x.matrixElements[i]), VARIABLE_IMAG34_DATA(&r.matrixElements[i])))) {
+            temporaryInformation = TI_FALSE;
+            break;
+          }
+        }
+      }
+      else {
+        temporaryInformation = TI_FALSE;
+      }
+      if(mode == COMPARE_MODE_NOT_EQUAL) {
+        if(temporaryInformation == TI_TRUE) temporaryInformation = TI_FALSE;
+        else                                temporaryInformation = TI_TRUE;
+      }
+      if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) complexMatrixFree(&x);
+      if(getRegisterDataType(regist)     == dtReal34Matrix) complexMatrixFree(&r);
     }
     else
   #endif // !TESTSUITE_BUILD
@@ -426,7 +446,50 @@ static void almostEqualMatrix(uint16_t regist) {
     realMatrixFree(&x);
   }
   else {
-    fnToBeCoded();
+    const bool_t xIsCxma = getRegisterDataType(REGISTER_X) == dtComplex34Matrix;
+    const bool_t rIsCxma = getRegisterDataType(regist)     == dtComplex34Matrix;
+    complex34Matrix_t x, r;
+    real34Matrix_t m;
+
+    if(xIsCxma) {
+      convertComplex34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
+    }
+    else {
+      convertReal34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
+      convertReal34MatrixRegisterToReal34Matrix(REGISTER_X, &m);
+    }
+    if(rIsCxma) {
+      convertComplex34MatrixRegisterToComplex34Matrix(regist, &r);
+    }
+    else {
+      convertReal34MatrixRegisterToComplex34Matrix(regist, &r);
+      convertReal34MatrixRegisterToReal34Matrix(regist, &m);
+    }
+
+    if(xIsCxma) roundCxma(); else roundRema();
+    fnSwapX(regist);
+    if(rIsCxma) roundCxma(); else roundRema();
+    fnSwapX(regist);
+
+    compareRegisters(regist, COMPARE_MODE_EQUAL);
+
+    if(rIsCxma) {
+      convertComplex34MatrixToComplex34MatrixRegister(&r, regist);
+    }
+    else {
+      convertReal34MatrixToReal34MatrixRegister(&m, regist);
+    }
+    if(xIsCxma) {
+      convertComplex34MatrixToComplex34MatrixRegister(&x, REGISTER_X);
+    }
+    else {
+      convertReal34MatrixToReal34MatrixRegister(&m, REGISTER_X);
+    }
+
+    complexMatrixFree(&r);
+    complexMatrixFree(&x);
+    if(!xIsCxma || !rIsCxma)
+      realMatrixFree(&m);
   }
 #endif // !TESTSUITE_BUILD
 }

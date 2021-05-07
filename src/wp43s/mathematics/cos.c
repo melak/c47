@@ -108,7 +108,7 @@ void cosRema(void) {
 
 
 void cosCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(cosCplx);
 }
 
 

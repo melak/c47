@@ -14,9 +14,9 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
+/**
  * \file memory.h
- ***********************************************/
+ */
 #ifndef MEMORY_H
 #define MEMORY_H
 

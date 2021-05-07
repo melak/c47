@@ -96,7 +96,7 @@ void cubeRema(void) {
 
 
 void cubeCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(cubeCplx);
 }
 
 

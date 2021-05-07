@@ -646,9 +646,7 @@ void divTimeTime(void) {
 void divRemaLonI(void) {
 #ifndef TESTSUITE_BUILD
   real34Matrix_t matrix, res;
-  real_t y, x;
-  uint16_t rows, cols;
-  int32_t i;
+  real_t x;
 
   convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
   if(!getSystemFlag(FLAG_SPCRES) && realIsZero(&x)) {
@@ -660,16 +658,7 @@ void divRemaLonI(void) {
 
   else {
     linkToRealMatrixRegister(REGISTER_Y, &matrix);
-    rows = matrix.header.matrixRows;
-    cols = matrix.header.matrixColumns;
-
-    realMatrixInit(&res, rows, cols);
-    for(i = 0; i < cols * rows; ++i) {
-      real34ToReal(&matrix.matrixElements[i], &y);
-      realDivide(&y, &x, &y, &ctxtReal39);
-      realToReal34(&y, &res.matrixElements[i]);
-    }
-
+    _divideRealMatrix(&matrix, &x, &res, &ctxtReal39);
     convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
     realMatrixFree(&res);
   }
@@ -726,7 +715,10 @@ void divRemaRema(void) {
  * \return void
  ***********************************************/
 void divRemaCxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
+  divCxmaCxma();
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -740,9 +732,7 @@ void divRemaCxma(void) {
 void divRemaShoI(void) {
 #ifndef TESTSUITE_BUILD
   real34Matrix_t matrix, res;
-  real_t y, x;
-  uint16_t rows, cols;
-  int32_t i;
+  real_t x;
 
   convertShortIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
   if(!getSystemFlag(FLAG_SPCRES) && realIsZero(&x)) {
@@ -754,16 +744,7 @@ void divRemaShoI(void) {
 
   else {
     linkToRealMatrixRegister(REGISTER_Y, &matrix);
-    rows = matrix.header.matrixRows;
-    cols = matrix.header.matrixColumns;
-
-    realMatrixInit(&res, rows, cols);
-    for(i = 0; i < cols * rows; ++i) {
-      real34ToReal(&matrix.matrixElements[i], &y);
-      realDivide(&y, &x, &y, &ctxtReal39);
-      realToReal34(&y, &res.matrixElements[i]);
-    }
-
+    _divideRealMatrix(&matrix, &x, &res, &ctxtReal39);
     convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
     realMatrixFree(&res);
   }
@@ -807,7 +788,10 @@ void divRemaReal(void) {
  * \return void
  ***********************************************/
 void divRemaCplx(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
+  divCxmaCplx();
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -823,7 +807,16 @@ void divRemaCplx(void) {
  * \return void
  ***********************************************/
 void divCxmaLonI(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t matrix, res;
+  real_t y;
+
+  convertLongIntegerRegisterToReal(REGISTER_X, &y, &ctxtReal39);
+  linkToComplexMatrixRegister(REGISTER_Y, &matrix);
+  _divideComplexMatrix(&matrix, &y, const_0, &res, &ctxtReal39);
+  convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
+  complexMatrixFree(&res);
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -835,7 +828,10 @@ void divCxmaLonI(void) {
  * \return void
  ***********************************************/
 void divCxmaRema(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_X, REGISTER_X);
+  divCxmaCxma();
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -847,7 +843,36 @@ void divCxmaRema(void) {
  * \return void
  ***********************************************/
 void divCxmaCxma(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t y, x, res;
+
+  linkToComplexMatrixRegister(REGISTER_Y, &y);
+  linkToComplexMatrixRegister(REGISTER_X, &x);
+
+  if(y.header.matrixColumns != x.header.matrixRows || y.header.matrixColumns != x.header.matrixColumns || x.header.matrixRows != x.header.matrixColumns) {
+    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "cannot divide %d" STD_CROSS "%d-matrix and %d" STD_CROSS "%d-matrix",
+              y.header.matrixRows, y.header.matrixColumns,
+              x.header.matrixRows, x.header.matrixColumns);
+      moreInfoOnError("In function divCxmaCxma:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+  else {
+    divideComplexMatrices(&y, &x, &res);
+    if(res.matrixElements) {
+      convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
+      complexMatrixFree(&res);
+    }
+    else {
+      displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot divide by a singular matrix");
+        moreInfoOnError("In function divRemaRema:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
+  }
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -859,7 +884,10 @@ void divCxmaCxma(void) {
  * \return void
  ***********************************************/
 void divCxmaShoI(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+  divCxmaReal();
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -871,7 +899,12 @@ void divCxmaShoI(void) {
  * \return void
  ***********************************************/
 void divCxmaReal(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t matrix;
+  linkToComplexMatrixRegister(REGISTER_Y, &matrix);
+  divideComplexMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_X), const34_0, &matrix);
+  convertComplex34MatrixToComplex34MatrixRegister(&matrix, REGISTER_X);
+#endif // TESTSUITE_BUILD
 }
 
 
@@ -883,7 +916,12 @@ void divCxmaReal(void) {
  * \return void
  ***********************************************/
 void divCxmaCplx(void) {
-  fnToBeCoded();
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t matrix;
+  linkToComplexMatrixRegister(REGISTER_Y, &matrix);
+  divideComplexMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X), &matrix);
+  convertComplex34MatrixToComplex34MatrixRegister(&matrix, REGISTER_X);
+#endif // TESTSUITE_BUILD
 }
 
 

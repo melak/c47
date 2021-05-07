@@ -25,7 +25,7 @@ void fnDisplayFormatFix                (uint16_t displayFormatN);
 void fnDisplayFormatSci                (uint16_t displayFormatN);
 void fnDisplayFormatEng                (uint16_t displayFormatN);
 void fnDisplayFormatAll                (uint16_t displayFormatN);
-//void fnDisplayFormatDsp                (uint16_t displayFormatN);
+void fnDisplayFormatDsp                (uint16_t displayFormatN);
 void fnDisplayFormatGap                (uint16_t gap);
 void fnDisplayFormatTime               (uint16_t displayFormatN);
 void fnShow                            (uint16_t unusedButMandatoryParameter);
@@ -40,6 +40,7 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
 void dateToDisplayString               (calcRegister_t regist, char *displayString);
 void timeToDisplayString               (calcRegister_t regist, char *displayString, bool_t ignoreTDisp);
 void real34MatrixToDisplayString       (calcRegister_t regist, char *displayString);
+void complex34MatrixToDisplayString    (calcRegister_t regist, char *displayString);
 void exponentToDisplayString           (int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode, const char *separator);
 void supNumberToDisplayString          (int32_t supNumber, char *displayString, char *displayValueString, bool_t insertGap, const char *separator);
 void subNumberToDisplayString          (int32_t subNumber, char *displayString, char *displayValueString);

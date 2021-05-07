@@ -14,9 +14,10 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
+/**
  * \file items.h
- ***********************************************/
+ * Item list and function to run them.
+ */
 #ifndef ITEMS_H
 #define ITEMS_H
 
@@ -1381,7 +1382,7 @@
 #define MNU_CPX                       1323
 #define MNU_CPXS                      1324
 #define MNU_DATES                     1325
-#define MNU_DSP                       1326
+#define MNU_DISP                      1326
 #define MNU_EQN                       1327
 #define MNU_EXP                       1328
 #define MNU_CONVE                     1329
@@ -1630,7 +1631,7 @@
 #define ITM_REexIM                    1570
 #define ITM_RM                        1571
 #define ITM_RMQ                       1572
-#define ITM_1573                      1573
+#define ITM_DSP                       1573
 #define ITM_RNORM                     1574
 #define ITM_EX1                       1575
 #define ITM_ROUNDI                    1576
@@ -1831,9 +1832,29 @@
 #define ITM_PROD_SIGN                 9999 // Multiplication sign × or ·
 
 void reallyRunFunction(int16_t func, uint16_t param);
+/**
+ * Runs a function.
+ *
+ * \param[in] func Index in the indexOfItems area of the function to run
+ */
 void runFunction      (int16_t func);
-void fnToBeCoded      (void);
+///**
+// * Dummy function for a function (part of an item) to be coded.
+// *
+// * \param[in] unusedButMandatoryParameter
+// */
+//void fnToBeCoded      (void);
+/**
+ * Dummy function for an item to be coded.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
 void itemToBeCoded    (uint16_t unusedButMandatoryParameter);
+/**
+ * No OPeration.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
 void fnNop            (uint16_t unusedButMandatoryParameter);
 
 #endif // ITEMS_H

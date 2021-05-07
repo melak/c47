@@ -14,10 +14,6 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file items.c Item list and function to run them
- ***********************************************/
-
 #include "items.h"
 
 #include "browsers/browsers.h"
@@ -56,41 +52,23 @@
 
 #include "wp43s.h"
 
-/********************************************//**
- * \brief Dummy function for an item to be coded
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
 void itemToBeCoded(uint16_t unusedButMandatoryParameter) {
   funcOK = false;
 }
 
 
 
-#ifndef GENERATE_CATALOGS
-/********************************************//**
- * \brief Dummy function for a function (part of an item) to be coded
- *
- * \param[in] unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
-void fnToBeCoded(void) {
-  displayCalcErrorMessage(ERROR_FUNCTION_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
-  #ifdef PC_BUILD
-    moreInfoOnError("Function to be coded", "for that data type(s)!", NULL, NULL);
-  #endif // PC_BUILD
-}
-#endif // GENERATE_CATALOGS
+//#ifndef GENERATE_CATALOGS
+//void fnToBeCoded(void) {
+//  displayCalcErrorMessage(ERROR_FUNCTION_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
+//  #ifdef PC_BUILD
+//    moreInfoOnError("Function to be coded", "for that data type(s)!", NULL, NULL);
+//  #endif // PC_BUILD
+//}
+//#endif // GENERATE_CATALOGS
 
 
 
-/********************************************//**
- * \brief No OPeration
- *
- * \param  unusedButMandatoryParameter uint16_t
- * \return void
- ***********************************************/
 void fnNop(uint16_t unusedButMandatoryParameter) {
 }
 
@@ -125,12 +103,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
 
 
-  /********************************************//**
-   * \brief Runs a function
-   *
-   * \param[in] fn int16_t Index in the indexOfItems area of the function to run
-   * \return void
-   ***********************************************/
   void runFunction(int16_t func) {
     funcOK = true;
 
@@ -188,6 +160,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnDisplayFormatFix          (uint16_t unusedButMandatoryParameter) {}
   void fnDisplayFormatSci          (uint16_t unusedButMandatoryParameter) {}
   void fnDisplayFormatEng          (uint16_t unusedButMandatoryParameter) {}
+  void fnDisplayFormatDsp          (uint16_t unusedButMandatoryParameter) {}
   void fnDisplayFormatGap          (uint16_t unusedButMandatoryParameter) {}
   void fnDisplayFormatTime         (uint16_t unusedButMandatoryParameter) {}
   void fnArccos                    (uint16_t unusedButMandatoryParameter) {}
@@ -2290,7 +2263,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1570 */  { fnSwapRealImaginary,          NOPARAM,                     "Re" STD_LEFT_RIGHT_ARROWS "Im",               "Re" STD_LEFT_RIGHT_ARROWS "Im",               (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1571 */  { fnSetRoundingMode,            TM_VALUE,                    "RM",                                          "RM",                                          (0 << TAM_MAX_BITS) |     6, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1572 */  { fnGetRoundingMode,            NOPARAM,                     "RM?",                                         "RM?",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
-/* 1573 */  { itemToBeCoded,                NOPARAM,                     "1573",                                        "1573",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_ENABLED  },
+/* 1573 */  { fnDisplayFormatDsp,           TM_VALUE,                    "DSP",                                         "DSP",                                         (0 << TAM_MAX_BITS) |    15, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1574 */  { fnRowNorm,                    NOPARAM,                     "RNORM",                                       "RNORM",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1575 */  { fnExpM1,                      NOPARAM,                     "e" STD_SUP_x "-1",                            "e" STD_SUP_x "-1",                            (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1576 */  { fnRoundi,                     NOPARAM,                     "ROUNDI",                                      "ROUNDI",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },

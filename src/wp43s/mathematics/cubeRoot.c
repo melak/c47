@@ -113,7 +113,7 @@ void curtRema(void) {
 
 
 void curtCxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(curtCplx);
 }
 
 

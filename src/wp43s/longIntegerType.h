@@ -21,143 +21,273 @@
 #define LONGINTEGERTYPE_H
 
 #include "defines.h"
+#include "typeDefinitions.h"
 
 #include <gmp.h>
 #include <stdlib.h>
 
-#define longInteger_t                                                     mpz_t
+typedef mpz_t longInteger_t;
+
 #define REGISTER_LONG_INTEGER_DATA(a)                                     ((void *)(getRegisterDataPointer(a) + 1)) // Memory pointer to the long integer of a register
-#define LIMB_SIZE                                                         sizeof(mp_limb_t)
-#define longIntegerSizeInBytes(li)                                        (abs((li)->_mp_size) * LIMB_SIZE)
 
+enum { LIMB_SIZE = sizeof(mp_limb_t) };
 
-#define longIntegerInit(op)                                               mpz_init(op);
-#define longIntegerInitSizeInBits(op, bits)                               mpz_init2(op, bits);
-#define uIntToLongInteger(source, destination)                            mpz_set_ui(destination, source)
-#define intToLongInteger(source, destination)                             mpz_set_si(destination, source)
+static inline size_t longIntegerSizeInBytes(mpz_srcptr li)
+{
+  return (abs((li)->_mp_size) * LIMB_SIZE);
+}
+
+static inline void longIntegerInit(mpz_ptr op)
+{
+  mpz_init(op);
+}
+
+static inline void longIntegerInitSizeInBits(mpz_ptr op, mp_bitcnt_t bits)
+{
+  mpz_init2(op, bits);
+}
+
+static inline void uIntToLongInteger(unsigned long int source, mpz_ptr destination)
+{
+  mpz_set_ui(destination, source);
+}
+static inline void intToLongInteger(signed long int source, mpz_ptr destination)
+{
+  mpz_set_si(destination, source);
+}
 #define longIntegerToUInt(op, uint)                                       {uint = mpz_get_ui(op); }
 #define longIntegerToInt(op, int)                                         {int  = mpz_get_si(op); }
-#define longIntegerCopy(source, destination)                              mpz_set(destination, source)
-//#define longIntegerCopy(source, destination)                              mpz_add_ui(destination, source, 0)
+static inline void longIntegerCopy(mpz_srcptr source, mpz_ptr destination)
+{
+  mpz_set(destination, source);
+  // Previous implementation:
+  //mpz_add_ui(destination, source, 0);
+}
 
-#define stringToLongInteger(source, radix, destination)                   mpz_set_str(destination, source, radix)
+static inline int stringToLongInteger(const char *source, int radix, mpz_ptr destination)
+{
+  return mpz_set_str(destination, source, radix);
+}
 
-#define longIntegerChangeSign(op)                                         {(op)->_mp_size =    -((op)->_mp_size);}
-#define longIntegerSetPositiveSign(op)                                    {(op)->_mp_size =  abs((op)->_mp_size);}
-#define longIntegerSetNegativeSign(op)                                    {(op)->_mp_size = -abs((op)->_mp_size);}
-#define longIntegerSetZero(op)                                            {mpz_clear(op); mpz_init(op);}
-#define longIntegerIsZero(op)                                             ((op)->_mp_size == 0)
+static inline void longIntegerChangeSign(mpz_ptr op)
+{
+  (op)->_mp_size = -((op)->_mp_size);
+}
+static inline void longIntegerSetPositiveSign(mpz_ptr op)
+{
+  (op)->_mp_size = abs((op)->_mp_size);
+}
+static inline void longIntegerSetNegativeSign(mpz_ptr op)
+{
+  (op)->_mp_size = -abs((op)->_mp_size);
+}
+static inline void longIntegerSetZero(mpz_ptr op)
+{
+  mpz_clear(op);
+  mpz_init(op);
+  // Previous implementation:
+  //(op)->_mp_size = 0;
+}
+static inline bool_t longIntegerIsZero(mpz_srcptr op)
+{
+  return ((op)->_mp_size == 0);
+}
 #define longIntegerIsZeroRegister(regist)                                 (getRegisterLongIntegerSign(regist) == LI_ZERO)
-#define longIntegerIsPositive(op)                                         ((op)->_mp_size >  0)
-#define longIntegerIsPositiveOrZero(op)                                   ((op)->_mp_size >= 0)
-#define longIntegerIsNegative(op)                                         ((op)->_mp_size <  0)
-#define longIntegerIsNegativeOrZero(op)                                   ((op)->_mp_size <= 0)
-#define longIntegerIsEven(op)                                             mpz_even_p(op)
-#define longIntegerIsOdd(op)                                              mpz_odd_p(op)
-#define longIntegerSign(op)                                               mpz_sgn(op)
-#define longIntegerSignTag(op)                                            ((op)->_mp_size == 0 ? LI_ZERO : ((op)->_mp_size > 0 ? LI_POSITIVE : LI_NEGATIVE))
-#define longIntegerBits(op)                                               mpz_sizeinbase(op, 2)
-#define longIntegerBase10Digits(op)                                       mpz_sizeinbase(op, 10)
-#define longIntegerProbabPrime(op)                                        mpz_probab_prime_p(op, 15); // 0=composite 1=probably prime 2=prime  A composite number will be identified as a prime with a probability of less than 4^(-15)
-#define longIntegerFree(op)                                               mpz_clear(op)
-
-#define longIntegerCompare(op1, op2)                                      mpz_cmp        (op1, op2)
-#define longIntegerDivide(op1, op2, result)                               mpz_tdiv_q     (result, op1, op2)            /* op1/op2 => result*op2 + remainder == op1 */
-#define longIntegerDivideQuotientRemainder(op1, op2, quotient, remainder) mpz_tdiv_qr    (quotient, remainder, op1, op2) /* op1/op2 => quotient*op2 + remainder == op1 */
-#define longIntegerDivideRemainder(op1, op2, remainder)                   mpz_tdiv_r     (remainder, op1, op2)
-#define longIntegerModulo(op1, op2, result)                               mpz_mod        (result, op1, op2)
-#define longInteger2Pow(exp, result)                                      mpz_setbit     (result, exp)                 /* result = 2^exp (result MUST be 0 before)*/
-#define longIntegerDivide2(op, result)                                    mpz_div_2exp   (result, op, 1)               /* result = op / 2 */
-#define longIntegerDivide2Exact(op, result)                               mpz_divexact_ui(result, op, 2)               /* result = op / 2 */
-#define longIntegerSquareRoot(op, result)                                 mpz_sqrt       (result, op)
-#define longIntegerRoot(op, n, result)                                    mpz_root       (result, op, n)
-#define longIntegerPerfectSquare(op)                                      mpz_perfect_square_p(op)
-#define longIntegerMultiply2(op, result)                                  mpz_mul_2exp   (result, op, 1);              /* result = op * 2 */
-#define longIntegerLeftShift(op, number, result)                          mpz_mul_2exp   (result, op, number);         /* result = op * 2^number */
-
-
-
-#define longIntegerCompareUInt(op, uint)                                  mpz_cmp_ui    (op, uint)
-#define longIntegerCompareInt(op, sint)                                   mpz_cmp_si    (op, sint)
-#define longIntegerAddUInt(op, uint, result)                              mpz_add_ui    (result, op, uint)
-#define longIntegerSubtractUInt(op, uint, result)                         mpz_sub_ui    (result, op, uint)
-#define longIntegerMultiplyUInt(op, uint, result)                         mpz_mul_ui    (result, op, uint)
-#define longIntegerDivideRemainderUInt(op, uint, result, remainder)       mpz_tdiv_qr_ui(remainder, result, op, uint)    /* op/uint => result*uint + remainder == op */
-#define longIntegerDivideUInt(op, uint, result)                           mpz_tdiv_q_ui (result, op, uint)               /* op/uint => result*uint + remainder == op */
-#define longIntegerPowerUIntUInt(base, exponent, result)                  mpz_ui_pow_ui (result, base, exponent)         /* result = base ^ exponent */
-#define longIntegerPowerModulo(base, exponent, modulo, result)            mpz_powm      (result, base, exponent, modulo) /* result = base ^ exponent */
-#define longIntegerPowerUIntModulo(base, exponent, modulo, result)        mpz_powm_ui   (result, base, exponent, modulo) /* result = base ^ exponent */
-#define longIntegerModuloUInt(op, uint)                                   mpz_fdiv_ui   (op, uint)                       /* result = op mod uint, 0 <= result < uint */
-
-#define longIntegerGcd(op1, op2, result)                                  mpz_gcd     (result, op1, op2)
-#define longIntegerLcm(op1, op2, result)                                  mpz_lcm     (result, op1, op2)
-
-#define longIntegerFactorial(op, result)                                  mpz_fac_ui(result, op)
-#define longIntegerIsPrime(currentNumber)                                 mpz_probab_prime_p(currentNumber, 25)
-#define longIntegerNextPrime(currentNumber, nextPrime)                    mpz_nextprime(nextPrime, currentNumber)
-#define longIntegerFibonacci(op, result)                                  mpz_fib_ui(result, op)
-
-//#define longIntegerInit(op)                                               {mpz_init(op); PRINT_LI(op, "after longIntegerInit"); }
-//#define longIntegerInitSizeInBits(op, bits)                               {printf("bits=%d ", (int)bits); mpz_init2(op, bits); PRINT_LI(op, "after longIntegerInitSizeInBits"); }
-//#define uIntToLongInteger(source, destination)                            {printf("source=%u", (unsigned int)(source)); PRINT_LI(destination, "before uIntToLongInteger"); mpz_set_ui(destination, source); PRINT_LI(destination, "after uIntToLongInteger"); }
-//#define intToLongInteger(source, destination)                             {printf("source=%d", (int)(source));          PRINT_LI(destination, "before intToLongInteger");  mpz_set_si(destination, source); PRINT_LI(destination, "after intToLongInteger"); }
-//#define longIntegerToUInt(op, uint)                                       {PRINT_LI(op, "before longIntegerToUInt"); uint = mpz_get_ui(op); PRINT_LI(op, "after longIntegerToUInt"); }
-//#define longIntegerToInt(op, int)                                         {PRINT_LI(op, "before longIntegerToInt");  int  = mpz_get_si(op); PRINT_LI(op, "after longIntegerToInt"); }
-////#define longIntegerCopy(source, destination)                              {PRINT_LI(source, "before longIntegerCopy"); PRINT_LI(destination, "before longIntegerCopy"); mpz_set(destination, source);       PRINT_LI(destination, "after longIntegerCopy"); }
-////#define longIntegerCopy(source, destination)                              {PRINT_LI(source, "before longIntegerCopy"); PRINT_LI(destination, "before longIntegerCopy"); mpz_add_ui(destination, source, 0); PRINT_LI(destination, "after longIntegerCopy"); }
-//
-//#define stringToLongInteger(source, radix, destination)                   {printf("source=%s radix=%u", source, (unsigned int)(radix)); PRINT_LI(destination, "before stringToLongInteger"); mpz_set_str(destination, source, radix); PRINT_LI(destination, "after stringToLongInteger"); }
-//
-//#define longIntegerChangeSign(op)                                         {(op)->_mp_size =    -((op)->_mp_size);}
-//#define longIntegerSetPositiveSign(op)                                    {(op)->_mp_size =  abs((op)->_mp_size);}
-//#define longIntegerSetNegativeSign(op)                                    {(op)->_mp_size = -abs((op)->_mp_size);}
-//#define longIntegerSetZero(op)                                            {(op)->_mp_size = 0;}
-//#define longIntegerIsZero(op)                                             ((op)->_mp_size == 0)
 //#define longIntegerIsZeroRegister(regist)                                 (*REGISTER_DATA_MAX_LEN(regist) == 0)
-//#define longIntegerIsPositive(op)                                         ((op)->_mp_size >  0)
-//#define longIntegerIsPositiveOrZero(op)                                   ((op)->_mp_size >= 0)
-//#define longIntegerIsNegative(op)                                         ((op)->_mp_size <  0)
-//#define longIntegerIsNegativeOrZero(op)                                   ((op)->_mp_size <= 0)
-//#define longIntegerIsEven(op)                                             mpz_even_p(op)
-//#define longIntegerIsOdd(op)                                              mpz_odd_p(op)
-//#define longIntegerSign(op)                                               mpz_sgn(op)
-//#define longIntegerSignTag(op)                                            ((op)->_mp_size == 0 ? LI_ZERO : ((op)->_mp_size > 0 ? LI_POSITIVE : LI_NEGATIVE))
-//#define longIntegerBits(op)                                               mpz_sizeinbase(op, 2)
-//#define longIntegerBase10Digits(op)                                       mpz_sizeinbase(op, 10)
-//#define longIntegerProbabPrime(op)                                        mpz_probab_prime_p(op, 15); // 0=composite 1=probably prime 2=prime  A composite number will be identified as a prime with a probability of less than 4^(-15)
-//#define longIntegerFree(op)                                               mpz_clear(op)
-//
-//#define longIntegerCompare(op1, op2)                                      mpz_cmp        (op1, op2)
-//#define longIntegerDivide(op1, op2, result)                               mpz_tdiv_q     (result, op1, op2)            /* op1/op2 => result*op2 + remainder == op1 */
-//#define longIntegerDivideQuotientRemainder(op1, op2, quotient, remainder) mpz_tdiv_qr    (quotient, remainder, op1, op2) /* op1/op2 => quotient*op2 + remainder == op1 */
-//#define longIntegerDivideRemainder(op1, op2, remainder)                   mpz_tdiv_r     (remainder, op1, op2)
-//#define longIntegerModulo(op1, op2, result)                               mpz_mod        (result, op1, op2)
-//#define longInteger2Pow(exp, result)                                      mpz_setbit     (result, exp)                 /* result = 2^exp (result MUST be 0 before)*/
-//#define longIntegerDivide2(op, result)                                    mpz_div_2exp   (result, op, 1)               /* result = op / 2 */
-//#define longIntegerDivide2Exact(op, result)                               mpz_divexact_ui(result, op, 2)               /* result = op / 2 */
-//#define longIntegerSquareRoot(op, result)                                 mpz_sqrt       (result, op)
-//#define longIntegerRoot(op, n, result)                                    mpz_root       (result, op, n)
-//#define longIntegerPerfectSquare(op)                                      mpz_perfect_square_p(op)
-//#define longIntegerMultiply2(op, result)                                  mpz_mul_2exp   (result, op, 1);              /* result = op * 2 */
-//#define longIntegerLeftShift(op, number, result)                          mpz_mul_2exp   (result, op, number);         /* result = op * 2^number */
-//
-//
-//
-//#define longIntegerCompareUInt(op, uint)                                  mpz_cmp_ui    (op, uint)
-//#define longIntegerCompareInt(op, sint)                                   mpz_cmp_si    (op, sint)
-//#define longIntegerAddUInt(op, uint, result)                              mpz_add_ui    (result, op, uint)
-//#define longIntegerSubtractUInt(op, uint, result)                         mpz_sub_ui    (result, op, uint)
-//#define longIntegerMultiplyUInt(op, uint, result)                         mpz_mul_ui    (result, op, uint)
-//#define longIntegerDivideRemainderUInt(op, uint, result, remainder)       mpz_tdiv_qr_ui(remainder, result, op, uint)    /* op/uint => result*uint + remainder == op */
-//#define longIntegerDivideUInt(op, uint, result)                           mpz_tdiv_q_ui (result, op, uint)               /* op/uint => result*uint + remainder == op */
-//#define longIntegerPowerUIntUInt(base, exponent, result)                  mpz_ui_pow_ui (result, base, exponent)         /* result = base ^ exponent */
-//#define longIntegerPowerModulo(base, exponent, modulo, result)            mpz_powm      (result, base, exponent, modulo) /* result = base ^ exponent */
-//#define longIntegerPowerUIntModulo(base, exponent, modulo, result)        mpz_powm_ui   (result, base, exponent, modulo) /* result = base ^ exponent */
-//#define longIntegerModuloUInt(op, uint)                                   mpz_fdiv_ui   (op, uint)                       /* result = op mod uint, 0 <= result < uint */
-//
-//#define longIntegerGcd(op1, op2, result)                                  mpz_gcd     (result, op1, op2)
-//#define longIntegerLcm(op1, op2, result)                                  mpz_lcm     (result, op1, op2)
-//
-//#define longIntegerFactorial(op, result)                                  mpz_fac_ui(result, op)
+static inline bool_t longIntegerIsPositive(mpz_srcptr op)
+{
+  return ((op)->_mp_size >  0);
+}
+static inline bool_t longIntegerIsPositiveOrZero(mpz_srcptr op)
+{
+  return ((op)->_mp_size >= 0);
+}
+static inline bool_t longIntegerIsNegative(mpz_srcptr op)
+{
+  return ((op)->_mp_size <  0);
+}
+static inline bool_t longIntegerIsNegativeOrZero(mpz_srcptr op)
+{
+  return ((op)->_mp_size <= 0);
+}
+static inline bool_t longIntegerIsEven(mpz_srcptr op)
+{
+  return mpz_even_p(op);
+}
+static inline bool_t longIntegerIsOdd(mpz_srcptr op)
+{
+  return mpz_odd_p(op);
+}
+static inline int longIntegerSign(mpz_srcptr op)
+{
+  return mpz_sgn(op);
+}
+static inline longIntegerSign_t longIntegerSignTag(mpz_srcptr op)
+{
+  return ((op)->_mp_size == 0 ? LI_ZERO : ((op)->_mp_size > 0 ? LI_POSITIVE : LI_NEGATIVE));
+}
+static inline size_t longIntegerBits(mpz_srcptr op)
+{
+  return mpz_sizeinbase(op, 2);
+}
+static inline size_t longIntegerBase10Digits(mpz_srcptr op)
+{
+  return mpz_sizeinbase(op, 10);
+}
+/**
+ * Determines whether the long integer is probably prime.
+ *
+ * \returns A number indicating the prime status:
+ *   - 0 = composite
+ *   - 1 = probably prime
+ *   - 2 = prime
+ * A composite number will be identified as a prime with a probability of
+ * less than 4^(-15).
+ */
+static inline int longIntegerProbabPrime(mpz_srcptr op)
+{
+  return mpz_probab_prime_p(op, 15);
+}
+static inline void longIntegerFree(mpz_ptr op)
+{
+  mpz_clear(op);
+}
+
+static inline int longIntegerCompare(mpz_srcptr op1, mpz_srcptr op2)
+{
+  return mpz_cmp(op1, op2);
+}
+static inline void longIntegerDivide(mpz_srcptr op1, mpz_srcptr op2, mpz_ptr result)
+{
+  /* op1/op2 => result*op2 + remainder == op1 */
+  mpz_tdiv_q(result, op1, op2);
+}
+static inline void longIntegerDivideQuotientRemainder(mpz_srcptr op1, mpz_srcptr op2, mpz_ptr quotient, mpz_ptr remainder)
+{
+  /* op1/op2 => quotient*op2 + remainder == op1 */
+  mpz_tdiv_qr(quotient, remainder, op1, op2);
+}
+static inline void longIntegerDivideRemainder(mpz_srcptr op1, mpz_srcptr op2, mpz_ptr remainder)
+{
+  mpz_tdiv_r(remainder, op1, op2);
+}
+static inline void longIntegerModulo(mpz_srcptr op1, mpz_srcptr op2, mpz_ptr result)
+{
+  mpz_mod(result, op1, op2);
+}
+static inline void longInteger2Pow(mp_bitcnt_t exp, mpz_ptr result)
+{
+  /* result = 2^exp (result MUST be 0 before)*/
+  mpz_setbit(result, exp);
+}
+static inline void longIntegerDivide2(mpz_srcptr op, mpz_ptr result)
+{
+  /* result = op / 2 */
+  mpz_div_2exp(result, op, 1);
+}
+static inline void longIntegerDivide2Exact(mpz_srcptr op, mpz_ptr result)
+{
+  /* result = op / 2 */
+  mpz_divexact_ui(result, op, 2);
+}
+static inline void longIntegerSquareRoot(mpz_srcptr op, mpz_ptr result)
+{
+  mpz_sqrt(result, op);
+}
+static inline int longIntegerRoot(mpz_srcptr op, unsigned long int n, mpz_ptr result)
+{
+  return mpz_root(result, op, n);
+}
+static inline int longIntegerPerfectSquare(mpz_srcptr op)
+{
+  return mpz_perfect_square_p(op);
+}
+static inline void longIntegerMultiply2(mpz_srcptr op, mpz_ptr result)
+{
+  /* result = op * 2 */
+  mpz_mul_2exp(result, op, 1);
+}
+static inline void longIntegerLeftShift(mpz_srcptr op, mp_bitcnt_t number, mpz_ptr result)
+{
+  /* result = op * 2^number */
+  mpz_mul_2exp(result, op, number);
+}
+
+static inline int longIntegerCompareUInt(mpz_srcptr op, unsigned long int uint)
+{
+  return mpz_cmp_ui(op, uint);
+}
+static inline int longIntegerCompareInt(mpz_srcptr op, signed long int sint)
+{
+  return mpz_cmp_si(op, sint);
+}
+static inline void longIntegerAddUInt(mpz_srcptr op, unsigned long int uint, mpz_ptr result)
+{
+  mpz_add_ui(result, op, uint);
+}
+static inline void longIntegerSubtractUInt(mpz_srcptr op, unsigned long int uint, mpz_ptr result)
+{
+  mpz_sub_ui(result, op, uint);
+}
+static inline void longIntegerMultiplyUInt(mpz_srcptr op, unsigned long int uint, mpz_ptr result)
+{
+  mpz_mul_ui(result, op, uint);
+}
+static inline unsigned long int longIntegerDivideRemainderUInt(mpz_srcptr op, unsigned long int uint, mpz_ptr result, mpz_ptr remainder)
+{
+  /* op/uint => result*uint + remainder == op */
+  return mpz_tdiv_qr_ui(remainder, result, op, uint);
+}
+static inline void longIntegerDivideUInt(mpz_srcptr op, unsigned long int uint, mpz_ptr result)
+{
+  /* op/uint => result*uint + remainder == op */
+  mpz_tdiv_q_ui(result, op, uint);
+}
+static inline void longIntegerPowerUIntUInt(unsigned long int base, unsigned long int exponent, mpz_ptr result)
+{
+  /* result = base ^ exponent */
+  mpz_ui_pow_ui(result, base, exponent);
+}
+static inline void longIntegerPowerModulo(mpz_srcptr base, mpz_srcptr exponent, mpz_srcptr modulo, mpz_ptr result)
+{
+  /* result = base ^ exponent */
+  mpz_powm(result, base, exponent, modulo);
+}
+static inline void longIntegerPowerUIntModulo(mpz_srcptr base, unsigned long int exponent, mpz_srcptr modulo, mpz_ptr result)
+{
+  /* result = base ^ exponent */
+  mpz_powm_ui(result, base, exponent, modulo);
+}
+static inline unsigned long int longIntegerModuloUInt(mpz_srcptr op, unsigned long int uint)
+{
+  /* result = op mod uint, 0 <= result < uint */
+  return mpz_fdiv_ui(op, uint);
+}
+
+static inline void longIntegerGcd(mpz_srcptr op1, mpz_srcptr op2, mpz_ptr result)
+{
+  mpz_gcd(result, op1, op2);
+}
+static inline void longIntegerLcm(mpz_srcptr op1, mpz_srcptr op2, mpz_ptr result)
+{
+  mpz_lcm(result, op1, op2);
+}
+
+static inline void longIntegerFactorial(unsigned long int op, mpz_ptr result)
+{
+  mpz_fac_ui(result, op);
+}
+static inline int longIntegerIsPrime(mpz_srcptr currentNumber)
+{
+  return mpz_probab_prime_p(currentNumber, 25);
+}
+static inline void longIntegerNextPrime(mpz_srcptr currentNumber, mpz_ptr nextPrime)
+{
+  mpz_nextprime(nextPrime, currentNumber);
+}
+static inline void longIntegerFibonacci(unsigned long int op, mpz_ptr result)
+{
+  mpz_fib_ui(result, op);
+}
 
 #endif // LONGINTEGERTYPE_H

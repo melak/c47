@@ -145,7 +145,7 @@ void log2Rema(void) {
 
 
 void log2Cxma(void) {
-  fnToBeCoded();
+  elementwiseCxma(log2Cplx);
 }
 
 

@@ -26,6 +26,8 @@
 #include "error.h"
 #include "conversionAngles.h"
 #include "mathematics/toPolar.h"
+#include "matrix.h"
+#include "registerValueConversions.h"
 #include "registers.h"
 
 #include "wp43s.h"
@@ -35,7 +37,7 @@
 TO_QSPI void (* const arg[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
 // regX ==> 1            2           3           4            5            6            7            8            9             10
 //          Long integer Real34      Complex34   Time         Date         String       Real34 mat   Complex34 m  Short integer Config data
-            argError,    argReal,    argCplx,    argError,    argError,    argError,    argError,    argError,    argError,     argError
+            argError,    argReal,    argCplx,    argError,    argError,    argError,    argError,    argCxma,     argError,     argError
 };
 
 
@@ -114,4 +116,25 @@ void argCplx(void) {
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, currentAngularMode);
   realToReal34(&imag, REGISTER_REAL34_DATA(REGISTER_X));
+}
+
+
+
+void argCxma(void) {
+#ifndef TESTSUITE_BUILD
+  complex34Matrix_t cMat;
+  real34Matrix_t rMat;
+  real34_t dummy;
+
+  linkToComplexMatrixRegister(REGISTER_X, &cMat);
+  realMatrixInit(&rMat, cMat.header.matrixRows, cMat.header.matrixColumns);
+
+  for(uint16_t i = 0; i < cMat.header.matrixRows * cMat.header.matrixColumns; ++i) {
+    real34RectangularToPolar(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), &dummy, &rMat.matrixElements[i]);
+    convertAngle34FromTo(&rMat.matrixElements[i], amRadian, currentAngularMode);
+  }
+
+  convertReal34MatrixToReal34MatrixRegister(&rMat, REGISTER_X);
+  realMatrixFree(&rMat);
+#endif // TESTSUITE_BUILD
 }

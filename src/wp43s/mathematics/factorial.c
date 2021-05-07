@@ -105,17 +105,17 @@ void factLonI(void) {
 
   uint32_t n;
   longIntegerToUInt(x, n);
-  #if (__linux__ == 1)
+  #ifdef LINUX
     //The more precise formula below is: (n*ln(n) - n + (ln(8n³ + 4n² + n + 1/30))/6 + ln(pi)/2) / ln(2)
     longIntegerInitSizeInBits(f, 1 + (uint32_t)((n * log(n) - n) / log(2)));
     uIntToLongInteger(1, f);
     for(uint32_t i=2; i<=n; i++) {
       longIntegerMultiplyUInt(f, i, f);
     }
-  #else // (__linux__ == 0)
+  #else // !LINUX
     longIntegerInit(f);
     longIntegerFactorial(n, f); //TODO why this line fails?
-  #endif // __linux__ == 1
+  #endif // LINUX
 
 
   convertLongIntegerToLongIntegerRegister(f, REGISTER_X);
