@@ -1388,7 +1388,7 @@
     shiftG = false;
 
     #ifdef PC_BUILD
-      if(getRegisterDataType(matrixIndex) != INVALID_VARIABLE) {
+      if(matrixIndex != INVALID_VARIABLE) {
         if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
           if(openMatrixMIMPointer.realMatrix.matrixElements)
           realMatrixFree(&openMatrixMIMPointer.realMatrix);

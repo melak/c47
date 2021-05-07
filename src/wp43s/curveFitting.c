@@ -146,6 +146,9 @@ uint16_t lrCountOnes(uint16_t curveFitting) { // count the number of allowed met
  * \return void
  ***********************************************/
 void fnProcessLRfind(uint16_t curveFitting){
+  int32_t nn;
+  real_t NN;
+  realToInt32(SIGMA_N, nn);  
   realCopy(const_0,&aa0);
   realCopy(const_0,&aa1);
   realCopy(const_0,&aa2);
@@ -153,7 +156,7 @@ void fnProcessLRfind(uint16_t curveFitting){
 	  printf("Processing for best fit: %s\n",getCurveFitModeNames(curveFitting));
 	#endif //PC_BUILD
   realCopy(const__4,&RRMAX);
-  uint16_t s = curveFitting;
+  uint16_t s = curveFitting;       //default
   uint16_t ix,jx;                  //only a single graph can be evaluated at once, so retain the single lowest bit, and clear the higher order bits.
   jx = 0;
   for(ix=0; ix<10; ix++) {         //up to 2^9 inclusive of 512 which is ORTHOF. The ReM is respectedby usage of 0 only, not by manual selection.
@@ -162,12 +165,15 @@ void fnProcessLRfind(uint16_t curveFitting){
       #ifdef PC_BUILD
         printf("processCurvefitSelection curveFitting:%u sweep:%u %s\n",curveFitting,jx,getCurveFitModeNames(jx));
       #endif
-      processCurvefitSelection(jx,&RR,&SMI, &aa0, &aa1, &aa2);
-      realMultiply(&RR,&RR,&RR2,&ctxtReal39);
+      
+      if(nn >= minLRDataPoints(jx)) {
+        processCurvefitSelection(jx,&RR,&SMI, &aa0, &aa1, &aa2);
+        realMultiply(&RR,&RR,&RR2,&ctxtReal39);
 
-      if(realCompareGreaterThan(&RR2, &RRMAX) && realCompareLessThan(&RR2, const_1)) {
-        realCopy(&RR2,&RRMAX);
-      	s = jx;
+        if(realCompareGreaterThan(&RR2, &RRMAX) && realCompareLessThan(&RR2, const_1)) {
+          realCopy(&RR2,&RRMAX);
+        	s = jx;
+        }
       }
     }
   }
@@ -175,29 +181,54 @@ void fnProcessLRfind(uint16_t curveFitting){
 	  printf("Found best fit: %u %s\n",s,getCurveFitModeNames(s));
 	#endif //PC_BUILD
 
-  processCurvefitSelection(s,&RR,&SMI, &aa0, &aa1, &aa2);
-  lrChosen = s;
+  if(nn >= minLRDataPoints(s)) {
 
-  temporaryInformation = TI_LR;
-  if(s == CF_CAUCHY_FITTING || s == CF_GAUSS_FITTING || s == CF_PARABOLIC_FITTING) {
-	  liftStack();
-	  setSystemFlag(FLAG_ASLIFT);
-	  reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-	  realToReal34(&aa2, REGISTER_REAL34_DATA(REGISTER_X));
-	}
-  liftStack();
-  setSystemFlag(FLAG_ASLIFT);
-  reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&aa1, REGISTER_REAL34_DATA(REGISTER_X));
-  liftStack();
-  setSystemFlag(FLAG_ASLIFT);
-  reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&aa0, REGISTER_REAL34_DATA(REGISTER_X));
+    processCurvefitSelection(s,&RR,&SMI, &aa0, &aa1, &aa2);
+    lrChosen = s;
+
+    temporaryInformation = TI_LR;
+    if(s == CF_CAUCHY_FITTING || s == CF_GAUSS_FITTING || s == CF_PARABOLIC_FITTING) {
+  	  liftStack();
+  	  setSystemFlag(FLAG_ASLIFT);
+  	  reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+  	  realToReal34(&aa2, REGISTER_REAL34_DATA(REGISTER_X));
+  	}
+    liftStack();
+    setSystemFlag(FLAG_ASLIFT);
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    realToReal34(&aa1, REGISTER_REAL34_DATA(REGISTER_X));
+    liftStack();
+    setSystemFlag(FLAG_ASLIFT);
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    realToReal34(&aa0, REGISTER_REAL34_DATA(REGISTER_X));
+  } else {
+    uInt32ToReal(minLRDataPoints(s),&NN);
+    checkMinimumDataPoints(&NN);              //Report an error
+  }
 }
 
 
+
+
+         //0010 0011 1111    //0x23F     (internal is inverted: '1' means enabled)
+         //0001 1100 0000    //0x1C0
 void fnProcessLR (uint16_t unusedButMandatoryParameter){
   fnProcessLRfind(lrSelection);
+/*                                           //check for number of parameters (superceded)
+  if( (lrSelection & 0x23F)) {               //if any 2-param models are included, at least 2 points needed
+    if(!checkMinimumDataPoints(const_2)) {
+      return;
+    } else {
+      fnProcessLRfind(lrSelection);
+    }
+  } else {                                   //otherwise all 2-param models excluded therefore check for 3 params
+    if(!checkMinimumDataPoints(const_3)) {
+      return;
+    } else {
+      fnProcessLRfind(lrSelection);
+    }
+  }
+*/
 }
 
 

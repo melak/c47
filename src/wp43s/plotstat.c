@@ -41,6 +41,7 @@
 
 static char tmp_names1[30];
 char * padEquals(const char * ss);
+void fnPlotRegressionLine(uint16_t plotMode);
 
 
 // This module originates and is part of the C43 fork, and is copied here. 
@@ -52,9 +53,9 @@ char * padEquals(const char * ss);
 
 
 #define roundedTicks false    //todo make variable
-graphtype *gr_x;
-graphtype *gr_y;
-graphtype telltale;
+float   *gr_x;
+float   *gr_y;
+float   telltale;
 uint16_t  ix_count;
   
 float     graph_dx;           // Many unused functions in WP43S. Do not change the variables.
@@ -118,10 +119,10 @@ void statGraphReset(void){
 void graph_setupmemory(void) {
   int i;
   if(telltale != MEM_INITIALIZED) {
-    gr_x = (graphtype*)malloc(LIM * sizeof(graphtype)); 
-    memset(gr_x, 0,           LIM * sizeof(graphtype));
-    gr_y = (graphtype*)malloc(LIM * sizeof(graphtype)); 
-    memset(gr_y, 0,           LIM * sizeof(graphtype));
+    gr_x = (float*)malloc(LIM * sizeof(float)); 
+    memset(gr_x, 0,         LIM * sizeof(float));
+    gr_y = (float*)malloc(LIM * sizeof(float)); 
+    memset(gr_y, 0,         LIM * sizeof(float));
     telltale = MEM_INITIALIZED;
     ix_count = 0;
   }
@@ -133,7 +134,7 @@ void graph_setupmemory(void) {
   } else
   {
   #ifdef PC_BUILD
-    printf("^^@@ Two arrays of %u bytes each created, i.e. %u blocks total\n",(uint32_t) (LIM * sizeof(graphtype)), (uint32_t)(2 * LIM * sizeof(graphtype) / 4));
+    printf("^^@@ Two arrays of %u bytes each created, i.e. %u blocks total\n",(uint32_t) (LIM * sizeof(float)), (uint32_t)(2 * LIM * sizeof(float) / 4));
   #endif
   }
   
@@ -221,7 +222,7 @@ infinite:
 
 //#define realToReal39(source, destination) decQuadFromNumber ((real39_t *)(destination), source, &ctxtReal39)
 
-void realToFloat(const real_t *vv, graphtype *v) {
+void realToFloat(const real_t *vv, float *v) {
   *v = fnRealToFloat(vv);
   #ifdef PC_BUILD
     char tmpString1[100];                      //allow for 75 digits
@@ -242,7 +243,7 @@ void realToDouble1(const real_t *vv, double *v) {
 
 void graph_sigmaplus(int8_t plusminus, real_t *xx, real_t *yy) {    //Called from STAT module from fnSigma(), to store the x,y pair to the memory structure.
   int16_t cnt;
-  graphtype x,y;
+  float x,y;
   realToInt32(SIGMA_N, cnt);
 
   if(cnt <= LIM) {
@@ -306,7 +307,7 @@ void graph_sigmaplus(int8_t plusminus, real_t *xx, real_t *yy) {    //Called fro
 }
 
 
-graphtype grf_x(int i) {
+float grf_x(int i) {
   if (jm_NVECT) {
     return gr_y[i];
   }
@@ -315,7 +316,7 @@ graphtype grf_x(int i) {
   }
 }
 
-graphtype grf_y(int i) {
+float grf_y(int i) {
   if (jm_NVECT) {
     return gr_x[i];
   }
@@ -326,10 +327,10 @@ graphtype grf_y(int i) {
 
 
 #ifndef TESTSUITE_BUILD
-  int16_t screen_window_x(graphtype x_min, graphtype x, graphtype x_max) {
-    int16_t temp; graphtype tempr;
+  int16_t screen_window_x(float x_min, float x, float x_max) {
+    int16_t temp; float tempr;
     if (Aspect_Square) {
-      tempr = ((x-x_min)/(x_max-x_min)*(graphtype)(SCREEN_HEIGHT_GRAPH-1.0f));
+      tempr = ((x-x_min)/(x_max-x_min)*(float)(SCREEN_HEIGHT_GRAPH-1.0f));
       temp = (int16_t) tempr;
       if (temp>SCREEN_HEIGHT_GRAPH-1) {
         temp=SCREEN_HEIGHT_GRAPH-1;
@@ -338,7 +339,7 @@ graphtype grf_y(int i) {
       return temp+SCREEN_WIDTH-SCREEN_HEIGHT_GRAPH;
     } 
     else {  //FULL SCREEN
-      tempr = ((x-x_min)/(x_max-x_min)*(graphtype)(SCREEN_WIDTH_GRAPH-1.0f));
+      tempr = ((x-x_min)/(x_max-x_min)*(float)(SCREEN_WIDTH_GRAPH-1.0f));
       temp = (int16_t) tempr;
       //printf("--> %d (%f %f)  ",temp, x_min,x_max);
       if (temp>SCREEN_WIDTH_GRAPH-1) {
@@ -354,13 +355,13 @@ graphtype grf_y(int i) {
   }
 
 
-  int16_t screen_window_y(graphtype y_min, graphtype y, graphtype y_max) {
+  int16_t screen_window_y(float y_min, float y, float y_max) {
     int16_t temp, minn;
-    graphtype tempr;
+    float tempr;
     if (!Aspect_Square) minn = SCREEN_NONSQ_HMIN;
     else minn = 0;
 
-    tempr = ((y-y_min)/(y_max-y_min)*(graphtype)(SCREEN_HEIGHT_GRAPH-1.0f - minn));
+    tempr = ((y-y_min)/(y_max-y_min)*(float)(SCREEN_HEIGHT_GRAPH-1.0f - minn));
     temp = (int16_t) tempr;
     if (temp>SCREEN_HEIGHT_GRAPH-1 - minn) {
       temp=SCREEN_HEIGHT_GRAPH-1 - minn;
@@ -464,10 +465,11 @@ void plotline(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn) {               
  }
 
 void plotline2(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn) {                   // Plots line from xo,yo to xn,yn; uses temporary x1,y1
-#define offset 0.55f
    pixelline(xo,yo,xn,yn,1);
    pixelline(xo-1,yo,xn-1,yn,1);
    pixelline(xo,yo-1,xn,yn-1,1);
+   //   pixelline(xo+1,yo,xn+1,yn,1);   //Do not use the full doubling, without it give as nice profile if the slope changes
+   //   pixelline(xo,yo+1,xn,yn+1,1);   
  }
 
 
@@ -651,8 +653,8 @@ void graphAxisDraw (void){
     printf("xzero=%d yzero=%d   \n",(int)xzero,(int)yzero);
   #endif
 
-  graphtype x; 
-  graphtype y;
+  float x; 
+  float y;
 
   if( PLOT_AXIS && !(yzero == SCREEN_HEIGHT_GRAPH-1 || yzero == minny)) {
     //DRAW XAXIS
@@ -893,6 +895,7 @@ void eformat (char* s02, const char* s01, double inreal, uint8_t prec, const cha
 void eformat_fix3 (char* s02, const char* s01, double inreal) {
   char *sign;
   char s03[100]; char s04[100];
+  s04[0]=0;
   if(inreal<0.0) {
     sign = "-"; 
     inreal = -inreal;
@@ -903,6 +906,7 @@ void eformat_fix3 (char* s02, const char* s01, double inreal) {
   } else {
     sprintf(s03,"%s%.3f",sign,inreal);
   }
+
   strcpy(s02,s01);
 
   if(inreal > 0) strcpy(s04," ");  //in place of negative sign
@@ -911,43 +915,27 @@ void eformat_fix3 (char* s02, const char* s01, double inreal) {
 }
 
 
-
-// Remove trailing zeroes from float strings
-static char * eatZeroesEnd(const char * ss) {
-  int8_t ix;
-  strcpy(tmp_names1,ss);
-  ix = stringByteLength(tmp_names1)-1;
-  while( ix > 0 ){
-    if(tmp_names1[ix]=='0' || tmp_names1[ix]==' ') {
-      tmp_names1[ix]=0;
-    } 
-    else {
-      break;
-    }
-    ix--;
-  }
-  if(tmp_names1[ix]=='.' || tmp_names1[ix]==',') {
-    tmp_names1[ix]=0;
-  } 
-  return tmp_names1;
-}
-
-
 char * padEquals(const char * ss) {
   int8_t ix = 0, iy = 0;
   tmp_names1[0]=0;
   while( ss[ix] != 0 ){
-    if(ss[ix]=='=') {
-      tmp_names1[iy++] = STD_SPACE_PUNCTUATION[0];
-      tmp_names1[iy++] = STD_SPACE_PUNCTUATION[1];
-      tmp_names1[iy++] = '=';
-      tmp_names1[iy++] = STD_SPACE_PUNCTUATION[0];
-      tmp_names1[iy++] = STD_SPACE_PUNCTUATION[1];
-      tmp_names1[iy] = 0;
-    } 
-    else {
+    if(!(ss[ix] & 0x80)) {
+      if(ss[ix]=='=') {
+        tmp_names1[iy++] = STD_SPACE_PUNCTUATION[0];
+        tmp_names1[iy++] = STD_SPACE_PUNCTUATION[1];
+        tmp_names1[iy++] = '=';
+        tmp_names1[iy++] = STD_SPACE_PUNCTUATION[0];
+        tmp_names1[iy++] = STD_SPACE_PUNCTUATION[1];
+        tmp_names1[iy] = 0;
+      } 
+      else {
+        tmp_names1[iy++] = ss[ix];
+        tmp_names1[iy] = 0;
+      }
+    } else {
       tmp_names1[iy++] = ss[ix];
-      tmp_names1[iy] = 0;      
+      if(ss[ix+1] != 0) tmp_names1[iy++] = ss[++ix];
+      tmp_names1[iy] = 0;
     }
     ix++;
   }
@@ -1023,6 +1011,7 @@ void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, con
 }
 
 
+
 void graphPlotstat(uint16_t selection){
   #if defined STATDEBUG && defined PC_BUILD
     printf("#####>>> graphPlotstat: selection:%u:%s  lastplotmode:%u  lrSelection:%u lrChosen:%u\n",selection, getCurveFitModeName(selection), lastPlotMode, lrSelection, lrChosen);
@@ -1031,8 +1020,8 @@ void graphPlotstat(uint16_t selection){
   uint16_t  cnt, ix, statnum;
   uint16_t  xo, xn, xN; 
   uint8_t   yo, yn, yN;
-  graphtype x; 
-  graphtype y;
+  float x; 
+  float y;
 
   statnum = 0;
 //  graphAxisDraw();                        //Draw the axis on any uncontrolled scale to start. Maybe optimize by remembering if there is an image on screen Otherwise double axis draw.
@@ -1044,9 +1033,8 @@ graph_axis();
     #if defined STATDEBUG && defined PC_BUILD
       printf("statnum n=%d\n",statnum);
     #endif 
-  }
 
-  if(telltale == MEM_INITIALIZED && statnum >= 2) {
+
     //AUTOSCALE
     x_min = FLoatingMax;
     x_max = FLoatingMin;
@@ -1113,8 +1101,8 @@ graph_axis();
       printf("Axis2: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);   
     #endif
   
-    graphtype dx = x_max-x_min;
-    graphtype dy = y_max-y_min;
+    float dx = x_max-x_min;
+    float dy = y_max-y_min;
   
     if (dy == 0.0f) {
       dy = 1.0f;
@@ -1207,16 +1195,14 @@ graph_axis();
     }
     //#################################################### ^^^ MAIN GRAPH LOOP ^^^          
 
-
-
-  if(selection != 0) {
-    processCurvefitSelection(selection, &RR, &SMI, &aa0, &aa1, &aa2);
-    realMultiply(&RR,&RR,&RR,&ctxtReal39);
-    drawline(selection, &RR, &SMI, &aa0, &aa1, &aa2);
-  }
-
+    if(selection != 0) {
+      processCurvefitSelection(selection, &RR, &SMI, &aa0, &aa1, &aa2);
+      realMultiply(&RR,&RR,&RR,&ctxtReal39);
+      drawline(selection, &RR, &SMI, &aa0, &aa1, &aa2);
+    }
 
   } else {
+    calcMode = CM_NORMAL;
     displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "There is no statistical data available!");
@@ -1224,6 +1210,23 @@ graph_axis();
     #endif
   }
 #endif
+}
+
+
+int32_t minLRDataPoints(uint16_t selection){
+      switch(selection) {
+        case 1  :
+        case 2  :
+        case 4  :
+        case 8  :
+        case 16 :
+        case 32 : return 2; break;
+        case 64 :
+        case 128:
+        case 256: return 3; break;
+        case 512: return 2; break;                      //ORTHOF ASSESS (2 points minimum)
+        default : return 0xFFFF; break;
+      }
 }
 
 
@@ -1238,86 +1241,87 @@ graph_axis();
     int32_t nn;
     char ss[100], tt[100];
 
-
-    realToFloat(RR , &rr );
-    realToFloat(SMI, &smi);
-    realToFloat(aa0, &a0 );
-    realToFloat(aa1, &a1 );
-    realToFloat(aa2, &a2 );
     realToInt32(SIGMA_N, nn);  
+    if(nn >= minLRDataPoints(selection)) {
+      realToFloat(RR , &rr );
+      realToFloat(SMI, &smi);
+      realToFloat(aa0, &a0 );
+      realToFloat(aa1, &a1 );
+      realToFloat(aa2, &a2 );
 
-    #if defined STATDEBUG && defined PC_BUILD
-      printf("plotting line: a2 %f a1 %f a0 %f\n",a2,a1,a0);
-    #endif //STATDEBUG
-    if((selection==0 && a2 == 0 && a1 == 0 && a0 == 0)) {
       #if defined STATDEBUG && defined PC_BUILD
-        printf("return, nothing selected, zero parameters, nothing to draw\n");
+        printf("plotting line: a2 %f a1 %f a0 %f\n",a2,a1,a0);
       #endif //STATDEBUG
-      return;
-    }
-    double  ix;
-    uint16_t  xo = 0, xn, xN = 0; 
-    uint8_t   yo = 0, yn, yN = 0;
-    double    x = x_min; 
-    double    y = 0.0;
-    int16_t   Intervals = numberIntervals; //increase resulution in beginning and end of graph, to get a better starting and ending point in y
-    uint16_t  iterations = 0;
-
-    for (ix = (double)x_min; iterations < 2000 && x < x_max+(x_max-x_min)*0.5 && xN != SCREEN_WIDTH-1; iterations++) {       //Variable accuracy line plot
-      
-      xo = xN;
-      yo = yN;
-
-      for(int xx =1; xx<50; xx++) {
-        x = ix + (double)(x_max-x_min)/(double)(Intervals) * (double)(1.0/(double)xx );
-        if(USEFLOATING != 0) {
-          //TODO create REAL from x (double) if REALS will be used
-          sprintf(ss,"%f",x); stringToReal(ss,&XX,&ctxtReal39);
-        }
-        yIsFnx( USEFLOATING, selection, x, &y, a0, a1, a2, &XX, &YY, RR, SMI, aa0, aa1, aa2);
-        xN = screen_window_x(x_min,(graphtype)x,x_max);
-        yN = screen_window_y(y_min,(graphtype)y,y_max);
-        if(abs((int)yN-(int)yo)<=2 && abs((int)xN-(int)xo)<=2) break;
-      }
-      ix = x;
-
-      if(iterations > 0) {  //Allow for starting values to accumulate in the registers at ix = 0
+      if((selection==0 && a2 == 0 && a1 == 0 && a0 == 0)) {
         #if defined STATDEBUG && defined PC_BUILD
-          printf("plotting graph: jm:%i iter:%u ix:%f I.vals:%u ==>xmin:%f (x:%f) xmax:%f ymin:%f (y:%f) ymax:%f xN:%d yN:%d \n",jumpMonitor,iterations,ix,Intervals,x_min,x,x_max,y_min,y,y_max,  xN,yN);
-        #endif
-        int16_t minN_y,minN_x;
-        if (!Aspect_Square) {minN_y = SCREEN_NONSQ_HMIN; minN_x = 0;}
-        else {minN_y = 0; minN_x = SCREEN_WIDTH-SCREEN_HEIGHT_GRAPH;}
+          printf("return, nothing selected, zero parameters, nothing to draw\n");
+        #endif //STATDEBUG
+        return;
+      }
+      double  ix;
+      uint16_t  xo = 0, xn, xN = 0; 
+      uint8_t   yo = 0, yn, yN = 0;
+      double    x = x_min; 
+      double    y = 0.0;
+      int16_t   Intervals = numberIntervals; //increase resulution in beginning and end of graph, to get a better starting and ending point in y
+      uint16_t  iterations = 0;
 
-        #define tol 4
-        if(xN<SCREEN_WIDTH_GRAPH && xN>minN_x && yN<SCREEN_HEIGHT_GRAPH-tol && yN>minN_y) {
-          yn = yN;
-          xn = xN;
-          #if defined STATDEBUG_VERBOSE && defined PC_BUILD
-            printf("Plotting box to x=%d y=%d\n",xn,yn);
-          #endif
-          if(fittedcurveboxes) plotbox(xn,yn);
-          if(xo < SCREEN_WIDTH_GRAPH && xo > minN_x && yo < SCREEN_HEIGHT_GRAPH-tol && yo > minN_y) {
-            #if defined STATDEBUG_VERBOSE && defined PC_BUILD
-              printf("Plotting line to x=%d y=%d\n",xn,yn);
-            #endif
-            plotline2(xo, yo, xn, yn);
+      for (ix = (double)x_min; iterations < 2000 && x < x_max+(x_max-x_min)*0.5 && xN != SCREEN_WIDTH-1; iterations++) {       //Variable accuracy line plot
+        
+        xo = xN;
+        yo = yN;
+
+        for(int xx =1; xx<50; xx++) {
+          x = ix + (double)(x_max-x_min)/(double)(Intervals) * (double)(1.0/(double)xx );
+          if(USEFLOATING != 0) {
+            //TODO create REAL from x (double) if REALS will be used
+            sprintf(ss,"%f",x); stringToReal(ss,&XX,&ctxtReal39);
           }
-        } 
-        else {
+          yIsFnx( USEFLOATING, selection, x, &y, a0, a1, a2, &XX, &YY, RR, SMI, aa0, aa1, aa2);
+          xN = screen_window_x(x_min,(float)x,x_max);
+          yN = screen_window_y(y_min,(float)y,y_max);
+          if(abs((int)yN-(int)yo)<=2 && abs((int)xN-(int)xo)<=2) break;
+        }
+        ix = x;
+
+        if(iterations > 0) {  //Allow for starting values to accumulate in the registers at ix = 0
           #if defined STATDEBUG && defined PC_BUILD
-            printf("Not plotted line: (%u %u) ",xN,yN);
-            if(!(xN < SCREEN_WIDTH_GRAPH ))  printf("x>>%u ",SCREEN_WIDTH_GRAPH); else
-            if(!(xN > minN_x              )) printf("x<<%u ",minN_x);
-            if(!(yN < SCREEN_HEIGHT_GRAPH))  printf("y>>%u ",SCREEN_HEIGHT_GRAPH); else
-            if(!(yN > 1+minN_y            )) printf("y<<%u ",1+minN_y);
-            printf("\n");
-          #endif //STATDEBUG
+            printf("plotting graph: iter:%u ix:%f I.vals:%u ==>xmin:%f (x:%f) xmax:%f ymin:%f (y:%f) ymax:%f xN:%d yN:%d \n",iterations,ix,Intervals,x_min,x,x_max,y_min,y,y_max,  xN,yN);
+          #endif
+          int16_t minN_y,minN_x;
+          if (!Aspect_Square) {minN_y = SCREEN_NONSQ_HMIN; minN_x = 0;}
+          else {minN_y = 0; minN_x = SCREEN_WIDTH-SCREEN_HEIGHT_GRAPH;}
+
+          #define tol 4
+          if(xN<SCREEN_WIDTH_GRAPH && xN>minN_x && yN<SCREEN_HEIGHT_GRAPH-tol && yN>minN_y) {
+            yn = yN;
+            xn = xN;
+            #if defined STATDEBUG_VERBOSE && defined PC_BUILD
+              printf("Plotting box to x=%d y=%d\n",xn,yn);
+            #endif
+            if(fittedcurveboxes) plotbox(xn,yn);
+            if(xo < SCREEN_WIDTH_GRAPH && xo > minN_x && yo < SCREEN_HEIGHT_GRAPH-tol && yo > minN_y) {
+              #if defined STATDEBUG_VERBOSE && defined PC_BUILD
+                printf("Plotting line to x=%d y=%d\n",xn,yn);
+              #endif
+              plotline2(xo, yo, xn, yn);
+            }
+          } 
+          else {
+            #if defined STATDEBUG && defined PC_BUILD
+              printf("Not plotted line: (%u %u) ",xN,yN);
+              if(!(xN < SCREEN_WIDTH_GRAPH ))  printf("x>>%u ",SCREEN_WIDTH_GRAPH); else
+              if(!(xN > minN_x              )) printf("x<<%u ",minN_x);
+              if(!(yN < SCREEN_HEIGHT_GRAPH))  printf("y>>%u ",SCREEN_HEIGHT_GRAPH); else
+              if(!(yN > 1+minN_y            )) printf("y<<%u ",1+minN_y);
+              printf("\n");
+            #endif //STATDEBUG
+          }
         }
       }
     }
 
-    #define horOffsetR 109 //digit righ side aliognment
+    #define horOffsetR 109+5 //digit righ side aliognment
     #define autoinc 19 //text line spacing
     #define autoshift -5 //text line spacing
     #define horOffset 1 //labels from the left
@@ -1326,60 +1330,66 @@ graph_axis();
       strcpy(ss,eatSpacesEnd(getCurveFitModeName(selection)));
       if(lrCountOnes(lrSelection)>1 && selection == lrChosen) strcat(ss,lrChosen == 0 ? "" : STD_SUP_ASTERISK);
         showString(ss, &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc * index++ -10 +autoshift, vmNormal, false, false);
+ 
+      if(nn >= minLRDataPoints(selection)) {
 
-      if(selection != CF_GAUSS_FITTING && selection != CF_CAUCHY_FITTING) {
-        strcpy(ss,"y="); strcat(ss,getCurveFitModeFormula(selection)); showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc * index++ -7 +autoshift, vmNormal, false, false);
-      } else {
-        strcpy(ss,"y="); strcat(ss,getCurveFitModeFormula(selection)); showString(          ss, &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc * index++ -7 +autoshift, vmNormal, false, false);        
-      }
-      
-      if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT_STAT) {
-        sprintf(ss,"%d",(int)nn);              showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -2 +autoshift, vmNormal, false, false);
-        sprintf(ss, STD_SPACE_PUNCTUATION STD_SPACE_PUNCTUATION "n=");                     showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++ -2 +autoshift, vmNormal, false, false);
-      }
-
-      if(selection != CF_ORTHOGONAL_FITTING) {
-        eformat_eng2(ss,"",a0,3,"");           showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
-        strcpy(ss,"a" STD_SUB_0 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
-
-        eformat_eng2(ss,"",a1,3,"");           showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
-        strcpy(ss,"a" STD_SUB_1 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
-
-        if(selection == CF_PARABOLIC_FITTING || selection == CF_GAUSS_FITTING || selection == CF_CAUCHY_FITTING) { 
-          eformat_eng2(ss,"",a2,3,"");         showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);      
-          strcpy(ss,"a" STD_SUB_2 "=");        showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
-        }
-
-        eformat(ss,"",rr,4,"");                showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  +2  +autoshift, vmNormal, false, false);      
-        strcpy(ss,"r" STD_SUP_2 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   +2 +autoshift, vmNormal, false, false);
-
-        eformat_eng2(ss,"(",x_max,2,""); 
-        eformat_eng2(tt,radixProcess("#"),y_max,2,")");
-        strcat(tt,ss);                    nn = showString(padEquals(ss), &standardFont,160-2 - stringWidth(tt, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index        +autoshift, vmNormal, false, false);      
-        eformat_eng2(ss,radixProcess("#"),y_max,2,")");      showString(padEquals(ss), &standardFont,nn+3, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++      +autoshift, vmNormal, false, false);      
-        eformat_eng2(ss,"(",x_min,2,"");  nn = showString(padEquals(ss), &standardFont,horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index    -2  +autoshift, vmNormal, false, false);      
-        eformat_eng2(ss,radixProcess("#"),y_min,2,")");      showString(padEquals(ss), &standardFont,nn+3, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++  -2  +autoshift, vmNormal, false, false);      
-        
-      }
-      else {
-        eformat_fix3(ss,"",a0);                showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
-        strcpy(ss,"a" STD_SUB_0 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
-        eformat_fix3(ss,"",a1);                showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
-        strcpy(ss,"a" STD_SUB_1 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
-        if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_STAT) {
-          if(nn>=30) {
-            eformat_eng2(ss,"",smi,3,"");      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  +1 +autoshift, vmNormal, false, false);
-          }
-          strcpy(ss,"s" STD_SUB_m STD_SUB_i "=");showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   +1 +autoshift, vmNormal, false, false);
+        if(selection != CF_GAUSS_FITTING && selection != CF_CAUCHY_FITTING) {
+          strcpy(ss,"y="); strcat(ss,getCurveFitModeFormula(selection)); showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc * index++ -7 +autoshift, vmNormal, false, false);
         } else {
-          eformat(ss,"",rr,4,"");              showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  +2  +autoshift, vmNormal, false, false);      
-          strcpy(ss,"r" STD_SUP_2 "=");        showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   +2 +autoshift, vmNormal, false, false);
+          strcpy(ss,"y="); strcat(ss,getCurveFitModeFormula(selection)); showString(          ss, &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc * index++ -7 +autoshift, vmNormal, false, false);        
+        }
+        
+        if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT_STAT) {
+          sprintf(ss,"%d",(int)nn);              showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -2 +autoshift, vmNormal, false, false);
+          sprintf(ss, STD_SPACE_PUNCTUATION STD_SPACE_PUNCTUATION "n=");                     showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++ -2 +autoshift, vmNormal, false, false);
         }
 
-        //eformat(ss,"x,y" STD_SUB_m STD_SUB_i STD_SUB_n "=", x_min,5);
-        //showString(ss, &standardFont, 0, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++ -2 +autoshift, vmNormal, false, false);
-        //eformat(ss,"x,y" STD_SUB_m STD_SUB_a STD_SUB_x "=", x_max,5);
-        //showString(ss, &standardFont, 0, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++ -2 +autoshift, vmNormal, false, false);
+        if(selection != CF_ORTHOGONAL_FITTING) {
+          eformat_eng2(ss,"",a0,3,"");           showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
+          strcpy(ss,"a" STD_SUB_0 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
+
+          eformat_eng2(ss,"",a1,3,"");           showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
+          strcpy(ss,"a" STD_SUB_1 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
+
+          if(selection == CF_PARABOLIC_FITTING || selection == CF_GAUSS_FITTING || selection == CF_CAUCHY_FITTING) { 
+            eformat_eng2(ss,"",a2,3,"");         showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);      
+            strcpy(ss,"a" STD_SUB_2 "=");        showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
+          }
+
+          eformat(ss,"",rr,4,"");                showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  +2  +autoshift, vmNormal, false, false);      
+          strcpy(ss,"r" STD_SUP_2 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   +2 +autoshift, vmNormal, false, false);
+
+          eformat_eng2(ss,"(",x_max,2,""); 
+          eformat_eng2(tt,radixProcess("#"),y_max,2,")");
+          strcat(tt,ss);                    nn = showString(padEquals(ss), &standardFont,160-2 - stringWidth(tt, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index        +autoshift, vmNormal, false, false);      
+          eformat_eng2(ss,radixProcess("#"),y_max,2,")");      showString(padEquals(ss), &standardFont,nn+3, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++      +autoshift, vmNormal, false, false);      
+          eformat_eng2(ss,"(",x_min,2,"");  nn = showString(padEquals(ss), &standardFont,horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index    -2  +autoshift, vmNormal, false, false);      
+          eformat_eng2(ss,radixProcess("#"),y_min,2,")");      showString(padEquals(ss), &standardFont,nn+3, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++  -2  +autoshift, vmNormal, false, false);      
+          
+        }
+        else {                          //ORTHOF
+          eformat_fix3(ss,"",a0);                showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
+
+          strcpy(ss,"a" STD_SUB_0 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
+          eformat_fix3(ss,"",a1);                showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
+          strcpy(ss,"a" STD_SUB_1 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
+          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_STAT) {
+            if(nn>=30) {
+              eformat_eng2(ss,"",smi,3,"");      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  +1 +autoshift, vmNormal, false, false);
+            }
+            strcpy(ss,"s" STD_SUB_m STD_SUB_i "=");showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   +1 +autoshift, vmNormal, false, false);
+          } else {
+            eformat(ss,"",rr,4,"");              showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  +2  +autoshift, vmNormal, false, false);      
+            strcpy(ss,"r" STD_SUP_2 "=");        showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   +2 +autoshift, vmNormal, false, false);
+          }
+
+          //eformat(ss,"x,y" STD_SUB_m STD_SUB_i STD_SUB_n "=", x_min,5);
+          //showString(ss, &standardFont, 0, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++ -2 +autoshift, vmNormal, false, false);
+          //eformat(ss,"x,y" STD_SUB_m STD_SUB_a STD_SUB_x "=", x_max,5);
+          //showString(ss, &standardFont, 0, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++ -2 +autoshift, vmNormal, false, false);
+        }
+      } else {
+        showString("insufficient data", &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc * index++ -7 +autoshift, vmNormal, false, false);
       }
     }
   }
@@ -1413,9 +1423,6 @@ void fnPlotStat(uint16_t plotMode){
 #if defined STATDEBUG && defined PC_BUILD
   printf("fnPlotStat1: plotSelection = %u; Plotmode=%u\n",plotSelection,plotMode);
   printf("#####>>> fnPlotStat1: plotSelection:%u:%s  Plotmode:%u lastplotmode:%u  lrSelection:%u lrChosen:%u\n",plotSelection, getCurveFitModeName(plotSelection), plotMode, lastPlotMode, lrSelection, lrChosen);
-#endif //STATDEBUG
-
-#if defined STATDEBUG && defined PC_BUILD
   uint16_t i;
   int16_t cnt;
   realToInt32(SIGMA_N, cnt);
@@ -1429,10 +1436,13 @@ void fnPlotStat(uint16_t plotMode){
 jm_SCALE = false;
 
 #ifndef TESTSUITE_BUILD
-  if (!(lastPlotMode == PLOT_NOTHING || lastPlotMode == PLOT_START)) plotMode = lastPlotMode;
+
+  if (!(lastPlotMode == PLOT_NOTHING || lastPlotMode == PLOT_START)) {
+    plotMode = lastPlotMode;
+  }
   calcMode = CM_PLOT_STAT;
   statGraphReset(); 
-  if(plotMode == PLOT_START){
+  if(plotMode == PLOT_START) {
     plotSelection = 0;
   }
   if(plotMode == PLOT_LR && lrSelection != 0) {
@@ -1441,6 +1451,7 @@ jm_SCALE = false;
 
   hourGlassIconEnabled = true;
   showHideHourGlass();
+
 
   #ifdef DMCP_BUILD
     lcd_refresh();
@@ -1497,9 +1508,10 @@ void fnPlotRegressionLine(uint16_t plotMode){
         plotSelection = 1;
       }
 
-    //  while((plotSelection != ( (lrSelection == 0 ? 1023 : lrSelection) & plotSelection)) && (plotSelection < 1024)){ //fast forward to selected LR
-    //    plotSelection = plotSelection << 1;
-    //  }
+      while((plotSelection != ( (lrSelection == 0 ? 1023 : lrSelection) & plotSelection)) && (plotSelection < 1024)){ //fast forward to selected LR
+        plotSelection = plotSelection << 1;
+      }
+    
       if(plotSelection >= 1024) {
         plotSelection = 0;  //purposely change to zero graph display to give a no-line view
       }
@@ -1513,6 +1525,11 @@ void fnPlotRegressionLine(uint16_t plotMode){
       if(plotSelection >= 1024){
         plotSelection = 0;  //purposely change to zero graph display to give a no line view
       }
+
+      while((plotSelection != ( (lrSelection == 0 ? 1023 : lrSelection) & plotSelection)) && (plotSelection < 1024) && (plotSelection > 0)){ //fast forward to selected LR
+        plotSelection = plotSelection >> 1;
+      }
+    
       break;
 
     case PLOT_LR:

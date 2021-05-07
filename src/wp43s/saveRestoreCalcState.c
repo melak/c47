@@ -238,8 +238,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&y_max,                              sizeof(y_max),                              BACKUP);
     save(&xzero,                              sizeof(xzero),                              BACKUP);
     save(&yzero,                              sizeof(yzero),                              BACKUP);
-    save(gr_x,                                LIM*sizeof(graphtype),                      BACKUP);
-    save(gr_y,                                LIM*sizeof(graphtype),                      BACKUP);
+    save(gr_x,                                LIM*sizeof(float),                        BACKUP);
+    save(gr_y,                                LIM*sizeof(float),                        BACKUP);
     save(&telltale,                           sizeof(telltale),                           BACKUP);
     save(&ix_count,                           sizeof(ix_count),                           BACKUP);
     save(&matrixIndex,                        sizeof(matrixIndex),                        BACKUP);
@@ -433,8 +433,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&y_max,                              sizeof(y_max),                              BACKUP);
       restore(&xzero,                              sizeof(xzero),                              BACKUP);
       restore(&yzero,                              sizeof(yzero),                              BACKUP);
-      restore(gr_x,                                LIM*sizeof(graphtype),                      BACKUP);
-      restore(gr_y,                                LIM*sizeof(graphtype),                      BACKUP);
+      restore(gr_x,                                LIM*sizeof(float),                        BACKUP);
+      restore(gr_y,                                LIM*sizeof(float),                        BACKUP);
       restore(&telltale,                           sizeof(telltale),                           BACKUP);
       restore(&ix_count,                           sizeof(ix_count),                           BACKUP);
       restore(&matrixIndex,                        sizeof(matrixIndex),                        BACKUP);
