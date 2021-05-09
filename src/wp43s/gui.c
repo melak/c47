@@ -107,9 +107,8 @@
         btnClicked(w, "00");
         break;
 
-      case 89:  // Y
-      case 121: // y
-        //printf("key pressed: y y^x\n");
+      case 76:  // L
+        //printf("key pressed: L EXP\n");
         btnClicked(w, "01");
         break;
 
@@ -119,7 +118,6 @@
         btnClicked(w, "02");
         break;
 
-      case 76:  // L
       case 108: // l
         //printf("key pressed: l ln\n");
         btnClicked(w, "03");
@@ -933,7 +931,7 @@
       btn25   = gtk_button_new();
       btn26   = gtk_button_new();
       gtk_widget_set_tooltip_text(GTK_WIDGET(btn21), "i");
-      gtk_widget_set_tooltip_text(GTK_WIDGET(btn22), "y");
+      gtk_widget_set_tooltip_text(GTK_WIDGET(btn22), "L");
       gtk_widget_set_tooltip_text(GTK_WIDGET(btn23), "t");
       gtk_widget_set_tooltip_text(GTK_WIDGET(btn24), "l");
       gtk_widget_set_tooltip_text(GTK_WIDGET(btn25), "e");
