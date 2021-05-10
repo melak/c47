@@ -790,12 +790,13 @@ void fnLuDecomposition(uint16_t unusedParamButMandatory) {
       if(res.matrixElements) {
         realMatrixIdentity(&pivot, res.header.matrixColumns);
         for(uint16_t i = 0; i < res.header.matrixColumns; ++i) {
-          complexMatrixSwapRows(&x, &x, i, p[i]);
+          realMatrixSwapRows(&pivot, &pivot, i, p[i]);
         }
         liftStack();
         convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
         convertReal34MatrixToReal34MatrixRegister(&pivot, REGISTER_Y);
         complexMatrixFree(&res);
+        realMatrixFree(&pivot);
         setSystemFlag(FLAG_ASLIFT);
       }
       else {
@@ -2517,7 +2518,7 @@ void _multiplyComplexMatrix(const complex34Matrix_t *matrix, const real_t *xr, c
   }
 }
 
-void multiplyComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res){
+void multiplyComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res) {
   const uint16_t rows = y->header.matrixRows;
   const uint16_t iter = y->header.matrixColumns;
   const uint16_t cols = x->header.matrixColumns;
@@ -2730,8 +2731,13 @@ void WP34S_LU_decomposition(const real34Matrix_t *matrix, real34Matrix_t *lu, ui
       *p++ = pvt;
 
     /* pivot if required */
-    if(pvt != k)
-      realMatrixSwapRows(lu, lu, k, pvt);
+    if(pvt != k) {
+      for(i = 0; i < n; i++) {
+        realCopy(&tmpMat[k   * n + i], &t                  );
+        realCopy(&tmpMat[pvt * n + i], &tmpMat[k   * n + i]);
+        realCopy(&t,                   &tmpMat[pvt * n + i]);
+      }
+    }
 
     /* Check for singular */
     realCopy(&tmpMat[k * n + k], &t);
@@ -2808,7 +2814,7 @@ void complex_LU_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t
       realMultiply(&tmpMat[(j * n + k) * 2 + 1], &tmpMat[(j * n + k) * 2 + 1], &v, &ctxtReal39);
       realAdd(&t, &v, &t, &ctxtReal39);
       realSquareRoot(&t, &u, &ctxtReal39);
-      if (realCompareGreaterThan(&u, &max)) {
+      if(realCompareGreaterThan(&u, &max)) {
         realCopy(&u, &max);
         pvt = j;
       }
@@ -2817,8 +2823,16 @@ void complex_LU_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t
       *p++ = pvt;
 
     /* pivot if required */
-    if(pvt != k)
-      complexMatrixSwapRows(lu, lu, k, pvt);
+    if(pvt != k) {
+      for(i = 0; i < n; i++) {
+        realCopy(&tmpMat[(k   * n + i) * 2    ], &t                            );
+        realCopy(&tmpMat[(pvt * n + i) * 2    ], &tmpMat[(k   * n + i) * 2    ]);
+        realCopy(&t,                             &tmpMat[(pvt * n + i) * 2    ]);
+        realCopy(&tmpMat[(k   * n + i) * 2 + 1], &t                            );
+        realCopy(&tmpMat[(pvt * n + i) * 2 + 1], &tmpMat[(k   * n + i) * 2 + 1]);
+        realCopy(&t,                             &tmpMat[(pvt * n + i) * 2 + 1]);
+      }
+    }
 
     /* Check for singular */
     if(realIsZero(&tmpMat[(k * n + k) * 2]) && realIsZero(&tmpMat[(k * n + k) * 2 + 1])) {
@@ -3049,7 +3063,7 @@ static void complex_matrix_pivoting_solve(const complex34Matrix_t *LU, real_t *b
 void WP34S_matrix_inverse(const real34Matrix_t *matrix, real34Matrix_t *res) {
   const uint16_t n = matrix->header.matrixColumns;
   real_t *x;
-  real34Matrix_t lu, pvt;
+  real34Matrix_t lu;
   uint16_t *pivots;
   uint16_t i, j;
   real_t *b;
@@ -3086,28 +3100,14 @@ void WP34S_matrix_inverse(const real34Matrix_t *matrix, real34Matrix_t *res) {
   }
   freeWp43s(b, res->header.matrixRows * REAL_SIZE);
   freeWp43s(x, res->header.matrixRows * REAL_SIZE);
-  realMatrixFree(&lu);
-
-  lu.header.matrixRows    = res->header.matrixRows;
-  lu.header.matrixColumns = res->header.matrixColumns;
-  lu.matrixElements       = res->matrixElements;
-  res->header.matrixRows    = 0;
-  res->header.matrixColumns = 0;
-  res->matrixElements       = NULL;
-  realMatrixIdentity(&pvt, n);
-  for(i = 0; i < n; ++i)
-    realMatrixSwapRows(&pvt, &pvt, i, pivots[i]);
-  multiplyRealMatrices(&lu, &pvt, res);
-
   freeWp43s(pivots, TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
-  realMatrixFree(&pvt);
   realMatrixFree(&lu);
 }
 
 void complex_matrix_inverse(const complex34Matrix_t *matrix, complex34Matrix_t *res) {
   const uint16_t n = matrix->header.matrixColumns;
   real_t *x;
-  complex34Matrix_t lu, pvt;
+  complex34Matrix_t lu;
   uint16_t *pivots;
   uint16_t i, j;
   real_t *b;
@@ -3148,21 +3148,7 @@ void complex_matrix_inverse(const complex34Matrix_t *matrix, complex34Matrix_t *
   }
   freeWp43s(b, res->header.matrixRows * REAL_SIZE * 2);
   freeWp43s(x, res->header.matrixRows * REAL_SIZE * 2);
-  complexMatrixFree(&lu);
-
-  lu.header.matrixRows    = res->header.matrixRows;
-  lu.header.matrixColumns = res->header.matrixColumns;
-  lu.matrixElements       = res->matrixElements;
-  res->header.matrixRows    = 0;
-  res->header.matrixColumns = 0;
-  res->matrixElements       = NULL;
-  complexMatrixIdentity(&pvt, n);
-  for(i = 0; i < n; ++i)
-    complexMatrixSwapRows(&pvt, &pvt, i, pivots[i]);
-  multiplyComplexMatrices(&lu, &pvt, res);
-
   freeWp43s(pivots, TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
-  complexMatrixFree(&pvt);
   complexMatrixFree(&lu);
 }
 
@@ -3326,6 +3312,7 @@ void WP34S_matrix_linear_eqn(const real34Matrix_t *a, const real34Matrix_t *b, r
   return;
 }
 
+#if 0
 void complex_matrix_linear_eqn(const complex34Matrix_t *a, const complex34Matrix_t *b, complex34Matrix_t *r) {
   const uint16_t n = a->header.matrixRows;
   int i;
@@ -3385,13 +3372,50 @@ void complex_matrix_linear_eqn(const complex34Matrix_t *a, const complex34Matrix
   }
   complex_matrix_pivoting_solve(&mat, bv, pivots, cv, &ctxtReal39);
   for(i = 0; i < n; i++) {
-    realToReal34(cv + i * 2    , VARIABLE_REAL34_DATA(&b->matrixElements[i]));
-    realToReal34(cv + i * 2 + 1, VARIABLE_IMAG34_DATA(&b->matrixElements[i]));
+    realToReal34(cv + i * 2    , VARIABLE_REAL34_DATA(&r->matrixElements[i]));
+    realToReal34(cv + i * 2 + 1, VARIABLE_IMAG34_DATA(&r->matrixElements[i]));
   }
   freeWp43s(pivots, TO_BLOCKS(sizeof(uint16_t) * n));
   freeWp43s(cv, n * REAL_SIZE * 2);
   freeWp43s(bv, n * REAL_SIZE * 2);
   return;
+}
+#endif
+
+void complex_matrix_linear_eqn(const complex34Matrix_t *a, const complex34Matrix_t *b, complex34Matrix_t *r) {
+  complex34Matrix_t inv_a;
+
+  if(a->header.matrixColumns != a->header.matrixRows) {
+    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "not a square matrix (%d" STD_CROSS "%d)",
+              a->header.matrixRows, a->header.matrixColumns);
+      moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return;
+  }
+  if(b->header.matrixRows != a->header.matrixRows || b->header.matrixColumns != 1) {
+    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "not a column vector or size mismatch (%d" STD_CROSS "%d)",
+              b->header.matrixRows, b->header.matrixColumns);
+      moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return;
+  }
+
+  complex_matrix_inverse(a, &inv_a);
+  if(!inv_a.matrixElements) {
+    displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "attempt to invert a singular matrix");
+      moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return;
+  }
+
+  multiplyComplexMatrices(&inv_a, b, r);
+  complexMatrixFree(&inv_a);
 }
 #endif
 
