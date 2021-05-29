@@ -160,7 +160,7 @@ void xthRootReal(real_t *yy, real_t *xx, realContext_t *realContext) {
   telltale = 0;
   if(getSystemFlag(FLAG_SPCRES)) {
     //0
-    if(   ((real34IsZero(&y)                          && (realCompareGreaterEqual(&x, const_0) || (realIsInfinite(&x) && realIsPositive(&x)))))
+    if(   ((realIsZero(&y)                            && (realCompareGreaterEqual(&x, const_0) || (realIsInfinite(&x) && realIsPositive(&x)))))
        || ((realIsInfinite(&y) && realIsPositive(&y)) && (realCompareLessThan(&x, const_0) && (!realIsInfinite(&x))))
       ) {
       telltale += 1;

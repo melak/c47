@@ -9,6 +9,15 @@ In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
 Func: fnDecomp
 
 ;=======================================
+; DECOMP(Long Integer) --> Long Integer, Long Integer
+;=======================================
+In:  WS=64 FL_ASLIFT=1 RX=LonI:"8754"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"8754" RX=LonI:"1" RY=LonI:"8754"
+
+In:  WS=64 FL_ASLIFT=1 RX=LonI:"-1234"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"-1234" RX=LonI:"1" RY=LonI:"-1234"
+
+;=======================================
 ; DECOMP(Real) --> Long Integer, Long Integer
 ;=======================================
 In:  WS=64 FL_ASLIFT=1 RX=Real:"0.5"
@@ -23,12 +32,6 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-0.25" RX=LonI:"4" RY=LonI:"-1"
 ;************************************************************************************************************************************************************
 ; DECOMP(*) -> Error 24
 ;************************************************************************************************************************************************************
-
-;=======================================
-; DECOMP(Long Integer) --> Error 24
-;=======================================
-In:  WS=64 FL_ASLIFT=0 RX=LonI:"1"
-Out: EC=24 FL_ASLIFT=0 RX=LonI:"1"
 
 ;=======================================
 ; DECOMP(Short Integer) --> Error 24

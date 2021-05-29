@@ -120,7 +120,6 @@
 			<Add option="`pkg-config gtk+-3.0 --cflags`" />
 			<Add option="-DPC_BUILD" />
 			<Add option="-DOS64BIT" />
-			<Add option="-DCODEBLOCKS_OVER_SCORE" />
 			<Add directory="dep/decNumberICU" />
 			<Add directory="src/wp43s" />
 		</Compiler>

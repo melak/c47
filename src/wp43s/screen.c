@@ -920,26 +920,30 @@
         linkToRealMatrixRegister(calcMode == CM_MIM ? matrixIndex : REGISTER_X, &matrix);
         const uint16_t rows = matrix.header.matrixRows;
         const uint16_t cols = matrix.header.matrixColumns;
-        bool_t smallFont = ((rows >= 4) || (cols >= 4) || (displayFormat != DF_ALL && displayFormatDigits > 3));
-        int16_t dummyVal[25] = {};
-        if(getRealMatrixColumnWidths(&matrix, &numericFont, dummyVal, dummyVal + 4, dummyVal + 24) > (MATRIX_LINE_WIDTH_LARGE * 3 - 20)) smallFont = true;
+        bool_t smallFont = (rows >= 5);
+        int16_t dummyVal[MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS + 1) + 1] = {};
+        if(getRealMatrixColumnWidths(&matrix, &numericFont, dummyVal, dummyVal + MATRIX_MAX_COLUMNS, dummyVal + (MATRIX_MAX_ROWS + 1) * MATRIX_MAX_COLUMNS, cols > MATRIX_MAX_COLUMNS ? MATRIX_MAX_COLUMNS : cols) > MATRIX_LINE_WIDTH) smallFont = true;
         if(rows == 2 && cols > 1 && !smallFont) displayStack = 3;
         if(rows == 3 && cols > 1) displayStack = smallFont ? 3 : 2;
-        if(rows >= 4 && cols > 1) displayStack = 2;
+        if(rows == 4 && cols > 1) displayStack = smallFont ? 2 : 1;
+        if(rows >= 5 && cols > 1) displayStack = 2;
         if(calcMode == CM_MIM) displayStack -= 2;
+        if(displayStack > 4 /* in case of overflow */) displayStack = 0;
       }
       else if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix || calcMode == CM_MIM) {
         complex34Matrix_t matrix;
         linkToComplexMatrixRegister(calcMode == CM_MIM ? matrixIndex : REGISTER_X, &matrix);
         const uint16_t rows = matrix.header.matrixRows;
         const uint16_t cols = matrix.header.matrixColumns;
-        bool_t smallFont = ((rows >= 4) || (cols >= 3) || (displayFormat != DF_ALL && displayFormatDigits > 3));
-        int16_t dummyVal[27] = {};
-        if(getComplexMatrixColumnWidths(&matrix, &numericFont, dummyVal, dummyVal + 2, dummyVal + 4, dummyVal + 6, dummyVal + 16, dummyVal + 26) > (MATRIX_LINE_WIDTH_LARGE * 3 - 20)) smallFont = true;
+        bool_t smallFont = (rows >= 5);
+        int16_t dummyVal[MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS * 2 + 3) + 1] = {};
+        if(getComplexMatrixColumnWidths(&matrix, &numericFont, dummyVal, dummyVal + MATRIX_MAX_COLUMNS, dummyVal + MATRIX_MAX_COLUMNS * 2, dummyVal + MATRIX_MAX_COLUMNS * 3, dummyVal + MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS + 3), dummyVal + MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS * 2 + 3), cols > MATRIX_MAX_COLUMNS ? MATRIX_MAX_COLUMNS : cols) > MATRIX_LINE_WIDTH) smallFont = true;
         if(rows == 2 && cols > 1 && !smallFont) displayStack = 3;
         if(rows == 3 && cols > 1) displayStack = smallFont ? 3 : 2;
-        if(rows >= 4 && cols > 1) displayStack = 2;
+        if(rows == 4 && cols > 1) displayStack = smallFont ? 2 : 1;
+        if(rows >= 5 && cols > 1) displayStack = 2;
         if(calcMode == CM_MIM) displayStack -= 2;
+        if(displayStack > 4 /* in case of overflow */) displayStack = 0;
       }
 
 
@@ -1136,198 +1140,198 @@
         else if(getRegisterDataType(regist) == dtReal34) {
           if(temporaryInformation == TI_RADIUS_THETA) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "r" STD_SPACE_FIGURE "=");
+              strcpy(prefix, "r =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_theta STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_theta " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_X_Y) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "x" STD_SPACE_FIGURE "=");
+              strcpy(prefix, "x =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, "y" STD_SPACE_FIGURE "=");
+              strcpy(prefix, "y =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_RE_IM) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "Im" STD_SPACE_FIGURE "=");
+              strcpy(prefix, "Im =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, "Re" STD_SPACE_FIGURE "=");
+              strcpy(prefix, "Re =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_SUMX_SUMY) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_SIGMA "x" STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_SIGMA "x =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_SIGMA "y" STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_SIGMA "y =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_XMIN_YMIN) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "x" STD_SUB_m STD_SUB_i STD_SUB_n STD_SPACE_FIGURE "=");
+              strcpy(prefix, "x" STD_SUB_m STD_SUB_i STD_SUB_n " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, "y" STD_SUB_m STD_SUB_i STD_SUB_n STD_SPACE_FIGURE "=");
+              strcpy(prefix, "y" STD_SUB_m STD_SUB_i STD_SUB_n " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_XMAX_YMAX) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "x" STD_SUB_m STD_SUB_a STD_SUB_x STD_SPACE_FIGURE "=");
+              strcpy(prefix, "x" STD_SUB_m STD_SUB_a STD_SUB_x " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, "y" STD_SUB_m STD_SUB_a STD_SUB_x STD_SPACE_FIGURE "=");
+              strcpy(prefix, "y" STD_SUB_m STD_SUB_a STD_SUB_x " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_SA) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "s(a" STD_SUB_0 ")" STD_SPACE_FIGURE "=");
+              strcpy(prefix, "s(a" STD_SUB_0 ") =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, "s(a" STD_SUB_1 ")" STD_SPACE_FIGURE "=");
+              strcpy(prefix, "s(a" STD_SUB_1 ") =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_MEANX_MEANY) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_x_BAR STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_x_BAR " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_y_BAR STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_y_BAR " =");
                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
            }
 
           else if(temporaryInformation == TI_SAMPLSTDDEV) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "s" STD_SUB_x STD_SPACE_FIGURE "=");
+              strcpy(prefix, "s" STD_SUB_x " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, "s" STD_SUB_y STD_SPACE_FIGURE "=");
+              strcpy(prefix, "s" STD_SUB_y " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_POPLSTDDEV) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_sigma STD_SUB_x STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_sigma STD_SUB_x " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_sigma STD_SUB_y STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_sigma STD_SUB_y " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_STDERR) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "s" STD_SUB_m STD_SUB_x STD_SPACE_FIGURE "=");
+              strcpy(prefix, "s" STD_SUB_m STD_SUB_x " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, "s" STD_SUB_m STD_SUB_y STD_SPACE_FIGURE "=");
+              strcpy(prefix, "s" STD_SUB_m STD_SUB_y " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_GEOMMEANX_GEOMMEANY) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_x_BAR STD_SUB_G STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_x_BAR STD_SUB_G " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_y_BAR STD_SUB_G STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_y_BAR STD_SUB_G " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_GEOMSAMPLSTDDEV) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_epsilon STD_SUB_x STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_epsilon STD_SUB_x " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_epsilon STD_SUB_y STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_epsilon STD_SUB_y " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_GEOMPOPLSTDDEV) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_epsilon STD_SUB_m STD_SUB_x STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_epsilon STD_SUB_m STD_SUB_x " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_epsilon STD_SUB_m STD_SUB_y STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_epsilon STD_SUB_m STD_SUB_y " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_GEOMSTDERR) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_epsilon STD_SUB_p STD_SUB_x STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_epsilon STD_SUB_p STD_SUB_x " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_epsilon STD_SUB_p STD_SUB_y STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_epsilon STD_SUB_p STD_SUB_y " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_WEIGHTEDMEANX) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_x_BAR STD_SUB_w STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_x_BAR STD_SUB_w " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_WEIGHTEDSAMPLSTDDEV) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "s" STD_SUB_w STD_SPACE_FIGURE "=");
+              strcpy(prefix, "s" STD_SUB_w " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_WEIGHTEDPOPLSTDDEV) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_sigma STD_SUB_w STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_sigma STD_SUB_w " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_WEIGHTEDSTDERR) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "s" STD_SUB_m STD_SUB_w STD_SPACE_FIGURE "=");
+              strcpy(prefix, "s" STD_SUB_m STD_SUB_w " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
-
+          //L.R. Display
           else if(temporaryInformation == TI_LR && lrChosen != 0) {
             #define LRWidth 140
             bool_t prefixPre = false;
@@ -1339,15 +1343,15 @@
                 while(stringWidth(prefix, &standardFont, prefixPre, prefixPost) + 1 < LRWidth) {
                   strcat(prefix,STD_SPACE_6_PER_EM);
                 }
-                strcat(prefix,"a" STD_SUB_0 STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM);
+                strcat(prefix,"a" STD_SUB_0 " =");
                 prefixWidth = stringWidth(prefix, &standardFont, prefixPre, prefixPost) + 1;
               } else
               if(regist == REGISTER_Y) {
-                strcpy(prefix,"y" STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM);
+                strcpy(prefix,"y = ");
                 while(stringWidth(prefix, &standardFont, prefixPre, prefixPost) + 1 < LRWidth) {
                   strcat(prefix,STD_SPACE_6_PER_EM);
                 }
-                strcat(prefix, "a" STD_SUB_1 STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM);
+                strcat(prefix, "a" STD_SUB_1 " =");
                 prefixWidth = stringWidth(prefix, &standardFont, prefixPre, prefixPost) + 1;
               } else
               if(regist == REGISTER_Z) {
@@ -1356,18 +1360,18 @@
                 while(stringWidth(prefix, &standardFont, prefixPre, prefixPost) + 1 < LRWidth) {
                   strcat(prefix,STD_SPACE_6_PER_EM);
                 }
-                strcat(prefix, "a" STD_SUB_2 STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM);
+                strcat(prefix, "a" STD_SUB_2 " =");
                 prefixWidth = stringWidth(prefix, &standardFont, prefixPre, prefixPost) + 1;
               }
             } else
 
             if(regist == REGISTER_X) {
-              strcpy(prefix,"y" STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM);
+              strcpy(prefix,"y = ");
               strcat(prefix,getCurveFitModeFormula(lrChosen));
               while(stringWidth(prefix, &standardFont, prefixPre, prefixPost) + 1 < LRWidth) {
                 strcat(prefix,STD_SPACE_6_PER_EM);
               }
-              strcat(prefix,"a" STD_SUB_0 STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM);
+              strcat(prefix,"a" STD_SUB_0 " =");
               prefixWidth = stringWidth(prefix, &standardFont, prefixPre, prefixPost) + 1;
             } else if(regist == REGISTER_Y) {
               strcpy(prefix, eatSpacesEnd(getCurveFitModeName(lrChosen)));
@@ -1375,90 +1379,122 @@
               while(stringWidth(prefix, &standardFont, prefixPre, prefixPost) + 1 < LRWidth) {
                 strcat(prefix,STD_SPACE_6_PER_EM);
               }
-              strcat(prefix, "a" STD_SUB_1 STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM STD_SPACE_4_PER_EM);
+              strcat(prefix, "a" STD_SUB_1 " =");
               prefixWidth = stringWidth(prefix, &standardFont, prefixPre, prefixPost) + 1;
             }
 
           }
 
-
+/*
           else if(temporaryInformation == TI_SXY) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "s" STD_SUB_x STD_SUB_y STD_SPACE_FIGURE "=");
+              strcpy(prefix, "s" STD_SUB_x STD_SUB_y " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_COV) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "s" STD_SUB_m STD_SUB_w STD_SPACE_FIGURE "=");
+              strcpy(prefix, "s" STD_SUB_m STD_SUB_w " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
-
+*/
           else if(temporaryInformation == TI_CALCY) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_y_CIRC STD_SPACE_FIGURE "=");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              prefix[0]=0;
+              if(lrChosen == 0) {
+              } else {
+                strcpy(prefix,eatSpacesEnd(getCurveFitModeName(lrChosen)));
+                if(lrCountOnes(lrSelection)>1) strcat(prefix,STD_SUP_ASTERISK);
+                strcat(prefix, STD_SPACE_FIGURE);
+              }
+              strcat(prefix, STD_y_CIRC " =");
+              prefixWidth = stringWidth(prefix, &standardFont, false,false) + 1;
             }
           }
 
           else if(temporaryInformation == TI_CALCX) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_x_CIRC STD_SPACE_FIGURE "=");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              prefix[0]=0;
+              if(lrChosen == 0) {
+              } else {
+                strcpy(prefix,eatSpacesEnd(getCurveFitModeName(lrChosen)));
+                if(lrCountOnes(lrSelection)>1) strcat(prefix,STD_SUP_ASTERISK);
+                strcat(prefix, STD_SPACE_FIGURE);
+              }
+              strcat(prefix, STD_x_CIRC " =");
+              prefixWidth = stringWidth(prefix, &standardFont, false,false) + 1;
             }
           }
 
           else if(temporaryInformation == TI_CALCX2) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_x_CIRC STD_SUB_1 STD_SPACE_FIGURE "=");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              prefix[0]=0;
+              if(lrChosen == 0) {
+              } else {
+                strcpy(prefix,eatSpacesEnd(getCurveFitModeName(lrChosen)));
+                if(lrCountOnes(lrSelection)>1) strcat(prefix,STD_SUP_ASTERISK);
+                strcat(prefix, STD_SPACE_FIGURE);
+              }
+              strcat(prefix, STD_x_CIRC STD_SUB_1 " =" );
+              prefixWidth = stringWidth(prefix, &standardFont, false,false) + 1;
             } else
             if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_x_CIRC STD_SUB_2 STD_SPACE_FIGURE "=");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              prefix[0]=0;
+              if(lrChosen == 0) {
+              } else {
+                strcpy(prefix,eatSpacesEnd(getCurveFitModeName(lrChosen)));
+                if(lrCountOnes(lrSelection)>1) strcat(prefix,STD_SUP_ASTERISK);
+                strcat(prefix, STD_SPACE_FIGURE);
+              }
+              strcat(prefix, STD_x_CIRC STD_SUB_2 " =");
+              prefixWidth = stringWidth(prefix, &standardFont, false,false) + 1;
             }
           }
 
           else if(temporaryInformation == TI_CORR) {             
             if(regist == REGISTER_X) {
+              prefix[0]=0;
               if(lrChosen == 0) {
-                strcpy(prefix, "r" STD_SPACE_FIGURE "=");
               } else {
                 strcpy(prefix,eatSpacesEnd(getCurveFitModeName(lrChosen)));
                 if(lrCountOnes(lrSelection)>1) strcat(prefix,STD_SUP_ASTERISK);
+                strcat(prefix, STD_SPACE_FIGURE);
               }
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              strcat(prefix, "r =");
+              prefixWidth = stringWidth(prefix, &standardFont, false,false) + 1;
             }
           }
 
           else if(temporaryInformation == TI_SMI) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "s" STD_SUB_m STD_SUB_i STD_SPACE_FIGURE "=");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              strcpy(prefix, "s" STD_SUB_m STD_SUB_i " =");
+              prefixWidth = stringWidth(prefix, &standardFont, false,false) + 1;
             }
           }
+          //L.R. Display
+
 
 
           else if(temporaryInformation == TI_HARMMEANX_HARMMEANY) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_x_BAR STD_SUB_H STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_x_BAR STD_SUB_H " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_y_BAR STD_SUB_H STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_y_BAR STD_SUB_H " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_RMSMEANX_RMSMEANY) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_x_BAR STD_SUB_R STD_SUB_M STD_SUB_S STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_x_BAR STD_SUB_R STD_SUB_M STD_SUB_S " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_y_BAR STD_SUB_R STD_SUB_M STD_SUB_S STD_SPACE_FIGURE "=");
+              strcpy(prefix, STD_y_BAR STD_SUB_R STD_SUB_M STD_SUB_S " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
@@ -1488,7 +1524,7 @@
              }            
            }
 
-          real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION);
+          real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
 
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;
@@ -1499,7 +1535,7 @@
         }
 
         else if(getRegisterDataType(regist) == dtComplex34) {
-          complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION);
+          complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
 
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;
@@ -1633,6 +1669,10 @@
             lineWidth = w;
             showString(tmpString, &numericFont, SCREEN_WIDTH - w - 2, baseY, vmNormal, false, true);
           }
+
+          if(temporaryInformation == TI_INACCURATE && regist == REGISTER_X) {
+            showString("This result may be inaccurate", &standardFont, 1, Y_POSITION_OF_ERR_LINE, vmNormal, true, true);
+          }
         }
 
         else if(getRegisterDataType(regist) == dtComplex34Matrix) {
@@ -1650,6 +1690,10 @@
             w = stringWidth(tmpString, &numericFont, false, true);
             lineWidth = w;
             showString(tmpString, &numericFont, SCREEN_WIDTH - w - 2, baseY, vmNormal, false, true);
+          }
+
+          if(temporaryInformation == TI_INACCURATE && regist == REGISTER_X) {
+            showString("This result may be inaccurate", &standardFont, 1, Y_POSITION_OF_ERR_LINE, vmNormal, true, true);
           }
         }
 
@@ -1798,6 +1842,7 @@
         showSoftmenuCurrentPart();
         hourGlassIconEnabled = false;
         refreshStatusBar();
+        //for(int y=Y_POSITION_OF_REGISTER_Y_LINE; y<Y_POSITION_OF_REGISTER_Y_LINE + 2*REGISTER_LINE_HEIGHT; y++ ) setBlackPixel(SCREEN_WIDTH - largeur - 1, y); // For the real34 width test
         break;
 
       case CM_PLOT_STAT:
@@ -1806,6 +1851,7 @@
         refreshStatusBar();
         hourGlassIconEnabled = true;
         graphPlotstat(plotSelection);
+        graphDrawLRline(plotSelection);
         hourGlassIconEnabled = false;
         refreshStatusBar();
         break;

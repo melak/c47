@@ -312,11 +312,11 @@ static void decodeLiteral(uint8_t *literalAddress) {
     //  break;
 
     case BINARY_REAL34:
-      real34ToDisplayString((real34_t *)literalAddress, amNone, tmpString, &standardFont, 9999, 34, false, STD_SPACE_4_PER_EM);
+      real34ToDisplayString((real34_t *)literalAddress, amNone, tmpString, &standardFont, 9999, 34, false, STD_SPACE_4_PER_EM, false);
       break;
 
     case BINARY_COMPLEX34:
-      complex34ToDisplayString((complex34_t *)literalAddress, tmpString, &standardFont, 9999, 34, false, STD_SPACE_4_PER_EM);
+      complex34ToDisplayString((complex34_t *)literalAddress, tmpString, &standardFont, 9999, 34, false, STD_SPACE_4_PER_EM, false);
       break;
 
     //case BINARY_DATE:

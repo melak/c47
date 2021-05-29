@@ -433,6 +433,8 @@
 
     temporaryInformation = TI_NO_INFO;
 
+    //longInteger_t lgInt; // For the real34 width test
+    //longIntegerInit(lgInt); // For the real34 width test
     switch(item) {
       case ITM_BACKSPACE:
         fnKeyBackspace(NOPARAM);
@@ -443,12 +445,18 @@
         fnKeyUp(NOPARAM);
         refreshScreen();
         keyActionProcessed = true;
+        //if(++largeur > SCREEN_WIDTH) largeur--; // For the real34 width test
+        //uIntToLongInteger(largeur, lgInt); // For the real34 width test
+        //convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z); // For the real34 width test
         break;
 
       case ITM_DOWN:
         fnKeyDown(NOPARAM);
         refreshScreen();
         keyActionProcessed = true;
+        //if(--largeur < 20) largeur++; // For the real34 width test
+        //uIntToLongInteger(largeur, lgInt); // For the real34 width test
+        //convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z); // For the real34 width test
         break;
 
       case ITM_EXIT:
@@ -640,6 +648,7 @@
           }
         }
     }
+    //longIntegerFree(lgInt); // For the real34 width test
   }
 
 

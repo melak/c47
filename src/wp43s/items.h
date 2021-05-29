@@ -1704,7 +1704,7 @@
 #define ITM_XCIRC                     1643
 #define ITM_XtoDATE                   1644
 #define ITM_XtoALPHA                  1645
-#define ITM_01646                     1646
+#define ITM_M_QR                      1646
 #define ITM_YEAR                      1647
 #define ITM_YCIRC                     1648
 #define ITM_YMD                       1649
@@ -1740,9 +1740,9 @@
 #define ITM_M1X                       1679
 #define ITM_XMOD                      1680
 #define ITM_toDATE                    1681
-#define ITM_1682                      1682
-#define ITM_1683                      1683
-#define ITM_1684                      1684
+#define ITM_sn                        1682
+#define ITM_cn                        1683
+#define ITM_dn                        1684
 #define ITM_toHR                      1685
 #define ITM_toHMS                     1686
 #define ITM_toINT                     1687
@@ -1786,9 +1786,9 @@
 #define ITM_UNDO                      1723
 #define ITM_PR                        1724
 #define ITM_RS                        1725
-#define ITM_1726                      1726
-#define ITM_1727                      1727
-#define ITM_1728                      1728
+#define ITM_Kk                        1726
+#define ITM_Ek                        1727
+#define ITM_PInk                      1728
 #define ITM_USERMODE                  1729
 #define ITM_CC                        1730
 #define ITM_SHIFTf                    1731

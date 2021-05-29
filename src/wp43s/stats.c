@@ -201,7 +201,6 @@ void fnClSigma(uint16_t unusedButMandatoryParameter) {
     freeWp43s(statisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
     statisticalSumsPointer = NULL;
     graph_end();                            // release plot memory
-    lrSelection = CF_LINEAR_FITTING;        // linear regression selection
     lrChosen = 0;                           // linear regression selection
     lastPlotMode = PLOT_NOTHING;            // last selected  plotmode
     plotSelection = 0;                      // Currently selected linear regression mode
@@ -214,6 +213,8 @@ void fnClSigma(uint16_t unusedButMandatoryParameter) {
 void fnSigma(uint16_t plusMinus) {
   real_t tmpReal1, tmpReal2, tmpReal3, x, y;
   realContext_t *realContext = &ctxtReal75; // Summation data with 75 digits
+
+  lrChosen = 0;
 
   if(   (getRegisterDataType(REGISTER_X) == dtLongInteger || getRegisterDataType(REGISTER_X) == dtReal34)
      && (getRegisterDataType(REGISTER_Y) == dtLongInteger || getRegisterDataType(REGISTER_Y) == dtReal34)) {

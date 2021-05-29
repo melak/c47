@@ -23,6 +23,7 @@
 #include "error.h"
 #include "integers.h"
 #include "matrix.h"
+#include "memory.h"
 #include "registers.h"
 
 #include "wp43s.h"
@@ -498,9 +499,17 @@ void convertReal34MatrixRegisterToReal34Matrix(calcRegister_t regist, real34Matr
 }
 
 void convertReal34MatrixToReal34MatrixRegister(const real34Matrix_t *matrix, calcRegister_t regist) {
-  reallocateRegister(regist, dtReal34Matrix, TO_BLOCKS((matrix->header.matrixColumns * matrix->header.matrixRows) * sizeof(real34_t)), amNone);
+  const size_t neededSize = (matrix->header.matrixColumns * matrix->header.matrixRows) * sizeof(real34_t);
+  if(!isMemoryBlockAvailable(TO_BLOCKS(neededSize))) {
+    displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      moreInfoOnError("In function convertReal34MatrixToReal34MatrixRegister:", "Not enough memory!", NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return;
+  }
+  reallocateRegister(regist, dtReal34Matrix, TO_BLOCKS(neededSize), amNone);
   xcopy(REGISTER_REAL34_MATRIX(regist), matrix, sizeof(dataBlock_t));
-  xcopy(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist), matrix->matrixElements, (matrix->header.matrixColumns * matrix->header.matrixRows) * sizeof(real34_t));
+  xcopy(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist), matrix->matrixElements, neededSize);
 }
 
 void convertComplex34MatrixRegisterToComplex34Matrix(calcRegister_t regist, complex34Matrix_t *matrix) {

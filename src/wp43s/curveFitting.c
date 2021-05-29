@@ -28,6 +28,7 @@
 #include "longIntegerType.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/variance.h"
+#include "mathematics/xthRoot.h"
 #include "mathematics/wp34s.h"
 #include "plotstat.h"
 #include "registers.h"
@@ -39,7 +40,7 @@
 #include "wp43s.h"
 
 
-#undef STAT_DISPLAY_ABCDEFG                      //to display helper functions A-H
+//#define STAT_DISPLAY_ABCDEFG                      //to display helper functions A-H
 
 
 static real_t RR, RR2, RRMAX, SMI, aa0, aa1, aa2;  // Curve fitting variables, available to the different functions
@@ -135,6 +136,29 @@ uint16_t lrCountOnes(uint16_t curveFitting) { // count the number of allowed met
 }
 
 
+int32_t minLRDataPoints(uint16_t selection){
+  if (selection > 1023)     return 65535; else
+    if(selection & 448)       return 3;     else
+      if(selection & (63+512))  return 2;     else
+        return 65535; //if 0
+
+//  switch(selection) {
+//    case CF_LINEAR_FITTING      /*   1 */ :
+//    case CF_EXPONENTIAL_FITTING /*   2 */ :
+//    case CF_LOGARITHMIC_FITTING /*   4 */ :
+//    case CF_POWER_FITTING       /*   8 */ :
+//    case CF_ROOT_FITTING        /*  16 */ :
+//    case CF_HYPERBOLIC_FITTING  /*  32 */ : return 2; break;
+//    case CF_PARABOLIC_FITTING   /*  64 */ :
+//    case CF_CAUCHY_FITTING      /* 128 */ :
+//    case CF_GAUSS_FITTING       /* 256 */ : return 3; break;
+//    case CF_ORTHOGONAL_FITTING  /* 512 */ : return 2; break;                      //ORTHOF ASSESS (2 points minimum)
+//    default : return 0xFFFF; break;
+//  }
+
+}
+
+
 /********************************************//**
  * \brief Finds the best curve fit
  *
@@ -148,6 +172,7 @@ uint16_t lrCountOnes(uint16_t curveFitting) { // count the number of allowed met
 void fnProcessLRfind(uint16_t curveFitting){
   int32_t nn;
   real_t NN;
+
   realToInt32(SIGMA_N, nn);  
   realCopy(const_0,&aa0);
   realCopy(const_0,&aa1);
@@ -156,7 +181,7 @@ void fnProcessLRfind(uint16_t curveFitting){
 	  printf("Processing for best fit: %s\n",getCurveFitModeNames(curveFitting));
 	#endif //PC_BUILD
   realCopy(const__4,&RRMAX);
-  uint16_t s = curveFitting;       //default
+  uint16_t s = 0;       //default
   uint16_t ix,jx;                  //only a single graph can be evaluated at once, so retain the single lowest bit, and clear the higher order bits.
   jx = 0;
   for(ix=0; ix<10; ix++) {         //up to 2^9 inclusive of 512 which is ORTHOF. The ReM is respectedby usage of 0 only, not by manual selection.
@@ -170,19 +195,21 @@ void fnProcessLRfind(uint16_t curveFitting){
         processCurvefitSelection(jx,&RR,&SMI, &aa0, &aa1, &aa2);
         realMultiply(&RR,&RR,&RR2,&ctxtReal39);
 
-        if(realCompareGreaterThan(&RR2, &RRMAX) && realCompareLessThan(&RR2, const_1)) {
+        if(realCompareGreaterThan(&RR2, &RRMAX) && realCompareLessEqual(&RR2, const_1)) { //Only consider L.R. models where R^2<=1
           realCopy(&RR2,&RRMAX);
         	s = jx;
         }
       }
     }
   }
+  if(lrCountOnes(s) > 1) s = 0; //error condition, cannot have >1 solutions, do not do L.R.
+
   #ifdef PC_BUILD
-	  printf("Found best fit: %u %s\n",s,getCurveFitModeNames(s));
+	  if(s != 0) printf("Found best fit: %u %s\n",s,getCurveFitModeNames(s)); else
+      printf("Found no fit: %u\n",s);
 	#endif //PC_BUILD
 
   if(nn >= minLRDataPoints(s)) {
-
     processCurvefitSelection(s,&RR,&SMI, &aa0, &aa1, &aa2);
     lrChosen = s;
 
@@ -202,33 +229,26 @@ void fnProcessLRfind(uint16_t curveFitting){
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     realToReal34(&aa0, REGISTER_REAL34_DATA(REGISTER_X));
   } else {
-    uInt32ToReal(minLRDataPoints(s),&NN);
-    checkMinimumDataPoints(&NN);              //Report an error
+    if(minLRDataPoints(s) == 65535) {
+      displayCalcErrorMessage(ERROR_TOO_FEW_DATA, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        moreInfoOnError("In function fnProcessLRfind:", "There is insufficient statistical data to do L.R., possibly due to data manipulation!", NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    } else {
+      uInt32ToReal(minLRDataPoints(s),&NN);
+      checkMinimumDataPoints(&NN);              //Report an error
+    }
   }
 }
 
 
 
-
-         //0010 0011 1111    //0x23F     (internal is inverted: '1' means enabled)
-         //0001 1100 0000    //0x1C0
+//0010 0011 1111    //0x23F     (internal is inverted: '1' means enabled)
+//0001 1100 0000    //0x1C0
 void fnProcessLR (uint16_t unusedButMandatoryParameter){
-  fnProcessLRfind(lrSelection);
-/*                                           //check for number of parameters (superceded)
-  if( (lrSelection & 0x23F)) {               //if any 2-param models are included, at least 2 points needed
-    if(!checkMinimumDataPoints(const_2)) {
-      return;
-    } else {
-      fnProcessLRfind(lrSelection);
-    }
-  } else {                                   //otherwise all 2-param models excluded therefore check for 3 params
-    if(!checkMinimumDataPoints(const_3)) {
-      return;
-    } else {
-      fnProcessLRfind(lrSelection);
-    }
+  if(checkMinimumDataPoints(const_2)) {
+    fnProcessLRfind(lrSelection);
   }
-*/
 }
 
 
@@ -302,8 +322,8 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
       if(jx) break;
     }
     selection = jx;
-    #if defined STATDEBUG && defined PC_BUILD
-      printf("processCurvefitSelectionA selection:%u reduced selection to:%u\n",selection,jx);
+    #if (defined STATDEBUG || defined STAT_DISPLAY_ABCDEFG) && defined PC_BUILD
+      printf("processCurvefitSelection selection:%u, reduced selection to:%u\n",selection,jx);
     #endif
 
     realContext = &ctxtReal75;    //Use 75 as the sums can reach high values and the accuracy of the regressionn depends on this. Could arguably be optimized.
@@ -550,6 +570,7 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
           formatRealDebug(ss, RR_); printf("§§ r: %s\n",ss);
         #endif
         #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
+          realToDouble1(SIGMA_N, &v); printf("§§ n: %f\n",v);
           realToDouble1(&AA, &v); printf("§§ AA: %f\n",v);
           realToDouble1(&BB, &v); printf("§§ BB: %f\n",v);
           realToDouble1(&CC, &v); printf("§§ CC: %f\n",v);
@@ -635,6 +656,7 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
         realSquareRoot(&RR2, RR_, realContext);
 
         #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
+          realToDouble1(SIGMA_N, &v); printf("§§ n: %f\n",v);
           realToDouble1(&AA, &v); printf("§§ AA: %f\n",v);
           realToDouble1(&BB, &v); printf("§§ BB: %f\n",v);
           realToDouble1(&CC, &v); printf("§§ CC: %f\n",v);
@@ -717,6 +739,7 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
         realSquareRoot(&RR2, RR_, realContext);
 
         #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
+          realToDouble1(SIGMA_N, &v); printf("§§ n: %f\n",v);
           realToDouble1(&AA, &v); printf("§§ AA: %f\n",v);
           realToDouble1(&BB, &v); printf("§§ BB: %f\n",v);
           realToDouble1(&CC, &v); printf("§§ CC: %f\n",v);
@@ -795,6 +818,7 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
         realSquareRoot(&RR2, RR_, realContext);
 
         #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
+          realToDouble1(SIGMA_N, &v); printf("§§ n: %f\n",v);
           realToDouble1(&AA, &v); printf("§§ AA: %f\n",v);
           realToDouble1(&BB, &v); printf("§§ BB: %f\n",v);
           realToDouble1(&CC, &v); printf("§§ CC: %f\n",v);
@@ -1002,25 +1026,21 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
 
   void fnYIsFnx(uint16_t unusedButMandatoryParameter){
     real_t XX,YY,RR,SMI,aa0,aa1,aa2;
-    uint16_t sel=1;
     double x=-99,y = 0,a0=-99,a1=-99,a2=-99;
     realCopy(const_0,&aa0);
     realCopy(const_0,&aa1);
     realCopy(const_0,&aa2);
     if(checkMinimumDataPoints(const_2)) {
-      if(lrChosen == 0) {
-        sel = 1; 
+      if(lrChosen == 0) {                    //if lrChosen contains something, the stat data exists, otherwise set it to linear. lrSelection still has 1 at this point, i.e. the * will not appear.
+        lrChosen = CF_LINEAR_FITTING;
       }
-      else {
-        sel = lrChosen;
-      }
-      processCurvefitSelection(sel, &RR, &SMI, &aa0, &aa1, &aa2);
+      processCurvefitSelection(lrChosen, &RR, &SMI, &aa0, &aa1, &aa2);
       if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
         convertLongIntegerRegisterToReal34Register (REGISTER_X, REGISTER_X);
       }
       if(getRegisterDataType(REGISTER_X) == dtReal34) {
         real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &XX);
-        yIsFnx(useREAL39, sel, x, &y, a0, a1, a2, &XX, &YY, &RR, &SMI, &aa0, &aa1, &aa2);
+        yIsFnx(useREAL39, lrChosen, x, &y, a0, a1, a2, &XX, &YY, &RR, &SMI, &aa0, &aa1, &aa2);
         realToReal34(&YY,REGISTER_REAL34_DATA(REGISTER_X));
 
         setSystemFlag(FLAG_ASLIFT);
@@ -1037,6 +1057,8 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
   }
 
 
+
+
   void xIsFny(uint16_t selection, uint8_t rootNo, real_t *XX, real_t *YY, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2){
       realCopy(const_0,XX);
       real_t SS,TT,UU;
@@ -1048,6 +1070,38 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
           realSubtract(YY, aa0, &UU, realContextForecast);
           realDivide  (&UU,aa1, &TT, realContextForecast);
           realCopy    (&TT,XX);
+          temporaryInformation = TI_CALCX;
+          break;
+        case CF_EXPONENTIAL_FITTING:
+          realDivide(YY,aa0,&UU,realContextForecast);
+          WP34S_Ln(&UU, &UU, realContextForecast);
+          realDivide(&UU,aa1,XX,realContextForecast);
+          temporaryInformation = TI_CALCX;
+          break;
+        case CF_LOGARITHMIC_FITTING:
+          realSubtract(YY,aa0,&UU,realContextForecast);
+          realDivide(&UU,aa1,&UU,realContextForecast);
+          realExp(&UU,XX,realContextForecast);
+          temporaryInformation = TI_CALCX;
+          break;
+        case CF_POWER_FITTING:
+          realDivide(YY,aa0,&UU,realContextForecast);
+          xthRootReal(&UU,aa1,realContextForecast);             //Note X-register gets written here
+          real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), XX);
+          temporaryInformation = TI_CALCX;
+          break;
+        case CF_ROOT_FITTING:
+          WP34S_Ln(YY,YY,realContextForecast);
+          WP34S_Ln(aa0,&UU,realContextForecast);
+          realSubtract(YY,&UU,YY,realContextForecast);
+          WP34S_Ln(aa1,&UU,realContextForecast);
+          realDivide(&UU,YY,XX,realContextForecast);
+          temporaryInformation = TI_CALCX;
+          break;
+        case CF_HYPERBOLIC_FITTING:
+          realDivide(const_1,YY,&UU,realContextForecast);
+          realSubtract(&UU,aa0,&UU,realContextForecast);
+          realDivide(&UU,aa1,XX,realContextForecast);
           temporaryInformation = TI_CALCX;
           break;
         case CF_PARABOLIC_FITTING:
@@ -1070,6 +1124,32 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
           realDivide(&SS,aa2,XX,realContextForecast);
           temporaryInformation = TI_CALCX2;
           break;
+
+        case CF_CAUCHY_FITTING:
+          realDivide(const_1,YY,&UU,realContextForecast);
+          realSubtract(&UU,aa2,&UU,realContextForecast);
+          realDivide(&UU,aa0,&UU,realContextForecast);
+          realSquareRoot(&UU,&UU,realContextForecast);
+          realSubtract(const_0,aa1,&SS,realContextForecast);
+          if(rootNo == 1)
+            realSubtract(&SS,&UU,XX,realContextForecast);
+          if(rootNo == 2)
+            realAdd   (&SS,&UU,XX,realContextForecast);
+          temporaryInformation = TI_CALCX2;
+          break;
+
+        case CF_GAUSS_FITTING:
+          realDivide(YY,aa0,&UU,realContextForecast);
+          WP34S_Ln(&UU,&UU,realContextForecast);
+          realMultiply(&UU,aa2,&UU,realContextForecast);
+          realSquareRoot(&UU,&UU,realContextForecast);
+          if(rootNo == 1)
+            realSubtract(aa1,&UU,XX,realContextForecast);
+          if(rootNo == 2)
+            realAdd   (aa1,&UU,XX,realContextForecast);
+          temporaryInformation = TI_CALCX2;
+          break;
+
         default:break;
       }
   }
@@ -1078,28 +1158,24 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
 
   void fnXIsFny(uint16_t unusedButMandatoryParameter){
   real_t XX,YY,RR,SMI,aa0,aa1,aa2;
-  uint16_t sel=1;
   realCopy(const_0,&aa0);
   realCopy(const_0,&aa1);
   realCopy(const_0,&aa2);
   if(checkMinimumDataPoints(const_2)) {
-    if(lrChosen == 0) {
-      sel = 1; 
+    if(lrChosen == 0) {                    //if lrChosen contains something, the stat data exists, otherwise set it to linear. lrSelection still has 1 at this point, i.e. the * will not appear.
+      lrChosen = CF_LINEAR_FITTING;
     }
-    else {
-      sel = lrChosen;
-    }
-    processCurvefitSelection(sel, &RR, &SMI, &aa0, &aa1, &aa2);
+    processCurvefitSelection(lrChosen, &RR, &SMI, &aa0, &aa1, &aa2);
     if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
       convertLongIntegerRegisterToReal34Register (REGISTER_X, REGISTER_X);
     }
     if(getRegisterDataType(REGISTER_X) == dtReal34) {
       real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &YY);
-      xIsFny(sel, 1, &XX, &YY, &RR, &SMI, &aa0, &aa1, &aa2);
+      xIsFny(lrChosen, 1, &XX, &YY, &RR, &SMI, &aa0, &aa1, &aa2);
       realToReal34(&XX,REGISTER_REAL34_DATA(REGISTER_X));
 
-      if(sel == CF_PARABOLIC_FITTING) {
-        xIsFny(sel, 2, &XX, &YY, &RR, &SMI, &aa0, &aa1, &aa2);        
+      if(lrChosen == CF_PARABOLIC_FITTING || lrChosen == CF_GAUSS_FITTING || lrChosen == CF_CAUCHY_FITTING) {
+        xIsFny(lrChosen, 2, &XX, &YY, &RR, &SMI, &aa0, &aa1, &aa2);        
         liftStack();
         setSystemFlag(FLAG_ASLIFT);
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);

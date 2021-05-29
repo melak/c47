@@ -681,7 +681,7 @@ void addStriShoI(void) {
 void addStriReal(void) {
   int16_t len1, len2;
 
-  real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION);
+  real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true);
 
   if(stringGlyphLength(REGISTER_STRING_DATA(REGISTER_Y)) + stringGlyphLength(tmpString) > MAX_NUMBER_OF_GLYPHS_IN_STRING) {
     displayCalcErrorMessage(ERROR_STRING_WOULD_BE_TOO_LONG, ERR_REGISTER_LINE, REGISTER_X);
@@ -715,7 +715,7 @@ void addStriReal(void) {
 void addStriCplx(void) {
   int16_t len1, len2;
 
-  complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION);
+  complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true);
 
   if(stringGlyphLength(REGISTER_STRING_DATA(REGISTER_Y)) + stringGlyphLength(tmpString) > MAX_NUMBER_OF_GLYPHS_IN_STRING) {
     displayCalcErrorMessage(ERROR_STRING_WOULD_BE_TOO_LONG, ERR_REGISTER_LINE, REGISTER_X);

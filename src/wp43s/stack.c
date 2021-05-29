@@ -240,6 +240,8 @@ void saveForUndo(void) {
     }
   }
   else { // There are statistical sums to save for undo
+    lrSelectionUndo = lrSelection;
+    lrChosenUndo = lrChosen;
     if(savedStatisticalSumsPointer == NULL) {
       savedStatisticalSumsPointer = allocWp43s(NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
     }
@@ -273,9 +275,12 @@ void undo(void) {
     if(statisticalSumsPointer != NULL) {
       freeWp43s(statisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
       statisticalSumsPointer = NULL;
+      lrChosen = 0;
     }
   }
   else { // There are statistical sums to restore
+    lrSelection = lrSelectionUndo;
+    lrChosen = lrChosenUndo;
     if(statisticalSumsPointer == NULL) {
       statisticalSumsPointer = allocWp43s(NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
     }

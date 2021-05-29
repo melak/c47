@@ -100,11 +100,6 @@ void sortOneCatalog(const char *menuName, int catalogType, int16_t generationTyp
 
 
 int main(int argc, char* argv[]) {
-  #ifdef CODEBLOCKS_OVER_SCORE // Since December 27th 2020 when running in code::blocks, we are no longer in the correct directory! Why?
-    (*strstr(argv[0], "/bin/")) = 0;
-    chdir(argv[0]);
-  #endif // CODEBLOCKS_OVER_SCORE
-
   if(argc < 2) {
     printf("Usage: generateCatalogs <output file>\n");
     return 1;

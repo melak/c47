@@ -256,6 +256,8 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(displayFormatDigits);
   storeToDtConfigDescriptor(groupingGap);
   storeToDtConfigDescriptor(currentAngularMode);
+  storeToDtConfigDescriptor(lrSelection);
+  storeToDtConfigDescriptor(lrChosen);
   storeToDtConfigDescriptor(denMax);
   storeToDtConfigDescriptor(displayStack);
   storeToDtConfigDescriptor(firstGregorianDay);
@@ -287,6 +289,10 @@ void fnStoreStack(uint16_t regist) {
 
 void fnStoreElement(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
+  if(matrixIndex != INVALID_VARIABLE && regInRange(matrixIndex) && getRegisterDataType(matrixIndex) == dtReal34Matrix && getRegisterDataType(REGISTER_X) == dtComplex34) {
+    // Real matrices turns to complex matrices by setting a complex element
+    convertReal34MatrixRegisterToComplex34MatrixRegister(matrixIndex, matrixIndex);
+  }
   callByIndexedMatrix(storeElementReal, storeElementComplex);
 #endif // TESTSUITE_BUILD
 }

@@ -38,9 +38,9 @@
 #ifndef TESTSUITE_BUILD
   static void oneSystemFlag(uint16_t systemFlag, const char *systemFlagNamename, int16_t *line, bool_t *firstSystemFlag) {
     if(getSystemFlag(systemFlag)) {
-      if(stringWidth(tmpString + CHARS_PER_LINE * *line, &standardFont, true, true) + stringWidth(systemFlagNamename, &standardFont, true, false) <= SCREEN_WIDTH - 1 - 8) { // STD_SPACE_FIGURE is 8 pixel wide
+      if(stringWidth(tmpString + CHARS_PER_LINE * *line, &standardFont, true, true) + stringWidth(systemFlagNamename, &standardFont, true, false) <= SCREEN_WIDTH - 1 - 8) { // SPACE is 8 pixel wide
         if(!*firstSystemFlag) {
-          strcat(tmpString + CHARS_PER_LINE * *line, STD_SPACE_FIGURE);
+          strcat(tmpString + CHARS_PER_LINE * *line, " ");
         }
         else {
           *firstSystemFlag = false;
@@ -111,9 +111,9 @@
             flagNumber[3] = 0;
           }
 
-          if(stringWidth(tmpString + CHARS_PER_LINE * line, &standardFont, true, true) + stringWidth(flagNumber, &standardFont, true, false) <= SCREEN_WIDTH - 1 - 8) { // STD_SPACE_FIGURE is 8 pixel wide
+          if(stringWidth(tmpString + CHARS_PER_LINE * line, &standardFont, true, true) + stringWidth(flagNumber, &standardFont, true, false) <= SCREEN_WIDTH - 1 - 8) { // SPACE is 8 pixel wide
             if(!firstFlag) {
-              strcat(tmpString + CHARS_PER_LINE * line, STD_SPACE_FIGURE);
+              strcat(tmpString + CHARS_PER_LINE * line, " ");
             }
             else {
               firstFlag = false;
@@ -158,9 +158,9 @@
               flagNumber[2] = 0;
             }
 
-            if(stringWidth(tmpString + CHARS_PER_LINE * line, &standardFont, true, true) + stringWidth(flagNumber, &standardFont, true, false) <= SCREEN_WIDTH - 1 - 8) { // STD_SPACE_FIGURE is 8 pixel wide
+            if(stringWidth(tmpString + CHARS_PER_LINE * line, &standardFont, true, true) + stringWidth(flagNumber, &standardFont, true, false) <= SCREEN_WIDTH - 1 - 8) { // SPACE is 8 pixel wide
               if(!firstFlag) {
-                strcat(tmpString + CHARS_PER_LINE * line, STD_SPACE_FIGURE);
+                strcat(tmpString + CHARS_PER_LINE * line, " ");
               }
               else {
                 firstFlag = false;

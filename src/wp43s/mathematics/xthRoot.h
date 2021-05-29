@@ -23,6 +23,7 @@
 
 #include "defines.h"
 #include <stdint.h>
+#include "typeDefinitions.h"
 
 void fnXthRoot      (uint16_t unusedButMandatoryParameter);
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -30,6 +31,8 @@ void xthRootError   (void);
 #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
 #define xthRootError typeError
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+void xthRootReal(real_t *yy, real_t *xx, realContext_t *realContext);
 
 //      RegYRegX
 void xthRootLonILonI(void);

@@ -796,7 +796,9 @@ void fnReset(uint16_t confirmation) {
     statisticalSumsPointer = NULL;
     savedStatisticalSumsPointer = NULL;
     lrSelection = CF_LINEAR_FITTING;
+    lrSelectionUndo = lrSelection;
     lrChosen    = 0;
+    lrChosenUndo = 0;
     lastPlotMode = PLOT_NOTHING;
     plotSelection = 0;
 

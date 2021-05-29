@@ -34,7 +34,7 @@
 TO_QSPI void (*const Decomp[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
 // regX ==> 1            2           3            4            5            6            7            8            9             10
 //          Long integer Real34      Complex34    Time         Date         String       Real34 mat   Complex34 m  Short integer Config data
-            decompError, decompReal, decompError, decompError, decompError, decompError, decompError, decompError, decompError,  decompError
+            decompLonI,  decompReal, decompError, decompError, decompError, decompError, decompError, decompError, decompError,  decompError
 };
 
 
@@ -67,6 +67,18 @@ void decompError(void) {
     moreInfoOnError("In function fnDecomp:", errorMessage, NULL, NULL);
 }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+
+
+void decompLonI(void) {
+  longInteger_t lgInt;
+
+  liftStack();
+  longIntegerInit(lgInt);
+  uIntToLongInteger(1, lgInt);
+  convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_X);
+  longIntegerFree(lgInt);
+}
 
 
 

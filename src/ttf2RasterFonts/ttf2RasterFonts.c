@@ -22,7 +22,11 @@
 #include FT_FREETYPE_H
 
 /* Turn off -Wunused-result for a specific function call */
-#define ignore_result(M) if(1==((uint64_t)M)){;}
+#ifdef OS32BIT
+  #define ignore_result(M) if(1==((uint32_t)M)){;}
+#else
+  #define ignore_result(M) if(1==((uint64_t)M)){;}
+#endif
 
 FT_Library library;
 FT_Error   error;

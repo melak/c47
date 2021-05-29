@@ -46,6 +46,18 @@ int32_t getFreeRamMemory(void) {
   }
 #endif // !DMCP_BUILD
 
+bool_t isMemoryBlockAvailable(size_t sizeInBlocks) {
+  int i;
+
+  for(i=0; i<numberOfFreeMemoryRegions; i++) {
+    if(freeMemoryRegions[i].sizeInBlocks >= sizeInBlocks) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 
 
 
