@@ -69,7 +69,7 @@ void lnP1Error(void) {
  * \return void
  ***********************************************/
 void fnLnP1(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   lnP1[getRegisterDataType(REGISTER_X)]();
 

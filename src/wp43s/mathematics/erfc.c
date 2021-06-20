@@ -62,7 +62,7 @@ void erfcError(void) {
  * \return void
  ***********************************************/
 void fnErfc(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   Erfc[getRegisterDataType(REGISTER_X)]();
 

@@ -69,7 +69,7 @@ void sincpiError(void) {
  * \return void
  ***********************************************/
 void fnSincpi(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   Sincpi[getRegisterDataType(REGISTER_X)]();
 

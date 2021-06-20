@@ -71,7 +71,7 @@ void lnbetaError(void) {
  * \return void
  ***********************************************/
 void fnLnBeta(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   lnBeta[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

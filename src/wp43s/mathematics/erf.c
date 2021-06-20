@@ -62,7 +62,7 @@ void erfError(void) {
  * \return void
  ***********************************************/
 void fnErf(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   Erf[getRegisterDataType(REGISTER_X)]();
 

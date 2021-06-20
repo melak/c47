@@ -65,7 +65,7 @@ void signError(void) {
  * \return void
  ***********************************************/
 void fnSign(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   sign[getRegisterDataType(REGISTER_X)]();
 

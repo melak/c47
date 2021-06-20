@@ -63,7 +63,7 @@ void chsError(void) {
  * \return void
  ***********************************************/
 void fnChangeSign(uint16_t unusedButMandatoryParameter) {
-  //copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  //if(!saveLastX()) return;
 
   chs[getRegisterDataType(REGISTER_X)]();
 }

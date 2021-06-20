@@ -80,7 +80,7 @@ void powError(void) {
  * \return void
  ***********************************************/
 void fnPower(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   power[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

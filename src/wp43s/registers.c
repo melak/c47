@@ -456,6 +456,8 @@ void setRegisterTag(calcRegister_t regist, uint32_t tag) {
 
 
 void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
+  dataBlock_t *oldSubroutineLevelData = currentSubroutineLevelData;
+
   if(numberOfRegistersToAllocate > 99) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -468,46 +470,97 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
   uint16_t r;
   if(currentLocalFlags == NULL) {
     // 1st allocation of local registers in this level of subroutine
-    currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 3, 4 + numberOfRegistersToAllocate);
-    currentLocalFlags = currentSubroutineLevelData + 3;
-    currentLocalFlags->localFlags = 0;
-    currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData + 4);
-    currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
-    currentNumberOfLocalFlags = NUMBER_OF_LOCAL_FLAGS;
+    if((currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 3, 4 + numberOfRegistersToAllocate))) {
+      currentLocalFlags = currentSubroutineLevelData + 3;
+      currentLocalFlags->localFlags = 0;
+      currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData + 4);
+      currentNumberOfLocalFlags = NUMBER_OF_LOCAL_FLAGS;
 
-    // All the new local registers are real34s initialized to 0.0
-    for(r=FIRST_LOCAL_REGISTER; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
-      setRegisterDataType(r, dtReal34, amNone);
-      setRegisterDataPointer(r, allocWp43s(REAL34_SIZE));
-      real34Zero(REGISTER_REAL34_DATA(r));
+      // All the new local registers are real34s initialized to 0.0
+      for(r=FIRST_LOCAL_REGISTER; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
+        void *newMem = allocWp43s(REAL34_SIZE);
+        if(newMem) {
+          setRegisterDataType(r, dtReal34, amNone);
+          setRegisterDataPointer(r, newMem);
+          real34Zero(REGISTER_REAL34_DATA(r));
+        }
+        else {
+          // Not enough memory (!)
+          for(uint16_t rr = FIRST_LOCAL_REGISTER; rr < r; rr++) {
+            freeRegisterData(FIRST_LOCAL_REGISTER + rr);
+          }
+          reallocWp43s(currentSubroutineLevelData, 4 + numberOfRegistersToAllocate, 3);
+          currentLocalFlags = NULL;
+          currentLocalRegisters = NULL;
+          currentNumberOfLocalRegisters = 0;
+          currentNumberOfLocalFlags = NUMBER_OF_LOCAL_FLAGS;
+          lastErrorCode = ERROR_RAM_FULL;
+          return;
+        }
+      }
+
+      currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
+    }
+    else {
+      currentSubroutineLevelData = oldSubroutineLevelData;
+      lastErrorCode = ERROR_RAM_FULL;
+      return;
     }
   }
   else if(numberOfRegistersToAllocate != currentNumberOfLocalRegisters) {
     // The number of allocated local registers changes
     if(numberOfRegistersToAllocate > currentNumberOfLocalRegisters) {
       uint8_t oldNumberOfLocalRegisters = currentNumberOfLocalRegisters;
-      currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 4 + currentNumberOfLocalRegisters, 4 + numberOfRegistersToAllocate);
-      currentLocalFlags = currentSubroutineLevelData + 3;
-      currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData + 4);
-      currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
+      if((currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 4 + currentNumberOfLocalRegisters, 4 + numberOfRegistersToAllocate))) {
+        currentLocalFlags = currentSubroutineLevelData + 3;
+        currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData + 4);
 
-      // All the new local registers are real34s initialized to 0.0
-      for(r=FIRST_LOCAL_REGISTER+oldNumberOfLocalRegisters; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
-        setRegisterDataType(r, dtReal34, amNone);
-        setRegisterDataPointer(r, allocWp43s(REAL34_SIZE));
-        real34Zero(REGISTER_REAL34_DATA(r));
+        // All the new local registers are real34s initialized to 0.0
+        for(r=FIRST_LOCAL_REGISTER+oldNumberOfLocalRegisters; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
+          void *newMem = allocWp43s(REAL34_SIZE);
+          if(newMem) {
+            setRegisterDataType(r, dtReal34, amNone);
+            setRegisterDataPointer(r, newMem);
+            real34Zero(REGISTER_REAL34_DATA(r));
+          }
+          else {
+            // Not enough memory (!)
+            for(uint16_t rr = FIRST_LOCAL_REGISTER + oldNumberOfLocalRegisters; rr < r; rr++) {
+              freeRegisterData(FIRST_LOCAL_REGISTER + rr);
+            }
+            reallocWp43s(currentSubroutineLevelData, 4 + numberOfRegistersToAllocate, 4 + currentNumberOfLocalRegisters);
+            currentLocalFlags = currentSubroutineLevelData + 3;
+            currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData + 4);
+            currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
+            lastErrorCode = ERROR_RAM_FULL;
+            return;
+          }
+        }
+
+        currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
+      }
+      else {
+        currentSubroutineLevelData = oldSubroutineLevelData;
+        lastErrorCode = ERROR_RAM_FULL;
+        return;
       }
     }
     else {
-      // free memory allocated to the data of the deleted local registers
-      for(r=numberOfRegistersToAllocate; r<currentNumberOfLocalRegisters; r++) {
-        freeRegisterData(FIRST_LOCAL_REGISTER + r);
-      }
+      if((currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 4 + currentNumberOfLocalRegisters, 4 + numberOfRegistersToAllocate))) {
+        // free memory allocated to the data of the deleted local registers
+        for(r=numberOfRegistersToAllocate; r<currentNumberOfLocalRegisters; r++) {
+          freeRegisterData(FIRST_LOCAL_REGISTER + r);
+        }
 
-      currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 4 + currentNumberOfLocalRegisters, 4 + numberOfRegistersToAllocate);
-      currentLocalFlags = currentSubroutineLevelData + 3;
-      currentLocalRegisters = (numberOfRegistersToAllocate == 0 ? NULL : (registerHeader_t *)(currentSubroutineLevelData + 4));
-      currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
+        currentLocalFlags = currentSubroutineLevelData + 3;
+        currentLocalRegisters = (numberOfRegistersToAllocate == 0 ? NULL : (registerHeader_t *)(currentSubroutineLevelData + 4));
+        currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
+      }
+      else {
+        currentSubroutineLevelData = oldSubroutineLevelData;
+        lastErrorCode = ERROR_RAM_FULL;
+        return;
+      }
     }
   }
   else {
@@ -537,10 +590,15 @@ void allocateNamedVariable(const char *variableName, dataType_t dataType, uint16
   }
 
   if(numberOfNamedVariables == 0) { // First named variable
-    allNamedVariables = allocWp43s(TO_BLOCKS(sizeof(namedVariableHeader_t)));
-    numberOfNamedVariables = 1;
+    if((allNamedVariables = allocWp43s(TO_BLOCKS(sizeof(namedVariableHeader_t))))) {
+      numberOfNamedVariables = 1;
 
-    regist = 0;
+      regist = 0;
+    }
+    else { // unlikely but possible
+      lastErrorCode = ERROR_RAM_FULL;
+      return;
+    }
   }
   else {
     regist = numberOfNamedVariables;
@@ -552,8 +610,15 @@ void allocateNamedVariable(const char *variableName, dataType_t dataType, uint16
       return;
     }
 
-    allNamedVariables = reallocWp43s(allNamedVariables, TO_BLOCKS(sizeof(namedVariableHeader_t) * numberOfNamedVariables), TO_BLOCKS(sizeof(namedVariableHeader_t) * (numberOfNamedVariables + 1)));
-    numberOfNamedVariables++;
+    namedVariableHeader_t *origNamedVariables = allNamedVariables;
+    if((allNamedVariables = reallocWp43s(allNamedVariables, TO_BLOCKS(sizeof(namedVariableHeader_t) * numberOfNamedVariables), TO_BLOCKS(sizeof(namedVariableHeader_t) * (numberOfNamedVariables + 1))))) {
+      numberOfNamedVariables++;
+    }
+    else {
+      allNamedVariables = origNamedVariables;
+      lastErrorCode = ERROR_RAM_FULL;
+      return;
+    }
   }
 
   len = stringByteLength(variableName);
@@ -595,10 +660,18 @@ calcRegister_t findOrAllocateNamedVariable(const char *variableName) {
   regist = findNamedVariable(variableName);
   if(regist == INVALID_VARIABLE && numberOfNamedVariables <= (LAST_NAMED_VARIABLE - FIRST_NAMED_VARIABLE)) {
     allocateNamedVariable(variableName, dtReal34, REAL34_SIZE);
-    // New variables are zero by default - although this might be immediately overridden, it might require an
-    // initial value, such as when STO+
-    regist = FIRST_NAMED_VARIABLE + numberOfNamedVariables - 1;
-    real34Zero(REGISTER_REAL34_DATA(regist));
+    if(lastErrorCode == ERROR_NONE) {
+      // New variables are zero by default - although this might be immediately overridden, it might require an
+      // initial value, such as when STO+
+      regist = FIRST_NAMED_VARIABLE + numberOfNamedVariables - 1;
+      real34Zero(REGISTER_REAL34_DATA(regist));
+    }
+    else {
+      // Failed attempt to allocate a new named variable: there is not enough memory.
+      // It is impossible to reach the limitation of number of named variables.
+      lastErrorCode = ERROR_RAM_FULL;
+      return INVALID_VARIABLE;
+    }
   }
   return regist;
 }
@@ -980,6 +1053,7 @@ void copySourceRegisterToDestRegister(calcRegister_t sourceRegister, calcRegiste
         sizeInBlocks = 0;
     }
     reallocateRegister(destRegister, getRegisterDataType(sourceRegister), sizeInBlocks, amNone);
+    if(lastErrorCode == ERROR_RAM_FULL) return;
   }
 
   switch(getRegisterDataType(sourceRegister)) {
@@ -1424,6 +1498,13 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
   }
 
   if(getRegisterDataType(regist) != dataType || ((getRegisterDataType(regist) == dtString || getRegisterDataType(regist) == dtLongInteger || getRegisterDataType(regist) == dtReal34Matrix || getRegisterDataType(regist) == dtComplex34Matrix) && getRegisterMaxDataLength(regist) != dataSizeWithoutDataLenBlocks)) {
+    if(!isMemoryBlockAvailable(dataSizeWithDataLenBlocks)) {
+#ifdef PC_BUILD
+      printf("In function reallocateRegister: required %" PRIu16 " blocks for register #%" PRId16 " but no data blocks with enough size are available!\n", dataSizeWithoutDataLenBlocks, regist); fflush(stdout);
+#endif // PC_BUILD
+      lastErrorCode = ERROR_RAM_FULL;
+      return;
+    }
     freeRegisterData(regist);
     setRegisterDataPointer(regist, allocWp43s(dataSizeWithDataLenBlocks));
     setRegisterDataType(regist, dataType, tag);
@@ -1483,4 +1564,10 @@ void fnToReal(uint16_t unusedButMandatoryParameter) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
   }
+}
+
+
+bool_t saveLastX(void) {
+  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  return lastErrorCode == ERROR_NONE;
 }

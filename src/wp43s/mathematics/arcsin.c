@@ -70,7 +70,7 @@ void arcsinError(void) {
  * \return void
  ***********************************************/
 void fnArcsin(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   arcsin[getRegisterDataType(REGISTER_X)]();
 

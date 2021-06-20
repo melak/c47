@@ -53,7 +53,7 @@ void fnDblMultiply(uint16_t unusedButMandatoryParameter) {
     return;
   }
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   longIntegerInit(wd);
   longInteger2Pow(shortIntegerWordSize, wd);

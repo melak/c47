@@ -180,14 +180,19 @@ bool_t checkMinimumDataPoints(const real_t *n) {
 void initStatisticalSums(void) {
   if(statisticalSumsPointer == NULL) {
     statisticalSumsPointer = allocWp43s(NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
-    for(int32_t sum=0; sum<NUMBER_OF_STATISTICAL_SUMS - 4; sum++) {
-      realZero((real_t *)(statisticalSumsPointer + REAL_SIZE * sum));
-    }
+    if(statisticalSumsPointer) {
+      for(int32_t sum=0; sum<NUMBER_OF_STATISTICAL_SUMS - 4; sum++) {
+        realZero((real_t *)(statisticalSumsPointer + REAL_SIZE * sum));
+      }
 
-    realCopy(const_plusInfinity,  SIGMA_XMIN);
-    realCopy(const_plusInfinity,  SIGMA_YMIN);
-    realCopy(const_minusInfinity, SIGMA_XMAX);
-    realCopy(const_minusInfinity, SIGMA_YMAX);
+      realCopy(const_plusInfinity,  SIGMA_XMIN);
+      realCopy(const_plusInfinity,  SIGMA_YMIN);
+      realCopy(const_minusInfinity, SIGMA_XMAX);
+      realCopy(const_minusInfinity, SIGMA_YMAX);
+    }
+    else {
+      lastErrorCode = ERROR_RAM_FULL;
+    }
   }
   if(telltale != MEM_INITIALIZED) {
     graph_setupmemory();
@@ -220,6 +225,7 @@ void fnSigma(uint16_t plusMinus) {
      && (getRegisterDataType(REGISTER_Y) == dtLongInteger || getRegisterDataType(REGISTER_Y) == dtReal34)) {
     if(statisticalSumsPointer == NULL) {
       initStatisticalSums();
+      if(lastErrorCode != ERROR_NONE) return;
     }
 
     if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
@@ -349,9 +355,10 @@ void fnSigma(uint16_t plusMinus) {
     if(matrix.header.matrixColumns == 2) {
       if(statisticalSumsPointer == NULL) {
         initStatisticalSums();
+        if(lastErrorCode != ERROR_NONE) return;
       }
 
-      copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+      if(!saveLastX()) return;
       for(uint16_t i = 0; i < matrix.header.matrixRows; ++i) {
         real34ToReal(&matrix.matrixElements[i * 2    ], &y);
         real34ToReal(&matrix.matrixElements[i * 2 + 1], &x);

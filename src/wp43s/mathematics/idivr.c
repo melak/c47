@@ -72,7 +72,7 @@ void idivrError(void) {
  * \return void
  ***********************************************/
 void fnIDivR(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   idivr[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

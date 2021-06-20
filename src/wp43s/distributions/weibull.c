@@ -88,7 +88,7 @@ static bool_t checkParamWeibull(real_t *x, real_t *i, real_t *j) {
 void fnWeibullP(uint16_t unusedButMandatoryParameter) {
   real_t val, shape, lifetime, ans;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamWeibull(&val, &shape, &lifetime)) {
     WP34S_Pdf_Weib(&val, &shape, &lifetime, &ans, &ctxtReal39);
@@ -102,7 +102,7 @@ void fnWeibullP(uint16_t unusedButMandatoryParameter) {
 void fnWeibullL(uint16_t unusedButMandatoryParameter) {
   real_t val, shape, lifetime, ans;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamWeibull(&val, &shape, &lifetime)) {
     WP34S_Cdf_Weib(&val, &shape, &lifetime, &ans, &ctxtReal39);
@@ -116,7 +116,7 @@ void fnWeibullL(uint16_t unusedButMandatoryParameter) {
 void fnWeibullR(uint16_t unusedButMandatoryParameter) {
   real_t val, shape, lifetime, ans;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamWeibull(&val, &shape, &lifetime)) {
     WP34S_Cdfu_Weib(&val, &shape, &lifetime, &ans, &ctxtReal39);
@@ -130,7 +130,7 @@ void fnWeibullR(uint16_t unusedButMandatoryParameter) {
 void fnWeibullI(uint16_t unusedButMandatoryParameter) {
   real_t val, shape, lifetime, ans;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamWeibull(&val, &shape, &lifetime)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {

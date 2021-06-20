@@ -73,7 +73,7 @@ void modError(void) {
  * \return void
  ***********************************************/
 void fnMod(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   mod[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

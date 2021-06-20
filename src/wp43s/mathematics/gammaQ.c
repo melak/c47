@@ -74,7 +74,7 @@ void gammaQError(void) {
  * \return void
  ***********************************************/
 void fnGammaQ(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   GammaQ[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

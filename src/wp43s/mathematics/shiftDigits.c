@@ -40,7 +40,7 @@ void fnSdl(uint16_t numberOfShifts) {
   if(getRegisterDataType(REGISTER_X) == dtReal34) {
     real_t real;
 
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+    if(!saveLastX()) return;
 
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &real);
     real.exponent += numberOfShifts;
@@ -52,7 +52,7 @@ void fnSdl(uint16_t numberOfShifts) {
       longInteger_t y, x;
       uint16_t exponent;
 
-      copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+      if(!saveLastX()) return;
       convertLongIntegerRegisterToLongInteger(REGISTER_X, x);
       longIntegerInit(y);
       uIntToLongInteger(10, y);
@@ -88,7 +88,7 @@ void fnSdr(uint16_t numberOfShifts) {
   if(getRegisterDataType(REGISTER_X) == dtReal34) {
     real_t real;
 
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+    if(!saveLastX()) return;
 
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &real);
     real.exponent -= numberOfShifts;
@@ -100,7 +100,7 @@ void fnSdr(uint16_t numberOfShifts) {
       longInteger_t y, x;
       uint16_t exponent;
 
-      copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+      if(!saveLastX()) return;
       convertLongIntegerRegisterToLongInteger(REGISTER_X, x);
       longIntegerInit(y);
       uIntToLongInteger(10, y);

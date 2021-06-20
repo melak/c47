@@ -56,7 +56,7 @@ static bool_t getOrthoPolyParam(calcRegister_t regist, real_t *val, realContext_
 void fnOrthoPoly(uint16_t kind) {
   real_t x, y, z, ans;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
   if(getOrthoPolyParam(REGISTER_X, &x, &ctxtReal39) && getOrthoPolyParam(REGISTER_Y, &y, &ctxtReal39)) {
     realCopy(const_0, &z);
     if((kind != ORTHOPOLY_LAGUERRE_L_ALPHA) || getOrthoPolyParam(REGISTER_Z, &z, &ctxtReal39)) {

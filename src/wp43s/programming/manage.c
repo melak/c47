@@ -108,10 +108,16 @@ void scanLabelsAndPrograms(void) {
 
   labelList = malloc(sizeof(labelList_t) * numberOfLabels);
   if(labelList == NULL) {
+    // unlikely
+    lastErrorCode = ERROR_RAM_FULL;
+    return;
   }
 
   programList = malloc(sizeof(programList_t) * numberOfPrograms);
   if(programList == NULL) {
+    // unlikely
+    lastErrorCode = ERROR_RAM_FULL;
+    return;
   }
 
   numberOfLabels = 0;
@@ -195,6 +201,7 @@ void fnClP(uint16_t unusedButMandatoryParameter) {
 
     deleteStepsFromTo(beginOfCurrentProgram, endOfCurrentProgram);
     scanLabelsAndPrograms();
+    // unlikely fails
 
     if(savedCurrentProgramNumber >= numberOfPrograms) { // The last program
       fnGotoDot(programList[numberOfPrograms - 2].step);

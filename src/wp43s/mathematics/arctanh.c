@@ -70,7 +70,7 @@ void arctanhError(void) {
  * \return void
  ***********************************************/
 void fnArctanh(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   arctanh[getRegisterDataType(REGISTER_X)]();
 

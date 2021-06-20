@@ -64,7 +64,7 @@ void wPosError(void) {
  * \return void
  ***********************************************/
 void fnWpositive(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   WPositive[getRegisterDataType(REGISTER_X)]();
 

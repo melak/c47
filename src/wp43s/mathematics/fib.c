@@ -67,7 +67,7 @@ void fibError(void) {
  * \return void
  ***********************************************/
 void fnFib(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   fib[getRegisterDataType(REGISTER_X)]();
 

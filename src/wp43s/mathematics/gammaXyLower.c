@@ -74,7 +74,7 @@ void gammaXyLowerError(void) {
  * \return void
  ***********************************************/
 void fnGammaXyLower(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   GammaXyLower[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

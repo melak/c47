@@ -63,7 +63,7 @@ void fpError(void) {
  * \return void
  ***********************************************/
 void fnFp(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
   fp[getRegisterDataType(REGISTER_X)]();
 }
 

@@ -66,7 +66,7 @@ void expError(void) {
  * \return void
  ***********************************************/
 void fnExp(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   Exp[getRegisterDataType(REGISTER_X)]();
 

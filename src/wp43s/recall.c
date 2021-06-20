@@ -83,7 +83,7 @@ void fnLastX(uint16_t unusedButMandatoryParameter) {
 
 void fnRecallAdd(uint16_t regist) {
   if(regInRange(regist)) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+    if(!saveLastX()) return;
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
     copySourceRegisterToDestRegister(regist, REGISTER_X);
     if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
@@ -102,7 +102,7 @@ void fnRecallAdd(uint16_t regist) {
 
 void fnRecallSub(uint16_t regist) {
   if(regInRange(regist)) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+    if(!saveLastX()) return;
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
     copySourceRegisterToDestRegister(regist, REGISTER_X);
     if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
@@ -121,7 +121,7 @@ void fnRecallSub(uint16_t regist) {
 
 void fnRecallMult(uint16_t regist) {
   if(regInRange(regist)) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+    if(!saveLastX()) return;
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
     copySourceRegisterToDestRegister(regist, REGISTER_X);
     if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
@@ -140,7 +140,7 @@ void fnRecallMult(uint16_t regist) {
 
 void fnRecallDiv(uint16_t regist) {
   if(regInRange(regist)) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+    if(!saveLastX()) return;
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
     copySourceRegisterToDestRegister(regist, REGISTER_X);
     if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
@@ -159,7 +159,7 @@ void fnRecallDiv(uint16_t regist) {
 
 void fnRecallMin(uint16_t regist) {
   if(regInRange(regist)) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+    if(!saveLastX()) return;
     registerMin(REGISTER_X, regist, REGISTER_X);
   }
 }
@@ -168,7 +168,7 @@ void fnRecallMin(uint16_t regist) {
 
 void fnRecallMax(uint16_t regist) {
   if(regInRange(regist)) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+    if(!saveLastX()) return;
     registerMax(REGISTER_X, regist, REGISTER_X);
   }
 }
@@ -220,7 +220,7 @@ void fnRecallStack(uint16_t regist) {
   else {
     int i;
 
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+    if(!saveLastX()) return;
 
     for(i=0; i<size; i++) {
       copySourceRegisterToDestRegister(regist + i, REGISTER_X + i);
@@ -247,7 +247,7 @@ void fnRecallIJ(uint16_t unusedButMandatoryParameter) {
   longInteger_t zero;
   longIntegerInit(zero);
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   liftStack();
   liftStack();

@@ -64,7 +64,7 @@ void floorError(void) {
  * \return void
  ***********************************************/
 void fnFloor(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   Floor[getRegisterDataType(REGISTER_X)]();
 

@@ -76,7 +76,7 @@ void fnPercentSigma(uint16_t unusedButMandatoryParameter) {
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
   else {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+    if(!saveLastX()) return;
 
     PercentSigma[getRegisterDataType(REGISTER_X)]();
 

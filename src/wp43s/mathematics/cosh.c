@@ -66,7 +66,7 @@ void coshError(void) {
  * \return void
  ***********************************************/
 void fnCosh(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   Cosh[getRegisterDataType(REGISTER_X)]();
 

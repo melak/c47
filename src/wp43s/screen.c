@@ -946,25 +946,23 @@
         if(displayStack > 4 /* in case of overflow */) displayStack = 0;
       }
 
-
       if(temporaryInformation == TI_STATISTIC_LR && (getRegisterDataType(REGISTER_X) != dtReal34)) {
-         if(regist == REGISTER_X) {
-           if( (uint16_t)((~lrSelection) & 0x01FF) == 511) {
-             sprintf(tmpString, "L.R. selected to OrthoF. Only for REAL data.");
-           } else {
-             sprintf(tmpString, "L.R. selected to %03" PRIu16 ". Only for REAL data.", (uint16_t)((~lrSelection) & 0x01FF));
-           }
-            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-              sprintf(errorMessage, "BestF is set, but will not work until REAL data points are used.");
-              moreInfoOnError("In function refreshRegisterLine:", errorMessage, errorMessages[24], NULL);
-            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-            w = stringWidth(tmpString, &standardFont, true, true);
-            showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
-         }            
-       } else
+        if(regist == REGISTER_X) {
+          if( (uint16_t)((~lrSelection) & 0x01FF) == 511) {
+            sprintf(tmpString, "L.R. selected to OrthoF.");
+          } else {
+            sprintf(tmpString, "L.R. selected to %03" PRIu16 ".", (uint16_t)((~lrSelection) & 0x01FF));
+          }
+           #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+             sprintf(errorMessage, "BestF is set, but will not work until REAL data points are used.");
+             moreInfoOnError("In function refreshRegisterLine:", errorMessage, errorMessages[24], NULL);
+           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+           w = stringWidth(tmpString, &standardFont, true, true);
+           showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+        }            
+      }
 
-
-      if(temporaryInformation == TI_ARE_YOU_SURE && regist == REGISTER_X) {
+      else if(temporaryInformation == TI_ARE_YOU_SURE && regist == REGISTER_X) {
         showString("Are you sure?", &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
       }
 
@@ -998,6 +996,10 @@
 
       else if(temporaryInformation == TI_BACKUP_RESTORED && regist == REGISTER_X) {
         showString("Backup restored", &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+      }
+
+      else if(temporaryInformation == TI_UNDO_DISABLED && regist == REGISTER_X) {
+        showString("Not enough memory for undo", &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
       }
 
       else if(temporaryInformation == TI_SHOW_REGISTER && regist == REGISTER_T) { // L1
@@ -1105,15 +1107,16 @@
           }
         }
 
-        else if(   getSystemFlag(FLAG_FRACT)
-                && (    getRegisterDataType(regist) == dtReal34
-                     && (
-                            (   real34CompareAbsGreaterThan(REGISTER_REAL34_DATA(regist), const34_1e_4)
-                             && real34CompareAbsLessThan(REGISTER_REAL34_DATA(regist), const34_1e6)
+        else if(temporaryInformation == TI_NO_INFO
+                && getSystemFlag(FLAG_FRACT)
+                    && (    getRegisterDataType(regist) == dtReal34
+                         && (
+                                (   real34CompareAbsGreaterThan(REGISTER_REAL34_DATA(regist), const34_1e_4)
+                                 && real34CompareAbsLessThan(REGISTER_REAL34_DATA(regist), const34_1e6)
+                                )
+                             || real34IsZero(REGISTER_REAL34_DATA(regist))
                             )
-                         || real34IsZero(REGISTER_REAL34_DATA(regist))
-                        )
-                   )
+                       )
                ) {
           fractionToDisplayString(regist, tmpString);
 

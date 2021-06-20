@@ -66,7 +66,7 @@ void factError(void) {
  * \return void
  ***********************************************/
 void fnFactorial(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   fact[getRegisterDataType(REGISTER_X)]();
 

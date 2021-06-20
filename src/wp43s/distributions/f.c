@@ -103,7 +103,7 @@ static bool_t checkParamF(real_t *x, real_t *i, real_t *j) {
 void fnF_P(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, d1, d2;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamF(&val, &d1, &d2)) {
     WP34S_Pdf_F(&val, &d1, &d2, &ans, &ctxtReal39);
@@ -118,7 +118,7 @@ void fnF_P(uint16_t unusedButMandatoryParameter) {
 void fnF_L(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, d1, d2;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamF(&val, &d1, &d2)) {
     WP34S_Cdf_F(&val, &d1, &d2, &ans, &ctxtReal39);
@@ -133,7 +133,7 @@ void fnF_L(uint16_t unusedButMandatoryParameter) {
 void fnF_R(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, d1, d2;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamF(&val, &d1, &d2)) {
     WP34S_Cdfu_F(&val, &d1, &d2, &ans, &ctxtReal39);
@@ -148,7 +148,7 @@ void fnF_R(uint16_t unusedButMandatoryParameter) {
 void fnF_I(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, d1, d2;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamF(&val, &d1, &d2)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {

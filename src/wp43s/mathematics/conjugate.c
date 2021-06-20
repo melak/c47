@@ -62,7 +62,7 @@ void conjError(void) {
  * \return void
  ***********************************************/
 void fnConjugate(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   conjugate[getRegisterDataType(REGISTER_X)]();
 }

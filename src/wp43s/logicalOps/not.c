@@ -61,7 +61,7 @@ void notError(void) {
  * \return void
  ***********************************************/
 void fnLogicalNot(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
   not[getRegisterDataType(REGISTER_X)]();
 }
 

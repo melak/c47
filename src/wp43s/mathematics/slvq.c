@@ -120,7 +120,7 @@ void fnSlvq(uint16_t unusedButMandatoryParameter) {
     return;
   }
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(realCoefs == false) {
     realRoots = false;

@@ -136,7 +136,7 @@ uint16_t lrCountOnes(uint16_t curveFitting) { // count the number of allowed met
 }
 
 
-int32_t minLRDataPoints(uint16_t selection){
+uint16_t minLRDataPoints(uint16_t selection){
   if (selection > 1023)     return 65535; else
     if(selection & 448)       return 3;     else
       if(selection & (63+512))  return 2;     else
@@ -191,7 +191,7 @@ void fnProcessLRfind(uint16_t curveFitting){
         printf("processCurvefitSelection curveFitting:%u sweep:%u %s\n",curveFitting,jx,getCurveFitModeNames(jx));
       #endif
       
-      if(nn >= minLRDataPoints(jx)) {
+      if(nn >= (int32_t)minLRDataPoints(jx)) {
         processCurvefitSelection(jx,&RR,&SMI, &aa0, &aa1, &aa2);
         realMultiply(&RR,&RR,&RR2,&ctxtReal39);
 
@@ -209,7 +209,7 @@ void fnProcessLRfind(uint16_t curveFitting){
       printf("Found no fit: %u\n",s);
 	#endif //PC_BUILD
 
-  if(nn >= minLRDataPoints(s)) {
+  if(nn >= (int32_t)minLRDataPoints(s)) {
     processCurvefitSelection(s,&RR,&SMI, &aa0, &aa1, &aa2);
     lrChosen = s;
 
@@ -235,7 +235,7 @@ void fnProcessLRfind(uint16_t curveFitting){
         moreInfoOnError("In function fnProcessLRfind:", "There is insufficient statistical data to do L.R., possibly due to data manipulation!", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     } else {
-      uInt32ToReal(minLRDataPoints(s),&NN);
+      uInt32ToReal((uint32_t)minLRDataPoints(s),&NN);
       checkMinimumDataPoints(&NN);              //Report an error
     }
   }

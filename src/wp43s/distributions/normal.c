@@ -82,7 +82,7 @@ static bool_t checkParamNormal(real_t *x, real_t *i, real_t *j) {
 static void normalP(bool_t logNormal) {
   real_t val, alval, mu, sigma, ans;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamNormal(&val, &mu, &sigma)) {
     if(logNormal && realIsZero(&val)) {
@@ -118,7 +118,7 @@ static void normalP(bool_t logNormal) {
 static void normalL(bool_t logNormal) {
   real_t val, mu, sigma, ans;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamNormal(&val, &mu, &sigma)) {
     if(logNormal && realIsZero(&val)) {
@@ -147,7 +147,7 @@ static void normalL(bool_t logNormal) {
 static void normalR(bool_t logNormal) {
   real_t val, mu, sigma, ans;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamNormal(&val, &mu, &sigma)) {
     if(logNormal && realIsZero(&val)) {
@@ -176,7 +176,7 @@ static void normalR(bool_t logNormal) {
 static void normalI(bool_t logNormal) {
   real_t val, mu, sigma, ans;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamNormal(&val, &mu, &sigma)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {

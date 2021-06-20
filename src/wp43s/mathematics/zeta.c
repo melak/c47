@@ -69,7 +69,7 @@ void zetaError(void) {
  * \return void
  ***********************************************/
 void fnZeta(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   Zeta[getRegisterDataType(REGISTER_X)]();
 

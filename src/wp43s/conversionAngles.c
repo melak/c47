@@ -32,7 +32,7 @@
 
 
 void fnCvtToCurrentAngularMode(uint16_t fromAngularMode) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -59,7 +59,7 @@ void fnCvtToCurrentAngularMode(uint16_t fromAngularMode) {
 
 
 void fnCvtFromCurrentAngularMode(uint16_t toAngularMode) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -91,7 +91,7 @@ void fnCvtFromCurrentAngularMode(uint16_t toAngularMode) {
 
 
 void fnCvtDegToRad(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -127,7 +127,7 @@ void fnCvtDegToRad(uint16_t unusedButMandatoryParameter) {
 
 
 void fnCvtRadToDeg(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -163,7 +163,7 @@ void fnCvtRadToDeg(uint16_t unusedButMandatoryParameter) {
 
 
 void fnCvtDegToDms(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -197,7 +197,7 @@ void fnCvtDegToDms(uint16_t unusedButMandatoryParameter) {
 
 
 void fnCvtDmsToDeg(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -233,7 +233,7 @@ void fnCvtDmsToDeg(uint16_t unusedButMandatoryParameter) {
 
 
 void fnCvtDmsToCurrentAngularMode(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:

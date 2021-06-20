@@ -135,7 +135,7 @@ static void percentMRR() {
  * \return void
  ***********************************************/
 void fnPercentMRR(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   percentMRR();
 

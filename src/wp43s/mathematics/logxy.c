@@ -72,7 +72,7 @@ void logxyError(void) {
  * \return void
  ***********************************************/
 void fnLogXY(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   logBaseX[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

@@ -77,7 +77,7 @@ void mulError(void) {
  * \return void
  ***********************************************/
 void fnMultiply(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   multiplication[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

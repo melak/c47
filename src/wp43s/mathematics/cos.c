@@ -66,7 +66,7 @@ void cosError(void) {
  * \return void
  ***********************************************/
 void fnCos(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   Cos[getRegisterDataType(REGISTER_X)]();
 

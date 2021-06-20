@@ -63,7 +63,7 @@ void swapReImError(void) {
  * \return void
  ***********************************************/
 void fnSwapRealImaginary(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
   swapReIm[getRegisterDataType(REGISTER_X)]();
 }
 

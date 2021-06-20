@@ -63,7 +63,7 @@ void ipError(void) {
  * \return void
  ***********************************************/
 void fnIp(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
   ip[getRegisterDataType(REGISTER_X)]();
 }
 

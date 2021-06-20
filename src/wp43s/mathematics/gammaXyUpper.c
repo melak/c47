@@ -74,7 +74,7 @@ void gammaXyUpperError(void) {
  * \return void
  ***********************************************/
 void fnGammaXyUpper(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   GammaXyUpper[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

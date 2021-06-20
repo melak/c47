@@ -90,7 +90,7 @@ void fnAgm(uint16_t unusedButMandatoryParameter) {
     return;
   }
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(realInput) {
     while(realIdenticalDigits(&aReal, &bReal) <= 34) {

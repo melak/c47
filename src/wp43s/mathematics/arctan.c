@@ -68,7 +68,7 @@ void arctanError(void) {
  * \return void
  ***********************************************/
 void fnArctan(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   arctan[getRegisterDataType(REGISTER_X)]();
 

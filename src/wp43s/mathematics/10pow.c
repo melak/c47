@@ -67,7 +67,7 @@ void tenPowError(void) {
  * \return void
  ***********************************************/
 void fn10Pow(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   tenPow[getRegisterDataType(REGISTER_X)]();
 

@@ -106,7 +106,7 @@ void fnExpMod(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnOpMod(uint16_t mode) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   switch(getRegisterDataType(REGISTER_Z)) {
     case dtLongInteger:

@@ -85,7 +85,7 @@ static bool_t getDimensionArg(uint32_t *rows, uint32_t *cols) {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "invalid data type %s and %s", getRegisterDataTypeName(REGISTER_Y, true, false), getRegisterDataTypeName(REGISTER_X, true, false));
-        moreInfoOnError("In function fnNewMatrix:", errorMessage, NULL, NULL);
+        moreInfoOnError("In function getDimensionArg:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return false;
   }
@@ -100,7 +100,7 @@ static bool_t getDimensionArg(uint32_t *rows, uint32_t *cols) {
       char strbuf[32];
       longIntegerToAllocatedString(tmp_lgInt, strbuf, 32);
       sprintf(errorMessage, "invalid number of columns");
-      moreInfoOnError("In function fnNewMatrix:", errorMessage, NULL, NULL);
+      moreInfoOnError("In function getDimensionArg:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return false;
   }
@@ -116,7 +116,7 @@ static bool_t getDimensionArg(uint32_t *rows, uint32_t *cols) {
       char strbuf[32];
       longIntegerToAllocatedString(tmp_lgInt, strbuf, 32);
       sprintf(errorMessage, "invalid number of rows");
-      moreInfoOnError("In function fnNewMatrix:", errorMessage, NULL, NULL);
+      moreInfoOnError("In function getDimensionArg:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return false;
   }
@@ -199,12 +199,18 @@ static bool_t getMatrixReal(real34Matrix_t *matrix) {
   if(realIsPositive(&rx) && realIsPositive(&ry) && realCompareLessEqual(&rx, &rcols) && realCompareLessEqual(&ry, &rrows)) {
     real34Matrix_t mat;
     fnDropY(NOPARAM);
-    realMatrixInit(&mat, a, b);
-    for(r = 0; r < a; ++r)
-      for(c = 0; c < b; ++c)
-        real34Copy(&matrix->matrixElements[(r + i) * matrix->header.matrixColumns + c + j], &mat.matrixElements[r * b + c]);
-    convertReal34MatrixToReal34MatrixRegister(&mat, REGISTER_X);
-    realMatrixFree(&mat);
+    if(lastErrorCode == ERROR_NONE) {
+      if(initMatrixRegister(REGISTER_X, a, b, false)) {
+        linkToRealMatrixRegister(REGISTER_X, &mat);
+        for(r = 0; r < a; ++r)
+          for(c = 0; c < b; ++c)
+            real34Copy(&matrix->matrixElements[(r + i) * matrix->header.matrixColumns + c + j], &mat.matrixElements[r * b + c]);
+      }
+      else {
+        lastErrorCode = ERROR_RAM_FULL;
+        return false;
+      }
+    }
   }
   else {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
@@ -235,12 +241,15 @@ static bool_t getMatrixComplex(complex34Matrix_t *matrix) {
   if(realIsPositive(&rx) && realIsPositive(&ry) && realCompareLessEqual(&rx, &rcols) && realCompareLessEqual(&ry, &rrows)) {
     complex34Matrix_t mat;
     fnDropY(NOPARAM);
-    complexMatrixInit(&mat, a, b);
-    for(r = 0; r < a; ++r)
-      for(c = 0; c < b; ++c)
-        complex34Copy(&matrix->matrixElements[(r + i) * matrix->header.matrixColumns + c + j], &mat.matrixElements[r * b + c]);
-    convertComplex34MatrixToComplex34MatrixRegister(&mat, REGISTER_X);
-    complexMatrixFree(&mat);
+    if(lastErrorCode == ERROR_NONE) {
+      if(initMatrixRegister(REGISTER_X, a, b, true)) {
+        linkToComplexMatrixRegister(REGISTER_X, &mat);
+        for(r = 0; r < a; ++r)
+          for(c = 0; c < b; ++c)
+            complex34Copy(&matrix->matrixElements[(r + i) * matrix->header.matrixColumns + c + j], &mat.matrixElements[r * b + c]);
+      }
+      else lastErrorCode = ERROR_RAM_FULL;
+    }
   }
   else {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
@@ -377,31 +386,6 @@ static bool_t incJComplex(complex34Matrix_t *matrix) {
 static bool_t decJComplex(complex34Matrix_t *matrix) {
   return decJReal((real34Matrix_t *)matrix);
 }
-
-
-
-static void initSimEqValue(calcRegister_t regist, uint16_t rows, uint16_t cols) {
-  if(getRegisterDataType(regist) != dtReal34Matrix && getRegisterDataType(regist) != dtComplex34Matrix) {
-    real34Matrix_t matrix;
-    realMatrixInit(&matrix, rows, cols);
-    convertReal34MatrixToReal34MatrixRegister(&matrix, regist);
-    realMatrixFree(&matrix);
-  }
-  else if(getRegisterDataType(regist) == dtReal34Matrix && (REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows != rows || REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns != cols)) {
-    real34Matrix_t matrix;
-    convertReal34MatrixRegisterToReal34Matrix(regist, &matrix);
-    realMatrixRedim(&matrix, rows, cols);
-    convertReal34MatrixToReal34MatrixRegister(&matrix, regist);
-    realMatrixFree(&matrix);
-  }
-  else if(getRegisterDataType(regist) == dtComplex34Matrix && (REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows != rows || REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns != cols)) {
-    complex34Matrix_t matrix;
-    convertComplex34MatrixRegisterToComplex34Matrix(regist, &matrix);
-    complexMatrixRedim(&matrix, rows, cols);
-    convertComplex34MatrixToComplex34MatrixRegister(&matrix, regist);
-    complexMatrixFree(&matrix);
-  }
-}
 #endif // TESTSUITE_BUILD
 
 
@@ -409,15 +393,16 @@ static void initSimEqValue(calcRegister_t regist, uint16_t rows, uint16_t cols) 
 void fnNewMatrix(uint16_t unusedParamButMandatory) {
 #ifndef TESTSUITE_BUILD
   uint32_t rows, cols;
-  real34Matrix_t matrix;
 
   if(!getDimensionArg(&rows, &cols)) return;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   //Initialize Memory for Matrix
-  realMatrixInit(&matrix, rows, cols);
-  if(matrix.matrixElements == NULL) {
+  if(initMatrixRegister(REGISTER_X, rows, cols, false)) {
+    setSystemFlag(FLAG_ASLIFT);
+  }
+  else {
     displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "Not enough memory for a %" PRIu32 STD_CROSS "%" PRIu32 " matrix", rows, cols);
@@ -425,18 +410,6 @@ void fnNewMatrix(uint16_t unusedParamButMandatory) {
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
-
-  //Drop X_Register and Y_Register
-  convertReal34MatrixToReal34MatrixRegister(&matrix, REGISTER_X);
-
-  if(lastErrorCode == ERROR_NONE) {
-    setSystemFlag(FLAG_ASLIFT);
-  }
-  else if(lastErrorCode == ERROR_RAM_FULL) {
-    lastErrorCode = ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX;
-  }
-
-  realMatrixFree(&matrix);
 
   adjustResult(REGISTER_X, true, false, REGISTER_X, REGISTER_Y, -1);
 #endif // TESTSUITE_BUILD
@@ -646,39 +619,15 @@ void fnSetMatrixDimensions(uint16_t regist) {
 
   if(!getDimensionArg(&y, &x)) {
   }
-  else if(getRegisterDataType(regist) == dtReal34Matrix) {
-    real34Matrix_t matrix;
-
-    convertReal34MatrixRegisterToReal34Matrix(regist, &matrix);
-    realMatrixRedim(&matrix, y, x);
-    convertReal34MatrixToReal34MatrixRegister(&matrix, regist);
-    realMatrixFree(&matrix);
-  }
-  else if(getRegisterDataType(regist) == dtComplex34Matrix) {
-    complex34Matrix_t matrix;
-
-    convertComplex34MatrixRegisterToComplex34Matrix(regist, &matrix);
-    complexMatrixRedim(&matrix, y, x);
-    convertComplex34MatrixToComplex34MatrixRegister(&matrix, regist);
-    complexMatrixFree(&matrix);
+  else if(redimMatrixRegister(regist, y, x)) {
   }
   else {
-    real34Matrix_t matrix;
-
-    realMatrixInit(&matrix, y, x);
-    if(matrix.matrixElements == NULL) {
-      displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "Not enough memory for a %" PRIu32 STD_CROSS "%" PRIu32 " matrix", y, x);
-        moreInfoOnError("In function fnSetMatrixDimensions:", errorMessage, NULL, NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      return;
-    }
-
-    convertReal34MatrixToReal34MatrixRegister(&matrix, regist);
-    if(lastErrorCode == ERROR_RAM_FULL)
-      lastErrorCode = ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX;
-    realMatrixFree(&matrix);
+    displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "Not enough memory for a %" PRIu32 STD_CROSS "%" PRIu32 " matrix", y, x);
+      moreInfoOnError("In function fnSetMatrixDimensions:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return;
   }
 #endif // TESTSUITE_BUILD
 }
@@ -688,7 +637,7 @@ void fnSetMatrixDimensions(uint16_t regist) {
 
 void fnGetMatrixDimensions(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || getRegisterDataType(REGISTER_X) == dtComplex34Matrix) {
     const uint16_t rows = REGISTER_DATA(REGISTER_X)->matrixRows;
@@ -723,21 +672,23 @@ void fnGetMatrixDimensions(uint16_t unusedButMandatoryParameter) {
 
 void fnTranspose(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
-    real34Matrix_t x, res;
+    real34Matrix_t x;
 
     linkToRealMatrixRegister(REGISTER_X, &x);
-    transposeRealMatrix(&x, &res);
-    convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+    transposeRealMatrix(&x, &x);
+    REGISTER_REAL34_MATRIX_DBLOCK(REGISTER_X)->matrixRows    = x.header.matrixRows;
+    REGISTER_REAL34_MATRIX_DBLOCK(REGISTER_X)->matrixColumns = x.header.matrixColumns;
   }
   else if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix) {
-    complex34Matrix_t x, res;
+    complex34Matrix_t x;
 
     linkToComplexMatrixRegister(REGISTER_X, &x);
-    transposeComplexMatrix(&x, &res);
-    convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
+    transposeComplexMatrix(&x, &x);
+    REGISTER_REAL34_MATRIX_DBLOCK(REGISTER_X)->matrixRows    = x.header.matrixRows;
+    REGISTER_REAL34_MATRIX_DBLOCK(REGISTER_X)->matrixColumns = x.header.matrixColumns;
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -756,7 +707,7 @@ void fnTranspose(uint16_t unusedButMandatoryParameter) {
 
 void fnLuDecomposition(uint16_t unusedParamButMandatory) {
 #ifndef TESTSUITE_BUILD
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, l, u;
@@ -773,43 +724,51 @@ void fnLuDecomposition(uint16_t unusedParamButMandatory) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      p = allocWp43s(x.header.matrixRows * sizeof(uint16_t));
-      WP34S_LU_decomposition(&x, &l, p);
-      if(l.matrixElements) {
-        copyRealMatrix(&l, &u);
-        for(i = 0; i < l.header.matrixRows; ++i) {
-          for(j = i; j < l.header.matrixColumns; ++j) {
-            real34Copy(i == j ? const34_1 : const34_0, &l.matrixElements[i * l.header.matrixColumns + j]);
+      if((p = allocWp43s(x.header.matrixRows * sizeof(uint16_t)))) {
+        WP34S_LU_decomposition(&x, &l, p);
+        if(l.matrixElements) {
+          copyRealMatrix(&l, &u);
+          if(u.matrixElements) {
+            for(i = 0; i < l.header.matrixRows; ++i) {
+              for(j = i; j < l.header.matrixColumns; ++j) {
+                real34Copy(i == j ? const34_1 : const34_0, &l.matrixElements[i * l.header.matrixColumns + j]);
+              }
+            }
+            for(i = 1; i < u.header.matrixRows; ++i) {
+              for(j = 0; j < i; ++j) {
+                real34Copy(const34_0, &u.matrixElements[i * u.header.matrixColumns + j]);
+              }
+            }
+            realMatrixFree(&x);
+            realMatrixIdentity(&x, l.header.matrixColumns);
+            for(uint16_t i = 0; i < l.header.matrixColumns; ++i) {
+              realMatrixSwapRows(&x, &x, i, p[i]);
+            }
+            transposeRealMatrix(&x, &x);
+            liftStack();
+            liftStack();
+            convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_Z);
+            if(lastErrorCode == ERROR_NONE) {
+              convertReal34MatrixToReal34MatrixRegister(&l, REGISTER_Y);
+              if(lastErrorCode == ERROR_NONE) {
+                convertReal34MatrixToReal34MatrixRegister(&u, REGISTER_X);
+              }
+            }
+            setSystemFlag(FLAG_ASLIFT);
+            realMatrixFree(&u);
           }
+          realMatrixFree(&l);
         }
-        for(i = 1; i < u.header.matrixRows; ++i) {
-          for(j = 0; j < i; ++j) {
-            real34Copy(const34_0, &u.matrixElements[i * u.header.matrixColumns + j]);
-          }
+        else {
+          displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            sprintf(errorMessage, "attempt to LU-decompose a singular matrix");
+            moreInfoOnError("In function fnLuDecomposition:", errorMessage, NULL, NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         }
-        realMatrixFree(&x);
-        realMatrixIdentity(&x, l.header.matrixColumns);
-        for(uint16_t i = 0; i < l.header.matrixColumns; ++i) {
-          realMatrixSwapRows(&x, &x, i, p[i]);
-        }
-        transposeRealMatrix(&x, &x);
-        liftStack();
-        liftStack();
-        convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_Z);
-        convertReal34MatrixToReal34MatrixRegister(&l, REGISTER_Y);
-        convertReal34MatrixToReal34MatrixRegister(&u, REGISTER_X);
-        realMatrixFree(&l);
-        realMatrixFree(&u);
-        setSystemFlag(FLAG_ASLIFT);
+        freeWp43s(p, x.header.matrixRows * sizeof(uint16_t));
       }
-      else {
-        displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          sprintf(errorMessage, "attempt to LU-decompose a singular matrix");
-          moreInfoOnError("In function fnLuDecomposition:", errorMessage, NULL, NULL);
-        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      }
-      freeWp43s(p, x.header.matrixRows * sizeof(uint16_t));
+      else lastErrorCode = ERROR_RAM_FULL;
     }
 
     realMatrixFree(&x);
@@ -830,45 +789,57 @@ void fnLuDecomposition(uint16_t unusedParamButMandatory) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      p = allocWp43s(x.header.matrixRows * sizeof(uint16_t));
-      complex_LU_decomposition(&x, &l, p);
-      if(l.matrixElements) {
-        copyComplexMatrix(&l, &u);
-        for(i = 0; i < l.header.matrixRows; ++i) {
-          for(j = i; j < l.header.matrixColumns; ++j) {
-            real34Copy(i == j ? const34_1 : const34_0, VARIABLE_REAL34_DATA(&l.matrixElements[i * l.header.matrixColumns + j]));
-            real34Copy(                     const34_0, VARIABLE_IMAG34_DATA(&l.matrixElements[i * l.header.matrixColumns + j]));
+      if((p = allocWp43s(x.header.matrixRows * sizeof(uint16_t)))) {
+        complex_LU_decomposition(&x, &l, p);
+        if(l.matrixElements) {
+          copyComplexMatrix(&l, &u);
+          if(u.matrixElements) {
+            for(i = 0; i < l.header.matrixRows; ++i) {
+              for(j = i; j < l.header.matrixColumns; ++j) {
+                real34Copy(i == j ? const34_1 : const34_0, VARIABLE_REAL34_DATA(&l.matrixElements[i * l.header.matrixColumns + j]));
+                real34Copy(                     const34_0, VARIABLE_IMAG34_DATA(&l.matrixElements[i * l.header.matrixColumns + j]));
+              }
+            }
+            for(i = 1; i < u.header.matrixRows; ++i) {
+              for(j = 0; j < i; ++j) {
+                real34Copy(const34_0, VARIABLE_REAL34_DATA(&u.matrixElements[i * u.header.matrixColumns + j]));
+                real34Copy(const34_0, VARIABLE_IMAG34_DATA(&u.matrixElements[i * u.header.matrixColumns + j]));
+              }
+            }
+            realMatrixIdentity(&pivot, l.header.matrixColumns);
+            if(lastErrorCode == ERROR_NONE) {
+              for(uint16_t i = 0; i < l.header.matrixColumns; ++i) {
+                realMatrixSwapRows(&pivot, &pivot, i, p[i]);
+              }
+              transposeRealMatrix(&pivot, &pivot);
+              liftStack();
+              liftStack();
+              setSystemFlag(FLAG_ASLIFT);
+              convertReal34MatrixToReal34MatrixRegister(&pivot, REGISTER_Z);
+              if(lastErrorCode == ERROR_NONE) {
+                convertComplex34MatrixToComplex34MatrixRegister(&l, REGISTER_Y);
+                if(lastErrorCode == ERROR_NONE) {
+                  convertComplex34MatrixToComplex34MatrixRegister(&u, REGISTER_X);
+                }
+              }
+              realMatrixFree(&pivot);
+            }
+            else lastErrorCode = ERROR_RAM_FULL;
+            complexMatrixFree(&u);
           }
+          else lastErrorCode = ERROR_RAM_FULL;
+          complexMatrixFree(&l);
         }
-        for(i = 1; i < u.header.matrixRows; ++i) {
-          for(j = 0; j < i; ++j) {
-            real34Copy(const34_0, VARIABLE_REAL34_DATA(&u.matrixElements[i * u.header.matrixColumns + j]));
-            real34Copy(const34_0, VARIABLE_IMAG34_DATA(&u.matrixElements[i * u.header.matrixColumns + j]));
-          }
+        else {
+          displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            sprintf(errorMessage, "attempt to LU-decompose a singular matrix");
+            moreInfoOnError("In function fnLuDecomposition:", errorMessage, NULL, NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         }
-        realMatrixIdentity(&pivot, l.header.matrixColumns);
-        for(uint16_t i = 0; i < l.header.matrixColumns; ++i) {
-          realMatrixSwapRows(&pivot, &pivot, i, p[i]);
-        }
-        transposeRealMatrix(&pivot, &pivot);
-        liftStack();
-        liftStack();
-        convertReal34MatrixToReal34MatrixRegister(&pivot, REGISTER_Z);
-        convertComplex34MatrixToComplex34MatrixRegister(&l, REGISTER_Y);
-        convertComplex34MatrixToComplex34MatrixRegister(&u, REGISTER_X);
-        complexMatrixFree(&l);
-        complexMatrixFree(&u);
-        realMatrixFree(&pivot);
-        setSystemFlag(FLAG_ASLIFT);
+        freeWp43s(p, x.header.matrixRows * sizeof(uint16_t));
       }
-      else {
-        displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          sprintf(errorMessage, "attempt to LU-decompose a singular matrix");
-          moreInfoOnError("In function fnLuDecomposition:", errorMessage, NULL, NULL);
-        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      }
-      freeWp43s(p, x.header.matrixRows * sizeof(uint16_t));
+      else lastErrorCode = ERROR_RAM_FULL;
     }
 
     complexMatrixFree(&x);
@@ -889,7 +860,7 @@ void fnLuDecomposition(uint16_t unusedParamButMandatory) {
 
 void fnDeterminant(uint16_t unusedParamButMandatory) {
 #ifndef TESTSUITE_BUILD
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x;
@@ -907,8 +878,10 @@ void fnDeterminant(uint16_t unusedParamButMandatory) {
     }
     else {
       detRealMatrix(&x, &res);
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      real34Copy(&res, REGISTER_REAL34_DATA(REGISTER_X));
+      if(lastErrorCode == ERROR_NONE) {
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+        real34Copy(&res, REGISTER_REAL34_DATA(REGISTER_X));
+      }
     }
   }
   else if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix) {
@@ -927,9 +900,11 @@ void fnDeterminant(uint16_t unusedParamButMandatory) {
     }
     else {
       detComplexMatrix(&x, &res_r, &res_i);
-      reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      real34Copy(&res_r, REGISTER_REAL34_DATA(REGISTER_X));
-      real34Copy(&res_i, REGISTER_IMAG34_DATA(REGISTER_X));
+      if(lastErrorCode == ERROR_NONE) {
+        reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+        real34Copy(&res_r, REGISTER_REAL34_DATA(REGISTER_X));
+        real34Copy(&res_i, REGISTER_IMAG34_DATA(REGISTER_X));
+      }
     }
   }
   else {
@@ -948,7 +923,7 @@ void fnDeterminant(uint16_t unusedParamButMandatory) {
 
 void fnInvertMatrix(uint16_t unusedParamButMandatory) {
 #ifndef TESTSUITE_BUILD
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, res;
@@ -965,17 +940,22 @@ void fnInvertMatrix(uint16_t unusedParamButMandatory) {
     }
     else {
       WP34S_matrix_inverse(&x, &res);
-      if(res.matrixElements) {
-        convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
-        realMatrixFree(&res);
-        setSystemFlag(FLAG_ASLIFT);
+      if(lastErrorCode == ERROR_NONE) {
+        if(res.matrixElements) {
+          convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+          realMatrixFree(&res);
+          setSystemFlag(FLAG_ASLIFT);
+        }
+        else {
+          displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            sprintf(errorMessage, "attempt to invert a singular matrix");
+            moreInfoOnError("In function fnInvertMatrix:", errorMessage, NULL, NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        }
       }
       else {
-        displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          sprintf(errorMessage, "attempt to invert a singular matrix");
-          moreInfoOnError("In function fnInvertMatrix:", errorMessage, NULL, NULL);
-        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        temporaryInformation = TI_NO_INFO;
       }
     }
   }
@@ -994,17 +974,22 @@ void fnInvertMatrix(uint16_t unusedParamButMandatory) {
     }
     else {
       complex_matrix_inverse(&x, &res);
-      if(res.matrixElements) {
-        convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
-        complexMatrixFree(&res);
-        setSystemFlag(FLAG_ASLIFT);
+      if(lastErrorCode == ERROR_NONE) {
+        if(res.matrixElements) {
+          convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
+          complexMatrixFree(&res);
+          setSystemFlag(FLAG_ASLIFT);
+        }
+        else {
+          displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            sprintf(errorMessage, "attempt to invert a singular matrix");
+            moreInfoOnError("In function fnInvertMatrix:", errorMessage, NULL, NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        }
       }
       else {
-        displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          sprintf(errorMessage, "attempt to invert a singular matrix");
-          moreInfoOnError("In function fnInvertMatrix:", errorMessage, NULL, NULL);
-        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        temporaryInformation = TI_NO_INFO;
       }
     }
   }
@@ -1024,7 +1009,7 @@ void fnInvertMatrix(uint16_t unusedParamButMandatory) {
 
 void fnEuclideanNorm(uint16_t unusedParamButMandatory) {
 #ifndef TESTSUITE_BUILD
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t matrix;
@@ -1081,46 +1066,50 @@ void fnEuclideanNorm(uint16_t unusedParamButMandatory) {
 
 void fnRowSum(uint16_t unusedParamButMandatory) {
 #ifndef TESTSUITE_BUILD
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, res;
     real_t sum, elem;
     linkToRealMatrixRegister(REGISTER_X, &x);
 
-    realMatrixInit(&res, x.header.matrixRows, 1);
-    for(uint16_t i = 0; i < x.header.matrixRows; ++i) {
-      realZero(&sum);
-      for(uint16_t j = 0; j < x.header.matrixColumns; ++j) {
-        real34ToReal(&x.matrixElements[i * x.header.matrixColumns + j], &elem);
-        realAdd(&sum, &elem, &sum, &ctxtReal39);
+    if(realMatrixInit(&res, x.header.matrixRows, 1)) {
+      for(uint16_t i = 0; i < x.header.matrixRows; ++i) {
+        realZero(&sum);
+        for(uint16_t j = 0; j < x.header.matrixColumns; ++j) {
+          real34ToReal(&x.matrixElements[i * x.header.matrixColumns + j], &elem);
+          realAdd(&sum, &elem, &sum, &ctxtReal39);
+        }
+        realToReal34(&sum, &res.matrixElements[i]);
       }
-      realToReal34(&sum, &res.matrixElements[i]);
-    }
 
-    convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
-    realMatrixFree(&res);
+      convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+      realMatrixFree(&res);
+    }
+    else lastErrorCode = ERROR_RAM_FULL;
   }
   else if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix) {
     complex34Matrix_t x, res;
     real_t sumr, sumi, elem;
     linkToComplexMatrixRegister(REGISTER_X, &x);
 
-    complexMatrixInit(&res, x.header.matrixRows, 1);
-    for(uint16_t i = 0; i < x.header.matrixRows; ++i) {
-      realZero(&sumr); realZero(&sumi);
-      for(uint16_t j = 0; j < x.header.matrixColumns; ++j) {
-        real34ToReal(VARIABLE_REAL34_DATA(&x.matrixElements[i * x.header.matrixColumns + j]), &elem);
-        realAdd(&sumr, &elem, &sumr, &ctxtReal39);
-        real34ToReal(VARIABLE_IMAG34_DATA(&x.matrixElements[i * x.header.matrixColumns + j]), &elem);
-        realAdd(&sumi, &elem, &sumi, &ctxtReal39);
+    if(complexMatrixInit(&res, x.header.matrixRows, 1)) {
+      for(uint16_t i = 0; i < x.header.matrixRows; ++i) {
+        realZero(&sumr); realZero(&sumi);
+        for(uint16_t j = 0; j < x.header.matrixColumns; ++j) {
+          real34ToReal(VARIABLE_REAL34_DATA(&x.matrixElements[i * x.header.matrixColumns + j]), &elem);
+          realAdd(&sumr, &elem, &sumr, &ctxtReal39);
+          real34ToReal(VARIABLE_IMAG34_DATA(&x.matrixElements[i * x.header.matrixColumns + j]), &elem);
+          realAdd(&sumi, &elem, &sumi, &ctxtReal39);
+        }
+        realToReal34(&sumr, VARIABLE_REAL34_DATA(&res.matrixElements[i]));
+        realToReal34(&sumi, VARIABLE_IMAG34_DATA(&res.matrixElements[i]));
       }
-      realToReal34(&sumr, VARIABLE_REAL34_DATA(&res.matrixElements[i]));
-      realToReal34(&sumi, VARIABLE_IMAG34_DATA(&res.matrixElements[i]));
-    }
 
-    convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
-    complexMatrixFree(&res);
+      convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
+      complexMatrixFree(&res);
+    }
+    else lastErrorCode = ERROR_RAM_FULL;
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -1138,7 +1127,7 @@ void fnRowSum(uint16_t unusedParamButMandatory) {
 
 void fnRowNorm(uint16_t unusedParamButMandatory) {
 #ifndef TESTSUITE_BUILD
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x;
@@ -1243,12 +1232,15 @@ void fnSwapRows(uint16_t unusedParamButMandatory) {
 
 void fnSimultaneousLinearEquation(uint16_t numberOfUnknowns) {
 #ifndef TESTSUITE_BUILD
-  initSimEqValue(findOrAllocateNamedVariable("Mat_A"), numberOfUnknowns, numberOfUnknowns);
-  initSimEqValue(findOrAllocateNamedVariable("Mat_B"), numberOfUnknowns, 1);
-  initSimEqValue(findOrAllocateNamedVariable("Mat_X"), numberOfUnknowns, 1);
-  showSoftmenu(-MNU_SIMQ);
-  showSoftmenu(-MNU_TAM);
-  numberOfTamMenusToPop = 1;
+  if(allocateNamedMatrix("Mat_A", numberOfUnknowns, numberOfUnknowns) != INVALID_VARIABLE) {
+    if(allocateNamedMatrix("Mat_B", numberOfUnknowns, 1) != INVALID_VARIABLE) {
+      if(allocateNamedMatrix("Mat_X", numberOfUnknowns, 1) != INVALID_VARIABLE) {
+        showSoftmenu(-MNU_SIMQ);
+        showSoftmenu(-MNU_TAM);
+        numberOfTamMenusToPop = 1;
+      }
+    }
+  }
 #endif // TESTSUITE_BUILD
 }
 
@@ -1327,6 +1319,8 @@ void fnEditLinearEquationMatrixX(uint16_t unusedParamButMandatory) {
 
 void fnQrDecomposition(uint16_t unusedParamButMandatory) {
 #ifndef TESTSUITE_BUILD
+  if(!saveLastX()) return;
+
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, q, r;
 
@@ -1380,6 +1374,8 @@ void fnQrDecomposition(uint16_t unusedParamButMandatory) {
     moreInfoOnError("In function fnQrDecomposition:", errorMessage, "is not a matrix.", "");
     #endif
   }
+
+  adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
 #endif // TESTSUITE_BUILD
 }
 
@@ -1387,6 +1383,8 @@ void fnQrDecomposition(uint16_t unusedParamButMandatory) {
 
 void fnEigenvalues(uint16_t unusedParamButMandatory) {
 #ifndef TESTSUITE_BUILD
+  if(!saveLastX()) return;
+
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, res, ires;
 
@@ -1406,21 +1404,25 @@ void fnEigenvalues(uint16_t unusedParamButMandatory) {
       ires.header.matrixRows = ires.header.matrixColumns = 0;
       ires.matrixElements = NULL;
       realEigenvalues(&x, &res, &ires);
-      if(ires.matrixElements) {
-        complex34Matrix_t cres;
-        complexMatrixInit(&cres, res.header.matrixRows, res.header.matrixColumns);
-        for(uint32_t i = 0; i < x.header.matrixRows * x.header.matrixColumns; i++) {
-          real34Copy(&res.matrixElements[i],  VARIABLE_REAL34_DATA(&cres.matrixElements[i]));
-          real34Copy(&ires.matrixElements[i], VARIABLE_IMAG34_DATA(&cres.matrixElements[i]));
+      if(lastErrorCode == ERROR_NONE) {
+        if(ires.matrixElements) {
+          complex34Matrix_t cres;
+          if(complexMatrixInit(&cres, res.header.matrixRows, res.header.matrixColumns)) {
+            for(uint32_t i = 0; i < x.header.matrixRows * x.header.matrixColumns; i++) {
+              real34Copy(&res.matrixElements[i],  VARIABLE_REAL34_DATA(&cres.matrixElements[i]));
+              real34Copy(&ires.matrixElements[i], VARIABLE_IMAG34_DATA(&cres.matrixElements[i]));
+            }
+            convertComplex34MatrixToComplex34MatrixRegister(&cres, REGISTER_X);
+            realMatrixFree(&ires);
+            complexMatrixFree(&cres);
+          }
+          else lastErrorCode = ERROR_RAM_FULL;
         }
-        convertComplex34MatrixToComplex34MatrixRegister(&cres, REGISTER_X);
-        realMatrixFree(&ires);
-        complexMatrixFree(&cres);
+        else {
+          convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+        }
+        realMatrixFree(&res);
       }
-      else {
-        convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
-      }
-      realMatrixFree(&res);
     }
   }
   else if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix) {
@@ -1451,11 +1453,15 @@ void fnEigenvalues(uint16_t unusedParamButMandatory) {
     moreInfoOnError("In function fnEigenvalues:", errorMessage, "is not a matrix.", "");
     #endif
   }
+
+  adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
 #endif // TESTSUITE_BUILD
 }
 
 void fnEigenvectors(uint16_t unusedParamButMandatory) {
 #ifndef TESTSUITE_BUILD
+  if(!saveLastX()) return;
+
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, res, ires;
 
@@ -1477,14 +1483,16 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
       realEigenvectors(&x, &res, &ires);
       if(ires.matrixElements) {
         complex34Matrix_t cres;
-        complexMatrixInit(&cres, res.header.matrixRows, res.header.matrixColumns);
-        for(uint32_t i = 0; i < x.header.matrixRows * x.header.matrixColumns; i++) {
-          real34Copy(&res.matrixElements[i],  VARIABLE_REAL34_DATA(&cres.matrixElements[i]));
-          real34Copy(&ires.matrixElements[i], VARIABLE_IMAG34_DATA(&cres.matrixElements[i]));
+        if(complexMatrixInit(&cres, res.header.matrixRows, res.header.matrixColumns)) {
+          for(uint32_t i = 0; i < x.header.matrixRows * x.header.matrixColumns; i++) {
+            real34Copy(&res.matrixElements[i],  VARIABLE_REAL34_DATA(&cres.matrixElements[i]));
+            real34Copy(&ires.matrixElements[i], VARIABLE_IMAG34_DATA(&cres.matrixElements[i]));
+          }
+          convertComplex34MatrixToComplex34MatrixRegister(&cres, REGISTER_X);
+          realMatrixFree(&ires);
+          complexMatrixFree(&cres);
         }
-        convertComplex34MatrixToComplex34MatrixRegister(&cres, REGISTER_X);
-        realMatrixFree(&ires);
-        complexMatrixFree(&cres);
+        else lastErrorCode = ERROR_RAM_FULL;
       }
       else {
         convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
@@ -1520,19 +1528,21 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
     moreInfoOnError("In function fnEigenvectors:", errorMessage, "is not a matrix.", "");
     #endif
   }
+
+  adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
 #endif // TESTSUITE_BUILD
 }
 
 
 
 #ifndef TESTSUITE_BUILD
-void realMatrixInit(real34Matrix_t *matrix, uint16_t rows, uint16_t cols) {
+bool_t realMatrixInit(real34Matrix_t *matrix, uint16_t rows, uint16_t cols) {
   //Allocate Memory for Matrix
   const size_t neededSize = TO_BLOCKS((rows * cols) * sizeof(real34_t));
   if(!isMemoryBlockAvailable(neededSize)) {
     matrix->header.matrixColumns = matrix->header.matrixRows = 0;
     matrix->matrixElements = NULL;
-    return;
+    return false;
   }
   matrix->matrixElements = allocWp43s(neededSize);
 
@@ -1543,6 +1553,7 @@ void realMatrixInit(real34Matrix_t *matrix, uint16_t rows, uint16_t cols) {
   for(uint32_t i = 0; i < rows * cols; i++) {
     real34Copy(const34_0, &matrix->matrixElements[i]);
   }
+  return true;
 }
 
 
@@ -1557,10 +1568,12 @@ void realMatrixFree(real34Matrix_t *matrix) {
 
 
 void realMatrixIdentity(real34Matrix_t *matrix, uint16_t size) {
-  realMatrixInit(matrix, size, size);
-  for(uint16_t i = 0; i < size; ++i) {
-    real34Copy(const34_1, &matrix->matrixElements[i * size + i]);
+  if(realMatrixInit(matrix, size, size)) {
+    for(uint16_t i = 0; i < size; ++i) {
+      real34Copy(const34_1, &matrix->matrixElements[i * size + i]);
+    }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 
@@ -1568,21 +1581,29 @@ void realMatrixRedim(real34Matrix_t *matrix, uint16_t rows, uint16_t cols) {
   real34Matrix_t newMatrix;
   uint32_t elements;
 
-  realMatrixInit(&newMatrix, rows, cols);
-  elements = matrix->header.matrixRows * matrix->header.matrixColumns;
-  if(elements > rows * cols) elements = rows * cols;
-  for(uint32_t i = 0; i < elements; ++i)
-    real34Copy(&matrix->matrixElements[i], &newMatrix.matrixElements[i]);
-  realMatrixFree(matrix);
-  matrix->header.matrixRows = newMatrix.header.matrixRows;
-  matrix->header.matrixColumns = newMatrix.header.matrixColumns;
-  matrix->matrixElements = newMatrix.matrixElements;
+  if(realMatrixInit(&newMatrix, rows, cols)) {
+    elements = matrix->header.matrixRows * matrix->header.matrixColumns;
+    if(elements > rows * cols) elements = rows * cols;
+    for(uint32_t i = 0; i < elements; ++i)
+      real34Copy(&matrix->matrixElements[i], &newMatrix.matrixElements[i]);
+    realMatrixFree(matrix);
+    matrix->header.matrixRows = newMatrix.header.matrixRows;
+    matrix->header.matrixColumns = newMatrix.header.matrixColumns;
+    matrix->matrixElements = newMatrix.matrixElements;
+  }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 
-void complexMatrixInit(complex34Matrix_t *matrix, uint16_t rows, uint16_t cols) {
+bool_t complexMatrixInit(complex34Matrix_t *matrix, uint16_t rows, uint16_t cols) {
   //Allocate Memory for Matrix
-  matrix->matrixElements = allocWp43s(TO_BLOCKS((rows * cols) * sizeof(complex34_t)));
+  const size_t neededSize = TO_BLOCKS((rows * cols) * sizeof(complex34_t));
+  if(!isMemoryBlockAvailable(neededSize)) {
+    matrix->header.matrixColumns = matrix->header.matrixRows = 0;
+    matrix->matrixElements = NULL;
+    return false;
+  }
+  matrix->matrixElements = allocWp43s(neededSize);
 
   matrix->header.matrixColumns = cols;
   matrix->header.matrixRows = rows;
@@ -1592,6 +1613,7 @@ void complexMatrixInit(complex34Matrix_t *matrix, uint16_t rows, uint16_t cols) 
     real34Copy(const34_0, VARIABLE_REAL34_DATA(&matrix->matrixElements[i]));
     real34Copy(const34_0, VARIABLE_IMAG34_DATA(&matrix->matrixElements[i]));
   }
+  return true;
 }
 
 
@@ -1606,11 +1628,13 @@ void complexMatrixFree(complex34Matrix_t *matrix) {
 
 
 void complexMatrixIdentity(complex34Matrix_t *matrix, uint16_t size) {
-  complexMatrixInit(matrix, size, size);
-  for(uint16_t i = 0; i < size; ++i) {
-    real34Copy(const34_1, VARIABLE_REAL34_DATA(&matrix->matrixElements[i * size + i]));
-    real34Copy(const34_0, VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * size + i]));
+  if(complexMatrixInit(matrix, size, size)) {
+    for(uint16_t i = 0; i < size; ++i) {
+      real34Copy(const34_1, VARIABLE_REAL34_DATA(&matrix->matrixElements[i * size + i]));
+      real34Copy(const34_0, VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * size + i]));
+    }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 
@@ -1618,16 +1642,18 @@ void complexMatrixRedim(complex34Matrix_t *matrix, uint16_t rows, uint16_t cols)
   complex34Matrix_t newMatrix;
   uint32_t elements;
 
-  complexMatrixInit(&newMatrix, rows, cols);
-  elements = matrix->header.matrixRows * matrix->header.matrixColumns;
-  if(elements > rows * cols) elements = rows * cols;
-  for(uint32_t i = 0; i < elements; ++i) {
-    complex34Copy(&matrix->matrixElements[i], &newMatrix.matrixElements[i]);
+  if(complexMatrixInit(&newMatrix, rows, cols)) {
+    elements = matrix->header.matrixRows * matrix->header.matrixColumns;
+    if(elements > rows * cols) elements = rows * cols;
+    for(uint32_t i = 0; i < elements; ++i) {
+      complex34Copy(&matrix->matrixElements[i], &newMatrix.matrixElements[i]);
+    }
+    complexMatrixFree(matrix);
+    matrix->header.matrixRows = newMatrix.header.matrixRows;
+    matrix->header.matrixColumns = newMatrix.header.matrixColumns;
+    matrix->matrixElements = newMatrix.matrixElements;
   }
-  complexMatrixFree(matrix);
-  matrix->header.matrixRows = newMatrix.header.matrixRows;
-  matrix->header.matrixColumns = newMatrix.header.matrixColumns;
-  matrix->matrixElements = newMatrix.matrixElements;
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 
@@ -2379,6 +2405,135 @@ void getMatrixFromRegister(calcRegister_t regist) {
 
 }
 
+
+
+bool_t initMatrixRegister(calcRegister_t regist, uint16_t rows, uint16_t cols, bool_t complex) {
+  const size_t neededSize = (rows * cols) * (complex ? COMPLEX34_SIZE : REAL34_SIZE);
+  reallocateRegister(regist, complex ? dtComplex34Matrix : dtReal34Matrix, neededSize, amNone);
+  if(regist == INVALID_VARIABLE) {
+    return false;
+  }
+  else if(lastErrorCode == ERROR_NONE) {
+    // REGISTER_COMPLEX34_MATRIX_DBLOCK is same as REGISTER_REAL34_MATRIX_DBLOCK
+    REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows    = rows;
+    REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns = cols;
+    if(complex) {
+      for(uint16_t i = 0; i < rows * cols; ++i) {
+        real34Zero(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+        real34Zero(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+      }
+    }
+    else {
+      for(uint16_t i = 0; i < rows * cols; ++i) {
+        real34Zero(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i);
+      }
+    }
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+bool_t redimMatrixRegister(calcRegister_t regist, uint16_t rows, uint16_t cols) {
+  const uint16_t origRows = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows, origCols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
+  if(regist == INVALID_VARIABLE) {
+    return false;
+  }
+  else if(getRegisterDataType(regist) == dtReal34Matrix) {
+    const size_t oldSize = (origRows * origCols) * REAL34_SIZE;
+    const size_t newSize = (rows     * cols    ) * REAL34_SIZE;
+    if(oldSize >= newSize) {
+      if(oldSize > newSize)
+        freeWp43s(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + rows * cols, oldSize - newSize);
+      REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows    = rows;
+      REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns = cols;
+      return true;
+    }
+    else {
+      real34Matrix_t newMatrix;
+      convertReal34MatrixRegisterToReal34Matrix(regist, &newMatrix);
+      if(lastErrorCode == ERROR_NONE) {
+        reallocateRegister(regist, dtReal34Matrix, newSize, amNone);
+        if(lastErrorCode == ERROR_NONE) {
+          for(uint16_t i = 0; i < origRows * origCols; ++i) {
+            real34Copy(newMatrix.matrixElements + i, REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i);
+          }
+          for(uint16_t i = origRows * origCols; i < rows * cols; ++i) {
+            real34Zero(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i);
+          }
+          realMatrixFree(&newMatrix);
+          return true;
+        }
+        else {
+          realMatrixFree(&newMatrix);
+          return false;
+        }
+      }
+      else return false;
+    }
+  }
+  else if(getRegisterDataType(regist) == dtComplex34Matrix) {
+    const size_t oldSize = (origRows * origCols) * COMPLEX34_SIZE;
+    const size_t newSize = (rows     * cols    ) * COMPLEX34_SIZE;
+    if(oldSize >= newSize) {
+      if(oldSize > newSize)
+        freeWp43s(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + rows * cols, oldSize - newSize);
+      REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows    = rows;
+      REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns = cols;
+      return true;
+    }
+    else {
+      complex34Matrix_t newMatrix;
+      convertComplex34MatrixRegisterToComplex34Matrix(regist, &newMatrix);
+      if(lastErrorCode == ERROR_NONE) {
+        reallocateRegister(regist, dtComplex34Matrix, newSize, amNone);
+        if(lastErrorCode == ERROR_NONE) {
+          for(uint16_t i = 0; i < origRows * origCols; ++i) {
+            complex34Copy(newMatrix.matrixElements + i, REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i);
+          }
+          for(uint16_t i = origRows * origCols; i < rows * cols; ++i) {
+            real34Zero(VARIABLE_REAL34_DATA(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i));
+            real34Zero(VARIABLE_IMAG34_DATA(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i));
+          }
+          complexMatrixFree(&newMatrix);
+          return true;
+        }
+        else {
+          complexMatrixFree(&newMatrix);
+          return false;
+        }
+      }
+      else return false;
+    }
+  }
+  else return initMatrixRegister(regist, rows, cols, false);
+}
+
+calcRegister_t allocateNamedMatrix(const char *name, uint16_t rows, uint16_t cols) {
+  const calcRegister_t regist = findOrAllocateNamedVariable(name);
+  if(regist == INVALID_VARIABLE) {
+    return INVALID_VARIABLE;
+  }
+  else if(redimMatrixRegister(regist, rows, cols)) {
+    return regist;
+  }
+  else {
+    return INVALID_VARIABLE;
+  }
+}
+
+bool_t appendRowAtMatrixRegister(calcRegister_t regist) {
+  const uint16_t rows = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows, cols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
+  if(regist == INVALID_VARIABLE) {
+    return false;
+  }
+  else if(getRegisterDataType(regist) == dtReal34Matrix || getRegisterDataType(regist) == dtComplex34Matrix) {
+    return redimMatrixRegister(regist, rows + 1, cols);
+  }
+  else return false;
+}
+
 //Row of Matrix
 int16_t getIRegisterAsInt(bool_t asArrayPointer) {
   int16_t ret;
@@ -2471,10 +2626,12 @@ void copyRealMatrix(const real34Matrix_t *matrix, real34Matrix_t *res) {
   const uint16_t cols = matrix->header.matrixColumns;
   int32_t i;
 
-  realMatrixInit(res, rows, cols);
-  for(i = 0; i < cols * rows; ++i) {
-    real34Copy(&matrix->matrixElements[i], &res->matrixElements[i]);
+  if(realMatrixInit(res, rows, cols)) {
+    for(i = 0; i < cols * rows; ++i) {
+      real34Copy(&matrix->matrixElements[i], &res->matrixElements[i]);
+    }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 void copyComplexMatrix(const complex34Matrix_t *matrix, complex34Matrix_t *res) {
@@ -2482,10 +2639,12 @@ void copyComplexMatrix(const complex34Matrix_t *matrix, complex34Matrix_t *res) 
   const uint16_t cols = matrix->header.matrixColumns;
   int32_t i;
 
-  complexMatrixInit(res, rows, cols);
-  for(i = 0; i < cols * rows; ++i) {
-    complex34Copy(&matrix->matrixElements[i], &res->matrixElements[i]);
+  if(complexMatrixInit(res, rows, cols)) {
+    for(i = 0; i < cols * rows; ++i) {
+      complex34Copy(&matrix->matrixElements[i], &res->matrixElements[i]);
+    }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 
@@ -2513,21 +2672,23 @@ void insRowRealMatrix(real34Matrix_t *matrix, uint16_t beforeRowNo) {
   int32_t i;
   real34Matrix_t newMat;
 
-  realMatrixInit(&newMat, rows + 1, cols);
-  for(i = 0; i < beforeRowNo * cols; ++i) {
-    real34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i]);
-  }
-  for(i = 0; i < cols; ++i) {
-    real34Copy(const34_0, &newMat.matrixElements[beforeRowNo * cols + i]);
-  }
-  for(i = beforeRowNo * cols; i < cols * rows; ++i) {
-    real34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i + cols]);
-  }
+  if(realMatrixInit(&newMat, rows + 1, cols)) {
+    for(i = 0; i < beforeRowNo * cols; ++i) {
+      real34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i]);
+    }
+    for(i = 0; i < cols; ++i) {
+      real34Copy(const34_0, &newMat.matrixElements[beforeRowNo * cols + i]);
+    }
+    for(i = beforeRowNo * cols; i < cols * rows; ++i) {
+      real34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i + cols]);
+    }
 
-  realMatrixFree(matrix);
-  matrix->header.matrixRows    = newMat.header.matrixRows;
-  matrix->header.matrixColumns = newMat.header.matrixColumns;
-  matrix->matrixElements       = newMat.matrixElements;
+    realMatrixFree(matrix);
+    matrix->header.matrixRows    = newMat.header.matrixRows;
+    matrix->header.matrixColumns = newMat.header.matrixColumns;
+    matrix->matrixElements       = newMat.matrixElements;
+  }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 void insRowComplexMatrix(complex34Matrix_t *matrix, uint16_t beforeRowNo) {
@@ -2536,22 +2697,24 @@ void insRowComplexMatrix(complex34Matrix_t *matrix, uint16_t beforeRowNo) {
   int32_t i;
   complex34Matrix_t newMat;
 
-  complexMatrixInit(&newMat, rows + 1, cols);
-  for(i = 0; i < beforeRowNo * cols; ++i) {
-    complex34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i]);
-  }
-  for(i = 0; i < cols; ++i) {
-    real34Copy(const34_0, VARIABLE_REAL34_DATA(&newMat.matrixElements[beforeRowNo * cols + i]));
-    real34Copy(const34_0, VARIABLE_IMAG34_DATA(&newMat.matrixElements[beforeRowNo * cols + i]));
-  }
-  for(i = beforeRowNo * cols; i < cols * rows; ++i) {
-    complex34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i + cols]);
-  }
+  if(complexMatrixInit(&newMat, rows + 1, cols)) {
+    for(i = 0; i < beforeRowNo * cols; ++i) {
+      complex34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i]);
+    }
+    for(i = 0; i < cols; ++i) {
+      real34Copy(const34_0, VARIABLE_REAL34_DATA(&newMat.matrixElements[beforeRowNo * cols + i]));
+      real34Copy(const34_0, VARIABLE_IMAG34_DATA(&newMat.matrixElements[beforeRowNo * cols + i]));
+    }
+    for(i = beforeRowNo * cols; i < cols * rows; ++i) {
+      complex34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i + cols]);
+    }
 
-  complexMatrixFree(matrix);
-  matrix->header.matrixRows    = newMat.header.matrixRows;
-  matrix->header.matrixColumns = newMat.header.matrixColumns;
-  matrix->matrixElements       = newMat.matrixElements;
+    complexMatrixFree(matrix);
+    matrix->header.matrixRows    = newMat.header.matrixRows;
+    matrix->header.matrixColumns = newMat.header.matrixColumns;
+    matrix->matrixElements       = newMat.matrixElements;
+  }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 
@@ -2563,18 +2726,20 @@ void delRowRealMatrix(real34Matrix_t *matrix, uint16_t beforeRowNo) {
   int32_t i;
   real34Matrix_t newMat;
 
-  realMatrixInit(&newMat, rows - 1, cols);
-  for(i = 0; i < beforeRowNo * cols; ++i) {
-    real34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i]);
-  }
-  for(i = (beforeRowNo + 1) * cols; i < cols * rows; ++i) {
-    real34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i - cols]);
-  }
+  if(realMatrixInit(&newMat, rows - 1, cols)) {
+    for(i = 0; i < beforeRowNo * cols; ++i) {
+      real34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i]);
+    }
+    for(i = (beforeRowNo + 1) * cols; i < cols * rows; ++i) {
+      real34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i - cols]);
+    }
 
-  realMatrixFree(matrix);
-  matrix->header.matrixRows    = newMat.header.matrixRows;
-  matrix->header.matrixColumns = newMat.header.matrixColumns;
-  matrix->matrixElements       = newMat.matrixElements;
+    realMatrixFree(matrix);
+    matrix->header.matrixRows    = newMat.header.matrixRows;
+    matrix->header.matrixColumns = newMat.header.matrixColumns;
+    matrix->matrixElements       = newMat.matrixElements;
+  }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 void delRowComplexMatrix(complex34Matrix_t *matrix, uint16_t beforeRowNo) {
@@ -2583,18 +2748,20 @@ void delRowComplexMatrix(complex34Matrix_t *matrix, uint16_t beforeRowNo) {
   int32_t i;
   complex34Matrix_t newMat;
 
-  complexMatrixInit(&newMat, rows - 1, cols);
-  for(i = 0; i < beforeRowNo * cols; ++i) {
-    complex34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i]);
-  }
-  for(i = (beforeRowNo + 1) * cols; i < cols * rows; ++i) {
-    complex34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i - cols]);
-  }
+  if(complexMatrixInit(&newMat, rows - 1, cols)) {
+    for(i = 0; i < beforeRowNo * cols; ++i) {
+      complex34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i]);
+    }
+    for(i = (beforeRowNo + 1) * cols; i < cols * rows; ++i) {
+      complex34Copy(&matrix->matrixElements[i], &newMat.matrixElements[i - cols]);
+    }
 
-  complexMatrixFree(matrix);
-  matrix->header.matrixRows    = newMat.header.matrixRows;
-  matrix->header.matrixColumns = newMat.header.matrixColumns;
-  matrix->matrixElements       = newMat.matrixElements;
+    complexMatrixFree(matrix);
+    matrix->header.matrixRows    = newMat.header.matrixRows;
+    matrix->header.matrixColumns = newMat.header.matrixColumns;
+    matrix->matrixElements       = newMat.matrixElements;
+  }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 
@@ -2605,12 +2772,14 @@ void transposeRealMatrix(const real34Matrix_t *matrix, real34Matrix_t *res) {
   int32_t i, j;
 
   if(matrix != res) {
-    realMatrixInit(res, cols, rows);
-    for(i = 0; i < rows; ++i) {
-      for(j = 0; j < cols; ++j) {
-        real34Copy(&matrix->matrixElements[i * cols + j], &res->matrixElements[j * rows + i]);
+    if(realMatrixInit(res, cols, rows)) {
+      for(i = 0; i < rows; ++i) {
+        for(j = 0; j < cols; ++j) {
+          real34Copy(&matrix->matrixElements[i * cols + j], &res->matrixElements[j * rows + i]);
+        }
       }
     }
+    else lastErrorCode = ERROR_RAM_FULL;
   }
   else {
     real34_t tmp;
@@ -2631,11 +2800,27 @@ void transposeComplexMatrix(const complex34Matrix_t *matrix, complex34Matrix_t *
   const uint16_t cols = matrix->header.matrixColumns;
   int32_t i, j;
 
-  complexMatrixInit(res, cols, rows);
-  for(i = 0; i < rows; ++i) {
-    for(j = 0; j < cols; ++j) {
-      complex34Copy(&matrix->matrixElements[i * cols + j], &res->matrixElements[j * rows + i]);
+  if(matrix != res) {
+    if(complexMatrixInit(res, cols, rows)) {
+      for(i = 0; i < rows; ++i) {
+        for(j = 0; j < cols; ++j) {
+          complex34Copy(&matrix->matrixElements[i * cols + j], &res->matrixElements[j * rows + i]);
+        }
+      }
     }
+    else lastErrorCode = ERROR_RAM_FULL;
+  }
+  else {
+    complex34_t tmp;
+    for(i = 0; i < rows; ++i) {
+      for(j = i + 1; j < cols; ++j) {
+        complex34Copy(&res->matrixElements[j * rows + i], &tmp);
+        complex34Copy(&res->matrixElements[i * cols + j], &res->matrixElements[j * rows + i]);
+        complex34Copy(&tmp,                               &res->matrixElements[i * cols + j]);
+      }
+    }
+    res->header.matrixRows    = cols;
+    res->header.matrixColumns = rows;
   }
 }
 
@@ -2653,7 +2838,12 @@ static void addSubRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x,
     return;
   }
 
-  if((y != res) && (x != res)) realMatrixInit(res, rows, cols);
+  if((y != res) && (x != res)) {
+    if(!realMatrixInit(res, rows, cols)) {
+      lastErrorCode = ERROR_RAM_FULL;
+      return;
+    }
+  }
   for(i = 0; i < cols * rows; ++i) {
     if(subtraction) {
       real34Subtract(&y->matrixElements[i], &x->matrixElements[i], &res->matrixElements[i]);
@@ -2683,17 +2873,19 @@ static void addSubComplexMatrices(const complex34Matrix_t *y, const complex34Mat
     return;
   }
 
-  if((y != res) && (x != res)) complexMatrixInit(res, rows, cols);
-  for(i = 0; i < cols * rows; ++i) {
-    if(subtraction) {
-      real34Subtract(VARIABLE_REAL34_DATA(&y->matrixElements[i]), VARIABLE_REAL34_DATA(&x->matrixElements[i]), VARIABLE_REAL34_DATA(&res->matrixElements[i]));
-      real34Subtract(VARIABLE_IMAG34_DATA(&y->matrixElements[i]), VARIABLE_IMAG34_DATA(&x->matrixElements[i]), VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
-    }
-    else {
-      real34Add(VARIABLE_REAL34_DATA(&y->matrixElements[i]), VARIABLE_REAL34_DATA(&x->matrixElements[i]), VARIABLE_REAL34_DATA(&res->matrixElements[i]));
-      real34Add(VARIABLE_IMAG34_DATA(&y->matrixElements[i]), VARIABLE_IMAG34_DATA(&x->matrixElements[i]), VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
+  if((y == res) || (x == res) || complexMatrixInit(res, rows, cols)) {
+    for(i = 0; i < cols * rows; ++i) {
+      if(subtraction) {
+        real34Subtract(VARIABLE_REAL34_DATA(&y->matrixElements[i]), VARIABLE_REAL34_DATA(&x->matrixElements[i]), VARIABLE_REAL34_DATA(&res->matrixElements[i]));
+        real34Subtract(VARIABLE_IMAG34_DATA(&y->matrixElements[i]), VARIABLE_IMAG34_DATA(&x->matrixElements[i]), VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
+      }
+      else {
+        real34Add(VARIABLE_REAL34_DATA(&y->matrixElements[i]), VARIABLE_REAL34_DATA(&x->matrixElements[i]), VARIABLE_REAL34_DATA(&res->matrixElements[i]));
+        real34Add(VARIABLE_IMAG34_DATA(&y->matrixElements[i]), VARIABLE_IMAG34_DATA(&x->matrixElements[i]), VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
+      }
     }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 void addComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res) {
@@ -2712,10 +2904,12 @@ void multiplyRealMatrix(const real34Matrix_t *matrix, const real34_t *x, real34M
   const uint16_t cols = matrix->header.matrixColumns;
   int32_t i;
 
-  if(matrix != res) realMatrixInit(res, rows, cols);
-  for(i = 0; i < cols * rows; ++i) {
-    real34Multiply(&matrix->matrixElements[i], x, &res->matrixElements[i]);
+  if(matrix == res || realMatrixInit(res, rows, cols)) {
+    for(i = 0; i < cols * rows; ++i) {
+      real34Multiply(&matrix->matrixElements[i], x, &res->matrixElements[i]);
+    }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 void _multiplyRealMatrix(const real34Matrix_t *matrix, const real_t *x, real34Matrix_t *res, realContext_t *realContext) {
@@ -2724,12 +2918,14 @@ void _multiplyRealMatrix(const real34Matrix_t *matrix, const real_t *x, real34Ma
   int32_t i;
   real_t y;
 
-  if(matrix != res) realMatrixInit(res, rows, cols);
-  for(i = 0; i < cols * rows; ++i) {
-    real34ToReal(&matrix->matrixElements[i], &y);
-    realMultiply(&y, x, &y, realContext);
-    realToReal34(&y, &res->matrixElements[i]);
+  if(matrix == res || realMatrixInit(res, rows, cols)) {
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(&matrix->matrixElements[i], &y);
+      realMultiply(&y, x, &y, realContext);
+      realToReal34(&y, &res->matrixElements[i]);
+    }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 void multiplyRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res) {
@@ -2745,20 +2941,22 @@ void multiplyRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real
     return;
   }
 
-  realMatrixInit(res, rows, cols);
-  for(i = 0; i < rows; ++i) {
-    for(j = 0; j < cols; ++j) {
-      realCopy(const_0, &sum);
-      realCopy(const_0, &prod);
-      for(k = 0; k < iter; ++k) {
-        real34ToReal(&y->matrixElements[i * iter + k], &p);
-        real34ToReal(&x->matrixElements[k * cols + j], &q);
-        realMultiply(&p, &q, &prod, &ctxtReal39);
-        realAdd(&sum, &prod, &sum, &ctxtReal39);
+  if(realMatrixInit(res, rows, cols)) {
+    for(i = 0; i < rows; ++i) {
+      for(j = 0; j < cols; ++j) {
+        realCopy(const_0, &sum);
+        realCopy(const_0, &prod);
+        for(k = 0; k < iter; ++k) {
+          real34ToReal(&y->matrixElements[i * iter + k], &p);
+          real34ToReal(&x->matrixElements[k * cols + j], &q);
+          realMultiply(&p, &q, &prod, &ctxtReal39);
+          realAdd(&sum, &prod, &sum, &ctxtReal39);
+        }
+        realToReal34(&sum, &res->matrixElements[i * cols + j]);
       }
-      realToReal34(&sum, &res->matrixElements[i * cols + j]);
     }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 void multiplyComplexMatrix(const complex34Matrix_t *matrix, const real34_t *xr, const real34_t *xi, complex34Matrix_t *res) {
@@ -2774,14 +2972,16 @@ void _multiplyComplexMatrix(const complex34Matrix_t *matrix, const real_t *xr, c
   int32_t i;
   real_t yr, yi;
 
-  if(matrix != res) complexMatrixInit(res, rows, cols);
-  for(i = 0; i < cols * rows; ++i) {
-    real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i]), &yr);
-    real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i]), &yi);
-    mulComplexComplex(&yr, &yi, xr, xi, &yr, &yi, &ctxtReal39);
-    realToReal34(&yr, VARIABLE_REAL34_DATA(&res->matrixElements[i]));
-    realToReal34(&yi, VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
+  if(matrix == res || complexMatrixInit(res, rows, cols)) {
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i]), &yr);
+      real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i]), &yi);
+      mulComplexComplex(&yr, &yi, xr, xi, &yr, &yi, &ctxtReal39);
+      realToReal34(&yr, VARIABLE_REAL34_DATA(&res->matrixElements[i]));
+      realToReal34(&yi, VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
+    }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 void multiplyComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res) {
@@ -2798,24 +2998,26 @@ void multiplyComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t
     return;
   }
 
-  complexMatrixInit(res, rows, cols);
-  for(i = 0; i < rows; ++i) {
-    for(j = 0; j < cols; ++j) {
-      realCopy(const_0, &sumr);  realCopy(const_0, &sumi);
-      realCopy(const_0, &prodr); realCopy(const_0, &prodi);
-      for(k = 0; k < iter; ++k) {
-        real34ToReal(VARIABLE_REAL34_DATA(&y->matrixElements[i * iter + k]), &pr);
-        real34ToReal(VARIABLE_IMAG34_DATA(&y->matrixElements[i * iter + k]), &pi);
-        real34ToReal(VARIABLE_REAL34_DATA(&x->matrixElements[k * cols + j]), &qr);
-        real34ToReal(VARIABLE_IMAG34_DATA(&x->matrixElements[k * cols + j]), &qi);
-        mulComplexComplex(&pr, &pi, &qr, &qi, &prodr, &prodi, &ctxtReal39);
-        realAdd(&sumr, &prodr, &sumr, &ctxtReal39);
-        realAdd(&sumi, &prodi, &sumi, &ctxtReal39);
+  if(complexMatrixInit(res, rows, cols)) {
+    for(i = 0; i < rows; ++i) {
+      for(j = 0; j < cols; ++j) {
+        realCopy(const_0, &sumr);  realCopy(const_0, &sumi);
+        realCopy(const_0, &prodr); realCopy(const_0, &prodi);
+        for(k = 0; k < iter; ++k) {
+          real34ToReal(VARIABLE_REAL34_DATA(&y->matrixElements[i * iter + k]), &pr);
+          real34ToReal(VARIABLE_IMAG34_DATA(&y->matrixElements[i * iter + k]), &pi);
+          real34ToReal(VARIABLE_REAL34_DATA(&x->matrixElements[k * cols + j]), &qr);
+          real34ToReal(VARIABLE_IMAG34_DATA(&x->matrixElements[k * cols + j]), &qi);
+          mulComplexComplex(&pr, &pi, &qr, &qi, &prodr, &prodi, &ctxtReal39);
+          realAdd(&sumr, &prodr, &sumr, &ctxtReal39);
+          realAdd(&sumi, &prodi, &sumi, &ctxtReal39);
+        }
+        realToReal34(&sumr, VARIABLE_REAL34_DATA(&res->matrixElements[i * cols + j]));
+        realToReal34(&sumi, VARIABLE_IMAG34_DATA(&res->matrixElements[i * cols + j]));
       }
-      realToReal34(&sumr, VARIABLE_REAL34_DATA(&res->matrixElements[i * cols + j]));
-      realToReal34(&sumi, VARIABLE_IMAG34_DATA(&res->matrixElements[i * cols + j]));
     }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 
@@ -2866,16 +3068,17 @@ void crossRealVectors(const real34Matrix_t *y, const real34Matrix_t *x, real34Ma
   real34ToReal(elementsX >= 2 ? &x->matrixElements[1] : const34_0, &b2);
   real34ToReal(elementsX >= 3 ? &x->matrixElements[2] : const34_0, &b3);
 
-  realMatrixInit(res, 1, 3);
+  if(realMatrixInit(res, 1, 3)) {
+    realMultiply(&a2, &b3, &p, &ctxtReal39); realMultiply(&a3, &b2, &q, &ctxtReal39);
+    realSubtract(&p, &q, &p, &ctxtReal39); realToReal34(&p, &res->matrixElements[0]);
 
-  realMultiply(&a2, &b3, &p, &ctxtReal39); realMultiply(&a3, &b2, &q, &ctxtReal39);
-  realSubtract(&p, &q, &p, &ctxtReal39); realToReal34(&p, &res->matrixElements[0]);
+    realMultiply(&a3, &b1, &p, &ctxtReal39); realMultiply(&a1, &b3, &q, &ctxtReal39);
+    realSubtract(&p, &q, &p, &ctxtReal39); realToReal34(&p, &res->matrixElements[1]);
 
-  realMultiply(&a3, &b1, &p, &ctxtReal39); realMultiply(&a1, &b3, &q, &ctxtReal39);
-  realSubtract(&p, &q, &p, &ctxtReal39); realToReal34(&p, &res->matrixElements[1]);
-
-  realMultiply(&a1, &b2, &p, &ctxtReal39); realMultiply(&a2, &b1, &q, &ctxtReal39);
-  realSubtract(&p, &q, &p, &ctxtReal39); realToReal34(&p, &res->matrixElements[2]);
+    realMultiply(&a1, &b2, &p, &ctxtReal39); realMultiply(&a2, &b1, &q, &ctxtReal39);
+    realSubtract(&p, &q, &p, &ctxtReal39); realToReal34(&p, &res->matrixElements[2]);
+  }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 uint16_t complexVectorSize(const complex34Matrix_t *matrix) {
@@ -2930,25 +3133,26 @@ void crossComplexVectors(const complex34Matrix_t *y, const complex34Matrix_t *x,
   real34ToReal(elementsX >= 3 ? VARIABLE_REAL34_DATA(&x->matrixElements[2]) : const34_0, &b3r);
   real34ToReal(elementsX >= 3 ? VARIABLE_IMAG34_DATA(&x->matrixElements[2]) : const34_0, &b3i);
 
-  complexMatrixInit(res, 1, 3);
+  if(complexMatrixInit(res, 1, 3)) {
+    mulComplexComplex(&a2r, &a2i, &b3r, &b3i, &pr, &pi, &ctxtReal39);
+    mulComplexComplex(&a3r, &a3i, &b2r, &b2i, &qr, &qi, &ctxtReal39);
+    realSubtract(&pr, &qr, &pr, &ctxtReal39), realSubtract(&pi, &qi, &pi, &ctxtReal39);
+    realToReal34(&pr, VARIABLE_REAL34_DATA(&res->matrixElements[0]));
+    realToReal34(&pi, VARIABLE_IMAG34_DATA(&res->matrixElements[0]));
 
-  mulComplexComplex(&a2r, &a2i, &b3r, &b3i, &pr, &pi, &ctxtReal39);
-  mulComplexComplex(&a3r, &a3i, &b2r, &b2i, &qr, &qi, &ctxtReal39);
-  realSubtract(&pr, &qr, &pr, &ctxtReal39), realSubtract(&pi, &qi, &pi, &ctxtReal39);
-  realToReal34(&pr, VARIABLE_REAL34_DATA(&res->matrixElements[0]));
-  realToReal34(&pi, VARIABLE_IMAG34_DATA(&res->matrixElements[0]));
+    mulComplexComplex(&a3r, &a3i, &b1r, &b1i, &pr, &pi, &ctxtReal39);
+    mulComplexComplex(&a1r, &a1i, &b3r, &b3i, &qr, &qi, &ctxtReal39);
+    realSubtract(&pr, &qr, &pr, &ctxtReal39), realSubtract(&pi, &qi, &pi, &ctxtReal39);
+    realToReal34(&pr, VARIABLE_REAL34_DATA(&res->matrixElements[1]));
+    realToReal34(&pi, VARIABLE_IMAG34_DATA(&res->matrixElements[1]));
 
-  mulComplexComplex(&a3r, &a3i, &b1r, &b1i, &pr, &pi, &ctxtReal39);
-  mulComplexComplex(&a1r, &a1i, &b3r, &b3i, &qr, &qi, &ctxtReal39);
-  realSubtract(&pr, &qr, &pr, &ctxtReal39), realSubtract(&pi, &qi, &pi, &ctxtReal39);
-  realToReal34(&pr, VARIABLE_REAL34_DATA(&res->matrixElements[1]));
-  realToReal34(&pi, VARIABLE_IMAG34_DATA(&res->matrixElements[1]));
-
-  mulComplexComplex(&a1r, &a1i, &b2r, &b2i, &pr, &pi, &ctxtReal39);
-  mulComplexComplex(&a2r, &a2i, &b1r, &b1i, &qr, &qi, &ctxtReal39);
-  realSubtract(&pr, &qr, &pr, &ctxtReal39), realSubtract(&pi, &qi, &pi, &ctxtReal39);
-  realToReal34(&pr, VARIABLE_REAL34_DATA(&res->matrixElements[2]));
-  realToReal34(&pi, VARIABLE_IMAG34_DATA(&res->matrixElements[2]));
+    mulComplexComplex(&a1r, &a1i, &b2r, &b2i, &pr, &pi, &ctxtReal39);
+    mulComplexComplex(&a2r, &a2i, &b1r, &b1i, &qr, &qi, &ctxtReal39);
+    realSubtract(&pr, &qr, &pr, &ctxtReal39), realSubtract(&pi, &qi, &pi, &ctxtReal39);
+    realToReal34(&pr, VARIABLE_REAL34_DATA(&res->matrixElements[2]));
+    realToReal34(&pi, VARIABLE_IMAG34_DATA(&res->matrixElements[2]));
+  }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 
@@ -2971,74 +3175,85 @@ void WP34S_LU_decomposition(const real34Matrix_t *matrix, real34Matrix_t *lu, ui
     return;
   }
 
-  if(matrix != lu) copyRealMatrix(matrix, lu);
+  if((tmpMat = allocWp43s(m * n * REAL_SIZE))) {
+    if(matrix != lu) copyRealMatrix(matrix, lu);
 
-  tmpMat = allocWp43s(m * n * REAL_SIZE);
-  for(i = 0; i < n; i++) {
-    for(j = 0; j < n; j++) {
-      real34ToReal(&lu->matrixElements[i * n + j], &tmpMat[i * n + j]);
-    }
-  }
-
-  for(k = 0; k < n; k++) {
-    /* Find the pivot row */
-    pvt = k;
-    realCopy(&tmpMat[k * n + k], &u);
-    realCopyAbs(&u, &max);
-    for(j = k + 1; j < n; j++) {
-      realCopy(&tmpMat[j * n + k], &t);
-      realCopyAbs(&t, &u);
-      if (realCompareGreaterThan(&u, &max)) {
-        realCopy(&u, &max);
-        pvt = j;
-      }
-    }
-    if(p != NULL)
-      *p++ = pvt;
-
-    /* pivot if required */
-    if(pvt != k) {
+    if(lu->matrixElements) {
       for(i = 0; i < n; i++) {
-        realCopy(&tmpMat[k   * n + i], &t                  );
-        realCopy(&tmpMat[pvt * n + i], &tmpMat[k   * n + i]);
-        realCopy(&t,                   &tmpMat[pvt * n + i]);
+        for(j = 0; j < n; j++) {
+          real34ToReal(&lu->matrixElements[i * n + j], &tmpMat[i * n + j]);
+        }
+      }
+
+      for(k = 0; k < n; k++) {
+        /* Find the pivot row */
+        pvt = k;
+        realCopy(&tmpMat[k * n + k], &u);
+        realCopyAbs(&u, &max);
+        for(j = k + 1; j < n; j++) {
+          realCopy(&tmpMat[j * n + k], &t);
+          realCopyAbs(&t, &u);
+          if (realCompareGreaterThan(&u, &max)) {
+            realCopy(&u, &max);
+            pvt = j;
+          }
+        }
+        if(p != NULL)
+          *p++ = pvt;
+
+        /* pivot if required */
+        if(pvt != k) {
+          for(i = 0; i < n; i++) {
+            realCopy(&tmpMat[k   * n + i], &t                  );
+            realCopy(&tmpMat[pvt * n + i], &tmpMat[k   * n + i]);
+            realCopy(&t,                   &tmpMat[pvt * n + i]);
+          }
+        }
+
+        /* Check for singular */
+        realCopy(&tmpMat[k * n + k], &t);
+        if(realIsZero(&t)) {
+          realMatrixFree(lu);
+          return;
+        }
+
+        /* Find the lower triangular elements for column k */
+        for(i = k + 1; i < n; i++) {
+          realCopy(&tmpMat[k * n + k], &t);
+          realCopy(&tmpMat[i * n + k], &u);
+          realDivide(&u, &t, &max, &ctxtReal39);
+          realCopy(&max, &tmpMat[i * n + k]);
+        }
+        /* Update the upper triangular elements */
+        for(i = k + 1; i < n; i++) {
+          for(j = k + 1; j < n; j++) {
+            realCopy(&tmpMat[i * n + k], &t);
+            realCopy(&tmpMat[k * n + j], &u);
+            realMultiply(&t, &u, &max, &ctxtReal39);
+            realCopy(&tmpMat[i * n + j], &t);
+            realSubtract(&t, &max, &u, &ctxtReal39);
+            realCopy(&u, &tmpMat[i * n + j]);
+          }
+        }
+      }
+
+      for(i = 0; i < n; i++) {
+        for(j = 0; j < n; j++) {
+          realToReal34(&tmpMat[i * n + j], &lu->matrixElements[i * n + j]);
+        }
       }
     }
+    else lastErrorCode = ERROR_RAM_FULL;
 
-    /* Check for singular */
-    realCopy(&tmpMat[k * n + k], &t);
-    if(realIsZero(&t)) {
-      realMatrixFree(lu);
-      return;
-    }
-
-    /* Find the lower triangular elements for column k */
-    for(i = k + 1; i < n; i++) {
-      realCopy(&tmpMat[k * n + k], &t);
-      realCopy(&tmpMat[i * n + k], &u);
-      realDivide(&u, &t, &max, &ctxtReal39);
-      realCopy(&max, &tmpMat[i * n + k]);
-    }
-    /* Update the upper triangular elements */
-    for(i = k + 1; i < n; i++) {
-      for(j = k + 1; j < n; j++) {
-        realCopy(&tmpMat[i * n + k], &t);
-        realCopy(&tmpMat[k * n + j], &u);
-        realMultiply(&t, &u, &max, &ctxtReal39);
-        realCopy(&tmpMat[i * n + j], &t);
-        realSubtract(&t, &max, &u, &ctxtReal39);
-        realCopy(&u, &tmpMat[i * n + j]);
-      }
-    }
+    freeWp43s(tmpMat, m * n * REAL_SIZE);
   }
-
-  for(i = 0; i < n; i++) {
-    for(j = 0; j < n; j++) {
-      realToReal34(&tmpMat[i * n + j], &lu->matrixElements[i * n + j]);
+  else {
+    if(matrix != lu) {
+      lu->matrixElements = NULL;
+      lu->header.matrixRows = lu->header.matrixColumns = 0;
     }
+    lastErrorCode = ERROR_RAM_FULL;
   }
-
-  freeWp43s(tmpMat, m * n * REAL_SIZE);
 }
 
 static bool_t luCpxMat(real_t *tmpMat, uint16_t size, uint16_t *p, realContext_t *realContext) {
@@ -3120,26 +3335,37 @@ void complex_LU_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t
     return;
   }
 
-  if(matrix != lu) copyComplexMatrix(matrix, lu);
+  if((tmpMat = allocWp43s(m * n * REAL_SIZE * 2))) {
+    if(matrix != lu) copyComplexMatrix(matrix, lu);
 
-  tmpMat = allocWp43s(m * n * REAL_SIZE * 2);
-  for(i = 0; i < n; i++) {
-    for(j = 0; j < n; j++) {
-      real34ToReal(VARIABLE_REAL34_DATA(&lu->matrixElements[i * n + j]), &tmpMat[(i * n + j) * 2    ]);
-      real34ToReal(VARIABLE_IMAG34_DATA(&lu->matrixElements[i * n + j]), &tmpMat[(i * n + j) * 2 + 1]);
-    }
-  }
+    if(lu->matrixElements) {
+      for(i = 0; i < n; i++) {
+        for(j = 0; j < n; j++) {
+          real34ToReal(VARIABLE_REAL34_DATA(&lu->matrixElements[i * n + j]), &tmpMat[(i * n + j) * 2    ]);
+          real34ToReal(VARIABLE_IMAG34_DATA(&lu->matrixElements[i * n + j]), &tmpMat[(i * n + j) * 2 + 1]);
+        }
+      }
 
-  if(luCpxMat(tmpMat, n, p, &ctxtReal39)) {
-    for(i = 0; i < n; i++) {
-      for(j = 0; j < n; j++) {
-        realToReal34(&tmpMat[(i * n + j) * 2    ], VARIABLE_REAL34_DATA(&lu->matrixElements[i * n + j]));
-        realToReal34(&tmpMat[(i * n + j) * 2 + 1], VARIABLE_IMAG34_DATA(&lu->matrixElements[i * n + j]));
+      if(luCpxMat(tmpMat, n, p, &ctxtReal39)) {
+        for(i = 0; i < n; i++) {
+          for(j = 0; j < n; j++) {
+            realToReal34(&tmpMat[(i * n + j) * 2    ], VARIABLE_REAL34_DATA(&lu->matrixElements[i * n + j]));
+            realToReal34(&tmpMat[(i * n + j) * 2 + 1], VARIABLE_IMAG34_DATA(&lu->matrixElements[i * n + j]));
+          }
+        }
       }
     }
-  }
+    else lastErrorCode = ERROR_RAM_FULL;
 
-  freeWp43s(tmpMat, m * n * REAL_SIZE * 2);
+    freeWp43s(tmpMat, m * n * REAL_SIZE * 2);
+  }
+  else {
+    if(matrix != lu) {
+      lu->matrixElements = NULL; // Matrix is not square
+      lu->header.matrixRows = lu->header.matrixColumns = 0;
+    }
+    lastErrorCode = ERROR_RAM_FULL;
+  }
 }
 
 
@@ -3152,13 +3378,16 @@ void realMatrixSwapRows(const real34Matrix_t *matrix, real34Matrix_t *res, uint1
   real34_t t;
 
   if(matrix != res) copyRealMatrix(matrix, res);
-  if((a < rows) && (b < rows) && (a != b)) {
-    for(i = 0; i < cols; i++) {
-      real34Copy(&res->matrixElements[a * cols + i], &t);
-      real34Copy(&res->matrixElements[b * cols + i], &res->matrixElements[a * cols + i]);
-      real34Copy(&t,                                 &res->matrixElements[b * cols + i]);
+  if(res->matrixElements) {
+    if((a < rows) && (b < rows) && (a != b)) {
+      for(i = 0; i < cols; i++) {
+        real34Copy(&res->matrixElements[a * cols + i], &t);
+        real34Copy(&res->matrixElements[b * cols + i], &res->matrixElements[a * cols + i]);
+        real34Copy(&t,                                 &res->matrixElements[b * cols + i]);
+      }
     }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 void complexMatrixSwapRows(const complex34Matrix_t *matrix, complex34Matrix_t *res, uint16_t a, uint16_t b) {
@@ -3168,16 +3397,19 @@ void complexMatrixSwapRows(const complex34Matrix_t *matrix, complex34Matrix_t *r
   real34_t t;
 
   if(matrix != res) copyComplexMatrix(matrix, res);
-  if((a < rows) && (b < rows) && (a != b)) {
-    for(i = 0; i < cols; i++) {
-      real34Copy(VARIABLE_REAL34_DATA(&res->matrixElements[a * cols + i]), &t);
-      real34Copy(VARIABLE_REAL34_DATA(&res->matrixElements[b * cols + i]), VARIABLE_REAL34_DATA(&res->matrixElements[a * cols + i]));
-      real34Copy(&t,                                                       VARIABLE_REAL34_DATA(&res->matrixElements[b * cols + i]));
-      real34Copy(VARIABLE_IMAG34_DATA(&res->matrixElements[a * cols + i]), &t);
-      real34Copy(VARIABLE_IMAG34_DATA(&res->matrixElements[b * cols + i]), VARIABLE_IMAG34_DATA(&res->matrixElements[a * cols + i]));
-      real34Copy(&t,                                                       VARIABLE_IMAG34_DATA(&res->matrixElements[b * cols + i]));
+  if(res->matrixElements) {
+    if((a < rows) && (b < rows) && (a != b)) {
+      for(i = 0; i < cols; i++) {
+        real34Copy(VARIABLE_REAL34_DATA(&res->matrixElements[a * cols + i]), &t);
+        real34Copy(VARIABLE_REAL34_DATA(&res->matrixElements[b * cols + i]), VARIABLE_REAL34_DATA(&res->matrixElements[a * cols + i]));
+        real34Copy(&t,                                                       VARIABLE_REAL34_DATA(&res->matrixElements[b * cols + i]));
+        real34Copy(VARIABLE_IMAG34_DATA(&res->matrixElements[a * cols + i]), &t);
+        real34Copy(VARIABLE_IMAG34_DATA(&res->matrixElements[b * cols + i]), VARIABLE_IMAG34_DATA(&res->matrixElements[a * cols + i]));
+        real34Copy(&t,                                                       VARIABLE_IMAG34_DATA(&res->matrixElements[b * cols + i]));
+      }
     }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 
@@ -3194,23 +3426,24 @@ void detRealMatrix(const real34Matrix_t *matrix, real34_t *res) {
     return;
   }
 
-  p = allocWp43s(TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
-
-  WP34S_LU_decomposition(matrix, &lu, p);
-  realCopy(const_1, &t);
-  if(lu.matrixElements) {
-    for(uint16_t i = 0; i < n; ++i) {
-      real34ToReal(&lu.matrixElements[i * n + i], &u);
-      //if(p[i] != i) realChangeSign(&u);
-      realMultiply(&t, &u, &t, &ctxtReal51);
+  if((p = allocWp43s(TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t))))) {
+    WP34S_LU_decomposition(matrix, &lu, p);
+    realCopy(const_1, &t);
+    if(lu.matrixElements) {
+      for(uint16_t i = 0; i < n; ++i) {
+        real34ToReal(&lu.matrixElements[i * n + i], &u);
+        //if(p[i] != i) realChangeSign(&u);
+        realMultiply(&t, &u, &t, &ctxtReal51);
+      }
+      realToReal34(&t, res);
     }
-    realToReal34(&t, res);
-  }
-  else { // singular
-    real34Copy(const34_0, res);
-  }
+    else { // singular
+      real34Copy(const34_0, res);
+    }
 
-  freeWp43s(p, TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
+    freeWp43s(p, TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
+  }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 void detComplexMatrix(const complex34Matrix_t *matrix, real34_t *res_r, real34_t *res_i) {
@@ -3225,23 +3458,24 @@ void detComplexMatrix(const complex34Matrix_t *matrix, real34_t *res_r, real34_t
     return;
   }
 
-  p = allocWp43s(TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
-
-  complex_LU_decomposition(matrix, &lu, p);
-  realCopy(const_1, &tr), realCopy(const_0, &ti);
-  if(lu.matrixElements) {
-    for(uint16_t i = 0; i < n; ++i) {
-      real34ToReal(VARIABLE_REAL34_DATA(&lu.matrixElements[i * n + i]), &ur);
-      real34ToReal(VARIABLE_IMAG34_DATA(&lu.matrixElements[i * n + i]), &ui);
-      mulComplexComplex(&tr, &ti, &ur, &ui, &tr, &ti, &ctxtReal51);
+  if((p = allocWp43s(TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t))))) {
+    complex_LU_decomposition(matrix, &lu, p);
+    realCopy(const_1, &tr), realCopy(const_0, &ti);
+    if(lu.matrixElements) {
+      for(uint16_t i = 0; i < n; ++i) {
+        real34ToReal(VARIABLE_REAL34_DATA(&lu.matrixElements[i * n + i]), &ur);
+        real34ToReal(VARIABLE_IMAG34_DATA(&lu.matrixElements[i * n + i]), &ui);
+        mulComplexComplex(&tr, &ti, &ur, &ui, &tr, &ti, &ctxtReal51);
+      }
+      realToReal34(&tr, res_r); realToReal34(&ti, res_i);
     }
-    realToReal34(&tr, res_r); realToReal34(&ti, res_i);
-  }
-  else { // singular
-    real34Copy(const34_0, res_r); real34Copy(const34_0, res_i);
-  }
+    else { // singular
+      real34Copy(const34_0, res_r); real34Copy(const34_0, res_i);
+    }
 
-  freeWp43s(p, TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
+    freeWp43s(p, TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
+  }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 
@@ -3350,54 +3584,63 @@ void WP34S_matrix_inverse(const real34Matrix_t *matrix, real34Matrix_t *res) {
     return;
   }
 
-  pivots = allocWp43s(TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
-  WP34S_LU_decomposition(matrix, &lu, pivots);
-  if(lu.matrixElements == NULL) {
+  if((pivots = allocWp43s(TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t))))) {
+    WP34S_LU_decomposition(matrix, &lu, pivots);
+    if(lu.matrixElements == NULL) {
+      freeWp43s(pivots, TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
+      if(matrix != res) {
+        res->matrixElements = NULL; // Singular matrix
+        res->header.matrixRows = res->header.matrixColumns = 0;
+      }
+      return;
+    }
+
+    {
+      real34_t maxVal, minVal;
+      real_t p, q;
+      real34CopyAbs(&lu.matrixElements[0], &maxVal);
+      real34CopyAbs(&lu.matrixElements[0], &minVal);
+      for(i = 1; i < n; ++i) {
+        if(real34CompareAbsLessThan(&lu.matrixElements[i * n + i], &minVal))
+          real34CopyAbs(&lu.matrixElements[i * n + i], &minVal);
+        if(real34CompareAbsGreaterThan(&lu.matrixElements[i * n + i], &maxVal))
+          real34CopyAbs(&lu.matrixElements[i * n + i], &maxVal);
+      }
+      real34ToReal(&maxVal, &p);
+      real34ToReal(&minVal, &q);
+      WP34S_Log10(&p, &p, &ctxtReal39);
+      WP34S_Log10(&q, &q, &ctxtReal39);
+      realSubtract(&p, &q, &p, &ctxtReal39);
+      int32ToReal(33 - displayFormatDigits, &q);
+      if(realCompareLessEqual(&q, &p)) {
+        temporaryInformation = TI_INACCURATE;
+      }
+    }
+
+    if(matrix != res) copyRealMatrix(matrix, res);
+
+    if(res->matrixElements) {
+      if((x = allocWp43s(res->header.matrixRows * REAL_SIZE))) {
+        if((b = allocWp43s(res->header.matrixRows * REAL_SIZE))) {
+          for(i = 0; i < n; i++) {
+            for(j = 0; j < n; j++)
+              realCopy((i == j) ? const_1 : const_0, &b[j]);
+            WP34S_matrix_pivoting_solve(&lu, b, pivots, x, &ctxtReal39);
+            for(j = 0; j < n; j++)
+              realToReal34(x + j, &res->matrixElements[j * n + i]);
+          }
+          realMatrixFree(&lu);
+          freeWp43s(b, res->header.matrixRows * REAL_SIZE);
+        }
+        else lastErrorCode = ERROR_RAM_FULL;
+        freeWp43s(x, res->header.matrixRows * REAL_SIZE);
+      }
+      else lastErrorCode = ERROR_RAM_FULL;
+    }
+    else lastErrorCode = ERROR_RAM_FULL;
     freeWp43s(pivots, TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
-    if(matrix != res) {
-      res->matrixElements = NULL; // Singular matrix
-      res->header.matrixRows = res->header.matrixColumns = 0;
-    }
-    return;
   }
-
-  {
-    real34_t maxVal, minVal;
-    real_t p, q;
-    real34CopyAbs(&lu.matrixElements[0], &maxVal);
-    real34CopyAbs(&lu.matrixElements[0], &minVal);
-    for(i = 1; i < n; ++i) {
-      if(real34CompareAbsLessThan(&lu.matrixElements[i * n + i], &minVal))
-        real34CopyAbs(&lu.matrixElements[i * n + i], &minVal);
-      if(real34CompareAbsGreaterThan(&lu.matrixElements[i * n + i], &maxVal))
-        real34CopyAbs(&lu.matrixElements[i * n + i], &maxVal);
-    }
-    real34ToReal(&maxVal, &p);
-    real34ToReal(&minVal, &q);
-    WP34S_Log10(&p, &p, &ctxtReal39);
-    WP34S_Log10(&q, &q, &ctxtReal39);
-    realSubtract(&p, &q, &p, &ctxtReal39);
-    int32ToReal(33 - displayFormatDigits, &q);
-    if(realCompareLessEqual(&q, &p)) {
-      temporaryInformation = TI_INACCURATE;
-    }
-  }
-
-  if(matrix != res) copyRealMatrix(matrix, res);
-
-  x = allocWp43s(res->header.matrixRows * REAL_SIZE);
-  b = allocWp43s(res->header.matrixRows * REAL_SIZE);
-  for(i = 0; i < n; i++) {
-    for(j = 0; j < n; j++)
-      realCopy((i == j) ? const_1 : const_0, &b[j]);
-    WP34S_matrix_pivoting_solve(&lu, b, pivots, x, &ctxtReal39);
-    for(j = 0; j < n; j++)
-      realToReal34(x + j, &res->matrixElements[j * n + i]);
-  }
-  freeWp43s(b, res->header.matrixRows * REAL_SIZE);
-  freeWp43s(x, res->header.matrixRows * REAL_SIZE);
-  freeWp43s(pivots, TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
-  realMatrixFree(&lu);
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 static bool_t invCpxMat(real_t *matrix, uint16_t n, realContext_t *realContext) {
@@ -3407,59 +3650,67 @@ static bool_t invCpxMat(real_t *matrix, uint16_t n, realContext_t *realContext) 
   uint16_t i, j;
   real_t *b;
 
-  lu = allocWp43s(n * n * REAL_SIZE * 2);
-  pivots = allocWp43s(TO_BLOCKS(n * sizeof(uint16_t)));
-  for(i = 0; i < n * n * 2; i++) realCopy(matrix + i, lu + i);
-  if(!luCpxMat(lu, n, pivots, realContext)) {
+  if((lu = allocWp43s(n * n * REAL_SIZE * 2))) {
+    if((pivots = allocWp43s(TO_BLOCKS(n * sizeof(uint16_t))))) {
+      for(i = 0; i < n * n * 2; i++) realCopy(matrix + i, lu + i);
+      if(!luCpxMat(lu, n, pivots, realContext)) {
+        freeWp43s(lu, n * n * REAL_SIZE * 2);
+        freeWp43s(pivots, TO_BLOCKS(n * sizeof(uint16_t)));
+        return false;
+      }
+
+      {
+        real_t maxVal, minVal;
+        real_t p, q;
+        realCopy(lu,     &p);
+        realCopy(lu + 1, &q);
+        realRectangularToPolar(&p, &q, &p, &q, realContext);
+        realCopy(&p, &maxVal);
+        realCopy(&p, &minVal);
+        for(i = 1; i < n; ++i) {
+          realCopy(lu + (i * n + i) * 2,     &p);
+          realCopy(lu + (i * n + i) * 2 + 1, &q);
+          realRectangularToPolar(&p, &q, &p, &q, realContext);
+          if(realCompareLessThan(&p, &minVal))
+            real34Copy(&p, &minVal);
+          if(realCompareGreaterThan(&p, &maxVal))
+            real34Copy(&p, &maxVal);
+        }
+        WP34S_Log10(&maxVal, &p, realContext);
+        WP34S_Log10(&minVal, &q, realContext);
+        realSubtract(&p, &q, &p, realContext);
+        int32ToReal(33 - displayFormatDigits, &q);
+        if(realCompareLessEqual(&q, &p)) {
+          temporaryInformation = TI_INACCURATE;
+        }
+      }
+
+      if((x = allocWp43s(n * REAL_SIZE * 2))) {
+        if((b = allocWp43s(n * REAL_SIZE * 2))) {
+          for(i = 0; i < n; i++) {
+            for(j = 0; j < n; j++) {
+              realCopy((i == j) ? const_1 : const_0, &b[j * 2    ]);
+              realCopy(                     const_0, &b[j * 2 + 1]);
+            }
+            complex_matrix_pivoting_solve(lu, n, b, pivots, x, realContext);
+            for(j = 0; j < n; j++) {
+              realCopy(x + j * 2,     matrix + (j * n + i) * 2    );
+              realCopy(x + j * 2 + 1, matrix + (j * n + i) * 2 + 1);
+            }
+          }
+          freeWp43s(b, n * REAL_SIZE * 2);
+        }
+        else lastErrorCode = ERROR_RAM_FULL;
+        freeWp43s(x, n * REAL_SIZE * 2);
+      }
+      else lastErrorCode = ERROR_RAM_FULL;
+      freeWp43s(pivots, TO_BLOCKS(n * sizeof(uint16_t)));
+    }
+    else lastErrorCode = ERROR_RAM_FULL;
     freeWp43s(lu, n * n * REAL_SIZE * 2);
-    freeWp43s(pivots, TO_BLOCKS(n * sizeof(uint16_t)));
-    return false;
   }
-
-  {
-    real_t maxVal, minVal;
-    real_t p, q;
-    realCopy(lu,     &p);
-    realCopy(lu + 1, &q);
-    realRectangularToPolar(&p, &q, &p, &q, realContext);
-    realCopy(&p, &maxVal);
-    realCopy(&p, &minVal);
-    for(i = 1; i < n; ++i) {
-      realCopy(lu + (i * n + i) * 2,     &p);
-      realCopy(lu + (i * n + i) * 2 + 1, &q);
-      realRectangularToPolar(&p, &q, &p, &q, realContext);
-      if(realCompareLessThan(&p, &minVal))
-        real34Copy(&p, &minVal);
-      if(realCompareGreaterThan(&p, &maxVal))
-        real34Copy(&p, &maxVal);
-    }
-    WP34S_Log10(&maxVal, &p, realContext);
-    WP34S_Log10(&minVal, &q, realContext);
-    realSubtract(&p, &q, &p, realContext);
-    int32ToReal(33 - displayFormatDigits, &q);
-    if(realCompareLessEqual(&q, &p)) {
-      temporaryInformation = TI_INACCURATE;
-    }
-  }
-
-  x = allocWp43s(n * REAL_SIZE * 2);
-  b = allocWp43s(n * REAL_SIZE * 2);
-  for(i = 0; i < n; i++) {
-    for(j = 0; j < n; j++) {
-      realCopy((i == j) ? const_1 : const_0, &b[j * 2    ]);
-      realCopy(                     const_0, &b[j * 2 + 1]);
-    }
-    complex_matrix_pivoting_solve(lu, n, b, pivots, x, realContext);
-    for(j = 0; j < n; j++) {
-      realCopy(x + j * 2,     matrix + (j * n + i) * 2    );
-      realCopy(x + j * 2 + 1, matrix + (j * n + i) * 2 + 1);
-    }
-  }
-  freeWp43s(b, n * REAL_SIZE * 2);
-  freeWp43s(x, n * REAL_SIZE * 2);
-  freeWp43s(pivots, TO_BLOCKS(n * sizeof(uint16_t)));
-  freeWp43s(lu, n * n * REAL_SIZE * 2);
-  return true;
+  else lastErrorCode = ERROR_RAM_FULL;
+  return lastErrorCode == ERROR_NONE;
 }
 
 void complex_matrix_inverse(const complex34Matrix_t *matrix, complex34Matrix_t *res) {
@@ -3475,25 +3726,30 @@ void complex_matrix_inverse(const complex34Matrix_t *matrix, complex34Matrix_t *
     return;
   }
 
-  tmpMat = allocWp43s(n * n * REAL_SIZE * 2);
-  for(i = 0; i < n; i++) {
-    for(j = 0; j < n; j++) {
-      real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i * n + j]), &tmpMat[(i * n + j) * 2    ]);
-      real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * n + j]), &tmpMat[(i * n + j) * 2 + 1]);
-    }
-  }
-
-  if(invCpxMat(tmpMat, n, &ctxtReal39)) {
-    if(matrix != res) copyComplexMatrix(matrix, res);
+  if((tmpMat = allocWp43s(n * n * REAL_SIZE * 2))) {
     for(i = 0; i < n; i++) {
       for(j = 0; j < n; j++) {
-        realToReal34(&tmpMat[(i * n + j) * 2    ], VARIABLE_REAL34_DATA(&res->matrixElements[i * n + j]));
-        realToReal34(&tmpMat[(i * n + j) * 2 + 1], VARIABLE_IMAG34_DATA(&res->matrixElements[i * n + j]));
+        real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i * n + j]), &tmpMat[(i * n + j) * 2    ]);
+        real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * n + j]), &tmpMat[(i * n + j) * 2 + 1]);
       }
     }
-  }
 
-  freeWp43s(tmpMat, n * n * REAL_SIZE * 2);
+    if(invCpxMat(tmpMat, n, &ctxtReal39)) {
+      if(matrix != res) copyComplexMatrix(matrix, res);
+      if(res->matrixElements) {
+        for(i = 0; i < n; i++) {
+          for(j = 0; j < n; j++) {
+            realToReal34(&tmpMat[(i * n + j) * 2    ], VARIABLE_REAL34_DATA(&res->matrixElements[i * n + j]));
+            realToReal34(&tmpMat[(i * n + j) * 2 + 1], VARIABLE_IMAG34_DATA(&res->matrixElements[i * n + j]));
+          }
+        }
+      }
+      else lastErrorCode = ERROR_RAM_FULL;
+    }
+
+    freeWp43s(tmpMat, n * n * REAL_SIZE * 2);
+  }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 
@@ -3504,10 +3760,12 @@ void divideRealMatrix(const real34Matrix_t *matrix, const real34_t *x, real34Mat
   const uint16_t cols = matrix->header.matrixColumns;
   int32_t i;
 
-  if(matrix != res) realMatrixInit(res, rows, cols);
-  for(i = 0; i < cols * rows; ++i) {
-    real34Divide(&matrix->matrixElements[i], x, &res->matrixElements[i]);
+  if(matrix == res || realMatrixInit(res, rows, cols)) {
+    for(i = 0; i < cols * rows; ++i) {
+      real34Divide(&matrix->matrixElements[i], x, &res->matrixElements[i]);
+    }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 void _divideRealMatrix(const real34Matrix_t *matrix, const real_t *x, real34Matrix_t *res, realContext_t *realContext) {
@@ -3516,12 +3774,14 @@ void _divideRealMatrix(const real34Matrix_t *matrix, const real_t *x, real34Matr
   int32_t i;
   real_t y;
 
-  if(matrix != res) realMatrixInit(res, rows, cols);
-  for(i = 0; i < cols * rows; ++i) {
-    real34ToReal(&matrix->matrixElements[i], &y);
-    realDivide(&y, x, &y, realContext);
-    realToReal34(&y, &res->matrixElements[i]);
+  if(matrix == res || realMatrixInit(res, rows, cols)) {
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(&matrix->matrixElements[i], &y);
+      realDivide(&y, x, &y, realContext);
+      realToReal34(&y, &res->matrixElements[i]);
+    }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 void divideRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res) {
@@ -3534,14 +3794,16 @@ void divideRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real34
   }
 
   WP34S_matrix_inverse(x, &invX);
-  if(invX.matrixElements == NULL) {
+  if(lastErrorCode == ERROR_NONE && invX.matrixElements) {
+    multiplyRealMatrices(y, &invX, res);
+  }
+  else {
     if(y != res && x != res) {
       res->matrixElements = NULL; // Singular matrix
       res->header.matrixRows = res->header.matrixColumns = 0;
     }
-    return;
   }
-  multiplyRealMatrices(y, &invX, res);
+  realMatrixFree(&invX);
 }
 
 void divideComplexMatrix(const complex34Matrix_t *matrix, const real34_t *xr, const real34_t *xi, complex34Matrix_t *res) {
@@ -3557,14 +3819,16 @@ void _divideComplexMatrix(const complex34Matrix_t *matrix, const real_t *xr, con
   int32_t i;
   real_t yr, yi;
 
-  if(matrix != res) complexMatrixInit(res, rows, cols);
-  for(i = 0; i < cols * rows; ++i) {
-    real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i]), &yr);
-    real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i]), &yi);
-    divComplexComplex(&yr, &yi, xr, xi, &yr, &yi, realContext);
-    realToReal34(&yr, VARIABLE_REAL34_DATA(&res->matrixElements[i]));
-    realToReal34(&yi, VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
+  if(matrix == res || complexMatrixInit(res, rows, cols)) {
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i]), &yr);
+      real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i]), &yi);
+      divComplexComplex(&yr, &yi, xr, xi, &yr, &yi, realContext);
+      realToReal34(&yr, VARIABLE_REAL34_DATA(&res->matrixElements[i]));
+      realToReal34(&yi, VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
+    }
   }
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 void divideComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res) {
@@ -3577,14 +3841,16 @@ void divideComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *
   }
 
   complex_matrix_inverse(x, &invX);
-  if(invX.matrixElements == NULL) {
+  if(lastErrorCode == ERROR_NONE && invX.matrixElements) {
+    multiplyComplexMatrices(y, &invX, res);
+  }
+  else {
     if(y != res && x != res) {
       res->matrixElements = NULL; // Singular matrix
       res->header.matrixRows = res->header.matrixColumns = 0;
     }
-    return;
   }
-  multiplyComplexMatrices(y, &invX, res);
+  complexMatrixFree(&invX);
 }
 
 
@@ -3624,36 +3890,46 @@ void WP34S_matrix_linear_eqn(const real34Matrix_t *a, const real34Matrix_t *b, r
   }
 
   /* Everything is happy so far -- decompose */
-  pivots = allocWp43s(TO_BLOCKS(sizeof(uint16_t) * n));
-  WP34S_LU_decomposition(a, &mat, pivots);
-  if(!mat.matrixElements) {
-    freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-    displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "attempt to LU-decompose a singular matrix");
-      moreInfoOnError("In function WP34S_matrix_linear_eqn:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return;
-  }
+  if((pivots = allocWp43s(TO_BLOCKS(sizeof(uint16_t) * n)))) {
+    WP34S_LU_decomposition(a, &mat, pivots);
+    if(lastErrorCode != ERROR_NONE) {
+      freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
+      return;
+    }
+    if(!mat.matrixElements) {
+      freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
+      displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "attempt to LU-decompose a singular matrix");
+        moreInfoOnError("In function WP34S_matrix_linear_eqn:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
 
-  /* And solve */
-  if(r == a)
-    realMatrixFree(r);
-  if(r != b)
-    realMatrixInit(r, n, 1);
-  cv = allocWp43s(n * REAL_SIZE);
-  bv = allocWp43s(n * REAL_SIZE);
-  for(i = 0; i < n; i++) {
-    real34ToReal(&b->matrixElements[i] , bv + i);
-    pivots[i] = i;
+    /* And solve */
+    if(r == a)
+      realMatrixFree(r);
+    if((r == b) || (realMatrixInit(r, n, 1))) {
+      if((cv = allocWp43s(n * REAL_SIZE))) {
+        if((bv = allocWp43s(n * REAL_SIZE))) {
+          for(i = 0; i < n; i++) {
+            real34ToReal(&b->matrixElements[i] , bv + i);
+            pivots[i] = i;
+          }
+          WP34S_matrix_pivoting_solve(&mat, bv, pivots, cv, &ctxtReal39);
+          for(i = 0; i < n; i++)
+            realToReal34(cv + i, &r->matrixElements[i]);
+          freeWp43s(bv, n * REAL_SIZE);
+        }
+        else lastErrorCode = ERROR_RAM_FULL;
+        freeWp43s(cv, n * REAL_SIZE);
+      }
+      else lastErrorCode = ERROR_RAM_FULL;
+    }
+    else lastErrorCode = ERROR_RAM_FULL;
+    freeWp43s(pivots, TO_BLOCKS(sizeof(uint16_t) * n));
   }
-  WP34S_matrix_pivoting_solve(&mat, bv, pivots, cv, &ctxtReal39);
-  for(i = 0; i < n; i++)
-    realToReal34(cv + i, &r->matrixElements[i]);
-  freeWp43s(pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-  freeWp43s(cv, n * REAL_SIZE);
-  freeWp43s(bv, n * REAL_SIZE);
-  return;
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 
 #if 0
@@ -3690,39 +3966,49 @@ void complex_matrix_linear_eqn(const complex34Matrix_t *a, const complex34Matrix
   }
 
   /* Everything is happy so far -- decompose */
-  pivots = allocWp43s(TO_BLOCKS(sizeof(uint16_t) * n));
-  complex_LU_decomposition(a, &mat, pivots);
-  if(!mat.matrixElements) {
-    freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-    displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "attempt to LU-decompose a singular matrix");
-      moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return;
-  }
+  if((pivots = allocWp43s(TO_BLOCKS(sizeof(uint16_t) * n)))) {
+    complex_LU_decomposition(a, &mat, pivots);
+    if(lastErrorCode != ERROR_NONE) {
+      freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
+      return;
+    }
+    if(!mat.matrixElements) {
+      freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
+      displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "attempt to LU-decompose a singular matrix");
+        moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
 
-  /* And solve */
-  if(r == a)
-    complexMatrixFree(r);
-  if(r != b)
-    complexMatrixInit(r, n, 1);
-  cv = allocWp43s(n * REAL_SIZE * 2);
-  bv = allocWp43s(n * REAL_SIZE * 2);
-  for(i = 0; i < n; i++) {
-    real34ToReal(VARIABLE_REAL34_DATA(&b->matrixElements[i]) , bv + i * 2    );
-    real34ToReal(VARIABLE_IMAG34_DATA(&b->matrixElements[i]) , bv + i * 2 + 1);
-    pivots[i] = i;
+    /* And solve */
+    if(r == a)
+      complexMatrixFree(r);
+    if(r == b || complexMatrixInit(r, n, 1)) {
+      if((cv = allocWp43s(n * REAL_SIZE * 2))) {
+        if((bv = allocWp43s(n * REAL_SIZE * 2))) {
+          for(i = 0; i < n; i++) {
+            real34ToReal(VARIABLE_REAL34_DATA(&b->matrixElements[i]) , bv + i * 2    );
+            real34ToReal(VARIABLE_IMAG34_DATA(&b->matrixElements[i]) , bv + i * 2 + 1);
+            pivots[i] = i;
+          }
+          complex_matrix_pivoting_solve(&mat, bv, pivots, cv, &ctxtReal39);
+          for(i = 0; i < n; i++) {
+            realToReal34(cv + i * 2    , VARIABLE_REAL34_DATA(&r->matrixElements[i]));
+            realToReal34(cv + i * 2 + 1, VARIABLE_IMAG34_DATA(&r->matrixElements[i]));
+          }
+          freeWp43s(bv, n * REAL_SIZE * 2);
+        }
+        else lastErrorCode = ERROR_RAM_FULL;
+        freeWp43s(cv, n * REAL_SIZE * 2);
+      }
+      else lastErrorCode = ERROR_RAM_FULL;
+    }
+    else lastErrorCode = ERROR_RAM_FULL;
+    freeWp43s(pivots, TO_BLOCKS(sizeof(uint16_t) * n));
   }
-  complex_matrix_pivoting_solve(&mat, bv, pivots, cv, &ctxtReal39);
-  for(i = 0; i < n; i++) {
-    realToReal34(cv + i * 2    , VARIABLE_REAL34_DATA(&r->matrixElements[i]));
-    realToReal34(cv + i * 2 + 1, VARIABLE_IMAG34_DATA(&r->matrixElements[i]));
-  }
-  freeWp43s(pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-  freeWp43s(cv, n * REAL_SIZE * 2);
-  freeWp43s(bv, n * REAL_SIZE * 2);
-  return;
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 #endif
 
@@ -3749,6 +4035,9 @@ void complex_matrix_linear_eqn(const complex34Matrix_t *a, const complex34Matrix
   }
 
   complex_matrix_inverse(a, &inv_a);
+  if(lastErrorCode != ERROR_NONE) {
+    return;
+  }
   if(!inv_a.matrixElements) {
     displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -3815,145 +4104,146 @@ static void QR_decomposition_householder(const real_t *mat, uint16_t size, real_
   real_t *v, *qq, *qt, *newMat, sum, m, t;
 
   // Allocate
-  bulk = allocWp43s((size * size * 5 + size) * REAL_SIZE * 2);
+  if((bulk = allocWp43s((size * size * 5 + size) * REAL_SIZE * 2))) {
+    matr = bulk;
+    matq = bulk + (size * size * 2);
 
-  matr = bulk;
-  matq = bulk + (size * size * 2);
+    qq     = bulk + 2 * (size * size * 2);
+    qt     = bulk + 3 * (size * size * 2);
+    newMat = bulk + 4 * (size * size * 2);
+    v      = bulk + 5 * (size * size * 2);
 
-  qq     = bulk + 2 * (size * size * 2);
-  qt     = bulk + 3 * (size * size * 2);
-  newMat = bulk + 4 * (size * size * 2);
-  v      = bulk + 5 * (size * size * 2);
-
-  // Copy mat to matr
-  for(i = 0; i < size * size; i++) {
-    realCopy(mat + i * 2,     matr + i * 2    );
-    realCopy(mat + i * 2 + 1, matr + i * 2 + 1);
-  }
-
-  // Initialize Q
-  for(i = 0; i < size * size; i++) {
-    realCopy(const_0, matq + i * 2    );
-    realCopy(const_0, matq + i * 2 + 1);
-  }
-  for(i = 0; i < size; i++) {
-    realCopy(const_1, matq + (i * size + i) * 2);
-  }
-
-  // Calculate
-  for(j = 0; j < (size - 1u); ++j) {
-    // Column vector of submatrix
-    realCopy(const_0, &sum);
-    for(i = 0; i < (size - j); i++) {
-      realCopy(matr + ((i + j) * size + j) * 2,     v + i * 2    );
-      realCopy(matr + ((i + j) * size + j) * 2 + 1, v + i * 2 + 1);
-      realMultiply(v + i * 2,     v + i * 2,     &t, realContext);
-      realAdd(&sum, &t, &sum, realContext);
-      realMultiply(v + i * 2 + 1, v + i * 2 + 1, &t, realContext);
-      realAdd(&sum, &t, &sum, realContext);
-    }
-    realSquareRoot(&sum, &sum, realContext);
-
-    // Calculate u = x - alpha e1
-    if(realIsZero(v + 1)) {
-      realSubtract(v, &sum, v, realContext);
-    }
-    else {
-      realRectangularToPolar(v, v + 1, &m, &t, realContext);
-      realPolarToRectangular(&sum, &t, &m, &t, realContext);
-      realSubtract(v, &m, v, realContext);
-      realAdd(v + 1, &t, v + 1, realContext);
-    }
-
-    // Euclidean norm
-    realCopy(const_0, &sum);
-    for(i = 0; i < (size - j); i++) {
-      realMultiply(v + i * 2,     v + i * 2,     &t, realContext);
-      realAdd(&sum, &t, &sum, realContext);
-      realMultiply(v + i * 2 + 1, v + i * 2 + 1, &t, realContext);
-      realAdd(&sum, &t, &sum, realContext);
-    }
-    realSquareRoot(&sum, &sum, realContext);
-
-    // Calculate v = u / ||u||
-    for(i = 0; i < (size - j); i++) {
-      if(realIsZero(&sum)) {
-        realCopy(v + i * 2,     &m);
-        realCopy(v + i * 2 + 1, &t);
-      }
-      else if(realIsZero(v + i * 2 + 1)) {
-        realDivide(v + i * 2, &sum, &m, realContext);
-        realCopy(const_0, &t);
-      }
-      else {
-        divComplexComplex(v + i * 2, v + i * 2 + 1, &sum, const_0, &m, &t, realContext);
-      }
-      realCopy(&m, v + i * 2    );
-      realCopy(&t, v + i * 2 + 1);
+    // Copy mat to matr
+    for(i = 0; i < size * size; i++) {
+      realCopy(mat + i * 2,     matr + i * 2    );
+      realCopy(mat + i * 2 + 1, matr + i * 2 + 1);
     }
 
     // Initialize Q
     for(i = 0; i < size * size; i++) {
-      realCopy(const_0, qq + i * 2    );
-      realCopy(const_0, qq + i * 2 + 1);
+      realCopy(const_0, matq + i * 2    );
+      realCopy(const_0, matq + i * 2 + 1);
     }
     for(i = 0; i < size; i++) {
-      realCopy(const_1, qq + (i * size + i) * 2);
+      realCopy(const_1, matq + (i * size + i) * 2);
     }
 
-    // Q -= 2vv*
-    for(i = 0; i < (size - j); i++) {
-      for(k = 0; k < (size - j); k++) {
-        const uint32_t qe = (i + j) * size + k + j;
-        realSubtract(const_0, (v + k * 2 + 1), &sum, realContext);
-        if(realIsZero(v + i * 2 + 1) && realIsZero(&sum)) {
-          realMultiply(v + i * 2, v + k * 2, &m, realContext);
+    // Calculate
+    for(j = 0; j < (size - 1u); ++j) {
+      // Column vector of submatrix
+      realCopy(const_0, &sum);
+      for(i = 0; i < (size - j); i++) {
+        realCopy(matr + ((i + j) * size + j) * 2,     v + i * 2    );
+        realCopy(matr + ((i + j) * size + j) * 2 + 1, v + i * 2 + 1);
+        realMultiply(v + i * 2,     v + i * 2,     &t, realContext);
+        realAdd(&sum, &t, &sum, realContext);
+        realMultiply(v + i * 2 + 1, v + i * 2 + 1, &t, realContext);
+        realAdd(&sum, &t, &sum, realContext);
+      }
+      realSquareRoot(&sum, &sum, realContext);
+
+      // Calculate u = x - alpha e1
+      if(realIsZero(v + 1)) {
+        realSubtract(v, &sum, v, realContext);
+      }
+      else {
+        realRectangularToPolar(v, v + 1, &m, &t, realContext);
+        realPolarToRectangular(&sum, &t, &m, &t, realContext);
+        realSubtract(v, &m, v, realContext);
+        realAdd(v + 1, &t, v + 1, realContext);
+      }
+
+      // Euclidean norm
+      realCopy(const_0, &sum);
+      for(i = 0; i < (size - j); i++) {
+        realMultiply(v + i * 2,     v + i * 2,     &t, realContext);
+        realAdd(&sum, &t, &sum, realContext);
+        realMultiply(v + i * 2 + 1, v + i * 2 + 1, &t, realContext);
+        realAdd(&sum, &t, &sum, realContext);
+      }
+      realSquareRoot(&sum, &sum, realContext);
+
+      // Calculate v = u / ||u||
+      for(i = 0; i < (size - j); i++) {
+        if(realIsZero(&sum)) {
+          realCopy(v + i * 2,     &m);
+          realCopy(v + i * 2 + 1, &t);
+        }
+        else if(realIsZero(v + i * 2 + 1)) {
+          realDivide(v + i * 2, &sum, &m, realContext);
           realCopy(const_0, &t);
         }
         else {
-          mulComplexComplex((v + i * 2), (v + i * 2 + 1), (v + k * 2), &sum, &m, &t, realContext);
+          divComplexComplex(v + i * 2, v + i * 2 + 1, &sum, const_0, &m, &t, realContext);
         }
-        realMultiply(&m, const_2, &m, realContext);
-        realMultiply(&t, const_2, &t, realContext);
-        realSubtract(qq + qe * 2 ,    &m, qq + qe * 2,     realContext);
-        realSubtract(qq + qe * 2 + 1, &t, qq + qe * 2 + 1, realContext);
+        realCopy(&m, v + i * 2    );
+        realCopy(&t, v + i * 2 + 1);
+      }
+
+      // Initialize Q
+      for(i = 0; i < size * size; i++) {
+        realCopy(const_0, qq + i * 2    );
+        realCopy(const_0, qq + i * 2 + 1);
+      }
+      for(i = 0; i < size; i++) {
+        realCopy(const_1, qq + (i * size + i) * 2);
+      }
+
+      // Q -= 2vv*
+      for(i = 0; i < (size - j); i++) {
+        for(k = 0; k < (size - j); k++) {
+          const uint32_t qe = (i + j) * size + k + j;
+          realSubtract(const_0, (v + k * 2 + 1), &sum, realContext);
+          if(realIsZero(v + i * 2 + 1) && realIsZero(&sum)) {
+            realMultiply(v + i * 2, v + k * 2, &m, realContext);
+            realCopy(const_0, &t);
+          }
+          else {
+            mulComplexComplex((v + i * 2), (v + i * 2 + 1), (v + k * 2), &sum, &m, &t, realContext);
+          }
+          realMultiply(&m, const_2, &m, realContext);
+          realMultiply(&t, const_2, &t, realContext);
+          realSubtract(qq + qe * 2 ,    &m, qq + qe * 2,     realContext);
+          realSubtract(qq + qe * 2 + 1, &t, qq + qe * 2 + 1, realContext);
+        }
+      }
+
+      // Calculate R
+      mulCpxMat(qq, matr, size, newMat, realContext);
+      for(i = 0; i < size * size; i++) {
+        realCopy(newMat + i * 2,     matr + i * 2    );
+        realCopy(newMat + i * 2 + 1, matr + i * 2 + 1);
+      }
+
+      // Calculate Q
+      adjCpxMat(qq, size, qt);
+      mulCpxMat(matq, qt, size, newMat, realContext);
+      for(i = 0; i < size * size; i++) {
+        realCopy(newMat + i * 2,     matq + i * 2    );
+        realCopy(newMat + i * 2 + 1, matq + i * 2 + 1);
       }
     }
 
-    // Calculate R
-    mulCpxMat(qq, matr, size, newMat, realContext);
+    // Make sure R is triangular
+    for(j = 0; j < (size - 1u); j++) {
+      for(i = j + 1; i < size; i++) {
+        realCopy(const_0, matr + (i * size + j) * 2    );
+        realCopy(const_0, matr + (i * size + j) * 2 + 1);
+      }
+    }
+
+    // Copy results
     for(i = 0; i < size * size; i++) {
-      realCopy(newMat + i * 2,     matr + i * 2    );
-      realCopy(newMat + i * 2 + 1, matr + i * 2 + 1);
+      realCopy(matq + i * 2,     q + i * 2    );
+      realCopy(matq + i * 2 + 1, q + i * 2 + 1);
+      realCopy(matr + i * 2,     r + i * 2    );
+      realCopy(matr + i * 2 + 1, r + i * 2 + 1);
     }
 
-    // Calculate Q
-    adjCpxMat(qq, size, qt);
-    mulCpxMat(matq, qt, size, newMat, realContext);
-    for(i = 0; i < size * size; i++) {
-      realCopy(newMat + i * 2,     matq + i * 2    );
-      realCopy(newMat + i * 2 + 1, matq + i * 2 + 1);
-    }
+    // Cleanup
+    freeWp43s(bulk, (size * size * 5 + size) * REAL_SIZE * 2);
   }
-
-  // Make sure R is triangular
-  for(j = 0; j < (size - 1u); j++) {
-    for(i = j + 1; i < size; i++) {
-      realCopy(const_0, matr + (i * size + j) * 2    );
-      realCopy(const_0, matr + (i * size + j) * 2 + 1);
-    }
-  }
-
-  // Copy results
-  for(i = 0; i < size * size; i++) {
-    realCopy(matq + i * 2,     q + i * 2    );
-    realCopy(matq + i * 2 + 1, q + i * 2 + 1);
-    realCopy(matr + i * 2,     r + i * 2    );
-    realCopy(matr + i * 2 + 1, r + i * 2 + 1);
-  }
-
-  // Cleanup
-  freeWp43s(bulk, (size * size * 5 + size) * REAL_SIZE * 2);
+  else lastErrorCode = ERROR_RAM_FULL;
 }
 #endif // TESTSUITE_BUILD
 
@@ -3964,31 +4254,39 @@ void real_QR_decomposition(const real34Matrix_t *matrix, real34Matrix_t *q, real
     uint32_t i;
 
     // Allocate
-    mat = allocWp43s(matrix->header.matrixRows * matrix->header.matrixColumns * REAL_SIZE * 2 * 3);
-    matq = mat + matrix->header.matrixRows * matrix->header.matrixColumns * 2;
-    matr = mat + matrix->header.matrixRows * matrix->header.matrixColumns * 2 * 2;
+    if((mat = allocWp43s(matrix->header.matrixRows * matrix->header.matrixColumns * REAL_SIZE * 2 * 3))) {
+      matq = mat + matrix->header.matrixRows * matrix->header.matrixColumns * 2;
+      matr = mat + matrix->header.matrixRows * matrix->header.matrixColumns * 2 * 2;
 
-    // Convert real34 to real
-    for(i = 0; i < matrix->header.matrixRows * matrix->header.matrixColumns; i++) {
-      real34ToReal(&matrix->matrixElements[i], mat + i * 2);
-      realCopy(const_0, mat + i * 2 + 1);
+      // Convert real34 to real
+      for(i = 0; i < matrix->header.matrixRows * matrix->header.matrixColumns; i++) {
+        real34ToReal(&matrix->matrixElements[i], mat + i * 2);
+        realCopy(const_0, mat + i * 2 + 1);
+      }
+
+      // Calculate
+      QR_decomposition_householder(mat, matrix->header.matrixRows, matq, matr, &ctxtReal39);
+      if(lastErrorCode == ERROR_NONE) {
+        // Write back
+        if(realMatrixInit(q, matrix->header.matrixRows, matrix->header.matrixRows)) {
+          for(i = 0; i < matrix->header.matrixRows * matrix->header.matrixRows; i++) {
+            realToReal34(matq + i * 2, &q->matrixElements[i]);
+          }
+          if(realMatrixInit(r, matrix->header.matrixRows, matrix->header.matrixRows)) {
+            for(i = 0; i < matrix->header.matrixRows * matrix->header.matrixRows; i++) {
+              realToReal34(matr + i * 2, &r->matrixElements[i]);
+            }
+          }
+          else lastErrorCode = ERROR_RAM_FULL;
+        }
+        else lastErrorCode = ERROR_RAM_FULL;
+      }
+      else lastErrorCode = ERROR_RAM_FULL;
+
+      // Cleanup
+      freeWp43s(mat, matrix->header.matrixRows * matrix->header.matrixColumns * REAL_SIZE * 2 * 3);
     }
-
-    // Calculate
-    QR_decomposition_householder(mat, matrix->header.matrixRows, matq, matr, &ctxtReal39);
-
-    // Write back
-    realMatrixInit(q, matrix->header.matrixRows, matrix->header.matrixRows);
-    for(i = 0; i < matrix->header.matrixRows * matrix->header.matrixRows; i++) {
-      realToReal34(matq + i * 2, &q->matrixElements[i]);
-    }
-    realMatrixInit(r, matrix->header.matrixRows, matrix->header.matrixRows);
-    for(i = 0; i < matrix->header.matrixRows * matrix->header.matrixRows; i++) {
-      realToReal34(matr + i * 2, &r->matrixElements[i]);
-    }
-
-    // Cleanup
-    freeWp43s(mat, matrix->header.matrixRows * matrix->header.matrixColumns * REAL_SIZE * 2 * 3);
+    else lastErrorCode = ERROR_RAM_FULL;
   }
 #endif // TESTSUITE_BUILD
 }
@@ -4000,32 +4298,38 @@ void complex_QR_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t
     uint32_t i;
 
     // Allocate
-    mat = allocWp43s(matrix->header.matrixRows * matrix->header.matrixColumns * REAL_SIZE * 2 * 3);
-    matq = mat + matrix->header.matrixRows * matrix->header.matrixColumns * 2;
-    matr = mat + matrix->header.matrixRows * matrix->header.matrixColumns * 2 * 2;
+    if((mat = allocWp43s(matrix->header.matrixRows * matrix->header.matrixColumns * REAL_SIZE * 2 * 3))) {
+      matq = mat + matrix->header.matrixRows * matrix->header.matrixColumns * 2;
+      matr = mat + matrix->header.matrixRows * matrix->header.matrixColumns * 2 * 2;
 
-    for(i = 0; i < matrix->header.matrixRows * matrix->header.matrixColumns; i++) {
-      real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i]), mat + i * 2    );
-      real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i]), mat + i * 2 + 1);
+      for(i = 0; i < matrix->header.matrixRows * matrix->header.matrixColumns; i++) {
+        real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i]), mat + i * 2    );
+        real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i]), mat + i * 2 + 1);
+      }
+
+      // Calculate
+      QR_decomposition_householder(mat, matrix->header.matrixRows, matq, matr, &ctxtReal39);
+
+      // Write back
+      if(complexMatrixInit(q, matrix->header.matrixRows, matrix->header.matrixRows)) {
+        for(i = 0; i < matrix->header.matrixRows * matrix->header.matrixColumns; i++) {
+          realToReal34(matq + i * 2,     VARIABLE_REAL34_DATA(&q->matrixElements[i]));
+          realToReal34(matq + i * 2 + 1, VARIABLE_IMAG34_DATA(&q->matrixElements[i]));
+        }
+        if(complexMatrixInit(r, matrix->header.matrixRows, matrix->header.matrixRows)) {
+          for(i = 0; i < matrix->header.matrixRows * matrix->header.matrixColumns; i++) {
+            realToReal34(matr + i * 2,     VARIABLE_REAL34_DATA(&r->matrixElements[i]));
+            realToReal34(matr + i * 2 + 1, VARIABLE_IMAG34_DATA(&r->matrixElements[i]));
+          }
+        }
+        else lastErrorCode = ERROR_RAM_FULL;
+      }
+      else lastErrorCode = ERROR_RAM_FULL;
+
+      // Cleanup
+      freeWp43s(mat, matrix->header.matrixRows * matrix->header.matrixColumns * REAL_SIZE * 2 * 3);
     }
-
-    // Calculate
-    QR_decomposition_householder(mat, matrix->header.matrixRows, matq, matr, &ctxtReal39);
-
-    // Write back
-    complexMatrixInit(q, matrix->header.matrixRows, matrix->header.matrixRows);
-    for(i = 0; i < matrix->header.matrixRows * matrix->header.matrixColumns; i++) {
-      realToReal34(matq + i * 2,     VARIABLE_REAL34_DATA(&q->matrixElements[i]));
-      realToReal34(matq + i * 2 + 1, VARIABLE_IMAG34_DATA(&q->matrixElements[i]));
-    }
-    complexMatrixInit(r, matrix->header.matrixRows, matrix->header.matrixRows);
-    for(i = 0; i < matrix->header.matrixRows * matrix->header.matrixColumns; i++) {
-      realToReal34(matr + i * 2,     VARIABLE_REAL34_DATA(&r->matrixElements[i]));
-      realToReal34(matr + i * 2 + 1, VARIABLE_IMAG34_DATA(&r->matrixElements[i]));
-    }
-
-    // Cleanup
-    freeWp43s(mat, matrix->header.matrixRows * matrix->header.matrixColumns * REAL_SIZE * 2 * 3);
+    else lastErrorCode = ERROR_RAM_FULL;
   }
 #endif // TESTSUITE_BUILD
 }
@@ -4142,6 +4446,9 @@ static void sortEigenvalues(real_t *eig, uint16_t size, uint16_t begin_a, uint16
   if(size < 2) { // ... trivial
     return;
   }
+  else if(begin_a == end_b) { // ... trivial
+    return;
+  }
   else if(size == 2) { // simply compare
     realRectangularToPolar(eig,     eig + 1, eig + 2, eig + 3, realContext);
     realRectangularToPolar(eig + 6, eig + 7, eig + 4, eig + 5, realContext);
@@ -4154,8 +4461,8 @@ static void sortEigenvalues(real_t *eig, uint16_t size, uint16_t begin_a, uint16
   }
   else {
     uint16_t a = begin_a, b = begin_b;
-    if(end_a - begin_a > 1) sortEigenvalues(eig, size, begin_a, (begin_a + end_a + 2) / 2, end_a, realContext);
-    if(end_b - begin_b > 1) sortEigenvalues(eig, size, begin_b, (begin_b + end_b + 2) / 2, end_b, realContext);
+    sortEigenvalues(eig, size, begin_a, (begin_a + end_a + 2) / 2, end_a, realContext);
+    sortEigenvalues(eig, size, begin_b, (begin_b + end_b + 2) / 2, end_b, realContext);
     for(uint16_t i = begin_a; i <= end_b; i++) {
       realRectangularToPolar(eig + (i * size + i) * 2, eig + (i * size + i) * 2 + 1, eig + (i * size + (i + 1) % size) * 2, eig + (i * size + (i + 1) % size) * 2 + 1, realContext);
       realZero(eig + (i * size + (i + 1) % size) * 2 + 1);
@@ -4395,44 +4702,50 @@ void realEigenvalues(const real34Matrix_t *matrix, real34Matrix_t *res, real34Ma
   bool_t shifted = true;
 
   if(matrix->header.matrixRows == matrix->header.matrixColumns) {
-    bulk = allocWp43s(size * size * REAL_SIZE * 2 * 4);
-    a   = bulk;
-    q   = bulk + size * size * 2;
-    r   = bulk + size * size * 2 * 2;
-    eig = bulk + size * size * 2 * 3;
+    if((bulk = allocWp43s(size * size * REAL_SIZE * 2 * 4))) {
+      a   = bulk;
+      q   = bulk + size * size * 2;
+      r   = bulk + size * size * 2 * 2;
+      eig = bulk + size * size * 2 * 3;
 
-    // Convert real34 to real
-    for(i = 0; i < size * size; i++) {
-      real34ToReal(&matrix->matrixElements[i], a + i * 2);
-      realZero(a + i * 2 + 1);
-    }
-
-    // Calculate
-    calculateEigenvalues(a, q, r, eig, size, shifted, &ctxtReal75);
-    shifted = false;
-
-    // Check imaginary part (mutually conjugate complex roots are possible in real quadratic equations)
-    isComplex = false;
-    for(i = 0; i < size * size; i++) {
-      if(!realIsZero(eig + i * 2 + 1)) {
-        isComplex = true;
-        break;
+      // Convert real34 to real
+      for(i = 0; i < size * size; i++) {
+        real34ToReal(&matrix->matrixElements[i], a + i * 2);
+        realZero(a + i * 2 + 1);
       }
-    }
 
-    // Write back
-    if(matrix != res) realMatrixInit(res, size, size);
-    for(i = 0; i < size; i++) {
-      realToReal34(eig + (i * size + i) * 2, &res->matrixElements[i * size + i]);
-    }
-    if(isComplex && (ires != NULL)) {
-      if(matrix != ires && res != ires) realMatrixInit(ires, size, size);
-      for(i = 0; i < size; i++) {
-        realToReal34(eig + (i * size + i) * 2 + 1, &ires->matrixElements[i * size + i]);
+      // Calculate
+      calculateEigenvalues(a, q, r, eig, size, shifted, &ctxtReal75);
+      shifted = false;
+
+      // Check imaginary part (mutually conjugate complex roots are possible in real quadratic equations)
+      isComplex = false;
+      for(i = 0; i < size * size; i++) {
+        if(!realIsZero(eig + i * 2 + 1)) {
+          isComplex = true;
+          break;
+        }
       }
-    }
 
-    freeWp43s(bulk, size * size * REAL_SIZE * 2 * 4);
+      // Write back
+      if(matrix == res || realMatrixInit(res, size, size)) {
+        for(i = 0; i < size; i++) {
+          realToReal34(eig + (i * size + i) * 2, &res->matrixElements[i * size + i]);
+        }
+        if(isComplex && (ires != NULL)) {
+          if(matrix == ires || res == ires || realMatrixInit(ires, size, size)) {
+            for(i = 0; i < size; i++) {
+              realToReal34(eig + (i * size + i) * 2 + 1, &ires->matrixElements[i * size + i]);
+            }
+          }
+          else lastErrorCode = ERROR_RAM_FULL;
+        }
+      }
+      else lastErrorCode = ERROR_RAM_FULL;
+
+      freeWp43s(bulk, size * size * REAL_SIZE * 2 * 4);
+    }
+    else lastErrorCode = ERROR_RAM_FULL;
   }
 #endif // TESTSUITE_BUILD
 }
@@ -4445,30 +4758,34 @@ void complexEigenvalues(const complex34Matrix_t *matrix, complex34Matrix_t *res)
   bool_t shifted = true;
 
   if(matrix->header.matrixRows == matrix->header.matrixColumns) {
-    bulk = allocWp43s(size * size * REAL_SIZE * 2 * 4);
-    a   = bulk;
-    q   = bulk + size * size * 2;
-    r   = bulk + size * size * 2 * 2;
-    eig = bulk + size * size * 2 * 3;
+    if((bulk = allocWp43s(size * size * REAL_SIZE * 2 * 4))) {
+      a   = bulk;
+      q   = bulk + size * size * 2;
+      r   = bulk + size * size * 2 * 2;
+      eig = bulk + size * size * 2 * 3;
 
-    // Convert real34 to real
-    for(i = 0; i < size * size; i++) {
-      real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i]), a + i * 2    );
-      real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i]), a + i * 2 + 1);
+      // Convert real34 to real
+      for(i = 0; i < size * size; i++) {
+        real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i]), a + i * 2    );
+        real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i]), a + i * 2 + 1);
+      }
+
+      // Calculate
+      calculateEigenvalues(a, q, r, eig, size, shifted, &ctxtReal75);
+      shifted = false;
+
+      // Write back
+      if(matrix == res || complexMatrixInit(res, size, size)) {
+        for(i = 0; i < size; i++) {
+          realToReal34(eig + (i * size + i) * 2,     VARIABLE_REAL34_DATA(&res->matrixElements[i * size + i]));
+          realToReal34(eig + (i * size + i) * 2 + 1, VARIABLE_IMAG34_DATA(&res->matrixElements[i * size + i]));
+        }
+      }
+      else lastErrorCode = ERROR_RAM_FULL;
+
+      freeWp43s(bulk, size * size * REAL_SIZE * 2 * 4);
     }
-
-    // Calculate
-    calculateEigenvalues(a, q, r, eig, size, shifted, &ctxtReal75);
-    shifted = false;
-
-    // Write back
-    if(matrix != res) complexMatrixInit(res, size, size);
-    for(i = 0; i < size; i++) {
-      realToReal34(eig + (i * size + i) * 2,     VARIABLE_REAL34_DATA(&res->matrixElements[i * size + i]));
-      realToReal34(eig + (i * size + i) * 2 + 1, VARIABLE_IMAG34_DATA(&res->matrixElements[i * size + i]));
-    }
-
-    freeWp43s(bulk, size * size * REAL_SIZE * 2 * 4);
+    else lastErrorCode = ERROR_RAM_FULL;
   }
 #endif // TESTSUITE_BUILD
 }
@@ -4482,64 +4799,70 @@ void realEigenvectors(const real34Matrix_t *matrix, real34Matrix_t *res, real34M
   bool_t shifted = true;
 
   if(matrix->header.matrixRows == matrix->header.matrixColumns) {
-    bulk = allocWp43s(size * size * REAL_SIZE * 2 * 4);
-    a   = bulk;
-    q   = bulk + size * size * 2;
-    r   = bulk + size * size * 2 * 2;
-    eig = bulk + size * size * 2 * 3;
+    if((bulk = allocWp43s(size * size * REAL_SIZE * 2 * 4))) {
+      a   = bulk;
+      q   = bulk + size * size * 2;
+      r   = bulk + size * size * 2 * 2;
+      eig = bulk + size * size * 2 * 3;
 
-    // Convert real34 to real
-    for(i = 0; i < size * size; i++) {
-      real34ToReal(&matrix->matrixElements[i], a + i * 2);
-      realZero(a + i * 2 + 1);
-    }
-
-    // Calculate eigenvalues
-    calculateEigenvalues(a, q, r, eig, size, shifted, &ctxtReal75);
-    shifted = false;
-    calculateEigenvectors((any34Matrix_t *)matrix, false, a, q, r, eig, &ctxtReal75);
-
-    // Check imaginary part (mutually conjugate complex roots are possible in real quadratic equations)
-    isComplex = false;
-    for(i = 0; i < size * size; i++) {
-      if(!realIsZero(r + i * 2 + 1)) {
-        isComplex = true;
-        break;
+      // Convert real34 to real
+      for(i = 0; i < size * size; i++) {
+        real34ToReal(&matrix->matrixElements[i], a + i * 2);
+        realZero(a + i * 2 + 1);
       }
-    }
 
-    // Normalize
-    for(j = 0; j < size; j++) {
-      real_t prod, sum;
-      realZero(&sum);
-      for(i = 0; i < size; i++) {
-        realMultiply(r + (i * size + j) * 2,     r + (i * size + j) * 2,     &prod, &ctxtReal75);
-        realAdd(&sum, &prod, &sum, &ctxtReal75);
-        realMultiply(r + (i * size + j) * 2 + 1, r + (i * size + j) * 2 + 1, &prod, &ctxtReal75);
-        realAdd(&sum, &prod, &sum, &ctxtReal75);
-      }
-      realSquareRoot(&sum, &sum, &ctxtReal75);
-      if(!realIsZero(&sum) && !realIsSpecial(&sum)) {
-        for(i = 0; i < size; i++) {
-          realDivide(r + (i * size + j) * 2,     &sum, r + (i * size + j) * 2,     &ctxtReal75);
-          realDivide(r + (i * size + j) * 2 + 1, &sum, r + (i * size + j) * 2 + 1, &ctxtReal75);
+      // Calculate eigenvalues
+      calculateEigenvalues(a, q, r, eig, size, shifted, &ctxtReal75);
+      shifted = false;
+      calculateEigenvectors((any34Matrix_t *)matrix, false, a, q, r, eig, &ctxtReal75);
+
+      // Check imaginary part (mutually conjugate complex roots are possible in real quadratic equations)
+      isComplex = false;
+      for(i = 0; i < size * size; i++) {
+        if(!realIsZero(r + i * 2 + 1)) {
+          isComplex = true;
+          break;
         }
       }
-    }
 
-    // Write back
-    if(matrix != res) realMatrixInit(res, size, size);
-    for(i = 0; i < size * size; i++) {
-      realToReal34(r + i * 2, &res->matrixElements[i]);
-    }
-    if(isComplex && (ires != NULL)) {
-      if(matrix != ires && res != ires) realMatrixInit(ires, size, size);
-      for(i = 0; i < size * size; i++) {
-        realToReal34(r + i * 2 + 1, &ires->matrixElements[i]);
+      // Normalize
+      for(j = 0; j < size; j++) {
+        real_t prod, sum;
+        realZero(&sum);
+        for(i = 0; i < size; i++) {
+          realMultiply(r + (i * size + j) * 2,     r + (i * size + j) * 2,     &prod, &ctxtReal75);
+          realAdd(&sum, &prod, &sum, &ctxtReal75);
+          realMultiply(r + (i * size + j) * 2 + 1, r + (i * size + j) * 2 + 1, &prod, &ctxtReal75);
+          realAdd(&sum, &prod, &sum, &ctxtReal75);
+        }
+        realSquareRoot(&sum, &sum, &ctxtReal75);
+        if(!realIsZero(&sum) && !realIsSpecial(&sum)) {
+          for(i = 0; i < size; i++) {
+            realDivide(r + (i * size + j) * 2,     &sum, r + (i * size + j) * 2,     &ctxtReal75);
+            realDivide(r + (i * size + j) * 2 + 1, &sum, r + (i * size + j) * 2 + 1, &ctxtReal75);
+          }
+        }
       }
-    }
 
-    freeWp43s(bulk, size * size * REAL_SIZE * 2 * 4);
+      // Write back
+      if(matrix == res || realMatrixInit(res, size, size)) {
+        for(i = 0; i < size * size; i++) {
+          realToReal34(r + i * 2, &res->matrixElements[i]);
+        }
+        if(isComplex && (ires != NULL)) {
+          if(matrix == ires || res == ires || realMatrixInit(ires, size, size)) {
+            for(i = 0; i < size * size; i++) {
+              realToReal34(r + i * 2 + 1, &ires->matrixElements[i]);
+            }
+          }
+          else lastErrorCode = ERROR_RAM_FULL;
+        }
+      }
+      else lastErrorCode = ERROR_RAM_FULL;
+
+      freeWp43s(bulk, size * size * REAL_SIZE * 2 * 4);
+    }
+    else lastErrorCode = ERROR_RAM_FULL;
   }
 #endif // TESTSUITE_BUILD
 }
@@ -4552,32 +4875,36 @@ void complexEigenvectors(const complex34Matrix_t *matrix, complex34Matrix_t *res
   bool_t shifted = true;
 
   if(matrix->header.matrixRows == matrix->header.matrixColumns) {
-    bulk = allocWp43s(size * size * REAL_SIZE * 2 * 4);
-    a   = bulk;
-    q   = bulk + size * size * 2;
-    r   = bulk + size * size * 2 * 2;
-    eig = bulk + size * size * 2 * 3;
+    if((bulk = allocWp43s(size * size * REAL_SIZE * 2 * 4))) {
+      a   = bulk;
+      q   = bulk + size * size * 2;
+      r   = bulk + size * size * 2 * 2;
+      eig = bulk + size * size * 2 * 3;
 
-    // Convert real34 to real
-    for(i = 0; i < size * size; i++) {
-      real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i]), a + i * 2    );
-      real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i]), a + i * 2 + 1);
-      realZero(a + i * 2 + 1);
+      // Convert real34 to real
+      for(i = 0; i < size * size; i++) {
+        real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i]), a + i * 2    );
+        real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i]), a + i * 2 + 1);
+        realZero(a + i * 2 + 1);
+      }
+
+      // Calculate eigenvalues
+      calculateEigenvalues(a, q, r, eig, size, shifted, &ctxtReal75);
+      shifted = false;
+      calculateEigenvectors((any34Matrix_t *)matrix, false, a, q, r, eig, &ctxtReal75);
+
+      // Write back
+      if(matrix == res || complexMatrixInit(res, size, size)) {
+        for(i = 0; i < size * size; i++) {
+          realToReal34(r + i * 2,     VARIABLE_REAL34_DATA(&res->matrixElements[i]));
+          realToReal34(r + i * 2 + 1, VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
+        }
+      }
+      else lastErrorCode = ERROR_RAM_FULL;
+
+      freeWp43s(bulk, size * size * REAL_SIZE * 2 * 4);
     }
-
-    // Calculate eigenvalues
-    calculateEigenvalues(a, q, r, eig, size, shifted, &ctxtReal75);
-    shifted = false;
-    calculateEigenvectors((any34Matrix_t *)matrix, false, a, q, r, eig, &ctxtReal75);
-
-    // Write back
-    if(matrix != res) complexMatrixInit(res, size, size);
-    for(i = 0; i < size * size; i++) {
-      realToReal34(r + i * 2,     VARIABLE_REAL34_DATA(&res->matrixElements[i]));
-      realToReal34(r + i * 2 + 1, VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
-    }
-
-    freeWp43s(bulk, size * size * REAL_SIZE * 2 * 4);
+    else lastErrorCode = ERROR_RAM_FULL;
   }
 #endif // TESTSUITE_BUILD
 }

@@ -79,7 +79,7 @@ static void dataTypeError(void) {
  * \return void
  ***********************************************/
 void fnDeltaPercent(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   deltaPercent[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

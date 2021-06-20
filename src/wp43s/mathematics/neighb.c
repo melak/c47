@@ -53,7 +53,7 @@ void fnNeighb(uint16_t unusedButMandatoryParameter) {
     return;
   }
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   switch(dataTypeX) {
     case dtLongInteger:

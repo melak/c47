@@ -60,7 +60,7 @@ static bool_t besselGetParam(calcRegister_t regist, real_t *r, realContext_t *re
 void fnBessel(uint16_t unusedButMandatoryParameter) {
   real_t x, n, r, a;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(besselGetParam(REGISTER_X, &x, &ctxtReal75) && besselGetParam(REGISTER_Y, &n, &ctxtReal75)) {
     if(realIsAnInteger(&n) || (!realIsNegative(&x))) {
@@ -184,107 +184,112 @@ static void Sigma_u_k(const real_t *nu, const real_t *t_r, const real_t *t_i, bo
   real_t nu_k, tmp, tmp2, prev_r, prev_i;
   uint32_t i, j;
 
-  // TODO: may be allocate that memory on the heap (or on the stack)
-  coeff_current = (real_t *)allocWp43s(COEFF_BUFFER_SIZE);
-  coeff_deriv   = (real_t *)allocWp43s(COEFF_BUFFER_SIZE);
-  coeff_next    = (real_t *)allocWp43s(COEFF_BUFFER_SIZE);
+  if((coeff_current = allocWp43s(COEFF_BUFFER_SIZE))) {
+    if((coeff_deriv = allocWp43s(COEFF_BUFFER_SIZE))) {
+      if((coeff_next = allocWp43s(COEFF_BUFFER_SIZE))) {
+        realCopy(const_0, &prev_r), realCopy(const_0, &prev_i);
+        realCopy(even ? const_1 : const_0, res_r), realCopy(const_0, res_i);
+        realCopy(nu, &nu_k);
 
-  realCopy(const_0, &prev_r), realCopy(const_0, &prev_i);
-  realCopy(even ? const_1 : const_0, res_r), realCopy(const_0, res_i);
-  realCopy(nu, &nu_k);
+        int32ToReal(24, &tmp);
+        realDivide(const_3, &tmp, &coeff_current[0], realContext);
+        realDivide(const_5, &tmp, &coeff_current[1], realContext);
+        realChangeSign(&coeff_current[1]);
+        for(i = 2; i < NUMBER_OF_COEFF; ++i) {
+          realZero(&coeff_current[i]);
+        }
 
-  int32ToReal(24, &tmp);
-  realDivide(const_3, &tmp, &coeff_current[0], realContext);
-  realDivide(const_5, &tmp, &coeff_current[1], realContext);
-  realChangeSign(&coeff_current[1]);
-  for(i = 2; i < NUMBER_OF_COEFF; ++i) {
-    realZero(&coeff_current[i]);
+        for(i = 0; i < NUMBER_OF_COEFF; ++i) {
+          realZero(&coeff_deriv[i]);
+          realZero(&coeff_next[i]);
+        }
+
+        for(i = 1; i < NUMBER_OF_COEFF; ++i) {
+         if(((i % 2 == 1) && odd) || ((i % 2 == 0) && even)) {
+           u_k(i, coeff_current, t_r, t_i, &tmp, &tmp2, realContext);
+           divComplexComplex(&tmp, &tmp2, &nu_k, const_0, &tmp, &tmp2, realContext);
+           if((!realIsSpecial(&tmp)) && !realIsSpecial(&tmp2)) {
+             realAdd(res_r, &tmp, res_r, realContext), realAdd(res_i, &tmp2, res_i, realContext);
+           }
+           realCopy(const_1, &tmp), tmp.exponent -= 73;
+           if(WP34S_RelativeError(res_r, &prev_r, &tmp, realContext) && WP34S_RelativeError(res_i, &prev_i, &tmp, realContext)) {
+             break;
+           }
+           realCopy(res_r, &prev_r), realCopy(res_i, &prev_i);
+         }
+
+         // for the next iteration
+         realMultiply(&nu_k, nu, &nu_k, realContext);
+
+         for(j = 0; j < NUMBER_OF_COEFF; ++j) { // coefficients of the derivative
+           int32ToReal(i + j * 2, &tmp);
+           realMultiply(&coeff_current[j], &tmp, &coeff_deriv[j], realContext);
+           if(realIsZero(&coeff_deriv[j])) {
+             break;
+           }
+         }
+         for(j = 0; j < NUMBER_OF_COEFF; ++j) { // x^2
+           realCopy(&coeff_deriv[j], &coeff_next[j]);
+           if(realIsZero(&coeff_deriv[j])) {
+             break;
+           }
+         }
+         for(j = 1; j < NUMBER_OF_COEFF; ++j) { // -x^4
+           realSubtract(&coeff_next[j], &coeff_deriv[j - 1], &coeff_next[j], realContext);
+           if(realIsZero(&coeff_deriv[j - 1])) {
+             break;
+           }
+         }
+         for(j = 0; j < NUMBER_OF_COEFF; ++j) { // /2
+           realMultiply(&coeff_next[j], const_1on2, &coeff_next[j], realContext);
+           if(realIsZero(&coeff_next[j])) {
+             break;
+           }
+         }
+
+         for(j = 0; j < NUMBER_OF_COEFF; ++j) { // 5x
+           realMultiply(&coeff_current[j], const_5, &coeff_deriv[j], realContext);
+           if(realIsZero(&coeff_deriv[j])) {
+             break;
+           }
+         }
+         for(j = 1; j < NUMBER_OF_COEFF; ++j) { // (1-5t^2)x
+           realSubtract(&coeff_current[j], &coeff_deriv[j - 1], &coeff_current[j], realContext);
+           if(realIsZero(&coeff_deriv[j - 1])) {
+             break;
+           }
+         }
+         for(j = 0; j < NUMBER_OF_COEFF; ++j) { // integrate
+           int32ToReal(i + j * 2 + 1, &tmp);
+           realDivide(&coeff_current[j], &tmp, &coeff_deriv[j], realContext);
+           if(realIsZero(&coeff_deriv[j])) {
+             break;
+           }
+         }
+         int32ToReal(8, &tmp);
+         for(j = 0; j < NUMBER_OF_COEFF; ++j) { // 1/8
+           realDivide(&coeff_deriv[j], &tmp, &tmp2, realContext);
+           realAdd(&coeff_next[j], &tmp2, &coeff_next[j], realContext);
+           if(realIsZero(&coeff_deriv[j])) {
+             break;
+           }
+         }
+
+         coeff_tmpptr = coeff_current;
+         coeff_current = coeff_next;
+         coeff_next = coeff_tmpptr;
+         coeff_tmpptr = NULL;
+        }
+        freeWp43s(coeff_next, COEFF_BUFFER_SIZE);
+      }
+      else lastErrorCode = ERROR_RAM_FULL;
+      freeWp43s(coeff_deriv, COEFF_BUFFER_SIZE);
+    }
+    else lastErrorCode = ERROR_RAM_FULL;
+    freeWp43s(coeff_current, COEFF_BUFFER_SIZE);
   }
-
-  for(i = 0; i < NUMBER_OF_COEFF; ++i) {
-    realZero(&coeff_deriv[i]);
-    realZero(&coeff_next[i]);
-  }
-
-  for(i = 1; i < NUMBER_OF_COEFF; ++i) {
-   if(((i % 2 == 1) && odd) || ((i % 2 == 0) && even)) {
-     u_k(i, coeff_current, t_r, t_i, &tmp, &tmp2, realContext);
-     divComplexComplex(&tmp, &tmp2, &nu_k, const_0, &tmp, &tmp2, realContext);
-     if((!realIsSpecial(&tmp)) && !realIsSpecial(&tmp2)) {
-       realAdd(res_r, &tmp, res_r, realContext), realAdd(res_i, &tmp2, res_i, realContext);
-     }
-     realCopy(const_1, &tmp), tmp.exponent -= 73;
-     if(WP34S_RelativeError(res_r, &prev_r, &tmp, realContext) && WP34S_RelativeError(res_i, &prev_i, &tmp, realContext)) {
-       break;
-     }
-     realCopy(res_r, &prev_r), realCopy(res_i, &prev_i);
-   }
-
-   // for the next iteration
-   realMultiply(&nu_k, nu, &nu_k, realContext);
-
-   for(j = 0; j < NUMBER_OF_COEFF; ++j) { // coefficients of the derivative
-     int32ToReal(i + j * 2, &tmp);
-     realMultiply(&coeff_current[j], &tmp, &coeff_deriv[j], realContext);
-     if(realIsZero(&coeff_deriv[j])) {
-       break;
-     }
-   }
-   for(j = 0; j < NUMBER_OF_COEFF; ++j) { // x^2
-     realCopy(&coeff_deriv[j], &coeff_next[j]);
-     if(realIsZero(&coeff_deriv[j])) {
-       break;
-     }
-   }
-   for(j = 1; j < NUMBER_OF_COEFF; ++j) { // -x^4
-     realSubtract(&coeff_next[j], &coeff_deriv[j - 1], &coeff_next[j], realContext);
-     if(realIsZero(&coeff_deriv[j - 1])) {
-       break;
-     }
-   }
-   for(j = 0; j < NUMBER_OF_COEFF; ++j) { // /2
-     realMultiply(&coeff_next[j], const_1on2, &coeff_next[j], realContext);
-     if(realIsZero(&coeff_next[j])) {
-       break;
-     }
-   }
-
-   for(j = 0; j < NUMBER_OF_COEFF; ++j) { // 5x
-     realMultiply(&coeff_current[j], const_5, &coeff_deriv[j], realContext);
-     if(realIsZero(&coeff_deriv[j])) {
-       break;
-     }
-   }
-   for(j = 1; j < NUMBER_OF_COEFF; ++j) { // (1-5t^2)x
-     realSubtract(&coeff_current[j], &coeff_deriv[j - 1], &coeff_current[j], realContext);
-     if(realIsZero(&coeff_deriv[j - 1])) {
-       break;
-     }
-   }
-   for(j = 0; j < NUMBER_OF_COEFF; ++j) { // integrate
-     int32ToReal(i + j * 2 + 1, &tmp);
-     realDivide(&coeff_current[j], &tmp, &coeff_deriv[j], realContext);
-     if(realIsZero(&coeff_deriv[j])) {
-       break;
-     }
-   }
-   int32ToReal(8, &tmp);
-   for(j = 0; j < NUMBER_OF_COEFF; ++j) { // 1/8
-     realDivide(&coeff_deriv[j], &tmp, &tmp2, realContext);
-     realAdd(&coeff_next[j], &tmp2, &coeff_next[j], realContext);
-     if(realIsZero(&coeff_deriv[j])) {
-       break;
-     }
-   }
-
-   coeff_tmpptr = coeff_current;
-   coeff_current = coeff_next;
-   coeff_next = coeff_tmpptr;
-   coeff_tmpptr = NULL;
-  }
-  freeWp43s(coeff_current, COEFF_BUFFER_SIZE);
-  freeWp43s(coeff_deriv  , COEFF_BUFFER_SIZE);
-  freeWp43s(coeff_next   , COEFF_BUFFER_SIZE);
+  else lastErrorCode = ERROR_RAM_FULL;
+  return;
 }
 #undef COEFF_BUFFER_SIZE
 #undef NUMBER_OF_COEFF

@@ -73,7 +73,7 @@ void parallelError(void) {
  * \return void
  ***********************************************/
 void fnParallel(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   parallel[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

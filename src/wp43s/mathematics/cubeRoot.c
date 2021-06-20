@@ -68,7 +68,7 @@ void curtError(void) {
  * \return void
  ***********************************************/
 void fnCubeRoot(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   Curt[getRegisterDataType(REGISTER_X)]();
 

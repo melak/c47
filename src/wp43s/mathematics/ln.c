@@ -68,7 +68,7 @@ void lnError(void) {
  * \return void
  ***********************************************/
 void fnLn(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   ln[getRegisterDataType(REGISTER_X)]();
 

@@ -76,8 +76,14 @@ void fnDropY(uint16_t unusedButMandatoryParameter) {
   }
 
   uint16_t sizeInBlocks = getRegisterFullSize(getStackTop());
-  setRegisterDataPointer(getStackTop() - 1, allocWp43s(sizeInBlocks));
-  xcopy(REGISTER_DATA(getStackTop() - 1), REGISTER_DATA(getStackTop()), TO_BYTES(sizeInBlocks));
+  void *dataPtr = allocWp43s(sizeInBlocks);
+  if(dataPtr) {
+    setRegisterDataPointer(getStackTop() - 1, dataPtr);
+    xcopy(REGISTER_DATA(getStackTop() - 1), REGISTER_DATA(getStackTop()), TO_BYTES(sizeInBlocks));
+  }
+  else {
+    lastErrorCode = ERROR_RAM_FULL;
+  }
 }
 
 
@@ -112,9 +118,9 @@ void fnDisplayStack(uint16_t numberOfStackLines) {
 
 void fnSwapX(uint16_t regist) {
   if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
-    copySourceRegisterToDestRegister(regist, REGISTER_X);
-    copySourceRegisterToDestRegister(TEMP_REGISTER_1, regist);
+    registerHeader_t savedRegisterHeader = globalRegister[REGISTER_X];
+    globalRegister[REGISTER_X] = globalRegister[regist];
+    globalRegister[regist] = savedRegisterHeader;
   }
 
   #ifdef PC_BUILD
@@ -129,9 +135,9 @@ void fnSwapX(uint16_t regist) {
 
 void fnSwapY(uint16_t regist) {
   if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_Y, TEMP_REGISTER_1);
-    copySourceRegisterToDestRegister(regist, REGISTER_Y);
-    copySourceRegisterToDestRegister(TEMP_REGISTER_1, regist);
+    registerHeader_t savedRegisterHeader = globalRegister[REGISTER_Y];
+    globalRegister[REGISTER_Y] = globalRegister[regist];
+    globalRegister[regist] = savedRegisterHeader;
   }
 
   #ifdef PC_BUILD
@@ -145,9 +151,9 @@ void fnSwapY(uint16_t regist) {
 
 void fnSwapZ(uint16_t regist) {
   if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_Z, TEMP_REGISTER_1);
-    copySourceRegisterToDestRegister(regist, REGISTER_Z);
-    copySourceRegisterToDestRegister(TEMP_REGISTER_1, regist);
+    registerHeader_t savedRegisterHeader = globalRegister[REGISTER_Z];
+    globalRegister[REGISTER_Z] = globalRegister[regist];
+    globalRegister[regist] = savedRegisterHeader;
   }
 
   #ifdef PC_BUILD
@@ -161,9 +167,9 @@ void fnSwapZ(uint16_t regist) {
 
 void fnSwapT(uint16_t regist) {
   if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
-    copySourceRegisterToDestRegister(REGISTER_T, TEMP_REGISTER_1);
-    copySourceRegisterToDestRegister(regist, REGISTER_T);
-    copySourceRegisterToDestRegister(TEMP_REGISTER_1, regist);
+    registerHeader_t savedRegisterHeader = globalRegister[REGISTER_T];
+    globalRegister[REGISTER_T] = globalRegister[regist];
+    globalRegister[regist] = savedRegisterHeader;
   }
 
   #ifdef PC_BUILD
@@ -200,8 +206,14 @@ void fnFillStack(uint16_t unusedButMandatoryParameter) {
     freeRegisterData(i);
     setRegisterDataType(i, dataTypeX, tag);
     void *newDataPointer = allocWp43s(dataSizeXinBlocks);
-    setRegisterDataPointer(i, newDataPointer);
-    xcopy(newDataPointer, REGISTER_DATA(REGISTER_X), TO_BYTES(dataSizeXinBlocks));
+    if(newDataPointer) {
+      setRegisterDataPointer(i, newDataPointer);
+      xcopy(newDataPointer, REGISTER_DATA(REGISTER_X), TO_BYTES(dataSizeXinBlocks));
+    }
+    else {
+      lastErrorCode = ERROR_RAM_FULL;
+      return;
+    }
   }
 }
 
@@ -229,10 +241,24 @@ void saveForUndo(void) {
 
   for(calcRegister_t regist=getStackTop(); regist>=REGISTER_X; regist--) {
     copySourceRegisterToDestRegister(regist, SAVED_REGISTER_X - REGISTER_X + regist);
+    if(lastErrorCode == ERROR_RAM_FULL) {
+#ifdef PC_BUILD
+      printf("In function saveForUndo: not enough space for saving register #%" PRId16 "!\n", regist); fflush(stdout);
+#endif // PC_BUILD
+      goto failed;
+    }
   }
 
   copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
+  if(lastErrorCode == ERROR_RAM_FULL) {
+#ifdef PC_BUILD
+    printf("In function saveForUndo: not enough space for saving register L!\n"); fflush(stdout);
+#endif // PC_BUILD
+    goto failed;
+  }
 
+  lrSelectionUndo = lrSelection;  
+  //printf(">>>Storing for UNDO lrSelectionUndo = %i \n",lrSelection);
   if(statisticalSumsPointer == NULL) { // There are no statistical sums to save for undo
     if(savedStatisticalSumsPointer != NULL) {
       freeWp43s(savedStatisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
@@ -240,7 +266,6 @@ void saveForUndo(void) {
     }
   }
   else { // There are statistical sums to save for undo
-    lrSelectionUndo = lrSelection;
     lrChosenUndo = lrChosen;
     if(savedStatisticalSumsPointer == NULL) {
       savedStatisticalSumsPointer = allocWp43s(NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
@@ -249,6 +274,16 @@ void saveForUndo(void) {
   }
 
   thereIsSomethingToUndo = true;
+  return;
+
+failed:
+  for(calcRegister_t regist=getStackTop(); regist>=REGISTER_X; regist--) {
+    clearRegister(SAVED_REGISTER_X - REGISTER_X + regist);
+  }
+  clearRegister(SAVED_REGISTER_L);
+  thereIsSomethingToUndo = false;
+  lastErrorCode = ERROR_RAM_FULL;
+  return;
 }
 
 
@@ -271,6 +306,8 @@ void undo(void) {
 
   copySourceRegisterToDestRegister(SAVED_REGISTER_L, REGISTER_L);
 
+  //printf(">>>UNDOING lrSelection was %i becomes %i\n",lrSelection,lrSelectionUndo);
+  lrSelection = lrSelectionUndo;
   if(savedStatisticalSumsPointer == NULL) { // There are no statistical sums to restore
     if(statisticalSumsPointer != NULL) {
       freeWp43s(statisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
@@ -279,7 +316,6 @@ void undo(void) {
     }
   }
   else { // There are statistical sums to restore
-    lrSelection = lrSelectionUndo;
     lrChosen = lrChosenUndo;
     if(statisticalSumsPointer == NULL) {
       statisticalSumsPointer = allocWp43s(NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);

@@ -799,7 +799,7 @@
       gtk_fixed_put(GTK_FIXED(grid), backgroundImage, 0, 0);
 
       bezelImage = gtk_image_new_from_file("res/artwork/normal.png");
-      gtk_fixed_put(GTK_FIXED(grid), bezelImage, (calcLandscape ? X_LEFT_LANDSCAPE : X_LEFT_PORTRAIT) - 15, calcLandscape ? 4 : 424);
+      gtk_fixed_put(GTK_FIXED(grid), bezelImage, (calcLandscape ? X_LEFT_LANDSCAPE : X_LEFT_PORTRAIT) - 16, calcLandscape ? 4 : 422);
 
       // Areas for the g shifted softkeys
       lblGSoftkeyArea = gtk_label_new("");
@@ -1514,6 +1514,13 @@
 
   void calcModeNim(uint16_t unusedButMandatoryParameter) {
     saveForUndo();
+    if(lastErrorCode == ERROR_RAM_FULL) {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        moreInfoOnError("In function calcModeNim:", "there is not enough memory to save for undo!", NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
 
     calcMode = CM_NIM;
     clearSystemFlag(FLAG_ALPHA);

@@ -910,11 +910,25 @@
           setSystemFlag(FLAG_ASLIFT);
           if(item == ITM_EXIT) {
             saveForUndo();
+            if(lastErrorCode == ERROR_RAM_FULL) {
+              lastErrorCode = 0;
+              temporaryInformation = TI_UNDO_DISABLED;
+              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+                moreInfoOnError("In function addItemToNimBuffer:", "there is not enough memory to save for undo!", NULL, NULL);
+              #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+            }
           }
           return;
         }
         if(item == ITM_EXIT) {
           saveForUndo();
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            lastErrorCode = 0;
+            temporaryInformation = TI_UNDO_DISABLED;
+            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+              moreInfoOnError("In function addItemToNimBuffer:", "there is not enough memory to save for undo!", NULL, NULL);
+            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+          }
         }
         break;
 
@@ -1143,7 +1157,9 @@
     }
 
     else {
-      closeNim();
+      if(item != -MNU_INTS && item != -MNU_BITS) {
+        closeNim();
+      }
       if(calcMode != CM_NIM) {
         if(item == ITM_CONSTpi || (item >= 0 && indexOfItems[item].func == fnConstant)) {
           setSystemFlag(FLAG_ASLIFT);

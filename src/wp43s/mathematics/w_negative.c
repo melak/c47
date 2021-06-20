@@ -64,7 +64,7 @@ void wNegError(void) {
  * \return void
  ***********************************************/
 void fnWnegative(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   WNegative[getRegisterDataType(REGISTER_X)]();
 

@@ -1157,26 +1157,28 @@ static void restoreOneSection(void *stream, uint16_t loadMode) {
       allocateLocalRegisters(numberOfRegs);
     }
 
-    for(i=0; i<numberOfRegs; i++) {
-      readLine(stream, tmpString); // Register number
-      regist = stringToInt16(tmpString + 2) + FIRST_LOCAL_REGISTER;
-      readLine(stream, aimBuffer); // Register data type
-      readLine(stream, tmpString); // Register value
+    if((loadMode != LM_ALL && loadMode != LM_REGISTERS) || lastErrorCode == ERROR_NONE) {
+      for(i=0; i<numberOfRegs; i++) {
+        readLine(stream, tmpString); // Register number
+        regist = stringToInt16(tmpString + 2) + FIRST_LOCAL_REGISTER;
+        readLine(stream, aimBuffer); // Register data type
+        readLine(stream, tmpString); // Register value
 
-      if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
-        restoreRegister(regist, aimBuffer, tmpString);
-        restoreMatrixData(regist, stream);
+        if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
+          restoreRegister(regist, aimBuffer, tmpString);
+          restoreMatrixData(regist, stream);
+        }
+        else {
+          skipMatrixData(aimBuffer, tmpString, stream);
+        }
       }
-      else {
-        skipMatrixData(aimBuffer, tmpString, stream);
-      }
-    }
 
-    if(numberOfRegs > 0) {
-      readLine(stream, tmpString); // LOCAL_FLAGS
-      readLine(stream, tmpString); // LOCAL_FLAGS
-      if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
-        currentLocalFlags->localFlags = stringToUint32(tmpString);
+      if(numberOfRegs > 0) {
+        readLine(stream, tmpString); // LOCAL_FLAGS
+        readLine(stream, tmpString); // LOCAL_FLAGS
+        if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
+          currentLocalFlags->localFlags = stringToUint32(tmpString);
+        }
       }
     }
   }
@@ -1207,10 +1209,12 @@ static void restoreOneSection(void *stream, uint16_t loadMode) {
 
     for(i=0; i<numberOfRegs; i++) {
       readLine(stream, tmpString); // statistical sum
-      if(loadMode == LM_ALL || loadMode == LM_SUMS) {
-        stringToReal(tmpString, (real_t *)(statisticalSumsPointer + REAL_SIZE * i), &ctxtReal75);
+      if(statisticalSumsPointer) { // likely
+        if(loadMode == LM_ALL || loadMode == LM_SUMS) {
+          stringToReal(tmpString, (real_t *)(statisticalSumsPointer + REAL_SIZE * i), &ctxtReal75);
+        }
       }
-    }    
+    }
   }
 
   else if(strcmp(tmpString, "SYSTEM_FLAGS") == 0) {

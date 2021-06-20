@@ -88,7 +88,7 @@ void lnGammaError(void) {
  * \return void
  ***********************************************/
 void fnGamma(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   Gamma[getRegisterDataType(REGISTER_X)]();
 
@@ -105,7 +105,7 @@ void fnGamma(uint16_t unusedButMandatoryParameter) {
  * \return void
  ***********************************************/
 void fnLnGamma(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   lnGamma[getRegisterDataType(REGISTER_X)]();
 

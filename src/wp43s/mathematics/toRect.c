@@ -42,7 +42,7 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
   if((dataTypeX == dtReal34 || dataTypeX == dtLongInteger) && (dataTypeY == dtReal34 || dataTypeY == dtLongInteger)) {
     angularMode_t yAngularMode = getRegisterAngularMode(REGISTER_Y);
 
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+    if(!saveLastX()) return;
 
     switch(dataTypeX) {
       case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39); break;

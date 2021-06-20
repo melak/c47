@@ -69,7 +69,7 @@ void sqrtError(void) {
  * \return void
  ***********************************************/
 void fnSquareRoot(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   Sqrt[getRegisterDataType(REGISTER_X)]();
 

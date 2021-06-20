@@ -64,7 +64,7 @@ void ceilError(void) {
  * \return void
  ***********************************************/
 void fnCeil(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   Ceil[getRegisterDataType(REGISTER_X)]();
 

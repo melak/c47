@@ -70,7 +70,7 @@ void arccosError(void) {
  * \return void
  ***********************************************/
 void fnArccos(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   arccos[getRegisterDataType(REGISTER_X)]();
 

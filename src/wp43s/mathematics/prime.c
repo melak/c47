@@ -198,7 +198,7 @@ void fnNextPrime(uint16_t unusedButMandatoryParameter) {
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   longIntegerSetPositiveSign(currentNumber);
 

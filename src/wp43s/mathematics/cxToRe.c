@@ -44,7 +44,7 @@ void fnCxToRe(uint16_t unusedButMandatoryParameter) {
   uint32_t dataTypeX = getRegisterDataType(REGISTER_X);
 
   if(dataTypeX == dtComplex34) {
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+    if(!saveLastX()) return;
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
 
     setSystemFlag(FLAG_ASLIFT);
@@ -70,29 +70,32 @@ void fnCxToRe(uint16_t unusedButMandatoryParameter) {
     complex34Matrix_t cMat;
     real34Matrix_t rMat, iMat;
 
-    copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+    if(!saveLastX()) return;
 
     linkToComplexMatrixRegister(REGISTER_X, &cMat);
-    realMatrixInit(&rMat, cMat.header.matrixRows, cMat.header.matrixColumns);
-    realMatrixInit(&iMat, cMat.header.matrixRows, cMat.header.matrixColumns);
+    if(realMatrixInit(&rMat, cMat.header.matrixRows, cMat.header.matrixColumns)) {
+      if(realMatrixInit(&iMat, cMat.header.matrixRows, cMat.header.matrixColumns)) {
+        for(uint16_t i = 0; i < cMat.header.matrixRows * cMat.header.matrixColumns; ++i) {
+          if(getSystemFlag(FLAG_POLAR)) { // polar mode
+            real34RectangularToPolar(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), &rMat.matrixElements[i], &iMat.matrixElements[i]);
+            convertAngle34FromTo(&iMat.matrixElements[i], amRadian, currentAngularMode);
+          }
+          else { // rectangular mode
+            real34Copy(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), &rMat.matrixElements[i]);
+            real34Copy(VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), &iMat.matrixElements[i]);
+          }
+        }
 
-    for(uint16_t i = 0; i < cMat.header.matrixRows * cMat.header.matrixColumns; ++i) {
-      if(getSystemFlag(FLAG_POLAR)) { // polar mode
-        real34RectangularToPolar(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), &rMat.matrixElements[i], &iMat.matrixElements[i]);
-        convertAngle34FromTo(&iMat.matrixElements[i], amRadian, currentAngularMode);
+        setSystemFlag(FLAG_ASLIFT);
+        liftStack();
+        convertReal34MatrixToReal34MatrixRegister(&rMat, REGISTER_Y);
+        convertReal34MatrixToReal34MatrixRegister(&iMat, REGISTER_X);
+        realMatrixFree(&iMat);
       }
-      else { // rectangular mode
-        real34Copy(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), &rMat.matrixElements[i]);
-        real34Copy(VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), &iMat.matrixElements[i]);
-      }
+      else lastErrorCode = ERROR_RAM_FULL;
+      realMatrixFree(&rMat);
     }
-
-    setSystemFlag(FLAG_ASLIFT);
-    liftStack();
-    convertReal34MatrixToReal34MatrixRegister(&rMat, REGISTER_Y);
-    convertReal34MatrixToReal34MatrixRegister(&iMat, REGISTER_X);
-    realMatrixFree(&rMat);
-    realMatrixFree(&iMat);
+    else lastErrorCode = ERROR_RAM_FULL;
   }
 #endif // TESTSUITE_BUILD
 

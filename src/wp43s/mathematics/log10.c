@@ -69,7 +69,7 @@ void log10Error(void) {
  * \return void
  ***********************************************/
 void fnLog10(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   logBase10[getRegisterDataType(REGISTER_X)]();
 

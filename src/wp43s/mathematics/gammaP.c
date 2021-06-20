@@ -74,7 +74,7 @@ void gammaPError(void) {
  * \return void
  ***********************************************/
 void fnGammaP(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   GammaP[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

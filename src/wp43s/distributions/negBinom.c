@@ -98,7 +98,7 @@ static bool_t checkParamNegBinom(real_t *x, real_t *i, real_t *j) {
 void fnNegBinomialP(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, num;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamNegBinom(&val, &prob, &num)) {
     if(realIsAnInteger(&val)) pdf_NegBinomial(&val, &prob, &num, &ans, &ctxtReal39);
@@ -122,7 +122,7 @@ void fnNegBinomialP(uint16_t unusedButMandatoryParameter) {
 void fnNegBinomialL(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, num;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamNegBinom(&val, &prob, &num)) {
     cdf_NegBinomial(&val, &prob, &num, &ans, &ctxtReal39);
@@ -145,7 +145,7 @@ void fnNegBinomialL(uint16_t unusedButMandatoryParameter) {
 void fnNegBinomialR(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, num;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamNegBinom(&val, &prob, &num)) {
     cdfu_NegBinomial(&val, &prob, &num, &ans, &ctxtReal39);
@@ -168,7 +168,7 @@ void fnNegBinomialR(uint16_t unusedButMandatoryParameter) {
 void fnNegBinomialI(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, num;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamNegBinom(&val, &prob, &num)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {

@@ -115,7 +115,7 @@ static bool_t checkParamHyper(real_t *x, real_t *i, real_t *j, real_t *k) {
 void fnHypergeometricP(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, samp, batch;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamHyper(&val, &prob, &samp, &batch)) {
     if(realIsAnInteger(&val)) pdf_Hypergeometric(&val, &prob, &samp, &batch, &ans, &ctxtReal39);
@@ -139,7 +139,7 @@ void fnHypergeometricP(uint16_t unusedButMandatoryParameter) {
 void fnHypergeometricL(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, samp, batch;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamHyper(&val, &prob, &samp, &batch)) {
     cdf_Hypergeometric(&val, &prob, &samp, &batch, &ans, &ctxtReal75);
@@ -162,7 +162,7 @@ void fnHypergeometricL(uint16_t unusedButMandatoryParameter) {
 void fnHypergeometricR(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, samp, batch;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamHyper(&val, &prob, &samp, &batch)) {
     cdfu_Hypergeometric(&val, &prob, &samp, &batch, &ans, &ctxtReal75);
@@ -185,7 +185,7 @@ void fnHypergeometricR(uint16_t unusedButMandatoryParameter) {
 void fnHypergeometricI(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, samp, batch;
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   if(checkParamHyper(&val, &prob, &samp, &batch)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {

@@ -82,7 +82,7 @@ void xthRootError(void) {
  * \return void
  ***********************************************/
 void fnXthRoot(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   xthRoot[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

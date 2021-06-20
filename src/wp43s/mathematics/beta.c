@@ -71,7 +71,7 @@ void betaError(void) {
  * \return void
  ***********************************************/
 void fnBeta(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   beta[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

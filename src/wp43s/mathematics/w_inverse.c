@@ -64,7 +64,7 @@ void wInvError(void) {
  * \return void
  ***********************************************/
 void fnWinverse(uint16_t unusedButMandatoryParameter) {
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  if(!saveLastX()) return;
 
   WInverse[getRegisterDataType(REGISTER_X)]();
 

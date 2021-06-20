@@ -204,4 +204,11 @@ void           fnToReal                        (uint16_t unusedButMandatoryParam
   void    printRegisterToString           (calcRegister_t regist, char *registerContent);
 #endif // TESTSUITE_BUILD
 
+  /********************************************//**
+   * \brief Save register X to register X
+   *
+   * \return true if succeeded
+   ***********************************************/
+  bool_t  saveLastX                       (void);
+
 #endif // REGISTERS_H

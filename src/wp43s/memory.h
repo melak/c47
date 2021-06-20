@@ -49,4 +49,8 @@ bool_t  isMemoryBlockAvailable(size_t sizeInBlocks);
   void ramDump(void);
 #endif // PC_BUILD
 
+// The following macros are for avoid crash in case that the memory is full. The corresponding label `cleanup_***` is needed AFTER freeing the memory.
+#define checkedAllocate2(var, size, label) var = allocWp43s(size); if(!var) {lastErrorCode = ERROR_RAM_FULL; goto label;}
+#define checkedAllocate(var, size) checkedAllocate2(var, size, cleanup_##var)
+
 #endif // MEMORY_H
