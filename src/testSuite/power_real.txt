@@ -1,8 +1,8 @@
 ;*************************************************************
 ;*************************************************************
 ;**                                                         **
-;**                    REAL34 ^ ...                         **
-;**                    ... ^ REAL34                         **
+;**                    REAL ^ ...                           **
+;**                    ... ^ REAL                           **
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
@@ -12,21 +12,21 @@ Func: fnPower
 
 
 ;==================================================================
-; Real34  ^ Long Integer      see in power_longInteger.txt
-; Real34  ^ Real16            see in power_real16.txt
-; Real34  ^ Complex16         see in power_complex16.txt
-; Real34  ^ Time              see in power_time.txt
-; Real34  ^ Date              see in power_date.txt
-; Real34  ^ String            see in power_string.txt
-; Real34  ^ Real16 Matrix     see in power_real16Matrix.txt
-; Real34  ^ Complex16 Matrix  see in power_complex16Matrix.txt
-; Real34  ^ Short Integer     see in power_shortInteger.txt
+; Real  ^ Long Integer      see in power_longInteger.txt
+; Real  ^ Real              see in power_real.txt
+; Real  ^ Complex           see in power_complex.txt
+; Real  ^ Time              see in power_time.txt
+; Real  ^ Date              see in power_date.txt
+; Real  ^ String            see in power_string.txt
+; Real  ^ Real Matrix       see in power_realMatrix.txt
+; Real  ^ Complex Matrix    see in power_complexMatrix.txt
+; Real  ^ Short Integer     see in power_shortInteger.txt
 ;==================================================================
 
 
 
 ;=======================================
-; Real34 ^ Real34 --> Real34
+; Real ^ Real --> Real
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RY=Real:"1.254554312028456" RX=Real:"123.456"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"123.456" RX=Real:"1442499588942.7648914982985183005495382299730804289548098958693"
@@ -259,7 +259,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"2.7":MULTPI RX=Real:"28.3899513389477
 
 
 ;=======================================
-; Real34 ^ Complex34 --> Complex34
+; Real ^ Complex --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RY=Real:"1.254" RX=Cplx:"123.456 i -6.78"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"123.456 i -6.78" RX=Cplx:"49464587020.21163627248839112076333703695337165708528494391301 i -1365009593447.0712449431536510438868748447615151290565406823152"
@@ -268,7 +268,7 @@ In:  FL_ASLIFT=0 FL_CPXRES=0 RY=Real:"1.254":DEG RX=Cplx:"1.23456 i -6.78"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"1.23456 i -6.78" RX=Cplx:"0.047888135536504034575377391279415596380094194470740482592417863 i -1.3215063211366105645701185457387635616107619349016956586274085"
 
 ;=======================================
-; Complex34 ^ Real34 --> Complex34
+; Complex ^ Real --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RY=Cplx:"123.456 i -6.78" RX=Real:"1.254"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"1.254" RX=Cplx:"419.32206511002553136776271090630529935408444219843452313361978 i -28.894332324191746693523649385779246781101703902081150231351406"

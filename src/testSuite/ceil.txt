@@ -51,13 +51,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; ceil(Real16 Matrix)
+; ceil(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; ceil(Complex16 Matrix) --> Error24
+; ceil(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -71,7 +71,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"5#7"
 
 
 ;=======================================
-; ceil(Real34) --> Long Integer
+; ceil(Real) --> Long Integer
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.0001" RX=LonI:"1"
@@ -117,7 +117,7 @@ Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-inf":RAD
 
 
 ;=======================================
-; ceil(Complex34) --> Error24
+; ceil(Complex) --> Error24
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"1 i 1"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"1 i 1"

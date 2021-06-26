@@ -154,6 +154,7 @@ void fnIsPrime(uint16_t unusedButMandatoryParameter) {
       sprintf(errorMessage, "the input type %s is not allowed for PRIME?!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false));
       moreInfoOnError("In function fnIsPrime:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return;
   }
 
   longIntegerSetPositiveSign(primeCandidate);

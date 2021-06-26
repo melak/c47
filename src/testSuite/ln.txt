@@ -11,7 +11,7 @@ Func: fnLn
 
 
 ;=======================================
-; ln(Long Integer) --> Real34
+; ln(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=Real:"1.6094379124341003746007593332261876395256013542685177219126479"
@@ -54,19 +54,19 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; ln(Real16 Matrix)
+; ln(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; ln(Complex16 Matrix)
+; ln(Complex Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; ln(Short Integer) --> Real34
+; ln(Short Integer) --> Real
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"5#7"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"5#7" RX=Real:"1.6094379124341003746007593332261876395256013542685177219126479"
@@ -74,7 +74,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"5#7" RX=Real:"1.609437912434100374600
 
 
 ;=======================================
-; ln(Real34) --> Real34
+; ln(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"0.0001"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.0001" RX=Real:"-9.2103403719761827360719658187374568304044059545150919041333116"
@@ -144,7 +144,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-inf":RAD RX=Real:"NaN"
 
 
 ;=======================================
-; ln(Complex34) --> Complex34
+; ln(Complex) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"6.2 i -7.6" RX=Cplx:"2.2832146788358304029104118896852890645898720888296627790756552 i -0.88650153513374682918073902244235637563185763987701679851894587"

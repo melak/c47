@@ -51,11 +51,11 @@ TO_QSPI void (* const arctan[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void arctanError(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void arctanError(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot calculate arctan for %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnArctan:", errorMessage, NULL, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 
@@ -105,13 +105,13 @@ void arctanReal(void) {
   if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(getSystemFlag(FLAG_SPCRES)) {
       if(real34IsPositive(REGISTER_REAL34_DATA(REGISTER_X))) {
-        realToReal34(const_1on2, REGISTER_REAL34_DATA(REGISTER_X));
+        realToReal34(const_90, REGISTER_REAL34_DATA(REGISTER_X));
       }
       else {
-        realToReal34(const_1on2, REGISTER_REAL34_DATA(REGISTER_X));
+        realToReal34(const_90, REGISTER_REAL34_DATA(REGISTER_X));
         real34SetNegativeSign(REGISTER_REAL34_DATA(REGISTER_X));
       }
-      convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amMultPi, currentAngularMode);
+      convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amDegree, currentAngularMode);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);

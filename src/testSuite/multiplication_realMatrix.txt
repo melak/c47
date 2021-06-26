@@ -1,8 +1,8 @@
 ;*************************************************************
 ;*************************************************************
 ;**                                                         **
-;**                  REAL16 MATRIX x ...                    **
-;**                  ... x REAL16 MATRIX                    **
+;**                  REAL MATRIX x ...                      **
+;**                  ... x REAL MATRIX                      **
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
@@ -12,56 +12,56 @@ Func: fnMultiply
 
 
 ;==================================================================
-; Real16 Matrix x Long Integer  see in multiplication_longInteger.txt
-; Real16 Matrix x Real16        see in multiplication_real16.txt
-; Real16 Matrix x Complex16     see in multiplication_complex16.txt
-; Real16 Matrix x Time          see in multiplication_time.txt
-; Real16 Matrix x Date          see in multiplication_date.txt
-; Real16 Matrix x String        see in multiplication_string.txt
+; Real Matrix x Long Integer  see in multiplication_longInteger.txt
+; Real Matrix x Real          see in multiplication_real.txt
+; Real Matrix x Complex       see in multiplication_complex.txt
+; Real Matrix x Time          see in multiplication_time.txt
+; Real Matrix x Date          see in multiplication_date.txt
+; Real Matrix x String        see in multiplication_string.txt
 ;==================================================================
 
 
 
 ;=======================================
-; Real16 Matrix x Real16 Matrix
+; Real Matrix x Real Matrix
 ;=======================================
 
 
 
 ;=======================================
-; Real16 Matrix x Complex16 Matrix
+; Real Matrix x Complex Matrix
 ;=======================================
 
 ;=======================================
-; Complex16 Matrix x Real16 Matrix
-;=======================================
-
-
-
-;=======================================
-; Real16 Matrix x Short Integer
-;=======================================
-
-;=======================================
-; Short Integer x Real16 Matrix
+; Complex Matrix x Real Matrix
 ;=======================================
 
 
 
 ;=======================================
-; Real16 Matrix x Real34
+; Real Matrix x Short Integer
 ;=======================================
 
 ;=======================================
-; Real34 x Real16 Matrix
+; Short Integer x Real Matrix
 ;=======================================
 
 
 
 ;=======================================
-; Real16 Matrix x Complex34
+; Real Matrix x Real
 ;=======================================
 
 ;=======================================
-; Complex34 x Real16 Matrix
+; Real x Real Matrix
+;=======================================
+
+
+
+;=======================================
+; Real Matrix x Complex
+;=======================================
+
+;=======================================
+; Complex x Real Matrix
 ;=======================================

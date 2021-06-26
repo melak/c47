@@ -12,7 +12,7 @@ Func: fnParallel
 
 
 ;=======================================
-; Long Integer || Long Integer --> Real34
+; Long Integer || Long Integer --> Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=LonI:"0" RX=LonI:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"0" RX=Real:"0"
@@ -60,11 +60,11 @@ Out: EC=24 FL_ASLIFT=0 RX=LonI:"-1234"
 
 
 ;=======================================
-; Long Integer || Real16 Matrix --> Error 24
+; Long Integer || Real Matrix --> Error 24
 ;=======================================
 
 ;=======================================
-; Real16 Matrix || Long Integer --> Error 24
+; Real Matrix || Long Integer --> Error 24
 ;=======================================
 
 
@@ -84,7 +84,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RY=ShoI:"45247#8" RX=LonI:"123456"
 
 
 ;=======================================
-; Long Integer || Real34 --> Real34
+; Long Integer || Real --> Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=LonI:"0" RX=Real:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0" RX=Real:"0"
@@ -105,7 +105,7 @@ In:  FL_ASLIFT=0 RY=LonI:"2200" RX=Real:"4700":GRAD
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"4700":GRAD RX=Real:"1498.5507246376811594202898550724637681159420289855072463768116"
 
 ;=======================================
-; Real34 || Long Integer --> Real34
+; Real || Long Integer --> Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=Real:"0" RX=LonI:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"0" RX=Real:"0"
@@ -128,7 +128,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"4700" RX=Real:"1498.55072463768115942
 
 
 ;=======================================
-; Long Integer || Complex34 --> Complex34
+; Long Integer || Complex --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RY=LonI:"0" RX=Cplx:"0 i 0"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"0 i 0" RX=Cplx:"0 i 0"
@@ -137,7 +137,7 @@ In:  FL_ASLIFT=0 FL_CPXRES=0 RY=LonI:"7" RX=Cplx:"2 i -1"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"2 i -1" RX=Cplx:"1.6219512195121951219512195121951219512195121951219512195121951 i -0.5975609756097560975609756097560975609756097560975609756097561"
 
 ;=======================================
-; Complex34 || Long Integer --> Complex34
+; Complex || Long Integer --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RY=Cplx:"0 i 0" RX=LonI:"0"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=LonI:"0" RX=Cplx:"0 i 0"

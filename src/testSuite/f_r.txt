@@ -11,7 +11,7 @@ Func: fnF_R
 
 
 ;=======================================
-; F_R(Long Integer) --> Real34
+; F_R(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=LonI:"1" RJ=LonI:"1" RX=LonI:"1"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"1" RX=Real:"0.5"
@@ -56,13 +56,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; F_R(Real16 Matrix) --> Error24
+; F_R(Real Matrix) --> Error24
 ;=======================================
 
 
 
 ;=======================================
-; F_R(Complex16 Matrix) --> Error24
+; F_R(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -74,7 +74,7 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; F_R(Real34) --> Real34
+; F_R(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=Real:"1" RJ=Real:"1" RX=Real:"1"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"1" RX=Real:"0.5"
@@ -99,5 +99,5 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"2" RX=Real:"0.30154736269507582664692
 
 
 ;=======================================
-; F_R(Complex34) --> Error24
+; F_R(Complex) --> Error24
 ;=======================================

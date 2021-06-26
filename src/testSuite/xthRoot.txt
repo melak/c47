@@ -103,26 +103,26 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"200#10" RX=Real:"1.003471748509502787
 
 
 ;=======================================|
-; Short Integer ^1/ Complex34 --> Complex34
+; Short Integer ^1/ Complex --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=1 RY=ShoI:"12540#10" RX=Cplx:"123.456 i -6.78"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"123.456 i -6.78" RX=Cplx:"1.07917729301867489609488461514464293723542971993291841 i 0.00451660308587583794580974584080182534836938382184214842"
 
 ;=======================================|
-; Complex34 ^1/ Short Integer --> Complex34
+; Complex ^1/ Short Integer --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=1 IM=2COMPL RY=Cplx:"123456 i -546" RX=ShoI:"45247#8" ;RX=19111
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=ShoI:"45247#8" RX=Cplx:"1.000613638561536999506741789473071814987215326513110 i -2.315584400465312112253469384941949568785154073686016E-7"
 
 
 ;=======================================|
-; Long Integer ^1/ Complex34 --> Complex34
+; Long Integer ^1/ Complex --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=1 RY=Loni:"12540" RX=Cplx:"123.456 i -6.78"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"123.456 i -6.78" RX=Cplx:"1.07917729301867489609488461514464293723542971993291841 i 0.00451660308587583794580974584080182534836938382184214842"
 
 ;=======================================|
-; Complex34 ^1/ Long Integer --> Complex34
+; Complex ^1/ Long Integer --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=1 IM=2COMPL RY=Cplx:"123456 i -546" RX=LonI:"19111"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=LonI:"19111" RX=Cplx:"1.000613638561536999506741789473071814987215326513110 i -2.315584400465312112253469384941949568785154073686016E-7"
@@ -339,7 +339,7 @@ In: FL_CPXRES=0 FL_SPCRES=0
 
 
 ;=======================================|
-; Complex34 ^1/ Complex34 --> Complex34
+; Complex ^1/ Complex --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=1 RY=Cplx:"12540 i 0" RX=Cplx:"123.456 i -6.78"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"123.456 i -6.78" RX=Cplx:"1.07917729301867489609488461514464293723542971993291841 i 0.00451660308587583794580974584080182534836938382184214842"
@@ -372,7 +372,7 @@ In: FL_CPXRES=0 FL_SPCRES=0
 
 
 ;=======================================|
-; Real ^1/ Complex34 --> Complex34
+; Real ^1/ Complex --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=1 RY=Real:"12540" RX=Cplx:"123.456 i -6.78"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"123.456 i -6.78" RX=Cplx:"1.07917729301867489609488461514464293723542971993291841 i 0.00451660308587583794580974584080182534836938382184214842"
@@ -383,7 +383,7 @@ Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"123.456 i -6.78" RX=Cplx:"1.138905068
 
 
 ;=======================================|
-; Complex34 ^1/ Real --> Complex34
+; Complex ^1/ Real --> Complex
 ;=======================================
 
 

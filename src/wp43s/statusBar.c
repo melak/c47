@@ -103,7 +103,7 @@
       case amRadian: showGlyph(STD_SUP_r,              &standardFont, x, 0, vmNormal, true, false); // r  is 0+6 pixel wide
                       break;
 
-      case amMultPi: showGlyph(STD_pi,                     &standardFont, x, 0, vmNormal, true, false); // pi is 0+9 pixel wide
+      case amMultPi: showGlyph(STD_pi,                 &standardFont, x, 0, vmNormal, true, false); // pi is 0+9 pixel wide
                       break;
 
       case amGrad:   showGlyph(STD_SUP_g,              &standardFont, x, 0, vmNormal, true, false); // g  is 0+6 pixel wide

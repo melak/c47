@@ -31,6 +31,8 @@ void     fnCvtDegToRad               (uint16_t unusedButMandatoryParameter);
 void     fnCvtDegToDms               (uint16_t unusedButMandatoryParameter);
 void     fnCvtDmsToDeg               (uint16_t unusedButMandatoryParameter);
 void     fnCvtRadToDeg               (uint16_t unusedButMandatoryParameter);
+void     fnCvtRadToMultPi            (uint16_t unusedButMandatoryParameter);
+void     fnCvtMultPiToRad            (uint16_t unusedButMandatoryParameter);
 void     convertAngle34FromTo        (real34_t *angle34, angularMode_t fromAngularMode, angularMode_t toAngularMode);
 void     convertAngleFromTo          (real_t *angle, angularMode_t fromAngularMode, angularMode_t toAngularMode, realContext_t *realContext);
 void     checkDms34                  (real34_t *angle34Dms);

@@ -9,11 +9,11 @@ In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
 Func: fnConjugate
 
 ;=======================================
-; conj(Complex16 Matrix)
+; conj(Complex Matrix)
 ;=======================================
 
 ;=======================================
-; conj(Complex34)
+; conj(Complex)
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"45.25 i -3.459"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"45.25 i 3.459"

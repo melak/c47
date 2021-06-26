@@ -11,7 +11,7 @@ Func: fnLnGamma
 
 
 ;=======================================
-; lnGamma(Long Integer) --> Real34
+; lnGamma(Long Integer) --> Real
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"46"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"46" RX=Real:"129.12393363912721488259862823028683374334758134171685052219397"
@@ -45,13 +45,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; lnGamma(Real16 Matrix)
+; lnGamma(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; lnGamma(Complex16 Matrix)
+; lnGamma(Complex Matrix)
 ;=======================================
 
 
@@ -65,7 +65,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"5#8"
 
 
 ;=======================================
-; lnGamma(Real34) --> Real34
+; lnGamma(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.5" RX=Real:"0.572364942924700087071713675676529355823647406457655785756811535736"
@@ -103,7 +103,7 @@ Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"-4.32564":GRAD RX=Cplx:"-2.3770512986
 
 
 ;=======================================
-; lnGamma(Complex34) --> Complex34
+; lnGamma(Complex) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"6.2 i -7.6" RX=Cplx:"1.00122389689096948452926975677791564142114904628972611966058 i -21.08209348332617000019537949212689" ; Result from WP34S

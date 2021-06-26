@@ -11,7 +11,7 @@ Func: fnBn
 
 
 ;=======================================
-; Bn(Long Integer) --> Real34
+; Bn(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"0" RX=Real:"1"
@@ -63,13 +63,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; Bn(Real16 Matrix) --> Error24
+; Bn(Real Matrix) --> Error24
 ;=======================================
 
 
 
 ;=======================================
-; Bn(Complex16 Matrix) --> Error24
+; Bn(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -81,7 +81,7 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; Bn(Real34) --> Real34
+; Bn(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0" RX=Real:"1"
@@ -113,5 +113,5 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"20" RX=Real:"-529.1242424242424242424
 
 
 ;=======================================
-; Bn(Complex34) --> Error24
+; Bn(Complex) --> Error24
 ;=======================================

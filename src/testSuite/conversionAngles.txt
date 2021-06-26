@@ -17,7 +17,7 @@ Func: fnCvtDegToRad
 
 
 ;=======================================
-; Deg->Rad(Long Integer) --> Real34
+; Deg->Rad(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=Real:"0.087266462599716478846184538424430635672143594427086272804859572":RAD
@@ -46,13 +46,13 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"-5" RX=Real:"-0.087266462599716478846
 
 
 ;=======================================
-; Deg->Rad(Real16 Matrix) --> Error
+; Deg->Rad(Real Matrix) --> Error
 ;=======================================
 
 
 
 ;=======================================
-; Deg->Rad(Complex16 Matrix) --> Error
+; Deg->Rad(Complex Matrix) --> Error
 ;=======================================
 
 
@@ -66,7 +66,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0
 
 
 ;=======================================
-; Deg->Rad(Real34) --> Real34
+; Deg->Rad(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"87.654321"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"87.654321" RX=Real:"1.5298565050500085491546338312583754362880250768011262502261463":RAD
@@ -86,7 +86,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-23.456789":GRAD
 
 
 ;=======================================
-; Deg->Rad(Complex34) --> Error
+; Deg->Rad(Complex) --> Error
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"1 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0
@@ -101,7 +101,7 @@ Func: fnCvtRadToDeg
 
 
 ;=======================================
-; Rad->Deg(Long Integer) --> Real34
+; Rad->Deg(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=Real:"286.47889756541160438399077407052585166202736233282160774580122":DEG
@@ -130,13 +130,13 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"-5" RX=Real:"-286.4788975654116043839
 
 
 ;=======================================
-; Rad->Deg(Real16 Matrix) --> Error
+; Rad->Deg(Real Matrix) --> Error
 ;=======================================
 
 
 
 ;=======================================
-; Rad->Deg(Complex16 Matrix) --> Error
+; Rad->Deg(Complex Matrix) --> Error
 ;=======================================
 
 
@@ -150,7 +150,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0
 
 
 ;=======================================
-; Rad->Deg(Real34) --> Real34
+; Rad->Deg(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"87.654321"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"87.654321" RX=Real:"5022.2226493849414535598669142832699280763459857408908082173093":DEG
@@ -170,7 +170,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-23.456789":GRAD
 
 
 ;=======================================
-; Rad->Deg(Complex34) --> Error
+; Rad->Deg(Complex) --> Error
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"1 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0
@@ -185,7 +185,7 @@ Func: fnCvtDegToDms
 
 
 ;=======================================
-; Deg->Dms(Long Integer) --> Real34
+; Deg->Dms(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=Real:"5":DMS
@@ -214,13 +214,13 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"-5" RX=Real:"-5":DMS
 
 
 ;=======================================
-; Deg->Dms(Real16 Matrix) --> Error
+; Deg->Dms(Real Matrix) --> Error
 ;=======================================
 
 
 
 ;=======================================
-; Deg->Dms(Complex16 Matrix) --> Error
+; Deg->Dms(Complex Matrix) --> Error
 ;=======================================
 
 
@@ -234,7 +234,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0
 
 
 ;=======================================
-; Deg->Dms(Real34) --> Real34
+; Deg->Dms(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"87.654321"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"87.654321" RX=Real:"87.654321":DMS
@@ -254,7 +254,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-23.456789":GRAD
 
 
 ;=======================================
-; Deg->Dms(Complex34) --> Error
+; Deg->Dms(Complex) --> Error
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"1 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0
@@ -269,7 +269,7 @@ Func: fnCvtDmsToDeg
 
 
 ;=======================================
-; Dms->Deg(Long Integer) --> Real34
+; Dms->Deg(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=Real:"5":DEG
@@ -297,13 +297,13 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"-5" RX=Real:"-5":DEG
 
 
 ;=======================================
-; Dms->Deg(Real16 Matrix) --> Error
+; Dms->Deg(Real Matrix) --> Error
 ;=======================================
 
 
 
 ;=======================================
-; Dms->Deg(Complex16 Matrix) --> Error
+; Dms->Deg(Complex Matrix) --> Error
 ;=======================================
 
 
@@ -317,7 +317,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0
 
 
 ;=======================================
-; Dms->Deg(Real34) --> Real34
+; Dms->Deg(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"87.39155556"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"87.39155556" RX=Real:"87.654321":DEG
@@ -337,7 +337,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-23.456789":GRAD
 
 
 ;=======================================
-; Dms->Deg(Complex34) --> Error
+; Dms->Deg(Complex) --> Error
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"1 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0

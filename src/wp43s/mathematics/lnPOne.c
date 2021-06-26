@@ -52,11 +52,11 @@ TO_QSPI void (* const lnP1[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void lnP1Error(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void lnP1Error(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot calculate Ln(1 + x) for %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnLnP1:", errorMessage, NULL, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 

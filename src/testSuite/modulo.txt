@@ -90,7 +90,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=ShoI:"4#11"
 
 
 ;=======================================
-; Long Integer Mod Real34 --> Real34
+; Long Integer Mod Real --> Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=LonI:"25" RX=Real:"7"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"7" RX=Real:"4"
@@ -195,7 +195,7 @@ In:  AM=MULTPI FL_CPXRES=0 FL_ASLIFT=0 RY=LonI:"2" RX=Real:"3.453099789":MULTPI
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3.453099789":MULTPI RX=Real:"2"
 
 ;=======================================
-; Real34 Mod Long Integer --> Real34
+; Real Mod Long Integer --> Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=Real:"25" RX=LonI:"7"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"7" RX=Real:"4"
@@ -322,7 +322,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"10000#2" RX=ShoI:"12#10"
 
 
 ;=======================================
-; Short Integer Mod Real34 --> Real34
+; Short Integer Mod Real --> Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=ShoI:"25#10" RX=Real:"7"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"7" RX=Real:"4"
@@ -427,7 +427,7 @@ In:  AM=MULTPI FL_CPXRES=0 FL_ASLIFT=0 RY=ShoI:"2#13" RX=Real:"3.453099789":MULT
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3.453099789":MULTPI RX=Real:"2"
 
 ;=======================================
-; Real34 Mod Short Integer --> Real34
+; Real Mod Short Integer --> Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=Real:"25" RX=ShoI:"7#10"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"7#10" RX=Real:"4"
@@ -534,7 +534,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"2#13" RX=Real:"1.453099789"
 
 
 ;=======================================
-; Real34 Mod Real34 --> Real34
+; Real Mod Real --> Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=Real:"25" RX=Real:"7"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"7" RX=Real:"4"

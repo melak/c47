@@ -11,7 +11,7 @@ Func: fnNormalI
 
 
 ;=======================================
-; normalI(Long Integer) --> Real34
+; normalI(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=LonI:"0" RJ=LonI:"1" RX=Real:"0.5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.5" RX=Real:"0"
@@ -57,13 +57,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; normalI(Real16 Matrix) --> Error24
+; normalI(Real Matrix) --> Error24
 ;=======================================
 
 
 
 ;=======================================
-; normalI(Complex16 Matrix) --> Error24
+; normalI(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -75,7 +75,7 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; normalI(Real34) --> Real34
+; normalI(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=Real:"0" RJ=Real:"1" RX=Real:"0.5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.5" RX=Real:"0"
@@ -100,5 +100,5 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.75" RX=Real:"2.34897950039216348640
 
 
 ;=======================================
-; normalI(Complex34) --> Error24
+; normalI(Complex) --> Error24
 ;=======================================

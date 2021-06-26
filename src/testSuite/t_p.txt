@@ -11,7 +11,7 @@ Func: fnT_P
 
 
 ;=======================================
-; T_P(Long Integer) --> Real34
+; T_P(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=LonI:"1" RX=LonI:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"0" RX=Real:"0.3183098861837906715377675267450287"
@@ -101,13 +101,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; T_P(Real16 Matrix) --> Error24
+; T_P(Real Matrix) --> Error24
 ;=======================================
 
 
 
 ;=======================================
-; T_P(Complex16 Matrix) --> Error24
+; T_P(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -119,7 +119,7 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; T_P(Real34) --> Real34
+; T_P(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=Real:"1" RX=Real:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0" RX=Real:"0.3183098861837906715377675267450287"
@@ -189,5 +189,5 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-3" RX=Real:"0.0229720373092413353963
 
 
 ;=======================================
-; T_P(Complex34) --> Error24
+; T_P(Complex) --> Error24
 ;=======================================

@@ -64,12 +64,12 @@ TO_QSPI void (* const xthRoot[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_D
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void xthRootError(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void xthRootError(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot obtain xthRoot of %s", getRegisterDataTypeName(REGISTER_Y, true, false));
     sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "to %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnRoot:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 
@@ -504,11 +504,11 @@ void xthRootCplxLonI(void) {
 /******************************************************************************************************************************************************************************************/
 
 /******************************************************************************************************************************************************************************************/
-/* real16 matrix ^ ...                                                                                                                                                                    */
+/* real34 matrix ^ ...                                                                                                                                                                    */
 /******************************************************************************************************************************************************************************************/
 
 /********************************************//**
- * \brief Y(real16 matrix) ^ 1/X(long integer) ==> X(real16 matrix)
+ * \brief Y(real34 matrix) ^ 1/X(long integer) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -520,7 +520,7 @@ void xthRootRemaLonI(void) {
 
 
 /********************************************//**
- * \brief Y(real16 matrix) ^ 1/X(short integer) ==> X(real16 matrix)
+ * \brief Y(real34 matrix) ^ 1/X(short integer) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -532,7 +532,7 @@ void xthRootRemaShoI(void) {
 
 
 /********************************************//**
- * \brief Y(real16 matrix) ^ 1/X(real34) ==> X(real16 matrix)
+ * \brief Y(real34 matrix) ^ 1/X(real34) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -544,7 +544,7 @@ void xthRootRemaReal(void) {
 
 
 /********************************************//**
- * \brief Y(real16 matrix) ^ 1/X(complex34) ==> X(complex16 matrix)
+ * \brief Y(real34 matrix) ^ 1/X(complex34) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -559,11 +559,11 @@ void xthRootRemaCplx(void) {
 
 
 /******************************************************************************************************************************************************************************************/
-/* complex16 matrix ^ ...                                                                                                                                                                 */
+/* complex34 matrix ^ ...                                                                                                                                                                 */
 /******************************************************************************************************************************************************************************************/
 
 /********************************************//**
- * \brief Y(complex16 matrix) ^ 1/X(long integer) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) ^ 1/X(long integer) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -575,7 +575,7 @@ void xthRootCxmaLonI(void) {
 
 
 /********************************************//**
- * \brief Y(complex16 matrix) ^ 1/X(short integer) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) ^ 1/X(short integer) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -587,7 +587,7 @@ void xthRootCxmaShoI(void) {
 
 
 /********************************************//**
- * \brief Y(complex16 matrix) ^ 1/X(real34) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) ^ 1/X(real34) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -599,7 +599,7 @@ void xthRootCxmaReal(void) {
 
 
 /********************************************//**
- * \brief Y(complex16 matrix) ^ 1/X(complex34) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) ^ 1/X(complex34) ==> X(complex34 matrix)
  *
  * \param void
  * \return void

@@ -53,11 +53,11 @@ TO_QSPI void (* const arccos[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void arccosError(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void arccosError(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot calculate arccos for %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnArccos:", errorMessage, NULL, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 
@@ -106,13 +106,13 @@ void arccosLonI(void) {
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, currentAngularMode);
 
   if(realIsZero(&x)) {
-    realToReal34(const_1on2, REGISTER_REAL34_DATA(REGISTER_X));
-    convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amMultPi, currentAngularMode);
+    realToReal34(const_90, REGISTER_REAL34_DATA(REGISTER_X));
+    convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amDegree, currentAngularMode);
   }
   else {
     if(realIsNegative(&x)) {
-      realToReal34(const_1, REGISTER_REAL34_DATA(REGISTER_X));
-      convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amMultPi, currentAngularMode);
+      realToReal34(const_180, REGISTER_REAL34_DATA(REGISTER_X));
+      convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amDegree, currentAngularMode);
     }
     else{
       real34Zero(REGISTER_REAL34_DATA(REGISTER_X));
@@ -172,34 +172,34 @@ void arccosCplx(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &a);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &b);
 
-  // arccos(z) = -i.ln(z + sqrt(z² - 1))
-  // calculate z²   real part
+  // arccos(z) = -i.ln(z + sqrt(zï¿½ - 1))
+  // calculate zï¿½   real part
   realMultiply(&b, &b, &real, &ctxtReal39);
   realChangeSign(&real);
   realFMA(&a, &a, &real, &real, &ctxtReal39);
 
-  // calculate z²   imaginary part
+  // calculate zï¿½   imaginary part
   realMultiply(&a, &b, &imag, &ctxtReal39);
   realMultiply(&imag, const_2, &imag, &ctxtReal39);
 
-  // calculate z² - 1
+  // calculate zï¿½ - 1
   realSubtract(&real, const_1, &real, &ctxtReal39);
 
-  // calculate sqrt(z² - 1)
+  // calculate sqrt(zï¿½ - 1)
   realRectangularToPolar(&real, &imag, &real, &imag, &ctxtReal39);
   realSquareRoot(&real, &real, &ctxtReal39);
   realMultiply(&imag, const_1on2, &imag, &ctxtReal39);
   realPolarToRectangular(&real, &imag, &real, &imag, &ctxtReal39);
 
-  // calculate z + sqrt(z² - 1)
+  // calculate z + sqrt(zï¿½ - 1)
   realAdd(&a, &real, &real, &ctxtReal39);
   realAdd(&b, &imag, &imag, &ctxtReal39);
 
-  // calculate ln(z + sqtr(z² - 1))
+  // calculate ln(z + sqtr(zï¿½ - 1))
   realRectangularToPolar(&real, &imag, &a, &b, &ctxtReal39);
   WP34S_Ln(&a, &a, &ctxtReal39);
 
-  // calculate = -i.ln(z + sqtr(z² - 1))
+  // calculate = -i.ln(z + sqtr(zï¿½ - 1))
   realChangeSign(&a);
 
   realToReal34(&b, REGISTER_REAL34_DATA(REGISTER_X));

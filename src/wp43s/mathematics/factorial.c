@@ -49,11 +49,11 @@ TO_QSPI void (* const fact[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void factError(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void factError(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot calculate x! for %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnFactorial:", errorMessage, NULL, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 
@@ -106,7 +106,7 @@ void factLonI(void) {
   uint32_t n;
   longIntegerToUInt(x, n);
   #ifdef LINUX
-    //The more precise formula below is: (n*ln(n) - n + (ln(8n³ + 4n² + n + 1/30))/6 + ln(pi)/2) / ln(2)
+    //The more precise formula below is: (n*ln(n) - n + (ln(8nï¿½ + 4nï¿½ + n + 1/30))/6 + ln(pi)/2) / ln(2)
     longIntegerInitSizeInBits(f, 1 + (uint32_t)((n * log(n) - n) / log(2)));
     uIntToLongInteger(1, f);
     for(uint32_t i=2; i<=n; i++) {

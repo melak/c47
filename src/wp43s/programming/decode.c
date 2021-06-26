@@ -1172,7 +1172,9 @@ void decodeOneStep(uint8_t *step) {
         case ITM_toHR:           //  1685
         case ITM_toHMS:          //  1686
         case ITM_toINT:          //  1687
-        case ITM_toPOL:          //  1689
+        case ITM_toPOL:          //  1688
+        case ITM_MPItoR:         //  1689
+        case ITM_RtoMPI:         //  1690
         case ITM_toREAL:         //  1691
         case ITM_toREC:          //  1692
         case ITM_DtoDMS:         //  1693

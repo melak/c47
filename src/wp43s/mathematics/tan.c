@@ -36,9 +36,9 @@
 
 
 TO_QSPI void (* const Tan[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
-// regX ==> 1            2        3         4         5         6         7          8           9             10
-//          Long integer Real34   complex34 Time      Date      String    Real34 mat Complex34 m Short integer Config data
-            tanLonI,     tanReal, tanCplx,  tanError, tanError, tanError, tanRema,   tanCxma,    tanError,     tanError
+// regX ==> 1            2        3        4         5         6         7        8           9             10
+//          Long integer Real     complex  Time      Date      String    Real mat Complex mat short integer Config data
+            tanLonI,     tanReal, tanCplx, tanError, tanError, tanError, tanRema, tanCxma,    tanError,     tanError
 };
 
 
@@ -47,7 +47,6 @@ void longIntegerAngleReduction(calcRegister_t regist, angularMode_t angularMode,
   uint32_t oneTurn;
 
   switch(angularMode) {
-    case amMultPi: oneTurn =   2; break;
     case amGrad:   oneTurn = 400; break;
     case amDegree:
     case amDMS:    oneTurn = 360; break;
@@ -75,11 +74,11 @@ void longIntegerAngleReduction(calcRegister_t regist, angularMode_t angularMode,
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void tanError(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void tanError(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot calculate Tan for %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnTan:", errorMessage, NULL, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 

@@ -13,8 +13,8 @@ Func: fnAdd
 
 ;==================================================================
 ; Date + Long Integer  see in addition_longInteger.txt
-; Date + Real16        see in addition_real16.txt
-; Date + Complex16     see in addition_complex16.txt
+; Date + Real          see in addition_real.txt
+; Date + Complex       see in addition_complex.txt
 ; Date + Time          see in addition_time.txt
 ;==================================================================
 
@@ -37,21 +37,21 @@ Func: fnAdd
 
 
 ;=======================================
-; Date + Real16 Matrix
+; Date + Real Matrix
 ;=======================================
 
 ;=======================================
-; Real16 Matrix + Date
+; Real Matrix + Date
 ;=======================================
 
 
 
 ;=======================================
-; Date + Complex16 Matrix
+; Date + Complex Matrix
 ;=======================================
 
 ;=======================================
-; Complex16 Matrix + Date
+; Complex Matrix + Date
 ;=======================================
 
 
@@ -67,7 +67,7 @@ Func: fnAdd
 
 
 ;=======================================
-; Date + Real34
+; Date + Real
 ;=======================================
 In:  FL_YMD=1 FL_MDY=0 FL_DMY=0 FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=Date:"1970.0101" RX=Real:"12345.67"
 Out: FL_YMD=1 FL_MDY=0 FL_DMY=0 EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"12345.67" RX=Date:"2003.1021"
@@ -80,7 +80,7 @@ Out: FL_YMD=0 FL_MDY=0 FL_DMY=1 EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"12345.67" 
 
 
 ;=======================================
-; Real34 + Date
+; Real + Date
 ;=======================================
 In:  FL_YMD=1 FL_MDY=0 FL_DMY=0 FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=Real:"12345.67" RX=Date:"1970.0101"
 Out: FL_YMD=1 FL_MDY=0 FL_DMY=0 EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Date:"1970.0101" RX=Date:"2003.1021"
@@ -94,9 +94,9 @@ Out: FL_YMD=0 FL_MDY=0 FL_DMY=1 EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Date:"1.011970" 
 
 
 ;=======================================
-; Date + Complex34
+; Date + Complex
 ;=======================================
 
 ;=======================================
-; Complex34 + Date
+; Complex + Date
 ;=======================================

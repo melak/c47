@@ -13,8 +13,8 @@ Func: fnDivide
 
 ;==================================================================
 ; Date / Long Integer  see in division_longInteger.txt
-; Date / Real16        see in division_real16.txt
-; Date / Complex16     see in division_complex16.txt
+; Date / Real          see in division_real.txt
+; Date / Complex       see in division_complex.txt
 ; Date / Time          see in division_time.txt
 ;==================================================================
 
@@ -37,21 +37,21 @@ Func: fnDivide
 
 
 ;=======================================
-; Date / Real16 Matrix
+; Date / Real Matrix
 ;=======================================
 
 ;=======================================
-; Real16 Matrix / Date
+; Real Matrix / Date
 ;=======================================
 
 
 
 ;=======================================
-; Date / Complex16 Matrix
+; Date / Complex Matrix
 ;=======================================
 
 ;=======================================
-; Complex16 Matrix / Date
+; Complex Matrix / Date
 ;=======================================
 
 
@@ -67,19 +67,19 @@ Func: fnDivide
 
 
 ;=======================================
-; Date / Real34
+; Date / Real
 ;=======================================
 
 ;=======================================
-; Real34 / Date
+; Real / Date
 ;=======================================
 
 
 
 ;=======================================
-; Date / Complex34
+; Date / Complex
 ;=======================================
 
 ;=======================================
-; Complex34 / Date
+; Complex / Date
 ;=======================================

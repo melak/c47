@@ -11,7 +11,7 @@ Func: fnLogisticP
 
 
 ;=======================================
-; normalP(Long Integer) --> Real34
+; normalP(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=LonI:"0" RJ=LonI:"1" RX=LonI:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"0" RX=Real:"0.25"
@@ -63,13 +63,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; normalP(Real16 Matrix) --> Error24
+; normalP(Real Matrix) --> Error24
 ;=======================================
 
 
 
 ;=======================================
-; normalP(Complex16 Matrix) --> Error24
+; normalP(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -81,7 +81,7 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; normalP(Real34) --> Real34
+; normalP(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=Real:"0" RJ=Real:"1" RX=Real:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0" RX=Real:"0.25"
@@ -113,5 +113,5 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"0.09830596662074092626871
 
 
 ;=======================================
-; normalP(Complex34) --> Error24
+; normalP(Complex) --> Error24
 ;=======================================

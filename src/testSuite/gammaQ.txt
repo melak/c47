@@ -11,7 +11,7 @@ Func: fnGammaQ
 
 
 ;=======================================
-; gammaQ(Long Integer, Long Integer) --> Real34
+; gammaQ(Long Integer, Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RY=LonI:"1" RX=LonI:"0"
 Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RY=LonI:"1" RX=LonI:"0"
@@ -45,13 +45,13 @@ Out: EC=24 FL_ASLIFT=0 RY=Stri:"String test"
 
 
 ;=======================================
-; gammaQ(Real16 Matrix)
+; gammaQ(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; gammaQ(Complex16 Matrix)
+; gammaQ(Complex Matrix)
 ;=======================================
 
 
@@ -63,7 +63,7 @@ Out: EC=24 FL_ASLIFT=0 RY=Stri:"String test"
 
 
 ;=======================================
-; gammaQ(Real34, Real34) --> Real34
+; gammaQ(Real, Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RY=Real:"1" RX=Real:"0"
 Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RY=Real:"1" RX=Real:"0"
@@ -127,5 +127,5 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"1" RX=Real:"0.00673794699908546709663
 
 
 ;=======================================
-; gammaQ(Complex34)
+; gammaQ(Complex)
 ;=======================================

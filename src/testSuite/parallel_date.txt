@@ -13,8 +13,8 @@ Func: fnParallel
 
 ;==================================================================
 ; Date || Long Integer  see in multiplication_longInteger.txt
-; Date || Real16        see in multiplication_real16.txt
-; Date || Complex16     see in multiplication_complex16.txt
+; Date || Real          see in multiplication_real.txt
+; Date || Complex       see in multiplication_complex.txt
 ; Date || Time          see in multiplication_time.txt
 ;==================================================================
 
@@ -37,21 +37,21 @@ Func: fnParallel
 
 
 ;=======================================
-; Date || Real16 Matrix
+; Date || Real Matrix
 ;=======================================
 
 ;=======================================
-; Real16 Matrix || Date
+; Real Matrix || Date
 ;=======================================
 
 
 
 ;=======================================
-; Date || Complex16 Matrix
+; Date || Complex Matrix
 ;=======================================
 
 ;=======================================
-; Complex16 Matrix || Date
+; Complex Matrix || Date
 ;=======================================
 
 
@@ -67,19 +67,19 @@ Func: fnParallel
 
 
 ;=======================================
-; Date || Real34
+; Date || Real
 ;=======================================
 
 ;=======================================
-; Real34 || Date
+; Real || Date
 ;=======================================
 
 
 
 ;=======================================
-; Date || Complex34
+; Date || Complex
 ;=======================================
 
 ;=======================================
-; Complex34 || Date
+; Complex || Date
 ;=======================================

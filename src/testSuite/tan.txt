@@ -11,7 +11,7 @@ Func: fnTan
 
 
 ;=======================================
-; tan(Long Integer) --> Real34
+; tan(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=Real:"0.087488663525924005222018669434961458119454276368108229145236662"
@@ -57,13 +57,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; tan(Real16 Matrix)
+; tan(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; tan(Complex16 Matrix)
+; tan(Complex Matrix)
 ;=======================================
 
 
@@ -77,7 +77,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"5#7"
 
 
 ;=======================================
-; tan(Real34) --> Real34
+; tan(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.0001" RX=Real:"1.7453292519961017692350955238831871615764240210174268902223812e-6"
@@ -132,7 +132,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-inf" RX=Real:"NaN"
 
 
 ;=======================================
-; tan(Complex34) --> Complex34
+; tan(Complex) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"6.2 i -7.6" RX=Cplx:"-8.2951632770191927777832809387648301530665840570244790376113112e-8 i -0.9999995060131651068608113798631681789187563420692453227162563"

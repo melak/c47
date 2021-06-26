@@ -11,7 +11,7 @@ Func: fnSinh
 
 
 ;=======================================
-; sinh(Long Integer) --> Real34
+; sinh(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=Real:"74.20321057778875897700947199606456559961940900442581698066127"
@@ -48,13 +48,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; sinh(Real16 Matrix)
+; sinh(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; sinh(Complex16 Matrix)
+; sinh(Complex Matrix)
 ;=======================================
 
 
@@ -68,7 +68,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"5#7"
 
 
 ;=======================================
-; sinh(Real34) --> Real34
+; sinh(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0" RX=Real:"0"
@@ -129,7 +129,7 @@ Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-inf":GRAD
 
 
 ;=======================================
-; sinh(Complex34) --> Complex34
+; sinh(Complex) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"6.2 i -7.6" RX=Cplx:"61.903768291613323355620984960713988217315656185239068929429946 i -238.47172728732495776240281548076859679543279877012533924894352"

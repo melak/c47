@@ -11,7 +11,7 @@ Func: fnNegBinomialR
 
 
 ;=======================================
-; negBinomialR(Long Integer) --> Real34
+; negBinomialR(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=Real:"0.5" RJ=LonI:"5" RX=LonI:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"0" RX=Real:"1"
@@ -99,13 +99,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; negBinomialR(Real16 Matrix) --> Error24
+; negBinomialR(Real Matrix) --> Error24
 ;=======================================
 
 
 
 ;=======================================
-; negBinomialR(Complex16 Matrix) --> Error24
+; negBinomialR(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -117,7 +117,7 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; negBinomialR(Real34) --> Real34
+; negBinomialR(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=Real:"0.5" RJ=Real:"5" RX=Real:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0" RX=Real:"1"
@@ -185,5 +185,5 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"100" RX=Real:"0.017937643107257231829
 
 
 ;=======================================
-; negBinomialR(Complex34) --> Error24
+; negBinomialR(Complex) --> Error24
 ;=======================================

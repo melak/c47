@@ -59,12 +59,12 @@ TO_QSPI void (* const multiplication[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMB
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void mulError(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void mulError(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot multiply %s", getRegisterDataTypeName(REGISTER_Y, true, false));
     sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "by %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnMultiply:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 
@@ -204,7 +204,7 @@ void mulTimeLonI(void) {
 
 
 /********************************************//**
- * \brief Y(long integer) × X(real16 matrix) ==> X(real16 matrix)
+ * \brief Y(long integer) × X(real34 matrix) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -225,7 +225,7 @@ void mulLonIRema(void) {
 
 
 /********************************************//**
- * \brief Y(real16 matrix) × X(long integer) ==> X(real16 matrix)
+ * \brief Y(real34 matrix) × X(long integer) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -246,7 +246,7 @@ void mulRemaLonI(void) {
 
 
 /********************************************//**
- * \brief Y(long integer) × X(complex16 matrix) ==> X(complex16 matrix)
+ * \brief Y(long integer) × X(complex34 matrix) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -267,7 +267,7 @@ void mulLonICxma(void) {
 
 
 /********************************************//**
- * \brief Y(complex16 matrix) × X(long integer) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) × X(long integer) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -534,11 +534,11 @@ void mulRealTime(void) {
 
 
 /******************************************************************************************************************************************************************************************/
-/* real16 matrix × ...                                                                                                                                                                    */
+/* real34 matrix × ...                                                                                                                                                                    */
 /******************************************************************************************************************************************************************************************/
 
 /********************************************//**
- * \brief Y(real16 matrix) × X(real16 matrix) ==> X(real16 matrix)
+ * \brief Y(real34 matrix) × X(real34 matrix) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -570,7 +570,7 @@ void mulRemaRema(void) {
 
 
 /********************************************//**
- * \brief Y(real16 matrix) × X(complex16 matrix) ==> X(complex16 matrix)
+ * \brief Y(real34 matrix) × X(complex34 matrix) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -585,7 +585,7 @@ void mulRemaCxma(void) {
 
 
 /********************************************//**
- * \brief Y(complex16 matrix) × X(real16 matrix) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) × X(real34 matrix) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -600,7 +600,7 @@ void mulCxmaRema(void) {
 
 
 /********************************************//**
- * \brief Y(real16 matrix) × X(short integer) ==> X(real16 matrix)
+ * \brief Y(real34 matrix) × X(short integer) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -621,7 +621,7 @@ void mulRemaShoI(void) {
 
 
 /********************************************//**
- * \brief Y(short integer) × X(real16 matrix) ==> X(real16 matrix)
+ * \brief Y(short integer) × X(real34 matrix) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -643,7 +643,7 @@ void mulShoIRema(void) {
 
 
 /********************************************//**
- * \brief Y(real16 matrix) × X(real34) ==> X(real16 matrix)
+ * \brief Y(real34 matrix) × X(real34) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -665,7 +665,7 @@ void mulRemaReal(void) {
 
 
 /********************************************//**
- * \brief Y(real34) × X(real16 matrix) ==> X(real16 matrix)
+ * \brief Y(real34) × X(real34 matrix) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -686,7 +686,7 @@ void mulRealRema(void) {
 
 
 /********************************************//**
- * \brief Y(real16 matrix) × X(complex34) ==> X(complex16 matrix)
+ * \brief Y(real34 matrix) × X(complex34) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -701,7 +701,7 @@ void mulRemaCplx(void) {
 
 
 /********************************************//**
- * \brief Y(complex34) × X(real16 matrix) ==> X(complex16 matrix)
+ * \brief Y(complex34) × X(real34 matrix) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -716,11 +716,11 @@ void mulCplxRema(void) {
 
 
 /******************************************************************************************************************************************************************************************/
-/* complex16 matrix × ...                                                                                                                                                                 */
+/* complex34 matrix × ...                                                                                                                                                                 */
 /******************************************************************************************************************************************************************************************/
 
 /********************************************//**
- * \brief Y(complex16 matrix) × X(complex16 matrix) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) × X(complex34 matrix) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -752,7 +752,7 @@ void mulCxmaCxma(void) {
 
 
 /********************************************//**
- * \brief Y(complex16 matrix) × X(short integer) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) × X(short integer) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -767,7 +767,7 @@ void mulCxmaShoI(void) {
 
 
 /********************************************//**
- * \brief Y(short integer) × X(complex16 matrix) ==> X(complex16 matrix)
+ * \brief Y(short integer) × X(complex34 matrix) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -782,7 +782,7 @@ void mulShoICxma(void) {
 
 
 /********************************************//**
- * \brief Y(complex16 matrix) × X(real34) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) × X(real34) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -799,7 +799,7 @@ void mulCxmaReal(void) {
 
 
 /********************************************//**
- * \brief Y(real34) × X(complex16 matrix) ==> X(complex16 matrix)
+ * \brief Y(real34) × X(complex34 matrix) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -815,7 +815,7 @@ void mulRealCxma(void) {
 
 
 /********************************************//**
- * \brief Y(complex16 matrix) × X(complex34) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) × X(complex34) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -832,7 +832,7 @@ void mulCxmaCplx(void) {
 
 
 /********************************************//**
- * \brief Y(complex34) × X(complex16 matrix) ==> X(complex16 matrix)
+ * \brief Y(complex34) × X(complex34 matrix) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -967,30 +967,22 @@ void mulRealReal(void) {
   yAngularMode = getRegisterAngularMode(REGISTER_Y);
   xAngularMode = getRegisterAngularMode(REGISTER_X);
 
-  if(yAngularMode == amNone && xAngularMode == amNone) {
+  if(yAngularMode == amNone && xAngularMode == amNone) { // Neither is an angle
     real34Multiply(REGISTER_REAL34_DATA(REGISTER_Y), REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(REGISTER_X));
   }
-  else if(yAngularMode != amNone && xAngularMode != amNone) {
+  else if(yAngularMode != amNone && xAngularMode != amNone) { // Both are angles
     real34Multiply(REGISTER_REAL34_DATA(REGISTER_Y), REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(REGISTER_X));
     setRegisterAngularMode(REGISTER_X, amNone);
   }
-  else {
+  else { // One and only one is an angle
     real_t y, x;
-
-    if(yAngularMode == amNone) {
-      yAngularMode = currentAngularMode;
-    }
-    else if(xAngularMode == amNone) {
-      xAngularMode = currentAngularMode;
-    }
 
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
-
-    convertAngleFromTo(&y, yAngularMode, currentAngularMode, &ctxtReal39);
-    convertAngleFromTo(&x, xAngularMode, currentAngularMode, &ctxtReal39);
-
     realMultiply(&y, &x, &x, &ctxtReal39);
+
+    convertAngleFromTo(&x, yAngularMode != amNone ? yAngularMode : xAngularMode, currentAngularMode, &ctxtReal39);
+
     realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
     setRegisterAngularMode(REGISTER_X, currentAngularMode);
   }

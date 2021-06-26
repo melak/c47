@@ -90,7 +90,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=LonI:"1" RY=ShoI:"4#11"
 
 
 ;=======================================
-; Long Integer IDivR Real34 --> Long Integer, Real34
+; Long Integer IDivR Real --> Long Integer, Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=LonI:"25" RX=Real:"7"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"7" RX=LonI:"3" RY=Real:"4"
@@ -183,7 +183,7 @@ In:  AM=MULTPI FL_CPXRES=0 FL_ASLIFT=0 RY=LonI:"2" RX=Real:"3.453099789":MULTPI
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3.453099789":MULTPI RX=LonI:"0" RY=Real:"2"
 
 ;=======================================
-; Real34 IDivR Long Integer --> Long Integer, Real34
+; Real IDivR Long Integer --> Long Integer, Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=Real:"25" RX=LonI:"7"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"7" RX=LonI:"3" RY=Real:"4"
@@ -298,7 +298,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"10000#2" RX=ShoI:"783#10" RY=ShoI:"12
 
 
 ;=======================================
-; Short Integer IDivR Real34 --> Long Integer, Real34
+; Short Integer IDivR Real --> Long Integer, Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=ShoI:"25#10" RX=Real:"7"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"7" RX=LonI:"3" RY=Real:"4"
@@ -391,7 +391,7 @@ In:  AM=MULTPI FL_CPXRES=0 FL_ASLIFT=0 RY=ShoI:"2#13" RX=Real:"3.453099789":MULT
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3.453099789":MULTPI RX=LonI:"0" RY=Real:"2"
 
 ;=======================================
-; Real34 IDivR Short Integer --> Long Integer, Real34
+; Real IDivR Short Integer --> Long Integer, Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=Real:"25" RX=ShoI:"7#10"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"7#10" RX=LonI:"3" RY=Real:"4"
@@ -486,7 +486,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"2#13" RX=LonI:"1" RY=Real:"1.45309978
 
 
 ;=======================================
-; Real34 IDivR Real34 --> Long Integer, Real34
+; Real IDivR Real --> Long Integer, Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=Real:"25" RX=Real:"7"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"7" RX=LonI:"3" RY=Real:"4"

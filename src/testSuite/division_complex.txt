@@ -1,8 +1,8 @@
 ;*************************************************************
 ;*************************************************************
 ;**                                                         **
-;**                    COMPLEX34 / ...                      **
-;**                    ... / COMPLEX34                      **
+;**                    COMPLEX / ...                        **
+;**                    ... / COMPLEX                        **
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
@@ -12,22 +12,22 @@ Func: fnDivide
 
 
 ;==================================================================
-; Complex34 / Long Integer      see in division_longInteger.txt
-; Complex34 / Real16            see in division_real16.txt
-; Complex34 / Complex16         see in division_complex16.txt
-; Complex34 / Time              see in division_time.txt
-; Complex34 / Date              see in division_date.txt
-; Complex34 / String            see in division_string.txt
-; Complex34 / Real16 Matrix     see in division_real16Matrix.txt
-; Complex34 / Complex16 Matrix  see in division_complex16Matrix.txt
-; Complex34 / Short Integer     see in division_shortInteger.txt
-; Complex34 / Real34            see in division_real34.txt
+; Complex / Long Integer      see in division_longInteger.txt
+; Complex / Real              see in division_real.txt
+; Complex / Complex           see in division_complex.txt
+; Complex / Time              see in division_time.txt
+; Complex / Date              see in division_date.txt
+; Complex / String            see in division_string.txt
+; Complex / Real Matrix       see in division_realMatrix.txt
+; Complex / Complex Matrix    see in division_complexMatrix.txt
+; Complex / Short Integer     see in division_shortInteger.txt
+; Complex / Real              see in division_real.txt
 ;==================================================================
 
 
 
 ;=======================================
-; Complex34 / Complex34 --> Complex34
+; Complex / Complex --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RY=Cplx:"123.456 i -6.78" RX=Cplx:"-12540 i 7.541235"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"-12540 i 7.541235" RX=Cplx:"-0.0098452976610031543389062829053730924644497397862711756995776511 i 5.3474914646678029325271436025790261140740473417726310130169023e-4"

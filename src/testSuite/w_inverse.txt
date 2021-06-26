@@ -11,7 +11,7 @@ Func: fnWinverse
 
 
 ;=======================================
-; W^-1(Long Integer) --> Real34
+; W^-1(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"2"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"2" RX=Real:"14.77811219786130045446085492115002"
@@ -50,13 +50,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; W^-1(Real16 Matrix) --> Error24
+; W^-1(Real Matrix) --> Error24
 ;=======================================
 
 
 
 ;=======================================
-; W^-1(Complex16 Matrix) --> Error24
+; W^-1(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -68,7 +68,7 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; W^-1(Real34) --> Real34
+; W^-1(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"2"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"2" RX=Real:"14.77811219786130045446085492115002"
@@ -88,7 +88,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-2" RX=Real:"-0.270670566473225383787
 
 
 ;=======================================
-; W^-1(Complex34) --> Complex34
+; W^-1(Complex) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=1 RX=Cplx:"2 i 0"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"2 i 0" RX=Cplx:"14.77811219786130045446085492115002 i 0"

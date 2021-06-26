@@ -45,13 +45,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; factorial(Real16 Matrix)
+; factorial(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; factorial(Complex16 Matrix)
+; factorial(Complex Matrix)
 ;=======================================
 
 
@@ -65,7 +65,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"5#8" RX=ShoI:"170#8"
 
 
 ;=======================================
-; factorial(Real34) --> Real34
+; factorial(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"45"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"45" RX=Real:"119622220865480194561963161495657715064383733760000000000"
@@ -87,7 +87,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-5.32564":GRAD RX=Real:"-0.0928238842
 
 
 ;=======================================
-; factorial(Complex34) --> Complex34
+; factorial(Complex) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"6.2 i -7.6" RX=Cplx:"-26.687204616760923642665367819436466866288560419845141767719036 i -0.6019934556957449319503825702850537615893851945711419210751746"

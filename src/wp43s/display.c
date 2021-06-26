@@ -302,7 +302,7 @@ void real34ToDisplayString(const real34_t *real34, uint32_t tag, char *displaySt
  * \brief Formats a real
  *
  * \param[out] displayString char* Result string
- * \param[in]  x const real16_t*  Value to format
+ * \param[in]  x const real34_t*  Value to format
  * \return void
  ***********************************************/
 void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t displayHasNDigits, bool_t limitExponent, const char *separator, bool_t noFix, bool_t frontSpace) {
@@ -1248,11 +1248,20 @@ void angle34ToDisplayString2(const real34_t *angle34, uint8_t mode, char *displa
                                                                        s,         RADIX34_MARK_STRING,
                                                                                     fs);
   }
+  else if(mode == amMultPi) {
+    real34_t multPi34;
+    real_t multPi;
+
+    real34ToReal(angle34, &multPi);
+    realDivide(&multPi, const_pi, &multPi, &ctxtReal39);
+    realToReal34(&multPi, &multPi34);
+    real34ToDisplayString2(&multPi34, displayString, displayHasNDigits, limitExponent, separator, mode == amSecond, frontSpace);
+    strcat(displayString, STD_pi);
+  }
   else {
     real34ToDisplayString2(angle34, displayString, displayHasNDigits, limitExponent, separator, mode == amSecond, frontSpace);
 
          if(mode == amRadian) strcat(displayString, STD_SUP_r);
-    else if(mode == amMultPi) strcat(displayString, STD_pi);
     else if(mode == amGrad)   strcat(displayString, STD_SUP_g);
     else if(mode == amDegree) strcat(displayString, STD_DEGREE);
     else if(mode == amSecond) strcat(displayString, "s");

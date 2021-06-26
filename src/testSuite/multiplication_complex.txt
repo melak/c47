@@ -1,8 +1,8 @@
 ;*************************************************************
 ;*************************************************************
 ;**                                                         **
-;**                    COMPLEX34 x ...                      **
-;**                    ... x COMPLEX34                      **
+;**                    COMPLEX x ...                        **
+;**                    ... x COMPLEX                        **
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
@@ -12,22 +12,22 @@ Func: fnMultiply
 
 
 ;==================================================================
-; Complex34 x Long Integer      see in multiplication_longInteger.txt
-; Complex34 x Real16            see in multiplication_real16.txt
-; Complex34 x Complex16         see in multiplication_complex16.txt
-; Complex34 x Time              see in multiplication_time.txt
-; Complex34 x Date              see in multiplication_date.txt
-; Complex34 x String            see in multiplication_string.txt
-; Complex34 x Real16 Matrix     see in multiplication_real16Matrix.txt
-; Complex34 x Complex16 Matrix  see in multiplication_complex16Matrix.txt
-; Complex34 x Short Integer     see in multiplication_shortInteger.txt
-; Complex34 x Real34            see in multiplication_real34.txt
+; Complex x Long Integer      see in multiplication_longInteger.txt
+; Complex x Real              see in multiplication_real.txt
+; Complex x Complex           see in multiplication_complex.txt
+; Complex x Time              see in multiplication_time.txt
+; Complex x Date              see in multiplication_date.txt
+; Complex x String            see in multiplication_string.txt
+; Complex x Real Matrix       see in multiplication_realMatrix.txt
+; Complex x Complex Matrix    see in multiplication_complexMatrix.txt
+; Complex x Short Integer     see in multiplication_shortInteger.txt
+; Complex x Real              see in multiplication_real.txt
 ;==================================================================
 
 
 
 ;=======================================
-; Complex34 x Complex34 --> Complex34
+; Complex x Complex --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RY=Cplx:"123.456 i -6.78" RX=Cplx:"-12540 i 7.541235"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"-12540 i 7.541235" RX=Cplx:"-1548087.1104267 i 85952.21070816"

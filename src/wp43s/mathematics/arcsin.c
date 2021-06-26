@@ -53,11 +53,11 @@ TO_QSPI void (* const arcsin[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void arcsinError(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void arcsinError(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot calculate arcsin for %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnArcsin:", errorMessage, NULL, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 
@@ -109,11 +109,11 @@ void arcsinLonI(void) {
     real34Zero(REGISTER_REAL34_DATA(REGISTER_X));
   }
   else {
-    realToReal34(const_1on2, REGISTER_REAL34_DATA(REGISTER_X));
+    realToReal34(const_90, REGISTER_REAL34_DATA(REGISTER_X));
     if(realIsNegative(&x)) {
       real34ChangeSign(REGISTER_REAL34_DATA(REGISTER_X));
     }
-    convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amMultPi, currentAngularMode);
+    convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amDegree, currentAngularMode);
   }
 }
 

@@ -226,7 +226,7 @@ void displayCalcErrorMessage(uint8_t errorCode, calcRegister_t errMessageRegiste
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR != 1)
-void typeError(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-}
+  void typeError(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR != 1)

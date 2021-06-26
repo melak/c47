@@ -11,7 +11,7 @@ Func: fnHypergeometricP
 
 
 ;=======================================
-; hypergeometricP(Long Integer) --> Real34
+; hypergeometricP(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=Real:"0.1" RJ=LonI:"100" RK=LonI:"500" RX=LonI:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"0" RX=Real:"7.360755374836875669625840606801499e-6"
@@ -86,13 +86,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; hypergeometricL(Real16 Matrix) --> Error24
+; hypergeometricL(Real Matrix) --> Error24
 ;=======================================
 
 
 
 ;=======================================
-; hypergeometricL(Complex16 Matrix) --> Error24
+; hypergeometricL(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -104,11 +104,11 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; hypergeometricL(Real34) --> Real34
+; hypergeometricL(Real) --> Real
 ;=======================================
 
 
 
 ;=======================================
-; hypergeometricL(Complex34) --> Error24
+; hypergeometricL(Complex) --> Error24
 ;=======================================

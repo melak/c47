@@ -1,8 +1,8 @@
 ;*************************************************************
 ;*************************************************************
 ;**                                                         **
-;**                COMPLEX16 MATRIX - ...                   **
-;**                ... - COMPLEX16 MATRIX                   **
+;**                COMPLEX MATRIX - ...                     **
+;**                ... - COMPLEX MATRIX                     **
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
@@ -12,47 +12,47 @@ Func: fnSubtract
 
 
 ;==================================================================
-; Complex16 Matrix - Long Integer   see in subtraction_longInteger.txt
-; Complex16 Matrix - Real16         see in subtraction_real16.txt
-; Complex16 Matrix - Complex16      see in subtraction_complex16.txt
-; Complex16 Matrix - Time           see in subtraction_time.txt
-; Complex16 Matrix - Date           see in subtraction_date.txt
-; Complex16 Matrix - String         see in subtraction_string.txt
-; Complex16 Matrix - Real16 Matrix  see in subtraction_real16Matrix.txt
+; Complex Matrix - Long Integer   see in subtraction_longInteger.txt
+; Complex Matrix - Real           see in subtraction_real.txt
+; Complex Matrix - Complex        see in subtraction_complex.txt
+; Complex Matrix - Time           see in subtraction_time.txt
+; Complex Matrix - Date           see in subtraction_date.txt
+; Complex Matrix - String         see in subtraction_string.txt
+; Complex Matrix - Real Matrix    see in subtraction_realMatrix.txt
 ;==================================================================
 
 
 
 ;=======================================
-; Complex16 Matrix - Complex16 Matrix
+; Complex Matrix - Complex Matrix
 ;=======================================
 
 
 
 ;=======================================
-; Complex16 Matrix - Short Integer
+; Complex Matrix - Short Integer
 ;=======================================
 
 ;=======================================
-; Short Integer - Complex16 Matrix
-;=======================================
-
-
-
-;=======================================
-; Complex16 Matrix - Real34
-;=======================================
-
-;=======================================
-; Real34 - Complex16 Matrix
+; Short Integer - Complex Matrix
 ;=======================================
 
 
 
 ;=======================================
-; Complex16 Matrix - Complex34
+; Complex Matrix - Real
 ;=======================================
 
 ;=======================================
-; Complex34 - Complex16 Matrix
+; Real - Complex Matrix
+;=======================================
+
+
+
+;=======================================
+; Complex Matrix - Complex
+;=======================================
+
+;=======================================
+; Complex - Complex Matrix
 ;=======================================

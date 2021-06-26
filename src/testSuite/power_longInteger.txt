@@ -66,21 +66,21 @@ Out: EC=24 FL_ASLIFT=0 RX=LonI:"-1234"
 
 
 ;=======================================
-; Long Integer ^ Real16 Matrix
+; Long Integer ^ Real Matrix
 ;=======================================
 
 ;=======================================
-; Real16 Matrix ^ Long Integer
+; Real Matrix ^ Long Integer
 ;=======================================
 
 
 
 ;=======================================
-; Long Integer ^ Complex16 Matrix
+; Long Integer ^ Complex Matrix
 ;=======================================
 
 ;=======================================
-; Complex16 Matrix ^ Long Integer
+; Complex Matrix ^ Long Integer
 ;=======================================
 
 
@@ -118,7 +118,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=LonI:"-32"
 
 
 ;=======================================
-; Long Integer ^ Real34 --> Real34
+; Long Integer ^ Real --> Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=LonI:"5" RX=Real:"123.456"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"123.456" RX=Real:"1.9590289562203547661849732382478881082061206314350810594214883e+86"
@@ -199,7 +199,7 @@ In:  AM=MULTPI FL_CPXRES=0 FL_ASLIFT=0 RY=LonI:"2" RX=Real:"3.453099789":MULTPI
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3.453099789":MULTPI RX=Real:"10.951827999657763014974112684628139432600036141997959332555989"
 
 ;=======================================
-; Real34 ^ Long Integer --> Real34
+; Real ^ Long Integer --> Real
 ;=======================================
 In:  FL_ASLIFT=0 RY=Real:"123.456" RX=LonI:"5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=Real:"28678802168.634497644363776"
@@ -282,13 +282,13 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"2" RX=Real:"11.923898152791844521"
 
 
 ;=======================================
-; Long Integer ^ Complex34 --> Complex34
+; Long Integer ^ Complex --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 RY=LonI:"4" RX=Cplx:"123.456 i -6.78"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"123.456 i -6.78" RX=Cplx:"-2.1270359272913709495732303449788920035031030932498551228616922e+74 i -5.4681528046893919212293733478777332266384627784034876004792665e+72"
 
 ;=======================================
-; Complex34 ^ Long Integer --> Complex34
+; Complex ^ Long Integer --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RY=Cplx:"123.456 i -6.78" RX=LonI:"4"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=LonI:"4" RX=Cplx:"228098165.178415677696 i -50876176.77758472192"

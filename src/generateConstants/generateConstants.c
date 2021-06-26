@@ -33,7 +33,7 @@ realContext_t ctxtReal34, ctxtReal39, ctxtReal51, ctxtReal1071;
 
 char       whiteSpace[50], temp[10000];
 char       defines[1000000], externalDeclarations[1000000]; // .h file
-char       realArray[1000000], realPointerDeclarations[1000000], real16PointerDeclarations[1000000], real34PointerDeclarations[1000000], real51PointerDeclarations[1000000], real1071PointerDeclarations[1000000]; // .c file
+char       realArray[1000000], realPointerDeclarations[1000000], real34PointerDeclarations[1000000], real51PointerDeclarations[1000000], real1071PointerDeclarations[1000000]; // .c file
 FILE       *constantsC, *constantsH;
 int        idx, c;
 
@@ -322,21 +322,22 @@ void generateAllConstants(void) {
 
   // Array angle180
   generateConstantArray("pi",            "+3.141592653589793238462643383279502884197169399375105821e+00"); // cnst79
-  generateConstantArray("1",             "+1.000000000000000000000000000000000000000000000000000000e+00"); // cnst80
-  generateConstantArray("200",           "+2.000000000000000000000000000000000000000000000000000000e+02"); // cnst81
-  generateConstantArray("180",           "+1.800000000000000000000000000000000000000000000000000000e+02"); // cnst82
+  generateConstantArray("200",           "+2.000000000000000000000000000000000000000000000000000000e+02"); // cnst80
+  generateConstantArray("180",           "+1.800000000000000000000000000000000000000000000000000000e+02"); // cnst81
 
   // Array angle90
-  generateConstantArray("piOn2",         "+1.570796326794896619231321691639751442098584699687552910e+00"); // cnst83
-  generateConstantArray("1on2",          "+5.000000000000000000000000000000000000000000000000000000e-01"); // cnst84
-  generateConstantArray("100",           "+1.000000000000000000000000000000000000000000000000000000e+02"); // cnst85
-  generateConstantArray("90",            "+9.000000000000000000000000000000000000000000000000000000e+01"); // cnst86
+  generateConstantArray("piOn2",         "+1.570796326794896619231321691639751442098584699687552910e+00"); // cnst82
+  generateConstantArray("100",           "+1.000000000000000000000000000000000000000000000000000000e+02"); // cnst83
+  generateConstantArray("90",            "+9.000000000000000000000000000000000000000000000000000000e+01"); // cnst84
 
   // Array angle45
-  generateConstantArray("piOn4",         "+7.853981633974483096156608458198757210492923498437764552e-01"); // cnst87
-  generateConstantArray("1on4",          "+2.500000000000000000000000000000000000000000000000000000e-01"); // cnst88
-  generateConstantArray("50",            "+5.000000000000000000000000000000000000000000000000000000e+01"); // cnst89
-  generateConstantArray("45",            "+4.500000000000000000000000000000000000000000000000000000e+01"); // cnst90
+  generateConstantArray("piOn4",         "+7.853981633974483096156608458198757210492923498437764552e-01"); // cnst85
+  generateConstantArray("50",            "+5.000000000000000000000000000000000000000000000000000000e+01"); // cnst86
+  generateConstantArray("45",            "+4.500000000000000000000000000000000000000000000000000000e+01"); // cnst87
+
+  generateConstantArray("1",             "+1.000000000000000000000000000000000000000000000000000000e+00"); // cnst88
+  generateConstantArray("1on2",          "+5.000000000000000000000000000000000000000000000000000000e-01"); // cnst89
+  generateConstantArray("1on4",          "+2.500000000000000000000000000000000000000000000000000000e-01"); // cnst90
 
   // All the formulas are 100% exact conversion formulas
   generateConstantArray("PointToMm",     "+3.527777777777777777777777777777777777777777777777777778e-01"); // cnst91       mm     = pt × 0.0254 / 72 × 1000
@@ -348,7 +349,7 @@ void generateAllConstants(void) {
   generateConstantArray("MiToKm",        "+1.609344000000000000000000000000000000000000000000000000e+00"); // cnst97       km     = mile × 63360 × 0.0254 / 1000
   generateConstantArray("NmiToKm",       "+1.852000000000000000000000000000000000000000000000000000e+00"); // cnst98       km     = nmi × 1852 / 1000
   generateConstantArray("AuToM",         "+1.495978707000000000000000000000000000000000000000000000e+11"); // cnst99       m      = au × 149597870700
-  generateConstantArray("LyToM",         "+9.460730472580800000000000000000000000000000000000000000e+15"); // cnst100      m      = ly × 299792458 × 3600 × 24 × 365.25
+  generateConstantArray("LyToM",         "+9.460730472580800000000000000000000000000000000000000000e+15"); // cnst100       m      = ly × 299792458 × 3600 × 24 × 365.25
   generateConstantArray("PcToM",         "+3.085677581491367278913937957796471610731921160409179801e+16"); // cnst101      m      = pc × 149597870700 × 648000 / pi
   generateConstantArray("LiToM",         "+5.000000000000000000000000000000000000000000000000000000e+02"); // cnst102      m      = lǐ × 500
   generateConstantArray("YinToM",        "+3.000000000000000000000000000000000000000000000000000000e-02"); // cnst103      m      = yǐn / 0.03
@@ -749,7 +750,6 @@ int main(int argc, char* argv[]) {
   strcat(externalDeclarations, "extern const uint8_t constants[];\n");
   realArray[0] = 0;
   realPointerDeclarations[0]     = 0;
-  real16PointerDeclarations[0]   = 0;
   real34PointerDeclarations[0]   = 0;
   real1071PointerDeclarations[0] = 0;
 
@@ -842,8 +842,6 @@ int main(int argc, char* argv[]) {
   fprintf(constantsC, "%s", real51PointerDeclarations);
   fprintf(constantsC, "\n");
   fprintf(constantsC, "%s", real1071PointerDeclarations);
-  fprintf(constantsC, "\n");
-  fprintf(constantsC, "%s", real16PointerDeclarations);
   fprintf(constantsC, "\n");
   fprintf(constantsC, "%s", real34PointerDeclarations);
 

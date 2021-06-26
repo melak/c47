@@ -57,21 +57,21 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Stri:"gdfhgfdh" RY=LonI:"2"
 
 
 ;=================================================
-; max(Long Integer, Real16 Matrix) --> Error24
+; max(Long Integer, Real Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Real16 Matrix, Long Integer) --> Error24
+; max(Real Matrix, Long Integer) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; max(Long Integer, Complex16 Matrix) --> Error24
+; max(Long Integer, Complex Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Complex16 Matrix, Long Integer) --> Error24
+; max(Complex Matrix, Long Integer) --> Error24
 ;=================================================
 
 
@@ -115,7 +115,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"3#7" RX=ShoI:"3#7"
 
 
 ;=================================================
-; max(Long Integer, Real34) --> Long Integer or Real34
+; max(Long Integer, Real) --> Long Integer or Real
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"2" RY=Real:"3"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"2" RX=Real:"3"
@@ -133,7 +133,7 @@ In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"3" RY=Real:"3":DEG
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"3" RX=LonI:"3"
 
 ;=================================================
-; max(Real34, Long Integer) --> Real34 or Long Integer
+; max(Real, Long Integer) --> Real or Long Integer
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=LonI:"2"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"3"
@@ -153,13 +153,13 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"3"
 
 
 ;=================================================
-; max(Long Integer, Complex34) --> Error24
+; max(Long Integer, Complex) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"2" RY=Cplx:"3 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=LonI:"2" RY=Cplx:"3 i 2"
 
 ;=================================================
-; max(Complex34, Long Integer) --> Error24
+; max(Complex, Long Integer) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=LonI:"2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=LonI:"2"
@@ -193,21 +193,21 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=LonI:"2"
 
 
 ;=================================================
-; max(Time, Real16 Matrix) --> Error24
+; max(Time, Real Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Real16 Matrix, Time) --> Error24
+; max(Real Matrix, Time) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; max(Time, Complex16 Matrix) --> Error24
+; max(Time, Complex Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Complex16 Matrix, Time) --> Error24
+; max(Complex Matrix, Time) --> Error24
 ;=================================================
 
 
@@ -223,21 +223,21 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=LonI:"2"
 
 
 ;=================================================
-; max(Time, Real34) --> Error24
+; max(Time, Real) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Real34, Time) --> Error24
+; max(Real, Time) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; max(Time, Complex34) --> Error24
+; max(Time, Complex) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Complex34, Time) --> Error24
+; max(Complex, Time) --> Error24
 ;=================================================
 
 
@@ -259,21 +259,21 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=LonI:"2"
 
 
 ;=================================================
-; max(Date, Real16 Matrix) --> Error24
+; max(Date, Real Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Real16 Matrix, Date) --> Error24
+; max(Real Matrix, Date) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; max(Date, Complex16 Matrix) --> Error24
+; max(Date, Complex Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Complex16 Matrix, Date) --> Error24
+; max(Complex Matrix, Date) --> Error24
 ;=================================================
 
 
@@ -289,21 +289,21 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=LonI:"2"
 
 
 ;=================================================
-; max(Date, Real34) --> Error24
+; max(Date, Real) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Real34, Date) --> Error24
+; max(Real, Date) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; max(Date, Complex34) --> Error24
+; max(Date, Complex) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Complex34, Date) --> Error24
+; max(Complex, Date) --> Error24
 ;=================================================
 
 
@@ -320,21 +320,21 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Stri:"gfhjjy i 2juytjuy" RX=Stri:"gfhjjy i 
 
 
 ;=================================================
-; max(String, Real16 Matrix) --> Error24
+; max(String, Real Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Real16 Matrix, String) --> Error24
+; max(Real Matrix, String) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; max(String, Complex16 Matrix) --> Error24
+; max(String, Complex Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Complex16 Matrix, String) --> Error24
+; max(Complex Matrix, String) --> Error24
 ;=================================================
 
 
@@ -354,13 +354,13 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"2#13" RY=Stri:"gdfhgfdh"
 
 
 ;=================================================
-; max(String, Real34) --> Error24
+; max(String, Real) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Stri:"gdfhgfdh" RY=Real:"2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Stri:"gdfhgfdh" RY=Real:"2"
 
 ;=================================================
-; max(Real34, String) --> Error24
+; max(Real, String) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"2" RY=Stri:"gdfhgfdh"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"2" RY=Stri:"gdfhgfdh"
@@ -368,13 +368,13 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"2" RY=Stri:"gdfhgfdh"
 
 
 ;=================================================
-; max(String, Complex34) --> Error24
+; max(String, Complex) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Stri:"3g jiku 2" RY=Cplx:"3 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Stri:"3g jiku 2" RY=Cplx:"3 i 2"
 
 ;=================================================
-; max(Complex34, String) --> Error24
+; max(Complex, String) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=Stri:"gfhjjy i 2juytjuy"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=Stri:"gfhjjy i 2juytjuy"
@@ -382,83 +382,83 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=Stri:"gfhjjy i 2juytjuy"
 
 
 ;=================================================
-; max(Real16 Matrix, Real16 Matrix) --> Error24
+; max(Real Matrix, Real Matrix) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; max(Real16 Matrix, Complex6 Matrix) --> Error24
+; max(Real Matrix, Complex Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Complex16 Matrix, Real6 Matrix) --> Error24
-;=================================================
-
-
-
-;=================================================
-; max(Real16 Matrix, Short Integer) --> Error24
-;=================================================
-
-;=================================================
-; max(Short Integer, Real16 Matrix) --> Error24
+; max(Complex Matrix, Real Matrix) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; max(Real16 Matrix, Real34) --> Error24
+; max(Real Matrix, Short Integer) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Real34, Real16 Matrix) --> Error24
-;=================================================
-
-
-
-;=================================================
-; max(Real16 Matrix, Complex34) --> Error24
-;=================================================
-
-;=================================================
-; max(Complex34, Real16 Matrix) --> Error24
+; max(Short Integer, Real Matrix) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; max(Complex16 Matrix, Complex16 Matrix) --> Error24
+; max(Real Matrix, Real) --> Error24
+;=================================================
+
+;=================================================
+; max(Real, Real Matrix) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; max(Complex16 Matrix, Short Integer) --> Error24
+; max(Real Matrix, Complex) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Short Integer, Complex16 Matrix) --> Error24
-;=================================================
-
-
-
-;=================================================
-; max(Complex16 Matrix, Real34) --> Error24
-;=================================================
-
-;=================================================
-; max(Real34, Complex16 Matrix) --> Error24
+; max(Complex, Real Matrix) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; max(Complex16 Matrix, Complex34) --> Error24
+; max(Complex Matrix, Complex Matrix) --> Error24
+;=================================================
+
+
+
+;=================================================
+; max(Complex Matrix, Short Integer) --> Error24
 ;=================================================
 
 ;=================================================
-; max(Complex34, Complex16 Matrix) --> Error24
+; max(Short Integer, Complex Matrix) --> Error24
+;=================================================
+
+
+
+;=================================================
+; max(Complex Matrix, Real) --> Error24
+;=================================================
+
+;=================================================
+; max(Real, Complex Matrix) --> Error24
+;=================================================
+
+
+
+;=================================================
+; max(Complex Matrix, Complex) --> Error24
+;=================================================
+
+;=================================================
+; max(Complex, Complex Matrix) --> Error24
 ;=================================================
 
 
@@ -478,7 +478,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"3#7" RX=ShoI:"3#7"
 
 
 ;=================================================
-; max(Short Integer, Real34) --> Short Integer or Real34
+; max(Short Integer, Real) --> Short Integer or Real
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"2#7" RY=Real:"3"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"2#7" RX=Real:"3"
@@ -496,7 +496,7 @@ In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"3#11" RY=Real:"3":DEG
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"3#11" RX=ShoI:"3#11"
 
 ;=================================================
-; max(Real34, Short Integer) --> Real34 or Short Integer
+; max(Real, Short Integer) --> Real or Short Integer
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=ShoI:"2#3"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"3"
@@ -516,13 +516,13 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"3"
 
 
 ;=================================================
-; max(Short Integer, Complex34) --> Error24
+; max(Short Integer, Complex) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"2#5" RY=Cplx:"3 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"2#5" RY=Cplx:"3 i 2"
 
 ;=================================================
-; max(Complex34, Short Integer) --> Error24
+; max(Complex, Short Integer) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=ShoI:"2#13"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=ShoI:"2#13"
@@ -530,7 +530,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=ShoI:"2#13"
 
 
 ;=================================================
-; max(Real34, Real34) --> Real34
+; max(Real, Real) --> Real
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=Real:"2"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"3"
@@ -547,13 +547,13 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3":DEG RX=Real:"3":DEG
 
 
 ;=================================================
-; max(Real34, Complex34) --> Error24
+; max(Real, Complex) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"2" RY=Cplx:"3 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"2" RY=Cplx:"3 i 2"
 
 ;=================================================
-; max(Complex34, Real34) --> Error24
+; max(Complex, Real) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=Real:"2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=Real:"2"
@@ -561,7 +561,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=Real:"2"
 
 
 ;=================================================
-; max(Complex34, Complex34) --> Error24
+; max(Complex, Complex) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=Cplx:"3 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=Cplx:"3 i 2"

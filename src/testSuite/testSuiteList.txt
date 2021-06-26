@@ -20,8 +20,8 @@
 ;      type after equal sign: LonI is a  Long Integer
 ;                             Stri is a  String
 ;                             ShoI is a  Short Integer
-;                             Real is a  DP Real
-;                             Cmpx is a  DP Complex
+;                             Real is a  34 digit Real
+;                             Cmpx is a  34 digit Complex
 ;                             Time is a  Time, Seconds or H:MM:SS
 ;                             Date is a  Date, Y.MD, M.DY, or D.MY
 ;                                              setting follows the system flags

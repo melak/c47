@@ -1,8 +1,8 @@
 ;*************************************************************
 ;*************************************************************
 ;**                                                         **
-;**                 REAL16 MATRIX | | ...                   **
-;**                 ... | | REAL16 MATRIX                   **
+;**                 REAL MATRIX | | ...                     **
+;**                 ... | | REAL MATRIX                     **
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
@@ -12,56 +12,56 @@ Func: fnParallel
 
 
 ;==================================================================
-; Real16 Matrix || Long Integer  see in multiplication_longInteger.txt
-; Real16 Matrix || Real16        see in multiplication_real16.txt
-; Real16 Matrix || Complex16     see in multiplication_complex16.txt
-; Real16 Matrix || Time          see in multiplication_time.txt
-; Real16 Matrix || Date          see in multiplication_date.txt
-; Real16 Matrix || String        see in multiplication_string.txt
+; Real Matrix || Long Integer  see in multiplication_longInteger.txt
+; Real Matrix || Real          see in multiplication_real.txt
+; Real Matrix || Complex       see in multiplication_complex.txt
+; Real Matrix || Time          see in multiplication_time.txt
+; Real Matrix || Date          see in multiplication_date.txt
+; Real Matrix || String        see in multiplication_string.txt
 ;==================================================================
 
 
 
 ;=======================================
-; Real16 Matrix || Real16 Matrix
+; Real Matrix || Real Matrix
 ;=======================================
 
 
 
 ;=======================================
-; Real16 Matrix || Complex16 Matrix
+; Real Matrix || Complex Matrix
 ;=======================================
 
 ;=======================================
-; Complex16 Matrix || Real16 Matrix
-;=======================================
-
-
-
-;=======================================
-; Real16 Matrix || Short Integer
-;=======================================
-
-;=======================================
-; Short Integer || Real16 Matrix
+; Complex Matrix || Real Matrix
 ;=======================================
 
 
 
 ;=======================================
-; Real16 Matrix || Real34
+; Real Matrix || Short Integer
 ;=======================================
 
 ;=======================================
-; Real34 || Real16 Matrix
+; Short Integer || Real Matrix
 ;=======================================
 
 
 
 ;=======================================
-; Real16 Matrix || Complex34
+; Real Matrix || Real
 ;=======================================
 
 ;=======================================
-; Complex34 || Real16 Matrix
+; Real || Real Matrix
+;=======================================
+
+
+
+;=======================================
+; Real Matrix || Complex
+;=======================================
+
+;=======================================
+; Complex || Real Matrix
 ;=======================================

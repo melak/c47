@@ -6,7 +6,7 @@
 ;*************************************************************
 ;*************************************************************
 
-; Real34 version
+; Real version
 In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"9"
 Func: fnSin
 Out:  EC=0

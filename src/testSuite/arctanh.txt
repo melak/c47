@@ -11,7 +11,7 @@ Func: fnArctanh
 
 
 ;=======================================
-; arctanh(Long Integer) --> Real34
+; arctanh(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"-2"
 Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=LonI:"-2"
@@ -69,13 +69,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; arctanh(Real16 Matrix)
+; arctanh(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; arctanh(Complex16 Matrix)
+; arctanh(Complex Matrix)
 ;=======================================
 
 
@@ -89,7 +89,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"5#7"
 
 
 ;=======================================
-; arctanh(Real34) --> Real34
+; arctanh(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-2.5"
 Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-2.5"
@@ -220,7 +220,7 @@ Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"2.5":DEG RX=Cplx:"0.42364893019360180
 
 
 ;=======================================
-; arctanh(Complex34) --> Complex34
+; arctanh(Complex) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=1 RX=Cplx:"-2 i -3"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"-2 i -3" RX=Cplx:"-0.14694666622552975204743278515471594244234494034424529538918519 i -1.3389725222944935611241935759091442410843161725444927785820058"

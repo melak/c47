@@ -11,7 +11,7 @@ Func: fnReToCx
 
 
 ;=======================================
-; ReToCx(Long Integer, Long Integer) --> Complex34
+; ReToCx(Long Integer, Long Integer) --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"23" RY=LonI:"42" RZ=LonI:"0" CM=RECT
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Cplx:"42 i 23" RY=LonI:"0"
@@ -32,7 +32,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=LonI:"23" RY=ShoI:"42#8"
 
 
 ;=======================================
-; ReToCx(Long Integer, Real34) --> Complex34
+; ReToCx(Long Integer, Real) --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"23" RY=Real:"42" RZ=LonI:"0" CM=RECT
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Cplx:"42i23" RY=LonI:"0"
@@ -65,7 +65,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"23#8" RY=ShoI:"42#8"
 
 
 ;=======================================
-; ReToCx(Short Integer, Real34) --> Error
+; ReToCx(Short Integer, Real) --> Error
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"23#8" RY=Real:"42" RZ=LonI:"0" CM=RECT
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"23#8" RY=Real:"42"
@@ -76,7 +76,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"23#8" RY=Real:"42"
 
 
 ;=======================================
-; ReToCx(Real34, Long Integer) --> Complex34
+; ReToCx(Real, Long Integer) --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"23" RY=LonI:"42" RZ=LonI:"0" CM=RECT
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Cplx:"42i23" RY=LonI:"0"
@@ -87,7 +87,7 @@ Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Cplx:"38.6612038450024937506695783786193796
 
 
 ;=======================================
-; ReToCx(Real34, Short Integer) --> Error
+; ReToCx(Real, Short Integer) --> Error
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"23" RY=ShoI:"42#8" RZ=LonI:"0" CM=RECT
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"23" RY=ShoI:"42#8"
@@ -98,7 +98,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"23" RY=ShoI:"42#8"
 
 
 ;=======================================
-; ReToCx(Real34, Real34) --> Complex34
+; ReToCx(Real, Real) --> Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"23" RY=Real:"42" RZ=LonI:"0" CM=RECT
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Cplx:"42i23" RY=LonI:"0"

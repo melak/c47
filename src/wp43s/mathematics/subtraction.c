@@ -21,6 +21,7 @@
 #include "mathematics/subtraction.h"
 
 #include "conversionAngles.h"
+#include "constantPointers.h"
 #include "debug.h"
 #include "error.h"
 #include "fonts.h"
@@ -59,12 +60,12 @@ TO_QSPI void (* const subtraction[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void subError(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void subError(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot subtract %s", getRegisterDataTypeName(REGISTER_X, true, false));
     sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "from %s", getRegisterDataTypeName(REGISTER_Y, true, false));
     moreInfoOnError("In function fnSubtract:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 
@@ -218,6 +219,9 @@ void subLonIReal(void) {
     realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
   }
   else {
+    if(currentAngularMode == amMultPi) {
+      realMultiply(&y, const_pi, &y, &ctxtReal39);
+    }
     convertAngleFromTo(&x, xAngularMode, currentAngularMode, &ctxtReal39);
     realSubtract(&y, &x, &x, &ctxtReal39);
     realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
@@ -247,6 +251,9 @@ void subRealLonI(void) {
     realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
   }
   else {
+    if(currentAngularMode == amMultPi) {
+      realMultiply(&x, const_pi, &x, &ctxtReal39);
+    }
     convertAngleFromTo(&y, yAngularMode, currentAngularMode, &ctxtReal39);
     realSubtract(&y, &x, &x, &ctxtReal39);
     realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
@@ -405,11 +412,11 @@ void subDateReal(void) {
 /******************************************************************************************************************************************************************************************/
 
 /******************************************************************************************************************************************************************************************/
-/* real16 matrix - ...                                                                                                                                                                    */
+/* real34 matrix - ...                                                                                                                                                                    */
 /******************************************************************************************************************************************************************************************/
 
 /********************************************//**
- * \brief Y(real16 matrix) - X(real16 matrix) ==> X(real16 matrix)
+ * \brief Y(real34 matrix) - X(real34 matrix) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -442,7 +449,7 @@ void subRemaRema(void) {
 
 
 /********************************************//**
- * \brief Y(real16 matrix) - X(complex16 matrix) ==> X(complex16 matrix)
+ * \brief Y(real34 matrix) - X(complex34 matrix) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -457,7 +464,7 @@ void subRemaCxma(void) {
 
 
 /********************************************//**
- * \brief Y(complex16 matrix) - X(real16 matrix) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) - X(real34 matrix) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -472,11 +479,11 @@ void subCxmaRema(void) {
 
 
 /******************************************************************************************************************************************************************************************/
-/* complex16 matrix - ...                                                                                                                                                                 */
+/* complex34 matrix - ...                                                                                                                                                                 */
 /******************************************************************************************************************************************************************************************/
 
 /********************************************//**
- * \brief Y(complex16 matrix) - X(complex16 matrix) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) - X(complex34 matrix) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -543,6 +550,9 @@ void subShoIReal(void) {
     realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
   }
   else {
+    if(currentAngularMode == amMultPi) {
+      realMultiply(&y, const_pi, &y, &ctxtReal39);
+    }
     convertAngleFromTo(&x, xAngularMode, currentAngularMode, &ctxtReal39);
     realSubtract(&y, &x, &x, &ctxtReal39);
     realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
@@ -571,6 +581,9 @@ void subRealShoI(void) {
     realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
   }
   else {
+    if(currentAngularMode == amMultPi) {
+      realMultiply(&x, const_pi, &x, &ctxtReal39);
+    }
     convertAngleFromTo(&y, yAngularMode, currentAngularMode, &ctxtReal39);
     realSubtract(&y, &x, &x, &ctxtReal39);
     realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
@@ -630,15 +643,21 @@ void subRealReal(void) {
   else {
     real_t y, x;
 
+    real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
+    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+
     if(yAngularMode == amNone) {
       yAngularMode = currentAngularMode;
+      if(currentAngularMode == amMultPi) {
+        realMultiply(&y, const_pi, &y, &ctxtReal39);
+      }
     }
     else if(xAngularMode == amNone) {
       xAngularMode = currentAngularMode;
+      if(currentAngularMode == amMultPi) {
+        realMultiply(&x, const_pi, &x, &ctxtReal39);
+      }
     }
-
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
 
     convertAngleFromTo(&y, yAngularMode, currentAngularMode, &ctxtReal39);
     convertAngleFromTo(&x, xAngularMode, currentAngularMode, &ctxtReal39);

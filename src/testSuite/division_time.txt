@@ -13,8 +13,8 @@ Func: fnDivide
 
 ;==================================================================
 ; Time / Long Integer  see in division_longInteger.txt
-; Time / Real16        see in division_real16.txt
-; Time / Complex16     see in division_complex16.txt
+; Time / Real          see in division_real.txt
+; Time / Complex       see in division_complex.txt
 ;==================================================================
 
 
@@ -48,21 +48,21 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Time:"45247.54264" RX=Real:"2.7284750021067
 
 
 ;=======================================
-; Time / Real16 Matrix
+; Time / Real Matrix
 ;=======================================
 
 ;=======================================
-; Real16 Matrix / Time
+; Real Matrix / Time
 ;=======================================
 
 
 
 ;=======================================
-; Time / Complex16 Matrix
+; Time / Complex Matrix
 ;=======================================
 
 ;=======================================
-; Complex16 Matrix / Time
+; Complex Matrix / Time
 ;=======================================
 
 
@@ -80,21 +80,21 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"45247#8" RX=Time:"6.45994453456124744
 
 
 ;=======================================
-; Time / Real34
+; Time / Real
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=Time:"123456.789" RX=Real:"45247.54264"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"45247.54264" RX=Time:"2.7284750021067663443832935630998943459971288288287029945102893"
 
 ;=======================================
-; Real34 / Time
+; Real / Time
 ;=======================================
 
 
 
 ;=======================================
-; Time / Complex34
+; Time / Complex
 ;=======================================
 
 ;=======================================
-; Complex34 / Time
+; Complex / Time
 ;=======================================

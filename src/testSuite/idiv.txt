@@ -54,7 +54,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=LonI:"1"
 
 
 ;=======================================
-; Long Integer IDiv Real34 --> Long Integer
+; Long Integer IDiv Real --> Long Integer
 ;=======================================
 In:  FL_ASLIFT=0 RY=LonI:"37125455431202845695058474896301" RX=Real:"123.456"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"123.456" RX=LonI:"300718113588670017618086402413"
@@ -135,7 +135,7 @@ In:  AM=MULTPI FL_CPXRES=0 FL_ASLIFT=0 RY=LonI:"2" RX=Real:"3.453099789":MULTPI
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3.453099789":MULTPI RX=LonI:"0"
 
 ;=======================================
-; Real34 IDiv Long Integer --> Long Integer
+; Real IDiv Long Integer --> Long Integer
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RY=Real:"123.456" RX=LonI:"12545543120284569505847489630102030405"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"12545543120284569505847489630102030405" RX=LonI:"9.8406261742775515542890234619968490617583323707530487292471935e-36"
@@ -226,7 +226,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"10000#2" RX=ShoI:"783#10"
 
 
 ;=======================================
-; Short Integer IDiv Real34 --> Long Integer
+; Short Integer IDiv Real --> Long Integer
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=ShoI:"45247#8" RX=Real:"123456" ;RY=19111
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"123456" RX=LonI:"0"
@@ -307,7 +307,7 @@ In:  AM=MULTPI FL_CPXRES=0 FL_ASLIFT=0 RY=ShoI:"2#13" RX=Real:"3.453099789":MULT
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3.453099789":MULTPI RX=LonI:"0"
 
 ;=======================================
-; Real34 IDiv Short Integer --> Long Integer
+; Real IDiv Short Integer --> Long Integer
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=Real:"123456" RX=ShoI:"45247#8" ;RX=19111
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"45247#8" RX=LonI:"6"
@@ -390,7 +390,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"2#13" RX=LonI:"1"
 
 
 ;=======================================
-; Real34 IDiv Real34 --> Long Integer
+; Real IDiv Real --> Long Integer
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=Real:"123456.789" RX=Real:"45247.54264"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"45247.54264" RX=LonI:"2"

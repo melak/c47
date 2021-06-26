@@ -101,6 +101,9 @@
 
   #ifdef PC_BUILD
     void btnFnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
+      if(event->type == GDK_DOUBLE_BUTTON_PRESS || event->type == GDK_TRIPLE_BUTTON_PRESS) { // return unprocessed for double or triple click
+        return;
+      }
       if(event->button.button == 2) { // Middle click
         shiftF = true;
         shiftG = false;

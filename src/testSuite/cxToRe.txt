@@ -11,7 +11,7 @@ Func: fnCxToRe
 
 
 ;=======================================
-; CxToRe(Complex34) --> Real34, Real34
+; CxToRe(Complex) --> Real, Real
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=1 RX=Cplx:"42 i 23" RY=LonI:"0" CM=RECT
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Real:"23" RY=Real:"42"
@@ -21,5 +21,5 @@ Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RX=Real:"23.0000000000000000000000000000000007
 
 
 ;=======================================
-; CxToRe(Complex16 Matrix) --> Real16 Matrix, Real16 Matrix
+; CxToRe(Complex Matrix) --> Real Matrix, Real Matrix
 ;=======================================

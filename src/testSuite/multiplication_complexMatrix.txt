@@ -1,8 +1,8 @@
 ;*************************************************************
 ;*************************************************************
 ;**                                                         **
-;**                COMPLEX16 MATRIX x ...                   **
-;**                ... x COMPLEX16 MATRIX                   **
+;**                COMPLEX MATRIX x ...                     **
+;**                ... x COMPLEX MATRIX                     **
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
@@ -12,47 +12,47 @@ Func: fnMultiply
 
 
 ;==================================================================
-; Complex16 Matrix x Long Integer   see in multiplication_longInteger.txt
-; Complex16 Matrix x Real16         see in multiplication_real16.txt
-; Complex16 Matrix x Complex16      see in multiplication_complex16.txt
-; Complex16 Matrix x Time           see in multiplication_time.txt
-; Complex16 Matrix x Date           see in multiplication_date.txt
-; Complex16 Matrix x String         see in multiplication_string.txt
-; Complex16 Matrix x Real16 Matrix  see in multiplication_real16Matrix.txt
+; Complex Matrix x Long Integer   see in multiplication_longInteger.txt
+; Complex Matrix x Real           see in multiplication_real.txt
+; Complex Matrix x Complex        see in multiplication_complex.txt
+; Complex Matrix x Time           see in multiplication_time.txt
+; Complex Matrix x Date           see in multiplication_date.txt
+; Complex Matrix x String         see in multiplication_string.txt
+; Complex Matrix x Real Matrix    see in multiplication_realMatrix.txt
 ;==================================================================
 
 
 
 ;=======================================
-; Complex16 Matrix x Complex16 Matrix
+; Complex Matrix x Complex Matrix
 ;=======================================
 
 
 
 ;=======================================
-; Complex16 Matrix x Short Integer
+; Complex Matrix x Short Integer
 ;=======================================
 
 ;=======================================
-; Short Integer x Complex16 Matrix
-;=======================================
-
-
-
-;=======================================
-; Complex16 Matrix x Real34
-;=======================================
-
-;=======================================
-; Real34 x Complex16 Matrix
+; Short Integer x Complex Matrix
 ;=======================================
 
 
 
 ;=======================================
-; Complex16 Matrix x Complex34
+; Complex Matrix x Real
 ;=======================================
 
 ;=======================================
-; Complex34 x Complex16 Matrix
+; Real x Complex Matrix
+;=======================================
+
+
+
+;=======================================
+; Complex Matrix x Complex
+;=======================================
+
+;=======================================
+; Complex x Complex Matrix
 ;=======================================

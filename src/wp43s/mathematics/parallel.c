@@ -55,12 +55,12 @@ TO_QSPI void (* const parallel[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void parallelError(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void parallelError(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot multiply %s", getRegisterDataTypeName(REGISTER_Y, true, false));
     sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "by %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnMultiply:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 
@@ -87,7 +87,7 @@ void fnParallel(uint16_t unusedButMandatoryParameter) {
 /******************************************************************************************************************************************************************************************/
 
 /********************************************//**
- * \brief Y(long integer) || X(long integer) ==> X(Real16)
+ * \brief Y(long integer) || X(long integer) ==> X(Real)
  *
  * \param void
  * \return void

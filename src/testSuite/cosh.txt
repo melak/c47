@@ -11,7 +11,7 @@ Func: fnCosh
 
 
 ;=======================================
-; cosh(Long Integer) --> Real34
+; cosh(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"5" RX=Real:"74.209948524787844444106108044487714023868258589453172066091575"
@@ -48,13 +48,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; cosh(Real16 Matrix)
+; cosh(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; cosh(Complex16 Matrix)
+; cosh(Complex Matrix)
 ;=======================================
 
 
@@ -68,7 +68,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"5#7"
 
 
 ;=======================================
-; cosh(Real34) --> Real34
+; cosh(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0" RX=Real:"1"
@@ -129,7 +129,7 @@ Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-inf":GRAD
 
 
 ;=======================================
-; cosh(Complex34) --> Complex34
+; cosh(Complex) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"6.2 i -7.6" RX=Cplx:"61.904278206035530628208841392918516914607105448667143436852455 i -238.46976296148906374438545158606509502378790242901267069775277"

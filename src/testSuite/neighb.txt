@@ -57,21 +57,21 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Stri:"gdfhgfdh" RY=LonI:"2"
 
 
 ;=================================================
-; neighb(Long Integer, Real16 Matrix) --> Error24
+; neighb(Long Integer, Real Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Real16 Matrix, Long Integer) --> Error24
+; neighb(Real Matrix, Long Integer) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; neighb(Long Integer, Complex16 Matrix) --> Error24
+; neighb(Long Integer, Complex Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Complex16 Matrix, Long Integer) --> Error24
+; neighb(Complex Matrix, Long Integer) --> Error24
 ;=================================================
 
 
@@ -103,7 +103,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"3#7" RX=ShoI:"3#7"
 
 
 ;=================================================
-; neighb(Long Integer, Real34) --> Long Integer
+; neighb(Long Integer, Real) --> Long Integer
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"2" RY=Real:"3"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"2" RX=LonI:"3"
@@ -112,7 +112,7 @@ In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"2" RY=Real:"3":DEG
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"2" RX=LonI:"3"
 
 ;=================================================
-; neighb(Real34, Long Integer) --> Real34
+; neighb(Real, Long Integer) --> Real
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=LonI:"2"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"2.999999999999999999999999999999999"
@@ -126,13 +126,13 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"3"
 
 
 ;=================================================
-; neighb(Long Integer, Complex34) --> Error24
+; neighb(Long Integer, Complex) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"2" RY=Cplx:"3 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=LonI:"2" RY=Cplx:"3 i 2"
 
 ;=================================================
-; neighb(Complex34, Long Integer) --> Error24
+; neighb(Complex, Long Integer) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=LonI:"2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=LonI:"2"
@@ -166,21 +166,21 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=LonI:"2"
 
 
 ;=================================================
-; neighb(Time, Real16 Matrix) --> Error24
+; neighb(Time, Real Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Real16 Matrix, Time) --> Error24
+; neighb(Real Matrix, Time) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; neighb(Time, Complex16 Matrix) --> Error24
+; neighb(Time, Complex Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Complex16 Matrix, Time) --> Error24
+; neighb(Complex Matrix, Time) --> Error24
 ;=================================================
 
 
@@ -196,21 +196,21 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=LonI:"2"
 
 
 ;=================================================
-; neighb(Time, Real34) --> Error24
+; neighb(Time, Real) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Real34, Time) --> Error24
+; neighb(Real, Time) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; neighb(Time, Complex34) --> Error24
+; neighb(Time, Complex) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Complex34, Time) --> Error24
+; neighb(Complex, Time) --> Error24
 ;=================================================
 
 
@@ -232,21 +232,21 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=LonI:"2"
 
 
 ;=================================================
-; neighb(Date, Real16 Matrix) --> Error24
+; neighb(Date, Real Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Real16 Matrix, Date) --> Error24
+; neighb(Real Matrix, Date) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; neighb(Date, Complex16 Matrix) --> Error24
+; neighb(Date, Complex Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Complex16 Matrix, Date) --> Error24
+; neighb(Complex Matrix, Date) --> Error24
 ;=================================================
 
 
@@ -262,21 +262,21 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=LonI:"2"
 
 
 ;=================================================
-; neighb(Date, Real34) --> Error24
+; neighb(Date, Real) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Real34, Date) --> Error24
+; neighb(Real, Date) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; neighb(Date, Complex34) --> Error24
+; neighb(Date, Complex) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Complex34, Date) --> Error24
+; neighb(Complex, Date) --> Error24
 ;=================================================
 
 
@@ -290,21 +290,21 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Stri:"3 +*/i 2" RY=Stri:"gfhjjy i 2juytjuy
 
 
 ;=================================================
-; neighb(String, Real16 Matrix) --> Error24
+; neighb(String, Real Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Real16 Matrix, String) --> Error24
+; neighb(Real Matrix, String) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; neighb(String, Complex16 Matrix) --> Error24
+; neighb(String, Complex Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Complex16 Matrix, String) --> Error24
+; neighb(Complex Matrix, String) --> Error24
 ;=================================================
 
 
@@ -324,13 +324,13 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"2#13" RY=Stri:"gdfhgfdh"
 
 
 ;=================================================
-; neighb(String, Real34) --> Error24
+; neighb(String, Real) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Stri:"gdfhgfdh" RY=Real:"2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Stri:"gdfhgfdh" RY=Real:"2"
 
 ;=================================================
-; neighb(Real34, String) --> Error24
+; neighb(Real, String) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"2" RY=Stri:"gdfhgfdh"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"2" RY=Stri:"gdfhgfdh"
@@ -338,13 +338,13 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"2" RY=Stri:"gdfhgfdh"
 
 
 ;=================================================
-; neighb(String, Complex34) --> Error24
+; neighb(String, Complex) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Stri:"3g jiku 2" RY=Cplx:"3 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Stri:"3g jiku 2" RY=Cplx:"3 i 2"
 
 ;=================================================
-; neighb(Complex34, String) --> Error24
+; neighb(Complex, String) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=Stri:"gfhjjy i 2juytjuy"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=Stri:"gfhjjy i 2juytjuy"
@@ -352,83 +352,83 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=Stri:"gfhjjy i 2juytjuy"
 
 
 ;=================================================
-; neighb(Real16 Matrix, Real16 Matrix) --> Error24
+; neighb(Real Matrix, Real Matrix) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; neighb(Real16 Matrix, Complex6 Matrix) --> Error24
+; neighb(Real Matrix, Complex Matrix) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Complex16 Matrix, Real6 Matrix) --> Error24
-;=================================================
-
-
-
-;=================================================
-; neighb(Real16 Matrix, Short Integer) --> Error24
-;=================================================
-
-;=================================================
-; neighb(Short Integer, Real16 Matrix) --> Error24
+; neighb(Complex Matrix, Real Matrix) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; neighb(Real16 Matrix, Real34) --> Error24
+; neighb(Real Matrix, Short Integer) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Real34, Real16 Matrix) --> Error24
-;=================================================
-
-
-
-;=================================================
-; neighb(Real16 Matrix, Complex34) --> Error24
-;=================================================
-
-;=================================================
-; neighb(Complex34, Real16 Matrix) --> Error24
+; neighb(Short Integer, Real Matrix) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; neighb(Complex16 Matrix, Complex16 Matrix) --> Error24
+; neighb(Real Matrix, Real) --> Error24
+;=================================================
+
+;=================================================
+; neighb(Real, Real Matrix) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; neighb(Complex16 Matrix, Short Integer) --> Error24
+; neighb(Real Matrix, Complex) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Short Integer, Complex16 Matrix) --> Error24
-;=================================================
-
-
-
-;=================================================
-; neighb(Complex16 Matrix, Real34) --> Error24
-;=================================================
-
-;=================================================
-; neighb(Real34, Complex16 Matrix) --> Error24
+; neighb(Complex, Real Matrix) --> Error24
 ;=================================================
 
 
 
 ;=================================================
-; neighb(Complex16 Matrix, Complex34) --> Error24
+; neighb(Complex Matrix, Complex Matrix) --> Error24
+;=================================================
+
+
+
+;=================================================
+; neighb(Complex Matrix, Short Integer) --> Error24
 ;=================================================
 
 ;=================================================
-; neighb(Complex34, Complex16 Matrix) --> Error24
+; neighb(Short Integer, Complex Matrix) --> Error24
+;=================================================
+
+
+
+;=================================================
+; neighb(Complex Matrix, Real) --> Error24
+;=================================================
+
+;=================================================
+; neighb(Real, Complex Matrix) --> Error24
+;=================================================
+
+
+
+;=================================================
+; neighb(Complex Matrix, Complex) --> Error24
+;=================================================
+
+;=================================================
+; neighb(Complex, Complex Matrix) --> Error24
 ;=================================================
 
 
@@ -448,7 +448,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"3#7" RX=ShoI:"3#7"
 
 
 ;=================================================
-; neighb(Short Integer, Real34) --> Short Integer
+; neighb(Short Integer, Real) --> Short Integer
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"2#7" RY=Real:"3"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"2#7" RX=ShoI:"3#7"
@@ -457,7 +457,7 @@ In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"2#11" RY=Real:"3":DEG
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"2#11" RX=ShoI:"3#11"
 
 ;=================================================
-; neighb(Real34, Short Integer) --> Real34
+; neighb(Real, Short Integer) --> Real
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=ShoI:"2#3"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"2.999999999999999999999999999999999"
@@ -471,13 +471,13 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"3"
 
 
 ;=================================================
-; neighb(Short Integer, Complex34) --> Error24
+; neighb(Short Integer, Complex) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"2#5" RY=Cplx:"3 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"2#5" RY=Cplx:"3 i 2"
 
 ;=================================================
-; neighb(Complex34, Short Integer) --> Error24
+; neighb(Complex, Short Integer) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=ShoI:"2#13"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=ShoI:"2#13"
@@ -485,7 +485,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=ShoI:"2#13"
 
 
 ;=================================================
-; neighb(Real34, Real34) --> Real34
+; neighb(Real, Real) --> Real
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3" RY=Real:"2"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"2.999999999999999999999999999999999"
@@ -502,13 +502,13 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3":DEG RX=Real:"2.9999999999999999999
 
 
 ;=================================================
-; neighb(Real34, Complex34) --> Error24
+; neighb(Real, Complex) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"2" RY=Cplx:"3 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"2" RY=Cplx:"3 i 2"
 
 ;=================================================
-; neighb(Complex34, Real34) --> Error24
+; neighb(Complex, Real) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=Real:"2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=Real:"2"
@@ -516,7 +516,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=Real:"2"
 
 
 ;=================================================
-; neighb(Complex34, Complex34) --> Error24
+; neighb(Complex, Complex) --> Error24
 ;=================================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"3 i 2" RY=Cplx:"3 i 2"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Cplx:"3 i 2" RY=Cplx:"3 i 2"

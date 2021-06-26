@@ -11,7 +11,7 @@ Func: fnLogisticR
 
 
 ;=======================================
-; normalR(Long Integer) --> Real34
+; normalR(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=LonI:"0" RJ=LonI:"1" RX=LonI:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"0" RX=Real:"0.5"
@@ -63,13 +63,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; normalR(Real16 Matrix) --> Error24
+; normalR(Real Matrix) --> Error24
 ;=======================================
 
 
 
 ;=======================================
-; normalR(Complex16 Matrix) --> Error24
+; normalR(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -81,7 +81,7 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; normalR(Real34) --> Real34
+; normalR(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=Real:"0" RJ=Real:"1" RX=Real:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0" RX=Real:"0.5"
@@ -113,5 +113,5 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"3" RX=Real:"0.26894142136999512074884
 
 
 ;=======================================
-; normalR(Complex34) --> Error24
+; normalR(Complex) --> Error24
 ;=======================================

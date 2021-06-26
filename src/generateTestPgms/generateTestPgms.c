@@ -10957,6 +10957,12 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_toPOL >> 8) | 0x80;
     *(currentStep++) =  ITM_toPOL       & 0xff;
 
+    *(currentStep++) = (ITM_MPItoR >> 8) | 0x80;
+    *(currentStep++) =  ITM_MPItoR       & 0xff;
+
+    *(currentStep++) = (ITM_RtoMPI >> 8) | 0x80;
+    *(currentStep++) =  ITM_RtoMPI       & 0xff;
+
     *(currentStep++) = (ITM_toREAL >> 8) | 0x80;
     *(currentStep++) =  ITM_toREAL       & 0xff;
 

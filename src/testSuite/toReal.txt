@@ -49,13 +49,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; toReal(Real16 Matrix) --> Error24
+; toReal(Real Matrix) --> Error24
 ;=======================================
 
 
 
 ;=======================================
-; toReal(Complex16 Matrix) --> Error24
+; toReal(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -68,7 +68,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=ShoI:"45247#8" RX=Real:"19111"
 
 
 ;=======================================
-; toReal(Real34) --> Real
+; toReal(Real) --> Real
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"1234567890.123456"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"1234567890.123456" RX=Real:"1234567890.123456"
@@ -94,7 +94,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"12.3456789":DMS RX=Real:"12.3456789"
 
 
 ;=======================================
-; toReal(Complex34) --> Error24
+; toReal(Complex) --> Error24
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
 Out: EC=24 FL_ASLIFT=0 RX=Cplx:"6.2 i -7.6"

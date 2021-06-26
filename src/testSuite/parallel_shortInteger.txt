@@ -13,13 +13,13 @@ Func: fnParallel
 
 ;==================================================================
 ; Short Integer || Long Integer      see in multiplication_longInteger.txt
-; Short Integer || Real16            see in multiplication_real16.txt
-; Short Integer || Complex16         see in multiplication_complex16.txt
+; Short Integer || Real              see in multiplication_real.txt
+; Short Integer || Complex           see in multiplication_complex.txt
 ; Short Integer || Time              see in multiplication_time.txt
 ; Short Integer || Date              see in multiplication_date.txt
 ; Short Integer || String            see in multiplication_string.txt
-; Short Integer || Real16 Matrix     see in multiplication_real16Matrix.txt
-; Short Integer || Complex16 Matrix  see in multiplication_complex16Matrix.txt
+; Short Integer || Real Matrix       see in multiplication_realMatrix.txt
+; Short Integer || Complex Matrix    see in multiplication_complexMatrix.txt
 ;==================================================================
 
 
@@ -33,7 +33,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RY=ShoI:"12540#10" RX=ShoI:"10000#2"
 
 
 ;=======================================
-; Short Integer || Real34 --> Error24
+; Short Integer || Real --> Error24
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=ShoI:"45247#8" RX=Real:"123456"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RY=ShoI:"45247#8" RX=Real:"123456"
@@ -114,7 +114,7 @@ In:  AM=MULTPI FL_CPXRES=0 FL_ASLIFT=0 RY=ShoI:"2#13" RX=Real:"3.453099789":MULT
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RY=ShoI:"2#13" RX=Real:"3.453099789":MULTPI
 
 ;=======================================
-; Real34 || Short Integer --> Error24
+; Real || Short Integer --> Error24
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=Real:"123456" RX=ShoI:"45247#8"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RY=Real:"123456" RX=ShoI:"45247#8"
@@ -196,13 +196,13 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RY=Real:"3.453099789":MULTPI RX=ShoI:"2#13"
 
 
 ;=======================================
-; Short Integer || Complex34 --> Error24
+; Short Integer || Complex --> Error24
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RY=ShoI:"12540#10" RX=Cplx:"123.456 i -6.78"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RY=ShoI:"12540#10" RX=Cplx:"123.456 i -6.78"
 
 ;=======================================
-; Complex34 || Short Integer --> Error24
+; Complex || Short Integer --> Error24
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=Cplx:"123456 i -546" RX=ShoI:"45247#8"
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RY=Cplx:"123456 i -546" RX=ShoI:"45247#8"

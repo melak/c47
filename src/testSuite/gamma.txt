@@ -11,7 +11,7 @@ Func: fnGamma
 
 
 ;=======================================
-; gamma(Long Integer) --> Real34
+; gamma(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"46"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"46" RX=Real:"119622220865480194561963161495657715064383733760000000000"
@@ -48,13 +48,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; gamma(Real16 Matrix)
+; gamma(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; gamma(Complex16 Matrix)
+; gamma(Complex Matrix)
 ;=======================================
 
 
@@ -68,7 +68,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"5#8"
 
 
 ;=======================================
-; gamma(Real34) --> Real34
+; gamma(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.5" RX=Real:"1.77245385090551602729816748334114518279754945612238712821380778985"
@@ -106,7 +106,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-4.32564":GRAD RX=Real:"-0.0928238842
 
 
 ;=======================================
-; gamma(Complex34) --> Complex34
+; gamma(Complex) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"6.2 i -7.6" RX=Cplx:"-1.6724066357653852921174882842654853012776480990051891929281362 i -2.1471425625020440567811763759197971050483081850017064173111305"

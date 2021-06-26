@@ -46,13 +46,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; day(Real16 Matrix) --> Error24
+; day(Real Matrix) --> Error24
 ;=======================================
 
 
 
 ;=======================================
-; day(Complex16 Matrix) --> Error24
+; day(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -65,7 +65,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"5#7"
 
 
 ;=======================================
-; day(Real34) --> Long Integer
+; day(Real) --> Long Integer
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001":DEG
 Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"0.0001":DEG
@@ -130,7 +130,7 @@ Out: FL_YMD=0 FL_MDY=0 FL_DMY=1 JG=2299161 EC=2 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:
 
 
 ;=======================================
-; day(Complex34) --> Error24
+; day(Complex) --> Error24
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
 Out: EC=24 FL_ASLIFT=0 RX=Cplx:"6.2 i -7.6"

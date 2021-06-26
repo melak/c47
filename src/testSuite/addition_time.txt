@@ -13,8 +13,8 @@ Func: fnAdd
 
 ;==================================================================
 ; Time + Long Integer  see in addition_longInteger.txt
-; Time + Real16        see in addition_real16.txt
-; Time + Complex16     see in addition_complex16.txt
+; Time + Real          see in addition_real.txt
+; Time + Complex       see in addition_complex.txt
 ;==================================================================
 
 
@@ -51,21 +51,21 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Time:"4:52:47.54264" RX=Time:"6:16:33.22154
 
 
 ;=======================================
-; Time + Real16 Matrix
+; Time + Real Matrix
 ;=======================================
 
 ;=======================================
-; Real16 Matrix + Time
+; Real Matrix + Time
 ;=======================================
 
 
 
 ;=======================================
-; Time + Complex16 Matrix
+; Time + Complex Matrix
 ;=======================================
 
 ;=======================================
-; Complex16 Matrix + Time
+; Complex Matrix + Time
 ;=======================================
 
 
@@ -81,7 +81,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Time:"4:52:47.54264" RX=Time:"6:16:33.22154
 
 
 ;=======================================
-; Time + Real34
+; Time + Real
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=Time:"123456.789" RX=Real:"4.524754264"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"4.524754264" RX=Time:"139745.9043504"
@@ -90,7 +90,7 @@ In:  FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=Time:"1:23:45.6789" RX=Real:"4.5247542
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"4.524754264" RX=Time:"5:55:14.7942504"
 
 ;=======================================
-; Real34 + Time
+; Real + Time
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=Real:"1.23456789" RX=Time:"45247.54264"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Time:"45247.54264" RX=Time:"49691.987044"
@@ -101,9 +101,9 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Time:"4:52:47.54264" RX=Time:"6:06:51.98704
 
 
 ;=======================================
-; Time + Complex34
+; Time + Complex
 ;=======================================
 
 ;=======================================
-; Complex34 + Time
+; Complex + Time
 ;=======================================

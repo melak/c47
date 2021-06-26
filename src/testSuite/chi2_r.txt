@@ -11,7 +11,7 @@ Func: fnChi2R
 
 
 ;=======================================
-; Chi2R(Long Integer) --> Real34
+; Chi2R(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=LonI:"1" RX=Real:"0.1"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.1" RX=Real:"0.7518296340458492824886447538260134"
@@ -96,13 +96,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; Chi2R(Real16 Matrix) --> Error24
+; Chi2R(Real Matrix) --> Error24
 ;=======================================
 
 
 
 ;=======================================
-; Chi2R(Complex16 Matrix) --> Error24
+; Chi2R(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -114,7 +114,7 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; Chi2R(Real34) --> Real34
+; Chi2R(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RI=Real:"1" RX=Real:"0.1"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.1" RX=Real:"0.7518296340458492824886447538260134"
@@ -179,5 +179,5 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"20" RX=Real:"0.0012497305630313754118
 
 
 ;=======================================
-; Chi2R(Complex34) --> Error24
+; Chi2R(Complex) --> Error24
 ;=======================================

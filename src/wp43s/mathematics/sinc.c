@@ -53,11 +53,11 @@ TO_QSPI void (* const Sinc[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void sincError(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void sincError(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot calculate Sinc for %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnSinc:", errorMessage, NULL, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 
@@ -113,7 +113,7 @@ void sincComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t
 
 
 void sincLonI(void) {
-  real_t x, sine;
+  real_t x;
 
   convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
 
@@ -121,9 +121,12 @@ void sincLonI(void) {
     realCopy(const_1, &x);
   }
   else {
+    real_t xx;
+
+    realCopy(&x, &xx);
     longIntegerAngleReduction(REGISTER_X, amRadian, &x);
-    WP34S_Cvt2RadSinCosTan(&x, amRadian, &sine, NULL, NULL, &ctxtReal39);
-    realDivide(&sine, &x, &x, &ctxtReal39);
+    WP34S_Cvt2RadSinCosTan(&x, amRadian, &x, NULL, NULL, &ctxtReal39);
+    realDivide(&x, &xx, &x, &ctxtReal39);
   }
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
@@ -159,7 +162,7 @@ void sincReal(void) {
   }
 
   else {
-    real_t x, sine;
+    real_t x;
 
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
 
@@ -167,6 +170,7 @@ void sincReal(void) {
       realCopy(const_1, &x);
     }
     else {
+      real_t sine;
       angularMode_t registerAngularMode = getRegisterAngularMode(REGISTER_X);
       if(registerAngularMode != amNone) {
         convertAngleFromTo(&x, registerAngularMode, amRadian, &ctxtReal39);

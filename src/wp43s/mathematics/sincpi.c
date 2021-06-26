@@ -52,11 +52,11 @@ TO_QSPI void (* const Sincpi[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void sincpiError(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void sincpiError(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot calculate Sincpi for %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnSincpi:", errorMessage, NULL, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 
@@ -115,7 +115,6 @@ void sincpiComplex(const real_t *real, const real_t *imag, real_t *resReal, real
 
 
 void sincpiLonI(void) {
-
   if(longIntegerIsZeroRegister(REGISTER_X)) {
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     realToReal34(const_1, REGISTER_REAL34_DATA(REGISTER_X));
@@ -140,10 +139,6 @@ void sincpiCxma(void) {
 
 
 
-
-
-
-
 void sincpiReal(void) {
   if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(getSystemFlag(FLAG_SPCRES)) {
@@ -159,23 +154,22 @@ void sincpiReal(void) {
   }
 
   else {
-    real_t x, xx, sine;
+    real_t x;
 
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
-    realToIntegralValue(&x, &xx, DEC_ROUND_DOWN, &ctxtReal39);
-    realSubtract(&x, &xx , &xx, &ctxtReal39);
 
     if(realIsZero(&x)) {
       realCopy(const_1, &x);
     }
-    else if(realIsZero(&xx)) {
-      realCopy(const_0, &x);
-    }
     else {
-      if(getRegisterAngularMode(REGISTER_X) == amNone) {
-        setRegisterAngularMode(REGISTER_X, amMultPi);
+      real_t sine;
+      angularMode_t registerAngularMode = getRegisterAngularMode(REGISTER_X);
+      if(registerAngularMode != amNone) {
+        convertAngleFromTo(&x, registerAngularMode, amRadian, &ctxtReal39);
       }
-      convertAngleFromTo(&x, getRegisterAngularMode(REGISTER_X), amRadian, &ctxtReal39);
+      else {
+        realMultiply(&x, const_pi, &x, &ctxtReal39);
+      }
       WP34S_Cvt2RadSinCosTan(&x, amRadian, &sine, NULL, NULL, &ctxtReal39);
       realDivide(&sine, &x, &x, &ctxtReal39);
     }

@@ -58,12 +58,12 @@ TO_QSPI void (* const logicalXor[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_O
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void xorError24(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void xorError24(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "%s XOR %s", getRegisterDataTypeName(REGISTER_Y, false, false), getRegisterDataTypeName(REGISTER_X, false, false));
     sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "data type of one of the XOR parameters is not allowed");
     moreInfoOnError("In function xorError24:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 void xorError31(void) {

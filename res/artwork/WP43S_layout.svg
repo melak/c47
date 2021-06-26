@@ -8146,14 +8146,14 @@
      showguides="false"
      inkscape:window-maximized="1"
      inkscape:window-y="0"
-     inkscape:window-x="0"
+     inkscape:window-x="2560"
      inkscape:window-height="1387"
      inkscape:window-width="2560"
      showgrid="false"
-     inkscape:current-layer="layer6"
+     inkscape:current-layer="layer1"
      inkscape:document-units="mm"
      inkscape:cy="279.68504"
-     inkscape:cx="397.04214"
+     inkscape:cx="396.80165"
      inkscape:zoom="2.0791244"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -8212,7 +8212,7 @@
      inkscape:groupmode="layer"
      id="layer10"
      inkscape:label="Do not print"
-     style="display:none">
+     style="display:inline">
     <g
        transform="translate(16.530543,11.733179)"
        id="g4086"
@@ -8335,6 +8335,17 @@
            y="70.879295"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.21733px;font-family:Consolas;-inkscape-font-specification:'Consolas Bold';fill:#ffffff;fill-opacity:1;stroke-width:0.264583">2</tspan></text>
     </g>
+    <text
+       id="text15970-2"
+       y="84.481049"
+       x="85.660553"
+       style="display:inline;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.794px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:Calibri;letter-spacing:0px;word-spacing:0px;fill:#f7a800;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="font-size:2.794px;fill:#f7a800;fill-opacity:1;stroke-width:0.264583"
+         y="84.481049"
+         x="85.660553"
+         id="tspan15968-76"
+         sodipodi:role="line">RMD</tspan></text>
   </g>
   <g
      transform="translate(0,-149)"
@@ -11547,12 +11558,12 @@
     <text
        id="text15970-22-6-99-6-5"
        y="248.37636"
-       x="112.54163"
+       x="111.17635"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.794px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:Calibri;letter-spacing:0px;word-spacing:0px;display:inline;fill:#53c9e9;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"><tspan
          style="font-size:2.794px;fill:#53c9e9;fill-opacity:1;stroke-width:0.264583"
          y="248.37636"
-         x="112.54163"
+         x="111.17635"
          id="tspan15968-27-9-23-4-1"
          sodipodi:role="line">MOD</tspan></text>
     <text
@@ -12386,17 +12397,6 @@
          id="path44339" />
     </g>
     <text
-       id="text15970-2-9"
-       y="248.39069"
-       x="106.39333"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.794px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:Calibri;letter-spacing:0px;word-spacing:0px;display:inline;fill:#f7a800;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       xml:space="preserve"><tspan
-         style="font-size:2.794px;fill:#f7a800;fill-opacity:1;stroke-width:0.264583"
-         y="248.39069"
-         x="106.39333"
-         id="tspan15968-76-4"
-         sodipodi:role="line">RMD</tspan></text>
-    <text
        transform="matrix(0.98870352,0,0,1.0114255,0,149)"
        id="text15970-687-2-0"
        y="70.197296"
@@ -12451,17 +12451,6 @@
         </g>
       </g>
     </g>
-    <text
-       id="text15970-60-5"
-       y="237.39096"
-       x="109.67117"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.794px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:Calibri;letter-spacing:0px;word-spacing:0px;display:inline;fill:#f7a800;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       xml:space="preserve"><tspan
-         style="font-size:2.794px;fill:#f7a800;fill-opacity:1;stroke-width:0.264583"
-         y="237.39096"
-         x="109.67117"
-         id="tspan15968-5-8"
-         sodipodi:role="line">FILL</tspan></text>
     <g
        transform="matrix(0.99999813,0,0,1,99.741638,148.58797)"
        id="g4239-0"
@@ -12493,6 +12482,17 @@
         </g>
       </g>
     </g>
+    <text
+       id="text15970-60-5"
+       y="237.39096"
+       x="109.67117"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.794px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:Calibri;letter-spacing:0px;word-spacing:0px;display:inline;fill:#f7a800;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="font-size:2.794px;fill:#f7a800;fill-opacity:1;stroke-width:0.264583"
+         y="237.39096"
+         x="109.67117"
+         id="tspan15968-5-8"
+         sodipodi:role="line">FILL</tspan></text>
     <g
        transform="translate(100.59284,148.60169)"
        id="g17051-7"
@@ -12685,10 +12685,22 @@
          d="m 141.3302,132.34484 q -0.005,0.0191 -0.0164,0.0314 -0.0109,0.0109 -0.03,0.0177 -0.0191,0.005 -0.0477,0.008 -0.0273,0.003 -0.0682,0.003 -0.0423,0 -0.0723,-0.003 -0.0286,-0.003 -0.0478,-0.008 -0.0191,-0.007 -0.0286,-0.0177 -0.01,-0.0123 -0.015,-0.0314 l -0.36971,-1.33288 h -0.003 l -0.34107,1.33288 q -0.004,0.0191 -0.0136,0.0314 -0.01,0.0109 -0.0273,0.0177 -0.0177,0.005 -0.0464,0.008 -0.0273,0.003 -0.0709,0.003 -0.045,0 -0.075,-0.003 -0.03,-0.003 -0.0491,-0.008 -0.0191,-0.007 -0.03,-0.0177 -0.01,-0.0123 -0.0136,-0.0314 l -0.46658,-1.63029 q -0.008,-0.0314 -0.01,-0.0491 0,-0.0177 0.0109,-0.0273 0.0123,-0.01 0.0382,-0.0123 0.0259,-0.003 0.0696,-0.003 0.0423,0 0.0669,0.003 0.0246,10e-4 0.0368,0.007 0.0136,0.005 0.0177,0.015 0.005,0.01 0.008,0.0246 l 0.39699,1.47886 h 0.001 l 0.37653,-1.47613 q 0.004,-0.015 0.01,-0.0246 0.007,-0.0109 0.0205,-0.0164 0.0136,-0.005 0.0382,-0.008 0.0259,-0.003 0.0669,-0.003 0.0382,0 0.06,0.003 0.0232,0.003 0.0368,0.008 0.0136,0.005 0.0191,0.0164 0.007,0.01 0.0109,0.0246 l 0.40519,1.47613 h 0.003 l 0.38882,-1.47749 q 0.004,-0.0137 0.008,-0.0232 0.004,-0.0109 0.0164,-0.0164 0.0136,-0.005 0.0368,-0.008 0.0246,-0.003 0.0641,-0.003 0.0409,0 0.0641,0.004 0.0246,0.003 0.0355,0.0123 0.0109,0.01 0.01,0.0273 0,0.0177 -0.007,0.0491 z"
          id="path44372" />
     </g>
+    <g
+       aria-label="||"
+       id="text15970-24-7-1-3"
+       style="display:inline;font-size:2.794px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:Calibri;letter-spacing:-0.132292px;word-spacing:0px;fill:#f7a800;stroke-width:0.264583"
+       transform="translate(-0.43085999,148.64632)">
+      <path
+         d="m 108.63466,100.03131 q 0,0.0109 -0.005,0.0191 -0.004,0.008 -0.0164,0.0136 -0.0123,0.005 -0.0327,0.008 -0.0205,0.003 -0.0518,0.003 -0.03,0 -0.0505,-0.003 -0.0205,-0.003 -0.0327,-0.008 -0.0123,-0.005 -0.0177,-0.0136 -0.004,-0.008 -0.004,-0.0191 v -2.368353 q 0,-0.0095 0.004,-0.01774 0.005,-0.0082 0.0177,-0.01364 0.0123,-0.0055 0.0327,-0.0082 0.0205,-0.0027 0.0505,-0.0027 0.0314,0 0.0518,0.0027 0.0205,0.0027 0.0327,0.0082 0.0123,0.0055 0.0164,0.01364 0.005,0.0082 0.005,0.01774 z"
+         id="path24882" />
+      <path
+         d="m 109.78886,100.03131 q 0,0.0109 -0.005,0.0191 -0.004,0.008 -0.0164,0.0136 -0.0123,0.005 -0.0327,0.008 -0.0205,0.003 -0.0518,0.003 -0.03,0 -0.0505,-0.003 -0.0205,-0.003 -0.0327,-0.008 -0.0123,-0.005 -0.0177,-0.0136 -0.004,-0.008 -0.004,-0.0191 v -2.368353 q 0,-0.0095 0.004,-0.01774 0.005,-0.0082 0.0177,-0.01364 0.0123,-0.0055 0.0327,-0.0082 0.0205,-0.0027 0.0505,-0.0027 0.0314,0 0.0518,0.0027 0.0205,0.0027 0.0327,0.0082 0.0123,0.0055 0.0164,0.01364 0.005,0.0082 0.005,0.01774 z"
+         id="path24884" />
+    </g>
   </g>
   <g
      transform="translate(0,-149)"
-     style="display:none"
+     style="display:inline"
      inkscape:label="Bezel grey"
      id="layer7"
      inkscape:groupmode="layer">
@@ -14342,28 +14354,6 @@
          style="display:inline;fill:#f7a800;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.199861" />
     </g>
     <text
-       id="text15970-2"
-       y="99.3909"
-       x="6.3930998"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.794px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:Calibri;letter-spacing:0px;word-spacing:0px;display:inline;fill:#f7a800;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       xml:space="preserve"><tspan
-         style="font-size:2.794px;fill:#f7a800;fill-opacity:1;stroke-width:0.264583"
-         y="99.3909"
-         x="6.3930998"
-         id="tspan15968-76"
-         sodipodi:role="line">RMD</tspan></text>
-    <text
-       id="text15970-22-6-99-6"
-       y="99.376572"
-       x="12.541408"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.794px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:Calibri;letter-spacing:0px;word-spacing:0px;display:inline;fill:#53c9e9;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       xml:space="preserve"><tspan
-         style="font-size:2.794px;fill:#53c9e9;fill-opacity:1;stroke-width:0.264583"
-         y="99.376572"
-         x="12.541408"
-         id="tspan15968-27-9-23-4"
-         sodipodi:role="line">MOD</tspan></text>
-    <text
        transform="scale(0.98870445,1.0114246)"
        id="text15970-687-2"
        y="70.197502"
@@ -14929,6 +14919,28 @@
            y="83.688004"
            style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.45533px;font-family:Consolas;-inkscape-font-specification:'Consolas Bold Italic';fill:#f7a800;fill-opacity:1;stroke-width:0.264583">x</tspan></text>
     </g>
+    <text
+       id="text15970-22-6-99-6"
+       y="99.376572"
+       x="11.176076"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.794px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:Calibri;letter-spacing:0px;word-spacing:0px;display:inline;fill:#53c9e9;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="font-size:2.794px;fill:#53c9e9;fill-opacity:1;stroke-width:0.264583"
+         y="99.376572"
+         x="11.176076"
+         id="tspan15968-27-9-23-4"
+         sodipodi:role="line">MOD</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.794px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:Calibri;letter-spacing:-0.132292px;word-spacing:0px;display:inline;fill:#f7a800;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="7.4555674"
+       y="99.223091"
+       id="text15970-24-7-1"><tspan
+         sodipodi:role="line"
+         id="tspan15968-74-1-5"
+         x="7.4555674"
+         y="99.223091"
+         style="font-size:2.794px;letter-spacing:-0.132292px;fill:#f7a800;fill-opacity:1;stroke-width:0.264583">||</tspan></text>
   </g>
   <g
      transform="translate(0,-149)"

@@ -62,12 +62,12 @@ TO_QSPI void (* const power[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DAT
  * \return void
  ***********************************************/
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void powError(void) {
-  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  void powError(void) {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     sprintf(errorMessage, "cannot raise %s", getRegisterDataTypeName(REGISTER_Y, true, false));
     sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "to %s", getRegisterDataTypeName(REGISTER_X, true, false));
     moreInfoOnError("In function fnPower:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
-}
+  }
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
 
@@ -263,11 +263,11 @@ void powCplxLonI(void) {
 /******************************************************************************************************************************************************************************************/
 
 /******************************************************************************************************************************************************************************************/
-/* real16 matrix ^ ...                                                                                                                                                                    */
+/* real34 matrix ^ ...                                                                                                                                                                    */
 /******************************************************************************************************************************************************************************************/
 
 /********************************************//**
- * \brief Y(real16 matrix) ^ X(long integer) ==> X(real16 matrix)
+ * \brief Y(real34 matrix) ^ X(long integer) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -279,7 +279,7 @@ void powRemaLonI(void) {
 
 
 /********************************************//**
- * \brief Y(real16 matrix) ^ X(short integer) ==> X(real16 matrix)
+ * \brief Y(real34 matrix) ^ X(short integer) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -291,7 +291,7 @@ void powRemaShoI(void) {
 
 
 /********************************************//**
- * \brief Y(real16 matrix) ^ X(real34) ==> X(real16 matrix)
+ * \brief Y(real34 matrix) ^ X(real34) ==> X(real34 matrix)
  *
  * \param void
  * \return void
@@ -303,7 +303,7 @@ void powRemaReal(void) {
 
 
 /********************************************//**
- * \brief Y(real16 matrix) ^ X(complex34) ==> X(complex16 matrix)
+ * \brief Y(real34 matrix) ^ X(complex34) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -318,11 +318,11 @@ void powRemaCplx(void) {
 
 
 /******************************************************************************************************************************************************************************************/
-/* complex16 matrix ^ ...                                                                                                                                                                 */
+/* complex34 matrix ^ ...                                                                                                                                                                 */
 /******************************************************************************************************************************************************************************************/
 
 /********************************************//**
- * \brief Y(complex16 matrix) ^ X(long integer) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) ^ X(long integer) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -334,7 +334,7 @@ void powCxmaLonI(void) {
 
 
 /********************************************//**
- * \brief Y(complex16 matrix) ^ X(short integer) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) ^ X(short integer) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -346,7 +346,7 @@ void powCxmaShoI(void) {
 
 
 /********************************************//**
- * \brief Y(complex16 matrix) ^ X(real34) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) ^ X(real34) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
@@ -358,7 +358,7 @@ void powCxmaReal(void) {
 
 
 /********************************************//**
- * \brief Y(complex16 matrix) ^ X(complex34) ==> X(complex16 matrix)
+ * \brief Y(complex34 matrix) ^ X(complex34) ==> X(complex34 matrix)
  *
  * \param void
  * \return void

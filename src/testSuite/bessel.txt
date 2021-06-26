@@ -11,7 +11,7 @@ Func: fnBessel
 
 
 ;=======================================
-; Jn(Long Integer) --> Real34
+; Jn(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RY=LonI:"1" RX=LonI:"-2"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"-2" RX=Real:"-0.5767248077568733872024482422691371"
@@ -51,13 +51,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; Jn(Real16 Matrix) --> Error24
+; Jn(Real Matrix) --> Error24
 ;=======================================
 
 
 
 ;=======================================
-; Jn(Complex16 Matrix) --> Error24
+; Jn(Complex Matrix) --> Error24
 ;=======================================
 
 
@@ -69,7 +69,7 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; Jn(Real34) --> Real34
+; Jn(Real) --> Real
 ;=======================================
 
 ; Non-integer order
@@ -260,5 +260,5 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"567" RX=Real:"0.025923912783114677157
 
 
 ;=======================================
-; Jn(Complex34) --> Error24
+; Jn(Complex) --> Error24
 ;=======================================

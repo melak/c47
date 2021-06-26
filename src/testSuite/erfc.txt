@@ -11,7 +11,7 @@ Func: fnErfc
 
 
 ;=======================================
-; erfc(Long Integer) --> Real34
+; erfc(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"-2"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"-2" RX=Real:"1.995322265018952734162069256367253"
@@ -51,13 +51,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; erfc(Real16 Matrix)
+; erfc(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; erfc(Complex16 Matrix)
+; erfc(Complex Matrix)
 ;=======================================
 
 
@@ -69,7 +69,7 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; erfc(Real34) --> Real34
+; erfc(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-2"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-2" RX=Real:"1.995322265018952734162069256367253"
@@ -140,5 +140,5 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"100" RX=Real:"6.405961424921732039021
 
 
 ;=======================================
-; erfc(Complex34) --> Complex34
+; erfc(Complex) --> Complex
 ;=======================================

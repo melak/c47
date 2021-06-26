@@ -185,9 +185,7 @@ size_t                 wp43sMemInBlocks;
   int                  keyAutoRepeat;
   int16_t              previousItem;
   uint32_t             nextScreenRefresh; // timer substitute for refreshLcd(), which does cursor blinking and other stuff
-#endif // DMCP_BUILD
 
-#ifdef DMCP_BUILD
   void program_main(void) {
     int key = 0;
     char charKey[3];

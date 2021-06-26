@@ -13,8 +13,8 @@ Func: fnMultiply
 
 ;==================================================================
 ; Time x Long Integer  see in multiplication_longInteger.txt
-; Time x Real16        see in multiplication_real16.txt
-; Time x Complex16     see in multiplication_complex16.txt
+; Time x Real          see in multiplication_real.txt
+; Time x Complex       see in multiplication_complex.txt
 ;==================================================================
 
 
@@ -46,21 +46,21 @@ Func: fnMultiply
 
 
 ;=======================================
-; Time x Real16 Matrix
+; Time x Real Matrix
 ;=======================================
 
 ;=======================================
-; Real16 Matrix x Time
+; Real Matrix x Time
 ;=======================================
 
 
 
 ;=======================================
-; Time x Complex16 Matrix
+; Time x Complex Matrix
 ;=======================================
 
 ;=======================================
-; Complex16 Matrix x Time
+; Complex Matrix x Time
 ;=======================================
 
 
@@ -80,7 +80,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Time:"123456" RX=Time:"2359367616"
 
 
 ;=======================================
-; Time x Real34
+; Time x Real
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=Time:"123456.789" RX=Real:"4.524754264"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"4.524754264" RX=Time:"558611.632447498296"
@@ -89,7 +89,7 @@ In:  FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=Time:"12:34:56.789" RX=Real:"4.5247542
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"4.524754264" RX=Time:"56:55:56.839173258296"
 
 ;=======================================
-; Real34 x Time
+; Real x Time
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 IM=2COMPL RY=Real:"12.3456789" RX=Time:"45247.54264"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Time:"45247.54264" RX=Time:"558611.632447498296"
@@ -100,9 +100,9 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Time:"4:52:47.54264" RX=Time:"60:14:43.2404
 
 
 ;=======================================
-; Time x Complex34
+; Time x Complex
 ;=======================================
 
 ;=======================================
-; Complex34 x Time
+; Complex x Time
 ;=======================================

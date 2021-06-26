@@ -13,8 +13,8 @@ Func: fnMultiply
 
 ;==================================================================
 ; Date x Long Integer  see in multiplication_longInteger.txt
-; Date x Real16        see in multiplication_real16.txt
-; Date x Complex16     see in multiplication_complex16.txt
+; Date x Real          see in multiplication_real.txt
+; Date x Complex       see in multiplication_complex.txt
 ; Date x Time          see in multiplication_time.txt
 ;==================================================================
 
@@ -37,21 +37,21 @@ Func: fnMultiply
 
 
 ;=======================================
-; Date x Real16 Matrix
+; Date x Real Matrix
 ;=======================================
 
 ;=======================================
-; Real16 Matrix x Date
+; Real Matrix x Date
 ;=======================================
 
 
 
 ;=======================================
-; Date x Complex16 Matrix
+; Date x Complex Matrix
 ;=======================================
 
 ;=======================================
-; Complex16 Matrix x Date
+; Complex Matrix x Date
 ;=======================================
 
 
@@ -67,19 +67,19 @@ Func: fnMultiply
 
 
 ;=======================================
-; Date x Real34
+; Date x Real
 ;=======================================
 
 ;=======================================
-; Real34 x Date
+; Real x Date
 ;=======================================
 
 
 
 ;=======================================
-; Date x Complex34
+; Date x Complex
 ;=======================================
 
 ;=======================================
-; Complex34 x Date
+; Complex x Date
 ;=======================================

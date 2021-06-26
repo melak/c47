@@ -11,7 +11,7 @@ Func: fnTanh
 
 
 ;=======================================
-; tanh(Long Integer) --> Real34
+; tanh(Long Integer) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"0"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"0" RX=Real:"0"
@@ -63,13 +63,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; tanh(Real16 Matrix)
+; tanh(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; tanh(Complex16 Matrix)
+; tanh(Complex Matrix)
 ;=======================================
 
 
@@ -83,7 +83,7 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"5#7"
 
 
 ;=======================================
-; tanh(Real34) --> Real34
+; tanh(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.0001" RX=Real:"9.9999999666666667999999994603174625044091622126022485234928224e-5"
@@ -138,7 +138,7 @@ Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-inf":GRAD
 
 
 ;=======================================
-; tanh(Complex34) --> Complex34
+; tanh(Complex) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"6.2 i -7.6" RX=Cplx:"1.0000071971444162626580247553336318992184867022233254586847381 i -4.006581130350301688211150410256869841731704426136404234314817E-6"

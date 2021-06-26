@@ -40,13 +40,13 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; - Real16 Matrix
+; - Real Matrix
 ;=======================================
 
 
 
 ;=======================================
-; - Complex16 Matrix
+; - Complex Matrix
 ;=======================================
 
 
@@ -73,7 +73,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=ShoI:"247#16"
 
 
 ;=======================================
-; - Real34
+; - Real
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"5.32564"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Real:"-5.32564"
@@ -114,7 +114,7 @@ Out: EC=4 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-inf":MULTPI
 
 
 ;=======================================
-; - Complex34
+; - Complex
 ;=======================================
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"45.25 i -3.459"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"-45.25 i 3.459"
