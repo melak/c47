@@ -36,7 +36,7 @@
 #include "wp43s.h"
 
 #define BACKUP_VERSION         56  // Added lrChosenUndo
-#define START_REGISTER_VALUE 1522
+#define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
 static char *tmpRegisterString = NULL;
@@ -572,7 +572,6 @@ static void registerToSaveString(calcRegister_t regist) {
       strcpy(aimBuffer, "Date");
       break;
 
-#ifndef TESTSUITE_BUILD
     case dtReal34Matrix:
       sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns);
       strcpy(aimBuffer, "Rema");
@@ -582,7 +581,6 @@ static void registerToSaveString(calcRegister_t regist) {
       sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns);
       strcpy(aimBuffer, "Cxma");
       break;
-#endif // TESTSUITE_BUILD
 
     case dtConfig:
       for(str=tmpRegisterString, cfg=(char *)REGISTER_CONFIG_DATA(regist), value=0; value<sizeof(dtConfigDescriptor_t); value++, cfg++, str+=2) {

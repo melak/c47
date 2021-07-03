@@ -1723,7 +1723,7 @@
 #define ITM_gammaXY                   1662
 #define ITM_GAMMAXY                   1663
 #define ITM_GAMMAX                    1664
-#define ITM_deltaX                    1665
+#define ITM_1665                      1665
 #define ITM_DELTAPC                   1666
 #define ITM_SCATTFACT                 1667
 #define ITM_SCATTFACTm                1668

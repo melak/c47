@@ -398,7 +398,7 @@ void fnGetSignificantDigits(uint16_t unusedButMandatoryParameter) {
   liftStack();
 
   longIntegerInit(sigDigits);
-  uIntToLongInteger(significantDigits, sigDigits);
+  uIntToLongInteger(significantDigits == 0 ? 34 : significantDigits, sigDigits);
   convertLongIntegerToLongIntegerRegister(sigDigits, REGISTER_X);
   longIntegerFree(sigDigits);
 }
@@ -551,7 +551,7 @@ void fnClAll(uint16_t confirmation) {
 
 
 void addTestPrograms(void) {
-  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(8368)); // Multiple of 4
+  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(8415));
 
   resizeProgramMemory(TO_BLOCKS(numberOfBytesForTheTestPrograms));
   firstDisplayedStep            = beginOfProgramMemory;
@@ -592,7 +592,7 @@ void addTestPrograms(void) {
       ignore_result(fread(&numberOfBytesUsed, 1, sizeof(numberOfBytesUsed), testPgms));
       printf("%u bytes\n", numberOfBytesUsed);
       if(numberOfBytesUsed > numberOfBytesForTheTestPrograms) {
-        printf("Increase allocated memory for programs!\n");
+        printf("Increase allocated memory for programs! File config.c 1st line of function addTestPrograms\n");
         fclose(testPgms);
         exit(0);
       }

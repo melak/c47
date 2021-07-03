@@ -21,9 +21,9 @@
 #include <stdlib.h>
 #include "fonts.h"
 #include "items.h"
+#include "defines.h"
 
 #include "wp43s.h"
-#include <stdlib.h>
 
 
 int main(int argc, char* argv[]) {
@@ -9498,6 +9498,52 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = 'a';
     *(currentStep++) = 'r';
 
+    *(currentStep++) = (ITM_DSP >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSP       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_DSP >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSP       & 0xff;
+    *(currentStep++) = 64;
+
+    *(currentStep++) = (ITM_DSP >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_DSP >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_DSP >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_DSP >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_DSP >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_DSP >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSP       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_DSP >> 8) | 0x80;
+    *(currentStep++) =  ITM_DSP       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
     *(currentStep++) = (ITM_RMQ >> 8) | 0x80;
     *(currentStep++) =  ITM_RMQ       & 0xff;
 
@@ -10852,9 +10898,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_GAMMAX >> 8) | 0x80;
     *(currentStep++) =  ITM_GAMMAX       & 0xff;
 
-    *(currentStep++) = (ITM_deltaX >> 8) | 0x80;
-    *(currentStep++) =  ITM_deltaX       & 0xff;
-
     *(currentStep++) = (ITM_DELTAPC >> 8) | 0x80;
     *(currentStep++) =  ITM_DELTAPC       & 0xff;
 
@@ -10944,6 +10987,15 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_toDATE >> 8) | 0x80;
     *(currentStep++) =  ITM_toDATE       & 0xff;
+
+    *(currentStep++) = (ITM_sn >> 8) | 0x80;
+    *(currentStep++) =  ITM_sn       & 0xff;
+
+    *(currentStep++) = (ITM_cn >> 8) | 0x80;
+    *(currentStep++) =  ITM_cn       & 0xff;
+
+    *(currentStep++) = (ITM_dn >> 8) | 0x80;
+    *(currentStep++) =  ITM_dn       & 0xff;
 
     *(currentStep++) = (ITM_toHR >> 8) | 0x80;
     *(currentStep++) =  ITM_toHR       & 0xff;
@@ -11318,6 +11370,15 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_PRINTERHASH >> 8) | 0x80;
     *(currentStep++) =  ITM_PRINTERHASH       & 0xff;
+
+    *(currentStep++) = (ITM_Kk >> 8) | 0x80;
+    *(currentStep++) =  ITM_Kk       & 0xff;
+
+    *(currentStep++) = (ITM_Ek >> 8) | 0x80;
+    *(currentStep++) =  ITM_Ek       & 0xff;
+
+    *(currentStep++) = (ITM_PInk >> 8) | 0x80;
+    *(currentStep++) =  ITM_PInk       & 0xff;
 
     *(currentStep++) = (ITM_SHOW >> 8) | 0x80;
     *(currentStep++) =  ITM_SHOW       & 0xff;

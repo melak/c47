@@ -1735,7 +1735,7 @@ void longIntegerToAllocatedString(const longInteger_t lgInt, char *str, int32_t 
 
 void dateToDisplayString(calcRegister_t regist, char *displayString) {
   real34_t j, y, yy, m, d;
-  uint64_t yearVal;
+  uint32_t yearval32;
   char sign[] = {0, 0};
 
   internalDateToJulianDay(REGISTER_REAL34_DATA(regist), &j);
@@ -1748,16 +1748,16 @@ void dateToDisplayString(calcRegister_t regist, char *displayString) {
   real34DivideRemainder(&y, const34_2p32, &y);
   real34Divide(&yy, const34_2p32, &yy);
   real34ToIntegralValue(&yy, &yy, DEC_ROUND_DOWN);
-  yearVal = ((uint64_t)real34ToUInt32(&yy) << 32) | ((uint64_t)real34ToUInt32(&y));
+  yearval32 = (uint32_t)(((uint64_t)real34ToUInt32(&yy) << 32) | ((uint64_t)real34ToUInt32(&y)));
 
   if(getSystemFlag(FLAG_DMY)) {
-    sprintf(displayString, "%02" PRIu32 ".%02" PRIu32 ".%s%04" PRIu64, real34ToUInt32(&d), real34ToUInt32(&m), sign, yearVal);
+    sprintf(displayString, "%02" PRIu32 ".%02" PRIu32 ".%s%04" PRIu32, real34ToUInt32(&d), real34ToUInt32(&m), sign, yearval32);
   }
   else if(getSystemFlag(FLAG_MDY)) {
-    sprintf(displayString, "%02" PRIu32 "/%02" PRIu32 "/%s%04" PRIu64, real34ToUInt32(&m), real34ToUInt32(&d), sign, yearVal);
+    sprintf(displayString, "%02" PRIu32 "/%02" PRIu32 "/%s%04" PRIu32, real34ToUInt32(&m), real34ToUInt32(&d), sign, yearval32);
   }
   else { // YMD
-    sprintf(displayString, "%s%04" PRIu64 "-%02" PRIu32 "-%02" PRIu32, sign, yearVal, real34ToUInt32(&m), real34ToUInt32(&d));
+    sprintf(displayString, "%s%04" PRIu32 "-%02" PRIu32 "-%02" PRIu32, sign, yearval32, real34ToUInt32(&m), real34ToUInt32(&d));
   }
 }
 

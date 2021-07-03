@@ -1141,6 +1141,17 @@
         }
 
         else if(getRegisterDataType(regist) == dtReal34) {
+          if(temporaryInformation == TI_THETA_RADIUS) {
+            if(regist == REGISTER_Y) {
+              strcpy(prefix, "r =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_X) {
+              strcpy(prefix, STD_theta " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
           if(temporaryInformation == TI_RADIUS_THETA) {
             if(regist == REGISTER_X) {
               strcpy(prefix, "r =");
