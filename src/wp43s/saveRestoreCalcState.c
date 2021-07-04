@@ -1429,6 +1429,8 @@ void fnLoad(uint16_t loadMode) {
   restoreOneSection(BACKUP, loadMode); // OTHER_CONFIGURATION_STUFF
   restoreOneSection(BACKUP, loadMode); // Graph memory
 
+  lastErrorCode = ERROR_NONE;
+
   #ifdef DMCP_BUILD
     f_close(BACKUP);
   #else // !DMCP_BUILD
