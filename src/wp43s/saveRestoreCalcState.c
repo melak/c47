@@ -743,7 +743,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   }
 
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n17\n");
+  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n15\n");
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
   save(tmpString, strlen(tmpString), BACKUP);
