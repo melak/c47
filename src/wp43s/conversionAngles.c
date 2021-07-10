@@ -65,6 +65,16 @@ void fnCvtFromCurrentAngularMode(uint16_t toAngularMode) {
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
       convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+
+      if(currentAngularMode == amMultPi && getRegisterAngularMode(REGISTER_X) == amNone) {
+        real_t x;
+        real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+        realMultiply(&x, const_pi, &x, &ctxtReal39);
+        realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+        //setRegisterAngularMode(REGISTER_X, toAngularMode);
+        //break;
+      }
+
       convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), currentAngularMode, toAngularMode);
       setRegisterAngularMode(REGISTER_X, toAngularMode);
       break;
@@ -73,6 +83,15 @@ void fnCvtFromCurrentAngularMode(uint16_t toAngularMode) {
       if(currentAngularMode == amDMS && getRegisterAngularMode(REGISTER_X) == amNone) {
         real34FromDmsToDeg(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(REGISTER_X));
         setRegisterAngularMode(REGISTER_X, amDegree);
+      }
+
+      if(currentAngularMode == amMultPi && getRegisterAngularMode(REGISTER_X) == amNone) {
+        real_t x;
+        real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+        realMultiply(&x, const_pi, &x, &ctxtReal39);
+        realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+        //setRegisterAngularMode(REGISTER_X, toAngularMode);
+        //break;
       }
 
       convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X) == amNone ? currentAngularMode : getRegisterAngularMode(REGISTER_X), toAngularMode);

@@ -26,7 +26,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.0791244"
-     inkscape:cx="198.64131"
+     inkscape:cx="198.40082"
      inkscape:cy="279.68504"
      inkscape:document-units="mm"
      inkscape:current-layer="layer4"
@@ -1004,5 +1004,38 @@
            x="12.11375"
            y="41.697357">FILL</tspan></text>
     </g>
+    <g
+       id="g96165"
+       transform="translate(0.0048952)">
+      <rect
+         style="fill:#ffffff;stroke-width:0.271428;stroke-dashoffset:6.27428"
+         id="rect1049-4"
+         width="7.1012149"
+         height="3.3231661"
+         x="62.428787"
+         y="29.382288" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82223px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial Bold';letter-spacing:-0.198437px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="62.83123"
+         y="32.089745"
+         id="text101902-9"><tspan
+           sodipodi:role="line"
+           id="tspan101900-0"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.50472px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke-width:0.264583"
+           x="62.83123"
+           y="32.089745">USER</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82223px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial Bold';letter-spacing:-0.198437px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="52.740582"
+       y="32.088642"
+       id="text23813"><tspan
+         sodipodi:role="line"
+         id="tspan23811"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.50472px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+         x="52.740582"
+         y="32.088642">SNAP</tspan></text>
   </g>
 </svg>
