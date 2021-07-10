@@ -422,7 +422,7 @@ size_t                 wp43sMemInBlocks;
         sys_sleep();
       }
       else if ((!ST(STAT_PGM_END) && key_empty() && emptyKeyBuffer())) {        // Just wait if no keys available.      //dr - internal keyBuffer POC
-        uint32_t sleepTime = max(1, nextScreenRefresh - sys_current_ms());        //vv dr timer without DMCP timer
+        uint32_t sleepTime = UINT_MAX;
         if(nextTimerRefresh != 0) {
           uint32_t timeoutTime = max(1, nextTimerRefresh - sys_current_ms());
           sleepTime = min(sleepTime, timeoutTime);
@@ -434,9 +434,13 @@ size_t                 wp43sMemInBlocks;
           sleepTime = min(sleepTime, 15);
         }                                                                         //^^
         CLR_ST(STAT_RUNNING);
-        sys_timer_start(TIMER_IDX_SCREEN_REFRESH, max(1, sleepTime));             // wake up for screen refresh           //dr
-        sys_sleep();
-        sys_timer_disable(TIMER_IDX_SCREEN_REFRESH);
+        if (sleepTime != UINT_MAX){
+          sys_timer_start(TIMER_IDX_SCREEN_REFRESH, max(1, sleepTime));             // wake up for screen refresh           //dr
+          sys_sleep();
+          sys_timer_disable(TIMER_IDX_SCREEN_REFRESH);
+        } else {
+          sys_sleep();
+        }
       }
 
       // Wakeup in off state or going to sleep
