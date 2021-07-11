@@ -114,7 +114,8 @@
         }
       }
       else {
-        int16_t max = (tam.dot ? ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) ? NUMBER_OF_LOCAL_FLAGS : currentNumberOfLocalRegisters) : tam.max);
+        int16_t max = (tam.indirect ? (tam.dot ? currentNumberOfLocalRegisters : 99)
+          : (tam.dot ? ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) ? NUMBER_OF_LOCAL_FLAGS : currentNumberOfLocalRegisters) : tam.max));
         uint8_t maxDigits = (max < 10 ? 1 : (max < 100 ? 2 : (max < 1000 ? 3 : (max < 10000 ? 4 : 5))));
         uint8_t underscores = maxDigits - tam.digitsSoFar;
         int16_t v = tam.value;
@@ -175,7 +176,7 @@
 
 
   static void _tamProcessInput(uint16_t item) {
-    int16_t min, max;
+    int16_t min, max, min2, max2;
     bool_t forceTry = false, tryOoR = false;
     bool_t valueParameter = (tam.function == ITM_GTOP || tam.function == ITM_BESTF || tam.function == ITM_CNST);
     char *forcedVar = NULL;
@@ -188,6 +189,8 @@
 
     min = (tam.dot ? 0 : tam.min);
     max = (tam.dot ? ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) ? NUMBER_OF_LOCAL_FLAGS : currentNumberOfLocalRegisters) : tam.max);
+    min2 = (tam.indirect ? 0 : min);
+    max2 = (tam.indirect ? (tam.dot ? currentNumberOfLocalRegisters : 99) : max);
     if(item == ITM_ENTER || (tam.alpha && stringGlyphLength(aimBuffer) > 6)) {
       forceTry = true;
     }
@@ -324,7 +327,7 @@
       forceTry = true;
     }
     else if(REGISTER_X <= indexOfItems[item].param && indexOfItems[item].param <= REGISTER_K) {
-      if(!tam.digitsSoFar && tam.function != ITM_BESTF && tam.function != ITM_CNST && tam.mode != TM_VALUE && tam.mode != TM_VALUE_CHB) {
+      if(!tam.digitsSoFar && tam.function != ITM_BESTF && tam.function != ITM_CNST && (tam.indirect || (tam.mode != TM_VALUE && tam.mode != TM_VALUE_CHB))) {
         tam.value = indexOfItems[item].param;
         forceTry = true;
         // Register letters access registers not accessible via number codes, so we shouldn't look at the tam.max value
@@ -345,9 +348,9 @@
     }
     else if(ITM_0 <= item && item <= ITM_9) {
       int16_t digit = item - ITM_0;
-      uint8_t maxDigits = (max < 10 ? 1 : (max < 100 ? 2 : (max < 1000 ? 3 : (max < 10000 ? 4 : 5))));
+      uint8_t maxDigits = (max2 < 10 ? 1 : (max2 < 100 ? 2 : (max2 < 1000 ? 3 : (max2 < 10000 ? 4 : 5))));
       // If the number is below our minimum, prevent further entry of digits
-      if(!tam.alpha && (tam.value*10 + digit) <= max && tam.digitsSoFar < maxDigits) {
+      if(!tam.alpha && (tam.value*10 + digit) <= max2 && tam.digitsSoFar < maxDigits) {
         tam.value = tam.value*10 + digit;
         tam.digitsSoFar++;
         if(tam.digitsSoFar == maxDigits) {
@@ -365,11 +368,11 @@
           tam.min = 1;
           tam.max = programList[currentProgramNumber].step - programList[currentProgramNumber - 1].step;
         }
-        else if(tam.indirect && currentLocalRegisters != NULL) {
+        else if(tam.indirect && currentNumberOfLocalRegisters) {
           tam.dot = true;
         }
         else if(tam.mode != TM_VALUE && tam.mode != TM_VALUE_CHB) {
-          if(((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && currentLocalFlags != NULL) || ((tam.mode != TM_FLAGR && tam.mode != TM_FLAGW) && currentLocalRegisters != NULL)) {
+          if(((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && currentLocalFlags != NULL) || ((tam.mode != TM_FLAGR && tam.mode != TM_FLAGW) && currentNumberOfLocalRegisters)) {
             tam.dot = true;
           }
         }
@@ -397,7 +400,7 @@
 
     if(!tam.alpha && !forcedVar) {
       // Check whether it is possible to add any more digits: if not, execute the function
-      if((tryOoR || (min <= tam.value && tam.value <= max)) && (forceTry || tam.value*10 > max)) {
+      if((tryOoR || (min2 <= tam.value && tam.value <= max2)) && (forceTry || tam.value*10 > max2)) {
         int16_t value = tam.value;
         bool_t run = true;
         if(tam.dot) {
