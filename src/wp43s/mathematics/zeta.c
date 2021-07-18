@@ -31,6 +31,7 @@
 #include "mathematics/wp34s.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "screen.h"
 #include "statusBar.h"
 
 #include "wp43s.h"
@@ -115,6 +116,11 @@ static void zeta_calc_complex(real_t *reg4, real_t *reg5, real_t *reg6, real_t *
 
   hourGlassIconEnabled = true;
   showHideHourGlass();
+  #ifdef DMCP_BUILD
+    lcd_refresh();
+  #else // !DMCP_BUILD
+    refreshLcd(NULL);
+  #endif // DMCP_BUILD
 
   realCopyAbs(reg7, &p);
   realMultiply(const_piOn2, &p, &q, realContext);
@@ -124,8 +130,7 @@ static void zeta_calc_complex(real_t *reg4, real_t *reg5, real_t *reg6, real_t *
   realCopy(const_3, &q); q.exponent += 10;
   WP34S_Ln(&q, &q, realContext);
   realAdd(&p, &q, &p, realContext);
-  int32ToReal(8, &q);
-  realSquareRoot(&q, &q, realContext);
+  realSquareRoot(const_8, &q, realContext);
   realAdd(&q, const_3, &q, realContext);
   WP34S_Ln(&q, &q, realContext);
   realDivide(&p, &q, &p, realContext);

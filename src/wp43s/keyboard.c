@@ -1240,3 +1240,36 @@ void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
     }
   #endif // !TESTSUITE_BUILD
 }
+
+
+
+void fnKeyAngle(uint16_t unusedButMandatoryParameter) {
+  #ifndef TESTSUITE_BUILD
+    switch(calcMode) {
+      case CM_NORMAL:
+        if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
+          runFunction(ITM_VANGLE);
+        }
+        else {
+          runFunction(ITM_ARG);
+        }
+        break;
+
+      case CM_NIM:
+        addItemToNimBuffer(ITM_ANGLE);
+        break;
+
+      case CM_REGISTER_BROWSER:
+      case CM_FLAG_BROWSER:
+      case CM_FONT_BROWSER:
+      case CM_PLOT_STAT:
+      case CM_MIM:
+        break;
+
+      default:
+        sprintf(errorMessage, "In function fnKeyAngle: unexpected calcMode value (%" PRIu8 ") while processing key .d!", calcMode);
+        displayBugScreen(errorMessage);
+    }
+  #endif // !TESTSUITE_BUILD
+}
+

@@ -126,7 +126,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
   }
 
   real34_t delta, temp3;
-  uInt32ToReal34(9999, &delta);
+  realToReal34(const_9999, &delta);
   //printf("2 delta = "); printReal34ToConsole(&delta); printf("\n");
 
   *intPart = real34ToUInt32(&temp0);

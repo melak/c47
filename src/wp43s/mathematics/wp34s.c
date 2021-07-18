@@ -31,6 +31,8 @@
 #include "mathematics/multiplication.h"
 #include "mathematics/sin.h"
 #include "mathematics/toPolar.h"
+#include "realType.h"
+#include "screen.h"
 #include "statusBar.h"
 
 #include "wp43s.h"
@@ -1339,6 +1341,11 @@ static void betacf(const real_t *a, const real_t *b, const real_t *x, real_t *r,
 
   hourGlassIconEnabled = true;
   showHideHourGlass();
+  #ifdef DMCP_BUILD
+    lcd_refresh();
+  #else // !DMCP_BUILD
+    refreshLcd(NULL);
+  #endif // DMCP_BUILD
   realAdd(a, const_1, &ap1, realContext);        // ap1 = 1+a
   realSubtract(a, const_1, &am1, realContext);   // am1 = a-1
   realAdd(a, b, &apb, realContext);              // apb = a+b
@@ -1492,6 +1499,11 @@ static void zeta_calc(const real_t *x, real_t *reg1, real_t *reg7, real_t *res, 
 
   hourGlassIconEnabled = true;
   showHideHourGlass();
+  #ifdef DMCP_BUILD
+    lcd_refresh();
+  #else // !DMCP_BUILD
+    refreshLcd(NULL);
+  #endif // DMCP_BUILD
 
   // zeta_calc
   int32ToReal(60/*44*/, &reg0);

@@ -145,6 +145,13 @@ void       fnRowSum                       (uint16_t unusedParamButMandatory);
 void       fnRowNorm                      (uint16_t unusedParamButMandatory);
 
 /**
+ * Angle between vectors X and Y.
+ *
+ * \param[in] unusedParamButMandatory
+ */
+void       fnVectorAngle                  (uint16_t unusedParamButMandatory);
+
+/**
  * Index a named matrix.
  *
  * \param[in] regist
@@ -360,6 +367,9 @@ void       fnEigenvectors                 (uint16_t unusedParamButMandatory);
   void     _multiplyComplexMatrix         (const complex34Matrix_t *matrix, const real_t *xr, const real_t *xi, complex34Matrix_t *res, realContext_t *realContext);
   void     multiplyComplexMatrices        (const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res);
 
+  void     euclideanNormRealMatrix        (const real34Matrix_t *matrix, real34_t *res);
+  void     euclideanNormComplexMatrix     (const complex34Matrix_t *matrix, real34_t *res);
+
   uint16_t realVectorSize                 (const real34Matrix_t *matrix);
   void     dotRealVectors                 (const real34Matrix_t *y, const real34Matrix_t *x, real34_t *res);
   void     crossRealVectors               (const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res);
@@ -367,6 +377,8 @@ void       fnEigenvectors                 (uint16_t unusedParamButMandatory);
   uint16_t complexVectorSize              (const complex34Matrix_t *matrix);
   void     dotComplexVectors              (const complex34Matrix_t *y, const complex34Matrix_t *x, real34_t *res_r, real34_t *res_i);
   void     crossComplexVectors            (const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res);
+
+  void     vectorAngle                    (const real34Matrix_t *y, const real34Matrix_t *x, real34_t *radians);
 
   void     WP34S_LU_decomposition         (const real34Matrix_t *matrix, real34Matrix_t *lu, uint16_t *p);
   void     realMatrixSwapRows             (const real34Matrix_t *matrix, real34Matrix_t *res, uint16_t a, uint16_t b);

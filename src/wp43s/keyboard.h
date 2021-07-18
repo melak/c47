@@ -71,6 +71,12 @@ void fnKeyDown       (uint16_t unusedButMandatoryParameter);
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyDotD       (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing ANGLE key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
+void fnKeyAngle      (uint16_t unusedButMandatoryParameter);
 
 #ifdef PC_BUILD
   /**

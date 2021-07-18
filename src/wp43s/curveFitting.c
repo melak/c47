@@ -305,6 +305,11 @@ real_t SS,TT,UU;
 
 
 
+void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, real_t *aa0, real_t *aa1, real_t *aa2){
+  real_t MX, MX2, SX2, SY2;
+  processCurvefitSelectionAll(selection, RR_, &MX, &MX2, &SX2, &SY2, SMI_, aa0, aa1, aa2);
+}
+
 /********************************************//**
  * \brief Calculates the curve fitting parameters r, smi, a0, a1, a2
  *
@@ -312,7 +317,7 @@ real_t SS,TT,UU;
  * \return void
  *
  ***********************************************/
-void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, real_t *aa0, real_t *aa1, real_t *aa2){
+void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, real_t *MX2,real_t *SX2, real_t *SY2, real_t *SMI_, real_t *aa0, real_t *aa1, real_t *aa2){
     real_t AA,BB,CC,DD,EE,FF,GG,HH,RR2;   // Curve aux fitting variables
     real_t SS,TT,UU;                  // Temporary curve fitting variables
     uint16_t ix,jx;               //only a single graph can be displayed at once, so retain the single lowest bit, and clear the higher order bits if ever control comes here with multpile graph selections
@@ -327,12 +332,18 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
     #endif
 
     realContext = &ctxtReal75;    //Use 75 as the sums can reach high values and the accuracy of the regressionn depends on this. Could arguably be optimized.
-    real_t VV,WW;
+    real_t VV,WW,ZZ;
     real_t S_X,S_Y,S_XY,M_X,M_Y;
     realDivide(SIGMA_X,SIGMA_N,&M_X,realContext); //&ctxtReal39);     //vv
     realDivide(SIGMA_Y,SIGMA_N,&M_Y,realContext); //&ctxtReal39);
     fnStatR   (RR_, &S_XY, &S_X, &S_Y);
     fnStatSMI (SMI_);
+
+    realMultiply(&S_X,&S_X,SX2,realContext);
+    realMultiply(&S_Y,&S_Y,SY2,realContext);
+    realDivide    (SIGMA_X,SIGMA_N,MX,realContext);         //MX = SumX / N
+    realMultiply  (MX,MX,MX2,realContext);                 //MX2
+
 
     #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
       double v;
@@ -417,11 +428,16 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
 
         realMultiply(SIGMA_N,SIGMA_ln2Y,&UU,realContext);
         realMultiply(SIGMA_lnY,SIGMA_lnY,&VV,realContext);
-        realSubtract(&UU,&VV,&UU,realContext);
-        realSquareRoot(&UU,&UU,realContext);            //UU is bottom factor 2
+        realSubtract(&UU,&VV,&ZZ,realContext);
+        realSquareRoot(&ZZ,&VV,realContext);            //UU is bottom factor 2
 
         realDivide(&SS,&TT,RR_,realContext);
-        realDivide(RR_,&UU,RR_,realContext);            //r
+        realDivide(RR_,&VV,RR_,realContext);            //r
+
+        realSubtract  (SIGMA_N,const_1,&SS,realContext); // Section for s(a)
+        realMultiply  (SIGMA_N,&SS,&SS,realContext);
+        realDivide    (const_1,&SS,&SS,realContext);
+        realMultiply  (&SS,&ZZ,SY2,realContext);
 
         #if defined STATDEBUG && defined PC_BUILD
           printf("##### EXPF\n");
@@ -458,8 +474,8 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
 
         realMultiply(SIGMA_N,SIGMA_ln2X,&TT,realContext);
         realMultiply(SIGMA_lnX,SIGMA_lnX,&UU,realContext);
-        realSubtract(&TT,&UU,&TT,realContext);
-        realSquareRoot(&TT,&TT,realContext);            //TT is bottom, factor 1
+        realSubtract(&TT,&UU,&WW,realContext);
+        realSquareRoot(&WW,&TT,realContext);            //TT is bottom, factor 1
 
         realMultiply(SIGMA_N,SIGMA_Y2,&UU,realContext);
         realMultiply(SIGMA_Y,SIGMA_Y,&VV,realContext);
@@ -468,6 +484,13 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
 
         realDivide(&SS,&TT,RR_,realContext);
         realDivide(RR_,&UU,RR_,realContext);            //r
+
+        realSubtract  (SIGMA_N,const_1,&SS,realContext); // Section for s(a)
+        realMultiply  (SIGMA_N,&SS,&SS,realContext);
+        realDivide    (const_1,&SS,&SS,realContext);
+        realMultiply  (&SS,&WW,SX2,realContext);
+        realDivide    (SIGMA_lnX,SIGMA_N,MX,realContext);
+        realMultiply  (MX,MX,MX2,realContext);
 
         #if defined STATDEBUG && defined PC_BUILD
           printf("##### LOGF\n");
@@ -505,16 +528,29 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
 
         realMultiply(SIGMA_N,SIGMA_ln2X,&TT,realContext);
         realMultiply(SIGMA_lnX,SIGMA_lnX,&UU,realContext);
-        realSubtract(&TT,&UU,&TT,realContext);
-        realSquareRoot(&TT,&TT,realContext);            //TT is bottom, factor 1
+        realSubtract(&TT,&UU,&WW,realContext);
+        realSquareRoot(&WW,&TT,realContext);            //TT is bottom, factor 1
 
         realMultiply(SIGMA_N,SIGMA_ln2Y,&UU,realContext);
         realMultiply(SIGMA_lnY,SIGMA_lnY,&VV,realContext);
-        realSubtract(&UU,&VV,&UU,realContext);
-        realSquareRoot(&UU,&UU,realContext);            //UU is bottom factor 2
+        realSubtract(&UU,&VV,&ZZ,realContext);
+        realSquareRoot(&ZZ,&UU,realContext);            //UU is bottom factor 2
 
         realDivide(&SS,&TT,RR_,realContext);
         realDivide(RR_,&UU,RR_,realContext);            //r
+
+        realSubtract  (SIGMA_N,const_1,&SS,realContext); // Section for s(a)
+        realMultiply  (SIGMA_N,&SS,&SS,realContext);
+        realDivide    (const_1,&SS,&SS,realContext);
+        realMultiply  (&SS,&WW,SX2,realContext);
+        realDivide    (SIGMA_lnX,SIGMA_N,MX,realContext);
+        realMultiply  (MX,MX,MX2,realContext);
+
+        realSubtract  (SIGMA_N,const_1,&SS,realContext); // Section for s(a)
+        realMultiply  (SIGMA_N,&SS,&SS,realContext);
+        realDivide    (const_1,&SS,&SS,realContext);
+        realMultiply  (&SS,&ZZ,SY2,realContext);
+
 
         #if defined STATDEBUG && defined PC_BUILD
           printf("##### POWERF\n");

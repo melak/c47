@@ -166,7 +166,7 @@ static void logistic_param(const real_t *x, const real_t *mu, const real_t *s, r
 }
 
 void WP34S_Pdf_Logit(const real_t *x, const real_t *mu, const real_t *s, real_t *res, realContext_t *realContext) {
-  real_t xx, p, q;
+  real_t xx, p;
   logistic_param(x, mu, s, &xx, realContext);
   if(realIsSpecial(&xx)) {
     realZero(res);
@@ -175,8 +175,7 @@ void WP34S_Pdf_Logit(const real_t *x, const real_t *mu, const real_t *s, real_t 
   WP34S_SinhCosh(&xx, NULL, &p, realContext);
   realPower(&p, const_2, &p, realContext);
   realMultiply(&p, s, &p, realContext);
-  int32ToReal(4, &q);
-  realMultiply(&p, &q, &p, realContext);
+  realMultiply(&p, const_4, &p, realContext);
   realDivide(const_1, &p, res, realContext);
 }
 

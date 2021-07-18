@@ -1101,6 +1101,7 @@ void decodeOneStep(uint8_t *step) {
         case ITM_R_COPY:         //  1581
         case ITM_R_SORT:         //  1582
         case ITM_R_SWAP:         //  1583
+        case ITM_am:             //  1584
         case ITM_STDDEVWEIGHTED: //  1585
         case ITM_SDIGS:          //  1588
         case ITM_SEED:           //  1589
@@ -1191,7 +1192,7 @@ void decodeOneStep(uint8_t *step) {
         case ITM_PARALLEL:       //  1703
         case ITM_M_TRANSP:       //  1704
         case ITM_M_INV:          //  1705
-        case ITM_ANGLE:          //  1706
+        case ITM_ARG:            //  1706
         case ITM_MULPIto:        //  1707
         case ITM_PRINTERADV:     //  1708
         case ITM_PRINTERLCD:     //  1711

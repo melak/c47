@@ -245,7 +245,8 @@ fib
 gd
 invGd
 
-bessel
+bessel_j
+bessel_y
 
 zeta
 bn
@@ -276,6 +277,7 @@ xToDate
 toHms
 toReal
 
+;Distributions
 normal_p
 normal_l
 normal_r
@@ -345,3 +347,16 @@ poisson_p
 poisson_l
 poisson_r
 poisson_i
+
+; Elliptic
+jacobi_sn
+jacobi_cn
+jacobi_dn
+jacobi_am
+
+ellipticK
+ellipticE
+;ellipticPi
+ellipticFphi
+ellipticEphi
+jacobi_zeta

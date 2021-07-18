@@ -21,6 +21,7 @@
 #define MAGNITUDE_H
 
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnMagnitude   (uint16_t unusedButMandatoryParameter);
@@ -35,5 +36,7 @@ void magnitudeCxma (void);
 void magnitudeShoI (void);
 void magnitudeReal (void);
 void magnitudeCplx (void);
+
+void complexMagnitude(const real_t *a, const real_t *b, real_t *c, realContext_t *realContext);
 
 #endif // MAGNITUDE_H

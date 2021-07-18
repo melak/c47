@@ -10985,6 +10985,15 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_XMOD >> 8) | 0x80;
     *(currentStep++) =  ITM_XMOD       & 0xff;
 
+    *(currentStep++) = (ITM_sn >> 8) | 0x80;
+    *(currentStep++) =  ITM_sn       & 0xff;
+
+    *(currentStep++) = (ITM_cn >> 8) | 0x80;
+    *(currentStep++) =  ITM_cn       & 0xff;
+
+    *(currentStep++) = (ITM_dn >> 8) | 0x80;
+    *(currentStep++) =  ITM_dn       & 0xff;
+
     *(currentStep++) = (ITM_toDATE >> 8) | 0x80;
     *(currentStep++) =  ITM_toDATE       & 0xff;
 

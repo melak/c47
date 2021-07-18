@@ -20,6 +20,7 @@
 
 #include "dateTime.h"
 
+#include "constantPointers.h"
 #include "debug.h"
 #include "error.h"
 #include "flags.h"
@@ -65,10 +66,8 @@ void fnSetDateFormat(uint16_t dateFormat) {
  * \return void
  ***********************************************/
 void internalDateToJulianDay(const real34_t *source, real34_t *destination) {
-  real34_t val;
-
-  int32ToReal34(43200, &val), real34Subtract(source, &val, destination);
-  int32ToReal34(86400, &val), real34Divide(destination, &val, destination), real34ToIntegralValue(destination, destination, DEC_ROUND_FLOOR);
+  real34Subtract(source, const34_43200, destination);
+  real34Divide(destination, const34_86400, destination), real34ToIntegralValue(destination, destination, DEC_ROUND_FLOOR);
 }
 
 /********************************************//**
@@ -79,11 +78,9 @@ void internalDateToJulianDay(const real34_t *source, real34_t *destination) {
  * \return void
  ***********************************************/
 void julianDayToInternalDate(const real34_t *source, real34_t *destination) {
-  real34_t val;
-
   real34ToIntegralValue(source, destination, DEC_ROUND_FLOOR);
-  int32ToReal34(86400, &val), real34Multiply(destination, &val, destination);
-  int32ToReal34(43200, &val), real34Add(destination, &val, destination);
+  real34Multiply(destination, const34_86400, destination);
+  real34Add(destination, const34_43200, destination);
 }
 
 /********************************************//**
@@ -126,17 +123,16 @@ bool_t checkDateArgument(calcRegister_t regist, real34_t *jd) {
  * \return bool_t true if leap year
  ***********************************************/
 bool_t isLeapYear(const real34_t *year) {
-  real34_t val, four_hundred, val2;
+  real34_t val, val2;
   int32_t y400; // year mod 400
   bool_t isGregorian;
-  int32ToReal34(400, &four_hundred);
 
-  int32ToReal34(2, &val), int32ToReal34(28, &val2), composeJulianDay(year, &val, &val2, &val);
+  composeJulianDay(year, const34_2, const34_28, &val);
   uInt32ToReal34(firstGregorianDay, &val2);
   isGregorian = real34CompareGreaterEqual(&val, &val2);
 
-  real34Divide(year, &four_hundred, &val), real34ToIntegralValue(&val, &val, DEC_ROUND_FLOOR);
-  real34Multiply(&val, &four_hundred, &val);
+  real34Divide(year, const34_400, &val), real34ToIntegralValue(&val, &val, DEC_ROUND_FLOOR);
+  real34Multiply(&val, const34_400, &val);
   real34Subtract(year, &val, &val);
   y400 = real34ToInt32(&val);
 
@@ -161,23 +157,23 @@ bool_t isValidDay(const real34_t *year, const real34_t *month, const real34_t *d
   // Year (this rejects year -4713 and earlier)
   real34ToIntegralValue(year, &val, DEC_ROUND_FLOOR), real34Subtract(year, &val, &val);
   if(!real34IsZero(&val)) return false;
-  int32ToReal34(-4712, &val), real34Compare(year, &val, &val);
+  real34Compare(year, const34__4712, &val);
   if(real34ToInt32(&val) < 0) return false;
 
   // Day
   real34ToIntegralValue(day, &val, DEC_ROUND_FLOOR), real34Subtract(day, &val, &val);
   if(!real34IsZero(&val)) return false;
-  int32ToReal34(1, &val), real34Compare(day, &val, &val);
+  real34Compare(day, const34_1, &val);
   if(real34ToInt32(&val) < 0) return false;
-  int32ToReal34(31, &val), real34Compare(day, &val, &val);
+  real34Compare(day, const34_31, &val);
   if(real34ToInt32(&val) > 0) return false;
 
   // Month
   real34ToIntegralValue(month, &val, DEC_ROUND_FLOOR), real34Subtract(month, &val, &val);
   if(!real34IsZero(&val)) return false;
-  int32ToReal34(1, &val), real34Compare(month, &val, &val);
+  real34Compare(month, const34_1, &val);
   if(real34ToInt32(&val) < 0) return false;
-  int32ToReal34(12, &val), real34Compare(month, &val, &val);
+  real34Compare(month, const34_12, &val);
   if(real34ToInt32(&val) > 0) return false;
 
   // Thirty days hath September...
@@ -209,10 +205,18 @@ bool_t isValidDay(const real34_t *year, const real34_t *month, const real34_t *d
 }
 
 
-#define AddInt(p, q, r) int32ToReal34(q, &tmp), real34Add(p, &tmp, r)
-#define SubInt(p, q, r) int32ToReal34(q, &tmp), real34Subtract(p, &tmp, r)
-#define MulInt(p, q, r) int32ToReal34(q, &tmp), real34Multiply(p, &tmp, r)
-#define DivInt(p, q, r) int32ToReal34(q, &tmp), real34Divide(p, &tmp, &tmp), real34ToIntegralValue(&tmp, r, DEC_ROUND_DOWN)
+static void divInt(const real34_t *p, const real34_t *q, real34_t *r) {
+  real34_t tmp;
+  real34Divide(p, q, &tmp), real34ToIntegralValue(&tmp, r, DEC_ROUND_DOWN);
+}
+static void divInt2(const real34_t *p, const real34_t *q, real34_t *r) {
+  real34_t tmp;
+  real34Divide(p, q, &tmp), real34ToIntegralValue(&tmp, r, DEC_ROUND_FLOOR);
+}
+static void modInt(const real34_t *p, const real34_t *q, real34_t *r) {
+  real34_t tmp;
+  divInt2(p, q, &tmp), real34Multiply(&tmp, q, &tmp), real34Subtract(p, &tmp, r);
+}
 
 /********************************************//**
  * \brief Convert date into Julian day number floored
@@ -237,60 +241,56 @@ void composeJulianDay(const real34_t *year, const real34_t *month, const real34_
 // Gregorian
 void composeJulianDay_g(const real34_t *year, const real34_t *month, const real34_t *day, real34_t *jd) {
   real34_t m_14_12; // round_down((month - 14) / 12)
-  real34_t a, tmp;
+  real34_t a;
 
   // round_down((month - 14) / 12)
-  SubInt(month, 14, &m_14_12);
-  DivInt(&m_14_12, 12, &m_14_12);
+  real34Subtract(month, const34_14, &m_14_12);
+  divInt(&m_14_12, const34_12, &m_14_12);
 
-  AddInt(year, 4800, &a);
+  real34Add(year, const34_4800, &a);
   real34Add(&a, &m_14_12, &a);
-  MulInt(&a, 1461, &a);
-  DivInt(&a, 4, jd);
+  real34Multiply(&a, const34_1461, &a);
+  divInt(&a, const34_4, jd);
 
-  MulInt(&m_14_12, 12, &a);
+  real34Multiply(&m_14_12, const34_12, &a);
   real34Subtract(month, &a, &a);
-  SubInt(&a, 2, &a);
-  MulInt(&a, 367, &a);
-  DivInt(&a, 12, &a);
+  real34Subtract(&a, const34_2, &a);
+  real34Multiply(&a, const34_367, &a);
+  divInt(&a, const34_12, &a);
   real34Add(jd, &a, jd);
 
-  AddInt(year, 4900, &a);
+  real34Add(year, const34_4900, &a);
   real34Add(&a, &m_14_12, &a);
-  DivInt(&a, 100, &a);
-  MulInt(&a, 3, &a);
-  DivInt(&a, 4, &a);
+  divInt(&a, const34_100, &a);
+  real34Multiply(&a, const34_3, &a);
+  divInt(&a, const34_4, &a);
   real34Subtract(jd, &a, jd);
 
   real34Add(jd, day, jd);
-  SubInt(jd, 32075, jd);
+  real34Subtract(jd, const34_32075, jd);
 }
 
 // Julian
 void composeJulianDay_j(const real34_t *year, const real34_t *month, const real34_t *day, real34_t *jd) {
-  real34_t a, tmp;
+  real34_t a;
 
-  MulInt(year, 367, jd);
+  real34Multiply(year, const34_367, jd);
 
-  SubInt(month, 9, &a);
-  DivInt(&a, 7, &a);
+  real34Subtract(month, const34_9, &a);
+  divInt(&a, const34_7, &a);
   real34Add(&a, year, &a);
-  AddInt(&a, 5001, &a);
-  MulInt(&a, 7, &a);
-  DivInt(&a, 4, &a);
+  real34Add(&a, const34_5001, &a);
+  real34Multiply(&a, const34_7, &a);
+  divInt(&a, const34_4, &a);
   real34Subtract(jd, &a, jd);
 
-  MulInt(month, 275, &a);
-  DivInt(&a, 9, &a);
+  real34Multiply(month, const34_275, &a);
+  divInt(&a, const34_9, &a);
   real34Add(jd, &a, jd);
 
   real34Add(jd, day, jd);
-  AddInt(jd, 1729777, jd);
+  real34Add(jd, const34_1729777, jd);
 }
-
-#undef DivInt
-#define DivInt(p, q, r) int32ToReal34(q, &tmp), real34Divide(p, &tmp, &tmp), real34ToIntegralValue(&tmp, r, DEC_ROUND_FLOOR)
-#define ModInt(p, q, r) DivInt(p, q, &modtmp), MulInt(&modtmp, q, &modtmp), real34Subtract(p, &modtmp, r)
 
 /********************************************//**
  * \brief Convert Julian day number (floored) into date
@@ -302,42 +302,42 @@ void composeJulianDay_j(const real34_t *year, const real34_t *month, const real3
  * \return void
  ***********************************************/
 void decomposeJulianDay(const real34_t *jd, real34_t *year, real34_t *month, real34_t *day) {
-  real34_t e, h, tmp1, tmp, modtmp;
+  real34_t e, h, tmp1;
 
-  AddInt(jd, 1401, &e);
-  uInt32ToReal34(firstGregorianDay, &tmp);
+  real34Add(jd, const34_1401, &e);
+  uInt32ToReal34(firstGregorianDay, &tmp1);
   // proleptic Gregorian calendar is used if firstGregorianDay == 0: for special purpose only!
-  if((firstGregorianDay == 0u) || real34CompareGreaterEqual(jd, &tmp)) { // Gregorian
-    MulInt(jd, 4, &tmp1);
-    AddInt(&tmp1, 274277, &tmp1);
-    DivInt(&tmp1, 146097, &tmp1);
-    MulInt(&tmp1, 3, &tmp1);
-    DivInt(&tmp1, 4, &tmp1);
-    SubInt(&tmp1, 38, &tmp1);
+  if((firstGregorianDay == 0u) || real34CompareGreaterEqual(jd, &tmp1)) { // Gregorian
+    real34Multiply(jd, const34_4, &tmp1);
+    real34Add(&tmp1, const34_274277, &tmp1);
+    divInt2(&tmp1, const34_146097, &tmp1);
+    real34Multiply(&tmp1, const34_3, &tmp1);
+    divInt2(&tmp1, const34_4, &tmp1);
+    real34Subtract(&tmp1, const34_38, &tmp1);
     real34Add(&e, &tmp1, &e);
   }
 
-  MulInt(&e, 4, &e);
-  AddInt(&e, 3, &e);
+  real34Multiply(&e, const34_4, &e);
+  real34Add(&e, const34_3, &e);
 
-  ModInt(&e, 1461, &h);
-  DivInt(&h, 4, &h);
-  MulInt(&h, 5, &h);
-  AddInt(&h, 2, &h);
+  modInt(&e, const34_1461, &h);
+  divInt2(&h, const34_4, &h);
+  real34Multiply(&h, const34_5, &h);
+  real34Add(&h, const34_2, &h);
 
-  ModInt(&h, 153, day);
-  DivInt(day, 5, day);
-  AddInt(day, 1, day);
+  modInt(&h, const34_153, day);
+  divInt2(day, const34_5, day);
+  real34Add(day, const34_1, day);
 
-  DivInt(&h, 153, month);
-  AddInt(month, 2, month);
-  ModInt(month, 12, month);
-  AddInt(month, 1, month);
+  divInt2(&h, const34_153, month);
+  real34Add(month, const34_2, month);
+  modInt(month, const34_12, month);
+  real34Add(month, const34_1, month);
 
-  DivInt(&e, 1461, year);
-  SubInt(year, 4716, year);
-  int32ToReal34(14, &tmp1), real34Subtract(&tmp1, month, &tmp1);
-  DivInt(&tmp1, 12, &tmp1);
+  divInt2(&e, const34_1461, year);
+  real34Subtract(year, const34_4716, year);
+  real34Subtract(const34_14, month, &tmp1);
+  divInt2(&tmp1, const34_12, &tmp1);
   real34Add(year, &tmp1, year);
 }
 
@@ -348,21 +348,16 @@ void decomposeJulianDay(const real34_t *jd, real34_t *year, real34_t *month, rea
  * \return uint32_t day of week (1 = Monday, 7 = Sunday), 0 if invalid
  ***********************************************/
 uint32_t getDayOfWeek(calcRegister_t regist) {
-  real34_t date34, tmp, modtmp;
+  real34_t date34;
   if(checkDateArgument(regist, &date34)) {
-    ModInt(&date34, 7, &date34);
-    AddInt(&date34, 1, &date34);
+    modInt(&date34, const34_7, &date34);
+    real34Add(&date34, const34_1, &date34);
     return real34ToUInt32(&date34);
   }
   else {
     return 0u;
   }
 }
-#undef ModInt
-#undef AddInt
-#undef SubInt
-#undef MulInt
-#undef DivInt
 
 /********************************************//**
  * \brief Check date range
@@ -371,9 +366,7 @@ uint32_t getDayOfWeek(calcRegister_t regist) {
  * \return void
  ***********************************************/
 void checkDateRange(const real34_t *date34) {
-  real34_t hundredgigayear;
-  stringToReal34("3155695348699627200.000000000000000", &hundredgigayear);
-  if(real34CompareGreaterEqual(date34, &hundredgigayear) || real34IsNegative(date34)) {
+  if(real34CompareGreaterEqual(date34, const34_maxDate) || real34IsNegative(date34)) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "value of date type is too large");
@@ -400,22 +393,18 @@ void hmmssToSeconds(const real34_t *src, real34_t *dest) {
   // Hours
   real34CopyAbs(src, &time34);
   real34ToIntegralValue(&time34, &real34, DEC_ROUND_DOWN);
-  int32ToReal34(3600, &value34);
-  real34Multiply(&real34, &value34, dest);
+  real34Multiply(&real34, const34_3600, dest);
 
   // Minutes
   real34Subtract(&time34, &real34, &time34);
-  int32ToReal34(100, &value34);
-  real34Multiply(&time34, &value34, &time34);
+  real34Multiply(&time34, const34_100, &time34);
   real34ToIntegralValue(&time34, &real34, DEC_ROUND_DOWN);
-  int32ToReal34(60, &value34);
-  real34Multiply(&value34, &real34, &value34);
+  real34Multiply(const34_60, &real34, &value34);
   real34Add(dest, &value34, dest);
 
   // Seconds
   real34Subtract(&time34, &real34, &time34);
-  int32ToReal34(100, &value34);
-  real34Multiply(&time34, &value34, &time34);
+  real34Multiply(&time34, const34_100, &time34);
   real34Add(dest, &time34, dest);
 
   // Sign
@@ -445,10 +434,9 @@ void hmmssInRegisterToSeconds(calcRegister_t regist) {
  * \return void
  ***********************************************/
 void checkTimeRange(const real34_t *time34) {
-  real34_t t, petahour;
+  real34_t t;
   real34CopyAbs(time34, &t);
-  stringToReal34("36000000000000000000.00000000000000", &petahour);
-  if(real34CompareGreaterEqual(&t, &petahour)) {
+  if(real34CompareGreaterEqual(&t, const34_maxTime)) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "value of time type is too large");
@@ -829,18 +817,16 @@ void fnSetTime(uint16_t unusedButMandatoryParameter) {
   #ifdef DMCP_BUILD
     tm_t timeInfo;
     dt_t dateInfo;
-    real34_t time34, value34;
+    real34_t time34;
     int32_t timeVal;
 
     if(getRegisterDataType(REGISTER_X) == dtTime) {
-      int32ToReal34(86400, &value34);
-      if(real34IsNegative(REGISTER_REAL34_DATA(REGISTER_X)) || real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X)) || real34CompareGreaterEqual(REGISTER_REAL34_DATA(REGISTER_X), &value34)) {
+      if(real34IsNegative(REGISTER_REAL34_DATA(REGISTER_X)) || real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X)) || real34CompareGreaterEqual(REGISTER_REAL34_DATA(REGISTER_X), const34_86400)) {
         displayCalcErrorMessage(ERROR_BAD_TIME_OR_DATE_INPUT, ERR_REGISTER_LINE, REGISTER_X);
       }
       else {
         rtc_read(&timeInfo, &dateInfo);
-        int32ToReal34(100, &value34);
-        real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), &value34, &time34);
+        real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), const34_100, &time34);
         real34ToIntegralValue(&time34, &time34, DEC_ROUND_DOWN);
         timeVal = real34ToInt32(&time34);
         timeInfo.csec =  timeVal         % 100;
@@ -848,6 +834,27 @@ void fnSetTime(uint16_t unusedButMandatoryParameter) {
         timeInfo.min  = (timeVal /=  60) %  60;
         timeInfo.hour = (timeVal /=  60);
         rtc_write(&timeInfo, &dateInfo);
+      }
+    }
+    else if(getRegisterDataType(REGISTER_X) == dtReal34) {
+      if(real34IsNegative(REGISTER_REAL34_DATA(REGISTER_X)) || real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X)) || real34CompareGreaterEqual(REGISTER_REAL34_DATA(REGISTER_X), const34_24)) {
+        displayCalcErrorMessage(ERROR_BAD_TIME_OR_DATE_INPUT, ERR_REGISTER_LINE, REGISTER_X);
+      }
+      else {
+        rtc_read(&timeInfo, &dateInfo);
+        real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), const34_1e6, &time34);
+        real34ToIntegralValue(&time34, &time34, DEC_ROUND_DOWN);
+        timeVal = real34ToInt32(&time34);
+        timeInfo.csec =  timeVal         % 100;
+        timeInfo.sec  = (timeVal /= 100) % 100;
+        timeInfo.min  = (timeVal /= 100) % 100;
+        timeInfo.hour = (timeVal /= 100);
+        if(timeInfo.sec <= 59 && timeInfo.min <= 59 && timeInfo.hour <= 23) {
+          rtc_write(&timeInfo, &dateInfo);
+        }
+        else {
+          displayCalcErrorMessage(ERROR_BAD_TIME_OR_DATE_INPUT, ERR_REGISTER_LINE, REGISTER_X);
+        }
       }
     }
     else {

@@ -241,8 +241,7 @@ void WP34S_Qf_T(const real_t *x, const real_t *nu, real_t *res, realContext_t *r
   realAdd(&p, &q, &p, realContext);
   realMultiply(nu, const__1, &q, realContext);
   realPower(&p, &q, &p, realContext);
-  int32ToReal(4, &q);
-  realDivide(&p, &q, &a, realContext);
+  realDivide(&p, const_4, &a, realContext);
   if(realCompareLessEqual(&reg0, &a)) {
     realMultiply(nu, const_2, &p, realContext);
     realMultiply(&reg0, &p, &q, realContext);

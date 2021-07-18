@@ -78,6 +78,7 @@ wp43s_src = files(
   'mathematics/deltaPercent.c',
   'mathematics/division.c',
   'mathematics/dot.c',
+  'mathematics/elliptic.c',
   'mathematics/erf.c',
   'mathematics/erfc.c',
   'mathematics/exp.c',

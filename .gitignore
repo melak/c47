@@ -1,10 +1,15 @@
 # WP43S project specific files
 /build
+/build.sim
 /dep/gmp-6.2.0
 /wp43s
 /testSuite
+/generate*
+/ttf2RasterFonts
 /wp43s.exe
 /testSuite.exe
+/generate*.exe
+/ttf2RasterFonts.exe
 backup.bin
 wp43s.sav
 

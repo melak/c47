@@ -262,8 +262,7 @@ void WP34S_Qf_Chi2(const real_t *x, const real_t *k, real_t *res, realContext_t 
     realPower(&q, const_3, &q, realContext);
     realMultiply(&q, k, &q, realContext);
     realMultiply(const_eE, k, &r, realContext);
-    int32ToReal(8, &t);
-    realAdd(&r, &t, &r, realContext);
+    realAdd(&r, const_8, &r, realContext);
     if(realCompareGreaterEqual(&q, &r)) {
       realDivide(&q, const_2, &q, realContext);
       WP34S_Ln(&q, &q, realContext);
@@ -317,8 +316,7 @@ void WP34S_Qf_Chi2(const real_t *x, const real_t *k, real_t *res, realContext_t 
     realDivide(&s, &q, &s, realContext);
     realMultiply(&p, const_2, &p, realContext);
     realSubtract(&s, &p, &p, realContext);
-    int32ToReal(4, &s);
-    realDivide(&p, &s, &p, realContext);
+    realDivide(&p, const_4, &p, realContext);
     realMultiply(&p, &r, &p, realContext);
     realChangeSign(&p);
     realAdd(&p, const_1, &p, realContext);

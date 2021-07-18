@@ -121,8 +121,9 @@
 #define ERROR_WRITE_PROTECTED_VAR                 37
 #define ERROR_BAD_INPUT                           38 // This error is not in ReM and cannot occur (theoretically).
 #define ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX    39
+#define ERROR_NO_ERRORS_CALCULABLE                40
 
-#define NUMBER_OF_ERROR_CODES                     40
+#define NUMBER_OF_ERROR_CODES                     41
 
 #define NUMBER_OF_GLOBAL_FLAGS                   112
 #define FIRST_LOCAL_FLAG                         112 // There are 112 global flag from 0 to 111
@@ -386,10 +387,10 @@ typedef enum {
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
 
 // Number of constants
-#define NUMBER_OF_CONSTANTS_39                   183
+#define NUMBER_OF_CONSTANTS_39                   187
 #define NUMBER_OF_CONSTANTS_51                    30
 #define NUMBER_OF_CONSTANTS_1071                   1
-#define NUMBER_OF_CONSTANTS_34                     8
+#define NUMBER_OF_CONSTANTS_34                    42
 
 #define MAX_FREE_REGION                           50 // Maximum number of free memory regions
 
