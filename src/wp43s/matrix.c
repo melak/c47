@@ -1760,7 +1760,7 @@ void showMatrixEditor() {
   else
     showComplexMatrix(&openMatrixMIMPointer.complexMatrix);
 
-  sprintf(tmpString, "%" PRIi16";%" PRIi16"= %s", (int16_t)(colVector ? matSelCol+1 : matSelRow+1), (int16_t)(colVector ? 1 : matSelCol+1), nimBufferDisplay);
+  sprintf(tmpString, "%" PRIi16";%" PRIi16"=%s%s", (int16_t)(colVector ? matSelCol+1 : matSelRow+1), (int16_t)(colVector ? 1 : matSelCol+1), (aimBuffer[0] == 0 || aimBuffer[0] == '-') ? "" : " ", nimBufferDisplay);
   width = stringWidth(tmpString, &numericFont, true, true) + 1;
   if(aimBuffer[0] == 0) {
     if(getRegisterDataType(matrixIndex) == dtReal34Matrix)
@@ -1835,6 +1835,10 @@ void mimEnter(bool_t commit) {
 }
 
 void mimAddNumber(int16_t item) {
+  const int cols = openMatrixMIMPointer.header.matrixColumns;
+  const int16_t row = getIRegisterAsInt(true);
+  const int16_t col = getJRegisterAsInt(true);
+
   switch(item) {
     case ITM_EXPONENT :
       if(aimBuffer[0] == 0) {
@@ -1906,10 +1910,6 @@ void mimAddNumber(int16_t item) {
 
     case ITM_CHS :
       if(aimBuffer[0] == 0) {
-        const int cols = openMatrixMIMPointer.header.matrixColumns;
-        const int16_t row = getIRegisterAsInt(true);
-        const int16_t col = getJRegisterAsInt(true);
-
         if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
           real34ChangeSign(&openMatrixMIMPointer.realMatrix.matrixElements[row * cols + col]);
         }
@@ -1925,6 +1925,22 @@ void mimAddNumber(int16_t item) {
     case ITM_CC :
       if(aimBuffer[0] == 0) return;
       break;
+
+    case ITM_CONSTpi :
+      if(aimBuffer[0] == 0) {
+        if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
+          realToReal34(const_pi, &openMatrixMIMPointer.realMatrix.matrixElements[row * cols + col]);
+        }
+        else {
+          realToReal34(const_pi, VARIABLE_REAL34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
+          real34Zero(VARIABLE_IMAG34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
+        }
+      }
+      else if(nimNumberPart == NP_COMPLEX_INT_PART && aimBuffer[strlen(aimBuffer) - 1] == 'i') {
+        strcat(aimBuffer, "3.141592653589793238462643383279503");
+        reallyRunFunction(ITM_ENTER, NOPARAM);
+      }
+      return;
 
     default:
       return;

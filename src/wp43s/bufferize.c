@@ -335,6 +335,8 @@
 
         case ITM_CHS : // +/-
 
+        case ITM_CONSTpi :
+
         mimAddNumber(item);
         break;
 
