@@ -44,6 +44,8 @@
   void registerBrowser(uint16_t unusedButMandatoryParameter) {
     int16_t registerNameWidth;
 
+    hourGlassIconEnabled = false;
+
     if(calcMode != CM_REGISTER_BROWSER) {
       if(calcMode == CM_AIM) {
         hideCursor();

@@ -66,6 +66,8 @@
     int16_t f;
     bool_t firstFlag;
 
+    hourGlassIconEnabled = false;
+
     if(calcMode != CM_FLAG_BROWSER) {
       if(calcMode == CM_AIM) {
         hideCursor();

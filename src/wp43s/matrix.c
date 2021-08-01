@@ -4840,8 +4840,8 @@ void realEigenvalues(const real34Matrix_t *matrix, real34Matrix_t *res, real34Ma
 
       // Check imaginary part (mutually conjugate complex roots are possible in real quadratic equations)
       isComplex = false;
-      for(i = 0; i < size * size; i++) {
-        if(!realIsZero(eig + i * 2 + 1)) {
+      for(i = 0; i < size; i++) {
+        if(!realIsZero(eig + (i * size + i) * 2 + 1)) {
           isComplex = true;
           break;
         }
