@@ -1504,7 +1504,7 @@
       else if(calcMode == CM_AIM || (tam.mode && tam.alpha)) {
         calcModeAimGui();
       }
-      else if(calcMode == CM_NORMAL || calcMode == CM_PEM) {
+      else if(calcMode == CM_NORMAL || calcMode == CM_PEM || calcMode == CM_MIM) {
         calcModeNormalGui();
       }
     #endif // PC_BUILD && (SCREEN_800X480 == 0)

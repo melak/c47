@@ -195,6 +195,9 @@
           else if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (ITM_0<=item && item<=ITM_F) && !catalog) {
             addItemToNimBuffer(item);
           }
+          else if(calcMode == CM_MIM && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_M_EDIT) {
+            addItemToBuffer(item);
+          }
           else if(item > 0) { // function
             if(calcMode == CM_NIM && item != ITM_CC) {
               closeNim();
@@ -854,9 +857,11 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_MIM:
-        mimEnter(true);
-        mimFinalize();
-        calcModeNormal();
+        if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_M_EDIT) {
+          mimEnter(true);
+          mimFinalize();
+          calcModeNormal();
+        }
         popSoftmenu(); // close softmenu dedicated for the MIM
         break;
 
@@ -1116,6 +1121,9 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_MIM:
+        if(currentSoftmenuScrolls()) {
+          menuUp();
+        }
         break;
 
       default:
@@ -1200,6 +1208,9 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_MIM:
+        if(currentSoftmenuScrolls()) {
+          menuDown();
+        }
         break;
 
       default:

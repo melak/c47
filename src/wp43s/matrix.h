@@ -267,6 +267,7 @@ void       fnEigenvectors                 (uint16_t unusedParamButMandatory);
   void     showMatrixEditor               (void);
   void     mimEnter                       (bool_t commit);
   void     mimAddNumber                   (int16_t item);
+  void     mimRunFunction                 (int16_t func, uint16_t param);
   void     mimFinalize                    (void);
   void     mimRestore                     (void);
   /**

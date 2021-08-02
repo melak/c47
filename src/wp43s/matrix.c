@@ -27,6 +27,7 @@
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
+#include "gui.h"
 #include "items.h"
 #include "longIntegerType.h"
 #include "mathematics/comparisonReals.h"
@@ -525,6 +526,9 @@ void fnGoToColumn(uint16_t col) {
       setIRegisterAsInt(false, tmpRow);
       setJRegisterAsInt(false, col);
     }
+    #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
+      calcModeNormalGui();
+    #endif // PC_BUILD && (SCREEN_800X480 == 0)
   }
   else {
     displayCalcErrorMessage(ERROR_OPERATION_UNDEFINED, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -1718,8 +1722,20 @@ void showMatrixEditor() {
   int cols = openMatrixMIMPointer.header.matrixColumns;
   int16_t width = 0;
 
-  if(softmenuStack[0].firstItem != -MNU_M_EDIT)
+  for(int i = 0; i < SOFTMENU_STACK_SIZE; i++) {
+    if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_M_EDIT) {
+      width = 1;
+      break;
+    }
+  }
+  if(width == 0) {
     showSoftmenu(-MNU_M_EDIT);
+  }
+  #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
+  if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_M_EDIT) {
+    calcModeNormalGui();
+  }
+  #endif // PC_BUILD && (SCREEN_800X480 == 0)
 
   bool_t colVector = false;
   if(cols == 1 && rows > 1) {
@@ -1947,6 +1963,112 @@ void mimAddNumber(int16_t item) {
   }
   addItemToNimBuffer(item);
   calcMode = CM_MIM;
+}
+
+void mimRunFunction(int16_t func, uint16_t param) {
+  int16_t i = getIRegisterAsInt(true);
+  int16_t j = getJRegisterAsInt(true);
+  bool_t isComplex = (getRegisterDataType(matrixIndex) == dtComplex34Matrix);
+  real34_t re, im, re1, im1;
+  bool_t converted = false;
+  bool_t liftStackFlag = getSystemFlag(FLAG_ASLIFT);
+
+  if(isComplex) {
+    real34Copy(VARIABLE_REAL34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j]), &re1);
+    real34Copy(VARIABLE_IMAG34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j]), &im1);
+  }
+  else {
+    real34Copy(&openMatrixMIMPointer.realMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j], &re1);
+    real34Zero(&im1);
+  }
+
+  lastErrorCode = ERROR_NONE;
+  mimEnter(true);
+  clearSystemFlag(FLAG_ASLIFT);
+
+  if(isComplex) {
+    real34Copy(VARIABLE_REAL34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j]), &re);
+    real34Copy(VARIABLE_IMAG34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j]), &im);
+  }
+  else {
+    real34Copy(&openMatrixMIMPointer.realMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j], &re);
+    real34Zero(&im);
+  }
+  if(isComplex) {
+    reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
+    real34Copy(&im, REGISTER_IMAG34_DATA(REGISTER_X));
+  }
+  else {
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
+  }
+
+  reallyRunFunction(func, param);
+
+  switch(getRegisterDataType(REGISTER_X)) {
+    case dtLongInteger:
+      convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+      break;
+    case dtShortInteger:
+      convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+      break;
+    case dtReal34:
+    case dtComplex34:
+      break;
+    default:
+      lastErrorCode = ERROR_INVALID_DATA_TYPE_FOR_OP;
+  }
+
+  if(lastErrorCode == ERROR_NONE) {
+    if(isComplex && getRegisterDataType(REGISTER_X) == dtComplex34) {
+      complex34Copy(REGISTER_COMPLEX34_DATA(REGISTER_X), &openMatrixMIMPointer.complexMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j]);
+    }
+    else if(isComplex) {
+      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), VARIABLE_REAL34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j]));
+      real34Zero(                                  VARIABLE_IMAG34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j]));
+    }
+    else if(getRegisterDataType(REGISTER_X) == dtComplex34) { // Convert to a complex matrix
+      complex34Matrix_t cxma;
+      complex34_t ans;
+
+      complex34Copy(REGISTER_COMPLEX34_DATA(REGISTER_X), &ans);
+      converted = true;
+      convertReal34MatrixToComplex34Matrix(&openMatrixMIMPointer.realMatrix, &cxma);
+      realMatrixFree(&openMatrixMIMPointer.realMatrix);
+      convertComplex34MatrixToComplex34MatrixRegister(&cxma, matrixIndex);
+      openMatrixMIMPointer.complexMatrix.header.matrixRows = cxma.header.matrixRows;
+      openMatrixMIMPointer.complexMatrix.header.matrixColumns = cxma.header.matrixColumns;
+      openMatrixMIMPointer.complexMatrix.matrixElements = cxma.matrixElements;
+
+      complex34Copy(&ans, &openMatrixMIMPointer.complexMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j]);
+    }
+    else {
+      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &openMatrixMIMPointer.realMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j]);
+    }
+  }
+
+  if(matrixIndex == REGISTER_X && !converted) {
+    if(isComplex) {
+      complex34Matrix_t linkedMatrix;
+      convertComplex34MatrixToComplex34MatrixRegister(&openMatrixMIMPointer.complexMatrix, REGISTER_X);
+      linkToComplexMatrixRegister(REGISTER_X, &linkedMatrix);
+      real34Copy(&re1, VARIABLE_REAL34_DATA(&linkedMatrix.matrixElements[i * linkedMatrix.header.matrixColumns + j]));
+      real34Copy(&im1, VARIABLE_IMAG34_DATA(&linkedMatrix.matrixElements[i * linkedMatrix.header.matrixColumns + j]));
+    }
+    else {
+      real34Matrix_t linkedMatrix;
+      convertReal34MatrixToReal34MatrixRegister(&openMatrixMIMPointer.realMatrix, REGISTER_X);
+      linkToRealMatrixRegister(REGISTER_X, &linkedMatrix);
+      real34Copy(&re1, &linkedMatrix.matrixElements[i * linkedMatrix.header.matrixColumns + j]);
+    }
+  }
+
+  if(liftStackFlag) setSystemFlag(FLAG_ASLIFT);
+
+  #ifdef PC_BUILD
+    refreshLcd(NULL);
+  #endif // PC_BUILD
 }
 
 void mimFinalize(void) {
@@ -2310,7 +2432,7 @@ smallFont:
         }
         showString(tmpString, font, X_POS + colX + colWidth_r[j] + (width - stringWidth(tmpString, font, true, true)), Y_POS - (maxRows -1 -i) * fontHeight, vm, true, false);
 
-        real34ToDisplayString(&im, amNone, tmpString, font, colWidth_i[j], displayFormat == DF_ALL ? digits : 15, true, STD_SPACE_4_PER_EM, false);
+        real34ToDisplayString(&im, getSystemFlag(FLAG_POLAR) ? currentAngularMode : amNone, tmpString, font, colWidth_i[j], displayFormat == DF_ALL ? digits : 15, true, STD_SPACE_4_PER_EM, false);
         width = stringWidth(tmpString, font, true, true) + 1;
         showString(tmpString, font, X_POS + colX + colWidth_r[j] + cpxUnitWidth + (((j == maxCols - 1) && rightEllipsis) ? 0 : (colWidth_i[j] - width) - rPadWidth_i[i * MATRIX_MAX_COLUMNS + j]), Y_POS - (maxRows -1 -i) * fontHeight, vm, true, false);
       }
@@ -2385,7 +2507,7 @@ int16_t getComplexMatrixColumnWidths(const complex34Matrix_t *matrix, const font
 
         rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] = 0;
         if(!getSystemFlag(FLAG_POLAR))real34SetPositiveSign(VARIABLE_IMAG34_DATA(&c34Val));
-        real34ToDisplayString(VARIABLE_IMAG34_DATA(&c34Val), amNone, tmpString, font, maxWidth, displayFormat == DF_ALL ? k : 15, true, STD_SPACE_4_PER_EM, false);
+        real34ToDisplayString(VARIABLE_IMAG34_DATA(&c34Val), getSystemFlag(FLAG_POLAR) ? currentAngularMode : amNone, tmpString, font, maxWidth, displayFormat == DF_ALL ? k : 15, true, STD_SPACE_4_PER_EM, false);
         width = stringWidth(tmpString, font, true, true) + 1;
         for(char *xStr = tmpString; *xStr != 0; xStr++) {
           if(((displayFormat != DF_ENG && (displayFormat != DF_ALL || !getSystemFlag(FLAG_ALLENG))) && (*xStr == '.' || *xStr == ',')) ||

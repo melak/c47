@@ -26,6 +26,7 @@
 #include "items.h"
 #include "mathematics/fractionalPart.h"
 #include "mathematics/integerPart.h"
+#include "matrix.h"
 #include "programming/lblGtoXeq.h"
 #include "registers.h"
 #include "softmenus.h"
@@ -419,7 +420,10 @@
           }
         }
         else if(run) {
-          reallyRunFunction(_tamOperation(), value);
+          if(calcMode == CM_MIM)
+            mimRunFunction(_tamOperation(), value);
+          else
+            reallyRunFunction(_tamOperation(), value);
         }
         if(_tamOperation() == ITM_M_GOTO_ROW) {
           tamLeaveMode();
@@ -455,7 +459,10 @@
         }
       }
       if(value != INVALID_VARIABLE) {
-        reallyRunFunction(_tamOperation(), value);
+        if(calcMode == CM_MIM)
+          mimRunFunction(_tamOperation(), value);
+        else
+          reallyRunFunction(_tamOperation(), value);
       }
       if(_tamOperation() == ITM_M_GOTO_ROW) {
         tamLeaveMode();
@@ -552,7 +559,7 @@
     }
 
     #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-      if(calcMode == CM_NORMAL || calcMode == CM_PEM) {
+      if(calcMode == CM_NORMAL || calcMode == CM_PEM || calcMode == CM_MIM) {
         calcModeNormalGui();
       }
       else if(calcMode == CM_AIM) {
