@@ -237,7 +237,9 @@
   extern uint16_t               lrChosenUndo;
   extern uint16_t               lastPlotMode;
   extern uint16_t               plotSelection;
-  //extern uint16_t               largeur; // For the real34 width test
+  #if (REAL34_WIDTH_TEST == 1)
+    extern uint16_t               largeur;
+  #endif // (REAL34_WIDTH_TEST == 1)
 
   extern int32_t                numberOfFreeMemoryRegions;
   extern int32_t                lgCatalogSelection;

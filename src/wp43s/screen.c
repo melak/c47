@@ -915,14 +915,18 @@
       #endif // PC_BUILD
 
 
-      if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || calcMode == CM_MIM) {
+      if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || (calcMode == CM_MIM && getRegisterDataType(matrixIndex) == dtReal34Matrix)) {
         real34Matrix_t matrix;
-        linkToRealMatrixRegister(calcMode == CM_MIM ? matrixIndex : REGISTER_X, &matrix);
+        if(calcMode == CM_MIM)
+          matrix = openMatrixMIMPointer.realMatrix;
+        else
+          linkToRealMatrixRegister(REGISTER_X, &matrix);
         const uint16_t rows = matrix.header.matrixRows;
         const uint16_t cols = matrix.header.matrixColumns;
         bool_t smallFont = (rows >= 5);
         int16_t dummyVal[MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS + 1) + 1] = {};
-        if(getRealMatrixColumnWidths(&matrix, &numericFont, dummyVal, dummyVal + MATRIX_MAX_COLUMNS, dummyVal + (MATRIX_MAX_ROWS + 1) * MATRIX_MAX_COLUMNS, cols > MATRIX_MAX_COLUMNS ? MATRIX_MAX_COLUMNS : cols) > MATRIX_LINE_WIDTH) smallFont = true;
+        const int16_t mtxWidth = getRealMatrixColumnWidths(&matrix, &numericFont, dummyVal, dummyVal + MATRIX_MAX_COLUMNS, dummyVal + (MATRIX_MAX_ROWS + 1) * MATRIX_MAX_COLUMNS, cols > MATRIX_MAX_COLUMNS ? MATRIX_MAX_COLUMNS : cols);
+        if(abs(mtxWidth) > MATRIX_LINE_WIDTH) smallFont = true;
         if(rows == 2 && cols > 1 && !smallFont) displayStack = 3;
         if(rows == 3 && cols > 1) displayStack = smallFont ? 3 : 2;
         if(rows == 4 && cols > 1) displayStack = smallFont ? 2 : 1;
@@ -930,20 +934,28 @@
         if(calcMode == CM_MIM) displayStack -= 2;
         if(displayStack > 4 /* in case of overflow */) displayStack = 0;
       }
-      else if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix || calcMode == CM_MIM) {
+      else if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix || (calcMode == CM_MIM && getRegisterDataType(matrixIndex) == dtComplex34Matrix)) {
         complex34Matrix_t matrix;
-        linkToComplexMatrixRegister(calcMode == CM_MIM ? matrixIndex : REGISTER_X, &matrix);
+        if(calcMode == CM_MIM)
+          matrix = openMatrixMIMPointer.complexMatrix;
+        else
+          linkToComplexMatrixRegister(calcMode == CM_MIM ? matrixIndex : REGISTER_X, &matrix);
         const uint16_t rows = matrix.header.matrixRows;
         const uint16_t cols = matrix.header.matrixColumns;
         bool_t smallFont = (rows >= 5);
         int16_t dummyVal[MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS * 2 + 3) + 1] = {};
-        if(getComplexMatrixColumnWidths(&matrix, &numericFont, dummyVal, dummyVal + MATRIX_MAX_COLUMNS, dummyVal + MATRIX_MAX_COLUMNS * 2, dummyVal + MATRIX_MAX_COLUMNS * 3, dummyVal + MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS + 3), dummyVal + MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS * 2 + 3), cols > MATRIX_MAX_COLUMNS ? MATRIX_MAX_COLUMNS : cols) > MATRIX_LINE_WIDTH) smallFont = true;
+        const int16_t mtxWidth = getComplexMatrixColumnWidths(&matrix, &numericFont, dummyVal, dummyVal + MATRIX_MAX_COLUMNS, dummyVal + MATRIX_MAX_COLUMNS * 2, dummyVal + MATRIX_MAX_COLUMNS * 3, dummyVal + MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS + 3), dummyVal + MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS * 2 + 3), cols > MATRIX_MAX_COLUMNS ? MATRIX_MAX_COLUMNS : cols);
+        if(mtxWidth > MATRIX_LINE_WIDTH) smallFont = true;
         if(rows == 2 && cols > 1 && !smallFont) displayStack = 3;
         if(rows == 3 && cols > 1) displayStack = smallFont ? 3 : 2;
         if(rows == 4 && cols > 1) displayStack = smallFont ? 2 : 1;
         if(rows >= 5 && cols > 1) displayStack = 2;
         if(calcMode == CM_MIM) displayStack -= 2;
         if(displayStack > 4 /* in case of overflow */) displayStack = 0;
+      }
+
+      if(calcMode == CM_MIM && matrixIndex == REGISTER_X) {
+        displayStack += 1;
       }
 
       if(temporaryInformation == TI_STATISTIC_LR && (getRegisterDataType(REGISTER_X) != dtReal34)) {
@@ -959,7 +971,7 @@
            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
            w = stringWidth(tmpString, &standardFont, true, true);
            showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
-        }            
+        }
       }
 
       else if(temporaryInformation == TI_ARE_YOU_SURE && regist == REGISTER_X) {
@@ -1467,7 +1479,7 @@
             }
           }
 
-          else if(temporaryInformation == TI_CORR) {             
+          else if(temporaryInformation == TI_CORR) {
             if(regist == REGISTER_X) {
               prefix[0]=0;
               if(lrChosen == 0) {
@@ -1516,11 +1528,11 @@
           else if(temporaryInformation == TI_STATISTIC_SUMS) {
             realToInt32(SIGMA_N, w);
             if(regist == REGISTER_X && w > LIM) {
-              sprintf(prefix, "Plot memory full, continuing");                
+              sprintf(prefix, "Plot memory full, continuing");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             if(regist == REGISTER_Y) {
-              sprintf(prefix, "Data point %03" PRId16, w);                
+              sprintf(prefix, "Data point %03" PRId16, w);
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Y_LINE - 2, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
             }
@@ -1535,7 +1547,7 @@
                }
                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
                //lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Y_LINE - 2, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
-             }            
+             }
            }
 
           real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
@@ -1856,7 +1868,9 @@
         showSoftmenuCurrentPart();
         hourGlassIconEnabled = false;
         refreshStatusBar();
-        //for(int y=Y_POSITION_OF_REGISTER_Y_LINE; y<Y_POSITION_OF_REGISTER_Y_LINE + 2*REGISTER_LINE_HEIGHT; y++ ) setBlackPixel(SCREEN_WIDTH - largeur - 1, y); // For the real34 width test
+        #if (REAL34_WIDTH_TEST == 1)
+          for(int y=Y_POSITION_OF_REGISTER_Y_LINE; y<Y_POSITION_OF_REGISTER_Y_LINE + 2*REGISTER_LINE_HEIGHT; y++ ) setBlackPixel(SCREEN_WIDTH - largeur - 1, y);
+        #endif // (REAL34_WIDTH_TEST == 1)
         break;
 
       case CM_PLOT_STAT:

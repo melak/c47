@@ -159,7 +159,9 @@ uint16_t               lrChosen;
 uint16_t               lrChosenUndo;
 uint16_t               lastPlotMode;
 uint16_t               plotSelection;
-//uint16_t               largeur=400; // For the real34 width test
+#if (REAL34_WIDTH_TEST == 1)
+  uint16_t               largeur=200;
+#endif // (REAL34_WIDTH_TEST == 1)
 
 int32_t                numberOfFreeMemoryRegions;
 int32_t                lgCatalogSelection;
