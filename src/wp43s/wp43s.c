@@ -569,7 +569,8 @@ size_t                 wp43sMemInBlocks;
         inFastRefresh = 0;
       }
 
-      if(ST(STAT_CLK_WKUP_FLAG) || ST(STAT_POWER_CHANGE) || nextScreenRefresh <= now) {
+      if(ST(STAT_CLK_WKUP_FLAG) || ST(STAT_POWER_CHANGE) || nextScreenRefresh <= now
+        || calcMode == CM_AIM || calcMode == CM_NIM) {
         if (nextScreenRefresh <= now) {
           previousRefresh = now;
           nextScreenRefresh = previousRefresh + (inFastRefresh ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);

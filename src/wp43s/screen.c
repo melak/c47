@@ -433,17 +433,12 @@
   }
 #elif defined DMCP_BUILD
   void refreshLcd(void) {// This function is called roughly every SCREEN_REFRESH_PERIOD ms from the main loop
-    // Cursor blinking
-    static bool_t cursorBlink=true;
 
     if(cursorEnabled) {
-      if(cursorBlink) {
-        showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor, vmNormal, true, false);
-      }
-      else {
-        hideCursor();
-      }
-      cursorBlink = !cursorBlink;
+      showGlyph(STD_CURSOR, cursorFont, xCursor, yCursor, vmNormal, true, false);
+    }
+    else {
+      hideCursor();
     }
 
     // Function name display
