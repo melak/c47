@@ -34,6 +34,7 @@
 #include "screen.h"
 #include "softmenus.h"
 #include "stack.h"
+#include "timer.h"
 #include "ui/tam.h"
 #if (REAL34_WIDTH_TEST == 1)
   #include "registerValueConversions.h"
@@ -100,6 +101,20 @@
     }
   #endif // PC_BUILD
 
+
+    void execAutoRepeat(uint16_t key) {
+#ifdef DMCP_BUILD
+      char charKey[6];
+      sprintf(charKey, "%02d", key -1);
+
+      fnTimerStart(TO_AUTO_REPEAT, key, KEY_AUTOREPEAT_PERIOD);
+
+      btnClicked(NULL, (char *)charKey);
+//    btnPressed(charKey);
+      refreshLcd();
+      lcd_refresh_dma();
+#endif
+    }
 
 
   #ifdef PC_BUILD
@@ -330,18 +345,19 @@
     }
   #endif // PC_BUILD
 
+
   #ifdef DMCP_BUILD
     void btnPressed(void *data) {
       int16_t item;
 
-      if(keyAutoRepeat) {
-        //beep(880, 50);
-        item = previousItem;
-      }
-      else {
+//    if(keyAutoRepeat) {
+//      //beep(880, 50);
+//      item = previousItem;
+//    }
+//    else {
         item = determineItem((char *)data);
-        previousItem = item;
-      }
+//      previousItem = item;
+//    }
 
       showFunctionNameItem = 0;
       if(item != ITM_NOP && item != ITM_NULL) {
@@ -377,12 +393,14 @@
           runFunction(item);
         }
       }
-  #ifdef DMCP_BUILD
-      else if(keyAutoRepeat) {
-        btnPressed(data);
+//#ifdef DMCP_BUILD
+//    else if(keyAutoRepeat) {
+//      btnPressed(data);
+//    }
+//#endif // DMCP_BUILD
+      if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING) {
+        refreshScreen();
       }
-  #endif // DMCP_BUILD
-      refreshScreen();
     }
 
 

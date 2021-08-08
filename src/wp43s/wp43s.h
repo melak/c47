@@ -262,8 +262,9 @@
 
   #ifdef DMCP_BUILD
     extern bool_t               backToDMCP;
-    extern int                  keyAutoRepeat; // Key repetition
-    extern int16_t              previousItem;
+//  extern int                  keyAutoRepeat; // Key repetition
+//  extern int16_t              previousItem;
+    extern uint32_t             nextTimerRefresh;
   #endif // DMCP_BUILD
 
 #endif // WP43S_H

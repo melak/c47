@@ -24,6 +24,7 @@
 #include "memory.h"
 #include "saveRestoreCalcState.h"
 #include "screen.h"
+#include "timer.h"
 
 #include "wp43s.h"
 
@@ -105,6 +106,10 @@
     refreshScreen();
 
     gdk_threads_add_timeout(SCREEN_REFRESH_PERIOD, refreshLcd, NULL); // refreshLcd is called every SCREEN_REFRESH_PERIOD ms
+
+    fnTimerReset();
+//  fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV);
+    gdk_threads_add_timeout(5, refreshTimer, NULL);
 
     gtk_main();
 

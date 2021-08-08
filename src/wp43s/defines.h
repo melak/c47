@@ -369,8 +369,15 @@ typedef enum {
 #define X_USER_MODE                              375
 #define X_BATTERY                                389
 
-#define TIMER_IDX_SCREEN_REFRESH                   0 // use timer 0 to wake up for screen refresh
-#define TIMER_IDX_AUTO_REPEAT                      1 // use timer 1 to wake up for key auto-repeat
+#define TIMER_IDX_REFRESH_SLEEP                    0 // use timer 0 to wake up for screen refresh
+//#define TIMER_IDX_AUTO_REPEAT                    1 // use timer 1 to wake up for key auto-repeat
+
+#define TMR_NUMBER    2
+
+// timer
+#define TO_AUTO_REPEAT                             0
+#define TO_KB_ACTV                                 1
+
 
 #ifdef PC_BUILD
   #ifdef LINUX

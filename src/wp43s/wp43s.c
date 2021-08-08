@@ -22,6 +22,7 @@
 #include "longIntegerType.h"
 #include "memory.h"
 #include "screen.h"
+#include "timer.h"
 
 #if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
   bool_t              debugMemAllocation;
@@ -184,16 +185,17 @@ size_t                 wp43sMemInBlocks;
 
 #ifdef DMCP_BUILD
   bool_t               backToDMCP;
-  int                  keyAutoRepeat;
-  int16_t              previousItem;
+//int                  keyAutoRepeat;
+//int16_t              previousItem;
+  uint32_t             nextTimerRefresh;
   uint32_t             nextScreenRefresh; // timer substitute for refreshLcd(), which does cursor blinking and other stuff
 
   void program_main(void) {
     int key = 0;
     char charKey[3];
-    bool_t wp43sKbdLayout, inFastRefresh = 0, inDownUpPress = 0, repeatDownUpPress = 0;
+    bool_t wp43sKbdLayout/*, inFastRefresh = 0, inDownUpPress = 0, repeatDownUpPress = 0*/;
     uint16_t currentVolumeSetting, savedVoluleSetting; // used for beep signaling screen shot
-    uint32_t now, previousRefresh, nextAutoRepeat = 0;
+  //uint32_t now, previousRefresh, nextAutoRepeat = 0;
 
     wp43sMemInBlocks = 0;
     gmpMemInBytes = 0;
@@ -309,16 +311,24 @@ size_t                 wp43sMemInBlocks;
     backToDMCP = false;
 
     lcd_refresh();
-    previousRefresh = sys_current_ms();
-    nextScreenRefresh = previousRefresh + SCREEN_REFRESH_PERIOD;
-    now = sys_current_ms();
+  //previousRefresh = sys_current_ms();
+    nextScreenRefresh = sys_current_ms() + SCREEN_REFRESH_PERIOD;
+  //now = sys_current_ms();
     //runner_key_tout_init(0); // Enables fast auto repeat
+
+    fnTimerReset();
+    fnTimerConfig(TO_AUTO_REPEAT, execAutoRepeat, 0);
+    fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV);
+    nextTimerRefresh = 0;
 
     // Status flags:
     //   ST(STAT_PGM_END)   - Indicates that program should go to off state (set by auto off timer)
     //   ST(STAT_SUSPENDED) - Program signals it is ready for off and doesn't need to be woken-up again
     //   ST(STAT_OFF)       - Program in off state (OS goes to sleep and only [EXIT] key can wake it up again)
     //   ST(STAT_RUNNING)   - OS doesn't sleep in this mode
+  //SET_ST(STAT_CLK_WKUP_SECONDS);
+    SET_ST(STAT_CLK_WKUP_ENABLE); // Enable wakeup each minute (for clock update)
+
     while(!backToDMCP) {
       if(ST(STAT_PGM_END) && ST(STAT_SUSPENDED)) { // Already in off mode and suspended
         CLR_ST(STAT_RUNNING);
@@ -326,19 +336,56 @@ size_t                 wp43sMemInBlocks;
       }
       else if((!ST(STAT_PGM_END) && key_empty())) {         // Just wait if no keys available.
         CLR_ST(STAT_RUNNING);
-        sys_timer_start(TIMER_IDX_SCREEN_REFRESH, max(1, nextScreenRefresh - now));  // wake up for screen refresh
-        if(inDownUpPress) {
-          sys_timer_start(TIMER_IDX_AUTO_REPEAT, max(1, nextAutoRepeat - now)); // wake up for key auto-repeat
+
+        if(nextTimerRefresh == 0) {                         // no timeout available
+          sys_sleep();
         }
-        sys_sleep();
-        sys_timer_disable(TIMER_IDX_SCREEN_REFRESH);
-        if(inDownUpPress) {
-          repeatDownUpPress = (sys_current_ms() > nextAutoRepeat);
-          sys_timer_disable(TIMER_IDX_AUTO_REPEAT);
+        else {                                                                  // timeout available
+          uint32_t timeoutTime = max(1, nextTimerRefresh - sys_current_ms());
+
+          uint32_t sleepTime = max(1, nextScreenRefresh - sys_current_ms());
+          if(showFunctionNameCounter > 0) {
+            sleepTime = min(sleepTime, FAST_SCREEN_REFRESH_PERIOD);
+          }
+          sleepTime = min(sleepTime, timeoutTime);
+
+          sys_timer_start(TIMER_IDX_REFRESH_SLEEP, max(1, sleepTime));          // wake up for refresh
+          sys_sleep();
+          sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
         }
+
+
+//      sys_timer_start(TIMER_IDX_SCREEN_REFRESH, max(1, nextScreenRefresh - now));  // wake up for screen refresh
+//      if(inDownUpPress) {
+//        sys_timer_start(TIMER_IDX_AUTO_REPEAT, max(1, nextAutoRepeat - now)); // wake up for key auto-repeat
+//      }
+//      sys_sleep();
+//      sys_timer_disable(TIMER_IDX_SCREEN_REFRESH);
+//      if(inDownUpPress) {
+//        repeatDownUpPress = (sys_current_ms() > nextAutoRepeat);
+//        sys_timer_disable(TIMER_IDX_AUTO_REPEAT);
+//      }
       }
 
-      now = sys_current_ms();
+    //now = sys_current_ms();
+
+      // =======================
+      // Externally forced LCD repaint
+      if(ST(STAT_CLK_WKUP_FLAG)) {
+        if(!ST(STAT_OFF) && (nextTimerRefresh == 0)) {
+          refreshLcd();
+          lcd_refresh_wait();
+        }
+        CLR_ST(STAT_CLK_WKUP_FLAG);
+        continue;
+      }
+      if(ST(STAT_POWER_CHANGE)) {
+        if(!ST(STAT_OFF) && (fnTimerGetStatus(TO_KB_ACTV) != TMR_RUNNING)) {
+          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, SCREEN_REFRESH_PERIOD+50);
+        }
+        CLR_ST(STAT_POWER_CHANGE);
+        continue;
+      }
 
       // Wakeup in off state or going to sleep
       if(ST(STAT_PGM_END) || ST(STAT_SUSPENDED)) {
@@ -477,20 +524,24 @@ size_t                 wp43sMemInBlocks;
 
       // Increase the refresh rate if we are in an UP/DOWN key press so we pick up auto key repeats
       if(key == 27 || key == 32) {
-        inDownUpPress = 1;
-        nextAutoRepeat = now + KEY_AUTOREPEAT_FIRST_PERIOD;
+//      inDownUpPress = 1;
+//      nextAutoRepeat = now + KEY_AUTOREPEAT_FIRST_PERIOD;
+        if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING) {
+          fnTimerStart(TO_AUTO_REPEAT, key, KEY_AUTOREPEAT_FIRST_PERIOD);
+        }
       }
       else if(key == 0) {
-        inDownUpPress = 0;
-        repeatDownUpPress = 0;
-        nextAutoRepeat = 0;
+//      inDownUpPress = 0;
+//      repeatDownUpPress = 0;
+//      nextAutoRepeat = 0;
+        fnTimerStop(TO_AUTO_REPEAT);
       }
-      else if(repeatDownUpPress) {
-        keyAutoRepeat = 1;
-        key = 0;
-        nextAutoRepeat = now + KEY_AUTOREPEAT_PERIOD;
-        repeatDownUpPress = 0;
-      }
+//    else if(repeatDownUpPress) {
+//      keyAutoRepeat = 1;
+//      key = 0;
+//      nextAutoRepeat = now + KEY_AUTOREPEAT_PERIOD;
+//      repeatDownUpPress = 0;
+//    }
 
       //if(keyAutoRepeat) {
       //  if(key == 27 || key == 32) { // UP or DOWN keys
@@ -547,21 +598,44 @@ size_t                 wp43sMemInBlocks;
           //beep(440, 50);
           btnReleased(charKey);
         }
-        keyAutoRepeat = 0;
+//      keyAutoRepeat = 0;
         lcd_refresh();
       }
 
-      // Compute refresh period
-      if(showFunctionNameCounter > 0) {
-        inFastRefresh = 1;
-        nextScreenRefresh = previousRefresh + FAST_SCREEN_REFRESH_PERIOD;
-      } else {
-        inFastRefresh = 0;
+      if(key >= 0) {                                        // Temporary intermediate solution to get some refreshLcd and go to sleep afterwards
+        if(key > 0) {
+          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, 60000);
+        }
+        else if(cursorEnabled == true) {
+          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, 4*FAST_SCREEN_REFRESH_PERIOD+50);
+        }
+        else
+        {
+          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, FAST_SCREEN_REFRESH_PERIOD+50);
+        }
       }
 
+//    // Compute refresh period
+//    if(showFunctionNameCounter > 0) {
+//      inFastRefresh = 1;
+//      nextScreenRefresh = previousRefresh + FAST_SCREEN_REFRESH_PERIOD;
+//    }
+//    else {
+//      inFastRefresh = 0;
+//    }
+
+      uint32_t now = sys_current_ms();
+
+      if(nextTimerRefresh != 0 && nextTimerRefresh <= now) {
+        refreshTimer();                                     // Executes pending timer jobs
+      }
+      now = sys_current_ms();
       if(nextScreenRefresh <= now) {
-        previousRefresh = now;
-        nextScreenRefresh = previousRefresh + (inFastRefresh ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);
+//      previousRefresh = now;
+        nextScreenRefresh += ((showFunctionNameCounter > 0) ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);
+        if(nextScreenRefresh < now) {
+          nextScreenRefresh = now + ((showFunctionNameCounter > 0) ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);         // we were out longer than expected; just skip ahead.
+        }
         refreshLcd();
         lcd_refresh();
       }

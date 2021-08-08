@@ -123,6 +123,8 @@ void fnKeyAngle      (uint16_t unusedButMandatoryParameter);
   void btnReleased   (GtkWidget *notUsed, GdkEvent *event, gpointer data);
 #endif // PC_BUILD
 
+void execAutoRepeat(uint16_t key);
+
 #ifdef DMCP_BUILD
   void btnFnPressed (void *data);
   void btnFnReleased(void *data);

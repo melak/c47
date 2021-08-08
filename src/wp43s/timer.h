@@ -21,8 +21,56 @@
 #define TIMER_H
 
 #include <stdint.h>
+#ifdef PC_BUILD
+  #include <gtk/gtk.h>
+  #include <gdk/gdk.h>
+#endif // PC_BUILD
+
 
 uint32_t getUptimeMs(void);
 void     fnTicks    (uint16_t unusedButMandatoryParameter);
+
+
+#ifdef PC_BUILD
+gboolean refreshTimer         (gpointer data);
+#endif
+#ifdef DMCP_BUILD
+void     refreshTimer         (void);
+#endif
+
+
+void     fnTimerReset         (void);
+void     fnTimerDummyTest     (uint16_t param);
+void     fnTimerConfig        (uint8_t nr, void(*func)(uint16_t), uint16_t param);
+void     fnTimerStart         (uint8_t nr, uint16_t param, uint32_t time);      // Start Timer, 0..n-1
+void     fnTimerStop          (uint8_t nr);                                     // Stop Timer, 0..n-1
+void     fnTimerExec          (uint8_t nr);                                     // Execute Timer, 0..n-1
+void     fnTimerDel           (uint8_t nr);                                     // Delete Timer, 0..n-1
+uint8_t  fnTimerGetStatus     (uint8_t nr);
+
+
+
+/********************************************//**
+ * \typedef timer_t
+ * \brief Structure keeping the information for one timer
+ ***********************************************/
+#define TMR_UNUSED    0
+#define TMR_STOPPED   1
+#define TMR_RUNNING   2
+#define TMR_COMPLETED 3
+
+
+
+typedef struct {
+  void     (*func)(uint16_t); ///< Function called to execute the timer
+  uint16_t param;             ///< 1st parameter to the above
+#ifndef PC_BUILD
+  uint32_t timer_will_expire; ///<
+#else
+  gint64   timer_will_expire; ///<
+#endif
+  uint8_t  state;             ///<
+} kb_timer_t;
+
 
 #endif // TIMER_H

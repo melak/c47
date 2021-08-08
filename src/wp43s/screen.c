@@ -443,7 +443,7 @@
       else {
         hideCursor();
       }
-      cursorBlink = !cursorBlink;
+//    cursorBlink = !cursorBlink;
     }
 
     // Function name display
