@@ -106,14 +106,14 @@ void fnAgm(uint16_t unusedButMandatoryParameter) {
     realAgm(&aReal, &bReal, &aReal, &ctxtReal39);
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&aReal, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&aReal, REGISTER_X);
   }
   else { // Complex input
     complexAgm(&aReal, &aImag, &bReal, &bImag, &aReal, &aImag, &ctxtReal39);
 
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    realToReal34(&aReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&aImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&aReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&aImag, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, true, true, REGISTER_X, -1, -1);

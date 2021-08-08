@@ -26,6 +26,7 @@
 #include "error.h"
 #include "flags.h"
 #include "registers.h"
+#include "registerValueConversions.h"
 #include "stack.h"
 #include "stats.h"
 
@@ -183,7 +184,7 @@ void fnPopulationCovariance(uint16_t unusedButMandatoryParameter){    //COVxy
     liftStack();
     setSystemFlag(FLAG_ASLIFT);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&TT, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&TT, REGISTER_X);
     temporaryInformation = TI_COV;
   }
 }
@@ -195,7 +196,7 @@ void fnSampleCovariance(uint16_t unusedButMandatoryParameter){    //sxy
     liftStack();
     setSystemFlag(FLAG_ASLIFT);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&SXY, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&SXY, REGISTER_X);
     temporaryInformation = TI_SXY;
   }
 }
@@ -220,7 +221,7 @@ void fnCoefficientDetermination(uint16_t unusedButMandatoryParameter){  //r
     liftStack();
     setSystemFlag(FLAG_ASLIFT);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&RR, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&RR, REGISTER_X);
     temporaryInformation = TI_CORR;
   }
 }
@@ -254,7 +255,7 @@ void fnMinExpStdDev(uint16_t unusedButMandatoryParameter){ //smi
     liftStack();
     setSystemFlag(FLAG_ASLIFT);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&SMI, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&SMI, REGISTER_X);
     temporaryInformation = TI_SMI;
   }
 }
@@ -347,8 +348,8 @@ void fnStatSa(uint16_t unusedButMandatoryParameter) {
     setSystemFlag(FLAG_ASLIFT);
     liftStack();
 
-    realToReal34(&SA0, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&SA1, REGISTER_REAL34_DATA(REGISTER_Y));
+    convertRealToReal34ResultRegister(&SA0, REGISTER_X);
+    convertRealToReal34ResultRegister(&SA1, REGISTER_Y);
     temporaryInformation = TI_SA;
   }
 

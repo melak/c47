@@ -59,7 +59,7 @@ static void unitConversion(const real_t * const coefficient, uint16_t multiplyDi
     realDivide(&reX, coefficient, &reX, &ctxtReal39);
   }
 
-  realToReal34(&reX, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&reX, REGISTER_X);
 
   adjustResult(REGISTER_X, false, false, -1, -1, -1);
 }
@@ -95,7 +95,7 @@ void fnCvtCToF(uint16_t unusedButMandatoryParameter) {
 
   realFMA(&reX, const_9on5, const_32, &reX, &ctxtReal39);
 
-  realToReal34(&reX, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&reX, REGISTER_X);
 
   adjustResult(REGISTER_X, false, false, -1, -1, -1);
 }
@@ -132,7 +132,7 @@ void fnCvtFToC(uint16_t unusedButMandatoryParameter) {
   realSubtract(&reX, const_32, &reX, &ctxtReal39);
   realDivide(&reX, const_9on5, &reX, &ctxtReal39);
 
-  realToReal34(&reX, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&reX, REGISTER_X);
 
   adjustResult(REGISTER_X, false, false, -1, -1, -1);
 }
@@ -434,7 +434,7 @@ void fnCvtRatioDb(uint16_t tenOrTwenty) { // ten: power ratio   twenty: field ra
   WP34S_Log10(&reX, &reX, &ctxtReal39);
   realMultiply(&reX, (tenOrTwenty == 10 ? const_10 : const_20), &reX, &ctxtReal39);
 
-  realToReal34(&reX, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&reX, REGISTER_X);
 
   adjustResult(REGISTER_X, false, false, -1, -1, -1);
 }
@@ -471,7 +471,7 @@ void fnCvtDbRatio(uint16_t tenOrTwenty) { // ten: power ratio   twenty: field ra
   realDivide(&reX, (tenOrTwenty == 10 ? const_10 : const_20), &reX, &ctxtReal39);
   realPower(const_10, &reX, &reX, &ctxtReal39);
 
-  realToReal34(&reX, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&reX, REGISTER_X);
 
   adjustResult(REGISTER_X, false, false, -1, -1, -1);
 }

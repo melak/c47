@@ -86,13 +86,13 @@ void arcsinLonI(void) {
   if(realCompareAbsGreaterThan(&x, const_1)) {
     if(getFlag(FLAG_CPXRES)) {
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
       real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
       arcsinCplx();
     }
     else if(getSystemFlag(FLAG_SPCRES)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, currentAngularMode);
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -109,7 +109,7 @@ void arcsinLonI(void) {
     real34Zero(REGISTER_REAL34_DATA(REGISTER_X));
   }
   else {
-    realToReal34(const_90, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(const_90, REGISTER_X);
     if(realIsNegative(&x)) {
       real34ChangeSign(REGISTER_REAL34_DATA(REGISTER_X));
     }
@@ -140,13 +140,13 @@ void arcsinReal(void) {
   if(realCompareAbsGreaterThan(&x, const_1)) {
     if(getFlag(FLAG_CPXRES)) {
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
       real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
       arcsinCplx();
       return;
     }
     else if(getSystemFlag(FLAG_SPCRES)) {
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -159,7 +159,7 @@ void arcsinReal(void) {
 
   WP34S_Asin(&x, &x, &ctxtReal39);
   convertAngleFromTo(&x, amRadian, currentAngularMode, &ctxtReal39);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
 }
 
 void arcsinCplx(void) {
@@ -170,8 +170,8 @@ void arcsinCplx(void) {
 
     ArcsinComplex(&xReal, &xImag, &rReal, &rImag, &ctxtReal39);
 
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
 }
 
 uint8_t ArcsinComplex(const real_t *xReal, const real_t *xImag, real_t *rReal, real_t *rImag, realContext_t *realContext) {

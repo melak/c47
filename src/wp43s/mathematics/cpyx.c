@@ -333,7 +333,7 @@ void cpyxLonIReal(uint16_t combOrPerm) {
 
     (combOrPerm == CP_COMBINATION) ? cyxReal(&y, &x, &t, &ctxtReal39) : pyxReal(&y, &x, &t, &ctxtReal39);
 
-    realToReal34(&t, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&t, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone);
   }
 }
@@ -357,8 +357,8 @@ void cpyxLonICplx(uint16_t combOrPerm) {
   (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39)
                                  : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
-  realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&tImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&tReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&tImag, REGISTER_X);
 }
 
 /********************************************//**
@@ -419,7 +419,7 @@ void cpyxRealLonI(uint16_t combOrPerm) {
                                    : pyxReal(&y, &x, &t, &ctxtReal39);
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&t, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&t, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone);
   }
 }
@@ -446,7 +446,7 @@ void cpyxRealReal(uint16_t combOrPerm) {
     (combOrPerm == CP_COMBINATION) ? cyxReal(&y, &x, &t, &ctxtReal39)
                                    : pyxReal(&y, &x, &t, &ctxtReal39);
 
-    realToReal34(&t, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&t, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone);
   }
 }
@@ -470,8 +470,8 @@ void cpyxRealCplx(uint16_t combOrPerm) {
   (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39)
                                  : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
-  realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&tImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&tReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&tImag, REGISTER_X);
 }
 
 /********************************************//**
@@ -497,7 +497,7 @@ void cpyxRealShoI(uint16_t combOrPerm) {
                                    : pyxReal(&y, &x, &t, &ctxtReal39);
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&t, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&t, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone);
   }
 }
@@ -526,8 +526,8 @@ void cpyxCplxLonI(uint16_t combOrPerm) {
                                  : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&tImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&tReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&tImag, REGISTER_X);
 }
 
 /********************************************//**
@@ -550,8 +550,8 @@ void cpyxCplxReal(uint16_t combOrPerm) {
                                  : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&tImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&tReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&tImag, REGISTER_X);
 }
 
 /********************************************//**
@@ -573,8 +573,8 @@ void cpyxCplxCplx(uint16_t combOrPerm) {
   (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39)
                                  : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
-  realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&tImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&tReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&tImag, REGISTER_X);
 }
 
 /********************************************//**
@@ -597,8 +597,8 @@ void cpyxCplxShoI(uint16_t combOrPerm) {
                                  : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&tImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&tReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&tImag, REGISTER_X);
 }
 
 //=============================================================================
@@ -659,7 +659,7 @@ void cpyxShoIReal(uint16_t combOrPerm) {
                                    : pyxReal(&y, &x, &t, &ctxtReal39);
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&t, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&t, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone);
   }
 }
@@ -683,8 +683,8 @@ void cpyxShoICplx(uint16_t combOrPerm) {
   (combOrPerm == CP_COMBINATION) ? cyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39)
                                  : pyxCplx(&yReal, &yImag, &xReal, &xImag, &tReal, &tImag, &ctxtReal39);
 
-  realToReal34(&tReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&tImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&tReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&tImag, REGISTER_X);
 }
 
 /********************************************//**

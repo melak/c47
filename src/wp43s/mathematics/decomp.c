@@ -86,11 +86,11 @@ void decompReal(void) {
   liftStack();
 
   if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) {
-    realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X)); // Denominator = NaN
-    realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_Y)); // Numerator = NaN
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_X); // Denominator = NaN
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_Y); // Numerator = NaN
   }
   else if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
-    realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X)); // Denominator = 0
+    convertRealToReal34ResultRegister(const_0, REGISTER_X); // Denominator = 0
     realToReal34(real34IsNegative(REGISTER_REAL34_DATA(REGISTER_X)) ? const__1 : const_1, REGISTER_REAL34_DATA(REGISTER_Y)); // Numerator = +/- 1
   }
   else {

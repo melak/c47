@@ -94,7 +94,7 @@ void sqrtLonI(void) {
       convertLongIntegerRegisterToReal(REGISTER_X, &a, &ctxtReal39);
       realSquareRoot(&a, &a, &ctxtReal39);
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&a, REGISTER_X);
     }
   }
   else if(getFlag(FLAG_CPXRES)) { // Negative value
@@ -105,7 +105,7 @@ void sqrtLonI(void) {
     realSetPositiveSign(&a);
     realSquareRoot(&a, &a, &ctxtReal39);
     real34Zero(REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&a, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToImag34ResultRegister(&a, REGISTER_X);
   }
   else {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -153,7 +153,7 @@ void sqrtReal(void) {
 
   if(real34IsPositive(REGISTER_REAL34_DATA(REGISTER_X))) {
     realSquareRoot(&a, &a, &ctxtReal39);
-    realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&a, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone);
   }
   else if(getFlag(FLAG_CPXRES)) {
@@ -161,7 +161,7 @@ void sqrtReal(void) {
     realSetPositiveSign(&a);
     realSquareRoot(&a, &a, &ctxtReal39);
     real34Zero(REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&a, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToImag34ResultRegister(&a, REGISTER_X);
   }
   else {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -185,6 +185,6 @@ void sqrtCplx(void) {
   realMultiply(&b, const_1on2, &b, &ctxtReal39);
   realPolarToRectangular(&a, &b, &a, &b, &ctxtReal39);
 
-  realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&b, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&a, REGISTER_X);
+  convertRealToImag34ResultRegister(&b, REGISTER_X);
 }

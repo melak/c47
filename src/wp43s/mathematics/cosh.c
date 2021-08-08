@@ -82,7 +82,7 @@ void coshLonI(void) {
   WP34S_SinhCosh(&cosh, NULL, &cosh, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&cosh, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&cosh, REGISTER_X);
 }
 
 
@@ -112,7 +112,7 @@ void coshReal(void) {
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
   WP34S_SinhCosh(&x, NULL, &x, &ctxtReal39);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -131,6 +131,6 @@ void coshCplx(void) {
   realMultiply(&cosha, &cosb, &a, &ctxtReal39);
   realMultiply(&sinha, &sinb, &b, &ctxtReal39);
 
-  realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&b, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&a, REGISTER_X);
+  convertRealToImag34ResultRegister(&b, REGISTER_X);
 }

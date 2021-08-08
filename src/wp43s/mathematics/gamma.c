@@ -141,13 +141,13 @@ void gammaLonI(void) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     return;
   }
 
   WP34S_Gamma(&x, &x, &ctxtReal39);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
 }
 
 
@@ -179,13 +179,13 @@ void lnGammaLonI(void) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     return;
   }
 
   WP34S_LnGamma(&x, &x, &ctxtReal39);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
 }
 
 
@@ -214,7 +214,7 @@ void gammaReal(void) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     return;
   }
@@ -223,7 +223,7 @@ void gammaReal(void) {
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
   WP34S_Gamma(&x, &x, &ctxtReal39);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
 }
 
 
@@ -256,7 +256,7 @@ void lnGammaReal(void) {
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
       else {
-        realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
       }
       return;
     }
@@ -265,7 +265,7 @@ void lnGammaReal(void) {
       WP34S_Mod(&xImag, const_2, &xImag, &ctxtReal39);
       if(realCompareGreaterThan(&xImag, const_1)) { // the result is a real
         WP34S_LnGamma(&xReal, &xReal, &ctxtReal39);
-        realToReal34(&xReal, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(&xReal, REGISTER_X);
       }
       else { // the result is a complex
         if(getFlag(FLAG_CPXRES)) { // We can calculate a complex
@@ -274,10 +274,10 @@ void lnGammaReal(void) {
           WP34S_Gamma(&xReal, &xReal, &ctxtReal39);
           realSetPositiveSign(&xReal);
           WP34S_Ln(&xReal, &xReal, &ctxtReal39);
-          realToReal34(&xReal, REGISTER_REAL34_DATA(REGISTER_X));
+          convertRealToReal34ResultRegister(&xReal, REGISTER_X);
           realToIntegralValue(&xImag, &xImag, DEC_ROUND_FLOOR, &ctxtReal39);
           realMultiply(&xImag, const_pi, &xImag, &ctxtReal39);
-          realToReal34(&xImag, REGISTER_IMAG34_DATA(REGISTER_X));
+          convertRealToImag34ResultRegister(&xImag, REGISTER_X);
         }
         else { // Domain error
           displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -291,7 +291,7 @@ void lnGammaReal(void) {
   }
 
   WP34S_LnGamma(&xReal, &xReal, &ctxtReal39);
-  realToReal34(&xReal, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&xReal, REGISTER_X);
 }
 
 
@@ -304,8 +304,8 @@ void gammaCplx(void) {
 
   WP34S_ComplexGamma(&zReal, &zImag, &zReal, &zImag, &ctxtReal39);
 
-  realToReal34(&zReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&zImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&zReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&zImag, REGISTER_X);
 }
 
 
@@ -318,6 +318,6 @@ void lnGammaCplx(void) {
 
   WP34S_ComplexLnGamma(&zReal, &zImag, &zReal, &zImag, &ctxtReal39);
 
-  realToReal34(&zReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&zImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&zReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&zImag, REGISTER_X);
 }

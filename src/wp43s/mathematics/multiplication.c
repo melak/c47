@@ -349,12 +349,12 @@ void mulLonIReal(void) {
 
   if(xAngularMode == amNone) {
     realMultiply(&y, &x, &x, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
   else {
     convertAngleFromTo(&x, xAngularMode, currentAngularMode, &ctxtReal39);
     realMultiply(&y, &x, &x, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, currentAngularMode);
   }
 }
@@ -378,12 +378,12 @@ void mulRealLonI(void) {
 
   if(yAngularMode == amNone) {
     realMultiply(&y, &x, &x, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
   else {
     convertAngleFromTo(&y, yAngularMode, currentAngularMode, &ctxtReal39);
     realMultiply(&y, &x, &x, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, currentAngularMode);
   }
 }
@@ -406,8 +406,8 @@ void mulLonICplx(void) {
   realMultiply(&c, &a, &c, &ctxtReal39);
   realMultiply(&d, &a, &d, &ctxtReal39);
 
-  realToReal34(&c, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&d, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&c, REGISTER_X);
+  convertRealToImag34ResultRegister(&d, REGISTER_X);
 }
 
 
@@ -429,8 +429,8 @@ void mulCplxLonI(void) {
   realMultiply(&b, &c, &b, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&b, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&a, REGISTER_X);
+  convertRealToImag34ResultRegister(&b, REGISTER_X);
 }
 
 
@@ -880,12 +880,12 @@ void mulShoIReal(void) {
 
   if(xAngularMode == amNone) {
     realMultiply(&y, &x, &x, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
   else {
     convertAngleFromTo(&x, xAngularMode, currentAngularMode, &ctxtReal39);
     realMultiply(&y, &x, &x, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, currentAngularMode);
   }
 }
@@ -909,12 +909,12 @@ void mulRealShoI(void) {
 
   if(yAngularMode == amNone) {
     realMultiply(&y, &x, &x, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
   else {
     convertAngleFromTo(&y, yAngularMode, currentAngularMode, &ctxtReal39);
     realMultiply(&y, &x, &x, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, currentAngularMode);
   }
 }
@@ -983,7 +983,7 @@ void mulRealReal(void) {
 
     convertAngleFromTo(&x, yAngularMode != amNone ? yAngularMode : xAngularMode, currentAngularMode, &ctxtReal39);
 
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, currentAngularMode);
   }
 }
@@ -1038,6 +1038,6 @@ void mulCplxCplx(void) {
 
   mulComplexComplex(&yReal, &yImag, &xReal, &xImag, &xReal, &xImag, &ctxtReal39);
 
-  realToReal34(&xReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&xImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&xReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&xImag, REGISTER_X);
 }

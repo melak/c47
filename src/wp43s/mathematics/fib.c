@@ -170,7 +170,7 @@ void fibReal(void) {
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
   FibonacciReal(&x, &x, &ctxtReal39);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
 }
 
 void fibCplx(void) {
@@ -186,6 +186,6 @@ void fibCplx(void) {
     FibonacciComplex(&xReal, &xImag, &xReal, &xImag, &ctxtReal39);
   }
 
-  realToReal34(&xReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&xImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&xReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&xImag, REGISTER_X);
 }

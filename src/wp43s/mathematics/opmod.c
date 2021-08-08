@@ -146,7 +146,7 @@ static void toRealResult(longInteger_t longIntVal, int32_t exponent) {
   convertLongIntegerToReal(longIntVal, &r, &ctxtReal34);
   r.exponent -= exponent;
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&r, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&r, REGISTER_X);
 
 }
 
@@ -506,7 +506,7 @@ void opModRealRealReal(uint16_t mode) {
   else if(realCompareGreaterThan(&x, const_1) && realCompareGreaterThan(&y, const_0) && realCompareGreaterThan(&z, const_0)) {
     realMultiply(&z, &y, &z, &ctxtReal75);
     WP34S_Mod(&z, &x, &x, &ctxtReal75);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
   else {
     opModOutOfDomain(mode);

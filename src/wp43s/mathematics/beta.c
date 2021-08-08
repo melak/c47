@@ -128,8 +128,8 @@ static void _betaComplex(real_t *xReal, real_t *xImag, real_t *yReal, real_t *yI
 
   if(_beta(xReal, xImag, yReal, yImag, &rReal, &rImag, realContext)) {
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
   }
 }
 
@@ -143,12 +143,12 @@ static void _betaReal(real_t *xReal, real_t *yReal, realContext_t *realContext) 
   if(_beta(xReal, &xImag, yReal, &yImag, &rReal, &rImag, realContext)) {
     if(realIsZero(&rImag)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&rReal, REGISTER_X);
     }
     else {
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-      realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+      convertRealToImag34ResultRegister(&rImag, REGISTER_X);
     }
   }
 }

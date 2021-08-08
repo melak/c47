@@ -86,7 +86,7 @@ void fnLogisticP(uint16_t unusedButMandatoryParameter) {
   if(checkParamLogistic(&val, &mu, &s)) {
     WP34S_Pdf_Logit(&val, &mu, &s, &ans, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&ans, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&ans, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
@@ -100,7 +100,7 @@ void fnLogisticL(uint16_t unusedButMandatoryParameter) {
   if(checkParamLogistic(&val, &mu, &s)) {
     WP34S_Cdf_Logit(&val, &mu, &s, &ans, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&ans, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&ans, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
@@ -114,7 +114,7 @@ void fnLogisticR(uint16_t unusedButMandatoryParameter) {
   if(checkParamLogistic(&val, &mu, &s)) {
     WP34S_Cdfu_Logit(&val, &mu, &s, &ans, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&ans, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&ans, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
@@ -135,7 +135,7 @@ void fnLogisticI(uint16_t unusedButMandatoryParameter) {
     else {
       WP34S_Qf_Logit(&val, &mu, &s, &ans, &ctxtReal39);
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&ans, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&ans, REGISTER_X);
     }
   }
 

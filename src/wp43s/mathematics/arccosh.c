@@ -85,13 +85,13 @@ void arccoshLonI(void) {
   if(realCompareLessThan(&x, const_1)) {
     if(getFlag(FLAG_CPXRES)) {
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
       real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
       arccoshCplx();
     }
     else if(getSystemFlag(FLAG_SPCRES)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -106,7 +106,7 @@ void arccoshLonI(void) {
 
   realArcosh(&x, &x, &ctxtReal39);
 
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
 }
 
 
@@ -131,13 +131,13 @@ void arccoshReal(void) {
   if(realCompareLessThan(&x, const_1)) {
     if(getFlag(FLAG_CPXRES)) {
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
       real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
       arccoshCplx();
       setRegisterAngularMode(REGISTER_X, amNone);
     }
     else if(getSystemFlag(FLAG_SPCRES)) {
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -150,7 +150,7 @@ void arccoshReal(void) {
 
   realArcosh(&x, &x, &ctxtReal75);
 
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -189,8 +189,8 @@ void arccoshCplx(void) {
   realRectangularToPolar(&real, &imag, &a, &b, &ctxtReal39);
   WP34S_Ln(&a, &a, &ctxtReal39);
 
-  realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&b, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&a, REGISTER_X);
+  convertRealToImag34ResultRegister(&b, REGISTER_X);
 }
 
 

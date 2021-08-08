@@ -78,7 +78,7 @@ void wNegLonI(void) {
 
   convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
   wNegReal();
 }
 
@@ -93,7 +93,7 @@ void wNegReal(void) {
   if(getRegisterAngularMode(REGISTER_X) == amNone) {
     if(realCompareGreaterEqual(&x, &threshold) && realCompareLessEqual(&x, const_0)) {
       WP34S_LambertW(&x, &res, true, &ctxtReal39);
-      realToReal34(&res, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&res, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -116,7 +116,7 @@ void wNegCplx(void) {
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xi);
   if(realIsZero(&xi)) {
     wNegReal();
-    realToReal34(&res, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&res, REGISTER_X);
   }
   else {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);

@@ -112,7 +112,7 @@ void fnBinomialP(uint16_t unusedButMandatoryParameter) {
     }
     else {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&ans, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&ans, REGISTER_X);
     }
   }
 
@@ -135,7 +135,7 @@ void fnBinomialL(uint16_t unusedButMandatoryParameter) {
     }
     else {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&ans, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&ans, REGISTER_X);
     }
   }
 
@@ -158,7 +158,7 @@ void fnBinomialR(uint16_t unusedButMandatoryParameter) {
     }
     else {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&ans, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&ans, REGISTER_X);
     }
   }
 
@@ -188,7 +188,7 @@ void fnBinomialI(uint16_t unusedButMandatoryParameter) {
       }
       else {
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        realToReal34(&ans, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(&ans, REGISTER_X);
       }
     }
   }

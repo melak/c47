@@ -402,6 +402,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnShuffle                   (uint16_t unusedButMandatoryParameter) {}
   void fnWho                       (uint16_t unusedButMandatoryParameter) {}
   void fnGetSignificantDigits      (uint16_t unusedButMandatoryParameter) {}
+  void fnSetSignificantDigits      (uint16_t unusedButMandatoryParameter) {}
   void fnSdl                       (uint16_t unusedButMandatoryParameter) {}
   void fnSdr                       (uint16_t unusedButMandatoryParameter) {}
   void fnCvtToCurrentAngularMode   (uint16_t unusedButMandatoryParameter) {}
@@ -2333,7 +2334,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1593 */  { fnConfigEurope,               NOPARAM,                     "SETEUR",                                      "EUROPE",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1594 */  { fnConfigIndia,                NOPARAM,                     "SETIND",                                      "INDIA",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1595 */  { fnConfigJapan,                NOPARAM,                     "SETJPN",                                      "JAPAN",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
-/* 1596 */  { itemToBeCoded,                NOPARAM,                     "SETSIG",                                      "SETSIG",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
+/* 1596 */  { fnSetSignificantDigits,       NOPARAM,                     "SETSIG",                                      "SETSIG",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1597 */  { fnSetTime,                    NOPARAM,                     "SETTIM",                                      "SETTIM",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1598 */  { fnConfigUk,                   NOPARAM,                     "SETUK",                                       "UK",                                          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 /* 1599 */  { fnConfigUsa,                  NOPARAM,                     "SETUSA",                                      "USA",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },

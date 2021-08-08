@@ -24,7 +24,7 @@
 #include "typeDefinitions.h"
 #include <stdint.h>
 
-void roundToSignificantDigits(real_t *source, real_t *destination, uint16_t digits, realContext_t *realContext);
+void roundToSignificantDigits(const real_t *source, real_t *destination, uint16_t digits, realContext_t *realContext);
 void senaryDigitToDecimal    (bool_t pre_grouped, real_t *val, realContext_t *realContext);
 void decimalDigitToSenary    (bool_t pre_grouped, real_t *val, realContext_t *realContext);
 void fnRsd                   (uint16_t digits);

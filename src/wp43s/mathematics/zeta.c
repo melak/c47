@@ -85,7 +85,7 @@ void zetaReal(void) {
   if(getRegisterAngularMode(REGISTER_X) == amNone) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
     WP34S_Zeta(&x, &res, &ctxtReal39);
-    realToReal34(&res, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&res, REGISTER_X);
   }
   else {
     zetaError();
@@ -100,8 +100,8 @@ void zetaCplx(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xr);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xi);
   ComplexZeta(&xr, &xi, &rr, &ri, &ctxtReal39);
-  realToReal34(&rr, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&ri, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rr, REGISTER_X);
+  convertRealToImag34ResultRegister(&ri, REGISTER_X);
 }
 
 

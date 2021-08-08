@@ -130,7 +130,7 @@ void dotRealCplx(void) {
   dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -153,7 +153,7 @@ void dotLonICplx(void) {
   dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -176,7 +176,7 @@ void dotShoICplx(void) {
   dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -199,7 +199,7 @@ void dotCplxCplx(void) {
   dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -221,7 +221,7 @@ void dotCplxReal(void) {
 
   dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
 
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -244,7 +244,7 @@ void dotCplxLonI(void) {
   dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -267,7 +267,7 @@ void dotCplxShoI(void) {
   dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 

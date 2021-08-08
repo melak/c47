@@ -86,13 +86,13 @@ void arccosLonI(void) {
   if(realCompareAbsGreaterThan(&x, const_1)) {
     if(getFlag(FLAG_CPXRES)) {
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
       real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
       arccosCplx();
     }
     else if(getSystemFlag(FLAG_SPCRES)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, currentAngularMode);
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -106,12 +106,12 @@ void arccosLonI(void) {
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, currentAngularMode);
 
   if(realIsZero(&x)) {
-    realToReal34(const_90, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(const_90, REGISTER_X);
     convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amDegree, currentAngularMode);
   }
   else {
     if(realIsNegative(&x)) {
-      realToReal34(const_180, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_180, REGISTER_X);
       convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amDegree, currentAngularMode);
     }
     else{
@@ -143,12 +143,12 @@ void arccosReal(void) {
   if(realCompareAbsGreaterThan(&x, const_1)) {
     if(getFlag(FLAG_CPXRES)) {
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
       real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
       arccosCplx();
     }
     else if(getSystemFlag(FLAG_SPCRES)) {
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -161,7 +161,7 @@ void arccosReal(void) {
 
   WP34S_Acos(&x, &x, &ctxtReal39);
   convertAngleFromTo(&x, amRadian, currentAngularMode, &ctxtReal39);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
 }
 
 
@@ -202,6 +202,6 @@ void arccosCplx(void) {
   // calculate = -i.ln(z + sqtr(z� - 1))
   realChangeSign(&a);
 
-  realToReal34(&b, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&a, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&b, REGISTER_X);
+  convertRealToImag34ResultRegister(&a, REGISTER_X);
 }

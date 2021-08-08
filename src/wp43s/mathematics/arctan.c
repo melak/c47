@@ -84,7 +84,7 @@ void arctanLonI(void) {
   WP34S_Atan(&x, &x, &ctxtReal39);
   convertAngleFromTo(&x, amRadian, currentAngularMode, &ctxtReal39);
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, currentAngularMode);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
 }
 
 
@@ -105,10 +105,10 @@ void arctanReal(void) {
   if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(getSystemFlag(FLAG_SPCRES)) {
       if(real34IsPositive(REGISTER_REAL34_DATA(REGISTER_X))) {
-        realToReal34(const_90, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_90, REGISTER_X);
       }
       else {
-        realToReal34(const_90, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_90, REGISTER_X);
         real34SetNegativeSign(REGISTER_REAL34_DATA(REGISTER_X));
       }
       convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amDegree, currentAngularMode);
@@ -127,7 +127,7 @@ void arctanReal(void) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
     WP34S_Atan(&x, &x, &ctxtReal39);
     convertAngleFromTo(&x, amRadian, currentAngularMode, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
 
   setRegisterAngularMode(REGISTER_X, currentAngularMode);
@@ -143,8 +143,8 @@ void arctanCplx(void) {
 
     ArctanComplex(&xReal, &xImag, &rReal, &rImag, &ctxtReal39);
 
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
 
 //  real_t a, b, numer, denom;
 //
@@ -179,8 +179,8 @@ void arctanCplx(void) {
 //  realMultiply(&b, const_1on2, &b, &ctxtReal39);
 //  realChangeSign(&b);
 //
-//  realToReal34(&b, REGISTER_REAL34_DATA(REGISTER_X));
-//  realToReal34(&a, REGISTER_IMAG34_DATA(REGISTER_X));
+//  convertRealToReal34ResultRegister(&b, REGISTER_X);
+//  convertRealToImag34ResultRegister(&a, REGISTER_X);
 }
 
 

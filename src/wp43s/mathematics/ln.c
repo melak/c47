@@ -104,7 +104,7 @@ void lnLonI(void) {
   if(longIntegerIsZero(lgInt)) {
     if(getSystemFlag(FLAG_SPCRES)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_minusInfinity, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -121,18 +121,18 @@ void lnLonI(void) {
     if(longIntegerIsPositive(lgInt)) {
       WP34S_Ln(&x, &x, &ctxtReal39);
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
      }
     else if(getFlag(FLAG_CPXRES)) {
       realSetPositiveSign(&x);
       WP34S_Ln(&x, &x, &ctxtReal39);
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
-      realToReal34(const_pi, REGISTER_IMAG34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
+      convertRealToImag34ResultRegister(const_pi, REGISTER_X);
     }
     else if(getSystemFlag(FLAG_SPCRES)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -167,7 +167,7 @@ void lnShoI(void) {
 
   if(realIsZero(&x)) {
     if(getSystemFlag(FLAG_SPCRES)) {
-      realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_minusInfinity, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -179,17 +179,17 @@ void lnShoI(void) {
   else {
     if(realIsPositive(&x)) {
       WP34S_Ln(&x, &x, &ctxtReal39);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
      }
     else if(getFlag(FLAG_CPXRES)) {
       realSetPositiveSign(&x);
       WP34S_Ln(&x, &x, &ctxtReal39);
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
-      realToReal34(const_pi, REGISTER_IMAG34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
+      convertRealToImag34ResultRegister(const_pi, REGISTER_X);
     }
     else if(getSystemFlag(FLAG_SPCRES)) {
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -205,7 +205,7 @@ void lnShoI(void) {
 void lnReal(void) {
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(getSystemFlag(FLAG_SPCRES)) {
-      realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_minusInfinity, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -225,16 +225,16 @@ void lnReal(void) {
     }
     else if(getFlag(FLAG_CPXRES)) {
       if(real34IsPositive(REGISTER_REAL34_DATA(REGISTER_X))) {
-        realToReal34(const_plusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_plusInfinity, REGISTER_X);
       }
       else {
         reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-        realToReal34(const_plusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
-        realToReal34(const_pi, REGISTER_IMAG34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_plusInfinity, REGISTER_X);
+        convertRealToImag34ResultRegister(const_pi, REGISTER_X);
       }
     }
     else {
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
   }
 
@@ -244,17 +244,17 @@ void lnReal(void) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
     if(real34IsPositive(REGISTER_REAL34_DATA(REGISTER_X))) {
       WP34S_Ln(&x, &x, &ctxtReal39);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
      }
     else if(getFlag(FLAG_CPXRES)) {
       realSetPositiveSign(&x);
       WP34S_Ln(&x, &x, &ctxtReal39);
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
-      realToReal34(const_pi, REGISTER_IMAG34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
+      convertRealToImag34ResultRegister(const_pi, REGISTER_X);
     }
     else if(getSystemFlag(FLAG_SPCRES)) {
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -271,7 +271,7 @@ void lnReal(void) {
 void lnCplx(void) {
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X)) && real34IsZero(REGISTER_IMAG34_DATA(REGISTER_X))) {
     if(getSystemFlag(FLAG_SPCRES)) {
-      realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_minusInfinity, REGISTER_X);
       real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
     }
     else {
@@ -289,7 +289,7 @@ void lnCplx(void) {
 
     lnComplex(&xReal, &xImag, &xReal, &xImag, &ctxtReal39);
 
-    realToReal34(&xReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&xImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&xReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&xImag, REGISTER_X);
   }
 }

@@ -127,6 +127,6 @@ void squareCplx(void) {
 
   mulComplexComplex(&a, &b, &a, &b, &a, &b, &ctxtReal39);
 
-  realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&b, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&a, REGISTER_X);
+  convertRealToImag34ResultRegister(&b, REGISTER_X);
 }

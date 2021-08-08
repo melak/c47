@@ -92,7 +92,7 @@ void arctanhLonI(void) {
     if(realCompareEqual(&x, const_1)) {
       if(getSystemFlag(FLAG_SPCRES)) {
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        realToReal34(const_plusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_plusInfinity, REGISTER_X);
       }
       else {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -104,7 +104,7 @@ void arctanhLonI(void) {
     else if(realCompareEqual(&x, const__1)) {
       if(getSystemFlag(FLAG_SPCRES)) {
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_minusInfinity, REGISTER_X);
       }
       else {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -116,13 +116,13 @@ void arctanhLonI(void) {
     else {
       if(getFlag(FLAG_CPXRES)) {
         reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-        realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(&x, REGISTER_X);
         real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
         arctanhCplx();
       }
       else if(getSystemFlag(FLAG_SPCRES)) {
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
       }
       else {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -159,7 +159,7 @@ void arctanhReal(void) {
   else {
     if(realCompareEqual(&x, const_1)) {
       if(getSystemFlag(FLAG_SPCRES)) {
-        realToReal34(const_plusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_plusInfinity, REGISTER_X);
       }
       else {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -170,7 +170,7 @@ void arctanhReal(void) {
     }
     else if(realCompareEqual(&x, const__1)) {
       if(getSystemFlag(FLAG_SPCRES)) {
-        realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_minusInfinity, REGISTER_X);
       }
       else {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -183,12 +183,12 @@ void arctanhReal(void) {
       if(realCompareAbsGreaterThan(&x, const_1)) {
         if(getFlag(FLAG_CPXRES)) {
           reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-          realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+          convertRealToReal34ResultRegister(&x, REGISTER_X);
           real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
           arctanhCplx();
         }
         else if(getSystemFlag(FLAG_SPCRES)) {
-          realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+          convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
         }
         else {
           displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -199,7 +199,7 @@ void arctanhReal(void) {
       }
       else {
         WP34S_ArcTanh(&x, &x, &ctxtReal39);
-        realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(&x, REGISTER_X);
       }
     }
   }
@@ -237,6 +237,6 @@ void arctanhCplx(void) {
   realMultiply(&numerReal, const_1on2, &numerReal, &ctxtReal39);
   realMultiply(&numerImag, const_1on2, &numerImag, &ctxtReal39);
 
-  realToReal34(&numerReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&numerImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&numerReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&numerImag, REGISTER_X);
 }

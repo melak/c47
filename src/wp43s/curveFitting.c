@@ -218,16 +218,16 @@ void fnProcessLRfind(uint16_t curveFitting){
   	  liftStack();
   	  setSystemFlag(FLAG_ASLIFT);
   	  reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  	  realToReal34(&aa2, REGISTER_REAL34_DATA(REGISTER_X));
+  	  convertRealToReal34ResultRegister(&aa2, REGISTER_X);
   	}
     liftStack();
     setSystemFlag(FLAG_ASLIFT);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&aa1, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&aa1, REGISTER_X);
     liftStack();
     setSystemFlag(FLAG_ASLIFT);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&aa0, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&aa0, REGISTER_X);
   } else {
     if(minLRDataPoints(s) == 65535) {
       displayCalcErrorMessage(ERROR_TOO_FEW_DATA, ERR_REGISTER_LINE, REGISTER_X);

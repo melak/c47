@@ -89,7 +89,7 @@ void arcsinhLonI(void) {
   realAdd(&xSquared, &x, &x, &ctxtReal39);
   WP34S_Ln(&x, &x, &ctxtReal39);
 
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
 }
 
 
@@ -111,7 +111,7 @@ void arcsinhReal(void) {
 
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
     ArcsinhReal(&x, &x, &ctxtReal51);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -125,8 +125,8 @@ void arcsinhCplx(void) {
 
     ArcsinhComplex(&xReal, &xImag, &rReal, &rImag, &ctxtReal39);
 
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
 }
 
 

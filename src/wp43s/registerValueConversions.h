@@ -28,6 +28,13 @@ void convertLongIntegerRegisterToReal34Register            (calcRegister_t sourc
 void convertLongIntegerRegisterToShortIntegerRegister      (calcRegister_t source, calcRegister_t destination);
 void convertLongIntegerRegisterToReal34                    (calcRegister_t source, real34_t *destination);
 void convertLongIntegerRegisterToReal                      (calcRegister_t source, real_t *destination, realContext_t *ctxt);
+/********************************************//**
+ * \brief Reads long integer value from a register and sets given long integer variable.
+ *        The destination variable will be initialized in this function.
+ * \warning Do not forget to call longIntegerFree() in order not to leak memory.
+ * \param[in] regist the source register
+ * \param[out] longInteger the destination value
+ ***********************************************/
 void convertLongIntegerRegisterToLongInteger               (calcRegister_t regist, longInteger_t longInteger);
 
 void convertLongIntegerToLongIntegerRegister               (const longInteger_t longInteger, calcRegister_t regist);
@@ -48,6 +55,28 @@ void convertRealToLongInteger                              (const real_t *real, 
 void convertRealToLongIntegerRegister                      (const real_t *real, calcRegister_t dest, enum rounding mode);
 void realToIntegralValue                                   (const real_t *source, real_t *destination, enum rounding mode, realContext_t *realContext);
 void realToUInt32                                          (const real_t *re, enum rounding mode, uint32_t *value32, bool_t *overflow);
+
+/********************************************//**
+ * \brief Sets function result in real type to a real34 register.
+ *        This follows preferences of number of significant digits.
+ *        For complex34 register, sets the real part of the register value.
+ *        This function is intended to avoid error with rounding twice.
+ * \warning The destination register must be initialized in advance with real34 or complex34 data type,
+ *          or else breaks the data in the destination register.
+ * \param[in] real the resulting value
+ * \param[in] dest the destination register. Usually REGISTER_X or REGISTER_Y.
+ ***********************************************/
+void convertRealToReal34ResultRegister                     (const real_t *real, calcRegister_t dest);
+/********************************************//**
+ * \brief Sets function result in real type to the imaginary part of a complex34 register.
+ *        This follows preferences of number of significant digits.
+ *        This function is intended to avoid error with rounding twice.
+ * \warning The destination register must be initialized in advance with complex34 data type,
+ *          or else breaks the data in the destination register.
+ * \param[in] real the resulting value
+ * \param[in] dest the destination register. Usually REGISTER_X or REGISTER_Y.
+ ***********************************************/
+void convertRealToImag34ResultRegister                     (const real_t *real, calcRegister_t dest);
 
 void convertTimeRegisterToReal34Register                   (calcRegister_t source, calcRegister_t destination);
 void convertReal34RegisterToTimeRegister                   (calcRegister_t source, calcRegister_t destination);

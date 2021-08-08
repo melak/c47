@@ -114,7 +114,7 @@ void gdLonI(uint16_t gdOrInvGd) {
   }
   else {
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
 }
 
@@ -130,7 +130,7 @@ void gdReal(uint16_t gdOrInvGd) {
     gdError(gdOrInvGd, errorCode);
   }
   else {
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
 }
 
@@ -155,8 +155,8 @@ void gdCplx(uint16_t gdOrInvGd) {
     gdError(gdOrInvGd, errorCode);
   }
   else {
-    realToReal34(&xReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&xImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&xReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&xImag, REGISTER_X);
   }
 }
 

@@ -110,7 +110,7 @@ void percentLonILonI(void) {
   percentReal(&xReal, &yReal, &rReal, &ctxtReal34);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -129,7 +129,7 @@ void percentLonIReal(void) {
 
   percentReal(&xReal, &yReal, &rReal, &ctxtReal34);
 
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
 }
 
 /********************************************//**
@@ -148,7 +148,7 @@ void percentRealLonI(void) {
   percentReal(&xReal, &yReal, &rReal, &ctxtReal34);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -167,5 +167,5 @@ void percentRealReal(void) {
 
   percentReal(&xReal, &yReal, &rReal, &ctxtReal34);
 
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
 }

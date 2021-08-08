@@ -26,6 +26,7 @@
 #include "mathematics/toRect.h"
 #include "matrix.h"
 #include "registers.h"
+#include "registerValueConversions.h"
 #include "saveRestoreCalcState.h"
 #include "screen.h"
 

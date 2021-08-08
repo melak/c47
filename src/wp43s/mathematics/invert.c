@@ -115,7 +115,7 @@ void invertLonI(void) {
       realDivide(const_1, &reX, &reX, &ctxtReal39);
 
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&reX, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&reX, REGISTER_X);
     }
 
     longIntegerFree(quotient);
@@ -149,7 +149,7 @@ void invertCxma(void) {
 void invertReal(void) {
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(getSystemFlag(FLAG_SPCRES)) {
-      realToReal34(const_plusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_plusInfinity, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -188,6 +188,6 @@ void invertCplx(void) {
 
   divRealComplex(const_1, &a, &b, &a, &b, &ctxtReal39);
 
-  realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&b, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&a, REGISTER_X);
+  convertRealToImag34ResultRegister(&b, REGISTER_X);
 }

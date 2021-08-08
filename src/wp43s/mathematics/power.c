@@ -225,7 +225,7 @@ void powLonICplx(void) {
 
   convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
   reallocateRegister(REGISTER_Y, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(&y, REGISTER_REAL34_DATA(REGISTER_Y));
+  convertRealToReal34ResultRegister(&y, REGISTER_Y);
   real34Zero(REGISTER_IMAG34_DATA(REGISTER_Y));
   powCplxCplx();
 }
@@ -243,7 +243,7 @@ void powCplxLonI(void) {
 
   convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
   real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
   powCplxCplx();
 }
@@ -434,7 +434,7 @@ void powShoICplx(void) {
 
   convertShortIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(&y, REGISTER_REAL34_DATA(REGISTER_Y));
+  convertRealToReal34ResultRegister(&y, REGISTER_Y);
   real34Zero(REGISTER_IMAG34_DATA(REGISTER_Y));
   powCplxCplx();
 }
@@ -452,7 +452,7 @@ void powCplxShoI(void) {
 
   convertShortIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
   real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
   powCplxCplx();
 }
@@ -472,22 +472,22 @@ void powCplxShoI(void) {
 void powRealReal(void) {
   if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_Y))) {
     if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     else {
       if(real34IsPositive(REGISTER_REAL34_DATA(REGISTER_X)) && real34IsAnInteger(REGISTER_REAL34_DATA(REGISTER_X))) {
         longInteger_t lgInt;
         convertReal34ToLongInteger(REGISTER_REAL34_DATA(REGISTER_X), lgInt, DEC_ROUND_DOWN);
         if(longIntegerIsEven(lgInt)) {
-          realToReal34(const_plusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
+          convertRealToReal34ResultRegister(const_plusInfinity, REGISTER_X);
         }
         else {
-          realToReal34(const_minusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
+          convertRealToReal34ResultRegister(const_minusInfinity, REGISTER_X);
         }
         longIntegerFree(lgInt);
       }
       else {
-        realToReal34(const_plusInfinity, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_plusInfinity, REGISTER_X);
       }
     }
     setRegisterAngularMode(REGISTER_X, amNone);
@@ -505,18 +505,18 @@ void powRealReal(void) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
 
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
     real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
 
     reallocateRegister(REGISTER_Y, dtComplex34, COMPLEX34_SIZE, amNone);
-    realToReal34(&y, REGISTER_REAL34_DATA(REGISTER_Y));
+    convertRealToReal34ResultRegister(&y, REGISTER_Y);
     real34Zero(REGISTER_IMAG34_DATA(REGISTER_Y));
 
     powCplxCplx();
     return;
   }
 
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -533,7 +533,7 @@ void powRealCplx(void) {
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
   reallocateRegister(REGISTER_Y, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(&y, REGISTER_REAL34_DATA(REGISTER_Y));
+  convertRealToReal34ResultRegister(&y, REGISTER_Y);
   real34Zero(REGISTER_IMAG34_DATA(REGISTER_Y));
   powCplxCplx();
 }
@@ -551,7 +551,7 @@ void powCplxReal(void) {
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
   real34Zero(REGISTER_IMAG34_DATA(REGISTER_X));
   powCplxCplx();
 }
@@ -628,7 +628,7 @@ void powCplxCplx(void) {
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
   else {
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
   }
 }

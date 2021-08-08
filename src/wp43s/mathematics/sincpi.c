@@ -117,11 +117,11 @@ void sincpiComplex(const real_t *real, const real_t *imag, real_t *resReal, real
 void sincpiLonI(void) {
   if(longIntegerIsZeroRegister(REGISTER_X)) {
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(const_1, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(const_1, REGISTER_X);
   }
   else {
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(const_0, REGISTER_X);
   }
 }
 
@@ -142,7 +142,7 @@ void sincpiCxma(void) {
 void sincpiReal(void) {
   if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(getSystemFlag(FLAG_SPCRES)) {
-      realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_0, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -173,7 +173,7 @@ void sincpiReal(void) {
       WP34S_Cvt2RadSinCosTan(&x, amRadian, &sine, NULL, NULL, &ctxtReal39);
       realDivide(&sine, &x, &x, &ctxtReal39);
     }
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
 
   setRegisterAngularMode(REGISTER_X, amNone);
@@ -189,6 +189,6 @@ void sincpiCplx(void) {
 
   sincpiComplex(&zReal, &zImag, &zReal, &zImag, &ctxtReal39);
 
-  realToReal34(&zReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&zImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&zReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&zImag, REGISTER_X);
 }

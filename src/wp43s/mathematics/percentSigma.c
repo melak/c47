@@ -123,7 +123,7 @@ void percentSigmaLonI(void) {
 
   if(percentSigma(&xReal, &rReal, &ctxtReal39)) {
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone);
   }
 }
@@ -140,6 +140,6 @@ void percentSigmaReal(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
 
   if(percentSigma(&xReal, &rReal, &ctxtReal39)) {
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   }
 }

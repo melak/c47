@@ -126,7 +126,7 @@ void fnNeighb(uint16_t unusedButMandatoryParameter) {
       }
 
       realNextToward(&x, &y, &x, &ctxtReal34);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
       break;
 
     default: {}

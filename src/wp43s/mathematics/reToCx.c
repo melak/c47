@@ -98,7 +98,7 @@ void fnReToCx(uint16_t unusedButMandatoryParameter) {
           WP34S_Mod(&theta, const1071_2pi, &theta, &ctxtReal39);
         }
         realPolarToRectangular(&magnitude, &theta, &magnitude, &theta, &ctxtReal39); // theta in radian
-        realToReal34(&magnitude, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(&magnitude, REGISTER_X);
         realToReal34(&theta,     REGISTER_IMAG34_DATA(REGISTER_X));
       }
     }

@@ -25,6 +25,7 @@
 #include "flags.h"
 #include "mathematics/comparisonReals.h"
 #include "registers.h"
+#include "registerValueConversions.h"
 #include "stack.h"
 #include "stats.h"
 
@@ -56,13 +57,13 @@ static void calculateMean(int displayInfo, real_t *sumX, real_t *numberX, real_t
       (*transform)(&tempReal1, &tempReal2);
     }
     real_t *mean = transform == NULL ? &tempReal1 : &tempReal2;
-    realToReal34(mean, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(mean, REGISTER_X);
 
     realDivide(sumY, numberY, &tempReal1, &ctxtReal39);
     if(transform != NULL) {
       (*transform)(&tempReal1, &tempReal2);
     }
-    realToReal34(mean, REGISTER_REAL34_DATA(REGISTER_Y));
+    convertRealToReal34ResultRegister(mean, REGISTER_Y);
 
     temporaryInformation = displayInfo;
   }
@@ -154,7 +155,7 @@ void fnWeightedMeanX(uint16_t unusedButMandatoryParameter) {
     setSystemFlag(FLAG_ASLIFT);
 
     realDivide(SIGMA_XY, SIGMA_Y, &mean, &ctxtReal39);
-    realToReal34(&mean, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&mean, REGISTER_X);
 
     temporaryInformation = TI_WEIGHTEDMEANX;
   }

@@ -123,7 +123,7 @@ void expM1LonI(void) {
   realExp(&a, &a, &ctxtReal39);
   realSubtract(&a, const_1, &a, &ctxtReal39);
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&a, REGISTER_X);
 }
 
 
@@ -147,7 +147,7 @@ void expM1ShoI(void) {
   realExp(&x, &x, &ctxtReal39);
   realSubtract(&x, const_1, &x, &ctxtReal39);
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
 }
 
 
@@ -178,7 +178,7 @@ void expM1Real(void) {
     realExp(&x, &x, &ctxtReal51);
     realSubtract(&x, const_1, &x, &ctxtReal51);
   }
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -192,6 +192,6 @@ void expM1Cplx(void) {
 
   expM1Complex(&zReal, &zImag, &zReal, &zImag, &ctxtReal75);
 
-  realToReal34(&zReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&zImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&zReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&zImag, REGISTER_X);
 }

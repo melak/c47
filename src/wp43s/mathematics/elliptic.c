@@ -1277,13 +1277,13 @@ void fnJacobiSn(uint16_t unusedButMandatoryParameter) {
   if (realInput) {
     jacobiElliptic(&uReal, &m, NULL, &rReal, NULL, NULL, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   }
   else {
     jacobiComplexSn(&uReal, &uImag, &m, &rReal, &rImag, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, true, true, REGISTER_X, -1, -1);
@@ -1302,13 +1302,13 @@ void fnJacobiCn(uint16_t unusedButMandatoryParameter) {
   if (realInput) {
     jacobiElliptic(&uReal, &m, NULL, NULL, &rReal, NULL, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   }
   else {
     jacobiComplexCn(&uReal, &uImag, &m, &rReal, &rImag, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, true, true, REGISTER_X, -1, -1);
@@ -1327,13 +1327,13 @@ void fnJacobiDn(uint16_t unusedButMandatoryParameter) {
   if (realInput) {
     jacobiElliptic(&uReal, &m, NULL, NULL, NULL, &rReal, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   }
   else {
     jacobiComplexDn(&uReal, &uImag, &m, &rReal, &rImag, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, true, true, REGISTER_X, -1, -1);
@@ -1353,13 +1353,13 @@ void fnJacobiAmplitude(uint16_t unusedButMandatoryParameter) {
     jacobiElliptic(&uReal, &m, &rReal, NULL, NULL, NULL, &ctxtReal39);
     convertAngleFromTo(&rReal, amRadian, currentAngularMode, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, currentAngularMode);
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   }
   else {
     jacobiComplexAm(&uReal, &uImag, &m, &rReal, &rImag, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, true, true, REGISTER_X, -1, -1);
@@ -1391,14 +1391,14 @@ void fnEllipticK(uint16_t unusedButMandatoryParameter) {
     ellipticKE(&m, &b, NULL, NULL, NULL, &ctxtReal39);
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&b, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&b, REGISTER_X);
   }
   else if(getFlag(FLAG_CPXRES)) {
     ellipticKE(&m, &a, &b, NULL, NULL, &ctxtReal39);
 
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&b, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&a, REGISTER_X);
+    convertRealToImag34ResultRegister(&b, REGISTER_X);
   }
   else {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -1437,14 +1437,14 @@ void fnEllipticE(uint16_t unusedButMandatoryParameter) {
     ellipticKE(&m, NULL, NULL, &b, NULL, &ctxtReal39);
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&b, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&b, REGISTER_X);
   }
   else if(getFlag(FLAG_CPXRES)) {
     ellipticKE(&m, NULL, NULL, &a, &b, &ctxtReal39);
 
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&b, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&a, REGISTER_X);
+    convertRealToImag34ResultRegister(&b, REGISTER_X);
   }
   else {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -1476,12 +1476,12 @@ void fnEllipticPi(uint16_t unusedButMandatoryParameter) {
     ellipticPi(&ur, &m, &rr, &ri, &ctxtReal39);
     if(realIsZero(&ri)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&rr, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&rr, REGISTER_X);
     }
     else if(getFlag(FLAG_CPXRES)) {
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&rr, REGISTER_REAL34_DATA(REGISTER_X));
-      realToReal34(&ri, REGISTER_IMAG34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&rr, REGISTER_X);
+      convertRealToImag34ResultRegister(&ri, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -1516,12 +1516,12 @@ void fnEllipticFphi(uint16_t unusedButMandatoryParameter) {
     ellipticF(&uReal, const_0, &m, &rReal, &rImag, &ctxtReal39);
     if(realIsZero(&rImag)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&rReal, REGISTER_X);
     }
     else if(getFlag(FLAG_CPXRES)) {
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-      realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+      convertRealToImag34ResultRegister(&rImag, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -1534,8 +1534,8 @@ void fnEllipticFphi(uint16_t unusedButMandatoryParameter) {
   else {
     ellipticF(&uReal, &uImag, &m, &rReal, &rImag, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, true, true, REGISTER_X, -1, -1);
@@ -1555,12 +1555,12 @@ void fnEllipticEphi(uint16_t unusedButMandatoryParameter) {
     ellipticE(&uReal, const_0, &m, &rReal, &rImag, &ctxtReal39);
     if(realIsZero(&rImag)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&rReal, REGISTER_X);
     }
     else if(getFlag(FLAG_CPXRES)) {
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-      realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+      convertRealToImag34ResultRegister(&rImag, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -1573,8 +1573,8 @@ void fnEllipticEphi(uint16_t unusedButMandatoryParameter) {
   else {
     ellipticE(&uReal, &uImag, &m, &rReal, &rImag, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, true, true, REGISTER_X, -1, -1);
@@ -1594,12 +1594,12 @@ void fnJacobiZeta(uint16_t unusedButMandatoryParameter) {
     jacobiZeta(&uReal, const_0, &m, &rReal, &rImag, &ctxtReal39);
     if(realIsZero(&rImag)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&rReal, REGISTER_X);
     }
     else if(getFlag(FLAG_CPXRES)) {
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-      realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+      convertRealToImag34ResultRegister(&rImag, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -1612,8 +1612,8 @@ void fnJacobiZeta(uint16_t unusedButMandatoryParameter) {
   else {
     jacobiZeta(&uReal, &uImag, &m, &rReal, &rImag, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, true, true, REGISTER_X, -1, -1);

@@ -116,10 +116,10 @@ void tanLonI(void) {
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
   if(realIsZero(&cos)) {
-    realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
   }
   else {
-    realToReal34(&tan, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&tan, REGISTER_X);
   }
 }
 
@@ -139,7 +139,7 @@ void tanCxma(void) {
 
 void tanReal(void) {
   if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
-    realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
   }
   else {
     real_t sin, cos, tan;
@@ -157,10 +157,10 @@ void tanReal(void) {
     }
     else {
       if(realIsZero(&cos)) {
-        realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
       }
       else {
-        realToReal34(&tan, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(&tan, REGISTER_X);
       }
     }
   }
@@ -181,8 +181,8 @@ void tanCplx(void) {
 
     TanComplex(&xReal, &xImag, &xReal, &xImag, &ctxtReal51);
 
-    realToReal34(&xReal, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&xImag, REGISTER_IMAG34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&xReal, REGISTER_X);
+    convertRealToImag34ResultRegister(&xImag, REGISTER_X);
 }
 
 uint8_t TanComplex(const real_t *xReal, const real_t *xImag, real_t *rReal, real_t *rImag, realContext_t *realContext) {

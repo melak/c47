@@ -76,8 +76,8 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(&y, REGISTER_REAL34_DATA(REGISTER_Y));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
+    convertRealToReal34ResultRegister(&y, REGISTER_Y);
 
     temporaryInformation = TI_X_Y;
   }

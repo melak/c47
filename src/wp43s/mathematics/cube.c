@@ -125,7 +125,7 @@ void cubeReal(void) {
   realMultiply(&x, &x, &xSquared, &ctxtReal39);
   realMultiply(&xSquared, &x, &x, &ctxtReal39);
 
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
 
@@ -140,6 +140,6 @@ void cubeCplx(void) {
   mulComplexComplex(&a, &b, &a, &b, &realSquare, &imagSquare, &ctxtReal39);
   mulComplexComplex(&realSquare, &imagSquare, &a, &b, &a, &b, &ctxtReal39);
 
-  realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&b, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&a, REGISTER_X);
+  convertRealToImag34ResultRegister(&b, REGISTER_X);
 }

@@ -95,7 +95,7 @@ void sinLonI(void) {
   WP34S_Cvt2RadSinCosTan(&x, currentAngularMode, &x, NULL, NULL, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
 }
 
 
@@ -114,7 +114,7 @@ void sinCxma(void) {
 
 void sinReal(void) {
   if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
-    realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
   }
   else {
     real_t x;
@@ -123,7 +123,7 @@ void sinReal(void) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
     xAngularMode = getRegisterAngularMode(REGISTER_X);
     WP34S_Cvt2RadSinCosTan(&x, (xAngularMode == amNone ? currentAngularMode : xAngularMode), &x, NULL, NULL, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
   setRegisterAngularMode(REGISTER_X, amNone);
 }
@@ -138,6 +138,6 @@ void sinCplx(void) {
 
   sinComplex(&zReal, &zImag, &zReal, &zImag, &ctxtReal39);
 
-  realToReal34(&zReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&zImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&zReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&zImag, REGISTER_X);
 }

@@ -70,7 +70,7 @@ void fnCvtFromCurrentAngularMode(uint16_t toAngularMode) {
         real_t x;
         real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
         realMultiply(&x, const_pi, &x, &ctxtReal39);
-        realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(&x, REGISTER_X);
         //setRegisterAngularMode(REGISTER_X, toAngularMode);
         //break;
       }
@@ -89,7 +89,7 @@ void fnCvtFromCurrentAngularMode(uint16_t toAngularMode) {
         real_t x;
         real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
         realMultiply(&x, const_pi, &x, &ctxtReal39);
-        realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(&x, REGISTER_X);
         //setRegisterAngularMode(REGISTER_X, toAngularMode);
         //break;
       }

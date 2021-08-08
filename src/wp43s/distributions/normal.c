@@ -108,7 +108,7 @@ static void normalP(bool_t logNormal) {
       }
     }
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&ans, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&ans, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
@@ -137,7 +137,7 @@ static void normalL(bool_t logNormal) {
       WP34S_Cdf_Q(&val, &ans, &ctxtReal39);
     }
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&ans, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&ans, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
@@ -166,7 +166,7 @@ static void normalR(bool_t logNormal) {
       WP34S_Cdfu_Q(&val, &ans, &ctxtReal39);
     }
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&ans, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&ans, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
@@ -191,7 +191,7 @@ static void normalI(bool_t logNormal) {
       realAdd(&ans, &mu, &ans, &ctxtReal39);
       if(logNormal) realExp(&ans, &ans, &ctxtReal39);
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&ans, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&ans, REGISTER_X);
     }
   }
 

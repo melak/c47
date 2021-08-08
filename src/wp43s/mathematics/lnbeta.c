@@ -112,7 +112,7 @@ static bool_t _checkLnGammaArgs(int8_t *resultType, real_t *xReal, realContext_t
       }
       else {
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
       }
 
       result = false;
@@ -242,12 +242,12 @@ static void _lnBeta(real_t *x, real_t *y, realContext_t *realContext) {
   if(_lnBetaReal(x, y, &rReal, &rImag, &ctxtReal39)) {
     if(realIsZero(&rImag)) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&rReal, REGISTER_X);
     }
     else {
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-      realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+      convertRealToImag34ResultRegister(&rImag, REGISTER_X);
     }
   }
 }
@@ -288,8 +288,8 @@ void lnbetaCplxLonI(void) {
   _lnBetaComplex(&xReal, &xImag, &yImag, &yImag, &rReal, &rImag, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&rImag, REGISTER_X);
 }
 
 
@@ -328,8 +328,8 @@ void lnbetaCplxReal(void) {
   _lnBetaComplex(&xReal, &xImag, &yImag, &yImag, &rReal, &rImag, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&rImag, REGISTER_X);
 }
 
 
@@ -345,8 +345,8 @@ void lnbetaLonICplx(void) {
 
   _lnBetaComplex(&xReal, &xImag, &yReal, &yImag, &rReal, &rImag, &ctxtReal39);
 
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&rImag, REGISTER_X);
 }
 
 
@@ -362,8 +362,8 @@ void lnbetaRealCplx(void)  {
 
   _lnBetaComplex(&xReal, &xImag, &yReal, &yImag, &rReal, &rImag, &ctxtReal39);
 
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&rImag, REGISTER_X);
 }
 
 
@@ -379,8 +379,8 @@ void lnbetaCplxCplx(void)  {
 
   _lnBetaComplex(&xReal, &xImag, &yReal, &yImag, &rReal, &rImag, &ctxtReal39);
 
-  realToReal34(&rReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&rImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&rImag, REGISTER_X);
 }
 
 

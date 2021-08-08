@@ -100,5 +100,5 @@ void imagPartCplx(void) {
 
 void imagPartReal(void) {
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(const_0, REGISTER_X);
 }

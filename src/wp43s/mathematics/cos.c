@@ -96,7 +96,7 @@ void cosLonI(void) {
   WP34S_Cvt2RadSinCosTan(&x, currentAngularMode, NULL, &x, NULL, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
 }
 
 
@@ -115,7 +115,7 @@ void cosCxma(void) {
 
 void cosReal(void) {
   if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
-    realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
   }
   else {
     real_t x;
@@ -124,7 +124,7 @@ void cosReal(void) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
     xAngularMode = getRegisterAngularMode(REGISTER_X);
     WP34S_Cvt2RadSinCosTan(&x, (xAngularMode == amNone ? currentAngularMode : xAngularMode), NULL, &x, NULL, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
   setRegisterAngularMode(REGISTER_X, amNone);
 }
@@ -139,6 +139,6 @@ void cosCplx(void) {
 
   cosComplex(&zReal, &zImag, &zReal, &zImag, &ctxtReal39);
 
-  realToReal34(&zReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&zImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&zReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&zImag, REGISTER_X);
 }

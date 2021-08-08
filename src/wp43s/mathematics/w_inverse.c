@@ -78,7 +78,7 @@ void wInvLonI(void) {
 
   convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
   wInvReal();
 }
 
@@ -92,7 +92,7 @@ void wInvReal(void) {
 
   if(getRegisterAngularMode(REGISTER_X) == amNone) {
     WP34S_InverseW(&x, &res, &ctxtReal39);
-    realToReal34(&res, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&res, REGISTER_X);
   }
   else {
     wInvError();
@@ -107,6 +107,6 @@ void wInvCplx(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xr);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xi);
   WP34S_InverseComplexW(&xr, &xi, &resr, &resi, &ctxtReal39);
-  realToReal34(&resr, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&resi, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&resr, REGISTER_X);
+  convertRealToImag34ResultRegister(&resi, REGISTER_X);
 }

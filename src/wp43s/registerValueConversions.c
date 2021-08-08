@@ -23,6 +23,7 @@
 #include "error.h"
 #include "integers.h"
 #include "matrix.h"
+#include "mathematics/rsd.h"
 #include "memory.h"
 #include "registers.h"
 
@@ -381,6 +382,20 @@ void realToUInt32(const real_t *re, enum rounding mode, uint32_t *value32, bool_
   #endif // OS32BIT
 
   longIntegerFree(lgInt);
+}
+
+
+
+void convertRealToReal34ResultRegister(const real_t *real, calcRegister_t dest) {
+  real_t rounded;
+  roundToSignificantDigits(real, &rounded, significantDigits == 0 ? 34 : significantDigits, &ctxtReal75);
+  realToReal34(&rounded, REGISTER_REAL34_DATA(dest));
+}
+
+void convertRealToImag34ResultRegister(const real_t *real, calcRegister_t dest) {
+  real_t rounded;
+  roundToSignificantDigits(real, &rounded, significantDigits == 0 ? 34 : significantDigits, &ctxtReal75);
+  realToReal34(&rounded, REGISTER_IMAG34_DATA(dest));
 }
 
 

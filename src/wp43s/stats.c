@@ -367,9 +367,9 @@ void fnSigma(uint16_t plusMinus) {
 
       liftStack();
       reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&y, REGISTER_REAL34_DATA(REGISTER_Y));
+      convertRealToReal34ResultRegister(&y, REGISTER_Y);
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
       temporaryInformation = TI_STATISTIC_SUMS;
     }
     else {
@@ -407,8 +407,8 @@ void fnSumXY(uint16_t unusedButMandatoryParameter) {
     setSystemFlag(FLAG_ASLIFT);
     liftStack();
 
-    realToReal34(SIGMA_X, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(SIGMA_Y, REGISTER_REAL34_DATA(REGISTER_Y));
+    convertRealToReal34ResultRegister(SIGMA_X, REGISTER_X);
+    convertRealToReal34ResultRegister(SIGMA_Y, REGISTER_Y);
 
     temporaryInformation = TI_SUMX_SUMY;
   }
@@ -422,8 +422,8 @@ void fnXmin(uint16_t unusedButMandatoryParameter) {
     setSystemFlag(FLAG_ASLIFT);
     liftStack();
 
-    realToReal34(SIGMA_XMIN, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(SIGMA_YMIN, REGISTER_REAL34_DATA(REGISTER_Y));
+    convertRealToReal34ResultRegister(SIGMA_XMIN, REGISTER_X);
+    convertRealToReal34ResultRegister(SIGMA_YMIN, REGISTER_Y);
 
     temporaryInformation = TI_XMIN_YMIN;
   }
@@ -437,8 +437,8 @@ void fnXmax(uint16_t unusedButMandatoryParameter) {
     setSystemFlag(FLAG_ASLIFT);
     liftStack();
 
-    realToReal34(SIGMA_XMAX, REGISTER_REAL34_DATA(REGISTER_X));
-    realToReal34(SIGMA_YMAX, REGISTER_REAL34_DATA(REGISTER_Y));
+    convertRealToReal34ResultRegister(SIGMA_XMAX, REGISTER_X);
+    convertRealToReal34ResultRegister(SIGMA_YMAX, REGISTER_Y);
 
     temporaryInformation = TI_XMAX_YMAX;
   }

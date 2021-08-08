@@ -214,7 +214,7 @@ void divLonILonI(void) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
 
       realDivide(&yIc, &xIc, &xIc, &ctxtReal39);
-      realToReal34(&xIc, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&xIc, REGISTER_X);
     }
 
     longIntegerFree(quotient);
@@ -302,7 +302,7 @@ void divLonIReal(void) {
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(realIsZero(&y)) {
       if(getSystemFlag(FLAG_SPCRES)) {
-        realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
       }
       else {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -327,7 +327,7 @@ void divLonIReal(void) {
   else {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
     realDivide(&y, &x, &x, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
 }
 
@@ -349,7 +349,7 @@ void divRealLonI(void) {
   if(realIsZero(&x)) {
     if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_Y))) {
       if(getSystemFlag(FLAG_SPCRES)) {
-        realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
       }
       else {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -377,12 +377,12 @@ void divRealLonI(void) {
 
     if(yAngularMode == amNone) {
       realDivide(&y, &x, &x, &ctxtReal39);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
     }
     else {
       convertAngleFromTo(&y, yAngularMode, currentAngularMode, &ctxtReal39);
       realDivide(&y, &x, &x, &ctxtReal39);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
       setRegisterAngularMode(REGISTER_X, currentAngularMode);
     }
   }
@@ -405,8 +405,8 @@ void divLonICplx(void) {
 
   divRealComplex(&y, &xReal, &xImag, &xReal, &xImag, &ctxtReal39);
 
-  realToReal34(&xReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&xImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&xReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&xImag, REGISTER_X);
 }
 
 
@@ -428,8 +428,8 @@ void divCplxLonI(void) {
   realDivide(&b, &c, &b, &ctxtReal39);
 
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(&a, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&b, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&a, REGISTER_X);
+  convertRealToImag34ResultRegister(&b, REGISTER_X);
 }
 
 
@@ -500,7 +500,7 @@ void divTimeShoI(void) {
   if(realIsZero(&x)) {
     if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_Y))) {
       if(getSystemFlag(FLAG_SPCRES)) {
-        realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
       }
       else {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -526,7 +526,7 @@ void divTimeShoI(void) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
 
     realDivide(&y, &x, &x, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
 }
 
@@ -541,7 +541,7 @@ void divTimeShoI(void) {
 void divTimeReal(void) {
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_Y)) && real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(getSystemFlag(FLAG_SPCRES)) {
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -591,7 +591,7 @@ void divTimeReal(void) {
 void divTimeTime(void) {
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_Y)) && real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(getSystemFlag(FLAG_SPCRES)) {
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -970,7 +970,7 @@ void divShoIReal(void) {
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(realIsZero(&y)) {
       if(getSystemFlag(FLAG_SPCRES)) {
-        realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
       }
       else {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -995,7 +995,7 @@ void divShoIReal(void) {
   else {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
     realDivide(&y, &x, &x, &ctxtReal39);
-    realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
 }
 
@@ -1017,7 +1017,7 @@ void divRealShoI(void) {
   if(realIsZero(&x)) {
     if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_Y))) {
       if(getSystemFlag(FLAG_SPCRES)) {
-        realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
       }
       else {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -1045,12 +1045,12 @@ void divRealShoI(void) {
 
     if(yAngularMode == amNone) {
       realDivide(&y, &x, &x, &ctxtReal39);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
     }
     else {
       convertAngleFromTo(&y, yAngularMode, currentAngularMode, &ctxtReal39);
       realDivide(&y, &x, &x, &ctxtReal39);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
       setRegisterAngularMode(REGISTER_X, currentAngularMode);
     }
   }
@@ -1073,8 +1073,8 @@ void divShoICplx(void) {
 
   divRealComplex(&y, &xReal, &xImag, &xReal, &xImag, &ctxtReal39);
 
-  realToReal34(&xReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&xImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&xReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&xImag, REGISTER_X);
 }
 
 
@@ -1108,7 +1108,7 @@ void divCplxShoI(void) {
 void divRealReal(void) {
   if(real34IsZero(REGISTER_REAL34_DATA(REGISTER_Y)) && real34IsZero(REGISTER_REAL34_DATA(REGISTER_X))) {
     if(getSystemFlag(FLAG_SPCRES)) {
-      realToReal34(const_NaN, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -1142,7 +1142,7 @@ void divRealReal(void) {
     if(yAngularMode != amNone && xAngularMode != amNone) { // angle / angle
       convertAngleFromTo(&x, xAngularMode, yAngularMode, &ctxtReal39);
       realDivide(&y, &x, &x, &ctxtReal39);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
       setRegisterAngularMode(REGISTER_X, amNone);
     }
     else if(yAngularMode == amNone) { // real / (real or angle)
@@ -1153,7 +1153,7 @@ void divRealReal(void) {
       realDivide(&y, &x, &x, &ctxtReal39);
 
       convertAngleFromTo(&x, yAngularMode, currentAngularMode, &ctxtReal39);
-      realToReal34(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
       setRegisterAngularMode(REGISTER_X, currentAngularMode);
     }
   }
@@ -1176,8 +1176,8 @@ void divRealCplx(void) {
 
   divRealComplex(&y, &xReal, &xImag, &xReal, &xImag, &ctxtReal39);
 
-  realToReal34(&xReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&xImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&xReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&xImag, REGISTER_X);
 }
 
 
@@ -1217,6 +1217,6 @@ void divCplxCplx(void) {
 
   divComplexComplex(&yReal, &yImag, &xReal, &xImag, &xReal, &xImag, &ctxtReal39);
 
-  realToReal34(&xReal, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(&xImag, REGISTER_IMAG34_DATA(REGISTER_X));
+  convertRealToReal34ResultRegister(&xReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&xImag, REGISTER_X);
 }

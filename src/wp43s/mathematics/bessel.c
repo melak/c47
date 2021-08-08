@@ -76,7 +76,7 @@ void fnBesselJ(uint16_t unusedButMandatoryParameter) {
     if(realIsAnInteger(&n) || (!realIsNegative(&x))) {
       WP34S_BesselJ(&n, &x, &r, &ctxtReal75);
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&r, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&r, REGISTER_X);
     }
     else if(getSystemFlag(FLAG_CPXRES)) { // Real -> Complex
       realSetPositiveSign(&x);
@@ -85,8 +85,8 @@ void fnBesselJ(uint16_t unusedButMandatoryParameter) {
       realMultiply(&a, const_pi, &a, &ctxtReal75);
       realPolarToRectangular(&r, &a, &r, &a, &ctxtReal75);
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&r, REGISTER_REAL34_DATA(REGISTER_X));
-      realToReal34(&a, REGISTER_IMAG34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&r, REGISTER_X);
+      convertRealToImag34ResultRegister(&a, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -116,7 +116,7 @@ void fnBesselY(uint16_t unusedButMandatoryParameter) {
     if(!realIsNegative(&x)) {
       WP34S_BesselY(&n, &x, &r, &ctxtReal75);
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      realToReal34(&r, REGISTER_REAL34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&r, REGISTER_X);
     }
     else if(getSystemFlag(FLAG_CPXRES)) { // Real -> Complex
       realSetPositiveSign(&x);
@@ -133,8 +133,8 @@ void fnBesselY(uint16_t unusedButMandatoryParameter) {
       realAdd(&a, &b, &a, &ctxtReal75);
 
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      realToReal34(&r, REGISTER_REAL34_DATA(REGISTER_X));
-      realToReal34(&a, REGISTER_IMAG34_DATA(REGISTER_X));
+      convertRealToReal34ResultRegister(&r, REGISTER_X);
+      convertRealToImag34ResultRegister(&a, REGISTER_X);
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);

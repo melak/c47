@@ -1138,7 +1138,7 @@ void fnRowNorm(uint16_t unusedParamButMandatory) {
     }
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&norm, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&norm, REGISTER_X);
   }
   else if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix) {
     complex34Matrix_t x;
@@ -1159,7 +1159,7 @@ void fnRowNorm(uint16_t unusedParamButMandatory) {
     }
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    realToReal34(&norm, REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToReal34ResultRegister(&norm, REGISTER_X);
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -2242,6 +2242,7 @@ int16_t getRealMatrixColumnWidths(const real34Matrix_t *matrix, const font_t *fo
   int16_t totalWidth = 0, width = 0;
   int16_t maxRightWidth[MATRIX_MAX_COLUMNS] = {};
   int16_t maxLeftWidth[MATRIX_MAX_COLUMNS] = {};
+  const int16_t exponentOutOfRange = 0x4000;
   bool_t noFix = false; const int16_t dspDigits = displayFormatDigits;
 
   begin:
@@ -2266,21 +2267,40 @@ int16_t getRealMatrixColumnWidths(const real34Matrix_t *matrix, const font_t *fo
         }
         width = stringWidth(tmpString, font, true, true) + 1;
         rPadWidth[i * MATRIX_MAX_COLUMNS + j] = 0;
-        for(char *xStr = tmpString; *xStr != 0; xStr++) {
-          if(((displayFormat != DF_ENG && (displayFormat != DF_ALL || !getSystemFlag(FLAG_ALLENG))) && (*xStr == '.' || *xStr == ',')) ||
-             ((displayFormat == DF_ENG || (displayFormat == DF_ALL && getSystemFlag(FLAG_ALLENG))) && xStr[0] == (char)0x80 && (xStr[1] == (char)0x87 || xStr[1] == (char)0xd7))) {
-            rPadWidth[i * MATRIX_MAX_COLUMNS + j] = stringWidth(xStr, font, true, true) + 1;
-            if(maxRightWidth[j] < rPadWidth[i * MATRIX_MAX_COLUMNS + j]) maxRightWidth[j] = rPadWidth[i * MATRIX_MAX_COLUMNS + j];
-            break;
+        if(strstr(tmpString, ".") || strstr(tmpString, ",")) {
+          for(char *xStr = tmpString; *xStr != 0; xStr++) {
+            if(((displayFormat != DF_ENG && (displayFormat != DF_ALL || !getSystemFlag(FLAG_ALLENG))) && (*xStr == '.' || *xStr == ',')) ||
+               ((displayFormat == DF_ENG || (displayFormat == DF_ALL && getSystemFlag(FLAG_ALLENG))) && xStr[0] == (char)0x80 && (xStr[1] == (char)0x87 || xStr[1] == (char)0xd7))) {
+              rPadWidth[i * MATRIX_MAX_COLUMNS + j] = stringWidth(xStr, font, true, true) + 1;
+              if(maxRightWidth[j] < rPadWidth[i * MATRIX_MAX_COLUMNS + j]) maxRightWidth[j] = rPadWidth[i * MATRIX_MAX_COLUMNS + j];
+              break;
+            }
           }
+          if(maxLeftWidth[j] < (width - rPadWidth[i * MATRIX_MAX_COLUMNS + j])) maxLeftWidth[j] = (width - rPadWidth[i * MATRIX_MAX_COLUMNS + j]);
         }
-        if(maxLeftWidth[j] < (width - rPadWidth[i * MATRIX_MAX_COLUMNS + j])) maxLeftWidth[j] = (width - rPadWidth[i * MATRIX_MAX_COLUMNS + j]);
+        else {
+          rPadWidth[i * MATRIX_MAX_COLUMNS + j] = width | exponentOutOfRange;
+        }
       }
     }
     for(int i = 0; i < maxRows; i++) {
       for(int j = 0; j < maxCols; j++) {
-        rPadWidth[i * MATRIX_MAX_COLUMNS + j] -= maxRightWidth[j];
-        rPadWidth[i * MATRIX_MAX_COLUMNS + j] *= -1;
+        if(rPadWidth[i * MATRIX_MAX_COLUMNS + j] & exponentOutOfRange) {
+          if((maxLeftWidth[j] + maxRightWidth[j]) < (rPadWidth[i * MATRIX_MAX_COLUMNS + j] & (~exponentOutOfRange))) {
+            maxLeftWidth[j] = (rPadWidth[i * MATRIX_MAX_COLUMNS + j] & (~exponentOutOfRange)) - maxRightWidth[j];
+          }
+        }
+      }
+    }
+    for(int i = 0; i < maxRows; i++) {
+      for(int j = 0; j < maxCols; j++) {
+        if(rPadWidth[i * MATRIX_MAX_COLUMNS + j] & exponentOutOfRange) {
+          rPadWidth[i * MATRIX_MAX_COLUMNS + j] = 0;
+        }
+        else {
+          rPadWidth[i * MATRIX_MAX_COLUMNS + j] -= maxRightWidth[j];
+          rPadWidth[i * MATRIX_MAX_COLUMNS + j] *= -1;
+        }
       }
     }
     for(int j = 0; j < maxCols; j++) {
@@ -2326,7 +2346,9 @@ void showComplexMatrix(const complex34Matrix_t *matrix) {
   const uint16_t sRow = forEditor ? scrollRow : 0;
   uint16_t sCol = forEditor ? scrollColumn : 0;
   const uint16_t tmpDisplayFormat = displayFormat;
+  const int16_t tmpExponentLimit = exponentLimit;
   const uint8_t tmpDisplayFormatDigits = displayFormatDigits;
+  const bool_t tmpMultX = getSystemFlag(FLAG_MULTx);
 
   Y_POS = Y_POSITION_OF_REGISTER_X_LINE - NUMERIC_FONT_HEIGHT;
 
@@ -2374,9 +2396,14 @@ smallFont:
     if(font == &numericFont) {
       goto smallFont;
     }
+    else if(exponentLimit > 99) {
+      exponentLimit = 99;
+      goto smallFont;
+    }
     else {
       displayFormat = DF_SCI;
-      displayFormatDigits = 3;
+      displayFormatDigits = 2;
+      clearSystemFlag(FLAG_MULTx);
       totalWidth = baseWidth + getComplexMatrixColumnWidths(matrix, font, colWidth, colWidth_r, colWidth_i, rPadWidth_r, rPadWidth_i, &digits, maxCols);
       if(totalWidth > maxWidth) {
         maxCols--;
@@ -2475,6 +2502,8 @@ smallFont:
 
   displayFormat = tmpDisplayFormat;
   displayFormatDigits = tmpDisplayFormatDigits;
+  exponentLimit = tmpExponentLimit;
+  if(tmpMultX) setSystemFlag(FLAG_MULTx);
 
 }
 
@@ -2492,6 +2521,7 @@ int16_t getComplexMatrixColumnWidths(const complex34Matrix_t *matrix, const font
   int16_t maxLeftWidth_r[MATRIX_MAX_COLUMNS] = {};
   int16_t maxRightWidth_i[MATRIX_MAX_COLUMNS] = {};
   int16_t maxLeftWidth_i[MATRIX_MAX_COLUMNS] = {};
+  const int16_t exponentOutOfRange = 0x4000;
 
   uint16_t cpxUnitWidth;
   if(getSystemFlag(FLAG_POLAR)) { // polar mode
@@ -2524,37 +2554,71 @@ int16_t getComplexMatrixColumnWidths(const complex34Matrix_t *matrix, const font
         real34SetPositiveSign(VARIABLE_REAL34_DATA(&c34Val));
         real34ToDisplayString(VARIABLE_REAL34_DATA(&c34Val), amNone, tmpString, font, maxWidth, displayFormat == DF_ALL ? k : 15, true, STD_SPACE_4_PER_EM, true);
         width = stringWidth(tmpString, font, true, true) + 1;
-        for(char *xStr = tmpString; *xStr != 0; xStr++) {
-          if(((displayFormat != DF_ENG && (displayFormat != DF_ALL || !getSystemFlag(FLAG_ALLENG))) && (*xStr == '.' || *xStr == ',')) ||
-             ((displayFormat == DF_ENG || (displayFormat == DF_ALL && getSystemFlag(FLAG_ALLENG))) && xStr[0] == (char)0x80 && (xStr[1] == (char)0x87 || xStr[1] == (char)0xd7))) {
-            rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] = stringWidth(xStr, font, true, true) + 1;
-            if(maxRightWidth_r[j] < rPadWidth_r[i * MATRIX_MAX_COLUMNS + j]) maxRightWidth_r[j] = rPadWidth_r[i * MATRIX_MAX_COLUMNS + j];
-            break;
+        if(strstr(tmpString, ".") || strstr(tmpString, ",")) {
+          for(char *xStr = tmpString; *xStr != 0; xStr++) {
+            if(((displayFormat != DF_ENG && (displayFormat != DF_ALL || !getSystemFlag(FLAG_ALLENG))) && (*xStr == '.' || *xStr == ',')) ||
+               ((displayFormat == DF_ENG || (displayFormat == DF_ALL && getSystemFlag(FLAG_ALLENG))) && xStr[0] == (char)0x80 && (xStr[1] == (char)0x87 || xStr[1] == (char)0xd7))) {
+              rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] = stringWidth(xStr, font, true, true) + 1;
+              if(maxRightWidth_r[j] < rPadWidth_r[i * MATRIX_MAX_COLUMNS + j]) maxRightWidth_r[j] = rPadWidth_r[i * MATRIX_MAX_COLUMNS + j];
+              break;
+            }
           }
+          if(maxLeftWidth_r[j] < (width - rPadWidth_r[i * MATRIX_MAX_COLUMNS + j])) maxLeftWidth_r[j] = (width - rPadWidth_r[i * MATRIX_MAX_COLUMNS + j]);
         }
-        if(maxLeftWidth_r[j] < (width - rPadWidth_r[i * MATRIX_MAX_COLUMNS + j])) maxLeftWidth_r[j] = (width - rPadWidth_r[i * MATRIX_MAX_COLUMNS + j]);
+        else {
+          rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] = width | exponentOutOfRange;
+        }
 
         rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] = 0;
         if(!getSystemFlag(FLAG_POLAR))real34SetPositiveSign(VARIABLE_IMAG34_DATA(&c34Val));
         real34ToDisplayString(VARIABLE_IMAG34_DATA(&c34Val), getSystemFlag(FLAG_POLAR) ? currentAngularMode : amNone, tmpString, font, maxWidth, displayFormat == DF_ALL ? k : 15, true, STD_SPACE_4_PER_EM, false);
         width = stringWidth(tmpString, font, true, true) + 1;
-        for(char *xStr = tmpString; *xStr != 0; xStr++) {
-          if(((displayFormat != DF_ENG && (displayFormat != DF_ALL || !getSystemFlag(FLAG_ALLENG))) && (*xStr == '.' || *xStr == ',')) ||
-             ((displayFormat == DF_ENG || (displayFormat == DF_ALL && getSystemFlag(FLAG_ALLENG))) && xStr[0] == (char)0x80 && (xStr[1] == (char)0x87 || xStr[1] == (char)0xd7))) {
-            rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] = stringWidth(xStr, font, true, true) + 1;
-            if(maxRightWidth_i[j] < rPadWidth_i[i * MATRIX_MAX_COLUMNS + j]) maxRightWidth_i[j] = rPadWidth_i[i * MATRIX_MAX_COLUMNS + j];
-            break;
+        if(strstr(tmpString, ".") || strstr(tmpString, ",")) {
+          for(char *xStr = tmpString; *xStr != 0; xStr++) {
+            if(((displayFormat != DF_ENG && (displayFormat != DF_ALL || !getSystemFlag(FLAG_ALLENG))) && (*xStr == '.' || *xStr == ',')) ||
+               ((displayFormat == DF_ENG || (displayFormat == DF_ALL && getSystemFlag(FLAG_ALLENG))) && xStr[0] == (char)0x80 && (xStr[1] == (char)0x87 || xStr[1] == (char)0xd7))) {
+              rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] = stringWidth(xStr, font, true, true) + 1;
+              if(maxRightWidth_i[j] < rPadWidth_i[i * MATRIX_MAX_COLUMNS + j]) maxRightWidth_i[j] = rPadWidth_i[i * MATRIX_MAX_COLUMNS + j];
+              break;
+            }
           }
+          if(maxLeftWidth_i[j] < (width - rPadWidth_i[i * MATRIX_MAX_COLUMNS + j])) maxLeftWidth_i[j] = (width - rPadWidth_i[i * MATRIX_MAX_COLUMNS + j]);
         }
-        if(maxLeftWidth_i[j] < (width - rPadWidth_i[i * MATRIX_MAX_COLUMNS + j])) maxLeftWidth_i[j] = (width - rPadWidth_i[i * MATRIX_MAX_COLUMNS + j]);
+        else {
+          rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] = width | exponentOutOfRange;
+        }
       }
     }
     for(int i = 0; i < maxRows; i++) {
       for(int j = 0; j < maxCols; j++) {
-        rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] -= maxRightWidth_r[j];
-        rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] *= -1;
-        rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] -= maxRightWidth_i[j];
-        rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] *= -1;
+        if(rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] & exponentOutOfRange) {
+          if((maxLeftWidth_r[j] + maxRightWidth_r[j]) < (rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] & (~exponentOutOfRange))) {
+            maxLeftWidth_r[j] = (rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] & (~exponentOutOfRange)) - maxRightWidth_r[j];
+          }
+        }
+        if(rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] & exponentOutOfRange) {
+          if((maxLeftWidth_i[j] + maxRightWidth_i[j]) < (rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] & (~exponentOutOfRange))) {
+            maxLeftWidth_i[j] = (rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] & (~exponentOutOfRange)) - maxRightWidth_i[j];
+          }
+        }
+      }
+    }
+    for(int i = 0; i < maxRows; i++) {
+      for(int j = 0; j < maxCols; j++) {
+        if(rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] & exponentOutOfRange) {
+          rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] = 0;
+        }
+        else {
+          rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] -= maxRightWidth_r[j];
+          rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] *= -1;
+        }
+        if(rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] & exponentOutOfRange) {
+          rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] = 0;
+        }
+        else {
+          rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] -= maxRightWidth_i[j];
+          rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] *= -1;
+        }
       }
     }
     for(int j = 0; j < maxCols; j++) {
@@ -5354,7 +5418,7 @@ void elementwiseCxma_UInt16(void (*f)(uint16_t), uint16_t param) {
   convertComplex34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
 
   for(int i = 0; i < x.header.matrixRows * x.header.matrixColumns; ++i) {
-    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
     complex34Copy(&x.matrixElements[i], REGISTER_COMPLEX34_DATA(REGISTER_X));
     f(param);
     if(getRegisterDataType(REGISTER_X) == dtLongInteger)
