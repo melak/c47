@@ -35,6 +35,9 @@
 #include "softmenus.h"
 #include "stack.h"
 #include "ui/tam.h"
+#if (REAL34_WIDTH_TEST == 1)
+  #include "registerValueConversions.h"
+#endif // (REAL34_WIDTH_TEST == 1)
 
 #include "wp43s.h"
 
@@ -439,8 +442,11 @@
 
     temporaryInformation = TI_NO_INFO;
 
-    //longInteger_t lgInt; // For the real34 width test
-    //longIntegerInit(lgInt); // For the real34 width test
+    #if (REAL34_WIDTH_TEST == 1)
+      longInteger_t lgInt;
+      longIntegerInit(lgInt);
+    #endif // (REAL34_WIDTH_TEST == 1)
+
     switch(item) {
       case ITM_BACKSPACE:
         fnKeyBackspace(NOPARAM);
@@ -451,18 +457,22 @@
         fnKeyUp(NOPARAM);
         refreshScreen();
         keyActionProcessed = true;
-        //if(++largeur > SCREEN_WIDTH) largeur--; // For the real34 width test
-        //uIntToLongInteger(largeur, lgInt); // For the real34 width test
-        //convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z); // For the real34 width test
+        #if (REAL34_WIDTH_TEST == 1)
+          if(++largeur > SCREEN_WIDTH) largeur--;
+          uIntToLongInteger(largeur, lgInt);
+          convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z);
+        #endif // (REAL34_WIDTH_TEST == 1)
         break;
 
       case ITM_DOWN:
         fnKeyDown(NOPARAM);
         refreshScreen();
         keyActionProcessed = true;
-        //if(--largeur < 20) largeur++; // For the real34 width test
-        //uIntToLongInteger(largeur, lgInt); // For the real34 width test
-        //convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z); // For the real34 width test
+        #if (REAL34_WIDTH_TEST == 1)
+          if(--largeur < 20) largeur++;
+          uIntToLongInteger(largeur, lgInt);
+          convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z);
+        #endif // (REAL34_WIDTH_TEST == 1)
         break;
 
       case ITM_EXIT:
@@ -654,7 +664,9 @@
           }
         }
     }
-    //longIntegerFree(lgInt); // For the real34 width test
+    #if (REAL34_WIDTH_TEST == 1)
+      longIntegerFree(lgInt);
+    #endif // (REAL34_WIDTH_TEST == 1)
   }
 
 
