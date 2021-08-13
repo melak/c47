@@ -738,7 +738,7 @@ void fnReset(uint16_t confirmation) {
     significantDigits = 0;
     roundingMode = RM_HALF_EVEN;
     ctxtReal34.round = DEC_ROUND_HALF_EVEN;
-    displayStack = 4;
+    displayStack = cachedDisplayStack = 4;
 
     initFontBrowser();
     currentFlgScr = 0;

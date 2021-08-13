@@ -2105,3 +2105,8 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
   displayFormat = savedDisplayFormat;
   displayFormatDigits = savedDisplayFormatDigits;
 }
+
+void fnView(uint16_t regist) {
+  currentViewRegister = regist;
+  temporaryInformation = TI_VIEW;
+}

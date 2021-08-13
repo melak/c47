@@ -25,11 +25,13 @@
 #include "error.h"
 #include "flags.h"
 #include "items.h"
+#include "mathematics/compare.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/rsd.h"
 #include "matrix.h"
 #include "memory.h"
 #include "registerValueConversions.h"
+#include "saveRestoreCalcState.h"
 #include "sort.h"
 #include "stack.h"
 #include <string.h>
@@ -1589,4 +1591,238 @@ void fnToReal(uint16_t unusedButMandatoryParameter) {
 bool_t saveLastX(void) {
   copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
   return lastErrorCode == ERROR_NONE;
+}
+
+
+static uint8_t getRegParam(bool_t *f, uint16_t *s, uint16_t *n, uint16_t *d) {
+  real_t x, p;
+  int32_t t;
+
+  if(getRegisterDataType(REGISTER_X) == dtReal34) {
+    *s = *n = 0;
+    if(d) *d = 0;
+    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+    if(!realCompareAbsLessThan(&x, const_1000))
+      return ERROR_OUT_OF_RANGE;
+
+    if(f) *f = realIsNegative(&x);
+    if(f == NULL && realIsNegative(&x))
+      return ERROR_OUT_OF_RANGE;
+    realSetPositiveSign(&x);
+
+    realToIntegralValue(&x, &p, DEC_ROUND_DOWN, &ctxtReal39);
+    realToInt32(&p, t); *s = t;
+
+    realSubtract(&x, &p, &x, &ctxtReal39);
+    x.exponent += 2;
+    realToIntegralValue(&x, &p, DEC_ROUND_DOWN, &ctxtReal39);
+    realToInt32(&p, t); *n = t;
+
+    if(d) {
+      realSubtract(&x, &p, &x, &ctxtReal39);
+      x.exponent += 3;
+      realToIntegralValue(&x, &p, DEC_ROUND_DOWN, &ctxtReal39);
+      realToInt32(&p, t); *d = t;
+    }
+
+    if(*s < REGISTER_X) { // global numbered registers
+      if(*s + *n >= REGISTER_X) {
+        return ERROR_OUT_OF_RANGE;
+      }
+      else if(*n == 0) {
+        *n = REGISTER_X - *s;
+      }
+    }
+    else if(*s < FIRST_LOCAL_REGISTER) { // stack and global lettered registers (XYZT ABCD LIJK)
+      if(*s + *n >= FIRST_LOCAL_REGISTER) {
+        return ERROR_OUT_OF_RANGE;
+      }
+      else if(*n == 0) {
+        *n = FIRST_LOCAL_REGISTER - *s;
+      }
+    }
+    else if(*s < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) { // local registers
+      if(*s + *n >= FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
+        return ERROR_OUT_OF_RANGE;
+      }
+      else if(f && *f) {
+        return ERROR_OUT_OF_RANGE;
+      }
+      else if(*n == 0) {
+        *n = FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters - *s;
+      }
+    }
+    else {
+      return ERROR_OUT_OF_RANGE;
+    }
+
+    if(d) {
+      if(*d < REGISTER_X) { // global numbered registers
+        if(*d + *n >= REGISTER_X) {
+          return ERROR_OUT_OF_RANGE;
+        }
+      }
+      else if(*d < FIRST_LOCAL_REGISTER) { // stack and global lettered registers (XYZT ABCD LIJK)
+        if(*d + *n >= FIRST_LOCAL_REGISTER) {
+          return ERROR_OUT_OF_RANGE;
+        }
+      }
+      else if(*d < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) { // local registers
+        if(*d + *n >= FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
+          return ERROR_OUT_OF_RANGE;
+        }
+      }
+      else {
+        return ERROR_OUT_OF_RANGE;
+      }
+    }
+
+    return ERROR_NONE;
+  }
+  else {
+    *s = *n = 0;
+    if(d) *d = 0;
+    return ERROR_INVALID_DATA_TYPE_FOR_OP;
+  }
+}
+
+
+void fnRegClr(uint16_t unusedButMandatoryParameter) {
+  uint16_t s, n;
+
+  if((lastErrorCode = getRegParam(NULL, &s, &n, NULL)) == ERROR_NONE) {
+    for(int i = s; i < (s + n); ++i) {
+      clearRegister(i);
+    }
+  }
+}
+
+
+static void sortReg(uint16_t range_start, uint16_t range_end) {
+  int8_t res;
+
+  if(range_start == range_end) {
+    // do nothing
+  }
+  else if(range_start + 1 == range_end) {
+    if(registerCmp(range_start, range_end, &res)) {
+      if(res > 0) {
+        registerHeader_t savedRegisterHeader = globalRegister[range_start];
+        globalRegister[range_start] = globalRegister[range_end];
+        globalRegister[range_end] = savedRegisterHeader;
+      }
+    }
+  }
+  else {
+    const uint16_t range_center = (range_end - range_start) / 2 + range_start;
+    uint16_t pos1 = range_start, pos2 = range_center + 1;
+    registerHeader_t *sortedReg = allocWp43s(TO_BLOCKS(sizeof(registerHeader_t)) * (range_end - range_start + 1));
+    if(lastErrorCode == ERROR_RAM_FULL) return; // unlikely
+
+    if(sortedReg) {
+      sortReg(range_start,      range_center);
+      sortReg(range_center + 1, range_end   );
+
+      for(uint16_t i = 0; i <= (range_end - range_start); ++i) {
+        if(registerCmp(pos1, pos2, &res)) {
+          if(pos2 > range_end) {
+            sortedReg[i] = globalRegister[pos1++];
+          }
+          else if(pos1 > range_center) {
+            sortedReg[i] = globalRegister[pos2++];
+          }
+          else if(res > 0) {
+            sortedReg[i] = globalRegister[pos2++];
+          }
+          else {
+            sortedReg[i] = globalRegister[pos1++];
+          }
+        }
+      }
+      for(uint16_t i = 0; i <= (range_end - range_start); ++i) {
+        globalRegister[range_start + i] = sortedReg[i];
+      }
+      freeWp43s(sortedReg, TO_BLOCKS(sizeof(registerHeader_t)) * (range_end - range_start + 1));
+    }
+    else { // unlikely
+      lastErrorCode = ERROR_RAM_FULL;
+    }
+  }
+}
+
+
+void fnRegSort(uint16_t unusedButMandatoryParameter) {
+  uint16_t s, n;
+
+  if((lastErrorCode = getRegParam(NULL, &s, &n, NULL)) == ERROR_NONE) {
+    switch(getRegisterDataType(s)) {
+      case dtLongInteger:
+      case dtShortInteger:
+      case dtReal34:
+        for(int i = s + 1; i < (s + n); ++i) {
+          if((getRegisterDataType(i) != dtLongInteger) && (getRegisterDataType(i) != dtShortInteger) && (getRegisterDataType(i) != dtReal34)) {
+            lastErrorCode = ERROR_INVALID_DATA_TYPE_FOR_OP;
+            break;
+          }
+        }
+        break;
+      case dtTime:
+      case dtDate:
+      case dtString:
+        for(int i = s + 1; i < (s + n); ++i) {
+          if(getRegisterDataType(i) != getRegisterDataType(s)) {
+            lastErrorCode = ERROR_INVALID_DATA_TYPE_FOR_OP;
+            break;
+          }
+        }
+        break;
+    }
+    if(lastErrorCode == ERROR_NONE) {
+      sortReg(s, s + n - 1);
+    }
+  }
+}
+
+
+void fnRegCopy(uint16_t unusedButMandatoryParameter) {
+  bool_t f;
+  uint16_t s, n, d;
+
+  if((lastErrorCode = getRegParam(&f, &s, &n, &d)) == ERROR_NONE) {
+    if(f) {
+      doLoad(LM_REGISTERS_PARTIAL, s, n, d);
+    }
+    else {
+      if(s > d) {
+        for(int i = 0; i < n; ++i) {
+          copySourceRegisterToDestRegister(s + i, d + i);
+          if(lastErrorCode == ERROR_RAM_FULL) return; // abort if not enough memory
+        }
+      }
+      else if(s < d) {
+        for(int i = n - 1; i >= 0; --i) {
+          copySourceRegisterToDestRegister(s + i, d + i);
+          if(lastErrorCode == ERROR_RAM_FULL) return; // abort if not enough memory
+        }
+      }
+    }
+  }
+}
+
+
+void fnRegSwap(uint16_t unusedButMandatoryParameter) {
+  uint16_t s, n, d;
+
+  if((lastErrorCode = getRegParam(NULL, &s, &n, &d)) == ERROR_NONE) {
+    if((d < s + n) && (s < d + n)) { // overlap
+      lastErrorCode = ERROR_OUT_OF_RANGE;
+    }
+    else {
+      for(int i = 0; i < n; ++i) {
+        registerHeader_t savedRegisterHeader = globalRegister[s + i];
+        globalRegister[s + i] = globalRegister[d + i];
+        globalRegister[d + i] = savedRegisterHeader;
+      }
+    }
+  }
 }

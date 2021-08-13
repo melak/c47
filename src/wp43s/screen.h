@@ -150,6 +150,10 @@ void       fnScreenDump                       (uint16_t unusedButMandatoryParame
    */
   void     clearRegisterLine                  (calcRegister_t regist, bool_t clearTop, bool_t clearBottom);
   /**
+   * Updates matrix height cache.
+   */
+  void     updateMatrixHeightCache            (void);
+  /**
    * Displays one register line.
    *
    * \param[in] regist Register line to display

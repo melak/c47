@@ -233,7 +233,13 @@
             }
 
             if(lastErrorCode == 0) {
-              temporaryInformation = TI_NO_INFO;
+              if(temporaryInformation == TI_VIEW) {
+                temporaryInformation = TI_NO_INFO;
+                updateMatrixHeightCache();
+              }
+              else {
+                temporaryInformation = TI_NO_INFO;
+              }
               runFunction(item);
             }
           }
@@ -256,7 +262,13 @@
 
     // Shift f pressed and shift g not active
     if(key->primary == ITM_SHIFTf && !shiftG && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT)) {
-      temporaryInformation = TI_NO_INFO;
+      if(temporaryInformation == TI_VIEW) {
+        temporaryInformation = TI_NO_INFO;
+        updateMatrixHeightCache();
+      }
+      else {
+        temporaryInformation = TI_NO_INFO;
+      }
       lastErrorCode = 0;
       shiftF = !shiftF;
       return ITM_NOP;
@@ -264,7 +276,13 @@
 
     // Shift g pressed and shift f not active
     else if(key->primary == ITM_SHIFTg && !shiftF && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT)) {
-      temporaryInformation = TI_NO_INFO;
+      if(temporaryInformation == TI_VIEW) {
+        temporaryInformation = TI_NO_INFO;
+        updateMatrixHeightCache();
+      }
+      else {
+        temporaryInformation = TI_NO_INFO;
+      }
       lastErrorCode = 0;
       shiftG = !shiftG;
       return ITM_NOP;
@@ -458,7 +476,13 @@
       lastErrorCode = 0;
     }
 
-    temporaryInformation = TI_NO_INFO;
+    if(temporaryInformation == TI_VIEW) {
+      temporaryInformation = TI_NO_INFO;
+      updateMatrixHeightCache();
+    }
+    else {
+      temporaryInformation = TI_NO_INFO;
+    }
 
     #if (REAL34_WIDTH_TEST == 1)
       longInteger_t lgInt;
@@ -891,6 +915,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           mimEnter(true);
           mimFinalize();
           calcModeNormal();
+          updateMatrixHeightCache();
         }
         popSoftmenu(); // close softmenu dedicated for the MIM
         break;

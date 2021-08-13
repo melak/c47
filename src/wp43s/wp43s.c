@@ -111,6 +111,7 @@ uint8_t                roundingMode;
 uint8_t                calcMode;
 uint8_t                nextChar;
 uint8_t                displayStack;
+uint8_t                cachedDisplayStack;
 uint8_t                alphaCase;
 uint8_t                numLinesNumericFont;
 uint8_t                numLinesStandardFont;
@@ -160,6 +161,7 @@ uint16_t               lrChosen;
 uint16_t               lrChosenUndo;
 uint16_t               lastPlotMode;
 uint16_t               plotSelection;
+uint16_t               currentViewRegister;
 #if (REAL34_WIDTH_TEST == 1)
   uint16_t               largeur=200;
 #endif // (REAL34_WIDTH_TEST == 1)
