@@ -2190,7 +2190,8 @@ smallFont:
   for(int j = 0; j < maxCols; j++) baseWidth += colWidth[j] + stringWidth(STD_SPACE_FIGURE, font, true, true);
   baseWidth -= stringWidth(STD_SPACE_FIGURE, font, true, true);
 
-  if(!forEditor) X_POS = SCREEN_WIDTH - ((colVector ? stringWidth("[]" STD_SUP_T, font, true, true) : stringWidth("[]", font, true, true)) + baseWidth) - (font == &standardFont ? 0 : 1);
+  if(prefixWidth > 0) X_POS = prefixWidth;
+  else if(!forEditor) X_POS = SCREEN_WIDTH - ((colVector ? stringWidth("[]" STD_SUP_T, font, true, true) : stringWidth("[]", font, true, true)) + baseWidth) - (font == &standardFont ? 0 : 1);
 
   if(forEditor) {
     clearRegisterLine(REGISTER_X, true, true);
@@ -2433,7 +2434,8 @@ smallFont:
   for(int j = 0; j < maxCols; j++) baseWidth += colWidth[j] + stringWidth(STD_SPACE_FIGURE, font, true, true);
   baseWidth -= stringWidth(STD_SPACE_FIGURE, font, true, true);
 
-  if(!forEditor) X_POS = SCREEN_WIDTH - ((colVector ? stringWidth("[]" STD_SUP_T, font, true, true) : stringWidth("[]", font, true, true)) + baseWidth) - (font == &standardFont ? 0 : 1);
+  if(prefixWidth > 0) X_POS = prefixWidth;
+  else if(!forEditor) X_POS = SCREEN_WIDTH - ((colVector ? stringWidth("[]" STD_SUP_T, font, true, true) : stringWidth("[]", font, true, true)) + baseWidth) - (font == &standardFont ? 0 : 1);
 
   if(forEditor) {
     clearRegisterLine(REGISTER_X, true, true);

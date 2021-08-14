@@ -1597,7 +1597,7 @@
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
-          showString(tmpString, &numericFont, SCREEN_WIDTH - w, baseY, vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY, vmNormal, false, true);
         }
 
         else if(getRegisterDataType(regist) == dtComplex34) {
@@ -1609,7 +1609,7 @@
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
-          showString(tmpString, &numericFont, SCREEN_WIDTH - w, baseY, vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY, vmNormal, false, true);
         }
 
         else if(getRegisterDataType(regist) == dtString) {
@@ -1627,7 +1627,7 @@
                 tmpString[stringLastGlyph(tmpString)] = 0;
                 w = stringWidth(tmpString, &standardFont, false, true);
               } while(w >= SCREEN_WIDTH - prefixWidth);
-              showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - 3, vmNormal, false, true);
+              showString(tmpString, &standardFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - 3, vmNormal, false, true);
 
               w = stringByteLength(tmpString);
               xcopy(tmpString, REGISTER_STRING_DATA(regist) + w, stringByteLength(REGISTER_STRING_DATA(regist) + w) + 1);
@@ -1640,7 +1640,7 @@
                 xcopy(tmpString + stringByteLength(tmpString), STD_ELLIPSIS, 3);
                 w += 14;
               }
-              showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE + 18, vmNormal, false, true);
+              showString(tmpString, &standardFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE + 18, vmNormal, false, true);
             }
             else {
               xcopy(tmpString, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
@@ -1651,12 +1651,12 @@
               xcopy(tmpString + stringByteLength(tmpString), STD_ELLIPSIS, 3);
               w += 14;
               lineWidth = w;
-              showString(tmpString, &standardFont, SCREEN_WIDTH - w, baseY + 6, vmNormal, false, true);
+              showString(tmpString, &standardFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY + 6, vmNormal, false, true);
             }
           }
           else {
             lineWidth = w;
-            showString(REGISTER_STRING_DATA(regist), &standardFont, SCREEN_WIDTH - w, baseY + 6, vmNormal, false, true);
+            showString(REGISTER_STRING_DATA(regist), &standardFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY + 6, vmNormal, false, true);
           }
         }
 
@@ -1666,7 +1666,8 @@
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
-          showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), baseY + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
+          w = stringWidth(tmpString, fontForShortInteger, false, true);
+          showString(tmpString, fontForShortInteger, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? min(prefixWidth, SCREEN_WIDTH - w) : SCREEN_WIDTH - w, baseY + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
         }
 
         else if(getRegisterDataType(regist) == dtLongInteger) {
@@ -1694,7 +1695,7 @@
           }
 
           if(w <= SCREEN_WIDTH) {
-            showString(tmpString, &numericFont, SCREEN_WIDTH - w, baseY, vmNormal, false, true);
+            showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY, vmNormal, false, true);
           }
           else {
             w = stringWidth(tmpString, &standardFont, false, true);
@@ -1706,7 +1707,7 @@
             }
             w = stringWidth(tmpString, &standardFont, false, true);
             lineWidth = w;
-            showString(tmpString, &standardFont, SCREEN_WIDTH - w, baseY + 6, vmNormal, false, true);
+            showString(tmpString, &standardFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY + 6, vmNormal, false, true);
           }
         }
 
@@ -1717,7 +1718,7 @@
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
-          showString(tmpString, &numericFont, SCREEN_WIDTH - w, baseY, vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY, vmNormal, false, true);
         }
 
         else if(getRegisterDataType(regist) == dtDate) {
@@ -1734,7 +1735,7 @@
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
-          showString(tmpString, &numericFont, SCREEN_WIDTH - w, baseY, vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY, vmNormal, false, true);
         }
 
         else if(getRegisterDataType(regist) == dtConfig) {
@@ -1745,7 +1746,7 @@
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
           }
-          showString(tmpString, &numericFont, SCREEN_WIDTH - w, baseY, vmNormal, false, true);
+          showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY, vmNormal, false, true);
         }
 
         else if(getRegisterDataType(regist) == dtReal34Matrix) {
