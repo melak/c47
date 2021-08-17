@@ -120,11 +120,12 @@
 #define ERROR_NO_BACKUP_DATA                      35
 #define ERROR_UNDEF_SOURCE_VAR                    36
 #define ERROR_WRITE_PROTECTED_VAR                 37
-#define ERROR_BAD_INPUT                           38 // This error is not in ReM and cannot occur (theoretically).
+#define ERROR_NO_MATRIX_INDEXED                   38
 #define ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX    39
 #define ERROR_NO_ERRORS_CALCULABLE                40
+#define ERROR_BAD_INPUT                           41 // This error is not in ReM and cannot occur (theoretically).
 
-#define NUMBER_OF_ERROR_CODES                     41
+#define NUMBER_OF_ERROR_CODES                     42
 
 #define NUMBER_OF_GLOBAL_FLAGS                   112
 #define FIRST_LOCAL_FLAG                         112 // There are 112 global flag from 0 to 111

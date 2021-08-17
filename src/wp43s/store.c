@@ -289,11 +289,20 @@ void fnStoreStack(uint16_t regist) {
 
 void fnStoreElement(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
-  if(matrixIndex != INVALID_VARIABLE && regInRange(matrixIndex) && getRegisterDataType(matrixIndex) == dtReal34Matrix && getRegisterDataType(REGISTER_X) == dtComplex34) {
-    // Real matrices turns to complex matrices by setting a complex element
-    convertReal34MatrixRegisterToComplex34MatrixRegister(matrixIndex, matrixIndex);
+  if(matrixIndex == INVALID_VARIABLE) {
+    displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "Cannot execute STOEL without a matrix indexed");
+      moreInfoOnError("In function fnStoreElement:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
-  callByIndexedMatrix(storeElementReal, storeElementComplex);
+  else {
+    if(regInRange(matrixIndex) && getRegisterDataType(matrixIndex) == dtReal34Matrix && getRegisterDataType(REGISTER_X) == dtComplex34) {
+      // Real matrices turns to complex matrices by setting a complex element
+      convertReal34MatrixRegisterToComplex34MatrixRegister(matrixIndex, matrixIndex);
+    }
+    callByIndexedMatrix(storeElementReal, storeElementComplex);
+  }
 #endif // TESTSUITE_BUILD
 }
 
@@ -301,6 +310,15 @@ void fnStoreElement(uint16_t unusedButMandatoryParameter) {
 
 void fnStoreIJ(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
-  callByIndexedMatrix(storeIjReal, storeIjComplex);
+  if(matrixIndex == INVALID_VARIABLE) {
+    displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "Cannot execute STOIJ without a matrix indexed");
+      moreInfoOnError("In function fnStoreIJ:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+  else {
+    callByIndexedMatrix(storeIjReal, storeIjComplex);
+  }
 #endif // TESTSUITE_BUILD
 }

@@ -67,9 +67,10 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /* 35 */  "No backup data found",
 /* 36 */  "Undefined source variable",
 /* 37 */  "This variable is write protected",
-/* 38 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
+/* 38 */  "No matrix indexed",
 /* 39 */  "Not enough memory for such a matrix",
 /* 40 */  "No errors for selected model"
+/* 41 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
 };
 
 
