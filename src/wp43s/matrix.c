@@ -1411,8 +1411,6 @@ void fnQrDecomposition(uint16_t unusedParamButMandatory) {
 
 void fnEigenvalues(uint16_t unusedParamButMandatory) {
 #ifndef TESTSUITE_BUILD
-  if(!saveLastX()) return;
-
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, res, ires;
 
@@ -1504,8 +1502,6 @@ void fnEigenvalues(uint16_t unusedParamButMandatory) {
 
 void fnEigenvectors(uint16_t unusedParamButMandatory) {
 #ifndef TESTSUITE_BUILD
-  if(!saveLastX()) return;
-
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, res, ires;
 
@@ -4862,7 +4858,7 @@ static void sortEigenvalues(real_t *eig, uint16_t size, uint16_t begin_a, uint16
     }
   }
 }
-static void calculateEigenvalues(real_t *a, real_t *q, real_t *r, real_t *eig, uint16_t size, bool_t shifted, realContext_t *realContext) {
+static void calculateEigenvalues(real_t *a, real_t *q, real_t *r, real_t *eig, uint16_t size, bool_t shifted, bool_t reducedSignificantDigits, realContext_t *realContext) {
   real_t shiftRe, shiftIm;
   uint16_t i, j;
   bool_t converged;
@@ -4871,6 +4867,20 @@ static void calculateEigenvalues(real_t *a, real_t *q, real_t *r, real_t *eig, u
     calculateEigenvalues22(a, size, eig, eig + 1, eig + 6, eig + 7, realContext);
   }
   else {
+    real_t tol;
+    if(reducedSignificantDigits) {
+      if(significantDigits == 0 || significantDigits >= 34) {
+        realCopy(const_1e_37, &tol);
+      }
+      else {
+        realCopy(const_1, &tol);
+        tol.exponent -= (significantDigits + 3);
+      }
+    }
+    else {
+      realCopy(const_1e_37, &tol);
+    }
+
     while(true) {
       if(shifted) {
         calculateQrShift(a, size, &shiftRe, &shiftIm, realContext);
@@ -4900,7 +4910,7 @@ static void calculateEigenvalues(real_t *a, real_t *q, real_t *r, real_t *eig, u
           converged = true;
           break;
         }
-        else if(!WP34S_RelativeError(a + (i * size + i) * 2, eig + (i * size + i) * 2, const_1e_37, realContext) || !WP34S_RelativeError(a + (i * size + i) * 2 + 1, eig + (i * size + i) * 2 + 1, const_1e_37, realContext)) {
+        else if(!WP34S_RelativeError(a + (i * size + i) * 2, eig + (i * size + i) * 2, &tol, realContext) || !WP34S_RelativeError(a + (i * size + i) * 2 + 1, eig + (i * size + i) * 2 + 1, &tol, realContext)) {
           converged = false;
         }
       }
@@ -5082,7 +5092,7 @@ void realEigenvalues(const real34Matrix_t *matrix, real34Matrix_t *res, real34Ma
       }
 
       // Calculate
-      calculateEigenvalues(a, q, r, eig, size, shifted, &ctxtReal75);
+      calculateEigenvalues(a, q, r, eig, size, shifted, true, &ctxtReal75);
       shifted = false;
 
       // Check imaginary part (mutually conjugate complex roots are possible in real quadratic equations)
@@ -5138,7 +5148,7 @@ void complexEigenvalues(const complex34Matrix_t *matrix, complex34Matrix_t *res)
       }
 
       // Calculate
-      calculateEigenvalues(a, q, r, eig, size, shifted, &ctxtReal75);
+      calculateEigenvalues(a, q, r, eig, size, shifted, true, &ctxtReal75);
       shifted = false;
 
       // Write back
@@ -5179,7 +5189,7 @@ void realEigenvectors(const real34Matrix_t *matrix, real34Matrix_t *res, real34M
       }
 
       // Calculate eigenvalues
-      calculateEigenvalues(a, q, r, eig, size, shifted, &ctxtReal75);
+      calculateEigenvalues(a, q, r, eig, size, shifted, false, &ctxtReal75);
       shifted = false;
       calculateEigenvectors((any34Matrix_t *)matrix, false, a, q, r, eig, &ctxtReal75);
 
@@ -5254,7 +5264,7 @@ void complexEigenvectors(const complex34Matrix_t *matrix, complex34Matrix_t *res
       }
 
       // Calculate eigenvalues
-      calculateEigenvalues(a, q, r, eig, size, shifted, &ctxtReal75);
+      calculateEigenvalues(a, q, r, eig, size, shifted, false, &ctxtReal75);
       shifted = false;
       calculateEigenvectors((any34Matrix_t *)matrix, false, a, q, r, eig, &ctxtReal75);
 
