@@ -218,6 +218,7 @@
   extern int16_t                imaginaryExponentSignLocation;
   extern int16_t                imaginaryMantissaSignLocation;
   extern int16_t                exponentLimit;
+  extern int16_t                exponentHideLimit;
   extern int16_t                showFunctionNameCounter;
   extern int16_t                dynamicMenuItem;
   extern int16_t               *menu_RAM;

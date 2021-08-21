@@ -415,6 +415,25 @@ void fnGetRange(uint16_t unusedButMandatoryParameter) {
 
 
 
+void fnHide(uint16_t digits) {
+  if(digits >= 12 || digits == 0) exponentHideLimit = digits;
+}
+
+
+
+void fnGetHide(uint16_t unusedButMandatoryParameter) {
+  longInteger_t range;
+
+  liftStack();
+
+  longIntegerInit(range);
+  uIntToLongInteger(exponentHideLimit, range);
+  convertLongIntegerToLongIntegerRegister(range, REGISTER_X);
+  longIntegerFree(range);
+}
+
+
+
 void fnClAll(uint16_t confirmation) {
   if(confirmation == NOT_CONFIRMED) {
     setConfirmationMode(fnClAll);
@@ -777,6 +796,7 @@ void fnReset(uint16_t confirmation) {
     memset(lastCatalogPosition, 0, NUMBER_OF_CATALOGS * sizeof(lastCatalogPosition[0]));
     firstGregorianDay = 2361222 /* 14 Sept 1752 */;
     exponentLimit = 6145;
+    exponentHideLimit = 0;
     lastIntegerBase = 0;
     temporaryInformation = TI_RESET;
 
