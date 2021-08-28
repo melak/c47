@@ -227,7 +227,7 @@ char * eatSpacesMid(const char * ss) {
   char tt[50];
   strcpy(tt,ss);
   int8_t ix=0,iy=0;
-  tmp_names[0]=0; 
+  tmp_names[0]=0;
   while( tt[ix] != 0 && ix < 50){
     if(tt[ix]!=' ') tmp_names[iy++]=tt[ix];
     ix++;
@@ -718,6 +718,11 @@ void debugNIM(void) {
     else if(getRegisterDataType(regist) == dtReal34Matrix) {
       dataBlock_t* dblock = REGISTER_REAL34_MATRIX_DBLOCK(regist);
       sprintf(string + n, "Real Matrix of Size [%" PRIu16" x %" PRIu16" Matrix]", dblock->matrixRows, dblock->matrixColumns);
+    }
+
+    else if(getRegisterDataType(regist) == dtComplex34Matrix) {
+      dataBlock_t* dblock = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist);
+      sprintf(string + n, "Complex Matrix of Size [%" PRIu16" x %" PRIu16" Matrix]", dblock->matrixRows, dblock->matrixColumns);
     }
 
     else {

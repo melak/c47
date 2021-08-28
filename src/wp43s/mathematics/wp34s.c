@@ -1142,8 +1142,8 @@ static void gser(const real_t *a, const real_t *x, const real_t *gln, real_t *re
   int32_t i;
 
   if(realCompareLessEqual(x, const_0)) {
-     realZero(res);
-     return;
+    realZero(res);
+    return;
   }
   realCopy(a, &ap);
   realDivide(const_1, a, &sum, realContext);
@@ -1168,11 +1168,8 @@ static void gser(const real_t *a, const real_t *x, const real_t *gln, real_t *re
 }
 
 static void gcheckSmall(real_t *v, realContext_t *realContext) {
-  real_t threshold;
-  stringToReal("1e-10000", &threshold, realContext);
-
-  if(realCompareAbsLessThan(v, &threshold)) {
-    realCopy(&threshold, v);
+  if(realCompareAbsLessThan(v, const_1e_10000)) {
+    realCopy(const_1e_10000, v);
   }
 }
 
@@ -1188,23 +1185,23 @@ static void gcf(const real_t *a, const real_t *x, const real_t *gln, real_t *res
   realCopy(&d, &h);
   realZero(&i);
   for(n=0; n<1000; n++) {
-   realAdd(&i, const_1, &i, realContext);
-   realSubtract(a, &i, &t, realContext);   // t = a-i
-   realMultiply(&i, &t, &an, realContext); // an = -i (i-a)
-   realAdd(&b, const_2, &b, realContext);
-   realMultiply(&an, &d, &t, realContext);
-   realAdd(&t, &b, &v, realContext);
-   gcheckSmall(&v, realContext);
-   realDivide(const_1, &v, &d, realContext);
-   realDivide(&an, &c, &t, realContext);
-   realAdd(&b, &t, &c, realContext);
-   gcheckSmall(&c, realContext);
-   realMultiply(&d, &c, &t, realContext);
-   realMultiply(&h, &t, &u, realContext);
-   if(realCompareEqual(&u, &h)) {
-     break;
-   }
-   realCopy(&u, &h);
+    realAdd(&i, const_1, &i, realContext);
+    realSubtract(a, &i, &t, realContext);   // t = a-i
+    realMultiply(&i, &t, &an, realContext); // an = -i (i-a)
+    realAdd(&b, const_2, &b, realContext);
+    realMultiply(&an, &d, &t, realContext);
+    realAdd(&t, &b, &v, realContext);
+    gcheckSmall(&v, realContext);
+    realDivide(const_1, &v, &d, realContext);
+    realDivide(&an, &c, &t, realContext);
+    realAdd(&b, &t, &c, realContext);
+    gcheckSmall(&c, realContext);
+    realMultiply(&d, &c, &t, realContext);
+    realMultiply(&h, &t, &u, realContext);
+    if(realCompareEqual(&u, &h)) {
+      break;
+    }
+    realCopy(&u, &h);
   }
   WP34S_Ln(x, &t, realContext);
   realMultiply(&t, a, &u, realContext);
@@ -1250,7 +1247,7 @@ void WP34S_GammaP(const real_t *x, const real_t *a, real_t *res, realContext_t *
     /* Deal with a difficult case by using the other expansion */
     int32ToReal(9000, &z);
     if(realCompareGreaterThan(a, &z)) {
-      stringToReal("0.995", &z, realContext);
+      realCopy(const_995on1000, &z);
       realMultiply(a, &z, &z, realContext);
       if(realCompareGreaterThan(x, &z)) {
         goto use_cf;
@@ -1505,7 +1502,6 @@ static void zeta_calc(const real_t *x, real_t *reg1, real_t *reg7, real_t *res, 
     refreshLcd(NULL);
   #endif // DMCP_BUILD
 
-  // zeta_calc
   int32ToReal(60/*44*/, &reg0);
   int32ToReal(60/*44*/, &reg3);
   int32ToReal(1, &reg4);
@@ -1806,7 +1802,7 @@ void WP34S_OrthoPoly(uint16_t kind, const real_t *rX, const real_t *rN, const re
       realSubtract(&a, rX, &a, realContext);
       realAdd(rParam, const_1, &rT1, realContext);
       realSubtract(&rT1, rX, &rT1, realContext);
-    ortho_allinc:
+      ortho_allinc:
       incA = true;
       realCopy(const_1, &incB);
       incC = true;

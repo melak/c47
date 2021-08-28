@@ -5490,6 +5490,7 @@ void elementwiseRemaShoI(void (*f)(void)) {
 
 
 
+#ifndef TESTSUITE_BUILD
 static void elementwiseCxmaGetResult(complex34Matrix_t *x, int i) {
   if(getRegisterDataType(REGISTER_X) == dtComplex34) {
     complex34Copy(REGISTER_COMPLEX34_DATA(REGISTER_X), &x->matrixElements[i]);
@@ -5503,6 +5504,7 @@ static void elementwiseCxmaGetResult(complex34Matrix_t *x, int i) {
     }
   }
 }
+#endif // TESTSUITE_BUILD
 
 void elementwiseCxma(void (*f)(void)) {
 #ifndef TESTSUITE_BUILD

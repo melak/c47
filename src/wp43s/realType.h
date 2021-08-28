@@ -165,6 +165,7 @@ typedef struct {
 #define real34ToReal(source, destination)                      decQuadToNumber          ((real34_t *)(source), destination)
 #define real34ToString(source, destination)                    decQuadToString          ((real34_t *)(source), destination)
 #define real34ToUInt32(source)                                 decQuadToUInt32          ((real34_t *)(source), &ctxtReal34, DEC_ROUND_DOWN)
+#define real34Reduce(source, destination)                      decQuadReduce            (destination, source, &ctxtReal34)
 #define real34Zero(destination)                                decQuadZero              (destination)
 //#define real34Zero(destination)                                xcopy                    (destination, const34_0, TO_BYTES(REAL34_SIZE))
 /*#define real34Zero(destination)                                {  *(uint64_t *)(destination)     =   *(uint64_t *)const34_0; \

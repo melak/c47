@@ -396,7 +396,7 @@ typedef enum {
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
 
 // Number of constants
-#define NUMBER_OF_CONSTANTS_39                   187
+#define NUMBER_OF_CONSTANTS_39                   189
 #define NUMBER_OF_CONSTANTS_51                    30
 #define NUMBER_OF_CONSTANTS_1071                   1
 #define NUMBER_OF_CONSTANTS_34                    42

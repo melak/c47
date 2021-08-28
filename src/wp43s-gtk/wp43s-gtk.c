@@ -45,9 +45,7 @@
   #if (SHOW_MEMORY_STATUS == 1)
     GtkWidget         *lblMemoryStatus;
   #endif // (SHOW_MEMORY_STATUS == 1)
-#endif // PC_BUILD
 
-#ifdef PC_BUILD
   int main(int argc, char* argv[]) {
     #ifdef __APPLE__
       // we take the directory where the application is as the root for this application.
