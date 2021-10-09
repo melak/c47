@@ -1673,6 +1673,27 @@
             }
           }
 
+          else if(temporaryInformation == TI_ACC) {
+            if(regist == REGISTER_X) {
+              sprintf(prefix, "ACC =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
+          else if(temporaryInformation == TI_ULIM) {
+            if(regist == REGISTER_X) {
+              sprintf(prefix, STD_UP_ARROW "Lim =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
+          else if(temporaryInformation == TI_LLIM) {
+            if(regist == REGISTER_X) {
+              sprintf(prefix, STD_DOWN_ARROW "Lim =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
           else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
           real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
 

@@ -63,7 +63,9 @@
 
       case MNU_MVAR:
         dynamicMenuItem = firstItem + itemShift + (fn - 1);
-        item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_SOLVE_VAR);
+        item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP :
+                !(currentSolverStatus & SOLVER_STATUS_INTERACTIVE)  ? MNU_DYNAMIC :
+                 (currentSolverStatus & SOLVER_STATUS_INTEGRATING)  ? ITM_Sfdx_VAR : ITM_SOLVE_VAR);
         break;
 
       case MNU_MATRS:
@@ -191,7 +193,17 @@
         if(calcMode != CM_CONFIRMATION) {
           lastErrorCode = 0;
 
-          if(item < 0) { // softmenu
+          if(calcMode != CM_PEM && item == -MNU_Sfdx) {
+            tamEnterMode(MNU_Sfdx);
+            refreshScreen();
+            return;
+          }
+          else if(calcMode != CM_PEM && item == ITM_INTEGRAL) {
+            reallyRunFunction(item, currentSolverVariable);
+            refreshScreen();
+            return;
+          }
+          else if(item < 0) { // softmenu
             showSoftmenu(item);
             refreshScreen();
             return;

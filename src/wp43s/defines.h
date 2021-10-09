@@ -506,7 +506,8 @@ typedef enum {
 #define TM_SHUFFLE                             10008
 #define TM_LABEL                               10009
 #define TM_SOLVE                               10010
-#define TM_CMP                                 10011 // TM_CMP must be the last in this list
+#define TM_INTEGRATE                           10011
+#define TM_CMP                                 10012 // TM_CMP must be the last in this list
 
 // NIM number part
 #define NP_EMPTY                                   0
@@ -570,6 +571,9 @@ typedef enum {
 #define TI_VIEW                                   46
 #define TI_SOLVER_VARIABLE                        47
 #define TI_SOLVER_FAILED                          48
+#define TI_ACC                                    49
+#define TI_ULIM                                   50
+#define TI_LLIM                                   51
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed
@@ -771,6 +775,7 @@ typedef enum {
 
 #define SOLVER_STATUS_READY_TO_EXECUTE             0x0001
 #define SOLVER_STATUS_INTERACTIVE                  0x0002
+#define SOLVER_STATUS_INTEGRATING                  0x0004
 
 #define SOLVER_RESULT_NORMAL                       0
 #define SOLVER_RESULT_SIGN_REVERSAL                1

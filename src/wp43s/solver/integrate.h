@@ -15,13 +15,15 @@
  */
 
 /********************************************//**
- * \file solver.h
+ * \file integrate.h
  ***********************************************/
-#ifndef SOLVER_H
-#define SOLVER_H
+#ifndef INTEGRATE_H
+#define INTEGRATE_H
 
+#include <stdint.h>
 
-#include "integrate.h"
-#include "solve.h"
+void fnPgmInt   (uint16_t label);
+void fnIntegrate(uint16_t labelOrVariable);
+void fnIntVar   (uint16_t unusedButMandatoryParameter);
 
-#endif // SOLVER_H
+#endif // INTEGRATE_H
