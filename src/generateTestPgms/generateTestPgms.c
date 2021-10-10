@@ -3407,6 +3407,51 @@ int main(int argc, char* argv[]) {
     *(currentStep++) =  ITM_END       & 0xff;
   }
 
+  { // OM page 257 (for integrator)
+    // 1
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 6; // String length
+    *(currentStep++) = 'I';
+    *(currentStep++) = 'B';
+    *(currentStep++) = 'e';
+    *(currentStep++) = 's';
+    *(currentStep++) = 's';
+    *(currentStep++) = 'I';
+
+    *(currentStep++) = (ITM_MVAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_MVAR       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 'x';
+
+    *(currentStep++) = (ITM_MVAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_MVAR       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_sin;
+
+    *(currentStep++) = ITM_RCLMULT;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 'x';
+
+    *(currentStep++) = ITM_cos;
+
+    *(currentStep++) = ITM_RTN;
+
+    // 9
+    *(currentStep++) = (ITM_END >> 8) | 0x80;
+    *(currentStep++) =  ITM_END       & 0xff;
+  }
+
   { // All OP's
     // 1
     *(currentStep++) = ITM_LBL;

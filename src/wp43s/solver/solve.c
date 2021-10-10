@@ -181,6 +181,8 @@ static bool_t _executeStep(uint8_t **step) {
     case CST_18:
     case ITM_ADD:
     case ITM_DIV:
+    case ITM_sin:
+    case ITM_cos:
       runFunction(op);
       *step = findNextStep(*step);
       break;
