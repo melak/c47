@@ -29,6 +29,7 @@
 #include "programming/lblGtoXeq.h"
 #include "programming/nextStep.h"
 #include "screen.h"
+#include "sort.h"
 #include <stdlib.h>
 
 #include "wp43s.h"
@@ -254,6 +255,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
 
     if(calcMode != CM_PEM) {
       calcMode = CM_PEM;
+      hourGlassIconEnabled = false;
       return;
     }
 
@@ -401,4 +403,19 @@ void insertStepInProgram(int16_t func) {
       #endif // DMCP_BUILD
     }
   }
+}
+
+
+
+calcRegister_t findNamedLabel(const char *labelName) {
+  for(uint16_t lbl = 0; lbl < numberOfLabels; lbl++) {
+    if(labelList[lbl].step > 0) {
+      xcopy(tmpString, labelList[lbl].labelPointer + 1, *(labelList[lbl].labelPointer));
+      tmpString[*(labelList[lbl].labelPointer)] = 0;
+      if(compareString(tmpString, labelName, CMP_EXTENSIVE) == 0) {
+        return lbl + FIRST_LABEL;
+      }
+    }
+  }
+  return INVALID_VARIABLE;
 }

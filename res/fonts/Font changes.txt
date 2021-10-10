@@ -160,4 +160,6 @@
            New WP43S_StandardFont.ttf generated.
 
 2021-05-02 Made + and - 16 pixels wide (1 pixel wider) in NumericFont
-           Reduced the space (U+0020) down to 8 pixels wide.
+           Reduced the space (U+0020) down to 8 pixels width.
+
+2021-09-28 Added stopwatch symbol U+23F1 to standard font.

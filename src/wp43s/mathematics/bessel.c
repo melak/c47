@@ -345,13 +345,13 @@ static void Sigma_u_k(const real_t *nu, const real_t *t_r, const real_t *t_i, in
         }
         freeWp43s(coeff_next, COEFF_BUFFER_SIZE);
       }
-      else lastErrorCode = ERROR_RAM_FULL;
+      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
       freeWp43s(coeff_deriv, COEFF_BUFFER_SIZE);
     }
-    else lastErrorCode = ERROR_RAM_FULL;
+    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
     freeWp43s(coeff_current, COEFF_BUFFER_SIZE);
   }
-  else lastErrorCode = ERROR_RAM_FULL;
+  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
   return;
 }
 #undef COEFF_BUFFER_SIZE

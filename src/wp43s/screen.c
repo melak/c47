@@ -241,25 +241,26 @@
       case dtComplex34: {
         real34_t reduced;
         int len;
+        char tmpStr[100];
 
         // Real part
         real34Reduce(REGISTER_REAL34_DATA(regist), &reduced);
-        real34ToString(&reduced, string);
-        if(strchr(string, '.') == NULL && strchr(string, 'E') == NULL) {
-          strcat(string, ".");
+        real34ToString(&reduced, tmpStr);
+        if(strchr(tmpStr, '.') == NULL && strchr(tmpStr, 'E') == NULL) {
+          strcat(tmpStr, ".");
         }
-        len = strlen(string);
+        len = strlen(tmpStr);
 
         // Imaginary part
         real34Reduce(REGISTER_IMAG34_DATA(regist), &reduced);
         if(real34IsNegative(&reduced)) {
-          sprintf(string, " - %sx", COMPLEX_UNIT);
+          sprintf(string, "%s - %sx", tmpStr, COMPLEX_UNIT);
           len += 5;
           real34SetPositiveSign(&reduced);
           real34ToString(&reduced, string + len);
         }
         else {
-          sprintf(string, " + %sx", COMPLEX_UNIT);
+          sprintf(string, "%s + %sx", tmpStr, COMPLEX_UNIT);
           len += 5;
           real34ToString(&reduced, string + len);
         }
@@ -892,7 +893,7 @@
       sprintf(prefix, "%c =", "XYZTABCDLIJK"[currentViewRegister - REGISTER_X]);
     }
     else if(currentViewRegister <= LAST_LOCAL_REGISTER) {
-      sprintf(prefix, "R.%02" PRIu16 " =", currentViewRegister - FIRST_LOCAL_REGISTER);
+      sprintf(prefix, "R.%02" PRIu16 " =", (uint16_t)(currentViewRegister - FIRST_LOCAL_REGISTER));
     }
     else if(currentViewRegister >= FIRST_NAMED_VARIABLE && currentViewRegister <= LAST_NAMED_VARIABLE) {
       memcpy(prefix, allNamedVariables[currentViewRegister - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentViewRegister - FIRST_NAMED_VARIABLE].variableName[0]);
@@ -1647,7 +1648,10 @@
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             if(regist == REGISTER_Y) {
-              sprintf(prefix, "Data point %03" PRId16, w);
+              if(w == 1) 
+                sprintf(prefix, "%03" PRId16 " data point", w);
+              else
+                sprintf(prefix, "%03" PRId16 " data points", w);
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Y_LINE - 2, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
             }
@@ -1665,6 +1669,14 @@
              }
            }
 
+          else if(temporaryInformation == TI_SOLVER_VARIABLE) {
+            if(regist == REGISTER_X) {
+              memcpy(prefix, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0]);
+              strcpy(prefix + allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0], " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
           else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
           real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
 
@@ -1677,7 +1689,15 @@
         }
 
         else if(getRegisterDataType(regist) == dtComplex34) {
-          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+          if(temporaryInformation == TI_SOLVER_VARIABLE) {
+            if(regist == REGISTER_X) {
+              memcpy(prefix, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0]);
+              strcpy(prefix + allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0], " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
+          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
           complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
 
           w = stringWidth(tmpString, &numericFont, false, true);
@@ -1747,6 +1767,14 @@
         }
 
         else if(getRegisterDataType(regist) == dtLongInteger) {
+          if(temporaryInformation == TI_SOLVER_VARIABLE) {
+            if(regist == REGISTER_X) {
+              memcpy(prefix, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0]);
+              strcpy(prefix + allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0], " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
           if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
           longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - prefixWidth, 50, STD_SPACE_PUNCTUATION);
 
@@ -2020,6 +2048,18 @@
         }
         if(calcMode == CM_MIM) {
           showMatrixEditor();
+        }
+        if(currentSolverStatus & SOLVER_STATUS_INTERACTIVE) {
+          bool_t mvarMenu = false;
+          for(int i = 0; i < SOFTMENU_STACK_SIZE; i++) {
+            if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_MVAR) {
+              mvarMenu = true;
+              break;
+            }
+          }
+          if(!mvarMenu) {
+            showSoftmenu(-MNU_MVAR);
+          }
         }
 
         displayShiftAndTamBuffer();

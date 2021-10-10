@@ -1004,6 +1004,7 @@ uint8_t *findNextStep(uint8_t *step) {
         case ITM_Kk:             //  1726
         case ITM_Ek:             //  1727
         case ITM_PInk:           //  1728
+        case ITM_ANGLE:          //  1739
         case ITM_SHOW:           //  1742
         case ITM_DMStoD:         //  1744
         case ITM_VANGLE:         //  1745
@@ -1015,6 +1016,11 @@ uint8_t *findNextStep(uint8_t *step) {
         case ITM_DET:            //  1751
         case ITM_INVRT:          //  1752
         case ITM_TRANS:          //  1753
+        case ITM_HIDE:           //  1757
+        case ITM_Fphik:          //  1763
+        case ITM_Ephik:          //  1764
+        case ITM_ZETAphik:       //  1765
+        case ITM_GETHIDE:        //  1766
           return step;
 
         case 0x7fff:             // 32767 .END.

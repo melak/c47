@@ -84,7 +84,7 @@ void imagPartCxma(void) {
     convertReal34MatrixToReal34MatrixRegister(&rMat, REGISTER_X); // cMat invalidates here
     realMatrixFree(&rMat);
   }
-  else lastErrorCode = ERROR_RAM_FULL;
+  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
 #endif // TESTSUITE_BUILD
 }
 

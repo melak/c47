@@ -163,6 +163,10 @@ uint16_t               lrChosenUndo;
 uint16_t               lastPlotMode;
 uint16_t               plotSelection;
 uint16_t               currentViewRegister;
+uint16_t               currentSolverStatus;
+uint16_t               currentSolverProgram;
+uint16_t               currentSolverVariable;
+uint16_t               currentSolverNestingDepth;
 #if (REAL34_WIDTH_TEST == 1)
   uint16_t               largeur=200;
 #endif // (REAL34_WIDTH_TEST == 1)

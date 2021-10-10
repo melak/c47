@@ -160,25 +160,25 @@ static void _calc_real_elliptic(real_t *sn, real_t *cn, real_t *dn, const real_t
           freeWp43s(D, ELLIPTIC_N * REAL_SIZE);
         }
         else {
-          lastErrorCode = ERROR_RAM_FULL;
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           realCopy(const_NaN, sn); realCopy(const_NaN, cn); realCopy(const_NaN, dn);
         }
         freeWp43s(C, ELLIPTIC_N * REAL_SIZE);
       }
       else {
-        lastErrorCode = ERROR_RAM_FULL;
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
         realCopy(const_NaN, sn); realCopy(const_NaN, cn); realCopy(const_NaN, dn);
       }
       freeWp43s(NU, ELLIPTIC_N * REAL_SIZE);
     }
     else {
-      lastErrorCode = ERROR_RAM_FULL;
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
       realCopy(const_NaN, sn); realCopy(const_NaN, cn); realCopy(const_NaN, dn);
     }
     freeWp43s(MU, ELLIPTIC_N * REAL_SIZE);
   }
   else {
-    lastErrorCode = ERROR_RAM_FULL;
+    displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
     realCopy(const_NaN, sn); realCopy(const_NaN, cn); realCopy(const_NaN, dn);
   }
 }
@@ -930,7 +930,7 @@ void ellipticE(const real_t *phi, const real_t *psi, const real_t *m, real_t *re
       freeWp43s(tmpVal, 25 * REAL_SIZE);
     }
     else {
-      lastErrorCode = ERROR_RAM_FULL;
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
       realCopy(const_NaN, res); realCopy(const_NaN, resi);
     }
 
@@ -1013,25 +1013,25 @@ static void _jacobiZeta_Agm(const real_t *phi, const real_t *psi, const real_t *
           freeWp43s(bi, ELLIPTIC_N * REAL_SIZE);
         }
         else {
-          lastErrorCode = ERROR_RAM_FULL;
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           realCopy(const_NaN, res); realCopy(const_NaN, resi);
         }
         freeWp43s(b, ELLIPTIC_N * REAL_SIZE);
       }
       else {
-        lastErrorCode = ERROR_RAM_FULL;
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
         realCopy(const_NaN, res); realCopy(const_NaN, resi);
       }
       freeWp43s(ai, ELLIPTIC_N * REAL_SIZE);
     }
     else {
-      lastErrorCode = ERROR_RAM_FULL;
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
       realCopy(const_NaN, res); realCopy(const_NaN, resi);
     }
     freeWp43s(a, ELLIPTIC_N * REAL_SIZE);
   }
   else {
-    lastErrorCode = ERROR_RAM_FULL;
+    displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
     realCopy(const_NaN, res); realCopy(const_NaN, resi);
   }
 }

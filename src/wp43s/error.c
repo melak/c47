@@ -69,8 +69,12 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /* 37 */  "This variable is write protected",
 /* 38 */  "No matrix indexed",
 /* 39 */  "Not enough memory for such a matrix",
-/* 40 */  "No errors for selected model"
-/* 41 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
+/* 40 */  "No errors for selected model",
+/* 41 */  "Large " STD_DELTA " and opposite signs, may be a pole",
+/* 42 */  "Solver reached local extremum, no root",
+/* 43 */  STD_GREATER_EQUAL "1 initial guess lies out of the domain",
+/* 44 */  "The function value look constant",
+/* 45 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
 };
 
 

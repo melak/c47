@@ -34,6 +34,7 @@
 #include "screen.h"
 #include "softmenus.h"
 #include "stack.h"
+#include "stats.h"
 #include "timer.h"
 #include "ui/tam.h"
 #if (REAL34_WIDTH_TEST == 1)
@@ -59,6 +60,11 @@
       case MNU_VAR:
         dynamicMenuItem = firstItem + itemShift + (fn - 1);
         item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : MNU_DYNAMIC);
+        break;
+
+      case MNU_MVAR:
+        dynamicMenuItem = firstItem + itemShift + (fn - 1);
+        item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_SOLVE_VAR);
         break;
 
       case MNU_MATRS:
@@ -191,7 +197,7 @@
             refreshScreen();
             return;
           }
-          else if(calcMode == CM_PEM && catalog) { // TODO: is that correct
+          else if(calcMode == CM_PEM && catalog && catalog != CATALOG_MVAR) { // TODO: is that correct
             runFunction(item);
             refreshScreen();
             return;
@@ -210,7 +216,7 @@
             }
             addItemToBuffer(item);
           }
-          else if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (ITM_0<=item && item<=ITM_F) && !catalog) {
+          else if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (ITM_0<=item && item<=ITM_F) && (!catalog || catalog == CATALOG_MVAR)) {
             addItemToNimBuffer(item);
           }
           else if(calcMode == CM_MIM && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_M_EDIT) {
@@ -288,7 +294,7 @@
       return ITM_NOP;
     }
 
-    if(calcMode == CM_AIM || (catalog && calcMode != CM_NIM) || tam.alpha) {
+    if(calcMode == CM_AIM || (catalog && catalog != CATALOG_MVAR && calcMode != CM_NIM) || tam.alpha) {
       result = shiftF ? key->fShiftedAim :
                shiftG ? key->gShiftedAim :
                         key->primaryAim;
@@ -540,7 +546,7 @@
         break;
 
       default:
-        if(catalog) {
+        if(catalog && catalog != CATALOG_MVAR) {
           if(ITM_A <= item && item <= ITM_Z && alphaCase == AC_LOWER) {
             addItemToBuffer(item + 26);
             keyActionProcessed = true;
@@ -868,9 +874,16 @@ ram_full:
 
 void fnKeyExit(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
+    if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MVAR) {
+      currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
+    }
+
     if(catalog) {
       leaveAsmMode();
       popSoftmenu();
+      if(tam.mode) {
+        numberOfTamMenusToPop--;
+      }
       return;
     }
 
@@ -913,6 +926,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       case CM_MIM:
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_M_EDIT) {
           mimEnter(true);
+          if(matrixIndex == findNamedVariable("STATS")) calcSigma(0);
           mimFinalize();
           calcModeNormal();
           updateMatrixHeightCache();
@@ -1046,7 +1060,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_AIM:
-        if(catalog) {
+        if(catalog && catalog != CATALOG_MVAR) {
           if(stringByteLength(aimBuffer) > 0) {
             lg = stringLastGlyph(aimBuffer);
             aimBuffer[lg] = 0;

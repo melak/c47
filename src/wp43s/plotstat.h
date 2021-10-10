@@ -35,14 +35,6 @@
 #define   FLoatingMin    -1e38f
 
 
-//Memory structure
-extern    float *gr_x;
-extern    float *gr_y;
-extern    float telltale;
-extern    uint16_t  ix_count;
-#define   MEM_INITIALIZED 199
-
-
 //Graph options
 extern  float    graph_dx;
 extern  float    graph_dy;
@@ -104,9 +96,6 @@ float   auto_tick          (float tick_int_f);
 
 
 //graph functions
-void    graph_setupmemory  (void);
-void    graph_sigmaplus    (int8_t plusminus, real_t *xx, real_t *yy);   //Called from STAT module from fnSigma(), to store the x,y pair to the memory structure.
-void    graph_end          (void);
 float grf_x(int i);
 float grf_y(int i);
 

@@ -28,6 +28,7 @@
 #include "mathematics/integerPart.h"
 #include "matrix.h"
 #include "programming/lblGtoXeq.h"
+#include "programming/manage.h"
 #include "registers.h"
 #include "softmenus.h"
 #include <string.h>
@@ -438,7 +439,17 @@
       char *buffer = (forcedVar ? forcedVar : aimBuffer);
       bool_t tryAllocate = ((tam.function == ITM_STO || tam.function == ITM_M_DIM) && !tam.indirect);
       int16_t value;
-      if(tryAllocate) {
+      if(tam.mode == TM_LABEL || tam.mode == TM_SOLVE) {
+        value = findNamedLabel(buffer);
+        if(value == INVALID_VARIABLE) {
+          displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            sprintf(errorMessage, "string '%s' is not a named label", buffer);
+            moreInfoOnError("In function _tamProcessInput:", errorMessage, NULL, NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        }
+      }
+      else if(tryAllocate) {
         value = findOrAllocateNamedVariable(buffer);
       }
       else {
@@ -527,6 +538,13 @@
 
       case TM_LABEL:
         showSoftmenu(-MNU_TAMLABEL);
+        break;
+
+      case TM_SOLVE:
+        if(func == ITM_SOLVE && calcMode == CM_PEM)
+          showSoftmenu(-MNU_TAM);
+        else
+          showSoftmenu(-MNU_TAMLABEL);
         break;
 
       default:

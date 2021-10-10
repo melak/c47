@@ -35,7 +35,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         58  // exponentHideLimit now will be saved
+#define BACKUP_VERSION         59  // states around VIEW and SOLVE now will be saved
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -243,11 +243,11 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&y_max,                              sizeof(y_max),                              BACKUP);
     save(&xzero,                              sizeof(xzero),                              BACKUP);
     save(&yzero,                              sizeof(yzero),                              BACKUP);
-    save(gr_x,                                LIM*sizeof(float),                        BACKUP);
-    save(gr_y,                                LIM*sizeof(float),                        BACKUP);
-    save(&telltale,                           sizeof(telltale),                           BACKUP);
-    save(&ix_count,                           sizeof(ix_count),                           BACKUP);
     save(&matrixIndex,                        sizeof(matrixIndex),                        BACKUP);
+    save(&currentViewRegister,                sizeof(currentViewRegister),                BACKUP);
+    save(&currentSolverStatus,                sizeof(currentSolverStatus),                BACKUP);
+    save(&currentSolverProgram,               sizeof(currentSolverProgram),               BACKUP);
+    save(&currentSolverVariable,              sizeof(currentSolverVariable),              BACKUP);
 
 
     fclose(BACKUP);
@@ -443,11 +443,11 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&y_max,                              sizeof(y_max),                              BACKUP);
       restore(&xzero,                              sizeof(xzero),                              BACKUP);
       restore(&yzero,                              sizeof(yzero),                              BACKUP);
-      restore(gr_x,                                LIM*sizeof(float),                        BACKUP);
-      restore(gr_y,                                LIM*sizeof(float),                        BACKUP);
-      restore(&telltale,                           sizeof(telltale),                           BACKUP);
-      restore(&ix_count,                           sizeof(ix_count),                           BACKUP);
       restore(&matrixIndex,                        sizeof(matrixIndex),                        BACKUP);
+      restore(&currentViewRegister,                sizeof(currentViewRegister),                BACKUP);
+      restore(&currentSolverStatus,                sizeof(currentSolverStatus),                BACKUP);
+      restore(&currentSolverProgram,               sizeof(currentSolverProgram),               BACKUP);
+      restore(&currentSolverVariable,              sizeof(currentSolverVariable),              BACKUP);
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
@@ -784,20 +784,6 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   save(tmpString, strlen(tmpString), BACKUP);
 
 
-  // Graph memory                                  //vv GRAPH MEMORY RESTORE
-  sprintf(tmpString, "STAT_GRAPH_DATA\n%u\n",LIM*2+2);
-  save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "%u\n",ix_count);
-  save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "%E\n",telltale);
-  save(tmpString, strlen(tmpString), BACKUP);
-  for(i=0; i<LIM; i++) {
-    sprintf(tmpString, "%E\n",gr_x[i]);
-    save(tmpString, strlen(tmpString), BACKUP);
-    sprintf(tmpString, "%E\n",gr_y[i]);
-    save(tmpString, strlen(tmpString), BACKUP);
-  }
-  // Graph memory                                  //^^ GRAPH MEMORY RESTORE
 
 
 
@@ -1382,27 +1368,6 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
       }
     }
   }
-
-  // Graph memory                                  //vv GRAPH MEMORY RESTORE
-  else if(strcmp(tmpString, "STAT_GRAPH_DATA") == 0) {
-    char* end;
-    readLine(stream, tmpString); // Number of params
-
-    readLine(stream, tmpString); // ix_count
-    ix_count = stringToInt16(tmpString);
-    readLine(stream, tmpString); // telltale
-    telltale = strtod(tmpString, &end);
-    graph_setupmemory();
-    for(i=0; i<LIM; i++) {
-      readLine(stream, tmpString);
-      gr_x[i] = strtod(tmpString, &end);
-      readLine(stream, tmpString);
-      gr_y[i] = strtod(tmpString, &end);
-      //printf("^^^^### %u %f %f \n",i,gr_x[i],gr_y[i]);
-      return false;
-    }
-  }
-  // Graph memory                                  //^^ GRAPH MEMORY RESTORE
 
   return true;
 }

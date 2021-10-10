@@ -3242,6 +3242,171 @@ int main(int argc, char* argv[]) {
     *(currentStep++) =  ITM_END       & 0xff;
   }
 
+  { // OM page 251 (for solver)
+    // 1
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 5; // String length
+    *(currentStep++) = 'F';
+    *(currentStep++) = 'r';
+    *(currentStep++) = 'e';
+    *(currentStep++) = 'e';
+    *(currentStep++) = 'F';
+
+    *(currentStep++) = (ITM_MVAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_MVAR       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 6; // String length
+    *(currentStep++) = 'h';
+    *(currentStep++) = 'e';
+    *(currentStep++) = 'i';
+    *(currentStep++) = 'g';
+    *(currentStep++) = 'h';
+    *(currentStep++) = 't';
+
+    *(currentStep++) = (ITM_MVAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_MVAR       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = 'v';
+    *(currentStep++) = STD_SUB_0[0];
+    *(currentStep++) = STD_SUB_0[1];
+
+    *(currentStep++) = (ITM_MVAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_MVAR       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 4; // String length
+    *(currentStep++) = 't';
+    *(currentStep++) = 'i';
+    *(currentStep++) = 'm';
+    *(currentStep++) = 'e';
+
+    *(currentStep++) = (CST_18 >> 8) | 0x80;
+    *(currentStep++) =  CST_18       & 0xff;
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = 2; // String length
+    *(currentStep++) = '-';
+    *(currentStep++) = '2';
+
+    *(currentStep++) = ITM_DIV;
+
+    *(currentStep++) = ITM_RCLMULT;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 4; // String length
+    *(currentStep++) = 't';
+    *(currentStep++) = 'i';
+    *(currentStep++) = 'm';
+    *(currentStep++) = 'e';
+
+    *(currentStep++) = ITM_RCLADD;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = 'v';
+    *(currentStep++) = STD_SUB_0[0];
+    *(currentStep++) = STD_SUB_0[1];
+
+    // 10
+    *(currentStep++) = ITM_RCLMULT;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 4; // String length
+    *(currentStep++) = 't';
+    *(currentStep++) = 'i';
+    *(currentStep++) = 'm';
+    *(currentStep++) = 'e';
+
+    *(currentStep++) = ITM_RCLSUB;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 6; // String length
+    *(currentStep++) = 'h';
+    *(currentStep++) = 'e';
+    *(currentStep++) = 'i';
+    *(currentStep++) = 'g';
+    *(currentStep++) = 'h';
+    *(currentStep++) = 't';
+
+    *(currentStep++) = ITM_RTN;
+
+    // 13
+    *(currentStep++) = (ITM_END >> 8) | 0x80;
+    *(currentStep++) =  ITM_END       & 0xff;
+  }
+
+  { // No root (Const)
+    // 1
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 7; // String length
+    *(currentStep++) = 'S';
+    *(currentStep++) = 'l';
+    *(currentStep++) = 'v';
+    *(currentStep++) = 'C';
+    *(currentStep++) = 'n';
+    *(currentStep++) = 's';
+    *(currentStep++) = 't';
+
+    *(currentStep++) = (ITM_MVAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_MVAR       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 'X';
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = '3';
+
+    *(currentStep++) = ITM_RTN;
+
+    // 5
+    *(currentStep++) = (ITM_END >> 8) | 0x80;
+    *(currentStep++) =  ITM_END       & 0xff;
+  }
+
+  { // No root (Extremum)
+    // 1
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 7; // String length
+    *(currentStep++) = 'S';
+    *(currentStep++) = 'l';
+    *(currentStep++) = 'v';
+    *(currentStep++) = 'E';
+    *(currentStep++) = 'x';
+    *(currentStep++) = 't';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_MVAR >> 8) | 0x80;
+    *(currentStep++) =  ITM_MVAR       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 'X';
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 'X';
+
+    *(currentStep++) = ITM_RCLMULT;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = 'X';
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = '1';
+
+    *(currentStep++) = ITM_ADD;
+
+    *(currentStep++) = ITM_RTN;
+
+    // 8
+    *(currentStep++) = (ITM_END >> 8) | 0x80;
+    *(currentStep++) =  ITM_END       & 0xff;
+  }
+
   { // All OP's
     // 1
     *(currentStep++) = ITM_LBL;
@@ -11421,6 +11586,21 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_TRANS >> 8) | 0x80;
     *(currentStep++) =  ITM_TRANS       & 0xff;
+
+    *(currentStep++) = (ITM_HIDE >> 8) | 0x80;
+    *(currentStep++) =  ITM_HIDE       & 0xff;
+
+    *(currentStep++) = (ITM_Ephik >> 8) | 0x80;
+    *(currentStep++) =  ITM_Ephik       & 0xff;
+
+    *(currentStep++) = (ITM_Fphik >> 8) | 0x80;
+    *(currentStep++) =  ITM_Fphik       & 0xff;
+
+    *(currentStep++) = (ITM_ZETAphik >> 8) | 0x80;
+    *(currentStep++) =  ITM_ZETAphik       & 0xff;
+
+    *(currentStep++) = (ITM_GETHIDE >> 8) | 0x80;
+    *(currentStep++) =  ITM_GETHIDE       & 0xff;
 
     *(currentStep++) = (ITM_END >> 8) | 0x80;
     *(currentStep++) =  ITM_END       & 0xff;

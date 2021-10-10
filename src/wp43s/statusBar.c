@@ -187,7 +187,7 @@
 
 
   void showHideAlphaMode(void) {
-    if(calcMode == CM_AIM || catalog || (tam.mode != 0 && tam.alpha)) {
+    if(calcMode == CM_AIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha)) {
       if(alphaCase == AC_UPPER) {
         showString(STD_ALPHA, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
         setSystemFlag(FLAG_alphaCAP);

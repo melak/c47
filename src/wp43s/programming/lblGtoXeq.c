@@ -66,6 +66,17 @@ void fnGoto(uint16_t label) {
         }
       #endif // DMCP_BUILD
     }
+    else if(label >= FIRST_LABEL && label <= LAST_LABEL) { // Global named label
+      if((label - FIRST_LABEL) < numberOfLabels) {
+        fnGotoDot(labelList[label - FIRST_LABEL].step);
+        return;
+      }
+      #ifndef DMCP_BUILD
+      else {
+        printf("Error in function fnGoto: label ID %u out of range\n", label - FIRST_LABEL);
+      }
+      #endif // DMCP_BUILD
+    }
     else { // Global label X, Y, Z, T, K, or L
       switch(label) {
         case REGISTER_X: label = 'X'; break;

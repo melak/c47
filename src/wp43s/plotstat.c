@@ -27,6 +27,7 @@
 #include "keyboard.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/variance.h"
+#include "matrix.h"
 #include "registers.h"
 #include "screen.h"
 #include "softmenus.h"
@@ -54,11 +55,6 @@ void fnPlotRegressionLine(uint16_t plotMode);
   static void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2);
 #endif //TESTSUITE_BUILD
 
-
-float   *gr_x;
-float   *gr_y;
-float   telltale;
-uint16_t  ix_count;
 
 float     graph_dx;           // Many unused functions in WP43S. Do not change the variables.
 float     graph_dy;
@@ -121,59 +117,6 @@ void statGraphReset(void){
   tick_int_y    = 0;
 }
 
-
-void graph_setupmemory(void) {
-  int i;
-  if(telltale != MEM_INITIALIZED) {
-    if((gr_x = (float*)malloc(LIM * sizeof(float)))) {
-      memset(gr_x, 0,         LIM * sizeof(float));
-      if((gr_y = (float*)malloc(LIM * sizeof(float)))) {
-        memset(gr_y, 0,         LIM * sizeof(float));
-        telltale = MEM_INITIALIZED;
-        ix_count = 0;
-      }
-    }
-  }
-  if ((telltale != MEM_INITIALIZED) || (gr_x == NULL || gr_y == NULL)) {
-  #ifdef PC_BUILD
-     moreInfoOnError("In function graph_setupmemory:", "error allocating memory for graph!", NULL, NULL);
-     exit(1);
-  #endif
-  } else
-  {
-  #if defined STATDEBUG && defined PC_BUILD
-    printf("^^@@ Two arrays of %u bytes each created, i.e. %u blocks total\n",(uint32_t) (LIM * sizeof(float)), (uint32_t)(2 * LIM * sizeof(float) / 4));
-  #endif
-  }
-
-  if((telltale==MEM_INITIALIZED) && (gr_x != NULL) && (gr_y != NULL)){
-    for (i = 0; i < LIM; ++i) {
-      #if defined STATDEBUG && defined PC_BUILD
-        gr_x[i] = 85.1f;
-        gr_y[i] = 170.1f;
-        if(fabs(gr_x[i]-85.1f) > 0.00001f || fabs(gr_y[i]-170.1f) > 0.00001f) printf("### ERROR MEMORY TEST A %i: x should be 85.1 and is %f; y should be 170.1 and is %f\n",i,gr_x[i],gr_y[i]);
-        gr_x[i] = 170.1;
-        gr_y[i] = 85.1;
-        if(fabs(gr_x[i]-170.1f) > 0.00001f || fabs(gr_y[i]-85.1f) > 0.00001f) printf("### ERROR MEMORY TEST B %i: x should be 170.1 and is %f; y should be 85.1 and is %f\n",i,gr_x[i],gr_y[i]);
-      #endif
-      gr_x[i] = 0.0f;
-      gr_y[i] = 0.0f;
-      #if defined STATDEBUG && defined PC_BUILD
-        if(gr_x[i]!=0.0f || gr_y[i]!=0.0f) printf("### ERROR MEMORY TEST C %i: x should be 170.1 and is %f; y should be 85.1 and is %f\n",i,gr_x[i],gr_y[i]);
-      #endif
-    }
-  } else {
-    #if defined STATDEBUG && defined PC_BUILD
-      printf("### ERROR MEMORY TEST D NOT INITIALIZED\n");
-    #endif //PC_BUILD
-  }
-}
-
-void graph_end(void) {
-  free(gr_x);
-  free(gr_y);
-  telltale = 0;
-}
 
 
 
@@ -249,89 +192,49 @@ void realToDouble1(const real_t *vv, double *v) {
 }
 
 
-void graph_sigmaplus(int8_t plusminus, real_t *xx, real_t *yy) {    //Called from STAT module from fnSigma(), to store the x,y pair to the memory structure.
-  int16_t cnt;
-  float x,y;
-  realToInt32(SIGMA_N, cnt);
 
-  if(cnt <= LIM) {
-    if(PLOT_VECT || PLOT_NVECT) {
-      plotmode = _VECT;
-    } else {
-      plotmode = _SCAT;
+#ifndef TESTSUITE_BUILD
+  float grf_x(int i) {
+    float xf=0;
+    real_t xr;
+    if (PLOT_NVECT) {
+  //    return gr_y[i];
     }
+    else {
 
-    if(telltale != MEM_INITIALIZED) {
-      graph_setupmemory();
+      calcRegister_t regStats = findNamedVariable("STATS");
+      if(regStats != INVALID_VARIABLE) {
+        real34Matrix_t stats;
+        linkToRealMatrixRegister(regStats, &stats);
+        const uint16_t cols = stats.header.matrixColumns;
+        real34ToReal(&stats.matrixElements[i * cols    ], &xr);
+        realToFloat(&xr, &xf);
+      } 
+      else xf = 0;
     }
+    return xf;
+  }
 
-    //Convert from X register to graphtype
-    realToFloat(yy,&y);
-    //printf("y=%f ",y);
-
-    //Convert from X register to graphtype
-    realToFloat(xx, &x);
-    //printf("x=%f ",x);
-
-    #ifndef TESTSUITE_BUILD
-    //export_xy_to_file(x,y);                  //Write to CSV file
-    #endif
-
-    if(plotmode == _VECT ) {
-      ix_count++;                              //Only used for VECT
-      cnt = ix_count;
-    } else {
-      ix_count = cnt;                          //ix_count increments in VECT with Σ-, where SIGMA_N decrements with Σ-
-                                               //if VECT is changed mid-process, it will cause x_count to assume SIGMA_N, which  will throw away the last values stored.
-      #if defined STATDEBUG && defined PC_BUILD
-        printf("Count: %s, %d\n",tmpString,cnt);
-      #endif
+  float grf_y(int i) {
+    float yf=0;
+    real_t yr;
+    if (PLOT_NVECT) {
+  //    return gr_x[i];
     }
-    //printf("Adding to graph table[%d] = x:%f y:%f\n",cnt,x,y);
-
-    if(plusminus == 1) {
-      gr_x[cnt-1]=x;
-      gr_y[cnt-1]=y;
-      #if defined STATDEBUG && defined PC_BUILD
-        printf("Index: [%d]=(%f,%f)\n",cnt-1,x,y);
-      #endif
-    } else {
-      if(plusminus == -1) {
-        if(plotmode == _VECT ) {
-          gr_x[cnt-1]=-x;
-          gr_y[cnt-1]=-y;
-          #if defined STATDEBUG && defined PC_BUILD
-            printf("Index: [%d]=(%f,%f)\n",cnt-1,-x,-y);
-          #endif
-        } else {
-          // Non-vector mode TODO
-        }
-      }
+    else {
+      calcRegister_t regStats = findNamedVariable("STATS");
+      if(regStats != INVALID_VARIABLE) {
+        real34Matrix_t stats;
+        linkToRealMatrixRegister(regStats, &stats);
+        const uint16_t cols = stats.header.matrixColumns;
+        real34ToReal(&stats.matrixElements[i * cols + 1], &yr);
+        realToFloat(&yr, &yf);
+      } 
+      else yf = 0;
     }
+    return yf;
   }
-  else {
-      printf("In function SUM+ or SUM-:%u There is insufficient plot memory available, but stats totals still accumulate!\n",plusminus);
-  }
-}
-
-
-float grf_x(int i) {
-  if (PLOT_NVECT) {
-    return gr_y[i];
-  }
-  else {
-    return gr_x[i];
-  }
-}
-
-float grf_y(int i) {
-  if (PLOT_NVECT) {
-    return gr_x[i];
-  }
-  else {
-    return gr_y[i];
-  }
-}
+#endif //TESTSUITE_BUILD
 
 
 #ifndef TESTSUITE_BUILD
@@ -937,7 +840,7 @@ void graphPlotstat(uint16_t selection){
   graph_axis();
   plotmode = _SCAT;
 
-  if(telltale == MEM_INITIALIZED && checkMinimumDataPoints(const_2)) {
+  if(checkMinimumDataPoints(const_2)) {
     realToInt32(SIGMA_N, statnum);
     #if defined STATDEBUG && defined PC_BUILD
       printf("statnum n=%d\n",statnum);
@@ -1372,7 +1275,7 @@ void fnPlotStat(uint16_t plotMode){
   }
 #endif //STATDEBUG
 
-if(telltale == MEM_INITIALIZED && checkMinimumDataPoints(const_2)) {
+if(checkMinimumDataPoints(const_2)) {
 
   PLOT_SCALE = false;
 
@@ -1509,6 +1412,8 @@ void fnPlotZoom(uint16_t unusedButMandatoryParameter){
      void refreshScreen(void);
    #endif //TESTSUITE_BUILD
 }
+
+
 
 /*
 //DEMO: Arbitrary distribution to test. Close to a Normal.

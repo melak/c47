@@ -415,8 +415,40 @@ void fnGetRange(uint16_t unusedButMandatoryParameter) {
 
 
 
-void fnHide(uint16_t digits) {
-  if(digits >= 12 || digits == 0) exponentHideLimit = digits;
+void fnHide(uint16_t unusedButMandatoryParameter) {
+  longInteger_t longInt;
+
+  if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
+    convertLongIntegerRegisterToLongInteger(REGISTER_X, longInt);
+  }
+  else if(getRegisterDataType(REGISTER_X) == dtReal34) {
+    convertReal34ToLongInteger(REGISTER_REAL34_DATA(REGISTER_X), longInt, DEC_ROUND_DOWN);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "cannot use %s for setting HIDE", getRegisterDataTypeName(REGISTER_X, true, true));
+      moreInfoOnError("In function fnHide:", errorMessage, NULL, NULL);
+    #endif //  (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return;
+  }
+
+  longIntegerSetPositiveSign(longInt);
+
+  if(longIntegerIsZero(longInt)) {
+    exponentHideLimit = 0;
+  }
+  else if(longIntegerCompareInt(longInt, 99) > 0) {
+    exponentHideLimit = 99;
+  }
+  else if(longIntegerCompareInt(longInt, 12) < 0) {
+    exponentHideLimit = 12;
+  }
+  else {
+    exponentHideLimit = (int16_t)(longInt->_mp_d[0]); // OK for 32 and 64 bit limbs
+  }
+
+  longIntegerFree(longInt);
 }
 
 
@@ -473,7 +505,7 @@ void fnClAll(uint16_t confirmation) {
 
 
 void addTestPrograms(void) {
-  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(8415));
+  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(8557));
 
   resizeProgramMemory(TO_BLOCKS(numberOfBytesForTheTestPrograms));
   firstDisplayedStep            = beginOfProgramMemory;
@@ -574,8 +606,6 @@ void fnReset(uint16_t confirmation) {
     memset(aimBuffer,        0, AIM_BUFFER_LENGTH);
     memset(nimBufferDisplay, 0, NIM_BUFFER_LENGTH);
     memset(tamBuffer,        0, TAM_BUFFER_LENGTH);
-
-    graph_setupmemory();
 
     // Empty program initialization
     beginOfProgramMemory          = (uint8_t *)(ram + freeMemoryRegions[0].sizeInBlocks);

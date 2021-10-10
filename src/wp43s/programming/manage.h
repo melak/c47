@@ -20,6 +20,7 @@
 #ifndef MANAGE_H
 #define MANAGE_H
 
+#include "typeDefinitions.h"
 #include <stdint.h>
 
 void scanLabelsAndPrograms                   (void);
@@ -30,5 +31,7 @@ void fnClPAll                                (uint16_t confirmation);
 void fnClP                                   (uint16_t unusedButMandatoryParameter);
 void fnPem                                   (uint16_t unusedButMandatoryParameter);
 void insertStepInProgram                     (int16_t func);
+
+calcRegister_t findNamedLabel                (const char *labelName);
 
 #endif // MANAGE_H

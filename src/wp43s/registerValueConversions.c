@@ -514,7 +514,7 @@ void convertReal34MatrixRegisterToReal34Matrix(calcRegister_t regist, real34Matr
       }
     }
   }
-  else lastErrorCode = ERROR_RAM_FULL;
+  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
 }
 
 void convertReal34MatrixToReal34MatrixRegister(const real34Matrix_t *matrix, calcRegister_t regist) {
@@ -540,7 +540,7 @@ void convertComplex34MatrixRegisterToComplex34Matrix(calcRegister_t regist, comp
       }
     }
   }
-  else lastErrorCode = ERROR_RAM_FULL;
+  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
 }
 
 void convertComplex34MatrixToComplex34MatrixRegister(const complex34Matrix_t *matrix, calcRegister_t regist) {
@@ -560,7 +560,7 @@ void convertReal34MatrixToComplex34Matrix(const real34Matrix_t *source, complex3
       }
     }
   }
-  else lastErrorCode = ERROR_RAM_FULL;
+  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
 }
 
 void convertReal34MatrixRegisterToComplex34Matrix(calcRegister_t source, complex34Matrix_t *destination) {
