@@ -127,9 +127,11 @@
 #define ERROR_SOLVER_REACHED_LOCAL_EXTREMUM       42
 #define ERROR_INITIAL_GUESS_OUT_OF_DOMAIN         43
 #define ERROR_FUNCTION_VALUES_LOOK_CONSTANT       44
-#define ERROR_BAD_INPUT                           45 // This error is not in ReM and cannot occur (theoretically).
+#define ERROR_SYNTAX_ERROR_IN_EQUATION            45
+#define ERROR_EQUATION_TOO_COMPLEX                46
+#define ERROR_BAD_INPUT                           47 // This error is not in ReM and cannot occur (theoretically).
 
-#define NUMBER_OF_ERROR_CODES                     46
+#define NUMBER_OF_ERROR_CODES                     48
 
 #define NUMBER_OF_GLOBAL_FLAGS                   112
 #define FIRST_LOCAL_FLAG                         112 // There are 112 global flag from 0 to 111
@@ -485,6 +487,7 @@ typedef enum {
 #define CM_BUG_ON_SCREEN                          10 // Bug message on screen
 #define CM_CONFIRMATION                           11 // Waiting for confirmation or canceling
 #define CM_MIM                                    12 // Matrix imput mode tbd reorder
+#define CM_EIM                                    13 // Equation imput mode
 
 // Next character in AIM 2 bits
 #define NC_NORMAL                                  0
@@ -771,6 +774,8 @@ typedef enum {
 
 #define SOLVER_STATUS_READY_TO_EXECUTE             0x0001
 #define SOLVER_STATUS_INTERACTIVE                  0x0002
+#define SOLVER_STATUS_USES_FORMULA                 0x0100
+#define SOLVER_STATUS_MVAR_BEING_OPENED            0x0200
 
 #define SOLVER_RESULT_NORMAL                       0
 #define SOLVER_RESULT_SIGN_REVERSAL                1

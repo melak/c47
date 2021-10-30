@@ -240,6 +240,17 @@ typedef struct {
 
 
 /**
+ * \struct formulaHeader_t
+ * Header for EQN formulae.
+ */
+typedef struct {
+  uint16_t pointerToFormulaData; ///< Memory block number
+  uint8_t  sizeInBlocks;         ///< Size of allocated memory block
+  uint8_t  unused;               ///< Padding
+} formulaHeader_t;
+
+
+/**
  * \enum videoMode_t
  * Video mode: normal video or reverse video.
  */

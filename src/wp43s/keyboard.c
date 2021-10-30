@@ -33,6 +33,7 @@
 #include "registers.h"
 #include "screen.h"
 #include "softmenus.h"
+#include "solver/equation.h"
 #include "stack.h"
 #include "stats.h"
 #include "timer.h"
@@ -64,7 +65,15 @@
 
       case MNU_MVAR:
         dynamicMenuItem = firstItem + itemShift + (fn - 1);
-        item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_SOLVE_VAR);
+        if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && dynamicMenuItem == 5) {
+          item = ITM_CALC;
+        }
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && *getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem) == 0) {
+          item = ITM_NOP;
+        }
+        else {
+          item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_SOLVE_VAR);
+        }
         break;
 
       case MNU_MATRS:
@@ -79,6 +88,12 @@
         dynamicMenuItem = firstItem + itemShift + (fn - 1);
         item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_RCL);
         break;
+
+      case MNU_EQN:
+        if(numberOfFormulae == 0 && (firstItem + itemShift + (fn - 1)) > 0) {
+          break;
+        }
+        /* fallthrough */
 
       default:
         sm = &softmenu[menuId];
@@ -155,6 +170,9 @@
             fnKeyInCatalog = 1;
             addItemToBuffer(item);
             fnKeyInCatalog = 0;
+            if(calcMode == CM_EIM && isAlphabeticSoftmenu()) {
+              popSoftmenu();
+            }
             refreshScreen();
           }
 
@@ -194,6 +212,10 @@
 
           if(item < 0) { // softmenu
             showSoftmenu(item);
+            if(item == -MNU_Solver && lastErrorCode != 0) {
+              popSoftmenu();
+              currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
+            }
             refreshScreen();
             return;
           }
@@ -267,7 +289,7 @@
     key = getSystemFlag(FLAG_USER) ? (kbd_usr + (*data - '0')*10 + *(data+1) - '0') : (kbd_std + (*data - '0')*10 + *(data+1) - '0');
 
     // Shift f pressed and shift g not active
-    if(key->primary == ITM_SHIFTf && !shiftG && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT)) {
+    if(key->primary == ITM_SHIFTf && !shiftG && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT)) {
       if(temporaryInformation == TI_VIEW) {
         temporaryInformation = TI_NO_INFO;
         updateMatrixHeightCache();
@@ -281,7 +303,7 @@
     }
 
     // Shift g pressed and shift f not active
-    else if(key->primary == ITM_SHIFTg && !shiftF && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT)) {
+    else if(key->primary == ITM_SHIFTg && !shiftF && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT)) {
       if(temporaryInformation == TI_VIEW) {
         temporaryInformation = TI_NO_INFO;
         updateMatrixHeightCache();
@@ -294,7 +316,7 @@
       return ITM_NOP;
     }
 
-    if(calcMode == CM_AIM || (catalog && catalog != CATALOG_MVAR && calcMode != CM_NIM) || tam.alpha) {
+    if(calcMode == CM_AIM || (catalog && catalog != CATALOG_MVAR && calcMode != CM_NIM) || calcMode == CM_EIM || tam.alpha) {
       result = shiftF ? key->fShiftedAim :
                shiftG ? key->gShiftedAim :
                         key->primaryAim;
@@ -587,6 +609,7 @@
               break;
 
             case CM_AIM:
+            case CM_EIM:
               processAimInput(item);
               break;
 
@@ -840,6 +863,17 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
         }
         break;
 
+      case CM_EIM:
+        if(aimBuffer[0] != 0) {
+          setEquation(currentFormula, aimBuffer);
+        }
+        if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQ_EDIT) {
+          calcModeNormal();
+          if(allFormulae[currentFormula].pointerToFormulaData == WP43S_NULL) deleteEquation(currentFormula);
+        }
+        popSoftmenu();
+        break;
+
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
       case CM_FONT_BROWSER:
@@ -874,7 +908,7 @@ ram_full:
 
 void fnKeyExit(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
-    if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MVAR) {
+    if(lastErrorCode == 0 && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MVAR) {
       currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
     }
 
@@ -944,6 +978,19 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         calcModeNormal();
         saveForUndo();
         if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
+        break;
+
+      case CM_EIM:
+        if(lastErrorCode != 0) {
+          lastErrorCode = 0;
+        }
+        else {
+          if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQ_EDIT) {
+            calcModeNormal();
+            if(allFormulae[currentFormula].pointerToFormulaData == WP43S_NULL) deleteEquation(currentFormula);
+          }
+          popSoftmenu();
+        }
         break;
 
       case CM_REGISTER_BROWSER:
@@ -1024,6 +1071,7 @@ void fnKeyCC(uint16_t unusedButMandatoryParameter) {
         mimAddNumber(ITM_CC);
         break;
 
+      case CM_EIM:
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
       case CM_FONT_BROWSER:
@@ -1079,6 +1127,18 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
       case CM_MIM:
         mimAddNumber(ITM_BACKSPACE);
+        break;
+
+      case CM_EIM:
+        if(xCursor > 0) {
+          char *srcPos = aimBuffer;
+          char *dstPos = aimBuffer;
+          char *lstPos = aimBuffer + stringNextGlyph(aimBuffer, stringLastGlyph(aimBuffer));
+          --xCursor;
+          for(uint32_t i = 0; i < xCursor; ++i) dstPos += (*dstPos & 0x80) ? 2 : 1;
+          srcPos = dstPos + ((*dstPos & 0x80) ? 2 : 1);
+          for(; srcPos <= lstPos;) *(dstPos++) = *(srcPos++);
+        }
         break;
 
       //case CM_ASM_OVER_NORMAL:
@@ -1139,6 +1199,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       case CM_NORMAL:
       case CM_AIM:
       case CM_NIM:
+      case CM_EIM:
       case CM_PLOT_STAT:
         resetAlphaSelectionBuffer();
         if(currentSoftmenuScrolls()) {
@@ -1146,6 +1207,10 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
           fnPlotStat(PLOT_NXT);
+        }
+        else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQN){
+          if(currentFormula == 0) currentFormula = numberOfFormulae;
+          --currentFormula;
         }
         else {
           alphaCase = AC_UPPER;
@@ -1226,6 +1291,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
       case CM_NORMAL:
       case CM_AIM:
       case CM_NIM:
+      case CM_EIM:
       case CM_PLOT_STAT:
         resetAlphaSelectionBuffer();
         if(currentSoftmenuScrolls()) {
@@ -1233,6 +1299,10 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
           fnPlotStat(PLOT_REV); //REVERSE
+        }
+        else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQN){
+          ++currentFormula;
+          if(currentFormula == numberOfFormulae) currentFormula = 0;
         }
         else {
           alphaCase = AC_LOWER;
@@ -1312,6 +1382,7 @@ void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
       case CM_FONT_BROWSER:
       case CM_PLOT_STAT:
       case CM_MIM:
+      case CM_EIM:
         break;
 
       default:
@@ -1344,6 +1415,7 @@ void fnKeyAngle(uint16_t unusedButMandatoryParameter) {
       case CM_FONT_BROWSER:
       case CM_PLOT_STAT:
       case CM_MIM:
+      case CM_EIM:
         break;
 
       default:

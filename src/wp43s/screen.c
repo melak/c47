@@ -2032,6 +2032,7 @@
       case CM_AIM:
       case CM_NIM:
       case CM_MIM:
+      case CM_EIM:
       case CM_ASSIGN:
       case CM_ERROR_MESSAGE:
       case CM_CONFIRMATION:
@@ -2058,7 +2059,24 @@
             }
           }
           if(!mvarMenu) {
-            showSoftmenu(-MNU_MVAR);
+            if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
+              showSoftmenu(-MNU_Solver);
+            }
+            else {
+              showSoftmenu(-MNU_MVAR);
+            }
+          }
+        }
+        if(calcMode == CM_EIM) {
+          bool_t mvarMenu = false;
+          for(int i = 0; i < SOFTMENU_STACK_SIZE; i++) {
+            if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_EQ_EDIT) {
+              mvarMenu = true;
+              break;
+            }
+          }
+          if(!mvarMenu) {
+            showSoftmenu(-MNU_EQ_EDIT);
           }
         }
 

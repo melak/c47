@@ -34,6 +34,7 @@
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "softmenus.h"
+#include "solver/equation.h"
 #include "stack.h"
 #include "wp43s.h"
 
@@ -235,9 +236,14 @@ static void _solverIteration(real34_t *res) {
   //  The following decoder is minimally implemented ad hoc engine for testing of SOLVE feature.
   //  Replace with the complete programming system when ready.
   //
-  uint8_t *step = labelList[currentSolverProgram].instructionPointer;
-  lastErrorCode = ERROR_NONE;
-  while(_executeStep(&step)) {}
+  if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
+    parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
+  }
+  else {
+    uint8_t *step = labelList[currentSolverProgram].instructionPointer;
+    lastErrorCode = ERROR_NONE;
+    while(_executeStep(&step)) {}
+  }
   if(lastErrorCode == ERROR_OVERFLOW_PLUS_INF) {
     realToReal34(const_plusInfinity, res);
     lastErrorCode = ERROR_NONE;

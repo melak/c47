@@ -176,6 +176,7 @@ wp43s_src = files(
   'saveRestoreCalcState.c',
   'screen.c',
   'softmenus.c',
+  'solver/equation.c',
   'solver/solve.c',
   'sort.c',
   'stack.c',

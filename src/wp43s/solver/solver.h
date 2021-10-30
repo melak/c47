@@ -21,6 +21,7 @@
 #define SOLVER_H
 
 
+#include "equation.h"
 #include "solve.h"
 
 #endif // SOLVER_H

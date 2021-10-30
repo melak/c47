@@ -23,6 +23,7 @@
 #include "programming/nextStep.h"
 #include "registers.h"
 #include "screen.h"
+#include "solver/equation.h"
 #include "sort.h"
 #include <string.h>
 #include <stdlib.h>
@@ -354,6 +355,8 @@ TO_QSPI const int16_t menu_TamStoRcl[]   = { ITM_INDIRECTION,               -MNU
 TO_QSPI const int16_t menu_TamShuffle[]  = { ITM_REG_X,                     ITM_REG_Y,                  ITM_REG_Z,                ITM_REG_T,             ITM_NULL,                    ITM_NULL,                     };
 TO_QSPI const int16_t menu_TamLabel[]    = { ITM_INDIRECTION,               -MNU_PROG,                  ITM_REG_X,                ITM_REG_Y,             ITM_REG_Z,                   ITM_REG_T                     };
 
+TO_QSPI const int16_t menu_Eim[]         = { ITM_EQ_LEFT,                   ITM_PAIR_OF_PARENTHESES,    ITM_CIRCUMFLEX,           ITM_COLON,             ITM_EQUAL,                   ITM_EQ_RIGHT                  };
+
 #include "softmenuCatalogs.h"
 
 TO_QSPI const softmenu_t softmenu[] = {
@@ -456,7 +459,8 @@ TO_QSPI const softmenu_t softmenu[] = {
 /*  96 */  {.menuItem = -MNU_TAMSTORCL,   .numItems = sizeof(menu_TamStoRcl  )/sizeof(int16_t), .softkeyItem = menu_TamStoRcl   },
 /*  97 */  {.menuItem = -MNU_TAMSHUFFLE,  .numItems = sizeof(menu_TamShuffle )/sizeof(int16_t), .softkeyItem = menu_TamShuffle  },
 /*  98 */  {.menuItem = -MNU_TAMLABEL,    .numItems = sizeof(menu_TamLabel   )/sizeof(int16_t), .softkeyItem = menu_TamLabel    },
-/*  99 */  {.menuItem =  0,               .numItems = 0,                                        .softkeyItem = NULL             }
+/*  99 */  {.menuItem = -MNU_EQ_EDIT,     .numItems = sizeof(menu_Eim        )/sizeof(int16_t), .softkeyItem = menu_Eim         },
+/* 100 */  {.menuItem =  0,               .numItems = 0,                                        .softkeyItem = NULL             }
 };
 
 
@@ -545,15 +549,29 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
   static void _dynmenuConstructMVars(int16_t menu) {
     uint16_t numberOfBytes = 0;
     uint16_t numberOfVars = 0;
-    uint8_t *step = labelList[currentSolverProgram].instructionPointer;
     memset(tmpString, 0, TMP_STR_LENGTH);
 
-    while(*step == ((ITM_MVAR >> 8) | 0x80) && *(step + 1) == (ITM_MVAR & 0xff) && *(step + 2) == STRING_LABEL_VARIABLE) {
-      xcopy(tmpString + numberOfBytes, step + 4, *(step + 3));
-      (void)findOrAllocateNamedVariable(tmpString + numberOfBytes);
-      numberOfBytes += *(step + 3) + 1;
-      numberOfVars++;
-      step = findNextStep(step);
+    if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
+      char *bufPtr = tmpString;
+      uint8_t errorCode = lastErrorCode;
+      lastErrorCode = ERROR_NONE;
+      parseEquation(currentFormula, EQUATION_PARSER_MVAR, tmpString + TMP_STR_LENGTH - AIM_BUFFER_LENGTH, tmpString);
+      while(*bufPtr != 0 || numberOfVars < 6) {
+        numberOfVars += 1;
+        numberOfBytes += stringByteLength(bufPtr) + 1;
+        bufPtr += stringByteLength(bufPtr) + 1;
+      }
+      lastErrorCode = errorCode;
+    }
+    else {
+      uint8_t *step = labelList[currentSolverProgram].instructionPointer;
+      while(*step == ((ITM_MVAR >> 8) | 0x80) && *(step + 1) == (ITM_MVAR & 0xff) && *(step + 2) == STRING_LABEL_VARIABLE) {
+        xcopy(tmpString + numberOfBytes, step + 4, *(step + 3));
+        (void)findOrAllocateNamedVariable(tmpString + numberOfBytes);
+        numberOfBytes += *(step + 3) + 1;
+        numberOfVars++;
+        step = findNextStep(step);
+      }
     }
 
     dynamicSoftmenu[menu].menuContent = malloc(numberOfBytes);
@@ -752,6 +770,9 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       initVariableSoftmenu(m);
       numberOfItems = dynamicSoftmenu[m].numItems;
     }
+    else if(softmenu[m].menuItem == -MNU_EQN && numberOfFormulae == 0) {
+      numberOfItems = 1;
+    }
     else { // Static softmenu
       numberOfItems = softmenu[m].numItems;
     }
@@ -759,6 +780,10 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
     if(numberOfItems <= 18) {
       dottedTopLine = false;
+      if(catalog != CATALOG_NONE) {
+        currentFirstItem = softmenuStack[0].firstItem = 0;
+        setCatalogLastPos();
+      }
     }
     else {
       dottedTopLine = true;
@@ -793,11 +818,15 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
         for(y=0; y<3; y++) {
           for(x=0; x<6; x++) {
             if(x + 6*y + currentFirstItem < numberOfItems) {
-              showSoftkey((char *)ptr, x, y, vmNormal, true, true);
+              if(*ptr != 0)
+                showSoftkey((char *)ptr, x, y, vmNormal, true, true);
               ptr += stringByteLength((char *)ptr) + 1;
             }
           }
         }
+      }
+      if(softmenu[m].menuItem == -MNU_MVAR && (currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE)) {
+        showEquation(currentFormula, 0, EQUATION_NO_CURSOR, false, NULL, NULL);
       }
     }
     else {
@@ -853,6 +882,32 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
             }
           }
         }
+      }
+      if(softmenu[m].menuItem == -MNU_EQN) {
+        showEquation(currentFormula, 0, EQUATION_NO_CURSOR, false, NULL, NULL);
+        dottedTopLine = (numberOfFormulae >= 2);
+        yDotted = 2;
+      }
+      if(softmenu[m].menuItem == -MNU_EQ_EDIT && softmenu[softmenuStack[1].softmenuId].menuItem == -MNU_EQN) {
+        bool_t cursorShown;
+        bool_t rightEllipsis;
+        while(1) {
+          showEquation(EQUATION_AIM_BUFFER, yCursor, xCursor, true, &cursorShown, &rightEllipsis);
+          if(cursorShown) break;
+          if(yCursor > xCursor) --yCursor;
+          else                  ++yCursor;
+        }
+        if(!rightEllipsis && yCursor > 0) {
+          do {
+            --yCursor;
+            showEquation(EQUATION_AIM_BUFFER, yCursor, xCursor, true, &cursorShown, &rightEllipsis);
+            if((!cursorShown) || rightEllipsis) {
+              ++yCursor;
+              break;
+            }
+          } while(yCursor > 0);
+        }
+        showEquation(EQUATION_AIM_BUFFER, yCursor, xCursor, false, NULL, NULL);
       }
     }
 
@@ -934,6 +989,19 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     }
     else if(id == -MNU_ALPHA_OMEGA && alphaCase == AC_LOWER) { // alpha...omega
       id = -MNU_alpha_omega;
+    }
+    else if(id == -MNU_Solver) {
+      int32_t numberOfVars = -1;
+      currentSolverStatus = SOLVER_STATUS_USES_FORMULA | SOLVER_STATUS_INTERACTIVE;
+      parseEquation(currentFormula, EQUATION_PARSER_MVAR, aimBuffer, tmpString);
+      id = -MNU_MVAR;
+      while((getNthString((uint8_t *)tmpString, ++numberOfVars))[0] != 0) {}
+      if(numberOfVars > 12) {
+        displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          moreInfoOnError("In function showSoftmenu:", "there are more than 11 variables in this equation!", NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      }
     }
 
     m = 0;
