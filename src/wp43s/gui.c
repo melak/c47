@@ -1472,6 +1472,7 @@
       case MNU_LINTS:     catalog = CATALOG_LINTS;   break;
       case MNU_REALS:     catalog = CATALOG_REALS;   break;
       case MNU_CPXS:      catalog = CATALOG_CPXS;    break;
+      case MNU_Solver:
       case MNU_MVAR:      catalog = CATALOG_MVAR;    break;
       default:            catalog = CATALOG_NONE;
     }

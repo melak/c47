@@ -84,6 +84,7 @@ pcg32_random_t         pcg32_global = PCG32_INITIALIZER;
 labelList_t           *labelList = NULL;
 programList_t         *programList = NULL;
 angularMode_t          currentAngularMode;
+formulaHeader_t       *allFormulae;
 
 char                  *tmpString = NULL;
 char                  *tmpStringLabelOrVariableName = NULL;
@@ -167,6 +168,8 @@ uint16_t               currentSolverStatus;
 uint16_t               currentSolverProgram;
 uint16_t               currentSolverVariable;
 uint16_t               currentSolverNestingDepth;
+uint16_t               numberOfFormulae;
+uint16_t               currentFormula;
 #if (REAL34_WIDTH_TEST == 1)
   uint16_t               largeur=200;
 #endif // (REAL34_WIDTH_TEST == 1)

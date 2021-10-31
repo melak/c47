@@ -33,29 +33,62 @@
 #include "wp43s.h"
 
 
-static void addSigma(real_t *x, real_t *y) {
-  real_t tmpReal1, tmpReal2, tmpReal3;
-  realContext_t *realContext = &ctxtReal75; // Summation data with 75 digits
+#ifndef TESTSUITE_BUILD //TESTSUITE_BUILD
+  static void calcMax(uint16_t maxOffset);
+  static void calcMin(uint16_t maxOffset);
+#endif
 
-  // xmin
-  if(realCompareLessThan(x, SIGMA_XMIN)) {
-    realCopy(x, SIGMA_XMIN);
+
+#ifndef TESTSUITE_BUILD
+static bool_t isStatsMatrix(uint16_t *rows) {
+  *rows = 0;
+  calcRegister_t regStats = findNamedVariable("STATS");
+  if(regStats == INVALID_VARIABLE) return false; else {
+    if(getRegisterDataType(regStats) != dtReal34Matrix) return false; else {
+      real34Matrix_t stats;
+      linkToRealMatrixRegister(regStats, &stats);
+      *rows = stats.header.matrixRows;
+      if (stats.header.matrixColumns != 2) return false;
+    }
   }
+  return true;
+}
+
+
+
+static void addMax(real_t *x, real_t *y) {
 
   // xmax
   if(realCompareGreaterThan(x, SIGMA_XMAX)) {
     realCopy(x, SIGMA_XMAX);
   }
 
-  // ymin
-  if(realCompareLessThan(y, SIGMA_YMIN)) {
-    realCopy(y, SIGMA_YMIN);
-  }
-
   // ymax
   if(realCompareGreaterThan(y, SIGMA_YMAX)) {
     realCopy(y, SIGMA_YMAX);
   }
+}
+
+
+static void addMin(real_t *x, real_t *y) {
+  // xmin
+  if(realCompareLessThan(x, SIGMA_XMIN)) {
+    realCopy(x, SIGMA_XMIN);
+  }
+
+  // ymin
+  if(realCompareLessThan(y, SIGMA_YMIN)) {
+    realCopy(y, SIGMA_YMIN);
+  }
+}
+
+
+static void addSigma(real_t *x, real_t *y) {
+  real_t tmpReal1, tmpReal2, tmpReal3;
+  realContext_t *realContext = &ctxtReal75; // Summation data with 75 digits
+
+  addMax(x, y);
+  addMin(x, y);
 
   // n
   realAdd(SIGMA_N, const_1, SIGMA_N, realContext);
@@ -151,8 +184,179 @@ static void addSigma(real_t *x, real_t *y) {
   realDivide(const_1, y, &tmpReal1, realContext);
   realAdd(SIGMA_1onY, &tmpReal1, SIGMA_1onY, realContext);
 
-  graph_sigmaplus(+1, x, y);
 }
+
+
+static bool_t ignoreMaxIfValid(real_t *r1, real_t *r2){
+  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || !realCompareEqual(r1, r2)) {
+#ifdef PC_BUILD
+printf(">>> spawning calcMax %u %u %u %u ", realIsNaN (r1) , realIsNaN (r2) , realIsInfinite (r1) , realIsInfinite (r2));
+printRealToConsole(r1,"  r1 ",", ");
+printRealToConsole(r2,"  r2 ","\n ");
+#endif
+  calcMax(1);
+    return false;
+  }
+printf(">>> ignoring calcMax\n");
+  return true;
+}
+
+static bool_t ignoreMinIfValid(real_t *r1, real_t *r2){
+  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || !realCompareEqual(r1, r2)) {
+#ifdef PC_BUILD
+printf(">>> spawning calcMin %u %u %u %u ", realIsNaN (r1) , realIsNaN (r2) , realIsInfinite (r1) , realIsInfinite (r2));
+printRealToConsole(r1,"  r1 ",", ");
+printRealToConsole(r2,"  r2 ","\n ");
+#endif
+  calcMin(1);
+    return false;
+  }
+printf(">>> ignoring calcMin\n");
+  return true;
+}
+
+
+static bool_t realSubtractIfValid(real_t *r1, real_t *r2, real_t *r3, realContext_t *ct){
+  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2)) {
+printf(">>> spawning calcSigma %u %u %u %u ", realIsNaN (r1) , realIsNaN (r2) , realIsInfinite (r1) , realIsInfinite (r2));
+    calcSigma(1);
+    return false;
+  }
+printf(">s ");
+  realSubtract(r1, r2, r3, ct);
+  return true;
+}
+
+
+static void subSigma(real_t *x, real_t *y) {
+  real_t tmpReal1, tmpReal2, tmpReal3;
+  realContext_t *realContext = &ctxtReal75; // Summation data with 75 digits
+ // SIGMA-
+
+#ifdef PC_BUILD
+printRealToConsole(x,">>> subsigma: x:", " ");
+printRealToConsole(y,"  y:", "\n");
+#endif
+
+  // xmax
+  if(!ignoreMaxIfValid(x, SIGMA_XMAX)) goto endMax;
+
+  // ymax
+  if(!ignoreMaxIfValid(y, SIGMA_YMAX)) goto endMax;
+
+  endMax:
+
+  // xmin
+  if(!ignoreMinIfValid(x, SIGMA_XMIN)) goto endMin;
+
+  // ymin
+  if(!ignoreMinIfValid(y, SIGMA_YMIN)) goto endMin;
+
+  endMin:
+
+  // n
+  realCopy(const_1,&tmpReal1);
+  if(!realSubtractIfValid(SIGMA_N, &tmpReal1, SIGMA_N, realContext)) goto toReturn;
+
+  // sigma x
+  if(!realSubtractIfValid(SIGMA_X, x, SIGMA_X, realContext)) goto toReturn;
+
+  // sigma y
+  if(!realSubtractIfValid(SIGMA_Y, y, SIGMA_Y, realContext)) goto toReturn;
+
+  // sigma x²
+  realMultiply(x, x, &tmpReal1, realContext);
+  if(!realSubtractIfValid(SIGMA_X2, &tmpReal1, SIGMA_X2, realContext)) goto toReturn;
+
+  // sigma x³
+  realMultiply(&tmpReal1, x, &tmpReal2, realContext);
+  if(!realSubtractIfValid(SIGMA_X3, &tmpReal2, SIGMA_X3, realContext)) goto toReturn;
+
+  // sigma x⁴
+  realMultiply(&tmpReal2, x, &tmpReal2, realContext);
+  if(!realSubtractIfValid(SIGMA_X4, &tmpReal2, SIGMA_X4, realContext)) goto toReturn;
+
+  // sigma x²y
+  realMultiply(&tmpReal1, y, &tmpReal2, realContext);
+  if(!realSubtractIfValid(SIGMA_X2Y, &tmpReal2, SIGMA_X2Y, realContext)) goto toReturn;
+
+  // sigma x²/y
+  realDivide(&tmpReal1, y, &tmpReal2, realContext);
+  if(!realSubtractIfValid(SIGMA_X2onY, &tmpReal2, SIGMA_X2onY, realContext)) goto toReturn;
+
+  // sigma 1/x²
+  realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
+  if(!realSubtractIfValid(SIGMA_1onX2, &tmpReal2, SIGMA_1onX2, realContext)) goto toReturn;
+
+  // sigma y²
+  realMultiply(y, y, &tmpReal1, realContext);
+  if(!realSubtractIfValid(SIGMA_Y2, &tmpReal1, SIGMA_Y2, realContext)) goto toReturn;
+
+  // sigma 1/y²
+  realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
+  if(!realSubtractIfValid(SIGMA_1onY2, &tmpReal2, SIGMA_1onY2, realContext)) goto toReturn;
+
+  // sigma xy
+  realMultiply(x, y, &tmpReal1, realContext);
+  if(!realSubtractIfValid(SIGMA_XY, &tmpReal1, SIGMA_XY, realContext)) goto toReturn;
+
+  // sigma ln(x)
+  WP34S_Ln(x, &tmpReal1, realContext);
+  realCopy(&tmpReal1 ,&tmpReal3);
+  if(!realSubtractIfValid(SIGMA_lnX, &tmpReal1, SIGMA_lnX, realContext)) goto toReturn;
+
+  // sigma ln²(x)
+  realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
+  if(!realSubtractIfValid(SIGMA_ln2X, &tmpReal2, SIGMA_ln2X, realContext)) goto toReturn;
+
+  // sigma yln(x)
+  realMultiply(&tmpReal1, y, &tmpReal1, realContext);
+  if(!realSubtractIfValid(SIGMA_YlnX, &tmpReal1, SIGMA_YlnX, realContext)) goto toReturn;
+
+  // sigma ln(y)
+  WP34S_Ln(y, &tmpReal1, realContext);
+  if(!realSubtractIfValid(SIGMA_lnY, &tmpReal1, SIGMA_lnY, realContext)) goto toReturn;
+
+  // sigma ln(x)×ln(y)
+  realMultiply(&tmpReal3, &tmpReal1, &tmpReal3, realContext);
+  if(!realSubtractIfValid(SIGMA_lnXlnY, &tmpReal3, SIGMA_lnXlnY, realContext)) goto toReturn;
+
+  // sigma ln(y)/x
+  realDivide(&tmpReal1, x, &tmpReal2, realContext);
+  if(!realSubtractIfValid(SIGMA_lnYonX, &tmpReal2, SIGMA_lnYonX, realContext)) goto toReturn;
+
+  // sigma ln²(y)
+  realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
+  if(!realSubtractIfValid(SIGMA_ln2Y, &tmpReal2, SIGMA_ln2Y, realContext)) goto toReturn;
+
+  // sigma xln(y)
+  realMultiply(&tmpReal1, x, &tmpReal1, realContext);
+  if(!realSubtractIfValid(SIGMA_XlnY, &tmpReal1, SIGMA_XlnY, realContext)) goto toReturn;
+
+  // sigma x²ln(y)
+  realMultiply(&tmpReal1, x, &tmpReal1, realContext);
+  if(!realSubtractIfValid(SIGMA_X2lnY, &tmpReal1, SIGMA_X2lnY, realContext)) goto toReturn;
+
+  // sigma 1/x
+  realDivide(const_1, x, &tmpReal1, realContext);
+  if(!realSubtractIfValid(SIGMA_1onX, &tmpReal1, SIGMA_1onX, realContext)) goto toReturn;
+
+  // sigma x/y
+  realDivide(x, y, &tmpReal1, realContext);
+  if(!realSubtractIfValid(SIGMA_XonY, &tmpReal1, SIGMA_XonY, realContext)) goto toReturn;
+
+  // sigma 1/y
+  realDivide(const_1, y, &tmpReal1, realContext);
+  if(!realSubtractIfValid(SIGMA_1onY, &tmpReal1, SIGMA_1onY, realContext)) goto toReturn;
+
+  toReturn:
+printf(" >>>\n");
+}
+
+
+#endif //TESTSUITE_|BUILD
+
+
 
 
 
@@ -177,56 +381,248 @@ bool_t checkMinimumDataPoints(const real_t *n) {
 }
 
 
-void initStatisticalSums(void) {
+static void clearStatisticalSums(void) {
+  if(statisticalSumsPointer) {
+    for(int32_t sum=0; sum<NUMBER_OF_STATISTICAL_SUMS - 4; sum++) {
+      realZero((real_t *)(statisticalSumsPointer + REAL_SIZE * sum));
+    }
+    realCopy(const_plusInfinity,  SIGMA_XMIN);
+    realCopy(const_plusInfinity,  SIGMA_YMIN);
+    realCopy(const_minusInfinity, SIGMA_XMAX);
+    realCopy(const_minusInfinity, SIGMA_YMAX);
+  }
+}
+
+
+void initStatisticalSums(void) { 
   if(statisticalSumsPointer == NULL) {
     statisticalSumsPointer = allocWp43s(NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
-    if(statisticalSumsPointer) {
-      for(int32_t sum=0; sum<NUMBER_OF_STATISTICAL_SUMS - 4; sum++) {
-        realZero((real_t *)(statisticalSumsPointer + REAL_SIZE * sum));
-      }
-
-      realCopy(const_plusInfinity,  SIGMA_XMIN);
-      realCopy(const_plusInfinity,  SIGMA_YMIN);
-      realCopy(const_minusInfinity, SIGMA_XMAX);
-      realCopy(const_minusInfinity, SIGMA_YMAX);
+    clearStatisticalSums();
     }
-    else {
+  else {
       displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
     }
   }
-  if(telltale != MEM_INITIALIZED) {
-    graph_setupmemory();
+
+
+
+#ifndef TESTSUITE_BUILD
+static void calcMax(uint16_t maxOffset) {
+
+  realCopy(const_minusInfinity, SIGMA_XMAX);
+  realCopy(const_minusInfinity, SIGMA_YMAX);
+
+  calcRegister_t regStats = findNamedVariable("STATS");
+  if(regStats != INVALID_VARIABLE) {
+    real34Matrix_t stats;
+    linkToRealMatrixRegister(regStats, &stats);
+    const uint16_t rows = stats.header.matrixRows, cols = stats.header.matrixColumns;
+
+#ifdef PC_BUILD
+printf(">>> Recalculating max:\n");                                  //temporary debugging matrix display
+#endif
+    real_t x, y;
+    for(uint16_t i = 0; i < rows - maxOffset; i++) {
+      real34ToReal(&stats.matrixElements[i * cols    ], &x);
+      real34ToReal(&stats.matrixElements[i * cols + 1], &y);
+#ifdef PC_BUILD
+printReal34ToConsole(&stats.matrixElements[i * cols    ],">>> x:",", ");  //temporary debugging matrix display
+printReal34ToConsole(&stats.matrixElements[i * cols +1 ],"y:","\n");  //temporary debugging matrix display
+#endif
+      addMax(&x, &y);
+    }
+  }
+}
+
+
+static void calcMin(uint16_t maxOffset) {
+
+  realCopy(const_plusInfinity,  SIGMA_XMIN);
+  realCopy(const_plusInfinity,  SIGMA_YMIN);
+
+  calcRegister_t regStats = findNamedVariable("STATS");
+  if(regStats != INVALID_VARIABLE) {
+    real34Matrix_t stats;
+    linkToRealMatrixRegister(regStats, &stats);
+    const uint16_t rows = stats.header.matrixRows, cols = stats.header.matrixColumns;
+
+#ifdef PC_BUILD
+printf(">>> Recalculating min:\n");                                  //temporary debugging matrix display
+#endif
+    real_t x, y;
+    for(uint16_t i = 0; i < rows - maxOffset; i++) {
+      real34ToReal(&stats.matrixElements[i * cols    ], &x);
+      real34ToReal(&stats.matrixElements[i * cols + 1], &y);
+#ifdef PC_BUILD
+printReal34ToConsole(&stats.matrixElements[i * cols    ],">>> x:",", ");  //temporary debugging matrix display
+printReal34ToConsole(&stats.matrixElements[i * cols +1 ],"y:","\n");  //temporary debugging matrix display
+#endif
+      addMin(&x, &y);
+    }
+  }
+}
+#endif //TESTSUITE_BUILD
+
+
+
+void calcSigma(uint16_t maxOffset) {
+#ifndef TESTSUITE_BUILD
+
+  clearStatisticalSums();
+  if(!statisticalSumsPointer) initStatisticalSums();
+  calcRegister_t regStats = findNamedVariable("STATS");
+  if(regStats != INVALID_VARIABLE) {
+    real34Matrix_t stats;
+    linkToRealMatrixRegister(regStats, &stats);
+    const uint16_t rows = stats.header.matrixRows, cols = stats.header.matrixColumns;
+
+#ifdef PC_BUILD
+printf(">>> Recalculating sums:\n");                                  //temporary debugging matrix display
+#endif
+    real_t x, y;
+    for(uint16_t i = 0; i < rows - maxOffset; i++) {
+      real34ToReal(&stats.matrixElements[i * cols    ], &x);
+      real34ToReal(&stats.matrixElements[i * cols + 1], &y);
+#ifdef PC_BUILD
+printReal34ToConsole(&stats.matrixElements[i * cols    ],">>> x:",", ");  //temporary debugging matrix display
+printReal34ToConsole(&stats.matrixElements[i * cols +1 ],"y:","\n");  //temporary debugging matrix display
+#endif
+      addSigma(&x, &y);
+    }
+  }
+#endif //TESTSUITE_BUILD
+}
+
+
+#ifndef TESTSUITE_BUILD
+static void getLastRowStatsMatrix(real_t *x, real_t *y) {
+  uint16_t rows = 0, cols;
+  calcRegister_t regStats = findNamedVariable("STATS");
+
+  if(regStats != INVALID_VARIABLE) {
+    real34Matrix_t stats;
+    linkToRealMatrixRegister(regStats, &stats);
+    rows = stats.header.matrixRows;
+    cols = stats.header.matrixColumns;
+printf(">>> STATS matrix: rows=0-%u cols=0-%u\n",rows-1,cols-1);
+    real34ToReal(&stats.matrixElements[(rows-1) * cols    ], x);
+    real34ToReal(&stats.matrixElements[(rows-1) * cols + 1], y);
+#ifdef PC_BUILD
+printRealToConsole(x,"   x-element:",", ");
+printRealToConsole(y,"   y-element:","\n");
+#endif
+  }
+  else {
+    displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "STATS matrix not found");
+      moreInfoOnError("In function getLastRowStatsMatrix:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
 
 
+
+static void AddtoStatsMatrix(real_t *x, real_t *y) {
+  uint16_t rows = 0, cols;
+  calcRegister_t regStats = findNamedVariable("STATS");
+  if(!isStatsMatrix(&rows)) {
+    regStats = allocateNamedMatrix("STATS", 1, 2);
+  }
+  else {
+    if(appendRowAtMatrixRegister(regStats)) {
+      regStats = findNamedVariable("STATS");
+    }
+    else {
+      regStats = INVALID_VARIABLE;
+    }
+  }
+  if(regStats != INVALID_VARIABLE) {
+    real34Matrix_t stats;
+    linkToRealMatrixRegister(regStats, &stats);
+    rows = stats.header.matrixRows;
+    cols = stats.header.matrixColumns;
+    realToReal34(x, &stats.matrixElements[(rows-1) * cols    ]);
+    realToReal34(y, &stats.matrixElements[(rows-1) * cols + 1]);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "additional matrix line not added");
+      moreInfoOnError("In function AddtoStatsMatrix:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+}
+
+
+
+static void removeLastRowFromStatsMatrix(void) {
+  uint16_t rows = 0;
+  if(!isStatsMatrix(&rows)) {
+    displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "no STATS matrix");
+      moreInfoOnError("In function removeLastRowFromStatsMatrix:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return;
+  }
+
+  calcRegister_t regStats = findNamedVariable("STATS");
+  if(rows <= 1) {
+    fnClSigma(0); 
+    return;
+  }
+  else {
+    if(!redimMatrixRegister(regStats, rows - 1, 2)) 
+      regStats = INVALID_VARIABLE; 
+  }
+  if(regStats == INVALID_VARIABLE) {
+    displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "matrix/line not removed");
+      moreInfoOnError("In function removeFromStatsMatrix:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+}
+#endif //TESTSUITE_BUILD
+
+
 void fnClSigma(uint16_t unusedButMandatoryParameter) {
+  calcRegister_t regStats = findNamedVariable("STATS");
+  if(regStats == INVALID_VARIABLE) {
+    allocateNamedVariable("STATS", dtReal34, REAL34_SIZE);
+    regStats = findNamedVariable("STATS");
+  }
+  clearRegister(regStats);                  // this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
+  lrChosen = 0;                             // linear regression selection
+  lastPlotMode = PLOT_NOTHING;              // last selected  plotmode
+  plotSelection = 0;                        // Currently selected linear regression mode
+  PLOT_ZOOM = 0;                            // Currently selected plot zoom level
   if(statisticalSumsPointer != NULL) {
     freeWp43s(statisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
     statisticalSumsPointer = NULL;
-    graph_end();                            // release plot memory
-    lrChosen = 0;                           // linear regression selection
-    lastPlotMode = PLOT_NOTHING;            // last selected  plotmode
-    plotSelection = 0;                      // Currently selected linear regression mode
-    PLOT_ZOOM = 0;                          // Currently selected plot zoom level
   }
 }
 
 
 
 void fnSigma(uint16_t plusMinus) {
-  real_t tmpReal1, tmpReal2, tmpReal3, x, y;
+#ifndef TESTSUITE_BUILD
+  real_t x, y;
   realContext_t *realContext = &ctxtReal75; // Summation data with 75 digits
 
   lrChosen = 0;
 
-  if(   (getRegisterDataType(REGISTER_X) == dtLongInteger || getRegisterDataType(REGISTER_X) == dtReal34)
-     && (getRegisterDataType(REGISTER_Y) == dtLongInteger || getRegisterDataType(REGISTER_Y) == dtReal34)) {
-    if(statisticalSumsPointer == NULL) {
-      initStatisticalSums();
-      if(lastErrorCode != ERROR_NONE) return;
-    }
+  if(plusMinus == 1) { // SIGMA+
+
+    if(   (getRegisterDataType(REGISTER_X) == dtLongInteger || getRegisterDataType(REGISTER_X) == dtReal34)
+       && (getRegisterDataType(REGISTER_Y) == dtLongInteger || getRegisterDataType(REGISTER_Y) == dtReal34)) {
+
+      if(statisticalSumsPointer == NULL) {
+        initStatisticalSums();
+        if(lastErrorCode != ERROR_NONE) return;
+      }
 
     if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
       convertLongIntegerRegisterToReal(REGISTER_X, &x, realContext);
@@ -244,113 +640,15 @@ void fnSigma(uint16_t plusMinus) {
       real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
     }
 
-    if(plusMinus == 1) { // SIGMA+
       addSigma(&x, &y);
+      AddtoStatsMatrix(&x, &y);
+
+
+      temporaryInformation = TI_STATISTIC_SUMS;
     }
-    else { // SIGMA-
-      // n
-      realSubtract(SIGMA_N, const_1, SIGMA_N, realContext);
-
-      // sigma x
-      realSubtract(SIGMA_X, &x, SIGMA_X, realContext);
-
-      // sigma y
-      realSubtract(SIGMA_Y, &y, SIGMA_Y, realContext);
-
-      // sigma x²
-      realMultiply(&x, &x, &tmpReal1, realContext);
-      realSubtract(SIGMA_X2, &tmpReal1, SIGMA_X2, realContext);
-
-      // sigma x³
-      realMultiply(&tmpReal1, &x, &tmpReal2, realContext);
-      realSubtract(SIGMA_X3, &tmpReal2, SIGMA_X3, realContext);
-
-      // sigma x⁴
-      realMultiply(&tmpReal2, &x, &tmpReal2, realContext);
-      realSubtract(SIGMA_X4, &tmpReal2, SIGMA_X4, realContext);
-
-      // sigma x²y
-      realMultiply(&tmpReal1, &y, &tmpReal2, realContext);
-      realSubtract(SIGMA_X2Y, &tmpReal2, SIGMA_X2Y, realContext);
-
-      // sigma x²/y
-      realDivide(&tmpReal1, &y, &tmpReal2, realContext);
-      realSubtract(SIGMA_X2onY, &tmpReal2, SIGMA_X2onY, realContext);
-
-      // sigma 1/x²
-      realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
-      realSubtract(SIGMA_1onX2, &tmpReal2, SIGMA_1onX2, realContext);
-
-      // sigma y²
-      realMultiply(&y, &y, &tmpReal1, realContext);
-      realSubtract(SIGMA_Y2, &tmpReal1, SIGMA_Y2, realContext);
-
-      // sigma 1/y²
-      realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
-      realSubtract(SIGMA_1onY2, &tmpReal2, SIGMA_1onY2, realContext);
-
-      // sigma xy
-      realMultiply(&x, &y, &tmpReal1, realContext);
-      realSubtract(SIGMA_XY, &tmpReal1, SIGMA_XY, realContext);
-
-      // sigma ln(x)
-      WP34S_Ln(&x, &tmpReal1, realContext);
-      realCopy(&tmpReal1 ,&tmpReal3);
-      realSubtract(SIGMA_lnX, &tmpReal1, SIGMA_lnX, realContext);
-
-      // sigma ln²(x)
-      realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
-      realSubtract(SIGMA_ln2X, &tmpReal2, SIGMA_ln2X, realContext);
-
-      // sigma yln(x)
-      realMultiply(&tmpReal1, &y, &tmpReal1, realContext);
-      realSubtract(SIGMA_YlnX, &tmpReal1, SIGMA_YlnX, realContext);
-
-      // sigma ln(y)
-      WP34S_Ln(&y, &tmpReal1, realContext);
-      realSubtract(SIGMA_lnY, &tmpReal1, SIGMA_lnY, realContext);
-
-      // sigma ln(x)×ln(y)
-      realMultiply(&tmpReal3, &tmpReal1, &tmpReal3, realContext);
-      realSubtract(SIGMA_lnXlnY, &tmpReal3, SIGMA_lnXlnY, realContext);
-
-      // sigma ln(y)/x
-      realDivide(&tmpReal1, &x, &tmpReal2, realContext);
-      realSubtract(SIGMA_lnYonX, &tmpReal2, SIGMA_lnYonX, realContext);
-
-      // sigma ln²(y)
-      realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
-      realSubtract(SIGMA_ln2Y, &tmpReal2, SIGMA_ln2Y, realContext);
-
-      // sigma xln(y)
-      realMultiply(&tmpReal1, &x, &tmpReal1, realContext);
-      realSubtract(SIGMA_XlnY, &tmpReal1, SIGMA_XlnY, realContext);
-
-      // sigma x²ln(y)
-      realMultiply(&tmpReal1, &x, &tmpReal1, realContext);
-      realAdd(SIGMA_X2lnY, &tmpReal1, SIGMA_X2lnY, realContext);
-
-      // sigma 1/x
-      realDivide(const_1, &x, &tmpReal1, realContext);
-      realSubtract(SIGMA_1onX, &tmpReal1, SIGMA_1onX, realContext);
-
-      // sigma x/y
-      realDivide(&x, &y, &tmpReal1, realContext);
-      realSubtract(SIGMA_XonY, &tmpReal1, SIGMA_XonY, realContext);
-
-      // sigma 1/y
-      realDivide(const_1, &y, &tmpReal1, realContext);
-      realSubtract(SIGMA_1onY, &tmpReal1, SIGMA_1onY, realContext);
-
-      graph_sigmaplus(-1, &x, &y);
-    }
-
-    temporaryInformation = TI_STATISTIC_SUMS;
-  }
-#ifndef TESTSUITE_BUILD
-  else if(getRegisterDataType(REGISTER_X) == dtReal34Matrix && plusMinus == 1) {
-    real34Matrix_t matrix;
-    linkToRealMatrixRegister(REGISTER_X, &matrix);
+    else if(getRegisterDataType(REGISTER_X) == dtReal34Matrix && plusMinus == 1) {
+      real34Matrix_t matrix;
+      linkToRealMatrixRegister(REGISTER_X, &matrix);
 
     if(matrix.header.matrixColumns == 2) {
       if(statisticalSumsPointer == NULL) {
@@ -358,36 +656,48 @@ void fnSigma(uint16_t plusMinus) {
         if(lastErrorCode != ERROR_NONE) return;
       }
 
-      if(!saveLastX()) return;
-      for(uint16_t i = 0; i < matrix.header.matrixRows; ++i) {
-        real34ToReal(&matrix.matrixElements[i * 2    ], &y);
-        real34ToReal(&matrix.matrixElements[i * 2 + 1], &x);
-        addSigma(&x, &y);
-      }
+        if(!saveLastX()) return;
+        for(uint16_t i = 0; i < matrix.header.matrixRows; ++i) {
+          real34ToReal(&matrix.matrixElements[i * 2    ], &y);
+          real34ToReal(&matrix.matrixElements[i * 2 + 1], &x);
+          addSigma(&x, &y);
+          AddtoStatsMatrix(&x, &y);
+        }
 
-      liftStack();
-      reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);
-      convertRealToReal34ResultRegister(&y, REGISTER_Y);
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      convertRealToReal34ResultRegister(&x, REGISTER_X);
-      temporaryInformation = TI_STATISTIC_SUMS;
+        liftStack();
+        reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);
+        convertRealToReal34ResultRegister(&y, REGISTER_Y);
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+        convertRealToReal34ResultRegister(&x, REGISTER_X);
+        temporaryInformation = TI_STATISTIC_SUMS;
+      }
+      else {
+        displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          sprintf(errorMessage, "cannot use %" PRIu16 STD_CROSS "%" PRId16 "-matrix as statistical data!", matrix.header.matrixRows, matrix.header.matrixColumns);
+          moreInfoOnError("In function fnSigma:", errorMessage, NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      }
     }
     else {
-      displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "cannot use %" PRIu16 STD_CROSS "%" PRId16 "-matrix as statistical data!", matrix.header.matrixRows, matrix.header.matrixColumns);
+        sprintf(errorMessage, "cannot use (%s, %s) as statistical data!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false), getDataTypeName(getRegisterDataType(REGISTER_Y), false, false));
         moreInfoOnError("In function fnSigma:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
-  }
+  } else 
+
+
+  { // SIGMA-
+    getLastRowStatsMatrix(&x, &y);
+    subSigma(&x, &y);
+    removeLastRowFromStatsMatrix();
+
+    if(statisticalSumsPointer != NULL) temporaryInformation = TI_STATISTIC_SUMS;
+  } 
+
 #endif // TESTSUITE_BUILD
-  else {
-    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "cannot use (%s, %s) as statistical data!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false), getDataTypeName(getRegisterDataType(REGISTER_Y), false, false));
-      moreInfoOnError("In function fnSigma:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
 }
 
 

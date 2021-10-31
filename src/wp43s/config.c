@@ -27,6 +27,7 @@
 #include "debug.h"
 #include "display.h"
 #include "error.h"
+#include "fonts.h"
 #include "flags.h"
 #include "gui.h"
 #include "items.h"
@@ -37,6 +38,7 @@
 #include "programming/manage.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "solver/equation.h"
 #include "stack.h"
 #include "stats.h"
 #include <stdlib.h>
@@ -607,8 +609,6 @@ void fnReset(uint16_t confirmation) {
     memset(nimBufferDisplay, 0, NIM_BUFFER_LENGTH);
     memset(tamBuffer,        0, TAM_BUFFER_LENGTH);
 
-    graph_setupmemory();
-
     // Empty program initialization
     beginOfProgramMemory          = (uint8_t *)(ram + freeMemoryRegions[0].sizeInBlocks);
     currentStep                   = beginOfProgramMemory;
@@ -859,6 +859,11 @@ void fnReset(uint16_t confirmation) {
     //allocateNamedVariable("Z" STD_a_DIARESIS "hler");
     //allocateNamedVariable(STD_omega STD_SUB_1);
     //allocateNamedVariable(STD_omega STD_SUB_2);
+
+    // Equation formulae
+    allFormulae = NULL;
+    numberOfFormulae = 0;
+    currentFormula = 0;
 
     #if (DEBUG_PANEL == 1)
       debugWindow = DBG_REGISTERS;

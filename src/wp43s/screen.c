@@ -241,25 +241,26 @@
       case dtComplex34: {
         real34_t reduced;
         int len;
+        char tmpStr[100];
 
         // Real part
         real34Reduce(REGISTER_REAL34_DATA(regist), &reduced);
-        real34ToString(&reduced, string);
-        if(strchr(string, '.') == NULL && strchr(string, 'E') == NULL) {
-          strcat(string, ".");
+        real34ToString(&reduced, tmpStr);
+        if(strchr(tmpStr, '.') == NULL && strchr(tmpStr, 'E') == NULL) {
+          strcat(tmpStr, ".");
         }
-        len = strlen(string);
+        len = strlen(tmpStr);
 
         // Imaginary part
         real34Reduce(REGISTER_IMAG34_DATA(regist), &reduced);
         if(real34IsNegative(&reduced)) {
-          sprintf(string, " - %sx", COMPLEX_UNIT);
+          sprintf(string, "%s - %sx", tmpStr, COMPLEX_UNIT);
           len += 5;
           real34SetPositiveSign(&reduced);
           real34ToString(&reduced, string + len);
         }
         else {
-          sprintf(string, " + %sx", COMPLEX_UNIT);
+          sprintf(string, "%s + %sx", tmpStr, COMPLEX_UNIT);
           len += 5;
           real34ToString(&reduced, string + len);
         }
@@ -892,7 +893,7 @@
       sprintf(prefix, "%c =", "XYZTABCDLIJK"[currentViewRegister - REGISTER_X]);
     }
     else if(currentViewRegister <= LAST_LOCAL_REGISTER) {
-      sprintf(prefix, "R.%02" PRIu16 " =", currentViewRegister - FIRST_LOCAL_REGISTER);
+      sprintf(prefix, "R.%02" PRIu16 " =", (uint16_t)(currentViewRegister - FIRST_LOCAL_REGISTER));
     }
     else if(currentViewRegister >= FIRST_NAMED_VARIABLE && currentViewRegister <= LAST_NAMED_VARIABLE) {
       memcpy(prefix, allNamedVariables[currentViewRegister - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentViewRegister - FIRST_NAMED_VARIABLE].variableName[0]);
@@ -1647,7 +1648,10 @@
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             if(regist == REGISTER_Y) {
-              sprintf(prefix, "Data point %03" PRId16, w);
+              if(w == 1) 
+                sprintf(prefix, "%03" PRId16 " data point", w);
+              else
+                sprintf(prefix, "%03" PRId16 " data points", w);
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Y_LINE - 2, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
             }
@@ -2049,6 +2053,7 @@
       case CM_AIM:
       case CM_NIM:
       case CM_MIM:
+      case CM_EIM:
       case CM_ASSIGN:
       case CM_ERROR_MESSAGE:
       case CM_CONFIRMATION:
@@ -2075,7 +2080,24 @@
             }
           }
           if(!mvarMenu) {
-            showSoftmenu(-MNU_MVAR);
+            if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
+              showSoftmenu(-MNU_Solver);
+            }
+            else {
+              showSoftmenu(-MNU_MVAR);
+            }
+          }
+        }
+        if(calcMode == CM_EIM) {
+          bool_t mvarMenu = false;
+          for(int i = 0; i < SOFTMENU_STACK_SIZE; i++) {
+            if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_EQ_EDIT) {
+              mvarMenu = true;
+              break;
+            }
+          }
+          if(!mvarMenu) {
+            showSoftmenu(-MNU_EQ_EDIT);
           }
         }
 

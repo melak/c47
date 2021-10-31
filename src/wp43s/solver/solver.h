@@ -21,6 +21,7 @@
 #define SOLVER_H
 
 
+#include "equation.h"
 #include "integrate.h"
 #include "solve.h"
 

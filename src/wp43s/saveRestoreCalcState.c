@@ -30,12 +30,13 @@
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "screen.h"
+#include "solver/equation.h"
 #include "stats.h"
 #include <string.h>
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         59  // states around VIEW and SOLVE now will be saved
+#define BACKUP_VERSION         60  // Save formulae
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -114,6 +115,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&rbrRegister,                        sizeof(rbrRegister),                        BACKUP);
     save(&numberOfNamedVariables,             sizeof(numberOfNamedVariables),             BACKUP);
     ramPtr = TO_WP43SMEMPTR(allNamedVariables);
+    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    ramPtr = TO_WP43SMEMPTR(allFormulae);
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
     ramPtr = TO_WP43SMEMPTR(statisticalSumsPointer);
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
@@ -243,15 +246,13 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&y_max,                              sizeof(y_max),                              BACKUP);
     save(&xzero,                              sizeof(xzero),                              BACKUP);
     save(&yzero,                              sizeof(yzero),                              BACKUP);
-    save(gr_x,                                LIM*sizeof(float),                        BACKUP);
-    save(gr_y,                                LIM*sizeof(float),                        BACKUP);
-    save(&telltale,                           sizeof(telltale),                           BACKUP);
-    save(&ix_count,                           sizeof(ix_count),                           BACKUP);
     save(&matrixIndex,                        sizeof(matrixIndex),                        BACKUP);
     save(&currentViewRegister,                sizeof(currentViewRegister),                BACKUP);
     save(&currentSolverStatus,                sizeof(currentSolverStatus),                BACKUP);
     save(&currentSolverProgram,               sizeof(currentSolverProgram),               BACKUP);
     save(&currentSolverVariable,              sizeof(currentSolverVariable),              BACKUP);
+    save(&numberOfFormulae,                   sizeof(numberOfFormulae),                   BACKUP);
+    save(&currentFormula,                     sizeof(currentFormula),                     BACKUP);
 
 
     fclose(BACKUP);
@@ -315,6 +316,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&numberOfNamedVariables,             sizeof(numberOfNamedVariables),             BACKUP);
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
       allNamedVariables = TO_PCMEMPTR(ramPtr);
+      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      allFormulae = TO_PCMEMPTR(ramPtr);
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
       statisticalSumsPointer = TO_PCMEMPTR(ramPtr);
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
@@ -447,15 +450,13 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&y_max,                              sizeof(y_max),                              BACKUP);
       restore(&xzero,                              sizeof(xzero),                              BACKUP);
       restore(&yzero,                              sizeof(yzero),                              BACKUP);
-      restore(gr_x,                                LIM*sizeof(float),                        BACKUP);
-      restore(gr_y,                                LIM*sizeof(float),                        BACKUP);
-      restore(&telltale,                           sizeof(telltale),                           BACKUP);
-      restore(&ix_count,                           sizeof(ix_count),                           BACKUP);
       restore(&matrixIndex,                        sizeof(matrixIndex),                        BACKUP);
       restore(&currentViewRegister,                sizeof(currentViewRegister),                BACKUP);
       restore(&currentSolverStatus,                sizeof(currentSolverStatus),                BACKUP);
       restore(&currentSolverProgram,               sizeof(currentSolverProgram),               BACKUP);
       restore(&currentSolverVariable,              sizeof(currentSolverVariable),              BACKUP);
+      restore(&numberOfFormulae,                   sizeof(numberOfFormulae),                   BACKUP);
+      restore(&currentFormula,                     sizeof(currentFormula),                     BACKUP);
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
@@ -478,6 +479,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_PEM)                   {}
         else if(calcMode == CM_PLOT_STAT)             {}
         else if(calcMode == CM_MIM)                   {mimRestore();}
+        else if(calcMode == CM_EIM)                   {}
         else {
           sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
           displayBugScreen(errorMessage);
@@ -492,6 +494,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_PEM)                    calcModeNormalGui();
         else if(calcMode == CM_PLOT_STAT)              calcModeNormalGui();
         else if(calcMode == CM_MIM)                   {calcModeNormalGui(); mimRestore();}
+        else if(calcMode == CM_EIM)                   {calcModeAimGui();}
         else {
           sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
           displayBugScreen(errorMessage);
@@ -755,8 +758,18 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
     save(tmpString, strlen(tmpString), BACKUP);
   }
 
+  // Equations
+  sprintf(tmpString, "EQUATIONS\n%" PRIu16 "\n", numberOfFormulae);
+  save(tmpString, strlen(tmpString), BACKUP);
+
+  for(i=0; i<numberOfFormulae; i++) {
+    stringToUtf8(TO_PCMEMPTR(allFormulae[i].pointerToFormulaData), (uint8_t *)tmpString);
+    strcat(tmpString, "\n");
+    save(tmpString, strlen(tmpString), BACKUP);
+  }
+
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n15\n");
+  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n16\n");
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -792,20 +805,6 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   save(tmpString, strlen(tmpString), BACKUP);
 
 
-  // Graph memory                                  //vv GRAPH MEMORY RESTORE
-  sprintf(tmpString, "STAT_GRAPH_DATA\n%u\n",LIM*2+2);
-  save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "%u\n",ix_count);
-  save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "%E\n",telltale);
-  save(tmpString, strlen(tmpString), BACKUP);
-  for(i=0; i<LIM; i++) {
-    sprintf(tmpString, "%E\n",gr_x[i]);
-    save(tmpString, strlen(tmpString), BACKUP);
-    sprintf(tmpString, "%E\n",gr_y[i]);
-    save(tmpString, strlen(tmpString), BACKUP);
-  }
-  // Graph memory                                  //^^ GRAPH MEMORY RESTORE
 
 
 
@@ -1323,6 +1322,36 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     scanLabelsAndPrograms();
   }
 
+  else if(strcmp(tmpString, "EQUATIONS") == 0) {
+    uint16_t formulae;
+
+    if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+      for(i = numberOfFormulae; i > 0; --i) {
+        deleteEquation(i - 1);
+      }
+    }
+
+    readLine(stream, tmpString); // Number of formulae
+    formulae = stringToUint16(tmpString);
+    if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+      allFormulae = wp43sAllocate(TO_BLOCKS(sizeof(formulaHeader_t)) * formulae);
+      numberOfFormulae = formulae;
+      currentFormula = 0;
+      for(i = 0; i < formulae; i++) {
+        allFormulae[i].pointerToFormulaData = WP43S_NULL;
+        allFormulae[i].sizeInBlocks = 0;
+      }
+    }
+
+    for(i = 0; i < formulae; i++) {
+      readLine(stream, tmpString); // One formula
+      if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+        utf8ToString((uint8_t *)tmpString, tmpString + TMP_STR_LENGTH / 2);
+        setEquation(i, tmpString + TMP_STR_LENGTH / 2);
+      }
+    }
+  }
+
   else if(strcmp(tmpString, "OTHER_CONFIGURATION_STUFF") == 0) {
     readLine(stream, tmpString); // Number params
     numberOfRegs = stringToInt16(tmpString);
@@ -1385,34 +1414,12 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "notBestF") == 0) {
           lrSelection = stringToUint16(tmpString);
         }
-
-
       }
     }
+    return false; //Signal that this was the last section loaded and no more sections to follow
   }
 
-  // Graph memory                                  //vv GRAPH MEMORY RESTORE
-  else if(strcmp(tmpString, "STAT_GRAPH_DATA") == 0) {
-    char* end;
-    readLine(stream, tmpString); // Number of params
-
-    readLine(stream, tmpString); // ix_count
-    ix_count = stringToInt16(tmpString);
-    readLine(stream, tmpString); // telltale
-    telltale = strtod(tmpString, &end);
-    graph_setupmemory();
-    for(i=0; i<LIM; i++) {
-      readLine(stream, tmpString);
-      gr_x[i] = strtod(tmpString, &end);
-      readLine(stream, tmpString);
-      gr_y[i] = strtod(tmpString, &end);
-      //printf("^^^^### %u %f %f \n",i,gr_x[i],gr_y[i]);
-      return false;
-    }
-  }
-  // Graph memory                                  //^^ GRAPH MEMORY RESTORE
-
-  return true;
+  return true; //Signal to continue loading the next section
 }
 
 
