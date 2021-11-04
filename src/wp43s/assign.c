@@ -50,7 +50,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
  {55,   ITM_XEQ,         ITM_GTO,         ITM_LBL,         ITM_NULL,        ITM_NULL,          ITM_NULL,        ITM_NULL,      ITM_NULL     },
 
  {61,   ITM_MULT,        ITM_XFACT,      -MNU_PROB,        ITM_CROSS,       ITM_R,             ITM_PROD_SIGN,   ITM_RHO,       ITM_MULT     },
- {62,   ITM_4,          -MNU_STAT,       -MNU_SUMS,        ITM_4,           ITM_S,             ITM_4,           ITM_SIGMA,     ITM_4        },
+ {62,   ITM_4,          -MNU_SUMS,       -MNU_STAT,        ITM_4,           ITM_S,             ITM_4,           ITM_SIGMA,     ITM_4        },
  {63,   ITM_5,           ITM_toREC,       ITM_toPOL,       ITM_5,           ITM_T,             ITM_5,           ITM_TAU,       ITM_5        },
  {64,   ITM_6,           ITM_TIMER,      -MNU_CLK,         ITM_6,           ITM_U,             ITM_6,           ITM_THETA,     ITM_6        },
  {65,   ITM_UP,          ITM_BST,        -MNU_FLAGS,       ITM_UP,          ITM_UP,            ITM_BST,        -MNU_FLAGS,     ITM_UP       },
@@ -58,7 +58,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
  {71,   ITM_SUB,        -MNU_INTS,       -MNU_PARTS,       ITM_MINUS,       ITM_V,             ITM_MINUS,      -MNU_ALPHAMATH, ITM_SUB      },
  {72,   ITM_1,          -MNU_ADV,        -MNU_EQN,         ITM_1,           ITM_W,             ITM_1,           ITM_PSI,       ITM_1        },
  {73,   ITM_2,          -MNU_MATX,       -MNU_XFN,         ITM_2,           ITM_X,             ITM_2,           ITM_XI,        ITM_2        },
- {74,   ITM_3,          -MNU_CONST,       ITM_CONSTpi,     ITM_3,           ITM_Y,             ITM_3,           ITM_UPSILON,   ITM_3        },
+ {74,   ITM_3,           ITM_CONSTpi,    -MNU_CONST,       ITM_3,           ITM_Y,             ITM_3,           ITM_UPSILON,   ITM_3        },
  {75,   ITM_DOWN,        ITM_SST,        -MNU_MODE,        ITM_DOWN,        ITM_DOWN,          ITM_SST,        -MNU_MODE,      ITM_DOWN     },
 
  {81,   ITM_ADD,        -MNU_LOOP,       -MNU_TEST,        ITM_PLUS,        ITM_Z,             ITM_PLUS,        ITM_ZETA,      ITM_ADD      },

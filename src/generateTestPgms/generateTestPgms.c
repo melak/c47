@@ -11602,6 +11602,9 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_GETHIDE >> 8) | 0x80;
     *(currentStep++) =  ITM_GETHIDE       & 0xff;
 
+    *(currentStep++) = (ITM_SQRT >> 8) | 0x80;
+    *(currentStep++) =  ITM_SQRT       & 0xff;
+
     *(currentStep++) = (ITM_END >> 8) | 0x80;
     *(currentStep++) =  ITM_END       & 0xff;
   }
