@@ -1223,6 +1223,7 @@ void decodeOneStep(uint8_t *step) {
         case ITM_Ephik:          //  1764
         case ITM_ZETAphik:       //  1765
         case ITM_GETHIDE:        //  1766
+        case ITM_SQRT:           //  1768
           sprintf(tmpString, "%s%s", item16 <= CST_79 ? "# " : "", indexOfItems[item16].itemCatalogName);
           break;
 

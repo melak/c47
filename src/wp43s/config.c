@@ -36,6 +36,7 @@
 #include "memory.h"
 #include "plotstat.h"
 #include "programming/manage.h"
+#include "recall.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "solver/equation.h"
@@ -179,14 +180,7 @@ TO_QSPI const enum rounding roundingModeTable[7] = {
 
 
 void fnGetIntegerSignMode(uint16_t unusedButMandatoryParameter) {
-  longInteger_t ism;
-
-  liftStack();
-
-  longIntegerInit(ism);
-  uIntToLongInteger((shortIntegerMode==SIM_2COMPL ? 2 : (shortIntegerMode==SIM_1COMPL ? 1 : (shortIntegerMode==SIM_UNSIGN ? 0 : -1))), ism);
-  convertLongIntegerToLongIntegerRegister(ism, REGISTER_X);
-  longIntegerFree(ism);
+  fnRecall(RESERVED_VARIABLE_ISM);
 }
 
 
@@ -507,7 +501,7 @@ void fnClAll(uint16_t confirmation) {
 
 
 void addTestPrograms(void) {
-  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(8589));
+  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(8604));
 
   resizeProgramMemory(TO_BLOCKS(numberOfBytesForTheTestPrograms));
   firstDisplayedStep            = beginOfProgramMemory;
@@ -615,6 +609,8 @@ void fnReset(uint16_t confirmation) {
     firstFreeProgramByte          = beginOfProgramMemory + 2;
     firstDisplayedStep            = beginOfProgramMemory;
     firstDisplayedLocalStepNumber = 0;
+    labelList                     = NULL;
+    programList                   = NULL;
     *(beginOfProgramMemory + 0) = (ITM_END >> 8) | 0x80;
     *(beginOfProgramMemory + 1) =  ITM_END       & 0xff;
     *(beginOfProgramMemory + 2) = 255; // .END.
@@ -775,6 +771,7 @@ void fnReset(uint16_t confirmation) {
     setSystemFlag(FLAG_YMD);   // date format = yyyy-mm-dd
     setSystemFlag(FLAG_ASLIFT);
     setSystemFlag(FLAG_PROPFR);
+    setSystemFlag(FLAG_ENDPMT);// TVM application = END mode
 
     hourGlassIconEnabled = false;
     watchIconEnabled = false;

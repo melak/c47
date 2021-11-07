@@ -55,6 +55,10 @@
    */
   void showMatrixMode         (void);
   /**
+   * Displays the TVM mode icon in the status bar.
+   */
+  void showTvmMode            (void);
+  /**
    * Displays the overflow flag and the carry flag.
    */
   void showOverflowCarry      (void);

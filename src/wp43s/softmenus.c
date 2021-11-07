@@ -509,6 +509,20 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 
 
+  static bool_t _filterDataType(calcRegister_t regist, dataType_t typeFilter, bool_t isAngular) {
+    dataType_t dt = getRegisterDataType(regist);
+    if(dt != dtReal34 && dt == typeFilter) return true;
+    if(typeFilter == dtReal34Matrix && dt == dtComplex34Matrix) return true;
+    if(typeFilter == dtReal34 && dt == dtReal34) {
+      if(isAngular) {
+        return getRegisterAngularMode(regist) != amNone;
+      }
+      if(!isAngular) {
+        return getRegisterAngularMode(regist) == amNone;
+      }
+    }
+    return false;
+  }
   static void _dynmenuConstructVars(int16_t menu, bool_t applyFilter, dataType_t typeFilter, bool_t isAngular) {
     uint16_t numberOfBytes, numberOfVars;
     uint8_t *ptr;
@@ -517,15 +531,18 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     memset(tmpString, 0, TMP_STR_LENGTH);
     for(int i=0; i<numberOfNamedVariables; i++) {
       calcRegister_t regist = i+FIRST_NAMED_VARIABLE;
-      dataType_t dt = getRegisterDataType(regist);
-      if(!applyFilter || (dt != dtReal34 && dt == typeFilter) ||
-          (typeFilter == dtReal34Matrix && dt == dtComplex34Matrix) ||
-          (typeFilter == dtReal34 && dt == dtReal34 &&
-            ((isAngular && getRegisterAngularMode(regist) != amNone) ||
-             (!isAngular && getRegisterAngularMode(regist) == amNone)))) {
+      if(!applyFilter || _filterDataType(regist, typeFilter, isAngular)) {
         xcopy(tmpString + 15 * numberOfVars, allNamedVariables[i].variableName + 1, allNamedVariables[i].variableName[0]);
         numberOfVars++;
         numberOfBytes += 1 + allNamedVariables[i].variableName[0];
+      }
+    }
+    for(int i=12; i<NUMBER_OF_RESERVED_VARIABLES; i++) {
+      calcRegister_t regist = i+FIRST_RESERVED_VARIABLE;
+      if((!applyFilter || _filterDataType(regist, typeFilter, isAngular)) && regist != RESERVED_VARIABLE_GRAMOD) {
+        xcopy(tmpString + 15 * numberOfVars, allReservedVariables[i].reservedVariableName + 1, allReservedVariables[i].reservedVariableName[0]);
+        numberOfVars++;
+        numberOfBytes += 1 + allReservedVariables[i].reservedVariableName[0];
       }
     }
 

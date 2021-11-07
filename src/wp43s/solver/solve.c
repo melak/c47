@@ -35,6 +35,7 @@
 #include "registerValueConversions.h"
 #include "softmenus.h"
 #include "solver/equation.h"
+#include "solver/tvm.h"
 #include "stack.h"
 #include "wp43s.h"
 
@@ -92,18 +93,20 @@ void fnSolve(uint16_t labelOrVariable) {
     fnPgmSlv(labelOrVariable);
     if(lastErrorCode == ERROR_NONE)
       currentSolverStatus = SOLVER_STATUS_INTERACTIVE;
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
   else if(labelOrVariable >= FIRST_NAMED_VARIABLE && labelOrVariable <= LAST_NAMED_VARIABLE) {
     // Execute
     real34_t z, y, x;
+    real_t tmp;
     int resultCode = 0;
     if(_realSolverFirstGuesses(REGISTER_Y, &y) && _realSolverFirstGuesses(REGISTER_X, &x)) {
       currentSolverVariable = labelOrVariable;
       resultCode = solver(labelOrVariable, &y, &x, &z, &y, &x);
       fnClearStack(NOPARAM); // reset stack to 0.
-      real34Copy(&z, REGISTER_REAL34_DATA(REGISTER_Z));
-      real34Copy(&y, REGISTER_REAL34_DATA(REGISTER_Y));
-      real34Copy(&x, REGISTER_REAL34_DATA(REGISTER_X));
+      real34ToReal(&z, &tmp), convertRealToReal34ResultRegister(&tmp, REGISTER_Z);
+      real34ToReal(&y, &tmp), convertRealToReal34ResultRegister(&tmp, REGISTER_Y);
+      real34ToReal(&x, &tmp), convertRealToReal34ResultRegister(&tmp, REGISTER_X);
       int32ToReal34(resultCode, REGISTER_REAL34_DATA(REGISTER_T));
       switch(resultCode) {
         case SOLVER_RESULT_NORMAL:
@@ -128,6 +131,7 @@ void fnSolve(uint16_t labelOrVariable) {
           break;
       }
       saveForUndo();
+      adjustResult(REGISTER_X, false, false, REGISTER_X, REGISTER_Y, -1);
     }
     else {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -135,6 +139,7 @@ void fnSolve(uint16_t labelOrVariable) {
         sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
         moreInfoOnError("In function fnSolve:", errorMessage, "is not a real number.", "");
       #endif
+      adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
     }
   }
   else {
@@ -143,6 +148,7 @@ void fnSolve(uint16_t labelOrVariable) {
       sprintf(errorMessage, "unexpected parameter %u", labelOrVariable);
       moreInfoOnError("In function fnPgmSlv:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
 }
 
@@ -233,15 +239,18 @@ static bool_t _executeStep(uint8_t **step) {
   return lastErrorCode == ERROR_NONE;
 }
 static void _solverIteration(real34_t *res) {
-  //
-  //  NOT A COMPLETE ENGINE: TESTING PURPOSE ONLY!!
-  //  The following decoder is minimally implemented ad hoc engine for testing of SOLVE feature.
-  //  Replace with the complete programming system when ready.
-  //
-  if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
+  if(currentSolverStatus & SOLVER_STATUS_TVM_APPLICATION) {
+    tvmEquation();
+  }
+  else if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
     parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
   }
   else {
+    //
+    //  NOT A COMPLETE ENGINE: TESTING PURPOSE ONLY!!
+    //  The following decoder is minimally implemented ad hoc engine for testing of SOLVE feature.
+    //  Replace with the complete programming system when ready.
+    //
     uint8_t *step = labelList[currentSolverProgram].instructionPointer;
     lastErrorCode = ERROR_NONE;
     while(_executeStep(&step)) {}
@@ -271,8 +280,13 @@ static void _solverIteration(real34_t *res) {
 static void _executeSolver(calcRegister_t variable, const real34_t *val, real34_t *res) {
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
   real34Copy(val, REGISTER_REAL34_DATA(REGISTER_X));
-  reallyRunFunction(ITM_STO, variable);
-  fnFillStack(NOPARAM);
+  if(currentSolverStatus & SOLVER_STATUS_TVM_APPLICATION) {
+    copySourceRegisterToDestRegister(REGISTER_X, variable);
+  }
+  else {
+    reallyRunFunction(ITM_STO, variable);
+    fnFillStack(NOPARAM);
+  }
   _solverIteration(res);
 }
 
@@ -319,11 +333,14 @@ static void _inverseQuadraticInterpolation(const real_t *a, const real_t *b, con
 int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34_t *resZ, real34_t *resY, real34_t *resX) {
 #ifndef TESTSUITE_BUILD
   real34_t a, b, b1, b2, fa, fb, fb1, m, s, *bp1, fbp1, tmp;
-  real_t aa, bb, bb1, bb2, faa, fbb, fbb1, mm, ss, secantSlopeA, secantSlopeB, delta, deltaB, smb;
+  real_t aa, bb, bb1, bb2, faa, fbb, fbb1, mm, ss, secantSlopeA, secantSlopeB, delta, deltaB, smb, tol;
   bool_t extendRange = false;
   bool_t originallyLevel = false;
   bool_t extremum = false;
   int result = SOLVER_RESULT_NORMAL;
+
+  realCopy(const_1, &tol);
+  tol.exponent -= (significantDigits == 0 || significantDigits >= 32) ? 32 : significantDigits;
 
   ++currentSolverNestingDepth;
   setSystemFlag(FLAG_SOLVING);
@@ -525,8 +542,8 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
     real34ToReal(&b1, &bb1);
 
   } while(result == SOLVER_RESULT_NORMAL &&
-          (real34IsSpecial(&b2) || !real34CompareEqual(&b1, &b2) || !(extendRange || extremum || WP34S_RelativeError(&bb, &bb1, const_1e_32, &ctxtReal39))) &&
-          (originallyLevel || !(real34CompareEqual(&b, &b1) || real34CompareEqual(&fb, const34_0)))
+          (real34IsSpecial(&b2) || !real34CompareEqual(&b1, &b2) || !(extendRange || extremum || WP34S_RelativeError(&bb, &bb1, &tol, &ctxtReal39))) &&
+          (originallyLevel || !((!extendRange && WP34S_RelativeError(&bb, &bb1, &tol, &ctxtReal39)) || real34CompareEqual(&b, &b1) || real34CompareEqual(&fb, const34_0)))
          );
 
   if((extendRange && !originallyLevel) || extremum) {

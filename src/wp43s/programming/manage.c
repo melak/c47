@@ -92,6 +92,9 @@ void scanLabelsAndPrograms(void) {
   uint32_t stepNumber = 0;
   uint8_t *nextStep, *step = beginOfProgramMemory;
 
+  freeWp43s(labelList, TO_BLOCKS(sizeof(labelList_t)) * numberOfLabels);
+  freeWp43s(programList, TO_BLOCKS(sizeof(programList_t)) * numberOfPrograms);
+
   numberOfLabels = 0;
   numberOfPrograms = 1;
   while(*step != 255 || *(step + 1) != 255) { // .END.
@@ -104,17 +107,14 @@ void scanLabelsAndPrograms(void) {
     step = findNextStep(step);
   }
 
-  free(labelList);
-  free(programList);
-
-  labelList = malloc(sizeof(labelList_t) * numberOfLabels);
+  labelList = allocWp43s(TO_BLOCKS(sizeof(labelList_t)) * numberOfLabels);
   if(labelList == NULL) {
     // unlikely
     lastErrorCode = ERROR_RAM_FULL;
     return;
   }
 
-  programList = malloc(sizeof(programList_t) * numberOfPrograms);
+  programList = allocWp43s(TO_BLOCKS(sizeof(programList_t)) * numberOfPrograms);
   if(programList == NULL) {
     // unlikely
     lastErrorCode = ERROR_RAM_FULL;
