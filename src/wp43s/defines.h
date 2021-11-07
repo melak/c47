@@ -196,7 +196,8 @@
 #define FLAG_SOLVING                          0xc026
 #define FLAG_VMDISP                           0xc027
 #define FLAG_USB                              0xc028
-#define NUMBER_OF_SYSTEM_FLAGS                    41
+#define FLAG_ENDPMT                           0xc029
+#define NUMBER_OF_SYSTEM_FLAGS                    42
 
 typedef enum {
   LI_ZERO     = 0, // Long integer sign 0
@@ -776,6 +777,7 @@ typedef enum {
 #define SOLVER_STATUS_INTERACTIVE                  0x0002
 #define SOLVER_STATUS_USES_FORMULA                 0x0100
 #define SOLVER_STATUS_MVAR_BEING_OPENED            0x0200
+#define SOLVER_STATUS_TVM_APPLICATION              0x1000
 
 #define SOLVER_RESULT_NORMAL                       0
 #define SOLVER_RESULT_SIGN_REVERSAL                1

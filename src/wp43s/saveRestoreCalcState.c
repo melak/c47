@@ -1334,7 +1334,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     readLine(stream, tmpString); // Number of formulae
     formulae = stringToUint16(tmpString);
     if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-      allFormulae = wp43sAllocate(TO_BLOCKS(sizeof(formulaHeader_t)) * formulae);
+      allFormulae = allocWp43s(TO_BLOCKS(sizeof(formulaHeader_t)) * formulae);
       numberOfFormulae = formulae;
       currentFormula = 0;
       for(i = 0; i < formulae; i++) {

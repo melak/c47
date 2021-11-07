@@ -255,6 +255,7 @@
       oneSystemFlag(FLAG_AUTOFF,  "AUTOFF",  &line, &firstFlag);
       oneSystemFlag(FLAG_AUTXEQ,  "AUTXEQ",  &line, &firstFlag);
       oneSystemFlag(FLAG_CPXj,    "CPXj",    &line, &firstFlag);
+      oneSystemFlag(FLAG_ENDPMT,  "ENDPMT",  &line, &firstFlag);
       oneSystemFlag(FLAG_FRACT,   "FRACT",   &line, &firstFlag);
       oneSystemFlag(FLAG_GROW,    "GROW",    &line, &firstFlag);
       oneSystemFlag(FLAG_IGN1ER,  "IGN1ER",  &line, &firstFlag);

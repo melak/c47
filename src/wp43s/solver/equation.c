@@ -67,7 +67,7 @@
 
 void fnEqNew(uint16_t unusedButMandatoryParameter) {
   if(numberOfFormulae == 0) {
-    allFormulae = wp43sAllocate(TO_BLOCKS(sizeof(formulaHeader_t)));
+    allFormulae = allocWp43s(TO_BLOCKS(sizeof(formulaHeader_t)));
     if(allFormulae) {
       numberOfFormulae = 1;
       currentFormula = 0;
@@ -83,7 +83,7 @@ void fnEqNew(uint16_t unusedButMandatoryParameter) {
     }
   }
   else {
-    formulaHeader_t *newPtr = wp43sAllocate(TO_BLOCKS(sizeof(formulaHeader_t)) * (numberOfFormulae + 1));
+    formulaHeader_t *newPtr = allocWp43s(TO_BLOCKS(sizeof(formulaHeader_t)) * (numberOfFormulae + 1));
     if(newPtr) {
       for(uint32_t i = 0; i < numberOfFormulae; ++i) {
         newPtr[i + (i > currentFormula ? 1 : 0)] = allFormulae[i];
@@ -136,6 +136,7 @@ void fnEqCursorRight(uint16_t unusedButMandatoryParameter) {
 
 void fnEqCalc(uint16_t unusedButMandatoryParameter) {
   parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
+  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -144,10 +145,10 @@ void setEquation(uint16_t equationId, const char *equationString) {
   uint32_t newSizeInBlocks = TO_BLOCKS(stringByteLength(equationString) + 1);
   uint8_t *newPtr;
   if(allFormulae[equationId].sizeInBlocks == 0) {
-    newPtr = wp43sAllocate(newSizeInBlocks);
+    newPtr = allocWp43s(newSizeInBlocks);
   }
   else {
-    newPtr = wp43sReallocate(TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData), allFormulae[equationId].sizeInBlocks, newSizeInBlocks);
+    newPtr = reallocWp43s(TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData), allFormulae[equationId].sizeInBlocks, newSizeInBlocks);
   }
   if(newPtr) {
     allFormulae[equationId].pointerToFormulaData = TO_WP43SMEMPTR(newPtr);

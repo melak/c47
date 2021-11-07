@@ -19,6 +19,7 @@
 #include "charString.h"
 #include "debug.h"
 #include "error.h"
+#include "items.h"
 #include "mathematics/compare.h"
 #include "matrix.h"
 #include "registerValueConversions.h"
@@ -32,7 +33,8 @@
 bool_t regInRange(uint16_t regist) {
   bool_t inRange = (
     (regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) ||
-    (regist >= FIRST_NAMED_VARIABLE && regist - FIRST_NAMED_VARIABLE < numberOfNamedVariables));
+    (regist >= FIRST_NAMED_VARIABLE && regist - FIRST_NAMED_VARIABLE < numberOfNamedVariables) ||
+    (regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE));
 #ifdef PC_BUILD
   if(!inRange) {
     if(regist >= FIRST_LOCAL_REGISTER && regist <= LAST_LOCAL_REGISTER) {
@@ -47,6 +49,20 @@ bool_t regInRange(uint16_t regist) {
   }
 #endif
   return inRange;
+}
+
+static bool_t _checkReadOnlyVariable(uint16_t regist) {
+  if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.readOnly == 1) {
+    displayCalcErrorMessage(ERROR_WRITE_PROTECTED_VAR, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "reserved variable %s", allReservedVariables[regist - FIRST_RESERVED_VARIABLE].reservedVariableName + 1);
+      moreInfoOnError("In function _checkReadOnlyVariable:", errorMessage, " is write-protected!", NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return false;
+  }
+  else {
+    return true;
+  }
 }
 
 
@@ -143,9 +159,23 @@ static bool_t storeIjComplex(complex34Matrix_t *matrix) {
 
 
 
-void fnStore(uint16_t regist) {
-  if(regInRange(regist)) {
+static void _storeValue(uint16_t regist) {
+  if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.dataType == dtReal34) {
+    copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
+    fnToReal(NOPARAM);
+    if(lastErrorCode == ERROR_NONE) {
+      copySourceRegisterToDestRegister(REGISTER_X, regist);
+      copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_X);
+    }
+  }
+  else {
     copySourceRegisterToDestRegister(REGISTER_X, regist);
+  }
+}
+
+void fnStore(uint16_t regist) {
+  if(_checkReadOnlyVariable(regist) && regInRange(regist)) {
+    _storeValue(regist);
     if(regist == findNamedVariable("STATS")) calcSigma(0);
   }
 }
@@ -153,7 +183,7 @@ void fnStore(uint16_t regist) {
 
 
 void fnStoreAdd(uint16_t regist) {
-  if(regInRange(regist)) {
+  if(_checkReadOnlyVariable(regist) && regInRange(regist)) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
@@ -163,7 +193,7 @@ void fnStoreAdd(uint16_t regist) {
     addition[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 
     copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
-    copySourceRegisterToDestRegister(REGISTER_X, regist);
+    _storeValue(regist);
     copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
@@ -174,7 +204,7 @@ void fnStoreAdd(uint16_t regist) {
 
 
 void fnStoreSub(uint16_t regist) {
-  if(regInRange(regist)) {
+  if(_checkReadOnlyVariable(regist) && regInRange(regist)) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
@@ -184,7 +214,7 @@ void fnStoreSub(uint16_t regist) {
     subtraction[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 
     copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
-    copySourceRegisterToDestRegister(REGISTER_X, regist);
+    _storeValue(regist);
     copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
@@ -195,7 +225,7 @@ void fnStoreSub(uint16_t regist) {
 
 
 void fnStoreMult(uint16_t regist) {
-  if(regInRange(regist)) {
+  if(_checkReadOnlyVariable(regist) && regInRange(regist)) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
@@ -205,7 +235,7 @@ void fnStoreMult(uint16_t regist) {
     multiplication[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 
     copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
-    copySourceRegisterToDestRegister(REGISTER_X, regist);
+    _storeValue(regist);
     copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
@@ -216,7 +246,7 @@ void fnStoreMult(uint16_t regist) {
 
 
 void fnStoreDiv(uint16_t regist) {
-  if(regInRange(regist)) {
+  if(_checkReadOnlyVariable(regist) && regInRange(regist)) {
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
@@ -226,7 +256,7 @@ void fnStoreDiv(uint16_t regist) {
     division[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 
     copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
-    copySourceRegisterToDestRegister(REGISTER_X, regist);
+    _storeValue(regist);
     copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
@@ -237,16 +267,42 @@ void fnStoreDiv(uint16_t regist) {
 
 
 void fnStoreMin(uint16_t regist) {
-  if(regInRange(regist)) {
+  if(_checkReadOnlyVariable(regist) && regInRange(regist)) {
+    copySourceRegisterToDestRegister(REGISTER_X, SAVED_REGISTER_X);
+    if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.pointerToRegisterData == WP43S_NULL) {
+      copySourceRegisterToDestRegister(regist, TEMP_REGISTER_1);
+      regist = TEMP_REGISTER_1;
+    }
+    else if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.pointerToRegisterData == WP43S_NULL) {
+      fnToReal(NOPARAM);
+      if(lastErrorCode == ERROR_NONE) {
+        copySourceRegisterToDestRegister(regist, TEMP_REGISTER_1);
+        regist = TEMP_REGISTER_1;
+      }
+    }
     registerMin(REGISTER_X, regist, regist);
+    copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
   }
 }
 
 
 
 void fnStoreMax(uint16_t regist) {
-  if(regInRange(regist)) {
+  if(_checkReadOnlyVariable(regist) && regInRange(regist)) {
+    copySourceRegisterToDestRegister(REGISTER_X, SAVED_REGISTER_X);
+    if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.pointerToRegisterData == WP43S_NULL) {
+      copySourceRegisterToDestRegister(regist, TEMP_REGISTER_1);
+      regist = TEMP_REGISTER_1;
+    }
+    else if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.pointerToRegisterData == WP43S_NULL) {
+      fnToReal(NOPARAM);
+      if(lastErrorCode == ERROR_NONE) {
+        copySourceRegisterToDestRegister(regist, TEMP_REGISTER_1);
+        regist = TEMP_REGISTER_1;
+      }
+    }
     registerMax(REGISTER_X, regist, regist);
+    copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
   }
 }
 

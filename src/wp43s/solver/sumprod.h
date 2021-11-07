@@ -15,15 +15,14 @@
  */
 
 /********************************************//**
- * \file solver.h
+ * \file sumprod.h
  ***********************************************/
-#ifndef SOLVER_H
-#define SOLVER_H
+#ifndef SUMPROD_H
+#define SUMPROD_H
 
+#include <stdint.h>
 
-#include "equation.h"
-#include "solve.h"
-#include "sumprod.h"
-#include "tvm.h"
+void fnProgrammableSum    (uint16_t label);
+void fnProgrammableProduct(uint16_t label);
 
-#endif // SOLVER_H
+#endif // SUMPROD_H

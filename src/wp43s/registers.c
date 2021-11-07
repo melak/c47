@@ -580,6 +580,23 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
 
 
 
+static calcRegister_t _findReservedVariable(const char *variableName) {
+  uint8_t len = stringGlyphLength(variableName);
+  if(len < 1 || len > 7) {
+    return INVALID_VARIABLE;
+  }
+
+  for(int i = 0; i < NUMBER_OF_RESERVED_VARIABLES; i++) {
+    if (compareString((char *)(allReservedVariables[i].reservedVariableName + 1), variableName, CMP_EXTENSIVE) == 0) {
+      return i + FIRST_RESERVED_VARIABLE;
+    }
+  }
+
+  return INVALID_VARIABLE;
+}
+
+
+
 void allocateNamedVariable(const char *variableName, dataType_t dataType, uint16_t fullDataSizeInBlocks) {
   calcRegister_t regist;
   uint8_t len;
@@ -588,6 +605,14 @@ void allocateNamedVariable(const char *variableName, dataType_t dataType, uint16
     #ifdef PC_BUILD
       sprintf(errorMessage, "the name %s", variableName);
       moreInfoOnError("In function allocateNamedVariable:", errorMessage, "is incorrect! The length must be", "from 1 to 7 glyphs!");
+    #endif // PC_BUILD
+    return;
+  }
+
+  if(_findReservedVariable(variableName) != INVALID_VARIABLE) {
+    #ifdef PC_BUILD
+      sprintf(errorMessage, "the name %s", variableName);
+      moreInfoOnError("In function allocateNamedVariable:", errorMessage, "clashes with a reserved variable!", NULL);
     #endif // PC_BUILD
     return;
   }
@@ -643,6 +668,10 @@ calcRegister_t findNamedVariable(const char *variableName) {
   if(len < 1 || len > 7) {
     return regist;
   }
+
+  regist = _findReservedVariable(variableName);
+  if(regist != INVALID_VARIABLE) return regist;
+
   for(int i = 0; i < numberOfNamedVariables; i++) {
     if (compareString((char *)(allNamedVariables[i].variableName + 1), variableName, CMP_EXTENSIVE) == 0) {
       regist = i + FIRST_NAMED_VARIABLE;
@@ -1048,6 +1077,60 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
 
 
 void copySourceRegisterToDestRegister(calcRegister_t sourceRegister, calcRegister_t destRegister) {
+  if(destRegister >= RESERVED_VARIABLE_X && destRegister <= RESERVED_VARIABLE_K) {
+    destRegister = destRegister - RESERVED_VARIABLE_X + REGISTER_X;
+  }
+
+  if(sourceRegister >= RESERVED_VARIABLE_X && sourceRegister <= RESERVED_VARIABLE_K) {
+    sourceRegister = sourceRegister - RESERVED_VARIABLE_X + REGISTER_X;
+  }
+  else if(sourceRegister == RESERVED_VARIABLE_ADM) {
+    longInteger_t longIntVar;
+    longIntegerInit(longIntVar);
+    switch(currentAngularMode) {
+      case amDMS:    intToLongInteger(1, longIntVar); break;
+      case amRadian: intToLongInteger(2, longIntVar); break;
+      case amMultPi: intToLongInteger(3, longIntVar); break;
+      case amGrad:   intToLongInteger(4, longIntVar); break;
+      default:       intToLongInteger(0, longIntVar); break;
+    }
+    convertLongIntegerToLongIntegerRegister(longIntVar, destRegister);
+    longIntegerFree(longIntVar);
+    return;
+  }
+  else if(sourceRegister == RESERVED_VARIABLE_DENMAX) {
+    longInteger_t longIntVar;
+    longIntegerInit(longIntVar);
+    uIntToLongInteger(denMax, longIntVar);
+    convertLongIntegerToLongIntegerRegister(longIntVar, destRegister);
+    longIntegerFree(longIntVar);
+    return;
+  }
+  else if(sourceRegister == RESERVED_VARIABLE_ISM) {
+    longInteger_t longIntVar;
+    longIntegerInit(longIntVar);
+    uIntToLongInteger((shortIntegerMode==SIM_2COMPL ? 2 : (shortIntegerMode==SIM_1COMPL ? 1 : (shortIntegerMode==SIM_UNSIGN ? 0 : -1))), longIntVar);
+    convertLongIntegerToLongIntegerRegister(longIntVar, destRegister);
+    longIntegerFree(longIntVar);
+    return;
+  }
+  else if(sourceRegister == RESERVED_VARIABLE_REALDF) {
+    longInteger_t longIntVar;
+    longIntegerInit(longIntVar);
+    uIntToLongInteger(displayFormat, longIntVar);
+    convertLongIntegerToLongIntegerRegister(longIntVar, destRegister);
+    longIntegerFree(longIntVar);
+    return;
+  }
+  else if(sourceRegister == RESERVED_VARIABLE_NDEC) {
+    longInteger_t longIntVar;
+    longIntegerInit(longIntVar);
+    uIntToLongInteger(displayFormatDigits, longIntVar);
+    convertLongIntegerToLongIntegerRegister(longIntVar, destRegister);
+    longIntegerFree(longIntVar);
+    return;
+  }
+
   if(   getRegisterDataType(destRegister) != getRegisterDataType(sourceRegister)
     || getRegisterFullSize(destRegister) != getRegisterFullSize(sourceRegister)) {
     uint32_t sizeInBlocks;

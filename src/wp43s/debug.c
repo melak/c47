@@ -971,6 +971,12 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
+        sprintf(string, "FLAG_ENDPMT                               = %s",          getBooleanName(getSystemFlag(FLAG_ENDPMT)));
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
+        gtk_widget_show(lbl1[row++]);
+      }
+
+      if(row < DEBUG_LINES) {
         sprintf(string, "calcMode                                  = %6u = %s",    calcMode,             getCalcModeName(calcMode));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
