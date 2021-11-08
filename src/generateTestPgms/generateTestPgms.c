@@ -3242,6 +3242,45 @@ int main(int argc, char* argv[]) {
     *(currentStep++) =  ITM_END       & 0xff;
   }
 
+  { // OM page 244 (for Σn)
+    // 1
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3; // String length
+    *(currentStep++) = STD_SIGMA[0];
+    *(currentStep++) = STD_SIGMA[1];
+    *(currentStep++) = 'V';
+
+    *(currentStep++) = ITM_SQUAREROOTX;
+
+    *(currentStep++) = ITM_RTN;
+
+    // 4
+    *(currentStep++) = (ITM_END >> 8) | 0x80;
+    *(currentStep++) =  ITM_END       & 0xff;
+  }
+
+  { // OM page 245 (for Πn)
+    // 1
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 4; // String length
+    *(currentStep++) = 'P';
+    *(currentStep++) = 'R';
+    *(currentStep++) = 'O';
+    *(currentStep++) = 'D';
+
+    *(currentStep++) = ITM_SQUAREROOTX;
+
+    *(currentStep++) = ITM_1ONX;
+
+    *(currentStep++) = ITM_RTN;
+
+    // 5
+    *(currentStep++) = (ITM_END >> 8) | 0x80;
+    *(currentStep++) =  ITM_END       & 0xff;
+  }
+
   { // OM page 253 (for solver)
     // 1
     *(currentStep++) = ITM_LBL;

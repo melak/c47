@@ -179,6 +179,7 @@ wp43s_src = files(
   'solver/equation.c',
   'solver/integrate.c',
   'solver/solve.c',
+  'solver/sumprod.c',
   'solver/tvm.c',
   'sort.c',
   'stack.c',

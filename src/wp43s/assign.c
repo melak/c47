@@ -15,9 +15,7 @@
  */
 
 #include "assign.h"
-
 #include "items.h"
-
 #include "wp43s.h"
 
 //This variable is to store in flash memory
@@ -37,7 +35,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
  {35,   ITM_SHIFTf,      ITM_NULL,        ITM_SNAP,        ITM_SHIFTf,      ITM_SHIFTf,        ITM_NULL,        ITM_SNAP,      ITM_SHIFTf   },
  {36,   ITM_SHIFTg,      ITM_USERMODE,    ITM_NULL,        ITM_SHIFTg,      ITM_SHIFTg,        ITM_USERMODE,    ITM_NULL,      ITM_SHIFTg   },
 
- {41,   ITM_ENTER,       ITM_FILL,        ITM_DROP,        ITM_ENTER,       ITM_ENTER,         ITM_STATUS,      ITM_DROP,      ITM_ENTER    },
+ {41,   ITM_ENTER,       ITM_FILL,        ITM_DROP,        ITM_ENTER,       ITM_ENTER,         ITM_NULL,        ITM_NULL,      ITM_ENTER    },
  {42,   ITM_XexY,        ITM_Xex,        -MNU_UNITCONV,    ITM_ex,          ITM_K,             ITM_ex,          ITM_KAPPA,     ITM_REG_K    },
  {43,   ITM_CHS,         ITM_DELTAPC,    -MNU_FIN,         ITM_PLUS_MINUS,  ITM_L,             ITM_PLUS_MINUS,  ITM_LAMBDA,    ITM_REG_L    },
  {44,   ITM_EXPONENT,    ITM_DSP,        -MNU_DISP,        ITM_NULL,        ITM_M,             ITM_UP_ARROW,    ITM_MU,        ITM_NULL     },
@@ -46,7 +44,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
  {51,   ITM_DIV,         ITM_PARALLEL,    ITM_MOD,         ITM_SLASH,       ITM_N,             ITM_SLASH,       ITM_NU,        ITM_DIV      },
  {52,   ITM_7,           ITM_NULL,        ITM_NULL,        ITM_7,           ITM_O,             ITM_7,           ITM_OMEGA,     ITM_7        },
  {53,   ITM_8,           ITM_NULL,        ITM_NULL,        ITM_8,           ITM_P,             ITM_8,           ITM_PI,        ITM_8        },
- {54,   ITM_9,           ITM_NULL,        ITM_RTN,         ITM_9,           ITM_Q,             ITM_9,           ITM_RTN,       ITM_9        },
+ {54,   ITM_9,           ITM_NULL,        ITM_RTN,         ITM_9,           ITM_Q,             ITM_9,           ITM_NULL,      ITM_9        },
  {55,   ITM_XEQ,         ITM_GTO,         ITM_LBL,         ITM_NULL,        ITM_NULL,          ITM_NULL,        ITM_NULL,      ITM_NULL     },
 
  {61,   ITM_MULT,        ITM_XFACT,      -MNU_PROB,        ITM_CROSS,       ITM_R,             ITM_PROD_SIGN,   ITM_RHO,       ITM_MULT     },
@@ -59,7 +57,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
  {72,   ITM_1,          -MNU_ADV,        -MNU_EQN,         ITM_1,           ITM_W,             ITM_1,           ITM_PSI,       ITM_1        },
  {73,   ITM_2,          -MNU_MATX,       -MNU_XFN,         ITM_2,           ITM_X,             ITM_2,           ITM_XI,        ITM_2        },
  {74,   ITM_3,           ITM_CONSTpi,    -MNU_CONST,       ITM_3,           ITM_Y,             ITM_3,           ITM_UPSILON,   ITM_3        },
- {75,   ITM_DOWN,        ITM_SST,        -MNU_MODE,        ITM_DOWN,        ITM_DOWN,          ITM_SST,        -MNU_MODE,      ITM_DOWN     },
+ {75,   ITM_DOWN,        ITM_SST,        -MNU_MODE,        ITM_DOWN,        ITM_DOWN,          ITM_SST,         ITM_NULL,      ITM_DOWN     },
 
  {81,   ITM_ADD,        -MNU_LOOP,       -MNU_TEST,        ITM_PLUS,        ITM_Z,             ITM_PLUS,        ITM_ZETA,      ITM_ADD      },
  {82,   ITM_0,          -MNU_IO,         -MNU_PRINT,       ITM_0,           ITM_QUESTION_MARK, ITM_0,           ITM_PRINTER,   ITM_0        },

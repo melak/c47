@@ -169,7 +169,7 @@ void fnSolveVar(uint16_t unusedButMandatoryParameter) {
 }
 
 #ifndef TESTSUITE_BUILD
-static bool_t _executeStep(uint8_t **step) {
+bool_t executeStep_test(uint8_t **step) {
   //
   //  NOT A COMPLETE ENGINE: TESTING PURPOSE ONLY!!
   //  The following decoder is minimally implemented ad hoc engine for testing of SOLVE feature.
@@ -190,6 +190,8 @@ static bool_t _executeStep(uint8_t **step) {
     case ITM_DIV:
     case ITM_sin:
     case ITM_cos:
+    case ITM_SQUAREROOTX:
+    case ITM_1ONX:
       runFunction(op);
       *step = findNextStep(*step);
       break;
@@ -234,6 +236,7 @@ static bool_t _executeStep(uint8_t **step) {
     default:
       printf("***Unimplemented opcode %u!\n", op);
       fflush(stdout);
+      *step = findNextStep(*step);
     #endif /* PC_BUILD */
   }
   return lastErrorCode == ERROR_NONE;
@@ -253,7 +256,7 @@ static void _solverIteration(real34_t *res) {
     //
     uint8_t *step = labelList[currentSolverProgram].instructionPointer;
     lastErrorCode = ERROR_NONE;
-    while(_executeStep(&step)) {}
+    while(executeStep_test(&step)) {}
   }
   if(lastErrorCode == ERROR_OVERFLOW_PLUS_INF) {
     realToReal34(const_plusInfinity, res);
