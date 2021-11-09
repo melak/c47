@@ -1830,7 +1830,14 @@
 #define ITM_CALC                      1767
 #define ITM_SQRT                      1768
 
-#define LAST_ITEM                     1769
+#define ITM_RCL_FV                    1769
+#define ITM_RCL_IPonA                 1770
+#define ITM_RCL_NPER                  1771
+#define ITM_RCL_PERonA                1772
+#define ITM_RCL_PMT                   1773
+#define ITM_RCL_PV                    1774
+
+#define LAST_ITEM                     1775
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

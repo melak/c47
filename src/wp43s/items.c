@@ -2534,5 +2534,12 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1767 */  { fnEqCalc,                     NOPARAM,                     "Calc",                                        "Calc",                                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED  },
 /* 1768 */  { fnSquareRoot,                 NOPARAM,                     "SQRT",                                        "SQRT",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED  },
 
-/* 1769 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED},
+/* 1769 */  { fnRecall,                     RESERVED_VARIABLE_FV,        "",                                            "RCL FV",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED  },
+/* 1770 */  { fnRecall,                     RESERVED_VARIABLE_IPONA,     "",                                            "i%/a",                                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED  },
+/* 1771 */  { fnRecall,                     RESERVED_VARIABLE_NPER,      "",                                            "RCL n" STD_SUB_P,                             (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED  },
+/* 1772 */  { fnRecall,                     RESERVED_VARIABLE_PERONA,    "",                                            "per/a",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED  },
+/* 1773 */  { fnRecall,                     RESERVED_VARIABLE_PMT,       "",                                            "PMT",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED  },
+/* 1774 */  { fnRecall,                     RESERVED_VARIABLE_PV,        "",                                            "PV",                                          (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED  },
+
+/* 1775 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED},
 };
