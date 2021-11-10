@@ -903,9 +903,20 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         }
         else if(*strPtr == '-') {
           /* unary minus */
-        }
-        else if(afterClosingParenthesis && *strPtr != '(' && *strPtr != ' ') {
+          buffer[0] = '-';
+          buffer[1] = '1';
+          buffer[2] = 0;
+          _parseWord(buffer, parseMode, PARSER_HINT_NUMERIC, mvarBuffer);
+          buffer[0] = STD_DOT[0];
+          buffer[1] = STD_DOT[1];
+          buffer[2] = 0;
+          _parseWord(buffer, parseMode, PARSER_HINT_OPERATOR, mvarBuffer);
+          bufPtr = buffer;
+          buffer[0] = 0;
+          numericCount = 0;
           afterClosingParenthesis = false;
+          ++strPtr;
+          break;
         }
         else if(*strPtr == '(') {
           afterClosingParenthesis = false;
@@ -913,7 +924,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         else if(*strPtr == ')') {
           afterClosingParenthesis = true;
         }
-        else if(*strPtr == '|') {
+        else if(afterClosingParenthesis && *strPtr != ' ') {
           afterClosingParenthesis = false;
         }
         else {
@@ -925,9 +936,6 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         }
         if(*strPtr == '=') equalAppeared = true;
         if(bufPtr != buffer || (*strPtr) != '-' || afterClosingParenthesis) {
-          if(afterClosingParenthesis && *strPtr == '-') {
-            afterClosingParenthesis = false;
-          }
           if(_compareStr("|)", buffer) != 0) {
             buffer[0] = *(strPtr++);
             buffer[1] = 0;
