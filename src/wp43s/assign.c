@@ -25,7 +25,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
  {22,  -MNU_EXP,         ITM_toINT,      -MNU_BITS,        ITM_NUMBER_SIGN, ITM_B,             ITM_NUMBER_SIGN, ITM_BETA,      ITM_REG_B    },
  {23,  -MNU_TRI,         ITM_DMS,        -MNU_ANGLECONV,   ITM_NULL,        ITM_C,             ITM_NULL,        ITM_GAMMA,     ITM_REG_C    },
  {24,   ITM_LN,          ITM_dotD,        ITM_LOG10,       ITM_NULL,        ITM_D,             ITM_NULL,        ITM_DELTA,     ITM_REG_D    }, // if f or g are changed: adapt the function btnClicked section if(calcMode == CM_NIM) in keyboard.c. Case D for decimal base
- {25,   ITM_EXP,         ITM_toHMS,       ITM_10x,         ITM_NULL,        ITM_E,             ITM_NULL,        ITM_EPSILON,   ITM_NULL     },
+ {25,   ITM_EXP,         ITM_toHMS,       ITM_10x,         ITM_ALOG_SYMBOL, ITM_E,             ITM_ALOG_SYMBOL, ITM_EPSILON,   ITM_NULL     },
  {26,   ITM_SQUAREROOTX, ITM_AIM,        -MNU_CPX,         ITM_ROOT_SIGN,   ITM_F,             ITM_ROOT_SIGN,   ITM_PHI,       ITM_alpha    },
 
  {31,   ITM_STO,         ITM_ASSIGN,      ITM_SAVE,        ITM_NULL,        ITM_G,             ITM_ASSIGN,      ITM_GAMMA,     ITM_NULL     },
