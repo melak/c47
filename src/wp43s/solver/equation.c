@@ -820,7 +820,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
   const char *strPtr = (char *)TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData);
   char *bufPtr = buffer;
   int16_t numericCount = 0;
-  bool_t equalAppeared = false, labeled = false, afterClosingParenthesis = false;
+  bool_t equalAppeared = false, labeled = false, afterClosingParenthesis = false, unaryMinusCanOccur = true;
 
   for(uint32_t i = 0; i < (PARSER_OPERATOR_STACK_SIZE * 2); ++i) mvarBuffer[i] = 0;
   real34Zero((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2));
@@ -867,6 +867,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
             numericCount = 0;
             break;
           }
+          unaryMinusCanOccur = true;
         }
         /* fallthrough */
       case '=':
@@ -894,14 +895,16 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
           *(bufPtr++) = ')';
           *(bufPtr++) = 0;
           afterClosingParenthesis = true;
+          unaryMinusCanOccur = false;
         }
         else if(bufPtr != buffer) {
           *(bufPtr++) = 0;
           if(*strPtr != ':')
             _parseWord(buffer, parseMode, PARSER_HINT_REGULAR, mvarBuffer);
           afterClosingParenthesis = (*strPtr == ')');
+          unaryMinusCanOccur = false;
         }
-        else if(*strPtr == '-') {
+        else if(unaryMinusCanOccur && *strPtr == '-') {
           /* unary minus */
           buffer[0] = '-';
           buffer[1] = '1';
@@ -915,17 +918,21 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
           buffer[0] = 0;
           numericCount = 0;
           afterClosingParenthesis = false;
+          unaryMinusCanOccur = false;
           ++strPtr;
           break;
         }
-        else if(*strPtr == '(') {
+        else if((*strPtr == '(') || (*strPtr == '|')) {
           afterClosingParenthesis = false;
+          unaryMinusCanOccur = true;
         }
         else if(*strPtr == ')') {
           afterClosingParenthesis = true;
+          unaryMinusCanOccur = false;
         }
         else if(afterClosingParenthesis && *strPtr != ' ') {
           afterClosingParenthesis = false;
+          unaryMinusCanOccur = false;
         }
         else {
           displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -934,21 +941,23 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
           return;
         }
-        if(*strPtr == '=') equalAppeared = true;
-        if(bufPtr != buffer || (*strPtr) != '-' || afterClosingParenthesis) {
-          if(_compareStr("|)", buffer) != 0) {
-            buffer[0] = *(strPtr++);
-            buffer[1] = 0;
-          }
-          else {
-            ++strPtr;
-          }
-          _parseWord(buffer, parseMode, PARSER_HINT_OPERATOR, mvarBuffer);
-          bufPtr = buffer;
-          buffer[0] = 0;
-          numericCount = 0;
-          break;
+        if(*strPtr == '=') {
+          equalAppeared = true;
+          unaryMinusCanOccur = true;
         }
+
+        if(_compareStr("|)", buffer) != 0) {
+          buffer[0] = *(strPtr++);
+          buffer[1] = 0;
+        }
+        else {
+          ++strPtr;
+        }
+        _parseWord(buffer, parseMode, PARSER_HINT_OPERATOR, mvarBuffer);
+        bufPtr = buffer;
+        buffer[0] = 0;
+        numericCount = 0;
+        break;
         /* fallthrough */
       case '0':
       case '1':
@@ -982,6 +991,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
           }
         }
         afterClosingParenthesis = false;
+        unaryMinusCanOccur = false;
     }
     if(lastErrorCode != ERROR_NONE) return;
   }

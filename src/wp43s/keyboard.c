@@ -913,10 +913,15 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
     }
 
     if(catalog) {
-      leaveAsmMode();
-      popSoftmenu();
-      if(tam.mode) {
-        numberOfTamMenusToPop--;
+      if(lastErrorCode != 0) {
+        lastErrorCode = 0;
+      }
+      else {
+        leaveAsmMode();
+        popSoftmenu();
+        if(tam.mode) {
+          numberOfTamMenusToPop--;
+        }
       }
       return;
     }
