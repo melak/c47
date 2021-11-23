@@ -56,6 +56,7 @@ wp43s_src = files(
   'mathematics/arctan.c',
   'mathematics/arctanh.c',
   'mathematics/arg.c',
+  'mathematics/atan2.c',
   'mathematics/bessel.c',
   'mathematics/beta.c',
   'mathematics/bn.c',

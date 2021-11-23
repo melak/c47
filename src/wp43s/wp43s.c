@@ -76,6 +76,9 @@ dataBlock_t           *currentSubroutineLevelData;
 
 namedVariableHeader_t *allNamedVariables;
 softmenuStack_t        softmenuStack[SOFTMENU_STACK_SIZE];
+userMenuItem_t         userMenuItems[18];
+userMenuItem_t         userAlphaItems[18];
+userMenu_t            *userMenus;
 calcKey_t              kbd_usr[37];
 calcRegister_t         errorMessageRegisterLine;
 glyph_t                glyphNotFound = {.charCode = 0x0000, .colsBeforeGlyph = 0, .colsGlyph = 13, .colsAfterGlyph = 0, .rowsGlyph = 19, .data = NULL};
@@ -92,6 +95,7 @@ char                  *errorMessage;
 char                  *aimBuffer; // aimBuffer is also used for NIM
 char                  *nimBufferDisplay;
 char                  *tamBuffer;
+char                  *userKeyLabel;
 char                   asmBuffer[5];
 char                   oldTime[8];
 char                   dateTimeString[12];
@@ -147,6 +151,8 @@ int16_t                showFunctionNameCounter;
 int16_t                dynamicMenuItem;
 int16_t               *menu_RAM;
 int16_t                numberOfTamMenusToPop;
+int16_t                itemToBeAssigned;
+int16_t                cachedDynamicMenu;
 
 uint16_t               globalFlags[7];
 uint16_t               freeProgramBytes;
@@ -170,6 +176,9 @@ uint16_t               currentSolverVariable;
 uint16_t               currentSolverNestingDepth;
 uint16_t               numberOfFormulae;
 uint16_t               currentFormula;
+uint16_t               numberOfUserMenus;
+uint16_t               currentUserMenu;
+uint16_t               userKeyLabelSize;
 #if (REAL34_WIDTH_TEST == 1)
   uint16_t               largeur=200;
 #endif // (REAL34_WIDTH_TEST == 1)

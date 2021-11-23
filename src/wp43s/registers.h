@@ -93,6 +93,13 @@ void           setRegisterMaxDataLength        (calcRegister_t regist, uint16_t 
  */
 void           allocateLocalRegisters          (uint16_t n);
 /**
+ * Check if the given name follows the naming convention
+ *
+ * \param[in] variableName         Variable name
+ * \return `true` if given name is valid, `false` otherwise
+ */
+bool_t         validateName                    (const char *variableName);
+/**
  * Allocates one named variable.
  *
  * \param[in] variableName         Variable name

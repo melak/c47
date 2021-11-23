@@ -625,7 +625,7 @@
       gtk_button_set_image(GTK_BUTTON(btn22), gtk_image_new_from_file("res/artwork/key_22_AIM.png"));
       gtk_button_set_image(GTK_BUTTON(btn23), gtk_image_new_from_file("res/artwork/key_empty.png"));
       gtk_button_set_image(GTK_BUTTON(btn24), gtk_image_new_from_file("res/artwork/key_empty.png"));
-      gtk_button_set_image(GTK_BUTTON(btn25), gtk_image_new_from_file("res/artwork/key_empty.png"));
+      gtk_button_set_image(GTK_BUTTON(btn25), gtk_image_new_from_file("res/artwork/key_25_AIM.png"));
       gtk_button_set_image(GTK_BUTTON(btn26), gtk_image_new_from_file("res/artwork/key_26_AIM.png"));
 
       gtk_button_set_image(GTK_BUTTON(btn31), gtk_image_new_from_file("res/artwork/key_empty.png"));
@@ -1507,7 +1507,7 @@
       else if(calcMode == CM_AIM || (tam.mode && tam.alpha)) {
         calcModeAimGui();
       }
-      else if(calcMode == CM_NORMAL || calcMode == CM_PEM || calcMode == CM_MIM) {
+      else if(calcMode == CM_NORMAL || calcMode == CM_PEM || calcMode == CM_MIM || calcMode == CM_ASSIGN) {
         calcModeNormalGui();
       }
     #endif // PC_BUILD && (SCREEN_800X480 == 0)

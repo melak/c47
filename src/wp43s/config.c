@@ -829,6 +829,15 @@ void fnReset(uint16_t confirmation) {
     lastIntegerBase = 0;
     temporaryInformation = TI_RESET;
 
+    memset(userMenuItems,  0, sizeof(userMenuItem_t) * 18);
+    memset(userAlphaItems, 0, sizeof(userMenuItem_t) * 18);
+    userMenus = NULL;
+    numberOfUserMenus = 0;
+    currentUserMenu = 0;
+    userKeyLabelSize = 37/*keys*/ * 6/*states*/ * 1/*byte terminator*/ + 1/*byte sentinel*/;
+    userKeyLabel = allocWp43s(TO_BLOCKS(userKeyLabelSize));
+    memset(userKeyLabel,   0, TO_BYTES(TO_BLOCKS(userKeyLabelSize)));
+
     // The following lines are test data
     addTestPrograms();
     //fnSetFlag(  3);

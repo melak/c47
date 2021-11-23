@@ -16,6 +16,7 @@
 
 #include "screen.h"
 
+#include "assign.h"
 #include "browsers/browsers.h"
 #include "bufferize.h"
 #include "charString.h"
@@ -476,6 +477,7 @@
       showFunctionNameCounter -= SCREEN_REFRESH_PERIOD;
       if(showFunctionNameCounter <= 0) {
         hideFunctionName();
+        tmpString[0] = 0;
         showFunctionName(ITM_NOP, 0);
       }
     }
@@ -528,6 +530,7 @@
       showFunctionNameCounter -= FAST_SCREEN_REFRESH_PERIOD;
       if(showFunctionNameCounter <= 0) {
         hideFunctionName();
+        tmpString[0] = 0;
         showFunctionName(ITM_NOP, 0);
       }
     }
@@ -830,7 +833,10 @@
   void showFunctionName(int16_t item, int16_t delayInMs) {
     uint32_t fcol, frow, gcol, grow;
     char *functionName;
-    if(item != MNU_DYNAMIC) {
+    if(tmpString[0] != 0) {
+      functionName = tmpString;
+    }
+    else if(item != MNU_DYNAMIC) {
       functionName = indexOfItems[abs(item)].itemCatalogName;
     }
     else {
@@ -855,7 +861,7 @@
 
   void hideFunctionName(void) {
     uint32_t col, row;
-    getStringBounds(indexOfItems[abs(showFunctionNameItem)].itemCatalogName, &standardFont, &col, &row);
+    getStringBounds(tmpString[0] != 0 ? tmpString : indexOfItems[abs(showFunctionNameItem)].itemCatalogName, &standardFont, &col, &row);
     lcd_fill_rect(1, Y_POSITION_OF_REGISTER_T_LINE+6, col, row, LCD_SET_VALUE);
     showFunctionNameItem = 0;
     showFunctionNameCounter = 0;
@@ -2010,14 +2016,20 @@
 
 
   static void displayShiftAndTamBuffer(void) {
-    if(shiftF) {
-      showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
-    }
-    else if(shiftG) {
-      showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
+    if(calcMode == CM_ASSIGN) {
+      updateAssignTamBuffer();
     }
 
-    if(tam.mode) {
+    if(calcMode != CM_ASSIGN || itemToBeAssigned == 0) {
+      if(shiftF) {
+        showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
+      }
+      else if(shiftG) {
+        showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
+      }
+    }
+
+    if(tam.mode || calcMode == CM_ASSIGN) {
       if(calcMode == CM_PEM) { // Variable line to display TAM informations
         lcd_fill_rect(45+20, tamOverPemYPos, 168, 20, LCD_SET_VALUE);
         showString(tamBuffer, &standardFont, 75+20, tamOverPemYPos, vmNormal,  false, false);

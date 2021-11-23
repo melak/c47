@@ -203,6 +203,10 @@
           int16_t lg = stringLastGlyph(aimBuffer);
           aimBuffer[lg] = 0;
         }
+        else if(tam.mode == TM_NEWMENU) {
+          tamLeaveMode();
+          runFunction(ITM_ASSIGN);
+        }
         else {
           // backspaces within AIM are handled by addItemToBuffer, so this is if the aimBuffer is already empty
           tam.alpha = false;
@@ -439,7 +443,10 @@
       char *buffer = (forcedVar ? forcedVar : aimBuffer);
       bool_t tryAllocate = ((tam.function == ITM_STO || tam.function == ITM_M_DIM) && !tam.indirect);
       int16_t value;
-      if(tam.mode == TM_LABEL || tam.mode == TM_SOLVE) {
+      if(tam.mode == TM_NEWMENU) {
+        value = 1;
+      }
+      else if(tam.mode == TM_LABEL || tam.mode == TM_SOLVE) {
         value = findNamedLabel(buffer);
         if(value == INVALID_VARIABLE) {
           displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
@@ -462,7 +469,7 @@
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         }
       }
-      aimBuffer[0] = 0;
+      if(tam.mode != TM_NEWMENU) aimBuffer[0] = 0;
       if(tam.indirect && value != INVALID_VARIABLE) {
         value = indirectAddressing(value, (tam.mode == TM_STORCL || tam.mode == TM_M_DIM), min, max);
         if(lastErrorCode != 0) {
@@ -488,7 +495,7 @@
 
 
   void tamEnterMode(int16_t func) {
-    tam.mode = indexOfItems[func].param;
+    tam.mode = func == ITM_ASSIGN ? TM_NEWMENU : indexOfItems[func].param;
     tam.function = func;
     tam.min = indexOfItems[func].tamMinMax >> TAM_MAX_BITS;
     tam.max = indexOfItems[func].tamMinMax & TAM_MAX_MASK;
@@ -504,7 +511,7 @@
       closeNim();
     }
 
-    tam.alpha = false;
+    tam.alpha = (func == ITM_ASSIGN);
     tam.currentOperation = tam.function;
     tam.digitsSoFar = 0;
     tam.dot = false;
@@ -547,20 +554,30 @@
           showSoftmenu(-MNU_TAMLABEL);
         break;
 
+      case TM_NEWMENU:
+        break;
+
       default:
         sprintf(errorMessage, "In function calcModeTam: %" PRIu16 " is an unexpected value for tam.mode!", tam.mode);
         displayBugScreen(errorMessage);
         return;
     }
 
-    numberOfTamMenusToPop = 1;
+    numberOfTamMenusToPop = func == ITM_ASSIGN ? 0 : 1;
 
     _tamUpdateBuffer();
 
     clearSystemFlag(FLAG_ALPHA);
 
     #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-      calcModeTamGui();
+      if(tam.mode == TM_NEWMENU) {
+        setSystemFlag(FLAG_ALPHA);
+        aimBuffer[0] = 0;
+        calcModeAim(NOPARAM);
+      }
+      else {
+        calcModeTamGui();
+      }
     #endif // PC_BUILD && (SCREEN_800X480 == 0)
   }
 

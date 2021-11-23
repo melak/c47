@@ -33,6 +33,7 @@
 #include "arctan.h"
 #include "arctanh.h"
 #include "arg.h"
+#include "atan2.h"
 #include "bessel.h"
 #include "bn.h"
 #include "ceil.h"
