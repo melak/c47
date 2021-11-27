@@ -201,6 +201,7 @@
   extern uint8_t                temporaryInformation;
   extern uint8_t                rbrMode;
   extern uint8_t                numScreensNumericFont;
+  extern uint8_t                timerCraAndDeciseconds;
   extern uint8_t               *beginOfProgramMemory;
   extern uint8_t               *beginOfCurrentProgram;
   extern uint8_t               *endOfCurrentProgram;
@@ -270,6 +271,9 @@
   extern uint32_t               xCursor;
   extern uint32_t               yCursor;
   extern uint32_t               tamOverPemYPos;
+  extern uint32_t               timerValue;
+  extern uint32_t               timerStartTime;
+  extern uint32_t               timerTotalTime;
 
   extern uint64_t               shortIntegerMask;
   extern uint64_t               shortIntegerSignBit;

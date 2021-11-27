@@ -24,6 +24,7 @@
 #include "curveFitting.h"
 #include "dateTime.h"
 #include "debug.h"
+#include "defines.h"
 #include "display.h"
 #include "error.h"
 #include "flags.h"
@@ -543,9 +544,10 @@
         showDateTime();
       #endif // (DEBUG_INSTEAD_STATUS_BAR != 1)
 
-      if(!getSystemFlag(FLAG_AUTOFF)) {
+      if(!getSystemFlag(FLAG_AUTOFF) || timerStartTime != TIMER_APP_STOPPED) {
         reset_auto_off();
       }
+      fnPollTimerApp();
 
 
     }
@@ -2015,7 +2017,7 @@
 
 
 
-  static void displayShiftAndTamBuffer(void) {
+  void displayShiftAndTamBuffer(void) {
     if(calcMode == CM_ASSIGN) {
       updateAssignTamBuffer();
     }
@@ -2085,10 +2087,11 @@
       case CM_ASSIGN:
       case CM_ERROR_MESSAGE:
       case CM_CONFIRMATION:
+      case CM_TIMER:
         //clearScreen();
 
         // The ordering of the 4 lines below is important for SHOW (temporaryInformation == TI_SHOW_REGISTER)
-        if(temporaryInformation != TI_VIEW) refreshRegisterLine(REGISTER_T);
+        if(calcMode != CM_TIMER && temporaryInformation != TI_VIEW) refreshRegisterLine(REGISTER_T);
         refreshRegisterLine(REGISTER_Z);
         refreshRegisterLine(REGISTER_Y);
         refreshRegisterLine(REGISTER_X);
@@ -2098,6 +2101,9 @@
         }
         if(calcMode == CM_MIM) {
           showMatrixEditor();
+        }
+        if(calcMode == CM_TIMER) {
+          fnShowTimerApp();
         }
         if(currentSolverStatus & SOLVER_STATUS_INTERACTIVE) {
           bool_t mvarMenu = false;

@@ -263,26 +263,7 @@ void setUserKeyArgument(uint16_t position, const char *name) {
 
 void createMenu(const char *name) {
   if(validateName(name)) {
-    bool_t alreadyInUse = false;
-
-    for(uint32_t i = 0; softmenu[i].menuItem < 0; ++i) {
-      if(compareString(name, indexOfItems[-softmenu[i].menuItem].itemCatalogName, CMP_BINARY) == 0) {
-        alreadyInUse = true;
-      }
-    }
-    for(uint32_t i = 0; i < numberOfUserMenus; ++i) {
-      if(compareString(name, userMenus[i].menuName, CMP_BINARY) == 0) {
-        alreadyInUse = true;
-      }
-    }
-
-    if(alreadyInUse) {
-      displayCalcErrorMessage(ERROR_ENTER_NEW_NAME, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        moreInfoOnError("In function fnAssign:", "the menu", name, "already exists");
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    }
-    else {
+    if(isUniqueName(name)) {
       if(numberOfUserMenus == 0) {
         userMenus = allocWp43s(TO_BLOCKS(sizeof(userMenu_t)));
       }
@@ -292,6 +273,13 @@ void createMenu(const char *name) {
       memset(userMenus + numberOfUserMenus, 0, sizeof(userMenu_t));
       xcopy(userMenus[numberOfUserMenus].menuName, name, stringByteLength(name));
       ++numberOfUserMenus;
+    }
+    else {
+      displayCalcErrorMessage(ERROR_ENTER_NEW_NAME, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "the name %s", name);
+        moreInfoOnError("In function fnAssign:", errorMessage, "is already in use!", NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
   else {

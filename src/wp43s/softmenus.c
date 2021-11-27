@@ -359,6 +359,8 @@ TO_QSPI const int16_t menu_TamLabel[]    = { ITM_INDIRECTION,               -MNU
 
 TO_QSPI const int16_t menu_Eim[]         = { ITM_EQ_LEFT,                   ITM_PAIR_OF_PARENTHESES,    ITM_CIRCUMFLEX,           ITM_COLON,             ITM_EQUAL,                   ITM_EQ_RIGHT                  };
 
+TO_QSPI const int16_t menu_Timer[]       = { ITM_TIMER_ADD,                 ITM_NULL,                   ITM_NULL,                 ITM_TIMER_0_1S,        ITM_NULL,                    ITM_TIMER_RESET               };
+
 #include "softmenuCatalogs.h"
 
 TO_QSPI const softmenu_t softmenu[] = {
@@ -463,7 +465,8 @@ TO_QSPI const softmenu_t softmenu[] = {
 /*  98 */  {.menuItem = -MNU_TAMSHUFFLE,  .numItems = sizeof(menu_TamShuffle )/sizeof(int16_t), .softkeyItem = menu_TamShuffle  },
 /*  99 */  {.menuItem = -MNU_TAMLABEL,    .numItems = sizeof(menu_TamLabel   )/sizeof(int16_t), .softkeyItem = menu_TamLabel    },
 /* 100 */  {.menuItem = -MNU_EQ_EDIT,     .numItems = sizeof(menu_Eim        )/sizeof(int16_t), .softkeyItem = menu_Eim         },
-/* 101 */  {.menuItem =  0,               .numItems = 0,                                        .softkeyItem = NULL             }
+/* 101 */  {.menuItem = -MNU_TIMERF,      .numItems = sizeof(menu_Timer      )/sizeof(int16_t), .softkeyItem = menu_Timer       },
+/* 102 */  {.menuItem =  0,               .numItems = 0,                                        .softkeyItem = NULL             }
 };
 
 

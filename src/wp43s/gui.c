@@ -27,6 +27,7 @@
 #include "saveRestoreCalcState.h"
 #include "screen.h"
 #include "stack.h"
+#include "timer.h"
 #include <string.h>
 
 #include "wp43s.h"
@@ -60,6 +61,7 @@
 
 
   static gint destroyCalc(GtkWidget* w, GdkEventAny* e, gpointer data) {
+    fnStopTimerApp();
     saveCalc();
     gtk_main_quit();
 
@@ -1384,6 +1386,8 @@
   void fnOff(uint16_t unsuedParamButMandatory) {
     shiftF = false;
     shiftG = false;
+
+    fnStopTimerApp();
 
     #ifdef PC_BUILD
       if(matrixIndex != INVALID_VARIABLE) {

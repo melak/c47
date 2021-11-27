@@ -594,7 +594,7 @@
     }
 
     #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-      if(calcMode == CM_NORMAL || calcMode == CM_PEM || calcMode == CM_MIM) {
+      if(calcMode == CM_NORMAL || calcMode == CM_PEM || calcMode == CM_MIM || calcMode == CM_TIMER) {
         calcModeNormalGui();
       }
       else if(calcMode == CM_AIM) {

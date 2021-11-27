@@ -497,6 +497,7 @@ typedef enum {
 #define CM_CONFIRMATION                           11 // Waiting for confirmation or canceling
 #define CM_MIM                                    12 // Matrix input mode tbd reorder
 #define CM_EIM                                    13 // Equation input mode
+#define CM_TIMER                                  14 // Timer application
 
 // Next character in AIM 2 bits
 #define NC_NORMAL                                  0
@@ -804,6 +805,8 @@ typedef enum {
 #define ASSIGN_LABELS                          12000
 #define ASSIGN_RESERVED_VARIABLES                  (ASSIGN_NAMED_VARIABLES + FIRST_RESERVED_VARIABLE - FIRST_NAMED_VARIABLE)
 #define ASSIGN_USER_MENU                     (-10000)
+
+#define TIMER_APP_STOPPED                          0xFFFFFFFFu
 
 #ifndef DMCP_BUILD
   #define LCD_SET_VALUE                            0 // Black pixel

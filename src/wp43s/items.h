@@ -1456,7 +1456,7 @@
 #define MNU_ELLIPT                    1397
 #define MNU_MVAR                      1398
 #define MNU_EQ_EDIT                   1399
-#define MNU_1400                      1400
+#define MNU_TIMERF                    1400
 #define MNU_1401                      1401
 #define MNU_1402                      1402
 #define MNU_1403                      1403
@@ -1839,7 +1839,12 @@
 
 #define ITM_atan2                     1775
 
-#define LAST_ITEM                     1776
+#define ITM_TIMER_ADD                 1776
+#define ITM_TIMER_0_1S                1777
+#define ITM_TIMER_RESET               1778
+#define ITM_TIMER_RCL                 1779
+
+#define LAST_ITEM                     1780
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

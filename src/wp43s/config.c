@@ -871,6 +871,12 @@ void fnReset(uint16_t confirmation) {
     numberOfFormulae = 0;
     currentFormula = 0;
 
+    // Timer application
+    timerCraAndDeciseconds = 0x80u;
+    timerValue             = 0u;
+    timerStartTime         = TIMER_APP_STOPPED;
+    timerTotalTime         = 0u;
+
     #if (DEBUG_PANEL == 1)
       debugWindow = DBG_REGISTERS;
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkHexaString), false);

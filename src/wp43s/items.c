@@ -746,6 +746,11 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnTvmBeginMode              (uint16_t unusedButMandatoryParameter) {}
   void fnTvmEndMode                (uint16_t unusedButMandatoryParameter) {}
   void fnAssign                    (uint16_t unusedButMandatoryParameter) {}
+  void fnTimer                     (uint16_t unusedButMandatoryParameter) {}
+  void fnAddTimerApp               (uint16_t unusedButMandatoryParameter) {}
+  void fnDecisecondTimerApp        (uint16_t unusedButMandatoryParameter) {}
+  void fnResetTimerApp             (uint16_t unusedButMandatoryParameter) {}
+  void fnRecallTimerApp            (uint16_t unusedButMandatoryParameter) {}
 #endif // GENERATE_CATALOGS
 
 TO_QSPI const item_t indexOfItems[] = {
@@ -2188,7 +2193,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1397 */  { itemToBeCoded,                NOPARAM,                     "ELLIPT",                                      "Ellipt",                                      (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED},
 /* 1398 */  { itemToBeCoded,                NOPARAM,                     "MVAR",                                        "MVAR",                                        (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED}, // solver variables
 /* 1399 */  { itemToBeCoded,                NOPARAM,                     "EQ.EDIT",                                     "EQ.EDIT",                                     (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED},
-/* 1400 */  { itemToBeCoded,                NOPARAM,                     "1400",                                        "1400",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED},
+/* 1400 */  { itemToBeCoded,                NOPARAM,                     "TIMERF",                                      "TIMERF",                                      (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED},
 /* 1401 */  { itemToBeCoded,                NOPARAM,                     "1401",                                        "1401",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED},
 /* 1402 */  { itemToBeCoded,                NOPARAM,                     "1402",                                        "1402",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED},
 /* 1403 */  { itemToBeCoded,                NOPARAM,                     "1403",                                        "1403",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED},
@@ -2413,7 +2418,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1619 */  { fnDisplayFormatTime,          TM_VALUE,                    "TDISP",                                       "TDISP",                                       (0 << TAM_MAX_BITS) |     6, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED},
 /* 1620 */  { fnTicks,                      NOPARAM,                     "TICKS",                                       "TICKS",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED},
 /* 1621 */  { fnTime,                       NOPARAM,                     "TIME",                                        "TIME",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED},
-/* 1622 */  { itemToBeCoded,                NOPARAM,                     "TIMER",                                       "TIMER",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED},
+/* 1622 */  { fnTimer,                      NOPARAM,                     "TIMER",                                       "TIMER",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED},
 /* 1623 */  { fnChebyshevT,                 NOPARAM,                     "T" STD_SUB_n,                                 "T" STD_SUB_n,                                 (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_ENABLED },
 /* 1624 */  { fnTone,                       TM_VALUE,                    "TONE",                                        "TONE",                                        (0 << TAM_MAX_BITS) |     9, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED},
 /* 1625 */  { fnSwapT,                      TM_REGISTER,                 "t" STD_LEFT_RIGHT_ARROWS,                     "t" STD_LEFT_RIGHT_ARROWS,                     (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED},
@@ -2572,5 +2577,10 @@ TO_QSPI const item_t indexOfItems[] = {
 
 /* 1775 */  { fnAtan2,                      NOPARAM,                     "atan2",                                       "atan2",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_ENABLED },
 
-/* 1776 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
+/* 1776 */  { fnAddTimerApp,                NOPARAM,                     "",                                            "ADD",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED},
+/* 1777 */  { fnDecisecondTimerApp,         NOPARAM,                     "",                                            "0.1s?",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED},
+/* 1778 */  { fnResetTimerApp,              NOPARAM,                     "",                                            "RESET",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED},
+/* 1779 */  { fnRecallTimerApp,             TM_REGISTER,                 "RCL",                                         "",                                          (0 << TAM_MAX_BITS) |    99, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED},
+
+/* 1780 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
 };

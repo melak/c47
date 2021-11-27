@@ -39,7 +39,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         61  // Save MyMenu and MyAlpha
+#define BACKUP_VERSION         62  // Save timer application status
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -265,6 +265,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&numberOfUserMenus,                  sizeof(numberOfUserMenus),                  BACKUP);
     save(&currentUserMenu,                    sizeof(currentUserMenu),                    BACKUP);
     save(&userKeyLabelSize,                   sizeof(userKeyLabelSize),                   BACKUP);
+    save(&timerCraAndDeciseconds,             sizeof(timerCraAndDeciseconds),             BACKUP);
+    save(&timerValue,                         sizeof(timerValue),                         BACKUP);
+    save(&timerTotalTime,                     sizeof(timerTotalTime),                     BACKUP);
 
 
     fclose(BACKUP);
@@ -478,6 +481,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&numberOfUserMenus,                  sizeof(numberOfUserMenus),                  BACKUP);
       restore(&currentUserMenu,                    sizeof(currentUserMenu),                    BACKUP);
       restore(&userKeyLabelSize,                   sizeof(userKeyLabelSize),                   BACKUP);
+      restore(&timerCraAndDeciseconds,             sizeof(timerCraAndDeciseconds),             BACKUP);
+      restore(&timerValue,                         sizeof(timerValue),                         BACKUP);
+      restore(&timerTotalTime,                     sizeof(timerTotalTime),                     BACKUP);
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
@@ -502,6 +508,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_MIM)                   {mimRestore();}
         else if(calcMode == CM_EIM)                   {}
         else if(calcMode == CM_ASSIGN)                {}
+        else if(calcMode == CM_TIMER)                 {}
         else {
           sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
           displayBugScreen(errorMessage);
@@ -518,6 +525,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_MIM)                   {calcModeNormalGui(); mimRestore();}
         else if(calcMode == CM_EIM)                   {calcModeAimGui();}
         else if(calcMode == CM_ASSIGN)                {calcModeNormalGui();}
+        else if(calcMode == CM_TIMER)                 {calcModeNormalGui();}
         else {
           sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
           displayBugScreen(errorMessage);

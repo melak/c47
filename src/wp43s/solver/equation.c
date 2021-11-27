@@ -20,6 +20,7 @@
 
 #include "solver/equation.h"
 
+#include "constantPointers.h"
 #include "charString.h"
 #include "defines.h"
 #include "error.h"
@@ -514,8 +515,13 @@ static void _menuF6(char *bufPtr) {
 #define PARSER_HINT_VARIABLE 3
 #define PARSER_HINT_REGULAR  (stringGlyphLength(buffer) == numericCount ? PARSER_HINT_NUMERIC : PARSER_HINT_VARIABLE)
 
-//#define PARSER_OPERATOR_STACK_SIZE (getSystemFlag(FLAG_SSIZE8) ? 8 : 4)
-#define PARSER_OPERATOR_STACK_SIZE (getSystemFlag(FLAG_SSIZE8) ? 8 : 4)
+//#define PARSER_OPERATOR_STACK_SIZE   (getSystemFlag(FLAG_SSIZE8) ? 8 : 4)
+#define PARSER_OPERATOR_STACK_SIZE   10 /* (200 - 16) / 18 */
+#define PARSER_OPERATOR_STACK        ((uint16_t *)mvarBuffer)
+#define PARSER_NUMERIC_STACK_SIZE    PARSER_OPERATOR_STACK_SIZE
+#define PARSER_NUMERIC_STACK         ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t)))
+#define PARSER_LEFT_VALUE            ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2))
+#define PARSER_NUMERIC_STACK_POINTER ((uint8_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t) * (1 + PARSER_NUMERIC_STACK_SIZE)))
 
 #define PARSER_OPERATOR_ITM_PARENTHESIS_LEFT   5000
 #define PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT  5001
@@ -550,10 +556,84 @@ static uint32_t _operatorPriority(uint16_t func) {
       return 3;
   }
 }
+static void _pushNumericStack(char *mvarBuffer, const real34_t *val) {
+  if((*PARSER_NUMERIC_STACK_POINTER) < PARSER_NUMERIC_STACK_SIZE) {
+    real34Copy(val, &PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER]);
+    ++(*PARSER_NUMERIC_STACK_POINTER);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      moreInfoOnError("In function parseEquation:", "numeric stack overflow!", NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+}
+static void _popNumericStack(char *mvarBuffer, const real34_t *val) {
+  if((*PARSER_NUMERIC_STACK_POINTER) > 0) {
+    --(*PARSER_NUMERIC_STACK_POINTER);
+    real34Copy(&PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER], val);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      moreInfoOnError("In function parseEquation:", "numeric stack is empty!", NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    realToReal34(const_NaN, val);
+  }
+}
+static void _runDyadicFunction(char *mvarBuffer, uint16_t item) {
+  liftStack();
+  clearRegister(REGISTER_X);
+  liftStack();
+  _popNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X));
+  _popNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_Y));
+  runFunction(item);
+  fnToReal(NOPARAM);
+  _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X));
+  fnDrop(NOPARAM);
+}
+static void _runMonadicFunction(char *mvarBuffer, uint16_t item) {
+  liftStack();
+  clearRegister(REGISTER_X);
+  _popNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X));
+  runFunction(item);
+  fnToReal(NOPARAM);
+  _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X));
+  fnDrop(NOPARAM);
+}
+static void _runEqFunction(char *mvarBuffer, uint16_t item) {
+  switch(item) {
+    case PARSER_OPERATOR_ITM_YX: // dyadic functions
+    case ITM_COMB:
+    case ITM_PERM:
+    case ITM_YX:
+    case ITM_LOGXY:
+    case ITM_ADD:
+    case ITM_SUB:
+    case ITM_MULT:
+    case ITM_DIV:
+    case ITM_IDIV:
+    case ITM_MOD:
+    case ITM_MAX:
+    case ITM_MIN:
+    case ITM_RMD:
+    case ITM_HN:
+    case ITM_HNP:
+    case ITM_Lm:
+    case ITM_LmALPHA:
+    case ITM_Pn:
+    case ITM_Tn:
+    case ITM_Un:
+      _runDyadicFunction(mvarBuffer, item);
+      break;
+    default: // monadic functions
+      _runMonadicFunction(mvarBuffer, item);
+  }
+}
 static void _processOperator(uint16_t func, char *mvarBuffer) {
   uint32_t opStackTop = 0xffffffffu;
-  for(uint32_t i = 0; i <= PARSER_OPERATOR_STACK_SIZE; ++i) {
-    if((i == PARSER_OPERATOR_STACK_SIZE) || (((uint16_t *)mvarBuffer)[i] == 0)) {
+  for(uint32_t i = 0; i < PARSER_OPERATOR_STACK_SIZE; ++i) {
+    if((i == PARSER_OPERATOR_STACK_SIZE) || (PARSER_OPERATOR_STACK[i] == 0)) {
       opStackTop = i;
       break;
     }
@@ -563,7 +643,7 @@ static void _processOperator(uint16_t func, char *mvarBuffer) {
     /* closing parenthesis, equal, or end of formula */
     if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT || func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT || func == PARSER_OPERATOR_ITM_EQUAL || func == PARSER_OPERATOR_ITM_END_OF_FORMULA) {
       for(int32_t i = (int32_t)opStackTop - 1; i >= 0; --i) {
-        switch(((uint16_t *)mvarBuffer)[i]) {
+        switch(PARSER_OPERATOR_STACK[i]) {
           case PARSER_OPERATOR_ITM_PARENTHESIS_LEFT:
             if(func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT) {
               displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -573,7 +653,7 @@ static void _processOperator(uint16_t func, char *mvarBuffer) {
             }
             break;
           case PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT:
-            runFunction(ITM_ABS);
+            _runEqFunction(mvarBuffer, ITM_ABS);
             if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT) {
               displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
               #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -582,25 +662,25 @@ static void _processOperator(uint16_t func, char *mvarBuffer) {
             }
             break;
           case PARSER_OPERATOR_ITM_YX:
-            runFunction(ITM_YX);
+            _runEqFunction(mvarBuffer, ITM_YX);
             break;
           case PARSER_OPERATOR_ITM_XFACT:
-            runFunction(ITM_XFACT);
+            _runEqFunction(mvarBuffer, ITM_XFACT);
             break;
           default:
-            runFunction(((uint16_t *)mvarBuffer)[i]);
+            _runEqFunction(mvarBuffer, PARSER_OPERATOR_STACK[i]);
         }
-        switch(((uint16_t *)mvarBuffer)[i]) {
+        switch(PARSER_OPERATOR_STACK[i]) {
           case ITM_ADD:
           case ITM_SUB:
           case ITM_MULT:
           case ITM_DIV:
           case PARSER_OPERATOR_ITM_YX:
           case PARSER_OPERATOR_ITM_XFACT:
-            ((uint16_t *)mvarBuffer)[i] = 0;
+            PARSER_OPERATOR_STACK[i] = 0;
             break;
           default:
-            ((uint16_t *)mvarBuffer)[i] = 0;
+            PARSER_OPERATOR_STACK[i] = 0;
             if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT || func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT) return;
             displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
             #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -624,21 +704,21 @@ static void _processOperator(uint16_t func, char *mvarBuffer) {
           break;
         case PARSER_OPERATOR_ITM_EQUAL:
           fnToReal(NOPARAM);
-          real34Copy(REGISTER_REAL34_DATA(REGISTER_X), (real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2));
+          _popNumericStack(mvarBuffer, PARSER_LEFT_VALUE);
           break;
         default:
           setSystemFlag(FLAG_ASLIFT);
           liftStack();
           reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-          real34Copy((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2), REGISTER_REAL34_DATA(REGISTER_X));
-          runFunction(ITM_SUB);
+          real34Subtract(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) - 1], PARSER_LEFT_VALUE, REGISTER_REAL34_DATA(REGISTER_X));
+          --(*PARSER_NUMERIC_STACK_POINTER);
       }
       return;
     }
 
     /* stack is empty */
     if(opStackTop == 0) {
-      ((uint16_t *)mvarBuffer)[0] = func;
+      PARSER_OPERATOR_STACK[0] = func;
       return;
     }
 
@@ -647,18 +727,18 @@ static void _processOperator(uint16_t func, char *mvarBuffer) {
 
       /* factorial */
       if(func == PARSER_OPERATOR_ITM_XFACT) {
-        runFunction(ITM_XFACT);
+        _runEqFunction(mvarBuffer, ITM_XFACT);
         return;
       }
 
       /* push an operator */
       else if(
-        (_operatorPriority(((uint16_t *)mvarBuffer)[i - 1]) < 4) || /* parenthesis */
-        (_operatorPriority(((uint16_t *)mvarBuffer)[i - 1]) & (~1u)) > (_operatorPriority(func) & (~1u)) || /* higher priority */
-        ((_operatorPriority(((uint16_t *)mvarBuffer)[i - 1]) & (~1u)) == (_operatorPriority(func) & (~1u)) && (_operatorPriority(func) & 1) /* same priority and right-associative */ )
+        (_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) < 4) || /* parenthesis */
+        (_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) > (_operatorPriority(func) & (~1u)) || /* higher priority */
+        ((_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) == (_operatorPriority(func) & (~1u)) && (_operatorPriority(func) & 1) /* same priority and right-associative */ )
       ) {
         if(i < PARSER_OPERATOR_STACK_SIZE) {
-          ((uint16_t *)mvarBuffer)[i] = func;
+          PARSER_OPERATOR_STACK[i] = func;
         }
         else {
           displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -671,15 +751,15 @@ static void _processOperator(uint16_t func, char *mvarBuffer) {
 
       /* pop an operator */
       else {
-        runFunction(((uint16_t *)mvarBuffer)[i - 1] == PARSER_OPERATOR_ITM_YX ? ITM_YX :
-                    ((uint16_t *)mvarBuffer)[i - 1] == PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT ? ITM_ABS :
-                    ((uint16_t *)mvarBuffer)[i - 1]);
+        _runEqFunction(mvarBuffer, PARSER_OPERATOR_STACK[i - 1] == PARSER_OPERATOR_ITM_YX ? ITM_YX :
+                                   PARSER_OPERATOR_STACK[i - 1] == PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT ? ITM_ABS :
+                                   PARSER_OPERATOR_STACK[i - 1]);
         if(i == 1) {
-          ((uint16_t *)mvarBuffer)[i - 1] = func;
+          PARSER_OPERATOR_STACK[i - 1] = func;
           return;
         }
         else {
-          ((uint16_t *)mvarBuffer)[i - 1] = 0;
+          PARSER_OPERATOR_STACK[i - 1] = 0;
         }
       }
 
@@ -747,16 +827,20 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
       if(parserHint == PARSER_HINT_VARIABLE) {
         if(compareString(STD_pi, strPtr, CMP_BINARY) == 0) { // check for pi
           runFunction(ITM_CONSTpi);
+          _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X));
           return;
         }
         for(uint32_t i = CST_01; i <= CST_79; ++i) { // check for constants
           if(compareString(indexOfItems[i].itemCatalogName, strPtr, CMP_BINARY) == 0) {
             runFunction(i);
+            _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X));
             return;
           }
         }
         if(validateName(strPtr)) {
           reallyRunFunction(ITM_RCL, findNamedVariable(strPtr));
+          fnToReal(NOPARAM);
+          _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X));
         }
         else {
           displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -766,10 +850,9 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
         }
       }
       else if(parserHint == PARSER_HINT_NUMERIC) {
-        liftStack();
-        setSystemFlag(FLAG_ASLIFT);
-        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        stringToReal34(strPtr, REGISTER_REAL34_DATA(REGISTER_X));
+        real34_t val;
+        stringToReal34(strPtr, &val);
+        _pushNumericStack(mvarBuffer, &val);
       }
       else if(parserHint == PARSER_HINT_OPERATOR) {
         if(compareString("+", strPtr, CMP_BINARY) == 0) {
@@ -851,8 +934,14 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
   int16_t numericCount = 0;
   bool_t equalAppeared = false, labeled = false, afterClosingParenthesis = false, unaryMinusCanOccur = true, afterSpace = false;
 
-  for(uint32_t i = 0; i < (PARSER_OPERATOR_STACK_SIZE * 2); ++i) mvarBuffer[i] = 0;
-  real34Zero((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2));
+  for(uint32_t i = 0; i < PARSER_OPERATOR_STACK_SIZE; ++i) {
+    PARSER_OPERATOR_STACK[i] = 0;
+  }
+  real34Zero(PARSER_LEFT_VALUE);
+  for(uint32_t i = 0; i < PARSER_NUMERIC_STACK_SIZE; ++i) {
+    realToReal34(const_NaN, &PARSER_NUMERIC_STACK[i]);
+  }
+  *PARSER_NUMERIC_STACK_POINTER = 0;
   if(parseMode == EQUATION_PARSER_XEQ) {
     fnClearStack(NOPARAM);
   }

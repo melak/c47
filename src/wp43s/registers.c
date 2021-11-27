@@ -581,28 +581,28 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
 
 
 
-bool_t validateName(const char *variableName) {
-  if(stringGlyphLength(variableName)  > 7) return false; // Given name is too long
-  if(stringGlyphLength(variableName) == 0) return false; // Given name is empty
+bool_t validateName(const char *name) {
+  if(stringGlyphLength(name)  > 7) return false; // Given name is too long
+  if(stringGlyphLength(name) == 0) return false; // Given name is empty
 
   // Check for the 1st character
-  if(                                                  compareChar(variableName, STD_A                   ) < 0) return false;
-  if(compareChar(variableName, STD_Z          ) > 0 && compareChar(variableName, STD_a                   ) < 0) return false;
-  if(compareChar(variableName, STD_Z          ) > 0 && compareChar(variableName, STD_a                   ) < 0) return false;
-  if(compareChar(variableName, STD_z          ) > 0 && compareChar(variableName, STD_A_GRAVE             ) < 0) return false;
-  if(                                                  compareChar(variableName, STD_CROSS               ) ==0) return false;
-  if(                                                  compareChar(variableName, STD_DIVIDE              ) ==0) return false;
-  if(compareChar(variableName, STD_z_CARON    ) > 0 && compareChar(variableName, STD_iota_DIALYTIKA_TONOS) < 0) return false;
-  if(compareChar(variableName, STD_omega_TONOS) > 0 && compareChar(variableName, STD_SUP_x               ) < 0) return false;
-  if(compareChar(variableName, STD_SUP_x      ) > 0 && compareChar(variableName, STD_SUB_alpha           ) < 0) return false;
-  if(compareChar(variableName, STD_SUB_mu     ) > 0 && compareChar(variableName, STD_SUB_h               ) < 0) return false;
-  if(compareChar(variableName, STD_SUB_h      ) > 0 && compareChar(variableName, STD_SUB_t               ) < 0) return false;
-  if(compareChar(variableName, STD_SUB_t      ) > 0 && compareChar(variableName, STD_SUB_a               ) < 0) return false;
-  if(compareChar(variableName, STD_SUB_Z      ) > 0                                                           ) return false;
+  if(                                          compareChar(name, STD_A                   ) < 0) return false;
+  if(compareChar(name, STD_Z          ) > 0 && compareChar(name, STD_a                   ) < 0) return false;
+  if(compareChar(name, STD_Z          ) > 0 && compareChar(name, STD_a                   ) < 0) return false;
+  if(compareChar(name, STD_z          ) > 0 && compareChar(name, STD_A_GRAVE             ) < 0) return false;
+  if(                                          compareChar(name, STD_CROSS               ) ==0) return false;
+  if(                                          compareChar(name, STD_DIVIDE              ) ==0) return false;
+  if(compareChar(name, STD_z_CARON    ) > 0 && compareChar(name, STD_iota_DIALYTIKA_TONOS) < 0) return false;
+  if(compareChar(name, STD_omega_TONOS) > 0 && compareChar(name, STD_SUP_x               ) < 0) return false;
+  if(compareChar(name, STD_SUP_x      ) > 0 && compareChar(name, STD_SUB_alpha           ) < 0) return false;
+  if(compareChar(name, STD_SUB_mu     ) > 0 && compareChar(name, STD_SUB_h               ) < 0) return false;
+  if(compareChar(name, STD_SUB_h      ) > 0 && compareChar(name, STD_SUB_t               ) < 0) return false;
+  if(compareChar(name, STD_SUB_t      ) > 0 && compareChar(name, STD_SUB_a               ) < 0) return false;
+  if(compareChar(name, STD_SUB_Z      ) > 0                                                           ) return false;
 
   // Check for the following characters
-  for(variableName += (*variableName & 0x80) ? 2 : 1; *variableName != 0; variableName += (*variableName & 0x80) ? 2 : 1) {
-    switch(*variableName) {
+  for(name += (*name & 0x80) ? 2 : 1; *name != 0; name += (*name & 0x80) ? 2 : 1) {
+    switch(*name) {
       case '+':
       case '-':
       case ':':
@@ -615,7 +615,39 @@ bool_t validateName(const char *variableName) {
       case ' ':
         return false;
       default:
-        if(compareChar(variableName, STD_CROSS) == 0) return false;
+        if(compareChar(name, STD_CROSS) == 0) return false;
+    }
+  }
+
+  return true;
+}
+
+
+
+bool_t isUniqueName(const char *name) {
+  // Built-in items
+  for(uint32_t i = 0; i < LAST_ITEM; ++i) {
+    switch(indexOfItems[i].status & CAT_STATUS) {
+      case CAT_FNCT:
+      case CAT_MENU:
+      case CAT_CNST:
+      case CAT_RVAR:
+      case CAT_SYFL:
+        if(compareString(name, indexOfItems[i].itemCatalogName, CMP_EXTENSIVE) == 0) {
+          return false;
+        }
+    }
+  }
+
+  // Variable menus
+  if(findNamedVariable(name) != INVALID_VARIABLE) {
+    return false;
+  }
+
+  // User menus
+  for(uint32_t i = 0; i < numberOfUserMenus; ++i) {
+    if(compareString(name, userMenus[i].menuName, CMP_EXTENSIVE) == 0) {
+      return false;
     }
   }
 
@@ -746,6 +778,14 @@ calcRegister_t findOrAllocateNamedVariable(const char *variableName) {
   }
   regist = findNamedVariable(variableName);
   if(regist == INVALID_VARIABLE && numberOfNamedVariables <= (LAST_NAMED_VARIABLE - FIRST_NAMED_VARIABLE)) {
+    if(!isUniqueName(variableName)) {
+      displayCalcErrorMessage(ERROR_ENTER_NEW_NAME, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      #ifdef PC_BUILD
+        sprintf(errorMessage, "the name %s", variableName);
+        moreInfoOnError("In function allocateNamedVariable:", errorMessage, "is already in use!", NULL);
+      #endif // PC_BUILD
+      return regist;
+    }
     allocateNamedVariable(variableName, dtReal34, REAL34_SIZE);
     if(lastErrorCode == ERROR_NONE) {
       // New variables are zero by default - although this might be immediately overridden, it might require an

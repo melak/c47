@@ -95,10 +95,17 @@ void           allocateLocalRegisters          (uint16_t n);
 /**
  * Check if the given name follows the naming convention
  *
- * \param[in] variableName         Variable name
+ * \param[in] name                 Name of variable/label/menu
  * \return `true` if given name is valid, `false` otherwise
  */
-bool_t         validateName                    (const char *variableName);
+bool_t         validateName                    (const char *name);
+/**
+ * Check if the given name is not yet in use
+ *
+ * \param[in] name                 Name of variable/label/menu
+ * \return `true` if given name is unique, `false` if duplicate
+ */
+bool_t         isUniqueName                    (const char *name);
 /**
  * Allocates one named variable.
  *
