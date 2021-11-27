@@ -16,6 +16,7 @@
 
 #include "screen.h"
 
+#include "assign.h"
 #include "browsers/browsers.h"
 #include "bufferize.h"
 #include "charString.h"
@@ -23,6 +24,7 @@
 #include "curveFitting.h"
 #include "dateTime.h"
 #include "debug.h"
+#include "defines.h"
 #include "display.h"
 #include "error.h"
 #include "flags.h"
@@ -476,6 +478,7 @@
       showFunctionNameCounter -= SCREEN_REFRESH_PERIOD;
       if(showFunctionNameCounter <= 0) {
         hideFunctionName();
+        tmpString[0] = 0;
         showFunctionName(ITM_NOP, 0);
       }
     }
@@ -528,6 +531,7 @@
       showFunctionNameCounter -= FAST_SCREEN_REFRESH_PERIOD;
       if(showFunctionNameCounter <= 0) {
         hideFunctionName();
+        tmpString[0] = 0;
         showFunctionName(ITM_NOP, 0);
       }
     }
@@ -540,9 +544,10 @@
         showDateTime();
       #endif // (DEBUG_INSTEAD_STATUS_BAR != 1)
 
-      if(!getSystemFlag(FLAG_AUTOFF)) {
+      if(!getSystemFlag(FLAG_AUTOFF) || timerStartTime != TIMER_APP_STOPPED) {
         reset_auto_off();
       }
+      fnPollTimerApp();
 
 
     }
@@ -830,7 +835,10 @@
   void showFunctionName(int16_t item, int16_t delayInMs) {
     uint32_t fcol, frow, gcol, grow;
     char *functionName;
-    if(item != MNU_DYNAMIC) {
+    if(tmpString[0] != 0) {
+      functionName = tmpString;
+    }
+    else if(item != MNU_DYNAMIC) {
       functionName = indexOfItems[abs(item)].itemCatalogName;
     }
     else {
@@ -855,7 +863,7 @@
 
   void hideFunctionName(void) {
     uint32_t col, row;
-    getStringBounds(indexOfItems[abs(showFunctionNameItem)].itemCatalogName, &standardFont, &col, &row);
+    getStringBounds(tmpString[0] != 0 ? tmpString : indexOfItems[abs(showFunctionNameItem)].itemCatalogName, &standardFont, &col, &row);
     lcd_fill_rect(1, Y_POSITION_OF_REGISTER_T_LINE+6, col, row, LCD_SET_VALUE);
     showFunctionNameItem = 0;
     showFunctionNameCounter = 0;
@@ -1988,15 +1996,21 @@
 
 
 
-  static void displayShiftAndTamBuffer(void) {
-    if(shiftF) {
-      showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
-    }
-    else if(shiftG) {
-      showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
+  void displayShiftAndTamBuffer(void) {
+    if(calcMode == CM_ASSIGN) {
+      updateAssignTamBuffer();
     }
 
-    if(tam.mode) {
+    if(calcMode != CM_ASSIGN || itemToBeAssigned == 0) {
+      if(shiftF) {
+        showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
+      }
+      else if(shiftG) {
+        showGlyph(STD_SUP_g, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // g is pixel 4+10+1 wide
+      }
+    }
+
+    if(tam.mode || calcMode == CM_ASSIGN) {
       if(calcMode == CM_PEM) { // Variable line to display TAM informations
         lcd_fill_rect(45+20, tamOverPemYPos, 168, 20, LCD_SET_VALUE);
         showString(tamBuffer, &standardFont, 75+20, tamOverPemYPos, vmNormal,  false, false);
@@ -2052,10 +2066,11 @@
       case CM_ASSIGN:
       case CM_ERROR_MESSAGE:
       case CM_CONFIRMATION:
+      case CM_TIMER:
         //clearScreen();
 
         // The ordering of the 4 lines below is important for SHOW (temporaryInformation == TI_SHOW_REGISTER)
-        if(temporaryInformation != TI_VIEW) refreshRegisterLine(REGISTER_T);
+        if(calcMode != CM_TIMER && temporaryInformation != TI_VIEW) refreshRegisterLine(REGISTER_T);
         refreshRegisterLine(REGISTER_Z);
         refreshRegisterLine(REGISTER_Y);
         refreshRegisterLine(REGISTER_X);
@@ -2065,6 +2080,9 @@
         }
         if(calcMode == CM_MIM) {
           showMatrixEditor();
+        }
+        if(calcMode == CM_TIMER) {
+          fnShowTimerApp();
         }
         if(currentSolverStatus & SOLVER_STATUS_INTERACTIVE) {
           bool_t mvarMenu = false;

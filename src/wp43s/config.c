@@ -829,6 +829,16 @@ void fnReset(uint16_t confirmation) {
     lastIntegerBase = 0;
     temporaryInformation = TI_RESET;
 
+    memset(userMenuItems,  0, sizeof(userMenuItem_t) * 18);
+    memset(userAlphaItems, 0, sizeof(userMenuItem_t) * 18);
+    userMenus = NULL;
+    numberOfUserMenus = 0;
+    currentUserMenu = 0;
+    userKeyLabelSize = 37/*keys*/ * 6/*states*/ * 1/*byte terminator*/ + 1/*byte sentinel*/;
+    userKeyLabel = allocWp43s(TO_BLOCKS(userKeyLabelSize));
+    memset(userKeyLabel,   0, TO_BYTES(TO_BLOCKS(userKeyLabelSize)));
+
+
     #ifdef DMCP_BUILD //JM temporary USER mode setup to run standard 43S on C43 template. Only change is this. SIN changes to TRIG; COS to f; TAN to g. Yellow shift remain normal f. C43 specific menus just fall away.
       fnSetFlag(FLAG_USER);
 
@@ -905,6 +915,12 @@ void fnReset(uint16_t confirmation) {
     allFormulae = NULL;
     numberOfFormulae = 0;
     currentFormula = 0;
+
+    // Timer application
+    timerCraAndDeciseconds = 0x80u;
+    timerValue             = 0u;
+    timerStartTime         = TIMER_APP_STOPPED;
+    timerTotalTime         = 0u;
 
     #if (DEBUG_PANEL == 1)
       debugWindow = DBG_REGISTERS;

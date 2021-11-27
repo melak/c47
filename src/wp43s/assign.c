@@ -15,8 +15,17 @@
  */
 
 #include "assign.h"
+#include "charString.h"
+#include "error.h"
+#include "fonts.h"
 #include "items.h"
+#include "memory.h"
+#include "registers.h"
+#include "screen.h"
+#include "softmenus.h"
+#include "sort.h"
 #include "wp43s.h"
+#include <string.h>
 
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std[37] = {
@@ -66,3 +75,217 @@ TO_QSPI const calcKey_t kbd_std[37] = {
  {85,   ITM_EXIT,       -MNU_CATALOG,     ITM_OFF,         ITM_EXIT,        ITM_EXIT,         -MNU_CATALOG,           ITM_OFF,       ITM_EXIT     }
 //keyId primary          fShifted         gShifted         keyLblAim        primaryAim         fShiftedAim            gShiftedAim    primaryTam
 };
+
+
+
+void fnAssign(uint16_t mode) {
+  if(mode) {
+    createMenu(aimBuffer);
+    aimBuffer[0] = 0;
+  }
+  else {
+    previousCalcMode = calcMode;
+    calcMode = CM_ASSIGN;
+    itemToBeAssigned = 0;
+    updateAssignTamBuffer();
+  }
+}
+
+
+
+void updateAssignTamBuffer(void) {
+  char *tbPtr = tamBuffer;
+  tbPtr = stpcpy(tbPtr, "ASSIGN ");
+
+  if(itemToBeAssigned == 0) {
+    tbPtr = stpcpy(tbPtr, "_");
+  }
+  else if(itemToBeAssigned >= ASSIGN_LABELS) {
+    uint8_t *lblPtr = labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer;
+    uint32_t count = *(lblPtr++);
+    for(uint32_t i = 0; i < count; ++i) {
+      *(tbPtr++) = *(lblPtr++);
+    }
+  }
+  else if(itemToBeAssigned >= ASSIGN_RESERVED_VARIABLES) {
+    tbPtr = stpcpy(tbPtr, (char *)allReservedVariables[itemToBeAssigned - ASSIGN_RESERVED_VARIABLES].reservedVariableName + 1);
+  }
+  else if(itemToBeAssigned >= ASSIGN_NAMED_VARIABLES) {
+    tbPtr = stpcpy(tbPtr, (char *)allNamedVariables[itemToBeAssigned - ASSIGN_NAMED_VARIABLES].variableName + 1);
+  }
+  else if(itemToBeAssigned <= ASSIGN_USER_MENU) {
+    tbPtr = stpcpy(tbPtr, userMenus[-(itemToBeAssigned - ASSIGN_USER_MENU)].menuName);
+  }
+  else if(itemToBeAssigned < 0) {
+    tbPtr = stpcpy(tbPtr, indexOfItems[-itemToBeAssigned].itemCatalogName);
+  }
+  else if(indexOfItems[itemToBeAssigned].itemCatalogName[0] == 0) {
+    tbPtr = stpcpy(tbPtr, indexOfItems[itemToBeAssigned].itemSoftmenuName);
+  }
+  else if(itemToBeAssigned == ITM_ENTER) {
+    tbPtr = stpcpy(tbPtr, "NULL");
+  }
+  else {
+    tbPtr = stpcpy(tbPtr, indexOfItems[itemToBeAssigned].itemCatalogName);
+  }
+
+  tbPtr = stpcpy(tbPtr, " ");
+  if(itemToBeAssigned != 0 && shiftF) {
+    tbPtr = stpcpy(tbPtr, STD_SUP_f STD_CURSOR);
+  }
+  else if(itemToBeAssigned != 0 && shiftG) {
+    tbPtr = stpcpy(tbPtr, STD_SUP_g STD_CURSOR);
+  }
+  else {
+    tbPtr = stpcpy(tbPtr, "_");
+  }
+}
+
+
+
+static void _assignItem(userMenuItem_t *menuItem) {
+  const uint8_t *lblPtr = NULL;
+  uint32_t l = 0;
+  if(itemToBeAssigned >= ASSIGN_LABELS) {
+    lblPtr                    = labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer;
+    menuItem->item            = ITM_XEQ;
+  }
+  else if(itemToBeAssigned >= ASSIGN_RESERVED_VARIABLES) {
+    lblPtr                    = allReservedVariables[itemToBeAssigned - ASSIGN_RESERVED_VARIABLES].reservedVariableName;
+    menuItem->item            = ITM_RCL;
+  }
+  else if(itemToBeAssigned >= ASSIGN_NAMED_VARIABLES) {
+    lblPtr                    = allNamedVariables[itemToBeAssigned - ASSIGN_NAMED_VARIABLES].variableName;
+    menuItem->item            = ITM_RCL;
+  }
+  else if(itemToBeAssigned <= ASSIGN_USER_MENU) {
+    lblPtr                    = (uint8_t *)userMenus[-(itemToBeAssigned - ASSIGN_USER_MENU)].menuName;
+    menuItem->item            = -MNU_DYNAMIC;
+    xcopy(menuItem->argumentName, (char *)lblPtr, stringByteLength((char *)lblPtr));
+    lblPtr                    = NULL;
+  }
+  else if(itemToBeAssigned == ITM_ENTER) {
+    menuItem->item            = ITM_NULL;
+    menuItem->argumentName[0] = 0;
+  }
+  else {
+    menuItem->item            = itemToBeAssigned;
+    menuItem->argumentName[0] = 0;
+  }
+  if(lblPtr) {
+    l = (uint32_t)(*(lblPtr++));
+    xcopy(menuItem->argumentName, (char *)lblPtr, l);
+    menuItem->argumentName[l] = 0;
+  }
+}
+
+void assignToMyMenu(uint16_t position) {
+  if(position < 18) {
+    _assignItem(&userMenuItems[position]);
+  }
+  cachedDynamicMenu = 0;
+  refreshScreen();
+}
+
+void assignToMyAlpha(uint16_t position) {
+  if(position < 18) {
+    _assignItem(&userAlphaItems[position]);
+  }
+  cachedDynamicMenu = 0;
+  refreshScreen();
+}
+
+void assignToUserMenu(uint16_t position) {
+  if(position < 18) {
+    _assignItem(&userMenus[currentUserMenu].menuItem[position]);
+  }
+  cachedDynamicMenu = 0;
+  refreshScreen();
+}
+
+void assignToKey(const char *data) {
+  int keyCode = (*data - '0')*10 + *(data+1) - '0';
+  calcKey_t *key = kbd_usr + keyCode;
+  userMenuItem_t tmpMenuItem;
+  int keyStateCode = ((previousCalcMode) == CM_AIM ? 3 : 0) + (shiftG ? 2 : shiftF ? 1 : 0);
+
+  _assignItem(&tmpMenuItem);
+  if(tmpMenuItem.item == ITM_NULL) {
+    const calcKey_t *stdKey = kbd_std + keyCode;
+    switch(keyStateCode) {
+      case 5: key->gShiftedAim = stdKey->gShiftedAim; break;
+      case 4: key->fShiftedAim = stdKey->fShiftedAim; break;
+      case 3: key->primaryAim  = stdKey->primaryAim;  break;
+      case 2: key->gShifted    = stdKey->gShifted;    break;
+      case 1: key->fShifted    = stdKey->fShifted;    break;
+      case 0: key->primary     = stdKey->primary;     break;
+    }
+  }
+  else {
+    switch(keyStateCode) {
+      case 5: key->gShiftedAim = tmpMenuItem.item; break;
+      case 4: key->fShiftedAim = tmpMenuItem.item; break;
+      case 3: key->primaryAim  = tmpMenuItem.item; break;
+      case 2: key->gShifted    = tmpMenuItem.item; break;
+      case 1: key->fShifted    = tmpMenuItem.item; break;
+      case 0: key->primary     = tmpMenuItem.item; break;
+    }
+  }
+
+  setUserKeyArgument(keyCode * 6 + keyStateCode, tmpMenuItem.argumentName);
+}
+
+
+
+void setUserKeyArgument(uint16_t position, const char *name) {
+  char *userKeyLabelPtr1 = (char *)getNthString((uint8_t *)userKeyLabel, position);
+  char *userKeyLabelPtr2 = (char *)getNthString((uint8_t *)userKeyLabel, position + 1);
+  char *userKeyLabelPtr3 = (char *)getNthString((uint8_t *)userKeyLabel, 37 * 6);
+  uint16_t newUserKeyLabelSize = userKeyLabelSize - stringByteLength(userKeyLabelPtr1) + stringByteLength(name);
+  char *newUserKeyLabel = allocWp43s(TO_BLOCKS(newUserKeyLabelSize));
+  char *newUserKeyLabelPtr = newUserKeyLabel;
+
+  xcopy(newUserKeyLabelPtr, userKeyLabel, (int)(userKeyLabelPtr1 - userKeyLabel));
+  newUserKeyLabelPtr += (int)(userKeyLabelPtr1 - userKeyLabel);
+  xcopy(newUserKeyLabelPtr, name, stringByteLength(name));
+  newUserKeyLabelPtr += stringByteLength(name);
+  *(newUserKeyLabelPtr++) = 0;
+  xcopy(newUserKeyLabelPtr, userKeyLabelPtr2, (int)(userKeyLabelPtr3 - userKeyLabelPtr2));
+  newUserKeyLabelPtr += (int)(userKeyLabelPtr3 - userKeyLabelPtr2);
+  *(newUserKeyLabelPtr++) = 0;
+
+  freeWp43s(userKeyLabel, TO_BLOCKS(userKeyLabelSize));
+  userKeyLabel = newUserKeyLabel;
+  userKeyLabelSize = newUserKeyLabelSize;
+}
+
+
+
+void createMenu(const char *name) {
+  if(validateName(name)) {
+    if(isUniqueName(name)) {
+      if(numberOfUserMenus == 0) {
+        userMenus = allocWp43s(TO_BLOCKS(sizeof(userMenu_t)));
+      }
+      else {
+        userMenus = reallocWp43s(userMenus, TO_BLOCKS(sizeof(userMenu_t)) * numberOfUserMenus, TO_BLOCKS(sizeof(userMenu_t)) * (numberOfUserMenus + 1));
+      }
+      memset(userMenus + numberOfUserMenus, 0, sizeof(userMenu_t));
+      xcopy(userMenus[numberOfUserMenus].menuName, name, stringByteLength(name));
+      ++numberOfUserMenus;
+    }
+    else {
+      displayCalcErrorMessage(ERROR_ENTER_NEW_NAME, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "the name %s", name);
+        moreInfoOnError("In function fnAssign:", errorMessage, "is already in use!", NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
+  }
+  else {
+    displayCalcErrorMessage(ERROR_INVALID_NAME, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      moreInfoOnError("In function fnAssign:", "the menu", name, "does not follow the naming convention");
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+}

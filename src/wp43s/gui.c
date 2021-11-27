@@ -27,6 +27,7 @@
 #include "saveRestoreCalcState.h"
 #include "screen.h"
 #include "stack.h"
+#include "timer.h"
 #include <string.h>
 
 #include "wp43s.h"
@@ -60,6 +61,7 @@
 
 
   static gint destroyCalc(GtkWidget* w, GdkEventAny* e, gpointer data) {
+    fnStopTimerApp();
     saveCalc();
     gtk_main_quit();
 
@@ -1385,6 +1387,8 @@
     shiftF = false;
     shiftG = false;
 
+    fnStopTimerApp();
+
     #ifdef PC_BUILD
       if(matrixIndex != INVALID_VARIABLE) {
         if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
@@ -1507,7 +1511,7 @@
       else if(calcMode == CM_AIM || (tam.mode && tam.alpha)) {
         calcModeAimGui();
       }
-      else if(calcMode == CM_NORMAL || calcMode == CM_PEM || calcMode == CM_MIM) {
+      else if(calcMode == CM_NORMAL || calcMode == CM_PEM || calcMode == CM_MIM || calcMode == CM_ASSIGN) {
         calcModeNormalGui();
       }
     #endif // PC_BUILD && (SCREEN_800X480 == 0)

@@ -2334,7 +2334,6 @@ void checkCatalogsSorting(void) {
   //compareString(indexOfItems[1048].itemCatalogName, indexOfItems[1049].itemCatalogName, CMP_EXTENSIVE);
   checkOneCatalogSorting(menu_FCNS,       MNU_FCNS,      "FCNS");
   checkOneCatalogSorting(menu_CONST,      MNU_CONST,     "CONST");
-  checkOneCatalogSorting(menu_MENUS,      MNU_MENUS,     "MENUS");
   checkOneCatalogSorting(menu_SYSFL,      MNU_SYSFL,     "SYS.FL");
   checkOneCatalogSorting(menu_alpha_INTL, MNU_ALPHAINTL, "alphaINTL");
   checkOneCatalogSorting(menu_alpha_intl, MNU_ALPHAintl, "alphaIntl");

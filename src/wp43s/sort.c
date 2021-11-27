@@ -23,6 +23,14 @@
 
 
 
+int32_t compareChar(const char *char1, const char *char2) {
+  int16_t code1 = (char1[0] & 0x80) ? ((((uint16_t)(char1[0] & 0x7f)) << 8) | (uint16_t)((uint8_t)(char1)[1])) : char1[0];
+  int16_t code2 = (char2[0] & 0x80) ? ((((uint16_t)(char2[0] & 0x7f)) << 8) | (uint16_t)((uint8_t)(char2)[1])) : char2[0];
+  return (int32_t)code1 - (int32_t)code2;
+}
+
+
+
 int32_t compareString(const char *stra, const char *strb, int32_t comparisonType) {
   int32_t lga, lgb, i;
   int16_t posa, posb, ranka, rankb;
@@ -30,6 +38,35 @@ int32_t compareString(const char *stra, const char *strb, int32_t comparisonType
 
   lga = stringGlyphLength(stra);
   lgb = stringGlyphLength(strb);
+
+  // Compare the string using charCode only
+  if(comparisonType == CMP_BINARY) {
+    posa = 0;
+    posb = 0;
+    for(i=0; i<min(lga, lgb); i++) {
+      charCode = (uint8_t)stra[posa];
+      if(charCode >= 0x80) {
+        charCode = (charCode << 8) + (uint8_t)stra[posa + 1];
+      }
+      ranka = charCode;
+
+      charCode = (uint8_t)strb[posb];
+      if(charCode >= 0x80) {
+        charCode = (charCode << 8) + (uint8_t)strb[posb + 1];
+      }
+      rankb = charCode;
+
+      if(ranka < rankb) return -1;
+      if(ranka > rankb) return 1;
+
+      posa = stringNextGlyph(stra, posa);
+      posb = stringNextGlyph(strb, posb);
+    }
+
+    if(lga < lgb) return -1;
+    if(lga > lgb) return 1;
+    return 0;
+  }
 
   // Compare the string using replacement glyphs
   posa = 0;

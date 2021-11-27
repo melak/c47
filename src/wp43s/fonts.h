@@ -522,6 +522,7 @@ void    generateNotFoundGlyph(const int16_t font, uint16_t charCode);
 #define STD_MAT_TR                    "\xa3\xa4"
 #define STD_MAT_MR                    "\xa3\xa5"
 #define STD_MAT_BR                    "\xa3\xa6"
+#define STD_TIMER                     "\xa3\xf1"
 #define STD_OBLIQUE1                  "\xa4\x21"
 #define STD_OBLIQUE2                  "\xa4\x22"
 #define STD_OPEN_BOX                  "\xa4\x23"

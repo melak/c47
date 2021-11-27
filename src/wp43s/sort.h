@@ -23,6 +23,7 @@
 
 #include <stdint.h>
 
+int32_t compareChar  (const char *char1, const char *char2);
 int32_t compareString(const char *stra, const char *strb, int32_t comparisonType);
 
 #endif // SORT_H

@@ -281,7 +281,7 @@
               xCursor += 2;
               break;
             default:
-              xCursor += 1;
+              xCursor += stringGlyphLength(indexOfItems[item].itemSoftmenuName);
           }
         }
         else {

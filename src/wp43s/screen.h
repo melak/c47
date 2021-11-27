@@ -160,6 +160,7 @@ void       fnScreenDump                       (uint16_t unusedButMandatoryParame
    */
   void     refreshRegisterLine                (calcRegister_t regist);
   void     displayNim                         (const char *nim, const char *lastBase, int16_t wLastBaseNumeric, int16_t wLastBaseStandard);
+  void     displayShiftAndTamBuffer           (void);
 #endif // TESTSUITE_BUILD
 
 #endif // SCREEN_H

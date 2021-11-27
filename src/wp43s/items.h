@@ -1140,7 +1140,7 @@
 #define ITM_CONTOUR_INTEGRAL          1093
 #define ITM_SURFACE_INTEGRAL          1094
 #define ITM_RATIO                     1095
-#define ITM_ROOT_SIGN                 1096
+#define ITM_CHECK_MARK                1096
 #define ITM_ASYMPOTICALLY_EQUAL       1097
 #define ITM_ALMOST_EQUAL              1098
 #define ITM_COLON_EQUALS              1099
@@ -1199,8 +1199,8 @@
 #define ITM_PAIR_OF_PARENTHESES       1152
 #define ITM_VERTICAL_BAR              1153
 #define ITM_ALOG_SYMBOL               1154
-#define ITM_1155                      1155
-#define ITM_1156                      1156
+#define ITM_ROOT_SIGN                 1155
+#define ITM_TIMER_SYMBOL              1156
 #define ITM_1157                      1157
 #define ITM_1158                      1158
 #define ITM_1159                      1159
@@ -1456,7 +1456,7 @@
 #define MNU_ELLIPT                    1397
 #define MNU_MVAR                      1398
 #define MNU_EQ_EDIT                   1399
-#define MNU_1400                      1400
+#define MNU_TIMERF                    1400
 #define MNU_1401                      1401
 #define MNU_1402                      1402
 #define MNU_1403                      1403
@@ -1837,7 +1837,14 @@
 #define ITM_RCL_PMT                   1773
 #define ITM_RCL_PV                    1774
 
-#define LAST_ITEM                     1775
+#define ITM_atan2                     1775
+
+#define ITM_TIMER_ADD                 1776
+#define ITM_TIMER_0_1S                1777
+#define ITM_TIMER_RESET               1778
+#define ITM_TIMER_RCL                 1779
+
+#define LAST_ITEM                     1780
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

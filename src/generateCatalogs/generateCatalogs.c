@@ -128,7 +128,7 @@ int main(int argc, char* argv[]) {
   fprintf(catalogFile, " */\n\n");
 
   fprintf(catalogFile, "/********************************************//**\n");
-  fprintf(catalogFile, "* \\file softmenuCatalogs.c\n");
+  fprintf(catalogFile, "* \\file softmenuCatalogs.h\n");
   fprintf(catalogFile, "***********************************************/\n\n");
 
   fprintf(catalogFile, "/***********************************************************************************************\n");
@@ -149,7 +149,6 @@ int main(int argc, char* argv[]) {
   fprintf(catalogFile, "#endif // DMCP_BUILD\n");
 
   sortOneCatalog("CONST",      CAT_CNST, GENERATION_FOR_BOTH);
-  sortOneCatalog("MENUS",      CAT_MENU, GENERATION_FOR_BOTH);
   sortOneCatalog("SYSFL",      CAT_SYFL, GENERATION_FOR_BOTH);
   sortOneCatalog("alpha_INTL", CAT_AINT, GENERATION_FOR_BOTH);
   sortOneCatalog("alpha_intl", CAT_aint, GENERATION_FOR_BOTH);
