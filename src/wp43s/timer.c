@@ -427,13 +427,13 @@ void fnShowTimerApp(void) {
     }
 
     if(rbr1stDigit) {
-      sprintf(tmpString + stringByteLength(tmpString), " [%02" PRIu8 "]", timerCraAndDeciseconds & 0x7fu);
+      sprintf(tmpString + stringByteLength(tmpString), " [%02" PRIu32 "]", (uint32_t)(timerCraAndDeciseconds & 0x7fu));
     }
     else if(aimBuffer[AIM_BUFFER_LENGTH / 2] == 0) {
       sprintf(tmpString + stringByteLength(tmpString), " [" STD_CURSOR STD_SPACE_FIGURE "]");
     }
     else {
-      sprintf(tmpString + stringByteLength(tmpString), " [%" PRId8 STD_CURSOR "]", aimBuffer[AIM_BUFFER_LENGTH / 2] - '0');
+      sprintf(tmpString + stringByteLength(tmpString), " [%" PRId32 STD_CURSOR "]", (int32_t)(aimBuffer[AIM_BUFFER_LENGTH / 2] - '0'));
     }
     showString(tmpString, &numericFont, timerTotalTime > 0 ? SCREEN_WIDTH * 45 / 100 : 1, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, false, true);
   }
