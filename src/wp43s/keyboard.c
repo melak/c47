@@ -75,6 +75,15 @@
         break;
 
       case MNU_PROG:
+        dynamicMenuItem = firstItem + itemShift + (fn - 1);
+        if(tam.function == ITM_GTOP) {
+          item = ITM_GTOP;
+        }
+        else {
+          item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : MNU_DYNAMIC);
+        }
+        break;
+
       case MNU_VAR:
         dynamicMenuItem = firstItem + itemShift + (fn - 1);
         item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : MNU_DYNAMIC);
@@ -369,6 +378,13 @@
                 currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
               }
             }
+            refreshScreen();
+            return;
+          }
+          else if(tam.function == ITM_GTOP && catalog == CATALOG_PROG) {
+            runFunction(item);
+            tamLeaveMode();
+            hourGlassIconEnabled = false;
             refreshScreen();
             return;
           }

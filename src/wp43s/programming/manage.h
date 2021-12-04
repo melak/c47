@@ -33,5 +33,6 @@ void fnPem                                   (uint16_t unusedButMandatoryParamet
 void insertStepInProgram                     (int16_t func);
 
 calcRegister_t findNamedLabel                (const char *labelName);
+uint16_t       getNumberOfSteps              (void);
 
 #endif // MANAGE_H

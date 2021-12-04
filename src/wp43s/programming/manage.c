@@ -215,13 +215,36 @@ void fnClP(uint16_t unusedButMandatoryParameter) {
 
 
 
+static uint32_t _getProgramSize(void) {
+  if(currentProgramNumber == numberOfPrograms) {
+    uint16_t numberOfSteps = 1;
+    uint8_t *step = programList[currentProgramNumber - 1].instructionPointer;
+    while(*step != 255 || *(step + 1) != 255) { // .END.
+      ++numberOfSteps;
+      step = findNextStep(step);
+    }
+    return (uint32_t)(step - programList[currentProgramNumber - 1].instructionPointer + 2);
+  }
+  else {
+    return (uint32_t)(programList[currentProgramNumber].instructionPointer - programList[currentProgramNumber - 1].instructionPointer);
+  }
+}
+
+
+
 void defineCurrentProgramFromGlobalStepNumber(uint16_t globalStepNumber) {
   currentProgramNumber = 0;
   while(globalStepNumber >= programList[currentProgramNumber].step) {
     currentProgramNumber++;
+    if(currentProgramNumber >= numberOfPrograms) break;
   }
 
-  endOfCurrentProgram = programList[currentProgramNumber].instructionPointer;
+  if(currentProgramNumber >= numberOfPrograms) {
+    endOfCurrentProgram = programList[currentProgramNumber - 1].instructionPointer + _getProgramSize() - 2;
+  }
+  else {
+    endOfCurrentProgram = programList[currentProgramNumber].instructionPointer;
+  }
   beginOfCurrentProgram = programList[currentProgramNumber - 1].instructionPointer;
 }
 
@@ -231,9 +254,15 @@ void defineCurrentProgramFromCurrentStep(void) {
   currentProgramNumber = 0;
   while(currentStep >= programList[currentProgramNumber].instructionPointer) {
     currentProgramNumber++;
+    if(currentProgramNumber >= numberOfPrograms) break;
   }
 
-  endOfCurrentProgram = programList[currentProgramNumber].instructionPointer;
+  if(currentProgramNumber >= numberOfPrograms) {
+    endOfCurrentProgram = programList[currentProgramNumber - 1].instructionPointer + _getProgramSize() - 2;
+  }
+  else {
+    endOfCurrentProgram = programList[currentProgramNumber].instructionPointer;
+  }
   beginOfCurrentProgram = programList[currentProgramNumber - 1].instructionPointer;
 }
 
@@ -269,8 +298,8 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
     lastProgramListEnd       = false;
 
     if(firstDisplayedLocalStepNumber == 0) {
-      uint32_t numberOfSteps = (uint32_t)(programList[currentProgramNumber].step - programList[currentProgramNumber - 1].step);
-      sprintf(tmpString, "{ Prgm #%d: %" PRIu32 " bytes / %" PRIu32 " step%s }", currentProgramNumber, (uint32_t)(programList[currentProgramNumber].instructionPointer - programList[currentProgramNumber - 1].instructionPointer),
+      uint32_t numberOfSteps = (uint32_t)getNumberOfSteps();
+      sprintf(tmpString, "{ Prgm #%d: %" PRIu32 " bytes / %" PRIu32 " step%s }", currentProgramNumber, _getProgramSize(),
                                                                                numberOfSteps, numberOfSteps == 1 ? "" : "s");
       showString(tmpString, &standardFont, 2, Y_POSITION_OF_REGISTER_T_LINE, vmNormal,  false, false);
       firstLine = 1;
@@ -322,6 +351,11 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
         if(*nextStep == 255 && *(nextStep + 1) == 255) {
           lastProgramListEnd = true;
         }
+        break;
+      }
+      if((*step == 255) && (*(step + 1) == 255)) {
+        programListEnd = true;
+        lastProgramListEnd = true;
         break;
       }
       step = nextStep;
@@ -418,4 +452,21 @@ calcRegister_t findNamedLabel(const char *labelName) {
     }
   }
   return INVALID_VARIABLE;
+}
+
+
+
+uint16_t getNumberOfSteps(void) {
+  if(currentProgramNumber == numberOfPrograms) {
+    uint16_t numberOfSteps = 1;
+    uint8_t *step = programList[currentProgramNumber - 1].instructionPointer;
+    while(*step != 255 || *(step + 1) != 255) { // .END.
+      ++numberOfSteps;
+      step = findNextStep(step);
+    }
+    return numberOfSteps;
+  }
+  else {
+    return programList[currentProgramNumber].step - programList[currentProgramNumber - 1].step;
+  }
 }

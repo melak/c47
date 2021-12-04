@@ -152,7 +152,7 @@ void fnGotoDot(uint16_t globalStepNumber) {
     if(firstDisplayedLocalStepNumber != 0) {
       firstDisplayedStep = findPreviousStep(firstDisplayedStep);
     }
-    uint16_t numberOfSteps = programList[currentProgramNumber].step - programList[currentProgramNumber - 1].step;
+    uint16_t numberOfSteps = getNumberOfSteps();
     if(firstDisplayedLocalStepNumber + 6 > numberOfSteps) {
       for(int i=3+currentLocalStepNumber-numberOfSteps; i>0; i--) {
         if(firstDisplayedLocalStepNumber > 0) {
