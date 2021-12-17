@@ -131,10 +131,11 @@
 #define ERROR_EQUATION_TOO_COMPLEX                46
 #define ERROR_CANNOT_ASSIGN_HERE                  47
 #define ERROR_INVALID_NAME                        48
-#define ERROR_TOO_MANY_VARIABLES                  49 // unlikely
-#define ERROR_BAD_INPUT                           50 // This error is not in ReM and cannot occur (theoretically).
+#define ERROR_NON_PROGRAMMABLE_COMMAND            49
+#define ERROR_TOO_MANY_VARIABLES                  50 // unlikely
+#define ERROR_BAD_INPUT                           51 // This error is not in ReM and cannot occur (theoretically).
 
-#define NUMBER_OF_ERROR_CODES                     51
+#define NUMBER_OF_ERROR_CODES                     52
 
 #define NUMBER_OF_GLOBAL_FLAGS                   112
 #define FIRST_LOCAL_FLAG                         112 // There are 112 global flag from 0 to 111
@@ -211,16 +212,6 @@ typedef enum {
 
 // PC GUI
 #define CSSFILE                      "res/wp43s_pre.css"
-
-#define DELTA_KEYS_X                              78 // Horizontal key step in pixel (row of 6 keys)
-#define DELTA_KEYS_Y                              74 // Vertical key step in pixel
-#define KEY_WIDTH_1                               47 // Width of small keys (STO, RCL, ...)
-#define KEY_WIDTH_2                               56 // Width of large keys (1, 2, 3, ...)
-
-#define X_LEFT_PORTRAIT                           45 // Horizontal offset for a portrait calculator
-#define X_LEFT_LANDSCAPE                         544 // Horizontal offset for a landscape calculator
-#define Y_TOP_PORTRAIT                           376 // Vertical offset for a portrait calculator
-#define Y_TOP_LANDSCAPE                           30 // vertical offset for a landscape calculator
 
 #define TAM_MAX_BITS                              14
 #define TAM_MAX_MASK                          0x3fff
@@ -390,11 +381,13 @@ typedef enum {
 #define TIMER_IDX_REFRESH_SLEEP                    0 // use timer 0 to wake up for screen refresh
 //#define TIMER_IDX_AUTO_REPEAT                    1 // use timer 1 to wake up for key auto-repeat
 
-#define TMR_NUMBER    2
+#define TMR_NUMBER                                 4
 
 // timer
 #define TO_AUTO_REPEAT                             0
-#define TO_KB_ACTV                                 1
+#define TO_TIMER_APP                               1
+#define TO_KB_ACTV                                 2
+#define TO_SHOW_NOP                                3
 
 
 #ifdef PC_BUILD
@@ -625,13 +618,20 @@ typedef enum {
 #define CMP_BINARY                                 0
 #define CMP_CLEANED_STRING_ONLY                    1
 #define CMP_EXTENSIVE                              2
+#define CMP_NAME                                   3
 
 // Combination / permutation
 #define CP_PERMUTATION                             0
 #define CP_COMBINATION                             1
 
+// Gudermannian
 #define GD_DIRECT_FUNCTION                         0
 #define GD_INVERSE_FUNCTION                        1
+
+// Program running mode
+#define PGM_STOPPED                                0
+#define PGM_RUNNING                                1
+#define PGM_WAITING                                2
 
 // Load mode
 #define LM_ALL                                     0
@@ -710,6 +710,7 @@ typedef enum {
 #define SCREEN_REFRESH_PERIOD                    500 // in milliseconds
 #define KEY_AUTOREPEAT_FIRST_PERIOD              400 // in milliseconds
 #define KEY_AUTOREPEAT_PERIOD                    200 // in milliseconds
+#define TIMER_APP_PERIOD                         100 // in milliseconds
 #define RAM_SIZE                               16384 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
 //#define RAM_SIZE                                3072 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
 

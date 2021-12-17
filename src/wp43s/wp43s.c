@@ -128,6 +128,7 @@ uint8_t                temporaryInformation;
 uint8_t                rbrMode;
 uint8_t                numScreensNumericFont;
 uint8_t                timerCraAndDeciseconds = 128u;
+uint8_t                programRunStop;
 uint8_t               *beginOfProgramMemory;
 uint8_t               *beginOfCurrentProgram;
 uint8_t               *endOfCurrentProgram;
@@ -212,11 +213,93 @@ size_t                 wp43sMemInBlocks;
 //int16_t              previousItem;
   uint32_t             nextTimerRefresh;
   uint32_t             nextScreenRefresh; // timer substitute for refreshLcd(), which does cursor blinking and other stuff
+  bool_t               wp43sKbdLayout;
+
+  int convertKeyCode(int key) {
+    if(wp43sKbdLayout) {
+      /////////////////////////////////////////////////
+      // For key reassignment see:
+      // https://technical.swissmicros.com/dm42/devel/dmcp_devel_manual/#_system_key_table
+      //
+      // Output of keymap2layout keymap.txt
+      //
+      //    +-----+-----+-----+-----+-----+-----+
+      // 1: | F1  | F2  | F3  | F4  | F5  | F6  |
+      //    |38:38|39:39|40:40|41:41|42:42|43:43|
+      //    +-----+-----+-----+-----+-----+-----+
+      // 2: | 1/x |Sum+ | SIN | LN  | LOG |SQRT |
+      //    | 1: 2| 2: 1| 3:10| 4: 5| 5: 4| 6: 3|
+      //    +-----+-----+-----+-----+-----+-----+
+      // 3: | STO | RCL | RDN | COS | TAN |SHIFT|
+      //    | 7: 7| 8: 8| 9: 9|10:11|11:12|12:28|
+      //    +-----+-----+-----+-----+-----+-----+
+      // 4: |   ENTER   |x<>y | CHS |  E  | <-- |
+      //    |   13:13   |14:14|15:15|16:16|17:17|
+      //    +-----------+-----+-----+-----+-----+
+      // 5: |  DIV |   7  |   8  |   9  |  XEQ  |
+      //    | 18:22| 19:19| 20:20| 21:21| 22: 6 |
+      //    +------+------+------+------+-------+
+      // 6: |  MUL |   4  |   5  |   6  |  UP   |
+      //    | 23:27| 24:24| 25:25| 26:26| 27:18 |
+      //    +------+------+------+------+-------+
+      // 7: |  SUB |   1  |   2  |   3  | DOWN  |
+      //    | 28:32| 29:29| 30:30| 31:31| 32:23 |
+      //    +------+------+------+------+-------+
+      // 8: |  ADD |   0  |  DOT |  RUN | EXIT  |
+      //    | 33:37| 34:34| 35:35| 36:36| 37:33 |
+      //    +------+------+------+------+-------+
+
+      //The switch instruction below is implemented as follows e.g. for the up arrow key on the WP43S layout:
+      //  the output of keymap2layout for this key is UP 27:18 so we need the line:
+      //    case 18: key = 27; break;
+      switch(key) {               // Original
+        case  1: key =  2; break; // SUM+
+        case  2: key =  1; break; // 1/x
+        case  3: key =  6; break; // SQRT
+        case  4: key =  5; break; // LOG
+        case  5: key =  4; break; // LN
+        case  6: key = 22; break; // XEQ
+      //case  7: key =  7; break; // STO
+      //case  8: key =  8; break; // RCL
+      //case  9: key =  9; break; // RDN
+        case 10: key =  3; break; // SIN
+        case 11: key = 10; break; // COS
+        case 12: key = 11; break; // TAN
+      //case 13: key = 13; break; // ENTER
+      //case 14: key = 14; break; // x<>y
+      //case 15: key = 15; break; // +/-
+      //case 16: key = 16; break; // E
+      //case 17: key = 17; break; // <--
+        case 18: key = 27; break; // UP
+      //case 19: key = 19; break; // 7
+      //case 20: key = 20; break; // 8
+      //case 21: key = 21; break; // 9
+        case 22: key = 18; break; // /
+        case 23: key = 32; break; // DOWN
+      //case 24: key = 24; break; // 4
+      //case 25: key = 25; break; // 5
+      //case 26: key = 26; break; // 6
+        case 27: key = 23; break; // x
+        case 28: key = 12; break; // SHIFT
+      //case 29: key = 29; break; // 1
+      //case 30: key = 30; break; // 2
+      //case 31: key = 31; break; // 3
+        case 32: key = 28; break; // -
+        case 33: key = 37; break; // EXIT
+      //case 34: key = 34; break; // 0
+      //case 35: key = 35; break; // .
+      //case 36: key = 36; break; // R/S
+        case 37: key = 33; break; // +
+        default: {}
+      }
+    }
+    return key;
+  }
 
   void program_main(void) {
     int key = 0;
     char charKey[3];
-    bool_t wp43sKbdLayout/*, inFastRefresh = 0, inDownUpPress = 0, repeatDownUpPress = 0*/;
+    /*bool_t wp43sKbdLayout, inFastRefresh = 0, inDownUpPress = 0, repeatDownUpPress = 0*/;
     uint16_t currentVolumeSetting, savedVoluleSetting; // used for beep signaling screen shot
   //uint32_t now, previousRefresh, nextAutoRepeat = 0;
 
@@ -335,16 +418,15 @@ size_t                 wp43sMemInBlocks;
 
     lcd_refresh();
   //previousRefresh = sys_current_ms();
-    if(timerStartTime == TIMER_APP_STOPPED)
-      nextScreenRefresh = sys_current_ms() + SCREEN_REFRESH_PERIOD;
-    else
-      nextScreenRefresh = sys_current_ms() + FAST_SCREEN_REFRESH_PERIOD;
+    nextScreenRefresh = sys_current_ms() + SCREEN_REFRESH_PERIOD;
   //now = sys_current_ms();
     //runner_key_tout_init(0); // Enables fast auto repeat
 
     fnTimerReset();
     fnTimerConfig(TO_AUTO_REPEAT, execAutoRepeat, 0);
+    fnTimerConfig(TO_TIMER_APP, execTimerApp, 0);
     fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV);
+//--fnTimerConfig(TO_SHOW_NOP, execNOPTimeout, TO_SHOW_NOP);
     nextTimerRefresh = 0;
 
     // Status flags:
@@ -363,23 +445,35 @@ size_t                 wp43sMemInBlocks;
       else if((!ST(STAT_PGM_END) && key_empty())) {         // Just wait if no keys available.
         CLR_ST(STAT_RUNNING);
 
-        if(timerStartTime == TIMER_APP_STOPPED || calcMode != CM_TIMER) {
-          if(nextTimerRefresh == 0) {                                             // no timeout available
-            sys_sleep();
+        if(nextTimerRefresh == 0) {                         // no timeout available
+          sys_sleep();
+        }
+        else {                                                                  // timeout available
+//--      uint32_t timeoutTime = max(1, nextTimerRefresh - sys_current_ms());
+          uint32_t timeoutTime = sys_current_ms();
+          if(nextTimerRefresh > timeoutTime) {
+            timeoutTime = nextTimerRefresh - timeoutTime;
           }
-          else {                                                                  // timeout available
-            uint32_t timeoutTime = max(1, nextTimerRefresh - sys_current_ms());
-
-            uint32_t sleepTime = max(1, nextScreenRefresh - sys_current_ms());
-            if(showFunctionNameCounter > 0) {
-              sleepTime = min(sleepTime, FAST_SCREEN_REFRESH_PERIOD);
-            }
-            sleepTime = min(sleepTime, timeoutTime);
-
-            sys_timer_start(TIMER_IDX_REFRESH_SLEEP, max(1, sleepTime));          // wake up for refresh
-            sys_sleep();
-            sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
+          else {
+            timeoutTime = 1;
           }
+
+//--      uint32_t sleepTime = max(1, nextScreenRefresh - sys_current_ms());
+          uint32_t sleepTime = sys_current_ms();
+          if(nextScreenRefresh > sleepTime) {
+            sleepTime = nextScreenRefresh - sleepTime;
+          }
+          else {
+            sleepTime = 1;
+          }
+          if(showFunctionNameCounter > 0) {
+            sleepTime = min(sleepTime, FAST_SCREEN_REFRESH_PERIOD);
+          }
+          sleepTime = min(sleepTime, timeoutTime);
+
+          sys_timer_start(TIMER_IDX_REFRESH_SLEEP, max(sleepTime, 1));          // wake up for refresh
+          sys_sleep();
+          sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
         }
 
 
@@ -449,7 +543,7 @@ size_t                 wp43sMemInBlocks;
       }
 
       // Key is ready -> clear auto off timer
-      if(!key_empty() || timerStartTime != TIMER_APP_STOPPED) {
+      if(!key_empty() || (nextTimerRefresh != 0)) {
         reset_auto_off();
       }
 
@@ -466,83 +560,7 @@ size_t                 wp43sMemInBlocks;
       //                           KEY_AUTOREPEAT_FIRST_PERIOD); // should be the same as time before first autorepeat
       //key = runner_get_key(&keyAutoRepeat);
 
-      if(wp43sKbdLayout) {
-        /////////////////////////////////////////////////
-        // For key reassignment see:
-        // https://technical.swissmicros.com/dm42/devel/dmcp_devel_manual/#_system_key_table
-        //
-        // Output of keymap2layout keymap.txt
-        //
-        //    +-----+-----+-----+-----+-----+-----+
-        // 1: | F1  | F2  | F3  | F4  | F5  | F6  |
-        //    |38:38|39:39|40:40|41:41|42:42|43:43|
-        //    +-----+-----+-----+-----+-----+-----+
-        // 2: | 1/x |Sum+ | SIN | LN  | LOG |SQRT |
-        //    | 1: 2| 2: 1| 3:10| 4: 5| 5: 4| 6: 3|
-        //    +-----+-----+-----+-----+-----+-----+
-        // 3: | STO | RCL | RDN | COS | TAN |SHIFT|
-        //    | 7: 7| 8: 8| 9: 9|10:11|11:12|12:28|
-        //    +-----+-----+-----+-----+-----+-----+
-        // 4: |   ENTER   |x<>y | CHS |  E  | <-- |
-        //    |   13:13   |14:14|15:15|16:16|17:17|
-        //    +-----------+-----+-----+-----+-----+
-        // 5: |  DIV |   7  |   8  |   9  |  XEQ  |
-        //    | 18:22| 19:19| 20:20| 21:21| 22: 6 |
-        //    +------+------+------+------+-------+
-        // 6: |  MUL |   4  |   5  |   6  |  UP   |
-        //    | 23:27| 24:24| 25:25| 26:26| 27:18 |
-        //    +------+------+------+------+-------+
-        // 7: |  SUB |   1  |   2  |   3  | DOWN  |
-        //    | 28:32| 29:29| 30:30| 31:31| 32:23 |
-        //    +------+------+------+------+-------+
-        // 8: |  ADD |   0  |  DOT |  RUN | EXIT  |
-        //    | 33:37| 34:34| 35:35| 36:36| 37:33 |
-        //    +------+------+------+------+-------+
-
-        //The switch instruction below is implemented as follows e.g. for the up arrow key on the WP43S layout:
-        //  the output of keymap2layout for this key is UP 27:18 so we need the line:
-        //    case 18: key = 27; break;
-        switch(key) {               // Original
-          case  1: key =  2; break; // SUM+
-          case  2: key =  1; break; // 1/x
-          case  3: key =  6; break; // SQRT
-          case  4: key =  5; break; // LOG
-          case  5: key =  4; break; // LN
-          case  6: key = 22; break; // XEQ
-        //case  7: key =  7; break; // STO
-        //case  8: key =  8; break; // RCL
-        //case  9: key =  9; break; // RDN
-          case 10: key =  3; break; // SIN
-          case 11: key = 10; break; // COS
-          case 12: key = 11; break; // TAN
-        //case 13: key = 13; break; // ENTER
-        //case 14: key = 14; break; // x<>y
-        //case 15: key = 15; break; // +/-
-        //case 16: key = 16; break; // E
-        //case 17: key = 17; break; // <--
-          case 18: key = 27; break; // UP
-        //case 19: key = 19; break; // 7
-        //case 20: key = 20; break; // 8
-        //case 21: key = 21; break; // 9
-          case 22: key = 18; break; // /
-          case 23: key = 32; break; // DOWN
-        //case 24: key = 24; break; // 4
-        //case 25: key = 25; break; // 5
-        //case 26: key = 26; break; // 6
-          case 27: key = 23; break; // x
-          case 28: key = 12; break; // SHIFT
-        //case 29: key = 29; break; // 1
-        //case 30: key = 30; break; // 2
-        //case 31: key = 31; break; // 3
-          case 32: key = 28; break; // -
-          case 33: key = 37; break; // EXIT
-        //case 34: key = 34; break; // 0
-        //case 35: key = 35; break; // .
-        //case 36: key = 36; break; // R/S
-          case 37: key = 33; break; // +
-          default: {}
-        }
-      }
+      key = convertKeyCode(key);
       //The 3 lines below to see in the top left screen corner the pressed keycode
       //char sysLastKeyCh[5];
       //sprintf(sysLastKeyCh, " %02d", key);
@@ -660,17 +678,14 @@ size_t                 wp43sMemInBlocks;
       now = sys_current_ms();
       if(nextScreenRefresh <= now) {
 //      previousRefresh = now;
-        nextScreenRefresh += ((showFunctionNameCounter > 0 || (calcMode == CM_TIMER && timerStartTime != TIMER_APP_STOPPED)) ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);
+        nextScreenRefresh += ((showFunctionNameCounter > 0) ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);
         if(nextScreenRefresh < now) {
-          nextScreenRefresh = now + ((showFunctionNameCounter > 0 || (calcMode == CM_TIMER && timerStartTime != TIMER_APP_STOPPED)) ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);         // we were out longer than expected; just skip ahead.
+          nextScreenRefresh = now + ((showFunctionNameCounter > 0) ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);         // we were out longer than expected; just skip ahead.
         }
-        if(calcMode == CM_TIMER && timerStartTime != TIMER_APP_STOPPED) {
-          fnUpdateTimerApp();
-        }
-        else {
+        if(calcMode != CM_TIMER) {
           refreshLcd();
+          lcd_refresh();
         }
-        lcd_refresh();
       }
     }
   }

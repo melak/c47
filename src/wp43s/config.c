@@ -495,13 +495,16 @@ void fnClAll(uint16_t confirmation) {
     fnClFAll(CONFIRMED);
 
     temporaryInformation = TI_NO_INFO;
+    if(programRunStop == PGM_WAITING) {
+      programRunStop = PGM_STOPPED;
+    }
   }
 }
 
 
 
 void addTestPrograms(void) {
-  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(8594));
+  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(8774));
 
   resizeProgramMemory(TO_BLOCKS(numberOfBytesForTheTestPrograms));
   firstDisplayedStep            = beginOfProgramMemory;

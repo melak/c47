@@ -474,11 +474,15 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
   uint16_t r;
   if(currentLocalFlags == NULL) {
     // 1st allocation of local registers in this level of subroutine
-    if((currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 3, 4 + numberOfRegistersToAllocate))) {
+    if(numberOfRegistersToAllocate == 0) {
+      return;
+    }
+    else if((currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 3, 4 + numberOfRegistersToAllocate))) {
       currentLocalFlags = currentSubroutineLevelData + 3;
       currentLocalFlags->localFlags = 0;
       currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData + 4);
       currentNumberOfLocalFlags = NUMBER_OF_LOCAL_FLAGS;
+      currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
 
       // All the new local registers are real34s initialized to 0.0
       for(r=FIRST_LOCAL_REGISTER; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
@@ -502,8 +506,6 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
           return;
         }
       }
-
-      currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
     }
     else {
       currentSubroutineLevelData = oldSubroutineLevelData;
@@ -518,6 +520,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
       if((currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 4 + currentNumberOfLocalRegisters, 4 + numberOfRegistersToAllocate))) {
         currentLocalFlags = currentSubroutineLevelData + 3;
         currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData + 4);
+        currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
 
         // All the new local registers are real34s initialized to 0.0
         for(r=FIRST_LOCAL_REGISTER+oldNumberOfLocalRegisters; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
@@ -532,7 +535,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
             for(uint16_t rr = FIRST_LOCAL_REGISTER + oldNumberOfLocalRegisters; rr < r; rr++) {
               freeRegisterData(FIRST_LOCAL_REGISTER + rr);
             }
-            reallocWp43s(currentSubroutineLevelData, 4 + numberOfRegistersToAllocate, 4 + currentNumberOfLocalRegisters);
+            reallocWp43s(currentSubroutineLevelData, 4 + numberOfRegistersToAllocate, 4 + oldNumberOfLocalRegisters);
             currentLocalFlags = currentSubroutineLevelData + 3;
             currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData + 4);
             currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
@@ -540,8 +543,6 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
             return;
           }
         }
-
-        currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
       }
       else {
         currentSubroutineLevelData = oldSubroutineLevelData;
@@ -635,7 +636,7 @@ bool_t isUniqueName(const char *name) {
       case CAT_CNST:
       case CAT_RVAR:
       case CAT_SYFL:
-        if(compareString(name, indexOfItems[i].itemCatalogName, CMP_EXTENSIVE) == 0) {
+        if(compareString(name, indexOfItems[i].itemCatalogName, CMP_NAME) == 0) {
           return false;
         }
     }
@@ -648,7 +649,7 @@ bool_t isUniqueName(const char *name) {
 
   // User menus
   for(uint32_t i = 0; i < numberOfUserMenus; ++i) {
-    if(compareString(name, userMenus[i].menuName, CMP_EXTENSIVE) == 0) {
+    if(compareString(name, userMenus[i].menuName, CMP_NAME) == 0) {
       return false;
     }
   }
@@ -665,7 +666,7 @@ static calcRegister_t _findReservedVariable(const char *variableName) {
   }
 
   for(int i = 0; i < NUMBER_OF_RESERVED_VARIABLES; i++) {
-    if (compareString((char *)(allReservedVariables[i].reservedVariableName + 1), variableName, CMP_EXTENSIVE) == 0) {
+    if (compareString((char *)(allReservedVariables[i].reservedVariableName + 1), variableName, CMP_NAME) == 0) {
       return i + FIRST_RESERVED_VARIABLE;
     }
   }
@@ -762,7 +763,7 @@ calcRegister_t findNamedVariable(const char *variableName) {
   if(regist != INVALID_VARIABLE) return regist;
 
   for(int i = 0; i < numberOfNamedVariables; i++) {
-    if (compareString((char *)(allNamedVariables[i].variableName + 1), variableName, CMP_EXTENSIVE) == 0) {
+    if (compareString((char *)(allNamedVariables[i].variableName + 1), variableName, CMP_NAME) == 0) {
       regist = i + FIRST_NAMED_VARIABLE;
       break;
     }

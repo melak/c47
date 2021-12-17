@@ -78,8 +78,9 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /* 46 */  "This equation formula is too complex",
 /* 47 */  "This item cannot be assigned here",
 /* 48 */  "Invalid name",
-/* 49 */  "Too many variables",
-/* 50 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
+/* 49 */  "Non-programmable command. Please remove.",
+/* 50 */  "Too many variables",
+/* 51 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
 };
 
 
@@ -125,6 +126,13 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
     }
   }
 #endif // PC_BUILD
+
+
+
+void fnRaiseError(uint16_t errorCode) {
+  displayCalcErrorMessage((uint8_t)errorCode, ERR_REGISTER_LINE, REGISTER_X);
+}
+
 
 
 void displayCalcErrorMessage(uint8_t errorCode, calcRegister_t errMessageRegisterLine, calcRegister_t errRegisterLine) {

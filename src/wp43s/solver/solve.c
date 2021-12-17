@@ -29,6 +29,7 @@
 #include "longIntegerType.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/wp34s.h"
+#include "programming/lblGtoXeq.h"
 #include "programming/manage.h"
 #include "programming/nextStep.h"
 #include "registers.h"
@@ -169,76 +170,6 @@ void fnSolveVar(uint16_t unusedButMandatoryParameter) {
 }
 
 #ifndef TESTSUITE_BUILD
-bool_t executeStep_test(uint8_t **step) {
-  //
-  //  NOT A COMPLETE ENGINE: TESTING PURPOSE ONLY!!
-  //  The following decoder is minimally implemented ad hoc engine for testing of SOLVE feature.
-  //  Replace with the complete programming system when ready.
-  //
-  uint16_t op = **step;
-  if(op & 0x80) op = ((op << 8) | *(*step + 1)) & 0x7fff;
-  switch(op) {
-    case ITM_MVAR:
-    case ITM_RTN:
-      *step = findNextStep(*step);
-      break;
-    case ITM_END:
-    case 0x7fff: // .END.
-      return false;
-    case CST_18:
-    case ITM_ADD:
-    case ITM_DIV:
-    case ITM_SQUAREROOTX:
-    case ITM_1ONX:
-      runFunction(op);
-      *step = findNextStep(*step);
-      break;
-    case ITM_LITERAL:
-      if(*(*step + 1) == STRING_LONG_INTEGER) {
-        longInteger_t val;
-        setSystemFlag(FLAG_ASLIFT);
-        longIntegerInit(val);
-        xcopy(tmpString, *step + 3, *(*step + 2));
-        tmpString[*(*step + 2)] = 0;
-        stringToLongInteger(tmpString, 10, val);
-        liftStack();
-        convertLongIntegerToLongIntegerRegister(val, REGISTER_X);
-        longIntegerFree(val);
-      }
-      #ifdef PC_BUILD
-      else {
-        printf("***Unimplemented type %u!\n", *(*step + 1));
-        fflush(stdout);
-      }
-      #endif /* PC_BUILD */
-      *step = findNextStep(*step);
-      break;
-    case ITM_RCL:
-    case ITM_RCLMULT:
-    case ITM_RCLADD:
-    case ITM_RCLSUB:
-      if(*(*step + 1) == STRING_LABEL_VARIABLE) {
-        xcopy(tmpString, *step + 3, *(*step + 2));
-        tmpString[*(*step + 2)] = 0;
-        reallyRunFunction(op, findNamedVariable(tmpString));
-      }
-      #ifdef PC_BUILD
-      else {
-        printf("***Not a named variable %u!\n", *(*step + 1));
-        fflush(stdout);
-      }
-      #endif /* PC_BUILD */
-      *step = findNextStep(*step);
-      break;
-    #ifdef PC_BUILD
-    default:
-      printf("***Unimplemented opcode %u!\n", op);
-      fflush(stdout);
-      *step = findNextStep(*step);
-    #endif /* PC_BUILD */
-  }
-  return lastErrorCode == ERROR_NONE;
-}
 static void _solverIteration(real34_t *res) {
   if(currentSolverStatus & SOLVER_STATUS_TVM_APPLICATION) {
     tvmEquation();
@@ -247,14 +178,8 @@ static void _solverIteration(real34_t *res) {
     parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
   }
   else {
-    //
-    //  NOT A COMPLETE ENGINE: TESTING PURPOSE ONLY!!
-    //  The following decoder is minimally implemented ad hoc engine for testing of SOLVE feature.
-    //  Replace with the complete programming system when ready.
-    //
-    uint8_t *step = labelList[currentSolverProgram].instructionPointer;
-    lastErrorCode = ERROR_NONE;
-    while(executeStep_test(&step)) {}
+    dynamicMenuItem = -1;
+    execProgram(currentSolverProgram + FIRST_LABEL);
   }
   if(lastErrorCode == ERROR_OVERFLOW_PLUS_INF) {
     realToReal34(const_plusInfinity, res);

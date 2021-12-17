@@ -832,18 +832,18 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
     case EQUATION_PARSER_MVAR:
       if(parserHint == PARSER_HINT_VARIABLE) {
         char *bufPtr = mvarBuffer;
-        if(compareString(STD_pi, strPtr, CMP_BINARY) == 0) { // check for pi
+        if(compareString(STD_pi, strPtr, CMP_NAME) == 0) { // check for pi
           return;
         }
         while(*bufPtr != 0) { // check for duplicates
-          if(compareString(bufPtr, strPtr, CMP_BINARY) == 0) {
+          if(compareString(bufPtr, strPtr, CMP_NAME) == 0) {
             return;
           }
           bufPtr += stringByteLength(bufPtr) + 1;
           ++tmpVal;
         }
         for(uint32_t i = CST_01; i <= CST_79; ++i) { // check for constants
-          if(compareString(indexOfItems[i].itemCatalogName, strPtr, CMP_BINARY) == 0) {
+          if(compareString(indexOfItems[i].itemCatalogName, strPtr, CMP_NAME) == 0) {
             return;
           }
         }
@@ -867,14 +867,14 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
 
     case EQUATION_PARSER_XEQ:
       if(parserHint == PARSER_HINT_VARIABLE) {
-        if(compareString(STD_pi, strPtr, CMP_BINARY) == 0) { // check for pi
+        if(compareString(STD_pi, strPtr, CMP_NAME) == 0) { // check for pi
           runFunction(ITM_CONSTpi);
           _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
           fnDrop(NOPARAM);
           return;
         }
         for(uint32_t i = CST_01; i <= CST_79; ++i) { // check for constants
-          if(compareString(indexOfItems[i].itemCatalogName, strPtr, CMP_BINARY) == 0) {
+          if(compareString(indexOfItems[i].itemCatalogName, strPtr, CMP_NAME) == 0) {
             runFunction(i);
             _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
             fnDrop(NOPARAM);
@@ -947,19 +947,19 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
       }
       else if(parserHint == PARSER_HINT_FUNCTION) {
         for(uint32_t i = 0; functionAlias[i].name[0] != 0; ++i) {
-          if(compareString(functionAlias[i].name, strPtr, CMP_BINARY) == 0) {
+          if(compareString(functionAlias[i].name, strPtr, CMP_NAME) == 0) {
             _processOperator(functionAlias[i].opCode, mvarBuffer);
             return;
           }
         }
         for(uint32_t i = 1; i < LAST_ITEM; ++i) {
-          if(((indexOfItems[i].status & EIM_STATUS) == EIM_ENABLED) && (indexOfItems[i].param <= NOPARAM) && (compareString(indexOfItems[i].itemCatalogName, strPtr, CMP_BINARY) == 0)) {
+          if(((indexOfItems[i].status & EIM_STATUS) == EIM_ENABLED) && (indexOfItems[i].param <= NOPARAM) && (compareString(indexOfItems[i].itemCatalogName, strPtr, CMP_NAME) == 0)) {
             _processOperator(i, mvarBuffer);
             return;
           }
         }
         for(uint32_t i = 1; i < LAST_ITEM; ++i) {
-          if(((indexOfItems[i].status & EIM_STATUS) == EIM_ENABLED) && (indexOfItems[i].param <= NOPARAM) && (compareString(indexOfItems[i].itemSoftmenuName, strPtr, CMP_BINARY) == 0)) {
+          if(((indexOfItems[i].status & EIM_STATUS) == EIM_ENABLED) && (indexOfItems[i].param <= NOPARAM) && (compareString(indexOfItems[i].itemSoftmenuName, strPtr, CMP_NAME) == 0)) {
             _processOperator(i, mvarBuffer);
             return;
           }

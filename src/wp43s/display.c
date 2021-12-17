@@ -2094,6 +2094,9 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
 
     default:
       temporaryInformation = TI_NO_INFO;
+      if(programRunStop == PGM_WAITING) {
+        programRunStop = PGM_STOPPED;
+      }
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot SHOW %s", getRegisterDataTypeName(REGISTER_X, true, false));

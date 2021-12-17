@@ -962,6 +962,9 @@ void fnInvertMatrix(uint16_t unusedParamButMandatory) {
       }
       else {
         temporaryInformation = TI_NO_INFO;
+        if(programRunStop == PGM_WAITING) {
+          programRunStop = PGM_STOPPED;
+        }
       }
     }
   }
@@ -996,6 +999,9 @@ void fnInvertMatrix(uint16_t unusedParamButMandatory) {
       }
       else {
         temporaryInformation = TI_NO_INFO;
+        if(programRunStop == PGM_WAITING) {
+          programRunStop = PGM_STOPPED;
+        }
       }
     }
   }
@@ -1847,6 +1853,16 @@ void mimEnter(bool_t commit) {
   updateMatrixHeightCache();
 }
 
+static void _resetCursorPos() {
+  clearRegisterLine(NIM_REGISTER_LINE, true, true);
+  sprintf(tmpString, "%" PRIi16";%" PRIi16"= ", (int16_t)getIRegisterAsInt(false), (int16_t)getJRegisterAsInt(false));
+  xCursor = showString(tmpString, &numericFont, 0, Y_POSITION_OF_NIM_LINE, vmNormal, true, true) + 1;
+  yCursor = Y_POSITION_OF_NIM_LINE;
+  cursorEnabled = true;
+  cursorFont = &numericFont;
+  lastIntegerBase = 0;
+}
+
 void mimAddNumber(int16_t item) {
   const int cols = openMatrixMIMPointer.header.matrixColumns;
   const int16_t row = getIRegisterAsInt(true);
@@ -1860,9 +1876,7 @@ void mimAddNumber(int16_t item) {
         aimBuffer[2] = '.';
         aimBuffer[3] = 0;
         nimNumberPart = NP_REAL_FLOAT_PART;
-        cursorEnabled = true;
-        cursorFont = &numericFont;
-        lastIntegerBase = 0;
+        _resetCursorPos();
       }
       break;
 
@@ -1872,9 +1886,7 @@ void mimAddNumber(int16_t item) {
         aimBuffer[1] = '0';
         aimBuffer[2] = 0;
         nimNumberPart = NP_INT_10;
-        cursorEnabled = true;
-        cursorFont = &numericFont;
-        lastIntegerBase = 0;
+        _resetCursorPos();
       }
       break;
 
@@ -1892,9 +1904,7 @@ void mimAddNumber(int16_t item) {
         aimBuffer[0] = '+';
         aimBuffer[1] = 0;
         nimNumberPart = NP_INT_10;
-        cursorEnabled = true;
-        cursorFont = &numericFont;
-        lastIntegerBase = 0;
+        _resetCursorPos();
       }
       break;
 

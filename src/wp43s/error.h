@@ -24,6 +24,8 @@
 #include "typeDefinitions.h"
 #include <stdint.h>
 
+void fnRaiseError           (uint16_t errorCode);
+
 #ifndef TESTSUITE_BUILD
   void displayBugScreen     (const char *msg);
 #endif // TESTSUITE_BUILD

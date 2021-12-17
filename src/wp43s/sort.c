@@ -31,6 +31,117 @@ int32_t compareChar(const char *char1, const char *char2) {
 
 
 
+#define GLYPH_TO_CHAR_CODE(x) (((uint16_t)((uint8_t)(x[0])) << 8) + (uint8_t)(x[1]))
+
+TO_QSPI uint16_t unSupSubTable[] = {
+  GLYPH_TO_CHAR_CODE(STD_SUP_T), (uint16_t)'T',
+
+  GLYPH_TO_CHAR_CODE(STD_SUP_a), (uint16_t)'a',
+  GLYPH_TO_CHAR_CODE(STD_SUP_f), (uint16_t)'f',
+  GLYPH_TO_CHAR_CODE(STD_SUP_g), (uint16_t)'g',
+  GLYPH_TO_CHAR_CODE(STD_SUP_h), (uint16_t)'h',
+  GLYPH_TO_CHAR_CODE(STD_SUP_r), (uint16_t)'r',
+  GLYPH_TO_CHAR_CODE(STD_SUP_x), (uint16_t)'x',
+
+  GLYPH_TO_CHAR_CODE(STD_SUP_0), (uint16_t)'0',
+  GLYPH_TO_CHAR_CODE(STD_SUP_1), (uint16_t)'1',
+  GLYPH_TO_CHAR_CODE(STD_SUP_2), (uint16_t)'2',
+  GLYPH_TO_CHAR_CODE(STD_SUP_3), (uint16_t)'3',
+  GLYPH_TO_CHAR_CODE(STD_SUP_4), (uint16_t)'4',
+  GLYPH_TO_CHAR_CODE(STD_SUP_5), (uint16_t)'5',
+  GLYPH_TO_CHAR_CODE(STD_SUP_6), (uint16_t)'6',
+  GLYPH_TO_CHAR_CODE(STD_SUP_7), (uint16_t)'7',
+  GLYPH_TO_CHAR_CODE(STD_SUP_8), (uint16_t)'8',
+  GLYPH_TO_CHAR_CODE(STD_SUP_9), (uint16_t)'9',
+
+  GLYPH_TO_CHAR_CODE(STD_SUP_PLUS),     (uint16_t)'+',
+  GLYPH_TO_CHAR_CODE(STD_SUP_MINUS),    (uint16_t)'-',
+  GLYPH_TO_CHAR_CODE(STD_SUP_INFINITY), GLYPH_TO_CHAR_CODE(STD_INFINITY),
+
+  GLYPH_TO_CHAR_CODE(STD_SUP_ASTERISK), (uint16_t)'*',
+
+  GLYPH_TO_CHAR_CODE(STD_SUB_A), (uint16_t)'A',
+  GLYPH_TO_CHAR_CODE(STD_SUB_B), (uint16_t)'B',
+  GLYPH_TO_CHAR_CODE(STD_SUB_C), (uint16_t)'C',
+  GLYPH_TO_CHAR_CODE(STD_SUB_D), (uint16_t)'D',
+  GLYPH_TO_CHAR_CODE(STD_SUB_E), (uint16_t)'E',
+  GLYPH_TO_CHAR_CODE(STD_SUB_F), (uint16_t)'F',
+  GLYPH_TO_CHAR_CODE(STD_SUB_G), (uint16_t)'G',
+  GLYPH_TO_CHAR_CODE(STD_SUB_H), (uint16_t)'H',
+  GLYPH_TO_CHAR_CODE(STD_SUB_I), (uint16_t)'I',
+  GLYPH_TO_CHAR_CODE(STD_SUB_J), (uint16_t)'J',
+  GLYPH_TO_CHAR_CODE(STD_SUB_K), (uint16_t)'K',
+  GLYPH_TO_CHAR_CODE(STD_SUB_L), (uint16_t)'L',
+  GLYPH_TO_CHAR_CODE(STD_SUB_M), (uint16_t)'M',
+  GLYPH_TO_CHAR_CODE(STD_SUB_N), (uint16_t)'N',
+  GLYPH_TO_CHAR_CODE(STD_SUB_O), (uint16_t)'O',
+  GLYPH_TO_CHAR_CODE(STD_SUB_P), (uint16_t)'P',
+  GLYPH_TO_CHAR_CODE(STD_SUB_Q), (uint16_t)'Q',
+  GLYPH_TO_CHAR_CODE(STD_SUB_R), (uint16_t)'R',
+  GLYPH_TO_CHAR_CODE(STD_SUB_S), (uint16_t)'S',
+  GLYPH_TO_CHAR_CODE(STD_SUB_T), (uint16_t)'T',
+  GLYPH_TO_CHAR_CODE(STD_SUB_U), (uint16_t)'U',
+  GLYPH_TO_CHAR_CODE(STD_SUB_V), (uint16_t)'V',
+  GLYPH_TO_CHAR_CODE(STD_SUB_W), (uint16_t)'W',
+  GLYPH_TO_CHAR_CODE(STD_SUB_X), (uint16_t)'X',
+  GLYPH_TO_CHAR_CODE(STD_SUB_Y), (uint16_t)'Y',
+  GLYPH_TO_CHAR_CODE(STD_SUB_Z), (uint16_t)'Z',
+
+  GLYPH_TO_CHAR_CODE(STD_SUB_a), (uint16_t)'a',
+  GLYPH_TO_CHAR_CODE(STD_SUB_b), (uint16_t)'b',
+  GLYPH_TO_CHAR_CODE(STD_SUB_c), (uint16_t)'c',
+  GLYPH_TO_CHAR_CODE(STD_SUB_d), (uint16_t)'d',
+  GLYPH_TO_CHAR_CODE(STD_SUB_e), (uint16_t)'e',
+  GLYPH_TO_CHAR_CODE(STD_SUB_h), (uint16_t)'h',
+  GLYPH_TO_CHAR_CODE(STD_SUB_i), (uint16_t)'i',
+  GLYPH_TO_CHAR_CODE(STD_SUB_j), (uint16_t)'j',
+  GLYPH_TO_CHAR_CODE(STD_SUB_k), (uint16_t)'k',
+  GLYPH_TO_CHAR_CODE(STD_SUB_l), (uint16_t)'l',
+  GLYPH_TO_CHAR_CODE(STD_SUB_m), (uint16_t)'m',
+  GLYPH_TO_CHAR_CODE(STD_SUB_n), (uint16_t)'n',
+  GLYPH_TO_CHAR_CODE(STD_SUB_o), (uint16_t)'o',
+  GLYPH_TO_CHAR_CODE(STD_SUB_p), (uint16_t)'p',
+  GLYPH_TO_CHAR_CODE(STD_SUB_q), (uint16_t)'q',
+  GLYPH_TO_CHAR_CODE(STD_SUB_s), (uint16_t)'s',
+  GLYPH_TO_CHAR_CODE(STD_SUB_t), (uint16_t)'t',
+  GLYPH_TO_CHAR_CODE(STD_SUB_u), (uint16_t)'u',
+  GLYPH_TO_CHAR_CODE(STD_SUB_v), (uint16_t)'v',
+  GLYPH_TO_CHAR_CODE(STD_SUB_w), (uint16_t)'w',
+  GLYPH_TO_CHAR_CODE(STD_SUB_x), (uint16_t)'x',
+  GLYPH_TO_CHAR_CODE(STD_SUB_y), (uint16_t)'y',
+  GLYPH_TO_CHAR_CODE(STD_SUB_z), (uint16_t)'z',
+
+  GLYPH_TO_CHAR_CODE(STD_SUB_0), (uint16_t)'0',
+  GLYPH_TO_CHAR_CODE(STD_SUB_1), (uint16_t)'1',
+  GLYPH_TO_CHAR_CODE(STD_SUB_2), (uint16_t)'2',
+  GLYPH_TO_CHAR_CODE(STD_SUB_3), (uint16_t)'3',
+  GLYPH_TO_CHAR_CODE(STD_SUB_4), (uint16_t)'4',
+  GLYPH_TO_CHAR_CODE(STD_SUB_5), (uint16_t)'5',
+  GLYPH_TO_CHAR_CODE(STD_SUB_6), (uint16_t)'6',
+  GLYPH_TO_CHAR_CODE(STD_SUB_7), (uint16_t)'7',
+  GLYPH_TO_CHAR_CODE(STD_SUB_8), (uint16_t)'8',
+  GLYPH_TO_CHAR_CODE(STD_SUB_9), (uint16_t)'9',
+
+  GLYPH_TO_CHAR_CODE(STD_SUB_PLUS),     (uint16_t)'+',
+  GLYPH_TO_CHAR_CODE(STD_SUB_MINUS),    (uint16_t)'-',
+  GLYPH_TO_CHAR_CODE(STD_SUB_INFINITY), GLYPH_TO_CHAR_CODE(STD_INFINITY),
+
+  GLYPH_TO_CHAR_CODE(STD_SUB_alpha),    GLYPH_TO_CHAR_CODE(STD_alpha),
+  GLYPH_TO_CHAR_CODE(STD_SUB_delta),    GLYPH_TO_CHAR_CODE(STD_delta),
+  GLYPH_TO_CHAR_CODE(STD_SUB_mu),       GLYPH_TO_CHAR_CODE(STD_mu),
+  GLYPH_TO_CHAR_CODE(STD_SUB_SUN),      GLYPH_TO_CHAR_CODE(STD_SUN),
+
+  0,                                    0
+};
+
+static uint16_t _charCodeUnSupSub(uint16_t charCode) {
+  for(int i = 0; unSupSubTable[i] != 0; i += 2) {
+    if(charCode == unSupSubTable[i]) return unSupSubTable[i + 1];
+  }
+  return charCode;
+}
+#undef GLYPH_TO_CHAR_CODE
+
 int32_t compareString(const char *stra, const char *strb, int32_t comparisonType) {
   int32_t lga, lgb, i;
   int16_t posa, posb, ranka, rankb;
@@ -40,7 +151,7 @@ int32_t compareString(const char *stra, const char *strb, int32_t comparisonType
   lgb = stringGlyphLength(strb);
 
   // Compare the string using charCode only
-  if(comparisonType == CMP_BINARY) {
+  if(comparisonType == CMP_BINARY || comparisonType == CMP_NAME) {
     posa = 0;
     posb = 0;
     for(i=0; i<min(lga, lgb); i++) {
@@ -48,12 +159,14 @@ int32_t compareString(const char *stra, const char *strb, int32_t comparisonType
       if(charCode >= 0x80) {
         charCode = (charCode << 8) + (uint8_t)stra[posa + 1];
       }
+      if(comparisonType == CMP_NAME) charCode = _charCodeUnSupSub(charCode);
       ranka = charCode;
 
       charCode = (uint8_t)strb[posb];
       if(charCode >= 0x80) {
         charCode = (charCode << 8) + (uint8_t)strb[posb + 1];
       }
+      if(comparisonType == CMP_NAME) charCode = _charCodeUnSupSub(charCode);
       rankb = charCode;
 
       if(ranka < rankb) return -1;

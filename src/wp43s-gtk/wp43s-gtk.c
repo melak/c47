@@ -20,6 +20,7 @@
 
 #include "gui.h"
 #include "items.h"
+#include "keyboard.h"
 #include "longIntegerType.h"
 #include "memory.h"
 #include "saveRestoreCalcState.h"
@@ -45,6 +46,8 @@
   #if (SHOW_MEMORY_STATUS == 1)
     GtkWidget         *lblMemoryStatus;
   #endif // (SHOW_MEMORY_STATUS == 1)
+  calcKeyboard_t       calcKeyboard[43];
+  int                  currentBezel; // 0=normal, 1=AIM, 2=TAM
 
   int main(int argc, char* argv[]) {
     #ifdef __APPLE__
@@ -106,7 +109,8 @@
     gdk_threads_add_timeout(SCREEN_REFRESH_PERIOD, refreshLcd, NULL); // refreshLcd is called every SCREEN_REFRESH_PERIOD ms
 
     fnTimerReset();
-//  fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV);
+    fnTimerConfig(TO_TIMER_APP, execTimerApp, 0);
+//--fnTimerConfig(TO_SHOW_NOP, execNOPTimeout, TO_SHOW_NOP);
     gdk_threads_add_timeout(5, refreshTimer, NULL);
 
     gtk_main();

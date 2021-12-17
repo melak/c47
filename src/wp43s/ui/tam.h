@@ -62,6 +62,14 @@
    * \param[in] item the ITM value to process
    */
   void tamProcessInput (uint16_t item);
+
+
+  /**
+   * Returns actual function for current TAM.
+   *
+   * \return operation code
+   */
+  int16_t tamOperation (void);
 #endif // TESTSUITE_BUILD
 
 #endif // TAM_H

@@ -835,7 +835,7 @@ void resizeProgramMemory(uint16_t newSizeInBlocks) {
     printf("\nallSubroutineLevels: numberOfSubroutineLevels=%u  ptrToSubroutineLevel0Data=%u\n", allSubroutineLevels.numberOfSubroutineLevels, allSubroutineLevels.ptrToSubroutineLevel0Data);
     printf("  Level rtnPgm rtnStep nbrLocalFlags nbrLocRegs level     next previous\n");
     currentSubroutineLevelData = TO_PCMEMPTR(allSubroutineLevels.ptrToSubroutineLevel0Data);
-    currentLocalFlags = (currentNumberOfLocalFlags == 0 ? NULL : currentSubroutineLevelData + 2);
+    currentLocalFlags = (currentNumberOfLocalFlags == 0 ? NULL : currentSubroutineLevelData + 3);
     currentLocalRegisters = (registerHeader_t *)(currentNumberOfLocalRegisters == 0 ? NULL : currentSubroutineLevelData + (currentLocalFlags == NULL ? 3 : 4));
     for(int level=0; level<allSubroutineLevels.numberOfSubroutineLevels; level++) {
       printf("  %5d %6d %7u %13u %10u %5u %8u %8u\n",
@@ -860,7 +860,7 @@ void resizeProgramMemory(uint16_t newSizeInBlocks) {
 
       if(currentPtrToNextLevel != WP43S_NULL) {
         currentSubroutineLevelData = TO_PCMEMPTR(currentPtrToNextLevel);
-        currentLocalFlags = (currentNumberOfLocalFlags == 0 ? NULL : currentSubroutineLevelData + 2);
+        currentLocalFlags = (currentNumberOfLocalFlags == 0 ? NULL : currentSubroutineLevelData + 3);
         currentLocalRegisters = (registerHeader_t *)(currentNumberOfLocalRegisters == 0 ? NULL : currentSubroutineLevelData + (currentLocalFlags == NULL ? 3 : 4));
       }
     }

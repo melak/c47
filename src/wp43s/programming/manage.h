@@ -30,6 +30,10 @@ void deleteStepsFromTo                       (uint8_t *from, uint8_t *to);
 void fnClPAll                                (uint16_t confirmation);
 void fnClP                                   (uint16_t unusedButMandatoryParameter);
 void fnPem                                   (uint16_t unusedButMandatoryParameter);
+void pemAlpha                                (int16_t item);
+void pemCloseAlphaInput                      (void);
+void pemAddNumber                            (int16_t item);
+void pemCloseNumberInput                     (void);
 void insertStepInProgram                     (int16_t func);
 
 calcRegister_t findNamedLabel                (const char *labelName);

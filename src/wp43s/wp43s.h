@@ -74,12 +74,14 @@
     extern bool_t               screenChange;
     extern char                 debugString[10000];
     #if (DEBUG_REGISTER_L == 1)
-      extern GtkWidget        *lblRegisterL1;
-      extern GtkWidget        *lblRegisterL2;
+      extern GtkWidget         *lblRegisterL1;
+      extern GtkWidget         *lblRegisterL2;
     #endif // (DEBUG_REGISTER_L == 1)
     #if (SHOW_MEMORY_STATUS == 1)
-      extern GtkWidget        *lblMemoryStatus;
+      extern GtkWidget         *lblMemoryStatus;
     #endif // (SHOW_MEMORY_STATUS == 1)
+    extern calcKeyboard_t       calcKeyboard[43];
+    extern int                  currentBezel; // 0=normal, 1=AIM, 2=TAM
   #endif //PC_BUILD
 
   // Variables stored in FLASH
@@ -202,6 +204,7 @@
   extern uint8_t                rbrMode;
   extern uint8_t                numScreensNumericFont;
   extern uint8_t                timerCraAndDeciseconds;
+  extern uint8_t                programRunStop;
   extern uint8_t               *beginOfProgramMemory;
   extern uint8_t               *beginOfCurrentProgram;
   extern uint8_t               *endOfCurrentProgram;
@@ -288,6 +291,8 @@
 //  extern int                  keyAutoRepeat; // Key repetition
 //  extern int16_t              previousItem;
     extern uint32_t             nextTimerRefresh;
+
+    int                         convertKeyCode(int key);
   #endif // DMCP_BUILD
 
 #endif // WP43S_H

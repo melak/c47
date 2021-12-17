@@ -540,10 +540,8 @@ void decodeOneStep(uint8_t *step) {
         case ITM_FDQX:           //  1476
         case ITM_INDEX:          //  1486
         case ITM_LBLQ:           //  1503
-        case ITM_MVAR:           //  1524
         case ITM_PGMINT:         //  1546
         case ITM_PGMSLV:         //  1547
-        case ITM_SOLVE:          //  1608
         case ITM_VARMNU:         //  1630
         case ITM_PIn:            //  1671
         case ITM_SIGMAn:         //  1672
@@ -583,6 +581,7 @@ void decodeOneStep(uint8_t *step) {
         case ITM_TDISP:          //  1619
         case ITM_TONE:           //  1624
         case ITM_WSIZE:          //  1638
+        case ITM_toINT:          //  1687
         case ITM_SHUFFLE:        //  1694
         case ITM_PRINTERCHAR:    //  1709
         case ITM_PRINTERDLAY:    //  1710
@@ -601,10 +600,12 @@ void decodeOneStep(uint8_t *step) {
         case ITM_RCLMAX:         //  1432
         case ITM_RCLMIN:         //  1462
         case ITM_KTYP:           //  1501
+        case ITM_MVAR:           //  1524
         case ITM_STOMIN:         //  1545
         case ITM_PUTK:           //  1556
         case ITM_RCLCFG:         //  1561
         case ITM_RCLS:           //  1564
+        case ITM_SOLVE:          //  1608
         case ITM_STOCFG:         //  1611
         case ITM_STOS:           //  1615
         case ITM_Tex:            //  1625
@@ -1175,7 +1176,6 @@ void decodeOneStep(uint8_t *step) {
         case ITM_dn:             //  1684
         case ITM_toHR:           //  1685
         case ITM_toHMS:          //  1686
-        case ITM_toINT:          //  1687
         case ITM_toPOL:          //  1688
         case ITM_MPItoR:         //  1689
         case ITM_RtoMPI:         //  1690
@@ -1224,6 +1224,7 @@ void decodeOneStep(uint8_t *step) {
         case ITM_ZETAphik:       //  1765
         case ITM_GETHIDE:        //  1766
         case ITM_SQRT:           //  1768
+        case ITM_atan2:          //  1775
           sprintf(tmpString, "%s%s", item16 <= CST_79 ? "# " : "", indexOfItems[item16].itemCatalogName);
           break;
 
