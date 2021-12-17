@@ -42,6 +42,7 @@
    * \return void
    ***********************************************/
   void registerBrowser(uint16_t unusedButMandatoryParameter) {
+  #ifndef SAVESPACE_JM
     int16_t registerNameWidth;
 
     hourGlassIconEnabled = false;
@@ -315,5 +316,6 @@
         registerBrowser(NOPARAM);
       }
     }
+  #endif //SAVESPACE_JM
   }
 #endif // TESTSUITE_BUILD
