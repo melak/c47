@@ -20,7 +20,11 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-#define SAVESPACE_JM //To remove some code to make fit without QSPI: Less fontbrowser, less registerbrowser
+#ifdef DMCP_BUILD
+  #define SAVESPACE_JM //To remove some code to make fit without QSPI: Less fontbrowser, less registerbrowser
+#else
+  #undef SAVESPACE_JM
+#endif
 
 
 //*********************************
