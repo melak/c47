@@ -36,6 +36,7 @@
 
 
 #ifndef TESTSUITE_BUILD
+#ifndef SAVESPACE_JM
   static void oneSystemFlag(uint16_t systemFlag, const char *systemFlagNamename, int16_t *line, bool_t *firstSystemFlag) {
     if(getSystemFlag(systemFlag)) {
       if(stringWidth(tmpString + CHARS_PER_LINE * *line, &standardFont, true, true) + stringWidth(systemFlagNamename, &standardFont, true, false) <= SCREEN_WIDTH - 1 - 8) { // SPACE is 8 pixel wide
@@ -52,6 +53,7 @@
       }
     }
   }
+  #endif //SAVESPACE_JM
 
 
 
@@ -62,6 +64,7 @@
    * \return void
    ***********************************************/
   void flagBrowser(uint16_t unusedButMandatoryParameter) {
+  #ifndef SAVESPACE_JM
     static int16_t line;
     int16_t f;
     bool_t firstFlag;
@@ -292,5 +295,6 @@
         flagBrowser(NOPARAM);
       }
     }
+  #endif //SAVESPACE_JM
   }
 #endif // TESTSUITE_BUILD
