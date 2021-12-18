@@ -137,8 +137,8 @@
 #define ERROR_EQUATION_TOO_COMPLEX                46
 #define ERROR_CANNOT_ASSIGN_HERE                  47
 #define ERROR_INVALID_NAME                        48
-#define ERROR_NON_PROGRAMMABLE_COMMAND            49
-#define ERROR_TOO_MANY_VARIABLES                  50 // unlikely
+#define ERROR_TOO_MANY_VARIABLES                  49 // unlikely
+#define ERROR_NON_PROGRAMMABLE_COMMAND            50
 #define ERROR_BAD_INPUT                           51 // This error is not in ReM and cannot occur (theoretically).
 
 #define NUMBER_OF_ERROR_CODES                     52
@@ -737,6 +737,7 @@ typedef enum {
 #define STRING_DATE                               12
 
 // OP parameter special values
+#define SYSTEM_FLAG_NUMBER                       250
 #define VALUE_0                                  251
 #define VALUE_1                                  252
 #define STRING_LABEL_VARIABLE                    253

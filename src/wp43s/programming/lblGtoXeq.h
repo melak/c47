@@ -20,6 +20,7 @@
 #ifndef LBLGTOXEQ_H
 #define LBLGTOXEQ_H
 
+#include "typeDefinitions.h"
 #include <stdint.h>
 
 void   fnGoto        (uint16_t label);
@@ -39,7 +40,7 @@ void   fnStopProgram (uint16_t unusedButMandatoryParameter);
  *                    > 1 if the next step shall be skipped
  */
 int16_t executeOneStep(uint8_t *step);
-void    runProgram    (void);
+void    runProgram    (bool_t singleStep);
 void    execProgram   (uint16_t label);
 
 #endif // LBLGTOXEQ_H

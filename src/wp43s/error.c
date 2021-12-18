@@ -57,7 +57,7 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /* 25 */  "",
 /* 26 */  "Please enter a NEW name",
 /* 27 */  "Cannot delete a predefined item",
-/* 28 */  "No summation data present",
+/* 28 */  "No statistic data present",
 /* 29 */  "Item to be coded",
 /* 30 */  "Function to be coded for that data type",
 /* 31 */  "Input data types do not match",
@@ -78,8 +78,8 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /* 46 */  "This equation formula is too complex",
 /* 47 */  "This item cannot be assigned here",
 /* 48 */  "Invalid name",
-/* 49 */  "Non-programmable command. Please remove.",
-/* 50 */  "Too many variables",
+/* 49 */  "Too many variables",
+/* 50 */  "Non-programmable command. Please remove.",
 /* 51 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
 };
 

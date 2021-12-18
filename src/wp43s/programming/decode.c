@@ -21,6 +21,7 @@
 #include "programming/decode.h"
 
 #include "charString.h"
+#include "dateTime.h"
 #include "display.h"
 #include "fonts.h"
 #include "items.h"
@@ -233,6 +234,9 @@ void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
       else if(FIRST_LOCAL_FLAG + NUMBER_OF_LOCAL_FLAGS <= opParam && opParam < FIRST_LOCAL_FLAG + NUMBER_OF_LOCAL_FLAGS + NUMBER_OF_SYSTEM_FLAGS) { // Local register from .00 to .15 (or .31)
         sprintf(tmpString, "%s .%02d", op, opParam - FIRST_LOCAL_FLAG);
       }
+      else if(opParam == SYSTEM_FLAG_NUMBER) {
+        sprintf(tmpString, "%s " STD_LEFT_SINGLE_QUOTE "%s" STD_RIGHT_SINGLE_QUOTE, op, indexOfItems[*paramAddress + SFL_TDM24].itemSoftmenuName);
+      }
       else if(opParam == INDIRECT_REGISTER) {
         getIndirectRegister(paramAddress, op);
       }
@@ -354,11 +358,36 @@ static void decodeLiteral(uint8_t *literalAddress) {
       sprintf(tmpString, STD_LEFT_SINGLE_QUOTE "%s" STD_RIGHT_SINGLE_QUOTE, tmpStringLabelOrVariableName);
       break;
 
-    //case STRING_DATE:
-    //  break;
+    case STRING_DATE:
+      getStringLabelOrVariableName(literalAddress);
+      reallocateRegister(TEMP_REGISTER_1, dtDate, REAL34_SIZE, amNone);
+      stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(TEMP_REGISTER_1));
+      julianDayToInternalDate(REGISTER_REAL34_DATA(TEMP_REGISTER_1), REGISTER_REAL34_DATA(TEMP_REGISTER_1));
+      dateToDisplayString(TEMP_REGISTER_1, tmpString);
+      break;
 
-    //case STRING_TIME:
-    //  break;
+    case STRING_TIME:
+      {
+        char *timeStringPtr = tmpString;
+        char *sourceStringPtr = tmpStringLabelOrVariableName;
+        getStringLabelOrVariableName(literalAddress);
+        for(; *sourceStringPtr != '.' && *sourceStringPtr != 0; ++sourceStringPtr) {
+          *(timeStringPtr++) = *sourceStringPtr;
+        }
+        if(*sourceStringPtr == '.') ++sourceStringPtr;
+        *(timeStringPtr++) = ':';
+        if(*sourceStringPtr != 0) {*(timeStringPtr++) = *(sourceStringPtr++);} else {*(timeStringPtr++) = '0';}
+        if(*sourceStringPtr != 0) {*(timeStringPtr++) = *(sourceStringPtr++);} else {*(timeStringPtr++) = '0';}
+        *(timeStringPtr++) = ':';
+        if(*sourceStringPtr != 0) {*(timeStringPtr++) = *(sourceStringPtr++);} else {*(timeStringPtr++) = '0';}
+        if(*sourceStringPtr != 0) {*(timeStringPtr++) = *(sourceStringPtr++);} else {*(timeStringPtr++) = '0';}
+        if(*sourceStringPtr != 0) {*(timeStringPtr++) = '.';}
+        for(; *sourceStringPtr != 0; ++sourceStringPtr) {
+          *(timeStringPtr++) = *sourceStringPtr;
+        }
+        *(timeStringPtr++) = 0;
+      }
+      break;
 
     default: {
       #ifndef DMCP_BUILD

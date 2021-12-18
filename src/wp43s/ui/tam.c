@@ -244,6 +244,11 @@
       }
       else if(tam.indirect) {
         tam.indirect = false;
+        if(tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) {
+          popSoftmenu();
+          showSoftmenu(-MNU_TAMFLAG);
+          --numberOfTamMenusToPop;
+        }
       }
       else if(tam.currentOperation != tam.function) {
         tam.currentOperation = tam.function;
@@ -425,6 +430,11 @@
     }
     else if(item == ITM_INDIRECTION) {
       if(!tam.alpha && !tam.digitsSoFar && !tam.dot && !valueParameter) {
+        if(!tam.indirect && (tam.mode == TM_FLAGR || tam.mode == TM_FLAGW)) {
+          popSoftmenu();
+          showSoftmenu(-MNU_TAM);
+          --numberOfTamMenusToPop;
+        }
         tam.indirect = true;
       }
       return;
@@ -564,6 +574,11 @@
 
     if(calcMode == CM_NIM) {
       closeNim();
+    }
+    else if(calcMode == CM_PEM && aimBuffer[0] != 0) {
+      if(getSystemFlag(FLAG_ALPHA)) pemCloseAlphaInput();
+      else                          pemCloseNumberInput();
+      aimBuffer[0] = 0;
     }
 
     tam.alpha = (func == ITM_ASSIGN);

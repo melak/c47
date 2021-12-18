@@ -4544,6 +4544,14 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = LAST_LOCAL_FLAG;
 
     *(currentStep++) = ITM_FC;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = ITM_FC;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = NUMBER_OF_SYSTEM_FLAGS - 1;
+
+    *(currentStep++) = ITM_FC;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 0;
 
@@ -4574,13 +4582,13 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = 'a';
     *(currentStep++) = 'r';
 
+    // 230
     *(currentStep++) = ITM_FS;
     *(currentStep++) = 0;
 
     *(currentStep++) = ITM_FS;
     *(currentStep++) = 99;
 
-    // 230
     *(currentStep++) = ITM_FS;
     *(currentStep++) = REGISTER_X;
 
@@ -4594,6 +4602,14 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = LAST_LOCAL_FLAG;
 
     *(currentStep++) = ITM_FS;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = ITM_FS;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = NUMBER_OF_SYSTEM_FLAGS - 1;
+
+    *(currentStep++) = ITM_FS;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 0;
 
@@ -4601,6 +4617,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 99;
 
+    // 240
     *(currentStep++) = ITM_FS;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = REGISTER_X;
@@ -4617,7 +4634,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = LAST_LOCAL_REGISTER;
 
-    // 240
     *(currentStep++) = ITM_FS;
     *(currentStep++) = INDIRECT_VARIABLE;
     *(currentStep++) = 3;
@@ -4635,6 +4651,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = ITM_CPX;
 
+    // 250
     *(currentStep++) = ITM_MATR;
 
     *(currentStep++) = ITM_NAN;
@@ -4643,7 +4660,6 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = ITM_SPEC;
 
-    // 250
     *(currentStep++) = ITM_STRI;
 
     *(currentStep++) = ITM_PMINFINITY;
@@ -5659,6 +5675,14 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = LAST_LOCAL_FLAG;
 
     *(currentStep++) = ITM_CF;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = ITM_CF;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = NUMBER_OF_SYSTEM_FLAGS - 1;
+
+    *(currentStep++) = ITM_CF;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 0;
 
@@ -5708,6 +5732,14 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = LAST_LOCAL_FLAG;
 
     *(currentStep++) = ITM_SF;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = ITM_SF;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = NUMBER_OF_SYSTEM_FLAGS - 1;
+
+    *(currentStep++) = ITM_SF;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 0;
 
@@ -5755,6 +5787,14 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = ITM_FF;
     *(currentStep++) = LAST_LOCAL_FLAG;
+
+    *(currentStep++) = ITM_FF;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = ITM_FF;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = NUMBER_OF_SYSTEM_FLAGS - 1;
 
     *(currentStep++) = ITM_FF;
     *(currentStep++) = INDIRECT_REGISTER;
@@ -5947,6 +5987,28 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '-';
     *(currentStep++) = 'i';
     *(currentStep++) = '2';
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_TIME;
+    *(currentStep++) =  7;  // String length
+    *(currentStep++) =  '-';
+    *(currentStep++) =  '1';
+    *(currentStep++) =  '.';
+    *(currentStep++) =  '2';
+    *(currentStep++) =  '3';
+    *(currentStep++) =  '4';
+    *(currentStep++) =  '5';
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_DATE;
+    *(currentStep++) =  7;  // String length
+    *(currentStep++) =  '2';
+    *(currentStep++) =  '4';
+    *(currentStep++) =  '5';
+    *(currentStep++) =  '6';
+    *(currentStep++) =  '7';
+    *(currentStep++) =  '8';
+    *(currentStep++) =  '9';
 
     *(currentStep++) = ITM_toDEG;
 
@@ -6841,6 +6903,16 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_FCC >> 8) | 0x80;
     *(currentStep++) =  ITM_FCC       & 0xff;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_FCC >> 8) | 0x80;
+    *(currentStep++) =  ITM_FCC       & 0xff;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = NUMBER_OF_SYSTEM_FLAGS - 1;
+
+    *(currentStep++) = (ITM_FCC >> 8) | 0x80;
+    *(currentStep++) =  ITM_FCC       & 0xff;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 0;
 
@@ -6903,6 +6975,16 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_FCS >> 8) | 0x80;
     *(currentStep++) =  ITM_FCS       & 0xff;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_FCS >> 8) | 0x80;
+    *(currentStep++) =  ITM_FCS       & 0xff;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = NUMBER_OF_SYSTEM_FLAGS - 1;
+
+    *(currentStep++) = (ITM_FCS >> 8) | 0x80;
+    *(currentStep++) =  ITM_FCS       & 0xff;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 0;
 
@@ -6965,6 +7047,16 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_FCF >> 8) | 0x80;
     *(currentStep++) =  ITM_FCF       & 0xff;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_FCF >> 8) | 0x80;
+    *(currentStep++) =  ITM_FCF       & 0xff;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = NUMBER_OF_SYSTEM_FLAGS - 1;
+
+    *(currentStep++) = (ITM_FCF >> 8) | 0x80;
+    *(currentStep++) =  ITM_FCF       & 0xff;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 0;
 
@@ -7027,6 +7119,16 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_FSC >> 8) | 0x80;
     *(currentStep++) =  ITM_FSC       & 0xff;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_FSC >> 8) | 0x80;
+    *(currentStep++) =  ITM_FSC       & 0xff;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = NUMBER_OF_SYSTEM_FLAGS - 1;
+
+    *(currentStep++) = (ITM_FSC >> 8) | 0x80;
+    *(currentStep++) =  ITM_FSC       & 0xff;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 0;
 
@@ -7089,6 +7191,16 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_FSS >> 8) | 0x80;
     *(currentStep++) =  ITM_FSS       & 0xff;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_FSS >> 8) | 0x80;
+    *(currentStep++) =  ITM_FSS       & 0xff;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = NUMBER_OF_SYSTEM_FLAGS - 1;
+
+    *(currentStep++) = (ITM_FSS >> 8) | 0x80;
+    *(currentStep++) =  ITM_FSS       & 0xff;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 0;
 
@@ -7148,6 +7260,16 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_FSF >> 8) | 0x80;
     *(currentStep++) =  ITM_FSF       & 0xff;
     *(currentStep++) = LAST_LOCAL_FLAG;
+
+    *(currentStep++) = (ITM_FSF >> 8) | 0x80;
+    *(currentStep++) =  ITM_FSF       & 0xff;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_FSF >> 8) | 0x80;
+    *(currentStep++) =  ITM_FSF       & 0xff;
+    *(currentStep++) = SYSTEM_FLAG_NUMBER;
+    *(currentStep++) = NUMBER_OF_SYSTEM_FLAGS - 1;
 
     *(currentStep++) = (ITM_FSF >> 8) | 0x80;
     *(currentStep++) =  ITM_FSF       & 0xff;

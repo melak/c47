@@ -306,6 +306,21 @@ void wp43sFree(void *pcMemPtr, size_t sizeInBlocks) {
     }
   }
 
+  #ifdef PC_BUILD
+  // check for overlap
+  for(i=1; i<numberOfFreeMemoryRegions; i++) {
+    if((freeMemoryRegions[i-1].address + freeMemoryRegions[i-1].sizeInBlocks) >= freeMemoryRegions[i].address) {
+      printf("\n*** Free memory regions overlap!\n");
+      printf("*** This suggests there was double-free!\n");
+      printf("Free blocks (%" PRId32 "):\n", numberOfFreeMemoryRegions);
+      for(j=0; j<numberOfFreeMemoryRegions; j++) {
+        printf("  %2" PRId32 " starting at %5" PRIu16 ": %5" PRIu16 " blocks = %6" PRIu32 " bytes\n", j, freeMemoryRegions[j].address, freeMemoryRegions[j].sizeInBlocks, TO_BYTES((uint32_t)freeMemoryRegions[j].sizeInBlocks));
+      }
+      break;
+    }
+  }
+  #endif // PC_BUILD
+
   // new free block
   if(!done) {
     if(numberOfFreeMemoryRegions == MAX_FREE_REGION) {

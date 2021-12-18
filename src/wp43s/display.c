@@ -33,6 +33,7 @@
 #include "mathematics/toPolar.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "screen.h"
 #include <string.h>
 
 #include "wp43s.h"
@@ -2112,4 +2113,12 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
 void fnView(uint16_t regist) {
   currentViewRegister = regist;
   temporaryInformation = TI_VIEW;
+  if(programRunStop == PGM_RUNNING) {
+    refreshScreen();
+    #ifdef DMCP_BUILD
+      lcd_refresh();
+    #else // !DMCP_BUILD
+      refreshLcd(NULL);
+    #endif // DMCP_BUILD
+  }
 }

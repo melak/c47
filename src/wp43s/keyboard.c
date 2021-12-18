@@ -400,7 +400,14 @@
             return;
           }
           else if(calcMode == CM_PEM && catalog && catalog != CATALOG_MVAR) { // TODO: is that correct
-            if(tam.mode) {
+            if(indexOfItems[item].func == fnGetSystemFlag && (tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && !tam.indirect) {
+              tam.value = (indexOfItems[item].param & 0xff);
+              tam.alpha = true;
+              insertStepInProgram(tamOperation());
+              tamLeaveMode();
+              hourGlassIconEnabled = false;
+            }
+            else if(tam.mode) {
               const char *itmLabel = dynmenuGetLabel(dynamicMenuItem);
               uint16_t nameLength = stringByteLength(itmLabel);
               xcopy(aimBuffer, itmLabel, nameLength + 1);
@@ -868,7 +875,9 @@
 
       case ITM_UP:
         fnKeyUp(NOPARAM);
-        refreshScreen();
+        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
+          refreshScreen();
+        }
         keyActionProcessed = true;
         #if (REAL34_WIDTH_TEST == 1)
           if(++largeur > SCREEN_WIDTH) largeur--;
@@ -879,7 +888,9 @@
 
       case ITM_DOWN:
         fnKeyDown(NOPARAM);
-        refreshScreen();
+        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
+          refreshScreen();
+        }
         keyActionProcessed = true;
         #if (REAL34_WIDTH_TEST == 1)
           if(--largeur < 20) largeur++;
@@ -1724,6 +1735,14 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuUp();
         }
+        else if(calcMode == CM_NORMAL) {
+          fnBst(NOPARAM);
+          #ifdef DMCP_BUILD
+            lcd_refresh();
+          #else // !DMCP_BUILD
+            refreshLcd(NULL);
+          #endif // DMCP_BUILD
+        }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
           fnPlotStat(PLOT_NXT);
         }
@@ -1833,6 +1852,9 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         resetAlphaSelectionBuffer();
         if(currentSoftmenuScrolls()) {
           menuDown();
+        }
+        else if(calcMode == CM_NORMAL) {
+          fnSst(NOPARAM);
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
           fnPlotStat(PLOT_REV); //REVERSE

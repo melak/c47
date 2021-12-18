@@ -23,6 +23,7 @@
 #include "bufferize.h"
 #include "charString.h"
 #include "config.h"
+#include "dateTime.h"
 #include "defines.h"
 #include "flags.h"
 #include "fonts.h"
@@ -34,6 +35,7 @@
 #include "programming/nextStep.h"
 #include "realType.h"
 #include "registers.h"
+#include "registerValueConversions.h"
 #include "screen.h"
 #include "softmenus.h"
 #include "sort.h"
@@ -332,7 +334,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       else {
         showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal,  false, true);
       }
-      lblOrEnd = (*step == ITM_LBL) || ((*step == ((ITM_END >> 8) | 0x80)) && (*(step + 1) == (ITM_END & 0xff)));
+      lblOrEnd = (*step == ITM_LBL) || ((*step == ((ITM_END >> 8) | 0x80)) && (*(step + 1) == (ITM_END & 0xff))) || ((*step == 0xff) && (*(step + 1) == 0xff));
       decodeOneStep(step);
       if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber) {
         if(getSystemFlag(FLAG_ALPHA)) {
@@ -456,7 +458,7 @@ void pemAlpha(int16_t item) {
     #endif // PC_BUILD && (SCREEN_800X480 == 0)
 
     tmpString[0] = ITM_LITERAL;
-    tmpString[1] = STRING_LABEL_VARIABLE;
+    tmpString[1] = (char)STRING_LABEL_VARIABLE;
     tmpString[2] = 0;
     _insertInProgram((uint8_t *)tmpString, 3);
     --currentLocalStepNumber;
@@ -499,7 +501,7 @@ void pemAlpha(int16_t item) {
 
   deleteStepsFromTo(currentStep, findNextStep(currentStep));
   tmpString[0] = ITM_LITERAL;
-  tmpString[1] = STRING_LABEL_VARIABLE;
+  tmpString[1] = (char)STRING_LABEL_VARIABLE;
   tmpString[2] = stringByteLength(aimBuffer);
   xcopy(tmpString + 3, aimBuffer, stringByteLength(aimBuffer));
   _insertInProgram((uint8_t *)tmpString, stringByteLength(aimBuffer) + 3);
@@ -655,6 +657,55 @@ void pemCloseNumberInput(void) {
 #endif // TESTSUITE_BUILD
 }
 
+static void _pemCloseTimeInput(void) {
+#ifndef TESTSUITE_BUILD
+  switch(nimNumberPart) {
+    case NP_INT_10:
+    case NP_REAL_FLOAT_PART:
+      deleteStepsFromTo(currentStep, findNextStep(currentStep));
+      if(aimBuffer[0] != 0) {
+        char *numBuffer = aimBuffer[0] == '+' ? aimBuffer + 1 : aimBuffer;
+        char *tmpPtr = tmpString;
+        *(tmpPtr++) = ITM_LITERAL;
+        *(tmpPtr++) = STRING_TIME;
+        *(tmpPtr++) = stringByteLength(numBuffer);
+        xcopy(tmpPtr, numBuffer, stringByteLength(numBuffer));
+        _insertInProgram((uint8_t *)tmpString, stringByteLength(numBuffer) + (int32_t)(tmpPtr - tmpString));
+      }
+
+      aimBuffer[0] = '!';
+      break;
+  }
+#endif // TESTSUITE_BUILD
+}
+
+static void _pemCloseDateInput(void) {
+#ifndef TESTSUITE_BUILD
+  if(nimNumberPart == NP_REAL_FLOAT_PART) {
+    deleteStepsFromTo(currentStep, findNextStep(currentStep));
+    if(aimBuffer[0] != 0) {
+      char *numBuffer = aimBuffer[0] == '+' ? aimBuffer + 1 : aimBuffer;
+      char *tmpPtr = tmpString;
+      *(tmpPtr++) = ITM_LITERAL;
+      *(tmpPtr++) = STRING_DATE;
+
+      reallocateRegister(TEMP_REGISTER_1, dtReal34, REAL34_SIZE, amNone);
+      stringToReal34(numBuffer, REGISTER_REAL34_DATA(TEMP_REGISTER_1));
+      convertReal34RegisterToDateRegister(TEMP_REGISTER_1, TEMP_REGISTER_1);
+      internalDateToJulianDay(REGISTER_REAL34_DATA(TEMP_REGISTER_1), REGISTER_REAL34_DATA(TEMP_REGISTER_1));
+
+      real34ToString(REGISTER_REAL34_DATA(TEMP_REGISTER_1), tmpPtr + 1);
+      *tmpPtr = stringByteLength(tmpPtr + 1);
+      ++tmpPtr;
+
+      _insertInProgram((uint8_t *)tmpString, stringByteLength(tmpPtr) + (int32_t)(tmpPtr - tmpString));
+    }
+
+    aimBuffer[0] = '!';
+  }
+#endif // TESTSUITE_BUILD
+}
+
 void insertStepInProgram(int16_t func) {
   if(func == ITM_AIM || (!tam.mode && getSystemFlag(FLAG_ALPHA))) {
     pemAlpha(func);
@@ -664,7 +715,14 @@ void insertStepInProgram(int16_t func) {
     pemAddNumber(func);
     return;
   }
-  if(!tam.mode && !tam.alpha && aimBuffer[0] != 0) {
+  if(!tam.mode && !tam.alpha && aimBuffer[0] != 0 && func != ITM_toHMS) {
+    if(func == ITM_dotD) {
+      _pemCloseDateInput();
+      if(aimBuffer[0] == '!') {
+        aimBuffer[0] = 0;
+        return;
+      }
+    }
     pemCloseNumberInput();
     aimBuffer[0] = 0;
   }
@@ -777,23 +835,26 @@ void insertStepInProgram(int16_t func) {
 
       if(tam.mode == TM_CMP && tam.value == TEMP_REGISTER_1) {
         tmpString[0] = func;
-        tmpString[1] = real34IsZero(REGISTER_REAL34_DATA(TEMP_REGISTER_1)) ? VALUE_0 : VALUE_1;
+        tmpString[1] = (char)(real34IsZero(REGISTER_REAL34_DATA(TEMP_REGISTER_1)) ? VALUE_0 : VALUE_1);
         _insertInProgram((uint8_t *)tmpString, 2);
       }
-      else if((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && tam.alpha) {
-        // not implemented
+      else if((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && tam.alpha && !tam.indirect) {
+        tmpString[0] = func;
+        tmpString[1] = (char)SYSTEM_FLAG_NUMBER;
+        tmpString[2] = tam.value;
+        _insertInProgram((uint8_t *)tmpString, 3);
       }
       else if(tam.alpha) {
         uint16_t nameLength = stringByteLength(aimBuffer);
         tmpString[0] = func;
-        tmpString[1] = tam.indirect ? INDIRECT_VARIABLE : STRING_LABEL_VARIABLE;
+        tmpString[1] = (char)(tam.indirect ? INDIRECT_VARIABLE : STRING_LABEL_VARIABLE);
         tmpString[2] = nameLength;
         xcopy(tmpString + 3, aimBuffer, nameLength);
         _insertInProgram((uint8_t *)tmpString, nameLength + 3);
       }
       else if(tam.indirect) {
         tmpString[0] = func;
-        tmpString[1] = INDIRECT_REGISTER;
+        tmpString[1] = (char)INDIRECT_REGISTER;
         tmpString[2] = tam.value;
         _insertInProgram((uint8_t *)tmpString, 3);
       }
@@ -907,6 +968,11 @@ void insertStepInProgram(int16_t func) {
 
     // Double-byte, 8-bit integer parameter
     case ITM_CNST:           //  207
+    case ITM_BS:             //  405
+    case ITM_BC:             //  406
+    case ITM_CB:             //  407
+    case ITM_SB:             //  408
+    case ITM_FB:             //  409
     case ITM_RL:             //  410
     case ITM_RLC:            //  411
     case ITM_RR:             //  412
@@ -991,26 +1057,25 @@ void insertStepInProgram(int16_t func) {
     case ITM_FSC:            //  399
     case ITM_FSS:            //  400
     case ITM_FSF:            //  401
-    case ITM_BS:             //  405
-    case ITM_BC:             //  406
-    case ITM_CB:             //  407
-    case ITM_SB:             //  408
-    case ITM_FB:             //  409
 
       if(tam.mode == TM_CMP && tam.value == TEMP_REGISTER_1) {
         tmpString[0] = (func >> 8) | 0x80;
         tmpString[1] =  func       & 0xff;
-        tmpString[2] = real34IsZero(REGISTER_REAL34_DATA(TEMP_REGISTER_1)) ? VALUE_0 : VALUE_1;
+        tmpString[2] = (char)(real34IsZero(REGISTER_REAL34_DATA(TEMP_REGISTER_1)) ? VALUE_0 : VALUE_1);
         _insertInProgram((uint8_t *)tmpString, 3);
       }
-      else if((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && tam.alpha) {
-        // not implemented
+      else if((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && tam.alpha && !tam.indirect) {
+        tmpString[0] = (func >> 8) | 0x80;
+        tmpString[1] =  func       & 0xff;
+        tmpString[2] = (char)SYSTEM_FLAG_NUMBER;
+        tmpString[3] = tam.value;
+        _insertInProgram((uint8_t *)tmpString, 4);
       }
       else if(tam.alpha) {
         uint16_t nameLength = stringByteLength(aimBuffer);
         tmpString[0] = (func >> 8) | 0x80;
         tmpString[1] =  func       & 0xff;
-        tmpString[2] = tam.indirect ? INDIRECT_VARIABLE : STRING_LABEL_VARIABLE;
+        tmpString[2] = (char)(tam.indirect ? INDIRECT_VARIABLE : STRING_LABEL_VARIABLE);
         tmpString[3] = nameLength;
         xcopy(tmpString + 4, aimBuffer, nameLength);
         _insertInProgram((uint8_t *)tmpString, nameLength + 4);
@@ -1018,7 +1083,7 @@ void insertStepInProgram(int16_t func) {
       else if(tam.indirect) {
         tmpString[0] = (func >> 8) | 0x80;
         tmpString[1] =  func       & 0xff;
-        tmpString[2] = INDIRECT_REGISTER;
+        tmpString[2] = (char)INDIRECT_REGISTER;
         tmpString[3] = tam.value;
         _insertInProgram((uint8_t *)tmpString, 4);
       }
@@ -1027,6 +1092,26 @@ void insertStepInProgram(int16_t func) {
         tmpString[1] =  func       & 0xff;
         tmpString[2] = tam.value;
         _insertInProgram((uint8_t *)tmpString, 3);
+      }
+      break;
+
+    // h.ms
+    case ITM_toHMS:          // 1686
+      if(aimBuffer[0] != 0 && !getSystemFlag(FLAG_ALPHA)) {
+        _pemCloseTimeInput();
+        if(aimBuffer[0] != '!') {
+          pemCloseNumberInput();
+          aimBuffer[0] = 0;
+          tmpString[0] = (func >> 8) | 0x80;
+          tmpString[1] =  func       & 0xff;
+          _insertInProgram((uint8_t *)tmpString, 2);
+        }
+        aimBuffer[0] = 0;
+      }
+      else {
+        tmpString[0] = (func >> 8) | 0x80;
+        tmpString[1] =  func       & 0xff;
+        _insertInProgram((uint8_t *)tmpString, 2);
       }
       break;
 
@@ -1570,7 +1655,6 @@ void insertStepInProgram(int16_t func) {
     case ITM_cn:             // 1683
     case ITM_dn:             // 1684
     case ITM_toHR:           // 1685
-    case ITM_toHMS:          // 1686
     case ITM_toPOL:          // 1688
     case ITM_MPItoR:         // 1689
     case ITM_RtoMPI:         // 1690
