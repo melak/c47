@@ -627,7 +627,7 @@
     }
 
     char key[3] = {0, 0, 0};
-    static void convertXYToKey(int x, int y, char *key) {
+    static void convertXYToKey(int x, int y) {
       int xMin, xMax, yMin, yMax;
       key[0] = 0;
       key[1] = 0;
@@ -657,7 +657,7 @@
 
     void frmCalcMouseButtonPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       if(key[0] == 0) { // The previous click must be released
-        convertXYToKey((int)event->button.x, (int)event->button.y, key);
+        convertXYToKey((int)event->button.x, (int)event->button.y);
         if(key[0] == 0) {
           return;
         }

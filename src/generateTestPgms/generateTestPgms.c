@@ -554,7 +554,9 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_RCL;
     *(currentStep++) = 1;
 
-    // 132
+    *(currentStep++) = ITM_STOP;
+
+    // 133
     *(currentStep++) = (ITM_END >> 8) | 0x80;
     *(currentStep++) =  ITM_END       & 0xff;
   }
