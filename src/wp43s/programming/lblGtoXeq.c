@@ -780,6 +780,7 @@ int16_t executeOneStep(uint8_t *step) {
         case ITM_FBR:            //  1722
         case ITM_UNDO:           //  1723
         case ITM_SYSTEM:         //  1743
+        case ITM_CLBKUP:         //  1780
           displayCalcErrorMessage(ERROR_NON_PROGRAMMABLE_COMMAND, ERR_REGISTER_LINE, REGISTER_X);
           #if (EXTRA_INFO_ON_CALC_ERROR == 1)
             moreInfoOnError("In function decodeOneStep:", "non-programmable function", indexOfItems[item16].itemCatalogName, "appeared in the program!");

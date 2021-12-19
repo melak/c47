@@ -38,4 +38,6 @@ int32_t  stringToInt32 (const char *str);
 
 void     doLoad        (uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d);
 
+void     fnDeleteBackup(uint16_t confirmation);
+
 #endif // SAVERESTORECALCSTATE_H
