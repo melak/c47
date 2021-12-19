@@ -68,7 +68,13 @@ void fnGoto(uint16_t label) {
       // Search for local label
       for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
         if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer) == label) { // Is in the current program and is a local label and is the searched label
-          fnGotoDot(-labelList[lbl].step);
+          if(programRunStop == PGM_RUNNING) {
+            currentLocalStepNumber = (-labelList[lbl].step) - programList[currentProgramNumber - 1].step + 1;
+            currentStep = labelList[lbl].labelPointer - 1;
+          }
+          else {
+            fnGotoDot(-labelList[lbl].step);
+          }
           return;
         }
       }
@@ -236,8 +242,19 @@ void fnReturn(uint16_t skip) {
 
   /* A subroutine is running */
   if(currentSubroutineLevel > 0) {
-    uint16_t returnGlobalStepNumber = currentReturnLocalStep + programList[currentReturnProgramNumber - 1].step; // the next step
-    fnGotoDot(returnGlobalStepNumber);
+    if(programRunStop == PGM_RUNNING) {
+      currentProgramNumber = currentReturnProgramNumber;
+      currentLocalStepNumber = currentReturnLocalStep + 1;
+      currentStep = programList[currentProgramNumber - 1].instructionPointer;
+      for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
+        currentStep = findNextStep(currentStep);
+      }
+    }
+    else {
+      uint16_t returnGlobalStepNumber = currentReturnLocalStep + programList[currentReturnProgramNumber - 1].step; // the next step
+      fnGotoDot(returnGlobalStepNumber);
+    }
+
     if(skip > 0 && (*currentStep != ((ITM_END >> 8) | 0x80) || *(currentStep + 1) != (ITM_END & 0xff)) && (*currentStep != 255 || *(currentStep + 1) != 255)) {
       ++currentLocalStepNumber;
       currentStep = findNextStep(currentStep);
