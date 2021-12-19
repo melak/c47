@@ -782,6 +782,7 @@ void insertStepInProgram(int16_t func) {
     case ITM_FBR:            // 1722
     case ITM_UNDO:           // 1723
     case ITM_SYSTEM:         // 1743
+    case ITM_CLBKUP:         // 1780
       break;
 
     // Single-byte, label parameter

@@ -740,9 +740,6 @@
       else if(showFunctionNameItem != 0) {
         item = showFunctionNameItem;
         hideFunctionName();
-        #ifdef PC_BUILD
-          if(item == ITM_RS || item == ITM_XEQ) key[0] = 0;
-        #endif // PC_BUILD
         if(item < 0) {
           showSoftmenu(item);
         }
@@ -750,6 +747,10 @@
           int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
           int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (shiftG ? 2 : shiftF ? 1 : 0);
           char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
+
+          #ifdef PC_BUILD
+            if(item == ITM_RS || item == ITM_XEQ) key[0] = 0;
+          #endif // PC_BUILD
 
           if(item != ITM_NOP && tam.alpha && indexOfItems[item].func != addItemToBuffer) {
             // We are in TAM mode so need to cancel first (equivalent to EXIT)
