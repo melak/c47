@@ -479,6 +479,9 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
   if((--currentSolverNestingDepth) == 0)
     clearSystemFlag(FLAG_SOLVING);
 
+  if(real34IsZero(&fb))
+    result = SOLVER_RESULT_NORMAL;
+
   real34Copy(&fb, resZ);
   real34Copy(&b1, resY);
   real34Copy(&b, resX);

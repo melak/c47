@@ -495,7 +495,9 @@
     // If LCD has changed: update the GTK screen
     if(screenChange) {
       #if defined(LINUX) && (DEBUG_PANEL == 1)
-        refreshDebugPanel();
+        if(programRunStop != PGM_RUNNING) {
+          refreshDebugPanel();
+        }
       #endif // defined(LINUX) && (DEBUG_PANEL == 1)
 
       gtk_widget_queue_draw(screen);
@@ -986,7 +988,9 @@ void execTimerApp(uint16_t timerType) {
     char prefix[200], lastBase[4];
 
     #if (DEBUG_PANEL == 1)
-      refreshDebugPanel();
+      if(programRunStop != PGM_RUNNING) {
+        refreshDebugPanel();
+      }
     #endif // (DEBUG_PANEL == 1)
 
     if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT)) {
