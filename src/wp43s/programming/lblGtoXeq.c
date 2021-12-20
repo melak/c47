@@ -1538,12 +1538,14 @@ void runProgram(bool_t singleStep) {
   lastErrorCode = ERROR_NONE;
   hourGlassIconEnabled = true;
   programRunStop = PGM_RUNNING;
-  showHideHourGlass();
-  #ifdef DMCP_BUILD
-    lcd_refresh();
-  #else // !DMCP_BUILD
-    refreshLcd(NULL);
-  #endif // DMCP_BUILD
+  if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
+    showHideHourGlass();
+    #ifdef DMCP_BUILD
+      lcd_refresh();
+    #else // !DMCP_BUILD
+      refreshLcd(NULL);
+    #endif // DMCP_BUILD
+  }
 
   while(1) {
     int16_t stepsToBeAdvanced;
@@ -1608,13 +1610,15 @@ stopProgram:
   if(programRunStop == PGM_RUNNING && !nestedEngine) {
     programRunStop = PGM_STOPPED;
   }
-  showHideHourGlass();
-  #ifdef DMCP_BUILD
-    lcd_refresh();
-    fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, FAST_SCREEN_REFRESH_PERIOD+50);
-  #else // !DMCP_BUILD
-    refreshLcd(NULL);
-  #endif // DMCP_BUILD
+  if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
+    showHideHourGlass();
+    #ifdef DMCP_BUILD
+      lcd_refresh();
+      fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, FAST_SCREEN_REFRESH_PERIOD+50);
+    #else // !DMCP_BUILD
+      refreshLcd(NULL);
+    #endif // DMCP_BUILD
+  }
   return;
 #endif // TESTSUITE_BUILD
 }
