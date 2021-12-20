@@ -360,6 +360,9 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
           real34Copy(const34_1e_32, &s);
           if(real34CompareLessThan(&b, &a)) real34SetNegativeSign(&s);
         }
+        if(real34CompareAbsLessThan(const34_1e6, &s)) {
+          real34Multiply(&s, const34_1e6, &s);
+        }
         real34Subtract(&a, &s, &a);
         _executeSolver(variable, &a, &fa);
         real34Add(&b, &s, &s);
