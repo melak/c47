@@ -44,7 +44,6 @@
 #include "screen.h"
 #include "softmenus.h"
 #include "stack.h"
-#include "statusBar.h"
 #include "store.h"
 #include "ui/tam.h"
 
@@ -1431,14 +1430,6 @@ void fnEigenvalues(uint16_t unusedParamButMandatory) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      hourGlassIconEnabled = true;
-      showHideHourGlass();
-      #ifdef DMCP_BUILD
-        lcd_refresh();
-      #else // !DMCP_BUILD
-        refreshLcd(NULL);
-      #endif // DMCP_BUILD
-
       setSystemFlag(FLAG_ASLIFT);
       liftStack();
       ires.header.matrixRows = ires.header.matrixColumns = 0;
@@ -1479,14 +1470,6 @@ void fnEigenvalues(uint16_t unusedParamButMandatory) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      hourGlassIconEnabled = true;
-      showHideHourGlass();
-      #ifdef DMCP_BUILD
-        lcd_refresh();
-      #else // !DMCP_BUILD
-        refreshLcd(NULL);
-      #endif // DMCP_BUILD
-
       setSystemFlag(FLAG_ASLIFT);
       liftStack();
       complexEigenvalues(&x, &res);
@@ -1522,14 +1505,6 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      hourGlassIconEnabled = true;
-      showHideHourGlass();
-      #ifdef DMCP_BUILD
-        lcd_refresh();
-      #else // !DMCP_BUILD
-        refreshLcd(NULL);
-      #endif // DMCP_BUILD
-
       setSystemFlag(FLAG_ASLIFT);
       liftStack();
       ires.header.matrixRows = ires.header.matrixColumns = 0;
@@ -1568,14 +1543,6 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      hourGlassIconEnabled = true;
-      showHideHourGlass();
-      #ifdef DMCP_BUILD
-        lcd_refresh();
-      #else // !DMCP_BUILD
-        refreshLcd(NULL);
-      #endif // DMCP_BUILD
-
       setSystemFlag(FLAG_ASLIFT);
       liftStack();
       complexEigenvectors(&x, &res);

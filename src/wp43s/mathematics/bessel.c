@@ -30,8 +30,6 @@
 #include "mathematics/toRect.h"
 #include "mathematics/wp34s.h"
 #include "memory.h"
-#include "screen.h"
-#include "statusBar.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -64,14 +62,6 @@ void fnBesselJ(uint16_t unusedButMandatoryParameter) {
 
   if(!saveLastX()) return;
 
-  hourGlassIconEnabled = true;
-  showHideHourGlass();
-  #ifdef DMCP_BUILD
-    lcd_refresh();
-  #else // !DMCP_BUILD
-    refreshLcd(NULL);
-  #endif // DMCP_BUILD
-
  if(besselGetParam(REGISTER_X, &x, &ctxtReal75) && besselGetParam(REGISTER_Y, &n, &ctxtReal75)) {
     if(realIsAnInteger(&n) || (!realIsNegative(&x))) {
       WP34S_BesselJ(&n, &x, &r, &ctxtReal75);
@@ -103,14 +93,6 @@ void fnBesselY(uint16_t unusedButMandatoryParameter) {
   real_t x, n, r, a, b, c;
 
   if(!saveLastX()) return;
-
-  hourGlassIconEnabled = true;
-  showHideHourGlass();
-  #ifdef DMCP_BUILD
-    lcd_refresh();
-  #else // !DMCP_BUILD
-    refreshLcd(NULL);
-  #endif // DMCP_BUILD
 
   if(besselGetParam(REGISTER_X, &x, &ctxtReal75) && besselGetParam(REGISTER_Y, &n, &ctxtReal75)) {
     if(!realIsNegative(&x)) {
