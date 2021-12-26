@@ -182,6 +182,7 @@ uint16_t               currentFormula;
 uint16_t               numberOfUserMenus;
 uint16_t               currentUserMenu;
 uint16_t               userKeyLabelSize;
+uint16_t               currentInputVariable = INVALID_VARIABLE;
 #if (REAL34_WIDTH_TEST == 1)
   uint16_t               largeur=200;
 #endif // (REAL34_WIDTH_TEST == 1)
@@ -207,6 +208,10 @@ uint64_t               savedSystemFlags;
 
 size_t                 gmpMemInBytes;
 size_t                 wp43sMemInBlocks;
+
+real_t                 SAVED_SIGMA_LASTX;
+real_t                 SAVED_SIGMA_LASTY;
+int32_t                SAVED_SIGMA_LAct;
 
 #ifdef DMCP_BUILD
   bool_t               backToDMCP;

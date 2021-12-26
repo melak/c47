@@ -926,6 +926,30 @@ void execTimerApp(uint16_t timerType) {
     *prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
   }
 
+  static void inputRegName(char *prefix, int16_t *prefixWidth) {
+    if(currentInputVariable < REGISTER_X) {
+      sprintf(prefix, "R%02" PRIu16 "?", currentInputVariable);
+    }
+    else if(currentInputVariable < FIRST_LOCAL_REGISTER) {
+      sprintf(prefix, "%c?", "XYZTABCDLIJK"[currentInputVariable - REGISTER_X]);
+    }
+    else if(currentInputVariable <= LAST_LOCAL_REGISTER) {
+      sprintf(prefix, "R.%02" PRIu16 "?", (uint16_t)(currentInputVariable - FIRST_LOCAL_REGISTER));
+    }
+    else if(currentInputVariable >= FIRST_NAMED_VARIABLE && currentInputVariable <= LAST_NAMED_VARIABLE) {
+      memcpy(prefix, allNamedVariables[currentInputVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentInputVariable - FIRST_NAMED_VARIABLE].variableName[0]);
+      strcpy(prefix + allNamedVariables[currentInputVariable - FIRST_NAMED_VARIABLE].variableName[0], "?");
+    }
+    else if(currentInputVariable >= FIRST_RESERVED_VARIABLE && currentInputVariable <= LAST_RESERVED_VARIABLE) {
+      memcpy(prefix, allReservedVariables[currentInputVariable - FIRST_RESERVED_VARIABLE].reservedVariableName + 1, allReservedVariables[currentInputVariable - FIRST_RESERVED_VARIABLE].reservedVariableName[0]);
+      strcpy(prefix + allReservedVariables[currentInputVariable - FIRST_RESERVED_VARIABLE].reservedVariableName[0], "?");
+    }
+    else {
+      sprintf(prefix, "??");
+    }
+    *prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+  }
+
 
   void updateMatrixHeightCache(void) {
     int16_t prefixWidth = 0;
@@ -936,6 +960,7 @@ void execTimerApp(uint16_t timerType) {
     if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || (calcMode == CM_MIM && getRegisterDataType(matrixIndex) == dtReal34Matrix)) {
       real34Matrix_t matrix;
       if(temporaryInformation == TI_VIEW) viewRegName(prefix, &prefixWidth);
+      if(temporaryInformation == TI_NO_INFO && currentInputVariable != INVALID_VARIABLE) inputRegName(prefix, &prefixWidth);
       if(calcMode == CM_MIM)
         matrix = openMatrixMIMPointer.realMatrix;
       else
@@ -956,6 +981,7 @@ void execTimerApp(uint16_t timerType) {
     else if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix || (calcMode == CM_MIM && getRegisterDataType(matrixIndex) == dtComplex34Matrix)) {
       complex34Matrix_t matrix;
       if(temporaryInformation == TI_VIEW) viewRegName(prefix, &prefixWidth);
+      if(temporaryInformation == TI_NO_INFO && currentInputVariable != INVALID_VARIABLE) inputRegName(prefix, &prefixWidth);
       if(calcMode == CM_MIM)
         matrix = openMatrixMIMPointer.complexMatrix;
       else
@@ -1197,6 +1223,8 @@ void execTimerApp(uint16_t timerType) {
             regist = currentViewRegister;
           }
         }
+
+        if(regist == REGISTER_X && currentInputVariable != INVALID_VARIABLE) inputRegName(prefix, &prefixWidth);
 
         if(lastErrorCode != 0 && regist == errorMessageRegisterLine) {
           if(stringWidth(errorMessages[lastErrorCode], &standardFont, true, true) <= SCREEN_WIDTH - 1) {

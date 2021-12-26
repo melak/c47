@@ -260,6 +260,7 @@
   extern uint16_t               numberOfUserMenus;
   extern uint16_t               currentUserMenu;
   extern uint16_t               userKeyLabelSize;
+  extern uint16_t               currentInputVariable;
   #if (REAL34_WIDTH_TEST == 1)
     extern uint16_t               largeur;
   #endif // (REAL34_WIDTH_TEST == 1)
@@ -285,6 +286,10 @@
 
   extern size_t                 gmpMemInBytes;
   extern size_t                 wp43sMemInBlocks;
+
+  extern real_t                 SAVED_SIGMA_LASTX;
+  extern real_t                 SAVED_SIGMA_LASTY;
+  extern int32_t                SAVED_SIGMA_LAct;
 
   #ifdef DMCP_BUILD
     extern bool_t               backToDMCP;

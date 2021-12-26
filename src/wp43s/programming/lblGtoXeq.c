@@ -39,6 +39,7 @@
 #include "softmenus.h"
 #include "statusBar.h"
 #include "stack.h"
+#include "store.h"
 #include "timer.h"
 #include "ui/tam.h"
 
@@ -54,17 +55,7 @@ void fnGoto(uint16_t label) {
     }
 
     // Local Label 00 to 99 and A, B, C, D, I, and J
-    if(label < REGISTER_X || (label != REGISTER_L && REGISTER_A <= label && label <= REGISTER_J)) {
-      switch(label) {
-        case REGISTER_A: label = 100 - 'A' + 'A'; break;
-        case REGISTER_B: label = 100 - 'A' + 'B'; break;
-        case REGISTER_C: label = 100 - 'A' + 'C'; break;
-        case REGISTER_D: label = 100 - 'A' + 'D'; break;
-        case REGISTER_I: label = 100 - 'A' + 'I'; break;
-        case REGISTER_J: label = 100 - 'A' + 'J'; break;
-        default: {}
-      }
-
+    if(label <= 109) {
       // Search for local label
       for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
         if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer) == label) { // Is in the current program and is a local label and is the searched label
@@ -93,26 +84,9 @@ void fnGoto(uint16_t label) {
       }
       #endif // DMCP_BUILD
     }
-    else { // Global label X, Y, Z, T, K, or L
-      switch(label) {
-        case REGISTER_X: label = 'X'; break;
-        case REGISTER_Y: label = 'Y'; break;
-        case REGISTER_Z: label = 'Z'; break;
-        case REGISTER_T: label = 'T'; break;
-        case REGISTER_K: label = 'K'; break;
-        case REGISTER_L: label = 'L'; break;
-        default: {}
-      }
-
-      for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
-        if(labelList[lbl].step > 0 && *(labelList[lbl].labelPointer) == 1 && *(labelList[lbl].labelPointer + 1) == label) { // Is a global label and is the searched label
-          fnGotoDot(labelList[lbl].step);
-          return;
-        }
-      }
-
+    else {
       #ifndef DMCP_BUILD
-        printf("Error in function fnGoto: there is no global label %c\n", label);
+        printf("Error in function fnGoto: invalid parameter %u\n", label);
       #endif // DMCP_BUILD
     }
   }
@@ -265,6 +239,10 @@ void fnReturn(uint16_t skip) {
 
 
 void fnRunProgram(uint16_t unusedButMandatoryParameter) {
+  if(currentInputVariable != INVALID_VARIABLE) {
+    fnStore(currentInputVariable);
+    currentInputVariable = INVALID_VARIABLE;
+  }
   dynamicMenuItem = -1;
   runProgram(false);
 }
@@ -463,6 +441,8 @@ static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
 static void _putLiteral(uint8_t *literalAddress) {
   switch(*(uint8_t *)(literalAddress++)) {
     case BINARY_SHORT_INTEGER:
+      liftStack();
+      setSystemFlag(FLAG_ASLIFT);
       reallocateRegister(REGISTER_X, dtShortInteger, SHORT_INTEGER_SIZE, *(uint8_t *)(literalAddress++));
       xcopy(REGISTER_DATA(REGISTER_X), literalAddress, TO_BYTES(SHORT_INTEGER_SIZE));
       break;
@@ -472,12 +452,14 @@ static void _putLiteral(uint8_t *literalAddress) {
 
     case BINARY_REAL34:
       liftStack();
+      setSystemFlag(FLAG_ASLIFT);
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       real34Copy((real34_t *)literalAddress, REGISTER_REAL34_DATA(REGISTER_X));
       break;
 
     case BINARY_COMPLEX34:
       liftStack();
+      setSystemFlag(FLAG_ASLIFT);
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
       complex34Copy((complex34_t *)literalAddress, REGISTER_COMPLEX34_DATA(REGISTER_X));
       break;
@@ -496,6 +478,7 @@ static void _putLiteral(uint8_t *literalAddress) {
         _getStringLabelOrVariableName(literalAddress + 1);
         stringToLongInteger(tmpStringLabelOrVariableName, 10, val);
         liftStack();
+        setSystemFlag(FLAG_ASLIFT);
         convertLongIntegerToShortIntegerRegister(val, (uint32_t)(*literalAddress), REGISTER_X);
 
         longIntegerFree(val);
@@ -510,6 +493,7 @@ static void _putLiteral(uint8_t *literalAddress) {
         _getStringLabelOrVariableName(literalAddress);
         stringToLongInteger(tmpStringLabelOrVariableName, 10, val);
         liftStack();
+        setSystemFlag(FLAG_ASLIFT);
         convertLongIntegerToLongIntegerRegister(val, REGISTER_X);
 
         longIntegerFree(val);
@@ -519,6 +503,7 @@ static void _putLiteral(uint8_t *literalAddress) {
     case STRING_REAL34:
       _getStringLabelOrVariableName(literalAddress);
       liftStack();
+      setSystemFlag(FLAG_ASLIFT);
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
       break;
@@ -527,19 +512,21 @@ static void _putLiteral(uint8_t *literalAddress) {
       {
         char *imag = tmpStringLabelOrVariableName;
         _getStringLabelOrVariableName(literalAddress);
-        while(*imag != 'i' || *imag != 0) ++imag;
+        while(*imag != 'i' && *imag != 0) ++imag;
         if(*imag == 'i') {
           if(imag > tmpStringLabelOrVariableName && *(imag - 1) == '-') {
             *imag = '-'; *(imag - 1) = 0;
           }
           else if(imag > tmpStringLabelOrVariableName && *(imag - 1) == '+') {
             *imag = 0; *(imag - 1) = 0;
+            ++imag;
           }
           else {
             *imag = 0;
           }
         }
         liftStack();
+        setSystemFlag(FLAG_ASLIFT);
         reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
         stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
         stringToReal34(imag,                         REGISTER_IMAG34_DATA(REGISTER_X));
@@ -549,6 +536,7 @@ static void _putLiteral(uint8_t *literalAddress) {
     case STRING_LABEL_VARIABLE:
       _getStringLabelOrVariableName(literalAddress);
       liftStack();
+      setSystemFlag(FLAG_ASLIFT);
       reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(stringByteLength(tmpStringLabelOrVariableName) + 1), amNone);
       xcopy(REGISTER_STRING_DATA(REGISTER_X), tmpStringLabelOrVariableName, stringByteLength(tmpStringLabelOrVariableName) + 1);
       break;
@@ -556,6 +544,7 @@ static void _putLiteral(uint8_t *literalAddress) {
     case STRING_DATE:
       _getStringLabelOrVariableName(literalAddress);
       liftStack();
+      setSystemFlag(FLAG_ASLIFT);
       reallocateRegister(REGISTER_X, dtDate, REAL34_SIZE, amNone);
       stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
       julianDayToInternalDate(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(REGISTER_X));
@@ -564,6 +553,7 @@ static void _putLiteral(uint8_t *literalAddress) {
     case STRING_TIME:
       _getStringLabelOrVariableName(literalAddress);
       liftStack();
+      setSystemFlag(FLAG_ASLIFT);
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
       hmmssInRegisterToSeconds(REGISTER_X);
@@ -1531,7 +1521,12 @@ void runProgram(bool_t singleStep) {
   while(1) {
     int16_t stepsToBeAdvanced;
     uint16_t subLevel = currentSubroutineLevel;
-    if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE || temporaryInformation == TI_SOLVER_FAILED) {
+    uint16_t opCode = *currentStep;
+    currentInputVariable = INVALID_VARIABLE; // INPUT is already executed
+    if(opCode & 0x80) {
+      opCode = ((uint16_t)(opCode & 0x7F) << 8) | *(currentStep + 1);
+    }
+    if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE || temporaryInformation == TI_SOLVER_FAILED || (opCode != ITM_RTN && opCode != ITM_STOP && opCode != ITM_END && opCode != 0x7fff)) {
       temporaryInformation = TI_NO_INFO;
     }
     stepsToBeAdvanced = executeOneStep(currentStep);

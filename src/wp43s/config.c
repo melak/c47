@@ -754,7 +754,10 @@ void fnReset(uint16_t confirmation) {
     lrChosenUndo = 0;
     lastPlotMode = PLOT_NOTHING;
     plotSelection = 0;
-
+    realZero(&SAVED_SIGMA_LASTX);
+    realZero(&SAVED_SIGMA_LASTY);
+    SAVED_SIGMA_LAct = 0;
+    
     shortIntegerMode = SIM_2COMPL;
     fnSetWordSize(64);
 
@@ -831,6 +834,8 @@ void fnReset(uint16_t confirmation) {
     exponentHideLimit = 0;
     lastIntegerBase = 0;
     temporaryInformation = TI_RESET;
+
+    currentInputVariable = INVALID_VARIABLE;
 
     memset(userMenuItems,  0, sizeof(userMenuItem_t) * 18);
     memset(userAlphaItems, 0, sizeof(userMenuItem_t) * 18);

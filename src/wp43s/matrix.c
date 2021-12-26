@@ -420,6 +420,7 @@ void fnNewMatrix(uint16_t unusedParamButMandatory) {
 
 void fnEditMatrix(uint16_t regist) {
 #ifndef TESTSUITE_BUILD
+  if(findNamedVariable("STATS") == regist) copySourceRegisterToDestRegister(regist, TEMP_REGISTER_2_SAVED_STATS);
   const uint16_t reg = (regist == NOPARAM) ? REGISTER_X : regist;
   if((getRegisterDataType(reg) == dtReal34Matrix) || (getRegisterDataType(reg) == dtComplex34Matrix)) {
     calcMode = CM_MIM;
