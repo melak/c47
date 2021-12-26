@@ -16,6 +16,7 @@
 
 #include "statusBar.h"
 
+#include "charString.h"
 #include "dateTime.h"
 #include "flags.h"
 #include "fonts.h"
@@ -204,7 +205,7 @@
 
 
   void showHideAlphaMode(void) {
-    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha)) {
+    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha) || (calcMode == CM_PEM && getSystemFlag(FLAG_ALPHA))) {
       if(alphaCase == AC_UPPER) {
         showString(STD_ALPHA, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
         setSystemFlag(FLAG_alphaCAP);
@@ -222,8 +223,19 @@
 
 
   void showHideHourGlass(void) {
-    if(hourGlassIconEnabled) {
-      showGlyph(STD_HOURGLASS, &standardFont, calcMode == CM_PLOT_STAT ? 160-20 : X_HOURGLASS, 0, vmNormal, true, false); // is 0+11+3 pixel wide //Shift the hourglass to a visible part of the status bar
+    switch(programRunStop) {
+      case PGM_WAITING:
+        showGlyph(STD_NEG_EXCLAMATION_MARK, &standardFont, (calcMode == CM_PLOT_STAT ? 160-20 : X_HOURGLASS) - 1, 0, vmNormal, true, false);
+        break;
+      case PGM_RUNNING:
+        lcd_fill_rect((calcMode == CM_PLOT_STAT ? 160-20 : X_HOURGLASS) - 1, 0, stringWidth(STD_NEG_EXCLAMATION_MARK, &standardFont, true, false), 20, LCD_SET_VALUE);
+        showGlyph(STD_P, &standardFont, (calcMode == CM_PLOT_STAT ? 160-20 : X_HOURGLASS) + 1, 0, vmNormal, true, false);
+        break;
+      default:
+        if(hourGlassIconEnabled) {
+          lcd_fill_rect((calcMode == CM_PLOT_STAT ? 160-20 : X_HOURGLASS) - 1, 0, stringWidth(STD_NEG_EXCLAMATION_MARK, &standardFont, true, false), 20, LCD_SET_VALUE);
+          showGlyph(STD_HOURGLASS, &standardFont, calcMode == CM_PLOT_STAT ? 160-20 : X_HOURGLASS, 0, vmNormal, true, false); // is 0+11+3 pixel wide //Shift the hourglass to a visible part of the status bar
+        }
     }
   }
 

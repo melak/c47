@@ -120,6 +120,20 @@ void fnKeyAngle      (uint16_t unusedButMandatoryParameter);
    * \param notUsed
    * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
    */
+  void frmCalcMouseButtonPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data);
+  /**
+   * A calc button was pressed.
+   *
+   * \param notUsed
+   * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
+   */
+  void frmCalcMouseButtonReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data);
+  /**
+   * A calc button was released.
+   *
+   * \param notUsed
+   * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
+   */
   void btnReleased   (GtkWidget *notUsed, GdkEvent *event, gpointer data);
 #endif // PC_BUILD
 

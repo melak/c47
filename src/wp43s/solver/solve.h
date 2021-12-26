@@ -28,10 +28,6 @@ void fnPgmSlv          (uint16_t label);
 void fnSolve           (uint16_t labelOrVariable);
 void fnSolveVar        (uint16_t unusedButMandatoryParameter);
 
-#ifndef TESTSUITE_BUILD
-bool_t executeStep_test(uint8_t **step);
-#endif // TESTSUITE_BUILD
-
 /**
  * Solves an equation f(x) = 0 stored as a program.
  *

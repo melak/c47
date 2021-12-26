@@ -201,7 +201,7 @@
         for(int16_t row=0; row<10; row++) {
           calcRegister_t regist = currentRegisterBrowserScreen + row;
           if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
-            sprintf(tmpString, "R.%02d:", regist);
+            sprintf(tmpString, "R.%02d:", regist - FIRST_LOCAL_REGISTER);
 
             // register number
             registerNameWidth = showString(tmpString, &standardFont, 1, 219 - 22 * row, vmNormal, true, true);

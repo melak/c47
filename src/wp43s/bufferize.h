@@ -24,21 +24,22 @@
 #include "realType.h"
 
 #ifndef TESTSUITE_BUILD
-  void    fnAim                    (uint16_t unusedButMandatoryParameter);
-  void    resetAlphaSelectionBuffer(void);
+  void     fnAim                    (uint16_t unusedButMandatoryParameter);
+  void     resetAlphaSelectionBuffer(void);
+  uint16_t convertItemToSubOrSup    (uint16_t item, int16_t subOrSup);
 
   /**
    * Adds an item to the alpha buffer.
    *
    * \param[in] item item to add to the buffer
    */
-  void    addItemToBuffer          (uint16_t item);
-  void    addItemToNimBuffer       (int16_t item);
-  void    closeNimWithFraction     (real34_t *dest);
-  void    closeNimWithComplex      (real34_t *dest_r, real34_t *dest_i);
-  void    closeNim                 (void);
-  void    closeAim                 (void);
-  void    nimBufferToDisplayBuffer (const char *buffer, char *displayBuffer);
+  void     addItemToBuffer          (uint16_t item);
+  void     addItemToNimBuffer       (int16_t item);
+  void     closeNimWithFraction     (real34_t *dest);
+  void     closeNimWithComplex      (real34_t *dest_r, real34_t *dest_i);
+  void     closeNim                 (void);
+  void     closeAim                 (void);
+  void     nimBufferToDisplayBuffer (const char *buffer, char *displayBuffer);
 #endif // TESTSUITE_BUILD
 
 #endif // BUFFERIZE_H

@@ -22,6 +22,10 @@
 
 #include "realType.h"
 #include <stdint.h>
+#ifdef PC_BUILD
+  #include <gtk/gtk.h>
+  #include <gdk/gdk.h>
+#endif // PC_BUILD
 
 /**
  * \union multiplyDivide_t
@@ -426,5 +430,17 @@ typedef struct {
   int16_t    min;
   int16_t    max;
 } tamState_t;
+
+#ifdef PC_BUILD
+  /**
+   * \struct calcKeyboard_t
+   * Structure keeping key images, image sizes, and image locations.
+   */
+  typedef struct {
+    int x, y;
+    int width[3], height[3];
+    GtkWidget *keyImage[3];
+  } calcKeyboard_t;
+#endif // PC_BUILD
 
 #endif // TYPEDEFINITIONS_H

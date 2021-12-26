@@ -47,7 +47,7 @@
 #include "wp43s.h"
 
 #ifndef TESTSUITE_BUILD
-  static const char *whoStr = "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter" STD_SPACE_3_PER_EM "&" STD_SPACE_3_PER_EM "Martin";
+  static const char *whoStr = "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter," STD_SPACE_3_PER_EM "Mihail," STD_SPACE_3_PER_EM "Jaco," STD_SPACE_3_PER_EM "and" STD_SPACE_3_PER_EM "Martin";
   static const char *versionStr = "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM VERSION_STRING;
 
   /* Names of day of week */
@@ -495,7 +495,9 @@
     // If LCD has changed: update the GTK screen
     if(screenChange) {
       #if defined(LINUX) && (DEBUG_PANEL == 1)
-        refreshDebugPanel();
+        if(programRunStop != PGM_RUNNING) {
+          refreshDebugPanel();
+        }
       #endif // defined(LINUX) && (DEBUG_PANEL == 1)
 
       gtk_widget_queue_draw(screen);
@@ -544,7 +546,7 @@
         showDateTime();
       #endif // (DEBUG_INSTEAD_STATUS_BAR != 1)
 
-      if(!getSystemFlag(FLAG_AUTOFF) || timerStartTime != TIMER_APP_STOPPED) {
+      if(!getSystemFlag(FLAG_AUTOFF) || (nextTimerRefresh != 0)) {
         reset_auto_off();
       }
       fnPollTimerApp();
@@ -591,6 +593,13 @@
     }
   }
 #endif // PC_BUILD DMCP_BUILD
+
+
+
+void execTimerApp(uint16_t timerType) {
+  fnTimerStart(TO_TIMER_APP, TO_TIMER_APP, TIMER_APP_PERIOD);
+  fnUpdateTimerApp();
+}
 
 
 
@@ -917,6 +926,30 @@
     *prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
   }
 
+  static void inputRegName(char *prefix, int16_t *prefixWidth) {
+    if(currentInputVariable < REGISTER_X) {
+      sprintf(prefix, "R%02" PRIu16 "?", currentInputVariable);
+    }
+    else if(currentInputVariable < FIRST_LOCAL_REGISTER) {
+      sprintf(prefix, "%c?", "XYZTABCDLIJK"[currentInputVariable - REGISTER_X]);
+    }
+    else if(currentInputVariable <= LAST_LOCAL_REGISTER) {
+      sprintf(prefix, "R.%02" PRIu16 "?", (uint16_t)(currentInputVariable - FIRST_LOCAL_REGISTER));
+    }
+    else if(currentInputVariable >= FIRST_NAMED_VARIABLE && currentInputVariable <= LAST_NAMED_VARIABLE) {
+      memcpy(prefix, allNamedVariables[currentInputVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentInputVariable - FIRST_NAMED_VARIABLE].variableName[0]);
+      strcpy(prefix + allNamedVariables[currentInputVariable - FIRST_NAMED_VARIABLE].variableName[0], "?");
+    }
+    else if(currentInputVariable >= FIRST_RESERVED_VARIABLE && currentInputVariable <= LAST_RESERVED_VARIABLE) {
+      memcpy(prefix, allReservedVariables[currentInputVariable - FIRST_RESERVED_VARIABLE].reservedVariableName + 1, allReservedVariables[currentInputVariable - FIRST_RESERVED_VARIABLE].reservedVariableName[0]);
+      strcpy(prefix + allReservedVariables[currentInputVariable - FIRST_RESERVED_VARIABLE].reservedVariableName[0], "?");
+    }
+    else {
+      sprintf(prefix, "??");
+    }
+    *prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+  }
+
 
   void updateMatrixHeightCache(void) {
     int16_t prefixWidth = 0;
@@ -927,6 +960,7 @@
     if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || (calcMode == CM_MIM && getRegisterDataType(matrixIndex) == dtReal34Matrix)) {
       real34Matrix_t matrix;
       if(temporaryInformation == TI_VIEW) viewRegName(prefix, &prefixWidth);
+      if(temporaryInformation == TI_NO_INFO && currentInputVariable != INVALID_VARIABLE) inputRegName(prefix, &prefixWidth);
       if(calcMode == CM_MIM)
         matrix = openMatrixMIMPointer.realMatrix;
       else
@@ -947,6 +981,7 @@
     else if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix || (calcMode == CM_MIM && getRegisterDataType(matrixIndex) == dtComplex34Matrix)) {
       complex34Matrix_t matrix;
       if(temporaryInformation == TI_VIEW) viewRegName(prefix, &prefixWidth);
+      if(temporaryInformation == TI_NO_INFO && currentInputVariable != INVALID_VARIABLE) inputRegName(prefix, &prefixWidth);
       if(calcMode == CM_MIM)
         matrix = openMatrixMIMPointer.complexMatrix;
       else
@@ -979,7 +1014,9 @@
     char prefix[200], lastBase[4];
 
     #if (DEBUG_PANEL == 1)
-      refreshDebugPanel();
+      if(programRunStop != PGM_RUNNING) {
+        refreshDebugPanel();
+      }
     #endif // (DEBUG_PANEL == 1)
 
     if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT)) {
@@ -1186,6 +1223,8 @@
             regist = currentViewRegister;
           }
         }
+
+        if(regist == REGISTER_X && currentInputVariable != INVALID_VARIABLE) inputRegName(prefix, &prefixWidth);
 
         if(lastErrorCode != 0 && regist == errorMessageRegisterLine) {
           if(stringWidth(errorMessages[lastErrorCode], &standardFont, true, true) <= SCREEN_WIDTH - 1) {
@@ -1666,7 +1705,7 @@
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             if(regist == REGISTER_Y) {
-              if(w == 1) 
+              if(w == 1)
                 sprintf(prefix, "%03" PRId16 " data point", w);
               else
                 sprintf(prefix, "%03" PRId16 " data points", w);

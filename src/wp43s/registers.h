@@ -91,7 +91,7 @@ void           setRegisterMaxDataLength        (calcRegister_t regist, uint16_t 
  *
  * \param[in] numberOfRegistersToAllocate Number of registers to allocate
  */
-void           allocateLocalRegisters          (uint16_t n);
+void           allocateLocalRegisters          (uint16_t numberOfRegistersToAllocate);
 /**
  * Check if the given name follows the naming convention
  *

@@ -168,6 +168,7 @@ wp43s_src = files(
   'memory.c',
   'plotstat.c',
   'programming/decode.c',
+  'programming/inputVar.c',
   'programming/lblGtoXeq.c',
   'programming/manage.c',
   'programming/nextStep.c',

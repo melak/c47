@@ -66,6 +66,7 @@ void     fnTimerStart         (uint8_t nr, uint16_t param, uint32_t time);      
 void     fnTimerStop          (uint8_t nr);                                     // Stop Timer, 0..n-1
 void     fnTimerExec          (uint8_t nr);                                     // Execute Timer, 0..n-1
 void     fnTimerDel           (uint8_t nr);                                     // Delete Timer, 0..n-1
+uint16_t fnTimerGetParam      (uint8_t nr);
 uint8_t  fnTimerGetStatus     (uint8_t nr);
 
 

@@ -58,38 +58,17 @@ void fnSetDateFormat(uint16_t dateFormat) {
   }
 }
 
-/********************************************//**
- * \brief Convert internal date representation to Julian day number (floored)
- *
- * \param[in] source real34_t*
- * \param[out] destination real34_t*
- * \return void
- ***********************************************/
 void internalDateToJulianDay(const real34_t *source, real34_t *destination) {
   real34Subtract(source, const34_43200, destination);
   real34Divide(destination, const34_86400, destination), real34ToIntegralValue(destination, destination, DEC_ROUND_FLOOR);
 }
 
-/********************************************//**
- * \brief Convert Julian day number (floored) to internal date representation
- *
- * \param[in] source real34_t*
- * \param[out] destination real34_t*
- * \return void
- ***********************************************/
 void julianDayToInternalDate(const real34_t *source, real34_t *destination) {
   real34ToIntegralValue(source, destination, DEC_ROUND_FLOOR);
   real34Multiply(destination, const34_86400, destination);
   real34Add(destination, const34_43200, destination);
 }
 
-/********************************************//**
- * \brief Check date argument and get Julian day
- *
- * \param[in] regist calcRegister_t register
- * \param[out] jd real34_t* Julian day (floored)
- * \return bool_t true if valid
- ***********************************************/
 bool_t checkDateArgument(calcRegister_t regist, real34_t *jd) {
   switch(getRegisterDataType(regist)) {
     case dtDate:
@@ -116,12 +95,6 @@ bool_t checkDateArgument(calcRegister_t regist, real34_t *jd) {
   }
 }
 
-/********************************************//**
- * \brief Check for leap year
- *
- * \param[in] year real34_t*
- * \return bool_t true if leap year
- ***********************************************/
 bool_t isLeapYear(const real34_t *year) {
   real34_t val, val2;
   int32_t y400; // year mod 400
@@ -143,14 +116,6 @@ bool_t isLeapYear(const real34_t *year) {
 }
 
 
-/********************************************//**
- * \brief Check if date is valid (e.g. 30 Feb is invalid)
- *
- * \param[in] year real34_t*
- * \param[in] month real34_t*
- * \param[in] day real34_t*
- * \return bool_t true if valid
- ***********************************************/
 bool_t isValidDay(const real34_t *year, const real34_t *month, const real34_t *day) {
   real34_t val;
 
@@ -218,15 +183,6 @@ static void modInt(const real34_t *p, const real34_t *q, real34_t *r) {
   divInt2(p, q, &tmp), real34Multiply(&tmp, q, &tmp), real34Subtract(p, &tmp, r);
 }
 
-/********************************************//**
- * \brief Convert date into Julian day number floored
- *
- * \param[in] year real34_t*
- * \param[in] month real34_t*
- * \param[in] day real34_t*
- * \param[out] jd real34_t*
- * \return void
- ***********************************************/
 void composeJulianDay(const real34_t *year, const real34_t *month, const real34_t *day, real34_t *jd) {
   real34_t fg, y, m, d;
 
@@ -292,15 +248,6 @@ void composeJulianDay_j(const real34_t *year, const real34_t *month, const real3
   real34Add(jd, const34_1729777, jd);
 }
 
-/********************************************//**
- * \brief Convert Julian day number (floored) into date
- *
- * \param[in] jd real34_t*
- * \param[out] year real34_t*
- * \param[out] month real34_t*
- * \param[out] day real34_t*
- * \return void
- ***********************************************/
 void decomposeJulianDay(const real34_t *jd, real34_t *year, real34_t *month, real34_t *day) {
   real34_t e, h, tmp1;
 
@@ -341,12 +288,6 @@ void decomposeJulianDay(const real34_t *jd, real34_t *year, real34_t *month, rea
   real34Add(year, &tmp1, year);
 }
 
-/********************************************//**
- * \brief Get day of week from date in given register
- *
- * \param[in] regist calcRegister_t register
- * \return uint32_t day of week (1 = Monday, 7 = Sunday), 0 if invalid
- ***********************************************/
 uint32_t getDayOfWeek(calcRegister_t regist) {
   real34_t date34;
   if(checkDateArgument(regist, &date34)) {
@@ -359,12 +300,6 @@ uint32_t getDayOfWeek(calcRegister_t regist) {
   }
 }
 
-/********************************************//**
- * \brief Check date range
- *
- * \param[in] time34 real34_t*
- * \return void
- ***********************************************/
 void checkDateRange(const real34_t *date34) {
   if(real34CompareGreaterEqual(date34, const34_maxDate) || real34IsNegative(date34)) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
@@ -377,13 +312,6 @@ void checkDateRange(const real34_t *date34) {
 }
 
 
-/********************************************//**
- * \brief Convert H.MMSS into seconds
- *
- * \param[in] src real34_t* H.MMSS-formatted time value (for input)
- * \param[out] dest real34_t* time value in seconds (internal representation)
- * \return void
- ***********************************************/
 void hmmssToSeconds(const real34_t *src, real34_t *dest) {
   real34_t time34, real34, value34;
   int32_t sign;
@@ -413,12 +341,6 @@ void hmmssToSeconds(const real34_t *src, real34_t *dest) {
   }
 }
 
-/********************************************//**
- * \brief Convert H.MMSS in given register into time
- *
- * \param[in] regist calcRegister_t register
- * \return void
- ***********************************************/
 void hmmssInRegisterToSeconds(calcRegister_t regist) {
   real34_t real34;
   real34Copy(REGISTER_REAL34_DATA(regist), &real34);
@@ -427,12 +349,6 @@ void hmmssInRegisterToSeconds(calcRegister_t regist) {
   checkTimeRange(REGISTER_REAL34_DATA(regist));
 }
 
-/********************************************//**
- * \brief Check time range
- *
- * \param[in] time34 real34_t*
- * \return void
- ***********************************************/
 void checkTimeRange(const real34_t *time34) {
   real34_t t;
   real34CopyAbs(time34, &t);
@@ -870,12 +786,6 @@ void fnSetTime(uint16_t unusedButMandatoryParameter) {
 }
 
 
-/********************************************//**
- * \brief Gets the system date
- *
- * \param[out] dateString char* String receiving the system date.  Must be at least 11 bytes long (yyyy-mm-dd plus terminating 0)
- * \return void
- ***********************************************/
 void getDateString(char *dateString) {
   #ifdef DMCP_BUILD
     tm_t timeInfo;
@@ -948,12 +858,6 @@ void getDateString(char *dateString) {
 
 
 
-/********************************************//**
- * \brief Gets the system time
- *
- * \param[out] timeString char* String receiving the system time. Must be at least 8 bytes long (03:15pm plus terminating 0)
- * \return void
- ***********************************************/
 void getTimeString(char *timeString) {
   #ifdef DMCP_BUILD
     tm_t timeInfo;

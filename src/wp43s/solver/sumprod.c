@@ -23,10 +23,13 @@
 #include "constantPointers.h"
 #include "defines.h"
 #include "error.h"
+#include "flags.h"
 #include "items.h"
 #include "mathematics/integerPart.h"
 #include "mathematics/iteration.h"
+#include "programming/lblGtoXeq.h"
 #include "programming/manage.h"
+#include "programming/nextStep.h"
 #include "realType.h"
 #include "registers.h"
 #include "solver/solve.h"
@@ -34,22 +37,14 @@
 #include "wp43s.h"
 
 #ifndef TESTSUITE_BUILD
-static void _sumProdIteration(uint16_t label) {
-  //
-  //  NOT A COMPLETE ENGINE: TESTING PURPOSE ONLY!!
-  //  The following decoder is minimally implemented ad hoc engine for testing of SOLVE feature.
-  //  Replace with the complete programming system when ready.
-  //
-  uint8_t *step = labelList[label - FIRST_LABEL].instructionPointer;
-  lastErrorCode = ERROR_NONE;
-  while(executeStep_test(&step)) {}
-}
-
 static void _programmableSumProd(uint16_t label, bool_t prod) {
   real34_t counter, result;
   bool_t finished = false;
 
   real34Copy(prod ? const34_1 : const34_0, &result);
+
+  ++currentSolverNestingDepth;
+  setSystemFlag(FLAG_SOLVING);
 
   while(1) {
     fnToReal(NOPARAM);
@@ -58,7 +53,8 @@ static void _programmableSumProd(uint16_t label, bool_t prod) {
     fnIp(NOPARAM);
     fnFillStack(NOPARAM);
 
-    _sumProdIteration(label);
+    dynamicMenuItem = -1;
+    execProgram(label);
     if(lastErrorCode != ERROR_NONE) break;
 
     fnToReal(NOPARAM);
@@ -82,7 +78,13 @@ static void _programmableSumProd(uint16_t label, bool_t prod) {
   }
 
   temporaryInformation = TI_NO_INFO;
+  if(programRunStop == PGM_WAITING) {
+    programRunStop = PGM_STOPPED;
+  }
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+
+  if((--currentSolverNestingDepth) == 0)
+    clearSystemFlag(FLAG_SOLVING);
 }
 
 void _checkArgument(uint16_t label, bool_t prod) {

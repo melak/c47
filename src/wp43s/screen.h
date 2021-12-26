@@ -81,6 +81,7 @@ void       fnScreenDump                       (uint16_t unusedButMandatoryParame
   void     setWhitePixel                      (uint32_t x, uint32_t y);
 #endif // DMCP_BUILD
 
+  void     execTimerApp                         (uint16_t timerType);
 #ifndef TESTSUITE_BUILD
   void     refreshScreen                      (void);
   //void     invertPixel                        (uint32_t x, uint32_t y);

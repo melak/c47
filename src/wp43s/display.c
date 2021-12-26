@@ -33,6 +33,7 @@
 #include "mathematics/toPolar.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "screen.h"
 #include <string.h>
 
 #include "wp43s.h"
@@ -2094,6 +2095,9 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
 
     default:
       temporaryInformation = TI_NO_INFO;
+      if(programRunStop == PGM_WAITING) {
+        programRunStop = PGM_STOPPED;
+      }
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot SHOW %s", getRegisterDataTypeName(REGISTER_X, true, false));
@@ -2109,4 +2113,12 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
 void fnView(uint16_t regist) {
   currentViewRegister = regist;
   temporaryInformation = TI_VIEW;
+  if(programRunStop == PGM_RUNNING) {
+    refreshScreen();
+    #ifdef DMCP_BUILD
+      lcd_refresh();
+    #else // !DMCP_BUILD
+      refreshLcd(NULL);
+    #endif // DMCP_BUILD
+  }
 }

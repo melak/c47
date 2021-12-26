@@ -1843,8 +1843,9 @@
 #define ITM_TIMER_0_1S                1777
 #define ITM_TIMER_RESET               1778
 #define ITM_TIMER_RCL                 1779
+#define ITM_CLBKUP                    1780
 
-#define LAST_ITEM                     1780
+#define LAST_ITEM                     1781
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

@@ -18,9 +18,25 @@
  * \file nextStep.c
  ***********************************************/
 
+#include "programming/manage.h"
 #include "programming/nextStep.h"
 
+#include "charString.h"
+#include "constantPointers.h"
+#include "debug.h"
+#include "defines.h"
+#include "error.h"
+#include "fonts.h"
 #include "items.h"
+#include "longIntegerType.h"
+#include "mathematics/comparisonReals.h"
+#include "programming/decode.h"
+#include "programming/lblGtoXeq.h"
+#include "realType.h"
+#include "registers.h"
+#include "registerValueConversions.h"
+#include "screen.h"
+#include <stdint.h>
 
 #include "wp43s.h"
 
@@ -81,7 +97,7 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
       if(opParam <= LAST_LOCAL_FLAG) { // Global flags from 00 to 99, lettered flags from X to K, and local flags from .00 to .15 (or .31)
         return step;
       }
-      else if(opParam == INDIRECT_REGISTER) {
+      else if(opParam == INDIRECT_REGISTER || opParam == SYSTEM_FLAG_NUMBER) {
         return step + 1;
       }
       else if(opParam == INDIRECT_VARIABLE) {
@@ -326,7 +342,7 @@ uint8_t *findNextStep(uint8_t *step) {
       return step;
 
     case ITM_LITERAL:     // 114
-       return countLiteralBytes(step);
+      return countLiteralBytes(step);
 
     default:
       if((item8 & 0x80) == 0) {
@@ -354,6 +370,11 @@ uint8_t *findNextStep(uint8_t *step) {
           return countOpBytes(step, PARAM_LABEL);
 
         case ITM_CNST:           //   207
+        case ITM_BS:             //   405
+        case ITM_BC:             //   406
+        case ITM_CB:             //   407
+        case ITM_SB:             //   408
+        case ITM_FB:             //   409
         case ITM_RL:             //   410
         case ITM_RLC:            //   411
         case ITM_RR:             //   412
@@ -385,6 +406,7 @@ uint8_t *findNextStep(uint8_t *step) {
         case ITM_TDISP:          //  1619
         case ITM_TONE:           //  1624
         case ITM_WSIZE:          //  1638
+        case ITM_toINT:          //  1687
         case ITM_SHUFFLE:        //  1694
         case ITM_PRINTERCHAR:    //  1709
         case ITM_PRINTERDLAY:    //  1710
@@ -425,11 +447,6 @@ uint8_t *findNextStep(uint8_t *step) {
         case ITM_FSC:            //   399
         case ITM_FSS:            //   400
         case ITM_FSF:            //   401
-        case ITM_BS:             //   405
-        case ITM_BC:             //   406
-        case ITM_CB:             //   407
-        case ITM_SB:             //   408
-        case ITM_FB:             //   409
           return countOpBytes(step, PARAM_FLAG);
 
         case CST_01:             //   128
@@ -973,7 +990,6 @@ uint8_t *findNextStep(uint8_t *step) {
         case ITM_dn:             //  1684
         case ITM_toHR:           //  1685
         case ITM_toHMS:          //  1686
-        case ITM_toINT:          //  1687
         case ITM_toPOL:          //  1688
         case ITM_MPItoR:         //  1689
         case ITM_RtoMPI:         //  1690
@@ -1022,6 +1038,7 @@ uint8_t *findNextStep(uint8_t *step) {
         case ITM_ZETAphik:       //  1765
         case ITM_GETHIDE:        //  1766
         case ITM_SQRT:           //  1768
+        case ITM_atan2:          //  1775
           return step;
 
         case 0x7fff:             // 32767 .END.
@@ -1068,7 +1085,44 @@ uint8_t *findPreviousStep(uint8_t *step) {
 
 
 
-void fnBst(uint16_t unusedButMandatoryParameter) {
+static void _showStep(void) {
+#ifndef TESTSUITE_BUILD
+  bool_t lblOrEnd = (*currentStep == ITM_LBL) || ((*currentStep == ((ITM_END >> 8) | 0x80)) && (*(currentStep + 1) == (ITM_END & 0xff))) || ((*currentStep == 0xff) && (*(currentStep + 1) == 0xff));
+  int16_t xPos = (lblOrEnd ? 42 : 62);
+  int16_t maxWidth = SCREEN_WIDTH - xPos;
+
+  sprintf(tmpString, "%04" PRIu16 ":" STD_SPACE_4_PER_EM, currentLocalStepNumber);
+  showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true);
+
+  decodeOneStep(currentStep);
+  if(stringWidth(tmpString, &standardFont, true, true) >= maxWidth) {
+    char *xstr = tmpString;
+    char *xstrOrig = tmpString;
+    char *glyph = tmpString + TMP_STR_LENGTH - 4;
+    maxWidth -= stringWidth(STD_ELLIPSIS, &standardFont, true, true);
+    while(maxWidth > 0) {
+      xstrOrig = xstr;
+      glyph[0] = *(xstr++);
+      if(glyph[0] & 0x80) {
+        glyph[1] = *(xstr++);
+        glyph[2] = 0;
+      }
+      else {
+        glyph[1] = 0;
+      }
+      maxWidth -= stringWidth(glyph, &standardFont, true, true);
+    }
+    xstrOrig[0] = STD_ELLIPSIS[0];
+    xstrOrig[1] = STD_ELLIPSIS[1];
+    xstrOrig[2] = 0;
+  }
+  showString(tmpString, &standardFont, xPos, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true);
+#endif // TESTSUITE_BUILD
+}
+
+
+
+static void _bstInPem(void) {
   //  - currentProgramNumber
   //  - currentLocalStepNumber
   //  - firstDisplayedLocalStepNumber
@@ -1085,11 +1139,18 @@ void fnBst(uint16_t unusedButMandatoryParameter) {
     }
   }
   else {
-    uint16_t numberOfSteps = programList[currentProgramNumber].step - programList[currentProgramNumber - 1].step;
+    uint16_t numberOfSteps = getNumberOfSteps();
     currentLocalStepNumber = numberOfSteps;
     if(numberOfSteps <= 6) {
       firstDisplayedLocalStepNumber = 0;
       firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
+    }
+    else if(currentProgramNumber == numberOfPrograms) {
+      firstDisplayedLocalStepNumber = numberOfSteps - 6;
+      firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
+      for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i) {
+        firstDisplayedStep = findNextStep(firstDisplayedStep);
+      }
     }
     else {
       firstDisplayedLocalStepNumber = numberOfSteps - 6;
@@ -1104,10 +1165,22 @@ void fnBst(uint16_t unusedButMandatoryParameter) {
   }
 }
 
+void fnBst(uint16_t unusedButMandatoryParameter) {
+  currentInputVariable = INVALID_VARIABLE;
+  _bstInPem();
+  if(calcMode != CM_PEM) {
+    currentStep = programList[currentProgramNumber - 1].instructionPointer;
+    for(int i = 1; i < currentLocalStepNumber; ++i) {
+      currentStep = findNextStep(currentStep);
+    }
+    _showStep();
+  }
+}
 
 
-void fnSst(uint16_t unusedButMandatoryParameter) {
-  uint16_t numberOfSteps = programList[currentProgramNumber].step - programList[currentProgramNumber - 1].step;
+
+static void _sstInPem(void) {
+  uint16_t numberOfSteps = getNumberOfSteps();
 
   if(currentLocalStepNumber < numberOfSteps) {
     if(currentLocalStepNumber++ >= 3) {
@@ -1121,9 +1194,13 @@ void fnSst(uint16_t unusedButMandatoryParameter) {
     if(firstDisplayedLocalStepNumber + 7 > numberOfSteps) {
       if(numberOfSteps <= 6) {
         firstDisplayedLocalStepNumber = 0;
+        firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
       }
       else {
         firstDisplayedLocalStepNumber = numberOfSteps - 6;
+        firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
+        for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i)
+          firstDisplayedStep = findNextStep(firstDisplayedStep);
       }
     }
   }
@@ -1131,5 +1208,86 @@ void fnSst(uint16_t unusedButMandatoryParameter) {
     currentLocalStepNumber = 1;
     firstDisplayedLocalStepNumber = 0;
     firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
+  }
+}
+
+void fnSst(uint16_t unusedButMandatoryParameter) {
+  currentInputVariable = INVALID_VARIABLE;
+  if(calcMode == CM_PEM) {
+    _sstInPem();
+  }
+  else {
+    _showStep();
+    runProgram(true);
+  }
+}
+
+
+
+void fnBack(uint16_t numberOfSteps) {
+  if(numberOfSteps >= (currentLocalStepNumber - 1)) {
+    currentLocalStepNumber = 1;
+    currentStep = programList[currentProgramNumber - 1].instructionPointer;
+  }
+  else {
+    currentLocalStepNumber -= numberOfSteps;
+    currentStep = programList[currentProgramNumber - 1].instructionPointer;
+    for(uint16_t i = 1; i < numberOfSteps; ++i) {
+      currentStep = findNextStep(currentStep);
+    }
+  }
+}
+
+
+
+void fnSkip(uint16_t numberOfSteps) {
+  for(uint16_t i = 0; i <= numberOfSteps; ++i) { // '<=' is intended here because the pointer must be moved at least by 1 step
+    if((*currentStep != ((ITM_END >> 8) | 0x80) || *(currentStep + 1) != (ITM_END & 0xff)) && (*currentStep != 255 || *(currentStep + 1) != 255)) {
+      ++currentLocalStepNumber;
+      currentStep = findNextStep(currentStep);
+    }
+    else {
+      break;
+    }
+  }
+}
+
+
+
+void fnCase(uint16_t regist) {
+  real34_t arg;
+  switch(getRegisterDataType(regist)) {
+    case dtLongInteger:
+      convertLongIntegerRegisterToReal34(regist, &arg);
+      break;
+    case dtReal34:
+      if(getRegisterAngularMode(regist) == amNone) {
+        real34ToIntegralValue(REGISTER_REAL34_DATA(regist), &arg, DEC_ROUND_DOWN);
+        break;
+      }
+      /* fallthrough */
+    default:
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot use %s for the parameter of CASE", getRegisterDataTypeName(REGISTER_X, true, false));
+        moreInfoOnError("In function fnCase:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+  }
+
+  if(real34CompareLessThan(&arg, const34_1)) {
+    fnSkip(0);
+  }
+  else if(real34CompareGreaterEqual(&arg, const34_1e6)) {
+    fnSkip(65534u);
+  }
+  else {
+    uint32_t x = real34ToUInt32(&arg);
+    if(x < 65535u) {
+      fnSkip(x - 1);
+    }
+    else {
+      fnSkip(65534u);
+    }
   }
 }

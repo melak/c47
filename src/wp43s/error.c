@@ -57,7 +57,7 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /* 25 */  "",
 /* 26 */  "Please enter a NEW name",
 /* 27 */  "Cannot delete a predefined item",
-/* 28 */  "No summation data present",
+/* 28 */  "No statistic data present",
 /* 29 */  "Item to be coded",
 /* 30 */  "Function to be coded for that data type",
 /* 31 */  "Input data types do not match",
@@ -79,7 +79,8 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /* 47 */  "This item cannot be assigned here",
 /* 48 */  "Invalid name",
 /* 49 */  "Too many variables",
-/* 50 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
+/* 50 */  "Non-programmable command. Please remove.",
+/* 51 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
 };
 
 
@@ -125,6 +126,13 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
     }
   }
 #endif // PC_BUILD
+
+
+
+void fnRaiseError(uint16_t errorCode) {
+  displayCalcErrorMessage((uint8_t)errorCode, ERR_REGISTER_LINE, REGISTER_X);
+}
+
 
 
 void displayCalcErrorMessage(uint8_t errorCode, calcRegister_t errMessageRegisterLine, calcRegister_t errRegisterLine) {
