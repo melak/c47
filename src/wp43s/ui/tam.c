@@ -244,7 +244,7 @@
       }
       else if(tam.indirect) {
         tam.indirect = false;
-        if(tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) {
+        if(tam.mode == TM_FLAGR || tam.mode == TM_FLAGW || tam.mode == TM_LABEL) {
           popSoftmenu();
           showSoftmenu(-MNU_TAMFLAG);
           --numberOfTamMenusToPop;
@@ -270,7 +270,13 @@
       return;
     }
     else if(item == ITM_alpha) {
-      if(!tam.digitsSoFar && !tam.dot && !valueParameter && (tam.mode == TM_STORCL || tam.mode == TM_M_DIM || tam.function == ITM_MVAR)) {
+      if(!tam.digitsSoFar && !tam.dot && !valueParameter && (tam.mode == TM_STORCL || tam.mode == TM_M_DIM || tam.mode == TM_REGISTER || tam.mode == TM_CMP || tam.function == ITM_MVAR)) {
+        tam.alpha = true;
+        setSystemFlag(FLAG_ALPHA);
+        aimBuffer[0] = 0;
+        calcModeAim(NOPARAM);
+      }
+      else if(!tam.digitsSoFar && !tam.dot && tam.indirect) {
         tam.alpha = true;
         setSystemFlag(FLAG_ALPHA);
         aimBuffer[0] = 0;
@@ -367,11 +373,29 @@
     }
     else if(REGISTER_X <= indexOfItems[item].param && indexOfItems[item].param <= REGISTER_K) {
       if(!tam.digitsSoFar && tam.function != ITM_BESTF && tam.function != ITM_CNST && (tam.indirect || (tam.mode != TM_VALUE && tam.mode != TM_VALUE_CHB))) {
-        tam.value = indexOfItems[item].param;
-        forceTry = true;
-        // Register letters access registers not accessible via number codes, so we shouldn't look at the tam.max value
-        // when determining if this is valid
-        tryOoR = true;
+        if(tam.mode == TM_LABEL && !tam.indirect) {
+          switch(indexOfItems[item].param) {
+            case REGISTER_A: tam.value = 100 - 'A' + 'A'; forceTry = true; tryOoR = true; break;
+            case REGISTER_B: tam.value = 100 - 'A' + 'B'; forceTry = true; tryOoR = true; break;
+            case REGISTER_C: tam.value = 100 - 'A' + 'C'; forceTry = true; tryOoR = true; break;
+            case REGISTER_D: tam.value = 100 - 'A' + 'D'; forceTry = true; tryOoR = true; break;
+            case REGISTER_I: tam.value = 100 - 'A' + 'I'; forceTry = true; tryOoR = true; break;
+            case REGISTER_J: tam.value = 100 - 'A' + 'J'; forceTry = true; tryOoR = true; break;
+            case REGISTER_X: tam.alpha = true; aimBuffer[0] = 'X'; aimBuffer[1] = 0; forceTry = true; break;
+            case REGISTER_Y: tam.alpha = true; aimBuffer[0] = 'Y'; aimBuffer[1] = 0; forceTry = true; break;
+            case REGISTER_Z: tam.alpha = true; aimBuffer[0] = 'Z'; aimBuffer[1] = 0; forceTry = true; break;
+            case REGISTER_T: tam.alpha = true; aimBuffer[0] = 'T'; aimBuffer[1] = 0; forceTry = true; break;
+            case REGISTER_K: tam.alpha = true; aimBuffer[0] = 'K'; aimBuffer[1] = 0; forceTry = true; break;
+            case REGISTER_L: tam.alpha = true; aimBuffer[0] = 'L'; aimBuffer[1] = 0; forceTry = true; break;
+          }
+        }
+        else {
+          tam.value = indexOfItems[item].param;
+          forceTry = true;
+          // Register letters access registers not accessible via number codes, so we shouldn't look at the tam.max value
+          // when determining if this is valid
+          tryOoR = true;
+        }
       }
     }
     else if(item == ITM_0P || item == ITM_1P) {
@@ -430,7 +454,7 @@
     }
     else if(item == ITM_INDIRECTION) {
       if(!tam.alpha && !tam.digitsSoFar && !tam.dot && !valueParameter) {
-        if(!tam.indirect && (tam.mode == TM_FLAGR || tam.mode == TM_FLAGW)) {
+        if(!tam.indirect && (tam.mode == TM_FLAGR || tam.mode == TM_FLAGW || tam.mode == TM_LABEL)) {
           popSoftmenu();
           showSoftmenu(-MNU_TAM);
           --numberOfTamMenusToPop;

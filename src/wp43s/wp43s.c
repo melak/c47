@@ -182,6 +182,7 @@ uint16_t               currentFormula;
 uint16_t               numberOfUserMenus;
 uint16_t               currentUserMenu;
 uint16_t               userKeyLabelSize;
+uint16_t               currentInputVariable = INVALID_VARIABLE;
 #if (REAL34_WIDTH_TEST == 1)
   uint16_t               largeur=200;
 #endif // (REAL34_WIDTH_TEST == 1)

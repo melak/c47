@@ -43,7 +43,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         63  // Save program running flag
+#define BACKUP_VERSION         64  // Save input variable
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -273,6 +273,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&timerCraAndDeciseconds,             sizeof(timerCraAndDeciseconds),             BACKUP);
     save(&timerValue,                         sizeof(timerValue),                         BACKUP);
     save(&timerTotalTime,                     sizeof(timerTotalTime),                     BACKUP);
+    save(&currentInputVariable,               sizeof(currentInputVariable),               BACKUP);
 
 
     fclose(BACKUP);
@@ -490,6 +491,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&timerCraAndDeciseconds,             sizeof(timerCraAndDeciseconds),             BACKUP);
       restore(&timerValue,                         sizeof(timerValue),                         BACKUP);
       restore(&timerTotalTime,                     sizeof(timerTotalTime),                     BACKUP);
+      restore(&currentInputVariable,               sizeof(currentInputVariable),               BACKUP);
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");

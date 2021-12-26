@@ -1166,6 +1166,7 @@ static void _bstInPem(void) {
 }
 
 void fnBst(uint16_t unusedButMandatoryParameter) {
+  currentInputVariable = INVALID_VARIABLE;
   _bstInPem();
   if(calcMode != CM_PEM) {
     currentStep = programList[currentProgramNumber - 1].instructionPointer;
@@ -1211,6 +1212,7 @@ static void _sstInPem(void) {
 }
 
 void fnSst(uint16_t unusedButMandatoryParameter) {
+  currentInputVariable = INVALID_VARIABLE;
   if(calcMode == CM_PEM) {
     _sstInPem();
   }

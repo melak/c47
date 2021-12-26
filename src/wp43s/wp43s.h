@@ -260,6 +260,7 @@
   extern uint16_t               numberOfUserMenus;
   extern uint16_t               currentUserMenu;
   extern uint16_t               userKeyLabelSize;
+  extern uint16_t               currentInputVariable;
   #if (REAL34_WIDTH_TEST == 1)
     extern uint16_t               largeur;
   #endif // (REAL34_WIDTH_TEST == 1)
