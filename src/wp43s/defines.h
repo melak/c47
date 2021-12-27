@@ -287,11 +287,12 @@ typedef enum {
 #define SAVED_REGISTER_D                         218
 #define SAVED_REGISTER_L                         219
 #define LAST_SAVED_STACK_REGISTER                219
-#define NUMBER_OF_TEMP_REGISTERS                   1 // 220
+#define NUMBER_OF_TEMP_REGISTERS                   2 // 220, 221
 #define FIRST_TEMP_REGISTER                      220
 #define TEMP_REGISTER_1                          220
-#define LAST_TEMP_REGISTER                       220
-#define FIRST_NAMED_VARIABLE                     221
+#define TEMP_REGISTER_2_SAVED_STATS              221
+#define LAST_TEMP_REGISTER                       221
+#define FIRST_NAMED_VARIABLE                     222
 #define LAST_NAMED_VARIABLE                     1999
 #define FIRST_RESERVED_VARIABLE                 2000
 #define RESERVED_VARIABLE_X                     2000

@@ -519,7 +519,7 @@
     }
     else {
       char *buffer = (forcedVar ? forcedVar : aimBuffer);
-      bool_t tryAllocate = ((tam.function == ITM_STO || tam.function == ITM_M_DIM || tam.function == ITM_MVAR) && !tam.indirect);
+      bool_t tryAllocate = ((tam.function == ITM_STO || tam.function == ITM_M_DIM || tam.function == ITM_MVAR || tam.function == ITM_INPUT) && !tam.indirect);
       int16_t value;
       if(tam.mode == TM_NEWMENU) {
         value = 1;

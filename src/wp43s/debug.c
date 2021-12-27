@@ -1439,6 +1439,37 @@ void debugNIM(void) {
         formatRealDebug(string, SIGMA_YMAX);
         gtk_label_set_label(GTK_LABEL(lbl2[row]), string);
         gtk_widget_show(lbl2[row++]);
+
+        row++;
+        sprintf(string, "STATS %s %7d %7d", getRegisterDataTypeName(findNamedVariable("STATS"), false, true), TO_WP43SMEMPTR(getRegisterDataPointer(findNamedVariable("STATS"))), TO_BYTES(getRegisterFullSize(findNamedVariable("STATS"))));
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
+        gtk_widget_show(lbl1[row]);
+        debugRegisterValue(findNamedVariable("STATS"), row++);
+
+        sprintf(string, "SAVED STATS %s %7d %7d", getRegisterDataTypeName(TEMP_REGISTER_2_SAVED_STATS, false, true), TO_WP43SMEMPTR(getRegisterDataPointer(TEMP_REGISTER_2_SAVED_STATS)), TO_BYTES(getRegisterFullSize(TEMP_REGISTER_2_SAVED_STATS)));
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
+        gtk_widget_show(lbl1[row]);
+        debugRegisterValue(TEMP_REGISTER_2_SAVED_STATS, row++);
+
+        sprintf(string, "SAVED LastX");
+        stringToUtf8(string, (uint8_t *)(string + 50));
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string + 50);
+        gtk_widget_show(lbl1[row]);
+        formatRealDebug(string, &SAVED_SIGMA_LASTX);
+        gtk_label_set_label(GTK_LABEL(lbl2[row]), string);
+        gtk_widget_show(lbl2[row++]);
+
+        sprintf(string, "SAVED LastY");
+        stringToUtf8(string, (uint8_t *)(string + 50));
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string + 50);
+        gtk_widget_show(lbl1[row]);
+        formatRealDebug(string, &SAVED_SIGMA_LASTY);
+        gtk_label_set_label(GTK_LABEL(lbl2[row]), string);
+        gtk_widget_show(lbl2[row++]);
+
+        sprintf(string, "SAVED Last Action %65i", SAVED_SIGMA_LAct);
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
+        gtk_widget_show(lbl1[row]);
       }
     }
 

@@ -287,6 +287,10 @@
   extern size_t                 gmpMemInBytes;
   extern size_t                 wp43sMemInBlocks;
 
+  extern real_t                 SAVED_SIGMA_LASTX;
+  extern real_t                 SAVED_SIGMA_LASTY;
+  extern int32_t                SAVED_SIGMA_LAct;
+
   #ifdef DMCP_BUILD
     extern bool_t               backToDMCP;
 //  extern int                  keyAutoRepeat; // Key repetition
