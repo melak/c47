@@ -248,6 +248,20 @@ typedef enum {
 #define EIM_DISABLED                        (0 << 8) // Function disabled in EIM
 #define EIM_ENABLED                         (1 << 8) // Function enabled in EIM
 
+// Parameter Type in Program status (4 bit)
+#define PTP_STATUS                            0x1e00
+#define PTP_NONE                           ( 0 << 9) // No parameters
+#define PTP_DECLARE_LABEL                  ( 1 << 9) // These
+#define PTP_LABEL                          ( 2 << 9) //   parameter
+#define PTP_REGISTER                       ( 3 << 9) //   types
+#define PTP_FLAG                           ( 4 << 9) //   must match
+#define PTP_NUMBER_8                       ( 5 << 9) //   with PARAM_*
+#define PTP_NUMBER_16                      ( 6 << 9) //   defined
+#define PTP_COMPARE                        ( 7 << 9) //   below.
+#define PTP_LITERAL                        ( 8 << 9) // Literal
+#define PTP_DISABLED                       ( 9 << 9) // Not programmable
+
+
 #define INC_FLAG                                   0
 #define DEC_FLAG                                   1
 
