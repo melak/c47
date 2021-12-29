@@ -15,301 +15,119 @@
  */
 
 /********************************************//**
- * \file lblGtoXeq.c
+ * \file clcvar.c
  ***********************************************/
 
-#include "programming/lblGtoXeq.h"
+#include "programming/clcvar.h"
 
 #include "charString.h"
 #include "constantPointers.h"
-#include "dateTime.h"
 #include "defines.h"
+#include "dateTime.h"
 #include "error.h"
-#include "flags.h"
 #include "fonts.h"
 #include "items.h"
 #include "longIntegerType.h"
-#include "memory.h"
-#include "programming/manage.h"
+#include "matrix.h"
 #include "programming/nextStep.h"
 #include "realType.h"
 #include "registers.h"
 #include "registerValueConversions.h"
-#include "screen.h"
-#include "softmenus.h"
-#include "statusBar.h"
-#include "stack.h"
-#include "store.h"
-#include "timer.h"
-#include "ui/tam.h"
+#include <stdio.h>
 
 #include "wp43s.h"
 
 
 
-void fnGoto(uint16_t label) {
-  if(tam.mode || calcMode != CM_PEM) {
-    if(dynamicMenuItem >= 0) {
-      fnGotoDot(label);
-      return;
-    }
-
-    // Local Label 00 to 99 and A, B, C, D, I, and J
-    if(label <= 109) {
-      // Search for local label
-      for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
-        if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer) == label) { // Is in the current program and is a local label and is the searched label
-          if(programRunStop == PGM_RUNNING) {
-            currentLocalStepNumber = (-labelList[lbl].step) - programList[currentProgramNumber - 1].step + 1;
-            currentStep = labelList[lbl].labelPointer - 1;
-          }
-          else {
-            fnGotoDot(-labelList[lbl].step);
-          }
-          return;
-        }
+#ifndef TESTSUITE_BUILD
+static void _clearVar(calcRegister_t regist) {
+  switch(getRegisterDataType(regist)) {
+    case dtLongInteger:
+      {
+        longInteger_t l;
+        longIntegerInit(l);
+        convertLongIntegerToLongIntegerRegister(l, regist);
+        longIntegerFree(l);
       }
-
-      #ifndef DMCP_BUILD
-        if(label < REGISTER_X) {
-          printf("Error in function fnGoto: there is no local label %02u in current program\n", label);
-        }
-        else {
-          printf("Error in function fnGoto: there is no local label %c in current program\n", 'A' + (label - 100));
-        }
-      #endif // DMCP_BUILD
-    }
-    else if(label >= FIRST_LABEL && label <= LAST_LABEL) { // Global named label
-      if((label - FIRST_LABEL) < numberOfLabels) {
-        fnGotoDot(labelList[label - FIRST_LABEL].step);
-        return;
-      }
-      #ifndef DMCP_BUILD
-      else {
-        printf("Error in function fnGoto: label ID %u out of range\n", label - FIRST_LABEL);
-      }
-      #endif // DMCP_BUILD
-    }
-    else {
-      #ifndef DMCP_BUILD
-        printf("Error in function fnGoto: invalid parameter %u\n", label);
-      #endif // DMCP_BUILD
-    }
-  }
-  else {
-    insertStepInProgram(ITM_GTO);
-  }
-}
-
-
-
-void fnGotoDot(uint16_t globalStepNumber) {
-  if(dynamicMenuItem >= 0) {
-    uint8_t *labelName = (uint8_t *)dynmenuGetLabel(dynamicMenuItem);
-
-    if(*labelName == 0) {
-      return;
-    }
-
-    int16_t c, len = stringByteLength((char *)labelName);
-    for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
-      if(labelList[lbl].step > 0 && *labelList[lbl].labelPointer == len) { // It's a global label and the length is OK
-        for(c=0; c<len; c++) {
-          if(labelName[c] != labelList[lbl].labelPointer[c + 1]) {
-            break;
-          }
-        }
-        if(c == len) {
-          globalStepNumber = labelList[lbl].step;
-          break;
-        }
-      }
-    }
-  }
-
-  defineCurrentProgramFromGlobalStepNumber(globalStepNumber);
-  currentLocalStepNumber = globalStepNumber - programList[currentProgramNumber - 1].step + 1;
-
-  uint8_t *stepPointer = beginOfCurrentProgram;
-  globalStepNumber = 1;
-  while(true) {
-    if(globalStepNumber == currentLocalStepNumber) {
-      currentStep = stepPointer;
       break;
-    }
 
-    stepPointer = findNextStep(stepPointer);
-    globalStepNumber++;
-  }
+    case dtReal34:
+    case dtTime:
+      real34Zero(REGISTER_REAL34_DATA(regist));
+      break;
 
-  if(currentLocalStepNumber >= 3) {
-    firstDisplayedLocalStepNumber = currentLocalStepNumber - 3;
-    firstDisplayedStep = findPreviousStep(findPreviousStep(currentStep));
-    if(firstDisplayedLocalStepNumber != 0) {
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-    }
-    uint16_t numberOfSteps = getNumberOfSteps();
-    if(firstDisplayedLocalStepNumber + 6 > numberOfSteps) {
-      for(int i=3+currentLocalStepNumber-numberOfSteps; i>0; i--) {
-        if(firstDisplayedLocalStepNumber > 0) {
-          firstDisplayedLocalStepNumber--;
-        }
-        if(firstDisplayedStep > programList[currentProgramNumber - 1].instructionPointer) {
-          firstDisplayedStep = findPreviousStep(firstDisplayedStep);
+    case dtComplex34:
+      real34Zero(REGISTER_REAL34_DATA(regist));
+      real34Zero(REGISTER_IMAG34_DATA(regist));
+      break;
+
+    case dtDate:
+      composeJulianDay(const34_0, const34_1, const34_1, REGISTER_REAL34_DATA(regist));
+      julianDayToInternalDate(REGISTER_REAL34_DATA(regist), REGISTER_REAL34_DATA(regist));
+      break;
+
+    case dtString:
+      reallocateRegister(regist, dtString, 1, amNone);
+      break;
+
+    case dtReal34Matrix:
+      {
+        real34Matrix_t m;
+        linkToRealMatrixRegister(regist, &m);
+        for(uint32_t i = 0; i < m.header.matrixRows * m.header.matrixColumns; i++) {
+          real34Zero(VARIABLE_REAL34_DATA(&m.matrixElements[i]));
         }
       }
-    }
-  }
-  else {
-    firstDisplayedLocalStepNumber = 0;
-    firstDisplayedStep = beginOfCurrentProgram;
-  }
-}
+      break;
 
-
-
-void fnExecute(uint16_t label) {
-  if(programRunStop == PGM_RUNNING) {
-    dataBlock_t *_currentSubroutineLevelData = currentSubroutineLevelData;
-    allSubroutineLevels.numberOfSubroutineLevels += 1;
-    currentSubroutineLevelData = allocWp43s(3);
-    if(currentSubroutineLevelData) {
-      _currentSubroutineLevelData[2].ptrToNextLevel = TO_WP43SMEMPTR(currentSubroutineLevelData);
-      currentReturnProgramNumber = currentProgramNumber;
-      currentReturnLocalStep = currentLocalStepNumber;
-      currentNumberOfLocalRegisters = 0; // No local register
-      currentNumberOfLocalFlags = 0; // No local flags
-      currentSubroutineLevel = allSubroutineLevels.numberOfSubroutineLevels - 1;
-      currentPtrToNextLevel = WP43S_NULL;
-      currentPtrToPreviousLevel = TO_WP43SMEMPTR(_currentSubroutineLevelData);
-      currentLocalFlags = NULL;
-      currentLocalRegisters = NULL;
-
-      fnGoto(label);
-      dynamicMenuItem = -1;
-    }
-    else {
-      // OUT OF MEMORY
-      // May occur if nested too deeply: we don't have tail recursion optimization
-      currentSubroutineLevelData = _currentSubroutineLevelData;
-      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    }
-  }
-  else {
-    fnGoto(label);
-    dynamicMenuItem = -1;
-#ifndef TESTSUITE_BUILD
-    if(tam.mode) {
-      tamLeaveMode();
-      refreshScreen();
-    }
-#endif // TESTSUITE_BUILD
-    runProgram(false);
-  }
-}
-
-
-
-void fnReturn(uint16_t skip) {
-  dataBlock_t *_currentSubroutineLevelData = currentSubroutineLevelData;
-  uint16_t sizeToBeFreedInBlocks;
-
-  /* A subroutine is running */
-  if(currentSubroutineLevel > 0) {
-    if(programRunStop == PGM_RUNNING) {
-      currentProgramNumber = currentReturnProgramNumber;
-      currentLocalStepNumber = currentReturnLocalStep + 1;
-      currentStep = programList[currentProgramNumber - 1].instructionPointer;
-      for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
-        currentStep = findNextStep(currentStep);
+    case dtComplex34Matrix:
+      {
+        complex34Matrix_t m;
+        linkToComplexMatrixRegister(regist, &m);
+        for(uint32_t i = 0; i < m.header.matrixRows * m.header.matrixColumns; i++) {
+          real34Zero(VARIABLE_REAL34_DATA(&m.matrixElements[i]));
+          real34Zero(VARIABLE_IMAG34_DATA(&m.matrixElements[i]));
+        }
       }
-    }
-    else {
-      uint16_t returnGlobalStepNumber = currentReturnLocalStep + programList[currentReturnProgramNumber - 1].step; // the next step
-      fnGotoDot(returnGlobalStepNumber);
-    }
+      break;
 
-    if(skip > 0 && (*currentStep != ((ITM_END >> 8) | 0x80) || *(currentStep + 1) != (ITM_END & 0xff)) && (*currentStep != 255 || *(currentStep + 1) != 255)) {
-      ++currentLocalStepNumber;
-      currentStep = findNextStep(currentStep);
-    }
-    if(currentNumberOfLocalRegisters > 0) {
-      allocateLocalRegisters(0);
-      _currentSubroutineLevelData = currentSubroutineLevelData;
-    }
-    sizeToBeFreedInBlocks = 3 + (currentNumberOfLocalFlags > 0 ? 1 : 0);
-    currentSubroutineLevelData = TO_PCMEMPTR(currentPtrToPreviousLevel);
-    freeWp43s(_currentSubroutineLevelData, sizeToBeFreedInBlocks);
-    currentPtrToNextLevel = WP43S_NULL;
-    allSubroutineLevels.numberOfSubroutineLevels -= 1;
+    case dtShortInteger:
+      convertUInt64ToShortIntegerRegister(false, 0, getRegisterTag(regist), regist);
+      break;
 
-    currentLocalFlags = (currentNumberOfLocalFlags == 0 ? NULL : currentSubroutineLevelData + 3);
-    currentLocalRegisters = (registerHeader_t *)(currentNumberOfLocalRegisters == 0 ? NULL : currentSubroutineLevelData + (currentLocalFlags == NULL ? 3 : 4));
-  }
+    case dtConfig:
+      break;
 
-  /* Not in a subroutine */
-  else {
-    fnGotoDot(programList[currentProgramNumber - 1].step);
+    default:
+      printf("In function _clearVar, the data type %" PRIu32 " is unknown! Please try to reproduce and submit a bug.\n", getRegisterDataType(regist));
   }
 }
 
-
-
-void fnRunProgram(uint16_t unusedButMandatoryParameter) {
-  if(currentInputVariable != INVALID_VARIABLE) {
-    fnStore(currentInputVariable);
-    currentInputVariable = INVALID_VARIABLE;
-  }
-  dynamicMenuItem = -1;
-  runProgram(false);
-}
-
-
-
-void fnStopProgram(uint16_t unusedButMandatoryParameter) {
-  programRunStop = PGM_WAITING;
-}
-
-
-
-#ifndef TESTSUITE_BUILD
 static void _getStringLabelOrVariableName(uint8_t *stringAddress) {
   uint8_t stringLength = *(uint8_t *)(stringAddress++);
   xcopy(tmpStringLabelOrVariableName, stringAddress, stringLength);
   tmpStringLabelOrVariableName[stringLength] = 0;
 }
 
-static void _executeWithIndirectRegister(uint8_t *paramAddress, uint16_t op) {
+static void _indirectRegister(uint8_t *paramAddress) {
   uint8_t opParam = *(uint8_t *)paramAddress;
   if(opParam <= LAST_LOCAL_REGISTER) { // Local register from .00 to .98
-    int16_t realParam = indirectAddressing(opParam, (indexOfItems[op].param == TM_STORCL || indexOfItems[op].param == TM_M_DIM), indexOfItems[op].tamMinMax >> TAM_MAX_BITS, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
-    if(realParam < 9999) reallyRunFunction(op, realParam);
+    _clearVar(opParam);
   }
   else {
-    sprintf(tmpString, "\nIn function _executeWithIndirectRegister: %s " STD_RIGHT_ARROW " %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
+    sprintf(tmpString, "\nIn function _executeWithIndirectRegister: " STD_RIGHT_ARROW " %u is not a valid parameter!", opParam);
   }
 }
 
-static void _executeWithIndirectVariable(uint8_t *stringAddress, uint16_t op) {
+static void _indirectVariable(uint8_t *stringAddress) {
   calcRegister_t regist;
   _getStringLabelOrVariableName(stringAddress);
-  regist = findNamedVariable(tmpStringLabelOrVariableName);
-  if(regist != INVALID_VARIABLE) {
-    int16_t realParam = indirectAddressing(regist, (indexOfItems[op].param == TM_STORCL || indexOfItems[op].param == TM_M_DIM), indexOfItems[op].tamMinMax >> TAM_MAX_BITS, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
-    if(realParam < 9999) reallyRunFunction(op, realParam);
-  }
-  else {
-    displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "string '%s' is not a named variable", tmpStringLabelOrVariableName);
-      moreInfoOnError("In function _executeOp:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
+  regist = findOrAllocateNamedVariable(tmpStringLabelOrVariableName);
+  _clearVar(regist);
 }
 
-static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
+static void _processOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
   uint8_t opParam = *(uint8_t *)(paramAddress++);
-  bool_t tryAllocate = (op == ITM_STO || op == ITM_M_DIM || op == ITM_MVAR || op == ITM_INPUT);
 
   switch(paramMode) {
     case PARAM_DECLARE_LABEL:
@@ -318,292 +136,108 @@ static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
 
     case PARAM_LABEL:
       if(opParam <= 109) { // Local label from 00 to 99 or from A to J
-        reallyRunFunction(op, opParam);
+        // nothing to do
       }
       else if(opParam == STRING_LABEL_VARIABLE) {
-        _getStringLabelOrVariableName(paramAddress);
-        calcRegister_t label = findNamedLabel(tmpStringLabelOrVariableName);
-        if(label != INVALID_VARIABLE) {
-          reallyRunFunction(op, label);
-        }
-        else {
-          displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-            sprintf(errorMessage, "string '%s' is not a named label", tmpStringLabelOrVariableName);
-            moreInfoOnError("In function _executeOp:", errorMessage, NULL, NULL);
-          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-        }
+        // nothing to do
       }
       else if(opParam == INDIRECT_REGISTER) {
-        _executeWithIndirectRegister(paramAddress, op);
+        _indirectRegister(paramAddress);
       }
       else if(opParam == INDIRECT_VARIABLE) {
-        _executeWithIndirectVariable(paramAddress, op);
+        _indirectVariable(paramAddress);
       }
       else {
-        sprintf(tmpString, "\nIn function _executeOp: case PARAM_LABEL, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
+        sprintf(tmpString, "\nIn function _processOp: case PARAM_LABEL, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
       }
       break;
 
     case PARAM_FLAG:
       if(opParam <= LAST_LOCAL_FLAG) { // Global flag from 00 to 99, Lettered flag from X to K, or Local flag from .00 to .15 (or .31)
-        reallyRunFunction(op, opParam);
+        // nothing to do
       }
       else if(FIRST_LOCAL_FLAG + NUMBER_OF_LOCAL_FLAGS <= opParam && opParam < FIRST_LOCAL_FLAG + NUMBER_OF_LOCAL_FLAGS + NUMBER_OF_SYSTEM_FLAGS) { // Local register from .00 to .15 (or .31)
-        reallyRunFunction(op, opParam);
+        // nothing to do
       }
       else if(opParam == SYSTEM_FLAG_NUMBER) {
-        switch((uint16_t)(*paramAddress) | 0xc000) { 
-          case FLAG_YMD:
-          case FLAG_DMY:
-          case FLAG_MDY:
-          case FLAG_ALPHA:
-          case FLAG_alphaCAP:
-          case FLAG_RUNTIM:
-          case FLAG_RUNIO:
-          case FLAG_PRINT:
-          case FLAG_LOWBAT:
-          case FLAG_NUMIN:
-          case FLAG_ALPIN:
-          case FLAG_ASLIFT:
-          case FLAG_INTING:
-          case FLAG_SOLVING:
-          case FLAG_VMDISP:
-          case FLAG_USB:
-          case FLAG_ENDPMT:
-            reallyRunFunction(op, (uint16_t)(*paramAddress) | 0xc000);
-            break;
-          default:
-            reallyRunFunction(op, (uint16_t)(*paramAddress) | 0x8000);
-        }
+        // nothing to do
       }
       else if(opParam == INDIRECT_REGISTER) {
-        _executeWithIndirectRegister(paramAddress, op);
+        _indirectRegister(paramAddress);
       }
       else if(opParam == INDIRECT_VARIABLE) {
-        _executeWithIndirectVariable(paramAddress, op);
+        _indirectVariable(paramAddress);
       }
       else {
-        sprintf(tmpString, "\nIn function _executeOp: case PARAM_FLAG, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
+        sprintf(tmpString, "\nIn function _processOp: case PARAM_FLAG, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
       }
       break;
 
     case PARAM_NUMBER_8:
       if(opParam <= 99) { // Value from 0 to 99
-        reallyRunFunction(op, opParam);
+        // nothing to do
       }
       else if(opParam == INDIRECT_REGISTER) {
-        _executeWithIndirectRegister(paramAddress, op);
+        _indirectRegister(paramAddress);
       }
       else if(opParam == INDIRECT_VARIABLE) {
-        _executeWithIndirectVariable(paramAddress, op);
+        _indirectVariable(paramAddress);
       }
       else {
-        sprintf(tmpString, "\nIn function _executeOp: case PARAM_NUMBER, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
+        sprintf(tmpString, "\nIn function _processOp: case PARAM_NUMBER, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
       }
       break;
 
     case PARAM_NUMBER_16:
-      reallyRunFunction(op, opParam + 256 * *(paramAddress));
+      // nothing to do
       break;
 
     case PARAM_REGISTER:
     case PARAM_COMPARE:
       if(opParam <= LAST_LOCAL_REGISTER) { // Global register from 00 to 99, Lettered register from X to K, or Local register from .00 to .98
-        reallyRunFunction(op, opParam);
+        _clearVar(opParam);
       }
       else if(opParam == STRING_LABEL_VARIABLE) {
         _getStringLabelOrVariableName(paramAddress);
-        calcRegister_t regist = findNamedVariable(tmpStringLabelOrVariableName);
-        if(tryAllocate) {
-          reallyRunFunction(op, findOrAllocateNamedVariable(tmpStringLabelOrVariableName));
-        }
-        else if(regist != INVALID_VARIABLE) {
-          reallyRunFunction(op, regist);
-        }
-        else {
-          displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-            sprintf(errorMessage, "string '%s' is not a named variable", tmpStringLabelOrVariableName);
-            moreInfoOnError("In function _executeOp:", errorMessage, NULL, NULL);
-          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-        }
+        _clearVar(findOrAllocateNamedVariable(tmpStringLabelOrVariableName));
       }
-      else if(paramMode == PARAM_COMPARE && opParam == VALUE_0) {
-        reallocateRegister(TEMP_REGISTER_1, dtReal34, REAL34_SIZE, amNone);
-        real34Copy(const34_0, REGISTER_REAL34_DATA(TEMP_REGISTER_1));
-        reallyRunFunction(op, TEMP_REGISTER_1);
-      }
-      else if(paramMode == PARAM_COMPARE && opParam == VALUE_1) {
-        reallocateRegister(TEMP_REGISTER_1, dtReal34, REAL34_SIZE, amNone);
-        real34Copy(const34_1, REGISTER_REAL34_DATA(TEMP_REGISTER_1));
-        reallyRunFunction(op, TEMP_REGISTER_1);
+      else if(paramMode == PARAM_COMPARE && (opParam == VALUE_0 || opParam == VALUE_1)) {
+      // nothing to do
       }
       else if(opParam == INDIRECT_REGISTER) {
-        _executeWithIndirectRegister(paramAddress, op);
+        _indirectRegister(paramAddress);
       }
       else if(opParam == INDIRECT_VARIABLE) {
-        _executeWithIndirectVariable(paramAddress, op);
+        _indirectVariable(paramAddress);
       }
       else {
-        sprintf(tmpString, "\nIn function _executeOp: case PARAM_REGISTER / PARAM_COMPARE, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
+        sprintf(tmpString, "\nIn function _processOp: case PARAM_REGISTER / PARAM_COMPARE, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
       }
       break;
 
     default:
-      sprintf(tmpString, "\nIn function _executeOp: paramMode %u is not valid!\n", paramMode);
+      sprintf(tmpString, "\nIn function _processOp: paramMode %u is not valid!\n", paramMode);
   }
 }
 
-static void _putLiteral(uint8_t *literalAddress) {
-  switch(*(uint8_t *)(literalAddress++)) {
-    case BINARY_SHORT_INTEGER:
-      liftStack();
-      setSystemFlag(FLAG_ASLIFT);
-      reallocateRegister(REGISTER_X, dtShortInteger, SHORT_INTEGER_SIZE, *(uint8_t *)(literalAddress++));
-      xcopy(REGISTER_DATA(REGISTER_X), literalAddress, TO_BYTES(SHORT_INTEGER_SIZE));
-      break;
-
-    //case BINARY_LONG_INTEGER:
-    //  break;
-
-    case BINARY_REAL34:
-      liftStack();
-      setSystemFlag(FLAG_ASLIFT);
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      real34Copy((real34_t *)literalAddress, REGISTER_REAL34_DATA(REGISTER_X));
-      break;
-
-    case BINARY_COMPLEX34:
-      liftStack();
-      setSystemFlag(FLAG_ASLIFT);
-      reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      complex34Copy((complex34_t *)literalAddress, REGISTER_COMPLEX34_DATA(REGISTER_X));
-      break;
-
-    //case BINARY_DATE:
-    //  break;
-
-    //case BINARY_TIME:
-    //  break;
-
-    case STRING_SHORT_INTEGER:
-      {
-        longInteger_t val;
-        longIntegerInit(val);
-
-        _getStringLabelOrVariableName(literalAddress + 1);
-        stringToLongInteger(tmpStringLabelOrVariableName, 10, val);
-        liftStack();
-        setSystemFlag(FLAG_ASLIFT);
-        convertLongIntegerToShortIntegerRegister(val, (uint32_t)(*literalAddress), REGISTER_X);
-
-        longIntegerFree(val);
-      }
-      break;
-
-    case STRING_LONG_INTEGER:
-      {
-        longInteger_t val;
-        longIntegerInit(val);
-
-        _getStringLabelOrVariableName(literalAddress);
-        stringToLongInteger(tmpStringLabelOrVariableName, 10, val);
-        liftStack();
-        setSystemFlag(FLAG_ASLIFT);
-        convertLongIntegerToLongIntegerRegister(val, REGISTER_X);
-
-        longIntegerFree(val);
-      }
-      break;
-
-    case STRING_REAL34:
-      _getStringLabelOrVariableName(literalAddress);
-      liftStack();
-      setSystemFlag(FLAG_ASLIFT);
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
-      break;
-
-    case STRING_COMPLEX34:
-      {
-        char *imag = tmpStringLabelOrVariableName;
-        _getStringLabelOrVariableName(literalAddress);
-        while(*imag != 'i' && *imag != 0) ++imag;
-        if(*imag == 'i') {
-          if(imag > tmpStringLabelOrVariableName && *(imag - 1) == '-') {
-            *imag = '-'; *(imag - 1) = 0;
-          }
-          else if(imag > tmpStringLabelOrVariableName && *(imag - 1) == '+') {
-            *imag = 0; *(imag - 1) = 0;
-            ++imag;
-          }
-          else {
-            *imag = 0;
-          }
-        }
-        liftStack();
-        setSystemFlag(FLAG_ASLIFT);
-        reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-        stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
-        stringToReal34(imag,                         REGISTER_IMAG34_DATA(REGISTER_X));
-      }
-      break;
-
-    case STRING_LABEL_VARIABLE:
-      _getStringLabelOrVariableName(literalAddress);
-      liftStack();
-      setSystemFlag(FLAG_ASLIFT);
-      reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(stringByteLength(tmpStringLabelOrVariableName) + 1), amNone);
-      xcopy(REGISTER_STRING_DATA(REGISTER_X), tmpStringLabelOrVariableName, stringByteLength(tmpStringLabelOrVariableName) + 1);
-      break;
-
-    case STRING_DATE:
-      _getStringLabelOrVariableName(literalAddress);
-      liftStack();
-      setSystemFlag(FLAG_ASLIFT);
-      reallocateRegister(REGISTER_X, dtDate, REAL34_SIZE, amNone);
-      stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
-      julianDayToInternalDate(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(REGISTER_X));
-      break;
-
-    case STRING_TIME:
-      _getStringLabelOrVariableName(literalAddress);
-      liftStack();
-      setSystemFlag(FLAG_ASLIFT);
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
-      hmmssInRegisterToSeconds(REGISTER_X);
-      break;
-
-    default: {
-      #ifndef DMCP_BUILD
-        printf("\nERROR: %u is not an acceptable parameter for ITM_LITERAL!\n", *(uint8_t *)(literalAddress - 1));
-      #endif // !DMCP_BUILD
-    }
-  }
-}
 #endif // TESTSUITE_BUILD
 
-int16_t executeOneStep(uint8_t *step) {
+static bool_t _processOneStep(uint8_t *step) {
 #ifdef TESTSUITE_BUILD
-  return 0;
+  return false;
 #else // TESTSUITE_BUILD
   uint8_t item8 = *(uint8_t *)(step++);
   uint16_t item16;
 
   switch(item8) {
-    case ITM_LBL:         //   1
-      return 1;
-
     case ITM_GTO:         //   2
     case ITM_XEQ:         //   3
-      _executeOp(step, (uint16_t)item8, PARAM_LABEL);
-      return -1;
+      _processOp(step, (uint16_t)item8, PARAM_LABEL);
+      return true;
 
     case ITM_PAUSE:       //  38
-      _executeOp(step, (uint16_t)item8, PARAM_NUMBER_8);
-      return temporaryInformation == TI_FALSE ? 2 : 1;
+      _processOp(step, (uint16_t)item8, PARAM_NUMBER_8);
+      return true;
 
     case ITM_ISE:         //   5
     case ITM_ISG:         //   6
@@ -628,8 +262,8 @@ int16_t executeOneStep(uint8_t *step) {
     case ITM_INC:         //  92
     case ITM_VIEW:        // 101
     case ITM_Xex:         // 127
-      _executeOp(step, (uint16_t)item8, PARAM_REGISTER);
-      return temporaryInformation == TI_FALSE ? 2 : 1;
+      _processOp(step, (uint16_t)item8, PARAM_REGISTER);
+      return true;
 
     case ITM_XEQU:        //  11
     case ITM_XNE:         //  12
@@ -638,21 +272,19 @@ int16_t executeOneStep(uint8_t *step) {
     case ITM_XLE:         //  17
     case ITM_XGE:         //  18
     case ITM_XGT:         //  19
-      _executeOp(step, (uint16_t)item8, PARAM_COMPARE);
-      return temporaryInformation == TI_FALSE ? 2 : 1;
+      _processOp(step, (uint16_t)item8, PARAM_COMPARE);
+      return true;
 
     case ITM_FC:          //  20
     case ITM_FS:          //  21
     case ITM_CF:          // 110
     case ITM_SF:          // 111
     case ITM_FF:          // 112
-      _executeOp(step, (uint16_t)item8, PARAM_FLAG);
-      return temporaryInformation == TI_FALSE ? 2 : 1;
+      _processOp(step, (uint16_t)item8, PARAM_FLAG);
+      return true;
 
+    case ITM_LBL:         //   1
     case ITM_RTN:         //   4
-      runFunction(item8);
-      return 0;
-
     case ITM_XEQUP0:      //  13
     case ITM_XEQUM0:      //  14
     case ITM_EVEN:        //  22
@@ -727,6 +359,7 @@ int16_t executeOneStep(uint8_t *step) {
     case ITM_XFACT:       // 108
     case ITM_CONSTpi:     // 109
     case ITM_M_SQR:       // 113
+    case ITM_LITERAL:     // 114
     case ITM_toDEG:       // 115
     case ITM_toDMS:       // 116
     case ITM_toGRAD:      // 117
@@ -739,19 +372,14 @@ int16_t executeOneStep(uint8_t *step) {
     case ITM_LOGICALAND:  // 124
     case ITM_LOGICALOR:   // 125
     case ITM_LOGICALXOR:  // 126
-      runFunction(item8);
-      return temporaryInformation == TI_FALSE ? 2 : 1;
-
-    case ITM_LITERAL:     // 114
-      _putLiteral(step);
-      return 1;
+      return true;
 
     default:
       if((item8 & 0x80) == 0) {
         #ifndef DMCP_BUILD
           printf("\nERROR in decodeOneStep: single byte instruction %u is unknown!\n", item8);
         #endif // !DMCP_BUILD
-        return 0;
+        return true;
       }
 
       item16 = ((uint16_t)(item8 & 0x7F) << 8) | *(uint8_t *)(step++);
@@ -792,7 +420,7 @@ int16_t executeOneStep(uint8_t *step) {
           #if (EXTRA_INFO_ON_CALC_ERROR == 1)
             moreInfoOnError("In function decodeOneStep:", "non-programmable function", indexOfItems[item16].itemCatalogName, "appeared in the program!");
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-          return 0;
+          return false;
 
         case ITM_DELITM:         //  1455
         case ITM_FQX:            //  1475
@@ -805,13 +433,8 @@ int16_t executeOneStep(uint8_t *step) {
         case ITM_PIn:            //  1671
         case ITM_SIGMAn:         //  1672
         case ITM_INTEGRAL:       //  1700
-          _executeOp(step, item16, PARAM_LABEL);
-          return temporaryInformation == TI_FALSE ? 2 : 1;
-
-        case ITM_BACK:           //  1412
-        case ITM_SKIP:           //  1603
-          _executeOp(step, item16, PARAM_NUMBER_8);
-          return -1;
+          _processOp(step, item16, PARAM_LABEL);
+          return true;
 
         case ITM_CNST:           //   207
         case ITM_BS:             //   405
@@ -832,6 +455,7 @@ int16_t executeOneStep(uint8_t *step) {
         case ITM_SDR:            //   424
         case ITM_AGRAPH:         //  1409
         case ITM_ALL:            //  1410
+        case ITM_BACK:           //  1412
         case ITM_DSTACK:         //  1450
         case ITM_ENG:            //  1460
         case ITM_ERR:            //  1468
@@ -845,6 +469,7 @@ int16_t executeOneStep(uint8_t *step) {
         case ITM_RSD:            //  1577
         case ITM_SCI:            //  1587
         case ITM_SIM_EQ:         //  1602
+        case ITM_SKIP:           //  1603
         case ITM_TDISP:          //  1619
         case ITM_TONE:           //  1624
         case ITM_WSIZE:          //  1638
@@ -854,28 +479,15 @@ int16_t executeOneStep(uint8_t *step) {
         case ITM_PRINTERDLAY:    //  1710
         case ITM_PRINTERMODE:    //  1712
         case ITM_PRINTERTAB:     //  1717
-          _executeOp(step, item16, PARAM_NUMBER_8);
-          return temporaryInformation == TI_FALSE ? 2 : 1;
+          _processOp(step, item16, PARAM_NUMBER_8);
+          return true;
 
         case ITM_BESTF:          //  1297
-          _executeOp(step, item16, PARAM_NUMBER_16);
+          _processOp(step, item16, PARAM_NUMBER_16);
           step++;
-          return temporaryInformation == TI_FALSE ? 2 : 1;
+          return true;
 
         case ITM_CASE:           //  1418
-          _executeOp(step, item16, PARAM_REGISTER);
-          return -1;
-
-        case ITM_SOLVE:          //  1608
-          _executeOp(step, item16, PARAM_REGISTER);
-          if(temporaryInformation == TI_SOLVER_FAILED) {
-            lastErrorCode = ERROR_NONE;
-            return 2;
-          }
-          else {
-            return 1;
-          }
-
         case ITM_STOMAX:         //  1430
         case ITM_RCLMAX:         //  1432
         case ITM_RCLMIN:         //  1462
@@ -885,6 +497,7 @@ int16_t executeOneStep(uint8_t *step) {
         case ITM_PUTK:           //  1556
         case ITM_RCLCFG:         //  1561
         case ITM_RCLS:           //  1564
+        case ITM_SOLVE:          //  1608
         case ITM_STOCFG:         //  1611
         case ITM_STOS:           //  1615
         case ITM_Tex:            //  1625
@@ -898,8 +511,8 @@ int16_t executeOneStep(uint8_t *step) {
         case ITM_ALPHASR:        //  1659
         case ITM_ALPHAtoX:       //  1660
         case ITM_PRINTERR:       //  1714
-          _executeOp(step, item16, PARAM_REGISTER);
-          return temporaryInformation == TI_FALSE ? 2 : 1;
+          _processOp(step, item16, PARAM_REGISTER);
+          return true;
 
         case ITM_FCC:            //   396
         case ITM_FCS:            //   397
@@ -907,8 +520,8 @@ int16_t executeOneStep(uint8_t *step) {
         case ITM_FSC:            //   399
         case ITM_FSS:            //   400
         case ITM_FSF:            //   401
-          _executeOp(step, item16, PARAM_FLAG);
-          return temporaryInformation == TI_FALSE ? 2 : 1;
+          _processOp(step, item16, PARAM_FLAG);
+          return true;
 
         case CST_01:             //   128
         case CST_02:             //   129
@@ -1369,6 +982,7 @@ int16_t executeOneStep(uint8_t *step) {
         case ITM_EX1:            //  1575
         case ITM_ROUNDI:         //  1576
         case ITM_RSUM:           //  1578
+        case ITM_RTNP1:          //  1579
         case ITM_R_CLR:          //  1580
         case ITM_R_COPY:         //  1581
         case ITM_R_SORT:         //  1582
@@ -1496,23 +1110,17 @@ int16_t executeOneStep(uint8_t *step) {
         case ITM_GETHIDE:        //  1766
         case ITM_SQRT:           //  1768
         case ITM_atan2:          //  1775
-          runFunction(item16);
-          return temporaryInformation == TI_FALSE ? 2 : 1;
+          return true;
 
         case ITM_END:            //  1458
-        case ITM_RTNP1:          //  1579
-          runFunction(item16);
-          return 0;
-
         case 0x7fff:             // 32767  .END.
-          fnReturn(0);
-          return 0;
+          return false;
 
         default: {
           #ifndef DMCP_BUILD
             printf("\nERROR in decodeOneStep: double byte instruction %u is unknown!\n", item16);
           #endif // !DMCP_BUILD
-          return 0;
+          return false;
         }
       }
   }
@@ -1521,107 +1129,12 @@ int16_t executeOneStep(uint8_t *step) {
 
 
 
-void runProgram(bool_t singleStep) {
+void fnClCVar(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
-  bool_t nestedEngine = (programRunStop == PGM_RUNNING);
-  uint16_t startingSubLevel = currentSubroutineLevel;
-  lastErrorCode = ERROR_NONE;
-  hourGlassIconEnabled = true;
-  programRunStop = PGM_RUNNING;
-  if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
-    showHideHourGlass();
-    #ifdef DMCP_BUILD
-      lcd_refresh();
-    #else // !DMCP_BUILD
-      refreshLcd(NULL);
-    #endif // DMCP_BUILD
-  }
+  uint8_t *ptr = beginOfCurrentProgram;
 
-  while(1) {
-    int16_t stepsToBeAdvanced;
-    uint16_t subLevel = currentSubroutineLevel;
-    uint16_t opCode = *currentStep;
-    currentInputVariable = INVALID_VARIABLE; // INPUT is already executed
-    if(opCode & 0x80) {
-      opCode = ((uint16_t)(opCode & 0x7F) << 8) | *(currentStep + 1);
-    }
-    if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE || temporaryInformation == TI_SOLVER_FAILED || (opCode != ITM_RTN && opCode != ITM_STOP && opCode != ITM_END && opCode != 0x7fff)) {
-      temporaryInformation = TI_NO_INFO;
-    }
-    stepsToBeAdvanced = executeOneStep(currentStep);
-    if(lastErrorCode == ERROR_NONE) {
-      switch(stepsToBeAdvanced) {
-        case -1: // Already the pointer is set
-          break;
-
-        case 0: // End of the routine
-          if(subLevel == startingSubLevel) {
-            goto stopProgram;
-          }
-          break;
-
-        default: // Find the next step
-          fnSkip((uint16_t)(stepsToBeAdvanced - 1));
-          break;
-      }
-    }
-    else {
-      break;
-    }
-    #ifdef DMCP_BUILD
-      if(!nestedEngine) {
-        int key = key_pop();
-        key = convertKeyCode(key);
-        if(key == 36 || key == 37) {
-          programRunStop = PGM_WAITING;
-          refreshScreen();
-          lcd_refresh();
-          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, 60000);
-          do {
-            key = key_pop();
-            sys_sleep();
-          } while(key == -1);
-          break;
-        }
-      }
-    #endif // DMCP_BUILD
-    if(programRunStop != PGM_RUNNING) {
-      break;
-    }
-    if(singleStep) {
-      break;
-    }
-    #ifdef PC_BUILD
-      refreshLcd(NULL);
-    #endif // PC_BUILD
+  while(_processOneStep(ptr)) {
+    ptr = findNextStep(ptr);
   }
-
-stopProgram:
-  if(programRunStop == PGM_RUNNING && !nestedEngine) {
-    programRunStop = PGM_STOPPED;
-  }
-  if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
-    showHideHourGlass();
-    #ifdef DMCP_BUILD
-      lcd_refresh();
-      fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, FAST_SCREEN_REFRESH_PERIOD+50);
-    #else // !DMCP_BUILD
-      refreshLcd(NULL);
-    #endif // DMCP_BUILD
-  }
-  return;
 #endif // TESTSUITE_BUILD
-}
-
-
-
-void execProgram(uint16_t label) {
-  uint16_t origLocalStepNumber = currentLocalStepNumber;
-  uint8_t *origStep = currentStep;
-  fnExecute(label);
-  if(programRunStop == PGM_RUNNING && (getSystemFlag(FLAG_INTING) || getSystemFlag(FLAG_SOLVING))) {
-    runProgram(false);
-    currentLocalStepNumber = origLocalStepNumber;
-    currentStep = origStep;
-  }
 }

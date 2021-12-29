@@ -15,17 +15,13 @@
  */
 
 /********************************************//**
- * \file programming.h
+ * \file clcvar.h
  ***********************************************/
-#ifndef PROGRAMMING_H
-#define PROGRAMMING_H
+#ifndef CLCVAR_H
+#define CLCVAR_H
 
+#include <stdint.h>
 
-#include "clcvar.h"
-#include "decode.h"
-#include "inputVar.h"
-#include "lblGtoXeq.h"
-#include "manage.h"
-#include "nextStep.h"
+void fnClCVar(uint16_t unusedButMandatoryParameter);
 
-#endif // PROGRAMMING_H
+#endif // CLCVAR_H

@@ -118,7 +118,14 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     indexOfItems[func].func(param);
 
     if(lastErrorCode != 0) {
-      if(thereIsSomethingToUndo) undo();
+      if(getSystemFlag(FLAG_IGN1ER)) {
+        if(thereIsSomethingToUndo) undo();
+        lastErrorCode = ERROR_NONE;
+      }
+      else {
+        if(thereIsSomethingToUndo) undo();
+      }
+      clearSystemFlag(FLAG_IGN1ER);
     }
     else {
       if((indexOfItems[func].status & SLS_STATUS) == SLS_DISABLED) {
@@ -640,6 +647,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnRegSort                   (uint16_t unusedButMandatoryParameter) {}
   void fnRegSwap                   (uint16_t unusedButMandatoryParameter) {}
   void fnInput                     (uint16_t unusedButMandatoryParameter) {}
+  void fnClCVar                    (uint16_t unusedButMandatoryParameter) {}
   void fnDynamicMenu               (uint16_t unusedButMandatoryParameter) {}
   void fnCheckInteger              (uint16_t unusedButMandatoryParameter) {}
   void fnNormalP                   (uint16_t unusedButMandatoryParameter) {}
@@ -2232,7 +2240,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1417 */  { fnBnStar,                     NOPARAM,                     "B" STD_SUB_n STD_SUP_ASTERISK,                "B" STD_SUB_n STD_SUP_ASTERISK,                (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_ENABLED },
 /* 1418 */  { fnCase,                       TM_REGISTER,                 "CASE",                                        "CASE",                                        (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED},
 /* 1419 */  { fnClAll,                      NOT_CONFIRMED,               "CLALL",                                       "CLall",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABL_XEQ | EIM_DISABLED},
-/* 1420 */  { itemToBeCoded,                NOPARAM,                     "CLCVAR",                                      "CLCVAR",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABL_XEQ | EIM_DISABLED},
+/* 1420 */  { fnClCVar,                     NOPARAM,                     "CLCVAR",                                      "CLCVAR",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABL_XEQ | EIM_DISABLED},
 /* 1421 */  { fnClFAll,                     NOT_CONFIRMED,               "CLFALL",                                      "CLFall",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABL_XEQ | EIM_DISABLED},
 /* 1422 */  { fnFractionType,               NOPARAM,                     "a b/c",                                       "a b/c",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
 /* 1423 */  { itemToBeCoded,                NOPARAM,                     "CLLCD",                                       "CLLCD",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABL_XEQ | EIM_DISABLED},
