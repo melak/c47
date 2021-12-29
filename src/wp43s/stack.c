@@ -17,11 +17,14 @@
 #include "stack.h"
 
 #include "charString.h"
+#include "constantPointers.h"
+#include "mathematics/comparisonReals.h"
 #include "error.h"
 #include "flags.h"
 #include "memory.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "stats.h"
 
 #include "wp43s.h"
 
@@ -237,6 +240,8 @@ void saveForUndo(void) {
     return;
   }
 
+  clearRegister(TEMP_REGISTER_2_SAVED_STATS); //clear it here, and set it only in fnEditMatrix()
+
   savedSystemFlags = systemFlags;
 
   for(calcRegister_t regist=getStackTop(); regist>=REGISTER_X; regist--) {
@@ -258,7 +263,6 @@ void saveForUndo(void) {
   }
 
   lrSelectionUndo = lrSelection;  
-  //printf(">>>Storing for UNDO lrSelectionUndo = %i \n",lrSelection);
   if(statisticalSumsPointer == NULL) { // There are no statistical sums to save for undo
     if(savedStatisticalSumsPointer != NULL) {
       freeWp43s(savedStatisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
@@ -297,6 +301,26 @@ void fnUndo(uint16_t unusedButMandatoryParameter) {
 
 
 void undo(void) {
+  if(getRegisterDataType(TEMP_REGISTER_2_SAVED_STATS) == dtReal34Matrix) {
+    calcRegister_t regStats = findNamedVariable("STATS");
+    if(regStats == INVALID_VARIABLE) {
+      allocateNamedVariable("STATS", dtReal34, REAL34_SIZE);
+      regStats = findNamedVariable("STATS");
+    }
+    clearRegister(regStats);
+    copySourceRegisterToDestRegister(TEMP_REGISTER_2_SAVED_STATS, findNamedVariable("STATS"));
+  }
+  
+
+  if(SAVED_SIGMA_LAct == +1 && statisticalSumsPointer != NULL) {
+    fnSigma(-1);
+  } else
+  if(SAVED_SIGMA_LAct == -1) {
+    convertRealToReal34ResultRegister(&SAVED_SIGMA_LASTX, REGISTER_X);             // Can use stack, as the stack will be undone below
+    convertRealToReal34ResultRegister(&SAVED_SIGMA_LASTY, REGISTER_Y);
+    fnSigma(+1);
+  }
+
   systemFlags = savedSystemFlags;
   synchronizeLetteredFlags();
 
@@ -306,7 +330,6 @@ void undo(void) {
 
   copySourceRegisterToDestRegister(SAVED_REGISTER_L, REGISTER_L);
 
-  //printf(">>>UNDOING lrSelection was %i becomes %i\n",lrSelection,lrSelectionUndo);
   lrSelection = lrSelectionUndo;
   if(savedStatisticalSumsPointer == NULL) { // There are no statistical sums to restore
     if(statisticalSumsPointer != NULL) {
@@ -321,7 +344,9 @@ void undo(void) {
       statisticalSumsPointer = allocWp43s(NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
     }
     xcopy(statisticalSumsPointer, savedStatisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * TO_BYTES(REAL_SIZE));
+    SAVED_SIGMA_LAct = 0;
   }
 
   thereIsSomethingToUndo = false;
+  clearRegister(TEMP_REGISTER_2_SAVED_STATS);
 }

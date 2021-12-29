@@ -21,6 +21,7 @@
 #define PROGRAMMING_H
 
 
+#include "clcvar.h"
 #include "decode.h"
 #include "inputVar.h"
 #include "lblGtoXeq.h"

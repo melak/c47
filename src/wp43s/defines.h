@@ -248,6 +248,20 @@ typedef enum {
 #define EIM_DISABLED                        (0 << 8) // Function disabled in EIM
 #define EIM_ENABLED                         (1 << 8) // Function enabled in EIM
 
+// Parameter Type in Program status (4 bit)
+#define PTP_STATUS                            0x1e00
+#define PTP_NONE                           ( 0 << 9) // No parameters
+#define PTP_DECLARE_LABEL                  ( 1 << 9) // These
+#define PTP_LABEL                          ( 2 << 9) //   parameter
+#define PTP_REGISTER                       ( 3 << 9) //   types
+#define PTP_FLAG                           ( 4 << 9) //   must match
+#define PTP_NUMBER_8                       ( 5 << 9) //   with PARAM_*
+#define PTP_NUMBER_16                      ( 6 << 9) //   defined
+#define PTP_COMPARE                        ( 7 << 9) //   below.
+#define PTP_LITERAL                        ( 8 << 9) // Literal
+#define PTP_DISABLED                       ( 9 << 9) // Not programmable
+
+
 #define INC_FLAG                                   0
 #define DEC_FLAG                                   1
 
@@ -287,11 +301,12 @@ typedef enum {
 #define SAVED_REGISTER_D                         218
 #define SAVED_REGISTER_L                         219
 #define LAST_SAVED_STACK_REGISTER                219
-#define NUMBER_OF_TEMP_REGISTERS                   1 // 220
+#define NUMBER_OF_TEMP_REGISTERS                   2 // 220, 221
 #define FIRST_TEMP_REGISTER                      220
 #define TEMP_REGISTER_1                          220
-#define LAST_TEMP_REGISTER                       220
-#define FIRST_NAMED_VARIABLE                     221
+#define TEMP_REGISTER_2_SAVED_STATS              221
+#define LAST_TEMP_REGISTER                       221
+#define FIRST_NAMED_VARIABLE                     222
 #define LAST_NAMED_VARIABLE                     1999
 #define FIRST_RESERVED_VARIABLE                 2000
 #define RESERVED_VARIABLE_X                     2000

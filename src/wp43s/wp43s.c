@@ -209,6 +209,10 @@ uint64_t               savedSystemFlags;
 size_t                 gmpMemInBytes;
 size_t                 wp43sMemInBlocks;
 
+real_t                 SAVED_SIGMA_LASTX;
+real_t                 SAVED_SIGMA_LASTY;
+int32_t                SAVED_SIGMA_LAct;
+
 #ifdef DMCP_BUILD
   bool_t               backToDMCP;
 //int                  keyAutoRepeat;
