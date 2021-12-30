@@ -2136,6 +2136,7 @@ void execTimerApp(uint16_t timerType) {
               showSoftmenu(-MNU_Solver);
             }
             else {
+              currentMvarLabel = INVALID_VARIABLE;
               showSoftmenu(-MNU_MVAR);
             }
           }
@@ -2156,7 +2157,9 @@ void execTimerApp(uint16_t timerType) {
         displayShiftAndTamBuffer();
 
         showSoftmenuCurrentPart();
-        hourGlassIconEnabled = false;
+        if(programRunStop == PGM_STOPPED || programRunStop == PGM_WAITING) {
+          hourGlassIconEnabled = false;
+        }
         refreshStatusBar();
         #if (REAL34_WIDTH_TEST == 1)
           for(int y=Y_POSITION_OF_REGISTER_Y_LINE; y<Y_POSITION_OF_REGISTER_Y_LINE + 2*REGISTER_LINE_HEIGHT; y++ ) setBlackPixel(SCREEN_WIDTH - largeur - 1, y);

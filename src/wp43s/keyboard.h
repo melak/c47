@@ -140,11 +140,14 @@ void fnKeyAngle      (uint16_t unusedButMandatoryParameter);
 void execAutoRepeat(uint16_t key);
 
 #ifdef DMCP_BUILD
+  void btnFnClicked (void *w, void *data);
   void btnFnPressed (void *data);
   void btnFnReleased(void *data);
   void btnClicked   (void *w, void *data);
   void btnPressed   (void *data);
   void btnReleased  (void *data);
 #endif // DMCP_BUILD
+
+void setLastKeyCode  (int key);
 
 #endif // KEYBOARD_H

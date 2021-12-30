@@ -26,6 +26,8 @@
 
 uint8_t *getNthString           (uint8_t *ptr, int16_t n); // Starting with string 0 (the 1st string is returned for n=0)
 void     fnDynamicMenu          (uint16_t unusedButMandatoryParameter);
+
+void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
 #ifndef TESTSUITE_BUILD
   /**
    * Displays one softkey.

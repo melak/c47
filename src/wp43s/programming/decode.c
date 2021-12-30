@@ -101,7 +101,7 @@
         if(*(labelList[i].labelPointer) < 100) {
           printf("%02d\n", *(labelList[i].labelPointer));
         }
-        else if(*(labelList[i].labelPointer) < 110) {
+        else if(*(labelList[i].labelPointer) < 105) {
           printf("%c\n", *(labelList[i].labelPointer) - 100 + 'A');
         }
       }
@@ -162,7 +162,7 @@ void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
       if(opParam <= 99) { // Local label from 00 to 99
         sprintf(tmpString, "%s %02u", op, opParam);
       }
-      else if(opParam <= 109) { // Local label from A to J
+      else if(opParam <= 104) { // Local label from A to E
         sprintf(tmpString, "%s %c", op, 'A' + (opParam - 100));
       }
       else if(opParam == STRING_LABEL_VARIABLE) {
@@ -178,7 +178,7 @@ void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
       if(opParam <= 99) { // Local label from 00 to 99
         sprintf(tmpString, "%s %02u", op, opParam);
       }
-      else if(opParam <= 109) { // Local label from A to J
+      else if(opParam <= 104) { // Local label from A to E
         sprintf(tmpString, "%s %c", op, 'A' + (opParam - 100));
       }
       else if(opParam == STRING_LABEL_VARIABLE) {
@@ -295,6 +295,18 @@ void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
       }
       else {
         sprintf(tmpString, "\nIn function decodeOp: case PARAM_COMPARE, %s  %u is not a valid parameter!", op, opParam);
+      }
+      break;
+
+    case PARAM_KEYG_KEYX:
+      {
+        uint8_t *secondParam = findKey2ndParam(paramAddress - 3);
+        decodeOp(secondParam + 1, indexOfItems[*secondParam].itemCatalogName, PARAM_LABEL);
+        xcopy(tmpString + TMP_STR_LENGTH / 2, tmpString, stringByteLength(tmpString) + 1);
+        decodeOp(paramAddress - 1, op, PARAM_NUMBER_8);
+        tmpString[stringByteLength(tmpString) + 1] = 0;
+        tmpString[stringByteLength(tmpString)    ] = ' ';
+        xcopy(tmpString + stringByteLength(tmpString), tmpString + TMP_STR_LENGTH / 2, stringByteLength(tmpString + TMP_STR_LENGTH / 2) + 1);
       }
       break;
 

@@ -157,7 +157,10 @@ void fnSolveVar(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   const char *var = (char *)getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem);
   const uint16_t regist = findOrAllocateNamedVariable(var);
-  if(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE) {
+  if(currentMvarLabel != INVALID_VARIABLE) {
+    reallyRunFunction(ITM_STO, regist);
+  }
+  else if(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE) {
     reallyRunFunction(ITM_SOLVE, regist);
   }
   else {

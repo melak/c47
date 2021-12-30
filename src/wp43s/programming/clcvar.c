@@ -135,7 +135,7 @@ static void _processOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
       break;
 
     case PARAM_LABEL:
-      if(opParam <= 109) { // Local label from 00 to 99 or from A to J
+      if(opParam <= 104) { // Local label from 00 to 99 or from A to E
         // nothing to do
       }
       else if(opParam == STRING_LABEL_VARIABLE) {
@@ -249,6 +249,14 @@ static bool_t _processOneStep(uint8_t *step) {
           moreInfoOnError("In function decodeOneStep:", "non-programmable function", indexOfItems[op].itemCatalogName, "appeared in the program!");
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return false;
+
+      case PTP_KEYG_KEYX:
+        {
+          uint8_t *secondParam = findKey2ndParam(step - 2);
+          _processOp(step, op, PARAM_NUMBER_8);
+          _processOp(secondParam, *secondParam, PARAM_LABEL);
+        }
+        return true;
 
       default:
         _processOp(step, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
