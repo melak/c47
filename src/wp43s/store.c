@@ -184,6 +184,11 @@ void fnStore(uint16_t regist) {
 
 void fnStoreAdd(uint16_t regist) {
   if(_checkReadOnlyVariable(regist) && regInRange(regist)) {
+    if(programRunStop == PGM_RUNNING) {
+      copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
+      copySourceRegisterToDestRegister(REGISTER_X, SAVED_REGISTER_X);
+    }
+
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
@@ -205,6 +210,11 @@ void fnStoreAdd(uint16_t regist) {
 
 void fnStoreSub(uint16_t regist) {
   if(_checkReadOnlyVariable(regist) && regInRange(regist)) {
+    if(programRunStop == PGM_RUNNING) {
+      copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
+      copySourceRegisterToDestRegister(REGISTER_X, SAVED_REGISTER_X);
+    }
+
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
@@ -226,6 +236,11 @@ void fnStoreSub(uint16_t regist) {
 
 void fnStoreMult(uint16_t regist) {
   if(_checkReadOnlyVariable(regist) && regInRange(regist)) {
+    if(programRunStop == PGM_RUNNING) {
+      copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
+      copySourceRegisterToDestRegister(REGISTER_X, SAVED_REGISTER_X);
+    }
+
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
@@ -247,6 +262,11 @@ void fnStoreMult(uint16_t regist) {
 
 void fnStoreDiv(uint16_t regist) {
   if(_checkReadOnlyVariable(regist) && regInRange(regist)) {
+    if(programRunStop == PGM_RUNNING) {
+      copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
+      copySourceRegisterToDestRegister(REGISTER_X, SAVED_REGISTER_X);
+    }
+
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
     copySourceRegisterToDestRegister(regist, REGISTER_Y);
     if(getRegisterDataType(REGISTER_Y) == dtShortInteger) {
