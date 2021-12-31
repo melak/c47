@@ -28,6 +28,7 @@
 #include "flags.h"
 #include "fonts.h"
 #include "items.h"
+#include "keyboard.h"
 #include "longIntegerType.h"
 #include "memory.h"
 #include "programming/manage.h"
@@ -54,8 +55,8 @@ void fnGoto(uint16_t label) {
       return;
     }
 
-    // Local Label 00 to 99 and A, B, C, D, I, and J
-    if(label <= 109) {
+    // Local Label 00 to 99 and A, B, C, D, and E
+    if(label <= 104) {
       // Search for local label
       for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
         if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer) == label) { // Is in the current program and is a local label and is the searched label
@@ -64,30 +65,36 @@ void fnGoto(uint16_t label) {
         }
       }
 
-      #ifndef DMCP_BUILD
+      displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         if(label < REGISTER_X) {
-          printf("Error in function fnGoto: there is no local label %02u in current program\n", label);
+          sprintf(errorMessage, "there is no local label %02u in current program", label);
         }
         else {
-          printf("Error in function fnGoto: there is no local label %c in current program\n", 'A' + (label - 100));
+          sprintf(errorMessage, "there is no local label %c in current program", 'A' + (label - 100));
         }
-      #endif // DMCP_BUILD
+        moreInfoOnError("In function fnGoto:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else if(label >= FIRST_LABEL && label <= LAST_LABEL) { // Global named label
       if((label - FIRST_LABEL) < numberOfLabels) {
         fnGotoDot(labelList[label - FIRST_LABEL].step);
         return;
       }
-      #ifndef DMCP_BUILD
       else {
-        printf("Error in function fnGoto: label ID %u out of range\n", label - FIRST_LABEL);
+        displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          sprintf(errorMessage, "label ID %u out of range", label - FIRST_LABEL);
+          moreInfoOnError("In function fnGoto:", errorMessage, NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
-      #endif // DMCP_BUILD
     }
     else {
-      #ifndef DMCP_BUILD
-        printf("Error in function fnGoto: invalid parameter %u\n", label);
-      #endif // DMCP_BUILD
+      displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "invalid parameter %u", label);
+        moreInfoOnError("In function fnGoto:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
   else {
@@ -181,6 +188,10 @@ void fnExecute(uint16_t label) {
 
       fnGoto(label);
       dynamicMenuItem = -1;
+      if(lastErrorCode != ERROR_NONE) {
+        fnReturn(0);
+        fnBack(1);
+      }
     }
     else {
       // OUT OF MEMORY
@@ -192,13 +203,15 @@ void fnExecute(uint16_t label) {
   else {
     fnGoto(label);
     dynamicMenuItem = -1;
-#ifndef TESTSUITE_BUILD
-    if(tam.mode) {
-      tamLeaveMode();
-      refreshScreen();
+    if(lastErrorCode == ERROR_NONE) {
+      #ifndef TESTSUITE_BUILD
+        if(tam.mode) {
+          tamLeaveMode();
+          refreshScreen();
+        }
+      #endif // TESTSUITE_BUILD
+      runProgram(false, INVALID_VARIABLE);
     }
-#endif // TESTSUITE_BUILD
-    runProgram(false);
   }
 }
 
@@ -240,11 +253,12 @@ void fnReturn(uint16_t skip) {
 
 void fnRunProgram(uint16_t unusedButMandatoryParameter) {
   if(currentInputVariable != INVALID_VARIABLE) {
-    fnStore(currentInputVariable);
+    if(currentInputVariable & 0x8000) fnDropY(NOPARAM);
+    fnStore(currentInputVariable & 0x3fff);
     currentInputVariable = INVALID_VARIABLE;
   }
   dynamicMenuItem = -1;
-  runProgram(false);
+  runProgram(false, INVALID_VARIABLE);
 }
 
 
@@ -300,13 +314,13 @@ static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
       break;
 
     case PARAM_LABEL:
-      if(opParam <= 109) { // Local label from 00 to 99 or from A to J
+      if(opParam <= 104) { // Local label from 00 to 99 or from A to E
         reallyRunFunction(op, opParam);
       }
       else if(opParam == STRING_LABEL_VARIABLE) {
         _getStringLabelOrVariableName(paramAddress);
         calcRegister_t label = findNamedLabel(tmpStringLabelOrVariableName);
-        if(label != INVALID_VARIABLE) {
+        if(label != INVALID_VARIABLE || op == ITM_LBLQ) {
           reallyRunFunction(op, label);
         }
         else {
@@ -340,7 +354,6 @@ static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
           case FLAG_YMD:
           case FLAG_DMY:
           case FLAG_MDY:
-          case FLAG_ALPHA:
           case FLAG_alphaCAP:
           case FLAG_RUNTIM:
           case FLAG_RUNIO:
@@ -628,6 +641,10 @@ int16_t executeOneStep(uint8_t *step) {
           _putLiteral(step);
           return 1;
 
+        case PTP_KEYG_KEYX:
+          _executeOp(step, op, PARAM_NUMBER_8);
+          break;
+
         default:
           _executeOp(step, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
       }
@@ -638,10 +655,10 @@ int16_t executeOneStep(uint8_t *step) {
 
 
 
-void runProgram(bool_t singleStep) {
+void runProgram(bool_t singleStep, uint16_t menuLabel) {
 #ifndef TESTSUITE_BUILD
   bool_t nestedEngine = (programRunStop == PGM_RUNNING);
-  uint16_t startingSubLevel = currentSubroutineLevel;
+  uint16_t startingSubLevel = (nestedEngine && menuLabel == INVALID_VARIABLE) ? currentSubroutineLevel : 0;
   lastErrorCode = ERROR_NONE;
   hourGlassIconEnabled = true;
   programRunStop = PGM_RUNNING;
@@ -651,6 +668,16 @@ void runProgram(bool_t singleStep) {
   #else // !DMCP_BUILD
     refreshLcd(NULL);
   #endif // DMCP_BUILD
+
+  if(menuLabel != INVALID_VARIABLE) {
+    fnBack(1);
+    if(menuLabel & 0x8000) {
+      fnExecute(menuLabel & 0x7fff);
+    }
+    else {
+      fnGoto(menuLabel & 0x7fff);
+    }
+  }
 
   while(1) {
     int16_t stepsToBeAdvanced;
@@ -692,11 +719,12 @@ void runProgram(bool_t singleStep) {
           refreshScreen();
           lcd_refresh();
           fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, 60000);
-          do {
-            key = key_pop();
-            sys_sleep();
-          } while(key == -1);
+          wait_for_key_release(0);
+          key_pop();
           break;
+        }
+        else if(key > 0) {
+          setLastKeyCode(key);
         }
       }
     #endif // DMCP_BUILD
@@ -733,8 +761,52 @@ void execProgram(uint16_t label) {
   uint8_t *origStep = currentStep;
   fnExecute(label);
   if(programRunStop == PGM_RUNNING && (getSystemFlag(FLAG_INTING) || getSystemFlag(FLAG_SOLVING))) {
-    runProgram(false);
+    runProgram(false, INVALID_VARIABLE);
     currentLocalStepNumber = origLocalStepNumber;
     currentStep = origStep;
+  }
+}
+
+
+
+void fnCheckLabel(uint16_t label) {
+  if(dynamicMenuItem >= 0) {
+    label = findNamedLabel(dynmenuGetLabel(dynamicMenuItem));
+  }
+
+  // Local Label 00 to 99 and A, B, C, D, I, and J
+  if(label <= 109) {
+    // Search for local label
+    for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
+      if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer) == label) { // Is in the current program and is a local label and is the searched label
+        temporaryInformation = TI_TRUE;
+        return;
+      }
+    }
+    temporaryInformation = TI_FALSE;
+  }
+  else if(label >= FIRST_LABEL && label <= LAST_LABEL) { // Global named label
+    if((label - FIRST_LABEL) < numberOfLabels) {
+      temporaryInformation = TI_TRUE;
+      return;
+    }
+    temporaryInformation = TI_FALSE;
+  }
+  else {
+    temporaryInformation = TI_FALSE;
+  }
+}
+
+
+
+void fnIsTopRoutine(uint16_t unusedButMandatoryParameter) {
+  /* A subroutine is running */
+  if(currentSubroutineLevel > 0) {
+    temporaryInformation = TI_FALSE;
+  }
+
+  /* Not in a subroutine */
+  else {
+    temporaryInformation = TI_TRUE;
   }
 }

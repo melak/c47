@@ -643,6 +643,19 @@
               calcKeyboard[calcKey].height[2] = gdk_pixbuf_get_height(pb);
               continue;
             }
+
+            if(!strcmp(parameter + 5, "TAM_L")) {
+              sprintf(fileName, "%s%s", skinDirectory, value);
+              if(access(fileName, F_OK) != 0) {
+                moreInfoOnError("In function prepareSkin:", "error: cannot access file", fileName, NULL);
+                exit(1);
+              }
+              calcKeyboard[calcKey].keyImage[3] = gtk_image_new_from_file(fileName);
+              const GdkPixbuf *pb = gtk_image_get_pixbuf(GTK_IMAGE(calcKeyboard[calcKey].keyImage[3]));
+              calcKeyboard[calcKey].width[3] = gdk_pixbuf_get_width(pb);
+              calcKeyboard[calcKey].height[3] = gdk_pixbuf_get_height(pb);
+              continue;
+            }
           }
 
           printf("Can't do anything with this parameter: %s=%s\n", parameter, value);
@@ -733,6 +746,7 @@
         gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[key].keyImage[2], -999,                -999);
         gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[key].keyImage[0], calcKeyboard[key].x, calcKeyboard[key].y);
       }
+      gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[ 10].keyImage[3], -999,                -999);
     }
 
     void calcModeAimGui(void) {
@@ -748,6 +762,7 @@
         gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[key].keyImage[2], -999,                -999);
         gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[key].keyImage[1], calcKeyboard[key].x, calcKeyboard[key].y);
       }
+      gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[ 10].keyImage[3], -999,                -999);
     }
 
     void calcModeTamGui(void) {
@@ -761,7 +776,19 @@
       for(key=0; key<43; key++) {
         gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[key].keyImage[0], -999,                -999);
         gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[key].keyImage[1], -999,                -999);
-        gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[key].keyImage[2], calcKeyboard[key].x, calcKeyboard[key].y);
+        if(key == 10) {
+          if(tam.mode == TM_LABEL || (tam.mode == TM_SOLVE && (tam.function != ITM_SOLVE || calcMode != CM_PEM)) || (tam.mode == TM_KEY && tam.keyInputFinished)) {
+            gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[key].keyImage[2], -999,                -999);
+            gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[key].keyImage[3], calcKeyboard[key].x, calcKeyboard[key].y);
+          }
+          else {
+            gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[key].keyImage[2], calcKeyboard[key].x, calcKeyboard[key].y);
+            gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[key].keyImage[3], -999,                -999);
+          }
+        }
+        else {
+          gtk_fixed_move(GTK_FIXED(grid), calcKeyboard[key].keyImage[2], calcKeyboard[key].x, calcKeyboard[key].y);
+        }
       }
     }
   #endif // (SCREEN_800X480 == 0)
@@ -870,6 +897,7 @@
           gtk_fixed_put(GTK_FIXED(grid), calcKeyboard[key].keyImage[bezel], -999, -999);
         }
       }
+      gtk_fixed_put(GTK_FIXED(grid), calcKeyboard[10].keyImage[3], -999, -999);
 
       #if (DEBUG_REGISTER_L == 1)
         lblRegisterL1 = gtk_label_new("");
@@ -932,6 +960,7 @@
         gtk_widget_set_tooltip_text(GTK_WIDGET(calcKeyboard[41].keyImage[bezel]), "Ctrl");
         gtk_widget_set_tooltip_text(GTK_WIDGET(calcKeyboard[42].keyImage[bezel]), "Esc");
       }
+      gtk_widget_set_tooltip_text(GTK_WIDGET(calcKeyboard[10].keyImage[3]), "e");
 
       // The debug window
       #if (DEBUG_PANEL == 1)

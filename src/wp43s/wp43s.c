@@ -80,6 +80,7 @@ softmenuStack_t        softmenuStack[SOFTMENU_STACK_SIZE];
 userMenuItem_t         userMenuItems[18];
 userMenuItem_t         userAlphaItems[18];
 userMenu_t            *userMenus;
+programmableMenu_t     programmableMenu;
 calcKey_t              kbd_usr[37];
 calcRegister_t         errorMessageRegisterLine;
 glyph_t                glyphNotFound = {.charCode = 0x0000, .colsBeforeGlyph = 0, .colsGlyph = 13, .colsAfterGlyph = 0, .rowsGlyph = 19, .data = NULL};
@@ -130,6 +131,7 @@ uint8_t                rbrMode;
 uint8_t                numScreensNumericFont;
 uint8_t                timerCraAndDeciseconds = 128u;
 uint8_t                programRunStop;
+uint8_t                lastKeyCode;
 uint8_t               *beginOfProgramMemory;
 uint8_t               *beginOfCurrentProgram;
 uint8_t               *endOfCurrentProgram;
@@ -183,6 +185,7 @@ uint16_t               numberOfUserMenus;
 uint16_t               currentUserMenu;
 uint16_t               userKeyLabelSize;
 uint16_t               currentInputVariable = INVALID_VARIABLE;
+uint16_t               currentMvarLabel = INVALID_VARIABLE;
 #if (REAL34_WIDTH_TEST == 1)
   uint16_t               largeur=200;
 #endif // (REAL34_WIDTH_TEST == 1)
