@@ -220,12 +220,7 @@ static void _processOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
   }
 }
 
-#endif // TESTSUITE_BUILD
-
 static bool_t _processOneStep(uint8_t *step) {
-#ifdef TESTSUITE_BUILD
-  return false;
-#else // TESTSUITE_BUILD
   uint16_t op = *(step++);
   if(op & 0x80) {
     op &= 0x7f;
@@ -263,8 +258,8 @@ static bool_t _processOneStep(uint8_t *step) {
         return true;
     }
   }
-#endif // TESTSUITE_BUILD
 }
+#endif // TESTSUITE_BUILD
 
 
 

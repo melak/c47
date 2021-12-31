@@ -2105,8 +2105,7 @@ void setLastKeyCode(int key) {
   if(1 <= key && key <= 43) {
     if     (key <=  6) lastKeyCode = key      + 20;
     else if(key <= 12) lastKeyCode = key -  6 + 30;
-    else if(key == 13) lastKeyCode =            41;
-    else if(key <= 17) lastKeyCode = key - 12 + 41;
+    else if(key <= 17) lastKeyCode = key - 12 + 40;
     else if(key <= 22) lastKeyCode = key - 17 + 50;
     else if(key <= 27) lastKeyCode = key - 22 + 60;
     else if(key <= 32) lastKeyCode = key - 27 + 70;

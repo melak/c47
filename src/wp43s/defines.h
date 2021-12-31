@@ -173,7 +173,7 @@
 #define FLAG_CARRY                            0x800b
 #define FLAG_OVERFLOW                         0x800c
 #define FLAG_LEAD0                            0x800d
-#define FLAG_ALPHA                            0xc00e
+#define FLAG_ALPHA                            0x800e
 #define FLAG_alphaCAP                         0xc00f
 #define FLAG_RUNTIM                           0xc010
 #define FLAG_RUNIO                            0xc011

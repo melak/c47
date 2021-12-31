@@ -132,6 +132,7 @@ uint8_t                numScreensNumericFont;
 uint8_t                timerCraAndDeciseconds = 128u;
 uint8_t                programRunStop;
 uint8_t                lastKeyCode;
+uint8_t                entryStatus;
 uint8_t               *beginOfProgramMemory;
 uint8_t               *beginOfCurrentProgram;
 uint8_t               *endOfCurrentProgram;

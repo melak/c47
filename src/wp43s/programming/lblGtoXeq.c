@@ -71,30 +71,36 @@ void fnGoto(uint16_t label) {
         }
       }
 
-      #ifndef DMCP_BUILD
+      displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         if(label < REGISTER_X) {
-          printf("Error in function fnGoto: there is no local label %02u in current program\n", label);
+          sprintf(errorMessage, "there is no local label %02u in current program", label);
         }
         else {
-          printf("Error in function fnGoto: there is no local label %c in current program\n", 'A' + (label - 100));
+          sprintf(errorMessage, "there is no local label %c in current program", 'A' + (label - 100));
         }
-      #endif // DMCP_BUILD
+        moreInfoOnError("In function fnGoto:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else if(label >= FIRST_LABEL && label <= LAST_LABEL) { // Global named label
       if((label - FIRST_LABEL) < numberOfLabels) {
         fnGotoDot(labelList[label - FIRST_LABEL].step);
         return;
       }
-      #ifndef DMCP_BUILD
       else {
-        printf("Error in function fnGoto: label ID %u out of range\n", label - FIRST_LABEL);
+        displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          sprintf(errorMessage, "label ID %u out of range", label - FIRST_LABEL);
+          moreInfoOnError("In function fnGoto:", errorMessage, NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
-      #endif // DMCP_BUILD
     }
     else {
-      #ifndef DMCP_BUILD
-        printf("Error in function fnGoto: invalid parameter %u\n", label);
-      #endif // DMCP_BUILD
+      displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "invalid parameter %u", label);
+        moreInfoOnError("In function fnGoto:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
   else {
@@ -188,6 +194,10 @@ void fnExecute(uint16_t label) {
 
       fnGoto(label);
       dynamicMenuItem = -1;
+      if(lastErrorCode != ERROR_NONE) {
+        fnReturn(0);
+        fnBack(1);
+      }
     }
     else {
       // OUT OF MEMORY
@@ -199,13 +209,15 @@ void fnExecute(uint16_t label) {
   else {
     fnGoto(label);
     dynamicMenuItem = -1;
-#ifndef TESTSUITE_BUILD
-    if(tam.mode) {
-      tamLeaveMode();
-      refreshScreen();
+    if(lastErrorCode == ERROR_NONE) {
+      #ifndef TESTSUITE_BUILD
+        if(tam.mode) {
+          tamLeaveMode();
+          refreshScreen();
+        }
+      #endif // TESTSUITE_BUILD
+      runProgram(false, INVALID_VARIABLE);
     }
-#endif // TESTSUITE_BUILD
-    runProgram(false, INVALID_VARIABLE);
   }
 }
 
@@ -258,7 +270,8 @@ void fnReturn(uint16_t skip) {
 
 void fnRunProgram(uint16_t unusedButMandatoryParameter) {
   if(currentInputVariable != INVALID_VARIABLE) {
-    fnStore(currentInputVariable);
+    if(currentInputVariable & 0x8000) fnDropY(NOPARAM);
+    fnStore(currentInputVariable & 0x3fff);
     currentInputVariable = INVALID_VARIABLE;
   }
   dynamicMenuItem = -1;
@@ -358,7 +371,6 @@ static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
           case FLAG_YMD:
           case FLAG_DMY:
           case FLAG_MDY:
-          case FLAG_ALPHA:
           case FLAG_alphaCAP:
           case FLAG_RUNTIM:
           case FLAG_RUNIO:
@@ -749,6 +761,9 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
 stopProgram:
   if(programRunStop == PGM_RUNNING && !nestedEngine) {
     programRunStop = PGM_STOPPED;
+  }
+  if(programRunStop != PGM_RUNNING) {
+    entryStatus &= 0xfe;
   }
   if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
     showHideHourGlass();

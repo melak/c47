@@ -43,7 +43,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         66  // Added VARMNU status
+#define BACKUP_VERSION         67  // Added ENTRY? status
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -163,6 +163,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&serialIOIconEnabled,                sizeof(serialIOIconEnabled),                BACKUP);
     save(&printerIconEnabled,                 sizeof(printerIconEnabled),                 BACKUP);
     save(&programRunStop,                     sizeof(programRunStop),                     BACKUP);
+    save(&entryStatus,                        sizeof(entryStatus),                        BACKUP);
     save(&cursorEnabled,                      sizeof(cursorEnabled),                      BACKUP);
     save(&cursorFont,                         sizeof(cursorFont),                         BACKUP);
     save(&rbr1stDigit,                        sizeof(rbr1stDigit),                        BACKUP);
@@ -385,6 +386,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&serialIOIconEnabled,                sizeof(serialIOIconEnabled),                BACKUP);
       restore(&printerIconEnabled,                 sizeof(printerIconEnabled),                 BACKUP);
       restore(&programRunStop,                     sizeof(programRunStop),                     BACKUP);
+      restore(&entryStatus,                        sizeof(entryStatus),                        BACKUP);
       restore(&cursorEnabled,                      sizeof(cursorEnabled),                      BACKUP);
       restore(&cursorFont,                         sizeof(cursorFont),                         BACKUP);
       restore(&rbr1stDigit,                        sizeof(rbr1stDigit),                        BACKUP);

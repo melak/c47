@@ -194,8 +194,8 @@ void fnKeyType(uint16_t regist) {
     case 53: uIntToLongInteger( 8, kt); break;
     case 54: uIntToLongInteger( 9, kt); break;
 
+    case 43:
     case 44:
-    case 45:
     case 83: uIntToLongInteger(10, kt); break;
 
     case 35:
@@ -219,8 +219,8 @@ void fnKeyType(uint16_t regist) {
     case 33:
     case 34:
     case 41:
-    case 43:
-    case 46:
+    case 42:
+    case 45:
     case 51:
     case 55:
     case 61:
@@ -287,10 +287,10 @@ void fnPutKey(uint16_t regist) {
       break;
 
     case 41:
+    case 42:
     case 43:
     case 44:
     case 45:
-    case 46:
       sprintf(kc, "%02u", keyCode - 41 + 12);
       btnClicked(NULL, kc);
       break;
@@ -341,4 +341,15 @@ void fnPutKey(uint16_t regist) {
 
   programRunStop = PGM_WAITING;
 #endif // TESTSUITE_BUILD
+}
+
+
+
+void fnEntryQ(uint16_t unusedButMandatoryParameter) {
+  if(entryStatus & 0x01) {
+    temporaryInformation = TI_TRUE;
+  }
+  else {
+    temporaryInformation = TI_FALSE;
+  }
 }

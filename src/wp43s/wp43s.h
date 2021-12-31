@@ -207,6 +207,7 @@
   extern uint8_t                timerCraAndDeciseconds;
   extern uint8_t                programRunStop;
   extern uint8_t                lastKeyCode;
+  extern uint8_t                entryStatus; // 0x01 for the entry flag, backed up to 0x02 for undo
   extern uint8_t               *beginOfProgramMemory;
   extern uint8_t               *beginOfCurrentProgram;
   extern uint8_t               *endOfCurrentProgram;
