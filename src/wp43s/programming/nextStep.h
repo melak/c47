@@ -23,6 +23,7 @@
 #include <stdint.h>
 
 uint8_t *findNextStep    (uint8_t *step);
+uint8_t *findKey2ndParam (uint8_t *step);
 uint8_t *findPreviousStep(uint8_t *step);
 void     fnBst           (uint16_t unusedButMandatoryParameter);
 void     fnSst           (uint16_t unusedButMandatoryParameter);

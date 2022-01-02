@@ -22,7 +22,9 @@
 
 #include "config.h"
 #include "error.h"
+#include "gui.h"
 #include "items.h"
+#include "ui/tam.h"
 #include <string.h>
 
 #include "wp43s.h"
@@ -184,7 +186,7 @@ void fnGetSystemFlag(uint16_t systemFlag) {
   else {
     temporaryInformation = TI_FALSE;
   }
- }
+}
 
 
 
@@ -208,6 +210,12 @@ void fnSetFlag(uint16_t flag) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
+#ifndef TESTSUITE_BUILD
+    else if(flag == FLAG_ALPHA) {
+      tamLeaveMode();
+      calcModeAim(NOPARAM);
+    }
+#endif // TESTSUITE_BUILD
     else {
       setSystemFlag(flag);
     }
@@ -266,6 +274,12 @@ void fnClearFlag(uint16_t flag) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
+#ifndef TESTSUITE_BUILD
+    else if(flag == FLAG_ALPHA) {
+      tamLeaveMode();
+      calcModeNormal();
+    }
+#endif // TESTSUITE_BUILD
     else {
       clearSystemFlag(flag);
     }
@@ -324,6 +338,17 @@ void fnFlipFlag(uint16_t flag) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
+#ifndef TESTSUITE_BUILD
+    else if(flag == FLAG_ALPHA) {
+      tamLeaveMode();
+      if(getSystemFlag(FLAG_ALPHA)) {
+        calcModeNormal();
+      }
+      else {
+        calcModeAim(NOPARAM);
+      }
+    }
+#endif // TESTSUITE_BUILD
     else {
       flipSystemFlag(flag);
     }

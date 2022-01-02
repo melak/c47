@@ -110,7 +110,7 @@ void fnEqNew(uint16_t unusedButMandatoryParameter) {
       ++currentFormula;
       newPtr[currentFormula].pointerToFormulaData = WP43S_NULL;
       newPtr[currentFormula].sizeInBlocks = 0;
-      wp43sFree(allFormulae, TO_BLOCKS(sizeof(formulaHeader_t)) * (numberOfFormulae));
+      freeWp43s(allFormulae, TO_BLOCKS(sizeof(formulaHeader_t)) * (numberOfFormulae));
       allFormulae = newPtr;
       ++numberOfFormulae;
     }
@@ -186,10 +186,10 @@ void setEquation(uint16_t equationId, const char *equationString) {
 void deleteEquation(uint16_t equationId) {
   if(equationId < numberOfFormulae) {
     if(allFormulae[equationId].sizeInBlocks > 0)
-      wp43sFree(TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData), allFormulae[equationId].sizeInBlocks);
+      freeWp43s(TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData), allFormulae[equationId].sizeInBlocks);
     for(uint16_t i = equationId + 1; i < numberOfFormulae; ++i)
       allFormulae[i - 1] = allFormulae[i];
-    wp43sFree(allFormulae + (--numberOfFormulae), TO_BLOCKS(sizeof(formulaHeader_t)));
+    freeWp43s(allFormulae + (--numberOfFormulae), TO_BLOCKS(sizeof(formulaHeader_t)));
     if(numberOfFormulae == 0)
       allFormulae = NULL;
     if(numberOfFormulae > 0 && currentFormula >= numberOfFormulae)

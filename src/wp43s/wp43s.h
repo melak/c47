@@ -149,6 +149,7 @@
   extern userMenuItem_t         userMenuItems[18];
   extern userMenuItem_t         userAlphaItems[18];
   extern userMenu_t            *userMenus;
+  extern programmableMenu_t     programmableMenu;
   extern calcKey_t              kbd_usr[37];
   extern calcRegister_t         errorMessageRegisterLine;
   extern glyph_t                glyphNotFound;
@@ -205,6 +206,8 @@
   extern uint8_t                numScreensNumericFont;
   extern uint8_t                timerCraAndDeciseconds;
   extern uint8_t                programRunStop;
+  extern uint8_t                lastKeyCode;
+  extern uint8_t                entryStatus; // 0x01 for the entry flag, backed up to 0x02 for undo
   extern uint8_t               *beginOfProgramMemory;
   extern uint8_t               *beginOfCurrentProgram;
   extern uint8_t               *endOfCurrentProgram;
@@ -261,6 +264,7 @@
   extern uint16_t               currentUserMenu;
   extern uint16_t               userKeyLabelSize;
   extern uint16_t               currentInputVariable;
+  extern uint16_t               currentMvarLabel;
   #if (REAL34_WIDTH_TEST == 1)
     extern uint16_t               largeur;
   #endif // (REAL34_WIDTH_TEST == 1)

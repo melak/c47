@@ -364,6 +364,7 @@ extern const real34_t * const const34_4900;
 extern const real34_t * const const34_5001;
 extern const real34_t * const const34_32075;
 extern const real34_t * const const34_43200;
+extern const real34_t * const const34_65535;
 extern const real34_t * const const34_86400;
 extern const real34_t * const const34_146097;
 extern const real34_t * const const34_274277;

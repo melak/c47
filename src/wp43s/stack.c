@@ -57,6 +57,7 @@ void fnDrop(uint16_t unusedButMandatoryParameter) {
 
 void liftStack(void) {
   if(getSystemFlag(FLAG_ASLIFT)) {
+    if(currentInputVariable != INVALID_VARIABLE) currentInputVariable |= 0x8000;
     freeRegisterData(getStackTop());
     for(uint16_t i=getStackTop(); i>REGISTER_X; i--) {
       globalRegister[i] = globalRegister[i-1];
@@ -244,6 +245,22 @@ void saveForUndo(void) {
 
   savedSystemFlags = systemFlags;
 
+  if(currentInputVariable != INVALID_VARIABLE) {
+    if(currentInputVariable & 0x8000) {
+      currentInputVariable |= 0x4000;
+    }
+    else {
+      currentInputVariable &= 0xbfff;
+    }
+  }
+
+  if(entryStatus & 0x01) {
+    entryStatus |= 0x02;
+  }
+  else {
+    entryStatus &= 0xfd;
+  }
+
   for(calcRegister_t regist=getStackTop(); regist>=REGISTER_X; regist--) {
     copySourceRegisterToDestRegister(regist, SAVED_REGISTER_X - REGISTER_X + regist);
     if(lastErrorCode == ERROR_RAM_FULL) {
@@ -310,7 +327,22 @@ void undo(void) {
     clearRegister(regStats);
     copySourceRegisterToDestRegister(TEMP_REGISTER_2_SAVED_STATS, findNamedVariable("STATS"));
   }
-  
+
+  if(currentInputVariable != INVALID_VARIABLE) {
+    if(currentInputVariable & 0x4000) {
+      currentInputVariable |= 0x8000;
+    }
+    else {
+      currentInputVariable &= 0x7fff;
+    }
+  }
+
+  if(entryStatus & 0x02) {
+    entryStatus |= 0x01;
+  }
+  else {
+    entryStatus &= 0xfe;
+  }
 
   if(SAVED_SIGMA_LAct == +1 && statisticalSumsPointer != NULL) {
     fnSigma(-1);

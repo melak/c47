@@ -31,6 +31,7 @@
 #include "fractions.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/toPolar.h"
+#include "programming/input.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "screen.h"
@@ -2115,10 +2116,6 @@ void fnView(uint16_t regist) {
   temporaryInformation = TI_VIEW;
   if(programRunStop == PGM_RUNNING) {
     refreshScreen();
-    #ifdef DMCP_BUILD
-      lcd_refresh();
-    #else // !DMCP_BUILD
-      refreshLcd(NULL);
-    #endif // DMCP_BUILD
+    fnPause(10);
   }
 }

@@ -314,7 +314,7 @@ static bool_t isEqualRealComplex(calcRegister_t registC, calcRegister_t registR)
 static void compareRegisters(uint16_t regist, uint8_t mode) {
   int8_t result;
 
-  if((regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) || (regist == TEMP_REGISTER_1)) {
+  if((regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) || (FIRST_NAMED_VARIABLE <= regist && regist <= FIRST_NAMED_VARIABLE + numberOfNamedVariables) || (FIRST_RESERVED_VARIABLE <= regist && regist <= LAST_RESERVED_VARIABLE) || (regist == TEMP_REGISTER_1)) {
   #ifndef TESTSUITE_BUILD
     // Compare matrices
     if((mode == COMPARE_MODE_EQUAL || mode == COMPARE_MODE_NOT_EQUAL) && getRegisterDataType(REGISTER_X) == dtReal34Matrix && getRegisterDataType(regist) == dtReal34Matrix) {

@@ -21,8 +21,14 @@
 #include "error.h"
 
 #include "charString.h"
+#include "constantPointers.h"
+#include "debug.h"
 #include "flags.h"
 #include "fonts.h"
+#include "mathematics/comparisonReals.h"
+#include "realType.h"
+#include "registers.h"
+#include "registerValueConversions.h"
 #include "screen.h"
 #include <string.h>
 
@@ -131,6 +137,45 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 
 void fnRaiseError(uint16_t errorCode) {
   displayCalcErrorMessage((uint8_t)errorCode, ERR_REGISTER_LINE, REGISTER_X);
+}
+
+
+
+void fnErrorMessage(uint16_t unusedButMandatoryParameter) {
+  real34_t r, maxErr;
+  uInt32ToReal34(NUMBER_OF_ERROR_CODES, &maxErr);
+
+  switch(getRegisterDataType(REGISTER_X)) {
+    case dtLongInteger:
+      convertLongIntegerRegisterToReal34(REGISTER_X, &r);
+      break;
+
+    case dtReal34:
+      if(getRegisterAngularMode(REGISTER_X) == amNone) {
+        real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &r);
+        break;
+      }
+      /* fallthrough */
+
+    default :
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "data type %s cannot be used for this function!", getRegisterDataTypeName(REGISTER_X, false, false));
+        moreInfoOnError("In function fnErrorMessage:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+  }
+
+  if(real34CompareLessEqual(const34_1, &r) && real34CompareLessThan(&r, &maxErr)) {
+    displayCalcErrorMessage((uint8_t)real34ToUInt32(&r), ERR_REGISTER_LINE, REGISTER_X);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "the argument is not less than %u or is negative!", NUMBER_OF_ERROR_CODES);
+      moreInfoOnError("In function fnErrorMessage:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
 }
 
 

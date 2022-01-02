@@ -927,22 +927,22 @@ void execTimerApp(uint16_t timerType) {
   }
 
   static void inputRegName(char *prefix, int16_t *prefixWidth) {
-    if(currentInputVariable < REGISTER_X) {
-      sprintf(prefix, "R%02" PRIu16 "?", currentInputVariable);
+    if((currentInputVariable & 0x3fff) < REGISTER_X) {
+      sprintf(prefix, "R%02" PRIu16 "?", (currentInputVariable & 0x3fff));
     }
-    else if(currentInputVariable < FIRST_LOCAL_REGISTER) {
-      sprintf(prefix, "%c?", "XYZTABCDLIJK"[currentInputVariable - REGISTER_X]);
+    else if((currentInputVariable & 0x3fff) < FIRST_LOCAL_REGISTER) {
+      sprintf(prefix, "%c?", "XYZTABCDLIJK"[(currentInputVariable & 0x3fff) - REGISTER_X]);
     }
-    else if(currentInputVariable <= LAST_LOCAL_REGISTER) {
-      sprintf(prefix, "R.%02" PRIu16 "?", (uint16_t)(currentInputVariable - FIRST_LOCAL_REGISTER));
+    else if((currentInputVariable & 0x3fff) <= LAST_LOCAL_REGISTER) {
+      sprintf(prefix, "R.%02" PRIu16 "?", (uint16_t)((currentInputVariable & 0x3fff) - FIRST_LOCAL_REGISTER));
     }
-    else if(currentInputVariable >= FIRST_NAMED_VARIABLE && currentInputVariable <= LAST_NAMED_VARIABLE) {
-      memcpy(prefix, allNamedVariables[currentInputVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentInputVariable - FIRST_NAMED_VARIABLE].variableName[0]);
-      strcpy(prefix + allNamedVariables[currentInputVariable - FIRST_NAMED_VARIABLE].variableName[0], "?");
+    else if((currentInputVariable & 0x3fff) >= FIRST_NAMED_VARIABLE && (currentInputVariable & 0x3fff) <= LAST_NAMED_VARIABLE) {
+      memcpy(prefix, allNamedVariables[(currentInputVariable & 0x3fff) - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[(currentInputVariable & 0x3fff) - FIRST_NAMED_VARIABLE].variableName[0]);
+      strcpy(prefix + allNamedVariables[(currentInputVariable & 0x3fff) - FIRST_NAMED_VARIABLE].variableName[0], "?");
     }
-    else if(currentInputVariable >= FIRST_RESERVED_VARIABLE && currentInputVariable <= LAST_RESERVED_VARIABLE) {
-      memcpy(prefix, allReservedVariables[currentInputVariable - FIRST_RESERVED_VARIABLE].reservedVariableName + 1, allReservedVariables[currentInputVariable - FIRST_RESERVED_VARIABLE].reservedVariableName[0]);
-      strcpy(prefix + allReservedVariables[currentInputVariable - FIRST_RESERVED_VARIABLE].reservedVariableName[0], "?");
+    else if((currentInputVariable & 0x3fff) >= FIRST_RESERVED_VARIABLE && (currentInputVariable & 0x3fff) <= LAST_RESERVED_VARIABLE) {
+      memcpy(prefix, allReservedVariables[(currentInputVariable & 0x3fff) - FIRST_RESERVED_VARIABLE].reservedVariableName + 1, allReservedVariables[(currentInputVariable & 0x3fff) - FIRST_RESERVED_VARIABLE].reservedVariableName[0]);
+      strcpy(prefix + allReservedVariables[(currentInputVariable & 0x3fff) - FIRST_RESERVED_VARIABLE].reservedVariableName[0], "?");
     }
     else {
       sprintf(prefix, "??");
@@ -2136,6 +2136,7 @@ void execTimerApp(uint16_t timerType) {
               showSoftmenu(-MNU_Solver);
             }
             else {
+              currentMvarLabel = INVALID_VARIABLE;
               showSoftmenu(-MNU_MVAR);
             }
           }
@@ -2156,7 +2157,9 @@ void execTimerApp(uint16_t timerType) {
         displayShiftAndTamBuffer();
 
         showSoftmenuCurrentPart();
-        hourGlassIconEnabled = false;
+        if(programRunStop == PGM_STOPPED || programRunStop == PGM_WAITING) {
+          hourGlassIconEnabled = false;
+        }
         refreshStatusBar();
         #if (REAL34_WIDTH_TEST == 1)
           for(int y=Y_POSITION_OF_REGISTER_Y_LINE; y<Y_POSITION_OF_REGISTER_Y_LINE + 2*REGISTER_LINE_HEIGHT; y++ ) setBlackPixel(SCREEN_WIDTH - largeur - 1, y);

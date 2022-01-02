@@ -43,7 +43,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         65  // Added SAVED SIGMA
+#define BACKUP_VERSION         68  // Added number of labels and programs
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -135,6 +135,10 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
     ramPtr = TO_WP43SMEMPTR(savedStatisticalSumsPointer);
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    ramPtr = TO_WP43SMEMPTR(labelList);
+    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    ramPtr = TO_WP43SMEMPTR(programList);
+    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
     save(&xCursor,                            sizeof(xCursor),                            BACKUP);
     save(&yCursor,                            sizeof(yCursor),                            BACKUP);
     save(&firstGregorianDay,                  sizeof(firstGregorianDay),                  BACKUP);
@@ -159,6 +163,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&serialIOIconEnabled,                sizeof(serialIOIconEnabled),                BACKUP);
     save(&printerIconEnabled,                 sizeof(printerIconEnabled),                 BACKUP);
     save(&programRunStop,                     sizeof(programRunStop),                     BACKUP);
+    save(&entryStatus,                        sizeof(entryStatus),                        BACKUP);
     save(&cursorEnabled,                      sizeof(cursorEnabled),                      BACKUP);
     save(&cursorFont,                         sizeof(cursorFont),                         BACKUP);
     save(&rbr1stDigit,                        sizeof(rbr1stDigit),                        BACKUP);
@@ -219,6 +224,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // currentStep offset within block
     save(&freeProgramBytes,                   sizeof(freeProgramBytes),                   BACKUP);
     save(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber),      BACKUP);
+    save(&numberOfLabels,                     sizeof(numberOfLabels),                     BACKUP);
+    save(&numberOfPrograms,                   sizeof(numberOfPrograms),                   BACKUP);
     save(&currentLocalStepNumber,             sizeof(currentLocalStepNumber),             BACKUP);
     save(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
     save(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
@@ -277,6 +284,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&SAVED_SIGMA_LASTX,                  sizeof(SAVED_SIGMA_LASTX),                  BACKUP);
     save(&SAVED_SIGMA_LASTY,                  sizeof(SAVED_SIGMA_LASTY),                  BACKUP);
     save(&SAVED_SIGMA_LAct,                   sizeof(SAVED_SIGMA_LAct),                   BACKUP);
+    save(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
 
 
     fclose(BACKUP);
@@ -352,6 +360,10 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       statisticalSumsPointer = TO_PCMEMPTR(ramPtr);
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
       savedStatisticalSumsPointer = TO_PCMEMPTR(ramPtr);
+      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      labelList = TO_PCMEMPTR(ramPtr);
+      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      programList = TO_PCMEMPTR(ramPtr);
       restore(&xCursor,                            sizeof(xCursor),                            BACKUP);
       restore(&yCursor,                            sizeof(yCursor),                            BACKUP);
       restore(&firstGregorianDay,                  sizeof(firstGregorianDay),                  BACKUP);
@@ -376,6 +388,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&serialIOIconEnabled,                sizeof(serialIOIconEnabled),                BACKUP);
       restore(&printerIconEnabled,                 sizeof(printerIconEnabled),                 BACKUP);
       restore(&programRunStop,                     sizeof(programRunStop),                     BACKUP);
+      restore(&entryStatus,                        sizeof(entryStatus),                        BACKUP);
       restore(&cursorEnabled,                      sizeof(cursorEnabled),                      BACKUP);
       restore(&cursorFont,                         sizeof(cursorFont),                         BACKUP);
       restore(&rbr1stDigit,                        sizeof(rbr1stDigit),                        BACKUP);
@@ -440,6 +453,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       currentStep += ramPtr;
       restore(&freeProgramBytes,                   sizeof(freeProgramBytes),                   BACKUP);
       restore(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber),      BACKUP);
+      restore(&numberOfLabels,                     sizeof(numberOfLabels),                     BACKUP);
+      restore(&numberOfPrograms,                   sizeof(numberOfPrograms),                   BACKUP);
       restore(&currentLocalStepNumber,             sizeof(currentLocalStepNumber),             BACKUP);
       restore(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
       restore(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
@@ -498,6 +513,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&SAVED_SIGMA_LASTX,                  sizeof(SAVED_SIGMA_LASTX),                  BACKUP);
       restore(&SAVED_SIGMA_LASTY,                  sizeof(SAVED_SIGMA_LASTY),                  BACKUP);
       restore(&SAVED_SIGMA_LAct,                   sizeof(SAVED_SIGMA_LAct),                   BACKUP);
+      restore(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
