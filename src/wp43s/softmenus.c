@@ -20,6 +20,7 @@
 #include "error.h"
 #include "gui.h"
 #include "items.h"
+#include "programming/flash.h"
 #include "programming/nextStep.h"
 #include "registers.h"
 #include "screen.h"
@@ -676,9 +677,32 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       case MNU_MyAlpha: _dynmenuConstructUser(menu);
                         break;
 
-      case MNU_FLASH:   dynamicSoftmenu[menu].menuContent = malloc(18);
-                        xcopy(dynamicSoftmenu[menu].menuContent, "FLASH\000to\000be\000coded", 18);
-                        dynamicSoftmenu[menu].numItems = 4;
+      case MNU_FLASH:   numberOfBytes = 0;
+                        numberOfGlobalLabels = 0;
+                        memset(tmpString, 0, TMP_STR_LENGTH);
+                        for(i=0; i<numberOfLabels; i++) {
+                          if(labelList[i].program < 0 && labelList[i].step > 0) { // Flash and Global label
+                            uint8_t tmpLabel[16];
+                            readStepInFlashPgmLibrary(tmpLabel, 16, (uintptr_t)labelList[i].labelPointer);
+                            xcopy(tmpString + 15 * numberOfGlobalLabels, tmpLabel + 1, tmpLabel[0]);
+                            numberOfGlobalLabels++;
+                            numberOfBytes += 1 + tmpLabel[0];
+                          }
+                        }
+
+                        if(numberOfGlobalLabels != 0) {
+                          qsort(tmpString, numberOfGlobalLabels, 15, sortMenu);
+                        }
+
+                        ptr = malloc(numberOfBytes);
+                        dynamicSoftmenu[menu].menuContent = ptr;
+                        for(i=0; i<numberOfGlobalLabels; i++) {
+                          int16_t len = stringByteLength(tmpString + 15*i) + 1;
+                          xcopy(ptr, tmpString + 15*i, len);
+                          ptr += len;
+                        }
+
+                        dynamicSoftmenu[menu].numItems = numberOfGlobalLabels;
                         break;
 
       case MNU_RAM:     numberOfBytes = 0;
@@ -721,6 +745,13 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
                             xcopy(tmpString + 15 * numberOfGlobalLabels, labelList[i].labelPointer + 1, labelList[i].labelPointer[0]);
                             numberOfGlobalLabels++;
                             numberOfBytes += 1 + labelList[i].labelPointer[0];
+                          }
+                          else if(labelList[i].program < 0 && labelList[i].step > 0) { // Flash and Global label
+                            uint8_t tmpLabel[16];
+                            readStepInFlashPgmLibrary(tmpLabel, 16, (uintptr_t)labelList[i].labelPointer);
+                            xcopy(tmpString + 15 * numberOfGlobalLabels, tmpLabel + 1, tmpLabel[0]);
+                            numberOfGlobalLabels++;
+                            numberOfBytes += 1 + tmpLabel[0];
                           }
                         }
 

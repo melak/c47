@@ -739,6 +739,9 @@ typedef enum {
 
 #define CONFIG_SIZE            TO_BLOCKS(sizeof(dtConfigDescriptor_t))
 
+#define FLASH_PGM_PAGE_SIZE                      512
+#define FLASH_PGM_NUMBER_OF_PAGES                 64
+
 // Type of constant stored in a program
 #define BINARY_SHORT_INTEGER                       1
 #define BINARY_LONG_INTEGER                        2

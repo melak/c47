@@ -23,6 +23,7 @@
 #include <stdint.h>
 
 void decodeOneStep          (uint8_t *step);
+void decodeOneStep_ram      (uint8_t *step);
 #ifndef DMCP_BUILD
   void listPrograms         (void);
   void listLabelsAndPrograms(void);

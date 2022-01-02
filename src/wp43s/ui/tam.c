@@ -521,12 +521,13 @@
     }
     else if(item == ITM_PERIOD) {
       if(tam.function == ITM_GTOP) {
-        tam.value = programList[numberOfPrograms - 1].step;
+        tam.value = programList[numberOfPrograms - numberOfProgramsInFlash - 1].step;
         reallyRunFunction(ITM_GTOP, tam.value);
         if((*currentStep != 0xff) || (*(currentStep + 1) != 0xff)) {
           currentStep = firstFreeProgramByte;
           insertStepInProgram(ITM_END);
-          tam.value = programList[numberOfPrograms - 1].step;
+          scanLabelsAndPrograms();
+          tam.value = programList[numberOfPrograms - numberOfProgramsInFlash - 1].step;
           reallyRunFunction(ITM_GTOP, tam.value);
         }
         tamLeaveMode();

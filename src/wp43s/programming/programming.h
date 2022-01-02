@@ -23,6 +23,7 @@
 
 #include "clcvar.h"
 #include "decode.h"
+#include "flash.h"
 #include "input.h"
 #include "lblGtoXeq.h"
 #include "manage.h"

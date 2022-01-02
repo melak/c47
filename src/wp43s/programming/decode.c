@@ -25,6 +25,7 @@
 #include "display.h"
 #include "fonts.h"
 #include "items.h"
+#include "programming/flash.h"
 #include "programming/nextStep.h"
 #include "registers.h"
 #include <string.h>
@@ -48,7 +49,7 @@
         printf("\nPgm Step   Bytes         OP");
       }
 
-      nextStep = findNextStep(step);
+      nextStep = findNextStep_ram(step);
       if(nextStep) {
         numberOfBytesInStep = (uint16_t)(nextStep - step);
         printf("\n%02d  %4d  ", programNumber, ++stepNumber - programList[programNumber - 1].step + 1); fflush(stdout);
@@ -97,28 +98,55 @@
     printf("num program  step label\n");
     for(int i=0; i<numberOfLabels; i++) {
       printf("%3d%8d%6d ", i, labelList[i].program, labelList[i].step);
-      if(labelList[i].step < 0) { // Local label
-        if(*(labelList[i].labelPointer) < 100) {
-          printf("%02d\n", *(labelList[i].labelPointer));
+      if(labelList[i].program < 0) { // Flash
+        readStepInFlashPgmLibrary((uint8_t *)(tmpString + 200), 32, (uintptr_t)labelList[i].labelPointer);
+        if(labelList[i].step < 0) { // Local label
+          if(*((uint8_t *)(tmpString + 200)) < 100) {
+            printf("%02d\n", *((uint8_t *)(tmpString + 200)));
+          }
+          else if(*((uint8_t *)(tmpString + 200)) < 105) {
+            printf("%c\n", *((uint8_t *)(tmpString + 200)) - 100 + 'A');
+          }
         }
-        else if(*(labelList[i].labelPointer) < 105) {
-          printf("%c\n", *(labelList[i].labelPointer) - 100 + 'A');
+        else { // Global label
+          xcopy(tmpString + 100, (uint8_t *)(tmpString + 200) + 1, *((uint8_t *)(tmpString + 200)));
+          tmpString[100 + *((uint8_t *)(tmpString + 200))] = 0;
+          stringToUtf8(tmpString + 100, (uint8_t *)tmpString);
+          printf("'%s'\n", tmpString);
         }
       }
-      else { // Global label
-        xcopy(tmpString + 100, labelList[i].labelPointer + 1, *(labelList[i].labelPointer));
-        tmpString[100 + *(labelList[i].labelPointer)] = 0;
-        stringToUtf8(tmpString + 100, (uint8_t *)tmpString);
-        printf("'%s'\n", tmpString);
+      else { // RAM
+        if(labelList[i].step < 0) { // Local label
+          if(*(labelList[i].labelPointer) < 100) {
+            printf("%02d\n", *(labelList[i].labelPointer));
+          }
+          else if(*(labelList[i].labelPointer) < 105) {
+            printf("%c\n", *(labelList[i].labelPointer) - 100 + 'A');
+          }
+        }
+        else { // Global label
+          xcopy(tmpString + 100, labelList[i].labelPointer + 1, *(labelList[i].labelPointer));
+          tmpString[100 + *(labelList[i].labelPointer)] = 0;
+          stringToUtf8(tmpString + 100, (uint8_t *)tmpString);
+          printf("'%s'\n", tmpString);
+        }
       }
     }
 
     printf("\nContent of programList\n");
     printf("program  step OP\n");
     for(int i=0; i<numberOfPrograms; i++) {
-      decodeOneStep(programList[i].instructionPointer);
-      stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
-      printf("%7d %5d %s\n", i, programList[i].step, tmpString);
+      if(programList[i].step < 0) { // Flash
+        readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, (uintptr_t)programList[i].instructionPointer);
+        decodeOneStep_ram((uint8_t *)(tmpString + 1600));
+        stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
+        printf("%7d %5d %s\n", i, programList[i].step, tmpString);
+      }
+      else {
+        decodeOneStep_ram(programList[i].instructionPointer);
+        stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
+        printf("%7d %5d %s\n", i, programList[i].step, tmpString);
+      }
     }
   }
 #endif // !DMCP_BUILD
@@ -424,6 +452,16 @@ static void decodeLiteral(uint8_t *literalAddress) {
 
 
 void decodeOneStep(uint8_t *step) {
+  if(currentProgramNumber > (numberOfPrograms - numberOfProgramsInFlash)) { // Flash
+    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, (uintptr_t)step);
+    decodeOneStep_ram((uint8_t *)(tmpString + 1600));
+  }
+  else {
+    decodeOneStep_ram(step);
+  }
+}
+
+void decodeOneStep_ram(uint8_t *step) {
   uint16_t op = *(step++);
   if(op & 0x80) {
     op &= 0x7f;

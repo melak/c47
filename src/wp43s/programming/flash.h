@@ -15,22 +15,18 @@
  */
 
 /********************************************//**
- * \file nextStep.h
+ * \file flash.h
  ***********************************************/
-#ifndef NEXTSTEP_H
-#define NEXTSTEP_H
+#ifndef FLASH_H
+#define FLASH_H
 
 #include <stdint.h>
 
-uint8_t *findNextStep       (uint8_t *step);
-uint8_t *findKey2ndParam    (uint8_t *step);
-uint8_t *findPreviousStep   (uint8_t *step);
-uint8_t *findNextStep_ram   (uint8_t *step);
-uint8_t *findKey2ndParam_ram(uint8_t *step);
-void     fnBst              (uint16_t unusedButMandatoryParameter);
-void     fnSst              (uint16_t unusedButMandatoryParameter);
-void     fnBack             (uint16_t numberOfSteps);
-void     fnSkip             (uint16_t numberOfSteps);
-void     fnCase             (uint16_t regist);
+void initFlashPgmLibrary         (void);
+void scanFlashPgmLibrary         (void);
+void addToFlashPgmLibrary        (void);
+void deleteFromFlashPgmLibrary   (uint32_t fromAddr, uint32_t toAddr);
+void readStepInFlashPgmLibrary   (uint8_t *buffer, uint16_t bufferSize, uint32_t pointer);
+void executeStepInFlashPgmLibrary(void);
 
-#endif // NEXTSTEP_H
+#endif // FLASH_H

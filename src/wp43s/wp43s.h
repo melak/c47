@@ -156,7 +156,9 @@
   extern freeMemoryRegion_t     freeMemoryRegions[MAX_FREE_REGION];
   extern pcg32_random_t         pcg32_global;
   extern labelList_t           *labelList;
+  extern labelList_t           *flashLabelList;
   extern programList_t         *programList;
+  extern programList_t         *flashProgramList;
   extern angularMode_t          currentAngularMode;
   extern formulaHeader_t       *allFormulae;
 
@@ -243,7 +245,9 @@
   extern uint16_t               freeProgramBytes;
   extern uint16_t               firstDisplayedLocalStepNumber;
   extern uint16_t               numberOfLabels;
+  extern uint16_t               numberOfLabelsInFlash;
   extern uint16_t               numberOfPrograms;
+  extern uint16_t               numberOfProgramsInFlash;
   extern uint16_t               numberOfNamedVariables;
   extern uint16_t               currentLocalStepNumber;
   extern uint16_t               currentProgramNumber;
@@ -283,6 +287,8 @@
   extern uint32_t               timerValue;
   extern uint32_t               timerStartTime;
   extern uint32_t               timerTotalTime;
+  extern uint32_t               pointerOfFlashPgmLibrary;
+  extern uint32_t               sizeOfFlashPgmLibrary;
 
   extern uint64_t               shortIntegerMask;
   extern uint64_t               shortIntegerSignBit;

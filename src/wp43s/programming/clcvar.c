@@ -29,6 +29,7 @@
 #include "items.h"
 #include "longIntegerType.h"
 #include "matrix.h"
+#include "programming/flash.h"
 #include "programming/nextStep.h"
 #include "realType.h"
 #include "registers.h"
@@ -222,7 +223,13 @@ static void _processOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
 }
 
 static bool_t _processOneStep(uint8_t *step) {
-  uint16_t op = *(step++);
+  uint16_t op;
+  if(programList[currentProgramNumber - 1].step < 0) {
+    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, (uintptr_t)step);
+    step = (uint8_t *)(tmpString + 1600);
+  }
+
+  op = *(step++);
   if(op & 0x80) {
     op &= 0x7f;
     op <<= 8;
