@@ -111,6 +111,7 @@ void zetaCplx(void) {
  *	http://hp41programs.yolasite.com/zeta.php
  */
 
+#ifndef SAVE_SPACE_DM42_12
 static void zeta_calc_complex(real_t *reg4, real_t *reg5, real_t *reg6, real_t *reg7, realContext_t *realContext) {
   real_t s, p, q, r, reg0, reg1, reg2, reg3, reg8, reg9;
 
@@ -182,8 +183,10 @@ static void zeta_calc_complex(real_t *reg4, real_t *reg5, real_t *reg6, real_t *
 
   divComplexComplex(&reg8, &reg9, &q, &s, reg4, reg5, realContext);
 }
+#endif
 
 void ComplexZeta(const real_t *xReal, const real_t *xImag, real_t *resReal, real_t *resImag, realContext_t *realContext) {
+#ifndef SAVE_SPACE_DM42_12
   real_t p, q, r, s, reg4, reg5, reg6, reg7, reg10, reg11;
 
   if(realIsZero(xReal) && realIsZero(xImag)) {
@@ -216,4 +219,5 @@ void ComplexZeta(const real_t *xReal, const real_t *xImag, real_t *resReal, real
 
     divComplexComplex(&reg4, &reg5, &q, &p, resReal, resImag, realContext);
   }
+#endif
 }
