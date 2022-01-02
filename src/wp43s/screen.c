@@ -1019,7 +1019,7 @@ void execTimerApp(uint16_t timerType) {
       }
     #endif // (DEBUG_PANEL == 1)
 
-    if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT)) {
+    if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT) && (calcMode != CM_GRAPH)) {
       clearRegisterLine(regist, true, (regist != REGISTER_Y));
 
       #ifdef PC_BUILD
@@ -2166,13 +2166,14 @@ void execTimerApp(uint16_t timerType) {
         #endif // (REAL34_WIDTH_TEST == 1)
         break;
 
+      case CM_GRAPH:
       case CM_PLOT_STAT:
         displayShiftAndTamBuffer();
         showSoftmenuCurrentPart();
         refreshStatusBar();
         hourGlassIconEnabled = true;
         graphPlotstat(plotSelection);
-        graphDrawLRline(plotSelection);
+        if (calcMode == CM_PLOT_STAT) graphDrawLRline(plotSelection);
         hourGlassIconEnabled = false;
         refreshStatusBar();
         break;
