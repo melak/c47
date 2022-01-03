@@ -66,7 +66,6 @@
 
 
 #ifndef TESTSUITE_BUILD
-	//TODO BEGIN //######################
 	static void fnRCL(int16_t inp) { //DONE
 	  setSystemFlag(FLAG_ASLIFT);
 	  if(inp == TEMP_REGISTER_1) {
@@ -86,8 +85,6 @@
 	  xcopy(REGISTER_STRING_DATA(REGISTER_X), aimBuffer, mem);
 	  setSystemFlag(FLAG_ASLIFT);
 	}
-    // TODO END ######################
-
 
   static void doubleToXRegisterReal34(double x) { //Convert from double to X register REAL34
     char buff[100];
@@ -101,11 +98,10 @@
 #endif
 
 
-#define DOUBLEINVALID 123.432f
-static double convert_to_double(calcRegister_t regist) { //Convert from X register to double
+#define DOUBLE_NOT_INIT 123.432f
+static double registerToDouble(calcRegister_t regist) { //Convert from X register to double
   double y;
   real_t tmpy;
-  char buff[100];
   switch(getRegisterDataType(regist)) {
   case dtLongInteger:
     convertLongIntegerRegisterToReal(regist, &tmpy, &ctxtReal39);
@@ -118,11 +114,10 @@ static double convert_to_double(calcRegister_t regist) { //Convert from X regist
     #ifdef PC_BUILD
       printf("ERROR IN INPUT\n"); 
     #endif
-    return DOUBLEINVALID;
+    return DOUBLE_NOT_INIT;
     break;
   }
-  realToString(&tmpy, buff);
-  y = strtof(buff, NULL);
+  realToDouble1(&tmpy, &y);
   return y;
 }
 
@@ -237,38 +232,31 @@ void check_osc(uint8_t ii){
 
 void graph_eqn(uint16_t mode) {
   #ifndef TESTSUITE_BUILD
-  if(graphVariable <= 0) return;
+    if(graphVariable <= 0) return;
 
-  double x; 
-  char buff[100];
-  runFunction(ITM_CLSTK);
-  runFunction(ITM_RAD);
+    double x; 
+    runFunction(ITM_CLSTK);
+    //runFunction(ITM_RAD);
 
-  if(mode == 1) {
-    fnClSigma(0);
-  }
-  for(x=x_min; x<=x_max; x+=0.99999*(x_max-x_min)/SCREEN_WIDTH_GRAPH*10) {    //Reduced the amount of sample data from 400 points to 40 points
-
-    //convert double to X register
-    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    snprintf(buff, 100, "%.16e", x);
-    stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
-
-    //leaving y in Y and x in X
-    execute_rpn_function();
-    #ifdef PC_BUILD
-      double y = convert_to_double(REGISTER_Y);
-    #endif
-    runFunction(ITM_SIGMAPLUS);
-    #ifdef PC_BUILD
-      int32_t cnt;
-      realToInt32(SIGMA_N, cnt);    
-      printf(">>> Into STATS:%i points; x=%f y=%f\n",cnt,(float)x,(float)y);
-      if(lastErrorCode == 24) { printf("ERROR CODE CANNOT STAT COMPLEX RESULT, ignored\n"); lastErrorCode = 0;}
-    #endif
-  }
-  runFunction(ITM_CLSTK);
-  fnPlot(0);
+    if(mode == 1) {
+      fnClSigma(0);
+    }
+    for(x=x_min; x<=x_max; x+=0.99999*(x_max-x_min)/SCREEN_WIDTH_GRAPH*10) {    //Reduced the amount of sample data from 400 points to 40 points
+      doubleToXRegisterReal34(x);
+      
+      //leaving y in Y and x in X
+      execute_rpn_function();
+      runFunction(ITM_SIGMAPLUS);
+      #ifdef PC_BUILD
+        double y = registerToDouble(REGISTER_Y);    //for console display only
+        int32_t cnt;
+        realToInt32(SIGMA_N, cnt);    
+        printf(">>> Into STATS:%i points; x=%f y=%f\n",cnt,(float)x,(float)y);
+        if(lastErrorCode == 24) { printf("ERROR CODE CANNOT STAT COMPLEX RESULT, ignored\n"); lastErrorCode = 0;}
+      #endif
+    }
+    runFunction(ITM_CLSTK);
+    fnPlot(0);
   #endif
 }
 
@@ -756,7 +744,7 @@ if(ix < CHANGE_TO_MOD_SECANT) {              //Secant and Newton approximation m
     //try round numbers
     if(convergent > 3 && ix > 6 && oscillations == 0 && real34CompareLessEqual(REGISTER_REAL34_DATA(REGISTER_X),const34_1e_4)) {
       convergent = 0;
-      double ix1 = convert_to_double(REGISTER_X);
+      double ix1 = registerToDouble(REGISTER_X);
       doubleToXRegisterReal34(roundf(1000.0 * ix1)/1000.0);
     }
 
@@ -1007,13 +995,13 @@ void fnEqSolvGraph (uint16_t func) {
 
   switch (func) {
      case EQ_SOLVE:{
-            double ix1 = convert_to_double(REGISTER_X);
-            double ix0 = convert_to_double(REGISTER_Y);
+            double ix1 = registerToDouble(REGISTER_X);
+            double ix0 = registerToDouble(REGISTER_Y);
             calcRegister_t SREG_STARTX0 = __STARTX0;
             calcRegister_t SREG_STARTX1 = __STARTX1;
             copySourceRegisterToDestRegister(REGISTER_Y,SREG_STARTX0);
             copySourceRegisterToDestRegister(REGISTER_X,SREG_STARTX1);
-            if(ix1>ix0 + 0.01 && ix1!=DOUBLEINVALID && ix0!=DOUBLEINVALID) { //pre-condition the plotter
+            if(ix1>ix0 + 0.01 && ix1!=DOUBLE_NOT_INIT && ix0!=DOUBLE_NOT_INIT) { //pre-condition the plotter
               x_min = ix0;
               x_max = ix1;
             }
@@ -1022,11 +1010,11 @@ void fnEqSolvGraph (uint16_t func) {
             break;
           }
      case EQ_PLOT: {
-            double ix1 = convert_to_double(REGISTER_X);
-            double ix0 = convert_to_double(REGISTER_Y);
+            double ix1 = registerToDouble(REGISTER_X);
+            double ix0 = registerToDouble(REGISTER_Y);
             fnDrop(0);
             fnDrop(0);
-            if(ix1>ix0 + 0.01 && ix1!=DOUBLEINVALID && ix0!=DOUBLEINVALID) { //pre-condition the plotter
+            if(ix1>ix0 + 0.01 && ix1!=DOUBLE_NOT_INIT && ix0!=DOUBLE_NOT_INIT) { //pre-condition the plotter
               x_min = ix0;
               x_max = ix1;
             }
