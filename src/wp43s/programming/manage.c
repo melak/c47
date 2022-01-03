@@ -745,8 +745,8 @@ void insertStepInProgram(int16_t func) {
         case ITM_KEYX:           // 1499
           {
             int opLen;
-            tmpString[0] = (ITM_KEY >> 8) | 0x80;
-            tmpString[1] =  ITM_KEY       & 0xff;
+            tmpString[0] = (char)((ITM_KEY >> 8) | 0x80);
+            tmpString[1] = (char)( ITM_KEY       & 0xff);
             if(tam.keyAlpha) {
               uint16_t nameLength = stringByteLength(aimBuffer + AIM_BUFFER_LENGTH / 2);
               tmpString[2] = (char)INDIRECT_VARIABLE;
