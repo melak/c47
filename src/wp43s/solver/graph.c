@@ -94,6 +94,27 @@
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     snprintf(buff, 100, "%.16e", x);
     stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
+
+    if(buff[0]!=0 && buff[1]==',' && real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) {
+      #ifdef PC_BUILD
+        printf(">>>###A %s %f %i %i %i \n",buff,(float) x, buff[0], buff[1], buff[2] );
+      #endif //PC_BUILD
+      uint16_t i = 0; while (buff[i]!=0) {
+        if(buff[i] == ',') buff[i] = '.';
+        i++;
+      }
+      #ifdef PC_BUILD
+        printf(">>>###B %s %f\n",buff,(float) x );
+      #endif //PC_BUILD
+      stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
+    }
+    #ifdef PC_BUILD
+      if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) {
+        snprintf(buff, 100, "%.16e", x);
+        printf("ERROR in locale: doubleToXRegisterReal34: %s\n",buff); 
+      }
+    #endif //PC_BUILD
+
     setSystemFlag(FLAG_ASLIFT);
   }
 #endif
@@ -131,20 +152,23 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
 
 static void initialize_function(void){
   #ifndef TESTSUITE_BUILD
-    #ifdef PC_BUILD
-      calcRegister_t regStats = 0;
-    #endif //PC_BUILD
     if(graphVariable > 0) {
       #ifdef PC_BUILD
-        regStats = graphVariable;
         printf(">>> graphVariable = %i\n", graphVariable);
         if(lastErrorCode != 0) { 
           #ifdef VERBOSE_SOLVER00
-          printf("ERROR CODE in execute_rpn_function/fnEqCalc: %u\n",lastErrorCode); 
+          printf("ERROR CODE in initialize_functionA: %u\n",lastErrorCode); 
           #endif //VERBOSE_SOLVER1
           lastErrorCode = 0;
         }
       #endif //PC_BUILD
+    } else {
+      #ifdef PC_BUILD
+        printf(">>> graphVariable = %i\n", graphVariable);
+          #ifdef VERBOSE_SOLVER00
+          printf("ERROR CODE in initialize_functionB: %u\n",lastErrorCode); 
+          #endif //VERBOSE_SOLVER1
+      #endif //PC_BUILD    	
     }
   #endif //TESTSUITE_BUILD
 }
