@@ -24,6 +24,7 @@
 #include "mathematics/comparisonReals.h"
 #include "charString.h"
 #include "constantPointers.h"
+#include "error.h"
 #include "flags.h"
 #include "items.h"
 #include "mathematics/invert.h"
@@ -130,10 +131,20 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
 
 static void initialize_function(void){
   #ifndef TESTSUITE_BUILD
-    calcRegister_t regStats = 0;
+    #ifdef PC_BUILD
+      calcRegister_t regStats = 0;
+    #endif //PC_BUILD
     if(graphVariable > 0) {
-      regStats = graphVariable;
-      reallocateRegister(regStats,  dtReal34, REAL34_SIZE, amNone);
+      #ifdef PC_BUILD
+        regStats = graphVariable;
+        printf(">>> graphVariable = %i\n", graphVariable);
+        if(lastErrorCode != 0) { 
+          #ifdef VERBOSE_SOLVER00
+          printf("ERROR CODE in execute_rpn_function/fnEqCalc: %u\n",lastErrorCode); 
+          #endif //VERBOSE_SOLVER1
+          lastErrorCode = 0;
+        }
+      #endif //PC_BUILD
     }
   #endif //TESTSUITE_BUILD
 }
@@ -146,10 +157,25 @@ static void initialize_function(void){
     if(regStats != INVALID_VARIABLE) {
       fnStore(regStats);                  //place X register into x
       fnEqCalc(0);
+      #ifdef PC_BUILD
+        if(lastErrorCode != 0) { 
+          #ifdef VERBOSE_SOLVER00
+          printf("ERROR CODE in execute_rpn_function/fnEqCalc: %u\n",lastErrorCode); 
+          #endif //VERBOSE_SOLVER1
+          lastErrorCode = 0;
+        }
+      #endif
       fnRCL(regStats);
-      #if (defined VERBOSE_SOLVER0) && (defined PC_BUILD)
-        printRegisterToConsole(REGISTER_X,">>> Solving x=","");
-        printRegisterToConsole(REGISTER_Y," f(x)=","\n");
+      #if ((defined VERBOSE_SOLVER00) || (defined VERBOSE_SOLVER0)) && (defined PC_BUILD)
+        printRegisterToConsole(REGISTER_X,">>> Calc x=","");
+        printRegisterToConsole(REGISTER_Y," y=","");
+      #endif
+    } else {
+      #ifdef PC_BUILD
+        #ifdef VERBOSE_SOLVER00
+        printf("ERROR in execute_rpn_function; invalid variable: %u\n",lastErrorCode); 
+        #endif //VERBOSE_SOLVER1
+        lastErrorCode = 0;
       #endif
     }
   }
@@ -242,16 +268,18 @@ void graph_eqn(uint16_t mode) {
       fnClSigma(0);
     }
     for(x=x_min; x<=x_max; x+=0.99999*(x_max-x_min)/SCREEN_WIDTH_GRAPH*10) {    //Reduced the amount of sample data from 400 points to 40 points
-      doubleToXRegisterReal34(x);
-      
+      doubleToXRegisterReal34(x);      
       //leaving y in Y and x in X
       execute_rpn_function();
       runFunction(ITM_SIGMAPLUS);
+
       #ifdef PC_BUILD
-        double y = registerToDouble(REGISTER_Y);    //for console display only
         int32_t cnt;
         realToInt32(SIGMA_N, cnt);    
-        printf(">>> Into STATS:%i points; x=%f y=%f\n",cnt,(float)x,(float)y);
+        printf(">>> Into STATS:%i points ",cnt);
+        printRegisterToConsole(REGISTER_X,"X:","");
+        printRegisterToConsole(REGISTER_Y," Y:","\n");
+
         if(lastErrorCode == 24) { printf("ERROR CODE CANNOT STAT COMPLEX RESULT, ignored\n"); lastErrorCode = 0;}
       #endif
     }
@@ -987,6 +1015,23 @@ void fnEqSolvGraph (uint16_t func) {
 
 //  if(!(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE)) return;
 
+
+  if(graphVariable >= FIRST_NAMED_VARIABLE && graphVariable <= LAST_NAMED_VARIABLE) {
+    #if ((defined VERBOSE_SOLVER00) || (defined VERBOSE_SOLVER0)) && (defined PC_BUILD)
+      printf("graphVariable accepted: %i\n", graphVariable);
+    #endif
+  }
+  else {
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "unexpected parameter %u", graphVariable);
+      moreInfoOnError("In function fnEqSolvGraph:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+  }
+
+
+
   fnClSigma(0);
   statGraphReset();
 
@@ -997,6 +1042,10 @@ void fnEqSolvGraph (uint16_t func) {
      case EQ_SOLVE:{
             double ix1 = registerToDouble(REGISTER_X);
             double ix0 = registerToDouble(REGISTER_Y);
+            #if ((defined VERBOSE_SOLVER00) || (defined VERBOSE_SOLVER0)) && (defined PC_BUILD)
+              printRegisterToConsole(REGISTER_Y,">>> ix0=","");
+              printRegisterToConsole(REGISTER_X," ix1=","\n");
+            #endif
             calcRegister_t SREG_STARTX0 = __STARTX0;
             calcRegister_t SREG_STARTX1 = __STARTX1;
             copySourceRegisterToDestRegister(REGISTER_Y,SREG_STARTX0);
@@ -1005,6 +1054,9 @@ void fnEqSolvGraph (uint16_t func) {
               x_min = ix0;
               x_max = ix1;
             }
+            #if ((defined VERBOSE_SOLVER00) || (defined VERBOSE_SOLVER0)) && (defined PC_BUILD)
+              printf("xmin:%f, xmax:%f\n",x_min,x_max);
+            #endif
             initialize_function();
             graph_solver();
             break;
@@ -1012,6 +1064,10 @@ void fnEqSolvGraph (uint16_t func) {
      case EQ_PLOT: {
             double ix1 = registerToDouble(REGISTER_X);
             double ix0 = registerToDouble(REGISTER_Y);
+            #if ((defined VERBOSE_SOLVER00) || (defined VERBOSE_SOLVER0)) && (defined PC_BUILD)
+              printRegisterToConsole(REGISTER_Y,">>> ix0=","");
+              printRegisterToConsole(REGISTER_X," ix1=","\n");
+            #endif
             fnDrop(0);
             fnDrop(0);
             if(ix1>ix0 + 0.01 && ix1!=DOUBLE_NOT_INIT && ix0!=DOUBLE_NOT_INIT) { //pre-condition the plotter
@@ -1026,6 +1082,9 @@ void fnEqSolvGraph (uint16_t func) {
             if(x_min == y_min) {
               //
             }
+            #if ((defined VERBOSE_SOLVER00) || (defined VERBOSE_SOLVER0)) && (defined PC_BUILD)
+              printf("xmin:%f, xmax:%f\n",x_min,x_max);
+            #endif
             initialize_function();
             graph_eqn(0);
             break;
