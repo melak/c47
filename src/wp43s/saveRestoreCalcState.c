@@ -43,7 +43,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         67  // Added ENTRY? status
+#define BACKUP_VERSION         69  // Added graphVariable
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -224,6 +224,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // currentStep offset within block
     save(&freeProgramBytes,                   sizeof(freeProgramBytes),                   BACKUP);
     save(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber),      BACKUP);
+    save(&numberOfLabels,                     sizeof(numberOfLabels),                     BACKUP);
+    save(&numberOfPrograms,                   sizeof(numberOfPrograms),                   BACKUP);
     save(&currentLocalStepNumber,             sizeof(currentLocalStepNumber),             BACKUP);
     save(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
     save(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
@@ -283,6 +285,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&SAVED_SIGMA_LASTY,                  sizeof(SAVED_SIGMA_LASTY),                  BACKUP);
     save(&SAVED_SIGMA_LAct,                   sizeof(SAVED_SIGMA_LAct),                   BACKUP);
     save(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
+    save(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
 
 
     fclose(BACKUP);
@@ -451,6 +454,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       currentStep += ramPtr;
       restore(&freeProgramBytes,                   sizeof(freeProgramBytes),                   BACKUP);
       restore(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber),      BACKUP);
+      restore(&numberOfLabels,                     sizeof(numberOfLabels),                     BACKUP);
+      restore(&numberOfPrograms,                   sizeof(numberOfPrograms),                   BACKUP);
       restore(&currentLocalStepNumber,             sizeof(currentLocalStepNumber),             BACKUP);
       restore(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
       restore(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
@@ -510,6 +515,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&SAVED_SIGMA_LASTY,                  sizeof(SAVED_SIGMA_LASTY),                  BACKUP);
       restore(&SAVED_SIGMA_LAct,                   sizeof(SAVED_SIGMA_LAct),                   BACKUP);
       restore(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
+      restore(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
@@ -531,6 +537,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_FONT_BROWSER)          {}
         else if(calcMode == CM_PEM)                   {}
         else if(calcMode == CM_PLOT_STAT)             {}
+        else if(calcMode == CM_GRAPH)                 {}
         else if(calcMode == CM_MIM)                   {mimRestore();}
         else if(calcMode == CM_EIM)                   {}
         else if(calcMode == CM_ASSIGN)                {}
@@ -548,6 +555,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_FONT_BROWSER)           calcModeNormalGui();
         else if(calcMode == CM_PEM)                    calcModeNormalGui();
         else if(calcMode == CM_PLOT_STAT)              calcModeNormalGui();
+        else if(calcMode == CM_GRAPH)                  calcModeNormalGui();
         else if(calcMode == CM_MIM)                   {calcModeNormalGui(); mimRestore();}
         else if(calcMode == CM_EIM)                   {calcModeAimGui();}
         else if(calcMode == CM_ASSIGN)                {calcModeNormalGui();}

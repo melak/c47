@@ -181,6 +181,7 @@ wp43s_src = files(
   'screen.c',
   'softmenus.c',
   'solver/equation.c',
+  'solver/graph.c',
   'solver/solve.c',
   'solver/sumprod.c',
   'solver/tvm.c',

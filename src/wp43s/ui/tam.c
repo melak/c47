@@ -434,7 +434,7 @@
     }
     else if(tam.function == ITM_toINT && item == ITM_REG_I) {
       if(calcMode == CM_PEM) {
-        insertStepInProgram(ITM_IP);
+        addStepInProgram(ITM_IP);
       }
       else {
         fnIp(NOPARAM);
@@ -444,7 +444,7 @@
     }
     else if(tam.function == ITM_toINT && item == ITM_alpha) {
       if(calcMode == CM_PEM) {
-        insertStepInProgram(ITM_FP);
+        addStepInProgram(ITM_FP);
       }
       else {
         fnFp(NOPARAM);
@@ -628,7 +628,7 @@
               mimRunFunction(tamOperation(), value);
               break;
             case CM_PEM:
-              insertStepInProgram(tamOperation());
+              addStepInProgram(tamOperation());
               break;
             default:
               reallyRunFunction(tamOperation(), value);
@@ -674,7 +674,7 @@
         }
       }
       if(calcMode == CM_PEM) {
-        insertStepInProgram(tamOperation());
+        addStepInProgram(tamOperation());
       }
       if(tam.mode != TM_NEWMENU) aimBuffer[0] = 0;
       if(tam.indirect && value != INVALID_VARIABLE && calcMode != CM_PEM) {

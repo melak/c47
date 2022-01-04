@@ -767,6 +767,11 @@ void fnReset(uint16_t confirmation) {
     realZero(&SAVED_SIGMA_LASTY);
     SAVED_SIGMA_LAct = 0;
     
+    x_min = -10;
+    x_max = 10;
+    y_min = 0;
+    y_max = 1;
+
     shortIntegerMode = SIM_2COMPL;
     fnSetWordSize(64);
 
@@ -892,6 +897,8 @@ void fnReset(uint16_t confirmation) {
     allFormulae = NULL;
     numberOfFormulae = 0;
     currentFormula = 0;
+
+    graphVariable = 0;
 
     // Timer application
     timerCraAndDeciseconds = 0x80u;

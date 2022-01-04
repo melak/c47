@@ -928,7 +928,7 @@ void execTimerApp(uint16_t timerType) {
 
   static void inputRegName(char *prefix, int16_t *prefixWidth) {
     if((currentInputVariable & 0x3fff) < REGISTER_X) {
-      sprintf(prefix, "R%02" PRIu16 "?", (currentInputVariable & 0x3fff));
+      sprintf(prefix, "R%02" PRIu16 "?", (uint16_t)(currentInputVariable & 0x3fff));
     }
     else if((currentInputVariable & 0x3fff) < FIRST_LOCAL_REGISTER) {
       sprintf(prefix, "%c?", "XYZTABCDLIJK"[(currentInputVariable & 0x3fff) - REGISTER_X]);
@@ -1019,7 +1019,7 @@ void execTimerApp(uint16_t timerType) {
       }
     #endif // (DEBUG_PANEL == 1)
 
-    if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT)) {
+    if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT) && (calcMode != CM_GRAPH)) {
       clearRegisterLine(regist, true, (regist != REGISTER_Y));
 
       #ifdef PC_BUILD
@@ -2166,13 +2166,14 @@ void execTimerApp(uint16_t timerType) {
         #endif // (REAL34_WIDTH_TEST == 1)
         break;
 
+      case CM_GRAPH:
       case CM_PLOT_STAT:
         displayShiftAndTamBuffer();
         showSoftmenuCurrentPart();
         refreshStatusBar();
         hourGlassIconEnabled = true;
         graphPlotstat(plotSelection);
-        graphDrawLRline(plotSelection);
+        if (calcMode == CM_PLOT_STAT) graphDrawLRline(plotSelection);
         hourGlassIconEnabled = false;
         refreshStatusBar();
         break;

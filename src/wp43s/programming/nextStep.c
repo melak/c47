@@ -414,7 +414,7 @@ void fnBack(uint16_t numberOfSteps) {
   else {
     currentLocalStepNumber -= numberOfSteps;
     currentStep = programList[currentProgramNumber - 1].instructionPointer;
-    for(uint16_t i = 1; i < numberOfSteps; ++i) {
+    for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
       currentStep = findNextStep(currentStep);
     }
   }

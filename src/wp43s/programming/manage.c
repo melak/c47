@@ -745,8 +745,8 @@ void insertStepInProgram(int16_t func) {
         case ITM_KEYX:           // 1499
           {
             int opLen;
-            tmpString[0] = (ITM_KEY >> 8) | 0x80;
-            tmpString[1] =  ITM_KEY       & 0xff;
+            tmpString[0] = (char)((ITM_KEY >> 8) | 0x80);
+            tmpString[1] = (char)( ITM_KEY       & 0xff);
             if(tam.keyAlpha) {
               uint16_t nameLength = stringByteLength(aimBuffer + AIM_BUFFER_LENGTH / 2);
               tmpString[2] = (char)INDIRECT_VARIABLE;
@@ -865,6 +865,20 @@ void insertStepInProgram(int16_t func) {
   }
 
   aimBuffer[0] = 0;
+}
+
+
+
+void addStepInProgram(int16_t func) {
+  if((aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) && ((*currentStep != ((ITM_END >> 8) | 0x80)) || (*(currentStep + 1) != (ITM_END & 0xff))) && ((*currentStep != 0xff) || (*(currentStep + 1) != 0xff))) {
+    currentStep = findNextStep(currentStep);
+    ++currentLocalStepNumber;
+  }
+  insertStepInProgram(func);
+  if(aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) {
+    currentStep = findPreviousStep(currentStep);
+    --currentLocalStepNumber;
+  }
 }
 
 

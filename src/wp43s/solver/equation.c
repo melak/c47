@@ -92,6 +92,7 @@ void fnEqNew(uint16_t unusedButMandatoryParameter) {
       currentFormula = 0;
       allFormulae[0].pointerToFormulaData = WP43S_NULL;
       allFormulae[0].sizeInBlocks = 0;
+      graphVariable = 0;
     }
     else {
       displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -113,6 +114,7 @@ void fnEqNew(uint16_t unusedButMandatoryParameter) {
       freeWp43s(allFormulae, TO_BLOCKS(sizeof(formulaHeader_t)) * (numberOfFormulae));
       allFormulae = newPtr;
       ++numberOfFormulae;
+      graphVariable = 0;
     }
     else {
       displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -194,6 +196,7 @@ void deleteEquation(uint16_t equationId) {
       allFormulae = NULL;
     if(numberOfFormulae > 0 && currentFormula >= numberOfFormulae)
       currentFormula = numberOfFormulae - 1;
+    graphVariable = 0;
   }
 }
 
@@ -574,9 +577,11 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
 
 
 #ifndef TESTSUITE_BUILD
-static void _menuF6(char *bufPtr) {
-  xcopy(bufPtr, "Calc", 5);
-  bufPtr[5] = 0;
+static void _menuItem(int16_t item, char *bufPtr) {
+  xcopy(bufPtr,indexOfItems[item].itemSoftmenuName,stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+  bufPtr[stringByteLength(indexOfItems[item].itemSoftmenuName)+1]=0;
+  //  xcopy(bufPtr, "Calc", 5);
+  //  bufPtr[5] = 0;
 }
 
 #define PARSER_HINT_NUMERIC  0
@@ -934,8 +939,12 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
           xcopy(bufPtr, strPtr, stringByteLength(strPtr) + 1);
           bufPtr += stringByteLength(strPtr) + 1;
           bufPtr[0] = 0;
-          if(tmpVal == 4) {
-            _menuF6(bufPtr);
+          if(tmpVal == 2) {   // If the 4th variable has just been added, add Draw and Calc.
+            _menuItem(ITM_CPXSLV, bufPtr);
+            bufPtr += stringByteLength(bufPtr) + 1;
+            _menuItem(ITM_DRAW, bufPtr);
+            bufPtr += stringByteLength(bufPtr) + 1;
+            _menuItem(ITM_CALC, bufPtr);
           }
         }
         else {
@@ -1316,11 +1325,15 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
       bufPtr += stringByteLength(bufPtr) + 1;
       ++tmpVal;
     }
-    for(; tmpVal < 5; ++tmpVal) {
+    for(; tmpVal < 3; ++tmpVal) {  //If there are less than 4 variables, skip to the 5th item and add Draw & Calc.
       *(bufPtr++) = 0;
     }
-    if(tmpVal == 5) {
-      _menuF6(bufPtr);
+    if(tmpVal == 3) {
+      _menuItem(ITM_CPXSLV, bufPtr);
+      bufPtr += stringByteLength(bufPtr) + 1;
+      _menuItem(ITM_DRAW, bufPtr);
+      bufPtr += stringByteLength(bufPtr) + 1;
+      _menuItem(ITM_CALC, bufPtr);
     }
   }
   if(parseMode == EQUATION_PARSER_XEQ) {
