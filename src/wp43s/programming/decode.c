@@ -131,7 +131,7 @@ static void getStringLabelOrVariableName(uint8_t *stringAddress) {
 }
 
 
-void getIndirectRegister(uint8_t *paramAddress, const char *op) {
+static void getIndirectRegister(uint8_t *paramAddress, const char *op) {
   uint8_t opParam = *(uint8_t *)paramAddress;
   if(opParam < REGISTER_X) { // Global register from 00 to 99
     sprintf(tmpString, "%s " STD_RIGHT_ARROW "%02u", op, opParam);
@@ -148,13 +148,13 @@ void getIndirectRegister(uint8_t *paramAddress, const char *op) {
 }
 
 
-void getIndirectVariable(uint8_t *stringAddress, const char *op) {
+static void getIndirectVariable(uint8_t *stringAddress, const char *op) {
   getStringLabelOrVariableName(stringAddress);
   sprintf(tmpString, "%s " STD_RIGHT_ARROW STD_LEFT_SINGLE_QUOTE "%s" STD_RIGHT_SINGLE_QUOTE, op, tmpStringLabelOrVariableName);
 }
 
 
-void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
+static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, uint16_t tamMax) {
   uint8_t opParam = *(uint8_t *)(paramAddress++);
 
   switch(paramMode) {
@@ -249,8 +249,16 @@ void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
       break;
 
     case PARAM_NUMBER_8:
-      if(opParam <= 99) { // Value from 0 to 99
-        sprintf(tmpString, "%s %02u", op, opParam);
+      if(opParam <= tamMax) { // Value from 0 to 99
+        if(tamMax <= 9) {
+          sprintf(tmpString, "%s %u", op, opParam);
+        }
+        else if(tamMax <= 99) {
+          sprintf(tmpString, "%s %02u", op, opParam);
+        }
+        else {
+          sprintf(tmpString, "%s %03u", op, opParam);
+        }
       }
       else if(opParam == INDIRECT_REGISTER) {
         getIndirectRegister(paramAddress, op);
@@ -301,14 +309,19 @@ void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
     case PARAM_KEYG_KEYX:
       {
         uint8_t *secondParam = findKey2ndParam(paramAddress - 3);
-        decodeOp(secondParam + 1, indexOfItems[*secondParam].itemCatalogName, PARAM_LABEL);
+        decodeOp(secondParam + 1, indexOfItems[*secondParam].itemCatalogName, PARAM_LABEL, indexOfItems[*secondParam].tamMinMax & TAM_MAX_MASK);
         xcopy(tmpString + TMP_STR_LENGTH / 2, tmpString, stringByteLength(tmpString) + 1);
-        decodeOp(paramAddress - 1, op, PARAM_NUMBER_8);
+        decodeOp(paramAddress - 1, op, PARAM_NUMBER_8, 21);
         tmpString[stringByteLength(tmpString) + 1] = 0;
         tmpString[stringByteLength(tmpString)    ] = ' ';
         xcopy(tmpString + stringByteLength(tmpString), tmpString + TMP_STR_LENGTH / 2, stringByteLength(tmpString + TMP_STR_LENGTH / 2) + 1);
       }
       break;
+
+    case PARAM_SKIP_BACK:
+      sprintf(tmpString, "%s %03u", op, opParam);
+      break;
+
 
     default:
       sprintf(tmpString, "\nIn function decodeOp: paramMode %u is not valid!\n", paramMode);
@@ -436,7 +449,7 @@ void decodeOneStep(uint8_t *step) {
         break;
 
       default:
-        decodeOp(step, indexOfItems[op].itemCatalogName, (indexOfItems[op].status & PTP_STATUS) >> 9);
+        decodeOp(step, indexOfItems[op].itemCatalogName, (indexOfItems[op].status & PTP_STATUS) >> 9, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
     }
   }
 }
