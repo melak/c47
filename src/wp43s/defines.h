@@ -254,13 +254,14 @@ typedef enum {
 #define PTP_DECLARE_LABEL                  ( 1 << 9) // These
 #define PTP_LABEL                          ( 2 << 9) //   parameter
 #define PTP_REGISTER                       ( 3 << 9) //   types
-#define PTP_FLAG                           ( 4 << 9) //   must match
-#define PTP_NUMBER_8                       ( 5 << 9) //   with
-#define PTP_NUMBER_16                      ( 6 << 9) //   PARAM_*
-#define PTP_COMPARE                        ( 7 << 9) //   defined
-#define PTP_KEYG_KEYX                      ( 8 << 9) //   below.
-#define PTP_LITERAL                        ( 9 << 9) // Literal
-#define PTP_DISABLED                       (10 << 9) // Not programmable
+#define PTP_FLAG                           ( 4 << 9) //   must
+#define PTP_NUMBER_8                       ( 5 << 9) //   match
+#define PTP_NUMBER_16                      ( 6 << 9) //   with
+#define PTP_COMPARE                        ( 7 << 9) //   PARAM_*
+#define PTP_KEYG_KEYX                      ( 8 << 9) //   defined
+#define PTP_SKIP_BACK                      ( 9 << 9) //   below.
+#define PTP_LITERAL                        (10 << 9) // Literal
+#define PTP_DISABLED                       (11 << 9) // Not programmable
 
 
 #define INC_FLAG                                   0
@@ -769,6 +770,7 @@ typedef enum {
 #define PARAM_NUMBER_16                            6
 #define PARAM_COMPARE                              7
 #define PARAM_KEYG_KEYX                            8
+#define PARAM_SKIP_BACK                            9
 
 #define CHECK_INTEGER                              0
 #define CHECK_INTEGER_EVEN                         1
