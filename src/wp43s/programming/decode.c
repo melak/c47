@@ -318,6 +318,11 @@ static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, 
       }
       break;
 
+    case PARAM_SKIP_BACK:
+      sprintf(tmpString, "%s %03u", op, opParam);
+      break;
+
+
     default:
       sprintf(tmpString, "\nIn function decodeOp: paramMode %u is not valid!\n", paramMode);
   }

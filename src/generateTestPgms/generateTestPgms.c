@@ -8458,45 +8458,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_BACK >> 8) | 0x80;
     *(currentStep++) =  ITM_BACK       & 0xff;
-    *(currentStep++) = 64;
-
-    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
-    *(currentStep++) =  ITM_BACK       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 0;
-
-    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
-    *(currentStep++) =  ITM_BACK       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 99;
-
-    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
-    *(currentStep++) =  ITM_BACK       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_X;
-
-    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
-    *(currentStep++) =  ITM_BACK       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
-    *(currentStep++) =  ITM_BACK       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = FIRST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
-    *(currentStep++) =  ITM_BACK       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = LAST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_BACK >> 8) | 0x80;
-    *(currentStep++) =  ITM_BACK       & 0xff;
-    *(currentStep++) = INDIRECT_VARIABLE;
-    *(currentStep++) = 3;
-    *(currentStep++) = 'V';
-    *(currentStep++) = 'a';
-    *(currentStep++) = 'r';
+    *(currentStep++) = 255;
 
     *(currentStep++) = (ITM_BATT >> 8) | 0x80;
     *(currentStep++) =  ITM_BATT       & 0xff;
@@ -12046,37 +12008,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
     *(currentStep++) =  ITM_SKIP       & 0xff;
-    *(currentStep++) = 64;
-
-    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
-    *(currentStep++) =  ITM_SKIP       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 0;
-
-    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
-    *(currentStep++) =  ITM_SKIP       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 99;
-
-    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
-    *(currentStep++) =  ITM_SKIP       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_X;
-
-    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
-    *(currentStep++) =  ITM_SKIP       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
-    *(currentStep++) =  ITM_SKIP       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = FIRST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_SKIP >> 8) | 0x80;
-    *(currentStep++) =  ITM_SKIP       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = LAST_LOCAL_REGISTER;
+    *(currentStep++) = 255;
 
     *(currentStep++) = (ITM_SLVQ >> 8) | 0x80;
     *(currentStep++) =  ITM_SLVQ       & 0xff;
