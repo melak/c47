@@ -11246,6 +11246,73 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_MSG >> 8) | 0x80;
     *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_MSG >> 8) | 0x80;
+    *(currentStep++) =  ITM_MSG       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
 
     *(currentStep++) = (ITM_MULPI >> 8) | 0x80;
     *(currentStep++) =  ITM_MULPI       & 0xff;
