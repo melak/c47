@@ -46,7 +46,7 @@
 
 #ifdef PC_BUILD
   //Verbose directives can be simulataneously selected
-  #define VERBOSE_SOLVER00   // minimal text
+  //#define VERBOSE_SOLVER00   // minimal text
   //#define VERBOSE_SOLVER0  // a lot less text
   //#define VERBOSE_SOLVER1  // a lot less text
   //#define VERBOSE_SOLVER2  // verbose a lot
@@ -92,26 +92,14 @@
     setSystemFlag(FLAG_ASLIFT);
     liftStack();
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    snprintf(buff, 100, "%.16e", x);
+
+    doubleToString(x, 100, buff);
     stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
 
-    if(buff[0]!=0 && buff[1]==',' && real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) {
-      #ifdef PC_BUILD
-        printf(">>>###A %s %f %i %i %i \n",buff,(float) x, buff[0], buff[1], buff[2] );
-      #endif //PC_BUILD
-      uint16_t i = 0; while (buff[i]!=0) {
-        if(buff[i] == ',') buff[i] = '.';
-        i++;
-      }
-      #ifdef PC_BUILD
-        printf(">>>###B %s %f\n",buff,(float) x );
-      #endif //PC_BUILD
-      stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
-    }
     #ifdef PC_BUILD
       if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) {
         snprintf(buff, 100, "%.16e", x);
-        printf("ERROR in locale: doubleToXRegisterReal34: %s\n",buff); 
+        printf("ERROR in locale: doubleToXRegisterReal34: %s\n",buff);
       }
     #endif //PC_BUILD
 
@@ -154,7 +142,7 @@ static void initialize_function(void){
   #ifndef TESTSUITE_BUILD
     if(graphVariable > 0) {
       #ifdef PC_BUILD
-        printf(">>> graphVariable = %i\n", graphVariable);
+        //printf(">>> graphVariable = %i\n", graphVariable);
         if(lastErrorCode != 0) { 
           #ifdef VERBOSE_SOLVER00
           printf("ERROR CODE in initialize_functionA: %u\n",lastErrorCode); 
@@ -164,7 +152,7 @@ static void initialize_function(void){
       #endif //PC_BUILD
     } else {
       #ifdef PC_BUILD
-        printf(">>> graphVariable = %i\n", graphVariable);
+        //printf(">>> graphVariable = %i\n", graphVariable);
           #ifdef VERBOSE_SOLVER00
           printf("ERROR CODE in initialize_functionB: %u\n",lastErrorCode); 
           #endif //VERBOSE_SOLVER1
@@ -190,7 +178,7 @@ static void initialize_function(void){
         }
       #endif
       fnRCL(regStats);
-      #if ((defined VERBOSE_SOLVER00) || (defined VERBOSE_SOLVER0)) && (defined PC_BUILD)
+      #if (defined VERBOSE_SOLVER0) && (defined PC_BUILD)
         printRegisterToConsole(REGISTER_X,">>> Calc x=","");
         printRegisterToConsole(REGISTER_Y," y=","");
       #endif
@@ -297,15 +285,17 @@ void graph_eqn(uint16_t mode) {
       execute_rpn_function();
       runFunction(ITM_SIGMAPLUS);
 
-      #ifdef PC_BUILD
+      #if (defined VERBOSE_SOLVER0) && (defined PC_BUILD)
         int32_t cnt;
         realToInt32(SIGMA_N, cnt);    
         printf(">>> Into STATS:%i points ",cnt);
         printRegisterToConsole(REGISTER_X,"X:","");
         printRegisterToConsole(REGISTER_Y," Y:","\n");
-
-        if(lastErrorCode == 24) { printf("ERROR CODE CANNOT STAT COMPLEX RESULT, ignored\n"); lastErrorCode = 0;}
       #endif
+      #ifdef PC_BUILD
+        if(lastErrorCode == 24) { printf("ERROR CODE CANNOT STAT COMPLEX RESULT, ignored\n"); lastErrorCode = 0;}
+      #endif //PC_BUILD
+
     }
     runFunction(ITM_CLSTK);
     fnPlot(0);
