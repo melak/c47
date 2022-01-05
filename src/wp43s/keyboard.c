@@ -1841,7 +1841,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuUp();
         }
-        else if(calcMode == CM_NORMAL) {
+        else if(calcMode == CM_NORMAL && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
           fnBst(NOPARAM);
           #ifdef DMCP_BUILD
             lcd_refresh();
@@ -1965,7 +1965,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuDown();
         }
-        else if(calcMode == CM_NORMAL) {
+        else if(calcMode == CM_NORMAL && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
           fnSst(NOPARAM);
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
