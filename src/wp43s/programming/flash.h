@@ -22,6 +22,8 @@
 
 #include <stdint.h>
 
+void fnPRcl                      (uint16_t unusedButMandatoryParameter);
+
 void initFlashPgmLibrary         (void);
 void scanFlashPgmLibrary         (void);
 void addToFlashPgmLibrary        (void);

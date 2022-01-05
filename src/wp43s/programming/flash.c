@@ -19,10 +19,12 @@
  ***********************************************/
 
 #include "programming/flash.h"
+#include "charString.h"
 #include "defines.h"
 #include "error.h"
 #include "items.h"
 #include "memory.h"
+#include "programming/manage.h"
 #include "programming/nextStep.h"
 #include "wp43s.h"
 #include <string.h>
@@ -61,6 +63,53 @@ static void seek(uint32_t pos, void *stream) {
   #else // !DMCP_BUILD
     fseek(stream, pos, SEEK_SET);
   #endif // DMCP_BUILD
+}
+
+
+
+static void _addSpaceAfterPrograms(uint16_t size) {
+  if(freeProgramBytes < size) {
+    uint8_t *oldBeginOfProgramMemory = beginOfProgramMemory;
+    uint32_t programSizeInBlocks = RAM_SIZE - freeMemoryRegions[numberOfFreeMemoryRegions - 1].address - freeMemoryRegions[numberOfFreeMemoryRegions - 1].sizeInBlocks;
+    uint32_t newProgramSizeInBlocks = TO_BLOCKS(TO_BYTES(programSizeInBlocks) - freeProgramBytes + size);
+    freeProgramBytes      += TO_BYTES(newProgramSizeInBlocks - programSizeInBlocks);
+    resizeProgramMemory(newProgramSizeInBlocks);
+    if(programList[currentProgramNumber - 1].step > 0) { // RAM
+      currentStep           = currentStep           - oldBeginOfProgramMemory + beginOfProgramMemory;
+      firstDisplayedStep    = firstDisplayedStep    - oldBeginOfProgramMemory + beginOfProgramMemory;
+      beginOfCurrentProgram = beginOfCurrentProgram - oldBeginOfProgramMemory + beginOfProgramMemory;
+      endOfCurrentProgram   = endOfCurrentProgram   - oldBeginOfProgramMemory + beginOfProgramMemory;
+    }
+  }
+
+  firstFreeProgramByte   += size;
+  freeProgramBytes       -= size;
+}
+
+void fnPRcl(uint16_t unusedButMandatoryParameter) {
+  uint32_t pgmSize = endOfCurrentProgram - beginOfCurrentProgram;
+
+  if((*(firstFreeProgramByte - 2) != ((ITM_END >> 8) | 0x80)) || (*(firstFreeProgramByte - 1) != (ITM_END & 0xff))) {
+    _addSpaceAfterPrograms(2);
+    *(firstFreeProgramByte - 2) = (ITM_END >> 8) | 0x80;
+    *(firstFreeProgramByte - 1) =  ITM_END       & 0xff;
+    *(firstFreeProgramByte    ) = 0xffu;
+    *(firstFreeProgramByte + 1) = 0xffu;
+    scanLabelsAndPrograms();
+    pgmSize = endOfCurrentProgram - beginOfCurrentProgram;
+  }
+
+  _addSpaceAfterPrograms(pgmSize);
+  if(programList[currentProgramNumber - 1].step < 0) { // flash memory
+    readStepInFlashPgmLibrary(firstFreeProgramByte - pgmSize, pgmSize, (uintptr_t)beginOfCurrentProgram);
+    ++currentProgramNumber;
+  }
+  else { // RAM
+    xcopy(firstFreeProgramByte - pgmSize, beginOfCurrentProgram, pgmSize);
+  }
+  *(firstFreeProgramByte    ) = 0xffu;
+  *(firstFreeProgramByte + 1) = 0xffu;
+  scanLabelsAndPrograms();
 }
 
 
