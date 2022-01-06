@@ -133,9 +133,10 @@
 #define ERROR_INVALID_NAME                        48
 #define ERROR_TOO_MANY_VARIABLES                  49 // unlikely
 #define ERROR_NON_PROGRAMMABLE_COMMAND            50
-#define ERROR_BAD_INPUT                           51 // This error is not in ReM and cannot occur (theoretically).
+#define ERROR_NO_GLOBAL_LABEL                     51
+#define ERROR_BAD_INPUT                           52 // This error is not in ReM and cannot occur (theoretically).
 
-#define NUMBER_OF_ERROR_CODES                     52
+#define NUMBER_OF_ERROR_CODES                     53
 
 #define NUMBER_OF_GLOBAL_FLAGS                   112
 #define FIRST_LOCAL_FLAG                         112 // There are 112 global flag from 0 to 111

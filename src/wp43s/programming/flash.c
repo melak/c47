@@ -20,12 +20,14 @@
 
 #include "programming/flash.h"
 #include "charString.h"
+#include "config.h"
 #include "defines.h"
 #include "error.h"
 #include "items.h"
 #include "memory.h"
 #include "programming/manage.h"
 #include "programming/nextStep.h"
+#include "sort.h"
 #include "wp43s.h"
 #include <string.h>
 
@@ -110,6 +112,104 @@ void fnPRcl(uint16_t unusedButMandatoryParameter) {
   *(firstFreeProgramByte    ) = 0xffu;
   *(firstFreeProgramByte + 1) = 0xffu;
   scanLabelsAndPrograms();
+}
+
+
+
+void fnPSto(uint16_t unusedButMandatoryParameter) {
+  if(programList[currentProgramNumber - 1].step > 0) { // RAM
+    char lblName[16];
+    char flashPgmName[16];
+    uint32_t pgmSize = endOfCurrentProgram - beginOfCurrentProgram;
+
+    // Check for labels in RAM
+    lblName[0] = 0;
+    for(int i = 0; i < numberOfLabels; ++i) {
+      if(labelList[i].program == currentProgramNumber && labelList[i].step > 0) {
+        xcopy(lblName, labelList[i].labelPointer + 1, *(labelList[i].labelPointer));
+        lblName[*(labelList[i].labelPointer)] = 0;
+        break;
+      }
+    }
+    if(lblName[0] == 0) {
+      displayCalcErrorMessage(ERROR_NO_GLOBAL_LABEL, ERR_REGISTER_LINE, REGISTER_X);
+      return;
+    }
+
+    // Check for memory
+    if(getFreeFlash() < pgmSize) {
+      displayCalcErrorMessage(ERROR_FLASH_MEMORY_FULL, ERR_REGISTER_LINE, REGISTER_X);
+      return;
+    }
+
+    // Check for END before .END.
+    if((*(firstFreeProgramByte - 2) != ((ITM_END >> 8) | 0x80)) || (*(firstFreeProgramByte - 1) != (ITM_END & 0xff))) {
+      _addSpaceAfterPrograms(2);
+      *(firstFreeProgramByte - 2) = (ITM_END >> 8) | 0x80;
+      *(firstFreeProgramByte - 1) =  ITM_END       & 0xff;
+      *(firstFreeProgramByte    ) = 0xffu;
+      *(firstFreeProgramByte + 1) = 0xffu;
+      scanLabelsAndPrograms();
+      pgmSize = endOfCurrentProgram - beginOfCurrentProgram;
+    }
+
+    // Check for labels in Flash
+    for(int i = 0; i < numberOfLabels; ++i) {
+      if(labelList[i].program < 0 && labelList[i].step > 0) {
+        readStepInFlashPgmLibrary((uint8_t *)flashPgmName, 16, (uintptr_t)labelList[i].labelPointer);
+        flashPgmName[flashPgmName[0] + 1] = 0;
+        if(compareString(lblName, &flashPgmName[1], CMP_NAME) == 0) {
+          uint16_t programNumber = abs(labelList[i].program);
+
+          deleteFromFlashPgmLibrary((uintptr_t)programList[programNumber - 1].instructionPointer, (uintptr_t)programList[programNumber].instructionPointer);
+
+          scanFlashPgmLibrary();
+          scanLabelsAndPrograms();
+          break;
+        }
+      }
+    }
+
+    // Append to Flash
+    #ifdef DMCP_BUILD
+      if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ | FA_WRITE | FA_OPEN_EXISTING) != FR_OK) {
+        displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file wp43s.sav", NULL, NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        return;
+      }
+    #else // !DMCP_BUILD
+      FILE *ppgm_fp;
+
+      if((LIBDATA = fopen(FLASH_PGM_FILE, "r+b")) == NULL) {
+        displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file wp43s.sav", NULL, NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        return;
+      }
+    #endif // DMCP_BUILD
+
+    seek(sizeOfFlashPgmLibrary, LIBDATA);
+    save(beginOfCurrentProgram, pgmSize, LIBDATA);
+    save(firstFreeProgramByte, 2, LIBDATA); // 0xffff
+
+    #ifdef DMCP_BUILD
+      f_close(LIBDATA);
+    #else // !DMCP_BUILD
+      fclose(LIBDATA);
+    #endif //DMCP_BUILD
+
+    scanFlashPgmLibrary();
+    scanLabelsAndPrograms();
+  }
+  else {
+    displayCalcErrorMessage(ERROR_FLASH_MEMORY_WRITE_PROTECTED, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      moreInfoOnError("In function fnPSto: cannot copy a program from FM to FM", NULL, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
 }
 
 

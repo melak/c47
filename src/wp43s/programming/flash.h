@@ -22,6 +22,7 @@
 
 #include <stdint.h>
 
+void fnPSto                      (uint16_t unusedButMandatoryParameter);
 void fnPRcl                      (uint16_t unusedButMandatoryParameter);
 
 void initFlashPgmLibrary         (void);
