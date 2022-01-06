@@ -114,11 +114,15 @@ static uint16_t _get2ndParamOfKey(uint8_t *paramAddress) {
 }
 
 void fnKeyGtoXeq(uint16_t keyNum) {
-  uint8_t *secondParam  = findKey2ndParam(currentStep);
-  uint8_t *opParam      = secondParam + 1;
-  uint16_t label        = _get2ndParamOfKey(opParam);
+  pgmPtr_t secondParam = findKey2ndParam(currentStep);
+  pgmPtr_t opParam;
+  uint16_t label;
 
-  if(*secondParam == ITM_XEQ) {
+  opParam.any = secondParam.any + 1;
+  label       = _get2ndParamOfKey(opParam.ram);
+
+  // TODO: flash
+  if(*secondParam.ram == ITM_XEQ) {
     keyXeq(keyNum, label);
   }
   else {

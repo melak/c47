@@ -30,6 +30,7 @@
 #include "sort.h"
 #include "wp43s.h"
 #include <string.h>
+#include <stdlib.h>
 
 #define LIBDATA               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -77,10 +78,10 @@ static void _addSpaceAfterPrograms(uint16_t size) {
     freeProgramBytes      += TO_BYTES(newProgramSizeInBlocks - programSizeInBlocks);
     resizeProgramMemory(newProgramSizeInBlocks);
     if(programList[currentProgramNumber - 1].step > 0) { // RAM
-      currentStep           = currentStep           - oldBeginOfProgramMemory + beginOfProgramMemory;
-      firstDisplayedStep    = firstDisplayedStep    - oldBeginOfProgramMemory + beginOfProgramMemory;
-      beginOfCurrentProgram = beginOfCurrentProgram - oldBeginOfProgramMemory + beginOfProgramMemory;
-      endOfCurrentProgram   = endOfCurrentProgram   - oldBeginOfProgramMemory + beginOfProgramMemory;
+      currentStep.ram           = currentStep.ram           - oldBeginOfProgramMemory + beginOfProgramMemory;
+      firstDisplayedStep.ram    = firstDisplayedStep.ram    - oldBeginOfProgramMemory + beginOfProgramMemory;
+      beginOfCurrentProgram.ram = beginOfCurrentProgram.ram - oldBeginOfProgramMemory + beginOfProgramMemory;
+      endOfCurrentProgram.ram   = endOfCurrentProgram.ram   - oldBeginOfProgramMemory + beginOfProgramMemory;
     }
   }
 
@@ -89,7 +90,7 @@ static void _addSpaceAfterPrograms(uint16_t size) {
 }
 
 void fnPRcl(uint16_t unusedButMandatoryParameter) {
-  uint32_t pgmSize = endOfCurrentProgram - beginOfCurrentProgram;
+  uint32_t pgmSize = endOfCurrentProgram.any - beginOfCurrentProgram.any;
 
   if((*(firstFreeProgramByte - 2) != ((ITM_END >> 8) | 0x80)) || (*(firstFreeProgramByte - 1) != (ITM_END & 0xff))) {
     _addSpaceAfterPrograms(2);
@@ -98,16 +99,16 @@ void fnPRcl(uint16_t unusedButMandatoryParameter) {
     *(firstFreeProgramByte    ) = 0xffu;
     *(firstFreeProgramByte + 1) = 0xffu;
     scanLabelsAndPrograms();
-    pgmSize = endOfCurrentProgram - beginOfCurrentProgram;
+    pgmSize = endOfCurrentProgram.any - beginOfCurrentProgram.any;
   }
 
   _addSpaceAfterPrograms(pgmSize);
   if(programList[currentProgramNumber - 1].step < 0) { // flash memory
-    readStepInFlashPgmLibrary(firstFreeProgramByte - pgmSize, pgmSize, (uintptr_t)beginOfCurrentProgram);
+    readStepInFlashPgmLibrary(firstFreeProgramByte - pgmSize, pgmSize, beginOfCurrentProgram.flash);
     ++currentProgramNumber;
   }
   else { // RAM
-    xcopy(firstFreeProgramByte - pgmSize, beginOfCurrentProgram, pgmSize);
+    xcopy(firstFreeProgramByte - pgmSize, beginOfCurrentProgram.ram, pgmSize);
   }
   *(firstFreeProgramByte    ) = 0xffu;
   *(firstFreeProgramByte + 1) = 0xffu;
@@ -120,14 +121,14 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
   if(programList[currentProgramNumber - 1].step > 0) { // RAM
     char lblName[16];
     char flashPgmName[16];
-    uint32_t pgmSize = endOfCurrentProgram - beginOfCurrentProgram;
+    uint32_t pgmSize = endOfCurrentProgram.ram - beginOfCurrentProgram.ram;
 
     // Check for labels in RAM
     lblName[0] = 0;
     for(int i = 0; i < numberOfLabels; ++i) {
       if(labelList[i].program == currentProgramNumber && labelList[i].step > 0) {
-        xcopy(lblName, labelList[i].labelPointer + 1, *(labelList[i].labelPointer));
-        lblName[*(labelList[i].labelPointer)] = 0;
+        xcopy(lblName, labelList[i].labelPointer.ram + 1, *(labelList[i].labelPointer.ram));
+        lblName[*(labelList[i].labelPointer.ram)] = 0;
         break;
       }
     }
@@ -150,18 +151,18 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
       *(firstFreeProgramByte    ) = 0xffu;
       *(firstFreeProgramByte + 1) = 0xffu;
       scanLabelsAndPrograms();
-      pgmSize = endOfCurrentProgram - beginOfCurrentProgram;
+      pgmSize = endOfCurrentProgram.ram - beginOfCurrentProgram.ram;
     }
 
     // Check for labels in Flash
     for(int i = 0; i < numberOfLabels; ++i) {
       if(labelList[i].program < 0 && labelList[i].step > 0) {
-        readStepInFlashPgmLibrary((uint8_t *)flashPgmName, 16, (uintptr_t)labelList[i].labelPointer);
+        readStepInFlashPgmLibrary((uint8_t *)flashPgmName, 16, labelList[i].labelPointer.flash);
         flashPgmName[flashPgmName[0] + 1] = 0;
         if(compareString(lblName, &flashPgmName[1], CMP_NAME) == 0) {
           uint16_t programNumber = abs(labelList[i].program);
 
-          deleteFromFlashPgmLibrary((uintptr_t)programList[programNumber - 1].instructionPointer, (uintptr_t)programList[programNumber].instructionPointer);
+          deleteFromFlashPgmLibrary(programList[programNumber - 1].instructionPointer.flash, programList[programNumber].instructionPointer.flash);
 
           scanFlashPgmLibrary();
           scanLabelsAndPrograms();
@@ -192,7 +193,7 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
     #endif // DMCP_BUILD
 
     seek(sizeOfFlashPgmLibrary, LIBDATA);
-    save(beginOfCurrentProgram, pgmSize, LIBDATA);
+    save(beginOfCurrentProgram.ram, pgmSize, LIBDATA);
     save(firstFreeProgramByte, 2, LIBDATA); // 0xffff
 
     #ifdef DMCP_BUILD
@@ -364,7 +365,7 @@ void scanFlashPgmLibrary(void) {
 
   numberOfLabelsInFlash = 0;
   step = (uint8_t *)tmpString;
-  flashProgramList[0].instructionPointer = (void *)(-1);
+  flashProgramList[0].instructionPointer.flash = -1;
   flashProgramList[0].step = -1;
 
   numberOfProgramsInFlash = 1;
@@ -373,21 +374,21 @@ void scanFlashPgmLibrary(void) {
     nextStep = findNextStep_ram(step);
     if(*step == 1) { // LBL
       flashLabelList[numberOfLabelsInFlash].program = -numberOfProgramsInFlash;
-      if(*(step + 1) <= 109) { // Local label
+      if(*(step + 1) <= 104) { // Local label
         flashLabelList[numberOfLabelsInFlash].step = -stepNumber;
-        flashLabelList[numberOfLabelsInFlash].labelPointer = (void *)(step - (uint8_t *)tmpString + 1 + seekPos + 1);
+        flashLabelList[numberOfLabelsInFlash].labelPointer.flash = step - (uint8_t *)tmpString + 1 + seekPos + 1;
       }
       else { // Global label
         flashLabelList[numberOfLabelsInFlash].step = stepNumber;
-        flashLabelList[numberOfLabelsInFlash].labelPointer = (void *)(step - (uint8_t *)tmpString + 2 + seekPos + 1);
+        flashLabelList[numberOfLabelsInFlash].labelPointer.flash = step - (uint8_t *)tmpString + 2 + seekPos + 1;
       }
 
-      flashLabelList[numberOfLabelsInFlash].instructionPointer = (void *)(nextStep - (uint8_t *)tmpString + seekPos + 1);
+      flashLabelList[numberOfLabelsInFlash].instructionPointer.flash = nextStep - (uint8_t *)tmpString + seekPos + 1;
       numberOfLabelsInFlash++;
     }
 
     if((*step & 0x7f) == (ITM_END >> 8) && *(step + 1) == (ITM_END & 0xff)) { // END
-      flashProgramList[numberOfProgramsInFlash].instructionPointer = (void *)(step - (uint8_t *)tmpString + 2 + seekPos + 1);
+      flashProgramList[numberOfProgramsInFlash].instructionPointer.flash = step - (uint8_t *)tmpString + 2 + seekPos + 1;
       flashProgramList[numberOfProgramsInFlash].step = -(stepNumber + 1);
       numberOfProgramsInFlash++;
     }

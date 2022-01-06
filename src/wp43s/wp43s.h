@@ -162,6 +162,11 @@
   extern angularMode_t          currentAngularMode;
   extern formulaHeader_t       *allFormulae;
 
+  extern pgmPtr_t               beginOfCurrentProgram;
+  extern pgmPtr_t               endOfCurrentProgram;
+  extern pgmPtr_t               firstDisplayedStep;
+  extern pgmPtr_t               currentStep;
+
   extern char                  *tmpString;
   extern char                  *tmpStringLabelOrVariableName;
   extern char                  *errorMessage;
@@ -211,11 +216,7 @@
   extern uint8_t                lastKeyCode;
   extern uint8_t                entryStatus; // 0x01 for the entry flag, backed up to 0x02 for undo
   extern uint8_t               *beginOfProgramMemory;
-  extern uint8_t               *beginOfCurrentProgram;
-  extern uint8_t               *endOfCurrentProgram;
   extern uint8_t               *firstFreeProgramByte;
-  extern uint8_t               *firstDisplayedStep;
-  extern uint8_t               *currentStep;
 
   /**
    * Instance of the internal state for TAM.

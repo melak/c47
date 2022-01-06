@@ -101,7 +101,8 @@ void updateAssignTamBuffer(void) {
     tbPtr = stpcpy(tbPtr, "_");
   }
   else if(itemToBeAssigned >= ASSIGN_LABELS) {
-    uint8_t *lblPtr = labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer;
+    // TODO: flash
+    uint8_t *lblPtr = labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer.ram;
     uint32_t count = *(lblPtr++);
     for(uint32_t i = 0; i < count; ++i) {
       *(tbPtr++) = *(lblPtr++);
@@ -147,7 +148,8 @@ static void _assignItem(userMenuItem_t *menuItem) {
   const uint8_t *lblPtr = NULL;
   uint32_t l = 0;
   if(itemToBeAssigned >= ASSIGN_LABELS) {
-    lblPtr                    = labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer;
+    // TODO: flash
+    lblPtr                    = labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer.ram;
     menuItem->item            = ITM_XEQ;
   }
   else if(itemToBeAssigned >= ASSIGN_RESERVED_VARIABLES) {

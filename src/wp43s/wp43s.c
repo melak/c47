@@ -93,6 +93,11 @@ programList_t         *flashProgramList = NULL;
 angularMode_t          currentAngularMode;
 formulaHeader_t       *allFormulae;
 
+pgmPtr_t               beginOfCurrentProgram;
+pgmPtr_t               endOfCurrentProgram;
+pgmPtr_t               firstDisplayedStep;
+pgmPtr_t               currentStep;
+
 char                  *tmpString = NULL;
 char                  *tmpStringLabelOrVariableName = NULL;
 char                  *errorMessage;
@@ -136,11 +141,7 @@ uint8_t                programRunStop;
 uint8_t                lastKeyCode;
 uint8_t                entryStatus;
 uint8_t               *beginOfProgramMemory;
-uint8_t               *beginOfCurrentProgram;
-uint8_t               *endOfCurrentProgram;
 uint8_t               *firstFreeProgramByte;
-uint8_t               *firstDisplayedStep;
-uint8_t               *currentStep;
 
 tamState_t             tam;
 int16_t                currentRegisterBrowserScreen;

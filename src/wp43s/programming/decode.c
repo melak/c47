@@ -41,7 +41,7 @@
     printf("\nProgram listing");
     step = beginOfProgramMemory;
     while(step) {
-      if(step == programList[programNumber].instructionPointer) {
+      if(step == programList[programNumber].instructionPointer.ram) {
         programNumber++;
         if(programNumber != 1) {
           printf("\n------------------------------------------------------------");
@@ -57,7 +57,7 @@
         for(i=0; i<numberOfBytesInStep; i++) {
           printf(" %02x", *(step + i)); fflush(stdout);
           if(i == 3 && numberOfBytesInStep > 4) {
-            decodeOneStep(step);
+            decodeOneStep_ram(step);
             stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
 
             if(*step != ITM_LBL && (*step != ((ITM_END >> 8) | 0x80) || *(step + 1) != (ITM_END & 0xff))) { // Not LBL and not END
@@ -76,7 +76,7 @@
           for(i=1; i<=4 - ((numberOfBytesInStep - 1) % 4); i++) {
             printf("   "); fflush(stdout);
           }
-          decodeOneStep(step);
+          decodeOneStep_ram(step);
           stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
 
           if(*step != ITM_LBL && (*step != ((ITM_END >> 8) | 0x80) || *(step + 1) != (ITM_END & 0xff))) { // Not LBL and not END
@@ -99,7 +99,7 @@
     for(int i=0; i<numberOfLabels; i++) {
       printf("%3d%8d%6d ", i, labelList[i].program, labelList[i].step);
       if(labelList[i].program < 0) { // Flash
-        readStepInFlashPgmLibrary((uint8_t *)(tmpString + 200), 32, (uintptr_t)labelList[i].labelPointer);
+        readStepInFlashPgmLibrary((uint8_t *)(tmpString + 200), 32, labelList[i].labelPointer.flash);
         if(labelList[i].step < 0) { // Local label
           if(*((uint8_t *)(tmpString + 200)) < 100) {
             printf("%02d\n", *((uint8_t *)(tmpString + 200)));
@@ -117,16 +117,16 @@
       }
       else { // RAM
         if(labelList[i].step < 0) { // Local label
-          if(*(labelList[i].labelPointer) < 100) {
-            printf("%02d\n", *(labelList[i].labelPointer));
+          if(*(labelList[i].labelPointer.ram) < 100) {
+            printf("%02d\n", *(labelList[i].labelPointer.ram));
           }
-          else if(*(labelList[i].labelPointer) < 105) {
-            printf("%c\n", *(labelList[i].labelPointer) - 100 + 'A');
+          else if(*(labelList[i].labelPointer.ram) < 105) {
+            printf("%c\n", *(labelList[i].labelPointer.ram) - 100 + 'A');
           }
         }
         else { // Global label
-          xcopy(tmpString + 100, labelList[i].labelPointer + 1, *(labelList[i].labelPointer));
-          tmpString[100 + *(labelList[i].labelPointer)] = 0;
+          xcopy(tmpString + 100, labelList[i].labelPointer.ram + 1, *(labelList[i].labelPointer.ram));
+          tmpString[100 + *(labelList[i].labelPointer.ram)] = 0;
           stringToUtf8(tmpString + 100, (uint8_t *)tmpString);
           printf("'%s'\n", tmpString);
         }
@@ -137,13 +137,13 @@
     printf("program  step OP\n");
     for(int i=0; i<numberOfPrograms; i++) {
       if(programList[i].step < 0) { // Flash
-        readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, (uintptr_t)programList[i].instructionPointer);
+        readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, programList[i].instructionPointer.flash);
         decodeOneStep_ram((uint8_t *)(tmpString + 1600));
         stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
         printf("%7d %5d %s\n", i, programList[i].step, tmpString);
       }
       else {
-        decodeOneStep_ram(programList[i].instructionPointer);
+        decodeOneStep_ram(programList[i].instructionPointer.ram);
         stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
         printf("%7d %5d %s\n", i, programList[i].step, tmpString);
       }
@@ -336,7 +336,7 @@ static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, 
 
     case PARAM_KEYG_KEYX:
       {
-        uint8_t *secondParam = findKey2ndParam(paramAddress - 3);
+        uint8_t *secondParam = findKey2ndParam_ram(paramAddress - 3);
         decodeOp(secondParam + 1, indexOfItems[*secondParam].itemCatalogName, PARAM_LABEL, indexOfItems[*secondParam].tamMinMax & TAM_MAX_MASK);
         xcopy(tmpString + TMP_STR_LENGTH / 2, tmpString, stringByteLength(tmpString) + 1);
         decodeOp(paramAddress - 1, op, PARAM_NUMBER_8, 21);
@@ -451,13 +451,13 @@ static void decodeLiteral(uint8_t *literalAddress) {
 }
 
 
-void decodeOneStep(uint8_t *step) {
+void decodeOneStep(pgmPtr_t step) {
   if(currentProgramNumber > (numberOfPrograms - numberOfProgramsInFlash)) { // Flash
-    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, (uintptr_t)step);
+    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, step.flash);
     decodeOneStep_ram((uint8_t *)(tmpString + 1600));
   }
   else {
-    decodeOneStep_ram(step);
+    decodeOneStep_ram(step.ram);
   }
 }
 

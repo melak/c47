@@ -523,8 +523,8 @@
       if(tam.function == ITM_GTOP) {
         tam.value = programList[numberOfPrograms - numberOfProgramsInFlash - 1].step;
         reallyRunFunction(ITM_GTOP, tam.value);
-        if((*currentStep != 0xff) || (*(currentStep + 1) != 0xff)) {
-          currentStep = firstFreeProgramByte;
+        if((*currentStep.ram != 0xff) || (*(currentStep.ram + 1) != 0xff)) {
+          currentStep.ram = firstFreeProgramByte;
           insertStepInProgram(ITM_END);
           scanLabelsAndPrograms();
           tam.value = programList[numberOfPrograms - numberOfProgramsInFlash - 1].step;

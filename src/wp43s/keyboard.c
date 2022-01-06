@@ -874,8 +874,8 @@
     if(freeProgramBytes >= 4) { // Push the programs to the end of RAM
       uint32_t newProgramSize = (uint32_t)((uint8_t *)(ram + RAM_SIZE) - beginOfProgramMemory) - (freeProgramBytes & 0xfffc);
       if(programList[currentProgramNumber].step > 0) {
-        currentStep        += (freeProgramBytes & 0xfffc);
-        firstDisplayedStep += (freeProgramBytes & 0xfffc);
+        currentStep.ram        += (freeProgramBytes & 0xfffc);
+        firstDisplayedStep.ram += (freeProgramBytes & 0xfffc);
       }
       freeProgramBytes &= 0x03;
       resizeProgramMemory(TO_BLOCKS(newProgramSize));
@@ -1758,6 +1758,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
       case CM_PEM:
         if(programList[currentProgramNumber - 1].step < 0) {
           // attempt to modify a program in the flash memory
+          displayCalcErrorMessage(ERROR_FLASH_MEMORY_WRITE_PROTECTED, ERR_REGISTER_LINE, REGISTER_X);
           return;
         }
         if(getSystemFlag(FLAG_ALPHA)) {
@@ -1768,9 +1769,9 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
           }
         }
         else if(aimBuffer[0] == 0) {
-          nextStep = findNextStep(currentStep);
-          if(*currentStep != 255 || *(currentStep + 1) != 255) { // Not the last END
-            deleteStepsFromTo(currentStep, nextStep);
+          nextStep = findNextStep_ram(currentStep.ram);
+          if(*currentStep.ram != 255 || *(currentStep.ram + 1) != 255) { // Not the last END
+            deleteStepsFromTo(currentStep.ram, nextStep);
           }
           if(currentLocalStepNumber > 1) {
             currentStep = findPreviousStep(currentStep);

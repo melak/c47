@@ -210,10 +210,10 @@ uint8_t *findNextStep_ram(uint8_t *step) {
 }
 
 
-uint8_t *findNextStep(uint8_t *step) {
+pgmPtr_t findNextStep(pgmPtr_t step) {
   if(programList[currentProgramNumber - 1].step < 0) { // Flash
     uint8_t stepByte1, stepByte2;
-    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, (uintptr_t)step);
+    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, step.flash);
     stepByte1 = *(uint8_t *)(tmpString + 1600);
     stepByte2 = *(uint8_t *)(tmpString + 1601);
     if((stepByte1 == ((ITM_KEY >> 8) | 0x80)) && (stepByte2 == (ITM_KEY & 0xff))) {
@@ -224,7 +224,9 @@ uint8_t *findNextStep(uint8_t *step) {
     }
   }
   else { // RAM
-    return findNextStep_ram(step);
+    pgmPtr_t ptr;
+    ptr.ram = findNextStep_ram(step.ram);
+    return ptr;
   }
 }
 
@@ -260,63 +262,69 @@ uint8_t *findKey2ndParam_ram(uint8_t *step) {
 
 
 
-uint8_t *findKey2ndParam(uint8_t *step) {
+pgmPtr_t findKey2ndParam(pgmPtr_t step) {
+  pgmPtr_t ptr;
   if(programList[currentProgramNumber - 1].step < 0) { // Flash
-    uintptr_t origStep = (uintptr_t)(step);
+    uintptr_t origStep = step.flash;
     readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, origStep);
-    step = (uint8_t *)(tmpString + 1600);
-    uint16_t op = *(step++);
+    step.ram = (uint8_t *)(tmpString + 1600);
+    uint16_t op = *(step.ram++);
     if(op & 0x80) {
       op &= 0x7f;
       op <<= 8;
-      op |= *(step++);
+      op |= *(step.ram++);
     }
 
     if(op == 0x7fff) { // .END.
-      return NULL;
+      ptr.ram = NULL;
     }
     else {
       switch(indexOfItems[op].status & PTP_STATUS) {
         case PTP_NONE:
         case PTP_DISABLED:
-          return step - ((uintptr_t)(tmpString + 1600)) + origStep;
+          ptr.flash = step.ram - (uint8_t *)(tmpString + 1600) + origStep;
+          break;
 
         case PTP_LITERAL:
-          return countLiteralBytes(step) - ((uintptr_t)(tmpString + 1600)) + origStep;
+          ptr.flash = countLiteralBytes(step.ram) - (uint8_t *)(tmpString + 1600) + origStep;
+          break;
 
         case PTP_KEYG_KEYX:
-          return countOpBytes(step, PARAM_NUMBER_8) - ((uintptr_t)(tmpString + 1600)) + origStep;
+          ptr.flash = countOpBytes(step.ram, PARAM_NUMBER_8) - (uint8_t *)(tmpString + 1600) + origStep;
+          break;
 
         default:
-          return countOpBytes(step, (indexOfItems[op].status & PTP_STATUS) >> 9) - ((uintptr_t)(tmpString + 1600)) + origStep;
+          ptr.flash = countOpBytes(step.ram, (indexOfItems[op].status & PTP_STATUS) >> 9) - (uint8_t *)(tmpString + 1600) + origStep;
       }
     }
   }
   else { // RAM
-    return findKey2ndParam_ram(step);
+    ptr.ram = findKey2ndParam_ram(step.ram);
   }
+  return ptr;
 }
 
 
 
-uint8_t *findPreviousStep(uint8_t *step) {
-  uint8_t *searchFromStep = NULL, *nextStep;
+pgmPtr_t findPreviousStep(pgmPtr_t step) {
+  pgmPtr_t searchFromStep, nextStep;
+  searchFromStep.ram = NULL;
 
-  if(step == beginOfProgramMemory) {
+  if(step.ram == beginOfProgramMemory) {
     return step;
   }
 
   if(currentProgramNumber > (numberOfPrograms - numberOfProgramsInFlash)) { // Flash
-    searchFromStep = beginOfCurrentProgram;
+    searchFromStep.flash = beginOfCurrentProgram.flash;
   }
   else {
-    if(numberOfLabels == 0 || step <= labelList[0].instructionPointer || labelList[0].program < 0) {
-      searchFromStep = beginOfProgramMemory;
+    if(numberOfLabels == 0 || step.ram <= labelList[0].instructionPointer.ram || labelList[0].program < 0) {
+      searchFromStep.ram = beginOfProgramMemory;
     }
     else {
       for(int16_t label=numberOfLabels - numberOfLabelsInFlash - 1; label >= 0; label--) {
-        if(labelList[label].instructionPointer < step) {
-          searchFromStep = labelList[label].instructionPointer;
+        if(labelList[label].instructionPointer.ram < step.ram) {
+          searchFromStep.ram = labelList[label].instructionPointer.ram;
           break;
         }
       }
@@ -324,8 +332,8 @@ uint8_t *findPreviousStep(uint8_t *step) {
   }
 
   nextStep = findNextStep(searchFromStep);
-  while(nextStep != step) {
-    searchFromStep = nextStep;
+  while(nextStep.any != step.any) {
+    searchFromStep.any = nextStep.any;
     nextStep = findNextStep(searchFromStep);
   }
 
@@ -340,11 +348,11 @@ static void _showStep(void) {
   uint8_t *tmpStep;
   
   if(programList[currentProgramNumber - 1].step < 0) {
-    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, (uintptr_t)currentStep);
+    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, currentStep.flash);
     tmpStep = (uint8_t *)(tmpString + 1600);
   }
   else {
-    tmpStep = currentStep;
+    tmpStep = currentStep.ram;
   }
   lblOrEnd = (*tmpStep == ITM_LBL) || ((*tmpStep == ((ITM_END >> 8) | 0x80)) && (*(tmpStep + 1) == (ITM_END & 0xff))) || ((*tmpStep == 0xff) && (*(tmpStep + 1) == 0xff));
   int16_t xPos = (lblOrEnd ? 42 : 62);
@@ -503,11 +511,11 @@ void fnSkip(uint16_t numberOfSteps) {
   for(uint16_t i = 0; i <= numberOfSteps; ++i) { // '<=' is intended here because the pointer must be moved at least by 1 step
     uint8_t *tmpStep;
     if(programList[currentProgramNumber - 1].step < 0) {
-      readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, (uintptr_t)currentStep);
+      readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, currentStep.flash);
       tmpStep = (uint8_t *)(tmpString + 1600);
     }
     else {
-      tmpStep = currentStep;
+      tmpStep = currentStep.ram;
     }
     if((*tmpStep != ((ITM_END >> 8) | 0x80) || *(tmpStep + 1) != (ITM_END & 0xff)) && (*tmpStep != 255 || *(tmpStep + 1) != 255)) {
       ++currentLocalStepNumber;
