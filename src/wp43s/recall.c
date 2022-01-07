@@ -85,7 +85,7 @@ void fnRecallAdd(uint16_t regist) {
   if(regInRange(regist)) {
     if(!saveLastX()) return;
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-    copySourceRegisterToDestRegister(regist, REGISTER_X);
+    copySourceRegisterToDestRegister(regist == REGISTER_Y ? SAVED_REGISTER_Y : regist, REGISTER_X);
     if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
     }
@@ -104,7 +104,7 @@ void fnRecallSub(uint16_t regist) {
   if(regInRange(regist)) {
     if(!saveLastX()) return;
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-    copySourceRegisterToDestRegister(regist, REGISTER_X);
+    copySourceRegisterToDestRegister(regist == REGISTER_Y ? SAVED_REGISTER_Y : regist, REGISTER_X);
     if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
     }
@@ -123,7 +123,7 @@ void fnRecallMult(uint16_t regist) {
   if(regInRange(regist)) {
     if(!saveLastX()) return;
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-    copySourceRegisterToDestRegister(regist, REGISTER_X);
+    copySourceRegisterToDestRegister(regist == REGISTER_Y ? SAVED_REGISTER_Y : regist, REGISTER_X);
     if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
     }
@@ -142,7 +142,7 @@ void fnRecallDiv(uint16_t regist) {
   if(regInRange(regist)) {
     if(!saveLastX()) return;
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-    copySourceRegisterToDestRegister(regist, REGISTER_X);
+    copySourceRegisterToDestRegister(regist == REGISTER_Y ? SAVED_REGISTER_Y : regist, REGISTER_X);
     if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
     }
