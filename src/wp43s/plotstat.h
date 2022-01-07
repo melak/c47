@@ -107,6 +107,7 @@ char * padEquals(const char * ss);
 #ifndef TESTSUITE_BUILD
 int16_t screen_window_x(float x_min, float x, float x_max);
 int16_t screen_window_y(float y_min, float y, float y_max);
+void    doubleToString(double x, int16_t n, char *buff);
 #endif
 
 void    statGraphReset     (void);

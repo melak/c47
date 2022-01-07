@@ -402,7 +402,7 @@ static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
       break;
 
     case PARAM_NUMBER_8:
-      if(opParam <= 99) { // Value from 0 to 99
+      if(opParam <= (indexOfItems[op].tamMinMax & TAM_MAX_MASK)) { // Value from 0 to 99
         reallyRunFunction(op, opParam);
       }
       else if(opParam == INDIRECT_REGISTER) {
@@ -461,6 +461,10 @@ static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
       else {
         sprintf(tmpString, "\nIn function _executeOp: case PARAM_REGISTER / PARAM_COMPARE, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
       }
+      break;
+
+    case PARAM_SKIP_BACK:
+      reallyRunFunction(op, opParam);
       break;
 
     default:

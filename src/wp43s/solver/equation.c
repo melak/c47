@@ -298,6 +298,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
     bool_t inLabel = false;
     bool_t unaryMinus = true;
     bool_t inNumeric = true;
+    bool_t beginningOfNumber = true;
     bool_t inExponent = false;
     const char *tmpPtr = strPtr;
 
@@ -357,6 +358,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           bufPtr += 1;
           unaryMinus = true;
           inNumeric = true;
+          beginningOfNumber = true;
           inExponent = false;
         }
 
@@ -392,6 +394,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           bufPtr += 1;
           unaryMinus = true;
           inNumeric = true;
+          beginningOfNumber = true;
           inExponent = false;
         }
 
@@ -425,6 +428,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           *(bufPtr + 1) = 0;
           unaryMinus = false;
           inNumeric = false;
+          beginningOfNumber = false;
           inExponent = false;
         }
 
@@ -443,6 +447,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           bufPtr += 1;
           unaryMinus = false;
           inNumeric = true;
+          beginningOfNumber = true;
           inExponent = false;
         }
 
@@ -467,6 +472,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           bufPtr += 2;
           unaryMinus = false;
           inNumeric = true;
+          beginningOfNumber = true;
           inExponent = false;
         }
 
@@ -475,10 +481,11 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           *(bufPtr + 1) = 0;
           unaryMinus = false;
           inExponent = false;
+          beginningOfNumber = false;
         }
 
         /* Exponent */
-        else if((!inLabel) && inNumeric && (!inExponent) && ((*strPtr) == 'E' || (*strPtr) == 'e')) {
+        else if((!inLabel) && inNumeric && (!beginningOfNumber) && (!inExponent) && (*strPtr) == 'E') {
           if(cursorAt == EQUATION_NO_CURSOR) {
             *bufPtr       = STD_DOT[0];
             *(bufPtr + 1) = STD_DOT[1];
@@ -501,11 +508,13 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
             }
             unaryMinus = false;
             inExponent = false;
+            beginningOfNumber = false;
           }
           else {
             *(bufPtr + 1) = 0;
             unaryMinus = false;
             inExponent = true;
+            beginningOfNumber = false;
           }
         }
 
@@ -517,6 +526,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           unaryMinus = false;
           inNumeric = false;
           inExponent = false;
+          beginningOfNumber = false;
         }
 
         /* Other single-byte characters */
@@ -525,6 +535,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           unaryMinus = false;
           inNumeric = false;
           inExponent = false;
+          beginningOfNumber = false;
         }
 
         /* Add the character */
@@ -1281,7 +1292,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
           ++numericCount;
           exponentSignCanOccur = false;
         }
-        else if((!inExponent) && (*strPtr == 'E' || *strPtr == 'e') && ((*bufPtr = 0), numericCount == stringGlyphLength(buffer))) {
+        else if((!inExponent) && *strPtr == 'E' && ((*bufPtr = 0), numericCount == stringGlyphLength(buffer))) {
           ++numericCount;
           inExponent = true;
           exponentSignCanOccur = true;
