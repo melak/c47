@@ -119,14 +119,26 @@ void fnKeyGtoXeq(uint16_t keyNum) {
   uint16_t label;
 
   opParam.any = secondParam.any + 1;
-  label       = _get2ndParamOfKey(opParam.ram);
+  if(labelList[label].program > 0) { // RAM
+    label = _get2ndParamOfKey(opParam.ram);
 
-  // TODO: flash
-  if(*secondParam.ram == ITM_XEQ) {
-    keyXeq(keyNum, label);
+    if(*secondParam.ram == ITM_XEQ) {
+      keyXeq(keyNum, label);
+    }
+    else {
+      keyGto(keyNum, label);
+    }
   }
-  else {
-    keyGto(keyNum, label);
+  else { // Flash
+    readStepInFlashPgmLibrary((uint8_t *)tmpString, 400, secondParam.flash);
+    label = _get2ndParamOfKey((uint8_t *)tmpString + 1);
+
+    if(*((uint8_t *)tmpString) == ITM_XEQ) {
+      keyXeq(keyNum, label);
+    }
+    else {
+      keyGto(keyNum, label);
+    }
   }
 }
 

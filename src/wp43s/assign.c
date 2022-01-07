@@ -20,6 +20,7 @@
 #include "fonts.h"
 #include "items.h"
 #include "memory.h"
+#include "programming/flash.h"
 #include "registers.h"
 #include "screen.h"
 #include "softmenus.h"
@@ -101,11 +102,21 @@ void updateAssignTamBuffer(void) {
     tbPtr = stpcpy(tbPtr, "_");
   }
   else if(itemToBeAssigned >= ASSIGN_LABELS) {
-    // TODO: flash
-    uint8_t *lblPtr = labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer.ram;
-    uint32_t count = *(lblPtr++);
-    for(uint32_t i = 0; i < count; ++i) {
-      *(tbPtr++) = *(lblPtr++);
+    if(labelList[itemToBeAssigned - ASSIGN_LABELS].program > 0) { // RAM
+      uint8_t *lblPtr = labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer.ram;
+      uint32_t count = *(lblPtr++);
+      for(uint32_t i = 0; i < count; ++i) {
+        *(tbPtr++) = *(lblPtr++);
+      }
+    }
+    else { // Flash
+      uint8_t *lblPtr = allocWp43s(TO_BLOCKS(16));
+      readStepInFlashPgmLibrary(lblPtr, 16, labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer.flash);
+      uint32_t count = *(lblPtr++);
+      for(uint32_t i = 0; i < count; ++i) {
+        *(tbPtr++) = *(lblPtr++);
+      }
+      freeWp43s(lblPtr, TO_BLOCKS(16));
     }
   }
   else if(itemToBeAssigned >= ASSIGN_RESERVED_VARIABLES) {

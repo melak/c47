@@ -412,22 +412,12 @@ static void _bstInPem(void) {
       firstDisplayedLocalStepNumber = 0;
       firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
     }
-    else if(currentProgramNumber == numberOfPrograms) {
+    else {
       firstDisplayedLocalStepNumber = numberOfSteps - 6;
       firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
       for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i) {
         firstDisplayedStep = findNextStep(firstDisplayedStep);
       }
-    }
-    else {
-      firstDisplayedLocalStepNumber = numberOfSteps - 6;
-      firstDisplayedStep = findPreviousStep(programList[currentProgramNumber].instructionPointer);
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
     }
   }
 }

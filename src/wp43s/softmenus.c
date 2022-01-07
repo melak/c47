@@ -20,6 +20,7 @@
 #include "error.h"
 #include "gui.h"
 #include "items.h"
+#include "memory.h"
 #include "programming/flash.h"
 #include "programming/nextStep.h"
 #include "registers.h"
@@ -578,21 +579,48 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 
 
+  static void _dynmenuConstructMVarsFromPgm(uint16_t label, uint16_t *numberOfBytes, uint16_t *numberOfVars) {
+    bool_t inFlash = (labelList[label].program < 0);
+    uint16_t flashOffset = 0;
+    uint8_t *step;
+    if(inFlash) {
+      step = allocWp43s(TO_BLOCKS(400));
+      if(step) {
+        readStepInFlashPgmLibrary(step, 400, labelList[label].instructionPointer.flash);
+      }
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        return;
+      }
+    }
+    else {
+      step = labelList[label].instructionPointer.ram;
+    }
+    while((*numberOfVars < 18) && *step == ((ITM_MVAR >> 8) | 0x80) && *(step + 1) == (ITM_MVAR & 0xff) && *(step + 2) == STRING_LABEL_VARIABLE) {
+      xcopy(tmpString + *numberOfBytes, step + 4, *(step + 3));
+      (void)findOrAllocateNamedVariable(tmpString + *numberOfBytes);
+      *numberOfBytes += *(step + 3) + 1;
+      (*numberOfVars)++;
+      if(inFlash) {
+        flashOffset += (findNextStep_ram(step) - step);
+        readStepInFlashPgmLibrary(step, 400, labelList[label].instructionPointer.flash + flashOffset);
+      }
+      else {
+        step = findNextStep_ram(step);
+      }
+    }
+    if(inFlash) {
+      freeWp43s(step, TO_BLOCKS(400));
+    }
+  }
+
   static void _dynmenuConstructMVars(int16_t menu) {
     uint16_t numberOfBytes = 0;
     uint16_t numberOfVars = 0;
     memset(tmpString, 0, TMP_STR_LENGTH);
 
     if(currentMvarLabel != INVALID_VARIABLE) {
-      uint8_t *step = labelList[currentMvarLabel - FIRST_LABEL].instructionPointer.ram;
-      while((numberOfVars < 18) && *step == ((ITM_MVAR >> 8) | 0x80) && *(step + 1) == (ITM_MVAR & 0xff) && *(step + 2) == STRING_LABEL_VARIABLE) {
-        xcopy(tmpString + numberOfBytes, step + 4, *(step + 3));
-        (void)findOrAllocateNamedVariable(tmpString + numberOfBytes);
-        numberOfBytes += *(step + 3) + 1;
-        numberOfVars++;
-        step = findNextStep_ram(step);
-      }
-    // TODO: flash
+      _dynmenuConstructMVarsFromPgm(currentMvarLabel - FIRST_LABEL, &numberOfBytes, &numberOfVars);
     }
     else if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
       char *bufPtr = tmpString;
@@ -607,16 +635,8 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       lastErrorCode = errorCode;
     }
     else {
-      uint8_t *step = labelList[currentSolverProgram].instructionPointer.ram;
-      while(*step == ((ITM_MVAR >> 8) | 0x80) && *(step + 1) == (ITM_MVAR & 0xff) && *(step + 2) == STRING_LABEL_VARIABLE) {
-        xcopy(tmpString + numberOfBytes, step + 4, *(step + 3));
-        (void)findOrAllocateNamedVariable(tmpString + numberOfBytes);
-        numberOfBytes += *(step + 3) + 1;
-        numberOfVars++;
-        step = findNextStep_ram(step);
-      }
+      _dynmenuConstructMVarsFromPgm(currentSolverProgram, &numberOfBytes, &numberOfVars);
     }
-    // TODO: flash
 
     dynamicSoftmenu[menu].menuContent = malloc(numberOfBytes);
     xcopy(dynamicSoftmenu[menu].menuContent, tmpString, numberOfBytes);
