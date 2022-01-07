@@ -27,6 +27,7 @@
 #include "error.h"
 #include "fonts.h"
 #include "items.h"
+#include "programming/flash.h"
 #include "programming/lblGtoXeq.h"
 #include "programming/manage.h"
 #include "programming/nextStep.h"
@@ -119,7 +120,7 @@ void fnKeyGtoXeq(uint16_t keyNum) {
   uint16_t label;
 
   opParam.any = secondParam.any + 1;
-  if(labelList[label].program > 0) { // RAM
+  if(programList[currentProgramNumber - 1].step > 0) { // RAM
     label = _get2ndParamOfKey(opParam.ram);
 
     if(*secondParam.ram == ITM_XEQ) {
