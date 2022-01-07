@@ -495,8 +495,6 @@ void pemAlpha(int16_t item) {
   }
   else if(item == ITM_ENTER) {
     pemCloseAlphaInput();
-    tmpString[0] = ITM_ENTER;
-    _insertInProgram((uint8_t *)tmpString, 1);
     return;
   }
 
