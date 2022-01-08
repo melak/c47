@@ -1780,13 +1780,18 @@ void execTimerApp(uint16_t timerType) {
           w = stringWidth(REGISTER_STRING_DATA(regist), &standardFont, false, true);
 
           if(w >= SCREEN_WIDTH - prefixWidth) {
-            if(regist == REGISTER_X) {
+            if(regist == REGISTER_X || (temporaryInformation == TI_VIEW && origRegist == REGISTER_T)) {
               xcopy(tmpString, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
               do {
                 tmpString[stringLastGlyph(tmpString)] = 0;
                 w = stringWidth(tmpString, &standardFont, false, true);
               } while(w >= SCREEN_WIDTH - prefixWidth);
-              showString(tmpString, &standardFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - 3, vmNormal, false, true);
+              if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+                showString(tmpString, &standardFont, prefixWidth     , Y_POSITION_OF_REGISTER_T_LINE - 3, vmNormal, false, true);
+              }
+              else {
+                showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - 3, vmNormal, false, true);
+              }
 
               w = stringByteLength(tmpString);
               xcopy(tmpString, REGISTER_STRING_DATA(regist) + w, stringByteLength(REGISTER_STRING_DATA(regist) + w) + 1);
@@ -1799,7 +1804,12 @@ void execTimerApp(uint16_t timerType) {
                 xcopy(tmpString + stringByteLength(tmpString), STD_ELLIPSIS, 3);
                 w += 14;
               }
-              showString(tmpString, &standardFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE + 18, vmNormal, false, true);
+              if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+                showString(tmpString, &standardFont, prefixWidth     , Y_POSITION_OF_REGISTER_T_LINE + 18, vmNormal, false, true);
+              }
+              else {
+                showString(tmpString, &standardFont, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE + 18, vmNormal, false, true);
+              }
             }
             else {
               xcopy(tmpString, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
@@ -1810,12 +1820,17 @@ void execTimerApp(uint16_t timerType) {
               xcopy(tmpString + stringByteLength(tmpString), STD_ELLIPSIS, 3);
               w += 14;
               lineWidth = w;
-              showString(tmpString, &standardFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY + 6, vmNormal, false, true);
+              showString(tmpString, &standardFont, SCREEN_WIDTH - w, baseY + 6, vmNormal, false, true);
             }
           }
           else {
             lineWidth = w;
-            showString(REGISTER_STRING_DATA(regist), &standardFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY + 6, vmNormal, false, true);
+            if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+              showString(REGISTER_STRING_DATA(regist), &standardFont, prefixWidth     , baseY + TEMPORARY_INFO_OFFSET, vmNormal, false, true);
+            }
+            else {
+              showString(REGISTER_STRING_DATA(regist), &standardFont, SCREEN_WIDTH - w, baseY + 6                    , vmNormal, false, true);
+            }
           }
         }
 
