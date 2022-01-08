@@ -942,6 +942,7 @@ void addStepInProgram(int16_t func) {
     else {
       displayCalcErrorMessage(ERROR_FLASH_MEMORY_WRITE_PROTECTED, ERR_REGISTER_LINE, REGISTER_X);
     }
+    aimBuffer[0] = 0;
     return;
   }
   if((aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) && ((*currentStep.ram != ((ITM_END >> 8) | 0x80)) || (*(currentStep.ram + 1) != (ITM_END & 0xff))) && ((*currentStep.ram != 0xff) || (*(currentStep.ram + 1) != 0xff))) {
