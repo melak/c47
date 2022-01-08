@@ -365,7 +365,7 @@ void scanFlashPgmLibrary(void) {
 
   numberOfLabelsInFlash = 0;
   step = (uint8_t *)tmpString;
-  flashProgramList[0].instructionPointer.flash = -1;
+  flashProgramList[0].instructionPointer.flash = 1;
   flashProgramList[0].step = -1;
 
   numberOfProgramsInFlash = 1;

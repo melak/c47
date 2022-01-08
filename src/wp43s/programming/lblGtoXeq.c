@@ -168,22 +168,18 @@ void fnGotoDot(uint16_t globalStepNumber) {
   }
 
   if(currentLocalStepNumber >= 3) {
+    firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
     firstDisplayedLocalStepNumber = currentLocalStepNumber - 3;
-    firstDisplayedStep = findPreviousStep(findPreviousStep(currentStep));
-    if(firstDisplayedLocalStepNumber != 0) {
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-    }
     uint16_t numberOfSteps = getNumberOfSteps();
     if(firstDisplayedLocalStepNumber + 6 > numberOfSteps) {
       for(int i=3+currentLocalStepNumber-numberOfSteps; i>0; i--) {
         if(firstDisplayedLocalStepNumber > 0) {
           firstDisplayedLocalStepNumber--;
         }
-        if(firstDisplayedStep.any > programList[currentProgramNumber - 1].instructionPointer.any) {
-          firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-        }
       }
     }
+    for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i)
+      firstDisplayedStep = findNextStep(firstDisplayedStep);
   }
   else {
     firstDisplayedLocalStepNumber = 0;

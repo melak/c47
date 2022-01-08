@@ -213,7 +213,7 @@ uint8_t *findNextStep_ram(uint8_t *step) {
 pgmPtr_t findNextStep(pgmPtr_t step) {
   if(programList[currentProgramNumber - 1].step < 0) { // Flash
     uint8_t stepByte1, stepByte2;
-    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, step.flash);
+    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 2, step.flash);
     stepByte1 = *(uint8_t *)(tmpString + 1600);
     stepByte2 = *(uint8_t *)(tmpString + 1601);
     if((stepByte1 == ((ITM_KEY >> 8) | 0x80)) && (stepByte2 == (ITM_KEY & 0xff))) {
