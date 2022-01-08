@@ -173,11 +173,13 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
 
     // Append to Flash
     #ifdef DMCP_BUILD
+      sys_disk_write_enable(1);
       if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ | FA_WRITE | FA_OPEN_EXISTING) != FR_OK) {
         displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file wp43s.sav", NULL, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sys_disk_write_enable(0);
         return;
       }
     #else // !DMCP_BUILD
@@ -198,6 +200,7 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
 
     #ifdef DMCP_BUILD
       f_close(LIBDATA);
+      sys_disk_write_enable(0);
     #else // !DMCP_BUILD
       fclose(LIBDATA);
     #endif //DMCP_BUILD
@@ -217,11 +220,13 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
 
 void deleteFromFlashPgmLibrary(uint32_t fromAddr, uint32_t toAddr) {
   #ifdef DMCP_BUILD
+    sys_disk_write_enable(1);
     if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ | FA_WRITE | FA_OPEN_EXISTING) != FR_OK) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function deleteFromFlashPgmLibrary: cannot find or read backup data file wp43s.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sys_disk_write_enable(0);
       return;
     }
   #else // !DMCP_BUILD
@@ -249,6 +254,7 @@ void deleteFromFlashPgmLibrary(uint32_t fromAddr, uint32_t toAddr) {
 
   #ifdef DMCP_BUILD
     f_close(LIBDATA);
+    sys_disk_write_enable(0);
   #else // !DMCP_BUILD
     fclose(LIBDATA);
   #endif //DMCP_BUILD
