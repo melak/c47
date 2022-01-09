@@ -246,6 +246,36 @@
     }
 
 
+    static void _closeCatalog(void) {
+      bool_t inCatalog = false;
+      for(int i = 0; i < SOFTMENU_STACK_SIZE; ++i) {
+        if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_CATALOG) {
+          inCatalog = true;
+          break;
+        }
+      }
+      if(inCatalog) {
+        switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
+          case MNU_ALPHAINTL:
+          case MNU_ALPHAintl:
+            // αINTL do not close after selection
+            break;
+          case MNU_TAM:
+          case MNU_TAMCMP:
+          case MNU_TAMSTORCL:
+          case MNU_TAMFLAG:
+          case MNU_TAMSHUFFLE:
+          case MNU_TAMLABEL:
+            // TAM menus are processed elsewhere
+            break;
+          default:
+            leaveAsmMode();
+            popSoftmenu();
+        }
+      }
+    }
+
+
   #ifdef PC_BUILD
     void btnFnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       if(event->type == GDK_DOUBLE_BUTTON_PRESS || event->type == GDK_TRIPLE_BUTTON_PRESS) { // return unprocessed for double or triple click
@@ -297,6 +327,7 @@
           default:
             updateAssignTamBuffer();
         }
+        _closeCatalog();
       }
       else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
         int16_t item = determineFunctionKeyItem((char *)data);
@@ -329,6 +360,7 @@
                 popSoftmenu();
               }
             }
+            _closeCatalog();
             refreshScreen();
           }
 
@@ -365,12 +397,14 @@
             assignToMyMenu((*((uint8_t *)data) - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
             calcMode = previousCalcMode;
             shiftF = shiftG = false;
+            _closeCatalog();
             refreshScreen();
             return;
           case MNU_MyAlpha:
             assignToMyAlpha((*((uint8_t *)data) - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
             calcMode = previousCalcMode;
             shiftF = shiftG = false;
+            _closeCatalog();
             refreshScreen();
             return;
           case MNU_DYNAMIC:
@@ -385,6 +419,7 @@
             }
             calcMode = previousCalcMode;
             shiftF = shiftG = false;
+            _closeCatalog();
             refreshScreen();
             return;
           case MNU_CATALOG:
@@ -400,6 +435,7 @@
             #endif
             calcMode = previousCalcMode;
             shiftF = shiftG = false;
+            _closeCatalog();
             refreshScreen();
             return;
         }
@@ -436,6 +472,7 @@
             runFunction(item);
             tamLeaveMode();
             hourGlassIconEnabled = false;
+            _closeCatalog();
             refreshScreen();
             return;
           }
@@ -459,6 +496,7 @@
             else {
               runFunction(item);
             }
+            _closeCatalog();
             refreshScreen();
             return;
           }
@@ -526,6 +564,7 @@
               }
             }
           }
+          _closeCatalog();
           fnKeyInCatalog = 0;
         }
       }
