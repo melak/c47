@@ -304,6 +304,10 @@
         programRunStop = PGM_KEY_PRESSED_WHILE_PAUSED;
         return;
       }
+      if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+        // not processed here
+        return;
+      }
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0) {
         int16_t item = determineFunctionKeyItem((char *)data);
 
@@ -391,6 +395,40 @@
       return;
     }
     if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
+      if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+        if(tam.digitsSoFar == 0) {
+          switch(((char *)data)[0]) {
+            case '1':
+              tamProcessInput(shiftG ? ITM_1 :                  ITM_0);
+              tamProcessInput(shiftG ? ITM_3 : shiftF ? ITM_7 : ITM_1);
+              break;
+            case '2':
+              tamProcessInput(shiftG ? ITM_1 :                  ITM_0);
+              tamProcessInput(shiftG ? ITM_4 : shiftF ? ITM_8 : ITM_2);
+              break;
+            case '3':
+              tamProcessInput(shiftG ? ITM_1 :                  ITM_0);
+              tamProcessInput(shiftG ? ITM_5 : shiftF ? ITM_9 : ITM_3);
+              break;
+            case '4':
+              tamProcessInput(     (shiftG || shiftF) ? ITM_1 : ITM_0);
+              tamProcessInput(shiftG ? ITM_6 : shiftF ? ITM_0 : ITM_4);
+              break;
+            case '5':
+              tamProcessInput(     (shiftG || shiftF) ? ITM_1 : ITM_0);
+              tamProcessInput(shiftG ? ITM_7 : shiftF ? ITM_1 : ITM_5);
+              break;
+            case '6':
+              tamProcessInput(     (shiftG || shiftF) ? ITM_1 : ITM_0);
+              tamProcessInput(shiftG ? ITM_8 : shiftF ? ITM_2 : ITM_6);
+              break;
+          }
+          shiftF = shiftG = false;
+          refreshScreen();
+        }
+        return;
+      }
+
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0) {
         switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
           case MNU_MyMenu:
@@ -1488,6 +1526,15 @@ ram_full:
 
 void fnKeyExit(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
+    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+      if(tam.digitsSoFar == 0) {
+        tamProcessInput(ITM_2);
+        tamProcessInput(ITM_1);
+        shiftF = shiftG = false;
+        refreshScreen();
+      }
+      return;
+    }
     if(lastErrorCode == 0 && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MVAR) {
       currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
     }
@@ -1848,6 +1895,15 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
 void fnKeyUp(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
+    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+      if(tam.digitsSoFar == 0) {
+        tamProcessInput(ITM_1);
+        tamProcessInput(ITM_9);
+        shiftF = shiftG = false;
+        refreshScreen();
+      }
+      return;
+    }
     if(tam.mode && !catalog) {
       if(tam.alpha) {
         resetAlphaSelectionBuffer();
@@ -1972,6 +2028,15 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
 
 void fnKeyDown(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
+    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+      if(tam.digitsSoFar == 0) {
+        tamProcessInput(ITM_2);
+        tamProcessInput(ITM_0);
+        shiftF = shiftG = false;
+        refreshScreen();
+      }
+      return;
+    }
     if(tam.mode && !catalog) {
       if(tam.alpha) {
         resetAlphaSelectionBuffer();

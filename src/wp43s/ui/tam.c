@@ -464,14 +464,14 @@
       tam.value = 16;
       forceTry = true;
     }
-    else if(tam.mode == TM_LABEL && !tam.indirect && item == ITM_E) {
+    else if((tam.mode == TM_LABEL || (tam.mode == TM_KEY && tam.keyInputFinished)) && !tam.indirect && item == ITM_E) {
       tam.value = 100 - 'A' + 'E';
       forceTry = true;
       tryOoR = true;
     }
     else if(REGISTER_X <= indexOfItems[item].param && indexOfItems[item].param <= REGISTER_K) {
       if(!tam.digitsSoFar && tam.function != ITM_BESTF && tam.function != ITM_CNST && (tam.indirect || (tam.mode != TM_VALUE && tam.mode != TM_VALUE_CHB))) {
-        if(tam.mode == TM_LABEL && !tam.indirect) {
+        if((tam.mode == TM_LABEL || (tam.mode == TM_KEY && tam.keyInputFinished)) && !tam.indirect) {
           switch(indexOfItems[item].param) {
             case REGISTER_A: tam.value = 100 - 'A' + 'A'; forceTry = true; tryOoR = true; break;
             case REGISTER_B: tam.value = 100 - 'A' + 'B'; forceTry = true; tryOoR = true; break;
