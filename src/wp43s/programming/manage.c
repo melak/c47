@@ -309,10 +309,10 @@ void defineCurrentProgramFromCurrentStep(void) {
     currentProgramNumber = 0;
     while(currentStep.ram >= programList[currentProgramNumber].instructionPointer.ram) {
       currentProgramNumber++;
-      if(currentProgramNumber >= numberOfPrograms) break;
+      if(currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) break;
     }
 
-    if(currentProgramNumber >= numberOfPrograms) {
+    if(currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) {
       endOfCurrentProgram.ram = programList[currentProgramNumber - 1].instructionPointer.ram + _getProgramSize();
     }
     else {

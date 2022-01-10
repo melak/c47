@@ -1803,8 +1803,11 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         if(getSystemFlag(FLAG_ALPHA)) {
           pemAlpha(ITM_BACKSPACE);
           if(aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA) && currentLocalStepNumber > 1) {
-            currentStep = findPreviousStep(currentStep);
             --currentLocalStepNumber;
+            currentStep.ram = programList[currentProgramNumber - 1].instructionPointer.ram;
+            for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
+              currentStep.ram = findNextStep_ram(currentStep.ram);
+            }
           }
         }
         else if(aimBuffer[0] == 0) {
@@ -1813,8 +1816,11 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
             deleteStepsFromTo(currentStep.ram, nextStep);
           }
           if(currentLocalStepNumber > 1) {
-            currentStep = findPreviousStep(currentStep);
             --currentLocalStepNumber;
+            currentStep.ram = programList[currentProgramNumber - 1].instructionPointer.ram;
+            for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
+              currentStep.ram = findNextStep_ram(currentStep.ram);
+            }
           }
         }
         else {
