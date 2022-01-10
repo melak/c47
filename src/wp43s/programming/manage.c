@@ -945,12 +945,12 @@ void addStepInProgram(int16_t func) {
     aimBuffer[0] = 0;
     return;
   }
-  if((aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) && ((*currentStep.ram != ((ITM_END >> 8) | 0x80)) || (*(currentStep.ram + 1) != (ITM_END & 0xff))) && ((*currentStep.ram != 0xff) || (*(currentStep.ram + 1) != 0xff))) {
+  if(((aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) || tam.mode) && ((*currentStep.ram != ((ITM_END >> 8) | 0x80)) || (*(currentStep.ram + 1) != (ITM_END & 0xff))) && ((*currentStep.ram != 0xff) || (*(currentStep.ram + 1) != 0xff))) {
     currentStep = findNextStep(currentStep);
     ++currentLocalStepNumber;
   }
   insertStepInProgram(func);
-  if(aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) {
+  if((aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) || tam.mode) {
     currentStep = findPreviousStep(currentStep);
     --currentLocalStepNumber;
   }
