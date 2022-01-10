@@ -137,7 +137,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
   //*******************
   //* Any denominator *
   //*******************
-  if(getSystemFlag(FLAG_DENANY)) { // denominator up to DENMAX
+  if(getSystemFlag(FLAG_DENANY)) { // denominator up to D.MAX
     uint64_t iPart[20], ex, bestNumer=0, bestDenom=1;
     uint32_t invalidOperation;
     int16_t i, j;
@@ -251,7 +251,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
   //*******************
   //* Fix denominator *
   //*******************
-  else if(getSystemFlag(FLAG_DENFIX)) { // denominator is DENMAX
+  else if(getSystemFlag(FLAG_DENFIX)) { // denominator is D.MAX
     *denom = denMax;
 
     uInt32ToReal34(denMax, &delta);
@@ -262,7 +262,7 @@ void fraction(calcRegister_t regist, int16_t *sign, uint64_t *intPart, uint64_t 
   //******************************
   //* Factors of max denominator *
   //******************************
-  else { // deniminator is a factor of DENMAX
+  else { // deniminator is a factor of D.MAX
     uint64_t bestNumer=0, bestDenom=1;
 
     real34_t temp4;
