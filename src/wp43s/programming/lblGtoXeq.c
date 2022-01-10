@@ -357,7 +357,7 @@ static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
           case FLAG_alphaCAP:
           case FLAG_RUNTIM:
           case FLAG_RUNIO:
-          case FLAG_PRINT:
+          case FLAG_PRINTS:
           case FLAG_LOWBAT:
           case FLAG_NUMIN:
           case FLAG_ALPIN:
