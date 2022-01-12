@@ -364,6 +364,20 @@ void       fnEigenvectors                 (uint16_t unusedParamButMandatory);
    */
   bool_t   appendRowAtMatrixRegister      (calcRegister_t regist);
 
+  /**
+   * Saves the STATS matrix if STATS is available.
+   *
+   * \return true if succeeded or not needed to backup, false if unsuccessful allocation
+   */
+  bool_t   saveStatsMatrix                (void);
+
+  /**
+   * Restores the STATS matrix if backed up STATS is available.
+   *
+   * \return true if succeeded, otherwise false
+   */
+  bool_t   recallStatsMatrix              (void);
+
   int16_t  getIRegisterAsInt              (bool_t asArrayPointer);
   int16_t  getJRegisterAsInt              (bool_t asArrayPointer);
   void     setIRegisterAsInt              (bool_t asArrayPointer, int16_t toStore);

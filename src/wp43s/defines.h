@@ -62,6 +62,15 @@
   #define STATDEBUG_VERBOSE
 #endif
 
+
+#ifdef PC_BUILD
+//  #define DEBUGUNDO
+  #undef DEBUGUNDO
+#else
+  #undef DEBUGUNDO
+#endif
+
+
 #define REAL34_WIDTH_TEST 0 // For debugging real34 ALL 0 formating. Use UP/DOWN to shrink or enlarge the available space. The Z register holds the available width.
 
 

@@ -1108,6 +1108,9 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
 
   if(lastErrorCode != 0) {
     #ifdef TESTSUITE_BUILD
+      #ifdef DEBUGUNDO
+        printf(">>> undo from adjustResult\n");
+      #endif
       undo();
     #endif //TESTSUITE_BUILD
     return;

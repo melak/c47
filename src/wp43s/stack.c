@@ -21,6 +21,7 @@
 #include "mathematics/comparisonReals.h"
 #include "error.h"
 #include "flags.h"
+#include "matrix.h"
 #include "memory.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -238,10 +239,16 @@ void fnGetStackSize(uint16_t unusedButMandatoryParameter) {
 
 void saveForUndo(void) {
   if((calcMode == CM_NIM || calcMode == CM_AIM) && thereIsSomethingToUndo) {
+    #ifdef DEBUGUNDO
+      printf(">>> saveForUndo; calcMode = %i, nothing stored as there is something to undo\n",calcMode);
+    #endif
     return;
   }
+  #ifdef DEBUGUNDO
+    printf(">>> savedForUndo; saved; calcMode = %i\n",calcMode);
+  #endif
 
-  clearRegister(TEMP_REGISTER_2_SAVED_STATS); //clear it here, and set it only in fnEditMatrix()
+  clearRegister(TEMP_REGISTER_2_SAVED_STATS); //clear it here for every saveForUndo call, and explicitly set it in fnEditMatrix() and fnEqSolvGraph() only
 
   savedSystemFlags = systemFlags;
 
@@ -318,15 +325,10 @@ void fnUndo(uint16_t unusedButMandatoryParameter) {
 
 
 void undo(void) {
-  if(getRegisterDataType(TEMP_REGISTER_2_SAVED_STATS) == dtReal34Matrix) {
-    calcRegister_t regStats = findNamedVariable("STATS");
-    if(regStats == INVALID_VARIABLE) {
-      allocateNamedVariable("STATS", dtReal34, REAL34_SIZE);
-      regStats = findNamedVariable("STATS");
-    }
-    clearRegister(regStats);
-    copySourceRegisterToDestRegister(TEMP_REGISTER_2_SAVED_STATS, findNamedVariable("STATS"));
-  }
+  #ifdef DEBUGUNDO
+    printf(">>> Undoing, calcMode = %i ...",calcMode);
+  #endif
+  recallStatsMatrix();
 
   if(currentInputVariable != INVALID_VARIABLE) {
     if(currentInputVariable & 0x4000) {
@@ -381,4 +383,8 @@ void undo(void) {
 
   thereIsSomethingToUndo = false;
   clearRegister(TEMP_REGISTER_2_SAVED_STATS);
+  #ifdef DEBUGUNDO
+    printf(">>> Undone, calcMode = %i\n",calcMode);
+  #endif
+
 }

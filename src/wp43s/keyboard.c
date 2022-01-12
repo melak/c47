@@ -1161,9 +1161,6 @@
 
             case CM_GRAPH:
             case CM_PLOT_STAT:
-              if(item == ITM_EXIT || item == ITM_BACKSPACE) {
-                fnPlotClose(0);
-              }
               break;
 
             case CM_CONFIRMATION:
@@ -1343,6 +1340,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
     switch(calcMode) {
       case CM_NORMAL:
         setSystemFlag(FLAG_ASLIFT);
+        #ifdef DEBUGUNDO
+          printf(">>> saveForUndo from fnKeyEnterA\n");
+        #endif
         saveForUndo();
         if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
 
@@ -1359,6 +1359,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
         popSoftmenu();
 
         if(aimBuffer[0] == 0) {
+          #ifdef DEBUGUNDO
+            printf(">>> undo from fnKeyEnter\n");
+          #endif
           undo();
         }
         else {
@@ -1368,6 +1371,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
           xcopy(REGISTER_STRING_DATA(REGISTER_X), aimBuffer, len);
 
           setSystemFlag(FLAG_ASLIFT);
+          #ifdef DEBUGUNDO
+            printf(">>> saveForUndo from fnKeyEnterB\n");
+          #endif
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
           liftStack();
@@ -1389,6 +1395,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
 
         if(calcMode != CM_NIM && lastErrorCode == 0) {
           setSystemFlag(FLAG_ASLIFT);
+          #ifdef DEBUGUNDO
+            printf(">>> saveForUndo from fnKeyEnterC\n");
+          #endif
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
           liftStack();
@@ -1440,6 +1449,9 @@ undo_disabled:
 
 ram_full:
     displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    #ifdef DEBUGUNDO
+      printf(">>> Undo from fnKeyEnterD\n");
+    #endif
     fnUndo(NOPARAM);
     return;
   #endif // !TESTSUITE_BUILD
@@ -1502,6 +1514,9 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       case CM_AIM:
         if(softmenuStack[0].softmenuId <= 1) { // MyMenu or MyAlpha is displayed
           closeAim();
+          #ifdef DEBUGUNDO
+            printf(">>> saveForUndo from fnKeyExitA\n");
+          #endif
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
         }
@@ -1534,6 +1549,9 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         aimBuffer[0] = 0;
         leavePem();
         calcModeNormal();
+        #ifdef DEBUGUNDO
+          printf(">>> saveForUndo from fnKeyExitB\n");
+        #endif
         saveForUndo();
         if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
         break;
@@ -1576,7 +1594,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         lastPlotMode = PLOT_NOTHING;
         plotSelection = 0;
         calcMode = CM_NORMAL;
-        fnUndo(0);
+        #ifdef DEBUGUNDO
+          printf(">>> Undo from fnKeyExit\n");
+        #endif
+        fnUndo(NOPARAM);
         popSoftmenu();
         break;
 

@@ -418,9 +418,92 @@ void fnNewMatrix(uint16_t unusedParamButMandatory) {
 #endif // TESTSUITE_BUILD
 }
 
+
+bool_t saveStatsMatrix(void) {
+#ifndef TESTSUITE_BUILD
+  #ifdef DEBUGUNDO
+    printf(">>> saveStatsMatrix\n");
+  #endif
+  uint32_t rows, cols;
+
+  calcRegister_t regStats = findNamedVariable("STATS");
+  if(regStats != INVALID_VARIABLE) {
+
+    if(getRegisterDataType(regStats) == dtReal34Matrix) {
+      rows = REGISTER_DATA(regStats)->matrixRows;
+      cols = REGISTER_DATA(regStats)->matrixColumns;
+
+      //Initialize Memory for Matrix
+      if(initMatrixRegister(TEMP_REGISTER_2_SAVED_STATS, rows, cols, false)) {
+        copySourceRegisterToDestRegister(regStats, TEMP_REGISTER_2_SAVED_STATS);
+        #ifdef DEBUGUNDO
+          printf(">>>    backing up STATS matrix containing %i rows and %i columns\n",rows, cols);
+        #endif
+        return true; //backed up
+      } else {
+        displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          sprintf(errorMessage, "Not enough memory for STATS undo matrix: rows=%i, cols=%i", rows, cols);
+          moreInfoOnError("In function saveStatsMatrix:", errorMessage, NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        return false;
+      }
+    } else return true; //nothing to backup
+  } else return true; //nothing to backup
+#else // TESTSUITE_BUILD
+  return true;
+#endif // TESTSUITE_BUILD
+}
+
+
+bool_t recallStatsMatrix(void) {
+#ifndef TESTSUITE_BUILD
+  #ifdef DEBUGUNDO
+    printf(">>> recallStatsMatrix ...");
+  #endif
+  uint32_t rows, cols;
+
+  calcRegister_t regStats = TEMP_REGISTER_2_SAVED_STATS;
+
+  if(getRegisterDataType(regStats) == dtReal34Matrix) {
+    rows = REGISTER_DATA(regStats)->matrixRows;
+    cols = REGISTER_DATA(regStats)->matrixColumns;
+    if(cols == 2 && rows >= 1) {
+      regStats = findNamedVariable("STATS");
+      if(regStats == INVALID_VARIABLE) {
+        allocateNamedVariable("STATS", dtReal34, REAL34_SIZE);
+        regStats = findNamedVariable("STATS");
+      }
+      clearRegister(regStats);
+
+      //Initialize Memory for Matrix
+      if(initMatrixRegister(regStats, rows, cols, false)) {
+        #ifdef DEBUGUNDO
+          printf(">>>    restoring STATS matrix containing %i rows and %i columns\n",rows, cols);
+        #endif
+        copySourceRegisterToDestRegister(TEMP_REGISTER_2_SAVED_STATS, regStats);
+        clearRegister(TEMP_REGISTER_2_SAVED_STATS);
+        return true; //restored
+      } else {
+        displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          sprintf(errorMessage, "Not enough memory to undo STATS undo matrix: rows=%i, cols=%i", rows, cols);
+          moreInfoOnError("In function recallStatsMatrix:", errorMessage, NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        return false; //not enough memory
+      }
+    } else return false; //TEMP_REGISTER_2_SAVED_STATS is a non-STATS dimensioned register
+  } else return false; //TEMP_REGISTER_2_SAVED_STATS is no real 34 matrix
+#else // TESTSUITE_BUILD
+  return true; //no error
+#endif // TESTSUITE_BUILD
+}
+
+
+
 void fnEditMatrix(uint16_t regist) {
 #ifndef TESTSUITE_BUILD
-  if(findNamedVariable("STATS") == regist) copySourceRegisterToDestRegister(regist, TEMP_REGISTER_2_SAVED_STATS);
+  saveStatsMatrix();
   const uint16_t reg = (regist == NOPARAM) ? REGISTER_X : regist;
   if((getRegisterDataType(reg) == dtReal34Matrix) || (getRegisterDataType(reg) == dtComplex34Matrix)) {
     calcMode = CM_MIM;
