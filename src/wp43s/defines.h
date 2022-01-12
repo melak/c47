@@ -260,8 +260,9 @@ typedef enum {
 #define PTP_COMPARE                        ( 7 << 9) //   PARAM_*
 #define PTP_KEYG_KEYX                      ( 8 << 9) //   defined
 #define PTP_SKIP_BACK                      ( 9 << 9) //   below.
-#define PTP_LITERAL                        (10 << 9) // Literal
-#define PTP_DISABLED                       (11 << 9) // Not programmable
+#define PTP_SHUFFLE                        (10 << 9) //
+#define PTP_LITERAL                        (11 << 9) // Literal
+#define PTP_DISABLED                       (12 << 9) // Not programmable
 
 
 #define INC_FLAG                                   0
@@ -771,6 +772,7 @@ typedef enum {
 #define PARAM_COMPARE                              7
 #define PARAM_KEYG_KEYX                            8
 #define PARAM_SKIP_BACK                            9
+#define PARAM_SHUFFLE                             10
 
 #define CHECK_INTEGER                              0
 #define CHECK_INTEGER_EVEN                         1
