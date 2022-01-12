@@ -41,6 +41,7 @@
 #include "solver/tvm.h"
 #include "stack.h"
 #include "wp43s.h"
+#include <math.h>
 
 void fnPgmSlv(uint16_t label) {
   if(label >= FIRST_LABEL && label <= LAST_LABEL) {
