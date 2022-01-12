@@ -86,7 +86,7 @@ void fnGoto(uint16_t label) {
     }
     else if(label >= FIRST_LABEL && label <= LAST_LABEL) { // Global named label
       if((label - FIRST_LABEL) < numberOfLabels) {
-        fnGotoDot(labelList[label - FIRST_LABEL].step);
+        fnGotoDot((uint16_t)((int16_t)labelList[label - FIRST_LABEL].step * (labelList[label - FIRST_LABEL].program < 0 ? -1 : 1)));
         return;
       }
       else {
