@@ -205,7 +205,12 @@
             tam.value |= 1 << (2*i + 8);
             tam.value = (tam.value & ~mask) | (((item-ITM_REG_X) << (2*i)) & mask);
             if(i == 3) {
-              reallyRunFunction(tamOperation(), tam.value);
+              if(calcMode == CM_PEM) {
+                addStepInProgram(tamOperation());
+              }
+              else {
+                reallyRunFunction(tamOperation(), tam.value);
+              }
               tamLeaveMode();
             }
             break;
