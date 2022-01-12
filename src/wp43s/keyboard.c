@@ -246,6 +246,36 @@
     }
 
 
+    static void _closeCatalog(void) {
+      bool_t inCatalog = false;
+      for(int i = 0; i < SOFTMENU_STACK_SIZE; ++i) {
+        if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_CATALOG) {
+          inCatalog = true;
+          break;
+        }
+      }
+      if(inCatalog) {
+        switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
+          case MNU_ALPHAINTL:
+          case MNU_ALPHAintl:
+            // αINTL do not close after selection
+            break;
+          case MNU_TAM:
+          case MNU_TAMCMP:
+          case MNU_TAMSTORCL:
+          case MNU_TAMFLAG:
+          case MNU_TAMSHUFFLE:
+          case MNU_TAMLABEL:
+            // TAM menus are processed elsewhere
+            break;
+          default:
+            leaveAsmMode();
+            popSoftmenu();
+        }
+      }
+    }
+
+
   #ifdef PC_BUILD
     void btnFnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       if(event->type == GDK_DOUBLE_BUTTON_PRESS || event->type == GDK_TRIPLE_BUTTON_PRESS) { // return unprocessed for double or triple click
@@ -274,6 +304,10 @@
         programRunStop = PGM_KEY_PRESSED_WHILE_PAUSED;
         return;
       }
+      if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+        // not processed here
+        return;
+      }
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0) {
         int16_t item = determineFunctionKeyItem((char *)data);
 
@@ -297,6 +331,7 @@
           default:
             updateAssignTamBuffer();
         }
+        _closeCatalog();
       }
       else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
         int16_t item = determineFunctionKeyItem((char *)data);
@@ -329,6 +364,7 @@
                 popSoftmenu();
               }
             }
+            _closeCatalog();
             refreshScreen();
           }
 
@@ -359,18 +395,54 @@
       return;
     }
     if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
+      if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+        if(tam.digitsSoFar == 0) {
+          switch(((char *)data)[0]) {
+            case '1':
+              tamProcessInput(shiftG ? ITM_1 :                  ITM_0);
+              tamProcessInput(shiftG ? ITM_3 : shiftF ? ITM_7 : ITM_1);
+              break;
+            case '2':
+              tamProcessInput(shiftG ? ITM_1 :                  ITM_0);
+              tamProcessInput(shiftG ? ITM_4 : shiftF ? ITM_8 : ITM_2);
+              break;
+            case '3':
+              tamProcessInput(shiftG ? ITM_1 :                  ITM_0);
+              tamProcessInput(shiftG ? ITM_5 : shiftF ? ITM_9 : ITM_3);
+              break;
+            case '4':
+              tamProcessInput(     (shiftG || shiftF) ? ITM_1 : ITM_0);
+              tamProcessInput(shiftG ? ITM_6 : shiftF ? ITM_0 : ITM_4);
+              break;
+            case '5':
+              tamProcessInput(     (shiftG || shiftF) ? ITM_1 : ITM_0);
+              tamProcessInput(shiftG ? ITM_7 : shiftF ? ITM_1 : ITM_5);
+              break;
+            case '6':
+              tamProcessInput(     (shiftG || shiftF) ? ITM_1 : ITM_0);
+              tamProcessInput(shiftG ? ITM_8 : shiftF ? ITM_2 : ITM_6);
+              break;
+          }
+          shiftF = shiftG = false;
+          refreshScreen();
+        }
+        return;
+      }
+
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0) {
         switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
           case MNU_MyMenu:
             assignToMyMenu((*((uint8_t *)data) - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
             calcMode = previousCalcMode;
             shiftF = shiftG = false;
+            _closeCatalog();
             refreshScreen();
             return;
           case MNU_MyAlpha:
             assignToMyAlpha((*((uint8_t *)data) - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
             calcMode = previousCalcMode;
             shiftF = shiftG = false;
+            _closeCatalog();
             refreshScreen();
             return;
           case MNU_DYNAMIC:
@@ -385,6 +457,7 @@
             }
             calcMode = previousCalcMode;
             shiftF = shiftG = false;
+            _closeCatalog();
             refreshScreen();
             return;
           case MNU_CATALOG:
@@ -400,6 +473,7 @@
             #endif
             calcMode = previousCalcMode;
             shiftF = shiftG = false;
+            _closeCatalog();
             refreshScreen();
             return;
         }
@@ -436,6 +510,7 @@
             runFunction(item);
             tamLeaveMode();
             hourGlassIconEnabled = false;
+            _closeCatalog();
             refreshScreen();
             return;
           }
@@ -459,6 +534,7 @@
             else {
               runFunction(item);
             }
+            _closeCatalog();
             refreshScreen();
             return;
           }
@@ -526,6 +602,7 @@
               }
             }
           }
+          _closeCatalog();
           fnKeyInCatalog = 0;
         }
       }
@@ -1461,6 +1538,15 @@ ram_full:
 
 void fnKeyExit(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
+    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+      if(tam.digitsSoFar == 0) {
+        tamProcessInput(ITM_2);
+        tamProcessInput(ITM_1);
+        shiftF = shiftG = false;
+        refreshScreen();
+      }
+      return;
+    }
     if(lastErrorCode == 0 && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MVAR) {
       currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
     }
@@ -1830,6 +1916,15 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
 void fnKeyUp(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
+    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+      if(tam.digitsSoFar == 0) {
+        tamProcessInput(ITM_1);
+        tamProcessInput(ITM_9);
+        shiftF = shiftG = false;
+        refreshScreen();
+      }
+      return;
+    }
     if(tam.mode && !catalog) {
       if(tam.alpha) {
         resetAlphaSelectionBuffer();
@@ -1862,7 +1957,9 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuUp();
         }
-        else if(calcMode == CM_NORMAL) {
+        else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
+          if(calcMode == CM_NIM) closeNim();
+          if(calcMode == CM_AIM) closeAim();
           fnBst(NOPARAM);
           #ifdef DMCP_BUILD
             lcd_refresh();
@@ -1954,6 +2051,15 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
 
 void fnKeyDown(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
+    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+      if(tam.digitsSoFar == 0) {
+        tamProcessInput(ITM_2);
+        tamProcessInput(ITM_0);
+        shiftF = shiftG = false;
+        refreshScreen();
+      }
+      return;
+    }
     if(tam.mode && !catalog) {
       if(tam.alpha) {
         resetAlphaSelectionBuffer();
@@ -1986,7 +2092,9 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuDown();
         }
-        else if(calcMode == CM_NORMAL) {
+        else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
+          if(calcMode == CM_NIM) closeNim();
+          if(calcMode == CM_AIM) closeAim();
           fnSst(NOPARAM);
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){

@@ -186,7 +186,7 @@
 #define FLAG_alphaCAP                         0xc00f
 #define FLAG_RUNTIM                           0xc010
 #define FLAG_RUNIO                            0xc011
-#define FLAG_PRINT                            0xc012
+#define FLAG_PRINTS                           0xc012
 #define FLAG_TRACE                            0x8013
 #define FLAG_USER                             0x8014
 #define FLAG_LOWBAT                           0xc015

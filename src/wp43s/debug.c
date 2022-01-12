@@ -542,7 +542,7 @@ void debugNIM(void) {
    * \return char*        Name of the fraction type
    ***********************************************/
   char * getFractionDenom1ModeName(bool_t ft) {
-    return (ft ? "up to DENMAX  " : "DENMAX or fact");
+    return (ft ? "up to D.MAX   " : "D.MAX or fact");
   }
 
 
@@ -553,7 +553,7 @@ void debugNIM(void) {
    * \return char*        Name of the fraction type
    ***********************************************/
   char * getFractionDenom2ModeName(bool_t ft) {
-    return (ft ? "DENMAX        " : "fact of DENMAX");
+    return (ft ? "D.MAX         " : "fact of D.MAX");
   }
 
 
