@@ -816,7 +816,7 @@ void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, con
 
 
 #define horOffsetR 109+5 //digit righ side aliognment
-#define autoinc 19 //text line spacing
+#define autoinc 20 //text line spacing
 #define autoshift -5 //text line spacing
 #define horOffset 1 //labels from the left
 
@@ -1067,6 +1067,7 @@ void graphDrawLRline(uint16_t selection) {
       while (buff[i]!=0) {
         i++;
       }
+      buff[i+1]=0;
       while (i!=0) {
         buff[i] = buff[i-1];
         i--;
@@ -1173,7 +1174,6 @@ void graphDrawLRline(uint16_t selection) {
           if(USEFLOATING != 0) {
             //TODO create REAL from x (double) if REALS will be used
             snprintf(ss,100,"%f",x); stringToReal(ss,&XX,&ctxtReal39);
-printf(">>><<< %s >>><<<\n",ss);
           }
           yIsFnx( USEFLOATING, selection, x, &y, a0, a1, a2, &XX, &YY, RR, SMI, aa0, aa1, aa2);
           xN = screen_window_x(x_min,(float)x,x_max);
@@ -1316,7 +1316,10 @@ void fnPlotClose(uint16_t unusedButMandatoryParameter){
   plotSelection = 0;
   calcMode = CM_NORMAL;
   fnKeyExit(0);
-  fnUndo(0);
+  #ifdef DEBUGUNDO
+    printf(">>> Undo from fnPlotClose\n");
+  #endif
+  fnUndo(NOPARAM);
 }
 
 
@@ -1325,7 +1328,10 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
   plotSelection = 0;
   calcMode = CM_NORMAL;
   fnKeyExit(0);
-  fnUndo(0);
+  #ifdef DEBUGUNDO
+    printf(">>> Undo from fnPlotCloseSmi\n");
+  #endif
+  fnUndo(NOPARAM);
   fnMinExpStdDev(0);
 }
 
