@@ -29,6 +29,7 @@
 #include "longIntegerType.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/wp34s.h"
+#include "plotstat.h"
 #include "programming/lblGtoXeq.h"
 #include "programming/manage.h"
 #include "programming/nextStep.h"
@@ -40,6 +41,7 @@
 #include "solver/tvm.h"
 #include "stack.h"
 #include "wp43s.h"
+#include <math.h>
 
 void fnPgmSlv(uint16_t label) {
   if(label >= FIRST_LABEL && label <= LAST_LABEL) {
@@ -102,7 +104,24 @@ void fnSolve(uint16_t labelOrVariable) {
     real34_t z, y, x;
     real_t tmp;
     int resultCode = 0;
+
+    //manipulate the graph minimuma and maximum points based on the solver inputs, part 1
+    float x_0, x_1;
+    float x_diff = 0;
     if(_realSolverFirstGuesses(REGISTER_Y, &y) && _realSolverFirstGuesses(REGISTER_X, &x)) {
+      x_0 = registerToDouble(REGISTER_Y);
+      x_1 = registerToDouble(REGISTER_X);
+      if(x_0 != DOUBLE_NOT_INIT && x_1 != DOUBLE_NOT_INIT) {
+        x_min = x_0;
+        x_max = x_1;
+        x_diff = fabs(x_max-x_min);
+        if(x_diff < 0.001) x_diff = 0.001; //stay within float range
+        if(x_diff < 0.01) {
+          x_max = x_max + 0.1 * x_diff;
+          x_min = x_min - 0.1 * x_diff;
+        }
+      }
+
       currentSolverVariable = labelOrVariable;
       resultCode = solver(labelOrVariable, &y, &x, &z, &y, &x);
       fnClearStack(NOPARAM); // reset stack to 0.
@@ -134,6 +153,19 @@ void fnSolve(uint16_t labelOrVariable) {
       }
       saveForUndo();
       adjustResult(REGISTER_X, false, false, REGISTER_X, REGISTER_Y, -1);
+
+      //manipulate the graph minimuma and maximum points based on the solver result, part 2
+      x_0 = registerToDouble(REGISTER_Y);
+      x_1 = registerToDouble(REGISTER_X);
+      if(x_0 != DOUBLE_NOT_INIT && x_1 != DOUBLE_NOT_INIT) {
+        if(!(x_min<x_0 && x_min<x_1 && x_0<x_max && x_1<x_max)) {
+          if(fmin(x_0,x_1) < x_min)
+            x_min = fmin(x_0,x_1) - 0.1 * fabs(x_max-fmin(x_0,x_1)); //get the root or maximum/minimum in the centre of the graph interval
+          if(fmax(x_0,x_1) > x_max)
+            x_max = fmax(x_0,x_1) + 0.1 * fabs(x_min-fmax(x_0,x_1)); //get the root or maximum/minimum in the centre of the graph interval
+        }
+      }
+
     }
     else {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -159,6 +191,7 @@ void fnSolveVar(uint16_t unusedButMandatoryParameter) {
   const char *var = (char *)getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem);
   const uint16_t regist = findOrAllocateNamedVariable(var);
   if(currentMvarLabel != INVALID_VARIABLE) {
+    graphVariable = -regist;
     reallyRunFunction(ITM_STO, regist);
   }
   else if(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE) {

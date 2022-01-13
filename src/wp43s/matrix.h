@@ -204,6 +204,20 @@ void       fnEigenvalues                  (uint16_t unusedParamButMandatory);
 
 void       fnEigenvectors                 (uint16_t unusedParamButMandatory);
 
+  /**
+   * Saves the STATS matrix if STATS is available.
+   *
+   * \return true if succeeded or not needed to backup, false if unsuccessful allocation
+   */
+  bool_t   saveStatsMatrix                (void);
+
+  /**
+   * Restores the STATS matrix if backed up STATS is available.
+   *
+   * \return true if succeeded, otherwise false
+   */
+  bool_t   recallStatsMatrix              (void);
+
 #ifndef TESTSUITE_BUILD
   /**
    * Initialize a real matrix.
@@ -364,6 +378,7 @@ void       fnEigenvectors                 (uint16_t unusedParamButMandatory);
    */
   bool_t   appendRowAtMatrixRegister      (calcRegister_t regist);
 
+
   int16_t  getIRegisterAsInt              (bool_t asArrayPointer);
   int16_t  getJRegisterAsInt              (bool_t asArrayPointer);
   void     setIRegisterAsInt              (bool_t asArrayPointer, int16_t toStore);
@@ -372,13 +387,17 @@ void       fnEigenvectors                 (uint16_t unusedParamButMandatory);
   bool_t   wrapIJ                         (uint16_t rows, uint16_t cols);
 
   void     copyRealMatrix                 (const real34Matrix_t *matrix, real34Matrix_t *res);
+#endif //!TESTSUITE_BUILD
   void     linkToRealMatrixRegister       (calcRegister_t regist, real34Matrix_t *linkedMatrix);
+#ifndef TESTSUITE_BUILD
   void     insRowRealMatrix               (real34Matrix_t *matrix, uint16_t beforeRowNo);
   void     delRowRealMatrix               (real34Matrix_t *matrix, uint16_t beforeRowNo);
   void     transposeRealMatrix            (const real34Matrix_t *matrix, real34Matrix_t *res);
 
   void     copyComplexMatrix              (const complex34Matrix_t *matrix, complex34Matrix_t *res);
+#endif //!TESTSUITE_BUILD
   void     linkToComplexMatrixRegister    (calcRegister_t regist, complex34Matrix_t *linkedMatrix);
+#ifndef TESTSUITE_BUILD
   void     insRowComplexMatrix            (complex34Matrix_t *matrix, uint16_t beforeRowNo);
   void     delRowComplexMatrix            (complex34Matrix_t *matrix, uint16_t beforeRowNo);
   void     transposeComplexMatrix         (const complex34Matrix_t *matrix, complex34Matrix_t *res);
