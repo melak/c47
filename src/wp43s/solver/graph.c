@@ -164,7 +164,7 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
 
 #ifndef TESTSUITE_BUILD
   static void execute_rpn_function(void){
-    if(graphVariable <= 0) return;
+    if(graphVariable <= 0 || graphVariable > 65535) return;
 
     calcRegister_t regStats = graphVariable;
     if(regStats != INVALID_VARIABLE) {
@@ -271,12 +271,10 @@ void check_osc(uint8_t ii){
 
 void graph_eqn(uint16_t mode) {
   #ifndef TESTSUITE_BUILD
-    if(graphVariable <= 0) return;
-
-calcMode = CM_GRAPH;
+    if(graphVariable <= 0 || graphVariable > 65535) return;
+    calcMode = CM_GRAPH;
     double x; 
-    fnClearStack(0); //runFunction(ITM_CLSTK);
-    //runFunction(ITM_RAD);
+    fnClearStack(0);
 
     if(mode == 1) {
       fnClSigma(0);
@@ -285,7 +283,7 @@ calcMode = CM_GRAPH;
       doubleToXRegisterReal34(x);      
       //leaving y in Y and x in X
       execute_rpn_function();
-      fnSigma(1);   //runFunction(ITM_SIGMAPLUS);
+      fnSigma(1);
 
       #if (defined VERBOSE_SOLVER0) && (defined PC_BUILD)
         int32_t cnt;
@@ -297,9 +295,22 @@ calcMode = CM_GRAPH;
       #ifdef PC_BUILD
         if(lastErrorCode == 24) { printf("ERROR CODE CANNOT STAT COMPLEX RESULT, ignored\n"); lastErrorCode = 0;}
       #endif //PC_BUILD
-
     }
-    fnClearStack(0); //runFunction(ITM_CLSTK);
+
+
+    SAVED_SIGMA_LAct = 0;   //prevent undo of last stats add action. REMOVE when STATS are not used anymore
+
+    #ifdef DEBUGUNDO
+      int32_t cnt;
+      realToInt32(SIGMA_N, cnt);    
+      printf(">>> graph_eqn: SIGMA_N STATS:%i points \n",cnt);
+      calcRegister_t regStats = findNamedVariable("STATS");
+      printRegisterToConsole(regStats,"graph_eqn: STATS:\n","\n");
+      printRegisterToConsole(TEMP_REGISTER_2_SAVED_STATS,"graph_eqn: TEMP_REGISTER_2_SAVED_STATS:\n","\n");
+    #endif //DEBUGUNDO
+
+
+    fnClearStack(0);
     fnPlot(0);
   #endif
 }
@@ -329,7 +340,7 @@ calcMode = CM_GRAPH;
 
 #ifndef TESTSUITE_BUILD
   static void graph_solver() {         //Input parameters in registers SREG_STARTX0, SREG_STARTX1
-    if(graphVariable <= 0) return;
+    if(graphVariable <= 0 || graphVariable > 65535) return;
 
     calcRegister_t SREG_TMP  = __TMP ;
     calcRegister_t SREG_Xold = __Xold; //: x old difference
@@ -1011,6 +1022,7 @@ calcMode = CM_GRAPH;
     displayFormat = displayFormatN;
     displayFormatDigits = displayFormatDigitsN;
 
+    SAVED_SIGMA_LAct = 0;   //prevent undo of last stats add action. REMOVE when STATS are not used anymore
 
   }
 #endif
@@ -1049,15 +1061,17 @@ void fnEqSolvGraph (uint16_t func) {
   }
 
 
-
-  fnClSigma(0);
-  statGraphReset();
-
   //initialize x
   currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;
 
   switch (func) {
      case EQ_SOLVE:{
+            thereIsSomethingToUndo = false;
+            saveForUndo();
+            if(!saveStatsMatrix()) return;
+            fnClSigma(0);
+            statGraphReset();
+
             double ix1 = registerToDouble(REGISTER_X);
             double ix0 = registerToDouble(REGISTER_Y);
             #if ((defined VERBOSE_SOLVER00) || (defined VERBOSE_SOLVER0)) && (defined PC_BUILD)
@@ -1089,9 +1103,14 @@ void fnEqSolvGraph (uint16_t func) {
 
             
             #ifdef DEBUGUNDO
-//              printf(">>> saveForUndo from fnEqSolvGraph:");
-            #endif
-//            saveForUndo();
+              printf(">>> saveForUndo from fnEqSolvGraph:");
+            #endif //DEBUGUNDO
+            
+            thereIsSomethingToUndo = false;
+            saveForUndo();
+            if(!saveStatsMatrix()) return;
+            fnClSigma(0);
+            statGraphReset();
 
             fnDrop(0);
             fnDrop(0);

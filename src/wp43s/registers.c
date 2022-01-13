@@ -1522,6 +1522,21 @@ int16_t indirectAddressing(calcRegister_t regist, bool_t valueIsRegister, int16_
       printf("date %s", str);
     }
 
+    else if(getRegisterDataType(regist) == dtReal34Matrix) {
+      uint16_t r, c;
+      real34Matrix_t mat;
+      linkToRealMatrixRegister(regist, &mat);
+      for(r = 0; r < mat.header.matrixRows; ++r) {
+        printf("Matrix Row %3i: ",r);
+        for(c = 0; c < mat.header.matrixColumns; ++c) {
+          real34ToString(&mat.matrixElements[r * mat.header.matrixColumns + c], str);
+          printf("%s ", str);
+        }
+        printf("\n");
+      }
+    }
+
+
     else {
       sprintf(errorMessage, "In printRegisterToConsole: data type %s not supported", getRegisterDataTypeName(regist ,false, false));
       displayBugScreen(errorMessage);

@@ -421,14 +421,16 @@ void fnNewMatrix(uint16_t unusedParamButMandatory) {
 
 bool_t saveStatsMatrix(void) {
 #ifndef TESTSUITE_BUILD
+  uint32_t rows, cols;
+  calcRegister_t regStats = findNamedVariable("STATS");
+
   #ifdef DEBUGUNDO
     printf(">>> saveStatsMatrix\n");
+    printRegisterToConsole(regStats,"...STATS:\n","\n");
+    printRegisterToConsole(TEMP_REGISTER_2_SAVED_STATS,"...pre-save: TEMP_REGISTER_2_SAVED_STATS:\n","\n");
   #endif
-  uint32_t rows, cols;
 
-  calcRegister_t regStats = findNamedVariable("STATS");
   if(regStats != INVALID_VARIABLE) {
-
     if(getRegisterDataType(regStats) == dtReal34Matrix) {
       rows = REGISTER_DATA(regStats)->matrixRows;
       cols = REGISTER_DATA(regStats)->matrixColumns;
@@ -437,7 +439,10 @@ bool_t saveStatsMatrix(void) {
       if(initMatrixRegister(TEMP_REGISTER_2_SAVED_STATS, rows, cols, false)) {
         copySourceRegisterToDestRegister(regStats, TEMP_REGISTER_2_SAVED_STATS);
         #ifdef DEBUGUNDO
-          printf(">>>    backing up STATS matrix containing %i rows and %i columns\n",rows, cols);
+          printf(">>>saveStatsMatrix:    backing up STATS matrix containing %i rows and %i columns\n",rows, cols);
+          regStats = findNamedVariable("STATS");
+          printRegisterToConsole(regStats,"...STATS:\n","\n");
+          printRegisterToConsole(TEMP_REGISTER_2_SAVED_STATS,"post save: ...TEMP_REGISTER_2_SAVED_STATS:\n","\n");
         #endif
         return true; //backed up
       } else {
@@ -460,7 +465,8 @@ bool_t recallStatsMatrix(void) {
 #ifndef TESTSUITE_BUILD
   #ifdef DEBUGUNDO
     printf(">>> recallStatsMatrix ...");
-  #endif
+    printRegisterToConsole(TEMP_REGISTER_2_SAVED_STATS,"From: recallStatsMatrix: TEMP_REGISTER_2_SAVED_STATS\n","");
+  #endif //DEBUGUNDO
   uint32_t rows, cols;
 
   calcRegister_t regStats = TEMP_REGISTER_2_SAVED_STATS;
@@ -474,6 +480,9 @@ bool_t recallStatsMatrix(void) {
         allocateNamedVariable("STATS", dtReal34, REAL34_SIZE);
         regStats = findNamedVariable("STATS");
       }
+      #ifdef DEBUGUNDO
+        printf("Clearing STATS\n");
+      #endif
       clearRegister(regStats);
 
       //Initialize Memory for Matrix
@@ -3051,6 +3060,7 @@ void copyComplexMatrix(const complex34Matrix_t *matrix, complex34Matrix_t *res) 
 }
 
 
+#endif //!TESTSUITE_BUILD
 
 /* Link to real matrix register (data not copied) */
 void linkToRealMatrixRegister(calcRegister_t regist, real34Matrix_t *linkedMatrix) {
@@ -3066,6 +3076,7 @@ void linkToComplexMatrixRegister(calcRegister_t regist, complex34Matrix_t *linke
   linkedMatrix->matrixElements       = REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist);
 }
 
+#ifndef TESTSUITE_BUILD
 
 
 /* Insert a row */

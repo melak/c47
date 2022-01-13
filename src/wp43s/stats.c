@@ -482,10 +482,12 @@ static void AddtoStatsMatrix(real_t *x, real_t *y) {
   calcRegister_t regStats = findNamedVariable("STATS");
   if(!isStatsMatrix(&rows)) {
     regStats = allocateNamedMatrix("STATS", 1, 2);
+    real34Matrix_t stats;
+    linkToRealMatrixRegister(regStats, &stats);
+    realMatrixInit(&stats,1,2);
   }
   else {
     if(appendRowAtMatrixRegister(regStats)) {
-      regStats = findNamedVariable("STATS");
     }
     else {
       regStats = INVALID_VARIABLE;
@@ -558,7 +560,6 @@ void fnClSigma(uint16_t unusedButMandatoryParameter) {
 
 
   clearRegister(regStats);                  // this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
-  clearRegister(TEMP_REGISTER_2_SAVED_STATS);
   lrChosen = 0;                             // linear regression selection
   lastPlotMode = PLOT_NOTHING;              // last selected  plotmode
   plotSelection = 0;                        // Currently selected linear regression mode
@@ -609,6 +610,11 @@ void fnSigma(uint16_t plusMinus) {
       realCopy(&x,      &SAVED_SIGMA_LASTX);
       realCopy(&y,      &SAVED_SIGMA_LASTY);
       SAVED_SIGMA_LAct = +1;
+
+      #ifdef DEBUGUNDO
+        calcRegister_t regStats = findNamedVariable("STATS");
+        printRegisterToConsole(regStats,"From: AddtoStatsMatrix STATS:\n","\n");
+      #endif //DEBUGUNDO
 
       temporaryInformation = TI_STATISTIC_SUMS;
     }
@@ -665,6 +671,11 @@ void fnSigma(uint16_t plusMinus) {
     realCopy(&x,       &SAVED_SIGMA_LASTX);
     realCopy(&y,       &SAVED_SIGMA_LASTY);
     SAVED_SIGMA_LAct = -1;
+
+    #ifdef DEBUGUNDO
+      calcRegister_t regStats = findNamedVariable("STATS");
+      printRegisterToConsole(regStats,"From Sigma-: STATS\n","\n");
+    #endif //DEBUGUNDO
   } 
 
 #endif // TESTSUITE_BUILD
