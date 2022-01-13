@@ -13380,37 +13380,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
     *(currentStep++) =  ITM_SHUFFLE       & 0xff;
-    *(currentStep++) = 64;
-
-    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
-    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 0;
-
-    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
-    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 99;
-
-    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
-    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_X;
-
-    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
-    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
-    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = FIRST_LOCAL_REGISTER;
-
-    *(currentStep++) = (ITM_SHUFFLE >> 8) | 0x80;
-    *(currentStep++) =  ITM_SHUFFLE       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = LAST_LOCAL_REGISTER;
+    *(currentStep++) = 255;
 
     *(currentStep++) = (ITM_PC >> 8) | 0x80;
     *(currentStep++) =  ITM_PC       & 0xff;

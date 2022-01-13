@@ -160,8 +160,8 @@
         }
       }
       else {
-        int16_t max = (tam.indirect ? (tam.dot ? currentNumberOfLocalRegisters : 99)
-          : (tam.dot ? ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) ? NUMBER_OF_LOCAL_FLAGS : currentNumberOfLocalRegisters) : tam.max));
+        int16_t max = (tam.indirect ? (tam.dot ? (calcMode == CM_PEM ? 98 : currentNumberOfLocalRegisters) : 99)
+          : (tam.dot ? (calcMode == CM_PEM ? 98 : ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) ? NUMBER_OF_LOCAL_FLAGS : currentNumberOfLocalRegisters)) : tam.max));
         uint8_t maxDigits = _tamMaxDigits(max);
         uint8_t underscores = maxDigits - tam.digitsSoFar;
         int16_t v = tam.value;
@@ -205,7 +205,12 @@
             tam.value |= 1 << (2*i + 8);
             tam.value = (tam.value & ~mask) | (((item-ITM_REG_X) << (2*i)) & mask);
             if(i == 3) {
-              reallyRunFunction(tamOperation(), tam.value);
+              if(calcMode == CM_PEM) {
+                addStepInProgram(tamOperation());
+              }
+              else {
+                reallyRunFunction(tamOperation(), tam.value);
+              }
               tamLeaveMode();
             }
             break;
@@ -243,9 +248,9 @@
     }
 
     min = (tam.dot ? 0 : tam.min);
-    max = (tam.dot ? ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) ? NUMBER_OF_LOCAL_FLAGS : currentNumberOfLocalRegisters) : tam.max);
+    max = (tam.dot ? (calcMode == CM_PEM ? 98 : ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) ? NUMBER_OF_LOCAL_FLAGS : currentNumberOfLocalRegisters)) : tam.max);
     min2 = (tam.indirect ? 0 : min);
-    max2 = (tam.indirect ? (tam.dot ? currentNumberOfLocalRegisters : 99) : max);
+    max2 = (tam.indirect ? (tam.dot ? (calcMode == CM_PEM ? 98 : currentNumberOfLocalRegisters) : 99) : max);
     if(item == ITM_ENTER || (tam.alpha && stringGlyphLength(aimBuffer) > 6)) {
       forceTry = true;
     }
@@ -539,11 +544,11 @@
           tam.min = 1;
           tam.max = getNumberOfSteps();
         }
-        else if(tam.indirect && currentNumberOfLocalRegisters) {
+        else if(tam.indirect && (currentNumberOfLocalRegisters || calcMode == CM_PEM)) {
           tam.dot = true;
         }
         else if(tam.mode != TM_VALUE && tam.mode != TM_VALUE_CHB) {
-          if(((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && currentLocalFlags != NULL) || ((tam.mode != TM_FLAGR && tam.mode != TM_FLAGW) && currentNumberOfLocalRegisters)) {
+          if(calcMode == CM_PEM || ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && currentLocalFlags != NULL) || ((tam.mode != TM_FLAGR && tam.mode != TM_FLAGW) && currentNumberOfLocalRegisters)) {
             tam.dot = true;
           }
         }

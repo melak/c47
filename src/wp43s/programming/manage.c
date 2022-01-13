@@ -853,11 +853,11 @@ void insertStepInProgram(int16_t func) {
       }
       else if(tam.indirect) {
         tmpString[opBytes    ] = (char)INDIRECT_REGISTER;
-        tmpString[opBytes + 1] = tam.value;
+        tmpString[opBytes + 1] = tam.value + (tam.dot ? FIRST_LOCAL_REGISTER : 0);
         _insertInProgram((uint8_t *)tmpString, opBytes + 2);
       }
       else {
-        tmpString[opBytes    ] = tam.value;
+        tmpString[opBytes    ] = tam.value + (tam.dot ? FIRST_LOCAL_REGISTER : 0);
         _insertInProgram((uint8_t *)tmpString, opBytes + 1);
       }
   }
