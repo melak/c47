@@ -111,7 +111,7 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
       }
 
     case PARAM_NUMBER_8:
-      if(opParam <= 99) { // Value from 0 to 99
+      if(opParam <= 249) { // Value from 0 to 99
         return step;
       }
       else if(opParam == INDIRECT_REGISTER) {
@@ -146,6 +146,10 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
         #endif // !DMCP_BUILD
         return NULL;
       }
+
+    case PARAM_SKIP_BACK:
+    case PARAM_SHUFFLE:
+      return step;
 
     default:
       #ifndef DMCP_BUILD

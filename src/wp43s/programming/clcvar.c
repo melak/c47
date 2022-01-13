@@ -174,7 +174,7 @@ static void _processOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
       break;
 
     case PARAM_NUMBER_8:
-      if(opParam <= 99) { // Value from 0 to 99
+      if(opParam <= (indexOfItems[op].tamMinMax & TAM_MAX_MASK)) { // Value from 0 to 99
         // nothing to do
       }
       else if(opParam == INDIRECT_REGISTER) {
@@ -189,6 +189,8 @@ static void _processOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
       break;
 
     case PARAM_NUMBER_16:
+    case PARAM_SKIP_BACK:
+    case PARAM_SHUFFLE:
       // nothing to do
       break;
 

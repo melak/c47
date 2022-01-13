@@ -176,20 +176,10 @@ infinite:
 
 void realToFloat(const real_t *vv, float *v) {
   *v = fnRealToFloat(vv);
-  #ifdef PC_BUILD
-    char tmpString1[100];                      //allow for 75 digits
-    realToString(vv, tmpString1);
-    //printf("Convert vv REAL %s --> Float %f\n",tmpString1,*v);
-  #endif
 }
 
-void realToDouble1(const real_t *vv, double *v) {
+void realToDouble1(const real_t *vv, double *v) {      //Not using double internally, i.e. using float type. Change fnRealToFloat if double is needed in future
   *v = fnRealToFloat(vv);
-  #ifdef PC_BUILD
-    char tmpString1[100];                      //allow for 75 digits
-    realToString(vv, tmpString1);
-    //printf("Convert vv REAL %s --> Double %lf\n",tmpString1,*v);
-  #endif
 }
 
 
@@ -1061,9 +1051,63 @@ void graphDrawLRline(uint16_t selection) {
   #endif //TESTSUITE_BUILD
 }
 
-
-
 #ifndef TESTSUITE_BUILD
+  void doubleToString(double x, int16_t n, char *buff) { //Reformatting real strings that are formatted according to different locale settings
+    uint16_t i = 2; 
+    uint16_t j = 2; 
+    bool_t error = false;
+    snprintf(buff, n, "%.16e", x);
+
+    //#ifdef PC_BUILD
+    //  printf(">>>###A §%s§ %f %i %i %i \n",buff,(float) x, buff[0], buff[1], buff[2] );
+    //#endif //PC_BUILD
+
+    if(buff[0]!='-') {
+      i = 0;
+      while (buff[i]!=0) {
+        i++;
+      }
+      while (i!=0) {
+        buff[i] = buff[i-1];
+        i--;
+      }
+      buff[0] = '+';
+    }
+
+    if(buff[0]!=0 && (buff[1]=='+' || buff[1]!='-') && (buff[2]=='.' || buff[2]==',')) {
+      buff[2] = '.';
+      i = 3; 
+      j = 3; 
+      while (buff[i]!=0) {
+        if(buff[i]==',' || buff[i]=='.' || buff[i]==' ') 
+          buff[j] = 0; 
+        else {
+          buff[j] = buff[i];
+          j++;
+        }
+        i++;
+      }
+      buff[j] = 0;
+    } else error = true;
+
+    //#ifdef PC_BUILD
+    //  printf(">>>###B §%s§ %f %i %i %i \n",buff,(float) x, buff[0], buff[1], buff[2] );
+    //#endif //PC_BUILD
+
+    stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
+    if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) error = true;
+
+    if(error) {
+      #ifdef PC_BUILD
+        printf("ERROR in locale: doubleToString: attempt to correct:  §%s§\n",buff);
+        snprintf(buff, 100, "%.16e", x);
+        printf("                                 Original conversion: §%s§\n",buff); 
+      #endif //PC_BUILD    
+      strcpy(buff,"NaN");
+    }
+  }
+
+
   void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2){
     int32_t n;
     uint16_t NN;
@@ -1128,7 +1172,8 @@ void graphDrawLRline(uint16_t selection) {
           x = ix + intervalW / ((double)((uint16_t) 1 << xx));
           if(USEFLOATING != 0) {
             //TODO create REAL from x (double) if REALS will be used
-            sprintf(ss,"%f",x); stringToReal(ss,&XX,&ctxtReal39);
+            snprintf(ss,100,"%f",x); stringToReal(ss,&XX,&ctxtReal39);
+printf(">>><<< %s >>><<<\n",ss);
           }
           yIsFnx( USEFLOATING, selection, x, &y, a0, a1, a2, &XX, &YY, RR, SMI, aa0, aa1, aa2);
           xN = screen_window_x(x_min,(float)x,x_max);
