@@ -190,6 +190,7 @@ static void _processOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
 
     case PARAM_NUMBER_16:
     case PARAM_SKIP_BACK:
+    case PARAM_SHUFFLE:
       // nothing to do
       break;
 

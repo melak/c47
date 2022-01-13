@@ -31,6 +31,7 @@
 
 #include "wp43s.h"
 
+TO_QSPI const char shuffleReg[4] = {'x', 'y', 'z', 't'};
 
 #ifndef DMCP_BUILD
   void listPrograms(void) {
@@ -320,6 +321,13 @@ static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, 
 
     case PARAM_SKIP_BACK:
       sprintf(tmpString, "%s %03u", op, opParam);
+      break;
+
+    case PARAM_SHUFFLE:
+      sprintf(tmpString, "%s %c%c%c%c", op, shuffleReg[ opParam & 0x03      ],
+                                            shuffleReg[(opParam & 0x0c) >> 2],
+                                            shuffleReg[(opParam & 0x30) >> 4],
+                                            shuffleReg[(opParam & 0xc0) >> 6]);
       break;
 
 
