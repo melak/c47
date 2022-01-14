@@ -149,6 +149,7 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
       }
 
     case PARAM_SKIP_BACK:
+    case PARAM_SHUFFLE:
       return step;
 
     default:

@@ -304,6 +304,10 @@
         programRunStop = PGM_KEY_PRESSED_WHILE_PAUSED;
         return;
       }
+      if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+        // not processed here
+        return;
+      }
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0) {
         int16_t item = determineFunctionKeyItem((char *)data);
 
@@ -391,6 +395,40 @@
       return;
     }
     if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
+      if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+        if(tam.digitsSoFar == 0) {
+          switch(((char *)data)[0]) {
+            case '1':
+              tamProcessInput(shiftG ? ITM_1 :                  ITM_0);
+              tamProcessInput(shiftG ? ITM_3 : shiftF ? ITM_7 : ITM_1);
+              break;
+            case '2':
+              tamProcessInput(shiftG ? ITM_1 :                  ITM_0);
+              tamProcessInput(shiftG ? ITM_4 : shiftF ? ITM_8 : ITM_2);
+              break;
+            case '3':
+              tamProcessInput(shiftG ? ITM_1 :                  ITM_0);
+              tamProcessInput(shiftG ? ITM_5 : shiftF ? ITM_9 : ITM_3);
+              break;
+            case '4':
+              tamProcessInput(     (shiftG || shiftF) ? ITM_1 : ITM_0);
+              tamProcessInput(shiftG ? ITM_6 : shiftF ? ITM_0 : ITM_4);
+              break;
+            case '5':
+              tamProcessInput(     (shiftG || shiftF) ? ITM_1 : ITM_0);
+              tamProcessInput(shiftG ? ITM_7 : shiftF ? ITM_1 : ITM_5);
+              break;
+            case '6':
+              tamProcessInput(     (shiftG || shiftF) ? ITM_1 : ITM_0);
+              tamProcessInput(shiftG ? ITM_8 : shiftF ? ITM_2 : ITM_6);
+              break;
+          }
+          shiftF = shiftG = false;
+          refreshScreen();
+        }
+        return;
+      }
+
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0) {
         switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
           case MNU_MyMenu:
@@ -1115,13 +1153,30 @@
               break;
 
             case CM_AIM:
+              if(item == ITM_BST || item == ITM_SST) {
+                closeAim();
+                runFunction(item);
+                keyActionProcessed = true;
+              }
+              else {
+                processAimInput(item);
+              }
+              break;
+
             case CM_EIM:
               processAimInput(item);
               break;
 
             case CM_NIM:
-              keyActionProcessed = true;
-              addItemToNimBuffer(item);
+              if(item == ITM_BST || item == ITM_SST) {
+                closeNim();
+                runFunction(item);
+                keyActionProcessed = true;
+              }
+              else {
+                keyActionProcessed = true;
+                addItemToNimBuffer(item);
+              }
               break;
 
             case CM_MIM:
@@ -1202,9 +1257,6 @@
 
             case CM_GRAPH:
             case CM_PLOT_STAT:
-              if(item == ITM_EXIT || item == ITM_BACKSPACE) {
-                fnPlotClose(0);
-              }
               break;
 
             case CM_CONFIRMATION:
@@ -1384,6 +1436,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
     switch(calcMode) {
       case CM_NORMAL:
         setSystemFlag(FLAG_ASLIFT);
+        #ifdef DEBUGUNDO
+          printf(">>> saveForUndo from fnKeyEnterA\n");
+        #endif
         saveForUndo();
         if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
 
@@ -1400,6 +1455,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
         popSoftmenu();
 
         if(aimBuffer[0] == 0) {
+          #ifdef DEBUGUNDO
+            printf(">>> undo from fnKeyEnter\n");
+          #endif
           undo();
         }
         else {
@@ -1409,6 +1467,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
           xcopy(REGISTER_STRING_DATA(REGISTER_X), aimBuffer, len);
 
           setSystemFlag(FLAG_ASLIFT);
+          #ifdef DEBUGUNDO
+            printf(">>> saveForUndo from fnKeyEnterB\n");
+          #endif
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
           liftStack();
@@ -1430,6 +1491,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
 
         if(calcMode != CM_NIM && lastErrorCode == 0) {
           setSystemFlag(FLAG_ASLIFT);
+          #ifdef DEBUGUNDO
+            printf(">>> saveForUndo from fnKeyEnterC\n");
+          #endif
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
           liftStack();
@@ -1481,6 +1545,9 @@ undo_disabled:
 
 ram_full:
     displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    #ifdef DEBUGUNDO
+      printf(">>> Undo from fnKeyEnterD\n");
+    #endif
     fnUndo(NOPARAM);
     return;
   #endif // !TESTSUITE_BUILD
@@ -1490,6 +1557,15 @@ ram_full:
 
 void fnKeyExit(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
+    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+      if(tam.digitsSoFar == 0) {
+        tamProcessInput(ITM_2);
+        tamProcessInput(ITM_1);
+        shiftF = shiftG = false;
+        refreshScreen();
+      }
+      return;
+    }
     if(lastErrorCode == 0 && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MVAR) {
       currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
     }
@@ -1543,6 +1619,9 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       case CM_AIM:
         if(softmenuStack[0].softmenuId <= 1) { // MyMenu or MyAlpha is displayed
           closeAim();
+          #ifdef DEBUGUNDO
+            printf(">>> saveForUndo from fnKeyExitA\n");
+          #endif
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
         }
@@ -1575,6 +1654,9 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         aimBuffer[0] = 0;
         leavePem();
         calcModeNormal();
+        #ifdef DEBUGUNDO
+          printf(">>> saveForUndo from fnKeyExitB\n");
+        #endif
         saveForUndo();
         if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
         break;
@@ -1617,7 +1699,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         lastPlotMode = PLOT_NOTHING;
         plotSelection = 0;
         calcMode = CM_NORMAL;
-        fnUndo(0);
+        #ifdef DEBUGUNDO
+          printf(">>> Undo from fnKeyExit\n");
+        #endif
+        fnUndo(NOPARAM);
         popSoftmenu();
         break;
 
@@ -1861,6 +1946,15 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
 void fnKeyUp(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
+    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+      if(tam.digitsSoFar == 0) {
+        tamProcessInput(ITM_1);
+        tamProcessInput(ITM_9);
+        shiftF = shiftG = false;
+        refreshScreen();
+      }
+      return;
+    }
     if(tam.mode && !catalog) {
       if(tam.alpha) {
         resetAlphaSelectionBuffer();
@@ -1893,7 +1987,9 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuUp();
         }
-        else if(calcMode == CM_NORMAL && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
+        else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_UPPER)) {
+          if(calcMode == CM_NIM) closeNim();
+          if(calcMode == CM_AIM) closeAim();
           fnBst(NOPARAM);
           #ifdef DMCP_BUILD
             lcd_refresh();
@@ -1985,6 +2081,15 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
 
 void fnKeyDown(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
+    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+      if(tam.digitsSoFar == 0) {
+        tamProcessInput(ITM_2);
+        tamProcessInput(ITM_0);
+        shiftF = shiftG = false;
+        refreshScreen();
+      }
+      return;
+    }
     if(tam.mode && !catalog) {
       if(tam.alpha) {
         resetAlphaSelectionBuffer();
@@ -2017,7 +2122,9 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuDown();
         }
-        else if(calcMode == CM_NORMAL && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
+        else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_LOWER)) {
+          if(calcMode == CM_NIM) closeNim();
+          if(calcMode == CM_AIM) closeAim();
           fnSst(NOPARAM);
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){

@@ -62,6 +62,15 @@
   #define STATDEBUG_VERBOSE
 #endif
 
+
+#ifdef PC_BUILD
+//  #define DEBUGUNDO
+  #undef DEBUGUNDO
+#else
+  #undef DEBUGUNDO
+#endif
+
+
 #define REAL34_WIDTH_TEST 0 // For debugging real34 ALL 0 formating. Use UP/DOWN to shrink or enlarge the available space. The Z register holds the available width.
 
 
@@ -261,8 +270,9 @@ typedef enum {
 #define PTP_COMPARE                        ( 7 << 9) //   PARAM_*
 #define PTP_KEYG_KEYX                      ( 8 << 9) //   defined
 #define PTP_SKIP_BACK                      ( 9 << 9) //   below.
-#define PTP_LITERAL                        (10 << 9) // Literal
-#define PTP_DISABLED                       (11 << 9) // Not programmable
+#define PTP_SHUFFLE                        (10 << 9) //
+#define PTP_LITERAL                        (11 << 9) // Literal
+#define PTP_DISABLED                       (12 << 9) // Not programmable
 
 
 #define INC_FLAG                                   0
@@ -775,6 +785,7 @@ typedef enum {
 #define PARAM_COMPARE                              7
 #define PARAM_KEYG_KEYX                            8
 #define PARAM_SKIP_BACK                            9
+#define PARAM_SHUFFLE                             10
 
 #define CHECK_INTEGER                              0
 #define CHECK_INTEGER_EVEN                         1
@@ -826,6 +837,7 @@ typedef enum {
 #define SOLVER_RESULT_EXTREMUM                     2
 #define SOLVER_RESULT_BAD_GUESS                    3
 #define SOLVER_RESULT_CONSTANT                     4
+#define SOLVER_RESULT_OTHER_FAILURE                5
 
 #define ASSIGN_NAMED_VARIABLES                 10000
 #define ASSIGN_LABELS                          12000

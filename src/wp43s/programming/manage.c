@@ -348,6 +348,14 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       return;
     }
 
+    if(currentLocalStepNumber < firstDisplayedLocalStepNumber) {
+      firstDisplayedLocalStepNumber = currentLocalStepNumber;
+      firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
+      for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i) {
+        firstDisplayedStep = findNextStep(firstDisplayedStep);
+      }
+    }
+
     if(currentLocalStepNumber == 0) {
       currentLocalStepNumber = 1;
     }
@@ -368,7 +376,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       firstLine = 0;
     }
 
-    int lineOffset = 0;
+    int lineOffset = 0, lineOffsetTam = 0;
 
     if(programList[currentProgramNumber - 1].step < 0) { // Flash
       tmpSteps = allocWp43s(400 * 7);
@@ -379,10 +387,10 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
     for(line=firstLine; line<7; line++) {
       nextStep = findNextStep_ram(step);
       //uint16_t stepSize = (uint16_t)(nextStep - step);
-      sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset);
+      sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset + lineOffsetTam);
       if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber) {
         tamOverPemYPos = Y_POSITION_OF_REGISTER_T_LINE + 21 * line;
-        showString(tmpString, &standardFont, 1, tamOverPemYPos, vmReverse, false, true);
+        showString(tmpString, &standardFont, 1, tamOverPemYPos, tam.mode ? vmNormal : vmReverse, false, true);
         if(programList[currentProgramNumber - 1].step < 0) { // Flash
           currentStep.flash = step - tmpSteps + firstDisplayedStep.flash;
         }
@@ -394,6 +402,29 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
         showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal,  false, true);
       }
       lblOrEnd = (*step == ITM_LBL) || ((*step == ((ITM_END >> 8) | 0x80)) && (*(step + 1) == (ITM_END & 0xff))) || ((*step == 0xff) && (*(step + 1) == 0xff));
+      if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber + 1) {
+        tamOverPemYPos = Y_POSITION_OF_REGISTER_T_LINE + 21 * line;
+        if(tam.mode) {
+          line += 1;
+          lineOffset += 1;
+          lineOffsetTam += 1;
+          showString(tmpString, &standardFont, 1, tamOverPemYPos, vmReverse, false, true);
+          if(line >= 7) break;
+          sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset + lineOffsetTam);
+          showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal, false, true);
+        }
+      }
+      else if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber && lblOrEnd && (*step != ITM_LBL)) {
+        if(tam.mode) {
+          line += 1;
+          lineOffset += 1;
+          lineOffsetTam += 1;
+          showString(tmpString, &standardFont, 1, tamOverPemYPos, vmReverse, false, true);
+          if(line >= 7) break;
+          sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset + lineOffsetTam);
+          showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal, false, true);
+        }
+      }
       decodeOneStep_ram(step);
       if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber && !tam.mode) {
         if(getSystemFlag(FLAG_ALPHA)) {
@@ -454,7 +485,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       freeWp43s(tmpSteps, 400 * 7);
     }
 
-    if(currentLocalStepNumber >= (firstDisplayedLocalStepNumber + stepsThatWouldBeDisplayed)) {
+    if(currentLocalStepNumber >= (firstDisplayedLocalStepNumber + stepsThatWouldBeDisplayed + (tam.mode ? 1 : 0))) {
       firstDisplayedLocalStepNumber = currentLocalStepNumber - stepsThatWouldBeDisplayed + 1;
       firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
       for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i) {
@@ -920,11 +951,11 @@ void insertStepInProgram(int16_t func) {
       }
       else if(tam.indirect) {
         tmpString[opBytes    ] = (char)INDIRECT_REGISTER;
-        tmpString[opBytes + 1] = tam.value;
+        tmpString[opBytes + 1] = tam.value + (tam.dot ? FIRST_LOCAL_REGISTER : 0);
         _insertInProgram((uint8_t *)tmpString, opBytes + 2);
       }
       else {
-        tmpString[opBytes    ] = tam.value;
+        tmpString[opBytes    ] = tam.value + (tam.dot ? FIRST_LOCAL_REGISTER : 0);
         _insertInProgram((uint8_t *)tmpString, opBytes + 1);
       }
   }

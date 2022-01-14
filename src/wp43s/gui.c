@@ -1203,6 +1203,9 @@
 
 
   void calcModeNim(uint16_t unusedButMandatoryParameter) {
+    #ifdef DEBUGUNDO
+      printf(">>> saveForUndo from gui: calcModeNim\n");
+    #endif
     saveForUndo();
     if(lastErrorCode == ERROR_RAM_FULL) {
       displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);

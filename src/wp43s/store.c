@@ -37,6 +37,7 @@ bool_t regInRange(uint16_t regist) {
     (regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE));
 #ifdef PC_BUILD
   if(!inRange) {
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     if(regist >= FIRST_LOCAL_REGISTER && regist <= LAST_LOCAL_REGISTER) {
       sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
     }

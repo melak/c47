@@ -467,6 +467,7 @@ static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
       break;
 
     case PARAM_SKIP_BACK:
+    case PARAM_SHUFFLE:
       reallyRunFunction(op, opParam);
       break;
 
