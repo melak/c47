@@ -83,6 +83,10 @@ void fnLastX(uint16_t unusedButMandatoryParameter) {
 
 void fnRecallAdd(uint16_t regist) {
   if(regInRange(regist)) {
+    if(programRunStop == PGM_RUNNING && regist == REGISTER_L) {
+      copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
+      if(lastErrorCode != ERROR_NONE) return;
+    }
     if(!saveLastX()) return;
     if(programRunStop == PGM_RUNNING) {
       copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
@@ -105,6 +109,10 @@ void fnRecallAdd(uint16_t regist) {
 
 void fnRecallSub(uint16_t regist) {
   if(regInRange(regist)) {
+    if(programRunStop == PGM_RUNNING && regist == REGISTER_L) {
+      copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
+      if(lastErrorCode != ERROR_NONE) return;
+    }
     if(!saveLastX()) return;
     if(programRunStop == PGM_RUNNING) {
       copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
@@ -127,6 +135,10 @@ void fnRecallSub(uint16_t regist) {
 
 void fnRecallMult(uint16_t regist) {
   if(regInRange(regist)) {
+    if(programRunStop == PGM_RUNNING && regist == REGISTER_L) {
+      copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
+      if(lastErrorCode != ERROR_NONE) return;
+    }
     if(!saveLastX()) return;
     if(programRunStop == PGM_RUNNING) {
       copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
@@ -149,6 +161,10 @@ void fnRecallMult(uint16_t regist) {
 
 void fnRecallDiv(uint16_t regist) {
   if(regInRange(regist)) {
+    if(programRunStop == PGM_RUNNING && regist == REGISTER_L) {
+      copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
+      if(lastErrorCode != ERROR_NONE) return;
+    }
     if(!saveLastX()) return;
     if(programRunStop == PGM_RUNNING) {
       copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
@@ -171,6 +187,10 @@ void fnRecallDiv(uint16_t regist) {
 
 void fnRecallMin(uint16_t regist) {
   if(regInRange(regist)) {
+    if(programRunStop == PGM_RUNNING && regist == REGISTER_L) {
+      copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
+      if(lastErrorCode != ERROR_NONE) return;
+    }
     if(!saveLastX()) return;
     if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.pointerToRegisterData == WP43S_NULL) {
       copySourceRegisterToDestRegister(regist == REGISTER_L ? SAVED_REGISTER_L : regist, TEMP_REGISTER_1);
@@ -184,6 +204,10 @@ void fnRecallMin(uint16_t regist) {
 
 void fnRecallMax(uint16_t regist) {
   if(regInRange(regist)) {
+    if(programRunStop == PGM_RUNNING && regist == REGISTER_L) {
+      copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
+      if(lastErrorCode != ERROR_NONE) return;
+    }
     if(!saveLastX()) return;
     if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.pointerToRegisterData == WP43S_NULL) {
       copySourceRegisterToDestRegister(regist == REGISTER_L ? SAVED_REGISTER_L : regist, TEMP_REGISTER_1);
