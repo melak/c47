@@ -21,6 +21,7 @@
 #include "mathematics/comparisonReals.h"
 #include "error.h"
 #include "flags.h"
+#include "matrix.h"
 #include "memory.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -237,11 +238,19 @@ void fnGetStackSize(uint16_t unusedButMandatoryParameter) {
 
 
 void saveForUndo(void) {
-  if((calcMode == CM_NIM || calcMode == CM_AIM) && thereIsSomethingToUndo) {
+  if((calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_MIM) && thereIsSomethingToUndo) {
+    #ifdef DEBUGUNDO
+      printf(">>> saveForUndo; calcMode = %i, nothing stored as there is something to undo\n",calcMode);
+    #endif
     return;
   }
+  #ifdef DEBUGUNDO
+    printf(">>> savedForUndo; saved; calcMode = %i\n",calcMode);
+    printf("Clearing TEMP_REGISTER_2_SAVED_STATS\n");
+  #endif
 
-  clearRegister(TEMP_REGISTER_2_SAVED_STATS); //clear it here, and set it only in fnEditMatrix()
+  clearRegister(TEMP_REGISTER_2_SAVED_STATS); //clear it here for every saveForUndo call, and explicitly set it in fnEditMatrix() and fnEqSolvGraph() only
+  SAVED_SIGMA_LAct = 0;
 
   savedSystemFlags = systemFlags;
 
@@ -318,15 +327,10 @@ void fnUndo(uint16_t unusedButMandatoryParameter) {
 
 
 void undo(void) {
-  if(getRegisterDataType(TEMP_REGISTER_2_SAVED_STATS) == dtReal34Matrix) {
-    calcRegister_t regStats = findNamedVariable("STATS");
-    if(regStats == INVALID_VARIABLE) {
-      allocateNamedVariable("STATS", dtReal34, REAL34_SIZE);
-      regStats = findNamedVariable("STATS");
-    }
-    clearRegister(regStats);
-    copySourceRegisterToDestRegister(TEMP_REGISTER_2_SAVED_STATS, findNamedVariable("STATS"));
-  }
+  #ifdef DEBUGUNDO
+    printf(">>> Undoing, calcMode = %i ...",calcMode);
+  #endif
+  recallStatsMatrix();
 
   if(currentInputVariable != INVALID_VARIABLE) {
     if(currentInputVariable & 0x4000) {
@@ -348,6 +352,8 @@ void undo(void) {
     fnSigma(-1);
   } else
   if(SAVED_SIGMA_LAct == -1) {
+    clearRegister(REGISTER_X);
+    clearRegister(REGISTER_Y);
     convertRealToReal34ResultRegister(&SAVED_SIGMA_LASTX, REGISTER_X);             // Can use stack, as the stack will be undone below
     convertRealToReal34ResultRegister(&SAVED_SIGMA_LASTY, REGISTER_Y);
     fnSigma(+1);
@@ -376,9 +382,13 @@ void undo(void) {
       statisticalSumsPointer = allocWp43s(NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
     }
     xcopy(statisticalSumsPointer, savedStatisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * TO_BYTES(REAL_SIZE));
-    SAVED_SIGMA_LAct = 0;
   }
 
+  SAVED_SIGMA_LAct = 0;
   thereIsSomethingToUndo = false;
   clearRegister(TEMP_REGISTER_2_SAVED_STATS);
+  #ifdef DEBUGUNDO
+    printf(">>> Undone, calcMode = %i\n",calcMode);
+  #endif
+
 }
