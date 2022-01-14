@@ -14,7 +14,7 @@ Func: fnRoundi
 ; roundi(Long Integer) --> Error24
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"12345678901234567"
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=LonI:"12345678901234567"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=LonI:"12345678901234567" RX=LonI:"12345678901234567"
 
 
 

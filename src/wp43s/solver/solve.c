@@ -150,6 +150,10 @@ void fnSolve(uint16_t labelOrVariable) {
           temporaryInformation = TI_SOLVER_FAILED;
           displayCalcErrorMessage(ERROR_FUNCTION_VALUES_LOOK_CONSTANT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           break;
+        case SOLVER_RESULT_OTHER_FAILURE:
+          temporaryInformation = TI_SOLVER_FAILED;
+          displayCalcErrorMessage(ERROR_NO_ROOT_FOUND, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          break;
       }
       saveForUndo();
       adjustResult(REGISTER_X, false, false, REGISTER_X, REGISTER_Y, -1);
@@ -528,6 +532,33 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
   real34Copy(&fb, resZ);
   real34Copy(&b1, resY);
   real34Copy(&b, resX);
+
+  if(result == SOLVER_RESULT_EXTREMUM) { // Check if the result is really an extremum
+    real34Copy(const34_1e_32, &tmp);
+    while(true) {
+      real34Add(resX, &tmp, &a);
+      real34Subtract(resX, &tmp, &b);
+      _executeSolver(variable, &a, &fa);
+      _executeSolver(variable, &b, &fb);
+      real34Subtract(&fa, resZ, &fa);
+      real34Subtract(&fb, resZ, &fb);
+      if(real34IsSpecial(&fa) || real34IsSpecial(&fb)) {
+        result = SOLVER_RESULT_OTHER_FAILURE;
+        break;
+      }
+      else if(real34IsZero(&fa) || real34IsZero(&fb)) {
+        real34Multiply(&tmp, const34_100, &tmp);
+      }
+      else if(real34IsNegative(&fa) == real34IsNegative(&fb)) { // true extremum
+        break;
+      }
+      else { // not an extremum
+        result = SOLVER_RESULT_OTHER_FAILURE;
+        break;
+      }
+    }
+  }
+
   return result;
 #else /* TESTSUITE_BUILD */
   return SOLVER_RESULT_NORMAL;

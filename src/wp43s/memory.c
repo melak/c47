@@ -107,6 +107,9 @@ void *reallocWp43s(void *pcMemPtr, size_t oldSizeInBlocks, size_t newSizeInBlock
 }
 
 void freeWp43s(void *pcMemPtr, size_t sizeInBlocks) {
+  if(pcMemPtr == NULL)
+    return;
+
   #ifndef DMCP_BUILD
     //if(debugMemAllocation) printf("freeWp43s\n");
   #endif // !DMCP_BUILD
