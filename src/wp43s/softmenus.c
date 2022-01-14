@@ -20,6 +20,8 @@
 #include "error.h"
 #include "gui.h"
 #include "items.h"
+#include "memory.h"
+#include "programming/flash.h"
 #include "programming/nextStep.h"
 #include "registers.h"
 #include "screen.h"
@@ -577,20 +579,48 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 
 
+  static void _dynmenuConstructMVarsFromPgm(uint16_t label, uint16_t *numberOfBytes, uint16_t *numberOfVars) {
+    bool_t inFlash = (labelList[label].program < 0);
+    uint16_t flashOffset = 0;
+    uint8_t *step;
+    if(inFlash) {
+      step = allocWp43s(TO_BLOCKS(400));
+      if(step) {
+        readStepInFlashPgmLibrary(step, 400, labelList[label].instructionPointer.flash);
+      }
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        return;
+      }
+    }
+    else {
+      step = labelList[label].instructionPointer.ram;
+    }
+    while((*numberOfVars < 18) && *step == ((ITM_MVAR >> 8) | 0x80) && *(step + 1) == (ITM_MVAR & 0xff) && *(step + 2) == STRING_LABEL_VARIABLE) {
+      xcopy(tmpString + *numberOfBytes, step + 4, *(step + 3));
+      (void)findOrAllocateNamedVariable(tmpString + *numberOfBytes);
+      *numberOfBytes += *(step + 3) + 1;
+      (*numberOfVars)++;
+      if(inFlash) {
+        flashOffset += (findNextStep_ram(step) - step);
+        readStepInFlashPgmLibrary(step, 400, labelList[label].instructionPointer.flash + flashOffset);
+      }
+      else {
+        step = findNextStep_ram(step);
+      }
+    }
+    if(inFlash) {
+      freeWp43s(step, TO_BLOCKS(400));
+    }
+  }
+
   static void _dynmenuConstructMVars(int16_t menu) {
     uint16_t numberOfBytes = 0;
     uint16_t numberOfVars = 0;
     memset(tmpString, 0, TMP_STR_LENGTH);
 
     if(currentMvarLabel != INVALID_VARIABLE) {
-      uint8_t *step = labelList[currentMvarLabel - FIRST_LABEL].instructionPointer;
-      while((numberOfVars < 18) && *step == ((ITM_MVAR >> 8) | 0x80) && *(step + 1) == (ITM_MVAR & 0xff) && *(step + 2) == STRING_LABEL_VARIABLE) {
-        xcopy(tmpString + numberOfBytes, step + 4, *(step + 3));
-        (void)findOrAllocateNamedVariable(tmpString + numberOfBytes);
-        numberOfBytes += *(step + 3) + 1;
-        numberOfVars++;
-        step = findNextStep(step);
-      }
+      _dynmenuConstructMVarsFromPgm(currentMvarLabel - FIRST_LABEL, &numberOfBytes, &numberOfVars);
     }
     else if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
       char *bufPtr = tmpString;
@@ -605,14 +635,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       lastErrorCode = errorCode;
     }
     else {
-      uint8_t *step = labelList[currentSolverProgram].instructionPointer;
-      while(*step == ((ITM_MVAR >> 8) | 0x80) && *(step + 1) == (ITM_MVAR & 0xff) && *(step + 2) == STRING_LABEL_VARIABLE) {
-        xcopy(tmpString + numberOfBytes, step + 4, *(step + 3));
-        (void)findOrAllocateNamedVariable(tmpString + numberOfBytes);
-        numberOfBytes += *(step + 3) + 1;
-        numberOfVars++;
-        step = findNextStep(step);
-      }
+      _dynmenuConstructMVarsFromPgm(currentSolverProgram, &numberOfBytes, &numberOfVars);
     }
 
     dynamicSoftmenu[menu].menuContent = malloc(numberOfBytes);
@@ -676,9 +699,32 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       case MNU_MyAlpha: _dynmenuConstructUser(menu);
                         break;
 
-      case MNU_FLASH:   dynamicSoftmenu[menu].menuContent = malloc(18);
-                        xcopy(dynamicSoftmenu[menu].menuContent, "FLASH\000to\000be\000coded", 18);
-                        dynamicSoftmenu[menu].numItems = 4;
+      case MNU_FLASH:   numberOfBytes = 0;
+                        numberOfGlobalLabels = 0;
+                        memset(tmpString, 0, TMP_STR_LENGTH);
+                        for(i=0; i<numberOfLabels; i++) {
+                          if(labelList[i].program < 0 && labelList[i].step > 0) { // Flash and Global label
+                            uint8_t tmpLabel[16];
+                            readStepInFlashPgmLibrary(tmpLabel, 16, labelList[i].labelPointer.flash);
+                            xcopy(tmpString + 15 * numberOfGlobalLabels, tmpLabel + 1, tmpLabel[0]);
+                            numberOfGlobalLabels++;
+                            numberOfBytes += 1 + tmpLabel[0];
+                          }
+                        }
+
+                        if(numberOfGlobalLabels != 0) {
+                          qsort(tmpString, numberOfGlobalLabels, 15, sortMenu);
+                        }
+
+                        ptr = malloc(numberOfBytes);
+                        dynamicSoftmenu[menu].menuContent = ptr;
+                        for(i=0; i<numberOfGlobalLabels; i++) {
+                          int16_t len = stringByteLength(tmpString + 15*i) + 1;
+                          xcopy(ptr, tmpString + 15*i, len);
+                          ptr += len;
+                        }
+
+                        dynamicSoftmenu[menu].numItems = numberOfGlobalLabels;
                         break;
 
       case MNU_RAM:     numberOfBytes = 0;
@@ -686,9 +732,9 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
                         memset(tmpString, 0, TMP_STR_LENGTH);
                         for(i=0; i<numberOfLabels; i++) {
                           if(labelList[i].program > 0 && labelList[i].step > 0) { // RAM and Global label
-                            xcopy(tmpString + 15 * numberOfGlobalLabels, labelList[i].labelPointer + 1, labelList[i].labelPointer[0]);
+                            xcopy(tmpString + 15 * numberOfGlobalLabels, labelList[i].labelPointer.ram + 1, labelList[i].labelPointer.ram[0]);
                             numberOfGlobalLabels++;
-                            numberOfBytes += 1 + labelList[i].labelPointer[0];
+                            numberOfBytes += 1 + labelList[i].labelPointer.ram[0];
                           }
                         }
 
@@ -718,9 +764,16 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
                         memset(tmpString, 0, TMP_STR_LENGTH);
                         for(i=0; i<numberOfLabels; i++) {
                           if(labelList[i].program > 0 && labelList[i].step > 0) { // RAM and Global label
-                            xcopy(tmpString + 15 * numberOfGlobalLabels, labelList[i].labelPointer + 1, labelList[i].labelPointer[0]);
+                            xcopy(tmpString + 15 * numberOfGlobalLabels, labelList[i].labelPointer.ram + 1, labelList[i].labelPointer.ram[0]);
                             numberOfGlobalLabels++;
-                            numberOfBytes += 1 + labelList[i].labelPointer[0];
+                            numberOfBytes += 1 + labelList[i].labelPointer.ram[0];
+                          }
+                          else if(labelList[i].program < 0 && labelList[i].step > 0) { // Flash and Global label
+                            uint8_t tmpLabel[16];
+                            readStepInFlashPgmLibrary(tmpLabel, 16, labelList[i].labelPointer.flash);
+                            xcopy(tmpString + 15 * numberOfGlobalLabels, tmpLabel + 1, tmpLabel[0]);
+                            numberOfGlobalLabels++;
+                            numberOfBytes += 1 + tmpLabel[0];
                           }
                         }
 

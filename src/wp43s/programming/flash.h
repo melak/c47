@@ -15,19 +15,21 @@
  */
 
 /********************************************//**
- * \file decode.h
+ * \file flash.h
  ***********************************************/
-#ifndef DECODE_H
-#define DECODE_H
+#ifndef FLASH_H
+#define FLASH_H
 
-#include "typeDefinitions.h"
 #include <stdint.h>
 
-void decodeOneStep          (pgmPtr_t step);
-void decodeOneStep_ram      (uint8_t *step);
-#ifndef DMCP_BUILD
-  void listPrograms         (void);
-  void listLabelsAndPrograms(void);
-#endif // !DMCP_BUILD
+void fnPSto                      (uint16_t unusedButMandatoryParameter);
+void fnPRcl                      (uint16_t unusedButMandatoryParameter);
 
-#endif // DECODE_H
+void initFlashPgmLibrary         (void);
+void scanFlashPgmLibrary         (void);
+void addToFlashPgmLibrary        (void);
+void deleteFromFlashPgmLibrary   (uint32_t fromAddr, uint32_t toAddr);
+void readStepInFlashPgmLibrary   (uint8_t *buffer, uint16_t bufferSize, uint32_t pointer);
+void executeStepInFlashPgmLibrary(void);
+
+#endif // FLASH_H

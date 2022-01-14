@@ -142,9 +142,10 @@
 #define ERROR_INVALID_NAME                        48
 #define ERROR_TOO_MANY_VARIABLES                  49 // unlikely
 #define ERROR_NON_PROGRAMMABLE_COMMAND            50
-#define ERROR_BAD_INPUT                           51 // This error is not in ReM and cannot occur (theoretically).
+#define ERROR_NO_GLOBAL_LABEL                     51
+#define ERROR_BAD_INPUT                           52 // This error is not in ReM and cannot occur (theoretically).
 
-#define NUMBER_OF_ERROR_CODES                     52
+#define NUMBER_OF_ERROR_CODES                     53
 
 #define NUMBER_OF_GLOBAL_FLAGS                   112
 #define FIRST_LOCAL_FLAG                         112 // There are 112 global flag from 0 to 111
@@ -748,6 +749,9 @@ typedef enum {
 //#define RAM_SIZE                                3072 // 16384 blocks = 65536 bytes  MUST be a multiple of 4 and MUST be <= 262140 (not 262144)
 
 #define CONFIG_SIZE            TO_BLOCKS(sizeof(dtConfigDescriptor_t))
+
+#define FLASH_PGM_PAGE_SIZE                      512
+#define FLASH_PGM_NUMBER_OF_PAGES                 64
 
 // Type of constant stored in a program
 #define BINARY_SHORT_INTEGER                       1

@@ -78,7 +78,7 @@
       case MNU_PROG:
         dynamicMenuItem = firstItem + itemShift + (fn - 1);
         if(tam.function == ITM_GTOP) {
-          item = ITM_GTOP;
+          item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_GTOP);
         }
         else {
           item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : MNU_DYNAMIC);
@@ -126,7 +126,7 @@
         break;
 
       case MNU_RAM:
-      //case MNU_FLASH:
+      case MNU_FLASH:
         dynamicMenuItem = firstItem + itemShift + (fn - 1);
         item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_XEQ);
         break;
@@ -950,8 +950,10 @@
   void leavePem(void) {
     if(freeProgramBytes >= 4) { // Push the programs to the end of RAM
       uint32_t newProgramSize = (uint32_t)((uint8_t *)(ram + RAM_SIZE) - beginOfProgramMemory) - (freeProgramBytes & 0xfffc);
-      currentStep        += (freeProgramBytes & 0xfffc);
-      firstDisplayedStep += (freeProgramBytes & 0xfffc);
+      if(programList[currentProgramNumber].step > 0) {
+        currentStep.ram        += (freeProgramBytes & 0xfffc);
+        firstDisplayedStep.ram += (freeProgramBytes & 0xfffc);
+      }
       freeProgramBytes &= 0x03;
       resizeProgramMemory(TO_BLOCKS(newProgramSize));
       scanLabelsAndPrograms();
@@ -1878,21 +1880,32 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_PEM:
+        if(programList[currentProgramNumber - 1].step < 0) {
+          // attempt to modify a program in the flash memory
+          displayCalcErrorMessage(ERROR_FLASH_MEMORY_WRITE_PROTECTED, ERR_REGISTER_LINE, REGISTER_X);
+          return;
+        }
         if(getSystemFlag(FLAG_ALPHA)) {
           pemAlpha(ITM_BACKSPACE);
           if(aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA) && currentLocalStepNumber > 1) {
-            currentStep = findPreviousStep(currentStep);
             --currentLocalStepNumber;
+            currentStep.ram = programList[currentProgramNumber - 1].instructionPointer.ram;
+            for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
+              currentStep.ram = findNextStep_ram(currentStep.ram);
+            }
           }
         }
         else if(aimBuffer[0] == 0) {
-          nextStep = findNextStep(currentStep);
-          if(*currentStep != 255 || *(currentStep + 1) != 255) { // Not the last END
-            deleteStepsFromTo(currentStep, nextStep);
+          nextStep = findNextStep_ram(currentStep.ram);
+          if(*currentStep.ram != 255 || *(currentStep.ram + 1) != 255) { // Not the last END
+            deleteStepsFromTo(currentStep.ram, nextStep);
           }
           if(currentLocalStepNumber > 1) {
-            currentStep = findPreviousStep(currentStep);
             --currentLocalStepNumber;
+            currentStep.ram = programList[currentProgramNumber - 1].instructionPointer.ram;
+            for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
+              currentStep.ram = findNextStep_ram(currentStep.ram);
+            }
           }
         }
         else {
