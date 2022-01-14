@@ -833,6 +833,7 @@ typedef enum {
 #define SOLVER_RESULT_EXTREMUM                     2
 #define SOLVER_RESULT_BAD_GUESS                    3
 #define SOLVER_RESULT_CONSTANT                     4
+#define SOLVER_RESULT_OTHER_FAILURE                5
 
 #define ASSIGN_NAMED_VARIABLES                 10000
 #define ASSIGN_LABELS                          12000
