@@ -390,7 +390,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset + lineOffsetTam);
       if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber) {
         tamOverPemYPos = Y_POSITION_OF_REGISTER_T_LINE + 21 * line;
-        showString(tmpString, &standardFont, 1, tamOverPemYPos, tam.mode ? vmNormal : vmReverse, false, true);
+        showString(tmpString, &standardFont, 1, tamOverPemYPos, (tam.mode && (programList[currentProgramNumber - 1].step > 0)) ? vmNormal : vmReverse, false, true);
         if(programList[currentProgramNumber - 1].step < 0) { // Flash
           currentStep.flash = step - tmpSteps + firstDisplayedStep.flash;
         }
@@ -402,27 +402,29 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
         showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal,  false, true);
       }
       lblOrEnd = (*step == ITM_LBL) || ((*step == ((ITM_END >> 8) | 0x80)) && (*(step + 1) == (ITM_END & 0xff))) || ((*step == 0xff) && (*(step + 1) == 0xff));
-      if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber + 1) {
-        tamOverPemYPos = Y_POSITION_OF_REGISTER_T_LINE + 21 * line;
-        if(tam.mode) {
-          line += 1;
-          lineOffset += 1;
-          lineOffsetTam += 1;
-          showString(tmpString, &standardFont, 1, tamOverPemYPos, vmReverse, false, true);
-          if(line >= 7) break;
-          sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset + lineOffsetTam);
-          showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal, false, true);
+      if(programList[currentProgramNumber - 1].step > 0) {
+        if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber + 1) {
+          tamOverPemYPos = Y_POSITION_OF_REGISTER_T_LINE + 21 * line;
+          if(tam.mode) {
+            line += 1;
+            lineOffset += 1;
+            lineOffsetTam += 1;
+            showString(tmpString, &standardFont, 1, tamOverPemYPos, vmReverse, false, true);
+            if(line >= 7) break;
+            sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset + lineOffsetTam);
+            showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal, false, true);
+          }
         }
-      }
-      else if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber && lblOrEnd && (*step != ITM_LBL)) {
-        if(tam.mode) {
-          line += 1;
-          lineOffset += 1;
-          lineOffsetTam += 1;
-          showString(tmpString, &standardFont, 1, tamOverPemYPos, vmReverse, false, true);
-          if(line >= 7) break;
-          sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset + lineOffsetTam);
-          showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal, false, true);
+        else if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber && lblOrEnd && (*step != ITM_LBL)) {
+          if(tam.mode) {
+            line += 1;
+            lineOffset += 1;
+            lineOffsetTam += 1;
+            showString(tmpString, &standardFont, 1, tamOverPemYPos, vmReverse, false, true);
+            if(line >= 7) break;
+            sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset + lineOffsetTam);
+            showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal, false, true);
+          }
         }
       }
       decodeOneStep_ram(step);
