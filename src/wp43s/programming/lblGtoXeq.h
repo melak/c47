@@ -41,7 +41,7 @@ void    fnIsTopRoutine(uint16_t unusedButMandatoryParameter);
  *                    1 if the routine continues,
  *                    > 1 if the next step shall be skipped
  */
-int16_t executeOneStep(uint8_t *step);
+int16_t executeOneStep(pgmPtr_t step);
 void    runProgram    (bool_t singleStep, uint16_t menuLabel);
 void    execProgram   (uint16_t label);
 

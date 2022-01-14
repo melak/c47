@@ -156,9 +156,16 @@
   extern freeMemoryRegion_t     freeMemoryRegions[MAX_FREE_REGION];
   extern pcg32_random_t         pcg32_global;
   extern labelList_t           *labelList;
+  extern labelList_t           *flashLabelList;
   extern programList_t         *programList;
+  extern programList_t         *flashProgramList;
   extern angularMode_t          currentAngularMode;
   extern formulaHeader_t       *allFormulae;
+
+  extern pgmPtr_t               beginOfCurrentProgram;
+  extern pgmPtr_t               endOfCurrentProgram;
+  extern pgmPtr_t               firstDisplayedStep;
+  extern pgmPtr_t               currentStep;
 
   extern char                  *tmpString;
   extern char                  *tmpStringLabelOrVariableName;
@@ -209,11 +216,7 @@
   extern uint8_t                lastKeyCode;
   extern uint8_t                entryStatus; // 0x01 for the entry flag, backed up to 0x02 for undo
   extern uint8_t               *beginOfProgramMemory;
-  extern uint8_t               *beginOfCurrentProgram;
-  extern uint8_t               *endOfCurrentProgram;
   extern uint8_t               *firstFreeProgramByte;
-  extern uint8_t               *firstDisplayedStep;
-  extern uint8_t               *currentStep;
 
   /**
    * Instance of the internal state for TAM.
@@ -243,7 +246,9 @@
   extern uint16_t               freeProgramBytes;
   extern uint16_t               firstDisplayedLocalStepNumber;
   extern uint16_t               numberOfLabels;
+  extern uint16_t               numberOfLabelsInFlash;
   extern uint16_t               numberOfPrograms;
+  extern uint16_t               numberOfProgramsInFlash;
   extern uint16_t               numberOfNamedVariables;
   extern uint16_t               currentLocalStepNumber;
   extern uint16_t               currentProgramNumber;
@@ -283,6 +288,8 @@
   extern uint32_t               timerValue;
   extern uint32_t               timerStartTime;
   extern uint32_t               timerTotalTime;
+  extern uint32_t               pointerOfFlashPgmLibrary;
+  extern uint32_t               sizeOfFlashPgmLibrary;
 
   extern uint64_t               shortIntegerMask;
   extern uint64_t               shortIntegerSignBit;

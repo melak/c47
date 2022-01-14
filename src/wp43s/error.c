@@ -85,8 +85,9 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /* 47 */  "This item cannot be assigned here",
 /* 48 */  "Invalid name",
 /* 49 */  "Too many variables",
-/* 50 */  "Non-programmable command. Please remove.",
-/* 51 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
+/* 50 */  "Non-programmable command, please remove",
+/* 51 */  "No global label in this program",
+/* 52 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
 };
 
 
