@@ -583,7 +583,7 @@ int32_t                SAVED_SIGMA_LAct;
       if(key == 27 || key == 32) {
 //      inDownUpPress = 1;
 //      nextAutoRepeat = now + KEY_AUTOREPEAT_FIRST_PERIOD;
-        if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING && !shiftF && !shiftG && (currentSoftmenuScrolls() || calcMode != CM_NORMAL)) {
+        if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING && !shiftF && !shiftG && (currentSoftmenuScrolls() || (calcMode != CM_NORMAL && calcMode != CM_NIM && calcMode != CM_AIM))) {
           fnTimerStart(TO_AUTO_REPEAT, key, KEY_AUTOREPEAT_FIRST_PERIOD);
         }
       }
