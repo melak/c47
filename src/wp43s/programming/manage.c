@@ -302,6 +302,14 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       return;
     }
 
+    if(currentLocalStepNumber < firstDisplayedLocalStepNumber) {
+      firstDisplayedLocalStepNumber = currentLocalStepNumber;
+      firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
+      for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i) {
+        firstDisplayedStep = findNextStep(firstDisplayedStep);
+      }
+    }
+
     if(currentLocalStepNumber == 0) {
       currentLocalStepNumber = 1;
     }
