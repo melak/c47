@@ -1151,13 +1151,30 @@
               break;
 
             case CM_AIM:
+              if(item == ITM_BST || item == ITM_SST) {
+                closeAim();
+                runFunction(item);
+                keyActionProcessed = true;
+              }
+              else {
+                processAimInput(item);
+              }
+              break;
+
             case CM_EIM:
               processAimInput(item);
               break;
 
             case CM_NIM:
-              keyActionProcessed = true;
-              addItemToNimBuffer(item);
+              if(item == ITM_BST || item == ITM_SST) {
+                closeNim();
+                runFunction(item);
+                keyActionProcessed = true;
+              }
+              else {
+                keyActionProcessed = true;
+                addItemToNimBuffer(item);
+              }
               break;
 
             case CM_MIM:
