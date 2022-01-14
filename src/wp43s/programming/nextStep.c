@@ -37,6 +37,8 @@
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "screen.h"
+#include "stack.h"
+#include "store.h"
 #include <stdint.h>
 
 #include "wp43s.h"
@@ -470,12 +472,18 @@ static void _sstInPem(void) {
 }
 
 void fnSst(uint16_t unusedButMandatoryParameter) {
-  currentInputVariable = INVALID_VARIABLE;
   if(calcMode == CM_PEM) {
+    currentInputVariable = INVALID_VARIABLE;
     _sstInPem();
   }
   else {
     _showStep();
+    if(currentInputVariable != INVALID_VARIABLE) {
+      if(currentInputVariable & 0x8000) fnDropY(NOPARAM);
+      fnStore(currentInputVariable & 0x3fff);
+      currentInputVariable = INVALID_VARIABLE;
+    }
+    dynamicMenuItem = -1;
     runProgram(true, INVALID_VARIABLE);
   }
 }

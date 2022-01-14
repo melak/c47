@@ -88,7 +88,7 @@ void fnRecallAdd(uint16_t regist) {
       copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
     }
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-    copySourceRegisterToDestRegister(regist == REGISTER_Y ? SAVED_REGISTER_Y : regist, REGISTER_X);
+    copySourceRegisterToDestRegister(regist == REGISTER_Y ? SAVED_REGISTER_Y : regist == REGISTER_L ? SAVED_REGISTER_L : regist, REGISTER_X);
     if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
     }
@@ -110,7 +110,7 @@ void fnRecallSub(uint16_t regist) {
       copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
     }
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-    copySourceRegisterToDestRegister(regist == REGISTER_Y ? SAVED_REGISTER_Y : regist, REGISTER_X);
+    copySourceRegisterToDestRegister(regist == REGISTER_Y ? SAVED_REGISTER_Y : regist == REGISTER_L ? SAVED_REGISTER_L : regist, REGISTER_X);
     if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
     }
@@ -132,7 +132,7 @@ void fnRecallMult(uint16_t regist) {
       copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
     }
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-    copySourceRegisterToDestRegister(regist == REGISTER_Y ? SAVED_REGISTER_Y : regist, REGISTER_X);
+    copySourceRegisterToDestRegister(regist == REGISTER_Y ? SAVED_REGISTER_Y : regist == REGISTER_L ? SAVED_REGISTER_L : regist, REGISTER_X);
     if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
     }
@@ -154,7 +154,7 @@ void fnRecallDiv(uint16_t regist) {
       copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
     }
     copySourceRegisterToDestRegister(REGISTER_X, REGISTER_Y);
-    copySourceRegisterToDestRegister(regist == REGISTER_Y ? SAVED_REGISTER_Y : regist, REGISTER_X);
+    copySourceRegisterToDestRegister(regist == REGISTER_Y ? SAVED_REGISTER_Y : regist == REGISTER_L ? SAVED_REGISTER_L : regist, REGISTER_X);
     if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
     }
@@ -173,7 +173,7 @@ void fnRecallMin(uint16_t regist) {
   if(regInRange(regist)) {
     if(!saveLastX()) return;
     if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.pointerToRegisterData == WP43S_NULL) {
-      copySourceRegisterToDestRegister(regist, TEMP_REGISTER_1);
+      copySourceRegisterToDestRegister(regist == REGISTER_L ? SAVED_REGISTER_L : regist, TEMP_REGISTER_1);
       regist = TEMP_REGISTER_1;
     }
     registerMin(REGISTER_X, regist, REGISTER_X);
@@ -186,7 +186,7 @@ void fnRecallMax(uint16_t regist) {
   if(regInRange(regist)) {
     if(!saveLastX()) return;
     if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.pointerToRegisterData == WP43S_NULL) {
-      copySourceRegisterToDestRegister(regist, TEMP_REGISTER_1);
+      copySourceRegisterToDestRegister(regist == REGISTER_L ? SAVED_REGISTER_L : regist, TEMP_REGISTER_1);
       regist = TEMP_REGISTER_1;
     }
     registerMax(REGISTER_X, regist, REGISTER_X);
