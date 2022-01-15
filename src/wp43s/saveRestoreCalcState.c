@@ -27,6 +27,8 @@
 #include "matrix.h"
 #include "memory.h"
 #include "plotstat.h"
+#include "programming/flash.h"
+#include "programming/lblGtoXeq.h"
 #include "programming/manage.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -43,7 +45,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         66  // Added VARMNU status
+#define BACKUP_VERSION         70  // Added flash program status
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -137,7 +139,11 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
     ramPtr = TO_WP43SMEMPTR(labelList);
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    ramPtr = TO_WP43SMEMPTR(flashLabelList);
+    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
     ramPtr = TO_WP43SMEMPTR(programList);
+    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    ramPtr = TO_WP43SMEMPTR(flashProgramList);
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
     save(&xCursor,                            sizeof(xCursor),                            BACKUP);
     save(&yCursor,                            sizeof(yCursor),                            BACKUP);
@@ -163,6 +169,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&serialIOIconEnabled,                sizeof(serialIOIconEnabled),                BACKUP);
     save(&printerIconEnabled,                 sizeof(printerIconEnabled),                 BACKUP);
     save(&programRunStop,                     sizeof(programRunStop),                     BACKUP);
+    save(&entryStatus,                        sizeof(entryStatus),                        BACKUP);
     save(&cursorEnabled,                      sizeof(cursorEnabled),                      BACKUP);
     save(&cursorFont,                         sizeof(cursorFont),                         BACKUP);
     save(&rbr1stDigit,                        sizeof(rbr1stDigit),                        BACKUP);
@@ -213,16 +220,20 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstFreeProgramByte pointer to block
     ramPtr = (uint32_t)((void *)firstFreeProgramByte - TO_PCMEMPTR(TO_WP43SMEMPTR(firstFreeProgramByte)));
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstFreeProgramByte offset within block
-    ramPtr = TO_WP43SMEMPTR(firstDisplayedStep);
+    ramPtr = TO_WP43SMEMPTR(firstDisplayedStep.ram);
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstDisplayedStep pointer to block
-    ramPtr = (uint32_t)((void *)firstDisplayedStep - TO_PCMEMPTR(TO_WP43SMEMPTR(firstDisplayedStep)));
+    ramPtr = (uint32_t)((void *)firstDisplayedStep.ram - TO_PCMEMPTR(TO_WP43SMEMPTR(firstDisplayedStep.ram)));
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstDisplayedStep offset within block
-    ramPtr = TO_WP43SMEMPTR(currentStep);
+    ramPtr = TO_WP43SMEMPTR(currentStep.ram);
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // currentStep pointer to block
-    ramPtr = (uint32_t)((void *)currentStep - TO_PCMEMPTR(TO_WP43SMEMPTR(currentStep)));
+    ramPtr = (uint32_t)((void *)currentStep.ram - TO_PCMEMPTR(TO_WP43SMEMPTR(currentStep.ram)));
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // currentStep offset within block
     save(&freeProgramBytes,                   sizeof(freeProgramBytes),                   BACKUP);
     save(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber),      BACKUP);
+    save(&numberOfLabels,                     sizeof(numberOfLabels),                     BACKUP);
+    save(&numberOfLabelsInFlash,              sizeof(numberOfLabelsInFlash),              BACKUP);
+    save(&numberOfPrograms,                   sizeof(numberOfPrograms),                   BACKUP);
+    save(&numberOfProgramsInFlash,            sizeof(numberOfProgramsInFlash),            BACKUP);
     save(&currentLocalStepNumber,             sizeof(currentLocalStepNumber),             BACKUP);
     save(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
     save(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
@@ -282,6 +293,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&SAVED_SIGMA_LASTY,                  sizeof(SAVED_SIGMA_LASTY),                  BACKUP);
     save(&SAVED_SIGMA_LAct,                   sizeof(SAVED_SIGMA_LAct),                   BACKUP);
     save(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
+    save(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
 
 
     fclose(BACKUP);
@@ -360,7 +372,11 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
       labelList = TO_PCMEMPTR(ramPtr);
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      flashLabelList = TO_PCMEMPTR(ramPtr);
+      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
       programList = TO_PCMEMPTR(ramPtr);
+      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      flashProgramList = TO_PCMEMPTR(ramPtr);
       restore(&xCursor,                            sizeof(xCursor),                            BACKUP);
       restore(&yCursor,                            sizeof(yCursor),                            BACKUP);
       restore(&firstGregorianDay,                  sizeof(firstGregorianDay),                  BACKUP);
@@ -385,6 +401,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&serialIOIconEnabled,                sizeof(serialIOIconEnabled),                BACKUP);
       restore(&printerIconEnabled,                 sizeof(printerIconEnabled),                 BACKUP);
       restore(&programRunStop,                     sizeof(programRunStop),                     BACKUP);
+      restore(&entryStatus,                        sizeof(entryStatus),                        BACKUP);
       restore(&cursorEnabled,                      sizeof(cursorEnabled),                      BACKUP);
       restore(&cursorFont,                         sizeof(cursorFont),                         BACKUP);
       restore(&rbr1stDigit,                        sizeof(rbr1stDigit),                        BACKUP);
@@ -440,15 +457,19 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstFreeProgramByte offset within block
       firstFreeProgramByte += ramPtr;
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstDisplayedStep pointer to block
-      firstDisplayedStep = TO_PCMEMPTR(ramPtr);
+      firstDisplayedStep.ram = TO_PCMEMPTR(ramPtr);
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // firstDisplayedStep offset within block
-      firstDisplayedStep += ramPtr;
+      firstDisplayedStep.ram += ramPtr;
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // currentStep pointer to block
-      currentStep = TO_PCMEMPTR(ramPtr);
+      currentStep.ram = TO_PCMEMPTR(ramPtr);
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP); // currentStep offset within block
-      currentStep += ramPtr;
+      currentStep.ram += ramPtr;
       restore(&freeProgramBytes,                   sizeof(freeProgramBytes),                   BACKUP);
       restore(&firstDisplayedLocalStepNumber,      sizeof(firstDisplayedLocalStepNumber),      BACKUP);
+      restore(&numberOfLabels,                     sizeof(numberOfLabels),                     BACKUP);
+      restore(&numberOfLabelsInFlash,              sizeof(numberOfLabelsInFlash),              BACKUP);
+      restore(&numberOfPrograms,                   sizeof(numberOfPrograms),                   BACKUP);
+      restore(&numberOfProgramsInFlash,            sizeof(numberOfProgramsInFlash),            BACKUP);
       restore(&currentLocalStepNumber,             sizeof(currentLocalStepNumber),             BACKUP);
       restore(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
       restore(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
@@ -508,12 +529,21 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&SAVED_SIGMA_LASTY,                  sizeof(SAVED_SIGMA_LASTY),                  BACKUP);
       restore(&SAVED_SIGMA_LAct,                   sizeof(SAVED_SIGMA_LAct),                   BACKUP);
       restore(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
+      restore(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
 
+      if(currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) {
+        currentStep.flash = 1;
+      }
+      scanFlashPgmLibrary();
       scanLabelsAndPrograms();
-      defineCurrentProgramFromGlobalStepNumber(currentLocalStepNumber + programList[currentProgramNumber - 1].step - 1);
+      defineCurrentProgramFromGlobalStepNumber((programList[currentProgramNumber - 1].step < 0 ? -1 : 1) * (currentLocalStepNumber + abs(programList[currentProgramNumber - 1].step) - 1));
+      if(programList[currentProgramNumber - 1].step < 0) {
+        dynamicMenuItem = -1;
+        fnGotoDot(-(currentLocalStepNumber + abs(programList[currentProgramNumber - 1].step) - 1));
+      }
       //defineCurrentLocalRegisters();
 
       #if (DEBUG_REGISTER_L == 1)
@@ -529,6 +559,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_FONT_BROWSER)          {}
         else if(calcMode == CM_PEM)                   {}
         else if(calcMode == CM_PLOT_STAT)             {}
+        else if(calcMode == CM_GRAPH)                 {}
         else if(calcMode == CM_MIM)                   {mimRestore();}
         else if(calcMode == CM_EIM)                   {}
         else if(calcMode == CM_ASSIGN)                {}
@@ -546,6 +577,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_FONT_BROWSER)           calcModeNormalGui();
         else if(calcMode == CM_PEM)                    calcModeNormalGui();
         else if(calcMode == CM_PLOT_STAT)              calcModeNormalGui();
+        else if(calcMode == CM_GRAPH)                  calcModeNormalGui();
         else if(calcMode == CM_MIM)                   {calcModeNormalGui(); mimRestore();}
         else if(calcMode == CM_EIM)                   {calcModeAimGui();}
         else if(calcMode == CM_ASSIGN)                {calcModeNormalGui();}
@@ -865,7 +897,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   sprintf(tmpString, "PROGRAMS\n%" PRIu16 "\n", currentSizeInBlocks);
   save(tmpString, strlen(tmpString), BACKUP);
 
-  sprintf(tmpString, "%" PRIu32 "\n%" PRIu32 "\n", (uint32_t)TO_WP43SMEMPTR(currentStep), (uint32_t)((void *)currentStep - TO_PCMEMPTR(TO_WP43SMEMPTR(currentStep)))); // currentStep block pointer + offset within block
+  sprintf(tmpString, "%" PRIu32 "\n%" PRIu32 "\n", (uint32_t)TO_WP43SMEMPTR(currentStep.ram), (uint32_t)((void *)currentStep.ram - TO_PCMEMPTR(TO_WP43SMEMPTR(currentStep.ram)))); // currentStep block pointer + offset within block
   save(tmpString, strlen(tmpString), BACKUP);
 
   sprintf(tmpString, "%" PRIu32 "\n%" PRIu32 "\n", (uint32_t)TO_WP43SMEMPTR(firstFreeProgramByte), (uint32_t)((void *)firstFreeProgramByte - TO_PCMEMPTR(TO_WP43SMEMPTR(firstFreeProgramByte)))); // firstFreeProgramByte block pointer + offset within block
@@ -1522,11 +1554,11 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 
     readLine(stream, tmpString); // currentStep (pointer to block)
     if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-      currentStep = TO_PCMEMPTR(stringToUint32(tmpString));
+      currentStep.ram = TO_PCMEMPTR(stringToUint32(tmpString));
     }
     readLine(stream, tmpString); // currentStep (offset in bytes within block)
     if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-      currentStep += stringToUint32(tmpString);
+      currentStep.ram += stringToUint32(tmpString);
     }
 
     readLine(stream, tmpString); // firstFreeProgramByte (pointer to block)

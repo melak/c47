@@ -78,7 +78,7 @@
       case MNU_PROG:
         dynamicMenuItem = firstItem + itemShift + (fn - 1);
         if(tam.function == ITM_GTOP) {
-          item = ITM_GTOP;
+          item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_GTOP);
         }
         else {
           item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : MNU_DYNAMIC);
@@ -97,6 +97,12 @@
         }
         else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && dynamicMenuItem == 5) {
           item = ITM_CALC;
+        } 
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && dynamicMenuItem == 4) {
+          item = ITM_DRAW;
+        }
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && dynamicMenuItem == 3) {
+          item = ITM_CPXSLV;
         }
         else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && *getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem) == 0) {
           item = ITM_NOP;
@@ -129,7 +135,7 @@
         break;
 
       case MNU_RAM:
-      //case MNU_FLASH:
+      case MNU_FLASH:
         dynamicMenuItem = firstItem + itemShift + (fn - 1);
         item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_XEQ);
         break;
@@ -249,6 +255,36 @@
     }
 
 
+    static void _closeCatalog(void) {
+      bool_t inCatalog = false;
+      for(int i = 0; i < SOFTMENU_STACK_SIZE; ++i) {
+        if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_CATALOG) {
+          inCatalog = true;
+          break;
+        }
+      }
+      if(inCatalog) {
+        switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
+          case MNU_ALPHAINTL:
+          case MNU_ALPHAintl:
+            // αINTL do not close after selection
+            break;
+          case MNU_TAM:
+          case MNU_TAMCMP:
+          case MNU_TAMSTORCL:
+          case MNU_TAMFLAG:
+          case MNU_TAMSHUFFLE:
+          case MNU_TAMLABEL:
+            // TAM menus are processed elsewhere
+            break;
+          default:
+            leaveAsmMode();
+            popSoftmenu();
+        }
+      }
+    }
+
+
   #ifdef PC_BUILD
     void btnFnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       if(event->type == GDK_DOUBLE_BUTTON_PRESS || event->type == GDK_TRIPLE_BUTTON_PRESS) { // return unprocessed for double or triple click
@@ -277,6 +313,10 @@
         programRunStop = PGM_KEY_PRESSED_WHILE_PAUSED;
         return;
       }
+      if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+        // not processed here
+        return;
+      }
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0) {
         int16_t item = determineFunctionKeyItem((char *)data);
 
@@ -300,6 +340,7 @@
           default:
             updateAssignTamBuffer();
         }
+        _closeCatalog();
       }
       else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
         int16_t item = determineFunctionKeyItem((char *)data);
@@ -332,6 +373,7 @@
                 popSoftmenu();
               }
             }
+            _closeCatalog();
             refreshScreen();
           }
 
@@ -362,18 +404,54 @@
       return;
     }
     if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
+      if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+        if(tam.digitsSoFar == 0) {
+          switch(((char *)data)[0]) {
+            case '1':
+              tamProcessInput(shiftG ? ITM_1 :                  ITM_0);
+              tamProcessInput(shiftG ? ITM_3 : shiftF ? ITM_7 : ITM_1);
+              break;
+            case '2':
+              tamProcessInput(shiftG ? ITM_1 :                  ITM_0);
+              tamProcessInput(shiftG ? ITM_4 : shiftF ? ITM_8 : ITM_2);
+              break;
+            case '3':
+              tamProcessInput(shiftG ? ITM_1 :                  ITM_0);
+              tamProcessInput(shiftG ? ITM_5 : shiftF ? ITM_9 : ITM_3);
+              break;
+            case '4':
+              tamProcessInput(     (shiftG || shiftF) ? ITM_1 : ITM_0);
+              tamProcessInput(shiftG ? ITM_6 : shiftF ? ITM_0 : ITM_4);
+              break;
+            case '5':
+              tamProcessInput(     (shiftG || shiftF) ? ITM_1 : ITM_0);
+              tamProcessInput(shiftG ? ITM_7 : shiftF ? ITM_1 : ITM_5);
+              break;
+            case '6':
+              tamProcessInput(     (shiftG || shiftF) ? ITM_1 : ITM_0);
+              tamProcessInput(shiftG ? ITM_8 : shiftF ? ITM_2 : ITM_6);
+              break;
+          }
+          shiftF = shiftG = false;
+          refreshScreen();
+        }
+        return;
+      }
+
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0) {
         switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
           case MNU_MyMenu:
             assignToMyMenu((*((uint8_t *)data) - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
             calcMode = previousCalcMode;
             shiftF = shiftG = false;
+            _closeCatalog();
             refreshScreen();
             return;
           case MNU_MyAlpha:
             assignToMyAlpha((*((uint8_t *)data) - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
             calcMode = previousCalcMode;
             shiftF = shiftG = false;
+            _closeCatalog();
             refreshScreen();
             return;
           case MNU_DYNAMIC:
@@ -388,6 +466,7 @@
             }
             calcMode = previousCalcMode;
             shiftF = shiftG = false;
+            _closeCatalog();
             refreshScreen();
             return;
           case MNU_CATALOG:
@@ -403,6 +482,7 @@
             #endif
             calcMode = previousCalcMode;
             shiftF = shiftG = false;
+            _closeCatalog();
             refreshScreen();
             return;
         }
@@ -449,6 +529,7 @@
             runFunction(item);
             tamLeaveMode();
             hourGlassIconEnabled = false;
+            _closeCatalog();
             refreshScreen();
             return;
           }
@@ -456,7 +537,7 @@
             if(indexOfItems[item].func == fnGetSystemFlag && (tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && !tam.indirect) {
               tam.value = (indexOfItems[item].param & 0xff);
               tam.alpha = true;
-              insertStepInProgram(tamOperation());
+              addStepInProgram(tamOperation());
               tamLeaveMode();
               hourGlassIconEnabled = false;
             }
@@ -465,13 +546,14 @@
               uint16_t nameLength = stringByteLength(itmLabel);
               xcopy(aimBuffer, itmLabel, nameLength + 1);
               tam.alpha = true;
-              insertStepInProgram(tamOperation());
+              addStepInProgram(tamOperation());
               tamLeaveMode();
               hourGlassIconEnabled = false;
             }
             else {
               runFunction(item);
             }
+            _closeCatalog();
             refreshScreen();
             return;
           }
@@ -539,6 +621,7 @@
               }
             }
           }
+          _closeCatalog();
           fnKeyInCatalog = 0;
         }
       }
@@ -557,7 +640,7 @@
     key = getSystemFlag(FLAG_USER) ? (kbd_usr + (*data - '0')*10 + *(data+1) - '0') : (kbd_std + (*data - '0')*10 + *(data+1) - '0');
 
     // Shift f pressed and shift g not active
-    if(key->primary == ITM_SHIFTf && !shiftG && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_ASSIGN)) {
+    if(key->primary == ITM_SHIFTf && !shiftG && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN)) {
       if(temporaryInformation == TI_VIEW) {
         temporaryInformation = TI_NO_INFO;
         updateMatrixHeightCache();
@@ -574,7 +657,7 @@
     }
 
     // Shift g pressed and shift f not active
-    else if(key->primary == ITM_SHIFTg && !shiftF && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_ASSIGN)) {
+    else if(key->primary == ITM_SHIFTg && !shiftF && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN)) {
       if(temporaryInformation == TI_VIEW) {
         temporaryInformation = TI_NO_INFO;
         updateMatrixHeightCache();
@@ -599,7 +682,7 @@
     else if(tam.mode) {
       result = key->primaryTam; // No shifted function in TAM
     }
-    else if(calcMode == CM_NORMAL || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_FONT_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_REGISTER_BROWSER || calcMode == CM_BUG_ON_SCREEN || calcMode == CM_CONFIRMATION || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_ASSIGN || calcMode == CM_TIMER) {
+    else if(calcMode == CM_NORMAL || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_FONT_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_REGISTER_BROWSER || calcMode == CM_BUG_ON_SCREEN || calcMode == CM_CONFIRMATION || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_TIMER) {
       result = shiftF ? key->fShifted :
                shiftG ? key->gShifted :
                         key->primary;
@@ -886,8 +969,10 @@
   void leavePem(void) {
     if(freeProgramBytes >= 4) { // Push the programs to the end of RAM
       uint32_t newProgramSize = (uint32_t)((uint8_t *)(ram + RAM_SIZE) - beginOfProgramMemory) - (freeProgramBytes & 0xfffc);
-      currentStep        += (freeProgramBytes & 0xfffc);
-      firstDisplayedStep += (freeProgramBytes & 0xfffc);
+      if(programList[currentProgramNumber].step > 0) {
+        currentStep.ram        += (freeProgramBytes & 0xfffc);
+        firstDisplayedStep.ram += (freeProgramBytes & 0xfffc);
+      }
       freeProgramBytes &= 0x03;
       resizeProgramMemory(TO_BLOCKS(newProgramSize));
       scanLabelsAndPrograms();
@@ -1004,7 +1089,7 @@
           keyActionProcessed = true;
         }
         else if(calcMode == CM_PEM && item == ITM_dotD && aimBuffer[0] == 0) {
-          insertStepInProgram(ITM_toREAL);
+          addStepInProgram(ITM_toREAL);
           keyActionProcessed = true;
         }
         break;
@@ -1087,13 +1172,30 @@
               break;
 
             case CM_AIM:
+              if(item == ITM_BST || item == ITM_SST) {
+                closeAim();
+                runFunction(item);
+                keyActionProcessed = true;
+              }
+              else {
+                processAimInput(item);
+              }
+              break;
+
             case CM_EIM:
               processAimInput(item);
               break;
 
             case CM_NIM:
-              keyActionProcessed = true;
-              addItemToNimBuffer(item);
+              if(item == ITM_BST || item == ITM_SST) {
+                closeNim();
+                runFunction(item);
+                keyActionProcessed = true;
+              }
+              else {
+                keyActionProcessed = true;
+                addItemToNimBuffer(item);
+              }
               break;
 
             case CM_MIM:
@@ -1172,10 +1274,8 @@
               keyActionProcessed = true;
               break;
 
+            case CM_GRAPH:
             case CM_PLOT_STAT:
-              if(item == ITM_EXIT || item == ITM_BACKSPACE) {
-                fnPlotClose(0);
-              }
               break;
 
             case CM_CONFIRMATION:
@@ -1210,7 +1310,7 @@
                 keyActionProcessed = true;
               }
               else if(item == ITM_RS) {
-                insertStepInProgram(ITM_STOP);
+                addStepInProgram(ITM_STOP);
                 keyActionProcessed = true;
               }
               break;
@@ -1355,6 +1455,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
     switch(calcMode) {
       case CM_NORMAL:
         setSystemFlag(FLAG_ASLIFT);
+        #ifdef DEBUGUNDO
+          printf(">>> saveForUndo from fnKeyEnterA\n");
+        #endif
         saveForUndo();
         if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
 
@@ -1371,6 +1474,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
         popSoftmenu();
 
         if(aimBuffer[0] == 0) {
+          #ifdef DEBUGUNDO
+            printf(">>> undo from fnKeyEnter\n");
+          #endif
           undo();
         }
         else {
@@ -1380,6 +1486,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
           xcopy(REGISTER_STRING_DATA(REGISTER_X), aimBuffer, len);
 
           setSystemFlag(FLAG_ASLIFT);
+          #ifdef DEBUGUNDO
+            printf(">>> saveForUndo from fnKeyEnterB\n");
+          #endif
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
           liftStack();
@@ -1401,6 +1510,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
 
         if(calcMode != CM_NIM && lastErrorCode == 0) {
           setSystemFlag(FLAG_ASLIFT);
+          #ifdef DEBUGUNDO
+            printf(">>> saveForUndo from fnKeyEnterC\n");
+          #endif
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
           liftStack();
@@ -1428,6 +1540,7 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
       case CM_ERROR_MESSAGE:
       case CM_BUG_ON_SCREEN:
       case CM_PLOT_STAT:
+      case CM_GRAPH:
         break;
 
       case CM_TIMER:
@@ -1451,6 +1564,9 @@ undo_disabled:
 
 ram_full:
     displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    #ifdef DEBUGUNDO
+      printf(">>> Undo from fnKeyEnterD\n");
+    #endif
     fnUndo(NOPARAM);
     return;
   #endif // !TESTSUITE_BUILD
@@ -1460,6 +1576,15 @@ ram_full:
 
 void fnKeyExit(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
+    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+      if(tam.digitsSoFar == 0) {
+        tamProcessInput(ITM_2);
+        tamProcessInput(ITM_1);
+        shiftF = shiftG = false;
+        refreshScreen();
+      }
+      return;
+    }
     if(lastErrorCode == 0 && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MVAR) {
       currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
     }
@@ -1513,6 +1638,9 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       case CM_AIM:
         if(softmenuStack[0].softmenuId <= 1) { // MyMenu or MyAlpha is displayed
           closeAim();
+          #ifdef DEBUGUNDO
+            printf(">>> saveForUndo from fnKeyExitA\n");
+          #endif
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
         }
@@ -1545,6 +1673,9 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         aimBuffer[0] = 0;
         leavePem();
         calcModeNormal();
+        #ifdef DEBUGUNDO
+          printf(">>> saveForUndo from fnKeyExitB\n");
+        #endif
         saveForUndo();
         if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
         break;
@@ -1582,11 +1713,15 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         calcMode = previousCalcMode;
         break;
 
+      case CM_GRAPH:
       case CM_PLOT_STAT:
         lastPlotMode = PLOT_NOTHING;
         plotSelection = 0;
         calcMode = CM_NORMAL;
-        fnUndo(0);
+        #ifdef DEBUGUNDO
+          printf(">>> Undo from fnKeyExit\n");
+        #endif
+        fnUndo(NOPARAM);
         popSoftmenu();
         break;
 
@@ -1673,6 +1808,7 @@ void fnKeyCC(uint16_t unusedButMandatoryParameter) {
       case CM_FONT_BROWSER:
       case CM_PLOT_STAT:
       case CM_TIMER:
+      case CM_GRAPH:
         break;
 
       default:
@@ -1750,6 +1886,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
       case CM_BUG_ON_SCREEN:
       case CM_PLOT_STAT:
+      case CM_GRAPH:
         calcMode = previousCalcMode;
         break;
 
@@ -1762,17 +1899,40 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_PEM:
+        if(programList[currentProgramNumber - 1].step < 0) {
+          // attempt to modify a program in the flash memory
+          displayCalcErrorMessage(ERROR_FLASH_MEMORY_WRITE_PROTECTED, ERR_REGISTER_LINE, REGISTER_X);
+          return;
+        }
         if(getSystemFlag(FLAG_ALPHA)) {
           pemAlpha(ITM_BACKSPACE);
+          if(aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA) && currentLocalStepNumber > 1) {
+            --currentLocalStepNumber;
+            currentStep.ram = programList[currentProgramNumber - 1].instructionPointer.ram;
+            for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
+              currentStep.ram = findNextStep_ram(currentStep.ram);
+            }
+          }
         }
         else if(aimBuffer[0] == 0) {
-          nextStep = findNextStep(currentStep);
-          if(*currentStep != 255 || *(currentStep + 1) != 255) { // Not the last END
-            deleteStepsFromTo(currentStep, nextStep);
+          nextStep = findNextStep_ram(currentStep.ram);
+          if(*currentStep.ram != 255 || *(currentStep.ram + 1) != 255) { // Not the last END
+            deleteStepsFromTo(currentStep.ram, nextStep);
+          }
+          if(currentLocalStepNumber > 1) {
+            --currentLocalStepNumber;
+            currentStep.ram = programList[currentProgramNumber - 1].instructionPointer.ram;
+            for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
+              currentStep.ram = findNextStep_ram(currentStep.ram);
+            }
           }
         }
         else {
           pemAddNumber(ITM_BACKSPACE);
+          if(aimBuffer[0] == 0 && currentLocalStepNumber > 1) {
+            currentStep = findPreviousStep(currentStep);
+            --currentLocalStepNumber;
+          }
         }
         break;
 
@@ -1805,6 +1965,15 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
 void fnKeyUp(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
+    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+      if(tam.digitsSoFar == 0) {
+        tamProcessInput(ITM_1);
+        tamProcessInput(ITM_9);
+        shiftF = shiftG = false;
+        refreshScreen();
+      }
+      return;
+    }
     if(tam.mode && !catalog) {
       if(tam.alpha) {
         resetAlphaSelectionBuffer();
@@ -1837,7 +2006,9 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuUp();
         }
-        else if(calcMode == CM_NORMAL) {
+        else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_UPPER)) {
+          if(calcMode == CM_NIM) closeNim();
+          if(calcMode == CM_AIM) closeAim();
           fnBst(NOPARAM);
           #ifdef DMCP_BUILD
             lcd_refresh();
@@ -1929,6 +2100,15 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
 
 void fnKeyDown(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
+    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+      if(tam.digitsSoFar == 0) {
+        tamProcessInput(ITM_2);
+        tamProcessInput(ITM_0);
+        shiftF = shiftG = false;
+        refreshScreen();
+      }
+      return;
+    }
     if(tam.mode && !catalog) {
       if(tam.alpha) {
         resetAlphaSelectionBuffer();
@@ -1961,7 +2141,9 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuDown();
         }
-        else if(calcMode == CM_NORMAL) {
+        else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_LOWER)) {
+          if(calcMode == CM_NIM) closeNim();
+          if(calcMode == CM_AIM) closeAim();
           fnSst(NOPARAM);
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
@@ -2066,6 +2248,7 @@ void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
       case CM_FLAG_BROWSER:
       case CM_FONT_BROWSER:
       case CM_PLOT_STAT:
+      case CM_GRAPH:
       case CM_MIM:
       case CM_EIM:
       case CM_TIMER:
@@ -2100,6 +2283,7 @@ void fnKeyAngle(uint16_t unusedButMandatoryParameter) {
       case CM_FLAG_BROWSER:
       case CM_FONT_BROWSER:
       case CM_PLOT_STAT:
+      case CM_GRAPH:
       case CM_MIM:
       case CM_EIM:
       case CM_TIMER:
@@ -2124,8 +2308,7 @@ void setLastKeyCode(int key) {
   if(1 <= key && key <= 43) {
     if     (key <=  6) lastKeyCode = key      + 20;
     else if(key <= 12) lastKeyCode = key -  6 + 30;
-    else if(key == 13) lastKeyCode =            41;
-    else if(key <= 17) lastKeyCode = key - 12 + 41;
+    else if(key <= 17) lastKeyCode = key - 12 + 40;
     else if(key <= 22) lastKeyCode = key - 17 + 50;
     else if(key <= 27) lastKeyCode = key - 22 + 60;
     else if(key <= 32) lastKeyCode = key - 27 + 70;

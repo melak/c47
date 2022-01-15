@@ -31,6 +31,7 @@
 #include "keyboard.h"
 #include "longIntegerType.h"
 #include "memory.h"
+#include "programming/flash.h"
 #include "programming/manage.h"
 #include "programming/nextStep.h"
 #include "realType.h"
@@ -59,9 +60,16 @@ void fnGoto(uint16_t label) {
     if(label <= 104) {
       // Search for local label
       for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
-        if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer) == label) { // Is in the current program and is a local label and is the searched label
+        if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer.ram) == label) { // Is in the current program and is a local label and is the searched label
           fnGotoDot(-labelList[lbl].step);
           return;
+        }
+        else if(labelList[lbl].program == -currentProgramNumber && labelList[lbl].step < 0) { // Is in the current program and is a local label and is the searched label
+          readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, labelList[lbl].labelPointer.flash);
+          if(*((uint8_t *)(tmpString + 1600)) == label) {
+            fnGotoDot(labelList[lbl].step);
+            return;
+          }
         }
       }
 
@@ -78,7 +86,7 @@ void fnGoto(uint16_t label) {
     }
     else if(label >= FIRST_LABEL && label <= LAST_LABEL) { // Global named label
       if((label - FIRST_LABEL) < numberOfLabels) {
-        fnGotoDot(labelList[label - FIRST_LABEL].step);
+        fnGotoDot((uint16_t)((int16_t)labelList[label - FIRST_LABEL].step * (labelList[label - FIRST_LABEL].program < 0 ? -1 : 1)));
         return;
       }
       else {
@@ -114,28 +122,44 @@ void fnGotoDot(uint16_t globalStepNumber) {
 
     int16_t c, len = stringByteLength((char *)labelName);
     for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
-      if(labelList[lbl].step > 0 && *labelList[lbl].labelPointer == len) { // It's a global label and the length is OK
+      uint8_t tmpLabel[16];
+      uint8_t *lblPtr;
+      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_RAM   && labelList[lbl].program < 0) continue;
+      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_FLASH && labelList[lbl].program > 0) continue;
+      if(labelList[lbl].program < 0) {
+        readStepInFlashPgmLibrary(tmpLabel, 16, labelList[lbl].labelPointer.flash);
+        lblPtr = tmpLabel;
+      }
+      else {
+        lblPtr = labelList[lbl].labelPointer.ram;
+      }
+      if(labelList[lbl].step > 0 && *lblPtr == len) { // It's a global label and the length is OK
         for(c=0; c<len; c++) {
-          if(labelName[c] != labelList[lbl].labelPointer[c + 1]) {
+          if(labelName[c] != lblPtr[c + 1]) {
             break;
           }
         }
         if(c == len) {
-          globalStepNumber = labelList[lbl].step;
+          if(labelList[lbl].program < 0) {
+            globalStepNumber = (uint16_t)(-labelList[lbl].step);
+          }
+          else {
+            globalStepNumber = labelList[lbl].step;
+          }
           break;
         }
       }
     }
   }
 
-  defineCurrentProgramFromGlobalStepNumber(globalStepNumber);
-  currentLocalStepNumber = globalStepNumber - programList[currentProgramNumber - 1].step + 1;
+  defineCurrentProgramFromGlobalStepNumber((int16_t)globalStepNumber);
+  currentLocalStepNumber = abs((int16_t)globalStepNumber) - abs(programList[currentProgramNumber - 1].step) + 1;
 
-  uint8_t *stepPointer = beginOfCurrentProgram;
+  pgmPtr_t stepPointer = beginOfCurrentProgram;
   globalStepNumber = 1;
   while(true) {
     if(globalStepNumber == currentLocalStepNumber) {
-      currentStep = stepPointer;
+      currentStep.any = stepPointer.any;
       break;
     }
 
@@ -144,26 +168,22 @@ void fnGotoDot(uint16_t globalStepNumber) {
   }
 
   if(currentLocalStepNumber >= 3) {
+    firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
     firstDisplayedLocalStepNumber = currentLocalStepNumber - 3;
-    firstDisplayedStep = findPreviousStep(findPreviousStep(currentStep));
-    if(firstDisplayedLocalStepNumber != 0) {
-      firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-    }
     uint16_t numberOfSteps = getNumberOfSteps();
     if(firstDisplayedLocalStepNumber + 6 > numberOfSteps) {
       for(int i=3+currentLocalStepNumber-numberOfSteps; i>0; i--) {
         if(firstDisplayedLocalStepNumber > 0) {
           firstDisplayedLocalStepNumber--;
         }
-        if(firstDisplayedStep > programList[currentProgramNumber - 1].instructionPointer) {
-          firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-        }
       }
     }
+    for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i)
+      firstDisplayedStep = findNextStep(firstDisplayedStep);
   }
   else {
     firstDisplayedLocalStepNumber = 0;
-    firstDisplayedStep = beginOfCurrentProgram;
+    firstDisplayedStep.any = beginOfCurrentProgram.any;
   }
 }
 
@@ -225,7 +245,7 @@ void fnReturn(uint16_t skip) {
   if(currentSubroutineLevel > 0) {
     uint16_t returnGlobalStepNumber = currentReturnLocalStep + programList[currentReturnProgramNumber - 1].step; // the next step
     fnGotoDot(returnGlobalStepNumber);
-    if(skip > 0 && (*currentStep != ((ITM_END >> 8) | 0x80) || *(currentStep + 1) != (ITM_END & 0xff)) && (*currentStep != 255 || *(currentStep + 1) != 255)) {
+    if(skip > 0 && (*currentStep.ram != ((ITM_END >> 8) | 0x80) || *(currentStep.ram + 1) != (ITM_END & 0xff)) && (*currentStep.ram != 255 || *(currentStep.ram + 1) != 255)) {
       ++currentLocalStepNumber;
       currentStep = findNextStep(currentStep);
     }
@@ -357,7 +377,7 @@ static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
           case FLAG_alphaCAP:
           case FLAG_RUNTIM:
           case FLAG_RUNIO:
-          case FLAG_PRINT:
+          case FLAG_PRINTS:
           case FLAG_LOWBAT:
           case FLAG_NUMIN:
           case FLAG_ALPIN:
@@ -385,7 +405,7 @@ static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
       break;
 
     case PARAM_NUMBER_8:
-      if(opParam <= 99) { // Value from 0 to 99
+      if(opParam <= (indexOfItems[op].tamMinMax & TAM_MAX_MASK)) { // Value from 0 to 99
         reallyRunFunction(op, opParam);
       }
       else if(opParam == INDIRECT_REGISTER) {
@@ -444,6 +464,11 @@ static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
       else {
         sprintf(tmpString, "\nIn function _executeOp: case PARAM_REGISTER / PARAM_COMPARE, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
       }
+      break;
+
+    case PARAM_SKIP_BACK:
+    case PARAM_SHUFFLE:
+      reallyRunFunction(op, opParam);
       break;
 
     default:
@@ -581,15 +606,21 @@ static void _putLiteral(uint8_t *literalAddress) {
 }
 #endif // TESTSUITE_BUILD
 
-int16_t executeOneStep(uint8_t *step) {
+int16_t executeOneStep(pgmPtr_t step) {
 #ifdef TESTSUITE_BUILD
   return 0;
 #else // TESTSUITE_BUILD
-  uint16_t op = *(step++);
+  uint16_t op;
+  if(programList[currentProgramNumber - 1].step < 0) {
+    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, step.flash);
+    step.ram = (uint8_t *)(tmpString + 1600);
+  }
+
+  op = *(step.ram++);
   if(op & 0x80) {
     op &= 0x7f;
     op <<= 8;
-    op |= *(step++);
+    op |= *(step.ram++);
   }
 
   switch(op) {
@@ -598,7 +629,7 @@ int16_t executeOneStep(uint8_t *step) {
     case ITM_BACK:        //  1412
     case ITM_CASE:        //  1418
     case ITM_SKIP:        //  1603
-      _executeOp(step, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
+      _executeOp(step.ram, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
       return -1;
 
     case ITM_RTN:         //     4
@@ -612,7 +643,7 @@ int16_t executeOneStep(uint8_t *step) {
       return 0;
 
     case ITM_SOLVE:       //  1608
-      _executeOp(step, op, PARAM_REGISTER);
+      _executeOp(step.ram, op, PARAM_REGISTER);
       if(temporaryInformation == TI_SOLVER_FAILED) {
         lastErrorCode = ERROR_NONE;
         return 2;
@@ -638,15 +669,15 @@ int16_t executeOneStep(uint8_t *step) {
           return 0;
 
         case PTP_LITERAL:
-          _putLiteral(step);
+          _putLiteral(step.ram);
           return 1;
 
         case PTP_KEYG_KEYX:
-          _executeOp(step, op, PARAM_NUMBER_8);
+          _executeOp(step.ram, op, PARAM_NUMBER_8);
           break;
 
         default:
-          _executeOp(step, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
+          _executeOp(step.ram, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
       }
       return temporaryInformation == TI_FALSE ? 2 : 1;
   }
@@ -682,10 +713,22 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
   while(1) {
     int16_t stepsToBeAdvanced;
     uint16_t subLevel = currentSubroutineLevel;
-    uint16_t opCode = *currentStep;
+    uint16_t opCode;
+    if(programList[currentProgramNumber - 1].step < 0) {
+      readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, currentStep.flash);
+      opCode = *((uint8_t *)(tmpString + 1600));
+    }
+    else {
+      opCode = *currentStep.ram;
+    }
     currentInputVariable = INVALID_VARIABLE; // INPUT is already executed
     if(opCode & 0x80) {
-      opCode = ((uint16_t)(opCode & 0x7F) << 8) | *(currentStep + 1);
+      if(programList[currentProgramNumber - 1].step < 0) {
+        opCode = ((uint16_t)(opCode & 0x7F) << 8) | *((uint8_t *)(tmpString + 1601));
+      }
+      else {
+        opCode = ((uint16_t)(opCode & 0x7F) << 8) | *(currentStep.ram + 1);
+      }
     }
     if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE || temporaryInformation == TI_SOLVER_FAILED || (opCode != ITM_RTN && opCode != ITM_STOP && opCode != ITM_END && opCode != 0x7fff)) {
       temporaryInformation = TI_NO_INFO;
@@ -743,6 +786,9 @@ stopProgram:
   if(programRunStop == PGM_RUNNING && !nestedEngine) {
     programRunStop = PGM_STOPPED;
   }
+  if(programRunStop != PGM_RUNNING) {
+    entryStatus &= 0xfe;
+  }
   showHideHourGlass();
   #ifdef DMCP_BUILD
     lcd_refresh();
@@ -758,12 +804,13 @@ stopProgram:
 
 void execProgram(uint16_t label) {
   uint16_t origLocalStepNumber = currentLocalStepNumber;
-  uint8_t *origStep = currentStep;
+  pgmPtr_t origStep;
+  origStep.any = currentStep.any;
   fnExecute(label);
   if(programRunStop == PGM_RUNNING && (getSystemFlag(FLAG_INTING) || getSystemFlag(FLAG_SOLVING))) {
     runProgram(false, INVALID_VARIABLE);
     currentLocalStepNumber = origLocalStepNumber;
-    currentStep = origStep;
+    currentStep.any = origStep.any;
   }
 }
 
@@ -774,13 +821,20 @@ void fnCheckLabel(uint16_t label) {
     label = findNamedLabel(dynmenuGetLabel(dynamicMenuItem));
   }
 
-  // Local Label 00 to 99 and A, B, C, D, I, and J
-  if(label <= 109) {
+  // Local Label 00 to 99 and A, B, C, D, and E
+  if(label <= 104) {
     // Search for local label
     for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
-      if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer) == label) { // Is in the current program and is a local label and is the searched label
+      if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer.ram) == label) { // Is in the current program and is a local label and is the searched label
         temporaryInformation = TI_TRUE;
         return;
+      }
+      else if(labelList[lbl].program == -currentProgramNumber && labelList[lbl].step < 0) { // Is in the current program and is a local label and is the searched label
+        readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 32, labelList[lbl].labelPointer.flash);
+        if(*((uint8_t *)(tmpString + 1600)) == label) {
+          temporaryInformation = TI_TRUE;
+          return;
+        }
       }
     }
     temporaryInformation = TI_FALSE;

@@ -28,5 +28,6 @@ void fnPause  (uint16_t duration);
 void fnKey    (uint16_t regist);
 void fnKeyType(uint16_t regist);
 void fnPutKey (uint16_t regist);
+void fnEntryQ (uint16_t unusedButMandatoryParameter);
 
 #endif // INPUT_H

@@ -62,6 +62,15 @@
   #define STATDEBUG_VERBOSE
 #endif
 
+
+#ifdef PC_BUILD
+//  #define DEBUGUNDO
+  #undef DEBUGUNDO
+#else
+  #undef DEBUGUNDO
+#endif
+
+
 #define REAL34_WIDTH_TEST 0 // For debugging real34 ALL 0 formating. Use UP/DOWN to shrink or enlarge the available space. The Z register holds the available width.
 
 
@@ -133,9 +142,10 @@
 #define ERROR_INVALID_NAME                        48
 #define ERROR_TOO_MANY_VARIABLES                  49 // unlikely
 #define ERROR_NON_PROGRAMMABLE_COMMAND            50
-#define ERROR_BAD_INPUT                           51 // This error is not in ReM and cannot occur (theoretically).
+#define ERROR_NO_GLOBAL_LABEL                     51
+#define ERROR_BAD_INPUT                           52 // This error is not in ReM and cannot occur (theoretically).
 
-#define NUMBER_OF_ERROR_CODES                     52
+#define NUMBER_OF_ERROR_CODES                     53
 
 #define NUMBER_OF_GLOBAL_FLAGS                   112
 #define FIRST_LOCAL_FLAG                         112 // There are 112 global flag from 0 to 111
@@ -177,7 +187,7 @@
 #define FLAG_alphaCAP                         0xc00f
 #define FLAG_RUNTIM                           0xc010
 #define FLAG_RUNIO                            0xc011
-#define FLAG_PRINT                            0xc012
+#define FLAG_PRINTS                           0xc012
 #define FLAG_TRACE                            0x8013
 #define FLAG_USER                             0x8014
 #define FLAG_LOWBAT                           0xc015
@@ -254,13 +264,15 @@ typedef enum {
 #define PTP_DECLARE_LABEL                  ( 1 << 9) // These
 #define PTP_LABEL                          ( 2 << 9) //   parameter
 #define PTP_REGISTER                       ( 3 << 9) //   types
-#define PTP_FLAG                           ( 4 << 9) //   must match
-#define PTP_NUMBER_8                       ( 5 << 9) //   with
-#define PTP_NUMBER_16                      ( 6 << 9) //   PARAM_*
-#define PTP_COMPARE                        ( 7 << 9) //   defined
-#define PTP_KEYG_KEYX                      ( 8 << 9) //   below.
-#define PTP_LITERAL                        ( 9 << 9) // Literal
-#define PTP_DISABLED                       (10 << 9) // Not programmable
+#define PTP_FLAG                           ( 4 << 9) //   must
+#define PTP_NUMBER_8                       ( 5 << 9) //   match
+#define PTP_NUMBER_16                      ( 6 << 9) //   with
+#define PTP_COMPARE                        ( 7 << 9) //   PARAM_*
+#define PTP_KEYG_KEYX                      ( 8 << 9) //   defined
+#define PTP_SKIP_BACK                      ( 9 << 9) //   below.
+#define PTP_SHUFFLE                        (10 << 9) //
+#define PTP_LITERAL                        (11 << 9) // Literal
+#define PTP_DISABLED                       (12 << 9) // Not programmable
 
 
 #define INC_FLAG                                   0
@@ -481,6 +493,7 @@ typedef enum {
 #define PLOT_LR                                    3
 #define PLOT_START                                 4
 #define PLOT_NOTHING                               5
+#define PLOT_GRAPH                                 6
 
 // Rounding mode 3 bits
 #define RM_HALF_EVEN                               0
@@ -504,9 +517,10 @@ typedef enum {
 #define CM_ERROR_MESSAGE                           9 // Error message in one of the register lines
 #define CM_BUG_ON_SCREEN                          10 // Bug message on screen
 #define CM_CONFIRMATION                           11 // Waiting for confirmation or canceling
-#define CM_MIM                                    12 // Matrix input mode tbd reorder
-#define CM_EIM                                    13 // Equation input mode
+#define CM_MIM                                    12 // Matrix imput mode tbd reorder
+#define CM_EIM                                    13 // Equation imput mode
 #define CM_TIMER                                  14 // Timer application
+#define CM_GRAPH                                  15 // Plot graph mode
 
 // Next character in AIM 2 bits
 #define NC_NORMAL                                  0
@@ -740,6 +754,9 @@ typedef enum {
 
 #define CONFIG_SIZE            TO_BLOCKS(sizeof(dtConfigDescriptor_t))
 
+#define FLASH_PGM_PAGE_SIZE                      512
+#define FLASH_PGM_NUMBER_OF_PAGES                 64
+
 // Type of constant stored in a program
 #define BINARY_SHORT_INTEGER                       1
 #define BINARY_LONG_INTEGER                        2
@@ -771,6 +788,8 @@ typedef enum {
 #define PARAM_NUMBER_16                            6
 #define PARAM_COMPARE                              7
 #define PARAM_KEYG_KEYX                            8
+#define PARAM_SKIP_BACK                            9
+#define PARAM_SHUFFLE                             10
 
 #define CHECK_INTEGER                              0
 #define CHECK_INTEGER_EVEN                         1
@@ -823,6 +842,7 @@ typedef enum {
 #define SOLVER_RESULT_EXTREMUM                     2
 #define SOLVER_RESULT_BAD_GUESS                    3
 #define SOLVER_RESULT_CONSTANT                     4
+#define SOLVER_RESULT_OTHER_FAILURE                5
 
 #define ASSIGN_NAMED_VARIABLES                 10000
 #define ASSIGN_LABELS                          12000

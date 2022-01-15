@@ -24,7 +24,7 @@
 #include <stdint.h>
 
 void scanLabelsAndPrograms                   (void);
-void defineCurrentProgramFromGlobalStepNumber(uint16_t globalStepNumber);
+void defineCurrentProgramFromGlobalStepNumber(int16_t globalStepNumber);
 void defineCurrentProgramFromCurrentStep     (void);
 void deleteStepsFromTo                       (uint8_t *from, uint8_t *to);
 void fnClPAll                                (uint16_t confirmation);
@@ -35,6 +35,7 @@ void pemCloseAlphaInput                      (void);
 void pemAddNumber                            (int16_t item);
 void pemCloseNumberInput                     (void);
 void insertStepInProgram                     (int16_t func);
+void addStepInProgram                        (int16_t func);
 
 calcRegister_t findNamedLabel                (const char *labelName);
 uint16_t       getNumberOfSteps              (void);

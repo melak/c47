@@ -160,8 +160,8 @@
         }
       }
       else {
-        int16_t max = (tam.indirect ? (tam.dot ? currentNumberOfLocalRegisters : 99)
-          : (tam.dot ? ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) ? NUMBER_OF_LOCAL_FLAGS : currentNumberOfLocalRegisters) : tam.max));
+        int16_t max = (tam.indirect ? (tam.dot ? (calcMode == CM_PEM ? 98 : currentNumberOfLocalRegisters) : 99)
+          : (tam.dot ? (calcMode == CM_PEM ? 98 : ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) ? NUMBER_OF_LOCAL_FLAGS : currentNumberOfLocalRegisters)) : tam.max));
         uint8_t maxDigits = _tamMaxDigits(max);
         uint8_t underscores = maxDigits - tam.digitsSoFar;
         int16_t v = tam.value;
@@ -205,7 +205,12 @@
             tam.value |= 1 << (2*i + 8);
             tam.value = (tam.value & ~mask) | (((item-ITM_REG_X) << (2*i)) & mask);
             if(i == 3) {
-              reallyRunFunction(tamOperation(), tam.value);
+              if(calcMode == CM_PEM) {
+                addStepInProgram(tamOperation());
+              }
+              else {
+                reallyRunFunction(tamOperation(), tam.value);
+              }
               tamLeaveMode();
             }
             break;
@@ -243,9 +248,9 @@
     }
 
     min = (tam.dot ? 0 : tam.min);
-    max = (tam.dot ? ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) ? NUMBER_OF_LOCAL_FLAGS : currentNumberOfLocalRegisters) : tam.max);
+    max = (tam.dot ? (calcMode == CM_PEM ? 98 : ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) ? NUMBER_OF_LOCAL_FLAGS : currentNumberOfLocalRegisters)) : tam.max);
     min2 = (tam.indirect ? 0 : min);
-    max2 = (tam.indirect ? (tam.dot ? currentNumberOfLocalRegisters : 99) : max);
+    max2 = (tam.indirect ? (tam.dot ? (calcMode == CM_PEM ? 98 : currentNumberOfLocalRegisters) : 99) : max);
     if(item == ITM_ENTER || (tam.alpha && stringGlyphLength(aimBuffer) > 6)) {
       forceTry = true;
     }
@@ -434,7 +439,7 @@
     }
     else if(tam.function == ITM_toINT && item == ITM_REG_I) {
       if(calcMode == CM_PEM) {
-        insertStepInProgram(ITM_IP);
+        addStepInProgram(ITM_IP);
       }
       else {
         fnIp(NOPARAM);
@@ -444,7 +449,7 @@
     }
     else if(tam.function == ITM_toINT && item == ITM_alpha) {
       if(calcMode == CM_PEM) {
-        insertStepInProgram(ITM_FP);
+        addStepInProgram(ITM_FP);
       }
       else {
         fnFp(NOPARAM);
@@ -464,14 +469,14 @@
       tam.value = 16;
       forceTry = true;
     }
-    else if(tam.mode == TM_LABEL && !tam.indirect && item == ITM_E) {
+    else if((tam.mode == TM_LABEL || (tam.mode == TM_KEY && tam.keyInputFinished)) && !tam.indirect && item == ITM_E) {
       tam.value = 100 - 'A' + 'E';
       forceTry = true;
       tryOoR = true;
     }
     else if(REGISTER_X <= indexOfItems[item].param && indexOfItems[item].param <= REGISTER_K) {
       if(!tam.digitsSoFar && tam.function != ITM_BESTF && tam.function != ITM_CNST && (tam.indirect || (tam.mode != TM_VALUE && tam.mode != TM_VALUE_CHB))) {
-        if(tam.mode == TM_LABEL && !tam.indirect) {
+        if((tam.mode == TM_LABEL || (tam.mode == TM_KEY && tam.keyInputFinished)) && !tam.indirect) {
           switch(indexOfItems[item].param) {
             case REGISTER_A: tam.value = 100 - 'A' + 'A'; forceTry = true; tryOoR = true; break;
             case REGISTER_B: tam.value = 100 - 'A' + 'B'; forceTry = true; tryOoR = true; break;
@@ -521,12 +526,13 @@
     }
     else if(item == ITM_PERIOD) {
       if(tam.function == ITM_GTOP) {
-        tam.value = programList[numberOfPrograms - 1].step;
+        tam.value = programList[numberOfPrograms - numberOfProgramsInFlash - 1].step;
         reallyRunFunction(ITM_GTOP, tam.value);
-        if((*currentStep != 0xff) || (*(currentStep + 1) != 0xff)) {
-          currentStep = firstFreeProgramByte;
+        if((*currentStep.ram != 0xff) || (*(currentStep.ram + 1) != 0xff)) {
+          currentStep.ram = firstFreeProgramByte;
           insertStepInProgram(ITM_END);
-          tam.value = programList[numberOfPrograms - 1].step;
+          scanLabelsAndPrograms();
+          tam.value = programList[numberOfPrograms - numberOfProgramsInFlash - 1].step;
           reallyRunFunction(ITM_GTOP, tam.value);
         }
         tamLeaveMode();
@@ -539,11 +545,11 @@
           tam.min = 1;
           tam.max = getNumberOfSteps();
         }
-        else if(tam.indirect && currentNumberOfLocalRegisters) {
+        else if(tam.indirect && (currentNumberOfLocalRegisters || calcMode == CM_PEM)) {
           tam.dot = true;
         }
         else if(tam.mode != TM_VALUE && tam.mode != TM_VALUE_CHB) {
-          if(((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && currentLocalFlags != NULL) || ((tam.mode != TM_FLAGR && tam.mode != TM_FLAGW) && currentNumberOfLocalRegisters)) {
+          if(calcMode == CM_PEM || ((tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && currentLocalFlags != NULL) || ((tam.mode != TM_FLAGR && tam.mode != TM_FLAGW) && currentNumberOfLocalRegisters)) {
             tam.dot = true;
           }
         }
@@ -551,7 +557,7 @@
       return;
     }
     else if(item == ITM_INDIRECTION) {
-      if(!tam.alpha && !tam.digitsSoFar && !tam.dot && !valueParameter) {
+      if(!tam.alpha && !tam.digitsSoFar && !tam.dot && !valueParameter && ((indexOfItems[tam.function].status & PTP_STATUS) != PTP_SKIP_BACK)) {
         if(!tam.indirect && (tam.mode == TM_FLAGR || tam.mode == TM_FLAGW || tam.mode == TM_LABEL)) {
           popSoftmenu();
           showSoftmenu(-MNU_TAM);
@@ -628,7 +634,7 @@
               mimRunFunction(tamOperation(), value);
               break;
             case CM_PEM:
-              insertStepInProgram(tamOperation());
+              addStepInProgram(tamOperation());
               break;
             default:
               reallyRunFunction(tamOperation(), value);
@@ -674,7 +680,7 @@
         }
       }
       if(calcMode == CM_PEM) {
-        insertStepInProgram(tamOperation());
+        addStepInProgram(tamOperation());
       }
       if(tam.mode != TM_NEWMENU) aimBuffer[0] = 0;
       if(tam.indirect && value != INVALID_VARIABLE && calcMode != CM_PEM) {

@@ -92,6 +92,7 @@ void fnEqNew(uint16_t unusedButMandatoryParameter) {
       currentFormula = 0;
       allFormulae[0].pointerToFormulaData = WP43S_NULL;
       allFormulae[0].sizeInBlocks = 0;
+      graphVariable = 0;
     }
     else {
       displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -110,9 +111,10 @@ void fnEqNew(uint16_t unusedButMandatoryParameter) {
       ++currentFormula;
       newPtr[currentFormula].pointerToFormulaData = WP43S_NULL;
       newPtr[currentFormula].sizeInBlocks = 0;
-      wp43sFree(allFormulae, TO_BLOCKS(sizeof(formulaHeader_t)) * (numberOfFormulae));
+      freeWp43s(allFormulae, TO_BLOCKS(sizeof(formulaHeader_t)) * (numberOfFormulae));
       allFormulae = newPtr;
       ++numberOfFormulae;
+      graphVariable = 0;
     }
     else {
       displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -186,14 +188,15 @@ void setEquation(uint16_t equationId, const char *equationString) {
 void deleteEquation(uint16_t equationId) {
   if(equationId < numberOfFormulae) {
     if(allFormulae[equationId].sizeInBlocks > 0)
-      wp43sFree(TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData), allFormulae[equationId].sizeInBlocks);
+      freeWp43s(TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData), allFormulae[equationId].sizeInBlocks);
     for(uint16_t i = equationId + 1; i < numberOfFormulae; ++i)
       allFormulae[i - 1] = allFormulae[i];
-    wp43sFree(allFormulae + (--numberOfFormulae), TO_BLOCKS(sizeof(formulaHeader_t)));
+    freeWp43s(allFormulae + (--numberOfFormulae), TO_BLOCKS(sizeof(formulaHeader_t)));
     if(numberOfFormulae == 0)
       allFormulae = NULL;
     if(numberOfFormulae > 0 && currentFormula >= numberOfFormulae)
       currentFormula = numberOfFormulae - 1;
+    graphVariable = 0;
   }
 }
 
@@ -295,6 +298,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
     bool_t inLabel = false;
     bool_t unaryMinus = true;
     bool_t inNumeric = true;
+    bool_t beginningOfNumber = true;
     bool_t inExponent = false;
     const char *tmpPtr = strPtr;
 
@@ -354,6 +358,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           bufPtr += 1;
           unaryMinus = true;
           inNumeric = true;
+          beginningOfNumber = true;
           inExponent = false;
         }
 
@@ -389,6 +394,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           bufPtr += 1;
           unaryMinus = true;
           inNumeric = true;
+          beginningOfNumber = true;
           inExponent = false;
         }
 
@@ -422,6 +428,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           *(bufPtr + 1) = 0;
           unaryMinus = false;
           inNumeric = false;
+          beginningOfNumber = false;
           inExponent = false;
         }
 
@@ -440,6 +447,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           bufPtr += 1;
           unaryMinus = false;
           inNumeric = true;
+          beginningOfNumber = true;
           inExponent = false;
         }
 
@@ -464,6 +472,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           bufPtr += 2;
           unaryMinus = false;
           inNumeric = true;
+          beginningOfNumber = true;
           inExponent = false;
         }
 
@@ -472,10 +481,11 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           *(bufPtr + 1) = 0;
           unaryMinus = false;
           inExponent = false;
+          beginningOfNumber = false;
         }
 
         /* Exponent */
-        else if((!inLabel) && inNumeric && (!inExponent) && ((*strPtr) == 'E' || (*strPtr) == 'e')) {
+        else if((!inLabel) && inNumeric && (!beginningOfNumber) && (!inExponent) && (*strPtr) == 'E') {
           if(cursorAt == EQUATION_NO_CURSOR) {
             *bufPtr       = STD_DOT[0];
             *(bufPtr + 1) = STD_DOT[1];
@@ -498,11 +508,13 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
             }
             unaryMinus = false;
             inExponent = false;
+            beginningOfNumber = false;
           }
           else {
             *(bufPtr + 1) = 0;
             unaryMinus = false;
             inExponent = true;
+            beginningOfNumber = false;
           }
         }
 
@@ -514,6 +526,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           unaryMinus = false;
           inNumeric = false;
           inExponent = false;
+          beginningOfNumber = false;
         }
 
         /* Other single-byte characters */
@@ -522,6 +535,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           unaryMinus = false;
           inNumeric = false;
           inExponent = false;
+          beginningOfNumber = false;
         }
 
         /* Add the character */
@@ -574,9 +588,11 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
 
 
 #ifndef TESTSUITE_BUILD
-static void _menuF6(char *bufPtr) {
-  xcopy(bufPtr, "Calc", 5);
-  bufPtr[5] = 0;
+static void _menuItem(int16_t item, char *bufPtr) {
+  xcopy(bufPtr,indexOfItems[item].itemSoftmenuName,stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+  bufPtr[stringByteLength(indexOfItems[item].itemSoftmenuName)+1]=0;
+  //  xcopy(bufPtr, "Calc", 5);
+  //  bufPtr[5] = 0;
 }
 
 #define PARSER_HINT_NUMERIC  0
@@ -934,8 +950,12 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
           xcopy(bufPtr, strPtr, stringByteLength(strPtr) + 1);
           bufPtr += stringByteLength(strPtr) + 1;
           bufPtr[0] = 0;
-          if(tmpVal == 4) {
-            _menuF6(bufPtr);
+          if(tmpVal == 2) {   // If the 4th variable has just been added, add Draw and Calc.
+            _menuItem(ITM_CPXSLV, bufPtr);
+            bufPtr += stringByteLength(bufPtr) + 1;
+            _menuItem(ITM_DRAW, bufPtr);
+            bufPtr += stringByteLength(bufPtr) + 1;
+            _menuItem(ITM_CALC, bufPtr);
           }
         }
         else {
@@ -1272,7 +1292,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
           ++numericCount;
           exponentSignCanOccur = false;
         }
-        else if((!inExponent) && (*strPtr == 'E' || *strPtr == 'e') && ((*bufPtr = 0), numericCount == stringGlyphLength(buffer))) {
+        else if((!inExponent) && *strPtr == 'E' && ((*bufPtr = 0), numericCount == stringGlyphLength(buffer))) {
           ++numericCount;
           inExponent = true;
           exponentSignCanOccur = true;
@@ -1316,11 +1336,15 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
       bufPtr += stringByteLength(bufPtr) + 1;
       ++tmpVal;
     }
-    for(; tmpVal < 5; ++tmpVal) {
+    for(; tmpVal < 3; ++tmpVal) {  //If there are less than 4 variables, skip to the 5th item and add Draw & Calc.
       *(bufPtr++) = 0;
     }
-    if(tmpVal == 5) {
-      _menuF6(bufPtr);
+    if(tmpVal == 3) {
+      _menuItem(ITM_CPXSLV, bufPtr);
+      bufPtr += stringByteLength(bufPtr) + 1;
+      _menuItem(ITM_DRAW, bufPtr);
+      bufPtr += stringByteLength(bufPtr) + 1;
+      _menuItem(ITM_CALC, bufPtr);
     }
   }
   if(parseMode == EQUATION_PARSER_XEQ) {

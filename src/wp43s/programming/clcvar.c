@@ -29,6 +29,7 @@
 #include "items.h"
 #include "longIntegerType.h"
 #include "matrix.h"
+#include "programming/flash.h"
 #include "programming/nextStep.h"
 #include "realType.h"
 #include "registers.h"
@@ -174,7 +175,7 @@ static void _processOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
       break;
 
     case PARAM_NUMBER_8:
-      if(opParam <= 99) { // Value from 0 to 99
+      if(opParam <= (indexOfItems[op].tamMinMax & TAM_MAX_MASK)) { // Value from 0 to 99
         // nothing to do
       }
       else if(opParam == INDIRECT_REGISTER) {
@@ -189,6 +190,8 @@ static void _processOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
       break;
 
     case PARAM_NUMBER_16:
+    case PARAM_SKIP_BACK:
+    case PARAM_SHUFFLE:
       // nothing to do
       break;
 
@@ -220,12 +223,18 @@ static void _processOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
   }
 }
 
-static bool_t _processOneStep(uint8_t *step) {
-  uint16_t op = *(step++);
+static bool_t _processOneStep(pgmPtr_t step) {
+  uint16_t op;
+  if(programList[currentProgramNumber - 1].step < 0) {
+    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, step.flash);
+    step.ram = (uint8_t *)(tmpString + 1600);
+  }
+
+  op = *(step.ram++);
   if(op & 0x80) {
     op &= 0x7f;
     op <<= 8;
-    op |= *(step++);
+    op |= *(step.ram++);
   }
 
   if(op == ITM_END || op == 0x7fff) {
@@ -247,14 +256,14 @@ static bool_t _processOneStep(uint8_t *step) {
 
       case PTP_KEYG_KEYX:
         {
-          uint8_t *secondParam = findKey2ndParam(step - 2);
-          _processOp(step, op, PARAM_NUMBER_8);
+          uint8_t *secondParam = findKey2ndParam_ram(step.ram - 2);
+          _processOp(step.ram, op, PARAM_NUMBER_8);
           _processOp(secondParam, *secondParam, PARAM_LABEL);
         }
         return true;
 
       default:
-        _processOp(step, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
+        _processOp(step.ram, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
         return true;
     }
   }
@@ -265,7 +274,8 @@ static bool_t _processOneStep(uint8_t *step) {
 
 void fnClCVar(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
-  uint8_t *ptr = beginOfCurrentProgram;
+  pgmPtr_t ptr;
+  ptr.any = beginOfCurrentProgram.any;
 
   while(_processOneStep(ptr)) {
     ptr = findNextStep(ptr);

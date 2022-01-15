@@ -53,7 +53,7 @@ const reservedVariableHeader_t allReservedVariables[] = { // MUST be in the same
 /* 10 */  { .header = {.pointerToRegisterData = WP43S_NULL, .dataType = 0,             .tag = 0,           .readOnly = 0, .notUsed = 0}, .reservedVariableName = {1, 'J',  0,   0,   0,   0,   0,   0} },
 /* 11 */  { .header = {.pointerToRegisterData = WP43S_NULL, .dataType = 0,             .tag = 0,           .readOnly = 0, .notUsed = 0}, .reservedVariableName = {1, 'K',  0,   0,   0,   0,   0,   0} },
 /* 12 */  { .header = {.pointerToRegisterData = WP43S_NULL, .dataType = dtLongInteger, .tag = LI_POSITIVE, .readOnly = 1, .notUsed = 0}, .reservedVariableName = {3, 'A', 'D', 'M',  0,   0,   0,   0} },
-/* 13 */  { .header = {.pointerToRegisterData = WP43S_NULL, .dataType = dtLongInteger, .tag = LI_POSITIVE, .readOnly = 1, .notUsed = 0}, .reservedVariableName = {6, 'D', 'E', 'N', 'M', 'A', 'X',  0} },
+/* 13 */  { .header = {.pointerToRegisterData = WP43S_NULL, .dataType = dtLongInteger, .tag = LI_POSITIVE, .readOnly = 1, .notUsed = 0}, .reservedVariableName = {5, 'D', '.', 'M', 'A', 'X',  0,   0} },
 /* 14 */  { .header = {.pointerToRegisterData = WP43S_NULL, .dataType = dtLongInteger, .tag = LI_POSITIVE, .readOnly = 1, .notUsed = 0}, .reservedVariableName = {3, 'I', 'S', 'M',  0,   0,   0,   0} },
 /* 15 */  { .header = {.pointerToRegisterData = WP43S_NULL, .dataType = dtLongInteger, .tag = LI_POSITIVE, .readOnly = 1, .notUsed = 0}, .reservedVariableName = {6, 'R', 'E', 'A', 'L', 'D', 'F',  0} },
 /* 16 */  { .header = {.pointerToRegisterData = WP43S_NULL, .dataType = dtLongInteger, .tag = LI_POSITIVE, .readOnly = 1, .notUsed = 0}, .reservedVariableName = {4, '#', 'D', 'E', 'C',  0,   0,   0} },
@@ -873,7 +873,7 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
   else if(regist <= LAST_LOCAL_REGISTER) { // Local register
     if(currentLocalRegisters != NULL) {
       if(regist-FIRST_LOCAL_REGISTER < currentNumberOfLocalRegisters) {
-        db = (dataBlock_t *)TO_PCMEMPTR(POINTER_TO_LOCAL_REGISTER(regist)->pointerToRegisterData);
+        db = (dataBlock_t *)TO_PCMEMPTR(POINTER_TO_LOCAL_REGISTER(regist-FIRST_LOCAL_REGISTER)->pointerToRegisterData);
       }
       else {
         sprintf(errorMessage, "In function getRegisterMaxDataLength: local register %" PRId16 " is not defined! Must be from 0 to %" PRIu8, (uint16_t)(regist - FIRST_LOCAL_REGISTER), (uint8_t)(currentNumberOfLocalRegisters - 1));
@@ -1108,6 +1108,9 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
 
   if(lastErrorCode != 0) {
     #ifdef TESTSUITE_BUILD
+      #ifdef DEBUGUNDO
+        printf(">>> undo from adjustResult\n");
+      #endif
       undo();
     #endif //TESTSUITE_BUILD
     return;
@@ -1518,6 +1521,21 @@ int16_t indirectAddressing(calcRegister_t regist, bool_t valueIsRegister, int16_
       real34ToString(REGISTER_REAL34_DATA(regist), str);
       printf("date %s", str);
     }
+
+    else if(getRegisterDataType(regist) == dtReal34Matrix) {
+      uint16_t r, c;
+      real34Matrix_t mat;
+      linkToRealMatrixRegister(regist, &mat);
+      for(r = 0; r < mat.header.matrixRows; ++r) {
+        printf("Matrix Row %3i: ",r);
+        for(c = 0; c < mat.header.matrixColumns; ++c) {
+          real34ToString(&mat.matrixElements[r * mat.header.matrixColumns + c], str);
+          printf("%s ", str);
+        }
+        printf("\n");
+      }
+    }
+
 
     else {
       sprintf(errorMessage, "In printRegisterToConsole: data type %s not supported", getRegisterDataTypeName(regist ,false, false));

@@ -25,12 +25,14 @@
 #include "display.h"
 #include "fonts.h"
 #include "items.h"
+#include "programming/flash.h"
 #include "programming/nextStep.h"
 #include "registers.h"
 #include <string.h>
 
 #include "wp43s.h"
 
+TO_QSPI const char shuffleReg[4] = {'x', 'y', 'z', 't'};
 
 #ifndef DMCP_BUILD
   void listPrograms(void) {
@@ -40,7 +42,7 @@
     printf("\nProgram listing");
     step = beginOfProgramMemory;
     while(step) {
-      if(step == programList[programNumber].instructionPointer) {
+      if(step == programList[programNumber].instructionPointer.ram) {
         programNumber++;
         if(programNumber != 1) {
           printf("\n------------------------------------------------------------");
@@ -48,7 +50,7 @@
         printf("\nPgm Step   Bytes         OP");
       }
 
-      nextStep = findNextStep(step);
+      nextStep = findNextStep_ram(step);
       if(nextStep) {
         numberOfBytesInStep = (uint16_t)(nextStep - step);
         printf("\n%02d  %4d  ", programNumber, ++stepNumber - programList[programNumber - 1].step + 1); fflush(stdout);
@@ -56,7 +58,7 @@
         for(i=0; i<numberOfBytesInStep; i++) {
           printf(" %02x", *(step + i)); fflush(stdout);
           if(i == 3 && numberOfBytesInStep > 4) {
-            decodeOneStep(step);
+            decodeOneStep_ram(step);
             stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
 
             if(*step != ITM_LBL && (*step != ((ITM_END >> 8) | 0x80) || *(step + 1) != (ITM_END & 0xff))) { // Not LBL and not END
@@ -75,7 +77,7 @@
           for(i=1; i<=4 - ((numberOfBytesInStep - 1) % 4); i++) {
             printf("   "); fflush(stdout);
           }
-          decodeOneStep(step);
+          decodeOneStep_ram(step);
           stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
 
           if(*step != ITM_LBL && (*step != ((ITM_END >> 8) | 0x80) || *(step + 1) != (ITM_END & 0xff))) { // Not LBL and not END
@@ -97,28 +99,55 @@
     printf("num program  step label\n");
     for(int i=0; i<numberOfLabels; i++) {
       printf("%3d%8d%6d ", i, labelList[i].program, labelList[i].step);
-      if(labelList[i].step < 0) { // Local label
-        if(*(labelList[i].labelPointer) < 100) {
-          printf("%02d\n", *(labelList[i].labelPointer));
+      if(labelList[i].program < 0) { // Flash
+        readStepInFlashPgmLibrary((uint8_t *)(tmpString + 200), 32, labelList[i].labelPointer.flash);
+        if(labelList[i].step < 0) { // Local label
+          if(*((uint8_t *)(tmpString + 200)) < 100) {
+            printf("%02d\n", *((uint8_t *)(tmpString + 200)));
+          }
+          else if(*((uint8_t *)(tmpString + 200)) < 105) {
+            printf("%c\n", *((uint8_t *)(tmpString + 200)) - 100 + 'A');
+          }
         }
-        else if(*(labelList[i].labelPointer) < 105) {
-          printf("%c\n", *(labelList[i].labelPointer) - 100 + 'A');
+        else { // Global label
+          xcopy(tmpString + 100, (uint8_t *)(tmpString + 200) + 1, *((uint8_t *)(tmpString + 200)));
+          tmpString[100 + *((uint8_t *)(tmpString + 200))] = 0;
+          stringToUtf8(tmpString + 100, (uint8_t *)tmpString);
+          printf("'%s'\n", tmpString);
         }
       }
-      else { // Global label
-        xcopy(tmpString + 100, labelList[i].labelPointer + 1, *(labelList[i].labelPointer));
-        tmpString[100 + *(labelList[i].labelPointer)] = 0;
-        stringToUtf8(tmpString + 100, (uint8_t *)tmpString);
-        printf("'%s'\n", tmpString);
+      else { // RAM
+        if(labelList[i].step < 0) { // Local label
+          if(*(labelList[i].labelPointer.ram) < 100) {
+            printf("%02d\n", *(labelList[i].labelPointer.ram));
+          }
+          else if(*(labelList[i].labelPointer.ram) < 105) {
+            printf("%c\n", *(labelList[i].labelPointer.ram) - 100 + 'A');
+          }
+        }
+        else { // Global label
+          xcopy(tmpString + 100, labelList[i].labelPointer.ram + 1, *(labelList[i].labelPointer.ram));
+          tmpString[100 + *(labelList[i].labelPointer.ram)] = 0;
+          stringToUtf8(tmpString + 100, (uint8_t *)tmpString);
+          printf("'%s'\n", tmpString);
+        }
       }
     }
 
     printf("\nContent of programList\n");
     printf("program  step OP\n");
     for(int i=0; i<numberOfPrograms; i++) {
-      decodeOneStep(programList[i].instructionPointer);
-      stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
-      printf("%7d %5d %s\n", i, programList[i].step, tmpString);
+      if(programList[i].step < 0) { // Flash
+        readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, programList[i].instructionPointer.flash);
+        decodeOneStep_ram((uint8_t *)(tmpString + 1600));
+        stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
+        printf("%7d %5d %s\n", i, programList[i].step, tmpString);
+      }
+      else {
+        decodeOneStep_ram(programList[i].instructionPointer.ram);
+        stringToUtf8(tmpString, (uint8_t *)(tmpString + 2000));
+        printf("%7d %5d %s\n", i, programList[i].step, tmpString);
+      }
     }
   }
 #endif // !DMCP_BUILD
@@ -131,7 +160,7 @@ static void getStringLabelOrVariableName(uint8_t *stringAddress) {
 }
 
 
-void getIndirectRegister(uint8_t *paramAddress, const char *op) {
+static void getIndirectRegister(uint8_t *paramAddress, const char *op) {
   uint8_t opParam = *(uint8_t *)paramAddress;
   if(opParam < REGISTER_X) { // Global register from 00 to 99
     sprintf(tmpString, "%s " STD_RIGHT_ARROW "%02u", op, opParam);
@@ -148,13 +177,13 @@ void getIndirectRegister(uint8_t *paramAddress, const char *op) {
 }
 
 
-void getIndirectVariable(uint8_t *stringAddress, const char *op) {
+static void getIndirectVariable(uint8_t *stringAddress, const char *op) {
   getStringLabelOrVariableName(stringAddress);
   sprintf(tmpString, "%s " STD_RIGHT_ARROW STD_LEFT_SINGLE_QUOTE "%s" STD_RIGHT_SINGLE_QUOTE, op, tmpStringLabelOrVariableName);
 }
 
 
-void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
+static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, uint16_t tamMax) {
   uint8_t opParam = *(uint8_t *)(paramAddress++);
 
   switch(paramMode) {
@@ -249,8 +278,16 @@ void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
       break;
 
     case PARAM_NUMBER_8:
-      if(opParam <= 99) { // Value from 0 to 99
-        sprintf(tmpString, "%s %02u", op, opParam);
+      if(opParam <= tamMax) { // Value from 0 to 99
+        if(tamMax <= 9) {
+          sprintf(tmpString, "%s %u", op, opParam);
+        }
+        else if(tamMax <= 99) {
+          sprintf(tmpString, "%s %02u", op, opParam);
+        }
+        else {
+          sprintf(tmpString, "%s %03u", op, opParam);
+        }
       }
       else if(opParam == INDIRECT_REGISTER) {
         getIndirectRegister(paramAddress, op);
@@ -300,15 +337,27 @@ void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode) {
 
     case PARAM_KEYG_KEYX:
       {
-        uint8_t *secondParam = findKey2ndParam(paramAddress - 3);
-        decodeOp(secondParam + 1, indexOfItems[*secondParam].itemCatalogName, PARAM_LABEL);
+        uint8_t *secondParam = findKey2ndParam_ram(paramAddress - 3);
+        decodeOp(secondParam + 1, indexOfItems[*secondParam].itemCatalogName, PARAM_LABEL, indexOfItems[*secondParam].tamMinMax & TAM_MAX_MASK);
         xcopy(tmpString + TMP_STR_LENGTH / 2, tmpString, stringByteLength(tmpString) + 1);
-        decodeOp(paramAddress - 1, op, PARAM_NUMBER_8);
+        decodeOp(paramAddress - 1, op, PARAM_NUMBER_8, 21);
         tmpString[stringByteLength(tmpString) + 1] = 0;
         tmpString[stringByteLength(tmpString)    ] = ' ';
         xcopy(tmpString + stringByteLength(tmpString), tmpString + TMP_STR_LENGTH / 2, stringByteLength(tmpString + TMP_STR_LENGTH / 2) + 1);
       }
       break;
+
+    case PARAM_SKIP_BACK:
+      sprintf(tmpString, "%s %03u", op, opParam);
+      break;
+
+    case PARAM_SHUFFLE:
+      sprintf(tmpString, "%s %c%c%c%c", op, shuffleReg[ opParam & 0x03      ],
+                                            shuffleReg[(opParam & 0x0c) >> 2],
+                                            shuffleReg[(opParam & 0x30) >> 4],
+                                            shuffleReg[(opParam & 0xc0) >> 6]);
+      break;
+
 
     default:
       sprintf(tmpString, "\nIn function decodeOp: paramMode %u is not valid!\n", paramMode);
@@ -410,7 +459,17 @@ static void decodeLiteral(uint8_t *literalAddress) {
 }
 
 
-void decodeOneStep(uint8_t *step) {
+void decodeOneStep(pgmPtr_t step) {
+  if(currentProgramNumber > (numberOfPrograms - numberOfProgramsInFlash)) { // Flash
+    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, step.flash);
+    decodeOneStep_ram((uint8_t *)(tmpString + 1600));
+  }
+  else {
+    decodeOneStep_ram(step.ram);
+  }
+}
+
+void decodeOneStep_ram(uint8_t *step) {
   uint16_t op = *(step++);
   if(op & 0x80) {
     op &= 0x7f;
@@ -436,7 +495,7 @@ void decodeOneStep(uint8_t *step) {
         break;
 
       default:
-        decodeOp(step, indexOfItems[op].itemCatalogName, (indexOfItems[op].status & PTP_STATUS) >> 9);
+        decodeOp(step, indexOfItems[op].itemCatalogName, (indexOfItems[op].status & PTP_STATUS) >> 9, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
     }
   }
 }

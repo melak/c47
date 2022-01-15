@@ -87,9 +87,16 @@ glyph_t                glyphNotFound = {.charCode = 0x0000, .colsBeforeGlyph = 0
 freeMemoryRegion_t     freeMemoryRegions[MAX_FREE_REGION];
 pcg32_random_t         pcg32_global = PCG32_INITIALIZER;
 labelList_t           *labelList = NULL;
+labelList_t           *flashLabelList = NULL;
 programList_t         *programList = NULL;
+programList_t         *flashProgramList = NULL;
 angularMode_t          currentAngularMode;
 formulaHeader_t       *allFormulae;
+
+pgmPtr_t               beginOfCurrentProgram;
+pgmPtr_t               endOfCurrentProgram;
+pgmPtr_t               firstDisplayedStep;
+pgmPtr_t               currentStep;
 
 char                  *tmpString = NULL;
 char                  *tmpStringLabelOrVariableName = NULL;
@@ -132,12 +139,9 @@ uint8_t                numScreensNumericFont;
 uint8_t                timerCraAndDeciseconds = 128u;
 uint8_t                programRunStop;
 uint8_t                lastKeyCode;
+uint8_t                entryStatus;
 uint8_t               *beginOfProgramMemory;
-uint8_t               *beginOfCurrentProgram;
-uint8_t               *endOfCurrentProgram;
 uint8_t               *firstFreeProgramByte;
-uint8_t               *firstDisplayedStep;
-uint8_t               *currentStep;
 
 tamState_t             tam;
 int16_t                currentRegisterBrowserScreen;
@@ -164,7 +168,9 @@ uint16_t               freeProgramBytes;
 uint16_t               glyphRow[NUMBER_OF_GLYPH_ROWS];
 uint16_t               firstDisplayedLocalStepNumber;
 uint16_t               numberOfLabels;
+uint16_t               numberOfLabelsInFlash;
 uint16_t               numberOfPrograms;
+uint16_t               numberOfProgramsInFlash;
 uint16_t               numberOfNamedVariables;
 uint16_t               currentLocalStepNumber;
 uint16_t               currentProgramNumber;
@@ -192,6 +198,7 @@ uint16_t               currentMvarLabel = INVALID_VARIABLE;
 
 int32_t                numberOfFreeMemoryRegions;
 int32_t                lgCatalogSelection;
+int32_t                graphVariable;
 
 uint32_t               firstGregorianDay;
 uint32_t               denMax;
@@ -203,6 +210,8 @@ uint32_t               tamOverPemYPos;
 uint32_t               timerValue;
 uint32_t               timerStartTime = TIMER_APP_STOPPED;
 uint32_t               timerTotalTime;
+uint32_t               pointerOfFlashPgmLibrary;
+uint32_t               sizeOfFlashPgmLibrary;
 
 uint64_t               shortIntegerMask;
 uint64_t               shortIntegerSignBit;
@@ -581,7 +590,7 @@ int32_t                SAVED_SIGMA_LAct;
       if(key == 27 || key == 32) {
 //      inDownUpPress = 1;
 //      nextAutoRepeat = now + KEY_AUTOREPEAT_FIRST_PERIOD;
-        if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING && !shiftF && !shiftG && (currentSoftmenuScrolls() || calcMode != CM_NORMAL)) {
+        if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING && !shiftF && !shiftG && (currentSoftmenuScrolls() || (calcMode != CM_NORMAL && calcMode != CM_NIM && calcMode != CM_AIM))) {
           fnTimerStart(TO_AUTO_REPEAT, key, KEY_AUTOREPEAT_FIRST_PERIOD);
         }
       }

@@ -464,10 +464,6 @@ static void getLastRowStatsMatrix(real_t *x, real_t *y) {
     cols = stats.header.matrixColumns;
     real34ToReal(&stats.matrixElements[(rows-1) * cols    ], x);
     real34ToReal(&stats.matrixElements[(rows-1) * cols + 1], y);
-#ifdef PC_BUILD
-printRealToConsole(x,"   x-element:",", ");
-printRealToConsole(y,"   y-element:","\n");
-#endif
   }
   else {
     displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
@@ -486,10 +482,12 @@ static void AddtoStatsMatrix(real_t *x, real_t *y) {
   calcRegister_t regStats = findNamedVariable("STATS");
   if(!isStatsMatrix(&rows)) {
     regStats = allocateNamedMatrix("STATS", 1, 2);
+    real34Matrix_t stats;
+    linkToRealMatrixRegister(regStats, &stats);
+    realMatrixInit(&stats,1,2);
   }
   else {
     if(appendRowAtMatrixRegister(regStats)) {
-      regStats = findNamedVariable("STATS");
     }
     else {
       regStats = INVALID_VARIABLE;
@@ -506,7 +504,7 @@ static void AddtoStatsMatrix(real_t *x, real_t *y) {
   else {
     displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "additional matrix line not added");
+      sprintf(errorMessage, "additional matrix line not added; rows = %i",rows);
       moreInfoOnError("In function AddtoStatsMatrix:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
@@ -551,6 +549,16 @@ void fnClSigma(uint16_t unusedButMandatoryParameter) {
     allocateNamedVariable("STATS", dtReal34, REAL34_SIZE);
     regStats = findNamedVariable("STATS");
   }
+
+  if(regStats == INVALID_VARIABLE) {
+    displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "STATS matrix not created");
+      moreInfoOnError("In function fnClSigma:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+
+
   clearRegister(regStats);                  // this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
   lrChosen = 0;                             // linear regression selection
   lastPlotMode = PLOT_NOTHING;              // last selected  plotmode
@@ -602,6 +610,11 @@ void fnSigma(uint16_t plusMinus) {
       realCopy(&x,      &SAVED_SIGMA_LASTX);
       realCopy(&y,      &SAVED_SIGMA_LASTY);
       SAVED_SIGMA_LAct = +1;
+
+      #ifdef DEBUGUNDO
+        calcRegister_t regStats = findNamedVariable("STATS");
+        printRegisterToConsole(regStats,"From: AddtoStatsMatrix STATS:\n","\n");
+      #endif //DEBUGUNDO
 
       temporaryInformation = TI_STATISTIC_SUMS;
     }
@@ -658,6 +671,11 @@ void fnSigma(uint16_t plusMinus) {
     realCopy(&x,       &SAVED_SIGMA_LASTX);
     realCopy(&y,       &SAVED_SIGMA_LASTY);
     SAVED_SIGMA_LAct = -1;
+
+    #ifdef DEBUGUNDO
+      calcRegister_t regStats = findNamedVariable("STATS");
+      printRegisterToConsole(regStats,"From Sigma-: STATS\n","\n");
+    #endif //DEBUGUNDO
   } 
 
 #endif // TESTSUITE_BUILD

@@ -35,6 +35,7 @@
 #include "matrix.h"
 #include "memory.h"
 #include "plotstat.h"
+#include "programming/flash.h"
 #include "programming/manage.h"
 #include "programming/programmableMenu.h"
 #include "recall.h"
@@ -270,7 +271,7 @@ void fnBatteryVoltage(uint16_t unusedButMandatoryParameter) {
 
 
 uint32_t getFreeFlash(void) {
-  return 1234567u;
+  return FLASH_PGM_PAGE_SIZE * FLASH_PGM_NUMBER_OF_PAGES - sizeOfFlashPgmLibrary - 2;
 }
 
 
@@ -505,11 +506,11 @@ void fnClAll(uint16_t confirmation) {
 
 
 void addTestPrograms(void) {
-  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(10476));
+  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(10451));
 
   resizeProgramMemory(TO_BLOCKS(numberOfBytesForTheTestPrograms));
-  firstDisplayedStep            = beginOfProgramMemory;
-  currentStep                   = beginOfProgramMemory;
+  firstDisplayedStep.ram        = beginOfProgramMemory;
+  currentStep.ram               = beginOfProgramMemory;
   currentLocalStepNumber        = 1;
   firstDisplayedLocalStepNumber = 0;
 
@@ -609,9 +610,9 @@ void fnReset(uint16_t confirmation) {
 
     // Empty program initialization
     beginOfProgramMemory          = (uint8_t *)(ram + freeMemoryRegions[0].sizeInBlocks);
-    currentStep                   = beginOfProgramMemory;
+    currentStep.ram               = beginOfProgramMemory;
     firstFreeProgramByte          = beginOfProgramMemory + 2;
-    firstDisplayedStep            = beginOfProgramMemory;
+    firstDisplayedStep.ram        = beginOfProgramMemory;
     firstDisplayedLocalStepNumber = 0;
     labelList                     = NULL;
     programList                   = NULL;
@@ -620,6 +621,8 @@ void fnReset(uint16_t confirmation) {
     *(beginOfProgramMemory + 2) = 255; // .END.
     *(beginOfProgramMemory + 3) = 255; // .END.
     freeProgramBytes            = 0;
+
+    scanFlashPgmLibrary();
     scanLabelsAndPrograms();
 
     // "Not found glyph" initialization
@@ -767,6 +770,11 @@ void fnReset(uint16_t confirmation) {
     realZero(&SAVED_SIGMA_LASTY);
     SAVED_SIGMA_LAct = 0;
     
+    x_min = -10;
+    x_max = 10;
+    y_min = 0;
+    y_max = 1;
+
     shortIntegerMode = SIM_2COMPL;
     fnSetWordSize(64);
 
@@ -847,6 +855,7 @@ void fnReset(uint16_t confirmation) {
     currentInputVariable = INVALID_VARIABLE;
     currentMvarLabel = INVALID_VARIABLE;
     lastKeyCode = 0;
+    entryStatus = 0;
 
     memset(userMenuItems,  0, sizeof(userMenuItem_t) * 18);
     memset(userAlphaItems, 0, sizeof(userMenuItem_t) * 18);
@@ -891,6 +900,8 @@ void fnReset(uint16_t confirmation) {
     allFormulae = NULL;
     numberOfFormulae = 0;
     currentFormula = 0;
+
+    graphVariable = 0;
 
     // Timer application
     timerCraAndDeciseconds = 0x80u;

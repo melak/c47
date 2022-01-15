@@ -20,6 +20,8 @@
 #include "error.h"
 #include "gui.h"
 #include "items.h"
+#include "memory.h"
+#include "programming/flash.h"
 #include "programming/nextStep.h"
 #include "registers.h"
 #include "screen.h"
@@ -193,6 +195,9 @@ TO_QSPI const int16_t menu_SUMS[]        = { ITM_NSIGMA,                    ITM_
                                              ITM_SIGMAx2y,                  ITM_SIGMAxlny,              ITM_SIGMAx2lny,           ITM_SIGMAlnyonx,       ITM_NULL,                    ITM_SIGMAylnx,
                                              ITM_SIGMAx2ony,                ITM_SIGMA1onx,              ITM_SIGMA1onx2,           ITM_SIGMAxony,         ITM_SIGMA1ony2,              ITM_SIGMA1ony,
                                              ITM_SIGMAx3,                   ITM_SIGMAx4,                ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
+
+TO_QSPI const int16_t menu_GRAPH[]   = {
+                                             ITM_REPLT,                     ITM_PLOTZOOM,               ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 
 TO_QSPI const int16_t menu_PLOT_STAT[]   = {
                                              ITM_PLOT_CENTRL,               ITM_SMI,                    ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
@@ -431,43 +436,44 @@ TO_QSPI const softmenu_t softmenu[] = {
 /*  64 */  {.menuItem = -MNU_PFN2,        .numItems = sizeof(menu_PFN2       )/sizeof(int16_t), .softkeyItem = menu_PFN2        },
 /*  65 */  {.menuItem = -MNU_STAT,        .numItems = sizeof(menu_STAT       )/sizeof(int16_t), .softkeyItem = menu_STAT        },
 /*  66 */  {.menuItem = -MNU_SUMS,        .numItems = sizeof(menu_SUMS       )/sizeof(int16_t), .softkeyItem = menu_SUMS        },
-/*  67 */  {.menuItem = -MNU_PLOT_STAT,   .numItems = sizeof(menu_PLOT_STAT  )/sizeof(int16_t), .softkeyItem = menu_PLOT_STAT   },
-/*  68 */  {.menuItem = -MNU_PLOT_LR,     .numItems = sizeof(menu_PLOT_LR    )/sizeof(int16_t), .softkeyItem = menu_PLOT_LR     },
-/*  69 */  {.menuItem = -MNU_STK,         .numItems = sizeof(menu_STK        )/sizeof(int16_t), .softkeyItem = menu_STK         },
-/*  70 */  {.menuItem = -MNU_TEST,        .numItems = sizeof(menu_TEST       )/sizeof(int16_t), .softkeyItem = menu_TEST        },
-/*  71 */  {.menuItem = -MNU_XFN,         .numItems = sizeof(menu_XFN        )/sizeof(int16_t), .softkeyItem = menu_XFN         },
-/*  72 */  {.menuItem = -MNU_ORTHOG,      .numItems = sizeof(menu_Orthog     )/sizeof(int16_t), .softkeyItem = menu_Orthog      },
-/*  73 */  {.menuItem = -MNU_ELLIPT,      .numItems = sizeof(menu_Ellipt     )/sizeof(int16_t), .softkeyItem = menu_Ellipt      },
-/*  74 */  {.menuItem = -MNU_CATALOG,     .numItems = sizeof(menu_CATALOG    )/sizeof(int16_t), .softkeyItem = menu_CATALOG     },
-/*  75 */  {.menuItem = -MNU_CHARS,       .numItems = sizeof(menu_CHARS      )/sizeof(int16_t), .softkeyItem = menu_CHARS       },
-/*  76 */  {.menuItem = -MNU_PROGS,       .numItems = sizeof(menu_PROGS      )/sizeof(int16_t), .softkeyItem = menu_PROGS       },
-/*  77 */  {.menuItem = -MNU_VARS,        .numItems = sizeof(menu_VARS       )/sizeof(int16_t), .softkeyItem = menu_VARS        },
-/*  78 */  {.menuItem = -MNU_ALPHA_OMEGA, .numItems = sizeof(menu_ALPHA_OMEGA)/sizeof(int16_t), .softkeyItem = menu_ALPHA_OMEGA },
-/*  79 */  {.menuItem = -MNU_alpha_omega, .numItems = sizeof(menu_alpha_omega)/sizeof(int16_t), .softkeyItem = menu_alpha_omega },
-/*  80 */  {.menuItem = -MNU_FCNS,        .numItems = sizeof(menu_FCNS       )/sizeof(int16_t), .softkeyItem = menu_FCNS        },
-/*  81 */  {.menuItem = -MNU_ALPHAMATH,   .numItems = sizeof(menu_alphaMATH  )/sizeof(int16_t), .softkeyItem = menu_alphaMATH   },
-/*  82 */  {.menuItem = -MNU_ALPHADOT,    .numItems = sizeof(menu_alphaDot   )/sizeof(int16_t), .softkeyItem = menu_alphaDot    },
-/*  83 */  {.menuItem = -MNU_ALPHAFN,     .numItems = sizeof(menu_alphaFN    )/sizeof(int16_t), .softkeyItem = menu_alphaFN     },
-/*  84 */  {.menuItem = -MNU_ANGLECONV,   .numItems = sizeof(menu_AngleConv  )/sizeof(int16_t), .softkeyItem = menu_AngleConv   },
-/*  85 */  {.menuItem = -MNU_UNITCONV,    .numItems = sizeof(menu_UnitConv   )/sizeof(int16_t), .softkeyItem = menu_UnitConv    },
-/*  86 */  {.menuItem = -MNU_CONVE,       .numItems = sizeof(menu_ConvE      )/sizeof(int16_t), .softkeyItem = menu_ConvE       },
-/*  87 */  {.menuItem = -MNU_CONVP,       .numItems = sizeof(menu_ConvP      )/sizeof(int16_t), .softkeyItem = menu_ConvP       },
-/*  88 */  {.menuItem = -MNU_CONVFP,      .numItems = sizeof(menu_ConvFP     )/sizeof(int16_t), .softkeyItem = menu_ConvFP      },
-/*  89 */  {.menuItem = -MNU_CONVM,       .numItems = sizeof(menu_ConvM      )/sizeof(int16_t), .softkeyItem = menu_ConvM       },
-/*  90 */  {.menuItem = -MNU_CONVX,       .numItems = sizeof(menu_ConvX      )/sizeof(int16_t), .softkeyItem = menu_ConvX       },
-/*  91 */  {.menuItem = -MNU_CONVV,       .numItems = sizeof(menu_ConvV      )/sizeof(int16_t), .softkeyItem = menu_ConvV       },
-/*  92 */  {.menuItem = -MNU_CONVA,       .numItems = sizeof(menu_ConvA      )/sizeof(int16_t), .softkeyItem = menu_ConvA       },
-/*  93 */  {.menuItem = -MNU_CONST,       .numItems = sizeof(menu_CONST      )/sizeof(int16_t), .softkeyItem = menu_CONST       },
-/*  94 */  {.menuItem = -MNU_IO,          .numItems = sizeof(menu_IO         )/sizeof(int16_t), .softkeyItem = menu_IO          },
-/*  95 */  {.menuItem = -MNU_PRINT,       .numItems = sizeof(menu_PRINT      )/sizeof(int16_t), .softkeyItem = menu_PRINT       },
-/*  96 */  {.menuItem = -MNU_TAM,         .numItems = sizeof(menu_Tam        )/sizeof(int16_t), .softkeyItem = menu_Tam         },
-/*  97 */  {.menuItem = -MNU_TAMCMP,      .numItems = sizeof(menu_TamCmp     )/sizeof(int16_t), .softkeyItem = menu_TamCmp      },
-/*  98 */  {.menuItem = -MNU_TAMSTORCL,   .numItems = sizeof(menu_TamStoRcl  )/sizeof(int16_t), .softkeyItem = menu_TamStoRcl   },
-/*  99 */  {.menuItem = -MNU_TAMSHUFFLE,  .numItems = sizeof(menu_TamShuffle )/sizeof(int16_t), .softkeyItem = menu_TamShuffle  },
-/* 100 */  {.menuItem = -MNU_TAMLABEL,    .numItems = sizeof(menu_TamLabel   )/sizeof(int16_t), .softkeyItem = menu_TamLabel    },
-/* 101 */  {.menuItem = -MNU_EQ_EDIT,     .numItems = sizeof(menu_Eim        )/sizeof(int16_t), .softkeyItem = menu_Eim         },
-/* 102 */  {.menuItem = -MNU_TIMERF,      .numItems = sizeof(menu_Timer      )/sizeof(int16_t), .softkeyItem = menu_Timer       },
-/* 103 */  {.menuItem =  0,               .numItems = 0,                                        .softkeyItem = NULL             }
+/*  67 */  {.menuItem = -MNU_GRAPH,       .numItems = sizeof(menu_GRAPH      )/sizeof(int16_t), .softkeyItem = menu_GRAPH       },
+/*  68 */  {.menuItem = -MNU_PLOT_STAT,   .numItems = sizeof(menu_PLOT_STAT  )/sizeof(int16_t), .softkeyItem = menu_PLOT_STAT   },
+/*  69 */  {.menuItem = -MNU_PLOT_LR,     .numItems = sizeof(menu_PLOT_LR    )/sizeof(int16_t), .softkeyItem = menu_PLOT_LR     },
+/*  70 */  {.menuItem = -MNU_STK,         .numItems = sizeof(menu_STK        )/sizeof(int16_t), .softkeyItem = menu_STK         },
+/*  71 */  {.menuItem = -MNU_TEST,        .numItems = sizeof(menu_TEST       )/sizeof(int16_t), .softkeyItem = menu_TEST        },
+/*  72 */  {.menuItem = -MNU_XFN,         .numItems = sizeof(menu_XFN        )/sizeof(int16_t), .softkeyItem = menu_XFN         },
+/*  73 */  {.menuItem = -MNU_ORTHOG,      .numItems = sizeof(menu_Orthog     )/sizeof(int16_t), .softkeyItem = menu_Orthog      },
+/*  74 */  {.menuItem = -MNU_ELLIPT,      .numItems = sizeof(menu_Ellipt     )/sizeof(int16_t), .softkeyItem = menu_Ellipt      },
+/*  75 */  {.menuItem = -MNU_CATALOG,     .numItems = sizeof(menu_CATALOG    )/sizeof(int16_t), .softkeyItem = menu_CATALOG     },
+/*  76 */  {.menuItem = -MNU_CHARS,       .numItems = sizeof(menu_CHARS      )/sizeof(int16_t), .softkeyItem = menu_CHARS       },
+/*  77 */  {.menuItem = -MNU_PROGS,       .numItems = sizeof(menu_PROGS      )/sizeof(int16_t), .softkeyItem = menu_PROGS       },
+/*  78 */  {.menuItem = -MNU_VARS,        .numItems = sizeof(menu_VARS       )/sizeof(int16_t), .softkeyItem = menu_VARS        },
+/*  79 */  {.menuItem = -MNU_ALPHA_OMEGA, .numItems = sizeof(menu_ALPHA_OMEGA)/sizeof(int16_t), .softkeyItem = menu_ALPHA_OMEGA },
+/*  80 */  {.menuItem = -MNU_alpha_omega, .numItems = sizeof(menu_alpha_omega)/sizeof(int16_t), .softkeyItem = menu_alpha_omega },
+/*  81 */  {.menuItem = -MNU_FCNS,        .numItems = sizeof(menu_FCNS       )/sizeof(int16_t), .softkeyItem = menu_FCNS        },
+/*  82 */  {.menuItem = -MNU_ALPHAMATH,   .numItems = sizeof(menu_alphaMATH  )/sizeof(int16_t), .softkeyItem = menu_alphaMATH   },
+/*  83 */  {.menuItem = -MNU_ALPHADOT,    .numItems = sizeof(menu_alphaDot   )/sizeof(int16_t), .softkeyItem = menu_alphaDot    },
+/*  84 */  {.menuItem = -MNU_ALPHAFN,     .numItems = sizeof(menu_alphaFN    )/sizeof(int16_t), .softkeyItem = menu_alphaFN     },
+/*  85 */  {.menuItem = -MNU_ANGLECONV,   .numItems = sizeof(menu_AngleConv  )/sizeof(int16_t), .softkeyItem = menu_AngleConv   },
+/*  86 */  {.menuItem = -MNU_UNITCONV,    .numItems = sizeof(menu_UnitConv   )/sizeof(int16_t), .softkeyItem = menu_UnitConv    },
+/*  87 */  {.menuItem = -MNU_CONVE,       .numItems = sizeof(menu_ConvE      )/sizeof(int16_t), .softkeyItem = menu_ConvE       },
+/*  88 */  {.menuItem = -MNU_CONVP,       .numItems = sizeof(menu_ConvP      )/sizeof(int16_t), .softkeyItem = menu_ConvP       },
+/*  89 */  {.menuItem = -MNU_CONVFP,      .numItems = sizeof(menu_ConvFP     )/sizeof(int16_t), .softkeyItem = menu_ConvFP      },
+/*  90 */  {.menuItem = -MNU_CONVM,       .numItems = sizeof(menu_ConvM      )/sizeof(int16_t), .softkeyItem = menu_ConvM       },
+/*  91 */  {.menuItem = -MNU_CONVX,       .numItems = sizeof(menu_ConvX      )/sizeof(int16_t), .softkeyItem = menu_ConvX       },
+/*  92 */  {.menuItem = -MNU_CONVV,       .numItems = sizeof(menu_ConvV      )/sizeof(int16_t), .softkeyItem = menu_ConvV       },
+/*  93 */  {.menuItem = -MNU_CONVA,       .numItems = sizeof(menu_ConvA      )/sizeof(int16_t), .softkeyItem = menu_ConvA       },
+/*  94 */  {.menuItem = -MNU_CONST,       .numItems = sizeof(menu_CONST      )/sizeof(int16_t), .softkeyItem = menu_CONST       },
+/*  95 */  {.menuItem = -MNU_IO,          .numItems = sizeof(menu_IO         )/sizeof(int16_t), .softkeyItem = menu_IO          },
+/*  96 */  {.menuItem = -MNU_PRINT,       .numItems = sizeof(menu_PRINT      )/sizeof(int16_t), .softkeyItem = menu_PRINT       },
+/*  97 */  {.menuItem = -MNU_TAM,         .numItems = sizeof(menu_Tam        )/sizeof(int16_t), .softkeyItem = menu_Tam         },
+/*  98 */  {.menuItem = -MNU_TAMCMP,      .numItems = sizeof(menu_TamCmp     )/sizeof(int16_t), .softkeyItem = menu_TamCmp      },
+/*  99 */  {.menuItem = -MNU_TAMSTORCL,   .numItems = sizeof(menu_TamStoRcl  )/sizeof(int16_t), .softkeyItem = menu_TamStoRcl   },
+/* 100 */  {.menuItem = -MNU_TAMSHUFFLE,  .numItems = sizeof(menu_TamShuffle )/sizeof(int16_t), .softkeyItem = menu_TamShuffle  },
+/* 101 */  {.menuItem = -MNU_TAMLABEL,    .numItems = sizeof(menu_TamLabel   )/sizeof(int16_t), .softkeyItem = menu_TamLabel    },
+/* 102 */  {.menuItem = -MNU_EQ_EDIT,     .numItems = sizeof(menu_Eim        )/sizeof(int16_t), .softkeyItem = menu_Eim         },
+/* 103 */  {.menuItem = -MNU_TIMERF,      .numItems = sizeof(menu_Timer      )/sizeof(int16_t), .softkeyItem = menu_Timer       },
+/* 104 */  {.menuItem =  0,               .numItems = 0,                                        .softkeyItem = NULL             }
 };
 
 
@@ -573,20 +579,48 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 
 
+  static void _dynmenuConstructMVarsFromPgm(uint16_t label, uint16_t *numberOfBytes, uint16_t *numberOfVars) {
+    bool_t inFlash = (labelList[label].program < 0);
+    uint16_t flashOffset = 0;
+    uint8_t *step;
+    if(inFlash) {
+      step = allocWp43s(TO_BLOCKS(400));
+      if(step) {
+        readStepInFlashPgmLibrary(step, 400, labelList[label].instructionPointer.flash);
+      }
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        return;
+      }
+    }
+    else {
+      step = labelList[label].instructionPointer.ram;
+    }
+    while((*numberOfVars < 18) && *step == ((ITM_MVAR >> 8) | 0x80) && *(step + 1) == (ITM_MVAR & 0xff) && *(step + 2) == STRING_LABEL_VARIABLE) {
+      xcopy(tmpString + *numberOfBytes, step + 4, *(step + 3));
+      (void)findOrAllocateNamedVariable(tmpString + *numberOfBytes);
+      *numberOfBytes += *(step + 3) + 1;
+      (*numberOfVars)++;
+      if(inFlash) {
+        flashOffset += (findNextStep_ram(step) - step);
+        readStepInFlashPgmLibrary(step, 400, labelList[label].instructionPointer.flash + flashOffset);
+      }
+      else {
+        step = findNextStep_ram(step);
+      }
+    }
+    if(inFlash) {
+      freeWp43s(step, TO_BLOCKS(400));
+    }
+  }
+
   static void _dynmenuConstructMVars(int16_t menu) {
     uint16_t numberOfBytes = 0;
     uint16_t numberOfVars = 0;
     memset(tmpString, 0, TMP_STR_LENGTH);
 
     if(currentMvarLabel != INVALID_VARIABLE) {
-      uint8_t *step = labelList[currentMvarLabel - FIRST_LABEL].instructionPointer;
-      while((numberOfVars < 18) && *step == ((ITM_MVAR >> 8) | 0x80) && *(step + 1) == (ITM_MVAR & 0xff) && *(step + 2) == STRING_LABEL_VARIABLE) {
-        xcopy(tmpString + numberOfBytes, step + 4, *(step + 3));
-        (void)findOrAllocateNamedVariable(tmpString + numberOfBytes);
-        numberOfBytes += *(step + 3) + 1;
-        numberOfVars++;
-        step = findNextStep(step);
-      }
+      _dynmenuConstructMVarsFromPgm(currentMvarLabel - FIRST_LABEL, &numberOfBytes, &numberOfVars);
     }
     else if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
       char *bufPtr = tmpString;
@@ -601,14 +635,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       lastErrorCode = errorCode;
     }
     else {
-      uint8_t *step = labelList[currentSolverProgram].instructionPointer;
-      while(*step == ((ITM_MVAR >> 8) | 0x80) && *(step + 1) == (ITM_MVAR & 0xff) && *(step + 2) == STRING_LABEL_VARIABLE) {
-        xcopy(tmpString + numberOfBytes, step + 4, *(step + 3));
-        (void)findOrAllocateNamedVariable(tmpString + numberOfBytes);
-        numberOfBytes += *(step + 3) + 1;
-        numberOfVars++;
-        step = findNextStep(step);
-      }
+      _dynmenuConstructMVarsFromPgm(currentSolverProgram, &numberOfBytes, &numberOfVars);
     }
 
     dynamicSoftmenu[menu].menuContent = malloc(numberOfBytes);
@@ -672,9 +699,32 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       case MNU_MyAlpha: _dynmenuConstructUser(menu);
                         break;
 
-      case MNU_FLASH:   dynamicSoftmenu[menu].menuContent = malloc(18);
-                        xcopy(dynamicSoftmenu[menu].menuContent, "FLASH\000to\000be\000coded", 18);
-                        dynamicSoftmenu[menu].numItems = 4;
+      case MNU_FLASH:   numberOfBytes = 0;
+                        numberOfGlobalLabels = 0;
+                        memset(tmpString, 0, TMP_STR_LENGTH);
+                        for(i=0; i<numberOfLabels; i++) {
+                          if(labelList[i].program < 0 && labelList[i].step > 0) { // Flash and Global label
+                            uint8_t tmpLabel[16];
+                            readStepInFlashPgmLibrary(tmpLabel, 16, labelList[i].labelPointer.flash);
+                            xcopy(tmpString + 15 * numberOfGlobalLabels, tmpLabel + 1, tmpLabel[0]);
+                            numberOfGlobalLabels++;
+                            numberOfBytes += 1 + tmpLabel[0];
+                          }
+                        }
+
+                        if(numberOfGlobalLabels != 0) {
+                          qsort(tmpString, numberOfGlobalLabels, 15, sortMenu);
+                        }
+
+                        ptr = malloc(numberOfBytes);
+                        dynamicSoftmenu[menu].menuContent = ptr;
+                        for(i=0; i<numberOfGlobalLabels; i++) {
+                          int16_t len = stringByteLength(tmpString + 15*i) + 1;
+                          xcopy(ptr, tmpString + 15*i, len);
+                          ptr += len;
+                        }
+
+                        dynamicSoftmenu[menu].numItems = numberOfGlobalLabels;
                         break;
 
       case MNU_RAM:     numberOfBytes = 0;
@@ -682,9 +732,9 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
                         memset(tmpString, 0, TMP_STR_LENGTH);
                         for(i=0; i<numberOfLabels; i++) {
                           if(labelList[i].program > 0 && labelList[i].step > 0) { // RAM and Global label
-                            xcopy(tmpString + 15 * numberOfGlobalLabels, labelList[i].labelPointer + 1, labelList[i].labelPointer[0]);
+                            xcopy(tmpString + 15 * numberOfGlobalLabels, labelList[i].labelPointer.ram + 1, labelList[i].labelPointer.ram[0]);
                             numberOfGlobalLabels++;
-                            numberOfBytes += 1 + labelList[i].labelPointer[0];
+                            numberOfBytes += 1 + labelList[i].labelPointer.ram[0];
                           }
                         }
 
@@ -714,9 +764,16 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
                         memset(tmpString, 0, TMP_STR_LENGTH);
                         for(i=0; i<numberOfLabels; i++) {
                           if(labelList[i].program > 0 && labelList[i].step > 0) { // RAM and Global label
-                            xcopy(tmpString + 15 * numberOfGlobalLabels, labelList[i].labelPointer + 1, labelList[i].labelPointer[0]);
+                            xcopy(tmpString + 15 * numberOfGlobalLabels, labelList[i].labelPointer.ram + 1, labelList[i].labelPointer.ram[0]);
                             numberOfGlobalLabels++;
-                            numberOfBytes += 1 + labelList[i].labelPointer[0];
+                            numberOfBytes += 1 + labelList[i].labelPointer.ram[0];
+                          }
+                          else if(labelList[i].program < 0 && labelList[i].step > 0) { // Flash and Global label
+                            uint8_t tmpLabel[16];
+                            readStepInFlashPgmLibrary(tmpLabel, 16, labelList[i].labelPointer.flash);
+                            xcopy(tmpString + 15 * numberOfGlobalLabels, tmpLabel + 1, tmpLabel[0]);
+                            numberOfGlobalLabels++;
+                            numberOfBytes += 1 + tmpLabel[0];
                           }
                         }
 
@@ -828,7 +885,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     int16_t w;
     char l[15];
 
-    if(calcMode == CM_PLOT_STAT && xSoftkey >= 2) {           //prevent softkeys columns 3-6 from displaying over the graph
+    if((calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) && xSoftkey >= 2) {           //prevent softkeys columns 3-6 from displaying over the graph
         return;
     }
 

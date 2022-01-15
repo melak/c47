@@ -52,6 +52,9 @@
     shiftG = false;
     aimBuffer[0] = 0;
     calcModeAim(NOPARAM); // Alpha Input Mode
+    if(programRunStop != PGM_RUNNING) {
+      entryStatus |= 0x01;
+    }
   }
 
 
@@ -882,6 +885,10 @@
           return;
       }
 
+      if(programRunStop != PGM_RUNNING) {
+        entryStatus |= 0x01;
+      }
+
       //debugNIM();
     }
 
@@ -1248,7 +1255,7 @@
         if(nimNumberPart == NP_COMPLEX_INT_PART && aimBuffer[strlen(aimBuffer) - 1] == 'i') {
           done = true;
           strcat(aimBuffer, "3.141592653589793238462643383279503");
-          reallyRunFunction(ITM_ENTER, NOPARAM);
+          reallyRunFunction(ITM_EXIT, NOPARAM);
         }
         break;
 
@@ -1369,6 +1376,9 @@
 
         if((calcMode != CM_MIM) && (lastChar == -1 || (lastChar == 0 && aimBuffer[0] == '+'))) {
           calcModeNormal();
+          #ifdef DEBUGUNDO
+            printf(">>> undo from addItemToNimBuffer\n");
+          #endif
           undo();
         }
         break;
@@ -1380,6 +1390,9 @@
         if(calcMode != CM_NIM && lastErrorCode == 0) {
           setSystemFlag(FLAG_ASLIFT);
           if(item == ITM_EXIT) {
+            #ifdef DEBUGUNDO
+              printf(">>> saveForUndo from bufferizeA:");
+            #endif
             saveForUndo();
             if(lastErrorCode == ERROR_RAM_FULL) {
               lastErrorCode = 0;
@@ -1392,6 +1405,9 @@
           return;
         }
         if(item == ITM_EXIT) {
+          #ifdef DEBUGUNDO
+            printf(">>> saveForUndo from bufferizeB:");
+          #endif
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) {
             lastErrorCode = 0;
@@ -1456,6 +1472,9 @@
               setSystemFlag(FLAG_ASLIFT);
             }
             else {
+              #ifdef DEBUGUNDO
+                printf(">>> undo from addItemToNimBufferB\n");
+              #endif
               undo();
             }
             return;
@@ -1478,6 +1497,9 @@
               setSystemFlag(FLAG_ASLIFT);
             }
             else {
+              #ifdef DEBUGUNDO
+                printf(">>> undo from addItemToNimBufferC\n");
+              #endif
               undo();
             }
             return;
@@ -1934,6 +1956,9 @@
                   moreInfoOnError("In function closeNIM:", errorMessage, NULL, NULL);
                 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
+                #ifdef DEBUGUNDO
+                  printf(">>> undo from addItemToNimBufferD\n");
+                #endif
                 undo();
                 return;
               }
@@ -2055,6 +2080,9 @@
     popSoftmenu();
 
     if(aimBuffer[0] == 0) {
+      #ifdef DEBUGUNDO
+        printf(">>> undo from closeAim\n");
+      #endif
       undo();
     }
     else {
