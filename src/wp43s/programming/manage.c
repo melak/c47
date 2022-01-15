@@ -904,6 +904,35 @@ void insertStepInProgram(int16_t func) {
         case ITM_SST:            // 1736
           fnSst(NOPARAM);
           break;
+
+        case VAR_ACC:            // 1192
+          tmpString[0] = ITM_STO;
+          tmpString[1] = (char)STRING_LABEL_VARIABLE;
+          tmpString[2] = 3;
+          tmpString[3] = 'A';
+          tmpString[4] = 'C';
+          tmpString[5] = 'C';
+          _insertInProgram((uint8_t *)tmpString, 6);
+          break;
+
+        case VAR_ULIM:           // 1193
+        case VAR_LLIM:           // 1194
+          tmpString[0] = ITM_STO;
+          tmpString[1] = (char)STRING_LABEL_VARIABLE;
+          tmpString[2] = 5;
+          if(func == VAR_ULIM) {
+            tmpString[3] = STD_UP_ARROW[0];
+            tmpString[4] = STD_UP_ARROW[1];
+          }
+          else {
+            tmpString[3] = STD_DOWN_ARROW[0];
+            tmpString[4] = STD_DOWN_ARROW[1];
+          }
+          tmpString[5] = 'L';
+          tmpString[6] = 'i';
+          tmpString[7] = 'm';
+          _insertInProgram((uint8_t *)tmpString, 8);
+          break;
       }
       break;
 
