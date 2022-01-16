@@ -584,8 +584,8 @@ void fnReset(uint16_t confirmation) {
     }
     memset(ram, 0, TO_BYTES(RAM_SIZE));
     numberOfFreeMemoryRegions = 1;
-    freeMemoryRegions[0].address = 0;
-    freeMemoryRegions[0].sizeInBlocks = RAM_SIZE - 1; // - 1: one block for an empty program
+    freeMemoryRegions[0].address = 40;                     // for reserved variables
+    freeMemoryRegions[0].sizeInBlocks = RAM_SIZE - 40 - 1; // - 1: one block for an empty program
 
     if(tmpString == NULL) {
       #ifdef DMCP_BUILD
