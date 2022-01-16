@@ -769,7 +769,7 @@ void fnReset(uint16_t confirmation) {
     realZero(&SAVED_SIGMA_LASTX);
     realZero(&SAVED_SIGMA_LASTY);
     SAVED_SIGMA_LAct = 0;
-    
+
     x_min = -10;
     x_max = 10;
     y_min = 0;
@@ -821,9 +821,9 @@ void fnReset(uint16_t confirmation) {
     lastErrorCode = 0;
 
     gammaLanczosCoefficients = (real51_t *)const_gammaC01;
-    angle180 = (real39_t *)const_pi;
-    angle90  = (real39_t *)const_piOn2;
-    angle45  = (real39_t *)const_piOn4;
+    angle180 = (real51_t *)const_pi_51;
+    angle90  = (real51_t *)const_piOn2_51;
+    angle45  = (real51_t *)const_piOn4_51;
 
     #ifndef TESTSUITE_BUILD
       resetAlphaSelectionBuffer();
