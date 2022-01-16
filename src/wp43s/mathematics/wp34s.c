@@ -32,6 +32,9 @@
 #include "mathematics/sin.h"
 #include "mathematics/toPolar.h"
 #include "realType.h"
+#include "screen.h"
+#include "statusBar.h"
+#include "registers.h"
 
 #include "wp43s.h"
 
@@ -65,6 +68,14 @@ void WP34S_Cvt2RadSinCosTan(const real_t *an, angularMode_t angularMode, real_t 
   if(realIsNegative(&angle)) {
     sinNeg = true;
     realSetPositiveSign(&angle);
+  }
+
+  int32_t savedContextDigits = realContext->digits;
+  if(realContext->digits > 51) {
+    realContext->digits = 75;
+  }
+  else {
+    realContext->digits = 51;
   }
 
   switch(angularMode) {
@@ -123,6 +134,8 @@ void WP34S_Cvt2RadSinCosTan(const real_t *an, angularMode_t angularMode, real_t 
     WP34S_SinCosTanTaylor(&angle, swap, swap?cosOut:sinOut, swap?sinOut:cosOut, tanOut, realContext); // angle in radian
   }
 
+  realContext->digits = savedContextDigits;
+
   if(sinOut != NULL) {
     if(sinNeg) {
       realSetNegativeSign(sinOut);
@@ -164,9 +177,8 @@ void WP34S_SinCosTanTaylor(const real_t *a, bool_t swap, real_t *sinOut, real_t 
   real_t angle, a2, t, j, z, sin, cos, compare;
   int i;
   bool_t endSin = (sinOut == NULL), endCos = (cosOut == NULL);
-  int32_t savedContextDigits;
+  int32_t savedContextDigits = realContext->digits;
 
-  savedContextDigits = realContext->digits;
   if(realContext->digits > 51) {
     realContext->digits = 75;
   }
