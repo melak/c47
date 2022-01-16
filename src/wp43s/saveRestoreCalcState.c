@@ -546,6 +546,10 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       }
       //defineCurrentLocalRegisters();
 
+      if(temporaryInformation==TI_SHOW_REGISTER) {
+        temporaryInformation = TI_NO_INFO;
+      }
+
       #if (DEBUG_REGISTER_L == 1)
         refreshRegisterLine(REGISTER_X); // to show L register
       #endif // (DEBUG_REGISTER_L == 1)
