@@ -163,3 +163,6 @@
            Reduced the space (U+0020) down to 8 pixels width.
 
 2021-09-28 Added stopwatch symbol U+23F1 to standard font.
+
+2022-01-16 Changed USB symbol U+2434 and printer symbol U+2399 in standard font.
+           Changed printer symbol U+2399 in numeric font.
