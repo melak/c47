@@ -1761,13 +1761,25 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
+          else if(temporaryInformation == TI_INTEGRAL) {
+            if(regist == REGISTER_X) {
+              sprintf(prefix, STD_INTEGRAL STD_ALMOST_EQUAL);
+              prefixWidth = stringWidth(prefix, &numericFont, true, true) + 1;
+            }
+          }
+
           else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
           real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
 
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;
           if(prefixWidth > 0) {
-            showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
+            if(temporaryInformation == TI_INTEGRAL) {
+              showString(prefix, &numericFont, 1, baseY, vmNormal, prefixPre, prefixPost);
+            }
+            else {
+              showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
+            }
           }
           showString(tmpString, &numericFont, (temporaryInformation == TI_VIEW && origRegist == REGISTER_T) ? prefixWidth : SCREEN_WIDTH - w, baseY, vmNormal, false, true);
         }
