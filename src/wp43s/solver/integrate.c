@@ -78,7 +78,7 @@ void fnIntegrate(uint16_t labelOrVariable) {
     // Interactive mode
     fnPgmInt(labelOrVariable);
     if(lastErrorCode == ERROR_NONE)
-      currentSolverStatus = SOLVER_STATUS_INTERACTIVE | SOLVER_STATUS_INTEGRATING;
+      currentSolverStatus = SOLVER_STATUS_INTERACTIVE | SOLVER_STATUS_EQUATION_INTEGRATE;
   }
   else if(labelOrVariable == RESERVED_VARIABLE_ACC || labelOrVariable == RESERVED_VARIABLE_ULIM || labelOrVariable == RESERVED_VARIABLE_LLIM) {
     fnToReal(NOPARAM);

@@ -2181,7 +2181,12 @@ void execTimerApp(uint16_t timerType) {
           }
           if(!mvarMenu) {
             if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
-              showSoftmenu(-MNU_Solver);
+              if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_INTEGRATE) {
+                showSoftmenu(-MNU_Sf);
+              }
+              else {
+                showSoftmenu(-MNU_Solver);
+              }
             }
             else {
               currentMvarLabel = INVALID_VARIABLE;

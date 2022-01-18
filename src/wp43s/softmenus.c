@@ -1185,9 +1185,11 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     else if(id == -MNU_ALPHA_OMEGA && alphaCase == AC_LOWER) { // alpha...omega
       id = -MNU_alpha_omega;
     }
-    else if(id == -MNU_Solver) {
+    else if(id == -MNU_Solver || id == -MNU_Sf) {
       int32_t numberOfVars = -1;
       currentSolverStatus = SOLVER_STATUS_USES_FORMULA | SOLVER_STATUS_INTERACTIVE;
+      if(id == -MNU_Sf) currentSolverStatus |= SOLVER_STATUS_EQUATION_INTEGRATE;
+      cachedDynamicMenu = 0;
       parseEquation(currentFormula, EQUATION_PARSER_MVAR, aimBuffer, tmpString);
       id = -MNU_MVAR;
       while((getNthString((uint8_t *)tmpString, ++numberOfVars))[0] != 0) {}
