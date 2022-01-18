@@ -554,7 +554,7 @@ void integrate(calcRegister_t regist, const real_t *a, const real_t *b, real_t *
   ++currentSolverNestingDepth;
   setSystemFlag(FLAG_INTING);
   clearSystemFlag(FLAG_SOLVING);
-  integrate(regist, a, b, acc, res, realContext);
+  _integrate(regist, a, b, acc, res, realContext);
   if((--currentSolverNestingDepth) == 0) {
     clearSystemFlag(FLAG_INTING);
   }
