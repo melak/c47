@@ -29,6 +29,7 @@
 #include "matrix.h"
 #include "programming/lblGtoXeq.h"
 #include "programming/manage.h"
+#include "programming/nextStep.h"
 #include "registers.h"
 #include "softmenus.h"
 #include <string.h>
@@ -736,6 +737,8 @@
       if(getSystemFlag(FLAG_ALPHA)) pemCloseAlphaInput();
       else                          pemCloseNumberInput();
       aimBuffer[0] = 0;
+      --currentLocalStepNumber;
+      currentStep = findPreviousStep(currentStep);
     }
 
     tam.alpha = (func == ITM_ASSIGN);
