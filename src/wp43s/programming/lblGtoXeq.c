@@ -227,6 +227,9 @@ void fnExecute(uint16_t label) {
     }
   }
   else {
+    while(currentSubroutineLevel > 0) {
+      fnReturn(0);
+    }
     fnGoto(label);
     dynamicMenuItem = -1;
     if(lastErrorCode == ERROR_NONE) {
@@ -283,6 +286,15 @@ void fnReturn(uint16_t skip) {
   /* Not in a subroutine */
   else {
     fnGotoDot(programList[currentProgramNumber - 1].step);
+    if(currentNumberOfLocalRegisters > 0) {
+      allocateLocalRegisters(0);
+    }
+    if(currentNumberOfLocalFlags > 0) {
+      reallocWp43s(currentSubroutineLevelData, 4, 3);
+      currentNumberOfLocalFlags = 0;
+    }
+    currentLocalFlags = NULL;
+    currentLocalRegisters = NULL;
   }
 }
 
