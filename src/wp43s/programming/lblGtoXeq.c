@@ -266,6 +266,15 @@ void fnReturn(uint16_t skip) {
   /* Not in a subroutine */
   else {
     fnGotoDot(programList[currentProgramNumber - 1].step);
+    if(currentNumberOfLocalRegisters > 0) {
+      allocateLocalRegisters(0);
+    }
+    if(currentNumberOfLocalFlags > 0) {
+      reallocWp43s(currentSubroutineLevelData, 4, 3);
+      currentNumberOfLocalFlags = 0;
+    }
+    currentLocalFlags = NULL;
+    currentLocalRegisters = NULL;
   }
 }
 
