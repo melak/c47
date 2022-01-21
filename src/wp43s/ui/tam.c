@@ -227,6 +227,7 @@
           }
           else if(i == 0) {
             tamLeaveMode();
+            scrollPemBackwards();
             break;
           }
         }
@@ -360,6 +361,7 @@
       }
       else {
         tamLeaveMode();
+        scrollPemBackwards();
       }
       return;
     }
@@ -739,6 +741,9 @@
       aimBuffer[0] = 0;
       --currentLocalStepNumber;
       currentStep = findPreviousStep(currentStep);
+    }
+    else if(calcMode == CM_PEM) {
+      scrollPemForwards();
     }
 
     tam.alpha = (func == ITM_ASSIGN);

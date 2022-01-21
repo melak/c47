@@ -30,6 +30,8 @@ void deleteStepsFromTo                       (uint8_t *from, uint8_t *to);
 void fnClPAll                                (uint16_t confirmation);
 void fnClP                                   (uint16_t unusedButMandatoryParameter);
 void fnPem                                   (uint16_t unusedButMandatoryParameter);
+void scrollPemBackwards                      (void);
+void scrollPemForwards                       (void);
 void pemAlpha                                (int16_t item);
 void pemCloseAlphaInput                      (void);
 void pemAddNumber                            (int16_t item);
