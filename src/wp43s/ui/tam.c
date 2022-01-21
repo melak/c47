@@ -29,6 +29,7 @@
 #include "matrix.h"
 #include "programming/lblGtoXeq.h"
 #include "programming/manage.h"
+#include "programming/nextStep.h"
 #include "registers.h"
 #include "softmenus.h"
 #include <string.h>
@@ -226,6 +227,7 @@
           }
           else if(i == 0) {
             tamLeaveMode();
+            scrollPemBackwards();
             break;
           }
         }
@@ -359,6 +361,7 @@
       }
       else {
         tamLeaveMode();
+        scrollPemBackwards();
       }
       return;
     }
@@ -736,6 +739,11 @@
       if(getSystemFlag(FLAG_ALPHA)) pemCloseAlphaInput();
       else                          pemCloseNumberInput();
       aimBuffer[0] = 0;
+      --currentLocalStepNumber;
+      currentStep = findPreviousStep(currentStep);
+    }
+    else if(calcMode == CM_PEM) {
+      scrollPemForwards();
     }
 
     tam.alpha = (func == ITM_ASSIGN);
