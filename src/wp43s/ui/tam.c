@@ -177,14 +177,6 @@
       }
     }
 
-    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
-      if(tam.function == ITM_KEYX) {
-        tbPtr = stpcpy(tbPtr, " XEQ __");
-      }
-      else {
-        tbPtr = stpcpy(tbPtr, " GTO __");
-      }
-    }
     tbPtr[0] = 0;
   }
 
