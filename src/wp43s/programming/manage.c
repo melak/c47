@@ -844,6 +844,12 @@ void insertStepInProgram(int16_t func) {
     pemAddNumber(func);
     return;
   }
+  else if(func == ITM_CONSTpi && aimBuffer[0] != 0 && !getSystemFlag(FLAG_ALPHA) && nimNumberPart == NP_COMPLEX_INT_PART && aimBuffer[strlen(aimBuffer) - 1] == 'i') {
+    strcat(aimBuffer, "3.141592653589793238462643383279503");
+    pemCloseNumberInput();
+    aimBuffer[0] = 0;
+    return;
+  }
   if(!tam.mode && !tam.alpha && aimBuffer[0] != 0 && func != ITM_toHMS) {
     if(func == ITM_dotD) {
       _pemCloseDateInput();
