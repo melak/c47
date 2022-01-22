@@ -360,7 +360,7 @@
     }
     else if(item==ITM_Max || item==ITM_Min || item==ITM_ADD || item==ITM_SUB || item==ITM_MULT || item==ITM_DIV || item==ITM_Config || item==ITM_Stack || item==ITM_dddEL || item==ITM_dddIJ) { // Operation
       if(!tam.digitsSoFar && !tam.indirect) {
-        if(tam.function == ITM_GTOP) {
+        if(tam.function == ITM_GTO) {
           if(item == ITM_Max) { // UP
             if(currentLocalStepNumber == 1) { // We are on 1st step of current program
               if(currentProgramNumber == 1) { // It's the 1st program in memory
