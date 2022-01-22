@@ -949,6 +949,15 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     int16_t x, y, yDotted=0, currentFirstItem, item, numberOfItems, m = softmenuStack[0].softmenuId;
     bool_t dottedTopLine;
 
+    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+      for(y=0; y<=2; y++) {
+        for(x=0; x<6; x++) {
+          showSoftkey("", x, y, vmReverse, true, true);
+        }
+      }
+      return;
+    }
+
     if(m < NUMBER_OF_DYNAMIC_SOFTMENUS) { // Dynamic softmenu
       if(softmenu[m].menuItem != cachedDynamicMenu || softmenu[m].menuItem == -MNU_DYNAMIC) {
         initVariableSoftmenu(m);
