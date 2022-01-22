@@ -257,31 +257,6 @@
           tamLeaveMode();
           runFunction(ITM_ASSIGN);
         }
-        else if(tam.mode == TM_KEY && tam.keyInputFinished) {
-          tam.value            = tam.key / 10;
-          tam.alpha            = tam.keyAlpha;
-          tam.dot              = tam.keyDot;
-          tam.indirect         = tam.keyIndirect;
-          tam.keyInputFinished = false;
-          xcopy(aimBuffer, aimBuffer + AIM_BUFFER_LENGTH / 2, 16);
-          aimBuffer[0]    = 0;
-          tam.key         = 0;
-          tam.keyAlpha    = false;
-          tam.keyDot      = false;
-          tam.keyIndirect = false;
-          tam.max         = 21;
-          tam.min         = 1;
-          tam.digitsSoFar = 1;
-          popSoftmenu();
-          showSoftmenu(-MNU_TAM);
-          --numberOfTamMenusToPop;
-          if(!tam.alpha) {
-            clearSystemFlag(FLAG_ALPHA);
-            #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-              calcModeTamGui();
-            #endif // PC_BUILD && (SCREEN_800X480 == 0)
-          }
-        }
         else {
           // backspaces within AIM are handled by addItemToBuffer, so this is if the aimBuffer is already empty
           tam.alpha = false;
