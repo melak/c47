@@ -661,10 +661,8 @@
           case ITM_PCtoM :
           case ITM_MMtoPOINT :
           case ITM_MMtoPOINTb :
-          case ITM_MMtoPOINTc :
           case ITM_POINTtoMM :
           case ITM_POINTtoMMb :
-          case ITM_POINTtoMMc :
           case ITM_MtoYD :
           case ITM_YDtoM :
           case ITM_PSItoPA :
@@ -685,10 +683,8 @@
           case ITM_LtoQT :
           case ITM_FATHOMtoM :
           case ITM_FATHOMtoMb :
-          case ITM_FATHOMtoMc :
           case ITM_MtoFATHOM :
           case ITM_MtoFATHOMb :
-          case ITM_MtoFATHOMc :
           case ITM_BARRELtoM3 :
           case ITM_BARRELtoM3b :
           case ITM_M3toBARREL :
@@ -713,6 +709,10 @@
           case ITM_MtoZHANGb :
           case ITM_FENtoM :
           case ITM_MtoFEN :
+          case ITM_MILEtoM :
+          case ITM_MtoMILE :
+          case ITM_NMItoM :
+          case ITM_MtoNMI :
 
           case ITM_NSIGMA :
           case ITM_SIGMAx :
