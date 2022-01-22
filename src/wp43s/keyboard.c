@@ -1591,6 +1591,9 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       }
       else {
         tamLeaveMode();
+        if(calcMode == CM_PEM) {
+          scrollPemBackwards();
+        }
       }
       return;
     }
@@ -1893,6 +1896,8 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
             for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
               currentStep.ram = findNextStep_ram(currentStep.ram);
             }
+            if(!programListEnd)
+              scrollPemBackwards();
           }
         }
         else if(aimBuffer[0] == 0) {
@@ -1907,12 +1912,15 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
               currentStep.ram = findNextStep_ram(currentStep.ram);
             }
           }
+          scrollPemBackwards();
         }
         else {
           pemAddNumber(ITM_BACKSPACE);
           if(aimBuffer[0] == 0 && currentLocalStepNumber > 1) {
             currentStep = findPreviousStep(currentStep);
             --currentLocalStepNumber;
+            if(!programListEnd)
+              scrollPemBackwards();
           }
         }
         break;
@@ -2054,6 +2062,8 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
             aimBuffer[0] = 0;
             --currentLocalStepNumber;
             currentStep = findPreviousStep(currentStep);
+            if(!programListEnd)
+              scrollPemBackwards();
           }
           fnBst(NOPARAM);
         }
@@ -2184,6 +2194,8 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
             aimBuffer[0] = 0;
             --currentLocalStepNumber;
             currentStep = findPreviousStep(currentStep);
+            if(!programListEnd)
+              scrollPemBackwards();
           }
           fnSst(NOPARAM);
         }

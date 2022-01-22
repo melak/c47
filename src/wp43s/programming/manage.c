@@ -324,6 +324,28 @@ void defineCurrentProgramFromCurrentStep(void) {
 
 
 
+void scrollPemBackwards(void) {
+  if(firstDisplayedLocalStepNumber > 0)
+    --firstDisplayedLocalStepNumber;
+  firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
+  for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i)
+    firstDisplayedStep = findNextStep(firstDisplayedStep);
+}
+
+void scrollPemForwards(void) {
+  if(getNumberOfSteps() > 6) {
+    if(currentLocalStepNumber > 3) {
+      ++firstDisplayedLocalStepNumber;
+      firstDisplayedStep = findNextStep(firstDisplayedStep);
+    }
+    else if(currentLocalStepNumber == 3) {
+      firstDisplayedLocalStepNumber = 1;
+    }
+  }
+}
+
+
+
 void fnPem(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -600,6 +622,8 @@ void pemAlpha(int16_t item) {
   _insertInProgram((uint8_t *)tmpString, stringByteLength(aimBuffer) + 3);
   --currentLocalStepNumber;
   currentStep = findPreviousStep(currentStep);
+  if(!programListEnd)
+    scrollPemBackwards();
 #endif // TESTSUITE_BUILD
 }
 
@@ -612,6 +636,8 @@ void pemCloseAlphaInput(void) {
   #endif // PC_BUILD && (SCREEN_800X480 == 0)
   ++currentLocalStepNumber;
   currentStep = findNextStep(currentStep);
+  ++firstDisplayedLocalStepNumber;
+  firstDisplayedStep = findNextStep(firstDisplayedStep);
 #endif // TESTSUITE_BUILD
 }
 
@@ -701,6 +727,8 @@ void pemAddNumber(int16_t item) {
       _insertInProgram((uint8_t *)tmpString, stringByteLength(numBuffer) + 3);
       --currentLocalStepNumber;
       currentStep = findPreviousStep(currentStep);
+      if(!programListEnd)
+        scrollPemBackwards();
     }
     calcMode = CM_PEM;
   }
@@ -986,6 +1014,8 @@ void addStepInProgram(int16_t func) {
   if((aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) || tam.mode) {
     currentStep = findPreviousStep(currentStep);
     --currentLocalStepNumber;
+    if(!programListEnd)
+      scrollPemBackwards();
   }
 }
 
