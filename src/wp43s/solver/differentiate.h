@@ -15,16 +15,15 @@
  */
 
 /********************************************//**
- * \file solver.h
+ * \file differentiate.h
  ***********************************************/
-#ifndef SOLVER_H
-#define SOLVER_H
+#ifndef DIFFERENTIATE_H
+#define DIFFERENTIATE_H
 
-#include "differentiate.h"
-#include "equation.h"
-#include "integrate.h"
-#include "solve.h"
-#include "sumprod.h"
-#include "tvm.h"
+#include "typeDefinitions.h"
+#include <stdint.h>
 
-#endif // SOLVER_H
+void fn1stDeriv(uint16_t label);
+
+void firstDerivative (calcRegister_t label);
+#endif // DIFFERENTIATE_H
