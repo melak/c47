@@ -24,6 +24,8 @@
 #include <stdint.h>
 
 void fn1stDeriv(uint16_t label);
+void fn2ndDeriv(uint16_t label);
 
 void firstDerivative (calcRegister_t label);
+void secondDerivative(calcRegister_t label);
 #endif // DIFFERENTIATE_H
