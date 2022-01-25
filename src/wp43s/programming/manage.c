@@ -827,6 +827,28 @@ static void _pemCloseDateInput(void) {
 #endif // TESTSUITE_BUILD
 }
 
+static void _pemCloseDmsInput(void) {
+#ifndef TESTSUITE_BUILD
+  switch(nimNumberPart) {
+    case NP_INT_10:
+    case NP_REAL_FLOAT_PART:
+      deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
+      if(aimBuffer[0] != 0) {
+        char *numBuffer = aimBuffer[0] == '+' ? aimBuffer + 1 : aimBuffer;
+        char *tmpPtr = tmpString;
+        *(tmpPtr++) = ITM_LITERAL;
+        *(tmpPtr++) = STRING_ANGLE_DMS;
+        *(tmpPtr++) = stringByteLength(numBuffer);
+        xcopy(tmpPtr, numBuffer, stringByteLength(numBuffer));
+        _insertInProgram((uint8_t *)tmpString, stringByteLength(numBuffer) + (int32_t)(tmpPtr - tmpString));
+      }
+
+      aimBuffer[0] = '!';
+      break;
+  }
+#endif // TESTSUITE_BUILD
+}
+
 void insertStepInProgram(int16_t func) {
   uint32_t opBytes = (func >= 128) ? 2 : 1;
 
@@ -847,6 +869,11 @@ void insertStepInProgram(int16_t func) {
   else if(func == ITM_CONSTpi && aimBuffer[0] != 0 && !getSystemFlag(FLAG_ALPHA) && nimNumberPart == NP_COMPLEX_INT_PART && aimBuffer[strlen(aimBuffer) - 1] == 'i') {
     strcat(aimBuffer, "3.141592653589793238462643383279503");
     pemCloseNumberInput();
+    aimBuffer[0] = 0;
+    return;
+  }
+  else if(func == ITM_DMS && aimBuffer[0] != 0 && !getSystemFlag(FLAG_ALPHA) && (nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART)) {
+    _pemCloseDmsInput();
     aimBuffer[0] = 0;
     return;
   }
