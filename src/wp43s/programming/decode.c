@@ -450,6 +450,31 @@ static void decodeLiteral(uint8_t *literalAddress) {
       }
       break;
 
+    case STRING_ANGLE_DMS:
+      {
+        char *angleStringPtr = tmpString;
+        char *sourceStringPtr = tmpStringLabelOrVariableName;
+        getStringLabelOrVariableName(literalAddress);
+        for(; *sourceStringPtr != '.' && *sourceStringPtr != 0; ++sourceStringPtr) {
+          *(angleStringPtr++) = *sourceStringPtr;
+        }
+        if(*sourceStringPtr == '.') ++sourceStringPtr;
+        *(angleStringPtr++) = STD_DEGREE[0];
+        *(angleStringPtr++) = STD_DEGREE[1];
+        if(*sourceStringPtr != 0) {*(angleStringPtr++) = *(sourceStringPtr++);} else {*(angleStringPtr++) = '0';}
+        if(*sourceStringPtr != 0) {*(angleStringPtr++) = *(sourceStringPtr++);} else {*(angleStringPtr++) = '0';}
+        *(angleStringPtr++) = '\'';
+        if(*sourceStringPtr != 0) {*(angleStringPtr++) = *(sourceStringPtr++);} else {*(angleStringPtr++) = '0';}
+        if(*sourceStringPtr != 0) {*(angleStringPtr++) = *(sourceStringPtr++);} else {*(angleStringPtr++) = '0';}
+        if(*sourceStringPtr != 0) {*(angleStringPtr++) = '.';}
+        for(; *sourceStringPtr != 0; ++sourceStringPtr) {
+          *(angleStringPtr++) = *sourceStringPtr;
+        }
+        *(angleStringPtr++) = '"';
+        *(angleStringPtr++) = 0;
+      }
+      break;
+
     default: {
       #ifndef DMCP_BUILD
         printf("\nERROR: %u is not an acceptable parameter for ITM_LITERAL!\n", *(uint8_t *)(literalAddress - 1));

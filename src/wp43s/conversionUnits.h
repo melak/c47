@@ -81,6 +81,8 @@ void fnCvtYinM      (uint16_t multiplyDivide);
 void fnCvtCunM      (uint16_t multiplyDivide);
 void fnCvtZhangM    (uint16_t multiplyDivide);
 void fnCvtFenM      (uint16_t multiplyDivide);
+void fnCvtMileM     (uint16_t multiplyDivide);
+void fnCvtNMiM      (uint16_t multiplyDivide);
 
 // Volume
 void fnCvtGalukL    (uint16_t multiplyDivide);

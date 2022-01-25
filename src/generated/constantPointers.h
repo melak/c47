@@ -204,6 +204,8 @@ extern const real_t * const const_YinToM;
 extern const real_t * const const_CunToM;
 extern const real_t * const const_ZhangToM;
 extern const real_t * const const_FenToM;
+extern const real_t * const const_MiToM;
+extern const real_t * const const_NmiToM;
 extern const real_t * const const_AccreToHa;
 extern const real_t * const const_AccreusToHa;
 extern const real_t * const const_MuToM2;

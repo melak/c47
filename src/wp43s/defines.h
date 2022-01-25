@@ -434,7 +434,7 @@ typedef enum {
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
 
 // Number of constants
-#define NUMBER_OF_CONSTANTS_39                   196
+#define NUMBER_OF_CONSTANTS_39                   198
 #define NUMBER_OF_CONSTANTS_51                    39
 #define NUMBER_OF_CONSTANTS_1071                   1
 #define NUMBER_OF_CONSTANTS_34                    44
@@ -771,6 +771,16 @@ typedef enum {
 #define STRING_COMPLEX34                          10
 #define STRING_TIME                               11
 #define STRING_DATE                               12
+//#define BINARY_ANGLE_RADIAN                       13
+//#define BINARY_ANGLE_GRAD                         14
+//#define BINARY_ANGLE_DEGREE                       15
+//#define BINARY_ANGLE_DMS                          16
+//#define BINARY_ANGLE_MULTPI                       17
+//#define STRING_ANGLE_RADIAN                       18
+//#define STRING_ANGLE_GRAD                         19
+//#define STRING_ANGLE_DEGREE                       20
+#define STRING_ANGLE_DMS                          21
+//#define STRING_ANGLE_MULTPI                       22
 
 // OP parameter special values
 #define SYSTEM_FLAG_NUMBER                       250

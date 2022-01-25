@@ -368,10 +368,10 @@
 #define ITM_PCtoM                      333
 #define ITM_MMtoPOINT                  334
 #define ITM_MMtoPOINTb                 335
-#define ITM_MMtoPOINTc                 336
+#define ITM_MILEtoM                    336
 #define ITM_POINTtoMM                  337
 #define ITM_POINTtoMMb                 338
-#define ITM_POINTtoMMc                 339
+#define ITM_MtoMILE                    339
 #define ITM_MtoYD                      340
 #define ITM_YDtoM                      341
 #define ITM_PSItoPA                    342
@@ -392,10 +392,10 @@
 #define ITM_LtoQT                      357
 #define ITM_FATHOMtoM                  358
 #define ITM_FATHOMtoMb                 359
-#define ITM_FATHOMtoMc                 360
+#define ITM_NMItoM                     360
 #define ITM_MtoFATHOM                  361
 #define ITM_MtoFATHOMb                 362
-#define ITM_MtoFATHOMc                 363
+#define ITM_MtoNMI                     363
 #define ITM_BARRELtoM3                 364
 #define ITM_BARRELtoM3b                365
 #define ITM_M3toBARREL                 366
