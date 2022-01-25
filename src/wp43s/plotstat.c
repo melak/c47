@@ -188,41 +188,30 @@ void realToDouble1(const real_t *vv, double *v) {      //Not using double intern
   float grf_x(int i) {
     float xf=0;
     real_t xr;
-    if (PLOT_NVECT) {
-  //    return gr_y[i];
-    }
-    else {
-
-      calcRegister_t regStats = findNamedVariable("STATS");
-      if(regStats != INVALID_VARIABLE) {
-        real34Matrix_t stats;
-        linkToRealMatrixRegister(regStats, &stats);
-        const uint16_t cols = stats.header.matrixColumns;
-        real34ToReal(&stats.matrixElements[i * cols    ], &xr);
-        realToFloat(&xr, &xf);
-      } 
-      else xf = 0;
-    }
+    calcRegister_t regStats = findNamedVariable("STATS");
+    if(regStats != INVALID_VARIABLE) {
+      real34Matrix_t stats;
+      linkToRealMatrixRegister(regStats, &stats);
+      const uint16_t cols = stats.header.matrixColumns;
+      real34ToReal(&stats.matrixElements[i * cols    ], &xr);
+      realToFloat(&xr, &xf);
+    } 
+    else xf = 0;
     return xf;
   }
 
   float grf_y(int i) {
     float yf=0;
     real_t yr;
-    if (PLOT_NVECT) {
-  //    return gr_x[i];
-    }
-    else {
-      calcRegister_t regStats = findNamedVariable("STATS");
-      if(regStats != INVALID_VARIABLE) {
-        real34Matrix_t stats;
-        linkToRealMatrixRegister(regStats, &stats);
-        const uint16_t cols = stats.header.matrixColumns;
-        real34ToReal(&stats.matrixElements[i * cols + 1], &yr);
-        realToFloat(&yr, &yf);
-      } 
-      else yf = 0;
-    }
+    calcRegister_t regStats = findNamedVariable("STATS");
+    if(regStats != INVALID_VARIABLE) {
+      real34Matrix_t stats;
+      linkToRealMatrixRegister(regStats, &stats);
+      const uint16_t cols = stats.header.matrixColumns;
+      real34ToReal(&stats.matrixElements[i * cols + 1], &yr);
+      realToFloat(&yr, &yf);
+    } 
+    else yf = 0;
     return yf;
   }
 #endif //TESTSUITE_BUILD
@@ -521,6 +510,7 @@ void graphAxisDraw (void){
     if(PLOT_NVECT) {
       char tmpString2[100];
       showString("N", &standardFont, xzero-4, minny+14, vmNormal, true, true);
+      showString("x", &standardFont, xzero-4, minny+28, vmNormal, true, true);
       tmpString2[0]=(char)((uint8_t)0x80 | (uint8_t)0x22);
       tmpString2[1]=0x06;
       tmpString2[2]=0;
