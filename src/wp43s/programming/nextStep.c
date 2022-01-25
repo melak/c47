@@ -192,6 +192,7 @@ uint8_t *countLiteralBytes(uint8_t *step) {
     case STRING_COMPLEX34:
     case STRING_DATE:
     case STRING_TIME:
+    case STRING_ANGLE_DMS:
       return step + *step + 1;
 
     default:
