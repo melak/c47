@@ -192,6 +192,7 @@ uint8_t *countLiteralBytes(uint8_t *step) {
     case STRING_COMPLEX34:
     case STRING_DATE:
     case STRING_TIME:
+    case STRING_ANGLE_DMS:
       return step + *step + 1;
 
     default:
@@ -445,30 +446,27 @@ static void _sstInPem(void) {
   if(currentLocalStepNumber < numberOfSteps) {
     if(currentLocalStepNumber++ >= 3) {
       if(!programListEnd) {
-        if(++firstDisplayedLocalStepNumber > 1) {
-          firstDisplayedStep = findNextStep(firstDisplayedStep);
-        }
+        ++firstDisplayedLocalStepNumber;
       }
     }
 
     if(firstDisplayedLocalStepNumber + 7 > numberOfSteps) {
       if(numberOfSteps <= 6) {
         firstDisplayedLocalStepNumber = 0;
-        firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
       }
       else {
         firstDisplayedLocalStepNumber = numberOfSteps - 6;
-        firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
-        for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i)
-          firstDisplayedStep = findNextStep(firstDisplayedStep);
       }
     }
   }
   else {
     currentLocalStepNumber = 1;
     firstDisplayedLocalStepNumber = 0;
-    firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
   }
+
+  firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
+  for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i)
+    firstDisplayedStep = findNextStep(firstDisplayedStep);
 }
 
 void fnSst(uint16_t unusedButMandatoryParameter) {

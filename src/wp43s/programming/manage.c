@@ -324,6 +324,28 @@ void defineCurrentProgramFromCurrentStep(void) {
 
 
 
+void scrollPemBackwards(void) {
+  if(firstDisplayedLocalStepNumber > 0)
+    --firstDisplayedLocalStepNumber;
+  firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
+  for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i)
+    firstDisplayedStep = findNextStep(firstDisplayedStep);
+}
+
+void scrollPemForwards(void) {
+  if(getNumberOfSteps() > 6) {
+    if(currentLocalStepNumber > 3) {
+      ++firstDisplayedLocalStepNumber;
+      firstDisplayedStep = findNextStep(firstDisplayedStep);
+    }
+    else if(currentLocalStepNumber == 3) {
+      firstDisplayedLocalStepNumber = 1;
+    }
+  }
+}
+
+
+
 void fnPem(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -600,6 +622,8 @@ void pemAlpha(int16_t item) {
   _insertInProgram((uint8_t *)tmpString, stringByteLength(aimBuffer) + 3);
   --currentLocalStepNumber;
   currentStep = findPreviousStep(currentStep);
+  if(!programListEnd)
+    scrollPemBackwards();
 #endif // TESTSUITE_BUILD
 }
 
@@ -612,6 +636,8 @@ void pemCloseAlphaInput(void) {
   #endif // PC_BUILD && (SCREEN_800X480 == 0)
   ++currentLocalStepNumber;
   currentStep = findNextStep(currentStep);
+  ++firstDisplayedLocalStepNumber;
+  firstDisplayedStep = findNextStep(firstDisplayedStep);
 #endif // TESTSUITE_BUILD
 }
 
@@ -701,6 +727,8 @@ void pemAddNumber(int16_t item) {
       _insertInProgram((uint8_t *)tmpString, stringByteLength(numBuffer) + 3);
       --currentLocalStepNumber;
       currentStep = findPreviousStep(currentStep);
+      if(!programListEnd)
+        scrollPemBackwards();
     }
     calcMode = CM_PEM;
   }
@@ -799,6 +827,28 @@ static void _pemCloseDateInput(void) {
 #endif // TESTSUITE_BUILD
 }
 
+static void _pemCloseDmsInput(void) {
+#ifndef TESTSUITE_BUILD
+  switch(nimNumberPart) {
+    case NP_INT_10:
+    case NP_REAL_FLOAT_PART:
+      deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
+      if(aimBuffer[0] != 0) {
+        char *numBuffer = aimBuffer[0] == '+' ? aimBuffer + 1 : aimBuffer;
+        char *tmpPtr = tmpString;
+        *(tmpPtr++) = ITM_LITERAL;
+        *(tmpPtr++) = STRING_ANGLE_DMS;
+        *(tmpPtr++) = stringByteLength(numBuffer);
+        xcopy(tmpPtr, numBuffer, stringByteLength(numBuffer));
+        _insertInProgram((uint8_t *)tmpString, stringByteLength(numBuffer) + (int32_t)(tmpPtr - tmpString));
+      }
+
+      aimBuffer[0] = '!';
+      break;
+  }
+#endif // TESTSUITE_BUILD
+}
+
 void insertStepInProgram(int16_t func) {
   uint32_t opBytes = (func >= 128) ? 2 : 1;
 
@@ -814,6 +864,17 @@ void insertStepInProgram(int16_t func) {
   }
   if(indexOfItems[func].func == addItemToBuffer || (!tam.mode && aimBuffer[0] != 0 && (func == ITM_CHS || func == ITM_CC || func == ITM_toINT || (nimNumberPart == NP_INT_BASE && (func == ITM_YX || func == ITM_LN || func == ITM_RCL))))) {
     pemAddNumber(func);
+    return;
+  }
+  else if(func == ITM_CONSTpi && aimBuffer[0] != 0 && !getSystemFlag(FLAG_ALPHA) && nimNumberPart == NP_COMPLEX_INT_PART && aimBuffer[strlen(aimBuffer) - 1] == 'i') {
+    strcat(aimBuffer, "3.141592653589793238462643383279503");
+    pemCloseNumberInput();
+    aimBuffer[0] = 0;
+    return;
+  }
+  else if(func == ITM_DMS && aimBuffer[0] != 0 && !getSystemFlag(FLAG_ALPHA) && (nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART)) {
+    _pemCloseDmsInput();
+    aimBuffer[0] = 0;
     return;
   }
   if(!tam.mode && !tam.alpha && aimBuffer[0] != 0 && func != ITM_toHMS) {
@@ -986,6 +1047,8 @@ void addStepInProgram(int16_t func) {
   if((aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) || tam.mode) {
     currentStep = findPreviousStep(currentStep);
     --currentLocalStepNumber;
+    if(!programListEnd)
+      scrollPemBackwards();
   }
 }
 

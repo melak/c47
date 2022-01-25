@@ -29,6 +29,7 @@
 #include "matrix.h"
 #include "programming/lblGtoXeq.h"
 #include "programming/manage.h"
+#include "programming/nextStep.h"
 #include "registers.h"
 #include "softmenus.h"
 #include <string.h>
@@ -177,14 +178,6 @@
       }
     }
 
-    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
-      if(tam.function == ITM_KEYX) {
-        tbPtr = stpcpy(tbPtr, " XEQ __");
-      }
-      else {
-        tbPtr = stpcpy(tbPtr, " GTO __");
-      }
-    }
     tbPtr[0] = 0;
   }
 
@@ -226,6 +219,7 @@
           }
           else if(i == 0) {
             tamLeaveMode();
+            scrollPemBackwards();
             break;
           }
         }
@@ -264,31 +258,6 @@
         else if(tam.mode == TM_NEWMENU) {
           tamLeaveMode();
           runFunction(ITM_ASSIGN);
-        }
-        else if(tam.mode == TM_KEY && tam.keyInputFinished) {
-          tam.value            = tam.key / 10;
-          tam.alpha            = tam.keyAlpha;
-          tam.dot              = tam.keyDot;
-          tam.indirect         = tam.keyIndirect;
-          tam.keyInputFinished = false;
-          xcopy(aimBuffer, aimBuffer + AIM_BUFFER_LENGTH / 2, 16);
-          aimBuffer[0]    = 0;
-          tam.key         = 0;
-          tam.keyAlpha    = false;
-          tam.keyDot      = false;
-          tam.keyIndirect = false;
-          tam.max         = 21;
-          tam.min         = 1;
-          tam.digitsSoFar = 1;
-          popSoftmenu();
-          showSoftmenu(-MNU_TAM);
-          --numberOfTamMenusToPop;
-          if(!tam.alpha) {
-            clearSystemFlag(FLAG_ALPHA);
-            #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-              calcModeTamGui();
-            #endif // PC_BUILD && (SCREEN_800X480 == 0)
-          }
         }
         else {
           // backspaces within AIM are handled by addItemToBuffer, so this is if the aimBuffer is already empty
@@ -359,6 +328,7 @@
       }
       else {
         tamLeaveMode();
+        scrollPemBackwards();
       }
       return;
     }
@@ -390,7 +360,7 @@
     }
     else if(item==ITM_Max || item==ITM_Min || item==ITM_ADD || item==ITM_SUB || item==ITM_MULT || item==ITM_DIV || item==ITM_Config || item==ITM_Stack || item==ITM_dddEL || item==ITM_dddIJ) { // Operation
       if(!tam.digitsSoFar && !tam.indirect) {
-        if(tam.function == ITM_GTOP) {
+        if(tam.function == ITM_GTO) {
           if(item == ITM_Max) { // UP
             if(currentLocalStepNumber == 1) { // We are on 1st step of current program
               if(currentProgramNumber == 1) { // It's the 1st program in memory
@@ -736,6 +706,11 @@
       if(getSystemFlag(FLAG_ALPHA)) pemCloseAlphaInput();
       else                          pemCloseNumberInput();
       aimBuffer[0] = 0;
+      --currentLocalStepNumber;
+      currentStep = findPreviousStep(currentStep);
+    }
+    else if(calcMode == CM_PEM) {
+      scrollPemForwards();
     }
 
     tam.alpha = (func == ITM_ASSIGN);

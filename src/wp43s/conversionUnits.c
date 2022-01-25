@@ -348,6 +348,16 @@ void fnCvtFenM(uint16_t multiplyDivide) {
 }
 
 
+void fnCvtMileM(uint16_t multiplyDivide) {
+  unitConversion(const_MiToM, multiplyDivide);
+}
+
+
+void fnCvtNMiM(uint16_t multiplyDivide) {
+  unitConversion(const_NmiToM, multiplyDivide);
+}
+
+
 void fnCvtGalukL(uint16_t multiplyDivide) {
   unitConversion(const_GalukToL, multiplyDivide);
 }
