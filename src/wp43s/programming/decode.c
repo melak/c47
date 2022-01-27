@@ -33,6 +33,7 @@
 #include "wp43s.h"
 
 TO_QSPI const char shuffleReg[4] = {'x', 'y', 'z', 't'};
+TO_QSPI const char supDigit[24] = STD_SUP_0 STD_SUP_1 STD_SUP_2 STD_SUP_3 STD_SUP_4 STD_SUP_5 STD_SUP_6 STD_SUP_7 STD_SUP_8 STD_SUP_9;
 
 #ifndef DMCP_BUILD
   void listPrograms(void) {
@@ -365,6 +366,63 @@ static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, 
 }
 
 
+static void _decodeNumeral(char *startPtr, const char *srcStartPtr, bool_t isLongInt, char **updatedTgtPtr, const char **updatedSrcPtr) {
+  int32_t digit;
+  char *strPtr = startPtr;
+  const char *srcStr = srcStartPtr;
+
+  if(*srcStr == '-') ++srcStr;
+  for(digit = 0; (*srcStr >= '0' && *srcStr <= '9'); ++digit, ++srcStr) {}
+  srcStr = srcStartPtr;
+
+  if(*srcStr == '-') {*(strPtr++) = *(srcStr++);}
+  while((*srcStr >= '0' && *srcStr <= '9') || *srcStr == '.' || *srcStr == ',') {
+    if(digit == 0) {
+      *(strPtr++) = RADIX34_MARK_CHAR;
+      ++srcStr;
+    }
+    else {
+      if(groupingGap > 0 && digit < -1 && (abs(digit) % groupingGap) == 1) {
+        *(strPtr++) = STD_SPACE_PUNCTUATION[0];
+        *(strPtr++) = STD_SPACE_PUNCTUATION[1];
+      }
+      *(strPtr++) = *(srcStr++);
+      if(groupingGap > 0 && digit > 1 && (digit % groupingGap) == 1) {
+        *(strPtr++) = STD_SPACE_PUNCTUATION[0];
+        *(strPtr++) = STD_SPACE_PUNCTUATION[1];
+      }
+    }
+    --digit;
+  }
+  if(digit == 0 && !isLongInt) {
+    *(strPtr++) = RADIX34_MARK_CHAR;
+  }
+
+  if(*(srcStr++) == 'e') {
+    *(strPtr++) = PRODUCT_SIGN[0];
+    *(strPtr++) = PRODUCT_SIGN[1];
+    *(strPtr++) = STD_SUB_10[0];
+    *(strPtr++) = STD_SUB_10[1];
+    if(*(srcStr++) == '-') {
+      *(strPtr++) = STD_SUP_MINUS[0];
+      *(strPtr++) = STD_SUP_MINUS[1];
+    }
+    while(*srcStr >= '0' && *srcStr <= '9') {
+      *(strPtr++) = supDigit[0 + (*srcStr - '0') * 2];
+      *(strPtr++) = supDigit[1 + (*srcStr - '0') * 2];
+      ++srcStr;
+    }
+  }
+  --srcStr;
+  *strPtr = 0;
+  if(updatedTgtPtr) {
+    *updatedTgtPtr = strPtr;
+  }
+  if(updatedSrcPtr) {
+    *updatedSrcPtr = srcStr;
+  }
+}
+
 static void decodeLiteral(uint8_t *literalAddress) {
   switch(*(uint8_t *)(literalAddress++)) {
     case BINARY_SHORT_INTEGER:
@@ -377,11 +435,11 @@ static void decodeLiteral(uint8_t *literalAddress) {
     //  break;
 
     case BINARY_REAL34:
-      real34ToDisplayString((real34_t *)literalAddress, amNone, tmpString, &standardFont, 9999, 34, false, STD_SPACE_4_PER_EM, false);
+      real34ToDisplayString((real34_t *)literalAddress, amNone, tmpString, &standardFont, 9999, 34, false, STD_SPACE_PUNCTUATION, false);
       break;
 
     case BINARY_COMPLEX34:
-      complex34ToDisplayString((complex34_t *)literalAddress, tmpString, &standardFont, 9999, 34, false, STD_SPACE_4_PER_EM, false);
+      complex34ToDisplayString((complex34_t *)literalAddress, tmpString, &standardFont, 9999, 34, false, STD_SPACE_PUNCTUATION, false);
       break;
 
     //case BINARY_DATE:
@@ -398,20 +456,35 @@ static void decodeLiteral(uint8_t *literalAddress) {
 
     case STRING_LONG_INTEGER:
       getStringLabelOrVariableName(literalAddress);
-      sprintf(tmpString, "%s", tmpStringLabelOrVariableName);
+      _decodeNumeral(tmpString, tmpStringLabelOrVariableName, true, NULL, NULL);
       break;
 
     case STRING_REAL34:
       getStringLabelOrVariableName(literalAddress);
-      sprintf(tmpString, "%s", tmpStringLabelOrVariableName);
-      if(strchr(tmpString, 'e') == NULL && strchr(tmpString, '.') == NULL) {
-        strcat(tmpString, RADIX34_MARK_STRING);
-      }
+      _decodeNumeral(tmpString, tmpStringLabelOrVariableName, false, NULL, NULL);
       break;
 
     case STRING_COMPLEX34:
-      getStringLabelOrVariableName(literalAddress);
-      xcopy(tmpString, tmpStringLabelOrVariableName, strlen(tmpStringLabelOrVariableName) + 1);
+      {
+        char *dispStringPtr = tmpString;
+        char *sourceStringPtr = tmpStringLabelOrVariableName;
+        getStringLabelOrVariableName(literalAddress);
+        _decodeNumeral(dispStringPtr, sourceStringPtr, false, &dispStringPtr, (const char **)&sourceStringPtr);
+        if(*sourceStringPtr == 'i' || *sourceStringPtr == 'j') {
+          *(dispStringPtr++) = '+';
+          *(dispStringPtr++) = '+';
+          *(dispStringPtr++) = COMPLEX_UNIT[0];
+          ++sourceStringPtr;
+        }
+        else if(*sourceStringPtr == '+' || *sourceStringPtr == '-') {
+          *(dispStringPtr++) = *(sourceStringPtr++);
+          *(dispStringPtr++) = COMPLEX_UNIT[0];
+          ++sourceStringPtr;
+        }
+        *(dispStringPtr++) = PRODUCT_SIGN[0];
+        *(dispStringPtr++) = PRODUCT_SIGN[1];
+        _decodeNumeral(dispStringPtr, sourceStringPtr, calcMode == CM_PEM && aimBuffer[0] != 0 && (currentStep.ram + 2 == literalAddress), NULL, NULL);
+      }
       break;
 
     case STRING_LABEL_VARIABLE:
