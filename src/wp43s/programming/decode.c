@@ -34,6 +34,7 @@
 
 TO_QSPI const char shuffleReg[4] = {'x', 'y', 'z', 't'};
 TO_QSPI const char supDigit[24] = STD_SUP_0 STD_SUP_1 STD_SUP_2 STD_SUP_3 STD_SUP_4 STD_SUP_5 STD_SUP_6 STD_SUP_7 STD_SUP_8 STD_SUP_9;
+TO_QSPI const char baseChars[36] = "??" STD_BASE_1 STD_BASE_2 STD_BASE_3 STD_BASE_4 STD_BASE_5 STD_BASE_6 STD_BASE_7 STD_BASE_8 STD_BASE_9 STD_BASE_10 STD_BASE_11 STD_BASE_12 STD_BASE_13 STD_BASE_14 STD_BASE_15 STD_BASE_16;
 
 #ifndef DMCP_BUILD
   void listPrograms(void) {
@@ -398,7 +399,8 @@ static void _decodeNumeral(char *startPtr, const char *srcStartPtr, bool_t isLon
     *(strPtr++) = RADIX34_MARK_CHAR;
   }
 
-  if(*(srcStr++) == 'e') {
+  if(*srcStr == 'e') {
+    ++srcStr;
     *(strPtr++) = PRODUCT_SIGN[0];
     *(strPtr++) = PRODUCT_SIGN[1];
     *(strPtr++) = STD_SUB_10[0];
@@ -412,6 +414,15 @@ static void _decodeNumeral(char *startPtr, const char *srcStartPtr, bool_t isLon
       *(strPtr++) = supDigit[1 + (*srcStr - '0') * 2];
       ++srcStr;
     }
+  }
+  else if(*srcStr == '#') { // input not yet closed
+    *(strPtr++) = *(srcStr++);
+    while(*srcStr >= '0' && *srcStr <= '9') {
+      *(strPtr++) = *(srcStr++);
+    }
+  }
+  else {
+    ++srcStr;
   }
   --srcStr;
   *strPtr = 0;
@@ -449,9 +460,40 @@ static void decodeLiteral(uint8_t *literalAddress) {
     //  break;
 
     case STRING_SHORT_INTEGER:
-      getStringLabelOrVariableName(literalAddress + 1);
-      sprintf(tmpString, "%s", tmpStringLabelOrVariableName);
-      sprintf(tmpString + strlen(tmpString), "#%u", *literalAddress);
+      {
+        int32_t digit;
+        uint8_t gap = groupingGap;
+        char *dispStringPtr = tmpString;
+        char *sourceStringPtr = tmpStringLabelOrVariableName;
+        uint8_t base = (uint8_t)(*literalAddress);
+        getStringLabelOrVariableName(literalAddress + 1);
+
+        if(groupingGap > 0) {
+          if(base == 2) {
+            gap = 4;
+          }
+          else if(base == 4 || base == 8 || base == 16) {
+            gap = 2;
+          }
+        }
+
+        if(*sourceStringPtr == '-') ++sourceStringPtr;
+        for(digit = 0; (*sourceStringPtr >= '0' && *sourceStringPtr <= '9') || (*sourceStringPtr >= 'A' && *sourceStringPtr <= 'F'); ++digit, ++sourceStringPtr) {}
+        sourceStringPtr = tmpStringLabelOrVariableName;
+
+        if(*sourceStringPtr == '-') {*(dispStringPtr++) = *(sourceStringPtr++);}
+        while((*sourceStringPtr >= '0' && *sourceStringPtr <= '9') || (*sourceStringPtr >= 'A' && *sourceStringPtr <= 'F')) {
+          *(dispStringPtr++) = *(sourceStringPtr++);
+          if(gap > 0 && digit > 1 && (digit % gap) == 1) {
+            *(dispStringPtr++) = STD_SPACE_PUNCTUATION[0];
+            *(dispStringPtr++) = STD_SPACE_PUNCTUATION[1];
+          }
+          --digit;
+        }
+        *(dispStringPtr++) = baseChars[base * 2    ];
+        *(dispStringPtr++) = baseChars[base * 2 + 1];
+        *dispStringPtr = 0;
+      }
       break;
 
     case STRING_LONG_INTEGER:
