@@ -22,6 +22,7 @@
 
 #include "charString.h"
 #include "constantPointers.h"
+#include "conversionAngles.h"
 #include "dateTime.h"
 #include "defines.h"
 #include "error.h"
@@ -624,6 +625,15 @@ static void _putLiteral(uint8_t *literalAddress) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
       hmmssInRegisterToSeconds(REGISTER_X);
+      break;
+
+    case STRING_ANGLE_DMS:
+      _getStringLabelOrVariableName(literalAddress);
+      liftStack();
+      setSystemFlag(FLAG_ASLIFT);
+      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amDMS);
+      stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
+      real34FromDmsToDeg(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(REGISTER_X));
       break;
 
     default: {

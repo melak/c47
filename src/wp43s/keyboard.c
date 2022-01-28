@@ -254,12 +254,8 @@
           break;
         }
       }
-      if(inCatalog) {
+      if(inCatalog || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_CONST) {
         switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
-          case MNU_ALPHAINTL:
-          case MNU_ALPHAintl:
-            // αINTL do not close after selection
-            break;
           case MNU_TAM:
           case MNU_TAMCMP:
           case MNU_TAMSTORCL:

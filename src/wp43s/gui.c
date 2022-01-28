@@ -1146,7 +1146,9 @@
       case MNU_SYSFL:     catalog = CATALOG_SYFL;    break;
       case MNU_ALPHAINTL: catalog = CATALOG_AINT;    break;
       case MNU_ALPHAintl: catalog = CATALOG_aint;    break;
-      case MNU_PROG:      catalog = CATALOG_PROG;    break;
+      case MNU_PROG:
+      case MNU_RAM:
+      case MNU_FLASH:     catalog = CATALOG_PROG;    break;
       case MNU_VAR:       catalog = CATALOG_VAR;     break;
       case MNU_MATRS:     catalog = CATALOG_MATRS;   break;
       case MNU_STRINGS:   catalog = CATALOG_STRINGS; break;
