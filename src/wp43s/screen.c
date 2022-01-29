@@ -1768,6 +1768,20 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
+          else if(temporaryInformation == TI_1ST_DERIVATIVE) {
+            if(regist == REGISTER_X) {
+              sprintf(prefix, "f' =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
+          else if(temporaryInformation == TI_2ND_DERIVATIVE) {
+            if(regist == REGISTER_X) {
+              sprintf(prefix, "f\" =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
           else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
           real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
 

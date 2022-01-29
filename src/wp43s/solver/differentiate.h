@@ -23,8 +23,10 @@
 #include "typeDefinitions.h"
 #include <stdint.h>
 
-void fn1stDeriv(uint16_t label);
-void fn2ndDeriv(uint16_t label);
+void fn1stDeriv      (uint16_t label);
+void fn2ndDeriv      (uint16_t label);
+void fn1stDerivEq    (uint16_t unusedButMandatoryParameter);
+void fn2ndDerivEq    (uint16_t unusedButMandatoryParameter);
 
 void firstDerivative (calcRegister_t label);
 void secondDerivative(calcRegister_t label);

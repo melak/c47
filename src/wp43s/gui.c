@@ -1161,6 +1161,8 @@
       case MNU_CPXS:      catalog = CATALOG_CPXS;    break;
       case MNU_Solver:
       case MNU_Sf:
+      case MNU_1STDERIV:
+      case MNU_2NDDERIV:
       case MNU_MVAR:      catalog = CATALOG_MVAR;    break;
       default:            catalog = CATALOG_NONE;
     }

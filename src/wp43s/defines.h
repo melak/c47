@@ -613,6 +613,8 @@ typedef enum {
 #define TI_ULIM                                   50
 #define TI_LLIM                                   51
 #define TI_INTEGRAL                               52
+#define TI_1ST_DERIVATIVE                         53
+#define TI_2ND_DERIVATIVE                         54
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed

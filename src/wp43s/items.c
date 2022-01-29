@@ -781,6 +781,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnIntVar                    (uint16_t unusedButMandatoryParameter) {}
   void fn1stDeriv                  (uint16_t unusedButMandatoryParameter) {}
   void fn2ndDeriv                  (uint16_t unusedButMandatoryParameter) {}
+  void fn1stDerivEq                (uint16_t unusedButMandatoryParameter) {}
+  void fn2ndDerivEq                (uint16_t unusedButMandatoryParameter) {}
   void fnEqDelete                  (uint16_t unusedButMandatoryParameter) {}
   void fnEqEdit                    (uint16_t unusedButMandatoryParameter) {}
   void fnEqNew                     (uint16_t unusedButMandatoryParameter) {}
@@ -2637,5 +2639,8 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1783 */  { itemToBeCoded,                NOPARAM,                     "GRAPH",                                       "GRAPH",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1784 */  { graph_eqn,                    1,                           "reDraw",                                      "reDraw",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 
-/* 1785 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1785 */  { fn1stDerivEq,                 NOPARAM,                     "f'here",                                      "f'here",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1786 */  { fn2ndDerivEq,                 NOPARAM,                     "f\"here",                                     "f\"here",                                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+
+/* 1787 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 };

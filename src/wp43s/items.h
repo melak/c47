@@ -1850,7 +1850,10 @@
 #define MNU_GRAPH                     1783
 #define ITM_REPLT                     1784
 
-#define LAST_ITEM                     1785
+#define ITM_FPHERE                    1785
+#define ITM_FPPHERE                   1786
+
+#define LAST_ITEM                     1787
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

@@ -198,6 +198,12 @@ void fnSolveVar(uint16_t unusedButMandatoryParameter) {
     graphVariable = -regist;
     reallyRunFunction(ITM_STO, regist);
   }
+  else if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE || (currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) {
+    graphVariable = -regist;
+    currentSolverVariable = regist;
+    reallyRunFunction(ITM_STO, regist);
+    temporaryInformation = TI_SOLVER_VARIABLE;
+  }
   else if(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE) {
     graphVariable = regist;
     reallyRunFunction(ITM_SOLVE, regist);

@@ -105,6 +105,18 @@ void fn2ndDeriv(uint16_t label) {
   }
 }
 
+void fn1stDerivEq(uint16_t unusedButMandatoryParameter) {
+  currentSolverStatus |= SOLVER_STATUS_USES_FORMULA;
+  firstDerivative(INVALID_VARIABLE);
+  temporaryInformation = TI_1ST_DERIVATIVE;
+}
+
+void fn2ndDerivEq(uint16_t unusedButMandatoryParameter) {
+  currentSolverStatus |= SOLVER_STATUS_USES_FORMULA;
+  secondDerivative(INVALID_VARIABLE);
+  temporaryInformation = TI_2ND_DERIVATIVE;
+}
+
 
 
 /* The following routines are ported from WP34s. */
@@ -153,19 +165,21 @@ static void _differentiatorIteration(calcRegister_t label, real_t *r0) {
   fnFillStack(NOPARAM);
 
   if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
+    reallyRunFunction(ITM_STO, currentSolverVariable);
     parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
   }
   else {
     dynamicMenuItem = -1;
     execProgram(label);
     fnToReal(NOPARAM);
-    if(getRegisterDataType(REGISTER_X) == dtReal34) {
-      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), r0);
-    }
-    else {
-      lastErrorCode = ERROR_NONE;
-      realCopy(const_NaN, r0);
-    }
+  }
+
+  if(getRegisterDataType(REGISTER_X) == dtReal34) {
+    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), r0);
+  }
+  else {
+    lastErrorCode = ERROR_NONE;
+    realCopy(const_NaN, r0);
   }
 }
 

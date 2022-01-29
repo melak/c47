@@ -107,6 +107,12 @@
         else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && *getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem) == 0) {
           item = ITM_NOP;
         }
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE) && dynamicMenuItem == 5) {
+          item = ITM_FPHERE;
+        } 
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) && dynamicMenuItem == 5) {
+          item = ITM_FPPHERE;
+        } 
         else if(dynamicMenuItem >= dynamicSoftmenu[menuId].numItems) {
           item = ITM_NOP;
         }
@@ -510,7 +516,7 @@
             }
             else {
               showSoftmenu(item);
-              if((item == -MNU_Solver || item == -MNU_Sf) && lastErrorCode != 0) {
+              if((item == -MNU_Solver || item == -MNU_Sf || item == -MNU_1STDERIV || item == -MNU_2NDDERIV) && lastErrorCode != 0) {
                 popSoftmenu();
                 currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
                 currentSolverStatus &= ~SOLVER_STATUS_EQUATION_MODE;

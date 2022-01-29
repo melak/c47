@@ -957,6 +957,12 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
             bufPtr += stringByteLength(bufPtr) + 1;
             _menuItem(ITM_CALC, bufPtr);
           }
+          else if(tmpVal == 4 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE)) {
+            _menuItem(ITM_FPHERE, bufPtr);
+          }
+          else if(tmpVal == 4 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE)) {
+            _menuItem(ITM_FPPHERE, bufPtr);
+          }
         }
         else {
           displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -1346,6 +1352,19 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         _menuItem(ITM_DRAW, bufPtr);
         bufPtr += stringByteLength(bufPtr) + 1;
         _menuItem(ITM_CALC, bufPtr);
+      }
+    }
+    if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE || (currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) {
+      for(; tmpVal < 5; ++tmpVal) {  //If there are less than 4 variables, skip to the 5th item and add Draw & Calc.
+        *(bufPtr++) = 0;
+      }
+      if(tmpVal == 5) {
+        if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE) {
+          _menuItem(ITM_FPHERE, bufPtr);
+        }
+        else {
+          _menuItem(ITM_FPPHERE, bufPtr);
+        }
       }
     }
   }
