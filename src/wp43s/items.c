@@ -803,6 +803,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnEqSolvGraph               (uint16_t unusedButMandatoryParameter) {}
   void graph_eqn                   (uint16_t unusedButMandatoryParameter) {}
   void fnClLcd                     (uint16_t unusedButMandatoryParameter) {}
+  void fnPixel                     (uint16_t unusedButMandatoryParameter) {}
+  void fnPoint                     (uint16_t unusedButMandatoryParameter) {}
 #endif // GENERATE_CATALOGS
 
 TO_QSPI const item_t indexOfItems[] = {
@@ -2396,10 +2398,10 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1545 */  { fnStoreMin,                   NOPARAM,                     "STO" STD_DOWN_ARROW,                          "Min",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_REGISTER     },
 /* 1546 */  { fnPgmInt,                     TM_LABEL,                    "PGMINT",                                      "PGMINT",                                      (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_LABEL        },
 /* 1547 */  { fnPgmSlv,                     TM_SOLVE,                    "PGMSLV",                                      "PGMSLV",                                      (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_LABEL        },
-/* 1548 */  { itemToBeCoded,                NOPARAM,                     "PIXEL",                                       "PIXEL",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1548 */  { fnPixel,                      NOPARAM,                     "PIXEL",                                       "PIXEL",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1549 */  { fnPlotStat,                   PLOT_START,                  "PLOT",                                        "PLOT",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1550 */  { fnLegendre,                   NOPARAM,                     "P" STD_SUB_n,                                 "P" STD_SUB_n,                                 (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_ENABLED  | PTP_NONE         },
-/* 1551 */  { itemToBeCoded,                NOPARAM,                     "POINT",                                       "POINT",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1551 */  { fnPoint,                      NOPARAM,                     "POINT",                                       "POINT",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1552 */  { fnLoad,                       LM_NAMED_VARIABLES,          "LOADV",                                       "LOADV",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
 /* 1553 */  { allocateLocalRegisters,       0,                           "PopLR",                                       "PopLR",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1554 */  { fnPRcl,                       NOPARAM,                     "PRCL",                                        "PRCL",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },

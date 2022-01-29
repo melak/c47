@@ -31,6 +31,8 @@
 void       fnScreenDump                       (uint16_t unusedButMandatoryParameter);
 
 void       fnClLcd                            (uint16_t unusedButMandatoryParameter);
+void       fnPixel                            (uint16_t unusedButMandatoryParameter);
+void       fnPoint                            (uint16_t unusedButMandatoryParameter);
 
 #ifdef PC_BUILD
   /**
