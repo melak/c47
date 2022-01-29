@@ -373,11 +373,11 @@ static void _decodeNumeral(char *startPtr, const char *srcStartPtr, bool_t isLon
   const char *srcStr = srcStartPtr;
 
   if(*srcStr == '-') ++srcStr;
-  for(digit = 0; (*srcStr >= '0' && *srcStr <= '9'); ++digit, ++srcStr) {}
+  for(digit = 0; ((*srcStr >= '0' && *srcStr <= '9') || (*srcStr >= 'A' && *srcStr <= 'F')); ++digit, ++srcStr) {}
   srcStr = srcStartPtr;
 
   if(*srcStr == '-') {*(strPtr++) = *(srcStr++);}
-  while((*srcStr >= '0' && *srcStr <= '9') || *srcStr == '.' || *srcStr == ',') {
+  while((*srcStr >= '0' && *srcStr <= '9') || (*srcStr >= 'A' && *srcStr <= 'F') || *srcStr == '.' || *srcStr == ',') {
     if(digit == 0) {
       *(strPtr++) = RADIX34_MARK_CHAR;
       ++srcStr;
