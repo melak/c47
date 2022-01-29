@@ -216,6 +216,7 @@ static void _1stDerivative(calcRegister_t label, const real_t *x, real_t *res, r
     return;
   }
   realCopy(x, &r3);
+  realCopy(x, &r4);
   deriv_default_h(&r4);
   realCopy(const_1, &r0);
   if(deriv_eval_func(label, &r0, &r3, &r4, false, realContext)) { /* f(x+h) - f(x-h)*/
@@ -287,6 +288,7 @@ static void _2ndDerivative(calcRegister_t label, const real_t *x, real_t *res, r
     return;
   }
   realCopy(x, &r3);
+  realCopy(x, &r4);
   deriv_default_h(&r4);
   realCopy(const_1, &r0);
   if(deriv_eval_func(label, &r0, &r3, &r4, true, realContext)) { /* f(x+h) - f(x-h)*/
