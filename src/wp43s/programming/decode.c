@@ -635,7 +635,7 @@ void decodeOneStep_ram(uint8_t *step) {
         break;
 
       default:
-        decodeOp(step, indexOfItems[op].itemCatalogName, (indexOfItems[op].status & PTP_STATUS) >> 9, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
+        decodeOp(step, (op == ITM_INTEGRAL) ? STD_INTEGRAL "fd" : indexOfItems[op].itemCatalogName, (indexOfItems[op].status & PTP_STATUS) >> 9, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
     }
   }
 }
