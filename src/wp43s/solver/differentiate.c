@@ -165,8 +165,10 @@ static void _differentiatorIteration(calcRegister_t label, real_t *r0) {
   fnFillStack(NOPARAM);
 
   if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
-    reallyRunFunction(ITM_STO, currentSolverVariable);
-    parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
+    #ifndef TESTSUITE_BUILD
+      reallyRunFunction(ITM_STO, currentSolverVariable);
+      parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
+    #endif // TESTSUITE_BUILD
   }
   else {
     dynamicMenuItem = -1;
