@@ -2374,3 +2374,9 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
     create_screenshot(0);
   #endif // DMCP_BUILD
 }
+
+
+
+void fnClLcd(uint16_t unusedButMandatoryParameter) {
+  clearScreen();
+}

@@ -30,6 +30,8 @@
 
 void       fnScreenDump                       (uint16_t unusedButMandatoryParameter);
 
+void       fnClLcd                            (uint16_t unusedButMandatoryParameter);
+
 #ifdef PC_BUILD
   /**
    * Draws the calc's screen on the PC window widget.
