@@ -361,7 +361,7 @@
                 pemAlpha(item);
               }
               else {
-                pemAddNumber(item);
+                addStepInProgram(item);
               }
               hourGlassIconEnabled = false;
             }
@@ -1311,6 +1311,12 @@
               else if(aimBuffer[0] != 0 && !getSystemFlag(FLAG_ALPHA) && (item == ITM_toINT || (nimNumberPart == NP_INT_BASE && item == ITM_RCL))) {
                 pemAddNumber(item);
                 keyActionProcessed = true;
+                if(item == ITM_RCL) {
+                  currentStep = findPreviousStep(currentStep);
+                  --currentLocalStepNumber;
+                  if(!programListEnd)
+                    scrollPemBackwards();
+                }
               }
               else if(item == ITM_RS) {
                 addStepInProgram(ITM_STOP);
