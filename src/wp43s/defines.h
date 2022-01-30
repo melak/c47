@@ -21,10 +21,12 @@
 #define DEFINES_H
 
 #ifdef DMCP_BUILD
-  #undef SAVESPACE_JM //To remove some code to make fit without QSPI: Less fontbrowser, less registerbrowser
+  #undef  SAVESPACE_JM       //To remove some code to make fit without QSPI: Less flagbrowser, less registerbrowser
+  #define SAVESPACE_JM_FB    //To remove some code to make fit without QSPI: Less fontbrowser
   #define SAVE_SPACE_DM42_12 //To remove math functions Zeta, Slvq, ortho_poly, elliptic, beta, bessel
 #else
   #undef SAVESPACE_JM
+  #undef SAVESPACE_JM_FB
   #undef SAVE_SPACE_DM42_12
 #endif
 
