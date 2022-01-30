@@ -1201,7 +1201,7 @@
 #define ITM_ALOG_SYMBOL               1154
 #define ITM_ROOT_SIGN                 1155
 #define ITM_TIMER_SYMBOL              1156
-#define ITM_1157                      1157
+#define ITM_Sfdx_VAR                  1157
 #define ITM_1158                      1158
 #define ITM_1159                      1159
 #define ITM_1160                      1160
@@ -1850,7 +1850,10 @@
 #define MNU_GRAPH                     1783
 #define ITM_REPLT                     1784
 
-#define LAST_ITEM                     1785
+#define ITM_FPHERE                    1785
+#define ITM_FPPHERE                   1786
+
+#define LAST_ITEM                     1787
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

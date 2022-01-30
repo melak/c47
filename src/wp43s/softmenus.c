@@ -25,6 +25,7 @@
 #include "programming/nextStep.h"
 #include "registers.h"
 #include "screen.h"
+#include "solver/differentiate.h"
 #include "solver/equation.h"
 #include "sort.h"
 #include <string.h>
@@ -1194,9 +1195,16 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     else if(id == -MNU_ALPHA_OMEGA && alphaCase == AC_LOWER) { // alpha...omega
       id = -MNU_alpha_omega;
     }
-    else if(id == -MNU_Solver) {
+    else if(id == -MNU_Solver || id == -MNU_Sf || id == -MNU_1STDERIV || id == -MNU_2NDDERIV) {
       int32_t numberOfVars = -1;
       currentSolverStatus = SOLVER_STATUS_USES_FORMULA | SOLVER_STATUS_INTERACTIVE;
+      switch(-id) {
+        case MNU_Solver:   currentSolverStatus |= SOLVER_STATUS_EQUATION_SOLVER;         break;
+        case MNU_Sf:       currentSolverStatus |= SOLVER_STATUS_EQUATION_INTEGRATE;      break;
+        case MNU_1STDERIV: currentSolverStatus |= SOLVER_STATUS_EQUATION_1ST_DERIVATIVE; break;
+        case MNU_2NDDERIV: currentSolverStatus |= SOLVER_STATUS_EQUATION_2ND_DERIVATIVE; break;
+      }
+      cachedDynamicMenu = 0;
       parseEquation(currentFormula, EQUATION_PARSER_MVAR, aimBuffer, tmpString);
       id = -MNU_MVAR;
       while((getNthString((uint8_t *)tmpString, ++numberOfVars))[0] != 0) {}
@@ -1205,6 +1213,18 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function showSoftmenu:", "there are more than 11 variables in this equation!", NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      }
+      else if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE || (currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) {
+        if((getNthString((uint8_t *)tmpString, 1))[0] == 0) {
+          currentSolverVariable = findOrAllocateNamedVariable((char *)getNthString((uint8_t *)tmpString, 0));
+          reallyRunFunction(ITM_STO, currentSolverVariable);
+          if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE) {
+            fn1stDerivEq(NOPARAM);
+          }
+          else {
+            fn2ndDerivEq(NOPARAM);
+          }
+        }
       }
     }
 

@@ -95,20 +95,35 @@
         if(currentMvarLabel != INVALID_VARIABLE) {
           item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_SOLVE_VAR);
         }
-        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && dynamicMenuItem == 5) {
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER) && dynamicMenuItem == 5) {
           item = ITM_CALC;
         } 
-        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && dynamicMenuItem == 4) {
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER) && dynamicMenuItem == 4) {
           item = ITM_DRAW;
         }
-        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && dynamicMenuItem == 3) {
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER) && dynamicMenuItem == 3) {
           item = ITM_CPXSLV;
         }
         else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && *getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem) == 0) {
           item = ITM_NOP;
         }
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE) && dynamicMenuItem == 5) {
+          item = ITM_FPHERE;
+        } 
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) && dynamicMenuItem == 5) {
+          item = ITM_FPPHERE;
+        } 
+        else if(dynamicMenuItem >= dynamicSoftmenu[menuId].numItems) {
+          item = ITM_NOP;
+        }
+        else if(!(currentSolverStatus & SOLVER_STATUS_INTERACTIVE)) {
+          item = MNU_DYNAMIC;
+        }
+        else if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_INTEGRATE) {
+          item = ITM_Sfdx_VAR;
+        }
         else {
-          item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_SOLVE_VAR);
+          item = ITM_SOLVE_VAR;
         }
         break;
 
@@ -346,7 +361,7 @@
                 pemAlpha(item);
               }
               else {
-                pemAddNumber(item);
+                addStepInProgram(item);
               }
               hourGlassIconEnabled = false;
             }
@@ -485,15 +500,26 @@
         if(calcMode != CM_CONFIRMATION) {
           lastErrorCode = 0;
 
-          if(item < 0) { // softmenu
+          if(calcMode != CM_PEM && item == -MNU_Sfdx) {
+            tamEnterMode(MNU_Sfdx);
+            refreshScreen();
+            return;
+          }
+          else if(calcMode != CM_PEM && item == ITM_INTEGRAL) {
+            reallyRunFunction(item, currentSolverVariable);
+            refreshScreen();
+            return;
+          }
+          else if(item < 0) { // softmenu
             if(calcMode == CM_ASSIGN && itemToBeAssigned == 0 && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MENUS) {
               itemToBeAssigned = item;
             }
             else {
               showSoftmenu(item);
-              if(item == -MNU_Solver && lastErrorCode != 0) {
+              if((item == -MNU_Solver || item == -MNU_Sf || item == -MNU_1STDERIV || item == -MNU_2NDDERIV) && lastErrorCode != 0) {
                 popSoftmenu();
                 currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
+                currentSolverStatus &= ~SOLVER_STATUS_EQUATION_MODE;
               }
             }
             refreshScreen();
@@ -1285,6 +1311,12 @@
               else if(aimBuffer[0] != 0 && !getSystemFlag(FLAG_ALPHA) && (item == ITM_toINT || (nimNumberPart == NP_INT_BASE && item == ITM_RCL))) {
                 pemAddNumber(item);
                 keyActionProcessed = true;
+                if(item == ITM_RCL) {
+                  currentStep = findPreviousStep(currentStep);
+                  --currentLocalStepNumber;
+                  if(!programListEnd)
+                    scrollPemBackwards();
+                }
               }
               else if(item == ITM_RS) {
                 addStepInProgram(ITM_STOP);

@@ -198,6 +198,12 @@ void fnSolveVar(uint16_t unusedButMandatoryParameter) {
     graphVariable = -regist;
     reallyRunFunction(ITM_STO, regist);
   }
+  else if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE || (currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) {
+    graphVariable = -regist;
+    currentSolverVariable = regist;
+    reallyRunFunction(ITM_STO, regist);
+    temporaryInformation = TI_SOLVER_VARIABLE;
+  }
   else if(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE) {
     graphVariable = regist;
     reallyRunFunction(ITM_SOLVE, regist);
@@ -311,12 +317,14 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
   bool_t originallyLevel = false;
   bool_t extremum = false;
   int result = SOLVER_RESULT_NORMAL;
+  bool_t was_inting = getSystemFlag(FLAG_INTING);
 
   realCopy(const_1, &tol);
   tol.exponent -= (significantDigits == 0 || significantDigits >= 32) ? 32 : significantDigits;
 
   ++currentSolverNestingDepth;
   setSystemFlag(FLAG_SOLVING);
+  clearSystemFlag(FLAG_INTING);
 
   realCopy(const_0, &delta);
 
@@ -523,8 +531,13 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
     result = SOLVER_RESULT_EXTREMUM;
   }
 
-  if((--currentSolverNestingDepth) == 0)
+  if((--currentSolverNestingDepth) == 0) {
     clearSystemFlag(FLAG_SOLVING);
+  }
+  else if(was_inting) {
+    clearSystemFlag(FLAG_SOLVING);
+    setSystemFlag(FLAG_INTING);
+  }
 
   if(real34IsZero(&fb))
     result = SOLVER_RESULT_NORMAL;
