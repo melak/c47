@@ -33,6 +33,8 @@
 #include "wp43s.h"
 
 TO_QSPI const char shuffleReg[4] = {'x', 'y', 'z', 't'};
+TO_QSPI const char supDigit[24] = STD_SUP_0 STD_SUP_1 STD_SUP_2 STD_SUP_3 STD_SUP_4 STD_SUP_5 STD_SUP_6 STD_SUP_7 STD_SUP_8 STD_SUP_9;
+TO_QSPI const char baseChars[36] = "??" STD_BASE_1 STD_BASE_2 STD_BASE_3 STD_BASE_4 STD_BASE_5 STD_BASE_6 STD_BASE_7 STD_BASE_8 STD_BASE_9 STD_BASE_10 STD_BASE_11 STD_BASE_12 STD_BASE_13 STD_BASE_14 STD_BASE_15 STD_BASE_16;
 
 #ifndef DMCP_BUILD
   void listPrograms(void) {
@@ -365,6 +367,73 @@ static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, 
 }
 
 
+static void _decodeNumeral(char *startPtr, const char *srcStartPtr, bool_t isLongInt, char **updatedTgtPtr, const char **updatedSrcPtr) {
+  int32_t digit;
+  char *strPtr = startPtr;
+  const char *srcStr = srcStartPtr;
+
+  if(*srcStr == '-') ++srcStr;
+  for(digit = 0; ((*srcStr >= '0' && *srcStr <= '9') || (*srcStr >= 'A' && *srcStr <= 'F')); ++digit, ++srcStr) {}
+  srcStr = srcStartPtr;
+
+  if(*srcStr == '-') {*(strPtr++) = *(srcStr++);}
+  while((*srcStr >= '0' && *srcStr <= '9') || (*srcStr >= 'A' && *srcStr <= 'F') || *srcStr == '.' || *srcStr == ',') {
+    if(digit == 0) {
+      *(strPtr++) = RADIX34_MARK_CHAR;
+      ++srcStr;
+    }
+    else {
+      if(groupingGap > 0 && digit < -1 && (abs(digit) % groupingGap) == 1) {
+        *(strPtr++) = STD_SPACE_PUNCTUATION[0];
+        *(strPtr++) = STD_SPACE_PUNCTUATION[1];
+      }
+      *(strPtr++) = *(srcStr++);
+      if(groupingGap > 0 && digit > 1 && (digit % groupingGap) == 1) {
+        *(strPtr++) = STD_SPACE_PUNCTUATION[0];
+        *(strPtr++) = STD_SPACE_PUNCTUATION[1];
+      }
+    }
+    --digit;
+  }
+  if(digit == 0 && !isLongInt) {
+    *(strPtr++) = RADIX34_MARK_CHAR;
+  }
+
+  if(*srcStr == 'e') {
+    ++srcStr;
+    *(strPtr++) = PRODUCT_SIGN[0];
+    *(strPtr++) = PRODUCT_SIGN[1];
+    *(strPtr++) = STD_SUB_10[0];
+    *(strPtr++) = STD_SUB_10[1];
+    if(*(srcStr++) == '-') {
+      *(strPtr++) = STD_SUP_MINUS[0];
+      *(strPtr++) = STD_SUP_MINUS[1];
+    }
+    while(*srcStr >= '0' && *srcStr <= '9') {
+      *(strPtr++) = supDigit[0 + (*srcStr - '0') * 2];
+      *(strPtr++) = supDigit[1 + (*srcStr - '0') * 2];
+      ++srcStr;
+    }
+  }
+  else if(*srcStr == '#') { // input not yet closed
+    *(strPtr++) = *(srcStr++);
+    while(*srcStr >= '0' && *srcStr <= '9') {
+      *(strPtr++) = *(srcStr++);
+    }
+  }
+  else {
+    ++srcStr;
+  }
+  --srcStr;
+  *strPtr = 0;
+  if(updatedTgtPtr) {
+    *updatedTgtPtr = strPtr;
+  }
+  if(updatedSrcPtr) {
+    *updatedSrcPtr = srcStr;
+  }
+}
+
 static void decodeLiteral(uint8_t *literalAddress) {
   switch(*(uint8_t *)(literalAddress++)) {
     case BINARY_SHORT_INTEGER:
@@ -377,11 +446,11 @@ static void decodeLiteral(uint8_t *literalAddress) {
     //  break;
 
     case BINARY_REAL34:
-      real34ToDisplayString((real34_t *)literalAddress, amNone, tmpString, &standardFont, 9999, 34, false, STD_SPACE_4_PER_EM, false);
+      real34ToDisplayString((real34_t *)literalAddress, amNone, tmpString, &standardFont, 9999, 34, false, STD_SPACE_PUNCTUATION, false);
       break;
 
     case BINARY_COMPLEX34:
-      complex34ToDisplayString((complex34_t *)literalAddress, tmpString, &standardFont, 9999, 34, false, STD_SPACE_4_PER_EM, false);
+      complex34ToDisplayString((complex34_t *)literalAddress, tmpString, &standardFont, 9999, 34, false, STD_SPACE_PUNCTUATION, false);
       break;
 
     //case BINARY_DATE:
@@ -391,27 +460,73 @@ static void decodeLiteral(uint8_t *literalAddress) {
     //  break;
 
     case STRING_SHORT_INTEGER:
-      getStringLabelOrVariableName(literalAddress + 1);
-      sprintf(tmpString, "%s", tmpStringLabelOrVariableName);
-      sprintf(tmpString + strlen(tmpString), "#%u", *literalAddress);
+      {
+        int32_t digit;
+        uint8_t gap = groupingGap;
+        char *dispStringPtr = tmpString;
+        char *sourceStringPtr = tmpStringLabelOrVariableName;
+        uint8_t base = (uint8_t)(*literalAddress);
+        getStringLabelOrVariableName(literalAddress + 1);
+
+        if(groupingGap > 0) {
+          if(base == 2) {
+            gap = 4;
+          }
+          else if(base == 4 || base == 8 || base == 16) {
+            gap = 2;
+          }
+        }
+
+        if(*sourceStringPtr == '-') ++sourceStringPtr;
+        for(digit = 0; (*sourceStringPtr >= '0' && *sourceStringPtr <= '9') || (*sourceStringPtr >= 'A' && *sourceStringPtr <= 'F'); ++digit, ++sourceStringPtr) {}
+        sourceStringPtr = tmpStringLabelOrVariableName;
+
+        if(*sourceStringPtr == '-') {*(dispStringPtr++) = *(sourceStringPtr++);}
+        while((*sourceStringPtr >= '0' && *sourceStringPtr <= '9') || (*sourceStringPtr >= 'A' && *sourceStringPtr <= 'F')) {
+          *(dispStringPtr++) = *(sourceStringPtr++);
+          if(gap > 0 && digit > 1 && (digit % gap) == 1) {
+            *(dispStringPtr++) = STD_SPACE_PUNCTUATION[0];
+            *(dispStringPtr++) = STD_SPACE_PUNCTUATION[1];
+          }
+          --digit;
+        }
+        *(dispStringPtr++) = baseChars[base * 2    ];
+        *(dispStringPtr++) = baseChars[base * 2 + 1];
+        *dispStringPtr = 0;
+      }
       break;
 
     case STRING_LONG_INTEGER:
       getStringLabelOrVariableName(literalAddress);
-      sprintf(tmpString, "%s", tmpStringLabelOrVariableName);
+      _decodeNumeral(tmpString, tmpStringLabelOrVariableName, true, NULL, NULL);
       break;
 
     case STRING_REAL34:
       getStringLabelOrVariableName(literalAddress);
-      sprintf(tmpString, "%s", tmpStringLabelOrVariableName);
-      if(strchr(tmpString, 'e') == NULL && strchr(tmpString, '.') == NULL) {
-        strcat(tmpString, RADIX34_MARK_STRING);
-      }
+      _decodeNumeral(tmpString, tmpStringLabelOrVariableName, false, NULL, NULL);
       break;
 
     case STRING_COMPLEX34:
-      getStringLabelOrVariableName(literalAddress);
-      xcopy(tmpString, tmpStringLabelOrVariableName, strlen(tmpStringLabelOrVariableName) + 1);
+      {
+        char *dispStringPtr = tmpString;
+        char *sourceStringPtr = tmpStringLabelOrVariableName;
+        getStringLabelOrVariableName(literalAddress);
+        _decodeNumeral(dispStringPtr, sourceStringPtr, false, &dispStringPtr, (const char **)&sourceStringPtr);
+        if(*sourceStringPtr == 'i' || *sourceStringPtr == 'j') {
+          *(dispStringPtr++) = '+';
+          *(dispStringPtr++) = '+';
+          *(dispStringPtr++) = COMPLEX_UNIT[0];
+          ++sourceStringPtr;
+        }
+        else if(*sourceStringPtr == '+' || *sourceStringPtr == '-') {
+          *(dispStringPtr++) = *(sourceStringPtr++);
+          *(dispStringPtr++) = COMPLEX_UNIT[0];
+          ++sourceStringPtr;
+        }
+        *(dispStringPtr++) = PRODUCT_SIGN[0];
+        *(dispStringPtr++) = PRODUCT_SIGN[1];
+        _decodeNumeral(dispStringPtr, sourceStringPtr, calcMode == CM_PEM && aimBuffer[0] != 0 && (currentStep.ram + 2 == literalAddress), NULL, NULL);
+      }
       break;
 
     case STRING_LABEL_VARIABLE:
@@ -520,7 +635,7 @@ void decodeOneStep_ram(uint8_t *step) {
         break;
 
       default:
-        decodeOp(step, indexOfItems[op].itemCatalogName, (indexOfItems[op].status & PTP_STATUS) >> 9, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
+        decodeOp(step, (op == ITM_INTEGRAL) ? STD_INTEGRAL "fd" : indexOfItems[op].itemCatalogName, (indexOfItems[op].status & PTP_STATUS) >> 9, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
     }
   }
 }

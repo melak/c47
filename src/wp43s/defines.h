@@ -434,7 +434,7 @@ typedef enum {
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
 
 // Number of constants
-#define NUMBER_OF_CONSTANTS_39                   185
+#define NUMBER_OF_CONSTANTS_39                   198
 #define NUMBER_OF_CONSTANTS_51                    39
 #define NUMBER_OF_CONSTANTS_1071                   1
 #define NUMBER_OF_CONSTANTS_34                    44
@@ -544,7 +544,8 @@ typedef enum {
 #define TM_SOLVE                               10010
 #define TM_NEWMENU                             10011
 #define TM_KEY                                 10012
-#define TM_CMP                                 10013 // TM_CMP must be the last in this list
+#define TM_INTEGRATE                           10013
+#define TM_CMP                                 10014 // TM_CMP must be the last in this list
 
 // NIM number part
 #define NP_EMPTY                                   0
@@ -608,6 +609,12 @@ typedef enum {
 #define TI_VIEW                                   46
 #define TI_SOLVER_VARIABLE                        47
 #define TI_SOLVER_FAILED                          48
+#define TI_ACC                                    49
+#define TI_ULIM                                   50
+#define TI_LLIM                                   51
+#define TI_INTEGRAL                               52
+#define TI_1ST_DERIVATIVE                         53
+#define TI_2ND_DERIVATIVE                         54
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed
@@ -838,6 +845,11 @@ typedef enum {
 
 #define SOLVER_STATUS_READY_TO_EXECUTE             0x0001
 #define SOLVER_STATUS_INTERACTIVE                  0x0002
+#define SOLVER_STATUS_EQUATION_MODE                0x000c
+#define SOLVER_STATUS_EQUATION_SOLVER              0x0000
+#define SOLVER_STATUS_EQUATION_INTEGRATE           0x0004
+#define SOLVER_STATUS_EQUATION_1ST_DERIVATIVE      0x0008
+#define SOLVER_STATUS_EQUATION_2ND_DERIVATIVE      0x000C
 #define SOLVER_STATUS_USES_FORMULA                 0x0100
 #define SOLVER_STATUS_MVAR_BEING_OPENED            0x0200
 #define SOLVER_STATUS_TVM_APPLICATION              0x1000

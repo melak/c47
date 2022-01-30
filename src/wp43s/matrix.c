@@ -5137,6 +5137,13 @@ static void calculateEigenvectors(const any34Matrix_t *matrix, bool_t isComplex,
           --i;
           isIndeterminate = true; tmpFlag = false;
           for(j = 0; j < size; j++) {
+            if((int16_t)i < 0) { // scalar or non-diagonalizable
+              for(i = 0; i < size * size * 2; i++) {
+                realCopy(const_NaN, q + i * 2    );
+                realCopy(const_0,   q + i * 2 + 1);
+              }
+              return;
+            }
             if(isIndeterminate && !tmpFlag && realCompareEqual(a + (j * size + i) * 2, const_1) && realIsZero(a + (j * size + i) * 2 + 1))
               tmpFlag = true;
             else if(!realIsZero(a + (j * size + i) * 2) || !realIsZero(a + (j * size + i) * 2 + 1))

@@ -523,11 +523,12 @@ static void _putLiteral(uint8_t *literalAddress) {
 
     case STRING_SHORT_INTEGER:
       {
+        uint8_t base = *literalAddress;
         longInteger_t val;
         longIntegerInit(val);
 
         _getStringLabelOrVariableName(literalAddress + 1);
-        stringToLongInteger(tmpStringLabelOrVariableName, 10, val);
+        stringToLongInteger(tmpStringLabelOrVariableName, base, val);
         liftStack();
         setSystemFlag(FLAG_ASLIFT);
         convertLongIntegerToShortIntegerRegister(val, (uint32_t)(*literalAddress), REGISTER_X);
