@@ -973,8 +973,10 @@
     if(freeProgramBytes >= 4) { // Push the programs to the end of RAM
       uint32_t newProgramSize = (uint32_t)((uint8_t *)(ram + RAM_SIZE) - beginOfProgramMemory) - (freeProgramBytes & 0xfffc);
       if(programList[currentProgramNumber].step > 0) {
-        currentStep.ram        += (freeProgramBytes & 0xfffc);
-        firstDisplayedStep.ram += (freeProgramBytes & 0xfffc);
+        currentStep.ram           += (freeProgramBytes & 0xfffc);
+        firstDisplayedStep.ram    += (freeProgramBytes & 0xfffc);
+        beginOfCurrentProgram.ram += (freeProgramBytes & 0xfffc);
+        endOfCurrentProgram.ram   += (freeProgramBytes & 0xfffc);
       }
       freeProgramBytes &= 0x03;
       resizeProgramMemory(TO_BLOCKS(newProgramSize));
