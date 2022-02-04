@@ -1620,6 +1620,9 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         numberOfTamMenusToPop--;
       }
       else {
+        if(calcMode == CM_PEM) {
+          aimBuffer[0] = 0;
+        }
         tamLeaveMode();
         if(calcMode == CM_PEM) {
           scrollPemBackwards();
