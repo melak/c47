@@ -133,7 +133,20 @@ void sqrtCxma(void) {
 
 
 void sqrtShoI(void) {
-  *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = WP34S_intSqrt(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)));
+  int32_t signValue;
+  WP34S_extract_value(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)), &signValue);
+  if(signValue && getFlag(FLAG_CPXRES)) {
+    real_t a;
+    convertShortIntegerRegisterToReal(REGISTER_X, &a, &ctxtReal39);
+    reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+    realSetPositiveSign(&a);
+    realSquareRoot(&a, &a, &ctxtReal39);
+    real34Zero(REGISTER_REAL34_DATA(REGISTER_X));
+    convertRealToImag34ResultRegister(&a, REGISTER_X);
+  }
+  else {
+    *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = WP34S_intSqrt(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)));
+  }
 }
 
 
