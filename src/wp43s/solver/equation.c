@@ -757,6 +757,7 @@ static void _runEqFunction(char *mvarBuffer, uint16_t item) {
     case ITM_Pn:
     case ITM_Tn:
     case ITM_Un:
+    case ITM_atan2:
       _runDyadicFunction(mvarBuffer, item);
       break;
     default: // monadic functions
