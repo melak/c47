@@ -26,12 +26,10 @@
 #include <stdint.h>
 
 
-#define EQ_SOLVE 0
-#define EQ_PLOT  1
-#define EQ_PLOT2 2
-#define DOUBLE_NOT_INIT 123.432f
+#define EQ_SOLVE 0   //fnEqSolvGraph
+#define EQ_PLOT  1   //graph_eqn
 
 void   fnEqSolvGraph (uint16_t func);
 void   graph_eqn(uint16_t unusedButMandatoryParameter);
-double registerToDouble(calcRegister_t regist);
+
 #endif // GRAPH_H

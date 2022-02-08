@@ -109,8 +109,8 @@ void fnSolve(uint16_t labelOrVariable) {
     float x_0, x_1;
     float x_diff = 0;
     if(_realSolverFirstGuesses(REGISTER_Y, &y) && _realSolverFirstGuesses(REGISTER_X, &x)) {
-      x_0 = registerToDouble(REGISTER_Y);
-      x_1 = registerToDouble(REGISTER_X);
+      x_0 = convertRegisterToDouble(REGISTER_Y);
+      x_1 = convertRegisterToDouble(REGISTER_X);
       if(x_0 != DOUBLE_NOT_INIT && x_1 != DOUBLE_NOT_INIT) {
         x_min = x_0;
         x_max = x_1;
@@ -159,8 +159,8 @@ void fnSolve(uint16_t labelOrVariable) {
       adjustResult(REGISTER_X, false, false, REGISTER_X, REGISTER_Y, -1);
 
       //manipulate the graph minimuma and maximum points based on the solver result, part 2
-      x_0 = registerToDouble(REGISTER_Y);
-      x_1 = registerToDouble(REGISTER_X);
+      x_0 = convertRegisterToDouble(REGISTER_Y);
+      x_1 = convertRegisterToDouble(REGISTER_X);
       if(x_0 != DOUBLE_NOT_INIT && x_1 != DOUBLE_NOT_INIT) {
         if(!(x_min<x_0 && x_min<x_1 && x_0<x_max && x_1<x_max)) {
           if(fmin(x_0,x_1) < x_min)

@@ -79,57 +79,22 @@
 	  }
 	}
 
-	static void fnStrtoX(char aimBuffer[]) {
+	static void fnStrtoX(char buff[]) {
 	  setSystemFlag(FLAG_ASLIFT); // 5
 	  liftStack();
-	  int16_t mem = stringByteLength(aimBuffer) + 1;
+	  int16_t mem = stringByteLength(buff) + 1;
 	  reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(mem), amNone);
-	  xcopy(REGISTER_STRING_DATA(REGISTER_X), aimBuffer, mem);
+	  xcopy(REGISTER_STRING_DATA(REGISTER_X), buff, mem);
 	  setSystemFlag(FLAG_ASLIFT);
 	}
 
-  static void doubleToXRegisterReal34(double x) { //Convert from double to X register REAL34
-    char buff[100];
+  static void convertDoubleToReal34RegisterPush(double x, calcRegister_t destination) {
     setSystemFlag(FLAG_ASLIFT);
     liftStack();
-    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-
-    doubleToString(x, 100, buff);
-    stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
-
-    #ifdef PC_BUILD
-      if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) {
-        snprintf(buff, 100, "%.16e", x);
-        printf("ERROR in doubleToXRegisterReal34: %s\n",buff);
-      }
-    #endif //PC_BUILD
-
+    convertDoubleToReal34Register(x, destination);
     setSystemFlag(FLAG_ASLIFT);
   }
 #endif
-
-
-double registerToDouble(calcRegister_t regist) { //Convert from X register to double
-  double y;
-  real_t tmpy;
-  switch(getRegisterDataType(regist)) {
-  case dtLongInteger:
-    convertLongIntegerRegisterToReal(regist, &tmpy, &ctxtReal39);
-    break;
-  case dtReal34:
-  case dtComplex34:
-    real34ToReal(REGISTER_REAL34_DATA(regist), &tmpy);
-    break;
-  default:
-    #ifdef PC_BUILD
-      printf("ERROR IN INPUT\n"); 
-    #endif
-    return DOUBLE_NOT_INIT;
-    break;
-  }
-  realToDouble1(&tmpy, &y);
-  return y;
-}
 
 
 void fnPlot(uint16_t unusedButMandatoryParameter) {
@@ -211,26 +176,26 @@ static void divFunction(bool_t addRandom, calcRegister_t TOL) {
     || real34IsNaN(REGISTER_REAL34_DATA(REGISTER_Y)) || (getRegisterDataType(REGISTER_Y) == dtComplex34 ? real34IsNaN(REGISTER_IMAG34_DATA(REGISTER_Y)) : 0 ) ) {
     fnDrop(0);
     fnDrop(0);
-    doubleToXRegisterReal34(0);
+    convertDoubleToReal34RegisterPush(0.0, REGISTER_X);
     return;
   }
   if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X)) || (getRegisterDataType(REGISTER_X) == dtComplex34 ? real34IsNaN(REGISTER_IMAG34_DATA(REGISTER_X)) : 0 ) ) {
     fnDrop(0);
     fnDrop(0);
-    doubleToXRegisterReal34(0);
+    convertDoubleToReal34RegisterPush(0.0, REGISTER_X);
     return;
   }
   if(!addRandom && (real34IsZero(REGISTER_REAL34_DATA(REGISTER_X)) && (getRegisterDataType(REGISTER_X) == dtComplex34 ? real34IsZero(REGISTER_IMAG34_DATA(REGISTER_X)) : 1 ) )) {
     fnDrop(0);
     fnDrop(0);
-    doubleToXRegisterReal34(1e30);
+    convertDoubleToReal34RegisterPush(1e30, REGISTER_X);
     return;
   }
   if(addRandom && regIsLowerThanTol(REGISTER_X, TOL)) {
     #ifdef PC_BUILD
       printf(">>> ADD random number to denominator to prevent infinite result\n");
     #endif
-    doubleToXRegisterReal34(1e-6);
+    convertDoubleToReal34RegisterPush(1e-6, REGISTER_X);
     runFunction(ITM_ADD);
     runFunction(ITM_RAN);
     runFunction(ITM_ADD);
@@ -280,7 +245,7 @@ void graph_eqn(uint16_t mode) {
       fnClSigma(0);
     }
     for(x=x_min; x<=x_max; x+=0.99999*(x_max-x_min)/SCREEN_WIDTH_GRAPH*10) {    //Reduced the amount of sample data from 400 points to 40 points
-      doubleToXRegisterReal34(x);      
+      convertDoubleToReal34RegisterPush(x, REGISTER_X);      
       //leaving y in Y and x in X
       execute_rpn_function();
       fnSigma(1);
@@ -378,17 +343,17 @@ void graph_eqn(uint16_t mode) {
     // Initialize all temporary registers
     // Registers are being used in the DEMO data programs
 
-    doubleToXRegisterReal34(1.0);
+    convertDoubleToReal34RegisterPush(1.0, REGISTER_X);
     fnRCL(SREG_STARTX1);
     runFunction(ITM_MULT);     //Convert input to REAL
     fnStore(SREG_X1);
-    doubleToXRegisterReal34(1.0);
+    convertDoubleToReal34RegisterPush(1.0, REGISTER_X);
     fnRCL(SREG_STARTX0);
     runFunction(ITM_MULT);     //Convert input to REAL
 
     //if input parameters X0 and X1 are the same, add a random number to X0
     if(real34CompareEqual(REGISTER_REAL34_DATA(SREG_X1), REGISTER_REAL34_DATA(REGISTER_X))) { 
-      doubleToXRegisterReal34(1e-3);
+      convertDoubleToReal34RegisterPush(1e-3, REGISTER_X);
       #ifdef PC_BUILD
         printf(">>> ADD random number to second input parameter to prevent infinite result\n");
       #endif
@@ -402,17 +367,17 @@ void graph_eqn(uint16_t mode) {
 
     runFunction(ITM_TICKS);
     fnStore(SREG_TICKS);
-    doubleToXRegisterReal34(0.0);
+    convertDoubleToReal34RegisterPush(0.0, REGISTER_X);
     fnStore(SREG_TMP);
     fnStore(SREG_Xold);   
     fnStore(SREG_Yold);   
     fnStore(SREG_X2N);    
-    doubleToXRegisterReal34(CONVERGE_FACTOR);
+    convertDoubleToReal34RegisterPush(CONVERGE_FACTOR, REGISTER_X);
     fnStore(SREG_F);                                     // factor
-    doubleToXRegisterReal34(1E-1); 
+    convertDoubleToReal34RegisterPush(1E-1, REGISTER_X); 
     fnStore(SREG_DX);                                    // initial value for difference comparison must be larger than tolerance
     fnStore(SREG_DY);                                    // initial value for difference comparison must be larger than tolerance
-    doubleToXRegisterReal34(1E-30); 
+    convertDoubleToReal34RegisterPush(1E-30, REGISTER_X); 
     fnStore(SREG_TOL);                                   // tolerance
 
     fnRCL(SREG_X0);          //determined third starting point using the slope or secant
@@ -563,13 +528,13 @@ void graph_eqn(uint16_t mode) {
 
         //when kicker = 0, then factor is small negative real
         //after that, it is complex, in the first quardrant, multplied by a alrger number every time
-        doubleToXRegisterReal34(  - (kicker +0.001) / 100.0);
+        convertDoubleToReal34RegisterPush(  - (kicker +0.001) / 100.0, REGISTER_X);
         if(kicker > 0) {
           runFunction(ITM_SQUAREROOTX);
-          doubleToXRegisterReal34(    (kicker+0.001) / 100.0);
+          convertDoubleToReal34RegisterPush(    (kicker+0.001) / 100.0, REGISTER_X);
           runFunction(ITM_SQUAREROOTX);
           runFunction(ITM_ADD);
-          doubleToXRegisterReal34(pow(-2.0,kicker));
+          convertDoubleToReal34RegisterPush(pow(-2.0,kicker), REGISTER_X);
           runFunction(ITM_MULT);
         }
 
@@ -667,16 +632,16 @@ void graph_eqn(uint16_t mode) {
               copySourceRegisterToDestRegister(REGISTER_Y,SREG_Y0); //set y0 to the result f(x0)
               //do DX = 2 (x2-x1)
               fnRCL      (SREG_DX);
-              doubleToXRegisterReal34(2);//calculate 2(x2-x1)
+              convertDoubleToReal34RegisterPush(2.0, REGISTER_X);//calculate 2(x2-x1)
               runFunction(ITM_MULT);             // DX = 2 delta x
               //do DY = (fi−2 − 4fi−1 + 3fi)
               fnRCL      (SREG_Y0);              //y0
               fnRCL      (SREG_Y1);
-              doubleToXRegisterReal34(4); 
+              convertDoubleToReal34RegisterPush(4.0, REGISTER_X); 
               runFunction(ITM_MULT);
               runFunction(ITM_SUB);               //-4.y1
               fnRCL      (SREG_Y2);
-              doubleToXRegisterReal34(3);
+              convertDoubleToReal34RegisterPush(3.0, REGISTER_X);
               runFunction(ITM_MULT); 
               runFunction(ITM_ADD);                    //+3.y2
               fnStore    (SREG_DY);
@@ -799,8 +764,8 @@ void graph_eqn(uint16_t mode) {
       //try round numbers
       if(convergent > 3 && ix > 6 && oscillations == 0 && real34CompareLessEqual(REGISTER_REAL34_DATA(REGISTER_X),const34_1e_4)) {
         convergent = 0;
-        double ix1 = registerToDouble(REGISTER_X);
-        doubleToXRegisterReal34(roundf(1000.0 * ix1)/1000.0);
+        double ix1 = convertRegisterToDouble(REGISTER_X);
+        convertDoubleToReal34RegisterPush(roundf(1000.0 * ix1)/1000.0, REGISTER_X);
       }
 
       fnStore(SREG_X2N);           // store temporarily to new x2n
@@ -837,7 +802,7 @@ void graph_eqn(uint16_t mode) {
       fnRCL(SREG_X0);
       fnRCL(SREG_X2);
       runFunction(ITM_ADD);
-      doubleToXRegisterReal34(2);       //Leaving (x1+x2)/2
+      convertDoubleToReal34RegisterPush(2.0, REGISTERX);       //Leaving (x1+x2)/2
       divFunction(!ADD_RAN, SREG_TOL);
       fnStore(SREG_X2N);   // store temporarily to new x2n
     }
@@ -923,7 +888,7 @@ void graph_eqn(uint16_t mode) {
       // replace X with ix
       // plot (ix,|dy|)
       if(!checkNaN && ix<NUMBERITERATIONS-1 && !checkzero) {
-        doubleToXRegisterReal34((double)ix);
+        convertDoubleToReal34RegisterPush((double)ix, REGISTER_X);
         if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterDataType(REGISTER_Y) == dtReal34)  {
           runFunction(ITM_SIGMAPLUS);
 
@@ -984,7 +949,7 @@ void graph_eqn(uint16_t mode) {
 
     displayFormat = DF_ALL;
     fnStrtoX("Itr=");
-    doubleToXRegisterReal34(ix*1.0);
+    convertDoubleToReal34RegisterPush(ix*1.0, REGISTER_X);
     runFunction(ITM_ADD);
     displayFormat = DF_FIX;
     fnStrtoX(";");
@@ -1072,8 +1037,8 @@ void fnEqSolvGraph (uint16_t func) {
             fnClSigma(0);
             statGraphReset();
 
-            double ix1 = registerToDouble(REGISTER_X);
-            double ix0 = registerToDouble(REGISTER_Y);
+            double ix1 = convertRegisterToDouble(REGISTER_X);
+            double ix0 = convertRegisterToDouble(REGISTER_Y);
             #if ((defined VERBOSE_SOLVER00) || (defined VERBOSE_SOLVER0)) && (defined PC_BUILD)
               printRegisterToConsole(REGISTER_Y,">>> ix0=","");
               printRegisterToConsole(REGISTER_X," ix1=","\n");
@@ -1094,8 +1059,8 @@ void fnEqSolvGraph (uint16_t func) {
             break;
           }
      case EQ_PLOT: {
-            double ix1 = registerToDouble(REGISTER_X);
-            double ix0 = registerToDouble(REGISTER_Y);
+            double ix1 = convertRegisterToDouble(REGISTER_X);
+            double ix0 = convertRegisterToDouble(REGISTER_Y);
             #if ((defined VERBOSE_SOLVER00) || (defined VERBOSE_SOLVER0)) && (defined PC_BUILD)
               printRegisterToConsole(REGISTER_Y,">>> ix0=","");
               printRegisterToConsole(REGISTER_X," ix1=","\n");

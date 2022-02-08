@@ -26,6 +26,7 @@
 #include "mathematics/rsd.h"
 #include "memory.h"
 #include "registers.h"
+#include <string.h>
 
 #include "wp43s.h"
 
@@ -575,5 +576,162 @@ void convertReal34MatrixRegisterToComplex34MatrixRegister(calcRegister_t source,
   convertComplex34MatrixToComplex34MatrixRegister(&matrix, destination);
   complexMatrixFree(&matrix);
 }
+
+void convertDoubleToString(double x, int16_t n, char *buff) { //Reformatting real strings that are formatted according to different locale settings
+  uint16_t i = 2; 
+  uint16_t j = 2; 
+  bool_t error = false;
+  snprintf(buff, n, "%.16e", x);
+
+  if(buff[0]!='-') {
+    i = 0;
+    while (buff[i]!=0) {
+      i++;
+    }
+    buff[i+1]=0;
+    while (i!=0) {
+      buff[i] = buff[i-1];
+      i--;
+    }
+    buff[0] = '+';
+  }
+
+  if(buff[0]!=0 && (buff[1]=='+' || buff[1]!='-') && (buff[2]=='.' || buff[2]==',')) {
+    buff[2] = '.';
+    i = 3; 
+    j = 3; 
+    while (buff[i]!=0) {
+      if(buff[i]==',' || buff[i]=='.' || buff[i]==' ') 
+        buff[j] = 0; 
+      else {
+        buff[j] = buff[i];
+        j++;
+      }
+      i++;
+    }
+    buff[j] = 0;
+  } else error = true;
+
+  //debug code to check for locale error by forcing a real conversion
+  //  stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
+  //  if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) error = true;
+
+  if(error) {
+    #ifdef PC_BUILD
+      printf("ERROR in locale: doubleToString: attempt to correct:  §%s§\n",buff);
+      snprintf(buff, 100, "%.16e", x);
+      printf("                                 Original conversion: §%s§\n",buff); 
+    #endif //PC_BUILD    
+    strcpy(buff,"NaN");
+  }
+}
+
+
+void convertDoubleToReal(double x, real_t *destination, realContext_t *ctxt) {
+  char buff[100];
+  buff[0]=0;
+  convertDoubleToString(x, 100, buff);
+  stringToReal(buff, destination, ctxt);
+}
+
+void convertDoubleToReal34Register(double x, calcRegister_t destination) {
+  char buff[100];
+  reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+  convertDoubleToString(x, 100, buff);
+  stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
+
+  #ifdef PC_BUILD
+    if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) {
+      snprintf(buff, 100, "%.16e", x);
+      printf("ERROR in convertDoubleToReal34Register: %s\n",buff);
+    }
+  #endif //PC_BUILD
+}
+
 #endif // TESTSUITE_BUILD
+
+
+double convertRegisterToDouble(calcRegister_t regist) {
+  double y;
+  real_t tmpy;
+  switch(getRegisterDataType(regist)) {
+  case dtLongInteger:
+    convertLongIntegerRegisterToReal(regist, &tmpy, &ctxtReal39);
+    break;
+  case dtReal34:
+  case dtComplex34:
+    real34ToReal(REGISTER_REAL34_DATA(regist), &tmpy);
+    break;
+  default:
+    #ifdef PC_BUILD
+      printf("ERROR IN convertRegisterToDouble\n"); 
+    #endif
+    return DOUBLE_NOT_INIT;
+    break;
+  }
+  realToDouble(&tmpy, &y);
+  return y;
+}
+
+
+//Pauli volunteered this fuction, rev 1 2021-10-10
+#if DECDPUN != 3
+#error DECDPUN must be 3
+#endif
+static float fnRealToFloat(const real_t *r){
+    int s = 0;
+    int j, n, e;
+    static const float exps[] = {
+        1.e-45, 1.e-44, 1.e-43, 1.e-42, 1.e-41, 1.e-40, 1.e-39, 1.e-38,
+        1.e-37, 1.e-36, 1.e-35, 1.e-34, 1.e-33, 1.e-32, 1.e-31, 1.e-30,
+        1.e-29, 1.e-28, 1.e-27, 1.e-26, 1.e-25, 1.e-24, 1.e-23, 1.e-22,
+        1.e-21, 1.e-20, 1.e-19, 1.e-18, 1.e-17, 1.e-16, 1.e-15, 1.e-14,
+        1.e-13, 1.e-12, 1.e-11, 1.e-10, 1.e-9,  1.e-8,  1.e-7,  1.e-6,
+        1.e-5,  1.e-4,  1.e-3,  1.e-2,  1.e-1,  1.e0,   1.e1,   1.e2,
+        1.e3,   1.e4,   1.e5,   1.e6,   1.e7,   1.e8,   1.e9,
+        1.e10,  1.e11,  1.e12,  1.e13,  1.e14,  1.e15,  1.e16,  1.e17,
+        1.e18,  1.e19,  1.e20,  1.e21,  1.e22,  1.e23,  1.e24,  1.e25,
+        1.e26,  1.e27,  1.e28,  1.e29,  1.e30,  1.e31,  1.e32,  1.e33,
+        1.e34,  1.e35,  1.e36,  1.e37,  1.e38
+    };
+
+    if (realIsSpecial(r)) {
+        if (realIsNaN(r))
+            return 0. / 0.;
+        goto infinite;
+    }
+    if (realIsZero(r))
+        goto zero;
+
+    j = (r->digits + DECDPUN-1) / DECDPUN;
+    while (j > 0)
+        if ((s = r->lsu[--j]) != 0)
+            break;
+    for (n = 0; --j >= 0 && n < 2; n++)
+        s = (s * 1000) + r->lsu[j];
+    if (realIsNegative(r))
+        s = -s;
+    e = r->exponent + (j + 1) * DECDPUN;
+    if (e < -45) {
+zero:
+        return realIsPositive(r) ? 0. : -0.;
+    }
+    if (e > 38) {
+infinite:
+        if (realIsPositive(r))
+            return 1. / 0.;
+        return -1. / 0.;
+    }
+    return (float)s * exps[e + 45];
+}
+
+//#define realToReal39(source, destination) decQuadFromNumber ((real39_t *)(destination), source, &ctxtReal39)
+
+void realToFloat(const real_t *vv, float *v) {
+  *v = fnRealToFloat(vv);
+}
+
+void realToDouble(const real_t *vv, double *v) {      //Not using double internally, i.e. using float type. Change fnRealToFloat if double is needed in future
+  *v = fnRealToFloat(vv);
+}
 
