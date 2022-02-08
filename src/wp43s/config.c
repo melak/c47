@@ -616,6 +616,8 @@ void fnReset(uint16_t confirmation) {
     firstDisplayedLocalStepNumber = 0;
     labelList                     = NULL;
     programList                   = NULL;
+    flashLabelList                = NULL;
+    flashProgramList              = NULL;
     *(beginOfProgramMemory + 0) = (ITM_END >> 8) | 0x80;
     *(beginOfProgramMemory + 1) =  ITM_END       & 0xff;
     *(beginOfProgramMemory + 2) = 255; // .END.
