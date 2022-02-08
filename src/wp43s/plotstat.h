@@ -31,11 +31,9 @@
 #define   zoomfactor     0.05f     // default is 0.05, which is 5% space around the data points. Use 0.05 * 40 for wide view
 #define   numberIntervals   50     // default 50, auto increase if jumps found
 #define   fittedcurveboxes   0     // default 0 = smooth line
-#define   USEFLOATING useFLOAT     // USEFLOATING can be used to change the graphing to work in different number types.
+#define   USEFLOATING useFLOAT     // USEFLOATING can be used to change the STATS graphing to work using different number types.
                                    //   Note that limited precision is required as only the pixels on screen need to be considered
-                                   // useFLOAT is faster than useREAL4 and useREAL39
-                                   // useREAL4 for graph reproduction
-                                   // Note: if useREAL4, then see plotstat.c TODO create REAL from x (double) if REALS will be used
+                                   //   useFLOAT is much faster plotting STATS graphs on the real hardware than useREAL4 and useREAL39
 #define   FLoatingMax    1e38f     //convenient round figures used for maxima and minima determination
 #define   FLoatingMin    -1e38f
 
