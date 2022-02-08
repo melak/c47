@@ -2377,6 +2377,7 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
 
 
 
+#ifndef TESTSUITE_BUILD
 static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue) {
   int32_t value;
 
@@ -2430,23 +2431,30 @@ static void getPixelPos(int32_t *x, int32_t *y) {
   *x = _getPositionFromRegister(REGISTER_X, SCREEN_WIDTH);
   *y = _getPositionFromRegister(REGISTER_Y, SCREEN_HEIGHT);
 }
+#endif // TESTSUITE_BUILD
 
 void fnClLcd(uint16_t unusedButMandatoryParameter) {
+#ifndef TESTSUITE_BUILD
   clearScreen();
+#endif // TESTSUITE_BUILD
 }
 
 void fnPixel(uint16_t unusedButMandatoryParameter) {
+#ifndef TESTSUITE_BUILD
   int32_t x, y;
   getPixelPos(&x, &y);
   if(lastErrorCode == ERROR_NONE) {
     setBlackPixel(x - 1, y - 1);
   }
+#endif // TESTSUITE_BUILD
 }
 
 void fnPoint(uint16_t unusedButMandatoryParameter) {
+#ifndef TESTSUITE_BUILD
   int32_t x, y;
   getPixelPos(&x, &y);
   if(lastErrorCode == ERROR_NONE) {
     lcd_fill_rect(x - 2, y - 2, 3, 3, LCD_EMPTY_VALUE);
   }
+#endif // TESTSUITE_BUILD
 }
