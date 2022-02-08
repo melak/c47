@@ -41,7 +41,7 @@ TO_QSPI void (* const division[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_
 /*  1 Long integer  */ {divLonILonI, divRealLonI, divCplxLonI, divTimeLonI, divError, divError, divRemaLonI, divCxmaLonI, divShoILonI,  divError},
 /*  2 Real34        */ {divLonIReal, divRealReal, divCplxReal, divTimeReal, divError, divError, divRemaReal, divCxmaReal, divShoIReal,  divError},
 /*  3 Complex34     */ {divLonICplx, divRealCplx, divCplxCplx, divError,    divError, divError, divRemaCplx, divCxmaCplx, divShoICplx,  divError},
-/*  4 Time          */ {divError,    divError,    divError,    divTimeTime, divError, divError, divError,    divError,    divError,     divError},
+/*  4 Time          */ {divLonITime, divRealTime, divError,    divTimeTime, divError, divError, divError,    divError,    divShoITime,  divError},
 /*  5 Date          */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError,     divError},
 /*  6 String        */ {divError,    divError,    divError,    divError,    divError, divError, divError,    divError,    divError,     divError},
 /*  7 Real34 mat    */ {divError,    divError,    divError,    divError,    divError, divError, divRemaRema, divCxmaRema, divError,     divError},
@@ -486,6 +486,19 @@ void divTimeLonI(void) {
 
 
 /********************************************//**
+ * \brief Y(long integer) ÷ X(time) ==> X(real34)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void divLonITime(void) {
+  convertTimeRegisterToReal34Register(REGISTER_X, REGISTER_X);
+  divLonIReal();
+}
+
+
+
+/********************************************//**
  * \brief Y(time) ÷ X(short integer) ==> X(time)
  *
  * \param void
@@ -528,6 +541,19 @@ void divTimeShoI(void) {
     realDivide(&y, &x, &x, &ctxtReal39);
     convertRealToReal34ResultRegister(&x, REGISTER_X);
   }
+}
+
+
+
+/********************************************//**
+ * \brief Y(short integer) ÷ X(time) ==> X(real34)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void divShoITime(void) {
+  convertTimeRegisterToReal34Register(REGISTER_X, REGISTER_X);
+  divShoIReal();
 }
 
 
@@ -578,6 +604,19 @@ void divTimeReal(void) {
       divError();
     }
   }
+}
+
+
+
+/********************************************//**
+ * \brief Y(real34) ÷ X(time) ==> X(real34)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void divRealTime(void) {
+  convertTimeRegisterToReal34Register(REGISTER_X, REGISTER_X);
+  divRealReal();
 }
 
 

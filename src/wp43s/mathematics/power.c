@@ -130,6 +130,12 @@ void powLonILonI(void) {
     longIntegerFree(exponent);
     return;
   }
+  else if((longIntegerCompareInt(base, 1) == 0 || longIntegerCompareInt(base, -1) == 0) && longIntegerCompareInt(exponent, -1) == 0) {
+    convertLongIntegerToLongIntegerRegister(base, REGISTER_X);
+    longIntegerFree(base);
+    longIntegerFree(exponent);
+    return;
+  }
   else if(longIntegerIsNegative(exponent)) {
     convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
     powLonIReal();
@@ -380,11 +386,17 @@ void powCxmaCplx(void) {
  * \return void
  ***********************************************/
 void powShoIShoI(void) {
-  int32_t exponentSign;
+  int32_t exponentSign, baseSign;
 
-  WP34S_extract_value(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)), &exponentSign);
+  uint64_t exponent = WP34S_extract_value(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)), &exponentSign);
+  uint64_t base = WP34S_extract_value(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_Y)), &baseSign);
 
-  if(exponentSign) { // exponent is negative
+  if(base == 1 && exponent == 1 && exponentSign) {
+    setRegisterShortIntegerBase(REGISTER_X, getRegisterShortIntegerBase(REGISTER_Y));
+    *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = *(REGISTER_SHORT_INTEGER_DATA(REGISTER_Y));
+    return;
+  }
+  else if(exponentSign) { // exponent is negative
     convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
     convertShortIntegerRegisterToReal34Register(REGISTER_Y, REGISTER_Y);
     powRealReal();
