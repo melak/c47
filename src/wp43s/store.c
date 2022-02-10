@@ -21,6 +21,7 @@
 #include "error.h"
 #include "items.h"
 #include "mathematics/compare.h"
+#include "mathematics/integerPart.h"
 #include "matrix.h"
 #include "registerValueConversions.h"
 #include "registers.h"
@@ -34,7 +35,7 @@ bool_t regInRange(uint16_t regist) {
   bool_t inRange = (
     (regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) ||
     (regist >= FIRST_NAMED_VARIABLE && regist - FIRST_NAMED_VARIABLE < numberOfNamedVariables) ||
-    (regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE));
+    (regist >= FIRST_RESERVED_VARIABLE && regist <= LAST_RESERVED_VARIABLE));
 #ifdef PC_BUILD
   if(!inRange) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
@@ -53,7 +54,7 @@ bool_t regInRange(uint16_t regist) {
 }
 
 static bool_t _checkReadOnlyVariable(uint16_t regist) {
-  if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.readOnly == 1) {
+  if(regist >= FIRST_RESERVED_VARIABLE && regist <= LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.readOnly == 1) {
     displayCalcErrorMessage(ERROR_WRITE_PROTECTED_VAR, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "reserved variable %s", allReservedVariables[regist - FIRST_RESERVED_VARIABLE].reservedVariableName + 1);
@@ -161,7 +162,26 @@ static bool_t storeIjComplex(complex34Matrix_t *matrix) {
 
 
 static void _storeValue(uint16_t regist) {
-  if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.dataType == dtReal34) {
+  if(regist == RESERVED_VARIABLE_GRAMOD) {
+    copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
+    fnIp(NOPARAM);
+    if(lastErrorCode == ERROR_NONE) {
+      longInteger_t x;
+      convertLongIntegerRegisterToLongInteger(REGISTER_X, x);
+      if(longIntegerCompareInt(x, 0) >= 0 && longIntegerCompareInt(x, 3) <= 0) {
+        copySourceRegisterToDestRegister(REGISTER_X, regist);
+        copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_X);
+      }
+      else {
+        displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          moreInfoOnError("In function _storeValue:", "Invalid value for GRAMOD", NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      }
+      longIntegerFree(x);
+    }
+  }
+  else if(regist >= FIRST_RESERVED_VARIABLE && regist <= LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.dataType == dtReal34) {
     copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
     fnToReal(NOPARAM);
     if(lastErrorCode == ERROR_NONE) {

@@ -31,6 +31,7 @@
 #include "fonts.h"
 #include "items.h"
 #include "keyboard.h"
+#include "longIntegerType.h"
 #include "mathematics/comparisonReals.h"
 #include "matrix.h"
 #include "memory.h"
@@ -624,6 +625,23 @@ void execTimerApp(uint16_t timerType) {
       }
 
       *(screenData + y*screenStride + x) = OFF_PIXEL;
+      screenChange = true;
+    }
+
+
+
+    void flipPixel(uint32_t x, uint32_t y) {
+      if(x>=SCREEN_WIDTH || y>=SCREEN_HEIGHT) {
+        printf("In function flipPixel: x=%u, y=%u outside the screen!\n", x, y);
+        return;
+      }
+
+      if(*(screenData + y*screenStride + x) == OFF_PIXEL) {
+        *(screenData + y*screenStride + x) = ON_PIXEL;
+      }
+      else {
+        *(screenData + y*screenStride + x) = OFF_PIXEL;
+      }
       screenChange = true;
     }
 
@@ -2462,7 +2480,12 @@ void fnPoint(uint16_t unusedButMandatoryParameter) {
 void fnAGraph(uint16_t regist) {
 #ifndef TESTSUITE_BUILD
   int32_t x, y;
+  uint32_t gramod;
+  longInteger_t liGramod;
   getPixelPos(&x, &y);
+  convertLongIntegerRegisterToLongInteger(RESERVED_VARIABLE_GRAMOD, liGramod);
+  longIntegerToUInt(liGramod, gramod);
+  longIntegerFree(liGramod);
   if(lastErrorCode == ERROR_NONE) {
     if(getRegisterDataType(regist) == dtShortInteger) {
       uint64_t val;
@@ -2473,8 +2496,27 @@ void fnAGraph(uint16_t regist) {
       convertShortIntegerRegisterToUInt64(regist, &sign, &val);
       shortIntegerMode = savedShortIntegerMode;
       for(uint32_t i = 0; i < shortIntegerWordSize; ++i) {
-        if(val & 1) {
-          setBlackPixel(x - 1, y - 1 + i);
+        switch(gramod) {
+          case 1:
+            if(!(val & 1)) {
+              setWhitePixel(x - 1, y - 1 + i);
+            }
+            /* fallthrough */
+          case 0:
+            if(val & 1) {
+              setBlackPixel(x - 1, y - 1 + i);
+            }
+            break;
+          case 2:
+            if(val & 1) {
+              setWhitePixel(x - 1, y - 1 + i);
+            }
+            break;
+          case 3:
+            if(val & 1) {
+              flipPixel(x - 1, y - 1 + i);
+            }
+            break;
         }
         val >>= 1;
       }
