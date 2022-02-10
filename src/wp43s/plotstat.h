@@ -37,8 +37,6 @@
 #define   FLoatingMax    1e38f     //convenient round figures used for maxima and minima determination
 #define   FLoatingMin    -1e38f
 
-extern  char     plotStatMx[8];
-extern  int32_t  drawMxN;
 
 //Graph options
 extern  float    graph_dx;

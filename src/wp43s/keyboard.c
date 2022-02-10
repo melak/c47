@@ -36,6 +36,7 @@
 #include "screen.h"
 #include "softmenus.h"
 #include "solver/equation.h"
+#include "solver/graph.h"
 #include "sort.h"
 #include "stack.h"
 #include "stats.h"

@@ -67,6 +67,10 @@
 #define NUMBERITERATIONS 35      // Must be smaller than LIM (see STATS)
 
 
+char     plotStatMx[8];
+
+
+
 #ifndef TESTSUITE_BUILD
 	static void fnRCL(int16_t inp) { //DONE
 	  setSystemFlag(FLAG_ASLIFT);
@@ -234,15 +238,31 @@ void check_osc(uint8_t ii){
 //###################################################################################
 //PLOTTER
 
+int32_t drawMxN(void){
+  uint16_t rows = 0;
+  if(plotStatMx[0]!='D') return 0;
+  calcRegister_t regStats = findNamedVariable(plotStatMx);
+  if(regStats == INVALID_VARIABLE) {
+    return 0;
+  }
+  if(isStatsMatrix(&rows,plotStatMx)) {
+    real34Matrix_t stats;
+    linkToRealMatrixRegister(regStats, &stats);
+    return stats.header.matrixRows;
+  } else return 0;
+
+  
+}
+
+
 void fnClDrawMx() {
-  strcpy(plotStatMx,"DrwMX");
-  drawMxN = 0;
+  if(plotStatMx[0]!='D') strcpy(plotStatMx,"DrwMX");
   calcRegister_t regStats = findNamedVariable(plotStatMx);
   if(regStats == INVALID_VARIABLE) {
     allocateNamedVariable(plotStatMx, dtReal34, REAL34_SIZE);
     regStats = findNamedVariable(plotStatMx);
   }
-
+  clearRegister(regStats);                  // this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
   if(regStats == INVALID_VARIABLE) {
     displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -253,7 +273,6 @@ void fnClDrawMx() {
 }
 
 static void AddtoDrawMx() {
-  strcpy(plotStatMx,"DrwMX");
   real_t x, y;
   uint16_t rows = 0, cols;
   calcRegister_t regStats = findNamedVariable(plotStatMx);
@@ -281,8 +300,6 @@ static void AddtoDrawMx() {
     cols = stats.header.matrixColumns;
     realToReal34(&x, &stats.matrixElements[(rows-1) * cols    ]);
     realToReal34(&y, &stats.matrixElements[(rows-1) * cols + 1]);
-
-    drawMxN++;
   }
   else {
     displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
@@ -312,7 +329,7 @@ void graph_eqn(uint16_t mode) {
       AddtoDrawMx();
 
       #if (defined VERBOSE_SOLVER0) && (defined PC_BUILD)
-        printf(">>> Into DrwMX:%i points ",drawMxN);
+        printf(">>> Into DrwMX:%i points ",drawMxN());
         printRegisterToConsole(REGISTER_X,"X:","");
         printRegisterToConsole(REGISTER_Y," Y:","\n");
       #endif
@@ -1079,8 +1096,8 @@ void fnEqSolvGraph (uint16_t func) {
      case EQ_SOLVE:{
             thereIsSomethingToUndo = false;
             saveForUndo();
-            if(!saveStatsMatrix()) return;
-            fnClSigma(0);
+
+            fnClDrawMx();
             statGraphReset();
 
             double ix1 = convertRegisterToDouble(REGISTER_X);

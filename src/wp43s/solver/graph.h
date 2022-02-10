@@ -25,11 +25,14 @@
 #include "typeDefinitions.h"
 #include <stdint.h>
 
+extern char plotStatMx[8];
+
 
 #define EQ_SOLVE 0   //fnEqSolvGraph
 #define EQ_PLOT  1   //graph_eqn
 
-void   fnEqSolvGraph (uint16_t func);
-void   graph_eqn(uint16_t unusedButMandatoryParameter);
+void    fnEqSolvGraph (uint16_t func);
+void    graph_eqn(uint16_t unusedButMandatoryParameter);
+int32_t drawMxN(void);
 
 #endif // GRAPH_H

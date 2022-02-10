@@ -32,6 +32,7 @@
 #include "registerValueConversions.h"
 #include "screen.h"
 #include "softmenus.h"
+#include "solver/graph.h"
 #include "stack.h"
 #include "stats.h"
 #include "statusBar.h"
@@ -55,8 +56,6 @@ void fnPlotRegressionLine(uint16_t plotMode);
   static void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2);
 #endif //TESTSUITE_BUILD
 
-char      plotStatMx[8];
-int32_t   drawMxN = 0;
 
 float     graph_dx;           // Many unused functions in WP43S. Do not change the variables.
 float     graph_dy;
@@ -127,7 +126,6 @@ void statGraphReset(void){
   float grf_x(int i) {
     float xf=0;
     real_t xr;
-printf(">>> %s\n",plotStatMx);
     calcRegister_t regStats = findNamedVariable(plotStatMx);
     if(regStats != INVALID_VARIABLE) {
       real34Matrix_t stats;
@@ -769,9 +767,9 @@ void graphPlotstat(uint16_t selection){
   graph_axis();
   plotmode = _SCAT;
 
-  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN >= 2) ) {
+  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) ) {
     if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, statnum);}
-    else {statnum = drawMxN;}
+    else {statnum = drawMxN();}
     #if defined STATDEBUG && defined PC_BUILD
       printf("statnum n=%d\n",statnum);
     #endif
@@ -986,7 +984,7 @@ void graphDrawLRline(uint16_t selection) {
     int32_t n;
     uint16_t NN;
     if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, n);}
-    else {n = drawMxN;}
+    else {n = drawMxN();}
     NN = (uint16_t) n;
     bool_t isValidDraw =
       selection != 0
@@ -1236,14 +1234,14 @@ switch (plotMode) {
 #if defined STATDEBUG && defined PC_BUILD
   printf("fnPlotStat1: plotSelection = %u; Plotmode=%u\n",plotSelection,plotMode);
   printf("#####>>> fnPlotStat1: plotSelection:%u:%s  Plotmode:%u lastplotmode:%u  lrSelection:%u lrChosen:%u plotStatMx:%s\n",plotSelection, getCurveFitModeName(plotSelection), plotMode, lastPlotMode, lrSelection, lrChosen, plotStatMx);
-  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN >= 2) ) {
+  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) ) {
     int16_t cnt;
     if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, cnt);}
-    else {cnt = drawMxN;}
+    else {cnt = drawMxN();}
     printf("Stored values %i\n",cnt);
   }
 #endif //STATDEBUG
-if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN >= 2) ) {
+if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) ) {
 
   PLOT_SCALE = false;
 
@@ -1318,7 +1316,7 @@ if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='
     calcMode = CM_NORMAL;
     displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "There is no statistical data available!");
+      sprintf(errorMessage, "There is no statistical/plot data available!");
       moreInfoOnError("In function fnPlotStat:", errorMessage, NULL, NULL);
     #endif
   }
