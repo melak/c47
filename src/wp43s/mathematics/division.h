@@ -39,6 +39,7 @@ void divLonILonI(void);
 void divLonIShoI(void);
 void divLonIReal(void);
 void divLonICplx(void);
+void divLonITime(void);
 
 //      RegYRegX
 void divTimeLonI(void);
@@ -67,12 +68,14 @@ void divShoILonI(void);
 void divShoIShoI(void);
 void divShoIReal(void);
 void divShoICplx(void);
+void divShoITime(void);
 
 //      RegYRegX
 void divRealLonI(void);
 void divRealShoI(void);
 void divRealReal(void);
 void divRealCplx(void);
+void divRealTime(void);
 
 //      RegYRegX
 void divCplxLonI(void);
