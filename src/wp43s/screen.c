@@ -2419,7 +2419,7 @@ static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue)
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     #ifdef PC_BUILD
       sprintf(errorMessage, "register %" PRId16 " is %s:", regist, getRegisterDataTypeName(regist, true, false));
-      moreInfoOnError("In function _getPositionFromRegister:", errorMessage, "not suited for indirect addressing!", NULL);
+      moreInfoOnError("In function _getPositionFromRegister:", errorMessage, "not suited for addressing!", NULL);
     #endif // PC_BUILD
     return -1;
   }
@@ -2455,6 +2455,38 @@ void fnPoint(uint16_t unusedButMandatoryParameter) {
   getPixelPos(&x, &y);
   if(lastErrorCode == ERROR_NONE) {
     lcd_fill_rect(x - 2, y - 2, 3, 3, LCD_EMPTY_VALUE);
+  }
+#endif // TESTSUITE_BUILD
+}
+
+void fnAGraph(uint16_t regist) {
+#ifndef TESTSUITE_BUILD
+  int32_t x, y;
+  getPixelPos(&x, &y);
+  if(lastErrorCode == ERROR_NONE) {
+    if(getRegisterDataType(regist) == dtShortInteger) {
+      uint64_t val;
+      int16_t sign;
+      const uint8_t savedShortIntegerMode = shortIntegerMode;
+
+      shortIntegerMode = SIM_UNSIGN;
+      convertShortIntegerRegisterToUInt64(regist, &sign, &val);
+      shortIntegerMode = savedShortIntegerMode;
+      for(uint32_t i = 0; i < shortIntegerWordSize; ++i) {
+        if(val & 1) {
+          setBlackPixel(x - 1, y - 1 + i);
+        }
+        val >>= 1;
+      }
+    }
+
+    else {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #ifdef PC_BUILD
+        sprintf(errorMessage, "register %" PRId16 " is %s:", regist, getRegisterDataTypeName(regist, true, false));
+        moreInfoOnError("In function fnAGraph:", errorMessage, "not suited for addressing!", NULL);
+      #endif // PC_BUILD
+    }
   }
 #endif // TESTSUITE_BUILD
 }
