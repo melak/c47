@@ -55,6 +55,8 @@ void fnPlotRegressionLine(uint16_t plotMode);
   static void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2);
 #endif //TESTSUITE_BUILD
 
+char      plotStatMx[8];
+int32_t   drawMxN = 0;
 
 float     graph_dx;           // Many unused functions in WP43S. Do not change the variables.
 float     graph_dy;
@@ -125,7 +127,8 @@ void statGraphReset(void){
   float grf_x(int i) {
     float xf=0;
     real_t xr;
-    calcRegister_t regStats = findNamedVariable("STATS");
+printf(">>> %s\n",plotStatMx);
+    calcRegister_t regStats = findNamedVariable(plotStatMx);
     if(regStats != INVALID_VARIABLE) {
       real34Matrix_t stats;
       linkToRealMatrixRegister(regStats, &stats);
@@ -140,7 +143,7 @@ void statGraphReset(void){
   float grf_y(int i) {
     float yf=0;
     real_t yr;
-    calcRegister_t regStats = findNamedVariable("STATS");
+    calcRegister_t regStats = findNamedVariable(plotStatMx);
     if(regStats != INVALID_VARIABLE) {
       real34Matrix_t stats;
       linkToRealMatrixRegister(regStats, &stats);
@@ -571,7 +574,6 @@ void graph_axis (void){
   graphAxisDraw();
 }
 
-
 char * radixProcess(const char * ss) {  //  .  HIERDIE WERK GLAD NIE
   int8_t ix = 0, iy = 0;
   tmp_names1[0]=0;
@@ -767,8 +769,9 @@ void graphPlotstat(uint16_t selection){
   graph_axis();
   plotmode = _SCAT;
 
-  if(checkMinimumDataPoints(const_2)) {
-    realToInt32(SIGMA_N, statnum);
+  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN >= 2) ) {
+    if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, statnum);}
+    else {statnum = drawMxN;}
     #if defined STATDEBUG && defined PC_BUILD
       printf("statnum n=%d\n",statnum);
     #endif
@@ -982,7 +985,8 @@ void graphDrawLRline(uint16_t selection) {
   void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2){
     int32_t n;
     uint16_t NN;
-    realToInt32(SIGMA_N, n);
+    if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, n);}
+    else {n = drawMxN;}
     NN = (uint16_t) n;
     bool_t isValidDraw =
       selection != 0
@@ -1043,8 +1047,8 @@ void graphDrawLRline(uint16_t selection) {
           x = ix + intervalW / ((double)((uint16_t) 1 << xx));
           if(USEFLOATING == useREAL4) {
             //TODO create REAL from x (double) if REALS will be used
-            //snprintf(ss,100,"%f",x); stringToReal(ss,&XX,&ctxtRealShort);
-            convertDoubleToReal(x, &XX, &ctxtRealShort);
+            //snprintf(ss,100,"%f",x); stringToReal(ss,&XX,&ctxtReal4);
+            convertDoubleToReal(x, &XX, &ctxtReal4);
           } else
           if(USEFLOATING == useREAL39) {
             //TODO create REAL from x (double) if REALS will be used
@@ -1216,15 +1220,30 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
 //** plotSelection = 0 means that no curve fit is plotted
 //
 void fnPlotStat(uint16_t plotMode){
+
+switch (plotMode) {
+   case PLOT_GRAPH:  strcpy(plotStatMx, "DrwMX");
+            break;
+   case PLOT_ORTHOF:
+   case PLOT_START:
+   case PLOT_REV:
+   case PLOT_NXT:
+   case PLOT_LR: strcpy(plotStatMx, "STATS");
+            break;
+   default: break;
+}
+
 #if defined STATDEBUG && defined PC_BUILD
   printf("fnPlotStat1: plotSelection = %u; Plotmode=%u\n",plotSelection,plotMode);
-  printf("#####>>> fnPlotStat1: plotSelection:%u:%s  Plotmode:%u lastplotmode:%u  lrSelection:%u lrChosen:%u\n",plotSelection, getCurveFitModeName(plotSelection), plotMode, lastPlotMode, lrSelection, lrChosen);
-  int16_t cnt;
-  realToInt32(SIGMA_N, cnt);
-  printf("Stored values %i\n",cnt);
+  printf("#####>>> fnPlotStat1: plotSelection:%u:%s  Plotmode:%u lastplotmode:%u  lrSelection:%u lrChosen:%u plotStatMx:%s\n",plotSelection, getCurveFitModeName(plotSelection), plotMode, lastPlotMode, lrSelection, lrChosen, plotStatMx);
+  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN >= 2) ) {
+    int16_t cnt;
+    if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, cnt);}
+    else {cnt = drawMxN;}
+    printf("Stored values %i\n",cnt);
+  }
 #endif //STATDEBUG
-
-if(checkMinimumDataPoints(const_2)) {
+if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN >= 2) ) {
 
   PLOT_SCALE = false;
 

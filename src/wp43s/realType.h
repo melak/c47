@@ -87,6 +87,7 @@ typedef struct {
 #define real_t                                                 decNumber
 
 #define REAL_SIZE                                              TO_BLOCKS(sizeof(real_t))
+#define REAL4_SIZE                                             TO_BLOCKS(sizeof(real4_t))
 #define REAL34_SIZE                                            TO_BLOCKS(sizeof(real34_t))
 #define REAL39_SIZE                                            TO_BLOCKS(sizeof(real39_t))
 #define REAL51_SIZE                                            TO_BLOCKS(sizeof(real51_t))

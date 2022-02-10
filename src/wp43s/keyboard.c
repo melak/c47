@@ -2039,6 +2039,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           #endif // DMCP_BUILD
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
+          strcpy(plotStatMx, "STATS");
           fnPlotStat(PLOT_NXT);
         }
         else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQN){
@@ -2171,6 +2172,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           fnSst(NOPARAM);
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
+          strcpy(plotStatMx, "STATS");
           fnPlotStat(PLOT_REV); //REVERSE
         }
         else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQN){

@@ -956,7 +956,7 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
       realCopy(const_0,YY);
       real_t SS,TT,UU;
       if(USEFLOAT == useREAL4) {
-        realContextForecast = &ctxtRealShort;
+        realContextForecast = &ctxtReal4;
       } else 
       if(USEFLOAT == useREAL39) {
         realContextForecast = &ctxtReal39;

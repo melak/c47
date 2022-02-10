@@ -234,6 +234,67 @@ void check_osc(uint8_t ii){
 //###################################################################################
 //PLOTTER
 
+void fnClDrawMx() {
+  strcpy(plotStatMx,"DrwMX");
+  drawMxN = 0;
+  calcRegister_t regStats = findNamedVariable(plotStatMx);
+  if(regStats == INVALID_VARIABLE) {
+    allocateNamedVariable(plotStatMx, dtReal34, REAL34_SIZE);
+    regStats = findNamedVariable(plotStatMx);
+  }
+
+  if(regStats == INVALID_VARIABLE) {
+    displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "DrwMX matrix not created");
+      moreInfoOnError("In function fnClPlotData:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+}
+
+static void AddtoDrawMx() {
+  strcpy(plotStatMx,"DrwMX");
+  real_t x, y;
+  uint16_t rows = 0, cols;
+  calcRegister_t regStats = findNamedVariable(plotStatMx);
+  if(!isStatsMatrix(&rows,plotStatMx)) {
+    regStats = allocateNamedMatrix(plotStatMx, 1, 2);
+    real34Matrix_t stats;
+    linkToRealMatrixRegister(regStats, &stats);
+    realMatrixInit(&stats,1,2);
+  }
+  else {
+    if(appendRowAtMatrixRegister(regStats)) {
+    }
+    else {
+      regStats = INVALID_VARIABLE;
+    }
+  }
+  if(regStats != INVALID_VARIABLE) {
+
+    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+    real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
+
+    real34Matrix_t stats;
+    linkToRealMatrixRegister(regStats, &stats);
+    rows = stats.header.matrixRows;
+    cols = stats.header.matrixColumns;
+    realToReal34(&x, &stats.matrixElements[(rows-1) * cols    ]);
+    realToReal34(&y, &stats.matrixElements[(rows-1) * cols + 1]);
+
+    drawMxN++;
+  }
+  else {
+    displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "additional matrix line not added; rows = %i",rows);
+      moreInfoOnError("In function AddtoDrawMx:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+}
+
+
+
 void graph_eqn(uint16_t mode) {
   #ifndef TESTSUITE_BUILD
     if(graphVariable <= 0 || graphVariable > 65535) return;
@@ -242,18 +303,16 @@ void graph_eqn(uint16_t mode) {
     fnClearStack(0);
 
     if(mode == 1) {
-      fnClSigma(0);
+      fnClDrawMx();
     }
     for(x=x_min; x<=x_max; x+=0.99999*(x_max-x_min)/SCREEN_WIDTH_GRAPH*10) {    //Reduced the amount of sample data from 400 points to 40 points
       convertDoubleToReal34RegisterPush(x, REGISTER_X);      
       //leaving y in Y and x in X
       execute_rpn_function();
-      fnSigma(1);
+      AddtoDrawMx();
 
       #if (defined VERBOSE_SOLVER0) && (defined PC_BUILD)
-        int32_t cnt;
-        realToInt32(SIGMA_N, cnt);    
-        printf(">>> Into STATS:%i points ",cnt);
+        printf(">>> Into DrwMX:%i points ",drawMxN);
         printRegisterToConsole(REGISTER_X,"X:","");
         printRegisterToConsole(REGISTER_Y," Y:","\n");
       #endif
@@ -261,19 +320,6 @@ void graph_eqn(uint16_t mode) {
         if(lastErrorCode == 24) { printf("ERROR CODE CANNOT STAT COMPLEX RESULT, ignored\n"); lastErrorCode = 0;}
       #endif //PC_BUILD
     }
-
-
-    SAVED_SIGMA_LAct = 0;   //prevent undo of last stats add action. REMOVE when STATS are not used anymore
-
-    #ifdef DEBUGUNDO
-      int32_t cnt;
-      realToInt32(SIGMA_N, cnt);    
-      printf(">>> graph_eqn: SIGMA_N STATS:%i points \n",cnt);
-      calcRegister_t regStats = findNamedVariable("STATS");
-      printRegisterToConsole(regStats,"graph_eqn: STATS:\n","\n");
-      printRegisterToConsole(TEMP_REGISTER_2_SAVED_STATS,"graph_eqn: TEMP_REGISTER_2_SAVED_STATS:\n","\n");
-    #endif //DEBUGUNDO
-
 
     fnClearStack(0);
     fnPlot(0);
@@ -1073,8 +1119,8 @@ void fnEqSolvGraph (uint16_t func) {
             
             thereIsSomethingToUndo = false;
             saveForUndo();
-            if(!saveStatsMatrix()) return;
-            fnClSigma(0);
+
+            fnClDrawMx();
             statGraphReset();
 
             fnDrop(0);
