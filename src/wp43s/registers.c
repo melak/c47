@@ -1314,7 +1314,7 @@ int16_t indirectAddressing(calcRegister_t regist, bool_t valueIsRegister, int16_
     longInteger_t lgInt;
 
     convertLongIntegerRegisterToLongInteger(regist, lgInt);
-    if(longIntegerIsNegative(lgInt) || longIntegerCompareUInt(lgInt, maxValue) >= 0) {
+    if(longIntegerIsNegative(lgInt) || longIntegerCompareUInt(lgInt, maxValue) > 0) {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #ifdef PC_BUILD
         longIntegerToAllocatedString(lgInt, errorMessage, ERROR_MESSAGE_LENGTH);
