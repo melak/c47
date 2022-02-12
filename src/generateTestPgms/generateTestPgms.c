@@ -4141,8 +4141,83 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = 66;
 
-    *(currentStep++) = ITM_XEQ;
-    *(currentStep++) = 62;
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = 2; // String length
+    *(currentStep++) = '6';
+    *(currentStep++) = '3';
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = 88;
+
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = 63;
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 45;
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_SHORT_INTEGER;
+    *(currentStep++) = 16; // Base
+    *(currentStep++) = 1;  // String length
+    *(currentStep++) = '3';
+
+    // 90
+    *(currentStep++) = ITM_SF;
+    *(currentStep++) = FLAG_C;
+
+    *(currentStep++) = (ITM_RLC >> 8) | 0x80;
+    *(currentStep++) =  ITM_RLC       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 88;
+
+    *(currentStep++) = ITM_LOGICALAND;
+
+    *(currentStep++) = (ITM_RL >> 8) | 0x80;
+    *(currentStep++) =  ITM_RL       & 0xff;
+    *(currentStep++) = 1;
+
+    *(currentStep++) = (ITM_RR >> 8) | 0x80;
+    *(currentStep++) =  ITM_RR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 88;
+
+    *(currentStep++) = ITM_ENTER;
+
+    *(currentStep++) = ITM_2X;
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = ITM_LOGICALAND;
+
+    *(currentStep++) = (ITM_SR >> 8) | 0x80;
+    *(currentStep++) =  ITM_SR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_Y;
+
+    // 100
+    *(currentStep++) = (ITM_SL >> 8) | 0x80;
+    *(currentStep++) =  ITM_SL       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 88;
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 46;
+
+    *(currentStep++) = ITM_LOGICALOR;
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 46;
+
+    *(currentStep++) = ITM_DSL;
+    *(currentStep++) = 88;
+
+    *(currentStep++) = ITM_GTO;
+    *(currentStep++) = 63;
 
     *(currentStep++) = ITM_INC;
     *(currentStep++) = 45;
@@ -4156,7 +4231,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_GTO;
     *(currentStep++) = 66;
 
-    // 90
+    // 110
     *(currentStep++) = ITM_LITERAL;
     *(currentStep++) = STRING_LONG_INTEGER;
     *(currentStep++) = 1; // String length
@@ -4186,16 +4261,149 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = 67;
 
-    *(currentStep++) = ITM_XEQ;
-    *(currentStep++) = 64;
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 45;
+
+    *(currentStep++) = (ITM_MASKL >> 8) | 0x80;
+    *(currentStep++) =  ITM_MASKL       & 0xff;
+    *(currentStep++) = 2;
+
+    *(currentStep++) = ITM_LOGICALAND;
+
+    // 120
+    *(currentStep++) = (ITM_SR >> 8) | 0x80;
+    *(currentStep++) =  ITM_SR       & 0xff;
+    *(currentStep++) = 62;
 
     *(currentStep++) = ITM_INC;
     *(currentStep++) = 45;
 
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 45;
+
+    *(currentStep++) = ITM_DEC;
+    *(currentStep++) = 45;
+
+    *(currentStep++) = (ITM_MASKR >> 8) | 0x80;
+    *(currentStep++) =  ITM_MASKR       & 0xff;
+    *(currentStep++) = 1;
+
+    *(currentStep++) = ITM_LOGICALAND;
+
+    *(currentStep++) = (ITM_SL >> 8) | 0x80;
+    *(currentStep++) =  ITM_SL       & 0xff;
+    *(currentStep++) = 2;
+
+    *(currentStep++) = ITM_LOGICALOR;
+
+    *(currentStep++) = ITM_ENTER;
+
+    *(currentStep++) = ITM_2X;
+
+    // 130
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = ITM_LOGICALAND;
+
+    *(currentStep++) = (ITM_SR >> 8) | 0x80;
+    *(currentStep++) =  ITM_SR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_Y;
+
+    *(currentStep++) = (ITM_SL >> 8) | 0x80;
+    *(currentStep++) =  ITM_SL       & 0xff;
+    *(currentStep++) = 63;
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 46;
+
+    *(currentStep++) = (ITM_CB >> 8) | 0x80;
+    *(currentStep++) =  ITM_CB       & 0xff;
+    *(currentStep++) = 63;
+
+    *(currentStep++) = ITM_LOGICALOR;
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 46;
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 45;
+
+    *(currentStep++) = (ITM_MASKL >> 8) | 0x80;
+    *(currentStep++) =  ITM_MASKL       & 0xff;
+    *(currentStep++) = 1;
+
+    // 140
+    *(currentStep++) = ITM_LOGICALAND;
+
+    *(currentStep++) = (ITM_SR >> 8) | 0x80;
+    *(currentStep++) =  ITM_SR       & 0xff;
+    *(currentStep++) = 63;
+
+    *(currentStep++) = ITM_INC;
+    *(currentStep++) = 45;
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 45;
+
+    *(currentStep++) = ITM_DEC;
+    *(currentStep++) = 45;
+
+    *(currentStep++) = (ITM_MASKR >> 8) | 0x80;
+    *(currentStep++) =  ITM_MASKR       & 0xff;
+    *(currentStep++) = 2;
+
+    *(currentStep++) = ITM_LOGICALAND;
+
+    *(currentStep++) = (ITM_SL >> 8) | 0x80;
+    *(currentStep++) =  ITM_SL       & 0xff;
+    *(currentStep++) = 1;
+
+    *(currentStep++) = ITM_LOGICALOR;
+
+    *(currentStep++) = ITM_ENTER;
+
+    // 150
+    *(currentStep++) = ITM_2X;
+
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = ITM_LOGICALAND;
+
+    *(currentStep++) = (ITM_SR >> 8) | 0x80;
+    *(currentStep++) =  ITM_SR       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_Y;
+
     *(currentStep++) = ITM_INC;
     *(currentStep++) = 46;
 
-    // 100
+    *(currentStep++) = ITM_RCL;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 46;
+
+    *(currentStep++) = (ITM_CB >> 8) | 0x80;
+    *(currentStep++) =  ITM_CB       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = ITM_LOGICALOR;
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 46;
+
+    *(currentStep++) = ITM_INC;
+    *(currentStep++) = 45;
+
+    // 160
     *(currentStep++) = ITM_DSL;
     *(currentStep++) = 44;
 
@@ -4222,242 +4430,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = ITM_RTN;
 
-    *(currentStep++) = ITM_LBL;
-    *(currentStep++) = 62;
-
-    *(currentStep++) = ITM_LITERAL;
-    *(currentStep++) = STRING_LONG_INTEGER;
-    *(currentStep++) = 2; // String length
-    *(currentStep++) = '6';
-    *(currentStep++) = '3';
-
-    *(currentStep++) = ITM_STO;
-    *(currentStep++) = 88;
-
-    // 110
-    *(currentStep++) = ITM_LBL;
-    *(currentStep++) = 63;
-
-    *(currentStep++) = ITM_RCL;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 45;
-
-    *(currentStep++) = ITM_LITERAL;
-    *(currentStep++) = STRING_SHORT_INTEGER;
-    *(currentStep++) = 16; // Base
-    *(currentStep++) = 1;  // String length
-    *(currentStep++) = '3';
-
-    *(currentStep++) = ITM_SF;
-    *(currentStep++) = FLAG_C;
-
-    *(currentStep++) = (ITM_RLC >> 8) | 0x80;
-    *(currentStep++) =  ITM_RLC       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 88;
-
-    *(currentStep++) = ITM_LOGICALAND;
-
-    *(currentStep++) = (ITM_RL >> 8) | 0x80;
-    *(currentStep++) =  ITM_RL       & 0xff;
-    *(currentStep++) = 1;
-
-    *(currentStep++) = (ITM_RR >> 8) | 0x80;
-    *(currentStep++) =  ITM_RR       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 88;
-
-    *(currentStep++) = ITM_ENTER;
-
-    *(currentStep++) = ITM_2X;
-
-    // 120
-    *(currentStep++) = ITM_RCL;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = ITM_LOGICALAND;
-
-    *(currentStep++) = (ITM_SR >> 8) | 0x80;
-    *(currentStep++) =  ITM_SR       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_Y;
-
-    *(currentStep++) = (ITM_SL >> 8) | 0x80;
-    *(currentStep++) =  ITM_SL       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 88;
-
-    *(currentStep++) = ITM_RCL;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 46;
-
-    *(currentStep++) = ITM_LOGICALOR;
-
-    *(currentStep++) = ITM_STO;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 46;
-
-    *(currentStep++) = ITM_DSL;
-    *(currentStep++) = 88;
-
-    *(currentStep++) = ITM_GTO;
-    *(currentStep++) = 63;
-
-    *(currentStep++) = ITM_RTN;
-
-    // 130
-    *(currentStep++) = ITM_LBL;
-    *(currentStep++) = 64;
-
-    *(currentStep++) = ITM_RCL;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 45;
-
-    *(currentStep++) = (ITM_MASKL >> 8) | 0x80;
-    *(currentStep++) =  ITM_MASKL       & 0xff;
-    *(currentStep++) = 2;
-
-    *(currentStep++) = ITM_LOGICALAND;
-
-    *(currentStep++) = (ITM_SR >> 8) | 0x80;
-    *(currentStep++) =  ITM_SR       & 0xff;
-    *(currentStep++) = 62;
-
-    *(currentStep++) = ITM_INC;
-    *(currentStep++) = 45;
-
-    *(currentStep++) = ITM_RCL;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 45;
-
-    *(currentStep++) = ITM_DEC;
-    *(currentStep++) = 45;
-
-    *(currentStep++) = (ITM_MASKR >> 8) | 0x80;
-    *(currentStep++) =  ITM_MASKR       & 0xff;
-    *(currentStep++) = 1;
-
-    *(currentStep++) = ITM_LOGICALAND;
-
-    // 140
-    *(currentStep++) = (ITM_SL >> 8) | 0x80;
-    *(currentStep++) =  ITM_SL       & 0xff;
-    *(currentStep++) = 2;
-
-    *(currentStep++) = ITM_LOGICALOR;
-
-    *(currentStep++) = ITM_ENTER;
-
-    *(currentStep++) = ITM_2X;
-
-    *(currentStep++) = ITM_RCL;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = ITM_LOGICALAND;
-
-    *(currentStep++) = (ITM_SR >> 8) | 0x80;
-    *(currentStep++) =  ITM_SR       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_Y;
-
-    *(currentStep++) = (ITM_SL >> 8) | 0x80;
-    *(currentStep++) =  ITM_SL       & 0xff;
-    *(currentStep++) = 63;
-
-    *(currentStep++) = ITM_RCL;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 46;
-
-    *(currentStep++) = (ITM_MASKR >> 8) | 0x80;
-    *(currentStep++) =  ITM_MASKR       & 0xff;
-    *(currentStep++) = 63;
-
-    // 150
-    *(currentStep++) = ITM_LOGICALAND;
-
-    *(currentStep++) = ITM_LOGICALOR;
-
-    *(currentStep++) = ITM_STO;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 46;
-
-    *(currentStep++) = ITM_RCL;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 45;
-
-    *(currentStep++) = (ITM_MASKL >> 8) | 0x80;
-    *(currentStep++) =  ITM_MASKL       & 0xff;
-    *(currentStep++) = 1;
-
-    *(currentStep++) = ITM_LOGICALAND;
-
-    *(currentStep++) = (ITM_SR >> 8) | 0x80;
-    *(currentStep++) =  ITM_SR       & 0xff;
-    *(currentStep++) = 63;
-
-    *(currentStep++) = ITM_INC;
-    *(currentStep++) = 45;
-
-    *(currentStep++) = ITM_RCL;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 45;
-
-    *(currentStep++) = ITM_DEC;
-    *(currentStep++) = 45;
-
-    // 160
-    *(currentStep++) = (ITM_MASKR >> 8) | 0x80;
-    *(currentStep++) =  ITM_MASKR       & 0xff;
-    *(currentStep++) = 2;
-
-    *(currentStep++) = ITM_LOGICALAND;
-
-    *(currentStep++) = (ITM_SL >> 8) | 0x80;
-    *(currentStep++) =  ITM_SL       & 0xff;
-    *(currentStep++) = 1;
-
-    *(currentStep++) = ITM_LOGICALOR;
-
-    *(currentStep++) = ITM_ENTER;
-
-    *(currentStep++) = ITM_2X;
-
-    *(currentStep++) = ITM_RCL;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = ITM_LOGICALAND;
-
-    *(currentStep++) = (ITM_SR >> 8) | 0x80;
-    *(currentStep++) =  ITM_SR       & 0xff;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = REGISTER_Y;
-
-    *(currentStep++) = ITM_INC;
-    *(currentStep++) = 46;
-
-    // 170
-    *(currentStep++) = ITM_RCL;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 46;
-
-    *(currentStep++) = (ITM_MASKL >> 8) | 0x80;
-    *(currentStep++) =  ITM_MASKL       & 0xff;
-    *(currentStep++) = 63;
-
-    *(currentStep++) = ITM_LOGICALAND;
-
-    *(currentStep++) = ITM_LOGICALOR;
-
-    *(currentStep++) = ITM_STO;
-    *(currentStep++) = INDIRECT_REGISTER;
-    *(currentStep++) = 46;
-
-    *(currentStep++) = ITM_DEC;
-    *(currentStep++) = 46;
-
-    *(currentStep++) = ITM_RTN;
-
-    // 177
+    // 167
     *(currentStep++) = (ITM_END >> 8) | 0x80;
     *(currentStep++) =  ITM_END       & 0xff;
   }
