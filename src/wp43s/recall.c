@@ -20,6 +20,7 @@
 #include "debug.h"
 #include "error.h"
 #include "flags.h"
+#include "items.h"
 #include "mathematics/compare.h"
 #include "matrix.h"
 #include "memory.h"
@@ -64,7 +65,9 @@ void fnRecall(uint16_t regist) {
       copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_X);
     }
     else {
-      liftStack();
+      if(getSystemFlag(FLAG_ASLIFT)) {
+        fnRollUp(NOPARAM);
+      }
       copySourceRegisterToDestRegister(regist, REGISTER_X);
       if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
         *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= shortIntegerMask;
