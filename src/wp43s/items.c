@@ -81,7 +81,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 #if !defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
   void reallyRunFunction(int16_t func, uint16_t param) {
     if((indexOfItems[func].status & US_STATUS) == US_ENABLED || (indexOfItems[func].status & US_STATUS) == US_ENABL_XEQ) {
-      if(calcMode!=CM_GRAPH) {
+      if(programRunStop != PGM_RUNNING && calcMode != CM_GRAPH) {
         #ifdef DEBUGUNDO
           printf(">>> saveForUndo from reallyRunFunction: %s, calcMode = %i ",indexOfItems[func].itemCatalogName, calcMode);
         #endif
@@ -108,14 +108,16 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
       thereIsSomethingToUndo = false;
     }
 
-    hourGlassIconEnabled = true;
-    showHideHourGlass();
+    if(programRunStop != PGM_RUNNING) {
+      hourGlassIconEnabled = true;
+      showHideHourGlass();
 
-    #ifdef DMCP_BUILD
-      lcd_refresh();
-    #else // !DMCP_BUILD
-      refreshLcd(NULL);
-    #endif // DMCP_BUILD
+      #ifdef DMCP_BUILD
+        lcd_refresh();
+      #else // !DMCP_BUILD
+        refreshLcd(NULL);
+      #endif // DMCP_BUILD
+    }
 
     indexOfItems[func].func(param);
 
@@ -138,11 +140,13 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
       }
     }
 
-    updateMatrixHeightCache();
-    cachedDynamicMenu = 0;
-    #ifdef PC_BUILD
-      refreshLcd(NULL);
-    #endif // PC_BUILD
+    if(programRunStop != PGM_RUNNING) {
+      updateMatrixHeightCache();
+      cachedDynamicMenu = 0;
+      #ifdef PC_BUILD
+        refreshLcd(NULL);
+      #endif // PC_BUILD
+    }
   }
 
 
@@ -157,44 +161,46 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
       }
     #endif // PC_BUILD
 
-    if(func == ITM_RCL && dynamicMenuItem > -1) {
-      char *varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
-      calcRegister_t regist = findNamedVariable(varCatalogItem);
-      if(regist != INVALID_VARIABLE) {
-        reallyRunFunction(func, regist);
+    if(programRunStop != PGM_RUNNING) {
+      if(func == ITM_RCL && dynamicMenuItem > -1) {
+        char *varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
+        calcRegister_t regist = findNamedVariable(varCatalogItem);
+        if(regist != INVALID_VARIABLE) {
+          reallyRunFunction(func, regist);
+        }
+        else {
+          displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            sprintf(errorMessage, "string '%s' is not a named variable", varCatalogItem);
+            moreInfoOnError("In function runFunction:", errorMessage, NULL, NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        }
+        return;
       }
-      else {
-        displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          sprintf(errorMessage, "string '%s' is not a named variable", varCatalogItem);
-          moreInfoOnError("In function runFunction:", errorMessage, NULL, NULL);
-        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      else if(func == ITM_XEQ && dynamicMenuItem > -1) {
+        char *varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
+        calcRegister_t regist = findNamedLabel(varCatalogItem);
+        if(regist != INVALID_VARIABLE) {
+          reallyRunFunction(func, regist);
+        }
+        else {
+          displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            sprintf(errorMessage, "string '%s' is not a named label", varCatalogItem);
+            moreInfoOnError("In function runFunction:", errorMessage, NULL, NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        }
+        return;
       }
-      return;
-    }
-    else if(func == ITM_XEQ && dynamicMenuItem > -1) {
-      char *varCatalogItem = dynmenuGetLabel(dynamicMenuItem);
-      calcRegister_t regist = findNamedLabel(varCatalogItem);
-      if(regist != INVALID_VARIABLE) {
-        reallyRunFunction(func, regist);
+      else if(tam.mode == 0 && TM_VALUE <= indexOfItems[func].param && indexOfItems[func].param <= TM_CMP) {
+        tamEnterMode(func);
+        return;
       }
-      else {
-        displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          sprintf(errorMessage, "string '%s' is not a named label", varCatalogItem);
-          moreInfoOnError("In function runFunction:", errorMessage, NULL, NULL);
-        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      }
-      return;
-    }
-    else if(tam.mode == 0 && TM_VALUE <= indexOfItems[func].param && indexOfItems[func].param <= TM_CMP) {
-      tamEnterMode(func);
-      return;
-    }
 
-    if(calcMode == CM_PEM && !tam.mode) {
-      addStepInProgram(func);
-      return;
+      if(calcMode == CM_PEM && !tam.mode) {
+        addStepInProgram(func);
+        return;
+      }
     }
 
     reallyRunFunction(func, indexOfItems[func].param);
