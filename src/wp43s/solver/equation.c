@@ -1236,14 +1236,21 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
           exponentSignCanOccur = false;
           break;
         }
-        else if((*strPtr == '(') || (*strPtr == '|')) {
+        else if((*strPtr == '(') || (*strPtr == '|' && !afterClosingParenthesis)) {
           afterClosingParenthesis = false;
           unaryMinusCanOccur = true;
           afterSpace = false;
           inExponent = false;
           exponentSignCanOccur = false;
         }
-        else if(*strPtr == ')') {
+        else if(*strPtr == ')' || *strPtr == '|') {
+          if(*strPtr == '|') {
+            bufPtr = buffer;
+            numericCount = 0;
+            *(bufPtr++) = '|';
+            *(bufPtr++) = ')';
+            *(bufPtr++) = 0;
+          }
           afterClosingParenthesis = true;
           unaryMinusCanOccur = false;
           afterSpace = false;
