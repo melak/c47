@@ -1712,8 +1712,18 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
     }
   #endif // DMCP_BUILD
 
+  if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+    while(currentSubroutineLevel > 0) {
+      fnReturn(0);
+    }
+  }
+
   while (restoreOneSection(BACKUP, loadMode, s, n, d))
   {
+  }
+
+  if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+    fnGotoDot(1);
   }
 
   lastErrorCode = ERROR_NONE;
