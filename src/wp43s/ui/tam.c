@@ -269,6 +269,9 @@
         }
       }
       else if(tam.digitsSoFar > 0) {
+        if(tam.function == ITM_GTOP && tam.digitsSoFar == 3) {
+          max2 = tam.max = max(getNumberOfSteps(), 99);
+        }
         if(--tam.digitsSoFar != 0) {
           tam.value /= 10;
         }
@@ -486,12 +489,20 @@
       int16_t digit = item - ITM_0;
       uint8_t maxDigits = _tamMaxDigits(max2);
       // If the number is below our minimum, prevent further entry of digits
+      if(tam.function == ITM_GTOP && tam.digitsSoFar == 2) {
+        max2 = tam.max = getNumberOfSteps();
+        maxDigits = _tamMaxDigits(max2);
+      }
       if(!tam.alpha && (tam.value*10 + digit) <= max2 && tam.digitsSoFar < maxDigits) {
         tam.value = tam.value*10 + digit;
         tam.digitsSoFar++;
         if(tam.digitsSoFar == maxDigits) {
           forceTry = true;
         }
+      }
+      else if(tam.function == ITM_GTOP) {
+        max2 = tam.max = max(getNumberOfSteps(), 99);
+        maxDigits = _tamMaxDigits(max2);
       }
     }
     else if(item == ITM_PERIOD) {
@@ -513,7 +524,7 @@
         if(tam.function == ITM_GTO) {
           tam.function = ITM_GTOP;
           tam.min = 1;
-          tam.max = getNumberOfSteps();
+          tam.max = max(getNumberOfSteps(), 99);
         }
         else if(tam.indirect && (currentNumberOfLocalRegisters || calcMode == CM_PEM)) {
           tam.dot = true;
@@ -591,7 +602,7 @@
           run = (lastErrorCode == 0);
         }
         if(tam.function == ITM_GTOP) {
-          if(forceTry && tam.digitsSoFar < 3) {
+          if(tam.digitsSoFar < 3) {
             fnGoto(value);
           }
           else {
