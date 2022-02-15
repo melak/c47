@@ -405,9 +405,13 @@ static void _decodeNumeral(char *startPtr, const char *srcStartPtr, bool_t isLon
     *(strPtr++) = PRODUCT_SIGN[1];
     *(strPtr++) = STD_SUB_10[0];
     *(strPtr++) = STD_SUB_10[1];
-    if(*(srcStr++) == '-') {
+    if(*srcStr == '-') {
       *(strPtr++) = STD_SUP_MINUS[0];
       *(strPtr++) = STD_SUP_MINUS[1];
+      ++srcStr;
+    }
+    else if(*srcStr == '+') {
+      ++srcStr;
     }
     while(*srcStr >= '0' && *srcStr <= '9') {
       *(strPtr++) = supDigit[0 + (*srcStr - '0') * 2];
