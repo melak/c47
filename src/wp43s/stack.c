@@ -195,6 +195,11 @@ void fnSwapXY(uint16_t unusedButMandatoryParameter) {
 
 void fnShuffle(uint16_t regist_order) {
   for(int i=0; i<4; i++) {
+    registerHeader_t savedRegisterHeader = globalRegister[REGISTER_X + i];
+    globalRegister[REGISTER_X + i] = savedStackRegister[i];
+    savedStackRegister[i] = savedRegisterHeader;
+  }
+  for(int i=0; i<4; i++) {
     uint16_t regist_offset = (regist_order >> (i*2)) & 3;
     copySourceRegisterToDestRegister(SAVED_REGISTER_X + regist_offset, REGISTER_X + i);
   }
