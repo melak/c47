@@ -1549,20 +1549,35 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 
   else if(strcmp(tmpString, "PROGRAMS") == 0) {
     uint16_t numberOfBlocks;
+    uint16_t oldSizeInBlocks = RAM_SIZE - freeMemoryRegions[numberOfFreeMemoryRegions - 1].address - freeMemoryRegions[numberOfFreeMemoryRegions - 1].sizeInBlocks;
+    uint8_t *oldFirstFreeProgramByte;
+    uint16_t oldFreeProgramBytes = freeProgramBytes;
 
     readLine(stream, tmpString); // Number of blocks
     numberOfBlocks = stringToUint16(tmpString);
-    if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+    if(loadMode == LM_ALL) {
       resizeProgramMemory(numberOfBlocks);
+    }
+    else if(loadMode == LM_PROGRAMS) {
+      resizeProgramMemory(oldSizeInBlocks + numberOfBlocks);
+      oldFirstFreeProgramByte = beginOfProgramMemory + TO_BYTES(oldSizeInBlocks) - oldFreeProgramBytes - 2;
     }
 
     readLine(stream, tmpString); // currentStep (pointer to block)
-    if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+    if(loadMode == LM_ALL) {
       currentStep.ram = TO_PCMEMPTR(stringToUint32(tmpString));
     }
     readLine(stream, tmpString); // currentStep (offset in bytes within block)
-    if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+    if(loadMode == LM_ALL) {
       currentStep.ram += stringToUint32(tmpString);
+    }
+    else if(loadMode == LM_PROGRAMS) {
+      if(programList[currentProgramNumber - 1].step > 0) {
+        currentStep.ram           -= TO_BYTES(numberOfBlocks);
+        firstDisplayedStep.ram    -= TO_BYTES(numberOfBlocks);
+        beginOfCurrentProgram.ram -= TO_BYTES(numberOfBlocks);
+        endOfCurrentProgram.ram   -= TO_BYTES(numberOfBlocks);
+      }
     }
 
     readLine(stream, tmpString); // firstFreeProgramByte (pointer to block)
@@ -1579,10 +1594,38 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
       freeProgramBytes = stringToUint16(tmpString);
     }
 
+    if(loadMode == LM_PROGRAMS) { // .END. to END
+      freeProgramBytes += oldFreeProgramBytes;
+      if((oldFirstFreeProgramByte >= (beginOfProgramMemory + 2)) && (*(oldFirstFreeProgramByte - 2) == ((ITM_END >> 8) | 0x80)) && (*(oldFirstFreeProgramByte - 1) == (ITM_END & 0xff))) {
+      }
+      else {
+        if(oldFreeProgramBytes + freeProgramBytes < 2) {
+          uint16_t tmpFreeProgramBytes = freeProgramBytes;
+          resizeProgramMemory(oldSizeInBlocks + numberOfBlocks + 1);
+          oldFirstFreeProgramByte -= 4;
+          freeProgramBytes = tmpFreeProgramBytes + 4;
+          if(programList[currentProgramNumber - 1].step > 0) {
+            currentStep.ram           -= 4;
+            firstDisplayedStep.ram    -= 4;
+            beginOfCurrentProgram.ram -= 4;
+            endOfCurrentProgram.ram   -= 4;
+          }
+        }
+        *(oldFirstFreeProgramByte    ) = (ITM_END >> 8) | 0x80;
+        *(oldFirstFreeProgramByte + 1) =  ITM_END       & 0xff;
+        freeProgramBytes -= 2;
+        oldFirstFreeProgramByte += 2;
+      }
+    }
+
     for(i=0; i<numberOfBlocks; i++) {
       readLine(stream, tmpString); // One block
-      if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+      if(loadMode == LM_ALL) {
         *(((uint32_t *)(beginOfProgramMemory)) + i) = stringToUint32(tmpString);
+      }
+      else if(loadMode == LM_PROGRAMS) {
+        uint32_t tmpBlock = stringToUint32(tmpString);
+        xcopy(oldFirstFreeProgramByte + TO_BYTES(i), (uint8_t *)(&tmpBlock), 4);
       }
     }
 
@@ -1712,7 +1755,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
     }
   #endif // DMCP_BUILD
 
-  if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+  if(loadMode == LM_ALL) {
     while(currentSubroutineLevel > 0) {
       fnReturn(0);
     }
@@ -1720,10 +1763,6 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
 
   while (restoreOneSection(BACKUP, loadMode, s, n, d))
   {
-  }
-
-  if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-    fnGotoDot(1);
   }
 
   lastErrorCode = ERROR_NONE;
