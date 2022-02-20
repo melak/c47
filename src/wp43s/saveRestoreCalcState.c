@@ -1550,7 +1550,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
   else if(strcmp(tmpString, "PROGRAMS") == 0) {
     uint16_t numberOfBlocks;
     uint16_t oldSizeInBlocks = RAM_SIZE - freeMemoryRegions[numberOfFreeMemoryRegions - 1].address - freeMemoryRegions[numberOfFreeMemoryRegions - 1].sizeInBlocks;
-    uint8_t *oldFirstFreeProgramByte;
+    uint8_t *oldFirstFreeProgramByte = firstFreeProgramByte;
     uint16_t oldFreeProgramBytes = freeProgramBytes;
 
     readLine(stream, tmpString); // Number of blocks
