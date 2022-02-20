@@ -195,6 +195,11 @@ void fnSwapXY(uint16_t unusedButMandatoryParameter) {
 
 void fnShuffle(uint16_t regist_order) {
   for(int i=0; i<4; i++) {
+    registerHeader_t savedRegisterHeader = globalRegister[REGISTER_X + i];
+    globalRegister[REGISTER_X + i] = savedStackRegister[i];
+    savedStackRegister[i] = savedRegisterHeader;
+  }
+  for(int i=0; i<4; i++) {
     uint16_t regist_offset = (regist_order >> (i*2)) & 3;
     copySourceRegisterToDestRegister(SAVED_REGISTER_X + regist_offset, REGISTER_X + i);
   }
@@ -273,18 +278,18 @@ void saveForUndo(void) {
   for(calcRegister_t regist=getStackTop(); regist>=REGISTER_X; regist--) {
     copySourceRegisterToDestRegister(regist, SAVED_REGISTER_X - REGISTER_X + regist);
     if(lastErrorCode == ERROR_RAM_FULL) {
-#ifdef PC_BUILD
-      printf("In function saveForUndo: not enough space for saving register #%" PRId16 "!\n", regist); fflush(stdout);
-#endif // PC_BUILD
+      #ifdef PC_BUILD
+        printf("In function saveForUndo: not enough space for saving register #%" PRId16 "!\n", regist); fflush(stdout);
+      #endif // PC_BUILD
       goto failed;
     }
   }
 
   copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
   if(lastErrorCode == ERROR_RAM_FULL) {
-#ifdef PC_BUILD
-    printf("In function saveForUndo: not enough space for saving register L!\n"); fflush(stdout);
-#endif // PC_BUILD
+    #ifdef PC_BUILD
+      printf("In function saveForUndo: not enough space for saving register L!\n"); fflush(stdout);
+    #endif // PC_BUILD
     goto failed;
   }
 

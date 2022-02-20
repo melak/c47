@@ -62,7 +62,13 @@ void fnGoto(uint16_t label) {
       // Search for local label
       for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
         if(labelList[lbl].program == currentProgramNumber && labelList[lbl].step < 0 && *(labelList[lbl].labelPointer.ram) == label) { // Is in the current program and is a local label and is the searched label
-          fnGotoDot(-labelList[lbl].step);
+          if(programRunStop == PGM_RUNNING) {
+            currentLocalStepNumber = (-labelList[lbl].step) - programList[currentProgramNumber - 1].step + 1;
+            currentStep.any = labelList[lbl].labelPointer.any - 1;
+          }
+          else {
+            fnGotoDot(-labelList[lbl].step);
+          }
           return;
         }
         else if(labelList[lbl].program == -currentProgramNumber && labelList[lbl].step < 0) { // Is in the current program and is a local label and is the searched label
@@ -247,8 +253,19 @@ void fnReturn(uint16_t skip) {
 
   /* A subroutine is running */
   if(currentSubroutineLevel > 0) {
-    uint16_t returnGlobalStepNumber = currentReturnLocalStep + programList[currentReturnProgramNumber - 1].step; // the next step
-    fnGotoDot(returnGlobalStepNumber);
+    if(programRunStop == PGM_RUNNING) {
+      currentProgramNumber = currentReturnProgramNumber;
+      currentLocalStepNumber = currentReturnLocalStep + 1;
+      currentStep = programList[currentProgramNumber - 1].instructionPointer;
+      for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
+        currentStep = findNextStep(currentStep);
+      }
+    }
+    else {
+      uint16_t returnGlobalStepNumber = currentReturnLocalStep + programList[currentReturnProgramNumber - 1].step; // the next step
+      fnGotoDot(returnGlobalStepNumber);
+    }
+
     if(skip > 0 && (*currentStep.ram != ((ITM_END >> 8) | 0x80) || *(currentStep.ram + 1) != (ITM_END & 0xff)) && (*currentStep.ram != 255 || *(currentStep.ram + 1) != 255)) {
       ++currentLocalStepNumber;
       currentStep = findNextStep(currentStep);
@@ -716,12 +733,14 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
   lastErrorCode = ERROR_NONE;
   hourGlassIconEnabled = true;
   programRunStop = PGM_RUNNING;
-  showHideHourGlass();
-  #ifdef DMCP_BUILD
-    lcd_refresh();
-  #else // !DMCP_BUILD
-    refreshLcd(NULL);
-  #endif // DMCP_BUILD
+  if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
+    showHideHourGlass();
+    #ifdef DMCP_BUILD
+      lcd_refresh();
+    #else // !DMCP_BUILD
+      refreshLcd(NULL);
+    #endif // DMCP_BUILD
+  }
 
   if(menuLabel != INVALID_VARIABLE) {
     fnBack(1);
@@ -812,13 +831,15 @@ stopProgram:
   if(programRunStop != PGM_RUNNING) {
     entryStatus &= 0xfe;
   }
-  showHideHourGlass();
-  #ifdef DMCP_BUILD
-    lcd_refresh();
-    fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, FAST_SCREEN_REFRESH_PERIOD+50);
-  #else // !DMCP_BUILD
-    refreshLcd(NULL);
-  #endif // DMCP_BUILD
+  if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
+    showHideHourGlass();
+    #ifdef DMCP_BUILD
+      lcd_refresh();
+      fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, FAST_SCREEN_REFRESH_PERIOD+50);
+    #else // !DMCP_BUILD
+      refreshLcd(NULL);
+    #endif // DMCP_BUILD
+  }
   return;
 #endif // TESTSUITE_BUILD
 }

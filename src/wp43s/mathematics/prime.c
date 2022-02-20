@@ -24,8 +24,6 @@
 #include "error.h"
 #include "registers.h"
 #include "registerValueConversions.h"
-#include "screen.h"
-#include "statusBar.h"
 
 #include "wp43s.h"
 
@@ -75,18 +73,6 @@ static bool_t longIntegerIsPrime1(longInteger_t primeCandidate) {
   if(longIntegerCompareUInt(primeCandidate, QUICK_CHECK) < 0) {
     return true;
   }
-
-  #if defined(PC_BUILD) || defined(DMCP_BUILD)
-    if(calcMode == CM_NORMAL) {
-      hourGlassIconEnabled = true;
-      showHideHourGlass();
-      #ifdef PC_BUILD
-        refreshLcd(NULL);
-      #else // !PC_BUILD
-        lcd_refresh();
-      #endif // PC_BUILD
-    }
-  #endif // PC_BUILD || DMCP_BUILD
 
   longIntegerInit(primeCandidateMinus1);
   longIntegerInit(s);
@@ -158,13 +144,6 @@ void fnIsPrime(uint16_t unusedButMandatoryParameter) {
   }
 
   longIntegerSetPositiveSign(primeCandidate);
-  hourGlassIconEnabled = true;
-  showHideHourGlass();
-  #ifdef DMCP_BUILD
-    lcd_refresh();
-  #else // !DMCP_BUILD
-    refreshLcd(NULL);
-  #endif // DMCP_BUILD
   //temporaryInformation = (longIntegerIsPrime1(primeCandidate) ? TI_TRUE : TI_FALSE);
   //temporaryInformation = (longIntegerIsPrime2(primeCandidate) ? TI_TRUE : TI_FALSE);
   temporaryInformation = (longIntegerIsPrime(primeCandidate) ? TI_TRUE : TI_FALSE);
@@ -203,13 +182,6 @@ void fnNextPrime(uint16_t unusedButMandatoryParameter) {
 
   longIntegerSetPositiveSign(currentNumber);
 
-  hourGlassIconEnabled = true;
-  showHideHourGlass();
-  #ifdef DMCP_BUILD
-    lcd_refresh();
-  #else // !DMCP_BUILD
-    refreshLcd(NULL);
-  #endif // DMCP_BUILD
   longIntegerNextPrime(currentNumber, nextPrime);
 
   if(getRegisterDataType(REGISTER_L) == dtShortInteger) {

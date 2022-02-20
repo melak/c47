@@ -54,14 +54,13 @@ endif
 
 conf_data = configuration_data()
 commit_tag = get_option('CI_COMMIT_TAG')
+today = run_command('date', '+%Y-%m-%d')
+conf_data.set('TODAY', today.stdout().strip())
 if commit_tag != ''
-  today = run_command('date', '+%Y-%m-%d')
   conf_data.set('CI_USE_TAG',    true)
   conf_data.set('CI_COMMIT_TAG', commit_tag)
-  conf_data.set('TODAY',         today.stdout().strip())
 else
   conf_data.set('CI_COMMIT_TAG', '')
-  conf_data.set('TODAY',         '')
 endif
 
 subdir('docs/code')
