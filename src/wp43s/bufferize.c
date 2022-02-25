@@ -275,14 +275,14 @@
           xcopy(aimCursorPos, addChar, itemLen);
           switch(item) {
             case ITM_ALOG_SYMBOL:
-              xCursor += 5;
+              xCursor += 4;
               break;
             case ITM_ROOT_SIGN:
-              xCursor += 3;
+              xCursor += 2;
               break;
             case ITM_PAIR_OF_PARENTHESES:
             case ITM_VERTICAL_BAR:
-              xCursor += 2;
+              xCursor += 1;
               break;
             default:
               xCursor += stringGlyphLength(indexOfItems[item].itemSoftmenuName);

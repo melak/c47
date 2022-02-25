@@ -9371,16 +9371,6 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
     *(currentStep++) =  ITM_INDEX       & 0xff;
-    *(currentStep++) = STRING_LABEL_VARIABLE;
-    *(currentStep++) = 5; // String length
-    *(currentStep++) = 'M';
-    *(currentStep++) = 'a';
-    *(currentStep++) = 't';
-    *(currentStep++) = '_';
-    *(currentStep++) = 'A';
-
-    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
-    *(currentStep++) =  ITM_INDEX       & 0xff;
     *(currentStep++) = 0;
 
     *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
@@ -9389,11 +9379,65 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
     *(currentStep++) =  ITM_INDEX       & 0xff;
-    *(currentStep++) = 'A' - 'A' + 100; // A
+    *(currentStep++) = REGISTER_X;
 
     *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
     *(currentStep++) =  ITM_INDEX       & 0xff;
-    *(currentStep++) = 'E' - 'A' + 100; // E
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = 99;
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = REGISTER_K;
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = FIRST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = INDIRECT_REGISTER;
+    *(currentStep++) = LAST_LOCAL_REGISTER;
+
+    *(currentStep++) = (ITM_INDEX >> 8) | 0x80;
+    *(currentStep++) =  ITM_INDEX       & 0xff;
+    *(currentStep++) = INDIRECT_VARIABLE;
+    *(currentStep++) = 3;
+    *(currentStep++) = 'V';
+    *(currentStep++) = 'a';
+    *(currentStep++) = 'r';
 
     *(currentStep++) = (ITM_IXYZ >> 8) | 0x80;
     *(currentStep++) =  ITM_IXYZ       & 0xff;
