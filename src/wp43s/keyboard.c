@@ -45,6 +45,7 @@
 #if (REAL34_WIDTH_TEST == 1)
   #include "registerValueConversions.h"
 #endif // (REAL34_WIDTH_TEST == 1)
+#include <string.h>
 
 #include "wp43s.h"
 
