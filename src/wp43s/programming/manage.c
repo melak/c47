@@ -361,6 +361,8 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
     uint8_t *step, *nextStep;
     uint8_t *tmpSteps = NULL;
     bool_t lblOrEnd;
+    bool_t inTamMode = tam.mode && programList[currentProgramNumber - 1].step > 0;
+    uint16_t numberOfSteps = getNumberOfSteps();
 
     if(calcMode != CM_PEM) {
       calcMode = CM_PEM;
@@ -388,8 +390,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
     lastProgramListEnd       = false;
 
     if(firstDisplayedLocalStepNumber == 0) {
-      uint32_t numberOfSteps = (uint32_t)getNumberOfSteps();
-      sprintf(tmpString, "{ Prgm #%d: %" PRIu32 " bytes / %" PRIu32 " step%s }", currentProgramNumber, _getProgramSize(),
+      sprintf(tmpString, "{ Prgm #%d: %" PRIu16 " bytes / %" PRIu16 " step%s }", currentProgramNumber, _getProgramSize(),
                                                                                numberOfSteps, numberOfSteps == 1 ? "" : "s");
       showString(tmpString, &standardFont, 2, Y_POSITION_OF_REGISTER_T_LINE, vmNormal,  false, false);
       firstLine = 1;
@@ -509,8 +510,11 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       freeWp43s(tmpSteps, 400 * 7);
     }
 
-    if(currentLocalStepNumber >= (firstDisplayedLocalStepNumber + stepsThatWouldBeDisplayed + (tam.mode ? 1 : 0))) {
-      firstDisplayedLocalStepNumber = currentLocalStepNumber - stepsThatWouldBeDisplayed + 1;
+    if((currentLocalStepNumber + (inTamMode ? (currentLocalStepNumber < numberOfSteps ? 2 : 1) : 0)) >= (firstDisplayedLocalStepNumber + stepsThatWouldBeDisplayed)) {
+      firstDisplayedLocalStepNumber = currentLocalStepNumber - stepsThatWouldBeDisplayed + 1 + (inTamMode ? (currentLocalStepNumber < numberOfSteps ? 2 : 1) : 0);
+      if(inTamMode && (firstDisplayedLocalStepNumber > 1) && (currentLocalStepNumber + 1 >= (firstDisplayedLocalStepNumber + stepsThatWouldBeDisplayed))) {
+        ++firstDisplayedLocalStepNumber;
+      }
       firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
       for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i) {
         firstDisplayedStep = findNextStep(firstDisplayedStep);
