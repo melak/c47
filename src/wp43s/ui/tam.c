@@ -506,7 +506,10 @@
       }
     }
     else if(item == ITM_PERIOD) {
-      if(tam.function == ITM_GTOP) {
+      if(tam.function == ITM_LBL) {
+        return;
+      }
+      else if(tam.function == ITM_GTOP) {
         tam.value = programList[numberOfPrograms - numberOfProgramsInFlash - 1].step;
         reallyRunFunction(ITM_GTOP, tam.value);
         if((*currentStep.ram != 0xff) || (*(currentStep.ram + 1) != 0xff)) {
