@@ -238,21 +238,22 @@ void check_osc(uint8_t ii){
 //###################################################################################
 //PLOTTER
 
-int32_t drawMxN(void){
-  uint16_t rows = 0;
-  if(plotStatMx[0]!='D') return 0;
-  calcRegister_t regStats = findNamedVariable(plotStatMx);
-  if(regStats == INVALID_VARIABLE) {
-    return 0;
+#ifndef TESTSUITE_BUILD
+  int32_t drawMxN(void){
+    uint16_t rows = 0;
+    if(plotStatMx[0]!='D') return 0;
+    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    if(regStats == INVALID_VARIABLE) {
+      return 0;
+    }
+    if(isStatsMatrix(&rows,plotStatMx)) {
+      real34Matrix_t stats;
+      linkToRealMatrixRegister(regStats, &stats);
+      return stats.header.matrixRows;
+    } else return 0;
   }
-  if(isStatsMatrix(&rows,plotStatMx)) {
-    real34Matrix_t stats;
-    linkToRealMatrixRegister(regStats, &stats);
-    return stats.header.matrixRows;
-  } else return 0;
+#endif // TESTSUITE_BUILD
 
-  
-}
 
 
 void fnClDrawMx() {
@@ -272,44 +273,45 @@ void fnClDrawMx() {
   }
 }
 
-static void AddtoDrawMx() {
-  real_t x, y;
-  uint16_t rows = 0, cols;
-  calcRegister_t regStats = findNamedVariable(plotStatMx);
-  if(!isStatsMatrix(&rows,plotStatMx)) {
-    regStats = allocateNamedMatrix(plotStatMx, 1, 2);
-    real34Matrix_t stats;
-    linkToRealMatrixRegister(regStats, &stats);
-    realMatrixInit(&stats,1,2);
-  }
-  else {
-    if(appendRowAtMatrixRegister(regStats)) {
+#ifndef TESTSUITE_BUILD
+  static void AddtoDrawMx() {
+    real_t x, y;
+    uint16_t rows = 0, cols;
+    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    if(!isStatsMatrix(&rows,plotStatMx)) {
+      regStats = allocateNamedMatrix(plotStatMx, 1, 2);
+      real34Matrix_t stats;
+      linkToRealMatrixRegister(regStats, &stats);
+      realMatrixInit(&stats,1,2);
     }
     else {
-      regStats = INVALID_VARIABLE;
+      if(appendRowAtMatrixRegister(regStats)) {
+      }
+      else {
+        regStats = INVALID_VARIABLE;
+      }
+    }
+    if(regStats != INVALID_VARIABLE) {
+
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
+
+      real34Matrix_t stats;
+      linkToRealMatrixRegister(regStats, &stats);
+      rows = stats.header.matrixRows;
+      cols = stats.header.matrixColumns;
+      realToReal34(&x, &stats.matrixElements[(rows-1) * cols    ]);
+      realToReal34(&y, &stats.matrixElements[(rows-1) * cols + 1]);
+    }
+    else {
+      displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "additional matrix line not added; rows = %i",rows);
+        moreInfoOnError("In function AddtoDrawMx:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
-  if(regStats != INVALID_VARIABLE) {
-
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
-
-    real34Matrix_t stats;
-    linkToRealMatrixRegister(regStats, &stats);
-    rows = stats.header.matrixRows;
-    cols = stats.header.matrixColumns;
-    realToReal34(&x, &stats.matrixElements[(rows-1) * cols    ]);
-    realToReal34(&y, &stats.matrixElements[(rows-1) * cols + 1]);
-  }
-  else {
-    displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "additional matrix line not added; rows = %i",rows);
-      moreInfoOnError("In function AddtoDrawMx:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-}
-
+#endif // TESTSUITE_BUILD
 
 
 void graph_eqn(uint16_t mode) {

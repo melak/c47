@@ -23,6 +23,7 @@
 #include "error.h"
 #include "flags.h"
 #include "gui.h"
+#include "solver/graph.h"
 #include "items.h"
 #include "matrix.h"
 #include "memory.h"
@@ -45,7 +46,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         70  // Added flash program status
+#define BACKUP_VERSION         71  // Added current graph storage matrix name
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -294,6 +295,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&SAVED_SIGMA_LAct,                   sizeof(SAVED_SIGMA_LAct),                   BACKUP);
     save(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
     save(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
+    save(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
 
 
     fclose(BACKUP);
@@ -530,6 +532,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&SAVED_SIGMA_LAct,                   sizeof(SAVED_SIGMA_LAct),                   BACKUP);
       restore(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
       restore(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
+      restore(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");

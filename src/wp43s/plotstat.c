@@ -1218,108 +1218,110 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
 //** plotSelection = 0 means that no curve fit is plotted
 //
 void fnPlotStat(uint16_t plotMode){
+#ifndef TESTSUITE_BUILD
 
-switch (plotMode) {
-   case PLOT_GRAPH:  strcpy(plotStatMx, "DrwMX");
-            break;
-   case PLOT_ORTHOF:
-   case PLOT_START:
-   case PLOT_REV:
-   case PLOT_NXT:
-   case PLOT_LR: strcpy(plotStatMx, "STATS");
-            break;
-   default: break;
-}
+  switch (plotMode) {
+     case PLOT_GRAPH:  strcpy(plotStatMx, "DrwMX");
+              break;
+     case PLOT_ORTHOF:
+     case PLOT_START:
+     case PLOT_REV:
+     case PLOT_NXT:
+     case PLOT_LR: strcpy(plotStatMx, "STATS");
+              break;
+     default: break;
+  }
 
-#if defined STATDEBUG && defined PC_BUILD
-  printf("fnPlotStat1: plotSelection = %u; Plotmode=%u\n",plotSelection,plotMode);
-  printf("#####>>> fnPlotStat1: plotSelection:%u:%s  Plotmode:%u lastplotmode:%u  lrSelection:%u lrChosen:%u plotStatMx:%s\n",plotSelection, getCurveFitModeName(plotSelection), plotMode, lastPlotMode, lrSelection, lrChosen, plotStatMx);
+  #if defined STATDEBUG && defined PC_BUILD
+    printf("fnPlotStat1: plotSelection = %u; Plotmode=%u\n",plotSelection,plotMode);
+    printf("#####>>> fnPlotStat1: plotSelection:%u:%s  Plotmode:%u lastplotmode:%u  lrSelection:%u lrChosen:%u plotStatMx:%s\n",plotSelection, getCurveFitModeName(plotSelection), plotMode, lastPlotMode, lrSelection, lrChosen, plotStatMx);
+    if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) ) {
+      int16_t cnt;
+      if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, cnt);}
+      else {cnt = drawMxN();}
+      printf("Stored values %i\n",cnt);
+    }
+  #endif //STATDEBUG
   if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) ) {
-    int16_t cnt;
-    if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, cnt);}
-    else {cnt = drawMxN();}
-    printf("Stored values %i\n",cnt);
-  }
-#endif //STATDEBUG
-if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) ) {
 
-  PLOT_SCALE = false;
+    PLOT_SCALE = false;
 
-  #ifndef TESTSUITE_BUILD
+    #ifndef TESTSUITE_BUILD
 
-    if (!(lastPlotMode == PLOT_NOTHING || lastPlotMode == PLOT_START)) {
-      plotMode = lastPlotMode;
-    }
-    calcMode = CM_PLOT_STAT;
-    if(plotMode != PLOT_GRAPH) statGraphReset();
+      if (!(lastPlotMode == PLOT_NOTHING || lastPlotMode == PLOT_START)) {
+        plotMode = lastPlotMode;
+      }
+      calcMode = CM_PLOT_STAT;
+      if(plotMode != PLOT_GRAPH) statGraphReset();
 
-    if(plotMode == PLOT_START){
-      plotSelection = 0;
-      roundedTicks = false;
-    } else
-      if(plotMode == PLOT_GRAPH){
-        calcMode = CM_GRAPH;
+      if(plotMode == PLOT_START){
         plotSelection = 0;
-        PLOT_AXIS     = true;
-        PLOT_LINE     = true;
-        PLOT_BOX      = false;
-        roundedTicks  = true;
+        roundedTicks = false;
       } else
-        if(plotMode == PLOT_LR && lrSelection != 0) {
-          plotSelection = lrSelection;
-          roundedTicks = false; 
-        }
+        if(plotMode == PLOT_GRAPH){
+          calcMode = CM_GRAPH;
+          plotSelection = 0;
+          PLOT_AXIS     = true;
+          PLOT_LINE     = true;
+          PLOT_BOX      = false;
+          roundedTicks  = true;
+        } else
+          if(plotMode == PLOT_LR && lrSelection != 0) {
+            plotSelection = lrSelection;
+            roundedTicks = false; 
+          }
 
-    hourGlassIconEnabled = true;
-    showHideHourGlass();
+      hourGlassIconEnabled = true;
+      showHideHourGlass();
 
-    #ifdef DMCP_BUILD
-      lcd_refresh();
-    #else // !DMCP_BUILD
-      refreshLcd(NULL);
-    #endif // DMCP_BUILD
+      #ifdef DMCP_BUILD
+        lcd_refresh();
+      #else // !DMCP_BUILD
+        refreshLcd(NULL);
+      #endif // DMCP_BUILD
 
-    switch(plotMode) {
-      case PLOT_GRAPH:
-           if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_GRAPH) {
-             showSoftmenu(-MNU_GRAPH);
-           }
-           break;             
-      case PLOT_LR:
-      case PLOT_NXT:
-      case PLOT_REV:
-           if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT_LR) {
-             showSoftmenu(-MNU_PLOT_LR);
-           }
-           break;
-      case PLOT_ORTHOF:
-      case PLOT_START:
-           PLOT_SCALE = true;
-           if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT_STAT) {
-             showSoftmenu(-MNU_PLOT_STAT);
-           }
-           break;
-      case PLOT_NOTHING:
-           break;
-      default: break;
+      switch(plotMode) {
+        case PLOT_GRAPH:
+             if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_GRAPH) {
+               showSoftmenu(-MNU_GRAPH);
+             }
+             break;             
+        case PLOT_LR:
+        case PLOT_NXT:
+        case PLOT_REV:
+             if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT_LR) {
+               showSoftmenu(-MNU_PLOT_LR);
+             }
+             break;
+        case PLOT_ORTHOF:
+        case PLOT_START:
+             PLOT_SCALE = true;
+             if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT_STAT) {
+               showSoftmenu(-MNU_PLOT_STAT);
+             }
+             break;
+        case PLOT_NOTHING:
+             break;
+        default: break;
+      }
+
+      if(plotMode != PLOT_START && plotMode != PLOT_GRAPH) {
+        fnPlotRegressionLine(plotMode);
+      }
+      else {
+        lastPlotMode = plotMode;
+      }
+    #endif //TESTSUITE_BUILD
+
+    } else {
+      calcMode = CM_NORMAL;
+      displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "There is no statistical/plot data available!");
+        moreInfoOnError("In function fnPlotStat:", errorMessage, NULL, NULL);
+      #endif
     }
-
-    if(plotMode != PLOT_START && plotMode != PLOT_GRAPH) {
-      fnPlotRegressionLine(plotMode);
-    }
-    else {
-      lastPlotMode = plotMode;
-    }
-  #endif //TESTSUITE_BUILD
-
-  } else {
-    calcMode = CM_NORMAL;
-    displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "There is no statistical/plot data available!");
-      moreInfoOnError("In function fnPlotStat:", errorMessage, NULL, NULL);
-    #endif
-  }
+  #endif // TESTSUITE_BUILD
 }
 
 
