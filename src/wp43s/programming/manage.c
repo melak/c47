@@ -390,7 +390,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
     lastProgramListEnd       = false;
 
     if(firstDisplayedLocalStepNumber == 0) {
-      sprintf(tmpString, "{ Prgm #%d: %" PRIu16 " bytes / %" PRIu16 " step%s }", currentProgramNumber, _getProgramSize(),
+      sprintf(tmpString, "{ Prgm #%d: %" PRIu32 " bytes / %" PRIu16 " step%s }", currentProgramNumber, _getProgramSize(),
                                                                                numberOfSteps, numberOfSteps == 1 ? "" : "s");
       showString(tmpString, &standardFont, 2, Y_POSITION_OF_REGISTER_T_LINE, vmNormal,  false, false);
       firstLine = 1;
