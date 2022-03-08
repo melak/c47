@@ -231,6 +231,7 @@ void fnExecute(uint16_t label) {
     while(currentSubroutineLevel > 0) {
       fnReturn(0);
     }
+    fnReturn(0); // 1 more time to clean local registers
     fnGoto(label);
     dynamicMenuItem = -1;
     if(lastErrorCode == ERROR_NONE) {
@@ -291,7 +292,7 @@ void fnReturn(uint16_t skip) {
       allocateLocalRegisters(0);
     }
     if(currentNumberOfLocalFlags > 0) {
-      reallocWp43s(currentSubroutineLevelData, 4, 3);
+      freeWp43s(currentSubroutineLevelData + 3, 1);
       currentNumberOfLocalFlags = 0;
     }
     currentLocalFlags = NULL;
