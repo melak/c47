@@ -327,9 +327,7 @@ void defineCurrentProgramFromCurrentStep(void) {
 void scrollPemBackwards(void) {
   if(firstDisplayedLocalStepNumber > 0)
     --firstDisplayedLocalStepNumber;
-  firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
-  for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i)
-    firstDisplayedStep = findNextStep(firstDisplayedStep);
+  defineFirstDisplayedStep();
 }
 
 void scrollPemForwards(void) {
@@ -374,10 +372,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
 
     if(currentLocalStepNumber < firstDisplayedLocalStepNumber) {
       firstDisplayedLocalStepNumber = currentLocalStepNumber;
-      firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
-      for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i) {
-        firstDisplayedStep = findNextStep(firstDisplayedStep);
-      }
+      defineFirstDisplayedStep();
     }
 
     if(currentLocalStepNumber == 0) {
@@ -515,10 +510,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       if(inTamMode && (firstDisplayedLocalStepNumber > 1) && (currentLocalStepNumber + 1 >= (firstDisplayedLocalStepNumber + stepsThatWouldBeDisplayed))) {
         ++firstDisplayedLocalStepNumber;
       }
-      firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
-      for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i) {
-        firstDisplayedStep = findNextStep(firstDisplayedStep);
-      }
+      defineFirstDisplayedStep();
       clearScreen();
       showSoftmenuCurrentPart();
       fnPem(NOPARAM);

@@ -414,15 +414,11 @@ static void _bstInPem(void) {
     currentLocalStepNumber = numberOfSteps;
     if(numberOfSteps <= 6) {
       firstDisplayedLocalStepNumber = 0;
-      firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
     }
     else {
       firstDisplayedLocalStepNumber = numberOfSteps - 6;
-      firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
-      for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i) {
-        firstDisplayedStep = findNextStep(firstDisplayedStep);
-      }
     }
+    defineFirstDisplayedStep();
   }
 }
 
@@ -430,10 +426,7 @@ void fnBst(uint16_t unusedButMandatoryParameter) {
   currentInputVariable = INVALID_VARIABLE;
   _bstInPem();
   if(calcMode != CM_PEM) {
-    currentStep = programList[currentProgramNumber - 1].instructionPointer;
-    for(int i = 1; i < currentLocalStepNumber; ++i) {
-      currentStep = findNextStep(currentStep);
-    }
+    defineCurrentStep();
     _showStep();
   }
 }
@@ -464,9 +457,7 @@ static void _sstInPem(void) {
     firstDisplayedLocalStepNumber = 0;
   }
 
-  firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
-  for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i)
-    firstDisplayedStep = findNextStep(firstDisplayedStep);
+  defineFirstDisplayedStep();
 }
 
 void fnSst(uint16_t unusedButMandatoryParameter) {
@@ -495,10 +486,7 @@ void fnBack(uint16_t numberOfSteps) {
   }
   else {
     currentLocalStepNumber -= numberOfSteps;
-    currentStep = programList[currentProgramNumber - 1].instructionPointer;
-    for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
-      currentStep = findNextStep(currentStep);
-    }
+    defineCurrentStep();
   }
 }
 
@@ -555,5 +543,24 @@ void fnCase(uint16_t regist) {
   }
   else {
     fnSkip(real34ToUInt32(&arg) - 1);
+  }
+}
+
+
+
+
+void defineCurrentStep(void) {
+  currentStep = programList[currentProgramNumber - 1].instructionPointer;
+  for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
+    currentStep = findNextStep(currentStep);
+  }
+}
+
+
+
+void defineFirstDisplayedStep(void) {
+  firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
+  for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i) {
+    firstDisplayedStep = findNextStep(firstDisplayedStep);
   }
 }

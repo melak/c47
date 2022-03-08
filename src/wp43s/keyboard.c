@@ -972,7 +972,11 @@
   void leavePem(void) {
     if(freeProgramBytes >= 4) { // Push the programs to the end of RAM
       uint32_t newProgramSize = (uint32_t)((uint8_t *)(ram + RAM_SIZE) - beginOfProgramMemory) - (freeProgramBytes & 0xfffc);
-      if(programList[currentProgramNumber].step > 0) {
+      uint16_t localStepNumber = currentLocalStepNumber;
+      uint16_t programNumber = currentProgramNumber;
+      uint16_t fdLocalStepNumber = firstDisplayedLocalStepNumber;
+      bool_t inRam = (programList[currentProgramNumber - 1].step > 0);
+      if(inRam) {
         currentStep.ram           += (freeProgramBytes & 0xfffc);
         firstDisplayedStep.ram    += (freeProgramBytes & 0xfffc);
         beginOfCurrentProgram.ram += (freeProgramBytes & 0xfffc);
@@ -981,6 +985,13 @@
       freeProgramBytes &= 0x03;
       resizeProgramMemory(TO_BLOCKS(newProgramSize));
       scanLabelsAndPrograms();
+      if(inRam) {
+        currentLocalStepNumber = localStepNumber;
+        currentProgramNumber = programNumber;
+        firstDisplayedLocalStepNumber = fdLocalStepNumber;
+        defineCurrentStep();
+        defineFirstDisplayedStep();
+      }
     }
   }
 
@@ -1925,10 +1936,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
           pemAlpha(ITM_BACKSPACE);
           if(aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA) && currentLocalStepNumber > 1) {
             --currentLocalStepNumber;
-            currentStep.ram = programList[currentProgramNumber - 1].instructionPointer.ram;
-            for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
-              currentStep.ram = findNextStep_ram(currentStep.ram);
-            }
+            defineCurrentStep();
             if(!programListEnd)
               scrollPemBackwards();
           }
@@ -1940,10 +1948,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
           }
           if(currentLocalStepNumber > 1) {
             --currentLocalStepNumber;
-            currentStep.ram = programList[currentProgramNumber - 1].instructionPointer.ram;
-            for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
-              currentStep.ram = findNextStep_ram(currentStep.ram);
-            }
+            defineCurrentStep();
           }
           scrollPemBackwards();
         }
