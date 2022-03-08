@@ -175,7 +175,6 @@ void fnGotoDot(uint16_t globalStepNumber) {
   }
 
   if(currentLocalStepNumber >= 3) {
-    firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
     firstDisplayedLocalStepNumber = currentLocalStepNumber - 3;
     uint16_t numberOfSteps = getNumberOfSteps();
     if(firstDisplayedLocalStepNumber + 6 > numberOfSteps) {
@@ -185,8 +184,7 @@ void fnGotoDot(uint16_t globalStepNumber) {
         }
       }
     }
-    for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i)
-      firstDisplayedStep = findNextStep(firstDisplayedStep);
+    defineFirstDisplayedStep();
   }
   else {
     firstDisplayedLocalStepNumber = 0;
@@ -257,10 +255,7 @@ void fnReturn(uint16_t skip) {
     if(programRunStop == PGM_RUNNING) {
       currentProgramNumber = currentReturnProgramNumber;
       currentLocalStepNumber = currentReturnLocalStep + 1;
-      currentStep = programList[currentProgramNumber - 1].instructionPointer;
-      for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
-        currentStep = findNextStep(currentStep);
-      }
+      defineCurrentStep();
     }
     else {
       uint16_t returnGlobalStepNumber = currentReturnLocalStep + programList[currentReturnProgramNumber - 1].step; // the next step
