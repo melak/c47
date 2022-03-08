@@ -548,21 +548,14 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
       }
     }
     else {
-      if((currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 4 + currentNumberOfLocalRegisters, 4 + numberOfRegistersToAllocate))) {
-        // free memory allocated to the data of the deleted local registers
-        for(r=numberOfRegistersToAllocate; r<currentNumberOfLocalRegisters; r++) {
-          freeRegisterData(FIRST_LOCAL_REGISTER + r);
-        }
-
-        currentLocalFlags = currentSubroutineLevelData + 3;
-        currentLocalRegisters = (numberOfRegistersToAllocate == 0 ? NULL : (registerHeader_t *)(currentSubroutineLevelData + 4));
-        currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
+      // free memory allocated to the data of the deleted local registers
+      for(r=numberOfRegistersToAllocate; r<currentNumberOfLocalRegisters; r++) {
+        freeRegisterData(FIRST_LOCAL_REGISTER + r);
       }
-      else {
-        currentSubroutineLevelData = oldSubroutineLevelData;
-        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-        return;
-      }
+      freeWp43s(currentSubroutineLevelData + 4 + numberOfRegistersToAllocate, currentNumberOfLocalRegisters - numberOfRegistersToAllocate);
+      currentLocalFlags = currentSubroutineLevelData + 3;
+      currentLocalRegisters = (numberOfRegistersToAllocate == 0 ? NULL : (registerHeader_t *)(currentSubroutineLevelData + 4));
+      currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
     }
   }
   else {
