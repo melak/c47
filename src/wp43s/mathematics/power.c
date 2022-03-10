@@ -182,14 +182,30 @@ void powLonIShoI(void) {
 
 
 /********************************************//**
- * \brief Y(short integer) ^ X(long integer) ==> X(long integer)
+ * \brief Y(short integer) ^ X(long integer) ==> X(short integer)
  *
  * \param void
  * \return void
  ***********************************************/
 void powShoILonI(void) {
+  int32_t base = getRegisterShortIntegerBase(REGISTER_Y);
+  real_t x, a;
+  convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_Y, REGISTER_Y);
   powLonILonI();
+  if(realIsPositive(&x)) {
+    convertLongIntegerRegisterToReal(REGISTER_X, &a, &ctxtReal39);
+    convertLongIntegerRegisterToShortIntegerRegister(REGISTER_X, REGISTER_X);
+    setRegisterShortIntegerBase(REGISTER_X, base);
+    convertShortIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+    if(realCompareEqual(&x, &a)) {
+      clearSystemFlag(FLAG_OVERFLOW);
+    }
+    else {
+      setSystemFlag(FLAG_OVERFLOW);
+    }
+  }
 }
 
 
