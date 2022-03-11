@@ -93,6 +93,38 @@ void fnPower(uint16_t unusedButMandatoryParameter) {
 /* long integer ^ ...                                                                                                                                                                     */
 /******************************************************************************************************************************************************************************************/
 
+void longIntegerPower(longInteger_t base, longInteger_t exponent, longInteger_t result) {
+  if(longIntegerIsZero(exponent)) {
+    uIntToLongInteger(1, result);
+  }
+  else if(longIntegerIsZero(base)) {
+    uIntToLongInteger(0, result);
+  }
+  else if((longIntegerCompareInt(base, 1) == 0 || longIntegerCompareInt(base, -1) == 0) && longIntegerCompareInt(exponent, -1) == 0) {
+    longIntegerCopy(base, result);
+  }
+  else if(longIntegerIsNegative(exponent)) {
+    uIntToLongInteger(0, result);
+  }
+  else {
+    uIntToLongInteger(1, result);
+
+    while(!longIntegerIsZero(exponent)) {
+      if(longIntegerIsOdd(exponent)) {
+       longIntegerMultiply(result, base, result);
+      }
+
+      longIntegerDivide2(exponent, exponent);
+
+      if(!longIntegerIsZero(exponent)) {
+        longIntegerSquare(base, base);
+      }
+    }
+  }
+}
+
+
+
 /********************************************//**
  * \brief Y(long integer) ^ X(long integer) ==> X(long integer)
  *
@@ -116,21 +148,7 @@ void powLonILonI(void) {
     return;
   }
 
-  if(longIntegerIsZero(exponent)) {
-    uIntToLongInteger(1, base);
-    convertLongIntegerToLongIntegerRegister(base, REGISTER_X);
-    longIntegerFree(base);
-    longIntegerFree(exponent);
-    return;
-  }
-  else if(longIntegerIsZero(base)) {
-    uIntToLongInteger(0, base);
-    convertLongIntegerToLongIntegerRegister(base, REGISTER_X);
-    longIntegerFree(base);
-    longIntegerFree(exponent);
-    return;
-  }
-  else if((longIntegerCompareInt(base, 1) == 0 || longIntegerCompareInt(base, -1) == 0) && longIntegerCompareInt(exponent, -1) == 0) {
+  if((longIntegerCompareInt(base, 1) == 0 || longIntegerCompareInt(base, -1) == 0) && longIntegerCompareInt(exponent, -1) == 0) {
     convertLongIntegerToLongIntegerRegister(base, REGISTER_X);
     longIntegerFree(base);
     longIntegerFree(exponent);
@@ -145,19 +163,7 @@ void powLonILonI(void) {
   longInteger_t result;
 
   longIntegerInit(result);
-  uIntToLongInteger(1, result);
-
-  while(!longIntegerIsZero(exponent) && lastErrorCode == 0) {
-    if(longIntegerIsOdd(exponent)) {
-     longIntegerMultiply(result, base, result);
-    }
-
-    longIntegerDivide2(exponent, exponent);
-
-    if(!longIntegerIsZero(exponent)) {
-      longIntegerSquare(base, base);
-    }
-  }
+  longIntegerPower(base, exponent, result);
 
   convertLongIntegerToLongIntegerRegister(result, REGISTER_X);
 

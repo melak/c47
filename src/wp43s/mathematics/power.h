@@ -21,6 +21,7 @@
 #define POWER_H
 
 #include "defines.h"
+#include "longIntegerType.h"
 #include "realType.h"
 #include <stdint.h>
 
@@ -34,6 +35,7 @@ void powError   (void);
 uint8_t PowerComplex(const real_t *yReal, const real_t *yImag, const real_t *xReal, const real_t *xImag,
                      real_t *rReal, real_t *rImag, realContext_t *realContext);
 
+void longIntegerPower(longInteger_t base, longInteger_t exponent, longInteger_t result);
 
 //      RegYRegX
 void powLonILonI(void);
