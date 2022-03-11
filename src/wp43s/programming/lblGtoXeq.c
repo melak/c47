@@ -175,7 +175,6 @@ void fnGotoDot(uint16_t globalStepNumber) {
   }
 
   if(currentLocalStepNumber >= 3) {
-    firstDisplayedStep = programList[currentProgramNumber - 1].instructionPointer;
     firstDisplayedLocalStepNumber = currentLocalStepNumber - 3;
     uint16_t numberOfSteps = getNumberOfSteps();
     if(firstDisplayedLocalStepNumber + 6 > numberOfSteps) {
@@ -185,8 +184,7 @@ void fnGotoDot(uint16_t globalStepNumber) {
         }
       }
     }
-    for(uint16_t i = 1; i < firstDisplayedLocalStepNumber; ++i)
-      firstDisplayedStep = findNextStep(firstDisplayedStep);
+    defineFirstDisplayedStep();
   }
   else {
     firstDisplayedLocalStepNumber = 0;
@@ -231,6 +229,7 @@ void fnExecute(uint16_t label) {
     while(currentSubroutineLevel > 0) {
       fnReturn(0);
     }
+    fnReturn(0); // 1 more time to clean local registers
     fnGoto(label);
     dynamicMenuItem = -1;
     if(lastErrorCode == ERROR_NONE) {
@@ -256,10 +255,7 @@ void fnReturn(uint16_t skip) {
     if(programRunStop == PGM_RUNNING) {
       currentProgramNumber = currentReturnProgramNumber;
       currentLocalStepNumber = currentReturnLocalStep + 1;
-      currentStep = programList[currentProgramNumber - 1].instructionPointer;
-      for(uint16_t i = 1; i < currentLocalStepNumber; ++i) {
-        currentStep = findNextStep(currentStep);
-      }
+      defineCurrentStep();
     }
     else {
       uint16_t returnGlobalStepNumber = currentReturnLocalStep + programList[currentReturnProgramNumber - 1].step; // the next step
@@ -291,7 +287,7 @@ void fnReturn(uint16_t skip) {
       allocateLocalRegisters(0);
     }
     if(currentNumberOfLocalFlags > 0) {
-      reallocWp43s(currentSubroutineLevelData, 4, 3);
+      freeWp43s(currentSubroutineLevelData + 3, 1);
       currentNumberOfLocalFlags = 0;
     }
     currentLocalFlags = NULL;
