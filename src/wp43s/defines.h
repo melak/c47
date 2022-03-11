@@ -24,11 +24,13 @@
   #undef  SAVESPACE_JM_FLB   //To remove some code to make fit without QSPI: Less flagbrowser
   #define SAVESPACE_JM_RB    //To remove some code to make fit without QSPI: Less registerbrowser
   #define SAVESPACE_JM_FB    //To remove some code to make fit without QSPI: Less fontbrowser
+  #define SAVESPACE_JM_SHOW  //To remove some code to make fit without QSPI: Less show
   #define SAVE_SPACE_DM42_12 //To remove math functions Zeta, Slvq, ortho_poly, elliptic, beta, bessel
 #else
   #undef  SAVESPACE_JM_FLB
   #undef  SAVESPACE_JM_RB
   #undef  SAVESPACE_JM_FB
+  #undef  SAVESPACE_JM_SHOW
   #undef  SAVE_SPACE_DM42_12
 #endif
 
