@@ -24,11 +24,17 @@
 #include "debug.h"
 #include "error.h"
 #include "flags.h"
+#include "integers.h"
 #include "items.h"
+#include "longIntegerType.h"
+#include "mathematics/comparisonReals.h"
 #include "mathematics/division.h"
+#include "mathematics/integerPart.h"
 #include "mathematics/ln.h"
+#include "mathematics/power.h"
 #include "mathematics/wp34s.h"
 #include "matrix.h"
+#include "realType.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -155,11 +161,31 @@ static void logxy(const real_t *xReal, const real_t *yReal, realContext_t *realC
 
 void logxyLonILonI(void) {
   real_t x, y;
+  longInteger_t antilog, yy, xx, rr;
+
+  convertLongIntegerRegisterToLongInteger(REGISTER_Y, antilog);
+  convertLongIntegerRegisterToLongInteger(REGISTER_Y, yy);
+  convertLongIntegerRegisterToLongInteger(REGISTER_X, xx);
 
   convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
   convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
 
   logxy(&x, &y, &ctxtReal39);
+
+  if(getRegisterDataType(REGISTER_X) == dtReal34 && real34IsAnInteger(REGISTER_REAL34_DATA(REGISTER_X))) {
+    longIntegerInit(rr);
+    convertReal34ToLongInteger(REGISTER_REAL34_DATA(REGISTER_X), rr, DEC_ROUND_DOWN);
+    longIntegerPower(xx, rr, yy);
+    fflush(stdout);
+    if(longIntegerCompare(antilog, yy) == 0) {
+      ipReal();
+    }
+    longIntegerFree(rr);
+  }
+
+  longIntegerFree(xx);
+  longIntegerFree(yy);
+  longIntegerFree(antilog);
 }
 
 
@@ -197,11 +223,27 @@ void logxyCplxLonI(void) {
 
 void logxyShoILonI(void) {
   real_t x, y;
+  int32_t base = getRegisterShortIntegerBase(REGISTER_Y);
 
   convertShortIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
   convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
 
   logxy(&x, &y, &ctxtReal39);
+
+  if(getRegisterDataType(REGISTER_X) == dtReal34) {
+    if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X)) && !getSystemFlag(FLAG_SPCRES)) {
+      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+      EXTRA_INFO_MESSAGE("logxy", "cannot calculate LogXY with x=0");
+      return;
+    }
+    else if(real34IsAnInteger(REGISTER_REAL34_DATA(REGISTER_X))) {
+      clearSystemFlag(FLAG_CARRY);
+    }
+    else {
+      setSystemFlag(FLAG_CARRY);
+    }
+    fnChangeBase((uint16_t)base);
+  }
 }
 
 
@@ -250,11 +292,27 @@ void logxyCplxReal(void) {
 
 void logxyShoIReal(void) {
   real_t x, y;
+  int32_t base = getRegisterShortIntegerBase(REGISTER_Y);
 
   convertShortIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
 
   logxy(&x, &y, &ctxtReal39);
+
+  if(getRegisterDataType(REGISTER_X) == dtReal34) {
+    if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X)) && !getSystemFlag(FLAG_SPCRES)) {
+      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+      EXTRA_INFO_MESSAGE("logxy", "cannot calculate LogXY with x=0");
+      return;
+    }
+    else if(real34IsAnInteger(REGISTER_REAL34_DATA(REGISTER_X))) {
+      clearSystemFlag(FLAG_CARRY);
+    }
+    else {
+      setSystemFlag(FLAG_CARRY);
+    }
+    fnChangeBase((uint16_t)base);
+  }
 }
 
 
@@ -336,12 +394,8 @@ void logxyShoICplx(void) {
 
 
 void logxyLonIShoI(void) {
-  real_t x, y;
-
-  convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
-  convertShortIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
-
-  logxy(&x, &y, &ctxtReal39);
+  convertShortIntegerRegisterToLongIntegerRegister(REGISTER_X, REGISTER_X);
+  logxyLonILonI();
 }
 
 
@@ -379,11 +433,27 @@ void logxyCplxShoI(void) {
 
 void logxyShoIShoI(void) {
   real_t x, y;
+  int32_t base = getRegisterShortIntegerBase(REGISTER_Y);
 
   convertShortIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
   convertShortIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
 
   logxy(&x, &y, &ctxtReal39);
+
+  if(getRegisterDataType(REGISTER_X) == dtReal34) {
+    if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X)) && !getSystemFlag(FLAG_SPCRES)) {
+      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+      EXTRA_INFO_MESSAGE("logxy", "cannot calculate LogXY with x=0");
+      return;
+    }
+    else if(real34IsAnInteger(REGISTER_REAL34_DATA(REGISTER_X))) {
+      clearSystemFlag(FLAG_CARRY);
+    }
+    else {
+      setSystemFlag(FLAG_CARRY);
+    }
+    fnChangeBase((uint16_t)base);
+  }
 }
 
 
