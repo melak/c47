@@ -159,9 +159,15 @@ static void _assignItem(userMenuItem_t *menuItem) {
   const uint8_t *lblPtr = NULL;
   uint32_t l = 0;
   if(itemToBeAssigned >= ASSIGN_LABELS) {
-    // TODO: flash
-    lblPtr                    = labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer.ram;
-    menuItem->item            = ITM_XEQ;
+    if(labelList[itemToBeAssigned - ASSIGN_LABELS].program > 0) {
+      lblPtr                  = labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer.ram;
+      menuItem->item          = ITM_XEQ;
+    }
+    else {
+      readStepInFlashPgmLibrary((uint8_t *)(tmpString + 200), 32, labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer.flash);
+      lblPtr                  = (uint8_t *)(tmpString + 200);
+      menuItem->item          = ITM_XEQ;
+    }
   }
   else if(itemToBeAssigned >= ASSIGN_RESERVED_VARIABLES) {
     lblPtr                    = allReservedVariables[itemToBeAssigned - ASSIGN_RESERVED_VARIABLES].reservedVariableName;
