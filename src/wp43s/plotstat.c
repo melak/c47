@@ -786,7 +786,7 @@ void graphPlotstat(uint16_t selection){
 
 
     //#################################################### vvv SCALING LOOP  vvv
-    for(cnt=0; (cnt < LIM && cnt < statnum); cnt++) {
+    for(cnt=0; (cnt < statnum); cnt++) {
       #if defined STATDEBUG && defined PC_BUILD
         printf("Axis0a: x: %f y: %f   \n",grf_x(cnt), grf_y(cnt));
       #endif
@@ -877,7 +877,7 @@ void graphPlotstat(uint16_t selection){
 
 
     //#################################################### vvv MAIN GRAPH LOOP vvv
-    for (ix = 0; (ix < LIM && ix < statnum); ++ix) {
+    for (ix = 0; (ix < statnum); ++ix) {
       x = grf_x(ix);
       y = grf_y(ix);
       xo = xN;
