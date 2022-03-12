@@ -1752,6 +1752,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           printf(">>> Undo from fnKeyExit\n");
         #endif
         fnUndo(NOPARAM);
+        fnClDrawMx();
         popSoftmenu();
         break;
 

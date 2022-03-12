@@ -256,7 +256,7 @@ void check_osc(uint8_t ii){
 
 
 
-void fnClDrawMx() {
+void fnClDrawMx(void) {
   if(plotStatMx[0]!='D') strcpy(plotStatMx,"DrwMX");
   calcRegister_t regStats = findNamedVariable(plotStatMx);
   if(regStats == INVALID_VARIABLE) {
