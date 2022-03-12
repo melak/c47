@@ -31,6 +31,7 @@
 #include "fonts.h"
 #include "items.h"
 #include "keyboard.h"
+#include "longIntegerType.h"
 #include "mathematics/comparisonReals.h"
 #include "matrix.h"
 #include "memory.h"
@@ -624,6 +625,23 @@ void execTimerApp(uint16_t timerType) {
       }
 
       *(screenData + y*screenStride + x) = OFF_PIXEL;
+      screenChange = true;
+    }
+
+
+
+    void flipPixel(uint32_t x, uint32_t y) {
+      if(x>=SCREEN_WIDTH || y>=SCREEN_HEIGHT) {
+        printf("In function flipPixel: x=%u, y=%u outside the screen!\n", x, y);
+        return;
+      }
+
+      if(*(screenData + y*screenStride + x) == OFF_PIXEL) {
+        *(screenData + y*screenStride + x) = ON_PIXEL;
+      }
+      else {
+        *(screenData + y*screenStride + x) = OFF_PIXEL;
+      }
       screenChange = true;
     }
 
@@ -2373,4 +2391,144 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
   #ifdef DMCP_BUILD
     create_screenshot(0);
   #endif // DMCP_BUILD
+}
+
+
+
+#ifndef TESTSUITE_BUILD
+static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue) {
+  int32_t value;
+
+  if(getRegisterDataType(regist) == dtReal34) {
+    real34_t maxValue34;
+
+    int32ToReal34(maxValue, &maxValue34);
+    if(real34CompareLessThan(REGISTER_REAL34_DATA(regist), const34_1) || real34CompareLessThan(&maxValue34, REGISTER_REAL34_DATA(regist))) {
+      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+      #ifdef PC_BUILD
+        real34ToString(REGISTER_REAL34_DATA(regist), errorMessage);
+        sprintf(tmpString, "x %" PRId16 " = %s:", regist, errorMessage);
+        moreInfoOnError("In function _getPositionFromRegister:", tmpString, "this value is negative or too big!", NULL);
+      #endif // PC_BUILD
+      return -1;
+    }
+    value = real34ToInt32(REGISTER_REAL34_DATA(regist));
+  }
+
+  else if(getRegisterDataType(regist) == dtLongInteger) {
+    longInteger_t lgInt;
+
+    convertLongIntegerRegisterToLongInteger(regist, lgInt);
+    if(longIntegerCompareUInt(lgInt, 1) < 0 || longIntegerCompareUInt(lgInt, maxValue) > 0) {
+      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+      #ifdef PC_BUILD
+        longIntegerToAllocatedString(lgInt, errorMessage, ERROR_MESSAGE_LENGTH);
+        sprintf(tmpString, "register %" PRId16 " = %s:", regist, errorMessage);
+        moreInfoOnError("In function _getPositionFromRegister:", tmpString, "this value is negative or too big!", NULL);
+      #endif // PC_BUILD
+      longIntegerFree(lgInt);
+      return -1;
+    }
+    longIntegerToUInt(lgInt, value);
+    longIntegerFree(lgInt);
+  }
+
+  else {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+    #ifdef PC_BUILD
+      sprintf(errorMessage, "register %" PRId16 " is %s:", regist, getRegisterDataTypeName(regist, true, false));
+      moreInfoOnError("In function _getPositionFromRegister:", errorMessage, "not suited for addressing!", NULL);
+    #endif // PC_BUILD
+    return -1;
+  }
+
+  return value;
+}
+
+static void getPixelPos(int32_t *x, int32_t *y) {
+  *x = _getPositionFromRegister(REGISTER_X, SCREEN_WIDTH);
+  *y = _getPositionFromRegister(REGISTER_Y, SCREEN_HEIGHT);
+}
+#endif // TESTSUITE_BUILD
+
+void fnClLcd(uint16_t unusedButMandatoryParameter) {
+#ifndef TESTSUITE_BUILD
+  clearScreen();
+#endif // TESTSUITE_BUILD
+}
+
+void fnPixel(uint16_t unusedButMandatoryParameter) {
+#ifndef TESTSUITE_BUILD
+  int32_t x, y;
+  getPixelPos(&x, &y);
+  if(lastErrorCode == ERROR_NONE) {
+    setBlackPixel(x - 1, y - 1);
+  }
+#endif // TESTSUITE_BUILD
+}
+
+void fnPoint(uint16_t unusedButMandatoryParameter) {
+#ifndef TESTSUITE_BUILD
+  int32_t x, y;
+  getPixelPos(&x, &y);
+  if(lastErrorCode == ERROR_NONE) {
+    lcd_fill_rect(x - 2, y - 2, 3, 3, LCD_EMPTY_VALUE);
+  }
+#endif // TESTSUITE_BUILD
+}
+
+void fnAGraph(uint16_t regist) {
+#ifndef TESTSUITE_BUILD
+  int32_t x, y;
+  uint32_t gramod;
+  longInteger_t liGramod;
+  getPixelPos(&x, &y);
+  convertLongIntegerRegisterToLongInteger(RESERVED_VARIABLE_GRAMOD, liGramod);
+  longIntegerToUInt(liGramod, gramod);
+  longIntegerFree(liGramod);
+  if(lastErrorCode == ERROR_NONE) {
+    if(getRegisterDataType(regist) == dtShortInteger) {
+      uint64_t val;
+      int16_t sign;
+      const uint8_t savedShortIntegerMode = shortIntegerMode;
+
+      shortIntegerMode = SIM_UNSIGN;
+      convertShortIntegerRegisterToUInt64(regist, &sign, &val);
+      shortIntegerMode = savedShortIntegerMode;
+      for(uint32_t i = 0; i < shortIntegerWordSize; ++i) {
+        switch(gramod) {
+          case 1:
+            if(!(val & 1)) {
+              setWhitePixel(x - 1, y - 1 + i);
+            }
+            /* fallthrough */
+          case 0:
+            if(val & 1) {
+              setBlackPixel(x - 1, y - 1 + i);
+            }
+            break;
+          case 2:
+            if(val & 1) {
+              setWhitePixel(x - 1, y - 1 + i);
+            }
+            break;
+          case 3:
+            if(val & 1) {
+              flipPixel(x - 1, y - 1 + i);
+            }
+            break;
+        }
+        val >>= 1;
+      }
+    }
+
+    else {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #ifdef PC_BUILD
+        sprintf(errorMessage, "register %" PRId16 " is %s:", regist, getRegisterDataTypeName(regist, true, false));
+        moreInfoOnError("In function fnAGraph:", errorMessage, "not suited for addressing!", NULL);
+      #endif // PC_BUILD
+    }
+  }
+#endif // TESTSUITE_BUILD
 }

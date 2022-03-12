@@ -30,6 +30,11 @@
 
 void       fnScreenDump                       (uint16_t unusedButMandatoryParameter);
 
+void       fnClLcd                            (uint16_t unusedButMandatoryParameter);
+void       fnPixel                            (uint16_t unusedButMandatoryParameter);
+void       fnPoint                            (uint16_t unusedButMandatoryParameter);
+void       fnAGraph                           (uint16_t regist);
+
 #ifdef PC_BUILD
   /**
    * Draws the calc's screen on the PC window widget.
@@ -79,6 +84,13 @@ void       fnScreenDump                       (uint16_t unusedButMandatoryParame
      * \param[in] y y coordinate from 0 (top) to 239 (bottom)
      */
   void     setWhitePixel                      (uint32_t x, uint32_t y);
+    /**
+     * Turns a black pixel to a white pixel or vice versa on the screen.
+     *
+     * \param[in] x x coordinate from 0 (left) to 399 (right)
+     * \param[in] y y coordinate from 0 (top) to 239 (bottom)
+     */
+  void     flipPixel                          (uint32_t x, uint32_t y);
 #endif // DMCP_BUILD
 
   void     execTimerApp                         (uint16_t timerType);
