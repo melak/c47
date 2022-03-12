@@ -556,7 +556,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     }
     for(int i=12; i<NUMBER_OF_RESERVED_VARIABLES; i++) {
       calcRegister_t regist = i+FIRST_RESERVED_VARIABLE;
-      if((!applyFilter || _filterDataType(regist, typeFilter, isAngular)) && regist != RESERVED_VARIABLE_GRAMOD) {
+      if((!applyFilter || _filterDataType(regist, typeFilter, isAngular))) {
         xcopy(tmpString + 15 * numberOfVars, allReservedVariables[i].reservedVariableName + 1, allReservedVariables[i].reservedVariableName[0]);
         numberOfVars++;
         numberOfBytes += 1 + allReservedVariables[i].reservedVariableName[0];

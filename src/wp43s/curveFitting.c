@@ -42,6 +42,7 @@
 
 //#define STAT_DISPLAY_ABCDEFG                      //to display helper functions A-H
 
+#ifndef TESTSUITE
 
 static real_t RR, RR2, RRMAX, SMI, aa0, aa1, aa2;  // Curve fitting variables, available to the different functions
 realContext_t *realContext;
@@ -606,14 +607,14 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
           formatRealDebug(ss, RR_); printf("§§ r: %s\n",ss);
         #endif
         #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
-          realToDouble1(SIGMA_N, &v); printf("§§ n: %f\n",v);
-          realToDouble1(&AA, &v); printf("§§ AA: %f\n",v);
-          realToDouble1(&BB, &v); printf("§§ BB: %f\n",v);
-          realToDouble1(&CC, &v); printf("§§ CC: %f\n",v);
-          realToDouble1(aa1, &v); printf("§§ A1: %f\n",v);
-          realToDouble1(aa0, &v); printf("§§ A0: %f\n",v);
-          realToDouble1(RR_, &v); printf("§§ r:  %f\n",v);
-          realToDouble1(&RR2,&v); printf("§§ r^2:%f\n",v);
+          realToDouble(SIGMA_N, &v); printf("§§ n: %f\n",v);
+          realToDouble(&AA, &v); printf("§§ AA: %f\n",v);
+          realToDouble(&BB, &v); printf("§§ BB: %f\n",v);
+          realToDouble(&CC, &v); printf("§§ CC: %f\n",v);
+          realToDouble(aa1, &v); printf("§§ A1: %f\n",v);
+          realToDouble(aa0, &v); printf("§§ A0: %f\n",v);
+          realToDouble(RR_, &v); printf("§§ r:  %f\n",v);
+          realToDouble(&RR2,&v); printf("§§ r^2:%f\n",v);
         #endif
 
 
@@ -692,20 +693,20 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realSquareRoot(&RR2, RR_, realContext);
 
         #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
-          realToDouble1(SIGMA_N, &v); printf("§§ n: %f\n",v);
-          realToDouble1(&AA, &v); printf("§§ AA: %f\n",v);
-          realToDouble1(&BB, &v); printf("§§ BB: %f\n",v);
-          realToDouble1(&CC, &v); printf("§§ CC: %f\n",v);
-          realToDouble1(&DD, &v); printf("§§ DD: %f\n",v);
-          realToDouble1(&EE, &v); printf("§§ EE: %f\n",v);
-          realToDouble1(&FF, &v); printf("§§ FF: %f\n",v);
-          realToDouble1(&GG, &v); printf("§§ GG: %f\n",v);
-          realToDouble1(&HH, &v); printf("§§ HH: %f\n",v);
-          realToDouble1(aa2, &v); printf("§§ A2: %f\n",v);
-          realToDouble1(aa1, &v); printf("§§ A1: %f\n",v);
-          realToDouble1(aa0, &v); printf("§§ A0: %f\n",v);
-          realToDouble1(RR_, &v); printf("§§ r:  %f\n",v);
-          realToDouble1(&RR2,&v); printf("§§ r^2:%f\n",v);
+          realToDouble(SIGMA_N, &v); printf("§§ n: %f\n",v);
+          realToDouble(&AA, &v); printf("§§ AA: %f\n",v);
+          realToDouble(&BB, &v); printf("§§ BB: %f\n",v);
+          realToDouble(&CC, &v); printf("§§ CC: %f\n",v);
+          realToDouble(&DD, &v); printf("§§ DD: %f\n",v);
+          realToDouble(&EE, &v); printf("§§ EE: %f\n",v);
+          realToDouble(&FF, &v); printf("§§ FF: %f\n",v);
+          realToDouble(&GG, &v); printf("§§ GG: %f\n",v);
+          realToDouble(&HH, &v); printf("§§ HH: %f\n",v);
+          realToDouble(aa2, &v); printf("§§ A2: %f\n",v);
+          realToDouble(aa1, &v); printf("§§ A1: %f\n",v);
+          realToDouble(aa0, &v); printf("§§ A0: %f\n",v);
+          realToDouble(RR_, &v); printf("§§ r:  %f\n",v);
+          realToDouble(&RR2,&v); printf("§§ r^2:%f\n",v);
         #endif
         #if defined STATDEBUG && defined PC_BUILD
           printf("##### PARABF\n");
@@ -775,20 +776,20 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realSquareRoot(&RR2, RR_, realContext);
 
         #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
-          realToDouble1(SIGMA_N, &v); printf("§§ n: %f\n",v);
-          realToDouble1(&AA, &v); printf("§§ AA: %f\n",v);
-          realToDouble1(&BB, &v); printf("§§ BB: %f\n",v);
-          realToDouble1(&CC, &v); printf("§§ CC: %f\n",v);
-          realToDouble1(&DD, &v); printf("§§ DD: %f\n",v);
-          realToDouble1(&EE, &v); printf("§§ EE: %f\n",v);
-          realToDouble1(&FF, &v); printf("§§ FF: %f\n",v);
-          realToDouble1(&GG, &v); printf("§§ GG: %f\n",v);
-          realToDouble1(&HH, &v); printf("§§ HH: %f\n",v);
-          realToDouble1(aa2, &v); printf("§§ A2: %f\n",v);
-          realToDouble1(aa1, &v); printf("§§ A1: %f\n",v);
-          realToDouble1(aa0, &v); printf("§§ A0: %f\n",v);
-          realToDouble1(RR_, &v); printf("§§ r:  %f\n",v);
-          realToDouble1(&RR2,&v); printf("§§ r^2:%f\n",v);
+          realToDouble(SIGMA_N, &v); printf("§§ n: %f\n",v);
+          realToDouble(&AA, &v); printf("§§ AA: %f\n",v);
+          realToDouble(&BB, &v); printf("§§ BB: %f\n",v);
+          realToDouble(&CC, &v); printf("§§ CC: %f\n",v);
+          realToDouble(&DD, &v); printf("§§ DD: %f\n",v);
+          realToDouble(&EE, &v); printf("§§ EE: %f\n",v);
+          realToDouble(&FF, &v); printf("§§ FF: %f\n",v);
+          realToDouble(&GG, &v); printf("§§ GG: %f\n",v);
+          realToDouble(&HH, &v); printf("§§ HH: %f\n",v);
+          realToDouble(aa2, &v); printf("§§ A2: %f\n",v);
+          realToDouble(aa1, &v); printf("§§ A1: %f\n",v);
+          realToDouble(aa0, &v); printf("§§ A0: %f\n",v);
+          realToDouble(RR_, &v); printf("§§ r:  %f\n",v);
+          realToDouble(&RR2,&v); printf("§§ r^2:%f\n",v);
         #endif
         #if defined STATDEBUG && defined PC_BUILD
           printf("##### GAUSSF\n");
@@ -854,20 +855,20 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realSquareRoot(&RR2, RR_, realContext);
 
         #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
-          realToDouble1(SIGMA_N, &v); printf("§§ n: %f\n",v);
-          realToDouble1(&AA, &v); printf("§§ AA: %f\n",v);
-          realToDouble1(&BB, &v); printf("§§ BB: %f\n",v);
-          realToDouble1(&CC, &v); printf("§§ CC: %f\n",v);
-          realToDouble1(&DD, &v); printf("§§ DD: %f\n",v);
-          realToDouble1(&EE, &v); printf("§§ EE: %f\n",v);
-          realToDouble1(&FF, &v); printf("§§ FF: %f\n",v);
-          realToDouble1(&GG, &v); printf("§§ GG: %f\n",v);
-          realToDouble1(&HH, &v); printf("§§ HH: %f\n",v);
-          realToDouble1(aa2, &v); printf("§§ A2: %f\n",v);
-          realToDouble1(aa1, &v); printf("§§ A1: %f\n",v);
-          realToDouble1(aa0, &v); printf("§§ A0: %f\n",v);
-          realToDouble1(RR_, &v); printf("§§ r:  %f\n",v);
-          realToDouble1(&RR2,&v); printf("§§ r^2:%f\n",v);
+          realToDouble(SIGMA_N, &v); printf("§§ n: %f\n",v);
+          realToDouble(&AA, &v); printf("§§ AA: %f\n",v);
+          realToDouble(&BB, &v); printf("§§ BB: %f\n",v);
+          realToDouble(&CC, &v); printf("§§ CC: %f\n",v);
+          realToDouble(&DD, &v); printf("§§ DD: %f\n",v);
+          realToDouble(&EE, &v); printf("§§ EE: %f\n",v);
+          realToDouble(&FF, &v); printf("§§ FF: %f\n",v);
+          realToDouble(&GG, &v); printf("§§ GG: %f\n",v);
+          realToDouble(&HH, &v); printf("§§ HH: %f\n",v);
+          realToDouble(aa2, &v); printf("§§ A2: %f\n",v);
+          realToDouble(aa1, &v); printf("§§ A1: %f\n",v);
+          realToDouble(aa0, &v); printf("§§ A0: %f\n",v);
+          realToDouble(RR_, &v); printf("§§ r:  %f\n",v);
+          realToDouble(&RR2,&v); printf("§§ r^2:%f\n",v);
         #endif
         #if defined STATDEBUG && defined PC_BUILD
           printf("##### CAUCHYF\n");
@@ -955,7 +956,7 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
       realCopy(const_0,YY);
       real_t SS,TT,UU;
       if(USEFLOAT == useREAL4) {
-        realContextForecast = &ctxtRealShort;
+        realContextForecast = &ctxtReal4;
       } else 
       if(USEFLOAT == useREAL39) {
         realContextForecast = &ctxtReal39;
@@ -1228,3 +1229,5 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
     }
   }
 }
+
+#endif //TESTSUITE

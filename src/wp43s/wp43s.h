@@ -124,7 +124,7 @@
   extern bool_t                 serialIOIconEnabled;
   extern bool_t                 neverUsed;
 
-  extern realContext_t          ctxtRealShort;//   Limited digits: used for high speed internal calcs
+  extern realContext_t          ctxtReal4;    //   Limited digits: used for high speed internal calcs
   extern realContext_t          ctxtReal34;   //   34 digits
   extern realContext_t          ctxtReal39;   //   39 digits: used for 34 digits intermediate calculations
   extern realContext_t          ctxtReal51;   //   51 digits: used for 34 digits intermediate calculations

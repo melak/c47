@@ -506,7 +506,7 @@ void fnClAll(uint16_t confirmation) {
 
 
 void addTestPrograms(void) {
-  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(10591));
+  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(11025));
 
   resizeProgramMemory(TO_BLOCKS(numberOfBytesForTheTestPrograms));
   firstDisplayedStep.ram        = beginOfProgramMemory;
@@ -728,9 +728,9 @@ void fnReset(uint16_t confirmation) {
 
     decContextDefault(&ctxtReal34, DEC_INIT_DECQUAD);
 
-    decContextDefault(&ctxtRealShort, DEC_INIT_DECSINGLE);
-    ctxtRealShort.digits = 6;
-    ctxtRealShort.traps  = 0;
+    decContextDefault(&ctxtReal4, DEC_INIT_DECSINGLE);
+    ctxtReal4.digits = 6;
+    ctxtReal4.traps  = 0;
 
     decContextDefault(&ctxtReal39, DEC_INIT_DECQUAD);
     ctxtReal39.digits = 39;

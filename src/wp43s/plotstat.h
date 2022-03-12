@@ -24,13 +24,15 @@
 #include "typeDefinitions.h"
 #include <stdint.h>
 
-#define   LIM              100     //Number of points; MUST be multiple of 4
+#define   useFLOAT           0
+#define   useREAL4           4
+#define   useREAL39         39
 #define   zoomfactor     0.05f     // default is 0.05, which is 5% space around the data points. Use 0.05 * 40 for wide view
 #define   numberIntervals   50     // default 50, auto increase if jumps found
 #define   fittedcurveboxes   0     // default 0 = smooth line
-#define   USEFLOATING useFLOAT     // useFLOAT is faster than 
-                                   // useREAL4 for graph reproduction
-                                   // Note: if useREAL4, then see plotstat.c TODO create REAL from x (double) if REALS will be used
+#define   USEFLOATING useFLOAT     // USEFLOATING can be used to change the STATS graphing to work using different number types.
+                                   //   Note that limited precision is required as only the pixels on screen need to be considered
+                                   //   useFLOAT is much faster plotting STATS graphs on the real hardware than useREAL4 and useREAL39
 #define   FLoatingMax    1e38f     //convenient round figures used for maxima and minima determination
 #define   FLoatingMin    -1e38f
 
@@ -89,8 +91,6 @@ void    plotbox            (uint16_t xn, uint8_t yn);                // Plots li
 void    pixelline          (uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn, bool_t vmNormal);              // Plots line from xo,yo to xn,yn; uses temporary x1,y1
 void    plotline           (uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn);
 void    graphAxisDraw      (void);
-void    realToFloat        (const real_t *vv, float *v);
-void    realToDouble1       (const real_t *vv, double *v);
 void    graph_axis         (void);
 float   auto_tick          (float tick_int_f);	
 
@@ -107,7 +107,6 @@ char * padEquals(const char * ss);
 #ifndef TESTSUITE_BUILD
 int16_t screen_window_x(float x_min, float x, float x_max);
 int16_t screen_window_y(float y_min, float y, float y_max);
-void    doubleToString(double x, int16_t n, char *buff);
 #endif
 
 void    statGraphReset     (void);
