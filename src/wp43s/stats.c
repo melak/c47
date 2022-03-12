@@ -40,9 +40,9 @@
 
 
 #ifndef TESTSUITE_BUILD
-static bool_t isStatsMatrix(uint16_t *rows) {
+bool_t isStatsMatrix(uint16_t *rows, char *mx) {
   *rows = 0;
-  calcRegister_t regStats = findNamedVariable("STATS");
+  calcRegister_t regStats = findNamedVariable(mx);
   if(regStats == INVALID_VARIABLE) return false; else {
     if(getRegisterDataType(regStats) != dtReal34Matrix) return false; else {
       real34Matrix_t stats;
@@ -480,7 +480,7 @@ static void getLastRowStatsMatrix(real_t *x, real_t *y) {
 static void AddtoStatsMatrix(real_t *x, real_t *y) {
   uint16_t rows = 0, cols;
   calcRegister_t regStats = findNamedVariable("STATS");
-  if(!isStatsMatrix(&rows)) {
+  if(!isStatsMatrix(&rows,"STATS")) {
     regStats = allocateNamedMatrix("STATS", 1, 2);
     real34Matrix_t stats;
     linkToRealMatrixRegister(regStats, &stats);
@@ -514,7 +514,7 @@ static void AddtoStatsMatrix(real_t *x, real_t *y) {
 
 static void removeLastRowFromStatsMatrix(void) {
   uint16_t rows = 0;
-  if(!isStatsMatrix(&rows)) {
+  if(!isStatsMatrix(&rows,"STATS")) {
     displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "no STATS matrix");

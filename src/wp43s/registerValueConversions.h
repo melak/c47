@@ -95,6 +95,17 @@ void convertReal34RegisterToDateRegister                   (calcRegister_t sourc
   void convertReal34MatrixToComplex34Matrix                (const real34Matrix_t *source, complex34Matrix_t *destination);
   void convertReal34MatrixRegisterToComplex34Matrix        (calcRegister_t source, complex34Matrix_t *destination);
   void convertReal34MatrixRegisterToComplex34MatrixRegister(calcRegister_t source, calcRegister_t destination);
+
+
+  //Section to convert doubles and floats
+  void    convertDoubleToString                            (double x, int16_t n, char *buff);  //Reformatting double/float strings that are formatted according to different locale settings
+  void    convertDoubleToReal                              (double x, real_t *destination, realContext_t *ctxt);
+  void    convertDoubleToReal34Register                    (double x, calcRegister_t destination);
 #endif // TESTSUITE_BUILD
+void    realToFloat                                        (const real_t *vv, float *v);
+void    realToDouble  /*float used (not double)*/          (const real_t *vv, double *v);
+double  convertRegisterToDouble                            (calcRegister_t regist);
+#define DOUBLE_NOT_INIT 3.402823466e+38f //maximum float value
+
 
 #endif // REGISTERVALUECONVERSIONS_H

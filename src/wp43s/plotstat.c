@@ -29,8 +29,10 @@
 #include "mathematics/variance.h"
 #include "matrix.h"
 #include "registers.h"
+#include "registerValueConversions.h"
 #include "screen.h"
 #include "softmenus.h"
+#include "solver/graph.h"
 #include "stack.h"
 #include "stats.h"
 #include "statusBar.h"
@@ -120,109 +122,34 @@ void statGraphReset(void){
 
 
 
-
-//Pauli volunteered this fuction, rev 1 2021-10-10
-#if DECDPUN != 3
-#error DECDPUN must be 3
-#endif
-float fnRealToFloat(const real_t *r){
-    int s = 0;
-    int j, n, e;
-    static const float exps[] = {
-        1.e-45, 1.e-44, 1.e-43, 1.e-42, 1.e-41, 1.e-40, 1.e-39, 1.e-38,
-        1.e-37, 1.e-36, 1.e-35, 1.e-34, 1.e-33, 1.e-32, 1.e-31, 1.e-30,
-        1.e-29, 1.e-28, 1.e-27, 1.e-26, 1.e-25, 1.e-24, 1.e-23, 1.e-22,
-        1.e-21, 1.e-20, 1.e-19, 1.e-18, 1.e-17, 1.e-16, 1.e-15, 1.e-14,
-        1.e-13, 1.e-12, 1.e-11, 1.e-10, 1.e-9,  1.e-8,  1.e-7,  1.e-6,
-        1.e-5,  1.e-4,  1.e-3,  1.e-2,  1.e-1,  1.e0,   1.e1,   1.e2,
-        1.e3,   1.e4,   1.e5,   1.e6,   1.e7,   1.e8,   1.e9,
-        1.e10,  1.e11,  1.e12,  1.e13,  1.e14,  1.e15,  1.e16,  1.e17,
-        1.e18,  1.e19,  1.e20,  1.e21,  1.e22,  1.e23,  1.e24,  1.e25,
-        1.e26,  1.e27,  1.e28,  1.e29,  1.e30,  1.e31,  1.e32,  1.e33,
-        1.e34,  1.e35,  1.e36,  1.e37,  1.e38
-    };
-
-    if (realIsSpecial(r)) {
-        if (realIsNaN(r))
-            return 0. / 0.;
-        goto infinite;
-    }
-    if (realIsZero(r))
-        goto zero;
-
-    j = (r->digits + DECDPUN-1) / DECDPUN;
-    while (j > 0)
-        if ((s = r->lsu[--j]) != 0)
-            break;
-    for (n = 0; --j >= 0 && n < 2; n++)
-        s = (s * 1000) + r->lsu[j];
-    if (realIsNegative(r))
-        s = -s;
-    e = r->exponent + (j + 1) * DECDPUN;
-    if (e < -45) {
-zero:
-        return realIsPositive(r) ? 0. : -0.;
-    }
-    if (e > 38) {
-infinite:
-        if (realIsPositive(r))
-            return 1. / 0.;
-        return -1. / 0.;
-    }
-    return (float)s * exps[e + 45];
-}
-
-//#define realToReal39(source, destination) decQuadFromNumber ((real39_t *)(destination), source, &ctxtReal39)
-
-void realToFloat(const real_t *vv, float *v) {
-  *v = fnRealToFloat(vv);
-}
-
-void realToDouble1(const real_t *vv, double *v) {      //Not using double internally, i.e. using float type. Change fnRealToFloat if double is needed in future
-  *v = fnRealToFloat(vv);
-}
-
-
-
 #ifndef TESTSUITE_BUILD
   float grf_x(int i) {
     float xf=0;
     real_t xr;
-    if (PLOT_NVECT) {
-  //    return gr_y[i];
-    }
-    else {
-
-      calcRegister_t regStats = findNamedVariable("STATS");
-      if(regStats != INVALID_VARIABLE) {
-        real34Matrix_t stats;
-        linkToRealMatrixRegister(regStats, &stats);
-        const uint16_t cols = stats.header.matrixColumns;
-        real34ToReal(&stats.matrixElements[i * cols    ], &xr);
-        realToFloat(&xr, &xf);
-      } 
-      else xf = 0;
-    }
+    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    if(regStats != INVALID_VARIABLE) {
+      real34Matrix_t stats;
+      linkToRealMatrixRegister(regStats, &stats);
+      const uint16_t cols = stats.header.matrixColumns;
+      real34ToReal(&stats.matrixElements[i * cols    ], &xr);
+      realToFloat(&xr, &xf);
+    } 
+    else xf = 0;
     return xf;
   }
 
   float grf_y(int i) {
     float yf=0;
     real_t yr;
-    if (PLOT_NVECT) {
-  //    return gr_x[i];
-    }
-    else {
-      calcRegister_t regStats = findNamedVariable("STATS");
-      if(regStats != INVALID_VARIABLE) {
-        real34Matrix_t stats;
-        linkToRealMatrixRegister(regStats, &stats);
-        const uint16_t cols = stats.header.matrixColumns;
-        real34ToReal(&stats.matrixElements[i * cols + 1], &yr);
-        realToFloat(&yr, &yf);
-      } 
-      else yf = 0;
-    }
+    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    if(regStats != INVALID_VARIABLE) {
+      real34Matrix_t stats;
+      linkToRealMatrixRegister(regStats, &stats);
+      const uint16_t cols = stats.header.matrixColumns;
+      real34ToReal(&stats.matrixElements[i * cols + 1], &yr);
+      realToFloat(&yr, &yf);
+    } 
+    else yf = 0;
     return yf;
   }
 #endif //TESTSUITE_BUILD
@@ -521,6 +448,7 @@ void graphAxisDraw (void){
     if(PLOT_NVECT) {
       char tmpString2[100];
       showString("N", &standardFont, xzero-4, minny+14, vmNormal, true, true);
+      showString("x", &standardFont, xzero-4, minny+28, vmNormal, true, true);
       tmpString2[0]=(char)((uint8_t)0x80 | (uint8_t)0x22);
       tmpString2[1]=0x06;
       tmpString2[2]=0;
@@ -643,7 +571,6 @@ void graph_axis (void){
   #endif //TESTSUITE_BUILD
   graphAxisDraw();
 }
-
 
 char * radixProcess(const char * ss) {  //  .  HIERDIE WERK GLAD NIE
   int8_t ix = 0, iy = 0;
@@ -840,8 +767,9 @@ void graphPlotstat(uint16_t selection){
   graph_axis();
   plotmode = _SCAT;
 
-  if(checkMinimumDataPoints(const_2)) {
-    realToInt32(SIGMA_N, statnum);
+  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) ) {
+    if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, statnum);}
+    else {statnum = drawMxN();}
     #if defined STATDEBUG && defined PC_BUILD
       printf("statnum n=%d\n",statnum);
     #endif
@@ -858,7 +786,7 @@ void graphPlotstat(uint16_t selection){
 
 
     //#################################################### vvv SCALING LOOP  vvv
-    for(cnt=0; (cnt < LIM && cnt < statnum); cnt++) {
+    for(cnt=0; (cnt < statnum); cnt++) {
       #if defined STATDEBUG && defined PC_BUILD
         printf("Axis0a: x: %f y: %f   \n",grf_x(cnt), grf_y(cnt));
       #endif
@@ -949,7 +877,7 @@ void graphPlotstat(uint16_t selection){
 
 
     //#################################################### vvv MAIN GRAPH LOOP vvv
-    for (ix = 0; (ix < LIM && ix < statnum); ++ix) {
+    for (ix = 0; (ix < statnum); ++ix) {
       x = grf_x(ix);
       y = grf_y(ix);
       xo = xN;
@@ -1052,67 +980,11 @@ void graphDrawLRline(uint16_t selection) {
 }
 
 #ifndef TESTSUITE_BUILD
-  void doubleToString(double x, int16_t n, char *buff) { //Reformatting real strings that are formatted according to different locale settings
-    uint16_t i = 2; 
-    uint16_t j = 2; 
-    bool_t error = false;
-    snprintf(buff, n, "%.16e", x);
-
-    //#ifdef PC_BUILD
-    //  printf(">>>###A §%s§ %f %i %i %i \n",buff,(float) x, buff[0], buff[1], buff[2] );
-    //#endif //PC_BUILD
-
-    if(buff[0]!='-') {
-      i = 0;
-      while (buff[i]!=0) {
-        i++;
-      }
-      buff[i+1]=0;
-      while (i!=0) {
-        buff[i] = buff[i-1];
-        i--;
-      }
-      buff[0] = '+';
-    }
-
-    if(buff[0]!=0 && (buff[1]=='+' || buff[1]!='-') && (buff[2]=='.' || buff[2]==',')) {
-      buff[2] = '.';
-      i = 3; 
-      j = 3; 
-      while (buff[i]!=0) {
-        if(buff[i]==',' || buff[i]=='.' || buff[i]==' ') 
-          buff[j] = 0; 
-        else {
-          buff[j] = buff[i];
-          j++;
-        }
-        i++;
-      }
-      buff[j] = 0;
-    } else error = true;
-
-    //#ifdef PC_BUILD
-    //  printf(">>>###B §%s§ %f %i %i %i \n",buff,(float) x, buff[0], buff[1], buff[2] );
-    //#endif //PC_BUILD
-
-    stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
-    if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) error = true;
-
-    if(error) {
-      #ifdef PC_BUILD
-        printf("ERROR in locale: doubleToString: attempt to correct:  §%s§\n",buff);
-        snprintf(buff, 100, "%.16e", x);
-        printf("                                 Original conversion: §%s§\n",buff); 
-      #endif //PC_BUILD    
-      strcpy(buff,"NaN");
-    }
-  }
-
-
   void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2){
     int32_t n;
     uint16_t NN;
-    realToInt32(SIGMA_N, n);
+    if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, n);}
+    else {n = drawMxN();}
     NN = (uint16_t) n;
     bool_t isValidDraw =
       selection != 0
@@ -1171,9 +1043,15 @@ void graphDrawLRline(uint16_t selection) {
         uint16_t xx;
         for( xx=0; xx<14; xx++) {      //the starting point is ix + dx where dx=2^-0*interval and reduce it to dx=2^-31*interval until dy<=2
           x = ix + intervalW / ((double)((uint16_t) 1 << xx));
-          if(USEFLOATING != 0) {
+          if(USEFLOATING == useREAL4) {
             //TODO create REAL from x (double) if REALS will be used
-            snprintf(ss,100,"%f",x); stringToReal(ss,&XX,&ctxtReal39);
+            //snprintf(ss,100,"%f",x); stringToReal(ss,&XX,&ctxtReal4);
+            convertDoubleToReal(x, &XX, &ctxtReal4);
+          } else
+          if(USEFLOATING == useREAL39) {
+            //TODO create REAL from x (double) if REALS will be used
+            //snprintf(ss,100,"%f",x); stringToReal(ss,&XX,&ctxtReal39);
+            convertDoubleToReal(x, &XX, &ctxtReal39);
           }
           yIsFnx( USEFLOATING, selection, x, &y, a0, a1, a2, &XX, &YY, RR, SMI, aa0, aa1, aa2);
           xN = screen_window_x(x_min,(float)x,x_max);
@@ -1340,93 +1218,110 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
 //** plotSelection = 0 means that no curve fit is plotted
 //
 void fnPlotStat(uint16_t plotMode){
-#if defined STATDEBUG && defined PC_BUILD
-  printf("fnPlotStat1: plotSelection = %u; Plotmode=%u\n",plotSelection,plotMode);
-  printf("#####>>> fnPlotStat1: plotSelection:%u:%s  Plotmode:%u lastplotmode:%u  lrSelection:%u lrChosen:%u\n",plotSelection, getCurveFitModeName(plotSelection), plotMode, lastPlotMode, lrSelection, lrChosen);
-  int16_t cnt;
-  realToInt32(SIGMA_N, cnt);
-  printf("Stored values %i\n",cnt);
-#endif //STATDEBUG
+#ifndef TESTSUITE_BUILD
 
-if(checkMinimumDataPoints(const_2)) {
-
-  PLOT_SCALE = false;
-
-  #ifndef TESTSUITE_BUILD
-
-    if (!(lastPlotMode == PLOT_NOTHING || lastPlotMode == PLOT_START)) {
-      plotMode = lastPlotMode;
-    }
-    calcMode = CM_PLOT_STAT;
-    if(plotMode != PLOT_GRAPH) statGraphReset();
-
-    if(plotMode == PLOT_START){
-      plotSelection = 0;
-      roundedTicks = false;
-    } else
-      if(plotMode == PLOT_GRAPH){
-        calcMode = CM_GRAPH;
-        plotSelection = 0;
-        PLOT_AXIS     = true;
-        PLOT_LINE     = true;
-        PLOT_BOX      = false;
-        roundedTicks  = true;
-      } else
-        if(plotMode == PLOT_LR && lrSelection != 0) {
-          plotSelection = lrSelection;
-          roundedTicks = false; 
-        }
-
-    hourGlassIconEnabled = true;
-    showHideHourGlass();
-
-    #ifdef DMCP_BUILD
-      lcd_refresh();
-    #else // !DMCP_BUILD
-      refreshLcd(NULL);
-    #endif // DMCP_BUILD
-
-    switch(plotMode) {
-      case PLOT_GRAPH:
-           if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_GRAPH) {
-             showSoftmenu(-MNU_GRAPH);
-           }
-           break;             
-      case PLOT_LR:
-      case PLOT_NXT:
-      case PLOT_REV:
-           if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT_LR) {
-             showSoftmenu(-MNU_PLOT_LR);
-           }
-           break;
-      case PLOT_ORTHOF:
-      case PLOT_START:
-           PLOT_SCALE = true;
-           if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT_STAT) {
-             showSoftmenu(-MNU_PLOT_STAT);
-           }
-           break;
-      case PLOT_NOTHING:
-           break;
-      default: break;
-    }
-
-    if(plotMode != PLOT_START && plotMode != PLOT_GRAPH) {
-      fnPlotRegressionLine(plotMode);
-    }
-    else {
-      lastPlotMode = plotMode;
-    }
-  #endif //TESTSUITE_BUILD
-
-  } else {
-    calcMode = CM_NORMAL;
-    displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "There is no statistical data available!");
-      moreInfoOnError("In function fnPlotStat:", errorMessage, NULL, NULL);
-    #endif
+  switch (plotMode) {
+     case PLOT_GRAPH:  strcpy(plotStatMx, "DrwMX");
+              break;
+     case PLOT_ORTHOF:
+     case PLOT_START:
+     case PLOT_REV:
+     case PLOT_NXT:
+     case PLOT_LR: strcpy(plotStatMx, "STATS");
+              break;
+     default: break;
   }
+
+  #if defined STATDEBUG && defined PC_BUILD
+    printf("fnPlotStat1: plotSelection = %u; Plotmode=%u\n",plotSelection,plotMode);
+    printf("#####>>> fnPlotStat1: plotSelection:%u:%s  Plotmode:%u lastplotmode:%u  lrSelection:%u lrChosen:%u plotStatMx:%s\n",plotSelection, getCurveFitModeName(plotSelection), plotMode, lastPlotMode, lrSelection, lrChosen, plotStatMx);
+    if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) ) {
+      int16_t cnt;
+      if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, cnt);}
+      else {cnt = drawMxN();}
+      printf("Stored values %i\n",cnt);
+    }
+  #endif //STATDEBUG
+  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) ) {
+
+    PLOT_SCALE = false;
+
+    #ifndef TESTSUITE_BUILD
+
+      if (!(lastPlotMode == PLOT_NOTHING || lastPlotMode == PLOT_START)) {
+        plotMode = lastPlotMode;
+      }
+      calcMode = CM_PLOT_STAT;
+      if(plotMode != PLOT_GRAPH) statGraphReset();
+
+      if(plotMode == PLOT_START){
+        plotSelection = 0;
+        roundedTicks = false;
+      } else
+        if(plotMode == PLOT_GRAPH){
+          calcMode = CM_GRAPH;
+          plotSelection = 0;
+          PLOT_AXIS     = true;
+          PLOT_LINE     = true;
+          PLOT_BOX      = false;
+          roundedTicks  = true;
+        } else
+          if(plotMode == PLOT_LR && lrSelection != 0) {
+            plotSelection = lrSelection;
+            roundedTicks = false; 
+          }
+
+      hourGlassIconEnabled = true;
+      showHideHourGlass();
+
+      #ifdef DMCP_BUILD
+        lcd_refresh();
+      #else // !DMCP_BUILD
+        refreshLcd(NULL);
+      #endif // DMCP_BUILD
+
+      switch(plotMode) {
+        case PLOT_GRAPH:
+             if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_GRAPH) {
+               showSoftmenu(-MNU_GRAPH);
+             }
+             break;             
+        case PLOT_LR:
+        case PLOT_NXT:
+        case PLOT_REV:
+             if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT_LR) {
+               showSoftmenu(-MNU_PLOT_LR);
+             }
+             break;
+        case PLOT_ORTHOF:
+        case PLOT_START:
+             PLOT_SCALE = true;
+             if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT_STAT) {
+               showSoftmenu(-MNU_PLOT_STAT);
+             }
+             break;
+        case PLOT_NOTHING:
+             break;
+        default: break;
+      }
+
+      if(plotMode != PLOT_START && plotMode != PLOT_GRAPH) {
+        fnPlotRegressionLine(plotMode);
+      }
+      else {
+        lastPlotMode = plotMode;
+      }
+    #endif //TESTSUITE_BUILD
+
+    } else {
+      calcMode = CM_NORMAL;
+      displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "There is no statistical/plot data available!");
+        moreInfoOnError("In function fnPlotStat:", errorMessage, NULL, NULL);
+      #endif
+    }
+  #endif // TESTSUITE_BUILD
 }
 
 

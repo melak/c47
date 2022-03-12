@@ -1718,10 +1718,6 @@ void execTimerApp(uint16_t timerType) {
 
           else if(temporaryInformation == TI_STATISTIC_SUMS) {
             realToInt32(SIGMA_N, w);
-            if(regist == REGISTER_X && w > LIM) {
-              sprintf(prefix, "Plot memory full, continuing");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
-            }
             if(regist == REGISTER_Y) {
               if(w == 1)
                 sprintf(prefix, "%03" PRId16 " data point", w);

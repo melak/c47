@@ -61,6 +61,7 @@ void   fnClSigma             (uint16_t unusedButMandatoryParameter);
  * \param[in] unusedButMandatoryParameter
  * \return bool_t
  */
+bool_t isStatsMatrix(uint16_t *rows, char *mx);
 bool_t checkMinimumDataPoints(const real_t *n);
 void   initStatisticalSums   (void);
 void   calcSigma             (uint16_t maxOffset);
