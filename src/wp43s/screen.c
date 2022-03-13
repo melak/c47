@@ -2256,6 +2256,7 @@ void execTimerApp(uint16_t timerType) {
         graphPlotstat(plotSelection);
         if (calcMode == CM_PLOT_STAT) graphDrawLRline(plotSelection);
         hourGlassIconEnabled = false;
+        showHideHourGlass();
         refreshStatusBar();
         break;
 
