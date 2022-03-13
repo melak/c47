@@ -1,4 +1,4 @@
-.PHONY: all clean sim test dmcp docs dist_windows dist_macos dist_dm42
+.PHONY: all clean sim test dmcp docs testPgms dist_windows dist_macos dist_dm42
 
 all: sim
 
@@ -37,6 +37,10 @@ dmcp: build.dmcp
 docs: build.sim
 	cd build.sim && ninja docs
 
+testPgms: build.sim
+	cd build.sim && ninja testPgms
+	cp build.sim/src/generateTestPgms/testPgms.bin res/dmcp/
+
 build.rel/wiki: build.rel
 	git clone https://gitlab.com/Over_score/wp43s.wiki.git build.rel/wiki
 
@@ -50,7 +54,7 @@ else
   DM_DIST_DIR = wp43s-dm42-$(CI_COMMIT_TAG)
 endif
 
-dist_windows: build.rel/wiki
+dist_windows: testPgms build.rel/wiki
 	cd build.rel && ninja sim
 	mkdir -p $(WIN_DIST_DIR)/res/artwork $(WIN_DIST_DIR)/res/dmcp $(WIN_DIST_DIR)/res/tone
 	cp build.rel/src/wp43s-gtk/wp43s.exe $(WIN_DIST_DIR)/
@@ -64,7 +68,7 @@ dist_windows: build.rel/wiki
 	zip -r wp43s-windows.zip $(WIN_DIST_DIR)
 	rm -rf $(WIN_DIST_DIR)
 
-dist_macos: build.rel
+dist_macos: testPgms build.rel
 	cd build.rel && ninja sim
 	mkdir -p $(MAC_DIST_DIR)/res/artwork $(MAC_DIST_DIR)/res/dmcp
 	cp build.rel/src/wp43s-gtk/wp43s $(MAC_DIST_DIR)/
@@ -76,7 +80,7 @@ dist_macos: build.rel
 	zip -r wp43s-macos.zip $(MAC_DIST_DIR)
 	rm -rf $(MAC_DIST_DIR)
 
-dist_dm42: dmcp build.rel/wiki
+dist_dm42: dmcp testPgms build.rel/wiki
 	mkdir -p $(DM_DIST_DIR)
 	cp build.dmcp/src/wp43s-dmcp/WP43S.pgm build.dmcp/src/wp43s-dmcp/WP43S_qspi.bin $(DM_DIST_DIR)
 	cp -r res/offimg $(DM_DIST_DIR)
