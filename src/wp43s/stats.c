@@ -188,7 +188,7 @@ static void addSigma(real_t *x, real_t *y) {
 
 
 static bool_t ignoreMaxIfValid(real_t *r1, real_t *r2){
-  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || !realCompareEqual(r1, r2)) {
+  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || realCompareEqual(r1, r2)) {
     calcMax(1);
     return false;
   }
@@ -196,7 +196,7 @@ static bool_t ignoreMaxIfValid(real_t *r1, real_t *r2){
 }
 
 static bool_t ignoreMinIfValid(real_t *r1, real_t *r2){
-  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || !realCompareEqual(r1, r2)) {
+  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || realCompareEqual(r1, r2)) {
     calcMin(1);
     return false;
   }
