@@ -423,6 +423,17 @@ static void _bstInPem(void) {
 }
 
 void fnBst(uint16_t unusedButMandatoryParameter) {
+  if(calcMode == CM_PEM) {
+    if(aimBuffer[0] != 0) {
+      if(getSystemFlag(FLAG_ALPHA)) pemCloseAlphaInput();
+      else                          pemCloseNumberInput();
+      aimBuffer[0] = 0;
+      --currentLocalStepNumber;
+      currentStep = findPreviousStep(currentStep);
+      if(!programListEnd)
+        scrollPemBackwards();
+    }
+  }
   currentInputVariable = INVALID_VARIABLE;
   _bstInPem();
   if(calcMode != CM_PEM) {
@@ -462,6 +473,15 @@ static void _sstInPem(void) {
 
 void fnSst(uint16_t unusedButMandatoryParameter) {
   if(calcMode == CM_PEM) {
+    if(aimBuffer[0] != 0) {
+      if(getSystemFlag(FLAG_ALPHA)) pemCloseAlphaInput();
+      else                          pemCloseNumberInput();
+      aimBuffer[0] = 0;
+      --currentLocalStepNumber;
+      currentStep = findPreviousStep(currentStep);
+      if(!programListEnd)
+        scrollPemBackwards();
+    }
     currentInputVariable = INVALID_VARIABLE;
     _sstInPem();
   }
