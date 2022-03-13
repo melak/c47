@@ -251,12 +251,16 @@
     void execAutoRepeat(uint16_t key) {
 #ifdef DMCP_BUILD
       char charKey[6];
+      bool_t f = shiftF;
+      bool_t g = shiftG;
       sprintf(charKey, "%02d", key -1);
 
       fnTimerStart(TO_AUTO_REPEAT, key, KEY_AUTOREPEAT_PERIOD);
 
       btnClicked(NULL, (char *)charKey);
 //    btnPressed(charKey);
+      shiftF = f;
+      shiftG = g;
       refreshLcd();
       lcd_refresh_dma();
 #endif
@@ -852,6 +856,8 @@
     void btnPressed(void *data) {
       int16_t item;
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
+      bool_t f = shiftF;
+      bool_t g = shiftG;
 
       if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
         lastKeyCode = keyCode;
@@ -868,6 +874,10 @@
         item = determineItem((char *)data);
 //      previousItem = item;
 //    }
+      if(calcMode == CM_PEM && (item == ITM_SST || item == ITM_BST)) {
+        shiftF = f;
+        shiftG = g;
+      }
 
       if(getSystemFlag(FLAG_USER)) {
         int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (shiftG ? 2 : shiftF ? 1 : 0);
@@ -1322,6 +1332,16 @@
               else if(item == ITM_OFF) {
                 fnOff(NOPARAM);
                 keyActionProcessed = true;
+              }
+              else if(item == ITM_SST) {
+                fnSst(NOPARAM);
+                keyActionProcessed = true;
+                refreshScreen();
+              }
+              else if(item == ITM_BST) {
+                fnBst(NOPARAM);
+                keyActionProcessed = true;
+                refreshScreen();
               }
               else if(aimBuffer[0] != 0 && !getSystemFlag(FLAG_ALPHA) && (item == ITM_toINT || (nimNumberPart == NP_INT_BASE && item == ITM_RCL))) {
                 pemAddNumber(item);
@@ -2098,15 +2118,6 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           menuUp();
         }
         else {
-          if(aimBuffer[0] != 0) {
-            if(getSystemFlag(FLAG_ALPHA)) pemCloseAlphaInput();
-            else                          pemCloseNumberInput();
-            aimBuffer[0] = 0;
-            --currentLocalStepNumber;
-            currentStep = findPreviousStep(currentStep);
-            if(!programListEnd)
-              scrollPemBackwards();
-          }
           fnBst(NOPARAM);
         }
         break;
@@ -2231,15 +2242,6 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           menuDown();
         }
         else {
-          if(aimBuffer[0] != 0) {
-            if(getSystemFlag(FLAG_ALPHA)) pemCloseAlphaInput();
-            else                          pemCloseNumberInput();
-            aimBuffer[0] = 0;
-            --currentLocalStepNumber;
-            currentStep = findPreviousStep(currentStep);
-            if(!programListEnd)
-              scrollPemBackwards();
-          }
           fnSst(NOPARAM);
         }
         break;
