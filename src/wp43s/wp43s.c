@@ -590,7 +590,7 @@ int32_t                SAVED_SIGMA_LAct;
       if(key == 27 || key == 32) {
 //      inDownUpPress = 1;
 //      nextAutoRepeat = now + KEY_AUTOREPEAT_FIRST_PERIOD;
-        if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING && !shiftF && !shiftG && (currentSoftmenuScrolls() || (calcMode != CM_NORMAL && calcMode != CM_NIM && calcMode != CM_AIM))) {
+        if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING && (!shiftF || calcMode == CM_PEM) && !shiftG && (currentSoftmenuScrolls() || (calcMode != CM_NORMAL && calcMode != CM_NIM && calcMode != CM_AIM))) {
           fnTimerStart(TO_AUTO_REPEAT, key, KEY_AUTOREPEAT_FIRST_PERIOD);
         }
       }
@@ -661,6 +661,10 @@ int32_t                SAVED_SIGMA_LAct;
         else { // Last key pressed was not one of the 6 function keys
           //beep(440, 50);
           btnReleased(charKey);
+          if(calcMode == CM_PEM && shiftF && ((charKey[0] == '2' && charKey[1] == '6') || (charKey[0] == '3' && charKey[1] == '1'))) {
+            shiftF = false;
+            refreshScreen();
+          }
         }
 //      keyAutoRepeat = 0;
         lcd_refresh();
