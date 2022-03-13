@@ -2120,6 +2120,106 @@ int main(int argc, char* argv[]) {
     *(currentStep++) =  ITM_END       & 0xff;
   }
 
+  { // STAT GR1 GRAPH1 TEST
+    // 1
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 6; // String length
+    *(currentStep++) = 'S';
+    *(currentStep++) = 'T';
+    *(currentStep++) = 'A';
+    *(currentStep++) = 'T';
+    *(currentStep++) = 'g';
+    *(currentStep++) = 'r';
+
+    *(currentStep++) = (ITM_CLSIGMA >> 8) | 0x80;
+    *(currentStep++) =  ITM_CLSIGMA       & 0xff;
+    *(currentStep++) = (ITM_RAD >> 8)     | 0x80;
+    *(currentStep++) =  ITM_RAD           & 0xff;
+    *(currentStep++) = (ITM_dotD >> 8)    | 0x80;
+    *(currentStep++) =  ITM_dotD          & 0xff;
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_REAL34;
+    *(currentStep++) = 3;  // String length
+    *(currentStep++) = '1';
+    *(currentStep++) = '0';
+    *(currentStep++) = '1';
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = 1;
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = 2;
+
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = 1;
+
+      *(currentStep++) = ITM_RCL;
+      *(currentStep++) = 2;
+      *(currentStep++) = ITM_RCL;
+      *(currentStep++) = 1;
+      *(currentStep++) = ITM_SUB;
+
+        *(currentStep++) = ITM_RCL;
+        *(currentStep++) = 2;
+        *(currentStep++) = ITM_DEC;
+        *(currentStep++) = 100; //X
+    
+        *(currentStep++) = ITM_LITERAL;
+        *(currentStep++) = STRING_LONG_INTEGER;
+        *(currentStep++) = 1;  // String length
+        *(currentStep++) = '2';
+
+        *(currentStep++) = ITM_IDIV;
+        *(currentStep++) = ITM_DIV;
+
+        *(currentStep++) = ITM_LITERAL;
+        *(currentStep++) = STRING_LONG_INTEGER;
+        *(currentStep++) = 1;  // String length
+        *(currentStep++) = '1';
+        *(currentStep++) = ITM_SUB;
+        *(currentStep++) = ITM_LITERAL;
+        *(currentStep++) = STRING_LONG_INTEGER;
+        *(currentStep++) = 1;  // String length
+        *(currentStep++) = '5';
+        *(currentStep++) = ITM_MULT;
+        *(currentStep++) = ITM_CONSTpi;
+        *(currentStep++) = ITM_MULT;
+        *(currentStep++) = ITM_ENTER;
+
+        *(currentStep++) = (ITM_sinc >> 8)       | 0x80;
+        *(currentStep++) =  ITM_sinc             & 0xff;
+        *(currentStep++) = ITM_XexY;                        //swap the stack x, y
+        *(currentStep++) = (ITM_SIGMAPLUS >> 8)  | 0x80;    //Enter stats pair incorrectly oriented x<>y
+        *(currentStep++) =  ITM_SIGMAPLUS        & 0xff;    
+
+      *(currentStep++) = ITM_DSZ;
+      *(currentStep++) = 1;
+
+    *(currentStep++) = ITM_GTO;
+    *(currentStep++) = 1;
+
+    *(currentStep++) = (ITM_LINF >> 8)      | 0x80;
+    *(currentStep++) =  ITM_LINF            & 0xff;
+    *(currentStep++) = (ITM_PLOT_LR >> 8)   | 0x80;
+    *(currentStep++) =  ITM_PLOT_LR         & 0xff;
+    *(currentStep++) = (ITM_PLOT_NXT >> 8)  | 0x80;
+    *(currentStep++) =  ITM_PLOT_NXT        & 0xff;
+    *(currentStep++) = ITM_STOP;
+
+    *(currentStep++) = (ITM_PARABF >> 8)    | 0x80;
+    *(currentStep++) =  ITM_PARABF          & 0xff;
+    *(currentStep++) = (ITM_PLOT_LR >> 8)   | 0x80;
+    *(currentStep++) =  ITM_PLOT_LR         & 0xff;
+    *(currentStep++) = ITM_STOP;
+
+
+    *(currentStep++) = ITM_RTN;
+    // 6
+    *(currentStep++) = (ITM_END >> 8)       | 0x80;
+    *(currentStep++) =  ITM_END             & 0xff;
+
+  }
+
   { // OM page 212
     // 1
     *(currentStep++) = ITM_LBL;
