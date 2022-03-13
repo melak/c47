@@ -188,7 +188,7 @@ static void addSigma(real_t *x, real_t *y) {
 
 
 static bool_t ignoreMaxIfValid(real_t *r1, real_t *r2){
-  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || !realCompareEqual(r1, r2)) {
+  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || realCompareEqual(r1, r2)) {
     calcMax(1);
     return false;
   }
@@ -196,7 +196,7 @@ static bool_t ignoreMaxIfValid(real_t *r1, real_t *r2){
 }
 
 static bool_t ignoreMinIfValid(real_t *r1, real_t *r2){
-  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || !realCompareEqual(r1, r2)) {
+  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || realCompareEqual(r1, r2)) {
     calcMin(1);
     return false;
   }
@@ -662,20 +662,31 @@ void fnSigma(uint16_t plusMinus) {
 
 
   { // SIGMA-
-    getLastRowStatsMatrix(&x, &y);
-    subSigma(&x, &y);
-    removeLastRowFromStatsMatrix();
+    if(checkMinimumDataPoints(const_1)) {
+      getLastRowStatsMatrix(&x, &y);
+      subSigma(&x, &y);
+      removeLastRowFromStatsMatrix();
 
-    if(statisticalSumsPointer != NULL) temporaryInformation = TI_STATISTIC_SUMS;
+      if(statisticalSumsPointer != NULL) temporaryInformation = TI_STATISTIC_SUMS;
+      liftStack();
+      setSystemFlag(FLAG_ASLIFT);
+      liftStack();
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
+      convertRealToReal34ResultRegister(&y, REGISTER_Y);
 
-    realCopy(&x,       &SAVED_SIGMA_LASTX);
-    realCopy(&y,       &SAVED_SIGMA_LASTY);
-    SAVED_SIGMA_LAct = -1;
+      realCopy(&x,       &SAVED_SIGMA_LASTX);
+      realCopy(&y,       &SAVED_SIGMA_LASTY);
+      SAVED_SIGMA_LAct = -1;
 
-    #ifdef DEBUGUNDO
-      calcRegister_t regStats = findNamedVariable("STATS");
-      printRegisterToConsole(regStats,"From Sigma-: STATS\n","\n");
-    #endif //DEBUGUNDO
+      #ifdef DEBUGUNDO
+        if(statisticalSumsPointer != NULL) {
+          calcRegister_t regStats = findNamedVariable("STATS");
+          printRealToConsole(SIGMA_N,"   >>> After\n   >>>   SIGMA_N:","\n");
+          printRealToConsole(SIGMA_XMAX,"   >>>   SIGMA_MaxX:","\n");
+          printRegisterToConsole(regStats,"From Sigma-: STATS\n","\n");
+        }
+      #endif //DEBUGUNDO
+    }
   } 
 
 #endif // TESTSUITE_BUILD
