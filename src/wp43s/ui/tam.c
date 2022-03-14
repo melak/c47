@@ -727,6 +727,8 @@
       scrollPemForwards();
     }
 
+    if(func == ITM_ASSIGN) aimBuffer[0] = 0;
+
     tam.alpha = (func == ITM_ASSIGN);
     tam.currentOperation = tam.function;
     tam.digitsSoFar = 0;
