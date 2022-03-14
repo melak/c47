@@ -268,9 +268,9 @@ void fnMinExpStdDev(uint16_t unusedButMandatoryParameter){ //smi
  * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnStatSa(uint16_t unusedButMandatoryParameter) {
+void processCurvefitSA(real_t *SA0, real_t *SA1) {
   realContext_t *realContext = &ctxtReal75; // Summation data with 75 digits
-  real_t SA0,SA1,RR,MX,SX,SY,RR2,MX2,SX2,SY2,UU,SS,TT,aa0,aa1,aa2,SMI;
+  real_t RR,MX,SX,SY,RR2,MX2,SX2,SY2,UU,SS,TT,aa0,aa1,aa2,SMI;
 
   //LINF:   SA0 & SA1: RR2, n, Sy, Sx, Sx^2, Mx^2
   //EXPF:   new value for SY2, SY and use REX
@@ -305,15 +305,8 @@ void fnStatSa(uint16_t unusedButMandatoryParameter) {
     switch(lrChosen) {
       case CF_LINEAR_FITTING :
       case CF_ORTHOGONAL_FITTING :        
-        //All parameters set from processCurvefitSelectionAll
-        break;
-
       case CF_EXPONENTIAL_FITTING :
-        //All parameters set from processCurvefitSelectionAll
-        break;
       case CF_POWER_FITTING :
-        //All parameters set from processCurvefitSelectionAll
-        break;
       case CF_LOGARITHMIC_FITTING :
         //All parameters set from processCurvefitSelectionAll        
         break;
@@ -329,20 +322,28 @@ void fnStatSa(uint16_t unusedButMandatoryParameter) {
     realSquareRoot(&SX2,&SX,realContext);
     realSquareRoot(&SY2,&SY,realContext);
 
+    //RR2,SY,SX,SX2,MX2 SS,TT,UU > SA1 SA0
     realSubtract  (const_1,&RR2,&SS,realContext);       //SA1 = f( RR2, n, SY, SX )
     realSubtract  (SIGMA_N,const_2,&TT,realContext);
     realDivide    (&SS,&TT,&UU,realContext);
     realSquareRoot(&UU,&UU,&ctxtReal39);
     realMultiply  (&UU,&SY,&UU,&ctxtReal39);
-    realDivide    (&UU,&SX,&SA1,&ctxtReal39); 
+    realDivide    (&UU,&SX,SA1,&ctxtReal39); 
 
     realSubtract  (SIGMA_N,const_1,&SS,realContext);    //SA0 = f( n, SX2, MX2, SA1 )
     realDivide    (&SS,SIGMA_N,&SS,realContext);             //SS = (n-1)/n
     realMultiply  (&SS,&SX2,&SS,realContext);                //SS = SS * SX^2
     realAdd       (&SS,&MX2,&SS,realContext);
     realSquareRoot(&SS,&SS,&ctxtReal39);
-    realMultiply  (&SS,&SA1,&SA0,&ctxtReal39);
+    realMultiply  (&SS,SA1,SA0,&ctxtReal39);
+  }
 
+}
+
+
+void fnStatSa(uint16_t unusedButMandatoryParameter) {
+real_t SA0, SA1;
+    processCurvefitSA(&SA0, &SA1);
 
     liftStack();
     setSystemFlag(FLAG_ASLIFT);
@@ -351,9 +352,6 @@ void fnStatSa(uint16_t unusedButMandatoryParameter) {
     convertRealToReal34ResultRegister(&SA0, REGISTER_X);
     convertRealToReal34ResultRegister(&SA1, REGISTER_Y);
     temporaryInformation = TI_SA;
-  }
-
 }
-
 
 
