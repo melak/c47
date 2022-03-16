@@ -52,8 +52,8 @@ void fnPlotRegressionLine(uint16_t plotMode);
 // Do not change the shared functions otherwise the C43 fork will break. JM 2021-03-20
 
 #ifndef TESTSUITE_BUILD
-  static real_t RR,SMI,aa0,aa1,aa2; //L.R. variables
-  static void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2);
+  static real_t RR,SMI,aa0,aa1,aa2,sa0, sa1; //L.R. variables
+  static void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2, real_t *sa0, real_t *sa1);
 #endif //TESTSUITE_BUILD
 
 
@@ -629,8 +629,8 @@ void eformat_fix3 (char* s02, const char* s01, double inreal) {
     sign = "-";
     inreal = -inreal;
   }
-  else sign = " ";
-  if(((fabs(inreal) > 100000000.0f || fabs(inreal) < 0.001f)) && (inreal != 0.0f)) {
+  else sign = " ";                              //changed from 0.001 to force more digits
+  if(((fabs(inreal) > 100000000.0f || fabs(inreal) < 0.1f)) && (inreal != 0.0f)) {
     sprintf(s03,"%s%.3e",sign,inreal);
   } else {
     sprintf(s03,"%s%.3f",sign,inreal);
@@ -968,19 +968,51 @@ void graphPlotstat(uint16_t selection){
 }
 
 
+#ifndef TESTSUITE_BUILD
+  void demo_plot(void) {
+    int8_t ix;
+    time_t t;
+    srand((unsigned) time(&t));
+    runFunction(ITM_CLSIGMA);
+    plotSelection = 0;
+    srand((unsigned int)time(NULL));
+    for(ix=0; ix!=40; ix++) {
+
+      int mv = 11000 + rand() % 110 - 55;  
+      //instrument measuring RMS voltage of an 11 kV installation, with +- 0.1% variance, offset to the + for convenience
+
+      setSystemFlag(FLAG_ASLIFT);
+      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+      int32ToReal34(mv+rand()%4-2,REGISTER_REAL34_DATA(REGISTER_X)); 
+      // reading 1 has additional +0 to +3 variance to the said random number
+
+      setSystemFlag(FLAG_ASLIFT);
+      liftStack();
+      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+      int32ToReal34(mv+rand()%4-2,REGISTER_REAL34_DATA(REGISTER_X)); 
+      // reading 2 has additional +0 to +3 variance to the said random number
+
+      runFunction(ITM_SIGMAPLUS);
+    }
+  }
+#endif //TESTSUITE_BUILD
+
 
 void graphDrawLRline(uint16_t selection) {
+
   #ifndef TESTSUITE_BUILD
+    //demo_plot();
     if(selection != 0) {
       processCurvefitSelection(selection, &RR, &SMI, &aa0, &aa1, &aa2);
       realMultiply(&RR,&RR,&RR,&ctxtReal39);
-      drawline(selection, &RR, &SMI, &aa0, &aa1, &aa2);
+      if(selection == CF_ORTHOGONAL_FITTING) { processCurvefitSA(&sa0, &sa1); }
+      drawline(selection, &RR, &SMI, &aa0, &aa1, &aa2, &sa0, &sa1);
     }
   #endif //TESTSUITE_BUILD
 }
 
 #ifndef TESTSUITE_BUILD
-  void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2){
+  void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2, real_t *sa0, real_t *sa1){
     int32_t n;
     uint16_t NN;
     if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, n);}
@@ -1000,13 +1032,15 @@ void graphDrawLRline(uint16_t selection) {
     #if defined STATDEBUG && defined PC_BUILD
       printf("#####>>> drawline: selection:%u:%s  lastplotmode:%u  lrSelection:%u lrChosen:%u\n",selection, getCurveFitModeName(selection), lastPlotMode, lrSelection, lrChosen);
     #endif //STATDEBUG
-    float rr,smi,a0,a1,a2;
+    float rr,smi,a0,a1,a2,ssa0,ssa1;
     char ss[100], tt[100];
     realToFloat(RR , &rr );
     realToFloat(SMI, &smi);
     realToFloat(aa0, &a0 );
     realToFloat(aa1, &a1 );
     realToFloat(aa2, &a2 );
+    realToFloat(sa0, &ssa0 );
+    realToFloat(sa1, &ssa1 );
 
     if(isValidDraw) {
 
@@ -1142,10 +1176,19 @@ void graphDrawLRline(uint16_t selection) {
       }
       else {                          //ORTHOF
         eformat_fix3(ss,"",a0);                showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
-
         strcpy(ss,"a" STD_SUB_0 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
+
+        eformat_fix3(ss,"",ssa0);              showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
+        strcpy(ss,"    " STD_PLUS_MINUS);      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
+
+
         eformat_fix3(ss,"",a1);                showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
         strcpy(ss,"a" STD_SUB_1 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
+
+        eformat_fix3(ss,"",ssa1);              showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
+        strcpy(ss,"    " STD_PLUS_MINUS);      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
+
+
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_STAT) {
           if(n>=30) {
             eformat_eng2(ss,"",smi,3,"");      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  +1 +autoshift, vmNormal, false, false);

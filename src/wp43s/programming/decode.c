@@ -454,7 +454,12 @@ static void decodeLiteral(uint8_t *literalAddress) {
       break;
 
     case BINARY_COMPLEX34:
-      complex34ToDisplayString((complex34_t *)literalAddress, tmpString, &standardFont, 9999, 34, false, STD_SPACE_PUNCTUATION, false);
+      {
+        complex34_t complexLiteral;
+        xcopy(VARIABLE_REAL34_DATA(&complexLiteral), literalAddress     , 16);
+        xcopy(VARIABLE_IMAG34_DATA(&complexLiteral), literalAddress + 16, 16);
+        complex34ToDisplayString(&complexLiteral, tmpString, &standardFont, 9999, 34, false, STD_SPACE_PUNCTUATION, false);
+      }
       break;
 
     //case BINARY_DATE:

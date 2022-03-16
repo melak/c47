@@ -175,7 +175,7 @@ uint8_t *countLiteralBytes(uint8_t *step) {
       return step + TO_BYTES(REAL34_SIZE);
 
     case BINARY_COMPLEX34:
-      return step + TO_BYTES(COMPLEX34_SIZE);
+      return step + TO_BYTES(REAL34_SIZE * 2);
 
     //case BINARY_DATE:
     //  break;

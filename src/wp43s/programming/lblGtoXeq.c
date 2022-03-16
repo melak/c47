@@ -522,10 +522,15 @@ static void _putLiteral(uint8_t *literalAddress) {
       break;
 
     case BINARY_COMPLEX34:
-      liftStack();
-      setSystemFlag(FLAG_ASLIFT);
-      reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      complex34Copy((complex34_t *)literalAddress, REGISTER_COMPLEX34_DATA(REGISTER_X));
+      {
+        complex34_t complexLiteral;
+        liftStack();
+        setSystemFlag(FLAG_ASLIFT);
+        reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+        xcopy(VARIABLE_REAL34_DATA(&complexLiteral), literalAddress     , 16);
+        xcopy(VARIABLE_IMAG34_DATA(&complexLiteral), literalAddress + 16, 16);
+        complex34Copy(&complexLiteral, REGISTER_COMPLEX34_DATA(REGISTER_X));
+      }
       break;
 
     //case BINARY_DATE:

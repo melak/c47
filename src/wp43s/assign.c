@@ -110,13 +110,12 @@ void updateAssignTamBuffer(void) {
       }
     }
     else { // Flash
-      uint8_t *lblPtr = allocWp43s(TO_BLOCKS(16));
+      uint8_t *lblPtr = (uint8_t *)(tmpString + TMP_STR_LENGTH - 16);
       readStepInFlashPgmLibrary(lblPtr, 16, labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer.flash);
       uint32_t count = *(lblPtr++);
       for(uint32_t i = 0; i < count; ++i) {
         *(tbPtr++) = *(lblPtr++);
       }
-      freeWp43s(lblPtr, TO_BLOCKS(16));
     }
   }
   else if(itemToBeAssigned >= ASSIGN_RESERVED_VARIABLES) {
