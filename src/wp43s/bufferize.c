@@ -804,11 +804,16 @@
 
           case ITM_Kk :
           case ITM_Ek :
-          case ITM_ANGLE :
-            if(item == ITM_ANGLE) item = ITM_ARG;
             mimRunFunction(item, indexOfItems[item].param);
             break;
 
+          case ITM_ANGLE :
+            mimRunFunction(ITM_ARG, indexOfItems[ITM_ARG].param);
+            break;
+
+          case ITM_OFF :
+            runFunction(ITM_OFF);
+            break;
         }
       }
 
