@@ -21,7 +21,7 @@
 #define DEFINES_H
 
 #ifdef DMCP_BUILD
-  #undef  SAVESPACE_JM_FLB   //To remove some code to make fit without QSPI: Less flagbrowser
+  #define SAVESPACE_JM_FLB   //To remove some code to make fit without QSPI: Less flagbrowser
   #define SAVESPACE_JM_RB    //To remove some code to make fit without QSPI: Less registerbrowser
   #define SAVESPACE_JM_FB    //To remove some code to make fit without QSPI: Less fontbrowser
   #undef  SAVESPACE_JM_SHOW  //To remove some code to make fit without QSPI: Less show
