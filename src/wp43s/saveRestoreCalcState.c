@@ -886,7 +886,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   save(tmpString, strlen(tmpString), BACKUP);
   for(uint32_t j = 0; j < numberOfUserMenus; ++j) {
     stringToUtf8(userMenus[j].menuName, (uint8_t *)tmpString);
-    strcat(tmpString, "\n");
+    strcat(tmpString, "\n18\n");
     save(tmpString, strlen(tmpString), BACKUP);
     for(i=0; i<18; i++) {
       sprintf(tmpString, "%" PRId16, userMenus[j].menuItem[i].item);
