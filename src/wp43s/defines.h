@@ -486,7 +486,7 @@ typedef enum {
 #define CF_GAUSS_FITTING_EX                      (~CF_GAUSS_FITTING) & 0x01FF
 #define CF_ORTHOGONAL_FITTING_EX                 (~CF_ORTHOGONAL_FITTING) & 0x01FF
 
-// Plot curve fitting 3 bits
+// Plot curve fitting 4 bits
 #define PLOT_ORTHOF                                0
 #define PLOT_NXT                                   1
 #define PLOT_REV                                   2
@@ -494,6 +494,8 @@ typedef enum {
 #define PLOT_START                                 4
 #define PLOT_NOTHING                               5
 #define PLOT_GRAPH                                 6
+#define H_PLOT                                     7
+#define H_NORM                                     8
 
 // Rounding mode 3 bits
 #define RM_HALF_EVEN                               0

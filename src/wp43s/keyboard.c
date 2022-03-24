@@ -1670,6 +1670,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       return;
     }
 
+printf(">>> ####@@@@ B = %i\n",calcMode);
     switch(calcMode) {
       case CM_NORMAL:
         if(lastErrorCode != 0) {
@@ -1765,6 +1766,8 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_GRAPH:
       case CM_PLOT_STAT:
+printf(">>> ####@@@@ D %i\n",calcMode);
+if(lastPlotMode == H_PLOT && calcMode == CM_PLOT_STAT) popSoftmenu();
         lastPlotMode = PLOT_NOTHING;
         plotSelection = 0;
         calcMode = CM_NORMAL;
