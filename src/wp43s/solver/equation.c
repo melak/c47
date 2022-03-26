@@ -311,7 +311,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
     for(uint32_t i = 0; i < 7; ++i) {
       tmpPtr += ((*tmpPtr) & 0x80) ? 2 : 1;
       if(*tmpPtr == ':') {
-        inLabel = true;
+        inLabel = (startAt <= (i + 1));
         tmpVal = i;
         break;
       }
