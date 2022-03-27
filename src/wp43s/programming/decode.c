@@ -425,10 +425,7 @@ static void _decodeNumeral(char *startPtr, const char *srcStartPtr, bool_t isLon
       *(strPtr++) = *(srcStr++);
     }
   }
-  else {
-    ++srcStr;
-  }
-  --srcStr;
+
   *strPtr = 0;
   if(updatedTgtPtr) {
     *updatedTgtPtr = strPtr;
