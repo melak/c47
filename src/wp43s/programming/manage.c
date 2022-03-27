@@ -584,7 +584,9 @@ void pemAlpha(int16_t item) {
       else if(ITM_ALPHA <= item && item <= ITM_OMEGA) item += 36;
     }
     item = convertItemToSubOrSup(item, nextChar);
-    xcopy(aimBuffer + len, indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+    if(len < (256 - stringByteLength(indexOfItems[item].itemSoftmenuName)) && stringGlyphLength(aimBuffer) < 196) {
+      xcopy(aimBuffer + len, indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+    }
   }
   else if(item == ITM_DOWN_ARROW) {
     nextChar = NC_SUBSCRIPT;
@@ -691,6 +693,9 @@ void pemAddNumber(int16_t item) {
   }
   else {
     addItemToNimBuffer(item);
+    if(stringByteLength(aimBuffer) > 255) {
+      addItemToNimBuffer(ITM_BACKSPACE);
+    }
   }
   clearSystemFlag(FLAG_ALPHA);
 
