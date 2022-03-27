@@ -361,6 +361,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
     bool_t lblOrEnd;
     bool_t inTamMode = tam.mode && programList[currentProgramNumber - 1].step > 0;
     uint16_t numberOfSteps = getNumberOfSteps();
+    uint16_t linesOfCurrentStep = 1;
 
     if(calcMode != CM_PEM) {
       calcMode = CM_PEM;
@@ -476,6 +477,9 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
         offset += 300;
       }
       stepsThatWouldBeDisplayed -= numberOfExtraLines;
+      if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber) {
+        linesOfCurrentStep += numberOfExtraLines;
+      }
 
       showString(tmpString, &standardFont, lblOrEnd ? 42 : 62, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal,  false, false);
       offset = 300;
@@ -505,6 +509,17 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       freeWp43s(tmpSteps, 400 * 7);
     }
 
+    if(aimBuffer[0] != 0 && linesOfCurrentStep > 4) { // Limited to 4 lines so as not to cause crash or freeze
+      if(getSystemFlag(FLAG_ALPHA)) {
+        pemAlpha(ITM_BACKSPACE);
+      }
+      else {
+        pemAddNumber(ITM_BACKSPACE);
+      }
+      clearScreen();
+      showSoftmenuCurrentPart();
+      fnPem(NOPARAM);
+    }
     if((currentLocalStepNumber + (inTamMode ? (currentLocalStepNumber < numberOfSteps ? 2 : 1) : 0)) >= (firstDisplayedLocalStepNumber + stepsThatWouldBeDisplayed)) {
       firstDisplayedLocalStepNumber = currentLocalStepNumber - stepsThatWouldBeDisplayed + 1 + (inTamMode ? (currentLocalStepNumber < numberOfSteps ? 2 : 1) : 0);
       if(inTamMode && (firstDisplayedLocalStepNumber > 1) && (currentLocalStepNumber + 1 >= (firstDisplayedLocalStepNumber + stepsThatWouldBeDisplayed))) {
