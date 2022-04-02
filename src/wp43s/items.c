@@ -112,6 +112,13 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
       hourGlassIconEnabled = true;
       showHideHourGlass();
 
+      if(func == ITM_GTO || func == ITM_XEQ || func == ITM_GTOP) {
+        while(currentSubroutineLevel > 0) {
+          fnReturn(0);
+        }
+        fnReturn(0); // 1 more time to clean local registers
+      }
+
       #ifdef DMCP_BUILD
         lcd_refresh();
       #else // !DMCP_BUILD

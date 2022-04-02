@@ -7,5 +7,6 @@ sim = executable(
   include_directories : [decNumber_inc, wp43s_inc],
   dependencies        : [gtk_dep, gmp_dep, m_dep, pulse_dep],
   native              : true,
-  override_options    : ['b_lto=true'])
+  override_options    : ['b_lto=true'],
+  win_subsystem       : 'windows')
 alias_target('sim', sim)
