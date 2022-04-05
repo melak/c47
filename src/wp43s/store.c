@@ -220,7 +220,9 @@ void fnStoreAdd(uint16_t regist) {
 
     copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
     _storeValue(regist);
-    copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
+    if(regist != REGISTER_X) {
+      copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
+    }
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
     if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
@@ -246,7 +248,9 @@ void fnStoreSub(uint16_t regist) {
 
     copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
     _storeValue(regist);
-    copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
+    if(regist != REGISTER_X) {
+      copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
+    }
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
     if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
@@ -272,7 +276,9 @@ void fnStoreMult(uint16_t regist) {
 
     copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
     _storeValue(regist);
-    copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
+    if(regist != REGISTER_X) {
+      copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
+    }
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
     if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
@@ -298,7 +304,9 @@ void fnStoreDiv(uint16_t regist) {
 
     copySourceRegisterToDestRegister(SAVED_REGISTER_Y, REGISTER_Y);
     _storeValue(regist);
-    copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
+    if(regist != REGISTER_X) {
+      copySourceRegisterToDestRegister(SAVED_REGISTER_X, REGISTER_X);
+    }
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
     if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
