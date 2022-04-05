@@ -46,7 +46,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         71  // Added current graph storage matrix name
+#define BACKUP_VERSION         72  // Added allSubroutineLevels and currentSubroutineLevel
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -146,6 +146,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
     ramPtr = TO_WP43SMEMPTR(flashProgramList);
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    ramPtr = TO_WP43SMEMPTR(currentSubroutineLevelData);
+    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
     save(&xCursor,                            sizeof(xCursor),                            BACKUP);
     save(&yCursor,                            sizeof(yCursor),                            BACKUP);
     save(&firstGregorianDay,                  sizeof(firstGregorianDay),                  BACKUP);
@@ -239,6 +241,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
     save(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
     save(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
+    save(&allSubroutineLevels,                sizeof(allSubroutineLevels),                BACKUP);
     save(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop),              BACKUP);
     save(&lrSelection,                        sizeof(lrSelection),                        BACKUP);
     save(&lrSelectionUndo,                    sizeof(lrSelectionUndo),                    BACKUP);
@@ -379,6 +382,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       programList = TO_PCMEMPTR(ramPtr);
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
       flashProgramList = TO_PCMEMPTR(ramPtr);
+      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      currentSubroutineLevelData = TO_PCMEMPTR(ramPtr);
       restore(&xCursor,                            sizeof(xCursor),                            BACKUP);
       restore(&yCursor,                            sizeof(yCursor),                            BACKUP);
       restore(&firstGregorianDay,                  sizeof(firstGregorianDay),                  BACKUP);
@@ -476,6 +481,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
       restore(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
       restore(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
+      restore(&allSubroutineLevels,                sizeof(allSubroutineLevels),                BACKUP);
       restore(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop),              BACKUP);
       restore(&lrSelection,                        sizeof(lrSelection),                        BACKUP);
       restore(&lrSelectionUndo,                    sizeof(lrSelectionUndo),                    BACKUP);
