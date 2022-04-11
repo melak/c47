@@ -498,7 +498,7 @@ void graph_eqn(uint16_t mode) {
                         printf(">>> ERROR CODE INITIALLY NON-ZERO = %d <<<<<\n",lastErrorCode); 
                         goto to_return;
                       }
-                    #endif
+                    #endif //PC_BUILD
 
       //assumes X2 is in R91
       //Identify oscillations in real or imag: increment osc flag
@@ -995,7 +995,9 @@ void graph_eqn(uint16_t mode) {
 
     if (FLAG_FRACTN) setSystemFlag(FLAG_FRACT) else clearSystemFlag(FLAG_FRACT);
 
-to_return:
+#ifdef PC_BUILD
+  to_return:
+#endif //Pc_BUILD
   calcMode = CM_NORMAL;
   SAVED_SIGMA_LAct = 0;   //prevent undo of last stats add action. REMOVE when STATS are not used anymore
   return;
