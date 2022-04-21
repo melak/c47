@@ -242,15 +242,16 @@ void fnGetStackSize(uint16_t unusedButMandatoryParameter) {
 
 
 void saveForUndo(void) {
-  if((calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_MIM) && thereIsSomethingToUndo) {
+  if(((calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_MIM) && thereIsSomethingToUndo) || calcMode == CM_NO_UNDO) {
     #ifdef DEBUGUNDO
-      printf(">>> saveForUndo; calcMode = %i, nothing stored as there is something to undo\n",calcMode);
+      if(thereIsSomethingToUndo) printf(">>> saveForUndo; calcMode = %i, nothing stored as there is something to undo\n",calcMode);
+      if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_MIM || calcMode == CM_NO_UNDO) printf(">>> saveForUndo; calcMode = %i, nothing stored, wrong mode\n",calcMode);
     #endif
     return;
   }
   #ifdef DEBUGUNDO
-    printf(">>> savedForUndo; saved; calcMode = %i\n",calcMode);
-    printf("Clearing TEMP_REGISTER_2_SAVED_STATS\n");
+    printf(">>> in saveForUndo, saving; calcMode = %i pre:thereIsSomethingToUndo = %i ;",calcMode, thereIsSomethingToUndo);
+    printf("Clearing TEMP_REGISTER_2_SAVED_STATS\n\n");
   #endif
 
   clearRegister(TEMP_REGISTER_2_SAVED_STATS); //clear it here for every saveForUndo call, and explicitly set it in fnEditMatrix() and fnEqSolvGraph() only

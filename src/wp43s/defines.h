@@ -504,7 +504,7 @@ typedef enum {
 #define RM_CEIL                                    5
 #define RM_FLOOR                                   6
 
-// Calc mode 4 bits
+// Calc mode 5 bits
 #define CM_NORMAL                                  0 // Normal operation
 #define CM_AIM                                     1 // Alpha input mode
 #define CM_NIM                                     2 // Numeric input mode
@@ -521,6 +521,7 @@ typedef enum {
 #define CM_EIM                                    13 // Equation imput mode
 #define CM_TIMER                                  14 // Timer application
 #define CM_GRAPH                                  15 // Plot graph mode
+#define CM_NO_UNDO                                16 // Running functions without undo affected
 
 // Next character in AIM 2 bits
 #define NC_NORMAL                                  0
