@@ -38,14 +38,18 @@ bool_t regInRange(uint16_t regist) {
     (regist >= FIRST_RESERVED_VARIABLE && regist <= LAST_RESERVED_VARIABLE));
 #ifdef PC_BUILD
   if(!inRange) {
-    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     if(regist >= FIRST_LOCAL_REGISTER && regist <= LAST_LOCAL_REGISTER) {
+      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
     }
     else if(regist >= FIRST_NAMED_VARIABLE && regist <= LAST_NAMED_VARIABLE) {
+      displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
       // This error message is not massively useful because it doesn't have the original name
       // But it shouldn't have even got this far if the name doesn't exist
       sprintf(errorMessage, "named register .%02d", regist - FIRST_NAMED_VARIABLE);
+    }
+    else {
+      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     }
     moreInfoOnError("In function regInRange:", errorMessage, " is not defined!", NULL);
   }
