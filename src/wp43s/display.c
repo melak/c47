@@ -35,6 +35,7 @@
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "screen.h"
+#include "store.h"
 #include <string.h>
 
 #include "wp43s.h"
