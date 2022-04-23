@@ -46,7 +46,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         72  // Added allSubroutineLevels and currentSubroutineLevel
+#define BACKUP_VERSION         73  // Added pemCursorIsZerothStep
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -242,6 +242,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
     save(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
     save(&allSubroutineLevels,                sizeof(allSubroutineLevels),                BACKUP);
+    save(&pemCursorIsZerothStep,              sizeof(pemCursorIsZerothStep),              BACKUP);
     save(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop),              BACKUP);
     save(&lrSelection,                        sizeof(lrSelection),                        BACKUP);
     save(&lrSelectionUndo,                    sizeof(lrSelectionUndo),                    BACKUP);
@@ -482,6 +483,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
       restore(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
       restore(&allSubroutineLevels,                sizeof(allSubroutineLevels),                BACKUP);
+      restore(&pemCursorIsZerothStep,              sizeof(pemCursorIsZerothStep),              BACKUP);
       restore(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop),              BACKUP);
       restore(&lrSelection,                        sizeof(lrSelection),                        BACKUP);
       restore(&lrSelectionUndo,                    sizeof(lrSelectionUndo),                    BACKUP);

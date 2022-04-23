@@ -1957,23 +1957,36 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         }
         if(getSystemFlag(FLAG_ALPHA)) {
           pemAlpha(ITM_BACKSPACE);
-          if(aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA) && currentLocalStepNumber > 1) {
-            --currentLocalStepNumber;
-            defineCurrentStep();
-            if(!programListEnd)
-              scrollPemBackwards();
+          if(aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) {
+            if(currentLocalStepNumber > 1) {
+              --currentLocalStepNumber;
+              defineCurrentStep();
+              if(!programListEnd)
+                scrollPemBackwards();
+            }
+            else {
+              pemCursorIsZerothStep = true;
+            }
           }
         }
         else if(aimBuffer[0] == 0) {
-          nextStep = findNextStep_ram(currentStep.ram);
-          if(*currentStep.ram != 255 || *(currentStep.ram + 1) != 255) { // Not the last END
-            deleteStepsFromTo(currentStep.ram, nextStep);
-          }
           if(currentLocalStepNumber > 1) {
-            --currentLocalStepNumber;
-            defineCurrentStep();
+            pemCursorIsZerothStep = false;
           }
-          scrollPemBackwards();
+          if(!pemCursorIsZerothStep) {
+            nextStep = findNextStep_ram(currentStep.ram);
+            if(*currentStep.ram != 255 || *(currentStep.ram + 1) != 255) { // Not the last END
+              deleteStepsFromTo(currentStep.ram, nextStep);
+            }
+            if(currentLocalStepNumber > 1) {
+              --currentLocalStepNumber;
+              defineCurrentStep();
+            }
+            else {
+              pemCursorIsZerothStep = true;
+            }
+            scrollPemBackwards();
+          }
         }
         else {
           pemAddNumber(ITM_BACKSPACE);
