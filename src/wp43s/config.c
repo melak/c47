@@ -803,6 +803,7 @@ void fnReset(uint16_t confirmation) {
     serialIOIconEnabled = false;
     printerIconEnabled = false;
     thereIsSomethingToUndo = false;
+    pemCursorIsZerothStep = true;
     tam.alpha = false;
     fnKeyInCatalog = false;
     shiftF = false;
