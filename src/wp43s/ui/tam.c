@@ -376,6 +376,7 @@
             else { // We aren't on 1st step of current program
               tam.value = programList[currentProgramNumber - 1].step;
             }
+            pemCursorIsZerothStep = true;
             reallyRunFunction(ITM_GTOP, tam.value);
             tamLeaveMode();
             hourGlassIconEnabled = false;
@@ -388,6 +389,7 @@
             }
 
             tam.value = programList[currentProgramNumber].step;
+            pemCursorIsZerothStep = true;
             reallyRunFunction(ITM_GTOP, tam.value);
             tamLeaveMode();
             hourGlassIconEnabled = false;
@@ -511,6 +513,7 @@
       }
       else if(tam.function == ITM_GTOP) {
         tam.value = programList[numberOfPrograms - numberOfProgramsInFlash - 1].step;
+        pemCursorIsZerothStep = true;
         reallyRunFunction(ITM_GTOP, tam.value);
         if((*currentStep.ram != 0xff) || (*(currentStep.ram + 1) != 0xff)) {
           currentStep.ram = firstFreeProgramByte;
@@ -526,7 +529,7 @@
       else if(!tam.alpha && !tam.digitsSoFar && !tam.dot && !valueParameter) {
         if(tam.function == ITM_GTO) {
           tam.function = ITM_GTOP;
-          tam.min = 1;
+          tam.min = 0;
           tam.max = max(getNumberOfSteps(), 99);
         }
         else if(tam.indirect && (currentNumberOfLocalRegisters || calcMode == CM_PEM)) {
@@ -606,9 +609,12 @@
         }
         if(tam.function == ITM_GTOP) {
           if(tam.digitsSoFar < 3) {
+            pemCursorIsZerothStep = false;
             fnGoto(value);
           }
           else {
+            pemCursorIsZerothStep = (value == 0);
+            if(value == 0) value = 1;
             reallyRunFunction(tamOperation(), value + programList[currentProgramNumber - 1].step - 1);
           }
         }
