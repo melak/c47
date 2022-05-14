@@ -684,6 +684,12 @@ typedef enum {
 #define LM_SYSTEM_STATE                            5
 #define LM_REGISTERS_PARTIAL                       6
 
+// Screen updating mode
+#define SCRUPD_AUTO                                0
+#define SCRUPD_MANUAL_STATUSBAR                    1
+#define SCRUPD_MANUAL_STACK                        2
+#define SCRUPD_MANUAL_MENU                         4
+
 // Statistical sums TODO: optimize size of SIGMA_N, _X, _Y, _XMIN, _XMAX, _YMIN, and _YMAX. Thus, saving 2×(7×60 - 4 - 6×16) = 640 bytes
 #define SUM_X                                      1
 #define SUM_Y                                      2

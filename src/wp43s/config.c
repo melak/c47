@@ -871,6 +871,8 @@ void fnReset(uint16_t confirmation) {
 
     fnClearMenu(NOPARAM);
 
+    screenUpdatingMode = SCRUPD_AUTO;
+
     // The following lines are test data
     addTestPrograms();
     //fnSetFlag(  3);
