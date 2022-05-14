@@ -3914,7 +3914,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) =  ITM_END       & 0xff;
   }
 
-  { // Elementary cellular automaton (for testing AGRAPH)
+  { // Elementary cellular automaton (for testing AGRAPH) [VERY SLOW ON DMCP]
     // 1
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
@@ -3946,9 +3946,20 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_STO;
     *(currentStep++) = REGISTER_K;
 
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = '1';
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = 1; // String length
+    *(currentStep++) = '1';
+
     *(currentStep++) = (ITM_CLLCD >> 8) | 0x80;
     *(currentStep++) =  ITM_CLLCD       & 0xff;
 
+    // 10
     *(currentStep++) = ITM_XEQ;
     *(currentStep++) = 1;
 
@@ -3957,7 +3968,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = 1; // String length
     *(currentStep++) = '1';
 
-    // 10
     *(currentStep++) = ITM_LITERAL;
     *(currentStep++) = STRING_REAL34;
     *(currentStep++) = 3; // String length
@@ -3985,6 +3995,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) =  ITM_AGRAPH       & 0xff;
     *(currentStep++) = 7;
 
+    // 20
     *(currentStep++) = ITM_LITERAL;
     *(currentStep++) = STRING_LONG_INTEGER;
     *(currentStep++) = 2; // String length
@@ -3994,7 +4005,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_RCLADD;
     *(currentStep++) = REGISTER_Z;
 
-    // 20
     *(currentStep++) = ITM_XexY;
 
     *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
@@ -4025,13 +4035,13 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_RCLADD;
     *(currentStep++) = REGISTER_Z;
 
+    // 30
     *(currentStep++) = ITM_XexY;
 
     *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
     *(currentStep++) =  ITM_AGRAPH       & 0xff;
     *(currentStep++) = 10;
 
-    // 30
     *(currentStep++) = ITM_LITERAL;
     *(currentStep++) = STRING_LONG_INTEGER;
     *(currentStep++) = 1; // String length
@@ -4056,6 +4066,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = 1;
 
+    // 40
     *(currentStep++) = ITM_LITERAL;
     *(currentStep++) = STRING_LONG_INTEGER;
     *(currentStep++) = 2; // String length
@@ -4065,7 +4076,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_STO;
     *(currentStep++) = 44;
 
-    // 40
     *(currentStep++) = ITM_Rdown;
 
     *(currentStep++) = ITM_FC;
@@ -4089,12 +4099,12 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_DSL;
     *(currentStep++) = 44;
 
+    // 50
     *(currentStep++) = ITM_GTO;
     *(currentStep++) = 55;
 
     *(currentStep++) = ITM_RTN;
 
-    // 50
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = 50;
 
@@ -4139,12 +4149,12 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = '0';
     *(currentStep++) = '0';
 
+    // 60
     *(currentStep++) = ITM_STO;
     *(currentStep++) = 8;
 
     *(currentStep++) = ITM_Rdown;
 
-    // 60
     *(currentStep++) = ITM_RTN;
 
     *(currentStep++) = ITM_LBL;
@@ -4169,13 +4179,13 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = ITM_RTN;
 
+    // 70
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = 2;
 
     *(currentStep++) = ITM_Xex;
     *(currentStep++) = REGISTER_I;
 
-    // 70
     *(currentStep++) = (ITM_Yex >> 8) | 0x80;
     *(currentStep++) =  ITM_Yex       & 0xff;
     *(currentStep++) = REGISTER_J;
@@ -4211,6 +4221,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_GTO;
     *(currentStep++) = 65;
 
+    // 80
     *(currentStep++) = ITM_LITERAL;
     *(currentStep++) = STRING_LONG_INTEGER;
     *(currentStep++) = 1; // String length
@@ -4219,7 +4230,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_STO;
     *(currentStep++) = 45;
 
-    // 80
     *(currentStep++) = ITM_LITERAL;
     *(currentStep++) = STRING_LONG_INTEGER;
     *(currentStep++) = 2; // String length
@@ -4253,6 +4263,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = 63;
 
+    // 90
     *(currentStep++) = ITM_RCL;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 45;
@@ -4263,7 +4274,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = 1;  // String length
     *(currentStep++) = '3';
 
-    // 90
     *(currentStep++) = ITM_SF;
     *(currentStep++) = FLAG_C;
 
@@ -4290,6 +4300,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_RCL;
     *(currentStep++) = REGISTER_K;
 
+    // 100
     *(currentStep++) = ITM_LOGICALAND;
 
     *(currentStep++) = (ITM_SR >> 8) | 0x80;
@@ -4297,7 +4308,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = REGISTER_Y;
 
-    // 100
     *(currentStep++) = (ITM_SL >> 8) | 0x80;
     *(currentStep++) =  ITM_SL       & 0xff;
     *(currentStep++) = INDIRECT_REGISTER;
@@ -4325,13 +4335,13 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_INC;
     *(currentStep++) = 46;
 
+    // 110
     *(currentStep++) = ITM_DSL;
     *(currentStep++) = 44;
 
     *(currentStep++) = ITM_GTO;
     *(currentStep++) = 66;
 
-    // 110
     *(currentStep++) = ITM_LITERAL;
     *(currentStep++) = STRING_LONG_INTEGER;
     *(currentStep++) = 1; // String length
@@ -4365,13 +4375,13 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 45;
 
+    // 120
     *(currentStep++) = (ITM_MASKL >> 8) | 0x80;
     *(currentStep++) =  ITM_MASKL       & 0xff;
     *(currentStep++) = 2;
 
     *(currentStep++) = ITM_LOGICALAND;
 
-    // 120
     *(currentStep++) = (ITM_SR >> 8) | 0x80;
     *(currentStep++) =  ITM_SR       & 0xff;
     *(currentStep++) = 62;
@@ -4398,11 +4408,11 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = ITM_LOGICALOR;
 
+    // 130
     *(currentStep++) = ITM_ENTER;
 
     *(currentStep++) = ITM_2X;
 
-    // 130
     *(currentStep++) = ITM_RCL;
     *(currentStep++) = REGISTER_K;
 
@@ -4431,6 +4441,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 46;
 
+    // 140
     *(currentStep++) = ITM_RCL;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 45;
@@ -4439,7 +4450,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) =  ITM_MASKL       & 0xff;
     *(currentStep++) = 1;
 
-    // 140
     *(currentStep++) = ITM_LOGICALAND;
 
     *(currentStep++) = (ITM_SR >> 8) | 0x80;
@@ -4466,11 +4476,11 @@ int main(int argc, char* argv[]) {
     *(currentStep++) =  ITM_SL       & 0xff;
     *(currentStep++) = 1;
 
+    // 150
     *(currentStep++) = ITM_LOGICALOR;
 
     *(currentStep++) = ITM_ENTER;
 
-    // 150
     *(currentStep++) = ITM_2X;
 
     *(currentStep++) = ITM_RCL;
@@ -4496,6 +4506,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = ITM_LOGICALOR;
 
+    // 160
     *(currentStep++) = ITM_STO;
     *(currentStep++) = INDIRECT_REGISTER;
     *(currentStep++) = 46;
@@ -4503,7 +4514,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = ITM_INC;
     *(currentStep++) = 45;
 
-    // 160
     *(currentStep++) = ITM_DSL;
     *(currentStep++) = 44;
 
@@ -4530,7 +4540,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = ITM_RTN;
 
-    // 167
+    // 169
     *(currentStep++) = (ITM_END >> 8) | 0x80;
     *(currentStep++) =  ITM_END       & 0xff;
   }

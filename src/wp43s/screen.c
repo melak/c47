@@ -2450,7 +2450,12 @@ static void getPixelPos(int32_t *x, int32_t *y) {
 
 void fnClLcd(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
-  clearScreen();
+  int32_t x, y;
+  getPixelPos(&x, &y);
+  if(lastErrorCode == ERROR_NONE) {
+    --x; --y;
+    lcd_fill_rect(x, y, SCREEN_WIDTH - x, SCREEN_HEIGHT - y, LCD_SET_VALUE);
+  }
 #endif // TESTSUITE_BUILD
 }
 
