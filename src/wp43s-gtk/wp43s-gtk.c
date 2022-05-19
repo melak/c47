@@ -100,7 +100,7 @@
 
     restoreCalc();
     //ramDump();
-    refreshScreen();
+    //refreshScreen();
 
     gdk_threads_add_timeout(SCREEN_REFRESH_PERIOD, refreshLcd, NULL); // refreshLcd is called every SCREEN_REFRESH_PERIOD ms
 
