@@ -1164,6 +1164,8 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 
   void popSoftmenu(void) {
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+
     xcopy(softmenuStack, softmenuStack + 1, (SOFTMENU_STACK_SIZE - 1) * sizeof(softmenuStack_t)); // shifting the entire stack
     memset(softmenuStack + SOFTMENU_STACK_SIZE - 1, 0, sizeof(softmenuStack_t)); // Put MyMenu in the last stack element
 
@@ -1188,6 +1190,8 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       displayBugScreen("In function showSoftmenu: id must not be 0!");
       return;
     }
+
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
 
     if(id == -MNU_ALPHAINTL && alphaCase == AC_LOWER) { // alphaINTL
       id = -MNU_ALPHAintl;

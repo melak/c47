@@ -126,6 +126,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
       #endif // DMCP_BUILD
     }
 
+    screenUpdatingMode = SCRUPD_AUTO;
+
     indexOfItems[func].func(param);
 
     if(lastErrorCode != 0) {

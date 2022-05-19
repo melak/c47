@@ -2145,28 +2145,27 @@ void execTimerApp(uint16_t timerType) {
 
 
   void refreshScreen(void) {
-    clearScreen();
     switch(calcMode) {
       case CM_FLAG_BROWSER:
-        //clearScreen();
+        clearScreen();
         flagBrowser(NOPARAM);
         refreshStatusBar();
         break;
 
       case CM_FONT_BROWSER:
-        //clearScreen();
+        clearScreen();
         fontBrowser(NOPARAM);
         refreshStatusBar();
         break;
 
       case CM_REGISTER_BROWSER:
-        //clearScreen();
+        clearScreen();
         registerBrowser(NOPARAM);
         refreshStatusBar();
         break;
 
       case CM_PEM:
-        //clearScreen();
+        clearScreen();
         showSoftmenuCurrentPart();
         fnPem(NOPARAM);
         displayShiftAndTamBuffer();
@@ -2182,23 +2181,44 @@ void execTimerApp(uint16_t timerType) {
       case CM_ERROR_MESSAGE:
       case CM_CONFIRMATION:
       case CM_TIMER:
-        //clearScreen();
+        if(calcMode == CM_MIM || calcMode == CM_TIMER || calcMode == CM_CONFIRMATION) {
+          screenUpdatingMode = SCRUPD_AUTO;
+        }
+
+        if(screenUpdatingMode == SCRUPD_AUTO) {
+          clearScreen();
+        }
+        else {
+          if(!(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR)) {
+            lcd_fill_rect(0, 0, SCREEN_WIDTH, Y_POSITION_OF_REGISTER_T_LINE, LCD_SET_VALUE);
+          }
+          if(!(screenUpdatingMode & SCRUPD_MANUAL_STACK)) {
+            lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, SCREEN_WIDTH, 240 - Y_POSITION_OF_REGISTER_T_LINE - SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
+          }
+          if(!(screenUpdatingMode & SCRUPD_MANUAL_MENU)) {
+            lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, SCREEN_WIDTH, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
+          }
+        }
 
         // The ordering of the 4 lines below is important for SHOW (temporaryInformation == TI_SHOW_REGISTER)
-        if(calcMode != CM_TIMER && temporaryInformation != TI_VIEW) refreshRegisterLine(REGISTER_T);
-        refreshRegisterLine(REGISTER_Z);
-        refreshRegisterLine(REGISTER_Y);
-        refreshRegisterLine(REGISTER_X);
-        if(temporaryInformation == TI_VIEW) {
-          clearRegisterLine(REGISTER_T, true, true);
-          refreshRegisterLine(REGISTER_T);
+        if(!(screenUpdatingMode & SCRUPD_MANUAL_STACK)) {
+          if(calcMode != CM_TIMER && temporaryInformation != TI_VIEW) refreshRegisterLine(REGISTER_T);
+          refreshRegisterLine(REGISTER_Z);
+          refreshRegisterLine(REGISTER_Y);
+          refreshRegisterLine(REGISTER_X);
+          if(temporaryInformation == TI_VIEW) {
+            clearRegisterLine(REGISTER_T, true, true);
+            refreshRegisterLine(REGISTER_T);
+          }
         }
+
         if(calcMode == CM_MIM) {
           showMatrixEditor();
         }
         if(calcMode == CM_TIMER) {
           fnShowTimerApp();
         }
+
         if(currentSolverStatus & SOLVER_STATUS_INTERACTIVE) {
           bool_t mvarMenu = false;
           for(int i = 0; i < SOFTMENU_STACK_SIZE; i++) {
@@ -2235,13 +2255,20 @@ void execTimerApp(uint16_t timerType) {
           }
         }
 
-        displayShiftAndTamBuffer();
+        if(!(screenUpdatingMode & SCRUPD_MANUAL_STACK)) {
+          displayShiftAndTamBuffer();
+        }
 
-        showSoftmenuCurrentPart();
+        if(!(screenUpdatingMode & SCRUPD_MANUAL_MENU)) {
+          showSoftmenuCurrentPart();
+        }
+
         if(programRunStop == PGM_STOPPED || programRunStop == PGM_WAITING) {
           hourGlassIconEnabled = false;
         }
-        refreshStatusBar();
+        if(!(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR)) {
+          refreshStatusBar();
+        }
         #if (REAL34_WIDTH_TEST == 1)
           for(int y=Y_POSITION_OF_REGISTER_Y_LINE; y<Y_POSITION_OF_REGISTER_Y_LINE + 2*REGISTER_LINE_HEIGHT; y++ ) setBlackPixel(SCREEN_WIDTH - largeur - 1, y);
         #endif // (REAL34_WIDTH_TEST == 1)
@@ -2249,6 +2276,7 @@ void execTimerApp(uint16_t timerType) {
 
       case CM_GRAPH:
       case CM_PLOT_STAT:
+        clearScreen();
         displayShiftAndTamBuffer();
         showSoftmenuCurrentPart();
         refreshStatusBar();
@@ -2450,7 +2478,14 @@ static void getPixelPos(int32_t *x, int32_t *y) {
 
 void fnClLcd(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
-  clearScreen();
+  int32_t x, y;
+  getPixelPos(&x, &y);
+  if(lastErrorCode == ERROR_NONE) {
+    screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;
+    if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
+    --x; --y;
+    lcd_fill_rect(x, y, SCREEN_WIDTH - x, SCREEN_HEIGHT - y, LCD_SET_VALUE);
+  }
 #endif // TESTSUITE_BUILD
 }
 
@@ -2459,6 +2494,8 @@ void fnPixel(uint16_t unusedButMandatoryParameter) {
   int32_t x, y;
   getPixelPos(&x, &y);
   if(lastErrorCode == ERROR_NONE) {
+    screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;
+    if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
     setBlackPixel(x - 1, y - 1);
   }
 #endif // TESTSUITE_BUILD
@@ -2469,6 +2506,8 @@ void fnPoint(uint16_t unusedButMandatoryParameter) {
   int32_t x, y;
   getPixelPos(&x, &y);
   if(lastErrorCode == ERROR_NONE) {
+    screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;
+    if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
     lcd_fill_rect(x - 2, y - 2, 3, 3, LCD_EMPTY_VALUE);
   }
 #endif // TESTSUITE_BUILD
@@ -2489,6 +2528,8 @@ void fnAGraph(uint16_t regist) {
       int16_t sign;
       const uint8_t savedShortIntegerMode = shortIntegerMode;
 
+      screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;
+      if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
       shortIntegerMode = SIM_UNSIGN;
       convertShortIntegerRegisterToUInt64(regist, &sign, &val);
       shortIntegerMode = savedShortIntegerMode;

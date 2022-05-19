@@ -1437,6 +1437,9 @@
   static void menuUp(void) {
     int16_t menuId = softmenuStack[0].softmenuId;
     int16_t sm = softmenu[menuId].menuItem;
+
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+
     if((sm == -MNU_alpha_omega || sm == -MNU_ALPHAintl) && alphaCase == AC_LOWER) {
       alphaCase = AC_UPPER;
       softmenuStack[0].softmenuId--; // Switch to the upper case menu
@@ -1463,6 +1466,9 @@
   static void menuDown(void) {
     int16_t menuId = softmenuStack[0].softmenuId;
     int16_t sm = softmenu[menuId].menuItem;
+
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+
     if((sm == -MNU_ALPHA_OMEGA || sm == -MNU_ALPHAINTL) && alphaCase == AC_UPPER) {
       alphaCase = AC_LOWER;
       softmenuStack[0].softmenuId++; // Switch to the lower case menu

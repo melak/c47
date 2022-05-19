@@ -506,7 +506,7 @@ void fnClAll(uint16_t confirmation) {
 
 
 void addTestPrograms(void) {
-  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(11106));
+  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(11112));
 
   resizeProgramMemory(TO_BLOCKS(numberOfBytesForTheTestPrograms));
   firstDisplayedStep.ram        = beginOfProgramMemory;
@@ -870,6 +870,8 @@ void fnReset(uint16_t confirmation) {
     memset(userKeyLabel,   0, TO_BYTES(TO_BLOCKS(userKeyLabelSize)));
 
     fnClearMenu(NOPARAM);
+
+    screenUpdatingMode = SCRUPD_AUTO;
 
     // The following lines are test data
     addTestPrograms();

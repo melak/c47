@@ -711,6 +711,8 @@
     tam.min = indexOfItems[func].tamMinMax >> TAM_MAX_BITS;
     tam.max = indexOfItems[func].tamMinMax & TAM_MAX_MASK;
 
+    screenUpdatingMode = SCRUPD_AUTO;
+
     if(tam.max == 16383) { // Only case featuring more than TAM_MAX_BITS bits is GTO.
       tam.max = 32766;
     }

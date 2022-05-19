@@ -46,7 +46,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         73  // Added pemCursorIsZerothStep
+#define BACKUP_VERSION         74  // Save screen
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -301,6 +301,20 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
     save(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
 
+    save(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
+    for(int y = 0; y < SCREEN_HEIGHT; ++y) {
+      uint8_t bmpdata = 0;
+      for(int x = 0; x < SCREEN_WIDTH; ++x) {
+        bmpdata <<= 1;
+        if(*(screenData + y*screenStride + x) == ON_PIXEL) {
+          bmpdata |= 1;
+        }
+        if((x % 8) == 7) {
+          save(&bmpdata,                      sizeof(bmpdata),                            BACKUP);
+          bmpdata = 0;
+        }
+      }
+    }
 
     fclose(BACKUP);
     printf("End of calc's backup\n");
@@ -311,6 +325,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
   void restoreCalc(void) {
     uint32_t backupVersion, ramSize, ramPtr;
     FILE *ppgm_fp;
+    uint8_t *loadedScreen = malloc(SCREEN_WIDTH * SCREEN_HEIGHT / 8);
 
     fnReset(CONFIRMED);
     BACKUP = fopen("backup.bin", "rb");
@@ -542,6 +557,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
       restore(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
 
+      restore(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
+      restore(loadedScreen,                        SCREEN_WIDTH * SCREEN_HEIGHT / 8,           BACKUP);
+
       fclose(BACKUP);
       printf("End of calc's restoration\n");
 
@@ -564,6 +582,16 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       #if (DEBUG_REGISTER_L == 1)
         refreshRegisterLine(REGISTER_X); // to show L register
       #endif // (DEBUG_REGISTER_L == 1)
+
+      for(int y = 0; y < SCREEN_HEIGHT; ++y) {
+        for(int x = 0; x < SCREEN_WIDTH; x += 8) {
+          uint8_t bmpdata = *(loadedScreen + (y * SCREEN_WIDTH + x) / 8);
+          for(int bit = 7; bit >= 0; --bit) {
+            *(screenData + y * screenStride + x + (7 - bit)) = (bmpdata & (1 << bit)) ? ON_PIXEL : OFF_PIXEL;
+          }
+        }
+      }
+      free(loadedScreen);
 
       #if (SCREEN_800X480 == 1)
         if(calcMode == CM_NORMAL)                     {}
