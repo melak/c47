@@ -1833,10 +1833,18 @@ void showMatrixEditor() {
     scrollRow = matSelRow - 3;
   }
 
-  if(getRegisterDataType(matrixIndex) == dtReal34Matrix)
-    showRealMatrix(&openMatrixMIMPointer.realMatrix, 0);
-  else
-    showComplexMatrix(&openMatrixMIMPointer.complexMatrix, 0);
+  if(aimBuffer[0] == 0) {
+    clearRegisterLine(NIM_REGISTER_LINE, true, true);
+    if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
+      showRealMatrix(&openMatrixMIMPointer.realMatrix, 0);
+    }
+    else {
+      showComplexMatrix(&openMatrixMIMPointer.complexMatrix, 0);
+    }
+  }
+  else {
+    clearRegisterLine(NIM_REGISTER_LINE, false, true);
+  }
 
   sprintf(tmpString, "%" PRIi16 ";%" PRIi16 "=" STD_SPACE_4_PER_EM "%s%s%s", (int16_t)(colVector ? matSelCol+1 : matSelRow+1), (int16_t)(colVector ? 1 : matSelCol+1), aimBuffer[0] == 0 ? STD_SPACE_HAIR : "", (aimBuffer[0] == 0 || aimBuffer[0] == '-') ? "" : " ", nimBufferDisplay);
   width = stringWidth(tmpString, &numericFont, true, true) + 1;
@@ -1914,7 +1922,7 @@ void mimEnter(bool_t commit) {
 }
 
 static void _resetCursorPos() {
-  clearRegisterLine(NIM_REGISTER_LINE, true, true);
+  clearRegisterLine(NIM_REGISTER_LINE, false, true);
   sprintf(tmpString, "%" PRIi16";%" PRIi16"= ", (int16_t)getIRegisterAsInt(false), (int16_t)getJRegisterAsInt(false));
   xCursor = showString(tmpString, &numericFont, 0, Y_POSITION_OF_NIM_LINE, vmNormal, true, true) + 1;
   yCursor = Y_POSITION_OF_NIM_LINE;

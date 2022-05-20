@@ -1733,6 +1733,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           #ifdef DEBUGUNDO
             printf(">>> saveForUndo from fnKeyExitA\n");
           #endif
+          updateMatrixHeightCache();
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
         }
@@ -1743,6 +1744,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_NIM:
         addItemToNimBuffer(ITM_EXIT);
+        updateMatrixHeightCache();
         break;
 
       case CM_MIM:
@@ -2114,6 +2116,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           menuUp();
         }
         else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_UPPER)) {
+          screenUpdatingMode = SCRUPD_AUTO;
           if(calcMode == CM_NIM) closeNim();
           if(calcMode == CM_AIM) closeAim();
           fnBst(NOPARAM);
@@ -2243,6 +2246,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           menuDown();
         }
         else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_LOWER)) {
+          screenUpdatingMode = SCRUPD_AUTO;
           if(calcMode == CM_NIM) closeNim();
           if(calcMode == CM_AIM) closeAim();
           fnSst(NOPARAM);

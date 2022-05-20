@@ -336,20 +336,23 @@
         if (item == ITM_RIGHT_ARROW) {
           mimEnter(true);
           setJRegisterAsInt(true, getJRegisterAsInt(true) + 1);
+          refreshScreen();
         }
         else if (item == ITM_LEFT_ARROW) {
           mimEnter(true);
           setJRegisterAsInt(true, getJRegisterAsInt(true) - 1);
+          refreshScreen();
         }
         else if (item == ITM_UP_ARROW) {
           mimEnter(true);
           setIRegisterAsInt(true, getIRegisterAsInt(true) - 1);
+          refreshScreen();
         }
         else if (item == ITM_DOWN_ARROW) {
           mimEnter(true);
           setIRegisterAsInt(true, getIRegisterAsInt(true) + 1);
+          refreshScreen();
         }
-        refreshScreen();
 
         if((int16_t)item < 0) {
           showSoftmenu(item);
@@ -899,6 +902,10 @@
       //debugNIM();
     }
 
+    else if(calcMode == CM_NIM) {
+      screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME;
+    }
+
     done = false;
 
     switch(item) {
@@ -1382,6 +1389,7 @@
         aimBuffer[lastChar--] = 0;
 
         if((calcMode != CM_MIM) && (lastChar == -1 || (lastChar == 0 && aimBuffer[0] == '+'))) {
+          screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
           calcModeNormal();
           #ifdef DEBUGUNDO
             printf(">>> undo from addItemToNimBuffer\n");
@@ -1393,6 +1401,7 @@
       case ITM_EXIT :
         addItemToNimBuffer_exit:
         done = true;
+        screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
         closeNim();
         if(calcMode != CM_NIM && lastErrorCode == 0) {
           setSystemFlag(FLAG_ASLIFT);
@@ -1451,6 +1460,7 @@
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART) {
           done = true;
 
+          screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
           closeNim();
           if(calcMode != CM_NIM && lastErrorCode == 0) {
             if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
@@ -1470,6 +1480,7 @@
         if(nimNumberPart == NP_REAL_FLOAT_PART) {
           done = true;
 
+          screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
           closeNim();
           if(calcMode != CM_NIM && lastErrorCode == 0) {
             convertReal34RegisterToDateRegister(REGISTER_X, REGISTER_X);
@@ -1493,6 +1504,7 @@
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
           done = true;
 
+          screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
           closeNim();
           if(calcMode != CM_NIM && lastErrorCode == 0) {
             if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
@@ -1658,6 +1670,7 @@
 
     else {
       if(item != -MNU_INTS && item != -MNU_BITS) {
+        screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
         closeNim();
       }
       if(calcMode != CM_NIM) {
