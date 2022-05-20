@@ -2192,7 +2192,7 @@ void execTimerApp(uint16_t timerType) {
           if(!(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR)) {
             lcd_fill_rect(0, 0, SCREEN_WIDTH, Y_POSITION_OF_REGISTER_T_LINE, LCD_SET_VALUE);
           }
-          if(!(screenUpdatingMode & SCRUPD_MANUAL_STACK)) {
+          if(!(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
             lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, SCREEN_WIDTH, 240 - Y_POSITION_OF_REGISTER_T_LINE - SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
           }
           if(!(screenUpdatingMode & SCRUPD_MANUAL_MENU)) {
@@ -2201,7 +2201,7 @@ void execTimerApp(uint16_t timerType) {
         }
 
         // The ordering of the 4 lines below is important for SHOW (temporaryInformation == TI_SHOW_REGISTER)
-        if(!(screenUpdatingMode & SCRUPD_MANUAL_STACK)) {
+        if(!(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
           if(calcMode != CM_TIMER && temporaryInformation != TI_VIEW) refreshRegisterLine(REGISTER_T);
           refreshRegisterLine(REGISTER_Z);
           refreshRegisterLine(REGISTER_Y);
