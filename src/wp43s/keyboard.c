@@ -1753,6 +1753,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           calcModeNormal();
           updateMatrixHeightCache();
         }
+        screenUpdatingMode = SCRUPD_AUTO;
         popSoftmenu(); // close softmenu dedicated for the MIM
         break;
 
@@ -1793,6 +1794,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_TIMER:
+        screenUpdatingMode = SCRUPD_AUTO;
         if(lastErrorCode != 0) {
           lastErrorCode = 0;
         }
