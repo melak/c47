@@ -2421,14 +2421,14 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
 
 
 #ifndef TESTSUITE_BUILD
-static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue) {
+static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue, bool_t allowZero) {
   int32_t value;
 
   if(getRegisterDataType(regist) == dtReal34) {
     real34_t maxValue34;
 
     int32ToReal34(maxValue, &maxValue34);
-    if(real34CompareLessThan(REGISTER_REAL34_DATA(regist), const34_1) || real34CompareLessThan(&maxValue34, REGISTER_REAL34_DATA(regist))) {
+    if(real34CompareLessThan(REGISTER_REAL34_DATA(regist), allowZero ? const34_0 : const34_1) || real34CompareLessThan(&maxValue34, REGISTER_REAL34_DATA(regist))) {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #ifdef PC_BUILD
         real34ToString(REGISTER_REAL34_DATA(regist), errorMessage);
@@ -2444,7 +2444,7 @@ static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue)
     longInteger_t lgInt;
 
     convertLongIntegerRegisterToLongInteger(regist, lgInt);
-    if(longIntegerCompareUInt(lgInt, 1) < 0 || longIntegerCompareUInt(lgInt, maxValue) > 0) {
+    if(longIntegerCompareUInt(lgInt, allowZero ? 0 : 1) < 0 || longIntegerCompareUInt(lgInt, maxValue) > 0) {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #ifdef PC_BUILD
         longIntegerToAllocatedString(lgInt, errorMessage, ERROR_MESSAGE_LENGTH);
@@ -2467,19 +2467,24 @@ static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue)
     return -1;
   }
 
-  return value;
+  if(value == 0) {
+    return 1;
+  }
+  else {
+    return value;
+  }
 }
 
-static void getPixelPos(int32_t *x, int32_t *y) {
-  *x = _getPositionFromRegister(REGISTER_X, SCREEN_WIDTH);
-  *y = _getPositionFromRegister(REGISTER_Y, SCREEN_HEIGHT);
+static void getPixelPos(int32_t *x, int32_t *y, bool_t allowZero) {
+  *x = _getPositionFromRegister(REGISTER_X, SCREEN_WIDTH , allowZero);
+  *y = _getPositionFromRegister(REGISTER_Y, SCREEN_HEIGHT, allowZero);
 }
 #endif // TESTSUITE_BUILD
 
 void fnClLcd(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   int32_t x, y;
-  getPixelPos(&x, &y);
+  getPixelPos(&x, &y, true);
   if(lastErrorCode == ERROR_NONE) {
     screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;
     if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
@@ -2492,7 +2497,7 @@ void fnClLcd(uint16_t unusedButMandatoryParameter) {
 void fnPixel(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   int32_t x, y;
-  getPixelPos(&x, &y);
+  getPixelPos(&x, &y, false);
   if(lastErrorCode == ERROR_NONE) {
     screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;
     if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
@@ -2504,7 +2509,7 @@ void fnPixel(uint16_t unusedButMandatoryParameter) {
 void fnPoint(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   int32_t x, y;
-  getPixelPos(&x, &y);
+  getPixelPos(&x, &y, false);
   if(lastErrorCode == ERROR_NONE) {
     screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;
     if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
@@ -2518,7 +2523,7 @@ void fnAGraph(uint16_t regist) {
   int32_t x, y;
   uint32_t gramod;
   longInteger_t liGramod;
-  getPixelPos(&x, &y);
+  getPixelPos(&x, &y, false);
   convertLongIntegerRegisterToLongInteger(RESERVED_VARIABLE_GRAMOD, liGramod);
   longIntegerToUInt(liGramod, gramod);
   longIntegerFree(liGramod);
