@@ -4545,6 +4545,129 @@ int main(int argc, char* argv[]) {
     *(currentStep++) =  ITM_END       & 0xff;
   }
 
+  { // Another test for AGRAPH
+    // 1
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = STRING_LABEL_VARIABLE;
+    *(currentStep++) = 7; // String length
+    *(currentStep++) = 'P';
+    *(currentStep++) = 'I';
+    *(currentStep++) = 'C';
+    *(currentStep++) = 'T';
+    *(currentStep++) = 'U';
+    *(currentStep++) = 'R';
+    *(currentStep++) = 'E';
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = BINARY_SHORT_INTEGER;
+    *(currentStep++) = 16; // Base
+    *(currentStep++) = 0xff;
+    *(currentStep++) = 0xff;
+    *(currentStep++) = 0xff;
+    *(currentStep++) = 0xff;
+    *(currentStep++) = 0xff;
+    *(currentStep++) = 0xff;
+    *(currentStep++) = 0xff;
+    *(currentStep++) = 0xff;
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = BINARY_SHORT_INTEGER;
+    *(currentStep++) = 16; // Base
+    *(currentStep++) = 0x01;
+    *(currentStep++) = 0x00;
+    *(currentStep++) = 0x00;
+    *(currentStep++) = 0x00;
+    *(currentStep++) = 0x00;
+    *(currentStep++) = 0x00;
+    *(currentStep++) = 0x00;
+    *(currentStep++) = 0x80;
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = 1;
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = 2;  // String length
+    *(currentStep++) = '6';
+    *(currentStep++) = '2';
+
+    *(currentStep++) = ITM_STO;
+    *(currentStep++) = 2;
+
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = 3;  // String length
+    *(currentStep++) = '1';
+    *(currentStep++) = '0';
+    *(currentStep++) = '0';
+
+    *(currentStep++) = ITM_ENTER;
+
+    // 10
+    *(currentStep++) = ITM_LITERAL;
+    *(currentStep++) = STRING_LONG_INTEGER;
+    *(currentStep++) = 3;  // String length
+    *(currentStep++) = '1';
+    *(currentStep++) = '5';
+    *(currentStep++) = '0';
+
+    *(currentStep++) = (ITM_CLLCD >> 8) | 0x80;
+    *(currentStep++) =  ITM_CLLCD       & 0xff;
+
+    *(currentStep++) = ITM_INC;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = ITM_INC;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = ITM_LBL;
+    *(currentStep++) = 1;
+
+    *(currentStep++) = ITM_INC;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = 1;
+
+    *(currentStep++) = ITM_DSE;
+    *(currentStep++) = 2;
+
+    // 20
+    *(currentStep++) = ITM_GTO;
+    *(currentStep++) = 1;
+
+    *(currentStep++) = ITM_INC;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = ITM_INC;
+    *(currentStep++) = REGISTER_X;
+
+    *(currentStep++) = (ITM_AGRAPH >> 8) | 0x80;
+    *(currentStep++) =  ITM_AGRAPH       & 0xff;
+    *(currentStep++) = 0;
+
+    *(currentStep++) = ITM_RTN;
+
+    *(currentStep++) = (ITM_END >> 8) | 0x80;
+    *(currentStep++) =  ITM_END       & 0xff;
+  }
+
   { // All OP's
     // 1
     *(currentStep++) = ITM_LBL;
