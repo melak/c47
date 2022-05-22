@@ -2428,14 +2428,14 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
 
 
 #ifndef TESTSUITE_BUILD
-static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue, bool_t allowZero) {
+static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue) {
   int32_t value;
 
   if(getRegisterDataType(regist) == dtReal34) {
     real34_t maxValue34;
 
     int32ToReal34(maxValue, &maxValue34);
-    if(real34CompareLessThan(REGISTER_REAL34_DATA(regist), allowZero ? const34_0 : const34_1) || real34CompareLessThan(&maxValue34, REGISTER_REAL34_DATA(regist))) {
+    if(real34CompareLessThan(REGISTER_REAL34_DATA(regist), const34_0) || real34CompareLessThan(&maxValue34, REGISTER_REAL34_DATA(regist))) {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #ifdef PC_BUILD
         real34ToString(REGISTER_REAL34_DATA(regist), errorMessage);
@@ -2451,7 +2451,7 @@ static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue,
     longInteger_t lgInt;
 
     convertLongIntegerRegisterToLongInteger(regist, lgInt);
-    if(longIntegerCompareUInt(lgInt, allowZero ? 0 : 1) < 0 || longIntegerCompareUInt(lgInt, maxValue) > 0) {
+    if(longIntegerCompareUInt(lgInt, 0) < 0 || longIntegerCompareUInt(lgInt, maxValue) > 0) {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #ifdef PC_BUILD
         longIntegerToAllocatedString(lgInt, errorMessage, ERROR_MESSAGE_LENGTH);
@@ -2474,29 +2474,23 @@ static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue,
     return -1;
   }
 
-  if(value == 0) {
-    return 1;
-  }
-  else {
-    return value;
-  }
+  return value;
 }
 
-static void getPixelPos(int32_t *x, int32_t *y, bool_t allowZero) {
-  *x = _getPositionFromRegister(REGISTER_X, SCREEN_WIDTH , allowZero);
-  *y = _getPositionFromRegister(REGISTER_Y, SCREEN_HEIGHT, allowZero);
+static void getPixelPos(int32_t *x, int32_t *y) {
+  *x = _getPositionFromRegister(REGISTER_X, SCREEN_WIDTH  - 1);
+  *y = _getPositionFromRegister(REGISTER_Y, SCREEN_HEIGHT - 1);
 }
 #endif // TESTSUITE_BUILD
 
 void fnClLcd(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   int32_t x, y;
-  getPixelPos(&x, &y, true);
+  getPixelPos(&x, &y);
   if(lastErrorCode == ERROR_NONE) {
     screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
-    if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
-    --x; --y;
-    lcd_fill_rect(x, y, SCREEN_WIDTH - x, SCREEN_HEIGHT - y, LCD_SET_VALUE);
+    if((SCREEN_HEIGHT - y - 1) <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
+    lcd_fill_rect(x, 0, SCREEN_WIDTH - x, SCREEN_HEIGHT - y, LCD_SET_VALUE);
   }
 #endif // TESTSUITE_BUILD
 }
@@ -2504,11 +2498,11 @@ void fnClLcd(uint16_t unusedButMandatoryParameter) {
 void fnPixel(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   int32_t x, y;
-  getPixelPos(&x, &y, false);
+  getPixelPos(&x, &y);
   if(lastErrorCode == ERROR_NONE) {
     screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
-    if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
-    setBlackPixel(x - 1, y - 1);
+    if((SCREEN_HEIGHT - y - 1) <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
+    setBlackPixel(x, SCREEN_HEIGHT - y - 1);
   }
 #endif // TESTSUITE_BUILD
 }
@@ -2516,11 +2510,11 @@ void fnPixel(uint16_t unusedButMandatoryParameter) {
 void fnPoint(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   int32_t x, y;
-  getPixelPos(&x, &y, false);
+  getPixelPos(&x, &y);
   if(lastErrorCode == ERROR_NONE) {
     screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
-    if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
-    lcd_fill_rect(x - 2, y - 2, 3, 3, LCD_EMPTY_VALUE);
+    if((SCREEN_HEIGHT - y - 1) <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
+    lcd_fill_rect(x - 1, SCREEN_HEIGHT - y - 2, 3, 3, LCD_EMPTY_VALUE);
   }
 #endif // TESTSUITE_BUILD
 }
@@ -2530,7 +2524,7 @@ void fnAGraph(uint16_t regist) {
   int32_t x, y;
   uint32_t gramod;
   longInteger_t liGramod;
-  getPixelPos(&x, &y, false);
+  getPixelPos(&x, &y);
   convertLongIntegerRegisterToLongInteger(RESERVED_VARIABLE_GRAMOD, liGramod);
   longIntegerToUInt(liGramod, gramod);
   longIntegerFree(liGramod);
@@ -2541,7 +2535,7 @@ void fnAGraph(uint16_t regist) {
       const uint8_t savedShortIntegerMode = shortIntegerMode;
 
       screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
-      if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
+      if((SCREEN_HEIGHT - y - 1) <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
       shortIntegerMode = SIM_UNSIGN;
       convertShortIntegerRegisterToUInt64(regist, &sign, &val);
       shortIntegerMode = savedShortIntegerMode;
@@ -2549,22 +2543,22 @@ void fnAGraph(uint16_t regist) {
         switch(gramod) {
           case 1:
             if(!(val & 1)) {
-              setWhitePixel(x - 1, y - 1 + i);
+              setWhitePixel(x, SCREEN_HEIGHT - y - 1 - i);
             }
             /* fallthrough */
           case 0:
             if(val & 1) {
-              setBlackPixel(x - 1, y - 1 + i);
+              setBlackPixel(x, SCREEN_HEIGHT - y - 1 - i);
             }
             break;
           case 2:
             if(val & 1) {
-              setWhitePixel(x - 1, y - 1 + i);
+              setWhitePixel(x, SCREEN_HEIGHT - y - 1 - i);
             }
             break;
           case 3:
             if(val & 1) {
-              flipPixel(x - 1, y - 1 + i);
+              flipPixel(x, SCREEN_HEIGHT - y - 1 - i);
             }
             break;
         }
