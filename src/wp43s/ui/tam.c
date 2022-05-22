@@ -31,6 +31,7 @@
 #include "programming/manage.h"
 #include "programming/nextStep.h"
 #include "registers.h"
+#include "screen.h"
 #include "softmenus.h"
 #include <string.h>
 
