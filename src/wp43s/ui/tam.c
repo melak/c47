@@ -817,6 +817,10 @@
 
 
   void tamLeaveMode(void) {
+    if(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME)) {
+      clearTamBuffer();
+    }
+
     tam.alpha = false;
     tam.mode = 0;
     catalog = CATALOG_NONE;

@@ -2111,6 +2111,15 @@ void execTimerApp(uint16_t timerType) {
 
 
 
+  void clearTamBuffer(void) {
+    if(shiftF || shiftG) {
+      lcd_fill_rect(18, Y_POSITION_OF_TAM_LINE, 120, 32, LCD_SET_VALUE);
+    }
+    else {
+      lcd_fill_rect(0, Y_POSITION_OF_TAM_LINE, 138, 32, LCD_SET_VALUE);
+    }
+  }
+
   void displayShiftAndTamBuffer(void) {
     if(calcMode == CM_ASSIGN) {
       updateAssignTamBuffer();
@@ -2131,12 +2140,7 @@ void execTimerApp(uint16_t timerType) {
         showString(tamBuffer, &standardFont, 75+20, tamOverPemYPos, vmNormal,  false, false);
       }
       else { // Fixed line to display TAM informations
-        if(shiftF || shiftG) {
-          lcd_fill_rect(18, Y_POSITION_OF_TAM_LINE, 120, 32, LCD_SET_VALUE);
-        }
-        else {
-          lcd_fill_rect(0, Y_POSITION_OF_TAM_LINE, 138, 32, LCD_SET_VALUE);
-        }
+        clearTamBuffer();
         showString(tamBuffer, &standardFont, 18, Y_POSITION_OF_TAM_LINE + 6, vmNormal, true, true);
       }
     }
