@@ -124,9 +124,9 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
       #else // !DMCP_BUILD
         refreshLcd(NULL);
       #endif // DMCP_BUILD
-    }
 
-    screenUpdatingMode = SCRUPD_AUTO;
+      screenUpdatingMode = SCRUPD_AUTO;
+    }
 
     indexOfItems[func].func(param);
 
