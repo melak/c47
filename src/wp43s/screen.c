@@ -2255,7 +2255,10 @@ void execTimerApp(uint16_t timerType) {
           }
         }
 
-        if(!(screenUpdatingMode & SCRUPD_MANUAL_STACK)) {
+        if(!(screenUpdatingMode & SCRUPD_MANUAL_SHIFT_STATUS)) {
+          if(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME)) {
+            lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, 15, NUMERIC_FONT_HEIGHT, LCD_SET_VALUE);
+          }
           displayShiftAndTamBuffer();
         }
 
@@ -2486,7 +2489,7 @@ void fnClLcd(uint16_t unusedButMandatoryParameter) {
   int32_t x, y;
   getPixelPos(&x, &y, true);
   if(lastErrorCode == ERROR_NONE) {
-    screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;
+    screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
     if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
     --x; --y;
     lcd_fill_rect(x, y, SCREEN_WIDTH - x, SCREEN_HEIGHT - y, LCD_SET_VALUE);
@@ -2499,7 +2502,7 @@ void fnPixel(uint16_t unusedButMandatoryParameter) {
   int32_t x, y;
   getPixelPos(&x, &y, false);
   if(lastErrorCode == ERROR_NONE) {
-    screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;
+    screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
     if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
     setBlackPixel(x - 1, y - 1);
   }
@@ -2511,7 +2514,7 @@ void fnPoint(uint16_t unusedButMandatoryParameter) {
   int32_t x, y;
   getPixelPos(&x, &y, false);
   if(lastErrorCode == ERROR_NONE) {
-    screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;
+    screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
     if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
     lcd_fill_rect(x - 2, y - 2, 3, 3, LCD_EMPTY_VALUE);
   }
@@ -2533,7 +2536,7 @@ void fnAGraph(uint16_t regist) {
       int16_t sign;
       const uint8_t savedShortIntegerMode = shortIntegerMode;
 
-      screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU;
+      screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
       if(y <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
       shortIntegerMode = SIM_UNSIGN;
       convertShortIntegerRegisterToUInt64(regist, &sign, &val);

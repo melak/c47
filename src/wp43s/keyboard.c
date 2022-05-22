@@ -355,6 +355,10 @@
       else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
         int16_t item = determineFunctionKeyItem((char *)data);
 
+        if(shiftF || shiftG) {
+          screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+        }
+
         shiftF = false;
         shiftG = false;
         if(item != ITM_NOP && item != ITM_NULL) {
@@ -677,6 +681,7 @@
       }
       lastErrorCode = 0;
       shiftF = !shiftF;
+      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
     }
 
@@ -694,6 +699,7 @@
       }
       lastErrorCode = 0;
       shiftG = !shiftG;
+      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
     }
 
@@ -718,6 +724,10 @@
 
     if(result == ITM_PROD_SIGN) {
       result = (getSystemFlag(FLAG_MULTx) ? ITM_CROSS : ITM_DOT);
+    }
+
+    if(shiftF || shiftG) {
+      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
     }
 
     shiftF = false;
