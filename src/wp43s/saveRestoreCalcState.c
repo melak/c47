@@ -331,6 +331,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     BACKUP = fopen("backup.bin", "rb");
     if(BACKUP == NULL) {
       printf("Cannot restore calc's memory from file backup.bin! Performing RESET\n");
+      refreshScreen();
       return;
     }
 
@@ -338,6 +339,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     restore(&ramSize,                            sizeof(ramSize),                            BACKUP);
     if(backupVersion != BACKUP_VERSION || ramSize != RAM_SIZE) {
       fclose(BACKUP);
+      refreshScreen();
 
       printf("Cannot restore calc's memory from file backup.bin! File backup.bin is from another backup version.\n");
       printf("               Backup file      Program\n");
