@@ -31,6 +31,7 @@
 #include "programming/manage.h"
 #include "programming/nextStep.h"
 #include "registers.h"
+#include "screen.h"
 #include "softmenus.h"
 #include <string.h>
 
@@ -817,6 +818,10 @@
 
 
   void tamLeaveMode(void) {
+    if(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME)) {
+      clearTamBuffer();
+    }
+
     tam.alpha = false;
     tam.mode = 0;
     catalog = CATALOG_NONE;
