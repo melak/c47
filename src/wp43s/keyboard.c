@@ -357,6 +357,7 @@
 
         if(shiftF || shiftG) {
           screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+          clearShiftState();
         }
 
         shiftF = false;
@@ -728,6 +729,7 @@
 
     if(shiftF || shiftG) {
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+      clearShiftState();
     }
 
     shiftF = false;

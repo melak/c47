@@ -2120,6 +2120,10 @@ void execTimerApp(uint16_t timerType) {
     }
   }
 
+  void clearShiftState(void) {
+    lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, 15, NUMERIC_FONT_HEIGHT, LCD_SET_VALUE);
+  }
+
   void displayShiftAndTamBuffer(void) {
     if(calcMode == CM_ASSIGN) {
       updateAssignTamBuffer();
@@ -2261,7 +2265,7 @@ void execTimerApp(uint16_t timerType) {
 
         if(!(screenUpdatingMode & SCRUPD_MANUAL_SHIFT_STATUS)) {
           if(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME)) {
-            lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, 15, NUMERIC_FONT_HEIGHT, LCD_SET_VALUE);
+            clearShiftState();
           }
           displayShiftAndTamBuffer();
         }
