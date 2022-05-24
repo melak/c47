@@ -27,6 +27,24 @@
 
 #ifndef TESTSUITE_BUILD
   void refreshStatusBar(void) {
+    if(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR) {
+      switch(calcMode) {
+        case CM_PEM:
+        case CM_REGISTER_BROWSER:
+        case CM_FLAG_BROWSER:
+        case CM_FONT_BROWSER:
+        case CM_PLOT_STAT:
+        case CM_CONFIRMATION:
+        case CM_MIM:
+        case CM_TIMER:
+        case CM_GRAPH:
+          screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR;
+          break;
+
+        default:
+          return;
+      }
+    }
     #if (DEBUG_INSTEAD_STATUS_BAR == 1)
       sprintf(tmpString, "%s%d %s/%s  mnu:%s fi:%d", catalog ? "asm:" : "", catalog, tam.mode ? "/tam" : "", getCalcModeName(calcMode),indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemCatalogName, softmenuStack[0].firstItem);
       showString(tmpString, &standardFont, X_DATE, 0, vmNormal, true, true);
@@ -223,6 +241,24 @@
 
 
   void showHideHourGlass(void) {
+    if(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR) {
+      switch(calcMode) {
+        case CM_PEM:
+        case CM_REGISTER_BROWSER:
+        case CM_FLAG_BROWSER:
+        case CM_FONT_BROWSER:
+        case CM_PLOT_STAT:
+        case CM_CONFIRMATION:
+        case CM_MIM:
+        case CM_TIMER:
+        case CM_GRAPH:
+          screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR;
+          break;
+
+        default:
+          return;
+      }
+    }
     switch(programRunStop) {
       case PGM_WAITING:
         showGlyph(STD_NEG_EXCLAMATION_MARK, &standardFont, (calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH  ? 160-20 : X_HOURGLASS) - 1, 0, vmNormal, true, false);
