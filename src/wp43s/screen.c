@@ -2203,7 +2203,7 @@ void execTimerApp(uint16_t timerType) {
           if(!(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
             lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, SCREEN_WIDTH, 240 - Y_POSITION_OF_REGISTER_T_LINE - SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
           }
-          if(!(screenUpdatingMode & SCRUPD_MANUAL_MENU)) {
+          if(!(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
             lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, SCREEN_WIDTH, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
           }
         }
@@ -2270,7 +2270,7 @@ void execTimerApp(uint16_t timerType) {
           displayShiftAndTamBuffer();
         }
 
-        if(!(screenUpdatingMode & SCRUPD_MANUAL_MENU)) {
+        if(!(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
           showSoftmenuCurrentPart();
         }
 
@@ -2422,10 +2422,12 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
 
 
     fclose(bmp);
+    screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME | SCRUPD_SKIP_MENU_ONE_TIME;
   #endif // PC_BUILD
 
   #ifdef DMCP_BUILD
     create_screenshot(0);
+    screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME | SCRUPD_SKIP_MENU_ONE_TIME;
   #endif // DMCP_BUILD
 }
 
