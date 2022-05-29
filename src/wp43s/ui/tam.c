@@ -377,8 +377,8 @@
             else { // We aren't on 1st step of current program
               tam.value = programList[currentProgramNumber - 1].step;
             }
-            pemCursorIsZerothStep = true;
             reallyRunFunction(ITM_GTOP, tam.value);
+            pemCursorIsZerothStep = true;
             tamLeaveMode();
             hourGlassIconEnabled = false;
             return;
@@ -390,8 +390,8 @@
             }
 
             tam.value = programList[currentProgramNumber].step;
-            pemCursorIsZerothStep = true;
             reallyRunFunction(ITM_GTOP, tam.value);
+            pemCursorIsZerothStep = true;
             tamLeaveMode();
             hourGlassIconEnabled = false;
             return;
