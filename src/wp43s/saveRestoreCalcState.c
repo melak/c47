@@ -46,7 +46,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         71  // Added current graph storage matrix name
+#define BACKUP_VERSION         74  // Save screen
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -146,6 +146,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
     ramPtr = TO_WP43SMEMPTR(flashProgramList);
     save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+    ramPtr = TO_WP43SMEMPTR(currentSubroutineLevelData);
+    save(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
     save(&xCursor,                            sizeof(xCursor),                            BACKUP);
     save(&yCursor,                            sizeof(yCursor),                            BACKUP);
     save(&firstGregorianDay,                  sizeof(firstGregorianDay),                  BACKUP);
@@ -239,6 +241,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
     save(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
     save(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
+    save(&allSubroutineLevels,                sizeof(allSubroutineLevels),                BACKUP);
+    save(&pemCursorIsZerothStep,              sizeof(pemCursorIsZerothStep),              BACKUP);
     save(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop),              BACKUP);
     save(&lrSelection,                        sizeof(lrSelection),                        BACKUP);
     save(&lrSelectionUndo,                    sizeof(lrSelectionUndo),                    BACKUP);
@@ -297,6 +301,20 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
     save(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
 
+    save(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
+    for(int y = 0; y < SCREEN_HEIGHT; ++y) {
+      uint8_t bmpdata = 0;
+      for(int x = 0; x < SCREEN_WIDTH; ++x) {
+        bmpdata <<= 1;
+        if(*(screenData + y*screenStride + x) == ON_PIXEL) {
+          bmpdata |= 1;
+        }
+        if((x % 8) == 7) {
+          save(&bmpdata,                      sizeof(bmpdata),                            BACKUP);
+          bmpdata = 0;
+        }
+      }
+    }
 
     fclose(BACKUP);
     printf("End of calc's backup\n");
@@ -307,11 +325,13 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
   void restoreCalc(void) {
     uint32_t backupVersion, ramSize, ramPtr;
     FILE *ppgm_fp;
+    uint8_t *loadedScreen = malloc(SCREEN_WIDTH * SCREEN_HEIGHT / 8);
 
     fnReset(CONFIRMED);
     BACKUP = fopen("backup.bin", "rb");
     if(BACKUP == NULL) {
       printf("Cannot restore calc's memory from file backup.bin! Performing RESET\n");
+      refreshScreen();
       return;
     }
 
@@ -319,6 +339,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     restore(&ramSize,                            sizeof(ramSize),                            BACKUP);
     if(backupVersion != BACKUP_VERSION || ramSize != RAM_SIZE) {
       fclose(BACKUP);
+      refreshScreen();
 
       printf("Cannot restore calc's memory from file backup.bin! File backup.bin is from another backup version.\n");
       printf("               Backup file      Program\n");
@@ -379,6 +400,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       programList = TO_PCMEMPTR(ramPtr);
       restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
       flashProgramList = TO_PCMEMPTR(ramPtr);
+      restore(&ramPtr,                             sizeof(ramPtr),                             BACKUP);
+      currentSubroutineLevelData = TO_PCMEMPTR(ramPtr);
       restore(&xCursor,                            sizeof(xCursor),                            BACKUP);
       restore(&yCursor,                            sizeof(yCursor),                            BACKUP);
       restore(&firstGregorianDay,                  sizeof(firstGregorianDay),                  BACKUP);
@@ -476,6 +499,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&currentProgramNumber,               sizeof(currentProgramNumber),               BACKUP);
       restore(&lastProgramListEnd,                 sizeof(lastProgramListEnd),                 BACKUP);
       restore(&programListEnd,                     sizeof(programListEnd),                     BACKUP);
+      restore(&allSubroutineLevels,                sizeof(allSubroutineLevels),                BACKUP);
+      restore(&pemCursorIsZerothStep,              sizeof(pemCursorIsZerothStep),              BACKUP);
       restore(&numberOfTamMenusToPop,              sizeof(numberOfTamMenusToPop),              BACKUP);
       restore(&lrSelection,                        sizeof(lrSelection),                        BACKUP);
       restore(&lrSelectionUndo,                    sizeof(lrSelectionUndo),                    BACKUP);
@@ -534,6 +559,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
       restore(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
 
+      restore(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
+      restore(loadedScreen,                        SCREEN_WIDTH * SCREEN_HEIGHT / 8,           BACKUP);
+
       fclose(BACKUP);
       printf("End of calc's restoration\n");
 
@@ -556,6 +584,16 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       #if (DEBUG_REGISTER_L == 1)
         refreshRegisterLine(REGISTER_X); // to show L register
       #endif // (DEBUG_REGISTER_L == 1)
+
+      for(int y = 0; y < SCREEN_HEIGHT; ++y) {
+        for(int x = 0; x < SCREEN_WIDTH; x += 8) {
+          uint8_t bmpdata = *(loadedScreen + (y * SCREEN_WIDTH + x) / 8);
+          for(int bit = 7; bit >= 0; --bit) {
+            *(screenData + y * screenStride + x + (7 - bit)) = (bmpdata & (1 << bit)) ? ON_PIXEL : OFF_PIXEL;
+          }
+        }
+      }
+      free(loadedScreen);
 
       #if (SCREEN_800X480 == 1)
         if(calcMode == CM_NORMAL)                     {}

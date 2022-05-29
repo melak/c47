@@ -1726,7 +1726,7 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
       REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns = dataSizeWithoutDataLenBlocks / COMPLEX34_SIZE;
     }
     else {
-      setRegisterMaxDataLength(regist, dataSizeWithDataLenBlocks - (dataType == dtString || dataType == dtLongInteger ? 1 : 0));
+      setRegisterMaxDataLength(regist, dataSizeWithoutDataLenBlocks);
     }
   }
   else {

@@ -54,7 +54,7 @@ bool_t                 thereIsSomethingToUndo;
 bool_t                 lastProgramListEnd;
 bool_t                 programListEnd;
 bool_t                 serialIOIconEnabled;
-bool_t                 neverUsed;
+bool_t                 pemCursorIsZerothStep;
 
 realContext_t          ctxtReal4;    //   limited digits: used for higher speed internal real calcs
 realContext_t          ctxtReal34;   //   34 digits
@@ -140,6 +140,7 @@ uint8_t                timerCraAndDeciseconds = 128u;
 uint8_t                programRunStop;
 uint8_t                lastKeyCode;
 uint8_t                entryStatus;
+uint8_t                screenUpdatingMode;
 uint8_t               *beginOfProgramMemory;
 uint8_t               *firstFreeProgramByte;
 

@@ -506,7 +506,7 @@ void fnClAll(uint16_t confirmation) {
 
 
 void addTestPrograms(void) {
-  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(11106));
+  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(11212));
 
   resizeProgramMemory(TO_BLOCKS(numberOfBytesForTheTestPrograms));
   firstDisplayedStep.ram        = beginOfProgramMemory;
@@ -803,6 +803,7 @@ void fnReset(uint16_t confirmation) {
     serialIOIconEnabled = false;
     printerIconEnabled = false;
     thereIsSomethingToUndo = false;
+    pemCursorIsZerothStep = true;
     tam.alpha = false;
     fnKeyInCatalog = false;
     shiftF = false;
@@ -869,6 +870,8 @@ void fnReset(uint16_t confirmation) {
     memset(userKeyLabel,   0, TO_BYTES(TO_BLOCKS(userKeyLabelSize)));
 
     fnClearMenu(NOPARAM);
+
+    screenUpdatingMode = SCRUPD_AUTO;
 
 
     #ifdef DMCP_BUILD //JM temporary USER mode setup to run standard 43S on C43 template. Only change is this. SIN changes to TRIG; COS to f; TAN to g. Yellow shift remain normal f. C43 specific menus just fall away.

@@ -253,11 +253,13 @@
       char charKey[6];
       bool_t f = shiftF;
       bool_t g = shiftG;
+      uint8_t origScreenUpdatingMode = screenUpdatingMode;
       sprintf(charKey, "%02d", key -1);
 
       fnTimerStart(TO_AUTO_REPEAT, key, KEY_AUTOREPEAT_PERIOD);
 
       btnClicked(NULL, (char *)charKey);
+      screenUpdatingMode = origScreenUpdatingMode;
 //    btnPressed(charKey);
       shiftF = f;
       shiftG = g;
@@ -353,6 +355,10 @@
       else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
         int16_t item = determineFunctionKeyItem((char *)data);
 
+        if(shiftF || shiftG) {
+          screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+        }
+
         shiftF = false;
         shiftG = false;
         if(item != ITM_NOP && item != ITM_NULL) {
@@ -409,6 +415,7 @@
   #endif // DMCP_BUILD
     if(programRunStop == PGM_KEY_PRESSED_WHILE_PAUSED) {
       programRunStop = PGM_RESUMING;
+      screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
       return;
     }
     if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
@@ -443,6 +450,7 @@
           shiftF = shiftG = false;
           refreshScreen();
         }
+        screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
         return;
       }
 
@@ -454,6 +462,7 @@
             shiftF = shiftG = false;
             _closeCatalog();
             refreshScreen();
+            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
           case MNU_MyAlpha:
             assignToMyAlpha((*((uint8_t *)data) - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
@@ -461,6 +470,7 @@
             shiftF = shiftG = false;
             _closeCatalog();
             refreshScreen();
+            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
           case MNU_DYNAMIC:
             if(itemToBeAssigned < 0) {
@@ -476,12 +486,14 @@
             shiftF = shiftG = false;
             _closeCatalog();
             refreshScreen();
+            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
           case MNU_CATALOG:
           case MNU_CHARS:
           case MNU_PROGS:
           case MNU_VARS:
           case MNU_MENUS:
+            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             break;
           default:
             displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -492,6 +504,7 @@
             shiftF = shiftG = false;
             _closeCatalog();
             refreshScreen();
+            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
         }
       }
@@ -509,11 +522,13 @@
           if(calcMode != CM_PEM && item == -MNU_Sfdx) {
             tamEnterMode(MNU_Sfdx);
             refreshScreen();
+            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
           }
           else if(calcMode != CM_PEM && item == ITM_INTEGRAL) {
             reallyRunFunction(item, currentSolverVariable);
             refreshScreen();
+            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
           }
           else if(item < 0) { // softmenu
@@ -529,6 +544,7 @@
               }
             }
             refreshScreen();
+            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
           }
           if(tam.mode && catalog && (tam.digitsSoFar || tam.function == ITM_BESTF || tam.function == ITM_CNST || (!tam.indirect && (tam.mode == TM_VALUE || tam.mode == TM_VALUE_CHB || (tam.mode == TM_KEY && !tam.keyInputFinished))))) {
@@ -540,6 +556,7 @@
             hourGlassIconEnabled = false;
             _closeCatalog();
             refreshScreen();
+            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
           }
           else if(calcMode == CM_PEM && catalog && catalog != CATALOG_MVAR) { // TODO: is that correct
@@ -564,6 +581,7 @@
             }
             _closeCatalog();
             refreshScreen();
+            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
           }
 
@@ -636,6 +654,7 @@
       }
 
       refreshScreen();
+      screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
     }
   }
 
@@ -662,6 +681,7 @@
       }
       lastErrorCode = 0;
       shiftF = !shiftF;
+      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
     }
 
@@ -679,6 +699,7 @@
       }
       lastErrorCode = 0;
       shiftG = !shiftG;
+      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
     }
 
@@ -705,8 +726,16 @@
       result = (getSystemFlag(FLAG_MULTx) ? ITM_CROSS : ITM_DOT);
     }
 
+    if(shiftF || shiftG) {
+      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+    }
+
     shiftF = false;
     shiftG = false;
+
+    if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && (result == ITM_NOP || result == ITM_NULL)) {
+      result = ITM_LBL;
+    }
 
     return result;
   }
@@ -736,6 +765,9 @@
   #ifdef PC_BUILD
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
+      bool_t f = shiftF;
+      bool_t g = shiftG;
+
       if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
         setLastKeyCode(keyCode + 1);
       }
@@ -767,7 +799,7 @@
       }
 
       if(getSystemFlag(FLAG_USER)) {
-        int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (shiftG ? 2 : shiftF ? 1 : 0);
+        int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (g ? 2 : f ? 1 : 0);
         char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
         xcopy(tmpString, funcParam, stringByteLength(funcParam) + 1);
       }
@@ -781,6 +813,10 @@
         if(!keyActionProcessed) {
           showFunctionName(item, 1000); // 1000ms = 1s
         }
+      }
+      if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
+        shiftF = f;
+        shiftG = g;
       }
     }
 
@@ -880,7 +916,7 @@
       }
 
       if(getSystemFlag(FLAG_USER)) {
-        int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (shiftG ? 2 : shiftF ? 1 : 0);
+        int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (g ? 2 : f ? 1 : 0);
         char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
         xcopy(tmpString, funcParam, stringByteLength(funcParam) + 1);
       }
@@ -894,6 +930,10 @@
         if(!keyActionProcessed) {
           showFunctionName(item, 1000); // 1000ms = 1s
         }
+      }
+      if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
+        shiftF = f;
+        shiftG = g;
       }
     }
   #endif // DMCP_BUILD
@@ -910,6 +950,7 @@
 
       if(programRunStop == PGM_KEY_PRESSED_WHILE_PAUSED) {
         programRunStop = PGM_RESUMING;
+        screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
         return;
       }
 
@@ -977,6 +1018,7 @@
       if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING) {
         refreshScreen();
       }
+      screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
     }
 
 
@@ -1052,8 +1094,11 @@
     if(temporaryInformation == TI_VIEW) {
       temporaryInformation = TI_NO_INFO;
       updateMatrixHeightCache();
+      if(item == ITM_UP || item == ITM_DOWN || item == ITM_EXIT) {
+        temporaryInformation = TI_VIEW;
+      }
     }
-    else {
+    else if(item != ITM_UP && item != ITM_DOWN && item != ITM_EXIT) {
       temporaryInformation = TI_NO_INFO;
     }
     if(programRunStop == PGM_WAITING) {
@@ -1073,9 +1118,10 @@
 
       case ITM_UP:
         fnKeyUp(NOPARAM);
-        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
+        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL || temporaryInformation != TI_NO_INFO) {
           refreshScreen();
         }
+        temporaryInformation = TI_NO_INFO;
         keyActionProcessed = true;
         #if (REAL34_WIDTH_TEST == 1)
           if(++largeur > SCREEN_WIDTH) largeur--;
@@ -1086,9 +1132,10 @@
 
       case ITM_DOWN:
         fnKeyDown(NOPARAM);
-        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL) {
+        if(currentSoftmenuScrolls() || calcMode != CM_NORMAL || temporaryInformation != TI_NO_INFO) {
           refreshScreen();
         }
+        temporaryInformation = TI_NO_INFO;
         keyActionProcessed = true;
         #if (REAL34_WIDTH_TEST == 1)
           if(--largeur < 20) largeur++;
@@ -1099,6 +1146,10 @@
 
       case ITM_EXIT:
         fnKeyExit(NOPARAM);
+        if(temporaryInformation != TI_NO_INFO) {
+          refreshScreen();
+        }
+        temporaryInformation = TI_NO_INFO;
         keyActionProcessed = true;
         break;
 
@@ -1437,6 +1488,12 @@
   static void menuUp(void) {
     int16_t menuId = softmenuStack[0].softmenuId;
     int16_t sm = softmenu[menuId].menuItem;
+
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+    if(temporaryInformation == TI_NO_INFO && lastErrorCode == ERROR_NONE) {
+      screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME;
+    }
+
     if((sm == -MNU_alpha_omega || sm == -MNU_ALPHAintl) && alphaCase == AC_LOWER) {
       alphaCase = AC_UPPER;
       softmenuStack[0].softmenuId--; // Switch to the upper case menu
@@ -1463,6 +1520,12 @@
   static void menuDown(void) {
     int16_t menuId = softmenuStack[0].softmenuId;
     int16_t sm = softmenu[menuId].menuItem;
+
+    screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+    if(temporaryInformation == TI_NO_INFO && lastErrorCode == ERROR_NONE) {
+      screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME;
+    }
+
     if((sm == -MNU_ALPHA_OMEGA || sm == -MNU_ALPHAINTL) && alphaCase == AC_UPPER) {
       alphaCase = AC_LOWER;
       softmenuStack[0].softmenuId++; // Switch to the lower case menu
@@ -1682,6 +1745,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           else {
             popSoftmenu();
           }
+          screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
+          if(temporaryInformation == TI_NO_INFO) {
+            screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME;
+          }
         }
         break;
 
@@ -1711,6 +1778,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           calcModeNormal();
           updateMatrixHeightCache();
         }
+        screenUpdatingMode = SCRUPD_AUTO;
         popSoftmenu(); // close softmenu dedicated for the MIM
         break;
 
@@ -1751,6 +1819,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_TIMER:
+        screenUpdatingMode = SCRUPD_AUTO;
         if(lastErrorCode != 0) {
           lastErrorCode = 0;
         }
@@ -1957,23 +2026,36 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         }
         if(getSystemFlag(FLAG_ALPHA)) {
           pemAlpha(ITM_BACKSPACE);
-          if(aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA) && currentLocalStepNumber > 1) {
-            --currentLocalStepNumber;
-            defineCurrentStep();
-            if(!programListEnd)
-              scrollPemBackwards();
+          if(aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) {
+            if(currentLocalStepNumber > 1) {
+              --currentLocalStepNumber;
+              defineCurrentStep();
+              if(!programListEnd)
+                scrollPemBackwards();
+            }
+            else {
+              pemCursorIsZerothStep = true;
+            }
           }
         }
         else if(aimBuffer[0] == 0) {
-          nextStep = findNextStep_ram(currentStep.ram);
-          if(*currentStep.ram != 255 || *(currentStep.ram + 1) != 255) { // Not the last END
-            deleteStepsFromTo(currentStep.ram, nextStep);
-          }
           if(currentLocalStepNumber > 1) {
-            --currentLocalStepNumber;
-            defineCurrentStep();
+            pemCursorIsZerothStep = false;
           }
-          scrollPemBackwards();
+          if(!pemCursorIsZerothStep) {
+            nextStep = findNextStep_ram(currentStep.ram);
+            if(*currentStep.ram != 255 || *(currentStep.ram + 1) != 255) { // Not the last END
+              deleteStepsFromTo(currentStep.ram, nextStep);
+            }
+            if(currentLocalStepNumber > 1) {
+              --currentLocalStepNumber;
+              defineCurrentStep();
+            }
+            else {
+              pemCursorIsZerothStep = true;
+            }
+            scrollPemBackwards();
+          }
         }
         else {
           pemAddNumber(ITM_BACKSPACE);

@@ -31,6 +31,7 @@
 #include "programming/manage.h"
 #include "programming/nextStep.h"
 #include "registers.h"
+#include "screen.h"
 #include "softmenus.h"
 #include <string.h>
 
@@ -376,6 +377,7 @@
             else { // We aren't on 1st step of current program
               tam.value = programList[currentProgramNumber - 1].step;
             }
+            pemCursorIsZerothStep = true;
             reallyRunFunction(ITM_GTOP, tam.value);
             tamLeaveMode();
             hourGlassIconEnabled = false;
@@ -388,6 +390,7 @@
             }
 
             tam.value = programList[currentProgramNumber].step;
+            pemCursorIsZerothStep = true;
             reallyRunFunction(ITM_GTOP, tam.value);
             tamLeaveMode();
             hourGlassIconEnabled = false;
@@ -511,6 +514,7 @@
       }
       else if(tam.function == ITM_GTOP) {
         tam.value = programList[numberOfPrograms - numberOfProgramsInFlash - 1].step;
+        pemCursorIsZerothStep = true;
         reallyRunFunction(ITM_GTOP, tam.value);
         if((*currentStep.ram != 0xff) || (*(currentStep.ram + 1) != 0xff)) {
           currentStep.ram = firstFreeProgramByte;
@@ -526,7 +530,7 @@
       else if(!tam.alpha && !tam.digitsSoFar && !tam.dot && !valueParameter) {
         if(tam.function == ITM_GTO) {
           tam.function = ITM_GTOP;
-          tam.min = 1;
+          tam.min = 0;
           tam.max = max(getNumberOfSteps(), 99);
         }
         else if(tam.indirect && (currentNumberOfLocalRegisters || calcMode == CM_PEM)) {
@@ -606,9 +610,12 @@
         }
         if(tam.function == ITM_GTOP) {
           if(tam.digitsSoFar < 3) {
+            pemCursorIsZerothStep = false;
             fnGoto(value);
           }
           else {
+            pemCursorIsZerothStep = (value == 0);
+            if(value == 0) value = 1;
             reallyRunFunction(tamOperation(), value + programList[currentProgramNumber - 1].step - 1);
           }
         }
@@ -704,6 +711,8 @@
     tam.function = func;
     tam.min = indexOfItems[func].tamMinMax >> TAM_MAX_BITS;
     tam.max = indexOfItems[func].tamMinMax & TAM_MAX_MASK;
+
+    screenUpdatingMode = SCRUPD_AUTO;
 
     if(tam.max == 16383) { // Only case featuring more than TAM_MAX_BITS bits is GTO.
       tam.max = 32766;
@@ -809,6 +818,10 @@
 
 
   void tamLeaveMode(void) {
+    if(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME)) {
+      clearTamBuffer();
+    }
+
     tam.alpha = false;
     tam.mode = 0;
     catalog = CATALOG_NONE;

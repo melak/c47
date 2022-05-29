@@ -378,6 +378,10 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
 
     if(currentLocalStepNumber == 0) {
       currentLocalStepNumber = 1;
+      pemCursorIsZerothStep = true;
+    }
+    else if(currentLocalStepNumber > 1) {
+      pemCursorIsZerothStep = false;
     }
     currentStepNumber        = currentLocalStepNumber        + abs(programList[currentProgramNumber - 1].step) - 1;
     firstDisplayedStepNumber = firstDisplayedLocalStepNumber + abs(programList[currentProgramNumber - 1].step) - 1;
@@ -386,9 +390,10 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
     lastProgramListEnd       = false;
 
     if(firstDisplayedLocalStepNumber == 0) {
+      showString("0000:" STD_SPACE_4_PER_EM, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE, (pemCursorIsZerothStep && !tam.mode && aimBuffer[0] == 0) ? vmReverse : vmNormal, false, true);
       sprintf(tmpString, "{ Prgm #%d: %" PRIu32 " bytes / %" PRIu16 " step%s }", currentProgramNumber, _getProgramSize(),
                                                                                numberOfSteps, numberOfSteps == 1 ? "" : "s");
-      showString(tmpString, &standardFont, 2, Y_POSITION_OF_REGISTER_T_LINE, vmNormal,  false, false);
+      showString(tmpString, &standardFont, 42, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, false, false);
       firstLine = 1;
     }
     else {
@@ -409,7 +414,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset + lineOffsetTam);
       if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber) {
         tamOverPemYPos = Y_POSITION_OF_REGISTER_T_LINE + 21 * line;
-        showString(tmpString, &standardFont, 1, tamOverPemYPos, (tam.mode && (programList[currentProgramNumber - 1].step > 0)) ? vmNormal : vmReverse, false, true);
+        showString(tmpString, &standardFont, 1, tamOverPemYPos, ((pemCursorIsZerothStep && !tam.mode && aimBuffer[0] == 0) || (tam.mode && (programList[currentProgramNumber - 1].step > 0))) ? vmNormal : vmReverse, false, true);
         if(programList[currentProgramNumber - 1].step < 0) { // Flash
           currentStep.flash = step - tmpSteps + firstDisplayedStep.flash;
         }
@@ -422,7 +427,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       }
       lblOrEnd = (*step == ITM_LBL) || ((*step == ((ITM_END >> 8) | 0x80)) && (*(step + 1) == (ITM_END & 0xff))) || ((*step == 0xff) && (*(step + 1) == 0xff));
       if(programList[currentProgramNumber - 1].step > 0) {
-        if(firstDisplayedStepNumber + line - lineOffset == currentStepNumber + 1) {
+        if((!pemCursorIsZerothStep && firstDisplayedStepNumber + line - lineOffset == currentStepNumber + 1) || (line == 1 && tam.mode && pemCursorIsZerothStep)) {
           tamOverPemYPos = Y_POSITION_OF_REGISTER_T_LINE + 21 * line;
           if(tam.mode) {
             line += 1;
@@ -624,6 +629,8 @@ void pemAlpha(int16_t item) {
   }
   else if(item == ITM_ENTER) {
     pemCloseAlphaInput();
+    --firstDisplayedLocalStepNumber;
+    defineFirstDisplayedStep();
     return;
   }
 
@@ -788,6 +795,7 @@ void pemCloseNumberInput(void) {
     *(tmpPtr++) = stringByteLength(numBuffer);
     xcopy(tmpPtr, numBuffer, stringByteLength(numBuffer));
     _insertInProgram((uint8_t *)tmpString, stringByteLength(numBuffer) + (int32_t)(tmpPtr - tmpString));
+    pemCursorIsZerothStep = false;
   }
 
   aimBuffer[0] = '!';
@@ -876,6 +884,7 @@ void insertStepInProgram(int16_t func) {
 
   if(func == ITM_AIM || (!tam.mode && getSystemFlag(FLAG_ALPHA))) {
     pemAlpha(func);
+    pemCursorIsZerothStep = false;
     return;
   }
   if(indexOfItems[func].func == addItemToBuffer || (!tam.mode && aimBuffer[0] != 0 && (func == ITM_CHS || func == ITM_CC || func == ITM_toINT || (nimNumberPart == NP_INT_BASE && (func == ITM_YX || func == ITM_LN || func == ITM_RCL))))) {
@@ -1084,7 +1093,7 @@ void addStepInProgram(int16_t func) {
     aimBuffer[0] = 0;
     return;
   }
-  if(((aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) || tam.mode) && ((*currentStep.ram != ((ITM_END >> 8) | 0x80)) || (*(currentStep.ram + 1) != (ITM_END & 0xff))) && ((*currentStep.ram != 0xff) || (*(currentStep.ram + 1) != 0xff))) {
+  if((!pemCursorIsZerothStep) && ((aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) || tam.mode) && ((*currentStep.ram != ((ITM_END >> 8) | 0x80)) || (*(currentStep.ram + 1) != (ITM_END & 0xff))) && ((*currentStep.ram != 0xff) || (*(currentStep.ram + 1) != 0xff))) {
     currentStep = findNextStep(currentStep);
     ++currentLocalStepNumber;
   }
@@ -1092,6 +1101,7 @@ void addStepInProgram(int16_t func) {
   if((aimBuffer[0] == 0 && !getSystemFlag(FLAG_ALPHA)) || tam.mode) {
     currentStep = findPreviousStep(currentStep);
     --currentLocalStepNumber;
+    pemCursorIsZerothStep = false;
     if((indexOfItems[func].status & PTP_STATUS) == PTP_DISABLED) {
       switch(func) {
         case VAR_ACC:            // 1192

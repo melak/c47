@@ -83,15 +83,6 @@ char     plotStatMx[8];
 	  }
 	}
 
-	static void fnStrtoX(char buff[]) {
-	  setSystemFlag(FLAG_ASLIFT); // 5
-	  liftStack();
-	  int16_t mem = stringByteLength(buff) + 1;
-	  reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(mem), amNone);
-	  xcopy(REGISTER_STRING_DATA(REGISTER_X), buff, mem);
-	  setSystemFlag(FLAG_ASLIFT);
-	}
-
   static void convertDoubleToReal34RegisterPush(double x, calcRegister_t destination) {
     setSystemFlag(FLAG_ASLIFT);
     liftStack();
@@ -373,6 +364,7 @@ void graph_eqn(uint16_t mode) {
   static void graph_solver() {         //Input parameters in registers SREG_STARTX0, SREG_STARTX1
     if(graphVariable <= 0 || graphVariable > 65535) return;
 
+    calcMode = CM_NO_UNDO;
     calcRegister_t SREG_TMP  = __TMP ;
     calcRegister_t SREG_Xold = __Xold; //: x old difference
     calcRegister_t SREG_Yold = __Yold; //: y old difference
@@ -504,9 +496,9 @@ void graph_eqn(uint16_t mode) {
                     #ifdef PC_BUILD
                       if(lastErrorCode != 0) { 
                         printf(">>> ERROR CODE INITIALLY NON-ZERO = %d <<<<<\n",lastErrorCode); 
-                        return;
+                        goto to_return;
                       }
-                    #endif
+                    #endif //PC_BUILD
 
       //assumes X2 is in R91
       //Identify oscillations in real or imag: increment osc flag
@@ -953,27 +945,14 @@ void graph_eqn(uint16_t mode) {
       // |dy| is still in Y
       // replace X with ix
       // plot (ix,|dy|)
-      if(!checkNaN && ix<NUMBERITERATIONS-1 && !checkzero) {
-        convertDoubleToReal34RegisterPush((double)ix, REGISTER_X);
-        if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterDataType(REGISTER_Y) == dtReal34)  {
-          runFunction(ITM_SIGMAPLUS);
 
-                          #ifdef PC_BUILD
-                            if(lastErrorCode == 24) { 
-                              #ifdef VERBOSE_SOLVER1
-                              printf("ERROR CODE CANNOT STAT COMPLEX ignored\n"); 
-                              #endif //VERBOSE_SOLVER1
-                              lastErrorCode = 0;
-                            } else
-                            if(lastErrorCode != 0) { 
-                              #ifdef VERBOSE_SOLVER1
-                              printf("ERROR CODE\n"); 
-                              #endif //VERBOSE_SOLVER1
-                              lastErrorCode = 0;
-                            }
-                          #endif
-        }
-      }
+
+      #if (defined PC_BUILD)
+        printf("ix = %i ", ix);
+        printRegisterToConsole(SREG_X1,"X = "," ");
+        printRegisterToConsole(REGISTER_Y,"Y = ","\n");
+      #endif
+
 
       #ifdef DMCP_BUILD
         lcd_refresh();
@@ -986,13 +965,9 @@ void graph_eqn(uint16_t mode) {
 
   //Iterations end
 
-    uint16_t displayFormatDigitsN = displayFormatDigits;
-    uint16_t displayFormatN = displayFormat;
     bool_t   FLAG_FRACTN;
     if (getSystemFlag(FLAG_FRACT)) FLAG_FRACTN = true; else FLAG_FRACTN = false;
     clearSystemFlag(FLAG_FRACT);
-    displayFormat = DF_FIX;
-    displayFormatDigits = 3;
 
 
     clearScreenPixels();
@@ -1002,61 +977,36 @@ void graph_eqn(uint16_t mode) {
         refreshLcd(NULL);
       #endif // DMCP_BUILD
 
-    runFunction(ITM_CLSTK);
-    fnStrtoX("Xo= ");
-    fnRCL(SREG_STARTX0);
-    runFunction(ITM_ADD);
-    fnStrtoX(" -> ");
-    runFunction(ITM_ADD);
-    fnRCL(SREG_STARTX1);
-    runFunction(ITM_ADD);
-    fnStrtoX(", ");
-    runFunction(ITM_ADD);
-
-    displayFormat = DF_ALL;
-    fnStrtoX("Itr=");
-    convertDoubleToReal34RegisterPush(ix*1.0, REGISTER_X);
-    runFunction(ITM_ADD);
-    displayFormat = DF_FIX;
-    fnStrtoX(";");
-    runFunction(ITM_ADD);
+    convertDoubleToReal34RegisterPush(0.0, REGISTER_X);
 
     if(((ix >= NUMBERITERATIONS-1) && !checkzero) || checkNaN) {
-   
-      fnStrtoX(" Root not found. |d|=");
-      runFunction(ITM_ADD);
 
-      fnRCL(SREG_X1);
-      fnRCL(SREG_X2);
-      runFunction(ITM_SUB);
-      runFunction(ITM_ABS);
-      displayFormat = DF_SCI;
-      runFunction(ITM_ADD);
+    convertDoubleToReal34RegisterPush(0.0, REGISTER_X);
+    //fnStrtoX(" Root not found. |d|=");
 
     } else {
-      fnStrtoX(" f(x)=");
       fnRCL(SREG_Y2);
-      runFunction(ITM_ADD);
-      fnStrtoX(" at x= ");
-      displayFormat = DF_FIX;
-      runFunction(ITM_ADD);
-      runFunction(ITM_ADD);  
     }
 
-    displayFormat = DF_ALL;
     fnRCL(SREG_X1);
     fnRCL(SREG_X2);
     
   //  if( ix * 1.0  >  NUMBERITERATIONS * 0.5) runFunction(ITM_PLOT_XY);
 
     if (FLAG_FRACTN) setSystemFlag(FLAG_FRACT) else clearSystemFlag(FLAG_FRACT);
-    displayFormat = displayFormatN;
-    displayFormatDigits = displayFormatDigitsN;
 
-    SAVED_SIGMA_LAct = 0;   //prevent undo of last stats add action. REMOVE when STATS are not used anymore
+#ifdef PC_BUILD
+  to_return:
+#endif //Pc_BUILD
+  calcMode = CM_NORMAL;
+  SAVED_SIGMA_LAct = 0;   //prevent undo of last stats add action. REMOVE when STATS are not used anymore
+  return;
+
 
   }
-#endif
+
+
+#endif //TESTSUITE_BUILD
 
 
 
@@ -1097,9 +1047,6 @@ void fnEqSolvGraph (uint16_t func) {
 
   switch (func) {
      case EQ_SOLVE:{
-            thereIsSomethingToUndo = false;
-            saveForUndo();
-
             fnClDrawMx();
             statGraphReset();
 
@@ -1131,14 +1078,6 @@ void fnEqSolvGraph (uint16_t func) {
               printRegisterToConsole(REGISTER_Y,">>> ix0=","");
               printRegisterToConsole(REGISTER_X," ix1=","\n");
             #endif
-
-            
-            #ifdef DEBUGUNDO
-              printf(">>> saveForUndo from fnEqSolvGraph:");
-            #endif //DEBUGUNDO
-            
-            thereIsSomethingToUndo = false;
-            saveForUndo();
 
             fnClDrawMx();
             statGraphReset();

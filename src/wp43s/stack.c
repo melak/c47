@@ -121,68 +121,67 @@ void fnDisplayStack(uint16_t numberOfStackLines) {
 
 
 
-void fnSwapX(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
-    registerHeader_t savedRegisterHeader = globalRegister[REGISTER_X];
-    globalRegister[REGISTER_X] = globalRegister[regist];
+static void _swapRegs(uint16_t srcReg, uint16_t regist) {
+  registerHeader_t savedRegisterHeader = globalRegister[srcReg];
+
+  if(regist <= LAST_GLOBAL_REGISTER) {
+    globalRegister[srcReg] = globalRegister[regist];
     globalRegister[regist] = savedRegisterHeader;
+  }
+
+  else if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
+    globalRegister[srcReg] = currentLocalRegisters[regist - FIRST_LOCAL_REGISTER];
+    currentLocalRegisters[regist - FIRST_LOCAL_REGISTER] = savedRegisterHeader;
+  }
+
+  #ifdef PC_BUILD
+    else if(regist <= LAST_LOCAL_REGISTER) {
+      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
+      moreInfoOnError("In function _swapRegs:", errorMessage, "is not defined!", NULL);
+    }
+  #endif // PC_BUILD
+
+  else if(regist <= LAST_TEMP_REGISTER) {
+    #ifdef PC_BUILD
+      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+      sprintf(errorMessage, "register %d", regist);
+      moreInfoOnError("In function _swapRegs:", errorMessage, "is unsupported!", NULL);
+    #endif // PC_BUILD
+  }
+
+  else if(regist < FIRST_NAMED_VARIABLE + numberOfNamedVariables) {
+    globalRegister[srcReg] = allNamedVariables[regist - FIRST_NAMED_VARIABLE].header;
+    allNamedVariables[regist - FIRST_NAMED_VARIABLE].header = savedRegisterHeader;
   }
 
   #ifdef PC_BUILD
     else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnSwapX:", errorMessage, "is not defined!", NULL);
+      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+      sprintf(errorMessage, "register %d", regist);
+      moreInfoOnError("In function _swapRegs:", errorMessage, "is unsupported!", NULL);
     }
   #endif // PC_BUILD
 }
 
 
+void fnSwapX(uint16_t regist) {
+  _swapRegs(REGISTER_X, regist);
+}
+
 
 void fnSwapY(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
-    registerHeader_t savedRegisterHeader = globalRegister[REGISTER_Y];
-    globalRegister[REGISTER_Y] = globalRegister[regist];
-    globalRegister[regist] = savedRegisterHeader;
-  }
-
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnSwapY:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
+  _swapRegs(REGISTER_Y, regist);
 }
 
 
 void fnSwapZ(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
-    registerHeader_t savedRegisterHeader = globalRegister[REGISTER_Z];
-    globalRegister[REGISTER_Z] = globalRegister[regist];
-    globalRegister[regist] = savedRegisterHeader;
-  }
-
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnSwapZ:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
+  _swapRegs(REGISTER_Z, regist);
 }
 
 
 void fnSwapT(uint16_t regist) {
-  if(regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
-    registerHeader_t savedRegisterHeader = globalRegister[REGISTER_T];
-    globalRegister[REGISTER_T] = globalRegister[regist];
-    globalRegister[regist] = savedRegisterHeader;
-  }
-
-  #ifdef PC_BUILD
-    else {
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
-      moreInfoOnError("In function fnSwapT:", errorMessage, "is not defined!", NULL);
-    }
-  #endif // PC_BUILD
+  _swapRegs(REGISTER_T, regist);
 }
 
 
@@ -243,15 +242,16 @@ void fnGetStackSize(uint16_t unusedButMandatoryParameter) {
 
 
 void saveForUndo(void) {
-  if((calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_MIM) && thereIsSomethingToUndo) {
+  if(((calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_MIM) && thereIsSomethingToUndo) || calcMode == CM_NO_UNDO) {
     #ifdef DEBUGUNDO
-      printf(">>> saveForUndo; calcMode = %i, nothing stored as there is something to undo\n",calcMode);
+      if(thereIsSomethingToUndo) printf(">>> saveForUndo; calcMode = %i, nothing stored as there is something to undo\n",calcMode);
+      if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_MIM || calcMode == CM_NO_UNDO) printf(">>> saveForUndo; calcMode = %i, nothing stored, wrong mode\n",calcMode);
     #endif
     return;
   }
   #ifdef DEBUGUNDO
-    printf(">>> savedForUndo; saved; calcMode = %i\n",calcMode);
-    printf("Clearing TEMP_REGISTER_2_SAVED_STATS\n");
+    printf(">>> in saveForUndo, saving; calcMode = %i pre:thereIsSomethingToUndo = %i ;",calcMode, thereIsSomethingToUndo);
+    printf("Clearing TEMP_REGISTER_2_SAVED_STATS\n\n");
   #endif
 
   clearRegister(TEMP_REGISTER_2_SAVED_STATS); //clear it here for every saveForUndo call, and explicitly set it in fnEditMatrix() and fnEqSolvGraph() only

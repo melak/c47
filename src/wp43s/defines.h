@@ -518,7 +518,7 @@ typedef enum {
 #define RM_CEIL                                    5
 #define RM_FLOOR                                   6
 
-// Calc mode 4 bits
+// Calc mode 5 bits
 #define CM_NORMAL                                  0 // Normal operation
 #define CM_AIM                                     1 // Alpha input mode
 #define CM_NIM                                     2 // Numeric input mode
@@ -535,6 +535,7 @@ typedef enum {
 #define CM_EIM                                    13 // Equation imput mode
 #define CM_TIMER                                  14 // Timer application
 #define CM_GRAPH                                  15 // Plot graph mode
+#define CM_NO_UNDO                                16 // Running functions without undo affected
 
 // Next character in AIM 2 bits
 #define NC_NORMAL                                  0
@@ -696,6 +697,18 @@ typedef enum {
 #define LM_SUMS                                    4
 #define LM_SYSTEM_STATE                            5
 #define LM_REGISTERS_PARTIAL                       6
+
+// Screen updating mode
+#define SCRUPD_AUTO                             0x00
+#define SCRUPD_MANUAL_STATUSBAR                 0x01
+#define SCRUPD_MANUAL_STACK                     0x02
+#define SCRUPD_MANUAL_MENU                      0x04
+#define SCRUPD_MANUAL_SHIFT_STATUS              0x08
+//#define SCRUPD_SKIP_STATUSBAR_ONE_TIME          0x10
+#define SCRUPD_SKIP_STACK_ONE_TIME              0x20
+//#define SCRUPD_SKIP_MENU_ONE_TIME               0x40
+//#define SCRUPD_SHIFT_STATUS                     0x80
+#define SCRUPD_ONE_TIME_FLAGS                   0xf0
 
 // Statistical sums TODO: optimize size of SIGMA_N, _X, _Y, _XMIN, _XMAX, _YMIN, and _YMAX. Thus, saving 2×(7×60 - 4 - 6×16) = 640 bytes
 #define SUM_X                                      1
