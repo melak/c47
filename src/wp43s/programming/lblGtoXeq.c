@@ -226,10 +226,6 @@ void fnExecute(uint16_t label) {
     }
   }
   else {
-    while(currentSubroutineLevel > 0) {
-      fnReturn(0);
-    }
-    fnReturn(0); // 1 more time to clean local registers
     fnGoto(label);
     dynamicMenuItem = -1;
     if(lastErrorCode == ERROR_NONE) {

@@ -251,6 +251,7 @@
       displayBugScreen("In function addItemToBuffer: item should not be NOPARAM=7654!");
     }
     else {
+      screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
       currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;
       if(calcMode == CM_NORMAL && fnKeyInCatalog && isAlphabeticSoftmenu()) {
         fnAim(NOPARAM);
@@ -840,6 +841,7 @@
     bool_t done;
     char *strBase;
 
+    screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
     currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;
 
     if(calcMode == CM_NORMAL) {

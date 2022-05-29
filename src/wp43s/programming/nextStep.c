@@ -400,29 +400,31 @@ static void _bstInPem(void) {
   //  - firstDisplayedStep
   if(currentLocalStepNumber > 1) {
     if(firstDisplayedLocalStepNumber > 0 && currentLocalStepNumber <= firstDisplayedLocalStepNumber + 3) {
-      if(--firstDisplayedLocalStepNumber != 0) {
-        firstDisplayedStep = findPreviousStep(firstDisplayedStep);
-      }
+      --firstDisplayedLocalStepNumber;
     }
-
-    if(currentLocalStepNumber > 1) {
-      currentLocalStepNumber--;
-    }
+    currentLocalStepNumber--;
+  }
+  else if(currentLocalStepNumber == 1 && !pemCursorIsZerothStep) {
+    currentLocalStepNumber = 1;
+    firstDisplayedLocalStepNumber = 0;
+    pemCursorIsZerothStep = true;
   }
   else {
     uint16_t numberOfSteps = getNumberOfSteps();
     currentLocalStepNumber = numberOfSteps;
+    pemCursorIsZerothStep = false;
     if(numberOfSteps <= 6) {
       firstDisplayedLocalStepNumber = 0;
     }
     else {
       firstDisplayedLocalStepNumber = numberOfSteps - 6;
     }
-    defineFirstDisplayedStep();
   }
+  defineFirstDisplayedStep();
 }
 
 void fnBst(uint16_t unusedButMandatoryParameter) {
+  screenUpdatingMode = SCRUPD_AUTO;
   if(calcMode == CM_PEM) {
     if(aimBuffer[0] != 0) {
       if(getSystemFlag(FLAG_ALPHA)) pemCloseAlphaInput();
@@ -447,7 +449,12 @@ void fnBst(uint16_t unusedButMandatoryParameter) {
 static void _sstInPem(void) {
   uint16_t numberOfSteps = getNumberOfSteps();
 
-  if(currentLocalStepNumber < numberOfSteps) {
+  if(currentLocalStepNumber == 1 && pemCursorIsZerothStep) {
+    currentLocalStepNumber = 1;
+    firstDisplayedLocalStepNumber = 0;
+    pemCursorIsZerothStep = false;
+  }
+  else if(currentLocalStepNumber < numberOfSteps) {
     if(currentLocalStepNumber++ >= 3) {
       if(!programListEnd) {
         ++firstDisplayedLocalStepNumber;
@@ -466,12 +473,14 @@ static void _sstInPem(void) {
   else {
     currentLocalStepNumber = 1;
     firstDisplayedLocalStepNumber = 0;
+    pemCursorIsZerothStep = true;
   }
 
   defineFirstDisplayedStep();
 }
 
 void fnSst(uint16_t unusedButMandatoryParameter) {
+  screenUpdatingMode = SCRUPD_AUTO;
   if(calcMode == CM_PEM) {
     if(aimBuffer[0] != 0) {
       if(getSystemFlag(FLAG_ALPHA)) pemCloseAlphaInput();

@@ -35,6 +35,7 @@
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "screen.h"
+#include "store.h"
 #include <string.h>
 
 #include "wp43s.h"
@@ -2112,10 +2113,13 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnView(uint16_t regist) {
-  currentViewRegister = regist;
-  temporaryInformation = TI_VIEW;
-  if(programRunStop == PGM_RUNNING) {
-    refreshScreen();
-    fnPause(10);
+  if(regInRange(regist)) {
+    currentViewRegister = regist;
+    temporaryInformation = TI_VIEW;
+    if(programRunStop == PGM_RUNNING) {
+      refreshScreen();
+      fnPause(10);
+      temporaryInformation = TI_NO_INFO;
+    }
   }
 }

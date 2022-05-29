@@ -66,10 +66,6 @@
       }
     #endif // __APPLE__
 
-  #ifdef __MINGW64__
-    system("chcp 65001"); // Configure for UTF-8 output on the Windows console
-  #endif // __MINGW64__
-
     wp43sMemInBlocks = 0;
     gmpMemInBytes = 0;
     mp_set_memory_functions(allocGmp, reallocGmp, freeGmp);
@@ -104,7 +100,7 @@
 
     restoreCalc();
     //ramDump();
-    refreshScreen();
+    //refreshScreen();
 
     gdk_threads_add_timeout(SCREEN_REFRESH_PERIOD, refreshLcd, NULL); // refreshLcd is called every SCREEN_REFRESH_PERIOD ms
 

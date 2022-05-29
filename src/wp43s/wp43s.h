@@ -122,7 +122,7 @@
   extern bool_t                 lastProgramListEnd;
   extern bool_t                 programListEnd;
   extern bool_t                 serialIOIconEnabled;
-  extern bool_t                 neverUsed;
+  extern bool_t                 pemCursorIsZerothStep;
 
   extern realContext_t          ctxtReal4;    //   Limited digits: used for high speed internal calcs
   extern realContext_t          ctxtReal34;   //   34 digits
@@ -215,6 +215,7 @@
   extern uint8_t                programRunStop;
   extern uint8_t                lastKeyCode;
   extern uint8_t                entryStatus; // 0x01 for the entry flag, backed up to 0x02 for undo
+  extern uint8_t                screenUpdatingMode;
   extern uint8_t               *beginOfProgramMemory;
   extern uint8_t               *firstFreeProgramByte;
 

@@ -156,6 +156,10 @@ void fnEqCursorRight(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnEqCalc(uint16_t unusedButMandatoryParameter) {
+  #ifdef DEBUGUNDO
+    printf(">>> saveForUndo from fnEqCalc, calcMode = %i, something to undo (pre) = %i \n",calcMode, thereIsSomethingToUndo);
+  #endif
+  if(!thereIsSomethingToUndo && !CM_NO_UNDO) saveForUndo();
   parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
@@ -311,7 +315,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
     for(uint32_t i = 0; i < 7; ++i) {
       tmpPtr += ((*tmpPtr) & 0x80) ? 2 : 1;
       if(*tmpPtr == ':') {
-        inLabel = true;
+        inLabel = (startAt <= (i + 1));
         tmpVal = i;
         break;
       }
