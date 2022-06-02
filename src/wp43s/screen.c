@@ -2192,7 +2192,7 @@ void execTimerApp(uint16_t timerType) {
           screenUpdatingMode = (aimBuffer[0] == 0) ? SCRUPD_AUTO : SCRUPD_MANUAL_STACK;
         }
         else if(calcMode == CM_TIMER) {
-          screenUpdatingMode = SCRUPD_MANUAL_STACK;
+          screenUpdatingMode = SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS;
         }
 
         if(screenUpdatingMode == SCRUPD_AUTO) {
