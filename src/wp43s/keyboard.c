@@ -355,6 +355,10 @@
       else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
         int16_t item = determineFunctionKeyItem((char *)data);
 
+        if(shiftF || shiftG) {
+          screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+        }
+
         shiftF = false;
         shiftG = false;
         if(item != ITM_NOP && item != ITM_NULL) {
@@ -677,6 +681,7 @@
       }
       lastErrorCode = 0;
       shiftF = !shiftF;
+      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
     }
 
@@ -694,6 +699,7 @@
       }
       lastErrorCode = 0;
       shiftG = !shiftG;
+      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
     }
 
@@ -720,8 +726,16 @@
       result = (getSystemFlag(FLAG_MULTx) ? ITM_CROSS : ITM_DOT);
     }
 
+    if(shiftF || shiftG) {
+      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+    }
+
     shiftF = false;
     shiftG = false;
+
+    if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && (result == ITM_NOP || result == ITM_NULL)) {
+      result = ITM_LBL;
+    }
 
     return result;
   }
@@ -751,6 +765,9 @@
   #ifdef PC_BUILD
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
+      bool_t f = shiftF;
+      bool_t g = shiftG;
+
       if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
         setLastKeyCode(keyCode + 1);
       }
@@ -782,7 +799,7 @@
       }
 
       if(getSystemFlag(FLAG_USER)) {
-        int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (shiftG ? 2 : shiftF ? 1 : 0);
+        int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (g ? 2 : f ? 1 : 0);
         char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
         xcopy(tmpString, funcParam, stringByteLength(funcParam) + 1);
       }
@@ -796,6 +813,10 @@
         if(!keyActionProcessed) {
           showFunctionName(item, 1000); // 1000ms = 1s
         }
+      }
+      if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
+        shiftF = f;
+        shiftG = g;
       }
     }
 
@@ -895,7 +916,7 @@
       }
 
       if(getSystemFlag(FLAG_USER)) {
-        int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (shiftG ? 2 : shiftF ? 1 : 0);
+        int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (g ? 2 : f ? 1 : 0);
         char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
         xcopy(tmpString, funcParam, stringByteLength(funcParam) + 1);
       }
@@ -909,6 +930,10 @@
         if(!keyActionProcessed) {
           showFunctionName(item, 1000); // 1000ms = 1s
         }
+      }
+      if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
+        shiftF = f;
+        shiftG = g;
       }
     }
   #endif // DMCP_BUILD

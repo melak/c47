@@ -689,11 +689,11 @@ typedef enum {
 #define SCRUPD_MANUAL_STATUSBAR                 0x01
 #define SCRUPD_MANUAL_STACK                     0x02
 #define SCRUPD_MANUAL_MENU                      0x04
-//#define SCRUPD_RESERVED_3                       0x08
+#define SCRUPD_MANUAL_SHIFT_STATUS              0x08
 //#define SCRUPD_SKIP_STATUSBAR_ONE_TIME          0x10
 #define SCRUPD_SKIP_STACK_ONE_TIME              0x20
 //#define SCRUPD_SKIP_MENU_ONE_TIME               0x40
-//#define SCRUPD_RESERVED_7                       0x80
+//#define SCRUPD_SHIFT_STATUS                     0x80
 #define SCRUPD_ONE_TIME_FLAGS                   0xf0
 
 // Statistical sums TODO: optimize size of SIGMA_N, _X, _Y, _XMIN, _XMAX, _YMIN, and _YMAX. Thus, saving 2×(7×60 - 4 - 6×16) = 640 bytes
