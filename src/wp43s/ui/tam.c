@@ -403,7 +403,16 @@
           } else {
             tam.currentOperation = item;
             if(item == ITM_dddEL || item == ITM_dddIJ) {
-              reallyRunFunction(tamOperation(), NOPARAM);
+              switch(calcMode) {
+                case CM_MIM:
+                  mimRunFunction(tamOperation(), NOPARAM);
+                  break;
+                case CM_PEM:
+                  addStepInProgram(tamOperation());
+                  break;
+                default:
+                  reallyRunFunction(tamOperation(), NOPARAM);
+              }
               if(tam.mode) tamLeaveMode();
               hourGlassIconEnabled = false;
               return;
