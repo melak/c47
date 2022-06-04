@@ -306,10 +306,12 @@ static uint32_t _currentTime(void) {
 static void _antirewinder(uint32_t currTime) {
   if(currTime < timerStartTime) {
     timerValue += 86400000u - timerStartTime;
+    if(timerTotalTime > 0) timerTotalTime += 86400000u - timerStartTime;
     timerStartTime = 0u;
   }
   else if(currTime >= timerStartTime + 3600000u) {
     timerValue += 3600000u;
+    if(timerTotalTime > 0) timerTotalTime += 3600000u;
     timerStartTime += 3600000u;
   }
 }
@@ -508,8 +510,13 @@ void fnDotTimerApp(void) {
 
   fnUpTimerApp();
 
+  if(timerTotalTime > 0) {
+    timerTotalTime += msec - timerValue;
+  }
+  else {
+    timerTotalTime = msec;
+  }
   timerValue = 0;
-  timerTotalTime += msec;
   if(timerStartTime != TIMER_APP_STOPPED) {
     timerStartTime = _currentTime();
     fnTimerStart(TO_TIMER_APP, TO_TIMER_APP, TIMER_APP_PERIOD);
@@ -541,8 +548,13 @@ void fnPlusTimerApp(void) {
 
   fnUpTimerApp();
 
+  if(timerTotalTime > 0) {
+    timerTotalTime += msec - timerValue;
+  }
+  else {
+    timerTotalTime = msec;
+  }
   timerValue = 0;
-  timerTotalTime += msec;
   if(timerStartTime != TIMER_APP_STOPPED) {
     timerStartTime = _currentTime();
     fnTimerStart(TO_TIMER_APP, TO_TIMER_APP, TIMER_APP_PERIOD);
