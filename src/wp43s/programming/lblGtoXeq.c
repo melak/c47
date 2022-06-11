@@ -288,6 +288,7 @@ void fnReturn(uint16_t skip) {
     }
     currentLocalFlags = NULL;
     currentLocalRegisters = NULL;
+    pemCursorIsZerothStep = true;
   }
 }
 
