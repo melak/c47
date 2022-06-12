@@ -665,6 +665,9 @@
               if(tam.mode) tamLeaveMode();
               if(calcMode == CM_PEM) {
                 aimBuffer[0] = 0;
+                if(!programListEnd) {
+                  scrollPemBackwards();
+                }
               }
               runFunction(i);
               return;
