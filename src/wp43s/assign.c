@@ -326,13 +326,16 @@ void createMenu(const char *name) {
 
 
 void assignEnterAlpha(void) {
+#ifndef TESTSUITE_BUILD
   tam.alpha = true;
   setSystemFlag(FLAG_ALPHA);
   aimBuffer[0] = 0;
   calcModeAim(NOPARAM);
+#endif // TESTSUITE_BUILD
 }
 
 void assignLeaveAlpha(void) {
+#ifndef TESTSUITE_BUILD
   tam.alpha = false;
   clearSystemFlag(FLAG_ALPHA);
   if(softmenuStack[0].softmenuId == 1) { // MyAlpha
@@ -341,6 +344,7 @@ void assignLeaveAlpha(void) {
   #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
     calcModeNormalGui();
   #endif // PC_BUILD && (SCREEN_800X480 == 0)
+#endif // TESTSUITE_BUILD
 }
 
 
