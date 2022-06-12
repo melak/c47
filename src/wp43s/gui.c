@@ -1114,7 +1114,7 @@
     alphaCase = AC_UPPER;
     nextChar = NC_NORMAL;
 
-    if(!tam.mode) {
+    if(!tam.mode && calcMode != CM_ASSIGN) {
       calcMode = CM_AIM;
       liftStack();
 

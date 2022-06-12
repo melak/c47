@@ -205,7 +205,7 @@
 
 
   void showHideAlphaMode(void) {
-    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha) || (calcMode == CM_PEM && getSystemFlag(FLAG_ALPHA))) {
+    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha) || ((calcMode == CM_PEM || calcMode == CM_ASSIGN) && getSystemFlag(FLAG_ALPHA))) {
       if(alphaCase == AC_UPPER) {
         showString(STD_ALPHA, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
         setSystemFlag(FLAG_alphaCAP);

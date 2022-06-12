@@ -31,3 +31,7 @@ void assignToKey          (const char *data);
 
 void setUserKeyArgument   (uint16_t position, const char *name);
 void createMenu           (const char *name);
+
+void assignEnterAlpha     (void);
+void assignLeaveAlpha     (void);
+void assignGetName1       (void);
