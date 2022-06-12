@@ -33,6 +33,7 @@
 #include "registers.h"
 #include "screen.h"
 #include "softmenus.h"
+#include "sort.h"
 #include <string.h>
 
 #include "wp43s.h"
@@ -655,6 +656,33 @@
       int16_t value;
       if(tam.mode == TM_NEWMENU) {
         value = 1;
+      }
+      else if(tam.function == ITM_XEQ) {
+        value = findNamedVariable(buffer);
+        if(value == INVALID_VARIABLE) {
+          for(int i = 0; i < LAST_ITEM; ++i) {
+            if((indexOfItems[i].status & CAT_STATUS) == CAT_FNCT && compareString(buffer, indexOfItems[i].itemCatalogName, CMP_NAME) == 0) {
+              if(tam.mode) tamLeaveMode();
+              if(calcMode == CM_PEM) {
+                aimBuffer[0] = 0;
+                if(!programListEnd) {
+                  scrollPemBackwards();
+                }
+              }
+              runFunction(i);
+              return;
+            }
+          }
+          if(calcMode != CM_PEM) {
+            if(tam.mode) tamLeaveMode();
+            displayCalcErrorMessage(ERROR_FUNCTION_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+              sprintf(errorMessage, "string '%s' is neither a named label nor a function name", buffer);
+              moreInfoOnError("In function _tamProcessInput:", errorMessage, NULL, NULL);
+            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+            return;
+          }
+        }
       }
       else if(tam.mode == TM_LABEL || tam.mode == TM_SOLVE || (tam.mode == TM_KEY && tam.keyInputFinished)) {
         value = findNamedLabel(buffer);
