@@ -1115,6 +1115,7 @@
         firstDisplayedLocalStepNumber = fdLocalStepNumber;
         defineCurrentStep();
         defineFirstDisplayedStep();
+        defineCurrentProgramFromCurrentStep();
       }
     }
   }
