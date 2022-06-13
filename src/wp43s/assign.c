@@ -156,7 +156,18 @@ void updateAssignTamBuffer(void) {
   }
 
   tbPtr = stpcpy(tbPtr, " ");
-  if(itemToBeAssigned != 0 && shiftF) {
+  if(itemToBeAssigned != 0 && tam.alpha) {
+    tbPtr = stpcpy(tbPtr, STD_LEFT_SINGLE_QUOTE);
+    if(aimBuffer[0] == 0) {
+      tbPtr = stpcpy(tbPtr, "_");
+    }
+    else {
+      tbPtr = stpcpy(tbPtr, aimBuffer);
+      tbPtr = stpcpy(tbPtr, STD_RIGHT_SINGLE_QUOTE);
+    }
+    
+  }
+  else if(itemToBeAssigned != 0 && shiftF) {
     tbPtr = stpcpy(tbPtr, STD_SUP_f STD_CURSOR);
   }
   else if(itemToBeAssigned != 0 && shiftG) {
@@ -355,6 +366,9 @@ void assignGetName1(void) {
   else if(compareString(aimBuffer, "EXIT", CMP_NAME) == 0) {
     itemToBeAssigned = ITM_EXIT;
   }
+  /*else if(compareString(aimBuffer, "USER", CMP_NAME) == 0) {
+    itemToBeAssigned = ITM_USERMODE;
+  }
   else if(compareString(aimBuffer, STD_alpha, CMP_NAME) == 0) {
     itemToBeAssigned = ITM_AIM;
   }
@@ -363,9 +377,12 @@ void assignGetName1(void) {
   }
   else if(compareString(aimBuffer, "g", CMP_NAME) == 0) {
     itemToBeAssigned = ITM_SHIFTg;
-  }
+  }*/
   else if(aimBuffer[0] == 0 && alphaCase == AC_LOWER) {
     itemToBeAssigned = ITM_DOWN;
+  }
+  else if(aimBuffer[0] == 0) {
+    itemToBeAssigned = ITM_NULL;
   }
   else {
     itemToBeAssigned = ASSIGN_CLEAR;
@@ -408,5 +425,69 @@ void assignGetName1(void) {
         }
       }
     }
+  }
+}
+
+static bool_t _assignToKey(int16_t keyFunc) {
+  int keyStateCode = (previousCalcMode) == CM_AIM ? 3 : 0;
+
+  for(int i = 0; i < 3; ++i) {
+    for(int j = 0; j < 37; ++j) {
+      const calcKey_t *key = (getSystemFlag(FLAG_USER) ? kbd_usr : kbd_std) + j;
+      int16_t kf = 0;
+      switch(keyStateCode + i) {
+        case 5: kf = key->gShiftedAim; break;
+        case 4: kf = key->fShiftedAim; break;
+        case 3: kf = key->primaryAim;  break;
+        case 2: kf = key->gShifted;    break;
+        case 1: kf = key->fShifted;    break;
+        case 0: kf = key->primary;     break;
+      }
+      if(keyFunc == kf && (!getSystemFlag(FLAG_USER) || getNthString((uint8_t *)userKeyLabel, j * 6 + keyStateCode + i) == 0)) {
+        char kc[4] = {};
+        kc[0] = (j / 10) + '0';
+        kc[1] = (j % 10) + '0';
+        kc[2] = 0;
+        assignToKey(kc);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+void assignGetName2(void) {
+  bool_t result = false;
+  if(compareString(aimBuffer, "ENTER", CMP_NAME) == 0) {
+    result = _assignToKey(ITM_ENTER);
+  }
+  else if(compareString(aimBuffer, "EXIT", CMP_NAME) == 0) {
+    result = _assignToKey(ITM_EXIT);
+  }
+  /*else if(compareString(aimBuffer, "USER", CMP_NAME) == 0) {
+    result = _assignToKey(ITM_USERMODE);
+  }
+  else if(compareString(aimBuffer, STD_alpha, CMP_NAME) == 0) {
+    result = _assignToKey(ITM_AIM);
+  }
+  else if(compareString(aimBuffer, "f", CMP_NAME) == 0) {
+    result = _assignToKey(ITM_SHIFTf);
+  }
+  else if(compareString(aimBuffer, "g", CMP_NAME) == 0) {
+    result = _assignToKey(ITM_SHIFTg);
+  }*/
+  else if(aimBuffer[0] == 0 && alphaCase == AC_LOWER) {
+    result = _assignToKey(ITM_DOWN);
+  }
+
+  calcMode = previousCalcMode;
+  shiftF = shiftG = false;
+  refreshScreen();
+
+  if(!result) {
+    displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    #ifdef PC_BUILD
+      moreInfoOnError("In function assignGetName2:", aimBuffer, "is invalid name.", NULL);
+    #endif
   }
 }

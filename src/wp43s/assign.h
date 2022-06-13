@@ -35,3 +35,4 @@ void createMenu           (const char *name);
 void assignEnterAlpha     (void);
 void assignLeaveAlpha     (void);
 void assignGetName1       (void);
+void assignGetName2       (void);
