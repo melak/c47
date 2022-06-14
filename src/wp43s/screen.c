@@ -2125,7 +2125,7 @@ void execTimerApp(uint16_t timerType) {
       updateAssignTamBuffer();
     }
 
-    if(calcMode != CM_ASSIGN || itemToBeAssigned == 0) {
+    if(calcMode != CM_ASSIGN || itemToBeAssigned == 0 || tam.alpha) {
       if(shiftF) {
         showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true); // f is pixel 4+8+3 wide
       }

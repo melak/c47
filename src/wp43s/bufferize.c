@@ -818,7 +818,7 @@
         }
       }
 
-      else if(calcMode != CM_AIM && calcMode != CM_EIM && (item >= ITM_A && item <= ITM_F)) {
+      else if(calcMode != CM_AIM && calcMode != CM_EIM && calcMode != CM_ASSIGN && (item >= ITM_A && item <= ITM_F)) {
         // We are not in NIM, but should enter NIM - this should be handled here
         // unlike digits 0 to 9 which are handled by processKeyAction
         addItemToNimBuffer(item);
