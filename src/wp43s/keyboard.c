@@ -2467,7 +2467,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuDown();
         }
-        else if(tam.alpha && alphaCase == AC_UPPER) {
+        else if(tam.alpha && (itemToBeAssigned == 0 || tam.mode == TM_NEWMENU) && alphaCase == AC_UPPER) {
           alphaCase = AC_LOWER;
         }
         else if(tam.alpha && itemToBeAssigned == 0 && aimBuffer[0] == 0) {
