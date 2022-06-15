@@ -658,7 +658,7 @@
         value = 1;
       }
       else if(tam.function == ITM_XEQ) {
-        value = findNamedVariable(buffer);
+        value = findNamedLabel(buffer);
         if(value == INVALID_VARIABLE) {
           for(int i = 0; i < LAST_ITEM; ++i) {
             if((indexOfItems[i].status & CAT_STATUS) == CAT_FNCT && compareString(buffer, indexOfItems[i].itemCatalogName, CMP_NAME) == 0) {
