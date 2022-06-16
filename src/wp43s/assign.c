@@ -15,7 +15,9 @@
  */
 
 #include "assign.h"
+#include "bufferize.h"
 #include "charString.h"
+#include "defines.h"
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
@@ -262,7 +264,8 @@ void assignToKey(const char *data) {
       case 3: key->primaryAim  = stdKey->primaryAim;  break;
       case 2: key->gShifted    = stdKey->gShifted;    break;
       case 1: key->fShifted    = stdKey->fShifted;    break;
-      case 0: key->primary     = stdKey->primary;     break;
+      case 0: key->primary     = stdKey->primary;
+              key->primaryTam  = stdKey->primaryTam;
     }
   }
   else {
@@ -272,7 +275,27 @@ void assignToKey(const char *data) {
       case 3: key->primaryAim  = tmpMenuItem.item; break;
       case 2: key->gShifted    = tmpMenuItem.item; break;
       case 1: key->fShifted    = tmpMenuItem.item; break;
-      case 0: key->primary     = tmpMenuItem.item; break;
+      case 0: key->primary     = tmpMenuItem.item;
+              if(keyCode == 12 || keyCode >= 15) {
+                bool_t alsoTam = false;
+                switch(tmpMenuItem.item) {
+                  case ITM_ENTER:
+                  case ITM_EXIT:
+                  case ITM_UP:
+                  case ITM_DOWN:
+                  case ITM_BACKSPACE:
+                    alsoTam = true;
+                    break;
+                  default:
+                    alsoTam = (indexOfItems[abs(tmpMenuItem.item)].func == addItemToBuffer);
+                }
+                if(alsoTam) {
+                  key->primaryTam = tmpMenuItem.item;
+                }
+                else {
+                  key->primaryTam = ITM_NULL;
+                }
+              }
     }
   }
 
