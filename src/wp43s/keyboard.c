@@ -1497,11 +1497,6 @@
                     case ITM_SHIFTf:
                     case ITM_SHIFTg:
                     case ITM_USERMODE:
-                    case -MNU_CATALOG:
-                    case -MNU_CHARS:
-                    case -MNU_PROGS:
-                    case -MNU_VARS:
-                    case -MNU_MENUS:
                     case ITM_EXIT:
                     case ITM_BACKSPACE:
                       break;
