@@ -342,6 +342,7 @@ void assignEnterAlpha(void) {
   setSystemFlag(FLAG_ALPHA);
   aimBuffer[0] = 0;
   calcModeAim(NOPARAM);
+  numberOfTamMenusToPop = 0;
 #endif // TESTSUITE_BUILD
 }
 
@@ -349,6 +350,9 @@ void assignLeaveAlpha(void) {
 #ifndef TESTSUITE_BUILD
   tam.alpha = false;
   clearSystemFlag(FLAG_ALPHA);
+  while(numberOfTamMenusToPop--) {
+    popSoftmenu();
+  }
   if(softmenuStack[0].softmenuId == 1) { // MyAlpha
     softmenuStack[0].softmenuId = 0; // MyMenu
   }

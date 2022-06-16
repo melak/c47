@@ -827,8 +827,6 @@
   #ifdef PC_BUILD
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
-      bool_t f = shiftF;
-      bool_t g = shiftG;
 
       asnKey[0] = ((uint8_t *)data)[0];
       asnKey[1] = ((uint8_t *)data)[1];
@@ -852,6 +850,8 @@
         shiftF = false;
         shiftG = true;
       }
+      bool_t f = shiftF;
+      bool_t g = shiftG;
       int16_t item = determineItem((char *)data);
       if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
         if((item == ITM_RS || item == ITM_EXIT) && !getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
@@ -1497,11 +1497,6 @@
                     case ITM_SHIFTf:
                     case ITM_SHIFTg:
                     case ITM_USERMODE:
-                    case -MNU_CATALOG:
-                    case -MNU_CHARS:
-                    case -MNU_PROGS:
-                    case -MNU_VARS:
-                    case -MNU_MENUS:
                     case ITM_EXIT:
                     case ITM_BACKSPACE:
                       break;
