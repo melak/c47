@@ -17,6 +17,7 @@
 #include "wp43s.h"
 
 #include "config.h"
+#include "flags.h"
 #include "items.h"
 #include "keyboard.h"
 #include "longIntegerType.h"
@@ -558,6 +559,15 @@ int32_t                SAVED_SIGMA_LAct;
 
         if(!lcd_get_buf_cleared()) {
           lcd_forced_refresh(); // Just redraw from LCD buffer
+        }
+
+        if(getSystemFlag(FLAG_AUTXEQ)) { // Run the program if AUTXEQ is set
+          clearSystemFlag(FLAG_AUTXEQ);
+          if(programRunStop != PGM_RUNNING) {
+            screenUpdatingMode = SCRUPD_AUTO;
+            runFunction(ITM_RS);
+          }
+          refreshScreen();
         }
       }
 
