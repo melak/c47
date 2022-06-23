@@ -49,7 +49,6 @@
       }
       showHideAlphaMode();
       showHideHourGlass();
-      showHidePgmBegin();
       showHideWatch();
       showHideSerialIO();
       showHidePrinter();
@@ -236,14 +235,6 @@
         if(hourGlassIconEnabled) {
           showGlyph(STD_HOURGLASS, &standardFont, calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? 160-20 : X_HOURGLASS, 0, vmNormal, true, false); // is 0+11+3 pixel wide //Shift the hourglass to a visible part of the status bar
         }
-    }
-  }
-
-
-
-  void showHidePgmBegin(void) {
-    if(currentStep.any == beginOfCurrentProgram.any) {
-      showGlyph(STD_PGM_BEGIN, &standardFont, X_PROGRAM_BEGIN, 0, vmNormal, true, false); // is 0+10+3 pixel wide
     }
   }
 

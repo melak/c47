@@ -71,10 +71,6 @@
    */
   void showHideHourGlass      (void);
   /**
-   * Shows or hides the program begin icon in the status bar.
-   */
-  void showHidePgmBegin       (void);
-  /**
    * Shows or hides the watch icon in the status bar.
    */
   void showHideWatch          (void);
