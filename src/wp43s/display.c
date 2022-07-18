@@ -1048,6 +1048,7 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
   int16_t  sign, lessEqualGreater;
   uint64_t intPart, numer, denom;
   int16_t  u, insertAt, endingZero, gap;
+  char prefix[7];
 
   //printf("regist = "); printRegisterToConsole(regist); printf("\n");
   fraction(regist, &sign, &intPart, &numer, &denom, &lessEqualGreater);
@@ -1175,14 +1176,29 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
   } while(denom != 0);
 
   // Comparison sign
-       if(lessEqualGreater == -1) strcat(displayString, STD_SPACE_PUNCTUATION "<" STD_SPACE_HAIR);
-  else if(lessEqualGreater ==  0) strcat(displayString, STD_SPACE_PUNCTUATION "=" STD_SPACE_HAIR);
-  else if(lessEqualGreater ==  1) strcat(displayString, STD_SPACE_PUNCTUATION ">" STD_SPACE_HAIR);
-  else {
-    strcat(displayString, STD_SPACE_PUNCTUATION "?");
-    sprintf(errorMessage, "In function fractionToDisplayString: %d is an unexpected value for lessEqualGreater!", lessEqualGreater);
-    displayBugScreen(errorMessage);
+  if(getSystemFlag(FLAG_FRCSRN)) {
+         if(lessEqualGreater == -1) sprintf(prefix, "%c" STD_SPACE_PUNCTUATION ">" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
+    else if(lessEqualGreater ==  0) sprintf(prefix, "%c" STD_SPACE_PUNCTUATION "=" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
+    else if(lessEqualGreater ==  1) sprintf(prefix, "%c" STD_SPACE_PUNCTUATION "<" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
+    else {
+      strcpy(prefix, "?" STD_SPACE_PUNCTUATION);
+      sprintf(errorMessage, "In function fractionToDisplayString: %d is an unexpected value for lessEqualGreater!", lessEqualGreater);
+      displayBugScreen(errorMessage);
+    }
   }
+  else {
+         if(lessEqualGreater == -1) sprintf(prefix, ">" STD_SPACE_PUNCTUATION);
+    else if(lessEqualGreater ==  0) prefix[0] = 0;
+    else if(lessEqualGreater ==  1) sprintf(prefix, "<" STD_SPACE_PUNCTUATION);
+    else {
+      strcpy(prefix, "?" STD_SPACE_PUNCTUATION);
+      sprintf(errorMessage, "In function fractionToDisplayString: %d is an unexpected value for lessEqualGreater!", lessEqualGreater);
+      displayBugScreen(errorMessage);
+    }
+  }
+
+ xcopy(displayString + strlen(prefix), displayString, strlen(displayString) + 1);
+ xcopy(displayString, prefix, strlen(prefix));
 }
 
 
