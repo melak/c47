@@ -18,6 +18,7 @@
  * \file wp43s-gtk.c
  ***********************************************/
 
+#include "flags.h"
 #include "gui.h"
 #include "items.h"
 #include "keyboard.h"
@@ -108,6 +109,15 @@
     fnTimerConfig(TO_TIMER_APP, execTimerApp, 0);
 //--fnTimerConfig(TO_SHOW_NOP, execNOPTimeout, TO_SHOW_NOP);
     gdk_threads_add_timeout(5, refreshTimer, NULL);
+
+    if(getSystemFlag(FLAG_AUTXEQ)) {
+      clearSystemFlag(FLAG_AUTXEQ);
+      if(programRunStop != PGM_RUNNING) {
+        screenUpdatingMode = SCRUPD_AUTO;
+        runFunction(ITM_RS);
+      }
+      refreshScreen();
+    }
 
     gtk_main();
 

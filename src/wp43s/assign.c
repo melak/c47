@@ -17,10 +17,13 @@
 #include "assign.h"
 #include "charString.h"
 #include "error.h"
+#include "flags.h"
 #include "fonts.h"
+#include "gui.h"
 #include "items.h"
 #include "memory.h"
 #include "programming/flash.h"
+#include "programming/manage.h"
 #include "registers.h"
 #include "screen.h"
 #include "softmenus.h"
@@ -99,7 +102,22 @@ void updateAssignTamBuffer(void) {
   tbPtr = stpcpy(tbPtr, "ASSIGN ");
 
   if(itemToBeAssigned == 0) {
-    tbPtr = stpcpy(tbPtr, "_");
+    if(tam.alpha) {
+      tbPtr = stpcpy(tbPtr, STD_LEFT_SINGLE_QUOTE);
+      if(aimBuffer[0] == 0) {
+        tbPtr = stpcpy(tbPtr, "_");
+      }
+      else {
+        tbPtr = stpcpy(tbPtr, aimBuffer);
+        tbPtr = stpcpy(tbPtr, STD_RIGHT_SINGLE_QUOTE);
+      }
+    }
+    else {
+      tbPtr = stpcpy(tbPtr, "_");
+    }
+  }
+  else if(itemToBeAssigned == ASSIGN_CLEAR) {
+    tbPtr = stpcpy(tbPtr, "NULL");
   }
   else if(itemToBeAssigned >= ASSIGN_LABELS) {
     if(labelList[itemToBeAssigned - ASSIGN_LABELS].program > 0) { // RAM
@@ -133,15 +151,23 @@ void updateAssignTamBuffer(void) {
   else if(indexOfItems[itemToBeAssigned].itemCatalogName[0] == 0) {
     tbPtr = stpcpy(tbPtr, indexOfItems[itemToBeAssigned].itemSoftmenuName);
   }
-  else if(itemToBeAssigned == ITM_ENTER) {
-    tbPtr = stpcpy(tbPtr, "NULL");
-  }
   else {
     tbPtr = stpcpy(tbPtr, indexOfItems[itemToBeAssigned].itemCatalogName);
   }
 
   tbPtr = stpcpy(tbPtr, " ");
-  if(itemToBeAssigned != 0 && shiftF) {
+  if(itemToBeAssigned != 0 && tam.alpha) {
+    tbPtr = stpcpy(tbPtr, STD_LEFT_SINGLE_QUOTE);
+    if(aimBuffer[0] == 0) {
+      tbPtr = stpcpy(tbPtr, "_");
+    }
+    else {
+      tbPtr = stpcpy(tbPtr, aimBuffer);
+      tbPtr = stpcpy(tbPtr, STD_RIGHT_SINGLE_QUOTE);
+    }
+    
+  }
+  else if(itemToBeAssigned != 0 && shiftF) {
     tbPtr = stpcpy(tbPtr, STD_SUP_f STD_CURSOR);
   }
   else if(itemToBeAssigned != 0 && shiftG) {
@@ -157,7 +183,11 @@ void updateAssignTamBuffer(void) {
 static void _assignItem(userMenuItem_t *menuItem) {
   const uint8_t *lblPtr = NULL;
   uint32_t l = 0;
-  if(itemToBeAssigned >= ASSIGN_LABELS) {
+  if(itemToBeAssigned == ASSIGN_CLEAR) {
+    menuItem->item            = ITM_NULL;
+    menuItem->argumentName[0] = 0;
+  }
+  else if(itemToBeAssigned >= ASSIGN_LABELS) {
     if(labelList[itemToBeAssigned - ASSIGN_LABELS].program > 0) {
       lblPtr                  = labelList[itemToBeAssigned - ASSIGN_LABELS].labelPointer.ram;
       menuItem->item          = ITM_XEQ;
@@ -181,10 +211,6 @@ static void _assignItem(userMenuItem_t *menuItem) {
     menuItem->item            = -MNU_DYNAMIC;
     xcopy(menuItem->argumentName, (char *)lblPtr, stringByteLength((char *)lblPtr));
     lblPtr                    = NULL;
-  }
-  else if(itemToBeAssigned == ITM_ENTER) {
-    menuItem->item            = ITM_NULL;
-    menuItem->argumentName[0] = 0;
   }
   else {
     menuItem->item            = itemToBeAssigned;
@@ -305,5 +331,167 @@ void createMenu(const char *name) {
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function fnAssign:", "the menu", name, "does not follow the naming convention");
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+}
+
+
+
+void assignEnterAlpha(void) {
+#ifndef TESTSUITE_BUILD
+  tam.alpha = true;
+  setSystemFlag(FLAG_ALPHA);
+  aimBuffer[0] = 0;
+  calcModeAim(NOPARAM);
+  numberOfTamMenusToPop = 0;
+#endif // TESTSUITE_BUILD
+}
+
+void assignLeaveAlpha(void) {
+#ifndef TESTSUITE_BUILD
+  tam.alpha = false;
+  clearSystemFlag(FLAG_ALPHA);
+  while(numberOfTamMenusToPop--) {
+    popSoftmenu();
+  }
+  if(softmenuStack[0].softmenuId == 1) { // MyAlpha
+    softmenuStack[0].softmenuId = 0; // MyMenu
+  }
+  #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
+    calcModeNormalGui();
+  #endif // PC_BUILD && (SCREEN_800X480 == 0)
+#endif // TESTSUITE_BUILD
+}
+
+
+void assignGetName1(void) {
+  if(compareString(aimBuffer, "ENTER", CMP_NAME) == 0) {
+    itemToBeAssigned = ITM_ENTER;
+  }
+  else if(compareString(aimBuffer, "EXIT", CMP_NAME) == 0) {
+    itemToBeAssigned = ITM_EXIT;
+  }
+  /*else if(compareString(aimBuffer, "USER", CMP_NAME) == 0) {
+    itemToBeAssigned = ITM_USERMODE;
+  }
+  else if(compareString(aimBuffer, STD_alpha, CMP_NAME) == 0) {
+    itemToBeAssigned = ITM_AIM;
+  }
+  else if(compareString(aimBuffer, "f", CMP_NAME) == 0) {
+    itemToBeAssigned = ITM_SHIFTf;
+  }
+  else if(compareString(aimBuffer, "g", CMP_NAME) == 0) {
+    itemToBeAssigned = ITM_SHIFTg;
+  }*/
+  else if(aimBuffer[0] == 0 && alphaCase == AC_LOWER) {
+    itemToBeAssigned = ITM_DOWN;
+  }
+  else if(aimBuffer[0] == 0) {
+    itemToBeAssigned = ITM_NULL;
+  }
+  else {
+    itemToBeAssigned = ASSIGN_CLEAR;
+
+    // user-defined menus
+    for(int i = 0; i < numberOfUserMenus; ++i) {
+      if(compareString(aimBuffer, userMenus[i].menuName, CMP_NAME) == 0) {
+        itemToBeAssigned = ASSIGN_USER_MENU - i;
+        break;
+      }
+    }
+
+    // preset menus
+    if(itemToBeAssigned == ASSIGN_CLEAR) {
+      for(int i = 0; softmenu[i].menuItem != 0; ++i) {
+        if(compareString(aimBuffer, indexOfItems[-softmenu[i].menuItem].itemCatalogName, CMP_NAME) == 0) {
+          itemToBeAssigned = softmenu[i].menuItem;
+          break;
+        }
+      }
+    }
+
+    // programs
+    if(itemToBeAssigned == ASSIGN_CLEAR) {
+      itemToBeAssigned = findNamedLabel(aimBuffer);
+      if(itemToBeAssigned == INVALID_VARIABLE) {
+        itemToBeAssigned = ASSIGN_CLEAR;
+      }
+      else {
+        itemToBeAssigned = itemToBeAssigned - FIRST_LABEL + ASSIGN_LABELS;
+      }
+    }
+
+    // functions
+    if(itemToBeAssigned == ASSIGN_CLEAR) {
+      for(int i = 0; i < LAST_ITEM; ++i) {
+        if((indexOfItems[i].status & CAT_STATUS) == CAT_FNCT && compareString(aimBuffer, indexOfItems[i].itemCatalogName, CMP_NAME) == 0) {
+          itemToBeAssigned = i;
+          break;
+        }
+      }
+    }
+  }
+}
+
+static bool_t _assignToKey(int16_t keyFunc) {
+  int keyStateCode = (previousCalcMode) == CM_AIM ? 3 : 0;
+
+  for(int i = 0; i < 3; ++i) {
+    for(int j = 0; j < 37; ++j) {
+      const calcKey_t *key = (getSystemFlag(FLAG_USER) ? kbd_usr : kbd_std) + j;
+      int16_t kf = 0;
+      switch(keyStateCode + i) {
+        case 5: kf = key->gShiftedAim; break;
+        case 4: kf = key->fShiftedAim; break;
+        case 3: kf = key->primaryAim;  break;
+        case 2: kf = key->gShifted;    break;
+        case 1: kf = key->fShifted;    break;
+        case 0: kf = key->primary;     break;
+      }
+      if(keyFunc == kf && (!getSystemFlag(FLAG_USER) || getNthString((uint8_t *)userKeyLabel, j * 6 + keyStateCode + i) == 0)) {
+        char kc[4] = {};
+        kc[0] = (j / 10) + '0';
+        kc[1] = (j % 10) + '0';
+        kc[2] = 0;
+        assignToKey(kc);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+void assignGetName2(void) {
+  bool_t result = false;
+  if(compareString(aimBuffer, "ENTER", CMP_NAME) == 0) {
+    result = _assignToKey(ITM_ENTER);
+  }
+  else if(compareString(aimBuffer, "EXIT", CMP_NAME) == 0) {
+    result = _assignToKey(ITM_EXIT);
+  }
+  /*else if(compareString(aimBuffer, "USER", CMP_NAME) == 0) {
+    result = _assignToKey(ITM_USERMODE);
+  }
+  else if(compareString(aimBuffer, STD_alpha, CMP_NAME) == 0) {
+    result = _assignToKey(ITM_AIM);
+  }
+  else if(compareString(aimBuffer, "f", CMP_NAME) == 0) {
+    result = _assignToKey(ITM_SHIFTf);
+  }
+  else if(compareString(aimBuffer, "g", CMP_NAME) == 0) {
+    result = _assignToKey(ITM_SHIFTg);
+  }*/
+  else if(aimBuffer[0] == 0 && alphaCase == AC_LOWER) {
+    result = _assignToKey(ITM_DOWN);
+  }
+
+  calcMode = previousCalcMode;
+  shiftF = shiftG = false;
+  refreshScreen();
+
+  if(!result) {
+    displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    #ifdef PC_BUILD
+      moreInfoOnError("In function assignGetName2:", aimBuffer, "is invalid name.", NULL);
+    #endif
   }
 }

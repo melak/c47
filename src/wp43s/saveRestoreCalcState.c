@@ -31,6 +31,7 @@
 #include "programming/flash.h"
 #include "programming/lblGtoXeq.h"
 #include "programming/manage.h"
+#include "programming/nextStep.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "screen.h"
@@ -575,6 +576,10 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         dynamicMenuItem = -1;
         fnGotoDot(-(currentLocalStepNumber + abs(programList[currentProgramNumber - 1].step) - 1));
       }
+      defineCurrentStep();
+      defineFirstDisplayedStep();
+      defineCurrentProgramFromCurrentStep();
+
       //defineCurrentLocalRegisters();
 
       if(temporaryInformation==TI_SHOW_REGISTER) {

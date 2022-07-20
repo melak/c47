@@ -294,6 +294,40 @@
       }
     }
 
+    static void processAimInput(int16_t item) {
+      if(alphaCase == AC_LOWER && (ITM_A <= item && item <= ITM_Z)) {
+        addItemToBuffer(item + 26);
+        keyActionProcessed = true;
+      }
+
+      else if(alphaCase == AC_LOWER && (ITM_ALPHA <= item && item <= ITM_OMEGA)) {
+        addItemToBuffer(item + 36);
+        keyActionProcessed = true;
+      }
+
+      else if(item == ITM_DOWN_ARROW) {
+        nextChar = NC_SUBSCRIPT;
+        keyActionProcessed = true;
+      }
+
+      else if(item == ITM_UP_ARROW) {
+        nextChar = NC_SUPERSCRIPT;
+        keyActionProcessed = true;
+      }
+
+      else if(indexOfItems[item].func == addItemToBuffer) {
+        addItemToBuffer(item);
+        keyActionProcessed = true;
+      }
+
+      if(keyActionProcessed) {
+        refreshScreen();
+      }
+    }
+
+
+  uint8_t asnKey[4] = {0, 0, 0, 0};
+
 
   #ifdef PC_BUILD
     void btnFnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
@@ -312,6 +346,10 @@
   #ifdef DMCP_BUILD
     void btnFnPressed(void *data) {
   #endif // DMCP_BUILD
+
+      asnKey[0] = ((uint8_t *)data)[0];
+      asnKey[1] = 0;
+
       if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
         setLastKeyCode((*((char *)data) - '0') + 37);
       }
@@ -327,7 +365,7 @@
         // not processed here
         return;
       }
-      if(calcMode == CM_ASSIGN && itemToBeAssigned != 0) {
+      if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && !(tam.alpha && tam.mode != TM_NEWMENU)) {
         int16_t item = determineFunctionKeyItem((char *)data);
 
         switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
@@ -407,6 +445,61 @@
 
 
 
+  static bool_t _assignToMenu(uint8_t *data) {
+    switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
+      case MNU_MyMenu:
+        assignToMyMenu((*data - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
+        calcMode = previousCalcMode;
+        shiftF = shiftG = false;
+        _closeCatalog();
+        refreshScreen();
+        screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
+        return true;
+      case MNU_MyAlpha:
+        assignToMyAlpha((*data - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
+        calcMode = previousCalcMode;
+        shiftF = shiftG = false;
+        _closeCatalog();
+        refreshScreen();
+        screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
+        return true;
+      case MNU_DYNAMIC:
+        if(itemToBeAssigned < 0) {
+          displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          #ifdef PC_BUILD
+            moreInfoOnError("In function btnFnReleased:", "cannot assign submenu", indexOfItems[-itemToBeAssigned].itemCatalogName, "in user-created menu.");
+          #endif
+        }
+        else {
+          assignToUserMenu((*data - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
+        }
+        calcMode = previousCalcMode;
+        shiftF = shiftG = false;
+        _closeCatalog();
+        refreshScreen();
+        screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
+        return true;
+      case MNU_CATALOG:
+      case MNU_CHARS:
+      case MNU_PROGS:
+      case MNU_VARS:
+      case MNU_MENUS:
+        screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
+        return false;
+      default:
+        displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        #ifdef PC_BUILD
+          moreInfoOnError("In function btnFnReleased:", "the menu", indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemCatalogName, "is write-protected.");
+        #endif
+        calcMode = previousCalcMode;
+        shiftF = shiftG = false;
+        _closeCatalog();
+        refreshScreen();
+        screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
+        return true;
+    }
+  }
+
   #ifdef PC_BUILD
     void btnFnReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
   #endif // PC_BUILD
@@ -454,58 +547,9 @@
         return;
       }
 
-      if(calcMode == CM_ASSIGN && itemToBeAssigned != 0) {
-        switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
-          case MNU_MyMenu:
-            assignToMyMenu((*((uint8_t *)data) - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
-            calcMode = previousCalcMode;
-            shiftF = shiftG = false;
-            _closeCatalog();
-            refreshScreen();
-            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
-            return;
-          case MNU_MyAlpha:
-            assignToMyAlpha((*((uint8_t *)data) - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
-            calcMode = previousCalcMode;
-            shiftF = shiftG = false;
-            _closeCatalog();
-            refreshScreen();
-            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
-            return;
-          case MNU_DYNAMIC:
-            if(itemToBeAssigned < 0) {
-              displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-              #ifdef PC_BUILD
-                moreInfoOnError("In function btnFnReleased:", "cannot assign submenu", indexOfItems[-itemToBeAssigned].itemCatalogName, "in user-created menu.");
-              #endif
-            }
-            else {
-              assignToUserMenu((*((uint8_t *)data) - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
-            }
-            calcMode = previousCalcMode;
-            shiftF = shiftG = false;
-            _closeCatalog();
-            refreshScreen();
-            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
-            return;
-          case MNU_CATALOG:
-          case MNU_CHARS:
-          case MNU_PROGS:
-          case MNU_VARS:
-          case MNU_MENUS:
-            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
-            break;
-          default:
-            displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-            #ifdef PC_BUILD
-              moreInfoOnError("In function btnFnReleased:", "the menu", indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemCatalogName, "is write-protected.");
-            #endif
-            calcMode = previousCalcMode;
-            shiftF = shiftG = false;
-            _closeCatalog();
-            refreshScreen();
-            screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
-            return;
+      if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && !(tam.alpha && tam.mode != TM_NEWMENU)) {
+        if(_assignToMenu((uint8_t *)data)) {
+          return;
         }
       }
       if(showFunctionNameItem != 0) {
@@ -625,7 +669,7 @@
             if(calcMode == CM_AIM && !isAlphabeticSoftmenu()) {
               closeAim();
             }
-            if(tam.alpha) {
+            if(tam.alpha && calcMode != CM_ASSIGN && tam.mode != TM_NEWMENU) {
               tamLeaveMode();
             }
 
@@ -641,7 +685,27 @@
                 programRunStop = PGM_STOPPED;
               }
               if(calcMode == CM_ASSIGN && itemToBeAssigned == 0 && item != ITM_NOP) {
-                itemToBeAssigned = item;
+                if(tam.alpha) {
+                  processAimInput(item);
+                  if(stringGlyphLength(aimBuffer) > 6) {
+                    assignLeaveAlpha();
+                    assignGetName1();
+                  }
+                }
+                else if(item == ITM_AIM) { // in case α is already assigned
+                  assignEnterAlpha();
+                  keyActionProcessed = true;
+                }
+                else {
+                  itemToBeAssigned = item;
+                }
+              }
+              else if(calcMode == CM_ASSIGN && tam.alpha && tam.mode != TM_NEWMENU && item != ITM_NOP) {
+                processAimInput(item);
+                if(stringGlyphLength(aimBuffer) > 6) {
+                  assignLeaveAlpha();
+                  assignGetName2();
+                }
               }
               else {
                 runFunction(item);
@@ -760,13 +824,13 @@
     }
   #endif // DMCP_BUILD
 
-
-
   #ifdef PC_BUILD
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
-      bool_t f = shiftF;
-      bool_t g = shiftG;
+
+      asnKey[0] = ((uint8_t *)data)[0];
+      asnKey[1] = ((uint8_t *)data)[1];
+      asnKey[2] = 0;
 
       if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
         setLastKeyCode(keyCode + 1);
@@ -786,6 +850,8 @@
         shiftF = false;
         shiftG = true;
       }
+      bool_t f = shiftF;
+      bool_t g = shiftG;
       int16_t item = determineItem((char *)data);
       if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
         if((item == ITM_RS || item == ITM_EXIT) && !getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
@@ -894,6 +960,10 @@
       int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
       bool_t f = shiftF;
       bool_t g = shiftG;
+
+      asnKey[0] = ((uint8_t *)data)[0];
+      asnKey[1] = ((uint8_t *)data)[1];
+      asnKey[2] = 0;
 
       if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
         lastKeyCode = keyCode;
@@ -1045,40 +1115,8 @@
         firstDisplayedLocalStepNumber = fdLocalStepNumber;
         defineCurrentStep();
         defineFirstDisplayedStep();
+        defineCurrentProgramFromCurrentStep();
       }
-    }
-  }
-
-
-
-  static void processAimInput(int16_t item) {
-    if(alphaCase == AC_LOWER && (ITM_A <= item && item <= ITM_Z)) {
-      addItemToBuffer(item + 26);
-      keyActionProcessed = true;
-    }
-
-    else if(alphaCase == AC_LOWER && (ITM_ALPHA <= item && item <= ITM_OMEGA)) {
-      addItemToBuffer(item + 36);
-      keyActionProcessed = true;
-    }
-
-    else if(item == ITM_DOWN_ARROW) {
-      nextChar = NC_SUBSCRIPT;
-      keyActionProcessed = true;
-    }
-
-    else if(item == ITM_UP_ARROW) {
-      nextChar = NC_SUPERSCRIPT;
-      keyActionProcessed = true;
-    }
-
-    else if(indexOfItems[item].func == addItemToBuffer) {
-      addItemToBuffer(item);
-      keyActionProcessed = true;
-    }
-
-    if(keyActionProcessed) {
-      refreshScreen();
     }
   }
 
@@ -1176,7 +1214,22 @@
       case ITM_ENTER:
         if(calcMode == CM_ASSIGN) {
           if(itemToBeAssigned == 0) {
-            itemToBeAssigned = item;
+            if(tam.alpha) {
+              assignLeaveAlpha();
+              assignGetName1();
+            }
+            else {
+              itemToBeAssigned = ASSIGN_CLEAR;
+            }
+          }
+          else {
+            if(tam.alpha && tam.mode != TM_NEWMENU) {
+              assignLeaveAlpha();
+              assignGetName2();
+            }
+            else if(tam.alpha) {
+              tamBuffer[0] = 0;
+            }
           }
           keyActionProcessed = true;
         }
@@ -1208,6 +1261,10 @@
         else if(calcMode == CM_ASSIGN && itemToBeAssigned == 0 && item == ITM_USERMODE) {
           tamEnterMode(ITM_ASSIGN);
           calcMode = previousCalcMode;
+          keyActionProcessed = true;
+        }
+        else if(calcMode == CM_ASSIGN && item == ITM_AIM) {
+          assignEnterAlpha();
           keyActionProcessed = true;
         }
         else if((calcMode != CM_PEM || !getSystemFlag(FLAG_ALPHA)) && catalog && catalog != CATALOG_MVAR) {
@@ -1411,32 +1468,43 @@
               break;
 
             case CM_ASSIGN:
-              if(item == ITM_OFF) {
-                fnOff(NOPARAM);
-                keyActionProcessed = true;
-              }
-              else if(item > 0 && itemToBeAssigned == 0) {
-                itemToBeAssigned = item;
+              if(item > 0 && itemToBeAssigned == 0) {
+                if(tam.alpha) {
+                  processAimInput(item);
+                  if(stringGlyphLength(aimBuffer) > 6) {
+                    assignLeaveAlpha();
+                    assignGetName1();
+                  }
+                }
+                else {
+                  itemToBeAssigned = item;
+                }
                 keyActionProcessed = true;
               }
               else if(item != 0 && itemToBeAssigned != 0) {
-                switch(item) {
-                  case ITM_ENTER:
-                  case ITM_SHIFTf:
-                  case ITM_SHIFTg:
-                  case ITM_USERMODE:
-                  case -MNU_CATALOG:
-                  case -MNU_CHARS:
-                  case -MNU_PROGS:
-                  case -MNU_VARS:
-                  case -MNU_MENUS:
-                  case ITM_EXIT:
-                  case ITM_OFF:
-                  case ITM_BACKSPACE:
-                    break;
-                  default:
-                    tamBuffer[0] = 0;
+                if(tam.alpha && tam.mode != TM_NEWMENU) {
+                  if(item > 0) {
+                    processAimInput(item);
+                    if(stringGlyphLength(aimBuffer) > 6) {
+                      assignLeaveAlpha();
+                      assignGetName2();
+                    }
                     keyActionProcessed = true;
+                  }
+                }
+                else {
+                  switch(item) {
+                    case ITM_ENTER:
+                    case ITM_SHIFTf:
+                    case ITM_SHIFTg:
+                    case ITM_USERMODE:
+                    case ITM_EXIT:
+                    case ITM_BACKSPACE:
+                      break;
+                    default:
+                      tamBuffer[0] = 0;
+                      keyActionProcessed = true;
+                  }
                 }
               }
               break;
@@ -1859,6 +1927,9 @@ if(lastPlotMode == H_PLOT && calcMode == CM_PLOT_STAT) popSoftmenu();
       case CM_ASSIGN:
         if(softmenuStack[0].softmenuId <= 1 && softmenuStack[1].softmenuId <= 1) { // MyMenu or MyAlpha is displayed
           calcMode = previousCalcMode;
+          if(tam.alpha) {
+            assignLeaveAlpha();
+          }
         }
         else {
           popSoftmenu();
@@ -2073,10 +2144,40 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
       case CM_ASSIGN:
         if(itemToBeAssigned == 0) {
-          calcMode = previousCalcMode;
+          if(!tam.alpha) {
+            calcMode = previousCalcMode;
+          }
+          else if(stringByteLength(aimBuffer) != 0) {
+            // Delete the last character
+            int16_t lg = stringLastGlyph(aimBuffer);
+            aimBuffer[lg] = 0;
+          }
+          else {
+            assignLeaveAlpha();
+            itemToBeAssigned = ITM_BACKSPACE;
+          }
         }
         else {
-          itemToBeAssigned = 0;
+          if(!tam.alpha) {
+            itemToBeAssigned = 0;
+          }
+          else if(stringByteLength(aimBuffer) != 0) {
+            // Delete the last character
+            int16_t lg = stringLastGlyph(aimBuffer);
+            aimBuffer[lg] = 0;
+          }
+          else {
+            assignLeaveAlpha();
+            if(asnKey[1] != 0) {
+              assignToKey((char *)asnKey);
+            }
+            else {
+              _assignToMenu(asnKey);
+            }
+            calcMode = previousCalcMode;
+            shiftF = shiftG = false;
+            refreshScreen();
+          }
         }
         break;
 
@@ -2208,9 +2309,33 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_MIM:
+        if(currentSoftmenuScrolls()) {
+          menuUp();
+        }
+        break;
+
       case CM_ASSIGN:
         if(currentSoftmenuScrolls()) {
           menuUp();
+        }
+        else if(tam.alpha && alphaCase == AC_LOWER) {
+          alphaCase = AC_UPPER;
+        }
+        else if(tam.alpha && itemToBeAssigned == 0 && aimBuffer[0] == 0) {
+          assignLeaveAlpha();
+          itemToBeAssigned = ITM_UP;
+        }
+        else if(tam.alpha && aimBuffer[0] == 0) {
+          assignLeaveAlpha();
+          if(asnKey[1] != 0) {
+            assignToKey((char *)asnKey);
+          }
+          else {
+            _assignToMenu(asnKey);
+          }
+          calcMode = previousCalcMode;
+          shiftF = shiftG = false;
+          refreshScreen();
         }
         break;
 
@@ -2332,9 +2457,33 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_MIM:
+        if(currentSoftmenuScrolls()) {
+          menuDown();
+        }
+        break;
+
       case CM_ASSIGN:
         if(currentSoftmenuScrolls()) {
           menuDown();
+        }
+        else if(tam.alpha && (itemToBeAssigned == 0 || tam.mode == TM_NEWMENU) && alphaCase == AC_UPPER) {
+          alphaCase = AC_LOWER;
+        }
+        else if(tam.alpha && itemToBeAssigned == 0 && aimBuffer[0] == 0) {
+          assignLeaveAlpha();
+          itemToBeAssigned = ITM_DOWN;
+        }
+        else if(tam.alpha && aimBuffer[0] == 0) {
+          assignLeaveAlpha();
+          if(asnKey[1] != 0) {
+            assignToKey((char *)asnKey);
+          }
+          else {
+            _assignToMenu(asnKey);
+          }
+          calcMode = previousCalcMode;
+          shiftF = shiftG = false;
+          refreshScreen();
         }
         break;
 

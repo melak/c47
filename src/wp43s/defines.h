@@ -211,7 +211,8 @@
 #define FLAG_VMDISP                           0xc027
 #define FLAG_USB                              0xc028
 #define FLAG_ENDPMT                           0xc029
-#define NUMBER_OF_SYSTEM_FLAGS                    42
+#define FLAG_FRCSRN                           0x802a
+#define NUMBER_OF_SYSTEM_FLAGS                    43
 
 typedef enum {
   LI_ZERO     = 0, // Long integer sign 0
@@ -880,6 +881,7 @@ typedef enum {
 #define ASSIGN_LABELS                          12000
 #define ASSIGN_RESERVED_VARIABLES                  (ASSIGN_NAMED_VARIABLES + FIRST_RESERVED_VARIABLE - FIRST_NAMED_VARIABLE)
 #define ASSIGN_USER_MENU                     (-10000)
+#define ASSIGN_CLEAR                         (-32768)
 
 #define TIMER_APP_STOPPED                          0xFFFFFFFFu
 
