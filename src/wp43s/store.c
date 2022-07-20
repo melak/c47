@@ -18,6 +18,7 @@
 
 #include "charString.h"
 #include "debug.h"
+#include "defines.h"
 #include "error.h"
 #include "items.h"
 #include "mathematics/compare.h"
@@ -386,7 +387,14 @@ void fnStoreConfig(uint16_t regist) {
 void fnStoreStack(uint16_t regist) {
   uint16_t size = getSystemFlag(FLAG_SSIZE8) ? 8 : 4;
 
-  if(regist + size >= REGISTER_X) {
+  if(regist + size >= REGISTER_X && regist < REGISTER_X) {
+    displayCalcErrorMessage(ERROR_STACK_CLASH, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "Cannot execute STOS, destination register would overlap the stack: %d", regist);
+      moreInfoOnError("In function fnStoreStack:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+  else if((regist >= REGISTER_X && regist < FIRST_LOCAL_REGISTER) || regist + size > FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "Cannot execute STOS, destination register is out of range: %d", regist);

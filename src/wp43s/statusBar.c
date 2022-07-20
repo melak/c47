@@ -49,7 +49,6 @@
       }
       showHideAlphaMode();
       showHideHourGlass();
-      showHidePgmBegin();
       showHideWatch();
       showHideSerialIO();
       showHidePrinter();
@@ -205,7 +204,7 @@
 
 
   void showHideAlphaMode(void) {
-    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha) || (calcMode == CM_PEM && getSystemFlag(FLAG_ALPHA))) {
+    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha) || ((calcMode == CM_PEM || calcMode == CM_ASSIGN) && getSystemFlag(FLAG_ALPHA))) {
       if(alphaCase == AC_UPPER) {
         showString(STD_ALPHA, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
         setSystemFlag(FLAG_alphaCAP);
@@ -236,14 +235,6 @@
         if(hourGlassIconEnabled) {
           showGlyph(STD_HOURGLASS, &standardFont, calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? 160-20 : X_HOURGLASS, 0, vmNormal, true, false); // is 0+11+3 pixel wide //Shift the hourglass to a visible part of the status bar
         }
-    }
-  }
-
-
-
-  void showHidePgmBegin(void) {
-    if(currentStep.any == beginOfCurrentProgram.any) {
-      showGlyph(STD_PGM_BEGIN, &standardFont, X_PROGRAM_BEGIN, 0, vmNormal, true, false); // is 0+10+3 pixel wide
     }
   }
 

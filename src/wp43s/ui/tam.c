@@ -33,6 +33,7 @@
 #include "registers.h"
 #include "screen.h"
 #include "softmenus.h"
+#include "sort.h"
 #include <string.h>
 
 #include "wp43s.h"
@@ -377,8 +378,8 @@
             else { // We aren't on 1st step of current program
               tam.value = programList[currentProgramNumber - 1].step;
             }
-            pemCursorIsZerothStep = true;
             reallyRunFunction(ITM_GTOP, tam.value);
+            pemCursorIsZerothStep = true;
             tamLeaveMode();
             hourGlassIconEnabled = false;
             return;
@@ -390,8 +391,8 @@
             }
 
             tam.value = programList[currentProgramNumber].step;
-            pemCursorIsZerothStep = true;
             reallyRunFunction(ITM_GTOP, tam.value);
+            pemCursorIsZerothStep = true;
             tamLeaveMode();
             hourGlassIconEnabled = false;
             return;
@@ -403,7 +404,16 @@
           } else {
             tam.currentOperation = item;
             if(item == ITM_dddEL || item == ITM_dddIJ) {
-              reallyRunFunction(tamOperation(), NOPARAM);
+              switch(calcMode) {
+                case CM_MIM:
+                  mimRunFunction(tamOperation(), NOPARAM);
+                  break;
+                case CM_PEM:
+                  addStepInProgram(tamOperation());
+                  break;
+                default:
+                  reallyRunFunction(tamOperation(), NOPARAM);
+              }
               if(tam.mode) tamLeaveMode();
               hourGlassIconEnabled = false;
               return;
@@ -646,6 +656,33 @@
       int16_t value;
       if(tam.mode == TM_NEWMENU) {
         value = 1;
+      }
+      else if(tam.function == ITM_XEQ) {
+        value = findNamedLabel(buffer);
+        if(value == INVALID_VARIABLE) {
+          for(int i = 0; i < LAST_ITEM; ++i) {
+            if((indexOfItems[i].status & CAT_STATUS) == CAT_FNCT && compareString(buffer, indexOfItems[i].itemCatalogName, CMP_NAME) == 0) {
+              if(tam.mode) tamLeaveMode();
+              if(calcMode == CM_PEM) {
+                aimBuffer[0] = 0;
+                if(!programListEnd) {
+                  scrollPemBackwards();
+                }
+              }
+              runFunction(i);
+              return;
+            }
+          }
+          if(calcMode != CM_PEM) {
+            if(tam.mode) tamLeaveMode();
+            displayCalcErrorMessage(ERROR_FUNCTION_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+              sprintf(errorMessage, "string '%s' is neither a named label nor a function name", buffer);
+              moreInfoOnError("In function _tamProcessInput:", errorMessage, NULL, NULL);
+            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+            return;
+          }
+        }
       }
       else if(tam.mode == TM_LABEL || tam.mode == TM_SOLVE || (tam.mode == TM_KEY && tam.keyInputFinished)) {
         value = findNamedLabel(buffer);
