@@ -693,7 +693,7 @@ typedef enum {
 #define SCRUPD_MANUAL_SHIFT_STATUS              0x08
 //#define SCRUPD_SKIP_STATUSBAR_ONE_TIME          0x10
 #define SCRUPD_SKIP_STACK_ONE_TIME              0x20
-//#define SCRUPD_SKIP_MENU_ONE_TIME               0x40
+#define SCRUPD_SKIP_MENU_ONE_TIME               0x40
 //#define SCRUPD_SHIFT_STATUS                     0x80
 #define SCRUPD_ONE_TIME_FLAGS                   0xf0
 

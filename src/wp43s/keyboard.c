@@ -395,6 +395,7 @@
 
         if(shiftF || shiftG) {
           screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+          clearShiftState();
         }
 
         shiftF = false;
@@ -792,6 +793,7 @@
 
     if(shiftF || shiftG) {
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+      clearShiftState();
     }
 
     shiftF = false;
@@ -2256,6 +2258,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQN){
           if(currentFormula == 0) currentFormula = numberOfFormulae;
           --currentFormula;
+          screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
         }
         else {
           alphaCase = AC_UPPER;
@@ -2404,6 +2407,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQN){
           ++currentFormula;
           if(currentFormula == numberOfFormulae) currentFormula = 0;
+          screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
         }
         else {
           alphaCase = AC_LOWER;
