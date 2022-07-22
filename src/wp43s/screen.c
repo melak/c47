@@ -33,6 +33,7 @@
 #include "keyboard.h"
 #include "longIntegerType.h"
 #include "mathematics/comparisonReals.h"
+#include "mathematics/incDec.h"
 #include "matrix.h"
 #include "memory.h"
 #include "plotstat.h"
@@ -2569,6 +2570,8 @@ void fnAGraph(uint16_t regist) {
         }
         val >>= 1;
       }
+
+      fnInc(REGISTER_X);
     }
 
     else {
