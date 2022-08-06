@@ -395,6 +395,7 @@
 
         if(shiftF || shiftG) {
           screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+          clearShiftState();
         }
 
         shiftF = false;
@@ -792,6 +793,7 @@
 
     if(shiftF || shiftG) {
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+      clearShiftState();
     }
 
     shiftF = false;
@@ -1826,6 +1828,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           #ifdef DEBUGUNDO
             printf(">>> saveForUndo from fnKeyExitA\n");
           #endif
+          updateMatrixHeightCache();
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
         }
@@ -1836,6 +1839,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_NIM:
         addItemToNimBuffer(ITM_EXIT);
+        updateMatrixHeightCache();
         break;
 
       case CM_MIM:
@@ -2240,6 +2244,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           menuUp();
         }
         else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_UPPER)) {
+          screenUpdatingMode = SCRUPD_AUTO;
           if(calcMode == CM_NIM) closeNim();
           if(calcMode == CM_AIM) closeAim();
           fnBst(NOPARAM);
@@ -2256,6 +2261,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQN){
           if(currentFormula == 0) currentFormula = numberOfFormulae;
           --currentFormula;
+          screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
         }
         else {
           alphaCase = AC_UPPER;
@@ -2393,6 +2399,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           menuDown();
         }
         else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_LOWER)) {
+          screenUpdatingMode = SCRUPD_AUTO;
           if(calcMode == CM_NIM) closeNim();
           if(calcMode == CM_AIM) closeAim();
           fnSst(NOPARAM);
@@ -2404,6 +2411,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQN){
           ++currentFormula;
           if(currentFormula == numberOfFormulae) currentFormula = 0;
+          screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
         }
         else {
           alphaCase = AC_LOWER;

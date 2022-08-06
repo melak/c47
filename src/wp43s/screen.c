@@ -33,6 +33,7 @@
 #include "keyboard.h"
 #include "longIntegerType.h"
 #include "mathematics/comparisonReals.h"
+#include "mathematics/incDec.h"
 #include "matrix.h"
 #include "memory.h"
 #include "plotstat.h"
@@ -2120,6 +2121,10 @@ void execTimerApp(uint16_t timerType) {
     }
   }
 
+  void clearShiftState(void) {
+    lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, 15, NUMERIC_FONT_HEIGHT, LCD_SET_VALUE);
+  }
+
   void displayShiftAndTamBuffer(void) {
     if(calcMode == CM_ASSIGN) {
       updateAssignTamBuffer();
@@ -2185,8 +2190,14 @@ void execTimerApp(uint16_t timerType) {
       case CM_ERROR_MESSAGE:
       case CM_CONFIRMATION:
       case CM_TIMER:
-        if(calcMode == CM_MIM || calcMode == CM_TIMER || calcMode == CM_CONFIRMATION) {
+        if(calcMode == CM_CONFIRMATION) {
           screenUpdatingMode = SCRUPD_AUTO;
+        }
+        else if(calcMode == CM_MIM) {
+          screenUpdatingMode = (aimBuffer[0] == 0) ? SCRUPD_AUTO : (SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
+        }
+        else if(calcMode == CM_TIMER) {
+          screenUpdatingMode = SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS;
         }
 
         if(screenUpdatingMode == SCRUPD_AUTO) {
@@ -2199,7 +2210,7 @@ void execTimerApp(uint16_t timerType) {
           if(!(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
             lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, SCREEN_WIDTH, 240 - Y_POSITION_OF_REGISTER_T_LINE - SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
           }
-          if(!(screenUpdatingMode & SCRUPD_MANUAL_MENU)) {
+          if(!(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
             lcd_fill_rect(0, 240 - SOFTMENU_HEIGHT * 3, SCREEN_WIDTH, SOFTMENU_HEIGHT * 3, LCD_SET_VALUE);
           }
         }
@@ -2215,6 +2226,10 @@ void execTimerApp(uint16_t timerType) {
             refreshRegisterLine(REGISTER_T);
           }
         }
+        else if(calcMode == CM_NIM) {
+          refreshRegisterLine(NIM_REGISTER_LINE);
+        }
+
 
         if(calcMode == CM_MIM) {
           showMatrixEditor();
@@ -2261,12 +2276,12 @@ void execTimerApp(uint16_t timerType) {
 
         if(!(screenUpdatingMode & SCRUPD_MANUAL_SHIFT_STATUS)) {
           if(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME)) {
-            lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, 15, NUMERIC_FONT_HEIGHT, LCD_SET_VALUE);
+            clearShiftState();
           }
           displayShiftAndTamBuffer();
         }
 
-        if(!(screenUpdatingMode & SCRUPD_MANUAL_MENU)) {
+        if(!(screenUpdatingMode & (SCRUPD_MANUAL_MENU | SCRUPD_SKIP_MENU_ONE_TIME))) {
           showSoftmenuCurrentPart();
         }
 
@@ -2418,10 +2433,12 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
 
 
     fclose(bmp);
+    screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME | SCRUPD_SKIP_MENU_ONE_TIME;
   #endif // PC_BUILD
 
   #ifdef DMCP_BUILD
     create_screenshot(0);
+    screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME | SCRUPD_SKIP_MENU_ONE_TIME;
   #endif // DMCP_BUILD
 }
 
@@ -2488,8 +2505,7 @@ void fnClLcd(uint16_t unusedButMandatoryParameter) {
   int32_t x, y;
   getPixelPos(&x, &y);
   if(lastErrorCode == ERROR_NONE) {
-    screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
-    if((SCREEN_HEIGHT - y - 1) <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
+    screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR | SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
     lcd_fill_rect(x, 0, SCREEN_WIDTH - x, SCREEN_HEIGHT - y, LCD_SET_VALUE);
   }
 #endif // TESTSUITE_BUILD
@@ -2513,7 +2529,7 @@ void fnPoint(uint16_t unusedButMandatoryParameter) {
   getPixelPos(&x, &y);
   if(lastErrorCode == ERROR_NONE) {
     screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
-    if((SCREEN_HEIGHT - y - 1) <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
+    if((SCREEN_HEIGHT - y - 2) <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
     lcd_fill_rect(x - 1, SCREEN_HEIGHT - y - 2, 3, 3, LCD_EMPTY_VALUE);
   }
 #endif // TESTSUITE_BUILD
@@ -2535,7 +2551,7 @@ void fnAGraph(uint16_t regist) {
       const uint8_t savedShortIntegerMode = shortIntegerMode;
 
       screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
-      if((SCREEN_HEIGHT - y - 1) <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
+      if((SCREEN_HEIGHT - y - 1 - (int)shortIntegerWordSize) <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
       shortIntegerMode = SIM_UNSIGN;
       convertShortIntegerRegisterToUInt64(regist, &sign, &val);
       shortIntegerMode = savedShortIntegerMode;
@@ -2564,6 +2580,8 @@ void fnAGraph(uint16_t regist) {
         }
         val >>= 1;
       }
+
+      fnInc(REGISTER_X);
     }
 
     else {
