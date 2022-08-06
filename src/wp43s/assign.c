@@ -167,7 +167,7 @@ void updateAssignTamBuffer(void) {
       tbPtr = stpcpy(tbPtr, aimBuffer);
       tbPtr = stpcpy(tbPtr, STD_RIGHT_SINGLE_QUOTE);
     }
-    
+
   }
   else if(itemToBeAssigned != 0 && shiftF) {
     tbPtr = stpcpy(tbPtr, STD_SUP_f STD_CURSOR);
@@ -327,11 +327,28 @@ void assignToKey(const char *data) {
     case 2:
       switch(keyStateCode) {
         case 5: key->gShiftedAim                   = tmpMenuItem.item; break;
-        case 4: key->fShiftedAim                   = tmpMenuItem.item; break;
+        case 4: key->fShiftedAim                   = tmpMenuItem.item;
+                switch(tmpMenuItem.item) {
+                  case ITM_PLUS:      key->primary = ITM_ADD;  break;
+                  case ITM_MINUS:     key->primary = ITM_SUB;  break;
+                  case ITM_CROSS:
+                  case ITM_DOT:
+                  case ITM_PROD_SIGN: key->primary = ITM_MULT; break;
+                  case ITM_SLASH:     key->primary = ITM_DIV;  break;
+                  default:            key->primary = tmpMenuItem.item;
+                }
+                break;
         case 3: key->primaryAim                    = tmpMenuItem.item; break;
         case 2: key->gShifted                      = tmpMenuItem.item; break;
         case 1: key->fShifted                      = tmpMenuItem.item; break;
         case 0: key->primary     = key->primaryTam = tmpMenuItem.item;
+                switch(tmpMenuItem.item) {
+                  case ITM_ADD:  key->fShiftedAim = ITM_PLUS;      break;
+                  case ITM_SUB:  key->fShiftedAim = ITM_MINUS;     break;
+                  case ITM_MULT: key->fShiftedAim = ITM_PROD_SIGN; break;
+                  case ITM_DIV:  key->fShiftedAim = ITM_SLASH;     break;
+                  default:       key->fShiftedAim = tmpMenuItem.item;
+                }
       }
       break;
 
