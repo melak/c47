@@ -1048,11 +1048,35 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
   int16_t  sign, lessEqualGreater;
   uint64_t intPart, numer, denom;
   int16_t  u, insertAt, endingZero, gap;
-  char prefix[7];
 
   //printf("regist = "); printRegisterToConsole(regist); printf("\n");
   fraction(regist, &sign, &intPart, &numer, &denom, &lessEqualGreater);
+
   //printf("result of fraction(...) = %c%" PRIu64 " %" PRIu64 "/%" PRIu64 "\n", sign==-1 ? '-' : ' ', intPart, numer, denom);
+
+  // Comparison sign
+  if(getSystemFlag(FLAG_FRCSRN)) {
+         if(lessEqualGreater == -1) sprintf(displayString, "%c" STD_SPACE_PUNCTUATION ">" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
+    else if(lessEqualGreater ==  0) sprintf(displayString, "%c" STD_SPACE_PUNCTUATION "=" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
+    else if(lessEqualGreater ==  1) sprintf(displayString, "%c" STD_SPACE_PUNCTUATION "<" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
+    else {
+      strcpy(displayString, "?" STD_SPACE_PUNCTUATION);
+      sprintf(errorMessage, "In function fractionToDisplayString: %d is an unexpected value for lessEqualGreater!", lessEqualGreater);
+      displayBugScreen(errorMessage);
+    }
+  }
+  else {
+         if(lessEqualGreater == -1) sprintf(displayString, ">" STD_SPACE_PUNCTUATION);
+    else if(lessEqualGreater ==  0) displayString[0] = 0;
+    else if(lessEqualGreater ==  1) sprintf(displayString, "<" STD_SPACE_PUNCTUATION);
+    else {
+      strcpy(displayString, "?" STD_SPACE_PUNCTUATION);
+      sprintf(errorMessage, "In function fractionToDisplayString: %d is an unexpected value for lessEqualGreater!", lessEqualGreater);
+      displayBugScreen(errorMessage);
+    }
+  }
+
+  endingZero = strlen(displayString);
 
   if(getSystemFlag(FLAG_PROPFR)) { // a b/c
     if(updateDisplayValueX) {
@@ -1060,16 +1084,8 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
     }
 
     if(sign == -1) {
-      displayString[0] = '-';
-      displayString[1] = 0;
-      endingZero = 1;
-    }
-    else {
-      displayString[0] = 0;
-      endingZero = 0;
-
-      if(updateDisplayValueX) {
-      }
+      strcat(displayString, "-");
+      endingZero++;
     }
 
     // Integer part
@@ -1102,12 +1118,8 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
     }
 
     if(sign == -1) {
-      strcpy(displayString, STD_SUP_MINUS);
-      endingZero = 2;
-    }
-    else {
-      displayString[0] = 0;
-      endingZero = 0;
+      strcat(displayString, STD_SUP_MINUS);
+      endingZero += 2;
     }
   }
 
@@ -1174,31 +1186,6 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
     displayString[insertAt + 1] = STD_SUB_0[1];
     displayString[insertAt + 1] += u;
   } while(denom != 0);
-
-  // Comparison sign
-  if(getSystemFlag(FLAG_FRCSRN)) {
-         if(lessEqualGreater == -1) sprintf(prefix, "%c" STD_SPACE_PUNCTUATION ">" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
-    else if(lessEqualGreater ==  0) sprintf(prefix, "%c" STD_SPACE_PUNCTUATION "=" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
-    else if(lessEqualGreater ==  1) sprintf(prefix, "%c" STD_SPACE_PUNCTUATION "<" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
-    else {
-      strcpy(prefix, "?" STD_SPACE_PUNCTUATION);
-      sprintf(errorMessage, "In function fractionToDisplayString: %d is an unexpected value for lessEqualGreater!", lessEqualGreater);
-      displayBugScreen(errorMessage);
-    }
-  }
-  else {
-         if(lessEqualGreater == -1) sprintf(prefix, ">" STD_SPACE_PUNCTUATION);
-    else if(lessEqualGreater ==  0) prefix[0] = 0;
-    else if(lessEqualGreater ==  1) sprintf(prefix, "<" STD_SPACE_PUNCTUATION);
-    else {
-      strcpy(prefix, "?" STD_SPACE_PUNCTUATION);
-      sprintf(errorMessage, "In function fractionToDisplayString: %d is an unexpected value for lessEqualGreater!", lessEqualGreater);
-      displayBugScreen(errorMessage);
-    }
-  }
-
- xcopy(displayString + strlen(prefix), displayString, strlen(displayString) + 1);
- xcopy(displayString, prefix, strlen(prefix));
 }
 
 
