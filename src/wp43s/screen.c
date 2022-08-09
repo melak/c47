@@ -2190,8 +2190,14 @@ void execTimerApp(uint16_t timerType) {
       case CM_ERROR_MESSAGE:
       case CM_CONFIRMATION:
       case CM_TIMER:
-        if(calcMode == CM_MIM || calcMode == CM_TIMER || calcMode == CM_CONFIRMATION) {
+        if(calcMode == CM_CONFIRMATION) {
           screenUpdatingMode = SCRUPD_AUTO;
+        }
+        else if(calcMode == CM_MIM) {
+          screenUpdatingMode = (aimBuffer[0] == 0) ? SCRUPD_AUTO : (SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
+        }
+        else if(calcMode == CM_TIMER) {
+          screenUpdatingMode = SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS;
         }
 
         if(screenUpdatingMode == SCRUPD_AUTO) {
@@ -2220,6 +2226,10 @@ void execTimerApp(uint16_t timerType) {
             refreshRegisterLine(REGISTER_T);
           }
         }
+        else if(calcMode == CM_NIM) {
+          refreshRegisterLine(NIM_REGISTER_LINE);
+        }
+
 
         if(calcMode == CM_MIM) {
           showMatrixEditor();

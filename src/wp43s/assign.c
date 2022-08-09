@@ -15,7 +15,9 @@
  */
 
 #include "assign.h"
+#include "bufferize.h"
 #include "charString.h"
+#include "defines.h"
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
@@ -165,7 +167,7 @@ void updateAssignTamBuffer(void) {
       tbPtr = stpcpy(tbPtr, aimBuffer);
       tbPtr = stpcpy(tbPtr, STD_RIGHT_SINGLE_QUOTE);
     }
-    
+
   }
   else if(itemToBeAssigned != 0 && shiftF) {
     tbPtr = stpcpy(tbPtr, STD_SUP_f STD_CURSOR);
@@ -247,33 +249,152 @@ void assignToUserMenu(uint16_t position) {
   refreshScreen();
 }
 
+static int _typeOfFunction(int16_t func) {
+  switch(func) {
+    case ITM_NULL:
+      return 0;
+
+    case ITM_EXIT:
+    case ITM_ENTER:
+    case ITM_UP:
+    case ITM_DOWN:
+    case ITM_BACKSPACE:
+      return 1;
+
+    case ITM_0:
+    case ITM_1:
+    case ITM_2:
+    case ITM_3:
+    case ITM_4:
+    case ITM_5:
+    case ITM_6:
+    case ITM_7:
+    case ITM_8:
+    case ITM_9:
+    case ITM_PERIOD:
+    case ITM_ADD:
+    case ITM_SUB:
+    case ITM_MULT:
+    case ITM_DIV:
+      return 2;
+
+    case ITM_A:
+    case ITM_B:
+    case ITM_C:
+    case ITM_D:
+    case ITM_E:
+    case ITM_H:
+    case ITM_I:
+    case ITM_J:
+    case ITM_K:
+    case ITM_L:
+      return 3;
+
+    default:
+      return 4;
+  }
+}
+
 void assignToKey(const char *data) {
   int keyCode = (*data - '0')*10 + *(data+1) - '0';
   calcKey_t *key = kbd_usr + keyCode;
   userMenuItem_t tmpMenuItem;
   int keyStateCode = ((previousCalcMode) == CM_AIM ? 3 : 0) + (shiftG ? 2 : shiftF ? 1 : 0);
+  const calcKey_t *stdKey = kbd_std + keyCode;
 
   _assignItem(&tmpMenuItem);
-  if(tmpMenuItem.item == ITM_NULL) {
-    const calcKey_t *stdKey = kbd_std + keyCode;
-    switch(keyStateCode) {
-      case 5: key->gShiftedAim = stdKey->gShiftedAim; break;
-      case 4: key->fShiftedAim = stdKey->fShiftedAim; break;
-      case 3: key->primaryAim  = stdKey->primaryAim;  break;
-      case 2: key->gShifted    = stdKey->gShifted;    break;
-      case 1: key->fShifted    = stdKey->fShifted;    break;
-      case 0: key->primary     = stdKey->primary;     break;
-    }
+  switch(_typeOfFunction(tmpMenuItem.item)) {
+    case 0:
+      switch(keyStateCode) {
+        case 5: key->gShiftedAim = stdKey->gShiftedAim; break;
+        case 4: key->fShiftedAim = stdKey->fShiftedAim; break;
+        case 3: key->primaryAim  = stdKey->primaryAim;  break;
+        case 2: key->gShifted    = stdKey->gShifted;    break;
+        case 1: key->fShifted    = stdKey->fShifted;    break;
+        case 0: key->primary     = stdKey->primary;
+                key->primaryTam  = stdKey->primaryTam;
+      }
+      break;
+
+    case 1:
+      switch(keyStateCode) {
+        case 5: case 2: key->gShiftedAim = key->gShifted                   = tmpMenuItem.item; break;
+        case 4: case 1: key->fShiftedAim = key->fShifted                   = tmpMenuItem.item; break;
+        case 3: case 0: key->primaryAim  = key->primary  = key->primaryTam = tmpMenuItem.item; break;
+      }
+      break;
+
+    case 2:
+      switch(keyStateCode) {
+        case 5: key->gShiftedAim                   = tmpMenuItem.item; break;
+        case 4: key->fShiftedAim                   = tmpMenuItem.item;
+                switch(tmpMenuItem.item) {
+                  case ITM_PLUS:      key->primary = ITM_ADD;  break;
+                  case ITM_MINUS:     key->primary = ITM_SUB;  break;
+                  case ITM_CROSS:
+                  case ITM_DOT:
+                  case ITM_PROD_SIGN: key->primary = ITM_MULT; break;
+                  case ITM_SLASH:     key->primary = ITM_DIV;  break;
+                  default:            key->primary = tmpMenuItem.item;
+                }
+                break;
+        case 3: key->primaryAim                    = tmpMenuItem.item; break;
+        case 2: key->gShifted                      = tmpMenuItem.item; break;
+        case 1: key->fShifted                      = tmpMenuItem.item; break;
+        case 0: key->primary     = key->primaryTam = tmpMenuItem.item;
+                switch(tmpMenuItem.item) {
+                  case ITM_ADD:  key->fShiftedAim = ITM_PLUS;      break;
+                  case ITM_SUB:  key->fShiftedAim = ITM_MINUS;     break;
+                  case ITM_MULT: key->fShiftedAim = ITM_PROD_SIGN; break;
+                  case ITM_DIV:  key->fShiftedAim = ITM_SLASH;     break;
+                  default:       key->fShiftedAim = tmpMenuItem.item;
+                }
+      }
+      break;
+
+    case 3:
+      switch(keyStateCode) {
+        case 5: key->gShiftedAim = tmpMenuItem.item; break;
+        case 4: key->fShiftedAim = tmpMenuItem.item; break;
+        case 3: key->primaryAim  = tmpMenuItem.item;
+                switch(tmpMenuItem.item) {
+                  case ITM_A: key->primaryTam = ITM_REG_A; break;
+                  case ITM_B: key->primaryTam = ITM_REG_B; break;
+                  case ITM_C: key->primaryTam = ITM_REG_C; break;
+                  case ITM_D: key->primaryTam = ITM_REG_D; break;
+                  case ITM_E: key->primaryTam = ITM_E;     break;
+                  case ITM_H: key->primaryTam = ITM_HEX;   break;
+                  case ITM_I: key->primaryTam = ITM_REG_I; break;
+                  case ITM_J: key->primaryTam = ITM_REG_J; break;
+                  case ITM_K: key->primaryTam = ITM_REG_K; break;
+                  case ITM_L: key->primaryTam = ITM_REG_L; break;
+                }
+                break;
+        case 2: key->gShifted    = tmpMenuItem.item; break;
+        case 1: key->fShifted    = tmpMenuItem.item; break;
+        case 0: key->primary     = tmpMenuItem.item;
+      }
+      break;
+
+    default:
+      switch(keyStateCode) {
+        case 5: key->gShiftedAim = tmpMenuItem.item; break;
+        case 4: key->fShiftedAim = tmpMenuItem.item; break;
+        case 3: key->primaryAim  = tmpMenuItem.item;
+                if(_typeOfFunction(key->primary) != 2) {
+                  key->primaryTam  = ITM_NULL;
+                }
+                break;
+        case 2: key->gShifted    = tmpMenuItem.item; break;
+        case 1: key->fShifted    = tmpMenuItem.item; break;
+        case 0: key->primary     = tmpMenuItem.item;
+                if(_typeOfFunction(key->primary) != 3) {
+                  key->primaryTam  = ITM_NULL;
+                }
+      }
   }
-  else {
-    switch(keyStateCode) {
-      case 5: key->gShiftedAim = tmpMenuItem.item; break;
-      case 4: key->fShiftedAim = tmpMenuItem.item; break;
-      case 3: key->primaryAim  = tmpMenuItem.item; break;
-      case 2: key->gShifted    = tmpMenuItem.item; break;
-      case 1: key->fShifted    = tmpMenuItem.item; break;
-      case 0: key->primary     = tmpMenuItem.item; break;
-    }
+  if(keyCode == 5) { // alpha
+    key->primaryTam  = stdKey->primaryTam;
   }
 
   setUserKeyArgument(keyCode * 6 + keyStateCode, tmpMenuItem.argumentName);
