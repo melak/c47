@@ -992,7 +992,7 @@ void WP34S_ExpM1(const real_t *x, real_t *res, realContext_t *realContext) {
 
 
 
-void WP34S_CalcComplexLnGamma_Lanczos(const real_t *zReal, const real_t *zImag, real_t *resReal, real_t *resImag, realContext_t *realContext) {
+static void WP34S_CalcComplexLnGamma_Lanczos(const real_t *zReal, const real_t *zImag, real_t *resReal, real_t *resImag, realContext_t *realContext) {
   real_t rReal, sReal, tReal, uReal, vReal;
   real_t rImag, sImag, tImag, uImag, vImag;
   int k;
