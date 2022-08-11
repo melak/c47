@@ -311,13 +311,30 @@ void gammaCplx(void) {
 
 
 void lnGammaCplx(void) {
-  real_t zReal, zImag;
+  real_t zReal, zImag, rReal, rImag, tImag;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &zReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &zImag);
 
-  WP34S_ComplexLnGamma(&zReal, &zImag, &zReal, &zImag, &ctxtReal39);
+  WP34S_ComplexLnGamma(&zReal, &zImag, &rReal, &rImag, &ctxtReal39);
 
-  convertRealToReal34ResultRegister(&zReal, REGISTER_X);
-  convertRealToImag34ResultRegister(&zImag, REGISTER_X);
+  /* Apply an integral multiple of 2 pi as a correction to give a better
+   * branch cut.
+   */
+  if (realIsNegative(&zReal)) {
+    realMultiply(&zReal, const_1on2, &tImag, &ctxtReal39);
+    realToIntegralValue(&tImag, &tImag, DEC_ROUND_CEILING, &ctxtReal39);
+    realSubtract(&tImag, const_1, &tImag, &ctxtReal39);
+    realMultiply(&tImag, const_2pi, &tImag, &ctxtReal39);
+  } else {
+    realMinus(const_2pi, &tImag, &ctxtReal39);
+  }
+  if (realIsNegative(&zImag)) {
+    realSubtract(&rImag, &tImag, &rImag, &ctxtReal39);
+  } else {
+    realAdd(&rImag, &tImag, &rImag, &ctxtReal39);
+  }
+
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&rImag, REGISTER_X);
 }
