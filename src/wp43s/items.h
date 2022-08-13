@@ -1814,8 +1814,8 @@
 #define ITM_DET                       1751
 #define ITM_INVRT                     1752
 #define ITM_TRANS                     1753
-#define ITM_XIN                       1754
-#define ITM_XOUT                      1755
+#define ITM_1754                      1754
+#define ITM_1755                      1755
 #define ITM_PLOT_CENTRL               1756
 #define ITM_HIDE                      1757
 #define ITM_SMI                       1758
