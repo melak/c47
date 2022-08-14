@@ -2239,6 +2239,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       case CM_NIM:
       case CM_EIM:
       case CM_PLOT_STAT:
+      case CM_GRAPH:
         resetAlphaSelectionBuffer();
         if(currentSoftmenuScrolls()) {
           menuUp();
@@ -2394,6 +2395,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
       case CM_NIM:
       case CM_EIM:
       case CM_PLOT_STAT:
+      case CM_GRAPH:
         resetAlphaSelectionBuffer();
         if(currentSoftmenuScrolls()) {
           menuDown();
