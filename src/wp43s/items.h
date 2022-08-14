@@ -1625,7 +1625,7 @@
 #define ITM_RCLS                      1564
 #define ITM_RDP                       1565
 #define ITM_RE                        1566
-#define ITM_RECV                      1567
+#define ITM_READP                     1567
 #define ITM_RESET                     1568
 #define ITM_REtoCX                    1569
 #define ITM_REexIM                    1570
@@ -1648,7 +1648,7 @@
 #define ITM_SCI                       1587
 #define ITM_SDIGS                     1588
 #define ITM_SEED                      1589
-#define ITM_SEND                      1590
+#define ITM_WRITEP                    1590
 #define ITM_SETCHN                    1591
 #define ITM_SETDAT                    1592
 #define ITM_SETEUR                    1593
