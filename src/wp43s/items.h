@@ -896,9 +896,9 @@
 #define ITM_SUB_delta                  849
 #define ITM_SUB_mu                     850
 #define ITM_SUB_SUN                    851
-#define ITM_SUB_SUN_b                  852
+#define ITM_0852                       852
 #define ITM_SUB_EARTH                  853
-#define ITM_SUB_EARTH_b                854
+#define ITM_0854                       854
 #define ITM_SUB_PLUS                   855
 #define ITM_SUB_MINUS                  856
 #define ITM_SUB_INFINITY               857
