@@ -1042,18 +1042,38 @@ void fnReset(uint16_t confirmation) {
     #endif
 
     char *build_str = "C43" L1L2 VERSION1 ", " __DATE__;
-
-
-//    fnStrtoX("C43L2_100+++, 2021-01-03, C43-PEM-XEQ-WIP");
     fnStrtoX(build_str);
     fnStore(102);
     fnDrop(0);
-  
-    #ifdef JM_LAYOUT_1A
-    fnStrtoX("C43 L1: C43 template");
-    #endif
-    #ifdef JM_LAYOUT_2_DM42_STRICT
-    fnStrtoX("C43 L42: unmodified DM42");
+
+
+    #ifdef PC_BUILD
+      #if defined(JM_LAYOUT_1A)
+        fnStrtoX("C43 L1: C43 template SIM");
+      #else
+        #if defined(JM_LAYOUT_2_DM42_STRICT)
+          fnStrtoX("C43 L42: unmodified DM42 SIM");
+        #endif
+      #endif
+
+    #else
+
+      #if defined(JM_LAYOUT_1A) && defined(TWO_FILE_PGM)
+        fnStrtoX("C43 L1: C43 template");
+      #else
+        #if defined(JM_LAYOUT_1A) && !defined(TWO_FILE_PGM)
+          fnStrtoX("C43 L1: C43 templ. QSPI");
+        #else
+          #if defined(JM_LAYOUT_2_DM42_STRICT) && defined(TWO_FILE_PGM)
+            fnStrtoX("C43 L42: unmodified DM42");
+          #else
+            #if defined(JM_LAYOUT_2_DM42_STRICT) && !defined(TWO_FILE_PGM)
+              fnStrtoX("C43 L42: unmod. DM42 QSPI");
+            #endif
+          #endif
+        #endif
+      #endif
+
     #endif
     fnStore(103);
 
