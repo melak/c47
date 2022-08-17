@@ -2083,7 +2083,7 @@
 #define ITM_NVECT                     2013
 #define ITM_EXTX                      2014
 #define ITM_EXTY                      2015
-#define ITM_2016                      2016
+#define ITM_DENMAX2                   2016
 #define ITM_2017                      2017
 #define ITM_2018                      2018
 #define ITM_2019                      2019

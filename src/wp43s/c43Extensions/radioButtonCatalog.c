@@ -556,6 +556,10 @@ int16_t fnItemShowValue(int16_t item) {
     result = exponentLimit;
     break;
 
+  case ITM_DENMAX2:     //
+    result = denMax;
+    break;
+
   case ITM_HIDE:     //
     result = exponentHideLimit;
     break;
