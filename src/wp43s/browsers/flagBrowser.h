@@ -19,7 +19,7 @@
 #include <stdint.h>
 
 #ifndef TESTSUITE_BUILD
-  void flagBrowser(uint16_t unusedButMandatoryParameter);
+  void flagBrowser(uint16_t init); //JM
 #endif // TESTSUITE_BUILD
 
 #endif // FLAGBROWSER_H

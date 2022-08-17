@@ -20,12 +20,11 @@
 
 #include "charString.h"
 
-#include <string.h>
 #include "error.h"
 #include "fonts.h"
+#include <string.h>
 
 #include "wp43s.h"
-#include <string.h>
 
 
 
@@ -33,6 +32,7 @@ int16_t stringWidth(const char *str, const font_t *font, bool_t withLeadingEmpty
   int16_t ch, numPixels, charCode, glyphId;
   const glyph_t *glyph;
   bool_t  firstChar;
+//  const font_t  *font;  //JM
 
   glyph = NULL;
   firstChar = true;
@@ -44,6 +44,23 @@ int16_t stringWidth(const char *str, const font_t *font, bool_t withLeadingEmpty
       charCode = (charCode<<8) | (uint8_t)str[ch++];
     }
 
+
+/*
+    font = font1;                                 //JM auto font change for enlarged alpha fonts vv
+#ifndef TESTSUITE_BUILD
+    if(combinationFonts == 2) {
+      if(maxiC == 1 && font == &numericFont) {
+#endif //TESTSUITE_BUILD
+        glyphId = findGlyph(font, charCode);
+        if(glyphId < 0) {                         //JM if there is not a large glyph, width of the small letter
+          font = &standardFont;
+        }
+#ifndef TESTSUITE_BUILD
+      }
+    }                                             //JM ^^
+#endif //TESTSUITE_BUILD
+*/
+    
     glyphId = findGlyph(font, charCode);
     if(glyphId >= 0) {
       glyph = (font->glyphs) + glyphId;
@@ -108,6 +125,30 @@ int16_t stringNextGlyph(const char *str, int16_t pos) {
   else {
    return pos;
   }
+}
+
+
+
+int16_t stringPrevGlyph(const char *str, int16_t pos) {
+  int16_t prev = 0;
+  int16_t lg;
+
+  lg = stringByteLength(str);
+  if(pos >= lg) {
+    pos = lg;
+  }
+
+  if(pos <= 1) {
+    return 0;
+  }
+  else {
+    int16_t cnt = 0;
+    while ((str[cnt] != 0) && (cnt<pos)) {
+      prev = cnt;
+      cnt = stringNextGlyph(str, cnt);
+    }
+  }
+  return prev;
 }
 
 

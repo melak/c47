@@ -32,6 +32,7 @@
 #include "wp43s.h"
 
 
+#ifndef SAVE_SPACE_DM42_12
 static bool_t getOrthoPolyParam(calcRegister_t regist, real_t *val, realContext_t *realContext) {
   switch(getRegisterDataType(regist)) {
     case dtLongInteger:
@@ -52,8 +53,10 @@ static bool_t getOrthoPolyParam(calcRegister_t regist, real_t *val, realContext_
       return false;
   }
 }
+#endif
 
 void fnOrthoPoly(uint16_t kind) {
+#ifndef SAVE_SPACE_DM42_12
   real_t x, y, z, ans;
 
   if(!saveLastX()) return;
@@ -75,6 +78,7 @@ void fnOrthoPoly(uint16_t kind) {
     }
   }
   adjustResult(REGISTER_X, true, false, REGISTER_X, REGISTER_Y, -1);
+#endif
 }
 
 void fnHermite(uint16_t unusedButMandatoryParameter) {

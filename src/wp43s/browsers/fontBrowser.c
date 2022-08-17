@@ -90,6 +90,8 @@
    * \return void
    ***********************************************/
   void fontBrowser(uint16_t unusedButMandatoryParameter) {
+  #ifndef SAVE_SPACE_DM42_8
+
     uint16_t x, y, first;
 
     hourGlassIconEnabled = false;
@@ -159,5 +161,6 @@
     else {
       displayBugScreen("In function showFonts: This should never happen!");
     }
+  #endif //SAVE_SPACE_DM42_8
   }
 #endif // TESTSUITE_BUILD

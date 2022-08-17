@@ -346,6 +346,8 @@ void debugNIM(void) {
     if(df == DF_FIX) return "FIX";
     if(df == DF_SCI) return "SCI";
     if(df == DF_ENG) return "ENG";
+    if(df == DF_SF)  return "SIG"; //JM
+    if(df == DF_UN)  return "UNT"; //JM
 
     return "???";
   }
@@ -453,6 +455,8 @@ void debugNIM(void) {
     if(cm == CM_MIM)                   return "mim    ";
     if(cm == CM_EIM)                   return "eim    ";
     if(cm == CM_TIMER)                 return "timer  ";
+    if(cm == CM_CONFIRMATION)          return "confirm";
+    if(cm == CM_LISTXY)                return "listxy ";    //JM
 
     return "???    ";
   }
@@ -705,7 +709,7 @@ void debugNIM(void) {
     }
 
     else if(getRegisterDataType(regist) == dtLongInteger) {
-      longIntegerRegisterToDisplayString(regist, string + n, sizeof(string) - n, SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION);
+      longIntegerRegisterToDisplayString(regist, string + n, sizeof(string) - n, SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION, false);   //JM added last parameter: Allow LARGELI
     }
 
     else if(getRegisterDataType(regist) == dtTime) {

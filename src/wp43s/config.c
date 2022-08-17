@@ -29,8 +29,10 @@
 #include "error.h"
 #include "fonts.h"
 #include "flags.h"
+#include "fractions.h"
 #include "gui.h"
 #include "items.h"
+#include "c43Extensions/jm.h"
 #include "keyboard.h"
 #include "matrix.h"
 #include "memory.h"
@@ -38,12 +40,16 @@
 #include "programming/flash.h"
 #include "programming/manage.h"
 #include "programming/programmableMenu.h"
+#include "c43Extensions/radioButtonCatalog.h"
 #include "recall.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "screen.h"
+#include "softmenus.h"
 #include "solver/equation.h"
 #include "stack.h"
 #include "stats.h"
+#include "store.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -125,6 +131,9 @@ void fnConfigUsa(uint16_t unusedButMandatoryParameter) {
 
 void fnIntegerMode(uint16_t mode) {
   shortIntegerMode = mode;
+  
+  fnRefreshState();                            //dr
+
 }
 
 
@@ -234,6 +243,9 @@ void fnSetWordSize(uint16_t WS) {
       *(REGISTER_SHORT_INTEGER_DATA(REGISTER_L)) &= shortIntegerMask;
     }
   }
+
+  fnRefreshState();                              //dr
+
 }
 
 
@@ -338,17 +350,32 @@ void fnRoundingMode(uint16_t RM) {
 
 void fnAngularMode(uint16_t am) {
   currentAngularMode = am;
+  lastSetAngularMode = currentAngularMode;                         //JM
+
+  fnRefreshState();                              //drJM
+
 }
 
 
 
 void fnFractionType(uint16_t unusedButMandatoryParameter) {
-  if(getSystemFlag(FLAG_FRACT)) {
-    flipSystemFlag(FLAG_PROPFR);
-  }
-  else {
-    setSystemFlag(FLAG_FRACT);
-    setSystemFlag(FLAG_PROPFR);
+  if(constantFractions) {
+    if(constantFractionsOn) {
+      flipSystemFlag(FLAG_PROPFR);
+    }
+    else {
+      constantFractionsOn = true;
+      setSystemFlag(FLAG_PROPFR);
+    }
+    clearSystemFlag(FLAG_FRACT);
+  } else {
+    if(getSystemFlag(FLAG_FRACT)) {
+      flipSystemFlag(FLAG_PROPFR);
+    }
+    else {
+      setSystemFlag(FLAG_FRACT);
+      setSystemFlag(FLAG_PROPFR);
+    }
   }
 }
 
@@ -779,14 +806,16 @@ void fnReset(uint16_t confirmation) {
 
     shortIntegerMode = SIM_2COMPL;
     fnSetWordSize(64);
+    fnIntegerMode(SIM_2COMPL);                       //JM
 
     groupingGap = 3;
 
     systemFlags = 0;
     displayFormat = DF_ALL;
-    displayFormatDigits = 0;
+    displayFormatDigits = 3;                             //JM Set to ALL 3
     timeDisplayFormatDigits = 0;
     currentAngularMode = amDegree;
+    lastSetAngularMode = currentAngularMode;             //JM
     denMax = MAX_DENMAX;
     setSystemFlag(FLAG_DENANY);
     setSystemFlag(FLAG_MULTx);
@@ -871,10 +900,86 @@ void fnReset(uint16_t confirmation) {
 
     fnClearMenu(NOPARAM);
 
-    screenUpdatingMode = SCRUPD_AUTO;
+
+
+      
+        clearSystemFlag(FLAG_DENANY);                              //JM Default
+        fnDenMax(0);                                               //JM Default
+        clearSystemFlag(FLAG_ASLIFT);  //JM??
+        fnDisplayFormatAll(3);                                     //JM Default
+        setSystemFlag(FLAG_SSIZE8);                                //JM Default
+        setSystemFlag(FLAG_CPXRES);                                //JM Default
+        clearSystemFlag(FLAG_FRCSRN);  //JM??                      //JM Default
+            
+    #ifndef TESTSUITE_BUILD
+      mm_MNU_HOME       = mm(-MNU_HOME);     //printf("####BB> %i \n",mm_MNU_HOME);                      //JM
+      mm_MNU_ALPHA      = mm(-MNU_ALPHA);    //printf("####CC> %i \n",mm_MNU_ALPHA);                      //JM
+      calcModeNormal();
+      if(SH_BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
+    #endif // TESTSUITE_BUILD      
+
+      reset_jm_defaults(true); 
+
+//********** JM CHECKQQ
+
+      
+      
+    //JM Default USER
+    fnUserJM(USER_RESET);                                      //JM USER
+//    kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
+//    kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
+//    kbd_usr[0].fShifted    = KEY_TYPCON_DN;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
+
+
+    #ifdef WP43S_ON_C43_USER_MODE
+      fnSetFlag(FLAG_USER);
+
+      kbd_usr[0].primary=ITM_SIGMAPLUS;                 kbd_usr[0].fShifted=ITM_NULL;                     kbd_usr[0].gShifted=ITM_TGLFRT;                   kbd_usr[0].keyLblAim=ITM_NULL;                    kbd_usr[0].primaryAim=ITM_A;                      kbd_usr[0].fShiftedAim=-MNU_ALPHAINTL;            kbd_usr[0].gShiftedAim=ITM_ALPHA;                 kbd_usr[0].primaryTam=ITM_REG_A;                  
+      kbd_usr[1].primary=ITM_1ONX;                      kbd_usr[1].fShifted=ITM_YX;                       kbd_usr[1].gShifted=ITM_toINT;                    kbd_usr[1].keyLblAim=ITM_NUMBER_SIGN;             kbd_usr[1].primaryAim=ITM_B;                      kbd_usr[1].fShiftedAim=ITM_NUMBER_SIGN;           kbd_usr[1].gShiftedAim=ITM_BETA;                  kbd_usr[1].primaryTam=ITM_REG_B;                  
+      kbd_usr[2].primary=ITM_SQUAREROOTX;               kbd_usr[2].fShifted=ITM_SQUARE;                   kbd_usr[2].gShifted=ITM_DMS;                      kbd_usr[2].keyLblAim=ITM_CHECK_MARK;              kbd_usr[2].primaryAim=ITM_C;                      kbd_usr[2].fShiftedAim=ITM_CHECK_MARK;            kbd_usr[2].gShiftedAim=ITM_CHI;                   kbd_usr[2].primaryTam=ITM_REG_C;                  
+      kbd_usr[3].primary=ITM_LOG10;                     kbd_usr[3].fShifted=ITM_10x;                      kbd_usr[3].gShifted=ITM_dotD;                     kbd_usr[3].keyLblAim=ITM_NULL;                    kbd_usr[3].primaryAim=ITM_D;                      kbd_usr[3].fShiftedAim=ITM_NULL;                  kbd_usr[3].gShiftedAim=ITM_DELTA;                 kbd_usr[3].primaryTam=ITM_REG_D;                  
+      kbd_usr[4].primary=ITM_LN;                        kbd_usr[4].fShifted=ITM_EXP;                      kbd_usr[4].gShifted=ITM_toREC2;                    kbd_usr[4].keyLblAim=ITM_NULL;                    kbd_usr[4].primaryAim=ITM_E;                      kbd_usr[4].fShiftedAim=ITM_NULL;                  kbd_usr[4].gShiftedAim=ITM_EPSILON;               kbd_usr[4].primaryTam=ITM_NULL;                   
+      kbd_usr[5].primary=ITM_XEQ;                       kbd_usr[5].fShifted=ITM_AIM;                      kbd_usr[5].gShifted=ITM_toPOL2;                    kbd_usr[5].keyLblAim=ITM_NULL;                    kbd_usr[5].primaryAim=ITM_F;                      kbd_usr[5].fShiftedAim=ITM_NULL;                  kbd_usr[5].gShiftedAim=ITM_NULL;                  kbd_usr[5].primaryTam=ITM_alpha;                  
+      kbd_usr[6].primary=ITM_STO;                       kbd_usr[6].fShifted=ITM_MAGNITUDE;                kbd_usr[6].gShifted=ITM_ANGLE;                    kbd_usr[6].keyLblAim=ITM_NULL;                    kbd_usr[6].primaryAim=ITM_G;                      kbd_usr[6].fShiftedAim=ITM_NULL;                  kbd_usr[6].gShiftedAim=ITM_GAMMA;                 kbd_usr[6].primaryTam=ITM_NULL;                   
+      kbd_usr[7].primary=ITM_RCL;                       kbd_usr[7].fShifted=ITM_PC;                       kbd_usr[7].gShifted=ITM_DELTAPC;                  kbd_usr[7].keyLblAim=ITM_NULL;                    kbd_usr[7].primaryAim=ITM_H;                      kbd_usr[7].fShiftedAim=ITM_NULL;                  kbd_usr[7].gShiftedAim=ITM_ETA;                   kbd_usr[7].primaryTam=ITM_HEX;                    
+      kbd_usr[8].primary=ITM_Rdown;                     kbd_usr[8].fShifted=ITM_CONSTpi;                  kbd_usr[8].gShifted=ITM_XTHROOT;                  kbd_usr[8].keyLblAim=ITM_NULL;                    kbd_usr[8].primaryAim=ITM_I;                      kbd_usr[8].fShiftedAim=ITM_NULL;                  kbd_usr[8].gShiftedAim=ITM_IOTA;                  kbd_usr[8].primaryTam=ITM_REG_I;                  
+      kbd_usr[9].primary=-MNU_TRI;                      kbd_usr[9].fShifted=ITM_DROP;                     kbd_usr[9].gShifted=ITM_FILL;                     kbd_usr[9].keyLblAim=ITM_NULL;                    kbd_usr[9].primaryAim=ITM_J;                      kbd_usr[9].fShiftedAim=ITM_NULL;                  kbd_usr[9].gShiftedAim=ITM_THETA;                 kbd_usr[9].primaryTam=ITM_REG_J;                  
+      kbd_usr[10].primary=ITM_SHIFTf;                   kbd_usr[10].fShifted=ITM_NULL;                    kbd_usr[10].gShifted=ITM_NULL;                    kbd_usr[10].keyLblAim=ITM_NULL;                   kbd_usr[10].primaryAim=ITM_K;                     kbd_usr[10].fShiftedAim=ITM_NULL;                 kbd_usr[10].gShiftedAim=ITM_KAPPA;                kbd_usr[10].primaryTam=ITM_REG_K;                 
+      kbd_usr[11].primary=ITM_SHIFTg;                   kbd_usr[11].fShifted=ITM_NULL;                    kbd_usr[11].gShifted=ITM_NULL;                    kbd_usr[11].keyLblAim=ITM_NULL;                   kbd_usr[11].primaryAim=ITM_L;                     kbd_usr[11].fShiftedAim=ITM_NULL;                 kbd_usr[11].gShiftedAim=ITM_LAMBDA;               kbd_usr[11].primaryTam=ITM_REG_L;                 
+      kbd_usr[12].primary=ITM_ENTER;                    kbd_usr[12].fShifted=ITM_CC;                      kbd_usr[12].gShifted=-MNU_CPX;                    kbd_usr[12].keyLblAim=ITM_ENTER;                  kbd_usr[12].primaryAim=ITM_ENTER;                 kbd_usr[12].fShiftedAim=ITM_NULL;                 kbd_usr[12].gShiftedAim=ITM_NULL;                 kbd_usr[12].primaryTam=ITM_ENTER;                 
+      kbd_usr[13].primary=ITM_XexY;                     kbd_usr[13].fShifted=ITM_LASTX;                   kbd_usr[13].gShifted=ITM_Rup;                     kbd_usr[13].keyLblAim=ITM_ex;                     kbd_usr[13].primaryAim=ITM_M;                     kbd_usr[13].fShiftedAim=ITM_ex;                   kbd_usr[13].gShiftedAim=ITM_MU;                   kbd_usr[13].primaryTam=ITM_NULL;                  
+      kbd_usr[14].primary=ITM_CHS;                      kbd_usr[14].fShifted=-MNU_MODE;                   kbd_usr[14].gShifted=-MNU_STK;                    kbd_usr[14].keyLblAim=ITM_PLUS_MINUS;             kbd_usr[14].primaryAim=ITM_N;                     kbd_usr[14].fShiftedAim=ITM_PLUS_MINUS;           kbd_usr[14].gShiftedAim=ITM_NU;                   kbd_usr[14].primaryTam=ITM_NULL;                  
+      kbd_usr[15].primary=ITM_EXPONENT;                 kbd_usr[15].fShifted=-MNU_DISP;                   kbd_usr[15].gShifted=-MNU_EXP;                    kbd_usr[15].keyLblAim=ITM_NULL;                   kbd_usr[15].primaryAim=ITM_O;                     kbd_usr[15].fShiftedAim=ITM_UP_ARROW;             kbd_usr[15].gShiftedAim=ITM_OMICRON;              kbd_usr[15].primaryTam=ITM_NULL;                  
+      kbd_usr[16].primary=ITM_BACKSPACE;                kbd_usr[16].fShifted=ITM_UNDO;                    kbd_usr[16].gShifted=-MNU_CLR;                    kbd_usr[16].keyLblAim=ITM_BACKSPACE;              kbd_usr[16].primaryAim=ITM_BACKSPACE;             kbd_usr[16].fShiftedAim=ITM_UNDO;                 kbd_usr[16].gShiftedAim=-MNU_CLR;                 kbd_usr[16].primaryTam=ITM_BACKSPACE;             
+      kbd_usr[17].primary=ITM_UP1;                       kbd_usr[17].fShifted=ITM_BST;                     kbd_usr[17].gShifted=ITM_RBR;                     kbd_usr[17].keyLblAim=ITM_UP1;                     kbd_usr[17].primaryAim=ITM_UP1;                    kbd_usr[17].fShiftedAim=ITM_NULL;                 kbd_usr[17].gShiftedAim=ITM_UP_ARROW;             kbd_usr[17].primaryTam=ITM_UP1;                    
+      kbd_usr[18].primary=ITM_7;                        kbd_usr[18].fShifted=-MNU_EQN;                    kbd_usr[18].gShifted=ITM_SAVE;                    kbd_usr[18].keyLblAim=ITM_7;                      kbd_usr[18].primaryAim=ITM_P;                     kbd_usr[18].fShiftedAim=ITM_7;                    kbd_usr[18].gShiftedAim=ITM_PI;                   kbd_usr[18].primaryTam=ITM_7;                     
+      kbd_usr[19].primary=ITM_8;                        kbd_usr[19].fShifted=-MNU_ADV;                    kbd_usr[19].gShifted=-MNU_CONST;                  kbd_usr[19].keyLblAim=ITM_8;                      kbd_usr[19].primaryAim=ITM_Q;                     kbd_usr[19].fShiftedAim=ITM_8;                    kbd_usr[19].gShiftedAim=ITM_NULL;                 kbd_usr[19].primaryTam=ITM_8;                     
+      kbd_usr[20].primary=ITM_9;                        kbd_usr[20].fShifted=-MNU_MATX;                   kbd_usr[20].gShifted=-MNU_XFN;                    kbd_usr[20].keyLblAim=ITM_9;                      kbd_usr[20].primaryAim=ITM_R;                     kbd_usr[20].fShiftedAim=ITM_9;                    kbd_usr[20].gShiftedAim=ITM_RHO;                  kbd_usr[20].primaryTam=ITM_9;                     
+      kbd_usr[21].primary=ITM_DIV;                      kbd_usr[21].fShifted=-MNU_STAT;                   kbd_usr[21].gShifted=-MNU_SUMS;                   kbd_usr[21].keyLblAim=ITM_OBELUS;                 kbd_usr[21].primaryAim=ITM_S;                     kbd_usr[21].fShiftedAim=ITM_OBELUS;               kbd_usr[21].gShiftedAim=ITM_SIGMA;                kbd_usr[21].primaryTam=ITM_DIV;                   
+      kbd_usr[22].primary=ITM_DOWN1;                     kbd_usr[22].fShifted=ITM_SST;                     kbd_usr[22].gShifted=ITM_STATUS;                  kbd_usr[22].keyLblAim=ITM_DOWN1;                   kbd_usr[22].primaryAim=ITM_DOWN1;                  kbd_usr[22].fShiftedAim=ITM_NULL;                 kbd_usr[22].gShiftedAim=ITM_DOWN_ARROW;           kbd_usr[22].primaryTam=ITM_DOWN1;                  
+      kbd_usr[23].primary=ITM_4;                        kbd_usr[23].fShifted=ITM_SNAP;                    kbd_usr[23].gShifted=-MNU_CLK;                    kbd_usr[23].keyLblAim=ITM_4;                      kbd_usr[23].primaryAim=ITM_T;                     kbd_usr[23].fShiftedAim=ITM_4;                    kbd_usr[23].gShiftedAim=ITM_TAU;                  kbd_usr[23].primaryTam=ITM_4;                     
+      kbd_usr[24].primary=ITM_5;                        kbd_usr[24].fShifted=-MNU_ANGLECONV;              kbd_usr[24].gShifted=-MNU_UNITCONV;               kbd_usr[24].keyLblAim=ITM_5;                      kbd_usr[24].primaryAim=ITM_U;                     kbd_usr[24].fShiftedAim=ITM_5;                    kbd_usr[24].gShiftedAim=ITM_PHI;                  kbd_usr[24].primaryTam=ITM_5;                     
+      kbd_usr[25].primary=ITM_6;                        kbd_usr[25].fShifted=-MNU_FLAGS;                  kbd_usr[25].gShifted=-MNU_BITS;                   kbd_usr[25].keyLblAim=ITM_6;                      kbd_usr[25].primaryAim=ITM_V;                     kbd_usr[25].fShiftedAim=ITM_6;                    kbd_usr[25].gShiftedAim=ITM_PSI;                  kbd_usr[25].primaryTam=ITM_6;                     
+      kbd_usr[26].primary=ITM_MULT;                     kbd_usr[26].fShifted=-MNU_PROB;                   kbd_usr[26].gShifted=-MNU_INTS;                   kbd_usr[26].keyLblAim=ITM_CROSS;                  kbd_usr[26].primaryAim=ITM_W;                     kbd_usr[26].fShiftedAim=ITM_CROSS;                kbd_usr[26].gShiftedAim=ITM_OMEGA;                kbd_usr[26].primaryTam=ITM_MULT;                  
+      kbd_usr[27].primary=ITM_SHIFTf;                   kbd_usr[27].fShifted=ITM_NULL;                    kbd_usr[27].gShifted=ITM_NULL;                    kbd_usr[27].keyLblAim=ITM_SHIFTf;                 kbd_usr[27].primaryAim=ITM_SHIFTf;                kbd_usr[27].fShiftedAim=ITM_NULL;                 kbd_usr[27].gShiftedAim=ITM_NULL;                 kbd_usr[27].primaryTam=ITM_SHIFTf;                
+      kbd_usr[28].primary=ITM_1;                        kbd_usr[28].fShifted=ITM_ASSIGN;                  kbd_usr[28].gShifted=ITM_NULL;                    kbd_usr[28].keyLblAim=ITM_1;                      kbd_usr[28].primaryAim=ITM_X;                     kbd_usr[28].fShiftedAim=ITM_1;                    kbd_usr[28].gShiftedAim=ITM_XI;                   kbd_usr[28].primaryTam=ITM_1;                     
+      kbd_usr[29].primary=ITM_2;                        kbd_usr[29].fShifted=ITM_USERMODE;                kbd_usr[29].gShifted=-MNU_LOOP;                   kbd_usr[29].keyLblAim=ITM_2;                      kbd_usr[29].primaryAim=ITM_Y;                     kbd_usr[29].fShiftedAim=ITM_2;                    kbd_usr[29].gShiftedAim=ITM_UPSILON;              kbd_usr[29].primaryTam=ITM_2;                     
+      kbd_usr[30].primary=ITM_3;                        kbd_usr[30].fShifted=-MNU_PARTS;                  kbd_usr[30].gShifted=-MNU_TEST;                   kbd_usr[30].keyLblAim=ITM_3;                      kbd_usr[30].primaryAim=ITM_Z;                     kbd_usr[30].fShiftedAim=ITM_3;                    kbd_usr[30].gShiftedAim=ITM_ZETA;                 kbd_usr[30].primaryTam=ITM_3;                     
+      kbd_usr[31].primary=ITM_SUB;                      kbd_usr[31].fShifted=-MNU_FIN;                    kbd_usr[31].gShifted=-MNU_ALPHAFN;                kbd_usr[31].keyLblAim=ITM_MINUS;                  kbd_usr[31].primaryAim=ITM_UNDERSCORE;            kbd_usr[31].fShiftedAim=ITM_MINUS;                kbd_usr[31].gShiftedAim=ITM_NULL;                 kbd_usr[31].primaryTam=ITM_SUB;                   
+      kbd_usr[32].primary=ITM_EXIT1;                     kbd_usr[32].fShifted=ITM_OFF;                     kbd_usr[32].gShifted=-MNU_PRINT;                  kbd_usr[32].keyLblAim=ITM_EXIT1;                   kbd_usr[32].primaryAim=ITM_EXIT1;                  kbd_usr[32].fShiftedAim=ITM_OFF;                  kbd_usr[32].gShiftedAim=ITM_PRINTER;              kbd_usr[32].primaryTam=ITM_EXIT1;                  
+      kbd_usr[33].primary=ITM_0;                        kbd_usr[33].fShifted=ITM_VIEW;                    kbd_usr[33].gShifted=ITM_TIMER;                   kbd_usr[33].keyLblAim=ITM_0;                      kbd_usr[33].primaryAim=ITM_COLON;                 kbd_usr[33].fShiftedAim=ITM_0;                    kbd_usr[33].gShiftedAim=ITM_NULL;                 kbd_usr[33].primaryTam=ITM_0;                     
+      kbd_usr[34].primary=ITM_PERIOD;                   kbd_usr[34].fShifted=ITM_SHOW;                    kbd_usr[34].gShifted=-MNU_INFO;                   kbd_usr[34].keyLblAim=ITM_PERIOD;                 kbd_usr[34].primaryAim=ITM_COMMA;                 kbd_usr[34].fShiftedAim=ITM_PERIOD;               kbd_usr[34].gShiftedAim=-MNU_ALPHADOT;            kbd_usr[34].primaryTam=ITM_PERIOD;                
+      kbd_usr[35].primary=ITM_RS;                       kbd_usr[35].fShifted=ITM_PR;                      kbd_usr[35].gShifted=-MNU_PFN;                    kbd_usr[35].keyLblAim=ITM_NULL;                   kbd_usr[35].primaryAim=ITM_QUESTION_MARK;         kbd_usr[35].fShiftedAim=ITM_SLASH;                kbd_usr[35].gShiftedAim=-MNU_ALPHAMATH;           kbd_usr[35].primaryTam=ITM_NULL;                  
+      kbd_usr[36].primary=ITM_ADD;                      kbd_usr[36].fShifted=-MNU_CATALOG;                kbd_usr[36].gShifted=-MNU_IO;                     kbd_usr[36].keyLblAim=ITM_PLUS;                   kbd_usr[36].primaryAim=ITM_SPACE;                 kbd_usr[36].fShiftedAim=ITM_PLUS;                 kbd_usr[36].gShiftedAim=-MNU_ALPHAINTL;           kbd_usr[36].primaryTam=ITM_ADD;                   
+    #endif //WP43S_ON_C43_USER_MODE
+
+
+
 
     // The following lines are test data
+  #ifndef SAVE_SPACE_DM42_14
     addTestPrograms();
+  #endif //SAVE_SPACE_DM42_14
     //fnSetFlag(  3);
     //fnSetFlag( 11);
     //fnSetFlag( 33);
@@ -919,17 +1024,126 @@ void fnReset(uint16_t confirmation) {
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkHexaString), false);
       refreshDebugPanel();
     #endif //  (DEBUG_PANEL == 1)
+
+    //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
+
+
+
+
+#define VERSION1 "_107_18 "
+
+    #ifdef JM_LAYOUT_1A
+      #undef L1L2
+      #define L1L2    "L1"
+    #endif
+    #ifdef JM_LAYOUT_2_DM42_STRICT
+      #undef L1L2
+      #define L1L2    "L42"
+    #endif
+
+    char *build_str = "C43" L1L2 VERSION1 ", " __DATE__;
+
+
+//    fnStrtoX("C43L2_100+++, 2021-01-03, C43-PEM-XEQ-WIP");
+    fnStrtoX(build_str);
+    fnStore(102);
+    fnDrop(0);
+  
+    #ifdef JM_LAYOUT_1A
+    fnStrtoX("C43 L1: C43 template");
+    #endif
+    #ifdef JM_LAYOUT_2_DM42_STRICT
+    fnStrtoX("C43 L42: unmodified DM42");
+    #endif
+    fnStore(103);
+
+//    fnStrtoX("C43: Try POC pi and e and roots, ...");
+//    fnStore(104);
+
+    fnDrop(0);
+//    fnDrop(0);
+//    fnStrtoX("C43 LARGE TEXT");
+
+#ifndef SAVE_SPACE_DM42_0
+    //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
+    fnStrtoX("Reg 11,12 & 13 have: The 3 cubes = 3.");
+    fnStore(10);
+    fnDrop(0);
+    fnStrInputLongint("569936821221962380720");
+    fnStore(11);
+    fnDrop(0);
+    fnStrInputLongint("-569936821113563493509");
+    fnStore(12);
+    fnDrop(0);
+    fnStrInputLongint("-472715493453327032");
+    fnStore(13);
+    fnDrop(0);
+
+    fnStrtoX("Reg 15, 16 & 17 have: The 3 cubes = 42.");
+    fnStore(14);
+    fnDrop(0);
+    fnStrInputLongint("-80538738812075974");
+    fnStore(15);
+    fnDrop(0);
+    fnStrInputLongint("80435758145817515");
+    fnStore(16);
+    fnDrop(0);
+    fnStrInputLongint("12602123297335631");
+    fnStore(17);
+    fnDrop(0);
+
+    fnStrtoX("37 digits of pi, Reg19 / Reg20.");
+    fnStore(18);
+    fnDrop(0);
+    fnStrInputLongint("2646693125139304345");
+    fnStore(19);
+    fnDrop(0);
+    fnStrInputLongint("842468587426513207");
+    fnStore(20);
+    fnDrop(0);
+
+    fnStrtoX("Primes: Carol, Kynea, repunit, Woodal");
+    fnStore(21);
+    fnDrop(0);
+    fnStrInputLongint("18014398241046527");
+    fnStore(22);
+    fnDrop(0);
+    fnStrInputLongint("18446744082299486207");
+    fnStore(23);
+    fnDrop(0);
+    fnStrInputLongint("7369130657357778596659");
+    fnStore(24);
+    fnDrop(0);
+    fnStrInputLongint("195845982777569926302400511");
+    fnStore(25);
+    fnDrop(0);
+    fnStrInputLongint("4776913109852041418248056622882488319");
+    fnStore(26);
+    fnDrop(0);
+    fnStrInputLongint("225251798594466661409915431774713195745814267044878909733007331390393510002687");
+    fnStore(27);
+    fnDrop(0);
+#endif //SAVE_SPACE_DM42_0
+
+    doRefreshSoftMenu = true;     //jm dr
+    last_CM = 253;
+    refreshScreen();
   }
 }
 
 
 
-void backToSystem(uint16_t unusedButMandatoryParameter) {
-  #ifdef PC_BUILD
-    fnOff(NOPARAM);
-  #endif // PC_BUILD
+void backToSystem(uint16_t confirmation) {
+  if(confirmation == NOT_CONFIRMED) {
+    setConfirmationMode(backToSystem);
+  }
+  else {
+    #ifdef PC_BUILD
+      fnOff(NOPARAM);
+    #endif // PC_BUILD
 
-  #ifdef DMCP_BUILD
-    backToDMCP = true;
-  #endif // DMCP_BUILD
+    #ifdef DMCP_BUILD
+      backToDMCP = true;
+    #endif // DMCP_BUILD
+  }
 }

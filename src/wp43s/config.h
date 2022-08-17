@@ -21,7 +21,10 @@
 #define CONFIG_H
 
 #include "decContext.h"
+#include "defines.h"
 #include <stdint.h>
+
+void     showSoftmenu          (int16_t id);  //JM repeat here to make DMCP compile
 
 extern const enum rounding roundingModeTable[7];
 
@@ -191,7 +194,7 @@ void     fnFractionType        (uint16_t unusedButMandatoryParameter);
 void     fnReset               (uint16_t confirmation);
 void     setConfirmationMode   (void (*func)(uint16_t));
 void     fnClAll               (uint16_t confirmation);
-void     backToSystem          (uint16_t unusedButMandatoryParameter);
+void     backToSystem          (uint16_t confirmation);
 void     fnRange               (uint16_t unusedButMandatoryParameter);
 void     fnGetRange            (uint16_t unusedButMandatoryParameter);
 void     fnHide                (uint16_t digits);

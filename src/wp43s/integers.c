@@ -23,6 +23,7 @@
 #include "flags.h"
 #include "fonts.h"
 #include "mathematics/wp34s.h"
+#include "c43Extensions/radioButtonCatalog.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -32,6 +33,8 @@ void fnChangeBase(uint16_t base) {
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
     if(2 <= base && base <= 16) {
       setRegisterTag(REGISTER_X, base);
+      lastIntegerBase = base;                //JMNIM
+      fnRefreshState();             //JM
     }
     else {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_T);
@@ -46,6 +49,8 @@ void fnChangeBase(uint16_t base) {
     if(2 <= base && base <= 16) {
       convertLongIntegerRegisterToShortIntegerRegister(REGISTER_X, REGISTER_X);
       setRegisterShortIntegerBase(REGISTER_X, base);
+      lastIntegerBase = base;                //JMNIM
+      fnRefreshState();             //JM
     }
     else {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_T);

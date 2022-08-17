@@ -16,7 +16,7 @@
 
 /**
  * \file typeDefinitions.h
- */
+ ***********************************************/
 #ifndef TYPEDEFINITIONS_H
 #define TYPEDEFINITIONS_H
 
@@ -29,8 +29,8 @@
 
 /**
  * \union multiplyDivide_t
- * Used for unit conversions.
- */
+ * \brief used for unit conversions
+ ***********************************************/
 typedef enum {
   multiply,
   divide
@@ -39,8 +39,8 @@ typedef enum {
 
 /**
  * \struct calcKey_t
- * Structure keeping the informations for one key.
- */
+ * \brief Structure keeping the informations for one key
+ ***********************************************/
 typedef struct {
   int16_t keyId;       ///< ID of the key
   int16_t primary;     ///< ID of the primary function of the key
@@ -118,6 +118,16 @@ typedef enum {
 
 
 /**
+ * \enum bool_t
+ * Boolean type.
+ */
+typedef enum {
+  false = 0,     ///< Value for false
+  true  = !false ///< Value for true
+} bool_t; // 1 bit
+
+
+/**
  * \enum angularMode_t
  * Angular units.
  */
@@ -128,8 +138,10 @@ typedef enum {
   amDMS    =  3,
   amMultPi =  4,
   amNone   =  5,
-  amSecond =  6  // not an angular but a time unit: for the routine unified with the real type
+  amSecond =  6, // not an angular but a time unit: for the routine unified with the real type
+  TM_HMS   =  7  // JM not an angular but a time unit: for the C43 usage
 } angularMode_t;
+//#define TM_HMS    7   //JM
 
 
 /**
@@ -153,6 +165,53 @@ typedef struct {
   uint32_t      firstGregorianDay;
   uint64_t      systemFlags;
   calcKey_t     kbd_usr[37];
+
+  //    int16_t   Norm_Key_00_VAR;                                           //JMCFGvv
+  uint8_t SigFigMode;
+  bool_t eRPN;
+  bool_t HOME3;
+  bool_t ShiftTimoutMode;
+  bool_t Home3TimerMode;
+  bool_t UNITDisplay;
+  bool_t SH_BASE_HOME;
+  bool_t SH_BASE_AHOME;
+  int16_t Norm_Key_00_VAR;
+  uint8_t Input_Default;
+  bool_t jm_FG_LINE;
+  bool_t jm_NO_BASE_SCREEN;
+  bool_t jm_G_DOUBLETAP;
+  double graph_xmin;
+  double graph_xmax;
+  double graph_ymin;
+  double graph_ymax;
+  double graph_dx;
+  double graph_dy;
+  bool_t roundedTicks;
+  bool_t extentx;
+  bool_t extenty;
+  bool_t PLOT_VECT;
+  bool_t PLOT_NVECT;
+  bool_t PLOT_SCALE;
+  bool_t Aspect_Square;
+  bool_t PLOT_LINE;
+  bool_t PLOT_CROSS;
+  bool_t PLOT_BOX;
+  bool_t PLOT_INTG;
+  bool_t PLOT_DIFF;
+  bool_t PLOT_RMS;
+  bool_t PLOT_SHADE;
+  bool_t PLOT_AXIS;
+  int8_t PLOT_ZMX;
+  int8_t PLOT_ZMY;
+  bool_t jm_HOME_SUM;
+  bool_t jm_HOME_MIR;
+  bool_t jm_HOME_FIX;     
+  bool_t jm_LARGELI;
+  bool_t constantFractions;
+  uint8_t constantFractionsMode;
+  bool_t constantFractionsOn;
+  uint8_t displayStackSHOIDISP;                                             //JMCFG^^
+
 } dtConfigDescriptor_t;
 
 
@@ -266,8 +325,8 @@ typedef enum {
 
 /**
  * \struct softmenu_t
- * Structure keeping the informations for one softmenu.
- */
+ * \brief Structure keeping the informations for one softmenu
+ ***********************************************/
 typedef struct {
   int16_t menuItem;           ///< ID of the menu. The item is always negative and -item must be in the indexOfItems area
   int16_t numItems;           ///< Number of items in the softmenu (must be a multiple of 6 for now)
@@ -277,8 +336,8 @@ typedef struct {
 
 /**
  * \struct dynamicSoftmenu_t
- * Structure keeping the informations for one variable softmenu.
- */
+ * \brief Structure keeping the informations for one variable softmenu
+ ***********************************************/
 typedef struct {
   int16_t menuItem;           ///< ID of the menu. The item is always negative and -item must be in the indexOfItems area
   int16_t numItems;           ///< Number of items in the dynamic softmenu (must be a multiple of 6 for now)
@@ -288,28 +347,18 @@ typedef struct {
 
 /**
  * \struct softmenuStack_t
- * Stack of softmenus.
- */
+ * \brief Stack of softmenus
+ ***********************************************/
 typedef struct {
   int16_t softmenuId; ///< Softmenu ID = rank in dynamicSoftmenu or softmenu
   int16_t firstItem;  ///< Current first item on the screen (unshifted F1 = bottom left)
 } softmenuStack_t;
 
 
-/**
- * \enum bool_t
- * Boolean type.
- */
-typedef enum {
-  false = 0,     ///< Value for false
-  true  = !false ///< Value for true
-} bool_t; // 1 bit
-
-
-/**
+/********************************************//**
  * \typedef calcRegister_t
- * A type for calculator registers.
- */
+ * \brief A type for calculator registers
+ ***********************************************/
 typedef int16_t calcRegister_t;
 
 /**

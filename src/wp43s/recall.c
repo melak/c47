@@ -22,13 +22,16 @@
 #include "error.h"
 #include "flags.h"
 #include "items.h"
+#include "c43Extensions/jm.h"
 #include "mathematics/compare.h"
 #include "matrix.h"
 #include "memory.h"
+#include "plotstat.h"
 #include "registerValueConversions.h"
 #include "registers.h"
 #include "stack.h"
 #include "store.h"
+#include "typeDefinitions.h"
 
 #include "wp43s.h"
 
@@ -241,6 +244,54 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(firstGregorianDay);
     recallFromDtConfigDescriptor(roundingMode);
     recallFromDtConfigDescriptor(systemFlags);
+
+//    setSystemFlagToRecalled(Norm_Key_00_VAR);                            //JMCFG vv
+    recallFromDtConfigDescriptor(SigFigMode);      
+    recallFromDtConfigDescriptor(eRPN);             
+    recallFromDtConfigDescriptor(HOME3);            
+    recallFromDtConfigDescriptor(ShiftTimoutMode);  
+    recallFromDtConfigDescriptor(Home3TimerMode);   
+    recallFromDtConfigDescriptor(UNITDisplay);      
+    recallFromDtConfigDescriptor(SH_BASE_HOME);     
+    recallFromDtConfigDescriptor(SH_BASE_AHOME);    
+    recallFromDtConfigDescriptor(Norm_Key_00_VAR); 
+    recallFromDtConfigDescriptor(Input_Default);   
+    recallFromDtConfigDescriptor(jm_FG_LINE);       
+    recallFromDtConfigDescriptor(jm_NO_BASE_SCREEN);       
+    recallFromDtConfigDescriptor(jm_G_DOUBLETAP);   
+    recallFromDtConfigDescriptor(graph_xmin);        
+    recallFromDtConfigDescriptor(graph_xmax);        
+    recallFromDtConfigDescriptor(graph_ymin);        
+    recallFromDtConfigDescriptor(graph_ymax);        
+    recallFromDtConfigDescriptor(graph_dx);          
+    recallFromDtConfigDescriptor(graph_dy);
+    recallFromDtConfigDescriptor(roundedTicks);
+    recallFromDtConfigDescriptor(extentx);
+    recallFromDtConfigDescriptor(extenty);
+    recallFromDtConfigDescriptor(PLOT_VECT);
+    recallFromDtConfigDescriptor(PLOT_NVECT);
+    recallFromDtConfigDescriptor(PLOT_SCALE);
+    recallFromDtConfigDescriptor(Aspect_Square);          
+    recallFromDtConfigDescriptor(PLOT_LINE);          
+    recallFromDtConfigDescriptor(PLOT_CROSS);          
+    recallFromDtConfigDescriptor(PLOT_BOX);
+    recallFromDtConfigDescriptor(jm_HOME_SUM);      
+    recallFromDtConfigDescriptor(PLOT_BOX);
+    recallFromDtConfigDescriptor(PLOT_INTG);
+    recallFromDtConfigDescriptor(PLOT_DIFF);
+    recallFromDtConfigDescriptor(PLOT_RMS );
+    recallFromDtConfigDescriptor(PLOT_SHADE );
+    recallFromDtConfigDescriptor(PLOT_AXIS );
+    recallFromDtConfigDescriptor(PLOT_ZMX );
+    recallFromDtConfigDescriptor(PLOT_ZMY );
+    recallFromDtConfigDescriptor(jm_HOME_MIR);      
+    recallFromDtConfigDescriptor(jm_HOME_FIX);
+    recallFromDtConfigDescriptor(jm_LARGELI);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(constantFractions);                           //JM
+    recallFromDtConfigDescriptor(constantFractionsMode);
+    recallFromDtConfigDescriptor(constantFractionsOn);
+    recallFromDtConfigDescriptor(displayStackSHOIDISP);                                  //JMCFG^^         
+
     synchronizeLetteredFlags();
   }
 

@@ -25,6 +25,16 @@
 #include "screen.h"
 #include "softmenus.h"
 #include "timer.h"
+#include <string.h>
+
+//#define JMSHOWCODES
+
+#if defined(DMCP_BUILD)
+  #include "c43Extensions/inlineTest.h"
+  #include "c43Extensions/jm.h"
+  #include "c43Extensions/keyboardTweak.h"
+#endif
+
 
 #if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
   bool_t              debugMemAllocation;
@@ -152,6 +162,63 @@ int16_t                rbrRegister;
 int16_t                catalog;
 int16_t                lastCatalogPosition[NUMBER_OF_CATALOGS];
 int16_t                showFunctionNameItem;
+
+uint8_t               displayStackSHOIDISP;          //JM SHOIDISP
+bool_t                numLock;                       //JM
+bool_t                doRefreshSoftMenu;                       //dr
+bool_t                jm_FG_LINE;                              //JM Screen / keyboard operation setup
+bool_t                jm_NO_BASE_SCREEN;                              //JM Screen / keyboard operation setup
+bool_t                jm_G_DOUBLETAP;                          //JM Screen / keyboard operation setup
+bool_t                jm_HOME_SUM;                             //JMHOME
+bool_t                jm_HOME_MIR;                             //JMHOME
+bool_t                jm_HOME_FIX;                             //JMHOME
+bool_t                jm_LARGELI;
+bool_t                constantFractions;                       //JM
+uint8_t               constantFractionsMode;
+bool_t                constantFractionsOn;                     //JM
+uint8_t               SigFigMode;                              //JM SIGFIG
+bool_t                eRPN;                                    //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
+bool_t                HOME3;                                   //JM HOME Create a flag to enable or disable triple shift HOME3.
+bool_t                ShiftTimoutMode;                         //JM SHIFT Create a flag to enable or disable SHIFT TIMER CANCEL.
+bool_t                Home3TimerMode;                          //JM HOME Create a flag to enable or disable HOME TIMER CANCEL.
+bool_t                UNITDisplay;                             //JM UNITDisplay
+bool_t                SH_BASE_HOME;                            //JM BASEHOME
+bool_t                SH_BASE_AHOME;                           //JM BASEHOME
+int16_t               Norm_Key_00_VAR;                         //JM USER NORMAL
+uint8_t               Input_Default;                           //JM Input Default
+float                 graph_xmin;                              //JM Graph
+float                 graph_xmax;                              //JM Graph
+float                 graph_ymin;                              //JM Graph
+float                 graph_ymax;                              //JM Graph
+uint8_t               lastSetAngularMode;
+bool_t                AlphaSelectionBufferTimerRunning;        //JM
+#ifdef INLINE_TEST                                             //vv dr
+bool_t                testEnabled;                             //
+uint16_t              testBitset;                              //
+#endif                                                         //^^
+int16_t                longpressDelayedkey2;         //JM
+int16_t                longpressDelayedkey3;         //JM
+int16_t                T_cursorPos;                  //JMCURSOR
+int16_t                SHOWregis;                    //JMSHOW
+int16_t                ListXYposition;               //JMSHOW
+int16_t                mm_MNU_HOME;                  //JM
+int16_t                mm_MNU_ALPHA;                 //JM
+int16_t                MY_ALPHA_MENU = MY_ALPHA_MENU_CNST;  //JM
+int16_t                JM_auto_doublepress_enabled;  //JM TIMER CLRDROP //drop
+int16_t                JM_auto_longpress_enabled;    //JM TIMER CLRDROP //clstk
+uint8_t                JM_SHIFT_HOME_TIMER1;         //Local to keyboard.c, but defined here
+bool_t                 ULFL, ULGL;                   //JM Underline
+int16_t                FN_key_pressed, FN_key_pressed_last; //JM LONGPRESS FN
+bool_t                 FN_timeouts_in_progress;      //JM LONGPRESS FN
+bool_t                 Shft_timeouts;                //JM SHIFT NEW FN
+bool_t                 FN_timed_out_to_NOP;          //JM LONGPRESS FN
+bool_t                 FN_timed_out_to_RELEASE_EXEC; //JM LONGPRESS FN
+bool_t                 FN_handle_timed_out_to_EXEC;
+char                   indexOfItemsXEQM[18*8];       //JMXEQ
+int16_t                fnXEQMENUpos;                 //JMXEQ
+uint8_t                last_CM = 255;                //Do extern !!
+uint8_t                FN_state; // = ST_0_INIT;      
+
 int16_t                exponentSignLocation;
 int16_t                denominatorLocation;
 int16_t                imaginaryExponentSignLocation;
@@ -228,7 +295,14 @@ real_t                 SAVED_SIGMA_LASTY;
 int32_t                SAVED_SIGMA_LAct;
 
 #ifdef DMCP_BUILD
-  bool_t               backToDMCP;
+  #ifdef JMSHOWCODES                                        //JM Test
+    int8_t            telltale_pos;                         //JM Test
+    int8_t            telltale_lastkey;                     //JM Test
+  #endif //JMSHOWCODES                                      //JM Test 
+#ifdef BUFFER_CLICK_DETECTION
+  uint32_t            timeStampKey;                         //dr - internal keyBuffer POC
+#endif //BUFFER_CLICK_DETECTION
+  bool_t              backToDMCP;
 //int                  keyAutoRepeat;
 //int16_t              previousItem;
   uint32_t             nextTimerRefresh;
@@ -316,10 +390,20 @@ int32_t                SAVED_SIGMA_LAct;
     return key;
   }
 
+//#define TMR_OBSERVE
+
   void program_main(void) {
     int key = 0;
     char charKey[3];
-    /*bool_t wp43sKbdLayout, inFastRefresh = 0, inDownUpPress = 0, repeatDownUpPress = 0*/;
+#ifdef BUFFER_KEY_COUNT
+    int keyCount = 0;                                       //dr - internal keyBuffer POC
+#endif
+#ifdef BUFFER_CLICK_DETECTION
+    timeStampKey = (uint32_t)sys_current_ms();              //dr - internal keyBuffer POC
+#endif
+  //uint8_t act_min = 0;                                    // dr - one second POC
+
+  //bool_t wp43sKbdLayout, inFastRefresh = 0, inDownUpPress = 0, repeatDownUpPress = 0;  // removed autorepeat stuff   //dr - no keymap is used
     uint16_t currentVolumeSetting, savedVoluleSetting; // used for beep signaling screen shot
   //uint32_t now, previousRefresh, nextAutoRepeat = 0;
 
@@ -328,6 +412,7 @@ int32_t                SAVED_SIGMA_LAct;
     mp_set_memory_functions(allocGmp, reallocGmp, freeGmp);
 
     lcd_clear_buf();
+#ifdef NOKEYMAP                                             //vv dr - no keymap is used
     lcd_putsAt(t24, 4, "Press the bottom left key."); lcd_refresh();
     while(key != 33 && key != 37) {
       key = key_pop();
@@ -340,9 +425,15 @@ int32_t                SAVED_SIGMA_LAct;
     wp43sKbdLayout = (key == 37); // bottom left key
     key = 0;
 
-    lcd_clear_buf();
+  lcd_clear_buf();
+#endif //NOKEYMAP                                           //^^
     fnReset(CONFIRMED);
     refreshScreen();
+
+  #ifdef JMSHOWCODES                                        //JM test
+    telltale_lastkey = 0;                                   //JM test
+    telltale_pos = 0;                                       //JM test
+  #endif                                                    //JM test
 
     #if 0
       longInteger_t li;
@@ -436,13 +527,20 @@ int32_t                SAVED_SIGMA_LAct;
 
     backToDMCP = false;
 
-    lcd_refresh();
+    lcd_forced_refresh();                                   //JM 
   //previousRefresh = sys_current_ms();
     nextScreenRefresh = sys_current_ms() + SCREEN_REFRESH_PERIOD;
   //now = sys_current_ms();
     //runner_key_tout_init(0); // Enables fast auto repeat
 
     fnTimerReset();
+    fnTimerConfig(TO_FG_LONG, refreshFn, TO_FG_LONG);
+    fnTimerConfig(TO_CL_LONG, refreshFn, TO_CL_LONG);
+    fnTimerConfig(TO_FG_TIMR, refreshFn, TO_FG_TIMR);
+    fnTimerConfig(TO_FN_LONG, refreshFn, TO_FN_LONG);
+    fnTimerConfig(TO_FN_EXEC, execFnTimeout, 0);
+    fnTimerConfig(TO_3S_CTFF, shiftCutoff, TO_3S_CTFF);
+    fnTimerConfig(TO_CL_DROP, fnTimerDummyTest, TO_CL_DROP);
     fnTimerConfig(TO_AUTO_REPEAT, execAutoRepeat, 0);
     fnTimerConfig(TO_TIMER_APP, execTimerApp, 0);
     fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV);
@@ -462,10 +560,18 @@ int32_t                SAVED_SIGMA_LAct;
         CLR_ST(STAT_RUNNING);
         sys_sleep();
       }
-      else if((!ST(STAT_PGM_END) && key_empty())) {         // Just wait if no keys available.
+      else if (!ST(STAT_PGM_END) && key_empty() && emptyKeyBuffer()) {         // Just wait if no keys available.
         CLR_ST(STAT_RUNNING);
 
-        if(nextTimerRefresh == 0) {                         // no timeout available
+        if(nextTimerRefresh == 0) {                                            // no timeout available
+#ifdef TMR_OBSERVE
+          if(fnTestBitIsSet(2) == true) {
+            showString("key_empty()", &standardFont, 20, 40, vmNormal, false, false);
+            refreshLcd();
+            lcd_refresh_wait();
+          }
+#endif
+
           sys_sleep();
         }
         else {                                                                  // timeout available
@@ -475,38 +581,49 @@ int32_t                SAVED_SIGMA_LAct;
             timeoutTime = nextTimerRefresh - timeoutTime;
           }
           else {
+#ifdef TMR_OBSERVE
+            if(fnTestBitIsSet(3) == true) {
+              char snum[50];
+              itoa(timeoutTime - nextTimerRefresh, snum, 10);
+              showString(snum, &standardFont, 20, 120, vmNormal, false, false);
+            }
+#endif
             timeoutTime = 1;
           }
 
-//--      uint32_t sleepTime = max(1, nextScreenRefresh - sys_current_ms());
-          uint32_t sleepTime = sys_current_ms();
-          if(nextScreenRefresh > sleepTime) {
-            sleepTime = nextScreenRefresh - sleepTime;
+          if(fnTimerGetStatus(TO_KB_ACTV) == TMR_RUNNING) {
+            timeoutTime = min(timeoutTime, 40);
           }
-          else {
-            sleepTime = 1;
+          if(fnTimerGetStatus(TO_FN_EXEC) == TMR_RUNNING) {
+            timeoutTime = min(timeoutTime, 15);
           }
-          if(showFunctionNameCounter > 0) {
-            sleepTime = min(sleepTime, FAST_SCREEN_REFRESH_PERIOD);
-          }
-          sleepTime = min(sleepTime, timeoutTime);
 
-          sys_timer_start(TIMER_IDX_REFRESH_SLEEP, max(sleepTime, 1));          // wake up for refresh
+        //if(timeoutTime > 1000) {                                             // timeout > 1s
+        //  sys_sleep();
+        //}
+        //else {                                                               // timeout leads to sys_timer
+
+          uint32_t sleepTime = SCREEN_REFRESH_PERIOD;
+          sleepTime = min(sleepTime, timeoutTime);
+          sys_timer_start(TIMER_IDX_REFRESH_SLEEP, max(sleepTime, 1));         // wake up for screen refresh
+#ifdef TMR_OBSERVE
+          if(fnTestBitIsSet(1) == true) {
+            char snum[50];
+            itoa(sleepTime, snum, 10);
+            strcat(snum, " ");
+            for(int8_t i = TMR_NUMBER -1; i>=0; i--) {
+              char digit[2] = "_";
+              if(fnTimerGetStatus(i) == TMR_RUNNING) { itoa(i, digit, 16); } 
+              strcat(snum, digit);
+            }
+            showString(snum, &standardFont, 20, 40, vmNormal, false, false);
+          }
+#endif
+
           sys_sleep();
           sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
+        //}
         }
-
-
-//      sys_timer_start(TIMER_IDX_SCREEN_REFRESH, max(1, nextScreenRefresh - now));  // wake up for screen refresh
-//      if(inDownUpPress) {
-//        sys_timer_start(TIMER_IDX_AUTO_REPEAT, max(1, nextAutoRepeat - now)); // wake up for key auto-repeat
-//      }
-//      sys_sleep();
-//      sys_timer_disable(TIMER_IDX_SCREEN_REFRESH);
-//      if(inDownUpPress) {
-//        repeatDownUpPress = (sys_current_ms() > nextAutoRepeat);
-//        sys_timer_disable(TIMER_IDX_AUTO_REPEAT);
-//      }
       }
 
     //now = sys_current_ms();
@@ -515,6 +632,12 @@ int32_t                SAVED_SIGMA_LAct;
       // Externally forced LCD repaint
       if(ST(STAT_CLK_WKUP_FLAG)) {
         if(!ST(STAT_OFF) && (nextTimerRefresh == 0)) {
+#ifdef TMR_OBSERVE
+          if(fnTestBitIsSet(1) == true) {
+            showString("CLK_WKUP_FLAG", &standardFont, 20, 40, vmNormal, false, false);
+          }
+#endif
+
           refreshLcd();
           lcd_refresh_wait();
         }
@@ -523,7 +646,7 @@ int32_t                SAVED_SIGMA_LAct;
       }
       if(ST(STAT_POWER_CHANGE)) {
         if(!ST(STAT_OFF) && (fnTimerGetStatus(TO_KB_ACTV) != TMR_RUNNING)) {
-          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, SCREEN_REFRESH_PERIOD+50);
+          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, 40);
         }
         CLR_ST(STAT_POWER_CHANGE);
         continue;
@@ -576,6 +699,7 @@ int32_t                SAVED_SIGMA_LAct;
         reset_auto_off();
       }
 
+#ifdef NOKEYMAP
       // Fetch the key
       //  < 0 -> No key event
       //  > 0 -> Key pressed
@@ -596,9 +720,11 @@ int32_t                SAVED_SIGMA_LAct;
       //showString(sysLastKeyCh, &standardFont, 0, 0, vmReverse, true, true);
       //The line below to emit a beep
       //while(get_beep_volume() < 11) beep_volume_up(); start_buzzer_freq(220000); sys_delay(200); stop_buzzer();
+#endif //NOKEYMAP
 
+#ifdef AUTOREPEAT
       // Increase the refresh rate if we are in an UP/DOWN key press so we pick up auto key repeats
-      if(key == 27 || key == 32) {
+      if(key == 18 || key == 23) {
 //      inDownUpPress = 1;
 //      nextAutoRepeat = now + KEY_AUTOREPEAT_FIRST_PERIOD;
         if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING && (!shiftF || calcMode == CM_PEM) && !shiftG && (currentSoftmenuScrolls() || (calcMode != CM_NORMAL && calcMode != CM_NIM && calcMode != CM_AIM))) {
@@ -627,10 +753,61 @@ int32_t                SAVED_SIGMA_LAct;
       //    key = -1;
       //  }
       //}
+#endif //AUTOREPEAT
+
+
+      uint8_t outKey;
+      keyBuffer_pop();
+
+#ifdef BUFFER_CLICK_DETECTION
+    uint32_t timeSpan_1;
+    uint32_t timeSpan_B;
+#ifdef BUFFER_KEY_COUNT
+    uint8_t outKeyCount;
+    if(outKeyBuffer(&outKey, &outKeyCount, &timeStampKey, &timeSpan_1, &timeSpan_B) == BUFFER_SUCCESS) {
+      key = outKey;
+      keyCount = outKeyCount;
+//    if(outKeyCount > 0) {
+//      do someting
+//    }
+    }
+#else
+    if(outKeyBuffer(&outKey, &timeStampKey, &timeSpan_1, &timeSpan_B) == BUFFER_SUCCESS) {
+      key = outKey;
+    }
+#endif
+#else
+#ifdef BUFFER_KEY_COUNT
+      uint8_t outKeyCount;
+      if(outKeyBuffer(&outKey, &outKeyCount) == BUFFER_SUCCESS) {
+        key = outKey;
+        keyCount = outKeyCount;
+      }
+#else
+      if(outKeyBuffer(&outKey) == BUFFER_SUCCESS) {
+        key = outKey;
+      }
+#endif
+#endif
+      else {
+        key = -1;
+      }                                                     //^^
+
+
+
+      if(key == 18 || key == 23) {
+        if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING) {
+          fnTimerStart(TO_AUTO_REPEAT, key, KEY_AUTOREPEAT_FIRST_PERIOD);
+        }
+      }
+      else if(key == 0) {
+        fnTimerStop(TO_AUTO_REPEAT);
+      }
+
+
 
       if(key == 44) { //DISP for special SCREEN DUMP key code. To be 16 but shift decoding already done to 44 in DMCP
-        shiftF = false;
-        shiftG = false; //To avoid f or g top left of the screen, clear again to make sure
+        resetShiftState();                                  //JM to avoid f or g top left of the screen
 
         currentVolumeSetting = get_beep_volume();
         savedVoluleSetting = currentVolumeSetting;
@@ -654,24 +831,47 @@ int32_t                SAVED_SIGMA_LAct;
           currentVolumeSetting = get_beep_volume();
         }
       }
+   
+    #ifdef JMSHOWCODES 
+      fnDisplayStack(1);
+      //Show key codes
+      if(sys_last_key()!=telltale_lastkey) {
+        telltale_lastkey = sys_last_key();
+        telltale_pos++;
+        telltale_pos = telltale_pos & 0x03;
+        char aaa[100];
+        sprintf   (aaa,"k=%d d=%ld      ",key, timeSpan);
+        showString(aaa, &standardFont, 300, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X), vmNormal, true, true);
+        sprintf   (aaa,"Rel=%d, nop=%d, St=%d, Key=%d, FN_kp=%d   ",FN_timed_out_to_RELEASE_EXEC, FN_timed_out_to_NOP, FN_state, sys_last_key(), FN_key_pressed);
+        showString(aaa, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X), vmNormal, true, true);
+        sprintf   (aaa,"%4d(%4ld)<<",sys_last_key(),timeSpan);
+        showString(aaa, &standardFont, telltale_pos*90+ 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X), vmNormal, true, true);
+      }
+    #endif
 
       if(38 <= key && key <=43) { // Function key
         sprintf(charKey, "%c", key+11);
         btnFnPressed(charKey);
-        lcd_refresh();
+        keyClick(3);
+      //lcd_refresh_dma();
       }
       else if(1 <= key && key <= 37) { // Not a function key
         sprintf(charKey, "%02d", key - 1);
         btnPressed(charKey);
-        lcd_refresh();
+        keyClick(1);
+      //lcd_refresh_dma();
       }
-      else if(key == 0) { // Autorepeat of UP/DOWN or key released
+
+#ifdef AUTOREPEAT
+      else if(key == 0) { // Autorepeat
         if(charKey[1] == 0) { // Last key pressed was one of the 6 function keys
           btnFnReleased(charKey);
+          keyClick(6);
         }
         else { // Last key pressed was not one of the 6 function keys
           //beep(440, 50);
           btnReleased(charKey);
+          keyClick(5);
           if(calcMode == CM_PEM && shiftF && ((charKey[0] == '2' && charKey[1] == '6') || (charKey[0] == '3' && charKey[1] == '1'))) {
             shiftF = false;
             refreshScreen();
@@ -681,27 +881,40 @@ int32_t                SAVED_SIGMA_LAct;
         lcd_refresh();
       }
 
-      if(key >= 0) {                                        // Temporary intermediate solution to get some refreshLcd and go to sleep afterwards
+      // Compute refresh period
+      if(showFunctionNameCounter > 0) {  //remove autorepeat  || seenKeyPress) {
+        inFastRefresh = 1;
+        nextScreenRefresh = previousRefresh + FAST_SCREEN_REFRESH_PERIOD;
+      } else {
+        inFastRefresh = 0;
+      }
+#endif //AUTOREPEAT
+
+
+      else if(key == 0 && FN_key_pressed != 0) {            //JM, key=0 is release, therefore there must have been a press before that. If the press was a FN key, FN_key_pressed > 0 when it comes back here for release.
+        btnFnReleased(NULL);                                //    in short, it can only execute FN release after there was a FN press.
+        keyClick(4);
+      //lcd_refresh_dma();
+      }
+      else if(key == 0) {
+        btnReleased(NULL);
+        keyClick(2);
+        //lcd_refresh_dma();
+      }
+
+      if(key >= 0) {                                        //dr
+        lcd_refresh_dma();
         if(key > 0) {
-          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, 60000);
+          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV);  //dr
         }
         else if(cursorEnabled == true) {
-          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, 4*FAST_SCREEN_REFRESH_PERIOD+50);
+          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, 480);
         }
         else
         {
-          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, FAST_SCREEN_REFRESH_PERIOD+50);
+          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, 40);
         }
       }
-
-//    // Compute refresh period
-//    if(showFunctionNameCounter > 0) {
-//      inFastRefresh = 1;
-//      nextScreenRefresh = previousRefresh + FAST_SCREEN_REFRESH_PERIOD;
-//    }
-//    else {
-//      inFastRefresh = 0;
-//    }
 
       uint32_t now = sys_current_ms();
 
@@ -710,16 +923,24 @@ int32_t                SAVED_SIGMA_LAct;
       }
       now = sys_current_ms();
       if(nextScreenRefresh <= now) {
-//      previousRefresh = now;
-        nextScreenRefresh += ((showFunctionNameCounter > 0) ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);
+        nextScreenRefresh += SCREEN_REFRESH_PERIOD;
         if(nextScreenRefresh < now) {
-          nextScreenRefresh = now + ((showFunctionNameCounter > 0) ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);         // we were out longer than expected; just skip ahead.
+          nextScreenRefresh = now + SCREEN_REFRESH_PERIOD;  // we were out longer than expected; just skip ahead.
         }
-        if(calcMode != CM_TIMER) {
-          refreshLcd();
-          lcd_refresh();
-        }
+        if((calcMode != CM_TIMER) || (fnTimerGetStatus(TO_TIMER_APP) != TMR_RUNNING)) {
+        refreshLcd();
+        if(key >= 0) lcd_refresh();                         //JMTOCHECK if key>0 is needed. what about -1?
+        else {lcd_refresh_wait();}
       }
+      }
+
+    /*if(nextScreenRefresh <= now) {                        // removed autorepeat stuff
+        previousRefresh = now;
+        nextScreenRefresh = previousRefresh + (inFastRefresh ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);
+        refreshLcd();
+        lcd_refresh();
+      }*/
+
     }
   }
 #endif // DMCP_BUILD

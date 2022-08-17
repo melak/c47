@@ -31,6 +31,17 @@
 
 #include "wp43s.h"
 
+#ifdef SAVE_SPACE_DM42_15
+  void fnT_P   (uint16_t unusedButMandatoryParameter){}
+  void fnT_L   (uint16_t unusedButMandatoryParameter){}
+  void fnT_R   (uint16_t unusedButMandatoryParameter){}
+  void fnT_I   (uint16_t unusedButMandatoryParameter){}
+  void WP34S_Pdf_T (const real_t *x, const real_t *nu, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdfu_T(const real_t *x, const real_t *nu, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdf_T (const real_t *x, const real_t *nu, real_t *res, realContext_t *realContext){}
+  void WP34S_Qf_T  (const real_t *x, const real_t *nu, real_t *res, realContext_t *realContext){}
+#else
+
 
 static bool_t checkParamT(real_t *x, real_t *i) {
   if(   ((getRegisterDataType(REGISTER_X) != dtReal34) && (getRegisterDataType(REGISTER_X) != dtLongInteger))
@@ -314,3 +325,6 @@ void WP34S_Qf_T(const real_t *x, const real_t *nu, real_t *res, realContext_t *r
     realChangeSign(res);
   }
 }
+
+#endif //SAVE_SPACE_DM42_15
+

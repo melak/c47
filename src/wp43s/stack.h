@@ -22,6 +22,7 @@
 #define STACK_H
 
 #include <stdint.h>
+void fnShoiXRepeats(uint16_t numberOfRepeats);           //JM SHOIDISP
 
 /**
  * Clears X and refreshes the stack.

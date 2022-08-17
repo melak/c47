@@ -412,8 +412,12 @@ void processFiles(const char *fontsPath, const char *outputFile) {
   ///////////////////////////
   // Generate the C arrays //
   ///////////////////////////
+/*                                               //JMvv
   exportCStructure(fontsPath, "WP43S_NumericFont.ttf");
   exportCStructure(fontsPath, "WP43S_StandardFont.ttf");
+*/
+  exportCStructure(fontsPath, "C43___NumericFont.ttf");
+  exportCStructure(fontsPath, "C43___StandardFont.ttf");    //JM ^^
 
   fclose(cFile);
 

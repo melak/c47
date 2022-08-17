@@ -338,7 +338,7 @@ static uint32_t _getTimerValue(void) {
 //--    }
 //--  #endif // PC_BUILD
 
-void fnTimer(uint16_t unusedButMandatoryParameter) {
+void fnItemTimerApp(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   calcMode = CM_TIMER;
   showSoftmenu(-MNU_TIMERF);

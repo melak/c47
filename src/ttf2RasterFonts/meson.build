@@ -1,7 +1,7 @@
 font_files = files(
   '../../res/fonts/sortingOrder.csv',
-  '../../res/fonts/WP43S_NumericFont.ttf',
-  '../../res/fonts/WP43S_StandardFont.ttf')
+  '../../res/fonts/C43___NumericFont.ttf',
+  '../../res/fonts/C43___StandardFont.ttf')
 ttf2RasterFonts = executable(
   'ttf2RasterFonts',
   build_by_default : false,

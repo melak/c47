@@ -21,6 +21,7 @@
 #ifndef SOFTMENUS_H
 #define SOFTMENUS_H
 
+#include "defines.h"
 #include "typeDefinitions.h"
 #include <stdint.h>
 
@@ -39,7 +40,7 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
    * \param[in] topLine    Draw a top line
    * \param[in] bottomLine Draw a bottom line
    */
-  void   showSoftkey            (const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine);
+  void   showSoftkey            (const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue);     //dr);
   /**
    * Displays the current part of the displayed softmenu.
    */
@@ -54,10 +55,16 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
    * Pops a softmenu from the softmenu stack.
    */
   void   popSoftmenu            (void);
-  void   setCatalogLastPos      (void);
   bool_t currentSoftmenuScrolls (void);
   bool_t isAlphabeticSoftmenu   (void);
+  bool_t isJMAlphaSoftmenu      (int16_t menuId);             //JM
+
+  int16_t mm(int16_t id);                                     //JM
+  extern TO_QSPI const int16_t menu_A_HOME[360];              //JM
+
 #endif // !TESTSUITE_BUILD
 char    *dynmenuGetLabel        (int16_t menuitem);
+void     setCatalogLastPos      (void);
+void     fnDumpMenus            (uint16_t unusedButMandatoryParameter);  //JM
 
 #endif // SOFTMENUS_H

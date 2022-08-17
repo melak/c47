@@ -443,7 +443,7 @@
       tamLeaveMode();
       return;
     }
-    else if(tam.function == ITM_toINT && item == ITM_REG_D) {
+    else if(tam.function == ITM_toINT && (item == ITM_REG_D || item == ITM_ENTER)) {   //JM
       tam.value = 10;
       forceTry = true;
     }

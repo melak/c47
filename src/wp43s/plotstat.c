@@ -57,6 +57,24 @@ void fnPlotRegressionLine(uint16_t plotMode);
 #endif //TESTSUITE_BUILD
 
 
+
+#define DEMO0
+#define DEMO1
+#define DEMO2
+#define DEMO105
+#define DEMO107
+#define DEMO109
+#ifdef SAVE_SPACE_DM42
+  #undef DEMO0
+  #undef DEMO1
+  #undef DEMO2
+#endif
+#ifdef SAVE_SPACE_DM42_1
+  #undef DEMO105
+  #undef DEMO107
+  #undef DEMO109
+#endif
+
 float     graph_dx;           // Many unused functions in WP43S. Do not change the variables.
 float     graph_dy;
 bool_t    roundedTicks;
@@ -335,6 +353,7 @@ void force_refresh1(void) {
 
 
 void graphAxisDraw (void){
+#ifndef SAVE_SPACE_DM42_13GRF
   #ifndef TESTSUITE_BUILD
   uint32_t cnt;
 
@@ -519,10 +538,12 @@ void graphAxisDraw (void){
   }
   force_refresh1();
   #endif
+#endif //SAVE_SPACE_DM42_13GRF
 }
 
 
 float auto_tick(float tick_int_f) {
+#ifndef SAVE_SPACE_DM42_13GRF
   char tmpString2[100];
   if (!roundedTicks) return tick_int_f;
   //Obtain scaling of ticks, to about 20 intervals left to right.
@@ -548,11 +569,13 @@ float auto_tick(float tick_int_f) {
 
   tick_int_f = strtof (tmpString2, NULL);                                        //printf("string:%s converted:%f \n",tmpString2, tick_int_f);
 
-  //printf("tick2 %f str %s tx %s \n",tick_int_f, tmpString2, tx);
+  //printf("tick2 %f str %s tx %s \n",tick_int_f, tmpString, tx);
+#endif //SAVE_SPACE_DM42_13GRF
   return tick_int_f;
 }
 
 void graph_axis (void){
+#ifndef SAVE_SPACE_DM42_13GRF
   #ifndef TESTSUITE_BUILD
     graph_dx = 0; //XXX override manual setting from GRAPH to auto, temporarily. Can program these to fixed values.
     graph_dy = 0;
@@ -570,6 +593,7 @@ void graph_axis (void){
     }
   #endif //TESTSUITE_BUILD
   graphAxisDraw();
+#endif //SAVE_SPACE_DM42_13GRF
 }
 
 char * radixProcess(const char * ss) {  //  .  HIERDIE WERK GLAD NIE
@@ -749,6 +773,7 @@ void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, con
 
 
 void graphPlotstat(uint16_t selection){
+#ifndef SAVE_SPACE_DM42_13GRF
   #if defined STATDEBUG && defined PC_BUILD
     printf("#####>>> graphPlotstat: selection:%u:%s  lastplotmode:%u  lrSelection:%u lrChosen:%u\n",selection, getCurveFitModeName(selection), lastPlotMode, lrSelection, lrChosen);
   #endif //STATDEBUG
@@ -965,6 +990,7 @@ void graphPlotstat(uint16_t selection){
     #endif
   }
 #endif
+#endif //SAVE_SPACE_DM42_13GRF
 }
 
 
@@ -999,7 +1025,6 @@ void graphPlotstat(uint16_t selection){
 
 
 void graphDrawLRline(uint16_t selection) {
-
   #ifndef TESTSUITE_BUILD
     //demo_plot();
     if(selection != 0) {
@@ -1013,6 +1038,7 @@ void graphDrawLRline(uint16_t selection) {
 
 #ifndef TESTSUITE_BUILD
   void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2, real_t *sa0, real_t *sa1){
+#ifndef SAVE_SPACE_DM42_13GRF
     int32_t n;
     uint16_t NN;
     if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, n);}
@@ -1227,6 +1253,7 @@ void graphDrawLRline(uint16_t selection) {
       else
         showString("L.R. error", &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc * index++ -7+2 +autoshift, vmNormal, false, false);
     }
+#endif //SAVE_SPACE_DM42_13GRF
   }
 #endif //TESTSUITE_BUILD
 
@@ -1262,6 +1289,7 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
 //
 void fnPlotStat(uint16_t plotMode){
 #ifndef TESTSUITE_BUILD
+#ifndef SAVE_SPACE_DM42_13GRF
 
   switch (plotMode) {
      case PLOT_GRAPH:  strcpy(plotStatMx, "DrwMX");
@@ -1356,19 +1384,21 @@ void fnPlotStat(uint16_t plotMode){
       }
     #endif //TESTSUITE_BUILD
 
-    } else {
-      calcMode = CM_NORMAL;
-      displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "There is no statistical/plot data available!");
-        moreInfoOnError("In function fnPlotStat:", errorMessage, NULL, NULL);
-      #endif
-    }
-  #endif // TESTSUITE_BUILD
+  } else {
+    calcMode = CM_NORMAL;
+    displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "There is no statistical/plot data available!");
+      moreInfoOnError("In function fnPlotStat:", errorMessage, NULL, NULL);
+    #endif
+  }
+#endif //SAVE_SPACE_DM42_13GRF
+#endif //TESTSUITE_BUILD
 }
 
 
 void fnPlotRegressionLine(uint16_t plotMode){
+#ifndef SAVE_SPACE_DM42_13GRF
   #if defined STATDEBUG && defined PC_BUILD
   printf("fnPlotRegressionLine: plotSelection = %u; Plotmode=%u\n",plotSelection,plotMode);
   #endif //STATDEBUG
@@ -1429,6 +1459,7 @@ void fnPlotRegressionLine(uint16_t plotMode){
       break;
     default:break;
   }
+#endif //SAVE_SPACE_DM42_13GRF
 }
 
 
@@ -1452,8 +1483,6 @@ void fnPlotZoom(uint16_t unusedButMandatoryParameter){
 }
 
 
-
-/*
 //DEMO: Arbitrary distribution to test. Close to a Normal.
 void fnStatDemo0(uint16_t unusedButMandatoryParameter){
 #ifdef DEMO0
@@ -1704,4 +1733,3 @@ void fnStatDemo109(uint16_t unusedButMandatoryParameter){
 #endif //DEMO109
 }
 
-*/

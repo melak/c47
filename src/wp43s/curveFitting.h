@@ -21,12 +21,15 @@
 #define CURVEFITTING_H
 
 #include <stdint.h>
+//#include "realType.h"
 
 #include "wp43s.h"
 
 #ifndef TESTSUITE
   extern   realContext_t              *realContext;
-  void     fnCurveFitting             (uint16_t curveFitting);
+void     fnCurveFittingReset     (uint16_t curveFitting);
+void     fnCurveFitting_T        (uint16_t curveFitting);
+void     fnCurveFitting          (uint16_t curveFitting);
   void     processCurvefitSelection   (uint16_t selection, real_t *RR_, real_t *SMI_, real_t *aa0, real_t *aa1, real_t *aa2);
   void     processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, real_t *MX2, real_t *SX2, real_t *SY2, real_t *SMI_, real_t *aa0, real_t *aa1, real_t *aa2);
   void     fnProcessLR                (uint16_t unusedButMandatoryParameter);

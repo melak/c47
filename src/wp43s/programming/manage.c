@@ -101,6 +101,7 @@
 
 
 void scanLabelsAndPrograms(void) {
+#ifndef SAVE_SPACE_DM42_10
   uint32_t stepNumber = 0;
   uint8_t *nextStep, *step = beginOfProgramMemory;
   uint16_t numberOfProgramsInRam;
@@ -180,6 +181,7 @@ void scanLabelsAndPrograms(void) {
   }
 
   defineCurrentProgramFromCurrentStep();
+#endif //SAVE_SPACE_DM42_10
 }
 
 
@@ -345,6 +347,7 @@ void scrollPemForwards(void) {
 
 
 void fnPem(uint16_t unusedButMandatoryParameter) {
+#ifndef SAVE_SPACE_DM42_10
   #ifndef TESTSUITE_BUILD
     ///////////////////////////////////////////////////////////////////////////////////////
     // For this function to work properly we need the following variables set properly:
@@ -536,6 +539,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       fnPem(NOPARAM);
     }
   #endif // TESTSUITE_BUILD
+#endif //SAVE_SPACE_DM42_10
 }
 
 

@@ -197,7 +197,7 @@ static void _setCaption(uint16_t keyNum) {
         break;
 
       case dtLongInteger:
-        longIntegerRegisterToDisplayString(REGISTER_K, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION);
+        longIntegerRegisterToDisplayString(REGISTER_K, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION, false);  //JM added last parameter: Allow LARGELI);
         break;
 
       case dtTime:

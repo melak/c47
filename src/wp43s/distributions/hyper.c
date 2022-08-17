@@ -35,6 +35,19 @@
 #include "wp43s.h"
 
 
+#ifdef SAVE_SPACE_DM42_15
+  void fnHypergeometricP  (uint16_t unusedButMandatoryParameter){}
+  void fnHypergeometricL  (uint16_t unusedButMandatoryParameter){}
+  void fnHypergeometricR  (uint16_t unusedButMandatoryParameter){}
+  void fnHypergeometricI  (uint16_t unusedButMandatoryParameter){}
+  void pdf_Hypergeometric (const real_t *x, const real_t *p0, const real_t *n, const real_t *n0, real_t *res, realContext_t *realContext){}
+  void cdfu_Hypergeometric(const real_t *x, const real_t *p0, const real_t *n, const real_t *n0, real_t *res, realContext_t *realContext){}
+  void cdf_Hypergeometric (const real_t *x, const real_t *p0, const real_t *n, const real_t *n0, real_t *res, realContext_t *realContext){}
+  void cdf_Hypergeometric2(const real_t *x, const real_t *p0, const real_t *n, const real_t *n0, real_t *res, realContext_t *realContext){}
+  void qf_Hypergeometric  (const real_t *x, const real_t *p0, const real_t *n, const real_t *n0, real_t *res, realContext_t *realContext){}
+#else
+
+
 static bool_t checkParamHyper(real_t *x, real_t *i, real_t *j, real_t *k) {
   real_t ik, xmin, xmax;
 
@@ -387,3 +400,5 @@ void qf_Hypergeometric(const real_t *x, const real_t *p0, const real_t *n, const
   WP34S_normal_moment_approx(x, &var, &mean, &s, realContext);
   WP34S_Qf_Newton(QF_NEWTON_HYPERGEOMETRIC, x, &s, p0, n, n0, res, realContext);
 }
+
+#endif

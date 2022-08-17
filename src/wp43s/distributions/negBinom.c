@@ -34,6 +34,18 @@
 #include "wp43s.h"
 
 
+#ifdef SAVE_SPACE_DM42_15
+  void fnNegBinomialP  (uint16_t unusedButMandatoryParameter){}
+  void fnNegBinomialL  (uint16_t unusedButMandatoryParameter){}
+  void fnNegBinomialR  (uint16_t unusedButMandatoryParameter){}
+  void fnNegBinomialI  (uint16_t unusedButMandatoryParameter){}
+  void pdf_NegBinomial (const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext){}
+  void cdfu_NegBinomial(const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext){}
+  void cdf_NegBinomial (const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext){}
+  void cdf_NegBinomial2(const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext){}
+  void qf_NegBinomial  (const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext){}
+#else
+
 static bool_t checkParamNegBinom(real_t *x, real_t *i, real_t *j) {
   if(   ((getRegisterDataType(REGISTER_X) != dtReal34) && (getRegisterDataType(REGISTER_X) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_I) != dtReal34) && (getRegisterDataType(REGISTER_I) != dtLongInteger))
@@ -291,3 +303,6 @@ void qf_NegBinomial(const real_t *x, const real_t *p0, const real_t *r, real_t *
   WP34S_normal_moment_approx(x, &var, &mean, &s, realContext);
   WP34S_Qf_Newton(QF_NEWTON_NEGBINOM, x, &s, p0, r, NULL, res, realContext);
 }
+
+#endif //SAVE_SPACE_DM42_15
+

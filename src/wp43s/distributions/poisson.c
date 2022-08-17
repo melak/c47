@@ -33,6 +33,20 @@
 #include "wp43s.h"
 
 
+#ifdef SAVE_SPACE_DM42_15
+  void fnPoissonP                (uint16_t unusedButMandatoryParameter){}
+  void fnPoissonL                (uint16_t unusedButMandatoryParameter){}
+  void fnPoissonR                (uint16_t unusedButMandatoryParameter){}
+  void fnPoissonI                (uint16_t unusedButMandatoryParameter){}
+  void WP34S_normal_moment_approx(const real_t *prob, const real_t *var, const real_t *mean, real_t *res, realContext_t *realContext){}
+  void WP34S_Pdf_Poisson         (const real_t *x, const real_t *lambda, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdfu_Poisson        (const real_t *x, const real_t *lambda, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdf_Poisson         (const real_t *x, const real_t *lambda, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdf_Poisson2        (const real_t *x, const real_t *lambda, real_t *res, realContext_t *realContext){}
+  void WP34S_Qf_Poisson          (const real_t *x, const real_t *lambda, real_t *res, realContext_t *realContext){}
+#else
+
+
 static bool_t checkParamPoisson(real_t *x, real_t *i) {
   if(   ((getRegisterDataType(REGISTER_X) != dtReal34) && (getRegisterDataType(REGISTER_X) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_I) != dtReal34) && (getRegisterDataType(REGISTER_I) != dtLongInteger))) {
@@ -248,3 +262,5 @@ void WP34S_Qf_Poisson(const real_t *x, const real_t *lambda, real_t *res, realCo
   WP34S_normal_moment_approx(x, &p, lambda, &q, realContext);
   WP34S_Qf_Newton(QF_NEWTON_POISSON, x, &q, lambda, NULL, NULL, res, realContext);
 }
+
+#endif //SAVE_SPACE_DM42_15

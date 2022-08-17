@@ -460,6 +460,12 @@ void generateAllConstants(void) {
   generateConstantArray("995on1000",     "+9.950000000000000000000000000000000000000000000000000000e-01"); // cnst197
   generateConstantArray("1e_32",         "+1.000000000000000000000000000000000000000000000000000000e-32"); // cnst198  if the number of constants changes: don't forget to update NUMBER_OF_CONSTANTS_* in defines.h
 
+  //JM vv
+  generateConstantArray("rt3",           "+1.732050807568877293527446341505872366942805253810380628e+00");                                         //JM ELEC Constants
+  generateConstantArray("rt3on2",        "+8.660254037844386467637231707529361834714026269051903140e-01");                                         //JM ELEC Constants
+  //JM ^^
+
+
   // Lanczos's coefficients calculated for N=22 and G=22.61891 using Toth's program: https://www.vttoth.com/CMS/projects/41
   // source: https://www.vttoth.com/FILES/lanczos.tgz
   //                                                   1    1    2    2    3    3    4    4    5    5

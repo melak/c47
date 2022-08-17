@@ -25,6 +25,8 @@
 #include "gui.h"
 #include "solver/graph.h"
 #include "items.h"
+#include "c43Extensions/xeqm.h"
+#include "c43Extensions/jm.h"
 #include "matrix.h"
 #include "memory.h"
 #include "plotstat.h"
@@ -302,6 +304,45 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
     save(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
 
+    save(&eRPN,                               sizeof(eRPN),                               BACKUP);    //JM vv
+    save(&HOME3,                              sizeof(HOME3),                              BACKUP);
+    save(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode),                    BACKUP);
+    save(&UNITDisplay,                        sizeof(UNITDisplay),                        BACKUP);
+    save(&SigFigMode,                         sizeof(SigFigMode),                         BACKUP);
+    save(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     BACKUP);
+    save(&SH_BASE_AHOME,                      sizeof(SH_BASE_AHOME ),                     BACKUP);
+    save(&Home3TimerMode,                     sizeof(Home3TimerMode),                     BACKUP);
+    save(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
+    save(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
+    save(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);
+    save(&jm_NO_BASE_SCREEN,                  sizeof(jm_NO_BASE_SCREEN),                  BACKUP);
+    save(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
+    save(&jm_HOME_SUM,                        sizeof(jm_HOME_SUM),                        BACKUP);
+    save(&jm_HOME_MIR,                        sizeof(jm_HOME_MIR),                        BACKUP);
+    save(&jm_HOME_FIX,                        sizeof(jm_HOME_FIX),                        BACKUP);
+    save(&graph_xmin,                         sizeof(graph_xmin),                         BACKUP);
+    save(&graph_xmax,                         sizeof(graph_xmax),                         BACKUP);
+    save(&graph_ymin,                         sizeof(graph_ymin),                         BACKUP);
+    save(&graph_ymax,                         sizeof(graph_ymax),                         BACKUP);
+    save(&jm_LARGELI,                         sizeof(jm_LARGELI),                         BACKUP);
+    save(&constantFractions,                  sizeof(constantFractions),                  BACKUP);
+    save(&constantFractionsMode,              sizeof(constantFractionsMode),              BACKUP);
+    save(&constantFractionsOn,                sizeof(constantFractionsOn),                BACKUP);
+    save(&running_program_jm,                 sizeof(running_program_jm),                 BACKUP);
+    save(&indic_x,                            sizeof(indic_x),                            BACKUP);
+    save(&indic_y,                            sizeof(indic_y),                            BACKUP);
+    save(&fnXEQMENUpos,                       sizeof(fnXEQMENUpos),                       BACKUP);
+    save(&indexOfItemsXEQM,                   sizeof(indexOfItemsXEQM),                   BACKUP);
+    save(&T_cursorPos,                        sizeof(T_cursorPos),                        BACKUP);   //JM ^^
+    save(&SHOWregis,                          sizeof(SHOWregis),                          BACKUP);   //JM ^^
+    save(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME),                        BACKUP);   //JM ^^
+    save(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA),                       BACKUP);   //JM ^^
+    save(&MY_ALPHA_MENU,                      sizeof(MY_ALPHA_MENU),                      BACKUP);   //JM ^^
+    save(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP),               BACKUP);   //JM ^^
+    save(&ListXYposition,                     sizeof(ListXYposition),                     BACKUP);   //JM ^^
+    save(&numLock,                            sizeof(numLock),                            BACKUP);   //JM ^^
+    save(&lastSetAngularMode,                 sizeof(lastSetAngularMode),                 BACKUP);   //JM
+
     save(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
     for(int y = 0; y < SCREEN_HEIGHT; ++y) {
       uint8_t bmpdata = 0;
@@ -560,11 +601,55 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
       restore(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
 
+      restore(&eRPN,                               sizeof(eRPN),                               BACKUP);    //JM vv
+      restore(&HOME3,                              sizeof(HOME3),                              BACKUP);
+      restore(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode),                    BACKUP);
+      restore(&UNITDisplay,                        sizeof(UNITDisplay),                        BACKUP);
+      restore(&SigFigMode,                         sizeof(SigFigMode),                         BACKUP);
+      restore(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     BACKUP);
+      restore(&SH_BASE_AHOME,                      sizeof(SH_BASE_AHOME ),                     BACKUP);
+      restore(&Home3TimerMode,                     sizeof(Home3TimerMode),                     BACKUP);
+      restore(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
+      restore(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
+      restore(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);
+      restore(&jm_NO_BASE_SCREEN,                  sizeof(jm_NO_BASE_SCREEN),                  BACKUP);
+      restore(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
+      restore(&jm_HOME_SUM,                        sizeof(jm_HOME_SUM),                        BACKUP);
+      restore(&jm_HOME_MIR,                        sizeof(jm_HOME_MIR),                        BACKUP);
+      restore(&jm_HOME_FIX,                        sizeof(jm_HOME_FIX),                        BACKUP);
+      restore(&graph_xmin,                         sizeof(graph_xmin),                         BACKUP);
+      restore(&graph_xmax,                         sizeof(graph_xmax),                         BACKUP);
+      restore(&graph_ymin,                         sizeof(graph_ymin),                         BACKUP);
+      restore(&graph_ymax,                         sizeof(graph_ymax),                         BACKUP);
+      restore(&jm_LARGELI,                         sizeof(jm_LARGELI),                         BACKUP);
+      restore(&constantFractions,                  sizeof(constantFractions),                  BACKUP);
+      restore(&constantFractionsMode,              sizeof(constantFractionsMode),              BACKUP);
+      restore(&constantFractionsOn,                sizeof(constantFractionsOn),                BACKUP);
+      restore(&running_program_jm,                 sizeof(running_program_jm),                 BACKUP);
+      restore(&indic_x,                            sizeof(indic_x),                            BACKUP);
+      restore(&indic_y,                            sizeof(indic_y),                            BACKUP);
+      restore(&fnXEQMENUpos,                       sizeof(fnXEQMENUpos),                       BACKUP);
+      restore(&indexOfItemsXEQM,                   sizeof(indexOfItemsXEQM),                   BACKUP);
+      restore(&T_cursorPos,                        sizeof(T_cursorPos),                        BACKUP);   //JM ^^
+      restore(&SHOWregis,                          sizeof(SHOWregis),                          BACKUP);   //JM ^^
+      restore(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME),                        BACKUP);   //JM ^^
+      restore(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA),                       BACKUP);   //JM ^^
+      restore(&MY_ALPHA_MENU,                      sizeof(MY_ALPHA_MENU),                      BACKUP);   //JM ^^
+      restore(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP),               BACKUP);   //JM ^^
+      restore(&ListXYposition,                     sizeof(ListXYposition),                     BACKUP);   //JM ^^
+      restore(&numLock,                            sizeof(numLock),                            BACKUP);   //JM ^^
+      restore(&lastSetAngularMode,                 sizeof(lastSetAngularMode),                     BACKUP);   //JM
+
       restore(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
       restore(loadedScreen,                        SCREEN_WIDTH * SCREEN_HEIGHT / 8,           BACKUP);
 
+
       fclose(BACKUP);
       printf("End of calc's restoration\n");
+
+      if(SH_BASE_AHOME) MY_ALPHA_MENU = mm_MNU_ALPHA; else MY_ALPHA_MENU = MY_ALPHA_MENU_CNST;              //JM
+      if(temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) 
+        temporaryInformation = TI_NO_INFO;                                                                  //JM
 
       if(currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) {
         currentStep.flash = 1;
@@ -611,6 +696,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_PLOT_STAT)             {}
         else if(calcMode == CM_GRAPH)                 {}
         else if(calcMode == CM_MIM)                   {mimRestore();}
+        else if(calcMode == CM_LISTXY)                {}             //JM
+        else if(calcMode == CM_GRAPH)                 {}             //JM
         else if(calcMode == CM_EIM)                   {}
         else if(calcMode == CM_ASSIGN)                {}
         else if(calcMode == CM_TIMER)                 {}
@@ -629,6 +716,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_PLOT_STAT)              calcModeNormalGui();
         else if(calcMode == CM_GRAPH)                  calcModeNormalGui();
         else if(calcMode == CM_MIM)                   {calcModeNormalGui(); mimRestore();}
+        else if(calcMode == CM_LISTXY)                 calcModeNormalGui();             //JM
+        else if(calcMode == CM_GRAPH)                  calcModeNormalGui();             //JM
         else if(calcMode == CM_EIM)                   {calcModeAimGui();}
         else if(calcMode == CM_ASSIGN)                {calcModeNormalGui();}
         else if(calcMode == CM_TIMER)                 {calcModeNormalGui();}
@@ -972,7 +1061,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   }
 
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n16\n");
+  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n18\n");
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1005,6 +1094,10 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   sprintf(tmpString, "exponentHideLimit\n%" PRId16 "\n", exponentHideLimit);
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "notBestF\n%" PRIu16 "\n", lrSelection);
+  save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "displayStackSHOIDISP\n%" PRIu8 "\n", displayStackSHOIDISP);   //JM
+  save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "lastSetAngularMode\n%" PRIu8 "\n", lastSetAngularMode);               //JM
   save(tmpString, strlen(tmpString), BACKUP);
 
 
@@ -1744,6 +1837,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         }
         else if(strcmp(aimBuffer, "currentAngularMode") == 0) {
           currentAngularMode = stringToUint8(tmpString);
+          lastSetAngularMode = currentAngularMode;                       //JM, lastSetAngularMode will overwrite when it loads later. Initialisez for if it does not load
         }
         else if(strcmp(aimBuffer, "groupingGap") == 0) {
           groupingGap = stringToUint8(tmpString);
@@ -1769,6 +1863,12 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         }
         else if(strcmp(aimBuffer, "notBestF") == 0) {
           lrSelection = stringToUint16(tmpString);
+        }
+        else if(strcmp(aimBuffer, "displayStackSHOIDISP") == 0) {         //JM SHOIDISP
+          displayStackSHOIDISP = stringToUint8(tmpString);
+        }
+        else if(strcmp(aimBuffer, "lastSetAngularMode") == 0) {               //JM
+          lastSetAngularMode = stringToUint8(tmpString);
         }
       }
     }

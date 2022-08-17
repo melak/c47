@@ -16,7 +16,7 @@
 
 /**
  * \file keyboard.h
- */
+ ***********************************************/
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
@@ -26,8 +26,13 @@
   #include <gdk/gdk.h>
 #endif // PC_BUILD
 
+
+#ifndef TESTSUITE_BUILD
+  int16_t determineFunctionKeyItem(const char *data, int16_t itemShift);
+#endif
+
+
 void leavePem        (void);
-void showShiftState  (void);
 void processKeyAction(int16_t item);
 /**
  * Processing ENTER key.
@@ -78,6 +83,15 @@ void fnKeyDotD       (uint16_t unusedButMandatoryParameter);
  */
 void fnKeyAngle      (uint16_t unusedButMandatoryParameter);
 
+void executeFunction(const char *data, int16_t item_);
+
+#define ST_0_INIT     0     //STATE 0 INIT             //JM vv FN-DOUBLE
+#define ST_1_PRESS1   1     //STATE 1 FIRST PRESS
+#define ST_2_REL1     2     //STATE 2 FIRST RELEASE
+#define ST_3_PRESS2   3     //STATE 3 SECOND PRESS     //Double click determination 2 to 3 < 75 ms.
+#define ST_4_REL2     4     //STATE 4 SECOND RELEASE   //JM ^^
+
+
 #ifdef PC_BUILD
   /**
    * Simulate a function key click.
@@ -86,6 +100,8 @@ void fnKeyAngle      (uint16_t unusedButMandatoryParameter);
    * \param data String containing the key ID
    */
   void btnFnClicked  (GtkWidget *notUsed, gpointer data);
+  void btnFnClickedP (GtkWidget *notUsed, gpointer data);                     //JM
+  void btnFnClickedR (GtkWidget *notUsed, gpointer data);                     //JM
   /**
    * A calc function key was pressed.
    *
@@ -107,6 +123,8 @@ void fnKeyAngle      (uint16_t unusedButMandatoryParameter);
    * \param data String containing the key ID
    */
   void btnClicked    (GtkWidget *notUsed, gpointer data);
+  void btnClickedP   (GtkWidget *notUsed, gpointer data);                     //JM
+  void btnClickedR   (GtkWidget *notUsed, gpointer data);                     //JM
   /**
    * A calc button was pressed.
    *

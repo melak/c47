@@ -31,6 +31,7 @@
 #include "mathematics/toRect.h"
 #include "mathematics/wp34s.h"
 #include "matrix.h"
+#include "c43Extensions/radioButtonCatalog.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "stack.h"
@@ -55,6 +56,7 @@ void fnReToCx(uint16_t unusedButMandatoryParameter) {
 
     if(!saveLastX()) return;
     fnSetFlag(FLAG_CPXRES);
+    fnRefreshState();                                 //drJM
 
     xIsAReal = true;
     if(getSystemFlag(FLAG_POLAR)) { // polar mode

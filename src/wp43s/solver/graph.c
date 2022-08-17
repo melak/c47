@@ -26,6 +26,7 @@
 #include "constantPointers.h"
 #include "error.h"
 #include "flags.h"
+#include "c43Extensions/graphs.h"
 #include "items.h"
 #include "mathematics/invert.h"
 #include "matrix.h"
@@ -83,6 +84,19 @@ char     plotStatMx[8];
 	  }
 	}
 
+/*
+#ifndef SAVE_SPACE_DM42_13GRF
+	static void fnStrtoX(char buff[]) {
+	  setSystemFlag(FLAG_ASLIFT); // 5
+	  liftStack();
+	  int16_t mem = stringByteLength(buff) + 1;
+	  reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(mem), amNone);
+	  xcopy(REGISTER_STRING_DATA(REGISTER_X), buff, mem);
+	  setSystemFlag(FLAG_ASLIFT);
+	}
+#endif //SAVE_SPACE_DM42_13GRF
+*/
+  
   static void convertDoubleToReal34RegisterPush(double x, calcRegister_t destination) {
     setSystemFlag(FLAG_ASLIFT);
     liftStack();
@@ -92,12 +106,22 @@ char     plotStatMx[8];
 #endif
 
 
-void fnPlot(uint16_t unusedButMandatoryParameter) {
-  lastPlotMode = PLOT_NOTHING;
-  fnPlotStat(PLOT_GRAPH);
-}
+
+#ifndef TESTSUITE_BUILD
+  static void fnPlot(uint16_t unusedButMandatoryParameter) {
+    lastPlotMode = PLOT_NOTHING;
+//    fnPlotStat(PLOT_GRAPH);
+//  C43 advanced plot vv
+    strcpy(plotStatMx, "DrwMX");
+    PLOT_LINE = true;
+    PLOT_SHADE = true;
+    fnPlotSQ(0);
+//  C43 advanced plot ^^
+  }
+#endif //TESTSUITE_BUILD
 
 
+#ifndef SAVE_SPACE_DM42_13GRF
 #ifndef TESTSUITE_BUILD
   static void initialize_function(void){
     if(graphVariable > 0) {
@@ -120,6 +144,7 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
     }
   }
 #endif //TESTSUITE_BUILD
+#endif //SAVE_SPACE_DM42_13GRF
 
 
 #ifndef TESTSUITE_BUILD
@@ -153,6 +178,7 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
     }
   }
 
+#ifndef SAVE_SPACE_DM42_13GRF
   static bool_t regIsLowerThanTol(calcRegister_t REG, calcRegister_t TOL) {
     return ( (real34IsZero(REGISTER_REAL34_DATA(REG)) && (getRegisterDataType(REG) == dtComplex34 ? real34IsZero(REGISTER_IMAG34_DATA(REG)) : 1 )) 
 
@@ -197,6 +223,7 @@ static void divFunction(bool_t addRandom, calcRegister_t TOL) {
   }
   runFunction(ITM_DIV);
 }
+#endif //SAVE_SPACE_DM42_13GRF
 
 
 int16_t osc = 0;
@@ -285,8 +312,8 @@ void fnClDrawMx(void) {
     }
     if(regStats != INVALID_VARIABLE) {
 
-      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
-      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
+    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+    real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
 
       real34Matrix_t stats;
       linkToRealMatrixRegister(regStats, &stats);
@@ -360,6 +387,7 @@ void graph_eqn(uint16_t mode) {
 #define __L1     98
 
 
+#ifndef SAVE_SPACE_DM42_13GRF
 #ifndef TESTSUITE_BUILD
   static void graph_solver() {         //Input parameters in registers SREG_STARTX0, SREG_STARTX1
     if(graphVariable <= 0 || graphVariable > 65535) return;
@@ -1004,9 +1032,8 @@ void graph_eqn(uint16_t mode) {
 
 
   }
-
-
 #endif //TESTSUITE_BUILD
+#endif //SAVE_SPACE_DM42_13GRF
 
 
 
@@ -1015,6 +1042,7 @@ void graph_eqn(uint16_t mode) {
 
 
 void fnEqSolvGraph (uint16_t func) {
+#ifndef SAVE_SPACE_DM42_13GRF
 #ifndef TESTSUITE_BUILD
   hourGlassIconEnabled = true;
   showHideHourGlass();
@@ -1080,7 +1108,7 @@ void fnEqSolvGraph (uint16_t func) {
             #endif
 
             fnClDrawMx();
-            statGraphReset();
+//            statGraphReset();    //C43 removed to allow changing of graph params
 
             fnDrop(0);
             fnDrop(0);
@@ -1110,6 +1138,7 @@ void fnEqSolvGraph (uint16_t func) {
      default:;
      }
 #endif //TESTSUITE_BUILD
+#endif //SAVE_SPACE_DM42_13GRF
 }
 
 

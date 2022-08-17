@@ -26,11 +26,13 @@
 #include "flags.h"
 #include "fonts.h"
 #include "items.h"
+#include "c43Extensions/jm.h"
 #include "mathematics/compare.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/rsd.h"
 #include "matrix.h"
 #include "memory.h"
+#include "c43Extensions/radioButtonCatalog.h"
 #include "registerValueConversions.h"
 #include "saveRestoreCalcState.h"
 #include "sort.h"
@@ -474,6 +476,8 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
   uint16_t r;
   if(currentLocalFlags == NULL) {
     // 1st allocation of local registers in this level of subroutine
+//TOCHECK XXXX
+
     if((currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 3, 4 + numberOfRegistersToAllocate))) {
       currentLocalFlags = currentSubroutineLevelData + 3;
       currentLocalFlags->localFlags = 0;
@@ -481,28 +485,63 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
       currentNumberOfLocalFlags = NUMBER_OF_LOCAL_FLAGS;
       currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
 
-      // All the new local registers are real34s initialized to 0.0
-      for(r=FIRST_LOCAL_REGISTER; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
+    // All the new local registers are real34s initialized to 0.0
+    for(r=FIRST_LOCAL_REGISTER; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
+      bool_t isMemIssue = false; 
+
+      if((lastIntegerBase == 0) && (Input_Default == ID_43S || Input_Default == ID_DP)) {                 //JM defaults JMZERO
         void *newMem = allocWp43s(REAL34_SIZE);
         if(newMem) {
           setRegisterDataType(r, dtReal34, amNone);
           setRegisterDataPointer(r, newMem);
           real34Zero(REGISTER_REAL34_DATA(r));
-        }
-        else {
-          // Not enough memory (!)
-          for(uint16_t rr = FIRST_LOCAL_REGISTER; rr < r; rr++) {
-            freeRegisterData(FIRST_LOCAL_REGISTER + rr);
-          }
-          reallocWp43s(currentSubroutineLevelData, 4 + numberOfRegistersToAllocate, 3);
-          currentLocalFlags = NULL;
-          currentLocalRegisters = NULL;
-          currentNumberOfLocalRegisters = 0;
-          currentNumberOfLocalFlags = NUMBER_OF_LOCAL_FLAGS;
-          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-          return;
-        }
+        } else isMemIssue = true;
       }
+      else if((lastIntegerBase == 0) && (Input_Default == ID_CPXDP)) {                //JM defaults vv
+        void *newMem = allocWp43s(TO_BYTES(COMPLEX34_SIZE));
+        if(newMem) {
+          setRegisterDataType(r, dtComplex34, amNone);
+          setRegisterDataPointer(r, newMem);
+          real34Zero(REGISTER_REAL34_DATA(r));
+          real34Zero(REGISTER_IMAG34_DATA(r));
+        } else isMemIssue = true;
+      }                                                   //JM defaults ^^
+      else if(lastIntegerBase !=0 || Input_Default == ID_SI) {                   //JM defaults vv
+        longInteger_t lgInt;
+        longIntegerInit(lgInt);
+        uint16_t val =0;
+        uIntToLongInteger(val,lgInt);
+        convertLongIntegerToShortIntegerRegister(lgInt, lastIntegerBase == 0 ? 10:lastIntegerBase, r);
+        longIntegerFree(lgInt);
+      }                                                   //JM defaults ^^
+      else if((lastIntegerBase == 0) && (Input_Default == ID_LI)) {                   //JM defaults vv
+        longInteger_t lgInt;
+        longIntegerInit(lgInt);
+        uint16_t val =0;
+        uIntToLongInteger(val,lgInt);
+        convertLongIntegerToLongIntegerRegister(lgInt, r);
+        longIntegerFree(lgInt);
+      }                                                   //JM defaults ^^
+
+      if(isMemIssue) {
+        // Not enough memory (!)
+        for(uint16_t rr = FIRST_LOCAL_REGISTER; rr < r; rr++) {
+          freeRegisterData(FIRST_LOCAL_REGISTER + rr);
+        }
+        reallocWp43s(currentSubroutineLevelData, 4 + numberOfRegistersToAllocate, 3);
+        currentLocalFlags = NULL;
+        currentLocalRegisters = NULL;
+        currentNumberOfLocalRegisters = 0;
+        currentNumberOfLocalFlags = NUMBER_OF_LOCAL_FLAGS;
+        lastErrorCode = ERROR_RAM_FULL;
+        return;
+      }
+
+
+    }                                                   //JM defaults ^^
+   
+
+
     }
     else {
       currentSubroutineLevelData = oldSubroutineLevelData;
@@ -514,20 +553,51 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
     // The number of allocated local registers changes
     if(numberOfRegistersToAllocate > currentNumberOfLocalRegisters) {
       uint8_t oldNumberOfLocalRegisters = currentNumberOfLocalRegisters;
+//YYYY
       if((currentSubroutineLevelData = reallocWp43s(currentSubroutineLevelData, 4 + currentNumberOfLocalRegisters, 4 + numberOfRegistersToAllocate))) {
         currentLocalFlags = currentSubroutineLevelData + 3;
         currentLocalRegisters = (registerHeader_t *)(currentSubroutineLevelData + 4);
         currentNumberOfLocalRegisters = numberOfRegistersToAllocate;
 
-        // All the new local registers are real34s initialized to 0.0
-        for(r=FIRST_LOCAL_REGISTER+oldNumberOfLocalRegisters; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
+      // All the new local registers are real34s initialized to 0.0
+      for(r=FIRST_LOCAL_REGISTER+oldNumberOfLocalRegisters; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
+        bool_t isMemIssue = false;
+
+        if((lastIntegerBase == 0) && (Input_Default == ID_43S || Input_Default == ID_DP)) {                 //JM defaults JMZERO
           void *newMem = allocWp43s(REAL34_SIZE);
           if(newMem) {
             setRegisterDataType(r, dtReal34, amNone);
             setRegisterDataPointer(r, newMem);
             real34Zero(REGISTER_REAL34_DATA(r));
-          }
-          else {
+          } else isMemIssue = true;
+        }
+        else if((lastIntegerBase == 0) && (Input_Default == ID_CPXDP)) {                //JM defaults vv
+          void *newMem = allocWp43s(TO_BYTES(COMPLEX34_SIZE));
+          if(newMem) {
+            setRegisterDataType(r, dtComplex34, amNone);
+            setRegisterDataPointer(r, allocWp43s(TO_BYTES(COMPLEX34_SIZE)));
+            real34Zero(REGISTER_REAL34_DATA(r));
+            real34Zero(REGISTER_IMAG34_DATA(r));
+          } else isMemIssue = true;
+        }                                                   //JM defaults ^^
+        else if(lastIntegerBase !=0 || Input_Default == ID_SI) {                   //JM defaults vv
+          longInteger_t lgInt;
+          longIntegerInit(lgInt);
+          uint16_t val =0;
+          uIntToLongInteger(val,lgInt);
+          convertLongIntegerToShortIntegerRegister(lgInt, lastIntegerBase == 0 ? 10:lastIntegerBase, r);
+          longIntegerFree(lgInt);
+        }                                                   //JM defaults ^^
+        else if((lastIntegerBase == 0) && (Input_Default == ID_LI)) {                   //JM defaults vv
+          longInteger_t lgInt;
+          longIntegerInit(lgInt);
+          uint16_t val =0;
+          uIntToLongInteger(val,lgInt);
+          convertLongIntegerToLongIntegerRegister(lgInt, r);
+          longIntegerFree(lgInt);
+        }                                                   //JM defaults ^^
+
+      if(isMemIssue) {
             // Not enough memory (!)
             for(uint16_t rr = FIRST_LOCAL_REGISTER + oldNumberOfLocalRegisters; rr < r; rr++) {
               freeRegisterData(FIRST_LOCAL_REGISTER + rr);
@@ -710,7 +780,6 @@ void allocateNamedVariable(const char *variableName, dataType_t dataType, uint16
   else {
     regist = numberOfNamedVariables;
     if(regist == LAST_NAMED_VARIABLE - FIRST_NAMED_VARIABLE + 1) {
-      displayCalcErrorMessage(ERROR_TOO_MANY_VARIABLES, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
       #ifdef PC_BUILD
         sprintf(errorMessage, "%d named variables!", LAST_NAMED_VARIABLE - FIRST_NAMED_VARIABLE + 1);
         moreInfoOnError("In function allocateNamedVariable:", "you can allocate up to", errorMessage, NULL);
@@ -951,14 +1020,46 @@ uint16_t getRegisterFullSize(calcRegister_t regist) {
 
 
 void clearRegister(calcRegister_t regist) {
-  if(getRegisterDataType(regist) == dtReal34) {
-    real34Zero(REGISTER_REAL34_DATA(regist));
-    setRegisterTag(regist, amNone);
-  }
-  else{
-    reallocateRegister(regist, dtReal34, REAL34_SIZE, amNone);
-    real34Zero(REGISTER_REAL34_DATA(regist));
-  }
+  if((lastIntegerBase == 0) && (Input_Default == ID_43S || Input_Default == ID_DP)) {                       //JM defaults JMZERO
+    if(getRegisterDataType(regist) == dtReal34) {
+      real34Zero(REGISTER_REAL34_DATA(regist));
+      setRegisterTag(regist, amNone);
+    }
+    else{
+      reallocateRegister(regist, dtReal34, REAL34_SIZE, amNone);
+      real34Zero(REGISTER_REAL34_DATA(regist));
+    }
+  }                                                                             //JM defaults ^^
+  else if((lastIntegerBase == 0) && (Input_Default == ID_CPXDP)) {                                          //JM defaults vv
+    if(getRegisterDataType(regist) == dtComplex34) {
+      real34Zero(REGISTER_REAL34_DATA(regist));
+      real34Zero(REGISTER_IMAG34_DATA(regist));
+      setRegisterTag(regist, amNone);
+    }
+    else{
+      reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, amNone);
+      real34Zero(REGISTER_REAL34_DATA(regist));
+      real34Zero(REGISTER_IMAG34_DATA(regist));
+    }
+  }                                                                             //JM defaults ^^
+  else if(lastIntegerBase !=0 || Input_Default == ID_SI) {                                             //JM defaults vv
+    //JM comment: Not checking if already the correct type, just changing it. Wasting some steps.
+    longInteger_t lgInt;
+    longIntegerInit(lgInt);
+    uint16_t val =0;
+    uIntToLongInteger(val,lgInt);
+    convertLongIntegerToShortIntegerRegister(lgInt, lastIntegerBase == 0 ? 10:lastIntegerBase, regist);
+    longIntegerFree(lgInt);
+  }                                                                             //JM defaults ^^
+  else if((lastIntegerBase == 0) && (Input_Default == ID_LI)) {                                             //JM defaults vv
+    //JM comment: Not checking if already the correct type, just changing it. Wasting some steps.
+    longInteger_t lgInt;
+    longIntegerInit(lgInt);
+    uint16_t val =0;
+    uIntToLongInteger(val,lgInt);
+    convertLongIntegerToLongIntegerRegister(lgInt, regist);
+    longIntegerFree(lgInt);
+  }                                                                             //JM defaults ^^
 }
 
 
@@ -1110,7 +1211,8 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
   }
 
   if(setCpxRes && oneArgumentIsComplex && resultDataType != dtString) {
-    fnSetFlag(FLAG_CPXRES);
+    fnSetFlag(FLAG_CPXRES);    
+    fnRefreshState();                                 //drJM
   }
 
   // Round the register value
@@ -1748,11 +1850,21 @@ void fnToReal(uint16_t unusedButMandatoryParameter) {
     case dtShortInteger :
       copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
       convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+      lastIntegerBase = 0;                                                       //JM
+      fnRefreshState();                                 //drJM
       break;
 
     case dtReal34:
       copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
-      setRegisterAngularMode(REGISTER_X, amNone);
+      if(getRegisterAngularMode(REGISTER_X) != amNone) {
+        if(getRegisterAngularMode(REGISTER_X) == amDMS) {
+          temporaryInformation = TI_FROM_DMS;
+//          convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amDMS, amDegree);
+//          setRegisterAngularMode(REGISTER_X, amDegree);                        //JM added amDegree: prevent stripping the tag if it was amDMS, to force an interim step to decimal degrees.
+        } 
+//        else                                                                  //JM added else: prevent stripping the tag if it was amDMS, to force an interim step to decimal degrees.
+        setRegisterAngularMode(REGISTER_X, amNone);
+      }
       break;
 
     case dtTime:

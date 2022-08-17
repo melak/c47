@@ -20,21 +20,23 @@
 
 #include "mathematics/swapRealImaginary.h"
 
+#include "constantPointers.h"
 #include "debug.h"
 #include "error.h"
 #include "fonts.h"
 #include "items.h"
 #include "matrix.h"
 #include "registers.h"
+#include "registerValueConversions.h"
 
 #include "wp43s.h"
 
 
 
 TO_QSPI void (* const swapReIm[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
-// regX ==> 1              2              3             4              5              6              7              8             9              10
-//          Long integer   Real34         complex34     Time           Date           String         Real34 mat     Complex34 m   Short integer  Config data
-            swapReImError, swapReImError, swapReImCplx, swapReImError, swapReImError, swapReImError, swapReImError, swapReImCxma, swapReImError, swapReImError
+// regX ==> 1                2             3             4              5              6              7              8             9              10
+//          Long integer     Real34        complex34     Time           Date           String         Real34 mat     Complex34 m   Short integer  Config data
+            swapLongintReal, swapRealReal, swapReImCplx, swapReImError, swapReImError, swapReImError, swapReImError, swapReImCxma, swapReImError, swapReImError          //JM
 };
 
 
@@ -92,3 +94,19 @@ void swapReImCplx(void) {
   real34Copy(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
   real34Copy(&temp,                            REGISTER_REAL34_DATA(REGISTER_X));
 }
+
+
+void swapRealReal(void) {                                                     //JM vv
+  real34_t temp;
+
+  real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &temp);
+  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+  real34Copy(&temp, REGISTER_IMAG34_DATA(REGISTER_X));
+  real34Copy(const_0, REGISTER_REAL34_DATA(REGISTER_X));
+}
+
+
+void swapLongintReal(void) {
+  convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+  swapRealReal();
+}                                                                             //JM ^^

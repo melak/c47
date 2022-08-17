@@ -21,6 +21,7 @@
 #include "charString.h"
 #include "constantPointers.h"
 #include "conversionAngles.h"
+#include "c43Extensions/jm.h"
 #include "debug.h"
 #include "defines.h"
 #include "display.h"
@@ -2553,6 +2554,7 @@ smallFont:
       }
       else {
         tmpString[0] = 0;
+        constantFractionsMode = CF_COMPLEX1;  //JM
         real34ToDisplayString(&re, amNone, tmpString, font, colWidth_r[j], displayFormat == DF_ALL ? digits : 15, true, STD_SPACE_4_PER_EM, true);
         if(forEditor && matSelRow == (i + sRow) && matSelCol == (j + sCol)) {
           lcd_fill_rect(X_POS + colX, Y_POS - (maxRows -1 -i) * fontHeight, colWidth[j], font == &numericFont ? 32 : 20, 0xFF);
@@ -2584,6 +2586,7 @@ smallFont:
         }
         showString(tmpString, font, X_POS + colX + colWidth_r[j] + (width - stringWidth(tmpString, font, true, true)), Y_POS - (maxRows -1 -i) * fontHeight, vm, true, false);
 
+        constantFractionsMode = CF_COMPLEX2; //JM
         real34ToDisplayString(&im, getSystemFlag(FLAG_POLAR) ? currentAngularMode : amNone, tmpString, font, colWidth_i[j], displayFormat == DF_ALL ? digits : 15, true, STD_SPACE_4_PER_EM, false);
         width = stringWidth(tmpString, font, true, true) + 1;
         showString(tmpString, font, X_POS + colX + colWidth_r[j] + cpxUnitWidth + (((j == maxCols - 1) && rightEllipsis) ? 0 : (colWidth_i[j] - width) - rPadWidth_i[i * MATRIX_MAX_COLUMNS + j]), Y_POS - (maxRows -1 -i) * fontHeight, vm, true, false);
@@ -2648,6 +2651,7 @@ int16_t getComplexMatrixColumnWidths(const complex34Matrix_t *matrix, int16_t pr
 
         rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] = 0;
         real34SetPositiveSign(VARIABLE_REAL34_DATA(&c34Val));
+        constantFractionsMode = CF_COMPLEX1; //JM
         real34ToDisplayString(VARIABLE_REAL34_DATA(&c34Val), amNone, tmpString, font, maxWidth, displayFormat == DF_ALL ? k : 15, true, STD_SPACE_4_PER_EM, true);
         width = stringWidth(tmpString, font, true, true) + 1;
         if(strstr(tmpString, ".") || strstr(tmpString, ",")) {
@@ -2667,6 +2671,7 @@ int16_t getComplexMatrixColumnWidths(const complex34Matrix_t *matrix, int16_t pr
 
         rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] = 0;
         if(!getSystemFlag(FLAG_POLAR))real34SetPositiveSign(VARIABLE_IMAG34_DATA(&c34Val));
+        constantFractionsMode = CF_COMPLEX2; //JM
         real34ToDisplayString(VARIABLE_IMAG34_DATA(&c34Val), getSystemFlag(FLAG_POLAR) ? currentAngularMode : amNone, tmpString, font, maxWidth, displayFormat == DF_ALL ? k : 15, true, STD_SPACE_4_PER_EM, false);
         width = stringWidth(tmpString, font, true, true) + 1;
         if(strstr(tmpString, ".") || strstr(tmpString, ",")) {

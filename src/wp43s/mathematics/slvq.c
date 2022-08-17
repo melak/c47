@@ -41,6 +41,7 @@
  * \return void
  ***********************************************/
 void fnSlvq(uint16_t unusedButMandatoryParameter) {
+#ifndef SAVE_SPACE_DM42_12
   bool_t realCoefs=true, realRoots=true;
   real_t aReal, bReal, cReal, rReal, x1Real, x2Real;
   real_t aImag, bImag, cImag, rImag, x1Imag, x2Imag;
@@ -303,4 +304,5 @@ void fnSlvq(uint16_t unusedButMandatoryParameter) {
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
   adjustResult(REGISTER_Y, false, true, REGISTER_Y, -1, -1);
   adjustResult(REGISTER_Z, false, true, REGISTER_Z, -1, -1);
+#endif //SAVE_SPACE_DM42_12
 }

@@ -5,7 +5,7 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * 43S is distributed in the hope that it will be useful,
+ * 43S is distributed in the ho	pe that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -20,6 +20,7 @@
 
 #include "dateTime.h"
 
+#include "bufferize.h"
 #include "constantPointers.h"
 #include "debug.h"
 #include "error.h"
@@ -626,7 +627,15 @@ void fnToHr(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnToHms(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  switch(calcMode) {                     //JM vv
+    case CM_NIM:
+      #ifndef TESTSUITE_BUILD
+        addItemToNimBuffer(ITM_toHMS);
+      #endif //TESTSUITE_BUILD
+      break;
+
+    default:                             //JM ^^
+      if(!saveLastX()) return;
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger :
@@ -644,13 +653,16 @@ void fnToHms(uint16_t unusedButMandatoryParameter) {
       }
       /* fallthrough */
 
-    default :
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "data type %s cannot be converted to time!", getRegisterDataTypeName(REGISTER_X, false, false));
-        moreInfoOnError("In function fnToReal:", errorMessage, NULL, NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      return;
+        default :
+          displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            sprintf(errorMessage, "data type %s cannot be converted to time!", getRegisterDataTypeName(REGISTER_X, false, false));
+            moreInfoOnError("In function fnToReal:", errorMessage, NULL, NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+          return;
+        break;
+      }
+    break;
   }
   checkTimeRange(REGISTER_REAL34_DATA(REGISTER_X));
   if(lastErrorCode != 0) undo();

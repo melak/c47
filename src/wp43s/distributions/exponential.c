@@ -31,6 +31,17 @@
 #include "wp43s.h"
 
 
+#ifdef SAVE_SPACE_DM42_15
+  void fnExponentialP  (uint16_t unusedButMandatoryParameter){}
+  void fnExponentialL  (uint16_t unusedButMandatoryParameter){}
+  void fnExponentialR  (uint16_t unusedButMandatoryParameter){}
+  void fnExponentialI  (uint16_t unusedButMandatoryParameter){}
+  void WP34S_Pdf_Expon (const real_t *x, const real_t *lambda, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdfu_Expon(const real_t *x, const real_t *lambda, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdf_Expon (const real_t *x, const real_t *lambda, real_t *res, realContext_t *realContext){}
+  void WP34S_Qf_Expon  (const real_t *x, const real_t *lambda, real_t *res, realContext_t *realContext){}
+#else
+
 static bool_t checkParamExponential(real_t *x, real_t *i) {
   if(   ((getRegisterDataType(REGISTER_X) != dtReal34) && (getRegisterDataType(REGISTER_X) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_I) != dtReal34) && (getRegisterDataType(REGISTER_I) != dtLongInteger))) {
@@ -217,3 +228,6 @@ void WP34S_Qf_Expon(const real_t *x, const real_t *lambda, real_t *res, realCont
   realDivide(res, lambda, res, realContext);
   realChangeSign(res);
 }
+
+#endif //SAVE_SPACE_DM42_15
+

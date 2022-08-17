@@ -20,6 +20,8 @@
 
 #include "testSuite.h"
 
+#include "c43Extensions/addons.h"
+#include "bufferize.h"
 #include "charString.h"
 #include "config.h"
 #include "constants.h"
@@ -78,6 +80,7 @@ const funcTest_t funcTestNoParam[] = {
   {"fnArctan",               fnArctan              },
   {"fnArctanh",              fnArctanh             },
   {"fnArg",                  fnArg                 },
+  {"fnArg_all",              fnArg_all             },    //JM
   {"fnAsr",                  fnAsr                 },
   {"fnBatteryVoltage",       fnBatteryVoltage      },
   {"fnBesselJ",              fnBesselJ             },
@@ -274,6 +277,8 @@ const funcTest_t funcTestNoParam[] = {
   {"fnRollUp",               fnRollUp              },
   {"fnRound",                fnRound               },
   {"fnRoundi",               fnRoundi              },
+  {"fnRound2",               fnRound               }, //JM
+  {"fnRoundi2",              fnRoundi              }, //JM
   {"fnSign",                 fnSign                },
   {"fnSin",                  fnSin                 },
   {"fnSinc",                 fnSinc                },
@@ -294,6 +299,8 @@ const funcTest_t funcTestNoParam[] = {
   {"fnToPolar",              fnToPolar             },
   {"fnToReal",               fnToReal              },
   {"fnToRect",               fnToRect              },
+  {"fnToPolar2",             fnToPolar2            },     //JM
+  {"fnToRect2",              fnToRect2             },     //JM
   {"fnT_I",                  fnT_I                 },
   {"fnT_L",                  fnT_L                 },
   {"fnT_P",                  fnT_P                 },
@@ -2357,7 +2364,11 @@ int processTests(const char *listPath) {
     exit(-1);
   }
 
-  ignore_result(fgets(line, 9999, fileList));
+  setSystemFlag(FLAG_DENANY);                              //JM Default
+  setSystemFlag(FLAG_DENFIX);                              //JM default
+  denMax = 9999;                                               //JM default
+ 
+  fgets(line, 9999, fileList);
   while(!feof(fileList)) {
     standardizeLine();
     if(line[0] != 0) {

@@ -45,7 +45,7 @@
 
 #include "version.h"
 
-#define PROGRAM_NAME    "WP43S"
+#define PROGRAM_NAME    "WP43C"
 #define PROGRAM_VERSION VERSION_SHORT
 
 #endif

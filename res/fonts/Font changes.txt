@@ -166,11 +166,3 @@
 
 2022-01-16 Changed USB symbol U+2434 and printer symbol U+2399 in standard font.
            Changed printer symbol U+2399 in numeric font.
-
-2022-08-16 Moved in both fonts U+2065 to U+2296 (subscript alpha),
-           moved in both fonts U+2066 to U+2297 (subscript delta),
-           moved in both fonts U+2067 to U+2298 (subscript delta),
-           moved in numeric font U+2068 to U+229A (subscript sun),
-           moved in numeric font U+2069 to U+2295 (subscript earth),
-           removed in standard font U+2068 (subscript sun),
-           removed in standard font U+2069 (subscript earth)

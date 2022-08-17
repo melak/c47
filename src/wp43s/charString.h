@@ -40,6 +40,15 @@ int16_t  stringLastGlyph  (const char *str);
  ***********************************************/
 int16_t  stringNextGlyph  (const char *str, int16_t pos);
 
+/********************************************//**              //JM
+ * \brief Returns a pointer to the glyph before pos a string
+ *
+ * \param[in] str const char*
+ * \param[in] pos int16_t       Location after which search the next glyph
+ * \return int16_t              Pointer to the glyph after pos
+ ***********************************************/
+int16_t  stringPrevGlyph  (const char *str, int16_t pos);     //JM
+
 /********************************************//**
  * \brief Returns a string length in byte
  *
@@ -85,7 +94,6 @@ void     codePointToUtf8  (uint32_t codePoint, uint8_t *utf8);
  * \return void
  ***********************************************/
 uint32_t utf8ToCodePoint  (const uint8_t *utf8, uint32_t *codePoint);
-
 void     stringToUtf8     (const char *str, uint8_t *utf8);
 void     utf8ToString     (const uint8_t *utf8, char *str);
 void    *xcopy            (void *dest, const void *source, int n);

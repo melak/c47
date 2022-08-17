@@ -32,6 +32,22 @@
 #include "wp43s.h"
 
 
+#ifdef SAVE_SPACE_DM42_15
+  void fnNormalP   (uint16_t unusedButMandatoryParameter){}
+  void fnNormalL   (uint16_t unusedButMandatoryParameter){}
+  void fnNormalR   (uint16_t unusedButMandatoryParameter){}
+  void fnNormalI   (uint16_t unusedButMandatoryParameter){}
+  void fnLogNormalP(uint16_t unusedButMandatoryParameter){}
+  void fnLogNormalL(uint16_t unusedButMandatoryParameter){}
+  void fnLogNormalR(uint16_t unusedButMandatoryParameter){}
+  void fnLogNormalI(uint16_t unusedButMandatoryParameter){}
+  void WP34S_Pdf_Q   (const real_t *x, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdfu_Q  (const real_t *x, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdf_Q   (const real_t *x, real_t *res, realContext_t *realContext){}
+  void WP34S_qf_q_est(const real_t *x, real_t *res, real_t* resY, realContext_t *realContext){}
+  void WP34S_Qf_Q    (const real_t *x, real_t *res, realContext_t *realContext){}
+#else
+
 static bool_t checkParamNormal(real_t *x, real_t *i, real_t *j) {
   if(   ((getRegisterDataType(REGISTER_X) != dtReal34) && (getRegisterDataType(REGISTER_X) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_I) != dtReal34) && (getRegisterDataType(REGISTER_I) != dtLongInteger))
@@ -394,3 +410,6 @@ void WP34S_Qf_Q(const real_t *x, real_t *res, realContext_t *realContext) {
   if(half) realChangeSign(&p);
   realCopy(&p, res);
 }
+
+#endif //SAVE_SPACE_DM42_15
+

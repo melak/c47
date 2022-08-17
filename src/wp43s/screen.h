@@ -28,7 +28,23 @@
   #include <gdk/gdk.h>
 #endif // PC_BUILD
 
-void       fnScreenDump                       (uint16_t unusedButMandatoryParameter);
+//#define displayStackSHOIDISP 2                  //JMSHOIDISP  displayStackSHOIDISP=1: 3 lines of X-repeats
+                                                  //JMSHOIDISP  displayStackSHOIDISP=2: 2 lines of X-repeats
+                                                  //JMSHOIDISP  displayStackSHOIDISP=3: 1 lines of X-repeats
+                                                  //JMSHOIDISP  displayStackSHOIDISP=4: 0 lines of X-repeats
+
+//JMvv
+  extern bool_t   doRefreshSoftMenu;                                                                              //dr  
+  void     FN_handler();                                                                                          //JM LONGPRESS
+  void     Shft_handler();                                                                                        //JM LONGPRESS f/g
+  void     LongpressKey_handler();                                                                                //JM LONGPRESS CLX
+  void     Shft_stop();                                                                                           //JM reset shift after  4s
+  void     underline(int16_t y);                                                                                  //JM SHIFT LINE
+  void     clear_ul(void);                                                                                        //JMUL
+  void     clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys);               //JMOLD
+//JM^^
+
+  void       fnScreenDump                       (uint16_t unusedButMandatoryParameter);
 
 void       fnClLcd                            (uint16_t unusedButMandatoryParameter);
 void       fnPixel                            (uint16_t unusedButMandatoryParameter);
@@ -66,6 +82,7 @@ void       fnAGraph                           (uint16_t regist);
 #endif // PC_BUILD
 
 #ifdef DMCP_BUILD
+  void     copyRegisterToClipboardString      (calcRegister_t regist, char *clipboardString);                   //JMCSV Added for textfiles 
   void     refreshLcd                         (void);
 #else // !DMCP_BUILD
   void     lcd_fill_rect                      (uint32_t x, uint32_t y, uint32_t dx, uint32_t dy, int val); // clone fron the DMCP function
@@ -95,8 +112,47 @@ void       fnAGraph                           (uint16_t regist);
 
   void     execTimerApp                         (uint16_t timerType);
 #ifndef TESTSUITE_BUILD
+//JM vv
+  void     refreshFn                            (uint16_t timerType);                                           //dr - general timeout handler 
+//  uint8_t  combinationFonts;    //TO REMOVE from .h
+//  uint8_t  maxiC;               //TO REMOVE from .h                                                                                            //JM global flags for character control:  enlarged letters
+  extern uint8_t  compressString;                                                                               //JM global flags for character control: compressString
+  extern uint8_t  raiseString;                                                                               //JM global flags for character control: raiseString
+  extern uint8_t  lines;
+  extern uint16_t current_cursor_x;
+  extern uint16_t current_cursor_y;
+  extern int16_t  displayAIMbufferoffset;
+  extern uint8_t  displayStack_m;
+
+  //Stack string large font display
+  #define STACK_X_STR_LRG_FONT
+  #define STACK_STR_MED_FONT
+  #define STACK_X_STR_MED_FONT
+  #undef  STACK_X_STR_MED_FONT //not needed as the full and half fonts are the same width
+
+  //mode
+  #define stdNoEnlarge     0                                                                                    //JM vv compress, enlarge, small fonts
+  #define stdEnlarge       1
+  #define stdnumEnlarge    2
+  #define numSmall         3
+  #define numHalf          4
+
+  //comp
+  #define nocompress       0
+  #define stdcompress      1
+
+  uint32_t showStringC43                      (const char *string, int mode, int comp, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols );
+  uint32_t stringWidthC43                     (const char *str,    int mode, int comp,                                                bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows);
+#ifdef TEXT_MULTILINE_EDIT
+  uint32_t showStringEdC43                    (uint32_t lastline, int16_t offset, int16_t edcursor, const char *string, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, bool_t noshow);
+#endif //TEXT_MULTILINE_EDIT
+                                                                                                               //JM ^^
+  void     underline_softkey                  (int16_t xSoftkey, int16_t ySoftKey, bool_t dontclear);          //JM LONGPRESS
+  void     refresh_gui                        (void);                                                          //JM
+  void     force_refresh                      (void);                                                          //JM SCREEN
+//JM^^
+
   void     refreshScreen                      (void);
-  //void     invertPixel                        (uint32_t x, uint32_t y);
   //int      getPixel                           (uint32_t x, uint32_t y);
   /**
    * Displays a 0 terminated string.

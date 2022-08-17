@@ -308,6 +308,8 @@ extern const real_t * const const_1e32;
 extern const real_t * const const_1e_10000;
 extern const real_t * const const_995on1000;
 extern const real_t * const const_1e_32;
+extern const real_t * const const_rt3;
+extern const real_t * const const_rt3on2;
 extern const real_t * const const_gammaC00;
 extern const real_t * const const_gammaC01;
 extern const real_t * const const_gammaC02;

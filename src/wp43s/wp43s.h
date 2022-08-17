@@ -124,6 +124,7 @@
   extern bool_t                 serialIOIconEnabled;
   extern bool_t                 pemCursorIsZerothStep;
 
+  extern bool_t                 AlphaSelectionBufferTimerRunning;                  //JM  #ifndef USEFLOAT
   extern realContext_t          ctxtReal4;    //   Limited digits: used for high speed internal calcs
   extern realContext_t          ctxtReal34;   //   34 digits
   extern realContext_t          ctxtReal39;   //   39 digits: used for 34 digits intermediate calculations
@@ -201,6 +202,8 @@
   extern uint8_t                nextChar;
   extern uint8_t                displayStack;
   extern uint8_t                cachedDisplayStack;
+  extern uint8_t                displayStackSHOIDISP;         //JM SHOIDISP
+  extern bool_t                 numLock;                      //JM
   extern uint8_t                alphaCase;
   extern uint8_t                numLinesNumericFont;
   extern uint8_t                numLinesStandardFont;
@@ -243,6 +246,30 @@
   extern int16_t                cachedDynamicMenu;
 
   extern uint16_t               globalFlags[7];
+  extern int16_t                longpressDelayedkey2;         //JM
+  extern int16_t                longpressDelayedkey3;         //JM
+  extern int16_t                T_cursorPos;                  //JMCURSOR
+  extern int16_t                SHOWregis;                    //JMSHOW
+  extern int16_t                ListXYposition;               //JM
+  extern int16_t                mm_MNU_HOME;                  //JM
+  extern int16_t                mm_MNU_ALPHA;                 //JM
+  extern int16_t                MY_ALPHA_MENU;                //JM Replaced define
+  extern uint8_t                lastSetAngularMode;           //JM
+  extern int16_t                JM_auto_doublepress_enabled;  //JM TIMER CLRDROP //drop
+  extern int16_t                JM_auto_longpress_enabled;    //JM TIMER CLRDROP //clstk
+  extern uint8_t                JM_SHIFT_HOME_TIMER1;         //Local to keyboard.c, but defined here
+  extern bool_t                 ULFL, ULGL;                   //JM Underline
+  extern int16_t                FN_key_pressed, FN_key_pressed_last; //JM LONGPRESS FN
+  extern bool_t                 FN_timeouts_in_progress;      //JM LONGPRESS FN
+  extern bool_t                 Shft_timeouts;                //JM SHIFT NEW FN
+  extern bool_t                 FN_timed_out_to_NOP;          //JM LONGPRESS FN
+  extern bool_t                 FN_timed_out_to_RELEASE_EXEC; //JM LONGPRESS FN
+  extern bool_t                 FN_handle_timed_out_to_EXEC;
+  extern char                   indexOfItemsXEQM[18*8];       //JMXEQ
+  extern int16_t                fnXEQMENUpos;                 //JMXEQ
+  extern uint8_t                last_CM;                      //Do extern !!
+  extern uint8_t                FN_state; // = ST_0_INIT;      
+
   extern uint16_t               glyphRow[NUMBER_OF_GLYPH_ROWS];
   extern uint16_t               freeProgramBytes;
   extern uint16_t               firstDisplayedLocalStepNumber;
@@ -305,7 +332,10 @@
   extern int32_t                SAVED_SIGMA_LAct;
 
   #ifdef DMCP_BUILD
-    extern bool_t               backToDMCP;
+    extern bool_t              backToDMCP;
+  #ifdef BUFFER_CLICK_DETECTION
+    extern uint32_t            timeStampKey;                                      //dr - internal keyBuffer POC
+  #endif
 //  extern int                  keyAutoRepeat; // Key repetition
 //  extern int16_t              previousItem;
     extern uint32_t             nextTimerRefresh;

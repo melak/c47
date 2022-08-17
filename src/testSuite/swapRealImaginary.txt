@@ -8,13 +8,14 @@
 In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
 Func: fnSwapRealImaginary
 
+;JM changed to include the use of the function on a real, assuming 0 imag value
 
 
 ;=======================================
-; swapRealImaginary(Long Integer) --> Error24
+; swapRealImaginary(Long Integer) --> Complex34  JM
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"5"
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=LonI:"5"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i 5"
 
 
 
@@ -59,50 +60,50 @@ Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"5#7"
 
 
 ;=======================================
-; swapRealImaginary(Real) --> Error24
+; swapRealImaginary(Real) --> Complex   JM
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001"
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"0.0001"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i 0.0001"
 
 In:  AM=GRAD FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"50"
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"50"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i 50"
 
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"89.99999"
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"89.99999"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i 89.99999"
 
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"5.32564":DMS
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"5.32564":DMS
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i 5.32564"
 
 In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-5.32564":GRAD
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-5.32564":GRAD
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i -5.32564"
 
 ; NaN
-In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"NaN":RAD
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"NaN":RAD
+In:  FL_ASLIFT=1 FL_CPXRES=0 RX=Real:"NaN":RAD
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i NaN"
 
 ; Infinity
-In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf":DEG
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"inf":DEG
+In:  FL_ASLIFT=1 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf":DEG
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i inf"
 
-In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"inf":MULTPI
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"inf":MULTPI
+In:  FL_ASLIFT=1 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"inf":MULTPI
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i inf"
 
-In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"-inf":RAD
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-inf":RAD
+In:  FL_ASLIFT=1 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"-inf":RAD
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i -inf"
 
 ; NaN
-In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"NaN"
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"NaN"
+In:  FL_ASLIFT=1 FL_CPXRES=0 RX=Real:"NaN"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i NaN"
 
 ; Infinity
-In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf"
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"inf"
+In:  FL_ASLIFT=1 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i inf"
 
-In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"inf"
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"inf"
+In:  FL_ASLIFT=1 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"inf"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i inf"
 
-In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"-inf"
-Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-inf"
+In:  FL_ASLIFT=1 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"-inf"
+Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RX=Cplx:"0 i -inf"
 
 
 

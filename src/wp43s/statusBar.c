@@ -16,12 +16,18 @@
 
 #include "statusBar.h"
 
+#include "bufferize.h"
 #include "charString.h"
 #include "dateTime.h"
 #include "flags.h"
 #include "fonts.h"
 #include "items.h"
+#include "gui.h"
+#include "c43Extensions/jm.h"
+#include "plotstat.h"
 #include "screen.h"
+#include "softmenus.h"
+#include <string.h>
 
 #include "wp43s.h"
 
@@ -49,7 +55,9 @@
       sprintf(tmpString, "%s%d %s/%s  mnu:%s fi:%d", catalog ? "asm:" : "", catalog, tam.mode ? "/tam" : "", getCalcModeName(calcMode),indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemCatalogName, softmenuStack[0].firstItem);
       showString(tmpString, &standardFont, X_DATE, 0, vmNormal, true, true);
     #else // DEBUG_INSTEAD_STATUS_BAR != 1
+      if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) lcd_fill_rect(0, 0, 158, 20, 0);
       showDateTime();
+      showHideHourGlass(); //TODO check if this belongs here and why JM
       if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) return;    // With graph displayed, only update the time, as the other items are clashing with the graph display screen
       showRealComplexResult();
       showComplexMode();
@@ -58,7 +66,7 @@
       if(calcMode == CM_MIM) {
         showMatrixMode();
       }
-      else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_TVM) {
+      else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_TVM || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_FIN) { //JM added FIN
         showTvmMode();
       }
       else {
@@ -76,6 +84,7 @@
       #else // !DMCP_BUILD
         showHideStackLift();
       #endif // DMCP_BUILD
+      showHideASB();                            //JM
     #endif // DEBUG_INSTEAD_STATUS_BAR == 1
   }
 
@@ -143,26 +152,104 @@
 
 
 
-  void showFracMode(void) {
+     void conv(char * str20, char * str40) {
+      str40[0]=0;
+      int16_t x = 0;
+      int16_t y = 0;
+      while(str20[x]!=0) {
+        if(str20[x]>='A' && str20[x]<='Z') {
+          str40[y++] = 0xa4;
+          str40[y++] = str20[x++] + 0x75;
+          str40[y] = 0;
+        } 
+        else if(str20[x]>='0' && str20[x]<='9') {
+          str40[y++] = 0xa0;
+          str40[y++] = str20[x++] + 0x50;
+          str40[y] = 0;
+        } 
+        else {
+          str40[y++] = str20[x++];
+          str40[y] = 0;
+        }
+      }
+    }                                                  //JM ^^ KEYS
+
+
+
+void showFracMode(void) {
+    char str20[20];                                   //JM vv KEYS
+    char str40[40];
+
+  showString(STD_SPACE_EM STD_SPACE_EM STD_SPACE_EM STD_SPACE_EM STD_SPACE_EM, &standardFont, X_INTEGER_MODE-12*5, 0, vmNormal, true, true); // STD_SPACE_EM is 0+0+12 pixel wide
+
+  uint32_t x = 0;
+
+  if(lastIntegerBase > 0 && lastIntegerBase <= 16) {                               //JMvv HEXKEYS
+    str20[0]=0;
+    
+    if(lastIntegerBase>10 && lastIntegerBase<=16){
+      x = showString("#KEY", &standardFont, X_FRAC_MODE, 0 , vmNormal, true, true);//-4 looks good
+      strcpy(str20,"A"); conv(str20, str40);
+      x = showString(str40,  &standardFont, x, -4 , vmNormal, true, true);         //-4 looks good
+      x = showString("-",    &standardFont, x,  2 , vmNormal, true, true);         //-4 looks good
+      strcpy(str20,"F"); conv(str20, str40);
+      x = showString(str40,  &standardFont, x, -4 , vmNormal, true, true);         //-4 looks good
+
+    } else
+    if(lastIntegerBase>=2 && lastIntegerBase<=10){
+      x = showString("#BASE", &standardFont, X_FRAC_MODE, 0, vmNormal, true, true); //-4 looks good
+    }
+    return;
+  }                                                                                //JM^^
+    
+    
+    x = X_FRAC_MODE;                    //vJM
+    char divStr[10];
+    if(getSystemFlag(FLAG_FRACT) || (constantFractions && constantFractionsOn)) {
+      if(!getSystemFlag(FLAG_PROPFR)) {
+        raiseString = 9;
+        strcpy(divStr,STD_SUB_b);
+        x = showString(divStr, &standardFont, x, 0, vmNormal, true, true)-2;
+        strcpy(divStr,"/");
+      }
+      else {
+        raiseString = 9;
+        strcpy(divStr,STD_SUB_a STD_SPACE_4_PER_EM STD_SUB_b);
+        x = showString(divStr, &standardFont, x, 0, vmNormal, true, true)-2;
+        strcpy(divStr,"/");
+      }
+    } else {
+        strcpy(divStr,"/");
+      }
+    compressString = 1;             //^JM
+
+
     if(getSystemFlag(FLAG_DENANY) && denMax == MAX_DENMAX) {
-      showString("/max", &standardFont, X_FRAC_MODE, 0, vmNormal, true, true);
+      sprintf(errorMessage,"%smax",divStr);
+      x = showString(errorMessage, &standardFont, x, 0, vmNormal, true, true);
     }
     else {
-      uint32_t x = 0;
-
       if((getSystemFlag(FLAG_DENANY) && denMax != MAX_DENMAX) || !getSystemFlag(FLAG_DENANY)) {
-        sprintf(errorMessage, "/%" PRIu32, denMax);
-        x = showString(errorMessage, &standardFont, X_FRAC_MODE, 0, vmNormal, true, true);
+        sprintf(errorMessage, "%s%" PRIu32, divStr,denMax);
+        x = showString(errorMessage, &standardFont, x, 0, vmNormal, true, true);
       }
 
-      if(!getSystemFlag(FLAG_DENANY)) {
-        if(getSystemFlag(FLAG_DENFIX)) {
-          showGlyphCode('f',  &standardFont, x, 0, vmNormal, true, false); // f is 0+7+3 pixel wide
-        }
-        else {
-          showString(PRODUCT_SIGN, &standardFont, x, 0, vmNormal, true, false); // STD_DOT is 0+3+2 pixel wide and STD_CROSS is 0+7+2 pixel wide
+      if(constantFractions && constantFractionsOn && !getSystemFlag(FLAG_FRACT)) {
+        raiseString = 1;
+        strcpy(divStr,"c");
+        x = showString(divStr, &standardFont, x, 0, vmNormal, true, true);
+      }
+      else {
+        if(!getSystemFlag(FLAG_DENANY)) {
+          if(getSystemFlag(FLAG_DENFIX)) {
+            showGlyphCode('f',  &standardFont, x, 0, vmNormal, true, false); // f is 0+7+3 pixel wide
+          }
+          else {
+            showString(PRODUCT_SIGN, &standardFont, x, 0, vmNormal, true, false); // STD_DOT is 0+3+2 pixel wide and STD_CROSS is 0+7+2 pixel wide
+          }
         }
       }
+
     }
   }
 
@@ -222,14 +309,69 @@
 
 
   void showHideAlphaMode(void) {
-    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha) || ((calcMode == CM_PEM || calcMode == CM_ASSIGN) && getSystemFlag(FLAG_ALPHA))) {
-      if(alphaCase == AC_UPPER) {
-        showString(STD_ALPHA, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
-        setSystemFlag(FLAG_alphaCAP);
-      }
-      else {
-        showString(STD_alpha, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_alpha is 0+9+2 pixel wide
-        clearSystemFlag(FLAG_alphaCAP);
+    int status=0;
+    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha)) {
+
+
+//WP43S    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha) || ((calcMode == CM_PEM || calcMode == CM_ASSIGN) && getSystemFlag(FLAG_ALPHA))) {
+//      if(alphaCase == AC_UPPER) {
+//        showString(STD_ALPHA, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
+//        setSystemFlag(FLAG_alphaCAP);
+//      }
+//      else {
+//        showString(STD_alpha, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_alpha is 0+9+2 pixel wide
+//        clearSystemFlag(FLAG_alphaCAP);
+
+
+      if(numLock && !shiftF && !shiftG) {
+          if(alphaCase == AC_UPPER)                  { status = 3 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); } else
+          if(alphaCase == AC_LOWER)                  { status = 6 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); }
+        } else
+          if(alphaCase == AC_LOWER && shiftF){
+            setSystemFlag(FLAG_alphaCAP);              status = 12 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); //A	
+          } else
+    		    if(alphaCase == AC_UPPER && shiftF){
+    		      clearSystemFlag(FLAG_alphaCAP);          status = 18 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0);   //a	
+    		    } else //at this point shiftF is false
+    		      if(alphaCase == AC_UPPER)  { //UPPER
+    		        setSystemFlag(FLAG_alphaCAP);
+    		        if(shiftG)                           { status =  3 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); } else
+    		        if(!shiftG && !shiftF && !numLock)   { status = 12 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); }
+    		      } else
+    		        if(alphaCase == AC_LOWER)  { //LOWER
+    				      clearSystemFlag(FLAG_alphaCAP);
+    				      if(shiftG)                         { status =  3 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); } else
+    				      if(!shiftG && !shiftF && !numLock) { status = 18 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); }
+    				    }
+
+      if(status >0 && status <=18) {
+        showGlyphCode(' ',    &standardFont, X_ALPHA_MODE, 0, vmNormal, true, true); // is 0+0+10 pixel wide
+        switch(status) {
+          case  1: showString(STD_SUB_N, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub    // STD_ALPHA is 0+9+2 pixel wide
+          case  2: showString(STD_SUB_N, &standardFont, X_ALPHA_MODE,-11, vmNormal, true, false); break; //sup   
+          case  3: showString(STD_num,   &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
+        
+          case  4: showString(STD_SUB_n, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub   
+          case  5: showString(STD_SUB_n, &standardFont, X_ALPHA_MODE,-11, vmNormal, true, false); break; //sup   
+          case  6: showString(STD_n,     &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
+          
+//          case  7: showString(STD_SIGMA, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sub   
+//          case  8: showString(STD_SIGMA, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sup   
+//          case  9: showString(STD_SIGMA, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
+          
+          case 10: showString(STD_SUB_A, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub   
+          case 11: showString(STD_SUB_A, &standardFont, X_ALPHA_MODE, -11, vmNormal, true, false); break; //sup   //not possible
+          case 12: showString(STD_A    , &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
+    
+//          case 13: showString(STD_sigma, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sub   
+//          case 14: showString(STD_sigma, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //sup   
+//          case 15: showString(STD_sigma, &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
+          
+          case 16: showString(STD_SUB_a, &standardFont, X_ALPHA_MODE, -2, vmNormal, true, false); break; //sub   
+          case 17: showString(STD_SUB_a, &standardFont, X_ALPHA_MODE, -11, vmNormal, true, false); break; //sup    //not possible 
+          case 18: showString(STD_a    , &standardFont, X_ALPHA_MODE,  0, vmNormal, true, false); break; //normal
+          default:;
+        }
       }
     }
     else {
@@ -300,12 +442,28 @@
 
 
 
-  void showHideUserMode(void) {
-    if(getSystemFlag(FLAG_USER)) {
-      showGlyph(STD_USER_MODE, &standardFont, X_USER_MODE, 0, vmNormal, false, false); // STD_USER_MODE is 0+12+2 pixel wide
-    }
-  }
 
+void showHideASB(void) {                     //JMvv
+  if(AlphaSelectionBufferTimerRunning) {
+    light_ASB_icon();
+  }
+  else {
+    kill_ASB_icon();
+  }
+}                                             //JM^^
+
+
+
+
+void showHideUserMode(void) {
+  if(getSystemFlag(FLAG_USER)) {
+    showGlyph(STD_USER_MODE, &standardFont, X_USER_MODE, 0, vmNormal, false, false); // STD_USER_MODE is 0+12+2 pixel wide
+  }
+  #ifndef DMCP_BUILD
+    refreshModeGui(); //JM Added here to force icon update in Gui
+  #endif //!TESTSUITE_BUILD
+}
+  
 
 
   #ifdef DMCP_BUILD

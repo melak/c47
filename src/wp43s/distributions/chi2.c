@@ -32,6 +32,19 @@
 #include "wp43s.h"
 
 
+#ifdef SAVE_SPACE_DM42_15
+  bool_t checkRegisterNoFP(calcRegister_t reg){return false;}
+  void fnChi2P(uint16_t unusedButMandatoryParameter){}
+  void fnChi2L(uint16_t unusedButMandatoryParameter){}
+  void fnChi2R(uint16_t unusedButMandatoryParameter){}
+  void fnChi2I(uint16_t unusedButMandatoryParameter){}
+  void WP34S_Pdf_Chi2 (const real_t *x, const real_t *k, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdfu_Chi2(const real_t *x, const real_t *k, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdf_Chi2 (const real_t *x, const real_t *k, real_t *res, realContext_t *realContext){}
+  void WP34S_Qf_Chi2  (const real_t *x, const real_t *k, real_t *res, realContext_t *realContext){}
+#else
+
+
 bool_t checkRegisterNoFP(calcRegister_t reg) {
   real34_t flooredI;
 
@@ -334,3 +347,5 @@ void WP34S_Qf_Chi2(const real_t *x, const real_t *k, real_t *res, realContext_t 
 
     realCopy(const_NaN, res); // ERR 20
 }
+
+#endif //SAVE_SPACE_DM42_15

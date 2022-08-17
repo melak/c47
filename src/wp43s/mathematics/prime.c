@@ -120,6 +120,7 @@ static bool_t longIntegerIsPrime1(longInteger_t primeCandidate) {
 
 
 void fnIsPrime(uint16_t unusedButMandatoryParameter) {
+#ifndef SAVE_SPACE_DM42_12
   longInteger_t primeCandidate;
 
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
@@ -148,11 +149,13 @@ void fnIsPrime(uint16_t unusedButMandatoryParameter) {
   //temporaryInformation = (longIntegerIsPrime2(primeCandidate) ? TI_TRUE : TI_FALSE);
   temporaryInformation = (longIntegerIsPrime(primeCandidate) ? TI_TRUE : TI_FALSE);
   longIntegerFree(primeCandidate);
+#endif //SAVE_SPACE_DM42_12
 }
 
 
 
 void fnNextPrime(uint16_t unusedButMandatoryParameter) {
+#ifndef SAVE_SPACE_DM42_12
   longInteger_t currentNumber, nextPrime;
 
   longIntegerInit(currentNumber);
@@ -193,6 +196,7 @@ void fnNextPrime(uint16_t unusedButMandatoryParameter) {
 
   longIntegerFree(nextPrime);
   longIntegerFree(currentNumber);
+#endif //SAVE_SPACE_DM42_12
 }
 
 

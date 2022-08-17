@@ -133,11 +133,16 @@ ultimateQuestionOfLife
 
 rectangularToPolar
 polarToRectangular
+;jm
+rectangularToPolarB
+polarToRectangularB
 
 ceil
 floor
 ;round
+;roundB        /jmreplaced, but original also does not work
 roundi
+roundiB
 
 idiv
 idivr
@@ -226,6 +231,7 @@ slvq
 agm
 
 decomp
+;             jmhold
 
 dot
 cross

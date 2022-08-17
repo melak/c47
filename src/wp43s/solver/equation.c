@@ -79,6 +79,28 @@
     { STD_GAMMA,                             ITM_GAMMAX,      0}, // Gamma function
     { STD_zeta,                              ITM_zetaX,       0}, // Riemann zeta function
     { STD_SQUARE_ROOT,                       ITM_SQUAREROOTX, 0}, // Square root (available through f SQRT in EIM)
+
+
+    { "acosh",                               ITM_arcosh,      0}, // JM C43 Inverse hyperbolic cosine
+    { "asinh",                               ITM_arsinh,      0}, // JM C43 Inverse hyperbolic sine
+    { "atan2",                               ITM_atan2,       0}, // JM C43 Binary arctangent
+    { "atanh",                               ITM_artanh,      0}, // JM C43 Inverse hyperbolic tangent
+    { "cos",                                 ITM_cos,         0}, // JM C43 Cosine
+    { "cosh",                                ITM_cosh,        0}, // JM C43 Hyperbolic cosine
+    { "exp",                                 ITM_EXP,         0}, // JM C43 Natural exponential
+    { "lb",                                  ITM_LOG2,        0}, // JM C43 Binary logarithm
+    { "lg",                                  ITM_LOG10,       0}, // JM C43 Common logarithm
+    { "ln",                                  ITM_LN,          0}, // JM C43 Natural logarithm
+    { "LOG",                                 ITM_LOG10,       0}, // JM C43 Common logarithm
+    { "LOG" STD_SUB_1 STD_SUB_0,             ITM_LOG10,       0}, // JM C43 Common logarithm
+    { "LG2",                                 ITM_LOG2,        0}, // JM C43 Binary logarithm
+    { "lB",                                  ITM_LOG2,        0}, // JM C43 Binary logarithm
+    { "LOG" STD_SUB_2,                       ITM_LOG2,        0}, // JM C43 Binary logarithm
+    { "sin",                                 ITM_sin,         0}, // JM C43 Sine
+    { "sinh",                                ITM_sinh,        0}, // JM C43 Hyperbolic sine
+    { "tan",                                 ITM_tan,         0}, // JM C43 Tangent
+    { "tanh",                                ITM_tanh,        0}, // JM C43 Hyperbolic tangent
+
     { "",                                    0,               0}  // Sentinel
   };
 #endif /* TESTSUITE_BUILD */
@@ -133,7 +155,9 @@ void fnEqEdit(uint16_t unusedButMandatoryParameter) {
   if(equationString) xcopy(aimBuffer, equationString, stringByteLength(equationString) + 1);
   else               aimBuffer[0] = 0;
   calcMode = CM_EIM;
-  alphaCase = AC_UPPER;
+  alphaCase = AC_UPPER;  
+  nextChar = NC_NORMAL;//JM C43
+  numLock = false;     //JM C43
   setSystemFlag(FLAG_ALPHA);
   yCursor = 0;
   xCursor = equationString ? stringGlyphLength(equationString) : 0;

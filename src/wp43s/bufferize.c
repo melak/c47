@@ -16,6 +16,7 @@
 
 #include "bufferize.h"
 
+#include "c43Extensions/addons.h"
 #include "charString.h"
 #include "constantPointers.h"
 #include "constants.h"
@@ -28,11 +29,14 @@
 #include "fonts.h"
 #include "gui.h"
 #include "items.h"
+#include "c43Extensions/jm.h"
+#include "c43Extensions/keyboardTweak.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/toRect.h"
 #include "mathematics/wp34s.h"
 #include "matrix.h"
 #include "programming/manage.h"
+#include "c43Extensions/radioButtonCatalog.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "saveRestoreCalcState.h"
@@ -48,8 +52,7 @@
 
 #ifndef TESTSUITE_BUILD
   void fnAim(uint16_t unusedButMandatoryParameter) {
-    shiftF = false;
-    shiftG = false;
+    resetShiftState();  //JM
     aimBuffer[0] = 0;
     calcModeAim(NOPARAM); // Alpha Input Mode
     if(programRunStop != PGM_RUNNING) {
@@ -59,10 +62,13 @@
 
 
 
-  uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
-    nextChar = NC_NORMAL;
+uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
+/*JM*/ //nextChar = NC_NORMAL;
 
     if(subOrSup == NC_SUBSCRIPT) {
+      if(item >= ITM_0 && item <= ITM_9) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_0 - (int16_t)ITM_0); else //JM optimized
+      if(item >= ITM_a && item <= ITM_z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_a - (int16_t)ITM_a); else //JM optimized
+      if(item >= ITM_A && item <= ITM_Z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_A - (int16_t)ITM_A); else //JM optimized
       switch(item) {
         case ITM_alpha    : return ITM_SUB_alpha;
         case ITM_delta    : return ITM_SUB_delta;
@@ -74,62 +80,64 @@
         case ITM_s        : return ITM_SUB_s;
         case ITM_PLUS     : return ITM_SUB_PLUS;
         case ITM_MINUS    : return ITM_SUB_MINUS;
-        case ITM_0        : return ITM_SUB_0;
-        case ITM_1        : return ITM_SUB_1;
-        case ITM_2        : return ITM_SUB_2;
-        case ITM_3        : return ITM_SUB_3;
-        case ITM_4        : return ITM_SUB_4;
-        case ITM_5        : return ITM_SUB_5;
-        case ITM_6        : return ITM_SUB_6;
-        case ITM_7        : return ITM_SUB_7;
-        case ITM_8        : return ITM_SUB_8;
-        case ITM_9        : return ITM_SUB_9;
-        case ITM_a        : return ITM_SUB_a;
-        case ITM_b        : return ITM_SUB_b;
-        case ITM_c        : return ITM_SUB_c;
-        case ITM_d        : return ITM_SUB_d;
-        case ITM_e        : return ITM_SUB_e;
-        case ITM_i        : return ITM_SUB_i;
-        case ITM_j        : return ITM_SUB_j;
-        case ITM_k        : return ITM_SUB_k;
-        case ITM_l        : return ITM_SUB_l;
-        case ITM_m        : return ITM_SUB_m;
-        case ITM_n        : return ITM_SUB_n;
-        case ITM_o        : return ITM_SUB_o;
-        case ITM_p        : return ITM_SUB_p;
-        case ITM_q        : return ITM_SUB_q;
-        case ITM_u        : return ITM_SUB_u;
-        case ITM_v        : return ITM_SUB_v;
-        case ITM_w        : return ITM_SUB_w;
-        case ITM_x        : return ITM_SUB_x;
-        case ITM_y        : return ITM_SUB_y;
-        case ITM_z        : return ITM_SUB_z;
-        case ITM_A        : return ITM_SUB_A;
-        case ITM_B        : return ITM_SUB_B;
-        case ITM_C        : return ITM_SUB_C;
-        case ITM_D        : return ITM_SUB_D;
-        case ITM_E        : return ITM_SUB_E;
-        case ITM_F        : return ITM_SUB_F;
-        case ITM_G        : return ITM_SUB_G;
-        case ITM_H        : return ITM_SUB_H;
-        case ITM_I        : return ITM_SUB_I;
-        case ITM_J        : return ITM_SUB_J;
-        case ITM_K        : return ITM_SUB_K;
-        case ITM_L        : return ITM_SUB_L;
-        case ITM_M        : return ITM_SUB_M;
-        case ITM_N        : return ITM_SUB_N;
-        case ITM_O        : return ITM_SUB_O;
-        case ITM_P        : return ITM_SUB_P;
-        case ITM_Q        : return ITM_SUB_Q;
-        case ITM_R        : return ITM_SUB_R;
-        case ITM_S        : return ITM_SUB_S;
-        case ITM_T        : return ITM_SUB_T;
-        case ITM_U        : return ITM_SUB_U;
-        case ITM_V        : return ITM_SUB_V;
-        case ITM_W        : return ITM_SUB_W;
-        case ITM_X        : return ITM_SUB_X;
-        case ITM_Y        : return ITM_SUB_Y;
-        case ITM_Z        : return ITM_SUB_Z;
+/* //JM optimized
+        case ITM_0        :
+        case ITM_1        :
+        case ITM_2        :
+        case ITM_3        :
+        case ITM_4        :
+        case ITM_5        :
+        case ITM_6        :
+        case ITM_7        :
+        case ITM_8        :
+        case ITM_9        : return item + (ITM_SUB_9 - ITM_9);
+        case ITM_a        :
+        case ITM_b        :
+        case ITM_c        :
+        case ITM_d        :
+        case ITM_e        :
+        case ITM_i        :
+        case ITM_j        :
+        case ITM_k        :
+        case ITM_l        :
+        case ITM_m        :
+        case ITM_n        :
+        case ITM_o        :
+        case ITM_p        :
+        case ITM_q        :
+        case ITM_u        :
+        case ITM_v        :
+        case ITM_w        :
+        case ITM_x        :
+        case ITM_y        :
+        case ITM_z        : return item + (ITM_SUB_z - ITM_z);
+        case ITM_A        :
+        case ITM_B        :
+        case ITM_C        :
+        case ITM_D        :
+        case ITM_E        :
+        case ITM_F        :
+        case ITM_G        :
+        case ITM_H        :
+        case ITM_I        :
+        case ITM_J        :
+        case ITM_K        :
+        case ITM_L        :
+        case ITM_M        :
+        case ITM_N        :
+        case ITM_O        :
+        case ITM_P        :
+        case ITM_Q        :
+        case ITM_R        :
+        case ITM_S        :
+        case ITM_T        :
+        case ITM_U        :
+        case ITM_V        :
+        case ITM_W        :
+        case ITM_X        :
+        case ITM_Y        :
+        case ITM_Z        : return item + (ITM_SUB_Z - ITM_Z);
+*/
         default           : return item;
       }
     }
@@ -140,16 +148,16 @@
         case ITM_INFINITY : return ITM_SUP_INFINITY;
         case ITM_PLUS     : return ITM_SUP_PLUS;
         case ITM_MINUS    : return ITM_SUP_MINUS;
-        case ITM_0        : return ITM_SUP_0;
-        case ITM_1        : return ITM_SUP_1;
-        case ITM_2        : return ITM_SUP_2;
-        case ITM_3        : return ITM_SUP_3;
-        case ITM_4        : return ITM_SUP_4;
-        case ITM_5        : return ITM_SUP_5;
-        case ITM_6        : return ITM_SUP_6;
-        case ITM_7        : return ITM_SUP_7;
-        case ITM_8        : return ITM_SUP_8;
-        case ITM_9        : return ITM_SUP_9;
+        case ITM_0        : 
+        case ITM_1        : 
+        case ITM_2        : 
+        case ITM_3        : 
+        case ITM_4        : 
+        case ITM_5        : 
+        case ITM_6        : 
+        case ITM_7        : 
+        case ITM_8        : 
+        case ITM_9        : return item + (ITM_SUP_0 - ITM_0);
         case ITM_f        : return ITM_SUP_f;
         case ITM_g        : return ITM_SUP_g;
         case ITM_h        : return ITM_SUP_h;
@@ -237,16 +245,62 @@
   }
 
 
+
+
+#ifndef TESTSUITE_BUILD                          //JMvv
+void light_ASB_icon(void) {
+  lcd_fill_rect(X_ALPHA_MODE,18,9,2,0xFF);
+  force_refresh();
+}
+
+void kill_ASB_icon(void) {
+  lcd_fill_rect(X_ALPHA_MODE,18,9,2,0);
+  force_refresh();
+}
+#endif                                           //JM^^
+
+
   void resetAlphaSelectionBuffer(void) {
     lgCatalogSelection = 0;
     alphaSelectionTimer = 0;
     asmBuffer[0] = 0;
     fnKeyInCatalog = 0;
+    AlphaSelectionBufferTimerRunning = false;     //JMvv
+    #ifndef TESTSUITE_BUILD
+      kill_ASB_icon();
+    #endif // TESTSUITE_BUILD                       //JM^^
+  }
+
+
+  bool_t timeoutAlphaSelectionBuffer(void) {       //JM
+    if(alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000){
+      resetAlphaSelectionBuffer();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void startAlphaSelectionBuffer(void) {           //JM
+    alphaSelectionTimer = getUptimeMs();
+    AlphaSelectionBufferTimerRunning = true;
+    #ifndef TESTSUITE_BUILD
+    light_ASB_icon();
+    #endif // TESTSUITE_BUILD                       //JM^^
   }
 
 
 
+
+
+
   void addItemToBuffer(uint16_t item) {
+
+    #ifdef PC_BUILD
+      char tmp[200]; sprintf(tmp,"bufferize.c: addItemToBuffer item=%d tam.mode=%d\n",item,tam.mode); jm_show_calc_state(tmp);
+    #endif
+
+
     if(item == NOPARAM) {
       displayBugScreen("In function addItemToBuffer: item should not be NOPARAM=7654!");
     }
@@ -267,6 +321,9 @@
                                 item == ITM_VERTICAL_BAR        ? "||" :
                                 item == ITM_ROOT_SIGN           ? STD_SQUARE_ROOT "()" :
                                 item == ITM_ALOG_SYMBOL         ? "e" STD_SUB_E "^()" :
+                                item == ITM_LG_SIGN             ? "LOG()" :   //JM C43
+                                item == ITM_LN_SIGN             ? "LN()"  :   //JM C43
+                                item == ITM_OBELUS              ? STD_SLASH  :   //JM C43
                                 indexOfItems[item].itemSoftmenuName;
           char *aimCursorPos = aimBuffer;
           char *aimBottomPos = aimBuffer + stringByteLength(aimBuffer);
@@ -278,8 +335,14 @@
             case ITM_ALOG_SYMBOL:
               xCursor += 4;
               break;
+            case ITM_LG_SIGN :    //JM C43
+              xCursor += 4;
+              break;
             case ITM_ROOT_SIGN:
               xCursor += 2;
+              break;
+            case ITM_LN_SIGN :   //JM C43
+              xCursor += 3;
               break;
             case ITM_PAIR_OF_PARENTHESES:
             case ITM_VERTICAL_BAR:
@@ -290,7 +353,44 @@
           }
         }
         else {
+#ifdef TEXT_MULTILINE_EDIT
+          //JMCURSOR vv ADD THE CHARACTER MID-STRING =======================================================
+          uint16_t ix = 0; 
+          uint16_t in = 0;
+          while (ix<T_cursorPos && in<T_cursorPos) {              //search the ix position in aimBuffer before the cursor
+            in = stringNextGlyph(aimBuffer, in);                  //find the in position in aimBuffer which is then the cursor position
+            ix++;  
+          }
+          T_cursorPos = in;
+          char ixaa[AIM_BUFFER_LENGTH];                           //prepare temporary aimBuffer
+          xcopy(ixaa, aimBuffer,in);                              //copy everything up to the cursor position
+          ixaa[in]=0;                                             //stop new buffer at cursor position to be able to insert new character 
+          strcat(ixaa,indexOfItems[item].itemSoftmenuName);       //add new character
+          strcat(ixaa,aimBuffer + in);                            //copy rest of the aimbuffer
+          strcpy(aimBuffer,ixaa);                                 //return temporary string to aimBuffer
+          T_cursorPos = stringNextGlyph(aimBuffer, T_cursorPos);  //place the cursor at the next glyph boundary
+          //JMCURSOR ^^ REPLACES THE FOLLOWING XCOPY, WHICH NORMALLY JUST ADDS A CHARACTER TO THE END OF THE STRING
+          // xcopy(aimBuffer + stringNextGlyph(aimBuffer, stringLastGlyph(aimBuffer)), indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+          switch(item) { // NOTE: cursor must jump on 3 places for the new COS_SIGN etc.
+            case ITM_LG_SIGN :    //JM C43
+            case ITM_SIN_SIGN :   //JM C43
+            case ITM_COS_SIGN :   //JM C43
+            case ITM_TAN_SIGN :   //JM C43
+              T_cursorPos += 2;
+              break;
+            case ITM_ROOT_SIGN:
+            case ITM_LN_SIGN :   //JM C43
+              T_cursorPos += 1;
+              break;
+            case ITM_PAIR_OF_PARENTHESES:
+              T_cursorPos += 1;
+              break;
+            default:;
+          }
+
+#else
           xcopy(aimBuffer + stringByteLength(aimBuffer), indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+#endif
         }
       }
 
@@ -319,7 +419,8 @@
 
           softmenuStack[0].firstItem = findFirstItem(asmBuffer);
           setCatalogLastPos();
-          alphaSelectionTimer = getUptimeMs();
+//          alphaSelectionTimer = getUptimeMs();     //JM
+          startAlphaSelectionBuffer();               //JM
         }
       }
 
@@ -382,6 +483,14 @@
             mimAddNumber(item);
             break;
 
+#ifdef SAVE_SPACE_DM42_11
+          case ITM_STO : //JM optimized
+          case ITM_RCL : //JM optimized
+              lastErrorCode = ERROR_NONE;
+              mimEnter(true);
+              runFunction(item);
+              break;
+#else //SAVE_SPACE_DM42_11
           case ITM_STO :
           case ITM_STOADD :
           case ITM_STOSUB :
@@ -808,6 +917,13 @@
 
           case ITM_Kk :
           case ITM_Ek :
+#endif //SAVE_SPACE_DM42_11          
+          case ITM_op_a :                 //C43
+          case ITM_op_a2:                 //C43
+          case ITM_op_j :                 //C43
+          case ITM_EE_EXP_TH :            //C43
+
+            if(item == ITM_ANGLE) item = ITM_ARG;
             mimRunFunction(item, indexOfItems[item].param);
             break;
 
@@ -857,6 +973,7 @@
           aimBuffer[3] = 0;
           nimNumberPart = NP_REAL_FLOAT_PART;
           lastIntegerBase = 0;
+          fnRefreshState();                                                //JMNIM
           break;
 
         case ITM_PERIOD :
@@ -924,13 +1041,13 @@
         switch(nimNumberPart) {
           case NP_INT_10 :
             if(item == ITM_0) {
-              if(aimBuffer[1] != '0') {
+              //if(aimBuffer[1] != '0') {  //JM_vv TYPE0; Allow starting the NIM buffer with 0000
                 strcat(aimBuffer, "0");
-              }
+              //}
             }
             else {
               if(aimBuffer[1] == '0') {
-                aimBuffer[1] = 0;
+                //aimBuffer[1] = 0;        //JM_^^ TYPE0
               }
 
               strcat(aimBuffer, indexOfItems[item].itemSoftmenuName);
@@ -1058,7 +1175,7 @@
 
         if(nimNumberPart == NP_EMPTY || nimNumberPart == NP_INT_10 || nimNumberPart == NP_INT_16) {
           if(aimBuffer[1] == '0') {
-            aimBuffer[1] = 0;
+            //aimBuffer[1] = 0;       //JM_TYPE0
           }
 
           strcat(aimBuffer, indexOfItems[item].itemSoftmenuName);
@@ -1077,6 +1194,7 @@
         }
 
         lastIntegerBase = 0;
+        fnRefreshState();                                                //JMNIM
 
         switch(nimNumberPart) {
           case NP_INT_10 :
@@ -1123,6 +1241,7 @@
         }
 
         lastIntegerBase = 0;
+        fnRefreshState();                                                //JMNIM
 
         switch(nimNumberPart) {
           case NP_INT_10 :
@@ -1159,6 +1278,7 @@
         done = true;
 
         lastIntegerBase = 0;
+        fnRefreshState();                                                //JMNIM
 
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_INT_16) {
           strcat(aimBuffer, "#");
@@ -1223,12 +1343,16 @@
         }
         break;
 
+
+      case ITM_i :                          //JM HP35 compatible, in NIM
       case ITM_CC :
+        if (item == ITM_i) resetShiftState();    //JM HP35 compatible, in NIM
         lastChar = strlen(aimBuffer) - 1;
 
         done = true;
 
         lastIntegerBase = 0;
+        fnRefreshState();                                                //JMNIM
 
         switch(nimNumberPart) {
          case NP_REAL_EXPONENT :
@@ -1269,7 +1393,7 @@
         if(nimNumberPart == NP_COMPLEX_INT_PART && aimBuffer[strlen(aimBuffer) - 1] == 'i') {
           done = true;
           strcat(aimBuffer, "3.141592653589793238462643383279503");
-          reallyRunFunction(ITM_EXIT, NOPARAM);
+          reallyRunFunction(ITM_EXIT1, NOPARAM);
         }
         break;
 
@@ -1398,14 +1522,14 @@
         }
         break;
 
-      case ITM_EXIT :
+      case ITM_EXIT1 :
         addItemToNimBuffer_exit:
         done = true;
         screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
         closeNim();
         if(calcMode != CM_NIM && lastErrorCode == 0) {
           setSystemFlag(FLAG_ASLIFT);
-          if(item == ITM_EXIT) {
+          if(item == ITM_EXIT1) {
             #ifdef DEBUGUNDO
               printf(">>> saveForUndo from bufferizeA:");
             #endif
@@ -1420,10 +1544,7 @@
           }
           return;
         }
-        if(item == ITM_EXIT) {
-          #ifdef DEBUGUNDO
-            printf(">>> saveForUndo from bufferizeB:");
-          #endif
+        if(item == ITM_EXIT1) {
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) {
             lastErrorCode = 0;
@@ -1435,14 +1556,15 @@
         }
         break;
 
-      case ITM_YX : // B for binary base
+      case ITM_1ONX : // B for binary base    Only works in direct NIM
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "2");
           goto addItemToNimBuffer_exit;
         }
         break;
 
-      case ITM_LN : // D for decimal base
+      case ITM_ENTER:                                 //JM
+      case ITM_LOG10 : // D for decimal base          //JM
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "10");
           goto addItemToNimBuffer_exit;
@@ -1497,9 +1619,13 @@
             }
             return;
           }
+        } else {                      //JM
+          done = true;                //JM
+          closeNim();                 //JM
         }
         break;
 
+      case ITM_ms :                        //JM
       case ITM_toHMS :
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
           done = true;
@@ -1525,6 +1651,42 @@
           }
         }
         break;
+
+      case ITM_DMS2:                        //JM
+        if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
+          done = true;
+          closeNim(); 
+          fnAngularModeJM(amDMS); //it cannot be an angle at this point. If closed input, it is only real or longint
+        }
+        break;
+
+      case ITM_DRG :                        //JM
+        if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
+          done = true;
+
+          closeNim();
+
+          if(calcMode != CM_NIM && lastErrorCode == 0) {
+            if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
+              convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+            }
+            if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone) {
+              if(currentAngularMode == amDMS) fnCvtFromCurrentAngularMode(amDMS); else
+              setRegisterAngularMode(REGISTER_X, currentAngularMode);
+            }
+
+            if(lastErrorCode == 0) {
+              setSystemFlag(FLAG_ASLIFT);
+            }
+            else {
+              undo();
+            }
+            return;
+          }
+        }
+        break;
+
+
 
       default : keyActionProcessed = false;
     }
@@ -1669,13 +1831,21 @@
     }
 
     else {
-      if(item != -MNU_INTS && item != -MNU_BITS) {
-        screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
-        closeNim();
+      switch (item) {           //JMCLOSE remove auto closenim for these functions only.
+        case ITM_SQUAREROOTX :  //closeNim moved to keyboard.c / btnkeyrelease, as .ms is on longpress underneath sqrt
+        case ITM_HASH_JM :      //closeNim simply not needed
+          break;
+          default : 
+          if(item != -MNU_INTS && item != -MNU_BITS) {
+            screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
+            closeNim();
+          }
       }
       if(calcMode != CM_NIM) {
         if(item == ITM_CONSTpi || (item >= 0 && indexOfItems[item].func == fnConstant)) {
           setSystemFlag(FLAG_ASLIFT);
+          lastIntegerBase = 0;                                             //JMNIM
+          fnRefreshState();                                                //JMNIM
         }
 
         if(lastErrorCode == 0) {
@@ -1723,6 +1893,37 @@
     }
     buffer++;
 
+    int16_t groupingGapM = groupingGap;                       //JMGAP vv
+    switch(nimNumberPart) {
+      case NP_INT_10:                     // +12345 longint; Do not change groupingGap. Leave at user setting, default 3.
+      case NP_INT_BASE:                   // +123AB#16.    ; Change groupinggap from user selection to this table, for entry
+        switch(lastIntegerBase) {
+          case  0: groupingGap = groupingGapM; break;
+          case  2: groupingGap = 4; break;
+          case  3: groupingGap = 3; break;
+          case  4: groupingGap = 2; break;
+          case  5:
+          case  6:
+          case  7:
+          case  8:
+          case  9:
+          case 10:
+          case 11:
+          case 12:
+          case 13:
+          case 14:
+          case 15: groupingGap = 3; break;
+          case 16: groupingGap = 2; break;
+          default: break;
+        }
+        break;
+      case NP_INT_16:                     // +123AB.       ; Change to 2 for hex.
+        groupingGap = 2;
+        break;
+      default:
+        break;
+    }                                                         //JMGAP ^^
+
     for(numDigits=0; buffer[numDigits]!=0 && buffer[numDigits]!='e' && buffer[numDigits]!='.' && buffer[numDigits]!=' ' && buffer[numDigits]!='#' && buffer[numDigits]!='+' && buffer[numDigits]!='-'; numDigits++); // The semicolon here is OK
 
     for(source=0, dest=0; source<numDigits; source++) {
@@ -1730,6 +1931,7 @@
       dest += insertGapIP(displayBuffer + dest, numDigits, source);
     }
 
+    groupingGap = groupingGapM;                               //JMGAP
     displayBuffer[dest] = 0;
 
     if(nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
@@ -1763,6 +1965,8 @@
     if(!getSystemFlag(FLAG_FRACT)) {
       setSystemFlag(FLAG_FRACT);
     }
+    constantFractionsOn = false; //JM
+
 
     lg = strlen(aimBuffer);
 
@@ -1878,7 +2082,21 @@
   }
 
   void closeNim(void) {
-    setSystemFlag(FLAG_ASLIFT);
+  //printf("closeNim\n");
+    
+    if(nimNumberPart == NP_INT_10) {                //JM Input default type vv
+      switch (Input_Default) {
+      case ID_43S:                                  //   Do nothing, this is default LI/DP
+      case ID_LI:                                   //   Do nothing, because default is LI/DP 
+        break;
+      case ID_DP:                                   //   Do Real default for DP
+      case ID_CPXDP:                                //                       CPX
+        nimNumberPart = NP_REAL_FLOAT_PART;
+        break;
+      case ID_SI:                                   //   lastIntegerBase is set in fnInDefault; I do not set it here, as the user can change it of course.
+        break;
+      }
+    }                                               //JM ^^
     if((nimNumberPart == NP_INT_10 || nimNumberPart == NP_INT_16) && lastIntegerBase != 0) {
       strcat(aimBuffer, "#0");
       int16_t basePos = strlen(aimBuffer) - 1;
@@ -1896,6 +2114,7 @@
     }
     else {
       lastIntegerBase = 0;
+      fnRefreshState();                                                //JMNIM
     }
 
     int16_t lastChar = strlen(aimBuffer) - 1;
@@ -2069,14 +2288,25 @@
 
             *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = val;
             lastIntegerBase = base;
+            fnRefreshState();                                                //JMNIM
+            aimBuffer[0]=0;                                      //JMNIM Clear the NIM input buffer once written to register successfully.
 
             longIntegerFree(maxVal);
             longIntegerFree(minVal);
             longIntegerFree(value);
           }
           else if(nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
-            reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-            stringToReal34(aimBuffer, REGISTER_REAL34_DATA(REGISTER_X));
+          
+              if(Input_Default == ID_CPXDP) {                                         //JM Input default type
+                reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone); //JM Input default type
+                stringToReal34(aimBuffer, REGISTER_REAL34_DATA(REGISTER_X));          //JM Input default type
+                stringToReal34("0", REGISTER_IMAG34_DATA(REGISTER_X));                //JM Input default type
+              }                                                                       //JM Input default type
+              else {                                                                  //JM Input default type
+              reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+              stringToReal34(aimBuffer, REGISTER_REAL34_DATA(REGISTER_X));
+              }                                                                       //JM Input default type
+
           }
           else if(nimNumberPart == NP_FRACTION_DENOMINATOR) {
             reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);

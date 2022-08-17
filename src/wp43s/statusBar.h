@@ -97,6 +97,7 @@
      */
     void showHideStackLift    (void);
   #endif // DMCP_BUILD
-#endif // !TESTSUITE_BUILD
+  void showHideASB            (void);       //JM
+#endif // not TESTSUITE_BUILD
 
 #endif // STATUSBAR_H

@@ -31,5 +31,7 @@ void swapReImError      (void);
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 void swapReImCxma       (void);
 void swapReImCplx       (void);
+void swapRealReal       (void);
+void swapLongintReal    (void);
 
 #endif // SWAPREALIMAGINARY_H

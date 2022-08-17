@@ -111,6 +111,59 @@ void fnCurveFitting(uint16_t curveFitting) {
 
 
 
+void fnCurveFittingReset(uint16_t curveFitting) {     // JM vv
+  lrSelection = CF_LINEAR_FITTING;
+  lrChosen = 0;                               // lrChosen    is used to indicate if there was a L.R. selection. Can be only one bit.
+}
+
+
+
+void fnCurveFitting_T(uint16_t curveFitting) {
+  curveFitting = curveFitting & 0x01FF;
+  temporaryInformation = TI_STATISTIC_LR;
+
+  if(curveFitting < 0x01FF) {                 // note curveFitting >= 0
+    curveFitting = (~curveFitting) & 0x01FF;  // see above
+  }
+  else if (curveFitting == 0x01FF) {
+    curveFitting = 0x0200;                    // see above
+  }
+  else {
+    curveFitting = 0;                         // illegal value, therefore defaulting to none
+  }
+
+   printf(">>>%u  %u\n",curveFitting,lrCountOnes(curveFitting));
+   if(lrCountOnes(curveFitting) == 1) {         //Added experimental, toggle bits of the lrselection word
+     lrSelection = lrSelection ^ curveFitting;  //Added  "
+   } else                                       //Added  "
+
+     lrSelection = curveFitting;                    // lrSelection is used to store the BestF method, in inverse, i.e. 1 indicating allowed method
+  
+  lrChosen = 0;                               // lrChosen    is used to indicate if there was a L.R. selection. Can be only one bit.
+
+  #ifdef PC_BUILD
+    uint16_t numberOfOnes;
+    numberOfOnes = lrCountOnes(curveFitting);
+
+    if(numberOfOnes == 1) {
+      printf("Use the ");
+    }
+    else {
+      printf("Use the best fitting model out of\n");
+    }
+
+    printf("%s",getCurveFitModeNames(curveFitting));
+    if(numberOfOnes == 1) {
+      printf(" fitting model.\n");
+    }
+    else {
+      printf("\nfitting models.\n");
+    }
+  #endif // PC_BUILD
+}
+
+
+
 /********************************************//**
  * \brief Sets X to the set L.R.
  *

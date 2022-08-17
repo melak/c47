@@ -661,12 +661,14 @@ int16_t executeOneStep(pgmPtr_t step) {
     op |= *(step.ram++);
   }
 
+  //printf("   >>> OP=%i §%s§%s§\n",op, indexOfItems[(op)].itemCatalogName, indexOfItems[(op)].itemSoftmenuName);
   switch(op) {
     case ITM_GTO:         //     2
     case ITM_XEQ:         //     3
     case ITM_BACK:        //  1412
     case ITM_CASE:        //  1418
     case ITM_SKIP:        //  1603
+      //printf("   >>> @@@\n");
       _executeOp(step.ram, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
       return -1;
 

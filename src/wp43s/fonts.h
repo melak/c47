@@ -368,6 +368,15 @@ void    generateNotFoundGlyph(const int16_t font, uint16_t charCode);
 #define STD_omicron_TONOS             "\x83\xcc"
 #define STD_upsilon_TONOS             "\x83\xcd"
 #define STD_omega_TONOS               "\x83\xce"
+                                                
+#define STD_QOPPA                     "\x83\xd8"  //JM GREEK
+#define STD_qoppa                     "\x83\xd9"  //JM GREEK
+#define STD_DIGAMMA                   "\x83\xdc"  //JM GREEK
+#define STD_digamma                   "\x83\xdd"  //JM GREEK
+#define STD_SAMPI                     "\x83\xe0"  //JM GREEK
+#define STD_sampi                     "\x83\xe1"  //JM GREEK
+#define STD_case                      "\xa1\x02"  //JM CAPS
+#define STD_num                       "\xa1\x15"  //JM NUM
 #define STD_SUP_x                     "\x9d\x61"
 #define STD_SUB_u_b                   "\x9d\x64"
 #define STD_SPACE_EM                  "\xa0\x03"
@@ -387,6 +396,11 @@ void    generateNotFoundGlyph(const int16_t font, uint16_t charCode);
 #define STD_DOUBLE_HIGH_QUOTE         "\xa0\x1f"
 #define STD_ELLIPSIS                  "\xa0\x26"
 #define STD_ONE                       "\xa0\x27"
+#define STD_SUB_alpha                 "\xa0\x65"
+#define STD_SUB_delta                 "\xa0\x66"
+#define STD_SUB_mu                    "\xa0\x67"
+#define STD_SUB_SUN                   "\xa0\x68"
+#define STD_SUB_EARTH                 "\xa0\x69"
 #define STD_SUP_0                     "\xa0\x70"
 #define STD_SUP_1                     "\xa0\x71"
 #define STD_SUP_MINUS_1               "\xa0\x72"
@@ -496,12 +510,9 @@ void    generateNotFoundGlyph(const int16_t font, uint16_t charCode);
 #define STD_GREATER_EQUAL             "\xa2\x65"
 #define STD_MUCH_LESS                 "\xa2\x6a"
 #define STD_MUCH_GREATER              "\xa2\x6b"
-#define STD_SUB_EARTH                 "\xa2\x95"
-#define STD_SUB_alpha                 "\xa2\x96"
-#define STD_SUB_delta                 "\xa2\x97"
-#define STD_SUB_mu                    "\xa2\x98"
+#define STD_SUB_EARTH_b               "\xa2\x95"
 #define STD_SUN                       "\xa2\x99"
-#define STD_SUB_SUN                   "\xa2\x9a"
+#define STD_SUB_SUN_b                 "\xa2\x9a"
 #define STD_DOWN_TACK                 "\xa2\xa4"
 #define STD_PERPENDICULAR             "\xa2\xa5"
 #define STD_XOR                       "\xa2\xbb"

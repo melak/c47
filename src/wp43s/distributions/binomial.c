@@ -35,6 +35,20 @@
 #include "wp43s.h"
 
 
+#ifdef SAVE_SPACE_DM42_15
+  void fnBinomialP           (uint16_t unusedButMandatoryParameter){}
+  void fnBinomialL           (uint16_t unusedButMandatoryParameter){}
+  void fnBinomialR           (uint16_t unusedButMandatoryParameter){}
+  void fnBinomialI           (uint16_t unusedButMandatoryParameter){}
+  void WP34S_Pdf_Binomial (const real_t *x, const real_t *p0, const real_t *n, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdfu_Binomial(const real_t *x, const real_t *p0, const real_t *n, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdf_Binomial (const real_t *x, const real_t *p0, const real_t *n, real_t *res, realContext_t *realContext){}
+  void WP34S_Cdf_Binomial2(const real_t *x, const real_t *p0, const real_t *n, real_t *res, realContext_t *realContext){}
+  void WP34S_Qf_Binomial  (const real_t *x, const real_t *p0, const real_t *n, real_t *res, realContext_t *realContext){}
+#else
+
+
+
 static bool_t checkParamBinomial(real_t *x, real_t *i, real_t *j) {
   if(   ((getRegisterDataType(REGISTER_X) != dtReal34) && (getRegisterDataType(REGISTER_X) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_I) != dtReal34) && (getRegisterDataType(REGISTER_I) != dtLongInteger))
@@ -299,3 +313,5 @@ void WP34S_Qf_Binomial(const real_t *x, const real_t *p0, const real_t *n, real_
   WP34S_Qf_Newton(QF_NEWTON_BINOMIAL, x, &r, p0, n, NULL, &p, realContext);
   realCopy(realCompareLessEqual(&p, n) ? &p : n, res);
 }
+
+#endif //SAVE_SPACE_DM42_15

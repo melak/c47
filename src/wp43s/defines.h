@@ -20,18 +20,208 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
+//??? #ifdef DMCP_BUILD
+//???   #include <dmcp.h>
+//??? #endif // DMCP_BUILD
+
+//*********************************
+// JM VARIOUS OPTIONS
+//*********************************
+
+  #undef SAVE_SPACE_DM42
+  #undef SAVE_SPACE_DM42_0
+  #undef SAVE_SPACE_DM42_1
+  #undef SAVE_SPACE_DM42_2
+  #undef SAVE_SPACE_DM42_3
+  #undef SAVE_SPACE_DM42_4
+  #undef SAVE_SPACE_DM42_6
+  #undef SAVE_SPACE_DM42_7
+  #undef SAVE_SPACE_DM42_8
+  #undef SAVE_SPACE_DM42_9
+  #undef SAVE_SPACE_DM42_10
+  #undef SAVE_SPACE_DM42_11
+  #undef SAVE_SPACE_DM42_12
+  #undef SAVE_SPACE_DM42_13GRF
+  #undef SAVE_SPACE_DM42_13GRF_JM
+  #undef SAVE_SPACE_DM42_14
+  #undef SAVE_SPACE_DM42_15
+  #undef SAVE_SPACE_DM42_20
+  #undef SAVE_SPACE_DM42_21
+
+
+#ifdef PC_BUILD
+  //Key layout option
+  #define SWAP_TO_L42_ON_SIM           //JM SWAP THE BELOW TWO DEFINES TO HAVE THE DM42 VERSION ON SIMULATOR
+  #undef  SWAP_TO_L42_ON_SIM
+     #define BLUES_WHEN_SWAPPED        //JM Only applicable if SWAPLAYOUTS is defined. Otherwise ignored
+     //#undef  BLUES_WHEN_SWAPPED
+#endif //PC_BUILD
+
+
+#if defined(DMCP_BUILD) || (SCREEN_800X480 == 1)
+
+  //Key layout options
+  #define SWAP_TO_L1_ON_DM42           //JM Normally selected to Layout L1 in on the DM42
+  //#undef  SWAP_TO_L1_ON_DM42         //JM swap these to comments to allow L42 to be on the DM42
+
+  #define TWO_FILE_PGM                 //JM Normally NOT have TWO_FILE. TWO_FILE means that QSPI is used.
+  #undef  TWO_FILE_PGM
+
+//THESE ARE DMCP COMPILE OPTIONS
+  #ifndef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
+    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
+    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
+  //removed _1 for Windows compile!
+  #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
+  //#define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
+    #define SAVE_SPACE_DM42_4  //000736 bytes: XY GRAPHDEMOS (Plot)
+  //#define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
+  //#define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42; USER_SHIFTS;
+  //#define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
+  //#define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
+    #define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
+  //#define SAVE_SPACE_DM42_11 //001552 bytes: Matrix function on entry ...
+    #define SAVE_SPACE_DM42_12 //047246 bytes: Standard extra 43S math: SLVQ, PRIME, BESSEL, ELLIPTIC, ZETA, BETA, ORTHO_POLY
+    #define SAVE_SPACE_DM42_13GRF //           JM Solver & graphics & stat graphics
+    #define SAVE_SPACE_DM42_13GRF_JM //        JM graphics
+    #define SAVE_SPACE_DM42_14    //           programming sample programs
+    #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
+  #endif
+
+  #ifdef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
+    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
+//    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
+//    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
+//    #define SAVE_SPACE_DM42_4  //000736 bytes: XY GRAPHDEMOS (Plot)
+//    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
+    #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
+  #endif
+
+#endif
+
+
+
+#define TEXT_MULTILINE_EDIT         //5 line buffer
+
+
+//Testing and debugging
+//#define DM42_KEYCLICK              //Add a 1 ms click after key presses and releases, for scope syncing
+
+
+//Verbose options
+#define VERBOSE_LEVEL 0              //JM 0 = no text; 1 = essential text; 2 = extra debugging: on calc screen
+
+#define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
+#undef  PC_BUILD_TELLTALE
+
+#define PC_BUILD_VERBOSE0
+#undef PC_BUILD_VERBOSE0
+
+#define PC_BUILD_VERBOSE1            //JM verbose XEQM basic operation on PC
+#undef  PC_BUILD_VERBOSE1
+
+#define PC_BUILD_VERBOSE2            //JM verbose XEQM detailed operation on PC, via central jm_show_comment1 function
+#undef  PC_BUILD_VERBOSE2
+
+#define VERBOSE_SCREEN               //JM Used at new SHOW. Needs PC_BUILD.
+#undef  VERBOSE_SCREEN
+
+#define INLINE_TEST                     //vv dr
+//#undef INLINE_TEST                    //^^
+
+
+
+//Allow longpress CHS and EEX
+#define TESTING
+//#undef TESTING
+
+
+//This is to allow the cursors to change the case. Normal on 43S. Off on C43
+#define arrowCasechange    false
+
+//This is to allow the creation of a logfile while you type
+#define RECORDLOG
+#undef  RECORDLOG
+
+//This is to really see what the LCD in the SIM does while programs are running. UGLY.
+#define FULLUPDATE
+//#undef  FULLUPDATE
+
+//* Key buffer and double clicck detection
+#define BUFFER_CLICK_DETECTION    //jm Evaluate the Single/Double/Triple presses
+#undef BUFFER_CLICK_DETECTION
+
+#define BUFFER_KEY_COUNT          //dr BUFFER_SIZE has to be at least 8 to become accurate results
+#undef BUFFER_KEY_COUNT
+
+#define BUFFER_SIZE 2             //dr muss 2^n betragen (8, 16, 32, 64 ...)
+//* Longpress repeat 
+#define FUNCTION_NOPTIME   800   //JM SCREEN NOP TIMEOUT FOR FIRST 15 FUNCTIONS
+
+#define JM_SHIFT_TIMER     4000  //ms TO_FG_TIMR
+#define JM_TO_FG_LONG      580   //ms TO_FG_LONG
+
+#define JM_FN_DOUBLE_TIMER 150   //ms TO_FN_EXEC
+#define JM_TO_FN_LONG      400   //ms TO_FN_LONG  //  450 on 2020-03-13
+
+#ifdef DMCP_BUILD
+  #define JM_CLRDROP_TIMER 900   //ms TO_CL_DROP   //DROP
+  #define JM_TO_CL_LONG    800   //ms TO_CL_LONG   //CLSTK
+  #define JM_TO_3S_CTFF    900   //ms TO_3S_CTFF
+#else
+  #define JM_CLRDROP_TIMER 500   //ms TO_CL_DROP   //DROP
+  #define JM_TO_CL_LONG    800   //ms TO_CL_LONG   //CLSTK
+  #define JM_TO_3S_CTFF    600   //ms TO_3S_CTFF
+#endif
+
+#define JM_TO_KB_ACTV      6000  //ms TO_KB_ACTV
+
+
+
+
+#define JMSHOWCODES_KB3   // top line right   Single Double Triple
+#undef JMSHOWCODES_KB3
+
+//wrapping editor
+#define  combinationFontsDefault 2  //JM 0 = no large font; 1 = enlarged standardfont; 2 = combination font enlargement
+                                    //JM for text wrapping editor. 
+                                    //JM Combintionfonts uses large numericfont characters, and if glyph not available then takes standardfont and enlarges it
+                                    //JM Otherwise, full enlarged standardfont is used.
+
+//Backup here, not active. Meant for WP43S Master JM branch, to enable WP43S usage on C43 template (see config.c)
+#undef WP43S_ON_C43_USER_MODE       //Default setting
+
+
+//constantFractionsMode         //JM
+#define CF_OFF                   0
+#define CF_NORMAL                1
+#define CF_COMPLEX1              2
+#define CF_COMPLEX2              3
+
 
 //*********************************
 //* General configuration defines *
 //*********************************
 #define DEBUG_INSTEAD_STATUS_BAR         0 // Debug data instead of the status bar
 #define EXTRA_INFO_ON_CALC_ERROR         1 // Print extra information on the console about an error
-#define DEBUG_PANEL                      1 // Showing registers, local registers, saved stack registers, flags, statistical sums, ... in a debug panel
-#define DEBUG_REGISTER_L                 1 // Showing register L content on the PC GUI
-#define SHOW_MEMORY_STATUS               1 // Showing the memory status on the PC GUI
-#define MMHG_PA_133_3224                 1 // mmHg to Pa conversion coefficient is 133.3224 an not 133.322387415
+#define DEBUG_PANEL                      0 //1 JM Showing registers, local registers, saved stack registers, flags, statistical sums, ... in a debug panel
+#define DEBUG_REGISTER_L                 0 //1 JM Showing register L content on the PC GUI
+#define SHOW_MEMORY_STATUS               0 //1 JM Showing the memory status on the PC GUI
+#define MMHG_PA_133_3224                 0 //1 JM mmHg to Pa conversion coefficient is 133.3224 an not 133.322387415
 #define FN_KEY_TIMEOUT_TO_NOP            0 // Set to 1 if you want the 6 function keys to timeout
-#define MAX_LONG_INTEGER_SIZE_IN_BITS 3328 // 1001 decimal digits: 3328 ≃ log2(10^1001)
+#define MAX_LONG_INTEGER_SIZE_IN_BITS    3328 //JMMAX 9965   // 43S:3328 //JMMAX // 1001 decimal digits: 3328 ≃ log2(10^1001)
+#define MAX_FACTORIAL                    450  //JMMAX 1142   // 43S: 450 //JMMAX
+
+                               // bits  digits  43S     x digits   x! digits
+                               //                         69!            98
+                               //                        210!           398
+                               // 3328  1001    450!     449!           998
+                               //                        807!          1997
+                               //                        977!          2499
+                               // 9965  3000            1142!          2998
+                               //15000  4515            1388!
+                               //                       2122!          6140
+
 #define SHORT_INTEGER_SIZE               2 // 2 blocks = 8 bytes = 64 bits
 
 #define DECNUMDIGITS                    75 // Default number of digits used in the decNumber library
@@ -77,6 +267,8 @@
 //*************************
 //* Other defines         *
 //*************************
+// Define the second tagline
+#define WHO2                                      "C43" STD_SPACE_3_PER_EM "HP42S" STD_SPACE_3_PER_EM "style" STD_SPACE_3_PER_EM "keys," STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Jaymos"   //JM ID
 #define CHARS_PER_LINE                            80 // Used in the flag browser application
 
 #define NUMERIC_FONT_HEIGHT                       36 // In pixel. Used in the font browser application
@@ -84,9 +276,14 @@
 #define NUMBER_OF_NUMERIC_FONT_LINES_PER_SCREEN    5 // Used in the font browser application
 #define NUMBER_OF_STANDARD_FONT_LINES_PER_SCREEN   8 // Used in the font browser application
 
-#define AIM_BUFFER_LENGTH                        400 // 199 double byte glyphs + trailing 0 + 1 byte to round up to a 4 byte boundary
-#define TAM_BUFFER_LENGTH                         32 // TODO: find the exact maximum needed
-#define NIM_BUFFER_LENGTH                        200 // TODO: find the exact maximum needed
+#define AIM_BUFFER_LENGTH                        400 //JMMAX220 changed from 400 // 199 double byte glyphs + trailing 0 + 1 byte to round up to a 4 byte boundary
+#define TAM_BUFFER_LENGTH                         32                          // TODO: find the exact maximum needed
+#ifdef BUFFER_CLICK_DETECTION
+#define NIM_BUFFER_LENGTH                        200 //JM(100-24-10) TEMP POC CHANGE FROM 100//JMMAX changed from 200 // TODO: find the exact maximum needed
+#else
+#define NIM_BUFFER_LENGTH                        200 //JM(100-24) TEMP POC CHANGE FROM 100//JMMAX changed from 200 // TODO: find the exact maximum needed
+#endif
+
 
 #define DEBUG_LINES                               68 // Used in for the debug panel
 
@@ -221,8 +418,47 @@ typedef enum {
 } longIntegerSign_t;
 
 
+#ifdef PC_BUILD
+  #ifndef SWAP_TO_L42_ON_SIM
+      #define JM_LAYOUT_1A               //Preferred layout
+      #undef  JM_LAYOUT_2_DM42_STRICT
+  #endif
+
+  #ifdef SWAP_TO_L42_ON_SIM
+      #define JM_LAYOUT_2_DM42_STRICT    //DM42 compatible layout. Temporary SWAP. Change here for screen picture.
+      #undef  JM_LAYOUT_1A
+      #undef  JM_LAYOUT_SHOW_BLUES       //ONLY DEFINE IF BLUE MUST BE DISPLAYED. TEMPORARY FOR CREATING AN EMU FOR THE LAYOUT42
+      #ifdef BLUES_WHEN_SWAPPED
+        #define JM_LAYOUT_SHOW_BLUES       //ONLY DEFINE IF BLUE MUST BE DISPLAYED. TEMPORARY FOR CREATING AN EMU FOR THE LAYOUT42
+      #endif
+  #endif
+#endif
+
+
 // PC GUI
-#define CSSFILE                      "res/wp43s_pre.css"
+#if   defined(JM_LAYOUT_2_DM42_STRICT) && !defined(JM_LAYOUT_SHOW_BLUES)                    //JM LAYOUT 2
+  #define CSSFILE "res/c43_pre_L2.css"              //JM L
+#elif defined(JM_LAYOUT_2_DM42_STRICT) && defined(JM_LAYOUT_SHOW_BLUES)                    //JM LAYOUT 2
+  #define CSSFILE "res/c43_pre_L2B.css"              //JM L
+#elif defined(JM_LAYOUT_1A) || defined(JM_LAYOUT_SHOW_BLUES)                                //JM LAYOUT 1
+  #define CSSFILE "res/c43_pre.css"
+#endif //JM L
+
+#define GAP                                        6 //JM original GUI legacy
+#define Y_OFFSET_LETTER                           18 //JM original GUI legacy
+#define X_OFFSET_LETTER                            3 //JM original GUI legacy
+#define Y_OFFSET_SHIFTED_LABEL                    25 //JM original GUI legacy
+#define Y_OFFSET_GREEK                            27 //JM original GUI legacy
+
+#define DELTA_KEYS_X                              78 // Horizontal key step in pixel (row of 6 keys)
+#define DELTA_KEYS_Y                              74 // Vertical key step in pixel
+#define KEY_WIDTH_1                               47 // Width of small keys (STO, RCL, ...)
+#define KEY_WIDTH_2                               56 // Width of large keys (1, 2, 3, ...)
+
+#define X_LEFT_PORTRAIT                           45 // Horizontal offset for a portrait calculator
+#define X_LEFT_LANDSCAPE                         544 // Horizontal offset for a landscape calculator
+#define Y_TOP_PORTRAIT                           376 // Vertical offset for a portrait calculator
+#define Y_TOP_LANDSCAPE                           30 // vertical offset for a landscape calculator
 
 #define TAM_MAX_BITS                              14
 #define TAM_MAX_MASK                          0x3fff
@@ -388,6 +624,7 @@ typedef enum {
 #define Y_POSITION_OF_REGISTER_X_LINE            132
 
 #define NUMBER_OF_DYNAMIC_SOFTMENUS               19
+#define MY_ALPHA_MENU_CNST                         1  //JM This is the index of the MyAlpha   softmenu in the softmenu[] array. //JM changed this to a variable: int16_t MY_ALPHA_MENU;
 #define SOFTMENU_HEIGHT                           23
 
 // Horizontal offsets in the status bar
@@ -410,13 +647,20 @@ typedef enum {
 #define TIMER_IDX_REFRESH_SLEEP                    0 // use timer 0 to wake up for screen refresh
 //#define TIMER_IDX_AUTO_REPEAT                    1 // use timer 1 to wake up for key auto-repeat
 
-#define TMR_NUMBER                                 4
+#define TMR_NUMBER                                10
 
 // timer
-#define TO_AUTO_REPEAT                             0
-#define TO_TIMER_APP                               1
-#define TO_KB_ACTV                                 2
-#define TO_SHOW_NOP                                3
+#define TO_FG_LONG                                 0
+#define TO_CL_LONG                                 1
+#define TO_FG_TIMR                                 2
+#define TO_FN_LONG                                 3
+#define TO_FN_EXEC                                 4
+#define TO_3S_CTFF                                 5
+#define TO_CL_DROP                                 6
+#define TO_AUTO_REPEAT                             7
+#define TO_TIMER_APP                               8
+#define TO_KB_ACTV                                 9
+
 
 
 #ifdef PC_BUILD
@@ -429,13 +673,15 @@ typedef enum {
   #else // Unsupported OS
     #error Only Linux, MacOS, and Windows MINGW64 are supported for now
   #endif // OS
-#endif // PC_BUILD
+#else // PC_BUILD
+  #define LINEBREAK                           "\n\r"
+#endif // !PC_BUILD
 
 #define NUMBER_OF_DISPLAY_DIGITS                  16
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
 
 // Number of constants
-#define NUMBER_OF_CONSTANTS_39                   198
+#define NUMBER_OF_CONSTANTS_39                   198+2   //JM 2 additionalconstants
 #define NUMBER_OF_CONSTANTS_51                    39
 #define NUMBER_OF_CONSTANTS_1071                   1
 #define NUMBER_OF_CONSTANTS_34                    44
@@ -457,6 +703,8 @@ typedef enum {
 #define DF_FIX                                     1
 #define DF_SCI                                     2
 #define DF_ENG                                     3
+#define DF_SF                                      4   //JM
+#define DF_UN                                      5   //JM
 
 // Date format 2 bits
 #define DF_DMY                                     0
@@ -523,6 +771,7 @@ typedef enum {
 #define CM_TIMER                                  14 // Timer application
 #define CM_GRAPH                                  15 // Plot graph mode
 #define CM_NO_UNDO                                16 // Running functions without undo affected
+#define CM_LISTXY                                 98 //JM Display stat list   //JM
 
 // Next character in AIM 2 bits
 #define NC_NORMAL                                  0
@@ -757,12 +1006,17 @@ typedef enum {
 #define SIGMA_YMAX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_YMAX  )) // could be a real34
 
 #define MAX_NUMBER_OF_GLYPHS_IN_STRING           196
-#define NUMBER_OF_GLYPH_ROWS                     100 // Used in the font browser application
+#define NUMBER_OF_GLYPH_ROWS                     101+6  //JM 100-->106 // Used in the font browser application
 
 #define MAX_DENMAX                              9999 // Biggest denominator in fraction display mode
 
+#ifdef DMCP_BUILD
+#define SCREEN_REFRESH_PERIOD                    160 // 500 // in milliseconds //JM timeout for lcd refresh in ms 125
 #define FAST_SCREEN_REFRESH_PERIOD               100 // in milliseconds
-#define SCREEN_REFRESH_PERIOD                    500 // in milliseconds
+#else
+#define SCREEN_REFRESH_PERIOD                    100 // 500 // in milliseconds //JM timeout for lcd refresh in ms 100
+#define FAST_SCREEN_REFRESH_PERIOD               100 // in milliseconds
+#endif
 #define KEY_AUTOREPEAT_FIRST_PERIOD              400 // in milliseconds
 #define KEY_AUTOREPEAT_PERIOD                    200 // in milliseconds
 #define TIMER_APP_PERIOD                         100 // in milliseconds
@@ -892,7 +1146,12 @@ typedef enum {
   #define setWhitePixel(x, y)                bitblt24(x, 1, y, 1, BLT_ANDN, BLT_NONE)
   #define flipPixel(x, y)                    bitblt24(x, 1, y, 1, BLT_XOR,  BLT_NONE)
   #define beep(frequence, length)            {while(get_beep_volume() < 11) beep_volume_up(); start_buzzer_freq(frequence * 1000); sys_delay(length); stop_buzzer();}
-  #define TO_QSPI                            __attribute__ ((section(".qspi")))
+  #undef TO_QSPI
+  #ifdef TWO_FILE_PGM
+    #define TO_QSPI                            __attribute__ ((section(".qspi")))
+  #else //TWO_FILE_PGM
+    #define TO_QSPI
+  #endif //TWO_FILE_PGM
 #endif // !DMCP_BUILD
 
 
@@ -927,11 +1186,12 @@ typedef enum {
 #define mod(n, d)                            (((n)%(d) + (d)) % (d))                                         // mod(n,d) = n - d*floor(n/d)  where floor(a) is the biggest integer <= a
 //#define modulo(n, d)                         ((n)%(d)<0 ? ((d)<0 ? (n)%(d) - (d) : (n)%(d) + (d)) : (n)%(d)) // modulo(n,d) = rmd(n,d) (+ |d| if rmd(n,d)<0)  thus the result is always >= 0
 #define modulo(n, d)                         ((n)%(d)<0 ? (n)%(d)+(d) : (n)%(d))                             // This version works only if d > 0
+#define nbrOfElements(x)                     (sizeof(x) / sizeof((x)[0]))                                    //dr
 #define COMPLEX_UNIT                         (getSystemFlag(FLAG_CPXj)   ? STD_j     : STD_i)
 #define RADIX34_MARK_CHAR                    (getSystemFlag(FLAG_DECIMP) ? '.'       : ',')
 #define RADIX34_MARK_STRING                  (getSystemFlag(FLAG_DECIMP) ? "."       : ",")
 #define PRODUCT_SIGN                         (getSystemFlag(FLAG_MULTx)  ? STD_CROSS : STD_DOT)
-#define clearScreen()                        lcd_fill_rect(0, 0, SCREEN_WIDTH, 240, LCD_SET_VALUE)
+#define clearScreen()                        {lcd_fill_rect(0, 0, SCREEN_WIDTH, 240, LCD_SET_VALUE); clear_ul();}
 #define currentReturnProgramNumber           (currentSubroutineLevelData[0].returnProgramNumber)
 #define currentReturnLocalStep               (currentSubroutineLevelData[0].returnLocalStep)
 #define currentNumberOfLocalFlags            (currentSubroutineLevelData[1].numberOfLocalFlags)
@@ -967,41 +1227,54 @@ typedef enum {
   #endif // RASPBERRY
 #endif // PC_BUILD
 
-#if defined(DMCP_BUILD) || (SCREEN_800X480 == 1)
-  #undef  DEBUG_PANEL
-  #define DEBUG_PANEL 0
-  #undef  DEBUG_REGISTER_L
-  #define DEBUG_REGISTER_L 0
-  #undef  SHOW_MEMORY_STATUS
-  #define SHOW_MEMORY_STATUS 0
-  #undef  EXTRA_INFO_ON_CALC_ERROR
-  #define EXTRA_INFO_ON_CALC_ERROR 0
-#endif // defined(DMCP_BUILD) || (SCREEN_800X480 == 1)
+  #if defined(DMCP_BUILD) || (SCREEN_800X480 == 1)
+    #undef  DEBUG_PANEL
+    #define DEBUG_PANEL 0
+    #undef  DEBUG_REGISTER_L
+    #define DEBUG_REGISTER_L 0
+    #undef  SHOW_MEMORY_STATUS
+    #define SHOW_MEMORY_STATUS 0
+    #undef  EXTRA_INFO_ON_CALC_ERROR
+    #define EXTRA_INFO_ON_CALC_ERROR 0
+  #ifndef SWAP_TO_L1_ON_DM42
+    #undef  JM_LAYOUT_1A
+    #define JM_LAYOUT_2_DM42_STRICT    //DM42 compatible layout
+  #else
+    #define JM_LAYOUT_1A
+    #undef  JM_LAYOUT_2_DM42_STRICT    //DM42 compatible layout
+  #endif
+ #endif // defined(DMCP_BUILD) || (SCREEN_800X480 == 1)
 
 #if defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
-  #undef  PC_BUILD
-  #undef  DMCP_BUILD
-  #undef  DEBUG_PANEL
-  #define DEBUG_PANEL 0
-  #undef  DEBUG_REGISTER_L
-  #define DEBUG_REGISTER_L 0
-  #undef  SHOW_MEMORY_STATUS
-  #define SHOW_MEMORY_STATUS 0
-  #undef  EXTRA_INFO_ON_CALC_ERROR
-  #define EXTRA_INFO_ON_CALC_ERROR 0
-  #define addItemToBuffer fnNop
-  #define fnOff           fnNop
-  #define fnAim           fnNop
-  #define registerBrowser fnNop
-  #define flagBrowser     fnNop
-  #define fontBrowser     fnNop
-  #define refreshRegisterLine(a)  {}
-  #define displayBugScreen(a)     { printf("\n-----------------------------------------------------------------------\n"); printf("%s\n", a); printf("\n-----------------------------------------------------------------------\n");}
-  #define showHideHourGlass()     {}
-  #define refreshScreen()         {}
-  #define refreshLcd(a)           {}
-  #define initFontBrowser()       {}
-#endif // defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
+    #undef  JM_LAYOUT_1A
+    #undef  JM_LAYOUT_2_DM42_STRICT     //DM42 compatible layout
+
+    #undef  PC_BUILD
+    #undef  DMCP_BUILD
+    #undef  DEBUG_PANEL
+    #define DEBUG_PANEL 0
+    #undef  DEBUG_REGISTER_L
+    #define DEBUG_REGISTER_L 0
+    #undef  SHOW_MEMORY_STATUS
+    #define SHOW_MEMORY_STATUS 0
+    #undef  EXTRA_INFO_ON_CALC_ERROR
+    #define EXTRA_INFO_ON_CALC_ERROR 0
+    #define addItemToBuffer fnNop
+    #define fnOff           fnNop
+    #define fnAim           fnNop
+    #define registerBrowser fnNop
+    #define flagBrowser     fnNop
+    #define fontBrowser     fnNop
+    #define flagBrowser_old fnNop       //JM
+    #define refreshRegisterLine(a)  {}
+    #define displayBugScreen(a)     { printf("\n-----------------------------------------------------------------------\n"); printf("%s\n", a); printf("\n-----------------------------------------------------------------------\n");}
+    #define showHideHourGlass()     {}
+    #define refreshScreen()         {}
+    #define refreshLcd(a)           {}
+    #define initFontBrowser()       {}
+
+    #define JM_LAYOUT_1A                //JM Preferred layout
+  #endif // defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
 
 /* Turn off -Wunused-result for a specific function call */
 #ifdef OS32BIT
@@ -1011,13 +1284,13 @@ typedef enum {
 #endif
 
 #ifdef DMCP_BUILD
-  #define TMP_STR_LENGTH       AUX_BUF_SIZE
+  #define TMP_STR_LENGTH     2560 //2560 //dr - remove #include <dmcp.h> again - AUX_BUF_SIZE
 #else // !DMCP_BUILD
-  #define TMP_STR_LENGTH       2560
+  #define TMP_STR_LENGTH     3000 //2560 //JMMAX ORG:2560
 #endif // DMCP_BUILD
-#define WRITE_BUFFER_LEN       4096
-#define ERROR_MESSAGE_LENGTH    512
-#define DISPLAY_VALUE_LEN        80
+  #define WRITE_BUFFER_LEN       4096
+  #define ERROR_MESSAGE_LENGTH    512 //JMMAX(325) 512          //JMMAX Temporarily reduced - ORG:512.
+  #define DISPLAY_VALUE_LEN        80
 
 //************************
 //* Macros for debugging *
