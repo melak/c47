@@ -2300,6 +2300,7 @@ static void RegName(void) {    //JM using standard reg name
 }
 
 
+#ifndef TESTSUITE_BUILD
 static void SHOW_reset(void){
   uint8_t ix;
 
@@ -2321,6 +2322,7 @@ static void checkAndEat(int16_t *source, int16_t last, int16_t *dest) {
     tmpString[*dest] = 0;
   }            
 }
+#endif //TESTSUITE_BUILD
 
 
 void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified by JM from the original fnShow
