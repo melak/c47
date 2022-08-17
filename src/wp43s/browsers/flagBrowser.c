@@ -36,6 +36,7 @@
 
 
 #ifndef TESTSUITE_BUILD
+#ifndef SAVESPACE_JM_FLB
   TO_QSPI const char flagLetter[] = "XYZTABCDLIJK";
 
   static void oneSystemFlag(uint16_t systemFlag, const char *systemFlagNamename, int16_t *line, bool_t *firstSystemFlag) {
@@ -54,6 +55,7 @@
       }
     }
   }
+  #endif //SAVESPACE_JM_FLB
 
 
 
@@ -64,6 +66,7 @@
    * \return void
    ***********************************************/
   void flagBrowser(uint16_t unusedButMandatoryParameter) {
+  #ifndef SAVESPACE_JM_FLB
     static int16_t line;
     int16_t f;
     bool_t firstFlag;
@@ -292,5 +295,6 @@
         flagBrowser(NOPARAM);
       }
     }
+  #endif //SAVESPACE_JM_FLB
   }
 #endif // TESTSUITE_BUILD

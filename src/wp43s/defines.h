@@ -21,6 +21,25 @@
 #define DEFINES_H
 
 
+#define TWO_FILE_PGM                 //JM Normally NOT have TWO_FILE. TWO_FILE means that QSPI is used.
+//  #undef  TWO_FILE_PGM
+
+#ifdef DMCP_BUILD
+  #ifndef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
+    #define SAVESPACE_JM_FLB   //To remove some code to make fit without QSPI: Less flagbrowser
+    #define SAVESPACE_JM_RB    //To remove some code to make fit without QSPI: Less registerbrowser
+    #define SAVESPACE_JM_FB    //To remove some code to make fit without QSPI: Less fontbrowser
+    #undef  SAVESPACE_JM_SHOW  //To remove some code to make fit without QSPI: Less show
+    #define SAVE_SPACE_DM42_12 //To remove math functions Zeta, Slvq, ortho_poly, elliptic, beta, bessel
+  #endif //TWO_FILE_PGM
+#else
+    #undef  SAVESPACE_JM_FLB
+    #undef  SAVESPACE_JM_RB
+    #undef  SAVESPACE_JM_FB
+    #undef  SAVESPACE_JM_SHOW
+    #undef  SAVE_SPACE_DM42_12
+#endif
+
 //*********************************
 //* General configuration defines *
 //*********************************
@@ -892,7 +911,13 @@ typedef enum {
   #define setWhitePixel(x, y)                bitblt24(x, 1, y, 1, BLT_ANDN, BLT_NONE)
   #define flipPixel(x, y)                    bitblt24(x, 1, y, 1, BLT_XOR,  BLT_NONE)
   #define beep(frequence, length)            {while(get_beep_volume() < 11) beep_volume_up(); start_buzzer_freq(frequence * 1000); sys_delay(length); stop_buzzer();}
-  #define TO_QSPI                            __attribute__ ((section(".qspi")))
+
+  #ifdef TWO_FILE_PGM
+    #define TO_QSPI                            __attribute__ ((section(".qspi")))
+  #else //TWO_FILE_PGM
+    #define TO_QSPI
+  #endif //TWO_FILE_PGM
+
 #endif // !DMCP_BUILD
 
 

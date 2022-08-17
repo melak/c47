@@ -79,6 +79,7 @@ void fnBeta(uint16_t unusedButMandatoryParameter) {
 }
 
 
+#ifndef SAVE_SPACE_DM42_12
 static bool_t _beta(real_t *xReal, real_t *xImag, real_t *yReal, real_t *yImag, real_t *rReal, real_t *rImag, realContext_t *realContext) {
   // Beta(x, y) := Gamma(x) * Gamma(y) / Gamma(x+y)
   real_t tReal, tImag;
@@ -152,32 +153,38 @@ static void _betaReal(real_t *xReal, real_t *yReal, realContext_t *realContext) 
     }
   }
 }
+#endif
 
 
 
 void betaLonILonI(void) {
+#ifndef SAVE_SPACE_DM42_12
   real_t x, y;
 
   convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
   convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
 
   _betaReal(&x, &y, &ctxtReal39);
+#endif
 }
 
 
 
 void betaRealLonI(void) {
+#ifndef SAVE_SPACE_DM42_12
   real_t x, y;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
   convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
 
   _betaReal(&x, &y, &ctxtReal39);
+#endif
 }
 
 
 
 void betaCplxLonI(void) {
+#ifndef SAVE_SPACE_DM42_12
   real_t xReal, xImag, yReal, yImag;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
@@ -187,33 +194,39 @@ void betaCplxLonI(void) {
   real34ToReal(const34_0, &xImag);
 
   _betaComplex(&xReal, &xImag, &yImag, &yImag, &ctxtReal39);
+#endif
 }
 
 
 
 void betaLonIReal(void) {
+#ifndef SAVE_SPACE_DM42_12
   real_t x, y;
 
   convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
 
   _betaReal(&x, &y, &ctxtReal39);
+#endif
 }
 
 
 
 void betaRealReal(void) {
+#ifndef SAVE_SPACE_DM42_12
   real_t x, y;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
 
   _betaReal(&x, &y, &ctxtReal39);
+#endif
 }
 
 
 
 void betaCplxReal(void) {
+#ifndef SAVE_SPACE_DM42_12
   real_t xReal, xImag, yReal, yImag;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
@@ -223,11 +236,13 @@ void betaCplxReal(void) {
   real34ToReal(const34_0, &xImag);
 
   _betaComplex(&xReal, &xImag, &yImag, &yImag, &ctxtReal39);
+#endif
 }
 
 
 
 void betaLonICplx(void) {
+#ifndef SAVE_SPACE_DM42_12
   real_t xReal, xImag, yReal, yImag;
 
   convertLongIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal39);
@@ -237,11 +252,13 @@ void betaLonICplx(void) {
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
   _betaComplex(&xReal, &xImag, &yReal, &yImag, &ctxtReal39);
+#endif
 }
 
 
 
 void betaRealCplx(void)  {
+#ifndef SAVE_SPACE_DM42_12
   real_t xReal, xImag, yReal, yImag;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
@@ -251,11 +268,13 @@ void betaRealCplx(void)  {
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
   _betaComplex(&xReal, &xImag, &yReal, &yImag, &ctxtReal39);
+#endif
 }
 
 
 
 void betaCplxCplx(void)  {
+#ifndef SAVE_SPACE_DM42_12
   real_t xReal, xImag, yReal, yImag;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
@@ -265,4 +284,5 @@ void betaCplxCplx(void)  {
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
   _betaComplex(&xReal, &xImag, &yReal, &yImag, &ctxtReal39);
+#endif
 }

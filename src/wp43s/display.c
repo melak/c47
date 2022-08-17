@@ -1976,6 +1976,7 @@ void complex34MatrixToDisplayString(calcRegister_t regist, char *displayString) 
 }
 
 void fnShow(uint16_t unusedButMandatoryParameter) {
+#ifndef SAVESPACE_JM_SHOW
   uint8_t savedDisplayFormat = displayFormat, savedDisplayFormatDigits = displayFormatDigits;
   int16_t source, dest, last, d, maxWidth, offset, bytesProcessed;
   real34_t real34;
@@ -2113,6 +2114,7 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
 
   displayFormat = savedDisplayFormat;
   displayFormatDigits = savedDisplayFormatDigits;
+#endif //SAVESPACE_JM_SHOW
 }
 
 void fnView(uint16_t regist) {

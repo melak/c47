@@ -41,6 +41,7 @@
    * \return void
    ***********************************************/
   void initFontBrowser(void) {
+  #ifndef SAVESPACE_JM_FB
     uint16_t g;
 
     numLinesNumericFont  = 0;
@@ -79,6 +80,7 @@
         exit(-1);
       }
     #endif // PC_BUILD
+  #endif //SAVESPACE_JM_FB
   }
 
 
@@ -90,6 +92,7 @@
    * \return void
    ***********************************************/
   void fontBrowser(uint16_t unusedButMandatoryParameter) {
+  #ifndef SAVESPACE_JM_FB
     uint16_t x, y, first;
 
     hourGlassIconEnabled = false;
@@ -159,5 +162,6 @@
     else {
       displayBugScreen("In function showFonts: This should never happen!");
     }
+  #endif //SAVESPACE_JM_FB
   }
 #endif // TESTSUITE_BUILD

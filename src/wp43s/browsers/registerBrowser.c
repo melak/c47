@@ -35,6 +35,7 @@
 
 
 #ifndef TESTSUITE_BUILD
+  #ifndef SAVESPACE_JM_RB
 
   static void _showRegisterInRbr(calcRegister_t regist, int16_t registerNameWidth) {
     switch(getRegisterDataType(regist)) {
@@ -148,8 +149,10 @@
         sprintf(tmpString, "Data type %s: to be coded", getDataTypeName(getRegisterDataType(regist), false, true));
     }
   }
+  #endif //SAVESPACE_JM_RB
 
   void registerBrowser(uint16_t unusedButMandatoryParameter) {
+  #ifndef SAVESPACE_JM_RB
     int16_t registerNameWidth;
 
     hourGlassIconEnabled = false;
@@ -232,5 +235,6 @@
         registerBrowser(NOPARAM);
       }
     }
+  #endif //SAVESPACE_JM_RB
   }
 #endif // TESTSUITE_BUILD
