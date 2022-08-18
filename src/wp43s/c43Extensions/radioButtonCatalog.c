@@ -560,6 +560,10 @@ int16_t fnItemShowValue(int16_t item) {
     result = denMax;
     break;
 
+  case ITM_SETSIG2:     //
+    result = significantDigits == 0 ? 34 : significantDigits;
+    break;
+
   case ITM_HIDE:     //
     result = exponentHideLimit;
     break;

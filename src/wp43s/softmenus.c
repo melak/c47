@@ -176,7 +176,7 @@ TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_
                                              ITM_SYS,                       -MNU_TRI,                   ITM_NULL,                 ITM_NULL,              ITM_RECT,                    ITM_POLAR,                         //JM
 
                                              ITM_SSIZE4,                    ITM_SSIZE8,                 ITM_CB_CPXRES,            ITM_CB_SPCRES,         ITM_DENMAX2,                 ITM_CFG,                           //JM
-                                             ITM_ERPN,                      ITM_NULL,                   ITM_SETSIG,               ITM_RM,                ITM_DENANY,                  ITM_DENFIX,                          //JM
+                                             ITM_ERPN,                      ITM_NULL,                   ITM_SETSIG2,              ITM_RM,                ITM_DENANY,                  ITM_DENFIX,                          //JM
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_INP_DEF_SI,              ITM_EXFRAC,                          //JM
 
                                              ITM_NO_BASE_SCREEN,            ITM_BASE_HOME,             ITM_BASE_AHOME,            ITM_HOMEx3T,           ITM_SHTIM,                   ITM_HOMEx3,                    //JM

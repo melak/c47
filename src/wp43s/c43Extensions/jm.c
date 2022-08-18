@@ -315,6 +315,10 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
      fnFlipFlag(FLAG_CPXRES);                                     //dr
      break;
 
+   case JC_BSR:                                              //JM bit ComplexResult
+     fnFlipFlag(FLAG_SPCRES);                                     //dr
+     break;
+
    case JC_FRC:                                              //JM bit ComplexResult
      fnFlipFlag(FLAG_FRCSRN);                                     //dr
      break;
