@@ -572,7 +572,7 @@ int16_t fnItemShowValue(int16_t item) {
 //    result = (~lrSelection) & 0x1FF;
 //    break;
 
-  case ITM_RM:      //
+  case ITM_RMODE:      //
     result = roundingMode;
     break;
 

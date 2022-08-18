@@ -602,6 +602,8 @@ TO_QSPI const function_t indexOfFunctions[] = {
            {ITM_REexIM,   "RE<>IM"},
 //           {ITM_RM,   "RMODE"},
 //           {ITM_RMQ,   "RMODE?"},
+//           {ITM_RMODE,   "RMODE"},
+//           {ITM_RMODEQ,   "RMODE?"},
 //           {ITM_DSP,   "DSP"},
 //           {ITM_RNORM,   "RNORM"},
            {ITM_EX1,   "E^X-1"},

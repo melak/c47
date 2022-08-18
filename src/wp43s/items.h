@@ -2085,8 +2085,8 @@
 #define ITM_EXTY                      2015
 #define ITM_DENMAX2                   2016
 #define ITM_SETSIG2                   2017
-#define ITM_2018                      2018
-#define ITM_2019                      2019
+#define ITM_RMODE                     2018
+#define ITM_RMODEQ                    2019
 #define ITM_2020                      2020
 #define ITM_2021                      2021
 #define ITM_2022                      2022

@@ -524,6 +524,7 @@ void kill_ASB_icon(void) {
 
           case ITM_RDP :
           case ITM_RM :
+          case ITM_RMODE : //JM
           case ITM_RSD :
 
           case ITM_DEG :
@@ -886,6 +887,7 @@ void kill_ASB_icon(void) {
           case ITM_RE :
           case ITM_REexIM :
           case ITM_RMQ :
+          case ITM_RMODEQ :  //JM
           case ITM_EX1 :
           case ITM_ROUNDI :
           case ITM_SDIGS :
