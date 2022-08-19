@@ -444,7 +444,8 @@ bool_t saveStatsMatrix(void) {
           printRegisterToConsole(TEMP_REGISTER_2_SAVED_STATS,"post save: ...TEMP_REGISTER_2_SAVED_STATS:\n","\n");
         #endif
         return true; //backed up
-      } else {
+      }
+      else {
         displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "Not enough memory for STATS undo matrix: rows=%i, cols=%i", rows, cols);
@@ -452,8 +453,10 @@ bool_t saveStatsMatrix(void) {
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return false;
       }
-    } else return true; //nothing to backup
-  } else return true; //nothing to backup
+    }
+    else return true; //nothing to backup
+  }
+  else return true; //nothing to backup
 #else // TESTSUITE_BUILD
   return true;
 #endif // TESTSUITE_BUILD
@@ -492,7 +495,8 @@ bool_t recallStatsMatrix(void) {
         copySourceRegisterToDestRegister(TEMP_REGISTER_2_SAVED_STATS, regStats);
         clearRegister(TEMP_REGISTER_2_SAVED_STATS);
         return true; //restored
-      } else {
+      }
+      else {
         displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "Not enough memory to undo STATS undo matrix: rows=%i, cols=%i", rows, cols);
@@ -500,8 +504,10 @@ bool_t recallStatsMatrix(void) {
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return false; //not enough memory
       }
-    } else return false; //TEMP_REGISTER_2_SAVED_STATS is a non-STATS dimensioned register
-  } else return false; //TEMP_REGISTER_2_SAVED_STATS is no real 34 matrix
+    }
+    else return false; //TEMP_REGISTER_2_SAVED_STATS is a non-STATS dimensioned register
+  }
+  else return false; //TEMP_REGISTER_2_SAVED_STATS is no real 34 matrix
 #else // TESTSUITE_BUILD
   return true; //no error
 #endif // TESTSUITE_BUILD
@@ -2297,7 +2303,8 @@ smallFont:
         if(forEditor && matSelRow == (i + sRow) && matSelCol == (j + sCol)) {
           lcd_fill_rect(X_POS + colX, Y_POS - (maxRows -1 -i) * fontHeight, colWidth[j], font == &numericFont ? 32 : 20, 0xFF);
           vm = vmReverse;
-        } else {
+        }
+        else {
           vm = vmNormal;
         }
       }
@@ -2557,7 +2564,8 @@ smallFont:
         if(forEditor && matSelRow == (i + sRow) && matSelCol == (j + sCol)) {
           lcd_fill_rect(X_POS + colX, Y_POS - (maxRows -1 -i) * fontHeight, colWidth[j], font == &numericFont ? 32 : 20, 0xFF);
           vm = vmReverse;
-        } else {
+        }
+        else {
           vm = vmNormal;
         }
       }
@@ -2926,17 +2934,22 @@ int16_t getIRegisterAsInt(bool_t asArrayPointer) {
   int16_t ret;
   longInteger_t tmp_lgInt;
 
-  if(getRegisterDataType(REGISTER_I) == dtLongInteger)
+  if(getRegisterDataType(REGISTER_I) == dtLongInteger) {
     convertLongIntegerRegisterToLongInteger(REGISTER_I, tmp_lgInt);
-  else if(getRegisterDataType(REGISTER_I) == dtReal34)
+  }
+  else if(getRegisterDataType(REGISTER_I) == dtReal34) {
     convertReal34ToLongInteger(REGISTER_REAL34_DATA(REGISTER_I), tmp_lgInt, DEC_ROUND_DOWN);
-  else
+  }
+  else {
     longIntegerInit(tmp_lgInt);
+  }
   longIntegerToInt(tmp_lgInt, ret);
 
   longIntegerFree(tmp_lgInt);
 
-  if (asArrayPointer) ret--;
+  if(asArrayPointer) {
+    ret--;
+  }
 
   return ret;
 }
@@ -2946,24 +2959,31 @@ int16_t getJRegisterAsInt(bool_t asArrayPointer) {
   int16_t ret;
   longInteger_t tmp_lgInt;
 
-  if(getRegisterDataType(REGISTER_J) == dtLongInteger)
+  if(getRegisterDataType(REGISTER_J) == dtLongInteger) {
     convertLongIntegerRegisterToLongInteger(REGISTER_J, tmp_lgInt);
-  else if(getRegisterDataType(REGISTER_J) == dtReal34)
+  }
+  else if(getRegisterDataType(REGISTER_J) == dtReal34) {
     convertReal34ToLongInteger(REGISTER_REAL34_DATA(REGISTER_J), tmp_lgInt, DEC_ROUND_DOWN);
-  else
+  }
+  else {
     longIntegerInit(tmp_lgInt);
+  }
   longIntegerToInt(tmp_lgInt, ret);
 
   longIntegerFree(tmp_lgInt);
 
-  if (asArrayPointer) ret--;
+  if(asArrayPointer) {
+    ret--;
+  }
 
   return ret;
 }
 
 //Row of Matrix
 void setIRegisterAsInt(bool_t asArrayPointer, int16_t toStore) {
-  if (asArrayPointer) toStore++;
+  if(asArrayPointer) {
+    toStore++;
+  }
   longInteger_t tmp_lgInt;
   longIntegerInit(tmp_lgInt);
 
@@ -2975,7 +2995,9 @@ void setIRegisterAsInt(bool_t asArrayPointer, int16_t toStore) {
 
 //ColOfMatrix
 void setJRegisterAsInt(bool_t asArrayPointer, int16_t toStore) {
-  if (asArrayPointer) toStore++;
+  if(asArrayPointer) {
+    toStore++;
+  }
   longInteger_t tmp_lgInt;
   longIntegerInit(tmp_lgInt);
 
@@ -2989,17 +3011,23 @@ bool_t wrapIJ(uint16_t rows, uint16_t cols) {
   if(getIRegisterAsInt(true) < 0) {
     setIRegisterAsInt(true, rows - 1);
     setJRegisterAsInt(true, (getJRegisterAsInt(true) == 0) ? cols - 1 : getJRegisterAsInt(true) - 1);
-  } else if(getIRegisterAsInt(true) == rows) {
-    setIRegisterAsInt(true, 0);
-    setJRegisterAsInt(true, (getJRegisterAsInt(true) == cols - 1) ? 0 : getJRegisterAsInt(true) + 1);
+  }
+  else {
+    if(getIRegisterAsInt(true) == rows) {
+      setIRegisterAsInt(true, 0);
+      setJRegisterAsInt(true, (getJRegisterAsInt(true) == cols - 1) ? 0 : getJRegisterAsInt(true) + 1);
+    }
   }
 
   if(getJRegisterAsInt(true) < 0) {
     setJRegisterAsInt(true, cols - 1);
     setIRegisterAsInt(true, (getIRegisterAsInt(true) == 0) ? rows - 1 : getIRegisterAsInt(true) - 1);
-  } else if(getJRegisterAsInt(true) == cols) {
-    setJRegisterAsInt(true, 0);
-    setIRegisterAsInt(true, ((!getSystemFlag(FLAG_GROW)) && (getIRegisterAsInt(true) == rows - 1)) ? 0 : getIRegisterAsInt(true) + 1);
+  }
+  else {
+    if(getJRegisterAsInt(true) == cols) {
+      setJRegisterAsInt(true, 0);
+      setIRegisterAsInt(true, ((!getSystemFlag(FLAG_GROW)) && (getIRegisterAsInt(true) == rows - 1)) ? 0 : getIRegisterAsInt(true) + 1);
+    }
   }
 
   return getIRegisterAsInt(true) == rows;
@@ -3649,7 +3677,7 @@ void WP34S_LU_decomposition(const real34Matrix_t *matrix, real34Matrix_t *lu, ui
         for(j = k + 1; j < n; j++) {
           realCopy(&tmpMat[j * n + k], &t);
           realCopyAbs(&t, &u);
-          if (realCompareGreaterThan(&u, &max)) {
+          if(realCompareGreaterThan(&u, &max)) {
             realCopy(&u, &max);
             pvt = j;
           }

@@ -48,7 +48,9 @@ bool_t isStatsMatrix(uint16_t *rows, char *mx) {
       real34Matrix_t stats;
       linkToRealMatrixRegister(regStats, &stats);
       *rows = stats.header.matrixRows;
-      if (stats.header.matrixColumns != 2) return false;
+      if(stats.header.matrixColumns != 2) {
+        return false;
+      }
     }
   }
   return true;
@@ -57,7 +59,6 @@ bool_t isStatsMatrix(uint16_t *rows, char *mx) {
 
 
 static void addMax(real_t *x, real_t *y) {
-
   // xmax
   if(realCompareGreaterThan(x, SIGMA_XMAX)) {
     realCopy(x, SIGMA_XMAX);
@@ -376,7 +377,7 @@ static void clearStatisticalSums(void) {
 }
 
 
-void initStatisticalSums(void) { 
+void initStatisticalSums(void) {
   if(statisticalSumsPointer == NULL) {
     statisticalSumsPointer = allocWp43s(NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
     clearStatisticalSums();
@@ -525,12 +526,12 @@ static void removeLastRowFromStatsMatrix(void) {
 
   calcRegister_t regStats = findNamedVariable("STATS");
   if(rows <= 1) {
-    fnClSigma(0); 
+    fnClSigma(0);
     return;
   }
   else {
-    if(!redimMatrixRegister(regStats, rows - 1, 2)) 
-      regStats = INVALID_VARIABLE; 
+    if(!redimMatrixRegister(regStats, rows - 1, 2))
+      regStats = INVALID_VARIABLE;
   }
   if(regStats == INVALID_VARIABLE) {
     displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
@@ -658,10 +659,8 @@ void fnSigma(uint16_t plusMinus) {
         moreInfoOnError("In function fnSigma:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
-  } else 
-
-
-  { // SIGMA-
+  }
+  else { // SIGMA-
     if(checkMinimumDataPoints(const_1)) {
       getLastRowStatsMatrix(&x, &y);
       subSigma(&x, &y);
@@ -687,7 +686,7 @@ void fnSigma(uint16_t plusMinus) {
         }
       #endif //DEBUGUNDO
     }
-  } 
+  }
 
 #endif // TESTSUITE_BUILD
 }

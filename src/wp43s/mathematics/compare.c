@@ -526,7 +526,7 @@ static void almostEqualScalar(uint16_t regist) {
 
   compareRegisters(regist, COMPARE_MODE_EQUAL);
 
-  if (getRegisterDataType(REGISTER_X) == dtComplex34) {
+  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
     real34Copy(&val1i, REGISTER_IMAG34_DATA(REGISTER_X));
   }
   real34Copy(&val1r, REGISTER_REAL34_DATA(REGISTER_X));

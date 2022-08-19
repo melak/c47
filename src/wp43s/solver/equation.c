@@ -624,7 +624,7 @@ static void _menuItem(int16_t item, char *bufPtr) {
 #define PARSER_OPERATOR_ITM_END_OF_FORMULA     5007
 
 static uint32_t _operatorPriority(uint16_t func) {
-  // priority of operator: smaller number represents higher priority 
+  // priority of operator: smaller number represents higher priority
   // associative property: even number represents left-associativity, odd number represents right-associativity.
   switch(func) {
     case ITM_MULT:

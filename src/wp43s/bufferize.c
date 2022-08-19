@@ -272,7 +272,7 @@
           char *aimBottomPos = aimBuffer + stringByteLength(aimBuffer);
           uint32_t itemLen = stringByteLength(addChar);
           for(uint32_t i = 0; i < xCursor; ++i) aimCursorPos += (*aimCursorPos & 0x80) ? 2 : 1;
-          for(; aimBottomPos >= aimCursorPos; --aimBottomPos) *(aimBottomPos + itemLen) = *aimBottomPos; 
+          for(; aimBottomPos >= aimCursorPos; --aimBottomPos) *(aimBottomPos + itemLen) = *aimBottomPos;
           xcopy(aimCursorPos, addChar, itemLen);
           switch(item) {
             case ITM_ALOG_SYMBOL:
@@ -333,22 +333,22 @@
 
       //Probably wrong place for this function?! Should Arrow be processed in buffercize.c in this case? //Switch statement better.
       else if(calcMode == CM_MIM) {
-        if (item == ITM_RIGHT_ARROW) {
+        if(item == ITM_RIGHT_ARROW) {
           mimEnter(true);
           setJRegisterAsInt(true, getJRegisterAsInt(true) + 1);
           refreshScreen();
         }
-        else if (item == ITM_LEFT_ARROW) {
+        else if(item == ITM_LEFT_ARROW) {
           mimEnter(true);
           setJRegisterAsInt(true, getJRegisterAsInt(true) - 1);
           refreshScreen();
         }
-        else if (item == ITM_UP_ARROW) {
+        else if(item == ITM_UP_ARROW) {
           mimEnter(true);
           setIRegisterAsInt(true, getIRegisterAsInt(true) - 1);
           refreshScreen();
         }
-        else if (item == ITM_DOWN_ARROW) {
+        else if(item == ITM_DOWN_ARROW) {
           mimEnter(true);
           setIRegisterAsInt(true, getIRegisterAsInt(true) + 1);
           refreshScreen();

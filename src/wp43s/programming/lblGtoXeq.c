@@ -393,7 +393,7 @@ static void _executeOp(uint8_t *paramAddress, uint16_t op, uint16_t paramMode) {
         reallyRunFunction(op, opParam);
       }
       else if(opParam == SYSTEM_FLAG_NUMBER) {
-        switch((uint16_t)(*paramAddress) | 0xc000) { 
+        switch((uint16_t)(*paramAddress) | 0xc000) {
           case FLAG_YMD:
           case FLAG_DMY:
           case FLAG_MDY:

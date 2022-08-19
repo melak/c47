@@ -213,12 +213,16 @@ void fnSolveVar(uint16_t unusedButMandatoryParameter) {
     reallyRunFunction(ITM_STO, regist);
     currentSolverStatus |= SOLVER_STATUS_READY_TO_EXECUTE;
     temporaryInformation = TI_SOLVER_VARIABLE;
-    if(graphVariable == 0) { 
+    if(graphVariable == 0) {
       graphVariable = -regist;
-    } else if(graphVariable < 0 && -graphVariable == regist) {
-        graphVariable = regist;
-      } else graphVariable = -regist;
     }
+    else if(graphVariable < 0 && -graphVariable == regist) {
+        graphVariable = regist;
+      }
+    else {
+      graphVariable = -regist;
+    }
+  }
 #endif /* TESTSUITE_BUILD */
 }
 
