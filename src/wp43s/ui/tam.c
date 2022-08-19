@@ -510,10 +510,12 @@
         maxDigits = _tamMaxDigits(max2);
       }
       if(!tam.alpha && (tam.value*10 + digit) <= max2 && tam.digitsSoFar < maxDigits) {
-        tam.value = tam.value*10 + digit;
-        tam.digitsSoFar++;
-        if(tam.digitsSoFar == maxDigits) {
-          forceTry = true;
+        if(tam.digitsSoFar != maxDigits - 1 || (tam.value*10 + digit) >= min2) {
+          tam.value = tam.value*10 + digit;
+          tam.digitsSoFar++;
+          if(tam.digitsSoFar == maxDigits) {
+            forceTry = true;
+          }
         }
       }
       else if(tam.function == ITM_GTOP) {

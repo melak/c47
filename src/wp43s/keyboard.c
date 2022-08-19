@@ -974,14 +974,14 @@
         lastKeyCode = 0;
       }
 
-//    if(keyAutoRepeat) {
-//      //beep(880, 50);
-//      item = previousItem;
-//    }
-//    else {
+      //if(keyAutoRepeat) {
+      //  //beep(880, 50);
+      //  item = previousItem;
+      //}
+      //else {
         item = determineItem((char *)data);
-//      previousItem = item;
-//    }
+      //  previousItem = item;
+      //}
       if(calcMode == CM_PEM && (item == ITM_SST || item == ITM_BST)) {
         shiftF = f;
         shiftG = g;
@@ -1082,11 +1082,11 @@
           }
         }
       }
-//#ifdef DMCP_BUILD
-//    else if(keyAutoRepeat) {
-//      btnPressed(data);
-//    }
-//#endif // DMCP_BUILD
+      //#ifdef DMCP_BUILD
+      //    else if(keyAutoRepeat) {
+      //      btnPressed(data);
+      //    }
+      //#endif // DMCP_BUILD
       if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING) {
         refreshScreen();
       }
