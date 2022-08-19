@@ -50,10 +50,10 @@ extern  bool_t   Aspect_Square;
 extern  bool_t   PLOT_LINE;
 extern  bool_t   PLOT_CROSS;
 extern  bool_t   PLOT_BOX;
-extern  bool_t   PLOT_INTG; 
-extern  bool_t   PLOT_DIFF; 
-extern  bool_t   PLOT_RMS; 
-extern  bool_t   PLOT_SHADE; 
+extern  bool_t   PLOT_INTG;
+extern  bool_t   PLOT_DIFF;
+extern  bool_t   PLOT_RMS;
+extern  bool_t   PLOT_SHADE;
 extern  bool_t   PLOT_AXIS;
 extern  int8_t   PLOT_ZMX;
 extern  int8_t   PLOT_ZMY;
@@ -65,7 +65,7 @@ extern  uint8_t  PLOT_ZOOM;
 extern  int8_t   plotmode;    //VECTOR or SCATTER
 extern  float    tick_int_x;
 extern  float    tick_int_y;
-extern  float    x_min; 
+extern  float    x_min;
 extern  float    x_max;
 extern  float    y_min;
 extern  float    y_max;
@@ -93,7 +93,7 @@ void    plotline           (uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn);
 void    plotline2          (uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn);
 void    graphAxisDraw      (void);
 void    graph_axis         (void);
-float   auto_tick          (float tick_int_f);	
+float   auto_tick          (float tick_int_f);
 
 
 //graph functions
@@ -124,4 +124,4 @@ void    fnPlotCloseSmi     (uint16_t unusedButMandatoryParameter);
 void    fnPlotStat         (uint16_t unusedButMandatoryParameter);
 void    fnPlotZoom         (uint16_t unusedButMandatoryParameter);
 
-#endif // PLOTSTAT_H 
+#endif // PLOTSTAT_H

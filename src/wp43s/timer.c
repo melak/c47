@@ -83,7 +83,7 @@ void fnRebuildTimerRefresh(void) {
   if(mutexRefreshTimer == false) {
     nextTimerRefresh = 0;
     for(int i = 0; i < TMR_NUMBER; i++) {
-      if (timer[i].state == TMR_RUNNING) {
+      if(timer[i].state == TMR_RUNNING) {
         next = timer[i].timer_will_expire;
         if(nextTimerRefresh != 0 && next < nextTimerRefresh) {
           nextTimerRefresh = next;
@@ -264,7 +264,7 @@ void fnTimerDel(uint8_t nr) {
 
 uint16_t fnTimerGetParam(uint8_t nr) {
   uint16_t result = 0;
-  
+
   if(nr < TMR_NUMBER) {
     result = timer[nr].param;
   }
@@ -276,7 +276,7 @@ uint16_t fnTimerGetParam(uint8_t nr) {
 
 uint8_t fnTimerGetStatus(uint8_t nr) {
   uint8_t result = TMR_UNUSED;
-  
+
   if(nr < TMR_NUMBER) {
     result = timer[nr].state;
   }

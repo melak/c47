@@ -296,7 +296,7 @@ void saveForUndo(void) {
     goto failed;
   }
 
-  lrSelectionUndo = lrSelection;  
+  lrSelectionUndo = lrSelection;
   if(statisticalSumsPointer == NULL) { // There are no statistical sums to save for undo
     if(savedStatisticalSumsPointer != NULL) {
       freeWp43s(savedStatisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
@@ -358,8 +358,8 @@ void undo(void) {
 
   if(SAVED_SIGMA_LAct == +1 && statisticalSumsPointer != NULL) {
     fnSigma(-1);
-  } else
-  if(SAVED_SIGMA_LAct == -1) {
+  }
+  else if(SAVED_SIGMA_LAct == -1) {
     clearRegister(REGISTER_X);
     clearRegister(REGISTER_Y);
     convertRealToReal34ResultRegister(&SAVED_SIGMA_LASTX, REGISTER_X);             // Can use stack, as the stack will be undone below

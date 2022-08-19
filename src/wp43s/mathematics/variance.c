@@ -207,7 +207,7 @@ void fnStatR(real_t *RR, real_t *SXY, real_t *SX, real_t *SY){
     fnStatSX_SY(SX,SY);
     fnStatSXY(SXY);
     realDivide(SXY,SX,RR,realContext);                 //this is sxy/sx
-    realDivide(RR,SY,RR,realContext);                 //this is sxy/sx/sy  
+    realDivide(RR,SY,RR,realContext);                 //this is sxy/sx/sy
   }
 }
 
@@ -241,7 +241,7 @@ void fnStatSMI(real_t *SMI){
     realDivide  (&SS,&TT,&UU,realContext);
     realMultiply(&UU,&SX2,&UU,realContext);
     realMultiply(&UU,&SY2,&UU,realContext);               //  --> smi2
-    realSquareRoot(&UU, SMI, &ctxtReal39);  
+    realSquareRoot(&UU, SMI, &ctxtReal39);
   }
 }
 
@@ -304,11 +304,11 @@ void processCurvefitSA(real_t *SA0, real_t *SA1) {
 
     switch(lrChosen) {
       case CF_LINEAR_FITTING :
-      case CF_ORTHOGONAL_FITTING :        
+      case CF_ORTHOGONAL_FITTING :
       case CF_EXPONENTIAL_FITTING :
       case CF_POWER_FITTING :
       case CF_LOGARITHMIC_FITTING :
-        //All parameters set from processCurvefitSelectionAll        
+        //All parameters set from processCurvefitSelectionAll
         break;
       default :
         displayCalcErrorMessage(ERROR_NO_ERRORS_CALCULABLE, ERR_REGISTER_LINE, REGISTER_X);
@@ -328,7 +328,7 @@ void processCurvefitSA(real_t *SA0, real_t *SA1) {
     realDivide    (&SS,&TT,&UU,realContext);
     realSquareRoot(&UU,&UU,&ctxtReal39);
     realMultiply  (&UU,&SY,&UU,&ctxtReal39);
-    realDivide    (&UU,&SX,SA1,&ctxtReal39); 
+    realDivide    (&UU,&SX,SA1,&ctxtReal39);
 
     realSubtract  (SIGMA_N,const_1,&SS,realContext);    //SA0 = f( n, SX2, MX2, SA1 )
     realDivide    (&SS,SIGMA_N,&SS,realContext);             //SS = (n-1)/n

@@ -668,13 +668,13 @@ void setParameter(char *p) {
         if(r[0] == '0') {clearSystemFlag(FLAG_ASLIFT);}   else {setSystemFlag(FLAG_ASLIFT);}
       }
       else if(!strcmp(l+3, "YMD")) {
-        if(r[0] == '0') {clearSystemFlag(FLAG_YMD);}   else {setSystemFlag(FLAG_YMD);}
+        if(r[0] == '0') {clearSystemFlag(FLAG_YMD);}      else {setSystemFlag(FLAG_YMD);}
       }
       else if(!strcmp(l+3, "MDY")) {
-        if(r[0] == '0') {clearSystemFlag(FLAG_MDY);}   else {setSystemFlag(FLAG_MDY);}
+        if(r[0] == '0') {clearSystemFlag(FLAG_MDY);}      else {setSystemFlag(FLAG_MDY);}
       }
       else if(!strcmp(l+3, "DMY")) {
-        if(r[0] == '0') {clearSystemFlag(FLAG_DMY);}   else {setSystemFlag(FLAG_DMY);}
+        if(r[0] == '0') {clearSystemFlag(FLAG_DMY);}      else {setSystemFlag(FLAG_DMY);}
       }
       else {
         printf("\nMissformed numbered flag setting. After FL_ there shall be a number from 0 to 111, a lettered, or a system flag.\n");

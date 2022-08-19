@@ -337,7 +337,7 @@ static void mode_Hypergeometric(const real_t *p0, const real_t *n, const real_t 
   real_t x0, a, q;
 
   realMultiply(p0, n0, &x0, realContext); // p0 == x0 / n0
-  
+
   realAdd(n, const_1, &a, realContext);
   WP34S_Ln(&a, &q, realContext);
   realAdd(&x0, const_1, &a, realContext);

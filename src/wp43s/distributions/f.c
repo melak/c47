@@ -312,7 +312,7 @@ void WP34S_Qf_Newton(uint32_t r_dist, const real_t *target, const real_t *estima
   realCopy(target, &r_p);
   realCopy(estimate, &r_r);
 
-	/* Set flags based on distribution */
+  /* Set flags based on distribution */
   // f_newton_setflags
   if(r_dist != QF_NEWTON_F)
     f_discrete = true; // Poisson or Binomial

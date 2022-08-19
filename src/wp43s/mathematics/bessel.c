@@ -475,20 +475,20 @@ static void bessel(const real_t *alpha, const real_t *x, bool_t neg, real_t *res
   real_t x2on4, term, gfac;
   int16_t n;
 
-  realDivide(x, const_2, &q, realContext);				// q = x/2
-  realPower(&q, const_2, &x2on4, realContext);		// factor each time around
-  realPower(&q, alpha, &r, realContext);		// (x/2)^(2m+alpha)
+  realDivide(x, const_2, &q, realContext);     // q = x/2
+  realPower(&q, const_2, &x2on4, realContext); // factor each time around
+  realPower(&q, alpha, &r, realContext);       // (x/2)^(2m+alpha)
 
   realAdd(alpha, const_1, &gfac, realContext);
   WP34S_Gamma(&gfac, &q, realContext);
   realDivide(&r, &q, &term, realContext);
-  realCopy(&term, res);			// first term in series
+  realCopy(&term, res);                        // first term in series
 
   realZero(&m);
 
   for(n=0; n<1000; n++) {
     realMultiply(&term, &x2on4, &q, realContext);
-    realAdd(&m, const_1, &m, realContext);			// m = m+1
+    realAdd(&m, const_1, &m, realContext);     // m = m+1
     realDivide(&q, &m, &r, realContext);
     realDivide(&r, &gfac, &term, realContext);
     realAdd(&gfac, const_1, &gfac, realContext);
@@ -687,7 +687,8 @@ void WP34S_BesselY(const real_t *alpha, const real_t *x, real_t *res, realContex
   }
   else if(realCompareAbsGreaterThan(x, const_90) && realCompareAbsGreaterThan(x, &gamma)) {
     bessel_asymptotic_large_x(alpha, x, true, res, realContext);
-  } else {
+  }
+  else {
     bessel2_int_series(alpha, x, res, realContext);
   }
 #endif //SAVE_SPACE_DM42_12

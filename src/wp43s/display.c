@@ -2268,6 +2268,7 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
 }
 
 
+#ifndef TESTSUITE_BUILD
 
   static void viewRegName1(int16_t currentViewRegister, char *sstmp) {
     if(currentViewRegister < REGISTER_X) {
@@ -2300,7 +2301,6 @@ static void RegName(void) {    //JM using standard reg name
 }
 
 
-#ifndef TESTSUITE_BUILD
 static void SHOW_reset(void){
   uint8_t ix;
 
