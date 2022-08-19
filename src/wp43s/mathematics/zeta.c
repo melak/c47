@@ -106,7 +106,7 @@ void zetaCplx(void) {
 
 /**************************************************************************/
 /* Complex zeta function implementation based on Jean-Marc Baillard's from:
- *	http://hp41programs.yolasite.com/zeta.php
+ * http://hp41programs.yolasite.com/zeta.php
  */
 
 static void zeta_calc_complex(real_t *reg4, real_t *reg5, real_t *reg6, real_t *reg7, realContext_t *realContext) {

@@ -2163,7 +2163,7 @@ int main(int argc, char* argv[]) {
         *(currentStep++) = 2;
         *(currentStep++) = ITM_DEC;
         *(currentStep++) = 100; //X
-    
+
         *(currentStep++) = ITM_LITERAL;
         *(currentStep++) = STRING_LONG_INTEGER;
         *(currentStep++) = 1;  // String length
@@ -2190,7 +2190,7 @@ int main(int argc, char* argv[]) {
         *(currentStep++) =  ITM_sinc             & 0xff;
         *(currentStep++) = ITM_XexY;                        //swap the stack x, y
         *(currentStep++) = (ITM_SIGMAPLUS >> 8)  | 0x80;    //Enter stats pair incorrectly oriented x<>y
-        *(currentStep++) =  ITM_SIGMAPLUS        & 0xff;    
+        *(currentStep++) =  ITM_SIGMAPLUS        & 0xff;
 
       *(currentStep++) = ITM_DSZ;
       *(currentStep++) = 1;

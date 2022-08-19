@@ -811,18 +811,18 @@ bool_t WP34S_RelativeError(const real_t *x, const real_t *y, const real_t *tol, 
 
 
 bool_t WP34S_AbsoluteError(const real_t *x, const real_t *y, const real_t *tol, realContext_t *realContext) {
-	real_t a;
+  real_t a;
   realSubtract(x, y, &a, realContext);
-	return realCompareAbsLessThan(&a, tol);
+  return realCompareAbsLessThan(&a, tol);
 }
 
 
 bool_t WP34S_ComplexAbsError(const real_t *xReal, const real_t *xImag, const real_t *yReal, const real_t *yImag, const real_t *tol, realContext_t *realContext) {
-	real_t a, b, r, t;
+  real_t a, b, r, t;
 
   realSubtract(xReal, yReal, &a, realContext), realSubtract(xImag, yImag, &b, realContext);
   realRectangularToPolar(&a, &b, &r, &t, realContext);
-	return realCompareAbsLessThan(&r, tol);
+  return realCompareAbsLessThan(&r, tol);
 }
 
 
@@ -1474,7 +1474,7 @@ void WP34S_Bernoulli(const real_t *x, real_t *res, bool_t bn_star, realContext_t
 
   // bernoulli
   realSubtract(&p, const_1, &p, realContext);
-	realChangeSign(&p);
+  realChangeSign(&p);
   WP34S_Zeta(&p, &p, realContext);
   realMultiply(&p, x, &p, realContext);
   realChangeSign(&p);
@@ -1489,7 +1489,7 @@ void WP34S_Bernoulli(const real_t *x, real_t *res, bool_t bn_star, realContext_t
 
 /**************************************************************************/
 /* Zeta function implementation based on Jean-Marc Baillard's from:
- *	http://hp41programs.yolasite.com/zeta.php
+ * http://hp41programs.yolasite.com/zeta.php
  * This is the same algorithm as the C version uses, just with fewer terms and
  * with the constants computed on the fly.
  */
@@ -1674,12 +1674,12 @@ void WP34S_LambertW(const real_t *x, real_t *res, bool_t negativeBranch, realCon
 /* The positive branch of the complex W function.
  *
  * This code is based on Jean-Marc Baillard's HP-41 version from:
- *	http://hp41programs.yolasite.com/lambertw.php
+ * http://hp41programs.yolasite.com/lambertw.php
  *
  * Register use:
- *	.00/.01	z
- *	.02/.03	w
- *	.04/.05	temporary
+ * .00/.01 z
+ * .02/.03 w
+ * .04/.05 temporary
  */
 void WP34S_ComplexLambertW(const real_t *xReal, const real_t *xImag, real_t *resReal, real_t *resImag, realContext_t *realContext) {
   real_t pr, pi, qr, qi, zr, zi, wr, wi, tr, ti;
@@ -1745,7 +1745,7 @@ void WP34S_OrthoPoly(uint16_t kind, const real_t *rX, const real_t *rN, const re
   //  return;
   //}
   realCopy(const_1, &rT0);
-	/* Now initialise everything else */
+  /* Now initialise everything else */
   realCopy(const_2, &i);
   realCopy(const_2, &d);
   realCopy(const_1, &c);
@@ -1763,7 +1763,7 @@ void WP34S_OrthoPoly(uint16_t kind, const real_t *rX, const real_t *rN, const re
     case ORTHOPOLY_LEGENDRE_P:
       realAdd(&a, rX, &a, realContext);
       realMultiply(rX, const_2, &d, realContext);
-    	goto ortho_allinc;
+      goto ortho_allinc;
 
   /**************************************************************************/
   /* Chebychev's Tn

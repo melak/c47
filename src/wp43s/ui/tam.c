@@ -401,7 +401,8 @@
         else if(tam.mode == TM_STORCL && tam.currentOperation != ITM_Config && tam.currentOperation != ITM_Stack) {
           if(item == tam.currentOperation) {
             tam.currentOperation = tam.function;
-          } else {
+          }
+          else {
             tam.currentOperation = item;
             if(item == ITM_dddEL || item == ITM_dddIJ) {
               switch(calcMode) {
@@ -414,7 +415,9 @@
                 default:
                   reallyRunFunction(tamOperation(), NOPARAM);
               }
-              if(tam.mode) tamLeaveMode();
+              if(tam.mode) {
+                tamLeaveMode();
+              }
               hourGlassIconEnabled = false;
               return;
             }

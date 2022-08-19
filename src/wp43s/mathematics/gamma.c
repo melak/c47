@@ -321,17 +321,20 @@ void lnGammaCplx(void) {
   /* Apply an integral multiple of 2 pi as a correction to give a better
    * branch cut.
    */
-  if (realIsNegative(&zReal)) {
+  if(realIsNegative(&zReal)) {
     realMultiply(&zReal, const_1on2, &tImag, &ctxtReal39);
     realToIntegralValue(&tImag, &tImag, DEC_ROUND_CEILING, &ctxtReal39);
     realSubtract(&tImag, const_1, &tImag, &ctxtReal39);
     realMultiply(&tImag, const_2pi, &tImag, &ctxtReal39);
-  } else {
+  }
+  else {
     realMinus(const_2pi, &tImag, &ctxtReal39);
   }
-  if (realIsNegative(&zImag)) {
+
+  if(realIsNegative(&zImag)) {
     realSubtract(&rImag, &tImag, &rImag, &ctxtReal39);
-  } else {
+  }
+  else {
     realAdd(&rImag, &tImag, &rImag, &ctxtReal39);
   }
 

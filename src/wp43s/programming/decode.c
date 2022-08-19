@@ -558,12 +558,33 @@ static void decodeLiteral(uint8_t *literalAddress) {
         }
         if(*sourceStringPtr == '.') ++sourceStringPtr;
         *(timeStringPtr++) = ':';
-        if(*sourceStringPtr != 0) {*(timeStringPtr++) = *(sourceStringPtr++);} else {*(timeStringPtr++) = '0';}
-        if(*sourceStringPtr != 0) {*(timeStringPtr++) = *(sourceStringPtr++);} else {*(timeStringPtr++) = '0';}
+        if(*sourceStringPtr != 0) {
+          *(timeStringPtr++) = *(sourceStringPtr++);
+        }
+        else {
+          *(timeStringPtr++) = '0';
+        }
+        if(*sourceStringPtr != 0) {
+          *(timeStringPtr++) = *(sourceStringPtr++);
+        }
+        else {*(timeStringPtr++) = '0';
+        }
         *(timeStringPtr++) = ':';
-        if(*sourceStringPtr != 0) {*(timeStringPtr++) = *(sourceStringPtr++);} else {*(timeStringPtr++) = '0';}
-        if(*sourceStringPtr != 0) {*(timeStringPtr++) = *(sourceStringPtr++);} else {*(timeStringPtr++) = '0';}
-        if(*sourceStringPtr != 0) {*(timeStringPtr++) = '.';}
+        if(*sourceStringPtr != 0) {
+          *(timeStringPtr++) = *(sourceStringPtr++);
+        }
+        else {
+          *(timeStringPtr++) = '0';
+        }
+        if(*sourceStringPtr != 0) {
+          *(timeStringPtr++) = *(sourceStringPtr++);
+        }
+        else {
+          *(timeStringPtr++) = '0';
+        }
+        if(*sourceStringPtr != 0) {
+          *(timeStringPtr++) = '.';
+        }
         for(; *sourceStringPtr != 0; ++sourceStringPtr) {
           *(timeStringPtr++) = *sourceStringPtr;
         }
@@ -579,15 +600,39 @@ static void decodeLiteral(uint8_t *literalAddress) {
         for(; *sourceStringPtr != '.' && *sourceStringPtr != 0; ++sourceStringPtr) {
           *(angleStringPtr++) = *sourceStringPtr;
         }
-        if(*sourceStringPtr == '.') ++sourceStringPtr;
+        if(*sourceStringPtr == '.') {
+          ++sourceStringPtr;
+        }
         *(angleStringPtr++) = STD_DEGREE[0];
         *(angleStringPtr++) = STD_DEGREE[1];
-        if(*sourceStringPtr != 0) {*(angleStringPtr++) = *(sourceStringPtr++);} else {*(angleStringPtr++) = '0';}
-        if(*sourceStringPtr != 0) {*(angleStringPtr++) = *(sourceStringPtr++);} else {*(angleStringPtr++) = '0';}
+        if(*sourceStringPtr != 0) {
+          *(angleStringPtr++) = *(sourceStringPtr++);
+        }
+        else {
+          *(angleStringPtr++) = '0';
+        }
+        if(*sourceStringPtr != 0) {
+          *(angleStringPtr++) = *(sourceStringPtr++);
+        }
+        else {
+          *(angleStringPtr++) = '0';
+        }
         *(angleStringPtr++) = '\'';
-        if(*sourceStringPtr != 0) {*(angleStringPtr++) = *(sourceStringPtr++);} else {*(angleStringPtr++) = '0';}
-        if(*sourceStringPtr != 0) {*(angleStringPtr++) = *(sourceStringPtr++);} else {*(angleStringPtr++) = '0';}
-        if(*sourceStringPtr != 0) {*(angleStringPtr++) = '.';}
+        if(*sourceStringPtr != 0) {
+          *(angleStringPtr++) = *(sourceStringPtr++);
+        }
+        else {
+          *(angleStringPtr++) = '0';
+        }
+        if(*sourceStringPtr != 0) {
+          *(angleStringPtr++) = *(sourceStringPtr++);
+        }
+        else {
+          *(angleStringPtr++) = '0';
+        }
+        if(*sourceStringPtr != 0) {
+          *(angleStringPtr++) = '.';
+        }
         for(; *sourceStringPtr != 0; ++sourceStringPtr) {
           *(angleStringPtr++) = *sourceStringPtr;
         }

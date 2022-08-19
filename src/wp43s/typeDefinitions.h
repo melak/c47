@@ -392,7 +392,7 @@ typedef struct {
 
 /**
  * \union pgmPtr_t
- * Stores a pointer to program step in RAM or flash 
+ * Stores a pointer to program step in RAM or flash
  */
 typedef union {
   uint8_t  *any;
