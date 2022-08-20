@@ -106,7 +106,7 @@ void zetaCplx(void) {
 
 /**************************************************************************/
 /* Complex zeta function implementation based on Jean-Marc Baillard's from:
- *	http://hp41programs.yolasite.com/zeta.php
+ * http://hp41programs.yolasite.com/zeta.php
  */
 
 #ifndef SAVE_SPACE_DM42_12
