@@ -902,7 +902,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnShoiXRepeats             (uint16_t unusedButMandatoryParameter) {}  //JM SHOIDISP
   void fnDumpMenus                (uint16_t unusedButMandatoryParameter) {}  //JM
   void fnCFGsettings              (uint16_t unusedButMandatoryParameter) {}
-  void fnPlotLS                   (uint16_t unusedButMandatoryParameter) {}
   void fnPlotSQ                   (uint16_t unusedButMandatoryParameter) {}
   void fnPline                    (uint16_t unusedButMandatoryParameter) {}
   void fnPcros                    (uint16_t unusedButMandatoryParameter) {}
@@ -938,6 +937,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnStatDemo109              (uint16_t unusedButMandatoryParameter) {} //Temporary
   void fnSHIFTf                   (uint16_t unusedButMandatoryParameter) {} //Temporary
   void fnSHIFTg                   (uint16_t unusedButMandatoryParameter) {} //Temporary
+  void graph_stat                 (uint16_t unusedButMandatoryParameter) {}
 
                                                                               //JM ^^
 #endif // GENERATE_CATALOGS
@@ -2994,7 +2994,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2005 */  { fnClAIM,                      NOPARAM,                     "EXITCLR",                                     "EXITCLR",                                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },//clear HEX mode
 /* 2006 */  { fnShoiXRepeats,               TM_VALUE,                    "",                                            "DISP_SI",                                     (0 << TAM_MAX_BITS) |     3, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM SHOI
 /* 2007 */  { fnScale,                      NOPARAM,                     "",                                            "X:Y=1",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM GRAPHING
-/* 2008 */  { fnPlotLS,                     NOPARAM,                     "PLOTLS",                                      "PLOTLS",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2008 */  { itemToBeCoded,                NOPARAM,                     "2008",                                        "2008",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2009 */  { fnPline,                      NOPARAM,                     "",                                            "LINE",                                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//GRAPH
 /* 2010 */  { fnPcros,                      NOPARAM,                     "",                                            "CROSS",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//GRAPH
 /* 2011 */  { fnPbox,                       NOPARAM,                     "",                                            "BOX",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//GRAPH
@@ -3026,7 +3026,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2037 */  { itemToBeCoded,                NOPARAM,                     "2037",                                        "2037",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2038 */  { itemToBeCoded,                NOPARAM,                     "2038",                                        "2038",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2039 */  { fnP_All_Regs,                 1,                           "PRN",                                         "PRN",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2040 */  { fnPlotSQ,                     NOPARAM,                     "PLOTXY",                                      "PLOTXY",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
+/* 2040 */  { graph_stat,                   NOPARAM,                     "PLSTAT",                                      "PLSTAT",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
 /* 2041 */  { fnJM,                         47,                          "",                                            "M" STD_RIGHT_ARROW "zyx",                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2042 */  { fnPlotReset,                  NOPARAM,                     "PLTRST",                                      "PLTRST",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
 /* 2043 */  { fnStatDemo0,                  NOPARAM,                     "",                                             "DEMO0"                ,                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },

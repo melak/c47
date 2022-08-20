@@ -371,6 +371,23 @@ void graph_eqn(uint16_t mode) {
   #endif
 }
 
+
+void graph_stat(uint16_t unusedButMandatoryParameter) {
+  #ifndef TESTSUITE_BUILD
+    calcMode = CM_GRAPH;
+
+    lastPlotMode = PLOT_NOTHING;
+    strcpy(plotStatMx,"STATS");
+
+    PLOT_LINE = true;
+    PLOT_SHADE = true;
+
+    fnClearStack(0);
+    fnPlotSQ(0);
+  #endif
+}
+
+
 //###################################################################################
 //SOLVER
 
@@ -1050,7 +1067,7 @@ void graph_eqn(uint16_t mode) {
     fnRCL(SREG_X2);
 
     //if(ix * 1.0  >  NUMBERITERATIONS * 0.5) {
-    //  runFunction(ITM_PLOT_XY);
+    //  runFunction(ITM_PLOT_STAT);
     //}
 
     if(FLAG_FRACTN) {

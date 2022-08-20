@@ -44,7 +44,7 @@ CHS STO 11             // REG11: Higher X
 
   PLTRST
   P_INT
-  PLOTXY                 // PLOTS THE STATS DATA
+  PLSTAT                 // PLOTS THE STATS DATA
 
 RETURN                   // STOPS PROCESSING
 

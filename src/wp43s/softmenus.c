@@ -249,7 +249,7 @@ TO_QSPI const int16_t menu_STAT[]        = { ITM_SIGMAPLUS,                 ITM_
                                              ITM_CLSIGMA,                   ITM_XG,                     ITM_SCATTFACT,            ITM_SCATTFACTp,        ITM_SCATTFACTm,              ITM_NULL,
                                              ITM_LR,                        ITM_CORR,                   ITM_SXY,                  ITM_COV,               ITM_XCIRC,                   ITM_YCIRC,
                                              ITM_SA,                        ITM_XH,                     ITM_XRMS,                 ITM_XMAX,              ITM_XMIN,                    ITM_NULL,
-                                             ITM_PLOT_LR,                   ITM_PLOT_XY,                ITM_PLOTLS,               ITM_PLOTRST,           ITM_LISTXY,                  ITM_PLOT,
+                                             ITM_PLOT_LR,                   ITM_PLOT_STAT,              ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_PLOT,
 
 /*WP43S
                                              ITM_LINF,                      ITM_EXPF,                   ITM_LOGF,                 ITM_POWERF,            ITM_NULL,                    ITM_ORTHOF,
@@ -754,8 +754,6 @@ TO_QSPI const int16_t menu_PLOT[]        = { ITM_PLINE,                     ITM_
 
                                              ITM_PZOOMX,                    ITM_PZOOMY,                 ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
                                              ITM_SNAP,                      ITM_LISTXY,                 ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM GRAPH
-                                             ITM_PLOT_XY,                   ITM_PLOTLS,                 ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM GRAPH
-
                                              ITM_NULL,                      ITM_PLOTRST,                ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL};                          //JM GRAPH
 
 
@@ -1924,7 +1922,7 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
               else if(item%10000 == ITM_op_j && !getSystemFlag(FLAG_CPXj)) {
                 showSoftkey(STD_i, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue);
               }                                                                                //JM ^^
-              else if((item == ITM_CFG) || (item ==ITM_PLOT_LR) || (item == ITM_PLOT_XY) || (item == ITM_PLOT) || (item == ITM_PLOTLS) || (item == ITM_PLOT_LRALL)) {       //JMvv colour PLOT in reverse font to appear to be menus
+              else if((item == ITM_CFG) || (item ==ITM_PLOT_LR) || (item == ITM_PLOT_STAT) || (item == ITM_PLOT) || (item == ITM_PLOT_LRALL)) {       //JMvv colour PLOT in reverse font to appear to be menus
                 showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue);
               }                                                                                //JM^^
 

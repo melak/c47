@@ -1933,16 +1933,8 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
             case CM_GRAPH:
             case CM_PLOT_STAT:
+            case CM_LISTXY:        //JM
               break;
-
-            case CM_LISTXY:                     //JM VV
-              if(item == ITM_EXIT1 || item == ITM_BACKSPACE) {
-//                calcMode = previousCalcMode;
-                fnPlotClose(0);
-              }
-              keyActionProcessed = true;
-              break;                            //JM ^^
-
 
             case CM_CONFIRMATION:
               if(item == ITEM_CONF_Y || item == ITM_XEQ || item == ITM_ENTER) { // Yes or XEQ or ENTER
@@ -2508,9 +2500,8 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
 
       case CM_LISTXY:                      //JM vv
-        calcMode = previousCalcMode;
+        calcMode = CM_GRAPH;
         softmenuStack[0].firstItem = 0;
-        fnUndo(0);
         break;                              //JM ^^
 
 

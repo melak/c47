@@ -2075,7 +2075,7 @@
 #define ITM_CLAIM                     2005
 #define ITM_SHOIREP                   2006
 #define ITM_SCALE                     2007
-#define ITM_PLOTLS                    2008
+#define ITM_2008                      2008
 #define ITM_PLINE                     2009
 #define ITM_PCROS                     2010
 #define ITM_PBOX                      2011
@@ -2107,7 +2107,7 @@
 #define ITM_2037                      2037
 #define ITM_2038                      2038
 #define ITM_PRN                       2039
-#define ITM_PLOT_XY                   2040
+#define ITM_PLOT_STAT                 2040
 #define ITM_3x1TOSTK                  2041
 #define ITM_PLOTRST                   2042
 #define ITM_STATDEMO0                 2043

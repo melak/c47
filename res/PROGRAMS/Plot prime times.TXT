@@ -24,7 +24,7 @@ GTO M1                //THE GTO IS SKIPPED IF THE RESULT WAS 0
 
 ALPHA "STORED ALL PRIMES FROM REGISTERS 10 TO 30" EXIT
 PLTRST
-PLOTXY                //PLOTS THE STATS DATA
+PLSTAT                //PLOTS THE STATS DATA
 RETURN                //STOPS PROCESSING
 
 //-------------------------------------------------------------------------------------

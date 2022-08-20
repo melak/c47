@@ -245,17 +245,6 @@ void fnPlotSQ(uint16_t unusedButMandatoryParameter) {
   doRefreshSoftMenu = true;             //Plot graph is part of refreshScreen
 }
 
-void fnPlotLS(uint16_t unusedButMandatoryParameter) {
-  PLOT_AXIS = true;
-  Aspect_Square = false;
-  if(calcMode != CM_GRAPH && calcMode != CM_PLOT_STAT){previousCalcMode = calcMode;}
-  if(previousCalcMode == CM_GRAPH || previousCalcMode == CM_PLOT_STAT) {
-    previousCalcMode = CM_NORMAL;
-  }
-  calcMode = CM_GRAPH;
-  doRefreshSoftMenu = true;             //Plot graph is part of refreshScreen
-}
-
 void fnListXY(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
   if( (plotStatMx[0]=='S' ? checkMinimumDataPoints(const_1):false) || (plotStatMx[0]=='D' ? drawMxN() >= 1:false) ) {

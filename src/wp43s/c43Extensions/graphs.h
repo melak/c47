@@ -47,7 +47,6 @@ void    fnListXY           (uint16_t unusedButMandatoryParameter);
 void    fnStatList         (void);
 void    graph_plotmem      (void);
 void    fnPlotSQ           (uint16_t unusedButMandatoryParameter);
-void    fnPlotLS           (uint16_t unusedButMandatoryParameter);
 void    fnPlotReset        (uint16_t unusedButMandatoryParameter);
 void    fnPlotStatAdv      (uint16_t unusedButMandatoryParameter);
 
