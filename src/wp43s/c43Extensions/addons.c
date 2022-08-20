@@ -1508,3 +1508,22 @@ void fnConstantR(uint16_t constantAddr, uint16_t *constNr, real_t *rVal) {
 
 
 
+void fnSafeReset (uint16_t unusedButMandatoryParameter) {
+  if(!jm_FG_LINE && !jm_G_DOUBLETAP && !Home3TimerMode && !ShiftTimoutMode && !HOME3) {
+    jm_FG_LINE     = true;
+    jm_G_DOUBLETAP = true;
+    Home3TimerMode = true;
+    ShiftTimoutMode= true;
+    HOME3          = true;
+  } else
+  {
+    jm_FG_LINE     = false;
+    jm_G_DOUBLETAP = false;
+    Home3TimerMode = false;
+    ShiftTimoutMode= false;
+    HOME3          = false;    
+  }
+}
+
+
+

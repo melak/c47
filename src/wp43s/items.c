@@ -938,6 +938,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnSHIFTf                   (uint16_t unusedButMandatoryParameter) {} //Temporary
   void fnSHIFTg                   (uint16_t unusedButMandatoryParameter) {} //Temporary
   void graph_stat                 (uint16_t unusedButMandatoryParameter) {}
+  void fnSafeReset                (uint16_t unusedButMandatoryParameter) {}
 
                                                                               //JM ^^
 #endif // GENERATE_CATALOGS
@@ -3024,7 +3025,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2035 */  { fnPzoom,                      2,                           "",                                            "ZOOMy",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//GRAPH
 /* 2036 */  { itemToBeCoded,                NOPARAM,                     "2036",                                        "2036",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2037 */  { itemToBeCoded,                NOPARAM,                     "2037",                                        "2037",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2038 */  { itemToBeCoded,                NOPARAM,                     "2038",                                        "2038",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2038 */  { fnSafeReset,                  NOPARAM,                     "S-RESET",                                     "S-RESET",                                     (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
 /* 2039 */  { fnP_All_Regs,                 1,                           "PRN",                                         "PRN",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2040 */  { graph_stat,                   NOPARAM,                     "PLSTAT",                                      "PLSTAT",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
 /* 2041 */  { fnJM,                         47,                          "",                                            "M" STD_RIGHT_ARROW "zyx",                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },

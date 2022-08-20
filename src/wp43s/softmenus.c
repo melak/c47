@@ -181,7 +181,7 @@ TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_
 
                                              ITM_NO_BASE_SCREEN,            ITM_BASE_HOME,             ITM_BASE_AHOME,            ITM_HOMEx3T,           ITM_SHTIM,                   ITM_HOMEx3,                    //JM
                                              ITM_G_DOUBLETAP,               ITM_TST,                   ITM_SYS,                   ITM_NULL,              ITM_NULL,                    ITM_FG_LINE,                        //JM
-                                             ITM_NULL,                      ITM_NULL,                  ITM_NULL,                  ITM_H_SUMRY,           ITM_H_REPLCA,                ITM_H_FIXED                    };
+                                             ITM_SAFERESET,                 ITM_NULL,                  ITM_NULL,                  ITM_H_SUMRY,           ITM_H_REPLCA,                ITM_H_FIXED                    };
 
 
 TO_QSPI const int16_t menu_PARTS[]       = { ITM_IP,                        ITM_FP,                     ITM_MANT,                 ITM_EXPT,              ITM_SIGN,                    ITM_DECOMP,
