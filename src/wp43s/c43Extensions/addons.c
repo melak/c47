@@ -546,35 +546,52 @@ void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
 
 
 void fnDRG(uint16_t unusedButMandatoryParameter) {
-  if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
-    convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+uint16_t dest = 9999;
+  if(getRegisterDataType(REGISTER_X) == dtShortInteger) {                  // If shortinteger in X, convert to real
+    convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone); //is probably none already
-  }
-  if(getRegisterDataType(REGISTER_X) == dtReal34) {
-    uint16_t dest = getRegisterAngularMode(REGISTER_X);
-    switch(dest) {
-    case amNone:      dest = currentAngularMode;  break; //converts from to the same, i.e. get to current angle mode
-    case amRadian:    dest = amGrad;              break;
-    case amMultPi:    dest = amDMS;               break;
-    case amGrad:      dest = amMultPi;            break;
-    case amDegree:    dest = amRadian;            break;
-    case amDMS:       dest = amDegree;            break;
-    default:      break;
+  } else if(getRegisterDataType(REGISTER_X) == dtLongInteger) {                   // If longinteger in X, convert to real
+      convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+      setRegisterAngularMode(REGISTER_X, amNone); //is probably none already
     }
-    fnCvtFromCurrentAngularMode(dest);
-  } else 
-    if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-      uint16_t dest = currentAngularMode;
-      switch(dest) {
+
+  if(getRegisterDataType(REGISTER_X) == dtReal34) {                        // if real
+    dest = getRegisterAngularMode(REGISTER_X);
+    switch(dest) {
       case amNone:      dest = currentAngularMode;  break; //converts from to the same, i.e. get to current angle mode
       case amRadian:    dest = amGrad;              break;
       case amMultPi:    dest = amDMS;               break;
       case amGrad:      dest = amMultPi;            break;
       case amDegree:    dest = amRadian;            break;
       case amDMS:       dest = amDegree;            break;
-      default:      break;    
+      default:      break;
+    }
+    fnCvtFromCurrentAngularMode(dest);
+    currentAngularMode = dest;
+  }
+  else //if(getRegisterDataType(REGISTER_X) == dtComplex34)
+  {
+    dest = currentAngularMode;
+    switch(dest) {
+      case amNone:      dest = currentAngularMode;  break; //converts from to the same, i.e. get to current angle mode
+      case amRadian:    dest = amGrad;              break;
+      case amMultPi:    dest = amDMS;               break;
+      case amGrad:      dest = amMultPi;            break;
+      case amDegree:    dest = amRadian;            break;
+      case amDMS:       dest = amDegree;            break;
+      default:      break;
     }
     currentAngularMode = dest;
+  }
+
+  if(dest != 9999) {
+    if(getRegisterDataType(REGISTER_Y) == dtReal34 && getRegisterAngularMode(REGISTER_Y) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_Y, dest);
+    if(getRegisterDataType(REGISTER_Z) == dtReal34 && getRegisterAngularMode(REGISTER_Z) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_Z, dest);
+    if(getRegisterDataType(REGISTER_T) == dtReal34 && getRegisterAngularMode(REGISTER_T) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_T, dest);
+    if(getRegisterDataType(REGISTER_A) == dtReal34 && getRegisterAngularMode(REGISTER_A) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_A, dest);
+    if(getRegisterDataType(REGISTER_B) == dtReal34 && getRegisterAngularMode(REGISTER_B) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_B, dest);
+    if(getRegisterDataType(REGISTER_C) == dtReal34 && getRegisterAngularMode(REGISTER_C) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_C, dest);
+    if(getRegisterDataType(REGISTER_D) == dtReal34 && getRegisterAngularMode(REGISTER_D) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_D, dest);
   }
 }
 

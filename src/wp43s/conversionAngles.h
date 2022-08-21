@@ -25,6 +25,7 @@
 #include <stdint.h>
 
 void     fnCvtToCurrentAngularMode   (uint16_t fromAngularMode);
+void     fnCvtFromCurrentAngularModeRegister(calcRegister_t regist1, uint16_t toAngularMode); //JM
 void     fnCvtFromCurrentAngularMode (uint16_t toAngularMode);
 void     fnCvtDmsToCurrentAngularMode(uint16_t unusedButMandatoryParameter);
 void     fnCvtDegToRad               (uint16_t unusedButMandatoryParameter);

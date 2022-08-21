@@ -59,49 +59,49 @@ void fnCvtToCurrentAngularMode(uint16_t fromAngularMode) {
 
 
 
-void fnCvtFromCurrentAngularMode(uint16_t toAngularMode) {
+void fnCvtFromCurrentAngularModeRegister(calcRegister_t regist1, uint16_t toAngularMode) {
   if(!saveLastX()) return;
 
-  switch(getRegisterDataType(REGISTER_X)) {
+  switch(getRegisterDataType(regist1)) {
     case dtLongInteger:
-      convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+      convertLongIntegerRegisterToReal34Register(regist1, regist1);
 
-      if(currentAngularMode == amMultPi && getRegisterAngularMode(REGISTER_X) == amNone) {
+      if(currentAngularMode == amMultPi && getRegisterAngularMode(regist1) == amNone) {
         real_t x;
-        real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+        real34ToReal(REGISTER_REAL34_DATA(regist1), &x);
         realMultiply(&x, const_pi, &x, &ctxtReal39);
-        convertRealToReal34ResultRegister(&x, REGISTER_X);
-        //setRegisterAngularMode(REGISTER_X, toAngularMode);
+        convertRealToReal34ResultRegister(&x, regist1);
+        //setRegisterAngularMode(regist1, toAngularMode);
         //break;
       }
 
-      convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), currentAngularMode, toAngularMode);
-      setRegisterAngularMode(REGISTER_X, toAngularMode);
+      convertAngle34FromTo(REGISTER_REAL34_DATA(regist1), currentAngularMode, toAngularMode);
+      setRegisterAngularMode(regist1, toAngularMode);
       break;
 
     case dtReal34:
-      if(currentAngularMode == amDMS && getRegisterAngularMode(REGISTER_X) == amNone) {
-        real34FromDmsToDeg(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(REGISTER_X));
-        setRegisterAngularMode(REGISTER_X, amDegree);
+      if(currentAngularMode == amDMS && getRegisterAngularMode(regist1) == amNone) {
+        real34FromDmsToDeg(REGISTER_REAL34_DATA(regist1), REGISTER_REAL34_DATA(regist1));
+        setRegisterAngularMode(regist1, amDegree);
       }
 
-      if(currentAngularMode == amMultPi && getRegisterAngularMode(REGISTER_X) == amNone) {
+      if(currentAngularMode == amMultPi && getRegisterAngularMode(regist1) == amNone) {
         real_t x;
-        real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+        real34ToReal(REGISTER_REAL34_DATA(regist1), &x);
         realMultiply(&x, const_pi, &x, &ctxtReal39);
-        convertRealToReal34ResultRegister(&x, REGISTER_X);
-        //setRegisterAngularMode(REGISTER_X, toAngularMode);
+        convertRealToReal34ResultRegister(&x, regist1);
+        //setRegisterAngularMode(regist1, toAngularMode);
         //break;
       }
 
-      convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X) == amNone ? currentAngularMode : getRegisterAngularMode(REGISTER_X), toAngularMode);
-      setRegisterAngularMode(REGISTER_X, toAngularMode);
+      convertAngle34FromTo(REGISTER_REAL34_DATA(regist1), getRegisterAngularMode(regist1) == amNone ? currentAngularMode : getRegisterAngularMode(regist1), toAngularMode);
+      setRegisterAngularMode(regist1, toAngularMode);
       break;
 
     default:
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, regist1);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "%s cannot be converted to an angle!", getRegisterDataTypeName(REGISTER_X, true, false));
+        sprintf(errorMessage, "%s cannot be converted to an angle!", getRegisterDataTypeName(regist1, true, false));
         moreInfoOnError("In function fnCvtFromCurrentAngularMode:", "the input value must be a long integer, a real34 or an angle16 or an angle34", errorMessage, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
@@ -109,6 +109,9 @@ void fnCvtFromCurrentAngularMode(uint16_t toAngularMode) {
 }
 
 
+void fnCvtFromCurrentAngularMode(uint16_t toAngularMode) {          //JM converted to used generic version including register
+  fnCvtFromCurrentAngularModeRegister(REGISTER_X, toAngularMode);
+}
 
 void fnCvtDegToRad(uint16_t unusedButMandatoryParameter) {
   if(!saveLastX()) return;
