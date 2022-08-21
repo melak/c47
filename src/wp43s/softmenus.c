@@ -577,7 +577,7 @@ TO_QSPI const int16_t menu_HOME[360]     = { //JMHOMEDEMO: NOTE REMOVE CONST TO 
 /*HOME0 */           
 /*0x18*/                                     ITM_SIGMAMINUS,       ITM_YX,         ITM_SQUARE,        ITM_10x,          ITM_EXP,          ITM_CC,                        //JM HOME
                                              ITM_MAGNITUDE,        ITM_ARG,        ITM_PARALLEL,      ITM_XFACT,        ITM_toREC2,       ITM_toPOL2,                    //JM HOME
-                                             -MNU_TRI,             ITM_DEG,        ITM_RAD,           ITM_op_j,         ITM_RECT,         ITM_POLAR,                          //JM HOME
+                                             -MNU_TRI,             ITM_DEG2,       ITM_DRG,           ITM_op_j,         ITM_RECT,         ITM_POLAR,                          //JM HOME
 /*HOME-1*/                                                                                                                                                                     //JM HOME
 /*1*18*/                                     ITM_SIGMAMINUS,      ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,          ITM_CC,                        //JM HOME
                                              ITM_FP,              ITM_IP,          ITM_PARALLEL,      ITM_XFACT,        -MNU_BASE,        -MNU_INTS,                          //JM HOME
@@ -585,7 +585,7 @@ TO_QSPI const int16_t menu_HOME[360]     = { //JMHOMEDEMO: NOTE REMOVE CONST TO 
 /*HOME-2*/                                                                                                                                                                     //JM HOME
 /*2*18*/                                     ITM_SIGMAMINUS,      ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,          ITM_CC,                        //JM HOME
                                              -MNU_CONST,         -MNU_CPX,        -MNU_EXP,          -MNU_XEQ,         -MNU_MyMenu,      CC_EE,                            //JM HOME
-                                             -MNU_TRI,             ITM_DEG,        ITM_RAD,           ITM_op_j,         ITM_RECT,         ITM_POLAR, 
+                                             -MNU_TRI,             ITM_DEG2,       ITM_DRG,           ITM_op_j,         ITM_RECT,         ITM_POLAR, 
 
                                        
 // 03 -- 09 HAAKON SUGGESTIONS OF FULL REPLICA
@@ -735,10 +735,10 @@ TO_QSPI const int16_t menu_HOME[360]     = { //JMHOMEDEMO: NOTE REMOVE CONST TO 
 #endif //JM END OF LAYOUT 2 DM42 STRICT.
 
 
-/*HOME1*/
+/*HOME+1*/
                                            ITM_SI_p,                  ITM_SI_n,                ITM_SI_u,                 ITM_SI_m,                 ITM_SI_k,              ITM_SI_M,                         //JM HOME
-                                           ITM_SI_f,                  ITM_NULL,                ITM_PARALLEL,             ITM_UNIT,                 ITM_SI_G,              ITM_SI_T,                         //JM HOME                                    
-                                           -MNU_TRI,                  ITM_DEG,                 ITM_RAD,                  ITM_op_j,                 ITM_RECT,              ITM_POLAR,                        //JM UNITS SI
+                                           ITM_SI_f,                  ITM_UNIT,                ITM_PARALLEL,             ITM_XFACT,                ITM_SI_G,              ITM_SI_T,                         //JM HOME                                    
+                                           -MNU_TRI,                  ITM_DEG2,                ITM_DRG,                  ITM_op_j,                 ITM_RECT,              ITM_POLAR,                        //JM UNITS SI
 
 //##################################################################################################################################################################################################################################
 
