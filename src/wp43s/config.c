@@ -1059,16 +1059,16 @@ void fnReset(uint16_t confirmation) {
     #else
 
       #if defined(JM_LAYOUT_1A) && defined(TWO_FILE_PGM)
-        fnStrtoX("C43 L1: C43 template");
+        fnStrtoX("C43 L1: C43, QSPI");
       #else
         #if defined(JM_LAYOUT_1A) && !defined(TWO_FILE_PGM)
-          fnStrtoX("C43 L1: C43 templ. QSPI");
+          fnStrtoX("C43 L1: C43, NO QSPI");
         #else
           #if defined(JM_LAYOUT_2_DM42_STRICT) && defined(TWO_FILE_PGM)
-            fnStrtoX("C43 L42: unmodified DM42");
+            fnStrtoX("C43 L42: unmod. DM42, QSPI");
           #else
             #if defined(JM_LAYOUT_2_DM42_STRICT) && !defined(TWO_FILE_PGM)
-              fnStrtoX("C43 L42: unmod. DM42 QSPI");
+              fnStrtoX("C43 L42: unmod. DM42, NO QSPI");
             #endif
           #endif
         #endif

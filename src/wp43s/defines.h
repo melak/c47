@@ -66,7 +66,7 @@
 
   #define TWO_FILE_PGM                 //JM Normally NOT have TWO_FILE. TWO_FILE means that QSPI is used.
 
-//  #undef  TWO_FILE_PGM  Commented this line to force full QSPI generation
+//  #undef  TWO_FILE_PGM  //Commented this line to force full QSPI generation
 
 
 //THESE ARE DMCP COMPILE OPTIONS
