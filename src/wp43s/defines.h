@@ -66,7 +66,8 @@
 
   #define TWO_FILE_PGM                 //JM Normally NOT have TWO_FILE. TWO_FILE means that QSPI is used.
 
-//  #undef  TWO_FILE_PGM  //Commented this line to force full QSPI generation
+//ONE FILE OPERATION needs the original CRC file - see src/WP43S-dmcp
+//  #undef  TWO_FILE_PGM  See CRC ISSUE - Commented this line to force full QSPI generation
 
 
 //THESE ARE DMCP COMPILE OPTIONS
@@ -81,12 +82,12 @@
   //#define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42; USER_SHIFTS;
   //#define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
   //#define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
-    #define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
+  //#define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
   //#define SAVE_SPACE_DM42_11 //001552 bytes: Matrix function on entry ...
     #define SAVE_SPACE_DM42_12 //047246 bytes: Standard extra 43S math: SLVQ, PRIME, BESSEL, ELLIPTIC, ZETA, BETA, ORTHO_POLY
     #define SAVE_SPACE_DM42_13GRF //           JM Solver & graphics & stat graphics
     #define SAVE_SPACE_DM42_13GRF_JM //        JM graphics
-    #define SAVE_SPACE_DM42_14    //           programming sample programs
+  //#define SAVE_SPACE_DM42_14    //           programming sample programs
     #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
   #endif
 
