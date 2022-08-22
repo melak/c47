@@ -22,7 +22,7 @@
 
 
 #define TWO_FILE_PGM                 //JM Normally NOT have TWO_FILE. TWO_FILE means that QSPI is used.
-//  #undef  TWO_FILE_PGM
+#undef  TWO_FILE_PGM
 
 #ifdef DMCP_BUILD
   #ifndef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
