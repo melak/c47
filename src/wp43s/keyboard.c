@@ -1767,18 +1767,30 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
     }
 
-    if(catalog) {
-      if(lastErrorCode != 0) {
-        lastErrorCode = 0;
-      }
-      else {
-        leaveAsmMode();
-        popSoftmenu();
-        if(tam.mode) {
-          numberOfTamMenusToPop--;
+    switch(calcMode) {
+      case CM_REGISTER_BROWSER:
+      case CM_FLAG_BROWSER:
+      case CM_FONT_BROWSER:
+      case CM_CONFIRMATION:
+      case CM_ERROR_MESSAGE:
+      case CM_BUG_ON_SCREEN:
+        // Browser or message should be closed first
+        break;
+
+      default:
+        if(catalog) {
+          if(lastErrorCode != 0) {
+            lastErrorCode = 0;
+          }
+          else {
+            leaveAsmMode();
+            popSoftmenu();
+            if(tam.mode) {
+              numberOfTamMenusToPop--;
+            }
+          }
+          return;
         }
-      }
-      return;
     }
 
     if(tam.mode) {
@@ -1798,10 +1810,22 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       return;
     }
 
-    if(softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
-      dynamicMenuItem = 20;
-      fnProgrammableMenu(NOPARAM);
-      return;
+    switch(calcMode) {
+      case CM_REGISTER_BROWSER:
+      case CM_FLAG_BROWSER:
+      case CM_FONT_BROWSER:
+      case CM_CONFIRMATION:
+      case CM_ERROR_MESSAGE:
+      case CM_BUG_ON_SCREEN:
+        // Browser or message should be closed first
+        break;
+
+      default:
+        if(softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
+          dynamicMenuItem = 20;
+          fnProgrammableMenu(NOPARAM);
+          return;
+        }
     }
 
     switch(calcMode) {
