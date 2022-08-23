@@ -2348,12 +2348,6 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
     jm_show_calc_state("fnKeyExit");
   #endif
 
-    if(tmp1 == -MNU_SYSFL) {                                                       //JM auto recover out of SYSFL
-      numberOfTamMenusToPop = 2;
-      tamLeaveMode();
-      return;
-    }
-
     switch(calcMode) {
         case CM_REGISTER_BROWSER:
         case CM_FLAG_BROWSER:
@@ -2370,6 +2364,11 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
                     lastErrorCode = 0;
                 }
                 else {
+                    if(tmp1 == -MNU_SYSFL) {                                                       //JM auto recover out of SYSFL
+                      numberOfTamMenusToPop = 2;                                                   //JM
+                      tamLeaveMode();                                                              //JM
+                      return;                                                                      //JM
+                    }                                                                              //JM
                     leaveAsmMode();
                     popSoftmenu();
                     if(tam.mode) {
