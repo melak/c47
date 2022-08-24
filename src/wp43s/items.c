@@ -121,7 +121,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
         //printf("---#### Before function %s\n",tmp);
       #endif //PC_BUILD
 
-      hourGlassIconEnabled = true; // !hourGlassIconEnabled; //jm
+      hourGlassIconEnabled = true;
       showHideHourGlass();
 
       if(func == ITM_GTO || func == ITM_XEQ || func == ITM_GTOP) {

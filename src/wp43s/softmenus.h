@@ -61,6 +61,7 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
 
   int16_t mm(int16_t id);                                     //JM
   extern TO_QSPI const int16_t menu_A_HOME[360];              //JM
+  extern TO_QSPI const int16_t menu_HOME[360];                //JM
 
 #endif // !TESTSUITE_BUILD
 char    *dynmenuGetLabel        (int16_t menuitem);

@@ -63,6 +63,8 @@ int16_t determineFunctionKeyItem_C43(const char *data) {
     if(!(menuId==0 && jm_NO_BASE_SCREEN) ) {
        item = determineFunctionKeyItem(data, itemShift);
     }
+    else item = 0;
+  /*
     else {              //if there is no SoftMenu showing
       if(fn>=1 && fn<=6) {
         if(itemShift == 0) {
@@ -78,6 +80,7 @@ int16_t determineFunctionKeyItem_C43(const char *data) {
         item = 0;
       }
     }
+*/
   #endif
   return item;
 }

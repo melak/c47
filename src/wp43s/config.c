@@ -20,6 +20,7 @@
 
 #include "config.h"
 
+#include "assign.h"
 #include "browsers/fontBrowser.h"
 #include "bufferize.h"
 #include "charString.h"
@@ -1083,6 +1084,17 @@ void fnReset(uint16_t confirmation) {
     fnDrop(0);
 //    fnDrop(0);
 //    fnStrtoX("C43 LARGE TEXT");
+
+
+    //Pre-assign the MyMenu                   //JM
+    for(int8_t fn = 1; fn <= 6; fn++) {
+      //itemToBeAssigned = ( !getSystemFlag(FLAG_USER) ? (kbd_std[fn-1].fShifted) : (kbd_usr[fn-1].fShifted) );  //Function key follows if the yellow key
+      itemToBeAssigned = menu_HOME[fn -1];  //Function key follows if the yellow key
+      assignToMyMenu(fn - 1);
+      }
+   
+
+
 
 #ifndef SAVE_SPACE_DM42_0
     //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
