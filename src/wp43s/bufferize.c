@@ -299,6 +299,7 @@ void kill_ASB_icon(void) {
     #ifdef PC_BUILD
       char tmp[200]; sprintf(tmp,"bufferize.c: addItemToBuffer item=%d tam.mode=%d\n",item,tam.mode); jm_show_calc_state(tmp);
     #endif
+    resetKeytimers();  //JM
 
 
     if(item == NOPARAM) {
@@ -961,6 +962,8 @@ void kill_ASB_icon(void) {
     uint8_t savedNimNumberPart;
     bool_t done;
     char *strBase;
+
+    resetKeytimers();  //JM
 
     screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
     currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;

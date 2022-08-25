@@ -175,6 +175,19 @@ void resetShiftState(void) {
 
 
 
+void resetKeytimers(void) {
+  resetShiftState();
+  //fnTimerStop(TO_FG_LONG) ;
+  //fnTimerStop(TO_FG_TIMR) ;
+  
+  fnTimerStop(TO_CL_LONG) ;
+  
+  //additionally
+  fnTimerStop(TO_FN_LONG) ;
+}
+
+
+
 
 #ifndef TESTSUITE_BUILD
 /********************************************//**

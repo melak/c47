@@ -57,6 +57,7 @@ void     shiftCutoff         (uint16_t unusedButMandatoryParameter);     //dr - 
 void     Check_MultiPresses  (int16_t  * result, int8_t key_no);
 void     Setup_MultiPresses  (int16_t  result                 );
 int16_t  nameFunction        (int16_t  fn, int16_t itemShift  );   //JM LONGPRESS FN
+void     resetKeytimers      (void);
 #endif
 
 uint16_t numlockReplacements(uint16_t id, int16_t item, bool_t NL, bool_t SHFT, bool_t GSHFT);
