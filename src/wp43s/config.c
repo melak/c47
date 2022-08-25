@@ -1031,7 +1031,7 @@ void fnReset(uint16_t confirmation) {
 
 
 
-#define VERSION1 "_108_01"
+#define VERSION1 "_108_02"
 
     #ifdef JM_LAYOUT_1A
       #undef L1L2
@@ -1087,11 +1087,13 @@ void fnReset(uint16_t confirmation) {
 
 
     //Pre-assign the MyMenu                   //JM
+    jm_NO_BASE_SCREEN = true;                                           //JM prevent slow updating of 6 menu items
     for(int8_t fn = 1; fn <= 6; fn++) {
       //itemToBeAssigned = ( !getSystemFlag(FLAG_USER) ? (kbd_std[fn-1].fShifted) : (kbd_usr[fn-1].fShifted) );  //Function key follows if the yellow key
       itemToBeAssigned = menu_HOME[fn -1];  //Function key follows if the yellow key
       assignToMyMenu(fn - 1);
       }
+    jm_NO_BASE_SCREEN = false;                                           //JM Menu system default (removed from reset_jm_defaults)
    
 
 
