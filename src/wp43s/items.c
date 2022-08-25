@@ -88,7 +88,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 #if !defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
   void reallyRunFunction(int16_t func, uint16_t param) {
     if((indexOfItems[func].status & US_STATUS) == US_ENABLED || (indexOfItems[func].status & US_STATUS) == US_ENABL_XEQ) {
-      if(programRunStop != PGM_RUNNING && calcMode != CM_GRAPH && calcMode != CM_NO_UNDO ) {
+      if((programRunStop != PGM_RUNNING || getSystemFlag(FLAG_IGN1ER)) && calcMode != CM_GRAPH && calcMode != CM_NO_UNDO) {
         #ifdef DEBUGUNDO
           printf(">>> saveForUndo from reallyRunFunction: %s, calcMode = %i ",indexOfItems[func].itemCatalogName, calcMode);
         #endif
