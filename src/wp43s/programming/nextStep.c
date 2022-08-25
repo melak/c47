@@ -350,7 +350,7 @@ static void _showStep(void) {
 #ifndef TESTSUITE_BUILD
   bool_t lblOrEnd;
   uint8_t *tmpStep;
-  
+
   if(programList[currentProgramNumber - 1].step < 0) {
     readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, currentStep.flash);
     tmpStep = (uint8_t *)(tmpString + 1600);

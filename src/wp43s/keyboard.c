@@ -99,7 +99,7 @@
         }
         else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER) && dynamicMenuItem == 5) {
           item = ITM_CALC;
-        } 
+        }
         else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER) && dynamicMenuItem == 4) {
           item = ITM_DRAW;
         }
@@ -111,10 +111,10 @@
         }
         else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE) && dynamicMenuItem == 5) {
           item = ITM_FPHERE;
-        } 
+        }
         else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) && dynamicMenuItem == 5) {
           item = ITM_FPPHERE;
-        } 
+        }
         else if(dynamicMenuItem >= dynamicSoftmenu[menuId].numItems) {
           item = ITM_NOP;
         }
@@ -974,14 +974,14 @@
         lastKeyCode = 0;
       }
 
-//    if(keyAutoRepeat) {
-//      //beep(880, 50);
-//      item = previousItem;
-//    }
-//    else {
+      //if(keyAutoRepeat) {
+      //  //beep(880, 50);
+      //  item = previousItem;
+      //}
+      //else {
         item = determineItem((char *)data);
-//      previousItem = item;
-//    }
+      //  previousItem = item;
+      //}
       if(calcMode == CM_PEM && (item == ITM_SST || item == ITM_BST)) {
         shiftF = f;
         shiftG = g;
@@ -1082,11 +1082,11 @@
           }
         }
       }
-//#ifdef DMCP_BUILD
-//    else if(keyAutoRepeat) {
-//      btnPressed(data);
-//    }
-//#endif // DMCP_BUILD
+      //#ifdef DMCP_BUILD
+      //    else if(keyAutoRepeat) {
+      //      btnPressed(data);
+      //    }
+      //#endif // DMCP_BUILD
       if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING) {
         refreshScreen();
       }
@@ -1289,7 +1289,8 @@
         else if(tam.mode) {
           if(tam.alpha) {
             processAimInput(item);
-          } else {
+          }
+          else {
             addItemToBuffer(item);
             keyActionProcessed = true;
           }
@@ -1766,18 +1767,30 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
     }
 
-    if(catalog) {
-      if(lastErrorCode != 0) {
-        lastErrorCode = 0;
-      }
-      else {
-        leaveAsmMode();
-        popSoftmenu();
-        if(tam.mode) {
-          numberOfTamMenusToPop--;
+    switch(calcMode) {
+      case CM_REGISTER_BROWSER:
+      case CM_FLAG_BROWSER:
+      case CM_FONT_BROWSER:
+      case CM_CONFIRMATION:
+      case CM_ERROR_MESSAGE:
+      case CM_BUG_ON_SCREEN:
+        // Browser or message should be closed first
+        break;
+
+      default:
+        if(catalog) {
+          if(lastErrorCode != 0) {
+            lastErrorCode = 0;
+          }
+          else {
+            leaveAsmMode();
+            popSoftmenu();
+            if(tam.mode) {
+              numberOfTamMenusToPop--;
+            }
+          }
+          return;
         }
-      }
-      return;
     }
 
     if(tam.mode) {
@@ -1797,10 +1810,22 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       return;
     }
 
-    if(softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
-      dynamicMenuItem = 20;
-      fnProgrammableMenu(NOPARAM);
-      return;
+    switch(calcMode) {
+      case CM_REGISTER_BROWSER:
+      case CM_FLAG_BROWSER:
+      case CM_FONT_BROWSER:
+      case CM_CONFIRMATION:
+      case CM_ERROR_MESSAGE:
+      case CM_BUG_ON_SCREEN:
+        // Browser or message should be closed first
+        break;
+
+      default:
+        if(softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
+          dynamicMenuItem = 20;
+          fnProgrammableMenu(NOPARAM);
+          return;
+        }
     }
 
 printf(">>> ####@@@@ B = %i\n",calcMode);
@@ -2242,6 +2267,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       case CM_NIM:
       case CM_EIM:
       case CM_PLOT_STAT:
+      case CM_GRAPH:
         resetAlphaSelectionBuffer();
         if(currentSoftmenuScrolls()) {
           menuUp();
@@ -2397,6 +2423,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
       case CM_NIM:
       case CM_EIM:
       case CM_PLOT_STAT:
+      case CM_GRAPH:
         resetAlphaSelectionBuffer();
         if(currentSoftmenuScrolls()) {
           menuDown();

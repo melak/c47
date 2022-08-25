@@ -50,6 +50,12 @@
   calcKeyboard_t       calcKeyboard[43];
   int                  currentBezel; // 0=normal, 1=AIM, 2=TAM
 
+  #ifdef EXPORT_ITEMS
+    int sortItems(void const *a, void const *b) {
+      return compareString(a, b, CMP_EXTENSIVE);
+    }
+  #endif
+
   int main(int argc, char* argv[]) {
     #ifdef __APPLE__
       // we take the directory where the application is as the root for this application.
@@ -95,6 +101,25 @@
       printf("The last item of indexOfItems[] is not \"Last item\"\n");
       exit(1);
     }
+
+    #ifdef EXPORT_ITEMS
+      char name[LAST_ITEM][16], nameUtf8[25];
+      int cat, nbrItems = 0;
+      for(int i=1; i<LAST_ITEM; i++) {
+        cat = indexOfItems[i].status & CAT_STATUS;
+        if(cat == CAT_FNCT || cat == CAT_CNST || cat == CAT_SYFL || cat == CAT_RVAR) {
+          strncpy(name[nbrItems++], indexOfItems[i].itemCatalogName, 16);
+        }
+      }
+      qsort(name, nbrItems, 16, sortItems);
+      printf("To be meaningfull, the list below must\n");
+      printf("be displayed with the WP43S_StandardFont!\n");
+      for(int i=0; i<nbrItems; i++) {
+        stringToUtf8(name[i], (uint8_t *)nameUtf8);
+        printf("%s\n", nameUtf8);
+      }
+      exit(0);
+    #endif
 
     gtk_init(&argc, &argv);
     setupUI();

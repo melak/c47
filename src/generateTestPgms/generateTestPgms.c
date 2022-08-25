@@ -2163,7 +2163,7 @@ int main(int argc, char* argv[]) {
         *(currentStep++) = 2;
         *(currentStep++) = ITM_DEC;
         *(currentStep++) = 100; //X
-    
+
         *(currentStep++) = ITM_LITERAL;
         *(currentStep++) = STRING_LONG_INTEGER;
         *(currentStep++) = 1;  // String length
@@ -2190,7 +2190,7 @@ int main(int argc, char* argv[]) {
         *(currentStep++) =  ITM_sinc             & 0xff;
         *(currentStep++) = ITM_XexY;                        //swap the stack x, y
         *(currentStep++) = (ITM_SIGMAPLUS >> 8)  | 0x80;    //Enter stats pair incorrectly oriented x<>y
-        *(currentStep++) =  ITM_SIGMAPLUS        & 0xff;    
+        *(currentStep++) =  ITM_SIGMAPLUS        & 0xff;
 
       *(currentStep++) = ITM_DSZ;
       *(currentStep++) = 1;
@@ -9832,7 +9832,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_ALL >> 8) | 0x80;
     *(currentStep++) =  ITM_ALL       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 15;
 
     *(currentStep++) = (ITM_ALL >> 8) | 0x80;
     *(currentStep++) =  ITM_ALL       & 0xff;
@@ -9979,9 +9979,6 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_CLMENU >> 8) | 0x80;
     *(currentStep++) =  ITM_CLMENU       & 0xff;
-
-    *(currentStep++) = (ITM_CLREGS >> 8) | 0x80;
-    *(currentStep++) =  ITM_CLREGS       & 0xff;
 
     *(currentStep++) = (ITM_CLSTK >> 8) | 0x80;
     *(currentStep++) =  ITM_CLSTK       & 0xff;
@@ -10189,7 +10186,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_DSTACK >> 8) | 0x80;
     *(currentStep++) =  ITM_DSTACK       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 4;
 
     *(currentStep++) = (ITM_DSTACK >> 8) | 0x80;
     *(currentStep++) =  ITM_DSTACK       & 0xff;
@@ -10264,7 +10261,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_ENG >> 8) | 0x80;
     *(currentStep++) =  ITM_ENG       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 15;
 
     *(currentStep++) = (ITM_ENG >> 8) | 0x80;
     *(currentStep++) =  ITM_ENG       & 0xff;
@@ -10389,7 +10386,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_ERR >> 8) | 0x80;
     *(currentStep++) =  ITM_ERR       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = NUMBER_OF_ERROR_CODES - 1;
 
     *(currentStep++) = (ITM_ERR >> 8) | 0x80;
     *(currentStep++) =  ITM_ERR       & 0xff;
@@ -10447,7 +10444,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_FIX >> 8) | 0x80;
     *(currentStep++) =  ITM_FIX       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 15;
 
     *(currentStep++) = (ITM_FIX >> 8) | 0x80;
     *(currentStep++) =  ITM_FIX       & 0xff;
@@ -10544,7 +10541,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_GAP >> 8) | 0x80;
     *(currentStep++) =  ITM_GAP       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 15;
 
     *(currentStep++) = (ITM_GAP >> 8) | 0x80;
     *(currentStep++) =  ITM_GAP       & 0xff;
@@ -13302,8 +13299,8 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_RE >> 8) | 0x80;
     *(currentStep++) =  ITM_RE       & 0xff;
 
-    *(currentStep++) = (ITM_RECV >> 8) | 0x80;
-    *(currentStep++) =  ITM_RECV       & 0xff;
+    *(currentStep++) = (ITM_READP >> 8) | 0x80;
+    *(currentStep++) =  ITM_READP       & 0xff;
 
     *(currentStep++) = (ITM_REtoCX >> 8) | 0x80;
     *(currentStep++) =  ITM_REtoCX       & 0xff;
@@ -13317,7 +13314,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_RM >> 8) | 0x80;
     *(currentStep++) =  ITM_RM       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 6;
 
     *(currentStep++) = (ITM_RM >> 8) | 0x80;
     *(currentStep++) =  ITM_RM       & 0xff;
@@ -13363,7 +13360,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_DSP >> 8) | 0x80;
     *(currentStep++) =  ITM_DSP       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 15;
 
     *(currentStep++) = (ITM_DSP >> 8) | 0x80;
     *(currentStep++) =  ITM_DSP       & 0xff;
@@ -13421,7 +13418,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_RSD >> 8) | 0x80;
     *(currentStep++) =  ITM_RSD       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 34;
 
     *(currentStep++) = (ITM_RSD >> 8) | 0x80;
     *(currentStep++) =  ITM_RSD       & 0xff;
@@ -13488,7 +13485,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_SCI >> 8) | 0x80;
     *(currentStep++) =  ITM_SCI       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 15;
 
     *(currentStep++) = (ITM_SCI >> 8) | 0x80;
     *(currentStep++) =  ITM_SCI       & 0xff;
@@ -13526,8 +13523,8 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_SEED >> 8) | 0x80;
     *(currentStep++) =  ITM_SEED       & 0xff;
 
-    *(currentStep++) = (ITM_SEND >> 8) | 0x80;
-    *(currentStep++) =  ITM_SEND       & 0xff;
+    *(currentStep++) = (ITM_WRITEP >> 8) | 0x80;
+    *(currentStep++) =  ITM_WRITEP       & 0xff;
 
     *(currentStep++) = (ITM_SETCHN >> 8) | 0x80;
     *(currentStep++) =  ITM_SETCHN       & 0xff;
@@ -13811,7 +13808,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_TDISP >> 8) | 0x80;
     *(currentStep++) =  ITM_TDISP       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 6;
 
     *(currentStep++) = (ITM_TDISP >> 8) | 0x80;
     *(currentStep++) =  ITM_TDISP       & 0xff;
@@ -13858,7 +13855,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_TONE >> 8) | 0x80;
     *(currentStep++) =  ITM_TONE       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 9;
 
     *(currentStep++) = (ITM_TONE >> 8) | 0x80;
     *(currentStep++) =  ITM_TONE       & 0xff;
@@ -14982,7 +14979,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_PRINTERCHAR >> 8) | 0x80;
     *(currentStep++) =  ITM_PRINTERCHAR       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 127;
 
     *(currentStep++) = (ITM_PRINTERCHAR >> 8) | 0x80;
     *(currentStep++) =  ITM_PRINTERCHAR       & 0xff;
@@ -15061,7 +15058,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_PRINTERMODE >> 8) | 0x80;
     *(currentStep++) =  ITM_PRINTERMODE       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 3;
 
     *(currentStep++) = (ITM_PRINTERMODE >> 8) | 0x80;
     *(currentStep++) =  ITM_PRINTERMODE       & 0xff;
@@ -15178,7 +15175,7 @@ int main(int argc, char* argv[]) {
 
     *(currentStep++) = (ITM_PRINTERTAB >> 8) | 0x80;
     *(currentStep++) =  ITM_PRINTERTAB       & 0xff;
-    *(currentStep++) = 64;
+    *(currentStep++) = 127;
 
     *(currentStep++) = (ITM_PRINTERTAB >> 8) | 0x80;
     *(currentStep++) =  ITM_PRINTERTAB       & 0xff;

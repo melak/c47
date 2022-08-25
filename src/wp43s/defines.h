@@ -759,7 +759,7 @@ typedef enum {
 #define SIGMA_YMAX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_YMAX  )) // could be a real34
 
 #define MAX_NUMBER_OF_GLYPHS_IN_STRING           196
-#define NUMBER_OF_GLYPH_ROWS                     101 // Used in the font browser application
+#define NUMBER_OF_GLYPH_ROWS                     100 // Used in the font browser application
 
 #define MAX_DENMAX                              9999 // Biggest denominator in fraction display mode
 

@@ -17,7 +17,7 @@
              - U+2428 Double precision period
              - U+2429 Double precision comma
            New WP43S_StandardFont.ttf generated.
-           
+
 2018-02-27 In numeric font: moved printer glyph from
            code point U+239A to U+2399.
            New WP43S_NumericFont.ttf generated.
@@ -110,7 +110,7 @@
 
 2019-07-13 New WP43S_NumericFont.ttf generated.
            New WP43S_StandardFont.ttf generated.
-           
+
 2019-10-26 Problem in standard font with U+2465 and U+246F
            New WP43S_StandardFont.ttf generated.
 
@@ -135,16 +135,16 @@
 
 2020-03-07 Changed glyph U+21CD (undo)
            New WP43S_StandardFont.ttf generated.
-           
+
 2020-04-03 Changed characters U+2422 and U+2423 in Standard font.
            Added U+2421 and U+2430 ... 33.
            New WP43S_StandardFont.ttf generated.
-           
+
 2020-04-10 Changed characters U+2430 and U+2433 in Standard font.
            Added characters U+2018 and U+2019 in Numeric font.
            New WP43S_NumericFont.ttf generated.
            New WP43S_StandardFont.ttf generated.
-           
+
 2020-05-23 Removed U+00B9 from both fonts.
            Removed U+21C8 and U+21CA from standard font.
            Added U+222D (triple integral), U+2230 (volume integral),
@@ -166,3 +166,11 @@
 
 2022-01-16 Changed USB symbol U+2434 and printer symbol U+2399 in standard font.
            Changed printer symbol U+2399 in numeric font.
+
+2022-08-16 Moved in both fonts U+2065 to U+2296 (subscript alpha),
+           moved in both fonts U+2066 to U+2297 (subscript delta),
+           moved in both fonts U+2067 to U+2298 (subscript delta),
+           moved in numeric font U+2068 to U+229A (subscript sun),
+           moved in numeric font U+2069 to U+2295 (subscript earth),
+           removed in standard font U+2068 (subscript sun),
+           removed in standard font U+2069 (subscript earth)

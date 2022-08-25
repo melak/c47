@@ -896,9 +896,9 @@
 #define ITM_SUB_delta                  849
 #define ITM_SUB_mu                     850
 #define ITM_SUB_SUN                    851
-#define ITM_SUB_SUN_b                  852
+#define ITM_0852                       852
 #define ITM_SUB_EARTH                  853
-#define ITM_SUB_EARTH_b                854
+#define ITM_0854                       854
 #define ITM_SUB_PLUS                   855
 #define ITM_SUB_MINUS                  856
 #define ITM_SUB_INFINITY               857
@@ -1625,7 +1625,7 @@
 #define ITM_RCLS                      1564
 #define ITM_RDP                       1565
 #define ITM_RE                        1566
-#define ITM_RECV                      1567
+#define ITM_READP                     1567
 #define ITM_RESET                     1568
 #define ITM_REtoCX                    1569
 #define ITM_REexIM                    1570
@@ -1648,7 +1648,7 @@
 #define ITM_SCI                       1587
 #define ITM_SDIGS                     1588
 #define ITM_SEED                      1589
-#define ITM_SEND                      1590
+#define ITM_WRITEP                    1590
 #define ITM_SETCHN                    1591
 #define ITM_SETDAT                    1592
 #define ITM_SETEUR                    1593
@@ -1814,8 +1814,8 @@
 #define ITM_DET                       1751
 #define ITM_INVRT                     1752
 #define ITM_TRANS                     1753
-#define ITM_XIN                       1754
-#define ITM_XOUT                      1755
+#define ITM_1754                      1754
+#define ITM_1755                      1755
 #define ITM_PLOT_CENTRL               1756
 #define ITM_HIDE                      1757
 #define ITM_SMI                       1758

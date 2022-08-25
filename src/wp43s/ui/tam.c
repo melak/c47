@@ -401,7 +401,8 @@
         else if(tam.mode == TM_STORCL && tam.currentOperation != ITM_Config && tam.currentOperation != ITM_Stack) {
           if(item == tam.currentOperation) {
             tam.currentOperation = tam.function;
-          } else {
+          }
+          else {
             tam.currentOperation = item;
             if(item == ITM_dddEL || item == ITM_dddIJ) {
               switch(calcMode) {
@@ -414,7 +415,9 @@
                 default:
                   reallyRunFunction(tamOperation(), NOPARAM);
               }
-              if(tam.mode) tamLeaveMode();
+              if(tam.mode) {
+                tamLeaveMode();
+              }
               hourGlassIconEnabled = false;
               return;
             }
@@ -507,10 +510,12 @@
         maxDigits = _tamMaxDigits(max2);
       }
       if(!tam.alpha && (tam.value*10 + digit) <= max2 && tam.digitsSoFar < maxDigits) {
-        tam.value = tam.value*10 + digit;
-        tam.digitsSoFar++;
-        if(tam.digitsSoFar == maxDigits) {
-          forceTry = true;
+        if(tam.digitsSoFar != maxDigits - 1 || (tam.value*10 + digit) >= min2) {
+          tam.value = tam.value*10 + digit;
+          tam.digitsSoFar++;
+          if(tam.digitsSoFar == maxDigits) {
+            forceTry = true;
+          }
         }
       }
       else if(tam.function == ITM_GTOP) {
