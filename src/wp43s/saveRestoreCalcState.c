@@ -49,7 +49,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         74  // Save screen
+#define BACKUP_VERSION         374  // Save screen
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
