@@ -794,7 +794,7 @@ int32_t                SAVED_SIGMA_LAct;
       }                                                     //^^
 
 
-
+#ifdef AUTOREPEAT                                             //removed the AUTOREPEAT since the rest of the autorep code is not in tegrated into 43C. Timer clashed with long menus - double tapped.
       if(key == 18 || key == 23) {
         if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING) {
           fnTimerStart(TO_AUTO_REPEAT, key, KEY_AUTOREPEAT_FIRST_PERIOD);
@@ -803,6 +803,7 @@ int32_t                SAVED_SIGMA_LAct;
       else if(key == 0) {
         fnTimerStop(TO_AUTO_REPEAT);
       }
+#endif //AUTOREPEAT
 
 
 
