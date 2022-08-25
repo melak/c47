@@ -833,13 +833,9 @@ void graphPlotstat(uint16_t selection){
   graph_axis();
   plotmode = _SCAT;
 
-  if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2)) {
-    if(plotStatMx[0]=='S') {
-      realToInt32(SIGMA_N, statnum);
-    }
-    else {
-      statnum = drawMxN();
-    }
+  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) || (plotStatMx[0]=='H' && drawMxN() >= 1)) {
+    if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, statnum);}
+    else {statnum = drawMxN();}
     #if defined STATDEBUG && defined PC_BUILD
       printf("statnum n=%d\n",statnum);
     #endif
@@ -1385,21 +1381,39 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
 }
 
 
+  int32_t StatMxN(void){
+    uint16_t rows = 0;
+    if(plotStatMx[0]=='D') return 0; //allow S and H
+    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    if(regStats == INVALID_VARIABLE) {
+      return 0;
+    }
+    if(isStatsMatrix(&rows,plotStatMx)) {
+      real34Matrix_t stats;
+      linkToRealMatrixRegister(regStats, &stats);
+      return stats.header.matrixRows;
+    } else return 0;
+  }
+
+
 //** Called from keyboard
 //** plotSelection = 0 means that no curve fit is plotted
 //
 void fnPlotStat(uint16_t plotMode){
 #ifndef TESTSUITE_BUILD
   switch (plotMode) {
-    case PLOT_GRAPH:  strcpy(plotStatMx, "DrwMX");
-                      break;
-    case PLOT_ORTHOF:
-    case PLOT_START:
-    case PLOT_REV:
-    case PLOT_NXT:
-    case PLOT_LR: strcpy(plotStatMx, "STATS");
-                  break;
-    default: break;
+     case PLOT_GRAPH:  strcpy(plotStatMx, "DrwMX");
+              break;
+     case PLOT_ORTHOF:
+     case PLOT_START:
+     case PLOT_REV:
+     case PLOT_NXT:
+     case PLOT_LR: strcpy(plotStatMx, "STATS");
+              break;
+     case H_PLOT:
+     case H_NORM: strcpy(plotStatMx, "HISTO");
+              break;
+     default: break;
   }
 
   #if defined STATDEBUG && defined PC_BUILD
@@ -1412,38 +1426,37 @@ void fnPlotStat(uint16_t plotMode){
       printf("Stored values %i\n",cnt);
     }
   #endif //STATDEBUG
-  if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2)) {
+  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) || (plotStatMx[0]=='H'  && StatMxN() >= 1) ) {
+
     PLOT_SCALE = false;
 
     #ifndef TESTSUITE_BUILD
-      if(!(lastPlotMode == PLOT_NOTHING || lastPlotMode == PLOT_START)) {
+
+      if (!(lastPlotMode == PLOT_NOTHING || lastPlotMode == PLOT_START)) {
         plotMode = lastPlotMode;
       }
       calcMode = CM_PLOT_STAT;
-      if(plotMode != PLOT_GRAPH) {
-        statGraphReset();
-      }
+      if(plotMode != PLOT_GRAPH) statGraphReset();
 
-      if(plotMode == PLOT_START) {
+      if(plotMode == PLOT_START){
         plotSelection = 0;
         roundedTicks = false;
-      }
-      else {
-        if(plotMode == PLOT_GRAPH) {
+      } else
+        if(plotMode == PLOT_GRAPH){
           calcMode = CM_GRAPH;
           plotSelection = 0;
           PLOT_AXIS     = true;
           PLOT_LINE     = true;
           PLOT_BOX      = false;
           roundedTicks  = true;
-        }
-        else {
+        } else
           if(plotMode == PLOT_LR && lrSelection != 0) {
             plotSelection = lrSelection;
-            roundedTicks = false;
-          }
-        }
-      }
+            roundedTicks = false; 
+          } else
+            if(plotMode == H_PLOT || plotMode == H_NORM) {
+               calcMode = CM_PLOT_STAT;
+            }
 
       hourGlassIconEnabled = true;
       showHideHourGlass();
@@ -1474,12 +1487,18 @@ void fnPlotStat(uint16_t plotMode){
                showSoftmenu(-MNU_PLOT_STAT);
              }
              break;
+        case H_PLOT:
+        case H_NORM:
+             if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_HPLOT) {
+               showSoftmenu(-MNU_HPLOT);
+             }
+             break;             
         case PLOT_NOTHING:
              break;
         default: break;
       }
 
-      if(plotMode != PLOT_START && plotMode != PLOT_GRAPH) {
+      if((plotMode != PLOT_START) && (plotMode != PLOT_GRAPH) & (plotMode != H_PLOT) && (plotMode != H_NORM)) {
         fnPlotRegressionLine(plotMode);
       }
       else {
