@@ -1460,14 +1460,14 @@ void fnPlotStat(uint16_t plotMode){
           PLOT_BOX      = false;
           roundedTicks  = true;
         }
-      }
-      else {
-        if(plotMode == PLOT_LR && lrSelection != 0) {
-          plotSelection = lrSelection;
-          roundedTicks = false; 
-        } else
-          if(plotMode == H_PLOT || plotMode == H_NORM) {
-             calcMode = CM_PLOT_STAT;
+        else {
+          if(plotMode == PLOT_LR && lrSelection != 0) {
+            plotSelection = lrSelection;
+            roundedTicks = false; 
+          } else
+            if(plotMode == H_PLOT || plotMode == H_NORM) {
+               calcMode = CM_PLOT_STAT;
+            }
           }
         }
 
