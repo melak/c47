@@ -155,7 +155,7 @@ void fnEqEdit(uint16_t unusedButMandatoryParameter) {
   if(equationString) xcopy(aimBuffer, equationString, stringByteLength(equationString) + 1);
   else               aimBuffer[0] = 0;
   calcMode = CM_EIM;
-  alphaCase = AC_UPPER;  
+  alphaCase = AC_LOWER;
   nextChar = NC_NORMAL;//JM C43
   numLock = false;     //JM C43
   setSystemFlag(FLAG_ALPHA);
@@ -975,22 +975,30 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
           }
         }
         if(validateName(strPtr)) {
-          (void)findOrAllocateNamedVariable(strPtr);
+          calcRegister_t var = findOrAllocateNamedVariable(strPtr);
           xcopy(bufPtr, strPtr, stringByteLength(strPtr) + 1);
           bufPtr += stringByteLength(strPtr) + 1;
           bufPtr[0] = 0;
-          if(tmpVal == 2 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER)) {   // If the 4th variable has just been added, add Draw and Calc.
-            _menuItem(ITM_CPXSLV, bufPtr);
-            bufPtr += stringByteLength(bufPtr) + 1;
-            _menuItem(ITM_DRAW, bufPtr);
-            bufPtr += stringByteLength(bufPtr) + 1;
-            _menuItem(ITM_CALC, bufPtr);
+          if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER && var >= FIRST_RESERVED_VARIABLE) {
+            displayCalcErrorMessage(ERROR_INVALID_NAME, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+              moreInfoOnError("In function parseEquation:", strPtr, "names a register or a reserved variable!", NULL);
+            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
           }
-          else if(tmpVal == 4 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE)) {
-            _menuItem(ITM_FPHERE, bufPtr);
-          }
-          else if(tmpVal == 4 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE)) {
-            _menuItem(ITM_FPPHERE, bufPtr);
+          else {
+            if(tmpVal == 2 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER)) {   // If the 4th variable has just been added, add Draw and Calc.
+              _menuItem(ITM_CPXSLV, bufPtr);
+              bufPtr += stringByteLength(bufPtr) + 1;
+              _menuItem(ITM_DRAW, bufPtr);
+              bufPtr += stringByteLength(bufPtr) + 1;
+              _menuItem(ITM_CALC, bufPtr);
+            }
+            else if(tmpVal == 4 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE)) {
+              _menuItem(ITM_FPHERE, bufPtr);
+            }
+            else if(tmpVal == 4 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE)) {
+              _menuItem(ITM_FPPHERE, bufPtr);
+            }
           }
         }
         else {
