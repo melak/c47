@@ -834,8 +834,13 @@ void graphPlotstat(uint16_t selection){
   plotmode = _SCAT;
 
   if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) || (plotStatMx[0]=='H' && drawMxN() >= 1)) {
-    if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, statnum);}
-    else {statnum = drawMxN();}
+    if(plotStatMx[0]=='S') {
+      realToInt32(SIGMA_N, statnum);
+    }
+    else {
+      statnum = drawMxN();
+    }
+
     #if defined STATDEBUG && defined PC_BUILD
       printf("statnum n=%d\n",statnum);
     #endif
@@ -1402,18 +1407,18 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
 void fnPlotStat(uint16_t plotMode){
 #ifndef TESTSUITE_BUILD
   switch (plotMode) {
-     case PLOT_GRAPH:  strcpy(plotStatMx, "DrwMX");
-              break;
-     case PLOT_ORTHOF:
-     case PLOT_START:
-     case PLOT_REV:
-     case PLOT_NXT:
-     case PLOT_LR: strcpy(plotStatMx, "STATS");
-              break;
-     case H_PLOT:
-     case H_NORM: strcpy(plotStatMx, "HISTO");
-              break;
-     default: break;
+    case PLOT_GRAPH: strcpy(plotStatMx, "DrwMX");
+                     break;
+    case PLOT_ORTHOF:
+    case PLOT_START:
+    case PLOT_REV:
+    case PLOT_NXT:
+    case PLOT_LR: strcpy(plotStatMx, "STATS");
+                  break;
+    case H_PLOT:
+    case H_NORM: strcpy(plotStatMx, "HISTO");
+                 break;
+    default: break;
   }
 
   #if defined STATDEBUG && defined PC_BUILD
@@ -1421,13 +1426,16 @@ void fnPlotStat(uint16_t plotMode){
     printf("#####>>> fnPlotStat1: plotSelection:%u:%s  Plotmode:%u lastplotmode:%u  lrSelection:%u lrChosen:%u plotStatMx:%s\n",plotSelection, getCurveFitModeName(plotSelection), plotMode, lastPlotMode, lrSelection, lrChosen, plotStatMx);
     if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) ) {
       int16_t cnt;
-      if(plotStatMx[0]=='S') {realToInt32(SIGMA_N, cnt);}
-      else {cnt = drawMxN();}
+      if(plotStatMx[0]=='S') {
+        realToInt32(SIGMA_N, cnt);
+      }
+      else {
+        cnt = drawMxN();
+      }
       printf("Stored values %i\n",cnt);
     }
   #endif //STATDEBUG
   if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) || (plotStatMx[0]=='H'  && StatMxN() >= 1) ) {
-
     PLOT_SCALE = false;
 
     #ifndef TESTSUITE_BUILD
@@ -1436,27 +1444,32 @@ void fnPlotStat(uint16_t plotMode){
         plotMode = lastPlotMode;
       }
       calcMode = CM_PLOT_STAT;
-      if(plotMode != PLOT_GRAPH) statGraphReset();
-
-      if(plotMode == PLOT_START){
+      if(plotMode != PLOT_GRAPH) {
+        statGraphReset();
+      }
+      if(plotMode == PLOT_START) {
         plotSelection = 0;
         roundedTicks = false;
-      } else
-        if(plotMode == PLOT_GRAPH){
+      }
+      else {
+        if(plotMode == PLOT_GRAPH) {
           calcMode = CM_GRAPH;
           plotSelection = 0;
           PLOT_AXIS     = true;
           PLOT_LINE     = true;
           PLOT_BOX      = false;
           roundedTicks  = true;
+        }
+      }
+      else {
+        if(plotMode == PLOT_LR && lrSelection != 0) {
+          plotSelection = lrSelection;
+          roundedTicks = false; 
         } else
-          if(plotMode == PLOT_LR && lrSelection != 0) {
-            plotSelection = lrSelection;
-            roundedTicks = false; 
-          } else
-            if(plotMode == H_PLOT || plotMode == H_NORM) {
-               calcMode = CM_PLOT_STAT;
-            }
+          if(plotMode == H_PLOT || plotMode == H_NORM) {
+             calcMode = CM_PLOT_STAT;
+          }
+        }
 
       hourGlassIconEnabled = true;
       showHideHourGlass();
