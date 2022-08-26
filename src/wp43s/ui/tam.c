@@ -349,9 +349,10 @@
       return;
     }
     else if(item == ITM_alpha) {
-      bool_t allowAlphaMode = false;
+      bool_t allowAlphaMode = false, beginWithLowercase = false;
       allowAlphaMode = allowAlphaMode || (!tam.digitsSoFar && !tam.dot && !valueParameter && (tam.mode == TM_STORCL || tam.mode == TM_M_DIM || tam.mode == TM_REGISTER || tam.mode == TM_CMP || tam.function == ITM_MVAR));
       allowAlphaMode = allowAlphaMode || (!tam.digitsSoFar && !tam.dot && tam.indirect);
+      beginWithLowercase = allowAlphaMode;
       allowAlphaMode = allowAlphaMode || (!tam.digitsSoFar && !tam.dot && tam.mode == TM_LABEL);
       allowAlphaMode = allowAlphaMode || (!tam.digitsSoFar && !tam.dot && tam.keyInputFinished && tam.mode == TM_KEY);
       allowAlphaMode = allowAlphaMode || (!tam.digitsSoFar && (tam.function == ITM_LBL || tam.function == ITM_GTOP));
@@ -360,6 +361,9 @@
         setSystemFlag(FLAG_ALPHA);
         aimBuffer[0] = 0;
         calcModeAim(NOPARAM);
+        if(beginWithLowercase) {
+          alphaCase = AC_LOWER;
+        }
       }
       return;
     }
