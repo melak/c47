@@ -1856,12 +1856,13 @@
 #define ITM_nBINS                     1787
 #define ITM_LOBIN                     1788
 #define ITM_HIBIN                     1789
-#define ITM_HISTGR                    1790
-#define ITM_HPLOT                     1791
-#define ITM_HNORM                     1792
+#define ITM_HISTOX                    1790
+#define ITM_HISTOY                    1791
+#define ITM_HPLOT                     1792
+#define ITM_HNORM                     1793
 
 
-#define LAST_ITEM                     1793
+#define LAST_ITEM                     1794
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

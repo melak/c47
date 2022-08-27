@@ -1457,11 +1457,12 @@ void fnPlotStat(uint16_t plotMode){
                      strcpy(plotStatMx, "HISTO");
                    }
                    break;
-      case H_NORM: drawHistogram = 0;
+      case H_NORM: drawHistogram = 1;
                    if(plotStatMx[0] != 'S') {
                      strcpy(plotStatMx, "STATS");
                    }
                    plotMode = PLOT_LR;
+                   lastPlotMode = PLOT_START;
                    fnCurveFitting(CF_GAUSS_FITTING_EX);
                    break;
       default: break;
