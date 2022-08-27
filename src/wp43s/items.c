@@ -821,7 +821,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnPixel                     (uint16_t unusedButMandatoryParameter) {}
   void fnPoint                     (uint16_t unusedButMandatoryParameter) {}
   void fnAGraph                    (uint16_t unusedButMandatoryParameter) {}
-  void fnHplot                     (uint16_t unusedButMandatoryParameter) {}
 #endif // GENERATE_CATALOGS
 
 TO_QSPI const item_t indexOfItems[] = {

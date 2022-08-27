@@ -48,7 +48,7 @@
 #endif // LINUX
 
 
-#define DEBUG_STAT                       0 // PLOT & STATS verbose level can be 0, 1 or 2 (more)
+#define DEBUG_STAT                       1 // PLOT & STATS verbose level can be 0, 1 or 2 (more)
 #if (DEBUG_STAT == 0)
   #undef STATDEBUG
   #undef STATDEBUG_VERBOSE

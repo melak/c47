@@ -47,7 +47,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         74  // Save screen
+#define BACKUP_VERSION         75  // Histogram additions
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -301,6 +301,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
     save(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
     save(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
+    save(&drawHistogram,                      sizeof(drawHistogram),                      BACKUP);
 
     save(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
     for(int y = 0; y < SCREEN_HEIGHT; ++y) {
@@ -559,6 +560,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
       restore(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
       restore(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
+      restore(&drawHistogram,                      sizeof(drawHistogram),                      BACKUP);
 
       restore(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
       restore(loadedScreen,                        SCREEN_WIDTH * SCREEN_HEIGHT / 8,           BACKUP);

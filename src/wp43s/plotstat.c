@@ -77,6 +77,7 @@ bool_t    PLOT_AXIS;
 int8_t    PLOT_ZMX;
 int8_t    PLOT_ZMY;
 uint8_t   PLOT_ZOOM;
+uint8_t   drawHistogram;
 
 int8_t    plotmode;
 float     tick_int_x;
@@ -308,6 +309,13 @@ static void plotrect(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {            
   plotline(c, d, c, b);
   plotline(c, d, a, d);
 }
+
+
+static void plotHisto_col(uint16_t ix, uint16_t ixn, uint16_t x, uint16_t y, uint16_t x_min, uint16_t x_wid, uint16_t y_min, uint16_t y_wid) {  //x is 0..(n-1)   
+  uint16_t col_width = (int16_t)(x_wid*(float)(0.95)/(float)(ixn+2));                 // Scaled to always have the histogram in the same scale as the STATS ASSESS graph
+  plotrect( x-col_width/2, y_min+y_wid,  x+col_width/2, y );
+}
+
 
 
 void plotbox_fat(uint16_t xn, uint8_t yn) {                                         // Plots line from xo,yo to xn,yn; uses temporary x1,y1
@@ -810,6 +818,23 @@ void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, con
 #define horOffset 1 //labels from the left
 
 
+#ifndef TESTSUITE_BUILD //TESTSUITE_BUILD
+  int32_t statMxN(void){
+    uint16_t rows = 0;
+    if(plotStatMx[0]=='D') return 0; //allow S and H
+    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    if(regStats == INVALID_VARIABLE) {
+      return 0;
+    }
+    if(isStatsMatrix(&rows,plotStatMx)) {
+      real34Matrix_t stats;
+      linkToRealMatrixRegister(regStats, &stats);
+      return stats.header.matrixRows;
+    } else return 0;
+  }
+
+
+
 void graphPlotstat(uint16_t selection){
   #if defined STATDEBUG && defined PC_BUILD
     printf("#####>>> graphPlotstat: selection:%u:%s  lastplotmode:%u  lrSelection:%u lrChosen:%u\n",selection, getCurveFitModeName(selection), lastPlotMode, lrSelection, lrChosen);
@@ -833,16 +858,21 @@ void graphPlotstat(uint16_t selection){
   graph_axis();
   plotmode = _SCAT;
 
-  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) || (plotStatMx[0]=='H' && drawMxN() >= 1)) {
-    if(plotStatMx[0]=='S') {
-      realToInt32(SIGMA_N, statnum);
+  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || 
+      (plotStatMx[0]=='D' && drawMxN() >= 2) || 
+      (plotStatMx[0]=='H' && statMxN() >= 3)) 
+  {
+    switch (plotStatMx[0]) {
+      case 'S': realToInt32(SIGMA_N, statnum);
+                break;
+      case 'D':  statnum = drawMxN();
+                break;
+      case 'H':  statnum = statMxN();
+                break;
+      default: break;
     }
-    else {
-      statnum = drawMxN();
-    }
-
     #if defined STATDEBUG && defined PC_BUILD
-      printf("statnum n=%d\n",statnum);
+      printf("graphPlotstat: statnum n=%d\n",statnum);
     #endif
 
 
@@ -966,10 +996,11 @@ void graphPlotstat(uint16_t selection){
       x_min = x_max - dx;
     }
 
-    x_min = x_min - dx * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
-    y_min = y_min - dy * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
-    x_max = x_max + dx * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
-    y_max = y_max + dy * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
+    float histofactor = drawHistogram == 0 ? 1 : 1/zoomfactor * (((float)statnum+2.0f)  /  ((float)(statnum) - 1.0f) - 1)/2;     //Create space on the sides of the graph for the wider histogram columns
+    x_min = x_min - dx * histofactor * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
+    y_min = y_min - dy * histofactor * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
+    x_max = x_max + dx * histofactor * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
+    y_max = y_max + dy * histofactor * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
     #if defined STATDEBUG && defined PC_BUILD
       printf("Axis3a: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
     #endif
@@ -1002,7 +1033,7 @@ void graphPlotstat(uint16_t selection){
       yN = screen_window_y(y_min,y,y_max);
 
       #if defined STATDEBUG && defined PC_BUILD
-        printf("plotting graph table[%d] = x:%f y:%f xN:%d yN:%d ",ix,x,y,  xN,yN);
+        printf("plotting graph table[%d] = x:%f y:%f xN:%d yN:%d drawHistogram:%d",ix,x,y,  xN,yN, drawHistogram);
       #endif
 
       int16_t minN_y,minN_x;
@@ -1017,6 +1048,10 @@ void graphPlotstat(uint16_t selection){
       if(xN<SCREEN_WIDTH_GRAPH && xN>minN_x && yN<SCREEN_HEIGHT_GRAPH && yN>minN_y) {
         yn = yN;
         xn = xN;
+
+        if(drawHistogram != 0) {
+          plotHisto_col(ix, statnum, xN, yN, minN_x, SCREEN_WIDTH_GRAPH-minN_x, minN_y, SCREEN_HEIGHT_GRAPH-minN_y);
+        }
 
         if(PLOT_CROSS) {
           #if defined STATDEBUG && defined PC_BUILD
@@ -1084,6 +1119,9 @@ void graphPlotstat(uint16_t selection){
   }
 #endif
 }
+#endif // TESTSUITE_BUILD
+
+
 
 
 #ifndef TESTSUITE_BUILD
@@ -1131,15 +1169,22 @@ void graphDrawLRline(uint16_t selection) {
 
 #ifndef TESTSUITE_BUILD
   void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2, real_t *sa0, real_t *sa1){
-    int32_t n;
+    int32_t n = 0;
     uint16_t NN;
 
-    if(plotStatMx[0]=='S') {
-      realToInt32(SIGMA_N, n);
+    switch (plotStatMx[0]) {
+      case 'S': realToInt32(SIGMA_N, n);
+                break;
+      case 'D':  n = drawMxN();
+                break;
+      case 'H':  n = statMxN();
+                break;
+      default: break;
     }
-    else {
-      n = drawMxN();
-    }
+    #if defined STATDEBUG && defined PC_BUILD
+      printf("graphDrawLRline: n=%d\n",n);
+    #endif
+
     NN = (uint16_t) n;
     bool_t isValidDraw =
          selection != 0
@@ -1386,56 +1431,66 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
 }
 
 
-  int32_t StatMxN(void){
-    uint16_t rows = 0;
-    if(plotStatMx[0]=='D') return 0; //allow S and H
-    calcRegister_t regStats = findNamedVariable(plotStatMx);
-    if(regStats == INVALID_VARIABLE) {
-      return 0;
-    }
-    if(isStatsMatrix(&rows,plotStatMx)) {
-      real34Matrix_t stats;
-      linkToRealMatrixRegister(regStats, &stats);
-      return stats.header.matrixRows;
-    } else return 0;
-  }
-
 
 //** Called from keyboard
 //** plotSelection = 0 means that no curve fit is plotted
 //
 void fnPlotStat(uint16_t plotMode){
 #ifndef TESTSUITE_BUILD
-  switch (plotMode) {
-    case PLOT_GRAPH: strcpy(plotStatMx, "DrwMX");
-                     break;
-    case PLOT_ORTHOF:
-    case PLOT_START:
-    case PLOT_REV:
-    case PLOT_NXT:
-    case PLOT_LR: strcpy(plotStatMx, "STATS");
-                  break;
-    case H_PLOT:
-    case H_NORM: strcpy(plotStatMx, "HISTO");
-                 break;
-    default: break;
-  }
+    switch (plotMode) {
+      case PLOT_GRAPH: drawHistogram = 0;
+                       if(plotStatMx[0] != 'D') {
+                         strcpy(plotStatMx, "DrwMX");
+                       }
+                       break;
+      case PLOT_ORTHOF:
+      case PLOT_START:
+      case PLOT_REV:
+      case PLOT_NXT:
+      case PLOT_LR: drawHistogram = 0;
+                    if(plotStatMx[0] != 'S') {
+                      strcpy(plotStatMx, "STATS");
+                    }
+                    break;
+      case H_PLOT: drawHistogram = 1;
+                   if(plotStatMx[0] != 'H') {
+                     strcpy(plotStatMx, "HISTO");
+                   }
+                   break;
+      case H_NORM: drawHistogram = 0;
+                   if(plotStatMx[0] != 'S') {
+                     strcpy(plotStatMx, "STATS");
+                   }
+                   plotMode = PLOT_LR;
+                   fnCurveFitting(CF_GAUSS_FITTING_EX);
+                   break;
+      default: break;
+    }
 
   #if defined STATDEBUG && defined PC_BUILD
     printf("fnPlotStat1: plotSelection = %u; Plotmode=%u\n",plotSelection,plotMode);
     printf("#####>>> fnPlotStat1: plotSelection:%u:%s  Plotmode:%u lastplotmode:%u  lrSelection:%u lrChosen:%u plotStatMx:%s\n",plotSelection, getCurveFitModeName(plotSelection), plotMode, lastPlotMode, lrSelection, lrChosen, plotStatMx);
-    if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) ) {
-      int16_t cnt;
-      if(plotStatMx[0]=='S') {
-        realToInt32(SIGMA_N, cnt);
-      }
-      else {
-        cnt = drawMxN();
+    if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || 
+        (plotStatMx[0]=='D' && drawMxN() >= 2) ||
+        (plotStatMx[0]=='H' && statMxN() >= 3) ) 
+    {
+      int16_t cnt = 0;
+      switch (plotStatMx[0]) {
+        case 'S': realToInt32(SIGMA_N, cnt);
+                  break;
+        case 'D':  cnt = drawMxN();
+                  break;
+        case 'H':  cnt = statMxN();
+                  break;
+        default: break;
       }
       printf("Stored values %i\n",cnt);
     }
   #endif //STATDEBUG
-  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) || (plotStatMx[0]=='H'  && StatMxN() >= 1) ) {
+  if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || 
+      (plotStatMx[0]=='D' && drawMxN() >= 2) || 
+      (plotStatMx[0]=='H' && statMxN() >= 3) ) 
+  {
     PLOT_SCALE = false;
 
     #ifndef TESTSUITE_BUILD
@@ -1451,7 +1506,7 @@ void fnPlotStat(uint16_t plotMode){
         plotSelection = 0;
         roundedTicks = false;
       }
-      else {
+      else
         if(plotMode == PLOT_GRAPH) {
           calcMode = CM_GRAPH;
           plotSelection = 0;
@@ -1460,16 +1515,17 @@ void fnPlotStat(uint16_t plotMode){
           PLOT_BOX      = false;
           roundedTicks  = true;
         }
-        else {
-          if(plotMode == PLOT_LR && lrSelection != 0) {
-            plotSelection = lrSelection;
-            roundedTicks = false; 
-          } else
-            if(plotMode == H_PLOT || plotMode == H_NORM) {
-               calcMode = CM_PLOT_STAT;
-            }
-          }
+      else
+        if(plotMode == PLOT_LR && lrSelection != 0) {
+          plotSelection = lrSelection;
+          roundedTicks = false; 
+        } 
+      else
+        if(plotMode == H_PLOT || plotMode == H_NORM) {
+           calcMode = CM_PLOT_STAT;
         }
+      
+    
 
       hourGlassIconEnabled = true;
       showHideHourGlass();

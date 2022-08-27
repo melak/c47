@@ -545,7 +545,23 @@ static void removeLastRowFromStatsMatrix(void) {
 
 
 void fnClSigma(uint16_t unusedButMandatoryParameter) {
-  calcRegister_t regStats = findNamedVariable("STATS");
+  calcRegister_t regStats = findNamedVariable("HISTO");
+  if(regStats == INVALID_VARIABLE) {
+    allocateNamedVariable("HISTO", dtReal34, REAL34_SIZE);
+    regStats = findNamedVariable("HISTO");
+  }
+
+  if(regStats == INVALID_VARIABLE) {
+    displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "HISTO matrix not created");
+      moreInfoOnError("In function fnClSigma:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+
+  clearRegister(regStats);                  // this should change to delete the named variable HISTO once the delete function is available. Until then write 0.0 into STATS.
+
+  regStats = findNamedVariable("STATS");
   if(regStats == INVALID_VARIABLE) {
     allocateNamedVariable("STATS", dtReal34, REAL34_SIZE);
     regStats = findNamedVariable("STATS");
@@ -565,6 +581,8 @@ void fnClSigma(uint16_t unusedButMandatoryParameter) {
   lastPlotMode = PLOT_NOTHING;              // last selected  plotmode
   plotSelection = 0;                        // Currently selected linear regression mode
   PLOT_ZOOM = 0;                            // Currently selected plot zoom level
+  drawHistogram = 0;
+ 
   if(statisticalSumsPointer != NULL) {
     freeWp43s(statisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
     statisticalSumsPointer = NULL;
