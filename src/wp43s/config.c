@@ -572,6 +572,17 @@ void addTestPrograms(void) {
 
 
 
+void restoreStats(void){
+  if(lrChosen    !=65535) lrChosen = lrChosenHistobackup;
+  if(lrSelection !=65535) lrSelection = lrSelectionHistobackup;
+  strcpy(statMx,"STATS");
+  lrSelectionHistobackup = 65535;
+  lrChosenHistobackup = 65535;
+  calcSigma(0);
+}
+
+
+
 void fnReset(uint16_t confirmation) {
   if(confirmation == NOT_CONFIRMED) {
     setConfirmationMode(fnReset);
@@ -760,6 +771,7 @@ void fnReset(uint16_t confirmation) {
     //ctxtReal2139.digits = 2139;
     //ctxtReal2139.traps  = 0;
 
+
     statisticalSumsPointer = NULL;
     savedStatisticalSumsPointer = NULL;
     lrSelection = CF_LINEAR_FITTING;
@@ -772,6 +784,13 @@ void fnReset(uint16_t confirmation) {
     realZero(&SAVED_SIGMA_LASTX);
     realZero(&SAVED_SIGMA_LASTY);
     SAVED_SIGMA_LAct = 0;
+
+    restoreStats();
+    plotStatMx[0] = 0;
+    Int_NBIN = 0;;
+    realZero(&Real_LOBIN);
+    realZero(&Real_HIBIN);
+
 
     x_min = -10;
     x_max = 10;

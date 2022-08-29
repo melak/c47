@@ -304,6 +304,16 @@
   extern real_t                 SAVED_SIGMA_LASTY;
   extern int32_t                SAVED_SIGMA_LAct;
 
+  extern uint16_t               lrSelectionHistobackup;
+  extern uint16_t               lrChosenHistobackup;
+  extern int16_t                Int_NBIN;
+  extern real_t                 Real_LOBIN;
+  extern real_t                 Real_HIBIN;
+  extern char                   statMx[8];
+  extern char                   plotStatMx[8];
+
+
+
   #ifdef DMCP_BUILD
     extern bool_t               backToDMCP;
 //  extern int                  keyAutoRepeat; // Key repetition

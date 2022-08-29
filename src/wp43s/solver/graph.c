@@ -67,9 +67,6 @@
 #define NUMBERITERATIONS 35      // Must be smaller than LIM (see STATS)
 
 
-char     plotStatMx[8];
-
-
 
 #ifndef TESTSUITE_BUILD
   static void fnRCL(int16_t inp) { //DONE

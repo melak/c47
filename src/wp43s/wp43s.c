@@ -227,6 +227,16 @@ real_t                 SAVED_SIGMA_LASTX;
 real_t                 SAVED_SIGMA_LASTY;
 int32_t                SAVED_SIGMA_LAct;
 
+uint16_t               lrSelectionHistobackup;
+uint16_t               lrChosenHistobackup;
+int16_t                Int_NBIN;
+real_t                 Real_LOBIN;
+real_t                 Real_HIBIN;
+char                   statMx[8];
+char                   plotStatMx[8];
+
+
+
 #ifdef DMCP_BUILD
   bool_t               backToDMCP;
 //int                  keyAutoRepeat;

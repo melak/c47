@@ -421,7 +421,7 @@ void fnNewMatrix(uint16_t unusedParamButMandatory) {
 bool_t saveStatsMatrix(void) {
 #ifndef TESTSUITE_BUILD
   uint32_t rows, cols;
-  calcRegister_t regStats = findNamedVariable("STATS");
+  calcRegister_t regStats = findNamedVariable(statMx);
 
   #ifdef DEBUGUNDO
     printf(">>> saveStatsMatrix\n");
@@ -439,7 +439,7 @@ bool_t saveStatsMatrix(void) {
         copySourceRegisterToDestRegister(regStats, TEMP_REGISTER_2_SAVED_STATS);
         #ifdef DEBUGUNDO
           printf(">>>saveStatsMatrix:    backing up STATS matrix containing %i rows and %i columns\n",rows, cols);
-          regStats = findNamedVariable("STATS");
+          regStats = findNamedVariable(statMx);
           printRegisterToConsole(regStats,"...STATS:\n","\n");
           printRegisterToConsole(TEMP_REGISTER_2_SAVED_STATS,"post save: ...TEMP_REGISTER_2_SAVED_STATS:\n","\n");
         #endif
@@ -477,10 +477,10 @@ bool_t recallStatsMatrix(void) {
     rows = REGISTER_DATA(regStats)->matrixRows;
     cols = REGISTER_DATA(regStats)->matrixColumns;
     if(cols == 2 && rows >= 1) {
-      regStats = findNamedVariable("STATS");
+      regStats = findNamedVariable(statMx);
       if(regStats == INVALID_VARIABLE) {
         allocateNamedVariable("STATS", dtReal34, REAL34_SIZE);
-        regStats = findNamedVariable("STATS");
+        regStats = findNamedVariable(statMx);
       }
       #ifdef DEBUGUNDO
         printf("Clearing STATS\n");

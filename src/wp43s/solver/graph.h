@@ -25,8 +25,6 @@
 #include "typeDefinitions.h"
 #include <stdint.h>
 
-extern char plotStatMx[8];
-
 
 #define EQ_SOLVE 0   //fnEqSolvGraph
 #define EQ_PLOT  1   //graph_eqn

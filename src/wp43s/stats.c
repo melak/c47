@@ -395,7 +395,7 @@ static void calcMax(uint16_t maxOffset) {
   realCopy(const_minusInfinity, SIGMA_XMAX);
   realCopy(const_minusInfinity, SIGMA_YMAX);
 
-  calcRegister_t regStats = findNamedVariable("STATS");
+  calcRegister_t regStats = findNamedVariable(statMx);
   if(regStats != INVALID_VARIABLE) {
     real34Matrix_t stats;
     linkToRealMatrixRegister(regStats, &stats);
@@ -416,7 +416,7 @@ static void calcMin(uint16_t maxOffset) {
   realCopy(const_plusInfinity,  SIGMA_XMIN);
   realCopy(const_plusInfinity,  SIGMA_YMIN);
 
-  calcRegister_t regStats = findNamedVariable("STATS");
+  calcRegister_t regStats = findNamedVariable(statMx);
   if(regStats != INVALID_VARIABLE) {
     real34Matrix_t stats;
     linkToRealMatrixRegister(regStats, &stats);
@@ -437,7 +437,7 @@ void calcSigma(uint16_t maxOffset) {
 #ifndef TESTSUITE_BUILD
   clearStatisticalSums();
   if(!statisticalSumsPointer) initStatisticalSums();
-  calcRegister_t regStats = findNamedVariable("STATS");
+  calcRegister_t regStats = findNamedVariable(statMx);
   if(regStats != INVALID_VARIABLE) {
     real34Matrix_t stats;
     linkToRealMatrixRegister(regStats, &stats);
@@ -456,7 +456,7 @@ void calcSigma(uint16_t maxOffset) {
 #ifndef TESTSUITE_BUILD
 static void getLastRowStatsMatrix(real_t *x, real_t *y) {
   uint16_t rows = 0, cols;
-  calcRegister_t regStats = findNamedVariable("STATS");
+  calcRegister_t regStats = findNamedVariable(statMx);
 
   if(regStats != INVALID_VARIABLE) {
     real34Matrix_t stats;
@@ -480,7 +480,7 @@ static void getLastRowStatsMatrix(real_t *x, real_t *y) {
 
 static void AddtoStatsMatrix(real_t *x, real_t *y) {
   uint16_t rows = 0, cols;
-  calcRegister_t regStats = findNamedVariable("STATS");
+  calcRegister_t regStats = findNamedVariable(statMx);
   if(!isStatsMatrix(&rows,"STATS")) {
     regStats = allocateNamedMatrix("STATS", 1, 2);
     real34Matrix_t stats;
@@ -524,7 +524,7 @@ static void removeLastRowFromStatsMatrix(void) {
     return;
   }
 
-  calcRegister_t regStats = findNamedVariable("STATS");
+  calcRegister_t regStats = findNamedVariable(statMx);
   if(rows <= 1) {
     fnClSigma(0);
     return;
@@ -561,10 +561,10 @@ void fnClSigma(uint16_t unusedButMandatoryParameter) {
 
   clearRegister(regStats);                  // this should change to delete the named variable HISTO once the delete function is available. Until then write 0.0 into STATS.
 
-  regStats = findNamedVariable("STATS");
+  regStats = findNamedVariable(statMx);
   if(regStats == INVALID_VARIABLE) {
     allocateNamedVariable("STATS", dtReal34, REAL34_SIZE);
-    regStats = findNamedVariable("STATS");
+    regStats = findNamedVariable(statMx);
   }
 
   if(regStats == INVALID_VARIABLE) {
@@ -631,7 +631,7 @@ void fnSigma(uint16_t plusMinus) {
       SAVED_SIGMA_LAct = +1;
 
       #ifdef DEBUGUNDO
-        calcRegister_t regStats = findNamedVariable("STATS");
+        calcRegister_t regStats = findNamedVariable(statMx);
         printRegisterToConsole(regStats,"From: AddtoStatsMatrix STATS:\n","\n");
       #endif //DEBUGUNDO
 
@@ -697,7 +697,7 @@ void fnSigma(uint16_t plusMinus) {
 
       #ifdef DEBUGUNDO
         if(statisticalSumsPointer != NULL) {
-          calcRegister_t regStats = findNamedVariable("STATS");
+          calcRegister_t regStats = findNamedVariable(statMx);
           printRealToConsole(SIGMA_N,"   >>> After\n   >>>   SIGMA_N:","\n");
           printRealToConsole(SIGMA_XMAX,"   >>>   SIGMA_MaxX:","\n");
           printRegisterToConsole(regStats,"From Sigma-: STATS\n","\n");

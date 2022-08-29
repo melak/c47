@@ -211,7 +211,7 @@ TO_QSPI const int16_t menu_PLOT_LR[]   = {
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 
 TO_QSPI const int16_t menu_HIST[]   = {
-                                             ITM_nBINS,                     ITM_LOBIN,                  ITM_HIBIN,                ITM_HISTOX,            ITM_HISTOY,                  ITM_HPLOT,
+                                             ITM_LOBIN,                     ITM_nBINS,                  ITM_HIBIN,                ITM_HISTOX,            ITM_HISTOY,                  ITM_HPLOT,
                                              ITM_PLOT_REV,                  ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 

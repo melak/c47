@@ -18,6 +18,7 @@
 
 #include "charString.h"
 #include "constantPointers.h"
+#include "config.h"
 #include "curveFitting.h"
 #include "debug.h"
 #include "error.h"
@@ -1437,6 +1438,7 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
 //
 void fnPlotStat(uint16_t plotMode){
 #ifndef TESTSUITE_BUILD
+//restoreStats();
     switch (plotMode) {
       case PLOT_GRAPH: drawHistogram = 0;
                        if(plotStatMx[0] != 'D') {
@@ -1459,10 +1461,14 @@ void fnPlotStat(uint16_t plotMode){
                    break;
       case H_NORM: drawHistogram = 1;
                    if(plotStatMx[0] != 'S') {
-                     strcpy(plotStatMx, "STATS");
+                     strcpy(plotStatMx, "HISTO");
                    }
+                   strcpy(statMx,"HISTO");
+                   calcSigma(0);
                    plotMode = PLOT_LR;
                    lastPlotMode = PLOT_START;
+                   lrSelectionHistobackup = lrSelection;
+                   lrChosenHistobackup = lrChosen;
                    fnCurveFitting(CF_GAUSS_FITTING_EX);
                    break;
       default: break;

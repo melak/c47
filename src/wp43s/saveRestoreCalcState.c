@@ -47,7 +47,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         75  // Histogram additions
+#define BACKUP_VERSION         76  // More Histogram additions
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -302,6 +302,13 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
     save(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
     save(&drawHistogram,                      sizeof(drawHistogram),                      BACKUP);
+    save(&statMx,                             sizeof(statMx),                             BACKUP);
+    save(&lrSelectionHistobackup,             sizeof(lrSelectionHistobackup),             BACKUP);
+    save(&lrChosenHistobackup,                sizeof(lrChosenHistobackup),                BACKUP);
+    save(&Int_NBIN,                           sizeof(Int_NBIN),                           BACKUP);
+    save(&Real_LOBIN,                         sizeof(Real_LOBIN),                         BACKUP);
+    save(&Real_HIBIN,                         sizeof(Real_HIBIN),                         BACKUP);
+
 
     save(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
     for(int y = 0; y < SCREEN_HEIGHT; ++y) {
@@ -561,6 +568,12 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
       restore(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
       restore(&drawHistogram,                      sizeof(drawHistogram),                      BACKUP);
+      restore(&statMx,                             sizeof(statMx),                             BACKUP);
+      restore(&lrSelectionHistobackup,             sizeof(lrSelectionHistobackup),             BACKUP);
+      restore(&lrChosenHistobackup,                sizeof(lrChosenHistobackup),                BACKUP);
+      restore(&Int_NBIN,                           sizeof(Int_NBIN),                           BACKUP);
+      restore(&Real_LOBIN,                         sizeof(Real_LOBIN),                         BACKUP);
+      restore(&Real_HIBIN,                         sizeof(Real_HIBIN),                         BACKUP);
 
       restore(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
       restore(loadedScreen,                        SCREEN_WIDTH * SCREEN_HEIGHT / 8,           BACKUP);

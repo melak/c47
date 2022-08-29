@@ -19,6 +19,7 @@
 #include "assign.h"
 #include "bufferize.h"
 #include "charString.h"
+#include "config.h"
 #include "constants.h"
 #include "debug.h"
 #include "error.h"
@@ -1871,7 +1872,7 @@ printf(">>> ####@@@@ B = %i\n",calcMode);
       case CM_MIM:
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_M_EDIT) {
           mimEnter(true);
-          if(matrixIndex == findNamedVariable("STATS")) calcSigma(0);
+          if(matrixIndex == findNamedVariable(statMx)) calcSigma(0);
           mimFinalize();
           calcModeNormal();
           updateMatrixHeightCache();
@@ -1932,6 +1933,7 @@ printf(">>> ####@@@@ B = %i\n",calcMode);
 
       case CM_GRAPH:
       case CM_PLOT_STAT:
+        restoreStats();
 printf(">>> ####@@@@ D %i\n",calcMode);
 if(lastPlotMode == H_PLOT && calcMode == CM_PLOT_STAT) popSoftmenu();
         lastPlotMode = PLOT_NOTHING;
