@@ -878,11 +878,17 @@
     }
 
     #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-      if(calcMode == CM_NORMAL || calcMode == CM_PEM || calcMode == CM_MIM || calcMode == CM_TIMER) {
-        calcModeNormalGui();
-      }
-      else if(calcMode == CM_AIM) {
-        calcModeAimGui();
+      switch(calcMode) {
+        case CM_NORMAL:
+        case CM_PEM:
+        case CM_MIM:
+        case CM_TIMER:
+          calcModeNormalGui();
+          break;
+        case CM_AIM:
+        case CM_EIM:
+          calcModeAimGui();
+          break;
       }
     #endif // PC_BUILD && (SCREEN_800X480 == 0)
 
