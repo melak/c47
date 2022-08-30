@@ -421,7 +421,7 @@
               addItemToBuffer(item);
               fnKeyInCatalog = 0;
             }
-            if(calcMode == CM_EIM) {
+            if(calcMode == CM_EIM && !tam.mode) {
               while(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQ_EDIT) {
                 popSoftmenu();
               }
