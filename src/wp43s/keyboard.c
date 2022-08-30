@@ -519,12 +519,7 @@ bool_t lowercaseselected;
         if(item != ITM_NOP && item != ITM_NULL) {
           lastErrorCode = 0;
 
-          if(calcMode != CM_ASSIGN && indexOfItems[item].func == addItemToBuffer
-
-             && !( (item>=ITM_0 && item <=ITM_9) || item == ITM_EXPONENT || -softmenu[softmenuStack[0].softmenuId].menuItem == MNU_EQ_EDIT ) 
-
-            ) { //JM added conditions, toherwise digits in menus do not work
-            
+          if(calcMode != CM_ASSIGN && indexOfItems[item].func == addItemToBuffer) {
             // If we are in the catalog then a normal key press should affect the Alpha Selection Buffer to choose
             // an item from the catalog, but a function key press should put the item in the AIM (or TAM) buffer
             // Use this variable to distinguish between the two
@@ -542,7 +537,10 @@ bool_t lowercaseselected;
             }
             else {
               fnKeyInCatalog = 1;
-              addItemToBuffer(item);
+              if( (item>=ITM_0 && item <=ITM_9) || item == ITM_EXPONENT || -softmenu[softmenuStack[0].softmenuId].menuItem == MNU_EQ_EDIT ) //JM added conditions, toherwise digits in menus do not work
+                addItemToBuffer(item);                      //   this is 43S where alpha menu keys do not time out. Comment out and replace with statemachine
+              else
+                btnFnPressed_StateMachine(NULL, data);      //JM ^^ This calls original state analysing btnFnPressed routing, which is now renamed to "statemachine" in keyboardtweaks
               fnKeyInCatalog = 0;
             }
             if(calcMode == CM_EIM && !tam.mode) {

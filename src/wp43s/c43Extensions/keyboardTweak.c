@@ -713,8 +713,8 @@ void btnFnReleased_StateMachine(void *unused, void *data) {
   else {
     FN_state =  ST_2_REL1;
   }
-
-  if((jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_ALPHA && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_T_EDIT ) && FN_state == ST_2_REL1 && FN_handle_timed_out_to_EXEC) {
+  int mI = softmenu[softmenuStack[0].softmenuId].menuItem;
+  if((jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ mI != -MNU_ALPHA && mI != -MNU_T_EDIT ) && FN_state == ST_2_REL1 && FN_handle_timed_out_to_EXEC) {
     uint8_t                      offset =  0;
     if(shiftF && !shiftG)      { offset =  6; }
     else if(!shiftF && shiftG) { offset = 12; }
