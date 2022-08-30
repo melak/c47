@@ -96,6 +96,7 @@ All the below: because both Last x and savestack does not work due to multiple s
 #include "mathematics/toRect.h"
 #include "plotstat.h"
 #include "c43Extensions/radioButtonCatalog.h"
+#include "c43Extensions/keyboardTweak.h"
 #include "recall.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -137,6 +138,8 @@ void fnClAIM(uint16_t unusedButMandatoryParameter) {        //clear input buffe
 #ifdef PC_BUILD
   jm_show_comment("^^^^fnClAIMa");
 #endif //PC_BUILD
+  resetKeytimers();  //JM
+
   temporaryInformation = TI_NO_INFO;
   if(calcMode == CM_NIM) {
     strcpy(aimBuffer, "+");
@@ -144,6 +147,9 @@ void fnClAIM(uint16_t unusedButMandatoryParameter) {        //clear input buffe
     //printf("|%s|\n",aimBuffer);
   }
   lastIntegerBase = 0;
+
+//  memset(softmenuStack, 0, sizeof(softmenuStack)); // This works because the ID of MyMenu is 0
+
 #ifndef TESTSUITE_BUILD
   uint_fast8_t ix = 0;
   while(ix < SOFTMENU_STACK_SIZE && softmenuStack[0].softmenuId != 0) {
@@ -165,6 +171,7 @@ void fnClAIM(uint16_t unusedButMandatoryParameter) {        //clear input buffe
   calcModeNormal();
   refreshScreen();
   fnKeyExit(0); //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
+  popSoftmenu();
 #endif
 }
 

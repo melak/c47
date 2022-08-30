@@ -2669,7 +2669,8 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
           lastErrorCode = 0;
         }
         else {
-          runFunction(ITM_CLX);
+//          runFunction(ITM_CLX);          //JM old
+          showFunctionName(ITM_CLX, 1000); //JM 1000ms = 1s        
         }
         break;
 
