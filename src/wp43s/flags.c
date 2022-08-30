@@ -140,6 +140,7 @@ void synchronizeLetteredFlags(void) {
 
 
 
+#ifndef TESTSUITE_BUILD
 static void _setAlpha(void) {
   if(calcMode != CM_EIM) {
     calcModeAim(NOPARAM);
@@ -158,6 +159,7 @@ static void _clearAlpha(void) {
     calcModeNormal();
   }
 }
+#endif // TESTSUITE_BUILD
 
 
 
