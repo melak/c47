@@ -421,7 +421,7 @@
               addItemToBuffer(item);
               fnKeyInCatalog = 0;
             }
-            if(calcMode == CM_EIM) {
+            if(calcMode == CM_EIM && !tam.mode) {
               while(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQ_EDIT) {
                 popSoftmenu();
               }
@@ -1951,7 +1951,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_ASSIGN:
-        if(softmenuStack[0].softmenuId <= 1 && softmenuStack[1].softmenuId <= 1) { // MyMenu or MyAlpha is displayed
+        if((softmenuStack[0].softmenuId <= 1 && softmenuStack[1].softmenuId <= 1) || (previousCalcMode == CM_EIM && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQ_EDIT)) { // MyMenu or MyAlpha is displayed
           calcMode = previousCalcMode;
           if(tam.alpha) {
             assignLeaveAlpha();
