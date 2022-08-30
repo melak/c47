@@ -140,6 +140,27 @@ void synchronizeLetteredFlags(void) {
 
 
 
+static void _setAlpha(void) {
+  if(calcMode != CM_EIM) {
+    calcModeAim(NOPARAM);
+  }
+}
+
+static void _clearAlpha(void) {
+  if(calcMode == CM_EIM) {
+    if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQ_EDIT) {
+      calcModeNormal();
+      if(allFormulae[currentFormula].pointerToFormulaData == WP43S_NULL) deleteEquation(currentFormula);
+    }
+    popSoftmenu();
+  }
+  else {
+    calcModeNormal();
+  }
+}
+
+
+
 /********************************************//**
  * \brief Returns the status of a flag
  *
@@ -215,9 +236,7 @@ void fnSetFlag(uint16_t flag) {
 #ifndef TESTSUITE_BUILD
     else if(flag == FLAG_ALPHA) {
       tamLeaveMode();
-      if(calcMode != CM_EIM) {
-        calcModeAim(NOPARAM);
-      }
+      _setAlpha();
     }
 #endif // TESTSUITE_BUILD
     else {
@@ -281,16 +300,7 @@ void fnClearFlag(uint16_t flag) {
 #ifndef TESTSUITE_BUILD
     else if(flag == FLAG_ALPHA) {
       tamLeaveMode();
-      if(calcMode == CM_EIM) {
-        if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQ_EDIT) {
-          calcModeNormal();
-          if(allFormulae[currentFormula].pointerToFormulaData == WP43S_NULL) deleteEquation(currentFormula);
-        }
-        popSoftmenu();
-      }
-      else {
-        calcModeNormal();
-      }
+      _clearAlpha();
     }
 #endif // TESTSUITE_BUILD
     else {
@@ -355,10 +365,10 @@ void fnFlipFlag(uint16_t flag) {
     else if(flag == FLAG_ALPHA) {
       tamLeaveMode();
       if(getSystemFlag(FLAG_ALPHA)) {
-        calcModeNormal();
+        _clearAlpha();
       }
       else {
-        calcModeAim(NOPARAM);
+        _setAlpha();
       }
     }
 #endif // TESTSUITE_BUILD
