@@ -753,9 +753,11 @@ void fnP_All_Regs(uint16_t option) {
 
 #ifndef TESTSUITE_BUILD
   if(calcMode != CM_NORMAL) {
+    #ifdef DMCP_BUILD
     beep(440, 50);
     beep(4400, 50);
     beep(440, 50);
+    #endif //DMCP_BUILD
     return;
   }
 
