@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# If we want to build on a Raspberry Pi with a Sharp Memory 400×240 Display then
+# mavigate to the wp43s directory (base directory of the program sources) and
+# touch ../rpiWithSharpMemoryDisplay
+
+RPIWSMD=../rpiWithSharpMemoryDisplay
+
+if [ -f $RPIWSMD ]; then
+	echo "true"
+else
+	echo "false"
+fi
