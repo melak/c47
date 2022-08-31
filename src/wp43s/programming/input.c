@@ -92,10 +92,14 @@ void fnPause(uint16_t duration) {
         refreshScreen();
         refreshLcd(NULL);
       }
-      gtk_main_iteration_do(FALSE);
+      #ifndef RPIWSMD
+        gtk_main_iteration_do(FALSE);
+      #endif
       usleep(100000);
     }
-    if(programRunStop == PGM_WAITING) previousProgramRunStop = PGM_WAITING;
+    if(programRunStop == PGM_WAITING) {
+      previousProgramRunStop = PGM_WAITING;
+    }
   #endif // DMCP_BUILD
   programRunStop = previousProgramRunStop;
   if(programRunStop != PGM_RUNNING) {
