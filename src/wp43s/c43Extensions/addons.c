@@ -752,6 +752,13 @@ void fnByte(uint16_t command) {
 void fnP_All_Regs(uint16_t option) {
 
 #ifndef TESTSUITE_BUILD
+  if(calcMode != CM_NORMAL) {
+    beep(440, 50);
+    beep(4400, 50);
+    beep(440, 50);
+    return;
+  }
+
   create_filename(".REGS.TSV");
 
 #if (VERBOSE_LEVEL >= 1)
