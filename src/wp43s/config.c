@@ -1087,6 +1087,7 @@ void fnReset(uint16_t confirmation) {
 
 
     //Pre-assign the MyMenu                   //JM
+    #ifndef TESTSUITE_BUILD
     jm_NO_BASE_SCREEN = true;                                           //JM prevent slow updating of 6 menu items
     for(int8_t fn = 1; fn <= 6; fn++) {
       //itemToBeAssigned = ( !getSystemFlag(FLAG_USER) ? (kbd_std[fn-1].fShifted) : (kbd_usr[fn-1].fShifted) );  //Function key follows if the yellow key
@@ -1094,7 +1095,7 @@ void fnReset(uint16_t confirmation) {
       assignToMyMenu(fn - 1);
       }
     jm_NO_BASE_SCREEN = false;                                           //JM Menu system default (removed from reset_jm_defaults)
-   
+    #endif // TESTSUITE_BUILD
 
 
 
