@@ -67,8 +67,8 @@
   #define TWO_FILE_PGM                 //JM Normally NOT have TWO_FILE. TWO_FILE means that QSPI is used.
 
 //ONE FILE OPERATION needs the original CRC file - see src/WP43S-dmcp
-//  #undef  TWO_FILE_PGM  See CRC ISSUE - Commented this line to force full QSPI generation
-
+//  #undef  TWO_FILE_PGM  //See CRC ISSUE - Commented this line to force full QSPI generation
+//                        //Also change the file here: src/wp43s-dmcp/qspi_crc.h for the single file version
 
 //THESE ARE DMCP COMPILE OPTIONS
   #ifndef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
