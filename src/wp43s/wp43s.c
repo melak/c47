@@ -390,7 +390,9 @@ int32_t                SAVED_SIGMA_LAct;
     return key;
   }
 
+#ifdef INLINE_TEST
 //#define TMR_OBSERVE
+#endif
 
   void program_main(void) {
     int key = 0;
@@ -401,11 +403,9 @@ int32_t                SAVED_SIGMA_LAct;
 #ifdef BUFFER_CLICK_DETECTION
     timeStampKey = (uint32_t)sys_current_ms();              //dr - internal keyBuffer POC
 #endif
-  //uint8_t act_min = 0;                                    // dr - one second POC
-
   //bool_t wp43sKbdLayout, inFastRefresh = 0, inDownUpPress = 0, repeatDownUpPress = 0;  // removed autorepeat stuff   //dr - no keymap is used
     uint16_t currentVolumeSetting, savedVoluleSetting; // used for beep signaling screen shot
-  //uint32_t now, previousRefresh, nextAutoRepeat = 0;
+  //uint32_t now, previousRefresh, nextAutoRepeat = 0;      // removed autorepeat stuff
 
     wp43sMemInBlocks = 0;
     gmpMemInBytes = 0;
@@ -574,7 +574,7 @@ int32_t                SAVED_SIGMA_LAct;
 
           sys_sleep();
         }
-        else {                                                                  // timeout available
+        else {                                                                 // timeout available
 //--      uint32_t timeoutTime = max(1, nextTimerRefresh - sys_current_ms());
           uint32_t timeoutTime = sys_current_ms();
           if(nextTimerRefresh > timeoutTime) {
@@ -598,11 +598,6 @@ int32_t                SAVED_SIGMA_LAct;
             timeoutTime = min(timeoutTime, 15);
           }
 
-        //if(timeoutTime > 1000) {                                             // timeout > 1s
-        //  sys_sleep();
-        //}
-        //else {                                                               // timeout leads to sys_timer
-
           uint32_t sleepTime = SCREEN_REFRESH_PERIOD;
           sleepTime = min(sleepTime, timeoutTime);
           sys_timer_start(TIMER_IDX_REFRESH_SLEEP, max(sleepTime, 1));         // wake up for screen refresh
@@ -622,8 +617,19 @@ int32_t                SAVED_SIGMA_LAct;
 
           sys_sleep();
           sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
-        //}
         }
+
+
+//      sys_timer_start(TIMER_IDX_SCREEN_REFRESH, max(1, nextScreenRefresh - now));  // wake up for screen refresh
+//      if(inDownUpPress) {
+//        sys_timer_start(TIMER_IDX_AUTO_REPEAT, max(1, nextAutoRepeat - now)); // wake up for key auto-repeat
+//      }
+//      sys_sleep();
+//      sys_timer_disable(TIMER_IDX_SCREEN_REFRESH);
+//      if(inDownUpPress) {
+//        repeatDownUpPress = (sys_current_ms() > nextAutoRepeat);
+//        sys_timer_disable(TIMER_IDX_AUTO_REPEAT);
+//      }
       }
 
     //now = sys_current_ms();
@@ -722,7 +728,7 @@ int32_t                SAVED_SIGMA_LAct;
       //while(get_beep_volume() < 11) beep_volume_up(); start_buzzer_freq(220000); sys_delay(200); stop_buzzer();
 #endif //NOKEYMAP
 
-#ifdef AUTOREPEAT
+#ifdef AUTOREPEAT_WP43S
       // Increase the refresh rate if we are in an UP/DOWN key press so we pick up auto key repeats
       if(key == 18 || key == 23) {
 //      inDownUpPress = 1;
@@ -753,7 +759,7 @@ int32_t                SAVED_SIGMA_LAct;
       //    key = -1;
       //  }
       //}
-#endif //AUTOREPEAT
+#endif //AUTOREPEAT_WP43S
 
 
       uint8_t outKey;
@@ -794,16 +800,18 @@ int32_t                SAVED_SIGMA_LAct;
       }                                                     //^^
 
 
-#ifdef AUTOREPEAT                                             //removed the AUTOREPEAT since the rest of the autorep code is not in tegrated into 43C. Timer clashed with long menus - double tapped.
+#ifdef AUTOREPEAT_C43
       if(key == 18 || key == 23) {
-        if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING) {
-          fnTimerStart(TO_AUTO_REPEAT, key, KEY_AUTOREPEAT_FIRST_PERIOD);
-        }
+      //if(!shiftF || calcMode == CM_PEM) && !shiftG && (currentSoftmenuScrolls() || (calcMode != CM_NORMAL && calcMode != CM_NIM && calcMode != CM_AIM)) {
+          if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING) {
+            fnTimerStart(TO_AUTO_REPEAT, key, KEY_AUTOREPEAT_FIRST_PERIOD);
+          }
+      //}
       }
       else if(key == 0) {
         fnTimerStop(TO_AUTO_REPEAT);
       }
-#endif //AUTOREPEAT
+#endif //AUTOREPEAT_C43
 
 
 
@@ -863,16 +871,14 @@ int32_t                SAVED_SIGMA_LAct;
       //lcd_refresh_dma();
       }
 
-#ifdef AUTOREPEAT
-      else if(key == 0) { // Autorepeat
+#ifdef FN_RELEASE_CODE_WP43S
+      else if(key == 0) { // Autorepeat of UP/DOWN or key released
         if(charKey[1] == 0) { // Last key pressed was one of the 6 function keys
           btnFnReleased(charKey);
-          keyClick(6);
         }
         else { // Last key pressed was not one of the 6 function keys
           //beep(440, 50);
           btnReleased(charKey);
-          keyClick(5);
           if(calcMode == CM_PEM && shiftF && ((charKey[0] == '2' && charKey[1] == '6') || (charKey[0] == '3' && charKey[1] == '1'))) {
             shiftF = false;
             refreshScreen();
@@ -881,16 +887,7 @@ int32_t                SAVED_SIGMA_LAct;
 //      keyAutoRepeat = 0;
         lcd_refresh();
       }
-
-      // Compute refresh period
-      if(showFunctionNameCounter > 0) {  //remove autorepeat  || seenKeyPress) {
-        inFastRefresh = 1;
-        nextScreenRefresh = previousRefresh + FAST_SCREEN_REFRESH_PERIOD;
-      } else {
-        inFastRefresh = 0;
-      }
-#endif //AUTOREPEAT
-
+#endif //FN_RELEASE_CODE_WP43S
 
       else if(key == 0 && FN_key_pressed != 0) {            //JM, key=0 is release, therefore there must have been a press before that. If the press was a FN key, FN_key_pressed > 0 when it comes back here for release.
         btnFnReleased(NULL);                                //    in short, it can only execute FN release after there was a FN press.
@@ -917,6 +914,15 @@ int32_t                SAVED_SIGMA_LAct;
         }
       }
 
+//    // Compute refresh period
+//    if(showFunctionNameCounter > 0) {
+//      inFastRefresh = 1;
+//      nextScreenRefresh = previousRefresh + FAST_SCREEN_REFRESH_PERIOD;
+//    }
+//    else {
+//      inFastRefresh = 0;
+//    }
+
       uint32_t now = sys_current_ms();
 
       if(nextTimerRefresh != 0 && nextTimerRefresh <= now) {
@@ -929,19 +935,15 @@ int32_t                SAVED_SIGMA_LAct;
           nextScreenRefresh = now + SCREEN_REFRESH_PERIOD;  // we were out longer than expected; just skip ahead.
         }
         if((calcMode != CM_TIMER) || (fnTimerGetStatus(TO_TIMER_APP) != TMR_RUNNING)) {
-        refreshLcd();
-        if(key >= 0) lcd_refresh();                         //JMTOCHECK if key>0 is needed. what about -1?
-        else {lcd_refresh_wait();}
+          refreshLcd();
+          if(key >= 0) {
+            lcd_refresh();
+          }
+          else {
+            lcd_refresh_wait();
+          }
+        }
       }
-      }
-
-    /*if(nextScreenRefresh <= now) {                        // removed autorepeat stuff
-        previousRefresh = now;
-        nextScreenRefresh = previousRefresh + (inFastRefresh ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);
-        refreshLcd();
-        lcd_refresh();
-      }*/
-
     }
   }
 #endif // DMCP_BUILD
