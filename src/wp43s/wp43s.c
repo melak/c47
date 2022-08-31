@@ -229,8 +229,8 @@ int32_t                SAVED_SIGMA_LAct;
 
 #ifdef DMCP_BUILD
   bool_t               backToDMCP;
-//int                  keyAutoRepeat;
-//int16_t              previousItem;
+  //int                  keyAutoRepeat;
+  //int16_t              previousItem;
   uint32_t             nextTimerRefresh;
   uint32_t             nextScreenRefresh; // timer substitute for refreshLcd(), which does cursor blinking and other stuff
   bool_t               wp43sKbdLayout;
@@ -319,9 +319,9 @@ int32_t                SAVED_SIGMA_LAct;
   void program_main(void) {
     int key = 0;
     char charKey[3];
-    /*bool_t wp43sKbdLayout, inFastRefresh = 0, inDownUpPress = 0, repeatDownUpPress = 0*/;
+    //bool_t wp43sKbdLayout, inFastRefresh = 0, inDownUpPress = 0, repeatDownUpPress = 0;
     uint16_t currentVolumeSetting, savedVoluleSetting; // used for beep signaling screen shot
-  //uint32_t now, previousRefresh, nextAutoRepeat = 0;
+    //uint32_t now, previousRefresh, nextAutoRepeat = 0;
 
     wp43sMemInBlocks = 0;
     gmpMemInBytes = 0;
