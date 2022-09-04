@@ -1099,7 +1099,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "lastSetAngularMode\n%" PRIu8 "\n", lastSetAngularMode);               //JM
   save(tmpString, strlen(tmpString), BACKUP);
-
+//JM if added here remember the 18 digit up top
 
 
 
@@ -1907,7 +1907,8 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
     }
   }
 
-  while(restoreOneSection(BACKUP, loadMode, s, n, d)) {
+  while(restoreOneSection(BACKUP, loadMode, s, n, d))
+  {
   }
 
   lastErrorCode = ERROR_NONE;

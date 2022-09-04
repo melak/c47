@@ -67,6 +67,7 @@ All the below: because both Last x and savestack does not work due to multiple s
 #include "c43Extensions/addons.h"
 
 #include "bufferize.h"
+#include "c43Extensions/keyboardTweak.h"
 #include "charString.h"
 #include "config.h"
 #include "constantPointers.h"
@@ -135,44 +136,46 @@ void fnCFGsettings(uint16_t unusedButMandatoryParameter) {
 
 
 void fnClAIM(uint16_t unusedButMandatoryParameter) {        //clear input buffe
-#ifdef PC_BUILD
-  jm_show_comment("^^^^fnClAIMa");
-#endif //PC_BUILD
-  resetKeytimers();  //JM
-
-  temporaryInformation = TI_NO_INFO;
-  if(calcMode == CM_NIM) {
-    strcpy(aimBuffer, "+");
-    fnKeyBackspace(0);
-    //printf("|%s|\n",aimBuffer);
-  }
-  lastIntegerBase = 0;
-
-//  memset(softmenuStack, 0, sizeof(softmenuStack)); // This works because the ID of MyMenu is 0
-
-#ifndef TESTSUITE_BUILD
-  uint_fast8_t ix = 0;
-  while(ix < SOFTMENU_STACK_SIZE && softmenuStack[0].softmenuId != 0) {
   #ifdef PC_BUILD
-    jm_show_comment("^^^^fnClAIMb");
+    jm_show_comment("^^^^fnClAIMa");
   #endif //PC_BUILD
+  #ifndef TESTSUITE_BUILD
+    resetKeytimers();  //JM
+
+    temporaryInformation = TI_NO_INFO;
+    if(calcMode == CM_NIM) {
+      strcpy(aimBuffer, "+");
+      fnKeyBackspace(0);
+      //printf("|%s|\n",aimBuffer);
+    }
+    lastIntegerBase = 0;
+
+  //  memset(softmenuStack, 0, sizeof(softmenuStack)); // This works because the ID of MyMenu is 0
+
+  #ifndef TESTSUITE_BUILD
+    uint_fast8_t ix = 0;
+    while(ix < SOFTMENU_STACK_SIZE && softmenuStack[0].softmenuId != 0) {
+    #ifdef PC_BUILD
+      jm_show_comment("^^^^fnClAIMb");
+    #endif //PC_BUILD
+      popSoftmenu();
+      ix++;
+    }
+
+    if(displayStack_m >= 1 && displayStack_m <= 4 /*&& displayStack_m != 255*/) { //JMSHOI
+      fnDisplayStack(displayStack_m);     //JMSHOI
+      displayStack_m = 255;               //JMSHOI
+    }
+    else {
+      fnDisplayStack(4);                  //removed because it clamps DSTACK to 4
+    }                                     //JMSHOI
+
+    calcModeNormal();
+    refreshScreen();
+    fnKeyExit(0); //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
     popSoftmenu();
-    ix++;
-  }
-
-  if(displayStack_m >= 1 && displayStack_m <= 4 /*&& displayStack_m != 255*/) { //JMSHOI
-    fnDisplayStack(displayStack_m);     //JMSHOI
-    displayStack_m = 255;               //JMSHOI
-  }
-  else {
-    fnDisplayStack(4);                  //removed because it clamps DSTACK to 4
-  }                                     //JMSHOI
-
-  calcModeNormal();
-  refreshScreen();
-  fnKeyExit(0); //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
-  popSoftmenu();
-#endif
+  #endif
+#endif //TESTSUITE_BUILD
 }
 
 //fnArg for real and longints in addition to the standard complex. Simply returns 0 angle

@@ -322,80 +322,105 @@ bool_t lastshiftG = false;
 
 
 bool_t lowercaseselected;
+#undef PAIMDEBUG
 
   static void processAimInput(int16_t item) {
     int16_t item1 = 0;
 #ifdef PC_BUILD
     char tmp[200]; sprintf(tmp,"^^^^processAimInput:AIM %d nextChar=%d",item,nextChar); jm_show_comment(tmp);
+    #ifdef PAIMDEBUG
+      printf("%s, |%s|\n",tmp,aimBuffer);
+    #endif //PAIMDEBUG
 #endif //PC_BUILD
 
     if(keyReplacements(item, &item1, numLock, lastshiftF, lastshiftG) > 0) {  //JMvv
       if(item1 > 0) {
         addItemToBuffer(item1);
+        #ifdef PAIMDEBUG
+          printf("---#K %d\n",keyActionProcessed);
+        #endif //PAIMDEBUG
         keyActionProcessed = true;
       }
     }
-    //JM^^
 
-    /*1*/ else if(lowercaseselected && (ITM_A <= item && item <= ITM_Z)) {
+    else if(lowercaseselected && (ITM_A <= item && item <= ITM_Z)) {
       addItemToBuffer(item + 26);
+        #ifdef PAIMDEBUG
+          printf("---#J %d\n",keyActionProcessed);
+        #endif //PAIMDEBUG
       keyActionProcessed = true;
     }
 
     else if(!lowercaseselected && (ITM_A <= item && item <= ITM_Z)) {  //JM
       addItemToBuffer(item);
+        #ifdef PAIMDEBUG
+          printf("---#I %d +%s+\n",keyActionProcessed, aimBuffer);
+        #endif //PAIMDEBUG
       keyActionProcessed = true;
     }
 
     else if(!lowercaseselected && (ITM_a <= item && item <= ITM_z)) {  //JM
       addItemToBuffer(item - 26);
+        #ifdef PAIMDEBUG
+          printf("---#H %d\n",keyActionProcessed);
+        #endif //PAIMDEBUG
       keyActionProcessed = true;
     }
 
     else if(lowercaseselected && (ITM_a <= item && item <= ITM_z)) {  //JM
       addItemToBuffer(item);
+        #ifdef PAIMDEBUG
+          printf("---#G %d\n",keyActionProcessed);
+        #endif //PAIMDEBUG
       keyActionProcessed = true;
     }
 
     else if(item == ITM_COLON || item == ITM_COMMA || item == ITM_QUESTION_MARK || item == ITM_SPACE || item == ITM_UNDERSCORE) {  //JM vv DIRECT LETTERS
       addItemToBuffer(item);
+        #ifdef PAIMDEBUG
+          printf("---#F %d\n",keyActionProcessed);
+        #endif //PAIMDEBUG
       keyActionProcessed = true;
-    } //JM ^^
+    }
 
-    /*2*/ else if(lowercaseselected && ((ITM_ALPHA <= item && item <= ITM_OMEGA) || (ITM_QOPPA <= item && item <= ITM_SAMPI))) {  //JM GREEK
-      addItemToBuffer(item); 
-      //addItemToBuffer(item + 36); //JM Remove the ability to shift to lower cap greek
+    else if(lowercaseselected && ((ITM_ALPHA <= item && item <= ITM_OMEGA) || (ITM_QOPPA <= item && item <= ITM_SAMPI))) {  //JM GREEK
+      addItemToBuffer(item /* +36 */); //JM Remove the ability to shift to lower cap greek
+        #ifdef PAIMDEBUG
+          printf("---#E %d\n",keyActionProcessed);
+        #endif //PAIMDEBUG
       keyActionProcessed = true;
     }
 
     else if(!lowercaseselected && ((ITM_ALPHA <= item && item <= ITM_OMEGA) || (ITM_QOPPA <= item && item <= ITM_SAMPI))) {  //JM GREEK
       addItemToBuffer(item);
-      keyActionProcessed = true;
-    }
-
-    /*
-    if(alphaCase == AC_LOWER && (ITM_A <= item && item <= ITM_Z)) {
-      addItemToBuffer(item + 26);
-      keyActionProcessed = true;
-    }
-
-    else if(alphaCase == AC_LOWER && (ITM_ALPHA <= item && item <= ITM_OMEGA)) {
-      addItemToBuffer(item + 36);
+        #ifdef PAIMDEBUG
+          printf("---#D %d\n",keyActionProcessed);
+        #endif //PAIMDEBUG
       keyActionProcessed = true;
     }
 
     else if(item == ITM_DOWN_ARROW) {
-      nextChar = NC_SUBSCRIPT;
+      if(nextChar == NC_NORMAL) nextChar = NC_SUBSCRIPT; else if(nextChar == NC_SUPERSCRIPT) nextChar = NC_NORMAL; //JM stack the SUP/NORMAL/SUB
+        #ifdef PAIMDEBUG
+          printf("---#C %d\n",keyActionProcessed);
+        #endif //PAIMDEBUG
       keyActionProcessed = true;
     }
 
     else if(item == ITM_UP_ARROW) {
-      nextChar = NC_SUPERSCRIPT;
+      if(nextChar == NC_NORMAL) nextChar = NC_SUPERSCRIPT; else if(nextChar == NC_SUBSCRIPT) nextChar = NC_NORMAL; //JM stack the SUP/NORMAL/SUB
+        #ifdef PAIMDEBUG
+          printf("---#B %d\n",keyActionProcessed);
+        #endif //PAIMDEBUG
       keyActionProcessed = true;
     }
 
     else if(indexOfItems[item].func == addItemToBuffer) {
       addItemToBuffer(item);
+        #ifdef PAIMDEBUG
+          printf("---#A %d\n",keyActionProcessed);
+          printf("###---> 3, |%s|\n",aimBuffer);
+        #endif //PAIMDEBUG
       keyActionProcessed = true;
     }
 
@@ -403,29 +428,11 @@ bool_t lowercaseselected;
       refreshScreen();
     }
 
-*/
-
-    /*3*/ else if(item == ITM_DOWN_ARROW) {
-      if(nextChar == NC_NORMAL) nextChar = NC_SUBSCRIPT; else if(nextChar == NC_SUPERSCRIPT) nextChar = NC_NORMAL; //JM stack the SUP/NORMAL/SUB
-      keyActionProcessed = true;
-    }
-
-    /*4*/ else if(item == ITM_UP_ARROW) {
-      if(nextChar == NC_NORMAL) nextChar = NC_SUPERSCRIPT; else if(nextChar == NC_SUBSCRIPT) nextChar = NC_NORMAL; //JM stack the SUP/NORMAL/SUB
-      keyActionProcessed = true;
-    }
-
-    /*5*/ else if(indexOfItems[item].func == addItemToBuffer) {
-      addItemToBuffer(item);
-      keyActionProcessed = true;
-    }
-
-    /*6*/ if(keyActionProcessed) {
-      refreshScreen();
-    }
-
   #ifdef PC_BUILD
-    sprintf(tmp,"^^^^processAimInput:AIM:end %d",item); jm_show_comment(tmp);
+    sprintf(tmp,"^^^^processAimInput:AIM:end %d, processed %d",item,keyActionProcessed); jm_show_comment(tmp);
+    #ifdef PAIMDEBUG
+      printf("%s, |%s|\n",tmp,aimBuffer);
+    #endif //PAIMDEBUG
   #endif //PC_BUILD
   }
 
@@ -508,24 +515,25 @@ bool_t lowercaseselected;
       }
       else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
         int16_t item = determineFunctionKeyItem_C43((char *)data);
-
+/*
         if(shiftF || shiftG) {
           screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
           clearShiftState();
         }
 
-//        shiftF = false;  //jm shifted lower down
-//        shiftG = false;  //jm shifted lower down
+        shiftF = false;
+        shiftG = false;
+*/
         if(item != ITM_NOP && item != ITM_NULL) {
           lastErrorCode = 0;
 
-          if(calcMode != CM_ASSIGN && indexOfItems[item].func == addItemToBuffer) {
+          btnFnPressed_StateMachine(NULL, data);    //JM This calls original state analysing btnFnPressed routing, which is now renamed to "statemachine" in keyboardtweaks
+                                                    // JM never allow a function key to directly enter into a buffer - always via the key detection btnFnPressed_StateMachine
+/*
+          if(calcMode != CM_ASSIGN && indexOfItems[item].func == addItemToBuffer) {           
             // If we are in the catalog then a normal key press should affect the Alpha Selection Buffer to choose
             // an item from the catalog, but a function key press should put the item in the AIM (or TAM) buffer
             // Use this variable to distinguish between the two
-            fnKeyInCatalog = 1;
-            resetShiftState();   //JM moved down here from above
-
             if(calcMode == CM_PEM && !tam.mode) {
               if(getSystemFlag(FLAG_ALPHA)) {
                 pemAlpha(item);
@@ -537,13 +545,10 @@ bool_t lowercaseselected;
             }
             else {
               fnKeyInCatalog = 1;
-              if( (item>=ITM_0 && item <=ITM_9) || item == ITM_EXPONENT || -softmenu[softmenuStack[0].softmenuId].menuItem == MNU_EQ_EDIT ) //JM added conditions, toherwise digits in menus do not work
-                addItemToBuffer(item);                      //   this is 43S where alpha menu keys do not time out. Comment out and replace with statemachine
-              else
-                btnFnPressed_StateMachine(NULL, data);      //JM ^^ This calls original state analysing btnFnPressed routing, which is now renamed to "statemachine" in keyboardtweaks
+              addItemToBuffer(item);
               fnKeyInCatalog = 0;
             }
-            if(calcMode == CM_EIM && !tam.mode) {
+            if(calcMode == CM_EIM) {
               while(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQ_EDIT) {
                 popSoftmenu();
               }
@@ -553,17 +558,13 @@ bool_t lowercaseselected;
           }
 
           else {
-/*
-    //    #if(FN_KEY_TIMEOUT_TO_NOP == 1)                    //JM vv Rmove the possibility for error by removing code that may conflict with the state machine
-    //      showFunctionName(item, 1000); // 1000ms = 1s
-    //    #else // (FN_KEY_TIMEOUT_TO_NOP == 0)
-    //    showFunctionNameItem = item;
-*/
-            btnFnPressed_StateMachine(NULL, data);        //JM ^^ This calls original state analysing btnFnPressed routing, which is now renamed to "statemachine" in keyboardtweaks
-/*
-    //    #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
-*/
+            #if (FN_KEY_TIMEOUT_TO_NOP == 1)
+              showFunctionName(item, 1000); // 1000ms = 1s
+            #else // (FN_KEY_TIMEOUT_TO_NOP == 0)
+              showFunctionNameItem = item;
+            #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
           }
+*/
         }
         else {
           showFunctionNameItem = ITM_NOP;
@@ -1042,7 +1043,7 @@ bool_t allowShiftsToClearError = false;
     }
     else                                                                                                                        //JM^^
 
-    if(calcMode == CM_AIM || (catalog && catalog != CATALOG_MVAR && calcMode != CM_NIM) || calcMode == CM_EIM || tam.alpha || (calcMode == CM_ASSIGN && (previousCalcMode == CM_AIM || previousCalcMode == CM_EIM))) {
+    if(calcMode == CM_AIM || (catalog && catalog != CATALOG_MVAR && calcMode != CM_NIM) || calcMode == CM_EIM || tam.alpha || (calcMode == CM_ASSIGN && (previousCalcMode == CM_AIM || previousCalcMode == CM_EIM)) || (calcMode == CM_PEM && getSystemFlag(FLAG_ALPHA))) {
       result = shiftF ? key->fShiftedAim :
                shiftG ? key->gShiftedAim :
                         key->primaryAim;
@@ -1051,7 +1052,7 @@ bool_t allowShiftsToClearError = false;
     else if(tam.mode) {
       result = key->primaryTam; // No shifted function in TAM
     }
-    else if(calcMode == CM_NORMAL || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_FONT_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_REGISTER_BROWSER || calcMode == CM_BUG_ON_SCREEN || calcMode == CM_CONFIRMATION || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_ASSIGN || calcMode == CM_TIMER || calcMode == CM_GRAPH || calcMode == CM_LISTXY) {
+    else if(calcMode == CM_NORMAL || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_FONT_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_REGISTER_BROWSER || calcMode == CM_BUG_ON_SCREEN || calcMode == CM_CONFIRMATION || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_TIMER  || calcMode == CM_LISTXY) {
       result = shiftF ? key->fShifted :
                shiftG ? key->gShifted :
                         key->primary;
@@ -2530,7 +2531,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       case CM_PLOT_STAT:
         lastPlotMode = PLOT_NOTHING;
         plotSelection = 0;
-        calcMode = CM_NORMAL;
+
+calcModeNormal();
+//        calcMode = CM_NORMAL;
+
         #ifdef DEBUGUNDO
           printf(">>> Undo from fnKeyExit\n");
         #endif
