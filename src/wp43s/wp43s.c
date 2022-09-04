@@ -16,6 +16,7 @@
 
 #include "wp43s.h"
 
+#include "charString.h"
 #include "config.h"
 #include "flags.h"
 #include "items.h"
@@ -643,7 +644,9 @@ int32_t                SAVED_SIGMA_LAct;
         sys_delay(5);
         stop_buzzer();
 
+        xcopy(tmpString, aimBuffer, ERROR_MESSAGE_LENGTH + AIM_BUFFER_LENGTH + NIM_BUFFER_LENGTH);       //backup portion of the "message buffer" area in DMCP used by ERROR..AIM..NIM buffers, to the tmpstring area in DMCP. DMCP uses this area during create_screenshot.
         create_screenshot(0);      //Screen dump
+        xcopy(aimBuffer,tmpString, ERROR_MESSAGE_LENGTH + AIM_BUFFER_LENGTH + NIM_BUFFER_LENGTH);        //   This total area must be less than the tmpString storage area, which it is.
 
         start_buzzer_freq(400000); //Click after screen dump
         sys_delay(5);
