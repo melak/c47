@@ -1669,7 +1669,7 @@ void debugNIM(void) {
   }
 #endif // DEBUG_PANEL == 1 || DEBUG_REGISTER_L == 1
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD) && !defined(RPIWSMD)
   void dumpScreenToConsole(void) {
     int x, y;
 
@@ -1685,7 +1685,7 @@ void debugNIM(void) {
       printf("\n");
     }
   }
-#endif // PC_BUILD
+#endif // PC_BUILD && !RPIWSMD
 
 
 

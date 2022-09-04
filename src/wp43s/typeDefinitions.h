@@ -22,10 +22,10 @@
 
 #include "realType.h"
 #include <stdint.h>
-#ifdef PC_BUILD
+#if defined(PC_BUILD) && !defined(RPIWSMD)
   #include <gtk/gtk.h>
   #include <gdk/gdk.h>
-#endif // PC_BUILD
+#endif // PC_BUILD && !RPIWSMD
 
 /**
  * \union multiplyDivide_t
@@ -510,7 +510,7 @@ typedef struct {
   bool_t     keyInputFinished;
 } tamState_t;
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD) && !defined(RPIWSMD)
   /**
    * \struct calcKeyboard_t
    * Structure keeping key images, image sizes, and image locations.
@@ -520,6 +520,6 @@ typedef struct {
     int width[4], height[4];
     GtkWidget *keyImage[4];
   } calcKeyboard_t;
-#endif // PC_BUILD
+#endif // PC_BUILD && !RPIWSMD
 
 #endif // TYPEDEFINITIONS_H

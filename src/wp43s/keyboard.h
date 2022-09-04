@@ -16,15 +16,15 @@
 
 /**
  * \file keyboard.h
- ***********************************************/
+ */
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
 #include <stdint.h>
-#ifdef PC_BUILD
+#if defined(PC_BUILD) && !defined(RPIWSMD)
   #include <gtk/gtk.h>
   #include <gdk/gdk.h>
-#endif // PC_BUILD
+#endif // PC_BUILD && !RPIWSMD
 
 
 #ifndef TESTSUITE_BUILD
@@ -33,6 +33,7 @@
 
 
 void leavePem        (void);
+void showShiftState  (void);
 void processKeyAction(int16_t item);
 /**
  * Processing ENTER key.
@@ -92,7 +93,7 @@ void executeFunction(const char *data, int16_t item_);
 #define ST_4_REL2     4     //STATE 4 SECOND RELEASE   //JM ^^
 
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD) && !defined(RPIWSMD)
   /**
    * Simulate a function key click.
    *
@@ -153,18 +154,18 @@ void executeFunction(const char *data, int16_t item_);
    * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
    */
   void btnReleased   (GtkWidget *notUsed, GdkEvent *event, gpointer data);
-#endif // PC_BUILD
+#endif // PC_BUILD && !RPIWSMD
 
 void execAutoRepeat(uint16_t key);
 
-#ifdef DMCP_BUILD
+#if defined(DMCP_BUILD) || defined(RPIWSMD)
   void btnFnClicked (void *w, void *data);
   void btnFnPressed (void *data);
   void btnFnReleased(void *data);
   void btnClicked   (void *w, void *data);
   void btnPressed   (void *data);
   void btnReleased  (void *data);
-#endif // DMCP_BUILD
+#endif // DMCP_BUILD || RPIWSMD
 
 void setLastKeyCode  (int key);
 

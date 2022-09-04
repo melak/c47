@@ -314,8 +314,8 @@ void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
       #ifdef PC_BUILD
-      longIntegerToAllocatedString(sigDigits, errorMessage, sizeof(errorMessage));
-      moreInfoOnError("In function fnSetSignificantDigits:", errorMessage, "is out of range.", "");
+        longIntegerToAllocatedString(sigDigits, errorMessage, sizeof(errorMessage));
+        moreInfoOnError("In function fnSetSignificantDigits:", errorMessage, "is out of range.", "");
       #endif
     }
     longIntegerFree(sigDigits);
@@ -323,8 +323,8 @@ void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
     #ifdef PC_BUILD
-    sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
-    moreInfoOnError("In function fnSetSignificantDigits:", errorMessage, "is not a long integer.", "");
+      sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
+      moreInfoOnError("In function fnSetSignificantDigits:", errorMessage, "is not a long integer.", "");
     #endif
   }
 }
@@ -617,18 +617,18 @@ void fnReset(uint16_t confirmation) {
 
     if(tmpString == NULL) {
       #ifdef DMCP_BUILD
-         tmpString        = aux_buf_ptr();   // 2560 byte buffer provided by DMCP
-         errorMessage     = write_buf_ptr(); // 4096 byte buffer provided by DMCP
-       #else // !DMCP_BUILD
-         tmpString        = (char *)malloc(TMP_STR_LENGTH);
-         errorMessage     = (char *)malloc(WRITE_BUFFER_LEN);
-       #endif // DMCP_BUILD
+        tmpString        = aux_buf_ptr();   // 2560 byte buffer provided by DMCP
+        errorMessage     = write_buf_ptr(); // 4096 byte buffer provided by DMCP
+      #else // !DMCP_BUILD
+        tmpString        = (char *)malloc(TMP_STR_LENGTH);
+        errorMessage     = (char *)malloc(WRITE_BUFFER_LEN);
+      #endif // DMCP_BUILD
 
-       aimBuffer        = errorMessage + ERROR_MESSAGE_LENGTH;
-       nimBufferDisplay = aimBuffer + AIM_BUFFER_LENGTH;
-       tamBuffer        = nimBufferDisplay + NIM_BUFFER_LENGTH;
+      aimBuffer        = errorMessage + ERROR_MESSAGE_LENGTH;
+      nimBufferDisplay = aimBuffer + AIM_BUFFER_LENGTH;
+      tamBuffer        = nimBufferDisplay + NIM_BUFFER_LENGTH;
 
-       tmpStringLabelOrVariableName = tmpString + 1000;
+      tmpStringLabelOrVariableName = tmpString + 1000;
     }
     memset(tmpString,        0, TMP_STR_LENGTH);
     memset(errorMessage,     0, ERROR_MESSAGE_LENGTH);
@@ -750,9 +750,9 @@ void fnReset(uint16_t confirmation) {
     #endif // TESTSUITE_BUILD
 
 
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD) && !defined(RPIWSMD)
       debugWindow = DBG_REGISTERS;
-    #endif // PC_BUILD
+    #endif // PC_BUILD && !RPIWSMD
 
     decContextDefault(&ctxtReal34, DEC_INIT_DECQUAD);
 
@@ -865,7 +865,9 @@ void fnReset(uint16_t confirmation) {
     #ifdef TESTSUITE_BUILD
       calcMode = CM_NORMAL;
     #else // TESTSUITE_BUILD
-      if(calcMode == CM_MIM) mimFinalize();
+      if(calcMode == CM_MIM) {
+        mimFinalize();
+      }
       calcModeNormal();
     #endif // TESTSUITE_BUILD
 

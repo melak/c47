@@ -33,11 +33,11 @@
     #include <unistd.h>
   #endif // OSX
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD) && !defined(RPIWSMD) 
     #include <glib.h>
     #include <gtk/gtk.h>
     #include <gdk/gdk.h>
-  #endif // PC_BUILD
+  #endif // PC_BUILD && !RPISMD
 
   #ifdef WIN32
     #include <locale.h>
@@ -63,7 +63,7 @@
   #if defined(PC_BUILD) || defined (TESTSUITE_BUILD)
     extern bool_t               debugMemAllocation;
   #endif // defined(PC_BUILD) || defined (TESTSUITE_BUILD)
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD) && !defined(RPIWSMD)
     extern bool_t               calcLandscape;
     extern bool_t               calcAutoLandscapePortrait;
     extern GtkWidget           *screen;
@@ -82,7 +82,7 @@
     #endif // (SHOW_MEMORY_STATUS == 1)
     extern calcKeyboard_t       calcKeyboard[43];
     extern int                  currentBezel; // 0=normal, 1=AIM, 2=TAM
-  #endif //PC_BUILD
+  #endif //PC_BUILD && !RPISMD
 
   // Variables stored in FLASH
   extern const item_t                    indexOfItems[];
@@ -342,5 +342,9 @@
 
     int                         convertKeyCode(int key);
   #endif // DMCP_BUILD
+
+  #ifdef RPIWSMD
+    extern bool_t               backToConsole;
+  #endif // RPIWSMD
 
 #endif // WP43S_H

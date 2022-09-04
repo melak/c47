@@ -21,10 +21,10 @@
 #define TIMER_H
 
 #include <stdint.h>
-#ifdef PC_BUILD
+#if defined(PC_BUILD) && !defined(RPIWSMD)
   #include <gtk/gtk.h>
   #include <gdk/gdk.h>
-#endif // PC_BUILD
+#endif // PC_BUILD && !RPIWSMD
 
 
 uint32_t getUptimeMs          (void);
@@ -51,11 +51,12 @@ void     fnLeaveTimerApp      (void);
 void     fnPollTimerApp       (void);
 
 
-#ifdef PC_BUILD
-gboolean refreshTimer         (gpointer data);
-#endif
+#if defined(PC_BUILD) && !defined(RPIWSMD)
+  gboolean refreshTimer         (gpointer data);
+#endif // PC_BUILD && !RPIWSMD
+
 #ifdef DMCP_BUILD
-void     refreshTimer         (void);
+  void     refreshTimer         (void);
 #endif
 
 
@@ -85,11 +86,11 @@ uint8_t  fnTimerGetStatus     (uint8_t nr);
 typedef struct {
   void     (*func)(uint16_t); ///< Function called to execute the timer
   uint16_t param;             ///< 1st parameter to the above
-#ifndef PC_BUILD
-  uint32_t timer_will_expire; ///<
-#else
-  gint64   timer_will_expire; ///<
-#endif
+  #if !defined(PC_BUILD) || defined(RPIWSMD)
+    uint32_t timer_will_expire; ///<
+  #else
+    gint64   timer_will_expire; ///<
+  #endif
   uint8_t  state;             ///<
 } kb_timer_t;
 

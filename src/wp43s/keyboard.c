@@ -234,21 +234,21 @@
 
 
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD) && !defined(RPIWSMD)
     void btnFnClicked(GtkWidget *notUsed, gpointer data) {
 //      GdkEvent mouseButton; //JM
 //      mouseButton.button.button = 1; //JM
       executeFunction(data, 0);
     }
-  #endif
-    
-  #ifdef DMCP_BUILD
+#endif // PC_BUILD && !RPIWSMD
+
+#if defined(DMCP_BUILD) || defined(RPIWSMD)
     void btnFnClicked(void *unused, void *data) {
 //      btnFnPressed(data); //JM
 //      btnFnReleased(data); //JM
       executeFunction(data, 0);
     }
-  #endif // DMCP_BUILD
+#endif // DMCP_BUILD || RPIWSMD
 
 
 
@@ -444,9 +444,7 @@ bool_t lowercaseselected;
   uint8_t asnKey[4] = {0, 0, 0, 0};
 
 
-
-
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD) && !defined(RPIWSMD)
     void btnFnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       if(event->type == GDK_DOUBLE_BUTTON_PRESS || event->type == GDK_TRIPLE_BUTTON_PRESS) { // return unprocessed for double or triple click
         return;
@@ -459,10 +457,10 @@ bool_t lowercaseselected;
         shiftF = false;
         shiftG = true;
       }
-  #endif // PC_BUILD
-  #ifdef DMCP_BUILD
+  #endif // PC_BUILD && !RPIWSMD
+  #if defined(DMCP_BUILD) || defined(RPIWSMD)
     void btnFnPressed(void *data) {
-  #endif // DMCP_BUILD
+  #endif // DMCP_BUILD || RPIWSMD
 
       asnKey[0] = ((uint8_t *)data)[0];
       asnKey[1] = 0;
@@ -629,12 +627,12 @@ bool_t lowercaseselected;
     }
   }
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD) && !defined(RPIWSMD)
     void btnFnReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
-  #endif // PC_BUILD
-  #ifdef DMCP_BUILD
+  #endif // PC_BUILD && !RPIWSMD
+  #if defined(DMCP_BUILD) || defined(RPIWSMD)
     void btnFnReleased(void *data) {
-  #endif // DMCP_BUILD
+  #endif // DMCP_BUILD || RPIWSMD
     if(programRunStop == PGM_KEY_PRESSED_WHILE_PAUSED) {
       programRunStop = PGM_RESUMING;
       screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
@@ -1097,7 +1095,7 @@ bool_t allowShiftsToClearError = false;
 
 
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD) && !defined(RPIWSMD)
     void btnClicked(GtkWidget *notUsed, gpointer data) {
       GdkEvent mouseButton;
       mouseButton.button.button = 1;
@@ -1106,14 +1104,14 @@ bool_t allowShiftsToClearError = false;
       btnPressed(notUsed, &mouseButton, data);
       btnReleased(notUsed, &mouseButton, data);
   }
-  #endif // PC_BUILD
+  #endif // PC_BUILD && !RPIWSMD
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD) || defined(RPIWSMD)
     void btnClicked(void *unused, void *data) {
       btnPressed(data);
       btnReleased(data);
     }
-  #endif // DMCP_BUILD
+  #endif // DMCP_BUILD || RPIWSMD
 
   #ifdef PC_BUILD
   void btnClickedP(GtkWidget *w, gpointer data) {                          //JM PRESSED FOR KEYBOARD F REPEAT
@@ -1160,7 +1158,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
 
 
-  #ifdef PC_BUILD
+#if defined(PC_BUILD) && !defined(RPIWSMD)
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
 
@@ -1309,10 +1307,10 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
       key[0] = 0;
     }
-  #endif // PC_BUILD
+  #endif // PC_BUILD && !RPIWSMD
 
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD) || defined(RPIWSMD)
     void btnPressed(void *data) {
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
       int16_t item;
@@ -1367,17 +1365,17 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         shiftG = g;
       }
     }
-  #endif // DMCP_BUILD
+  #endif // DMCP_BUILD || RPIWSMD
 
 
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD) && !defined(RPIWSMD)
     void btnReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
-      jm_show_calc_state("##### keyboard.c: btnReleased begin");
-  #endif // PC_BUILD
-  #ifdef DMCP_BUILD
+        jm_show_calc_state("##### keyboard.c: btnReleased begin");
+  #endif // PC_BUILD && !RPIWSMD
+  #if defined(DMCP_BUILD) || defined(RPIWSMD)
     void btnReleased(void *data) {
-  #endif // DMCP_BUILD
+  #endif // DMCP_BUILD || RPIWSMD
       int16_t item;
       Shft_timeouts = false;                         //JM SHIFT NEW
       JM_auto_longpress_enabled = 0;                 //JM TIMER CLRCLSTK ON LONGPRESS
@@ -1413,9 +1411,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (shiftG ? 2 : shiftF ? 1 : 0);
           char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
 
-          #ifdef PC_BUILD
+          #if defined(PC_BUILD) && !defined(RPIWSMD)
             if(item == ITM_RS || item == ITM_XEQ) key[0] = 0;
-          #endif // PC_BUILD
+          #endif // PC_BUILD && !RPIWSMD
 
           if(item != ITM_NOP && tam.alpha && indexOfItems[item].func != addItemToBuffer) {
             // We are in TAM mode so need to cancel first (equivalent to EXIT)

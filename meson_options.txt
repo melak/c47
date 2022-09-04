@@ -6,3 +6,7 @@ option('RASPBERRY',
   type        : 'boolean',
   value       : false,
   description : 'Set if running on a RaspberryPi for a better layout')
+option('RPIWSMD',
+  type        : 'boolean',
+  value       : false,
+  description : 'Set if a Sharp Memory 400×240 Display is present (for Raspberry Pi)')
