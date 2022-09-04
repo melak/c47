@@ -4327,19 +4327,20 @@ if(!tam.mode) {
       if(calcMode == CM_NIM) {
         closeNim();
       }
-
-      alphaCase = AC_UPPER;
-      nextChar = NC_NORMAL;
-      numLock = false;
+      if(calcMode != CM_PEM || !getSystemFlag(FLAG_ALPHA)) {
+        alphaCase = AC_UPPER;
+        nextChar = NC_NORMAL;
+        numLock = false;
 
 
         clearSystemFlag(FLAG_ALPHA);
         resetAlphaSelectionBuffer();
 
-      #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-        if(catalog != CATALOG_MVAR)
-          calcModeAimGui();
-      #endif // PC_BUILD && (SCREEN_800X480 == 0)
+        #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
+          if(catalog != CATALOG_MVAR)
+            calcModeAimGui();
+        #endif // PC_BUILD && (SCREEN_800X480 == 0)
+      }
     }
   }
 
