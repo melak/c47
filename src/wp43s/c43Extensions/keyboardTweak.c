@@ -139,6 +139,11 @@ void showShiftState(void) {
     }
     else {
 //      showGlyph(" ", &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);         // space clears the f and g
+      //#ifdef DMCP_BUILD
+      //  start_buzzer_freq(100000); //Click when shifts are cleared for TESTING
+      //  sys_delay(5);
+      //  stop_buzzer();
+      //#endif //DMCP_BUILD
       clearShiftState();
       clear_fg_jm();
       showHideAlphaMode();
@@ -161,11 +166,16 @@ void showShiftState(void) {
 void resetShiftState(void) {
   fnTimerStop(TO_FG_LONG);
   fnTimerStop(TO_FG_TIMR);
+
+  fnTimerStop(TO_3S_CTFF);     //to make sure a repeated key does not restart the f shift which just reset
+  fnTimerStop(TO_AUTO_REPEAT);
+
   if(shiftF || shiftG) {                                                        //vv dr
     shiftF = false;
     shiftG = false;
     screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
     showShiftState();
+    refreshScreen();
   }                                                                             //^^
   #ifdef PC_BUILD
     if(calcMode == CM_AIM || calcMode == CM_EIM) refreshModeGui();

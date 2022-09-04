@@ -836,10 +836,11 @@ void LongpressKey_handler() {
 
 void Shft_stop() {
   Shft_timeouts = false;
-//fnTimerStop(TO_FG_LONG);                  // vv moved to resetShiftState()
-//fnTimerStop(TO_FG_TIMR);                  // ^^
   resetShiftState();                        //force into no shift state, i.e. to wait
 }
+
+
+
   #ifndef DMCP_BUILD
     void setBlackPixel(uint32_t x, uint32_t y) {
       //if(y >= (uint32_t)(-6)) return;  //JM allowing allowing -1..-5 for top row text
