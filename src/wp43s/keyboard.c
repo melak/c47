@@ -2248,7 +2248,11 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
         mimEnter(false);
         break;
 
-/* 43S code not in use: PHM. JM Keeping the structure like in 43S, to be able to pick up changes
+//       43S code not in use: PHM. 
+//       JM Keeping the structure like in 43S, to be able to pick up changes
+//JM: 2022-09-04:
+//JM: This code does not seem to be "not-used" See bug report Gitlab #80. code seems needed.
+//JM: PHM is not active in the project anymore. Restored this code:
       case CM_NIM:
         closeNim();
 
@@ -2266,7 +2270,7 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
           if(lastErrorCode == ERROR_RAM_FULL) goto ram_full;
         }
         break;
---- */
+//JM ^^ ---2022-09-04
 
       case CM_EIM:
         if(aimBuffer[0] != 0) {
