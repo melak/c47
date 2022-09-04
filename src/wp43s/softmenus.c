@@ -2206,7 +2206,7 @@ void fnMenuDump(uint16_t menu, uint16_t item) {                              //J
       softmenuStack[0].softmenuId = mm_MNU_ALPHA;
     } 
                                                               //JM ^^
-//        softmenuStack[0].firstItem = 0;
+        softmenuStack[0].firstItem = 0;
 
     enterAsmModeIfMenuIsACatalog(softmenu[softmenuStack[0].softmenuId].menuItem);
 
