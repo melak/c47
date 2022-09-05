@@ -97,16 +97,18 @@ void swapReImCplx(void) {
 
 
 void swapRealReal(void) {                                                     //JM vv
-  real34_t temp;
-
-  real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &temp);
+  real_t c;
+  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &c);
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  real34Copy(&temp, REGISTER_IMAG34_DATA(REGISTER_X));
-  real34Copy(const_0, REGISTER_REAL34_DATA(REGISTER_X));
+  convertRealToImag34ResultRegister(&c, REGISTER_X);
+  convertRealToReal34ResultRegister(const_0, REGISTER_X);
 }
 
 
 void swapLongintReal(void) {
-  convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
-  swapRealReal();
+  real_t c;
+  convertLongIntegerRegisterToReal(REGISTER_X, &c, &ctxtReal39);
+  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+  convertRealToImag34ResultRegister(&c, REGISTER_X);
+  convertRealToReal34ResultRegister(const_0, REGISTER_X);
 }                                                                             //JM ^^
