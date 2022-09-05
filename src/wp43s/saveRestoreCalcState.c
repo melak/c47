@@ -158,6 +158,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen),       BACKUP);
     save(&currentFntScr,                      sizeof(currentFntScr),                      BACKUP);
     save(&currentFlgScr,                      sizeof(currentFlgScr),                      BACKUP);
+    save(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);
     save(&displayFormat,                      sizeof(displayFormat),                      BACKUP);
     save(&displayFormatDigits,                sizeof(displayFormatDigits),                BACKUP);
     save(&timeDisplayFormatDigits,            sizeof(timeDisplayFormatDigits),            BACKUP);
@@ -451,6 +452,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen),       BACKUP);
       restore(&currentFntScr,                      sizeof(currentFntScr),                      BACKUP);
       restore(&currentFlgScr,                      sizeof(currentFlgScr),                      BACKUP);
+      restore(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);
       restore(&displayFormat,                      sizeof(displayFormat),                      BACKUP);
       restore(&displayFormatDigits,                sizeof(displayFormatDigits),                BACKUP);
       restore(&timeDisplayFormatDigits,            sizeof(timeDisplayFormatDigits),            BACKUP);

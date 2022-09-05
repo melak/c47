@@ -846,6 +846,7 @@ void fnReset(uint16_t confirmation) {
 
     initFontBrowser();
     currentFlgScr = 0;
+    lastFlgScr = 0;
     currentRegisterBrowserScreen = 9999;
 
     memset(softmenuStack, 0, sizeof(softmenuStack)); // This works because the ID of MyMenu is 0

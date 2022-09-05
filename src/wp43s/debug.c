@@ -1051,6 +1051,12 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
+        sprintf(string, "lastFlgScr                             = %6u",         lastFlgScr);
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
+        gtk_widget_show(lbl1[row++]);
+      }
+
+      if(row < DEBUG_LINES) {
         sprintf(string, "rbrMode                                   = %6u = %s",    rbrMode,              getRbrModeName(rbrMode));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);

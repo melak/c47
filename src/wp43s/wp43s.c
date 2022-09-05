@@ -125,6 +125,7 @@ char                   displayValueX[DISPLAY_VALUE_LEN];
 uint8_t                numScreensStandardFont;
 uint8_t                currentFntScr;
 uint8_t                currentFlgScr;
+uint8_t                lastFlgScr;
 uint8_t                displayFormat;
 uint8_t                displayFormatDigits;
 uint8_t                timeDisplayFormatDigits;

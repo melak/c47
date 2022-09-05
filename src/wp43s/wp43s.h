@@ -189,6 +189,7 @@
   extern uint8_t                numScreensStandardFont;
   extern uint8_t                currentFntScr;
   extern uint8_t                currentFlgScr;
+  extern uint8_t                lastFlgScr;
   extern uint8_t                displayFormat;
   extern uint8_t                displayFormatDigits;
   extern uint8_t                timeDisplayFormatDigits;

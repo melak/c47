@@ -83,17 +83,16 @@
       calcMode = CM_FLAG_BROWSER;
       clearSystemFlag(FLAG_ALPHA);
       currentFlgScr = init;        //5 in new style; 0 is old style
+      if(currentFlgScr == 0)  currentFlgScr = 3; // Init old style
       return;
     }
 
-    if(currentFlgScr == 0) { // Init old style
-      currentFlgScr = 3;
-    }
+    if(currentFlgScr == 0) currentFlgScr = 4;
+    if(currentFlgScr == 5) currentFlgScr = 1;
 
-    if(currentFlgScr == 5 || currentFlgScr == 1) { // Init new style
+    if(currentFlgScr == 1) { // Init new style
       char flagNumber[4];
 
-      currentFlgScr = 1;
       line = 0;
 
       // Free memory
@@ -295,6 +294,11 @@
         for(f=9; f<line; f++) {
           showString(tmpString + CHARS_PER_LINE * f, &standardFont, 1, 22*(f-9) + 43, vmNormal, true, false);
         }
+      } else {
+        if(lastFlgScr == 1) {currentFlgScr++;}
+        else {
+          currentFlgScr--;
+        }
       }
     }
 
@@ -402,13 +406,7 @@
   #endif
 
     }
-
-    //printf("1: %d %d (OLD:%d NEW:%d) %s \n",currentFlgScr,calcMode, CM_FLAG_BROWSER_OLD, CM_FLAG_BROWSER, tmpString);  //JM
-    if(currentFlgScr == 5) {        //JM
-      currentFlgScr = 1;
-      //printf("leave new\n");
-      flagBrowser(NOPARAM);
-    }
+    lastFlgScr = currentFlgScr;
   #endif //SAVE_SPACE_DM42_8
   }
 #endif // TESTSUITE_BUILD
