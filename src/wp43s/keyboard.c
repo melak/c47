@@ -2875,18 +2875,25 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 }
 
 
+static bool_t activatescroll(void) {
+   int16_t menuId = softmenuStack[0].softmenuId; //JM
+   return (calcMode == CM_NORMAL) && 
+          (softmenu[menuId].menuItem != -MNU_EQN) && 
+          (
+            ((menuId == 0) && jm_NO_BASE_SCREEN) ||
+            ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
+            ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18)) 
+          );
+ }
+
 
 void fnKeyUp(uint16_t unusedButMandatoryParameter) {
     doRefreshSoftMenu = true;     //dr
 
   #ifndef TESTSUITE_BUILD  
     int16_t menuId = softmenuStack[0].softmenuId; //JM
-    bool_t activatescroll = (calcMode == CM_NORMAL) &&  (//JM
-            ((menuId == 0) && jm_NO_BASE_SCREEN) ||
-            ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
-            ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18)) );
 
-    if(activatescroll && !tam.mode) { //JMSHOW vv
+    if(activatescroll() && !tam.mode) { //JMSHOW vv
       fnShow_SCROLL(1); 
       return;
     }                              //JMSHOW ^^
@@ -3067,11 +3074,8 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
 
 #ifndef TESTSUITE_BUILD
     int16_t menuId = softmenuStack[0].softmenuId; //JM
-    bool_t activatescroll = (calcMode == CM_NORMAL) &&  (//JM
-          ((menuId == 0) && jm_NO_BASE_SCREEN) ||
-          ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
-          ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18)) );
-    if(activatescroll && !tam.mode) { //JMSHOW vv
+
+    if(activatescroll() && !tam.mode) { //JMSHOW vv
       fnShow_SCROLL(2);
       return;
     }                             //JMSHOW ^^

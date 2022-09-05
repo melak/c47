@@ -235,32 +235,32 @@ uint32_t CTRL_State, event_keyval;
 
       case 65470: // F1                      //JM Added this portion to be able to go to NOP on emulator
         //printf("key pressed: F1\n");
-        btnFnClickedR(w, "1");
+        if (calcMode != CM_EIM && !tam.mode) {btnFnClickedR(w, "1");}
         break;
 
       case 65471: // F2
         //printf("key pressed: F2\n");
-        btnFnClickedR(w, "2");
+        if (calcMode != CM_EIM && !tam.mode) {btnFnClickedR(w, "2");}
         break;
 
       case 65472: // F3
         //printf("key pressed: F3\n");
-        btnFnClickedR(w, "3");
+        if (calcMode != CM_EIM && !tam.mode) {btnFnClickedR(w, "3");}
         break;
 
       case 65473: // F4
         //printf("key pressed: F4\n");
-        btnFnClickedR(w, "4");
+        if (calcMode != CM_EIM && !tam.mode) {btnFnClickedR(w, "4");}
         break;
 
       case 65474: // F5
         //printf("key pressed: F5\n");
-        btnFnClickedR(w, "5");
+        if (calcMode != CM_EIM && !tam.mode) {btnFnClickedR(w, "5");}
         break;
 
       case 65475: // F6
         //printf("key pressed: F6\n");
-        btnFnClickedR(w, "6");
+        if (calcMode != CM_EIM && !tam.mode) {btnFnClickedR(w, "6");}
         break;
 
     case 65505: // left shift  //JM Added this portion to be able to repeat f key on emulator
