@@ -49,7 +49,7 @@ void fnSHIFTg(uint16_t unusedButMandatoryParameter) {
 }
 
 
-int16_t determineFunctionKeyItem_C43(const char *data) {
+int16_t determineFunctionKeyItem_C43(const char *data, bool_t shiftF, bool_t shiftG) {
   int16_t item = ITM_NOP;
   #ifndef TESTSUITE_BUILD
     int16_t itemShift = (shiftF ? 6 : (shiftG ? 12 : 0));

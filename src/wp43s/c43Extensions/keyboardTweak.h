@@ -69,7 +69,7 @@ void     btnFnReleased_StateMachine(GtkWidget *unused, gpointer data);
 #endif
 
 #ifndef TESTSUITE_BUILD
-int16_t determineFunctionKeyItem_C43(const char *data);
+int16_t determineFunctionKeyItem_C43(const char *data, bool_t ShiftF, bool_t ShiftG);
 #endif
 
 #ifdef DMCP_BUILD

@@ -487,7 +487,7 @@ bool_t lowercaseselected;
         return;
       }
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && !(tam.alpha && tam.mode != TM_NEWMENU)) {
-        int16_t item = determineFunctionKeyItem_C43((char *)data);
+        int16_t item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG);
 
         switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
           case MNU_MENUS:
@@ -512,7 +512,7 @@ bool_t lowercaseselected;
         _closeCatalog();
       }
       else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
-        int16_t item = determineFunctionKeyItem_C43((char *)data);
+        int16_t item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG);
 /*
         if(shiftF || shiftG) {
           screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
@@ -522,7 +522,10 @@ bool_t lowercaseselected;
         shiftF = false;
         shiftG = false;
 */
-        if(item != ITM_NOP && item != ITM_NULL) {
+        if( (item != ITM_NOP && item != ITM_NULL) ||                  //JM allow entry into statemachine if item=blank (NOP) but f(item) or g(item) is not blank
+            (determineFunctionKeyItem_C43((char *)data, true, false) != ITM_NOP && determineFunctionKeyItem_C43((char *)data, true, false) != ITM_NULL) ||
+            (determineFunctionKeyItem_C43((char *)data, false, true) != ITM_NOP && determineFunctionKeyItem_C43((char *)data, false, true) != ITM_NULL)
+           ) {
           lastErrorCode = 0;
 
           btnFnPressed_StateMachine(NULL, data);    //JM This calls original state analysing btnFnPressed routing, which is now renamed to "statemachine" in keyboardtweaks
@@ -642,7 +645,6 @@ bool_t lowercaseselected;
       if(tam.mode == TM_KEY && !tam.keyInputFinished) {
         if(tam.digitsSoFar == 0) {
           switch(((char *)data)[0]) {
-//TODO !!! vv 2022-01-13
             case '1':
               tamProcessInput(shiftG ? ITM_1 :                  ITM_0);
               tamProcessInput(shiftG ? ITM_3 : shiftF ? ITM_7 : ITM_1);
@@ -669,7 +671,6 @@ bool_t lowercaseselected;
               break;
           }
           shiftF = shiftG = false;
-//TODO ^^ 2022-01-13
           refreshScreen();
         }
         screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
@@ -699,7 +700,7 @@ bool_t lowercaseselected;
     if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
   
       if(data[0] == 0) { item = item_; }
-      else             { item = determineFunctionKeyItem_C43((char *)data); }
+      else             { item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG); }
 
       resetShiftState();                               //shift cancelling delayed to this point after state machine
 

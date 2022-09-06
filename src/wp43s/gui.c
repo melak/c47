@@ -218,11 +218,13 @@ void btnClicked_SNU(GtkWidget *w, gpointer data) {
 }
 
 
-uint32_t CTRL_State, event_keyval;
+uint32_t CTRL_State;
+uint32_t event_keyval = 99999999;
 
 
   gboolean keyReleased(GtkWidget *w, GdkEventKey *event, gpointer data) {     //JM
     //printf("Released %d\n", event->keyval);
+    if(event_keyval == event->keyval + CTRL_State) event_keyval = 99999999;
 
     switch(event->keyval) {
 
@@ -279,9 +281,11 @@ uint32_t CTRL_State, event_keyval;
 
 gboolean keyPressed(GtkWidget *w, GdkEventKey *event, gpointer data) {
   //printf("Pressed %d\n", event->keyval);                                  //JM
-  event_keyval = event->keyval + CTRL_State;
+  if (event_keyval ==  event->keyval + CTRL_State) {
+  	return FALSE;
+  }
+  else event_keyval = event->keyval + CTRL_State;
   //printf("#######%d\n",event_keyval);
-
 //JM ALPHA SECTION FOR ALPHAMODE - TAKE OVER ALPHA KEYBOARD
 if (calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
 switch (event_keyval) {
