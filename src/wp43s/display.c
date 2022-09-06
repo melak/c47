@@ -397,9 +397,19 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
 
 
+  if(SigFigMode!=0) {                             //vvJM convert real34 to string, eat away all zeroes from the right and give back to FIX as a real
+    real34ToString(real34, tmpString);
+    int16_t tmpi;
+    tmpi = stringByteLength(tmpString)-1;
+    while(tmpString[tmpi]==48 && tmpi>0 && tmpString[tmpi-1]!='.' && tmpString[tmpi-1]!=',') {tmpString[tmpi]=0; tmpi--;}
+    stringToReal(tmpString,&value,&ctxtReal39);
+  }                                               //^^JM
+  else {
+    real34ToReal(real34, &value);
+  }
 
 
-  real34ToReal(real34, &value);
+
   ctxtReal39.digits =  (displayFormat == DF_FIX ? 24 : displayHasNDigits); // This line is for FIX n displaying more than 16 digits. e.g. in FIX 15: 123 456.789 123 456 789 123
   //ctxtReal39.digits =  displayHasNDigits; // This line is for fixed number of displayed digits, e.g. in FIX 15: 123 456.789 123 456 8
   realPlus(&value, &value, &ctxtReal39);
