@@ -1644,7 +1644,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
     if((temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) && regist == REGISTER_X) { //JM frame the SHOW window
       lcd_fill_rect(0,Y_POSITION_OF_REGISTER_T_LINE-4,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
-      lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,3,LCD_EMPTY_VALUE);
+      lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
     }
 
     if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT) && (calcMode != CM_GRAPH) && (calcMode != CM_LISTXY)) {               //JM      
