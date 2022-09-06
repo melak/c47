@@ -450,19 +450,20 @@ TO_QSPI const int16_t menu_TamLabel[]    = { ITM_INDIRECTION,               -MNU
 TO_QSPI const int16_t menu_Eim[]         = { ITM_EQ_LEFT,                   ITM_CIRCUMFLEX,             ITM_COLON,                CHR_num,               CHR_case,                    ITM_EQ_RIGHT,
                                              ITM_ALOG_SYMBOL,               ITM_ROOT_SIGN,              ITM_LEFT_PARENTHESIS,     ITM_RIGHT_PARENTHESIS, ITM_EQUAL,                  -MNU_CATALOG,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                     
-ITM_VERTICAL_BAR,   
-ITM_DELTA,          
-ITM_pi,             
-ITM_NULL,       
-ITM_LEFT_PARENTHESIS,
-ITM_RIGHT_PARENTHESIS,
 
-ITM_SIGMA,     
-ITM_CIRCUMFLEX,
-ITM_ROOT_SIGN, 
-ITM_LG_SIGN,   
-ITM_LN_SIGN,   
-ITM_alpha
+                                             ITM_VERTICAL_BAR,   
+                                             ITM_DELTA,          
+                                             ITM_pi,             
+                                             ITM_NULL,       
+                                             ITM_LEFT_PARENTHESIS,
+                                             ITM_RIGHT_PARENTHESIS,
+                                             
+                                             ITM_SIGMA,     
+                                             ITM_CIRCUMFLEX,
+                                             ITM_ROOT_SIGN, 
+                                             ITM_LG_SIGN,   
+                                             ITM_LN_SIGN,   
+                                             ITM_alpha
                                          };
 
 TO_QSPI const int16_t menu_Timer[]       = { ITM_TIMER_ADD,                 ITM_NULL,                   ITM_NULL,                 ITM_TIMER_0_1S,        ITM_NULL,                    ITM_TIMER_RESET               };

@@ -101,8 +101,8 @@ TO_QSPI const calcKey_t kbd_std[37] = {
       {32,   ITM_RCL,           ITM_PC,            ITM_DELTAPC,       ITM_NULL,          ITM_H,             ITM_h,             ITM_DELTA,          ITM_HEX            },
       {33,   ITM_Rdown,         ITM_CONSTpi,       ITM_XTHROOT,       ITM_NULL,          ITM_I,             ITM_i,             ITM_pi,             ITM_REG_I          },
       {34,   ITM_sin,           ITM_arcsin,        ITM_GTO,           ITM_NULL,          ITM_J,             ITM_j,             ITM_NULL,           ITM_REG_J          },
-      {35,   ITM_cos,           ITM_arccos,        ITM_LBL,           ITM_NULL,          ITM_K,             ITM_k,             ITM_LEFT_PARENTHESIS, ITM_REG_K        },
-      {36,   ITM_tan,           ITM_arctan,        ITM_RTN,           ITM_NULL,          ITM_L,             ITM_l,             ITM_RIGHT_PARENTHESIS,ITM_REG_L        },
+      {35,   ITM_cos,           ITM_arccos,        ITM_LBL,           ITM_NULL,          ITM_K,             ITM_k,             ITM_NULL,           ITM_REG_K          },
+      {36,   ITM_tan,           ITM_arctan,        ITM_RTN,           ITM_NULL,          ITM_L,             ITM_l,             ITM_NULL,           ITM_REG_L          },
 
       {41,   ITM_ENTER,         KEY_COMPLEX,       -MNU_CPX,          ITM_ENTER,         ITM_ENTER,         ITM_XEDIT,         ITM_XEDIT,          ITM_ENTER          },
       {42,   ITM_XexY,          ITM_LASTX,         ITM_Rup,           ITM_ex,            ITM_M,             ITM_m,             ITM_ex,             ITM_NULL           },
@@ -151,8 +151,8 @@ TO_QSPI const calcKey_t kbd_std[37] = {
       {32,   ITM_RCL,           ITM_PC,            ITM_ANGLE,         ITM_NULL,          ITM_H,             ITM_h,             ITM_DELTA,          ITM_HEX            },
       {33,   ITM_Rdown,         ITM_CONSTpi,       ITM_XTHROOT,       ITM_NULL,          ITM_I,             ITM_i,             ITM_pi,             ITM_REG_I          },
       {34,   ITM_sin,           ITM_arcsin,        ITM_CC,            ITM_NULL,          ITM_J,             ITM_j,             ITM_NULL,           ITM_REG_J          },
-      {35,   ITM_cos,           ITM_arccos,        ITM_LBL,           ITM_NULL,          ITM_K,             ITM_k,             ITM_LEFT_PARENTHESIS, ITM_REG_K        },
-      {36,   ITM_tan,           ITM_arctan,        ITM_RTN,           ITM_NULL,          ITM_L,             ITM_l,             ITM_RIGHT_PARENTHESIS,ITM_REG_L        },
+      {35,   ITM_cos,           ITM_arccos,        ITM_LBL,           ITM_NULL,          ITM_K,             ITM_k,             ITM_NULL,           ITM_REG_K          },
+      {36,   ITM_tan,           ITM_arctan,        ITM_RTN,           ITM_NULL,          ITM_L,             ITM_l,             ITM_NULL,           ITM_REG_L          },
 
       {41,   ITM_ENTER,         ITM_AIM,           -MNU_CPX,          ITM_ENTER,         ITM_ENTER,         ITM_XEDIT,         ITM_XEDIT,          ITM_ENTER          },
       {42,   ITM_XexY,          ITM_LASTX,         ITM_Rup,           ITM_ex,            ITM_M,             ITM_m,             ITM_ex,             ITM_NULL           },
