@@ -454,9 +454,9 @@ TO_QSPI const int16_t menu_Eim[]         = { ITM_EQ_LEFT,                   ITM_
                                              ITM_VERTICAL_BAR,   
                                              ITM_DELTA,          
                                              ITM_pi,             
-                                             ITM_NULL,       
-                                             ITM_LEFT_PARENTHESIS,
-                                             ITM_RIGHT_PARENTHESIS,
+                                             ITM_SIN_SIGN,       
+                                             ITM_COS_SIGN,
+                                             ITM_TAN_SIGN,
                                              
                                              ITM_SIGMA,     
                                              ITM_CIRCUMFLEX,

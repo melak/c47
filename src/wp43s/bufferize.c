@@ -328,6 +328,9 @@ void kill_ASB_icon(void) {
                                 item == ITM_ALOG_SYMBOL         ? "e" STD_SUB_E "^()" :
                                 item == ITM_LG_SIGN             ? "LOG()" :   //JM C43
                                 item == ITM_LN_SIGN             ? "LN()"  :   //JM C43
+                                item == ITM_SIN_SIGN            ? "SIN()" :   //JM C43
+                                item == ITM_COS_SIGN            ? "COS()" :   //JM C43
+                                item == ITM_TAN_SIGN            ? "TAN()" :   //JM C43
                                 item == ITM_OBELUS              ? STD_SLASH  :   //JM C43
                                 indexOfItems[item].itemSoftmenuName;
           char *aimCursorPos = aimBuffer;
@@ -341,6 +344,9 @@ void kill_ASB_icon(void) {
               xCursor += 4;
               break;
             case ITM_LG_SIGN :    //JM C43
+            case ITM_SIN_SIGN :    //JM C43
+            case ITM_COS_SIGN :    //JM C43
+            case ITM_TAN_SIGN :    //JM C43
               xCursor += 4;
               break;
             case ITM_ROOT_SIGN:
