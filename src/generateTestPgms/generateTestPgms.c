@@ -2254,7 +2254,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = 'B';
     *(currentStep++) = 'A';
     *(currentStep++) = 'S';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';                       //C43 mod JM
 
     *(currentStep++) = ITM_STOADD;
     *(currentStep++) = STRING_LABEL_VARIABLE;
@@ -2269,7 +2269,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = 'B';
     *(currentStep++) = 'A';
     *(currentStep++) = 'S';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';                       //C43 mod JM
 
     // 10
     *(currentStep++) = ITM_INPUT;
@@ -2326,7 +2326,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = 'B';
     *(currentStep++) = 'A';
     *(currentStep++) = 'S';
-    *(currentStep++) = 'E';
+    *(currentStep++) = 'e';                       //C43 mod JM
 
     // 20
     *(currentStep++) = ITM_LITERAL;
