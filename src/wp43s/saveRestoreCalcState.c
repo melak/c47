@@ -49,7 +49,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         374  // Save screen
+#define BACKUP_VERSION         474  // Save screen
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -158,7 +158,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen),       BACKUP);
     save(&currentFntScr,                      sizeof(currentFntScr),                      BACKUP);
     save(&currentFlgScr,                      sizeof(currentFlgScr),                      BACKUP);
-    save(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);
     save(&displayFormat,                      sizeof(displayFormat),                      BACKUP);
     save(&displayFormatDigits,                sizeof(displayFormatDigits),                BACKUP);
     save(&timeDisplayFormatDigits,            sizeof(timeDisplayFormatDigits),            BACKUP);
@@ -305,6 +304,21 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
     save(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
 
+    save(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
+    for(int y = 0; y < SCREEN_HEIGHT; ++y) {
+      uint8_t bmpdata = 0;
+      for(int x = 0; x < SCREEN_WIDTH; ++x) {
+        bmpdata <<= 1;
+        if(*(screenData + y*screenStride + x) == ON_PIXEL) {
+          bmpdata |= 1;
+        }
+        if((x % 8) == 7) {
+          save(&bmpdata,                      sizeof(bmpdata),                            BACKUP);
+          bmpdata = 0;
+        }
+      }
+    }
+
     save(&eRPN,                               sizeof(eRPN),                               BACKUP);    //JM vv
     save(&HOME3,                              sizeof(HOME3),                              BACKUP);
     save(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode),                    BACKUP);
@@ -343,21 +357,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&ListXYposition,                     sizeof(ListXYposition),                     BACKUP);   //JM ^^
     save(&numLock,                            sizeof(numLock),                            BACKUP);   //JM ^^
     save(&lastSetAngularMode,                 sizeof(lastSetAngularMode),                 BACKUP);   //JM
-
-    save(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
-    for(int y = 0; y < SCREEN_HEIGHT; ++y) {
-      uint8_t bmpdata = 0;
-      for(int x = 0; x < SCREEN_WIDTH; ++x) {
-        bmpdata <<= 1;
-        if(*(screenData + y*screenStride + x) == ON_PIXEL) {
-          bmpdata |= 1;
-        }
-        if((x % 8) == 7) {
-          save(&bmpdata,                      sizeof(bmpdata),                            BACKUP);
-          bmpdata = 0;
-        }
-      }
-    }
+    save(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);   //C43 JM
 
     fclose(BACKUP);
     printf("End of calc's backup\n");
@@ -452,7 +452,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen),       BACKUP);
       restore(&currentFntScr,                      sizeof(currentFntScr),                      BACKUP);
       restore(&currentFlgScr,                      sizeof(currentFlgScr),                      BACKUP);
-      restore(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);
       restore(&displayFormat,                      sizeof(displayFormat),                      BACKUP);
       restore(&displayFormatDigits,                sizeof(displayFormatDigits),                BACKUP);
       restore(&timeDisplayFormatDigits,            sizeof(timeDisplayFormatDigits),            BACKUP);
@@ -603,6 +602,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
       restore(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
 
+      restore(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
+      restore(loadedScreen,                        SCREEN_WIDTH * SCREEN_HEIGHT / 8,           BACKUP);
+
       restore(&eRPN,                               sizeof(eRPN),                               BACKUP);    //JM vv
       restore(&HOME3,                              sizeof(HOME3),                              BACKUP);
       restore(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode),                    BACKUP);
@@ -641,10 +643,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&ListXYposition,                     sizeof(ListXYposition),                     BACKUP);   //JM ^^
       restore(&numLock,                            sizeof(numLock),                            BACKUP);   //JM ^^
       restore(&lastSetAngularMode,                 sizeof(lastSetAngularMode),                     BACKUP);   //JM
-
-      restore(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
-      restore(loadedScreen,                        SCREEN_WIDTH * SCREEN_HEIGHT / 8,           BACKUP);
-
+      restore(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
@@ -1909,8 +1908,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
     }
   }
 
-  while(restoreOneSection(BACKUP, loadMode, s, n, d))
-  {
+  while(restoreOneSection(BACKUP, loadMode, s, n, d)) {
   }
 
   lastErrorCode = ERROR_NONE;
