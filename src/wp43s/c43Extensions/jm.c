@@ -47,18 +47,51 @@
 
 
 #ifdef PC_BUILD
+
+  #ifdef PC_BUILD_TELLTALE
+    static char * getCalcModeName(uint16_t cm) {
+      if(cm == CM_NORMAL)                return "normal ";
+      if(cm == CM_AIM)                   return "aim    ";
+      if(cm == CM_EIM)                   return "eim    ";
+      if(cm == CM_PEM)                   return "pem    ";
+      if(cm == CM_NIM)                   return "nim    ";
+      if(cm == CM_ASSIGN)                return "assign ";
+      if(cm == CM_REGISTER_BROWSER)      return "reg.bro";
+      if(cm == CM_FLAG_BROWSER)          return "flg.bro";
+      if(cm == CM_FONT_BROWSER)          return "fnt.bro";
+      if(cm == CM_PLOT_STAT)             return "plot.st";
+      if(cm == CM_GRAPH)                 return "plot.gr";
+      if(cm == CM_ERROR_MESSAGE)         return "err.msg";
+      if(cm == CM_BUG_ON_SCREEN)         return "bug.scr";
+      if(cm == CM_MIM)                   return "mim    ";
+      if(cm == CM_EIM)                   return "eim    ";
+      if(cm == CM_TIMER)                 return "timer  ";
+      if(cm == CM_CONFIRMATION)          return "confirm";
+      if(cm == CM_LISTXY)                return "listxy ";    //JM
+
+      return "???    ";
+    }
+    static char * getAlphaCaseName(uint16_t ac) {
+      if(ac == AC_LOWER) return "lower";
+      if(ac == AC_UPPER) return "upper";
+
+      return "???  ";
+    }
+  #endif //PC_BUILD_TELLTALE
+
+
   void jm_show_calc_state(char comment[]) {
   #ifdef PC_BUILD_TELLTALE
     printf("\n%s-----------------------------------------------------------------------------------------------------------------\n",comment);
-    printf(".  calcMode: %d   last_CM=%d (CM_AIM=%d)  doRefreshSoftMenu=%d    lastErrorCode=%d\n",calcMode, last_CM, CM_AIM,doRefreshSoftMenu,lastErrorCode);
-    printf(".  AlphaCaseL:%d  AlphaCaseU:%d \n",alphaCase == AC_LOWER, alphaCase == AC_UPPER);
+    printf(".  calcMode: %s   last_CM=%s  doRefreshSoftMenu=%d    lastErrorCode=%d\n",getCalcModeName(calcMode), getCalcModeName(last_CM), doRefreshSoftMenu,lastErrorCode);
+    printf(".  AlphaCase: %s  \n",getAlphaCaseName(alphaCase));
     printf(".  softmenuStack[0].softmenuId=%d       MY_ALPHA_MENU=%d    softmenu[softmenuStack[0].softmenuId].menuItem=%d -MNU_ALPHA=%d\n",softmenuStack[0].softmenuId,MY_ALPHA_MENU,softmenu[softmenuStack[0].softmenuId].menuItem, -MNU_ALPHA);
     printf(".  ");int8_t ix=0; while(ix<SOFTMENU_STACK_SIZE) {printf("(%d)=%5d ", ix, softmenuStack[ix].softmenuId); ix++;} printf("\n");
     printf(".  ");       ix=0; while(ix<SOFTMENU_STACK_SIZE) {printf("%9s ", indexOfItems[-softmenu[softmenuStack[ix].softmenuId].menuItem].itemSoftmenuName  ); ix++;} printf("\n");
     printf(".  (tam.mode=%d, catalog=%d)\n",tam.mode, catalog);
     printf(".  (mm_MNU_HOME=%d, mm_MNU_ALPHA=%d)\n",mm_MNU_HOME, mm_MNU_ALPHA);
     jm_show_comment("calcstate END:");
-  #endif  
+  #endif //PC_BUILD_TELLTALE
   }
 
 

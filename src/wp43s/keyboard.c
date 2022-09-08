@@ -1681,8 +1681,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         break;
 
 
-//TOFIX: Is this still required? vv
-      case CHR_numL:   //JMvv
+
+
+      case CHR_numL:                                             //JMvv
         if(!numLock)  { processKeyAction(CHR_num); } 
         keyActionProcessed = true;
         break;
@@ -1717,7 +1718,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
       case CHR_case:
         numLock = false;
-        int16_t sm = softmenu[softmenuStack[0].softmenuId].menuItem;                                      //JMvv
+        int16_t sm = softmenu[softmenuStack[0].softmenuId].menuItem;      //JMvv
         nextChar = NC_NORMAL;
         if(alphaCase == AC_LOWER) {
           alphaCase = AC_UPPER;
@@ -1734,7 +1735,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         showAlphaModeonGui(); //dr JM, see keyboardtweaks
         keyActionProcessed = true;
         break;                                                                                                               //JM^^
- //TOFIX ^^
 
 
 

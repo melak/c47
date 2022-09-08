@@ -1368,6 +1368,7 @@ void fnCla(uint16_t unusedButMandatoryParameter){
     while (xCursor > 0) {
       fnKeyBackspace(0);
     }
+    refreshRegisterLine(NIM_REGISTER_LINE);
   }
 }
 

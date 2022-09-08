@@ -281,6 +281,9 @@ uint32_t event_keyval = 99999999;
 
 gboolean keyPressed(GtkWidget *w, GdkEventKey *event, gpointer data) {
   //printf("Pressed %d\n", event->keyval);                                  //JM
+  bool_t AlphaArrowsOffAndUpDn = (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA_OMEGA || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_alpha_omega) ||
+                            (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHADOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAMATH) ||
+                            (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAINTL);
   if (event_keyval ==  event->keyval + CTRL_State) {
   	return FALSE;
   }
@@ -303,28 +306,42 @@ switch (event_keyval) {
 
 //ROW 0
     case 65362:                                               //JM     // CursorUp //JM
-      if(calcMode != CM_EIM)
-        btnFnClicked(w, "1");
+      if(AlphaArrowsOffAndUpDn)
+        btnClicked(w, "17");   //Up
+      else        
+      if(calcMode == CM_EIM)
+        btnClicked(w, "17");   //Up
       else
-        btnClicked(w, "17");
-      break;
-    case 65361:                                               //JM     // CursorLt BST //JM
-      if(calcMode != CM_EIM)
-        btnFnClicked(w, "5");
-      else
-        btnFnClicked(w, "1");
+        btnFnClicked(w, "1");  //F1
       break;
     case 65364:                                               //JM     // CursorDown //JM
-      if(calcMode != CM_EIM)
-        btnFnClicked(w, "2");
+      if(AlphaArrowsOffAndUpDn)
+        btnClicked(w, "22");   //Up
       else
-        btnClicked(w, "22");
+      if(calcMode == CM_EIM)
+        btnClicked(w, "22");   //Dn
+      else
+        btnFnClicked(w, "2");  //F2
       break;
-    case 65363:                                               //JM     // CursorRt SST //JM
-      if(calcMode != CM_EIM)
-        btnFnClicked(w, "6");
+    case 65361:                                               //JM     // CursorLt BST //JM Left
+      if(AlphaArrowsOffAndUpDn) 
+      {}
       else
-        btnFnClicked(w, "6");
+      if(calcMode == CM_EIM)
+        if(softmenuStack[0].firstItem == 0) btnFnClicked(w, "1");  //F1
+        else {}
+      else
+        btnFnClicked(w, "5");  //F5
+      break;
+    case 65363:                                               //JM     // CursorRt SST //JM Right
+      if(AlphaArrowsOffAndUpDn)
+      {}
+      else
+      if(calcMode == CM_EIM)
+        if(softmenuStack[0].firstItem == 0) btnFnClicked(w, "6");  //F6
+        else {}
+      else
+        btnFnClicked(w, "6");  //F6
       break;
 
 
