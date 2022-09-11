@@ -20,10 +20,10 @@
 #include "realType.h"
 #include "typeDefinitions.h"
 #include <stdint.h>
-#if defined(PC_BUILD) && !defined(RPIWSMD)
+#ifdef PC_BUILD
   #include <gtk/gtk.h>
   #include <gdk/gdk.h>
-#endif // PC_BUILD && !RPIWSMD
+#endif // PC_BUILD
 
 #if (DEBUG_PANEL == 1)
   extern GtkWidget *lbl1[DEBUG_LINES], *lbl2[DEBUG_LINES];
@@ -84,9 +84,9 @@ char *eatSpacesMid                        (const char * ss);
 
 //void  debugNIM                            (void); Never used
 
-#if defined(PC_BUILD) && !defined(RPIWSMD)
+#ifdef PC_BUILD
   void dumpScreenToConsole(void);
-#endif // PC_BUILD && !RPIWSMD
+#endif // PC_BUILD
 
 #if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
   void testRegisters    (const char *text);

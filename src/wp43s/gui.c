@@ -33,7 +33,7 @@
 
 #include "wp43s.h"
 
-#if defined(PC_BUILD) && !defined(RPIWSMD)
+#ifdef PC_BUILD
   GtkWidget *grid;
   #if (SCREEN_800X480 == 0)
     GtkWidget *backgroundImage, *bezelImage[3], *behindScreenImage, *fgShiftedArea1, *fgShiftedArea2;
@@ -336,10 +336,10 @@
     }
     return FALSE;
   }
-#endif // PC_BUILD && !RPIWSMD
+#endif // PC_BUILD
 
 
-#if !defined(DMCP_BUILD) && !defined(RPIWSMD)
+#ifndef DMCP_BUILD
   void strReplace(char *haystack, const char *needle, const char *newNeedle) {
     ////////////////////////////////////////////////////////
     // There MUST be enough memory allocated to *haystack //
@@ -366,10 +366,10 @@
       free(str);
     }
   }
-#endif // !DMCP_BUILD && !RPIWSMD
+#endif // !DMCP_BUILD
 
 
-#if defined(PC_BUILD) && !defined(RPIWSMD)
+#ifdef PC_BUILD
   #if (SCREEN_800X480 == 0)
     static void getParameter(char *textLine, char *parameterName, char *parameterValue) {
       char *equalSign;
@@ -1059,7 +1059,7 @@
       gtk_widget_show_all(frmCalc);
     #endif //  (SCREEN_800X480 == 0)
   }
-#endif // PC_BUILD && !RPIWSMD
+#endif // PC_BUILD
 
 
 
@@ -1082,11 +1082,7 @@
         }
       }
       saveCalc();
-      #ifdef RPIWSMD
-        backToConsole = 1;
-      #else // !RPIWSMD
-        gtk_main_quit();
-      #endif // RPIWSMD
+      gtk_main_quit();
     #endif // PC_BUILD
 
     #ifdef DMCP_BUILD
@@ -1107,9 +1103,9 @@
     hideCursor();
     cursorEnabled = false;
 
-    #if defined(PC_BUILD) && (SCREEN_800X480 == 0) && !defined(RPIWSMD)
+    #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
       calcModeNormalGui();
-    #endif // PC_BUILD && (SCREEN_800X480 == 0) && !RPIWSMD
+    #endif // PC_BUILD && (SCREEN_800X480 == 0)
   }
 
 
@@ -1135,9 +1131,9 @@
 
     setSystemFlag(FLAG_ALPHA);
 
-    #if defined(PC_BUILD) && (SCREEN_800X480 == 0) && !defined(RPIWSMD)
+    #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
       calcModeAimGui();
-    #endif // PC_BUILD && (SCREEN_800X480 == 0) && !RPIWSMD
+    #endif // PC_BUILD && (SCREEN_800X480 == 0)
   }
 
 
@@ -1183,10 +1179,10 @@
         clearSystemFlag(FLAG_ALPHA);
         resetAlphaSelectionBuffer();
 
-        #if defined(PC_BUILD) && (SCREEN_800X480 == 0) && !defined(RPIWSMD)
+        #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
           if(catalog != CATALOG_MVAR)
             calcModeAimGui();
-        #endif // PC_BUILD && (SCREEN_800X480 == 0) && !RPIWSMD
+        #endif // PC_BUILD && (SCREEN_800X480 == 0)
       }
     }
   }
@@ -1196,7 +1192,7 @@
   void leaveAsmMode(void) {
     catalog = CATALOG_NONE;
 
-    #if defined(PC_BUILD) && (SCREEN_800X480 == 0) && !defined(RPIWSMD)
+    #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
       if(tam.mode && !tam.alpha) {
         calcModeTamGui();
       }
@@ -1206,7 +1202,7 @@
       else if(calcMode == CM_NORMAL || calcMode == CM_PEM || calcMode == CM_MIM || calcMode == CM_ASSIGN) {
         calcModeNormalGui();
       }
-    #endif // PC_BUILD && (SCREEN_800X480 == 0) && !RPIWSMD
+    #endif // PC_BUILD && (SCREEN_800X480 == 0)
   }
 
 

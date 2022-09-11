@@ -21,10 +21,10 @@
 #define KEYBOARD_H
 
 #include <stdint.h>
-#if defined(PC_BUILD) && !defined(RPIWSMD)
+#ifdef PC_BUILD
   #include <gtk/gtk.h>
   #include <gdk/gdk.h>
-#endif // PC_BUILD && !RPIWSMD
+#endif // PC_BUILD
 
 void leavePem        (void);
 void showShiftState  (void);
@@ -78,7 +78,7 @@ void fnKeyDotD       (uint16_t unusedButMandatoryParameter);
  */
 void fnKeyAngle      (uint16_t unusedButMandatoryParameter);
 
-#if defined(PC_BUILD) && !defined(RPIWSMD)
+#ifdef PC_BUILD
   /**
    * Simulate a function key click.
    *
@@ -135,18 +135,18 @@ void fnKeyAngle      (uint16_t unusedButMandatoryParameter);
    * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
    */
   void btnReleased   (GtkWidget *notUsed, GdkEvent *event, gpointer data);
-#endif // PC_BUILD && !RPIWSMD
+#endif // PC_BUILD
 
 void execAutoRepeat(uint16_t key);
 
-#if defined(DMCP_BUILD) || defined(RPIWSMD)
+#ifdef DMCP_BUILD
   void btnFnClicked (void *w, void *data);
   void btnFnPressed (void *data);
   void btnFnReleased(void *data);
   void btnClicked   (void *w, void *data);
   void btnPressed   (void *data);
   void btnReleased  (void *data);
-#endif // DMCP_BUILD || RPIWSMD
+#endif // DMCP_BUILD
 
 void setLastKeyCode  (int key);
 
