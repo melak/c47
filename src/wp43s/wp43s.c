@@ -201,6 +201,7 @@ uint16_t              testBitset;                              //
 int16_t                longpressDelayedkey2;         //JM
 int16_t                longpressDelayedkey3;         //JM
 int16_t                T_cursorPos;                  //JMCURSOR
+int16_t                displayAIMbufferoffset;       //JMCURSOR
 int16_t                SHOWregis;                    //JMSHOW
 int16_t                ListXYposition;               //JMSHOW
 int16_t                mm_MNU_HOME;                  //JM

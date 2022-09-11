@@ -49,7 +49,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         474  // Save screen
+#define BACKUP_VERSION         574  // Save screen
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -358,6 +358,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&numLock,                            sizeof(numLock),                            BACKUP);   //JM ^^
     save(&lastSetAngularMode,                 sizeof(lastSetAngularMode),                 BACKUP);   //JM
     save(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);   //C43 JM
+    save(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset),             BACKUP);   //C43 JM
 
     fclose(BACKUP);
     printf("End of calc's backup\n");
@@ -642,8 +643,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP),               BACKUP);   //JM ^^
       restore(&ListXYposition,                     sizeof(ListXYposition),                     BACKUP);   //JM ^^
       restore(&numLock,                            sizeof(numLock),                            BACKUP);   //JM ^^
-      restore(&lastSetAngularMode,                 sizeof(lastSetAngularMode),                     BACKUP);   //JM
+      restore(&lastSetAngularMode,                 sizeof(lastSetAngularMode),                 BACKUP);   //JM
       restore(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);
+      restore(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset),             BACKUP);   //C43 JM
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");

@@ -1204,14 +1204,11 @@ uint8_t  displaymode = stdNoEnlarge;
 
 
 
-uint8_t lines    = 2;      //lines   0
-uint8_t y_offset = 3;
-uint8_t x_offset = 0;      //pixels 40
+uint8_t lines;      //lines   0
+uint8_t y_offset;
+uint8_t x_offset;      //pixels 40
 uint16_t current_cursor_x = 0;
 uint16_t current_cursor_y = 0;
-int16_t  displayAIMbufferoffset;
-//#define lines 5                                                          //JMCURSOR vv
-//#define y_offset 2    //lines   0
 #ifdef TEXT_MULTILINE_EDIT
 uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, const char *string, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, bool_t noshow) {
    uint16_t ch, charCode, lg;
@@ -1219,10 +1216,13 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
   bool_t   slc, sec;
   uint32_t  numPixels, orglastlines, tmpxy;
   const    glyph_t *glyph;
-  uint8_t  editlines     = 5 ; 
-  uint8_t  yincr         = 21; 
+  uint8_t  editlines; 
+  uint8_t  yincr; 
   const    font_t *font;
 
+
+//combinationFonts = 0;
+ 
 
   if(combinationFonts == 2) {
     font = &numericFont;                             //JM ENLARGE
@@ -1232,39 +1232,21 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
 
 
   lg = stringByteLength(string + offset);
-  //printf("######## Printing:%s offset:%d length:%d:%s\n",string, offset, lg, string + offset);
-  //printf("##>> %d x:%d y:%d \n",edcursor, x,y);
   if(combinationFonts !=0) {
     editlines     = 3 ;       //JM ENLARGE 5    number of editing lines                                        //JMCURSOR vv
     yincr         = 35;       //JM ENLARGE 21   distasnce between editing wrapped lines
     x_offset      = 0;    //pixels 40
-    if(stringWidth(string + offset, &numericFont, showLeadingCols, showEndingCols) > SCREEN_WIDTH - 50 ) {  //jump from large letters to small letters
-      if(stringWidth(string + offset, &numericFont, showLeadingCols, showEndingCols) > SCREEN_WIDTH * 3 - 70 ) {
-        combinationFonts = 0;  //Auto change to small font after some characters
-      }
-      lines = editlines;
-      y_offset = 1;
-    } else {
-      lines = 2;              //jump back to small letters
-      y_offset = 3;
-      last_CM = 253; //Force redraw
-    }
+    lines = editlines;
+    y_offset = 1;
   } else {
     editlines     = 5 ;       //JM ENLARGE 5    number of editing lines                                        //JMCURSOR vv
     yincr         = 21;       //JM ENLARGE 21   distasnce between editing wrapped lines
     x_offset      = 0;    //pixels 40
-    if(stringWidth(string + offset, &standardFont, showLeadingCols, showEndingCols) > SCREEN_WIDTH - 50 ) {
-      lines = editlines;
-      y_offset = 2;
-    } else {
-      lines = 2;
-      y_offset = 3;
-      combinationFonts = combinationFontsDefault;  //Auto change back to large font
-      last_CM = 253; //Force redraw
-    }
+    lines = 2;
+    y_offset = 3;
   }
+
   if(lines == editlines || lg == 0) last_CM = 253; //Force redraw if 
-  //printf("^^^^ combinationFonts=%d editlines=%d yincr=%d %d %d \n",combinationFonts, editlines, yincr, lines, last_CM);
 
   orglastlines = lastline;
 
@@ -1371,6 +1353,37 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
 #endif //TEXT_MULTILINE_EDIT
 
                                                           //JMCURSOR ^^
+
+
+
+
+void findOffset(void){             //C43 JM
+   displayAIMbufferoffset = 0;
+   int16_t cnt = 0;
+   while(
+        displayAIMbufferoffset < stringByteLength(aimBuffer) &&
+        cnt++ < 150
+        ) 
+     {
+       if((int32_t)stringWidthC43(aimBuffer + displayAIMbufferoffset, combinationFonts ,nocompress, true, true) 
+        > SCREEN_WIDTH * lines - 25) {
+         displayAIMbufferoffset = stringNextGlyph(aimBuffer, displayAIMbufferoffset);
+       //printf(">>> displayAIMbufferoffset: %d, stringByteLength(aimBuffer)=%d\n",displayAIMbufferoffset,stringByteLength(aimBuffer));
+       }
+     }
+   }
+
+
+void incOffset(void){             //C43 JM
+   if( (int32_t)stringWidthC43(aimBuffer + displayAIMbufferoffset, combinationFonts ,nocompress, true, true) -
+       (int32_t)stringWidthC43(aimBuffer + T_cursorPos, combinationFonts ,nocompress, true, true) 
+       > SCREEN_WIDTH * lines - 25
+      )
+   {
+     displayAIMbufferoffset = stringNextGlyph(aimBuffer, displayAIMbufferoffset);
+   }
+ }
+
 
 
 void refresh_gui(void) {                                        //JM vv
@@ -1993,32 +2006,8 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         int16_t tmplen = stringByteLength(aimBuffer);
         if(T_cursorPos > tmplen) {T_cursorPos = tmplen;}     //Do range checking in case the cursor starts off outside of range
         if(T_cursorPos < 0)      {T_cursorPos = tmplen;}     //Do range checking in case the cursor starts off outside of range
-        int16_t cnt;
-        displayAIMbufferoffset = 0;                                         //Determine offset to be able to display the latter part of the string
 
-        int16_t sw=SCREEN_WIDTH-1-x_offset;              //Calculate the total available pixels in the number of lines available.
-        if(lines==1 && y_offset<1) {sw = SCREEN_WIDTH-1 - x_offset;} 
-        else if(lines==2 && y_offset<=1) {sw = (SCREEN_WIDTH-1 - x_offset)*(2-y_offset);}
-        else if(lines>2) {sw = (SCREEN_WIDTH-1 - x_offset)*2 + (lines-2)*(SCREEN_WIDTH-1);}
-        cnt = 0;
-        do {
-          //printf(">>>a %d %d >? %d\n", stringWidth(aimBuffer + displayAIMbufferoffset, font, true, true), - stringWidth(aimBuffer + T_cursorPos, font, true, true), sw);
-          while(/*cnt++ < 100 && */
-               ((int32_t)stringWidthC43(aimBuffer + displayAIMbufferoffset, combinationFonts ,nocompress, true, true) - (int32_t)stringWidthC43(aimBuffer + T_cursorPos, combinationFonts ,nocompress, true, true) +lines*15 > sw) &&     //assume max of 15 pixels lost at the end of each line 
-               (displayAIMbufferoffset <= tmplen) && 
-               (displayAIMbufferoffset + 10 < T_cursorPos)
-               ) 
-            {
-              //printf(">>>b %d %d >? %d\n", stringWidth(aimBuffer + displayAIMbufferoffset, font, true, true), - stringWidth(aimBuffer + T_cursorPos, font, true, true), sw);
-              displayAIMbufferoffset = stringNextGlyph(aimBuffer, displayAIMbufferoffset);
-            }
-
-          showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, Y_POSITION_OF_NIM_LINE - 3, vmNormal, true, true, false);  //display up to the cursor
-
-          if(xCursor > SCREEN_WIDTH-1) displayAIMbufferoffset = stringNextGlyph(aimBuffer, displayAIMbufferoffset);
-          //printf(">>>c length:%d T_cursorPos:%d displayAIMbufferoffset:%d x:%d y:%d\n",tmplen, T_cursorPos, displayAIMbufferoffset, xCursor, yCursor);
-        } while(cnt++ < 150 && xCursor > SCREEN_WIDTH-1);
-
+        showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, Y_POSITION_OF_NIM_LINE - 3, vmNormal, true, true, false);  //display up to the cursor
 
         if(T_cursorPos == tmplen) cursorEnabled = true; else cursorEnabled = false; 
         if(combinationFonts == 2) {

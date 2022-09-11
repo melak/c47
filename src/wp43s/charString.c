@@ -115,10 +115,10 @@ int16_t posinc = 0;
 
   if(str[pos] & 0x80) {
     posinc = 2;
-    if(str[pos+1] == 0 || str[pos+2] == 0) return pos;
+    if(str[pos+1] == 0 || str[pos+2] == 0) return pos+1;
   } else {
     posinc = 1;
-    if(str[pos+1] == 0) return pos;
+    if(str[pos+1] == 0) return pos+1;
   }
 
   pos += posinc;

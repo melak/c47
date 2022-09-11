@@ -1267,11 +1267,13 @@ void fnT_ARROW(uint16_t command) {
 
        case ITM_T_LEFT_ARROW /*STD_LEFT_ARROW */ : 
           T_cursorPos = stringPrevGlyph(aimBuffer, T_cursorPos);
+          if(T_cursorPos < displayAIMbufferoffset && displayAIMbufferoffset > 0) displayAIMbufferoffset = stringPrevGlyph(aimBuffer, displayAIMbufferoffset);
           break;
 
        case ITM_T_RIGHT_ARROW /*STD_RIGHT_ARROW*/ : 
-
+          ixx = T_cursorPos;
           T_cursorPos = stringNextGlyph(aimBuffer, T_cursorPos);
+          incOffset();
           break;
 
        case ITM_T_LLEFT_ARROW /*STD_FARLEFT_ARROW */ :
@@ -1299,8 +1301,6 @@ void fnT_ARROW(uint16_t command) {
           while(ixx < 75 && (current_cursor_x >= current_cursor_x_old+5 || current_cursor_y == current_cursor_y_old)) {
             fnT_ARROW(ITM_T_LEFT_ARROW);
             showStringEdC43(lines ,displayAIMbufferoffset, T_cursorPos, aimBuffer, 1, -100, vmNormal, true, true, true);  //display up to the cursor
-
-            //printf("###^^^ %d %d %d %d %d\n",ixx,current_cursor_x, current_cursor_x_old, current_cursor_y, current_cursor_y_old);
             ixx++;
           }
           break;
@@ -1324,6 +1324,7 @@ void fnT_ARROW(uint16_t command) {
 
        case ITM_UP1 /*HOME */ :
           T_cursorPos = 0;
+          displayAIMbufferoffset = 0;
           break;
 
 
@@ -1331,6 +1332,7 @@ void fnT_ARROW(uint16_t command) {
           T_cursorPos = stringByteLength(aimBuffer) - 1;
           T_cursorPos = stringNextGlyph(aimBuffer, T_cursorPos);
           fnT_ARROW(ITM_T_RIGHT_ARROW);
+          findOffset();
           break;
 
 

@@ -53,6 +53,8 @@
 #ifndef TESTSUITE_BUILD
   void fnAim(uint16_t unusedButMandatoryParameter) {
     resetShiftState();  //JM
+    displayAIMbufferoffset = 0;
+    T_cursorPos = 0;
     aimBuffer[0] = 0;
     calcModeAim(NOPARAM); // Alpha Input Mode
     if(programRunStop != PGM_RUNNING) {
@@ -411,6 +413,8 @@ void kill_ASB_icon(void) {
               break;
             default:;
           }
+
+          incOffset();
 
 #else   //TEXT_MULTILINE_EDIT
           xcopy(aimBuffer + stringByteLength(aimBuffer), indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);

@@ -124,7 +124,6 @@ void       fnAGraph                           (uint16_t regist);
   extern uint8_t  lines;
   extern uint16_t current_cursor_x;
   extern uint16_t current_cursor_y;
-  extern int16_t  displayAIMbufferoffset;
   extern uint8_t  displayStack_m;
 
   //Stack string large font display
@@ -148,6 +147,9 @@ void       fnAGraph                           (uint16_t regist);
   uint32_t stringWidthC43                     (const char *str,    int mode, int comp,                                                bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows);
 #ifdef TEXT_MULTILINE_EDIT
   uint32_t showStringEdC43                    (uint32_t lastline, int16_t offset, int16_t edcursor, const char *string, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, bool_t noshow);
+  void findOffset(void);
+  void incOffset(void);
+
 #endif //TEXT_MULTILINE_EDIT
                                                                                                                //JM ^^
   void     underline_softkey                  (int16_t xSoftkey, int16_t ySoftKey, bool_t dontclear);          //JM LONGPRESS
