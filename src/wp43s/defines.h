@@ -104,7 +104,8 @@
 
 
 
-#define TEXT_MULTILINE_EDIT         //5 line buffer
+#define TEXT_MULTILINE_EDIT         // 5 line buffer
+#define MAXLINES 2                  // two lines at small font maximum allowed in entry
 
 
 //Testing and debugging
@@ -276,8 +277,8 @@
 #define NUMBER_OF_NUMERIC_FONT_LINES_PER_SCREEN    5 // Used in the font browser application
 #define NUMBER_OF_STANDARD_FONT_LINES_PER_SCREEN   8 // Used in the font browser application
 
-#define AIM_BUFFER_LENGTH                        400 //JMMAX220 changed from 400 // 199 double byte glyphs + trailing 0 + 1 byte to round up to a 4 byte boundary
-#define TAM_BUFFER_LENGTH                         32                          // TODO: find the exact maximum needed
+#define AIM_BUFFER_LENGTH                        400 // 199 double byte glyphs + trailing 0 + 1 byte to round up to a 4 byte boundary
+#define TAM_BUFFER_LENGTH                         32 // TODO: find the exact maximum needed
 #ifdef BUFFER_CLICK_DETECTION
 #define NIM_BUFFER_LENGTH                        200 //JM(100-24-10) TEMP POC CHANGE FROM 100//JMMAX changed from 200 // TODO: find the exact maximum needed
 #else

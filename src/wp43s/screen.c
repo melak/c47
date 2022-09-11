@@ -1239,7 +1239,9 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
     yincr         = 35;       //JM ENLARGE 21   distasnce between editing wrapped lines
     x_offset      = 0;    //pixels 40
     if(stringWidth(string + offset, &numericFont, showLeadingCols, showEndingCols) > SCREEN_WIDTH - 50 ) {  //jump from large letters to small letters
-      if(stringWidth(string + offset, &numericFont, showLeadingCols, showEndingCols) > SCREEN_WIDTH * 3 - 70 ) combinationFonts = 0;  //Auto change to small font after some characters
+      if(stringWidth(string + offset, &numericFont, showLeadingCols, showEndingCols) > SCREEN_WIDTH * 3 - 70 ) {
+        combinationFonts = 0;  //Auto change to small font after some characters
+      }
       lines = editlines;
       y_offset = 1;
     } else {

@@ -38,6 +38,7 @@ int16_t  stringLastGlyph  (const char *str);
  * \param[in] pos int16_t       Location after which search the next glyph
  * \return int16_t              Pointer to the glyph after pos
  ***********************************************/
+int16_t  stringNextGlyphNoEndCheck_JM  (const char *str, int16_t pos);
 int16_t  stringNextGlyph  (const char *str, int16_t pos);
 
 /********************************************//**              //JM

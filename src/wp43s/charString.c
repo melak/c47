@@ -109,6 +109,23 @@ int16_t stringWidth(const char *str, const font_t *font, bool_t withLeadingEmpty
 
 
 
+int16_t stringNextGlyphNoEndCheck_JM(const char *str, int16_t pos) {    //Not checking for beyond terminator. Use only if no risk for pos > length(str)
+int16_t posinc = 0;
+  if(str[pos] == 0) return pos;
+
+  if(str[pos] & 0x80) {
+    posinc = 2;
+    if(str[pos+1] == 0 || str[pos+2] == 0) return pos;
+  } else {
+    posinc = 1;
+    if(str[pos+1] == 0) return pos;
+  }
+
+  pos += posinc;
+  return pos;
+}
+
+
 int16_t stringNextGlyph(const char *str, int16_t pos) {
   int16_t lg;
 
