@@ -2872,6 +2872,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 }
 
 
+#ifndef TESTSUITE_BUILD  
 static bool_t activatescroll(void) {
    int16_t menuId = softmenuStack[0].softmenuId; //JM
    return (calcMode == CM_NORMAL) && 
@@ -2882,6 +2883,7 @@ static bool_t activatescroll(void) {
             ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18)) 
           );
  }
+ #endif // !TESTSUITE_BUILD
 
 
 void fnKeyUp(uint16_t unusedButMandatoryParameter) {
