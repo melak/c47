@@ -84,7 +84,9 @@ static bool_t checkParamGeometric(real_t *x, real_t *i) {
 void fnGeometricP(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamGeometric(&val, &prob)) {
     WP34S_Pdf_Geom(&val, &prob, &ans, &ctxtReal39);
@@ -99,7 +101,9 @@ void fnGeometricP(uint16_t unusedButMandatoryParameter) {
 void fnGeometricL(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamGeometric(&val, &prob)) {
     WP34S_Cdf_Geom(&val, &prob, &ans, &ctxtReal39);
@@ -114,7 +118,9 @@ void fnGeometricL(uint16_t unusedButMandatoryParameter) {
 void fnGeometricR(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamGeometric(&val, &prob)) {
     WP34S_Cdfu_Geom(&val, &prob, &ans, &ctxtReal39);
@@ -129,7 +135,9 @@ void fnGeometricR(uint16_t unusedButMandatoryParameter) {
 void fnGeometricI(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamGeometric(&val, &prob)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
