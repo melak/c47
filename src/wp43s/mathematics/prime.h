@@ -17,12 +17,11 @@
 /********************************************//**
  * \file prime.h
  ***********************************************/
-#ifndef PRIME_H
-#define PRIME_H
+#if !defined(PRIME_H)
+  #define PRIME_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnIsPrime  (uint16_t unusedButMandatoryParameter);
-void fnNextPrime(uint16_t unusedButMandatoryParameter);
-
-#endif // PRIME_H
+  void fnIsPrime  (uint16_t unusedButMandatoryParameter);
+  void fnNextPrime(uint16_t unusedButMandatoryParameter);
+#endif // !PRIME_H

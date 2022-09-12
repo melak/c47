@@ -17,23 +17,24 @@
 /********************************************//**
  * \file cubeRoot.h
  ***********************************************/
-#ifndef CUBEROOT_H
-#define CUBEROOT_H
+#if !defined(CUBEROOT_H)
+  #define CUBEROOT_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnCubeRoot(uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void curtError  (void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define curtError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void curtLonI   (void);
-void curtRema   (void);
-void curtCxma   (void);
-void curtShoI   (void);
-void curtReal   (void);
-void curtCplx   (void);
-
-#endif // CUBEROOT_H
+  void fnCubeRoot(uint16_t unusedButMandatoryParameter);
+  
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void curtError  (void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #define curtError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  
+  void curtLonI   (void);
+  void curtRema   (void);
+  void curtCxma   (void);
+  void curtShoI   (void);
+  void curtReal   (void);
+  void curtCplx   (void);
+#endif // !CUBEROOT_H

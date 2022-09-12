@@ -17,21 +17,22 @@
 /********************************************//**
  * \file integerPart.h
  ***********************************************/
-#ifndef INTEGERPART_H
-#define INTEGERPART_H
+#if !defined(INTEGERPART_H)
+  #define INTEGERPART_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnIp   (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void ipError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define ipError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void ipLonI (void);
-void ipRema (void);
-void ipShoI (void);
-void ipReal (void);
-
-#endif // INTEGERPART_H
+  void fnIp   (uint16_t unusedButMandatoryParameter);
+  
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void ipError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define ipError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  
+  void ipLonI (void);
+  void ipRema (void);
+  void ipShoI (void);
+  void ipReal (void);
+#endif // !INTEGERPART_H

@@ -17,20 +17,20 @@
 /********************************************//**
  * \file decomp.h
  ***********************************************/
-#ifndef DECOMP_H
-#define DECOMP_H
+#if !defined(DECOMP_H)
+  #define DECOMP_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnDecomp(uint16_t unusedButMandatoryParameter);
+  void fnDecomp(uint16_t unusedButMandatoryParameter);
 
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-  void decompError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  #define decompError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void decompLonI(void);
-void decompReal(void);
-
-#endif // DECOMP_H
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void decompError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #define decompError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  
+  void decompLonI(void);
+  void decompReal(void);
+#endif // !DECOMP_H

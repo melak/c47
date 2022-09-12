@@ -17,20 +17,21 @@
 /********************************************//**
  * \file ceil.h
  ***********************************************/
-#ifndef CEIL_H
-#define CEIL_H
+#if !defined(CEIL_H)
+  #define CEIL_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnCeil   (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void ceilError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define ceilError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void ceilLonI (void);
-void ceilRema (void);
-void ceilReal (void);
-
-#endif // CEIL_H
+  void fnCeil   (uint16_t unusedButMandatoryParameter);
+  
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void ceilError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #define ceilError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  
+  void ceilLonI (void);
+  void ceilRema (void);
+  void ceilReal (void);
+#endif // !CEIL_H

@@ -17,54 +17,59 @@
 /**
  * \file gui.h
  */
-#ifndef GUI_H
-#define GUI_H
+#if !defined(GUI_H)
+  #define GUI_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-#ifndef TESTSUITE_BUILD
-  void fnOff                       (uint16_t unsuedParamButMandatory);
-  /**
-   * Sets the calc mode to normal.
-   */
-  void calcModeNormal              (void);
-  /**
-   * Sets the calc mode to alpha input mode.
-   *
-   * \param[in] unusedButMandatoryParameter
-   */
-  void calcModeAim                 (uint16_t unusedButMandatoryParameter);
-  /**
-   * Sets the calc mode to number input mode.
-   *
-   * \param[in] unusedButMandatoryParameter
-   */
-  void calcModeNim                 (uint16_t unusedButMandatoryParameter);
-  /**
-   * Sets the calc mode to alpha selection menu if needed.
-   */
-  void enterAsmModeIfMenuIsACatalog(int16_t id);
-  /**
-   * Leaves the alpha selection mode.
-   */
-  void leaveAsmMode                (void);
-#endif // TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    void fnOff                       (uint16_t unsuedParamButMandatory);
+    
+    /**
+     * Sets the calc mode to normal.
+     */
+    void calcModeNormal              (void);
+    
+    /**
+     * Sets the calc mode to alpha input mode.
+     *
+     * \param[in] unusedButMandatoryParameter
+     */
+    void calcModeAim                 (uint16_t unusedButMandatoryParameter);
+    
+    /**
+     * Sets the calc mode to number input mode.
+     *
+     * \param[in] unusedButMandatoryParameter
+     */
+    void calcModeNim                 (uint16_t unusedButMandatoryParameter);
+    
+    /**
+     * Sets the calc mode to alpha selection menu if needed.
+     */
+    void enterAsmModeIfMenuIsACatalog(int16_t id);
+    
+    /**
+     * Leaves the alpha selection mode.
+     */
+    void leaveAsmMode                (void);
+  #endif // !TESTSUITE_BUILD
 
-#ifdef PC_BUILD
-  /**
-   * Creates the calc's GUI window with all the widgets.
-   */
-  void setupUI                     (void);
-  #if (SCREEN_800X480 == 0)
-    void calcModeNormalGui         (void);
-    void calcModeAimGui            (void);
-    void calcModeTamGui            (void);
-  #endif // SCREEN_800X480
-#endif // PC_BUILD
+  #if defined(PC_BUILD)
+    /**
+     * Creates the calc's GUI window with all the widgets.
+     */
+    void setupUI                     (void);
+    
+    #if (SCREEN_800X480 == 0)
+      void calcModeNormalGui         (void);
+      void calcModeAimGui            (void);
+      void calcModeTamGui            (void);
+    #endif // SCREEN_800X480
+  #endif // PC_BUILD
 
-#ifndef DMCP_BUILD
-  void strReplace                  (char *haystack, const char *needle, const char *newNeedle);
-#endif // DMCP_BUILD
-
-#endif // GUI_H
+  #if !defined(DMCP_BUILD)
+    void strReplace                  (char *haystack, const char *needle, const char *newNeedle);
+  #endif // DMCP_BUILD
+#endif // !GUI_H
