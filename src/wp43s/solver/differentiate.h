@@ -17,17 +17,17 @@
 /********************************************//**
  * \file differentiate.h
  ***********************************************/
-#ifndef DIFFERENTIATE_H
-#define DIFFERENTIATE_H
+#if !defined(DIFFERENTIATE_H)
+  #define DIFFERENTIATE_H
 
-#include "typeDefinitions.h"
-#include <stdint.h>
+  #include "typeDefinitions.h"
+  #include <stdint.h>
 
-void fn1stDeriv      (uint16_t label);
-void fn2ndDeriv      (uint16_t label);
-void fn1stDerivEq    (uint16_t unusedButMandatoryParameter);
-void fn2ndDerivEq    (uint16_t unusedButMandatoryParameter);
+  void fn1stDeriv      (uint16_t label);
+  void fn2ndDeriv      (uint16_t label);
+  void fn1stDerivEq    (uint16_t unusedButMandatoryParameter);
+  void fn2ndDerivEq    (uint16_t unusedButMandatoryParameter);
 
-void firstDerivative (calcRegister_t label);
-void secondDerivative(calcRegister_t label);
-#endif // DIFFERENTIATE_H
+  void firstDerivative (calcRegister_t label);
+  void secondDerivative(calcRegister_t label);
+#endif // !DIFFERENTIATE_H

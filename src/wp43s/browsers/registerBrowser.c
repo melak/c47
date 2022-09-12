@@ -34,9 +34,8 @@
 
 
 
-#ifndef TESTSUITE_BUILD
-
-  #ifndef SAVE_SPACE_DM42_8
+#if !defined(TESTSUITE_BUILD)
+#ifndef SAVE_SPACE_DM42_8
   static void _showRegisterInRbr(calcRegister_t regist, int16_t registerNameWidth) {
     switch(getRegisterDataType(regist)) {
       case dtReal34:
@@ -237,4 +236,4 @@
     }
     #endif //SAVE_SPACE_DM42_8
 }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD

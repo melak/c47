@@ -113,11 +113,17 @@ static bool_t checkParamBinomial(real_t *x, real_t *i, real_t *j) {
 void fnBinomialP(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, num;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamBinomial(&val, &prob, &num)) {
-    if(realIsAnInteger(&val)) WP34S_Pdf_Binomial(&val, &prob, &num, &ans, &ctxtReal39);
-    else                      realZero(&ans);
+    if(realIsAnInteger(&val)) {
+      WP34S_Pdf_Binomial(&val, &prob, &num, &ans, &ctxtReal39);
+    }
+    else {
+      realZero(&ans);
+    }
     if(realIsNaN(&ans)) {
       displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -137,7 +143,9 @@ void fnBinomialP(uint16_t unusedButMandatoryParameter) {
 void fnBinomialL(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, num;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamBinomial(&val, &prob, &num)) {
     WP34S_Cdf_Binomial(&val, &prob, &num, &ans, &ctxtReal39);
@@ -160,7 +168,9 @@ void fnBinomialL(uint16_t unusedButMandatoryParameter) {
 void fnBinomialR(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, num;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamBinomial(&val, &prob, &num)) {
     WP34S_Cdfu_Binomial(&val, &prob, &num, &ans, &ctxtReal39);
@@ -183,7 +193,9 @@ void fnBinomialR(uint16_t unusedButMandatoryParameter) {
 void fnBinomialI(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, num;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamBinomial(&val, &prob, &num)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
@@ -231,7 +243,9 @@ bool_t binomial_param(const real_t *n, real_t *res) {
 void WP34S_Pdf_Binomial(const real_t *x, const real_t *p0, const real_t *n, real_t *res, realContext_t *realContext) {
   real_t p, q, nn, xx;
 
-  if(!binomial_param(n, res)) return;
+  if(!binomial_param(n, res)) {
+    return;
+  }
   if(realIsNegative(x) || realCompareGreaterThan(x, n)) {
     realZero(res);
     return;
@@ -254,7 +268,9 @@ void WP34S_Pdf_Binomial(const real_t *x, const real_t *p0, const real_t *n, real
 void WP34S_Cdfu_Binomial(const real_t *x, const real_t *p0, const real_t *n, real_t *res, realContext_t *realContext) {
   real_t p, q, r;
 
-  if(!binomial_param(n, res)) return;
+  if(!binomial_param(n, res)) {
+    return;
+  }
   realToIntegralValue(x, &p, DEC_ROUND_CEILING, realContext);
   if(realCompareLessThan(&p, const_1)) {
     realCopy(const_1, res);
@@ -274,7 +290,9 @@ void WP34S_Cdfu_Binomial(const real_t *x, const real_t *p0, const real_t *n, rea
 void WP34S_Cdf_Binomial(const real_t *x, const real_t *p0, const real_t *n, real_t *res, realContext_t *realContext) {
   real_t p;
 
-  if(!binomial_param(n, res)) return;
+  if(!binomial_param(n, res)) {
+    return;
+  }
   realToIntegralValue(x, &p, DEC_ROUND_FLOOR, realContext);
   WP34S_Cdf_Binomial2(&p, p0, n, res, realContext);
 }

@@ -36,16 +36,13 @@
 #include "typeDefinitions.h"
 #include "wp43s.h"
 
-#ifdef TESTSUITE_BUILD
-
+#if defined(TESTSUITE_BUILD)
 void fnKeyGtoXeq       (uint16_t unusedButMandatoryParameter) {}
 void fnKeyGto          (uint16_t unusedButMandatoryParameter) {}
 void fnKeyXeq          (uint16_t unusedButMandatoryParameter) {}
 void fnProgrammableMenu(uint16_t unusedButMandatoryParameter) {}
 void fnClearMenu       (uint16_t unusedButMandatoryParameter) {}
-
-#else // TESTSUITE_BUILD
-
+#else // !TESTSUITE_BUILD
 static void _getStringLabelOrVariableName(uint8_t *stringAddress) {
   uint8_t stringLength = *(uint8_t *)(stringAddress++);
   xcopy(tmpStringLabelOrVariableName, stringAddress, stringLength);
@@ -70,7 +67,9 @@ static uint16_t _indirectVariable(uint8_t *stringAddress) {
   regist = findNamedVariable(tmpStringLabelOrVariableName);
   if(regist != INVALID_VARIABLE) {
     int16_t realParam = indirectAddressing(regist, false, 0, 99);
-    if(realParam < 9999) return realParam;
+      if(realParam < 9999) {
+        return realParam;
+      }
   }
   else {
     displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
@@ -258,5 +257,4 @@ void keyXeq(uint16_t keyNum, uint16_t label) {
   _setCaption(keyNum);
   programmableMenu.itemParam[keyNum - 1] = label | 0x8000;
 }
-
 #endif // TESTSUITE_BUILD

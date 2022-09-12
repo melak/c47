@@ -476,18 +476,6 @@
 
 
 
-  /********************************************//**
-   * \brief Refreshes calc's screen. This function is
-   * called every SCREEN_REFRESH_PERIOD ms by a GTK timer.
-   * * make the cursor blink if needed
-   * * refresh date and time in the status bar if needed
-   * * refresh the whole screen if needed
-   *
-   * \param[in] data gpointer Not used
-   * \return gboolean         What will happen next?
-   *                          * true  = timer will call this function again
-   *                          * false = timer stops calling this function
-   ***********************************************/
   #define cursorCycle 3                      //JM cursor vv
   int8_t cursorBlinkCounter;                 //JM cursor ^^
   gboolean refreshLcd(gpointer unusedData) { // This function is called every SCREEN_REFRESH_PERIOD ms by a GTK timer
@@ -867,6 +855,7 @@ void Shft_stop() {
       *(screenData + y*screenStride + x) = OFF_PIXEL;
       screenChange = true;
     }
+
 
 
    void flipPixel(uint32_t x, uint32_t y) {
@@ -1945,7 +1934,6 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         }                                                                 //JMSHOW ^^
 
       else if(regist < REGISTER_X + min(displayStack, origDisplayStack) || (lastErrorCode != 0 && regist == errorMessageRegisterLine) || (temporaryInformation == TI_VIEW && regist == REGISTER_T)) {
-
         prefixWidth = 0;
         const int16_t baseY = Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X + ((temporaryInformation == TI_VIEW && regist == REGISTER_T) ? 0 : (getRegisterDataType(REGISTER_X) == dtReal34Matrix || getRegisterDataType(REGISTER_X) == dtComplex34Matrix) ? 4 - displayStack : 0));
         calcRegister_t origRegist = regist;
@@ -2622,7 +2610,6 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
           //JM else if(getRegisterDataType(regist) == dtComplex34) {                                                                                                      //JM EE Removed and replaced with the below
           //JM complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION);   //JM EE Removed and replaced with the below
         else if(getRegisterDataType(regist) == dtComplex34) { 
-
           if(temporaryInformation == TI_SOLVER_VARIABLE) {
             if(regist == REGISTER_X) {
               memcpy(prefix, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0]);
@@ -3615,17 +3602,7 @@ void fnAGraph(uint16_t regist) {
 #endif // TESTSUITE_BUILD
 }
 
-
-
 #ifndef TESTSUITE_BUILD 
-/********************************************//**   //JM vv
- * \brief Clears parts of the screen
- *
- * \param[in] clearStatusBar bool_t Clear the status bar
- * \param[in] clearRegLines bool_t  Clear the register lines
- * \param[in] clearSoftkeys bool_t  Clear the softkey area
- * \return void
- ***********************************************/
 void clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys) {      //JMOLD
   if(clearStatusBar) {
     lcd_fill_rect(0, 0, SCREEN_WIDTH, 20, 0);

@@ -21,10 +21,10 @@
 #define KEYBOARD_H
 
 #include <stdint.h>
-#if defined(PC_BUILD) && !defined(RPIWSMD)
+#ifdef PC_BUILD
   #include <gtk/gtk.h>
   #include <gdk/gdk.h>
-#endif // PC_BUILD && !RPIWSMD
+#endif // PC_BUILD
 
 
 #ifndef TESTSUITE_BUILD
@@ -93,8 +93,8 @@ void executeFunction(const char *data, int16_t item_);
 #define ST_4_REL2     4     //STATE 4 SECOND RELEASE   //JM ^^
 
 
-#if defined(PC_BUILD) && !defined(RPIWSMD)
-  /**
+#ifdef PC_BUILD
+/**
    * Simulate a function key click.
    *
    * \param notUsed The button to pass to btnFnPressed and btnFnReleased
@@ -154,18 +154,18 @@ void executeFunction(const char *data, int16_t item_);
    * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
    */
   void btnReleased   (GtkWidget *notUsed, GdkEvent *event, gpointer data);
-#endif // PC_BUILD && !RPIWSMD
+#endif // PC_BUILD
 
 void execAutoRepeat(uint16_t key);
 
-#if defined(DMCP_BUILD) || defined(RPIWSMD)
+#ifdef DMCP_BUILD
   void btnFnClicked (void *w, void *data);
   void btnFnPressed (void *data);
   void btnFnReleased(void *data);
   void btnClicked   (void *w, void *data);
   void btnPressed   (void *data);
   void btnReleased  (void *data);
-#endif // DMCP_BUILD || RPIWSMD
+#endif // DMCP_BUILD
 
 void setLastKeyCode  (int key);
 

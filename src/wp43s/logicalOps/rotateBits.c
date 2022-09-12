@@ -44,7 +44,9 @@ void fnAsr(uint16_t numberOfShifts) {
   uint64_t sign;
 
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     sign = *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & shortIntegerSignBit;
     for(i=1; i<=numberOfShifts; i++) {
@@ -83,7 +85,9 @@ void fnSl(uint16_t numberOfShifts) {
   int32_t i;
 
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     for(i=1; i<=numberOfShifts; i++) {
       if(i == numberOfShifts) {
@@ -121,7 +125,9 @@ void fnSr(uint16_t numberOfShifts) {
   int32_t i;
 
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     for(i=1; i<=numberOfShifts; i++) {
       if(i == numberOfShifts) {
@@ -160,7 +166,9 @@ void fnRl(uint16_t numberOfShifts) {
   uint64_t sign;
 
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     for(i=1; i<=numberOfShifts; i++) {
       sign = (*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & shortIntegerSignBit) >> (shortIntegerWordSize - 1);
@@ -199,7 +207,9 @@ void fnRr(uint16_t numberOfShifts) {
   int32_t i;
 
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     for(i=1; i<=numberOfShifts; i++) {
       if(i == numberOfShifts) {
@@ -238,7 +248,9 @@ void fnRlc(uint16_t numberOfShifts) {
   uint64_t sign, carry;
 
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     carry = getSystemFlag(FLAG_CARRY);
     for(i=1; i<=numberOfShifts; i++) {
@@ -278,7 +290,9 @@ void fnRrc(uint16_t numberOfShifts) {
   uint64_t lsb, carry;
 
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     carry = getSystemFlag(FLAG_CARRY);
     for(i=1; i<=numberOfShifts; i++) {
@@ -318,7 +332,9 @@ void fnLj(uint16_t numberOfShifts) {
   longInteger_t regX;
 
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     count = 0;
     while((*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & shortIntegerSignBit) == 0) {
@@ -357,7 +373,9 @@ void fnRj(uint16_t numberOfShifts) {
   longInteger_t regX;
 
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     count = 0;
     while((*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) & 1) == 0) {
@@ -388,7 +406,9 @@ void fnMirror(uint16_t unusedButMandatoryParameter) {
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
     uint64_t x, r=0;
 
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     x = *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X));
     if(x != 0) {

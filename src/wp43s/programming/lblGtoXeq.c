@@ -229,7 +229,7 @@ void fnExecute(uint16_t label) {
     fnGoto(label);
     dynamicMenuItem = -1;
     if(lastErrorCode == ERROR_NONE) {
-      #ifndef TESTSUITE_BUILD
+      #if !defined(TESTSUITE_BUILD)
         if(tam.mode) {
           tamLeaveMode();
           refreshScreen();
@@ -312,7 +312,7 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 static void _getStringLabelOrVariableName(uint8_t *stringAddress) {
   uint8_t stringLength = *(uint8_t *)(stringAddress++);
   xcopy(tmpStringLabelOrVariableName, stringAddress, stringLength);
@@ -636,16 +636,16 @@ static void _putLiteral(uint8_t *literalAddress) {
       break;
 
     default: {
-      #ifndef DMCP_BUILD
+        #if !defined(DMCP_BUILD)
         printf("\nERROR: %u is not an acceptable parameter for ITM_LITERAL!\n", *(uint8_t *)(literalAddress - 1));
       #endif // !DMCP_BUILD
     }
   }
 }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 
 int16_t executeOneStep(pgmPtr_t step) {
-#ifdef TESTSUITE_BUILD
+  #if defined(TESTSUITE_BUILD)
   return 0;
 #else // TESTSUITE_BUILD
   uint16_t op;
@@ -661,14 +661,12 @@ int16_t executeOneStep(pgmPtr_t step) {
     op |= *(step.ram++);
   }
 
-  //printf("   >>> OP=%i §%s§%s§\n",op, indexOfItems[(op)].itemCatalogName, indexOfItems[(op)].itemSoftmenuName);
   switch(op) {
     case ITM_GTO:         //     2
     case ITM_XEQ:         //     3
     case ITM_BACK:        //  1412
     case ITM_CASE:        //  1418
     case ITM_SKIP:        //  1603
-      //printf("   >>> @@@\n");
       _executeOp(step.ram, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
       return -1;
 
@@ -721,13 +719,13 @@ int16_t executeOneStep(pgmPtr_t step) {
       }
       return temporaryInformation == TI_FALSE ? 2 : 1;
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
 
 void runProgram(bool_t singleStep, uint16_t menuLabel) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   bool_t nestedEngine = (programRunStop == PGM_RUNNING);
   uint16_t startingSubLevel = (nestedEngine && menuLabel == INVALID_VARIABLE) ? currentSubroutineLevel : 0;
   lastErrorCode = ERROR_NONE;
@@ -735,7 +733,7 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
   programRunStop = PGM_RUNNING;
   if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
     showHideHourGlass();
-    #ifdef DMCP_BUILD
+      #if defined(DMCP_BUILD)
       lcd_refresh();
     #else // !DMCP_BUILD
       refreshLcd(NULL);
@@ -795,7 +793,7 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
     else {
       break;
     }
-    #ifdef DMCP_BUILD
+      #if defined(DMCP_BUILD)
       if(!nestedEngine) {
         int key = key_pop();
         key = convertKeyCode(key);
@@ -819,7 +817,7 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
     if(singleStep) {
       break;
     }
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
       refreshLcd(NULL);
     #endif // PC_BUILD
   }
@@ -833,7 +831,7 @@ stopProgram:
   }
   if(!getSystemFlag(FLAG_INTING) && !getSystemFlag(FLAG_SOLVING)) {
     showHideHourGlass();
-    #ifdef DMCP_BUILD
+      #if defined(DMCP_BUILD)
       lcd_refresh();
       fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, FAST_SCREEN_REFRESH_PERIOD+50);
     #else // !DMCP_BUILD
@@ -841,7 +839,7 @@ stopProgram:
     #endif // DMCP_BUILD
   }
   return;
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 

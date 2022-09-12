@@ -40,7 +40,7 @@
      their discretion
 
 */
-#ifndef __PGM_MAIN_H__
+#if !defined(__PGM_MAIN_H__)
 #define __PGM_MAIN_H__
 
 #include "version.h"
@@ -48,4 +48,4 @@
 #define PROGRAM_NAME    "WP43C"
 #define PROGRAM_VERSION VERSION_SHORT
 
-#endif
+#endif // __PGM_MAIN_H__

@@ -38,7 +38,7 @@
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   typedef struct {
     char     name[16];
     uint16_t opCode;
@@ -103,7 +103,7 @@
 
     { "",                                    0,               0}  // Sentinel
   };
-#endif /* TESTSUITE_BUILD */
+#endif // !TESTSUITE_BUILD
 
 
 void fnEqNew(uint16_t unusedButMandatoryParameter) {
@@ -150,7 +150,7 @@ void fnEqNew(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnEqEdit(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   const char *equationString = TO_PCMEMPTR(allFormulae[currentFormula].pointerToFormulaData);
   if(equationString) xcopy(aimBuffer, equationString, stringByteLength(equationString) + 1);
   else               aimBuffer[0] = 0;
@@ -164,7 +164,7 @@ void fnEqEdit(uint16_t unusedButMandatoryParameter) {
   #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
     calcModeAimGui();
   #endif // PC_BUILD && (SCREEN_800X480 == 0)
-#endif /* TESTSUITE_BUILD */
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnEqDelete(uint16_t unusedButMandatoryParameter) {
@@ -180,9 +180,9 @@ void fnEqCursorRight(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnEqCalc(uint16_t unusedButMandatoryParameter) {
-  #ifdef DEBUGUNDO
+  #if defined(DEBUGUNDO)
     printf(">>> saveForUndo from fnEqCalc, calcMode = %i, something to undo (pre) = %i \n",calcMode, thereIsSomethingToUndo);
-  #endif
+  #endif // DEBUGUNDO
   if(!thereIsSomethingToUndo && !CM_NO_UNDO) saveForUndo();
   parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
@@ -215,22 +215,25 @@ void setEquation(uint16_t equationId, const char *equationString) {
 
 void deleteEquation(uint16_t equationId) {
   if(equationId < numberOfFormulae) {
-    if(allFormulae[equationId].sizeInBlocks > 0)
+    if(allFormulae[equationId].sizeInBlocks > 0) {
       freeWp43s(TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData), allFormulae[equationId].sizeInBlocks);
+    }
     for(uint16_t i = equationId + 1; i < numberOfFormulae; ++i)
       allFormulae[i - 1] = allFormulae[i];
     freeWp43s(allFormulae + (--numberOfFormulae), TO_BLOCKS(sizeof(formulaHeader_t)));
-    if(numberOfFormulae == 0)
+    if(numberOfFormulae == 0) {
       allFormulae = NULL;
-    if(numberOfFormulae > 0 && currentFormula >= numberOfFormulae)
+    }
+    if(numberOfFormulae > 0 && currentFormula >= numberOfFormulae) {
       currentFormula = numberOfFormulae - 1;
+    }
     graphVariable = 0;
   }
 }
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 static void _showExponent(char **bufPtr, const char **strPtr, int16_t *strWidth) {
   switch(*(++(*strPtr))) {
     case '1':
@@ -261,6 +264,7 @@ static void _showExponent(char **bufPtr, const char **strPtr, int16_t *strWidth)
   (*strWidth) += stringWidth(*bufPtr, &standardFont, true, true);
   (*bufPtr) += 2;
 }
+
 static uint32_t _checkExponent(const char *strPtr) {
   uint32_t digits = 0;
   while(1) {
@@ -311,10 +315,10 @@ static void _addSpace(char **bufPtr, int16_t *strWidth, uint32_t *doubleBytednes
     *doubleBytednessHistory <<= 1;
   }
 }
-#endif /* TESTSUITE_BUILD */
+#endif // !TESTSUITE_BUILD
 
 void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool_t dryRun, bool_t *cursorShown, bool_t *rightEllipsis) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(equationId < numberOfFormulae || equationId == EQUATION_AIM_BUFFER) {
     char *bufPtr = tmpString;
     const char *strPtr = equationId == EQUATION_AIM_BUFFER ? aimBuffer : (char *)TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData);
@@ -587,10 +591,14 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
         if(strWidth > (SCREEN_WIDTH - 2)) {
           glyphWidth = stringWidth(STD_ELLIPSIS, &standardFont, true, true);
           while(1) {
-            if(*bufPtr == STD_CURSOR[0] && *(bufPtr + 1) == STD_CURSOR[1]) *cursorShown = false;
+              if(*bufPtr == STD_CURSOR[0] && *(bufPtr + 1) == STD_CURSOR[1]) {
+                *cursorShown = false;
+              }
             strWidth -= stringWidth(bufPtr, &standardFont, true, true);
             *bufPtr = 0;
-            if((strWidth + glyphWidth) <= (SCREEN_WIDTH - 2)) break;
+              if((strWidth + glyphWidth) <= (SCREEN_WIDTH - 2)) {
+                break;
+              }
             doubleBytednessHistory >>= 1;
             bufPtr -= (doubleBytednessHistory & 0x00000001) ? 2 : 1;
           }
@@ -607,15 +615,16 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
       strPtr += ((*strPtr) & 0x80) ? 2 : 1;
     }
 
-    if((!dryRun) && (*cursorShown || cursorAt == EQUATION_NO_CURSOR))
+      if((!dryRun) && (*cursorShown || cursorAt == EQUATION_NO_CURSOR)) {
       showString(tmpString, &standardFont, 1, SCREEN_HEIGHT - SOFTMENU_HEIGHT * 3 + 2 , vmNormal, true, true);
   }
-#endif /* TESTSUITE_BUILD */
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 static void _menuItem(int16_t item, char *bufPtr) {
   xcopy(bufPtr,indexOfItems[item].itemSoftmenuName,stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
   bufPtr[stringByteLength(indexOfItems[item].itemSoftmenuName)+1]=0;
@@ -671,6 +680,7 @@ static uint32_t _operatorPriority(uint16_t func) {
       return 3;
   }
 }
+
 static void _pushNumericStack(char *mvarBuffer, const real34_t *re, const real34_t *im) {
   if((*PARSER_NUMERIC_STACK_POINTER) < PARSER_NUMERIC_STACK_SIZE) {
     real34Copy(re, &PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER * 2    ]);
@@ -684,11 +694,14 @@ static void _pushNumericStack(char *mvarBuffer, const real34_t *re, const real34
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
+
 static void _popNumericStack(char *mvarBuffer, real34_t *re, real34_t *im) {
   if((*PARSER_NUMERIC_STACK_POINTER) > 0) {
     --(*PARSER_NUMERIC_STACK_POINTER);
     real34Copy(&PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER * 2], re);
-    if(im) real34Copy(&PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER * 2 + 1], im);
+      if(im) {
+        real34Copy(&PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER * 2 + 1], im);
+      }
   }
   else {
     displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -696,9 +709,12 @@ static void _popNumericStack(char *mvarBuffer, real34_t *re, real34_t *im) {
       moreInfoOnError("In function parseEquation:", "numeric stack is empty!", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     realToReal34(const_NaN, re);
-    if(im) realToReal34(const_NaN, im);
+      if(im) {
+        realToReal34(const_NaN, im);
+      }
+    }
   }
-}
+
 static void _runDyadicFunction(char *mvarBuffer, uint16_t item) {
   real34_t re, im;
   liftStack();
@@ -736,6 +752,7 @@ static void _runDyadicFunction(char *mvarBuffer, uint16_t item) {
   }
   fnDrop(NOPARAM);
 }
+
 static void _runMonadicFunction(char *mvarBuffer, uint16_t item) {
   real34_t re, im;
   liftStack();
@@ -762,6 +779,7 @@ static void _runMonadicFunction(char *mvarBuffer, uint16_t item) {
   }
   fnDrop(NOPARAM);
 }
+
 static void _runEqFunction(char *mvarBuffer, uint16_t item) {
   switch(item) {
     case PARSER_OPERATOR_ITM_YX: // dyadic functions
@@ -792,6 +810,7 @@ static void _runEqFunction(char *mvarBuffer, uint16_t item) {
       _runMonadicFunction(mvarBuffer, item);
   }
 }
+
 static void _processOperator(uint16_t func, char *mvarBuffer) {
   uint32_t opStackTop = 0xffffffffu;
   for(uint32_t i = 0; i < PARSER_OPERATOR_STACK_SIZE; ++i) {
@@ -941,6 +960,7 @@ static void _processOperator(uint16_t func, char *mvarBuffer) {
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
+
 static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, char *mvarBuffer) {
   uint32_t tmpVal = 0;
   if(parserHint != PARSER_HINT_NUMERIC && stringGlyphLength(strPtr) > 7) {
@@ -955,7 +975,6 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
   }
 
   switch(parseMode) {
-
     case EQUATION_PARSER_MVAR:
       if(parserHint == PARSER_HINT_VARIABLE) {
         char *bufPtr = mvarBuffer;
@@ -1120,10 +1139,10 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
       displayBugScreen("In function _parseWord: Unknown mode of formula parser!");
   }
 }
-#endif /* TESTSUITE_BUILD */
+#endif // !TESTSUITE_BUILD
 
 void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *mvarBuffer) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   const char *strPtr = (char *)TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData);
   char *bufPtr = buffer;
   int16_t numericCount = 0;
@@ -1372,7 +1391,9 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         unaryMinusCanOccur = false;
         afterSpace = false;
     }
-    if(lastErrorCode != ERROR_NONE) return;
+      if(lastErrorCode != ERROR_NONE) {
+        return;
+      }
   }
   if(bufPtr != buffer) {
     *(bufPtr++) = 0;
@@ -1415,5 +1436,5 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
   if(parseMode == EQUATION_PARSER_XEQ) {
     _processOperator(PARSER_OPERATOR_ITM_END_OF_FORMULA, mvarBuffer);
   }
-#endif /* TESTSUITE_BUILD */
+  #endif // !TESTSUITE_BUILD
 }

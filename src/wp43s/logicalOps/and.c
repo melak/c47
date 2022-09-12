@@ -85,7 +85,9 @@ void andError31(void) {
  * \return void
  ***********************************************/
 void fnLogicalAnd(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
   logicalAnd[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
   fnDropY(NOPARAM);
 }

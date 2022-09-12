@@ -23,10 +23,10 @@
 
 #include "typeDefinitions.h"
 #include <stdint.h>
-#if defined(PC_BUILD) && !defined(RPIWSMD)
+#ifdef PC_BUILD
   #include <gtk/gtk.h>
   #include <gdk/gdk.h>
-#endif // PC_BUILD && !RPIWSMD
+#endif // PC_BUILD
 
 //#define displayStackSHOIDISP 2                  //JMSHOIDISP  displayStackSHOIDISP=1: 3 lines of X-repeats
                                                   //JMSHOIDISP  displayStackSHOIDISP=2: 2 lines of X-repeats
@@ -52,36 +52,33 @@ void       fnPoint                            (uint16_t unusedButMandatoryParame
 void       fnAGraph                           (uint16_t regist);
 
 #ifdef PC_BUILD
+  /**
+   * Draws the calc's screen on the PC window widget.
+   *
+   * \param[in] widget Not used
+   * \param[in] cr
+   * \param[in] data   Not used
+   */
+  gboolean drawScreen                         (GtkWidget *widget, cairo_t *cr, gpointer data);
   void     copyScreenToClipboard              (void);
   void     copyRegisterXToClipboard           (void);
   void     copyStackRegistersToClipboardString(char *clipboardString);
   void     copyStackRegistersToClipboard      (void);
   void     copyAllRegistersToClipboard        (void);
   void     copyRegisterToClipboardString      (calcRegister_t regist, char *clipboardString);
-
-  #ifndef RPIWSMD
-    /**
-     * Refreshes calc's screen.
-     * This function is called every SCREEN_REFRESH_PERIOD ms by a GTK timer.
-     * - make the cursor blink if needed
-     * - refresh date and time in the status bar if needed
-     * - refresh the whole screen if needed
-     *
-     * \param[in] unusedData Not used
-     * \return What will happen next?
-     *   - true  = timer will call this function again
-     *   - false = timer stops calling this function
-     */
-    gboolean refreshLcd                         (gpointer unusedData);
-    /**
-     * Draws the calc's screen on the PC window widget.
-     *
-     * \param[in] widget Not used
-     * \param[in] cr
-     * \param[in] data   Not used
-     */
-    gboolean drawScreen                         (GtkWidget *widget, cairo_t *cr, gpointer data);
-  #endif // !RPIWSMD
+  /**
+   * Refreshes calc's screen.
+   * This function is called every SCREEN_REFRESH_PERIOD ms by a GTK timer.
+   * - make the cursor blink if needed
+   * - refresh date and time in the status bar if needed
+   * - refresh the whole screen if needed
+   *
+   * \param[in] unusedData Not used
+   * \return What will happen next?
+   *   - true  = timer will call this function again
+   *   - false = timer stops calling this function
+   */
+  gboolean refreshLcd                         (gpointer unusedData);
 #endif // PC_BUILD
 
 #ifdef DMCP_BUILD

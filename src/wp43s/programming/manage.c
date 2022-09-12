@@ -348,7 +348,7 @@ void scrollPemForwards(void) {
 
 void fnPem(uint16_t unusedButMandatoryParameter) {
 #ifndef SAVE_SPACE_DM42_10
-  #ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
     ///////////////////////////////////////////////////////////////////////////////////////
     // For this function to work properly we need the following variables set properly:
     //  - currentProgramNumber
@@ -437,7 +437,9 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
             lineOffset += 1;
             lineOffsetTam += 1;
             showString(tmpString, &standardFont, 1, tamOverPemYPos, vmReverse, false, true);
-            if(line >= 7) break;
+            if(line >= 7) {
+              break;
+            }
             sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset + lineOffsetTam);
             showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal, false, true);
           }
@@ -448,7 +450,9 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
             lineOffset += 1;
             lineOffsetTam += 1;
             showString(tmpString, &standardFont, 1, tamOverPemYPos, vmReverse, false, true);
-            if(line >= 7) break;
+            if(line >= 7) {
+              break;
+            }
             sprintf(tmpString, "%04d:" STD_SPACE_4_PER_EM, firstDisplayedLocalStepNumber + line - lineOffset + lineOffsetTam);
             showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 21 * line, vmNormal, false, true);
           }
@@ -538,7 +542,7 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       showSoftmenuCurrentPart();
       fnPem(NOPARAM);
     }
-  #endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 #endif //SAVE_SPACE_DM42_10
 }
 
@@ -576,7 +580,7 @@ static void _insertInProgram(const uint8_t *dat, uint16_t size) {
 }
 
 void pemAlpha(int16_t item) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(!getSystemFlag(FLAG_ALPHA)) {
     shiftF = false;
     shiftG = false;
@@ -604,8 +608,12 @@ void pemAlpha(int16_t item) {
   if(indexOfItems[item].func == addItemToBuffer) {
     int32_t len = stringByteLength(aimBuffer);
     if(alphaCase == AC_LOWER) {
-      if     (ITM_A     <= item && item <= ITM_Z    ) item += 26;
-      else if(ITM_ALPHA <= item && item <= ITM_OMEGA) item += 36;
+        if(ITM_A <= item && item <= ITM_Z) {
+          item += 26;
+        }
+        else if(ITM_ALPHA <= item && item <= ITM_OMEGA) {
+          item += 36;
+        }
     }
     item = convertItemToSubOrSup(item, nextChar);
     if(len < (256 - stringByteLength(indexOfItems[item].itemSoftmenuName)) && stringGlyphLength(aimBuffer) < 196) {
@@ -646,13 +654,14 @@ void pemAlpha(int16_t item) {
   _insertInProgram((uint8_t *)tmpString, stringByteLength(aimBuffer) + 3);
   --currentLocalStepNumber;
   currentStep = findPreviousStep(currentStep);
-  if(!programListEnd)
+    if(!programListEnd) {
     scrollPemBackwards();
-#endif // TESTSUITE_BUILD
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 void pemCloseAlphaInput(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   aimBuffer[0] = 0;
   clearSystemFlag(FLAG_ALPHA);
   #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
@@ -662,11 +671,11 @@ void pemCloseAlphaInput(void) {
   currentStep = findNextStep(currentStep);
   ++firstDisplayedLocalStepNumber;
   firstDisplayedStep = findNextStep(firstDisplayedStep);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void pemAddNumber(int16_t item) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(aimBuffer[0] == 0) {
     tmpString[0] = ITM_LITERAL;
     tmpString[1] = STRING_LONG_INTEGER;
@@ -754,19 +763,20 @@ void pemAddNumber(int16_t item) {
       _insertInProgram((uint8_t *)tmpString, stringByteLength(numBuffer) + 3);
       --currentLocalStepNumber;
       currentStep = findPreviousStep(currentStep);
-      if(!programListEnd)
+        if(!programListEnd) {
         scrollPemBackwards();
     }
+      }
     calcMode = CM_PEM;
   }
   else {
     aimBuffer[0] = 0;
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void pemCloseNumberInput(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
   if(aimBuffer[0] != 0) {
     char *numBuffer = aimBuffer[0] == '+' ? aimBuffer + 1 : aimBuffer;
@@ -807,7 +817,7 @@ void pemCloseNumberInput(void) {
 }
 
 static void _pemCloseTimeInput(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   switch(nimNumberPart) {
     case NP_INT_10:
     case NP_REAL_FLOAT_PART:
@@ -825,11 +835,11 @@ static void _pemCloseTimeInput(void) {
       aimBuffer[0] = '!';
       break;
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 static void _pemCloseDateInput(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(nimNumberPart == NP_REAL_FLOAT_PART) {
     deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
     if(aimBuffer[0] != 0) {
@@ -852,11 +862,11 @@ static void _pemCloseDateInput(void) {
 
     aimBuffer[0] = '!';
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 static void _pemCloseDmsInput(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   switch(nimNumberPart) {
     case NP_INT_10:
     case NP_REAL_FLOAT_PART:
@@ -874,7 +884,7 @@ static void _pemCloseDmsInput(void) {
       aimBuffer[0] = '!';
       break;
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void insertStepInProgram(int16_t func) {
@@ -973,7 +983,7 @@ void insertStepInProgram(int16_t func) {
           break;
 
         case ITM_GTOP:           // 1482
-          #ifndef DMCP_BUILD
+          #if !defined(DMCP_BUILD)
             stringToUtf8(indexOfItems[func].itemCatalogName, (uint8_t *)tmpString);
             printf("insertStepInProgram: %s\n", tmpString);
           #endif // DMCP_BUILD
@@ -1123,9 +1133,10 @@ void addStepInProgram(int16_t func) {
           return;
       }
     }
-    if(!programListEnd)
+    if(!programListEnd) {
       scrollPemBackwards();
   }
+}
 }
 
 

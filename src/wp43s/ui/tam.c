@@ -38,7 +38,7 @@
 
 #include "wp43s.h"
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   int16_t tamOperation(void) {
     switch(tam.function) {
       case ITM_STO :
@@ -903,4 +903,4 @@
     _tamProcessInput(item);
     _tamUpdateBuffer();
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD

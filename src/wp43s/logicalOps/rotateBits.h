@@ -17,7 +17,7 @@
 /********************************************//**
  * \file rotateBits.h
  ***********************************************/
-#ifndef ROTATEBITS_H
+#if !defined(ROTATEBITS_H)
 #define ROTATEBITS_H
 
 #include <stdint.h>
@@ -33,5 +33,4 @@ void fnLj    (uint16_t numberOfShifts);
 void fnRj    (uint16_t numberOfShifts);
 void fnMirror(uint16_t unusedButMandatoryParameter);
 void fnSwapEndian(uint8_t bitWidth);                  //JM
-
-#endif // ROTATEBITS_H
+#endif // !ROTATEBITS_H

@@ -1,7 +1,7 @@
-#include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <glib.h>
 #include <gmp.h>
+#include <gtk/gtk.h>
 #include <inttypes.h>
 #include <locale.h>
 #include <math.h>

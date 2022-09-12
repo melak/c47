@@ -581,7 +581,9 @@ void setParameter(char *p) {
   //printf("  setting %s\n", p);
 
   i = 0;
-  while(p[i] != '=' && p[i] != 0) i++;
+  while(p[i] != '=' && p[i] != 0) {
+    i++;
+  }
   if(p[i] == 0) {
     printf("\nMissformed parameter setting. Missing equal sign, remember that no space is allowed around the equal sign.\n");
     abortTest();
@@ -912,7 +914,9 @@ void setParameter(char *p) {
 
     // find the : separating the data type and the value
     i = 0;
-    while(r[i] != ':' && r[i] != 0) i++;
+    while(r[i] != ':' && r[i] != 0) {
+      i++;
+    }
     if(r[i] == 0) {
       printf("\nMissformed register value. Missing colon between data type and value.\n");
       abortTest();
@@ -928,7 +932,9 @@ void setParameter(char *p) {
 
       // remove beginning and ending " and removing leading spaces
       xcopy(r, r + 1, strlen(r));
-      while(r[0] == ' ') xcopy(r, r + 1, strlen(r));
+      while(r[0] == ' ') {
+        xcopy(r, r + 1, strlen(r));
+      }
       r[strlen(r) - 1] = 0;
 
       longIntegerInit(lgInt);
@@ -939,7 +945,9 @@ void setParameter(char *p) {
     else if(strcmp(l, "REAL") == 0) {
       // find the : separating the real value from the angular mode
       i = 0;
-      while(r[i] != ':' && r[i] != 0) i++;
+      while(r[i] != ':' && r[i] != 0) {
+        i++;
+      }
       if(r[i] == 0) {
         strcat(r, ":NONE");
       }
@@ -966,7 +974,9 @@ void setParameter(char *p) {
 
       // replace , with .
       for(i=0; i<(int)strlen(r); i++) {
-        if(r[i] == ',') r[i] = '.';
+        if(r[i] == ',') {
+          r[i] = '.';
+        }
       }
 
       reallocateRegister(regist, dtReal34, REAL34_SIZE, am);
@@ -980,7 +990,9 @@ void setParameter(char *p) {
     else if(strcmp(l, "SHOI") == 0) {
       // find the # separating the value from the base
       i = 0;
-      while(r[i] != '#' && r[i] != 0) i++;
+      while(r[i] != '#' && r[i] != 0) {
+        i++;
+      }
       if(r[i] == 0) {
         printf("\nMissformed register short integer value. Missing # between value and base.\n");
         abortTest();
@@ -988,7 +1000,9 @@ void setParameter(char *p) {
 
       // remove beginning and ending " and removing leading spaces
       xcopy(r, r + 1, strlen(r));
-      while(r[0] == ' ') xcopy(r, r + 1, strlen(r));
+      while(r[0] == ' ') {
+        xcopy(r, r + 1, strlen(r));
+      }
       r[strlen(r) - 1] = 0;
 
       // Convert string to upper case
@@ -1003,12 +1017,16 @@ void setParameter(char *p) {
     else if(strcmp(l, "CPLX") == 0) {
       // remove beginning and ending " and removing leading spaces
       xcopy(r, r + 1, strlen(r));
-      while(r[0] == ' ') xcopy(r, r + 1, strlen(r));
+      while(r[0] == ' ') {
+        xcopy(r, r + 1, strlen(r));
+      }
       r[strlen(r) - 1] = 0;
 
       // find the i separating the real and imagynary part
       i = 0;
-      while(r[i] != 'i' && r[i] != 0) i++;
+      while(r[i] != 'i' && r[i] != 0) {
+        i++;
+      }
       if(r[i] == 0) {
         printf("\nMissformed register complex34 value. Missing i between real and imaginary part.\n");
         abortTest();
@@ -1020,22 +1038,32 @@ void setParameter(char *p) {
       strcpy(imag, r + i + 1);
 
       // remove leading spaces
-      while(imag[0] == ' ') xcopy(imag, imag + 1, strlen(imag));
+      while(imag[0] == ' ') {
+        xcopy(imag, imag + 1, strlen(imag));
+      }
 
       // removing trailing spaces from real part
-      while(real[strlen(real) - 1] == ' ') real[strlen(real) - 1] = 0;
+      while(real[strlen(real) - 1] == ' ') {
+        real[strlen(real) - 1] = 0;
+      }
 
       // removing trailing spaces from imaginary part
-      while(imag[strlen(imag) - 1] == ' ') imag[strlen(imag) - 1] = 0;
+      while(imag[strlen(imag) - 1] == ' ') {
+        imag[strlen(imag) - 1] = 0;
+      }
 
       // replace , with . in the real part
       for(i=0; i<(int)strlen(real); i++) {
-        if(real[i] == ',') real[i] = '.';
+        if(real[i] == ',') {
+          real[i] = '.';
+        }
       }
 
       // replace , with . in the imaginary part
       for(i=0; i<(int)strlen(imag); i++) {
-        if(imag[i] == ',') imag[i] = '.';
+        if(imag[i] == ',') {
+          imag[i] = '.';
+        }
       }
 
       reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, amNone);
@@ -1048,7 +1076,9 @@ void setParameter(char *p) {
 
       // find the : separating hours and minutes
       i = 0;
-      while(r[i] != ':' && r[i] != 0) i++;
+      while(r[i] != ':' && r[i] != 0) {
+        i++;
+      }
       if(r[i] == ':') { // Input by HMS
         isHms = true;
         k = i;
@@ -1064,12 +1094,16 @@ void setParameter(char *p) {
 
       // remove beginning and ending " and removing leading spaces
       xcopy(r, r + 1, strlen(r));
-      while(r[0] == ' ') xcopy(r, r + 1, strlen(r));
+      while(r[0] == ' ') {
+        xcopy(r, r + 1, strlen(r));
+      }
       r[strlen(r) - 1] = 0;
 
       // replace , with .
       for(i=0; i<(int)strlen(r); i++) {
-        if(r[i] == ',') r[i] = '.';
+        if(r[i] == ',') {
+          r[i] = '.';
+        }
       }
 
       reallocateRegister(regist, dtTime, REAL34_SIZE, amNone);
@@ -1081,12 +1115,16 @@ void setParameter(char *p) {
     else if(strcmp(l, "DATE") == 0) {
       // remove beginning and ending " and removing leading spaces
       xcopy(r, r + 1, strlen(r));
-      while(r[0] == ' ') xcopy(r, r + 1, strlen(r));
+      while(r[0] == ' ') {
+        xcopy(r, r + 1, strlen(r));
+      }
       r[strlen(r) - 1] = 0;
 
       // replace , with .
       for(i=0; i<(int)strlen(r); i++) {
-        if(r[i] == ',') r[i] = '.';
+        if(r[i] == ',') {
+          r[i] = '.';
+        }
       }
 
       reallocateRegister(regist, dtReal34, REAL34_SIZE, amNone);
@@ -1123,7 +1161,9 @@ void inParameters(char *token) {
 
   strReplace(token, "inf", "9e9999");
 
-  while(*token == ' ') token++;
+  while(*token == ' ') {
+    token++;
+  }
   while(*token != 0) {
     int32_t index = 0;
     while(*token != ' ' && *token != 0) {
@@ -1139,7 +1179,9 @@ void inParameters(char *token) {
 
     setParameter(parameter);
 
-    while(*token == ' ') token++;
+    while(*token == ' ') {
+      token++;
+    }
   }
 }
 
@@ -1287,7 +1329,7 @@ bool_t real34AreEqual(real34_t *a, real34_t *b) {
 
   if( real34IsInfinite(a) && !real34IsInfinite(b)) return false;
   if(!real34IsInfinite(a) &&  real34IsInfinite(b)) return false;
-  if(real34IsInfinite(a) && real34IsInfinite(b)) {
+  if( real34IsInfinite(a) &&  real34IsInfinite(b)) {
     if(real34IsPositive(a) && real34IsPositive(b)) return true;
     if(real34IsNegative(a) && real34IsNegative(b)) return true;
     return false;
@@ -1307,7 +1349,9 @@ void checkExpectedOutParameter(char *p) {
   //printf("  Checking %s\n", p);
 
   i = 0;
-  while(p[i] != '=' && p[i] != 0) i++;
+  while(p[i] != '=' && p[i] != 0) {
+    i++;
+  }
   if(p[i] == 0) {
     printf("\nMissformed out parameter. Missing equal sign, remember that no space is allowed around the equal sign.\n");
     abortTest();
@@ -1737,7 +1781,9 @@ void checkExpectedOutParameter(char *p) {
 
     // find the : separating the data type and the value
     i = 0;
-    while(r[i] != ':' && r[i] != 0) i++;
+    while(r[i] != ':' && r[i] != 0) {
+      i++;
+    }
     if(r[i] == 0) {
       printf("\nMissformed register value. Missing colon between data type and value.\n");
       abortTest();
@@ -1753,7 +1799,9 @@ void checkExpectedOutParameter(char *p) {
 
       // remove beginning and ending " and removing leading spaces
       xcopy(r, r + 1, strlen(r));
-      while(r[0] == ' ') xcopy(r, r + 1, strlen(r));
+      while(r[0] == ' ') {
+        xcopy(r, r + 1, strlen(r));
+      }
       r[strlen(r) - 1] = 0;
 
       longIntegerInit(expectedLongInteger);
@@ -1770,7 +1818,9 @@ void checkExpectedOutParameter(char *p) {
     else if(strcmp(l, "REAL") == 0) {
       // find the : separating the real value from the angular mode
       i = 0;
-      while(r[i] != ':' && r[i] != 0) i++;
+      while(r[i] != ':' && r[i] != 0) {
+        i++;
+      }
       if(r[i] == 0) {
         strcat(r, ":NONE");
       }
@@ -1793,12 +1843,16 @@ void checkExpectedOutParameter(char *p) {
 
       // remove beginning and ending " and removing leading spaces
       xcopy(r, r + 1, strlen(r));
-      while(r[0] == ' ') xcopy(r, r + 1, strlen(r));
+      while(r[0] == ' ') {
+        xcopy(r, r + 1, strlen(r));
+      }
       r[strlen(r) - 1] = 0;
 
       // replace , with .
       for(i=0; i<(int)strlen(r); i++) {
-        if(r[i] == ',') r[i] = '.';
+        if(r[i] == ',') {
+          r[i] = '.';
+        }
       }
 
       checkRegisterType(regist, letter, dtReal34, am);
@@ -1831,9 +1885,7 @@ void checkExpectedOutParameter(char *p) {
         abortTest();
       }
 
-      for(i=stringByteLength(r + 1), expected=r + 1, is=REGISTER_STRING_DATA(regist);
-          i>0;
-          i--, expected++, is++) {
+      for(i=stringByteLength(r + 1), expected=r + 1, is=REGISTER_STRING_DATA(regist); i>0; i--, expected++, is++) {
         //printf("%c %02x   %c %02x\n", *expected, (unsigned char)*expected, *is, (unsigned char)*is);
         if(*expected != *is) {
           printf("\nThe 2 strings are different.\nRegister string: ");
@@ -1852,7 +1904,9 @@ void checkExpectedOutParameter(char *p) {
     else if(strcmp(l, "SHOI") == 0) {
       // find the # separating the value from the base
       i = 0;
-      while(r[i] != '#' && r[i] != 0) i++;
+      while(r[i] != '#' && r[i] != 0) {
+        i++;
+      }
       if(r[i] == 0) {
         printf("\nMissformed register short integer value. Missing # between value and base.\n");
         abortTest();
@@ -1860,7 +1914,9 @@ void checkExpectedOutParameter(char *p) {
 
       // remove beginning and ending " and removing leading spaces
       xcopy(r, r + 1, strlen(r));
-      while(r[0] == ' ') xcopy(r, r + 1, strlen(r));
+      while(r[0] == ' ') {
+        xcopy(r, r + 1, strlen(r));
+      }
       r[strlen(r) - 1] = 0;
 
       // Convert string to upper case
@@ -1881,12 +1937,16 @@ void checkExpectedOutParameter(char *p) {
 
       // remove beginning and ending " and removing leading spaces
       xcopy(r, r + 1, strlen(r));
-      while(r[0] == ' ') xcopy(r, r + 1, strlen(r));
+      while(r[0] == ' ') {
+        xcopy(r, r + 1, strlen(r));
+      }
       r[strlen(r) - 1] = 0;
 
       // find the i separating the real and imagynary part
       i = 0;
-      while(r[i] != 'i' && r[i] != 0) i++;
+      while(r[i] != 'i' && r[i] != 0) {
+        i++;
+      }
       if(r[i] == 0) {
         printf("\nMissformed register complex34 value. Missing i between real and imaginary part.\n");
         abortTest();
@@ -1898,22 +1958,32 @@ void checkExpectedOutParameter(char *p) {
       strcpy(imag, r + i + 1);
 
       // remove leading spaces
-      while(imag[0] == ' ') xcopy(imag, imag + 1, strlen(imag));
+      while(imag[0] == ' ') {
+        xcopy(imag, imag + 1, strlen(imag));
+      }
 
       // removing trailing spaces from real part
-      while(real[strlen(real) - 1] == ' ') real[strlen(real) - 1] = 0;
+      while(real[strlen(real) - 1] == ' ') {
+        real[strlen(real) - 1] = 0;
+      }
 
       // removing trailing spaces from imaginary part
-      while(imag[strlen(imag) - 1] == ' ') imag[strlen(imag) - 1] = 0;
+      while(imag[strlen(imag) - 1] == ' ') {
+        imag[strlen(imag) - 1] = 0;
+      }
 
       // replace , with . in the real part
       for(i=0; i<(int)strlen(real); i++) {
-        if(real[i] == ',') real[i] = '.';
+        if(real[i] == ',') {
+          real[i] = '.';
+        }
       }
 
       // replace , with . in the imaginary part
       for(i=0; i<(int)strlen(imag); i++) {
-        if(imag[i] == ',') imag[i] = '.';
+        if(imag[i] == ',') {
+          imag[i] = '.';
+        }
       }
 
       stringToReal34(real, &expectedReal34);
@@ -1941,7 +2011,9 @@ void checkExpectedOutParameter(char *p) {
 
       // find the : separating hours and minutes
       i = 0;
-      while(r[i] != ':' && r[i] != 0) i++;
+      while(r[i] != ':' && r[i] != 0) {
+        i++;
+      }
       if(r[i] == ':') { // Input by HMS
         isHms = true;
         k = i;
@@ -1957,12 +2029,16 @@ void checkExpectedOutParameter(char *p) {
 
       // remove beginning and ending " and removing leading spaces
       xcopy(r, r + 1, strlen(r));
-      while(r[0] == ' ') xcopy(r, r + 1, strlen(r));
+      while(r[0] == ' ') {
+        xcopy(r, r + 1, strlen(r));
+      }
       r[strlen(r) - 1] = 0;
 
       // replace , with .
       for(i=0; i<(int)strlen(r); i++) {
-        if(r[i] == ',') r[i] = '.';
+        if(r[i] == ',') {
+          r[i] = '.';
+        }
       }
 
       checkRegisterType(regist, letter, dtTime, amNone);
@@ -1980,12 +2056,16 @@ void checkExpectedOutParameter(char *p) {
     else if(strcmp(l, "DATE") == 0) {
       // remove beginning and ending " and removing leading spaces
       xcopy(r, r + 1, strlen(r));
-      while(r[0] == ' ') xcopy(r, r + 1, strlen(r));
+      while(r[0] == ' ') {
+        xcopy(r, r + 1, strlen(r));
+      }
       r[strlen(r) - 1] = 0;
 
       // replace , with .
       for(i=0; i<(int)strlen(r); i++) {
-        if(r[i] == ',') r[i] = '.';
+        if(r[i] == ',') {
+          r[i] = '.';
+        }
       }
 
       checkRegisterType(regist, letter, dtDate, amNone);
@@ -2020,7 +2100,9 @@ void outParameters(char *token) {
 
   strReplace(token, "inf", "9e9999");
 
-  while(*token == ' ') token++;
+  while(*token == ' ') {
+    token++;
+  }
   while(*token != 0) {
     int32_t index = 0;
     while(*token != ' ' && *token != 0) {
@@ -2037,7 +2119,9 @@ void outParameters(char *token) {
     //printf("  Check %s\n", parameter);
     checkExpectedOutParameter(parameter);
 
-    while(*token == ' ') token++;
+    while(*token == ' ') {
+      token++;
+    }
   }
 }
 
@@ -2128,9 +2212,6 @@ void functionToCall(char *functionName) {
       }
 
       return;
-    }
-
-    else {
     }
   }
 
@@ -2303,7 +2384,7 @@ void processOneFile(void) {
 
   fclose(testSuite);
 
-//  printf(" %d passed successfully\n", numTestsFile);
+  //printf(" %d passed successfully\n", numTestsFile);
   printf("\n");
 }
 

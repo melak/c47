@@ -33,18 +33,17 @@
 #include "typeDefinitions.h"
 #include <inttypes.h>
 #include <stdio.h>
-#if defined(PC_BUILD) && !defined(RPIWSMD)
+#ifdef PC_BUILD
   #include <glib.h>
-#endif // PC_BUILD && !RPIWSMD
+#endif // PC_BUILD
 
 #include "wp43s.h"
 
 
 kb_timer_t  timer[TMR_NUMBER];
-#if defined(PC_BUILD) && !defined(RPIWSMD)
+#ifdef PC_BUILD
 gint64      timerLastCalled;
-#endif // PC_BUILD && !RPIWSMD
-
+#endif
 #ifdef DMCP_BUILD
 uint32_t    timerLastCalled;
 bool_t      mutexRefreshTimer = false;
@@ -133,7 +132,7 @@ gboolean refreshTimer(gpointer data) {      // This function is called every 5 m
 
   timerLastCalled = now;
 
-  //fnRebuildTimerRefresh();
+//fnRebuildTimerRefresh();
 
   return TRUE;
 }
@@ -182,9 +181,9 @@ void fnTimerDummyTest(uint16_t param) {
 
 
 void fnTimerReset(void) {
-  #ifndef TESTSUITE_BUILD
-    timerLastCalled = 0;
-  #endif
+#ifndef TESTSUITE_BUILD
+  timerLastCalled = 0;
+#endif
 
   for(int i = 0; i < TMR_NUMBER; i++) {
     timer[i].state = TMR_UNUSED;
@@ -192,9 +191,9 @@ void fnTimerReset(void) {
     timer[i].param = 0;
   }
 
-  #ifdef DMCP_BUILD
-    mutexRefreshTimer = false;
-  #endif
+#ifdef DMCP_BUILD
+  mutexRefreshTimer = false;
+#endif
   fnRebuildTimerRefresh();
 }
 

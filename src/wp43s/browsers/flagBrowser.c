@@ -35,7 +35,7 @@
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 #ifndef SAVE_SPACE_DM42_8
   TO_QSPI const char flagLetter[] = "XYZTABCDLIJK";
 
@@ -409,4 +409,4 @@
     lastFlgScr = currentFlgScr;
   #endif //SAVE_SPACE_DM42_8
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD

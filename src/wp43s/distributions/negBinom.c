@@ -110,7 +110,9 @@ static bool_t checkParamNegBinom(real_t *x, real_t *i, real_t *j) {
 void fnNegBinomialP(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, num;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamNegBinom(&val, &prob, &num)) {
     if(realIsAnInteger(&val)) pdf_NegBinomial(&val, &prob, &num, &ans, &ctxtReal39);
@@ -134,7 +136,9 @@ void fnNegBinomialP(uint16_t unusedButMandatoryParameter) {
 void fnNegBinomialL(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, num;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamNegBinom(&val, &prob, &num)) {
     cdf_NegBinomial(&val, &prob, &num, &ans, &ctxtReal39);
@@ -157,7 +161,9 @@ void fnNegBinomialL(uint16_t unusedButMandatoryParameter) {
 void fnNegBinomialR(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, num;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamNegBinom(&val, &prob, &num)) {
     cdfu_NegBinomial(&val, &prob, &num, &ans, &ctxtReal39);
@@ -180,7 +186,9 @@ void fnNegBinomialR(uint16_t unusedButMandatoryParameter) {
 void fnNegBinomialI(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, num;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamNegBinom(&val, &prob, &num)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
@@ -224,7 +232,9 @@ bool_t negBinom_param(const real_t *r, real_t *res) {
 void pdf_NegBinomial(const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext) {
   real_t p, q, xx, c;
 
-  if(!negBinom_param(r, res)) return;
+  if(!negBinom_param(r, res)) {
+    return;
+  }
   if(realIsNegative(x)) {
     realZero(res);
     return;
@@ -251,7 +261,9 @@ void pdf_NegBinomial(const real_t *x, const real_t *p0, const real_t *r, real_t 
 void cdfu_NegBinomial(const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext) {
   real_t p;
 
-  if(!negBinom_param(r, res)) return;
+  if(!negBinom_param(r, res)) {
+    return;
+  }
   realToIntegralValue(x, &p, DEC_ROUND_CEILING, realContext);
   if(realCompareLessThan(&p, const_1)) {
     realCopy(const_1, res);
@@ -265,7 +277,9 @@ void cdfu_NegBinomial(const real_t *x, const real_t *p0, const real_t *r, real_t
 void cdf_NegBinomial(const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext) {
   real_t p;
 
-  if(!negBinom_param(r, res)) return;
+  if(!negBinom_param(r, res)) {
+    return;
+  }
   realToIntegralValue(x, &p, DEC_ROUND_FLOOR, realContext);
   cdf_NegBinomial2(&p, p0, r, res, realContext);
 }
@@ -287,7 +301,9 @@ void cdf_NegBinomial2(const real_t *x, const real_t *p0, const real_t *r, real_t
 void qf_NegBinomial(const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext) {
   real_t p0c, pr, mean, var, s;
 
-  if(!negBinom_param(r, res)) return;
+  if(!negBinom_param(r, res)) {
+    return;
+  }
   if(realCompareLessEqual(x, const_0)) {
     realZero(res);
     return;

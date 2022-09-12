@@ -94,7 +94,9 @@ static bool_t checkParamHyper(real_t *x, real_t *i, real_t *j, real_t *k) {
   realMultiply(i, k, &ik, &ctxtReal39), realToIntegralValue(&ik, &ik, DEC_ROUND_HALF_EVEN, &ctxtReal39);
   realAdd(j, &ik, &xmin, &ctxtReal39);
   realSubtract(&xmin, k, &xmin, &ctxtReal39);
-  if(realIsNegative(&xmin)) realCopy(const_0, &xmin);
+  if(realIsNegative(&xmin)) {
+    realCopy(const_0, &xmin);
+  }
   realCopy(realCompareLessThan(&ik, j) ? &ik : j, &xmax);
 
   if((!checkRegisterNoFP(REGISTER_J)) || (!checkRegisterNoFP(REGISTER_K))) {
@@ -128,11 +130,17 @@ static bool_t checkParamHyper(real_t *x, real_t *i, real_t *j, real_t *k) {
 void fnHypergeometricP(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, samp, batch;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamHyper(&val, &prob, &samp, &batch)) {
-    if(realIsAnInteger(&val)) pdf_Hypergeometric(&val, &prob, &samp, &batch, &ans, &ctxtReal39);
-    else                      realZero(&ans);
+    if(realIsAnInteger(&val)) {
+      pdf_Hypergeometric(&val, &prob, &samp, &batch, &ans, &ctxtReal39);
+    }
+    else {
+      realZero(&ans);
+    }
     if(realIsNaN(&ans)) {
       displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -152,7 +160,9 @@ void fnHypergeometricP(uint16_t unusedButMandatoryParameter) {
 void fnHypergeometricL(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, samp, batch;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamHyper(&val, &prob, &samp, &batch)) {
     cdf_Hypergeometric(&val, &prob, &samp, &batch, &ans, &ctxtReal75);
@@ -175,7 +185,9 @@ void fnHypergeometricL(uint16_t unusedButMandatoryParameter) {
 void fnHypergeometricR(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, samp, batch;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamHyper(&val, &prob, &samp, &batch)) {
     cdfu_Hypergeometric(&val, &prob, &samp, &batch, &ans, &ctxtReal75);
@@ -198,7 +210,9 @@ void fnHypergeometricR(uint16_t unusedButMandatoryParameter) {
 void fnHypergeometricI(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob, samp, batch;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamHyper(&val, &prob, &samp, &batch)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
@@ -228,7 +242,6 @@ void fnHypergeometricI(uint16_t unusedButMandatoryParameter) {
 
 // PDF(k; n, K, N) = (K C k) ((N-K) C (n-k)) / (N C n)
 void pdf_Hypergeometric(const real_t *x, const real_t *p0, const real_t *n, const real_t *n0, real_t *res, realContext_t *realContext) {
-
   real_t a, b, c, q, x0;
 
   realMultiply(p0, n0, &x0, realContext); // p0 == x0 / n0

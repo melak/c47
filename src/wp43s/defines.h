@@ -20,10 +20,6 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-//??? #ifdef DMCP_BUILD
-//???   #include <dmcp.h>
-//??? #endif // DMCP_BUILD
-
 //*********************************
 // JM VARIOUS OPTIONS
 //*********************************
@@ -675,7 +671,7 @@ typedef enum {
     #error Only Linux, MacOS, and Windows MINGW64 are supported for now
   #endif // OS
 #else // PC_BUILD
-  #define LINEBREAK                           "\n\r"
+  #define LINEBREAK                           "\n\r"                       //JM
 #endif // !PC_BUILD
 
 #define NUMBER_OF_DISPLAY_DIGITS                  16
@@ -1217,17 +1213,6 @@ typedef enum {
   #error Only one of OS32BIT and OS64BIT must be defined
 #endif // defined(OS32BIT) && defined(OS64BIT)
 
-#if defined(RPIWSMD) && !defined(RASPBERRY)
-  #error RASPBERRY is not defined. Build for Raspberry with Sharp memory display must happen on a Raspberry
-#endif // RPIWSMD && !RASPBERRY
-
-#ifdef RPIWSMD
-  #undef SCREEN_800X480
-  #define SCREEN_800x480 0
-  #undef  DEBUG_PANEL
-  #define DEBUG_PANEL 0
-#endif
-
 #ifdef PC_BUILD
   #ifdef WIN32 // No DEBUG_PANEL mode for Windows
     #undef  DEBUG_PANEL
@@ -1238,11 +1223,6 @@ typedef enum {
     #define DEBUG_PANEL 0
   #endif // RASPBERRY
 #endif // PC_BUILD
-
-#ifdef RPIWSMD
-  #define REVERSE(b) ((((b) * 0x0202020202ULL) & 0x010884422010ULL) % 0x3ff) // reverses the bit order of one byte
-  #define CHIP_SELECT 25 // pin 22 = GPIO 25
-#endif // RPIWSMD
 
   #if defined(DMCP_BUILD) || (SCREEN_800X480 == 1)
     #undef  DEBUG_PANEL

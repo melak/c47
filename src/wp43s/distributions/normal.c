@@ -98,7 +98,9 @@ static bool_t checkParamNormal(real_t *x, real_t *i, real_t *j) {
 static void normalP(bool_t logNormal) {
   real_t val, alval, mu, sigma, ans;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamNormal(&val, &mu, &sigma)) {
     if(logNormal && realIsZero(&val)) {
@@ -134,7 +136,9 @@ static void normalP(bool_t logNormal) {
 static void normalL(bool_t logNormal) {
   real_t val, mu, sigma, ans;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamNormal(&val, &mu, &sigma)) {
     if(logNormal && realIsZero(&val)) {
@@ -163,7 +167,9 @@ static void normalL(bool_t logNormal) {
 static void normalR(bool_t logNormal) {
   real_t val, mu, sigma, ans;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamNormal(&val, &mu, &sigma)) {
     if(logNormal && realIsZero(&val)) {
@@ -192,7 +198,9 @@ static void normalR(bool_t logNormal) {
 static void normalI(bool_t logNormal) {
   real_t val, mu, sigma, ans;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamNormal(&val, &mu, &sigma)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
@@ -260,7 +268,9 @@ static void cdf_q(const real_t *x, real_t *res, realContext_t *realContext, bool
   real_t p;
 
   if(upper) {
-    if(realIsNegative(x)) goto cdfu_q_flip;
+    if(realIsNegative(x)) {
+      goto cdfu_q_flip;
+    }
     cdf_q_flip:
     realPower(x, const_2, res, realContext);
     realDivide(res, const_2, res, realContext);
@@ -271,7 +281,9 @@ static void cdf_q(const real_t *x, real_t *res, realContext_t *realContext, bool
     return;
   }
   else {
-    if(realIsNegative(x)) goto cdf_q_flip;
+    if(realIsNegative(x)) {
+      goto cdf_q_flip;
+    }
     cdfu_q_flip:
     realPower(x, const_2, res, realContext);
     realDivide(res, const_2, res, realContext);
@@ -359,7 +371,9 @@ void WP34S_Qf_Q(const real_t *x, real_t *res, realContext_t *realContext) {
   bool_t half = false;
   int32_t loops;
   WP34S_qf_q_est(x, &p, &reg0, realContext);
-  if(realIsNegative(&p)) half = true;
+  if(realIsNegative(&p)) {
+    half = true;
+  }
   loops = 2;
   realSetPositiveSign(&p);
   realAdd(&p, const_1, &q, realContext);
@@ -368,8 +382,9 @@ void WP34S_Qf_Q(const real_t *x, real_t *res, realContext_t *realContext) {
     --loops;
     realMultiply(&p, const_1e8, &q, realContext);
     realMultiply(&q, const_1e8, &q, realContext);
-    if(realCompareGreaterThan(&q, const_1))
+    if(realCompareGreaterThan(&q, const_1)) {
       goto qf_q_calc;
+    }
   }
   else {
     qf_q_calc:

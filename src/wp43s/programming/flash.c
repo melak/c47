@@ -34,7 +34,7 @@
 
 #define LIBDATA               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
-#ifdef DMCP_BUILD
+#if defined(DMCP_BUILD)
   #define FLASH_PGM_DIR  "LIBRARY"
   #define FLASH_PGM_FILE "wp43s.dat"
 #else // !DMCP_BUILD
@@ -42,7 +42,7 @@
 #endif // DMCP_BUILD
 
 static void save(const void *buffer, uint32_t size, void *stream) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     UINT bytesWritten;
     f_write(stream, buffer, size, &bytesWritten);
   #else // !DMCP_BUILD
@@ -51,7 +51,7 @@ static void save(const void *buffer, uint32_t size, void *stream) {
 }
 
 static uint32_t load(void *buffer, uint32_t size, void *stream) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     UINT bytesRead;
     f_read(stream, buffer, size, &bytesRead);
     return(bytesRead);
@@ -61,7 +61,7 @@ static uint32_t load(void *buffer, uint32_t size, void *stream) {
 }
 
 static void seek(uint32_t pos, void *stream) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     f_lseek(stream, pos);
   #else // !DMCP_BUILD
     fseek(stream, pos, SEEK_SET);
@@ -172,7 +172,7 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
     }
 
     // Append to Flash
-    #ifdef DMCP_BUILD
+    #if defined(DMCP_BUILD)
       sys_disk_write_enable(1);
       if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ | FA_WRITE | FA_OPEN_EXISTING) != FR_OK) {
         displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
@@ -198,7 +198,7 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
     save(beginOfCurrentProgram.ram, pgmSize, LIBDATA);
     save(firstFreeProgramByte, 2, LIBDATA); // 0xffff
 
-    #ifdef DMCP_BUILD
+    #if defined(DMCP_BUILD)
       f_close(LIBDATA);
       sys_disk_write_enable(0);
     #else // !DMCP_BUILD
@@ -219,7 +219,7 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
 
 
 void deleteFromFlashPgmLibrary(uint32_t fromAddr, uint32_t toAddr) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     sys_disk_write_enable(1);
     if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ | FA_WRITE | FA_OPEN_EXISTING) != FR_OK) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
@@ -252,7 +252,7 @@ void deleteFromFlashPgmLibrary(uint32_t fromAddr, uint32_t toAddr) {
     toAddr += FLASH_PGM_PAGE_SIZE;
   } while(toAddr < (sizeOfFlashPgmLibrary + 2));
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     f_close(LIBDATA);
     sys_disk_write_enable(0);
   #else // !DMCP_BUILD
@@ -263,7 +263,7 @@ void deleteFromFlashPgmLibrary(uint32_t fromAddr, uint32_t toAddr) {
 
 
 void readStepInFlashPgmLibrary(uint8_t *buffer, uint16_t bufferSize, uint32_t pointer) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ) != FR_OK) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -286,7 +286,7 @@ void readStepInFlashPgmLibrary(uint8_t *buffer, uint16_t bufferSize, uint32_t po
   seek(pointer - 1, LIBDATA);
   load(buffer, bufferSize, LIBDATA);
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     f_close(LIBDATA);
   #else // !DMCP_BUILD
     fclose(LIBDATA);
@@ -296,7 +296,7 @@ void readStepInFlashPgmLibrary(uint8_t *buffer, uint16_t bufferSize, uint32_t po
 
 
 void scanFlashPgmLibrary(void) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ) != FR_OK) {
       initFlashPgmLibrary();
       if(f_open(LIBDATA, FLASH_PGM_DIR "\\" FLASH_PGM_FILE, FA_READ) != FR_OK) {
@@ -410,7 +410,7 @@ void scanFlashPgmLibrary(void) {
     }
   }
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     f_close(LIBDATA);
   #else // !DMCP_BUILD
     fclose(LIBDATA);
@@ -420,7 +420,7 @@ void scanFlashPgmLibrary(void) {
 
 
 void initFlashPgmLibrary(void) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     FRESULT result;
 
     sys_disk_write_enable(1);
@@ -450,7 +450,7 @@ void initFlashPgmLibrary(void) {
     save(tmpString, FLASH_PGM_PAGE_SIZE, LIBDATA);
   }
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     f_close(LIBDATA);
     sys_disk_write_enable(0);
   #else // !DMCP_BUILD

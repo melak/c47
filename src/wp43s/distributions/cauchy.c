@@ -94,7 +94,9 @@ static bool_t checkParamCauchy(real_t *x, real_t *i, real_t *j) {
 void fnCauchyP(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, x0, gamma;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamCauchy(&val, &x0, &gamma)) {
     WP34S_Pdf_Cauchy(&val, &x0, &gamma, &ans, &ctxtReal39);
@@ -109,7 +111,9 @@ void fnCauchyP(uint16_t unusedButMandatoryParameter) {
 void fnCauchyL(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, x0, gamma;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamCauchy(&val, &x0, &gamma)) {
     WP34S_Cdf_Cauchy(&val, &x0, &gamma, &ans, &ctxtReal39);
@@ -124,7 +128,9 @@ void fnCauchyL(uint16_t unusedButMandatoryParameter) {
 void fnCauchyR(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, x0, gamma;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamCauchy(&val, &x0, &gamma)) {
     WP34S_Cdfu_Cauchy(&val, &x0, &gamma, &ans, &ctxtReal39);
@@ -139,7 +145,9 @@ void fnCauchyR(uint16_t unusedButMandatoryParameter) {
 void fnCauchyI(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, x0, gamma;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamCauchy(&val, &x0, &gamma)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
@@ -203,7 +211,9 @@ void WP34S_cdf_cauchy_common(const real_t *x, const real_t *x0, const real_t *ga
   }
   WP34S_Atan(&p, &p, realContext);
   realDivide(&p, const_pi, &p, realContext);
-  if(complementary) realChangeSign(&p);
+  if(complementary) {
+    realChangeSign(&p);
+  }
   realAdd(&p, const_1on2, res, realContext);
 }
 
