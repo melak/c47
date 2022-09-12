@@ -217,7 +217,7 @@ void fnRCL          (int16_t inp);
 #define JC_ORTHOGONAL_FITTING  64
 
 #define JC_EXFRAC              65
-
+#define JC_UU                  66
 
 #ifdef PC_BUILD
 //keyboard.c
