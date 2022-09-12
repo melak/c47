@@ -2252,13 +2252,13 @@ void fnExitAllMenus(uint16_t unusedButMandatoryParameter) {
 
 
 void fnMenuDump(uint16_t menu, uint16_t item) {                              //JMvv procedure to dump all menus. First page only. To mod todump all pages
+#ifdef PC_BUILD
 
   doRefreshSoftMenu = true;
   showSoftmenu(softmenu[menu].menuItem);
   softmenuStack[0].firstItem += item;
   showSoftmenuCurrentPart();
 
-#ifdef PC_BUILD
   FILE *bmp;
   char bmpFileName[22];
   int32_t x, y;
