@@ -17,11 +17,10 @@
 /********************************************//**
  * \file neighb.h
  ***********************************************/
-#ifndef NEIGHB_H
-#define NEIGHB_H
+#if !defined(NEIGHB_H)
+  #define NEIGHB_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnNeighb(uint16_t unusedButMandatoryParameter);
-
-#endif // NEIGHB_H
+  void fnNeighb(uint16_t unusedButMandatoryParameter);
+#endif // !NEIGHB_H

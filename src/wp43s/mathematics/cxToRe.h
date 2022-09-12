@@ -17,11 +17,10 @@
 /********************************************//**
  * \file cxToRe.h
  ***********************************************/
-#ifndef CXTORE_H
-#define CXTORE_H
+#if !defined(CXTORE_H)
+  #define CXTORE_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnCxToRe(uint16_t unusedButMandatoryParameter);
-
-#endif // CXTORE_H
+  void fnCxToRe(uint16_t unusedButMandatoryParameter);
+#endif // !CXTORE_H

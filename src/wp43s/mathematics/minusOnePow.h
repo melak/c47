@@ -17,23 +17,24 @@
 /********************************************//**
  * \file minusOnePow.h
  ***********************************************/
-#ifndef MINUSONEPOW_H
-#define MINUSONEPOW_H
+#if !defined(MINUSONEPOW_H)
+  #define MINUSONEPOW_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnM1Pow   (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void m1PowError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define m1PowError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void m1PowLonI (void);
-void m1PowRema (void);
-void m1PowCxma (void);
-void m1PowShoI (void);
-void m1PowReal (void);
-void m1PowCplx (void);
-
-#endif // MINUSONEPOW_H
+  void fnM1Pow   (uint16_t unusedButMandatoryParameter);
+  
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void m1PowError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define m1PowError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  
+  void m1PowLonI (void);
+  void m1PowRema (void);
+  void m1PowCxma (void);
+  void m1PowShoI (void);
+  void m1PowReal (void);
+  void m1PowCplx (void);
+#endif // !MINUSONEPOW_H

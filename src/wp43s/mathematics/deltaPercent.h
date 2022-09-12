@@ -17,16 +17,15 @@
 /********************************************//**
  * \file percentT.h
  ***********************************************/
-#ifndef DELTAPERCENT_H
-#define DELTAPERCENT_H
+#if !defined(DELTAPERCENT_H)
+  #define DELTAPERCENT_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnDeltaPercent(uint16_t unusedButMandatoryParameter);
+  void fnDeltaPercent(uint16_t unusedButMandatoryParameter);
 
-void deltaPercentLonILonI(void);
-void deltaPercentLonIReal(void);
-void deltaPercentRealLonI(void);
-void deltaPercentRealReal(void);
-
-#endif // DELTAPERCENT_H
+  void deltaPercentLonILonI(void);
+  void deltaPercentLonIReal(void);
+  void deltaPercentRealLonI(void);
+  void deltaPercentRealReal(void);
+#endif // !DELTAPERCENT_H

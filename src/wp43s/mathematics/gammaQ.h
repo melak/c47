@@ -17,21 +17,22 @@
 /********************************************//**
  * \file gammaQ.h
  ***********************************************/
-#ifndef GAMMAQ_H
-#define GAMMAQ_H
+#if !defined(GAMMAQ_H)
+  #define GAMMAQ_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnGammaQ      (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void gammaQError   (void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define gammaQError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void gammaQLonILonI(void);
-void gammaQLonIReal(void);
-void gammaQRealLonI(void);
-void gammaQRealReal(void);
-
-#endif // GAMMAQ_H
+  void fnGammaQ      (uint16_t unusedButMandatoryParameter);
+  
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void gammaQError   (void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define gammaQError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  
+  void gammaQLonILonI(void);
+  void gammaQLonIReal(void);
+  void gammaQRealLonI(void);
+  void gammaQRealReal(void);
+#endif // !GAMMAQ_H

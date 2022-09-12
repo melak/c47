@@ -17,26 +17,27 @@
 /********************************************//**
  * \file magnitude.h
  ***********************************************/
-#ifndef MAGNITUDE_H
-#define MAGNITUDE_H
+#if !defined(MAGNITUDE_H)
+  #define MAGNITUDE_H
 
-#include "defines.h"
-#include "realType.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include "realType.h"
+  #include <stdint.h>
 
-void fnMagnitude   (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void magnitudeError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define magnitudeError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void magnitudeLonI (void);
-void magnitudeRema (void);
-void magnitudeCxma (void);
-void magnitudeShoI (void);
-void magnitudeReal (void);
-void magnitudeCplx (void);
+  void fnMagnitude   (uint16_t unusedButMandatoryParameter);
+  
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void magnitudeError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define magnitudeError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  
+  void magnitudeLonI (void);
+  void magnitudeRema (void);
+  void magnitudeCxma (void);
+  void magnitudeShoI (void);
+  void magnitudeReal (void);
+  void magnitudeCplx (void);
 
-void complexMagnitude(const real_t *a, const real_t *b, real_t *c, realContext_t *realContext);
-
-#endif // MAGNITUDE_H
+  void complexMagnitude(const real_t *a, const real_t *b, real_t *c, realContext_t *realContext);
+#endif // !MAGNITUDE_H

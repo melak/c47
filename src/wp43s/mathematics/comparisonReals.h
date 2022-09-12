@@ -17,33 +17,32 @@
 /********************************************//**
  * \file comparisonReals.h
  ***********************************************/
-#ifndef COMPARISONREALS_H
-#define COMPARISONREALS_H
+#if !defined(COMPARISONREALS_H)
+  #define COMPARISONREALS_H
 
-#include "realType.h"
-#include "typeDefinitions.h"
-#include <stdint.h>
+  #include "realType.h"
+  #include "typeDefinitions.h"
+  #include <stdint.h>
 
-bool_t  real34CompareAbsGreaterThan (const real34_t *number1, const real34_t *number2);
-bool_t  real34CompareAbsGreaterEqual(const real34_t *number1, const real34_t *number2);
-bool_t  real34CompareAbsLessThan    (const real34_t *number1, const real34_t *number2);
-bool_t  real34CompareEqual          (const real34_t *number1, const real34_t *number2);
-bool_t  real34CompareGreaterEqual   (const real34_t *number1, const real34_t *number2);
-//bool_t  real34CompareGreaterThan    (const real34_t *number1, const real34_t *number2); never used
-bool_t  real34CompareLessEqual      (const real34_t *number1, const real34_t *number2);
-bool_t  real34CompareLessThan       (const real34_t *number1, const real34_t *number2);
+  bool_t  real34CompareAbsGreaterThan (const real34_t *number1, const real34_t *number2);
+  bool_t  real34CompareAbsGreaterEqual(const real34_t *number1, const real34_t *number2);
+  bool_t  real34CompareAbsLessThan    (const real34_t *number1, const real34_t *number2);
+  bool_t  real34CompareEqual          (const real34_t *number1, const real34_t *number2);
+  bool_t  real34CompareGreaterEqual   (const real34_t *number1, const real34_t *number2);
+  //bool_t  real34CompareGreaterThan    (const real34_t *number1, const real34_t *number2); never used
+  bool_t  real34CompareLessEqual      (const real34_t *number1, const real34_t *number2);
+  bool_t  real34CompareLessThan       (const real34_t *number1, const real34_t *number2);
 
-bool_t  realCompareAbsGreaterThan   (const real_t *number1, const real_t *number2);
-//bool_t  realCompareAbsGreaterEqual  (const real_t *number1, const real_t *number2); never used
-bool_t  realCompareAbsLessThan      (const real_t *number1, const real_t *number2);
-bool_t  realCompareEqual            (const real_t *number1, const real_t *number2);
-bool_t  realCompareGreaterEqual     (const real_t *number1, const real_t *number2);
-bool_t  realCompareGreaterThan      (const real_t *number1, const real_t *number2);
-bool_t  realCompareLessEqual        (const real_t *number1, const real_t *number2);
-bool_t  realCompareLessThan         (const real_t *number1, const real_t *number2);
+  bool_t  realCompareAbsGreaterThan   (const real_t *number1, const real_t *number2);
+  //bool_t  realCompareAbsGreaterEqual  (const real_t *number1, const real_t *number2); never used
+  bool_t  realCompareAbsLessThan      (const real_t *number1, const real_t *number2);
+  bool_t  realCompareEqual            (const real_t *number1, const real_t *number2);
+  bool_t  realCompareGreaterEqual     (const real_t *number1, const real_t *number2);
+  bool_t  realCompareGreaterThan      (const real_t *number1, const real_t *number2);
+  bool_t  realCompareLessEqual        (const real_t *number1, const real_t *number2);
+  bool_t  realCompareLessThan         (const real_t *number1, const real_t *number2);
 
-bool_t  real34IsAnInteger           (const real34_t *x);
-bool_t  realIsAnInteger             (const real_t *x);
-int16_t realIdenticalDigits         (real_t *a, real_t *b);
-
-#endif // COMPARISONREALS_H
+  bool_t  real34IsAnInteger           (const real34_t *x);
+  bool_t  realIsAnInteger             (const real_t *x);
+  int16_t realIdenticalDigits         (real_t *a, real_t *b);
+#endif // !COMPARISONREALS_H
