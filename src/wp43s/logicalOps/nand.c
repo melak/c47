@@ -85,7 +85,9 @@ void nandError31(void) {
  * \return void
  ***********************************************/
 void fnLogicalNand(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
   logicalNand[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
   fnDropY(NOPARAM);
 }

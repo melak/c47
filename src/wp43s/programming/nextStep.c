@@ -56,7 +56,7 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
         return step + *step + 1;
       }
       else {
-        #ifndef DMCP_BUILD
+        #if !defined(DMCP_BUILD)
           printf("\nIn function countOpBytes case PARAM_DECLARE_LABEL: opParam %u is not a valid label!\n", opParam);
         #endif // !DMCP_BUILD
         return NULL;
@@ -73,7 +73,7 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
         return step + 1;
       }
       else {
-        #ifndef DMCP_BUILD
+        #if !defined(DMCP_BUILD)
           printf("\nIn function countOpBytes: case PARAM_LABEL, %u is not a valid parameter!", opParam);
         #endif // !DMCP_BUILD
         return NULL;
@@ -90,7 +90,7 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
         return step + 1;
       }
       else {
-        #ifndef DMCP_BUILD
+        #if !defined(DMCP_BUILD)
           printf("\nIn function countOpBytes: case PARAM_REGISTER, %u is not a valid parameter!", opParam);
         #endif // !DMCP_BUILD
         return NULL;
@@ -107,7 +107,7 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
         return step + *step + 1;
       }
       else {
-        #ifndef DMCP_BUILD
+        #if !defined(DMCP_BUILD)
           printf("\nIn function countOpBytes: case PARAM_FLAG, %u is not a valid parameter!", opParam);
         #endif // !DMCP_BUILD
         return NULL;
@@ -124,7 +124,7 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
         return step + *step + 1;
       }
       else {
-        #ifndef DMCP_BUILD
+        #if !defined(DMCP_BUILD)
           printf("\nIn function countOpBytes: case PARAM_NUMBER, %u is not a valid parameter!", opParam);
         #endif // !DMCP_BUILD
         return NULL;
@@ -144,7 +144,7 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
         return step + 1;
       }
       else {
-        #ifndef DMCP_BUILD
+        #if !defined(DMCP_BUILD)
           printf("\nIn function countOpBytes: case PARAM_COMPARE, %u is not a valid parameter!", opParam);
         #endif // !DMCP_BUILD
         return NULL;
@@ -155,7 +155,7 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
       return step;
 
     default:
-      #ifndef DMCP_BUILD
+      #if !defined(DMCP_BUILD)
         printf("\nIn function countOpBytes: paramMode %u is not valid!\n", paramMode);
       #endif // !DMCP_BUILD
       return NULL;
@@ -196,7 +196,7 @@ uint8_t *countLiteralBytes(uint8_t *step) {
       return step + *step + 1;
 
     default:
-      #ifndef DMCP_BUILD
+      #if !defined(DMCP_BUILD)
         printf("\nERROR: %u is not an acceptable parameter for ITM_LITERAL!\n", *(uint8_t *)(step - 1));
       #endif // !DMCP_BUILD
       return NULL;
@@ -347,48 +347,48 @@ pgmPtr_t findPreviousStep(pgmPtr_t step) {
 
 
 static void _showStep(void) {
-#ifndef TESTSUITE_BUILD
-  bool_t lblOrEnd;
-  uint8_t *tmpStep;
+  #if !defined(TESTSUITE_BUILD)
+    bool_t lblOrEnd;
+    uint8_t *tmpStep;
 
-  if(programList[currentProgramNumber - 1].step < 0) {
-    readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, currentStep.flash);
-    tmpStep = (uint8_t *)(tmpString + 1600);
-  }
-  else {
-    tmpStep = currentStep.ram;
-  }
-  lblOrEnd = (*tmpStep == ITM_LBL) || ((*tmpStep == ((ITM_END >> 8) | 0x80)) && (*(tmpStep + 1) == (ITM_END & 0xff))) || ((*tmpStep == 0xff) && (*(tmpStep + 1) == 0xff));
-  int16_t xPos = (lblOrEnd ? 42 : 62);
-  int16_t maxWidth = SCREEN_WIDTH - xPos;
-
-  sprintf(tmpString, "%04" PRIu16 ":" STD_SPACE_4_PER_EM, currentLocalStepNumber);
-  showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true);
-
-  decodeOneStep_ram(tmpStep);
-  if(stringWidth(tmpString, &standardFont, true, true) >= maxWidth) {
-    char *xstr = tmpString;
-    char *xstrOrig = tmpString;
-    char *glyph = tmpString + TMP_STR_LENGTH - 4;
-    maxWidth -= stringWidth(STD_ELLIPSIS, &standardFont, true, true);
-    while(maxWidth > 0) {
-      xstrOrig = xstr;
-      glyph[0] = *(xstr++);
-      if(glyph[0] & 0x80) {
-        glyph[1] = *(xstr++);
-        glyph[2] = 0;
-      }
-      else {
-        glyph[1] = 0;
-      }
-      maxWidth -= stringWidth(glyph, &standardFont, true, true);
+    if(programList[currentProgramNumber - 1].step < 0) {
+      readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, currentStep.flash);
+      tmpStep = (uint8_t *)(tmpString + 1600);
     }
-    xstrOrig[0] = STD_ELLIPSIS[0];
-    xstrOrig[1] = STD_ELLIPSIS[1];
-    xstrOrig[2] = 0;
-  }
-  showString(tmpString, &standardFont, xPos, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true);
-#endif // TESTSUITE_BUILD
+    else {
+      tmpStep = currentStep.ram;
+    }
+    lblOrEnd = (*tmpStep == ITM_LBL) || ((*tmpStep == ((ITM_END >> 8) | 0x80)) && (*(tmpStep + 1) == (ITM_END & 0xff))) || ((*tmpStep == 0xff) && (*(tmpStep + 1) == 0xff));
+    int16_t xPos = (lblOrEnd ? 42 : 62);
+    int16_t maxWidth = SCREEN_WIDTH - xPos;
+
+    sprintf(tmpString, "%04" PRIu16 ":" STD_SPACE_4_PER_EM, currentLocalStepNumber);
+    showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true);
+
+    decodeOneStep_ram(tmpStep);
+    if(stringWidth(tmpString, &standardFont, true, true) >= maxWidth) {
+      char *xstr = tmpString;
+      char *xstrOrig = tmpString;
+      char *glyph = tmpString + TMP_STR_LENGTH - 4;
+      maxWidth -= stringWidth(STD_ELLIPSIS, &standardFont, true, true);
+      while(maxWidth > 0) {
+        xstrOrig = xstr;
+        glyph[0] = *(xstr++);
+        if(glyph[0] & 0x80) {
+          glyph[1] = *(xstr++);
+          glyph[2] = 0;
+        }
+        else {
+          glyph[1] = 0;
+        }
+        maxWidth -= stringWidth(glyph, &standardFont, true, true);
+      }
+      xstrOrig[0] = STD_ELLIPSIS[0];
+      xstrOrig[1] = STD_ELLIPSIS[1];
+      xstrOrig[2] = 0;
+    }
+    showString(tmpString, &standardFont, xPos, Y_POSITION_OF_REGISTER_T_LINE + 6, vmNormal, true, true);
+  #endif // !TESTSUITE_BUILD
 }
 
 

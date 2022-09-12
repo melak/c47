@@ -85,7 +85,9 @@ void orError31(void) {
  * \return void
  ***********************************************/
 void fnLogicalOr(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
   logicalOr[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
   fnDropY(NOPARAM);
 }

@@ -163,10 +163,12 @@ void fnSolve(uint16_t labelOrVariable) {
       x_1 = convertRegisterToDouble(REGISTER_X);
       if(x_0 != DOUBLE_NOT_INIT && x_1 != DOUBLE_NOT_INIT) {
         if(!(x_min<x_0 && x_min<x_1 && x_0<x_max && x_1<x_max)) {
-          if(fmin(x_0,x_1) < x_min)
+          if(fmin(x_0,x_1) < x_min) {
             x_min = fmin(x_0,x_1) - 0.1 * fabs(x_max-fmin(x_0,x_1)); //get the root or maximum/minimum in the centre of the graph interval
-          if(fmax(x_0,x_1) > x_max)
+          }
+          if(fmax(x_0,x_1) > x_max) {
             x_max = fmax(x_0,x_1) + 0.1 * fabs(x_min-fmax(x_0,x_1)); //get the root or maximum/minimum in the centre of the graph interval
+          }
         }
       }
 
@@ -191,396 +193,398 @@ void fnSolve(uint16_t labelOrVariable) {
 }
 
 void fnSolveVar(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
-  const char *var = (char *)getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem);
-  const uint16_t regist = findOrAllocateNamedVariable(var);
-  if(currentMvarLabel != INVALID_VARIABLE) {
-    graphVariable = -regist;
-    reallyRunFunction(ITM_STO, regist);
-  }
-  else if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE || (currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) {
-    graphVariable = -regist;
-    currentSolverVariable = regist;
-    reallyRunFunction(ITM_STO, regist);
-    temporaryInformation = TI_SOLVER_VARIABLE;
-  }
-  else if(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE) {
-    graphVariable = regist;
-    reallyRunFunction(ITM_SOLVE, regist);
-  }
-  else {
-    currentSolverVariable = regist;
-    reallyRunFunction(ITM_STO, regist);
-    currentSolverStatus |= SOLVER_STATUS_READY_TO_EXECUTE;
-    temporaryInformation = TI_SOLVER_VARIABLE;
-    if(graphVariable == 0) {
+  #if !defined(TESTSUITE_BUILD)
+    const char *var = (char *)getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem);
+    const uint16_t regist = findOrAllocateNamedVariable(var);
+    if(currentMvarLabel != INVALID_VARIABLE) {
       graphVariable = -regist;
+      reallyRunFunction(ITM_STO, regist);
     }
-    else if(graphVariable < 0 && -graphVariable == regist) {
-        graphVariable = regist;
-      }
+    else if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE || (currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) {
+      graphVariable = -regist;
+      currentSolverVariable = regist;
+      reallyRunFunction(ITM_STO, regist);
+      temporaryInformation = TI_SOLVER_VARIABLE;
+    }
+    else if(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE) {
+      graphVariable = regist;
+      reallyRunFunction(ITM_SOLVE, regist);
+    }
     else {
-      graphVariable = -regist;
+      currentSolverVariable = regist;
+      reallyRunFunction(ITM_STO, regist);
+      currentSolverStatus |= SOLVER_STATUS_READY_TO_EXECUTE;
+      temporaryInformation = TI_SOLVER_VARIABLE;
+      if(graphVariable == 0) {
+        graphVariable = -regist;
+      }
+      else if(graphVariable < 0 && -graphVariable == regist) {
+          graphVariable = regist;
+        }
+      else {
+        graphVariable = -regist;
+      }
+    }
+  #endif // !TESTSUITE_BUILD
+}
+
+#if !defined(TESTSUITE_BUILD)
+  static void _solverIteration(real34_t *res) {
+    if(currentSolverStatus & SOLVER_STATUS_TVM_APPLICATION) {
+      tvmEquation();
+    }
+    else if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
+      parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
+    }
+    else {
+      dynamicMenuItem = -1;
+      execProgram(currentSolverProgram + FIRST_LABEL);
+    }
+    if(lastErrorCode == ERROR_OVERFLOW_PLUS_INF) {
+      realToReal34(const_plusInfinity, res);
+      lastErrorCode = ERROR_NONE;
+    }
+    else if(lastErrorCode == ERROR_OVERFLOW_MINUS_INF) {
+      realToReal34(const_minusInfinity, res);
+      lastErrorCode = ERROR_NONE;
+    }
+    else if(lastErrorCode != ERROR_NONE) {
+      realToReal34(const_NaN, res);
+    }
+    else if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone) {
+      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), res);
+    }
+    else if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
+      convertLongIntegerRegisterToReal34(REGISTER_X, res);
+    }
+    else {
+      realToReal34(const_NaN, res);
     }
   }
-#endif /* TESTSUITE_BUILD */
-}
 
-#ifndef TESTSUITE_BUILD
-static void _solverIteration(real34_t *res) {
-  if(currentSolverStatus & SOLVER_STATUS_TVM_APPLICATION) {
-    tvmEquation();
+  static void _executeSolver(calcRegister_t variable, const real34_t *val, real34_t *res) {
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    real34Copy(val, REGISTER_REAL34_DATA(REGISTER_X));
+    if(currentSolverStatus & SOLVER_STATUS_TVM_APPLICATION) {
+      copySourceRegisterToDestRegister(REGISTER_X, variable);
+    }
+    else {
+      reallyRunFunction(ITM_STO, variable);
+      fnFillStack(NOPARAM);
+    }
+    _solverIteration(res);
   }
-  else if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
-    parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
-  }
-  else {
-    dynamicMenuItem = -1;
-    execProgram(currentSolverProgram + FIRST_LABEL);
-  }
-  if(lastErrorCode == ERROR_OVERFLOW_PLUS_INF) {
-    realToReal34(const_plusInfinity, res);
-    lastErrorCode = ERROR_NONE;
-  }
-  else if(lastErrorCode == ERROR_OVERFLOW_MINUS_INF) {
-    realToReal34(const_minusInfinity, res);
-    lastErrorCode = ERROR_NONE;
-  }
-  else if(lastErrorCode != ERROR_NONE) {
-    realToReal34(const_NaN, res);
-  }
-  else if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone) {
-    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), res);
-  }
-  else if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
-    convertLongIntegerRegisterToReal34(REGISTER_X, res);
-  }
-  else {
-    realToReal34(const_NaN, res);
-  }
-}
 
-static void _executeSolver(calcRegister_t variable, const real34_t *val, real34_t *res) {
-  reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-  real34Copy(val, REGISTER_REAL34_DATA(REGISTER_X));
-  if(currentSolverStatus & SOLVER_STATUS_TVM_APPLICATION) {
-    copySourceRegisterToDestRegister(REGISTER_X, variable);
+  static void _linearInterpolation(const real_t *a, const real_t *b, const real_t *fa, const real_t *fb, real_t *res, real_t *slope, realContext_t *realContext) {
+    real_t amb, famfb;
+    realSubtract(a, b, &amb, realContext);
+    realSubtract(fa, fb, &famfb, realContext);
+    if(slope) {
+      realDivide(&famfb, &amb, slope, realContext);
+    }
+    if(res) {
+      realDivide(&amb, &famfb, &amb, realContext);
+      realMultiply(&amb, fb, &amb, realContext);
+      realSubtract(b, &amb, res, realContext);
+    }
   }
-  else {
-    reallyRunFunction(ITM_STO, variable);
-    fnFillStack(NOPARAM);
+
+  static void _inverseQuadraticInterpolation(const real_t *a, const real_t *b, const real_t *c, const real_t *fa, const real_t *fb, const real_t *fc, real_t *res, realContext_t *realContext) {
+    real_t val, num, den, tmp;
+
+    realMultiply(fb, fc, &num, realContext);
+    realMultiply(&num, a, &num, realContext);
+    realSubtract(fa, fb, &den, realContext);
+    realSubtract(fa, fc, &tmp, realContext);
+    realMultiply(&den, &tmp, &den, realContext);
+    realDivide(&num, &den, &val, realContext);
+
+    realMultiply(fa, fc, &num, realContext);
+    realMultiply(&num, b, &num, realContext);
+    realSubtract(fb, fa, &den, realContext);
+    realSubtract(fb, fc, &tmp, realContext);
+    realMultiply(&den, &tmp, &den, realContext);
+    realDivide(const_1, &den, &den, realContext);
+    realFMA(&num, &den, &val, &val, realContext);
+
+    realMultiply(fa, fb, &num, realContext);
+    realMultiply(&num, c, &num, realContext);
+    realSubtract(fc, fa, &den, realContext);
+    realSubtract(fc, fb, &tmp, realContext);
+    realMultiply(&den, &tmp, &den, realContext);
+    realDivide(const_1, &den, &den, realContext);
+    realFMA(&num, &den, &val, res, realContext);
   }
-  _solverIteration(res);
-}
-
-static void _linearInterpolation(const real_t *a, const real_t *b, const real_t *fa, const real_t *fb, real_t *res, real_t *slope, realContext_t *realContext) {
-  real_t amb, famfb;
-  realSubtract(a, b, &amb, realContext);
-  realSubtract(fa, fb, &famfb, realContext);
-  if(slope) realDivide(&famfb, &amb, slope, realContext);
-  if(res) {
-    realDivide(&amb, &famfb, &amb, realContext);
-    realMultiply(&amb, fb, &amb, realContext);
-    realSubtract(b, &amb, res, realContext);
-  }
-}
-
-static void _inverseQuadraticInterpolation(const real_t *a, const real_t *b, const real_t *c, const real_t *fa, const real_t *fb, const real_t *fc, real_t *res, realContext_t *realContext) {
-  real_t val, num, den, tmp;
-
-  realMultiply(fb, fc, &num, realContext);
-  realMultiply(&num, a, &num, realContext);
-  realSubtract(fa, fb, &den, realContext);
-  realSubtract(fa, fc, &tmp, realContext);
-  realMultiply(&den, &tmp, &den, realContext);
-  realDivide(&num, &den, &val, realContext);
-
-  realMultiply(fa, fc, &num, realContext);
-  realMultiply(&num, b, &num, realContext);
-  realSubtract(fb, fa, &den, realContext);
-  realSubtract(fb, fc, &tmp, realContext);
-  realMultiply(&den, &tmp, &den, realContext);
-  realDivide(const_1, &den, &den, realContext);
-  realFMA(&num, &den, &val, &val, realContext);
-
-  realMultiply(fa, fb, &num, realContext);
-  realMultiply(&num, c, &num, realContext);
-  realSubtract(fc, fa, &den, realContext);
-  realSubtract(fc, fb, &tmp, realContext);
-  realMultiply(&den, &tmp, &den, realContext);
-  realDivide(const_1, &den, &den, realContext);
-  realFMA(&num, &den, &val, res, realContext);
-}
-#endif /* TESTSUITE_BUILD */
+#endif // !TESTSUITE_BUILD
 
 int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34_t *resZ, real34_t *resY, real34_t *resX) {
-#ifndef TESTSUITE_BUILD
-  real34_t a, b, b1, b2, fa, fb, fb1, m, s, *bp1, fbp1, tmp;
-  real_t aa, bb, bb1, bb2, faa, fbb, fbb1, mm, ss, secantSlopeA, secantSlopeB, delta, deltaB, smb, tol;
-  bool_t extendRange = false;
-  bool_t originallyLevel = false;
-  bool_t extremum = false;
-  int result = SOLVER_RESULT_NORMAL;
-  bool_t was_inting = getSystemFlag(FLAG_INTING);
+  #if !defined(TESTSUITE_BUILD)
+    real34_t a, b, b1, b2, fa, fb, fb1, m, s, *bp1, fbp1, tmp;
+    real_t aa, bb, bb1, bb2, faa, fbb, fbb1, mm, ss, secantSlopeA, secantSlopeB, delta, deltaB, smb, tol;
+    bool_t extendRange = false;
+    bool_t originallyLevel = false;
+    bool_t extremum = false;
+    int result = SOLVER_RESULT_NORMAL;
+    bool_t was_inting = getSystemFlag(FLAG_INTING);
 
-  realCopy(const_1, &tol);
-  tol.exponent -= (significantDigits == 0 || significantDigits >= 32) ? 32 : significantDigits;
+    realCopy(const_1, &tol);
+    tol.exponent -= (significantDigits == 0 || significantDigits >= 32) ? 32 : significantDigits;
 
-  ++currentSolverNestingDepth;
-  setSystemFlag(FLAG_SOLVING);
-  clearSystemFlag(FLAG_INTING);
+    ++currentSolverNestingDepth;
+    setSystemFlag(FLAG_SOLVING);
+    clearSystemFlag(FLAG_INTING);
 
-  realCopy(const_0, &delta);
+    realCopy(const_0, &delta);
 
-  real34Copy(y, &a);
-  real34Copy(y, &b1);
-  real34Copy(x, &b);
-  realToReal34(const_NaN, &b2);
+    real34Copy(y, &a);
+    real34Copy(y, &b1);
+    real34Copy(x, &b);
+    realToReal34(const_NaN, &b2);
 
-  real34Subtract(&b, &a, &s);
-  if(real34CompareAbsLessThan(&s, const34_1e_32)) {
-    real34Copy(const34_1e_32, &s);
-    if(real34CompareLessThan(&b, &a)) real34SetNegativeSign(&s);
-    real34Subtract(&a, &s, &a);
-    real34Add(&b, &s, &b);
-  }
-
-  _executeSolver(variable, &b1, &fb1);
-  if(lastErrorCode != ERROR_NONE) {
-    result = SOLVER_RESULT_BAD_GUESS;
-  }
-  real34Copy(&fb1, &fa);
-
-  // calculation
-  _executeSolver(variable, &b, &fb);
-  if(lastErrorCode != ERROR_NONE) {
-    result = SOLVER_RESULT_BAD_GUESS;
-  }
-
-  if(real34IsSpecial(&fb) || real34IsSpecial(&fb1)) {
-    result = SOLVER_RESULT_BAD_GUESS;
-  }
-  else if(real34IsNegative(&fb) == real34IsNegative(&fb1)) {
-    extendRange = true;
-  }
-  if(real34CompareEqual(&fb, &fb1)) {
-    originallyLevel = true;
-  }
-  if(real34CompareAbsLessThan(&fa, &fb)) {
-    real34Copy(&b, &tmp); real34Copy(&a, &b); real34Copy(&tmp, &a); real34Copy(&tmp, &b1);
-    real34Copy(&fb, &tmp); real34Copy(&fa, &fb); real34Copy(&tmp, &fa); real34Copy(&tmp, &fb1);
-  }
-
-  do {
-    // convert real34 to real
-    real34ToReal(&a, &aa);
-    real34ToReal(&b, &bb);
-    real34ToReal(&b1, &bb1);
-    real34ToReal(&b2, &bb2);
-    real34ToReal(&fa, &faa);
-    real34ToReal(&fb, &fbb);
-    real34ToReal(&fb1, &fbb1);
-
-    // pre-calculation
-    if(realIsSpecial(&bb2)) {
-      realSubtract(&bb, &bb1, &deltaB, &ctxtReal39);
+    real34Subtract(&b, &a, &s);
+    if(real34CompareAbsLessThan(&s, const34_1e_32)) {
+      real34Copy(const34_1e_32, &s);
+      if(real34CompareLessThan(&b, &a)) real34SetNegativeSign(&s);
+      real34Subtract(&a, &s, &a);
+      real34Add(&b, &s, &b);
     }
-    else {
-      realSubtract(&bb1, &bb2, &deltaB, &ctxtReal39);
+
+    _executeSolver(variable, &b1, &fb1);
+    if(lastErrorCode != ERROR_NONE) {
+      result = SOLVER_RESULT_BAD_GUESS;
     }
-    realSetPositiveSign(&deltaB);
+    real34Copy(&fb1, &fa);
 
-    _linearInterpolation(&aa, &bb, &faa, &fbb, NULL, &secantSlopeA, &ctxtReal39);
-
-    // interpolation
-    if(!(realCompareEqual(&faa, &fbb) || realCompareEqual(&faa, &fbb1) || realCompareEqual(&fbb, &fbb1))) { // inverse quadratic interpolation
-      _linearInterpolation(&bb, &bb1, &fbb, &fbb1, NULL, &secantSlopeB, &ctxtReal39);
-      _inverseQuadraticInterpolation(&aa, &bb, &bb1, &faa, &fbb, &fbb1, &ss, &ctxtReal39);
+    // calculation
+    _executeSolver(variable, &b, &fb);
+    if(lastErrorCode != ERROR_NONE) {
+      result = SOLVER_RESULT_BAD_GUESS;
     }
-    else { // linear interpolation
-      _linearInterpolation(&bb, &bb1, &fbb, &fbb1, &ss, &secantSlopeB, &ctxtReal39);
+
+    if(real34IsSpecial(&fb) || real34IsSpecial(&fb1)) {
+      result = SOLVER_RESULT_BAD_GUESS;
     }
-    realToReal34(&ss, &s);
+    else if(real34IsNegative(&fb) == real34IsNegative(&fb1)) {
+      extendRange = true;
+    }
+    if(real34CompareEqual(&fb, &fb1)) {
+      originallyLevel = true;
+    }
+    if(real34CompareAbsLessThan(&fa, &fb)) {
+      real34Copy(&b, &tmp); real34Copy(&a, &b); real34Copy(&tmp, &a); real34Copy(&tmp, &b1);
+      real34Copy(&fb, &tmp); real34Copy(&fa, &fb); real34Copy(&tmp, &fa); real34Copy(&tmp, &fb1);
+    }
 
-    realSubtract(&ss, &bb, &smb, &ctxtReal39);
-    realMultiply(&smb, const_2, &smb, &ctxtReal39);
-    realSetPositiveSign(&smb);
+    do {
+      // convert real34 to real
+      real34ToReal(&a, &aa);
+      real34ToReal(&b, &bb);
+      real34ToReal(&b1, &bb1);
+      real34ToReal(&b2, &bb2);
+      real34ToReal(&fa, &faa);
+      real34ToReal(&fb, &fbb);
+      real34ToReal(&fb1, &fbb1);
 
-    // bisection
-    realAdd(&aa, &bb, &mm, &ctxtReal39);
-    realMultiply(&mm, const_1on2, &mm, &ctxtReal39);
-    realToReal34(&mm, &m);
-
-    // next point
-    if(extendRange) {
-      if(real34CompareEqual(&fb, &fa)) {
-        real34Subtract(&b, &a, &s);
-        if(real34CompareAbsLessThan(&s, const34_1e_32)) {
-          real34Copy(const34_1e_32, &s);
-          if(real34CompareLessThan(&b, &a)) real34SetNegativeSign(&s);
-        }
-        if(real34CompareAbsLessThan(const34_1e6, &s)) {
-          real34Multiply(&s, const34_1e6, &s);
-        }
-        real34Subtract(&a, &s, &a);
-        _executeSolver(variable, &a, &fa);
-        real34Add(&b, &s, &s);
-      }
-      else if(!real34CompareEqual(&b, &a)) {
-        real34Subtract(&b, &a, &s);
-        real34Add(&s, &b, &s);
-      }
-      else if(real34IsNegative(&fb)) {
-        real34Multiply(&b, const34_1e_32, &s);
-        real34Subtract(&b, &s, &s);
+      // pre-calculation
+      if(realIsSpecial(&bb2)) {
+        realSubtract(&bb, &bb1, &deltaB, &ctxtReal39);
       }
       else {
-        real34Multiply(&b, const34_1e_32, &s);
-        if(real34CompareAbsLessThan(&s, const34_1e_32)) {
-          real34Copy(const34_1e_32, &s);
-          if(real34CompareLessThan(&b, &a)) real34SetNegativeSign(&s);
+        realSubtract(&bb1, &bb2, &deltaB, &ctxtReal39);
+      }
+      realSetPositiveSign(&deltaB);
+
+      _linearInterpolation(&aa, &bb, &faa, &fbb, NULL, &secantSlopeA, &ctxtReal39);
+
+      // interpolation
+      if(!(realCompareEqual(&faa, &fbb) || realCompareEqual(&faa, &fbb1) || realCompareEqual(&fbb, &fbb1))) { // inverse quadratic interpolation
+        _linearInterpolation(&bb, &bb1, &fbb, &fbb1, NULL, &secantSlopeB, &ctxtReal39);
+        _inverseQuadraticInterpolation(&aa, &bb, &bb1, &faa, &fbb, &fbb1, &ss, &ctxtReal39);
+      }
+      else { // linear interpolation
+        _linearInterpolation(&bb, &bb1, &fbb, &fbb1, &ss, &secantSlopeB, &ctxtReal39);
+      }
+      realToReal34(&ss, &s);
+
+      realSubtract(&ss, &bb, &smb, &ctxtReal39);
+      realMultiply(&smb, const_2, &smb, &ctxtReal39);
+      realSetPositiveSign(&smb);
+
+      // bisection
+      realAdd(&aa, &bb, &mm, &ctxtReal39);
+      realMultiply(&mm, const_1on2, &mm, &ctxtReal39);
+      realToReal34(&mm, &m);
+
+      // next point
+      if(extendRange) {
+        if(real34CompareEqual(&fb, &fa)) {
+          real34Subtract(&b, &a, &s);
+          if(real34CompareAbsLessThan(&s, const34_1e_32)) {
+            real34Copy(const34_1e_32, &s);
+            if(real34CompareLessThan(&b, &a)) real34SetNegativeSign(&s);
+          }
+          if(real34CompareAbsLessThan(const34_1e6, &s)) {
+            real34Multiply(&s, const34_1e6, &s);
+          }
+          real34Subtract(&a, &s, &a);
+          _executeSolver(variable, &a, &fa);
+          real34Add(&b, &s, &s);
         }
-        if(real34IsNegative(&fb)) {
+        else if(!real34CompareEqual(&b, &a)) {
+          real34Subtract(&b, &a, &s);
+          real34Add(&s, &b, &s);
+        }
+        else if(real34IsNegative(&fb)) {
+          real34Multiply(&b, const34_1e_32, &s);
           real34Subtract(&b, &s, &s);
         }
         else {
-          real34Add(&b, &s, &s);
+          real34Multiply(&b, const34_1e_32, &s);
+          if(real34CompareAbsLessThan(&s, const34_1e_32)) {
+            real34Copy(const34_1e_32, &s);
+            if(real34CompareLessThan(&b, &a)) real34SetNegativeSign(&s);
+          }
+          if(real34IsNegative(&fb)) {
+            real34Subtract(&b, &s, &s);
+          }
+          else {
+            real34Add(&b, &s, &s);
+          }
         }
-      }
-      bp1 = &s;
-    }
-    else if(real34CompareEqual(&b, &s)) {
-      bp1 = &m;
-    }
-    else if(!real34IsSpecial(&s) && ((real34CompareLessThan(&b, &s) && real34CompareLessThan(&s, &m)) || (real34CompareLessThan(&m, &s) && real34CompareLessThan(&s, &m)))) {
-      if(realCompareLessThan(&delta, &deltaB) && realCompareLessThan(&smb, &deltaB))
         bp1 = &s;
-      else
+      }
+      else if(real34CompareEqual(&b, &s)) {
         bp1 = &m;
-    }
-    else {
-      bp1 = &m;
-    }
-
-    // calculation
-    _executeSolver(variable, bp1, &fbp1);
-    if(extendRange && (realIsNegative(&secantSlopeA) != realIsNegative(&secantSlopeB)) && !realIsZero(&secantSlopeA) && !realIsZero(&secantSlopeB)) {
-      extendRange = false;
-      extremum = (real34IsNegative(&fb) == real34IsNegative(&fbp1));
-    }
-
-    if(!real34IsSpecial(bp1) && !real34IsSpecial(&fbp1)) {
-      if(extendRange) {
-        if((real34IsNegative(&fb) != real34IsNegative(&fbp1)) || (real34IsNegative(&fb) != real34IsNegative(&fa))) {
-          extendRange = false;
-          originallyLevel = false;
-        }
-        if((real34IsNegative(&fa) == real34IsNegative(&fbp1)) && real34CompareAbsLessThan(&fb, &fbp1)) {
-          extendRange = false;
-          originallyLevel = false;
-          extremum = true;
-        }
       }
-      else if(real34IsNegative(&fa) == real34IsNegative(&fbp1)) {
-        real34Copy(&b, &a);
-        real34Copy(&fb, &fa);
+      else if(!real34IsSpecial(&s) && ((real34CompareLessThan(&b, &s) && real34CompareLessThan(&s, &m)) || (real34CompareLessThan(&m, &s) && real34CompareLessThan(&s, &m)))) {
+        if(realCompareLessThan(&delta, &deltaB) && realCompareLessThan(&smb, &deltaB))
+          bp1 = &s;
+        else
+          bp1 = &m;
       }
       else {
+        bp1 = &m;
+      }
+
+      // calculation
+      _executeSolver(variable, bp1, &fbp1);
+      if(extendRange && (realIsNegative(&secantSlopeA) != realIsNegative(&secantSlopeB)) && !realIsZero(&secantSlopeA) && !realIsZero(&secantSlopeB)) {
         extendRange = false;
-        extremum = false;
-        if(!real34CompareEqual(&fb, &fa)) {
-          originallyLevel = false;
+        extremum = (real34IsNegative(&fb) == real34IsNegative(&fbp1));
+      }
+
+      if(!real34IsSpecial(bp1) && !real34IsSpecial(&fbp1)) {
+        if(extendRange) {
+          if((real34IsNegative(&fb) != real34IsNegative(&fbp1)) || (real34IsNegative(&fb) != real34IsNegative(&fa))) {
+            extendRange = false;
+            originallyLevel = false;
+          }
+          if((real34IsNegative(&fa) == real34IsNegative(&fbp1)) && real34CompareAbsLessThan(&fb, &fbp1)) {
+            extendRange = false;
+            originallyLevel = false;
+            extremum = true;
+          }
         }
+        else if(real34IsNegative(&fa) == real34IsNegative(&fbp1)) {
+          real34Copy(&b, &a);
+          real34Copy(&fb, &fa);
+        }
+        else {
+          extendRange = false;
+          extremum = false;
+          if(!real34CompareEqual(&fb, &fa)) {
+            originallyLevel = false;
+          }
+        }
+
+        if(real34CompareAbsLessThan(&fa, &fbp1)) {
+          real34Copy(bp1, &tmp); real34Copy(&a, bp1); real34Copy(&tmp, &a);
+          real34Copy(&fbp1, &tmp); real34Copy(&fa, &fbp1); real34Copy(&tmp, &fa);
+          real34Copy(&a, &b); real34Copy(&fa, &fb);
+        }
+
+        if(bp1 == &s) {
+          realToReal34(const_NaN, &b2);
+        }
+        else {
+          real34Copy(&b1, &b2);
+        }
+        real34Copy(&b, &b1);
+        real34Copy(&fb, &fb1);
+        real34Copy(bp1, &b);
+        real34Copy(&fbp1, &fb);
       }
 
-      if(real34CompareAbsLessThan(&fa, &fbp1)) {
-        real34Copy(bp1, &tmp); real34Copy(&a, bp1); real34Copy(&tmp, &a);
-        real34Copy(&fbp1, &tmp); real34Copy(&fa, &fbp1); real34Copy(&tmp, &fa);
-        real34Copy(&a, &b); real34Copy(&fa, &fb);
+      else if(originallyLevel && (real34IsInfinite(&b) || real34IsInfinite(&a))) {
+        result = SOLVER_RESULT_CONSTANT;
       }
-
-      if(bp1 == &s) {
-        realToReal34(const_NaN, &b2);
+      else if(extendRange) {
+        extendRange = false;
+        originallyLevel = false;
+        extremum = true;
+      }
+      else if(real34IsNegative(&fa) != real34IsNegative(&fb)) {
+        result = SOLVER_RESULT_SIGN_REVERSAL;
       }
       else {
-        real34Copy(&b1, &b2);
+        result = SOLVER_RESULT_EXTREMUM;
       }
-      real34Copy(&b, &b1);
-      real34Copy(&fb, &fb1);
-      real34Copy(bp1, &b);
-      real34Copy(&fbp1, &fb);
-    }
 
-    else if(originallyLevel && (real34IsInfinite(&b) || real34IsInfinite(&a))) {
-      result = SOLVER_RESULT_CONSTANT;
-    }
-    else if(extendRange) {
-      extendRange = false;
-      originallyLevel = false;
-      extremum = true;
-    }
-    else if(real34IsNegative(&fa) != real34IsNegative(&fb)) {
-      result = SOLVER_RESULT_SIGN_REVERSAL;
-    }
-    else {
+      real34ToReal(&b, &bb);
+      real34ToReal(&b1, &bb1);
+
+    } while(result == SOLVER_RESULT_NORMAL &&
+            (real34IsSpecial(&b2) || !real34CompareEqual(&b1, &b2) || !(extendRange || extremum || WP34S_RelativeError(&bb, &bb1, &tol, &ctxtReal39))) &&
+            (originallyLevel || !((!extendRange && WP34S_RelativeError(&bb, &bb1, &tol, &ctxtReal39)) || real34CompareEqual(&b, &b1) || real34CompareEqual(&fb, const34_0)))
+           );
+
+    if((extendRange && !originallyLevel) || extremum) {
       result = SOLVER_RESULT_EXTREMUM;
     }
 
-    real34ToReal(&b, &bb);
-    real34ToReal(&b1, &bb1);
+    if((--currentSolverNestingDepth) == 0) {
+      clearSystemFlag(FLAG_SOLVING);
+    }
+    else if(was_inting) {
+      clearSystemFlag(FLAG_SOLVING);
+      setSystemFlag(FLAG_INTING);
+    }
 
-  } while(result == SOLVER_RESULT_NORMAL &&
-          (real34IsSpecial(&b2) || !real34CompareEqual(&b1, &b2) || !(extendRange || extremum || WP34S_RelativeError(&bb, &bb1, &tol, &ctxtReal39))) &&
-          (originallyLevel || !((!extendRange && WP34S_RelativeError(&bb, &bb1, &tol, &ctxtReal39)) || real34CompareEqual(&b, &b1) || real34CompareEqual(&fb, const34_0)))
-         );
+    if(real34IsZero(&fb))
+      result = SOLVER_RESULT_NORMAL;
 
-  if((extendRange && !originallyLevel) || extremum) {
-    result = SOLVER_RESULT_EXTREMUM;
-  }
+    real34Copy(&fb, resZ);
+    real34Copy(&b1, resY);
+    real34Copy(&b, resX);
 
-  if((--currentSolverNestingDepth) == 0) {
-    clearSystemFlag(FLAG_SOLVING);
-  }
-  else if(was_inting) {
-    clearSystemFlag(FLAG_SOLVING);
-    setSystemFlag(FLAG_INTING);
-  }
-
-  if(real34IsZero(&fb))
-    result = SOLVER_RESULT_NORMAL;
-
-  real34Copy(&fb, resZ);
-  real34Copy(&b1, resY);
-  real34Copy(&b, resX);
-
-  if(result == SOLVER_RESULT_EXTREMUM) { // Check if the result is really an extremum
-    real34Copy(const34_1e_32, &tmp);
-    while(true) {
-      real34Add(resX, &tmp, &a);
-      real34Subtract(resX, &tmp, &b);
-      _executeSolver(variable, &a, &fa);
-      _executeSolver(variable, &b, &fb);
-      real34Subtract(&fa, resZ, &fa);
-      real34Subtract(&fb, resZ, &fb);
-      if(real34IsSpecial(&fa) || real34IsSpecial(&fb)) {
-        result = SOLVER_RESULT_OTHER_FAILURE;
-        break;
-      }
-      else if(real34IsZero(&fa) || real34IsZero(&fb)) {
-        real34Multiply(&tmp, const34_100, &tmp);
-      }
-      else if(real34IsNegative(&fa) == real34IsNegative(&fb)) { // true extremum
-        break;
-      }
-      else { // not an extremum
-        result = SOLVER_RESULT_OTHER_FAILURE;
-        break;
+    if(result == SOLVER_RESULT_EXTREMUM) { // Check if the result is really an extremum
+      real34Copy(const34_1e_32, &tmp);
+      while(true) {
+        real34Add(resX, &tmp, &a);
+        real34Subtract(resX, &tmp, &b);
+        _executeSolver(variable, &a, &fa);
+        _executeSolver(variable, &b, &fb);
+        real34Subtract(&fa, resZ, &fa);
+        real34Subtract(&fb, resZ, &fb);
+        if(real34IsSpecial(&fa) || real34IsSpecial(&fb)) {
+          result = SOLVER_RESULT_OTHER_FAILURE;
+          break;
+        }
+        else if(real34IsZero(&fa) || real34IsZero(&fb)) {
+          real34Multiply(&tmp, const34_100, &tmp);
+        }
+        else if(real34IsNegative(&fa) == real34IsNegative(&fb)) { // true extremum
+          break;
+        }
+        else { // not an extremum
+          result = SOLVER_RESULT_OTHER_FAILURE;
+          break;
+        }
       }
     }
-  }
 
-  return result;
-#else /* TESTSUITE_BUILD */
-  return SOLVER_RESULT_NORMAL;
-#endif /* TESTSUITE_BUILD */
+    return result;
+  #else // !TESTSUITE_BUILD
+    return SOLVER_RESULT_NORMAL;
+  #endif // TESTSUITE_BUILD
 }

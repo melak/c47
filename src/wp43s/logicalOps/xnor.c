@@ -85,7 +85,9 @@ void xnorError31(void) {
  * \return void
  ***********************************************/
 void fnLogicalXnor(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
   logicalXnor[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
   fnDropY(NOPARAM);
 }
