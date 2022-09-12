@@ -81,7 +81,9 @@ static bool_t checkParamLogistic(real_t *x, real_t *i, real_t *j) {
 void fnLogisticP(uint16_t unusedButMandatoryParameter) {
   real_t val, mu, s, ans;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamLogistic(&val, &mu, &s)) {
     WP34S_Pdf_Logit(&val, &mu, &s, &ans, &ctxtReal39);
@@ -95,7 +97,9 @@ void fnLogisticP(uint16_t unusedButMandatoryParameter) {
 void fnLogisticL(uint16_t unusedButMandatoryParameter) {
   real_t val, mu, s, ans;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamLogistic(&val, &mu, &s)) {
     WP34S_Cdf_Logit(&val, &mu, &s, &ans, &ctxtReal39);
@@ -109,7 +113,9 @@ void fnLogisticL(uint16_t unusedButMandatoryParameter) {
 void fnLogisticR(uint16_t unusedButMandatoryParameter) {
   real_t val, mu, s, ans;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamLogistic(&val, &mu, &s)) {
     WP34S_Cdfu_Logit(&val, &mu, &s, &ans, &ctxtReal39);
@@ -123,7 +129,9 @@ void fnLogisticR(uint16_t unusedButMandatoryParameter) {
 void fnLogisticI(uint16_t unusedButMandatoryParameter) {
   real_t val, mu, s, ans;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamLogistic(&val, &mu, &s)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {

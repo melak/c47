@@ -17,21 +17,20 @@
 /********************************************//**
  * \file negBinom.h
  ***********************************************/
-#ifndef NEGBINOM_H
-#define NEGBINOM_H
+#if !defined(NEGBINOM_H)
+  #define NEGBINOM_H
 
-#include "realType.h"
-#include <stdint.h>
+  #include "realType.h"
+  #include <stdint.h>
 
-void fnNegBinomialP  (uint16_t unusedButMandatoryParameter);
-void fnNegBinomialL  (uint16_t unusedButMandatoryParameter);
-void fnNegBinomialR  (uint16_t unusedButMandatoryParameter);
-void fnNegBinomialI  (uint16_t unusedButMandatoryParameter);
+  void fnNegBinomialP  (uint16_t unusedButMandatoryParameter);
+  void fnNegBinomialL  (uint16_t unusedButMandatoryParameter);
+  void fnNegBinomialR  (uint16_t unusedButMandatoryParameter);
+  void fnNegBinomialI  (uint16_t unusedButMandatoryParameter);
 
-void pdf_NegBinomial (const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext);
-void cdfu_NegBinomial(const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext);
-void cdf_NegBinomial (const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext);
-void cdf_NegBinomial2(const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext);
-void qf_NegBinomial  (const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext);
-
-#endif // NEGBINOM_H
+  void pdf_NegBinomial (const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext);
+  void cdfu_NegBinomial(const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext);
+  void cdf_NegBinomial (const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext);
+  void cdf_NegBinomial2(const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext);
+  void qf_NegBinomial  (const real_t *x, const real_t *p0, const real_t *r, real_t *res, realContext_t *realContext);
+#endif // !NEGBINOM_H

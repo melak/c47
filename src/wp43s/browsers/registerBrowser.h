@@ -17,19 +17,18 @@
 /********************************************//**
  * \file registerBrowser.h
  ***********************************************/
-#ifndef REGISTERBROWSER_H
-#define REGISTERBROWSER_H
+#if !defined(REGISTERBROWSER_H)
+  #define REGISTERBROWSER_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-#ifndef TESTSUITE_BUILD
-  /********************************************//**
-   * \brief The register browser
-   *
-   * \param[in] unusedButMandatoryParameter uint16_t
-   * \return void
-   ***********************************************/
-  void registerBrowser(uint16_t unusedButMandatoryParameter);
-#endif // TESTSUITE_BUILD
-
-#endif // REGISTERBROWSER_H
+  #if !defined(TESTSUITE_BUILD)
+    /********************************************//**
+     * \brief The register browser
+     *
+     * \param[in] unusedButMandatoryParameter uint16_t
+     * \return void
+     ***********************************************/
+    void registerBrowser(uint16_t unusedButMandatoryParameter);
+  #endif // !TESTSUITE_BUILD
+#endif // !REGISTERBROWSER_H

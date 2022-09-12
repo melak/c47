@@ -74,7 +74,9 @@ static bool_t checkParamT(real_t *x, real_t *i) {
 void fnT_P(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, dof;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamT(&val, &dof)) {
     WP34S_Pdf_T(&val, &dof, &ans, &ctxtReal39);
@@ -89,7 +91,9 @@ void fnT_P(uint16_t unusedButMandatoryParameter) {
 void fnT_L(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, dof;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamT(&val, &dof)) {
     WP34S_Cdf_T(&val, &dof, &ans, &ctxtReal39);
@@ -104,7 +108,9 @@ void fnT_L(uint16_t unusedButMandatoryParameter) {
 void fnT_R(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, dof;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamT(&val, &dof)) {
     WP34S_Cdfu_T(&val, &dof, &ans, &ctxtReal39);
@@ -119,7 +125,9 @@ void fnT_R(uint16_t unusedButMandatoryParameter) {
 void fnT_I(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, dof;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamT(&val, &dof)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
