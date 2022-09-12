@@ -17,12 +17,11 @@
 /********************************************//**
  * \file sumprod.h
  ***********************************************/
-#ifndef SUMPROD_H
-#define SUMPROD_H
+#if !defined(SUMPROD_H)
+  #define SUMPROD_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnProgrammableSum    (uint16_t label);
-void fnProgrammableProduct(uint16_t label);
-
-#endif // SUMPROD_H
+  void fnProgrammableSum    (uint16_t label);
+  void fnProgrammableProduct(uint16_t label);
+#endif // !SUMPROD_H

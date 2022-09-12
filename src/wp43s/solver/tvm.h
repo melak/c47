@@ -17,15 +17,13 @@
 /********************************************//**
  * \file tvm.h
  ***********************************************/
-#ifndef TVM_H
-#define TVM_H
+#if !defined(TVM_H)
+  #define TVM_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnTvmVar      (uint16_t variable);
-void fnTvmBeginMode(uint16_t unusedButMandatoryParameter);
-void fnTvmEndMode  (uint16_t unusedButMandatoryParameter);
-
-void tvmEquation   (void);
-
-#endif // TVM_H
+  void fnTvmVar      (uint16_t variable);
+  void fnTvmBeginMode(uint16_t unusedButMandatoryParameter);
+  void fnTvmEndMode  (uint16_t unusedButMandatoryParameter);
+  void tvmEquation   (void);
+#endif // !TVM_H

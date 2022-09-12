@@ -17,17 +17,16 @@
 /********************************************//**
  * \file decode.h
  ***********************************************/
-#ifndef DECODE_H
-#define DECODE_H
+#if !defined(DECODE_H)
+  #define DECODE_H
 
-#include "typeDefinitions.h"
-#include <stdint.h>
+  #include "typeDefinitions.h"
+  #include <stdint.h>
 
-void decodeOneStep          (pgmPtr_t step);
-void decodeOneStep_ram      (uint8_t *step);
-#ifndef DMCP_BUILD
-  void listPrograms         (void);
-  void listLabelsAndPrograms(void);
-#endif // !DMCP_BUILD
-
-#endif // DECODE_H
+  void decodeOneStep          (pgmPtr_t step);
+  void decodeOneStep_ram      (uint8_t *step);
+  #if !defined(DMCP_BUILD)
+    void listPrograms         (void);
+    void listLabelsAndPrograms(void);
+  #endif // !DMCP_BUILD
+#endif // !DECODE_H

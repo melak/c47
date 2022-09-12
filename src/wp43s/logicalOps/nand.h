@@ -17,23 +17,24 @@
 /********************************************//**
  * \file nand.h
  ***********************************************/
-#ifndef NAND_H
-#define NAND_H
+#if !defined(NAND_H)
+  #define NAND_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnLogicalNand(uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void nandError24  (void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define nandError24 typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void nandError31  (void);
-void nandLonILonI (void);
-void nandLonIReal (void);
-void nandRealLonI (void);
-void nandRealReal (void);
-void nandShoIShoI (void);
-
-#endif // NAND_H
+  void fnLogicalNand(uint16_t unusedButMandatoryParameter);
+  
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void nandError24  (void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #define nandError24 typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  
+  void nandError31  (void);
+  void nandLonILonI (void);
+  void nandLonIReal (void);
+  void nandRealLonI (void);
+  void nandRealReal (void);
+  void nandShoIShoI (void);
+#endif // !NAND_H
