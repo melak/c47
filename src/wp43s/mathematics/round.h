@@ -17,24 +17,25 @@
 /********************************************//**
  * \file round.h
  ***********************************************/
-#ifndef ROUND_H
-#define ROUND_H
+#if !defined(ROUND_H)
+  #define ROUND_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnRound   (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void roundError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define roundError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void roundLonI (void);
-void roundTime (void);
-void roundDate (void);
-void roundRema (void);
-void roundCxma (void);
-void roundReal (void);
-void roundCplx (void);
-
-#endif // ROUND_H
+  void fnRound   (uint16_t unusedButMandatoryParameter);
+  
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void roundError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define roundError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  
+  void roundLonI (void);
+  void roundTime (void);
+  void roundDate (void);
+  void roundRema (void);
+  void roundCxma (void);
+  void roundReal (void);
+  void roundCplx (void);
+#endif // !ROUND_H

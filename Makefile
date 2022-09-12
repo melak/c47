@@ -1,4 +1,4 @@
-.PHONY: all clean rpiwsmd sim test dmcp docs testPgms dist_windows dist_macos dist_dm42
+.PHONY: all clean sim test dmcp docs testPgms dist_windows dist_macos dist_dm42
 
 all: sim
 
@@ -8,12 +8,9 @@ ifeq ($(OS),Windows_NT)
 endif
 
 clean:
-	rm -f wp43s$(EXE) wp43s-smd
+	rm -f wp43s$(EXE)
 	rm -rf wp43s-windows* wp43s-macos* wp43s-dm42*
-	rm -rf build build.sim build.rpiwsmd build.dmcp build.rel
-
-build.rpiwsmd:
-	meson setup build.rpiwsmd --buildtype=debug -DRASPBERRY=`tools/onARaspberry` -DRPIWSMD=true
+	rm -rf build build.sim build.dmcp build.rel
 
 build.sim:
 	meson setup build.sim --buildtype=debug -DRASPBERRY=`tools/onARaspberry`
@@ -23,13 +20,6 @@ build.rel:
 
 build.dmcp:
 	meson setup build.dmcp --cross-file=cross_arm_gcc.build -DCI_COMMIT_TAG=$(CI_COMMIT_TAG)
-
-rpiwsmd: build.rpiwsmd
-	cd build.rpiwsmd && ninja rpiwsmd
-	cp build.rpiwsmd/src/wp43s-gtk/wp43s-smd ./
-	cp build.rpiwsmd/src/generateCatalogs/softmenuCatalogs.h src/generated/
-	cp build.rpiwsmd/src/generateConstants/constantPointers.* src/generated/
-	cp build.rpiwsmd/src/ttf2RasterFonts/rasterFontsData.c src/generated/
 
 sim: build.sim
 	cd build.sim && ninja sim

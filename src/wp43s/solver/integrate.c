@@ -77,8 +77,9 @@ void fnIntegrate(uint16_t labelOrVariable) {
   if((labelOrVariable >= FIRST_LABEL && labelOrVariable <= LAST_LABEL) || (labelOrVariable >= REGISTER_X && labelOrVariable <= REGISTER_T)) {
     // Interactive mode
     fnPgmInt(labelOrVariable);
-    if(lastErrorCode == ERROR_NONE)
+    if(lastErrorCode == ERROR_NONE) {
       currentSolverStatus = SOLVER_STATUS_INTERACTIVE | SOLVER_STATUS_EQUATION_INTEGRATE;
+    }
   }
   else if(labelOrVariable == RESERVED_VARIABLE_ACC || labelOrVariable == RESERVED_VARIABLE_ULIM || labelOrVariable == RESERVED_VARIABLE_LLIM) {
     fnToReal(NOPARAM);
@@ -116,19 +117,19 @@ void fnIntegrate(uint16_t labelOrVariable) {
 }
 
 void fnIntVar(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
-  const char *var = (char *)getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem);
-  const uint16_t regist = findOrAllocateNamedVariable(var);
-  currentSolverVariable = regist;
-  if(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE) {
-    showSoftmenu(-MNU_Sfdx);
-  }
-  else {
-    reallyRunFunction(ITM_STO, regist);
-    currentSolverStatus |= SOLVER_STATUS_READY_TO_EXECUTE;
-    temporaryInformation = TI_SOLVER_VARIABLE;
-  }
-#endif /* TESTSUITE_BUILD */
+  #if !defined(TESTSUITE_BUILD)
+    const char *var = (char *)getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem);
+    const uint16_t regist = findOrAllocateNamedVariable(var);
+    currentSolverVariable = regist;
+    if(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE) {
+      showSoftmenu(-MNU_Sfdx);
+    }
+    else {
+      reallyRunFunction(ITM_STO, regist);
+      currentSolverStatus |= SOLVER_STATUS_READY_TO_EXECUTE;
+      temporaryInformation = TI_SOLVER_VARIABLE;
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -241,7 +242,9 @@ static void DEI_xeq_user(calcRegister_t regist, const real_t *x, real_t *res, re
     if(realIsSpecial(res)) { // do not stop in error (if flag D was set)
       realZero(res);
     }
-    if(d) setSystemFlag(FLAG_SPCRES); // set flag D for internal calculations
+    if(d) {
+      setSystemFlag(FLAG_SPCRES); // set flag D for internal calculations
+    }
   }
   else { // DEI_bad_absc::
     realZero(res);

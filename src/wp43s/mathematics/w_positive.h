@@ -17,20 +17,21 @@
 /********************************************//**
  * \file w_positive.h
  ***********************************************/
-#ifndef W_POSITIVE_H
-#define W_POSITIVE_H
+#if !defined(W_POSITIVE_H)
+  #define W_POSITIVE_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnWpositive(uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void wPosError  (void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define wPosError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void wPosLonI   (void);
-void wPosReal   (void);
-void wPosCplx   (void);
-
-#endif // W_POSITIVE_H
+  void fnWpositive(uint16_t unusedButMandatoryParameter);
+  
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void wPosError  (void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #define wPosError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  
+  void wPosLonI   (void);
+  void wPosReal   (void);
+  void wPosCplx   (void);
+#endif // !W_POSITIVE_H

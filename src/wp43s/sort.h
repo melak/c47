@@ -18,12 +18,11 @@
  * \file sort.h
  * Comparing 2 strings, sorting strings.
  */
-#ifndef SORT_H
-#define SORT_H
+#if !defined(SORT_H)
+  #define SORT_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-int32_t compareChar  (const char *char1, const char *char2);
-int32_t compareString(const char *stra, const char *strb, int32_t comparisonType);
-
-#endif // SORT_H
+  int32_t compareChar  (const char *char1, const char *char2);
+  int32_t compareString(const char *stra, const char *strb, int32_t comparisonType);
+#endif // !SORT_H

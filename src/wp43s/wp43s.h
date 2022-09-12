@@ -18,35 +18,35 @@
  * \file wp43s.h
  */
 
-#ifndef WP43S_H
-#define WP43S_H
+#if !defined(WP43S_H)
+  #define WP43S_H
 
   #pragma GCC diagnostic ignored "-Wunused-parameter"
 
 
-  #ifdef LINUX
+  #if defined(LINUX)
     #include <math.h>
   #endif // LINUX
 
-  #ifdef OSX
+  #if defined(OSX)
     // needed by chdir
     #include <unistd.h>
   #endif // OSX
 
-  #if defined(PC_BUILD) && !defined(RPIWSMD) 
+  #if defined(PC_BUILD)
     #include <glib.h>
     #include <gtk/gtk.h>
     #include <gdk/gdk.h>
-  #endif // PC_BUILD && !RPISMD
+  #endif // PC_BUILD
 
-  #ifdef WIN32
+  #if defined(WIN32)
     #include <locale.h>
   #endif // WIN32
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     #define DBG_PRINT
 
-    #ifdef DBG_PRINT
+    #if defined(DBG_PRINT)
       #include <stdio.h>
     #else
       #define printf(...)
@@ -60,10 +60,10 @@
   #include "typeDefinitions.h"
 
   // Variables for the simulator
-  #if defined(PC_BUILD) || defined (TESTSUITE_BUILD)
+  #if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
     extern bool_t               debugMemAllocation;
-  #endif // defined(PC_BUILD) || defined (TESTSUITE_BUILD)
-  #if defined(PC_BUILD) && !defined(RPIWSMD)
+  #endif // PC_BUILD || TESTSUITE_BUILD
+  #if defined(PC_BUILD)
     extern bool_t               calcLandscape;
     extern bool_t               calcAutoLandscapePortrait;
     extern GtkWidget           *screen;
@@ -82,7 +82,7 @@
     #endif // (SHOW_MEMORY_STATUS == 1)
     extern calcKeyboard_t       calcKeyboard[43];
     extern int                  currentBezel; // 0=normal, 1=AIM, 2=TAM
-  #endif //PC_BUILD && !RPISMD
+  #endif // PC_BUILD
 
   // Variables stored in FLASH
   extern const item_t                    indexOfItems[];
@@ -304,17 +304,13 @@
   extern real_t                 SAVED_SIGMA_LASTY;
   extern int32_t                SAVED_SIGMA_LAct;
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     extern bool_t               backToDMCP;
-//  extern int                  keyAutoRepeat; // Key repetition
-//  extern int16_t              previousItem;
+    //extern int                  keyAutoRepeat; // Key repetition
+    //extern int16_t              previousItem;
     extern uint32_t             nextTimerRefresh;
 
     int                         convertKeyCode(int key);
   #endif // DMCP_BUILD
 
-  #ifdef RPIWSMD
-    extern bool_t               backToConsole;
-  #endif // RPIWSMD
-
-#endif // WP43S_H
+#endif // !WP43S_H

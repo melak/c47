@@ -17,82 +17,79 @@
 /**
  * \file timer.h
  */
-#ifndef TIMER_H
-#define TIMER_H
+#if !defined(TIMER_H)
+  #define TIMER_H
 
-#include <stdint.h>
-#if defined(PC_BUILD) && !defined(RPIWSMD)
-  #include <gtk/gtk.h>
-  #include <gdk/gdk.h>
-#endif // PC_BUILD && !RPIWSMD
-
-
-uint32_t getUptimeMs          (void);
-void     fnTicks              (uint16_t unusedButMandatoryParameter);
+  #include <stdint.h>
+  #if defined(PC_BUILD)
+    #include <gtk/gtk.h>
+    #include <gdk/gdk.h>
+  #endif // PC_BUILD
 
 
-void     fnTimer              (uint16_t unusedButMandatoryParameter);
-void     fnAddTimerApp        (uint16_t unusedButMandatoryParameter);
-void     fnDecisecondTimerApp (uint16_t unusedButMandatoryParameter);
-void     fnResetTimerApp      (uint16_t unusedButMandatoryParameter);
-void     fnRecallTimerApp     (uint16_t regist);
-void     fnStartStopTimerApp  (void);
-void     fnStopTimerApp       (void);
-void     fnShowTimerApp       (void);
-void     fnUpdateTimerApp     (void);
-void     fnEnterTimerApp      (void);
-void     fnDotTimerApp        (void);
-void     fnUpTimerApp         (void);
-void     fnDownTimerApp       (void);
-void     fnDigitKeyTimerApp   (uint16_t digit);
-void     fnPlusTimerApp       (void);
-void     fnBackspaceTimerApp  (void);
-void     fnLeaveTimerApp      (void);
-void     fnPollTimerApp       (void);
+  uint32_t getUptimeMs          (void);
+  void     fnTicks              (uint16_t unusedButMandatoryParameter);
 
 
-#if defined(PC_BUILD) && !defined(RPIWSMD)
-  gboolean refreshTimer         (gpointer data);
-#endif // PC_BUILD && !RPIWSMD
-
-#ifdef DMCP_BUILD
-  void     refreshTimer         (void);
-#endif
-
-
-void     fnTimerReset         (void);
-void     fnTimerDummyTest     (uint16_t param);
-void     fnTimerConfig        (uint8_t nr, void(*func)(uint16_t), uint16_t param);
-void     fnTimerStart         (uint8_t nr, uint16_t param, uint32_t time);      // Start Timer, 0..n-1
-void     fnTimerStop          (uint8_t nr);                                     // Stop Timer, 0..n-1
-void     fnTimerExec          (uint8_t nr);                                     // Execute Timer, 0..n-1
-void     fnTimerDel           (uint8_t nr);                                     // Delete Timer, 0..n-1
-uint16_t fnTimerGetParam      (uint8_t nr);
-uint8_t  fnTimerGetStatus     (uint8_t nr);
-
-
-
-/********************************************//**
- * \typedef timer_t
- * \brief Structure keeping the information for one timer
- ***********************************************/
-#define TMR_UNUSED    0
-#define TMR_STOPPED   1
-#define TMR_RUNNING   2
-#define TMR_COMPLETED 3
+  void     fnTimer              (uint16_t unusedButMandatoryParameter);
+  void     fnAddTimerApp        (uint16_t unusedButMandatoryParameter);
+  void     fnDecisecondTimerApp (uint16_t unusedButMandatoryParameter);
+  void     fnResetTimerApp      (uint16_t unusedButMandatoryParameter);
+  void     fnRecallTimerApp     (uint16_t regist);
+  void     fnStartStopTimerApp  (void);
+  void     fnStopTimerApp       (void);
+  void     fnShowTimerApp       (void);
+  void     fnUpdateTimerApp     (void);
+  void     fnEnterTimerApp      (void);
+  void     fnDotTimerApp        (void);
+  void     fnUpTimerApp         (void);
+  void     fnDownTimerApp       (void);
+  void     fnDigitKeyTimerApp   (uint16_t digit);
+  void     fnPlusTimerApp       (void);
+  void     fnBackspaceTimerApp  (void);
+  void     fnLeaveTimerApp      (void);
+  void     fnPollTimerApp       (void);
 
 
-
-typedef struct {
-  void     (*func)(uint16_t); ///< Function called to execute the timer
-  uint16_t param;             ///< 1st parameter to the above
-  #if !defined(PC_BUILD) || defined(RPIWSMD)
-    uint32_t timer_will_expire; ///<
-  #else
-    gint64   timer_will_expire; ///<
+  #if defined(PC_BUILD)
+    gboolean refreshTimer         (gpointer data);
   #endif
-  uint8_t  state;             ///<
-} kb_timer_t;
+  #if defined(DMCP_BUILD)
+    void     refreshTimer         (void);
+  #endif
 
 
-#endif // TIMER_H
+  void     fnTimerReset         (void);
+  void     fnTimerDummyTest     (uint16_t param);
+  void     fnTimerConfig        (uint8_t nr, void(*func)(uint16_t), uint16_t param);
+  void     fnTimerStart         (uint8_t nr, uint16_t param, uint32_t time);      // Start Timer, 0..n-1
+  void     fnTimerStop          (uint8_t nr);                                     // Stop Timer, 0..n-1
+  void     fnTimerExec          (uint8_t nr);                                     // Execute Timer, 0..n-1
+  void     fnTimerDel           (uint8_t nr);                                     // Delete Timer, 0..n-1
+  uint16_t fnTimerGetParam      (uint8_t nr);
+  uint8_t  fnTimerGetStatus     (uint8_t nr);
+
+
+
+  /********************************************//**
+   * \typedef timer_t
+   * \brief Structure keeping the information for one timer
+   ***********************************************/
+  #define TMR_UNUSED    0
+  #define TMR_STOPPED   1
+  #define TMR_RUNNING   2
+  #define TMR_COMPLETED 3
+
+
+
+  typedef struct {
+    void     (*func)(uint16_t); ///< Function called to execute the timer
+    uint16_t param;             ///< 1st parameter to the above
+  #if !defined(PC_BUILD)
+    uint32_t timer_will_expire; ///<
+  #else // PC_BUILD
+    gint64   timer_will_expire; ///<
+  #endif // !PC_BUILD
+    uint8_t  state;             ///<
+  } kb_timer_t;
+#endif // .TIMER_H

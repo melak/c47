@@ -17,61 +17,61 @@
 /********************************************//**
  * \file subtraction.h
  ***********************************************/
-#ifndef SUBTRACTION_H
-#define SUBTRACTION_H
+#if !defined(SUBTRACTION_H)
+  #define SUBTRACTION_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnSubtract (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void subError   (void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define subError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  void fnSubtract (uint16_t unusedButMandatoryParameter);
+  
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void subError   (void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define subError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
-//      RegYRegX
-void subLonILonI(void);
-void subLonITime(void);
-void subLonIShoI(void);
-void subLonIReal(void);
-void subLonICplx(void);
+  //      RegYRegX
+  void subLonILonI(void);
+  void subLonITime(void);
+  void subLonIShoI(void);
+  void subLonIReal(void);
+  void subLonICplx(void);
 
-//      RegYRegX
-void subTimeLonI(void);
-void subTimeTime(void);
-void subTimeReal(void);
+  //      RegYRegX
+  void subTimeLonI(void);
+  void subTimeTime(void);
+  void subTimeReal(void);
 
-//      RegYRegX
-void subDateLonI(void);
-void subDateDate(void);
-void subDateReal(void);
+  //      RegYRegX
+  void subDateLonI(void);
+  void subDateDate(void);
+  void subDateReal(void);
 
-//      RegYRegX
-void subRemaRema(void);
-void subRemaCxma(void);
+  //      RegYRegX
+  void subRemaRema(void);
+  void subRemaCxma(void);
 
-//      RegYRegX
-void subCxmaRema(void);
-void subCxmaCxma(void);
+  //      RegYRegX
+  void subCxmaRema(void);
+  void subCxmaCxma(void);
 
-//      RegYRegX
-void subShoILonI(void);
-void subShoIShoI(void);
-void subShoIReal(void);
-void subShoICplx(void);
+  //      RegYRegX
+  void subShoILonI(void);
+  void subShoIShoI(void);
+  void subShoIReal(void);
+  void subShoICplx(void);
 
-//      RegYRegX
-void subRealLonI(void);
-void subRealTime(void);
-void subRealShoI(void);
-void subRealReal(void);
-void subRealCplx(void);
+  //      RegYRegX
+  void subRealLonI(void);
+  void subRealTime(void);
+  void subRealShoI(void);
+  void subRealReal(void);
+  void subRealCplx(void);
 
-//      RegYRegX
-void subCplxLonI(void);
-void subCplxShoI(void);
-void subCplxReal(void);
-void subCplxCplx(void);
-
-#endif // SUBTRACTION_H
+  //      RegYRegX
+  void subCplxLonI(void);
+  void subCplxShoI(void);
+  void subCplxReal(void);
+  void subCplxCplx(void);
+#endif // !SUBTRACTION_H

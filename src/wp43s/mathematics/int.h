@@ -17,11 +17,10 @@
 /********************************************//**
  * \file int.h
  ***********************************************/
-#ifndef INT_H
-#define INT_H
+#if !defined(INT_H)
+  #define INT_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnCheckInteger(uint16_t mode);
-
-#endif // INT_H
+  void fnCheckInteger(uint16_t mode);
+#endif // !INT_H

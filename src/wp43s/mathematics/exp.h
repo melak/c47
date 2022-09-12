@@ -17,25 +17,26 @@
 /********************************************//**
  * \file exp.h
  ***********************************************/
-#ifndef EXP_H
-#define EXP_H
+#if !defined(EXP_H)
+  #define EXP_H
 
-#include "defines.h"
-#include "realType.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include "realType.h"
+  #include <stdint.h>
 
-void fnExp   (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void expError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define expError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void expLonI (void);
-void expRema (void);
-void expCxma (void);
-void expShoI (void);
-void expReal (void);
-void expCplx (void);
-void expComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t *resImag, realContext_t *realContext);
-
-#endif // EXP_H
+  void fnExp   (uint16_t unusedButMandatoryParameter);
+  
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void expError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define expError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  
+  void expLonI (void);
+  void expRema (void);
+  void expCxma (void);
+  void expShoI (void);
+  void expReal (void);
+  void expCplx (void);
+  void expComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t *resImag, realContext_t *realContext);
+#endif // !EXP_H

@@ -33,7 +33,7 @@
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   /********************************************//**
    * \brief The font browser application initialisation
    *
@@ -74,7 +74,7 @@
 
     currentFntScr = 1;
 
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       if(numLinesNumericFont + numLinesStandardFont > NUMBER_OF_GLYPH_ROWS) {
         printf("In file defines.h NUMBER_OF_GLYPH_ROWS must be increased from %d to %d\n", NUMBER_OF_GLYPH_ROWS, numLinesNumericFont + numLinesStandardFont);
         exit(-1);
@@ -164,4 +164,4 @@
     }
   #endif //SAVESPACE_JM_FB
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD

@@ -165,7 +165,7 @@ static void _differentiatorIteration(calcRegister_t label, real_t *r0) {
   fnFillStack(NOPARAM);
 
   if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
-    #ifndef TESTSUITE_BUILD
+    #if !defined(TESTSUITE_BUILD)
       reallyRunFunction(ITM_STO, currentSolverVariable);
       parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
     #endif // TESTSUITE_BUILD

@@ -40,12 +40,12 @@
      their discretion
 
 */
-#ifndef __PGM_MAIN_H__
-#define __PGM_MAIN_H__
+#if !defined(__PGM_MAIN_H__)
+  #define __PGM_MAIN_H__
 
-#include "version.h"
+  #include "version.h"
 
-#define PROGRAM_NAME    "WP43S"
-#define PROGRAM_VERSION VERSION_SHORT
+  #define PROGRAM_NAME    "WP43S"
+  #define PROGRAM_VERSION VERSION_SHORT
 
-#endif
+#endif // __PGM_MAIN_H__

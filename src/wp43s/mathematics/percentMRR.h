@@ -17,11 +17,10 @@
 /********************************************//**
  * \file percentMRR.h
  ***********************************************/
-#ifndef PERCENTMRR_H
-#define PERCENTMRR_H
+#if !defined(PERCENTMRR_H)
+  #define PERCENTMRR_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnPercentMRR(uint16_t unusedButMandatoryParameter);
-
-#endif // PERCENTMRR_H
+  void fnPercentMRR(uint16_t unusedButMandatoryParameter);
+#endif // !PERCENTMRR_H

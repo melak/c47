@@ -28,10 +28,6 @@ if get_option('RASPBERRY')
   add_project_arguments('-DRASPBERRY',  native : true, language : 'c')
 endif
 
-if get_option('RPIWSMD')
-  add_project_arguments('-DRPIWSMD',  native : true, language : 'c')
-endif
-
 # DMCP arguments
 add_project_arguments('-DDMCP_BUILD', native : false, language : 'c')
 add_project_arguments('-DOS32BIT',    native : false, language : 'c')

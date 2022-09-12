@@ -35,7 +35,7 @@
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 #ifndef SAVESPACE_JM_FLB
   TO_QSPI const char flagLetter[] = "XYZTABCDLIJK";
 
@@ -297,4 +297,4 @@
     }
   #endif //SAVESPACE_JM_FLB
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
