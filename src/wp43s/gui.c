@@ -237,32 +237,32 @@ uint32_t event_keyval = 99999999;
 
       case 65470: // F1                      //JM Added this portion to be able to go to NOP on emulator
         //printf("key pressed: F1\n");
-        if (calcMode != CM_EIM && !tam.mode) {btnFnClickedR(w, "1");}
+        if (!tam.mode) {btnFnClickedR(w, "1");}
         break;
 
       case 65471: // F2
         //printf("key pressed: F2\n");
-        if (calcMode != CM_EIM && !tam.mode) {btnFnClickedR(w, "2");}
+        if (!tam.mode) {btnFnClickedR(w, "2");}
         break;
 
       case 65472: // F3
         //printf("key pressed: F3\n");
-        if (calcMode != CM_EIM && !tam.mode) {btnFnClickedR(w, "3");}
+        if (!tam.mode) {btnFnClickedR(w, "3");}
         break;
 
       case 65473: // F4
         //printf("key pressed: F4\n");
-        if (calcMode != CM_EIM && !tam.mode) {btnFnClickedR(w, "4");}
+        if (!tam.mode) {btnFnClickedR(w, "4");}
         break;
 
       case 65474: // F5
         //printf("key pressed: F5\n");
-        if (calcMode != CM_EIM && !tam.mode) {btnFnClickedR(w, "5");}
+        if (!tam.mode) {btnFnClickedR(w, "5");}
         break;
 
       case 65475: // F6
         //printf("key pressed: F6\n");
-        if (calcMode != CM_EIM && !tam.mode) {btnFnClickedR(w, "6");}
+        if (!tam.mode) {btnFnClickedR(w, "6");}
         break;
 
     case 65505: // left shift  //JM Added this portion to be able to repeat f key on emulator
@@ -347,22 +347,28 @@ switch (event_keyval) {
 
 //ROW 1
     case 65470: // F1                                                    //**************-- FUNCTION KEYS --***************//
-      btnFnClicked(w, "1");
+      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) btnFnClickedP(w, "1");
+      else  btnFnClicked(w, "1");
       break;
     case 65471: // F2
-      btnFnClicked(w, "2");
+      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) btnFnClickedP(w, "2");
+      else  btnFnClicked(w, "2");
       break;
     case 65472: // F3
-      btnFnClicked(w, "3");
+      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) btnFnClickedP(w, "3");
+      else  btnFnClicked(w, "3");
       break;
     case 65473: // F4
-      btnFnClicked(w, "4");
+      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) btnFnClickedP(w, "4");
+      else  btnFnClicked(w, "4");
       break;
     case 65474: // F5
-      btnFnClicked(w, "5");
+      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) btnFnClickedP(w, "5");
+      else  btnFnClicked(w, "5");
       break;
     case 65475: // F6
-      btnFnClicked(w, "6");
+      if(calcMode == CM_EIM || AlphaArrowsOffAndUpDn) btnFnClickedP(w, "6");
+      else  btnFnClicked(w, "6");
       break;
 //ROW 2
     case 65:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM.    //**************-- ALPHA KEYS UPPER CASE --***************//
