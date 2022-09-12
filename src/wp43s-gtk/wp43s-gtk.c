@@ -30,7 +30,7 @@
 
 #include "wp43s.h"
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   bool_t              calcLandscape;
   bool_t              calcAutoLandscapePortrait;
   GtkWidget           *screen;
@@ -50,14 +50,14 @@
   calcKeyboard_t       calcKeyboard[43];
   int                  currentBezel; // 0=normal, 1=AIM, 2=TAM
 
-  #ifdef EXPORT_ITEMS
+  #if defined(EXPORT_ITEMS)
     int sortItems(void const *a, void const *b) {
       return compareString(a, b, CMP_EXTENSIVE);
     }
-  #endif
+  #endif // EXPORT_ITEMS
 
   int main(int argc, char* argv[]) {
-    #ifdef __APPLE__
+    #if defined(__APPLE__)
       // we take the directory where the application is as the root for this application.
       // in argv[0] is the application itself. We strip the name of the app by searching for the last '/':
       if(argc>=1) {
@@ -102,7 +102,7 @@
       exit(1);
     }
 
-    #ifdef EXPORT_ITEMS
+    #if defined(EXPORT_ITEMS)
       char name[LAST_ITEM][16], nameUtf8[25];
       int cat, nbrItems = 0;
       for(int i=1; i<LAST_ITEM; i++) {
@@ -119,7 +119,7 @@
         printf("%s\n", nameUtf8);
       }
       exit(0);
-    #endif
+    #endif // EXPORT_ITEMS
 
     gtk_init(&argc, &argv);
     setupUI();
@@ -132,7 +132,7 @@
 
     fnTimerReset();
     fnTimerConfig(TO_TIMER_APP, execTimerApp, 0);
-//--fnTimerConfig(TO_SHOW_NOP, execNOPTimeout, TO_SHOW_NOP);
+    //fnTimerConfig(TO_SHOW_NOP, execNOPTimeout, TO_SHOW_NOP);
     gdk_threads_add_timeout(5, refreshTimer, NULL);
 
     if(getSystemFlag(FLAG_AUTXEQ)) {
