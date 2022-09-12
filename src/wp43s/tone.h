@@ -17,12 +17,11 @@
 /**
  * \file tone.h
  */
-#ifndef TONE_H
-#define TONE_H
+#if !defined(TONE_H)
+  #define TONE_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnTone(uint16_t toneNum);
-void fnBeep(uint16_t unusedButMandatoryParameter);
-
-#endif // TONE_H
+  void fnTone(uint16_t toneNum);
+  void fnBeep(uint16_t unusedButMandatoryParameter);
+#endif // .TONE_H

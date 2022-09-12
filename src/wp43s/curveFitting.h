@@ -17,7 +17,7 @@
 /********************************************//**
  * \file curveFitting.h
  ***********************************************/
-#ifndef CURVEFITTING_H
+#if !defined(CURVEFITTING_H)
 #define CURVEFITTING_H
 
 #include <stdint.h>
@@ -25,7 +25,6 @@
 
 #include "wp43s.h"
 
-#ifndef TESTSUITE
   extern   realContext_t              *realContext;
 void     fnCurveFittingReset     (uint16_t curveFitting);
 void     fnCurveFitting_T        (uint16_t curveFitting);
@@ -39,6 +38,4 @@ void     fnCurveFitting          (uint16_t curveFitting);
   void     fnYIsFnx                   (uint16_t unusedButMandatoryParameter);
   void     fnXIsFny                   (uint16_t unusedButMandatoryParameter);
   void     fnCurveFittingLR           (uint16_t unusedButMandatoryParameter);
-#endif //TESTSUITE
-
-#endif // CURVEFITTING_H
+#endif // !CURVEFITTING_H

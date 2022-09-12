@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DISPLAY_H
+#if !defined(DISPLAY_H)
 #define DISPLAY_H
 
 #include "longIntegerType.h"
@@ -47,5 +47,4 @@ void supNumberToDisplayString          (int32_t supNumber, char *displayString, 
 void subNumberToDisplayString          (int32_t subNumber, char *displayString, char *displayValueString);
 void longIntegerToAllocatedString      (const longInteger_t lgInt, char *str, int32_t strLen);
 void fnShow_SCROLL                     (uint16_t fnShow_param);    //JMSHOW
-
-#endif // DISPLAY_H
+#endif // !DISPLAY_H

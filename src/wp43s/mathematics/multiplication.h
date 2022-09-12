@@ -17,76 +17,76 @@
 /********************************************//**
  * \file multiplication.h
  ***********************************************/
-#ifndef MULTIPLICATION_H
-#define MULTIPLICATION_H
+#if !defined(MULTIPLICATION_H)
+  #define MULTIPLICATION_H
 
-#include "defines.h"
-#include "realType.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include "realType.h"
+  #include <stdint.h>
 
-void fnMultiply (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void mulError   (void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define mulError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  void fnMultiply (uint16_t unusedButMandatoryParameter);
+  
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void mulError   (void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define mulError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
-void mulComplexComplex(const real_t *factor1Real, const real_t *factor1Imag, const real_t *factor2Real, const real_t *factor2Imag, real_t *productReal, real_t *productImag, realContext_t *realContext);
+  void mulComplexComplex(const real_t *factor1Real, const real_t *factor1Imag, const real_t *factor2Real, const real_t *factor2Imag, real_t *productReal, real_t *productImag, realContext_t *realContext);
 
-//      RegYRegX
-void mulLonILonI(void);
-void mulLonITime(void);
-void mulLonIRema(void);
-void mulLonICxma(void);
-void mulLonIShoI(void);
-void mulLonIReal(void);
-void mulLonICplx(void);
+  //      RegYRegX
+  void mulLonILonI(void);
+  void mulLonITime(void);
+  void mulLonIRema(void);
+  void mulLonICxma(void);
+  void mulLonIShoI(void);
+  void mulLonIReal(void);
+  void mulLonICplx(void);
 
-//      RegYRegX
-void mulTimeLonI(void);
-void mulTimeShoI(void);
-void mulTimeReal(void);
+  //      RegYRegX
+  void mulTimeLonI(void);
+  void mulTimeShoI(void);
+  void mulTimeReal(void);
 
-//      RegYRegX
-void mulRemaLonI(void);
-void mulRemaRema(void);
-void mulRemaCxma(void);
-void mulRemaShoI(void);
-void mulRemaReal(void);
-void mulRemaCplx(void);
+  //      RegYRegX
+  void mulRemaLonI(void);
+  void mulRemaRema(void);
+  void mulRemaCxma(void);
+  void mulRemaShoI(void);
+  void mulRemaReal(void);
+  void mulRemaCplx(void);
 
-//      RegYRegX
-void mulCxmaLonI(void);
-void mulCxmaRema(void);
-void mulCxmaCxma(void);
-void mulCxmaShoI(void);
-void mulCxmaReal(void);
-void mulCxmaCplx(void);
+  //      RegYRegX
+  void mulCxmaLonI(void);
+  void mulCxmaRema(void);
+  void mulCxmaCxma(void);
+  void mulCxmaShoI(void);
+  void mulCxmaReal(void);
+  void mulCxmaCplx(void);
 
-//      RegYRegX
-void mulShoILonI(void);
-void mulShoITime(void);
-void mulShoIRema(void);
-void mulShoICxma(void);
-void mulShoIShoI(void);
-void mulShoIReal(void);
-void mulShoICplx(void);
+  //      RegYRegX
+  void mulShoILonI(void);
+  void mulShoITime(void);
+  void mulShoIRema(void);
+  void mulShoICxma(void);
+  void mulShoIShoI(void);
+  void mulShoIReal(void);
+  void mulShoICplx(void);
 
-//      RegYRegX
-void mulRealLonI(void);
-void mulRealTime(void);
-void mulRealRema(void);
-void mulRealCxma(void);
-void mulRealShoI(void);
-void mulRealReal(void);
-void mulRealCplx(void);
+  //      RegYRegX
+  void mulRealLonI(void);
+  void mulRealTime(void);
+  void mulRealRema(void);
+  void mulRealCxma(void);
+  void mulRealShoI(void);
+  void mulRealReal(void);
+  void mulRealCplx(void);
 
-//      RegYRegX
-void mulCplxLonI(void);
-void mulCplxRema(void);
-void mulCplxCxma(void);
-void mulCplxShoI(void);
-void mulCplxReal(void);
-void mulCplxCplx(void);
-
-#endif // MULTIPLICATION_H
+  //      RegYRegX
+  void mulCplxLonI(void);
+  void mulCplxRema(void);
+  void mulCplxCxma(void);
+  void mulCplxShoI(void);
+  void mulCplxReal(void);
+  void mulCplxCplx(void);
+#endif // !MULTIPLICATION_H

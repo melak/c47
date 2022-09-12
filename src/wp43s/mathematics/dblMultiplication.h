@@ -17,11 +17,10 @@
 /********************************************//**
  * \file dblMultiplication.h
  ***********************************************/
-#ifndef DBLMULTIPLICATION_H
-#define DBLMULTIPLICATION_H
+#if !defined(DBLMULTIPLICATION_H)
+  #define DBLMULTIPLICATION_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnDblMultiply(uint16_t unusedButMandatoryParameter);
-
-#endif // DBLMULTIPLICATION_H
+  void fnDblMultiply(uint16_t unusedButMandatoryParameter);
+#endif // !DBLMULTIPLICATION_H

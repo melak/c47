@@ -17,11 +17,10 @@
 /********************************************//**
  * \file ulp.h
  ***********************************************/
-#ifndef ULP_H
-#define ULP_H
+#if !defined(ULP_H)
+  #define ULP_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnUlp(uint16_t unusedButMandatoryParameter);
-
-#endif // ULP_H
+  void fnUlp(uint16_t unusedButMandatoryParameter);
+#endif // !ULP_H

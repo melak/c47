@@ -17,11 +17,11 @@
 /**
  * \file keyboard.h
  */
-#ifndef KEYBOARD_H
+#if !defined(KEYBOARD_H)
 #define KEYBOARD_H
 
 #include <stdint.h>
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   #include <gtk/gtk.h>
   #include <gdk/gdk.h>
 #endif // PC_BUILD
@@ -35,48 +35,56 @@
 void leavePem        (void);
 void showShiftState  (void);
 void processKeyAction(int16_t item);
+  
 /**
  * Processing ENTER key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyEnter      (uint16_t unusedButMandatoryParameter);
+  
 /**
  * Processing EXIT key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyExit       (uint16_t unusedButMandatoryParameter);
+  
 /**
  * Processing CC key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyCC         (uint16_t unusedButMandatoryParameter);
+  
 /**
  * Processing BACKSPACE key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyBackspace  (uint16_t unusedButMandatoryParameter);
+  
 /**
  * Processing UP key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyUp         (uint16_t unusedButMandatoryParameter);
+  
 /**
  * Processing DOWN key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyDown       (uint16_t unusedButMandatoryParameter);
+  
 /**
  * Processing .d key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyDotD       (uint16_t unusedButMandatoryParameter);
+  
 /**
  * Processing ANGLE key.
  *
@@ -93,7 +101,7 @@ void executeFunction(const char *data, int16_t item_);
 #define ST_4_REL2     4     //STATE 4 SECOND RELEASE   //JM ^^
 
 
-#ifdef PC_BUILD
+  #if defined(PC_BUILD)
 /**
    * Simulate a function key click.
    *
@@ -110,6 +118,7 @@ void executeFunction(const char *data, int16_t item_);
    * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
    */
   void btnFnPressed  (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+    
   /**
    * A calc function key was released.
    *
@@ -117,6 +126,7 @@ void executeFunction(const char *data, int16_t item_);
    * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
    */
   void btnFnReleased (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+    
   /**
    * Simulate a button click.
    *
@@ -133,6 +143,7 @@ void executeFunction(const char *data, int16_t item_);
    * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
    */
   void btnPressed    (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+    
   /**
    * A calc button was released.
    *
@@ -140,6 +151,7 @@ void executeFunction(const char *data, int16_t item_);
    * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
    */
   void frmCalcMouseButtonPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data);
+    
   /**
    * A calc button was pressed.
    *
@@ -147,6 +159,7 @@ void executeFunction(const char *data, int16_t item_);
    * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
    */
   void frmCalcMouseButtonReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data);
+    
   /**
    * A calc button was released.
    *
@@ -158,15 +171,14 @@ void executeFunction(const char *data, int16_t item_);
 
 void execAutoRepeat(uint16_t key);
 
-#ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
   void btnFnClicked (void *w, void *data);
   void btnFnPressed (void *data);
   void btnFnReleased(void *data);
   void btnClicked   (void *w, void *data);
   void btnPressed   (void *data);
   void btnReleased  (void *data);
-#endif // DMCP_BUILD
+  #endif // DMCP_BUILD
 
 void setLastKeyCode  (int key);
-
-#endif // KEYBOARD_H
+#endif // !KEYBOARD_H

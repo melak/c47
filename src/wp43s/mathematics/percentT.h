@@ -17,16 +17,15 @@
 /********************************************//**
  * \file percentT.h
  ***********************************************/
-#ifndef PERCENTT_H
-#define PERCENTT_H
+#if !defined(PERCENTT_H)
+  #define PERCENTT_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnPercentT(uint16_t unusedButMandatoryParameter);
+  void fnPercentT(uint16_t unusedButMandatoryParameter);
 
-void percentTLonILonI(void);
-void percentTLonIReal(void);
-void percentTRealLonI(void);
-void percentTRealReal(void);
-
-#endif // PERCENTT_H
+  void percentTLonILonI(void);
+  void percentTLonIReal(void);
+  void percentTRealLonI(void);
+  void percentTRealReal(void);
+#endif // !PERCENTT_H

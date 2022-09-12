@@ -17,7 +17,7 @@
 /********************************************//**
  * \file conversionAngles.h
  ***********************************************/
-#ifndef CONVERSIONANGLES_H
+#if !defined(CONVERSIONANGLES_H)
 #define CONVERSIONANGLES_H
 
 #include "realType.h"
@@ -41,5 +41,4 @@ uint32_t getInfiniteComplexAngle     (real_t *x, real_t *y);
 void     setInfiniteComplexAngle     (uint32_t angle, real_t *x, real_t *y);
 void     real34FromDmsToDeg          (const real34_t *angleDms, real34_t *angleDec);
 void     real34FromDegToDms          (const real34_t *angleDec, real34_t *angleDms);
-
-#endif // CONVERSIONANGLES_H
+#endif // !CONVERSIONANGLES_H

@@ -294,7 +294,8 @@
         for(f=9; f<line; f++) {
           showString(tmpString + CHARS_PER_LINE * f, &standardFont, 1, 22*(f-9) + 43, vmNormal, true, false);
         }
-      } else {
+      }
+      else {
         if(lastFlgScr == 1) {currentFlgScr++;}
         else {
           currentFlgScr--;

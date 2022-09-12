@@ -17,14 +17,13 @@
 /********************************************//**
  * \file percentSigma.h
  ***********************************************/
-#ifndef PERCENTSIGMA_H
-#define PERCENTSIGMA_H
+#if !defined(PERCENTSIGMA_H)
+  #define PERCENTSIGMA_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnPercentSigma(uint16_t unusedButMandatoryParameter);
+  void fnPercentSigma(uint16_t unusedButMandatoryParameter);
 
-void percentSigmaLonI(void);
-void percentSigmaReal(void);
-
-#endif // PERCENTSIGMA_H
+  void percentSigmaLonI(void);
+  void percentSigmaReal(void);
+#endif // !PERCENTSIGMA_H

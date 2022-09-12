@@ -18,15 +18,15 @@
  * \file screen.h
  * Screen related functions.
  */
-#ifndef SCREEN_H
+#if !defined(SCREEN_H)
 #define SCREEN_H
 
 #include "typeDefinitions.h"
 #include <stdint.h>
-#ifdef PC_BUILD
+  #if defined(PC_BUILD)
   #include <gtk/gtk.h>
   #include <gdk/gdk.h>
-#endif // PC_BUILD
+  #endif // PC_BUILD
 
 //#define displayStackSHOIDISP 2                  //JMSHOIDISP  displayStackSHOIDISP=1: 3 lines of X-repeats
                                                   //JMSHOIDISP  displayStackSHOIDISP=2: 2 lines of X-repeats
@@ -51,7 +51,7 @@ void       fnPixel                            (uint16_t unusedButMandatoryParame
 void       fnPoint                            (uint16_t unusedButMandatoryParameter);
 void       fnAGraph                           (uint16_t regist);
 
-#ifdef PC_BUILD
+  #if defined(PC_BUILD)
   /**
    * Draws the calc's screen on the PC window widget.
    *
@@ -66,6 +66,7 @@ void       fnAGraph                           (uint16_t regist);
   void     copyStackRegistersToClipboard      (void);
   void     copyAllRegistersToClipboard        (void);
   void     copyRegisterToClipboardString      (calcRegister_t regist, char *clipboardString);
+    
   /**
    * Refreshes calc's screen.
    * This function is called every SCREEN_REFRESH_PERIOD ms by a GTK timer.
@@ -81,11 +82,12 @@ void       fnAGraph                           (uint16_t regist);
   gboolean refreshLcd                         (gpointer unusedData);
 #endif // PC_BUILD
 
-#ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
   void     copyRegisterToClipboardString      (calcRegister_t regist, char *clipboardString);                   //JMCSV Added for textfiles 
   void     refreshLcd                         (void);
 #else // !DMCP_BUILD
-  void     lcd_fill_rect                      (uint32_t x, uint32_t y, uint32_t dx, uint32_t dy, int val); // clone fron the DMCP function
+    void     lcd_fill_rect                      (uint32_t x, uint32_t y, uint32_t dx, uint32_t dy, int val); // clone from the DMCP function
+    
     /**
      * Sets a black pixel on the screen.
      *
@@ -94,6 +96,7 @@ void       fnAGraph                           (uint16_t regist);
      * \return void
      */
   void     setBlackPixel                      (uint32_t x, uint32_t y);
+    
     /**
      * Sets a white pixel on the screen.
      *
@@ -101,6 +104,7 @@ void       fnAGraph                           (uint16_t regist);
      * \param[in] y y coordinate from 0 (top) to 239 (bottom)
      */
   void     setWhitePixel                      (uint32_t x, uint32_t y);
+    
     /**
      * Turns a black pixel to a white pixel or vice versa on the screen.
      *
@@ -169,6 +173,7 @@ void       fnAGraph                           (uint16_t regist);
    * \return x coordinate for the next glyph
    */
   uint32_t showString                         (const char *str,   const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols);
+    
   /**
    * Displays the first glyph of a string.
    *
@@ -182,6 +187,7 @@ void       fnAGraph                           (uint16_t regist);
    * \return x coordinate for the next glyph
    */
   uint32_t showGlyph                          (const char *ch,    const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols);
+    
   /**
    * Displays a glyph using it's Unicode code point.
    *
@@ -195,10 +201,12 @@ void       fnAGraph                           (uint16_t regist);
    * \return x coordinate for the next glyph
    */
   uint32_t showGlyphCode                      (uint16_t charCode, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols);
+    
   /**
    * Hides the cursor.
    */
   void     hideCursor                         (void);
+    
   /**
    * Displays the function name.
    * The function name of the currently pressed button is shown in the
@@ -208,32 +216,36 @@ void       fnAGraph                           (uint16_t regist);
    * \param[in] counter  number of 1/10 seconds until NOP
    */
   void     showFunctionName                   (int16_t item, int16_t delayInMs);
+    
   /**
    * Hides the function name.
    * The function name in the upper left corner of the T register line is hidden
    * and the counter is cleared.
    */
   void     hideFunctionName                   (void);
+    
   /**
    * Clears one register line.
    *
    * \param[in] yStart y coordinate from where starting to clear
    */
   void     clearRegisterLine                  (calcRegister_t regist, bool_t clearTop, bool_t clearBottom);
+    
   /**
    * Updates matrix height cache.
    */
   void     updateMatrixHeightCache            (void);
+    
   /**
    * Displays one register line.
    *
    * \param[in] regist Register line to display
    */
   void     refreshRegisterLine                (calcRegister_t regist);
+    
   void     displayNim                         (const char *nim, const char *lastBase, int16_t wLastBaseNumeric, int16_t wLastBaseStandard);
   void     clearTamBuffer                     (void);
   void     clearShiftState                    (void);
   void     displayShiftAndTamBuffer           (void);
-#endif // TESTSUITE_BUILD
-
-#endif // SCREEN_H
+  #endif // !TESTSUITE_BUILD
+#endif // !SCREEN_H

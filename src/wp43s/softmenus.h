@@ -18,7 +18,7 @@
  * \file softmenus.h
  * List of softmenus and related functions.
  */
-#ifndef SOFTMENUS_H
+#if !defined(SOFTMENUS_H)
 #define SOFTMENUS_H
 
 #include "defines.h"
@@ -29,7 +29,7 @@ uint8_t *getNthString           (uint8_t *ptr, int16_t n); // Starting with stri
 void     fnDynamicMenu          (uint16_t unusedButMandatoryParameter);
 
 void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   /**
    * Displays one softkey.
    *
@@ -41,20 +41,25 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
    * \param[in] bottomLine Draw a bottom line
    */
   void   showSoftkey            (const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue);     //dr);
-  /**
+
+/**
    * Displays the current part of the displayed softmenu.
    */
   void   showSoftmenuCurrentPart(void);
+    
   /**
    * Displays a softmenu.
    *
    * \param[in] id ID of softmenu
    */
   void   showSoftmenu           (int16_t id);
+    
   /**
    * Pops a softmenu from the softmenu stack.
    */
   void   popSoftmenu            (void);
+    
+  void   setCatalogLastPos      (void);
   bool_t currentSoftmenuScrolls (void);
   bool_t isAlphabeticSoftmenu   (void);
   bool_t isJMAlphaSoftmenu      (int16_t menuId);             //JM
@@ -65,7 +70,5 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
 
 #endif // !TESTSUITE_BUILD
 char    *dynmenuGetLabel        (int16_t menuitem);
-void     setCatalogLastPos      (void);
 void     fnDumpMenus            (uint16_t unusedButMandatoryParameter);  //JM
-
-#endif // SOFTMENUS_H
+#endif // !SOFTMENUS_H

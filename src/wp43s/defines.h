@@ -17,7 +17,7 @@
 /********************************************//**
  * \file defines.h
  ***********************************************/
-#ifndef DEFINES_H
+#if !defined(DEFINES_H)
 #define DEFINES_H
 
 //*********************************
@@ -224,13 +224,13 @@
 #define DECNUMDIGITS                    75 // Default number of digits used in the decNumber library
 
 #define SCREEN_800X480                   1 // Set to 0 if you want a keyboard in addition to the screen on Raspberry pi
-#ifndef RASPBERRY
+  #if !defined(RASPBERRY)
   #undef SCREEN_800X480
   #define SCREEN_800x480 0
-#endif // RASPBERRY
+  #endif // !RASPBERRY
 
 
-#ifdef LINUX
+  #if defined(LINUX)
   #define _XOPEN_SOURCE                700 // see: https://stackoverflow.com/questions/5378778/what-does-d-xopen-source-do-mean
 #endif // LINUX
 
@@ -239,23 +239,23 @@
 #if (DEBUG_STAT == 0)
   #undef STATDEBUG
   #undef STATDEBUG_VERBOSE
-#endif
+  #endif // DEBUG_STAT == 0
 #if (DEBUG_STAT == 1)
   #define STATDEBUG
   #undef STATDEBUG_VERBOSE
-#endif
+  #endif // DEBUG_STAT == 1
 #if (DEBUG_STAT == 2)
   #define STATDEBUG
   #define STATDEBUG_VERBOSE
-#endif
+  #endif // DEBUG_STAT == 2
 
 
-#ifdef PC_BUILD
+  #if defined(PC_BUILD)
 //  #define DEBUGUNDO
   #undef DEBUGUNDO
-#else
+  #else // !PC_BUILD
   #undef DEBUGUNDO
-#endif
+  #endif // PC_BUILD
 
 
 #define REAL34_WIDTH_TEST 0 // For debugging real34 ALL 0 formating. Use UP/DOWN to shrink or enlarge the available space. The Z register holds the available width.
@@ -660,8 +660,8 @@ typedef enum {
 
 
 
-#ifdef PC_BUILD
-  #ifdef LINUX
+  #if defined(PC_BUILD)
+    #if defined(LINUX)
     #define LINEBREAK                           "\n"
   #elif defined(WIN32)
     #define LINEBREAK                         "\n\r"
@@ -1134,7 +1134,7 @@ typedef enum {
 
 #define TIMER_APP_STOPPED                          0xFFFFFFFFu
 
-#ifndef DMCP_BUILD
+  #if !defined(DMCP_BUILD)
   #define LCD_SET_VALUE                            0 // Black pixel
   #define LCD_EMPTY_VALUE                        255 // White (or empty) pixel
   #define TO_QSPI
@@ -1157,9 +1157,9 @@ typedef enum {
 //******************************
 #if (EXTRA_INFO_ON_CALC_ERROR == 0) || defined(TESTSUITE_BUILD) || defined(DMCP_BUILD)
   #define EXTRA_INFO_MESSAGE(function, msg)
-#else // EXTRA_INFO_ON_CALC_ERROR == 1
+  #else // EXTRA_INFO_ON_CALC_ERROR != 0 && !TESTSUITE_BUILD && !DMCP_BUILD
   #define EXTRA_INFO_MESSAGE(function, msg)  {sprintf(errorMessage, msg); moreInfoOnError("In function ", function, errorMessage, NULL);}
-#endif // EXTRA_INFO_ON_CALC_ERROR
+  #endif // EXTRA_INFO_ON_CALC_ERROR == 0 || TESTSUITE_BUILD || DMCP_BUILD
 
 #define isSystemFlagWriteProtected(sf)       ((sf & 0x4000) != 0)
 #define getSystemFlag(sf)                    ((systemFlags &   ((uint64_t)1 << (sf & 0x3fff))) != 0)
@@ -1199,26 +1199,26 @@ typedef enum {
 
 #if !defined(PC_BUILD) && !defined(DMCP_BUILD)
   #error One of PC_BUILD and DMCP_BUILD must be defined
-#endif // !defined(PC_BUILD) && !defined(DMCP_BUILD)
+  #endif // !PC_BUILD && !DMCP_BUILD
 
 #if defined(PC_BUILD) && defined(DMCP_BUILD)
   #error Only one of PC_BUILD and DMCP_BUILD must be defined
-#endif // defined(PC_BUILD) && defined(DMCP_BUILD)
+  #endif // PC_BUILD && DMCP_BUILD
 
 #if !defined(OS32BIT) && !defined(OS64BIT)
   #error One of OS32BIT and OS64BIT must be defined
-#endif // !defined(OS32BIT) && !defined(OS64BIT)
+  #endif // !OS32BIT && !OS64BIT
 
 #if defined(OS32BIT) && defined(OS64BIT)
   #error Only one of OS32BIT and OS64BIT must be defined
-#endif // defined(OS32BIT) && defined(OS64BIT)
+  #endif // OS32BIT && OS64BIT
 
-#ifdef PC_BUILD
-  #ifdef WIN32 // No DEBUG_PANEL mode for Windows
+  #if defined(PC_BUILD)
+    #if defined(WIN32) // No DEBUG_PANEL mode for Windows
     #undef  DEBUG_PANEL
     #define DEBUG_PANEL 0
   #endif // WIN32
-  #ifdef RASPBERRY // No DEBUG_PANEL mode for Raspberry Pi
+    #if defined(RASPBERRY) // No DEBUG_PANEL mode for Raspberry Pi
     #undef  DEBUG_PANEL
     #define DEBUG_PANEL 0
   #endif // RASPBERRY
@@ -1240,7 +1240,7 @@ typedef enum {
     #define JM_LAYOUT_1A
     #undef  JM_LAYOUT_2_DM42_STRICT    //DM42 compatible layout
   #endif
- #endif // defined(DMCP_BUILD) || (SCREEN_800X480 == 1)
+  #endif // DMCP_BUILD || SCREEN_800X480 == 1
 
 #if defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
     #undef  JM_LAYOUT_1A
@@ -1271,14 +1271,14 @@ typedef enum {
     #define initFontBrowser()       {}
 
     #define JM_LAYOUT_1A                //JM Preferred layout
-  #endif // defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
+  #endif // TESTSUITE_BUILD && !GENERATE_CATALOGS
 
 /* Turn off -Wunused-result for a specific function call */
-#ifdef OS32BIT
+  #if defined(OS32BIT)
   #define ignore_result(M) if(1==((uint32_t)M)){;}
-#else
+  #else // !OS32BIT
   #define ignore_result(M) if(1==((uint64_t)M)){;}
-#endif
+  #endif // OS32BIT
 
 #ifdef DMCP_BUILD
   #define TMP_STR_LENGTH     2560 //2560 //dr - remove #include <dmcp.h> again - AUX_BUF_SIZE
@@ -1338,5 +1338,4 @@ typedef enum {
                                      printf("%lulimbs", *REGISTER_DATA_MAX_LEN(reg) / LIMB_SIZE); \
                                      printf("\n"); \
                                     }
-
-#endif // DEFINES_H
+#endif // !DEFINES_H

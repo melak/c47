@@ -17,21 +17,22 @@
 /********************************************//**
  * \file fractionalPart.h
  ***********************************************/
-#ifndef FRACTIONALPART_H
-#define FRACTIONALPART_H
+#if !defined(FRACTIONALPART_H)
+  #define FRACTIONALPART_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnFp   (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void fpError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define fpError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void fpLonI (void);
-void fpRema (void);
-void fpShoI (void);
-void fpReal (void);
-
-#endif // FRACTIONALPART_H
+  void fnFp   (uint16_t unusedButMandatoryParameter);
+  
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void fpError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define fpError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  
+  void fpLonI (void);
+  void fpRema (void);
+  void fpShoI (void);
+  void fpReal (void);
+#endif // !FRACTIONALPART_H

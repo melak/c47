@@ -17,7 +17,7 @@
 /********************************************//**
  * \file comparisonReals.h
  ***********************************************/
-#ifndef COMPARISONREALS_H
+#if !defined(COMPARISONREALS_H)
 #define COMPARISONREALS_H
 
 #include "realType.h"
@@ -45,5 +45,4 @@ bool_t  realCompareLessThan         (const real_t *number1, const real_t *number
 bool_t  real34IsAnInteger           (const real34_t *x);
 bool_t  realIsAnInteger             (const real_t *x);
 int16_t realIdenticalDigits         (real_t *a, real_t *b);
-
-#endif // COMPARISONREALS_H
+#endif // !COMPARISONREALS_H

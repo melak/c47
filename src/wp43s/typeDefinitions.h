@@ -16,21 +16,21 @@
 
 /**
  * \file typeDefinitions.h
- ***********************************************/
-#ifndef TYPEDEFINITIONS_H
+ */
+#if !defined(TYPEDEFINITIONS_H)
 #define TYPEDEFINITIONS_H
 
 #include "realType.h"
 #include <stdint.h>
-#ifdef PC_BUILD
+  #if defined(PC_BUILD)
   #include <gtk/gtk.h>
   #include <gdk/gdk.h>
-#endif // PC_BUILD
+  #endif // PC_BUILD
 
 /**
  * \union multiplyDivide_t
- * \brief used for unit conversions
- ***********************************************/
+   * Used for unit conversions.
+   */
 typedef enum {
   multiply,
   divide
@@ -39,8 +39,8 @@ typedef enum {
 
 /**
  * \struct calcKey_t
- * \brief Structure keeping the informations for one key
- ***********************************************/
+   * Structure keeping the informations for one key.
+   */
 typedef struct {
   int16_t keyId;       ///< ID of the key
   int16_t primary;     ///< ID of the primary function of the key
@@ -325,8 +325,8 @@ typedef enum {
 
 /**
  * \struct softmenu_t
- * \brief Structure keeping the informations for one softmenu
- ***********************************************/
+   * Structure keeping the informations for one softmenu.
+   */
 typedef struct {
   int16_t menuItem;           ///< ID of the menu. The item is always negative and -item must be in the indexOfItems area
   int16_t numItems;           ///< Number of items in the softmenu (must be a multiple of 6 for now)
@@ -336,8 +336,8 @@ typedef struct {
 
 /**
  * \struct dynamicSoftmenu_t
- * \brief Structure keeping the informations for one variable softmenu
- ***********************************************/
+   * Structure keeping the informations for one variable softmenu.
+   */
 typedef struct {
   int16_t menuItem;           ///< ID of the menu. The item is always negative and -item must be in the indexOfItems area
   int16_t numItems;           ///< Number of items in the dynamic softmenu (must be a multiple of 6 for now)
@@ -347,18 +347,18 @@ typedef struct {
 
 /**
  * \struct softmenuStack_t
- * \brief Stack of softmenus
- ***********************************************/
+   * Stack of softmenus.
+   */
 typedef struct {
   int16_t softmenuId; ///< Softmenu ID = rank in dynamicSoftmenu or softmenu
   int16_t firstItem;  ///< Current first item on the screen (unshifted F1 = bottom left)
 } softmenuStack_t;
 
 
-/********************************************//**
+/**
  * \typedef calcRegister_t
  * \brief A type for calculator registers
- ***********************************************/
+*/
 typedef int16_t calcRegister_t;
 
 /**
@@ -510,7 +510,7 @@ typedef struct {
   bool_t     keyInputFinished;
 } tamState_t;
 
-#ifdef PC_BUILD
+  #if defined(PC_BUILD)
   /**
    * \struct calcKeyboard_t
    * Structure keeping key images, image sizes, and image locations.
@@ -520,6 +520,5 @@ typedef struct {
     int width[4], height[4];
     GtkWidget *keyImage[4];
   } calcKeyboard_t;
-#endif // PC_BUILD
-
-#endif // TYPEDEFINITIONS_H
+  #endif // PC_BUILD
+#endif // .TYPEDEFINITIONS_H

@@ -18,13 +18,10 @@
  * \file items.h
  * Item list and function to run them.
  */
-#ifndef ITEMS_H
+#if !defined(ITEMS_H)
 #define ITEMS_H
 
 #include <stdint.h>
-
-
-
 
 #define ITM_NULL                         0
 
@@ -2145,29 +2142,32 @@
 #define ITM_PROD_SIGN                 9999 // Multiplication sign × or ·
 
 void reallyRunFunction(int16_t func, uint16_t param);
+  
 /**
  * Runs a function.
  *
  * \param[in] func Index in the indexOfItems area of the function to run
  */
 void runFunction      (int16_t func);
+  
 ///**
 // * Dummy function for a function (part of an item) to be coded.
 // *
 // * \param[in] unusedButMandatoryParameter
 // */
 //void fnToBeCoded      (void);
+  
 /**
  * Dummy function for an item to be coded.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void itemToBeCoded    (uint16_t unusedButMandatoryParameter);
+  
 /**
  * No OPeration.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnNop            (uint16_t unusedButMandatoryParameter);
-
-#endif // ITEMS_H
+#endif // !ITEMS_H
