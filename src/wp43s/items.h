@@ -2049,10 +2049,10 @@
 #define ITM_X_g6                      1982
 #define ITM_XSAVE                     1983
 #define ITM_XLOAD                     1984
-#define ITM_FB00                      1985
-#define ITM_FB01                      1986
-#define ITM_FB02                      1987
-#define ITM_FB03                      1988
+#define ITM_1985                      1985
+#define ITM_1986                      1986
+#define ITM_1987                      1987
+#define ITM_1988                      1988
 #define ITM_S06                       1989
 #define ITM_S08                       1990
 #define ITM_S16                       1991

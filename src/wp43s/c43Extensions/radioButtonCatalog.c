@@ -141,6 +141,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
 
 /*      */  { CHR_num,              JC_NL,                  CB_JC },  //
 /*      */  { CHR_case,             JC_UC,                  CB_JC },  //
+/*      */  { ITM_USERMODE,         JC_UU,                  CB_JC },  //
 
 /* 1685 */  { ITM_2BIN,             2,                      RB_HX  }, //fnChangeBaseJM
 /* 1686 */  { ITM_2OCT,             8,                      RB_HX  }, //fnChangeBaseJM
@@ -441,6 +442,12 @@ int8_t fnCbIsSet(int16_t item) {
           cb_param = !alphaCase;
         }
         break;
+
+        case JC_UU: {
+          cb_param = getSystemFlag(FLAG_USER);
+        }
+        break;
+
 
 #ifdef INLINE_TEST
         case JC_ITM_TST: {
