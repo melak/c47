@@ -140,7 +140,7 @@ void synchronizeLetteredFlags(void) {
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 static void _setAlpha(void) {
   if(calcMode != CM_EIM) {
     calcModeAim(NOPARAM);
@@ -187,10 +187,10 @@ bool_t getFlag(uint16_t flag) {
         displayBugScreen(errorMessage);
       }
     }
-    #ifdef PC_BUILD
-    else {
-      moreInfoOnError("In function getFlag:", "no local flags defined!", "To do so, you can find LocR here:", "[g] [P.FN] [g] [F5]");
-    }
+    #if defined(PC_BUILD)
+      else {
+        moreInfoOnError("In function getFlag:", "no local flags defined!", "To do so, you can find LocR here:", "[g] [P.FN] [g] [F5]");
+      }
     #endif // PC_BUILD
   }
   return false;
@@ -235,12 +235,12 @@ void fnSetFlag(uint16_t flag) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
-#ifndef TESTSUITE_BUILD
-    else if(flag == FLAG_ALPHA) {
-      tamLeaveMode();
-      _setAlpha();
-    }
-#endif // TESTSUITE_BUILD
+    #if !defined(TESTSUITE_BUILD)
+      else if(flag == FLAG_ALPHA) {
+        tamLeaveMode();
+        _setAlpha();
+      }
+    #endif // !TESTSUITE_BUILD
     else {
       setSystemFlag(flag);
     }
@@ -269,7 +269,7 @@ void fnSetFlag(uint16_t flag) {
         displayBugScreen(errorMessage);
       }
     }
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       else {
         moreInfoOnError("In function fnSetFlag:", "no local flags defined!", "To do so, you can find LocR here:", "[g] [P.FN] [g] [F5]");
       }
@@ -299,12 +299,12 @@ void fnClearFlag(uint16_t flag) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
-#ifndef TESTSUITE_BUILD
-    else if(flag == FLAG_ALPHA) {
-      tamLeaveMode();
-      _clearAlpha();
-    }
-#endif // TESTSUITE_BUILD
+    #if !defined(TESTSUITE_BUILD)
+      else if(flag == FLAG_ALPHA) {
+        tamLeaveMode();
+        _clearAlpha();
+      }
+    #endif // !TESTSUITE_BUILD
     else {
       clearSystemFlag(flag);
     }
@@ -333,7 +333,7 @@ void fnClearFlag(uint16_t flag) {
         displayBugScreen(errorMessage);
       }
     }
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       else {
        moreInfoOnError("In function fnClearFlag:", "no local flags defined!", "To do so, you can find LocR here:", "[g] [P.FN] [g] [F5]");
       }
@@ -363,17 +363,17 @@ void fnFlipFlag(uint16_t flag) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
-#ifndef TESTSUITE_BUILD
-    else if(flag == FLAG_ALPHA) {
-      tamLeaveMode();
-      if(getSystemFlag(FLAG_ALPHA)) {
-        _clearAlpha();
+    #if !defined(TESTSUITE_BUILD)
+      else if(flag == FLAG_ALPHA) {
+        tamLeaveMode();
+        if(getSystemFlag(FLAG_ALPHA)) {
+          _clearAlpha();
+        }
+        else {
+          _setAlpha();
+        }
       }
-      else {
-        _setAlpha();
-      }
-    }
-#endif // TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
     else {
       flipSystemFlag(flag);
     }
@@ -402,7 +402,7 @@ void fnFlipFlag(uint16_t flag) {
         displayBugScreen(errorMessage);
       }
     }
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       else {
         moreInfoOnError("In function fnFlipFlag:", "no local flags defined!", "To do so, you can find LocR here:", "[g] [P.FN] [g] [F5]");
       }

@@ -63,14 +63,14 @@ void itemToBeCoded(uint16_t unusedButMandatoryParameter) {
 
 
 
-//#ifndef GENERATE_CATALOGS
+//#if !defined(GENERATE_CATALOGS)
 //void fnToBeCoded(void) {
 //  displayCalcErrorMessage(ERROR_FUNCTION_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
-//  #ifdef PC_BUILD
+//  #if defined(PC_BUILD)
 //    moreInfoOnError("Function to be coded", "for that data type(s)!", NULL, NULL);
 //  #endif // PC_BUILD
 //}
-//#endif // GENERATE_CATALOGS
+//#endif // !GENERATE_CATALOGS
 
 
 
@@ -82,9 +82,9 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void reallyRunFunction(int16_t func, uint16_t param) {
     if((indexOfItems[func].status & US_STATUS) == US_ENABLED || (indexOfItems[func].status & US_STATUS) == US_ENABL_XEQ) {
       if((programRunStop != PGM_RUNNING || getSystemFlag(FLAG_IGN1ER)) && calcMode != CM_GRAPH && calcMode != CM_NO_UNDO) {
-        #ifdef DEBUGUNDO
+        #if defined(DEBUGUNDO)
           printf(">>> saveForUndo from reallyRunFunction: %s, calcMode = %i ",indexOfItems[func].itemCatalogName, calcMode);
-        #endif
+        #endif // DEBUGUNDO
         saveForUndo();
       }
       if(lastErrorCode == ERROR_RAM_FULL) {
@@ -119,7 +119,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
         fnReturn(0); // 1 more time to clean local registers
       }
 
-      #ifdef DMCP_BUILD
+      #if defined(DMCP_BUILD)
         lcd_refresh();
       #else // !DMCP_BUILD
         refreshLcd(NULL);
@@ -152,7 +152,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     if(programRunStop != PGM_RUNNING) {
       updateMatrixHeightCache();
       cachedDynamicMenu = 0;
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
         refreshLcd(NULL);
       #endif // PC_BUILD
     }
@@ -163,7 +163,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void runFunction(int16_t func) {
     funcOK = true;
 
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       if(func >= LAST_ITEM) {
         sprintf(errorMessage, "item (%" PRId16 ") must be below LAST_ITEM", func);
         moreInfoOnError("In function runFunction:", errorMessage, NULL, NULL);
@@ -216,7 +216,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
     if(!funcOK) {
       displayCalcErrorMessage(ERROR_ITEM_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
         sprintf(errorMessage, "%" PRId16 " = %s", func, indexOfItems[func].itemCatalogName);
         moreInfoOnError("In function runFunction:", "Item not implemented", errorMessage, "to be coded");
       #endif // PC_BUILD
@@ -224,7 +224,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   }
 #endif // !TESTSUITE_BUILD && !GENERATE_CATALOGS
 
-#ifdef GENERATE_CATALOGS
+#if defined(GENERATE_CATALOGS)
   void registerBrowser             (uint16_t unusedButMandatoryParameter) {}
   void flagBrowser                 (uint16_t unusedButMandatoryParameter) {}
   void fontBrowser                 (uint16_t unusedButMandatoryParameter) {}

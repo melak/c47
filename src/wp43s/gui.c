@@ -33,7 +33,7 @@
 
 #include "wp43s.h"
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   GtkWidget *grid;
   #if (SCREEN_800X480 == 0)
     GtkWidget *backgroundImage, *bezelImage[3], *behindScreenImage, *fgShiftedArea1, *fgShiftedArea2;
@@ -339,7 +339,7 @@
 #endif // PC_BUILD
 
 
-#ifndef DMCP_BUILD
+#if !defined(DMCP_BUILD)
   void strReplace(char *haystack, const char *needle, const char *newNeedle) {
     ////////////////////////////////////////////////////////
     // There MUST be enough memory allocated to *haystack //
@@ -352,7 +352,7 @@
       needleLg = strlen(needle);
       needleLocation = strstr(haystack, needle);
       str = malloc(strlen(needleLocation + needleLg) + 1);
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
         if(str == NULL) {
           moreInfoOnError("In function strReplace:", "error allocating memory for str!", NULL, NULL);
           exit(1);
@@ -369,7 +369,7 @@
 #endif // !DMCP_BUILD
 
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   #if (SCREEN_800X480 == 0)
     static void getParameter(char *textLine, char *parameterName, char *parameterValue) {
       char *equalSign;
@@ -852,7 +852,7 @@
       gtk_window_set_title(GTK_WINDOW(frmCalc), "WP 43S");
       g_signal_connect(frmCalc, "destroy", G_CALLBACK(destroyCalc), NULL);
       g_signal_connect(frmCalc, "key_press_event", G_CALLBACK(keyPressed), NULL);
-      #ifdef RASPBERRY
+      #if defined(RASPBERRY)
         gtk_window_set_decorated(GTK_WINDOW(frmCalc), FALSE);
         gtk_window_set_position(GTK_WINDOW(frmCalc), GTK_WIN_POS_CENTER);
       #endif // RASPBERRY
@@ -1019,7 +1019,7 @@
         gtk_widget_show(chkHexaString);
 
         debugWindow = DBG_REGISTERS;
-      #endif // (DEBUG_PANEL == 1)
+      #endif // DEBUG_PANEL == 0
 
       gtk_widget_show_all(frmCalc);
 
@@ -1063,14 +1063,14 @@
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   void fnOff(uint16_t unsuedParamButMandatory) {
     shiftF = false;
     shiftG = false;
 
     fnStopTimerApp();
 
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       if(matrixIndex != INVALID_VARIABLE) {
         if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
           if(openMatrixMIMPointer.realMatrix.matrixElements)
@@ -1085,7 +1085,7 @@
       gtk_main_quit();
     #endif // PC_BUILD
 
-    #ifdef DMCP_BUILD
+    #if defined(DMCP_BUILD)
       SET_ST(STAT_PGM_END);
     #endif // DMCP_BUILD
   }
@@ -1208,9 +1208,9 @@
 
 
   void calcModeNim(uint16_t unusedButMandatoryParameter) {
-    #ifdef DEBUGUNDO
+    #if defined(DEBUGUNDO)
       printf(">>> saveForUndo from gui: calcModeNim\n");
-    #endif
+    #endif // DEBUGUNDO
     saveForUndo();
     if(lastErrorCode == ERROR_RAM_FULL) {
       displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);

@@ -35,7 +35,9 @@
 static void unitConversion(const real_t * const coefficient, uint16_t multiplyDivide) {
   real_t reX;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &reX);
@@ -76,7 +78,9 @@ static void unitConversion(const real_t * const coefficient, uint16_t multiplyDi
 void fnCvtCToF(uint16_t unusedButMandatoryParameter) {
   real_t reX;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &reX);
@@ -112,7 +116,9 @@ void fnCvtCToF(uint16_t unusedButMandatoryParameter) {
 void fnCvtFToC(uint16_t unusedButMandatoryParameter) {
   real_t reX;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &reX);
@@ -424,7 +430,9 @@ void fnCvtLbfftNm(uint16_t multiplyDivide) {
 void fnCvtRatioDb(uint16_t tenOrTwenty) { // ten: power ratio   twenty: field ratio
   real_t reX;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &reX);
@@ -461,7 +469,9 @@ void fnCvtRatioDb(uint16_t tenOrTwenty) { // ten: power ratio   twenty: field ra
 void fnCvtDbRatio(uint16_t tenOrTwenty) { // ten: power ratio   twenty: field ratio
   real_t reX;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &reX);

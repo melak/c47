@@ -48,7 +48,7 @@
 
 #include "wp43s.h"
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   static const char *whoStr = "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter," STD_SPACE_3_PER_EM "Mihail," STD_SPACE_3_PER_EM "Jaco," STD_SPACE_3_PER_EM "and" STD_SPACE_3_PER_EM "Martin";
   static const char *versionStr = "WP" STD_SPACE_3_PER_EM "43S" STD_SPACE_3_PER_EM VERSION_STRING;
 
@@ -61,10 +61,10 @@
   TO_QSPI static const char *nameOfWday_it[8] = {"giorno della settimana non valido",                     "luned" STD_i_GRAVE, "marted" STD_i_GRAVE,          "mercoled" STD_i_GRAVE,    "gioved" STD_i_GRAVE, "venerd" STD_i_GRAVE, "sabato",               "domenica"};
   TO_QSPI static const char *nameOfWday_pt[8] = {"dia inv" STD_a_ACUTE "lido da semana",                  "segunda-feira",     "ter" STD_c_CEDILLA "a-feira", "quarta-feira",            "quinta-feira",       "sexta-feira",        "s" STD_a_ACUTE "bado", "domingo"};
   */
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   gboolean drawScreen(GtkWidget *widget, cairo_t *cr, gpointer data) {
     cairo_surface_t *imageSurface;
 
@@ -516,7 +516,7 @@
     return TRUE;
   }
 #elif defined DMCP_BUILD
-  void refreshLcd(void) {// This function is called roughly every SCREEN_REFRESH_PERIOD ms from the main loop
+  void refreshLcd(void) { // This function is called roughly every SCREEN_REFRESH_PERIOD ms from the main loop
     // Cursor blinking
     static bool_t cursorBlink=true;
 
@@ -527,7 +527,7 @@
       else {
         hideCursor();
       }
-//    cursorBlink = !cursorBlink;
+      //cursorBlink = !cursorBlink;
     }
 
     // Function name display
@@ -552,8 +552,6 @@
         reset_auto_off();
       }
       fnPollTimerApp();
-
-
     }
 
     if(usb_powered() == 1) {
@@ -605,8 +603,8 @@ void execTimerApp(uint16_t timerType) {
 
 
 
-#ifndef TESTSUITE_BUILD
-  #ifndef DMCP_BUILD
+#if !defined(TESTSUITE_BUILD)
+  #if !defined(DMCP_BUILD)
     void setBlackPixel(uint32_t x, uint32_t y) {
       if(x>=SCREEN_WIDTH || y>=SCREEN_HEIGHT) {
         printf("In function setBlackPixel: x=%u, y=%u outside the screen!\n", x, y);
@@ -716,7 +714,7 @@ void execTimerApp(uint16_t timerType) {
           byte = *(data++);
         }
 
-        if(byte & 0x80) {// MSB set
+        if(byte & 0x80) { // MSB set
           if(videoMode == vmNormal) { // Black pixel for white background
             setBlackPixel(x + col, y);
           }
@@ -799,7 +797,7 @@ void execTimerApp(uint16_t timerType) {
 
     ch = 0;
     while(string[ch] != 0) {
-      if(lg == 1 || (lg == 2 && (string[0] & 0x80))) {// The string is 1 glyph long
+      if(lg == 1 || (lg == 2 && (string[0] & 0x80))) { // The string is 1 glyph long
         slc = showLeadingCols;
         sec = showEndingCols;
       }
@@ -807,11 +805,11 @@ void execTimerApp(uint16_t timerType) {
         slc = showLeadingCols;
         sec = true;
       }
-      else if(ch == lg-1 || (ch == lg-2 && (string[ch] & 0x80))) {// Last glyph
+      else if(ch == lg-1 || (ch == lg-2 && (string[ch] & 0x80))) { // Last glyph
         slc = true;
         sec = showEndingCols;
       }
-      else {// Glyph between first and last glyph
+      else { // Glyph between first and last glyph
         slc = true;
         sec = true;
       }
@@ -863,6 +861,7 @@ void execTimerApp(uint16_t timerType) {
   void showFunctionName(int16_t item, int16_t delayInMs) {
     uint32_t fcol, frow, gcol, grow;
     char *functionName;
+    
     if(tmpString[0] != 0) {
       functionName = tmpString;
     }
@@ -891,6 +890,7 @@ void execTimerApp(uint16_t timerType) {
 
   void hideFunctionName(void) {
     uint32_t col, row;
+    
     getStringBounds(tmpString[0] != 0 ? tmpString : indexOfItems[abs(showFunctionNameItem)].itemCatalogName, &standardFont, &col, &row);
     lcd_fill_rect(1, Y_POSITION_OF_REGISTER_T_LINE+6, col, row, LCD_SET_VALUE);
     showFunctionNameItem = 0;
@@ -978,31 +978,57 @@ void execTimerApp(uint16_t timerType) {
 
     if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || (calcMode == CM_MIM && getRegisterDataType(matrixIndex) == dtReal34Matrix)) {
       real34Matrix_t matrix;
-      if(temporaryInformation == TI_VIEW) viewRegName(prefix, &prefixWidth);
-      if(temporaryInformation == TI_NO_INFO && currentInputVariable != INVALID_VARIABLE) inputRegName(prefix, &prefixWidth);
-      if(calcMode == CM_MIM)
+      
+      if(temporaryInformation == TI_VIEW) {
+        viewRegName(prefix, &prefixWidth);
+      }
+      if(temporaryInformation == TI_NO_INFO && currentInputVariable != INVALID_VARIABLE) {
+        inputRegName(prefix, &prefixWidth);
+      }
+      if(calcMode == CM_MIM) {
         matrix = openMatrixMIMPointer.realMatrix;
-      else
+      }
+      else {
         linkToRealMatrixRegister(REGISTER_X, &matrix);
+      }
       const uint16_t rows = matrix.header.matrixRows;
       const uint16_t cols = matrix.header.matrixColumns;
       bool_t smallFont = (rows >= 5);
       int16_t dummyVal[MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS + 1) + 1] = {};
       const int16_t mtxWidth = getRealMatrixColumnWidths(&matrix, prefixWidth, &numericFont, dummyVal, dummyVal + MATRIX_MAX_COLUMNS, dummyVal + (MATRIX_MAX_ROWS + 1) * MATRIX_MAX_COLUMNS, cols > MATRIX_MAX_COLUMNS ? MATRIX_MAX_COLUMNS : cols);
-      if(abs(mtxWidth) > MATRIX_LINE_WIDTH) smallFont = true;
-      if(rows == 2 && cols > 1 && !smallFont) cachedDisplayStack = 3;
-      if(rows == 3 && cols > 1) cachedDisplayStack = smallFont ? 3 : 2;
-      if(rows == 4 && cols > 1) cachedDisplayStack = smallFont ? 2 : 1;
-      if(rows >= 5 && cols > 1) cachedDisplayStack = 2;
-      if(calcMode == CM_MIM) cachedDisplayStack -= 2;
-      if(cachedDisplayStack > 4 /* in case of overflow */) cachedDisplayStack = 0;
+      if(abs(mtxWidth) > MATRIX_LINE_WIDTH) {
+        smallFont = true;
+      }
+      if(rows == 2 && cols > 1 && !smallFont) {
+        cachedDisplayStack = 3;
+      }
+      if(rows == 3 && cols > 1) {
+        cachedDisplayStack = smallFont ? 3 : 2;
+      }
+      if(rows == 4 && cols > 1) {
+        cachedDisplayStack = smallFont ? 2 : 1;
+      }
+      if(rows >= 5 && cols > 1) {
+        cachedDisplayStack = 2;
+      }
+      if(calcMode == CM_MIM) {
+        cachedDisplayStack -= 2;
+      }
+      if(cachedDisplayStack > 4) { // in case of overflow
+        cachedDisplayStack = 0;
+      }
     }
     else if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix || (calcMode == CM_MIM && getRegisterDataType(matrixIndex) == dtComplex34Matrix)) {
       complex34Matrix_t matrix;
-      if(temporaryInformation == TI_VIEW) viewRegName(prefix, &prefixWidth);
-      if(temporaryInformation == TI_NO_INFO && currentInputVariable != INVALID_VARIABLE) inputRegName(prefix, &prefixWidth);
-      if(calcMode == CM_MIM)
+      if(temporaryInformation == TI_VIEW) {
+        viewRegName(prefix, &prefixWidth);
+      }
+      if(temporaryInformation == TI_NO_INFO && currentInputVariable != INVALID_VARIABLE) {
+        inputRegName(prefix, &prefixWidth);
+      }
+      if(calcMode == CM_MIM) {
         matrix = openMatrixMIMPointer.complexMatrix;
+      }
       else
         linkToComplexMatrixRegister(REGISTER_X, &matrix);
       const uint16_t rows = matrix.header.matrixRows;
@@ -1010,13 +1036,27 @@ void execTimerApp(uint16_t timerType) {
       bool_t smallFont = (rows >= 5);
       int16_t dummyVal[MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS * 2 + 3) + 1] = {};
       const int16_t mtxWidth = getComplexMatrixColumnWidths(&matrix, prefixWidth, &numericFont, dummyVal, dummyVal + MATRIX_MAX_COLUMNS, dummyVal + MATRIX_MAX_COLUMNS * 2, dummyVal + MATRIX_MAX_COLUMNS * 3, dummyVal + MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS + 3), dummyVal + MATRIX_MAX_COLUMNS * (MATRIX_MAX_ROWS * 2 + 3), cols > MATRIX_MAX_COLUMNS ? MATRIX_MAX_COLUMNS : cols);
-      if(mtxWidth > MATRIX_LINE_WIDTH) smallFont = true;
-      if(rows == 2 && cols > 1 && !smallFont) cachedDisplayStack = 3;
-      if(rows == 3 && cols > 1) cachedDisplayStack = smallFont ? 3 : 2;
-      if(rows == 4 && cols > 1) cachedDisplayStack = smallFont ? 2 : 1;
-      if(rows >= 5 && cols > 1) cachedDisplayStack = 2;
-      if(calcMode == CM_MIM) cachedDisplayStack -= 2;
-      if(cachedDisplayStack > 4 /* in case of overflow */) cachedDisplayStack = 0;
+      if(mtxWidth > MATRIX_LINE_WIDTH) {
+        smallFont = true;
+      }
+      if(rows == 2 && cols > 1 && !smallFont) {
+        cachedDisplayStack = 3;
+      }
+      if(rows == 3 && cols > 1) {
+        cachedDisplayStack = smallFont ? 3 : 2;
+      }
+      if(rows == 4 && cols > 1) {
+        cachedDisplayStack = smallFont ? 2 : 1;
+      }
+      if(rows >= 5 && cols > 1) {
+        cachedDisplayStack = 2;
+      }
+      if(calcMode == CM_MIM) {
+        cachedDisplayStack -= 2;
+      }
+      if(cachedDisplayStack > 4) { // in case of overflow
+        cachedDisplayStack = 0;
+      }
     }
 
     if(calcMode == CM_MIM && matrixIndex == REGISTER_X) {
@@ -1041,7 +1081,7 @@ void execTimerApp(uint16_t timerType) {
     if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT) && (calcMode != CM_GRAPH)) {
       clearRegisterLine(regist, true, (regist != REGISTER_Y));
 
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
         #if (DEBUG_REGISTER_L == 1 || SHOW_MEMORY_STATUS == 1)
           char tmpStr[1000];
         #endif // (DEBUG_REGISTER_L == 1 || SHOW_MEMORY_STATUS == 1)
@@ -1093,14 +1133,12 @@ void execTimerApp(uint16_t timerType) {
           }
 
           else if(getRegisterDataType(REGISTER_L) == dtReal34Matrix) {
-            sprintf(&string1[strlen(string1)], "real34 %" PRIu16 STD_CROSS "%" PRIu16 " matrix = ",
-              REGISTER_REAL34_MATRIX_DBLOCK(REGISTER_L)->matrixRows, REGISTER_REAL34_MATRIX_DBLOCK(REGISTER_L)->matrixColumns);
+            sprintf(&string1[strlen(string1)], "real34 %" PRIu16 STD_CROSS "%" PRIu16 " matrix = ", REGISTER_REAL34_MATRIX_DBLOCK(REGISTER_L)->matrixRows, REGISTER_REAL34_MATRIX_DBLOCK(REGISTER_L)->matrixColumns);
             formatReal34Debug(string2, REGISTER_REAL34_MATRIX_M_ELEMENTS(REGISTER_L));
           }
 
           else if(getRegisterDataType(REGISTER_L) == dtComplex34Matrix) {
-            sprintf(&string1[strlen(string1)], "complex34 %" PRIu16 STD_CROSS "%" PRIu16 " matrix = ",
-              REGISTER_COMPLEX34_MATRIX_DBLOCK(REGISTER_L)->matrixRows, REGISTER_COMPLEX34_MATRIX_DBLOCK(REGISTER_L)->matrixColumns);
+            sprintf(&string1[strlen(string1)], "complex34 %" PRIu16 STD_CROSS "%" PRIu16 " matrix = ", REGISTER_COMPLEX34_MATRIX_DBLOCK(REGISTER_L)->matrixRows, REGISTER_COMPLEX34_MATRIX_DBLOCK(REGISTER_L)->matrixColumns);
             formatComplex34Debug(string2, REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(REGISTER_L));
           }
 
@@ -1605,7 +1643,7 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
-/*
+          /*
           else if(temporaryInformation == TI_SXY) {
             if(regist == REGISTER_X) {
               strcpy(prefix, "s" STD_SUB_x STD_SUB_y " =");
@@ -1619,7 +1657,7 @@ void execTimerApp(uint16_t timerType) {
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
-*/
+          */
           else if(temporaryInformation == TI_CALCY) {
             if(regist == REGISTER_X) {
               prefix[0]=0;
@@ -2219,7 +2257,9 @@ void execTimerApp(uint16_t timerType) {
 
         // The ordering of the 4 lines below is important for SHOW (temporaryInformation == TI_SHOW_REGISTER)
         if(!(screenUpdatingMode & (SCRUPD_MANUAL_STACK | SCRUPD_SKIP_STACK_ONE_TIME))) {
-          if(calcMode != CM_TIMER && temporaryInformation != TI_VIEW) refreshRegisterLine(REGISTER_T);
+          if(calcMode != CM_TIMER && temporaryInformation != TI_VIEW) {
+            refreshRegisterLine(REGISTER_T);
+          }
           refreshRegisterLine(REGISTER_Z);
           refreshRegisterLine(REGISTER_Y);
           refreshRegisterLine(REGISTER_X);
@@ -2317,7 +2357,7 @@ void execTimerApp(uint16_t timerType) {
       default: {}
     }
 
-    #ifndef DMCP_BUILD
+    #if !defined(DMCP_BUILD)
       refreshLcd(NULL);
     #endif // !DMCP_BUILD
   }
@@ -2326,7 +2366,7 @@ void execTimerApp(uint16_t timerType) {
 
 
 void fnScreenDump(uint16_t unusedButMandatoryParameter) {
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     FILE *bmp;
     char bmpFileName[22];
     time_t rawTime;
@@ -2440,7 +2480,7 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
     screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME | SCRUPD_SKIP_MENU_ONE_TIME;
   #endif // PC_BUILD
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     create_screenshot(0);
     screenUpdatingMode |= SCRUPD_SKIP_STACK_ONE_TIME | SCRUPD_SKIP_MENU_ONE_TIME;
   #endif // DMCP_BUILD
@@ -2448,153 +2488,159 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
 
 
 
-#ifndef TESTSUITE_BUILD
-static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue) {
-  int32_t value;
+#if !defined(TESTSUITE_BUILD)
+  static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue) {
+    int32_t value;
 
-  if(getRegisterDataType(regist) == dtReal34) {
-    real34_t maxValue34;
+    if(getRegisterDataType(regist) == dtReal34) {
+      real34_t maxValue34;
 
-    int32ToReal34(maxValue, &maxValue34);
-    if(real34CompareLessThan(REGISTER_REAL34_DATA(regist), const34_0) || real34CompareLessThan(&maxValue34, REGISTER_REAL34_DATA(regist))) {
-      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-      #ifdef PC_BUILD
-        real34ToString(REGISTER_REAL34_DATA(regist), errorMessage);
-        sprintf(tmpString, "x %" PRId16 " = %s:", regist, errorMessage);
-        moreInfoOnError("In function _getPositionFromRegister:", tmpString, "this value is negative or too big!", NULL);
-      #endif // PC_BUILD
-      return -1;
+      int32ToReal34(maxValue, &maxValue34);
+      if(real34CompareLessThan(REGISTER_REAL34_DATA(regist), const34_0) || real34CompareLessThan(&maxValue34, REGISTER_REAL34_DATA(regist))) {
+        displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+        #if defined(PC_BUILD)
+          real34ToString(REGISTER_REAL34_DATA(regist), errorMessage);
+          sprintf(tmpString, "x %" PRId16 " = %s:", regist, errorMessage);
+          moreInfoOnError("In function _getPositionFromRegister:", tmpString, "this value is negative or too big!", NULL);
+        #endif // PC_BUILD
+        return -1;
+      }
+      value = real34ToInt32(REGISTER_REAL34_DATA(regist));
     }
-    value = real34ToInt32(REGISTER_REAL34_DATA(regist));
-  }
 
-  else if(getRegisterDataType(regist) == dtLongInteger) {
-    longInteger_t lgInt;
+    else if(getRegisterDataType(regist) == dtLongInteger) {
+      longInteger_t lgInt;
 
-    convertLongIntegerRegisterToLongInteger(regist, lgInt);
-    if(longIntegerCompareUInt(lgInt, 0) < 0 || longIntegerCompareUInt(lgInt, maxValue) > 0) {
-      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-      #ifdef PC_BUILD
-        longIntegerToAllocatedString(lgInt, errorMessage, ERROR_MESSAGE_LENGTH);
-        sprintf(tmpString, "register %" PRId16 " = %s:", regist, errorMessage);
-        moreInfoOnError("In function _getPositionFromRegister:", tmpString, "this value is negative or too big!", NULL);
-      #endif // PC_BUILD
+      convertLongIntegerRegisterToLongInteger(regist, lgInt);
+      if(longIntegerCompareUInt(lgInt, 0) < 0 || longIntegerCompareUInt(lgInt, maxValue) > 0) {
+        displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+        #if defined(PC_BUILD)
+          longIntegerToAllocatedString(lgInt, errorMessage, ERROR_MESSAGE_LENGTH);
+          sprintf(tmpString, "register %" PRId16 " = %s:", regist, errorMessage);
+          moreInfoOnError("In function _getPositionFromRegister:", tmpString, "this value is negative or too big!", NULL);
+        #endif // PC_BUILD
+        longIntegerFree(lgInt);
+        return -1;
+      }
+      longIntegerToUInt(lgInt, value);
       longIntegerFree(lgInt);
+    }
+
+    else {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #if defined(PC_BUILD)
+        sprintf(errorMessage, "register %" PRId16 " is %s:", regist, getRegisterDataTypeName(regist, true, false));
+        moreInfoOnError("In function _getPositionFromRegister:", errorMessage, "not suited for addressing!", NULL);
+      #endif // PC_BUILD
       return -1;
     }
-    longIntegerToUInt(lgInt, value);
-    longIntegerFree(lgInt);
+
+    return value;
   }
 
-  else {
-    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #ifdef PC_BUILD
-      sprintf(errorMessage, "register %" PRId16 " is %s:", regist, getRegisterDataTypeName(regist, true, false));
-      moreInfoOnError("In function _getPositionFromRegister:", errorMessage, "not suited for addressing!", NULL);
-    #endif // PC_BUILD
-    return -1;
+  static void getPixelPos(int32_t *x, int32_t *y) {
+    *x = _getPositionFromRegister(REGISTER_X, SCREEN_WIDTH  - 1);
+    *y = _getPositionFromRegister(REGISTER_Y, SCREEN_HEIGHT - 1);
   }
-
-  return value;
-}
-
-static void getPixelPos(int32_t *x, int32_t *y) {
-  *x = _getPositionFromRegister(REGISTER_X, SCREEN_WIDTH  - 1);
-  *y = _getPositionFromRegister(REGISTER_Y, SCREEN_HEIGHT - 1);
-}
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 
 void fnClLcd(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
-  int32_t x, y;
-  getPixelPos(&x, &y);
-  if(lastErrorCode == ERROR_NONE) {
-    screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR | SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
-    lcd_fill_rect(x, 0, SCREEN_WIDTH - x, SCREEN_HEIGHT - y, LCD_SET_VALUE);
-  }
-#endif // TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    int32_t x, y;
+    getPixelPos(&x, &y);
+    if(lastErrorCode == ERROR_NONE) {
+      screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR | SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
+      lcd_fill_rect(x, 0, SCREEN_WIDTH - x, SCREEN_HEIGHT - y, LCD_SET_VALUE);
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnPixel(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
-  int32_t x, y;
-  getPixelPos(&x, &y);
-  if(lastErrorCode == ERROR_NONE) {
-    screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
-    if((SCREEN_HEIGHT - y - 1) <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
-    setBlackPixel(x, SCREEN_HEIGHT - y - 1);
-  }
-#endif // TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    int32_t x, y;
+    getPixelPos(&x, &y);
+    if(lastErrorCode == ERROR_NONE) {
+      screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
+      if((SCREEN_HEIGHT - y - 1) <= Y_POSITION_OF_REGISTER_T_LINE) {
+        screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
+      }
+      setBlackPixel(x, SCREEN_HEIGHT - y - 1);
+    }
+  #endif // TESTSUITE_BUILD
 }
 
 void fnPoint(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   int32_t x, y;
   getPixelPos(&x, &y);
   if(lastErrorCode == ERROR_NONE) {
     screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
-    if((SCREEN_HEIGHT - y - 2) <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
+    if((SCREEN_HEIGHT - y - 2) <= Y_POSITION_OF_REGISTER_T_LINE) {
+      screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
+    }
     lcd_fill_rect(x - 1, SCREEN_HEIGHT - y - 2, 3, 3, LCD_EMPTY_VALUE);
   }
 #endif // TESTSUITE_BUILD
 }
 
 void fnAGraph(uint16_t regist) {
-#ifndef TESTSUITE_BUILD
-  int32_t x, y;
-  uint32_t gramod;
-  longInteger_t liGramod;
-  getPixelPos(&x, &y);
-  convertLongIntegerRegisterToLongInteger(RESERVED_VARIABLE_GRAMOD, liGramod);
-  longIntegerToUInt(liGramod, gramod);
-  longIntegerFree(liGramod);
-  if(lastErrorCode == ERROR_NONE) {
-    if(getRegisterDataType(regist) == dtShortInteger) {
-      uint64_t val;
-      int16_t sign;
-      const uint8_t savedShortIntegerMode = shortIntegerMode;
+  #if !defined(TESTSUITE_BUILD)
+    int32_t x, y;
+    uint32_t gramod;
+    longInteger_t liGramod;
+    getPixelPos(&x, &y);
+    convertLongIntegerRegisterToLongInteger(RESERVED_VARIABLE_GRAMOD, liGramod);
+    longIntegerToUInt(liGramod, gramod);
+    longIntegerFree(liGramod);
+    if(lastErrorCode == ERROR_NONE) {
+      if(getRegisterDataType(regist) == dtShortInteger) {
+        uint64_t val;
+        int16_t sign;
+        const uint8_t savedShortIntegerMode = shortIntegerMode;
 
-      screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
-      if((SCREEN_HEIGHT - y - 1 - (int)shortIntegerWordSize) <= Y_POSITION_OF_REGISTER_T_LINE) screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
-      shortIntegerMode = SIM_UNSIGN;
-      convertShortIntegerRegisterToUInt64(regist, &sign, &val);
-      shortIntegerMode = savedShortIntegerMode;
-      for(uint32_t i = 0; i < shortIntegerWordSize; ++i) {
-        switch(gramod) {
-          case 1:
-            if(!(val & 1)) {
-              setWhitePixel(x, SCREEN_HEIGHT - y - 1 - i);
-            }
-            /* fallthrough */
-          case 0:
-            if(val & 1) {
-              setBlackPixel(x, SCREEN_HEIGHT - y - 1 - i);
-            }
-            break;
-          case 2:
-            if(val & 1) {
-              setWhitePixel(x, SCREEN_HEIGHT - y - 1 - i);
-            }
-            break;
-          case 3:
-            if(val & 1) {
-              flipPixel(x, SCREEN_HEIGHT - y - 1 - i);
-            }
-            break;
+        screenUpdatingMode |= SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_MENU | SCRUPD_MANUAL_SHIFT_STATUS;
+        if((SCREEN_HEIGHT - y - 1 - (int)shortIntegerWordSize) <= Y_POSITION_OF_REGISTER_T_LINE) {
+          screenUpdatingMode |= SCRUPD_MANUAL_STATUSBAR;
         }
-        val >>= 1;
+        shortIntegerMode = SIM_UNSIGN;
+        convertShortIntegerRegisterToUInt64(regist, &sign, &val);
+        shortIntegerMode = savedShortIntegerMode;
+        for(uint32_t i = 0; i < shortIntegerWordSize; ++i) {
+          switch(gramod) {
+            case 1:
+              if(!(val & 1)) {
+                setWhitePixel(x, SCREEN_HEIGHT - y - 1 - i);
+              }
+              /* fallthrough */
+            case 0:
+              if(val & 1) {
+                setBlackPixel(x, SCREEN_HEIGHT - y - 1 - i);
+              }
+              break;
+            case 2:
+              if(val & 1) {
+                setWhitePixel(x, SCREEN_HEIGHT - y - 1 - i);
+              }
+              break;
+            case 3:
+              if(val & 1) {
+                flipPixel(x, SCREEN_HEIGHT - y - 1 - i);
+              }
+              break;
+          }
+          val >>= 1;
+        }
+
+        fnInc(REGISTER_X);
       }
 
-      fnInc(REGISTER_X);
+      else {
+        displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+        #if defined(PC_BUILD)
+          sprintf(errorMessage, "register %" PRId16 " is %s:", regist, getRegisterDataTypeName(regist, true, false));
+          moreInfoOnError("In function fnAGraph:", errorMessage, "not suited for addressing!", NULL);
+        #endif // PC_BUILD
+      }
     }
-
-    else {
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #ifdef PC_BUILD
-        sprintf(errorMessage, "register %" PRId16 " is %s:", regist, getRegisterDataTypeName(regist, true, false));
-        moreInfoOnError("In function fnAGraph:", errorMessage, "not suited for addressing!", NULL);
-      #endif // PC_BUILD
-    }
-  }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
