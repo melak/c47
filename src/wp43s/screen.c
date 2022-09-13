@@ -1467,9 +1467,7 @@ void force_refresh(void) {
   showFunctionNameCounter = delayInMs;
   strcpy(padding,functionName);   //JM
   strcat(padding,"    ");                                    //JM
-  if(stringWidth(padding, &standardFont, true, true) + /*1*/ 20 + lineTWidth > SCREEN_WIDTH) {                //JM
-    clearRegisterLine(REGISTER_T, true, false);
-  }
+  clearRegisterLine(REGISTER_T, true, false);
 
     // Draw over SHIFT f and SHIFT g in case they were present (otherwise they will be obscured by the function name)
     getGlyphBounds(STD_SUP_f, 0, &numericFont, &fcol, &frow);
