@@ -92,7 +92,7 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 
 
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   /********************************************//**
    * \brief Displays an error message like a pop up
    *
@@ -205,7 +205,7 @@ void displayCalcErrorMessage(uint8_t errorCode, calcRegister_t errMessageRegiste
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   void nextWord(const char *str, int16_t *pos, char *word) {
     int16_t i = 0;
 

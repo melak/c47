@@ -166,18 +166,28 @@ int32_t compareString(const char *stra, const char *strb, int32_t comparisonType
       if(charCode >= 0x80) {
         charCode = (charCode << 8) + (uint8_t)strb[posb + 1];
       }
-      if(comparisonType == CMP_NAME) charCode = _charCodeUnSupSub(charCode);
+      if(comparisonType == CMP_NAME) {
+        charCode = _charCodeUnSupSub(charCode);
+      }
       rankb = charCode;
 
-      if(ranka < rankb) return -1;
-      if(ranka > rankb) return 1;
+      if(ranka < rankb) {
+        return -1;
+      }
+      if(ranka > rankb) {
+        return 1;
+      }
 
       posa = stringNextGlyph(stra, posa);
       posb = stringNextGlyph(strb, posb);
     }
 
-    if(lga < lgb) return -1;
-    if(lga > lgb) return 1;
+    if(lga < lgb) {
+      return -1;
+    }
+    if(lga > lgb) {
+      return 1;
+    }
     return 0;
   }
 
@@ -197,15 +207,23 @@ int32_t compareString(const char *stra, const char *strb, int32_t comparisonType
     }
     rankb = standardFont.glyphs[findGlyph(&standardFont, charCode)].rank1;
 
-    if(ranka < rankb) return -1;
-    if(ranka > rankb) return 1;
+    if(ranka < rankb) {
+      return -1;
+    }
+    if(ranka > rankb) {
+      return 1;
+    }
 
     posa = stringNextGlyph(stra, posa);
     posb = stringNextGlyph(strb, posb);
   }
 
-  if(lga < lgb) return -1;
-  if(lga > lgb) return 1;
+  if(lga < lgb) {
+    return -1;
+  }
+  if(lga > lgb) {
+    return 1;
+  }
 
   // The strings using replacement glyphs are equal: comparing the original strings
   if(comparisonType == CMP_EXTENSIVE) {
@@ -224,15 +242,23 @@ int32_t compareString(const char *stra, const char *strb, int32_t comparisonType
       }
       rankb = standardFont.glyphs[findGlyph(&standardFont, charCode)].rank2;
 
-      if(ranka < rankb) return -1;
-      if(ranka > rankb) return 1;
+      if(ranka < rankb) {
+        return -1;
+      }
+      if(ranka > rankb) {
+        return 1;
+      }
 
       posa = stringNextGlyph(stra, posa);
       posb = stringNextGlyph(strb, posb);
     }
 
-    if(lga < lgb) return -1;
-    if(lga > lgb) return 1;
+    if(lga < lgb) {
+      return -1;
+    }
+    if(lga > lgb) {
+      return 1;
+    }
   }
 
   return 0;

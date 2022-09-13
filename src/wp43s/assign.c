@@ -458,17 +458,17 @@ void createMenu(const char *name) {
 
 
 void assignEnterAlpha(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   tam.alpha = true;
   setSystemFlag(FLAG_ALPHA);
   aimBuffer[0] = 0;
   calcModeAim(NOPARAM);
   numberOfTamMenusToPop = 0;
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 void assignLeaveAlpha(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   tam.alpha = false;
   clearSystemFlag(FLAG_ALPHA);
   while(numberOfTamMenusToPop--) {
@@ -480,7 +480,7 @@ void assignLeaveAlpha(void) {
   #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
     calcModeNormalGui();
   #endif // PC_BUILD && (SCREEN_800X480 == 0)
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -613,6 +613,6 @@ void assignGetName2(void) {
     displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
     #ifdef PC_BUILD
       moreInfoOnError("In function assignGetName2:", aimBuffer, "is invalid name.", NULL);
-    #endif
+    #endif // PC_BUILD
   }
 }

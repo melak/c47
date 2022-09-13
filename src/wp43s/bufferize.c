@@ -46,7 +46,7 @@
 
 #include "wp43s.h"
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   void fnAim(uint16_t unusedButMandatoryParameter) {
     shiftF = false;
     shiftG = false;
@@ -295,7 +295,6 @@
       }
 
       if(catalog && catalog != CATALOG_MVAR && !fnKeyInCatalog) {
-
         if(item == ITM_BACKSPACE) {
           calcModeNormal();
           return;
@@ -378,7 +377,6 @@
           case ITM_CHS : // +/-
 
           case ITM_CONSTpi :
-
             mimAddNumber(item);
             break;
 
@@ -421,7 +419,6 @@
           case ITM_GRAD :
           case ITM_MULPI :
           case ITM_RAD :
-
               lastErrorCode = ERROR_NONE;
               mimEnter(true);
               runFunction(item);
@@ -1127,7 +1124,7 @@
         switch(nimNumberPart) {
           case NP_INT_10 :
             strcat(aimBuffer, "."); // no break here
-            #ifndef OSX
+            #if !defined(OSX)
               __attribute__ ((fallthrough));
             #endif // !OSX
           case NP_REAL_FLOAT_PART :
@@ -1140,7 +1137,7 @@
 
           case NP_COMPLEX_INT_PART :
             strcat(aimBuffer, "."); // no break here
-            #ifndef OSX
+            #if !defined(OSX)
               __attribute__ ((fallthrough));
             #endif // !OSX
           case NP_COMPLEX_FLOAT_PART :
@@ -1249,7 +1246,7 @@
 
           case NP_INT_10 :
             strcat(aimBuffer, "."); // no break here
-            #ifndef OSX
+            #if !defined(OSX)
               __attribute__ ((fallthrough));
             #endif // !OSX
 
@@ -1391,9 +1388,9 @@
         if((calcMode != CM_MIM) && (lastChar == -1 || (lastChar == 0 && aimBuffer[0] == '+'))) {
           screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
           calcModeNormal();
-          #ifdef DEBUGUNDO
+          #if defined(DEBUGUNDO)
             printf(">>> undo from addItemToNimBuffer\n");
-          #endif
+          #endif // DEBUGUNDO
           undo();
         }
         break;
@@ -1406,9 +1403,9 @@
         if(calcMode != CM_NIM && lastErrorCode == 0) {
           setSystemFlag(FLAG_ASLIFT);
           if(item == ITM_EXIT) {
-            #ifdef DEBUGUNDO
+            #if defined(DEBUGUNDO)
               printf(">>> saveForUndo from bufferizeA:");
-            #endif
+            #endif // DEBUGUNDO
             saveForUndo();
             if(lastErrorCode == ERROR_RAM_FULL) {
               lastErrorCode = 0;
@@ -1421,9 +1418,9 @@
           return;
         }
         if(item == ITM_EXIT) {
-          #ifdef DEBUGUNDO
+          #if defined(DEBUGUNDO)
             printf(">>> saveForUndo from bufferizeB:");
-          #endif
+          #endif // DEBUGUNDO
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) {
             lastErrorCode = 0;
@@ -1490,9 +1487,9 @@
               setSystemFlag(FLAG_ASLIFT);
             }
             else {
-              #ifdef DEBUGUNDO
+              #if defined(DEBUGUNDO)
                 printf(">>> undo from addItemToNimBufferB\n");
-              #endif
+              #endif // DEBUGUNDO
               undo();
             }
             return;
@@ -1516,9 +1513,9 @@
               setSystemFlag(FLAG_ASLIFT);
             }
             else {
-              #ifdef DEBUGUNDO
+              #if defined(DEBUGUNDO)
                 printf(">>> undo from addItemToNimBufferC\n");
-              #endif
+              #endif // DEBUGUNDO
               undo();
             }
             return;
@@ -1976,9 +1973,9 @@
                   moreInfoOnError("In function closeNIM:", errorMessage, NULL, NULL);
                 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
-                #ifdef DEBUGUNDO
+                #if defined(DEBUGUNDO)
                   printf(">>> undo from addItemToNimBufferD\n");
-                #endif
+                #endif // DEBUGUNDO
                 undo();
                 return;
               }
@@ -2100,9 +2097,9 @@
     popSoftmenu();
 
     if(aimBuffer[0] == 0) {
-      #ifdef DEBUGUNDO
+      #if defined(DEBUGUNDO)
         printf(">>> undo from closeAim\n");
-      #endif
+      #endif // DEBUGUNDO
       undo();
     }
     else {
@@ -2116,4 +2113,4 @@
       setSystemFlag(FLAG_ASLIFT);
     }
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD

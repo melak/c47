@@ -228,10 +228,10 @@ real_t                 SAVED_SIGMA_LASTX;
 real_t                 SAVED_SIGMA_LASTY;
 int32_t                SAVED_SIGMA_LAct;
 
-#ifdef DMCP_BUILD
+#if defined(DMCP_BUILD)
   bool_t               backToDMCP;
-//int                  keyAutoRepeat;
-//int16_t              previousItem;
+  //int                  keyAutoRepeat;
+  //int16_t              previousItem;
   uint32_t             nextTimerRefresh;
   uint32_t             nextScreenRefresh; // timer substitute for refreshLcd(), which does cursor blinking and other stuff
   bool_t               wp43sKbdLayout;
@@ -322,7 +322,7 @@ int32_t                SAVED_SIGMA_LAct;
     char charKey[3];
     /*bool_t wp43sKbdLayout, inFastRefresh = 0, inDownUpPress = 0, repeatDownUpPress = 0*/;
     uint16_t currentVolumeSetting, savedVoluleSetting; // used for beep signaling screen shot
-  //uint32_t now, previousRefresh, nextAutoRepeat = 0;
+    //uint32_t now, previousRefresh, nextAutoRepeat = 0;
 
     wp43sMemInBlocks = 0;
     gmpMemInBytes = 0;
@@ -438,16 +438,16 @@ int32_t                SAVED_SIGMA_LAct;
     backToDMCP = false;
 
     lcd_refresh();
-  //previousRefresh = sys_current_ms();
+    //previousRefresh = sys_current_ms();
     nextScreenRefresh = sys_current_ms() + SCREEN_REFRESH_PERIOD;
-  //now = sys_current_ms();
+    //now = sys_current_ms();
     //runner_key_tout_init(0); // Enables fast auto repeat
 
     fnTimerReset();
     fnTimerConfig(TO_AUTO_REPEAT, execAutoRepeat, 0);
     fnTimerConfig(TO_TIMER_APP, execTimerApp, 0);
     fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV);
-//--fnTimerConfig(TO_SHOW_NOP, execNOPTimeout, TO_SHOW_NOP);
+    //fnTimerConfig(TO_SHOW_NOP, execNOPTimeout, TO_SHOW_NOP);
     nextTimerRefresh = 0;
 
     // Status flags:
@@ -455,7 +455,7 @@ int32_t                SAVED_SIGMA_LAct;
     //   ST(STAT_SUSPENDED) - Program signals it is ready for off and doesn't need to be woken-up again
     //   ST(STAT_OFF)       - Program in off state (OS goes to sleep and only [EXIT] key can wake it up again)
     //   ST(STAT_RUNNING)   - OS doesn't sleep in this mode
-  //SET_ST(STAT_CLK_WKUP_SECONDS);
+    //SET_ST(STAT_CLK_WKUP_SECONDS);
     SET_ST(STAT_CLK_WKUP_ENABLE); // Enable wakeup each minute (for clock update)
 
     while(!backToDMCP) {
@@ -470,7 +470,7 @@ int32_t                SAVED_SIGMA_LAct;
           sys_sleep();
         }
         else {                                                                  // timeout available
-//--      uint32_t timeoutTime = max(1, nextTimerRefresh - sys_current_ms());
+          //uint32_t timeoutTime = max(1, nextTimerRefresh - sys_current_ms());
           uint32_t timeoutTime = sys_current_ms();
           if(nextTimerRefresh > timeoutTime) {
             timeoutTime = nextTimerRefresh - timeoutTime;
@@ -479,7 +479,7 @@ int32_t                SAVED_SIGMA_LAct;
             timeoutTime = 1;
           }
 
-//--      uint32_t sleepTime = max(1, nextScreenRefresh - sys_current_ms());
+          //uint32_t sleepTime = max(1, nextScreenRefresh - sys_current_ms());
           uint32_t sleepTime = sys_current_ms();
           if(nextScreenRefresh > sleepTime) {
             sleepTime = nextScreenRefresh - sleepTime;
@@ -498,19 +498,19 @@ int32_t                SAVED_SIGMA_LAct;
         }
 
 
-//      sys_timer_start(TIMER_IDX_SCREEN_REFRESH, max(1, nextScreenRefresh - now));  // wake up for screen refresh
-//      if(inDownUpPress) {
-//        sys_timer_start(TIMER_IDX_AUTO_REPEAT, max(1, nextAutoRepeat - now)); // wake up for key auto-repeat
-//      }
-//      sys_sleep();
-//      sys_timer_disable(TIMER_IDX_SCREEN_REFRESH);
-//      if(inDownUpPress) {
-//        repeatDownUpPress = (sys_current_ms() > nextAutoRepeat);
-//        sys_timer_disable(TIMER_IDX_AUTO_REPEAT);
-//      }
+        //sys_timer_start(TIMER_IDX_SCREEN_REFRESH, max(1, nextScreenRefresh - now));  // wake up for screen refresh
+        //if(inDownUpPress) {
+        //  sys_timer_start(TIMER_IDX_AUTO_REPEAT, max(1, nextAutoRepeat - now)); // wake up for key auto-repeat
+        //}
+        //sys_sleep();
+        //sys_timer_disable(TIMER_IDX_SCREEN_REFRESH);
+        //if(inDownUpPress) {
+        //  repeatDownUpPress = (sys_current_ms() > nextAutoRepeat);
+        //  sys_timer_disable(TIMER_IDX_AUTO_REPEAT);
+        //}
       }
 
-    //now = sys_current_ms();
+      //now = sys_current_ms();
 
       // =======================
       // Externally forced LCD repaint
@@ -600,24 +600,24 @@ int32_t                SAVED_SIGMA_LAct;
 
       // Increase the refresh rate if we are in an UP/DOWN key press so we pick up auto key repeats
       if(key == 27 || key == 32) {
-//      inDownUpPress = 1;
-//      nextAutoRepeat = now + KEY_AUTOREPEAT_FIRST_PERIOD;
+        //inDownUpPress = 1;
+        //nextAutoRepeat = now + KEY_AUTOREPEAT_FIRST_PERIOD;
         if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING && (!shiftF || calcMode == CM_PEM) && !shiftG && (currentSoftmenuScrolls() || (calcMode != CM_NORMAL && calcMode != CM_NIM && calcMode != CM_AIM))) {
           fnTimerStart(TO_AUTO_REPEAT, key, KEY_AUTOREPEAT_FIRST_PERIOD);
         }
       }
       else if(key == 0) {
-//      inDownUpPress = 0;
-//      repeatDownUpPress = 0;
-//      nextAutoRepeat = 0;
+        //inDownUpPress = 0;
+        //repeatDownUpPress = 0;
+        //nextAutoRepeat = 0;
         fnTimerStop(TO_AUTO_REPEAT);
       }
-//    else if(repeatDownUpPress) {
-//      keyAutoRepeat = 1;
-//      key = 0;
-//      nextAutoRepeat = now + KEY_AUTOREPEAT_PERIOD;
-//      repeatDownUpPress = 0;
-//    }
+      //else if(repeatDownUpPress) {
+      //  keyAutoRepeat = 1;
+      //  key = 0;
+      //  nextAutoRepeat = now + KEY_AUTOREPEAT_PERIOD;
+      //  repeatDownUpPress = 0;
+      //}
 
       //if(keyAutoRepeat) {
       //  if(key == 27 || key == 32) { // UP or DOWN keys
@@ -680,7 +680,7 @@ int32_t                SAVED_SIGMA_LAct;
             refreshScreen();
           }
         }
-//      keyAutoRepeat = 0;
+        //keyAutoRepeat = 0;
         lcd_refresh();
       }
 
@@ -697,14 +697,14 @@ int32_t                SAVED_SIGMA_LAct;
         }
       }
 
-//    // Compute refresh period
-//    if(showFunctionNameCounter > 0) {
-//      inFastRefresh = 1;
-//      nextScreenRefresh = previousRefresh + FAST_SCREEN_REFRESH_PERIOD;
-//    }
-//    else {
-//      inFastRefresh = 0;
-//    }
+      //// Compute refresh period
+      //if(showFunctionNameCounter > 0) {
+      //  inFastRefresh = 1;
+      //  nextScreenRefresh = previousRefresh + FAST_SCREEN_REFRESH_PERIOD;
+      //}
+      //else {
+      //  inFastRefresh = 0;
+      //}
 
       uint32_t now = sys_current_ms();
 
@@ -713,7 +713,7 @@ int32_t                SAVED_SIGMA_LAct;
       }
       now = sys_current_ms();
       if(nextScreenRefresh <= now) {
-//      previousRefresh = now;
+        //previousRefresh = now;
         nextScreenRefresh += ((showFunctionNameCounter > 0) ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);
         if(nextScreenRefresh < now) {
           nextScreenRefresh = now + ((showFunctionNameCounter > 0) ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);         // we were out longer than expected; just skip ahead.
