@@ -1916,7 +1916,7 @@ void labelCaptionNormal(const calcKey_t *key, GtkWidget *button, GtkWidget *lblF
   }
 
   gtk_label_set_label(GTK_LABEL(lblG), (gchar *)lbl);
-  if(key->gShifted < 0 || key->gShifted == ITM_TIMER) gtk_widget_set_name(lblG, "gShiftedUnderline"); else  gtk_widget_set_name(lblG, "gShifted");
+  if(key->gShifted < 0 /*|| key->gShifted == ITM_TIMER*/) gtk_widget_set_name(lblG, "gShiftedUnderline"); else  gtk_widget_set_name(lblG, "gShifted");
 
   stringToUtf8(indexOfItems[key->primaryAim].itemSoftmenuName, lbl);
   if(key->primaryAim == 0) {

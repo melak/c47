@@ -1928,7 +1928,7 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
               else if(item%10000 == ITM_op_j && !getSystemFlag(FLAG_CPXj)) {
                 showSoftkey(STD_i, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue);
               }                                                                                //JM ^^
-              else if((item == ITM_CFG) || (item ==ITM_PLOT_LR) || (item == ITM_PLOT_STAT) || (item == ITM_PLOT) || (item == ITM_PLOT_LRALL) || (item == ITM_TIMER)) {       //JMvv colour PLOT in reverse font to appear to be menus
+              else if((item == ITM_CFG) || (item ==ITM_PLOT_LR) || (item == ITM_PLOT_STAT) || (item == ITM_PLOT) || (item == ITM_PLOT_LRALL) /*|| (item == ITM_TIMER)*/) {       //JMvv colour PLOT in reverse font to appear to be menus
                 showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue);
               }                                                                                //JM^^
 
