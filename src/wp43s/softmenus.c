@@ -836,7 +836,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
                         numberOfGlobalLabels = 0;
                         memset(tmpString, 0, TMP_STR_LENGTH);
                         for(i=0; i<LAST_ITEM; i++) {
-                          if((indexOfItems[i].status & CAT_STATUS) == CAT_MENU && i != MNU_CATALOG && i != MNU_MENUS) {
+                          if((indexOfItems[i].status & CAT_STATUS) == CAT_MENU && indexOfItems[i].itemCatalogName[0] != 0 && i != MNU_CATALOG && i != MNU_MENUS) {
                             int16_t len = stringByteLength(indexOfItems[i].itemCatalogName);
                             xcopy(tmpString + 15 * numberOfGlobalLabels, indexOfItems[i].itemCatalogName, len);
                             numberOfGlobalLabels++;
