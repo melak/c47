@@ -893,10 +893,13 @@ void divRemaReal(void) {
       moreInfoOnError("In function divRemaReal:", "cannot divide by 0", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
-  else {
+  else if(getRegisterAngularMode(REGISTER_X) == amNone) {
     linkToRealMatrixRegister(REGISTER_Y, &matrix);
     divideRealMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_X), &matrix);
     convertReal34MatrixToReal34MatrixRegister(&matrix, REGISTER_X);
+  }
+  else {
+    elementwiseRemaReal(divRealReal);
   }
 #endif // TESTSUITE_BUILD
 }
@@ -934,10 +937,14 @@ void divRealRema(void) {
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 
-  else {
+  else if(getRegisterAngularMode(REGISTER_Y) == amNone) {
     divideByRealMatrix(REGISTER_REAL34_DATA(REGISTER_Y), &matrix, &res);
     convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
     realMatrixFree(&res);
+  }
+
+  else {
+    elementwiseRealRema(divRealReal);
   }
 #endif // TESTSUITE_BUILD
 }
@@ -1115,9 +1122,14 @@ void divShoICxma(void) {
 void divCxmaReal(void) {
 #ifndef TESTSUITE_BUILD
   complex34Matrix_t matrix;
-  linkToComplexMatrixRegister(REGISTER_Y, &matrix);
-  divideComplexMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_X), const34_0, &matrix);
-  convertComplex34MatrixToComplex34MatrixRegister(&matrix, REGISTER_X);
+  if(getRegisterAngularMode(REGISTER_X) == amNone) {
+    linkToComplexMatrixRegister(REGISTER_Y, &matrix);
+    divideComplexMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_X), const34_0, &matrix);
+    convertComplex34MatrixToComplex34MatrixRegister(&matrix, REGISTER_X);
+  }
+  else {
+    elementwiseCxmaReal(divCplxReal);
+  }
 #endif // TESTSUITE_BUILD
 }
 
@@ -1132,8 +1144,13 @@ void divCxmaReal(void) {
 void divRealCxma(void) {
 #ifndef TESTSUITE_BUILD
   complex34Matrix_t matrix;
-  linkToComplexMatrixRegister(REGISTER_X, &matrix);
-  divideByComplexMatrix(REGISTER_REAL34_DATA(REGISTER_Y), const34_0, &matrix, &matrix);
+  if(getRegisterAngularMode(REGISTER_Y) == amNone) {
+    linkToComplexMatrixRegister(REGISTER_X, &matrix);
+    divideByComplexMatrix(REGISTER_REAL34_DATA(REGISTER_Y), const34_0, &matrix, &matrix);
+  }
+  else {
+    elementwiseRealCxma(divRealCplx);
+  }
 #endif // TESTSUITE_BUILD
 }
 

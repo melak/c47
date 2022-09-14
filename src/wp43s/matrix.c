@@ -5679,6 +5679,42 @@ void elementwiseRemaShoI(void (*f)(void)) {
 #endif // TESTSUITE_BUILD
 }
 
+void elementwiseRealRema(void (*f)(void)) {
+#if !defined(TESTSUITE_BUILD)
+  real34Matrix_t x;
+  complex34Matrix_t xc;
+  real34_t y;
+  bool_t complex = false;
+
+  convertReal34MatrixRegisterToReal34Matrix(REGISTER_X, &x);
+  real34Copy(REGISTER_REAL34_DATA(REGISTER_Y), &y);
+  const int numOfElements = x.header.matrixRows * x.header.matrixColumns;
+
+  for(int i = 0; i < numOfElements; ++i) {
+    reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    real34Copy(&y, REGISTER_REAL34_DATA(REGISTER_Y));
+    if(complex) {
+      real34Copy(VARIABLE_REAL34_DATA(&xc.matrixElements[i]), REGISTER_REAL34_DATA(REGISTER_X));
+    }
+    else {
+      real34Copy(&x.matrixElements[i], REGISTER_REAL34_DATA(REGISTER_X));
+    }
+    f();
+    elementwiseRemaGetResult(&complex, &x, &xc, i);
+  }
+
+  if(complex) {
+    convertComplex34MatrixToComplex34MatrixRegister(&xc, REGISTER_X);
+    complexMatrixFree(&xc);
+  }
+  else {
+    convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
+    realMatrixFree(&x);
+  }
+#endif // TESTSUITE_BUILD
+}
+
 
 
 #if !defined(TESTSUITE_BUILD)
@@ -5824,6 +5860,29 @@ void elementwiseCxmaCplx(void (*f)(void)) {
   convertComplex34MatrixToComplex34MatrixRegister(&y, REGISTER_X);
 
   complexMatrixFree(&y);
+#endif // TESTSUITE_BUILD
+}
+
+void elementwiseRealCxma(void (*f)(void)) {
+#if !defined(TESTSUITE_BUILD)
+  complex34Matrix_t x;
+  real34_t y;
+
+  convertComplex34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
+  real34Copy(REGISTER_REAL34_DATA(REGISTER_Y), &y);
+
+  for(int i = 0; i < x.header.matrixRows * x.header.matrixColumns; ++i) {
+    reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);
+    reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+    real34Copy(&y, REGISTER_REAL34_DATA(REGISTER_Y));
+    complex34Copy(&x.matrixElements[i], REGISTER_COMPLEX34_DATA(REGISTER_X));
+    f();
+    elementwiseCxmaGetResult(&x, i);
+  }
+
+  convertComplex34MatrixToComplex34MatrixRegister(&x, REGISTER_X);
+
+  complexMatrixFree(&x);
 #endif // TESTSUITE_BUILD
 }
 

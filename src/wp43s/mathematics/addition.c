@@ -990,8 +990,7 @@ void addRealRema(void) {
     }
   }
   else {
-    fnSwapXY(NOPARAM);
-    elementwiseRemaReal(addRealReal);
+    elementwiseRealRema(addRealReal);
   }
 #endif // TESTSUITE_BUILD
 }
@@ -1239,8 +1238,7 @@ void addRealCxma(void) {
     }
   }
   else {
-    fnSwapXY(NOPARAM);
-    elementwiseCxmaReal(addCplxReal);
+    elementwiseRealCxma(addRealCplx);
   }
 #endif // TESTSUITE_BUILD
 }

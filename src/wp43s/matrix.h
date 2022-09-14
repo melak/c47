@@ -498,6 +498,7 @@
   void       elementwiseRemaLonI            (void (*f)(void));
   void       elementwiseRemaReal            (void (*f)(void));
   void       elementwiseRemaShoI            (void (*f)(void));
+  void       elementwiseRealRema            (void (*f)(void));
 
   void       elementwiseCxma                (void (*f)(void));
   void       elementwiseCxma_UInt16         (void (*f)(uint16_t), uint16_t param);
@@ -505,4 +506,5 @@
   void       elementwiseCxmaReal            (void (*f)(void));
   void       elementwiseCxmaShoI            (void (*f)(void));
   void       elementwiseCxmaCplx            (void (*f)(void));
+  void       elementwiseRealCxma            (void (*f)(void));
 #endif // !MATRIX_H

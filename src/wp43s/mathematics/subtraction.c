@@ -28,7 +28,6 @@
 #include "integers.h"
 #include "items.h"
 #include "mathematics/addition.h"
-#include "mathematics/changeSign.h"
 #include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -655,9 +654,7 @@ void subRealRema(void) {
     }
   }
   else {
-    chsRema();
-    fnSwapXY(NOPARAM);
-    elementwiseRemaReal(addRealReal);
+    elementwiseRealRema(subRealReal);
   }
 #endif // TESTSUITE_BUILD
 }
@@ -874,7 +871,7 @@ void subCxmaReal(void) {
     fnSwapXY(NOPARAM);
   }
   else {
-    elementwiseCxmaReal(addCplxReal);
+    elementwiseCxmaReal(subCplxReal);
   }
 #endif // TESTSUITE_BUILD
 }
@@ -905,8 +902,7 @@ void subRealCxma(void) {
     }
   }
   else {
-    fnSwapXY(NOPARAM);
-    elementwiseCxmaReal(addCplxReal);
+    elementwiseRealCxma(subRealCplx);
   }
 #endif // TESTSUITE_BUILD
 }
