@@ -651,13 +651,13 @@ void mulShoIRema(void) {
 void mulRemaReal(void) {
 #ifndef TESTSUITE_BUILD
   real34Matrix_t matrix;
-  if(getRegisterAngularMode(REGISTER_Y) == amNone) {
+  if(getRegisterAngularMode(REGISTER_X) == amNone) {
     linkToRealMatrixRegister(REGISTER_Y, &matrix);
     multiplyRealMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_X), &matrix);
     convertReal34MatrixToReal34MatrixRegister(&matrix, REGISTER_X);
   }
   else {
-    mulError();
+    elementwiseRemaReal(mulRealReal);
   }
 #endif // TESTSUITE_BUILD
 }
@@ -673,12 +673,12 @@ void mulRemaReal(void) {
 void mulRealRema(void) {
 #ifndef TESTSUITE_BUILD
   real34Matrix_t matrix;
-  if(getRegisterAngularMode(REGISTER_X) == amNone) {
+  if(getRegisterAngularMode(REGISTER_Y) == amNone) {
     linkToRealMatrixRegister(REGISTER_X, &matrix);
     multiplyRealMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_Y), &matrix);
   }
   else {
-    mulError();
+    elementwiseRealRema(mulRealReal);
   }
 #endif // TESTSUITE_BUILD
 }
@@ -790,9 +790,14 @@ void mulShoICxma(void) {
 void mulCxmaReal(void) {
 #ifndef TESTSUITE_BUILD
   complex34Matrix_t matrix;
-  linkToComplexMatrixRegister(REGISTER_Y, &matrix);
-  multiplyComplexMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_X), const34_0, &matrix);
-  convertComplex34MatrixToComplex34MatrixRegister(&matrix, REGISTER_X);
+  if(getRegisterAngularMode(REGISTER_X) == amNone) {
+    linkToComplexMatrixRegister(REGISTER_Y, &matrix);
+    multiplyComplexMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_X), const34_0, &matrix);
+    convertComplex34MatrixToComplex34MatrixRegister(&matrix, REGISTER_X);
+  }
+  else {
+    elementwiseCxmaReal(mulCplxReal);
+  }
 #endif // TESTSUITE_BUILD
 }
 
@@ -807,8 +812,13 @@ void mulCxmaReal(void) {
 void mulRealCxma(void) {
 #ifndef TESTSUITE_BUILD
   complex34Matrix_t matrix;
-  linkToComplexMatrixRegister(REGISTER_X, &matrix);
-  multiplyComplexMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_Y), const34_0, &matrix);
+  if(getRegisterAngularMode(REGISTER_Y) == amNone) {
+    linkToComplexMatrixRegister(REGISTER_X, &matrix);
+    multiplyComplexMatrix(&matrix, REGISTER_REAL34_DATA(REGISTER_Y), const34_0, &matrix);
+  }
+  else {
+    elementwiseRealCxma(mulRealCplx);
+  }
 #endif // TESTSUITE_BUILD
 }
 
