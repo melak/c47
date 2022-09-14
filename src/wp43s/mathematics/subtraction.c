@@ -32,6 +32,8 @@
 #include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "rsd.h"
+#include "stack.h"
 
 #include "wp43s.h"
 
