@@ -63,14 +63,16 @@ TO_QSPI void (* const swapReIm[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnSwapRealImaginary(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
   swapReIm[getRegisterDataType(REGISTER_X)]();
 }
 
 
 
 void swapReImCxma(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   complex34Matrix_t cMat;
   real34_t tmp;
 
@@ -81,7 +83,7 @@ void swapReImCxma(void) {
     real34Copy(VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), VARIABLE_REAL34_DATA(&cMat.matrixElements[i]));
     real34Copy(&tmp                                         , VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]));
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 

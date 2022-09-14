@@ -69,7 +69,9 @@ TO_QSPI void (* const arccosh[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnArccosh(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   arccosh[getRegisterDataType(REGISTER_X)]();
 

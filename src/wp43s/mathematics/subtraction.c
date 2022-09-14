@@ -80,7 +80,9 @@ TO_QSPI void (* const subtraction[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_
  * \return void
  ***********************************************/
 void fnSubtract(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   subtraction[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 
@@ -424,7 +426,7 @@ void subDateReal(void) {
  * \return void
  ***********************************************/
 void subRemaLonI(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   real34Matrix_t ym;
   real_t y, x;
 
@@ -442,7 +444,7 @@ void subRemaLonI(void) {
     realToReal34(&y, &ym.matrixElements[i]);
   }
   fnSwapXY(NOPARAM);
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -454,7 +456,7 @@ void subRemaLonI(void) {
  * \return void
  ***********************************************/
 void subLonIRema(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   real34Matrix_t xm;
   real_t y, x;
 
@@ -471,7 +473,7 @@ void subLonIRema(void) {
     roundToSignificantDigits(&x, &x, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
     realToReal34(&x, &xm.matrixElements[i]);
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -483,7 +485,7 @@ void subLonIRema(void) {
  * \return void
  ***********************************************/
 void subRemaRema(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   real34Matrix_t y, x;
 
   linkToRealMatrixRegister(REGISTER_Y, &y);
@@ -504,7 +506,7 @@ void subRemaRema(void) {
   }
 
   realMatrixFree(&x);
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -516,10 +518,10 @@ void subRemaRema(void) {
  * \return void
  ***********************************************/
 void subRemaCxma(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
   subCxmaCxma();
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -531,10 +533,10 @@ void subRemaCxma(void) {
  * \return void
  ***********************************************/
 void subCxmaRema(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_X, REGISTER_X);
   subCxmaCxma();
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -546,7 +548,7 @@ void subCxmaRema(void) {
  * \return void
  ***********************************************/
 void subRemaShoI(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   real34Matrix_t ym;
   real_t y, x;
 
@@ -564,7 +566,7 @@ void subRemaShoI(void) {
     realToReal34(&y, &ym.matrixElements[i]);
   }
   fnSwapXY(NOPARAM);
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -576,7 +578,7 @@ void subRemaShoI(void) {
  * \return void
  ***********************************************/
 void subShoIRema(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   real34Matrix_t xm;
   real_t y, x;
 
@@ -593,7 +595,7 @@ void subShoIRema(void) {
     roundToSignificantDigits(&x, &x, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
     realToReal34(&x, &xm.matrixElements[i]);
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -605,7 +607,7 @@ void subShoIRema(void) {
  * \return void
  ***********************************************/
 void subRemaReal(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   real34Matrix_t y;
   angularMode_t xAngularMode;
 
@@ -625,7 +627,7 @@ void subRemaReal(void) {
   else {
     elementwiseRemaReal(subRealReal);
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -637,7 +639,7 @@ void subRemaReal(void) {
  * \return void
  ***********************************************/
 void subRealRema(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   real34Matrix_t x;
   angularMode_t yAngularMode;
 
@@ -656,7 +658,7 @@ void subRealRema(void) {
   else {
     elementwiseRealRema(subRealReal);
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -668,10 +670,10 @@ void subRealRema(void) {
  * \return void
  ***********************************************/
 void subRemaCplx(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
   subCxmaCplx();
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -683,10 +685,10 @@ void subRemaCplx(void) {
  * \return void
  ***********************************************/
 void subCplxRema(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_X, REGISTER_X);
   subCplxCxma();
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -702,7 +704,7 @@ void subCplxRema(void) {
  * \return void
  ***********************************************/
 void subCxmaLonI(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   complex34Matrix_t ym;
   real_t y, x;
 
@@ -720,7 +722,7 @@ void subCxmaLonI(void) {
     realToReal34(&y, VARIABLE_REAL34_DATA(&ym.matrixElements[i]));
   }
   fnSwapXY(NOPARAM);
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -732,7 +734,7 @@ void subCxmaLonI(void) {
  * \return void
  ***********************************************/
 void subLonICxma(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   complex34Matrix_t xm;
   real_t y, x;
 
@@ -749,7 +751,7 @@ void subLonICxma(void) {
     roundToSignificantDigits(&x, &x, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
     realToReal34(&x, VARIABLE_REAL34_DATA(&xm.matrixElements[i]));
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -761,7 +763,7 @@ void subLonICxma(void) {
  * \return void
  ***********************************************/
 void subCxmaCxma(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   complex34Matrix_t y, x;
 
   linkToComplexMatrixRegister(REGISTER_Y, &y);
@@ -782,7 +784,7 @@ void subCxmaCxma(void) {
   }
 
   complexMatrixFree(&x);
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -794,7 +796,7 @@ void subCxmaCxma(void) {
  * \return void
  ***********************************************/
 void subCxmaShoI(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   complex34Matrix_t ym;
   real_t y, x;
 
@@ -812,7 +814,7 @@ void subCxmaShoI(void) {
     realToReal34(&y, VARIABLE_REAL34_DATA(&ym.matrixElements[i]));
   }
   fnSwapXY(NOPARAM);
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -824,7 +826,7 @@ void subCxmaShoI(void) {
  * \return void
  ***********************************************/
 void subShoICxma(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   complex34Matrix_t xm;
   real_t y, x;
 
@@ -841,7 +843,7 @@ void subShoICxma(void) {
     roundToSignificantDigits(&x, &x, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
     realToReal34(&x, VARIABLE_REAL34_DATA(&xm.matrixElements[i]));
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -853,7 +855,7 @@ void subShoICxma(void) {
  * \return void
  ***********************************************/
 void subCxmaReal(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   complex34Matrix_t y;
   angularMode_t xAngularMode;
 
@@ -873,7 +875,7 @@ void subCxmaReal(void) {
   else {
     elementwiseCxmaReal(subCplxReal);
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -885,7 +887,7 @@ void subCxmaReal(void) {
  * \return void
  ***********************************************/
 void subRealCxma(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   complex34Matrix_t x;
   angularMode_t yAngularMode;
 
@@ -904,7 +906,7 @@ void subRealCxma(void) {
   else {
     elementwiseRealCxma(subRealCplx);
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -916,7 +918,7 @@ void subRealCxma(void) {
  * \return void
  ***********************************************/
 void subCxmaCplx(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   complex34Matrix_t y;
 
   linkToComplexMatrixRegister(REGISTER_Y, &y);
@@ -930,7 +932,7 @@ void subCxmaCplx(void) {
     real34Subtract(VARIABLE_IMAG34_DATA(&y.matrixElements[i]), REGISTER_IMAG34_DATA(REGISTER_X), VARIABLE_IMAG34_DATA(&y.matrixElements[i]));
   }
   fnSwapXY(NOPARAM);
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
@@ -942,7 +944,7 @@ void subCxmaCplx(void) {
  * \return void
  ***********************************************/
 void subCplxCxma(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   complex34Matrix_t x;
 
   linkToComplexMatrixRegister(REGISTER_X, &x);
@@ -955,7 +957,7 @@ void subCplxCxma(void) {
     real34Subtract(REGISTER_REAL34_DATA(REGISTER_Y), VARIABLE_REAL34_DATA(&x.matrixElements[i]), VARIABLE_REAL34_DATA(&x.matrixElements[i]));
     real34Subtract(REGISTER_IMAG34_DATA(REGISTER_Y), VARIABLE_IMAG34_DATA(&x.matrixElements[i]), VARIABLE_IMAG34_DATA(&x.matrixElements[i]));
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 

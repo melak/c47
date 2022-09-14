@@ -111,7 +111,9 @@ void rsdError(uint16_t unusedButMandatoryParameter) {
  * \return void
  ***********************************************/
 void fnRsd(uint16_t digits) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Rsd[getRegisterDataType(REGISTER_X)](digits);
 

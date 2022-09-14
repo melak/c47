@@ -72,7 +72,9 @@ TO_QSPI void (* const idivr[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DAT
  * \return void
  ***********************************************/
 void fnIDivR(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   idivr[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

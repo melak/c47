@@ -65,7 +65,9 @@ TO_QSPI void (* const unitVector[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) =
  * \return void
  ***********************************************/
 void fnUnitVector(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   unitVector[getRegisterDataType(REGISTER_X)]();
 
@@ -93,7 +95,7 @@ void unitVectorCplx(void) {
 
 
 void unitVectorRema(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   real34Matrix_t matrix;
   real_t elem, sum;
 
@@ -111,13 +113,13 @@ void unitVectorRema(void) {
     realDivide(&elem, &sum, &elem, &ctxtReal39);
     realToReal34(&elem, &matrix.matrixElements[i]);
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
 
 void unitVectorCxma(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   complex34Matrix_t matrix;
   real_t real, imag, sum;
 
@@ -140,5 +142,5 @@ void unitVectorCxma(void) {
     realToReal34(&real, VARIABLE_REAL34_DATA(&matrix.matrixElements[i]));
     realToReal34(&imag, VARIABLE_IMAG34_DATA(&matrix.matrixElements[i]));
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }

@@ -57,7 +57,7 @@ TO_QSPI void (* const deltaPercent[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER
  * \return void
  ***********************************************/
 static void dataTypeError(void) {
-   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+  displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
 
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     sprintf(errorMessage, "cannot raise %s", getRegisterDataTypeName(REGISTER_Y, true, false));
@@ -79,7 +79,9 @@ static void dataTypeError(void) {
  * \return void
  ***********************************************/
 void fnDeltaPercent(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   deltaPercent[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 
@@ -107,8 +109,7 @@ static bool_t deltaPercentReal(real_t *xReal, real_t *yReal, real_t *rReal, real
         return false;
       }
   }
-  else if(realIsZero(yReal))
-  {
+  else if(realIsZero(yReal)) {
     if(getSystemFlag(FLAG_SPCRES)) {
       realCopy((realCompareAbsGreaterThan(xReal, yReal) ? const_plusInfinity : const_minusInfinity),rReal);
     }

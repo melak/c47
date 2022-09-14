@@ -106,7 +106,9 @@ void fnExpMod(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnOpMod(uint16_t mode) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_Z)) {
     case dtLongInteger:

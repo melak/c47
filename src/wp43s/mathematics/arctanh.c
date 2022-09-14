@@ -70,7 +70,9 @@ TO_QSPI void (* const arctanh[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnArctanh(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   arctanh[getRegisterDataType(REGISTER_X)]();
 

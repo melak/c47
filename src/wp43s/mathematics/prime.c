@@ -178,7 +178,9 @@ void fnNextPrime(uint16_t unusedButMandatoryParameter) {
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   longIntegerSetPositiveSign(currentNumber);
 

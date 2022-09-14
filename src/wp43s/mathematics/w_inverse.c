@@ -64,7 +64,9 @@ TO_QSPI void (* const WInverse[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnWinverse(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   WInverse[getRegisterDataType(REGISTER_X)]();
 
