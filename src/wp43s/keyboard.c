@@ -1900,6 +1900,22 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_PEM:
+        if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
+          pemAlpha(ITM_BACKSPACE);
+          fnBst(NOPARAM); // Set the PGM pointer to the original position
+          break;
+        }
+        if(aimBuffer[0] != 0 && !tam.mode) {
+          if(getSystemFlag(FLAG_ALPHA)) {
+            pemCloseAlphaInput();
+          }
+          else {
+            pemCloseNumberInput();
+          }
+          aimBuffer[0] = 0;
+          fnBst(NOPARAM); // Set the PGM pointer to the original position
+          break;
+        }
         if(softmenuStack[0].softmenuId > 1) { // not MyMenu and not MyAlpha
           popSoftmenu();
           break;
@@ -2359,6 +2375,9 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           menuUp();
         }
         else {
+          if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
+            pemAlpha(ITM_BACKSPACE);
+          }
           fnBst(NOPARAM);
         }
         break;
@@ -2514,6 +2533,10 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           menuDown();
         }
         else {
+          if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
+            pemAlpha(ITM_BACKSPACE);
+            fnBst(NOPARAM); // Set the PGM pointer to the original position
+          }
           fnSst(NOPARAM);
         }
         break;
