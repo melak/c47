@@ -1421,7 +1421,7 @@ void fnEditLinearEquationMatrixX(uint16_t unusedParamButMandatory) {
     real34Matrix_t a, b, x;
     linkToRealMatrixRegister(findNamedVariable("Mat_A"), &a);
     linkToRealMatrixRegister(findNamedVariable("Mat_B"), &b);
-    WP34S_matrix_linear_eqn(&a, &b, &x);
+    real_matrix_linear_eqn(&a, &b, &x);
     if(x.matrixElements) {
       convertReal34MatrixToReal34MatrixRegister(&x, findNamedVariable("Mat_X"));
       realMatrixFree(&x);
@@ -4357,105 +4357,19 @@ void divideComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *
 
 /* Solve a system of linear equations Ac = b
  */
-void WP34S_matrix_linear_eqn(const real34Matrix_t *a, const real34Matrix_t *b, real34Matrix_t *r) {
-  const uint16_t n = a->header.matrixRows;
-  int i;
-  real34Matrix_t mat;
-  real_t *cv = NULL;
-  uint16_t *pivots = NULL;
-  real_t *bv = NULL;
+void real_matrix_linear_eqn(const real34Matrix_t *a, const real34Matrix_t *b, real34Matrix_t *r) {
+  real34Matrix_t inv_a;
 
-  if(r != a && r != b) {
-    r->matrixElements = NULL;
-    r->header.matrixRows = r->header.matrixColumns = 0;
-  }
-
-  if(a->header.matrixColumns != n) {
+  if(a->header.matrixColumns != a->header.matrixRows) {
     displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "not a square matrix (%d" STD_CROSS "%d)",
-              n, a->header.matrixColumns);
-      moreInfoOnError("In function WP34S_matrix_linear_eqn:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return;
-  }
-  if(b->header.matrixRows != n || b->header.matrixColumns != 1) {
-    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "not a column vector or size mismatch (%d" STD_CROSS "%d)",
-              b->header.matrixRows, b->header.matrixColumns);
-      moreInfoOnError("In function WP34S_matrix_linear_eqn:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return;
-  }
-
-  /* Everything is happy so far -- decompose */
-  if((pivots = allocWp43s(TO_BLOCKS(sizeof(uint16_t) * n)))) {
-    WP34S_LU_decomposition(a, &mat, pivots);
-    if(lastErrorCode != ERROR_NONE) {
-      freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-      return;
-    }
-    if(!mat.matrixElements) {
-      freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-      displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "attempt to LU-decompose a singular matrix");
-        moreInfoOnError("In function WP34S_matrix_linear_eqn:", errorMessage, NULL, NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      return;
-    }
-
-    /* And solve */
-    if(r == a)
-      realMatrixFree(r);
-    if((r == b) || (realMatrixInit(r, n, 1))) {
-      if((cv = allocWp43s(n * REAL_SIZE))) {
-        if((bv = allocWp43s(n * REAL_SIZE))) {
-          for(i = 0; i < n; i++) {
-            real34ToReal(&b->matrixElements[i] , bv + i);
-            pivots[i] = i;
-          }
-          WP34S_matrix_pivoting_solve(&mat, bv, pivots, cv, &ctxtReal39);
-          for(i = 0; i < n; i++)
-            realToReal34(cv + i, &r->matrixElements[i]);
-          freeWp43s(bv, n * REAL_SIZE);
-        }
-        else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-        freeWp43s(cv, n * REAL_SIZE);
-      }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    freeWp43s(pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-  }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
-
-#if 0
-void complex_matrix_linear_eqn(const complex34Matrix_t *a, const complex34Matrix_t *b, complex34Matrix_t *r) {
-  const uint16_t n = a->header.matrixRows;
-  int i;
-  complex34Matrix_t mat;
-  real_t *cv = NULL;
-  uint16_t *pivots = NULL;
-  real_t *bv = NULL;
-
-  if(r != a && r != b) {
-    r->matrixElements = NULL;
-    r->header.matrixRows = r->header.matrixColumns = 0;
-  }
-
-  if(a->header.matrixColumns != n) {
-    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "not a square matrix (%d" STD_CROSS "%d)",
-              n, a->header.matrixColumns);
+              a->header.matrixRows, a->header.matrixColumns);
       moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
-  if(b->header.matrixRows != n || b->header.matrixColumns != 1) {
+  if(b->header.matrixRows != a->header.matrixRows || b->header.matrixColumns != 1) {
     displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "not a column vector or size mismatch (%d" STD_CROSS "%d)",
@@ -4465,52 +4379,22 @@ void complex_matrix_linear_eqn(const complex34Matrix_t *a, const complex34Matrix
     return;
   }
 
-  /* Everything is happy so far -- decompose */
-  if((pivots = allocWp43s(TO_BLOCKS(sizeof(uint16_t) * n)))) {
-    complex_LU_decomposition(a, &mat, pivots);
-    if(lastErrorCode != ERROR_NONE) {
-      freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-      return;
-    }
-    if(!mat.matrixElements) {
-      freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-      displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "attempt to LU-decompose a singular matrix");
-        moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      return;
-    }
-
-    /* And solve */
-    if(r == a)
-      complexMatrixFree(r);
-    if(r == b || complexMatrixInit(r, n, 1)) {
-      if((cv = allocWp43s(n * REAL_SIZE * 2))) {
-        if((bv = allocWp43s(n * REAL_SIZE * 2))) {
-          for(i = 0; i < n; i++) {
-            real34ToReal(VARIABLE_REAL34_DATA(&b->matrixElements[i]) , bv + i * 2    );
-            real34ToReal(VARIABLE_IMAG34_DATA(&b->matrixElements[i]) , bv + i * 2 + 1);
-            pivots[i] = i;
-          }
-          complex_matrix_pivoting_solve(&mat, bv, pivots, cv, &ctxtReal39);
-          for(i = 0; i < n; i++) {
-            realToReal34(cv + i * 2    , VARIABLE_REAL34_DATA(&r->matrixElements[i]));
-            realToReal34(cv + i * 2 + 1, VARIABLE_IMAG34_DATA(&r->matrixElements[i]));
-          }
-          freeWp43s(bv, n * REAL_SIZE * 2);
-        }
-        else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-        freeWp43s(cv, n * REAL_SIZE * 2);
-      }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    freeWp43s(pivots, TO_BLOCKS(sizeof(uint16_t) * n));
+  WP34S_matrix_inverse(a, &inv_a);
+  if(lastErrorCode != ERROR_NONE) {
+    return;
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+  if(!inv_a.matrixElements) {
+    displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "attempt to invert a singular matrix");
+      moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return;
+  }
+
+  multiplyRealMatrices(&inv_a, b, r);
+  realMatrixFree(&inv_a);
 }
-#endif
 
 void complex_matrix_linear_eqn(const complex34Matrix_t *a, const complex34Matrix_t *b, complex34Matrix_t *r) {
   complex34Matrix_t inv_a;
