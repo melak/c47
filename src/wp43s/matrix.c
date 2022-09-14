@@ -4268,6 +4268,19 @@ void divideRealMatrix(const real34Matrix_t *matrix, const real34_t *x, real34Mat
   else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
 }
 
+void divideByRealMatrix(const real34_t *y, const real34Matrix_t *matrix, real34Matrix_t *res) {
+  const uint16_t rows = matrix->header.matrixRows;
+  const uint16_t cols = matrix->header.matrixColumns;
+  int32_t i;
+
+  if(matrix == res || realMatrixInit(res, rows, cols)) {
+    for(i = 0; i < cols * rows; ++i) {
+      real34Divide(y, &matrix->matrixElements[i], &res->matrixElements[i]);
+    }
+  }
+  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+}
+
 void _divideRealMatrix(const real34Matrix_t *matrix, const real_t *x, real34Matrix_t *res, realContext_t *realContext) {
   const uint16_t rows = matrix->header.matrixRows;
   const uint16_t cols = matrix->header.matrixColumns;
@@ -4279,6 +4292,22 @@ void _divideRealMatrix(const real34Matrix_t *matrix, const real_t *x, real34Matr
       real34ToReal(&matrix->matrixElements[i], &y);
       realDivide(&y, x, &y, realContext);
       realToReal34(&y, &res->matrixElements[i]);
+    }
+  }
+  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+}
+
+void _divideByRealMatrix(const real_t *y, const real34Matrix_t *matrix, real34Matrix_t *res, realContext_t *realContext) {
+  const uint16_t rows = matrix->header.matrixRows;
+  const uint16_t cols = matrix->header.matrixColumns;
+  int32_t i;
+  real_t x;
+
+  if(matrix == res || realMatrixInit(res, rows, cols)) {
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(&matrix->matrixElements[i], &x);
+      realDivide(y, &x, &x, realContext);
+      realToReal34(&x, &res->matrixElements[i]);
     }
   }
   else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -4313,6 +4342,13 @@ void divideComplexMatrix(const complex34Matrix_t *matrix, const real34_t *xr, co
   _divideComplexMatrix(matrix, &_xr, &_xi, res, &ctxtReal39);
 }
 
+void divideByComplexMatrix(const real34_t *yr, const real34_t *yi, const complex34Matrix_t *matrix, complex34Matrix_t *res) {
+  real_t _yr, _yi;
+
+  real34ToReal(yr, &_yr); real34ToReal(yi, &_yi);
+  _divideByComplexMatrix(&_yr, &_yi, matrix, res, &ctxtReal39);
+}
+
 void _divideComplexMatrix(const complex34Matrix_t *matrix, const real_t *xr, const real_t *xi, complex34Matrix_t *res, realContext_t *realContext) {
   const uint16_t rows = matrix->header.matrixRows;
   const uint16_t cols = matrix->header.matrixColumns;
@@ -4326,6 +4362,24 @@ void _divideComplexMatrix(const complex34Matrix_t *matrix, const real_t *xr, con
       divComplexComplex(&yr, &yi, xr, xi, &yr, &yi, realContext);
       realToReal34(&yr, VARIABLE_REAL34_DATA(&res->matrixElements[i]));
       realToReal34(&yi, VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
+    }
+  }
+  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+}
+
+void _divideByComplexMatrix(const real_t *yr, const real_t *yi, const complex34Matrix_t *matrix, complex34Matrix_t *res, realContext_t *realContext) {
+  const uint16_t rows = matrix->header.matrixRows;
+  const uint16_t cols = matrix->header.matrixColumns;
+  int32_t i;
+  real_t xr, xi;
+
+  if(matrix == res || complexMatrixInit(res, rows, cols)) {
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i]), &xr);
+      real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i]), &xi);
+      divComplexComplex(yr, yi, &xr, &xi, &xr, &xi, realContext);
+      realToReal34(&xr, VARIABLE_REAL34_DATA(&res->matrixElements[i]));
+      realToReal34(&xi, VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
     }
   }
   else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
