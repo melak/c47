@@ -22,6 +22,7 @@
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
+#include "gui.h"
 #include "items.h"
 #include "realType.h"
 #include "registers.h"
@@ -347,7 +348,6 @@ uint8_t fnTimerGetStatus(uint8_t nr) {
 void fnTimer(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
     calcMode = CM_TIMER;
-    showSoftmenu(-MNU_TIMERF);
     rbr1stDigit = true;
     watchIconEnabled = false;
     if(timerStartTime != TIMER_APP_STOPPED) {
@@ -468,6 +468,22 @@ void fnShowTimerApp(void) {
         sprintf(tmpString + stringByteLength(tmpString), "[%" PRId32 STD_CURSOR "]", (int32_t)(aimBuffer[AIM_BUFFER_LENGTH / 2] - '0'));
       }
       showString(tmpString, &numericFont, 1, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);
+
+      bool_t timerMenu = false;
+      for(int i = 0; i < SOFTMENU_STACK_SIZE; i++) {
+        if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_TIMERF) {
+          timerMenu = true;
+          break;
+        }
+      }
+      if(!timerMenu) {
+        showSoftmenu(-MNU_TIMERF);
+      }
+      #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
+      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_TIMERF) {
+        calcModeNormalGui();
+      }
+      #endif // PC_BUILD && (SCREEN_800X480 == 0)
     }
   #endif // !TESTSUITE_BUILD
 }
