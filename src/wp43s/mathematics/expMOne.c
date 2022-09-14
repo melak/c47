@@ -67,7 +67,9 @@ TO_QSPI void (* const ExpM1[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnExpM1(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   ExpM1[getRegisterDataType(REGISTER_X)]();
 

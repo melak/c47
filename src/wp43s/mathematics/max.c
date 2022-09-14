@@ -26,7 +26,9 @@
 #include "wp43s.h"
 
 void fnMax(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   registerMax(REGISTER_X, REGISTER_Y, REGISTER_X);
 

@@ -72,7 +72,9 @@ TO_QSPI void (* const rmd[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_
  * \return void
  ***********************************************/
 void fnRmd(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   rmd[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

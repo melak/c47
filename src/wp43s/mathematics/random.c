@@ -176,7 +176,7 @@ void fnSeed(uint16_t unusedButMandatoryParameter) {
   }
 
   if(seed == 0 && sequ == 0) {
-    #ifdef TESTSUITE_BUILD
+    #if defined(TESTSUITE_BUILD)
       seed = 0xDeadBeef;
       sequ = 0xBadCafeFace;
     #else // !TESTSUITE_BUILD

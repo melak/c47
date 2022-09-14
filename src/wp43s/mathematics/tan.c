@@ -91,7 +91,9 @@ void longIntegerAngleReduction(calcRegister_t regist, angularMode_t angularMode,
  * \return void
  ***********************************************/
 void fnTan(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Tan[getRegisterDataType(REGISTER_X)]();
 

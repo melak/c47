@@ -40,7 +40,9 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
   dataTypeY = getRegisterDataType(REGISTER_Y);
 
   if((dataTypeX == dtReal34 || dataTypeX == dtLongInteger) && (dataTypeY == dtReal34 || dataTypeY == dtLongInteger)) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+    return;
+  }
 
     switch(dataTypeX) {
       case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39); break;

@@ -83,7 +83,9 @@ static void gdError(uint16_t gdOrInvGd, uint8_t errorCode) {
  * \return void
  ***********************************************/
 void fnGd(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
   gd[getRegisterDataType(REGISTER_X)](GD_DIRECT_FUNCTION);
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
 }
@@ -96,7 +98,9 @@ void fnGd(uint16_t unusedButMandatoryParameter) {
  * \return void
  ***********************************************/
 void fnInvGd(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
   gd[getRegisterDataType(REGISTER_X)](GD_INVERSE_FUNCTION);
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
 }

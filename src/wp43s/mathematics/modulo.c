@@ -73,7 +73,9 @@ TO_QSPI void (* const mod[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_
  * \return void
  ***********************************************/
 void fnMod(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   mod[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

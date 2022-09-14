@@ -53,7 +53,9 @@ static bool_t ixyzConvert(calcRegister_t reg, real_t *val) {
 void fnIxyz(uint16_t unusedButMandatoryParameter) {
   real_t x, a, b, val;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(ixyzConvert(REGISTER_X, &x) && ixyzConvert(REGISTER_Y, &a) && ixyzConvert(REGISTER_Z, &b)) {
     if(realCompareGreaterEqual(&x, const_0) && realCompareLessEqual(&x, const_1) && realCompareGreaterThan(&a, const_0) && realCompareGreaterThan(&b, const_0)) {

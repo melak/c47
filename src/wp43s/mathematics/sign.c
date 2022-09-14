@@ -65,7 +65,9 @@ TO_QSPI void (* const sign[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnSign(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   sign[getRegisterDataType(REGISTER_X)]();
 
