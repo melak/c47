@@ -1900,6 +1900,17 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_PEM:
+        if(aimBuffer[0] != 0) {
+          if(getSystemFlag(FLAG_ALPHA)) {
+            pemCloseAlphaInput();
+          }
+          else {
+            pemCloseNumberInput();
+          }
+          aimBuffer[0] = 0;
+          fnBst(NOPARAM); // Set the PGM pointer to the original position
+          break;
+        }
         if(softmenuStack[0].softmenuId > 1) { // not MyMenu and not MyAlpha
           popSoftmenu();
           break;
