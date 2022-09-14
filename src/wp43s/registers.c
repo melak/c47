@@ -1364,13 +1364,13 @@ int16_t indirectAddressing(calcRegister_t regist, bool_t valueIsRegister, int16_
   }
 
   if(valueIsRegister) {
-    if(minValue <= value && (value <= 99 || isValidAlpha)) {
+    if(minValue <= value && (value <= maxValue || isValidAlpha)) {
       return value;
     }
     else {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #if defined(PC_BUILD)
-        sprintf(errorMessage, "value = %d! Should be from %d to 99.", value, minValue);
+        sprintf(errorMessage, "value = %d! Should be from %d to %d.", value, minValue, maxValue);
         moreInfoOnError("In function indirectAddressing:", errorMessage, NULL, NULL);
       #endif // PC_BUILD
       return 9999;
