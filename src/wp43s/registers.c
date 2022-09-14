@@ -1269,14 +1269,21 @@ void copySourceRegisterToDestRegister(calcRegister_t sourceRegister, calcRegiste
 
 
 
-int16_t indirectAddressing(calcRegister_t regist, bool_t valueIsRegister, int16_t minValue, int16_t maxValue) {
+int16_t indirectAddressing(calcRegister_t regist, uint16_t parameterType, int16_t minValue, int16_t maxValue) {
   int16_t value;
   bool_t isValidAlpha = false;
+  printf("parameterType %u\n", parameterType); fflush(stdout);
+  printf("currentNumberOfLocalFlags %u\n", currentNumberOfLocalFlags); fflush(stdout);
 
-  if(valueIsRegister) {
-    // Temorarily assign the maximum value to the maximum register
-    // We need to do better range checking later
-    maxValue = FIRST_NAMED_VARIABLE + numberOfNamedVariables;
+  switch(parameterType) {
+    case INDPM_REGISTER:
+      // Temorarily assign the maximum value to the maximum register
+      // We need to do better range checking later
+      maxValue = FIRST_NAMED_VARIABLE + numberOfNamedVariables - 1;
+      break;
+    case INDPM_FLAG:
+      maxValue = NUMBER_OF_GLOBAL_FLAGS + currentNumberOfLocalFlags - 1;
+      break;
   }
 
   if(regist >= FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters &&
@@ -1341,7 +1348,7 @@ int16_t indirectAddressing(calcRegister_t regist, bool_t valueIsRegister, int16_
     value = val;
   }
 
-  else if(getRegisterDataType(regist) == dtString && valueIsRegister) {
+  else if(getRegisterDataType(regist) == dtString && parameterType == INDPM_REGISTER) {
     value = findNamedVariable(REGISTER_STRING_DATA(regist));
     isValidAlpha = true;
     if(value == INVALID_VARIABLE) {
@@ -1363,31 +1370,16 @@ int16_t indirectAddressing(calcRegister_t regist, bool_t valueIsRegister, int16_
     return 9999;
   }
 
-  if(valueIsRegister) {
-    if(minValue <= value && (value <= maxValue || isValidAlpha)) {
-      return value;
-    }
-    else {
-      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-      #if defined(PC_BUILD)
-        sprintf(errorMessage, "value = %d! Should be from %d to %d.", value, minValue, maxValue);
-        moreInfoOnError("In function indirectAddressing:", errorMessage, NULL, NULL);
-      #endif // PC_BUILD
-      return 9999;
-    }
+  if(minValue <= value && (value <= maxValue || isValidAlpha)) {
+    return value;
   }
   else {
-    if(minValue <= value && value <= maxValue) {
-      return value;
-    }
-    else {
-      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-      #if defined(PC_BUILD)
-        sprintf(errorMessage, "value = %d! Should be from %d to %d.", value, minValue, maxValue);
-        moreInfoOnError("In function indirectAddressing:", errorMessage, NULL, NULL);
-      #endif // PC_BUILD
-      return 9999;
-    }
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    #if defined(PC_BUILD)
+      sprintf(errorMessage, "value = %d! Should be from %d to %d.", value, minValue, maxValue);
+      moreInfoOnError("In function indirectAddressing:", errorMessage, NULL, NULL);
+    #endif // PC_BUILD
+    return 9999;
   }
 }
 

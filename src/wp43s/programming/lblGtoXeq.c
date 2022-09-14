@@ -322,7 +322,7 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
   static void _executeWithIndirectRegister(uint8_t *paramAddress, uint16_t op) {
     uint8_t opParam = *(uint8_t *)paramAddress;
     if(opParam <= LAST_LOCAL_REGISTER) { // Local register from .00 to .98
-      int16_t realParam = indirectAddressing(opParam, (indexOfItems[op].param == TM_STORCL || indexOfItems[op].param == TM_M_DIM), indexOfItems[op].tamMinMax >> TAM_MAX_BITS, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
+      int16_t realParam = indirectAddressing(opParam, (indexOfItems[op].param == TM_FLAGR || indexOfItems[op].param == TM_FLAGW) ? INDPM_FLAG : (indexOfItems[op].param == TM_STORCL || indexOfItems[op].param == TM_M_DIM) ? INDPM_REGISTER : INDPM_PARAM, indexOfItems[op].tamMinMax >> TAM_MAX_BITS, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
       if(realParam < 9999) reallyRunFunction(op, realParam);
     }
     else {
@@ -335,7 +335,7 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
     _getStringLabelOrVariableName(stringAddress);
     regist = findNamedVariable(tmpStringLabelOrVariableName);
     if(regist != INVALID_VARIABLE) {
-      int16_t realParam = indirectAddressing(regist, (indexOfItems[op].param == TM_STORCL || indexOfItems[op].param == TM_M_DIM), indexOfItems[op].tamMinMax >> TAM_MAX_BITS, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
+      int16_t realParam = indirectAddressing(regist, (indexOfItems[op].param == TM_FLAGR || indexOfItems[op].param == TM_FLAGW) ? INDPM_FLAG : (indexOfItems[op].param == TM_STORCL || indexOfItems[op].param == TM_M_DIM) ? INDPM_REGISTER : INDPM_PARAM, indexOfItems[op].tamMinMax >> TAM_MAX_BITS, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
       if(realParam < 9999) reallyRunFunction(op, realParam);
     }
     else {

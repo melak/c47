@@ -660,6 +660,11 @@
   #define CMP_EXTENSIVE                              2
   #define CMP_NAME                                   3
 
+  // Indirect parameter mode
+  #define INDPM_PARAM                                0
+  #define INDPM_REGISTER                             1
+  #define INDPM_FLAG                                 2
+
   // Combination / permutation
   #define CP_PERMUTATION                             0
   #define CP_COMBINATION                             1
