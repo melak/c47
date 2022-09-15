@@ -34,7 +34,7 @@
      * \param[in] item item to add to the buffer
      */
     void     addItemToBuffer          (uint16_t item);
-    
+
     void     addItemToNimBuffer       (int16_t item);
     void     closeNimWithFraction     (real34_t *dest);
     void     closeNimWithComplex      (real34_t *dest_r, real34_t *dest_i);

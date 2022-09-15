@@ -81,7 +81,7 @@
    * \return void
    ***********************************************/
   void composeJulianDay        (const real34_t *year, const real34_t *month, const real34_t *day, real34_t *jd);
- 
+
   void composeJulianDay_g      (const real34_t *year, const real34_t *month, const real34_t *day, real34_t *jd);
   void composeJulianDay_j      (const real34_t *year, const real34_t *month, const real34_t *day, real34_t *jd);
 

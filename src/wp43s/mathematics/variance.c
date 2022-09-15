@@ -292,14 +292,14 @@ void processCurvefitSA(real_t *SA0, real_t *SA1) {
     processCurvefitSelectionAll(lrChosen, &RR, &MX, &MX2, &SX2, &SY2, &SMI, &aa0, &aa1, &aa2);  //Can be optimised a lot, as fnStatR is also called here
     realMultiply  (&RR,&RR,&RR2,realContext);               //   --> r^2
 
-    #if defined STATDEBUG && defined PC_BUILD
+    #if defined(STATDEBUG) && defined(PC_BUILD)
       printf("##### fnStatSa:\n");
       char ss[100];
       formatRealDebug(ss, &RR2); printf("§§ RR^2: %s\n",ss);
       formatRealDebug(ss, &MX2); printf("§§ MX^2: %s\n",ss);
       formatRealDebug(ss, &SX2); printf("§§ SX^2: %s\n",ss);
       formatRealDebug(ss, &SY2); printf("§§ SY^2: %s\n",ss);
-    #endif
+    #endif // STATDEBUG && PC_BUILD
 
 
     switch(lrChosen) {
@@ -343,7 +343,7 @@ void processCurvefitSA(real_t *SA0, real_t *SA1) {
 
 void fnStatSa(uint16_t unusedButMandatoryParameter) {
   real_t SA0, SA1;
-  
+
   processCurvefitSA(&SA0, &SA1);
 
   liftStack();

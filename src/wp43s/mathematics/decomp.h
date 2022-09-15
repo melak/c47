@@ -30,7 +30,7 @@
   #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
     #define decompError typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void decompLonI(void);
   void decompReal(void);
 #endif // !DECOMP_H

@@ -24,13 +24,13 @@
   #include <stdint.h>
 
   void fnM1Pow   (uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void m1PowError(void);
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
     #define m1PowError typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void m1PowLonI (void);
   void m1PowRema (void);
   void m1PowCxma (void);

@@ -24,13 +24,13 @@
   #include <stdint.h>
 
   void fnArctanh   (uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void arctanhError(void);
   #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
     #define arctanhError typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void arctanhLonI (void);
   void arctanhRema (void);
   void arctanhCxma (void);

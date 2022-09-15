@@ -3681,8 +3681,8 @@ void linkToComplexMatrixRegister(calcRegister_t regist, complex34Matrix_t *linke
     }
     realCopy(&sum, res);
   }
-  
-  
+
+
   void dotRealVectors(const real34Matrix_t *y, const real34Matrix_t *x, real34_t *res) {
     real_t p;
 

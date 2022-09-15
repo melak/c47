@@ -24,13 +24,13 @@
   #include <stdint.h>
 
   void fnLogicalNand(uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void nandError24  (void);
   #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
     #define nandError24 typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void nandError31  (void);
   void nandLonILonI (void);
   void nandLonIReal (void);

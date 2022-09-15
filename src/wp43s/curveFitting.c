@@ -269,7 +269,7 @@ void fnProcessLR (uint16_t unusedButMandatoryParameter){
 void calc_BCD(real_t *BB, real_t *CC, real_t *DD){                        //Aux terms, calc_BCD must be run before calc_AEFG
   realContext = &ctxtReal75;
   real_t SS,TT;
-  
+
   //        B = nn * sumx2y - sumx2 * sumy;
   realMultiply(SIGMA_N,  SIGMA_X2Y, &SS, realContext);
   realMultiply(SIGMA_X2, SIGMA_Y,   &TT, realContext);
@@ -291,7 +291,7 @@ void calc_BCD(real_t *BB, real_t *CC, real_t *DD){                        //Aux 
 void calc_AEFG(real_t *AA, real_t *BB, real_t *CC, real_t *DD, real_t *EE, real_t *FF, real_t *GG){                        //Aux terms, calc_AEFG must be run after calc_BCD
   realContext = &ctxtReal75;
   real_t SS,TT,UU;
-  
+
   //        A = nn * sumx2 - sumx * sumx;
   realMultiply(SIGMA_N,  SIGMA_X2,  &SS, realContext);
   realMultiply(SIGMA_X,  SIGMA_X,   &TT, realContext);
@@ -336,7 +336,7 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
     real_t AA, BB, CC, DD, EE, FF, GG, HH, RR2;   // Curve aux fitting variables
     real_t SS, TT, UU;             // Temporary curve fitting variables
     uint16_t ix, jx;               //only a single graph can be displayed at once, so retain the single lowest bit, and clear the higher order bits if ever control comes here with multpile graph selections
-    
+
     jx = 0;
     for(ix=0; ix!=10; ix++) {     //up to 2^9 inclusive of 512 which is ORTHOF. The ReM is respectedby usage of 0 only, not by manual selection.
       jx = selection & ((1 << ix));
@@ -967,7 +967,7 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
     *y = 0;
     float yf;
     real_t SS, TT, UU;
-    
+
     realCopy(const_0, YY);
     if(USEFLOAT == useREAL4) {
       realContextForecast = &ctxtReal4;
@@ -1089,7 +1089,7 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
   void fnYIsFnx(uint16_t unusedButMandatoryParameter){
     real_t XX, YY, RR, SMI, aa0, aa1, aa2;
     double x=-99, y = 0, a0=-99, a1=-99, a2=-99;
-    
+
     realCopy(const_0, &aa0);
     realCopy(const_0, &aa1);
     realCopy(const_0, &aa2);
@@ -1228,7 +1228,7 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
 
   void fnXIsFny(uint16_t unusedButMandatoryParameter){
   real_t XX, YY, RR, SMI, aa0, aa1, aa2;
-  
+
   realCopy(const_0, &aa0);
   realCopy(const_0, &aa1);
   realCopy(const_0, &aa2);

@@ -25,13 +25,13 @@
   #include <stdint.h>
 
   void fnArctan   (uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void arctanError(void);
   #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
     #define arctanError typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void arctanLonI (void);
   void arctanRema (void);
   void arctanCxma (void);

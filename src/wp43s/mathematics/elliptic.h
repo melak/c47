@@ -58,7 +58,7 @@
    * \param[out] ri imaginary part of result
    */
   void jacobiComplexAm  (const real_t *ur, const real_t *ui, const real_t *m, real_t *rr, real_t *ri, realContext_t *realContext);
-  
+
   /**
    * Computes <em>sinus amplitudinis</em> for complex argument.
    *
@@ -69,7 +69,7 @@
    * \param[out] ri imaginary part of result
    */
   void jacobiComplexSn  (const real_t *ur, const real_t *ui, const real_t *m, real_t *rr, real_t *ri, realContext_t *realContext);
-  
+
   /**
    * Computes <em>cosinus amplitudinis</em> for complex argument.
    *
@@ -80,7 +80,7 @@
    * \param[out] ri imaginary part of result
    */
   void jacobiComplexCn  (const real_t *ur, const real_t *ui, const real_t *m, real_t *rr, real_t *ri, realContext_t *realContext);
-  
+
   /**
    * Computes <em>delta amplitudinis</em> for complex argument.
    *
@@ -104,7 +104,7 @@
    * \param[out] ei elliptic integral of the 2nd kind ℑ(E(𝑚))
    */
   void ellipticKE       (const real_t *m, real_t *k, real_t *ki, real_t *e, real_t *ei, realContext_t *realContext);
-  
+
   /**
    * Computes incomplete elliptic integral of the 3rd kind Π(𝑛 | 𝑚).
    *
@@ -114,7 +114,7 @@
    * \param[out] resi imaginary part of the result
    */
   void ellipticPi       (const real_t *n, const real_t *m, real_t *res, real_t *resi, realContext_t *realContext);
-  
+
   /**
    * Computes incomplete elliptic integral of the 1st kind F(𝜑 + i 𝜓 | 𝑚).
    *
@@ -125,7 +125,7 @@
    * \param[out] resi imaginary part of the result
    */
   void ellipticF        (const real_t *phi, const real_t *psi, const real_t *m, real_t *res, real_t *resi, realContext_t *realContext);
-  
+
   /**
    * Computes incomplete elliptic integral of the 2nd kind E(𝜑 + i 𝜓 | 𝑚).
    *
@@ -136,7 +136,7 @@
    * \param[out] resi imaginary part of the result
    */
   void ellipticE        (const real_t *phi, const real_t *psi, const real_t *m, real_t *res, real_t *resi, realContext_t *realContext);
-  
+
   /**
    * Computes Jacobi zeta function Ζ(𝜑 + i 𝜓 | 𝑚).
    *

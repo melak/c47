@@ -25,13 +25,13 @@
   #include <stdint.h>
 
   void fnExp   (uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void expError(void);
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
     #define expError typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void expLonI (void);
   void expRema (void);
   void expCxma (void);
