@@ -342,16 +342,15 @@ void processCurvefitSA(real_t *SA0, real_t *SA1) {
 
 
 void fnStatSa(uint16_t unusedButMandatoryParameter) {
-real_t SA0, SA1;
-    processCurvefitSA(&SA0, &SA1);
+  real_t SA0, SA1;
+  
+  processCurvefitSA(&SA0, &SA1);
 
-    liftStack();
-    setSystemFlag(FLAG_ASLIFT);
-    liftStack();
+  liftStack();
+  setSystemFlag(FLAG_ASLIFT);
+  liftStack();
 
-    convertRealToReal34ResultRegister(&SA0, REGISTER_X);
-    convertRealToReal34ResultRegister(&SA1, REGISTER_Y);
-    temporaryInformation = TI_SA;
+  convertRealToReal34ResultRegister(&SA0, REGISTER_X);
+  convertRealToReal34ResultRegister(&SA1, REGISTER_Y);
+  temporaryInformation = TI_SA;
 }
-
-
