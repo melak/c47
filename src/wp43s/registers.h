@@ -198,12 +198,12 @@
 
   void           reallocateRegister              (calcRegister_t regist, uint32_t dataType, uint16_t dataSizeWithoutDataLenBlocks, uint32_t tag);
   void           fnToReal                        (uint16_t unusedButMandatoryParameter);
-  
+
   #if !defined(DMCP_BUILD)
     void         printReal34ToConsole            (const real34_t *value, const char *before, const char *after);
     void         printRealToConsole              (const real_t *value, const char *before, const char *after);
     void         printComplex34ToConsole         (const complex34_t *value, const char *before, const char *after);
-    
+
     /**
      * Prints the content of a long integer to the console.
      *
@@ -212,7 +212,7 @@
      * \param[in] after  text to display after the value
      */
     void         printLongIntegerToConsole       (const longInteger_t value, const char *before, const char *after);
-    
+
     /**
      * Prints the content of a register to the console.
      *
@@ -221,7 +221,7 @@
      * \param[in] after  text to display after the register value
      */
     void         printRegisterToConsole          (calcRegister_t regist, const char *before, const char *after);
-    
+
     void         printRegisterDescriptorToConsole(calcRegister_t regist);
   #endif // !DMCP_BUILD
 

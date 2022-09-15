@@ -592,7 +592,7 @@ void convertReal34RegisterToDateRegister(calcRegister_t source, calcRegister_t d
     uint16_t i = 2;
     uint16_t j = 2;
     bool_t error = false;
-    
+
     snprintf(buff, n, "%.16e", x);
 
     if(buff[0] != '-') {
@@ -644,7 +644,7 @@ void convertReal34RegisterToDateRegister(calcRegister_t source, calcRegister_t d
 
   void convertDoubleToReal(double x, real_t *destination, realContext_t *ctxt) {
     char buff[100];
-    
+
     buff[0]=0;
     convertDoubleToString(x, 100, buff);
     stringToReal(buff, destination, ctxt);
@@ -652,7 +652,7 @@ void convertReal34RegisterToDateRegister(calcRegister_t source, calcRegister_t d
 
   void convertDoubleToReal34Register(double x, calcRegister_t destination) {
     char buff[100];
-    
+
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertDoubleToString(x, 100, buff);
     stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
@@ -670,7 +670,7 @@ void convertReal34RegisterToDateRegister(calcRegister_t source, calcRegister_t d
 double convertRegisterToDouble(calcRegister_t regist) {
   double y;
   real_t tmpy;
-  
+
   switch(getRegisterDataType(regist)) {
   case dtLongInteger:
     convertLongIntegerRegisterToReal(regist, &tmpy, &ctxtReal39);
@@ -699,7 +699,7 @@ double convertRegisterToDouble(calcRegister_t regist) {
 static float fnRealToFloat(const real_t *r) {
   int s = 0;
   int j, n, e;
-  
+
   static const float exps[] = {
     1.e-45, 1.e-44, 1.e-43, 1.e-42, 1.e-41, 1.e-40, 1.e-39, 1.e-38,
     1.e-37, 1.e-36, 1.e-35, 1.e-34, 1.e-33, 1.e-32, 1.e-31, 1.e-30,

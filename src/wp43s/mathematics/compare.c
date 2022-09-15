@@ -364,7 +364,7 @@ static void compareRegisters(uint16_t regist, uint8_t mode) {
           convertReal34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
         }
         if(getRegisterDataType(regist) == dtComplex34Matrix) {
-          linkToComplexMatrixRegister(regist,     &r); 
+          linkToComplexMatrixRegister(regist,     &r);
         }
         else {
           convertReal34MatrixRegisterToComplex34Matrix(regist,     &r);
@@ -502,7 +502,7 @@ static void almostEqualMatrix(uint16_t regist) {
       }
 
       if(xIsCxma) {
-        roundCxma(); 
+        roundCxma();
       }
       else {
         roundRema();

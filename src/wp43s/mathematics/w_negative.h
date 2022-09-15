@@ -24,13 +24,13 @@
   #include <stdint.h>
 
   void fnWnegative(uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void wNegError  (void);
   #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
     #define wNegError typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void wNegLonI   (void);
   void wNegReal   (void);
   void wNegCplx   (void);

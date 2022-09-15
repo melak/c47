@@ -25,7 +25,7 @@
   #include <stdint.h>
 
   void fnMultiply (uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void mulError   (void);
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)

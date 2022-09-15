@@ -515,7 +515,7 @@
 
     return TRUE;
   }
-#elif defined DMCP_BUILD
+#elif defined(DMCP_BUILD)
   void refreshLcd(void) { // This function is called roughly every SCREEN_REFRESH_PERIOD ms from the main loop
     // Cursor blinking
     static bool_t cursorBlink=true;
@@ -861,7 +861,7 @@ void execTimerApp(uint16_t timerType) {
   void showFunctionName(int16_t item, int16_t delayInMs) {
     uint32_t fcol, frow, gcol, grow;
     char *functionName;
-    
+
     if(tmpString[0] != 0) {
       functionName = tmpString;
     }
@@ -890,7 +890,7 @@ void execTimerApp(uint16_t timerType) {
 
   void hideFunctionName(void) {
     uint32_t col, row;
-    
+
     getStringBounds(tmpString[0] != 0 ? tmpString : indexOfItems[abs(showFunctionNameItem)].itemCatalogName, &standardFont, &col, &row);
     lcd_fill_rect(1, Y_POSITION_OF_REGISTER_T_LINE+6, col, row, LCD_SET_VALUE);
     showFunctionNameItem = 0;
@@ -978,7 +978,7 @@ void execTimerApp(uint16_t timerType) {
 
     if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || (calcMode == CM_MIM && getRegisterDataType(matrixIndex) == dtReal34Matrix)) {
       real34Matrix_t matrix;
-      
+
       if(temporaryInformation == TI_VIEW) {
         viewRegName(prefix, &prefixWidth);
       }

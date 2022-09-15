@@ -44,14 +44,14 @@
      * \param[in] data   Not used
      */
     gboolean drawScreen                         (GtkWidget *widget, cairo_t *cr, gpointer data);
-    
+
     void     copyScreenToClipboard              (void);
     void     copyRegisterXToClipboard           (void);
     void     copyStackRegistersToClipboardString(char *clipboardString);
     void     copyStackRegistersToClipboard      (void);
     void     copyAllRegistersToClipboard        (void);
     void     copyRegisterToClipboardString      (calcRegister_t regist, char *clipboardString);
-    
+
     /**
      * Refreshes calc's screen.
      * This function is called every SCREEN_REFRESH_PERIOD ms by a GTK timer.
@@ -71,7 +71,7 @@
     void     refreshLcd                         (void);
   #else // !DMCP_BUILD
     void     lcd_fill_rect                      (uint32_t x, uint32_t y, uint32_t dx, uint32_t dy, int val); // clone from the DMCP function
-    
+
       /**
        * Sets a black pixel on the screen.
        *
@@ -80,7 +80,7 @@
        * \return void
        */
     void     setBlackPixel                      (uint32_t x, uint32_t y);
-    
+
       /**
        * Sets a white pixel on the screen.
        *
@@ -88,7 +88,7 @@
        * \param[in] y y coordinate from 0 (top) to 239 (bottom)
        */
     void     setWhitePixel                      (uint32_t x, uint32_t y);
-    
+
       /**
        * Turns a black pixel to a white pixel or vice versa on the screen.
        *
@@ -116,7 +116,7 @@
      * \return x coordinate for the next glyph
      */
     uint32_t showString                         (const char *str,   const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols);
-    
+
     /**
      * Displays the first glyph of a string.
      *
@@ -130,7 +130,7 @@
      * \return x coordinate for the next glyph
      */
     uint32_t showGlyph                          (const char *ch,    const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols);
-    
+
     /**
      * Displays a glyph using it's Unicode code point.
      *
@@ -144,12 +144,12 @@
      * \return x coordinate for the next glyph
      */
     uint32_t showGlyphCode                      (uint16_t charCode, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols);
-    
+
     /**
      * Hides the cursor.
      */
     void     hideCursor                         (void);
-    
+
     /**
      * Displays the function name.
      * The function name of the currently pressed button is shown in the
@@ -159,33 +159,33 @@
      * \param[in] counter  number of 1/10 seconds until NOP
      */
     void     showFunctionName                   (int16_t item, int16_t delayInMs);
-    
+
     /**
      * Hides the function name.
      * The function name in the upper left corner of the T register line is hidden
      * and the counter is cleared.
      */
     void     hideFunctionName                   (void);
-    
+
     /**
      * Clears one register line.
      *
      * \param[in] yStart y coordinate from where starting to clear
      */
     void     clearRegisterLine                  (calcRegister_t regist, bool_t clearTop, bool_t clearBottom);
-    
+
     /**
      * Updates matrix height cache.
      */
     void     updateMatrixHeightCache            (void);
-    
+
     /**
      * Displays one register line.
      *
      * \param[in] regist Register line to display
      */
     void     refreshRegisterLine                (calcRegister_t regist);
-    
+
     void     displayNim                         (const char *nim, const char *lastBase, int16_t wLastBaseNumeric, int16_t wLastBaseStandard);
     void     clearTamBuffer                     (void);
     void     clearShiftState                    (void);

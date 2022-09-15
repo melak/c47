@@ -24,7 +24,7 @@
   #include <stdint.h>
 
   void fnAtan2      (uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void atan2Error   (void);
   #else // (EXTRA_INFO_ON_CALC_ERROR == 1)

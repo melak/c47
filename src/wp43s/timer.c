@@ -175,7 +175,7 @@ void fnRebuildTimerRefresh(void) {
 
 
 void fnTimerDummyTest(uint16_t param) {
-#if defined(PC_BUILD) || defined (TESTSUITE_BUILD)
+#if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
   printf("fnTimerDummyTest called  %u\n", param);
 #endif // PC_BUILD || TESTSUITE_BUILD
 }
@@ -216,7 +216,7 @@ void fnTimerStart(uint8_t nr, uint16_t param, uint32_t time) {
   #if defined(DMCP_BUILD)
     uint32_t now = (uint32_t)sys_current_ms();
   #endif // DMCP_BUILD
-  
+
   #if defined(PC_BUILD)
     gint64 now = g_get_monotonic_time();
   #endif // PC_BUILD

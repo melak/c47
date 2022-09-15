@@ -26,13 +26,13 @@
   #include <stdint.h>
 
   void fnExpM1   (uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void expM1Error(void);
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
     #define expM1Error typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void expM1LonI (void);
   void expM1Rema (void);
   void expM1Cxma (void);

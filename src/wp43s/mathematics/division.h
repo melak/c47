@@ -25,7 +25,7 @@
   #include <stdint.h>
 
   void fnDivide(uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void divError(void);
   #else // (EXTRA_INFO_ON_CALC_ERROR == 1)

@@ -126,7 +126,7 @@ void statGraphReset(void){
   float grf_x(int i) {
     float xf=0;
     real_t xr;
-    
+
     calcRegister_t regStats = findNamedVariable(plotStatMx);
     if(regStats != INVALID_VARIABLE) {
       real34Matrix_t stats;
@@ -144,7 +144,7 @@ void statGraphReset(void){
   float grf_y(int i) {
     float yf=0;
     real_t yr;
-    
+
     calcRegister_t regStats = findNamedVariable(plotStatMx);
     if(regStats != INVALID_VARIABLE) {
       real34Matrix_t stats;
@@ -162,7 +162,7 @@ void statGraphReset(void){
 
   int16_t screen_window_x(float x_min, float x, float x_max) {
     int16_t temp; float tempr;
-    
+
     if(Aspect_Square) {
       tempr = ((x - x_min) / (x_max - x_min) * (float)(SCREEN_HEIGHT_GRAPH - 1));
       if(tempr > 32766) temp = 32767; else
@@ -212,7 +212,7 @@ void statGraphReset(void){
   int16_t screen_window_y(float y_min, float y, float y_max) {
     int16_t temp, minn;
     float tempr;
-    
+
     if(!Aspect_Square) {
       minn = SCREEN_NONSQ_HMIN;
     }
@@ -248,7 +248,7 @@ void statGraphReset(void){
 void placePixel(uint32_t x, uint32_t y) {
   #if !defined(TESTSUITE_BUILD)
     uint32_t minn;
-    
+
     if(!Aspect_Square) {
       minn = SCREEN_NONSQ_HMIN;
     }
@@ -266,7 +266,7 @@ void placePixel(uint32_t x, uint32_t y) {
 void removePixel(uint32_t x, uint32_t y) {
   #if !defined(TESTSUITE_BUILD)
     uint32_t minn;
-    
+
     if(!Aspect_Square) {
       minn = SCREEN_NONSQ_HMIN;
     }
@@ -584,7 +584,7 @@ void graphAxisDraw (void) {
 
 float auto_tick(float tick_int_f) {
   char tmpString2[100];
-  
+
   if(!roundedTicks) {
     return tick_int_f;
   }
@@ -640,7 +640,7 @@ void graph_axis (void){
 char * radixProcess(const char * ss) {  //  .  HIERDIE WERK GLAD NIE
   int8_t ix = 0, iy = 0;
   tmp_names1[0] = 0;
-  
+
   while(ss[ix] != 0) {
     if(ss[ix]==',' || ss[ix]=='.') {
       tmp_names1[iy++] = getSystemFlag(FLAG_DECIMP) ? '.' : ',';
@@ -674,7 +674,7 @@ void nanCheck(char* s02) {
 
 void eformat (char* s02, const char* s01, double inreal, uint8_t prec, const char* s05) {
   char s03[100];
-  
+
   if(((fabs(inreal) > 1000000.0 || fabs(inreal) < 0.001)) && (inreal != 0.0)) {
     sprintf(s03,"%.*e", prec,inreal);
   }
@@ -694,7 +694,7 @@ void eformat (char* s02, const char* s01, double inreal, uint8_t prec, const cha
 void eformat_fix3 (char* s02, const char* s01, double inreal) {
   char *sign;
   char s03[100]; char s04[100];
-  
+
   s04[0] = 0;
   if(inreal < 0.0) {
     sign = "-";
@@ -723,7 +723,7 @@ void eformat_fix3 (char* s02, const char* s01, double inreal) {
 
 char * padEquals(const char * ss) {
   int8_t ix = 0, iy = 0;
-  
+
   tmp_names1[0] = 0;
   while(ss[ix] != 0) {
     if(!(ss[ix] & 0x80)) {
@@ -1069,7 +1069,7 @@ void graphPlotstat(uint16_t selection) {
             else if(xN <= minN_x) {
               printf("x<<%u ", minN_x);
             }
-            
+
             if(yN >= SCREEN_HEIGHT_GRAPH) {
               printf("y>>%u ", SCREEN_HEIGHT_GRAPH);
             }
@@ -1087,7 +1087,7 @@ void graphPlotstat(uint16_t selection) {
         int16_t index = -1;
         char ss[100], tt[100];
         int32_t n;
-        
+
         eformat_eng2(ss, "(", x_max, 2, "");
         eformat_eng2(tt,radixProcess("#"),y_max,2,")");
         strcat(tt, ss);
@@ -1121,7 +1121,7 @@ void graphPlotstat(uint16_t selection) {
   void demo_plot(void) {
     int8_t ix;
     time_t t;
-    
+
     srand((unsigned) time(&t));
     runFunction(ITM_CLSIGMA);
     plotSelection = 0;
@@ -1262,14 +1262,14 @@ void graphDrawLRline(uint16_t selection) {
           if(xN<SCREEN_WIDTH_GRAPH && xN>minN_x && yN<SCREEN_HEIGHT_GRAPH-tol && yN>minN_y) {
             yn = yN;
             xn = xN;
-            #if defined STATDEBUG_VERBOSE && defined PC_BUILD
+            #if defined(STATDEBUG_VERBOSE) && defined(PC_BUILD)
               printf("Plotting box to x=%d y=%d\n", xn, yn);
             #endif // STATDEBUG && PC_BUILD
             if(fittedcurveboxes) {
               plotbox(xn,yn);
             }
             if(xo < SCREEN_WIDTH_GRAPH && xo > minN_x && yo < SCREEN_HEIGHT_GRAPH-tol && yo > minN_y) {
-              #if defined STATDEBUG_VERBOSE && defined PC_BUILD
+              #if defined(STATDEBUG_VERBOSE) && defined(PC_BUILD)
                 printf("Plotting line to x=%d y=%d\n", xn, yn);
               #endif // STATDEBUG && PC_BUILD
               plotline2(xo, yo, xn, yn);
@@ -1410,7 +1410,7 @@ void graphDrawLRline(uint16_t selection) {
       else if(isnan(a0) || isnan(a1) || (isnan(a2) && minLRDataPoints(selection)!=2) ) {
         if(selection & 448) {
           showString("invalid a0,a1,a2", &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc * index++ -7+2 +autoshift, vmNormal, false, false);
-        }  
+        }
         else {
           showString("invalid a0,a1", &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc * index++ -7+2 +autoshift, vmNormal, false, false);
         }
@@ -1494,7 +1494,7 @@ void fnPlotStat(uint16_t plotMode){
         printf("Stored values %i\n",cnt);
       }
     #endif // STATDEBUG && PC_BUILD
-    
+
     if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2)) {
       PLOT_SCALE = false;
 

@@ -651,7 +651,7 @@ bool_t isUniqueName(const char *name) {
 
 static calcRegister_t _findReservedVariable(const char *variableName) {
   uint8_t len = stringGlyphLength(variableName);
-  
+
   if(len < 1 || len > 7) {
     return INVALID_VARIABLE;
   }

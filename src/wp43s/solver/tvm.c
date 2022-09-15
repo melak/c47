@@ -157,7 +157,7 @@ void tvmEquation(void) {
   else {
     realAdd(const_1, &i, &val, &ctxtReal39); // BEGIN mode
   }
-  
+
   realMultiply(&val, &pmt, &val, &ctxtReal39);
   realDivide(&val, &i, &val, &ctxtReal39);
 

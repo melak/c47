@@ -203,7 +203,7 @@ char * getCurveFitModeName(uint16_t selection) {          //Can be only one bit.
 char * eatSpacesEnd(const char * ss) {
   static char tmp_names[20];
   int8_t ix;
-  
+
   strcpy(tmp_names, ss);
   ix = stringByteLength(ss)-1;
   while(ix > 0) {
@@ -227,7 +227,7 @@ char * eatSpacesMid(const char * ss) {
   static char tmp_names[20];
   char tt[50];
   int8_t ix = 0, iy = 0;
-  
+
   strcpy(tt, ss);
   tmp_names[0] = 0;
   while(tt[ix] != 0 && ix < 50) {
@@ -251,7 +251,7 @@ char * eatSpacesMid(const char * ss) {
  ***********************************************/
 char * getCurveFitModeNames(uint16_t selection) {
   uint16_t ix;
-  
+
   errorMessage[0] = 0;
   for(ix = 0; ix < 10; ix++) {
     if(selection & (1 << ix)) {

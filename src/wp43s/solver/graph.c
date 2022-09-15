@@ -200,7 +200,7 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
 
 
   void check_osc(uint8_t ii){
-     switch (ii & 0b00111111) {
+     switch(ii & 0b00111111) {
        case 0b001111:
        case 0b011110:
        case 0b111100:
@@ -212,7 +212,7 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
        case 0b101101: osc++;
        default:;
      }
-     switch (ii) {
+     switch(ii) {
        case 0b01001001:
        case 0b10010010:
        case 0b00100100: osc++;
@@ -1071,7 +1071,7 @@ void fnEqSolvGraph (uint16_t func) {
   //initialize x
   currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;
 
-  switch (func) {
+  switch(func) {
      case EQ_SOLVE:{
             fnClDrawMx();
             statGraphReset();
