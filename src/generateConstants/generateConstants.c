@@ -72,12 +72,12 @@ void generateConstantArray(char *name, char *value) {
   strcpy(whiteSpace, "                                        ");
   whiteSpace[13 - strlen(name)] = 0;
 
-  strcat(externalDeclarations, "extern const real_t * const const_");
+  strcat(externalDeclarations, "  extern const real_t * const const_");
   strcat(externalDeclarations, name);
   strcat(externalDeclarations, ";\n");
 
   if(c <= NUMBER_OF_CONSTANTS_IN_CNST_CATALOG) {
-    sprintf(temp, "#define CONST_%02d %4d\n", c, idx);
+    sprintf(temp, "  #define CONST_%02d %4d\n", c, idx);
     strcat(defines, temp);
   }
 
@@ -115,7 +115,7 @@ void generateConstantArray34(char *name, char *value) {
   strcpy(whiteSpace, "                                        ");
   whiteSpace[9 - strlen(name)] = 0;
 
-  strcat(externalDeclarations, "extern const real34_t * const const34_");
+  strcat(externalDeclarations, "  extern const real34_t * const const34_");
   strcat(externalDeclarations, name);
   strcat(externalDeclarations, ";\n");
 
@@ -153,7 +153,7 @@ void generateConstantArray51(char *name, char *value) {
   strcpy(whiteSpace, "                                        ");
   whiteSpace[13 - strlen(name)] = 0;
 
-  strcat(externalDeclarations, "extern const real_t * const const_");
+  strcat(externalDeclarations, "  extern const real_t * const const_");
   strcat(externalDeclarations, name);
   strcat(externalDeclarations, ";\n");
 
@@ -191,7 +191,7 @@ void generateConstantArray1071(char *name, char *value) {
   strcpy(whiteSpace, "                                        ");
   whiteSpace[9 - strlen(name)] = 0;
 
-  strcat(externalDeclarations, "extern const real_t * const const1071_");
+  strcat(externalDeclarations, "  extern const real_t * const const1071_");
   strcat(externalDeclarations, name);
   strcat(externalDeclarations, ";\n");
 
@@ -810,7 +810,7 @@ int main(int argc, char* argv[]) {
 
   defines[0] = 0;
   externalDeclarations[0] = 0;
-  strcat(externalDeclarations, "extern const uint8_t constants[];\n");
+  strcat(externalDeclarations, "  extern const uint8_t constants[];\n");
   realArray[0] = 0;
   realPointerDeclarations[0]     = 0;
   real34PointerDeclarations[0]   = 0;

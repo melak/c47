@@ -87,8 +87,7 @@ void sincComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t
   real_t rr;
   real_t ii;
 
-
-//  fnCvtFromCurrentAngularMode(amRadian);
+  //fnCvtFromCurrentAngularMode(amRadian);
 
   realCopy(real, &rr);
   realCopy(imag, &ii);

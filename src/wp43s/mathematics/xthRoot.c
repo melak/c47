@@ -552,10 +552,10 @@ void xthRootRemaReal(void) {
  * \return void
  ***********************************************/
 void xthRootRemaCplx(void) {
-#if !defined(TESTSUITE_BUILD)
-  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
-  xthRootCxmaCplx();
-#endif // !TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
+    xthRootCxmaCplx();
+  #endif // !TESTSUITE_BUILD
 }
 
 
