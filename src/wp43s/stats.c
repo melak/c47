@@ -762,3 +762,212 @@ void fnXmax(uint16_t unusedButMandatoryParameter) {
     temporaryInformation = TI_XMAX_YMAX;
   }
 }
+
+
+//----------- Histogram Section -----------------
+
+
+
+
+static bool_t isHistoMatrix(uint16_t *rows, char *mx) {
+  *rows = 0;
+  calcRegister_t regHisto = findNamedVariable(mx);
+  if(regHisto == INVALID_VARIABLE) return false; else {
+    if(getRegisterDataType(regHisto) != dtReal34Matrix) return false; else {
+      real34Matrix_t histo;
+      linkToRealMatrixRegister(regHisto, &histo);
+      *rows = histo.header.matrixRows;
+      if(histo.header.matrixColumns != 2) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+
+static void initHistoMatrix(real_t *s) {
+  uint16_t rows = 0, cols;
+  calcRegister_t regHisto = findNamedVariable("HISTO");
+  if(!isHistoMatrix(&rows,"HISTO")) {
+    regHisto = allocateNamedMatrix("HISTO", 1, 2);
+    real34Matrix_t histo;
+    linkToRealMatrixRegister(regHisto, &histo);
+    realMatrixInit(&histo,1,2);
+  }
+  else {
+    if(appendRowAtMatrixRegister(regHisto)) {
+    }
+    else {
+      regHisto = INVALID_VARIABLE;
+    }
+  }
+  if(regHisto != INVALID_VARIABLE) {
+    real34Matrix_t histo;
+    linkToRealMatrixRegister(regHisto, &histo);
+    rows = histo.header.matrixRows;
+    cols = histo.header.matrixColumns;
+    realToReal34(s,       &histo.matrixElements[(rows-1) * cols    ]);
+    realToReal34(const_0, &histo.matrixElements[(rows-1) * cols + 1]);
+printf(">>>>> rows=%d  cols=%d  ",rows, cols);
+printReal34ToConsole(&histo.matrixElements[(rows-1) * cols    ],"X34:","  ");
+printReal34ToConsole(&histo.matrixElements[(rows-1) * cols +1 ],"Y34:","  \n");
+
+  }
+  else {
+    displayCalcErrorMessage(ERROR_NOT_ENOUGH_MEMORY_FOR_NEW_MATRIX, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "additional matrix line not added; rows = %i",rows);
+      moreInfoOnError("In function initHistoMatrix:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+}
+
+
+
+
+real34_t loBinR;
+real34_t nBins;
+real34_t hiBinR;
+
+void fnSetLoBin(uint16_t unusedButMandatoryParameter) {
+  if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
+    convertLongIntegerRegisterToReal34(REGISTER_X, &loBinR);
+  } else {
+    if(getRegisterDataType(REGISTER_X) == dtReal34) {
+      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loBinR);
+    } else {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      #ifdef PC_BUILD
+      sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
+      moreInfoOnError("In function fnSetLoBin:", errorMessage, "is not a long integer or real.", "");
+      #endif
+    }
+  }
+}
+
+void fnSetHiBin(uint16_t unusedButMandatoryParameter) {
+  if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
+    convertLongIntegerRegisterToReal34(REGISTER_X, &hiBinR);
+  } else {
+    if(getRegisterDataType(REGISTER_X) == dtReal34) {
+      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &hiBinR);
+    } else {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      #ifdef PC_BUILD
+      sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
+      moreInfoOnError("In function fnSetHiBin:", errorMessage, "is not a long integer or real.", "");
+      #endif
+    }
+  }
+}
+
+void fnSetNBins(uint16_t unusedButMandatoryParameter) {
+  if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
+    convertLongIntegerRegisterToReal34(REGISTER_X, &nBins);
+  } else {
+    if(getRegisterDataType(REGISTER_X) == dtReal34) {
+      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &nBins);
+    } else {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      #ifdef PC_BUILD
+      sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
+      moreInfoOnError("In function fnSetNBins:", errorMessage, "is not a long integer or real.", "");
+      #endif
+    }
+  }
+}
+
+
+
+static void clHisto(void){
+  calcRegister_t regStats = findNamedVariable("HISTO");
+  if(regStats == INVALID_VARIABLE) {
+    allocateNamedVariable("HISTO", dtReal34, REAL34_SIZE);
+    regStats = findNamedVariable("HISTO");
+  }
+
+  if(regStats == INVALID_VARIABLE) {
+    displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "HISTO matrix not created");
+      moreInfoOnError("In function clHisto:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+  clearRegister(regStats);                  // this should change to delete the named variable HISTO once the delete function is available. Until then write 0.0 into STATS.
+}
+
+///TODO check if clearRegister can work if invalid? !!!
+///TODO use above function in clSigma
+
+
+void fnConvertStatsXToHisto(uint16_t unusedButMandatoryParameter) {
+}
+
+void fnConvertStatsYToHisto(uint16_t unusedButMandatoryParameter) {
+#ifndef TESTSUITE_BUILD
+real_t ii, lb, hb, nb, nn, bw, bwon2;
+realCopy(SIGMA_YMIN, &lb);
+  realToReal34(&lb,&loBinR);              //set up the user variables
+realCopy(SIGMA_YMAX, &hb);
+  realToReal34(&hb, &hiBinR);             //set up the user variables
+realCopy(SIGMA_N, &nn);
+realSquareRoot(&nn,&nb,&ctxtReal39);
+realToIntegralValue(&nb, &nb, DEC_ROUND_CEILING, &ctxtReal39);
+  realToReal34(&nb, &nBins);              //set up the user variables
+int32_t n = real34ToInt32(&nBins);
+realSubtract(&hb, &lb, &bw, &ctxtReal39); //calculate bin width
+realDivide(&bw, &nb, &bw, &ctxtReal39);
+realDivide(&bw, const_2, &bwon2, &ctxtReal39);
+
+
+  clHisto();
+  calcRegister_t regStats = findNamedVariable("STATS");
+  calcRegister_t regHisto = findNamedVariable("HISTO");
+  if(regStats != INVALID_VARIABLE && regHisto != INVALID_VARIABLE) {
+    real34Matrix_t stats;
+    real34Matrix_t histo;
+    linkToRealMatrixRegister(regStats, &stats);
+    const uint16_t rows = stats.header.matrixRows, cols = stats.header.matrixColumns;
+    if(cols == 2) {
+
+      for(uint16_t i = 0; i < n; i++) {
+        int32ToReal(i, &ii);
+        realAdd(&ii, const_1on2, &ii, &ctxtReal39);
+        realMultiply(&ii, &bw, &ii, &ctxtReal39);
+        realAdd(&ii, &lb, &ii, &ctxtReal39);           //midpoint
+        //printRealToConsole(&ii,"midpoint \n","");
+        initHistoMatrix(&ii);                            // Set up all x-mid-points of the bins in HISTO, with 0 in y
+linkToRealMatrixRegister(regHisto, &histo);
+printReal34ToConsole(&histo.matrixElements[(i) * cols    ],"XX34:","  ");
+printReal34ToConsole(&histo.matrixElements[(i) * cols +1 ],"YY34:","  \n");
+      }
+
+
+      for(uint16_t i = 0; i < rows - 1; i++) {
+printf("n=%d ^^^^ i=%d ",n,i);
+        for(uint16_t j = 0; j < n; j++) {
+printf("^ j=%d\n",j);
+           real_t t, tl, th;
+           real34ToReal(&stats.matrixElements[i * cols + 1], &t);  //from Y
+           real34ToReal(&histo.matrixElements[j * cols    ], &tl); //get the bin mid x
+//printReal34ToConsole(&histo.matrixElements[j * cols    ],"Xrcl34:","  \n");
+printRealToConsole(&tl,"xRCL:","  ");
+
+           realSubtract(&tl, &bwon2, &tl, &ctxtReal39);            //get the bin x low
+           realAdd     (&tl, &bw   , &th, &ctxtReal39);            //get the bin x hi
+printRealToConsole(&tl,"low:","  ");
+printRealToConsole(&t,"t:","  ");
+printRealToConsole(&th,"hi:","\n");
+           if(realCompareLessThan(&t, &th) && realCompareGreaterEqual(&t, &tl)) {
+printf("Add\n");
+            real34Add(&histo.matrixElements[j * cols + 1], const34_1, &histo.matrixElements[j * cols + 1]);
+            break;
+           }
+        }
+      }
+    } else printf("Error 1 STATS columns not right\n");//put error here STATS not 2 col
+  }  else printf("Error 2 invalid variable\n"); //put error here STATS 
+#endif //TESTSUITE_BUILD
+}
+
