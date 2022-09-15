@@ -313,8 +313,8 @@ static void plotrect(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {            
 
 
 static void plotHisto_col(uint16_t ix, uint16_t ixn, uint16_t x, uint16_t y, uint16_t x_min, uint16_t x_wid, uint16_t y_min, uint16_t y_wid) {  //x is 0..(n-1)   
-  uint16_t col_width = (int16_t)(x_wid*(float)(0.95)/(float)(ixn+2));                 // Scaled to always have the histogram in the same scale as the STATS ASSESS graph
-  plotrect( x-col_width/2, y_min+y_wid,  x+col_width/2, y );
+  float col_width = (int16_t)(x_wid*(float)(1.0)/(float)(ixn+2))-0.6f;                 // Scaled to always have the histogram in the same scale as the STATS ASSESS graph
+  plotrect( x-(int)((+0.1f+col_width)/2), y_min+y_wid,  x+(int)((-0.1f+col_width)/2), y );
 }
 
 
