@@ -195,17 +195,14 @@ void fnSolveVar(uint16_t unusedButMandatoryParameter) {
   const char *var = (char *)getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem);
   const uint16_t regist = findOrAllocateNamedVariable(var);
   if(currentMvarLabel != INVALID_VARIABLE) {
-    graphVariable = -regist;
     reallyRunFunction(ITM_STO, regist);
   }
   else if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE || (currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) {
-    graphVariable = -regist;
     currentSolverVariable = regist;
     reallyRunFunction(ITM_STO, regist);
     temporaryInformation = TI_SOLVER_VARIABLE;
   }
   else if(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE) {
-    graphVariable = regist;
     reallyRunFunction(ITM_SOLVE, regist);
   }
   else {
@@ -213,15 +210,6 @@ void fnSolveVar(uint16_t unusedButMandatoryParameter) {
     reallyRunFunction(ITM_STO, regist);
     currentSolverStatus |= SOLVER_STATUS_READY_TO_EXECUTE;
     temporaryInformation = TI_SOLVER_VARIABLE;
-    if(graphVariable == 0) {
-      graphVariable = -regist;
-    }
-    else if(graphVariable < 0 && -graphVariable == regist) {
-        graphVariable = regist;
-      }
-    else {
-      graphVariable = -regist;
-    }
   }
 #endif /* TESTSUITE_BUILD */
 }

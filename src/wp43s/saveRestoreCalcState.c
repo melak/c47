@@ -305,9 +305,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&statMx,                             sizeof(statMx),                             BACKUP);
     save(&lrSelectionHistobackup,             sizeof(lrSelectionHistobackup),             BACKUP);
     save(&lrChosenHistobackup,                sizeof(lrChosenHistobackup),                BACKUP);
-    save(&Int_NBIN,                           sizeof(Int_NBIN),                           BACKUP);
-    save(&Real_LOBIN,                         sizeof(Real_LOBIN),                         BACKUP);
-    save(&Real_HIBIN,                         sizeof(Real_HIBIN),                         BACKUP);
+    save(&loBinR,                             sizeof(loBinR),                             BACKUP);
+    save(&nBins ,                             sizeof(nBins ),                             BACKUP);
+    save(&hiBinR,                             sizeof(hiBinR),                             BACKUP);
 
 
     save(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
@@ -571,9 +571,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&statMx,                             sizeof(statMx),                             BACKUP);
       restore(&lrSelectionHistobackup,             sizeof(lrSelectionHistobackup),             BACKUP);
       restore(&lrChosenHistobackup,                sizeof(lrChosenHistobackup),                BACKUP);
-      restore(&Int_NBIN,                           sizeof(Int_NBIN),                           BACKUP);
-      restore(&Real_LOBIN,                         sizeof(Real_LOBIN),                         BACKUP);
-      restore(&Real_HIBIN,                         sizeof(Real_HIBIN),                         BACKUP);
+      restore(&loBinR,                             sizeof(loBinR),                             BACKUP);
+      restore(&nBins ,                             sizeof(nBins ),                             BACKUP);
+      restore(&hiBinR,                             sizeof(hiBinR),                             BACKUP);
 
       restore(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
       restore(loadedScreen,                        SCREEN_WIDTH * SCREEN_HEIGHT / 8,           BACKUP);

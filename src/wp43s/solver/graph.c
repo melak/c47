@@ -1054,8 +1054,8 @@ void fnEqSolvGraph (uint16_t func) {
     refreshLcd(NULL);
   #endif // DMCP_BUILD
 
-//  if(!(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE)) return;
-
+  graphVariable = currentSolverVariable;
+  if(graphVariable<0) graphVariable = -graphVariable;
 
   if(graphVariable >= FIRST_NAMED_VARIABLE && graphVariable <= LAST_NAMED_VARIABLE) {
     #if ((defined VERBOSE_SOLVER00) || (defined VERBOSE_SOLVER0)) && (defined PC_BUILD)
@@ -1069,6 +1069,7 @@ void fnEqSolvGraph (uint16_t func) {
       moreInfoOnError("In function fnEqSolvGraph:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+    return;
   }
 
 

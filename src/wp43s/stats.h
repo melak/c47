@@ -69,7 +69,6 @@ void   calcSigma             (uint16_t maxOffset);
 void   fnSetLoBin            (uint16_t unusedButMandatoryParameter);
 void   fnSetHiBin            (uint16_t unusedButMandatoryParameter);
 void   fnSetNBins            (uint16_t unusedButMandatoryParameter);
-void   fnConvertStatsXToHisto(uint16_t unusedButMandatoryParameter);
-void   fnConvertStatsYToHisto(uint16_t unusedButMandatoryParameter);
+void   fnConvertStatsToHisto (uint16_t statsVariableToHistogram);
 
 #endif // STATS_H

@@ -47,7 +47,7 @@
 TO_QSPI const int16_t menu_ADV[]         = { ITM_SOLVE,                     ITM_SLVQ,                   ITM_FQX,                  ITM_PIn,               ITM_SIGMAn,                  -MNU_Sfdx,
                                              ITM_PGMSLV,                    ITM_NULL,                   ITM_FDQX,                 ITM_NULL,              ITM_NULL,                    ITM_PGMINT                    };
 
-TO_QSPI const int16_t menu_Sfdx[]        = { ITM_NULL,                      ITM_NULL,                   VAR_ACC,                  VAR_LLIM,              VAR_ULIM,                    ITM_INTEGRAL                  };
+TO_QSPI const int16_t menu_Sfdx[]        = { ITM_NULL,                      ITM_DRAW,                   VAR_ACC,                  VAR_LLIM,              VAR_ULIM,                    ITM_INTEGRAL                  };
 
 TO_QSPI const int16_t menu_BITS[]        = { ITM_LOGICALAND,                ITM_LOGICALOR,              ITM_LOGICALXOR,           ITM_LOGICALNOT,        ITM_MASKL,                   ITM_MASKR,
                                              ITM_LOGICALNAND,               ITM_LOGICALNOR,             ITM_LOGICALXNOR,          ITM_MIRROR,            ITM_NULL,                    ITM_NULL,
@@ -1032,6 +1032,9 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
                   case MNU_MyMenu:  vm = (                      userMenuItems[x + 6*y].item < 0) ? vmReverse : vmNormal; break;
                   case MNU_MyAlpha: vm = (                     userAlphaItems[x + 6*y].item < 0) ? vmReverse : vmNormal; break;
                   case MNU_DYNAMIC: vm = (userMenus[currentUserMenu].menuItem[x + 6*y].item < 0) ? vmReverse : vmNormal; break;
+                  case MNU_1STDERIV:
+                  case MNU_2NDDERIV:
+                  case MNU_MVAR:    if(!compareString((char *)getNthString(dynamicSoftmenu[m].menuContent, x+6*y), indexOfItems[ITM_DRAW].itemSoftmenuName, CMP_NAME)) {vm = vmReverse; break;}
                   default:          vm =                                                  vmNormal; break;
                 }
                 showSoftkey((char *)ptr, x, y, vm, true, true);
@@ -1082,7 +1085,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
             if(softmenu[m].menuItem == -MNU_FCNS) {
               showSoftkey(indexOfItems[item%10000].itemCatalogName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1);
             }
-            else if(item == ITM_PLOT || item == ITM_PLOT_LR || item == ITM_HPLOT) {       //colour PLOT in reverse font to appear to be menus
+            else if(item == ITM_PLOT || item == ITM_PLOT_LR || item == ITM_HPLOT  || item == ITM_DRAW) {       //colour PLOT in reverse font to appear to be menus
               showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1);
             }
             else {

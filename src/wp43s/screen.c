@@ -1550,6 +1550,21 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
+        else if(temporaryInformation == TI_STATISTIC_HISTO) {
+              if(regist == REGISTER_X) {
+                strcpy(prefix,STD_UP_ARROW "BIN" " =");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              } else
+              if(regist == REGISTER_Y) {
+                strcpy(prefix,STD_DOWN_ARROW "BIN" " =");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              }
+              else if(regist == REGISTER_Z) {
+                strcpy(prefix,"nBINS" " =");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              }
+          }
+
           //L.R. Display
           else if(temporaryInformation == TI_LR && lrChosen != 0) {
             #define LRWidth 140
@@ -2299,16 +2314,25 @@ void execTimerApp(uint16_t timerType) {
         break;
 
       case CM_GRAPH:
+        clearScreen();
+        displayShiftAndTamBuffer();
+        showSoftmenuCurrentPart();
+        hourGlassIconEnabled = true;
+        refreshStatusBar();
+        graphPlotstat(plotSelection);
+        hourGlassIconEnabled = false;
+        showHideHourGlass();
+        refreshStatusBar();
+        break;
+
       case CM_PLOT_STAT:
         clearScreen();
         displayShiftAndTamBuffer();
         showSoftmenuCurrentPart();
-        refreshStatusBar();
         hourGlassIconEnabled = true;
+        refreshStatusBar();
         graphPlotstat(plotSelection);
-        if(calcMode == CM_PLOT_STAT) {
-          graphDrawLRline(plotSelection);
-        }
+        graphDrawLRline(plotSelection);
         hourGlassIconEnabled = false;
         showHideHourGlass();
         refreshStatusBar();

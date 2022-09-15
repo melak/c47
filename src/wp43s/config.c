@@ -787,9 +787,9 @@ void fnReset(uint16_t confirmation) {
 
     restoreStats();
     plotStatMx[0] = 0;
-    Int_NBIN = 0;;
-    realZero(&Real_LOBIN);
-    realZero(&Real_HIBIN);
+    real34Zero(&loBinR);
+    real34Zero(&nBins );
+    real34Zero(&hiBinR);
 
 
     x_min = -10;

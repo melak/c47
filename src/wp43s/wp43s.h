@@ -306,13 +306,11 @@
 
   extern uint16_t               lrSelectionHistobackup;
   extern uint16_t               lrChosenHistobackup;
-  extern int16_t                Int_NBIN;
-  extern real_t                 Real_LOBIN;
-  extern real_t                 Real_HIBIN;
+  extern real34_t               loBinR;
+  extern real34_t               nBins ;
+  extern real34_t               hiBinR;
   extern char                   statMx[8];
   extern char                   plotStatMx[8];
-
-
 
   #ifdef DMCP_BUILD
     extern bool_t               backToDMCP;

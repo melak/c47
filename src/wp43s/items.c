@@ -824,8 +824,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnSetLoBin                  (uint16_t unusedButMandatoryParameter) {}
   void fnSetHiBin                  (uint16_t unusedButMandatoryParameter) {}
   void fnSetNBins                  (uint16_t unusedButMandatoryParameter) {}
-  void fnConvertStatsXToHisto      (uint16_t unusedButMandatoryParameter) {}
-  void fnConvertStatsYToHisto      (uint16_t unusedButMandatoryParameter) {}
+  void fnConvertStatsToHisto       (uint16_t unusedButMandatoryParameter) {}
 #endif // GENERATE_CATALOGS
 
 TO_QSPI const item_t indexOfItems[] = {
@@ -2669,8 +2668,8 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1787 */  { fnSetNBins,                   NOPARAM,                     "nBINS",                                       "nBINS",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1788 */  { fnSetLoBin,                   NOPARAM,                     STD_DOWN_ARROW "BIN",                          STD_DOWN_ARROW "BIN",                          (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1789 */  { fnSetHiBin,                   NOPARAM,                     STD_UP_ARROW "BIN",                            STD_UP_ARROW "BIN",                            (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 1790 */  { fnConvertStatsXToHisto,       NOPARAM,                     "HISTOX",                                      "HISTOX",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 1791 */  { fnConvertStatsYToHisto,       NOPARAM,                     "HISTOY",                                      "HISTOY",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1790 */  { fnConvertStatsToHisto,        ITM_X,                       "HISTOX",                                      "HISTOX",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1791 */  { fnConvertStatsToHisto,        ITM_Y,                       "HISTOY",                                      "HISTOY",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1792 */  { fnPlotStat,                   H_PLOT,                      "HPLOT",                                       "HPLOT",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1793 */  { fnPlotStat,                   H_NORM,                      "HNORM",                                       "HNORM",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 

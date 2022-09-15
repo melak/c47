@@ -822,16 +822,22 @@ void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, con
 #ifndef TESTSUITE_BUILD //TESTSUITE_BUILD
   int32_t statMxN(void){
     uint16_t rows = 0;
-    if(plotStatMx[0]=='D') return 0; //allow S and H
-    calcRegister_t regStats = findNamedVariable(plotStatMx);
-    if(regStats == INVALID_VARIABLE) {
-      return 0;
+    if(plotStatMx[0]=='D') {
+      return 0;                //Only allow S and H
+    } else {
+      calcRegister_t regStats = findNamedVariable(plotStatMx);
+      if(regStats == INVALID_VARIABLE) {
+        return 0;
+      } else {
+        if(isStatsMatrix(&rows,plotStatMx)) {
+          real34Matrix_t stats;
+          linkToRealMatrixRegister(regStats, &stats);
+          return stats.header.matrixRows;
+        } else {
+          return 0;
+        }
+      }
     }
-    if(isStatsMatrix(&rows,plotStatMx)) {
-      real34Matrix_t stats;
-      linkToRealMatrixRegister(regStats, &stats);
-      return stats.header.matrixRows;
-    } else return 0;
   }
 
 
@@ -1172,6 +1178,7 @@ void graphDrawLRline(uint16_t selection) {
   void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2, real_t *sa0, real_t *sa1){
     int32_t n = 0;
     uint16_t NN;
+printf("##### A drawHistogram=%d,  selection=%d\n",drawHistogram,selection);
 
     switch (plotStatMx[0]) {
       case 'S': realToInt32(SIGMA_N, n);
@@ -1183,12 +1190,12 @@ void graphDrawLRline(uint16_t selection) {
       default: break;
     }
     #if defined STATDEBUG && defined PC_BUILD
-      printf("graphDrawLRline: n=%d\n",n);
+      printf("drawline: n=%d\n",n);
     #endif
 
     NN = (uint16_t) n;
     bool_t isValidDraw =
-         selection != 0
+      selection != 0
       && n >= (int32_t)minLRDataPoints(selection)
       && !realCompareGreaterThan(RR, const_1)
       && !realIsNaN(RR)
@@ -1196,15 +1203,38 @@ void graphDrawLRline(uint16_t selection) {
       && !realIsNaN(aa1)
       && (!realIsNaN(aa2) || minLRDataPoints(selection)==2)
       && (!realIsNaN(SMI) || !(selection & CF_ORTHOGONAL_FITTING));
+
+    #if defined STATDEBUG && defined PC_BUILD
+      printf("#####>>> drawline: selection:%u:%s  lastplotmode:%u  lrSelection:%u lrChosen:%u\n",selection, getCurveFitModeName(selection), lastPlotMode, lrSelection, lrChosen);
+    #endif //STATDEBUG
+    float rr,smi,a0,a1,a2,ssa0,ssa1, lB, hB, nB;
+    real_t lBr, hBr, nBr;
+    char ss[100], tt[100];
+    int16_t index = -1;
+
+printf("##### B drawHistogram=%d,  selection=%d\n",drawHistogram,selection);
+
+    if(drawHistogram == 1 && selection == 0) {                          //HISTO
+      real34ToReal(&loBinR ,&lBr);
+      real34ToReal(&hiBinR ,&hBr);
+      real34ToReal(&nBins  ,&nBr);
+      realToFloat(&lBr, &lB);
+      realToFloat(&hBr, &hB);
+      realToFloat(&nBr, &nB);
+      eformat_eng2(ss,"",lB,3,"");           showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
+      strcpy(ss,"lB" "=");                   showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
+      eformat_eng2(ss,"",hB,3,"");           showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
+      strcpy(ss,"hB" "=");                   showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
+      eformat_eng2(ss,"",nB,3,"");           showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
+      strcpy(ss,"nB" "=");                   showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
+      return;
+    }
+
     real_t XX,YY;
     if(!selection) {
       return;
     }
-    #if defined STATDEBUG && defined PC_BUILD
-      printf("#####>>> drawline: selection:%u:%s  lastplotmode:%u  lrSelection:%u lrChosen:%u\n",selection, getCurveFitModeName(selection), lastPlotMode, lrSelection, lrChosen);
-    #endif //STATDEBUG
-    float rr,smi,a0,a1,a2,ssa0,ssa1;
-    char ss[100], tt[100];
+
     realToFloat(RR , &rr );
     realToFloat(SMI, &smi);
     realToFloat(aa0, &a0 );
@@ -1216,9 +1246,7 @@ void graphDrawLRline(uint16_t selection) {
     if(isValidDraw) {
       #if defined STATDEBUG && defined PC_BUILD
         printf("plotting line: a2 %f a1 %f a0 %f\n",a2,a1,a0);
-      #endif //STATDEBUG
-      if((selection==0 && a2 == 0 && a1 == 0 && a0 == 0)) {
-        #if defined STATDEBUG && defined PC_BUILD
+        if((selection==0 && a2 == 0 && a1 == 0 && a0 == 0)) {
           printf("return, nothing selected, zero parameters, nothing to draw\n");
         #endif //STATDEBUG
         return;
@@ -1305,7 +1333,7 @@ void graphDrawLRline(uint16_t selection) {
     }
 
 
-    int16_t index = -1;
+    index = -1;
     if(selection!=0) {
       strcpy(ss,eatSpacesEnd(getCurveFitModeName(selection)));
       if(lrCountOnes(lrSelection)>1 && selection == lrChosen) strcat(ss,lrChosen == 0 ? "" : STD_SUP_ASTERISK);
@@ -1324,7 +1352,7 @@ void graphDrawLRline(uint16_t selection) {
         sprintf(ss, STD_SPACE_PUNCTUATION STD_SPACE_PUNCTUATION "n=");                     showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++ -2 +autoshift, vmNormal, false, false);
       }
 
-      if(selection != CF_ORTHOGONAL_FITTING) {
+      if(selection != CF_ORTHOGONAL_FITTING && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_HPLOT) {
         eformat_eng2(ss,"",a0,3,"");           showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
         strcpy(ss,"a" STD_SUB_0 "=");          showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
 
@@ -1494,6 +1522,7 @@ void fnPlotStat(uint16_t plotMode){
       printf("Stored values %i\n",cnt);
     }
   #endif //STATDEBUG
+    
   if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || 
       (plotStatMx[0]=='D' && drawMxN() >= 2) || 
       (plotStatMx[0]=='H' && statMxN() >= 3) ) 
