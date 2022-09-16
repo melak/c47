@@ -38,7 +38,7 @@
 
 #include "wp43s.h"
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   GtkWidget *grid;
   #if (SCREEN_800X480 == 0)
     GtkWidget *backgroundImage;
@@ -1005,7 +1005,7 @@ return FALSE;
 #endif // PC_BUILD
 
 
-#ifndef DMCP_BUILD
+#if !defined(DMCP_BUILD)
   void strReplace(char *haystack, const char *needle, const char *newNeedle) {
     ////////////////////////////////////////////////////////
     // There MUST be enough memory allocated to *haystack //
@@ -1018,7 +1018,7 @@ return FALSE;
       needleLg = strlen(needle);
       needleLocation = strstr(haystack, needle);
       str = malloc(strlen(needleLocation + needleLg) + 1);
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
         if(str == NULL) {
           moreInfoOnError("In function strReplace:", "error allocating memory for str!", NULL, NULL);
           exit(1);
@@ -1035,7 +1035,7 @@ return FALSE;
 #endif // !DMCP_BUILD
 
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   #if (SCREEN_800X480 == 0)
     /* Reads the CSS file to configure the calc's GUI style. */
     static void prepareCssData(void) {
@@ -2943,7 +2943,7 @@ void setupUI(void) {
   g_signal_connect(frmCalc, "destroy", G_CALLBACK(destroyCalc), NULL);
   g_signal_connect(frmCalc, "key_press_event", G_CALLBACK(keyPressed), NULL);
   g_signal_connect(frmCalc, "key_release_event", G_CALLBACK(keyReleased), NULL);  //JM CTRL
-      #ifdef RASPBERRY
+      #if defined(RASPBERRY)
         gtk_window_set_decorated(GTK_WINDOW(frmCalc), FALSE);
         gtk_window_set_position(GTK_WINDOW(frmCalc), GTK_WIN_POS_CENTER);
       #endif // RASPBERRY
@@ -4183,7 +4183,7 @@ void setupUI(void) {
         gtk_widget_show(chkHexaString);
 
         debugWindow = DBG_REGISTERS;
-      #endif // (DEBUG_PANEL == 1)
+      #endif // DEBUG_PANEL == 0
 
       gtk_widget_show_all(frmCalc);
 
@@ -4227,14 +4227,14 @@ void setupUI(void) {
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   void fnOff(uint16_t unsuedParamButMandatory) {
     shiftF = false;
     shiftG = false;
 
     fnStopTimerApp();
 
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       if(matrixIndex != INVALID_VARIABLE) {
         if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
           if(openMatrixMIMPointer.realMatrix.matrixElements)
@@ -4249,7 +4249,7 @@ void setupUI(void) {
       gtk_main_quit();
     #endif // PC_BUILD
 
-    #ifdef DMCP_BUILD
+    #if defined(DMCP_BUILD)
       SET_ST(STAT_PGM_END);
     #endif // DMCP_BUILD
   }
@@ -4392,9 +4392,9 @@ if(!tam.mode) {
 
 
   void calcModeNim(uint16_t unusedButMandatoryParameter) {
-    #ifdef DEBUGUNDO
+    #if defined(DEBUGUNDO)
       printf(">>> saveForUndo from gui: calcModeNim\n");
-    #endif
+    #endif // DEBUGUNDO
     #ifdef PC_BUILD
       char tmp[200]; sprintf(tmp,"^^^^### calcModeNim"); jm_show_comment(tmp);
     #endif //PC_BUILD

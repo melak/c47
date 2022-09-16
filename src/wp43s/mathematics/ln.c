@@ -68,7 +68,9 @@ TO_QSPI void (* const ln[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnLn(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   ln[getRegisterDataType(REGISTER_X)]();
 

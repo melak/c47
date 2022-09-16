@@ -53,7 +53,7 @@
 
 #include "wp43s.h"
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   int16_t determineFunctionKeyItem(const char *data, int16_t itemShift) { //Added itemshift param JM
     int16_t item = ITM_NOP;
 
@@ -234,7 +234,7 @@
 
 
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     void btnFnClicked(GtkWidget *notUsed, gpointer data) {
 //      GdkEvent mouseButton; //JM
 //      mouseButton.button.button = 1; //JM
@@ -270,7 +270,7 @@
 
 
     void execAutoRepeat(uint16_t key) {
-#ifdef DMCP_BUILD
+    #if defined(DMCP_BUILD)
       char charKey[6];
       bool_t f = shiftF;
       bool_t g = shiftG;
@@ -286,7 +286,7 @@
       shiftG = g;
       refreshLcd();
       lcd_refresh_dma();
-#endif
+    #endif // DMCP_BUILD
     }
 
 
@@ -444,7 +444,7 @@ bool_t lowercaseselected;
   uint8_t asnKey[4] = {0, 0, 0, 0};
 
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     void btnFnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       if(event->type == GDK_DOUBLE_BUTTON_PRESS || event->type == GDK_TRIPLE_BUTTON_PRESS) { // return unprocessed for double or triple click
         return;
@@ -458,10 +458,9 @@ bool_t lowercaseselected;
         shiftG = true;
       }
   #endif // PC_BUILD
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     void btnFnPressed(void *data) {
   #endif // DMCP_BUILD
-
       asnKey[0] = ((uint8_t *)data)[0];
       asnKey[1] = 0;
 
@@ -596,9 +595,9 @@ bool_t lowercaseselected;
       case MNU_DYNAMIC:
         if(itemToBeAssigned < 0) {
           displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-          #ifdef PC_BUILD
+          #if defined(PC_BUILD)
             moreInfoOnError("In function btnFnReleased:", "cannot assign submenu", indexOfItems[-itemToBeAssigned].itemCatalogName, "in user-created menu.");
-          #endif
+          #endif // PC_BUILD
         }
         else {
           assignToUserMenu((*data - '1') + (shiftG ? 12 : shiftF ? 6 : 0));
@@ -618,9 +617,9 @@ bool_t lowercaseselected;
         return false;
       default:
         displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-        #ifdef PC_BUILD
+        #if defined(PC_BUILD)
           moreInfoOnError("In function btnFnReleased:", "the menu", indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemCatalogName, "is write-protected.");
-        #endif
+        #endif // PC_BUILD
         calcMode = previousCalcMode;
         shiftF = shiftG = false;
         _closeCatalog();
@@ -630,10 +629,10 @@ bool_t lowercaseselected;
     }
   }
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     void btnFnReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
   #endif // PC_BUILD
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     void btnFnReleased(void *data) {
   #endif // DMCP_BUILD
     if(programRunStop == PGM_KEY_PRESSED_WHILE_PAUSED) {
@@ -711,11 +710,11 @@ bool_t lowercaseselected;
         item = showFunctionNameItem;
       #if (FN_KEY_TIMEOUT_TO_NOP == 1)
         hideFunctionName();
-      #else
+ #else // FN_KEY_TIMEOUT_TO_NOP != 1
 */
         showFunctionNameItem = 0;
 /*
-      #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
+      #endif // FN_KEY_TIMEOUT_TO_NOP == 1
 */
         //printf("%d--\n",calcMode);
         
@@ -1096,7 +1095,7 @@ bool_t allowShiftsToClearError = false;
 
 
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     void btnClicked(GtkWidget *notUsed, gpointer data) {
       GdkEvent mouseButton;
       mouseButton.button.button = 1;
@@ -1107,14 +1106,14 @@ bool_t allowShiftsToClearError = false;
   }
   #endif // PC_BUILD
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     void btnClicked(void *unused, void *data) {
       btnPressed(data);
       btnReleased(data);
     }
   #endif // DMCP_BUILD
 
-  #ifdef PC_BUILD
+#if defined(PC_BUILD)
   void btnClickedP(GtkWidget *w, gpointer data) {                          //JM PRESSED FOR KEYBOARD F REPEAT
     GdkEvent mouseButton;
     mouseButton.button.button = 1;
@@ -1127,7 +1126,7 @@ bool_t allowShiftsToClearError = false;
     mouseButton.button.button = 1;
     btnReleased(w, &mouseButton, data);
   }
-  #endif
+#endif // DMCP_BUILD
 
 
   bool_t checkShifts(const char *data) {
@@ -1159,7 +1158,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
 
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
 
@@ -1274,8 +1273,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           break;
         }
       }
-
-      //printf("key = <%s>\n", key);
     }
 
     void frmCalcMouseButtonPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
@@ -1311,7 +1308,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
   #endif // PC_BUILD
 
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     void btnPressed(void *data) {
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
       int16_t item;
@@ -1370,11 +1367,11 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
 
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     void btnReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
         jm_show_calc_state("##### keyboard.c: btnReleased begin");
   #endif // PC_BUILD
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     void btnReleased(void *data) {
   #endif // DMCP_BUILD
       int16_t item;
@@ -1412,7 +1409,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (shiftG ? 2 : shiftF ? 1 : 0);
           char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
 
-          #ifdef PC_BUILD
+        #if defined(PC_BUILD)
             if(item == ITM_RS || item == ITM_XEQ) key[0] = 0;
           #endif // PC_BUILD
 
@@ -1451,7 +1448,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           }
         }
       }
-//  #ifdef DMCP_BUILD
+//#if defined(DMCP_BUILD)
 //      else if(keyAutoRepeat) {         // AUTOREPEAT
 //        btnPressed(data);
 //      }
@@ -1976,9 +1973,10 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
                 if(item == ITM_RCL) {
                   currentStep = findPreviousStep(currentStep);
                   --currentLocalStepNumber;
-                  if(!programListEnd)
+                  if(!programListEnd) {
                     scrollPemBackwards();
                 }
+              }
               }
               else if(item == ITM_RS) {
                 addStepInProgram(ITM_STOP);
@@ -2175,23 +2173,29 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
 
 void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
-    doRefreshSoftMenu = true;     //dr
-  #ifndef TESTSUITE_BUILD
+  doRefreshSoftMenu = true;     //dr
+  #if !defined(TESTSUITE_BUILD)
     switch(calcMode) {
       case CM_NORMAL:
 
         if(!eRPN || !nimWhenButtonPressed) {                 //vv PHM eRPN 2021-07
           setSystemFlag(FLAG_ASLIFT);
-          #ifdef DEBUGUNDO
+          #if defined(DEBUGUNDO)
             printf(">>> saveForUndo from fnKeyEnterA\n");
-          #endif
+          #endif // DEBUGUNDO
           saveForUndo();
-          if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
+          if(lastErrorCode == ERROR_RAM_FULL) {
+          goto undo_disabled;
+          }
 
           liftStack();
-          if(lastErrorCode == ERROR_RAM_FULL) goto ram_full;
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            goto ram_full;
+          }
           copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_X);
-          if(lastErrorCode == ERROR_RAM_FULL) goto ram_full;
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            goto ram_full;
+          }
         }
 
         if(eRPN) {
@@ -2211,9 +2215,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
         popSoftmenu();
 
         if(aimBuffer[0] == 0) {
-          #ifdef DEBUGUNDO
+          #if defined(DEBUGUNDO)
             printf(">>> undo from fnKeyEnter\n");
-          #endif
+          #endif // DEBUGUNDO
           undo();
         }
         else {
@@ -2225,26 +2229,29 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
 
           if(!eRPN) {                                  //PHM eRPN 2021-07
             setSystemFlag(FLAG_ASLIFT);
-            #ifdef DEBUGUNDO
+          #if defined(DEBUGUNDO)
               printf(">>> saveForUndo from fnKeyEnterB\n");
-            #endif
+          #endif // DEBUGUNDO
             saveForUndo();
-            if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            goto undo_disabled;
+          }
             liftStack();
-            if(lastErrorCode == ERROR_RAM_FULL) goto ram_full;
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            goto ram_full;
+          }
             clearSystemFlag(FLAG_ASLIFT);
 
           copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_X);
-          if(lastErrorCode == ERROR_RAM_FULL) goto ram_full;
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            goto ram_full;
+          }
           aimBuffer[0] = 0;              //PHM JM Keeping the structure like 43S, to be able to pick up changes from their side easier
-        }
-
-          else {
+        } else {
             setSystemFlag(FLAG_ASLIFT);
             aimBuffer[0] = 0;              //PHM JM Keeping the structure like 43S, to be able to pick up changes from their side easier
           }
         }
-
         break;
 
       case CM_MIM:
@@ -2261,16 +2268,22 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
 
         if(calcMode != CM_NIM && lastErrorCode == 0) {
           setSystemFlag(FLAG_ASLIFT);
-          #ifdef DEBUGUNDO
+          #if defined(DEBUGUNDO)
             printf(">>> saveForUndo from fnKeyEnterC\n");
-          #endif
+          #endif // DEBUGUNDO
           saveForUndo();
-          if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            goto undo_disabled;
+          }
           liftStack();
-          if(lastErrorCode == ERROR_RAM_FULL) goto ram_full;
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            goto ram_full;
+          }
           clearSystemFlag(FLAG_ASLIFT);
           copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_X);
-          if(lastErrorCode == ERROR_RAM_FULL) goto ram_full;
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            goto ram_full;
+          }
         }
         break;
 //JM ^^ ---2022-09-04
@@ -2317,9 +2330,9 @@ undo_disabled:
 
 ram_full:
     displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef DEBUGUNDO
+    #if defined(DEBUGUNDO)
       printf(">>> Undo from fnKeyEnterD\n");
-    #endif
+    #endif // DEBUGUNDO
     fnUndo(NOPARAM);
     return;
   #endif // !TESTSUITE_BUILD
@@ -2328,7 +2341,7 @@ ram_full:
 
 
 void fnKeyExit(uint16_t unusedButMandatoryParameter) {
-  #ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {
       if(tam.digitsSoFar == 0) {
         tamProcessInput(ITM_2);
@@ -2445,12 +2458,14 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 //TOFIX ^^
         if(running_program_jm || softmenuStack[0].softmenuId <= 1) { // MyMenu or MyAlpha is displayed
           closeAim();
-          #ifdef DEBUGUNDO
+          #if defined(DEBUGUNDO)
             printf(">>> saveForUndo from fnKeyExitA\n");
-          #endif
+          #endif  // DEBUGUNDO
           updateMatrixHeightCache();
           saveForUndo();
-          if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            goto undo_disabled;
+          }
         }
         else {
           popSoftmenu();
@@ -2465,7 +2480,9 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       case CM_MIM:
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_M_EDIT) {
           mimEnter(true);
-          if(matrixIndex == findNamedVariable("STATS")) calcSigma(0);
+          if(matrixIndex == findNamedVariable("STATS")) {
+            calcSigma(0);
+          }
           mimFinalize();
           calcModeNormal();
           updateMatrixHeightCache();
@@ -2475,6 +2492,22 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_PEM:
+        if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
+          pemAlpha(ITM_BACKSPACE);
+          fnBst(NOPARAM); // Set the PGM pointer to the original position
+          break;
+        }
+        if(aimBuffer[0] != 0 && !tam.mode) {
+          if(getSystemFlag(FLAG_ALPHA)) {
+            pemCloseAlphaInput();
+          }
+          else {
+            pemCloseNumberInput();
+          }
+          aimBuffer[0] = 0;
+          fnBst(NOPARAM); // Set the PGM pointer to the original position
+          break;
+        }
         if(softmenuStack[0].softmenuId > 1) { // not MyMenu and not MyAlpha
           popSoftmenu();
           break;
@@ -2483,11 +2516,13 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         aimBuffer[0] = 0;
         leavePem();
         calcModeNormal();
-        #ifdef DEBUGUNDO
+        #if defined(DEBUGUNDO)
           printf(">>> saveForUndo from fnKeyExitB\n");
-        #endif
+        #endif // DEBUGUNDO
         saveForUndo();
-        if(lastErrorCode == ERROR_RAM_FULL) goto undo_disabled;
+        if(lastErrorCode == ERROR_RAM_FULL) {
+          goto undo_disabled;
+        }
         break;
 
       case CM_EIM:
@@ -2537,12 +2572,11 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         lastPlotMode = PLOT_NOTHING;
         plotSelection = 0;
 
-calcModeNormal();
+        calcModeNormal();
 //        calcMode = CM_NORMAL;
-
-        #ifdef DEBUGUNDO
+        #if defined(DEBUGUNDO)
           printf(">>> Undo from fnKeyExit\n");
-        #endif
+        #endif // DEBUGUNDO
         fnUndo(NOPARAM);
         fnClDrawMx();
         popSoftmenu();
@@ -2586,13 +2620,16 @@ undo_disabled:
 
 
 void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter' complex_Type=KEY_COMPLEX
-    doRefreshSoftMenu = true;     //dr
-  #ifndef TESTSUITE_BUILD
+  doRefreshSoftMenu = true;     //dr
+  #if !defined(TESTSUITE_BUILD)
     uint32_t dataTypeX;
     uint32_t dataTypeY;
 
     // The switch statement is broken up here, due to multiple conditions.                      //JM
-    if((calcMode == CM_NIM) && (complex_Type == KEY_COMPLEX)) addItemToNimBuffer(ITM_EXIT1);    //JM Allow COMPLEX to be used from NIM
+    if((calcMode == CM_NIM) && (complex_Type == KEY_COMPLEX)) {
+      addItemToNimBuffer(ITM_EXIT1);
+    }    //JM Allow COMPLEX to be used from NIM
+
     if(calcMode == CM_NORMAL || ((calcMode == CM_NIM) && (complex_Type == KEY_COMPLEX))) {      //JM
       dataTypeX = getRegisterDataType(REGISTER_X);
       dataTypeY = getRegisterDataType(REGISTER_Y);
@@ -2655,7 +2692,7 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
 
 
 void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
-  #ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
     uint16_t lg;
 #ifndef SAVE_SPACE_DM42_10
     uint8_t *nextStep;
@@ -2887,9 +2924,8 @@ static bool_t activatescroll(void) {
 
 
 void fnKeyUp(uint16_t unusedButMandatoryParameter) {
-    doRefreshSoftMenu = true;     //dr
-
-  #ifndef TESTSUITE_BUILD  
+  doRefreshSoftMenu = true;     //dr
+  #if !defined(TESTSUITE_BUILD)
     int16_t menuId = softmenuStack[0].softmenuId; //JM
 
     if(activatescroll() && !tam.mode) { //JMSHOW vv
@@ -2954,10 +2990,14 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         }
         else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_UPPER)) {
           screenUpdatingMode = SCRUPD_AUTO;
-          if(calcMode == CM_NIM) closeNim();
-          if(calcMode == CM_AIM) closeAim();
+          if(calcMode == CM_NIM) {
+            closeNim();
+          }
+          if(calcMode == CM_AIM) {
+            closeAim();
+          }
           fnBst(NOPARAM);
-          #ifdef DMCP_BUILD
+          #if defined(DMCP_BUILD)
             lcd_refresh();
           #else // !DMCP_BUILD
             refreshLcd(NULL);
@@ -3016,6 +3056,9 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           menuUp();
         }
         else {
+          if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
+            pemAlpha(ITM_BACKSPACE);
+          }
           fnBst(NOPARAM);
         }
         break;
@@ -3069,11 +3112,9 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
 
 
 void fnKeyDown(uint16_t unusedButMandatoryParameter) {
-    doRefreshSoftMenu = true;     //dr
-
-#ifndef TESTSUITE_BUILD
+  doRefreshSoftMenu = true;     //dr
+  #if !defined(TESTSUITE_BUILD)
     int16_t menuId = softmenuStack[0].softmenuId; //JM
-
     if(activatescroll() && !tam.mode) { //JMSHOW vv
       fnShow_SCROLL(2);
       return;
@@ -3135,8 +3176,12 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         }
         else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_LOWER)) {
           screenUpdatingMode = SCRUPD_AUTO;
-          if(calcMode == CM_NIM) closeNim();
-          if(calcMode == CM_AIM) closeAim();
+          if(calcMode == CM_NIM) {
+            closeNim();
+          }
+          if(calcMode == CM_AIM) {
+            closeAim();
+          }
           fnSst(NOPARAM);
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
@@ -3192,6 +3237,10 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           menuDown();
         }
         else {
+          if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
+            pemAlpha(ITM_BACKSPACE);
+            fnBst(NOPARAM); // Set the PGM pointer to the original position
+          }
           fnSst(NOPARAM);
         }
         break;
@@ -3245,7 +3294,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
 
 
 void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
-  #ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
     switch(calcMode) {
       case CM_NORMAL:
         constantFractionsOn = false; //JM
@@ -3282,7 +3331,7 @@ void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
 
 
 void fnKeyAngle(uint16_t unusedButMandatoryParameter) {
-  #ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
     switch(calcMode) {
       case CM_NORMAL:
         if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {

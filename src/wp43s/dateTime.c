@@ -110,8 +110,12 @@ bool_t isLeapYear(const real34_t *year) {
   real34Subtract(year, &val, &val);
   y400 = real34ToInt32(&val);
 
-  if(y400 == 0) return true;
-  else if(isGregorian && (y400 % 100 == 0)) return false;
+  if(y400 == 0) {
+    return true;
+  }
+  else if(isGregorian && (y400 % 100 == 0)) {
+    return false;
+  }
 
   return (y400 % 4 == 0);
 }
@@ -122,25 +126,41 @@ bool_t isValidDay(const real34_t *year, const real34_t *month, const real34_t *d
 
   // Year (this rejects year -4713 and earlier)
   real34ToIntegralValue(year, &val, DEC_ROUND_FLOOR), real34Subtract(year, &val, &val);
-  if(!real34IsZero(&val)) return false;
+  if(!real34IsZero(&val)) {
+    return false;
+  }
   real34Compare(year, const34__4712, &val);
-  if(real34ToInt32(&val) < 0) return false;
+  if(real34ToInt32(&val) < 0) {
+    return false;
+  }
 
   // Day
   real34ToIntegralValue(day, &val, DEC_ROUND_FLOOR), real34Subtract(day, &val, &val);
-  if(!real34IsZero(&val)) return false;
+  if(!real34IsZero(&val)) {
+    return false;
+  }
   real34Compare(day, const34_1, &val);
-  if(real34ToInt32(&val) < 0) return false;
+  if(real34ToInt32(&val) < 0) {
+    return false;
+  }
   real34Compare(day, const34_31, &val);
-  if(real34ToInt32(&val) > 0) return false;
+  if(real34ToInt32(&val) > 0) {
+    return false;
+  }
 
   // Month
   real34ToIntegralValue(month, &val, DEC_ROUND_FLOOR), real34Subtract(month, &val, &val);
-  if(!real34IsZero(&val)) return false;
+  if(!real34IsZero(&val)) {
+    return false;
+  }
   real34Compare(month, const34_1, &val);
-  if(real34ToInt32(&val) < 0) return false;
+  if(real34ToInt32(&val) < 0) {
+    return false;
+  }
   real34Compare(month, const34_12, &val);
-  if(real34ToInt32(&val) > 0) return false;
+  if(real34ToInt32(&val) > 0) {
+    return false;
+  }
 
   // Thirty days hath September...
   if(real34ToInt32(day) == 31) {
@@ -154,8 +174,12 @@ bool_t isValidDay(const real34_t *year, const real34_t *month, const real34_t *d
 
   // February
   if(real34ToInt32(month) == 2) {
-    if(real34ToInt32(day) == 30) return false;
-    else if((real34ToInt32(day) == 29) && (!isLeapYear(year))) return false;
+    if(real34ToInt32(day) == 30) {
+      return false;
+    }
+    else if((real34ToInt32(day) == 29) && (!isLeapYear(year))) {
+      return false;
+    }
   }
 
   // Check for Julian-Gregorian gap
@@ -163,7 +187,9 @@ bool_t isValidDay(const real34_t *year, const real34_t *month, const real34_t *d
     real34_t y, m, d;
     composeJulianDay(year, month, day, &val);
     decomposeJulianDay(&val, &y, &m, &d);
-    if(!real34CompareEqual(year, &y) || !real34CompareEqual(month, &m) || !real34CompareEqual(day, &d)) return false;
+    if(!real34CompareEqual(year, &y) || !real34CompareEqual(month, &m) || !real34CompareEqual(day, &d)) {
+      return false;
+    }
   }
 
   // Valid date
@@ -344,6 +370,7 @@ void hmmssToSeconds(const real34_t *src, real34_t *dest) {
 
 void hmmssInRegisterToSeconds(calcRegister_t regist) {
   real34_t real34;
+
   real34Copy(REGISTER_REAL34_DATA(regist), &real34);
   reallocateRegister(regist, dtTime, REAL34_SIZE, amNone);
   hmmssToSeconds(&real34, REGISTER_REAL34_DATA(regist));
@@ -352,6 +379,7 @@ void hmmssInRegisterToSeconds(calcRegister_t regist) {
 
 void checkTimeRange(const real34_t *time34) {
   real34_t t;
+
   real34CopyAbs(time34, &t);
   if(real34CompareGreaterEqual(&t, const34_maxTime)) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
@@ -368,7 +396,9 @@ void checkTimeRange(const real34_t *time34) {
 void fnJulianToDate(uint16_t unusedButMandatoryParameter) {
   real34_t date;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -395,7 +425,9 @@ void fnJulianToDate(uint16_t unusedButMandatoryParameter) {
 void fnDateToJulian(uint16_t unusedButMandatoryParameter) {
   real34_t jd34;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkDateArgument(REGISTER_X, &jd34)) {
     convertReal34ToLongIntegerRegister(&jd34, REGISTER_X, DEC_ROUND_FLOOR);
@@ -446,7 +478,9 @@ void fnGetFirstGregorianDay(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnXToDate(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtDate:
@@ -476,7 +510,9 @@ void fnXToDate(uint16_t unusedButMandatoryParameter) {
 void fnYear(uint16_t unusedButMandatoryParameter) {
   real34_t y, m, d, j;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkDateArgument(REGISTER_X, &j)) {
     decomposeJulianDay(&j, &y, &m, &d);
@@ -487,7 +523,9 @@ void fnYear(uint16_t unusedButMandatoryParameter) {
 void fnMonth(uint16_t unusedButMandatoryParameter) {
   real34_t y, m, d, j;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkDateArgument(REGISTER_X, &j)) {
     decomposeJulianDay(&j, &y, &m, &d);
@@ -498,7 +536,9 @@ void fnMonth(uint16_t unusedButMandatoryParameter) {
 void fnDay(uint16_t unusedButMandatoryParameter) {
   real34_t y, m, d, j;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkDateArgument(REGISTER_X, &j)) {
     decomposeJulianDay(&j, &y, &m, &d);
@@ -510,7 +550,9 @@ void fnWday(uint16_t unusedButMandatoryParameter) {
   const uint32_t dayOfWeek = getDayOfWeek(REGISTER_X);
   longInteger_t result;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(dayOfWeek != 0) {
     longIntegerInit(result);
@@ -524,7 +566,9 @@ void fnWday(uint16_t unusedButMandatoryParameter) {
 void fnDateTo(uint16_t unusedButMandatoryParameter) {
   real34_t y, m, d, j;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkDateArgument(REGISTER_X, &j)) {
     liftStack();
@@ -542,7 +586,9 @@ void fnToDate(uint16_t unusedButMandatoryParameter) {
   calcRegister_t r[3] = {REGISTER_Z, REGISTER_Y, REGISTER_X};
   int32_t i;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(getSystemFlag(FLAG_DMY)) {
     part[0] = &d;
@@ -604,12 +650,16 @@ void fnToDate(uint16_t unusedButMandatoryParameter) {
       checkDateRange(REGISTER_REAL34_DATA(REGISTER_X));
     }
   }
-  if(lastErrorCode != 0) undo();
+  if(lastErrorCode != 0) {
+    undo();
+  }
 }
 
 
 void fnToHr(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtTime:
@@ -635,33 +685,35 @@ void fnToHms(uint16_t unusedButMandatoryParameter) {
       break;
 
     default:                             //JM ^^
-      if(!saveLastX()) return;
+          if(!saveLastX()) {
+              return;
+          }
 
-  switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger :
-      convertLongIntegerRegisterToTimeRegister(REGISTER_X, REGISTER_X);
-      break;
+          switch(getRegisterDataType(REGISTER_X)) {
+            case dtLongInteger :
+              convertLongIntegerRegisterToTimeRegister(REGISTER_X, REGISTER_X);
+              break;
 
-    case dtTime:
-      /* already in hours: do nothing */
-      break;
+            case dtTime:
+            /* already in hours: do nothing */
+              break;
 
-    case dtReal34:
-      if(getRegisterAngularMode(REGISTER_X) == amNone) {
-        convertReal34RegisterToTimeRegister(REGISTER_X, REGISTER_X);
-        break;
-      }
-      /* fallthrough */
+            case dtReal34:
+              if(getRegisterAngularMode(REGISTER_X) == amNone) {
+                convertReal34RegisterToTimeRegister(REGISTER_X, REGISTER_X);
+                break;
+              }
+            /* fallthrough */
 
-        default :
-          displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-            sprintf(errorMessage, "data type %s cannot be converted to time!", getRegisterDataTypeName(REGISTER_X, false, false));
-            moreInfoOnError("In function fnToReal:", errorMessage, NULL, NULL);
-          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-          return;
-        break;
-      }
+            default :
+              displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+                sprintf(errorMessage, "data type %s cannot be converted to time!", getRegisterDataTypeName(REGISTER_X, false, false));
+                moreInfoOnError("In function fnToReal:", errorMessage, NULL, NULL);
+              #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+              return;
+              break;
+              }
     break;
   }
   checkTimeRange(REGISTER_REAL34_DATA(REGISTER_X));
@@ -672,7 +724,7 @@ void fnToHms(uint16_t unusedButMandatoryParameter) {
 void fnDate(uint16_t unusedButMandatoryParameter) {
   real34_t y, m, d, j;
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     tm_t timeInfo;
     dt_t dateInfo;
 
@@ -699,7 +751,7 @@ void fnDate(uint16_t unusedButMandatoryParameter) {
 void fnTime(uint16_t unusedButMandatoryParameter) {
   real34_t time34;
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     tm_t timeInfo;
     dt_t dateInfo;
 
@@ -719,7 +771,7 @@ void fnTime(uint16_t unusedButMandatoryParameter) {
 
 
 void fnSetDate(uint16_t unusedButMandatoryParameter) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     tm_t timeInfo;
     dt_t dateInfo;
     real34_t j, y, m, d;
@@ -742,7 +794,7 @@ void fnSetDate(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnSetTime(uint16_t unusedButMandatoryParameter) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     tm_t timeInfo;
     dt_t dateInfo;
     real34_t time34;
@@ -799,7 +851,7 @@ void fnSetTime(uint16_t unusedButMandatoryParameter) {
 
 
 void getDateString(char *dateString) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     tm_t timeInfo;
     dt_t dateInfo;
 
@@ -871,7 +923,7 @@ void getDateString(char *dateString) {
 
 
 void getTimeString(char *timeString) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     tm_t timeInfo;
     dt_t dateInfo;
 

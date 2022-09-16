@@ -66,7 +66,9 @@ TO_QSPI void (* const Round[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnRound(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Round[getRegisterDataType(REGISTER_X)]();
 

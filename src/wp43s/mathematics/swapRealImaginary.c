@@ -65,25 +65,27 @@ TO_QSPI void (* const swapReIm[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnSwapRealImaginary(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
   swapReIm[getRegisterDataType(REGISTER_X)]();
 }
 
 
 
 void swapReImCxma(void) {
-#ifndef TESTSUITE_BUILD
-  complex34Matrix_t cMat;
-  real34_t tmp;
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t cMat;
+    real34_t tmp;
 
-  linkToComplexMatrixRegister(REGISTER_X, &cMat);
+    linkToComplexMatrixRegister(REGISTER_X, &cMat);
 
-  for(uint16_t i = 0; i < cMat.header.matrixRows * cMat.header.matrixColumns; ++i) {
-    real34Copy(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), &tmp);
-    real34Copy(VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), VARIABLE_REAL34_DATA(&cMat.matrixElements[i]));
-    real34Copy(&tmp                                         , VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]));
-  }
-#endif // TESTSUITE_BUILD
+    for(uint16_t i = 0; i < cMat.header.matrixRows * cMat.header.matrixColumns; ++i) {
+      real34Copy(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), &tmp);
+      real34Copy(VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), VARIABLE_REAL34_DATA(&cMat.matrixElements[i]));
+      real34Copy(&tmp                                         , VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]));
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 

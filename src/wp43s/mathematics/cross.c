@@ -90,7 +90,9 @@ static void crossDataTypeError(void) {
  * \return void
  ***********************************************/
 void fnCross(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   cross[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 
@@ -281,26 +283,26 @@ void crossCplxShoI(void) {
  * \return void
  ***********************************************/
 void crossRemaRema(void) {
-#ifndef TESTSUITE_BUILD
-  real34Matrix_t y, x, res;
+  #if !defined(TESTSUITE_BUILD)
+    real34Matrix_t y, x, res;
 
-  linkToRealMatrixRegister(REGISTER_Y, &y);
-  linkToRealMatrixRegister(REGISTER_X, &x);
+    linkToRealMatrixRegister(REGISTER_Y, &y);
+    linkToRealMatrixRegister(REGISTER_X, &x);
 
-  if((realVectorSize(&y) == 0) || (realVectorSize(&x) == 0) || (realVectorSize(&y) > 3) || (realVectorSize(&x) > 3)) {
-    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "invalid numbers of elements of %d" STD_CROSS "%d-matrix to %d" STD_CROSS "%d-matrix",
-              x.header.matrixRows, x.header.matrixColumns,
-              y.header.matrixRows, y.header.matrixColumns);
-      moreInfoOnError("In function crossRemaRema:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-  else {
-    crossRealVectors(&y, &x, &res);
-    convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
-  }
-#endif // TESTSUITE_BUILD
+    if((realVectorSize(&y) == 0) || (realVectorSize(&x) == 0) || (realVectorSize(&y) > 3) || (realVectorSize(&x) > 3)) {
+      displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "invalid numbers of elements of %d" STD_CROSS "%d-matrix to %d" STD_CROSS "%d-matrix",
+                x.header.matrixRows, x.header.matrixColumns,
+                y.header.matrixRows, y.header.matrixColumns);
+        moreInfoOnError("In function crossRemaRema:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
+    else {
+      crossRealVectors(&y, &x, &res);
+      convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 /********************************************//**
@@ -310,10 +312,10 @@ void crossRemaRema(void) {
  * \return void
  ***********************************************/
 void crossCpmaRema(void) {
-#ifndef TESTSUITE_BUILD
-  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_X, REGISTER_X);
-  crossCpmaCpma();
-#endif // TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_X, REGISTER_X);
+    crossCpmaCpma();
+  #endif // !TESTSUITE_BUILD
 }
 
 /********************************************//**
@@ -323,10 +325,10 @@ void crossCpmaRema(void) {
  * \return void
  ***********************************************/
 void crossRemaCpma(void) {
-#ifndef TESTSUITE_BUILD
-  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
-  crossCpmaCpma();
-#endif // TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
+    crossCpmaCpma();
+  #endif // !TESTSUITE_BUILD
 }
 
 /********************************************//**
@@ -336,24 +338,24 @@ void crossRemaCpma(void) {
  * \return void
  ***********************************************/
 void crossCpmaCpma(void) {
-#ifndef TESTSUITE_BUILD
-  complex34Matrix_t y, x, res;
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t y, x, res;
 
-  linkToComplexMatrixRegister(REGISTER_Y, &y);
-  linkToComplexMatrixRegister(REGISTER_X, &x);
+    linkToComplexMatrixRegister(REGISTER_Y, &y);
+    linkToComplexMatrixRegister(REGISTER_X, &x);
 
-  if((complexVectorSize(&y) == 0) || (complexVectorSize(&x) == 0) || (complexVectorSize(&y) > 3) || (complexVectorSize(&x) > 3)) {
-    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "invalid numbers of elements of %d" STD_CROSS "%d-matrix to %d" STD_CROSS "%d-matrix",
-              x.header.matrixRows, x.header.matrixColumns,
-              y.header.matrixRows, y.header.matrixColumns);
-      moreInfoOnError("In function crossCpmaCpma:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-  else {
-    crossComplexVectors(&y, &x, &res);
-    convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
-  }
-#endif // TESTSUITE_BUILD
+    if((complexVectorSize(&y) == 0) || (complexVectorSize(&x) == 0) || (complexVectorSize(&y) > 3) || (complexVectorSize(&x) > 3)) {
+      displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "invalid numbers of elements of %d" STD_CROSS "%d-matrix to %d" STD_CROSS "%d-matrix",
+                x.header.matrixRows, x.header.matrixColumns,
+                y.header.matrixRows, y.header.matrixColumns);
+        moreInfoOnError("In function crossCpmaCpma:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
+    else {
+      crossComplexVectors(&y, &x, &res);
+      convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
+    }
+  #endif // !TESTSUITE_BUILD
 }

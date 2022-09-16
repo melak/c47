@@ -64,7 +64,9 @@ TO_QSPI void (* const WNegative[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = 
  * \return void
  ***********************************************/
 void fnWnegative(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   WNegative[getRegisterDataType(REGISTER_X)]();
 

@@ -58,7 +58,7 @@
   static inline longIntegerSign_t longIntegerSignTag(mpz_srcptr op)                                                                        {return ((op)->_mp_size == 0 ? LI_ZERO : ((op)->_mp_size > 0 ? LI_POSITIVE : LI_NEGATIVE));}
   static inline size_t longIntegerBits(mpz_srcptr op)                                                                                      {return mpz_sizeinbase(op, 2);}
   static inline size_t longIntegerBase10Digits(mpz_srcptr op)                                                                              {return mpz_sizeinbase(op, 10);}
-  
+
   /**
    * Determines whether the long integer is probably prime.
    *

@@ -33,7 +33,9 @@
 
 
 void fnCvtToCurrentAngularMode(uint16_t fromAngularMode) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -60,7 +62,9 @@ void fnCvtToCurrentAngularMode(uint16_t fromAngularMode) {
 
 
 void fnCvtFromCurrentAngularModeRegister(calcRegister_t regist1, uint16_t toAngularMode) {
-  if(!saveLastX()) return;
+    if(!saveLastX()) {
+        return;
+    }
 
   switch(getRegisterDataType(regist1)) {
     case dtLongInteger:
@@ -114,7 +118,9 @@ void fnCvtFromCurrentAngularMode(uint16_t toAngularMode) {          //JM convert
 }
 
 void fnCvtDegToRad(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -150,7 +156,9 @@ void fnCvtDegToRad(uint16_t unusedButMandatoryParameter) {
 
 
 void fnCvtRadToDeg(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -186,7 +194,9 @@ void fnCvtRadToDeg(uint16_t unusedButMandatoryParameter) {
 
 
 void fnCvtMultPiToRad(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -222,7 +232,9 @@ void fnCvtMultPiToRad(uint16_t unusedButMandatoryParameter) {
 
 
 void fnCvtRadToMultPi(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -256,7 +268,9 @@ void fnCvtRadToMultPi(uint16_t unusedButMandatoryParameter) {
 
 
 void fnCvtDegToDms(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -290,7 +304,9 @@ void fnCvtDegToDms(uint16_t unusedButMandatoryParameter) {
 
 
 void fnCvtDmsToDeg(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -326,7 +342,9 @@ void fnCvtDmsToDeg(uint16_t unusedButMandatoryParameter) {
 
 
 void fnCvtDmsToCurrentAngularMode(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:
@@ -456,32 +474,40 @@ void checkDms34(real34_t *angle34Dms) {
 
 uint32_t getInfiniteComplexAngle(real_t *x, real_t *y) {
   if(!realIsInfinite(x)) {
-    if(realIsPositive(y))
+    if(realIsPositive(y)) {
       return 2; // 90°
-    else
+    }
+    else {
       return 6; // -90° or 270°
+  }
   }
 
   if(!realIsInfinite(y)) {
-    if(realIsPositive(x))
+    if(realIsPositive(x)) {
       return 0; // 0°
-    else
+    }
+    else {
       return 4; // -180° or 180°
+  }
   }
 
   // At this point, x and y are infinite
   if(realIsPositive(x)) {
-    if(realIsPositive(y))
+    if(realIsPositive(y)) {
       return 1; // 45°
-    else
+    }
+    else {
       return 7; // -45° or 315°
+  }
   }
 
   // At this point, x is negative
-  if(realIsPositive(y))
+  if(realIsPositive(y)) {
     return 3; // 135°
-  else
+  }
+  else {
     return 5; // -135° or 225°
+}
 }
 
 

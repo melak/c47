@@ -32,6 +32,8 @@
 #include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "rsd.h"
+#include "stack.h"
 
 #include "wp43s.h"
 
@@ -40,15 +42,15 @@
 TO_QSPI void (* const addition[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
 // regX |    regY ==>   1            2            3            4            5            6            7            8            9             10
 //      V               Long integer Real34       Complex34    Time         Date         String       Real34 mat   Complex34 m  Short integer Config data
-/*  1 Long integer  */ {addLonILonI, addRealLonI, addCplxLonI, addTimeLonI, addDateLonI, addStriLonI, addError,    addError,    addShoILonI,  addError},
-/*  2 Real34        */ {addLonIReal, addRealReal, addCplxReal, addTimeReal, addDateReal, addStriReal, addError,    addError,    addShoIReal,  addError},
-/*  3 Complex34     */ {addLonICplx, addRealCplx, addCplxCplx, addError,    addError,    addStriCplx, addError,    addError,    addShoICplx,  addError},
+/*  1 Long integer  */ {addLonILonI, addRealLonI, addCplxLonI, addTimeLonI, addDateLonI, addStriLonI, addRemaLonI, addCxmaLonI, addShoILonI,  addError},
+/*  2 Real34        */ {addLonIReal, addRealReal, addCplxReal, addTimeReal, addDateReal, addStriReal, addRemaReal, addCxmaReal, addShoIReal,  addError},
+/*  3 Complex34     */ {addLonICplx, addRealCplx, addCplxCplx, addError,    addError,    addStriCplx, addRemaCplx, addCxmaCplx, addShoICplx,  addError},
 /*  4 Time          */ {addLonITime, addRealTime, addError,    addTimeTime, addError,    addStriTime, addError,    addError,    addError,     addError},
 /*  5 Date          */ {addLonIDate, addRealDate, addError,    addError,    addError,    addStriDate, addError,    addError,    addError,     addError},
 /*  6 String        */ {addRegYStri, addRegYStri, addRegYStri, addRegYStri, addRegYStri, addStriStri, addError,    addError,    addRegYStri,  addError},   //JM added addRegYStri
-/*  7 Real34 mat    */ {addError,    addError,    addError,    addError,    addError,    addStriRema, addRemaRema, addCxmaRema, addError,     addError},
-/*  8 Complex34 mat */ {addError,    addError,    addError,    addError,    addError,    addStriCxma, addRemaCxma, addCxmaCxma, addError,     addError},
-/*  9 Short integer */ {addLonIShoI, addRealShoI, addCplxShoI, addError,    addError,    addStriShoI, addError,    addError,    addShoIShoI,  addError},
+/*  7 Real34 mat    */ {addLonIRema, addRealRema, addCplxRema, addError,    addError,    addStriRema, addRemaRema, addCxmaRema, addShoIRema,  addError},
+/*  8 Complex34 mat */ {addLonICxma, addRealCxma, addCplxCxma, addError,    addError,    addStriCxma, addRemaCxma, addCxmaCxma, addShoICxma,  addError},
+/*  9 Short integer */ {addLonIShoI, addRealShoI, addCplxShoI, addError,    addError,    addStriShoI, addRemaShoI, addCxmaShoI, addShoIShoI,  addError},
 /* 10 Config data   */ {addError,    addError,    addError,    addError,    addError,    addError,    addError,    addError,    addError,     addError}
 };
 
@@ -776,34 +778,93 @@ void addStriCplx(void) {
 /******************************************************************************************************************************************************************************************/
 
 /********************************************//**
+ * \brief Y(real34 matrix) + X(long integer) ==> X(real34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addRemaLonI(void) {
+  #if !defined(TESTSUITE_BUILD)
+    real34Matrix_t ym;
+    real_t y, x;
+
+    linkToRealMatrixRegister(REGISTER_Y, &ym);
+
+    const uint16_t rows = ym.header.matrixRows;
+    const uint16_t cols = ym.header.matrixColumns;
+    int32_t i;
+
+    convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(&ym.matrixElements[i], &y);
+      realAdd(&y, &x, &y, &ctxtReal39);
+      roundToSignificantDigits(&y, &y, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
+      realToReal34(&y, &ym.matrixElements[i]);
+    }
+    fnSwapXY(NOPARAM);
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(long integer) + X(real34 matrix) ==> X(real34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addLonIRema(void) {
+  #if !defined(TESTSUITE_BUILD)
+    real34Matrix_t xm;
+    real_t y, x;
+
+    linkToRealMatrixRegister(REGISTER_X, &xm);
+
+    const uint16_t rows = xm.header.matrixRows;
+    const uint16_t cols = xm.header.matrixColumns;
+    int32_t i;
+
+    convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(&xm.matrixElements[i], &x);
+      realAdd(&y, &x, &x, &ctxtReal39);
+      roundToSignificantDigits(&x, &x, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
+      realToReal34(&x, &xm.matrixElements[i]);
+    }
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
  * \brief Y(real34 matrix) + X(real34 matrix) ==> X(real34 matrix)
  *
  * \param void
  * \return void
  ***********************************************/
 void addRemaRema(void) {
-#ifndef TESTSUITE_BUILD
-  real34Matrix_t y, x;
+  #if !defined(TESTSUITE_BUILD)
+    real34Matrix_t y, x;
 
-  linkToRealMatrixRegister(REGISTER_Y, &y);
-  convertReal34MatrixRegisterToReal34Matrix(REGISTER_X, &x);
+    linkToRealMatrixRegister(REGISTER_Y, &y);
+    convertReal34MatrixRegisterToReal34Matrix(REGISTER_X, &x);
 
-  addRealMatrices(&y, &x, &x);
-  if(x.matrixElements) {
-    convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
-  }
-  else {
-    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "cannot add %d" STD_CROSS "%d-matrix to %d" STD_CROSS "%d-matrix",
-              x.header.matrixRows, x.header.matrixColumns,
-              y.header.matrixRows, y.header.matrixColumns);
-      moreInfoOnError("In function addRemaRema:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
+    addRealMatrices(&y, &x, &x);
+    if(x.matrixElements) {
+      convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
+    }
+    else {
+      displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot add %d" STD_CROSS "%d-matrix to %d" STD_CROSS "%d-matrix",
+                x.header.matrixRows, x.header.matrixColumns,
+                y.header.matrixRows, y.header.matrixColumns);
+        moreInfoOnError("In function addRemaRema:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
 
-  realMatrixFree(&x);
-#endif // TESTSUITE_BUILD
+    realMatrixFree(&x);
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -815,10 +876,10 @@ void addRemaRema(void) {
  * \return void
  ***********************************************/
 void addRemaCxma(void) {
-#ifndef TESTSUITE_BUILD
-  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
-  addCxmaCxma();
-#endif // TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
+    addCxmaCxma();
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -830,10 +891,162 @@ void addRemaCxma(void) {
  * \return void
  ***********************************************/
 void addCxmaRema(void) {
-#ifndef TESTSUITE_BUILD
-  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_X, REGISTER_X);
-  addCxmaCxma();
-#endif // TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_X, REGISTER_X);
+    addCxmaCxma();
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(real34 matrix) + X(short integer) ==> X(real34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addRemaShoI(void) {
+  #if !defined(TESTSUITE_BUILD)
+    real34Matrix_t ym;
+    real_t y, x;
+
+    linkToRealMatrixRegister(REGISTER_Y, &ym);
+
+    const uint16_t rows = ym.header.matrixRows;
+    const uint16_t cols = ym.header.matrixColumns;
+    int32_t i;
+
+    convertShortIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(&ym.matrixElements[i], &y);
+      realAdd(&y, &x, &y, &ctxtReal39);
+      roundToSignificantDigits(&y, &y, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
+      realToReal34(&y, &ym.matrixElements[i]);
+    }
+    fnSwapXY(NOPARAM);
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(short integer) + X(real34 matrix) ==> X(real34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addShoIRema(void) {
+  #if !defined(TESTSUITE_BUILD)
+    real34Matrix_t xm;
+    real_t y, x;
+
+    linkToRealMatrixRegister(REGISTER_X, &xm);
+
+    const uint16_t rows = xm.header.matrixRows;
+    const uint16_t cols = xm.header.matrixColumns;
+    int32_t i;
+
+    convertShortIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(&xm.matrixElements[i], &x);
+      realAdd(&y, &x, &x, &ctxtReal39);
+      roundToSignificantDigits(&x, &x, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
+      realToReal34(&x, &xm.matrixElements[i]);
+    }
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(real34 matrix) + X(real34) ==> X(real34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addRemaReal(void) {
+  #if !defined(TESTSUITE_BUILD)
+    real34Matrix_t y;
+    angularMode_t xAngularMode;
+
+    linkToRealMatrixRegister(REGISTER_Y, &y);
+    xAngularMode = getRegisterAngularMode(REGISTER_X);
+
+    if(xAngularMode == amNone) {
+      const uint16_t rows = y.header.matrixRows;
+      const uint16_t cols = y.header.matrixColumns;
+      int32_t i;
+
+      for(i = 0; i < cols * rows; ++i) {
+        real34Add(&y.matrixElements[i], REGISTER_REAL34_DATA(REGISTER_X), &y.matrixElements[i]);
+      }
+      fnSwapXY(NOPARAM);
+    }
+    else {
+      elementwiseRemaReal(addRealReal);
+    }
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(real34) + X(real34 matrix) ==> X(real34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addRealRema(void) {
+  #if !defined(TESTSUITE_BUILD)
+    real34Matrix_t x;
+    angularMode_t yAngularMode;
+
+    linkToRealMatrixRegister(REGISTER_X, &x);
+    yAngularMode = getRegisterAngularMode(REGISTER_Y);
+
+    if(yAngularMode == amNone) {
+      const uint16_t rows = x.header.matrixRows;
+      const uint16_t cols = x.header.matrixColumns;
+      int32_t i;
+
+      for(i = 0; i < cols * rows; ++i) {
+        real34Add(REGISTER_REAL34_DATA(REGISTER_Y), &x.matrixElements[i], &x.matrixElements[i]);
+      }
+    }
+    else {
+      elementwiseRealRema(addRealReal);
+    }
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(real34 matrix) + X(complex34) ==> X(complex34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addRemaCplx(void) {
+  #if !defined(TESTSUITE_BUILD)
+    convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
+    addCxmaCplx();
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(complex34) + X(real34 matrix) ==> X(complex34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addCplxRema(void) {
+  #if !defined(TESTSUITE_BUILD)
+    convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_X, REGISTER_X);
+    addCplxCxma();
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -843,34 +1056,266 @@ void addCxmaRema(void) {
 /******************************************************************************************************************************************************************************************/
 
 /********************************************//**
+ * \brief Y(complex34 matrix) + X(long integer) ==> X(complex34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addCxmaLonI(void) {
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t ym;
+    real_t y, x;
+
+    linkToComplexMatrixRegister(REGISTER_Y, &ym);
+
+    const uint16_t rows = ym.header.matrixRows;
+    const uint16_t cols = ym.header.matrixColumns;
+    int32_t i;
+
+    convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(VARIABLE_REAL34_DATA(&ym.matrixElements[i]), &y);
+      realAdd(&y, &x, &y, &ctxtReal39);
+      roundToSignificantDigits(&y, &y, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
+      realToReal34(&y, VARIABLE_REAL34_DATA(&ym.matrixElements[i]));
+    }
+    fnSwapXY(NOPARAM);
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(long integer) + X(complex34 matrix) ==> X(complex34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addLonICxma(void) {
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t xm;
+    real_t y, x;
+
+    linkToComplexMatrixRegister(REGISTER_X, &xm);
+
+    const uint16_t rows = xm.header.matrixRows;
+    const uint16_t cols = xm.header.matrixColumns;
+    int32_t i;
+
+    convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(VARIABLE_REAL34_DATA(&xm.matrixElements[i]), &x);
+      realAdd(&y, &x, &x, &ctxtReal39);
+      roundToSignificantDigits(&x, &x, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
+      realToReal34(&x, VARIABLE_REAL34_DATA(&xm.matrixElements[i]));
+    }
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
  * \brief Y(complex34 matrix) + X(complex34 matrix) ==> X(complex34 matrix)
  *
  * \param void
  * \return void
  ***********************************************/
 void addCxmaCxma(void) {
-#ifndef TESTSUITE_BUILD
-  complex34Matrix_t y, x;
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t y, x;
 
-  linkToComplexMatrixRegister(REGISTER_Y, &y);
-  convertComplex34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
+    linkToComplexMatrixRegister(REGISTER_Y, &y);
+    convertComplex34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
 
-  addComplexMatrices(&y, &x, &x);
-  if(x.matrixElements) {
-    convertComplex34MatrixToComplex34MatrixRegister(&x, REGISTER_X);
-  }
-  else {
-    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "cannot add %d" STD_CROSS "%d-matrix to %d" STD_CROSS "%d-matrix",
-              x.header.matrixRows, x.header.matrixColumns,
-              y.header.matrixRows, y.header.matrixColumns);
-      moreInfoOnError("In function addRemaRema:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
+    addComplexMatrices(&y, &x, &x);
+    if(x.matrixElements) {
+      convertComplex34MatrixToComplex34MatrixRegister(&x, REGISTER_X);
+    }
+    else {
+      displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot add %d" STD_CROSS "%d-matrix to %d" STD_CROSS "%d-matrix",
+                x.header.matrixRows, x.header.matrixColumns,
+                y.header.matrixRows, y.header.matrixColumns);
+        moreInfoOnError("In function addRemaRema:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
 
-  complexMatrixFree(&x);
-#endif // TESTSUITE_BUILD
+    complexMatrixFree(&x);
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(complex34 matrix) + X(short integer) ==> X(complex34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addCxmaShoI(void) {
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t ym;
+    real_t y, x;
+
+    linkToComplexMatrixRegister(REGISTER_Y, &ym);
+
+    const uint16_t rows = ym.header.matrixRows;
+    const uint16_t cols = ym.header.matrixColumns;
+    int32_t i;
+
+    convertShortIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(VARIABLE_REAL34_DATA(&ym.matrixElements[i]), &y);
+      realAdd(&y, &x, &y, &ctxtReal39);
+      roundToSignificantDigits(&y, &y, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
+      realToReal34(&y, VARIABLE_REAL34_DATA(&ym.matrixElements[i]));
+    }
+    fnSwapXY(NOPARAM);
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(short integer) + X(complex34 matrix) ==> X(complex34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addShoICxma(void) {
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t xm;
+    real_t y, x;
+
+    linkToComplexMatrixRegister(REGISTER_X, &xm);
+
+    const uint16_t rows = xm.header.matrixRows;
+    const uint16_t cols = xm.header.matrixColumns;
+    int32_t i;
+
+    convertShortIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+    for(i = 0; i < cols * rows; ++i) {
+      real34ToReal(VARIABLE_REAL34_DATA(&xm.matrixElements[i]), &x);
+      realAdd(&y, &x, &x, &ctxtReal39);
+      roundToSignificantDigits(&x, &x, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
+      realToReal34(&x, VARIABLE_REAL34_DATA(&xm.matrixElements[i]));
+    }
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(complex34 matrix) + X(real34) ==> X(complex34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addCxmaReal(void) {
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t y;
+    angularMode_t xAngularMode;
+
+    linkToComplexMatrixRegister(REGISTER_Y, &y);
+    xAngularMode = getRegisterAngularMode(REGISTER_X);
+
+    if(xAngularMode == amNone) {
+      const uint16_t rows = y.header.matrixRows;
+      const uint16_t cols = y.header.matrixColumns;
+      int32_t i;
+
+      for(i = 0; i < cols * rows; ++i) {
+        real34Add(VARIABLE_REAL34_DATA(&y.matrixElements[i]), REGISTER_REAL34_DATA(REGISTER_X), VARIABLE_REAL34_DATA(&y.matrixElements[i]));
+      }
+      fnSwapXY(NOPARAM);
+    }
+    else {
+      elementwiseCxmaReal(addCplxReal);
+    }
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(real34) + X(complex34 matrix) ==> X(complex34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addRealCxma(void) {
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t x;
+    angularMode_t yAngularMode;
+
+    linkToComplexMatrixRegister(REGISTER_X, &x);
+    yAngularMode = getRegisterAngularMode(REGISTER_Y);
+
+    if(yAngularMode == amNone) {
+      const uint16_t rows = x.header.matrixRows;
+      const uint16_t cols = x.header.matrixColumns;
+      int32_t i;
+
+      for(i = 0; i < cols * rows; ++i) {
+        real34Add(REGISTER_REAL34_DATA(REGISTER_Y), VARIABLE_REAL34_DATA(&x.matrixElements[i]), VARIABLE_REAL34_DATA(&x.matrixElements[i]));
+      }
+    }
+    else {
+      elementwiseRealCxma(addRealCplx);
+    }
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(complex34 matrix) + X(complex34) ==> X(complex34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addCxmaCplx(void) {
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t y;
+
+    linkToComplexMatrixRegister(REGISTER_Y, &y);
+
+    const uint16_t rows = y.header.matrixRows;
+    const uint16_t cols = y.header.matrixColumns;
+    int32_t i;
+
+    for(i = 0; i < cols * rows; ++i) {
+      real34Add(VARIABLE_REAL34_DATA(&y.matrixElements[i]), REGISTER_REAL34_DATA(REGISTER_X), VARIABLE_REAL34_DATA(&y.matrixElements[i]));
+      real34Add(VARIABLE_IMAG34_DATA(&y.matrixElements[i]), REGISTER_IMAG34_DATA(REGISTER_X), VARIABLE_IMAG34_DATA(&y.matrixElements[i]));
+    }
+    fnSwapXY(NOPARAM);
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+/********************************************//**
+ * \brief Y(complex34) + X(complex34 matrix) ==> X(complex34 matrix)
+ *
+ * \param void
+ * \return void
+ ***********************************************/
+void addCplxCxma(void) {
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t x;
+
+    linkToComplexMatrixRegister(REGISTER_X, &x);
+
+    const uint16_t rows = x.header.matrixRows;
+    const uint16_t cols = x.header.matrixColumns;
+    int32_t i;
+
+    for(i = 0; i < cols * rows; ++i) {
+      real34Add(REGISTER_REAL34_DATA(REGISTER_Y), VARIABLE_REAL34_DATA(&x.matrixElements[i]), VARIABLE_REAL34_DATA(&x.matrixElements[i]));
+      real34Add(REGISTER_IMAG34_DATA(REGISTER_Y), VARIABLE_IMAG34_DATA(&x.matrixElements[i]), VARIABLE_IMAG34_DATA(&x.matrixElements[i]));
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 

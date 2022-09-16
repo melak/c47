@@ -68,7 +68,9 @@ TO_QSPI void (* const Curt[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnCubeRoot(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Curt[getRegisterDataType(REGISTER_X)]();
 

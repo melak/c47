@@ -102,7 +102,7 @@
    */
   void showHideUserMode       (void);
     
-    #if defined(DMCP_BUILD)
+  #if defined(DMCP_BUILD)
     /**
      * Shows or hides the USB or low battery icon in the status bar.
      */
@@ -113,6 +113,8 @@
      */
     void showHideStackLift    (void);
   #endif // DMCP_BUILD
+
   void showHideASB            (void);       //JM
+
 #endif // !TESTSUITE_BUILD
 #endif // !STATUSBAR_H

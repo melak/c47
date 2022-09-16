@@ -66,7 +66,9 @@ TO_QSPI void (* const Sinh[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnSinh(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Sinh[getRegisterDataType(REGISTER_X)]();
 

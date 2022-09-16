@@ -454,8 +454,8 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
     numDigits = lastDigit - firstDigit;
     exponent += numDigits++;
   }
-
-/*  if(limitExponent && abs(exponent) > exponentLimit) {
+/*
+  if(limitExponent && abs(exponent) > exponentLimit) {
     if(exponent > exponentLimit) {
       if(real34IsPositive(&value34)) {
         realToReal34(const_plusInfinity, &value34);
@@ -1104,7 +1104,7 @@ void complex34ToDisplayString(const complex34_t *complex34, char *displayString,
 
 
 void complex34ToDisplayString2(const complex34_t *complex34, char *displayString, int16_t displayHasNDigits, bool_t limitExponent, const char *separator, bool_t frontSpace) {
-  int16_t i=100;
+  int16_t i = 100;
   real34_t real34, imag34;
   real_t real, imagIc;
 
@@ -1782,7 +1782,9 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
       displayString[lastChar]++;
       while(displayString[lastChar] > '9') {
         displayString[lastChar--] = '0';
-        while(lastChar >= 0 && (displayString[lastChar] < '0' || displayString[lastChar] > '9')) lastChar--;
+        while(lastChar >= 0 && (displayString[lastChar] < '0' || displayString[lastChar] > '9')) {
+          lastChar--;
+        }
         if(lastChar >= 0) {
           displayString[lastChar]++;
         }
@@ -2204,7 +2206,9 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
       // +/- i×
       real34Copy(REGISTER_IMAG34_DATA(REGISTER_X), &real34);
       last = 300;
-      while(tmpString[last]) last++;
+      while(tmpString[last]) {
+        last++;
+      }
       xcopy(tmpString + last++, (real34IsNegative(&real34) ? "-" : "+"), 1);
       xcopy(tmpString + last++, COMPLEX_UNIT, 1);
       xcopy(tmpString + last, PRODUCT_SIGN, 3);
@@ -2215,14 +2219,18 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
 
       if(stringWidth(tmpString + 300, &standardFont, true, true) + stringWidth(tmpString + 600, &standardFont, true, true) <= SCREEN_WIDTH) {
         last = 300;
-        while(tmpString[last]) last++;
+        while(tmpString[last]) {
+          last++;
+        }
         xcopy(tmpString + last, tmpString + 600, strlen(tmpString + 600) + 1);
         tmpString[600] = 0;
       }
 
       if(stringWidth(tmpString, &standardFont, true, true) + stringWidth(tmpString + 300, &standardFont, true, true) <= SCREEN_WIDTH) {
         last = 0;
-        while(tmpString[last]) last++;
+        while(tmpString[last]) {
+          last++;
+        }
         xcopy(tmpString + last, tmpString + 300, strlen(tmpString + 300) + 1);
         xcopy(tmpString + 300,  tmpString + 600, strlen(tmpString + 600) + 1);
         tmpString[600] = 0;

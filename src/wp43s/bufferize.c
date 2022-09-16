@@ -50,7 +50,7 @@
 
 #include "wp43s.h"
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   void fnAim(uint16_t unusedButMandatoryParameter) {
     resetShiftState();  //JM
     displayAIMbufferoffset = 0;
@@ -95,7 +95,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         case ITM_6        :
         case ITM_7        :
         case ITM_8        :
-        case ITM_9        : return item + (ITM_SUB_9 - ITM_9);
+        case ITM_9        :
         case ITM_a        :
         case ITM_b        :
         case ITM_c        :
@@ -115,7 +115,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         case ITM_w        :
         case ITM_x        :
         case ITM_y        :
-        case ITM_z        : return item + (ITM_SUB_z - ITM_z);
+        case ITM_z        :
         case ITM_A        :
         case ITM_B        :
         case ITM_C        :
@@ -141,7 +141,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         case ITM_W        :
         case ITM_X        :
         case ITM_Y        :
-        case ITM_Z        : return item + (ITM_SUB_Z - ITM_Z);
+        case ITM_Z        :
 */
         default           : return item;
       }
@@ -423,7 +423,6 @@ void kill_ASB_icon(void) {
       }
 
       if(catalog && catalog != CATALOG_MVAR && !fnKeyInCatalog) {
-
         if(item == ITM_BACKSPACE) {
           calcModeNormal();
           return;
@@ -507,12 +506,11 @@ void kill_ASB_icon(void) {
           case ITM_CHS : // +/-
 
           case ITM_CONSTpi :
-
             mimAddNumber(item);
             break;
 
 #ifdef SAVE_SPACE_DM42_11
-          case ITM_STO : //JM optimized
+          case ITM_STO : //JM optimized, to be grouped, so that a single SAVE_SPACE can be used
           case ITM_RCL : //JM optimized
               lastErrorCode = ERROR_NONE;
               mimEnter(true);
@@ -559,7 +557,6 @@ void kill_ASB_icon(void) {
           case ITM_GRAD :
           case ITM_MULPI :
           case ITM_RAD :
-
               lastErrorCode = ERROR_NONE;
               mimEnter(true);
               runFunction(item);
@@ -1207,7 +1204,7 @@ void kill_ASB_icon(void) {
 
         if(nimNumberPart == NP_EMPTY || nimNumberPart == NP_INT_10 || nimNumberPart == NP_INT_16) {
           if(aimBuffer[1] == '0') {
-            //aimBuffer[1] = 0;       //JM_TYPE0
+            //aimBuffer[1] = 0;       //JM_TYPE0 start NIM entry with 0. Why not?
           }
 
           strcat(aimBuffer, indexOfItems[item].itemSoftmenuName);
@@ -1278,7 +1275,7 @@ void kill_ASB_icon(void) {
         switch(nimNumberPart) {
           case NP_INT_10 :
             strcat(aimBuffer, "."); // no break here
-            #ifndef OSX
+            #if !defined(OSX)
               __attribute__ ((fallthrough));
             #endif // !OSX
           case NP_REAL_FLOAT_PART :
@@ -1291,7 +1288,7 @@ void kill_ASB_icon(void) {
 
           case NP_COMPLEX_INT_PART :
             strcat(aimBuffer, "."); // no break here
-            #ifndef OSX
+            #if !defined(OSX)
               __attribute__ ((fallthrough));
             #endif // !OSX
           case NP_COMPLEX_FLOAT_PART :
@@ -1405,7 +1402,7 @@ void kill_ASB_icon(void) {
 
           case NP_INT_10 :
             strcat(aimBuffer, "."); // no break here
-            #ifndef OSX
+            #if !defined(OSX)
               __attribute__ ((fallthrough));
             #endif // !OSX
 
@@ -1547,9 +1544,9 @@ void kill_ASB_icon(void) {
         if((calcMode != CM_MIM) && (lastChar == -1 || (lastChar == 0 && aimBuffer[0] == '+'))) {
           screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
           calcModeNormal();
-          #ifdef DEBUGUNDO
+          #if defined(DEBUGUNDO)
             printf(">>> undo from addItemToNimBuffer\n");
-          #endif
+          #endif // DEBUGUNDO
           undo();
         }
         break;
@@ -1562,9 +1559,9 @@ void kill_ASB_icon(void) {
         if(calcMode != CM_NIM && lastErrorCode == 0) {
           setSystemFlag(FLAG_ASLIFT);
           if(item == ITM_EXIT1) {
-            #ifdef DEBUGUNDO
+            #if defined(DEBUGUNDO)
               printf(">>> saveForUndo from bufferizeA:");
-            #endif
+            #endif // DEBUGUNDO
             saveForUndo();
             if(lastErrorCode == ERROR_RAM_FULL) {
               lastErrorCode = 0;
@@ -1577,6 +1574,9 @@ void kill_ASB_icon(void) {
           return;
         }
         if(item == ITM_EXIT1) {
+          #if defined(DEBUGUNDO)
+            printf(">>> saveForUndo from bufferizeB:");
+          #endif // DEBUGUNDO
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) {
             lastErrorCode = 0;
@@ -1644,9 +1644,9 @@ void kill_ASB_icon(void) {
               setSystemFlag(FLAG_ASLIFT);
             }
             else {
-              #ifdef DEBUGUNDO
+              #if defined(DEBUGUNDO)
                 printf(">>> undo from addItemToNimBufferB\n");
-              #endif
+              #endif // DEBUGUNDO
               undo();
             }
             return;
@@ -1674,9 +1674,9 @@ void kill_ASB_icon(void) {
               setSystemFlag(FLAG_ASLIFT);
             }
             else {
-              #ifdef DEBUGUNDO
+              #if defined(DEBUGUNDO)
                 printf(">>> undo from addItemToNimBufferC\n");
-              #endif
+              #endif // DEBUGUNDO
               undo();
             }
             return;
@@ -2227,9 +2227,9 @@ void kill_ASB_icon(void) {
                   moreInfoOnError("In function closeNIM:", errorMessage, NULL, NULL);
                 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
-                #ifdef DEBUGUNDO
+                #if defined(DEBUGUNDO)
                   printf(">>> undo from addItemToNimBufferD\n");
-                #endif
+                #endif // DEBUGUNDO
                 undo();
                 return;
               }
@@ -2362,9 +2362,9 @@ void kill_ASB_icon(void) {
     popSoftmenu();
 
     if(aimBuffer[0] == 0) {
-      #ifdef DEBUGUNDO
+      #if defined(DEBUGUNDO)
         printf(">>> undo from closeAim\n");
-      #endif
+      #endif // DEBUGUNDO
       undo();
     }
     else {
@@ -2378,4 +2378,4 @@ void kill_ASB_icon(void) {
       setSystemFlag(FLAG_ASLIFT);
     }
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD

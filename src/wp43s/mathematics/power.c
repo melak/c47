@@ -80,7 +80,9 @@ TO_QSPI void (* const power[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DAT
  * \return void
  ***********************************************/
 void fnPower(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   power[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 
@@ -337,10 +339,10 @@ void powRemaReal(void) {
  * \return void
  ***********************************************/
 void powRemaCplx(void) {
-#ifndef TESTSUITE_BUILD
-  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
-  powCxmaCplx();
-#endif // TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
+    powCxmaCplx();
+  #endif // !TESTSUITE_BUILD
 }
 
 

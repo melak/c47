@@ -63,28 +63,32 @@ TO_QSPI void (* const realPart[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnRealPart(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
   realPart[getRegisterDataType(REGISTER_X)]();
 }
 
 
 
 void realPartCxma(void) {
-#ifndef TESTSUITE_BUILD
-  complex34Matrix_t cMat;
-  real34Matrix_t rMat;
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t cMat;
+    real34Matrix_t rMat;
 
-  linkToComplexMatrixRegister(REGISTER_X, &cMat);
-  if(realMatrixInit(&rMat, cMat.header.matrixRows, cMat.header.matrixColumns)) {
-    for(uint16_t i = 0; i < cMat.header.matrixRows * cMat.header.matrixColumns; ++i) {
-      real34Copy(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), &rMat.matrixElements[i]);
+    linkToComplexMatrixRegister(REGISTER_X, &cMat);
+    if(realMatrixInit(&rMat, cMat.header.matrixRows, cMat.header.matrixColumns)) {
+      for(uint16_t i = 0; i < cMat.header.matrixRows * cMat.header.matrixColumns; ++i) {
+        real34Copy(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), &rMat.matrixElements[i]);
+      }
+
+      convertReal34MatrixToReal34MatrixRegister(&rMat, REGISTER_X); // cMat invalidates here
+      realMatrixFree(&rMat);
     }
-
-    convertReal34MatrixToReal34MatrixRegister(&rMat, REGISTER_X); // cMat invalidates here
-    realMatrixFree(&rMat);
-  }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-#endif // TESTSUITE_BUILD
+    else {
+     displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 

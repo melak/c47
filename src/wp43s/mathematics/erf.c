@@ -62,7 +62,9 @@ TO_QSPI void (* const Erf[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnErf(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Erf[getRegisterDataType(REGISTER_X)]();
 

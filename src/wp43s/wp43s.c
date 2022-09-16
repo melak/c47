@@ -297,7 +297,7 @@ real_t                 SAVED_SIGMA_LASTX;
 real_t                 SAVED_SIGMA_LASTY;
 int32_t                SAVED_SIGMA_LAct;
 
-#ifdef DMCP_BUILD
+#if defined(DMCP_BUILD)
   #ifdef JMSHOWCODES                                        //JM Test
     int8_t            telltale_pos;                         //JM Test
     int8_t            telltale_lastkey;                     //JM Test

@@ -78,7 +78,9 @@ TO_QSPI void (* const logBaseX[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_
  * \return void
  ***********************************************/
 void fnLogXY(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   logBaseX[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 
@@ -483,10 +485,10 @@ void logxyCxmaReal(void) {
 
 
 void logxyRemaCplx(void) {
-#ifndef TESTSUITE_BUILD
-  convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
-  logxyCxmaCplx();
-#endif // TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    convertReal34MatrixRegisterToComplex34MatrixRegister(REGISTER_Y, REGISTER_Y);
+    logxyCxmaCplx();
+  #endif // !TESTSUITE_BUILD
 }
 
 

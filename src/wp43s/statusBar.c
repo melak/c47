@@ -31,7 +31,7 @@
 
 #include "wp43s.h"
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   void refreshStatusBar(void) {
     if(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR) {
       switch(calcMode) {
@@ -58,7 +58,9 @@
       if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) lcd_fill_rect(0, 0, 158, 20, 0);
       showDateTime();
       showHideHourGlass(); //TODO check if this belongs here and why JM
-      if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) return;    // With graph displayed, only update the time, as the other items are clashing with the graph display screen
+      if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) {
+        return;    // With graph displayed, only update the time, as the other items are clashing with the graph display screen
+      }
       showRealComplexResult();
       showComplexMode();
       showAngularMode();
@@ -79,7 +81,7 @@
       showHideSerialIO();
       showHidePrinter();
       showHideUserMode();
-      #ifdef DMCP_BUILD
+      #if defined(DMCP_BUILD)
         showHideUsbLowBattery();
       #else // !DMCP_BUILD
         showHideStackLift();
@@ -466,7 +468,7 @@ void showHideUserMode(void) {
   
 
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     void showHideUsbLowBattery(void) {
       if(getSystemFlag(FLAG_USB)) {
         showGlyph(STD_USB, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+9+2 pixel wide
@@ -481,7 +483,7 @@ void showHideUserMode(void) {
 
 
 
-  #ifndef DMCP_BUILD
+  #if !defined(DMCP_BUILD)
     void showHideStackLift(void) {
       if(getSystemFlag(FLAG_ASLIFT)) {
         // Draw S

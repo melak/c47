@@ -32,7 +32,9 @@ void fnUlp(uint16_t unusedButMandatoryParameter) {
   real34_t x34;
   longInteger_t lgInt;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger:

@@ -67,7 +67,9 @@ TO_QSPI void (* const arcsinh[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnArcsinh(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   arcsinh[getRegisterDataType(REGISTER_X)]();
 
@@ -107,83 +109,83 @@ void arcsinhCxma(void) {
 
 
 void arcsinhReal(void) {
-    real_t x;
+  real_t x;
 
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
-    ArcsinhReal(&x, &x, &ctxtReal51);
-    convertRealToReal34ResultRegister(&x, REGISTER_X);
-    setRegisterAngularMode(REGISTER_X, amNone);
+  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+  ArcsinhReal(&x, &x, &ctxtReal51);
+  convertRealToReal34ResultRegister(&x, REGISTER_X);
+  setRegisterAngularMode(REGISTER_X, amNone);
 }
 
 
 
 void arcsinhCplx(void) {
-    real_t xReal, xImag, rReal, rImag;
+  real_t xReal, xImag, rReal, rImag;
 
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
-    real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
+  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
+  real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
-    ArcsinhComplex(&xReal, &xImag, &rReal, &rImag, &ctxtReal39);
+  ArcsinhComplex(&xReal, &xImag, &rReal, &rImag, &ctxtReal39);
 
-    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
-    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&rImag, REGISTER_X);
 }
 
 
 uint8_t ArcsinhReal(const real_t *x, real_t *res, realContext_t *realContext) {
-    real_t xSquared;
+  real_t xSquared;
 
-    if(realIsInfinite(x) && realIsNegative(x)) {
-        realCopy(const_minusInfinity, res);
-    }
-    else {
-        // arcsinh(x) = ln(x + sqrt(x� + 1))
-        realMultiply(x, x, &xSquared, realContext);
-        realAdd(&xSquared, const_1, &xSquared, realContext);
-        realSquareRoot(&xSquared, &xSquared, realContext);
-        realAdd(&xSquared, x, res, realContext);
-        WP34S_Ln(res, res, realContext);
-    }
+  if(realIsInfinite(x) && realIsNegative(x)) {
+    realCopy(const_minusInfinity, res);
+  }
+  else {
+    // arcsinh(x) = ln(x + sqrt(x� + 1))
+    realMultiply(x, x, &xSquared, realContext);
+    realAdd(&xSquared, const_1, &xSquared, realContext);
+    realSquareRoot(&xSquared, &xSquared, realContext);
+    realAdd(&xSquared, x, res, realContext);
+    WP34S_Ln(res, res, realContext);
+  }
 
-    return ERROR_NONE;
+  return ERROR_NONE;
 }
 
 
 uint8_t ArcsinhComplex(const real_t *xReal, const real_t *xImag, real_t *rReal, real_t *rImag, realContext_t *realContext) {
-    real_t a, b;
+  real_t a, b;
 
-    realCopy(xReal, &a);
-    realCopy(xImag, &b);
+  realCopy(xReal, &a);
+  realCopy(xImag, &b);
 
-    // arcsinh(z) = ln(z + sqrt(z� + 1))
-    // calculate z�   real part
-    realMultiply(&b, &b, rReal, realContext);
-    realChangeSign(rReal);
-    realFMA(&a, &a, rReal, rReal, realContext);
+  // arcsinh(z) = ln(z + sqrt(z� + 1))
+  // calculate z�   real part
+  realMultiply(&b, &b, rReal, realContext);
+  realChangeSign(rReal);
+  realFMA(&a, &a, rReal, rReal, realContext);
 
-    // calculate z�   imaginary part
-    realMultiply(&a, &b, rImag, realContext);
-    realMultiply(rImag, const_2, rImag, realContext);
+  // calculate z�   imaginary part
+  realMultiply(&a, &b, rImag, realContext);
+  realMultiply(rImag, const_2, rImag, realContext);
 
-    // calculate z� + 1
-    realAdd(rReal, const_1, rReal, realContext);
+  // calculate z� + 1
+  realAdd(rReal, const_1, rReal, realContext);
 
-    // calculate sqrt(z� + 1)
-    realRectangularToPolar(rReal, rImag, rReal, rImag, realContext);
-    realSquareRoot(rReal, rReal, realContext);
-    realMultiply(rImag, const_1on2, rImag, realContext);
-    realPolarToRectangular(rReal, rImag, rReal, rImag, realContext);
+  // calculate sqrt(z� + 1)
+  realRectangularToPolar(rReal, rImag, rReal, rImag, realContext);
+  realSquareRoot(rReal, rReal, realContext);
+  realMultiply(rImag, const_1on2, rImag, realContext);
+  realPolarToRectangular(rReal, rImag, rReal, rImag, realContext);
 
-    // calculate z + sqrt(z� + 1)
-    realAdd(&a, rReal, rReal, realContext);
-    realAdd(&b, rImag, rImag, realContext);
+  // calculate z + sqrt(z� + 1)
+  realAdd(&a, rReal, rReal, realContext);
+  realAdd(&b, rImag, rImag, realContext);
 
-    // calculate ln(z + sqtr(z� + 1))
-    realRectangularToPolar(rReal, rImag, &a, &b, realContext);
-    WP34S_Ln(&a, &a, realContext);
+  // calculate ln(z + sqtr(z� + 1))
+  realRectangularToPolar(rReal, rImag, &a, &b, realContext);
+  WP34S_Ln(&a, &a, realContext);
 
-    realCopy(&a, rReal);
-    realCopy(&b, rImag);
+  realCopy(&a, rReal);
+  realCopy(&b, rImag);
 
-    return ERROR_NONE;
+  return ERROR_NONE;
 }

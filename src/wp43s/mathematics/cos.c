@@ -66,7 +66,9 @@ TO_QSPI void (* const Cos[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnCos(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Cos[getRegisterDataType(REGISTER_X)]();
 

@@ -64,7 +64,9 @@ TO_QSPI void (* const WPositive[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = 
  * \return void
  ***********************************************/
 void fnWpositive(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   WPositive[getRegisterDataType(REGISTER_X)]();
 

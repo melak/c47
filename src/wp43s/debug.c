@@ -203,11 +203,12 @@ char * getCurveFitModeName(uint16_t selection) {          //Can be only one bit.
 char * eatSpacesEnd(const char * ss) {
   static char tmp_names[20];
   int8_t ix;
-  strcpy(tmp_names,ss);
+
+  strcpy(tmp_names, ss);
   ix = stringByteLength(ss)-1;
-  while( ix > 0 ){
-    if(ss[ix]==' ') {
-      tmp_names[ix]=0;
+  while(ix > 0) {
+    if(ss[ix] == ' ') {
+      tmp_names[ix] = 0;
     }
     else {
       break;
@@ -225,15 +226,18 @@ char * eatSpacesEnd(const char * ss) {
 char * eatSpacesMid(const char * ss) {
   static char tmp_names[20];
   char tt[50];
-  strcpy(tt,ss);
-  int8_t ix=0,iy=0;
-  tmp_names[0]=0;
-  while( tt[ix] != 0 && ix < 50){
-    if(tt[ix]!=' ') tmp_names[iy++]=tt[ix];
+  int8_t ix = 0, iy = 0;
+
+  strcpy(tt, ss);
+  tmp_names[0] = 0;
+  while(tt[ix] != 0 && ix < 50) {
+    if(tt[ix] != ' ') {
+      tmp_names[iy++] = tt[ix];
+    }
     ix++;
   }
-  tmp_names[iy]=0;
-  tmp_names[iy++]=0;
+  tmp_names[iy] = 0;
+  tmp_names[iy++] = 0;
   return tmp_names;
 }
 
@@ -247,14 +251,15 @@ char * eatSpacesMid(const char * ss) {
  ***********************************************/
 char * getCurveFitModeNames(uint16_t selection) {
   uint16_t ix;
-  errorMessage[0]=0;
+
+  errorMessage[0] = 0;
   for(ix = 0; ix < 10; ix++) {
     if(selection & (1 << ix)) {
       strcat(errorMessage, errorMessage[0] == 0 ? "" : " ");
       strcat(errorMessage, eatSpacesEnd(getCurveFitModeName(1 << ix)));
     }
   }
-  if(errorMessage[0]==0) return "???        ";
+  if(errorMessage[0] == 0) return "???        ";
   return errorMessage;
 }
 
@@ -266,20 +271,20 @@ char * getCurveFitModeNames(uint16_t selection) {
  * \return char*          Formula of the curvefitting mode
  ***********************************************/
 char * getCurveFitModeFormula(uint16_t selection) {          //Can be only one bit. ??? if invalid.
-    switch( selection & 0x03FF ){
-      case CF_LINEAR_FITTING:      return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
-      case CF_EXPONENTIAL_FITTING: return "a" STD_SUB_0 STD_SPACE_3_PER_EM "e^(a" STD_SUB_1 "x)";
-      case CF_LOGARITHMIC_FITTING: return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "ln(x)";
-      case CF_POWER_FITTING:       return "a" STD_SUB_0 STD_SPACE_3_PER_EM "x^a" STD_SUB_1 ;
-      case CF_ROOT_FITTING:        return "a" STD_SUB_0 STD_SPACE_3_PER_EM "a" STD_SUB_1 "^(1/x)";
-      case CF_HYPERBOLIC_FITTING:  return "(a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x)" STD_SUP_MINUS_1;
-      case CF_PARABOLIC_FITTING:   return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x" STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_2 "x" STD_SUP_2;
-      case CF_CAUCHY_FITTING:      return STD_LEFT_SQUARE_BRACKET "a" STD_SUB_0 "(x+a" STD_SUB_1 ")" STD_SUP_2 "+a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET STD_SUP_MINUS_1;
-      case CF_GAUSS_FITTING:       return "a" STD_SUB_0 "e^" STD_LEFT_SQUARE_BRACKET  "(x-a" STD_SUB_1 ")" STD_SUP_2 "/a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET;
-      case CF_ORTHOGONAL_FITTING:  return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
-      default: return "???        "; break;
-    }
+  switch( selection & 0x03FF ){
+    case CF_LINEAR_FITTING:      return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
+    case CF_EXPONENTIAL_FITTING: return "a" STD_SUB_0 STD_SPACE_3_PER_EM "e^(a" STD_SUB_1 "x)";
+    case CF_LOGARITHMIC_FITTING: return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "ln(x)";
+    case CF_POWER_FITTING:       return "a" STD_SUB_0 STD_SPACE_3_PER_EM "x^a" STD_SUB_1 ;
+    case CF_ROOT_FITTING:        return "a" STD_SUB_0 STD_SPACE_3_PER_EM "a" STD_SUB_1 "^(1/x)";
+    case CF_HYPERBOLIC_FITTING:  return "(a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x)" STD_SUP_MINUS_1;
+    case CF_PARABOLIC_FITTING:   return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x" STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_2 "x" STD_SUP_2;
+    case CF_CAUCHY_FITTING:      return STD_LEFT_SQUARE_BRACKET "a" STD_SUB_0 "(x+a" STD_SUB_1 ")" STD_SUP_2 "+a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET STD_SUP_MINUS_1;
+    case CF_GAUSS_FITTING:       return "a" STD_SUB_0 "e^" STD_LEFT_SQUARE_BRACKET  "(x-a" STD_SUB_1 ")" STD_SUP_2 "/a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET;
+    case CF_ORTHOGONAL_FITTING:  return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
+    default: return "???        "; break;
   }
+}
 
 
 
@@ -1675,7 +1680,7 @@ void debugNIM(void) {
   }
 #endif // DEBUG_PANEL == 1 || DEBUG_REGISTER_L == 1
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   void dumpScreenToConsole(void) {
     int x, y;
 
@@ -1739,8 +1744,8 @@ void debugNIM(void) {
     uint32_t dataType;
     calcRegister_t regist;
 
-  //  if(debug) {
-  //    debugCounter++;
+    //if(debug) {
+    //  debugCounter++;
       printf("\n\n%s\nTotal memory = %d bytes = %d blocks\n", text, TO_BYTES(RAM_SIZE), RAM_SIZE);
       printf("Free blocks (%" PRId32 "):\n", numberOfFreeMemoryRegions);
 

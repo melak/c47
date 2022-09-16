@@ -38,59 +38,59 @@
    * \param[in] unusedParamButMandatory
    */
   void       fnNewMatrix                    (uint16_t unusedParamButMandatory);
-  
+
   /**
    * Opens the Matrix Editor.
    *
    * \param[in] regist
    */
   void       fnEditMatrix                   (uint16_t regist);
-  
+
   /**
    * Recalls old element in the Matrix Editor.
    *
    * \param[in] unusedParamButMandatory
    */
   void       fnOldMatrix                    (uint16_t unusedParamButMandatory);
-  
+
   /**
    * Go to an element in the Matrix Editor.
    *
    * \param[in] unusedParamButMandatory
    */
   void       fnGoToElement                  (uint16_t unusedParamButMandatory);
-  
+
   void       fnGoToRow                      (uint16_t row);
   void       fnGoToColumn                   (uint16_t col);
-  
+
   /**
    * Set grow mode.
    *
    * \param[in] growFlag
    */
   void       fnSetGrowMode                  (uint16_t growFlag);
-  
+
   /**
    * Increment or decrement of register I as row pointer.
    *
    * \param[in] mode
    */
   void       fnIncDecI                      (uint16_t mode);
-  
+
   /**
    * Increment or decrement of register J as column pointer.
    *
    * \param[in] mode
    */
   void       fnIncDecJ                      (uint16_t mode);
-  
+
   /**
    * Insert a row.
    *
    * \param[in] unusedParamButMandatory
    */
   void       fnInsRow                       (uint16_t unusedParamButMandatory);
-  
+
   /**
    * Delete a row.
    *
@@ -104,63 +104,63 @@
    * \param[in] regist
    */
   void       fnSetMatrixDimensions          (uint16_t regist);
-  
+
   /**
    * Get dimensions of matrix X.
    *
    * \param[in] unusedParamButMandatory
    */
   void       fnGetMatrixDimensions          (uint16_t unusedParamButMandatory);
-  
+
   /**
    * Transpose matrix.
    *
    * \param[in] unusedParamButMandatory
    */
   void       fnTranspose                    (uint16_t unusedParamButMandatory);
-  
+
   /**
    * LU decomposition.
    *
    * \param[in] unusedParamButMandatory
    */
   void       fnLuDecomposition              (uint16_t unusedParamButMandatory);
-  
+
   /**
    * Determinant.
    *
    * \param[in] unusedParamButMandatory
    */
   void       fnDeterminant                  (uint16_t unusedParamButMandatory);
-  
+
   /**
    * Invert a square matrix.
    *
    * \param[in] unusedParamButMandatory
    */
   void       fnInvertMatrix                 (uint16_t unusedParamButMandatory);
-  
+
   /**
    * Euclidean norm of matrix X.
    *
    * \param[in] unusedParamButMandatory
    */
   void       fnEuclideanNorm                (uint16_t unusedParamButMandatory);
-  
+
   /**
    * Row sum of matrix X.
    *
    * \param[in] unusedParamButMandatory
    */
   void       fnRowSum                       (uint16_t unusedParamButMandatory);
-  
+
   /**
    * Row norm of matrix X.
    *
    * \param[in] unusedParamButMandatory
    */
   void       fnRowNorm                      (uint16_t unusedParamButMandatory);
-  
+
 
   /**
    * Angle between vectors X and Y.
@@ -168,7 +168,7 @@
    * \param[in] unusedParamButMandatory
    */
   void       fnVectorAngle                  (uint16_t unusedParamButMandatory);
-  
+
 
   /**
    * Index a named matrix.
@@ -176,21 +176,21 @@
    * \param[in] regist
    */
   void       fnIndexMatrix                  (uint16_t regist);
-  
+
   /**
    * Get submatrix of the indexed matrix.
    *
    * \param[in] unusedParamButMandatory
    */
   void       fnGetMatrix                    (uint16_t unusedParamButMandatory);
-  
+
   /**
    * Put submatrix to the indexed matrix.
    *
    * \param[in] unusedParamButMandatory
    */
   void       fnPutMatrix                    (uint16_t unusedParamButMandatory);
-  
+
   /**
    * Swap rows of the indexed matrix.
    *
@@ -250,21 +250,21 @@
      * \return true if succeeded, false otherwise
      */
     bool_t   realMatrixInit                 (real34Matrix_t *matrix, uint16_t rows, uint16_t cols);
-    
+
     /**
      * Free a real matrix.
      *
      * \param[in] matrix
      */
     void     realMatrixFree                 (real34Matrix_t *matrix);
-    
+
     /**
      * Returns identity matrix of given size.
      *
      * \param[in] matrix
      */
     void     realMatrixIdentity             (real34Matrix_t *matrix, uint16_t size);
-    
+
     /**
      * Redemention a real matrix.
      *
@@ -281,21 +281,21 @@
      * \return true if succeeded, false otherwise
      */
     bool_t   complexMatrixInit              (complex34Matrix_t *matrix, uint16_t rows, uint16_t cols);
-    
+
     /**
      * Free a complex matrix.
      *
      * \param[in] matrix
      */
     void     complexMatrixFree              (complex34Matrix_t *matrix);
-    
+
     /**
      * Returns identity matrix of given size in complex34Matrix_t.
      *
      * \param[in] matrix
      */
     void     complexMatrixIdentity          (complex34Matrix_t *matrix, uint16_t size);
-    
+
     /**
      * Redemention a complex matrix.
      *
@@ -312,7 +312,7 @@
     void     mimRunFunction                 (int16_t func, uint16_t param);
     void     mimFinalize                    (void);
     void     mimRestore                     (void);
-    
+
     /**
      * Displays a real matrix.
      *
@@ -320,7 +320,7 @@
      * \param[in] prefixWidth
      */
     void     showRealMatrix                 (const real34Matrix_t *matrix, int16_t prefixWidth);
-    
+
     /**
      * Calculates width of columns of a real matrix.
      *
@@ -334,7 +334,7 @@
      * \return Width of the matrix excluding brackets
      */
     int16_t  getRealMatrixColumnWidths      (const real34Matrix_t *matrix, int16_t prefixWidth, const font_t *font, int16_t *colWidth, int16_t *rPadWidth, int16_t *digits, uint16_t maxCols);
-    
+
     /**
      * Displays a complex matrix.
      *
@@ -342,7 +342,7 @@
      * \param[in] prefixWidth
      */
     void     showComplexMatrix              (const complex34Matrix_t *matrix, int16_t prefixWidth);
-    
+
     /**
      * Calculates width of columns of a complex matrix.
      *
@@ -419,7 +419,7 @@
     bool_t   wrapIJ                         (uint16_t rows, uint16_t cols);
 
     void     copyRealMatrix                 (const real34Matrix_t *matrix, real34Matrix_t *res);
-    
+
     void     insRowRealMatrix               (real34Matrix_t *matrix, uint16_t beforeRowNo);
     void     delRowRealMatrix               (real34Matrix_t *matrix, uint16_t beforeRowNo);
     void     transposeRealMatrix            (const real34Matrix_t *matrix, real34Matrix_t *res);
@@ -463,6 +463,8 @@
     void     WP34S_matrix_inverse           (const real34Matrix_t *matrix, real34Matrix_t *res);
     void     divideRealMatrix               (const real34Matrix_t *matrix, const real34_t *x, real34Matrix_t *res);
     void     _divideRealMatrix              (const real34Matrix_t *matrix, const real_t *x, real34Matrix_t *res, realContext_t *realContext);
+    void     divideByRealMatrix             (const real34_t *y, const real34Matrix_t *matrix, real34Matrix_t *res);
+    void     _divideByRealMatrix            (const real_t *y, const real34Matrix_t *matrix, real34Matrix_t *res, realContext_t *realContext);
     void     divideRealMatrices             (const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res);
 
     void     complex_LU_decomposition       (const complex34Matrix_t *matrix, complex34Matrix_t *lu, uint16_t *p);
@@ -471,9 +473,11 @@
     void     complex_matrix_inverse         (const complex34Matrix_t *matrix, complex34Matrix_t *res);
     void     divideComplexMatrix            (const complex34Matrix_t *matrix, const real34_t *xr, const real34_t *xi, complex34Matrix_t *res);
     void     _divideComplexMatrix           (const complex34Matrix_t *matrix, const real_t *xr, const real_t *xi, complex34Matrix_t *res, realContext_t *realContext);
+    void     divideByComplexMatrix          (const real34_t *yr, const real34_t *yi, const complex34Matrix_t *matrix, complex34Matrix_t *res);
+    void     _divideByComplexMatrix         (const real_t *yr, const real_t *yi, const complex34Matrix_t *matrix, complex34Matrix_t *res, realContext_t *realContext);
     void     divideComplexMatrices          (const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res);
 
-    void     WP34S_matrix_linear_eqn        (const real34Matrix_t *a, const real34Matrix_t *b, real34Matrix_t *r);
+    void     real_matrix_linear_eqn         (const real34Matrix_t *a, const real34Matrix_t *b, real34Matrix_t *r);
     void     complex_matrix_linear_eqn      (const complex34Matrix_t *a, const complex34Matrix_t *b, complex34Matrix_t *r);
 
     void     real_QR_decomposition          (const real34Matrix_t *matrix, real34Matrix_t *q, real34Matrix_t *r);
@@ -488,12 +492,13 @@
 
   void       linkToRealMatrixRegister       (calcRegister_t regist, real34Matrix_t *linkedMatrix);
   void       linkToComplexMatrixRegister    (calcRegister_t regist, complex34Matrix_t *linkedMatrix);
-  
+
   void       elementwiseRema                (void (*f)(void));
   void       elementwiseRema_UInt16         (void (*f)(uint16_t), uint16_t param);
   void       elementwiseRemaLonI            (void (*f)(void));
   void       elementwiseRemaReal            (void (*f)(void));
   void       elementwiseRemaShoI            (void (*f)(void));
+  void       elementwiseRealRema            (void (*f)(void));
 
   void       elementwiseCxma                (void (*f)(void));
   void       elementwiseCxma_UInt16         (void (*f)(uint16_t), uint16_t param);
@@ -501,4 +506,5 @@
   void       elementwiseCxmaReal            (void (*f)(void));
   void       elementwiseCxmaShoI            (void (*f)(void));
   void       elementwiseCxmaCplx            (void (*f)(void));
+  void       elementwiseRealCxma            (void (*f)(void));
 #endif // !MATRIX_H

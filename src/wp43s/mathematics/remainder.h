@@ -24,7 +24,7 @@
   #include <stdint.h>
 
   void fnRmd(uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void rmdError(void);
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)

@@ -59,7 +59,9 @@ void fnOrthoPoly(uint16_t kind) {
 #ifndef SAVE_SPACE_DM42_12
   real_t x, y, z, ans;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
   if(getOrthoPolyParam(REGISTER_X, &x, &ctxtReal39) && getOrthoPolyParam(REGISTER_Y, &y, &ctxtReal39)) {
     realCopy(const_0, &z);
     if((kind != ORTHOPOLY_LAGUERRE_L_ALPHA) || getOrthoPolyParam(REGISTER_Z, &z, &ctxtReal39)) {
@@ -73,7 +75,9 @@ void fnOrthoPoly(uint16_t kind) {
         WP34S_OrthoPoly(kind, &x, &y, &z, &ans, &ctxtReal39);
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
         convertRealToReal34ResultRegister(&ans, REGISTER_X);
-        if(kind == ORTHOPOLY_LAGUERRE_L_ALPHA) fnDropY(NOPARAM);
+        if(kind == ORTHOPOLY_LAGUERRE_L_ALPHA) {
+          fnDropY(NOPARAM);
+        }
       }
     }
   }

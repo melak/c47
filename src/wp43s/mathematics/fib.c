@@ -67,7 +67,9 @@ TO_QSPI void (* const fib[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnFib(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   fib[getRegisterDataType(REGISTER_X)]();
 

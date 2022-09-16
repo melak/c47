@@ -26,7 +26,7 @@
   #include <stdint.h>
 
   void fnPower    (uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void powError   (void);
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)

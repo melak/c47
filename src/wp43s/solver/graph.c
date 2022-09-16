@@ -1191,5 +1191,5 @@ void fnEqSolvGraph (uint16_t func) {
      default:;
      }
 #endif // !TESTSUITE_BUILD
-    #endif //SAVE_SPACE_DM42_13GRF
+#endif //SAVE_SPACE_DM42_13GRF
 }

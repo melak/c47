@@ -69,7 +69,9 @@ TO_QSPI void (* const logBase10[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = 
  * \return void
  ***********************************************/
 void fnLog10(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   logBase10[getRegisterDataType(REGISTER_X)]();
 

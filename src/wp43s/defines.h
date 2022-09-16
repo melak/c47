@@ -265,7 +265,7 @@
 //* Other defines         *
 //*************************
 // Define the second tagline
-#define WHO2                                      "C43" STD_SPACE_3_PER_EM "HP42S" STD_SPACE_3_PER_EM "style" STD_SPACE_3_PER_EM "keys," STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Jaymos"   //JM ID
+#define WHO2                                      "C43" STD_SPACE_3_PER_EM "HP42S" STD_SPACE_3_PER_EM "style" STD_SPACE_3_PER_EM "keys," STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Jaymos, DaniR, H2X, Inautilus"   //JM ID
 #define CHARS_PER_LINE                            80 // Used in the flag browser application
 
 #define NUMERIC_FONT_HEIGHT                       36 // In pixel. Used in the font browser application
@@ -905,6 +905,11 @@ typedef enum {
 #define CMP_CLEANED_STRING_ONLY                    1
 #define CMP_EXTENSIVE                              2
 #define CMP_NAME                                   3
+
+  // Indirect parameter mode
+  #define INDPM_PARAM                                0
+  #define INDPM_REGISTER                             1
+  #define INDPM_FLAG                                 2
 
 // Combination / permutation
 #define CP_PERMUTATION                             0

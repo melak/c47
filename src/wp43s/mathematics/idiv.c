@@ -72,7 +72,9 @@ TO_QSPI void (* const idiv[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA
  * \return void
  ***********************************************/
 void fnIDiv(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   idiv[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

@@ -22,6 +22,7 @@
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
+#include "gui.h"
 #include "items.h"
 #include "realType.h"
 #include "registers.h"
@@ -33,7 +34,7 @@
 #include "typeDefinitions.h"
 #include <inttypes.h>
 #include <stdio.h>
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   #include <glib.h>
 #endif // PC_BUILD
 
@@ -41,17 +42,18 @@
 
 
 kb_timer_t  timer[TMR_NUMBER];
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
 gint64      timerLastCalled;
-#endif
-#ifdef DMCP_BUILD
+#endif // PC_BUILD
+
+#if defined(DMCP_BUILD)
 uint32_t    timerLastCalled;
 bool_t      mutexRefreshTimer = false;
-#endif
+#endif // DMCP_BUILD
 
 
 uint32_t getUptimeMs(void) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     return (uint32_t)sys_current_ms();
   #elif !defined(TESTSUITE_BUILD)
     return (uint32_t)(g_get_monotonic_time() / 1000);
@@ -77,7 +79,7 @@ void fnTicks(uint16_t unusedButMandatoryParameter) {
 
 
 void fnRebuildTimerRefresh(void) {
-#ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
   uint32_t next;
 
   if(mutexRefreshTimer == false) {
@@ -94,11 +96,11 @@ void fnRebuildTimerRefresh(void) {
       }
     }
   }
-#endif
+  #endif // DMCP_BUILD
 }
 
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
 /********************************************//**
  * \brief Refreshes timer. This function is
  * called every 5 ms by a GTK timer.
@@ -136,9 +138,9 @@ gboolean refreshTimer(gpointer data) {      // This function is called every 5 m
 
   return TRUE;
 }
-#endif
+#endif // PC_BUILD
 
-#ifdef DMCP_BUILD
+#if defined(DMCP_BUILD)
 void refreshTimer(void) {                   // This function is called when nextTimerRefresh has been elapsed
   uint32_t now = (uint32_t)sys_current_ms();
 
@@ -169,21 +171,21 @@ void refreshTimer(void) {                   // This function is called when next
 
   fnRebuildTimerRefresh();
 }
-#endif
+#endif // DMCP_BUILD
 
 
 void fnTimerDummyTest(uint16_t param) {
 #if defined(PC_BUILD) || defined (TESTSUITE_BUILD)
   printf("fnTimerDummyTest called  %u\n", param);
-#endif
+#endif // PC_BUILD || TESTSUITE_BUILD
 }
 
 
 
 void fnTimerReset(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   timerLastCalled = 0;
-#endif
+  #endif // !TESTSUITE_BUILD
 
   for(int i = 0; i < TMR_NUMBER; i++) {
     timer[i].state = TMR_UNUSED;
@@ -191,7 +193,7 @@ void fnTimerReset(void) {
     timer[i].param = 0;
   }
 
-#ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
   mutexRefreshTimer = false;
 #endif
   fnRebuildTimerRefresh();
@@ -211,24 +213,25 @@ void fnTimerConfig(uint8_t nr, void(*func)(uint16_t), uint16_t param) {
 
 
 void fnTimerStart(uint8_t nr, uint16_t param, uint32_t time) {
-#ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
   uint32_t now = (uint32_t)sys_current_ms();
-#endif
-#ifdef PC_BUILD
+  #endif // DMCP_BUILD
+
+  #if defined(PC_BUILD)
   gint64 now = g_get_monotonic_time();
-#endif
+  #endif // PC_BUILD
 
   if(nr < TMR_NUMBER) {
     timer[nr].param = param;
-#ifdef DMCP_BUILD
+    #if defined(DMCP_BUILD)
     timer[nr].timer_will_expire = (uint32_t)(now + time);
-#endif
-#ifdef PC_BUILD
+    #endif // DMCP_BUILD
+    #if defined(PC_BUILD)
     timer[nr].timer_will_expire = (gint64)(now + time *1000);
     if(timer[nr].timer_will_expire < 0) {
       timer[nr].timer_will_expire = time *1000;
     }
-#endif
+    #endif // PC_BUILD
     timer[nr].state = TMR_RUNNING;
   }
   fnRebuildTimerRefresh();
@@ -287,9 +290,9 @@ uint8_t fnTimerGetStatus(uint8_t nr) {
 
 // Timer application
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 static uint32_t _currentTime(void) {
-  #ifdef DMCP_BUILD
+    #if defined(DMCP_BUILD)
     tm_t timeInfo;
     dt_t dateInfo;
 
@@ -306,12 +309,16 @@ static uint32_t _currentTime(void) {
 static void _antirewinder(uint32_t currTime) {
   if(currTime < timerStartTime) {
     timerValue += 86400000u - timerStartTime;
-    if(timerTotalTime > 0) timerTotalTime += 86400000u - timerStartTime;
+      if(timerTotalTime > 0) {
+        timerTotalTime += 86400000u - timerStartTime;
+      }
     timerStartTime = 0u;
   }
   else if(currTime >= timerStartTime + 3600000u) {
     timerValue += 3600000u;
-    if(timerTotalTime > 0) timerTotalTime += 3600000u;
+      if(timerTotalTime > 0) {
+        timerTotalTime += 3600000u;
+      }
     timerStartTime += 3600000u;
   }
 }
@@ -328,33 +335,32 @@ static uint32_t _getTimerValue(void) {
 }
 #endif // TESTSUITE_BUILD
 
-//--  #ifdef PC_BUILD
-//--    static gboolean _updateTimer(gpointer unusedData) {
-//--      if(calcMode != CM_TIMER) {
-//--        return FALSE;
-//--      }
-//--      fnUpdateTimerApp();
-//--      return timerStartTime != TIMER_APP_STOPPED;
-//--    }
-//--  #endif // PC_BUILD
+//#if defined(PC_BUILD)
+//  static gboolean _updateTimer(gpointer unusedData) {
+//    if(calcMode != CM_TIMER) {
+//      return FALSE;
+//    }
+//    fnUpdateTimerApp();
+//    return timerStartTime != TIMER_APP_STOPPED;
+//  }
+//#endif // PC_BUILD
 
 void fnItemTimerApp(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   calcMode = CM_TIMER;
-  showSoftmenu(-MNU_TIMERF);
   rbr1stDigit = true;
   watchIconEnabled = false;
   if(timerStartTime != TIMER_APP_STOPPED) {
     fnTimerStart(TO_TIMER_APP, TO_TIMER_APP, TIMER_APP_PERIOD);
-//--  #ifdef PC_BUILD
-//--      gdk_threads_add_timeout(100, _updateTimer, NULL);
-//--  #endif // PC_BUILD
+      //#if defined(PC_BUILD)
+      //  gdk_threads_add_timeout(100, _updateTimer, NULL);
+      //#endif // PC_BUILD
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnAddTimerApp(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   real_t tmp;
 
   uInt32ToReal(_getTimerValue() / 100u, &tmp);
@@ -373,17 +379,17 @@ void fnAddTimerApp(uint16_t unusedButMandatoryParameter) {
   fnSigma(1);
 
   refreshScreen();
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnDecisecondTimerApp(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   timerCraAndDeciseconds ^= 0x80u;
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnResetTimerApp(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   timerValue = 0;
   timerTotalTime = 0;
   if(timerStartTime != TIMER_APP_STOPPED) {
@@ -391,18 +397,18 @@ void fnResetTimerApp(uint16_t unusedButMandatoryParameter) {
     fnTimerStart(TO_TIMER_APP, TO_TIMER_APP, TIMER_APP_PERIOD);
   }
   rbr1stDigit = true;
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnStartStopTimerApp(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(timerStartTime == TIMER_APP_STOPPED) {
     setSystemFlag(FLAG_RUNTIM);
     timerStartTime = _currentTime();
     fnTimerStart(TO_TIMER_APP, TO_TIMER_APP, TIMER_APP_PERIOD);
-//--  #ifdef PC_BUILD
-//--      gdk_threads_add_timeout(100, _updateTimer, NULL);
-//--  #endif // PC_BUILD
+      //#if defined(PC_BUILD)
+      //  gdk_threads_add_timeout(100, _updateTimer, NULL);
+      //#endif // PC_BUILD
   }
   else {
     fnStopTimerApp();
@@ -412,11 +418,13 @@ void fnStartStopTimerApp(void) {
 }
 
 void fnStopTimerApp(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(timerStartTime != TIMER_APP_STOPPED) {
     const uint32_t msec = _currentTime();
     timerValue += msec - timerStartTime;
-    if(timerTotalTime > 0) timerTotalTime += msec - timerStartTime;
+      if(timerTotalTime > 0) {
+        timerTotalTime += msec - timerStartTime;
+      }
     timerStartTime = TIMER_APP_STOPPED;
     fnTimerStop(TO_TIMER_APP);
   }
@@ -426,7 +434,7 @@ void fnStopTimerApp(void) {
 }
 
 void fnShowTimerApp(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(calcMode == CM_TIMER) {
     const uint32_t msec = _getTimerValue();
     clearRegisterLine(REGISTER_T, true, true);
@@ -460,27 +468,43 @@ void fnShowTimerApp(void) {
       sprintf(tmpString + stringByteLength(tmpString), "[%" PRId32 STD_CURSOR "]", (int32_t)(aimBuffer[AIM_BUFFER_LENGTH / 2] - '0'));
     }
     showString(tmpString, &numericFont, 1, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);
-  }
-#endif // TESTSUITE_BUILD
+
+      bool_t timerMenu = false;
+      for(int i = 0; i < SOFTMENU_STACK_SIZE; i++) {
+        if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_TIMERF) {
+          timerMenu = true;
+          break;
+        }
+      }
+      if(!timerMenu) {
+        showSoftmenu(-MNU_TIMERF);
+      }
+      #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
+      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_TIMERF) {
+        calcModeNormalGui();
+      }
+      #endif // PC_BUILD && (SCREEN_800X480 == 0)
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnUpdateTimerApp(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(calcMode == CM_TIMER) {
     fnShowTimerApp();
     displayShiftAndTamBuffer();
-    #ifdef DMCP_BUILD
+      #if defined(DMCP_BUILD)
       refreshLcd();
       lcd_refresh();
     #else // !DMCP_BUILD
       refreshLcd(NULL);
     #endif // DMCP_BUILD
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnEnterTimerApp(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(rbr1stDigit) {
     real_t tmp;
     uInt32ToReal(_getTimerValue() / 100u, &tmp);
@@ -496,11 +520,11 @@ void fnEnterTimerApp(void) {
     timerCraAndDeciseconds = (timerCraAndDeciseconds & 0x80u) + (uint8_t)(aimBuffer[AIM_BUFFER_LENGTH / 2] - '0');
     rbr1stDigit = true;
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnDotTimerApp(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   const uint32_t msec = _getTimerValue();
   real_t tmp;
 
@@ -522,11 +546,11 @@ void fnDotTimerApp(void) {
     timerStartTime = _currentTime();
     fnTimerStart(TO_TIMER_APP, TO_TIMER_APP, TIMER_APP_PERIOD);
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnPlusTimerApp(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   const uint32_t msec = _getTimerValue();
   real_t tmp;
 
@@ -562,11 +586,11 @@ void fnPlusTimerApp(void) {
   }
 
   refreshScreen();
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnUpTimerApp(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if((timerCraAndDeciseconds & 0x7fu) >= 99u) {
     timerCraAndDeciseconds &= 0x80u;
   }
@@ -574,11 +598,11 @@ void fnUpTimerApp(void) {
     ++timerCraAndDeciseconds;
   }
   rbr1stDigit = true;
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnDownTimerApp(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if((timerCraAndDeciseconds & 0x7fu) == 0u) {
     timerCraAndDeciseconds |= 99u;
   }
@@ -586,11 +610,11 @@ void fnDownTimerApp(void) {
     --timerCraAndDeciseconds;
   }
   rbr1stDigit = true;
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnDigitKeyTimerApp(uint16_t digit) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(rbr1stDigit || aimBuffer[AIM_BUFFER_LENGTH / 2] == 0) {
     aimBuffer[AIM_BUFFER_LENGTH / 2    ] = digit + '0';
     aimBuffer[AIM_BUFFER_LENGTH / 2 + 1] = 0;
@@ -600,11 +624,11 @@ void fnDigitKeyTimerApp(uint16_t digit) {
     timerCraAndDeciseconds = (timerCraAndDeciseconds & 0x80u) + (uint8_t)(aimBuffer[AIM_BUFFER_LENGTH / 2] - '0') * 10u + digit;
     rbr1stDigit = true;
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnRecallTimerApp(uint16_t regist) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   real_t tmp;
   bool_t overflow;
   uint32_t val;
@@ -650,11 +674,11 @@ void fnRecallTimerApp(uint16_t regist) {
       fnTimerStart(TO_TIMER_APP, TO_TIMER_APP, TIMER_APP_PERIOD);
     }
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnBackspaceTimerApp(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(rbr1stDigit) {
     fnResetTimerApp(NOPARAM);
   }
@@ -664,22 +688,22 @@ void fnBackspaceTimerApp(void) {
   else {
     aimBuffer[AIM_BUFFER_LENGTH / 2] = 0;
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnLeaveTimerApp(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   popSoftmenu();
   rbr1stDigit = true;
   calcMode = previousCalcMode;
   watchIconEnabled = (timerStartTime != TIMER_APP_STOPPED);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnPollTimerApp(void) { // poll every minute not to rewind the timer
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(calcMode != CM_TIMER && timerStartTime != TIMER_APP_STOPPED) {
     _antirewinder(_currentTime());
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }

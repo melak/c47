@@ -70,7 +70,9 @@ TO_QSPI void (* const arcsin[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnArcsin(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   arcsin[getRegisterDataType(REGISTER_X)]();
 
@@ -163,15 +165,15 @@ void arcsinReal(void) {
 }
 
 void arcsinCplx(void) {
-    real_t xReal, xImag, rReal, rImag;
+  real_t xReal, xImag, rReal, rImag;
 
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
-    real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
+  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
+  real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
-    ArcsinComplex(&xReal, &xImag, &rReal, &rImag, &ctxtReal39);
+  ArcsinComplex(&xReal, &xImag, &rReal, &rImag, &ctxtReal39);
 
-    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
-    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&rImag, REGISTER_X);
 }
 
 uint8_t ArcsinComplex(const real_t *xReal, const real_t *xImag, real_t *rReal, real_t *rImag, realContext_t *realContext) {
@@ -217,4 +219,3 @@ uint8_t ArcsinComplex(const real_t *xReal, const real_t *xImag, real_t *rReal, r
 
   return ERROR_NONE;
 }
-

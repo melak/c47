@@ -26,13 +26,13 @@
   #include <stdint.h>
 
   void fnLnP1   (uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void lnP1Error(void);
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
     #define lnP1Error typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void lnP1LonI (void);
   void lnP1Rema (void);
   void lnP1Cxma (void);

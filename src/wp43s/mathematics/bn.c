@@ -43,7 +43,9 @@ static void bnTypeError(void) {
 void fnBn(uint16_t unusedButMandatoryParameter) {
   real_t x, res;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
     convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
@@ -77,7 +79,9 @@ cleanup:
 void fnBnStar(uint16_t unusedButMandatoryParameter) {
   real_t x, res;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
     convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);

@@ -24,13 +24,13 @@
   #include <stdint.h>
 
   void fnSquareRoot(uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void sqrtError   (void);
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
     #define sqrtError typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void sqrtLonI    (void);
   void sqrtRema    (void);
   void sqrtCxma    (void);

@@ -204,7 +204,9 @@ void fnAlphaPos(uint16_t regist) {
     return;
   }
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   longIntegerInit(lgInt);
   ptrTarget = REGISTER_STRING_DATA(REGISTER_X);
@@ -295,7 +297,9 @@ void fnAlphaRR(uint16_t regist) {
   steps = longIntegerModuloUInt(lgInt, stringGlyphLen);
   longIntegerFree(lgInt);
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(steps > 0) {
     for(glyphPointer=0, steps=stringGlyphLen-steps; steps > 0; steps--) {
@@ -374,7 +378,9 @@ void fnAlphaRL(uint16_t regist) {
   steps = longIntegerModuloUInt(lgInt, stringGlyphLen);
   longIntegerFree(lgInt);
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(steps > 0) {
     for(glyphPointer=0; steps > 0; steps--) {
@@ -451,7 +457,9 @@ void fnAlphaSR(uint16_t regist) {
   longIntegerToInt(lgInt, steps);
   longIntegerFree(lgInt);
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(steps > 0) {
     for(glyphPointer=0, steps=stringGlyphLen-steps; steps > 0; steps--) {
@@ -525,7 +533,9 @@ void fnAlphaSL(uint16_t regist) {
   longIntegerToInt(lgInt, steps);
   longIntegerFree(lgInt);
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(steps > 0) {
     for(glyphPointer=0; steps > 0; steps--) {

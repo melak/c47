@@ -175,10 +175,10 @@ void fnSolve(uint16_t labelOrVariable) {
     }
     else {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
         sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
         moreInfoOnError("In function fnSolve:", errorMessage, "is not a real number.", "");
-      #endif
+      #endif // PC_BUILD
       adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
     }
   }

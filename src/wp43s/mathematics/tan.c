@@ -91,7 +91,9 @@ void longIntegerAngleReduction(calcRegister_t regist, angularMode_t angularMode,
  * \return void
  ***********************************************/
 void fnTan(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Tan[getRegisterDataType(REGISTER_X)]();
 
@@ -174,33 +176,33 @@ void tanCplx(void) {
   // tan(a + ib) = -----------------------------------
   //                cos(a)*cosh(b) - i*sin(a)*sinh(b)
 
-    real_t xReal, xImag;
+  real_t xReal, xImag;
 
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
-    real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
+  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
+  real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
-    TanComplex(&xReal, &xImag, &xReal, &xImag, &ctxtReal51);
+  TanComplex(&xReal, &xImag, &xReal, &xImag, &ctxtReal51);
 
-    convertRealToReal34ResultRegister(&xReal, REGISTER_X);
-    convertRealToImag34ResultRegister(&xImag, REGISTER_X);
+  convertRealToReal34ResultRegister(&xReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&xImag, REGISTER_X);
 }
 
 uint8_t TanComplex(const real_t *xReal, const real_t *xImag, real_t *rReal, real_t *rImag, realContext_t *realContext) {
-    real_t sina, cosa, sinhb, coshb;
-    real_t numerReal, denomReal;
-    real_t numerImag, denomImag;
+  real_t sina, cosa, sinhb, coshb;
+  real_t numerReal, denomReal;
+  real_t numerImag, denomImag;
 
-    WP34S_Cvt2RadSinCosTan(xReal, amRadian, &sina, &cosa, NULL, realContext);
-    WP34S_SinhCosh(xImag, &sinhb, &coshb, realContext);
+  WP34S_Cvt2RadSinCosTan(xReal, amRadian, &sina, &cosa, NULL, realContext);
+  WP34S_SinhCosh(xImag, &sinhb, &coshb, realContext);
 
-    realMultiply(&sina, &coshb, &numerReal, realContext);
-    realMultiply(&cosa, &sinhb, &numerImag, realContext);
+  realMultiply(&sina, &coshb, &numerReal, realContext);
+  realMultiply(&cosa, &sinhb, &numerImag, realContext);
 
-    realMultiply(&cosa, &coshb, &denomReal, realContext);
-    realMultiply(&sina, &sinhb, &denomImag, realContext);
-    realChangeSign(&denomImag);
+  realMultiply(&cosa, &coshb, &denomReal, realContext);
+  realMultiply(&sina, &sinhb, &denomImag, realContext);
+  realChangeSign(&denomImag);
 
-    divComplexComplex(&numerReal, &numerImag, &denomReal, &denomImag, rReal, rImag, realContext);
+  divComplexComplex(&numerReal, &numerImag, &denomReal, &denomImag, rReal, rImag, realContext);
 
-    return ERROR_NONE;
+  return ERROR_NONE;
 }

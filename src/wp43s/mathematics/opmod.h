@@ -30,7 +30,7 @@
 
   void longInteger_mulmod(const longInteger_t a, int32_t exp_a, const longInteger_t b, int32_t exp_b, const longInteger_t c, int32_t exp_c, longInteger_t res, int32_t *exp_res);
   void longInteger_expmod(const longInteger_t a, const longInteger_t b, const longInteger_t c, longInteger_t res);
-  
+
   //      RegZRegYRegX
   void opModLonILonILonI (uint16_t mode);
   void opModLonILonIShoI (uint16_t mode);

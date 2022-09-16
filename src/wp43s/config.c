@@ -269,11 +269,11 @@ void fnBatteryVoltage(uint16_t unusedButMandatoryParameter) {
 
   liftStack();
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     int32ToReal(3100, &value);
   #endif // PC_BUILD
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     int32ToReal(get_vbat(), &value);
   #endif // DMCP_BUILD
 
@@ -313,19 +313,19 @@ void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
       longIntegerToAllocatedString(sigDigits, errorMessage, sizeof(errorMessage));
       moreInfoOnError("In function fnSetSignificantDigits:", errorMessage, "is out of range.", "");
-      #endif
+      #endif // PC_BUILD
     }
     longIntegerFree(sigDigits);
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
     moreInfoOnError("In function fnSetSignificantDigits:", errorMessage, "is not a long integer.", "");
-    #endif
+    #endif // PC_BUILD
   }
 }
 
@@ -542,7 +542,7 @@ void addTestPrograms(void) {
   currentLocalStepNumber        = 1;
   firstDisplayedLocalStepNumber = 0;
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     if(f_open(ppgm_fp, "testPgms.bin", FA_READ) != FR_OK) {
       *(beginOfProgramMemory)     = 255; // .END.
       *(beginOfProgramMemory + 1) = 255; // .END.
@@ -589,13 +589,13 @@ void addTestPrograms(void) {
     printf("freeProgramBytes = %u\n", freeProgramBytes);
 
     scanLabelsAndPrograms();
-    #ifndef TESTSUITE_BUILD
+    #if !defined(TESTSUITE_BUILD)
       leavePem();
-    #endif // TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
     printf("freeProgramBytes = %u\n", freeProgramBytes);
     //listPrograms();
     //listLabelsAndPrograms();
-  #endif // !DMCP_BUILD
+  #endif // DMCP_BUILD
 }
 
 
@@ -616,7 +616,7 @@ void fnReset(uint16_t confirmation) {
     freeMemoryRegions[0].sizeInBlocks = RAM_SIZE - 40 - 1; // - 1: one block for an empty program
 
     if(tmpString == NULL) {
-      #ifdef DMCP_BUILD
+      #if defined(DMCP_BUILD)
          tmpString        = aux_buf_ptr();   // 2560 byte buffer provided by DMCP
          errorMessage     = write_buf_ptr(); // 4096 byte buffer provided by DMCP
        #else // !DMCP_BUILD
@@ -679,7 +679,7 @@ void fnReset(uint16_t confirmation) {
     }
 
     // initialize 1 long integer reserved variables: GRAMOD
-    #ifdef OS64BIT
+    #if defined(OS64BIT)
       memPtr = allocWp43s(3);
       ((dataBlock_t *)memPtr)->dataMaxLength = 2;
     #else // !OS64BIT
@@ -745,12 +745,12 @@ void fnReset(uint16_t confirmation) {
     ((dataBlock_t *)memPtr)->matrixColumns = 1;
     real34Zero(memPtr + 4);
 
-    #ifndef TESTSUITE_BUILD
+    #if !defined(TESTSUITE_BUILD)
       matrixIndex = INVALID_VARIABLE; // Unset matrix index
-    #endif // TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
 
 
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       debugWindow = DBG_REGISTERS;
     #endif // PC_BUILD
 
@@ -859,16 +859,16 @@ void fnReset(uint16_t confirmation) {
     angle90  = (real51_t *)const_piOn2_51;
     angle45  = (real51_t *)const_piOn4_51;
 
-    #ifndef TESTSUITE_BUILD
+    #if !defined(TESTSUITE_BUILD)
       resetAlphaSelectionBuffer();
     #endif // !TESTSUITE_BUILD
 
-    #ifdef TESTSUITE_BUILD
+    #if defined(TESTSUITE_BUILD)
       calcMode = CM_NORMAL;
     #else // TESTSUITE_BUILD
       if(calcMode == CM_MIM) mimFinalize();
       calcModeNormal();
-    #endif // TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
 
     #if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
       debugMemAllocation = true;
@@ -988,7 +988,7 @@ void fnReset(uint16_t confirmation) {
 
 
 
-#define VERSION1 "_108_04"
+#define VERSION1 "_108_05"
 
     #ifdef JM_LAYOUT_1A
       #undef L1L2
@@ -1134,7 +1134,7 @@ void backToSystem(uint16_t confirmation) {
       fnOff(NOPARAM);
     #endif // PC_BUILD
 
-    #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
       backToDMCP = true;
     #endif // DMCP_BUILD
   }

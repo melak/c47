@@ -159,6 +159,7 @@ void       fnAGraph                           (uint16_t regist);
 //JM^^
 
   void     refreshScreen                      (void);
+  //void     invertPixel                        (uint32_t x, uint32_t y);
   //int      getPixel                           (uint32_t x, uint32_t y);
   /**
    * Displays a 0 terminated string.

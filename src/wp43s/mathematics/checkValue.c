@@ -72,10 +72,12 @@ void checkValueLonI(uint16_t mode) {
 
   if(mode == CHECK_VALUE_POSITIVE_ZERO || mode == CHECK_VALUE_NEGATIVE_ZERO) { // unlikely true
     convertLongIntegerRegisterToLongInteger(REGISTER_X, val);
-    if(mode == CHECK_VALUE_POSITIVE_ZERO)
+    if(mode == CHECK_VALUE_POSITIVE_ZERO) {
       temporaryInformation = (getSystemFlag(FLAG_SPCRES) && longIntegerIsZero(val) && longIntegerIsPositive(val)) ? TI_TRUE : TI_FALSE;
-    else // mode == CHECK_VALUE_NEGATIVE_ZERO
+    }
+    else { // mode == CHECK_VALUE_NEGATIVE_ZERO
       temporaryInformation = (getSystemFlag(FLAG_SPCRES) && longIntegerIsZero(val) && longIntegerIsNegative(val)) ? TI_TRUE : TI_FALSE;
+    }
     longIntegerFree(val);
     return;
   }
@@ -110,9 +112,11 @@ void checkValueRema(uint16_t mode) {
     case CHECK_VALUE_NAN:
       temporaryInformation = TI_FALSE;
       if(getSystemFlag(FLAG_SPCRES)) {
-        for(int i = 0; i < elements; ++i)
-          if(real34IsNaN(REGISTER_REAL34_MATRIX_M_ELEMENTS(REGISTER_X) + i))
+        for(int i = 0; i < elements; ++i) {
+          if(real34IsNaN(REGISTER_REAL34_MATRIX_M_ELEMENTS(REGISTER_X) + i)) {
             temporaryInformation = TI_TRUE;
+          }
+        }
       }
       return;
     default:
@@ -134,33 +138,41 @@ void checkValueCxma(uint16_t mode) {
     case CHECK_VALUE_COMPLEX:
       temporaryInformation = TI_FALSE;
       if(getSystemFlag(FLAG_SPCRES)) {
-        for(int i = 0; i < elements; ++i)
-          if(!real34IsZero(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(REGISTER_X) + i)))
+        for(int i = 0; i < elements; ++i) {
+          if(!real34IsZero(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(REGISTER_X) + i))) {
             temporaryInformation = TI_TRUE;
+          }
+        }
       }
       return;
     case CHECK_VALUE_REAL: // true if all elements are real
       temporaryInformation = TI_TRUE;
       if(getSystemFlag(FLAG_SPCRES)) {
-        for(int i = 0; i < elements; ++i)
-          if(!real34IsZero(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(REGISTER_X) + i)))
+        for(int i = 0; i < elements; ++i) {
+          if(!real34IsZero(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(REGISTER_X) + i))) {
             temporaryInformation = TI_FALSE;
+          }
+        }
       }
       return;
     case CHECK_VALUE_SPECIAL: // true if any elements is special
       temporaryInformation = TI_FALSE;
       if(getSystemFlag(FLAG_SPCRES)) {
-        for(int i = 0; i < elements; ++i)
-          if(real34IsSpecial(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(REGISTER_X) + i)) || real34IsSpecial(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(REGISTER_X) + i)))
+        for(int i = 0; i < elements; ++i) {
+          if(real34IsSpecial(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(REGISTER_X) + i)) || real34IsSpecial(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(REGISTER_X) + i))) {
             temporaryInformation = TI_TRUE;
+          }
+        }
       }
       return;
     case CHECK_VALUE_NAN:
       temporaryInformation = TI_FALSE;
       if(getSystemFlag(FLAG_SPCRES)) {
-        for(int i = 0; i < elements; ++i)
-          if(real34IsNaN(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(REGISTER_X) + i)) || real34IsNaN(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(REGISTER_X) + i)))
+        for(int i = 0; i < elements; ++i) {
+          if(real34IsNaN(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(REGISTER_X) + i)) || real34IsNaN(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(REGISTER_X) + i))) {
             temporaryInformation = TI_TRUE;
+          }
+        }
       }
       return;
     default:

@@ -50,7 +50,7 @@
 
 #include "wp43s.h"
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 any34Matrix_t         openMatrixMIMPointer;
 bool_t                matEditMode;
 uint16_t              scrollRow;
@@ -93,10 +93,12 @@ static bool_t getDimensionArg(uint32_t *rows, uint32_t *cols) {
       return false;
   }
 
-  if(getRegisterDataType(REGISTER_X) == dtLongInteger)
+    if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
     convertLongIntegerRegisterToLongInteger(REGISTER_X, tmp_lgInt);
-  else // dtReal34
+    }
+    else { // dtReal34
     convertReal34ToLongInteger(REGISTER_REAL34_DATA(REGISTER_X), tmp_lgInt, DEC_ROUND_DOWN);
+    }
   if(longIntegerIsNegativeOrZero(tmp_lgInt)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -109,10 +111,12 @@ static bool_t getDimensionArg(uint32_t *rows, uint32_t *cols) {
   }
   longIntegerToUInt(tmp_lgInt, *cols);
 
-  if(getRegisterDataType(REGISTER_Y) == dtLongInteger)
+    if(getRegisterDataType(REGISTER_Y) == dtLongInteger) {
     convertLongIntegerRegisterToLongInteger(REGISTER_Y, tmp_lgInt);
-  else // dtReal34
+    }
+    else { // dtReal34
     convertReal34ToLongInteger(REGISTER_REAL34_DATA(REGISTER_Y), tmp_lgInt, DEC_ROUND_DOWN);
+    }
   if(longIntegerIsNegativeOrZero(tmp_lgInt)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -137,7 +141,9 @@ static bool_t swapRowsReal(real34Matrix_t *matrix) {
 
   int32ToReal(matrix->header.matrixRows, &rrows);
 
-  if((!getArg(REGISTER_Y, &ry)) || (!getArg(REGISTER_X, &rx))) return false;
+    if((!getArg(REGISTER_Y, &ry)) || (!getArg(REGISTER_X, &rx))) {
+      return false;
+    }
 
   realToInt32(&ry, a);
   realToInt32(&rx, b);
@@ -163,14 +169,17 @@ static bool_t swapRowsComplex(complex34Matrix_t *matrix) {
 
   int32ToReal(matrix->header.matrixRows, &rrows);
 
-  if((!getArg(REGISTER_Y, &ry)) || (!getArg(REGISTER_X, &rx))) return false;
+    if((!getArg(REGISTER_Y, &ry)) || (!getArg(REGISTER_X, &rx))) {
+      return false;
+    }
 
   realToInt32(&ry, a);
   realToInt32(&rx, b);
   if(realIsPositive(&rx) && realIsPositive(&ry) && realCompareLessEqual(&rx, &rrows) && realCompareLessEqual(&ry, &rrows)) {
-    if(!realCompareEqual(&ry, &rx))
+      if(!realCompareEqual(&ry, &rx)) {
       complexMatrixSwapRows(matrix, matrix, a - 1, b - 1);
   }
+    }
   else {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -195,7 +204,9 @@ static bool_t getMatrixReal(real34Matrix_t *matrix) {
   int32ToReal(matrix->header.matrixRows    - i, &rrows);
   int32ToReal(matrix->header.matrixColumns - j, &rcols);
 
-  if((!getArg(REGISTER_Y, &ry)) || (!getArg(REGISTER_X, &rx))) return false;
+    if((!getArg(REGISTER_Y, &ry)) || (!getArg(REGISTER_X, &rx))) {
+      return false;
+    }
 
   realToInt32(&ry, a);
   realToInt32(&rx, b);
@@ -205,10 +216,12 @@ static bool_t getMatrixReal(real34Matrix_t *matrix) {
     if(lastErrorCode == ERROR_NONE) {
       if(initMatrixRegister(REGISTER_X, a, b, false)) {
         linkToRealMatrixRegister(REGISTER_X, &mat);
-        for(r = 0; r < a; ++r)
-          for(c = 0; c < b; ++c)
+          for(r = 0; r < a; ++r) {
+            for(c = 0; c < b; ++c) {
             real34Copy(&matrix->matrixElements[(r + i) * matrix->header.matrixColumns + c + j], &mat.matrixElements[r * b + c]);
       }
+          }
+        }
       else {
         displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
         return false;
@@ -237,7 +250,9 @@ static bool_t getMatrixComplex(complex34Matrix_t *matrix) {
   int32ToReal(matrix->header.matrixRows    - i, &rrows);
   int32ToReal(matrix->header.matrixColumns - j, &rcols);
 
-  if((!getArg(REGISTER_Y, &ry)) || (!getArg(REGISTER_X, &rx))) return false;
+    if((!getArg(REGISTER_Y, &ry)) || (!getArg(REGISTER_X, &rx))) {
+      return false;
+    }
 
   realToInt32(&ry, a);
   realToInt32(&rx, b);
@@ -247,11 +262,15 @@ static bool_t getMatrixComplex(complex34Matrix_t *matrix) {
     if(lastErrorCode == ERROR_NONE) {
       if(initMatrixRegister(REGISTER_X, a, b, true)) {
         linkToComplexMatrixRegister(REGISTER_X, &mat);
-        for(r = 0; r < a; ++r)
-          for(c = 0; c < b; ++c)
+          for(r = 0; r < a; ++r) {
+            for(c = 0; c < b; ++c) {
             complex34Copy(&matrix->matrixElements[(r + i) * matrix->header.matrixColumns + c + j], &mat.matrixElements[r * b + c]);
       }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          }
+        }
+        else {
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        }
     }
   }
   else {
@@ -286,10 +305,12 @@ static bool_t putMatrixReal(real34Matrix_t *matrix) {
 
   linkToRealMatrixRegister(REGISTER_X, &mat);
   if((mat.header.matrixRows + i) <= matrix->header.matrixRows && (mat.header.matrixColumns + j) <= matrix->header.matrixColumns) {
-    for(r = 0; r < mat.header.matrixRows; ++r)
-      for(c = 0; c < mat.header.matrixColumns; ++c)
+      for(r = 0; r < mat.header.matrixRows; ++r) {
+        for(c = 0; c < mat.header.matrixColumns; ++c) {
         real34Copy(&mat.matrixElements[r * mat.header.matrixColumns + c], &matrix->matrixElements[(r + i) * matrix->header.matrixColumns + c + j]);
   }
+      }
+    }
   else {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -320,10 +341,12 @@ static bool_t putMatrixComplex(complex34Matrix_t *matrix) {
 
   linkToComplexMatrixRegister(REGISTER_X, &mat);
   if((mat.header.matrixRows + i) <= matrix->header.matrixRows && (mat.header.matrixColumns + j) <= matrix->header.matrixColumns) {
-    for(r = 0; r < mat.header.matrixRows; ++r)
-      for(c = 0; c < mat.header.matrixColumns; ++c)
+      for(r = 0; r < mat.header.matrixRows; ++r) {
+        for(c = 0; c < mat.header.matrixColumns; ++c) {
         complex34Copy(&mat.matrixElements[r * mat.header.matrixColumns + c], &matrix->matrixElements[(r + i) * matrix->header.matrixColumns + c + j]);
   }
+      }
+    }
   else {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -389,17 +412,18 @@ static bool_t incJComplex(complex34Matrix_t *matrix) {
 static bool_t decJComplex(complex34Matrix_t *matrix) {
   return decJReal((real34Matrix_t *)matrix);
 }
-#endif // TESTSUITE_BUILD
-
+#endif // !TESTSUITE_BUILD
 
 
 void fnNewMatrix(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   uint32_t rows, cols;
 
   if(!getDimensionArg(&rows, &cols)) return;
 
-  if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
   //Initialize Memory for Matrix
   if(initMatrixRegister(REGISTER_X, rows, cols, false)) {
@@ -415,20 +439,20 @@ void fnNewMatrix(uint16_t unusedParamButMandatory) {
   }
 
   adjustResult(REGISTER_X, true, false, REGISTER_X, REGISTER_Y, -1);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
 bool_t saveStatsMatrix(void) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   uint32_t rows, cols;
   calcRegister_t regStats = findNamedVariable("STATS");
 
-  #ifdef DEBUGUNDO
+    #if defined(DEBUGUNDO)
     printf(">>> saveStatsMatrix\n");
     printRegisterToConsole(regStats,"...STATS:\n","\n");
     printRegisterToConsole(TEMP_REGISTER_2_SAVED_STATS,"...pre-save: TEMP_REGISTER_2_SAVED_STATS:\n","\n");
-  #endif
+    #endif // DEBUGUNDO
 
   if(regStats != INVALID_VARIABLE) {
     if(getRegisterDataType(regStats) == dtReal34Matrix) {
@@ -438,12 +462,12 @@ bool_t saveStatsMatrix(void) {
       //Initialize Memory for Matrix
       if(initMatrixRegister(TEMP_REGISTER_2_SAVED_STATS, rows, cols, false)) {
         copySourceRegisterToDestRegister(regStats, TEMP_REGISTER_2_SAVED_STATS);
-        #ifdef DEBUGUNDO
+          #if defined(DEBUGUNDO)
           printf(">>>saveStatsMatrix:    backing up STATS matrix containing %i rows and %i columns\n",rows, cols);
           regStats = findNamedVariable("STATS");
           printRegisterToConsole(regStats,"...STATS:\n","\n");
           printRegisterToConsole(TEMP_REGISTER_2_SAVED_STATS,"post save: ...TEMP_REGISTER_2_SAVED_STATS:\n","\n");
-        #endif
+          #endif // DEBUGUNDO
         return true; //backed up
       }
       else {
@@ -455,18 +479,22 @@ bool_t saveStatsMatrix(void) {
         return false;
       }
     }
-    else return true; //nothing to backup
-  }
-  else return true; //nothing to backup
+      else {
+        return true; //nothing to backup
+      }
+    }
+    else {
+      return true; //nothing to backup
+    }
 #else // TESTSUITE_BUILD
   return true;
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
 bool_t recallStatsMatrix(void) {
-#ifndef TESTSUITE_BUILD
-  #ifdef DEBUGUNDO
+  #if !defined(TESTSUITE_BUILD)
+    #if defined(DEBUGUNDO)
     printf(">>> recallStatsMatrix ...");
     printRegisterToConsole(TEMP_REGISTER_2_SAVED_STATS,"From: recallStatsMatrix: TEMP_REGISTER_2_SAVED_STATS\n","");
   #endif //DEBUGUNDO
@@ -483,16 +511,16 @@ bool_t recallStatsMatrix(void) {
         allocateNamedVariable("STATS", dtReal34, REAL34_SIZE);
         regStats = findNamedVariable("STATS");
       }
-      #ifdef DEBUGUNDO
+        #if defined(DEBUGUNDO)
         printf("Clearing STATS\n");
-      #endif
+        #endif // DEBUGUNDO
       clearRegister(regStats);
 
       //Initialize Memory for Matrix
       if(initMatrixRegister(regStats, rows, cols, false)) {
-        #ifdef DEBUGUNDO
+          #if defined(DEBUGUNDO)
           printf(">>>    restoring STATS matrix containing %i rows and %i columns\n",rows, cols);
-        #endif
+          #endif // DEBUGUNDO
         copySourceRegisterToDestRegister(TEMP_REGISTER_2_SAVED_STATS, regStats);
         clearRegister(TEMP_REGISTER_2_SAVED_STATS);
         return true; //restored
@@ -506,18 +534,21 @@ bool_t recallStatsMatrix(void) {
         return false; //not enough memory
       }
     }
-    else return false; //TEMP_REGISTER_2_SAVED_STATS is a non-STATS dimensioned register
-  }
-  else return false; //TEMP_REGISTER_2_SAVED_STATS is no real 34 matrix
+      else {
+        return false; //TEMP_REGISTER_2_SAVED_STATS is a non-STATS dimensioned register
+      }
+    }
+    else {
+      return false; //TEMP_REGISTER_2_SAVED_STATS is no real 34 matrix
+    }
 #else // TESTSUITE_BUILD
   return true; //no error
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnEditMatrix(uint16_t regist) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   saveStatsMatrix();
   const uint16_t reg = (regist == NOPARAM) ? REGISTER_X : regist;
   if((getRegisterDataType(reg) == dtReal34Matrix) || (getRegisterDataType(reg) == dtComplex34Matrix)) {
@@ -535,18 +566,17 @@ void fnEditMatrix(uint16_t regist) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(reg));
     moreInfoOnError("In function fnEditMatrix:", errorMessage, "is not a matrix.", "");
-    #endif
-  }
-#endif // TESTSUITE_BUILD
+      #endif // PC_BUILD
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnOldMatrix(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(calcMode == CM_MIM) {
     aimBuffer[0] = 0;
     nimBufferDisplay[0] = 0;
@@ -554,59 +584,64 @@ void fnOldMatrix(uint16_t unusedParamButMandatory) {
     cursorEnabled = false;
 
     if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
-      if(openMatrixMIMPointer.realMatrix.matrixElements) realMatrixFree(&openMatrixMIMPointer.realMatrix);
+        if(openMatrixMIMPointer.realMatrix.matrixElements) {
+          realMatrixFree(&openMatrixMIMPointer.realMatrix);
+        }
       convertReal34MatrixRegisterToReal34Matrix(matrixIndex, &openMatrixMIMPointer.realMatrix);
     }
     else {
-      if(openMatrixMIMPointer.complexMatrix.matrixElements) complexMatrixFree(&openMatrixMIMPointer.complexMatrix);
+        if(openMatrixMIMPointer.complexMatrix.matrixElements) {
+          complexMatrixFree(&openMatrixMIMPointer.complexMatrix);
+        }
       convertComplex34MatrixRegisterToComplex34Matrix(matrixIndex, &openMatrixMIMPointer.complexMatrix);
     }
   }
   else {
     displayCalcErrorMessage(ERROR_OPERATION_UNDEFINED, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "works in MIM only");
     moreInfoOnError("In function fnOldMatrix:", errorMessage, NULL, NULL);
-    #endif
-  }
-#endif // TESTSUITE_BUILD
+      #endif // PC_BUILD
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnGoToElement(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(calcMode == CM_MIM) {
     mimEnter(false);
     runFunction(ITM_M_GOTO_ROW);
   }
   else {
     displayCalcErrorMessage(ERROR_OPERATION_UNDEFINED, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
       sprintf(errorMessage, "works in MIM only");
       moreInfoOnError("In function fnGoToElement:", errorMessage, NULL, NULL);
-    #endif
-  }
-#endif // TESTSUITE_BUILD
+      #endif // PC_BUILD
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void fnGoToRow(uint16_t row) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(calcMode == CM_MIM) {
     tmpRow = row;
   }
   else {
     displayCalcErrorMessage(ERROR_OPERATION_UNDEFINED, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
       sprintf(errorMessage, "works in MIM only");
       moreInfoOnError("In function fnGoToRow:", errorMessage, NULL, NULL);
-    #endif
-  }
-#endif // TESTSUITE_BUILD
+      #endif // PC_BUILD
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void fnGoToColumn(uint16_t col) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(calcMode == CM_MIM) {
     if(tmpRow == 0 || tmpRow > openMatrixMIMPointer.header.matrixRows || col == 0 || col > openMatrixMIMPointer.header.matrixColumns) {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
@@ -631,14 +666,13 @@ void fnGoToColumn(uint16_t col) {
   }
   else {
     displayCalcErrorMessage(ERROR_OPERATION_UNDEFINED, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
       sprintf(errorMessage, "works in MIM only");
       moreInfoOnError("In function fnGoToColumn:", errorMessage, NULL, NULL);
-    #endif
-  }
-#endif // TESTSUITE_BUILD
+      #endif // PC_BUILD
+    }
+  #endif // !TESTSUITE_BUILD
 }
-
 
 
 void fnSetGrowMode(uint16_t growFlag) {
@@ -651,25 +685,22 @@ void fnSetGrowMode(uint16_t growFlag) {
 }
 
 
-
 void fnIncDecI(uint16_t mode) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   callByIndexedMatrix((mode == DEC_FLAG) ? decIReal : incIReal, (mode == DEC_FLAG) ? decIComplex : incIComplex);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
-
 
 
 void fnIncDecJ(uint16_t mode) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   callByIndexedMatrix((mode == DEC_FLAG) ? decJReal : incJReal, (mode == DEC_FLAG) ? decJComplex : incJComplex);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnInsRow(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(calcMode == CM_MIM) {
     mimEnter(false);
     if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
@@ -682,18 +713,17 @@ void fnInsRow(uint16_t unusedParamButMandatory) {
   }
   else {
     displayCalcErrorMessage(ERROR_OPERATION_UNDEFINED, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
       sprintf(errorMessage, "works in MIM only");
       moreInfoOnError("In function fnGoToElement:", errorMessage, NULL, NULL);
-    #endif
-  }
-#endif // TESTSUITE_BUILD
+      #endif // PC_BUILD
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnDelRow(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(calcMode == CM_MIM) {
     mimEnter(false);
     if(openMatrixMIMPointer.header.matrixRows > 1) {
@@ -708,18 +738,17 @@ void fnDelRow(uint16_t unusedParamButMandatory) {
   }
   else {
     displayCalcErrorMessage(ERROR_OPERATION_UNDEFINED, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
       sprintf(errorMessage, "works in MIM only");
       moreInfoOnError("In function fnGoToElement:", errorMessage, NULL, NULL);
-    #endif
-  }
-#endif // TESTSUITE_BUILD
+      #endif // PC_BUILD
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnSetMatrixDimensions(uint16_t regist) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   uint32_t y, x;
 
   if(!getDimensionArg(&y, &x)) {
@@ -734,15 +763,15 @@ void fnSetMatrixDimensions(uint16_t regist) {
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
-
 void fnGetMatrixDimensions(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
-  if(!saveLastX()) return;
+  #if !defined(TESTSUITE_BUILD)
+    if(!saveLastX()) {
+      return;
+    }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || getRegisterDataType(REGISTER_X) == dtComplex34Matrix) {
     const uint16_t rows = REGISTER_DATA(REGISTER_X)->matrixRows;
@@ -762,22 +791,22 @@ void fnGetMatrixDimensions(uint16_t unusedButMandatoryParameter) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
     moreInfoOnError("In function fnGetMatrixDimensions:", errorMessage, "is not a matrix.", "");
-    #endif
+      #endif // PC_BUILD
   }
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
-
 void fnTranspose(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
-  if(!saveLastX()) return;
+  #if !defined(TESTSUITE_BUILD)
+    if(!saveLastX()) {
+      return;
+    }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x;
@@ -797,22 +826,22 @@ void fnTranspose(uint16_t unusedButMandatoryParameter) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
     moreInfoOnError("In function fnTranspose:", errorMessage, "is not a matrix.", "");
-    #endif
+      #endif // PC_BUILD
   }
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
-
 void fnLuDecomposition(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
-  if(!saveLastX()) return;
+  #if !defined(TESTSUITE_BUILD)
+    if(!saveLastX()) {
+      return;
+    }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, l, u;
@@ -873,7 +902,9 @@ void fnLuDecomposition(uint16_t unusedParamButMandatory) {
         }
         freeWp43s(p, x.header.matrixRows * sizeof(uint16_t));
       }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        else {
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        }
     }
 
     realMatrixFree(&x);
@@ -944,28 +975,31 @@ void fnLuDecomposition(uint16_t unusedParamButMandatory) {
         }
         freeWp43s(p, x.header.matrixRows * sizeof(uint16_t));
       }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        else {
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        }
     }
 
     complexMatrixFree(&x);
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
     moreInfoOnError("In function fnLuDecomposition:", errorMessage, "is not a matrix.", "");
-    #endif
+      #endif // PC_BUILD
   }
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnDeterminant(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
-  if(!saveLastX()) return;
+  #if !defined(TESTSUITE_BUILD)
+    if(!saveLastX()) {
+      return;
+    }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x;
@@ -1014,21 +1048,22 @@ void fnDeterminant(uint16_t unusedParamButMandatory) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
     moreInfoOnError("In function fnLuDecomposition:", errorMessage, "is not a matrix.", "");
-    #endif
+      #endif // PC_BUILD
   }
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnInvertMatrix(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
-  if(!saveLastX()) return;
+  #if !defined(TESTSUITE_BUILD)
+    if(!saveLastX()) {
+      return;
+    }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, res;
@@ -1106,21 +1141,22 @@ void fnInvertMatrix(uint16_t unusedParamButMandatory) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
     moreInfoOnError("In function fnInvertMatrix:", errorMessage, "is not a matrix.", "");
-    #endif
+      #endif // PC_BUILD
   }
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnEuclideanNorm(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
-  if(!saveLastX()) return;
+  #if !defined(TESTSUITE_BUILD)
+    if(!saveLastX()) {
+      return;
+    }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t matrix;
@@ -1148,21 +1184,22 @@ void fnEuclideanNorm(uint16_t unusedParamButMandatory) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
     moreInfoOnError("In function fnInvertMatrix:", errorMessage, "is not a matrix.", "");
-    #endif
+      #endif // PC_BUILD
   }
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnRowSum(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
-  if(!saveLastX()) return;
+  #if !defined(TESTSUITE_BUILD)
+    if(!saveLastX()) {
+      return;
+    }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, res;
@@ -1182,7 +1219,9 @@ void fnRowSum(uint16_t unusedParamButMandatory) {
       convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
       realMatrixFree(&res);
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
   }
   else if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix) {
     complex34Matrix_t x, res;
@@ -1209,21 +1248,22 @@ void fnRowSum(uint16_t unusedParamButMandatory) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
     moreInfoOnError("In function fnInvertMatrix:", errorMessage, "is not a matrix.", "");
-    #endif
+      #endif // PC_BUILD
   }
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnRowNorm(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
-  if(!saveLastX()) return;
+  #if !defined(TESTSUITE_BUILD)
+    if(!saveLastX()) {
+      return;
+    }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x;
@@ -1238,9 +1278,10 @@ void fnRowNorm(uint16_t unusedParamButMandatory) {
         realSetPositiveSign(&elem);
         realAdd(&sum, &elem, &sum, &ctxtReal39);
       }
-      if(realCompareGreaterThan(&sum, &norm))
+        if(realCompareGreaterThan(&sum, &norm)) {
         realCopy(&sum, &norm);
     }
+      }
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertRealToReal34ResultRegister(&norm, REGISTER_X);
@@ -1259,30 +1300,32 @@ void fnRowNorm(uint16_t unusedParamButMandatory) {
         complexMagnitude(&elem, &imag, &elem, &ctxtReal39);
         realAdd(&sum, &elem, &sum, &ctxtReal39);
       }
-      if(realCompareGreaterThan(&sum, &norm))
+        if(realCompareGreaterThan(&sum, &norm)) {
         realCopy(&sum, &norm);
     }
+      }
 
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertRealToReal34ResultRegister(&norm, REGISTER_X);
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
     moreInfoOnError("In function fnInvertMatrix:", errorMessage, "is not a matrix.", "");
-    #endif
+      #endif // PC_BUILD
   }
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnVectorAngle(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
-  if(!saveLastX()) return;
+  #if !defined(TESTSUITE_BUILD)
+    if(!saveLastX()) {
+      return;
+    }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix && getRegisterDataType(REGISTER_Y) == dtReal34Matrix) {
     real34Matrix_t x, y;
@@ -1308,20 +1351,19 @@ void fnVectorAngle(uint16_t unusedParamButMandatory) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
     moreInfoOnError("In function fnVectorAngle:", errorMessage, "is not a real matrix.", "");
-    #endif
+      #endif // PC_BUILD
   }
 
   adjustResult(REGISTER_X, true, true, REGISTER_X, REGISTER_Y, -1);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnIndexMatrix(uint16_t regist) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if((getRegisterDataType(regist) == dtReal34Matrix) || (getRegisterDataType(regist) == dtComplex34Matrix)) {
     matrixIndex = regist;
     setIRegisterAsInt(false, 1);
@@ -1329,42 +1371,38 @@ void fnIndexMatrix(uint16_t regist) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(regist));
     moreInfoOnError("In function fnIndexMatrix:", errorMessage, "is not a matrix.", "");
     #endif
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
-
 
 
 void fnGetMatrix(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   callByIndexedMatrix(getMatrixReal, getMatrixComplex);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
-
 
 
 void fnPutMatrix(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   callByIndexedMatrix(putMatrixReal, putMatrixComplex);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
-
 
 
 void fnSwapRows(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   callByIndexedMatrix(swapRowsReal, swapRowsComplex);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnSimultaneousLinearEquation(uint16_t numberOfUnknowns) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(allocateNamedMatrix("Mat_A", numberOfUnknowns, numberOfUnknowns) != INVALID_VARIABLE) {
     if(allocateNamedMatrix("Mat_B", numberOfUnknowns, 1) != INVALID_VARIABLE) {
       if(allocateNamedMatrix("Mat_X", numberOfUnknowns, 1) != INVALID_VARIABLE) {
@@ -1374,23 +1412,26 @@ void fnSimultaneousLinearEquation(uint16_t numberOfUnknowns) {
       }
     }
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
+
 
 void fnEditLinearEquationMatrixA(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   fnEditMatrix(findNamedVariable("Mat_A"));
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
+
 
 void fnEditLinearEquationMatrixB(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   fnEditMatrix(findNamedVariable("Mat_B"));
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void fnEditLinearEquationMatrixX(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(findNamedVariable("Mat_A") == INVALID_VARIABLE || findNamedVariable("Mat_B") == INVALID_VARIABLE || findNamedVariable("Mat_X") == INVALID_VARIABLE) {
     displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1402,7 +1443,7 @@ void fnEditLinearEquationMatrixX(uint16_t unusedParamButMandatory) {
     real34Matrix_t a, b, x;
     linkToRealMatrixRegister(findNamedVariable("Mat_A"), &a);
     linkToRealMatrixRegister(findNamedVariable("Mat_B"), &b);
-    WP34S_matrix_linear_eqn(&a, &b, &x);
+      real_matrix_linear_eqn(&a, &b, &x);
     if(x.matrixElements) {
       convertReal34MatrixToReal34MatrixRegister(&x, findNamedVariable("Mat_X"));
       realMatrixFree(&x);
@@ -1445,14 +1486,15 @@ void fnEditLinearEquationMatrixX(uint16_t unusedParamButMandatory) {
     copySourceRegisterToDestRegister(findNamedVariable("Mat_X"), REGISTER_X);
     popSoftmenu();
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnQrDecomposition(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
-  if(!saveLastX()) return;
+  #if !defined(TESTSUITE_BUILD)
+    if(!saveLastX()) {
+      return;
+    }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, q, r;
@@ -1502,20 +1544,19 @@ void fnQrDecomposition(uint16_t unusedParamButMandatory) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
     moreInfoOnError("In function fnQrDecomposition:", errorMessage, "is not a matrix.", "");
-    #endif
+      #endif // PC_BUILD
   }
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
 void fnEigenvalues(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, res, ires;
 
@@ -1524,8 +1565,7 @@ void fnEigenvalues(uint16_t unusedParamButMandatory) {
     if(x.header.matrixRows != x.header.matrixColumns && x.header.matrixRows >= 2) {
       displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "rectangular or single-element matrix or (%d" STD_CROSS "%d)",
-                x.header.matrixRows, x.header.matrixColumns);
+          sprintf(errorMessage, "rectangular or single-element matrix or (%d" STD_CROSS "%d)", x.header.matrixRows, x.header.matrixColumns);
         moreInfoOnError("In function fnEigenvalues:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
@@ -1547,7 +1587,9 @@ void fnEigenvalues(uint16_t unusedParamButMandatory) {
             realMatrixFree(&ires);
             complexMatrixFree(&cres);
           }
-          else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+            else {
+              displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+            }
         }
         else {
           convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
@@ -1564,8 +1606,7 @@ void fnEigenvalues(uint16_t unusedParamButMandatory) {
     if(x.header.matrixRows != x.header.matrixColumns && x.header.matrixRows >= 2) {
       displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "rectangular or single-element matrix or (%d" STD_CROSS "%d)",
-                x.header.matrixRows, x.header.matrixColumns);
+          sprintf(errorMessage, "rectangular or single-element matrix or (%d" STD_CROSS "%d)", x.header.matrixRows, x.header.matrixColumns);
         moreInfoOnError("In function fnEigenvalues:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
@@ -1579,18 +1620,19 @@ void fnEigenvalues(uint16_t unusedParamButMandatory) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
     moreInfoOnError("In function fnEigenvalues:", errorMessage, "is not a matrix.", "");
-    #endif
+      #endif // PC_BUILD
   }
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void fnEigenvectors(uint16_t unusedParamButMandatory) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
     real34Matrix_t x, res, ires;
 
@@ -1621,7 +1663,9 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
           realMatrixFree(&ires);
           complexMatrixFree(&cres);
         }
-        else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          else {
+            displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          }
       }
       else {
         convertReal34MatrixToReal34MatrixRegister(&res, REGISTER_X);
@@ -1652,19 +1696,18 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
     moreInfoOnError("In function fnEigenvectors:", errorMessage, "is not a matrix.", "");
-    #endif
+      #endif // PC_BUILD
   }
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
-
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 bool_t realMatrixInit(real34Matrix_t *matrix, uint16_t rows, uint16_t cols) {
   //Allocate Memory for Matrix
   const size_t neededSize = TO_BLOCKS((rows * cols) * sizeof(real34_t));
@@ -1702,7 +1745,9 @@ void realMatrixIdentity(real34Matrix_t *matrix, uint16_t size) {
       real34Copy(const34_1, &matrix->matrixElements[i * size + i]);
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
 }
 
 
@@ -1712,15 +1757,20 @@ void realMatrixRedim(real34Matrix_t *matrix, uint16_t rows, uint16_t cols) {
 
   if(realMatrixInit(&newMatrix, rows, cols)) {
     elements = matrix->header.matrixRows * matrix->header.matrixColumns;
-    if(elements > rows * cols) elements = rows * cols;
-    for(uint32_t i = 0; i < elements; ++i)
+      if(elements > rows * cols) {
+        elements = rows * cols;
+      }
+      for(uint32_t i = 0; i < elements; ++i) {
       real34Copy(&matrix->matrixElements[i], &newMatrix.matrixElements[i]);
+      }
     realMatrixFree(matrix);
     matrix->header.matrixRows = newMatrix.header.matrixRows;
     matrix->header.matrixColumns = newMatrix.header.matrixColumns;
     matrix->matrixElements = newMatrix.matrixElements;
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
 }
 
 
@@ -1763,7 +1813,9 @@ void complexMatrixIdentity(complex34Matrix_t *matrix, uint16_t size) {
       real34Copy(const34_0, VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * size + i]));
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
 }
 
 
@@ -1773,7 +1825,9 @@ void complexMatrixRedim(complex34Matrix_t *matrix, uint16_t rows, uint16_t cols)
 
   if(complexMatrixInit(&newMatrix, rows, cols)) {
     elements = matrix->header.matrixRows * matrix->header.matrixColumns;
-    if(elements > rows * cols) elements = rows * cols;
+      if(elements > rows * cols) {
+        elements = rows * cols;
+      }
     for(uint32_t i = 0; i < elements; ++i) {
       complex34Copy(&matrix->matrixElements[i], &newMatrix.matrixElements[i]);
     }
@@ -1782,7 +1836,9 @@ void complexMatrixRedim(complex34Matrix_t *matrix, uint16_t rows, uint16_t cols)
     matrix->header.matrixColumns = newMatrix.header.matrixColumns;
     matrix->matrixElements = newMatrix.matrixElements;
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
 }
 
 
@@ -1856,10 +1912,12 @@ void showMatrixEditor() {
   sprintf(tmpString, "%" PRIi16 ";%" PRIi16 "=" STD_SPACE_4_PER_EM "%s%s%s", (int16_t)(colVector ? matSelCol+1 : matSelRow+1), (int16_t)(colVector ? 1 : matSelCol+1), aimBuffer[0] == 0 ? STD_SPACE_HAIR : "", (aimBuffer[0] == 0 || aimBuffer[0] == '-') ? "" : " ", nimBufferDisplay);
   width = stringWidth(tmpString, &numericFont, true, true) + 1;
   if(aimBuffer[0] == 0) {
-    if(getRegisterDataType(matrixIndex) == dtReal34Matrix)
+      if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
       real34ToDisplayString(&openMatrixMIMPointer.realMatrix.matrixElements[matSelRow*cols+matSelCol], amNone, &tmpString[strlen(tmpString)], &numericFont, SCREEN_WIDTH - width, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_4_PER_EM, true);
-    else
+      }
+      else {
       complex34ToDisplayString(&openMatrixMIMPointer.complexMatrix.matrixElements[matSelRow*cols+matSelCol], &tmpString[strlen(tmpString)], &numericFont, SCREEN_WIDTH - width, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_4_PER_EM, true);
+      }
 
     showString(tmpString, &numericFont, 0, Y_POSITION_OF_NIM_LINE, vmNormal, true, false);
   }
@@ -1920,11 +1978,13 @@ void mimEnter(bool_t commit) {
     setSystemFlag(FLAG_ASLIFT);
   }
   if(commit) {
-    if(getRegisterDataType(matrixIndex) == dtReal34Matrix)
+      if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
       convertReal34MatrixToReal34MatrixRegister(&openMatrixMIMPointer.realMatrix, matrixIndex);
-    else
+      }
+      else {
       convertComplex34MatrixToComplex34MatrixRegister(&openMatrixMIMPointer.complexMatrix, matrixIndex);
   }
+    }
   updateMatrixHeightCache();
 }
 
@@ -2021,7 +2081,9 @@ void mimAddNumber(int16_t item) {
       break;
 
     case ITM_CC :
-      if(aimBuffer[0] == 0) return;
+        if(aimBuffer[0] == 0) {
+          return;
+        }
       break;
 
     case ITM_CONSTpi :
@@ -2146,23 +2208,27 @@ void mimRunFunction(int16_t func, uint16_t param) {
     }
   }
 
-  if(liftStackFlag) setSystemFlag(FLAG_ASLIFT);
+    if(liftStackFlag) {
+      setSystemFlag(FLAG_ASLIFT);
+    }
 
   updateMatrixHeightCache();
-  #ifdef PC_BUILD
+    #if defined(PC_BUILD)
     refreshLcd(NULL);
   #endif // PC_BUILD
 }
 
 void mimFinalize(void) {
   if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
-    if(openMatrixMIMPointer.realMatrix.matrixElements)
+      if(openMatrixMIMPointer.realMatrix.matrixElements) {
       realMatrixFree(&openMatrixMIMPointer.realMatrix);
   }
+    }
   else if(getRegisterDataType(matrixIndex) == dtComplex34Matrix) {
-    if(openMatrixMIMPointer.complexMatrix.matrixElements)
+      if(openMatrixMIMPointer.complexMatrix.matrixElements) {
       complexMatrixFree(&openMatrixMIMPointer.complexMatrix);
   }
+    }
   matrixIndex = INVALID_VARIABLE;
 }
 
@@ -2203,7 +2269,9 @@ void showRealMatrix(const real34Matrix_t *matrix, int16_t prefixWidth) {
 
   uint16_t maxCols = cols > MATRIX_MAX_COLUMNS ? MATRIX_MAX_COLUMNS : cols;
   const uint16_t maxRows = rows > MATRIX_MAX_ROWS ? MATRIX_MAX_ROWS : rows;
-  if(maxCols + sCol >= cols) maxCols = cols - sCol;
+    if(maxCols + sCol >= cols) {
+      maxCols = cols - sCol;
+    }
 
   int16_t matSelRow = colVector ? getJRegisterAsInt(true) : getIRegisterAsInt(true);
   int16_t matSelCol = colVector ? getIRegisterAsInt(true) : getJRegisterAsInt(true);
@@ -2219,16 +2287,21 @@ smallFont:
     //maxWidth = MATRIX_LINE_WIDTH_SMALL * 4 - 20;
   }
 
-  if(!forEditor) Y_POS += REGISTER_LINE_HEIGHT;
+    if(!forEditor) {
+      Y_POS += REGISTER_LINE_HEIGHT;
+    }
   const bool_t rightEllipsis = (cols > maxCols) && (cols > maxCols + sCol);
   const bool_t leftEllipsis = (sCol > 0);
   int16_t digits;
 
-  if(prefixWidth > 0) Y_POS = Y_POSITION_OF_REGISTER_T_LINE - REGISTER_LINE_HEIGHT + 1 + maxRows * fontHeight;
-  if(prefixWidth > 0 && font == &standardFont) Y_POS += (maxRows == 1 ? STANDARD_FONT_HEIGHT : REGISTER_LINE_HEIGHT - STANDARD_FONT_HEIGHT);
+    if(prefixWidth > 0) {
+      Y_POS = Y_POSITION_OF_REGISTER_T_LINE - REGISTER_LINE_HEIGHT + 1 + maxRows * fontHeight;
+    }
+    if(prefixWidth > 0 && font == &standardFont) {
+      Y_POS += (maxRows == 1 ? STANDARD_FONT_HEIGHT : REGISTER_LINE_HEIGHT - STANDARD_FONT_HEIGHT);
+    }
 
-  int16_t baseWidth = (leftEllipsis ? stringWidth(STD_ELLIPSIS " ", font, true, true) : 0) +
-    (rightEllipsis ? stringWidth(" " STD_ELLIPSIS, font, true, true) : 0);
+    int16_t baseWidth = (leftEllipsis ? stringWidth(STD_ELLIPSIS " ", font, true, true) : 0) + (rightEllipsis ? stringWidth(" " STD_ELLIPSIS, font, true, true) : 0);
   int16_t mtxWidth = getRealMatrixColumnWidths(matrix, prefixWidth, font, colWidth, rPadWidth, &digits, maxCols);
   bool_t noFix = (mtxWidth < 0);
   mtxWidth = abs(mtxWidth);
@@ -2268,11 +2341,17 @@ smallFont:
       goto smallFont;
     }
   }
-  for(int j = 0; j < maxCols; j++) baseWidth += colWidth[j] + stringWidth(STD_SPACE_FIGURE, font, true, true);
+    for(int j = 0; j < maxCols; j++) {
+      baseWidth += colWidth[j] + stringWidth(STD_SPACE_FIGURE, font, true, true);
+    }
   baseWidth -= stringWidth(STD_SPACE_FIGURE, font, true, true);
 
-  if(prefixWidth > 0) X_POS = prefixWidth;
-  else if(!forEditor) X_POS = SCREEN_WIDTH - ((colVector ? stringWidth("[]" STD_SUP_T, font, true, true) : stringWidth("[]", font, true, true)) + baseWidth) - (font == &standardFont ? 0 : 1);
+    if(prefixWidth > 0) {
+      X_POS = prefixWidth;
+    }
+    else if(!forEditor) {
+      X_POS = SCREEN_WIDTH - ((colVector ? stringWidth("[]" STD_SUP_T, font, true, true) : stringWidth("[]", font, true, true)) + baseWidth) - (font == &standardFont ? 0 : 1);
+    }
 
   if(forEditor) {
     clearRegisterLine(REGISTER_X, true, true);
@@ -2282,9 +2361,15 @@ smallFont:
   }
   else if(prefixWidth > 0) {
     clearRegisterLine(REGISTER_T, true, true);
-    if(rows >= 2) clearRegisterLine(REGISTER_Z, true, true);
-    if(rows >= (font == &standardFont ? 4 : 3)) clearRegisterLine(REGISTER_Y, true, true);
-    if(rows == 4 && font != &standardFont) clearRegisterLine(REGISTER_X, true, true);
+      if(rows >= 2) {
+        clearRegisterLine(REGISTER_Z, true, true);
+      }
+      if(rows >= (font == &standardFont ? 4 : 3)) {
+        clearRegisterLine(REGISTER_Y, true, true);
+      }
+      if(rows == 4 && font != &standardFont) {
+        clearRegisterLine(REGISTER_X, true, true);
+      }
   }
 
   for(int i = 0; i < maxRows; i++) {
@@ -2341,7 +2426,9 @@ int16_t getRealMatrixColumnWidths(const real34Matrix_t *matrix, int16_t prefixWi
 
   begin:
   for(int k = 15; k >= 1; k--) {
-    if(displayFormat == DF_ALL) *digits = k;
+      if(displayFormat == DF_ALL) {
+        *digits = k;
+      }
     if(displayFormat == DF_ALL && noFix) { // something like SCI
       displayFormat = getSystemFlag(FLAG_ALLENG) ? DF_ENG : DF_SCI;
       displayFormatDigits = k;
@@ -2355,8 +2442,9 @@ int16_t getRealMatrixColumnWidths(const real34Matrix_t *matrix, int16_t prefixWi
         if(displayFormat == DF_ALL && !noFix && strstr(tmpString, STD_SUB_10)) { // something like SCI
           noFix = true;
           totalWidth = 0;
-          for(int p = 0; p < MATRIX_MAX_COLUMNS; ++p)
+            for(int p = 0; p < MATRIX_MAX_COLUMNS; ++p) {
             maxRightWidth[p] = maxLeftWidth[p] = 0;
+            }
           goto begin; // redo
         }
         width = stringWidth(tmpString, font, true, true) + 1;
@@ -2366,11 +2454,15 @@ int16_t getRealMatrixColumnWidths(const real34Matrix_t *matrix, int16_t prefixWi
             if(((displayFormat != DF_ENG && (displayFormat != DF_ALL || !getSystemFlag(FLAG_ALLENG))) && (*xStr == '.' || *xStr == ',')) ||
                ((displayFormat == DF_ENG || (displayFormat == DF_ALL && getSystemFlag(FLAG_ALLENG))) && xStr[0] == (char)0x80 && (xStr[1] == (char)0x87 || xStr[1] == (char)0xd7))) {
               rPadWidth[i * MATRIX_MAX_COLUMNS + j] = stringWidth(xStr, font, true, true) + 1;
-              if(maxRightWidth[j] < rPadWidth[i * MATRIX_MAX_COLUMNS + j]) maxRightWidth[j] = rPadWidth[i * MATRIX_MAX_COLUMNS + j];
+                if(maxRightWidth[j] < rPadWidth[i * MATRIX_MAX_COLUMNS + j]) {
+                  maxRightWidth[j] = rPadWidth[i * MATRIX_MAX_COLUMNS + j];
+                }
               break;
             }
           }
-          if(maxLeftWidth[j] < (width - rPadWidth[i * MATRIX_MAX_COLUMNS + j])) maxLeftWidth[j] = (width - rPadWidth[i * MATRIX_MAX_COLUMNS + j]);
+            if(maxLeftWidth[j] < (width - rPadWidth[i * MATRIX_MAX_COLUMNS + j])) {
+              maxLeftWidth[j] = (width - rPadWidth[i * MATRIX_MAX_COLUMNS + j]);
+            }
         }
         else {
           rPadWidth[i * MATRIX_MAX_COLUMNS + j] = width | exponentOutOfRange;
@@ -2471,16 +2563,21 @@ smallFont:
     //maxWidth = MATRIX_LINE_WIDTH_SMALL * 4 - 20;
   }
 
-  if(!forEditor) Y_POS += REGISTER_LINE_HEIGHT;
+    if(!forEditor) {
+      Y_POS += REGISTER_LINE_HEIGHT;
+    }
   bool_t rightEllipsis = (cols > maxCols) && (cols > maxCols + sCol);
   bool_t leftEllipsis = (sCol > 0);
   int16_t digits;
 
-  if(prefixWidth > 0) Y_POS = Y_POSITION_OF_REGISTER_T_LINE - REGISTER_LINE_HEIGHT + 1 + maxRows * fontHeight;
-  if(prefixWidth > 0 && font == &standardFont) Y_POS += (maxRows == 1 ? STANDARD_FONT_HEIGHT : REGISTER_LINE_HEIGHT - STANDARD_FONT_HEIGHT);
+    if(prefixWidth > 0) {
+      Y_POS = Y_POSITION_OF_REGISTER_T_LINE - REGISTER_LINE_HEIGHT + 1 + maxRows * fontHeight;
+    }
+    if(prefixWidth > 0 && font == &standardFont) {
+      Y_POS += (maxRows == 1 ? STANDARD_FONT_HEIGHT : REGISTER_LINE_HEIGHT - STANDARD_FONT_HEIGHT);
+    }
 
-  int16_t baseWidth = (leftEllipsis ? stringWidth(STD_ELLIPSIS " ", font, true, true) : 0) +
-    (rightEllipsis ? stringWidth(STD_ELLIPSIS, font, true, true) : 0);
+    int16_t baseWidth = (leftEllipsis ? stringWidth(STD_ELLIPSIS " ", font, true, true) : 0) + (rightEllipsis ? stringWidth(STD_ELLIPSIS, font, true, true) : 0);
   totalWidth = baseWidth + getComplexMatrixColumnWidths(matrix, prefixWidth, font, colWidth, colWidth_r, colWidth_i, rPadWidth_r, rPadWidth_i, &digits, maxCols);
   if(totalWidth > maxWidth || leftEllipsis) {
     if(font == &numericFont) {
@@ -2513,23 +2610,39 @@ smallFont:
       goto smallFont;
     }
   }
-  for(int j = 0; j < maxCols; j++) baseWidth += colWidth[j] + stringWidth(STD_SPACE_FIGURE, font, true, true);
+    for(int j = 0; j < maxCols; j++) {
+      baseWidth += colWidth[j] + stringWidth(STD_SPACE_FIGURE, font, true, true);
+    }
   baseWidth -= stringWidth(STD_SPACE_FIGURE, font, true, true);
 
-  if(prefixWidth > 0) X_POS = prefixWidth;
-  else if(!forEditor) X_POS = SCREEN_WIDTH - ((colVector ? stringWidth("[]" STD_SUP_T, font, true, true) : stringWidth("[]", font, true, true)) + baseWidth) - (font == &standardFont ? 0 : 1);
+    if(prefixWidth > 0) {
+      X_POS = prefixWidth;
+    }
+    else if(!forEditor) {
+      X_POS = SCREEN_WIDTH - ((colVector ? stringWidth("[]" STD_SUP_T, font, true, true) : stringWidth("[]", font, true, true)) + baseWidth) - (font == &standardFont ? 0 : 1);
+    }
 
   if(forEditor) {
     clearRegisterLine(REGISTER_X, true, true);
     clearRegisterLine(REGISTER_Y, true, true);
-    if(rows >= (font == &standardFont ? 3 : 2)) clearRegisterLine(REGISTER_Z, true, true);
-    if(rows >= (font == &standardFont ? 4 : 2)) clearRegisterLine(REGISTER_T, true, true);
+      if(rows >= (font == &standardFont ? 3 : 2)) {
+        clearRegisterLine(REGISTER_Z, true, true);
+      }
+      if(rows >= (font == &standardFont ? 4 : 2)) {
+        clearRegisterLine(REGISTER_T, true, true);
+      }
   }
   else if(prefixWidth > 0) {
     clearRegisterLine(REGISTER_T, true, true);
-    if(rows >= 2) clearRegisterLine(REGISTER_Z, true, true);
-    if(rows >= (font == &standardFont ? 4 : 3)) clearRegisterLine(REGISTER_Y, true, true);
-    if(rows == 4 && font != &standardFont) clearRegisterLine(REGISTER_X, true, true);
+      if(rows >= 2) {
+        clearRegisterLine(REGISTER_Z, true, true);
+      }
+      if(rows >= (font == &standardFont ? 4 : 3)) {
+        clearRegisterLine(REGISTER_Y, true, true);
+      }
+      if(rows == 4 && font != &standardFont) {
+        clearRegisterLine(REGISTER_X, true, true);
+      }
   }
 
   for(int i = 0; i < maxRows; i++) {
@@ -2610,8 +2723,9 @@ smallFont:
   displayFormat = tmpDisplayFormat;
   displayFormatDigits = tmpDisplayFormatDigits;
   exponentLimit = tmpExponentLimit;
-  if(tmpMultX) setSystemFlag(FLAG_MULTx);
-
+    if(tmpMultX) {
+      setSystemFlag(FLAG_MULTx);
+    }
 }
 
 int16_t getComplexMatrixColumnWidths(const complex34Matrix_t *matrix, int16_t prefixWidth, const font_t *font, int16_t *colWidth, int16_t *colWidth_r, int16_t *colWidth_i, int16_t *rPadWidth_r, int16_t *rPadWidth_i, int16_t *digits, uint16_t maxCols) {
@@ -2642,7 +2756,9 @@ int16_t getComplexMatrixColumnWidths(const complex34Matrix_t *matrix, int16_t pr
   cpxUnitWidth = stringWidth(tmpString, font, true, true);
 
   for(int k = 15; k >= 1; k--) {
-    if(displayFormat == DF_ALL) *digits = k;
+      if(displayFormat == DF_ALL) {
+        *digits = k;
+      }
     for(int i = 0; i < maxRows; i++) {
       for(int j = 0; j < maxCols; j++) {
         complex34_t c34Val;
@@ -2667,18 +2783,24 @@ int16_t getComplexMatrixColumnWidths(const complex34Matrix_t *matrix, int16_t pr
             if(((displayFormat != DF_ENG && (displayFormat != DF_ALL || !getSystemFlag(FLAG_ALLENG))) && (*xStr == '.' || *xStr == ',')) ||
                ((displayFormat == DF_ENG || (displayFormat == DF_ALL && getSystemFlag(FLAG_ALLENG))) && xStr[0] == (char)0x80 && (xStr[1] == (char)0x87 || xStr[1] == (char)0xd7))) {
               rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] = stringWidth(xStr, font, true, true) + 1;
-              if(maxRightWidth_r[j] < rPadWidth_r[i * MATRIX_MAX_COLUMNS + j]) maxRightWidth_r[j] = rPadWidth_r[i * MATRIX_MAX_COLUMNS + j];
+                if(maxRightWidth_r[j] < rPadWidth_r[i * MATRIX_MAX_COLUMNS + j]) {
+                  maxRightWidth_r[j] = rPadWidth_r[i * MATRIX_MAX_COLUMNS + j];
+                }
               break;
             }
           }
-          if(maxLeftWidth_r[j] < (width - rPadWidth_r[i * MATRIX_MAX_COLUMNS + j])) maxLeftWidth_r[j] = (width - rPadWidth_r[i * MATRIX_MAX_COLUMNS + j]);
+            if(maxLeftWidth_r[j] < (width - rPadWidth_r[i * MATRIX_MAX_COLUMNS + j])) {
+              maxLeftWidth_r[j] = (width - rPadWidth_r[i * MATRIX_MAX_COLUMNS + j]);
+            }
         }
         else {
           rPadWidth_r[i * MATRIX_MAX_COLUMNS + j] = width | exponentOutOfRange;
         }
 
         rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] = 0;
-        if(!getSystemFlag(FLAG_POLAR))real34SetPositiveSign(VARIABLE_IMAG34_DATA(&c34Val));
+        if(!getSystemFlag(FLAG_POLAR)) {
+          real34SetPositiveSign(VARIABLE_IMAG34_DATA(&c34Val));
+        }
         constantFractionsMode = CF_COMPLEX2; //JM
         real34ToDisplayString(VARIABLE_IMAG34_DATA(&c34Val), getSystemFlag(FLAG_POLAR) ? currentAngularMode : amNone, tmpString, font, maxWidth, displayFormat == DF_ALL ? k : 15, true, STD_SPACE_4_PER_EM, false);
         width = stringWidth(tmpString, font, true, true) + 1;
@@ -2687,11 +2809,15 @@ int16_t getComplexMatrixColumnWidths(const complex34Matrix_t *matrix, int16_t pr
             if(((displayFormat != DF_ENG && (displayFormat != DF_ALL || !getSystemFlag(FLAG_ALLENG))) && (*xStr == '.' || *xStr == ',')) ||
                ((displayFormat == DF_ENG || (displayFormat == DF_ALL && getSystemFlag(FLAG_ALLENG))) && xStr[0] == (char)0x80 && (xStr[1] == (char)0x87 || xStr[1] == (char)0xd7))) {
               rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] = stringWidth(xStr, font, true, true) + 1;
-              if(maxRightWidth_i[j] < rPadWidth_i[i * MATRIX_MAX_COLUMNS + j]) maxRightWidth_i[j] = rPadWidth_i[i * MATRIX_MAX_COLUMNS + j];
+                if(maxRightWidth_i[j] < rPadWidth_i[i * MATRIX_MAX_COLUMNS + j]) {
+                  maxRightWidth_i[j] = rPadWidth_i[i * MATRIX_MAX_COLUMNS + j];
+                }
               break;
             }
           }
-          if(maxLeftWidth_i[j] < (width - rPadWidth_i[i * MATRIX_MAX_COLUMNS + j])) maxLeftWidth_i[j] = (width - rPadWidth_i[i * MATRIX_MAX_COLUMNS + j]);
+            if(maxLeftWidth_i[j] < (width - rPadWidth_i[i * MATRIX_MAX_COLUMNS + j])) {
+              maxLeftWidth_i[j] = (width - rPadWidth_i[i * MATRIX_MAX_COLUMNS + j]);
+            }
         }
         else {
           rPadWidth_i[i * MATRIX_MAX_COLUMNS + j] = width | exponentOutOfRange;
@@ -2760,7 +2886,6 @@ int16_t getComplexMatrixColumnWidths(const complex34Matrix_t *matrix, int16_t pr
 
 /*
 void storeMatrixToXRegister(real34Matrix_t *matrix) {
-
   setSystemFlag(FLAG_ASLIFT);
   liftStack();
   clearSystemFlag(FLAG_ASLIFT);
@@ -2777,7 +2902,9 @@ void getMatrixFromRegister(calcRegister_t regist) {
   if(getRegisterDataType(regist) == dtReal34Matrix) {
     real34Matrix_t matrix;
 
-    if(openMatrixMIMPointer.realMatrix.matrixElements) realMatrixFree(&openMatrixMIMPointer.realMatrix);
+      if(openMatrixMIMPointer.realMatrix.matrixElements) {
+        realMatrixFree(&openMatrixMIMPointer.realMatrix);
+      }
     convertReal34MatrixRegisterToReal34Matrix(regist, &matrix);
 
     openMatrixMIMPointer.realMatrix = matrix;
@@ -2785,22 +2912,22 @@ void getMatrixFromRegister(calcRegister_t regist) {
   else if(getRegisterDataType(regist) == dtComplex34Matrix) {
     complex34Matrix_t matrix;
 
-    if(openMatrixMIMPointer.complexMatrix.matrixElements) complexMatrixFree(&openMatrixMIMPointer.complexMatrix);
+      if(openMatrixMIMPointer.complexMatrix.matrixElements) {
+        complexMatrixFree(&openMatrixMIMPointer.complexMatrix);
+      }
     convertComplex34MatrixRegisterToComplex34Matrix(regist, &matrix);
 
     openMatrixMIMPointer.complexMatrix = matrix;
   }
   else {
-    #ifdef PC_BUILD
+      #if defined(PC_BUILD)
     sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(regist));
     moreInfoOnError("In function getMatrixFromRegister:", errorMessage, "is not dataType dtRealMatrix.", "");
-    #endif
+      #endif // PC_BUILD
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
     return;
   }
-
 }
-
 
 
 bool_t initMatrixRegister(calcRegister_t regist, uint16_t rows, uint16_t cols, bool_t complex) {
@@ -2831,6 +2958,7 @@ bool_t initMatrixRegister(calcRegister_t regist, uint16_t rows, uint16_t cols, b
   }
 }
 
+
 bool_t redimMatrixRegister(calcRegister_t regist, uint16_t rows, uint16_t cols) {
   const uint16_t origRows = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows, origCols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
   if(regist == INVALID_VARIABLE) {
@@ -2840,8 +2968,9 @@ bool_t redimMatrixRegister(calcRegister_t regist, uint16_t rows, uint16_t cols) 
     const size_t oldSize = (origRows * origCols) * REAL34_SIZE;
     const size_t newSize = (rows     * cols    ) * REAL34_SIZE;
     if(oldSize >= newSize) {
-      if(oldSize > newSize)
+        if(oldSize > newSize) {
         freeWp43s(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + rows * cols, oldSize - newSize);
+        }
       REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows    = rows;
       REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns = cols;
       return true;
@@ -2875,8 +3004,9 @@ bool_t redimMatrixRegister(calcRegister_t regist, uint16_t rows, uint16_t cols) 
     const size_t oldSize = (origRows * origCols) * COMPLEX34_SIZE;
     const size_t newSize = (rows     * cols    ) * COMPLEX34_SIZE;
     if(oldSize >= newSize) {
-      if(oldSize > newSize)
+        if(oldSize > newSize) {
         freeWp43s(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + rows * cols, oldSize - newSize);
+        }
       REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows    = rows;
       REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns = cols;
       return true;
@@ -2904,10 +3034,14 @@ bool_t redimMatrixRegister(calcRegister_t regist, uint16_t rows, uint16_t cols) 
           return false;
         }
       }
-      else return false;
+        else {
+          return false;
+        }
+      }
     }
-  }
-  else return initMatrixRegister(regist, rows, cols, false);
+    else {
+      return initMatrixRegister(regist, rows, cols, false);
+    }
 }
 
 calcRegister_t allocateNamedMatrix(const char *name, uint16_t rows, uint16_t cols) {
@@ -2931,7 +3065,9 @@ bool_t appendRowAtMatrixRegister(calcRegister_t regist) {
   else if(getRegisterDataType(regist) == dtReal34Matrix || getRegisterDataType(regist) == dtComplex34Matrix) {
     return redimMatrixRegister(regist, rows + 1, cols);
   }
-  else return false;
+    else {
+      return false;
+    }
 }
 
 //Row of Matrix
@@ -3051,7 +3187,9 @@ void copyRealMatrix(const real34Matrix_t *matrix, real34Matrix_t *res) {
       real34Copy(&matrix->matrixElements[i], &res->matrixElements[i]);
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
 }
 
 void copyComplexMatrix(const complex34Matrix_t *matrix, complex34Matrix_t *res) {
@@ -3064,11 +3202,12 @@ void copyComplexMatrix(const complex34Matrix_t *matrix, complex34Matrix_t *res) 
       complex34Copy(&matrix->matrixElements[i], &res->matrixElements[i]);
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
-
-
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
 #endif //!TESTSUITE_BUILD
+
 
 /* Link to real matrix register (data not copied) */
 void linkToRealMatrixRegister(calcRegister_t regist, real34Matrix_t *linkedMatrix) {
@@ -3077,6 +3216,7 @@ void linkToRealMatrixRegister(calcRegister_t regist, real34Matrix_t *linkedMatri
   linkedMatrix->matrixElements       = REGISTER_REAL34_MATRIX_M_ELEMENTS(regist);
 }
 
+
 /* Link to complex matrix register (data not copied) */
 void linkToComplexMatrixRegister(calcRegister_t regist, complex34Matrix_t *linkedMatrix) {
   linkedMatrix->header.matrixRows    = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows;
@@ -3084,9 +3224,8 @@ void linkToComplexMatrixRegister(calcRegister_t regist, complex34Matrix_t *linke
   linkedMatrix->matrixElements       = REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist);
 }
 
-#ifndef TESTSUITE_BUILD
 
-
+#if !defined(TESTSUITE_BUILD)
 /* Insert a row */
 void insRowRealMatrix(real34Matrix_t *matrix, uint16_t beforeRowNo) {
   const uint16_t rows = matrix->header.matrixRows;
@@ -3110,8 +3249,11 @@ void insRowRealMatrix(real34Matrix_t *matrix, uint16_t beforeRowNo) {
     matrix->header.matrixColumns = newMat.header.matrixColumns;
     matrix->matrixElements       = newMat.matrixElements;
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 void insRowComplexMatrix(complex34Matrix_t *matrix, uint16_t beforeRowNo) {
   const uint16_t rows = matrix->header.matrixRows;
@@ -3136,9 +3278,10 @@ void insRowComplexMatrix(complex34Matrix_t *matrix, uint16_t beforeRowNo) {
     matrix->header.matrixColumns = newMat.header.matrixColumns;
     matrix->matrixElements       = newMat.matrixElements;
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
-
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
 
 
 /* Delete a row */
@@ -3161,8 +3304,11 @@ void delRowRealMatrix(real34Matrix_t *matrix, uint16_t beforeRowNo) {
     matrix->header.matrixColumns = newMat.header.matrixColumns;
     matrix->matrixElements       = newMat.matrixElements;
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 void delRowComplexMatrix(complex34Matrix_t *matrix, uint16_t beforeRowNo) {
   const uint16_t rows = matrix->header.matrixRows;
@@ -3183,7 +3329,9 @@ void delRowComplexMatrix(complex34Matrix_t *matrix, uint16_t beforeRowNo) {
     matrix->header.matrixColumns = newMat.header.matrixColumns;
     matrix->matrixElements       = newMat.matrixElements;
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
 }
 
 
@@ -3201,7 +3349,9 @@ void transposeRealMatrix(const real34Matrix_t *matrix, real34Matrix_t *res) {
         }
       }
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
   }
   else {
     real34Matrix_t tmp;
@@ -3216,9 +3366,12 @@ void transposeRealMatrix(const real34Matrix_t *matrix, real34Matrix_t *res) {
       res->header.matrixRows    = cols;
       res->header.matrixColumns = rows;
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
+    }
   }
-}
+
 
 void transposeComplexMatrix(const complex34Matrix_t *matrix, complex34Matrix_t *res) {
   const uint16_t rows = matrix->header.matrixRows;
@@ -3233,7 +3386,9 @@ void transposeComplexMatrix(const complex34Matrix_t *matrix, complex34Matrix_t *
         }
       }
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
   }
   else {
     complex34Matrix_t tmp;
@@ -3248,10 +3403,11 @@ void transposeComplexMatrix(const complex34Matrix_t *matrix, complex34Matrix_t *
       res->header.matrixRows    = cols;
       res->header.matrixColumns = rows;
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
+    }
   }
-}
-
 
 
 /* Addition and subtraction */
@@ -3282,13 +3438,16 @@ static void addSubRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x,
   }
 }
 
+
 void addRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res) {
   addSubRealMatrices(y, x, false, res);
 }
 
+
 void subtractRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res) {
   addSubRealMatrices(y, x, true, res);
 }
+
 
 static void addSubComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, bool_t subtraction, complex34Matrix_t *res) {
   const uint16_t rows = y->header.matrixRows;
@@ -3313,17 +3472,20 @@ static void addSubComplexMatrices(const complex34Matrix_t *y, const complex34Mat
       }
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 void addComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res) {
   addSubComplexMatrices(y, x, false, res);
 }
 
+
 void subtractComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res) {
   addSubComplexMatrices(y, x, true, res);
 }
-
 
 
 /* Multiplication */
@@ -3337,8 +3499,11 @@ void multiplyRealMatrix(const real34Matrix_t *matrix, const real34_t *x, real34M
       real34Multiply(&matrix->matrixElements[i], x, &res->matrixElements[i]);
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 void _multiplyRealMatrix(const real34Matrix_t *matrix, const real_t *x, real34Matrix_t *res, realContext_t *realContext) {
   const uint16_t rows = matrix->header.matrixRows;
@@ -3353,8 +3518,11 @@ void _multiplyRealMatrix(const real34Matrix_t *matrix, const real_t *x, real34Ma
       realToReal34(&y, &res->matrixElements[i]);
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 void multiplyRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res) {
   const uint16_t rows = y->header.matrixRows;
@@ -3384,8 +3552,11 @@ void multiplyRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real
       }
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 void multiplyComplexMatrix(const complex34Matrix_t *matrix, const real34_t *xr, const real34_t *xi, complex34Matrix_t *res) {
   real_t _xr, _xi;
@@ -3393,6 +3564,7 @@ void multiplyComplexMatrix(const complex34Matrix_t *matrix, const real34_t *xr, 
   real34ToReal(xr, &_xr); real34ToReal(xi, &_xi);
   _multiplyComplexMatrix(matrix, &_xr, &_xi, res, &ctxtReal39);
 }
+
 
 void _multiplyComplexMatrix(const complex34Matrix_t *matrix, const real_t *xr, const real_t *xi, complex34Matrix_t *res, realContext_t *realContext) {
   const uint16_t rows = matrix->header.matrixRows;
@@ -3409,8 +3581,11 @@ void _multiplyComplexMatrix(const complex34Matrix_t *matrix, const real_t *xr, c
       realToReal34(&yi, VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 void multiplyComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res) {
   const uint16_t rows = y->header.matrixRows;
@@ -3445,9 +3620,10 @@ void multiplyComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t
       }
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
-
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
 
 
 /* Euclidean (Frobenius) norm */
@@ -3461,12 +3637,15 @@ static void _euclideanNormRealMatrix(const real34Matrix_t *matrix, real_t *res, 
   }
   realSquareRoot(res, res, realContext);
 }
+
+
 void euclideanNormRealMatrix(const real34Matrix_t *matrix, real34_t *res) {
   real_t sum;
 
   _euclideanNormRealMatrix(matrix, &sum, &ctxtReal39);
   realToReal34(&sum, res);
 }
+
 
 void euclideanNormComplexMatrix(const complex34Matrix_t *matrix, real34_t *res) {
   real_t elem, sum;
@@ -3483,14 +3662,16 @@ void euclideanNormComplexMatrix(const complex34Matrix_t *matrix, real34_t *res) 
 }
 
 
-
 /* Vectors */
 uint16_t realVectorSize(const real34Matrix_t *matrix) {
-  if((matrix->header.matrixColumns != 1) && (matrix->header.matrixRows != 1))
+    if((matrix->header.matrixColumns != 1) && (matrix->header.matrixRows != 1)) {
     return 0;
-  else
+    }
+    else {
     return matrix->header.matrixColumns * matrix->header.matrixRows;
 }
+  }
+
 
 static void _dotRealVectors(const real34Matrix_t *y, const real34Matrix_t *x, real_t *res, realContext_t *realContext) {
   const uint16_t elements = realVectorSize(y);
@@ -3505,6 +3686,8 @@ static void _dotRealVectors(const real34Matrix_t *y, const real34Matrix_t *x, re
   }
   realCopy(&sum, res);
 }
+
+
 void dotRealVectors(const real34Matrix_t *y, const real34Matrix_t *x, real34_t *res) {
   real_t p;
 
@@ -3516,6 +3699,7 @@ void dotRealVectors(const real34Matrix_t *y, const real34Matrix_t *x, real34_t *
   _dotRealVectors(y, x, &p, &ctxtReal39);
   realToReal34(&p, res);
 }
+
 
 void crossRealVectors(const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res) {
   const uint16_t elementsY = realVectorSize(y);
@@ -3544,12 +3728,16 @@ void crossRealVectors(const real34Matrix_t *y, const real34Matrix_t *x, real34Ma
     realMultiply(&a1, &b2, &p, &ctxtReal39); realMultiply(&a2, &b1, &q, &ctxtReal39);
     realSubtract(&p, &q, &p, &ctxtReal39); realToReal34(&p, &res->matrixElements[2]);
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 uint16_t complexVectorSize(const complex34Matrix_t *matrix) {
   return realVectorSize((const real34Matrix_t *)matrix);
 }
+
 
 void dotComplexVectors(const complex34Matrix_t *y, const complex34Matrix_t *x, real34_t *res_r, real34_t *res_i) {
   const uint16_t elements = complexVectorSize(y);
@@ -3574,6 +3762,7 @@ void dotComplexVectors(const complex34Matrix_t *y, const complex34Matrix_t *x, r
   realToReal34(&sumr, res_r);
   realToReal34(&sumi, res_i);
 }
+
 
 void crossComplexVectors(const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res) {
   const uint16_t elementsY = complexVectorSize(y);
@@ -3618,8 +3807,11 @@ void crossComplexVectors(const complex34Matrix_t *y, const complex34Matrix_t *x,
     realToReal34(&pr, VARIABLE_REAL34_DATA(&res->matrixElements[2]));
     realToReal34(&pi, VARIABLE_IMAG34_DATA(&res->matrixElements[2]));
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 void vectorAngle(const real34Matrix_t *y, const real34Matrix_t *x, real34_t *radians) {
   const uint16_t elements = realVectorSize(y);
@@ -3645,7 +3837,6 @@ void vectorAngle(const real34Matrix_t *y, const real34Matrix_t *x, real34_t *rad
 }
 
 
-
 /* LU decomposition routine borrowed from WP 34s */
 void WP34S_LU_decomposition(const real34Matrix_t *matrix, real34Matrix_t *lu, uint16_t *p) {
   int i, j, k;
@@ -3665,7 +3856,9 @@ void WP34S_LU_decomposition(const real34Matrix_t *matrix, real34Matrix_t *lu, ui
   }
 
   if((tmpMat = allocWp43s(m * n * REAL_SIZE))) {
-    if(matrix != lu) copyRealMatrix(matrix, lu);
+      if(matrix != lu) {
+        copyRealMatrix(matrix, lu);
+      }
 
     if(lu->matrixElements) {
       for(i = 0; i < n; i++) {
@@ -3687,8 +3880,9 @@ void WP34S_LU_decomposition(const real34Matrix_t *matrix, real34Matrix_t *lu, ui
             pvt = j;
           }
         }
-        if(p != NULL)
+          if(p != NULL) {
           *p++ = pvt;
+          }
 
         /* pivot if required */
         if(pvt != k) {
@@ -3732,7 +3926,9 @@ void WP34S_LU_decomposition(const real34Matrix_t *matrix, real34Matrix_t *lu, ui
         }
       }
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
 
     freeWp43s(tmpMat, m * n * REAL_SIZE);
   }
@@ -3744,6 +3940,7 @@ void WP34S_LU_decomposition(const real34Matrix_t *matrix, real34Matrix_t *lu, ui
     displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
   }
 }
+
 
 static bool_t luCpxMat(real_t *tmpMat, uint16_t size, uint16_t *p, realContext_t *realContext) {
   int i, j, k;
@@ -3763,8 +3960,9 @@ static bool_t luCpxMat(real_t *tmpMat, uint16_t size, uint16_t *p, realContext_t
         pvt = j;
       }
     }
-    if(p != NULL)
+      if(p != NULL) {
       *p++ = pvt;
+      }
 
     /* pivot if required */
     if(pvt != k) {
@@ -3803,6 +4001,7 @@ static bool_t luCpxMat(real_t *tmpMat, uint16_t size, uint16_t *p, realContext_t
   return true;
 }
 
+
 void complex_LU_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t *lu, uint16_t *p) {
   int i, j;
   real_t *tmpMat;
@@ -3819,7 +4018,9 @@ void complex_LU_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t
   }
 
   if((tmpMat = allocWp43s(m * n * REAL_SIZE * 2))) {
-    if(matrix != lu) copyComplexMatrix(matrix, lu);
+      if(matrix != lu) {
+        copyComplexMatrix(matrix, lu);
+      }
 
     if(lu->matrixElements) {
       for(i = 0; i < n; i++) {
@@ -3838,7 +4039,9 @@ void complex_LU_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t
         }
       }
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
 
     freeWp43s(tmpMat, m * n * REAL_SIZE * 2);
   }
@@ -3850,7 +4053,6 @@ void complex_LU_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t
     displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
   }
 }
-
 
 
 /* Swap 2 rows */
@@ -3870,8 +4072,11 @@ void realMatrixSwapRows(const real34Matrix_t *matrix, real34Matrix_t *res, uint1
       }
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 void complexMatrixSwapRows(const complex34Matrix_t *matrix, complex34Matrix_t *res, uint16_t a, uint16_t b) {
   const uint16_t rows = matrix->header.matrixRows;
@@ -3892,9 +4097,10 @@ void complexMatrixSwapRows(const complex34Matrix_t *matrix, complex34Matrix_t *r
       }
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
-
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
 
 
 /* Determinant */
@@ -3926,8 +4132,11 @@ void detRealMatrix(const real34Matrix_t *matrix, real34_t *res) {
 
     freeWp43s(p, TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 void detComplexMatrix(const complex34Matrix_t *matrix, real34_t *res_r, real34_t *res_i) {
   const uint16_t n = matrix->header.matrixColumns;
@@ -3958,9 +4167,10 @@ void detComplexMatrix(const complex34Matrix_t *matrix, real34_t *res_r, real34_t
 
     freeWp43s(p, TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
-
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
 
 
 /* Solve the linear equation Ax = b.
@@ -4003,6 +4213,7 @@ static void WP34S_matrix_pivoting_solve(const real34Matrix_t *LU, real_t *b, uin
     ++k;
   }
 }
+
 
 static void complex_matrix_pivoting_solve(const real_t *LU, uint16_t n, real_t *b, uint16_t *pivot, real_t *x, realContext_t *realContext) {
   uint16_t i, k;
@@ -4047,6 +4258,7 @@ static void complex_matrix_pivoting_solve(const real_t *LU, uint16_t n, real_t *
   }
 }
 
+
 /* Invert a matrix
  * Do this by calculating the LU decomposition and solving lots of systems
  * of linear equations.
@@ -4084,11 +4296,13 @@ void WP34S_matrix_inverse(const real34Matrix_t *matrix, real34Matrix_t *res) {
       real34CopyAbs(&lu.matrixElements[0], &maxVal);
       real34CopyAbs(&lu.matrixElements[0], &minVal);
       for(i = 1; i < n; ++i) {
-        if(real34CompareAbsLessThan(&lu.matrixElements[i * n + i], &minVal))
+          if(real34CompareAbsLessThan(&lu.matrixElements[i * n + i], &minVal)) {
           real34CopyAbs(&lu.matrixElements[i * n + i], &minVal);
-        if(real34CompareAbsGreaterThan(&lu.matrixElements[i * n + i], &maxVal))
+          }
+          if(real34CompareAbsGreaterThan(&lu.matrixElements[i * n + i], &maxVal)) {
           real34CopyAbs(&lu.matrixElements[i * n + i], &maxVal);
       }
+        }
       real34ToReal(&maxVal, &p);
       real34ToReal(&minVal, &q);
       WP34S_Log10(&p, &p, &ctxtReal39);
@@ -4100,31 +4314,44 @@ void WP34S_matrix_inverse(const real34Matrix_t *matrix, real34Matrix_t *res) {
       }
     }
 
-    if(matrix != res) copyRealMatrix(matrix, res);
+      if(matrix != res) {
+        copyRealMatrix(matrix, res);
+      }
 
     if(res->matrixElements) {
       if((x = allocWp43s(res->header.matrixRows * REAL_SIZE))) {
         if((b = allocWp43s(res->header.matrixRows * REAL_SIZE))) {
           for(i = 0; i < n; i++) {
-            for(j = 0; j < n; j++)
+              for(j = 0; j < n; j++) {
               realCopy((i == j) ? const_1 : const_0, &b[j]);
+              }
             WP34S_matrix_pivoting_solve(&lu, b, pivots, x, &ctxtReal39);
-            for(j = 0; j < n; j++)
+              for(j = 0; j < n; j++) {
               realToReal34(x + j, &res->matrixElements[j * n + i]);
           }
+            }
           realMatrixFree(&lu);
           freeWp43s(b, res->header.matrixRows * REAL_SIZE);
         }
-        else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          else {
+            displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          }
         freeWp43s(x, res->header.matrixRows * REAL_SIZE);
       }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        else {
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        }
+      }
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
     freeWp43s(pivots, TO_BLOCKS(matrix->header.matrixRows * sizeof(uint16_t)));
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 static bool_t invCpxMat(real_t *matrix, uint16_t n, realContext_t *realContext) {
   real_t *x;
@@ -4135,7 +4362,9 @@ static bool_t invCpxMat(real_t *matrix, uint16_t n, realContext_t *realContext) 
 
   if((lu = allocWp43s(n * n * REAL_SIZE * 2))) {
     if((pivots = allocWp43s(TO_BLOCKS(n * sizeof(uint16_t))))) {
-      for(i = 0; i < n * n * 2; i++) realCopy(matrix + i, lu + i);
+        for(i = 0; i < n * n * 2; i++) {
+          realCopy(matrix + i, lu + i);
+        }
       if(!luCpxMat(lu, n, pivots, realContext)) {
         freeWp43s(lu, n * n * REAL_SIZE * 2);
         freeWp43s(pivots, TO_BLOCKS(n * sizeof(uint16_t)));
@@ -4183,18 +4412,27 @@ static bool_t invCpxMat(real_t *matrix, uint16_t n, realContext_t *realContext) 
           }
           freeWp43s(b, n * REAL_SIZE * 2);
         }
-        else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          else {
+            displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          }
         freeWp43s(x, n * REAL_SIZE * 2);
       }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        else {
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        }
       freeWp43s(pivots, TO_BLOCKS(n * sizeof(uint16_t)));
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
     freeWp43s(lu, n * n * REAL_SIZE * 2);
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
   return lastErrorCode == ERROR_NONE;
 }
+
 
 void complex_matrix_inverse(const complex34Matrix_t *matrix, complex34Matrix_t *res) {
   const uint16_t n = matrix->header.matrixColumns;
@@ -4227,14 +4465,17 @@ void complex_matrix_inverse(const complex34Matrix_t *matrix, complex34Matrix_t *
           }
         }
       }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        else {
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        }
     }
 
     freeWp43s(tmpMat, n * n * REAL_SIZE * 2);
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
-
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
 
 
 /* Division */
@@ -4248,8 +4489,27 @@ void divideRealMatrix(const real34Matrix_t *matrix, const real34_t *x, real34Mat
       real34Divide(&matrix->matrixElements[i], x, &res->matrixElements[i]);
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
+
+  void divideByRealMatrix(const real34_t *y, const real34Matrix_t *matrix, real34Matrix_t *res) {
+    const uint16_t rows = matrix->header.matrixRows;
+    const uint16_t cols = matrix->header.matrixColumns;
+    int32_t i;
+
+    if(matrix == res || realMatrixInit(res, rows, cols)) {
+      for(i = 0; i < cols * rows; ++i) {
+        real34Divide(y, &matrix->matrixElements[i], &res->matrixElements[i]);
+      }
+    }
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 void _divideRealMatrix(const real34Matrix_t *matrix, const real_t *x, real34Matrix_t *res, realContext_t *realContext) {
   const uint16_t rows = matrix->header.matrixRows;
@@ -4264,8 +4524,30 @@ void _divideRealMatrix(const real34Matrix_t *matrix, const real_t *x, real34Matr
       realToReal34(&y, &res->matrixElements[i]);
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
+
+  void _divideByRealMatrix(const real_t *y, const real34Matrix_t *matrix, real34Matrix_t *res, realContext_t *realContext) {
+    const uint16_t rows = matrix->header.matrixRows;
+    const uint16_t cols = matrix->header.matrixColumns;
+    int32_t i;
+    real_t x;
+
+    if(matrix == res || realMatrixInit(res, rows, cols)) {
+      for(i = 0; i < cols * rows; ++i) {
+        real34ToReal(&matrix->matrixElements[i], &x);
+        realDivide(y, &x, &x, realContext);
+        realToReal34(&x, &res->matrixElements[i]);
+      }
+    }
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 void divideRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res) {
   real34Matrix_t invX;
@@ -4289,12 +4571,22 @@ void divideRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real34
   realMatrixFree(&invX);
 }
 
+
 void divideComplexMatrix(const complex34Matrix_t *matrix, const real34_t *xr, const real34_t *xi, complex34Matrix_t *res) {
   real_t _xr, _xi;
 
   real34ToReal(xr, &_xr); real34ToReal(xi, &_xi);
   _divideComplexMatrix(matrix, &_xr, &_xi, res, &ctxtReal39);
 }
+
+
+  void divideByComplexMatrix(const real34_t *yr, const real34_t *yi, const complex34Matrix_t *matrix, complex34Matrix_t *res) {
+    real_t _yr, _yi;
+
+    real34ToReal(yr, &_yr); real34ToReal(yi, &_yi);
+    _divideByComplexMatrix(&_yr, &_yi, matrix, res, &ctxtReal39);
+  }
+
 
 void _divideComplexMatrix(const complex34Matrix_t *matrix, const real_t *xr, const real_t *xi, complex34Matrix_t *res, realContext_t *realContext) {
   const uint16_t rows = matrix->header.matrixRows;
@@ -4311,8 +4603,32 @@ void _divideComplexMatrix(const complex34Matrix_t *matrix, const real_t *xr, con
       realToReal34(&yi, VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
     }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
+
+  void _divideByComplexMatrix(const real_t *yr, const real_t *yi, const complex34Matrix_t *matrix, complex34Matrix_t *res, realContext_t *realContext) {
+    const uint16_t rows = matrix->header.matrixRows;
+    const uint16_t cols = matrix->header.matrixColumns;
+    int32_t i;
+    real_t xr, xi;
+
+    if(matrix == res || complexMatrixInit(res, rows, cols)) {
+      for(i = 0; i < cols * rows; ++i) {
+        real34ToReal(VARIABLE_REAL34_DATA(&matrix->matrixElements[i]), &xr);
+        real34ToReal(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i]), &xi);
+        divComplexComplex(yr, yi, &xr, &xi, &xr, &xi, realContext);
+        realToReal34(&xr, VARIABLE_REAL34_DATA(&res->matrixElements[i]));
+        realToReal34(&xi, VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
+      }
+    }
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+
 
 void divideComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res) {
   complex34Matrix_t invX;
@@ -4337,163 +4653,44 @@ void divideComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *
 }
 
 
+  // Solve a system of linear equations Ac = b
+  void real_matrix_linear_eqn(const real34Matrix_t *a, const real34Matrix_t *b, real34Matrix_t *r) {
+    real34Matrix_t inv_a;
 
-/* Solve a system of linear equations Ac = b
- */
-void WP34S_matrix_linear_eqn(const real34Matrix_t *a, const real34Matrix_t *b, real34Matrix_t *r) {
-  const uint16_t n = a->header.matrixRows;
-  int i;
-  real34Matrix_t mat;
-  real_t *cv = NULL;
-  uint16_t *pivots = NULL;
-  real_t *bv = NULL;
-
-  if(r != a && r != b) {
-    r->matrixElements = NULL;
-    r->header.matrixRows = r->header.matrixColumns = 0;
-  }
-
-  if(a->header.matrixColumns != n) {
-    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "not a square matrix (%d" STD_CROSS "%d)",
-              n, a->header.matrixColumns);
-      moreInfoOnError("In function WP34S_matrix_linear_eqn:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return;
-  }
-  if(b->header.matrixRows != n || b->header.matrixColumns != 1) {
-    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "not a column vector or size mismatch (%d" STD_CROSS "%d)",
-              b->header.matrixRows, b->header.matrixColumns);
-      moreInfoOnError("In function WP34S_matrix_linear_eqn:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return;
-  }
-
-  /* Everything is happy so far -- decompose */
-  if((pivots = allocWp43s(TO_BLOCKS(sizeof(uint16_t) * n)))) {
-    WP34S_LU_decomposition(a, &mat, pivots);
-    if(lastErrorCode != ERROR_NONE) {
-      freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-      return;
-    }
-    if(!mat.matrixElements) {
-      freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-      displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+    if(a->header.matrixColumns != a->header.matrixRows) {
+      displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "attempt to LU-decompose a singular matrix");
-        moreInfoOnError("In function WP34S_matrix_linear_eqn:", errorMessage, NULL, NULL);
+        sprintf(errorMessage, "not a square matrix (%d" STD_CROSS "%d)", a->header.matrixRows, a->header.matrixColumns);
+        moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
-
-    /* And solve */
-    if(r == a)
-      realMatrixFree(r);
-    if((r == b) || (realMatrixInit(r, n, 1))) {
-      if((cv = allocWp43s(n * REAL_SIZE))) {
-        if((bv = allocWp43s(n * REAL_SIZE))) {
-          for(i = 0; i < n; i++) {
-            real34ToReal(&b->matrixElements[i] , bv + i);
-            pivots[i] = i;
-          }
-          WP34S_matrix_pivoting_solve(&mat, bv, pivots, cv, &ctxtReal39);
-          for(i = 0; i < n; i++)
-            realToReal34(cv + i, &r->matrixElements[i]);
-          freeWp43s(bv, n * REAL_SIZE);
-        }
-        else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-        freeWp43s(cv, n * REAL_SIZE);
-      }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    freeWp43s(pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-  }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
-
-#if 0
-void complex_matrix_linear_eqn(const complex34Matrix_t *a, const complex34Matrix_t *b, complex34Matrix_t *r) {
-  const uint16_t n = a->header.matrixRows;
-  int i;
-  complex34Matrix_t mat;
-  real_t *cv = NULL;
-  uint16_t *pivots = NULL;
-  real_t *bv = NULL;
-
-  if(r != a && r != b) {
-    r->matrixElements = NULL;
-    r->header.matrixRows = r->header.matrixColumns = 0;
-  }
-
-  if(a->header.matrixColumns != n) {
-    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "not a square matrix (%d" STD_CROSS "%d)",
-              n, a->header.matrixColumns);
-      moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return;
-  }
-  if(b->header.matrixRows != n || b->header.matrixColumns != 1) {
-    displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "not a column vector or size mismatch (%d" STD_CROSS "%d)",
-              b->header.matrixRows, b->header.matrixColumns);
-      moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return;
-  }
-
-  /* Everything is happy so far -- decompose */
-  if((pivots = allocWp43s(TO_BLOCKS(sizeof(uint16_t) * n)))) {
-    complex_LU_decomposition(a, &mat, pivots);
-    if(lastErrorCode != ERROR_NONE) {
-      freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-      return;
-    }
-    if(!mat.matrixElements) {
-      freeWp43s(&pivots, TO_BLOCKS(sizeof(uint16_t) * n));
-      displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+    if(b->header.matrixRows != a->header.matrixRows || b->header.matrixColumns != 1) {
+      displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "attempt to LU-decompose a singular matrix");
+        sprintf(errorMessage, "not a column vector or size mismatch (%d" STD_CROSS "%d)", b->header.matrixRows, b->header.matrixColumns);
         moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
 
-    /* And solve */
-    if(r == a)
-      complexMatrixFree(r);
-    if(r == b || complexMatrixInit(r, n, 1)) {
-      if((cv = allocWp43s(n * REAL_SIZE * 2))) {
-        if((bv = allocWp43s(n * REAL_SIZE * 2))) {
-          for(i = 0; i < n; i++) {
-            real34ToReal(VARIABLE_REAL34_DATA(&b->matrixElements[i]) , bv + i * 2    );
-            real34ToReal(VARIABLE_IMAG34_DATA(&b->matrixElements[i]) , bv + i * 2 + 1);
-            pivots[i] = i;
-          }
-          complex_matrix_pivoting_solve(&mat, bv, pivots, cv, &ctxtReal39);
-          for(i = 0; i < n; i++) {
-            realToReal34(cv + i * 2    , VARIABLE_REAL34_DATA(&r->matrixElements[i]));
-            realToReal34(cv + i * 2 + 1, VARIABLE_IMAG34_DATA(&r->matrixElements[i]));
-          }
-          freeWp43s(bv, n * REAL_SIZE * 2);
-        }
-        else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-        freeWp43s(cv, n * REAL_SIZE * 2);
-      }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    WP34S_matrix_inverse(a, &inv_a);
+    if(lastErrorCode != ERROR_NONE) {
+      return;
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    freeWp43s(pivots, TO_BLOCKS(sizeof(uint16_t) * n));
+    if(!inv_a.matrixElements) {
+      displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "attempt to invert a singular matrix");
+        moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
+
+    multiplyRealMatrices(&inv_a, b, r);
+    realMatrixFree(&inv_a);
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
-#endif
+
 
 void complex_matrix_linear_eqn(const complex34Matrix_t *a, const complex34Matrix_t *b, complex34Matrix_t *r) {
   complex34Matrix_t inv_a;
@@ -4501,8 +4698,7 @@ void complex_matrix_linear_eqn(const complex34Matrix_t *a, const complex34Matrix
   if(a->header.matrixColumns != a->header.matrixRows) {
     displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "not a square matrix (%d" STD_CROSS "%d)",
-              a->header.matrixRows, a->header.matrixColumns);
+        sprintf(errorMessage, "not a square matrix (%d" STD_CROSS "%d)", a->header.matrixRows, a->header.matrixColumns);
       moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
@@ -4510,8 +4706,7 @@ void complex_matrix_linear_eqn(const complex34Matrix_t *a, const complex34Matrix
   if(b->header.matrixRows != a->header.matrixRows || b->header.matrixColumns != 1) {
     displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "not a column vector or size mismatch (%d" STD_CROSS "%d)",
-              b->header.matrixRows, b->header.matrixColumns);
+        sprintf(errorMessage, "not a column vector or size mismatch (%d" STD_CROSS "%d)", b->header.matrixRows, b->header.matrixColumns);
       moreInfoOnError("In function complex_matrix_linear_eqn:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
@@ -4533,13 +4728,9 @@ void complex_matrix_linear_eqn(const complex34Matrix_t *a, const complex34Matrix
   multiplyComplexMatrices(&inv_a, b, r);
   complexMatrixFree(&inv_a);
 }
-#endif
-
 
 
 /* Routines for calculating eigenpairs */
-
-#ifndef TESTSUITE_BUILD
 static void adjCpxMat(const real_t *x, uint16_t size, real_t *res) {
   int32_t i, j;
   for(i = 0; i < size; ++i) {
@@ -4550,6 +4741,7 @@ static void adjCpxMat(const real_t *x, uint16_t size, real_t *res) {
     }
   }
 }
+
 
 static void mulCpxMat(const real_t *y, const real_t *x, uint16_t size, real_t *res, realContext_t *realContext) {
   int32_t i, j, k;
@@ -4577,6 +4769,7 @@ static void mulCpxMat(const real_t *y, const real_t *x, uint16_t size, real_t *r
     }
   }
 }
+
 
 static void QR_decomposition_householder(const real_t *mat, uint16_t size, real_t *q, real_t *r, realContext_t *realContext) {
   uint32_t i, j, k;
@@ -4722,12 +4915,15 @@ static void QR_decomposition_householder(const real_t *mat, uint16_t size, real_
     // Cleanup
     freeWp43s(bulk, (size * size * 5 + size) * REAL_SIZE * 2);
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
-#endif // TESTSUITE_BUILD
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
+  }
+#endif // !TESTSUITE_BUILD
+
 
 void real_QR_decomposition(const real34Matrix_t *matrix, real34Matrix_t *q, real34Matrix_t *r) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(matrix->header.matrixRows == matrix->header.matrixColumns) {
     real_t *mat, *matq, *matr;
     uint32_t i;
@@ -4756,22 +4952,31 @@ void real_QR_decomposition(const real34Matrix_t *matrix, real34Matrix_t *q, real
               realToReal34(matr + i * 2, &r->matrixElements[i]);
             }
           }
-          else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+            else {
+              displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+            }
+          }
+          else {
+            displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          }
         }
-        else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-      }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        else {
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        }
 
       // Cleanup
       freeWp43s(mat, matrix->header.matrixRows * matrix->header.matrixColumns * REAL_SIZE * 2 * 3);
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-  }
-#endif // TESTSUITE_BUILD
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void complex_QR_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t *q, complex34Matrix_t *r) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   if(matrix->header.matrixRows == matrix->header.matrixColumns) {
     real_t *mat, *matq, *matr;
     uint32_t i;
@@ -4801,19 +5006,26 @@ void complex_QR_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t
             realToReal34(matr + i * 2 + 1, VARIABLE_IMAG34_DATA(&r->matrixElements[i]));
           }
         }
-        else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-      }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          else {
+            displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          }
+        }
+        else {
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        }
 
       // Cleanup
       freeWp43s(mat, matrix->header.matrixRows * matrix->header.matrixColumns * REAL_SIZE * 2 * 3);
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-  }
-#endif // TESTSUITE_BUILD
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
-#ifndef TESTSUITE_BUILD
+
+#if !defined(TESTSUITE_BUILD)
 static void calculateEigenvalues22(const real_t *mat, uint16_t size, real_t *t1r, real_t *t1i, real_t *t2r, real_t *t2i, realContext_t *realContext) {
   // Calculate eigenvalue of 2x2-submatrix
   // Characteristic equation of A = [[a b] [c d]] : t^2 - trace(A) t +      det(A) = 0
@@ -4829,16 +5041,20 @@ static void calculateEigenvalues22(const real_t *mat, uint16_t size, real_t *t1r
   dr = mat + ((size - 1) * size + (size - 1)) * 2; di = dr + 1;
 
   // a^2
-  if(realIsZero(ai))
+    if(realIsZero(ai)) {
     realMultiply(ar, ar, &discrR, realContext), realZero(&discrI);
-  else
+    }
+    else {
     mulComplexComplex(ar, ai, ar, ai, &discrR, &discrI, realContext);
+    }
 
   // d^2
-  if(realIsZero(di))
+    if(realIsZero(di)) {
     realMultiply(dr, dr, &tmpR, realContext), realZero(&tmpI);
-  else
+    }
+    else {
     mulComplexComplex(dr, di, dr, di, &tmpR, &tmpI, realContext);
+    }
   realAdd(&discrR, &tmpR, &discrR, realContext), realAdd(&discrI, &tmpI, &discrI, realContext);
 
   // -2ad
@@ -4895,6 +5111,7 @@ static void calculateEigenvalues22(const real_t *mat, uint16_t size, real_t *t1r
   realDivide(t2r, const_2, t2r, realContext), realDivide(t2i, const_2, t2i, realContext);
 }
 
+
 static void calculateQrShift(const real_t *mat, uint16_t size, real_t *re, real_t *im, realContext_t *realContext) {
   real_t t1r, t1i, t2r, t2i;
   real_t tmp, tmpR, tmpI;
@@ -4917,6 +5134,7 @@ static void calculateQrShift(const real_t *mat, uint16_t size, real_t *re, real_
     realCopy(&t2r, re); realCopy(&t2i, im);
   }
 }
+
 
 static void sortEigenvalues(real_t *eig, uint16_t size, uint16_t begin_a, uint16_t begin_b, uint16_t end_b, realContext_t *realContext) {
   const uint16_t end_a = begin_b - 1;
@@ -4971,6 +5189,8 @@ static void sortEigenvalues(real_t *eig, uint16_t size, uint16_t begin_a, uint16
     }
   }
 }
+
+
 static void calculateEigenvalues(real_t *a, real_t *q, real_t *r, real_t *eig, uint16_t size, bool_t shifted, bool_t reducedSignificantDigits, realContext_t *realContext) {
   real_t shiftRe, shiftIm;
   uint16_t i, j;
@@ -5042,6 +5262,7 @@ static void calculateEigenvalues(real_t *a, real_t *q, real_t *r, real_t *eig, u
   sortEigenvalues(eig, size, 0, (size + 1) / 2, size - 1, realContext);
 }
 
+
 static void calculateEigenvectors(const any34Matrix_t *matrix, bool_t isComplex, real_t *a, real_t *q, real_t *r, real_t *eig, realContext_t *realContext) {
   // Call after the eigenvalues are calculated!
   const uint16_t size = matrix->header.matrixRows;
@@ -5050,7 +5271,9 @@ static void calculateEigenvectors(const any34Matrix_t *matrix, bool_t isComplex,
   bool_t tmpFlag = false;
 
   if(matrix->header.matrixRows == matrix->header.matrixColumns) {
-    for(i = 0; i < size * size * 2; i++) realZero(r + i);
+      for(i = 0; i < size * size * 2; i++) {
+        realZero(r + i);
+      }
     for(k = 0; k < size; k++) {
       // Round to 34 digits
       realAdd(eig + (k * size + k) * 2,     const_0, eig + (k * size + k) * 2,     &ctxtReal34);
@@ -5124,12 +5347,16 @@ static void calculateEigenvectors(const any34Matrix_t *matrix, bool_t isComplex,
           --i;
           isIndeterminate = true; tmpFlag = false;
           for(j = 0; j < size; j++) {
-            if(isIndeterminate && !tmpFlag && realCompareEqual(a + (j * size + i) * 2, const_1) && realIsZero(a + (j * size + i) * 2 + 1))
+              if(isIndeterminate && !tmpFlag && realCompareEqual(a + (j * size + i) * 2, const_1) && realIsZero(a + (j * size + i) * 2 + 1)) {
               tmpFlag = true;
-            else if(!realIsZero(a + (j * size + i) * 2) || !realIsZero(a + (j * size + i) * 2 + 1))
+              }
+              else if(!realIsZero(a + (j * size + i) * 2) || !realIsZero(a + (j * size + i) * 2 + 1)) {
               isIndeterminate = false;
           }
-          if(isIndeterminate && tmpFlag) --l;
+            }
+            if(isIndeterminate && tmpFlag) {
+              --l;
+            }
         }
         for(j = 0; j < size; j++) {
           realCopy(const_0, a + (i * size + j) * 2    );
@@ -5152,12 +5379,16 @@ static void calculateEigenvectors(const any34Matrix_t *matrix, bool_t isComplex,
               }
               return;
             }
-            if(isIndeterminate && !tmpFlag && realCompareEqual(a + (j * size + i) * 2, const_1) && realIsZero(a + (j * size + i) * 2 + 1))
+              if(isIndeterminate && !tmpFlag && realCompareEqual(a + (j * size + i) * 2, const_1) && realIsZero(a + (j * size + i) * 2 + 1)) {
               tmpFlag = true;
-            else if(!realIsZero(a + (j * size + i) * 2) || !realIsZero(a + (j * size + i) * 2 + 1))
+              }
+              else if(!realIsZero(a + (j * size + i) * 2) || !realIsZero(a + (j * size + i) * 2 + 1)) {
               isIndeterminate = false;
           }
-          if(!isIndeterminate || !tmpFlag) --l;
+            }
+            if(!isIndeterminate || !tmpFlag) {
+              --l;
+            }
         }
         for(j = 0; j < size; j++) {
           realCopy(const_0, a + ((size - 1) * size + j) * 2    );
@@ -5188,10 +5419,11 @@ static void calculateEigenvectors(const any34Matrix_t *matrix, bool_t isComplex,
     }
   }
 }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
+
 
 void realEigenvalues(const real34Matrix_t *matrix, real34Matrix_t *res, real34Matrix_t *ires) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   const uint16_t size = matrix->header.matrixRows;
   real_t *bulk, *a, *q, *r, *eig;
   uint16_t i;
@@ -5235,20 +5467,27 @@ void realEigenvalues(const real34Matrix_t *matrix, real34Matrix_t *res, real34Ma
               realToReal34(eig + (i * size + i) * 2 + 1, &ires->matrixElements[i * size + i]);
             }
           }
-          else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+            else {
+              displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+            }
+          }
         }
-      }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        else {
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        }
 
       freeWp43s(bulk, size * size * REAL_SIZE * 2 * 4);
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-  }
-#endif // TESTSUITE_BUILD
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void complexEigenvalues(const complex34Matrix_t *matrix, complex34Matrix_t *res) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   const uint16_t size = matrix->header.matrixRows;
   real_t *bulk, *a, *q, *r, *eig;
   uint16_t i;
@@ -5278,17 +5517,22 @@ void complexEigenvalues(const complex34Matrix_t *matrix, complex34Matrix_t *res)
           realToReal34(eig + (i * size + i) * 2 + 1, VARIABLE_IMAG34_DATA(&res->matrixElements[i * size + i]));
         }
       }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        else {
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        }
 
       freeWp43s(bulk, size * size * REAL_SIZE * 2 * 4);
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-  }
-#endif // TESTSUITE_BUILD
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void realEigenvectors(const real34Matrix_t *matrix, real34Matrix_t *res, real34Matrix_t *ires) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   const uint16_t size = matrix->header.matrixRows;
   real_t *bulk, *a, *q, *r, *eig;
   uint16_t i, j;
@@ -5350,20 +5594,27 @@ void realEigenvectors(const real34Matrix_t *matrix, real34Matrix_t *res, real34M
               realToReal34(r + i * 2 + 1, &ires->matrixElements[i]);
             }
           }
-          else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+            else {
+              displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+            }
+          }
         }
-      }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        else {
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        }
 
       freeWp43s(bulk, size * size * REAL_SIZE * 2 * 4);
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-  }
-#endif // TESTSUITE_BUILD
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void complexEigenvectors(const complex34Matrix_t *matrix, complex34Matrix_t *res) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   const uint16_t size = matrix->header.matrixRows;
   real_t *bulk, *a, *q, *r, *eig;
   uint16_t i;
@@ -5395,25 +5646,30 @@ void complexEigenvectors(const complex34Matrix_t *matrix, complex34Matrix_t *res
           realToReal34(r + i * 2 + 1, VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
         }
       }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        else {
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        }
 
       freeWp43s(bulk, size * size * REAL_SIZE * 2 * 4);
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-  }
-#endif // TESTSUITE_BUILD
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 
-
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 static void elementwiseRemaGetResult(bool_t *complex, real34Matrix_t *x, complex34Matrix_t *xc, int i) {
   if((!(*complex)) && (getRegisterDataType(REGISTER_X) != dtComplex34)) {
-    if(getRegisterDataType(REGISTER_X) == dtLongInteger)
+      if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
       convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
-    if(getRegisterDataType(REGISTER_X) == dtReal34)
+      }
+      if(getRegisterDataType(REGISTER_X) == dtReal34) {
       real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &x->matrixElements[i]);
   }
+    }
   else {
     if(!(*complex)) {
       convertReal34MatrixToComplex34Matrix(x, xc);
@@ -5426,18 +5682,20 @@ static void elementwiseRemaGetResult(bool_t *complex, real34Matrix_t *x, complex
       complex34Copy(REGISTER_COMPLEX34_DATA(REGISTER_X), &xc->matrixElements[i]);
     }
     else {
-      if(getRegisterDataType(REGISTER_X) == dtLongInteger)
+        if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
         convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+        }
       real34Copy(REGISTER_REAL34_DATA(REGISTER_X), VARIABLE_REAL34_DATA(&xc->matrixElements[i]));
       real34Copy(const34_0,                        VARIABLE_IMAG34_DATA(&xc->matrixElements[i]));
     }
   }
 }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
+
 
 /* Elementwise function call */
 void elementwiseRema(void (*f)(void)) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   real34Matrix_t x;
   complex34Matrix_t xc;
   bool_t complex = false;
@@ -5465,11 +5723,12 @@ void elementwiseRema(void (*f)(void)) {
     convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
     realMatrixFree(&x);
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void elementwiseRema_UInt16(void (*f)(uint16_t), uint16_t param) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   real34Matrix_t x;
   complex34Matrix_t xc;
   bool_t complex = false;
@@ -5497,11 +5756,12 @@ void elementwiseRema_UInt16(void (*f)(uint16_t), uint16_t param) {
     convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
     realMatrixFree(&x);
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void elementwiseRemaLonI(void (*f)(void)) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   real34Matrix_t y;
   complex34Matrix_t yc;
   longInteger_t x;
@@ -5533,11 +5793,12 @@ void elementwiseRemaLonI(void (*f)(void)) {
     realMatrixFree(&y);
   }
   longIntegerFree(x);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void elementwiseRemaReal(void (*f)(void)) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   real34Matrix_t y;
   complex34Matrix_t yc;
   real34_t x;
@@ -5569,11 +5830,12 @@ void elementwiseRemaReal(void (*f)(void)) {
     convertReal34MatrixToReal34MatrixRegister(&y, REGISTER_X);
     realMatrixFree(&y);
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void elementwiseRemaShoI(void (*f)(void)) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   real34Matrix_t y;
   complex34Matrix_t yc;
   uint64_t x; uint32_t base; int16_t sign;
@@ -5605,29 +5867,67 @@ void elementwiseRemaShoI(void (*f)(void)) {
     convertReal34MatrixToReal34MatrixRegister(&y, REGISTER_X);
     realMatrixFree(&y);
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
+void elementwiseRealRema(void (*f)(void)) {
+  #if !defined(TESTSUITE_BUILD)
+    real34Matrix_t x;
+    complex34Matrix_t xc;
+    real34_t y;
+    bool_t complex = false;
 
-#ifndef TESTSUITE_BUILD
+    convertReal34MatrixRegisterToReal34Matrix(REGISTER_X, &x);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_Y), &y);
+    const int numOfElements = x.header.matrixRows * x.header.matrixColumns;
+
+    for(int i = 0; i < numOfElements; ++i) {
+      reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);
+      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+      real34Copy(&y, REGISTER_REAL34_DATA(REGISTER_Y));
+      if(complex) {
+        real34Copy(VARIABLE_REAL34_DATA(&xc.matrixElements[i]), REGISTER_REAL34_DATA(REGISTER_X));
+      }
+      else {
+        real34Copy(&x.matrixElements[i], REGISTER_REAL34_DATA(REGISTER_X));
+      }
+      f();
+      elementwiseRemaGetResult(&complex, &x, &xc, i);
+    }
+
+    if(complex) {
+      convertComplex34MatrixToComplex34MatrixRegister(&xc, REGISTER_X);
+      complexMatrixFree(&xc);
+    }
+    else {
+      convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
+      realMatrixFree(&x);
+    }
+  #endif // !TESTSUITE_BUILD
+}
+
+
+#if !defined(TESTSUITE_BUILD)
 static void elementwiseCxmaGetResult(complex34Matrix_t *x, int i) {
   if(getRegisterDataType(REGISTER_X) == dtComplex34) {
     complex34Copy(REGISTER_COMPLEX34_DATA(REGISTER_X), &x->matrixElements[i]);
   }
   else {
-    if(getRegisterDataType(REGISTER_X) == dtLongInteger)
+      if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
       convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+      }
     if(getRegisterDataType(REGISTER_X) == dtReal34) {
       real34Copy(REGISTER_REAL34_DATA(REGISTER_X), VARIABLE_REAL34_DATA(&x->matrixElements[i]));
       real34Copy(const34_0,                        VARIABLE_IMAG34_DATA(&x->matrixElements[i]));
     }
   }
 }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
+
 
 void elementwiseCxma(void (*f)(void)) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   complex34Matrix_t x;
 
   convertComplex34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
@@ -5642,11 +5942,12 @@ void elementwiseCxma(void (*f)(void)) {
   convertComplex34MatrixToComplex34MatrixRegister(&x, REGISTER_X);
 
   complexMatrixFree(&x);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void elementwiseCxma_UInt16(void (*f)(uint16_t), uint16_t param) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   complex34Matrix_t x;
 
   convertComplex34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
@@ -5661,11 +5962,12 @@ void elementwiseCxma_UInt16(void (*f)(uint16_t), uint16_t param) {
   convertComplex34MatrixToComplex34MatrixRegister(&x, REGISTER_X);
 
   complexMatrixFree(&x);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void elementwiseCxmaLonI(void (*f)(void)) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   complex34Matrix_t y;
   longInteger_t x;
 
@@ -5684,11 +5986,12 @@ void elementwiseCxmaLonI(void (*f)(void)) {
 
   longIntegerFree(x);
   complexMatrixFree(&y);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void elementwiseCxmaReal(void (*f)(void)) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   complex34Matrix_t y;
   real34_t x;
 
@@ -5707,11 +6010,12 @@ void elementwiseCxmaReal(void (*f)(void)) {
   convertComplex34MatrixToComplex34MatrixRegister(&y, REGISTER_X);
 
   complexMatrixFree(&y);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void elementwiseCxmaShoI(void (*f)(void)) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   complex34Matrix_t y;
   uint64_t x; uint32_t base; int16_t sign;
 
@@ -5730,11 +6034,12 @@ void elementwiseCxmaShoI(void (*f)(void)) {
   convertComplex34MatrixToComplex34MatrixRegister(&y, REGISTER_X);
 
   complexMatrixFree(&y);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
+
 void elementwiseCxmaCplx(void (*f)(void)) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   complex34Matrix_t y;
   complex34_t x;
 
@@ -5753,12 +6058,35 @@ void elementwiseCxmaCplx(void (*f)(void)) {
   convertComplex34MatrixToComplex34MatrixRegister(&y, REGISTER_X);
 
   complexMatrixFree(&y);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
+void elementwiseRealCxma(void (*f)(void)) {
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t x;
+    real34_t y;
 
-#ifndef TESTSUITE_BUILD
+    convertComplex34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_Y), &y);
+
+    for(int i = 0; i < x.header.matrixRows * x.header.matrixColumns; ++i) {
+      reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);
+      reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+      real34Copy(&y, REGISTER_REAL34_DATA(REGISTER_Y));
+      complex34Copy(&x.matrixElements[i], REGISTER_COMPLEX34_DATA(REGISTER_X));
+      f();
+      elementwiseCxmaGetResult(&x, i);
+    }
+
+    convertComplex34MatrixToComplex34MatrixRegister(&x, REGISTER_X);
+
+    complexMatrixFree(&x);
+  #endif // !TESTSUITE_BUILD
+}
+
+
+#if !defined(TESTSUITE_BUILD)
 void callByIndexedMatrix(bool_t (*real_f)(real34Matrix_t *), bool_t (*complex_f)(complex34Matrix_t *)) {
   const int16_t i = getIRegisterAsInt(true);
   const int16_t j = getJRegisterAsInt(true);
@@ -5781,7 +6109,9 @@ void callByIndexedMatrix(bool_t (*real_f)(real34Matrix_t *), bool_t (*complex_f)
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      if(real_f(&mat)) convertReal34MatrixToReal34MatrixRegister(&mat, matrixIndex);
+        if(real_f(&mat)) {
+          convertReal34MatrixToReal34MatrixRegister(&mat, matrixIndex);
+        }
     }
     realMatrixFree(&mat);
   }
@@ -5796,7 +6126,9 @@ void callByIndexedMatrix(bool_t (*real_f)(real34Matrix_t *), bool_t (*complex_f)
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      if(complex_f(&mat)) convertComplex34MatrixToComplex34MatrixRegister(&mat, matrixIndex);
+        if(complex_f(&mat)) {
+          convertComplex34MatrixToComplex34MatrixRegister(&mat, matrixIndex);
+        }
     }
     complexMatrixFree(&mat);
   }
@@ -5808,4 +6140,4 @@ void callByIndexedMatrix(bool_t (*real_f)(real34Matrix_t *), bool_t (*complex_f)
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
