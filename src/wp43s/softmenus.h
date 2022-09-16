@@ -18,8 +18,8 @@
  * \file softmenus.h
  * List of softmenus and related functions.
  */
-#ifndef SOFTMENUS_H
-#define SOFTMENUS_H
+#if !defined(SOFTMENUS_H)
+  #define SOFTMENUS_H
 
 #include "typeDefinitions.h"
 #include <stdint.h>
@@ -27,37 +27,40 @@
 uint8_t *getNthString           (uint8_t *ptr, int16_t n); // Starting with string 0 (the 1st string is returned for n=0)
 void     fnDynamicMenu          (uint16_t unusedButMandatoryParameter);
 
-void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
-#ifndef TESTSUITE_BUILD
-  /**
-   * Displays one softkey.
-   *
-   * \param[in] label      Text to display
-   * \param[in] xSoftkey   x location of softkey: from 0 (left) to 5 (right)
-   * \param[in] ySoftKey   y location of softkey: from 0 (bottom) to 2 (top)
-   * \param[in] videoMode  Video mode normal or reverse
-   * \param[in] topLine    Draw a top line
-   * \param[in] bottomLine Draw a bottom line
-   */
-  void   showSoftkey            (const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine);
-  /**
-   * Displays the current part of the displayed softmenu.
-   */
-  void   showSoftmenuCurrentPart(void);
-  /**
-   * Displays a softmenu.
-   *
-   * \param[in] id ID of softmenu
-   */
-  void   showSoftmenu           (int16_t id);
-  /**
-   * Pops a softmenu from the softmenu stack.
-   */
-  void   popSoftmenu            (void);
-  void   setCatalogLastPos      (void);
-  bool_t currentSoftmenuScrolls (void);
-  bool_t isAlphabeticSoftmenu   (void);
-#endif // !TESTSUITE_BUILD
-char    *dynmenuGetLabel        (int16_t menuitem);
+  void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
+  #if !defined(TESTSUITE_BUILD)
+    /**
+     * Displays one softkey.
+     *
+     * \param[in] label      Text to display
+     * \param[in] xSoftkey   x location of softkey: from 0 (left) to 5 (right)
+     * \param[in] ySoftKey   y location of softkey: from 0 (bottom) to 2 (top)
+     * \param[in] videoMode  Video mode normal or reverse
+     * \param[in] topLine    Draw a top line
+     * \param[in] bottomLine Draw a bottom line
+     */
+    void   showSoftkey            (const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine);
 
-#endif // SOFTMENUS_H
+    /**
+     * Displays the current part of the displayed softmenu.
+     */
+    void   showSoftmenuCurrentPart(void);
+
+    /**
+     * Displays a softmenu.
+     *
+     * \param[in] id ID of softmenu
+     */
+    void   showSoftmenu           (int16_t id);
+
+    /**
+     * Pops a softmenu from the softmenu stack.
+     */
+    void   popSoftmenu            (void);
+
+    void   setCatalogLastPos      (void);
+    bool_t currentSoftmenuScrolls (void);
+    bool_t isAlphabeticSoftmenu   (void);
+  #endif // !TESTSUITE_BUILD
+  char    *dynmenuGetLabel        (int16_t menuitem);
+#endif // !SOFTMENUS_H

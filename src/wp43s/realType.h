@@ -17,8 +17,8 @@
 /**
  * \file realType.h
  */
-#ifndef REALTYPE_H
-#define REALTYPE_H
+#if !defined(REALTYPE_H)
+  #define REALTYPE_H
 
 #include "defines.h"
 

@@ -17,23 +17,24 @@
 /********************************************//**
  * \file xnor.h
  ***********************************************/
-#ifndef XNOR_H
-#define XNOR_H
+#if !defined(XNOR_H)
+  #define XNOR_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnLogicalXnor(uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void xnorError24  (void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define xnorError24 typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void xnorError31  (void);
-void xnorLonILonI (void);
-void xnorLonIReal (void);
-void xnorRealLonI (void);
-void xnorRealReal (void);
-void xnorShoIShoI (void);
+  void fnLogicalXnor(uint16_t unusedButMandatoryParameter);
 
-#endif // XNOR_H
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void xnorError24  (void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #define xnorError24 typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+  void xnorError31  (void);
+  void xnorLonILonI (void);
+  void xnorLonIReal (void);
+  void xnorRealLonI (void);
+  void xnorRealReal (void);
+  void xnorShoIShoI (void);
+#endif // !XNOR_H

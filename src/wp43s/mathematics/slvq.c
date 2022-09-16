@@ -120,7 +120,9 @@ void fnSlvq(uint16_t unusedButMandatoryParameter) {
     return;
   }
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(realCoefs == false) {
     realRoots = false;

@@ -17,8 +17,8 @@
 /**
  * \file saveRestoreCalcState.h
  */
-#ifndef SAVERESTORECALCSTATE_H
-#define SAVERESTORECALCSTATE_H
+#if !defined(SAVERESTORECALCSTATE_H)
+  #define SAVERESTORECALCSTATE_H
 
 #include <stdint.h>
 

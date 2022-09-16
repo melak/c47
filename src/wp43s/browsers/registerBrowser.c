@@ -34,8 +34,7 @@
 
 
 
-#ifndef TESTSUITE_BUILD
-
+#if !defined(TESTSUITE_BUILD)
   static void _showRegisterInRbr(calcRegister_t regist, int16_t registerNameWidth) {
     switch(getRegisterDataType(regist)) {
       case dtReal34:
@@ -233,4 +232,4 @@
       }
     }
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD

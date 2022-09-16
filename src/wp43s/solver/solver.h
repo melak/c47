@@ -17,8 +17,8 @@
 /********************************************//**
  * \file solver.h
  ***********************************************/
-#ifndef SOLVER_H
-#define SOLVER_H
+#if !defined(SOLVER_H)
+  #define SOLVER_H
 
 #include "differentiate.h"
 #include "equation.h"

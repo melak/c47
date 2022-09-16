@@ -38,7 +38,7 @@
 
 #include "wp43s.h"
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   int16_t tamOperation(void) {
     switch(tam.function) {
       case ITM_STO :
@@ -624,7 +624,7 @@
           value += FIRST_LOCAL_REGISTER;
         }
         if(tam.indirect && calcMode != CM_PEM) {
-          value = indirectAddressing(value, (tam.mode == TM_STORCL || tam.mode == TM_M_DIM), min, max);
+          value = indirectAddressing(value, (indexOfItems[tamOperation()].param == TM_FLAGR || indexOfItems[tamOperation()].param == TM_FLAGW) ? INDPM_FLAG : (tam.mode == TM_STORCL || tam.mode == TM_M_DIM) ? INDPM_REGISTER : INDPM_PARAM, min, max);
           run = (lastErrorCode == 0);
         }
         if(tam.function == ITM_GTOP) {
@@ -721,7 +721,7 @@
       }
       if(tam.mode != TM_NEWMENU) aimBuffer[0] = 0;
       if(tam.indirect && value != INVALID_VARIABLE && calcMode != CM_PEM) {
-        value = indirectAddressing(value, (tam.mode == TM_STORCL || tam.mode == TM_M_DIM), min, max);
+        value = indirectAddressing(value, (indexOfItems[tam.function].param == TM_FLAGR || indexOfItems[tam.function].param == TM_FLAGW) ? INDPM_FLAG : (tam.mode == TM_STORCL || tam.mode == TM_M_DIM) ? INDPM_REGISTER : INDPM_PARAM, min, max);
         if(lastErrorCode != 0) {
           value = INVALID_VARIABLE;
         }
@@ -878,11 +878,17 @@
     }
 
     #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-      if(calcMode == CM_NORMAL || calcMode == CM_PEM || calcMode == CM_MIM || calcMode == CM_TIMER) {
-        calcModeNormalGui();
-      }
-      else if(calcMode == CM_AIM) {
-        calcModeAimGui();
+      switch(calcMode) {
+        case CM_NORMAL:
+        case CM_PEM:
+        case CM_MIM:
+        case CM_TIMER:
+          calcModeNormalGui();
+          break;
+        case CM_AIM:
+        case CM_EIM:
+          calcModeAimGui();
+          break;
       }
     #endif // PC_BUILD && (SCREEN_800X480 == 0)
 

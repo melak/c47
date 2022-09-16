@@ -17,8 +17,8 @@
 /**
  * \file plot.h
  ***********************************************/
-#ifndef PLOTSTAT_H
-#define PLOTSTAT_H
+#if !defined(PLOTSTAT_H)
+  #define PLOTSTAT_H
 
 #include "realType.h"
 #include "typeDefinitions.h"
@@ -105,10 +105,10 @@ void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, con
 char * padEquals(const char * ss);
 
 
-#ifndef TESTSUITE_BUILD
-int16_t screen_window_x(float x_min, float x, float x_max);
-int16_t screen_window_y(float y_min, float y, float y_max);
-#endif
+  #if !defined(TESTSUITE_BUILD)
+    int16_t screen_window_x(float x_min, float x, float x_max);
+    int16_t screen_window_y(float y_min, float y, float y_max);
+  #endif // !TESTSUITE_BUILD
 
 void    statGraphReset     (void);
 void    fnStatDemo0        (uint16_t unusedButMandatoryParameter);

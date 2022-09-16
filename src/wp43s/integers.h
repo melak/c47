@@ -17,8 +17,8 @@
 /**
  * \file integers.h
  */
-#ifndef INTEGERS_H
-#define INTEGERS_H
+#if !defined(INTEGERS_H)
+  #define INTEGERS_H
 
 #include "longIntegerType.h"
 #include <stdint.h>

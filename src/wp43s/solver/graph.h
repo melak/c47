@@ -19,12 +19,13 @@
  ***********************************************/
 
 
-#ifndef GRAPH_H
-#define GRAPH_H
+#if !defined(GRAPH_H)
+  #define GRAPH_H
 
 #include "typeDefinitions.h"
 #include <stdint.h>
 
+  extern char plotStatMx[8];
 
 #define EQ_SOLVE 0   //fnEqSolvGraph
 #define EQ_PLOT  1   //graph_eqn

@@ -17,8 +17,8 @@
 /********************************************//**
  * \file charString.h
  ***********************************************/
-#ifndef CHARSTRING_H
-#define CHARSTRING_H
+#if !defined(CHARSTRING_H)
+  #define CHARSTRING_H
 
 #include "typeDefinitions.h"
 #include <stdint.h>
@@ -86,11 +86,10 @@ void     codePointToUtf8  (uint32_t codePoint, uint8_t *utf8);
  ***********************************************/
 uint32_t utf8ToCodePoint  (const uint8_t *utf8, uint32_t *codePoint);
 
-void     stringToUtf8     (const char *str, uint8_t *utf8);
-void     utf8ToString     (const uint8_t *utf8, char *str);
-void    *xcopy            (void *dest, const void *source, int n);
-#ifdef WIN32
-char    *stpcpy           (char *dest, const char *source);
-#endif //WIN32
-
-#endif // CHARSTRING_H
+  void     stringToUtf8     (const char *str, uint8_t *utf8);
+  void     utf8ToString     (const uint8_t *utf8, char *str);
+  void    *xcopy            (void *dest, const void *source, int n);
+  #if defined(WIN32)
+    char    *stpcpy           (char *dest, const char *source);
+  #endif //WIN32
+#endif // !CHARSTRING_H

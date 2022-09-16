@@ -74,7 +74,9 @@ TO_QSPI void (* const GammaP[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DA
  * \return void
  ***********************************************/
 void fnGammaP(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   GammaP[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

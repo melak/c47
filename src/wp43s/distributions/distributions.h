@@ -17,23 +17,20 @@
 /********************************************//**
  * \file distributions.h
  ***********************************************/
-#ifndef DISTRIBUTIONS_H
-#define DISTRIBUTIONS_H
+#if !defined(DISTRIBUTIONS_H)
+  #define DISTRIBUTIONS_H
 
-
-
-#include "binomial.h"
-#include "cauchy.h"
-#include "chi2.h"
-#include "exponential.h"
-#include "f.h"
-#include "geometric.h"
-#include "hyper.h"
-#include "logistic.h"
-#include "negBinom.h"
-#include "normal.h"
-#include "poisson.h"
-#include "t.h"
-#include "weibull.h"
-
-#endif // DISTRIBUTIONS_H
+  #include "binomial.h"
+  #include "cauchy.h"
+  #include "chi2.h"
+  #include "exponential.h"
+  #include "f.h"
+  #include "geometric.h"
+  #include "hyper.h"
+  #include "logistic.h"
+  #include "negBinom.h"
+  #include "normal.h"
+  #include "poisson.h"
+  #include "t.h"
+  #include "weibull.h"
+#endif // !DISTRIBUTIONS_H

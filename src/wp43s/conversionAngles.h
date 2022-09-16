@@ -17,8 +17,8 @@
 /********************************************//**
  * \file conversionAngles.h
  ***********************************************/
-#ifndef CONVERSIONANGLES_H
-#define CONVERSIONANGLES_H
+#if !defined(CONVERSIONANGLES_H)
+  #define CONVERSIONANGLES_H
 
 #include "realType.h"
 #include "typeDefinitions.h"

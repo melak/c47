@@ -78,7 +78,9 @@ static void dataTtypeError(void) {
  * \return void
  ***********************************************/
 void fnPercent(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   percent[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

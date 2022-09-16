@@ -17,32 +17,32 @@
 /********************************************//**
  * \file remainder.h
  ***********************************************/
-#ifndef REMAINDER_H
-#define REMAINDER_H
+#if !defined(REMAINDER_H)
+  #define REMAINDER_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnRmd(uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void rmdError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define rmdError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  void fnRmd(uint16_t unusedButMandatoryParameter);
 
-//      RegYRegX
-void rmdLonILonI(void);
-void rmdLonIShoI(void);
-void rmdLonIReal(void);
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void rmdError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define rmdError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
-//      RegYRegX
-void rmdShoILonI(void);
-void rmdShoIShoI(void);
-void rmdShoIReal(void);
+  //      RegYRegX
+  void rmdLonILonI(void);
+  void rmdLonIShoI(void);
+  void rmdLonIReal(void);
 
-//      RegYRegX
-void rmdRealLonI(void);
-void rmdRealShoI(void);
-void rmdRealReal(void);
+  //      RegYRegX
+  void rmdShoILonI(void);
+  void rmdShoIShoI(void);
+  void rmdShoIReal(void);
 
-#endif // REMAINDER_H
+  //      RegYRegX
+  void rmdRealLonI(void);
+  void rmdRealShoI(void);
+  void rmdRealReal(void);
+#endif // !REMAINDER_H

@@ -102,7 +102,9 @@ static bool_t checkParamChi2(real_t *x, real_t *i) {
 void fnChi2P(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, dof;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamChi2(&val, &dof)) {
     WP34S_Pdf_Chi2(&val, &dof, &ans, &ctxtReal39);
@@ -117,7 +119,9 @@ void fnChi2P(uint16_t unusedButMandatoryParameter) {
 void fnChi2L(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, dof;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamChi2(&val, &dof)) {
     WP34S_Cdf_Chi2(&val, &dof, &ans, &ctxtReal39);
@@ -132,7 +136,9 @@ void fnChi2L(uint16_t unusedButMandatoryParameter) {
 void fnChi2R(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, dof;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamChi2(&val, &dof)) {
     WP34S_Cdfu_Chi2(&val, &dof, &ans, &ctxtReal39);
@@ -147,7 +153,9 @@ void fnChi2R(uint16_t unusedButMandatoryParameter) {
 void fnChi2I(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, dof;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamChi2(&val, &dof)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {

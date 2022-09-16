@@ -17,16 +17,16 @@
 /**
  * \file bufferize.h
  */
-#ifndef BUFFERIZE_H
-#define BUFFERIZE_H
+#if !defined(BUFFERIZE_H)
+  #define BUFFERIZE_H
 
 #include <stdint.h>
 #include "realType.h"
 
-#ifndef TESTSUITE_BUILD
-  void     fnAim                    (uint16_t unusedButMandatoryParameter);
-  void     resetAlphaSelectionBuffer(void);
-  uint16_t convertItemToSubOrSup    (uint16_t item, int16_t subOrSup);
+  #if !defined(TESTSUITE_BUILD)
+    void     fnAim                    (uint16_t unusedButMandatoryParameter);
+    void     resetAlphaSelectionBuffer(void);
+    uint16_t convertItemToSubOrSup    (uint16_t item, int16_t subOrSup);
 
   /**
    * Adds an item to the alpha buffer.

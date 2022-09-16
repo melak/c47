@@ -17,8 +17,8 @@
 /**
  * \file recall.h
  */
-#ifndef RECALL_H
-#define RECALL_H
+#if !defined(RECALL_H)
+  #define RECALL_H
 
 #include <stdint.h>
 

@@ -18,8 +18,8 @@
  * \file items.h
  * Item list and function to run them.
  */
-#ifndef ITEMS_H
-#define ITEMS_H
+#if !defined(ITEMS_H)
+  #define ITEMS_H
 
 #include <stdint.h>
 

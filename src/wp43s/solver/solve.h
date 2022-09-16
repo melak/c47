@@ -17,8 +17,8 @@
 /********************************************//**
  * \file solve.h
  ***********************************************/
-#ifndef SOLVE_H
-#define SOLVE_H
+#if !defined(SOLVE_H)
+  #define SOLVE_H
 
 #include "realType.h"
 #include "typeDefinitions.h"

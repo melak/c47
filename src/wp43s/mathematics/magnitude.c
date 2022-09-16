@@ -64,7 +64,9 @@ TO_QSPI void (* const magnitude[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = 
  * \return void
  ***********************************************/
 void fnMagnitude(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   magnitude[getRegisterDataType(REGISTER_X)]();
 
@@ -86,22 +88,22 @@ void magnitudeRema(void) {
 
 
 void magnitudeCxma(void) {
-#ifndef TESTSUITE_BUILD
-  complex34Matrix_t cMat;
-  real34Matrix_t rMat;
-  real34_t dummy;
+  #if !defined(TESTSUITE_BUILD)
+    complex34Matrix_t cMat;
+    real34Matrix_t rMat;
+    real34_t dummy;
 
-  linkToComplexMatrixRegister(REGISTER_X, &cMat);
-  if(realMatrixInit(&rMat, cMat.header.matrixRows, cMat.header.matrixColumns)) {
-    for(uint16_t i = 0; i < cMat.header.matrixRows * cMat.header.matrixColumns; ++i) {
-      real34RectangularToPolar(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), &rMat.matrixElements[i], &dummy);
+    linkToComplexMatrixRegister(REGISTER_X, &cMat);
+    if(realMatrixInit(&rMat, cMat.header.matrixRows, cMat.header.matrixColumns)) {
+      for(uint16_t i = 0; i < cMat.header.matrixRows * cMat.header.matrixColumns; ++i) {
+        real34RectangularToPolar(VARIABLE_REAL34_DATA(&cMat.matrixElements[i]), VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]), &rMat.matrixElements[i], &dummy);
+      }
+
+      convertReal34MatrixToReal34MatrixRegister(&rMat, REGISTER_X);
+      realMatrixFree(&rMat);
     }
-
-    convertReal34MatrixToReal34MatrixRegister(&rMat, REGISTER_X);
-    realMatrixFree(&rMat);
-  }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-#endif // TESTSUITE_BUILD
+    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+  #endif // !TESTSUITE_BUILD
 }
 
 

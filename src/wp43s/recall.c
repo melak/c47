@@ -34,10 +34,10 @@
 
 
 
-#ifndef TESTSUITE_BUILD
-static bool_t recallElementReal(real34Matrix_t *matrix) {
-  const int16_t i = getIRegisterAsInt(true);
-  const int16_t j = getJRegisterAsInt(true);
+#if !defined(TESTSUITE_BUILD)
+  static bool_t recallElementReal(real34Matrix_t *matrix) {
+    const int16_t i = getIRegisterAsInt(true);
+    const int16_t j = getJRegisterAsInt(true);
 
   liftStack();
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
@@ -89,9 +89,13 @@ void fnRecallAdd(uint16_t regist) {
   if(regInRange(regist)) {
     if(programRunStop == PGM_RUNNING && regist == REGISTER_L) {
       copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
-      if(lastErrorCode != ERROR_NONE) return;
+      if(lastErrorCode != ERROR_NONE) {
+        return;
+      }
     }
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
     if(programRunStop == PGM_RUNNING) {
       copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
     }
@@ -115,9 +119,13 @@ void fnRecallSub(uint16_t regist) {
   if(regInRange(regist)) {
     if(programRunStop == PGM_RUNNING && regist == REGISTER_L) {
       copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
-      if(lastErrorCode != ERROR_NONE) return;
+      if(lastErrorCode != ERROR_NONE) {
+        return;
+      }
     }
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
     if(programRunStop == PGM_RUNNING) {
       copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
     }
@@ -141,9 +149,13 @@ void fnRecallMult(uint16_t regist) {
   if(regInRange(regist)) {
     if(programRunStop == PGM_RUNNING && regist == REGISTER_L) {
       copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
-      if(lastErrorCode != ERROR_NONE) return;
+      if(lastErrorCode != ERROR_NONE) {
+        return;
+      }
     }
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
     if(programRunStop == PGM_RUNNING) {
       copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
     }
@@ -167,9 +179,13 @@ void fnRecallDiv(uint16_t regist) {
   if(regInRange(regist)) {
     if(programRunStop == PGM_RUNNING && regist == REGISTER_L) {
       copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
-      if(lastErrorCode != ERROR_NONE) return;
+      if(lastErrorCode != ERROR_NONE) {
+        return;
+      }
     }
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
     if(programRunStop == PGM_RUNNING) {
       copySourceRegisterToDestRegister(REGISTER_Y, SAVED_REGISTER_Y);
     }
@@ -193,9 +209,13 @@ void fnRecallMin(uint16_t regist) {
   if(regInRange(regist)) {
     if(programRunStop == PGM_RUNNING && regist == REGISTER_L) {
       copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
-      if(lastErrorCode != ERROR_NONE) return;
+      if(lastErrorCode != ERROR_NONE) {
+        return;
+      }
     }
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
     if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.pointerToRegisterData == WP43S_NULL) {
       copySourceRegisterToDestRegister(regist == REGISTER_L ? SAVED_REGISTER_L : regist, TEMP_REGISTER_1);
       regist = TEMP_REGISTER_1;
@@ -210,9 +230,13 @@ void fnRecallMax(uint16_t regist) {
   if(regInRange(regist)) {
     if(programRunStop == PGM_RUNNING && regist == REGISTER_L) {
       copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
-      if(lastErrorCode != ERROR_NONE) return;
+      if(lastErrorCode != ERROR_NONE) {
+        return;
+      }
     }
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
     if(regist >= FIRST_RESERVED_VARIABLE && regist < LAST_RESERVED_VARIABLE && allReservedVariables[regist - FIRST_RESERVED_VARIABLE].header.pointerToRegisterData == WP43S_NULL) {
       copySourceRegisterToDestRegister(regist == REGISTER_L ? SAVED_REGISTER_L : regist, TEMP_REGISTER_1);
       regist = TEMP_REGISTER_1;
@@ -275,7 +299,9 @@ void fnRecallStack(uint16_t regist) {
   else {
     int i;
 
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     for(i=0; i<size; i++) {
       copySourceRegisterToDestRegister(regist + i, REGISTER_X + i);
@@ -290,58 +316,66 @@ void fnRecallStack(uint16_t regist) {
 
 
 void fnRecallElement(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
-  if(matrixIndex == INVALID_VARIABLE) {
-    displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "Cannot execute RCLEL without a matrix indexed");
-      moreInfoOnError("In function fnRecallElement:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-  else {
-    callByIndexedMatrix(recallElementReal, recallElementComplex);
-  }
-#endif // TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    if(matrixIndex == INVALID_VARIABLE) {
+      displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "Cannot execute RCLEL without a matrix indexed");
+        moreInfoOnError("In function fnRecallElement:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
+    else {
+      callByIndexedMatrix(recallElementReal, recallElementComplex);
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 
 
 void fnRecallIJ(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
-  if(matrixIndex == INVALID_VARIABLE) {
-    displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "Cannot execute RCLIJ without a matrix indexed");
-      moreInfoOnError("In function fnRecallIJ:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-  else {
-    longInteger_t zero;
-    longIntegerInit(zero);
-
-    if(!saveLastX()) return;
-
-    liftStack();
-    liftStack();
-
-    if(matrixIndex == INVALID_VARIABLE || !regInRange(matrixIndex) || !((getRegisterDataType(matrixIndex) == dtReal34Matrix) || (getRegisterDataType(matrixIndex) == dtComplex34Matrix))) {
-      convertLongIntegerToLongIntegerRegister(zero, REGISTER_Y);
-      convertLongIntegerToLongIntegerRegister(zero, REGISTER_X);
+  #if !defined(TESTSUITE_BUILD)
+    if(matrixIndex == INVALID_VARIABLE) {
+      displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "Cannot execute RCLIJ without a matrix indexed");
+        moreInfoOnError("In function fnRecallIJ:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      if(getRegisterDataType(REGISTER_I) == dtLongInteger)
-        copySourceRegisterToDestRegister(REGISTER_I, REGISTER_Y);
-      else if(getRegisterDataType(REGISTER_I) == dtReal34)
-        convertReal34ToLongIntegerRegister(REGISTER_REAL34_DATA(REGISTER_I), REGISTER_Y, DEC_ROUND_DOWN);
-      else
+      longInteger_t zero;
+      longIntegerInit(zero);
+
+      if(!saveLastX()) {
+        return;
+      }
+
+    liftStack();
+    liftStack();
+
+      if(matrixIndex == INVALID_VARIABLE || !regInRange(matrixIndex) || !((getRegisterDataType(matrixIndex) == dtReal34Matrix) || (getRegisterDataType(matrixIndex) == dtComplex34Matrix))) {
         convertLongIntegerToLongIntegerRegister(zero, REGISTER_Y);
-      if(getRegisterDataType(REGISTER_J) == dtLongInteger)
-        copySourceRegisterToDestRegister(REGISTER_J, REGISTER_X);
-      else if(getRegisterDataType(REGISTER_J) == dtReal34)
-        convertReal34ToLongIntegerRegister(REGISTER_REAL34_DATA(REGISTER_J), REGISTER_X, DEC_ROUND_DOWN);
-      else
         convertLongIntegerToLongIntegerRegister(zero, REGISTER_X);
-    }
+      }
+      else {
+        if(getRegisterDataType(REGISTER_I) == dtLongInteger) {
+          copySourceRegisterToDestRegister(REGISTER_I, REGISTER_Y);
+        }
+        else if(getRegisterDataType(REGISTER_I) == dtReal34) {
+          convertReal34ToLongIntegerRegister(REGISTER_REAL34_DATA(REGISTER_I), REGISTER_Y, DEC_ROUND_DOWN);
+        }
+        else {
+          convertLongIntegerToLongIntegerRegister(zero, REGISTER_Y);
+        }
+        if(getRegisterDataType(REGISTER_J) == dtLongInteger) {
+          copySourceRegisterToDestRegister(REGISTER_J, REGISTER_X);
+        }
+        else if(getRegisterDataType(REGISTER_J) == dtReal34) {
+          convertReal34ToLongIntegerRegister(REGISTER_REAL34_DATA(REGISTER_J), REGISTER_X, DEC_ROUND_DOWN);
+        }
+        else {
+          convertLongIntegerToLongIntegerRegister(zero, REGISTER_X);
+        }
+      }
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
     adjustResult(REGISTER_Y, false, true, REGISTER_Y, -1, -1);

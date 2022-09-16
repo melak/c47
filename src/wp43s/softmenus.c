@@ -530,7 +530,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   static int sortMenu(void const *a, void const *b) {
     return compareString(a, b, CMP_EXTENSIVE);
   }
@@ -539,8 +539,12 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
   static bool_t _filterDataType(calcRegister_t regist, dataType_t typeFilter, bool_t isAngular) {
     dataType_t dt = getRegisterDataType(regist);
-    if(dt != dtReal34 && dt == typeFilter) return true;
-    if(typeFilter == dtReal34Matrix && dt == dtComplex34Matrix) return true;
+    if(dt != dtReal34 && dt == typeFilter) {
+      return true;
+    }
+    if(typeFilter == dtReal34Matrix && dt == dtComplex34Matrix) {
+      return true;
+    }
     if(typeFilter == dtReal34 && dt == dtReal34) {
       if(isAngular) {
         return getRegisterAngularMode(regist) != amNone;
@@ -838,7 +842,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
                         numberOfGlobalLabels = 0;
                         memset(tmpString, 0, TMP_STR_LENGTH);
                         for(i=0; i<LAST_ITEM; i++) {
-                          if((indexOfItems[i].status & CAT_STATUS) == CAT_MENU && i != MNU_CATALOG && i != MNU_MENUS) {
+                          if((indexOfItems[i].status & CAT_STATUS) == CAT_MENU && indexOfItems[i].itemCatalogName[0] != 0 && i != MNU_CATALOG && i != MNU_MENUS) {
                             int16_t len = stringByteLength(indexOfItems[i].itemCatalogName);
                             xcopy(tmpString + 15 * numberOfGlobalLabels, indexOfItems[i].itemCatalogName, len);
                             numberOfGlobalLabels++;
@@ -1034,7 +1038,10 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
                   case MNU_DYNAMIC: vm = (userMenus[currentUserMenu].menuItem[x + 6*y].item < 0) ? vmReverse : vmNormal; break;
                   case MNU_1STDERIV:
                   case MNU_2NDDERIV:
-                  case MNU_MVAR:    if(!compareString((char *)getNthString(dynamicSoftmenu[m].menuContent, x+6*y), indexOfItems[ITM_DRAW].itemSoftmenuName, CMP_NAME)) {vm = vmReverse; break;}
+                  case MNU_MVAR:    if(!compareString((char *)getNthString(dynamicSoftmenu[m].menuContent, x+6*y), indexOfItems[ITM_DRAW].itemSoftmenuName, CMP_NAME)) {
+                                      vm = vmReverse;
+                                      break;
+                                    }
                   default:          vm =                                                  vmNormal; break;
                 }
                 showSoftkey((char *)ptr, x, y, vm, true, true);
@@ -1095,7 +1102,9 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
               // Strike out non coded functions
               int16_t yStroke = SCREEN_HEIGHT - (y-currentFirstItem/6)*23 - 3;
               for(int16_t xStroke=x*67 + 10; xStroke<x*67 + 57; xStroke++) {
-                if(xStroke%3 == 0) yStroke--;
+                if(xStroke%3 == 0) {
+                  yStroke--;
+                }
                 setBlackPixel(xStroke, yStroke);
               }
             }
@@ -1112,9 +1121,15 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
         bool_t rightEllipsis;
         while(1) {
           showEquation(EQUATION_AIM_BUFFER, yCursor, xCursor, true, &cursorShown, &rightEllipsis);
-          if(cursorShown) break;
-          if(yCursor > xCursor) --yCursor;
-          else                  ++yCursor;
+          if(cursorShown) {
+            break;
+          }
+          if(yCursor > xCursor) {
+            --yCursor;
+          }
+          else {
+            ++yCursor;
+          }
         }
         if(!rightEllipsis && yCursor > 0) {
           do {
@@ -1225,7 +1240,8 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       cachedDynamicMenu = 0;
       parseEquation(currentFormula, EQUATION_PARSER_MVAR, aimBuffer, tmpString);
       id = -MNU_MVAR;
-      while((getNthString((uint8_t *)tmpString, ++numberOfVars))[0] != 0) {}
+      while((getNthString((uint8_t *)tmpString, ++numberOfVars))[0] != 0) {
+      }
       if(numberOfVars > 12) {
         displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1318,9 +1334,9 @@ char *dynmenuGetLabel(int16_t menuitem) {
 
 
 void fnExitAllMenus(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
-  while((softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_MyMenu && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_MyAlpha) || (softmenu[softmenuStack[1].softmenuId].menuItem != -MNU_MyMenu)) {
-    popSoftmenu();
-  }
-#endif // !TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    while((softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_MyMenu && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_MyAlpha) || (softmenu[softmenuStack[1].softmenuId].menuItem != -MNU_MyMenu)) {
+      popSoftmenu();
+    }
+  #endif // !TESTSUITE_BUILD
 }

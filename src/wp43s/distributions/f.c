@@ -103,7 +103,9 @@ static bool_t checkParamF(real_t *x, real_t *i, real_t *j) {
 void fnF_P(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, d1, d2;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamF(&val, &d1, &d2)) {
     WP34S_Pdf_F(&val, &d1, &d2, &ans, &ctxtReal39);
@@ -118,7 +120,9 @@ void fnF_P(uint16_t unusedButMandatoryParameter) {
 void fnF_L(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, d1, d2;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamF(&val, &d1, &d2)) {
     WP34S_Cdf_F(&val, &d1, &d2, &ans, &ctxtReal39);
@@ -133,7 +137,9 @@ void fnF_L(uint16_t unusedButMandatoryParameter) {
 void fnF_R(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, d1, d2;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamF(&val, &d1, &d2)) {
     WP34S_Cdfu_F(&val, &d1, &d2, &ans, &ctxtReal39);
@@ -148,7 +154,9 @@ void fnF_R(uint16_t unusedButMandatoryParameter) {
 void fnF_I(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, d1, d2;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamF(&val, &d1, &d2)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
@@ -251,12 +259,14 @@ void WP34S_Qf_F(const real_t *x, const real_t *d1, const real_t *d2, real_t *res
   realCopy(x, &reg0);
   WP34S_qf_q_est(x, &p, NULL, realContext);
   realCopy(d1, &r);
-  if(realCompareGreaterThan(&r, const_1))
+  if(realCompareGreaterThan(&r, const_1)) {
     realSubtract(&r, const_1, &r, realContext);
+  }
   realDivide(const_1, &r, &r, realContext);
   realCopy(d2, &s);
-  if(realCompareGreaterThan(&s, const_1))
+  if(realCompareGreaterThan(&s, const_1)) {
     realSubtract(&s, const_1, &s, realContext);
+  }
   realDivide(const_1, &s, &s, realContext);
   realCopy(&s, &reg1), realCopy(&r, &reg2);
   realAdd(&r, &s, &r, realContext);
@@ -301,8 +311,9 @@ void WP34S_Qf_Newton(uint32_t r_dist, const real_t *target, const real_t *estima
 
   /* Set flags based on distribution */
   // f_newton_setflags
-  if(r_dist != QF_NEWTON_F)
+  if(r_dist != QF_NEWTON_F) {
     f_discrete = true; // Poisson or Binomial
+  }
 
   // qf_f_flags
   realDivide(const_3on2, const_2, &p, realContext);
@@ -430,8 +441,9 @@ qf_newton_fixed:
         /* Check for discrete distribution convergence */
         realSubtract(&r_z, &r_r, &p, realContext);
         realSetPositiveSign(&p);
-        if(realCompareGreaterThan(const_1on10, &p))
+        if(realCompareGreaterThan(const_1on10, &p)) {
           goto qf_newton_done;
+        }
       }
       /* Check for continuous distribution convergence */
       else if(WP34S_RelativeError(&r_r, &r_z, const_1e_37, realContext)) {

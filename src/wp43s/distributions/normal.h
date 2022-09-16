@@ -17,26 +17,25 @@
 /********************************************//**
  * \file normal.h
  ***********************************************/
-#ifndef NORMAL_H
-#define NORMAL_H
+#if !defined(NORMAL_H)
+  #define NORMAL_H
 
-#include "realType.h"
-#include <stdint.h>
+  #include "realType.h"
+  #include <stdint.h>
 
-void fnNormalP   (uint16_t unusedButMandatoryParameter);
-void fnNormalL   (uint16_t unusedButMandatoryParameter);
-void fnNormalR   (uint16_t unusedButMandatoryParameter);
-void fnNormalI   (uint16_t unusedButMandatoryParameter);
+  void fnNormalP     (uint16_t unusedButMandatoryParameter);
+  void fnNormalL     (uint16_t unusedButMandatoryParameter);
+  void fnNormalR     (uint16_t unusedButMandatoryParameter);
+  void fnNormalI     (uint16_t unusedButMandatoryParameter);
 
-void fnLogNormalP(uint16_t unusedButMandatoryParameter);
-void fnLogNormalL(uint16_t unusedButMandatoryParameter);
-void fnLogNormalR(uint16_t unusedButMandatoryParameter);
-void fnLogNormalI(uint16_t unusedButMandatoryParameter);
+  void fnLogNormalP  (uint16_t unusedButMandatoryParameter);
+  void fnLogNormalL  (uint16_t unusedButMandatoryParameter);
+  void fnLogNormalR  (uint16_t unusedButMandatoryParameter);
+  void fnLogNormalI  (uint16_t unusedButMandatoryParameter);
 
-void WP34S_Pdf_Q   (const real_t *x, real_t *res, realContext_t *realContext);
-void WP34S_Cdfu_Q  (const real_t *x, real_t *res, realContext_t *realContext);
-void WP34S_Cdf_Q   (const real_t *x, real_t *res, realContext_t *realContext);
-void WP34S_qf_q_est(const real_t *x, real_t *res, real_t* resY, realContext_t *realContext);
-void WP34S_Qf_Q    (const real_t *x, real_t *res, realContext_t *realContext);
-
-#endif // NORMAL_H
+  void WP34S_Pdf_Q   (const real_t *x, real_t *res, realContext_t *realContext);
+  void WP34S_Cdfu_Q  (const real_t *x, real_t *res, realContext_t *realContext);
+  void WP34S_Cdf_Q   (const real_t *x, real_t *res, realContext_t *realContext);
+  void WP34S_qf_q_est(const real_t *x, real_t *res, real_t* resY, realContext_t *realContext);
+  void WP34S_Qf_Q    (const real_t *x, real_t *res, realContext_t *realContext);
+#endif // !NORMAL_H

@@ -37,24 +37,24 @@ bool_t regInRange(uint16_t regist) {
     (regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) ||
     (regist >= FIRST_NAMED_VARIABLE && regist - FIRST_NAMED_VARIABLE < numberOfNamedVariables) ||
     (regist >= FIRST_RESERVED_VARIABLE && regist <= LAST_RESERVED_VARIABLE));
-#ifdef PC_BUILD
-  if(!inRange) {
-    if(regist >= FIRST_LOCAL_REGISTER && regist <= LAST_LOCAL_REGISTER) {
-      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-      sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
+  #if defined(PC_BUILD)
+    if(!inRange) {
+      if(regist >= FIRST_LOCAL_REGISTER && regist <= LAST_LOCAL_REGISTER) {
+        displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+        sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
+      }
+      else if(regist >= FIRST_NAMED_VARIABLE && regist <= LAST_NAMED_VARIABLE) {
+        displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
+        // This error message is not massively useful because it doesn't have the original name
+        // But it shouldn't have even got this far if the name doesn't exist
+        sprintf(errorMessage, "named register .%02d", regist - FIRST_NAMED_VARIABLE);
+      }
+      else {
+        displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+      }
+      moreInfoOnError("In function regInRange:", errorMessage, " is not defined!", NULL);
     }
-    else if(regist >= FIRST_NAMED_VARIABLE && regist <= LAST_NAMED_VARIABLE) {
-      displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
-      // This error message is not massively useful because it doesn't have the original name
-      // But it shouldn't have even got this far if the name doesn't exist
-      sprintf(errorMessage, "named register .%02d", regist - FIRST_NAMED_VARIABLE);
-    }
-    else {
-      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-    }
-    moreInfoOnError("In function regInRange:", errorMessage, " is not defined!", NULL);
-  }
-#endif
+  #endif // PC_BUILD
   return inRange;
 }
 
@@ -74,95 +74,95 @@ static bool_t _checkReadOnlyVariable(uint16_t regist) {
 
 
 
-#ifndef TESTSUITE_BUILD
-static bool_t storeElementReal(real34Matrix_t *matrix) {
-  const int16_t i = getIRegisterAsInt(true);
-  const int16_t j = getJRegisterAsInt(true);
+#if !defined(TESTSUITE_BUILD)
+  static bool_t storeElementReal(real34Matrix_t *matrix) {
+    const int16_t i = getIRegisterAsInt(true);
+    const int16_t j = getJRegisterAsInt(true);
 
-  if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
-    convertLongIntegerRegisterToReal34(REGISTER_X, &matrix->matrixElements[i * matrix->header.matrixColumns + j]);
-  }
-  else if(getRegisterDataType(REGISTER_X) == dtReal34) {
-    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &matrix->matrixElements[i * matrix->header.matrixColumns + j]);
-  }
-  else {
-    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "Cannot store %s in a matrix", getRegisterDataTypeName(REGISTER_X, true, false));
-      moreInfoOnError("In function storeElementReal:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
-  }
-  return true;
-}
-
-static bool_t storeElementComplex(complex34Matrix_t *matrix) {
-  const int16_t i = getIRegisterAsInt(true);
-  const int16_t j = getJRegisterAsInt(true);
-
-  if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
-    convertLongIntegerRegisterToReal34(REGISTER_X, VARIABLE_REAL34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
-    real34Zero(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
-  }
-  else if(getRegisterDataType(REGISTER_X) == dtReal34) {
-    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), VARIABLE_REAL34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
-    real34Zero(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
-  }
-  else if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), VARIABLE_REAL34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
-    real34Copy(REGISTER_IMAG34_DATA(REGISTER_X), VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
-  }
-  else {
-    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "Cannot store %s in a matrix", getRegisterDataTypeName(REGISTER_X, true, false));
-      moreInfoOnError("In function storeElementReal:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
-  }
-  return true;
-}
-
-
-
-static bool_t storeIjReal(real34Matrix_t *matrix) {
-  if(getRegisterDataType(REGISTER_X) == dtLongInteger && getRegisterDataType(REGISTER_Y) == dtLongInteger) {
-    longInteger_t i, j;
-    convertLongIntegerRegisterToLongInteger(REGISTER_Y, i);
-    convertLongIntegerRegisterToLongInteger(REGISTER_X, j);
-    if(longIntegerCompareInt(i, 0) > 0 && longIntegerCompareUInt(i, matrix->header.matrixRows) <= 0 && longIntegerCompareInt(j, 0) > 0 && longIntegerCompareUInt(j, matrix->header.matrixColumns) <= 0) {
-      copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_I);
-      copySourceRegisterToDestRegister(REGISTER_X, REGISTER_J);
+    if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
+      convertLongIntegerRegisterToReal34(REGISTER_X, &matrix->matrixElements[i * matrix->header.matrixColumns + j]);
+    }
+    else if(getRegisterDataType(REGISTER_X) == dtReal34) {
+      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &matrix->matrixElements[i * matrix->header.matrixColumns + j]);
     }
     else {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        uint16_t row, col;
-        longIntegerToUInt(i, row);
-        longIntegerToUInt(j, col);
+        sprintf(errorMessage, "Cannot store %s in a matrix", getRegisterDataTypeName(REGISTER_X, true, false));
+        moreInfoOnError("In function storeElementReal:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+      return false;
+    }
+    return true;
+  }
+
+  static bool_t storeElementComplex(complex34Matrix_t *matrix) {
+    const int16_t i = getIRegisterAsInt(true);
+    const int16_t j = getJRegisterAsInt(true);
+
+    if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
+      convertLongIntegerRegisterToReal34(REGISTER_X, VARIABLE_REAL34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
+      real34Zero(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
+    }
+    else if(getRegisterDataType(REGISTER_X) == dtReal34) {
+      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), VARIABLE_REAL34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
+      real34Zero(VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
+    }
+    else if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), VARIABLE_REAL34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
+      real34Copy(REGISTER_IMAG34_DATA(REGISTER_X), VARIABLE_IMAG34_DATA(&matrix->matrixElements[i * matrix->header.matrixColumns + j]));
+    }
+    else {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "(%" PRIu16 ", %" PRIu16 ") out of range", row, col);
+        sprintf(errorMessage, "Cannot store %s in a matrix", getRegisterDataTypeName(REGISTER_X, true, false));
+        moreInfoOnError("In function storeElementReal:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return false;
+    }
+    return true;
+  }
+
+
+
+  static bool_t storeIjReal(real34Matrix_t *matrix) {
+    if(getRegisterDataType(REGISTER_X) == dtLongInteger && getRegisterDataType(REGISTER_Y) == dtLongInteger) {
+      longInteger_t i, j;
+      convertLongIntegerRegisterToLongInteger(REGISTER_Y, i);
+      convertLongIntegerRegisterToLongInteger(REGISTER_X, j);
+      if(longIntegerCompareInt(i, 0) > 0 && longIntegerCompareUInt(i, matrix->header.matrixRows) <= 0 && longIntegerCompareInt(j, 0) > 0 && longIntegerCompareUInt(j, matrix->header.matrixColumns) <= 0) {
+        copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_I);
+        copySourceRegisterToDestRegister(REGISTER_X, REGISTER_J);
+      }
+      else {
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          uint16_t row, col;
+          longIntegerToUInt(i, row);
+          longIntegerToUInt(j, col);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          sprintf(errorMessage, "(%" PRIu16 ", %" PRIu16 ") out of range", row, col);
+          moreInfoOnError("In function storeIJReal:", errorMessage, NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      }
+      longIntegerFree(i);
+      longIntegerFree(j);
+    }
+    else {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "Cannot store %s in a matrix", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function storeIJReal:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
-    longIntegerFree(i);
-    longIntegerFree(j);
+    return false;
   }
-  else {
-    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "Cannot store %s in a matrix", getRegisterDataTypeName(REGISTER_X, true, false));
-      moreInfoOnError("In function storeIJReal:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-  return false;
-}
 
-static bool_t storeIjComplex(complex34Matrix_t *matrix) {
-  return storeIjReal((real34Matrix_t *)matrix);
-}
-#endif // TESTSUITE_BUILD
+  static bool_t storeIjComplex(complex34Matrix_t *matrix) {
+    return storeIjReal((real34Matrix_t *)matrix);
+  }
+#endif // !TESTSUITE_BUILD
 
 
 
@@ -202,7 +202,7 @@ static void _storeValue(uint16_t regist) {
 void fnStore(uint16_t regist) {
   if(_checkReadOnlyVariable(regist) && regInRange(regist)) {
     _storeValue(regist);
-    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable(statMx)) calcSigma(0);
+    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
   }
 }
 
@@ -230,7 +230,7 @@ void fnStoreAdd(uint16_t regist) {
     }
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable(statMx)) calcSigma(0);
+    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
   }
 }
 
@@ -258,7 +258,7 @@ void fnStoreSub(uint16_t regist) {
     }
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable(statMx)) calcSigma(0);
+    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
   }
 }
 
@@ -286,7 +286,7 @@ void fnStoreMult(uint16_t regist) {
     }
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable(statMx)) calcSigma(0);
+    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
   }
 }
 
@@ -314,7 +314,7 @@ void fnStoreDiv(uint16_t regist) {
     }
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable(statMx)) calcSigma(0);
+    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
   }
 }
 
@@ -411,39 +411,39 @@ void fnStoreStack(uint16_t regist) {
 
 
 void fnStoreElement(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
-  if(matrixIndex == INVALID_VARIABLE) {
-    displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "Cannot execute STOEL without a matrix indexed");
-      moreInfoOnError("In function fnStoreElement:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-  else {
-    if(regInRange(matrixIndex) && getRegisterDataType(matrixIndex) == dtReal34Matrix && getRegisterDataType(REGISTER_X) == dtComplex34) {
-      // Real matrices turns to complex matrices by setting a complex element
-      convertReal34MatrixRegisterToComplex34MatrixRegister(matrixIndex, matrixIndex);
+  #if !defined(TESTSUITE_BUILD)
+    if(matrixIndex == INVALID_VARIABLE) {
+      displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "Cannot execute STOEL without a matrix indexed");
+        moreInfoOnError("In function fnStoreElement:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
-    callByIndexedMatrix(storeElementReal, storeElementComplex);
-    if(matrixIndex >= FIRST_NAMED_VARIABLE && matrixIndex == findNamedVariable(statMx)) calcSigma(0);
-  }
-#endif // TESTSUITE_BUILD
+    else {
+      if(regInRange(matrixIndex) && getRegisterDataType(matrixIndex) == dtReal34Matrix && getRegisterDataType(REGISTER_X) == dtComplex34) {
+        // Real matrices turns to complex matrices by setting a complex element
+        convertReal34MatrixRegisterToComplex34MatrixRegister(matrixIndex, matrixIndex);
+      }
+      callByIndexedMatrix(storeElementReal, storeElementComplex);
+      if(matrixIndex >= FIRST_NAMED_VARIABLE && matrixIndex == findNamedVariable("STATS")) calcSigma(0);
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 
 
 void fnStoreIJ(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
-  if(matrixIndex == INVALID_VARIABLE) {
-    displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "Cannot execute STOIJ without a matrix indexed");
-      moreInfoOnError("In function fnStoreIJ:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-  else {
-    callByIndexedMatrix(storeIjReal, storeIjComplex);
-    if(matrixIndex >= FIRST_NAMED_VARIABLE && matrixIndex == findNamedVariable(statMx)) calcSigma(0);
-  }
-#endif // TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    if(matrixIndex == INVALID_VARIABLE) {
+      displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "Cannot execute STOIJ without a matrix indexed");
+        moreInfoOnError("In function fnStoreIJ:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
+    else {
+      callByIndexedMatrix(storeIjReal, storeIjComplex);
+      if(matrixIndex >= FIRST_NAMED_VARIABLE && matrixIndex == findNamedVariable("STATS")) calcSigma(0);
+    }
+  #endif // !TESTSUITE_BUILD
 }

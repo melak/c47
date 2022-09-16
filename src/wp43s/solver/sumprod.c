@@ -36,103 +36,111 @@
 #include "stack.h"
 #include "wp43s.h"
 
-#ifndef TESTSUITE_BUILD
-static void _programmableSumProd(uint16_t label, bool_t prod) {
-  real34_t counter, result;
-  bool_t finished = false;
+#if !defined(TESTSUITE_BUILD)
+  static void _programmableSumProd(uint16_t label, bool_t prod) {
+    real34_t counter, result;
+    bool_t finished = false;
 
-  real34Copy(prod ? const34_1 : const34_0, &result);
+    real34Copy(prod ? const34_1 : const34_0, &result);
 
-  ++currentSolverNestingDepth;
-  setSystemFlag(FLAG_SOLVING);
+    ++currentSolverNestingDepth;
+    setSystemFlag(FLAG_SOLVING);
 
-  while(1) {
-    fnToReal(NOPARAM);
-    if(lastErrorCode != ERROR_NONE) break;
-    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter);
-    fnIp(NOPARAM);
-    fnFillStack(NOPARAM);
+    while(1) {
+      fnToReal(NOPARAM);
+      if(lastErrorCode != ERROR_NONE) {
+        break;
+      }
+      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter);
+      fnIp(NOPARAM);
+      fnFillStack(NOPARAM);
 
-    dynamicMenuItem = -1;
-    execProgram(label);
-    if(lastErrorCode != ERROR_NONE) break;
+      dynamicMenuItem = -1;
+      execProgram(label);
+      if(lastErrorCode != ERROR_NONE) {
+        break;
+      }
 
-    fnToReal(NOPARAM);
-    if(lastErrorCode != ERROR_NONE) break;
-    if(prod) {
-      real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
+      fnToReal(NOPARAM);
+      if(lastErrorCode != ERROR_NONE) {
+        break;
+      }
+      if(prod) {
+        real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
+      }
+      else {
+        real34Add(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
+      }
+      real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
+
+      if(finished) {
+        break;
+      }
+      fnDse(REGISTER_X);
+      finished = (temporaryInformation != TI_TRUE);
+    }
+
+    if(lastErrorCode == ERROR_NONE) {
+      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+      real34Copy(&result, REGISTER_REAL34_DATA(REGISTER_X));
+    }
+
+    temporaryInformation = TI_NO_INFO;
+    if(programRunStop == PGM_WAITING) {
+      programRunStop = PGM_STOPPED;
+    }
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+
+    if((--currentSolverNestingDepth) == 0) {
+      clearSystemFlag(FLAG_SOLVING);
+    }
+  }
+
+  void _checkArgument(uint16_t label, bool_t prod) {
+    if(label >= FIRST_LABEL && label <= LAST_LABEL) {
+      _programmableSumProd(label, prod);
+    }
+    else if(label >= REGISTER_X && label <= REGISTER_T) {
+      // Interactive mode
+      char buf[4];
+      switch(label) {
+        case REGISTER_X:        buf[0] = 'X'; break;
+        case REGISTER_Y:        buf[0] = 'Y'; break;
+        case REGISTER_Z:        buf[0] = 'Z'; break;
+        case REGISTER_T:        buf[0] = 'T'; break;
+        default: /* unlikely */ buf[0] = 0;
+      }
+      buf[1] = 0;
+      label = findNamedLabel(buf);
+      if(label == INVALID_VARIABLE) {
+        displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          sprintf(errorMessage, "string '%s' is not a named label", buf);
+          moreInfoOnError("In function fnPgmSlv:", errorMessage, NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      }
+      else {
+        _programmableSumProd(label, prod);
+      }
     }
     else {
-      real34Add(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
-    }
-    real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
-
-    if(finished) break;
-    fnDse(REGISTER_X);
-    finished = (temporaryInformation != TI_TRUE);
-  }
-
-  if(lastErrorCode == ERROR_NONE) {
-    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    real34Copy(&result, REGISTER_REAL34_DATA(REGISTER_X));
-  }
-
-  temporaryInformation = TI_NO_INFO;
-  if(programRunStop == PGM_WAITING) {
-    programRunStop = PGM_STOPPED;
-  }
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
-
-  if((--currentSolverNestingDepth) == 0)
-    clearSystemFlag(FLAG_SOLVING);
-}
-
-void _checkArgument(uint16_t label, bool_t prod) {
-  if(label >= FIRST_LABEL && label <= LAST_LABEL) {
-    _programmableSumProd(label, prod);
-  }
-  else if(label >= REGISTER_X && label <= REGISTER_T) {
-    // Interactive mode
-    char buf[4];
-    switch(label) {
-      case REGISTER_X:        buf[0] = 'X'; break;
-      case REGISTER_Y:        buf[0] = 'Y'; break;
-      case REGISTER_Z:        buf[0] = 'Z'; break;
-      case REGISTER_T:        buf[0] = 'T'; break;
-      default: /* unlikely */ buf[0] = 0;
-    }
-    buf[1] = 0;
-    label = findNamedLabel(buf);
-    if(label == INVALID_VARIABLE) {
-      displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+      displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "string '%s' is not a named label", buf);
+        sprintf(errorMessage, "unexpected parameter %u", label);
         moreInfoOnError("In function fnPgmSlv:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
-    else {
-      _programmableSumProd(label, prod);
-    }
   }
-  else {
-    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "unexpected parameter %u", label);
-      moreInfoOnError("In function fnPgmSlv:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-}
-
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 
 void fnProgrammableSum(uint16_t label) {
-#ifndef TESTSUITE_BUILD
-  _checkArgument(label, false);
-#endif // TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    _checkArgument(label, false);
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnProgrammableProduct(uint16_t label) {
-#ifndef TESTSUITE_BUILD
-  _checkArgument(label, true);
-#endif // TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
+    _checkArgument(label, true);
+  #endif // !TESTSUITE_BUILD
 }

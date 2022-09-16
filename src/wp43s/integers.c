@@ -379,8 +379,8 @@ uint64_t WP34S_intSubtract(uint64_t y, uint64_t x) {
       clearSystemFlag(FLAG_CARRY);
     }
 
-    x2 = (x & shortIntegerSignBit)?-(x ^ shortIntegerSignBit):x;
-    y2 = (y & shortIntegerSignBit)?-(y ^ shortIntegerSignBit):y;
+    x2 = (x & shortIntegerSignBit) ? -(x ^ shortIntegerSignBit) : x;
+    y2 = (y & shortIntegerSignBit) ? -(y ^ shortIntegerSignBit) : y;
 
     difference = y2 - x2;
     if(difference & shortIntegerSignBit) {
@@ -864,19 +864,16 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
 #if 0
   /* Justify to the end of the register
    */
-  void justify(int64_t (*shift)(int64_t), const int64_t mask)
-   {
+  void justify(int64_t (*shift)(int64_t), const int64_t mask) {
     uint32_t c = 0;
     int64_t v;
 
     v = getX_int();
     setlastX();
     lift();
-    if(v != 0)
-     {
+    if(v != 0) {
       const int32_t flags = save_flags();
-      while((v & mask) == 0)
-       {
+      while((v & mask) == 0) {
         v = (*shift)(v);
         c++;
        }
@@ -887,8 +884,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     setX_int((int64_t)c);
    }
 
-  void int_justify(enum nilop op)
-   {
+  void int_justify(enum nilop op) {
     const uint64_t mask = (op == OP_LJ) ? shortIntegerSignBit : 1LL;
     justify((op == OP_LJ) ? &intLSL : &intLSR, mask);
    }
@@ -898,8 +894,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
    * If the n is negative, the mask is created at the other end of the
    * word.
    */
-  void intmsks(uint32_t arg, enum rarg op)
-   {
+  void intmsks(uint32_t arg, enum rarg op) {
     int64_t mask;
     int64_t x;
     int64_t (*f)(int64_t);
@@ -907,26 +902,21 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
 
     lift();
 
-    if(op == RARG_MASKL)
-     {
+    if(op == RARG_MASKL) {
       mask = shortIntegerSignBit;
       f = &intLSR;
-     }
-    else
-     {
+    }
+    else {
       mask = 1LL;
       f = &intLSL;
      }
 
-    if(arg >= shortIntegerWordSize)
-     {
+    if(arg >= shortIntegerWordSize) {
       x = (-1) & shortIntegerMask;
-     }
-    else
-     {
+    }
+    else {
       x = 0;
-      for(uint32_t i=0; i<arg; i++)
-       {
+      for(uint32_t i=0; i<arg; i++) {
         x |= mask;
         mask = (*f)(mask);
        }
@@ -938,29 +928,25 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
 
 
   /* Set, clear, flip and test bits */
-  void intbits(uint32_t arg, enum rarg op)
-   {
+  void intbits(uint32_t arg, enum rarg op) {
     int64_t m, x;
 
     m =  (arg >= shortIntegerWordSize)?0:(1LL << arg);
     x = getX_int();
 
-    switch(op)
-     {
+    switch(op) {
       case RARG_SB: x |= m;                              setlastX();  break;
       case RARG_CB: x &= ~m;                             setlastX();  break;
       case RARG_FB: x ^= m;                              setlastX();  break;
       case RARG_BS: fin_tst((x&m)?1:0);                               break;
       case RARG_BC: fin_tst((m != 0 && (x&m) != 0)?0:1);              break;
-      default:
-       return;
-   }
+      default: return;
+    }
 
    setX_int(x);
   }
 
-  int64_t intFib(int64_t x)
-   {
+  int64_t intFib(int64_t x) {
     int32_t sx, s;
     uint64_t v = extract_value(x, &sx);
     uint64_t a0, a1;
@@ -972,16 +958,16 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
      * are Fib(92) for signed quantities and Fib(93) for unsigned.
      * We allow a bit more and maintain the low order digits.
      */
-    if(v >= 100)
-     {
+    if(v >= 100) {
       set_overflow(1);
       return 0;
      }
 
     set_overflow(0);
     n = v & 0xff;
-    if(n <= 1)
-     return build_value(n, 0);
+    if(n <= 1) {
+      return build_value(n, 0);
+    }
 
     /* Negative integers produce the same values as positive
      * except the sign for negative evens is negative.
@@ -990,18 +976,19 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
 
     /* Mask to check for overflow */
     tbm = shortIntegerSignBit;
-    if(shortIntegerMode == SIM_UNSIGN)
-     tbm <<= 1;
+    if(shortIntegerMode == SIM_UNSIGN) {
+      tbm <<= 1;
+    }
 
     /* Down to the computation.
      */
     a0 = 0;
     a1 = 1;
-    for(i=1; i<n; i++)
-     {
+    for(i=1; i<n; i++) {
       const uint64_t anew = a0 + a1;
-      if((anew & tbm) || anew < a1)
-       set_overflow(1);
+      if((anew & tbm) || anew < a1) {
+        set_overflow(1);
+      }
       a0 = a1;
       a1 = anew;
      }
@@ -1010,21 +997,23 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
    }
 
 
-  int64_t intmodop(int64_t z, int64_t y, int64_t x)
-   {
+  int64_t intmodop(int64_t z, int64_t y, int64_t x) {
     int32_t sx, sy, sz;
     uint64_t vx = extract_value(x, &sx);
     uint64_t vy = extract_value(y, &sy);
     uint64_t vz = extract_value(z, &sz);
     uint64_t r;
 
-    if(sx || sy || sz || vx <= 1)
-     err(ERR_DOMAIN);
+    if(sx || sy || sz || vx <= 1) {
+      err(ERR_DOMAIN);
+    }
 
-    if(XeqOpCode == (OP_TRI | OP_MULMOD))
-     r = mulmod(vz, vy, vx);
-    else
-     r = expmod(vz, vy, vx);
+    if(XeqOpCode == (OP_TRI | OP_MULMOD)) {
+      r = mulmod(vz, vy, vx);
+    }
+    else {
+      r = expmod(vz, vy, vx);
+    }
 
     return build_value(r, 0);
    }
@@ -1033,42 +1022,39 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
   // only need 8 terms for factors > 256
   #define MAX_TERMS 8
 
-  int32_t dscanOdd(uint32_t d, uint32_t limit, int32_t nd, uint32_t ad[MAX_TERMS])
-   {
+  int32_t dscanOdd(uint32_t d, uint32_t limit, int32_t nd, uint32_t ad[MAX_TERMS]) {
     /* given starting odd `d', skip two divisors at a time and thus
     * scan only the odd numbers.
     */
     int32_t i, j;
-    while(ad[0])
-     {
+    while(ad[0]) {
       d += 2;
-      if(d > limit) return 0; // limit reached
-      for(i = nd-2; i >= 0; --i)
-       {
-        for(j = i; j < nd-1; ++j)
-         {
+      if(d > limit) {
+        return 0; // limit reached
+      }
+      for(i = nd-2; i >= 0; --i) {
+        for(j = i; j < nd-1; ++j) {
           int32_t v = ad[j] - ad[j+1] - ad[j+1];
-          if(v < 0)
-           {
+          if(v < 0) {
             v += d;
             --ad[j+1];
-            if(v < 0)
-             {
+            if(v < 0) {
               v += d;
               --ad[j+1];
              }
            }
           ad[j] = v;
-         }
-        if(!ad[j]) --nd;
-       }
-     }
+        }
+        if(!ad[j]) {
+          --nd;
+        }
+      }
+    }
 
     return d;
    }
 
-  uint64_t doFactor(uint64_t n)
-   {
+  uint64_t doFactor(uint64_t n) {
     /* find the least prime factor of `n'.
     * numbers up to 10^14 can be factored. worst case about 30 seconds
     * on realbuild.
@@ -1093,21 +1079,27 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     uint8_t* cp;
 
     // eliminate small cases < 257
-    if(n <= 2) return n;
-    if((n & 1) == 0) return 2;
-    for(i=1; i<N_PRIMES; i++)
-     {
-      if(n % primes[i] == 0)
-       return primes[i];
-     }
+    if(n <= 2) {
+      return n;
+    }
+    if((n & 1) == 0) {
+      return 2;
+    }
+    for(i=1; i<N_PRIMES; i++) {
+      if(n % primes[i] == 0) {
+        return primes[i];
+      }
+    }
 
-    if(n <= QUICK_CHECK)  // the number is prime
-     return n;
+    if(n <= QUICK_CHECK) { // the number is prime
+      return n;
+    }
 
     rt = (uint32_t)intSqrt(n);
     limit = rt;
-    if(limit > dmax)
-     limit = dmax; // max time about 30 seconds
+    if(limit > dmax) {
+      limit = dmax; // max time about 30 seconds
+    }
 
     // starting factor for search
     d = 257;
@@ -1117,65 +1109,68 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     // XX ASSUME little endian here.
     cp = (uint8_t*)&n;
     nd = 0;
-    for(i = 0; i < sizeof(n); ++i)
-     if((ad[i] = *cp++) != 0) ++nd;
+    for(i = 0; i < sizeof(n); ++i) {
+      if((ad[i] = *cp++) != 0) {
+        ++nd;
+      }
+    }
 
     // and slide to 257
-    for(i = nd-2; i >= 0; --i)
-     {
-      for(j = i; j < nd-1; ++j)
-       {
-        if((ad[j] -= ad[j+1]) < 0)
-         {
+    for(i = nd-2; i >= 0; --i) {
+      for(j = i; j < nd-1; ++j) {
+        if((ad[j] -= ad[j+1]) < 0) {
           ad[j] += d;
           --ad[j+1];
-         }
-       }
-      if(!ad[j]) --nd;
-     }
+        }
+      }
+      if(!ad[j]) {
+        --nd;
+      }
+    }
 
-    if(ad[0])
-     {
+    if(ad[0]) {
       // find factor or return 0 if limit reached
       d = dscanOdd(d, limit, nd, ad);
-      if(!d)
-       {
+      if(!d) {
         // no factor found, if limit reached, we've failed
         // otherwise `n' is prime
-        if(limit == dmax)
-        n = 0; // fail
-       }
-     }
+        if(limit == dmax) {
+          n = 0; // fail
+        }
+      }
+    }
 
-    if(d) n = d;
+    if(d) {
+      n = d;
+    }
 
     return n;
    }
   #undef MAX_TERMS
 
 
-  int64_t intFactor(int64_t x)
-   {
+  int64_t intFactor(int64_t x) {
     int32_t sx;
     uint64_t vx = extract_value(x, &sx);
     uint64_t r = doFactor(vx);
     return build_value(r, sx);
    }
 
-  int64_t intRecv(int64_t x)
-   {
+  int64_t intRecv(int64_t x) {
     int32_t sx;
     uint64_t xv = extract_value(x, &sx);
     int32_t to = xv & 0x7fffffff;
     int32_t c;
 
-    if(sx)
-     to = -1;
+    if(sx) {
+      to = -1;
+    }
     c = recv_byte(to);
 
     sx = c < 0;
-    if(sx)
-     c = -c;
+    if(sx) {
+      c = -c;
+    }
     set_overflow(sx);
 
     return build_value(c, sx);
@@ -1184,42 +1179,37 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
   /* Some utility routines for saving and restoring carry and overflow.
    * Some operations don't change these flags but their subcomponents might.
    */
-  int32_t save_flags(void)
-   {
+  int32_t save_flags(void) {
     return (getSystemFlag(FLAG_OVERFLOW) == ON ? 2 : 0) | (getSystemFlag(FLAG_CARRY) == ON ? 1 : 0);
    }
 
-  void restore_flags(int32_t co)
-   {
+  void restore_flags(int32_t co) {
     set_carry(co & 1);
     set_overflow(co & 2);
    }
 
   /* Utility routine to check if a value has overflowed or not */
-  int32_t check_overflow(int64_t x)
-   {
+  int32_t check_overflow(int64_t x) {
     return ((x) & shortIntegerMask) != x || (shortIntegerMode != SIM_UNSIGN && (x & shortIntegerSignBit) != 0);
    }
 
 
-  int64_t intMod(int64_t y, int64_t x)
-   {
+  int64_t intMod(int64_t y, int64_t x) {
     int32_t sx, sy;
     uint64_t xv = extract_value(x, &sx);
     uint64_t yv = extract_value(y, &sy);
     uint64_t r;
 
-    if(xv == 0)
-     {
+    if(xv == 0) {
       err_div0(yv, sy, sx);
       return 0;
      }
     r = yv % xv;
 
-    if(XeqOpCode == (OP_DYA | OP_MOD41) && sx != sy)
-     {
-      if(r != 0)
-       r = xv - r;
+    if(XeqOpCode == (OP_DYA | OP_MOD41) && sx != sy) {
+      if(r != 0) {
+        r = xv - r;
+      }
       sy = sx;
      }
 
@@ -1227,86 +1217,79 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
    }
 
 
-  int64_t intMin(int64_t y, int64_t x)
-   {
+  int64_t intMin(int64_t y, int64_t x) {
     int32_t sx, sy;
     const uint64_t xv = extract_value(x, &sx);
     const uint64_t yv = extract_value(y, &sy);
 
-    if(sx != sy)
-     {   // different signs
-      if(sx)
-       return x;
-     }
-    else
-     if(sx)
-      {  // both negative
-       if(xv > yv)
+    if(sx != sy) {   // different signs
+      if(sx) {
         return x;
       }
-     else
-      {   // both positive
-       if(xv < yv)
+    }
+    else if(sx) {  // both negative
+      if(xv > yv) {
         return x;
       }
+    }
+    else {   // both positive
+      if(xv < yv) {
+        return x;
+      }
+    }
 
     return y;
    }
 
-  int64_t intMax(int64_t y, int64_t x)
-   {
+  int64_t intMax(int64_t y, int64_t x) {
     int32_t sx, sy;
     uint64_t xv = extract_value(x, &sx);
     uint64_t yv = extract_value(y, &sy);
 
-    if(sx != sy)
-     {   // different signs
-      if(sx)
-       return y;
-     }
-    else
-     if(sx)
-      {  // both negative
-       if(xv > yv)
+    if(sx != sy) {   // different signs
+      if(sx) {
         return y;
       }
-     else
-      {   // both positive
-       if(xv < yv)
+    }
+    else if(sx) {  // both negative
+      if(xv > yv) {
         return y;
       }
+    }
+    else {   // both positive
+      if(xv < yv) {
+        return y;
+      }
+    }
 
     return x;
    }
 
 
-  int64_t intMAdd(int64_t z, int64_t y, int64_t x)
-   {
+  int64_t intMAdd(int64_t z, int64_t y, int64_t x) {
     int64_t t = intMultiply(x, y);
     const int32_t of = (getSystemFlag(FLAG_OVERFLOW) == ON ? 1 : 0);
 
     t = intAdd(t, z);
-    if(of)
-     set_overflow(1);
+    if(of) {
+      set_overflow(1);
+    }
 
     return t;
    }
 
-  void breakup(uint64_t x, uint16_t xv[4])
-   {
+  void breakup(uint64_t x, uint16_t xv[4]) {
     xv[0] = x & 0xffff;
     xv[1] = (x >> 16) & 0xffff;
     xv[2] = (x >> 32) & 0xffff;
     xv[3] = (x >> 48) & 0xffff;
    }
 
-  uint64_t packup(uint16_t x[4])
-   {
+  uint64_t packup(uint16_t x[4]) {
     return (((uint64_t)x[3]) << 48) | (((uint64_t)x[2]) << 32) | (((uint32_t)x[1]) << 16) | x[0];
    }
 
-  void intDblMul(void)
-   {
+  void intDblMul(void) {
     uint64_t xv, yv;
     int32_t s;
     uint16_t xa[4], ya[4];
@@ -1340,17 +1323,20 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     breakup(xv, xa);
     breakup(yv, ya);
 
-    for(i=0; i<8; i++)
-     t[i] = 0;
+    for(i=0; i<8; i++) {
+      t[i] = 0;
+    }
 
-    for(i=0; i<4; i++)
-     for(j=0; j<4; j++)
-      t[i+j] += xa[i] * ya[j];
+    for(i=0; i<4; i++) {
+      for(j=0; j<4; j++) {
+        t[i+j] += xa[i] * ya[j];
+      }
+    }
 
-    for(i=0; i<8; i++)
-     {
-      if(t[i] >= 65536)
-       t[i+1] += t[i] >> 16;
+    for(i=0; i<8; i++) {
+      if(t[i] >= 65536) {
+        t[i+1] += t[i] >> 16;
+      }
       r[i] = t[i];
      }
 
@@ -1358,28 +1344,28 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     xv = packup(r+4);
 
     i = shortIntegerWordSize;
-    if(i != 64)
-     xv = (xv << (64-i)) | (yv >> i);
+    if(i != 64) {
+      xv = (xv << (64-i)) | (yv >> i);
+    }
 
     setlastX();
 
-    if(s != 0)
-     {
-      if(shortIntegerMode == SIM_2COMPL)
-       {
+    if(s != 0) {
+      if(shortIntegerMode == SIM_2COMPL) {
         yv = (1 + ~yv) & shortIntegerMask;
         xv = ~xv;
-        if(yv == 0)
-         xv++;
-       }
-      else if(shortIntegerMode == SIM_1COMPL)
-       {
+        if(yv == 0) {
+          xv++;
+        }
+      }
+      else if(shortIntegerMode == SIM_1COMPL) {
         yv = ~yv;
         xv = ~xv;
-       }
-      else
-       xv |= shortIntegerSignBit;
-     }
+      }
+      else {
+        xv |= shortIntegerSignBit;
+      }
+    }
 
     set_reg_n_int(regY_idx, yv & shortIntegerMask);
     setX_int(xv & shortIntegerMask);
@@ -1387,12 +1373,12 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
    }
 
 
-  int32_t nlz(uint16_t x)
-   {
+  int32_t nlz(uint16_t x) {
     int32_t n;
 
-    if(x == 0)
-     return 16;
+    if(x == 0) {
+      return 16;
+    }
     n = 0;
     if(x <= 0x00ff) {n = n + 8; x = x << 8;}
     if(x <= 0x0fff) {n = n + 4; x = x << 4;}
@@ -1422,8 +1408,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
   that the dividend be at least as long as the divisor.  (In his terms,
   m >= 0 (unstated).  Therefore m+n >= n.) */
 
-  void divmnu(uint16_t q[], uint16_t r[], const uint16_t u[], const uint16_t v[], const int32_t m, const int32_t n)
-   {
+  void divmnu(uint16_t q[], uint16_t r[], const uint16_t u[], const uint16_t v[], const int32_t m, const int32_t n) {
     const uint32_t b = 65536;   // Number base (16 bits).
     uint32_t qhat;     // Estimated quotient digit.
     uint32_t rhat;     // A remainder.
@@ -1432,12 +1417,10 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     uint16_t vn[8];    // Normalised denominator
     uint16_t un[18];    // Normalised numerator
 
-    if(n == 1)
-     {                            // Take care of
-      k = 0;                      // the case of a
-      for(j = m - 1; j >= 0; j--)
-       {                          // single-digit
-        q[j] = (k*b + u[j])/v[0]; // divisor here.
+    if(n == 1) {                      // Take care of
+      k = 0;                          // the case of a
+      for(j = m - 1; j >= 0; j--) {   // single-digit
+        q[j] = (k*b + u[j])/v[0];     // divisor here.
         k = (k*b + u[j]) - q[j]*v[0];
        }
       r[0] = k;
@@ -1450,33 +1433,33 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
    // digit on the dividend; we do that unconditionally.
 
     s = nlz(v[n-1]);            // 0 <= s <= 16.
-    for(i = n - 1; i > 0; i--)
-     vn[i] = (v[i] << s) | (v[i-1] >> (16-s));
+    for(i = n - 1; i > 0; i--) {
+      vn[i] = (v[i] << s) | (v[i-1] >> (16-s));
+    }
     vn[0] = v[0] << s;
 
     un[m] = u[m-1] >> (16-s);
-    for(i = m - 1; i > 0; i--)
-     un[i] = (u[i] << s) | (u[i-1] >> (16-s));
+    for(i = m - 1; i > 0; i--) {
+      un[i] = (u[i] << s) | (u[i-1] >> (16-s));
+    }
     un[0] = u[0] << s;
 
-    for(j = m - n; j >= 0; j--)
-     {         // Main loop.
+    for(j = m - n; j >= 0; j--) {         // Main loop.
       // Compute estimate qhat of q[j].
       qhat = (un[j+n]*b + un[j+n-1])/vn[n-1];
       rhat = (un[j+n]*b + un[j+n-1]) - qhat*vn[n-1];
-      again:
-      if(qhat >= b || qhat*vn[n-2] > b*rhat + un[j+n-2])
-       {
+again:
+      if(qhat >= b || qhat*vn[n-2] > b*rhat + un[j+n-2]) {
         qhat = qhat - 1;
         rhat = rhat + vn[n-1];
-        if(rhat < b)
-         goto again;
-       }
+        if(rhat < b) {
+          goto again;
+        }
+      }
 
       // Multiply and subtract.
       k = 0;
-      for(i = 0; i < n; i++)
-       {
+      for(i = 0; i < n; i++) {
         p = qhat*vn[i];
         t = un[i+j] - k - (p & 0xFFFF);
         un[i+j] = t;
@@ -1486,12 +1469,10 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
       un[j+n] = t;
 
       q[j] = qhat;       // Store quotient digit.
-      if(t < 0)
-       {                 // If we subtracted too
+      if(t < 0) {        // If we subtracted too
         q[j] = q[j] - 1; // much, add back.
         k = 0;
-        for(i = 0; i < n; i++)
-         {
+        for(i = 0; i < n; i++) {
           t = un[i+j] + vn[i] + k;
           un[i+j] = t;
           k = t >> 16;
@@ -1500,13 +1481,13 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
        }
      } // End j.
 
-   // Unnormalize remainder
-   for(i = 0; i < n; i++)
-    r[i] = (un[i] >> s) | (un[i+1] << (16-s));
+    // Unnormalize remainder
+    for(i = 0; i < n; i++) {
+      r[i] = (un[i] >> s) | (un[i+1] << (16-s));
+    }
   }
 
-  uint64_t divmod(const int64_t z, const int64_t y, const int64_t x, int32_t *sx, int32_t *sy, uint64_t *rem)
-   {
+  uint64_t divmod(const int64_t z, const int64_t y, const int64_t x, int32_t *sx, int32_t *sy, uint64_t *rem) {
     uint64_t d, h, l;
     uint16_t denom[4];
     uint16_t numer[8];
@@ -1517,45 +1498,40 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
 
     l = (uint64_t)z;  // Numerator low
     h = (uint64_t)y;  // Numerator high
-    if(shortIntegerMode != SIM_UNSIGN && (h & shortIntegerSignBit) != 0)
-     {
-      if(shortIntegerMode == SIM_2COMPL)
-       {
+    if(shortIntegerMode != SIM_UNSIGN && (h & shortIntegerSignBit) != 0) {
+      if(shortIntegerMode == SIM_2COMPL) {
         l = (1 + ~l) & shortIntegerMask;
         h = ~h;
-        if(l == 0)
-         h++;
+        if(l == 0) {
+          h++;
+        }
         h = h & shortIntegerMask;
-       }
-      else if(shortIntegerMode == SIM_1COMPL)
-       {
+      }
+      else if(shortIntegerMode == SIM_1COMPL) {
         l = (~l) & shortIntegerMask;
         h = (~h) & shortIntegerMask;
-       }
-      else
-       {
+      }
+      else {
         h ^= shortIntegerSignBit;
        }
       *sy = 1;
-     }
-    else
-     *sy = 0;
+    }
+    else {
+      *sy = 0;
+    }
 
     d = extract_value(x, sx);  // Demonimator
-    if(d == 0)
-     {
+    if(d == 0) {
       err_div0(h|l, *sx, *sy);
       return 0;
      }
 
-    if(shortIntegerWordSize != 64)
-     {
+    if(shortIntegerWordSize != 64) {
       l |= h << shortIntegerWordSize;
       h >>= (64 - shortIntegerWordSize);
      }
 
-    if(h == 0 && l == 0)
-     {    // zero over
+    if(h == 0 && l == 0) {    // zero over
       *rem = 0;
       return 0;
      }
@@ -1576,8 +1552,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     return packup(quot);
    }
 
-  int64_t intDblDiv(int64_t z, int64_t y, int64_t x)
-   {
+  int64_t intDblDiv(int64_t z, int64_t y, int64_t x) {
     uint64_t q, r;
     int32_t sx, sy;
 
@@ -1587,8 +1562,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     return build_value(q, sx != sy);
    }
 
-  int64_t intDblRmdr(int64_t z, int64_t y, int64_t x)
-   {
+  int64_t intDblRmdr(int64_t z, int64_t y, int64_t x) {
     uint64_t r;
     int32_t sx, sy;
 
@@ -1597,21 +1571,20 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
    }
 
 
-  int64_t intBooleanOp(int64_t y, int64_t x)
-   {
+  int64_t intBooleanOp(int64_t y, int64_t x) {
     int64_t result;
     const int32_t op = XeqOpCode - (OP_DYA | OP_LAND);
     const int32_t not = op >= 3 ? 3 : 0;
 
-    switch(op - not)
-     {
+    switch(op - not) {
       case 0:  result = y & x; break;
       case 1:  result = y | x; break;
       default: result = y ^ x; break;
      }
 
-    if(not)
-     result = ~result;
+    if(not) {
+      result = ~result;
+    }
 
     return result & shortIntegerMask;
    }
@@ -1620,69 +1593,66 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
    * The multi-bit shifts vector through these.
    */
 
-  int64_t intLSL(int64_t x)
-   {
+  int64_t intLSL(int64_t x) {
     set_carry(0 != (shortIntegerSignBit & x));
     return ((x << 1) & ~1) & shortIntegerMask;
    }
 
-  int64_t intLSR(int64_t x)
-   {
+  int64_t intLSR(int64_t x) {
     set_carry(0 != (x & 1));
     return ((x >> 1) & ~shortIntegerSignBit) & shortIntegerMask;
    }
 
-  int64_t intASR(int64_t x)
-   {
+  int64_t intASR(int64_t x) {
     int64_t y;
 
     set_carry(x & 1);
-    if(shortIntegerMode == SIM_SIGNMT)
-     return ((x & ~shortIntegerSignBit) >> 1) | (x & shortIntegerSignBit);
+    if(shortIntegerMode == SIM_SIGNMT) {
+      return ((x & ~shortIntegerSignBit) >> 1) | (x & shortIntegerSignBit);
+    }
 
     y = x >> 1;
-    if(shortIntegerMode != SIM_UNSIGN && (x & shortIntegerSignBit) != 0)
-     y |= shortIntegerSignBit;
+    if(shortIntegerMode != SIM_UNSIGN && (x & shortIntegerSignBit) != 0)  {
+      y |= shortIntegerSignBit;
+    }
 
     return y;
    }
 
-  int64_t intRL(int64_t x)
-   {
+  int64_t intRL(int64_t x) {
     const int32_t cry = (shortIntegerSignBit & x)?1:0;
 
     set_carry(cry);
     return (intLSL(x) | cry) & shortIntegerMask;
    }
 
-  int64_t intRR(int64_t x)
-   {
+  int64_t intRR(int64_t x) {
     const int32_t cry = x & 1;
 
     set_carry(cry);
     x = intLSR(x);
-    if(cry)
-     x |= shortIntegerSignBit;
+    if(cry) {
+      x |= shortIntegerSignBit;
+    }
 
     return x & shortIntegerMask;
    }
 
-  int64_t intRLC(int64_t x)
-   {
+  int64_t intRLC(int64_t x) {
     const int32_t cin = (getSystemFlag(FLAG_CARRY) == ON ? 1 : 0);
     set_carry((shortIntegerSignBit & x)?1:0);
 
     return (intLSL(x) | cin) & shortIntegerMask;
   }
 
-  int64_t intRRC(int64_t x)
-   {
+  int64_t intRRC(int64_t x) {
     const int32_t cin = (getSystemFlag(FLAG_CARRY) == ON ? 1 : 0);
 
     set_carry(x&1);
     x = intLSR(x);
-    if(cin)
-     x |= shortIntegerSignBit;
+    if(cin) {
+      x |= shortIntegerSignBit;
+    }
 
     return x & shortIntegerMask;
    }
@@ -1690,8 +1660,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
   /* Like the above but taking the count argument from the opcode.
    * Also possibly register indirect but that is dealt with elsewhere.
    */
-  void introt(uint32_t arg, enum rarg op)
-   {
+  void introt(uint32_t arg, enum rarg op) {
     int64_t (*f)(int64_t);
     uint32_t mod;
     int64_t x;
@@ -1699,10 +1668,8 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
 
     x = getX_int();
 
-    if(arg != 0)
-     {
-      switch(op)
-       {
+    if(arg != 0) {
+      switch(op) {
         case RARG_RL:  f = &intRL;  mod = shortIntegerWordSize;     break;
         case RARG_RR:  f = &intRR;  mod = shortIntegerWordSize;     break;
         case RARG_RLC: f = &intRLC; mod = shortIntegerWordSize + 1; break;
@@ -1710,21 +1677,22 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
         case RARG_SL:  f = &intLSL; mod = 0;            break;
         case RARG_SR:  f = &intLSR; mod = 0;            break;
         case RARG_ASR: f = &intASR; mod = 0;            break;
-        default:
-         return;
-       }
+        default: return;
+      }
 
-      if(arg > shortIntegerWordSize)
-       {
-        if(mod)
-         arg = arg % mod;
-        else
-         arg = shortIntegerWordSize;
-       }
+      if(arg > shortIntegerWordSize) {
+        if(mod) {
+          arg = arg % mod;
+        }
+        else {
+          arg = shortIntegerWordSize;
+        }
+      }
 
-      for(i=0; i<arg; i++)
-       x = (*f)(x);
-     }
+      for(i=0; i<arg; i++) {
+        x = (*f)(x);
+      }
+    }
 
     setlastX();
     setX_int(x & shortIntegerMask);

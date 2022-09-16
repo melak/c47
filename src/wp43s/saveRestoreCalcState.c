@@ -40,21 +40,21 @@
 #include "sort.h"
 #include "stats.h"
 #include <string.h>
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
 #include <stdio.h>
 #include <errno.h>
 #endif
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         76  // More Histogram additions
+#define BACKUP_VERSION         76  // Save screen
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
 static char *tmpRegisterString = NULL;
 
 static void save(const void *buffer, uint32_t size, void *stream) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     UINT bytesWritten;
     f_write(stream, buffer, size, &bytesWritten);
   #else // !DMCP_BUILD
@@ -65,7 +65,7 @@ static void save(const void *buffer, uint32_t size, void *stream) {
 
 
 static uint32_t restore(void *buffer, uint32_t size, void *stream) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     UINT bytesRead;
     f_read(stream, buffer, size, &bytesRead);
     return(bytesRead);
@@ -76,7 +76,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 
 
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   void saveCalc(void) {
     uint32_t backupVersion = BACKUP_VERSION;
     uint32_t ramSize       = RAM_SIZE;
@@ -766,24 +766,24 @@ static void registerToSaveString(calcRegister_t regist) {
 
 
 static void saveMatrixElements(calcRegister_t regist, void *stream) {
-#ifndef TESTSUITE_BUILD
-  if(getRegisterDataType(regist) == dtReal34Matrix) {
-    for(uint32_t element = 0; element < REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
-      real34ToString(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + element, tmpString);
-      strcat(tmpString, "\n");
-      save(tmpString, strlen(tmpString), stream);
+  #if !defined(TESTSUITE_BUILD)
+    if(getRegisterDataType(regist) == dtReal34Matrix) {
+      for(uint32_t element = 0; element < REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
+        real34ToString(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + element, tmpString);
+        strcat(tmpString, "\n");
+        save(tmpString, strlen(tmpString), stream);
+      }
     }
-  }
-  else if(getRegisterDataType(regist) == dtComplex34Matrix) {
-    for(uint32_t element = 0; element < REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
-      real34ToString(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString);
-      strcat(tmpString, " ");
-      real34ToString(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString + strlen(tmpString));
-      strcat(tmpString, "\n");
-      save(tmpString, strlen(tmpString), stream);
+    else if(getRegisterDataType(regist) == dtComplex34Matrix) {
+      for(uint32_t element = 0; element < REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
+        real34ToString(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString);
+        strcat(tmpString, " ");
+        real34ToString(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString + strlen(tmpString));
+        strcat(tmpString, "\n");
+        save(tmpString, strlen(tmpString), stream);
+      }
     }
-  }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -792,7 +792,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   calcRegister_t regist;
   uint32_t i;
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     FRESULT result;
 
     sys_disk_write_enable(1);
@@ -894,14 +894,14 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   // Keyboard arguments
   sprintf(tmpString, "KEYBOARD_ARGUMENTS\n");
   save(tmpString, strlen(tmpString), BACKUP);
-  {
-    uint32_t num = 0;
-    for(i = 0; i < 37 * 6; ++i) {
-      if(*(getNthString((uint8_t *)userKeyLabel, i)) != 0) ++num;
-    }
-    sprintf(tmpString, "%" PRIu32 "\n", num);
-    save(tmpString, strlen(tmpString), BACKUP);
+
+  uint32_t num = 0;
+  for(i = 0; i < 37 * 6; ++i) {
+    if(*(getNthString((uint8_t *)userKeyLabel, i)) != 0) ++num;
   }
+  sprintf(tmpString, "%" PRIu32 "\n", num);
+  save(tmpString, strlen(tmpString), BACKUP);
+
   for(i = 0; i < 37 * 6; ++i) {
     if(*(getNthString((uint8_t *)userKeyLabel, i)) != 0) {
       sprintf(tmpString, "%" PRIu32 " ", i);
@@ -1022,11 +1022,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   sprintf(tmpString, "notBestF\n%" PRIu16 "\n", lrSelection);
   save(tmpString, strlen(tmpString), BACKUP);
 
-
-
-
-
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     f_close(BACKUP);
     sys_disk_write_enable(0);
   #else // !DMCP_BUILD
@@ -1203,8 +1199,12 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
     uint16_t sign = (value[0] == '-' ? 1 : 0);
     uint64_t val  = stringToUint64(value + 1);
 
-    while(*value != ' ') value++;
-    while(*value == ' ') value++;
+    while(*value != ' ') {
+      value++;
+    }
+    while(*value == ' ') {
+      value++;
+    }
     uint32_t base = stringToUint32(value);
 
     convertUInt64ToShortIntegerRegister(sign, val, base, regist);
@@ -1221,7 +1221,7 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
     stringToReal34(imaginaryPart, REGISTER_IMAG34_DATA(regist));
   }
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   else if(strcmp(type, "Rema") == 0) {
     char *numOfCols;
     uint16_t rows, cols;
@@ -1268,9 +1268,9 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
 
 
 static void restoreMatrixData(calcRegister_t regist, void *stream) {
-#ifndef TESTSUITE_BUILD
-  uint16_t rows, cols;
-  uint32_t i;
+  #if !defined(TESTSUITE_BUILD)
+    uint16_t rows, cols;
+    uint32_t i;
 
   if(getRegisterDataType(regist) == dtReal34Matrix) {
     rows = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows;
@@ -1289,23 +1289,25 @@ static void restoreMatrixData(calcRegister_t regist, void *stream) {
     for(i = 0; i < rows * cols; ++i) {
       char *imaginaryPart;
 
-      readLine(stream, tmpString);
-      imaginaryPart = tmpString;
-      while(*imaginaryPart != ' ') imaginaryPart++;
-      *(imaginaryPart++) = 0;
-      stringToReal34(tmpString,     VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
-      stringToReal34(imaginaryPart, VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+        readLine(stream, tmpString);
+        imaginaryPart = tmpString;
+        while(*imaginaryPart != ' ') {
+          imaginaryPart++;
+        }
+        *(imaginaryPart++) = 0;
+        stringToReal34(tmpString,     VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+        stringToReal34(imaginaryPart, VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+      }
     }
-  }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
 static void skipMatrixData(char *type, char *value, void *stream) {
-#ifndef TESTSUITE_BUILD
-  uint16_t rows, cols;
-  uint32_t i;
-  char *numOfCols;
+  #if !defined(TESTSUITE_BUILD)
+    uint16_t rows, cols;
+    uint32_t i;
+    char *numOfCols;
 
   if(strcmp(type, "Rema") == 0 || strcmp(type, "Cxma") == 0) {
     numOfCols = value;
@@ -1514,9 +1516,13 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         uint16_t key = stringToUint16(str);
         userMenuItems[i].argumentName[0] = 0;
 
-        while((*str != ' ') && (*str != '\n') && (*str != 0)) str++;
+        while((*str != ' ') && (*str != '\n') && (*str != 0)) {
+          str++;
+        }
         if(*str == ' ') {
-          while(*str == ' ') str++;
+          while(*str == ' ') {
+            str++;
+          }
           if((*str != '\n') && (*str != 0)) {
             utf8ToString((uint8_t *)str, tmpString + TMP_STR_LENGTH / 2);
             setUserKeyArgument(key, tmpString + TMP_STR_LENGTH / 2);
@@ -1536,9 +1542,13 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         userMenuItems[i].item            = stringToInt16(str);
         userMenuItems[i].argumentName[0] = 0;
 
-        while((*str != ' ') && (*str != '\n') && (*str != 0)) str++;
+        while((*str != ' ') && (*str != '\n') && (*str != 0)) {
+          str++;
+        }
         if(*str == ' ') {
-          while(*str == ' ') str++;
+          while(*str == ' ') {
+            str++;
+          }
           if((*str != '\n') && (*str != 0)) {
             utf8ToString((uint8_t *)str, userMenuItems[i].argumentName);
           }
@@ -1557,9 +1567,13 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         userAlphaItems[i].item            = stringToInt16(str);
         userAlphaItems[i].argumentName[0] = 0;
 
-        while((*str != ' ') && (*str != '\n') && (*str != 0)) str++;
+        while((*str != ' ') && (*str != '\n') && (*str != 0)) {
+          str++;
+        }
         if(*str == ' ') {
-          while(*str == ' ') str++;
+          while(*str == ' ') {
+            str++;
+          }
           if((*str != '\n') && (*str != 0)) {
             utf8ToString((uint8_t *)str, userAlphaItems[i].argumentName);
           }
@@ -1596,9 +1610,13 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
           userMenus[target].menuItem[i].item            = stringToInt16(str);
           userMenus[target].menuItem[i].argumentName[0] = 0;
 
-          while((*str != ' ') && (*str != '\n') && (*str != 0)) str++;
+          while((*str != ' ') && (*str != '\n') && (*str != 0)) {
+            str++;
+          }
           if(*str == ' ') {
-            while(*str == ' ') str++;
+            while(*str == ' ') {
+              str++;
+            }
             if((*str != '\n') && (*str != 0)) {
               utf8ToString((uint8_t *)str, userMenus[target].menuItem[i].argumentName);
             }
@@ -1772,8 +1790,12 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "rngState") == 0) {
           pcg32_global.state = stringToUint64(tmpString);
           str = tmpString;
-          while(*str != ' ') str++;
-          while(*str == ' ') str++;
+          while(*str != ' ') {
+            str++;
+          }
+          while(*str == ' ') {
+            str++;
+          }
           pcg32_global.inc = stringToUint64(str);
         }
         else if(strcmp(aimBuffer, "exponentLimit") == 0) {
@@ -1796,7 +1818,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 
 
 void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     if(f_open(BACKUP, "SAVFILES\\wp43s.sav", FA_READ) != FR_OK) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1827,13 +1849,13 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
 
   lastErrorCode = ERROR_NONE;
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     f_close(BACKUP);
   #else // !DMCP_BUILD
     fclose(BACKUP);
   #endif //DMCP_BUILD
 
-  #ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
     if(loadMode == LM_ALL) {
       temporaryInformation = TI_BACKUP_RESTORED;
     }
@@ -1855,7 +1877,7 @@ void fnDeleteBackup(uint16_t confirmation) {
     setConfirmationMode(fnDeleteBackup);
   }
   else {
-    #ifdef DMCP_BUILD
+    #if defined(DMCP_BUILD)
       FRESULT result;
       sys_disk_write_enable(1);
       result = f_unlink("SAVFILES\\wp43s.sav");
@@ -1866,7 +1888,7 @@ void fnDeleteBackup(uint16_t confirmation) {
     #else // !DMCP_BUILD
       int result = remove("wp43s.sav");
       if(result == -1) {
-        #ifndef TESTSUITE_BUILD
+        #if !defined(TESTSUITE_BUILD)
           int e = errno;
           if(e != ENOENT) {
             displayCalcErrorMessage(ERROR_IO, ERR_REGISTER_LINE, REGISTER_X);

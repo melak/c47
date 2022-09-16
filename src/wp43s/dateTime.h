@@ -17,8 +17,8 @@
 /********************************************//**
  * \file dateTime.h
  ***********************************************/
-#ifndef DATETIME_H
-#define DATETIME_H
+#if !defined(DATETIME_H)
+  #define DATETIME_H
 
 #include "realType.h"
 #include "typeDefinitions.h"

@@ -82,7 +82,9 @@ static bool_t checkParamPoisson(real_t *x, real_t *i) {
 void fnPoissonP(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamPoisson(&val, &prob)) {
     WP34S_Pdf_Poisson(&val, &prob, &ans, &ctxtReal39);
@@ -97,7 +99,9 @@ void fnPoissonP(uint16_t unusedButMandatoryParameter) {
 void fnPoissonL(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamPoisson(&val, &prob)) {
     WP34S_Cdf_Poisson(&val, &prob, &ans, &ctxtReal39);
@@ -112,7 +116,9 @@ void fnPoissonL(uint16_t unusedButMandatoryParameter) {
 void fnPoissonR(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamPoisson(&val, &prob)) {
     WP34S_Cdfu_Poisson(&val, &prob, &ans, &ctxtReal39);
@@ -127,7 +133,9 @@ void fnPoissonR(uint16_t unusedButMandatoryParameter) {
 void fnPoissonI(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, prob;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamPoisson(&val, &prob)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {

@@ -13,17 +13,17 @@
  * You should have received a copy of the GNU General Public License
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DEBUG_H
-#define DEBUG_H
+#if !defined(DEBUG_H)
+  #define DEBUG_H
 
-#include "defines.h"
-#include "realType.h"
-#include "typeDefinitions.h"
-#include <stdint.h>
-#ifdef PC_BUILD
-  #include <gtk/gtk.h>
-  #include <gdk/gdk.h>
-#endif // PC_BUILD
+  #include "defines.h"
+  #include "realType.h"
+  #include "typeDefinitions.h"
+  #include <stdint.h>
+  #if defined(PC_BUILD)
+    #include <gtk/gtk.h>
+    #include <gdk/gdk.h>
+  #endif // PC_BUILD
 
 #if (DEBUG_PANEL == 1)
   extern GtkWidget *lbl1[DEBUG_LINES], *lbl2[DEBUG_LINES];
@@ -84,9 +84,9 @@ char *eatSpacesMid                        (const char * ss);
 
 //void  debugNIM                            (void); Never used
 
-#ifdef PC_BUILD
-  void dumpScreenToConsole(void);
-#endif // PC_BUILD
+  #if defined(PC_BUILD)
+    void dumpScreenToConsole(void);
+  #endif // PC_BUILD
 
 #if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
   void testRegisters    (const char *text);

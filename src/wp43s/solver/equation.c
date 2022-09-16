@@ -38,7 +38,7 @@
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   typedef struct {
     char     name[16];
     uint16_t opCode;
@@ -81,7 +81,7 @@
     { STD_SQUARE_ROOT,                       ITM_SQUAREROOTX, 0}, // Square root (available through f SQRT in EIM)
     { "",                                    0,               0}  // Sentinel
   };
-#endif /* TESTSUITE_BUILD */
+#endif // !TESTSUITE_BUILD
 
 
 void fnEqNew(uint16_t unusedButMandatoryParameter) {
@@ -128,19 +128,19 @@ void fnEqNew(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnEqEdit(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
-  const char *equationString = TO_PCMEMPTR(allFormulae[currentFormula].pointerToFormulaData);
-  if(equationString) xcopy(aimBuffer, equationString, stringByteLength(equationString) + 1);
-  else               aimBuffer[0] = 0;
-  calcMode = CM_EIM;
-  alphaCase = AC_LOWER;
-  setSystemFlag(FLAG_ALPHA);
-  yCursor = 0;
-  xCursor = equationString ? stringGlyphLength(equationString) : 0;
-  #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-    calcModeAimGui();
-  #endif // PC_BUILD && (SCREEN_800X480 == 0)
-#endif /* TESTSUITE_BUILD */
+  #if !defined(TESTSUITE_BUILD)
+    const char *equationString = TO_PCMEMPTR(allFormulae[currentFormula].pointerToFormulaData);
+    if(equationString) xcopy(aimBuffer, equationString, stringByteLength(equationString) + 1);
+    else               aimBuffer[0] = 0;
+    calcMode = CM_EIM;
+    alphaCase = AC_LOWER;
+    setSystemFlag(FLAG_ALPHA);
+    yCursor = 0;
+    xCursor = equationString ? stringGlyphLength(equationString) : 0;
+    #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
+      calcModeAimGui();
+    #endif // PC_BUILD && (SCREEN_800X480 == 0)
+  #endif // !TESTSUITE_BUILD
 }
 
 void fnEqDelete(uint16_t unusedButMandatoryParameter) {
@@ -156,9 +156,9 @@ void fnEqCursorRight(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnEqCalc(uint16_t unusedButMandatoryParameter) {
-  #ifdef DEBUGUNDO
+  #if defined(DEBUGUNDO)
     printf(">>> saveForUndo from fnEqCalc, calcMode = %i, something to undo (pre) = %i \n",calcMode, thereIsSomethingToUndo);
-  #endif
+  #endif // DEBUGUNDO
   if(!thereIsSomethingToUndo && !CM_NO_UNDO) saveForUndo();
   parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
@@ -191,120 +191,124 @@ void setEquation(uint16_t equationId, const char *equationString) {
 
 void deleteEquation(uint16_t equationId) {
   if(equationId < numberOfFormulae) {
-    if(allFormulae[equationId].sizeInBlocks > 0)
+    if(allFormulae[equationId].sizeInBlocks > 0) {
       freeWp43s(TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData), allFormulae[equationId].sizeInBlocks);
+    }
     for(uint16_t i = equationId + 1; i < numberOfFormulae; ++i)
       allFormulae[i - 1] = allFormulae[i];
     freeWp43s(allFormulae + (--numberOfFormulae), TO_BLOCKS(sizeof(formulaHeader_t)));
-    if(numberOfFormulae == 0)
+    if(numberOfFormulae == 0) {
       allFormulae = NULL;
-    if(numberOfFormulae > 0 && currentFormula >= numberOfFormulae)
+    }
+    if(numberOfFormulae > 0 && currentFormula >= numberOfFormulae) {
       currentFormula = numberOfFormulae - 1;
+    }
     graphVariable = 0;
   }
 }
 
 
 
-#ifndef TESTSUITE_BUILD
-static void _showExponent(char **bufPtr, const char **strPtr, int16_t *strWidth) {
-  switch(*(++(*strPtr))) {
-    case '1':
-      **bufPtr         = STD_SUP_1[0];
-      *((*bufPtr) + 1) = STD_SUP_1[1];
-      break;
-    case '2':
-      **bufPtr         = STD_SUP_2[0];
-      *((*bufPtr) + 1) = STD_SUP_2[1];
-      break;
-    case '3':
-      **bufPtr         = STD_SUP_3[0];
-      *((*bufPtr) + 1) = STD_SUP_3[1];
-      break;
-    case '+':
-      **bufPtr         = STD_SUP_PLUS[0];
-      *((*bufPtr) + 1) = STD_SUP_PLUS[1];
-      break;
-    case '-':
-      **bufPtr         = STD_SUP_MINUS[0];
-      *((*bufPtr) + 1) = STD_SUP_MINUS[1];
-      break;
-    default:
-      **bufPtr         = STD_SUP_0[0];
-      *((*bufPtr) + 1) = STD_SUP_0[1] + ((**strPtr) - '0');
-  }
-  *((*bufPtr) + 2) = 0;
-  (*strWidth) += stringWidth(*bufPtr, &standardFont, true, true);
-  (*bufPtr) += 2;
-}
-static uint32_t _checkExponent(const char *strPtr) {
-  uint32_t digits = 0;
-  while(1) {
-    switch(*strPtr) {
-      case '0':
+#if !defined(TESTSUITE_BUILD)
+  static void _showExponent(char **bufPtr, const char **strPtr, int16_t *strWidth) {
+    switch(*(++(*strPtr))) {
       case '1':
-      case '2':
-      case '3':
-      case '4':
-      case '5':
-      case '6':
-      case '7':
-      case '8':
-      case '9':
-        ++digits;
-        ++strPtr;
+        **bufPtr         = STD_SUP_1[0];
+        *((*bufPtr) + 1) = STD_SUP_1[1];
         break;
-      case '^':
-      case '.':
-        return 0;
+      case '2':
+        **bufPtr         = STD_SUP_2[0];
+        *((*bufPtr) + 1) = STD_SUP_2[1];
+        break;
+      case '3':
+        **bufPtr         = STD_SUP_3[0];
+        *((*bufPtr) + 1) = STD_SUP_3[1];
+        break;
       case '+':
+        **bufPtr         = STD_SUP_PLUS[0];
+        *((*bufPtr) + 1) = STD_SUP_PLUS[1];
+        break;
       case '-':
-        if(digits == 0) {
+        **bufPtr         = STD_SUP_MINUS[0];
+        *((*bufPtr) + 1) = STD_SUP_MINUS[1];
+        break;
+      default:
+        **bufPtr         = STD_SUP_0[0];
+        *((*bufPtr) + 1) = STD_SUP_0[1] + ((**strPtr) - '0');
+    }
+    *((*bufPtr) + 2) = 0;
+    (*strWidth) += stringWidth(*bufPtr, &standardFont, true, true);
+    (*bufPtr) += 2;
+  }
+
+  static uint32_t _checkExponent(const char *strPtr) {
+    uint32_t digits = 0;
+    while(1) {
+      switch(*strPtr) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
           ++digits;
           ++strPtr;
           break;
-        }
-        else {
+        case '^':
+        case '.':
+          return 0;
+        case '+':
+        case '-':
+          if(digits == 0) {
+            ++digits;
+            ++strPtr;
+            break;
+          }
+          else {
+            return digits;
+          }
+        default:
           return digits;
-        }
-      default:
-        return digits;
+      }
     }
   }
-}
 
-static void _addSpace(char **bufPtr, int16_t *strWidth, uint32_t *doubleBytednessHistory) { // space between an operand and an operator
-  bool_t spaceShallBeAdded = true;
-  if(((*bufPtr) >= (tmpString + 2)) && (compareChar((*bufPtr) - 2, STD_SPACE_PUNCTUATION) == 0)) spaceShallBeAdded = false;
-  if(((*bufPtr) >= (tmpString + 1)) && (((*doubleBytednessHistory) & 1) == 0 && *((*bufPtr) - 1) == ' ')) spaceShallBeAdded = false;
-  if(spaceShallBeAdded) {
-    **bufPtr         = STD_SPACE_PUNCTUATION[0];
-    *((*bufPtr) + 1) = STD_SPACE_PUNCTUATION[1];
-    *((*bufPtr) + 2) = 0;
-    *strWidth += stringWidth(*bufPtr, &standardFont, true, true);
-    *bufPtr += 2;
-    *doubleBytednessHistory |= 1;
-    *doubleBytednessHistory <<= 1;
+  static void _addSpace(char **bufPtr, int16_t *strWidth, uint32_t *doubleBytednessHistory) { // space between an operand and an operator
+    bool_t spaceShallBeAdded = true;
+    if(((*bufPtr) >= (tmpString + 2)) && (compareChar((*bufPtr) - 2, STD_SPACE_PUNCTUATION) == 0)) spaceShallBeAdded = false;
+    if(((*bufPtr) >= (tmpString + 1)) && (((*doubleBytednessHistory) & 1) == 0 && *((*bufPtr) - 1) == ' ')) spaceShallBeAdded = false;
+    if(spaceShallBeAdded) {
+      **bufPtr         = STD_SPACE_PUNCTUATION[0];
+      *((*bufPtr) + 1) = STD_SPACE_PUNCTUATION[1];
+      *((*bufPtr) + 2) = 0;
+      *strWidth += stringWidth(*bufPtr, &standardFont, true, true);
+      *bufPtr += 2;
+      *doubleBytednessHistory |= 1;
+      *doubleBytednessHistory <<= 1;
+    }
   }
-}
-#endif /* TESTSUITE_BUILD */
+#endif // !TESTSUITE_BUILD
 
 void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool_t dryRun, bool_t *cursorShown, bool_t *rightEllipsis) {
-#ifndef TESTSUITE_BUILD
-  if(equationId < numberOfFormulae || equationId == EQUATION_AIM_BUFFER) {
-    char *bufPtr = tmpString;
-    const char *strPtr = equationId == EQUATION_AIM_BUFFER ? aimBuffer : (char *)TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData);
-    uint16_t strLength = 0;
-    int16_t strWidth = 0;
-    int16_t glyphWidth = 0;
-    uint32_t doubleBytednessHistory = 0;
-    uint32_t tmpVal = 0;
-    bool_t inLabel = false;
-    bool_t unaryMinus = true;
-    bool_t inNumeric = true;
-    bool_t beginningOfNumber = true;
-    bool_t inExponent = false;
-    const char *tmpPtr = strPtr;
+  #if !defined(TESTSUITE_BUILD)
+    if(equationId < numberOfFormulae || equationId == EQUATION_AIM_BUFFER) {
+      char *bufPtr = tmpString;
+      const char *strPtr = equationId == EQUATION_AIM_BUFFER ? aimBuffer : (char *)TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData);
+      uint16_t strLength = 0;
+      int16_t strWidth = 0;
+      int16_t glyphWidth = 0;
+      uint32_t doubleBytednessHistory = 0;
+      uint32_t tmpVal = 0;
+      bool_t inLabel = false;
+      bool_t unaryMinus = true;
+      bool_t inNumeric = true;
+      bool_t beginningOfNumber = true;
+      bool_t inExponent = false;
+      const char *tmpPtr = strPtr;
 
     bool_t _cursorShown, _rightEllipsis;
     if(cursorShown == NULL)   cursorShown   = &_cursorShown;
@@ -559,23 +563,27 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
           *cursorShown = true;
         }
 
-        /* Trailing ellipsis */
-        if(strWidth > (SCREEN_WIDTH - 2)) {
-          glyphWidth = stringWidth(STD_ELLIPSIS, &standardFont, true, true);
-          while(1) {
-            if(*bufPtr == STD_CURSOR[0] && *(bufPtr + 1) == STD_CURSOR[1]) *cursorShown = false;
-            strWidth -= stringWidth(bufPtr, &standardFont, true, true);
-            *bufPtr = 0;
-            if((strWidth + glyphWidth) <= (SCREEN_WIDTH - 2)) break;
-            doubleBytednessHistory >>= 1;
-            bufPtr -= (doubleBytednessHistory & 0x00000001) ? 2 : 1;
+          /* Trailing ellipsis */
+          if(strWidth > (SCREEN_WIDTH - 2)) {
+            glyphWidth = stringWidth(STD_ELLIPSIS, &standardFont, true, true);
+            while(1) {
+              if(*bufPtr == STD_CURSOR[0] && *(bufPtr + 1) == STD_CURSOR[1]) {
+                *cursorShown = false;
+              }
+              strWidth -= stringWidth(bufPtr, &standardFont, true, true);
+              *bufPtr = 0;
+              if((strWidth + glyphWidth) <= (SCREEN_WIDTH - 2)) {
+                break;
+              }
+              doubleBytednessHistory >>= 1;
+              bufPtr -= (doubleBytednessHistory & 0x00000001) ? 2 : 1;
+            }
+            *bufPtr       = STD_ELLIPSIS[0];
+            *(bufPtr + 1) = STD_ELLIPSIS[1];
+            *(bufPtr + 2) = 0;
+            *rightEllipsis = true;
+            break;
           }
-          *bufPtr       = STD_ELLIPSIS[0];
-          *(bufPtr + 1) = STD_ELLIPSIS[1];
-          *(bufPtr + 2) = 0;
-          *rightEllipsis = true;
-          break;
-        }
 
         /* Increment bufPtr */
         bufPtr += (doubleBytednessHistory & 0x00000001) ? 2 : 1;
@@ -583,21 +591,22 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
       strPtr += ((*strPtr) & 0x80) ? 2 : 1;
     }
 
-    if((!dryRun) && (*cursorShown || cursorAt == EQUATION_NO_CURSOR))
-      showString(tmpString, &standardFont, 1, SCREEN_HEIGHT - SOFTMENU_HEIGHT * 3 + 2 , vmNormal, true, true);
+      if((!dryRun) && (*cursorShown || cursorAt == EQUATION_NO_CURSOR)) {
+        showString(tmpString, &standardFont, 1, SCREEN_HEIGHT - SOFTMENU_HEIGHT * 3 + 2 , vmNormal, true, true);
+      }
+    }
+  #endif // !TESTSUITE_BUILD
+}
+
+
+
+#if !defined(TESTSUITE_BUILD)
+  static void _menuItem(int16_t item, char *bufPtr) {
+    xcopy(bufPtr,indexOfItems[item].itemSoftmenuName,stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
+    bufPtr[stringByteLength(indexOfItems[item].itemSoftmenuName)+1]=0;
+    //  xcopy(bufPtr, "Calc", 5);
+    //  bufPtr[5] = 0;
   }
-#endif /* TESTSUITE_BUILD */
-}
-
-
-
-#ifndef TESTSUITE_BUILD
-static void _menuItem(int16_t item, char *bufPtr) {
-  xcopy(bufPtr,indexOfItems[item].itemSoftmenuName,stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
-  bufPtr[stringByteLength(indexOfItems[item].itemSoftmenuName)+1]=0;
-  //  xcopy(bufPtr, "Calc", 5);
-  //  bufPtr[5] = 0;
-}
 
 #define PARSER_HINT_NUMERIC  0
 #define PARSER_HINT_OPERATOR 1
@@ -623,63 +632,70 @@ static void _menuItem(int16_t item, char *bufPtr) {
 #define PARSER_OPERATOR_ITM_XFACT              5006
 #define PARSER_OPERATOR_ITM_END_OF_FORMULA     5007
 
-static uint32_t _operatorPriority(uint16_t func) {
-  // priority of operator: smaller number represents higher priority
-  // associative property: even number represents left-associativity, odd number represents right-associativity.
-  switch(func) {
-    case ITM_MULT:
-    case ITM_DIV:
-      return 8;
-    case ITM_ADD:
-    case ITM_SUB:
-      return 10;
-    case PARSER_OPERATOR_ITM_YX:
-      return 7;
-    case PARSER_OPERATOR_ITM_XFACT:
-      return 5;
-    case PARSER_OPERATOR_ITM_PARENTHESIS_LEFT:
-    case PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT:
-    case PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT:
-    case PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT:
-    case PARSER_OPERATOR_ITM_EQUAL:
-      return 1;
-    default:
-      return 3;
+  static uint32_t _operatorPriority(uint16_t func) {
+    // priority of operator: smaller number represents higher priority
+    // associative property: even number represents left-associativity, odd number represents right-associativity.
+    switch(func) {
+      case ITM_MULT:
+      case ITM_DIV:
+        return 8;
+      case ITM_ADD:
+      case ITM_SUB:
+        return 10;
+      case PARSER_OPERATOR_ITM_YX:
+        return 7;
+      case PARSER_OPERATOR_ITM_XFACT:
+        return 5;
+      case PARSER_OPERATOR_ITM_PARENTHESIS_LEFT:
+      case PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT:
+      case PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT:
+      case PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT:
+      case PARSER_OPERATOR_ITM_EQUAL:
+        return 1;
+      default:
+        return 3;
+    }
   }
-}
-static void _pushNumericStack(char *mvarBuffer, const real34_t *re, const real34_t *im) {
-  if((*PARSER_NUMERIC_STACK_POINTER) < PARSER_NUMERIC_STACK_SIZE) {
-    real34Copy(re, &PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER * 2    ]);
-    real34Copy(im, &PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER * 2 + 1]);
-    ++(*PARSER_NUMERIC_STACK_POINTER);
+
+  static void _pushNumericStack(char *mvarBuffer, const real34_t *re, const real34_t *im) {
+    if((*PARSER_NUMERIC_STACK_POINTER) < PARSER_NUMERIC_STACK_SIZE) {
+      real34Copy(re, &PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER * 2    ]);
+      real34Copy(im, &PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER * 2 + 1]);
+      ++(*PARSER_NUMERIC_STACK_POINTER);
+    }
+    else {
+      displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        moreInfoOnError("In function parseEquation:", "numeric stack overflow!", NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
   }
-  else {
-    displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      moreInfoOnError("In function parseEquation:", "numeric stack overflow!", NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+  static void _popNumericStack(char *mvarBuffer, real34_t *re, real34_t *im) {
+    if((*PARSER_NUMERIC_STACK_POINTER) > 0) {
+      --(*PARSER_NUMERIC_STACK_POINTER);
+      real34Copy(&PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER * 2], re);
+      if(im) {
+        real34Copy(&PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER * 2 + 1], im);
+      }
+    }
+    else {
+      displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        moreInfoOnError("In function parseEquation:", "numeric stack is empty!", NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      realToReal34(const_NaN, re);
+      if(im) {
+        realToReal34(const_NaN, im);
+      }
+    }
   }
-}
-static void _popNumericStack(char *mvarBuffer, real34_t *re, real34_t *im) {
-  if((*PARSER_NUMERIC_STACK_POINTER) > 0) {
-    --(*PARSER_NUMERIC_STACK_POINTER);
-    real34Copy(&PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER * 2], re);
-    if(im) real34Copy(&PARSER_NUMERIC_STACK[*PARSER_NUMERIC_STACK_POINTER * 2 + 1], im);
-  }
-  else {
-    displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      moreInfoOnError("In function parseEquation:", "numeric stack is empty!", NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    realToReal34(const_NaN, re);
-    if(im) realToReal34(const_NaN, im);
-  }
-}
-static void _runDyadicFunction(char *mvarBuffer, uint16_t item) {
-  real34_t re, im;
-  liftStack();
-  clearRegister(REGISTER_X);
-  liftStack();
+
+  static void _runDyadicFunction(char *mvarBuffer, uint16_t item) {
+    real34_t re, im;
+    liftStack();
+    clearRegister(REGISTER_X);
+    liftStack();
 
   _popNumericStack(mvarBuffer, &re, &im);
   if(real34IsZero(&im) || real34IsNaN(&im)) {
@@ -930,54 +946,53 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
     return;
   }
 
-  switch(parseMode) {
-
-    case EQUATION_PARSER_MVAR:
-      if(parserHint == PARSER_HINT_VARIABLE) {
-        char *bufPtr = mvarBuffer;
-        if(compareString(STD_pi, strPtr, CMP_NAME) == 0) { // check for pi
-          return;
-        }
-        while(*bufPtr != 0) { // check for duplicates
-          if(compareString(bufPtr, strPtr, CMP_NAME) == 0) {
+    switch(parseMode) {
+      case EQUATION_PARSER_MVAR:
+        if(parserHint == PARSER_HINT_VARIABLE) {
+          char *bufPtr = mvarBuffer;
+          if(compareString(STD_pi, strPtr, CMP_NAME) == 0) { // check for pi
             return;
           }
-          bufPtr += stringByteLength(bufPtr) + 1;
-          ++tmpVal;
-        }
-        for(uint32_t i = CST_01; i <= CST_79; ++i) { // check for constants
-          if(compareString(indexOfItems[i].itemCatalogName, strPtr, CMP_NAME) == 0) {
-            return;
-          }
-        }
-        if(validateName(strPtr)) {
-          calcRegister_t var = findOrAllocateNamedVariable(strPtr);
-          xcopy(bufPtr, strPtr, stringByteLength(strPtr) + 1);
-          bufPtr += stringByteLength(strPtr) + 1;
-          bufPtr[0] = 0;
-          if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER && var >= FIRST_RESERVED_VARIABLE) {
-            displayCalcErrorMessage(ERROR_INVALID_NAME, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-              moreInfoOnError("In function parseEquation:", strPtr, "names a register or a reserved variable!", NULL);
-            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-          }
-          else {
-            if(tmpVal == 2 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER)) {   // If the 4th variable has just been added, add Draw and Calc.
-              _menuItem(ITM_CPXSLV, bufPtr);
-              bufPtr += stringByteLength(bufPtr) + 1;
-              _menuItem(ITM_DRAW, bufPtr);
-              bufPtr += stringByteLength(bufPtr) + 1;
-              _menuItem(ITM_CALC, bufPtr);
+          while(*bufPtr != 0) { // check for duplicates
+            if(compareString(bufPtr, strPtr, CMP_NAME) == 0) {
+              return;
             }
-            else if(tmpVal == 3 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE)) {
-              _menuItem(ITM_DRAW, bufPtr);
-              bufPtr += stringByteLength(bufPtr) + 1;
-              _menuItem(ITM_FPHERE, bufPtr);
+            bufPtr += stringByteLength(bufPtr) + 1;
+            ++tmpVal;
+          }
+          for(uint32_t i = CST_01; i <= CST_79; ++i) { // check for constants
+            if(compareString(indexOfItems[i].itemCatalogName, strPtr, CMP_NAME) == 0) {
+              return;
             }
-            else if(tmpVal == 3 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE)) {
-              _menuItem(ITM_DRAW, bufPtr);
-              bufPtr += stringByteLength(bufPtr) + 1;
-              _menuItem(ITM_FPPHERE, bufPtr);
+          }
+          if(validateName(strPtr)) {
+            calcRegister_t var = findOrAllocateNamedVariable(strPtr);
+            xcopy(bufPtr, strPtr, stringByteLength(strPtr) + 1);
+            bufPtr += stringByteLength(strPtr) + 1;
+            bufPtr[0] = 0;
+            if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER && var >= FIRST_RESERVED_VARIABLE) {
+              displayCalcErrorMessage(ERROR_INVALID_NAME, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+                moreInfoOnError("In function parseEquation:", strPtr, "names a register or a reserved variable!", NULL);
+              #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+            }
+            else {
+              if(tmpVal == 2 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER)) {   // If the 4th variable has just been added, add Draw and Calc.
+                _menuItem(ITM_CPXSLV, bufPtr);
+                bufPtr += stringByteLength(bufPtr) + 1;
+                _menuItem(ITM_DRAW, bufPtr);
+                bufPtr += stringByteLength(bufPtr) + 1;
+                _menuItem(ITM_CALC, bufPtr);
+              }
+              else if(tmpVal == 3 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE)) {
+                _menuItem(ITM_DRAW, bufPtr);
+                bufPtr += stringByteLength(bufPtr) + 1;
+                _menuItem(ITM_FPHERE, bufPtr);
+              }
+              else if(tmpVal == 3 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE)) {
+                _menuItem(ITM_DRAW, bufPtr);
+                bufPtr += stringByteLength(bufPtr) + 1;
+                _menuItem(ITM_FPPHERE, bufPtr);
             }
           }
         }
@@ -1096,19 +1111,19 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
       }
       break;
 
-    default:
-      displayBugScreen("In function _parseWord: Unknown mode of formula parser!");
+      default:
+        displayBugScreen("In function _parseWord: Unknown mode of formula parser!");
+    }
   }
-}
-#endif /* TESTSUITE_BUILD */
+#endif // !TESTSUITE_BUILD
 
 void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *mvarBuffer) {
-#ifndef TESTSUITE_BUILD
-  const char *strPtr = (char *)TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData);
-  char *bufPtr = buffer;
-  int16_t numericCount = 0;
-  bool_t equalAppeared = false, labeled = false, afterClosingParenthesis = false, unaryMinusCanOccur = true, afterSpace = false;
-  bool_t inExponent = false, exponentSignCanOccur = false;
+  #if !defined(TESTSUITE_BUILD)
+    const char *strPtr = (char *)TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData);
+    char *bufPtr = buffer;
+    int16_t numericCount = 0;
+    bool_t equalAppeared = false, labeled = false, afterClosingParenthesis = false, unaryMinusCanOccur = true, afterSpace = false;
+    bool_t inExponent = false, exponentSignCanOccur = false;
 
   for(uint32_t i = 0; i < PARSER_OPERATOR_STACK_SIZE; ++i) {
     PARSER_OPERATOR_STACK[i] = 0;
@@ -1310,94 +1325,96 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         exponentSignCanOccur = false;
         break;
 
-      default:
-        if(afterSpace) {
-          *(bufPtr++) = 0;
-          _parseWord(buffer, parseMode, PARSER_HINT_REGULAR, mvarBuffer);
-          bufPtr = buffer;
-          numericCount = 0;
+        default:
+          if(afterSpace) {
+            *(bufPtr++) = 0;
+            _parseWord(buffer, parseMode, PARSER_HINT_REGULAR, mvarBuffer);
+            bufPtr = buffer;
+            numericCount = 0;
+            afterSpace = false;
+          }
+          if((*strPtr >= '0' && *strPtr <= '9') || *strPtr == '.') {
+            ++numericCount;
+            exponentSignCanOccur = false;
+          }
+          else if((!inExponent) && *strPtr == 'E' && ((*bufPtr = 0), numericCount == stringGlyphLength(buffer))) {
+            ++numericCount;
+            inExponent = true;
+            exponentSignCanOccur = true;
+          }
+          else {
+            inExponent = false;
+            exponentSignCanOccur = false;
+          }
+          if(compareChar(strPtr, STD_CROSS) == 0 || compareChar(strPtr, STD_DOT) == 0) {
+            *(bufPtr++) = 0;
+            _parseWord(buffer, parseMode, PARSER_HINT_REGULAR, mvarBuffer);
+            buffer[0] = *(strPtr++);
+            buffer[1] = *(strPtr++);
+            buffer[2] = 0;
+            _parseWord(buffer, parseMode, PARSER_HINT_OPERATOR, mvarBuffer);
+            bufPtr = buffer;
+            buffer[0] = 0;
+            numericCount = 0;
+          }
+          else {
+            *(bufPtr++) = *strPtr;
+            if((*(strPtr++)) & 0x80) {
+              *(bufPtr++) = *(strPtr++);
+            }
+          }
+          afterClosingParenthesis = false;
+          unaryMinusCanOccur = false;
           afterSpace = false;
-        }
-        if((*strPtr >= '0' && *strPtr <= '9') || *strPtr == '.') {
-          ++numericCount;
-          exponentSignCanOccur = false;
-        }
-        else if((!inExponent) && *strPtr == 'E' && ((*bufPtr = 0), numericCount == stringGlyphLength(buffer))) {
-          ++numericCount;
-          inExponent = true;
-          exponentSignCanOccur = true;
-        }
-        else {
-          inExponent = false;
-          exponentSignCanOccur = false;
-        }
-        if(compareChar(strPtr, STD_CROSS) == 0 || compareChar(strPtr, STD_DOT) == 0) {
+      }
+      if(lastErrorCode != ERROR_NONE) {
+        return;
+      }
+    }
+    if(bufPtr != buffer) {
+      *(bufPtr++) = 0;
+      _parseWord(buffer, parseMode, PARSER_HINT_REGULAR, mvarBuffer);
+    }
+
+    if(parseMode == EQUATION_PARSER_MVAR) {
+      uint32_t tmpVal = 0;
+      bufPtr = mvarBuffer;
+      while(*bufPtr != 0) {
+        bufPtr += stringByteLength(bufPtr) + 1;
+        ++tmpVal;
+      }
+      if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER) {
+        for(; tmpVal < 3; ++tmpVal) {  //If there are less than 4 variables, skip to the 5th item and add Draw & Calc.
           *(bufPtr++) = 0;
-          _parseWord(buffer, parseMode, PARSER_HINT_REGULAR, mvarBuffer);
-          buffer[0] = *(strPtr++);
-          buffer[1] = *(strPtr++);
-          buffer[2] = 0;
-          _parseWord(buffer, parseMode, PARSER_HINT_OPERATOR, mvarBuffer);
-          bufPtr = buffer;
-          buffer[0] = 0;
-          numericCount = 0;
         }
-        else {
-          *(bufPtr++) = *strPtr;
-          if((*(strPtr++)) & 0x80) {
-            *(bufPtr++) = *(strPtr++);
+        if(tmpVal == 3) {
+          _menuItem(ITM_CPXSLV, bufPtr);
+          bufPtr += stringByteLength(bufPtr) + 1;
+          _menuItem(ITM_DRAW, bufPtr);
+          bufPtr += stringByteLength(bufPtr) + 1;
+          _menuItem(ITM_CALC, bufPtr);
+        }
+      }
+      if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE || (currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) {
+        for(; tmpVal < 4; ++tmpVal) {  //If there are less than 4 variables, skip to the 5th item and add Draw & Calc.
+          *(bufPtr++) = 0;
+        }
+        if(tmpVal == 4) {
+          if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE) {
+            _menuItem(ITM_DRAW, bufPtr);
+            bufPtr += stringByteLength(bufPtr) + 1;
+            _menuItem(ITM_FPHERE, bufPtr);
+          }
+          else {
+            _menuItem(ITM_DRAW, bufPtr);
+            bufPtr += stringByteLength(bufPtr) + 1;
+            _menuItem(ITM_FPPHERE, bufPtr);
           }
         }
-        afterClosingParenthesis = false;
-        unaryMinusCanOccur = false;
-        afterSpace = false;
-    }
-    if(lastErrorCode != ERROR_NONE) return;
-  }
-  if(bufPtr != buffer) {
-    *(bufPtr++) = 0;
-    _parseWord(buffer, parseMode, PARSER_HINT_REGULAR, mvarBuffer);
-  }
-
-  if(parseMode == EQUATION_PARSER_MVAR) {
-    uint32_t tmpVal = 0;
-    bufPtr = mvarBuffer;
-    while(*bufPtr != 0) {
-      bufPtr += stringByteLength(bufPtr) + 1;
-      ++tmpVal;
-    }
-    if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_SOLVER) {
-      for(; tmpVal < 3; ++tmpVal) {  //If there are less than 4 variables, skip to the 5th item and add Draw & Calc.
-        *(bufPtr++) = 0;
-      }
-      if(tmpVal == 3) {
-        _menuItem(ITM_CPXSLV, bufPtr);
-        bufPtr += stringByteLength(bufPtr) + 1;
-        _menuItem(ITM_DRAW, bufPtr);
-        bufPtr += stringByteLength(bufPtr) + 1;
-        _menuItem(ITM_CALC, bufPtr);
       }
     }
-    if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE || (currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) {
-      for(; tmpVal < 4; ++tmpVal) {  //If there are less than 4 variables, skip to the 5th item and add Draw & Calc.
-        *(bufPtr++) = 0;
-      }
-      if(tmpVal == 4) {
-        if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE) {
-          _menuItem(ITM_DRAW, bufPtr);
-          bufPtr += stringByteLength(bufPtr) + 1;
-          _menuItem(ITM_FPHERE, bufPtr);
-        }
-        else {
-          _menuItem(ITM_DRAW, bufPtr);
-          bufPtr += stringByteLength(bufPtr) + 1;
-          _menuItem(ITM_FPPHERE, bufPtr);
-        }
-      }
+    if(parseMode == EQUATION_PARSER_XEQ) {
+      _processOperator(PARSER_OPERATOR_ITM_END_OF_FORMULA, mvarBuffer);
     }
-  }
-  if(parseMode == EQUATION_PARSER_XEQ) {
-    _processOperator(PARSER_OPERATOR_ITM_END_OF_FORMULA, mvarBuffer);
-  }
-#endif /* TESTSUITE_BUILD */
+  #endif // !TESTSUITE_BUILD
 }

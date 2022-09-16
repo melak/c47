@@ -17,8 +17,8 @@
 /********************************************//**
  * \file defines.h
  ***********************************************/
-#ifndef DEFINES_H
-#define DEFINES_H
+#if !defined(DEFINES_H)
+  #define DEFINES_H
 
 
 //*********************************
@@ -36,39 +36,39 @@
 
 #define DECNUMDIGITS                    75 // Default number of digits used in the decNumber library
 
-#define SCREEN_800X480                   1 // Set to 0 if you want a keyboard in addition to the screen on Raspberry pi
-#ifndef RASPBERRY
-  #undef SCREEN_800X480
-  #define SCREEN_800x480 0
-#endif // RASPBERRY
+  #define SCREEN_800X480                   1 // Set to 0 if you want a keyboard in addition to the screen on Raspberry pi
+  #if !defined(RASPBERRY)
+    #undef SCREEN_800X480
+    #define SCREEN_800x480 0
+  #endif // !RASPBERRY
 
 
-#ifdef LINUX
-  #define _XOPEN_SOURCE                700 // see: https://stackoverflow.com/questions/5378778/what-does-d-xopen-source-do-mean
-#endif // LINUX
+  #if defined(LINUX)
+    #define _XOPEN_SOURCE                700 // see: https://stackoverflow.com/questions/5378778/what-does-d-xopen-source-do-mean
+  #endif // LINUX
 
 
-#define DEBUG_STAT                       1 // PLOT & STATS verbose level can be 0, 1 or 2 (more)
-#if (DEBUG_STAT == 0)
-  #undef STATDEBUG
-  #undef STATDEBUG_VERBOSE
-#endif
-#if (DEBUG_STAT == 1)
-  #define STATDEBUG
-  #undef STATDEBUG_VERBOSE
-#endif
-#if (DEBUG_STAT == 2)
-  #define STATDEBUG
-  #define STATDEBUG_VERBOSE
-#endif
+  #define DEBUG_STAT                       0 // PLOT & STATS verbose level can be 0, 1 or 2 (more)
+  #if (DEBUG_STAT == 0)
+    #undef STATDEBUG
+    #undef STATDEBUG_VERBOSE
+  #endif // DEBUG_STAT == 0
+  #if (DEBUG_STAT == 1)
+    #define STATDEBUG
+    #undef STATDEBUG_VERBOSE
+  #endif // DEBUG_STAT == 1
+  #if (DEBUG_STAT == 2)
+    #define STATDEBUG
+    #define STATDEBUG_VERBOSE
+  #endif // DEBUG_STAT == 2
 
 
-#ifdef PC_BUILD
-//  #define DEBUGUNDO
-  #undef DEBUGUNDO
-#else
-  #undef DEBUGUNDO
-#endif
+  #if defined(PC_BUILD)
+    //#define DEBUGUNDO
+    #undef DEBUGUNDO
+  #else // !PC_BUILD
+    #undef DEBUGUNDO
+  #endif // PC_BUILD
 
 
 #define REAL34_WIDTH_TEST 0 // For debugging real34 ALL 0 formating. Use UP/DOWN to shrink or enlarge the available space. The Z register holds the available width.
@@ -419,17 +419,17 @@ typedef enum {
 #define TO_SHOW_NOP                                3
 
 
-#ifdef PC_BUILD
-  #ifdef LINUX
-    #define LINEBREAK                           "\n"
-  #elif defined(WIN32)
-    #define LINEBREAK                         "\n\r"
-  #elif defined(OSX)
-    #define LINEBREAK                         "\r\n"
-  #else // Unsupported OS
-    #error Only Linux, MacOS, and Windows MINGW64 are supported for now
-  #endif // OS
-#endif // PC_BUILD
+  #if defined(PC_BUILD)
+    #if defined(LINUX)
+      #define LINEBREAK                           "\n"
+    #elif defined(WIN32)
+      #define LINEBREAK                         "\n\r"
+    #elif defined(OSX)
+      #define LINEBREAK                         "\r\n"
+    #else // Unsupported OS
+      #error Only Linux, MacOS, and Windows MINGW64 are supported for now
+    #endif // OS
+  #endif // PC_BUILD
 
 #define NUMBER_OF_DISPLAY_DIGITS                  16
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
@@ -663,9 +663,14 @@ typedef enum {
 #define CMP_EXTENSIVE                              2
 #define CMP_NAME                                   3
 
-// Combination / permutation
-#define CP_PERMUTATION                             0
-#define CP_COMBINATION                             1
+  // Indirect parameter mode
+  #define INDPM_PARAM                                0
+  #define INDPM_REGISTER                             1
+  #define INDPM_FLAG                                 2
+
+  // Combination / permutation
+  #define CP_PERMUTATION                             0
+  #define CP_COMBINATION                             1
 
 // Gudermannian
 #define GD_DIRECT_FUNCTION                         0
@@ -886,17 +891,17 @@ typedef enum {
 
 #define TIMER_APP_STOPPED                          0xFFFFFFFFu
 
-#ifndef DMCP_BUILD
-  #define LCD_SET_VALUE                            0 // Black pixel
-  #define LCD_EMPTY_VALUE                        255 // White (or empty) pixel
-  #define TO_QSPI
-#else // DMCP_BUILD
-  #define setBlackPixel(x, y)                bitblt24(x, 1, y, 1, BLT_OR,   BLT_NONE)
-  #define setWhitePixel(x, y)                bitblt24(x, 1, y, 1, BLT_ANDN, BLT_NONE)
-  #define flipPixel(x, y)                    bitblt24(x, 1, y, 1, BLT_XOR,  BLT_NONE)
-  #define beep(frequence, length)            {while(get_beep_volume() < 11) beep_volume_up(); start_buzzer_freq(frequence * 1000); sys_delay(length); stop_buzzer();}
-  #define TO_QSPI                            __attribute__ ((section(".qspi")))
-#endif // !DMCP_BUILD
+  #if !defined(DMCP_BUILD)
+    #define LCD_SET_VALUE                            0 // Black pixel
+    #define LCD_EMPTY_VALUE                        255 // White (or empty) pixel
+    #define TO_QSPI
+  #else // DMCP_BUILD
+    #define setBlackPixel(x, y)                bitblt24(x, 1, y, 1, BLT_OR,   BLT_NONE)
+    #define setWhitePixel(x, y)                bitblt24(x, 1, y, 1, BLT_ANDN, BLT_NONE)
+    #define flipPixel(x, y)                    bitblt24(x, 1, y, 1, BLT_XOR,  BLT_NONE)
+    #define beep(frequence, length)            {while(get_beep_volume() < 11) beep_volume_up(); start_buzzer_freq(frequence * 1000); sys_delay(length); stop_buzzer();}
+    #define TO_QSPI                            __attribute__ ((section(".qspi")))
+  #endif // !DMCP_BUILD
 
 
 //******************************
@@ -959,16 +964,16 @@ typedef enum {
   #error Only one of OS32BIT and OS64BIT must be defined
 #endif // defined(OS32BIT) && defined(OS64BIT)
 
-#ifdef PC_BUILD
-  #ifdef WIN32 // No DEBUG_PANEL mode for Windows
-    #undef  DEBUG_PANEL
-    #define DEBUG_PANEL 0
-  #endif // WIN32
-  #ifdef RASPBERRY // No DEBUG_PANEL mode for Raspberry Pi
-    #undef  DEBUG_PANEL
-    #define DEBUG_PANEL 0
-  #endif // RASPBERRY
-#endif // PC_BUILD
+  #if defined(PC_BUILD)
+    #if defined(WIN32) // No DEBUG_PANEL mode for Windows
+      #undef  DEBUG_PANEL
+      #define DEBUG_PANEL 0
+    #endif // WIN32
+    #if defined(RASPBERRY) // No DEBUG_PANEL mode for Raspberry Pi
+      #undef  DEBUG_PANEL
+      #define DEBUG_PANEL 0
+    #endif // RASPBERRY
+  #endif // PC_BUILD
 
 #if defined(DMCP_BUILD) || (SCREEN_800X480 == 1)
   #undef  DEBUG_PANEL
@@ -1006,21 +1011,21 @@ typedef enum {
   #define initFontBrowser()       {}
 #endif // defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
 
-/* Turn off -Wunused-result for a specific function call */
-#ifdef OS32BIT
-  #define ignore_result(M) if(1==((uint32_t)M)){;}
-#else
-  #define ignore_result(M) if(1==((uint64_t)M)){;}
-#endif
+  /* Turn off -Wunused-result for a specific function call */
+  #if defined(OS32BIT)
+    #define ignore_result(M) if(1==((uint32_t)M)){;}
+  #else // !OS32BIT
+    #define ignore_result(M) if(1==((uint64_t)M)){;}
+  #endif // OS32BIT
 
-#ifdef DMCP_BUILD
-  #define TMP_STR_LENGTH       AUX_BUF_SIZE
-#else // !DMCP_BUILD
-  #define TMP_STR_LENGTH       2560
-#endif // DMCP_BUILD
-#define WRITE_BUFFER_LEN       4096
-#define ERROR_MESSAGE_LENGTH    512
-#define DISPLAY_VALUE_LEN        80
+  #if defined(DMCP_BUILD)
+    #define TMP_STR_LENGTH       AUX_BUF_SIZE
+  #else // !DMCP_BUILD
+    #define TMP_STR_LENGTH       2560
+  #endif // DMCP_BUILD
+  #define WRITE_BUFFER_LEN       4096
+  #define ERROR_MESSAGE_LENGTH    512
+  #define DISPLAY_VALUE_LEN        80
 
 //************************
 //* Macros for debugging *

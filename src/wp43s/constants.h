@@ -17,8 +17,8 @@
 /********************************************//**
  * \file constants.h functions for constant management
  ***********************************************/
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#if !defined(CONSTANTS_H)
+  #define CONSTANTS_H
 
 #include <stdint.h>
 

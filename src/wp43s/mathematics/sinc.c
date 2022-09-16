@@ -70,7 +70,9 @@ TO_QSPI void (* const Sinc[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnSinc(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Sinc[getRegisterDataType(REGISTER_X)]();
 
@@ -85,8 +87,7 @@ void sincComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t
   real_t rr;
   real_t ii;
 
-
-//  fnCvtFromCurrentAngularMode(amRadian);
+  //fnCvtFromCurrentAngularMode(amRadian);
 
   realCopy(real, &rr);
   realCopy(imag, &ii);

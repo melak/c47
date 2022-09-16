@@ -62,7 +62,9 @@ TO_QSPI void (* const conjugate[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = 
  * \return void
  ***********************************************/
 void fnConjugate(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   conjugate[getRegisterDataType(REGISTER_X)]();
 }
@@ -70,7 +72,7 @@ void fnConjugate(uint16_t unusedButMandatoryParameter) {
 
 
 void conjCxma(void) {
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   complex34Matrix_t cMat;
 
   linkToComplexMatrixRegister(REGISTER_X, &cMat);
@@ -81,7 +83,7 @@ void conjCxma(void) {
       real34SetPositiveSign(VARIABLE_IMAG34_DATA(&cMat.matrixElements[i]));
     }
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 

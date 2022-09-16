@@ -205,9 +205,9 @@ char * eatSpacesEnd(const char * ss) {
   int8_t ix;
   strcpy(tmp_names,ss);
   ix = stringByteLength(ss)-1;
-  while( ix > 0 ){
-    if(ss[ix]==' ') {
-      tmp_names[ix]=0;
+  while(ix > 0) {
+    if(ss[ix] == ' ') {
+      tmp_names[ix] = 0;
     }
     else {
       break;
@@ -225,15 +225,18 @@ char * eatSpacesEnd(const char * ss) {
 char * eatSpacesMid(const char * ss) {
   static char tmp_names[20];
   char tt[50];
-  strcpy(tt,ss);
-  int8_t ix=0,iy=0;
-  tmp_names[0]=0;
-  while( tt[ix] != 0 && ix < 50){
-    if(tt[ix]!=' ') tmp_names[iy++]=tt[ix];
+  int8_t ix = 0, iy = 0;
+
+  strcpy(tt, ss);
+  tmp_names[0] = 0;
+  while(tt[ix] != 0 && ix < 50) {
+    if(tt[ix] != ' ') {
+      tmp_names[iy++] = tt[ix];
+    }
     ix++;
   }
-  tmp_names[iy]=0;
-  tmp_names[iy++]=0;
+  tmp_names[iy] = 0;
+  tmp_names[iy++] = 0;
   return tmp_names;
 }
 
@@ -247,14 +250,15 @@ char * eatSpacesMid(const char * ss) {
  ***********************************************/
 char * getCurveFitModeNames(uint16_t selection) {
   uint16_t ix;
-  errorMessage[0]=0;
+
+  errorMessage[0] = 0;
   for(ix = 0; ix < 10; ix++) {
     if(selection & (1 << ix)) {
       strcat(errorMessage, errorMessage[0] == 0 ? "" : " ");
       strcat(errorMessage, eatSpacesEnd(getCurveFitModeName(1 << ix)));
     }
   }
-  if(errorMessage[0]==0) return "???        ";
+  if(errorMessage[0] == 0) return "???        ";
   return errorMessage;
 }
 
@@ -1665,7 +1669,7 @@ void debugNIM(void) {
   }
 #endif // DEBUG_PANEL == 1 || DEBUG_REGISTER_L == 1
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   void dumpScreenToConsole(void) {
     int x, y;
 

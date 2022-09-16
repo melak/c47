@@ -17,8 +17,8 @@
 /********************************************//**
  * \file integrate.h
  ***********************************************/
-#ifndef INTEGRATE_H
-#define INTEGRATE_H
+#if !defined(INTEGRATE_H)
+  #define INTEGRATE_H
 
 #include "typeDefinitions.h"
 #include <stdint.h>

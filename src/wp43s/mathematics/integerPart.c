@@ -63,7 +63,9 @@ TO_QSPI void (* const ip[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnIp(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
   ip[getRegisterDataType(REGISTER_X)]();
 }
 

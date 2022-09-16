@@ -17,23 +17,24 @@
 /********************************************//**
  * \file sqrt.h
  ***********************************************/
-#ifndef SQUAREROOT_H
-#define SQUAREROOT_H
+#if !defined(SQUAREROOT_H)
+  #define SQUAREROOT_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnSquareRoot(uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void sqrtError   (void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define sqrtError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void sqrtLonI    (void);
-void sqrtRema    (void);
-void sqrtCxma    (void);
-void sqrtShoI    (void);
-void sqrtReal    (void);
-void sqrtCplx    (void);
+  void fnSquareRoot(uint16_t unusedButMandatoryParameter);
 
-#endif // SQUAREROOT_H
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void sqrtError   (void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define sqrtError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+  void sqrtLonI    (void);
+  void sqrtRema    (void);
+  void sqrtCxma    (void);
+  void sqrtShoI    (void);
+  void sqrtReal    (void);
+  void sqrtCplx    (void);
+#endif // !SQUAREROOT_H

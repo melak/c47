@@ -78,7 +78,6 @@ TO_QSPI void (* const opModR[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DA
 };
 
 
-
 void opModError(uint16_t mode) {
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -87,6 +86,7 @@ void opModError(uint16_t mode) {
     moreInfoOnError("In function fnOpMod:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 }
+
 
 void opModOutOfDomain(uint16_t mode) {
   displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -101,12 +101,17 @@ void fnMulMod(uint16_t unusedButMandatoryParameter) {
   fnOpMod(OPMOD_MULTIPLY);
 }
 
+
 void fnExpMod(uint16_t unusedButMandatoryParameter) {
   fnOpMod(OPMOD_POWER);
 }
 
+
 void fnOpMod(uint16_t mode) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
+
 
   switch(getRegisterDataType(REGISTER_Z)) {
     case dtLongInteger:
@@ -140,6 +145,8 @@ static void parseReal(calcRegister_t regist, longInteger_t longIntVal, int32_t *
   longIntegerInit(longIntVal);
   convertRealToLongInteger(&r, longIntVal, DEC_ROUND_FLOOR);
 }
+
+
 static void toRealResult(longInteger_t longIntVal, int32_t exponent) {
   real_t r;
 
@@ -149,6 +156,7 @@ static void toRealResult(longInteger_t longIntVal, int32_t exponent) {
   convertRealToReal34ResultRegister(&r, REGISTER_X);
 
 }
+
 
 // Adapted from WP34s integer-mode function to long integer
 void longInteger_mulmod(const longInteger_t a, int32_t exp_a, const longInteger_t b, int32_t exp_b, const longInteger_t c, int32_t exp_c, longInteger_t res, int32_t *exp_res) {
@@ -193,6 +201,8 @@ void longInteger_mulmod(const longInteger_t a, int32_t exp_a, const longInteger_
   longIntegerFree(bb);
   longIntegerFree(cc);
 }
+
+
 void longInteger_expmod(const longInteger_t a, const longInteger_t b, const longInteger_t c, longInteger_t res) {
   longInteger_t x, y, bb;
 
@@ -217,7 +227,6 @@ void longInteger_expmod(const longInteger_t a, const longInteger_t b, const long
 }
 
 
-
 void opModLonILonILonI(uint16_t mode) {
   longInteger_t x, y, z;
 
@@ -226,8 +235,12 @@ void opModLonILonILonI(uint16_t mode) {
   convertLongIntegerRegisterToLongInteger(REGISTER_Z, z);
 
   if((longIntegerCompareInt(x, 1) > 0) && longIntegerIsPositive(y) && longIntegerIsPositive(z)) {
-    if(mode == OPMOD_POWER) longInteger_expmod(z,    y,    x,    x);
-    else                    longInteger_mulmod(z, 0, y, 0, x, 0, x, NULL);
+    if(mode == OPMOD_POWER) {
+      longInteger_expmod(z, y, x, x);
+    }
+    else {
+      longInteger_mulmod(z, 0, y, 0, x, 0, x, NULL);
+    }
     convertLongIntegerToLongIntegerRegister(x, REGISTER_X);
   }
   else {
@@ -238,10 +251,14 @@ void opModLonILonILonI(uint16_t mode) {
   longIntegerFree(y);
   longIntegerFree(z);
 }
+
+
 void opModLonILonIShoI(uint16_t mode) {
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_X, REGISTER_X);
   opModLonILonILonI(mode);
 }
+
+
 void opModLonILonIReal(uint16_t mode) {
   longInteger_t x, y, z;
   real_t xx;
@@ -272,15 +289,20 @@ void opModLonIShoILonI(uint16_t mode) {
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_Y, REGISTER_Y);
   opModLonILonILonI(mode);
 }
+
+
 void opModLonIShoIShoI(uint16_t mode) {
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_X, REGISTER_X);
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_Y, REGISTER_Y);
   opModLonILonILonI(mode);
 }
+
+
 void opModLonIShoIReal(uint16_t mode) {
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_Y, REGISTER_Y);
   opModLonILonIReal(mode);
 }
+
 
 void opModLonIRealLonI(uint16_t mode) {
   longInteger_t x, y, z;
@@ -305,10 +327,14 @@ void opModLonIRealLonI(uint16_t mode) {
   longIntegerFree(y);
   longIntegerFree(z);
 }
+
+
 void opModLonIRealShoI(uint16_t mode) {
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_X, REGISTER_X);
   opModLonIRealLonI(mode);
 }
+
+
 void opModLonIRealReal(uint16_t mode) {
   longInteger_t x, y, z;
   real_t xx;
@@ -336,11 +362,12 @@ void opModLonIRealReal(uint16_t mode) {
 }
 
 
-
 void opModShoILonILonI(uint16_t mode) {
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_Z, REGISTER_Z);
   opModLonILonILonI(mode);
 }
+
+
 void opModShoILonIShoI(uint16_t mode) {
   const uint32_t base = getRegisterShortIntegerBase(REGISTER_Z);
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_X, REGISTER_X);
@@ -351,16 +378,21 @@ void opModShoILonIShoI(uint16_t mode) {
     setRegisterTag(REGISTER_X, base);
   }
 }
+
+
 void opModShoILonIReal(uint16_t mode) {
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_Z, REGISTER_Z);
   opModLonILonIReal(mode);
 }
+
 
 void opModShoIShoILonI(uint16_t mode) {
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_Y, REGISTER_Y);
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_Z, REGISTER_Z);
   opModLonILonILonI(mode);
 }
+
+
 void opModShoIShoIShoI(uint16_t mode) {
   uint64_t x, y, z;
   int16_t sx, sy, sz;
@@ -370,34 +402,44 @@ void opModShoIShoIShoI(uint16_t mode) {
   convertShortIntegerRegisterToUInt64(REGISTER_Z, &sz, &z);
 
   if((!sx) && (x > 1) && (!sy) && (!sz)) {
-    if(mode == OPMOD_POWER) x = WP34S_expmod(z, y, x);
-    else                    x = WP34S_mulmod(z, y, x);
+    if(mode == OPMOD_POWER) {
+      x = WP34S_expmod(z, y, x);
+    }
+    else {
+      x = WP34S_mulmod(z, y, x);
+    }
     convertUInt64ToShortIntegerRegister(0, x, getRegisterShortIntegerBase(REGISTER_Z), REGISTER_X);
   }
   else {
     opModOutOfDomain(mode);
   }
 }
+
+
 void opModShoIShoIReal(uint16_t mode) {
   convertShortIntegerRegisterToReal34Register(REGISTER_Y, REGISTER_Y);
   convertShortIntegerRegisterToReal34Register(REGISTER_Z, REGISTER_Z);
   opModRealRealReal(mode);
 }
 
+
 void opModShoIRealLonI(uint16_t mode) {
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_Z, REGISTER_Z);
   opModLonIRealLonI(mode);
 }
+
+
 void opModShoIRealShoI(uint16_t mode) {
   convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
   convertShortIntegerRegisterToReal34Register(REGISTER_Z, REGISTER_Z);
   opModRealRealReal(mode);
 }
+
+
 void opModShoIRealReal(uint16_t mode) {
   convertShortIntegerRegisterToReal34Register(REGISTER_Z, REGISTER_Z);
   opModRealRealReal(mode);
 }
-
 
 
 void opModRealLonILonI(uint16_t mode) {
@@ -423,10 +465,14 @@ void opModRealLonILonI(uint16_t mode) {
   longIntegerFree(y);
   longIntegerFree(z);
 }
+
+
 void opModRealLonIShoI(uint16_t mode) {
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_X, REGISTER_X);
   opModRealLonILonI(mode);
 }
+
+
 void opModRealLonIReal(uint16_t mode) {
   longInteger_t x, y, z;
   real_t xx;
@@ -457,15 +503,20 @@ void opModRealShoILonI(uint16_t mode) {
   convertShortIntegerRegisterToLongIntegerRegister(REGISTER_Y, REGISTER_Y);
   opModRealLonILonI(mode);
 }
+
+
 void opModRealShoIShoI(uint16_t mode) {
   convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
   convertShortIntegerRegisterToReal34Register(REGISTER_Y, REGISTER_Y);
   opModRealRealReal(mode);
 }
+
+
 void opModRealShoIReal(uint16_t mode) {
   convertShortIntegerRegisterToReal34Register(REGISTER_Y, REGISTER_Y);
   opModRealRealReal(mode);
 }
+
 
 void opModRealRealLonI(uint16_t mode) {
   longInteger_t x, y, z;
@@ -491,10 +542,14 @@ void opModRealRealLonI(uint16_t mode) {
   longIntegerFree(y);
   longIntegerFree(z);
 }
+
+
 void opModRealRealShoI(uint16_t mode) {
   convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
   opModRealRealReal(mode);
 }
+
+
 void opModRealRealReal(uint16_t mode) {
   real_t x, y, z;
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);

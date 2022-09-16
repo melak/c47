@@ -46,7 +46,7 @@
 
 #include "wp43s.h"
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   void fnAim(uint16_t unusedButMandatoryParameter) {
     shiftF = false;
     shiftG = false;
@@ -256,7 +256,7 @@
       if(calcMode == CM_NORMAL && fnKeyInCatalog && isAlphabeticSoftmenu()) {
         fnAim(NOPARAM);
       }
-      if((fnKeyInCatalog || !catalog || catalog == CATALOG_MVAR) && (calcMode == CM_AIM || calcMode == CM_EIM || tam.alpha)) {
+      if((fnKeyInCatalog || !catalog || catalog == CATALOG_MVAR) && (((calcMode == CM_AIM || calcMode == CM_EIM) && !tam.mode) || tam.alpha)) {
         item = convertItemToSubOrSup(item, nextChar);
         if(stringByteLength(aimBuffer) + stringByteLength(indexOfItems[item].itemSoftmenuName) >= AIM_BUFFER_LENGTH) { /// TODO this error should never happen but who knows!
           sprintf(errorMessage, "In function addItemToBuffer: the AIM input buffer is full! %d bytes for now", AIM_BUFFER_LENGTH);
@@ -1127,7 +1127,7 @@
         switch(nimNumberPart) {
           case NP_INT_10 :
             strcat(aimBuffer, "."); // no break here
-            #ifndef OSX
+            #if !defined(OSX)
               __attribute__ ((fallthrough));
             #endif // !OSX
           case NP_REAL_FLOAT_PART :
@@ -1140,7 +1140,7 @@
 
           case NP_COMPLEX_INT_PART :
             strcat(aimBuffer, "."); // no break here
-            #ifndef OSX
+            #if !defined(OSX)
               __attribute__ ((fallthrough));
             #endif // !OSX
           case NP_COMPLEX_FLOAT_PART :
@@ -1249,7 +1249,7 @@
 
           case NP_INT_10 :
             strcat(aimBuffer, "."); // no break here
-            #ifndef OSX
+            #if !defined(OSX)
               __attribute__ ((fallthrough));
             #endif // !OSX
 
@@ -1391,9 +1391,9 @@
         if((calcMode != CM_MIM) && (lastChar == -1 || (lastChar == 0 && aimBuffer[0] == '+'))) {
           screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
           calcModeNormal();
-          #ifdef DEBUGUNDO
+          #if defined(DEBUGUNDO)
             printf(">>> undo from addItemToNimBuffer\n");
-          #endif
+          #endif // DEBUGUNDO
           undo();
         }
         break;
@@ -1406,9 +1406,9 @@
         if(calcMode != CM_NIM && lastErrorCode == 0) {
           setSystemFlag(FLAG_ASLIFT);
           if(item == ITM_EXIT) {
-            #ifdef DEBUGUNDO
+            #if defined(DEBUGUNDO)
               printf(">>> saveForUndo from bufferizeA:");
-            #endif
+            #endif // DEBUGUNDO
             saveForUndo();
             if(lastErrorCode == ERROR_RAM_FULL) {
               lastErrorCode = 0;
@@ -1421,9 +1421,9 @@
           return;
         }
         if(item == ITM_EXIT) {
-          #ifdef DEBUGUNDO
+          #if defined(DEBUGUNDO)
             printf(">>> saveForUndo from bufferizeB:");
-          #endif
+          #endif // DEBUGUNDO
           saveForUndo();
           if(lastErrorCode == ERROR_RAM_FULL) {
             lastErrorCode = 0;
@@ -1490,9 +1490,9 @@
               setSystemFlag(FLAG_ASLIFT);
             }
             else {
-              #ifdef DEBUGUNDO
+              #if defined(DEBUGUNDO)
                 printf(">>> undo from addItemToNimBufferB\n");
-              #endif
+              #endif // DEBUGUNDO
               undo();
             }
             return;
@@ -1516,9 +1516,9 @@
               setSystemFlag(FLAG_ASLIFT);
             }
             else {
-              #ifdef DEBUGUNDO
+              #if defined(DEBUGUNDO)
                 printf(">>> undo from addItemToNimBufferC\n");
-              #endif
+              #endif // DEBUGUNDO
               undo();
             }
             return;
@@ -1976,9 +1976,9 @@
                   moreInfoOnError("In function closeNIM:", errorMessage, NULL, NULL);
                 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
-                #ifdef DEBUGUNDO
+                #if defined(DEBUGUNDO)
                   printf(">>> undo from addItemToNimBufferD\n");
-                #endif
+                #endif // DEBUGUNDO
                 undo();
                 return;
               }
@@ -2100,9 +2100,9 @@
     popSoftmenu();
 
     if(aimBuffer[0] == 0) {
-      #ifdef DEBUGUNDO
+      #if defined(DEBUGUNDO)
         printf(">>> undo from closeAim\n");
-      #endif
+      #endif // DEBUGUNDO
       undo();
     }
     else {

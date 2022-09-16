@@ -69,7 +69,9 @@ TO_QSPI void (* const Sqrt[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnSquareRoot(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Sqrt[getRegisterDataType(REGISTER_X)]();
 

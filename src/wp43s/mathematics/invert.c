@@ -67,7 +67,9 @@ TO_QSPI void (* const invert[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnInvert(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   invert[getRegisterDataType(REGISTER_X)]();
 

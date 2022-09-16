@@ -17,8 +17,8 @@
 /********************************************//**
  * \file conversionUnits.h
  ***********************************************/
-#ifndef CONVERSIONUNITS_H
-#define CONVERSIONUNITS_H
+#if !defined(CONVERSIONUNITS_H)
+  #define CONVERSIONUNITS_H
 
 #include <stdint.h>
 

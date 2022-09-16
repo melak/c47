@@ -102,7 +102,7 @@ void convertLongIntegerToShortIntegerRegister(longInteger_t lgInt, uint32_t base
     *(REGISTER_SHORT_INTEGER_DATA(destination)) = 0;
   }
   else {
-    #ifdef OS32BIT // 32 bit
+    #if defined(OS32BIT) // 32 bit
       uint64_t u64 = *(uint32_t *)(lgInt->_mp_d);
       if(abs(lgInt->_mp_size) > 1) {
         u64 |= (int64_t)(*(((uint32_t *)(lgInt->_mp_d)) + 1)) << 32;
@@ -370,7 +370,7 @@ void realToUInt32(const real_t *re, enum rounding mode, uint32_t *value32, bool_
 
   *overflow = false;
 
-  #ifdef OS32BIT // 32 bit
+  #if defined(OS32BIT) // 32 bit
     *value32 = (lgInt->_mp_size == 0 ? 0 : lgInt->_mp_d[0]);
     if(sign || lgInt->_mp_size > 1) {
       *overflow = true;
@@ -453,7 +453,9 @@ void convertDateRegisterToReal34Register(calcRegister_t source, calcRegister_t d
   reallocateRegister(destination, dtReal34, REAL34_SIZE, amNone);
   real34Add(&y, &m, REGISTER_REAL34_DATA(destination));
   real34Add(REGISTER_REAL34_DATA(destination), &d, REGISTER_REAL34_DATA(destination));
-  if(isNegative) real34SetNegativeSign(REGISTER_REAL34_DATA(destination));
+  if(isNegative) {
+    real34SetNegativeSign(REGISTER_REAL34_DATA(destination));
+  }
 }
 
 
@@ -475,8 +477,12 @@ void convertReal34RegisterToDateRegister(calcRegister_t source, calcRegister_t d
   real34ToIntegralValue(&part3, &part3, DEC_ROUND_DOWN);
 
   if(isNegative) {
-    if(getSystemFlag(FLAG_YMD)) real34SetNegativeSign(&part1);
-    else real34SetNegativeSign(&part3);
+    if(getSystemFlag(FLAG_YMD)) {
+      real34SetNegativeSign(&part1);
+    }
+    else {
+      real34SetNegativeSign(&part3);
+    }
   }
 
   if((getSystemFlag(FLAG_YMD) && !isValidDay(&part1, &part2, &part3)) ||
@@ -500,8 +506,8 @@ void convertReal34RegisterToDateRegister(calcRegister_t source, calcRegister_t d
 
 
 
-#ifndef TESTSUITE_BUILD
-void convertReal34MatrixRegisterToReal34Matrix(calcRegister_t regist, real34Matrix_t *matrix) {
+#if !defined(TESTSUITE_BUILD)
+  void convertReal34MatrixRegisterToReal34Matrix(calcRegister_t regist, real34Matrix_t *matrix) {
 
   dataBlock_t *dblock           = REGISTER_REAL34_MATRIX_DBLOCK(regist);
   real34_t    *matrixElem     = REGISTER_REAL34_MATRIX_M_ELEMENTS(regist);
@@ -510,13 +516,15 @@ void convertReal34MatrixRegisterToReal34Matrix(calcRegister_t regist, real34Matr
     if(matrix->matrixElements) {
       xcopy(matrix->matrixElements, REGISTER_REAL34_MATRIX_M_ELEMENTS(regist), (matrix->header.matrixColumns * matrix->header.matrixRows) * sizeof(real34_t));
 
-      for(int i = 0; i < matrix->header.matrixColumns * matrix->header.matrixRows; i++) {
-        real34Copy(&matrixElem[i], &matrix->matrixElements[i]);
+        for(int i = 0; i < matrix->header.matrixColumns * matrix->header.matrixRows; i++) {
+          real34Copy(&matrixElem[i], &matrix->matrixElements[i]);
+        }
       }
     }
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
 
 void convertReal34MatrixToReal34MatrixRegister(const real34Matrix_t *matrix, calcRegister_t regist) {
   const size_t neededSize = (matrix->header.matrixColumns * matrix->header.matrixRows) * sizeof(real34_t);
@@ -536,13 +544,15 @@ void convertComplex34MatrixRegisterToComplex34Matrix(calcRegister_t regist, comp
     if(matrix->matrixElements) {
       xcopy(matrix->matrixElements, REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist), (matrix->header.matrixColumns * matrix->header.matrixRows) * sizeof(complex34_t));
 
-      for(int i = 0; i < matrix->header.matrixColumns * matrix->header.matrixRows; i++) {
-        complex34Copy(&matrixElem[i], &matrix->matrixElements[i]);
+        for(int i = 0; i < matrix->header.matrixColumns * matrix->header.matrixRows; i++) {
+          complex34Copy(&matrixElem[i], &matrix->matrixElements[i]);
+        }
       }
     }
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
 
 void convertComplex34MatrixToComplex34MatrixRegister(const complex34Matrix_t *matrix, calcRegister_t regist) {
   reallocateRegister(regist, dtComplex34Matrix, TO_BLOCKS((matrix->header.matrixColumns * matrix->header.matrixRows) * sizeof(complex34_t)), amNone);
@@ -552,17 +562,19 @@ void convertComplex34MatrixToComplex34MatrixRegister(const complex34Matrix_t *ma
   }
 }
 
-void convertReal34MatrixToComplex34Matrix(const real34Matrix_t *source, complex34Matrix_t *destination) {
-  if(complexMatrixInit(destination, source->header.matrixRows, source->header.matrixColumns)) {
-    if(destination->matrixElements) {
-      for(uint16_t i = 0; i < source->header.matrixRows * source->header.matrixColumns; ++i) {
-        real34Copy(&source->matrixElements[i], VARIABLE_REAL34_DATA(&destination->matrixElements[i]));
-        real34Zero(VARIABLE_IMAG34_DATA(&destination->matrixElements[i]));
+  void convertReal34MatrixToComplex34Matrix(const real34Matrix_t *source, complex34Matrix_t *destination) {
+    if(complexMatrixInit(destination, source->header.matrixRows, source->header.matrixColumns)) {
+      if(destination->matrixElements) {
+        for(uint16_t i = 0; i < source->header.matrixRows * source->header.matrixColumns; ++i) {
+          real34Copy(&source->matrixElements[i], VARIABLE_REAL34_DATA(&destination->matrixElements[i]));
+          real34Zero(VARIABLE_IMAG34_DATA(&destination->matrixElements[i]));
+        }
       }
     }
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
   }
-  else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-}
 
 void convertReal34MatrixRegisterToComplex34Matrix(calcRegister_t source, complex34Matrix_t *destination) {
   real34Matrix_t matrix;
@@ -619,15 +631,15 @@ void convertDoubleToString(double x, int16_t n, char *buff) { //Reformatting rea
   //  stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
   //  if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) error = true;
 
-  if(error) {
-    #ifdef PC_BUILD
-      printf("ERROR in locale: doubleToString: attempt to correct:  §%s§\n",buff);
-      snprintf(buff, 100, "%.16e", x);
-      printf("                                 Original conversion: §%s§\n",buff);
-    #endif //PC_BUILD
-    strcpy(buff,"NaN");
+    if(error) {
+      #if defined(PC_BUILD)
+        printf("ERROR in locale: doubleToString: attempt to correct:  §%s§\n", buff);
+        snprintf(buff, 100, "%.16e", x);
+        printf("                                 Original conversion: §%s§\n", buff);
+      #endif //PC_BUILD
+      strcpy(buff,"NaN");
+    }
   }
-}
 
 
 void convertDoubleToReal(double x, real_t *destination, realContext_t *ctxt) {
@@ -643,15 +655,14 @@ void convertDoubleToReal34Register(double x, calcRegister_t destination) {
   convertDoubleToString(x, 100, buff);
   stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
 
-  #ifdef PC_BUILD
-    if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) {
-      snprintf(buff, 100, "%.16e", x);
-      printf("ERROR in convertDoubleToReal34Register: %s\n",buff);
-    }
-  #endif //PC_BUILD
-}
-
-#endif // TESTSUITE_BUILD
+    #if defined(PC_BUILD)
+      if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) {
+        snprintf(buff, 100, "%.16e", x);
+        printf("ERROR in convertDoubleToReal34Register: %s\n",buff);
+      }
+    #endif // PC_BUILD
+  }
+#endif // !TESTSUITE_BUILD
 
 
 double convertRegisterToDouble(calcRegister_t regist) {
@@ -666,7 +677,7 @@ double convertRegisterToDouble(calcRegister_t regist) {
     real34ToReal(REGISTER_REAL34_DATA(regist), &tmpy);
     break;
   default:
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       printf("ERROR IN convertRegisterToDouble\n");
     #endif
     return DOUBLE_NOT_INIT;

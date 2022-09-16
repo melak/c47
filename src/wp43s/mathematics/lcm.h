@@ -17,23 +17,23 @@
 /********************************************//**
  * \file lcm.h
  ***********************************************/
-#ifndef LCM_H
-#define LCM_H
+#if !defined(LCM_H)
+  #define LCM_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnLcm      (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void lcmError   (void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define lcmError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  void fnLcm      (uint16_t unusedButMandatoryParameter);
 
-//      RegYRegX
-void lcmLonILonI(void);
-void lcmLonIShoI(void);
-void lcmShoILonI(void);
-void lcmShoIShoI(void);
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void lcmError   (void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define lcmError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
-#endif // LCM_H
+  //      RegYRegX
+  void lcmLonILonI(void);
+  void lcmLonIShoI(void);
+  void lcmShoILonI(void);
+  void lcmShoIShoI(void);
+#endif // !LCM_H

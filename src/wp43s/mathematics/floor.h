@@ -17,20 +17,21 @@
 /********************************************//**
  * \file floor.h
  ***********************************************/
-#ifndef FLOOR_H
-#define FLOOR_H
+#if !defined(FLOOR_H)
+  #define FLOOR_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnFloor   (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void floorError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define floorError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void floorLonI (void);
-void floorRema (void);
-void floorReal (void);
+  void fnFloor   (uint16_t unusedButMandatoryParameter);
 
-#endif // FLOOR_H
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void floorError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define floorError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+  void floorLonI (void);
+  void floorRema (void);
+  void floorReal (void);
+#endif // !FLOOR_H

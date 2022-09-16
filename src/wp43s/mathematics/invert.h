@@ -17,22 +17,23 @@
 /********************************************//**
  * \file invert.h
  ***********************************************/
-#ifndef INVERT_H
-#define INVERT_H
+#if !defined(INVERT_H)
+  #define INVERT_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnInvert   (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void invertError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define invertError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void invertLonI (void);
-void invertRema (void);
-void invertCxma (void);
-void invertReal (void);
-void invertCplx (void);
+  void fnInvert   (uint16_t unusedButMandatoryParameter);
 
-#endif // INVERT_H
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void invertError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define invertError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+  void invertLonI (void);
+  void invertRema (void);
+  void invertCxma (void);
+  void invertReal (void);
+  void invertCplx (void);
+#endif // !INVERT_H

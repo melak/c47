@@ -13,14 +13,13 @@
  * You should have received a copy of the GNU General Public License
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FONTBROWSER_H
-#define FONTBROWSER_H
+#if !defined(FONTBROWSER_H)
+  #define FONTBROWSER_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-#ifndef TESTSUITE_BUILD
-  void initFontBrowser(void);
-  void fontBrowser    (uint16_t unusedButMandatoryParameter);
-#endif // TESTSUITE_BUILD
-
-#endif // FONTBROWSER_H
+  #if !defined(TESTSUITE_BUILD)
+    void initFontBrowser(void);
+    void fontBrowser    (uint16_t unusedButMandatoryParameter);
+  #endif // !TESTSUITE_BUILD
+#endif // !FONTBROWSER_H

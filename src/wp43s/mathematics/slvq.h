@@ -17,11 +17,10 @@
 /********************************************//**
  * \file slvq.h
  ***********************************************/
-#ifndef SLVQ_H
-#define SLVQ_H
+#if !defined(SLVQ_H)
+  #define SLVQ_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnSlvq(uint16_t unusedButMandatoryParameter);
-
-#endif // SLVQ_H
+  void fnSlvq(uint16_t unusedButMandatoryParameter);
+#endif // !SLVQ_H

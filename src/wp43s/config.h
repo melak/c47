@@ -17,8 +17,8 @@
 /********************************************//**
  * \file config.h
  ***********************************************/
-#ifndef CONFIG_H
-#define CONFIG_H
+#if !defined(CONFIG_H)
+  #define CONFIG_H
 
 #include "decContext.h"
 #include <stdint.h>
@@ -187,7 +187,6 @@ void     fnAngularMode         (uint16_t angularMode);
  * \param[in] unusedButMandatoryParameter uint16_t
  ***********************************************/
 void     fnFractionType        (uint16_t unusedButMandatoryParameter);
-
 
 void     restoreStats          (void);
 void     fnReset               (uint16_t confirmation);
