@@ -1035,7 +1035,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
           for(x=0; x<6; x++) {
             if(x + 6*y + currentFirstItem < numberOfItems) {
               if(*ptr != 0) {
-                videoMode_t vm;
+                videoMode_t vm = vmNormal;
                 switch(-softmenu[m].menuItem) {
                   case MNU_MENUS:   vm =                                                            vmReverse;            break;
                   case MNU_MyMenu:  vm = (                      userMenuItems[x + 6*y].item < 0) ? vmReverse : vmNormal; break;
@@ -1045,8 +1045,8 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
                   case MNU_2NDDERIV:
                   case MNU_MVAR:    if(!compareString((char *)getNthString(dynamicSoftmenu[m].menuContent, x+6*y), indexOfItems[ITM_DRAW].itemSoftmenuName, CMP_NAME)) {
                                       vm = vmReverse;
-                                      break;
                                     }
+                                    break;
                   default:          vm =                                                  vmNormal; break;
                 }
                 showSoftkey((char *)ptr, x, y, vm, true, true);
