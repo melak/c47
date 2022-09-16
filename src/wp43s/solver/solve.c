@@ -51,11 +51,25 @@ void fnPgmSlv(uint16_t label) {
     // Interactive mode
     char buf[4];
     switch(label) {
-      case REGISTER_X:        buf[0] = 'X'; break;
-      case REGISTER_Y:        buf[0] = 'Y'; break;
-      case REGISTER_Z:        buf[0] = 'Z'; break;
-      case REGISTER_T:        buf[0] = 'T'; break;
-      default: /* unlikely */ buf[0] = 0;
+      case REGISTER_X: {
+        buf[0] = 'X';
+        break;
+      }
+      case REGISTER_Y: {
+        buf[0] = 'Y';
+        break;
+      }
+      case REGISTER_Z: {
+        buf[0] = 'Z';
+        break;
+      }
+      case REGISTER_T: {
+        buf[0] = 'T';
+        break;
+      }
+      default: { /* unlikely */
+        buf[0] = 0;
+      }
     }
     buf[1] = 0;
     label = findNamedLabel(buf);
@@ -115,7 +129,9 @@ void fnSolve(uint16_t labelOrVariable) {
         x_min = x_0;
         x_max = x_1;
         x_diff = fabs(x_max-x_min);
-        if(x_diff < 0.001) x_diff = 0.001; //stay within float range
+        if(x_diff < 0.001) {
+          x_diff = 0.001; //stay within float range
+        }
         if(x_diff < 0.01) {
           x_max = x_max + 0.1 * x_diff;
           x_min = x_min - 0.1 * x_diff;
@@ -130,30 +146,36 @@ void fnSolve(uint16_t labelOrVariable) {
       real34ToReal(&x, &tmp), convertRealToReal34ResultRegister(&tmp, REGISTER_X);
       int32ToReal34(resultCode, REGISTER_REAL34_DATA(REGISTER_T));
       switch(resultCode) {
-        case SOLVER_RESULT_NORMAL:
+        case SOLVER_RESULT_NORMAL: {
           temporaryInformation = TI_SOLVER_VARIABLE;
           lastErrorCode = ERROR_NONE;
           break;
-        case SOLVER_RESULT_SIGN_REVERSAL:
+        }
+        case SOLVER_RESULT_SIGN_REVERSAL: {
           temporaryInformation = TI_SOLVER_FAILED;
           displayCalcErrorMessage(ERROR_LARGE_DELTA_AND_OPPOSITE_SIGN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           break;
-        case SOLVER_RESULT_EXTREMUM:
+        }
+        case SOLVER_RESULT_EXTREMUM: {
           temporaryInformation = TI_SOLVER_FAILED;
           displayCalcErrorMessage(ERROR_SOLVER_REACHED_LOCAL_EXTREMUM, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           break;
-        case SOLVER_RESULT_BAD_GUESS:
+        }
+        case SOLVER_RESULT_BAD_GUESS: {
           temporaryInformation = TI_SOLVER_FAILED;
           displayCalcErrorMessage(ERROR_INITIAL_GUESS_OUT_OF_DOMAIN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           break;
-        case SOLVER_RESULT_CONSTANT:
+        }
+        case SOLVER_RESULT_CONSTANT: {
           temporaryInformation = TI_SOLVER_FAILED;
           displayCalcErrorMessage(ERROR_FUNCTION_VALUES_LOOK_CONSTANT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           break;
-        case SOLVER_RESULT_OTHER_FAILURE:
+        }
+        case SOLVER_RESULT_OTHER_FAILURE: {
           temporaryInformation = TI_SOLVER_FAILED;
           displayCalcErrorMessage(ERROR_NO_ROOT_FOUND, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           break;
+        }
       }
       saveForUndo();
       adjustResult(REGISTER_X, false, false, REGISTER_X, REGISTER_Y, -1);
@@ -194,37 +216,25 @@ void fnSolve(uint16_t labelOrVariable) {
 
 void fnSolveVar(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
-    const char *var = (char *)getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem);
-    const uint16_t regist = findOrAllocateNamedVariable(var);
-    if(currentMvarLabel != INVALID_VARIABLE) {
-      graphVariable = -regist;
-      reallyRunFunction(ITM_STO, regist);
-    }
-    else if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE || (currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) {
-      graphVariable = -regist;
-      currentSolverVariable = regist;
-      reallyRunFunction(ITM_STO, regist);
-      temporaryInformation = TI_SOLVER_VARIABLE;
-    }
-    else if(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE) {
-      graphVariable = regist;
-      reallyRunFunction(ITM_SOLVE, regist);
-    }
-    else {
-      currentSolverVariable = regist;
-      reallyRunFunction(ITM_STO, regist);
-      currentSolverStatus |= SOLVER_STATUS_READY_TO_EXECUTE;
-      temporaryInformation = TI_SOLVER_VARIABLE;
-      if(graphVariable == 0) {
-        graphVariable = -regist;
-      }
-      else if(graphVariable < 0 && -graphVariable == regist) {
-          graphVariable = regist;
-        }
-      else {
-        graphVariable = -regist;
-      }
-    }
+  const char *var = (char *)getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem);
+  const uint16_t regist = findOrAllocateNamedVariable(var);
+  if(currentMvarLabel != INVALID_VARIABLE) {
+    reallyRunFunction(ITM_STO, regist);
+  }
+  else if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE || (currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) {
+    currentSolverVariable = regist;
+    reallyRunFunction(ITM_STO, regist);
+    temporaryInformation = TI_SOLVER_VARIABLE;
+  }
+  else if(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE) {
+    reallyRunFunction(ITM_SOLVE, regist);
+  }
+  else {
+    currentSolverVariable = regist;
+    reallyRunFunction(ITM_STO, regist);
+    currentSolverStatus |= SOLVER_STATUS_READY_TO_EXECUTE;
+    temporaryInformation = TI_SOLVER_VARIABLE;
+  }
   #endif // !TESTSUITE_BUILD
 }
 
@@ -262,18 +272,18 @@ void fnSolveVar(uint16_t unusedButMandatoryParameter) {
     }
   }
 
-  static void _executeSolver(calcRegister_t variable, const real34_t *val, real34_t *res) {
-    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    real34Copy(val, REGISTER_REAL34_DATA(REGISTER_X));
-    if(currentSolverStatus & SOLVER_STATUS_TVM_APPLICATION) {
-      copySourceRegisterToDestRegister(REGISTER_X, variable);
-    }
-    else {
-      reallyRunFunction(ITM_STO, variable);
-      fnFillStack(NOPARAM);
-    }
-    _solverIteration(res);
+static void _executeSolver(calcRegister_t variable, const real34_t *val, real34_t *res) {
+  reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+  real34Copy(val, REGISTER_REAL34_DATA(REGISTER_X));
+  if(currentSolverStatus & SOLVER_STATUS_TVM_APPLICATION) {
+    copySourceRegisterToDestRegister(REGISTER_X, variable);
   }
+  else {
+    reallyRunFunction(ITM_STO, variable);
+    fnFillStack(NOPARAM);
+  }
+  _solverIteration(res);
+}
 
   static void _linearInterpolation(const real_t *a, const real_t *b, const real_t *fa, const real_t *fb, real_t *res, real_t *slope, realContext_t *realContext) {
     real_t amb, famfb;

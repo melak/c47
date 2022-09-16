@@ -116,13 +116,32 @@
 
   static void angularUnitToString(angularMode_t angularMode, char *string) {
     switch(angularMode) {
-      case amRadian: strcpy(string, "r");        break;
-      case amMultPi: strcpy(string, STD_pi);     break;
-      case amGrad:   strcpy(string, "g");        break;
-      case amDegree: strcpy(string, STD_DEGREE); break;
-      case amDMS:    strcpy(string, "d.ms");     break;
-      case amNone:   break;
-      default:        strcpy(string, "?");
+      case amRadian: {
+        strcpy(string, "r");
+        break;
+      }
+      case amMultPi: {
+        strcpy(string, STD_pi);
+        break;
+      }
+      case amGrad: {
+        strcpy(string, "g");
+        break;
+      }
+      case amDegree: {
+        strcpy(string, STD_DEGREE);
+        break;
+      }
+      case amDMS: {
+        strcpy(string, "d.ms");
+        break;
+      }
+      case amNone: {
+        break;
+      }
+      default: {
+        strcpy(string, "?");
+      }
     }
   }
 
@@ -135,23 +154,27 @@
     char string[CLIPSTR];
 
     switch(getRegisterDataType(regist)) {
-      case dtLongInteger:
+      case dtLongInteger: {
         convertLongIntegerRegisterToLongInteger(regist, lgInt);
         longIntegerToAllocatedString(lgInt, string, CLIPSTR);
         longIntegerFree(lgInt);
         break;
+      }
 
-      case dtTime:
+      case dtTime: {
         timeToDisplayString(regist, string, false);
         break;
+      }
 
-      case dtDate:
+      case dtDate: {
         dateToDisplayString(regist, string);
         break;
+      }
 
-      case dtString:
+      case dtString: {
         xcopy(string, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
         break;
+      }
 
       case dtReal34Matrix: {
         dataBlock_t* dblock = REGISTER_REAL34_MATRIX_DBLOCK(regist);
@@ -219,7 +242,7 @@
         break;
       }
 
-      case dtShortInteger:
+      case dtShortInteger: {
         convertShortIntegerRegisterToUInt64(regist, &sign, &shortInt);
         base = getRegisterShortIntegerBase(regist);
 
@@ -242,6 +265,7 @@
 
         strcpy(string, errorMessage + n);
         break;
+      }
 
       case dtReal34: {
         real34_t reduced;
@@ -288,12 +312,14 @@
         break;
       }
 
-      case dtConfig:
+      case dtConfig: {
         xcopy(string, "Configuration data", 19);
         break;
+      }
 
-      default:
+      default: {
         sprintf(string, "In function copyRegisterXToClipboard, the data type %" PRIu32 " is unknown! Please try to reproduce and submit a bug.", getRegisterDataType(regist));
+    }
     }
 
     stringToUtf8(string, (uint8_t *)clipboardString);
@@ -2312,6 +2338,21 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             }
           }
 
+          else if(temporaryInformation == TI_STATISTIC_HISTO) {
+            if(regist == REGISTER_X) {
+              strcpy(prefix,STD_UP_ARROW "BIN" " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            } else
+            if(regist == REGISTER_Y) {
+              strcpy(prefix,STD_DOWN_ARROW "BIN" " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_Z) {
+              strcpy(prefix,"nBINS" " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
           //L.R. Display
           else if(temporaryInformation == TI_LR && lrChosen != 0) {
             #define LRWidth 140
@@ -3155,34 +3196,38 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
   if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {last_CM = 254;}  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S 
 
   switch(calcMode) {
-    case CM_FLAG_BROWSER:
-      last_CM = calcMode;
-      clearScreen();
-      flagBrowser(NOPARAM);
-      refreshStatusBar();
-      break;
+      case CM_FLAG_BROWSER: {
+        last_CM = calcMode;
+        clearScreen();
+        flagBrowser(NOPARAM);
+        refreshStatusBar();
+        break;
+      }
 
-    case CM_FONT_BROWSER:
-      last_CM = calcMode;
-      clearScreen();
-      fontBrowser(NOPARAM);
-      refreshStatusBar();
-      break;
+      case CM_FONT_BROWSER: {
+        last_CM = calcMode;
+        clearScreen();
+        fontBrowser(NOPARAM);
+        refreshStatusBar();
+        break;
+      }
 
-    case CM_REGISTER_BROWSER:
-      last_CM = calcMode;
-      clearScreen();
-      registerBrowser(NOPARAM);
-      refreshStatusBar();
-      break;
+      case CM_REGISTER_BROWSER: {
+        last_CM = calcMode;
+        clearScreen();
+        registerBrowser(NOPARAM);
+        refreshStatusBar();
+        break;
+      }
 
-    case CM_PEM:
+      case CM_PEM: {
       clearScreen();
       showSoftmenuCurrentPart();
       fnPem(NOPARAM);
       displayShiftAndTamBuffer();
       refreshStatusBar();
       break;
+      }
 
       case CM_NORMAL:
       case CM_AIM:
@@ -3194,9 +3239,9 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
       case CM_CONFIRMATION:
       case CM_TIMER:
         if(doRefreshSoftMenu) {
-          screenUpdatingMode = SCRUPD_MANUAL_MENU ;      
-	       }
-        if(last_CM != calcMode || calcMode == CM_MIM || calcMode == CM_TIMER || calcMode == CM_CONFIRMATION) {
+          screenUpdatingMode = SCRUPD_MANUAL_MENU ;
+        }
+        if(last_CM != calcMode || calcMode == CM_CONFIRMATION) {
           screenUpdatingMode = SCRUPD_AUTO;
         }
         else if(calcMode == CM_MIM) {
@@ -3353,7 +3398,8 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
       }
       break;
 
-      default: {}
+      default: {
+      }
     }
 
     #if !defined(DMCP_BUILD)
@@ -3607,27 +3653,31 @@ void fnAGraph(uint16_t regist) {
       shortIntegerMode = savedShortIntegerMode;
       for(uint32_t i = 0; i < shortIntegerWordSize; ++i) {
         switch(gramod) {
-          case 1:
+            case 1: {
             if(!(val & 1)) {
               setWhitePixel(x, SCREEN_HEIGHT - y - 1 - i);
             }
+            }
             /* fallthrough */
-          case 0:
+            case 0: {
             if(val & 1) {
               setBlackPixel(x, SCREEN_HEIGHT - y - 1 - i);
             }
             break;
-          case 2:
+            }
+            case 2: {
             if(val & 1) {
               setWhitePixel(x, SCREEN_HEIGHT - y - 1 - i);
             }
             break;
-          case 3:
+            }
+            case 3: {
             if(val & 1) {
               flipPixel(x, SCREEN_HEIGHT - y - 1 - i);
             }
             break;
         }
+          }
         val >>= 1;
       }
 

@@ -334,16 +334,47 @@ void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
 void fnRoundingMode(uint16_t RM) {
   roundingMode = RM;
 
-  if(RM == 0) ctxtReal34.round = DEC_ROUND_HALF_EVEN;
-  else if(RM == 1) ctxtReal34.round = DEC_ROUND_HALF_UP;
-  else if(RM == 2) ctxtReal34.round = DEC_ROUND_HALF_DOWN;
-  else if(RM == 3) ctxtReal34.round = DEC_ROUND_UP;
-  else if(RM == 4) ctxtReal34.round = DEC_ROUND_DOWN;
-  else if(RM == 5) ctxtReal34.round = DEC_ROUND_CEILING;
-  else if(RM == 6) ctxtReal34.round = DEC_ROUND_FLOOR;
-  else {
-    sprintf(errorMessage, "In function fnRoundingMode: %d is an unexpected value for RM! Must be from 0 to 6", RM);
-    displayBugScreen(errorMessage);
+  switch(RM) {
+    case 0: {
+      ctxtReal34.round = DEC_ROUND_HALF_EVEN;
+      break;
+    }
+
+    case 1: {
+      ctxtReal34.round = DEC_ROUND_HALF_UP;
+      break;
+    }
+
+    case 2: {
+      ctxtReal34.round = DEC_ROUND_HALF_DOWN;
+      break;
+    }
+
+    case 3: {
+      ctxtReal34.round = DEC_ROUND_UP;
+      break;
+    }
+
+    case 4: {
+      ctxtReal34.round = DEC_ROUND_DOWN;
+      break;
+    }
+
+    case 5: {
+      ctxtReal34.round = DEC_ROUND_CEILING;
+      break;
+    }
+
+    case 6: {
+      ctxtReal34.round = DEC_ROUND_FLOOR;
+      break;
+    }
+
+    default: {
+      sprintf(errorMessage, "In function fnRoundingMode: %d is an unexpected value for RM! Must be from 0 to 6", RM);
+      displayBugScreen(errorMessage);
+      break;
+    }
   }
 }
 
@@ -600,6 +631,17 @@ void addTestPrograms(void) {
 
 
 
+void restoreStats(void){
+  if(lrChosen    !=65535) lrChosen = lrChosenHistobackup;
+  if(lrSelection !=65535) lrSelection = lrSelectionHistobackup;
+  strcpy(statMx,"STATS");
+  lrSelectionHistobackup = 65535;
+  lrChosenHistobackup = 65535;
+  calcSigma(0);
+}
+
+
+
 void fnReset(uint16_t confirmation) {
   if(confirmation == NOT_CONFIRMED) {
     setConfirmationMode(fnReset);
@@ -788,6 +830,7 @@ void fnReset(uint16_t confirmation) {
     //ctxtReal2139.digits = 2139;
     //ctxtReal2139.traps  = 0;
 
+
     statisticalSumsPointer = NULL;
     savedStatisticalSumsPointer = NULL;
     lrSelection = CF_LINEAR_FITTING;
@@ -796,9 +839,17 @@ void fnReset(uint16_t confirmation) {
     lrChosenUndo = 0;
     lastPlotMode = PLOT_NOTHING;
     plotSelection = 0;
+    drawHistogram = 0;
     realZero(&SAVED_SIGMA_LASTX);
     realZero(&SAVED_SIGMA_LASTY);
     SAVED_SIGMA_LAct = 0;
+
+    restoreStats();
+    plotStatMx[0] = 0;
+    real34Zero(&loBinR);
+    real34Zero(&nBins );
+    real34Zero(&hiBinR);
+
 
     x_min = -10;
     x_max = 10;

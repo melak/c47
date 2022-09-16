@@ -72,4 +72,10 @@
   bool_t checkMinimumDataPoints(const real_t *n);
   void   initStatisticalSums   (void);
   void   calcSigma             (uint16_t maxOffset);
+
+  void   fnSetLoBin            (uint16_t unusedButMandatoryParameter);
+  void   fnSetHiBin            (uint16_t unusedButMandatoryParameter);
+  void   fnSetNBins            (uint16_t unusedButMandatoryParameter);
+  void   fnConvertStatsToHisto (uint16_t statsVariableToHistogram);
+
 #endif // STATS_H

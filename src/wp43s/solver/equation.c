@@ -44,6 +44,7 @@
     uint16_t opCode;
     uint16_t unused;
   } functionAlias_t;
+  
   TO_QSPI static const functionAlias_t functionAlias[] = {
     //name                                   opCode           padding
     { "ACOSH",                               ITM_arcosh,      0}, // Inverse hyperbolic cosine
@@ -1012,10 +1013,14 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
               bufPtr += stringByteLength(bufPtr) + 1;
               _menuItem(ITM_CALC, bufPtr);
             }
-            else if(tmpVal == 4 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE)) {
+              else if(tmpVal == 3 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE)) {
+                _menuItem(ITM_DRAW, bufPtr);
+                bufPtr += stringByteLength(bufPtr) + 1;
               _menuItem(ITM_FPHERE, bufPtr);
             }
-            else if(tmpVal == 4 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE)) {
+              else if(tmpVal == 3 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE)) {
+                _menuItem(ITM_DRAW, bufPtr);
+                bufPtr += stringByteLength(bufPtr) + 1;
               _menuItem(ITM_FPPHERE, bufPtr);
             }
           }
@@ -1420,14 +1425,18 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
       }
     }
     if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE || (currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) {
-      for(; tmpVal < 5; ++tmpVal) {  //If there are less than 4 variables, skip to the 5th item and add Draw & Calc.
+        for(; tmpVal < 4; ++tmpVal) {  //If there are less than 4 variables, skip to the 5th item and add Draw & Calc.
         *(bufPtr++) = 0;
       }
-      if(tmpVal == 5) {
+        if(tmpVal == 4) {
         if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE) {
+            _menuItem(ITM_DRAW, bufPtr);
+            bufPtr += stringByteLength(bufPtr) + 1;
           _menuItem(ITM_FPHERE, bufPtr);
         }
         else {
+            _menuItem(ITM_DRAW, bufPtr);
+            bufPtr += stringByteLength(bufPtr) + 1;
           _menuItem(ITM_FPPHERE, bufPtr);
         }
       }

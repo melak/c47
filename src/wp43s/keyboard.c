@@ -19,6 +19,7 @@
 #include "assign.h"
 #include "bufferize.h"
 #include "charString.h"
+#include "config.h"
 #include "constants.h"
 #include "debug.h"
 #include "display.h"
@@ -116,14 +117,23 @@
         else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE) && dynamicMenuItem == 5) {
           item = ITM_FPHERE;
         }
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE) && dynamicMenuItem == 4) {
+          item = ITM_DRAW;
+        }
         else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) && dynamicMenuItem == 5) {
           item = ITM_FPPHERE;
+        }
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) && dynamicMenuItem == 4) {
+          item = ITM_DRAW;
         }
         else if(dynamicMenuItem >= dynamicSoftmenu[menuId].numItems) {
           item = ITM_NOP;
         }
         else if(!(currentSolverStatus & SOLVER_STATUS_INTERACTIVE)) {
           item = MNU_DYNAMIC;
+        }
+        else if( ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_INTEGRATE) && dynamicMenuItem == 2) {
+          item = ITM_DRAW;
         }
         else if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_INTEGRATE) {
           item = ITM_Sfdx_VAR;
@@ -1410,7 +1420,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
 
         #if defined(PC_BUILD)
-            if(item == ITM_RS || item == ITM_XEQ) key[0] = 0;
+          if(item == ITM_RS || item == ITM_XEQ) {
+            key[0] = 0;
+          }
           #endif // PC_BUILD
 
           if(item != ITM_NOP && tam.alpha && indexOfItems[item].func != addItemToBuffer) {
@@ -1556,7 +1568,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         }
         keyActionProcessed = true;
         #if (REAL34_WIDTH_TEST == 1)
-          if(++largeur > SCREEN_WIDTH) largeur--;
+          if(++largeur > SCREEN_WIDTH) {
+            largeur--;
+          }
           uIntToLongInteger(largeur, lgInt);
           convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z);
         #endif // (REAL34_WIDTH_TEST == 1)
@@ -1573,7 +1587,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         }
         keyActionProcessed = true;
         #if (REAL34_WIDTH_TEST == 1)
-          if(--largeur < 20) largeur++;
+          if(--largeur < 20) {
+            largeur++;
+          }
           uIntToLongInteger(largeur, lgInt);
           convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_Z);
         #endif // (REAL34_WIDTH_TEST == 1)
@@ -2294,7 +2310,9 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQ_EDIT) {
           calcModeNormal();
-          if(allFormulae[currentFormula].pointerToFormulaData == WP43S_NULL) deleteEquation(currentFormula);
+          if(allFormulae[currentFormula].pointerToFormulaData == WP43S_NULL) {
+            deleteEquation(currentFormula);
+          }
         }
         popSoftmenu();
         break;
@@ -2480,7 +2498,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       case CM_MIM:
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_M_EDIT) {
           mimEnter(true);
-          if(matrixIndex == findNamedVariable("STATS")) {
+          if(matrixIndex == findNamedVariable(statMx)) {
             calcSigma(0);
           }
           mimFinalize();
@@ -2532,7 +2550,9 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         else {
           if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQ_EDIT) {
             calcModeNormal();
-            if(allFormulae[currentFormula].pointerToFormulaData == WP43S_NULL) deleteEquation(currentFormula);
+            if(allFormulae[currentFormula].pointerToFormulaData == WP43S_NULL) {
+              deleteEquation(currentFormula);
+            }
           }
           popSoftmenu();
         }
@@ -2569,6 +2589,11 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_GRAPH:
       case CM_PLOT_STAT:
+//Temporary - TODO JM
+            restoreStats();
+printf(">>> ####@@@@ D %i\n",calcMode);
+if(lastPlotMode == H_PLOT && calcMode == CM_PLOT_STAT) popSoftmenu();
+//TODO
         lastPlotMode = PLOT_NOTHING;
         plotSelection = 0;
 
@@ -2765,9 +2790,13 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
           char *dstPos = aimBuffer;
           char *lstPos = aimBuffer + stringNextGlyph(aimBuffer, stringLastGlyph(aimBuffer));
           --xCursor;
-          for(uint32_t i = 0; i < xCursor; ++i) dstPos += (*dstPos & 0x80) ? 2 : 1;
+          for(uint32_t i = 0; i < xCursor; ++i) {
+            dstPos += (*dstPos & 0x80) ? 2 : 1;
+          }
           srcPos = dstPos + ((*dstPos & 0x80) ? 2 : 1);
-          for(; srcPos <= lstPos;) *(dstPos++) = *(srcPos++);
+          for(; srcPos <= lstPos;) {
+            *(dstPos++) = *(srcPos++);
+          }
         }
         break;
 
@@ -2814,8 +2843,9 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
             if(currentLocalStepNumber > 1) {
               --currentLocalStepNumber;
               defineCurrentStep();
-              if(!programListEnd)
+              if(!programListEnd) {
                 scrollPemBackwards();
+            }
             }
             else {
               pemCursorIsZerothStep = true;
@@ -2846,8 +2876,9 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
           if(aimBuffer[0] == 0 && currentLocalStepNumber > 1) {
             currentStep = findPreviousStep(currentStep);
             --currentLocalStepNumber;
-            if(!programListEnd)
+            if(!programListEnd) {
               scrollPemBackwards();
+            }
           }
         }
         #endif //SAVE_SPACE_DM42_10
@@ -3008,7 +3039,9 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           fnPlotStat(PLOT_NXT);
         }
         else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQN){
-          if(currentFormula == 0) currentFormula = numberOfFormulae;
+          if(currentFormula == 0) {
+            currentFormula = numberOfFormulae;
+          }
           --currentFormula;
           screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
         }
@@ -3190,7 +3223,9 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         }
         else if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQN){
           ++currentFormula;
-          if(currentFormula == numberOfFormulae) currentFormula = 0;
+          if(currentFormula == numberOfFormulae) {
+            currentFormula = 0;
+          }
           screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
         }
         else {
@@ -3373,13 +3408,29 @@ void fnKeyAngle(uint16_t unusedButMandatoryParameter) {
 
 void setLastKeyCode(int key) {
   if(1 <= key && key <= 43) {
-    if     (key <=  6) lastKeyCode = key      + 20;
-    else if(key <= 12) lastKeyCode = key -  6 + 30;
-    else if(key <= 17) lastKeyCode = key - 12 + 40;
-    else if(key <= 22) lastKeyCode = key - 17 + 50;
-    else if(key <= 27) lastKeyCode = key - 22 + 60;
-    else if(key <= 32) lastKeyCode = key - 27 + 70;
-    else if(key <= 37) lastKeyCode = key - 32 + 80;
-    else if(key <= 43) lastKeyCode = key - 37 + 10; // function keys
+    if(key <=  6) {
+      lastKeyCode = key      + 20;
+    }
+    else if(key <= 12) {
+      lastKeyCode = key -  6 + 30;
+    }
+    else if(key <= 17) {
+      lastKeyCode = key - 12 + 40;
+    }
+    else if(key <= 22) {
+      lastKeyCode = key - 17 + 50;
+    }
+    else if(key <= 27) {
+      lastKeyCode = key - 22 + 60;
+    }
+    else if(key <= 32) {
+      lastKeyCode = key - 27 + 70;
+    }
+    else if(key <= 37) {
+      lastKeyCode = key - 32 + 80;
+    }
+    else if(key <= 43) {
+      lastKeyCode = key - 37 + 10; // function keys
+    }
   }
 }

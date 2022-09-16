@@ -52,12 +52,12 @@
   //#define VERBOSE_SOLVER0  // a lot less text
   //#define VERBOSE_SOLVER1  // a lot less text
   //#define VERBOSE_SOLVER2  // verbose a lot
-#else
+#else // !PC_BUILD
   #undef VERBOSE_SOLVER00
   #undef VERBOSE_SOLVER0
   #undef VERBOSE_SOLVER1
   #undef VERBOSE_SOLVER2
-#endif
+#endif // PC_BUILD
 
 
 //Todo: involve https://en.wikipedia.org/wiki/Brent%27s_method#Brent's_method
@@ -68,14 +68,21 @@
 #define NUMBERITERATIONS 35      // Must be smaller than LIM (see STATS)
 
 
-char     plotStatMx[8];
+#ifndef TESTSUITE_BUILD
+static void fnPlot(uint16_t unusedButMandatoryParameter) {
+    lastPlotMode = PLOT_NOTHING;
+    //    fnPlotStat(PLOT_GRAPH);
+    //  C43 advanced plot vv
+    strcpy(plotStatMx, "DrwMX");
+    PLOT_LINE = true;
+    PLOT_SHADE = true;
+    fnPlotSQ(0);
+    //  C43 advanced plot ^^
+}
 
 
 
-
-
-#if !defined(TESTSUITE_BUILD)
-  static void fnRCL(int16_t inp) { //DONE
+static void fnRCL(int16_t inp) { //DONE
     setSystemFlag(FLAG_ASLIFT);
     if(inp == TEMP_REGISTER_1) {
       liftStack();
@@ -86,45 +93,15 @@ char     plotStatMx[8];
     }
   }
 
-/*
-#ifndef SAVE_SPACE_DM42_13GRF
-	static void fnStrtoX(char buff[]) {
-	  setSystemFlag(FLAG_ASLIFT); // 5
-	  liftStack();
-	  int16_t mem = stringByteLength(buff) + 1;
-	  reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(mem), amNone);
-	  xcopy(REGISTER_STRING_DATA(REGISTER_X), buff, mem);
-	  setSystemFlag(FLAG_ASLIFT);
-	}
-#endif //SAVE_SPACE_DM42_13GRF
-*/
-  
   static void convertDoubleToReal34RegisterPush(double x, calcRegister_t destination) {
     setSystemFlag(FLAG_ASLIFT);
     liftStack();
     convertDoubleToReal34Register(x, destination);
     setSystemFlag(FLAG_ASLIFT);
   }
-#endif
-
-
-
-#ifndef TESTSUITE_BUILD
-  static void fnPlot(uint16_t unusedButMandatoryParameter) {
-    lastPlotMode = PLOT_NOTHING;
-//    fnPlotStat(PLOT_GRAPH);
-//  C43 advanced plot vv
-    strcpy(plotStatMx, "DrwMX");
-    PLOT_LINE = true;
-    PLOT_SHADE = true;
-    fnPlotSQ(0);
-//  C43 advanced plot ^^
-  }
-#endif //TESTSUITE_BUILD
 
 
 #ifndef SAVE_SPACE_DM42_13GRF
-#ifndef TESTSUITE_BUILD
   static void initialize_function(void){
     if(graphVariable > 0) {
       #if defined(PC_BUILD)
@@ -146,11 +123,9 @@ char     plotStatMx[8];
       #endif //PC_BUILD
     }
   }
-#endif //TESTSUITE_BUILD
 #endif //SAVE_SPACE_DM42_13GRF
 
 
-#ifndef TESTSUITE_BUILD
   static void execute_rpn_function(void){
     if(graphVariable <= 0 || graphVariable > 65535) return;
 
@@ -232,30 +207,34 @@ int16_t osc = 0;
 uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
 
 
-void check_osc(uint8_t ii){
-   switch (ii & 0b00111111) {
-     case 0b001111:
-     case 0b011110:
-     case 0b111100:
-     case 0b010101:
-     case 0b101010:
-
-     case 0b011011:
-     case 0b110110:
-     case 0b101101: osc++;
-     default:;
-   }
-   switch (ii) {
-     case 0b01001001:
-     case 0b10010010:
-     case 0b00100100: osc++;
-     default:;
-   }
-}
+  void check_osc(uint8_t ii){
+     switch (ii & 0b00111111) {
+       case 0b001111:
+       case 0b011110:
+       case 0b111100:
+       case 0b010101:
+       case 0b101010:
+       case 0b011011:
+       case 0b110110:
+       case 0b101101: {
+         osc++;
+       }
+       default: {
+       }
+     }
+     switch (ii) {
+       case 0b01001001:
+       case 0b10010010:
+       case 0b00100100: {
+         osc++;
+       }
+       default: {
+       }
+    }
+  }
 
 //###################################################################################
 //PLOTTER
-
   int32_t drawMxN(void){
     uint16_t rows = 0;
     if(plotStatMx[0]!='D') return 0;
@@ -314,25 +293,25 @@ void check_osc(uint8_t ii){
 
 
 
-void fnClDrawMx(void) {
-  PLOT_ZOOM = 0;
-  if(plotStatMx[0]!='D') {
-    strcpy(plotStatMx,"DrwMX");
+  void fnClDrawMx(void) {
+    PLOT_ZOOM = 0;
+    if(plotStatMx[0]!='D') {
+      strcpy(plotStatMx,"DrwMX");
+    }
+    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    if(regStats == INVALID_VARIABLE) {
+      allocateNamedVariable(plotStatMx, dtReal34, REAL34_SIZE);
+      regStats = findNamedVariable(plotStatMx);
+    }
+    clearRegister(regStats);                  // this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
+    if(regStats == INVALID_VARIABLE) {
+      displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "DrwMX matrix not created");
+        moreInfoOnError("In function fnClPlotData:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
   }
-  calcRegister_t regStats = findNamedVariable(plotStatMx);
-  if(regStats == INVALID_VARIABLE) {
-    allocateNamedVariable(plotStatMx, dtReal34, REAL34_SIZE);
-    regStats = findNamedVariable(plotStatMx);
-  }
-  clearRegister(regStats);                  // TODO this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
-  if(regStats == INVALID_VARIABLE) {
-    displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "DrwMX matrix not created");
-      moreInfoOnError("In function fnClPlotData:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-}
 
 
 void graph_eqn(uint16_t mode) {
@@ -383,7 +362,7 @@ void graph_stat(uint16_t unusedButMandatoryParameter) {
 
     fnClearStack(0);
     fnPlotSQ(0);
-  #endif
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -1083,9 +1062,8 @@ void graph_stat(uint16_t unusedButMandatoryParameter) {
     SAVED_SIGMA_LAct = 0;   //prevent undo of last stats add action. REMOVE when STATS are not used anymore
     return;
   }
-#endif // !TESTSUITE_BUILD
 #endif //SAVE_SPACE_DM42_13GRF
-
+#endif // !TESTSUITE_BUILD
 
 
 
@@ -1103,8 +1081,10 @@ void fnEqSolvGraph (uint16_t func) {
     refreshLcd(NULL);
   #endif // DMCP_BUILD
 
-//  if(!(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE)) return;
-
+  graphVariable = currentSolverVariable;
+  if(graphVariable<0) {
+    graphVariable = -graphVariable;
+  }
 
   if(graphVariable >= FIRST_NAMED_VARIABLE && graphVariable <= LAST_NAMED_VARIABLE) {
     #if (defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
@@ -1118,6 +1098,7 @@ void fnEqSolvGraph (uint16_t func) {
       moreInfoOnError("In function fnEqSolvGraph:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+    return;
   }
 
 
@@ -1188,7 +1169,8 @@ void fnEqSolvGraph (uint16_t func) {
             graph_eqn(0);
             break;
           }
-     default:;
+     default: {
+     }
      }
 #endif // !TESTSUITE_BUILD
 #endif //SAVE_SPACE_DM42_13GRF

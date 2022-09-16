@@ -496,9 +496,15 @@ void convertReal34RegisterToDateRegister(calcRegister_t source, calcRegister_t d
   }
 
   reallocateRegister(destination, dtDate, REAL34_SIZE, amNone);
-  if(     getSystemFlag(FLAG_YMD)) composeJulianDay(&part1, &part2, &part3, REGISTER_REAL34_DATA(destination));
-  else if(getSystemFlag(FLAG_MDY)) composeJulianDay(&part3, &part1, &part2, REGISTER_REAL34_DATA(destination));
-  else if(getSystemFlag(FLAG_DMY)) composeJulianDay(&part3, &part2, &part1, REGISTER_REAL34_DATA(destination));
+  if(getSystemFlag(FLAG_YMD)) {
+    composeJulianDay(&part1, &part2, &part3, REGISTER_REAL34_DATA(destination));
+  }
+  else if(getSystemFlag(FLAG_MDY)) {
+    composeJulianDay(&part3, &part1, &part2, REGISTER_REAL34_DATA(destination));
+  }
+  else if(getSystemFlag(FLAG_DMY)) {
+    composeJulianDay(&part3, &part2, &part1, REGISTER_REAL34_DATA(destination));
+  }
 
   int32ToReal34(86400, &val), real34Multiply(REGISTER_REAL34_DATA(destination), &val, REGISTER_REAL34_DATA(destination));
   int32ToReal34(43200, &val), real34Add(REGISTER_REAL34_DATA(destination), &val, REGISTER_REAL34_DATA(destination));
@@ -508,7 +514,6 @@ void convertReal34RegisterToDateRegister(calcRegister_t source, calcRegister_t d
 
 #if !defined(TESTSUITE_BUILD)
   void convertReal34MatrixRegisterToReal34Matrix(calcRegister_t regist, real34Matrix_t *matrix) {
-
     dataBlock_t *dblock           = REGISTER_REAL34_MATRIX_DBLOCK(regist);
     real34_t    *matrixElem     = REGISTER_REAL34_MATRIX_M_ELEMENTS(regist);
 
@@ -543,15 +548,15 @@ void convertReal34RegisterToDateRegister(calcRegister_t source, calcRegister_t d
       if(matrix->matrixElements) {
         xcopy(matrix->matrixElements, REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist), (matrix->header.matrixColumns * matrix->header.matrixRows) * sizeof(complex34_t));
 
-        for(int i = 0; i < matrix->header.matrixColumns * matrix->header.matrixRows; i++) {
-          complex34Copy(&matrixElem[i], &matrix->matrixElements[i]);
+          for(int i = 0; i < matrix->header.matrixColumns * matrix->header.matrixRows; i++) {
+            complex34Copy(&matrixElem[i], &matrix->matrixElements[i]);
+          }
         }
       }
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
     }
-    else {
-      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    }
-  }
 
   void convertComplex34MatrixToComplex34MatrixRegister(const complex34Matrix_t *matrix, calcRegister_t regist) {
     reallocateRegister(regist, dtComplex34Matrix, TO_BLOCKS((matrix->header.matrixColumns * matrix->header.matrixRows) * sizeof(complex34_t)), amNone);
@@ -631,15 +636,15 @@ void convertReal34RegisterToDateRegister(calcRegister_t source, calcRegister_t d
     //  stringToReal34(buff, REGISTER_REAL34_DATA(REGISTER_X));
     //  if(real34IsNaN(REGISTER_REAL34_DATA(REGISTER_X))) error = true;
 
-    if(error) {
-      #if defined(PC_BUILD)
-        printf("ERROR in locale: doubleToString: attempt to correct:  §%s§\n", buff);
-        snprintf(buff, 100, "%.16e", x);
-        printf("                                 Original conversion: §%s§\n", buff);
-      #endif //PC_BUILD
-      strcpy(buff,"NaN");
+      if(error) {
+        #if defined(PC_BUILD)
+          printf("ERROR in locale: doubleToString: attempt to correct:  §%s§\n", buff);
+          snprintf(buff, 100, "%.16e", x);
+          printf("                                 Original conversion: §%s§\n", buff);
+        #endif //PC_BUILD
+        strcpy(buff,"NaN");
+      }
     }
-  }
 
 
   void convertDoubleToReal(double x, real_t *destination, realContext_t *ctxt) {
@@ -696,7 +701,7 @@ double convertRegisterToDouble(calcRegister_t regist) {
   #error DECDPUN must be 3
 #endif
 
-static float fnRealToFloat(const real_t *r) {
+static float fnRealToFloat(const real_t *r){
   int s = 0;
   int j, n, e;
 
@@ -760,4 +765,3 @@ void realToFloat(const real_t *vv, float *v) {
 void realToDouble(const real_t *vv, double *v) {      //Not using double internally, i.e. using float type. Change fnRealToFloat if double is needed in future
   *v = fnRealToFloat(vv);
 }
-

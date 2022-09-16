@@ -115,8 +115,9 @@ void *reallocWp43s(void *pcMemPtr, size_t oldSizeInBlocks, size_t newSizeInBlock
 }
 
 void freeWp43s(void *pcMemPtr, size_t sizeInBlocks) {
-  if(pcMemPtr == NULL)
+  if(pcMemPtr == NULL) {
     return;
+  }
 
   #if !defined(DMCP_BUILD)
     //if(debugMemAllocation) {

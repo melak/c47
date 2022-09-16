@@ -18,6 +18,7 @@
 
 #include "charString.h"
 #include "constantPointers.h"
+#include "config.h"
 #include "curveFitting.h"
 #include "debug.h"
 #include "error.h"
@@ -95,6 +96,7 @@ bool_t    PLOT_AXIS;
 int8_t    PLOT_ZMX;
 int8_t    PLOT_ZMY;
 uint8_t   PLOT_ZOOM;
+uint8_t   drawHistogram;
 
 int8_t    plotmode;
 float     tick_int_x;
@@ -139,7 +141,6 @@ void statGraphReset(void){
 }
 
 
-
 #if !defined(TESTSUITE_BUILD)
   float grf_x(int i) {
     float xf=0;
@@ -158,6 +159,7 @@ void statGraphReset(void){
     }
     return xf;
   }
+
 
   float grf_y(int i) {
     float yf=0;
@@ -340,6 +342,14 @@ static void plotrect(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {            
 }
 
 
+  static void plotHisto_col(uint16_t ix, uint16_t ixn, uint16_t x, uint16_t y, uint16_t x_min, uint16_t x_wid, uint16_t y_min, uint16_t y_wid) {  //x is 0..(n-1)   
+    float col_width = (int16_t)(x_wid*(float)(1.0f) / (float)(ixn + 2)) - 0.6f;              // Scaled to always have the histogram in the same scale as the STATS ASSESS graph
+    
+    plotrect(x - (int)((+0.1f + col_width)/2), y_min + y_wid,  x + (int)((-0.1f + col_width)/2), y);
+  }
+
+
+
 void plotbox_fat(uint16_t xn, uint8_t yn) {                                         // Plots line from xo,yo to xn,yn; uses temporary x1,y1
   plotrect(xn-3,yn-3,xn+3,yn+3);
   plotrect(xn-2,yn-2,xn+2,yn+2);
@@ -358,7 +368,6 @@ void plotline2(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn) {              
    //   pixelline(xo+1,yo,xn+1,yn,1);   //Do not use the full doubling, without it give as nice profile if the slope changes
    //   pixelline(xo,yo+1,xn,yn+1,1);
  }
-
 
 
 //Exhange the name of this routine with pixelline() above to try Bresenham
@@ -393,7 +402,6 @@ void pixelline(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn, bool_t vmNormal
     }
   }
 }
-
 
 
 void force_refresh1(void) {
@@ -636,6 +644,7 @@ float auto_tick(float tick_int_f) {
   return tick_int_f;
 }
 
+
 void graph_axis (void){
 #if !defined(SAVE_SPACE_DM42_13GRF)
   #if !defined(TESTSUITE_BUILD)
@@ -659,6 +668,7 @@ void graph_axis (void){
   graphAxisDraw();
 #endif //SAVE_SPACE_DM42_13GRF
 }
+
 
 char * radixProcess(const char * ss) {  //  .  HIERDIE WERK GLAD NIE
   int8_t ix = 0, iy = 0;
@@ -841,6 +851,7 @@ static char *eng(double value, int digits) {
 
 void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, const char* s05) {
   char s03[100];
+  
   strcpy(s03,eng(inreal, digits));
   strcpy(s02,s01);
   strcat(s02,eatSpacesMid(radixProcess(s03)));
@@ -853,6 +864,33 @@ void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, con
 #define autoinc 20 //text line spacing
 #define autoshift -5 //text line spacing
 #define horOffset 1 //labels from the left
+
+
+#if !defined (TESTSUITE_BUILD) //TESTSUITE_BUILD
+  int32_t statMxN(void) {
+    uint16_t rows = 0;
+    
+    if(plotStatMx[0]=='D') {
+      return 0;                //Only allow S and H
+    }
+    else {
+      calcRegister_t regStats = findNamedVariable(plotStatMx);
+      if(regStats == INVALID_VARIABLE) {
+        return 0;
+      }
+      else {
+        if(isStatsMatrix(&rows,plotStatMx)) {
+          real34Matrix_t stats;
+          linkToRealMatrixRegister(regStats, &stats);
+          return stats.header.matrixRows;
+        }
+        else {
+          return 0;
+        }
+      }
+    }
+  }
+#endif // !TESTSUITE_BUILD
 
 
 void graphPlotstat(uint16_t selection){
@@ -879,16 +917,29 @@ void graphPlotstat(uint16_t selection){
   graph_axis();
   plotmode = _SCAT;
 
-  if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2)) {
-    if(plotStatMx[0]=='S') {
+    if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) ||
+      (plotStatMx[0]=='D' && drawMxN() >= 2) ||
+      (plotStatMx[0]=='H' && statMxN() >= 3)) {
+      switch (plotStatMx[0]) {
+        case 'S': {
       realToInt32(SIGMA_N, statnum);
+          break;
     }
-    else {
+        case 'D': {
       statnum = drawMxN();
-    }
-      #if defined(STATDEBUG) && defined(PC_BUILD)
-      printf("statnum n=%d\n",statnum);
-      #endif // STATDEBUG && PC_BUILD
+          break;
+        }
+        case 'H': {
+          statnum = statMxN();
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+      #if defined STATDEBUG && defined PC_BUILD
+        printf("graphPlotstat: statnum n=%d\n",statnum);
+      #endif
 
 
     //AUTOSCALE
@@ -1011,10 +1062,11 @@ void graphPlotstat(uint16_t selection){
       x_min = x_max - dx;
     }
 
-    x_min = x_min - dx * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
-    y_min = y_min - dy * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
-    x_max = x_max + dx * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
-    y_max = y_max + dy * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
+      float histofactor = drawHistogram == 0 ? 1 : 1/zoomfactor * (((float)statnum + 2.0f)  /  ((float)(statnum) - 1.0f) - 1)/2;     //Create space on the sides of the graph for the wider histogram columns
+      x_min = x_min - dx * histofactor * zoomfactor * (pow(4.5f, (int8_t)(PLOT_ZOOM & 0x03)));
+      y_min = y_min - dy * histofactor * zoomfactor * (pow(4.5f, (int8_t)(PLOT_ZOOM & 0x03)));
+      x_max = x_max + dx * histofactor * zoomfactor * (pow(4.5f, (int8_t)(PLOT_ZOOM & 0x03)));
+      y_max = y_max + dy * histofactor * zoomfactor * (pow(4.5f, (int8_t)(PLOT_ZOOM & 0x03)));
       #if defined(STATDEBUG) && defined(PC_BUILD)
       printf("Axis3a: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
       #endif // STATDEBUG && PC_BUILD
@@ -1047,7 +1099,7 @@ void graphPlotstat(uint16_t selection){
       yN = screen_window_y(y_min,y,y_max);
 
         #if defined(STATDEBUG) && defined(PC_BUILD)
-        printf("plotting graph table[%d] = x:%f y:%f xN:%d yN:%d ",ix,x,y,  xN,yN);
+          printf("plotting graph table[%d] = x:%f y:%f xN:%d yN:%d drawHistogram:%d ", ix, x, y, xN, yN, drawHistogram);
         #endif // STATDEBUG && PC_BUILD
 
       int16_t minN_y,minN_x;
@@ -1062,6 +1114,10 @@ void graphPlotstat(uint16_t selection){
       if(xN<SCREEN_WIDTH_GRAPH && xN>minN_x && yN<SCREEN_HEIGHT_GRAPH && yN>minN_y) {
         yn = yN;
         xn = xN;
+
+          if(drawHistogram != 0) {
+            plotHisto_col(ix, statnum, xN, yN, minN_x, SCREEN_WIDTH_GRAPH - minN_x, minN_y, SCREEN_HEIGHT_GRAPH - minN_y);
+          }
 
         if(PLOT_CROSS) {
             #if defined(STATDEBUG) && defined(PC_BUILD)
@@ -1186,18 +1242,34 @@ void graphDrawLRline(uint16_t selection) {
   #endif // !TESTSUITE_BUILD
 }
 
+
 #if !defined(TESTSUITE_BUILD)
   void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2, real_t *sa0, real_t *sa1){
 #ifndef SAVE_SPACE_DM42_13GRF
-    int32_t n;
+    int32_t n = 0;
     uint16_t NN;
 
-    if(plotStatMx[0]=='S') {
+    switch (plotStatMx[0]) {
+      case 'S': {
       realToInt32(SIGMA_N, n);
+        break;
     }
-    else {
+      case 'D':  {
       n = drawMxN();
+        break;
+      }
+      case 'H':  {
+        n = statMxN();
+        break;
+      }
+      default: {
+        break;
+      }
     }
+    #if defined STATDEBUG && defined PC_BUILD
+      printf("drawline: n=%d\n",n);
+    #endif
+
     NN = (uint16_t) n;
     bool_t isValidDraw =
          selection != 0
@@ -1208,15 +1280,42 @@ void graphDrawLRline(uint16_t selection) {
       && !realIsNaN(aa1)
       && (!realIsNaN(aa2) || minLRDataPoints(selection)==2)
       && (!realIsNaN(SMI) || !(selection & CF_ORTHOGONAL_FITTING));
+
+    #if defined (STATDEBUG) && defined (PC_BUILD)
+      printf("#####>>> drawline: selection:%u:%s  lastplotmode:%u  lrSelection:%u lrChosen:%u\n",selection, getCurveFitModeName(selection), lastPlotMode, lrSelection, lrChosen);
+    #endif //  STATDEBUG && PC_BUILD
+    float rr, smi, a0, a1, a2, ssa0, ssa1, lB, hB, nB;
+    real_t lBr, hBr, nBr;
+    char ss[100], tt[100];
+
+    if(drawHistogram == 1 && selection == 0) { // HISTO
+      int16_t index = -1;
+      real34ToReal(&loBinR ,&lBr);
+      real34ToReal(&hiBinR ,&hBr);
+      real34ToReal(&nBins  ,&nBr);
+      realToFloat(&lBr, &lB);
+      realToFloat(&hBr, &hB);
+      realToFloat(&nBr, &nB);
+      eformat_eng2(ss,"",lB,3,"");           
+      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
+      strcpy(ss,"lB" "=");                   
+      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
+      eformat_eng2(ss,"",hB,3,"");           
+      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
+      strcpy(ss,"hB" "=");                   
+      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
+      eformat_eng2(ss,"",nB,3,"");           
+      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
+      strcpy(ss,"nB" "=");                   
+      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
+      return;
+    }
+
     real_t XX,YY;
     if(!selection) {
       return;
     }
-    #if defined(STATDEBUG) && defined(PC_BUILD)
-      printf("#####>>> drawline: selection:%u:%s  lastplotmode:%u  lrSelection:%u lrChosen:%u\n",selection, getCurveFitModeName(selection), lastPlotMode, lrSelection, lrChosen);
-    #endif // STATDEBUG && PC_BUILD
-    float rr,smi,a0,a1,a2,ssa0,ssa1;
-    char ss[100], tt[100];
+
     realToFloat(RR , &rr );
     realToFloat(SMI, &smi);
     realToFloat(aa0, &a0 );
@@ -1461,8 +1560,7 @@ void graphDrawLRline(uint16_t selection) {
 #endif //SAVE_SPACE_DM42_13GRF
   }
   }
-#endif //TESTSUITE_BUILD
-
+#endif // !TESTSUITE_BUILD
 
 
 void fnPlotClose(uint16_t unusedButMandatoryParameter){
@@ -1496,35 +1594,83 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
 void fnPlotStat(uint16_t plotMode){
 #if !defined(TESTSUITE_BUILD)
 #if !defined(SAVE_SPACE_DM42_13GRF)
-
+    //restoreStats();
   switch (plotMode) {
-    case PLOT_GRAPH:  strcpy(plotStatMx, "DrwMX");
+      case PLOT_GRAPH: {
+        drawHistogram = 0;
+        if(plotStatMx[0] != 'D') {
+          strcpy(plotStatMx, "DrwMX");
+        }
                       break;
+      }
     case PLOT_ORTHOF:
     case PLOT_START:
     case PLOT_REV:
     case PLOT_NXT:
-    case PLOT_LR: strcpy(plotStatMx, "STATS");
-                  break;
-    default: break;
+      case PLOT_LR: {
+        drawHistogram = 0;
+        if(plotStatMx[0] != 'S') {
+          strcpy(plotStatMx, "STATS");
+        }
+        break;
+      }
+      case H_PLOT: {
+        drawHistogram = 1;
+        if(plotStatMx[0] != 'H') {
+          strcpy(plotStatMx, "HISTO");
+        }
+        break;
+      }
+      case H_NORM: {
+        drawHistogram = 1;
+        if(plotStatMx[0] != 'S') {
+          strcpy(plotStatMx, "HISTO");
+        }
+        strcpy(statMx,"HISTO");
+        calcSigma(0);
+        plotMode = PLOT_LR;
+        lastPlotMode = PLOT_START;
+        lrSelectionHistobackup = lrSelection;
+        lrChosenHistobackup = lrChosen;
+        fnCurveFitting(CF_GAUSS_FITTING_EX);
+        break;
+      }
+      default: {
+        break;
+      }
   }
 
     #if defined(STATDEBUG) && defined(PC_BUILD)
     printf("fnPlotStat1: plotSelection = %u; Plotmode=%u\n",plotSelection,plotMode);
     printf("#####>>> fnPlotStat1: plotSelection:%u:%s  Plotmode:%u lastplotmode:%u  lrSelection:%u lrChosen:%u plotStatMx:%s\n",plotSelection, getCurveFitModeName(plotSelection), plotMode, lastPlotMode, lrSelection, lrChosen, plotStatMx);
-    if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2) ) {
-      int16_t cnt;
-        if(plotStatMx[0]=='S') {
+      if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || 
+          (plotStatMx[0]=='D' && drawMxN() >= 2) ||
+          (plotStatMx[0]=='H' && statMxN() >= 3) ) {
+        int16_t cnt = 0;
+        switch (plotStatMx[0]) {
+          case 'S': {
           realToInt32(SIGMA_N, cnt);
+            break;
         }
-        else {
+          case 'D':  {
           cnt = drawMxN();
+            break;
+          }
+          case 'H':  {
+            cnt = statMxN();
+            break;
+          }
+          default: {
+            break;
+          }
         }
       printf("Stored values %i\n",cnt);
     }
-    #endif // STATDEBUG && PC_BUILD
+    #endif //STATDEBUG
 
-  if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || (plotStatMx[0]=='D' && drawMxN() >= 2)) {
+    if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || 
+       (plotStatMx[0]=='D' && drawMxN() >= 2) || 
+       (plotStatMx[0]=='H' && statMxN() >= 3) ) {
     PLOT_SCALE = false;
 
       #if !defined(TESTSUITE_BUILD)
@@ -1554,6 +1700,11 @@ void fnPlotStat(uint16_t plotMode){
             plotSelection = lrSelection;
             roundedTicks = false;
           }
+            else {
+              if(plotMode == H_PLOT || plotMode == H_NORM) {
+                 calcMode = CM_PLOT_STAT;
+              }
+            }
         }
       }
 
@@ -1567,31 +1718,44 @@ void fnPlotStat(uint16_t plotMode){
       #endif // DMCP_BUILD
 
       switch(plotMode) {
-        case PLOT_GRAPH:
+          case PLOT_GRAPH: {
              if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_GRAPH) {
                showSoftmenu(-MNU_GRAPH);
              }
              break;
+          }
         case PLOT_LR:
         case PLOT_NXT:
-        case PLOT_REV:
+          case PLOT_REV: {
              if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT_LR) {
                showSoftmenu(-MNU_PLOT_LR);
              }
              break;
+          }
         case PLOT_ORTHOF:
-        case PLOT_START:
+          case PLOT_START: {
              PLOT_SCALE = true;
              if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_PLOT_STAT) {
                showSoftmenu(-MNU_PLOT_STAT);
              }
              break;
-        case PLOT_NOTHING:
-             break;
-        default: break;
+          }
+          case H_PLOT:
+          case H_NORM: {
+            if(softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_HPLOT) {
+              showSoftmenu(-MNU_HPLOT);
+            }
+            break;
+          }
+          case PLOT_NOTHING: {
+            break;
+          }
+          default: {
+            break;
+          }
       }
 
-      if(plotMode != PLOT_START && plotMode != PLOT_GRAPH) {
+      if((plotMode != PLOT_START) && (plotMode != PLOT_GRAPH) && (plotMode != H_PLOT) && (plotMode != H_NORM)) {
         fnPlotRegressionLine(plotMode);
       }
       else {
@@ -1619,14 +1783,15 @@ void fnPlotRegressionLine(uint16_t plotMode){
   #endif // STATDEBUG && PC_BUILD
 
   switch(plotMode) {
-    case PLOT_ORTHOF:
+    case PLOT_ORTHOF: {
       plotSelection = CF_ORTHOGONAL_FITTING;
       lrChosen = CF_ORTHOGONAL_FITTING;
       break;
+    }
 
       //Show data and one curve fit selected: Scans lrSelection from LSB and stop after the first one is found. If a chosen curve is there, override.
       //printf("#####X %u %u \n",plotSelection, lrSelection);
-    case PLOT_NXT:
+    case PLOT_NXT: {
       plotSelection = plotSelection << 1;
       if(plotSelection == 0){
         plotSelection = 1;
@@ -1640,8 +1805,9 @@ void fnPlotRegressionLine(uint16_t plotMode){
         plotSelection = 0;  //purposely change to zero graph display to give a no-line view
       }
       break;
+    }
 
-    case PLOT_REV:
+    case PLOT_REV: {
       if(plotSelection == 0){
         plotSelection = 1024; //wraparound, will still shift right 1
       }
@@ -1655,8 +1821,9 @@ void fnPlotRegressionLine(uint16_t plotMode){
       }
 
       break;
+    }
 
-    case PLOT_LR:
+    case PLOT_LR: {
       //Show data and one curve fit selected: Scans lrSelection from LSB and stop after the first one is found. If a chosen curve is there, override.
       plotSelection = lrChosen;
       if(plotSelection == 0) {
@@ -1669,14 +1836,20 @@ void fnPlotRegressionLine(uint16_t plotMode){
         plotSelection = 0;  //purposely change to zero graph display
       }
       break;
+    }
 
-    case PLOT_START:
+    case PLOT_START: {
       plotMode = PLOT_ORTHOF;
       break;
+    }
 
-    case PLOT_NOTHING:
+    case PLOT_NOTHING: {
       break;
-    default:break;
+    }
+    
+    default: {
+      break;
+    }
   }
 #endif //SAVE_SPACE_DM42_13GRF
 }
@@ -1685,16 +1858,20 @@ void fnPlotRegressionLine(uint16_t plotMode){
 void fnPlotZoom(uint16_t unusedButMandatoryParameter){
    PLOT_ZOOM = (PLOT_ZOOM + 1) & 0x03;
    switch(calcMode) {
-     case CM_PLOT_STAT :
+    case CM_PLOT_STAT: {
        if(PLOT_ZOOM != 0)
          PLOT_AXIS = true;
        else
          PLOT_AXIS = false;
        break;
-     case CM_GRAPH :
+    }
+    case CM_GRAPH: {
          PLOT_AXIS = true;
          break;
-     default: break;
+    }
+    default: {
+      break;
+    }
    }
   #if !defined(TESTSUITE_BUILD)
      void refreshScreen(void);
