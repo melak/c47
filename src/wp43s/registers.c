@@ -573,8 +573,12 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
 
 
 bool_t validateName(const char *name) {
-  if(stringGlyphLength(name)  > 7) return false; // Given name is too long
-  if(stringGlyphLength(name) == 0) return false; // Given name is empty
+  if(stringGlyphLength(name)  > 7) {
+    return false; // Given name is too long
+  }
+  else if(stringGlyphLength(name) == 0) {
+    return false; // Given name is empty
+  }
 
   // Check for the 1st character
   if(                                          compareChar(name, STD_A                   ) < 0) return false;
@@ -589,7 +593,7 @@ bool_t validateName(const char *name) {
   if(compareChar(name, STD_SUB_mu     ) > 0 && compareChar(name, STD_SUB_h               ) < 0) return false;
   if(compareChar(name, STD_SUB_h      ) > 0 && compareChar(name, STD_SUB_t               ) < 0) return false;
   if(compareChar(name, STD_SUB_t      ) > 0 && compareChar(name, STD_SUB_a               ) < 0) return false;
-  if(compareChar(name, STD_SUB_Z      ) > 0                                                           ) return false;
+  if(compareChar(name, STD_SUB_Z      ) > 0                                                   ) return false;
 
   // Check for the following characters
   for(name += (*name & 0x80) ? 2 : 1; *name != 0; name += (*name & 0x80) ? 2 : 1) {
@@ -608,7 +612,9 @@ bool_t validateName(const char *name) {
       case ' ':
         return false;
       default:
-        if(compareChar(name, STD_CROSS) == 0) return false;
+        if(compareChar(name, STD_CROSS) == 0) {
+          return false;
+        }
     }
   }
 
@@ -751,7 +757,9 @@ calcRegister_t findNamedVariable(const char *variableName) {
   }
 
   regist = _findReservedVariable(variableName);
-  if(regist != INVALID_VARIABLE) return regist;
+  if(regist != INVALID_VARIABLE) {
+    return regist;
+  }
 
   for(int i = 0; i < numberOfNamedVariables; i++) {
     if(compareString((char *)(allNamedVariables[i].variableName + 1), variableName, CMP_NAME) == 0) {
@@ -1097,8 +1105,12 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
     }
   }
 
-  if(resultDataType == dtTime) checkTimeRange(REGISTER_REAL34_DATA(res));
-  if(resultDataType == dtDate) checkDateRange(REGISTER_REAL34_DATA(res));
+  if(resultDataType == dtTime) {
+    checkTimeRange(REGISTER_REAL34_DATA(res));
+  }
+  if(resultDataType == dtDate) {
+    checkDateRange(REGISTER_REAL34_DATA(res));
+  }
 
   if(lastErrorCode != 0) {
     #if defined(TESTSUITE_BUILD)
@@ -1781,7 +1793,9 @@ static uint8_t getRegParam(bool_t *f, uint16_t *s, uint16_t *n, uint16_t *d) {
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {
     *s = *n = 0;
-    if(d) *d = 0;
+    if(d) {
+      *d = 0;
+    }
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
     if(!realCompareAbsLessThan(&x, const_1000)) {
       return ERROR_OUT_OF_RANGE;
@@ -1866,7 +1880,9 @@ static uint8_t getRegParam(bool_t *f, uint16_t *s, uint16_t *n, uint16_t *d) {
   }
   else {
     *s = *n = 0;
-    if(d) *d = 0;
+    if(d) {
+      *d = 0;
+    }
     return ERROR_INVALID_DATA_TYPE_FOR_OP;
   }
 }
@@ -1905,7 +1921,9 @@ static void sortReg(uint16_t range_start, uint16_t range_end) {
     const uint16_t range_center = (range_end - range_start) / 2 + range_start;
     uint16_t pos1 = range_start, pos2 = range_center + 1;
     registerHeader_t *sortedReg = allocWp43s(TO_BLOCKS(sizeof(registerHeader_t)) * (range_end - range_start + 1));
-    if(lastErrorCode == ERROR_RAM_FULL) return; // unlikely
+    if(lastErrorCode == ERROR_RAM_FULL) {
+      return; // unlikely
+    }
 
     if(sortedReg) {
       sortReg(range_start,      range_center);
@@ -1987,13 +2005,17 @@ void fnRegCopy(uint16_t unusedButMandatoryParameter) {
       if(s > d) {
         for(int i = 0; i < n; ++i) {
           copySourceRegisterToDestRegister(s + i, d + i);
-          if(lastErrorCode == ERROR_RAM_FULL) return; // abort if not enough memory
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            return; // abort if not enough memory
+          }
         }
       }
       else if(s < d) {
         for(int i = n - 1; i >= 0; --i) {
           copySourceRegisterToDestRegister(s + i, d + i);
-          if(lastErrorCode == ERROR_RAM_FULL) return; // abort if not enough memory
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            return; // abort if not enough memory
+          }
         }
       }
     }

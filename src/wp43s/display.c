@@ -1056,9 +1056,15 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
 
   // Comparison sign
   if(getSystemFlag(FLAG_FRCSRN)) {
-         if(lessEqualGreater == -1) sprintf(displayString, "%c" STD_SPACE_PUNCTUATION ">" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
-    else if(lessEqualGreater ==  0) sprintf(displayString, "%c" STD_SPACE_PUNCTUATION "=" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
-    else if(lessEqualGreater ==  1) sprintf(displayString, "%c" STD_SPACE_PUNCTUATION "<" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
+    if(lessEqualGreater == -1) {
+      sprintf(displayString, "%c" STD_SPACE_PUNCTUATION ">" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
+    }
+    else if(lessEqualGreater ==  0) {
+      sprintf(displayString, "%c" STD_SPACE_PUNCTUATION "=" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
+    }
+    else if(lessEqualGreater ==  1) {
+      sprintf(displayString, "%c" STD_SPACE_PUNCTUATION "<" STD_SPACE_PUNCTUATION, "xyzt"[regist - REGISTER_X]);
+    }
     else {
       strcpy(displayString, "?" STD_SPACE_PUNCTUATION);
       sprintf(errorMessage, "In function fractionToDisplayString: %d is an unexpected value for lessEqualGreater!", lessEqualGreater);
@@ -1066,9 +1072,15 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
     }
   }
   else {
-         if(lessEqualGreater == -1) sprintf(displayString, ">" STD_SPACE_PUNCTUATION);
-    else if(lessEqualGreater ==  0) displayString[0] = 0;
-    else if(lessEqualGreater ==  1) sprintf(displayString, "<" STD_SPACE_PUNCTUATION);
+    if(lessEqualGreater == -1) {
+      sprintf(displayString, ">" STD_SPACE_PUNCTUATION);
+    }
+    else if(lessEqualGreater ==  0) {
+      displayString[0] = 0;
+    }
+    else if(lessEqualGreater ==  1) {
+      sprintf(displayString, "<" STD_SPACE_PUNCTUATION);
+    }
     else {
       strcpy(displayString, "?" STD_SPACE_PUNCTUATION);
       sprintf(errorMessage, "In function fractionToDisplayString: %d is an unexpected value for lessEqualGreater!", lessEqualGreater);
@@ -1269,10 +1281,18 @@ void angle34ToDisplayString2(const real34_t *angle34, uint8_t mode, char *displa
   else {
     real34ToDisplayString2(angle34, displayString, displayHasNDigits, limitExponent, separator, mode == amSecond, frontSpace);
 
-         if(mode == amRadian) strcat(displayString, STD_SUP_r);
-    else if(mode == amGrad)   strcat(displayString, STD_SUP_g);
-    else if(mode == amDegree) strcat(displayString, STD_DEGREE);
-    else if(mode == amSecond) strcat(displayString, "s");
+    if(mode == amRadian) {
+      strcat(displayString, STD_SUP_r);
+    }
+    else if(mode == amGrad) {
+      strcat(displayString, STD_SUP_g);
+    }
+    else if(mode == amDegree) {
+      strcat(displayString, STD_DEGREE);
+    }
+    else if(mode == amSecond) {
+      strcat(displayString, "s");
+    }
     else {
       strcat(displayString, "?");
       sprintf(errorMessage, "In function angle34ToDisplayString2: %" PRIu8 " is an unexpected value for mode!", mode);
@@ -1362,11 +1382,21 @@ void shortIntegerToDisplayString(calcRegister_t regist, char *displayString, boo
 
   // Add leading zeros
   if(getSystemFlag(FLAG_LEAD0)) {
-         if(base ==  2) bitsPerDigit = 1;
-    else if(base ==  4) bitsPerDigit = 2;
-    else if(base ==  8) bitsPerDigit = 3;
-    else if(base == 16) bitsPerDigit = 4;
-    else                bitsPerDigit = 0;
+    if(base ==  2) {
+      bitsPerDigit = 1;
+    }
+    else if(base ==  4) {
+      bitsPerDigit = 2;
+    }
+    else if(base ==  8) {
+      bitsPerDigit = 3;
+    }
+    else if(base == 16) {
+      bitsPerDigit = 4;
+    }
+    else {
+     bitsPerDigit = 0;
+    }
 
     if(bitsPerDigit != 0) {
       maxDigits = shortIntegerWordSize / bitsPerDigit;
@@ -1568,9 +1598,16 @@ void longIntegerRegisterToDisplayString(calcRegister_t regist, char *displayStri
     //longIntegerDivide(lgInt, divisor, lgInt);
     //longIntegerFree(divisor);
     for(int32_t i=(int32_t)exponentShift; i>=1; i--) {
-      if(i >= 9)      {longIntegerDivideUInt(lgInt, 1000000000, lgInt); i -= 8;}
-      else if(i >= 4) {longIntegerDivideUInt(lgInt,      10000, lgInt); i -= 3;}
-      else            {longIntegerDivideUInt(lgInt,         10, lgInt);}
+      if(i >= 9) {
+        longIntegerDivideUInt(lgInt, 1000000000, lgInt); i -= 8;
+      }
+      else if(i >= 4) {
+        longIntegerDivideUInt(lgInt,      10000, lgInt);
+        i -= 3;
+      }
+      else {
+        longIntegerDivideUInt(lgInt,         10, lgInt);
+      }
     }
   }
   else {
@@ -1797,7 +1834,9 @@ void timeToDisplayString(calcRegister_t regist, char *displayString, bool_t igno
     realCopy(const_1, &value);
     for(i = 3; i < timeDisplayFormatDigits; ++i) {
       --value.exponent;
-      if(i == 5) break;
+      if(i == 5) {
+        break;
+      }
     }
   }
   if(realCompareAbsLessThan(&real, const_1)) {
@@ -1838,7 +1877,9 @@ void timeToDisplayString(calcRegister_t regist, char *displayString, bool_t igno
           isValid12hTime = true;
         }
         for(bDigits = 0; bDigits < (isValid12hTime ? 14 : 16); ++bDigits) {
-          if(realCompareAbsLessThan(&h, const_100)) break;
+          if(realCompareAbsLessThan(&h, const_100)) {
+            break;
+          }
           ++value.exponent;
         }
         tDigits = isValid12hTime ? 13 : 15;
