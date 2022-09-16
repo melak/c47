@@ -63,6 +63,7 @@
   #if defined(PC_BUILD) || defined (TESTSUITE_BUILD)
     extern bool_t               debugMemAllocation;
   #endif // PC_BUILD || TESTSUITE_BUILD
+  
   #if defined(PC_BUILD)
     extern bool_t               calcLandscape;
     extern bool_t               calcAutoLandscapePortrait;
@@ -320,5 +321,4 @@
 
     int                         convertKeyCode(int key);
   #endif // DMCP_BUILD
-
 #endif // !WP43S_H
