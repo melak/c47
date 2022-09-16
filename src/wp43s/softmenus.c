@@ -717,185 +717,225 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     free(dynamicSoftmenu[menu].menuContent);
 
     switch(-dynamicSoftmenu[menu].menuItem) {
-      case MNU_MyAlpha: _dynmenuConstructUser(menu);
-                        break;
+      case MNU_MyAlpha: {
+        _dynmenuConstructUser(menu);
+        break;
+      }
 
-      case MNU_FLASH:   numberOfBytes = 0;
-                        numberOfGlobalLabels = 0;
-                        memset(tmpString, 0, TMP_STR_LENGTH);
-                        for(i=0; i<numberOfLabels; i++) {
-                          if(labelList[i].program < 0 && labelList[i].step > 0) { // Flash and Global label
-                            uint8_t tmpLabel[16];
-                            readStepInFlashPgmLibrary(tmpLabel, 16, labelList[i].labelPointer.flash);
-                            xcopy(tmpString + 15 * numberOfGlobalLabels, tmpLabel + 1, tmpLabel[0]);
-                            numberOfGlobalLabels++;
-                            numberOfBytes += 1 + tmpLabel[0];
-                          }
-                        }
+      case MNU_FLASH: {
+        numberOfBytes = 0;
+        numberOfGlobalLabels = 0;
+        memset(tmpString, 0, TMP_STR_LENGTH);
+        for(i=0; i<numberOfLabels; i++) {
+          if(labelList[i].program < 0 && labelList[i].step > 0) { // Flash and Global label
+            uint8_t tmpLabel[16];
+            readStepInFlashPgmLibrary(tmpLabel, 16, labelList[i].labelPointer.flash);
+            xcopy(tmpString + 15 * numberOfGlobalLabels, tmpLabel + 1, tmpLabel[0]);
+            numberOfGlobalLabels++;
+            numberOfBytes += 1 + tmpLabel[0];
+          }
+        }
 
-                        if(numberOfGlobalLabels != 0) {
-                          qsort(tmpString, numberOfGlobalLabels, 15, sortMenu);
-                        }
+        if(numberOfGlobalLabels != 0) {
+          qsort(tmpString, numberOfGlobalLabels, 15, sortMenu);
+        }
 
-                        ptr = malloc(numberOfBytes);
-                        dynamicSoftmenu[menu].menuContent = ptr;
-                        for(i=0; i<numberOfGlobalLabels; i++) {
-                          int16_t len = stringByteLength(tmpString + 15*i) + 1;
-                          xcopy(ptr, tmpString + 15*i, len);
-                          ptr += len;
-                        }
+        ptr = malloc(numberOfBytes);
+        dynamicSoftmenu[menu].menuContent = ptr;
+        for(i=0; i<numberOfGlobalLabels; i++) {
+          int16_t len = stringByteLength(tmpString + 15*i) + 1;
+          xcopy(ptr, tmpString + 15*i, len);
+          ptr += len;
+        }
 
-                        dynamicSoftmenu[menu].numItems = numberOfGlobalLabels;
-                        break;
+        dynamicSoftmenu[menu].numItems = numberOfGlobalLabels;
+        break;
+      }
 
-      case MNU_RAM:     numberOfBytes = 0;
-                        numberOfGlobalLabels = 0;
-                        memset(tmpString, 0, TMP_STR_LENGTH);
-                        for(i=0; i<numberOfLabels; i++) {
-                          if(labelList[i].program > 0 && labelList[i].step > 0) { // RAM and Global label
-                            xcopy(tmpString + 15 * numberOfGlobalLabels, labelList[i].labelPointer.ram + 1, labelList[i].labelPointer.ram[0]);
-                            numberOfGlobalLabels++;
-                            numberOfBytes += 1 + labelList[i].labelPointer.ram[0];
-                          }
-                        }
+      case MNU_RAM: {
+        numberOfBytes = 0;
+        numberOfGlobalLabels = 0;
+        memset(tmpString, 0, TMP_STR_LENGTH);
+        for(i=0; i<numberOfLabels; i++) {
+          if(labelList[i].program > 0 && labelList[i].step > 0) { // RAM and Global label
+            xcopy(tmpString + 15 * numberOfGlobalLabels, labelList[i].labelPointer.ram + 1, labelList[i].labelPointer.ram[0]);
+            numberOfGlobalLabels++;
+            numberOfBytes += 1 + labelList[i].labelPointer.ram[0];
+          }
+        }
 
-                        if(numberOfGlobalLabels != 0) {
-                          qsort(tmpString, numberOfGlobalLabels, 15, sortMenu);
-                        }
+        if(numberOfGlobalLabels != 0) {
+          qsort(tmpString, numberOfGlobalLabels, 15, sortMenu);
+        }
 
-                        ptr = malloc(numberOfBytes);
-                        dynamicSoftmenu[menu].menuContent = ptr;
-                        for(i=0; i<numberOfGlobalLabels; i++) {
-                          int16_t len = stringByteLength(tmpString + 15*i) + 1;
-                          xcopy(ptr, tmpString + 15*i, len);
-                          ptr += len;
-                        }
+        ptr = malloc(numberOfBytes);
+        dynamicSoftmenu[menu].menuContent = ptr;
+        for(i=0; i<numberOfGlobalLabels; i++) {
+          int16_t len = stringByteLength(tmpString + 15*i) + 1;
+          xcopy(ptr, tmpString + 15*i, len);
+          ptr += len;
+        }
 
-                        dynamicSoftmenu[menu].numItems = numberOfGlobalLabels;
-                        break;
+        dynamicSoftmenu[menu].numItems = numberOfGlobalLabels;
+        break;
+      }
 
-      case MNU_MyMenu:  _dynmenuConstructUser(menu);
-                        break;
+      case MNU_MyMenu: {
+        _dynmenuConstructUser(menu);
+        break;
+      }
 
-      case MNU_VAR:     _dynmenuConstructVars(menu, false, 0, false);
-                        break;
+      case MNU_VAR: {
+        _dynmenuConstructVars(menu, false, 0, false);
+        break;
+      }
 
-      case MNU_PROG:    numberOfBytes = 1;
-                        numberOfGlobalLabels = 0;
-                        memset(tmpString, 0, TMP_STR_LENGTH);
-                        for(i=0; i<numberOfLabels; i++) {
-                          if(labelList[i].program > 0 && labelList[i].step > 0) { // RAM and Global label
-                            xcopy(tmpString + 15 * numberOfGlobalLabels, labelList[i].labelPointer.ram + 1, labelList[i].labelPointer.ram[0]);
-                            numberOfGlobalLabels++;
-                            numberOfBytes += 1 + labelList[i].labelPointer.ram[0];
-                          }
-                          else if(labelList[i].program < 0 && labelList[i].step > 0) { // Flash and Global label
-                            uint8_t tmpLabel[16];
-                            readStepInFlashPgmLibrary(tmpLabel, 16, labelList[i].labelPointer.flash);
-                            xcopy(tmpString + 15 * numberOfGlobalLabels, tmpLabel + 1, tmpLabel[0]);
-                            numberOfGlobalLabels++;
-                            numberOfBytes += 1 + tmpLabel[0];
-                          }
-                        }
+      case MNU_PROG: {
+        numberOfBytes = 1;
+        numberOfGlobalLabels = 0;
+        memset(tmpString, 0, TMP_STR_LENGTH);
+        for(i=0; i<numberOfLabels; i++) {
+          if(labelList[i].program > 0 && labelList[i].step > 0) { // RAM and Global label
+            xcopy(tmpString + 15 * numberOfGlobalLabels, labelList[i].labelPointer.ram + 1, labelList[i].labelPointer.ram[0]);
+            numberOfGlobalLabels++;
+            numberOfBytes += 1 + labelList[i].labelPointer.ram[0];
+          }
+          else if(labelList[i].program < 0 && labelList[i].step > 0) { // Flash and Global label
+            uint8_t tmpLabel[16];
+            readStepInFlashPgmLibrary(tmpLabel, 16, labelList[i].labelPointer.flash);
+            xcopy(tmpString + 15 * numberOfGlobalLabels, tmpLabel + 1, tmpLabel[0]);
+            numberOfGlobalLabels++;
+            numberOfBytes += 1 + tmpLabel[0];
+          }
+        }
 
-                        if(numberOfGlobalLabels != 0) {
-                          qsort(tmpString, numberOfGlobalLabels, 15, sortMenu);
-                        }
+        if(numberOfGlobalLabels != 0) {
+          qsort(tmpString, numberOfGlobalLabels, 15, sortMenu);
+        }
 
-                        ptr = malloc(numberOfBytes);
-                        dynamicSoftmenu[menu].menuContent = ptr;
-                        for(i=0; i<numberOfGlobalLabels; i++) {
-                          int16_t len = stringByteLength(tmpString + 15*i) + 1;
-                          xcopy(ptr, tmpString + 15*i, len);
-                          ptr += len;
-                        }
+        ptr = malloc(numberOfBytes);
+        dynamicSoftmenu[menu].menuContent = ptr;
+        for(i=0; i<numberOfGlobalLabels; i++) {
+          int16_t len = stringByteLength(tmpString + 15*i) + 1;
+          xcopy(ptr, tmpString + 15*i, len);
+          ptr += len;
+        }
 
-                        dynamicSoftmenu[menu].numItems = numberOfGlobalLabels;
-                        break;
+        dynamicSoftmenu[menu].numItems = numberOfGlobalLabels;
+        break;
+      }
 
-      case MNU_MATRS:   _dynmenuConstructVars(menu, true, dtReal34Matrix, false);
-                        break;
+      case MNU_MATRS: {
+        _dynmenuConstructVars(menu, true, dtReal34Matrix, false);
+        break;
+      }
 
-      case MNU_STRINGS: _dynmenuConstructVars(menu, true, dtString, false);
-                        break;
+      case MNU_STRINGS: {
+        _dynmenuConstructVars(menu, true, dtString, false);
+        break;
+      }
 
-      case MNU_DATES:   _dynmenuConstructVars(menu, true, dtDate, false);
-                        break;
+      case MNU_DATES: {
+        _dynmenuConstructVars(menu, true, dtDate, false);
+        break;
+      }
 
-      case MNU_TIMES:   _dynmenuConstructVars(menu, true, dtTime, false);
-                        break;
+      case MNU_TIMES: {
+        _dynmenuConstructVars(menu, true, dtTime, false);
+        break;
+      }
 
-      case MNU_ANGLES:  _dynmenuConstructVars(menu, true, dtReal34, true);
-                        break;
+      case MNU_ANGLES: {
+        _dynmenuConstructVars(menu, true, dtReal34, true);
+        break;
+      }
 
-      case MNU_SINTS:   _dynmenuConstructVars(menu, true, dtShortInteger, false);
-                        break;
+      case MNU_SINTS: {
+        _dynmenuConstructVars(menu, true, dtShortInteger, false);
+        break;
+      }
 
-      case MNU_LINTS:   _dynmenuConstructVars(menu, true, dtLongInteger, false);
-                        break;
+      case MNU_LINTS: {
+        _dynmenuConstructVars(menu, true, dtLongInteger, false);
+        break;
+      }
 
-      case MNU_REALS:   _dynmenuConstructVars(menu, true, dtReal34, false);
-                        break;
+      case MNU_REALS: {
+        _dynmenuConstructVars(menu, true, dtReal34, false);
+        break;
+      }
 
-      case MNU_CPXS:    _dynmenuConstructVars(menu, true, dtComplex34, false);
-                        break;
+      case MNU_CPXS: {
+        _dynmenuConstructVars(menu, true, dtComplex34, false);
+        break;
+      }
 
-      case MNU_MVAR:    _dynmenuConstructMVars(menu);
-                        break;
+      case MNU_MVAR: {
+        _dynmenuConstructMVars(menu);
+        break;
+      }
 
-      case MNU_MENUS:   numberOfBytes = 1;
-                        numberOfGlobalLabels = 0;
-                        memset(tmpString, 0, TMP_STR_LENGTH);
-                        for(i=0; i<LAST_ITEM; i++) {
-                          if((indexOfItems[i].status & CAT_STATUS) == CAT_MENU && indexOfItems[i].itemCatalogName[0] != 0 && i != MNU_CATALOG && i != MNU_MENUS) {
-                            int16_t len = stringByteLength(indexOfItems[i].itemCatalogName);
-                            xcopy(tmpString + 15 * numberOfGlobalLabels, indexOfItems[i].itemCatalogName, len);
-                            numberOfGlobalLabels++;
-                            numberOfBytes += 1 + len;
-                          }
-                        }
-                        for(i=0; i<numberOfUserMenus; i++) {
-                          int16_t len = stringByteLength(userMenus[i].menuName);
-                          xcopy(tmpString + 15 * numberOfGlobalLabels, userMenus[i].menuName, len);
-                          numberOfGlobalLabels++;
-                          numberOfBytes += 1 + len;
-                        }
+      case MNU_MENUS: {
+        numberOfBytes = 1;
+        numberOfGlobalLabels = 0;
+        memset(tmpString, 0, TMP_STR_LENGTH);
+        for(i=0; i<LAST_ITEM; i++) {
+          if((indexOfItems[i].status & CAT_STATUS) == CAT_MENU && indexOfItems[i].itemCatalogName[0] != 0 && i != MNU_CATALOG && i != MNU_MENUS) {
+            int16_t len = stringByteLength(indexOfItems[i].itemCatalogName);
+            xcopy(tmpString + 15 * numberOfGlobalLabels, indexOfItems[i].itemCatalogName, len);
+            numberOfGlobalLabels++;
+            numberOfBytes += 1 + len;
+          }
+        }
+        for(i=0; i<numberOfUserMenus; i++) {
+          int16_t len = stringByteLength(userMenus[i].menuName);
+          xcopy(tmpString + 15 * numberOfGlobalLabels, userMenus[i].menuName, len);
+          numberOfGlobalLabels++;
+          numberOfBytes += 1 + len;
+        }
 
-                        if(numberOfGlobalLabels != 0) {
-                          qsort(tmpString, numberOfGlobalLabels, 15, sortMenu);
-                        }
+        if(numberOfGlobalLabels != 0) {
+          qsort(tmpString, numberOfGlobalLabels, 15, sortMenu);
+        }
 
-                        ptr = malloc(numberOfBytes);
-                        dynamicSoftmenu[menu].menuContent = ptr;
-                        for(i=0; i<numberOfGlobalLabels; i++) {
-                          int16_t len = stringByteLength(tmpString + 15*i) + 1;
-                          xcopy(ptr, tmpString + 15*i, len);
-                          ptr += len;
-                        }
+        ptr = malloc(numberOfBytes);
+        dynamicSoftmenu[menu].menuContent = ptr;
+        for(i=0; i<numberOfGlobalLabels; i++) {
+          int16_t len = stringByteLength(tmpString + 15*i) + 1;
+          xcopy(ptr, tmpString + 15*i, len);
+          ptr += len;
+        }
 
-                        dynamicSoftmenu[menu].numItems = numberOfGlobalLabels;
-                        break;
+        dynamicSoftmenu[menu].numItems = numberOfGlobalLabels;
+        break;
+      }
 
-      case MNU_DYNAMIC: _dynmenuConstructUser(menu);
-                        break;
+      case MNU_DYNAMIC: {
+        _dynmenuConstructUser(menu);
+        break;
+      }
 
-      case ITM_MENU:    numberOfBytes = 0;
-                        numberOfGlobalLabels = 0;
-                        memset(tmpString, 0, TMP_STR_LENGTH);
-                        for(i=0; i<18; i++) {
-                          xcopy(tmpString + numberOfBytes, programmableMenu.itemName[i], stringByteLength(programmableMenu.itemName[i]) + 1);
-                          numberOfBytes += stringByteLength(programmableMenu.itemName[i]) + 1;
-                        }
+      case ITM_MENU: {
+        numberOfBytes = 0;
+        numberOfGlobalLabels = 0;
+        memset(tmpString, 0, TMP_STR_LENGTH);
+        for(i=0; i<18; i++) {
+          xcopy(tmpString + numberOfBytes, programmableMenu.itemName[i], stringByteLength(programmableMenu.itemName[i]) + 1);
+          numberOfBytes += stringByteLength(programmableMenu.itemName[i]) + 1;
+        }
 
-                        ptr = malloc(numberOfBytes);
-                        dynamicSoftmenu[menu].menuContent = ptr;
-                        xcopy(ptr, tmpString, numberOfBytes);
+        ptr = malloc(numberOfBytes);
+        dynamicSoftmenu[menu].menuContent = ptr;
+        xcopy(ptr, tmpString, numberOfBytes);
 
-                        dynamicSoftmenu[menu].numItems = 18;
-                        break;
+        dynamicSoftmenu[menu].numItems = 18;
+        break;
+      }
 
-      default:          sprintf(errorMessage, "In function initVariableSoftmenu: unexpected variable softmenu %" PRId16 "!", (int16_t)(-dynamicSoftmenu[menu].menuItem));
-                        displayBugScreen(errorMessage);
+      default: {
+        sprintf(errorMessage, "In function initVariableSoftmenu: unexpected variable softmenu %" PRId16 "!", (int16_t)(-dynamicSoftmenu[menu].menuItem));
+        displayBugScreen(errorMessage);
+      }
     }
   }
 
@@ -1037,7 +1077,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
               if(*ptr != 0) {
                 videoMode_t vm = vmNormal;
                 switch(-softmenu[m].menuItem) {
-                  case MNU_MENUS:   vm =                                                            vmReverse;            break;
+                  case MNU_MENUS:   vm =                                                           vmReverse;            break;
                   case MNU_MyMenu:  vm = (                      userMenuItems[x + 6*y].item < 0) ? vmReverse : vmNormal; break;
                   case MNU_MyAlpha: vm = (                     userAlphaItems[x + 6*y].item < 0) ? vmReverse : vmNormal; break;
                   case MNU_DYNAMIC: vm = (userMenus[currentUserMenu].menuItem[x + 6*y].item < 0) ? vmReverse : vmNormal; break;
@@ -1316,10 +1356,12 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       case -MNU_alpha_omega:
       case -MNU_ALPHAMATH:
       case -MNU_MyAlpha:
-      case -MNU_ALPHADOT:
+      case -MNU_ALPHADOT: {
         return true;
-      default:
+      }
+      default: {
         return false;
+      }
     }
   }
 #endif // !TESTSUITE_BUILD

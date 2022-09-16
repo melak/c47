@@ -44,6 +44,7 @@
     uint16_t opCode;
     uint16_t unused;
   } functionAlias_t;
+  
   TO_QSPI static const functionAlias_t functionAlias[] = {
     //name                                   opCode           padding
     { "ACOSH",                               ITM_arcosh,      0}, // Inverse hyperbolic cosine
@@ -608,29 +609,29 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
     //  bufPtr[5] = 0;
   }
 
-#define PARSER_HINT_NUMERIC  0
-#define PARSER_HINT_OPERATOR 1
-#define PARSER_HINT_FUNCTION 2
-#define PARSER_HINT_VARIABLE 3
-#define PARSER_HINT_REGULAR  (stringGlyphLength(buffer) == numericCount ? PARSER_HINT_NUMERIC : PARSER_HINT_VARIABLE)
+  #define PARSER_HINT_NUMERIC  0
+  #define PARSER_HINT_OPERATOR 1
+  #define PARSER_HINT_FUNCTION 2
+  #define PARSER_HINT_VARIABLE 3
+  #define PARSER_HINT_REGULAR  (stringGlyphLength(buffer) == numericCount ? PARSER_HINT_NUMERIC : PARSER_HINT_VARIABLE)
 
-//#define PARSER_OPERATOR_STACK_SIZE   (getSystemFlag(FLAG_SSIZE8) ? 8 : 4)
-#define PARSER_OPERATOR_STACK_SIZE   10 /* (200 - 16) / 18 */
-#define PARSER_OPERATOR_STACK        ((uint16_t *)mvarBuffer)
-#define PARSER_NUMERIC_STACK_SIZE    PARSER_OPERATOR_STACK_SIZE
-#define PARSER_NUMERIC_STACK         ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t) * 2))
-#define PARSER_LEFT_VALUE_REAL       ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2))
-#define PARSER_LEFT_VALUE_IMAG       ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t)))
-#define PARSER_NUMERIC_STACK_POINTER ((uint8_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t) * (2 + 2 * PARSER_NUMERIC_STACK_SIZE)))
+  //#define PARSER_OPERATOR_STACK_SIZE   (getSystemFlag(FLAG_SSIZE8) ? 8 : 4)
+  #define PARSER_OPERATOR_STACK_SIZE   10 /* (200 - 16) / 18 */
+  #define PARSER_OPERATOR_STACK        ((uint16_t *)mvarBuffer)
+  #define PARSER_NUMERIC_STACK_SIZE    PARSER_OPERATOR_STACK_SIZE
+  #define PARSER_NUMERIC_STACK         ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t) * 2))
+  #define PARSER_LEFT_VALUE_REAL       ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2))
+  #define PARSER_LEFT_VALUE_IMAG       ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t)))
+  #define PARSER_NUMERIC_STACK_POINTER ((uint8_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t) * (2 + 2 * PARSER_NUMERIC_STACK_SIZE)))
 
-#define PARSER_OPERATOR_ITM_PARENTHESIS_LEFT   5000
-#define PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT  5001
-#define PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT  5002
-#define PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT 5003
-#define PARSER_OPERATOR_ITM_EQUAL              5004
-#define PARSER_OPERATOR_ITM_YX                 5005
-#define PARSER_OPERATOR_ITM_XFACT              5006
-#define PARSER_OPERATOR_ITM_END_OF_FORMULA     5007
+  #define PARSER_OPERATOR_ITM_PARENTHESIS_LEFT   5000
+  #define PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT  5001
+  #define PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT  5002
+  #define PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT 5003
+  #define PARSER_OPERATOR_ITM_EQUAL              5004
+  #define PARSER_OPERATOR_ITM_YX                 5005
+  #define PARSER_OPERATOR_ITM_XFACT              5006
+  #define PARSER_OPERATOR_ITM_END_OF_FORMULA     5007
 
   static uint32_t _operatorPriority(uint16_t func) {
     // priority of operator: smaller number represents higher priority
@@ -697,258 +698,258 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
     clearRegister(REGISTER_X);
     liftStack();
 
-  _popNumericStack(mvarBuffer, &re, &im);
-  if(real34IsZero(&im) || real34IsNaN(&im)) {
-    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
-  }
-  else {
-    reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
-    real34Copy(&im, REGISTER_IMAG34_DATA(REGISTER_X));
+    _popNumericStack(mvarBuffer, &re, &im);
+    if(real34IsZero(&im) || real34IsNaN(&im)) {
+      real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
+    }
+    else {
+      reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+      real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
+      real34Copy(&im, REGISTER_IMAG34_DATA(REGISTER_X));
+    }
+
+    _popNumericStack(mvarBuffer, &re, &im);
+    if(real34IsZero(&im) || real34IsNaN(&im)) {
+      real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_Y));
+    }
+    else {
+      reallocateRegister(REGISTER_Y, dtComplex34, COMPLEX34_SIZE, amNone);
+      real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_Y));
+      real34Copy(&im, REGISTER_IMAG34_DATA(REGISTER_Y));
+    }
+
+    runFunction(item);
+
+    if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+      _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
+    }
+    else {
+      fnToReal(NOPARAM);
+      _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
+    }
+    fnDrop(NOPARAM);
   }
 
-  _popNumericStack(mvarBuffer, &re, &im);
-  if(real34IsZero(&im) || real34IsNaN(&im)) {
-    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_Y));
-  }
-  else {
-    reallocateRegister(REGISTER_Y, dtComplex34, COMPLEX34_SIZE, amNone);
-    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_Y));
-    real34Copy(&im, REGISTER_IMAG34_DATA(REGISTER_Y));
+  static void _runMonadicFunction(char *mvarBuffer, uint16_t item) {
+    real34_t re, im;
+    liftStack();
+    clearRegister(REGISTER_X);
+
+    _popNumericStack(mvarBuffer, &re, &im);
+    if(real34IsZero(&im) || real34IsNaN(&im)) {
+      real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
+    }
+    else {
+      reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+      real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
+      real34Copy(&im, REGISTER_IMAG34_DATA(REGISTER_X));
+    }
+
+    runFunction(item);
+
+    if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+      _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
+    }
+    else {
+      fnToReal(NOPARAM);
+      _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
+    }
+    fnDrop(NOPARAM);
   }
 
-  runFunction(item);
-
-  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-    _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
-  }
-  else {
-    fnToReal(NOPARAM);
-    _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
-  }
-  fnDrop(NOPARAM);
-}
-
-static void _runMonadicFunction(char *mvarBuffer, uint16_t item) {
-  real34_t re, im;
-  liftStack();
-  clearRegister(REGISTER_X);
-
-  _popNumericStack(mvarBuffer, &re, &im);
-  if(real34IsZero(&im) || real34IsNaN(&im)) {
-    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
-  }
-  else {
-    reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
-    real34Copy(&im, REGISTER_IMAG34_DATA(REGISTER_X));
-  }
-
-  runFunction(item);
-
-  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-    _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
-  }
-  else {
-    fnToReal(NOPARAM);
-    _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
-  }
-  fnDrop(NOPARAM);
-}
-
-static void _runEqFunction(char *mvarBuffer, uint16_t item) {
-  switch(item) {
-    case PARSER_OPERATOR_ITM_YX: // dyadic functions
-    case ITM_COMB:
-    case ITM_PERM:
-    case ITM_YX:
-    case ITM_LOGXY:
-    case ITM_ADD:
-    case ITM_SUB:
-    case ITM_MULT:
-    case ITM_DIV:
-    case ITM_IDIV:
-    case ITM_MOD:
-    case ITM_MAX:
-    case ITM_MIN:
-    case ITM_RMD:
-    case ITM_HN:
-    case ITM_HNP:
-    case ITM_Lm:
-    case ITM_LmALPHA:
-    case ITM_Pn:
-    case ITM_Tn:
-    case ITM_Un:
-    case ITM_atan2:
-      _runDyadicFunction(mvarBuffer, item);
-      break;
-    default: // monadic functions
-      _runMonadicFunction(mvarBuffer, item);
-  }
-}
-
-static void _processOperator(uint16_t func, char *mvarBuffer) {
-  uint32_t opStackTop = 0xffffffffu;
-  for(uint32_t i = 0; i < PARSER_OPERATOR_STACK_SIZE; ++i) {
-    if((i == PARSER_OPERATOR_STACK_SIZE) || (PARSER_OPERATOR_STACK[i] == 0)) {
-      opStackTop = i;
-      break;
+  static void _runEqFunction(char *mvarBuffer, uint16_t item) {
+    switch(item) {
+      case PARSER_OPERATOR_ITM_YX: // dyadic functions
+      case ITM_COMB:
+      case ITM_PERM:
+      case ITM_YX:
+      case ITM_LOGXY:
+      case ITM_ADD:
+      case ITM_SUB:
+      case ITM_MULT:
+      case ITM_DIV:
+      case ITM_IDIV:
+      case ITM_MOD:
+      case ITM_MAX:
+      case ITM_MIN:
+      case ITM_RMD:
+      case ITM_HN:
+      case ITM_HNP:
+      case ITM_Lm:
+      case ITM_LmALPHA:
+      case ITM_Pn:
+      case ITM_Tn:
+      case ITM_Un:
+      case ITM_atan2:
+        _runDyadicFunction(mvarBuffer, item);
+        break;
+      default: // monadic functions
+        _runMonadicFunction(mvarBuffer, item);
     }
   }
-  if(opStackTop != 0xffffffffu) {
-    /* flush operator stack */
-    /* closing parenthesis, equal, or end of formula */
-    if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT || func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT || func == PARSER_OPERATOR_ITM_EQUAL || func == PARSER_OPERATOR_ITM_END_OF_FORMULA) {
-      for(int32_t i = (int32_t)opStackTop - 1; i >= 0; --i) {
-        switch(PARSER_OPERATOR_STACK[i]) {
-          case PARSER_OPERATOR_ITM_PARENTHESIS_LEFT:
-            if(func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT) {
+
+  static void _processOperator(uint16_t func, char *mvarBuffer) {
+    uint32_t opStackTop = 0xffffffffu;
+    for(uint32_t i = 0; i < PARSER_OPERATOR_STACK_SIZE; ++i) {
+      if((i == PARSER_OPERATOR_STACK_SIZE) || (PARSER_OPERATOR_STACK[i] == 0)) {
+        opStackTop = i;
+        break;
+      }
+    }
+    if(opStackTop != 0xffffffffu) {
+      /* flush operator stack */
+      /* closing parenthesis, equal, or end of formula */
+      if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT || func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT || func == PARSER_OPERATOR_ITM_EQUAL || func == PARSER_OPERATOR_ITM_END_OF_FORMULA) {
+        for(int32_t i = (int32_t)opStackTop - 1; i >= 0; --i) {
+          switch(PARSER_OPERATOR_STACK[i]) {
+            case PARSER_OPERATOR_ITM_PARENTHESIS_LEFT:
+              if(func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT) {
+                displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+                #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+                  moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "parenthesis not closed", NULL);
+                #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+              }
+              break;
+            case PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT:
+              _runEqFunction(mvarBuffer, ITM_ABS);
+              if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT) {
+                displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+                #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+                  moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "unpaired vertical bar within parentheses", NULL);
+                #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+              }
+              break;
+            case PARSER_OPERATOR_ITM_YX:
+              _runEqFunction(mvarBuffer, ITM_YX);
+              break;
+            case PARSER_OPERATOR_ITM_XFACT:
+              _runEqFunction(mvarBuffer, ITM_XFACT);
+              break;
+            default:
+              _runEqFunction(mvarBuffer, PARSER_OPERATOR_STACK[i]);
+          }
+          switch(PARSER_OPERATOR_STACK[i]) {
+            case ITM_ADD:
+            case ITM_SUB:
+            case ITM_MULT:
+            case ITM_DIV:
+            case PARSER_OPERATOR_ITM_YX:
+            case PARSER_OPERATOR_ITM_XFACT:
+              PARSER_OPERATOR_STACK[i] = 0;
+              break;
+            default:
+              PARSER_OPERATOR_STACK[i] = 0;
+              if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT || func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT) return;
               displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
               #if (EXTRA_INFO_ON_CALC_ERROR == 1)
                 moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "parenthesis not closed", NULL);
               #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-            }
-            break;
-          case PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT:
-            _runEqFunction(mvarBuffer, ITM_ABS);
-            if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT) {
-              displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "unpaired vertical bar within parentheses", NULL);
-              #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-            }
-            break;
-          case PARSER_OPERATOR_ITM_YX:
-            _runEqFunction(mvarBuffer, ITM_YX);
-            break;
-          case PARSER_OPERATOR_ITM_XFACT:
-            _runEqFunction(mvarBuffer, ITM_XFACT);
-            break;
-          default:
-            _runEqFunction(mvarBuffer, PARSER_OPERATOR_STACK[i]);
+              break;
+          }
         }
-        switch(PARSER_OPERATOR_STACK[i]) {
-          case ITM_ADD:
-          case ITM_SUB:
-          case ITM_MULT:
-          case ITM_DIV:
-          case PARSER_OPERATOR_ITM_YX:
-          case PARSER_OPERATOR_ITM_XFACT:
-            PARSER_OPERATOR_STACK[i] = 0;
-            break;
-          default:
-            PARSER_OPERATOR_STACK[i] = 0;
-            if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT || func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT) return;
+        switch(func) {
+          case PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT:
             displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
             #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-              moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "parenthesis not closed", NULL);
+              moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "no corresponding opening parenthesis", NULL);
             #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
             break;
-        }
-      }
-      switch(func) {
-        case PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT:
-          displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-            moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "no corresponding opening parenthesis", NULL);
-          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-          break;
-        case PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT:
-          displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-            moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "no corresponding opening vertical bar", NULL);
-          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-          break;
-        case PARSER_OPERATOR_ITM_EQUAL:
-          fnToReal(NOPARAM);
-          _popNumericStack(mvarBuffer, PARSER_LEFT_VALUE_REAL, PARSER_LEFT_VALUE_IMAG);
-          break;
-        default:
-          setSystemFlag(FLAG_ASLIFT);
-          liftStack();
-          if((real34IsZero(PARSER_LEFT_VALUE_IMAG) || real34IsNaN(PARSER_LEFT_VALUE_IMAG)) && (real34IsZero(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 1]) || real34IsNaN(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 1]))) {
-            reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-            real34Subtract(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 2], PARSER_LEFT_VALUE_REAL, REGISTER_REAL34_DATA(REGISTER_X));
-          }
-          else {
-            reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-            real34Subtract(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 2], PARSER_LEFT_VALUE_REAL, REGISTER_REAL34_DATA(REGISTER_X));
-            real34Subtract(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 1], PARSER_LEFT_VALUE_IMAG, REGISTER_IMAG34_DATA(REGISTER_X));
-          }
-          --(*PARSER_NUMERIC_STACK_POINTER);
-      }
-      return;
-    }
-
-    /* stack is empty */
-    if(opStackTop == 0) {
-      PARSER_OPERATOR_STACK[0] = func;
-      return;
-    }
-
-    /* other cases */
-    for(uint32_t i = opStackTop; i > 0; --i) {
-
-      /* factorial */
-      if(func == PARSER_OPERATOR_ITM_XFACT) {
-        _runEqFunction(mvarBuffer, ITM_XFACT);
-        return;
-      }
-
-      /* push an operator */
-      else if(
-        (_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) < 4) || /* parenthesis */
-        (_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) > (_operatorPriority(func) & (~1u)) || /* higher priority */
-        ((_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) == (_operatorPriority(func) & (~1u)) && (_operatorPriority(func) & 1) /* same priority and right-associative */ )
-      ) {
-        if(i < PARSER_OPERATOR_STACK_SIZE) {
-          PARSER_OPERATOR_STACK[i] = func;
-        }
-        else {
-          displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-            moreInfoOnError("In function parseEquation:", "operator stack overflow!", NULL, NULL);
-          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+          case PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT:
+            displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+              moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "no corresponding opening vertical bar", NULL);
+            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+            break;
+          case PARSER_OPERATOR_ITM_EQUAL:
+            fnToReal(NOPARAM);
+            _popNumericStack(mvarBuffer, PARSER_LEFT_VALUE_REAL, PARSER_LEFT_VALUE_IMAG);
+            break;
+          default:
+            setSystemFlag(FLAG_ASLIFT);
+            liftStack();
+            if((real34IsZero(PARSER_LEFT_VALUE_IMAG) || real34IsNaN(PARSER_LEFT_VALUE_IMAG)) && (real34IsZero(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 1]) || real34IsNaN(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 1]))) {
+              reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+              real34Subtract(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 2], PARSER_LEFT_VALUE_REAL, REGISTER_REAL34_DATA(REGISTER_X));
+            }
+            else {
+              reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+              real34Subtract(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 2], PARSER_LEFT_VALUE_REAL, REGISTER_REAL34_DATA(REGISTER_X));
+              real34Subtract(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 1], PARSER_LEFT_VALUE_IMAG, REGISTER_IMAG34_DATA(REGISTER_X));
+            }
+            --(*PARSER_NUMERIC_STACK_POINTER);
         }
         return;
       }
 
-      /* pop an operator */
-      else {
-        _runEqFunction(mvarBuffer, PARSER_OPERATOR_STACK[i - 1] == PARSER_OPERATOR_ITM_YX ? ITM_YX :
-                                   PARSER_OPERATOR_STACK[i - 1] == PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT ? ITM_ABS :
-                                   PARSER_OPERATOR_STACK[i - 1]);
-        if(i == 1) {
-          PARSER_OPERATOR_STACK[i - 1] = func;
+      /* stack is empty */
+      if(opStackTop == 0) {
+        PARSER_OPERATOR_STACK[0] = func;
+        return;
+      }
+
+      /* other cases */
+      for(uint32_t i = opStackTop; i > 0; --i) {
+
+        /* factorial */
+        if(func == PARSER_OPERATOR_ITM_XFACT) {
+          _runEqFunction(mvarBuffer, ITM_XFACT);
           return;
         }
-        else {
-          PARSER_OPERATOR_STACK[i - 1] = 0;
-        }
-      }
 
+        /* push an operator */
+        else if(
+          (_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) < 4) || /* parenthesis */
+          (_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) > (_operatorPriority(func) & (~1u)) || /* higher priority */
+          ((_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) == (_operatorPriority(func) & (~1u)) && (_operatorPriority(func) & 1) /* same priority and right-associative */ )
+        ) {
+          if(i < PARSER_OPERATOR_STACK_SIZE) {
+            PARSER_OPERATOR_STACK[i] = func;
+          }
+          else {
+            displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+              moreInfoOnError("In function parseEquation:", "operator stack overflow!", NULL, NULL);
+            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+          }
+          return;
+        }
+
+        /* pop an operator */
+        else {
+          _runEqFunction(mvarBuffer, PARSER_OPERATOR_STACK[i - 1] == PARSER_OPERATOR_ITM_YX ? ITM_YX :
+                                     PARSER_OPERATOR_STACK[i - 1] == PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT ? ITM_ABS :
+                                     PARSER_OPERATOR_STACK[i - 1]);
+          if(i == 1) {
+            PARSER_OPERATOR_STACK[i - 1] = func;
+            return;
+          }
+          else {
+            PARSER_OPERATOR_STACK[i - 1] = 0;
+          }
+        }
+
+      }
+    }
+    else {
+      displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        moreInfoOnError("In function parseEquation:", "operator stack overflow!", NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
-  else {
-    displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      moreInfoOnError("In function parseEquation:", "operator stack overflow!", NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-}
 
-static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, char *mvarBuffer) {
-  uint32_t tmpVal = 0;
-  if(parserHint != PARSER_HINT_NUMERIC && stringGlyphLength(strPtr) > 7) {
-    displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      moreInfoOnError("In function parseEquation:", strPtr, "token too long!", NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return;
-  }
-  if(strPtr[0] == 0) {
-    return;
-  }
+  static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, char *mvarBuffer) {
+    uint32_t tmpVal = 0;
+    if(parserHint != PARSER_HINT_NUMERIC && stringGlyphLength(strPtr) > 7) {
+      displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        moreInfoOnError("In function parseEquation:", strPtr, "token too long!", NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
+    if(strPtr[0] == 0) {
+      return;
+    }
 
     switch(parseMode) {
       case EQUATION_PARSER_MVAR:

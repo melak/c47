@@ -52,296 +52,295 @@
         return false;
       }
       else {
-      real34Matrix_t stats;
-      linkToRealMatrixRegister(regStats, &stats);
-      *rows = stats.header.matrixRows;
-      if(stats.header.matrixColumns != 2) {
-        return false;
+        real34Matrix_t stats;
+        linkToRealMatrixRegister(regStats, &stats);
+        *rows = stats.header.matrixRows;
+        if(stats.header.matrixColumns != 2) {
+          return false;
+        }
       }
     }
-  }
-  return true;
-}
-
-
-
-static void addMax(real_t *x, real_t *y) {
-  // xmax
-  if(realCompareGreaterThan(x, SIGMA_XMAX)) {
-    realCopy(x, SIGMA_XMAX);
+    return true;
   }
 
-  // ymax
-  if(realCompareGreaterThan(y, SIGMA_YMAX)) {
-    realCopy(y, SIGMA_YMAX);
+
+
+  static void addMax(real_t *x, real_t *y) {
+    // xmax
+    if(realCompareGreaterThan(x, SIGMA_XMAX)) {
+      realCopy(x, SIGMA_XMAX);
+    }
+
+    // ymax
+    if(realCompareGreaterThan(y, SIGMA_YMAX)) {
+      realCopy(y, SIGMA_YMAX);
+    }
   }
-}
 
 
-static void addMin(real_t *x, real_t *y) {
-  // xmin
-  if(realCompareLessThan(x, SIGMA_XMIN)) {
-    realCopy(x, SIGMA_XMIN);
+  static void addMin(real_t *x, real_t *y) {
+    // xmin
+    if(realCompareLessThan(x, SIGMA_XMIN)) {
+      realCopy(x, SIGMA_XMIN);
+    }
+
+    // ymin
+    if(realCompareLessThan(y, SIGMA_YMIN)) {
+      realCopy(y, SIGMA_YMIN);
+    }
   }
 
-  // ymin
-  if(realCompareLessThan(y, SIGMA_YMIN)) {
-    realCopy(y, SIGMA_YMIN);
+
+  static void addSigma(real_t *x, real_t *y) {
+    real_t tmpReal1, tmpReal2, tmpReal3;
+    realContext_t *realContext = &ctxtReal75; // Summation data with 75 digits
+
+    addMax(x, y);
+    addMin(x, y);
+
+    // n
+    realAdd(SIGMA_N, const_1, SIGMA_N, realContext);
+
+    // sigma x
+    realAdd(SIGMA_X, x, SIGMA_X, realContext);
+
+    // sigma y
+    realAdd(SIGMA_Y, y, SIGMA_Y, realContext);
+
+    // sigma x²
+    realMultiply(x, x, &tmpReal1, realContext);
+    realAdd(SIGMA_X2, &tmpReal1, SIGMA_X2, realContext);
+
+    // sigma x³
+    realMultiply(&tmpReal1, x, &tmpReal2, realContext);
+    realAdd(SIGMA_X3, &tmpReal2, SIGMA_X3, realContext);
+
+    // sigma x⁴
+    realMultiply(&tmpReal2, x, &tmpReal2, realContext);
+    realAdd(SIGMA_X4, &tmpReal2, SIGMA_X4, realContext);
+
+    // sigma x²y
+    realMultiply(&tmpReal1, y, &tmpReal2, realContext);
+    realAdd(SIGMA_X2Y, &tmpReal2, SIGMA_X2Y, realContext);
+
+    // sigma x²/y
+    realDivide(&tmpReal1, y, &tmpReal2, realContext);
+    realAdd(SIGMA_X2onY, &tmpReal2, SIGMA_X2onY, realContext);
+
+    // sigma 1/x²
+    realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
+    realAdd(SIGMA_1onX2, &tmpReal2, SIGMA_1onX2, realContext);
+
+    // sigma y²
+    realMultiply(y, y, &tmpReal1, realContext);
+    realAdd(SIGMA_Y2, &tmpReal1, SIGMA_Y2, realContext);
+
+    // sigma 1/y²
+    realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
+    realAdd(SIGMA_1onY2, &tmpReal2, SIGMA_1onY2, realContext);
+
+    // sigma xy
+    realMultiply(x, y, &tmpReal1, realContext);
+    realAdd(SIGMA_XY, &tmpReal1, SIGMA_XY, realContext);
+
+    // sigma ln(x)
+    WP34S_Ln(x, &tmpReal1, realContext);
+    realCopy(&tmpReal1 ,&tmpReal3);
+    realAdd(SIGMA_lnX, &tmpReal1, SIGMA_lnX, realContext);
+
+    // sigma ln²(x)
+    realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
+    realAdd(SIGMA_ln2X, &tmpReal2, SIGMA_ln2X, realContext);
+
+    // sigma yln(x)
+    realMultiply(&tmpReal1, y, &tmpReal1, realContext);
+    realAdd(SIGMA_YlnX, &tmpReal1, SIGMA_YlnX, realContext);
+
+    // sigma ln(y)
+    WP34S_Ln(y, &tmpReal1, realContext);
+    realAdd(SIGMA_lnY, &tmpReal1, SIGMA_lnY, realContext);
+
+    // sigma ln(x)×ln(y)
+    realMultiply(&tmpReal3, &tmpReal1, &tmpReal3, realContext);
+    realAdd(SIGMA_lnXlnY, &tmpReal3, SIGMA_lnXlnY, realContext);
+
+    // sigma ln(y)/x
+    realDivide(&tmpReal1, x, &tmpReal2, realContext);
+    realAdd(SIGMA_lnYonX, &tmpReal2, SIGMA_lnYonX, realContext);
+
+    // sigma ln²(y)
+    realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
+    realAdd(SIGMA_ln2Y, &tmpReal2, SIGMA_ln2Y, realContext);
+
+    // sigma xln(y)
+    realMultiply(&tmpReal1, x, &tmpReal1, realContext);
+    realAdd(SIGMA_XlnY, &tmpReal1, SIGMA_XlnY, realContext);
+
+    // sigma x²ln(y)
+    realMultiply(&tmpReal1, x, &tmpReal1, realContext);
+    realAdd(SIGMA_X2lnY, &tmpReal1, SIGMA_X2lnY, realContext);
+
+    // sigma 1/x
+    realDivide(const_1, x, &tmpReal1, realContext);
+    realAdd(SIGMA_1onX, &tmpReal1, SIGMA_1onX, realContext);
+
+    // sigma x/y
+    realDivide(x, y, &tmpReal1, realContext);
+    realAdd(SIGMA_XonY, &tmpReal1, SIGMA_XonY, realContext);
+
+    // sigma 1/y
+    realDivide(const_1, y, &tmpReal1, realContext);
+    realAdd(SIGMA_1onY, &tmpReal1, SIGMA_1onY, realContext);
   }
-}
 
 
-static void addSigma(real_t *x, real_t *y) {
-  real_t tmpReal1, tmpReal2, tmpReal3;
-  realContext_t *realContext = &ctxtReal75; // Summation data with 75 digits
-
-  addMax(x, y);
-  addMin(x, y);
-
-  // n
-  realAdd(SIGMA_N, const_1, SIGMA_N, realContext);
-
-  // sigma x
-  realAdd(SIGMA_X, x, SIGMA_X, realContext);
-
-  // sigma y
-  realAdd(SIGMA_Y, y, SIGMA_Y, realContext);
-
-  // sigma x²
-  realMultiply(x, x, &tmpReal1, realContext);
-  realAdd(SIGMA_X2, &tmpReal1, SIGMA_X2, realContext);
-
-  // sigma x³
-  realMultiply(&tmpReal1, x, &tmpReal2, realContext);
-  realAdd(SIGMA_X3, &tmpReal2, SIGMA_X3, realContext);
-
-  // sigma x⁴
-  realMultiply(&tmpReal2, x, &tmpReal2, realContext);
-  realAdd(SIGMA_X4, &tmpReal2, SIGMA_X4, realContext);
-
-  // sigma x²y
-  realMultiply(&tmpReal1, y, &tmpReal2, realContext);
-  realAdd(SIGMA_X2Y, &tmpReal2, SIGMA_X2Y, realContext);
-
-  // sigma x²/y
-  realDivide(&tmpReal1, y, &tmpReal2, realContext);
-  realAdd(SIGMA_X2onY, &tmpReal2, SIGMA_X2onY, realContext);
-
-  // sigma 1/x²
-  realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
-  realAdd(SIGMA_1onX2, &tmpReal2, SIGMA_1onX2, realContext);
-
-  // sigma y²
-  realMultiply(y, y, &tmpReal1, realContext);
-  realAdd(SIGMA_Y2, &tmpReal1, SIGMA_Y2, realContext);
-
-  // sigma 1/y²
-  realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
-  realAdd(SIGMA_1onY2, &tmpReal2, SIGMA_1onY2, realContext);
-
-  // sigma xy
-  realMultiply(x, y, &tmpReal1, realContext);
-  realAdd(SIGMA_XY, &tmpReal1, SIGMA_XY, realContext);
-
-  // sigma ln(x)
-  WP34S_Ln(x, &tmpReal1, realContext);
-  realCopy(&tmpReal1 ,&tmpReal3);
-  realAdd(SIGMA_lnX, &tmpReal1, SIGMA_lnX, realContext);
-
-  // sigma ln²(x)
-  realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
-  realAdd(SIGMA_ln2X, &tmpReal2, SIGMA_ln2X, realContext);
-
-  // sigma yln(x)
-  realMultiply(&tmpReal1, y, &tmpReal1, realContext);
-  realAdd(SIGMA_YlnX, &tmpReal1, SIGMA_YlnX, realContext);
-
-  // sigma ln(y)
-  WP34S_Ln(y, &tmpReal1, realContext);
-  realAdd(SIGMA_lnY, &tmpReal1, SIGMA_lnY, realContext);
-
-  // sigma ln(x)×ln(y)
-  realMultiply(&tmpReal3, &tmpReal1, &tmpReal3, realContext);
-  realAdd(SIGMA_lnXlnY, &tmpReal3, SIGMA_lnXlnY, realContext);
-
-  // sigma ln(y)/x
-  realDivide(&tmpReal1, x, &tmpReal2, realContext);
-  realAdd(SIGMA_lnYonX, &tmpReal2, SIGMA_lnYonX, realContext);
-
-  // sigma ln²(y)
-  realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
-  realAdd(SIGMA_ln2Y, &tmpReal2, SIGMA_ln2Y, realContext);
-
-  // sigma xln(y)
-  realMultiply(&tmpReal1, x, &tmpReal1, realContext);
-  realAdd(SIGMA_XlnY, &tmpReal1, SIGMA_XlnY, realContext);
-
-  // sigma x²ln(y)
-  realMultiply(&tmpReal1, x, &tmpReal1, realContext);
-  realAdd(SIGMA_X2lnY, &tmpReal1, SIGMA_X2lnY, realContext);
-
-  // sigma 1/x
-  realDivide(const_1, x, &tmpReal1, realContext);
-  realAdd(SIGMA_1onX, &tmpReal1, SIGMA_1onX, realContext);
-
-  // sigma x/y
-  realDivide(x, y, &tmpReal1, realContext);
-  realAdd(SIGMA_XonY, &tmpReal1, SIGMA_XonY, realContext);
-
-  // sigma 1/y
-  realDivide(const_1, y, &tmpReal1, realContext);
-  realAdd(SIGMA_1onY, &tmpReal1, SIGMA_1onY, realContext);
-
-}
-
-
-static bool_t ignoreMaxIfValid(real_t *r1, real_t *r2){
-  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || realCompareEqual(r1, r2)) {
-    calcMax(1);
-    return false;
+  static bool_t ignoreMaxIfValid(real_t *r1, real_t *r2){
+    if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || realCompareEqual(r1, r2)) {
+      calcMax(1);
+      return false;
+    }
+    return true;
   }
-  return true;
-}
 
-static bool_t ignoreMinIfValid(real_t *r1, real_t *r2){
-  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || realCompareEqual(r1, r2)) {
-    calcMin(1);
-    return false;
+  static bool_t ignoreMinIfValid(real_t *r1, real_t *r2){
+    if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2) || realCompareEqual(r1, r2)) {
+      calcMin(1);
+      return false;
+    }
+    return true;
   }
-  return true;
-}
 
 
-static bool_t realSubtractIfValid(real_t *r1, real_t *r2, real_t *r3, realContext_t *ct){
-  if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2)) {
-    calcSigma(1);
-    return false;
+  static bool_t realSubtractIfValid(real_t *r1, real_t *r2, real_t *r3, realContext_t *ct){
+    if(realIsNaN (r1) || realIsNaN (r2) || realIsInfinite (r1) || realIsInfinite (r2)) {
+      calcSigma(1);
+      return false;
+    }
+    realSubtract(r1, r2, r3, ct);
+    return true;
   }
-  realSubtract(r1, r2, r3, ct);
-  return true;
-}
 
 
-static void subSigma(real_t *x, real_t *y) {
-  real_t tmpReal1, tmpReal2, tmpReal3;
-  realContext_t *realContext = &ctxtReal75; // Summation data with 75 digits
- // SIGMA-
+  static void subSigma(real_t *x, real_t *y) {
+    real_t tmpReal1, tmpReal2, tmpReal3;
+    realContext_t *realContext = &ctxtReal75; // Summation data with 75 digits
+   // SIGMA-
 
-  // xmax
-  if(!ignoreMaxIfValid(x, SIGMA_XMAX)) goto endMax;
+    // xmax
+    if(!ignoreMaxIfValid(x, SIGMA_XMAX)) goto endMax;
 
-  // ymax
-  if(!ignoreMaxIfValid(y, SIGMA_YMAX)) goto endMax;
+    // ymax
+    if(!ignoreMaxIfValid(y, SIGMA_YMAX)) goto endMax;
 
-  endMax:
+    endMax:
 
-  // xmin
-  if(!ignoreMinIfValid(x, SIGMA_XMIN)) goto endMin;
+    // xmin
+    if(!ignoreMinIfValid(x, SIGMA_XMIN)) goto endMin;
 
-  // ymin
-  if(!ignoreMinIfValid(y, SIGMA_YMIN)) goto endMin;
+    // ymin
+    if(!ignoreMinIfValid(y, SIGMA_YMIN)) goto endMin;
 
-  endMin:
+    endMin:
 
-  // n
-  realCopy(const_1,&tmpReal1);
-  if(!realSubtractIfValid(SIGMA_N, &tmpReal1, SIGMA_N, realContext)) goto toReturn;
+    // n
+    realCopy(const_1,&tmpReal1);
+    if(!realSubtractIfValid(SIGMA_N, &tmpReal1, SIGMA_N, realContext)) goto toReturn;
 
-  // sigma x
-  if(!realSubtractIfValid(SIGMA_X, x, SIGMA_X, realContext)) goto toReturn;
+    // sigma x
+    if(!realSubtractIfValid(SIGMA_X, x, SIGMA_X, realContext)) goto toReturn;
 
-  // sigma y
-  if(!realSubtractIfValid(SIGMA_Y, y, SIGMA_Y, realContext)) goto toReturn;
+    // sigma y
+    if(!realSubtractIfValid(SIGMA_Y, y, SIGMA_Y, realContext)) goto toReturn;
 
-  // sigma x²
-  realMultiply(x, x, &tmpReal1, realContext);
-  if(!realSubtractIfValid(SIGMA_X2, &tmpReal1, SIGMA_X2, realContext)) goto toReturn;
+    // sigma x²
+    realMultiply(x, x, &tmpReal1, realContext);
+    if(!realSubtractIfValid(SIGMA_X2, &tmpReal1, SIGMA_X2, realContext)) goto toReturn;
 
-  // sigma x³
-  realMultiply(&tmpReal1, x, &tmpReal2, realContext);
-  if(!realSubtractIfValid(SIGMA_X3, &tmpReal2, SIGMA_X3, realContext)) goto toReturn;
+    // sigma x³
+    realMultiply(&tmpReal1, x, &tmpReal2, realContext);
+    if(!realSubtractIfValid(SIGMA_X3, &tmpReal2, SIGMA_X3, realContext)) goto toReturn;
 
-  // sigma x⁴
-  realMultiply(&tmpReal2, x, &tmpReal2, realContext);
-  if(!realSubtractIfValid(SIGMA_X4, &tmpReal2, SIGMA_X4, realContext)) goto toReturn;
+    // sigma x⁴
+    realMultiply(&tmpReal2, x, &tmpReal2, realContext);
+    if(!realSubtractIfValid(SIGMA_X4, &tmpReal2, SIGMA_X4, realContext)) goto toReturn;
 
-  // sigma x²y
-  realMultiply(&tmpReal1, y, &tmpReal2, realContext);
-  if(!realSubtractIfValid(SIGMA_X2Y, &tmpReal2, SIGMA_X2Y, realContext)) goto toReturn;
+    // sigma x²y
+    realMultiply(&tmpReal1, y, &tmpReal2, realContext);
+    if(!realSubtractIfValid(SIGMA_X2Y, &tmpReal2, SIGMA_X2Y, realContext)) goto toReturn;
 
-  // sigma x²/y
-  realDivide(&tmpReal1, y, &tmpReal2, realContext);
-  if(!realSubtractIfValid(SIGMA_X2onY, &tmpReal2, SIGMA_X2onY, realContext)) goto toReturn;
+    // sigma x²/y
+    realDivide(&tmpReal1, y, &tmpReal2, realContext);
+    if(!realSubtractIfValid(SIGMA_X2onY, &tmpReal2, SIGMA_X2onY, realContext)) goto toReturn;
 
-  // sigma 1/x²
-  realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
-  if(!realSubtractIfValid(SIGMA_1onX2, &tmpReal2, SIGMA_1onX2, realContext)) goto toReturn;
+    // sigma 1/x²
+    realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
+    if(!realSubtractIfValid(SIGMA_1onX2, &tmpReal2, SIGMA_1onX2, realContext)) goto toReturn;
 
-  // sigma y²
-  realMultiply(y, y, &tmpReal1, realContext);
-  if(!realSubtractIfValid(SIGMA_Y2, &tmpReal1, SIGMA_Y2, realContext)) goto toReturn;
+    // sigma y²
+    realMultiply(y, y, &tmpReal1, realContext);
+    if(!realSubtractIfValid(SIGMA_Y2, &tmpReal1, SIGMA_Y2, realContext)) goto toReturn;
 
-  // sigma 1/y²
-  realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
-  if(!realSubtractIfValid(SIGMA_1onY2, &tmpReal2, SIGMA_1onY2, realContext)) goto toReturn;
+    // sigma 1/y²
+    realDivide(const_1, &tmpReal1, &tmpReal2, realContext);
+    if(!realSubtractIfValid(SIGMA_1onY2, &tmpReal2, SIGMA_1onY2, realContext)) goto toReturn;
 
-  // sigma xy
-  realMultiply(x, y, &tmpReal1, realContext);
-  if(!realSubtractIfValid(SIGMA_XY, &tmpReal1, SIGMA_XY, realContext)) goto toReturn;
+    // sigma xy
+    realMultiply(x, y, &tmpReal1, realContext);
+    if(!realSubtractIfValid(SIGMA_XY, &tmpReal1, SIGMA_XY, realContext)) goto toReturn;
 
-  // sigma ln(x)
-  WP34S_Ln(x, &tmpReal1, realContext);
-  realCopy(&tmpReal1 ,&tmpReal3);
-  if(!realSubtractIfValid(SIGMA_lnX, &tmpReal1, SIGMA_lnX, realContext)) goto toReturn;
+    // sigma ln(x)
+    WP34S_Ln(x, &tmpReal1, realContext);
+    realCopy(&tmpReal1 ,&tmpReal3);
+    if(!realSubtractIfValid(SIGMA_lnX, &tmpReal1, SIGMA_lnX, realContext)) goto toReturn;
 
-  // sigma ln²(x)
-  realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
-  if(!realSubtractIfValid(SIGMA_ln2X, &tmpReal2, SIGMA_ln2X, realContext)) goto toReturn;
+    // sigma ln²(x)
+    realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
+    if(!realSubtractIfValid(SIGMA_ln2X, &tmpReal2, SIGMA_ln2X, realContext)) goto toReturn;
 
-  // sigma yln(x)
-  realMultiply(&tmpReal1, y, &tmpReal1, realContext);
-  if(!realSubtractIfValid(SIGMA_YlnX, &tmpReal1, SIGMA_YlnX, realContext)) goto toReturn;
+    // sigma yln(x)
+    realMultiply(&tmpReal1, y, &tmpReal1, realContext);
+    if(!realSubtractIfValid(SIGMA_YlnX, &tmpReal1, SIGMA_YlnX, realContext)) goto toReturn;
 
-  // sigma ln(y)
-  WP34S_Ln(y, &tmpReal1, realContext);
-  if(!realSubtractIfValid(SIGMA_lnY, &tmpReal1, SIGMA_lnY, realContext)) goto toReturn;
+    // sigma ln(y)
+    WP34S_Ln(y, &tmpReal1, realContext);
+    if(!realSubtractIfValid(SIGMA_lnY, &tmpReal1, SIGMA_lnY, realContext)) goto toReturn;
 
-  // sigma ln(x)×ln(y)
-  realMultiply(&tmpReal3, &tmpReal1, &tmpReal3, realContext);
-  if(!realSubtractIfValid(SIGMA_lnXlnY, &tmpReal3, SIGMA_lnXlnY, realContext)) goto toReturn;
+    // sigma ln(x)×ln(y)
+    realMultiply(&tmpReal3, &tmpReal1, &tmpReal3, realContext);
+    if(!realSubtractIfValid(SIGMA_lnXlnY, &tmpReal3, SIGMA_lnXlnY, realContext)) goto toReturn;
 
-  // sigma ln(y)/x
-  realDivide(&tmpReal1, x, &tmpReal2, realContext);
-  if(!realSubtractIfValid(SIGMA_lnYonX, &tmpReal2, SIGMA_lnYonX, realContext)) goto toReturn;
+    // sigma ln(y)/x
+    realDivide(&tmpReal1, x, &tmpReal2, realContext);
+    if(!realSubtractIfValid(SIGMA_lnYonX, &tmpReal2, SIGMA_lnYonX, realContext)) goto toReturn;
 
-  // sigma ln²(y)
-  realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
-  if(!realSubtractIfValid(SIGMA_ln2Y, &tmpReal2, SIGMA_ln2Y, realContext)) goto toReturn;
+    // sigma ln²(y)
+    realMultiply(&tmpReal1, &tmpReal1, &tmpReal2, realContext);
+    if(!realSubtractIfValid(SIGMA_ln2Y, &tmpReal2, SIGMA_ln2Y, realContext)) goto toReturn;
 
-  // sigma xln(y)
-  realMultiply(&tmpReal1, x, &tmpReal1, realContext);
-  if(!realSubtractIfValid(SIGMA_XlnY, &tmpReal1, SIGMA_XlnY, realContext)) goto toReturn;
+    // sigma xln(y)
+    realMultiply(&tmpReal1, x, &tmpReal1, realContext);
+    if(!realSubtractIfValid(SIGMA_XlnY, &tmpReal1, SIGMA_XlnY, realContext)) goto toReturn;
 
-  // sigma x²ln(y)
-  realMultiply(&tmpReal1, x, &tmpReal1, realContext);
-  if(!realSubtractIfValid(SIGMA_X2lnY, &tmpReal1, SIGMA_X2lnY, realContext)) goto toReturn;
+    // sigma x²ln(y)
+    realMultiply(&tmpReal1, x, &tmpReal1, realContext);
+    if(!realSubtractIfValid(SIGMA_X2lnY, &tmpReal1, SIGMA_X2lnY, realContext)) goto toReturn;
 
-  // sigma 1/x
-  realDivide(const_1, x, &tmpReal1, realContext);
-  if(!realSubtractIfValid(SIGMA_1onX, &tmpReal1, SIGMA_1onX, realContext)) goto toReturn;
+    // sigma 1/x
+    realDivide(const_1, x, &tmpReal1, realContext);
+    if(!realSubtractIfValid(SIGMA_1onX, &tmpReal1, SIGMA_1onX, realContext)) goto toReturn;
 
-  // sigma x/y
-  realDivide(x, y, &tmpReal1, realContext);
-  if(!realSubtractIfValid(SIGMA_XonY, &tmpReal1, SIGMA_XonY, realContext)) goto toReturn;
+    // sigma x/y
+    realDivide(x, y, &tmpReal1, realContext);
+    if(!realSubtractIfValid(SIGMA_XonY, &tmpReal1, SIGMA_XonY, realContext)) goto toReturn;
 
-  // sigma 1/y
-  realDivide(const_1, y, &tmpReal1, realContext);
-  if(!realSubtractIfValid(SIGMA_1onY, &tmpReal1, SIGMA_1onY, realContext)) goto toReturn;
+    // sigma 1/y
+    realDivide(const_1, y, &tmpReal1, realContext);
+    if(!realSubtractIfValid(SIGMA_1onY, &tmpReal1, SIGMA_1onY, realContext)) goto toReturn;
 
-  toReturn:
+    toReturn:
 
-  return;
-}
+    return;
+  }
 #endif // !TESTSUITE_|BUILD
 
 
@@ -362,7 +361,6 @@ bool_t checkMinimumDataPoints(const real_t *n) {
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return false;
   }
-
   return true;
 }
 
@@ -929,32 +927,32 @@ void fnSetNBins(uint16_t unusedButMandatoryParameter) {
 
 void fnConvertStatsToHisto(uint16_t statsVariableToHistogram) {
   #if !defined(TESTSUITE_BUILD)
-  real_t ii, lb, hb, nb, nn, bw, bwon2;
+    real_t ii, lb, hb, nb, nn, bw, bwon2;
 
-  if (!checkMinimumDataPoints(const_3)) return;
-
-
-  if(statsVariableToHistogram == ITM_Y) {
-    realCopy(SIGMA_YMIN, &lb);
-    realCopy(SIGMA_YMAX, &hb);
-  } else if(statsVariableToHistogram == ITM_X) {
-    realCopy(SIGMA_XMIN, &lb);
-    realCopy(SIGMA_XMAX, &hb);
-  } else return;
+    if (!checkMinimumDataPoints(const_3)) return;
 
 
-  realCopy(SIGMA_N, &nn);
-  realSquareRoot(&nn,&nb,&ctxtReal39);
-  realToIntegralValue(&nb, &nb, DEC_ROUND_CEILING, &ctxtReal39);
+    if(statsVariableToHistogram == ITM_Y) {
+      realCopy(SIGMA_YMIN, &lb);
+      realCopy(SIGMA_YMAX, &hb);
+    } else if(statsVariableToHistogram == ITM_X) {
+      realCopy(SIGMA_XMIN, &lb);
+      realCopy(SIGMA_XMAX, &hb);
+    } else return;
 
-  realToReal34(&lb, &loBinR);             //set up the user variables
-  realToReal34(&hb, &hiBinR);             //set up the user variables
-  realToReal34(&nb, &nBins);              //set up the user variables
 
-  int32_t n = real34ToInt32(&nBins);
-  realSubtract(&hb, &lb, &bw, &ctxtReal39); //calculate bin width
-  realDivide(&bw, &nb, &bw, &ctxtReal39);
-  realDivide(&bw, const_2, &bwon2, &ctxtReal39);
+    realCopy(SIGMA_N, &nn);
+    realSquareRoot(&nn,&nb,&ctxtReal39);
+    realToIntegralValue(&nb, &nb, DEC_ROUND_CEILING, &ctxtReal39);
+
+    realToReal34(&lb, &loBinR);             //set up the user variables
+    realToReal34(&hb, &hiBinR);             //set up the user variables
+    realToReal34(&nb, &nBins);              //set up the user variables
+
+    int32_t n = real34ToInt32(&nBins);
+    realSubtract(&hb, &lb, &bw, &ctxtReal39); //calculate bin width
+    realDivide(&bw, &nb, &bw, &ctxtReal39);
+    realDivide(&bw, const_2, &bwon2, &ctxtReal39);
 
     calcRegister_t regStats = findNamedVariable("STATS");
     calcRegister_t regHisto =   clHisto();
@@ -1014,7 +1012,8 @@ void fnConvertStatsToHisto(uint16_t statsVariableToHistogram) {
             }
           }
         }
-      } else {
+      }
+      else {
         #ifdef PC_BUILD
           #ifdef VERBOSE_SOLVER00
           printf("ERROR in execute_rpn_function; STATS Matrix columns not right: %u\n",lastErrorCode);
@@ -1023,14 +1022,15 @@ void fnConvertStatsToHisto(uint16_t statsVariableToHistogram) {
           return;
         #endif //PC_BUILD
       }
-    }  else {
-       #ifdef PC_BUILD
-         #ifdef VERBOSE_SOLVER00
-         printf("ERROR in execute_rpn_function; invalid variable: %u\n",lastErrorCode);
-         #endif //VERBOSE_SOLVER1
-         lastErrorCode = 0;
-         return;
-       #endif //PC_BUILD
+    }
+    else {
+      #ifdef PC_BUILD
+        #ifdef VERBOSE_SOLVER00
+        printf("ERROR in execute_rpn_function; invalid variable: %u\n",lastErrorCode);
+        #endif //VERBOSE_SOLVER1
+        lastErrorCode = 0;
+        return;
+      #endif //PC_BUILD
     }
     liftStack();
     liftStack();
@@ -1044,4 +1044,3 @@ void fnConvertStatsToHisto(uint16_t statsVariableToHistogram) {
     temporaryInformation = TI_STATISTIC_HISTO;
   #endif //TESTSUITE_BUILD
 }
-
