@@ -269,6 +269,7 @@ void fnProcessLR (uint16_t unusedButMandatoryParameter){
 void calc_BCD(real_t *BB, real_t *CC, real_t *DD){                        //Aux terms, calc_BCD must be run before calc_AEFG
 realContext = &ctxtReal75;
 real_t SS,TT;
+
   //        B = nn * sumx2y - sumx2 * sumy;
   realMultiply(SIGMA_N, SIGMA_X2Y, &SS, realContext);
   realMultiply(SIGMA_X2, SIGMA_Y, &TT, realContext);
@@ -290,6 +291,7 @@ real_t SS,TT;
 void calc_AEFG(real_t *AA, real_t *BB, real_t *CC, real_t *DD, real_t *EE, real_t *FF, real_t *GG){                        //Aux terms, calc_AEFG must be run after calc_BCD
 realContext = &ctxtReal75;
 real_t SS,TT,UU;
+
   //        A = nn * sumx2 - sumx * sumx;
   realMultiply(SIGMA_N, SIGMA_X2, &SS, realContext);
   realMultiply(SIGMA_X, SIGMA_X, &TT, realContext);

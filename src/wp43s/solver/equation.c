@@ -728,6 +728,7 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
   }
   fnDrop(NOPARAM);
 }
+
 static void _runMonadicFunction(char *mvarBuffer, uint16_t item) {
   real34_t re, im;
   liftStack();
@@ -754,6 +755,7 @@ static void _runMonadicFunction(char *mvarBuffer, uint16_t item) {
   }
   fnDrop(NOPARAM);
 }
+
 static void _runEqFunction(char *mvarBuffer, uint16_t item) {
   switch(item) {
     case PARSER_OPERATOR_ITM_YX: // dyadic functions
@@ -784,6 +786,7 @@ static void _runEqFunction(char *mvarBuffer, uint16_t item) {
       _runMonadicFunction(mvarBuffer, item);
   }
 }
+
 static void _processOperator(uint16_t func, char *mvarBuffer) {
   uint32_t opStackTop = 0xffffffffu;
   for(uint32_t i = 0; i < PARSER_OPERATOR_STACK_SIZE; ++i) {
@@ -933,6 +936,7 @@ static void _processOperator(uint16_t func, char *mvarBuffer) {
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
+
 static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, char *mvarBuffer) {
   uint32_t tmpVal = 0;
   if(parserHint != PARSER_HINT_NUMERIC && stringGlyphLength(strPtr) > 7) {

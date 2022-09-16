@@ -321,4 +321,4 @@
     int                         convertKeyCode(int key);
   #endif // DMCP_BUILD
 
-#endif // WP43S_H
+#endif // !WP43S_H

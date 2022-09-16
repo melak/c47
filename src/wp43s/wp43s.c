@@ -16,6 +16,7 @@
 
 #include "wp43s.h"
 
+#include "charString.h"
 #include "config.h"
 #include "flags.h"
 #include "items.h"

@@ -1322,7 +1322,7 @@ bool_t real34AreEqual(real34_t *a, real34_t *b) {
 
   if( real34IsInfinite(a) && !real34IsInfinite(b)) return false;
   if(!real34IsInfinite(a) &&  real34IsInfinite(b)) return false;
-  if(real34IsInfinite(a) && real34IsInfinite(b)) {
+  if( real34IsInfinite(a) &&  real34IsInfinite(b)) {
     if(real34IsPositive(a) && real34IsPositive(b)) return true;
     if(real34IsNegative(a) && real34IsNegative(b)) return true;
     return false;

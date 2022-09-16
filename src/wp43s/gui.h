@@ -20,8 +20,8 @@
 #if !defined(GUI_H)
   #define GUI_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
   #if !defined(TESTSUITE_BUILD)
     void fnOff                       (uint16_t unsuedParamButMandatory);

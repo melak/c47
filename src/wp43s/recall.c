@@ -54,7 +54,7 @@ static bool_t recallElementComplex(complex34Matrix_t *matrix) {
   complex34Copy(&matrix->matrixElements[i * matrix->header.matrixColumns + j], REGISTER_COMPLEX34_DATA(REGISTER_X));
   return false;
 }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 
 
 
@@ -382,5 +382,5 @@ void fnRecallIJ(uint16_t unusedButMandatoryParameter) {
 
     longIntegerFree(zero);
   }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }

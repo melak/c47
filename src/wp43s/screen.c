@@ -61,7 +61,7 @@
   TO_QSPI static const char *nameOfWday_it[8] = {"giorno della settimana non valido",                     "luned" STD_i_GRAVE, "marted" STD_i_GRAVE,          "mercoled" STD_i_GRAVE,    "gioved" STD_i_GRAVE, "venerd" STD_i_GRAVE, "sabato",               "domenica"};
   TO_QSPI static const char *nameOfWday_pt[8] = {"dia inv" STD_a_ACUTE "lido da semana",                  "segunda-feira",     "ter" STD_c_CEDILLA "a-feira", "quarta-feira",            "quinta-feira",       "sexta-feira",        "s" STD_a_ACUTE "bado", "domingo"};
   */
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 
 
 #if defined(PC_BUILD)
@@ -552,8 +552,6 @@
         reset_auto_off();
       }
       fnPollTimerApp();
-
-
     }
 
     if(usb_powered() == 1) {
@@ -863,6 +861,7 @@ void execTimerApp(uint16_t timerType) {
   void showFunctionName(int16_t item, int16_t delayInMs) {
     uint32_t fcol, frow, gcol, grow;
     char *functionName;
+
     if(tmpString[0] != 0) {
       functionName = tmpString;
     }
@@ -891,6 +890,7 @@ void execTimerApp(uint16_t timerType) {
 
   void hideFunctionName(void) {
     uint32_t col, row;
+
     getStringBounds(tmpString[0] != 0 ? tmpString : indexOfItems[abs(showFunctionNameItem)].itemCatalogName, &standardFont, &col, &row);
     lcd_fill_rect(1, Y_POSITION_OF_REGISTER_T_LINE+6, col, row, LCD_SET_VALUE);
     showFunctionNameItem = 0;
@@ -2566,7 +2566,7 @@ static void getPixelPos(int32_t *x, int32_t *y) {
   *x = _getPositionFromRegister(REGISTER_X, SCREEN_WIDTH  - 1);
   *y = _getPositionFromRegister(REGISTER_Y, SCREEN_HEIGHT - 1);
 }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 
 void fnClLcd(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)

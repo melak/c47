@@ -20,11 +20,10 @@
 #if !defined(SOLVER_H)
   #define SOLVER_H
 
-#include "differentiate.h"
-#include "equation.h"
-#include "integrate.h"
-#include "solve.h"
-#include "sumprod.h"
-#include "tvm.h"
-
-#endif // SOLVER_H
+  #include "differentiate.h"
+  #include "equation.h"
+  #include "integrate.h"
+  #include "solve.h"
+  #include "sumprod.h"
+  #include "tvm.h"
+#endif // !SOLVER_H

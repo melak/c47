@@ -1019,7 +1019,7 @@
         gtk_widget_show(chkHexaString);
 
         debugWindow = DBG_REGISTERS;
-      #endif // (DEBUG_PANEL == 1)
+      #endif // DEBUG_PANEL == 0
 
       gtk_widget_show_all(frmCalc);
 

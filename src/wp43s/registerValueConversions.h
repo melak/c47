@@ -67,6 +67,7 @@ void realToUInt32                                          (const real_t *re, en
  * \param[in] dest the destination register. Usually REGISTER_X or REGISTER_Y.
  ***********************************************/
 void convertRealToReal34ResultRegister                     (const real_t *real, calcRegister_t dest);
+
 /********************************************//**
  * \brief Sets function result in real type to the imaginary part of a complex34 register.
  *        This follows preferences of number of significant digits.
@@ -101,11 +102,10 @@ void convertReal34RegisterToDateRegister                   (calcRegister_t sourc
   void    convertDoubleToString                            (double x, int16_t n, char *buff);  //Reformatting double/float strings that are formatted according to different locale settings
   void    convertDoubleToReal                              (double x, real_t *destination, realContext_t *ctxt);
   void    convertDoubleToReal34Register                    (double x, calcRegister_t destination);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
+
 void    realToFloat                                        (const real_t *vv, float *v);
 void    realToDouble  /*float used (not double)*/          (const real_t *vv, double *v);
 double  convertRegisterToDouble                            (calcRegister_t regist);
 #define DOUBLE_NOT_INIT 3.402823466e+38f //maximum float value
-
-
-#endif // REGISTERVALUECONVERSIONS_H
+#endif // !REGISTERVALUECONVERSIONS_H

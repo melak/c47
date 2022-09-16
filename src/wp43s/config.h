@@ -197,5 +197,4 @@ void     fnRange               (uint16_t unusedButMandatoryParameter);
 void     fnGetRange            (uint16_t unusedButMandatoryParameter);
 void     fnHide                (uint16_t digits);
 void     fnGetHide             (uint16_t unusedButMandatoryParameter);
-
-#endif // CONFIG_H
+#endif // !CONFIG_H

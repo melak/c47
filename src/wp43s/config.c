@@ -563,11 +563,11 @@ void addTestPrograms(void) {
     scanLabelsAndPrograms();
     #if !defined(TESTSUITE_BUILD)
       leavePem();
-    #endif // TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
     printf("freeProgramBytes = %u\n", freeProgramBytes);
     //listPrograms();
     //listLabelsAndPrograms();
-  #endif // !DMCP_BUILD
+  #endif // DMCP_BUILD
 }
 
 
@@ -730,7 +730,7 @@ void fnReset(uint16_t confirmation) {
 
     #if !defined(TESTSUITE_BUILD)
       matrixIndex = INVALID_VARIABLE; // Unset matrix index
-    #endif // TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
 
 
     #if defined(PC_BUILD)
@@ -857,7 +857,7 @@ void fnReset(uint16_t confirmation) {
     #else // TESTSUITE_BUILD
       if(calcMode == CM_MIM) mimFinalize();
       calcModeNormal();
-    #endif // TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
 
     #if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
       debugMemAllocation = true;
@@ -938,7 +938,7 @@ void fnReset(uint16_t confirmation) {
       debugWindow = DBG_REGISTERS;
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkHexaString), false);
       refreshDebugPanel();
-    #endif //  (DEBUG_PANEL == 1)
+    #endif // DEBUG_PANEL == 1
   }
 }
 

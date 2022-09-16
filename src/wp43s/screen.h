@@ -28,12 +28,12 @@
     #include <gdk/gdk.h>
   #endif // PC_BUILD
 
-void       fnScreenDump                       (uint16_t unusedButMandatoryParameter);
+  void       fnScreenDump                       (uint16_t unusedButMandatoryParameter);
 
-void       fnClLcd                            (uint16_t unusedButMandatoryParameter);
-void       fnPixel                            (uint16_t unusedButMandatoryParameter);
-void       fnPoint                            (uint16_t unusedButMandatoryParameter);
-void       fnAGraph                           (uint16_t regist);
+  void       fnClLcd                            (uint16_t unusedButMandatoryParameter);
+  void       fnPixel                            (uint16_t unusedButMandatoryParameter);
+  void       fnPoint                            (uint16_t unusedButMandatoryParameter);
+  void       fnAGraph                           (uint16_t regist);
 
   #if defined(PC_BUILD)
     /**

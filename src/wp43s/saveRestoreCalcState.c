@@ -652,9 +652,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
           displayBugScreen(errorMessage);
         }
       #endif // (SCREEN_800X480 == 1)
-        if(catalog) {
-          clearSystemFlag(FLAG_ALPHA);
-        }
+      if(catalog) {
+        clearSystemFlag(FLAG_ALPHA);
+      }
 
       updateMatrixHeightCache();
       refreshScreen();
@@ -1272,22 +1272,22 @@ static void restoreMatrixData(calcRegister_t regist, void *stream) {
     uint16_t rows, cols;
     uint32_t i;
 
-  if(getRegisterDataType(regist) == dtReal34Matrix) {
-    rows = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows;
-    cols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
+    if(getRegisterDataType(regist) == dtReal34Matrix) {
+      rows = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows;
+      cols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
 
-    for(i = 0; i < rows * cols; ++i) {
-      readLine(stream, tmpString);
-      stringToReal34(tmpString, REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i);
+      for(i = 0; i < rows * cols; ++i) {
+        readLine(stream, tmpString);
+        stringToReal34(tmpString, REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i);
+      }
     }
-  }
 
-  if(getRegisterDataType(regist) == dtComplex34Matrix) {
-    rows = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows;
-    cols = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns;
+    if(getRegisterDataType(regist) == dtComplex34Matrix) {
+      rows = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows;
+      cols = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns;
 
-    for(i = 0; i < rows * cols; ++i) {
-      char *imaginaryPart;
+      for(i = 0; i < rows * cols; ++i) {
+        char *imaginaryPart;
 
         readLine(stream, tmpString);
         imaginaryPart = tmpString;
@@ -1309,18 +1309,18 @@ static void skipMatrixData(char *type, char *value, void *stream) {
     uint32_t i;
     char *numOfCols;
 
-  if(strcmp(type, "Rema") == 0 || strcmp(type, "Cxma") == 0) {
-    numOfCols = value;
-    while(*numOfCols != ' ') numOfCols++;
-    *(numOfCols++) = 0;
-    rows = stringToUint16(value);
-    cols = stringToUint16(numOfCols);
+    if(strcmp(type, "Rema") == 0 || strcmp(type, "Cxma") == 0) {
+      numOfCols = value;
+      while(*numOfCols != ' ') numOfCols++;
+      *(numOfCols++) = 0;
+      rows = stringToUint16(value);
+      cols = stringToUint16(numOfCols);
 
-    for(i = 0; i < rows * cols; ++i) {
-      readLine(stream, tmpString);
+      for(i = 0; i < rows * cols; ++i) {
+        readLine(stream, tmpString);
+      }
     }
-  }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -1859,7 +1859,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
     if(loadMode == LM_ALL) {
       temporaryInformation = TI_BACKUP_RESTORED;
     }
-  #endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -1897,7 +1897,7 @@ void fnDeleteBackup(uint16_t confirmation) {
               moreInfoOnError("In function fnDeleteBackup:", errorMessage, NULL, NULL);
             #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
           }
-        #endif // TESTSUITE_BUILD
+        #endif // !TESTSUITE_BUILD
       }
     #endif // DMCP_BUILD
   }

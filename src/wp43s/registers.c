@@ -651,6 +651,7 @@ bool_t isUniqueName(const char *name) {
 
 static calcRegister_t _findReservedVariable(const char *variableName) {
   uint8_t len = stringGlyphLength(variableName);
+
   if(len < 1 || len > 7) {
     return INVALID_VARIABLE;
   }
@@ -1089,7 +1090,7 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
           }
         }
         break;
-#endif // TESTSUITE_BUILD
+      #endif // !TESTSUITE_BUILD
 
       default:
         break;
@@ -1153,7 +1154,7 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
 
       rsdCxma(significantDigits);
       break;
-#endif // TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
 
     default:
       break;
@@ -1415,7 +1416,6 @@ int16_t indirectAddressing(calcRegister_t regist, uint16_t parameterType, int16_
 
     else if(getRegisterDataType(regist) == dtShortInteger) {
       uint64_t value = *(REGISTER_SHORT_INTEGER_DATA(regist));
-
       sprintf(registerContent, "short integer %08x-%08x (base %u)", (unsigned int)(value>>32), (unsigned int)(value&0xffffffff), getRegisterTag(regist));
     }
 
@@ -1482,7 +1482,6 @@ int16_t indirectAddressing(calcRegister_t regist, uint16_t parameterType, int16_
 
     else if(getRegisterDataType(regist) == dtShortInteger) {
       uint64_t value = *(REGISTER_SHORT_INTEGER_DATA(regist));
-
       printf("short integer %08x-%08x (base %" PRIu32 ")", (unsigned int)(value>>32), (unsigned int)(value&0xffffffff), getRegisterTag(regist));
     }
 

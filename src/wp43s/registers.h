@@ -20,10 +20,10 @@
 #if !defined(REGISTERS_H)
   #define REGISTERS_H
 
-#include "longIntegerType.h"
-#include "realType.h"
-#include "typeDefinitions.h"
-#include <stdint.h>
+  #include "longIntegerType.h"
+  #include "realType.h"
+  #include "typeDefinitions.h"
+  #include <stdint.h>
 
   /**
    * Returns the data type of a register.
@@ -226,12 +226,12 @@
   #endif // !DMCP_BUILD
 
 
-#define getRegisterAngularMode(reg)            getRegisterTag(reg)
-#define setRegisterAngularMode(reg, am)        setRegisterTag(reg, am)
-#define getRegisterShortIntegerBase(reg)       getRegisterTag(reg)
-#define setRegisterShortIntegerBase(reg, base) setRegisterTag(reg, base)
-#define getRegisterLongIntegerSign(reg)        getRegisterTag(reg)
-#define setRegisterLongIntegerSign(reg, sign)  setRegisterTag(reg, sign)
+  #define getRegisterAngularMode(reg)            getRegisterTag(reg)
+  #define setRegisterAngularMode(reg, am)        setRegisterTag(reg, am)
+  #define getRegisterShortIntegerBase(reg)       getRegisterTag(reg)
+  #define setRegisterShortIntegerBase(reg, base) setRegisterTag(reg, base)
+  #define getRegisterLongIntegerSign(reg)        getRegisterTag(reg)
+  #define setRegisterLongIntegerSign(reg, sign)  setRegisterTag(reg, sign)
 
   /********************************************//**
    * \brief Prints the content of a register to a string
@@ -248,8 +248,8 @@
    ***********************************************/
   bool_t  saveLastX                       (void);
 
-void      fnRegClr                        (uint16_t unusedButMandatoryParameter);
-void      fnRegCopy                       (uint16_t unusedButMandatoryParameter);
-void      fnRegSort                       (uint16_t unusedButMandatoryParameter);
-void      fnRegSwap                       (uint16_t unusedButMandatoryParameter);
-#endif // REGISTERS_H
+  void      fnRegClr                        (uint16_t unusedButMandatoryParameter);
+  void      fnRegCopy                       (uint16_t unusedButMandatoryParameter);
+  void      fnRegSort                       (uint16_t unusedButMandatoryParameter);
+  void      fnRegSwap                       (uint16_t unusedButMandatoryParameter);
+#endif // !REGISTERS_H

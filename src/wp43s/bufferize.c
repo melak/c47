@@ -295,7 +295,6 @@
       }
 
       if(catalog && catalog != CATALOG_MVAR && !fnKeyInCatalog) {
-
         if(item == ITM_BACKSPACE) {
           calcModeNormal();
           return;
@@ -378,7 +377,6 @@
           case ITM_CHS : // +/-
 
           case ITM_CONSTpi :
-
             mimAddNumber(item);
             break;
 
@@ -421,7 +419,6 @@
           case ITM_GRAD :
           case ITM_MULPI :
           case ITM_RAD :
-
               lastErrorCode = ERROR_NONE;
               mimEnter(true);
               runFunction(item);
@@ -2116,4 +2113,4 @@
       setSystemFlag(FLAG_ASLIFT);
     }
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD

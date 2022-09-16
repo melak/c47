@@ -34,5 +34,4 @@ void    fnEqSolvGraph (uint16_t func);
 void    graph_eqn(uint16_t unusedButMandatoryParameter);
 int32_t drawMxN(void);
 void    fnClDrawMx(void);
-
-#endif // GRAPH_H
+#endif // !GRAPH_H

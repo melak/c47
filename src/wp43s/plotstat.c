@@ -55,7 +55,7 @@ void fnPlotRegressionLine(uint16_t plotMode);
 #if !defined(TESTSUITE_BUILD)
   static real_t RR,SMI,aa0,aa1,aa2,sa0, sa1; //L.R. variables
   static void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2, real_t *sa0, real_t *sa1);
-#endif //TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 
 
 float     graph_dx;           // Many unused functions in WP43S. Do not change the variables.
@@ -128,6 +128,7 @@ void statGraphReset(void){
   float grf_x(int i) {
     float xf=0;
     real_t xr;
+
     calcRegister_t regStats = findNamedVariable(plotStatMx);
     if(regStats != INVALID_VARIABLE) {
       real34Matrix_t stats;
@@ -145,6 +146,7 @@ void statGraphReset(void){
   float grf_y(int i) {
     float yf=0;
     real_t yr;
+
     calcRegister_t regStats = findNamedVariable(plotStatMx);
     if(regStats != INVALID_VARIABLE) {
       real34Matrix_t stats;
@@ -162,6 +164,7 @@ void statGraphReset(void){
 
   int16_t screen_window_x(float x_min, float x, float x_max) {
     int16_t temp; float tempr;
+
     if(Aspect_Square) {
       tempr = ((x - x_min) / (x_max - x_min) * (float)(SCREEN_HEIGHT_GRAPH - 1));
       if(tempr > 32766) temp = 32767; else
@@ -211,6 +214,7 @@ void statGraphReset(void){
   int16_t screen_window_y(float y_min, float y, float y_max) {
     int16_t temp, minn;
     float tempr;
+
     if(!Aspect_Square) {
       minn = SCREEN_NONSQ_HMIN;
     }
@@ -321,7 +325,7 @@ static void plotrect(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {            
 
 
 static void plotHisto_col(uint16_t ix, uint16_t ixn, uint16_t x, uint16_t y, uint16_t x_min, uint16_t x_wid, uint16_t y_min, uint16_t y_wid) {  //x is 0..(n-1)   
-  float col_width = (int16_t)(x_wid*(float)(1.0f)/(float)(ixn + 2)) - 0.6f;              // Scaled to always have the histogram in the same scale as the STATS ASSESS graph
+  float col_width = (int16_t)(x_wid*(float)(1.0f) / (float)(ixn + 2)) - 0.6f;              // Scaled to always have the histogram in the same scale as the STATS ASSESS graph
   plotrect(x - (int)((+0.1f + col_width)/2), y_min + y_wid,  x + (int)((-0.1f + col_width)/2), y);
 }
 
@@ -387,7 +391,7 @@ void force_refresh1(void) {
   #if defined(PC_BUILD)
     gtk_widget_queue_draw(screen);
     //FULL UPDATE (UGLY)
-    #ifdef FULLUPDATE
+    #if defined(FULLUPDATE)
       refresh_gui();
     #endif // FULLUPDATE
   #endif // PC_BUILD
@@ -589,6 +593,7 @@ void graphAxisDraw (void) {
 
 float auto_tick(float tick_int_f) {
   char tmpString2[100];
+
   if(!roundedTicks) {
     return tick_int_f;
   }
@@ -637,7 +642,7 @@ void graph_axis (void){
     else {
       tick_int_y = graph_dy;
     }
-  #endif //TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
   graphAxisDraw();
 }
 
@@ -678,6 +683,7 @@ void nanCheck(char* s02) {
 
 void eformat (char* s02, const char* s01, double inreal, uint8_t prec, const char* s05) {
   char s03[100];
+
   if(((fabs(inreal) > 1000000.0 || fabs(inreal) < 0.001)) && (inreal != 0.0)) {
     sprintf(s03,"%.*e",prec,inreal);
   }
@@ -859,7 +865,7 @@ void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, con
 
 
 void graphPlotstat(uint16_t selection){
-  #if defined (STATDEBUG) && defined (PC_BUILD)
+  #if defined(STATDEBUG) && defined(PC_BUILD)
     printf("#####>>> graphPlotstat: selection:%u:%s  lastplotmode:%u  lrSelection:%u lrChosen:%u\n",selection, getCurveFitModeName(selection), lastPlotMode, lrSelection, lrChosen);
   #endif // STATDEBUG && PC_BUILD
   #if !defined(TESTSUITE_BUILD)
@@ -881,8 +887,8 @@ void graphPlotstat(uint16_t selection){
     graph_axis();
     plotmode = _SCAT;
 
-    if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || 
-      (plotStatMx[0]=='D' && drawMxN() >= 2) || 
+    if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) ||
+      (plotStatMx[0]=='D' && drawMxN() >= 2) ||
       (plotStatMx[0]=='H' && statMxN() >= 3)) 
     {
       switch (plotStatMx[0]) {
@@ -1020,10 +1026,10 @@ void graphPlotstat(uint16_t selection){
     }
 
     float histofactor = drawHistogram == 0 ? 1 : 1/zoomfactor * (((float)statnum + 2.0f)  /  ((float)(statnum) - 1.0f) - 1)/2;     //Create space on the sides of the graph for the wider histogram columns
-    x_min = x_min - dx * histofactor * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
-    y_min = y_min - dy * histofactor * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
-    x_max = x_max + dx * histofactor * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
-    y_max = y_max + dy * histofactor * zoomfactor * (pow(4.5f,(int8_t)(PLOT_ZOOM & 0x03)));
+    x_min = x_min - dx * histofactor * zoomfactor * (pow(4.5f, (int8_t)(PLOT_ZOOM & 0x03)));
+    y_min = y_min - dy * histofactor * zoomfactor * (pow(4.5f, (int8_t)(PLOT_ZOOM & 0x03)));
+    x_max = x_max + dx * histofactor * zoomfactor * (pow(4.5f, (int8_t)(PLOT_ZOOM & 0x03)));
+    y_max = y_max + dy * histofactor * zoomfactor * (pow(4.5f, (int8_t)(PLOT_ZOOM & 0x03)));
       #if defined(STATDEBUG) && defined(PC_BUILD)
         printf("Axis3a: x: %f -> %f y: %f -> %f   \n", x_min, x_max, y_min, y_max);
       #endif // STATDEBUG && PC_BUILD
@@ -1073,7 +1079,7 @@ void graphPlotstat(uint16_t selection){
         xn = xN;
 
         if(drawHistogram != 0) {
-          plotHisto_col(ix, statnum, xN, yN, minN_x, SCREEN_WIDTH_GRAPH-minN_x, minN_y, SCREEN_HEIGHT_GRAPH - minN_y);
+          plotHisto_col(ix, statnum, xN, yN, minN_x, SCREEN_WIDTH_GRAPH - minN_x, minN_y, SCREEN_HEIGHT_GRAPH - minN_y);
         }
 
           if(PLOT_CROSS) {
@@ -1158,12 +1164,12 @@ void graphPlotstat(uint16_t selection){
   void demo_plot(void) {
     int8_t ix;
     time_t t;
+
     srand((unsigned) time(&t));
     runFunction(ITM_CLSIGMA);
     plotSelection = 0;
     srand((unsigned int)time(NULL));
     for(ix=0; ix!=40; ix++) {
-
       int mv = 11000 + rand() % 110 - 55;
       //instrument measuring RMS voltage of an 11 kV installation, with +- 0.1% variance, offset to the + for convenience
 
@@ -1181,7 +1187,7 @@ void graphPlotstat(uint16_t selection){
       runFunction(ITM_SIGMAPLUS);
     }
   }
-#endif //TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 
 
 void graphDrawLRline(uint16_t selection) {
@@ -1195,7 +1201,7 @@ void graphDrawLRline(uint16_t selection) {
       }
       drawline(selection, &RR, &SMI, &aa0, &aa1, &aa2, &sa0, &sa1);
     }
-  #endif //TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 #if !defined(TESTSUITE_BUILD)
@@ -1277,7 +1283,7 @@ void graphDrawLRline(uint16_t selection) {
       if((selection==0 && a2 == 0 && a1 == 0 && a0 == 0)) {
         #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("return, nothing selected, zero parameters, nothing to draw\n");
-        #endif //STATDEBUG
+        #endif // STATDEBUG && PC_BUILD
         return;
       }
       double  ix;
@@ -1362,7 +1368,7 @@ void graphDrawLRline(uint16_t selection) {
                 printf("y<<%u ", 1+minN_y);
               }
               printf("\n");
-            #endif //STATDEBUG
+            #endif // STATDEBUG && PC_BUILD
           }
         }
       }
@@ -1534,7 +1540,6 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
 }
 
 
-
 //** Called from keyboard
 //** plotSelection = 0 means that no curve fit is plotted
 //
@@ -1693,7 +1698,7 @@ void fnPlotStat(uint16_t plotMode){
         moreInfoOnError("In function fnPlotStat:", errorMessage, NULL, NULL);
       #endif
     }
-  #endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -1789,8 +1794,8 @@ void fnPlotZoom(uint16_t unusedButMandatoryParameter) {
 /*
 //DEMO: Arbitrary distribution to test. Close to a Normal.
 void fnStatDemo0(uint16_t unusedButMandatoryParameter){
-#ifdef DEMO0
-  #ifndef TESTSUITE_BUILD
+  #if defined(DEMO0)
+    #if !defined(TESTSUITE_BUILD)
   plotSelection = 0;
   runFunction(ITM_CLSIGMA);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone); reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);stringToReal34("-5.0",REGISTER_REAL34_DATA(REGISTER_X)); stringToReal34("1.3887943864964E-11",REGISTER_REAL34_DATA(REGISTER_Y));runFunction(ITM_SIGMAPLUS);
@@ -1896,14 +1901,14 @@ void fnStatDemo0(uint16_t unusedButMandatoryParameter){
     fnCurveFitting(0);
     runFunction(ITM_LR);
     runFunction(ITM_PLOT_LR);
-   #endif //TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
   #endif //DEMO0
   }
 
 //DEMO: Randomized linear
 void fnStatDemo10(uint16_t unusedButMandatoryParameter){
-#ifdef DEMO1
-  #ifndef TESTSUITE_BUILD
+  #if defined(DEMO1)
+    #if !defined(TESTSUITE_BUILD)
     int8_t ix;
     runFunction(ITM_CLSIGMA);
     plotSelection = 0;
@@ -1926,13 +1931,13 @@ void fnStatDemo10(uint16_t unusedButMandatoryParameter){
     fnCurveFitting(0);
     runFunction(ITM_LR);
     runFunction(ITM_PLOT_LR);
-  #endif //TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
 #endif //DEMO1
 }
 
 void fnStatDemo2(uint16_t unusedButMandatoryParameter){
-#ifdef DEMO2
-  #ifndef TESTSUITE_BUILD
+  #if defined(DEMO2)
+    #if !defined(TESTSUITE_BUILD)
     plotSelection = 0;
     runFunction(ITM_CLSIGMA);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone); reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);stringToReal34("-0.1",REGISTER_REAL34_DATA(REGISTER_X)); stringToReal34("0.0905",REGISTER_REAL34_DATA(REGISTER_Y));runFunction(ITM_SIGMAPLUS);
@@ -1942,14 +1947,14 @@ void fnStatDemo2(uint16_t unusedButMandatoryParameter){
     fnCurveFitting(0);
     runFunction(ITM_LR);
     runFunction(ITM_PLOT_LR);
-  #endif //TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
 #endif //DEMO2
 }
 
 
 //DEMO: Randomized linear
 void fnStatDemo1(uint16_t unusedButMandatoryParameter){
-  #ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
     int8_t ix;
     time_t t;
     srand((unsigned) time(&t));
@@ -1957,7 +1962,6 @@ void fnStatDemo1(uint16_t unusedButMandatoryParameter){
     plotSelection = 0;
     srand((unsigned int)time(NULL));
     for(ix=0; ix!=100; ix++) {
-
       int mv = 11000 + rand() % 22;  //instrument measuring RMS voltage of an 11 kV installation, with +- 0.1% variance, offset to the + for convenience
 
       setSystemFlag(FLAG_ASLIFT);
@@ -1973,7 +1977,7 @@ void fnStatDemo1(uint16_t unusedButMandatoryParameter){
       }
     runFunction(ITM_PLOT);
     runFunction(ITM_PLOT_CENTRL);
-  #endif //TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -1981,8 +1985,8 @@ void fnStatDemo1(uint16_t unusedButMandatoryParameter){
 
 //DEMO: 4 points to simulate a distribution, from p105 of OM
 void fnStatDemo105(uint16_t unusedButMandatoryParameter){
-#ifdef DEMO105
-  #ifndef TESTSUITE_BUILD
+  #if defined(DEMO105)
+    #if !defined(TESTSUITE_BUILD)
     plotSelection = 0;
     runFunction(ITM_CLSIGMA);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone); reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);stringToReal34("2",REGISTER_REAL34_DATA(REGISTER_X)); stringToReal34("30",REGISTER_REAL34_DATA(REGISTER_Y));runFunction(ITM_SIGMAPLUS);
@@ -1993,14 +1997,14 @@ void fnStatDemo105(uint16_t unusedButMandatoryParameter){
     fnCurveFitting(0);
     runFunction(ITM_LR);
     runFunction(ITM_PLOT_LR);
-  #endif //TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
 #endif //DEMO105
 }
 
 //DEMO: points to simulate a distribution, from p107 of OM
 void fnStatDemo107(uint16_t unusedButMandatoryParameter){
-#ifdef DEMO107
-  #ifndef TESTSUITE_BUILD
+  #if defined(DEMO107)
+    #if !defined(TESTSUITE_BUILD)
     plotSelection = 0;
     runFunction(ITM_CLSIGMA);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone); reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);stringToReal34("1945",REGISTER_REAL34_DATA(REGISTER_X)); stringToReal34("696",REGISTER_REAL34_DATA(REGISTER_Y));runFunction(ITM_SIGMAPLUS);
@@ -2015,14 +2019,14 @@ void fnStatDemo107(uint16_t unusedButMandatoryParameter){
     fnCurveFitting(0);
     runFunction(ITM_LR);
     runFunction(ITM_PLOT_LR);
-  #endif //TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
 #endif //DEMO107
 }
 
 //DEMO:  points to simulate a distribution, from p109 of OM
 void fnStatDemo109(uint16_t unusedButMandatoryParameter){
-#ifdef DEMO109
-  #ifndef TESTSUITE_BUILD
+  #if defined(DEMO109)
+    #if !defined(TESTSUITE_BUILD)
     plotSelection = 0;
     runFunction(ITM_CLSIGMA);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone); reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);stringToReal34("0",REGISTER_REAL34_DATA(REGISTER_X)); stringToReal34("4.63",REGISTER_REAL34_DATA(REGISTER_Y));runFunction(ITM_SIGMAPLUS);
@@ -2033,8 +2037,7 @@ void fnStatDemo109(uint16_t unusedButMandatoryParameter){
     fnCurveFitting(0);
     runFunction(ITM_LR);
     runFunction(ITM_PLOT_LR);
-  #endif //TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
 #endif //DEMO109
 }
-
 */

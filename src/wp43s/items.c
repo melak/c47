@@ -63,14 +63,14 @@ void itemToBeCoded(uint16_t unusedButMandatoryParameter) {
 
 
 
-//#ifndef GENERATE_CATALOGS
+//#if !defined(GENERATE_CATALOGS)
 //void fnToBeCoded(void) {
 //  displayCalcErrorMessage(ERROR_FUNCTION_TO_BE_CODED, ERR_REGISTER_LINE, REGISTER_X);
-//  #ifdef PC_BUILD
+//  #if defined(PC_BUILD)
 //    moreInfoOnError("Function to be coded", "for that data type(s)!", NULL, NULL);
 //  #endif // PC_BUILD
 //}
-//#endif // GENERATE_CATALOGS
+//#endif // !GENERATE_CATALOGS
 
 
 

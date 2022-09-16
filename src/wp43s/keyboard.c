@@ -356,7 +356,6 @@
   #if defined(DMCP_BUILD)
     void btnFnPressed(void *data) {
   #endif // DMCP_BUILD
-
       asnKey[0] = ((uint8_t *)data)[0];
       asnKey[1] = 0;
 
@@ -569,7 +568,7 @@
           hideFunctionName();
         #else // FN_KEY_TIMEOUT_TO_NOP != 1
           showFunctionNameItem = 0;
-        #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
+        #endif // FN_KEY_TIMEOUT_TO_NOP == 1
 
         if(calcMode != CM_CONFIRMATION) {
           lastErrorCode = 0;
@@ -1090,7 +1089,7 @@
           }
         }
       }
-      //#ifdef DMCP_BUILD
+    //#if defined(DMCP_BUILD)
       //    else if(keyAutoRepeat) {
       //      btnPressed(data);
       //    }
@@ -1980,7 +1979,8 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_GRAPH:
       case CM_PLOT_STAT:
-        restoreStats();
+//Temporary - TODO JM
+            restoreStats();
 printf(">>> ####@@@@ D %i\n",calcMode);
 if(lastPlotMode == H_PLOT && calcMode == CM_PLOT_STAT) popSoftmenu();
 //TODO

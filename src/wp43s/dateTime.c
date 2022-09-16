@@ -369,6 +369,7 @@ void hmmssToSeconds(const real34_t *src, real34_t *dest) {
 
 void hmmssInRegisterToSeconds(calcRegister_t regist) {
   real34_t real34;
+
   real34Copy(REGISTER_REAL34_DATA(regist), &real34);
   reallocateRegister(regist, dtTime, REAL34_SIZE, amNone);
   hmmssToSeconds(&real34, REGISTER_REAL34_DATA(regist));
@@ -377,6 +378,7 @@ void hmmssInRegisterToSeconds(calcRegister_t regist) {
 
 void checkTimeRange(const real34_t *time34) {
   real34_t t;
+
   real34CopyAbs(time34, &t);
   if(real34CompareGreaterEqual(&t, const34_maxTime)) {
     displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);

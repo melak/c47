@@ -555,6 +555,9 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     }
     return false;
   }
+
+
+
   static void _dynmenuConstructVars(int16_t menu, bool_t applyFilter, dataType_t typeFilter, bool_t isAngular) {
     uint16_t numberOfBytes, numberOfVars;
     uint8_t *ptr;
@@ -629,6 +632,8 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       freeWp43s(step, TO_BLOCKS(400));
     }
   }
+
+
 
   static void _dynmenuConstructMVars(int16_t menu) {
     uint16_t numberOfBytes = 0;

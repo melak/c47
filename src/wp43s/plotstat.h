@@ -123,5 +123,4 @@ void    fnPlotClose        (uint16_t unusedButMandatoryParameter);
 void    fnPlotCloseSmi     (uint16_t unusedButMandatoryParameter);
 void    fnPlotStat         (uint16_t unusedButMandatoryParameter);
 void    fnPlotZoom         (uint16_t unusedButMandatoryParameter);
-
-#endif // PLOTSTAT_H
+#endif // !PLOTSTAT_H

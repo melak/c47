@@ -297,7 +297,7 @@ int64_t WP34S_build_value(const uint64_t x, const int32_t sign) {
 static uint64_t WP34S_multiply_with_overflow(uint64_t multiplier, uint64_t multiplicand, int32_t *overflow) {
   const uint64_t product = (multiplier * multiplicand) & shortIntegerMask;
 
-  if(! *overflow && multiplicand != 0) {
+  if(!*overflow && multiplicand != 0) {
     const uint64_t tbm = (shortIntegerMode == SIM_UNSIGN) ? 0 : shortIntegerSignBit;
 
     if((product & tbm) != 0 || product / multiplicand != multiplier) {
@@ -876,18 +876,18 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
       while((v & mask) == 0) {
         v = (*shift)(v);
         c++;
-       }
+      }
       restore_flags(flags);
       set_reg_n_int(regY_idx, v);
-     }
+    }
 
     setX_int((int64_t)c);
-   }
+  }
 
   void int_justify(enum nilop op) {
     const uint64_t mask = (op == OP_LJ) ? shortIntegerSignBit : 1LL;
     justify((op == OP_LJ) ? &intLSL : &intLSR, mask);
-   }
+  }
 
 
   /* Create n bit masks at either end of the word.
@@ -909,7 +909,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     else {
       mask = 1LL;
       f = &intLSL;
-     }
+    }
 
     if(arg >= shortIntegerWordSize) {
       x = (-1) & shortIntegerMask;
@@ -919,12 +919,12 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
       for(uint32_t i=0; i<arg; i++) {
         x |= mask;
         mask = (*f)(mask);
-       }
-     }
+      }
+    }
 
     setX_int(x);
     set_carry(carry);
-   }
+  }
 
 
   /* Set, clear, flip and test bits */
@@ -943,7 +943,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
       default: return;
     }
 
-   setX_int(x);
+    setX_int(x);
   }
 
   int64_t intFib(int64_t x) {
@@ -961,7 +961,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     if(v >= 100) {
       set_overflow(1);
       return 0;
-     }
+    }
 
     set_overflow(0);
     n = v & 0xff;
@@ -991,10 +991,10 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
       }
       a0 = a1;
       a1 = anew;
-     }
+    }
 
     return build_value(a1, s);
-   }
+  }
 
 
   int64_t intmodop(int64_t z, int64_t y, int64_t x) {
@@ -1016,7 +1016,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     }
 
     return build_value(r, 0);
-   }
+  }
 
 
   // only need 8 terms for factors > 256
@@ -1041,8 +1041,8 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
             if(v < 0) {
               v += d;
               --ad[j+1];
-             }
-           }
+            }
+          }
           ad[j] = v;
         }
         if(!ad[j]) {
@@ -1052,7 +1052,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     }
 
     return d;
-   }
+  }
 
   uint64_t doFactor(uint64_t n) {
     /* find the least prime factor of `n'.
@@ -1145,7 +1145,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     }
 
     return n;
-   }
+  }
   #undef MAX_TERMS
 
 
@@ -1154,7 +1154,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     uint64_t vx = extract_value(x, &sx);
     uint64_t r = doFactor(vx);
     return build_value(r, sx);
-   }
+  }
 
   int64_t intRecv(int64_t x) {
     int32_t sx;
@@ -1174,24 +1174,24 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     set_overflow(sx);
 
     return build_value(c, sx);
-   }
+  }
 
   /* Some utility routines for saving and restoring carry and overflow.
    * Some operations don't change these flags but their subcomponents might.
    */
   int32_t save_flags(void) {
     return (getSystemFlag(FLAG_OVERFLOW) == ON ? 2 : 0) | (getSystemFlag(FLAG_CARRY) == ON ? 1 : 0);
-   }
+  }
 
   void restore_flags(int32_t co) {
     set_carry(co & 1);
     set_overflow(co & 2);
-   }
+  }
 
   /* Utility routine to check if a value has overflowed or not */
   int32_t check_overflow(int64_t x) {
     return ((x) & shortIntegerMask) != x || (shortIntegerMode != SIM_UNSIGN && (x & shortIntegerSignBit) != 0);
-   }
+  }
 
 
   int64_t intMod(int64_t y, int64_t x) {
@@ -1203,7 +1203,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     if(xv == 0) {
       err_div0(yv, sy, sx);
       return 0;
-     }
+    }
     r = yv % xv;
 
     if(XeqOpCode == (OP_DYA | OP_MOD41) && sx != sy) {
@@ -1211,10 +1211,10 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
         r = xv - r;
       }
       sy = sx;
-     }
+    }
 
     return build_value(r, sy);
-   }
+  }
 
 
   int64_t intMin(int64_t y, int64_t x) {
@@ -1239,7 +1239,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     }
 
     return y;
-   }
+  }
 
   int64_t intMax(int64_t y, int64_t x) {
     int32_t sx, sy;
@@ -1263,7 +1263,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     }
 
     return x;
-   }
+  }
 
 
   int64_t intMAdd(int64_t z, int64_t y, int64_t x) {
@@ -1298,16 +1298,16 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     int32_t i, j;
 
     {
-     int64_t xr, yr;
-     int32_t sx, sy;
+      int64_t xr, yr;
+      int32_t sx, sy;
 
-     xr = getX_int();
-     yr = get_reg_n_int(regY_idx);
+      xr = getX_int();
+      yr = get_reg_n_int(regY_idx);
 
-     xv = extract_value(xr, &sx);
-     yv = extract_value(yr, &sy);
+      xv = extract_value(xr, &sx);
+      yv = extract_value(yr, &sy);
 
-     s = sx != sy;
+      s = sx != sy;
     }
 
    /* Do the multiplication by breaking the values into uint16_t
@@ -1338,7 +1338,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
         t[i+1] += t[i] >> 16;
       }
       r[i] = t[i];
-     }
+    }
 
     yv = packup(r);
     xv = packup(r+4);
@@ -1370,7 +1370,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     set_reg_n_int(regY_idx, yv & shortIntegerMask);
     setX_int(xv & shortIntegerMask);
     set_overflow(0);
-   }
+  }
 
 
   int32_t nlz(uint16_t x) {
@@ -1385,7 +1385,7 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     if(x <= 0x3fff) {n = n + 2; x = x << 2;}
     if(x <= 0x7fff) {n = n + 1;}
     return n;
-   }
+  }
 
   /* q[0], r[0], u[0], and v[0] contain the LEAST significant halfwords.
   (The sequence is in little-endian order).
@@ -1412,25 +1412,25 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     const uint32_t b = 65536;   // Number base (16 bits).
     uint32_t qhat;     // Estimated quotient digit.
     uint32_t rhat;     // A remainder.
-    uint32_t p;     // Product of two digits.
+    uint32_t p;        // Product of two digits.
     int32_t s, i, j, t, k;
     uint16_t vn[8];    // Normalised denominator
-    uint16_t un[18];    // Normalised numerator
+    uint16_t un[18];   // Normalised numerator
 
     if(n == 1) {                      // Take care of
       k = 0;                          // the case of a
       for(j = m - 1; j >= 0; j--) {   // single-digit
         q[j] = (k*b + u[j])/v[0];     // divisor here.
         k = (k*b + u[j]) - q[j]*v[0];
-       }
+      }
       r[0] = k;
       return;
-     }
+    }
 
-   // Normalize by shifting v left just enough so that
-   // its high-order bit is on, and shift u left the
-   // same amount.  We may have to append a high-order
-   // digit on the dividend; we do that unconditionally.
+    // Normalize by shifting v left just enough so that
+    // its high-order bit is on, and shift u left the
+    // same amount.  We may have to append a high-order
+    // digit on the dividend; we do that unconditionally.
 
     s = nlz(v[n-1]);            // 0 <= s <= 16.
     for(i = n - 1; i > 0; i--) {
@@ -1464,7 +1464,7 @@ again:
         t = un[i+j] - k - (p & 0xFFFF);
         un[i+j] = t;
         k = (p >> 16) - (t >> 16);
-       }
+      }
       t = un[j+n] - k;
       un[j+n] = t;
 
@@ -1476,10 +1476,10 @@ again:
           t = un[i+j] + vn[i] + k;
           un[i+j] = t;
           k = t >> 16;
-         }
+        }
         un[j+n] = un[j+n] + k;
-       }
-     } // End j.
+      }
+    } // End j.
 
     // Unnormalize remainder
     for(i = 0; i < n; i++) {
@@ -1513,7 +1513,7 @@ again:
       }
       else {
         h ^= shortIntegerSignBit;
-       }
+      }
       *sy = 1;
     }
     else {
@@ -1524,17 +1524,17 @@ again:
     if(d == 0) {
       err_div0(h|l, *sx, *sy);
       return 0;
-     }
+    }
 
     if(shortIntegerWordSize != 64) {
       l |= h << shortIntegerWordSize;
       h >>= (64 - shortIntegerWordSize);
-     }
+    }
 
     if(h == 0 && l == 0) {    // zero over
       *rem = 0;
       return 0;
-     }
+    }
 
     xset(quot, 0, sizeof(quot));
     xset(rmdr, 0, sizeof(rmdr));
@@ -1550,7 +1550,7 @@ again:
 
     *rem = packup(rmdr);
     return packup(quot);
-   }
+  }
 
   int64_t intDblDiv(int64_t z, int64_t y, int64_t x) {
     uint64_t q, r;
@@ -1560,7 +1560,7 @@ again:
     set_overflow(0);
     set_carry(r != 0);
     return build_value(q, sx != sy);
-   }
+  }
 
   int64_t intDblRmdr(int64_t z, int64_t y, int64_t x) {
     uint64_t r;
@@ -1568,7 +1568,7 @@ again:
 
     divmod(z, y, x, &sx, &sy, &r);
     return build_value(r, sy);
-   }
+  }
 
 
   int64_t intBooleanOp(int64_t y, int64_t x) {
@@ -1587,7 +1587,7 @@ again:
     }
 
     return result & shortIntegerMask;
-   }
+  }
 
   /* Single bit shifts are special internal version.
    * The multi-bit shifts vector through these.
@@ -1596,12 +1596,12 @@ again:
   int64_t intLSL(int64_t x) {
     set_carry(0 != (shortIntegerSignBit & x));
     return ((x << 1) & ~1) & shortIntegerMask;
-   }
+  }
 
   int64_t intLSR(int64_t x) {
     set_carry(0 != (x & 1));
     return ((x >> 1) & ~shortIntegerSignBit) & shortIntegerMask;
-   }
+  }
 
   int64_t intASR(int64_t x) {
     int64_t y;
@@ -1617,14 +1617,14 @@ again:
     }
 
     return y;
-   }
+  }
 
   int64_t intRL(int64_t x) {
     const int32_t cry = (shortIntegerSignBit & x)?1:0;
 
     set_carry(cry);
     return (intLSL(x) | cry) & shortIntegerMask;
-   }
+  }
 
   int64_t intRR(int64_t x) {
     const int32_t cry = x & 1;
@@ -1636,14 +1636,14 @@ again:
     }
 
     return x & shortIntegerMask;
-   }
+  }
 
   int64_t intRLC(int64_t x) {
     const int32_t cin = (getSystemFlag(FLAG_CARRY) == ON ? 1 : 0);
     set_carry((shortIntegerSignBit & x)?1:0);
 
     return (intLSL(x) | cin) & shortIntegerMask;
-  }
+ }
 
   int64_t intRRC(int64_t x) {
     const int32_t cin = (getSystemFlag(FLAG_CARRY) == ON ? 1 : 0);
@@ -1655,7 +1655,7 @@ again:
     }
 
     return x & shortIntegerMask;
-   }
+  }
 
   /* Like the above but taking the count argument from the opcode.
    * Also possibly register indirect but that is dealt with elsewhere.
@@ -1696,7 +1696,7 @@ again:
 
     setlastX();
     setX_int(x & shortIntegerMask);
-   }
+  }
 
 
   /* Some code to count bits.  We start with a routine to count bits in a single

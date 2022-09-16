@@ -20,13 +20,13 @@
 #if !defined(LONGINTEGERTYPE_H)
   #define LONGINTEGERTYPE_H
 
-#include "defines.h"
-#include "typeDefinitions.h"
+  #include "defines.h"
+  #include "typeDefinitions.h"
 
-#include <gmp.h>
-#include <stdlib.h>
+  #include <gmp.h>
+  #include <stdlib.h>
 
-typedef mpz_t longInteger_t;
+  typedef mpz_t longInteger_t;
 
   #define REGISTER_LONG_INTEGER_DATA(a)       ((void *)(getRegisterDataPointer(a) + 1)) // Memory pointer to the long integer of a register
   #define longIntegerToUInt(op, uint)         {uint = mpz_get_ui(op);}

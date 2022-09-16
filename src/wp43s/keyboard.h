@@ -29,48 +29,56 @@
 void leavePem        (void);
 void showShiftState  (void);
 void processKeyAction(int16_t item);
+
 /**
  * Processing ENTER key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyEnter      (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing EXIT key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyExit       (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing CC key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyCC         (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing BACKSPACE key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyBackspace  (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing UP key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyUp         (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing DOWN key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyDown       (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing .d key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyDotD       (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing ANGLE key.
  *
@@ -156,5 +164,4 @@ void execAutoRepeat(uint16_t key);
   #endif // DMCP_BUILD
 
 void setLastKeyCode  (int key);
-
-#endif // KEYBOARD_H
+#endif // !KEYBOARD_H

@@ -342,11 +342,7 @@ static void subSigma(real_t *x, real_t *y) {
 
   return;
 }
-
-
-#endif //TESTSUITE_|BUILD
-
-
+#endif // !TESTSUITE_|BUILD
 
 
 
@@ -418,7 +414,6 @@ void initStatisticalSums(void) {
 
 
   static void calcMin(uint16_t maxOffset) {
-
     realCopy(const_plusInfinity,  SIGMA_XMIN);
     realCopy(const_plusInfinity,  SIGMA_YMIN);
 
@@ -435,7 +430,7 @@ void initStatisticalSums(void) {
       }
     }
   }
-#endif //TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 
 
 
@@ -482,7 +477,6 @@ static void getLastRowStatsMatrix(real_t *x, real_t *y) {
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
-
 
 
 
@@ -550,7 +544,7 @@ static void getLastRowStatsMatrix(real_t *x, real_t *y) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
-#endif //TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 
 
 void fnClSigma(uint16_t unusedButMandatoryParameter) {
@@ -608,7 +602,6 @@ void fnSigma(uint16_t plusMinus) {
   lrChosen = 0;
 
   if(plusMinus == 1) { // SIGMA+
-
     if(   (getRegisterDataType(REGISTER_X) == dtLongInteger || getRegisterDataType(REGISTER_X) == dtReal34)
        && (getRegisterDataType(REGISTER_Y) == dtLongInteger || getRegisterDataType(REGISTER_Y) == dtReal34)) {
 

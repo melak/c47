@@ -20,9 +20,8 @@
 #if !defined(CONSTANTS_H)
   #define CONSTANTS_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnConstant(const uint16_t constant);
-void fnPi      (uint16_t unusedButMandatoryParameter);
-
-#endif // CONSTANTS_H
+  void fnConstant(const uint16_t constant);
+  void fnPi      (uint16_t unusedButMandatoryParameter);
+#endif // !CONSTANTS_H

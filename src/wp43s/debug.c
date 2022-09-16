@@ -203,7 +203,8 @@ char * getCurveFitModeName(uint16_t selection) {          //Can be only one bit.
 char * eatSpacesEnd(const char * ss) {
   static char tmp_names[20];
   int8_t ix;
-  strcpy(tmp_names,ss);
+
+  strcpy(tmp_names, ss);
   ix = stringByteLength(ss)-1;
   while(ix > 0) {
     if(ss[ix] == ' ') {
@@ -270,20 +271,20 @@ char * getCurveFitModeNames(uint16_t selection) {
  * \return char*          Formula of the curvefitting mode
  ***********************************************/
 char * getCurveFitModeFormula(uint16_t selection) {          //Can be only one bit. ??? if invalid.
-    switch( selection & 0x03FF ){
-      case CF_LINEAR_FITTING:      return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
-      case CF_EXPONENTIAL_FITTING: return "a" STD_SUB_0 STD_SPACE_3_PER_EM "e^(a" STD_SUB_1 "x)";
-      case CF_LOGARITHMIC_FITTING: return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "ln(x)";
-      case CF_POWER_FITTING:       return "a" STD_SUB_0 STD_SPACE_3_PER_EM "x^a" STD_SUB_1 ;
-      case CF_ROOT_FITTING:        return "a" STD_SUB_0 STD_SPACE_3_PER_EM "a" STD_SUB_1 "^(1/x)";
-      case CF_HYPERBOLIC_FITTING:  return "(a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x)" STD_SUP_MINUS_1;
-      case CF_PARABOLIC_FITTING:   return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x" STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_2 "x" STD_SUP_2;
-      case CF_CAUCHY_FITTING:      return STD_LEFT_SQUARE_BRACKET "a" STD_SUB_0 "(x+a" STD_SUB_1 ")" STD_SUP_2 "+a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET STD_SUP_MINUS_1;
-      case CF_GAUSS_FITTING:       return "a" STD_SUB_0 "e^" STD_LEFT_SQUARE_BRACKET  "(x-a" STD_SUB_1 ")" STD_SUP_2 "/a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET;
-      case CF_ORTHOGONAL_FITTING:  return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
-      default: return "???        "; break;
-    }
+  switch( selection & 0x03FF ){
+    case CF_LINEAR_FITTING:      return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
+    case CF_EXPONENTIAL_FITTING: return "a" STD_SUB_0 STD_SPACE_3_PER_EM "e^(a" STD_SUB_1 "x)";
+    case CF_LOGARITHMIC_FITTING: return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "ln(x)";
+    case CF_POWER_FITTING:       return "a" STD_SUB_0 STD_SPACE_3_PER_EM "x^a" STD_SUB_1 ;
+    case CF_ROOT_FITTING:        return "a" STD_SUB_0 STD_SPACE_3_PER_EM "a" STD_SUB_1 "^(1/x)";
+    case CF_HYPERBOLIC_FITTING:  return "(a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x)" STD_SUP_MINUS_1;
+    case CF_PARABOLIC_FITTING:   return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x" STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_2 "x" STD_SUP_2;
+    case CF_CAUCHY_FITTING:      return STD_LEFT_SQUARE_BRACKET "a" STD_SUB_0 "(x+a" STD_SUB_1 ")" STD_SUP_2 "+a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET STD_SUP_MINUS_1;
+    case CF_GAUSS_FITTING:       return "a" STD_SUB_0 "e^" STD_LEFT_SQUARE_BRACKET  "(x-a" STD_SUB_1 ")" STD_SUP_2 "/a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET;
+    case CF_ORTHOGONAL_FITTING:  return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
+    default: return "???        "; break;
   }
+}
 
 
 
@@ -1733,8 +1734,8 @@ void debugNIM(void) {
     uint32_t dataType;
     calcRegister_t regist;
 
-  //  if(debug) {
-  //    debugCounter++;
+    //if(debug) {
+    //  debugCounter++;
       printf("\n\n%s\nTotal memory = %d bytes = %d blocks\n", text, TO_BYTES(RAM_SIZE), RAM_SIZE);
       printf("Free blocks (%" PRId32 "):\n", numberOfFreeMemoryRegions);
 

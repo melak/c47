@@ -909,9 +909,9 @@ typedef enum {
 //******************************
 #if (EXTRA_INFO_ON_CALC_ERROR == 0) || defined(TESTSUITE_BUILD) || defined(DMCP_BUILD)
   #define EXTRA_INFO_MESSAGE(function, msg)
-#else // EXTRA_INFO_ON_CALC_ERROR == 1
+  #else // EXTRA_INFO_ON_CALC_ERROR != 0 && !TESTSUITE_BUILD && !DMCP_BUILD
   #define EXTRA_INFO_MESSAGE(function, msg)  {sprintf(errorMessage, msg); moreInfoOnError("In function ", function, errorMessage, NULL);}
-#endif // EXTRA_INFO_ON_CALC_ERROR
+  #endif // EXTRA_INFO_ON_CALC_ERROR == 0 || TESTSUITE_BUILD || DMCP_BUILD
 
 #define isSystemFlagWriteProtected(sf)       ((sf & 0x4000) != 0)
 #define getSystemFlag(sf)                    ((systemFlags &   ((uint64_t)1 << (sf & 0x3fff))) != 0)
@@ -950,19 +950,19 @@ typedef enum {
 
 #if !defined(PC_BUILD) && !defined(DMCP_BUILD)
   #error One of PC_BUILD and DMCP_BUILD must be defined
-#endif // !defined(PC_BUILD) && !defined(DMCP_BUILD)
+  #endif // !PC_BUILD && !DMCP_BUILD
 
 #if defined(PC_BUILD) && defined(DMCP_BUILD)
   #error Only one of PC_BUILD and DMCP_BUILD must be defined
-#endif // defined(PC_BUILD) && defined(DMCP_BUILD)
+  #endif // PC_BUILD && DMCP_BUILD
 
 #if !defined(OS32BIT) && !defined(OS64BIT)
   #error One of OS32BIT and OS64BIT must be defined
-#endif // !defined(OS32BIT) && !defined(OS64BIT)
+  #endif // !OS32BIT && !OS64BIT
 
 #if defined(OS32BIT) && defined(OS64BIT)
   #error Only one of OS32BIT and OS64BIT must be defined
-#endif // defined(OS32BIT) && defined(OS64BIT)
+  #endif // OS32BIT && OS64BIT
 
   #if defined(PC_BUILD)
     #if defined(WIN32) // No DEBUG_PANEL mode for Windows
@@ -984,7 +984,7 @@ typedef enum {
   #define SHOW_MEMORY_STATUS 0
   #undef  EXTRA_INFO_ON_CALC_ERROR
   #define EXTRA_INFO_ON_CALC_ERROR 0
-#endif // defined(DMCP_BUILD) || (SCREEN_800X480 == 1)
+  #endif // DMCP_BUILD || SCREEN_800X480 == 1
 
 #if defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
   #undef  PC_BUILD
@@ -1009,7 +1009,7 @@ typedef enum {
   #define refreshScreen()         {}
   #define refreshLcd(a)           {}
   #define initFontBrowser()       {}
-#endif // defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
+  #endif // TESTSUITE_BUILD && !GENERATE_CATALOGS
 
   /* Turn off -Wunused-result for a specific function call */
   #if defined(OS32BIT)
@@ -1076,5 +1076,4 @@ typedef enum {
                                      printf("%lulimbs", *REGISTER_DATA_MAX_LEN(reg) / LIMB_SIZE); \
                                      printf("\n"); \
                                     }
-
-#endif // DEFINES_H
+#endif // !DEFINES_H

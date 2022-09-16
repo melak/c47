@@ -20,9 +20,9 @@
 #if !defined(CURVEFITTING_H)
   #define CURVEFITTING_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-#include "wp43s.h"
+  #include "wp43s.h"
 
   extern   realContext_t              *realContext;
   void     fnCurveFitting             (uint16_t curveFitting);

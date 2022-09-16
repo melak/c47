@@ -903,4 +903,4 @@
     _tamProcessInput(item);
     _tamUpdateBuffer();
   }
-#endif // TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
