@@ -58,7 +58,7 @@ void fnCheckInteger(uint16_t mode) {
       return;
   }
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     lcd_refresh();
   #else // !DMCP_BUILD
     refreshLcd(NULL);

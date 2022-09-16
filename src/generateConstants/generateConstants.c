@@ -62,9 +62,9 @@ void *xcopy(void *dest, const void *source, int n) {
 void generateConstantArray(char *name, char *value) {
   real39_t real39;
 
-  #ifdef DEBUG
+  #if defined(DEBUG)
     printf("generateConstantArray: %-10.10s = %s\n", name, value);
-  #endif
+  #endif // DEBUG
 
   memset(&real39, 0, sizeof(real39_t));
   stringToReal(value, (real_t *)&real39, &ctxtReal39);
@@ -105,9 +105,9 @@ void generateConstantArray(char *name, char *value) {
 void generateConstantArray34(char *name, char *value) {
   real34_t real34;
 
-  #ifdef DEBUG
+  #if defined(DEBUG)
     printf("generateConstantArray34: %-10.10s = %s\n", name, value);
-  #endif
+  #endif // DEBUG
 
   memset(&real34, 0, sizeof(real34_t));
   stringToReal34(value, &real34);
@@ -143,9 +143,9 @@ void generateConstantArray34(char *name, char *value) {
 void generateConstantArray51(char *name, char *value) {
   real51_t real51;
 
-  #ifdef DEBUG
+  #if defined(DEBUG)
     printf("generateConstantArray51: %-10.10s = %s\n", name, value);
-  #endif
+  #endif // DEBUG
 
   memset(&real51, 0, sizeof(real51_t));
   stringToReal(value, (real_t *)&real51, &ctxtReal51);
@@ -181,9 +181,9 @@ void generateConstantArray51(char *name, char *value) {
 void generateConstantArray1071(char *name, char *value) {
   real1071_t real1071;
 
-  #ifdef DEBUG
+  #if defined(DEBUG)
     printf("generateConstantArray1071: %-9.9s = %s\n", name, value);
-  #endif
+  #endif // DEBUG
 
   memset(&real1071, 0, sizeof(real1071_t));
   stringToReal(value, (real_t *)&real1071, &ctxtReal1071);

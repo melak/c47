@@ -382,7 +382,7 @@ void force_refresh1(void) {
   #if defined(PC_BUILD)
     gtk_widget_queue_draw(screen);
     //FULL UPDATE (UGLY)
-    #ifdef FULLUPDATE
+    #if defined(FULLUPDATE)
       refresh_gui();
     #endif // FULLUPDATE
   #endif // PC_BUILD
@@ -1468,7 +1468,7 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
 //
 void fnPlotStat(uint16_t plotMode){
   #if !defined(TESTSUITE_BUILD)
-    switch (plotMode) {
+    switch(plotMode) {
       case PLOT_GRAPH:  strcpy(plotStatMx, "DrwMX");
                         break;
       case PLOT_ORTHOF:
