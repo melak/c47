@@ -17,20 +17,21 @@
 /********************************************//**
  * \file arctan.h
  ***********************************************/
-#ifndef ARG_H
-#define ARG_H
+#if !defined(ARG_H)
+  #define ARG_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnArg      (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void argError   (void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define argError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void argReal    (void);
-void argCplx    (void);
-void argCxma    (void);
+  void fnArg      (uint16_t unusedButMandatoryParameter);
 
-#endif // ARG_H
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void argError   (void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #define argError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+  void argReal    (void);
+  void argCplx    (void);
+  void argCxma    (void);
+#endif // !ARG_H

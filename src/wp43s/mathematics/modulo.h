@@ -17,32 +17,32 @@
 /********************************************//**
  * \file modulo.h
  ***********************************************/
-#ifndef MODULO_H
-#define MODULO_H
+#if !defined(MODULO_H)
+  #define MODULO_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnMod(uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void modError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define modError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  void fnMod(uint16_t unusedButMandatoryParameter);
 
-//      RegYRegX
-void modLonILonI(void);
-void modLonIShoI(void);
-void modLonIReal(void);
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void modError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define modError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
-//      RegYRegX
-void modShoILonI(void);
-void modShoIShoI(void);
-void modShoIReal(void);
+  //      RegYRegX
+  void modLonILonI(void);
+  void modLonIShoI(void);
+  void modLonIReal(void);
 
-//      RegYRegX
-void modRealLonI(void);
-void modRealShoI(void);
-void modRealReal(void);
+  //      RegYRegX
+  void modShoILonI(void);
+  void modShoIShoI(void);
+  void modShoIReal(void);
 
-#endif // MODULO_H
+  //      RegYRegX
+  void modRealLonI(void);
+  void modRealShoI(void);
+  void modRealReal(void);
+#endif // !MODULO_H

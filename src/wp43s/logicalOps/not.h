@@ -17,20 +17,21 @@
 /********************************************//**
  * \file not.h
  ***********************************************/
-#ifndef NOT_H
-#define NOT_H
+#if !defined(NOT_H)
+  #define NOT_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnLogicalNot(uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void notError    (void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define notError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void notLonI     (void);
-void notShoI     (void);
-void notReal     (void);
+  void fnLogicalNot(uint16_t unusedButMandatoryParameter);
 
-#endif // NOT_H
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void notError    (void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #define notError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+  void notLonI     (void);
+  void notShoI     (void);
+  void notReal     (void);
+#endif // !NOT_H

@@ -17,15 +17,14 @@
 /********************************************//**
  * \file setClearFlipBits.h
  ***********************************************/
-#ifndef SETCLEARFLIPBITS_H
-#define SETCLEARFLIPBITS_H
+#if !defined(SETCLEARFLIPBITS_H)
+  #define SETCLEARFLIPBITS_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnCb(uint16_t bit);
-void fnSb(uint16_t bit);
-void fnFb(uint16_t bit);
-void fnBc(uint16_t bit);
-void fnBs(uint16_t bit);
-
-#endif // SETCLEARFLIPBITS_H
+  void fnCb(uint16_t bit);
+  void fnSb(uint16_t bit);
+  void fnFb(uint16_t bit);
+  void fnBc(uint16_t bit);
+  void fnBs(uint16_t bit);
+#endif // !SETCLEARFLIPBITS_H

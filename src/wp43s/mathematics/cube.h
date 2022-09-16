@@ -17,23 +17,24 @@
 /********************************************//**
  * \file cube.h
  ***********************************************/
-#ifndef CUBE_H
-#define CUBE_H
+#if !defined(CUBE_H)
+  #define CUBE_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnCube   (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void cubeError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define cubeError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void cubeLonI (void);
-void cubeRema (void);
-void cubeCxma (void);
-void cubeShoI (void);
-void cubeReal (void);
-void cubeCplx (void);
+  void fnCube   (uint16_t unusedButMandatoryParameter);
 
-#endif // CUBE_H
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void cubeError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #define cubeError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+  void cubeLonI (void);
+  void cubeRema (void);
+  void cubeCxma (void);
+  void cubeShoI (void);
+  void cubeReal (void);
+  void cubeCplx (void);
+#endif // !CUBE_H

@@ -17,14 +17,13 @@
 /********************************************//**
  * \file toPolar.h
  ***********************************************/
-#ifndef TOPOLAR_H
-#define TOPOLAR_H
+#if !defined(TOPOLAR_H)
+  #define TOPOLAR_H
 
-#include "realType.h"
-#include <stdint.h>
+  #include "realType.h"
+  #include <stdint.h>
 
-void fnToPolar               (uint16_t unusedButMandatoryParameter);
-void real34RectangularToPolar(const real34_t *real34, const real34_t *imag34, real34_t *magnitude34, real34_t *theta34);
-void realRectangularToPolar  (const real_t   *real,   const real_t   *imag,   real_t   *magnitude,   real_t   *theta,  realContext_t *realContext);
-
-#endif // TOPOLAR_H
+  void fnToPolar               (uint16_t unusedButMandatoryParameter);
+  void real34RectangularToPolar(const real34_t *real34, const real34_t *imag34, real34_t *magnitude34, real34_t *theta34);
+  void realRectangularToPolar  (const real_t   *real,   const real_t   *imag,   real_t   *magnitude,   real_t   *theta,  realContext_t *realContext);
+#endif // !TOPOLAR_H

@@ -74,7 +74,9 @@ TO_QSPI void (* const GammaXyLower[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER
  * \return void
  ***********************************************/
 void fnGammaXyLower(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   GammaXyLower[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

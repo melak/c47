@@ -17,22 +17,23 @@
 /********************************************//**
  * \file sinh.h
  ***********************************************/
-#ifndef SINH_H
-#define SINH_H
+#if !defined(SINH_H)
+  #define SINH_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnSinh   (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void sinhError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define sinhError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void sinhLonI (void);
-void sinhRema (void);
-void sinhCxma (void);
-void sinhReal (void);
-void sinhCplx (void);
+  void fnSinh   (uint16_t unusedButMandatoryParameter);
 
-#endif // SINH_H
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void sinhError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define sinhError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+  void sinhLonI (void);
+  void sinhRema (void);
+  void sinhCxma (void);
+  void sinhReal (void);
+  void sinhCplx (void);
+#endif // !SINH_H

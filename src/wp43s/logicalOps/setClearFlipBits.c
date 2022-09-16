@@ -37,7 +37,9 @@
  ***********************************************/
 void fnCb(uint16_t bit) { // bit from 0=LSB to shortIntegerWordSize-1=MSB
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) &= ~((uint64_t)1 << bit);
   }
@@ -61,7 +63,9 @@ void fnCb(uint16_t bit) { // bit from 0=LSB to shortIntegerWordSize-1=MSB
  ***********************************************/
 void fnSb(uint16_t bit) { // bit from 0=LSB to shortIntegerWordSize-1=MSB
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) |= (uint64_t)1 << bit;
   }
@@ -85,7 +89,9 @@ void fnSb(uint16_t bit) { // bit from 0=LSB to shortIntegerWordSize-1=MSB
  ***********************************************/
 void fnFb(uint16_t bit) { // bit from 0=LSB to shortIntegerWordSize-1=MSB
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
 
     *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) ^= (uint64_t)1 << bit;
   }

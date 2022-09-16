@@ -17,24 +17,23 @@
 /********************************************//**
  * \file cross.h
  ***********************************************/
-#ifndef CROSS_H
-#define CROSS_H
+#if !defined(CROSS_H)
+  #define CROSS_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnCross(uint16_t unusedButMandatoryParameter);
+  void fnCross(uint16_t unusedButMandatoryParameter);
 
-void crossRealCplx(void);
-void crossLonICplx(void);
-void crossShoICplx(void);
-void crossCplxCplx(void);
-void crossCplxReal(void);
-void crossCplxLonI(void);
-void crossCplxShoI(void);
+  void crossRealCplx(void);
+  void crossLonICplx(void);
+  void crossShoICplx(void);
+  void crossCplxCplx(void);
+  void crossCplxReal(void);
+  void crossCplxLonI(void);
+  void crossCplxShoI(void);
 
-void crossRemaRema(void);
-void crossCpmaRema(void);
-void crossRemaCpma(void);
-void crossCpmaCpma(void);
-
-#endif // CROSS_H
+  void crossRemaRema(void);
+  void crossCpmaRema(void);
+  void crossRemaCpma(void);
+  void crossCpmaCpma(void);
+#endif // !CROSS_H

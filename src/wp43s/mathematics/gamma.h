@@ -17,28 +17,28 @@
 /********************************************//**
  * \file gamma.h
  ***********************************************/
-#ifndef GAMMA_H
-#define GAMMA_H
+#if !defined(GAMMA_H)
+  #define GAMMA_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnGamma     (uint16_t unusedButMandatoryParameter);
-void fnLnGamma   (uint16_t unusedButMandatoryParameter);
+  void fnGamma     (uint16_t unusedButMandatoryParameter);
+  void fnLnGamma   (uint16_t unusedButMandatoryParameter);
 
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void gammaError  (void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define gammaError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void lnGammaError(void);
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void gammaError  (void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define gammaError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 
-void gammaLonI   (void);
-void gammaReal   (void);
-void gammaCplx   (void);
+  void lnGammaError(void);
 
-void lnGammaLonI (void);
-void lnGammaReal (void);
-void lnGammaCplx (void);
+  void gammaLonI   (void);
+  void gammaReal   (void);
+  void gammaCplx   (void);
 
-#endif // GAMMA_H
+  void lnGammaLonI (void);
+  void lnGammaReal (void);
+  void lnGammaCplx (void);
+#endif // !GAMMA_H

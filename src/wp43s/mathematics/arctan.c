@@ -68,7 +68,9 @@ TO_QSPI void (* const arctan[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnArctan(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   arctan[getRegisterDataType(REGISTER_X)]();
 
@@ -136,90 +138,90 @@ void arctanReal(void) {
 
 
 void arctanCplx(void) {
-    real_t xReal, xImag, rReal, rImag;
+  real_t xReal, xImag, rReal, rImag;
 
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
-    real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
+  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
+  real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
-    ArctanComplex(&xReal, &xImag, &rReal, &rImag, &ctxtReal39);
+  ArctanComplex(&xReal, &xImag, &rReal, &rImag, &ctxtReal39);
 
-    convertRealToReal34ResultRegister(&rReal, REGISTER_X);
-    convertRealToImag34ResultRegister(&rImag, REGISTER_X);
+  convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&rImag, REGISTER_X);
 
-//  real_t a, b, numer, denom;
-//
-//  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &a);
-//  real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &b);
-//
-//  // arctan(z) = i/2 . ln((1 - iz) / (1 + iz))
-//
-//  // calculate (1 - iz) / (1 + iz)  with z = a + bi
-//
-//  // 1 - (a + bi)i      1 - (a² + b²)             - 2a
-//  // -------------  =  ----------------  +  ---------------- i
-//  // 1 + (a + bi)i     a² + b² - 2b + 1     a² + b² - 2b + 1
-//
-//  realMultiply(&a, &a, &denom, &ctxtReal39);          // denom = a²
-//  realFMA(&b, &b, &denom, &denom, &ctxtReal39);       // denom = a² + b²
-//  realSubtract(const_1, &denom, &numer, &ctxtReal39); // numer = 1 - (a² + b²)
-//  realChangeSign(&b);                                 // b = -b
-//  realFMA(&b, const_2, &denom, &denom, &ctxtReal39);  // denom = a² + b² - 2b
-//  realAdd(&denom, const_1, &denom, &ctxtReal39);      // denom = a² + b² - 2b + 1
-//  realMultiply(&a, const_2, &b, &ctxtReal39);         // imag part = 2a
-//  realChangeSign(&b);                                 // imag part = -2a
-//  realDivide(&numer, &denom, &a, &ctxtReal39);        // real part = numer / denom
-//  realDivide(&b, &denom, &b, &ctxtReal39);            // imag part = -2a / denom
-//
-//  // calculate ln((1 - iz) / (1 + iz))
-//  realRectangularToPolar(&a, &b, &a, &b, &ctxtReal39);
-//  WP34S_Ln(&a, &a, &ctxtReal39);
-//
-//  // arctan(z) = i/2 . ln((1 - iz) / (1 + iz))
-//  realMultiply(&a, const_1on2, &a, &ctxtReal39);
-//  realMultiply(&b, const_1on2, &b, &ctxtReal39);
-//  realChangeSign(&b);
-//
-//  convertRealToReal34ResultRegister(&b, REGISTER_X);
-//  convertRealToImag34ResultRegister(&a, REGISTER_X);
+  //real_t a, b, numer, denom;
+  //
+  //real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &a);
+  //real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &b);
+  //
+  //// arctan(z) = i/2 . ln((1 - iz) / (1 + iz))
+  //
+  //// calculate (1 - iz) / (1 + iz)  with z = a + bi
+  //
+  //// 1 - (a + bi)i      1 - (a² + b²)             - 2a
+  //// -------------  =  ----------------  +  ---------------- i
+  //// 1 + (a + bi)i     a² + b² - 2b + 1     a² + b² - 2b + 1
+  //
+  //realMultiply(&a, &a, &denom, &ctxtReal39);          // denom = a²
+  //realFMA(&b, &b, &denom, &denom, &ctxtReal39);       // denom = a² + b²
+  //realSubtract(const_1, &denom, &numer, &ctxtReal39); // numer = 1 - (a² + b²)
+  //realChangeSign(&b);                                 // b = -b
+  //realFMA(&b, const_2, &denom, &denom, &ctxtReal39);  // denom = a² + b² - 2b
+  //realAdd(&denom, const_1, &denom, &ctxtReal39);      // denom = a² + b² - 2b + 1
+  //realMultiply(&a, const_2, &b, &ctxtReal39);         // imag part = 2a
+  //realChangeSign(&b);                                 // imag part = -2a
+  //realDivide(&numer, &denom, &a, &ctxtReal39);        // real part = numer / denom
+  //realDivide(&b, &denom, &b, &ctxtReal39);            // imag part = -2a / denom
+  //
+  //// calculate ln((1 - iz) / (1 + iz))
+  //realRectangularToPolar(&a, &b, &a, &b, &ctxtReal39);
+  //WP34S_Ln(&a, &a, &ctxtReal39);
+  //
+  //// arctan(z) = i/2 . ln((1 - iz) / (1 + iz))
+  //realMultiply(&a, const_1on2, &a, &ctxtReal39);
+  //realMultiply(&b, const_1on2, &b, &ctxtReal39);
+  //realChangeSign(&b);
+  //
+  //convertRealToReal34ResultRegister(&b, REGISTER_X);
+  //convertRealToImag34ResultRegister(&a, REGISTER_X);
 }
 
 
 uint8_t ArctanComplex(real_t *xReal, real_t *xImag, real_t *rReal, real_t *rImag, realContext_t *realContext) {
-    real_t a, b, numer, denom;
+  real_t a, b, numer, denom;
 
-    realCopy(xReal, &a);
-    realCopy(xImag, &b);
+  realCopy(xReal, &a);
+  realCopy(xImag, &b);
 
-    // arctan(z) = i/2 . ln((1 - iz) / (1 + iz))
+  // arctan(z) = i/2 . ln((1 - iz) / (1 + iz))
 
-    // calculate (1 - iz) / (1 + iz)  with z = a + bi
+  // calculate (1 - iz) / (1 + iz)  with z = a + bi
 
-    // 1 - (a + bi)i      1 - (a² + b²)             - 2a
-    // -------------  =  ----------------  +  ---------------- i
-    // 1 + (a + bi)i     a² + b² - 2b + 1     a² + b² - 2b + 1
+  // 1 - (a + bi)i      1 - (a² + b²)             - 2a
+  // -------------  =  ----------------  +  ---------------- i
+  // 1 + (a + bi)i     a² + b² - 2b + 1     a² + b² - 2b + 1
 
-    realMultiply(&a, &a, &denom, realContext);         // denom = a²
-    realFMA(&b, &b, &denom, &denom, realContext);   // denom = a² + b²
-    realSubtract(const_1, &denom, &numer, realContext);         // numer = 1 - (a² + b²)
-    realChangeSign(&b);                                              // b = -b
-    realFMA(&b, const_2, &denom, &denom, realContext);     // denom = a² + b² - 2b
-    realAdd(&denom, const_1, &denom, realContext);             // denom = a² + b² - 2b + 1
-    realMultiply(&a, const_2, &b, realContext);                // imag part = 2a
-    realChangeSign(&b);                                             // imag part = -2a
-    realDivide(&numer, &denom, &a, realContext);      // real part = numer / denom
-    realDivide(&b, &denom, &b, realContext);          // imag part = -2a / denom
+  realMultiply(&a, &a, &denom, realContext);         // denom = a²
+  realFMA(&b, &b, &denom, &denom, realContext);   // denom = a² + b²
+  realSubtract(const_1, &denom, &numer, realContext);         // numer = 1 - (a² + b²)
+  realChangeSign(&b);                                              // b = -b
+  realFMA(&b, const_2, &denom, &denom, realContext);     // denom = a² + b² - 2b
+  realAdd(&denom, const_1, &denom, realContext);             // denom = a² + b² - 2b + 1
+  realMultiply(&a, const_2, &b, realContext);                // imag part = 2a
+  realChangeSign(&b);                                             // imag part = -2a
+  realDivide(&numer, &denom, &a, realContext);      // real part = numer / denom
+  realDivide(&b, &denom, &b, realContext);          // imag part = -2a / denom
 
-    // calculate ln((1 - iz) / (1 + iz))
-    realRectangularToPolar(&a, &b, &a, &b, realContext);
-    WP34S_Ln(&a, &a, realContext);
+  // calculate ln((1 - iz) / (1 + iz))
+  realRectangularToPolar(&a, &b, &a, &b, realContext);
+  WP34S_Ln(&a, &a, realContext);
 
-    // arctan(z) = i/2 . ln((1 - iz) / (1 + iz))
-    realMultiply(&a, const_1on2, &a, realContext);
-    realMultiply(&b, const_1on2, &b, realContext);
-    realChangeSign(&b);
+  // arctan(z) = i/2 . ln((1 - iz) / (1 + iz))
+  realMultiply(&a, const_1on2, &a, realContext);
+  realMultiply(&b, const_1on2, &b, realContext);
+  realChangeSign(&b);
 
-    realCopy(&b, rReal);
-    realCopy(&a, rImag);
+  realCopy(&b, rReal);
+  realCopy(&a, rImag);
 
-    return ERROR_NONE;
+  return ERROR_NONE;
 }

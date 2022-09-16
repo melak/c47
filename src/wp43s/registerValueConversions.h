@@ -17,8 +17,8 @@
 /**
  * \file registerValueConversions.h
  */
-#ifndef REGISTERVALUECONVERSIONS_H
-#define REGISTERVALUECONVERSIONS_H
+#if !defined(REGISTERVALUECONVERSIONS_H)
+  #define REGISTERVALUECONVERSIONS_H
 
 #include "longIntegerType.h"
 #include "realType.h"
@@ -67,6 +67,7 @@ void realToUInt32                                          (const real_t *re, en
  * \param[in] dest the destination register. Usually REGISTER_X or REGISTER_Y.
  ***********************************************/
 void convertRealToReal34ResultRegister                     (const real_t *real, calcRegister_t dest);
+
 /********************************************//**
  * \brief Sets function result in real type to the imaginary part of a complex34 register.
  *        This follows preferences of number of significant digits.
@@ -85,9 +86,9 @@ void convertLongIntegerRegisterToTimeRegister              (calcRegister_t sourc
 void convertDateRegisterToReal34Register                   (calcRegister_t source, calcRegister_t destination);
 void convertReal34RegisterToDateRegister                   (calcRegister_t source, calcRegister_t destination);
 
-#ifndef TESTSUITE_BUILD
-  void convertReal34MatrixRegisterToReal34Matrix           (calcRegister_t regist, real34Matrix_t *matrix);
-  void convertReal34MatrixToReal34MatrixRegister           (const real34Matrix_t *matrix, calcRegister_t regist);
+  #if !defined(TESTSUITE_BUILD)
+    void convertReal34MatrixRegisterToReal34Matrix           (calcRegister_t regist, real34Matrix_t *matrix);
+    void convertReal34MatrixToReal34MatrixRegister           (const real34Matrix_t *matrix, calcRegister_t regist);
 
   void convertComplex34MatrixRegisterToComplex34Matrix     (calcRegister_t regist, complex34Matrix_t *matrix);
   void convertComplex34MatrixToComplex34MatrixRegister     (const complex34Matrix_t *matrix, calcRegister_t regist);
@@ -101,11 +102,10 @@ void convertReal34RegisterToDateRegister                   (calcRegister_t sourc
   void    convertDoubleToString                            (double x, int16_t n, char *buff);  //Reformatting double/float strings that are formatted according to different locale settings
   void    convertDoubleToReal                              (double x, real_t *destination, realContext_t *ctxt);
   void    convertDoubleToReal34Register                    (double x, calcRegister_t destination);
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
+
 void    realToFloat                                        (const real_t *vv, float *v);
 void    realToDouble  /*float used (not double)*/          (const real_t *vv, double *v);
 double  convertRegisterToDouble                            (calcRegister_t regist);
 #define DOUBLE_NOT_INIT 3.402823466e+38f //maximum float value
-
-
-#endif // REGISTERVALUECONVERSIONS_H
+#endif // !REGISTERVALUECONVERSIONS_H

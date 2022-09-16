@@ -17,24 +17,23 @@
 /********************************************//**
  * \file dot.h
  ***********************************************/
-#ifndef DOT_H
-#define DOT_H
+#if !defined(DOT_H)
+  #define DOT_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnDot(uint16_t unusedButMandatoryParameter);
+  void fnDot(uint16_t unusedButMandatoryParameter);
 
-void dotRealCplx(void);
-void dotLonICplx(void);
-void dotShoICplx(void);
-void dotCplxCplx(void);
-void dotCplxReal(void);
-void dotCplxLonI(void);
-void dotCplxShoI(void);
+  void dotRealCplx(void);
+  void dotLonICplx(void);
+  void dotShoICplx(void);
+  void dotCplxCplx(void);
+  void dotCplxReal(void);
+  void dotCplxLonI(void);
+  void dotCplxShoI(void);
 
-void dotRemaRema(void);
-void dotCpmaRema(void);
-void dotRemaCpma(void);
-void dotCpmaCpma(void);
-
-#endif // DOT_H
+  void dotRemaRema(void);
+  void dotCpmaRema(void);
+  void dotRemaCpma(void);
+  void dotCpmaCpma(void);
+#endif // !DOT_H

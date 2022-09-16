@@ -17,6 +17,8 @@
 /**
  * \file assign.h
  */
+#if !defined(ASSIGN_H)
+#define ASSIGN_H
 
 #include <stdint.h>
 
@@ -36,3 +38,4 @@ void assignEnterAlpha     (void);
 void assignLeaveAlpha     (void);
 void assignGetName1       (void);
 void assignGetName2       (void);
+#endif // !ASSIGN_H

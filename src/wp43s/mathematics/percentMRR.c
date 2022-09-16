@@ -135,11 +135,14 @@ static void percentMRR() {
  * \return void
  ***********************************************/
 void fnPercentMRR(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   percentMRR();
 
   adjustResult(REGISTER_X, true, true, REGISTER_X, -1, -1);
-  if(lastErrorCode == 0)
+  if(lastErrorCode == 0) {
     fnDropY(NOPARAM);
+  }
 }

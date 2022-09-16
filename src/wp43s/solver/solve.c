@@ -163,20 +163,22 @@ void fnSolve(uint16_t labelOrVariable) {
       x_1 = convertRegisterToDouble(REGISTER_X);
       if(x_0 != DOUBLE_NOT_INIT && x_1 != DOUBLE_NOT_INIT) {
         if(!(x_min<x_0 && x_min<x_1 && x_0<x_max && x_1<x_max)) {
-          if(fmin(x_0,x_1) < x_min)
+          if(fmin(x_0,x_1) < x_min) {
             x_min = fmin(x_0,x_1) - 0.1 * fabs(x_max-fmin(x_0,x_1)); //get the root or maximum/minimum in the centre of the graph interval
-          if(fmax(x_0,x_1) > x_max)
+          }
+          if(fmax(x_0,x_1) > x_max) {
             x_max = fmax(x_0,x_1) + 0.1 * fabs(x_min-fmax(x_0,x_1)); //get the root or maximum/minimum in the centre of the graph interval
+          }
         }
       }
 
     }
     else {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
         sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
         moreInfoOnError("In function fnSolve:", errorMessage, "is not a real number.", "");
-      #endif
+      #endif // PC_BUILD
       adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
     }
   }
@@ -191,7 +193,7 @@ void fnSolve(uint16_t labelOrVariable) {
 }
 
 void fnSolveVar(uint16_t unusedButMandatoryParameter) {
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
   const char *var = (char *)getNthString(dynamicSoftmenu[softmenuStack[0].softmenuId].menuContent, dynamicMenuItem);
   const uint16_t regist = findOrAllocateNamedVariable(var);
   if(currentMvarLabel != INVALID_VARIABLE) {
@@ -211,42 +213,42 @@ void fnSolveVar(uint16_t unusedButMandatoryParameter) {
     currentSolverStatus |= SOLVER_STATUS_READY_TO_EXECUTE;
     temporaryInformation = TI_SOLVER_VARIABLE;
   }
-#endif /* TESTSUITE_BUILD */
+  #endif // !TESTSUITE_BUILD
 }
 
-#ifndef TESTSUITE_BUILD
-static void _solverIteration(real34_t *res) {
-  if(currentSolverStatus & SOLVER_STATUS_TVM_APPLICATION) {
-    tvmEquation();
+#if !defined(TESTSUITE_BUILD)
+  static void _solverIteration(real34_t *res) {
+    if(currentSolverStatus & SOLVER_STATUS_TVM_APPLICATION) {
+      tvmEquation();
+    }
+    else if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
+      parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
+    }
+    else {
+      dynamicMenuItem = -1;
+      execProgram(currentSolverProgram + FIRST_LABEL);
+    }
+    if(lastErrorCode == ERROR_OVERFLOW_PLUS_INF) {
+      realToReal34(const_plusInfinity, res);
+      lastErrorCode = ERROR_NONE;
+    }
+    else if(lastErrorCode == ERROR_OVERFLOW_MINUS_INF) {
+      realToReal34(const_minusInfinity, res);
+      lastErrorCode = ERROR_NONE;
+    }
+    else if(lastErrorCode != ERROR_NONE) {
+      realToReal34(const_NaN, res);
+    }
+    else if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone) {
+      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), res);
+    }
+    else if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
+      convertLongIntegerRegisterToReal34(REGISTER_X, res);
+    }
+    else {
+      realToReal34(const_NaN, res);
+    }
   }
-  else if(currentSolverStatus & SOLVER_STATUS_USES_FORMULA) {
-    parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
-  }
-  else {
-    dynamicMenuItem = -1;
-    execProgram(currentSolverProgram + FIRST_LABEL);
-  }
-  if(lastErrorCode == ERROR_OVERFLOW_PLUS_INF) {
-    realToReal34(const_plusInfinity, res);
-    lastErrorCode = ERROR_NONE;
-  }
-  else if(lastErrorCode == ERROR_OVERFLOW_MINUS_INF) {
-    realToReal34(const_minusInfinity, res);
-    lastErrorCode = ERROR_NONE;
-  }
-  else if(lastErrorCode != ERROR_NONE) {
-    realToReal34(const_NaN, res);
-  }
-  else if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone) {
-    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), res);
-  }
-  else if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
-    convertLongIntegerRegisterToReal34(REGISTER_X, res);
-  }
-  else {
-    realToReal34(const_NaN, res);
-  }
-}
 
 static void _executeSolver(calcRegister_t variable, const real34_t *val, real34_t *res) {
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
@@ -261,55 +263,57 @@ static void _executeSolver(calcRegister_t variable, const real34_t *val, real34_
   _solverIteration(res);
 }
 
-static void _linearInterpolation(const real_t *a, const real_t *b, const real_t *fa, const real_t *fb, real_t *res, real_t *slope, realContext_t *realContext) {
-  real_t amb, famfb;
-  realSubtract(a, b, &amb, realContext);
-  realSubtract(fa, fb, &famfb, realContext);
-  if(slope) realDivide(&famfb, &amb, slope, realContext);
-  if(res) {
-    realDivide(&amb, &famfb, &amb, realContext);
-    realMultiply(&amb, fb, &amb, realContext);
-    realSubtract(b, &amb, res, realContext);
+  static void _linearInterpolation(const real_t *a, const real_t *b, const real_t *fa, const real_t *fb, real_t *res, real_t *slope, realContext_t *realContext) {
+    real_t amb, famfb;
+    realSubtract(a, b, &amb, realContext);
+    realSubtract(fa, fb, &famfb, realContext);
+    if(slope) {
+      realDivide(&famfb, &amb, slope, realContext);
+    }
+    if(res) {
+      realDivide(&amb, &famfb, &amb, realContext);
+      realMultiply(&amb, fb, &amb, realContext);
+      realSubtract(b, &amb, res, realContext);
+    }
   }
-}
 
-static void _inverseQuadraticInterpolation(const real_t *a, const real_t *b, const real_t *c, const real_t *fa, const real_t *fb, const real_t *fc, real_t *res, realContext_t *realContext) {
-  real_t val, num, den, tmp;
+  static void _inverseQuadraticInterpolation(const real_t *a, const real_t *b, const real_t *c, const real_t *fa, const real_t *fb, const real_t *fc, real_t *res, realContext_t *realContext) {
+    real_t val, num, den, tmp;
 
-  realMultiply(fb, fc, &num, realContext);
-  realMultiply(&num, a, &num, realContext);
-  realSubtract(fa, fb, &den, realContext);
-  realSubtract(fa, fc, &tmp, realContext);
-  realMultiply(&den, &tmp, &den, realContext);
-  realDivide(&num, &den, &val, realContext);
+    realMultiply(fb, fc, &num, realContext);
+    realMultiply(&num, a, &num, realContext);
+    realSubtract(fa, fb, &den, realContext);
+    realSubtract(fa, fc, &tmp, realContext);
+    realMultiply(&den, &tmp, &den, realContext);
+    realDivide(&num, &den, &val, realContext);
 
-  realMultiply(fa, fc, &num, realContext);
-  realMultiply(&num, b, &num, realContext);
-  realSubtract(fb, fa, &den, realContext);
-  realSubtract(fb, fc, &tmp, realContext);
-  realMultiply(&den, &tmp, &den, realContext);
-  realDivide(const_1, &den, &den, realContext);
-  realFMA(&num, &den, &val, &val, realContext);
+    realMultiply(fa, fc, &num, realContext);
+    realMultiply(&num, b, &num, realContext);
+    realSubtract(fb, fa, &den, realContext);
+    realSubtract(fb, fc, &tmp, realContext);
+    realMultiply(&den, &tmp, &den, realContext);
+    realDivide(const_1, &den, &den, realContext);
+    realFMA(&num, &den, &val, &val, realContext);
 
-  realMultiply(fa, fb, &num, realContext);
-  realMultiply(&num, c, &num, realContext);
-  realSubtract(fc, fa, &den, realContext);
-  realSubtract(fc, fb, &tmp, realContext);
-  realMultiply(&den, &tmp, &den, realContext);
-  realDivide(const_1, &den, &den, realContext);
-  realFMA(&num, &den, &val, res, realContext);
-}
-#endif /* TESTSUITE_BUILD */
+    realMultiply(fa, fb, &num, realContext);
+    realMultiply(&num, c, &num, realContext);
+    realSubtract(fc, fa, &den, realContext);
+    realSubtract(fc, fb, &tmp, realContext);
+    realMultiply(&den, &tmp, &den, realContext);
+    realDivide(const_1, &den, &den, realContext);
+    realFMA(&num, &den, &val, res, realContext);
+  }
+#endif // !TESTSUITE_BUILD
 
 int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34_t *resZ, real34_t *resY, real34_t *resX) {
-#ifndef TESTSUITE_BUILD
-  real34_t a, b, b1, b2, fa, fb, fb1, m, s, *bp1, fbp1, tmp;
-  real_t aa, bb, bb1, bb2, faa, fbb, fbb1, mm, ss, secantSlopeA, secantSlopeB, delta, deltaB, smb, tol;
-  bool_t extendRange = false;
-  bool_t originallyLevel = false;
-  bool_t extremum = false;
-  int result = SOLVER_RESULT_NORMAL;
-  bool_t was_inting = getSystemFlag(FLAG_INTING);
+  #if !defined(TESTSUITE_BUILD)
+    real34_t a, b, b1, b2, fa, fb, fb1, m, s, *bp1, fbp1, tmp;
+    real_t aa, bb, bb1, bb2, faa, fbb, fbb1, mm, ss, secantSlopeA, secantSlopeB, delta, deltaB, smb, tol;
+    bool_t extendRange = false;
+    bool_t originallyLevel = false;
+    bool_t extremum = false;
+    int result = SOLVER_RESULT_NORMAL;
+    bool_t was_inting = getSystemFlag(FLAG_INTING);
 
   realCopy(const_1, &tol);
   tol.exponent -= (significantDigits == 0 || significantDigits >= 32) ? 32 : significantDigits;
@@ -567,8 +571,8 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
     }
   }
 
-  return result;
-#else /* TESTSUITE_BUILD */
-  return SOLVER_RESULT_NORMAL;
-#endif /* TESTSUITE_BUILD */
+    return result;
+  #else // !TESTSUITE_BUILD
+    return SOLVER_RESULT_NORMAL;
+  #endif // TESTSUITE_BUILD
 }

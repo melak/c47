@@ -100,7 +100,9 @@ void fnAgm(uint16_t unusedButMandatoryParameter) {
     return;
   }
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(realInput) {
     realAgm(&aReal, &bReal, &aReal, &ctxtReal39);
@@ -236,7 +238,9 @@ static int _complexAgm(int mode, const real_t *ar, const real_t *ai, const real_
       realCopy(&aImag, _ai + n);
       realCopy(&bReal, _br + n);
       realCopy(&bImag, _bi + n);
-      if(n >= (int)_sz - 1) break;
+      if(n >= (int)_sz - 1) {
+        break;
+      }
     }
   }
 

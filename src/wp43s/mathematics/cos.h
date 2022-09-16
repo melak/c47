@@ -17,24 +17,25 @@
 /********************************************//**
  * \file cos.h
  ***********************************************/
-#ifndef COS_H
-#define COS_H
+#if !defined(COS_H)
+  #define COS_H
 
-#include "defines.h"
-#include "realType.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include "realType.h"
+  #include <stdint.h>
 
-void fnCos   (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void cosError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define cosError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void cosLonI (void);
-void cosRema (void);
-void cosCxma (void);
-void cosReal (void);
-void cosCplx (void);
-void cosComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t *resImag, realContext_t *realContext);
+  void fnCos   (uint16_t unusedButMandatoryParameter);
 
-#endif // COS_H
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void cosError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #define cosError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+  void cosLonI (void);
+  void cosRema (void);
+  void cosCxma (void);
+  void cosReal (void);
+  void cosCplx (void);
+  void cosComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t *resImag, realContext_t *realContext);
+#endif // !COS_H

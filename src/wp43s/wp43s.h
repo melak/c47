@@ -18,35 +18,35 @@
  * \file wp43s.h
  */
 
-#ifndef WP43S_H
-#define WP43S_H
+#if !defined(WP43S_H)
+  #define WP43S_H
 
   #pragma GCC diagnostic ignored "-Wunused-parameter"
 
 
-  #ifdef LINUX
+  #if defined(LINUX)
     #include <math.h>
   #endif // LINUX
 
-  #ifdef OSX
+  #if defined(OSX)
     // needed by chdir
     #include <unistd.h>
   #endif // OSX
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     #include <glib.h>
     #include <gtk/gtk.h>
     #include <gdk/gdk.h>
   #endif // PC_BUILD
 
-  #ifdef WIN32
+  #if defined(WIN32)
     #include <locale.h>
   #endif // WIN32
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     #define DBG_PRINT
 
-    #ifdef DBG_PRINT
+    #if defined(DBG_PRINT)
       #include <stdio.h>
     #else
       #define printf(...)
@@ -62,8 +62,8 @@
   // Variables for the simulator
   #if defined(PC_BUILD) || defined (TESTSUITE_BUILD)
     extern bool_t               debugMemAllocation;
-  #endif // defined(PC_BUILD) || defined (TESTSUITE_BUILD)
-  #ifdef PC_BUILD
+  #endif // PC_BUILD || TESTSUITE_BUILD
+  #if defined(PC_BUILD)
     extern bool_t               calcLandscape;
     extern bool_t               calcAutoLandscapePortrait;
     extern GtkWidget           *screen;
@@ -312,13 +312,13 @@
   extern char                   statMx[8];
   extern char                   plotStatMx[8];
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     extern bool_t               backToDMCP;
-//  extern int                  keyAutoRepeat; // Key repetition
-//  extern int16_t              previousItem;
+    //extern int                  keyAutoRepeat; // Key repetition
+    //extern int16_t              previousItem;
     extern uint32_t             nextTimerRefresh;
 
     int                         convertKeyCode(int key);
   #endif // DMCP_BUILD
 
-#endif // WP43S_H
+#endif // !WP43S_H

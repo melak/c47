@@ -53,7 +53,9 @@ void fnNeighb(uint16_t unusedButMandatoryParameter) {
     return;
   }
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(dataTypeX) {
     case dtLongInteger:

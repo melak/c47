@@ -16,6 +16,7 @@
 
 #include "wp43s.h"
 
+#include "charString.h"
 #include "config.h"
 #include "flags.h"
 #include "items.h"
@@ -236,7 +237,7 @@ char                   statMx[8];
 char                   plotStatMx[8];
 
 
-#ifdef DMCP_BUILD
+#if defined(DMCP_BUILD)
   bool_t               backToDMCP;
 //int                  keyAutoRepeat;
 //int16_t              previousItem;
@@ -455,7 +456,7 @@ char                   plotStatMx[8];
     fnTimerConfig(TO_AUTO_REPEAT, execAutoRepeat, 0);
     fnTimerConfig(TO_TIMER_APP, execTimerApp, 0);
     fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV);
-//--fnTimerConfig(TO_SHOW_NOP, execNOPTimeout, TO_SHOW_NOP);
+    //fnTimerConfig(TO_SHOW_NOP, execNOPTimeout, TO_SHOW_NOP);
     nextTimerRefresh = 0;
 
     // Status flags:
@@ -478,7 +479,7 @@ char                   plotStatMx[8];
           sys_sleep();
         }
         else {                                                                  // timeout available
-//--      uint32_t timeoutTime = max(1, nextTimerRefresh - sys_current_ms());
+          //uint32_t timeoutTime = max(1, nextTimerRefresh - sys_current_ms());
           uint32_t timeoutTime = sys_current_ms();
           if(nextTimerRefresh > timeoutTime) {
             timeoutTime = nextTimerRefresh - timeoutTime;
@@ -487,7 +488,7 @@ char                   plotStatMx[8];
             timeoutTime = 1;
           }
 
-//--      uint32_t sleepTime = max(1, nextScreenRefresh - sys_current_ms());
+          //uint32_t sleepTime = max(1, nextScreenRefresh - sys_current_ms());
           uint32_t sleepTime = sys_current_ms();
           if(nextScreenRefresh > sleepTime) {
             sleepTime = nextScreenRefresh - sleepTime;
@@ -506,16 +507,16 @@ char                   plotStatMx[8];
         }
 
 
-//      sys_timer_start(TIMER_IDX_SCREEN_REFRESH, max(1, nextScreenRefresh - now));  // wake up for screen refresh
-//      if(inDownUpPress) {
-//        sys_timer_start(TIMER_IDX_AUTO_REPEAT, max(1, nextAutoRepeat - now)); // wake up for key auto-repeat
-//      }
-//      sys_sleep();
-//      sys_timer_disable(TIMER_IDX_SCREEN_REFRESH);
-//      if(inDownUpPress) {
-//        repeatDownUpPress = (sys_current_ms() > nextAutoRepeat);
-//        sys_timer_disable(TIMER_IDX_AUTO_REPEAT);
-//      }
+        //sys_timer_start(TIMER_IDX_SCREEN_REFRESH, max(1, nextScreenRefresh - now));  // wake up for screen refresh
+        //if(inDownUpPress) {
+        //  sys_timer_start(TIMER_IDX_AUTO_REPEAT, max(1, nextAutoRepeat - now)); // wake up for key auto-repeat
+        //}
+        //sys_sleep();
+        //sys_timer_disable(TIMER_IDX_SCREEN_REFRESH);
+        //if(inDownUpPress) {
+        //  repeatDownUpPress = (sys_current_ms() > nextAutoRepeat);
+        //  sys_timer_disable(TIMER_IDX_AUTO_REPEAT);
+        //}
       }
 
     //now = sys_current_ms();
@@ -608,24 +609,24 @@ char                   plotStatMx[8];
 
       // Increase the refresh rate if we are in an UP/DOWN key press so we pick up auto key repeats
       if(key == 27 || key == 32) {
-//      inDownUpPress = 1;
-//      nextAutoRepeat = now + KEY_AUTOREPEAT_FIRST_PERIOD;
+        //inDownUpPress = 1;
+        //nextAutoRepeat = now + KEY_AUTOREPEAT_FIRST_PERIOD;
         if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING && (!shiftF || calcMode == CM_PEM) && !shiftG && (currentSoftmenuScrolls() || (calcMode != CM_NORMAL && calcMode != CM_NIM && calcMode != CM_AIM))) {
           fnTimerStart(TO_AUTO_REPEAT, key, KEY_AUTOREPEAT_FIRST_PERIOD);
         }
       }
       else if(key == 0) {
-//      inDownUpPress = 0;
-//      repeatDownUpPress = 0;
-//      nextAutoRepeat = 0;
+        //inDownUpPress = 0;
+        //repeatDownUpPress = 0;
+        //nextAutoRepeat = 0;
         fnTimerStop(TO_AUTO_REPEAT);
       }
-//    else if(repeatDownUpPress) {
-//      keyAutoRepeat = 1;
-//      key = 0;
-//      nextAutoRepeat = now + KEY_AUTOREPEAT_PERIOD;
-//      repeatDownUpPress = 0;
-//    }
+      //else if(repeatDownUpPress) {
+      //  keyAutoRepeat = 1;
+      //  key = 0;
+      //  nextAutoRepeat = now + KEY_AUTOREPEAT_PERIOD;
+      //  repeatDownUpPress = 0;
+      //}
 
       //if(keyAutoRepeat) {
       //  if(key == 27 || key == 32) { // UP or DOWN keys
@@ -652,7 +653,9 @@ char                   plotStatMx[8];
         sys_delay(5);
         stop_buzzer();
 
+        xcopy(tmpString, aimBuffer, ERROR_MESSAGE_LENGTH + AIM_BUFFER_LENGTH + NIM_BUFFER_LENGTH);       //backup portion of the "message buffer" area in DMCP used by ERROR..AIM..NIM buffers, to the tmpstring area in DMCP. DMCP uses this area during create_screenshot.
         create_screenshot(0);      //Screen dump
+        xcopy(aimBuffer,tmpString, ERROR_MESSAGE_LENGTH + AIM_BUFFER_LENGTH + NIM_BUFFER_LENGTH);        //   This total area must be less than the tmpString storage area, which it is.
 
         start_buzzer_freq(400000); //Click after screen dump
         sys_delay(5);
@@ -686,7 +689,7 @@ char                   plotStatMx[8];
             refreshScreen();
           }
         }
-//      keyAutoRepeat = 0;
+        //keyAutoRepeat = 0;
         lcd_refresh();
       }
 
@@ -703,14 +706,14 @@ char                   plotStatMx[8];
         }
       }
 
-//    // Compute refresh period
-//    if(showFunctionNameCounter > 0) {
-//      inFastRefresh = 1;
-//      nextScreenRefresh = previousRefresh + FAST_SCREEN_REFRESH_PERIOD;
-//    }
-//    else {
-//      inFastRefresh = 0;
-//    }
+      //// Compute refresh period
+      //if(showFunctionNameCounter > 0) {
+      //  inFastRefresh = 1;
+      //  nextScreenRefresh = previousRefresh + FAST_SCREEN_REFRESH_PERIOD;
+      //}
+      //else {
+      //  inFastRefresh = 0;
+      //}
 
       uint32_t now = sys_current_ms();
 
@@ -719,7 +722,7 @@ char                   plotStatMx[8];
       }
       now = sys_current_ms();
       if(nextScreenRefresh <= now) {
-//      previousRefresh = now;
+        //previousRefresh = now;
         nextScreenRefresh += ((showFunctionNameCounter > 0) ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);
         if(nextScreenRefresh < now) {
           nextScreenRefresh = now + ((showFunctionNameCounter > 0) ? FAST_SCREEN_REFRESH_PERIOD : SCREEN_REFRESH_PERIOD);         // we were out longer than expected; just skip ahead.

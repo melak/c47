@@ -17,60 +17,68 @@
 /**
  * \file keyboard.h
  */
-#ifndef KEYBOARD_H
-#define KEYBOARD_H
+#if !defined(KEYBOARD_H)
+  #define KEYBOARD_H
 
-#include <stdint.h>
-#ifdef PC_BUILD
-  #include <gtk/gtk.h>
-  #include <gdk/gdk.h>
-#endif // PC_BUILD
+  #include <stdint.h>
+  #if defined(PC_BUILD)
+    #include <gtk/gtk.h>
+    #include <gdk/gdk.h>
+  #endif // PC_BUILD
 
 void leavePem        (void);
 void showShiftState  (void);
 void processKeyAction(int16_t item);
+
 /**
  * Processing ENTER key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyEnter      (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing EXIT key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyExit       (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing CC key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyCC         (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing BACKSPACE key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyBackspace  (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing UP key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyUp         (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing DOWN key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyDown       (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing .d key.
  *
  * \param[in] unusedButMandatoryParameter
  */
 void fnKeyDotD       (uint16_t unusedButMandatoryParameter);
+
 /**
  * Processing ANGLE key.
  *
@@ -78,76 +86,82 @@ void fnKeyDotD       (uint16_t unusedButMandatoryParameter);
  */
 void fnKeyAngle      (uint16_t unusedButMandatoryParameter);
 
-#ifdef PC_BUILD
-  /**
-   * Simulate a function key click.
-   *
-   * \param notUsed The button to pass to btnFnPressed and btnFnReleased
-   * \param data String containing the key ID
-   */
-  void btnFnClicked  (GtkWidget *notUsed, gpointer data);
-  /**
-   * A calc function key was pressed.
-   *
-   * \param notUsed
-   * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
-   */
-  void btnFnPressed  (GtkWidget *notUsed, GdkEvent *event, gpointer data);
-  /**
-   * A calc function key was released.
-   *
-   * \param notUsed
-   * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
-   */
-  void btnFnReleased (GtkWidget *notUsed, GdkEvent *event, gpointer data);
-  /**
-   * Simulate a button click.
-   *
-   * \param notUsed The button to pass to btnPressed and btnReleased
-   * \param data String containing the key ID
-   */
-  void btnClicked    (GtkWidget *notUsed, gpointer data);
-  /**
-   * A calc button was pressed.
-   *
-   * \param notUsed
-   * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
-   */
-  void btnPressed    (GtkWidget *notUsed, GdkEvent *event, gpointer data);
-  /**
-   * A calc button was released.
-   *
-   * \param notUsed
-   * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
-   */
-  void frmCalcMouseButtonPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data);
-  /**
-   * A calc button was pressed.
-   *
-   * \param notUsed
-   * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
-   */
-  void frmCalcMouseButtonReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data);
-  /**
-   * A calc button was released.
-   *
-   * \param notUsed
-   * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
-   */
-  void btnReleased   (GtkWidget *notUsed, GdkEvent *event, gpointer data);
-#endif // PC_BUILD
+  #if defined(PC_BUILD)
+    /**
+     * Simulate a function key click.
+     *
+     * \param notUsed The button to pass to btnFnPressed and btnFnReleased
+     * \param data String containing the key ID
+     */
+    void btnFnClicked  (GtkWidget *notUsed, gpointer data);
+
+    /**
+     * A calc function key was pressed.
+     *
+     * \param notUsed
+     * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
+     */
+    void btnFnPressed  (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+
+    /**
+     * A calc function key was released.
+     *
+     * \param notUsed
+     * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
+     */
+    void btnFnReleased (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+
+    /**
+     * Simulate a button click.
+     *
+     * \param notUsed The button to pass to btnPressed and btnReleased
+     * \param data String containing the key ID
+     */
+    void btnClicked    (GtkWidget *notUsed, gpointer data);
+
+    /**
+     * A calc button was pressed.
+     *
+     * \param notUsed
+     * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
+     */
+    void btnPressed    (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+
+    /**
+     * A calc button was released.
+     *
+     * \param notUsed
+     * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
+     */
+    void frmCalcMouseButtonPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data);
+
+    /**
+     * A calc button was pressed.
+     *
+     * \param notUsed
+     * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
+     */
+    void frmCalcMouseButtonReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data);
+
+    /**
+     * A calc button was released.
+     *
+     * \param notUsed
+     * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
+     */
+    void btnReleased   (GtkWidget *notUsed, GdkEvent *event, gpointer data);
+  #endif // PC_BUILD
 
 void execAutoRepeat(uint16_t key);
 
-#ifdef DMCP_BUILD
-  void btnFnClicked (void *w, void *data);
-  void btnFnPressed (void *data);
-  void btnFnReleased(void *data);
-  void btnClicked   (void *w, void *data);
-  void btnPressed   (void *data);
-  void btnReleased  (void *data);
-#endif // DMCP_BUILD
+  #if defined(DMCP_BUILD)
+    void btnFnClicked (void *w, void *data);
+    void btnFnPressed (void *data);
+    void btnFnReleased(void *data);
+    void btnClicked   (void *w, void *data);
+    void btnPressed   (void *data);
+    void btnReleased  (void *data);
+  #endif // DMCP_BUILD
 
 void setLastKeyCode  (int key);
-
-#endif // KEYBOARD_H
+#endif // !KEYBOARD_H

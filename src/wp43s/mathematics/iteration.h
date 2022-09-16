@@ -17,16 +17,15 @@
 /********************************************//**
  * \file iteration.h
  ***********************************************/
-#ifndef ITERATION_H
-#define ITERATION_H
+#if !defined(ITERATION_H)
+  #define ITERATION_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnIse(uint16_t regist);
-void fnIsg(uint16_t regist);
-void fnIsz(uint16_t regist);
-void fnDse(uint16_t regist);
-void fnDsl(uint16_t regist);
-void fnDsz(uint16_t regist);
-
-#endif // ITERATION_H
+  void fnIse(uint16_t regist);
+  void fnIsg(uint16_t regist);
+  void fnIsz(uint16_t regist);
+  void fnDse(uint16_t regist);
+  void fnDsl(uint16_t regist);
+  void fnDsz(uint16_t regist);
+#endif // !ITERATION_H

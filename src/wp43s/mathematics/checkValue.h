@@ -17,18 +17,17 @@
 /********************************************//**
  * \file checkValue.h
  ***********************************************/
-#ifndef CHECKVALUE_H
-#define CHECKVALUE_H
+#if !defined(CHECKVALUE_H)
+  #define CHECKVALUE_H
 
-#include <stdint.h>
+  #include <stdint.h>
 
-void fnCheckValue   (uint16_t mode);
-void checkValueError(uint16_t unusedButMandatoryParameter);
-void checkValueLonI (uint16_t mode);
-void checkValueRema (uint16_t mode);
-void checkValueCxma (uint16_t mode);
-void checkValueShoI (uint16_t mode);
-void checkValueReal (uint16_t mode);
-void checkValueCplx (uint16_t mode);
-
-#endif // CHECKVALUE_H
+  void fnCheckValue   (uint16_t mode);
+  void checkValueError(uint16_t unusedButMandatoryParameter);
+  void checkValueLonI (uint16_t mode);
+  void checkValueRema (uint16_t mode);
+  void checkValueCxma (uint16_t mode);
+  void checkValueShoI (uint16_t mode);
+  void checkValueReal (uint16_t mode);
+  void checkValueCplx (uint16_t mode);
+#endif // !CHECKVALUE_H

@@ -42,18 +42,16 @@
 
 //#define STAT_DISPLAY_ABCDEFG                      //to display helper functions A-H
 
-#ifndef TESTSUITE
-
 static real_t RR, RR2, RRMAX, SMI, aa0, aa1, aa2;  // Curve fitting variables, available to the different functions
 realContext_t *realContext;
 realContext_t *realContextForecast;
 
-#if defined STAT_DISPLAY_ABCDEFG
+#if defined(STAT_DISPLAY_ABCDEFG)
   double A, B, C, D, E, F, G, H;
-#endif
-#if defined STATDEBUG && defined PC_BUILD
+#endif // STAT_DISPLAY_ABCDEFG
+#if defined(STATDEBUG) && defined(PC_BUILD)
   char ss[200];
-#endif
+#endif // STATDEBUG && PC_BUILD
 
 /********************************************//**
  * \brief Sets the curve fitting mode
@@ -88,7 +86,7 @@ void fnCurveFitting(uint16_t curveFitting) {
   lrSelection = curveFitting;                 // lrSelection is used to store the BestF method, in inverse, i.e. 1 indicating allowed method
   lrChosen = 0;                               // lrChosen    is used to indicate if there was a L.R. selection. Can be only one bit.
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     uint16_t numberOfOnes;
     numberOfOnes = lrCountOnes(curveFitting);
 
@@ -183,10 +181,10 @@ void fnProcessLRfind(uint16_t curveFitting){
   real_t NN;
 
   realToInt32(SIGMA_N, nn);
-  realCopy(const_0,&aa0);
-  realCopy(const_0,&aa1);
-  realCopy(const_0,&aa2);
-  #ifdef PC_BUILD
+  realCopy(const_0, &aa0);
+  realCopy(const_0, &aa1);
+  realCopy(const_0, &aa2);
+  #if defined(PC_BUILD)
     printf("Processing for best fit: %s\n",getCurveFitModeNames(curveFitting));
   #endif //PC_BUILD
   realCopy(const__4,&RRMAX);
@@ -196,9 +194,9 @@ void fnProcessLRfind(uint16_t curveFitting){
   for(ix=0; ix<10; ix++) { //up to 2^9 inclusive of 512 which is ORTHOF. The ReM is respectedby usage of 0 only, not by manual selection.
     jx = curveFitting & ((1 << ix));
     if(jx) {
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
         printf("processCurvefitSelection curveFitting:%u sweep:%u %s\n",curveFitting,jx,getCurveFitModeNames(jx));
-      #endif
+      #endif // PC_BUILD
 
       if(nn >= (int32_t)minLRDataPoints(jx)) {
         processCurvefitSelection(jx,&RR,&SMI, &aa0, &aa1, &aa2);
@@ -213,10 +211,14 @@ void fnProcessLRfind(uint16_t curveFitting){
   }
   if(lrCountOnes(s) > 1) s = 0; //error condition, cannot have >1 solutions, do not do L.R.
 
-  #ifdef PC_BUILD
-    if(s != 0) printf("Found best fit: %u %s\n",s,getCurveFitModeNames(s)); else
-    printf("Found no fit: %u\n",s);
-  #endif //PC_BUILD
+  #if defined(PC_BUILD)
+    if(s != 0) {
+      printf("Found best fit: %u %s\n", s, getCurveFitModeNames(s));
+    }
+    else {
+      printf("Found no fit: %u\n", s);
+    }
+  #endif // PC_BUILD
 
   if(nn >= (int32_t)minLRDataPoints(s)) {
     processCurvefitSelection(s,&RR,&SMI, &aa0, &aa1, &aa2);
@@ -267,6 +269,7 @@ void fnProcessLR (uint16_t unusedButMandatoryParameter){
 void calc_BCD(real_t *BB, real_t *CC, real_t *DD){                        //Aux terms, calc_BCD must be run before calc_AEFG
 realContext = &ctxtReal75;
 real_t SS,TT;
+
   //        B = nn * sumx2y - sumx2 * sumy;
   realMultiply(SIGMA_N, SIGMA_X2Y, &SS, realContext);
   realMultiply(SIGMA_X2, SIGMA_Y, &TT, realContext);
@@ -288,6 +291,7 @@ real_t SS,TT;
 void calc_AEFG(real_t *AA, real_t *BB, real_t *CC, real_t *DD, real_t *EE, real_t *FF, real_t *GG){                        //Aux terms, calc_AEFG must be run after calc_BCD
 realContext = &ctxtReal75;
 real_t SS,TT,UU;
+
   //        A = nn * sumx2 - sumx * sumx;
   realMultiply(SIGMA_N, SIGMA_X2, &SS, realContext);
   realMultiply(SIGMA_X, SIGMA_X, &TT, realContext);
@@ -300,18 +304,18 @@ real_t SS,TT,UU;
 
   //USING COMPONENTS OF BCD
   //        F = (A*B - C*D) / (A*E - C*C);    //interchangably the a2 in PARABF
-  realMultiply(AA, BB, &SS, realContext);
-  realMultiply(CC, DD, &TT, realContext);
-  realSubtract(&SS, &TT, &UU, realContext);
-  realMultiply(AA, EE, &SS, realContext);
-  realMultiply(CC, CC, &TT, realContext);
-  realSubtract(&SS, &TT, &SS, realContext);
-  realDivide  (&UU,&SS,FF,realContext);
+  realMultiply(AA,       BB,        &SS, realContext);
+  realMultiply(CC,       DD,        &TT, realContext);
+  realSubtract(&SS,      &TT,       &UU, realContext);
+  realMultiply(AA,       EE,        &SS, realContext);
+  realMultiply(CC,       CC,        &TT, realContext);
+  realSubtract(&SS,      &TT,       &SS, realContext);
+  realDivide  (&UU,      &SS,       FF,  realContext);
 
   //        G = (D - F * C) / A;
-  realMultiply(FF, CC, &SS, realContext);
-  realSubtract(DD, &SS, &SS, realContext);
-  realDivide  (&SS,AA,GG,realContext);
+  realMultiply(FF,      CC,         &SS, realContext);
+  realSubtract(DD,      &SS,        &SS, realContext);
+  realDivide  (&SS,     AA,         GG,  realContext);
 }
 
 
@@ -329,36 +333,37 @@ void processCurvefitSelection(uint16_t selection, real_t *RR_, real_t *SMI_, rea
  *
  ***********************************************/
 void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, real_t *MX2,real_t *SX2, real_t *SY2, real_t *SMI_, real_t *aa0, real_t *aa1, real_t *aa2){
-    real_t AA,BB,CC,DD,EE,FF,GG,HH,RR2;   // Curve aux fitting variables
-    real_t SS,TT,UU;                  // Temporary curve fitting variables
-    uint16_t ix,jx;               //only a single graph can be displayed at once, so retain the single lowest bit, and clear the higher order bits if ever control comes here with multpile graph selections
+    real_t AA, BB, CC, DD, EE, FF, GG, HH, RR2;   // Curve aux fitting variables
+    real_t SS, TT, UU;             // Temporary curve fitting variables
+    uint16_t ix, jx;               //only a single graph can be displayed at once, so retain the single lowest bit, and clear the higher order bits if ever control comes here with multpile graph selections
+
     jx = 0;
     for(ix=0; ix!=10; ix++) {     //up to 2^9 inclusive of 512 which is ORTHOF. The ReM is respectedby usage of 0 only, not by manual selection.
       jx = selection & ((1 << ix));
       if(jx) break;
     }
     selection = jx;
-    #if (defined STATDEBUG || defined STAT_DISPLAY_ABCDEFG) && defined PC_BUILD
+    #if (defined(STATDEBUG) || defined(STAT_DISPLAY_ABCDEFG)) && defined(PC_BUILD)
       printf("processCurvefitSelection selection:%u, reduced selection to:%u\n",selection,jx);
-    #endif
+    #endif // (STATDEBUG || STAT_DISPLAY_ABCDEFG) && PC_BUILD
 
     realContext = &ctxtReal75;    //Use 75 as the sums can reach high values and the accuracy of the regressionn depends on this. Could arguably be optimized.
-    real_t VV,WW,ZZ;
-    real_t S_X,S_Y,S_XY,M_X,M_Y;
-    realDivide(SIGMA_X,SIGMA_N,&M_X,realContext); //&ctxtReal39);     //vv
-    realDivide(SIGMA_Y,SIGMA_N,&M_Y,realContext); //&ctxtReal39);
+    real_t VV, WW, ZZ;
+    real_t S_X, S_Y, S_XY, M_X, M_Y;
+    realDivide(SIGMA_X, SIGMA_N, &M_X, realContext); //&ctxtReal39);     //vv
+    realDivide(SIGMA_Y, SIGMA_N, &M_Y, realContext); //&ctxtReal39);
     fnStatR   (RR_, &S_XY, &S_X, &S_Y);
     fnStatSMI (SMI_);
 
-    realMultiply(&S_X,&S_X,SX2,realContext);
-    realMultiply(&S_Y,&S_Y,SY2,realContext);
-    realDivide    (SIGMA_X,SIGMA_N,MX,realContext);         //MX = SumX / N
-    realMultiply  (MX,MX,MX2,realContext);                 //MX2
+    realMultiply(&S_X,    &S_X,    SX2, realContext);
+    realMultiply(&S_Y,    &S_Y,    SY2, realContext);
+    realDivide  (SIGMA_X, SIGMA_N, MX,  realContext);         //MX = SumX / N
+    realMultiply(MX,      MX,      MX2, realContext);         //MX2
 
 
-    #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
+    #if defined(STAT_DISPLAY_ABCDEFG) && defined(PC_BUILD)
       double v;
-    #endif
+    #endif // STAT_DISPLAY_ABCDEFG && PC_BUILD
 
     switch(selection) {
       case CF_LINEAR_FITTING :
@@ -398,12 +403,12 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide(&SS,&TT,RR_,realContext);
         realDivide(RR_,&UU,RR_,realContext);            //r
 
-        #if defined STATDEBUG && defined PC_BUILD
+        #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### Linear\n");
-          formatRealDebug(ss, aa1); printf("§§ A1: %s\n",ss);
-          formatRealDebug(ss, aa0); printf("§§ A0: %s\n",ss);
-          formatRealDebug(ss, RR_); printf("§§ r: %s\n",ss);
-        #endif
+          formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
+          formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+          formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        #endif // STATDEBUG && PC_BUILD
         break;
 
 
@@ -450,12 +455,12 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide    (const_1,&SS,&SS,realContext);
         realMultiply  (&SS,&ZZ,SY2,realContext);
 
-        #if defined STATDEBUG && defined PC_BUILD
+        #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### EXPF\n");
-          formatRealDebug(ss, aa1); printf("§§ A1: %s\n",ss);
-          formatRealDebug(ss, aa0); printf("§§ A0: %s\n",ss);
-          formatRealDebug(ss, RR_); printf("§§ r: %s\n",ss);
-        #endif
+          formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
+          formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+          formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        #endif // STATDEBUG && PC_BUILD
         break;
 
 
@@ -496,19 +501,19 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide(&SS,&TT,RR_,realContext);
         realDivide(RR_,&UU,RR_,realContext);            //r
 
-        realSubtract  (SIGMA_N,const_1,&SS,realContext); // Section for s(a)
-        realMultiply  (SIGMA_N,&SS,&SS,realContext);
-        realDivide    (const_1,&SS,&SS,realContext);
-        realMultiply  (&SS,&WW,SX2,realContext);
-        realDivide    (SIGMA_lnX,SIGMA_N,MX,realContext);
-        realMultiply  (MX,MX,MX2,realContext);
+        realSubtract(SIGMA_N,   const_1,     &SS, realContext); // Section for s(a)
+        realMultiply(SIGMA_N,   &SS,         &SS, realContext);
+        realDivide  (const_1,   &SS,         &SS, realContext);
+        realMultiply(&SS,       &WW,         SX2, realContext);
+        realDivide  (SIGMA_lnX, SIGMA_N,     MX,  realContext);
+        realMultiply(MX,        MX,          MX2, realContext);
 
-        #if defined STATDEBUG && defined PC_BUILD
+        #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### LOGF\n");
-          formatRealDebug(ss, aa1); printf("§§ A1: %s\n",ss);
-          formatRealDebug(ss, aa0); printf("§§ A0: %s\n",ss);
-          formatRealDebug(ss, RR_); printf("§§ r: %s\n",ss);
-        #endif
+          formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
+          formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+          formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        #endif // STATDEBUG && PC_BUILD
         break;
 
 
@@ -550,12 +555,12 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide(&SS,&TT,RR_,realContext);
         realDivide(RR_,&UU,RR_,realContext);            //r
 
-        realSubtract  (SIGMA_N,const_1,&SS,realContext); // Section for s(a)
-        realMultiply  (SIGMA_N,&SS,&SS,realContext);
-        realDivide    (const_1,&SS,&SS,realContext);
-        realMultiply  (&SS,&WW,SX2,realContext);
-        realDivide    (SIGMA_lnX,SIGMA_N,MX,realContext);
-        realMultiply  (MX,MX,MX2,realContext);
+        realSubtract(SIGMA_N,    const_1,      &SS, realContext); // Section for s(a)
+        realMultiply(SIGMA_N,    &SS,          &SS, realContext);
+        realDivide  (const_1,    &SS,          &SS, realContext);
+        realMultiply(&SS,        &WW,          SX2, realContext);
+        realDivide  (SIGMA_lnX,  SIGMA_N,      MX,  realContext);
+        realMultiply(MX,         MX,           MX2, realContext);
 
         realSubtract  (SIGMA_N,const_1,&SS,realContext); // Section for s(a)
         realMultiply  (SIGMA_N,&SS,&SS,realContext);
@@ -563,12 +568,12 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realMultiply  (&SS,&ZZ,SY2,realContext);
 
 
-        #if defined STATDEBUG && defined PC_BUILD
+        #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### POWERF\n");
-          formatRealDebug(ss, aa1); printf("§§ A1: %s\n",ss);
-          formatRealDebug(ss, aa0); printf("§§ A0: %s\n",ss);
-          formatRealDebug(ss, RR_); printf("§§ r: %s\n",ss);
-        #endif
+          formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
+          formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+          formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        #endif // STATDEBUG && PC_BUILD
         break;
 
 
@@ -610,24 +615,22 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide  (&SS,&TT,&RR2,realContext);
         realSquareRoot(&RR2,RR_,realContext);
 
-        #if defined STATDEBUG && defined PC_BUILD
+        #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### ROOTF\n");
-          formatRealDebug(ss, aa1); printf("§§ A1: %s\n",ss);
-          formatRealDebug(ss, aa0); printf("§§ A0: %s\n",ss);
-          formatRealDebug(ss, RR_); printf("§§ r: %s\n",ss);
-        #endif
-        #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
-          realToDouble(SIGMA_N, &v); printf("§§ n: %f\n",v);
-          realToDouble(&AA, &v); printf("§§ AA: %f\n",v);
-          realToDouble(&BB, &v); printf("§§ BB: %f\n",v);
-          realToDouble(&CC, &v); printf("§§ CC: %f\n",v);
-          realToDouble(aa1, &v); printf("§§ A1: %f\n",v);
-          realToDouble(aa0, &v); printf("§§ A0: %f\n",v);
-          realToDouble(RR_, &v); printf("§§ r:  %f\n",v);
-          realToDouble(&RR2,&v); printf("§§ r^2:%f\n",v);
-        #endif
-
-
+          formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
+          formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+          formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        #endif // STATDEBUG && PC_BUILD
+        #if defined(STAT_DISPLAY_ABCDEFG) && defined(PC_BUILD)
+          realToDouble(SIGMA_N, &v); printf("§§ n: %f\n", v);
+          realToDouble(&AA, &v); printf("§§ AA: %f\n", v);
+          realToDouble(&BB, &v); printf("§§ BB: %f\n", v);
+          realToDouble(&CC, &v); printf("§§ CC: %f\n", v);
+          realToDouble(aa1, &v); printf("§§ A1: %f\n", v);
+          realToDouble(aa0, &v); printf("§§ A0: %f\n", v);
+          realToDouble(RR_, &v); printf("§§ r:  %f\n", v);
+          realToDouble(&RR2,&v); printf("§§ r^2:%f\n", v);
+        #endif // STAT_DISPLAY_ABCDEFG && PC_BUILD
         break;
 
 
@@ -662,13 +665,13 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide  (&SS,&UU,&RR2,realContext);
         realSquareRoot(&RR2,RR_,realContext);
 
-        #if defined STATDEBUG && defined PC_BUILD
+        #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### HYPF\n");
-          formatRealDebug(ss, aa1); printf("§§ A1: %s\n",ss);
-          formatRealDebug(ss, aa0); printf("§§ A0: %s\n",ss);
-          formatRealDebug(ss, &RR2); printf("§§ r^2: %s\n",ss);
-          formatRealDebug(ss, RR_); printf("§§ r: %s\n",ss);
-        #endif
+          formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
+          formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+          formatRealDebug(ss, &RR2); printf("§§ r^2: %s\n", ss);
+          formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        #endif // STATDEBUG && PC_BUILD
         break;
 
 
@@ -683,11 +686,11 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realCopy (&GG,aa1);
 
         //      a0 = 1.0/nn * (sumy - a2 * sumx2 - a1 * sumx);
-        realMultiply(&FF, SIGMA_X2, &TT, realContext);
-        realSubtract(SIGMA_Y , &TT, &HH, realContext);
-        realMultiply(&GG, SIGMA_X, &TT, realContext);
-        realSubtract(&HH, &TT, &HH, realContext);
-        realDivide  (&HH,SIGMA_N,aa0,realContext);
+        realMultiply(&FF,      SIGMA_X2,  &TT,  realContext);
+        realSubtract(SIGMA_Y,  &TT,       &HH,  realContext);
+        realMultiply(&GG,      SIGMA_X,   &TT,  realContext);
+        realSubtract(&HH,      &TT,       &HH,  realContext);
+        realDivide  (&HH,      SIGMA_N,   aa0,  realContext);
 
         //      r = sqrt( (a0 * sumy + a1 * sumxy + a2 * sumx2y - 1.0/nn * sumy * sumy) / (sumy2 - 1.0/nn * sumy * sumy) );
         realMultiply(aa0, SIGMA_Y, &SS, realContext);
@@ -702,30 +705,30 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide  (&SS, &TT,&RR2,realContext); //R^2
         realSquareRoot(&RR2, RR_, realContext);
 
-        #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
-          realToDouble(SIGMA_N, &v); printf("§§ n: %f\n",v);
-          realToDouble(&AA, &v); printf("§§ AA: %f\n",v);
-          realToDouble(&BB, &v); printf("§§ BB: %f\n",v);
-          realToDouble(&CC, &v); printf("§§ CC: %f\n",v);
-          realToDouble(&DD, &v); printf("§§ DD: %f\n",v);
-          realToDouble(&EE, &v); printf("§§ EE: %f\n",v);
-          realToDouble(&FF, &v); printf("§§ FF: %f\n",v);
-          realToDouble(&GG, &v); printf("§§ GG: %f\n",v);
-          realToDouble(&HH, &v); printf("§§ HH: %f\n",v);
-          realToDouble(aa2, &v); printf("§§ A2: %f\n",v);
-          realToDouble(aa1, &v); printf("§§ A1: %f\n",v);
-          realToDouble(aa0, &v); printf("§§ A0: %f\n",v);
-          realToDouble(RR_, &v); printf("§§ r:  %f\n",v);
-          realToDouble(&RR2,&v); printf("§§ r^2:%f\n",v);
-        #endif
-        #if defined STATDEBUG && defined PC_BUILD
+        #if defined(STAT_DISPLAY_ABCDEFG) && defined(PC_BUILD)
+          realToDouble(SIGMA_N, &v); printf("§§ n: %f\n", v);
+          realToDouble(&AA, &v); printf("§§ AA: %f\n", v);
+          realToDouble(&BB, &v); printf("§§ BB: %f\n", v);
+          realToDouble(&CC, &v); printf("§§ CC: %f\n", v);
+          realToDouble(&DD, &v); printf("§§ DD: %f\n", v);
+          realToDouble(&EE, &v); printf("§§ EE: %f\n", v);
+          realToDouble(&FF, &v); printf("§§ FF: %f\n", v);
+          realToDouble(&GG, &v); printf("§§ GG: %f\n", v);
+          realToDouble(&HH, &v); printf("§§ HH: %f\n", v);
+          realToDouble(aa2, &v); printf("§§ A2: %f\n", v);
+          realToDouble(aa1, &v); printf("§§ A1: %f\n", v);
+          realToDouble(aa0, &v); printf("§§ A0: %f\n", v);
+          realToDouble(RR_, &v); printf("§§ r:  %f\n", v);
+          realToDouble(&RR2,&v); printf("§§ r^2:%f\n", v);
+        #endif // STAT_DISPLAY_ABCDEFG && PC_BUILD
+        #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### PARABF\n");
-          formatRealDebug(ss, aa2); printf("§§ A2: %s\n",ss);
-          formatRealDebug(ss, aa1); printf("§§ A1: %s\n",ss);
-          formatRealDebug(ss, aa0); printf("§§ A0: %s\n",ss);
-          formatRealDebug(ss, &RR2); printf("§§ r^2: %s\n",ss);
-          formatRealDebug(ss, RR_); printf("§§ r: %s\n",ss);
-        #endif
+          formatRealDebug(ss, aa2); printf("§§ A2: %s\n", ss);
+          formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
+          formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+          formatRealDebug(ss, &RR2); printf("§§ r^2: %s\n", ss);
+          formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        #endif // STATDEBUG && PC_BUILD
         break;
 
 
@@ -761,9 +764,9 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide  (const_1,&FF,aa2,realContext);
 
         //        a1 = -G/(2.0) * a2;
-        realDivide  (&GG,const__1,&TT,realContext);
-        realDivide  (&TT,const_2 ,&TT,realContext);
-        realMultiply(&TT, aa2, aa1, realContext);
+        realDivide  (&GG,        const__1,    &TT,  realContext);
+        realDivide  (&TT,        const_2,     &TT,  realContext);
+        realMultiply(&TT,        aa2,         aa1,  realContext);
 
         //GAUSS  a0 = exp (H - F * a1 * a1); //maxy;
         realMultiply(aa1,aa1,&SS,realContext);
@@ -785,30 +788,30 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide  (&SS, &TT,&RR2,realContext); //R^2
         realSquareRoot(&RR2, RR_, realContext);
 
-        #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
-          realToDouble(SIGMA_N, &v); printf("§§ n: %f\n",v);
-          realToDouble(&AA, &v); printf("§§ AA: %f\n",v);
-          realToDouble(&BB, &v); printf("§§ BB: %f\n",v);
-          realToDouble(&CC, &v); printf("§§ CC: %f\n",v);
-          realToDouble(&DD, &v); printf("§§ DD: %f\n",v);
-          realToDouble(&EE, &v); printf("§§ EE: %f\n",v);
-          realToDouble(&FF, &v); printf("§§ FF: %f\n",v);
-          realToDouble(&GG, &v); printf("§§ GG: %f\n",v);
-          realToDouble(&HH, &v); printf("§§ HH: %f\n",v);
-          realToDouble(aa2, &v); printf("§§ A2: %f\n",v);
-          realToDouble(aa1, &v); printf("§§ A1: %f\n",v);
-          realToDouble(aa0, &v); printf("§§ A0: %f\n",v);
-          realToDouble(RR_, &v); printf("§§ r:  %f\n",v);
-          realToDouble(&RR2,&v); printf("§§ r^2:%f\n",v);
-        #endif
-        #if defined STATDEBUG && defined PC_BUILD
+        #if defined(STAT_DISPLAY_ABCDEFG) && defined(PC_BUILD)
+          realToDouble(SIGMA_N, &v); printf("§§ n: %f\n", v);
+          realToDouble(&AA, &v); printf("§§ AA: %f\n", v);
+          realToDouble(&BB, &v); printf("§§ BB: %f\n", v);
+          realToDouble(&CC, &v); printf("§§ CC: %f\n", v);
+          realToDouble(&DD, &v); printf("§§ DD: %f\n", v);
+          realToDouble(&EE, &v); printf("§§ EE: %f\n", v);
+          realToDouble(&FF, &v); printf("§§ FF: %f\n", v);
+          realToDouble(&GG, &v); printf("§§ GG: %f\n", v);
+          realToDouble(&HH, &v); printf("§§ HH: %f\n", v);
+          realToDouble(aa2, &v); printf("§§ A2: %f\n", v);
+          realToDouble(aa1, &v); printf("§§ A1: %f\n", v);
+          realToDouble(aa0, &v); printf("§§ A0: %f\n", v);
+          realToDouble(RR_, &v); printf("§§ r:  %f\n", v);
+          realToDouble(&RR2,&v); printf("§§ r^2:%f\n", v);
+        #endif // STAT_DISPLAY_ABCDEFG && PC_BUILD
+        #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### GAUSSF\n");
-          formatRealDebug(ss, aa2); printf("§§ A2: %s\n",ss);
-          formatRealDebug(ss, aa1); printf("§§ A1: %s\n",ss);
-          formatRealDebug(ss, aa0); printf("§§ A0: %s\n",ss);
-          formatRealDebug(ss, &RR2); printf("§§ r^2: %s\n",ss);
-          formatRealDebug(ss, RR_); printf("§§ r: %s\n",ss);
-        #endif
+          formatRealDebug(ss, aa2); printf("§§ A2: %s\n", ss);
+          formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
+          formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+          formatRealDebug(ss, &RR2); printf("§§ r^2: %s\n", ss);
+          formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        #endif // STATDEBUG && PC_BUILD
         break;
 
 
@@ -832,11 +835,11 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
 
         //    H = 1.0/nn * (sum1ony - R12 * sumx - R13 * sumx2);
         //old GAUSS CHANGED TO 1/y ; F and G left:      H = (1.0)/nn * (sum1ony - F * sumx2 - G * sumx);
-        realMultiply(&FF, SIGMA_X2, &TT, realContext);
-        realSubtract(SIGMA_1onY , &TT, &HH, realContext);
-        realMultiply(&GG, SIGMA_X, &TT, realContext);
-        realSubtract(&HH, &TT, &HH, realContext);
-        realDivide  (&HH,SIGMA_N,&HH,realContext);
+        realMultiply(&FF,         SIGMA_X2,    &TT,  realContext);
+        realSubtract(SIGMA_1onY,  &TT,         &HH,  realContext);
+        realMultiply(&GG,         SIGMA_X,     &TT,  realContext);
+        realSubtract(&HH,         &TT,         &HH,  realContext);
+        realDivide  (&HH,         SIGMA_N,     &HH,  realContext);
 
         //        a0 = F;
         realCopy    (&FF,aa0);
@@ -864,30 +867,30 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide  (&SS, &TT,&RR2,realContext); //R^2
         realSquareRoot(&RR2, RR_, realContext);
 
-        #if defined STAT_DISPLAY_ABCDEFG && defined PC_BUILD
-          realToDouble(SIGMA_N, &v); printf("§§ n: %f\n",v);
-          realToDouble(&AA, &v); printf("§§ AA: %f\n",v);
-          realToDouble(&BB, &v); printf("§§ BB: %f\n",v);
-          realToDouble(&CC, &v); printf("§§ CC: %f\n",v);
-          realToDouble(&DD, &v); printf("§§ DD: %f\n",v);
-          realToDouble(&EE, &v); printf("§§ EE: %f\n",v);
-          realToDouble(&FF, &v); printf("§§ FF: %f\n",v);
-          realToDouble(&GG, &v); printf("§§ GG: %f\n",v);
-          realToDouble(&HH, &v); printf("§§ HH: %f\n",v);
-          realToDouble(aa2, &v); printf("§§ A2: %f\n",v);
-          realToDouble(aa1, &v); printf("§§ A1: %f\n",v);
-          realToDouble(aa0, &v); printf("§§ A0: %f\n",v);
-          realToDouble(RR_, &v); printf("§§ r:  %f\n",v);
-          realToDouble(&RR2,&v); printf("§§ r^2:%f\n",v);
-        #endif
-        #if defined STATDEBUG && defined PC_BUILD
+        #if defined(STAT_DISPLAY_ABCDEFG) && defined(PC_BUILD)
+          realToDouble(SIGMA_N, &v); printf("§§ n: %f\n", v);
+          realToDouble(&AA, &v); printf("§§ AA: %f\n", v);
+          realToDouble(&BB, &v); printf("§§ BB: %f\n", v);
+          realToDouble(&CC, &v); printf("§§ CC: %f\n", v);
+          realToDouble(&DD, &v); printf("§§ DD: %f\n", v);
+          realToDouble(&EE, &v); printf("§§ EE: %f\n", v);
+          realToDouble(&FF, &v); printf("§§ FF: %f\n", v);
+          realToDouble(&GG, &v); printf("§§ GG: %f\n", v);
+          realToDouble(&HH, &v); printf("§§ HH: %f\n", v);
+          realToDouble(aa2, &v); printf("§§ A2: %f\n", v);
+          realToDouble(aa1, &v); printf("§§ A1: %f\n", v);
+          realToDouble(aa0, &v); printf("§§ A0: %f\n", v);
+          realToDouble(RR_, &v); printf("§§ r:  %f\n", v);
+          realToDouble(&RR2,&v); printf("§§ r^2:%f\n", v);
+        #endif // STAT_DISPLAY_ABCDEFG && PC_BUILD
+        #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### CAUCHYF\n");
-          formatRealDebug(ss, aa2); printf("§§ A2: %s\n",ss);
-          formatRealDebug(ss, aa1); printf("§§ A1: %s\n",ss);
-          formatRealDebug(ss, aa0); printf("§§ A0: %s\n",ss);
-          formatRealDebug(ss, &RR2); printf("§§ r^2: %s\n",ss);
-          formatRealDebug(ss, RR_); printf("§§ r: %s\n",ss);
-        #endif
+          formatRealDebug(ss, aa2); printf("§§ A2: %s\n", ss);
+          formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
+          formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+          formatRealDebug(ss, &RR2); printf("§§ r^2: %s\n", ss);
+          formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        #endif // STATDEBUG && PC_BUILD
         break;
 
 
@@ -933,26 +936,26 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide(&SS,&TT,RR_,realContext);
         realDivide(RR_,&UU,RR_,realContext);            //r
 
-        #if defined STATDEBUG && defined PC_BUILD
-          formatRealDebug(ss, &S_X); printf("§§ S_X: %s\n",ss);
-          formatRealDebug(ss, &S_Y); printf("§§ S_Y: %s\n",ss);
-          formatRealDebug(ss, &S_XY); printf("§§ SXY: %s\n",ss);
-          formatRealDebug(ss, &M_X); printf("§§ M_X: %s\n",ss);
-          formatRealDebug(ss, &M_Y); printf("§§ M_Y: %s\n",ss);
-          formatRealDebug(ss, SIGMA_N ); printf("§§ SIGMA_N : %s\n",ss);
-          formatRealDebug(ss, SIGMA_X ); printf("§§ SIGMA_X : %s\n",ss);
-          formatRealDebug(ss, SIGMA_Y ); printf("§§ SIGMA_Y : %s\n",ss);
-          formatRealDebug(ss, SIGMA_XY); printf("§§ SIGMA_XY: %s\n",ss);
-          formatRealDebug(ss, SIGMA_X2); printf("§§ SIGMA_X2: %s\n",ss);
-          formatRealDebug(ss, SIGMA_Y2); printf("§§ SIGMA_Y2: %s\n",ss);
-        #endif
+        #if defined(STATDEBUG) && defined(PC_BUILD)
+          formatRealDebug(ss, &S_X); printf("§§ S_X: %s\n", ss);
+          formatRealDebug(ss, &S_Y); printf("§§ S_Y: %s\n", ss);
+          formatRealDebug(ss, &S_XY); printf("§§ SXY: %s\n", ss);
+          formatRealDebug(ss, &M_X); printf("§§ M_X: %s\n", ss);
+          formatRealDebug(ss, &M_Y); printf("§§ M_Y: %s\n", ss);
+          formatRealDebug(ss, SIGMA_N ); printf("§§ SIGMA_N : %s\n", ss);
+          formatRealDebug(ss, SIGMA_X ); printf("§§ SIGMA_X : %s\n", ss);
+          formatRealDebug(ss, SIGMA_Y ); printf("§§ SIGMA_Y : %s\n", ss);
+          formatRealDebug(ss, SIGMA_XY); printf("§§ SIGMA_XY: %s\n", ss);
+          formatRealDebug(ss, SIGMA_X2); printf("§§ SIGMA_X2: %s\n", ss);
+          formatRealDebug(ss, SIGMA_Y2); printf("§§ SIGMA_Y2: %s\n", ss);
+        #endif // STATDEBUG && PC_BUILD
 
-        #if defined STATDEBUG && defined PC_BUILD
+        #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### ORTHOF\n");
-          formatRealDebug(ss, aa1); printf("§§ A1: %s\n",ss);
-          formatRealDebug(ss, aa0); printf("§§ A0: %s\n",ss);
-          formatRealDebug(ss, RR_); printf("§§ r: %s\n",ss);
-        #endif
+          formatRealDebug(ss, aa1); printf("§§ A1: %s\n", ss);
+          formatRealDebug(ss, aa0); printf("§§ A0: %s\n", ss);
+          formatRealDebug(ss, RR_); printf("§§ r: %s\n", ss);
+        #endif // STATDEBUG && PC_BUILD
         break;
 
       default: break;
@@ -961,133 +964,135 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
 
 
   void yIsFnx(uint8_t USEFLOAT, uint16_t selection, double x, double *y, double a0, double a1, double a2, real_t *XX, real_t *YY, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2){
-      *y = 0;
-      float yf;
-      realCopy(const_0,YY);
-      real_t SS,TT,UU;
-      if(USEFLOAT == useREAL4) {
-        realContextForecast = &ctxtReal4;
+    *y = 0;
+    float yf;
+    real_t SS, TT, UU;
+
+    realCopy(const_0, YY);
+    if(USEFLOAT == useREAL4) {
+      realContextForecast = &ctxtReal4;
+    }
+    else {
+      if(USEFLOAT == useREAL39) {
+        realContextForecast = &ctxtReal39;
       }
-      else {
-        if(USEFLOAT == useREAL39) {
-          realContextForecast = &ctxtReal39;
+    }
+    switch(selection) {
+      case CF_LINEAR_FITTING:
+      case CF_ORTHOGONAL_FITTING:
+        if(USEFLOAT == 0) {
+          *y = a1 * x + a0;
         }
-      }
-      switch(selection) {
-        case CF_LINEAR_FITTING:
-        case CF_ORTHOGONAL_FITTING:
-          if(USEFLOAT == 0) {
-            *y = a1 * x + a0;
-          }
-          else {
-            realMultiply(XX, aa1, &UU, realContextForecast);
-            realAdd     (&UU, aa0, YY, realContextForecast);
-            realToFloat/*Double*/(YY, &yf); *y = (double)yf;
-          }
-          break;
-        case CF_EXPONENTIAL_FITTING:
-          if(USEFLOAT == 0) {
-            *y = a0 * exp(a1 * x);
-          }
-          else {
-            realMultiply(XX, aa1, &UU, realContextForecast);
-            realExp     (&UU, &UU,     realContextForecast);
-            realMultiply(&UU, aa0, YY, realContextForecast);
-            realToFloat/*Double*/(YY, &yf); *y = (double)yf;
-          }
-          break;
-        case CF_LOGARITHMIC_FITTING:
-          if(USEFLOAT == 0) {
-            *y = a0 + a1*log(x);
-          }
-          else {
-            WP34S_Ln    (XX, &SS,       realContextForecast);
-            realMultiply(&SS, aa1, &UU, realContextForecast);
-            realAdd     (&UU, aa0, YY,  realContextForecast);
-            realToFloat/*Double*/(YY, &yf); *y = (double)yf;
-          }
-          break;
-        case CF_POWER_FITTING:
-          if(USEFLOAT == 0) {
-            *y = a0 * pow(x,a1);
-          }
-          else {
-            realPower   (XX, aa1, &SS, realContextForecast);
-            realMultiply(&SS, aa0, YY, realContextForecast);
-            realToFloat/*Double*/(YY, &yf); *y = (double)yf;
-          }
-          break;
-        case CF_ROOT_FITTING:
-          if(USEFLOAT == 0) {
-            *y = a0 * pow(a1,1/x);
-          }
-          else {
-            realDivide  (const_1, XX, &SS, realContextForecast);
-            realPower   (aa1, &SS, &SS,    realContextForecast);    //very very slow with a1=0.9982, probably in the 0.4 < x < 1.0 area
-            realMultiply(&SS, aa0, YY,     realContextForecast);
-            realToFloat/*Double*/(YY, &yf); *y = (double)yf;
-          }
-          break;
-        case CF_HYPERBOLIC_FITTING:
-          if(USEFLOAT == 0) {
-            *y = 1 / (a1 * x + a0);
-          }
-          else {
-            realMultiply(XX, aa1, &UU,     realContextForecast);
-            realAdd     (&UU, aa0, &TT,    realContextForecast);
-            realDivide  (const_1, &TT, YY, realContextForecast);
-            realToFloat/*Double*/(YY, &yf); *y = (double)yf;
-          }
-          break;
-        case CF_PARABOLIC_FITTING:
-          if(USEFLOAT == 0) {
-            *y = a2 * x * x + a1 * x + a0;
-          }
-          else {
-            realMultiply(XX, XX , &TT,   realContextForecast);
-            realMultiply(&TT, aa2, &TT,  realContextForecast);
-            realMultiply(XX, aa1, &UU,   realContextForecast);
-            realAdd     (&TT, &UU,  &TT, realContextForecast);
-            realAdd     (&TT, aa0,  YY , realContextForecast);
-            realToFloat/*Double*/(YY, &yf); *y = (double)yf;
-          }
-          break;
-        case CF_GAUSS_FITTING:
-          if(USEFLOAT == 0) {
-            *y = a0 * exp( (x-a1)*(x-a1)/a2 );
-          }
-          else {
-            realSubtract(XX, aa1, &TT,   realContextForecast);
-            realMultiply(&TT, &TT , &TT, realContextForecast);
-            realDivide  (&TT, aa2, &TT,  realContextForecast);
-            realExp     (&TT, &TT ,      realContextForecast);
-            realMultiply(&TT, aa0, YY,   realContextForecast);
-            realToFloat/*Double*/(YY, &yf); *y = (double)yf;
-          }
-          break;
-        case CF_CAUCHY_FITTING:
-          if(USEFLOAT == 0) {
-            *y = 1/(a0*(x+a1)*(x+a1)+a2);
-          }
-          else {
-            realAdd     (XX, aa1, &TT,   realContextForecast);
-            realMultiply(&TT, &TT , &TT, realContextForecast);
-            realMultiply(&TT, aa0, &TT,  realContextForecast);
-            realAdd     (&TT, aa2, &TT,  realContextForecast);
-            realDivide  (const_1, &TT, YY, realContextForecast);
-            realToFloat/*Double*/(YY, &yf); *y = (double)yf;
-          }
-        default:break;
-      }
+        else {
+          realMultiply(XX,  aa1, &UU, realContextForecast);
+          realAdd     (&UU, aa0, YY,  realContextForecast);
+          realToFloat/*Double*/(YY, &yf); *y = (double)yf;
+        }
+        break;
+      case CF_EXPONENTIAL_FITTING:
+        if(USEFLOAT == 0) {
+          *y = a0 * exp(a1 * x);
+        }
+        else {
+          realMultiply(XX,  aa1, &UU, realContextForecast);
+          realExp     (&UU, &UU,      realContextForecast);
+          realMultiply(&UU, aa0, YY,  realContextForecast);
+          realToFloat/*Double*/(YY, &yf); *y = (double)yf;
+        }
+        break;
+      case CF_LOGARITHMIC_FITTING:
+        if(USEFLOAT == 0) {
+          *y = a0 + a1*log(x);
+        }
+        else {
+          WP34S_Ln    (XX,  &SS,       realContextForecast);
+          realMultiply(&SS, aa1, &UU,  realContextForecast);
+          realAdd     (&UU, aa0, YY,   realContextForecast);
+          realToFloat/*Double*/(YY, &yf); *y = (double)yf;
+        }
+        break;
+      case CF_POWER_FITTING:
+        if(USEFLOAT == 0) {
+          *y = a0 * pow(x,a1);
+        }
+        else {
+          realPower   (XX,  aa1, &SS, realContextForecast);
+          realMultiply(&SS, aa0, YY,  realContextForecast);
+          realToFloat/*Double*/(YY, &yf); *y = (double)yf;
+        }
+        break;
+      case CF_ROOT_FITTING:
+        if(USEFLOAT == 0) {
+          *y = a0 * pow(a1,1/x);
+        }
+        else {
+          realDivide  (const_1, XX,  &SS, realContextForecast);
+          realPower   (aa1,     &SS, &SS, realContextForecast);    //very very slow with a1=0.9982, probably in the 0.4 < x < 1.0 area
+          realMultiply(&SS,     aa0, YY,  realContextForecast);
+          realToFloat/*Double*/(YY, &yf); *y = (double)yf;
+        }
+        break;
+      case CF_HYPERBOLIC_FITTING:
+        if(USEFLOAT == 0) {
+          *y = 1 / (a1 * x + a0);
+        }
+        else {
+          realMultiply(XX,      aa1, &UU, realContextForecast);
+          realAdd     (&UU,     aa0, &TT, realContextForecast);
+          realDivide  (const_1, &TT, YY,  realContextForecast);
+          realToFloat/*Double*/(YY, &yf); *y = (double)yf;
+        }
+        break;
+      case CF_PARABOLIC_FITTING:
+        if(USEFLOAT == 0) {
+          *y = a2 * x * x + a1 * x + a0;
+        }
+        else {
+          realMultiply(XX,  XX , &TT, realContextForecast);
+          realMultiply(&TT, aa2, &TT, realContextForecast);
+          realMultiply(XX,  aa1, &UU, realContextForecast);
+          realAdd     (&TT, &UU, &TT, realContextForecast);
+          realAdd     (&TT, aa0, YY , realContextForecast);
+          realToFloat/*Double*/(YY, &yf); *y = (double)yf;
+        }
+        break;
+      case CF_GAUSS_FITTING:
+        if(USEFLOAT == 0) {
+          *y = a0 * exp( (x-a1)*(x-a1)/a2 );
+        }
+        else {
+          realSubtract(XX,  aa1, &TT, realContextForecast);
+          realMultiply(&TT, &TT, &TT, realContextForecast);
+          realDivide  (&TT, aa2, &TT, realContextForecast);
+          realExp     (&TT, &TT,      realContextForecast);
+          realMultiply(&TT, aa0, YY,  realContextForecast);
+          realToFloat/*Double*/(YY, &yf); *y = (double)yf;
+        }
+        break;
+      case CF_CAUCHY_FITTING:
+        if(USEFLOAT == 0) {
+          *y = 1/(a0*(x+a1)*(x+a1)+a2);
+        }
+        else {
+          realAdd     (XX,      aa1, &TT, realContextForecast);
+          realMultiply(&TT,     &TT, &TT, realContextForecast);
+          realMultiply(&TT,     aa0, &TT, realContextForecast);
+          realAdd     (&TT,     aa2, &TT, realContextForecast);
+          realDivide  (const_1, &TT, YY,  realContextForecast);
+          realToFloat/*Double*/(YY, &yf); *y = (double)yf;
+        }
+      default:break;
+    }
   }
 
 
   void fnYIsFnx(uint16_t unusedButMandatoryParameter){
-    real_t XX,YY,RR,SMI,aa0,aa1,aa2;
-    double x=-99,y = 0,a0=-99,a1=-99,a2=-99;
-    realCopy(const_0,&aa0);
-    realCopy(const_0,&aa1);
-    realCopy(const_0,&aa2);
+    real_t XX, YY, RR, SMI, aa0, aa1, aa2;
+    double x=-99, y = 0, a0=-99, a1=-99, a2=-99;
+
+    realCopy(const_0, &aa0);
+    realCopy(const_0, &aa1);
+    realCopy(const_0, &aa2);
     if(checkMinimumDataPoints(const_2)) {
       if(lrChosen == 0) {                    //if lrChosen contains something, the stat data exists, otherwise set it to linear. lrSelection still has 1 at this point, i.e. the * will not appear.
         lrChosen = CF_LINEAR_FITTING;
@@ -1118,95 +1123,102 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
 
 
   void xIsFny(uint16_t selection, uint8_t rootNo, real_t *XX, real_t *YY, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2){
-      realCopy(const_0,XX);
-      real_t SS,TT,UU;
-      realContextForecast = &ctxtReal39;
-      switch(selection) {
-        case CF_LINEAR_FITTING:
-        case CF_ORTHOGONAL_FITTING:
-          //x = (y - a0) / a1;
-          realSubtract(YY, aa0, &UU, realContextForecast);
-          realDivide  (&UU,aa1, &TT, realContextForecast);
-          realCopy    (&TT,XX);
-          temporaryInformation = TI_CALCX;
-          break;
-        case CF_EXPONENTIAL_FITTING:
-          realDivide(YY,aa0,&UU,realContextForecast);
-          WP34S_Ln(&UU, &UU, realContextForecast);
-          realDivide(&UU,aa1,XX,realContextForecast);
-          temporaryInformation = TI_CALCX;
-          break;
-        case CF_LOGARITHMIC_FITTING:
-          realSubtract(YY,aa0,&UU,realContextForecast);
-          realDivide(&UU,aa1,&UU,realContextForecast);
-          realExp(&UU,XX,realContextForecast);
-          temporaryInformation = TI_CALCX;
-          break;
-        case CF_POWER_FITTING:
-          realDivide(YY,aa0,&UU,realContextForecast);
-          xthRootReal(&UU,aa1,realContextForecast);             //Note X-register gets written here
-          real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), XX);
-          temporaryInformation = TI_CALCX;
-          break;
-        case CF_ROOT_FITTING:
-          WP34S_Ln(YY,YY,realContextForecast);
-          WP34S_Ln(aa0,&UU,realContextForecast);
-          realSubtract(YY,&UU,YY,realContextForecast);
-          WP34S_Ln(aa1,&UU,realContextForecast);
-          realDivide(&UU,YY,XX,realContextForecast);
-          temporaryInformation = TI_CALCX;
-          break;
-        case CF_HYPERBOLIC_FITTING:
-          realDivide(const_1,YY,&UU,realContextForecast);
-          realSubtract(&UU,aa0,&UU,realContextForecast);
-          realDivide(&UU,aa1,XX,realContextForecast);
-          temporaryInformation = TI_CALCX;
-          break;
-        case CF_PARABOLIC_FITTING:
-          // (1/(2.a2)) . ( -a1 +- sqrt(a1.a1 - 4a2.(a0 - y) ) )
-          realSubtract(YY,aa0,&UU,realContextForecast);
-          realMultiply(const_2,&UU,&UU,realContextForecast);
-          realMultiply(const_2,&UU,&UU,realContextForecast);
-          realMultiply(aa2,&UU,&UU,realContextForecast);
-          realMultiply(aa1,aa1,&TT,realContextForecast);
-          realAdd     (&UU,&TT,&UU,realContextForecast);        //swapped terms around minus, therefore add
-          realSquareRoot(&UU,&UU,realContextForecast);
+    real_t SS, TT, UU;
 
-          realSubtract(const_0,aa1,&SS,realContextForecast);
-          if(rootNo == 1)
-            realSubtract(&SS,&UU,&SS,realContextForecast);      //This term could be Add due to plus and minus
-          if(rootNo == 2)
-            realAdd   (&SS,&UU,&SS,realContextForecast);        //This term could be Add due to plus and minus
+    realCopy(const_0, XX);
+    realContextForecast = &ctxtReal39;
+    switch(selection) {
+      case CF_LINEAR_FITTING:
+      case CF_ORTHOGONAL_FITTING:
+        //x = (y - a0) / a1;
+        realSubtract(YY,      aa0,     &UU, realContextForecast);
+        realDivide  (&UU,     aa1,     &TT, realContextForecast);
+        realCopy    (&TT,     XX);
+        temporaryInformation = TI_CALCX;
+        break;
+      case CF_EXPONENTIAL_FITTING:
+        realDivide(YY,        aa0,     &UU, realContextForecast);
+        WP34S_Ln(&UU,         &UU,          realContextForecast);
+        realDivide(&UU,       aa1,     XX,  realContextForecast);
+        temporaryInformation = TI_CALCX;
+        break;
+      case CF_LOGARITHMIC_FITTING:
+        realSubtract(YY,      aa0,     &UU, realContextForecast);
+        realDivide(&UU,       aa1,     &UU, realContextForecast);
+        realExp(&UU,          XX,           realContextForecast);
+        temporaryInformation = TI_CALCX;
+        break;
+      case CF_POWER_FITTING:
+        realDivide(YY,        aa0,     &UU, realContextForecast);
+        xthRootReal(&UU,      aa1,          realContextForecast);             //Note X-register gets written here
+        real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), XX);
+        temporaryInformation = TI_CALCX;
+        break;
+      case CF_ROOT_FITTING:
+        WP34S_Ln(YY,          YY,           realContextForecast);
+        WP34S_Ln(aa0,         &UU,          realContextForecast);
+        realSubtract(YY,      &UU,     YY,  realContextForecast);
+        WP34S_Ln(aa1,         &UU,          realContextForecast);
+        realDivide(&UU,       YY,      XX,  realContextForecast);
+        temporaryInformation = TI_CALCX;
+        break;
+      case CF_HYPERBOLIC_FITTING:
+        realDivide(const_1,   YY,      &UU, realContextForecast);
+        realSubtract(&UU,     aa0,     &UU, realContextForecast);
+        realDivide(&UU,       aa1,     XX,  realContextForecast);
+        temporaryInformation = TI_CALCX;
+        break;
+      case CF_PARABOLIC_FITTING:
+        // (1/(2.a2)) . ( -a1 +- sqrt(a1.a1 - 4a2.(a0 - y) ) )
+        realSubtract(YY,      aa0,     &UU, realContextForecast);
+        realMultiply(const_2, &UU,     &UU, realContextForecast);
+        realMultiply(const_2, &UU,     &UU, realContextForecast);
+        realMultiply(aa2,     &UU,     &UU, realContextForecast);
+        realMultiply(aa1,     aa1,     &TT, realContextForecast);
+        realAdd     (&UU,     &TT,     &UU, realContextForecast);        //swapped terms around minus, therefore add
+        realSquareRoot(&UU,   &UU,          realContextForecast);
 
-          realDivide(&SS,const_2,&SS,realContextForecast);
-          realDivide(&SS,aa2,XX,realContextForecast);
-          temporaryInformation = TI_CALCX2;
-          break;
+        realSubtract(const_0, aa1,     &SS, realContextForecast);
+        if(rootNo == 1) {
+          realSubtract(&SS,   &UU,     &SS, realContextForecast);      //This term could be Add due to plus and minus
+        }
+        if(rootNo == 2) {
+          realAdd   (&SS,     &UU,     &SS, realContextForecast);        //This term could be Add due to plus and minus
+        }
 
-        case CF_CAUCHY_FITTING:
-          realDivide(const_1,YY,&UU,realContextForecast);
-          realSubtract(&UU,aa2,&UU,realContextForecast);
-          realDivide(&UU,aa0,&UU,realContextForecast);
-          realSquareRoot(&UU,&UU,realContextForecast);
-          realSubtract(const_0,aa1,&SS,realContextForecast);
-          if(rootNo == 1)
-            realSubtract(&SS,&UU,XX,realContextForecast);
-          if(rootNo == 2)
-            realAdd   (&SS,&UU,XX,realContextForecast);
-          temporaryInformation = TI_CALCX2;
-          break;
+        realDivide(&SS,       const_2, &SS, realContextForecast);
+        realDivide(&SS,       aa2,     XX,  realContextForecast);
+        temporaryInformation = TI_CALCX2;
+        break;
 
-        case CF_GAUSS_FITTING:
-          realDivide(YY,aa0,&UU,realContextForecast);
-          WP34S_Ln(&UU,&UU,realContextForecast);
-          realMultiply(&UU,aa2,&UU,realContextForecast);
-          realSquareRoot(&UU,&UU,realContextForecast);
-          if(rootNo == 1)
-            realSubtract(aa1,&UU,XX,realContextForecast);
-          if(rootNo == 2)
-            realAdd   (aa1,&UU,XX,realContextForecast);
-          temporaryInformation = TI_CALCX2;
-          break;
+      case CF_CAUCHY_FITTING:
+        realDivide(const_1,   YY,      &UU, realContextForecast);
+        realSubtract(&UU,     aa2,     &UU, realContextForecast);
+        realDivide(&UU,       aa0,     &UU, realContextForecast);
+        realSquareRoot(&UU,   &UU,          realContextForecast);
+        realSubtract(const_0, aa1,     &SS, realContextForecast);
+        if(rootNo == 1) {
+          realSubtract(&SS,   &UU,     XX,  realContextForecast);
+        }
+        if(rootNo == 2) {
+          realAdd   (&SS,     &UU,     XX,  realContextForecast);
+        }
+        temporaryInformation = TI_CALCX2;
+        break;
+
+      case CF_GAUSS_FITTING:
+        realDivide(YY,        aa0,     &UU, realContextForecast);
+        WP34S_Ln(&UU,         &UU,          realContextForecast);
+        realMultiply(&UU,     aa2,     &UU, realContextForecast);
+        realSquareRoot(&UU,   &UU,          realContextForecast);
+        if(rootNo == 1) {
+          realSubtract(aa1,   &UU,     XX,  realContextForecast);
+        }
+        if(rootNo == 2) {
+          realAdd   (aa1,     &UU,     XX,  realContextForecast);
+        }
+        temporaryInformation = TI_CALCX2;
+        break;
 
         default:break;
       }
@@ -1215,10 +1227,11 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
 
 
   void fnXIsFny(uint16_t unusedButMandatoryParameter){
-  real_t XX,YY,RR,SMI,aa0,aa1,aa2;
-  realCopy(const_0,&aa0);
-  realCopy(const_0,&aa1);
-  realCopy(const_0,&aa2);
+  real_t XX, YY, RR, SMI, aa0, aa1, aa2;
+
+  realCopy(const_0, &aa0);
+  realCopy(const_0, &aa1);
+  realCopy(const_0, &aa2);
   if(checkMinimumDataPoints(const_2)) {
     if(lrChosen == 0) {                    //if lrChosen contains something, the stat data exists, otherwise set it to linear. lrSelection still has 1 at this point, i.e. the * will not appear.
       lrChosen = CF_LINEAR_FITTING;
@@ -1251,5 +1264,3 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
     }
   }
 }
-
-#endif //TESTSUITE

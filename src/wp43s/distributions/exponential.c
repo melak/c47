@@ -80,7 +80,9 @@ static bool_t checkParamExponential(real_t *x, real_t *i) {
 void fnExponentialP(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, dof;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamExponential(&val, &dof)) {
     WP34S_Pdf_Expon(&val, &dof, &ans, &ctxtReal39);
@@ -95,7 +97,9 @@ void fnExponentialP(uint16_t unusedButMandatoryParameter) {
 void fnExponentialL(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, dof;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamExponential(&val, &dof)) {
     WP34S_Cdf_Expon(&val, &dof, &ans, &ctxtReal39);
@@ -110,7 +114,9 @@ void fnExponentialL(uint16_t unusedButMandatoryParameter) {
 void fnExponentialR(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, dof;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamExponential(&val, &dof)) {
     WP34S_Cdfu_Expon(&val, &dof, &ans, &ctxtReal39);
@@ -125,7 +131,9 @@ void fnExponentialR(uint16_t unusedButMandatoryParameter) {
 void fnExponentialI(uint16_t unusedButMandatoryParameter) {
   real_t val, ans, dof;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(checkParamExponential(&val, &dof)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {

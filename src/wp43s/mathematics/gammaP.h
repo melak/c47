@@ -17,21 +17,22 @@
 /********************************************//**
  * \file gammaP.h
  ***********************************************/
-#ifndef GAMMAP_H
-#define GAMMAP_H
+#if !defined(GAMMAP_H)
+  #define GAMMAP_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fnGammaP      (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void gammaPError   (void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define gammaPError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void gammaPLonILonI(void);
-void gammaPLonIReal(void);
-void gammaPRealLonI(void);
-void gammaPRealReal(void);
+  void fnGammaP      (uint16_t unusedButMandatoryParameter);
 
-#endif // GAMMAP_H
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void gammaPError   (void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
+    #define gammaPError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+  void gammaPLonILonI(void);
+  void gammaPLonIReal(void);
+  void gammaPRealLonI(void);
+  void gammaPRealReal(void);
+#endif // !GAMMAP_H

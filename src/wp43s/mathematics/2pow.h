@@ -17,23 +17,24 @@
 /********************************************//**
  * \file 2pow.h
  ***********************************************/
-#ifndef FILE_2POW_H
-#define FILE_2POW_H
+#if !defined(FILE_2POW_H)
+  #define FILE_2POW_H
 
-#include "defines.h"
-#include <stdint.h>
+  #include "defines.h"
+  #include <stdint.h>
 
-void fn2Pow     (uint16_t unusedButMandatoryParameter);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-void twoPowError(void);
-#else // (EXTRA_INFO_ON_CALC_ERROR == 1)
-#define twoPowError typeError
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-void twoPowLonI (void);
-void twoPowRema (void);
-void twoPowCxma (void);
-void twoPowShoI (void);
-void twoPowReal (void);
-void twoPowCplx (void);
+  void fn2Pow     (uint16_t unusedButMandatoryParameter);
 
-#endif // FILE_2POW_H
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    void twoPowError(void);
+  #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    #define twoPowError typeError
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+  void twoPowLonI (void);
+  void twoPowRema (void);
+  void twoPowCxma (void);
+  void twoPowShoI (void);
+  void twoPowReal (void);
+  void twoPowCplx (void);
+#endif // !FILE_2POW_H

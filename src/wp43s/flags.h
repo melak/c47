@@ -17,28 +17,27 @@
 /********************************************//**
  * \file flags.h
  ***********************************************/
-#ifndef FLAGS_H
-#define FLAGS_H
+#if !defined(FLAGS_H)
+  #define FLAGS_H
 
-#include "typeDefinitions.h"
-#include <stdint.h>
+  #include "typeDefinitions.h"
+  #include <stdint.h>
 
-void   systemFlagAction        (uint16_t systemFlag, uint16_t action);
-void   synchronizeLetteredFlags(void);
-bool_t getFlag                 (uint16_t flag);
-void   fnGetSystemFlag         (uint16_t systemFlag);
-void   fnSetFlag               (uint16_t flag);
-void   fnClearFlag             (uint16_t flag);
-void   fnFlipFlag              (uint16_t flag);
-void   fnClFAll                (uint16_t confirmation);
-void   fnIsFlagClear           (uint16_t flag);
-void   fnIsFlagSet             (uint16_t flag);
-void   fnIsFlagClearClear      (uint16_t flag);
-void   fnIsFlagSetClear        (uint16_t flag);
-void   fnIsFlagClearSet        (uint16_t flag);
-void   fnIsFlagSetSet          (uint16_t flag);
-void   fnIsFlagClearFlip       (uint16_t flag);
-void   fnIsFlagSetFlip         (uint16_t flag);
-void   fnIsFlagSetFlip         (uint16_t flag);
-
-#endif // FLAGS_H
+  void   systemFlagAction        (uint16_t systemFlag, uint16_t action);
+  void   synchronizeLetteredFlags(void);
+  bool_t getFlag                 (uint16_t flag);
+  void   fnGetSystemFlag         (uint16_t systemFlag);
+  void   fnSetFlag               (uint16_t flag);
+  void   fnClearFlag             (uint16_t flag);
+  void   fnFlipFlag              (uint16_t flag);
+  void   fnClFAll                (uint16_t confirmation);
+  void   fnIsFlagClear           (uint16_t flag);
+  void   fnIsFlagSet             (uint16_t flag);
+  void   fnIsFlagClearClear      (uint16_t flag);
+  void   fnIsFlagSetClear        (uint16_t flag);
+  void   fnIsFlagClearSet        (uint16_t flag);
+  void   fnIsFlagSetSet          (uint16_t flag);
+  void   fnIsFlagClearFlip       (uint16_t flag);
+  void   fnIsFlagSetFlip         (uint16_t flag);
+  void   fnIsFlagSetFlip         (uint16_t flag);
+#endif // !FLAGS_H

@@ -17,8 +17,8 @@
 /********************************************//**
  * \file config.h
  ***********************************************/
-#ifndef CONFIG_H
-#define CONFIG_H
+#if !defined(CONFIG_H)
+  #define CONFIG_H
 
 #include "decContext.h"
 #include <stdint.h>
@@ -188,7 +188,6 @@ void     fnAngularMode         (uint16_t angularMode);
  ***********************************************/
 void     fnFractionType        (uint16_t unusedButMandatoryParameter);
 
-
 void     restoreStats          (void);
 void     fnReset               (uint16_t confirmation);
 void     setConfirmationMode   (void (*func)(uint16_t));
@@ -198,5 +197,4 @@ void     fnRange               (uint16_t unusedButMandatoryParameter);
 void     fnGetRange            (uint16_t unusedButMandatoryParameter);
 void     fnHide                (uint16_t digits);
 void     fnGetHide             (uint16_t unusedButMandatoryParameter);
-
-#endif // CONFIG_H
+#endif // !CONFIG_H
