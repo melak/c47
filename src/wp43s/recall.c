@@ -39,21 +39,21 @@
     const int16_t i = getIRegisterAsInt(true);
     const int16_t j = getJRegisterAsInt(true);
 
-    liftStack();
-    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    real34Copy(&matrix->matrixElements[i * matrix->header.matrixColumns + j], REGISTER_REAL34_DATA(REGISTER_X));
-    return false;
-  }
+  liftStack();
+  reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+  real34Copy(&matrix->matrixElements[i * matrix->header.matrixColumns + j], REGISTER_REAL34_DATA(REGISTER_X));
+  return false;
+}
 
-  static bool_t recallElementComplex(complex34Matrix_t *matrix) {
-    const int16_t i = getIRegisterAsInt(true);
-    const int16_t j = getJRegisterAsInt(true);
+static bool_t recallElementComplex(complex34Matrix_t *matrix) {
+  const int16_t i = getIRegisterAsInt(true);
+  const int16_t j = getJRegisterAsInt(true);
 
-    liftStack();
-    reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-    complex34Copy(&matrix->matrixElements[i * matrix->header.matrixColumns + j], REGISTER_COMPLEX34_DATA(REGISTER_X));
-    return false;
-  }
+  liftStack();
+  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+  complex34Copy(&matrix->matrixElements[i * matrix->header.matrixColumns + j], REGISTER_COMPLEX34_DATA(REGISTER_X));
+  return false;
+}
 #endif // !TESTSUITE_BUILD
 
 
@@ -349,8 +349,8 @@ void fnRecallIJ(uint16_t unusedButMandatoryParameter) {
         return;
       }
 
-      liftStack();
-      liftStack();
+    liftStack();
+    liftStack();
 
       if(matrixIndex == INVALID_VARIABLE || !regInRange(matrixIndex) || !((getRegisterDataType(matrixIndex) == dtReal34Matrix) || (getRegisterDataType(matrixIndex) == dtComplex34Matrix))) {
         convertLongIntegerToLongIntegerRegister(zero, REGISTER_Y);
@@ -377,10 +377,10 @@ void fnRecallIJ(uint16_t unusedButMandatoryParameter) {
         }
       }
 
-      adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
-      adjustResult(REGISTER_Y, false, true, REGISTER_Y, -1, -1);
+    adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
+    adjustResult(REGISTER_Y, false, true, REGISTER_Y, -1, -1);
 
-      longIntegerFree(zero);
-    }
+    longIntegerFree(zero);
+  }
   #endif // !TESTSUITE_BUILD
 }

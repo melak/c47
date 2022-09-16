@@ -228,10 +228,19 @@ real_t                 SAVED_SIGMA_LASTX;
 real_t                 SAVED_SIGMA_LASTY;
 int32_t                SAVED_SIGMA_LAct;
 
+uint16_t               lrSelectionHistobackup;
+uint16_t               lrChosenHistobackup;
+real34_t               loBinR;
+real34_t               nBins ;
+real34_t               hiBinR;
+char                   statMx[8];
+char                   plotStatMx[8];
+
+
 #if defined(DMCP_BUILD)
   bool_t               backToDMCP;
-  //int                  keyAutoRepeat;
-  //int16_t              previousItem;
+//int                  keyAutoRepeat;
+//int16_t              previousItem;
   uint32_t             nextTimerRefresh;
   uint32_t             nextScreenRefresh; // timer substitute for refreshLcd(), which does cursor blinking and other stuff
   bool_t               wp43sKbdLayout;
@@ -322,7 +331,7 @@ int32_t                SAVED_SIGMA_LAct;
     char charKey[3];
     /*bool_t wp43sKbdLayout, inFastRefresh = 0, inDownUpPress = 0, repeatDownUpPress = 0*/;
     uint16_t currentVolumeSetting, savedVoluleSetting; // used for beep signaling screen shot
-    //uint32_t now, previousRefresh, nextAutoRepeat = 0;
+  //uint32_t now, previousRefresh, nextAutoRepeat = 0;
 
     wp43sMemInBlocks = 0;
     gmpMemInBytes = 0;
@@ -438,9 +447,9 @@ int32_t                SAVED_SIGMA_LAct;
     backToDMCP = false;
 
     lcd_refresh();
-    //previousRefresh = sys_current_ms();
+  //previousRefresh = sys_current_ms();
     nextScreenRefresh = sys_current_ms() + SCREEN_REFRESH_PERIOD;
-    //now = sys_current_ms();
+  //now = sys_current_ms();
     //runner_key_tout_init(0); // Enables fast auto repeat
 
     fnTimerReset();
@@ -455,7 +464,7 @@ int32_t                SAVED_SIGMA_LAct;
     //   ST(STAT_SUSPENDED) - Program signals it is ready for off and doesn't need to be woken-up again
     //   ST(STAT_OFF)       - Program in off state (OS goes to sleep and only [EXIT] key can wake it up again)
     //   ST(STAT_RUNNING)   - OS doesn't sleep in this mode
-    //SET_ST(STAT_CLK_WKUP_SECONDS);
+  //SET_ST(STAT_CLK_WKUP_SECONDS);
     SET_ST(STAT_CLK_WKUP_ENABLE); // Enable wakeup each minute (for clock update)
 
     while(!backToDMCP) {
@@ -510,7 +519,7 @@ int32_t                SAVED_SIGMA_LAct;
         //}
       }
 
-      //now = sys_current_ms();
+    //now = sys_current_ms();
 
       // =======================
       // Externally forced LCD repaint

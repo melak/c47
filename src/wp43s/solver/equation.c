@@ -310,258 +310,258 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
       bool_t inExponent = false;
       const char *tmpPtr = strPtr;
 
-      bool_t _cursorShown, _rightEllipsis;
-      if(cursorShown == NULL)   cursorShown   = &_cursorShown;
-      if(rightEllipsis == NULL) rightEllipsis = &_rightEllipsis;
-      *cursorShown = false;
-      *rightEllipsis = false;
+    bool_t _cursorShown, _rightEllipsis;
+    if(cursorShown == NULL)   cursorShown   = &_cursorShown;
+    if(rightEllipsis == NULL) rightEllipsis = &_rightEllipsis;
+    *cursorShown = false;
+    *rightEllipsis = false;
 
-      for(uint32_t i = 0; i < 7; ++i) {
-        tmpPtr += ((*tmpPtr) & 0x80) ? 2 : 1;
-        if(*tmpPtr == ':') {
-          inLabel = (startAt <= (i + 1));
-          tmpVal = i;
-          break;
-        }
-        else if(*tmpPtr == '(') {
-          inLabel = false;
-          tmpVal = i;
-          break;
-        }
+    for(uint32_t i = 0; i < 7; ++i) {
+      tmpPtr += ((*tmpPtr) & 0x80) ? 2 : 1;
+      if(*tmpPtr == ':') {
+        inLabel = (startAt <= (i + 1));
+        tmpVal = i;
+        break;
       }
-      bufPtr = tmpString;
+      else if(*tmpPtr == '(') {
+        inLabel = false;
+        tmpVal = i;
+        break;
+      }
+    }
+    bufPtr = tmpString;
 
-      if(startAt > 0) {
-        *bufPtr       = STD_ELLIPSIS[0];
-        *(bufPtr + 1) = STD_ELLIPSIS[1];
-        *(bufPtr + 2) = 0;
-        strWidth += stringWidth(bufPtr, &standardFont, true, true);
-        bufPtr += 2;
-      }
-      if(startAt == cursorAt) {
-        *bufPtr       = STD_CURSOR[0];
-        *(bufPtr + 1) = STD_CURSOR[1];
-        *(bufPtr + 2) = 0;
-        strWidth += stringWidth(bufPtr, &standardFont, true, true);
-        bufPtr += 2;
-        *cursorShown = true;
-      }
+    if(startAt > 0) {
+      *bufPtr       = STD_ELLIPSIS[0];
+      *(bufPtr + 1) = STD_ELLIPSIS[1];
+      *(bufPtr + 2) = 0;
+      strWidth += stringWidth(bufPtr, &standardFont, true, true);
+      bufPtr += 2;
+    }
+    if(startAt == cursorAt) {
+      *bufPtr       = STD_CURSOR[0];
+      *(bufPtr + 1) = STD_CURSOR[1];
+      *(bufPtr + 2) = 0;
+      strWidth += stringWidth(bufPtr, &standardFont, true, true);
+      bufPtr += 2;
+      *cursorShown = true;
+    }
 
-      while((*strPtr) != 0) {
-        if((++strLength) > startAt) {
+    while((*strPtr) != 0) {
+      if((++strLength) > startAt) {
+        doubleBytednessHistory <<= 1;
+        *bufPtr = *strPtr;
+
+        /* Argument separator */
+        if((!inLabel) && (*strPtr) == ':') {
+          _addSpace(&bufPtr, &strWidth, &doubleBytednessHistory);
+          *bufPtr       = *strPtr;
+          *(bufPtr + 1) = 0;
+          strWidth += stringWidth(bufPtr, &standardFont, true, true);
+          *(bufPtr + 1) = STD_SPACE_PUNCTUATION[0];
+          *(bufPtr + 2) = STD_SPACE_PUNCTUATION[1];
+          *(bufPtr + 3) = 0;
           doubleBytednessHistory <<= 1;
-          *bufPtr = *strPtr;
+          doubleBytednessHistory |= 1;
+          bufPtr += 1;
+          unaryMinus = true;
+          inNumeric = true;
+          beginningOfNumber = true;
+          inExponent = false;
+        }
 
-          /* Argument separator */
-          if((!inLabel) && (*strPtr) == ':') {
+        /* End of label */
+        else if((*strPtr) == ':') {
+          *(bufPtr + 1) = 0;
+          strWidth += stringWidth(bufPtr, &standardFont, true, true);
+          *(bufPtr + 1) = ' ';
+          *(bufPtr + 2) = 0;
+          doubleBytednessHistory <<= 1;
+          bufPtr += 1;
+          inLabel = false;
+        }
+
+        /* Unary minus */
+        else if((!inLabel) && unaryMinus && (*strPtr) == '-') {
+          if(strLength > 1) _addSpace(&bufPtr, &strWidth, &doubleBytednessHistory);
+          *bufPtr       = *strPtr;
+          *(bufPtr + 1) = 0;
+          unaryMinus = false;
+          inExponent = false;
+        }
+
+        /* Opening parenthesis */
+        else if((!inLabel) && (*strPtr) == '(') {
+          *(bufPtr + 1) = 0;
+          strWidth += stringWidth(bufPtr, &standardFont, true, true);
+          *(bufPtr + 1) = STD_SPACE_PUNCTUATION[0];
+          *(bufPtr + 2) = STD_SPACE_PUNCTUATION[1];
+          *(bufPtr + 3) = 0;
+          doubleBytednessHistory <<= 1;
+          doubleBytednessHistory |= 1;
+          bufPtr += 1;
+          unaryMinus = true;
+          inNumeric = true;
+          beginningOfNumber = true;
+          inExponent = false;
+        }
+
+        /* Power (if not editing) */
+        else if((!inLabel) && (cursorAt == EQUATION_NO_CURSOR && (*strPtr) == '^' && (tmpVal = _checkExponent(strPtr + 1)))) {
+          for(uint32_t i = 0; i < tmpVal; ++i)
+            _showExponent(&bufPtr, &strPtr, &strWidth);
+          *bufPtr = 0;
+          bufPtr -= 2;
+          strWidth -= stringWidth(bufPtr, &standardFont, true, true);
+          doubleBytednessHistory |= 1;
+          for(uint32_t i = 1; i < tmpVal; ++i) {
+            doubleBytednessHistory <<= 1;
+            doubleBytednessHistory |= 1;
+          }
+          unaryMinus = false;
+          inExponent = false;
+        }
+
+        /* Closing parenthesis or power (when editing) */
+        else if((!inLabel) && ((*strPtr) == ')' || (*strPtr) == '^')) {
+          _addSpace(&bufPtr, &strWidth, &doubleBytednessHistory);
+          *bufPtr       = *strPtr;
+          *(bufPtr + 1) = 0;
+          unaryMinus = false;
+          inExponent = false;
+        }
+
+        /* Sign of exponent */
+        else if((!inLabel) && inNumeric && inExponent && ((*strPtr) == '+' || (*strPtr) == '-')) {
+          *(bufPtr + 1) = 0;
+          unaryMinus = false;
+          inNumeric = false;
+          beginningOfNumber = false;
+          inExponent = false;
+        }
+
+        /* Operators */
+        else if((!inLabel) && ((*strPtr) == '=' || (*strPtr) == '+' || (*strPtr) == '-' || (*strPtr) == '/' || (*strPtr) == '!' || (*strPtr) == '|')) {
+          if((*strPtr) != '|' || (strLength > (startAt + 1)))
             _addSpace(&bufPtr, &strWidth, &doubleBytednessHistory);
-            *bufPtr       = *strPtr;
-            *(bufPtr + 1) = 0;
-            strWidth += stringWidth(bufPtr, &standardFont, true, true);
-            *(bufPtr + 1) = STD_SPACE_PUNCTUATION[0];
-            *(bufPtr + 2) = STD_SPACE_PUNCTUATION[1];
-            *(bufPtr + 3) = 0;
+          *bufPtr       = *strPtr;
+          *(bufPtr + 1) = 0;
+          strWidth += stringWidth(bufPtr, &standardFont, true, true);
+          *(bufPtr + 1) = STD_SPACE_PUNCTUATION[0];
+          *(bufPtr + 2) = STD_SPACE_PUNCTUATION[1];
+          *(bufPtr + 3) = 0;
+          doubleBytednessHistory <<= 1;
+          doubleBytednessHistory |= 1;
+          bufPtr += 1;
+          unaryMinus = false;
+          inNumeric = true;
+          beginningOfNumber = true;
+          inExponent = false;
+        }
+
+        /* Multiply */
+        else if((!inLabel) && (compareChar(strPtr, STD_CROSS) == 0 || compareChar(strPtr, STD_DOT) == 0)) {
+          _addSpace(&bufPtr, &strWidth, &doubleBytednessHistory);
+          //if(getSystemFlag(FLAG_MULTx)) {
+          //  *bufPtr       = STD_CROSS[0];
+          //  *(bufPtr + 1) = STD_CROSS[1];
+          //}
+          //else {
+            *bufPtr       = STD_DOT[0];
+            *(bufPtr + 1) = STD_DOT[1];
+          //}
+          *(bufPtr + 2) = 0;
+          strWidth += stringWidth(bufPtr, &standardFont, true, true);
+          *(bufPtr + 2) = STD_SPACE_PUNCTUATION[0];
+          *(bufPtr + 3) = STD_SPACE_PUNCTUATION[1];
+          *(bufPtr + 4) = 0;
+          doubleBytednessHistory <<= 1;
+          doubleBytednessHistory |= 3;
+          bufPtr += 2;
+          unaryMinus = false;
+          inNumeric = true;
+          beginningOfNumber = true;
+          inExponent = false;
+        }
+
+        /* Numbers */
+        else if((!inLabel) && (((*strPtr) >= '0' && (*strPtr) <= '9') || (*strPtr) == '.')) {
+          *(bufPtr + 1) = 0;
+          unaryMinus = false;
+          inExponent = false;
+          beginningOfNumber = false;
+        }
+
+        /* Exponent */
+        else if((!inLabel) && inNumeric && (!beginningOfNumber) && (!inExponent) && (*strPtr) == 'E') {
+          if(cursorAt == EQUATION_NO_CURSOR) {
+            *bufPtr       = STD_DOT[0];
+            *(bufPtr + 1) = STD_DOT[1];
+            *(bufPtr + 2) = STD_SUB_10[0];
+            *(bufPtr + 3) = STD_SUB_10[1];
+            *(bufPtr + 4) = 0;
             doubleBytednessHistory <<= 1;
-            doubleBytednessHistory |= 1;
-            bufPtr += 1;
-            unaryMinus = true;
-            inNumeric = true;
-            beginningOfNumber = true;
-            inExponent = false;
-          }
-
-          /* End of label */
-          else if((*strPtr) == ':') {
-            *(bufPtr + 1) = 0;
+            doubleBytednessHistory |= 3;
             strWidth += stringWidth(bufPtr, &standardFont, true, true);
-            *(bufPtr + 1) = ' ';
-            *(bufPtr + 2) = 0;
-            doubleBytednessHistory <<= 1;
-            bufPtr += 1;
-            inLabel = false;
-          }
-
-          /* Unary minus */
-          else if((!inLabel) && unaryMinus && (*strPtr) == '-') {
-            if(strLength > 1) _addSpace(&bufPtr, &strWidth, &doubleBytednessHistory);
-            *bufPtr       = *strPtr;
-            *(bufPtr + 1) = 0;
-            unaryMinus = false;
-            inExponent = false;
-          }
-
-          /* Opening parenthesis */
-          else if((!inLabel) && (*strPtr) == '(') {
-            *(bufPtr + 1) = 0;
-            strWidth += stringWidth(bufPtr, &standardFont, true, true);
-            *(bufPtr + 1) = STD_SPACE_PUNCTUATION[0];
-            *(bufPtr + 2) = STD_SPACE_PUNCTUATION[1];
-            *(bufPtr + 3) = 0;
-            doubleBytednessHistory <<= 1;
-            doubleBytednessHistory |= 1;
-            bufPtr += 1;
-            unaryMinus = true;
-            inNumeric = true;
-            beginningOfNumber = true;
-            inExponent = false;
-          }
-
-          /* Power (if not editing) */
-          else if((!inLabel) && (cursorAt == EQUATION_NO_CURSOR && (*strPtr) == '^' && (tmpVal = _checkExponent(strPtr + 1)))) {
+            bufPtr += 4;
+            tmpVal = _checkExponent(strPtr + 1);
             for(uint32_t i = 0; i < tmpVal; ++i)
               _showExponent(&bufPtr, &strPtr, &strWidth);
             *bufPtr = 0;
             bufPtr -= 2;
             strWidth -= stringWidth(bufPtr, &standardFont, true, true);
-            doubleBytednessHistory |= 1;
-            for(uint32_t i = 1; i < tmpVal; ++i) {
+            for(uint32_t i = 0; i < tmpVal; ++i) {
               doubleBytednessHistory <<= 1;
               doubleBytednessHistory |= 1;
             }
             unaryMinus = false;
             inExponent = false;
-          }
-
-          /* Closing parenthesis or power (when editing) */
-          else if((!inLabel) && ((*strPtr) == ')' || (*strPtr) == '^')) {
-            _addSpace(&bufPtr, &strWidth, &doubleBytednessHistory);
-            *bufPtr       = *strPtr;
-            *(bufPtr + 1) = 0;
-            unaryMinus = false;
-            inExponent = false;
-          }
-
-          /* Sign of exponent */
-          else if((!inLabel) && inNumeric && inExponent && ((*strPtr) == '+' || (*strPtr) == '-')) {
-            *(bufPtr + 1) = 0;
-            unaryMinus = false;
-            inNumeric = false;
-            beginningOfNumber = false;
-            inExponent = false;
-          }
-
-          /* Operators */
-          else if((!inLabel) && ((*strPtr) == '=' || (*strPtr) == '+' || (*strPtr) == '-' || (*strPtr) == '/' || (*strPtr) == '!' || (*strPtr) == '|')) {
-            if((*strPtr) != '|' || (strLength > (startAt + 1)))
-              _addSpace(&bufPtr, &strWidth, &doubleBytednessHistory);
-            *bufPtr       = *strPtr;
-            *(bufPtr + 1) = 0;
-            strWidth += stringWidth(bufPtr, &standardFont, true, true);
-            *(bufPtr + 1) = STD_SPACE_PUNCTUATION[0];
-            *(bufPtr + 2) = STD_SPACE_PUNCTUATION[1];
-            *(bufPtr + 3) = 0;
-            doubleBytednessHistory <<= 1;
-            doubleBytednessHistory |= 1;
-            bufPtr += 1;
-            unaryMinus = false;
-            inNumeric = true;
-            beginningOfNumber = true;
-            inExponent = false;
-          }
-
-          /* Multiply */
-          else if((!inLabel) && (compareChar(strPtr, STD_CROSS) == 0 || compareChar(strPtr, STD_DOT) == 0)) {
-            _addSpace(&bufPtr, &strWidth, &doubleBytednessHistory);
-            //if(getSystemFlag(FLAG_MULTx)) {
-            //  *bufPtr       = STD_CROSS[0];
-            //  *(bufPtr + 1) = STD_CROSS[1];
-            //}
-            //else {
-              *bufPtr       = STD_DOT[0];
-              *(bufPtr + 1) = STD_DOT[1];
-            //}
-            *(bufPtr + 2) = 0;
-            strWidth += stringWidth(bufPtr, &standardFont, true, true);
-            *(bufPtr + 2) = STD_SPACE_PUNCTUATION[0];
-            *(bufPtr + 3) = STD_SPACE_PUNCTUATION[1];
-            *(bufPtr + 4) = 0;
-            doubleBytednessHistory <<= 1;
-            doubleBytednessHistory |= 3;
-            bufPtr += 2;
-            unaryMinus = false;
-            inNumeric = true;
-            beginningOfNumber = true;
-            inExponent = false;
-          }
-
-          /* Numbers */
-          else if((!inLabel) && (((*strPtr) >= '0' && (*strPtr) <= '9') || (*strPtr) == '.')) {
-            *(bufPtr + 1) = 0;
-            unaryMinus = false;
-            inExponent = false;
             beginningOfNumber = false;
           }
-
-          /* Exponent */
-          else if((!inLabel) && inNumeric && (!beginningOfNumber) && (!inExponent) && (*strPtr) == 'E') {
-            if(cursorAt == EQUATION_NO_CURSOR) {
-              *bufPtr       = STD_DOT[0];
-              *(bufPtr + 1) = STD_DOT[1];
-              *(bufPtr + 2) = STD_SUB_10[0];
-              *(bufPtr + 3) = STD_SUB_10[1];
-              *(bufPtr + 4) = 0;
-              doubleBytednessHistory <<= 1;
-              doubleBytednessHistory |= 3;
-              strWidth += stringWidth(bufPtr, &standardFont, true, true);
-              bufPtr += 4;
-              tmpVal = _checkExponent(strPtr + 1);
-              for(uint32_t i = 0; i < tmpVal; ++i)
-                _showExponent(&bufPtr, &strPtr, &strWidth);
-              *bufPtr = 0;
-              bufPtr -= 2;
-              strWidth -= stringWidth(bufPtr, &standardFont, true, true);
-              for(uint32_t i = 0; i < tmpVal; ++i) {
-                doubleBytednessHistory <<= 1;
-                doubleBytednessHistory |= 1;
-              }
-              unaryMinus = false;
-              inExponent = false;
-              beginningOfNumber = false;
-            }
-            else {
-              *(bufPtr + 1) = 0;
-              unaryMinus = false;
-              inExponent = true;
-              beginningOfNumber = false;
-            }
-          }
-
-          /* Other double-byte characters */
-          else if((*strPtr) & 0x80) {
-            *(bufPtr + 1) = *(strPtr + 1);
-            *(bufPtr + 2) = 0;
-            doubleBytednessHistory |= 1;
-            unaryMinus = false;
-            inNumeric = false;
-            inExponent = false;
-            beginningOfNumber = false;
-          }
-
-          /* Other single-byte characters */
           else {
             *(bufPtr + 1) = 0;
             unaryMinus = false;
-            inNumeric = false;
-            inExponent = false;
+            inExponent = true;
             beginningOfNumber = false;
           }
+        }
 
-          /* Add the character */
+        /* Other double-byte characters */
+        else if((*strPtr) & 0x80) {
+          *(bufPtr + 1) = *(strPtr + 1);
+          *(bufPtr + 2) = 0;
+          doubleBytednessHistory |= 1;
+          unaryMinus = false;
+          inNumeric = false;
+          inExponent = false;
+          beginningOfNumber = false;
+        }
+
+        /* Other single-byte characters */
+        else {
+          *(bufPtr + 1) = 0;
+          unaryMinus = false;
+          inNumeric = false;
+          inExponent = false;
+          beginningOfNumber = false;
+        }
+
+        /* Add the character */
+        glyphWidth = stringWidth(bufPtr, &standardFont, true, true);
+        strWidth += glyphWidth;
+
+        /* Cursor */
+        if(strLength == cursorAt) {
+          bufPtr += (doubleBytednessHistory & 0x00000001) ? 2 : 1;
+          *bufPtr       = STD_CURSOR[0];
+          *(bufPtr + 1) = STD_CURSOR[1];
+          *(bufPtr + 2) = 0;
           glyphWidth = stringWidth(bufPtr, &standardFont, true, true);
           strWidth += glyphWidth;
-
-          /* Cursor */
-          if(strLength == cursorAt) {
-            bufPtr += (doubleBytednessHistory & 0x00000001) ? 2 : 1;
-            *bufPtr       = STD_CURSOR[0];
-            *(bufPtr + 1) = STD_CURSOR[1];
-            *(bufPtr + 2) = 0;
-            glyphWidth = stringWidth(bufPtr, &standardFont, true, true);
-            strWidth += glyphWidth;
-            doubleBytednessHistory <<= 1;
-            doubleBytednessHistory |= 1;
-            *cursorShown = true;
-          }
+          doubleBytednessHistory <<= 1;
+          doubleBytednessHistory |= 1;
+          *cursorShown = true;
+        }
 
           /* Trailing ellipsis */
           if(strWidth > (SCREEN_WIDTH - 2)) {
@@ -585,11 +585,11 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
             break;
           }
 
-          /* Increment bufPtr */
-          bufPtr += (doubleBytednessHistory & 0x00000001) ? 2 : 1;
-        }
-        strPtr += ((*strPtr) & 0x80) ? 2 : 1;
+        /* Increment bufPtr */
+        bufPtr += (doubleBytednessHistory & 0x00000001) ? 2 : 1;
       }
+      strPtr += ((*strPtr) & 0x80) ? 2 : 1;
+    }
 
       if((!dryRun) && (*cursorShown || cursorAt == EQUATION_NO_CURSOR)) {
         showString(tmpString, &standardFont, 1, SCREEN_HEIGHT - SOFTMENU_HEIGHT * 3 + 2 , vmNormal, true, true);
@@ -608,29 +608,29 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
     //  bufPtr[5] = 0;
   }
 
-  #define PARSER_HINT_NUMERIC  0
-  #define PARSER_HINT_OPERATOR 1
-  #define PARSER_HINT_FUNCTION 2
-  #define PARSER_HINT_VARIABLE 3
-  #define PARSER_HINT_REGULAR  (stringGlyphLength(buffer) == numericCount ? PARSER_HINT_NUMERIC : PARSER_HINT_VARIABLE)
+#define PARSER_HINT_NUMERIC  0
+#define PARSER_HINT_OPERATOR 1
+#define PARSER_HINT_FUNCTION 2
+#define PARSER_HINT_VARIABLE 3
+#define PARSER_HINT_REGULAR  (stringGlyphLength(buffer) == numericCount ? PARSER_HINT_NUMERIC : PARSER_HINT_VARIABLE)
 
-  //#define PARSER_OPERATOR_STACK_SIZE   (getSystemFlag(FLAG_SSIZE8) ? 8 : 4)
-  #define PARSER_OPERATOR_STACK_SIZE   10 /* (200 - 16) / 18 */
-  #define PARSER_OPERATOR_STACK        ((uint16_t *)mvarBuffer)
-  #define PARSER_NUMERIC_STACK_SIZE    PARSER_OPERATOR_STACK_SIZE
-  #define PARSER_NUMERIC_STACK         ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t) * 2))
-  #define PARSER_LEFT_VALUE_REAL       ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2))
-  #define PARSER_LEFT_VALUE_IMAG       ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t)))
-  #define PARSER_NUMERIC_STACK_POINTER ((uint8_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t) * (2 + 2 * PARSER_NUMERIC_STACK_SIZE)))
+//#define PARSER_OPERATOR_STACK_SIZE   (getSystemFlag(FLAG_SSIZE8) ? 8 : 4)
+#define PARSER_OPERATOR_STACK_SIZE   10 /* (200 - 16) / 18 */
+#define PARSER_OPERATOR_STACK        ((uint16_t *)mvarBuffer)
+#define PARSER_NUMERIC_STACK_SIZE    PARSER_OPERATOR_STACK_SIZE
+#define PARSER_NUMERIC_STACK         ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t) * 2))
+#define PARSER_LEFT_VALUE_REAL       ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2))
+#define PARSER_LEFT_VALUE_IMAG       ((real34_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t)))
+#define PARSER_NUMERIC_STACK_POINTER ((uint8_t *)(mvarBuffer + PARSER_OPERATOR_STACK_SIZE * 2 + sizeof(real34_t) * (2 + 2 * PARSER_NUMERIC_STACK_SIZE)))
 
-  #define PARSER_OPERATOR_ITM_PARENTHESIS_LEFT   5000
-  #define PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT  5001
-  #define PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT  5002
-  #define PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT 5003
-  #define PARSER_OPERATOR_ITM_EQUAL              5004
-  #define PARSER_OPERATOR_ITM_YX                 5005
-  #define PARSER_OPERATOR_ITM_XFACT              5006
-  #define PARSER_OPERATOR_ITM_END_OF_FORMULA     5007
+#define PARSER_OPERATOR_ITM_PARENTHESIS_LEFT   5000
+#define PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT  5001
+#define PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT  5002
+#define PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT 5003
+#define PARSER_OPERATOR_ITM_EQUAL              5004
+#define PARSER_OPERATOR_ITM_YX                 5005
+#define PARSER_OPERATOR_ITM_XFACT              5006
+#define PARSER_OPERATOR_ITM_END_OF_FORMULA     5007
 
   static uint32_t _operatorPriority(uint16_t func) {
     // priority of operator: smaller number represents higher priority
@@ -697,258 +697,258 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
     clearRegister(REGISTER_X);
     liftStack();
 
-    _popNumericStack(mvarBuffer, &re, &im);
-    if(real34IsZero(&im) || real34IsNaN(&im)) {
-      real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
-    }
-    else {
-      reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
-      real34Copy(&im, REGISTER_IMAG34_DATA(REGISTER_X));
-    }
-
-    _popNumericStack(mvarBuffer, &re, &im);
-    if(real34IsZero(&im) || real34IsNaN(&im)) {
-      real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_Y));
-    }
-    else {
-      reallocateRegister(REGISTER_Y, dtComplex34, COMPLEX34_SIZE, amNone);
-      real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_Y));
-      real34Copy(&im, REGISTER_IMAG34_DATA(REGISTER_Y));
-    }
-
-    runFunction(item);
-
-    if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-      _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
-    }
-    else {
-      fnToReal(NOPARAM);
-      _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
-    }
-    fnDrop(NOPARAM);
+  _popNumericStack(mvarBuffer, &re, &im);
+  if(real34IsZero(&im) || real34IsNaN(&im)) {
+    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
+  }
+  else {
+    reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
+    real34Copy(&im, REGISTER_IMAG34_DATA(REGISTER_X));
   }
 
-  static void _runMonadicFunction(char *mvarBuffer, uint16_t item) {
-    real34_t re, im;
-    liftStack();
-    clearRegister(REGISTER_X);
-
-    _popNumericStack(mvarBuffer, &re, &im);
-    if(real34IsZero(&im) || real34IsNaN(&im)) {
-      real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
-    }
-    else {
-      reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-      real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
-      real34Copy(&im, REGISTER_IMAG34_DATA(REGISTER_X));
-    }
-
-    runFunction(item);
-
-    if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-      _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
-    }
-    else {
-      fnToReal(NOPARAM);
-      _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
-    }
-    fnDrop(NOPARAM);
+  _popNumericStack(mvarBuffer, &re, &im);
+  if(real34IsZero(&im) || real34IsNaN(&im)) {
+    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_Y));
+  }
+  else {
+    reallocateRegister(REGISTER_Y, dtComplex34, COMPLEX34_SIZE, amNone);
+    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_Y));
+    real34Copy(&im, REGISTER_IMAG34_DATA(REGISTER_Y));
   }
 
-  static void _runEqFunction(char *mvarBuffer, uint16_t item) {
-    switch(item) {
-      case PARSER_OPERATOR_ITM_YX: // dyadic functions
-      case ITM_COMB:
-      case ITM_PERM:
-      case ITM_YX:
-      case ITM_LOGXY:
-      case ITM_ADD:
-      case ITM_SUB:
-      case ITM_MULT:
-      case ITM_DIV:
-      case ITM_IDIV:
-      case ITM_MOD:
-      case ITM_MAX:
-      case ITM_MIN:
-      case ITM_RMD:
-      case ITM_HN:
-      case ITM_HNP:
-      case ITM_Lm:
-      case ITM_LmALPHA:
-      case ITM_Pn:
-      case ITM_Tn:
-      case ITM_Un:
-      case ITM_atan2:
-        _runDyadicFunction(mvarBuffer, item);
-        break;
-      default: // monadic functions
-        _runMonadicFunction(mvarBuffer, item);
-    }
+  runFunction(item);
+
+  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+    _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
+  }
+  else {
+    fnToReal(NOPARAM);
+    _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
+  }
+  fnDrop(NOPARAM);
+}
+
+static void _runMonadicFunction(char *mvarBuffer, uint16_t item) {
+  real34_t re, im;
+  liftStack();
+  clearRegister(REGISTER_X);
+
+  _popNumericStack(mvarBuffer, &re, &im);
+  if(real34IsZero(&im) || real34IsNaN(&im)) {
+    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
+  }
+  else {
+    reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+    real34Copy(&re, REGISTER_REAL34_DATA(REGISTER_X));
+    real34Copy(&im, REGISTER_IMAG34_DATA(REGISTER_X));
   }
 
-  static void _processOperator(uint16_t func, char *mvarBuffer) {
-    uint32_t opStackTop = 0xffffffffu;
-    for(uint32_t i = 0; i < PARSER_OPERATOR_STACK_SIZE; ++i) {
-      if((i == PARSER_OPERATOR_STACK_SIZE) || (PARSER_OPERATOR_STACK[i] == 0)) {
-        opStackTop = i;
-        break;
-      }
+  runFunction(item);
+
+  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+    _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
+  }
+  else {
+    fnToReal(NOPARAM);
+    _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
+  }
+  fnDrop(NOPARAM);
+}
+
+static void _runEqFunction(char *mvarBuffer, uint16_t item) {
+  switch(item) {
+    case PARSER_OPERATOR_ITM_YX: // dyadic functions
+    case ITM_COMB:
+    case ITM_PERM:
+    case ITM_YX:
+    case ITM_LOGXY:
+    case ITM_ADD:
+    case ITM_SUB:
+    case ITM_MULT:
+    case ITM_DIV:
+    case ITM_IDIV:
+    case ITM_MOD:
+    case ITM_MAX:
+    case ITM_MIN:
+    case ITM_RMD:
+    case ITM_HN:
+    case ITM_HNP:
+    case ITM_Lm:
+    case ITM_LmALPHA:
+    case ITM_Pn:
+    case ITM_Tn:
+    case ITM_Un:
+    case ITM_atan2:
+      _runDyadicFunction(mvarBuffer, item);
+      break;
+    default: // monadic functions
+      _runMonadicFunction(mvarBuffer, item);
+  }
+}
+
+static void _processOperator(uint16_t func, char *mvarBuffer) {
+  uint32_t opStackTop = 0xffffffffu;
+  for(uint32_t i = 0; i < PARSER_OPERATOR_STACK_SIZE; ++i) {
+    if((i == PARSER_OPERATOR_STACK_SIZE) || (PARSER_OPERATOR_STACK[i] == 0)) {
+      opStackTop = i;
+      break;
     }
-    if(opStackTop != 0xffffffffu) {
-      /* flush operator stack */
-      /* closing parenthesis, equal, or end of formula */
-      if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT || func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT || func == PARSER_OPERATOR_ITM_EQUAL || func == PARSER_OPERATOR_ITM_END_OF_FORMULA) {
-        for(int32_t i = (int32_t)opStackTop - 1; i >= 0; --i) {
-          switch(PARSER_OPERATOR_STACK[i]) {
-            case PARSER_OPERATOR_ITM_PARENTHESIS_LEFT:
-              if(func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT) {
-                displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-                #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                  moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "parenthesis not closed", NULL);
-                #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-              }
-              break;
-            case PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT:
-              _runEqFunction(mvarBuffer, ITM_ABS);
-              if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT) {
-                displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-                #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                  moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "unpaired vertical bar within parentheses", NULL);
-                #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-              }
-              break;
-            case PARSER_OPERATOR_ITM_YX:
-              _runEqFunction(mvarBuffer, ITM_YX);
-              break;
-            case PARSER_OPERATOR_ITM_XFACT:
-              _runEqFunction(mvarBuffer, ITM_XFACT);
-              break;
-            default:
-              _runEqFunction(mvarBuffer, PARSER_OPERATOR_STACK[i]);
-          }
-          switch(PARSER_OPERATOR_STACK[i]) {
-            case ITM_ADD:
-            case ITM_SUB:
-            case ITM_MULT:
-            case ITM_DIV:
-            case PARSER_OPERATOR_ITM_YX:
-            case PARSER_OPERATOR_ITM_XFACT:
-              PARSER_OPERATOR_STACK[i] = 0;
-              break;
-            default:
-              PARSER_OPERATOR_STACK[i] = 0;
-              if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT || func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT) return;
+  }
+  if(opStackTop != 0xffffffffu) {
+    /* flush operator stack */
+    /* closing parenthesis, equal, or end of formula */
+    if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT || func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT || func == PARSER_OPERATOR_ITM_EQUAL || func == PARSER_OPERATOR_ITM_END_OF_FORMULA) {
+      for(int32_t i = (int32_t)opStackTop - 1; i >= 0; --i) {
+        switch(PARSER_OPERATOR_STACK[i]) {
+          case PARSER_OPERATOR_ITM_PARENTHESIS_LEFT:
+            if(func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT) {
               displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
               #if (EXTRA_INFO_ON_CALC_ERROR == 1)
                 moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "parenthesis not closed", NULL);
               #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-              break;
-          }
-        }
-        switch(func) {
-          case PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT:
-            displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-              moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "no corresponding opening parenthesis", NULL);
-            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+            }
             break;
-          case PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT:
-            displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-              moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "no corresponding opening vertical bar", NULL);
-            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+          case PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT:
+            _runEqFunction(mvarBuffer, ITM_ABS);
+            if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT) {
+              displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+                moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "unpaired vertical bar within parentheses", NULL);
+              #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+            }
             break;
-          case PARSER_OPERATOR_ITM_EQUAL:
-            fnToReal(NOPARAM);
-            _popNumericStack(mvarBuffer, PARSER_LEFT_VALUE_REAL, PARSER_LEFT_VALUE_IMAG);
+          case PARSER_OPERATOR_ITM_YX:
+            _runEqFunction(mvarBuffer, ITM_YX);
+            break;
+          case PARSER_OPERATOR_ITM_XFACT:
+            _runEqFunction(mvarBuffer, ITM_XFACT);
             break;
           default:
-            setSystemFlag(FLAG_ASLIFT);
-            liftStack();
-            if((real34IsZero(PARSER_LEFT_VALUE_IMAG) || real34IsNaN(PARSER_LEFT_VALUE_IMAG)) && (real34IsZero(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 1]) || real34IsNaN(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 1]))) {
-              reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-              real34Subtract(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 2], PARSER_LEFT_VALUE_REAL, REGISTER_REAL34_DATA(REGISTER_X));
-            }
-            else {
-              reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-              real34Subtract(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 2], PARSER_LEFT_VALUE_REAL, REGISTER_REAL34_DATA(REGISTER_X));
-              real34Subtract(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 1], PARSER_LEFT_VALUE_IMAG, REGISTER_IMAG34_DATA(REGISTER_X));
-            }
-            --(*PARSER_NUMERIC_STACK_POINTER);
+            _runEqFunction(mvarBuffer, PARSER_OPERATOR_STACK[i]);
         }
-        return;
-      }
-
-      /* stack is empty */
-      if(opStackTop == 0) {
-        PARSER_OPERATOR_STACK[0] = func;
-        return;
-      }
-
-      /* other cases */
-      for(uint32_t i = opStackTop; i > 0; --i) {
-
-        /* factorial */
-        if(func == PARSER_OPERATOR_ITM_XFACT) {
-          _runEqFunction(mvarBuffer, ITM_XFACT);
-          return;
-        }
-
-        /* push an operator */
-        else if(
-          (_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) < 4) || /* parenthesis */
-          (_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) > (_operatorPriority(func) & (~1u)) || /* higher priority */
-          ((_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) == (_operatorPriority(func) & (~1u)) && (_operatorPriority(func) & 1) /* same priority and right-associative */ )
-        ) {
-          if(i < PARSER_OPERATOR_STACK_SIZE) {
-            PARSER_OPERATOR_STACK[i] = func;
-          }
-          else {
-            displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        switch(PARSER_OPERATOR_STACK[i]) {
+          case ITM_ADD:
+          case ITM_SUB:
+          case ITM_MULT:
+          case ITM_DIV:
+          case PARSER_OPERATOR_ITM_YX:
+          case PARSER_OPERATOR_ITM_XFACT:
+            PARSER_OPERATOR_STACK[i] = 0;
+            break;
+          default:
+            PARSER_OPERATOR_STACK[i] = 0;
+            if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT || func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT) return;
+            displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
             #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-              moreInfoOnError("In function parseEquation:", "operator stack overflow!", NULL, NULL);
+              moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "parenthesis not closed", NULL);
             #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-          }
-          return;
+            break;
         }
-
-        /* pop an operator */
-        else {
-          _runEqFunction(mvarBuffer, PARSER_OPERATOR_STACK[i - 1] == PARSER_OPERATOR_ITM_YX ? ITM_YX :
-                                     PARSER_OPERATOR_STACK[i - 1] == PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT ? ITM_ABS :
-                                     PARSER_OPERATOR_STACK[i - 1]);
-          if(i == 1) {
-            PARSER_OPERATOR_STACK[i - 1] = func;
-            return;
+      }
+      switch(func) {
+        case PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT:
+          displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "no corresponding opening parenthesis", NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+          break;
+        case PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT:
+          displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "no corresponding opening vertical bar", NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+          break;
+        case PARSER_OPERATOR_ITM_EQUAL:
+          fnToReal(NOPARAM);
+          _popNumericStack(mvarBuffer, PARSER_LEFT_VALUE_REAL, PARSER_LEFT_VALUE_IMAG);
+          break;
+        default:
+          setSystemFlag(FLAG_ASLIFT);
+          liftStack();
+          if((real34IsZero(PARSER_LEFT_VALUE_IMAG) || real34IsNaN(PARSER_LEFT_VALUE_IMAG)) && (real34IsZero(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 1]) || real34IsNaN(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 1]))) {
+            reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+            real34Subtract(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 2], PARSER_LEFT_VALUE_REAL, REGISTER_REAL34_DATA(REGISTER_X));
           }
           else {
-            PARSER_OPERATOR_STACK[i - 1] = 0;
+            reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+            real34Subtract(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 2], PARSER_LEFT_VALUE_REAL, REGISTER_REAL34_DATA(REGISTER_X));
+            real34Subtract(&PARSER_NUMERIC_STACK[(*PARSER_NUMERIC_STACK_POINTER) * 2 - 1], PARSER_LEFT_VALUE_IMAG, REGISTER_IMAG34_DATA(REGISTER_X));
           }
-        }
-
+          --(*PARSER_NUMERIC_STACK_POINTER);
       }
+      return;
     }
-    else {
-      displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        moreInfoOnError("In function parseEquation:", "operator stack overflow!", NULL, NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
+    /* stack is empty */
+    if(opStackTop == 0) {
+      PARSER_OPERATOR_STACK[0] = func;
+      return;
+    }
+
+    /* other cases */
+    for(uint32_t i = opStackTop; i > 0; --i) {
+
+      /* factorial */
+      if(func == PARSER_OPERATOR_ITM_XFACT) {
+        _runEqFunction(mvarBuffer, ITM_XFACT);
+        return;
+      }
+
+      /* push an operator */
+      else if(
+        (_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) < 4) || /* parenthesis */
+        (_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) > (_operatorPriority(func) & (~1u)) || /* higher priority */
+        ((_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) == (_operatorPriority(func) & (~1u)) && (_operatorPriority(func) & 1) /* same priority and right-associative */ )
+      ) {
+        if(i < PARSER_OPERATOR_STACK_SIZE) {
+          PARSER_OPERATOR_STACK[i] = func;
+        }
+        else {
+          displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            moreInfoOnError("In function parseEquation:", "operator stack overflow!", NULL, NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        }
+        return;
+      }
+
+      /* pop an operator */
+      else {
+        _runEqFunction(mvarBuffer, PARSER_OPERATOR_STACK[i - 1] == PARSER_OPERATOR_ITM_YX ? ITM_YX :
+                                   PARSER_OPERATOR_STACK[i - 1] == PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT ? ITM_ABS :
+                                   PARSER_OPERATOR_STACK[i - 1]);
+        if(i == 1) {
+          PARSER_OPERATOR_STACK[i - 1] = func;
+          return;
+        }
+        else {
+          PARSER_OPERATOR_STACK[i - 1] = 0;
+        }
+      }
+
     }
   }
+  else {
+    displayCalcErrorMessage(ERROR_EQUATION_TOO_COMPLEX, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      moreInfoOnError("In function parseEquation:", "operator stack overflow!", NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+}
 
-  static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, char *mvarBuffer) {
-    uint32_t tmpVal = 0;
-    if(parserHint != PARSER_HINT_NUMERIC && stringGlyphLength(strPtr) > 7) {
-      displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        moreInfoOnError("In function parseEquation:", strPtr, "token too long!", NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      return;
-    }
-    if(strPtr[0] == 0) {
-      return;
-    }
+static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, char *mvarBuffer) {
+  uint32_t tmpVal = 0;
+  if(parserHint != PARSER_HINT_NUMERIC && stringGlyphLength(strPtr) > 7) {
+    displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      moreInfoOnError("In function parseEquation:", strPtr, "token too long!", NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return;
+  }
+  if(strPtr[0] == 0) {
+    return;
+  }
 
     switch(parseMode) {
       case EQUATION_PARSER_MVAR:
@@ -988,128 +988,132 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
                 bufPtr += stringByteLength(bufPtr) + 1;
                 _menuItem(ITM_CALC, bufPtr);
               }
-              else if(tmpVal == 4 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE)) {
+              else if(tmpVal == 3 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE)) {
+                _menuItem(ITM_DRAW, bufPtr);
+                bufPtr += stringByteLength(bufPtr) + 1;
                 _menuItem(ITM_FPHERE, bufPtr);
               }
-              else if(tmpVal == 4 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE)) {
+              else if(tmpVal == 3 && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE)) {
+                _menuItem(ITM_DRAW, bufPtr);
+                bufPtr += stringByteLength(bufPtr) + 1;
                 _menuItem(ITM_FPPHERE, bufPtr);
-              }
             }
           }
-          else {
-            displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-              moreInfoOnError("In function parseEquation:", strPtr, "is not a valid name!", NULL);
-            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-          }
         }
-        break;
+        else {
+          displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            moreInfoOnError("In function parseEquation:", strPtr, "is not a valid name!", NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        }
+      }
+      break;
 
-      case EQUATION_PARSER_XEQ:
-        if(parserHint == PARSER_HINT_VARIABLE) {
-          if(compareString(STD_pi, strPtr, CMP_NAME) == 0) { // check for pi
-            runFunction(ITM_CONSTpi);
+    case EQUATION_PARSER_XEQ:
+      if(parserHint == PARSER_HINT_VARIABLE) {
+        if(compareString(STD_pi, strPtr, CMP_NAME) == 0) { // check for pi
+          runFunction(ITM_CONSTpi);
+          _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
+          fnDrop(NOPARAM);
+          return;
+        }
+        for(uint32_t i = CST_01; i <= CST_79; ++i) { // check for constants
+          if(compareString(indexOfItems[i].itemCatalogName, strPtr, CMP_NAME) == 0) {
+            runFunction(i);
             _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
             fnDrop(NOPARAM);
             return;
           }
-          for(uint32_t i = CST_01; i <= CST_79; ++i) { // check for constants
-            if(compareString(indexOfItems[i].itemCatalogName, strPtr, CMP_NAME) == 0) {
-              runFunction(i);
-              _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
-              fnDrop(NOPARAM);
-              return;
-            }
-          }
-          if(validateName(strPtr)) {
-            reallyRunFunction(ITM_RCL, findNamedVariable(strPtr));
-            if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-              _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
-            }
-            else {
-              fnToReal(NOPARAM);
-              _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
-            }
-            fnDrop(NOPARAM);
+        }
+        if(validateName(strPtr)) {
+          reallyRunFunction(ITM_RCL, findNamedVariable(strPtr));
+          if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+            _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
           }
           else {
-            displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-              moreInfoOnError("In function parseEquation:", strPtr, "is not a valid name!", NULL);
-            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+            fnToReal(NOPARAM);
+            _pushNumericStack(mvarBuffer, REGISTER_REAL34_DATA(REGISTER_X), const34_0);
           }
+          fnDrop(NOPARAM);
         }
-        else if(parserHint == PARSER_HINT_NUMERIC) {
-          real34_t val;
-          stringToReal34(strPtr, &val);
-          _pushNumericStack(mvarBuffer, &val, const34_0);
-        }
-        else if(parserHint == PARSER_HINT_OPERATOR) {
-          if(compareString("+", strPtr, CMP_BINARY) == 0) {
-            _processOperator(ITM_ADD, mvarBuffer);
-          }
-          else if(compareString("-", strPtr, CMP_BINARY) == 0) {
-            _processOperator(ITM_SUB, mvarBuffer);
-          }
-          else if(compareString(STD_CROSS, strPtr, CMP_BINARY) == 0 || compareString(STD_DOT, strPtr, CMP_BINARY) == 0) {
-            _processOperator(ITM_MULT, mvarBuffer);
-          }
-          else if(compareString("/", strPtr, CMP_BINARY) == 0) {
-            _processOperator(ITM_DIV, mvarBuffer);
-          }
-          else if(compareString("^", strPtr, CMP_BINARY) == 0) {
-            _processOperator(PARSER_OPERATOR_ITM_YX, mvarBuffer);
-          }
-          else if(compareString("!", strPtr, CMP_BINARY) == 0) {
-            _processOperator(PARSER_OPERATOR_ITM_XFACT, mvarBuffer);
-          }
-          else if(compareString("(", strPtr, CMP_BINARY) == 0) {
-            _processOperator(PARSER_OPERATOR_ITM_PARENTHESIS_LEFT, mvarBuffer);
-          }
-          else if(compareString(")", strPtr, CMP_BINARY) == 0) {
-            _processOperator(PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT, mvarBuffer);
-          }
-          else if(compareString("|", strPtr, CMP_BINARY) == 0) {
-            _processOperator(PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT, mvarBuffer);
-          }
-          else if(compareString("|)", strPtr, CMP_BINARY) == 0) {
-            _processOperator(PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT, mvarBuffer);
-          }
-          else if(compareString("=", strPtr, CMP_BINARY) == 0) {
-            _processOperator(PARSER_OPERATOR_ITM_EQUAL, mvarBuffer);
-          }
-          else if(compareString(":", strPtr, CMP_BINARY) == 0) {
-            // label or parameter separator will be skipped
-          }
-          else {
-            displayBugScreen("In function _parseWord: Unknown operator appeared!");
-          }
-        }
-        else if(parserHint == PARSER_HINT_FUNCTION) {
-          for(uint32_t i = 0; functionAlias[i].name[0] != 0; ++i) {
-            if(compareString(functionAlias[i].name, strPtr, CMP_NAME) == 0) {
-              _processOperator(functionAlias[i].opCode, mvarBuffer);
-              return;
-            }
-          }
-          for(uint32_t i = 1; i < LAST_ITEM; ++i) {
-            if(((indexOfItems[i].status & EIM_STATUS) == EIM_ENABLED) && (indexOfItems[i].param <= NOPARAM) && (compareString(indexOfItems[i].itemCatalogName, strPtr, CMP_NAME) == 0)) {
-              _processOperator(i, mvarBuffer);
-              return;
-            }
-          }
-          for(uint32_t i = 1; i < LAST_ITEM; ++i) {
-            if(((indexOfItems[i].status & EIM_STATUS) == EIM_ENABLED) && (indexOfItems[i].param <= NOPARAM) && (compareString(indexOfItems[i].itemSoftmenuName, strPtr, CMP_NAME) == 0)) {
-              _processOperator(i, mvarBuffer);
-              return;
-            }
-          }
-          displayCalcErrorMessage(ERROR_FUNCTION_NOT_FOUND, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        else {
+          displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-            moreInfoOnError("In function parseEquation:", strPtr, "is not recognized as a function", "or not for equations");
+            moreInfoOnError("In function parseEquation:", strPtr, "is not a valid name!", NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         }
-        break;
+      }
+      else if(parserHint == PARSER_HINT_NUMERIC) {
+        real34_t val;
+        stringToReal34(strPtr, &val);
+        _pushNumericStack(mvarBuffer, &val, const34_0);
+      }
+      else if(parserHint == PARSER_HINT_OPERATOR) {
+        if(compareString("+", strPtr, CMP_BINARY) == 0) {
+          _processOperator(ITM_ADD, mvarBuffer);
+        }
+        else if(compareString("-", strPtr, CMP_BINARY) == 0) {
+          _processOperator(ITM_SUB, mvarBuffer);
+        }
+        else if(compareString(STD_CROSS, strPtr, CMP_BINARY) == 0 || compareString(STD_DOT, strPtr, CMP_BINARY) == 0) {
+          _processOperator(ITM_MULT, mvarBuffer);
+        }
+        else if(compareString("/", strPtr, CMP_BINARY) == 0) {
+          _processOperator(ITM_DIV, mvarBuffer);
+        }
+        else if(compareString("^", strPtr, CMP_BINARY) == 0) {
+          _processOperator(PARSER_OPERATOR_ITM_YX, mvarBuffer);
+        }
+        else if(compareString("!", strPtr, CMP_BINARY) == 0) {
+          _processOperator(PARSER_OPERATOR_ITM_XFACT, mvarBuffer);
+        }
+        else if(compareString("(", strPtr, CMP_BINARY) == 0) {
+          _processOperator(PARSER_OPERATOR_ITM_PARENTHESIS_LEFT, mvarBuffer);
+        }
+        else if(compareString(")", strPtr, CMP_BINARY) == 0) {
+          _processOperator(PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT, mvarBuffer);
+        }
+        else if(compareString("|", strPtr, CMP_BINARY) == 0) {
+          _processOperator(PARSER_OPERATOR_ITM_VERTICAL_BAR_LEFT, mvarBuffer);
+        }
+        else if(compareString("|)", strPtr, CMP_BINARY) == 0) {
+          _processOperator(PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT, mvarBuffer);
+        }
+        else if(compareString("=", strPtr, CMP_BINARY) == 0) {
+          _processOperator(PARSER_OPERATOR_ITM_EQUAL, mvarBuffer);
+        }
+        else if(compareString(":", strPtr, CMP_BINARY) == 0) {
+          // label or parameter separator will be skipped
+        }
+        else {
+          displayBugScreen("In function _parseWord: Unknown operator appeared!");
+        }
+      }
+      else if(parserHint == PARSER_HINT_FUNCTION) {
+        for(uint32_t i = 0; functionAlias[i].name[0] != 0; ++i) {
+          if(compareString(functionAlias[i].name, strPtr, CMP_NAME) == 0) {
+            _processOperator(functionAlias[i].opCode, mvarBuffer);
+            return;
+          }
+        }
+        for(uint32_t i = 1; i < LAST_ITEM; ++i) {
+          if(((indexOfItems[i].status & EIM_STATUS) == EIM_ENABLED) && (indexOfItems[i].param <= NOPARAM) && (compareString(indexOfItems[i].itemCatalogName, strPtr, CMP_NAME) == 0)) {
+            _processOperator(i, mvarBuffer);
+            return;
+          }
+        }
+        for(uint32_t i = 1; i < LAST_ITEM; ++i) {
+          if(((indexOfItems[i].status & EIM_STATUS) == EIM_ENABLED) && (indexOfItems[i].param <= NOPARAM) && (compareString(indexOfItems[i].itemSoftmenuName, strPtr, CMP_NAME) == 0)) {
+            _processOperator(i, mvarBuffer);
+            return;
+          }
+        }
+        displayCalcErrorMessage(ERROR_FUNCTION_NOT_FOUND, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          moreInfoOnError("In function parseEquation:", strPtr, "is not recognized as a function", "or not for equations");
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      }
+      break;
 
       default:
         displayBugScreen("In function _parseWord: Unknown mode of formula parser!");
@@ -1125,205 +1129,205 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
     bool_t equalAppeared = false, labeled = false, afterClosingParenthesis = false, unaryMinusCanOccur = true, afterSpace = false;
     bool_t inExponent = false, exponentSignCanOccur = false;
 
-    for(uint32_t i = 0; i < PARSER_OPERATOR_STACK_SIZE; ++i) {
-      PARSER_OPERATOR_STACK[i] = 0;
+  for(uint32_t i = 0; i < PARSER_OPERATOR_STACK_SIZE; ++i) {
+    PARSER_OPERATOR_STACK[i] = 0;
+  }
+  real34Zero(PARSER_LEFT_VALUE_REAL);
+  real34Zero(PARSER_LEFT_VALUE_IMAG);
+  for(uint32_t i = 0; i < PARSER_NUMERIC_STACK_SIZE; ++i) {
+    realToReal34(const_NaN, &PARSER_NUMERIC_STACK[i * 2    ]);
+    realToReal34(const_NaN, &PARSER_NUMERIC_STACK[i * 2 + 1]);
+  }
+  *PARSER_NUMERIC_STACK_POINTER = 0;
+  if(parseMode == EQUATION_PARSER_XEQ) {
+    fnClearStack(NOPARAM);
+  }
+
+  for(uint32_t i = 0; i < 7; ++i) {
+    strPtr += ((*strPtr) & 0x80) ? 2 : 1;
+    if(*strPtr == ':') {
+      labeled = true;
+      ++strPtr;
+      break;
     }
-    real34Zero(PARSER_LEFT_VALUE_REAL);
-    real34Zero(PARSER_LEFT_VALUE_IMAG);
-    for(uint32_t i = 0; i < PARSER_NUMERIC_STACK_SIZE; ++i) {
-      realToReal34(const_NaN, &PARSER_NUMERIC_STACK[i * 2    ]);
-      realToReal34(const_NaN, &PARSER_NUMERIC_STACK[i * 2 + 1]);
+    else if(*strPtr == '(') {
+      labeled = false;
+      break;
     }
-    *PARSER_NUMERIC_STACK_POINTER = 0;
-    if(parseMode == EQUATION_PARSER_XEQ) {
-      fnClearStack(NOPARAM);
+  }
+  if(!labeled) {
+    strPtr = (char *)TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData);
+  }
+
+  while(*strPtr != 0) {
+    while(*strPtr == ' ') {
+      afterSpace = true;
+      ++strPtr;
     }
 
-    for(uint32_t i = 0; i < 7; ++i) {
-      strPtr += ((*strPtr) & 0x80) ? 2 : 1;
-      if(*strPtr == ':') {
-        labeled = true;
-        ++strPtr;
-        break;
-      }
-      else if(*strPtr == '(') {
-        labeled = false;
-        break;
-      }
-    }
-    if(!labeled) {
-      strPtr = (char *)TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData);
-    }
+    switch(*strPtr) {
+      case ';':
+      case ',':
+        displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          sprintf(errorMessage, "%c", *strPtr);
+          moreInfoOnError("In function parseEquation:", errorMessage, "cannot be appeared in equations", NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        return;
 
-    while(*strPtr != 0) {
-      while(*strPtr == ' ') {
-        afterSpace = true;
-        ++strPtr;
-      }
-
-      switch(*strPtr) {
-        case ';':
-        case ',':
-          displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-            sprintf(errorMessage, "%c", *strPtr);
-            moreInfoOnError("In function parseEquation:", errorMessage, "cannot be appeared in equations", NULL);
-          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-          return;
-
-        case '(':
-          if(bufPtr != buffer) {
-            *(bufPtr++) = 0;
-            ++strPtr;
-            if(stringGlyphLength(buffer) == numericCount) {
-              displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                moreInfoOnError("In function parseEquation:", "attempt to call a number as a function!", NULL, NULL);
-              #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-              return;
-            }
-            else {
-              _parseWord(buffer, parseMode, PARSER_HINT_FUNCTION, mvarBuffer);
-              bufPtr = buffer;
-              buffer[0] = 0;
-              numericCount = 0;
-              afterClosingParenthesis = false;
-              unaryMinusCanOccur = true;
-              afterSpace = false;
-              inExponent = false;
-              exponentSignCanOccur = false;
-              break;
-            }
-          }
-          /* fallthrough */
-        case '=':
-        case '+':
-        case '-':
-        case '/':
-        case ')':
-        case '^':
-        case '!':
-        case ':':
-        case '|':
-          if(equalAppeared && (*strPtr == '=')) {
+      case '(':
+        if(bufPtr != buffer) {
+          *(bufPtr++) = 0;
+          ++strPtr;
+          if(stringGlyphLength(buffer) == numericCount) {
             displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
             #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-              moreInfoOnError("In function parseEquation:", "= appears more than once", NULL, NULL);
+              moreInfoOnError("In function parseEquation:", "attempt to call a number as a function!", NULL, NULL);
             #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
             return;
           }
-          else if((bufPtr != buffer) && (*strPtr == '|')) {
-            *(bufPtr++) = 0;
-            _parseWord(buffer, parseMode, PARSER_HINT_REGULAR, mvarBuffer);
+          else {
+            _parseWord(buffer, parseMode, PARSER_HINT_FUNCTION, mvarBuffer);
+            bufPtr = buffer;
+            buffer[0] = 0;
+            numericCount = 0;
+            afterClosingParenthesis = false;
+            unaryMinusCanOccur = true;
+            afterSpace = false;
+            inExponent = false;
+            exponentSignCanOccur = false;
+            break;
+          }
+        }
+        /* fallthrough */
+      case '=':
+      case '+':
+      case '-':
+      case '/':
+      case ')':
+      case '^':
+      case '!':
+      case ':':
+      case '|':
+        if(equalAppeared && (*strPtr == '=')) {
+          displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            moreInfoOnError("In function parseEquation:", "= appears more than once", NULL, NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+          return;
+        }
+        else if((bufPtr != buffer) && (*strPtr == '|')) {
+          *(bufPtr++) = 0;
+          _parseWord(buffer, parseMode, PARSER_HINT_REGULAR, mvarBuffer);
+          bufPtr = buffer;
+          numericCount = 0;
+          *(bufPtr++) = '|';
+          *(bufPtr++) = ')';
+          *(bufPtr++) = 0;
+          afterClosingParenthesis = true;
+          unaryMinusCanOccur = false;
+          afterSpace = false;
+          inExponent = false;
+          exponentSignCanOccur = false;
+        }
+        else if(exponentSignCanOccur && (*strPtr == '+' || *strPtr == '-')) {
+          /* exponent sign */
+          *(bufPtr++) = *(strPtr++);
+          ++numericCount;
+          afterClosingParenthesis = false;
+          unaryMinusCanOccur = false;
+          afterSpace = false;
+          inExponent = true;
+          exponentSignCanOccur = false;
+          break;
+        }
+        else if(bufPtr != buffer) {
+          *(bufPtr++) = 0;
+          _parseWord(buffer, parseMode, PARSER_HINT_REGULAR, mvarBuffer);
+          afterClosingParenthesis = (*strPtr == ')');
+          unaryMinusCanOccur = false;
+          afterSpace = false;
+          inExponent = false;
+          exponentSignCanOccur = false;
+        }
+        else if(unaryMinusCanOccur && *strPtr == '-') {
+          /* unary minus */
+          buffer[0] = '-';
+          buffer[1] = '1';
+          buffer[2] = 0;
+          _parseWord(buffer, parseMode, PARSER_HINT_NUMERIC, mvarBuffer);
+          buffer[0] = STD_DOT[0];
+          buffer[1] = STD_DOT[1];
+          buffer[2] = 0;
+          _parseWord(buffer, parseMode, PARSER_HINT_OPERATOR, mvarBuffer);
+          bufPtr = buffer;
+          buffer[0] = 0;
+          numericCount = 0;
+          afterClosingParenthesis = false;
+          unaryMinusCanOccur = false;
+          ++strPtr;
+          afterSpace = false;
+          inExponent = false;
+          exponentSignCanOccur = false;
+          break;
+        }
+        else if((*strPtr == '(') || (*strPtr == '|' && !afterClosingParenthesis)) {
+          afterClosingParenthesis = false;
+          unaryMinusCanOccur = true;
+          afterSpace = false;
+          inExponent = false;
+          exponentSignCanOccur = false;
+        }
+        else if(*strPtr == ')' || *strPtr == '|') {
+          if(*strPtr == '|') {
             bufPtr = buffer;
             numericCount = 0;
             *(bufPtr++) = '|';
             *(bufPtr++) = ')';
             *(bufPtr++) = 0;
-            afterClosingParenthesis = true;
-            unaryMinusCanOccur = false;
-            afterSpace = false;
-            inExponent = false;
-            exponentSignCanOccur = false;
           }
-          else if(exponentSignCanOccur && (*strPtr == '+' || *strPtr == '-')) {
-            /* exponent sign */
-            *(bufPtr++) = *(strPtr++);
-            ++numericCount;
-            afterClosingParenthesis = false;
-            unaryMinusCanOccur = false;
-            afterSpace = false;
-            inExponent = true;
-            exponentSignCanOccur = false;
-            break;
-          }
-          else if(bufPtr != buffer) {
-            *(bufPtr++) = 0;
-            _parseWord(buffer, parseMode, PARSER_HINT_REGULAR, mvarBuffer);
-            afterClosingParenthesis = (*strPtr == ')');
-            unaryMinusCanOccur = false;
-            afterSpace = false;
-            inExponent = false;
-            exponentSignCanOccur = false;
-          }
-          else if(unaryMinusCanOccur && *strPtr == '-') {
-            /* unary minus */
-            buffer[0] = '-';
-            buffer[1] = '1';
-            buffer[2] = 0;
-            _parseWord(buffer, parseMode, PARSER_HINT_NUMERIC, mvarBuffer);
-            buffer[0] = STD_DOT[0];
-            buffer[1] = STD_DOT[1];
-            buffer[2] = 0;
-            _parseWord(buffer, parseMode, PARSER_HINT_OPERATOR, mvarBuffer);
-            bufPtr = buffer;
-            buffer[0] = 0;
-            numericCount = 0;
-            afterClosingParenthesis = false;
-            unaryMinusCanOccur = false;
-            ++strPtr;
-            afterSpace = false;
-            inExponent = false;
-            exponentSignCanOccur = false;
-            break;
-          }
-          else if((*strPtr == '(') || (*strPtr == '|' && !afterClosingParenthesis)) {
-            afterClosingParenthesis = false;
-            unaryMinusCanOccur = true;
-            afterSpace = false;
-            inExponent = false;
-            exponentSignCanOccur = false;
-          }
-          else if(*strPtr == ')' || *strPtr == '|') {
-            if(*strPtr == '|') {
-              bufPtr = buffer;
-              numericCount = 0;
-              *(bufPtr++) = '|';
-              *(bufPtr++) = ')';
-              *(bufPtr++) = 0;
-            }
-            afterClosingParenthesis = true;
-            unaryMinusCanOccur = false;
-            afterSpace = false;
-            inExponent = false;
-            exponentSignCanOccur = false;
-          }
-          else if(afterClosingParenthesis && *strPtr != ':') {
-            afterClosingParenthesis = false;
-            unaryMinusCanOccur = false;
-            afterSpace = false;
-            inExponent = false;
-            exponentSignCanOccur = false;
-          }
-          else {
-            displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-              moreInfoOnError("In function parseEquation:", buffer, "unexpected operator", NULL);
-            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-            return;
-          }
-          if(*strPtr == '=') {
-            equalAppeared = true;
-            unaryMinusCanOccur = true;
-            afterSpace = false;
-            inExponent = false;
-            exponentSignCanOccur = false;
-          }
-
-          if(compareString("|)", buffer, CMP_BINARY) != 0) {
-            buffer[0] = *(strPtr++);
-            buffer[1] = 0;
-          }
-          else {
-            ++strPtr;
-          }
-          _parseWord(buffer, parseMode, PARSER_HINT_OPERATOR, mvarBuffer);
-          bufPtr = buffer;
-          buffer[0] = 0;
-          numericCount = 0;
+          afterClosingParenthesis = true;
+          unaryMinusCanOccur = false;
+          afterSpace = false;
           inExponent = false;
           exponentSignCanOccur = false;
-          break;
+        }
+        else if(afterClosingParenthesis && *strPtr != ':') {
+          afterClosingParenthesis = false;
+          unaryMinusCanOccur = false;
+          afterSpace = false;
+          inExponent = false;
+          exponentSignCanOccur = false;
+        }
+        else {
+          displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            moreInfoOnError("In function parseEquation:", buffer, "unexpected operator", NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+          return;
+        }
+        if(*strPtr == '=') {
+          equalAppeared = true;
+          unaryMinusCanOccur = true;
+          afterSpace = false;
+          inExponent = false;
+          exponentSignCanOccur = false;
+        }
+
+        if(compareString("|)", buffer, CMP_BINARY) != 0) {
+          buffer[0] = *(strPtr++);
+          buffer[1] = 0;
+        }
+        else {
+          ++strPtr;
+        }
+        _parseWord(buffer, parseMode, PARSER_HINT_OPERATOR, mvarBuffer);
+        bufPtr = buffer;
+        buffer[0] = 0;
+        numericCount = 0;
+        inExponent = false;
+        exponentSignCanOccur = false;
+        break;
 
         default:
           if(afterSpace) {
@@ -1396,14 +1400,18 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         }
       }
       if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE || (currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) {
-        for(; tmpVal < 5; ++tmpVal) {  //If there are less than 4 variables, skip to the 5th item and add Draw & Calc.
+        for(; tmpVal < 4; ++tmpVal) {  //If there are less than 4 variables, skip to the 5th item and add Draw & Calc.
           *(bufPtr++) = 0;
         }
-        if(tmpVal == 5) {
+        if(tmpVal == 4) {
           if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE) {
+            _menuItem(ITM_DRAW, bufPtr);
+            bufPtr += stringByteLength(bufPtr) + 1;
             _menuItem(ITM_FPHERE, bufPtr);
           }
           else {
+            _menuItem(ITM_DRAW, bufPtr);
+            bufPtr += stringByteLength(bufPtr) + 1;
             _menuItem(ITM_FPPHERE, bufPtr);
           }
         }

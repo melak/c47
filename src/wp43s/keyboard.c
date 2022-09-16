@@ -19,6 +19,7 @@
 #include "assign.h"
 #include "bufferize.h"
 #include "charString.h"
+#include "config.h"
 #include "constants.h"
 #include "debug.h"
 #include "error.h"
@@ -112,14 +113,23 @@
         else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE) && dynamicMenuItem == 5) {
           item = ITM_FPHERE;
         }
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_1ST_DERIVATIVE) && dynamicMenuItem == 4) {
+          item = ITM_DRAW;
+        }
         else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) && dynamicMenuItem == 5) {
           item = ITM_FPPHERE;
+        }
+        else if((currentSolverStatus & SOLVER_STATUS_USES_FORMULA) && (currentSolverStatus & SOLVER_STATUS_INTERACTIVE) && ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_2ND_DERIVATIVE) && dynamicMenuItem == 4) {
+          item = ITM_DRAW;
         }
         else if(dynamicMenuItem >= dynamicSoftmenu[menuId].numItems) {
           item = ITM_NOP;
         }
         else if(!(currentSolverStatus & SOLVER_STATUS_INTERACTIVE)) {
           item = MNU_DYNAMIC;
+        }
+        else if( ((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_INTEGRATE) && dynamicMenuItem == 2) {
+          item = ITM_DRAW;
         }
         else if((currentSolverStatus & SOLVER_STATUS_EQUATION_MODE) == SOLVER_STATUS_EQUATION_INTEGRATE) {
           item = ITM_Sfdx_VAR;
@@ -269,61 +279,61 @@
   }
 
 
-  static void _closeCatalog(void) {
-    bool_t inCatalog = false;
-    for(int i = 0; i < SOFTMENU_STACK_SIZE; ++i) {
-      if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_CATALOG) {
-        inCatalog = true;
-        break;
-      }
-    }
-    if(inCatalog || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_CONST) {
-      switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
-        case MNU_TAM:
-        case MNU_TAMCMP:
-        case MNU_TAMSTORCL:
-        case MNU_TAMFLAG:
-        case MNU_TAMSHUFFLE:
-        case MNU_TAMLABEL:
-          // TAM menus are processed elsewhere
+    static void _closeCatalog(void) {
+      bool_t inCatalog = false;
+      for(int i = 0; i < SOFTMENU_STACK_SIZE; ++i) {
+        if(softmenu[softmenuStack[i].softmenuId].menuItem == -MNU_CATALOG) {
+          inCatalog = true;
           break;
-        default:
-          leaveAsmMode();
-          popSoftmenu();
+        }
+      }
+      if(inCatalog || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_CONST) {
+        switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
+          case MNU_TAM:
+          case MNU_TAMCMP:
+          case MNU_TAMSTORCL:
+          case MNU_TAMFLAG:
+          case MNU_TAMSHUFFLE:
+          case MNU_TAMLABEL:
+            // TAM menus are processed elsewhere
+            break;
+          default:
+            leaveAsmMode();
+            popSoftmenu();
+        }
       }
     }
-  }
 
-  static void processAimInput(int16_t item) {
-    if(alphaCase == AC_LOWER && (ITM_A <= item && item <= ITM_Z)) {
-      addItemToBuffer(item + 26);
-      keyActionProcessed = true;
-    }
+    static void processAimInput(int16_t item) {
+      if(alphaCase == AC_LOWER && (ITM_A <= item && item <= ITM_Z)) {
+        addItemToBuffer(item + 26);
+        keyActionProcessed = true;
+      }
 
-    else if(alphaCase == AC_LOWER && (ITM_ALPHA <= item && item <= ITM_OMEGA)) {
-      addItemToBuffer(item + 36);
-      keyActionProcessed = true;
-    }
+      else if(alphaCase == AC_LOWER && (ITM_ALPHA <= item && item <= ITM_OMEGA)) {
+        addItemToBuffer(item + 36);
+        keyActionProcessed = true;
+      }
 
-    else if(item == ITM_DOWN_ARROW) {
-      nextChar = NC_SUBSCRIPT;
-      keyActionProcessed = true;
-    }
+      else if(item == ITM_DOWN_ARROW) {
+        nextChar = NC_SUBSCRIPT;
+        keyActionProcessed = true;
+      }
 
-    else if(item == ITM_UP_ARROW) {
-      nextChar = NC_SUPERSCRIPT;
-      keyActionProcessed = true;
-    }
+      else if(item == ITM_UP_ARROW) {
+        nextChar = NC_SUPERSCRIPT;
+        keyActionProcessed = true;
+      }
 
-    else if(indexOfItems[item].func == addItemToBuffer) {
-      addItemToBuffer(item);
-      keyActionProcessed = true;
-    }
+      else if(indexOfItems[item].func == addItemToBuffer) {
+        addItemToBuffer(item);
+        keyActionProcessed = true;
+      }
 
-    if(keyActionProcessed) {
-      refreshScreen();
+      if(keyActionProcessed) {
+        refreshScreen();
+      }
     }
-  }
 
 
   uint8_t asnKey[4] = {0, 0, 0, 0};
@@ -346,61 +356,61 @@
   #if defined(DMCP_BUILD)
     void btnFnPressed(void *data) {
   #endif // DMCP_BUILD
-    asnKey[0] = ((uint8_t *)data)[0];
-    asnKey[1] = 0;
+      asnKey[0] = ((uint8_t *)data)[0];
+      asnKey[1] = 0;
 
-    if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
-      setLastKeyCode((*((char *)data) - '0') + 37);
-    }
-    else {
-      lastKeyCode = 0;
-    }
-
-    if(programRunStop == PGM_PAUSED) {
-      programRunStop = PGM_KEY_PRESSED_WHILE_PAUSED;
-      return;
-    }
-    if(tam.mode == TM_KEY && !tam.keyInputFinished) {
-      // not processed here
-      return;
-    }
-    if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && !(tam.alpha && tam.mode != TM_NEWMENU)) {
-      int16_t item = determineFunctionKeyItem((char *)data);
-
-      switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
-        case MNU_MENUS:
-          if(item <= ASSIGN_USER_MENU) {
-            currentUserMenu = ASSIGN_USER_MENU - item;
-            item = -MNU_DYNAMIC;
-          }
-          /* fallthrough */
-        case MNU_CATALOG:
-        case MNU_CHARS:
-        case MNU_PROGS:
-        case MNU_VARS:
-          #if (FN_KEY_TIMEOUT_TO_NOP == 1)
-            showFunctionName(item, 1000); // 1000ms = 1s
-          #else // (FN_KEY_TIMEOUT_TO_NOP == 0)
-            showFunctionNameItem = item;
-          #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
-          break;
-        default:
-          updateAssignTamBuffer();
+      if(programRunStop == PGM_RUNNING || programRunStop == PGM_PAUSED) {
+        setLastKeyCode((*((char *)data) - '0') + 37);
       }
-      _closeCatalog();
-    }
-    else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
-      int16_t item = determineFunctionKeyItem((char *)data);
-
-      if(shiftF || shiftG) {
-        screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
-        clearShiftState();
+      else {
+        lastKeyCode = 0;
       }
 
-      shiftF = false;
-      shiftG = false;
-      if(item != ITM_NOP && item != ITM_NULL) {
-        lastErrorCode = 0;
+      if(programRunStop == PGM_PAUSED) {
+        programRunStop = PGM_KEY_PRESSED_WHILE_PAUSED;
+        return;
+      }
+      if(tam.mode == TM_KEY && !tam.keyInputFinished) {
+        // not processed here
+        return;
+      }
+      if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && !(tam.alpha && tam.mode != TM_NEWMENU)) {
+        int16_t item = determineFunctionKeyItem((char *)data);
+
+        switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
+          case MNU_MENUS:
+            if(item <= ASSIGN_USER_MENU) {
+              currentUserMenu = ASSIGN_USER_MENU - item;
+              item = -MNU_DYNAMIC;
+            }
+            /* fallthrough */
+          case MNU_CATALOG:
+          case MNU_CHARS:
+          case MNU_PROGS:
+          case MNU_VARS:
+            #if (FN_KEY_TIMEOUT_TO_NOP == 1)
+              showFunctionName(item, 1000); // 1000ms = 1s
+            #else // (FN_KEY_TIMEOUT_TO_NOP == 0)
+              showFunctionNameItem = item;
+            #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
+            break;
+          default:
+            updateAssignTamBuffer();
+        }
+        _closeCatalog();
+      }
+      else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
+        int16_t item = determineFunctionKeyItem((char *)data);
+
+        if(shiftF || shiftG) {
+          screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+          clearShiftState();
+        }
+
+        shiftF = false;
+        shiftG = false;
+        if(item != ITM_NOP && item != ITM_NULL) {
+          lastErrorCode = 0;
 
         if(calcMode != CM_ASSIGN && indexOfItems[item].func == addItemToBuffer) {
           // If we are in the catalog then a normal key press should affect the Alpha Selection Buffer to choose
@@ -429,19 +439,19 @@
           refreshScreen();
         }
 
+          else {
+            #if (FN_KEY_TIMEOUT_TO_NOP == 1)
+              showFunctionName(item, 1000); // 1000ms = 1s
+            #else // (FN_KEY_TIMEOUT_TO_NOP == 0)
+              showFunctionNameItem = item;
+            #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
+          }
+        }
         else {
-          #if (FN_KEY_TIMEOUT_TO_NOP == 1)
-            showFunctionName(item, 1000); // 1000ms = 1s
-          #else // (FN_KEY_TIMEOUT_TO_NOP == 0)
-            showFunctionNameItem = item;
-          #endif // (FN_KEY_TIMEOUT_TO_NOP == 1)
+          showFunctionNameItem = ITM_NOP;
         }
       }
-      else {
-        showFunctionNameItem = ITM_NOP;
-      }
     }
-  }
 
 
 
@@ -815,7 +825,7 @@
 
       btnPressed(notUsed, &mouseButton, data);
       btnReleased(notUsed, &mouseButton, data);
-    }
+  }
   #endif // PC_BUILD
 
   #if defined(DMCP_BUILD)
@@ -1015,80 +1025,80 @@
   #if defined(DMCP_BUILD)
     void btnReleased(void *data) {
   #endif // DMCP_BUILD
-    int16_t item;
+      int16_t item;
 
-    if(programRunStop == PGM_KEY_PRESSED_WHILE_PAUSED) {
-      programRunStop = PGM_RESUMING;
-      screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
-      return;
-    }
-
-    if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
-      assignToKey((char *)data);
-      calcMode = previousCalcMode;
-      shiftF = shiftG = false;
-      refreshScreen();
-    }
-    else if(showFunctionNameItem != 0) {
-      item = showFunctionNameItem;
-      hideFunctionName();
-      if(item < 0) {
-        showSoftmenu(item);
+      if(programRunStop == PGM_KEY_PRESSED_WHILE_PAUSED) {
+        programRunStop = PGM_RESUMING;
+        screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
+        return;
       }
-      else {
-        int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
-        int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (shiftG ? 2 : shiftF ? 1 : 0);
-        char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
+
+      if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
+        assignToKey((char *)data);
+        calcMode = previousCalcMode;
+        shiftF = shiftG = false;
+        refreshScreen();
+      }
+      else if(showFunctionNameItem != 0) {
+        item = showFunctionNameItem;
+        hideFunctionName();
+        if(item < 0) {
+          showSoftmenu(item);
+        }
+        else {
+          int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
+          int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (shiftG ? 2 : shiftF ? 1 : 0);
+          char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
 
         #if defined(PC_BUILD)
           if(item == ITM_RS || item == ITM_XEQ) key[0] = 0;
         #endif // PC_BUILD
 
-        if(item != ITM_NOP && tam.alpha && indexOfItems[item].func != addItemToBuffer) {
-          // We are in TAM mode so need to cancel first (equivalent to EXIT)
-          tamLeaveMode();
-        }
-        if(item == ITM_RCL && getSystemFlag(FLAG_USER) && funcParam[0] != 0) {
-          calcRegister_t var = findNamedVariable(funcParam);
-          if(var != INVALID_VARIABLE) {
-            reallyRunFunction(item, var);
+          if(item != ITM_NOP && tam.alpha && indexOfItems[item].func != addItemToBuffer) {
+            // We are in TAM mode so need to cancel first (equivalent to EXIT)
+            tamLeaveMode();
+          }
+          if(item == ITM_RCL && getSystemFlag(FLAG_USER) && funcParam[0] != 0) {
+            calcRegister_t var = findNamedVariable(funcParam);
+            if(var != INVALID_VARIABLE) {
+              reallyRunFunction(item, var);
+            }
+            else {
+              displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
+              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+                sprintf(errorMessage, "string '%s' is not a named variable", funcParam);
+                moreInfoOnError("In function btnReleased:", errorMessage, NULL, NULL);
+              #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+            }
+          }
+          else if(item == ITM_XEQ && getSystemFlag(FLAG_USER) && funcParam[0] != 0) {
+            calcRegister_t label = findNamedLabel(funcParam);
+            if(label != INVALID_VARIABLE) {
+              reallyRunFunction(item, label);
+            }
+            else {
+              displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+                sprintf(errorMessage, "string '%s' is not a named label", funcParam);
+                moreInfoOnError("In function btnReleased:", errorMessage, NULL, NULL);
+              #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+            }
           }
           else {
-            displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
-            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-              sprintf(errorMessage, "string '%s' is not a named variable", funcParam);
-              moreInfoOnError("In function btnReleased:", errorMessage, NULL, NULL);
-            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+            runFunction(item);
           }
-        }
-        else if(item == ITM_XEQ && getSystemFlag(FLAG_USER) && funcParam[0] != 0) {
-          calcRegister_t label = findNamedLabel(funcParam);
-          if(label != INVALID_VARIABLE) {
-            reallyRunFunction(item, label);
-          }
-          else {
-            displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
-            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-              sprintf(errorMessage, "string '%s' is not a named label", funcParam);
-              moreInfoOnError("In function btnReleased:", errorMessage, NULL, NULL);
-            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-          }
-        }
-        else {
-          runFunction(item);
         }
       }
-    }
     //#if defined(DMCP_BUILD)
-    //    else if(keyAutoRepeat) {
-    //      btnPressed(data);
-    //    }
-    //#endif // DMCP_BUILD
-    if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING) {
-      refreshScreen();
+      //    else if(keyAutoRepeat) {
+      //      btnPressed(data);
+      //    }
+      //#endif // DMCP_BUILD
+      if(fnTimerGetStatus(TO_AUTO_REPEAT) != TMR_RUNNING) {
+        refreshScreen();
+      }
+      screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
     }
-    screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
-  }
 
 
 
@@ -1888,7 +1898,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       case CM_MIM:
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_M_EDIT) {
           mimEnter(true);
-          if(matrixIndex == findNamedVariable("STATS")) {
+          if(matrixIndex == findNamedVariable(statMx)) {
             calcSigma(0);
           }
           mimFinalize();
@@ -1969,6 +1979,11 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_GRAPH:
       case CM_PLOT_STAT:
+//Temporary - TODO JM
+            restoreStats();
+printf(">>> ####@@@@ D %i\n",calcMode);
+if(lastPlotMode == H_PLOT && calcMode == CM_PLOT_STAT) popSoftmenu();
+//TODO
         lastPlotMode = PLOT_NOTHING;
         plotSelection = 0;
         calcMode = CM_NORMAL;
@@ -2663,7 +2678,7 @@ void fnKeyAngle(uint16_t unusedButMandatoryParameter) {
 
 void setLastKeyCode(int key) {
   if(1 <= key && key <= 43) {
-    if(     key <=  6) lastKeyCode = key      + 20;
+    if     (key <=  6) lastKeyCode = key      + 20;
     else if(key <= 12) lastKeyCode = key -  6 + 30;
     else if(key <= 17) lastKeyCode = key - 12 + 40;
     else if(key <= 22) lastKeyCode = key - 17 + 50;

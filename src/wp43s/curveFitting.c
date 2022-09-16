@@ -149,19 +149,19 @@ uint16_t minLRDataPoints(uint16_t selection) {
     return 65535; //if 0
   }
 
-  //switch(selection) {
-  //  case CF_LINEAR_FITTING      /*   1 */ :
-  //  case CF_EXPONENTIAL_FITTING /*   2 */ :
-  //  case CF_LOGARITHMIC_FITTING /*   4 */ :
-  //  case CF_POWER_FITTING       /*   8 */ :
-  //  case CF_ROOT_FITTING        /*  16 */ :
-  //  case CF_HYPERBOLIC_FITTING  /*  32 */ : return 2; break;
-  //  case CF_PARABOLIC_FITTING   /*  64 */ :
-  //  case CF_CAUCHY_FITTING      /* 128 */ :
-  //  case CF_GAUSS_FITTING       /* 256 */ : return 3; break;
-  //  case CF_ORTHOGONAL_FITTING  /* 512 */ : return 2; break;                      //ORTHOF ASSESS (2 points minimum)
-  //  default : return 0xFFFF; break;
-  //}
+  //  switch(selection) {
+  //    case CF_LINEAR_FITTING      /*   1 */ :
+  //    case CF_EXPONENTIAL_FITTING /*   2 */ :
+  //    case CF_LOGARITHMIC_FITTING /*   4 */ :
+  //    case CF_POWER_FITTING       /*   8 */ :
+  //    case CF_ROOT_FITTING        /*  16 */ :
+  //    case CF_HYPERBOLIC_FITTING  /*  32 */ : return 2; break;
+  //    case CF_PARABOLIC_FITTING   /*  64 */ :
+  //    case CF_CAUCHY_FITTING      /* 128 */ :
+  //    case CF_GAUSS_FITTING       /* 256 */ : return 3; break;
+  //    case CF_ORTHOGONAL_FITTING  /* 512 */ : return 2; break;                      //ORTHOF ASSESS (2 points minimum)
+  //    default : return 0xFFFF; break;
+  //  }
 
 }
 
@@ -186,8 +186,8 @@ void fnProcessLRfind(uint16_t curveFitting){
   realCopy(const_0, &aa2);
   #if defined(PC_BUILD)
     printf("Processing for best fit: %s\n",getCurveFitModeNames(curveFitting));
-  #endif // PC_BUILD
-  realCopy(const__4, &RRMAX);
+  #endif //PC_BUILD
+  realCopy(const__4,&RRMAX);
   uint16_t s = 0;       //default
   uint16_t ix, jx;      //only a single graph can be evaluated at once, so retain the single lowest bit, and clear the higher order bits.
   jx = 0;
@@ -199,11 +199,11 @@ void fnProcessLRfind(uint16_t curveFitting){
       #endif // PC_BUILD
 
       if(nn >= (int32_t)minLRDataPoints(jx)) {
-        processCurvefitSelection(jx, &RR, &SMI, &aa0, &aa1, &aa2);
-        realMultiply(&RR, &RR, &RR2, &ctxtReal39);
+        processCurvefitSelection(jx,&RR,&SMI, &aa0, &aa1, &aa2);
+        realMultiply(&RR,&RR,&RR2,&ctxtReal39);
 
         if(realCompareGreaterThan(&RR2, &RRMAX) && realCompareLessEqual(&RR2, const_1)) { //Only consider L.R. models where R^2<=1
-          realCopy(&RR2, &RRMAX);
+          realCopy(&RR2,&RRMAX);
           s = jx;
         }
       }
@@ -221,7 +221,7 @@ void fnProcessLRfind(uint16_t curveFitting){
   #endif // PC_BUILD
 
   if(nn >= (int32_t)minLRDataPoints(s)) {
-    processCurvefitSelection(s, &RR, &SMI, &aa0, &aa1, &aa2);
+    processCurvefitSelection(s,&RR,&SMI, &aa0, &aa1, &aa2);
     lrChosen = s;
 
     temporaryInformation = TI_LR;
@@ -248,7 +248,7 @@ void fnProcessLRfind(uint16_t curveFitting){
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      uInt32ToReal((uint32_t)minLRDataPoints(s), &NN);
+      uInt32ToReal((uint32_t)minLRDataPoints(s),&NN);
       checkMinimumDataPoints(&NN);              //Report an error
     }
   }
@@ -267,40 +267,40 @@ void fnProcessLR (uint16_t unusedButMandatoryParameter){
 
 
 void calc_BCD(real_t *BB, real_t *CC, real_t *DD){                        //Aux terms, calc_BCD must be run before calc_AEFG
-  realContext = &ctxtReal75;
-  real_t SS,TT;
+realContext = &ctxtReal75;
+real_t SS,TT;
 
   //        B = nn * sumx2y - sumx2 * sumy;
-  realMultiply(SIGMA_N,  SIGMA_X2Y, &SS, realContext);
-  realMultiply(SIGMA_X2, SIGMA_Y,   &TT, realContext);
-  realSubtract(&SS,      &TT,       BB,  realContext);
+  realMultiply(SIGMA_N, SIGMA_X2Y, &SS, realContext);
+  realMultiply(SIGMA_X2, SIGMA_Y, &TT, realContext);
+  realSubtract(&SS, &TT, BB, realContext);
 
   //        C = nn * sumx3 - sumx2 * sumx;
-  realMultiply(SIGMA_N,  SIGMA_X3,  &SS, realContext);
-  realMultiply(SIGMA_X2, SIGMA_X,   &TT, realContext);
-  realSubtract(&SS,      &TT,       CC,  realContext);
+  realMultiply(SIGMA_N, SIGMA_X3, &SS, realContext);
+  realMultiply(SIGMA_X2, SIGMA_X, &TT, realContext);
+  realSubtract(&SS, &TT, CC, realContext);
 
   //        D = nn * sumxy - sumx * sumy;
-  realMultiply(SIGMA_N,  SIGMA_XY,  &SS, realContext);
-  realMultiply(SIGMA_X,  SIGMA_Y,   &TT, realContext);
-  realSubtract(&SS,      &TT,       DD,  realContext);
+  realMultiply(SIGMA_N, SIGMA_XY, &SS, realContext);
+  realMultiply(SIGMA_X, SIGMA_Y, &TT, realContext);
+  realSubtract(&SS, &TT, DD, realContext);
 }
 
 
 
 void calc_AEFG(real_t *AA, real_t *BB, real_t *CC, real_t *DD, real_t *EE, real_t *FF, real_t *GG){                        //Aux terms, calc_AEFG must be run after calc_BCD
-  realContext = &ctxtReal75;
-  real_t SS,TT,UU;
+realContext = &ctxtReal75;
+real_t SS,TT,UU;
 
   //        A = nn * sumx2 - sumx * sumx;
-  realMultiply(SIGMA_N,  SIGMA_X2,  &SS, realContext);
-  realMultiply(SIGMA_X,  SIGMA_X,   &TT, realContext);
-  realSubtract(&SS,      &TT,       AA,  realContext);
+  realMultiply(SIGMA_N, SIGMA_X2, &SS, realContext);
+  realMultiply(SIGMA_X, SIGMA_X, &TT, realContext);
+  realSubtract(&SS, &TT, AA, realContext);
 
   //        E = nn * sumx4 - sumx2 * sumx2;
-  realMultiply(SIGMA_N,  SIGMA_X4,  &SS, realContext);
-  realMultiply(SIGMA_X2, SIGMA_X2,  &TT, realContext);
-  realSubtract(&SS,      &TT,       EE,  realContext);
+  realMultiply(SIGMA_N, SIGMA_X4, &SS, realContext);
+  realMultiply(SIGMA_X2, SIGMA_X2, &TT, realContext);
+  realSubtract(&SS, &TT, EE, realContext);
 
   //USING COMPONENTS OF BCD
   //        F = (A*B - C*D) / (A*E - C*C);    //interchangably the a2 in PARABF
@@ -368,40 +368,40 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
     switch(selection) {
       case CF_LINEAR_FITTING :
         //      a0 = (sumx2 * sumy  - sumx * sumxy) / (nn * sumx2 - sumx * sumx);
-        realMultiply(SIGMA_X2, SIGMA_Y,  &SS, realContext);
-        realMultiply(SIGMA_X,  SIGMA_XY, &TT, realContext);
-        realSubtract(&SS,      &TT,      &SS, realContext);
-        realMultiply(SIGMA_N,  SIGMA_X2, &TT, realContext);
-        realMultiply(SIGMA_X,  SIGMA_X,  &UU, realContext);
-        realSubtract(&TT,      &UU,      &TT, realContext);
-        realDivide  (&SS,      &TT,      aa0, realContext);
+        realMultiply(SIGMA_X2,SIGMA_Y,&SS,realContext);
+        realMultiply(SIGMA_X,SIGMA_XY,&TT,realContext);
+        realSubtract(&SS,&TT,&SS,realContext);
+        realMultiply(SIGMA_N,SIGMA_X2,&TT,realContext);
+        realMultiply(SIGMA_X,SIGMA_X,&UU,realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realDivide(&SS,&TT,aa0,realContext);
 
         //      a1 = (nn  * sumxy - sumx * sumy ) / (nn * sumx2 - sumx * sumx);
-        realMultiply(SIGMA_N,  SIGMA_XY, &SS, realContext);
-        realMultiply(SIGMA_X,  SIGMA_Y,  &TT, realContext);
-        realSubtract(&SS,      &TT,      &SS, realContext);
-        realMultiply(SIGMA_N,  SIGMA_X2, &TT, realContext);
-        realMultiply(SIGMA_X,  SIGMA_X,  &UU, realContext);
-        realSubtract(&TT,      &UU,      &TT, realContext);
-        realDivide (&SS,       &TT,      aa1, realContext);
+        realMultiply(SIGMA_N,SIGMA_XY,&SS,realContext);
+        realMultiply(SIGMA_X,SIGMA_Y,&TT,realContext);
+        realSubtract(&SS,&TT,&SS,realContext);
+        realMultiply(SIGMA_N,SIGMA_X2,&TT,realContext);
+        realMultiply(SIGMA_X,SIGMA_X,&UU,realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realDivide(&SS,&TT,aa1,realContext);
 
         //       r  = (nn * sumxy - sumx * sumy) / (sqrt (nn * sumx2 - sumx * sumx) * sqrt(nn * sumy2 - sumy * sumy) );
-        realMultiply(SIGMA_N,  SIGMA_XY, &SS, realContext);
-        realMultiply(SIGMA_X,  SIGMA_Y,  &TT, realContext);
-        realSubtract(&SS,      &TT,      &SS, realContext);    //SS is top
+        realMultiply(SIGMA_N,SIGMA_XY,&SS,realContext);
+        realMultiply(SIGMA_X,SIGMA_Y,&TT,realContext);
+        realSubtract(&SS,&TT,&SS,realContext);          //SS is top
 
-        realMultiply(SIGMA_N,  SIGMA_X2, &TT, realContext);
-        realMultiply(SIGMA_X,  SIGMA_X,  &UU, realContext);
-        realSubtract(&TT,      &UU,      &TT, realContext);
-        realSquareRoot(&TT,    &TT,           realContext);    //TT is bottom, factor 1
+        realMultiply(SIGMA_N,SIGMA_X2,&TT,realContext);
+        realMultiply(SIGMA_X,SIGMA_X,&UU,realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realSquareRoot(&TT,&TT,realContext);            //TT is bottom, factor 1
 
-        realMultiply(SIGMA_N,  SIGMA_Y2, &UU, realContext);
-        realMultiply(SIGMA_Y,  SIGMA_Y,  &VV, realContext);
-        realSubtract(&UU,      &VV,      &UU, realContext);
-        realSquareRoot(&UU,    &UU,           realContext);     //UU is bottom factor 2
+        realMultiply(SIGMA_N,SIGMA_Y2,&UU,realContext);
+        realMultiply(SIGMA_Y,SIGMA_Y,&VV,realContext);
+        realSubtract(&UU,&VV,&UU,realContext);
+        realSquareRoot(&UU,&UU,realContext);            //UU is bottom factor 2
 
-        realDivide(&SS,        &TT,      RR_, realContext);
-        realDivide(RR_,        &UU,      RR_, realContext);     //r
+        realDivide(&SS,&TT,RR_,realContext);
+        realDivide(RR_,&UU,RR_,realContext);            //r
 
         #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### Linear\n");
@@ -414,46 +414,46 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
 
       case CF_EXPONENTIAL_FITTING :
         //      a0 = exp( (sumx2 * sumlny  - sumx * sumxlny) / (nn * sumx2 - sumx * sumx) );
-        realMultiply(SIGMA_X2,  SIGMA_lnY,  &SS,  realContext);
-        realMultiply(SIGMA_X,   SIGMA_XlnY, &TT,  realContext);
-        realSubtract(&SS,       &TT,        &SS,  realContext);
-        realMultiply(SIGMA_N,   SIGMA_X2,   &TT,  realContext);
-        realMultiply(SIGMA_X,   SIGMA_X,    &UU,  realContext);
-        realSubtract(&TT,       &UU,        &TT,  realContext);
-        realDivide(&SS,         &TT,        aa0,  realContext);
-        realExp(aa0,            aa0,              realContext);
+        realMultiply(SIGMA_X2,SIGMA_lnY,&SS,realContext);
+        realMultiply(SIGMA_X,SIGMA_XlnY,&TT,realContext);
+        realSubtract(&SS,&TT,&SS,realContext);
+        realMultiply(SIGMA_N,SIGMA_X2,&TT,realContext);
+        realMultiply(SIGMA_X,SIGMA_X,&UU,realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realDivide(&SS,&TT,aa0,realContext);
+        realExp(aa0,aa0,realContext);
 
         //a1 = (nn  * sumxlny - sumx * sumlny ) / (nn * sumx2 - sumx * sumx);
-        realMultiply(SIGMA_N,   SIGMA_XlnY, &SS,  realContext);
-        realMultiply(SIGMA_X,   SIGMA_lnY,  &TT,  realContext);
-        realSubtract(&SS,       &TT,        &SS,  realContext);
-        realMultiply(SIGMA_N,   SIGMA_X2,   &TT,  realContext);
-        realMultiply(SIGMA_X,   SIGMA_X,    &UU,  realContext);
-        realSubtract(&TT,       &UU,        &TT,  realContext);
-        realDivide(&SS,         &TT,        aa1,  realContext);
+        realMultiply(SIGMA_N,SIGMA_XlnY,&SS,realContext);
+        realMultiply(SIGMA_X,SIGMA_lnY,&TT,realContext);
+        realSubtract(&SS,&TT,&SS,realContext);
+        realMultiply(SIGMA_N,SIGMA_X2,&TT,realContext);
+        realMultiply(SIGMA_X,SIGMA_X,&UU,realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realDivide(&SS,&TT,aa1,realContext);
 
         //      r = (nn * sumxlny - sumx*sumlny) / (sqrt(nn*sumx2-sumx*sumx) * sqrt(nn*sumln2y-sumlny*sumlny)); //(rEXP)
-        realMultiply(SIGMA_N,   SIGMA_XlnY, &SS,  realContext);
-        realMultiply(SIGMA_X,   SIGMA_lnY,  &TT,  realContext);
-        realSubtract(&SS,       &TT,        &SS,  realContext);   //SS is top
+        realMultiply(SIGMA_N,SIGMA_XlnY,&SS,realContext);
+        realMultiply(SIGMA_X,SIGMA_lnY,&TT,realContext);
+        realSubtract(&SS,&TT,&SS,realContext);          //SS is top
 
-        realMultiply(SIGMA_N,   SIGMA_X2,   &TT,  realContext);
-        realMultiply(SIGMA_X,   SIGMA_X,    &UU,  realContext);
-        realSubtract(&TT,       &UU,        &TT,  realContext);
-        realSquareRoot(&TT,     &TT,              realContext);   //TT is bottom, factor 1
+        realMultiply(SIGMA_N,SIGMA_X2,&TT,realContext);
+        realMultiply(SIGMA_X,SIGMA_X,&UU,realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realSquareRoot(&TT,&TT,realContext);            //TT is bottom, factor 1
 
-        realMultiply(SIGMA_N,   SIGMA_ln2Y, &UU,  realContext);
-        realMultiply(SIGMA_lnY, SIGMA_lnY,  &VV,  realContext);
-        realSubtract(&UU,       &VV,        &ZZ,  realContext);
-        realSquareRoot(&ZZ,     &VV,              realContext);  //UU is bottom factor 2
+        realMultiply(SIGMA_N,SIGMA_ln2Y,&UU,realContext);
+        realMultiply(SIGMA_lnY,SIGMA_lnY,&VV,realContext);
+        realSubtract(&UU,&VV,&ZZ,realContext);
+        realSquareRoot(&ZZ,&VV,realContext);            //UU is bottom factor 2
 
-        realDivide(&SS,         &TT,        RR_,  realContext);
-        realDivide(RR_,         &VV,        RR_,  realContext);  //r
+        realDivide(&SS,&TT,RR_,realContext);
+        realDivide(RR_,&VV,RR_,realContext);            //r
 
-        realSubtract(SIGMA_N,   const_1,    &SS,  realContext); // Section for s(a)
-        realMultiply(SIGMA_N,   &SS,        &SS,  realContext);
-        realDivide  (const_1,   &SS,        &SS,  realContext);
-        realMultiply(&SS,       &ZZ,        SY2,  realContext);
+        realSubtract  (SIGMA_N,const_1,&SS,realContext); // Section for s(a)
+        realMultiply  (SIGMA_N,&SS,&SS,realContext);
+        realDivide    (const_1,&SS,&SS,realContext);
+        realMultiply  (&SS,&ZZ,SY2,realContext);
 
         #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### EXPF\n");
@@ -466,40 +466,40 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
 
       case CF_LOGARITHMIC_FITTING :
         //      a0 = (sumln2x * sumy  - sumlnx * sumylnx) / (nn * sumln2x - sumlnx * sumlnx);
-        realMultiply(SIGMA_ln2X, SIGMA_Y,    &SS, realContext);
-        realMultiply(SIGMA_lnX,  SIGMA_YlnX, &TT, realContext);
-        realSubtract(&SS,        &TT,        &SS, realContext);
-        realMultiply(SIGMA_N,    SIGMA_ln2X, &TT, realContext);
-        realMultiply(SIGMA_lnX,  SIGMA_lnX,  &UU, realContext);
-        realSubtract(&TT,        &UU,        &TT, realContext);
-        realDivide(&SS,          &TT,        aa0, realContext);
+        realMultiply(SIGMA_ln2X,SIGMA_Y,&SS,realContext);
+        realMultiply(SIGMA_lnX,SIGMA_YlnX,&TT,realContext);
+        realSubtract(&SS,&TT,&SS,realContext);
+        realMultiply(SIGMA_N,SIGMA_ln2X,&TT,realContext);
+        realMultiply(SIGMA_lnX,SIGMA_lnX,&UU,realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realDivide(&SS,&TT,aa0,realContext);
 
         //a1 = (nn  * sumylnx - sumlnx * sumy ) / (nn * sumln2x - sumlnx * sumlnx);;
-        realMultiply(SIGMA_N,   SIGMA_YlnX,  &SS, realContext);
-        realMultiply(SIGMA_lnX, SIGMA_Y,     &TT, realContext);
-        realSubtract(&SS,       &TT,         &SS, realContext);
-        realMultiply(SIGMA_N,   SIGMA_ln2X,  &TT, realContext);
-        realMultiply(SIGMA_lnX, SIGMA_lnX,   &UU, realContext);
-        realSubtract(&TT,       &UU,         &TT, realContext);
-        realDivide(&SS,         &TT,         aa1, realContext);
+        realMultiply(SIGMA_N,SIGMA_YlnX,&SS,realContext);
+        realMultiply(SIGMA_lnX,SIGMA_Y,&TT,realContext);
+        realSubtract(&SS,&TT,&SS,realContext);
+        realMultiply(SIGMA_N,SIGMA_ln2X,&TT,realContext);
+        realMultiply(SIGMA_lnX,SIGMA_lnX,&UU,realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realDivide(&SS,&TT,aa1,realContext);
 
         //      r = (nn * sumylnx - sumlnx*sumy) / (sqrt(nn*sumln2x-sumlnx*sumlnx) * sqrt(nn*sumy2-sumy*sumy)); //(rLOG)
-        realMultiply(SIGMA_N,   SIGMA_YlnX,  &SS, realContext);
-        realMultiply(SIGMA_lnX, SIGMA_Y,     &TT, realContext);
-        realSubtract(&SS,       &TT,         &SS, realContext);          //SS is top
+        realMultiply(SIGMA_N,SIGMA_YlnX,&SS,realContext);
+        realMultiply(SIGMA_lnX,SIGMA_Y,&TT,realContext);
+        realSubtract(&SS,&TT,&SS,realContext);          //SS is top
 
-        realMultiply(SIGMA_N,   SIGMA_ln2X,  &TT, realContext);
-        realMultiply(SIGMA_lnX, SIGMA_lnX,   &UU, realContext);
-        realSubtract(&TT,       &UU,         &WW, realContext);
-        realSquareRoot(&WW,     &TT,              realContext);            //TT is bottom, factor 1
+        realMultiply(SIGMA_N,SIGMA_ln2X,&TT,realContext);
+        realMultiply(SIGMA_lnX,SIGMA_lnX,&UU,realContext);
+        realSubtract(&TT,&UU,&WW,realContext);
+        realSquareRoot(&WW,&TT,realContext);            //TT is bottom, factor 1
 
-        realMultiply(SIGMA_N,   SIGMA_Y2,    &UU, realContext);
-        realMultiply(SIGMA_Y,   SIGMA_Y,     &VV, realContext);
-        realSubtract(&UU,       &VV,         &UU, realContext);
-        realSquareRoot(&UU,     &UU,              realContext);            //UU is bottom factor 2
+        realMultiply(SIGMA_N,SIGMA_Y2,&UU,realContext);
+        realMultiply(SIGMA_Y,SIGMA_Y,&VV,realContext);
+        realSubtract(&UU,&VV,&UU,realContext);
+        realSquareRoot(&UU,&UU,realContext);            //UU is bottom factor 2
 
-        realDivide(&SS,         &TT,         RR_, realContext);
-        realDivide(RR_,         &UU,         RR_, realContext);            //r
+        realDivide(&SS,&TT,RR_,realContext);
+        realDivide(RR_,&UU,RR_,realContext);            //r
 
         realSubtract(SIGMA_N,   const_1,     &SS, realContext); // Section for s(a)
         realMultiply(SIGMA_N,   &SS,         &SS, realContext);
@@ -519,41 +519,41 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
 
       case CF_POWER_FITTING :
         //      a0 = exp( (sumln2x * sumlny  - sumlnx * sumlnxlny) / (nn * sumln2x - sumlnx * sumlnx)  );
-        realMultiply(SIGMA_ln2X, SIGMA_lnY,    &SS, realContext);
-        realMultiply(SIGMA_lnX,  SIGMA_lnXlnY, &TT, realContext);
-        realSubtract(&SS,        &TT,          &SS, realContext);
-        realMultiply(SIGMA_N,    SIGMA_ln2X,   &TT, realContext);
-        realMultiply(SIGMA_lnX,  SIGMA_lnX,    &UU, realContext);
-        realSubtract(&TT,        &UU,          &TT, realContext);
-        realDivide(&SS,          &TT,          aa0, realContext);
-        realExp(aa0,             aa0,               realContext);
+        realMultiply(SIGMA_ln2X,SIGMA_lnY,&SS,realContext);
+        realMultiply(SIGMA_lnX,SIGMA_lnXlnY,&TT,realContext);
+        realSubtract(&SS,&TT,&SS,realContext);
+        realMultiply(SIGMA_N,SIGMA_ln2X,&TT,realContext);
+        realMultiply(SIGMA_lnX,SIGMA_lnX,&UU,realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realDivide(&SS,&TT,aa0,realContext);
+        realExp(aa0,aa0,realContext);
 
         //a1 = (nn  * sumlnxlny - sumlnx * sumlny ) / (nn * sumln2x - sumlnx * sumlnx);
-        realMultiply(SIGMA_N,    SIGMA_lnXlnY, &SS, realContext);
-        realMultiply(SIGMA_lnX,  SIGMA_lnY,    &TT, realContext);
-        realSubtract(&SS,        &TT,          &SS, realContext);
-        realMultiply(SIGMA_N,    SIGMA_ln2X,   &TT, realContext);
-        realMultiply(SIGMA_lnX,  SIGMA_lnX,    &UU, realContext);
-        realSubtract(&TT,        &UU,          &TT, realContext);
-        realDivide(&SS,          &TT,          aa1, realContext);
+        realMultiply(SIGMA_N,SIGMA_lnXlnY,&SS,realContext);
+        realMultiply(SIGMA_lnX,SIGMA_lnY,&TT,realContext);
+        realSubtract(&SS,&TT,&SS,realContext);
+        realMultiply(SIGMA_N,SIGMA_ln2X,&TT,realContext);
+        realMultiply(SIGMA_lnX,SIGMA_lnX,&UU,realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realDivide(&SS,&TT,aa1,realContext);
 
         //      r = (nn * sumlnxlny - sumlnx*sumlny) / (sqrt(nn*sumln2x-sumlnx*sumlnx) * sqrt(nn*sumln2y-sumlny*sumlny)); //(rEXP)
-        realMultiply(SIGMA_N,    SIGMA_lnXlnY, &SS, realContext);
-        realMultiply(SIGMA_lnX,  SIGMA_lnY,    &TT, realContext);
-        realSubtract(&SS,        &TT,          &SS, realContext);          //SS is top
+        realMultiply(SIGMA_N,SIGMA_lnXlnY,&SS,realContext);
+        realMultiply(SIGMA_lnX,SIGMA_lnY,&TT,realContext);
+        realSubtract(&SS,&TT,&SS,realContext);          //SS is top
 
-        realMultiply(SIGMA_N,    SIGMA_ln2X,   &TT, realContext);
-        realMultiply(SIGMA_lnX,  SIGMA_lnX,    &UU, realContext);
-        realSubtract(&TT,        &UU,          &WW, realContext);
-        realSquareRoot(&WW,      &TT,               realContext);            //TT is bottom, factor 1
+        realMultiply(SIGMA_N,SIGMA_ln2X,&TT,realContext);
+        realMultiply(SIGMA_lnX,SIGMA_lnX,&UU,realContext);
+        realSubtract(&TT,&UU,&WW,realContext);
+        realSquareRoot(&WW,&TT,realContext);            //TT is bottom, factor 1
 
-        realMultiply(SIGMA_N,    SIGMA_ln2Y,   &UU, realContext);
-        realMultiply(SIGMA_lnY,  SIGMA_lnY,    &VV, realContext);
-        realSubtract(&UU,        &VV,          &ZZ, realContext);
-        realSquareRoot(&ZZ,      &UU,               realContext);            //UU is bottom factor 2
+        realMultiply(SIGMA_N,SIGMA_ln2Y,&UU,realContext);
+        realMultiply(SIGMA_lnY,SIGMA_lnY,&VV,realContext);
+        realSubtract(&UU,&VV,&ZZ,realContext);
+        realSquareRoot(&ZZ,&UU,realContext);            //UU is bottom factor 2
 
-        realDivide(&SS,          &TT,          RR_, realContext);
-        realDivide(RR_,          &UU,          RR_, realContext);            //r
+        realDivide(&SS,&TT,RR_,realContext);
+        realDivide(RR_,&UU,RR_,realContext);            //r
 
         realSubtract(SIGMA_N,    const_1,      &SS, realContext); // Section for s(a)
         realMultiply(SIGMA_N,    &SS,          &SS, realContext);
@@ -562,10 +562,10 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide  (SIGMA_lnX,  SIGMA_N,      MX,  realContext);
         realMultiply(MX,         MX,           MX2, realContext);
 
-        realSubtract(SIGMA_N,    const_1,      &SS, realContext); // Section for s(a)
-        realMultiply(SIGMA_N,    &SS,          &SS, realContext);
-        realDivide  (const_1,    &SS,          &SS, realContext);
-        realMultiply(&SS,        &ZZ,          SY2, realContext);
+        realSubtract  (SIGMA_N,const_1,&SS,realContext); // Section for s(a)
+        realMultiply  (SIGMA_N,&SS,&SS,realContext);
+        realDivide    (const_1,&SS,&SS,realContext);
+        realMultiply  (&SS,&ZZ,SY2,realContext);
 
 
         #if defined(STATDEBUG) && defined(PC_BUILD)
@@ -581,39 +581,39 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         //      A = nn * sum1onx2 - sum1onx * sum1onx;
         //      B = 1.0/A * (sum1onx2 * sumlny - sum1onx * sumlnyonx);
         //      C = 1.0/A * (nn * sumlnyonx - sum1onx * sumlny);
-        realMultiply(SIGMA_N,     SIGMA_1onX2,  &SS,  realContext);
-        realMultiply(SIGMA_1onX,  SIGMA_1onX,   &AA,  realContext);
-        realSubtract(&SS,         &AA,          &AA,  realContext);                 //err fixed
+        realMultiply(SIGMA_N,SIGMA_1onX2,&SS,realContext);
+        realMultiply(SIGMA_1onX,SIGMA_1onX,&AA,realContext);
+        realSubtract(&SS,&AA,&AA,realContext);                 //err fixed
 
-        realDivide(const_1,       &AA,          &SS,  realContext);               //err fixed
-        realMultiply(SIGMA_1onX2, SIGMA_lnY,    &TT,  realContext);
-        realMultiply(SIGMA_1onX,  SIGMA_lnYonX, &UU,  realContext);
-        realSubtract(&TT,         &UU,          &TT,  realContext);
-        realMultiply(&SS,         &TT,          &BB,  realContext);
+        realDivide(const_1,&AA,&SS,realContext);               //err fixed
+        realMultiply(SIGMA_1onX2,SIGMA_lnY,&TT,realContext);
+        realMultiply(SIGMA_1onX,SIGMA_lnYonX,&UU,realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realMultiply(&SS,&TT,&BB,realContext);
 
-        realMultiply(SIGMA_N,     SIGMA_lnYonX, &TT,  realContext);
-        realMultiply(SIGMA_1onX,  SIGMA_lnY,    &UU,  realContext);
-        realSubtract(&TT,         &UU,          &TT,  realContext);
-        realMultiply(&SS,         &TT,          &CC,  realContext);                 //err due to SS above
+        realMultiply(SIGMA_N,SIGMA_lnYonX,&TT,realContext);
+        realMultiply(SIGMA_1onX,SIGMA_lnY,&UU,realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realMultiply(&SS,&TT,&CC,realContext);                 //err due to SS above
 
         //      a0 = exp (B);
-        realExp(&BB,              aa0,                realContext);
+        realExp(&BB,aa0,realContext);
 
         //      a1 = exp (C);
-        realExp(&CC,              aa1,                realContext);
+        realExp(&CC,aa1,realContext);
 
         //     r = sqrt ( (B * sumlny + C * sumlnyonx - 1.0/nn * sumlny * sumlny) / (sumln2y - 1.0/nn * sumlny * sumlny) ); //(rROOT)
-        realMultiply(&BB,         SIGMA_lnY,    &SS,  realContext);
-        realMultiply(&CC,         SIGMA_lnYonX, &TT,  realContext);
-        realAdd     (&SS,         &TT,          &SS,  realContext); //t1+t2
-        realDivide  (const_1,     SIGMA_N,      &TT,  realContext);
-        realMultiply(&TT,         SIGMA_lnY,    &TT,  realContext);
-        realMultiply(&TT,         SIGMA_lnY,    &TT,  realContext); //t3
-        realSubtract(&SS,         &TT,          &SS,  realContext); //t1+t2-t3
+        realMultiply(&BB,SIGMA_lnY,&SS,realContext);
+        realMultiply(&CC,SIGMA_lnYonX,&TT,realContext);
+        realAdd     (&SS,&TT,&SS,realContext); //t1+t2
+        realDivide  (const_1,SIGMA_N,&TT,realContext);
+        realMultiply(&TT,SIGMA_lnY,&TT,realContext);
+        realMultiply(&TT,SIGMA_lnY,&TT,realContext); //t3
+        realSubtract(&SS,&TT,&SS,realContext); //t1+t2-t3
 
-        realSubtract(SIGMA_ln2Y,  &TT,          &TT,  realContext);
-        realDivide  (&SS,         &TT,          &RR2, realContext);
-        realSquareRoot(&RR2,      RR_,                realContext);
+        realSubtract(SIGMA_ln2Y,&TT,&TT,realContext);
+        realDivide  (&SS,&TT,&RR2,realContext);
+        realSquareRoot(&RR2,RR_,realContext);
 
         #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### ROOTF\n");
@@ -636,34 +636,34 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
 
       case CF_HYPERBOLIC_FITTING :
         //      a0 = (sumx2 * sum1ony - sumx * sumxony) / (nn*sumx2 - sumx * sumx);
-        realMultiply(SIGMA_X2,    SIGMA_1onY, &SS,  realContext);
-        realMultiply(SIGMA_X,     SIGMA_XonY, &TT,  realContext);
-        realSubtract(&SS,         &TT,        &SS,  realContext);
-        realMultiply(SIGMA_N,     SIGMA_X2,   &TT,  realContext);
-        realMultiply(SIGMA_X,     SIGMA_X,    &UU,  realContext);
-        realSubtract(&TT,         &UU,        &TT,  realContext);
-        realDivide  (&SS,         &TT,        aa0,  realContext);
+        realMultiply(SIGMA_X2, SIGMA_1onY, &SS, realContext);
+        realMultiply(SIGMA_X, SIGMA_XonY, &TT, realContext);
+        realSubtract(&SS,&TT,&SS,realContext);
+        realMultiply(SIGMA_N,SIGMA_X2,&TT,realContext);
+        realMultiply(SIGMA_X, SIGMA_X, &UU, realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realDivide  (&SS,&TT,aa0,realContext);
 
         //     a1 = (nn * sumxony - sumx * sum1ony) / (nn * sumx2 - sumx * sumx);
-        realMultiply(SIGMA_N,     SIGMA_XonY, &SS,  realContext);
-        realMultiply(SIGMA_X,     SIGMA_1onY, &TT,  realContext);
-        realSubtract(&SS,         &TT,        &SS,  realContext);
-        realMultiply(SIGMA_N,     SIGMA_X2,   &TT,  realContext);
-        realMultiply(SIGMA_X,     SIGMA_X,    &UU,  realContext);
-        realSubtract(&TT,         &UU,        &TT,  realContext);
-        realDivide  (&SS,         &TT,        aa1,  realContext);
+        realMultiply(SIGMA_N, SIGMA_XonY, &SS, realContext);
+        realMultiply(SIGMA_X, SIGMA_1onY, &TT, realContext);
+        realSubtract(&SS,&TT,&SS,realContext);
+        realMultiply(SIGMA_N,SIGMA_X2,&TT,realContext);
+        realMultiply(SIGMA_X, SIGMA_X, &UU, realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realDivide  (&SS,&TT,aa1,realContext);
 
         //     r = sqrt ( (a0 * sum1ony + a1 * sumxony - 1.0/nn * sum1ony * sum1ony) / (sum1ony2 - 1.0/nn * sum1ony * sum1ony ) ); //(rHYP)
-        realMultiply(aa0,         SIGMA_1onY, &SS,  realContext);
-        realMultiply(aa1,         SIGMA_XonY, &TT,  realContext);
-        realAdd     (&SS,         &TT,        &SS,  realContext);   //ss=t1+t2
-        realDivide  (const_1,     SIGMA_N,    &TT,  realContext);
-        realMultiply(&TT,         SIGMA_1onY, &TT,  realContext);
-        realMultiply(&TT,         SIGMA_1onY, &TT,  realContext); //tt=t3
-        realSubtract(&SS,         &TT,        &SS,  realContext);   //t1+t2-t3
-        realSubtract(SIGMA_1onY2, &TT,        &UU,  realContext); //use t3
-        realDivide  (&SS,         &UU,        &RR2, realContext);
-        realSquareRoot(&RR2,      RR_,              realContext);
+        realMultiply(aa0, SIGMA_1onY, &SS, realContext);
+        realMultiply(aa1, SIGMA_XonY, &TT, realContext);
+        realAdd     (&SS,&TT,&SS,realContext);   //ss=t1+t2
+        realDivide  (const_1,SIGMA_N,&TT,realContext);
+        realMultiply(&TT, SIGMA_1onY, &TT, realContext);
+        realMultiply(&TT, SIGMA_1onY, &TT, realContext); //tt=t3
+        realSubtract(&SS,&TT,&SS,realContext);   //t1+t2-t3
+        realSubtract(SIGMA_1onY2,&TT,&UU,realContext); //use t3
+        realDivide  (&SS,&UU,&RR2,realContext);
+        realSquareRoot(&RR2,RR_,realContext);
 
         #if defined(STATDEBUG) && defined(PC_BUILD)
           printf("##### HYPF\n");
@@ -676,14 +676,14 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
 
 
       case CF_PARABOLIC_FITTING :
-        calc_BCD(&BB, &CC, &DD);
-        calc_AEFG(&AA, &BB, &CC, &DD, &EE, &FF, &GG);
+        calc_BCD(&BB,&CC,&DD);
+        calc_AEFG(&AA,&BB,&CC,&DD,&EE,&FF,&GG);
 
         //      a2 = F; //a2 = (A*B - C*D) / (A*E - C*C) = F. Not in ReM, but the formula is correct and prevents duplicate code.
-        realCopy (&FF, aa2);
+        realCopy (&FF,aa2);
 
         //      a1 = G; //a1 = (D - a2 * C) / A = G; Not in ReM, but the formula is correct and prevents duplicate code.
-        realCopy (&GG, aa1);
+        realCopy (&GG,aa1);
 
         //      a0 = 1.0/nn * (sumy - a2 * sumx2 - a1 * sumx);
         realMultiply(&FF,      SIGMA_X2,  &TT,  realContext);
@@ -693,17 +693,17 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide  (&HH,      SIGMA_N,   aa0,  realContext);
 
         //      r = sqrt( (a0 * sumy + a1 * sumxy + a2 * sumx2y - 1.0/nn * sumy * sumy) / (sumy2 - 1.0/nn * sumy * sumy) );
-        realMultiply(aa0,      SIGMA_Y,   &SS,  realContext);
-        realMultiply(aa1,      SIGMA_XY,  &TT,  realContext);
-        realAdd     (&SS,      &TT,       &SS,  realContext);
-        realMultiply(aa2,      SIGMA_X2Y, &TT,  realContext);
-        realAdd     (&SS,      &TT,       &SS,  realContext); //interim in SS
-        realMultiply(SIGMA_Y,  SIGMA_Y,   &TT,  realContext);
-        realDivide  (&TT,      SIGMA_N,   &UU,  realContext);
-        realSubtract(&SS,      &UU,       &SS,  realContext); //top in SS
-        realSubtract(SIGMA_Y2, &UU,       &TT,  realContext);
-        realDivide  (&SS,      &TT,       &RR2, realContext); //R^2
-        realSquareRoot(&RR2,   RR_,             realContext);
+        realMultiply(aa0, SIGMA_Y, &SS, realContext);
+        realMultiply(aa1, SIGMA_XY, &TT, realContext);
+        realAdd     (&SS, &TT,&SS,realContext);
+        realMultiply(aa2, SIGMA_X2Y, &TT, realContext);
+        realAdd     (&SS, &TT,&SS,realContext); //interim in SS
+        realMultiply(SIGMA_Y, SIGMA_Y, &TT, realContext);
+        realDivide  (&TT, SIGMA_N,&UU,realContext);
+        realSubtract(&SS, &UU,&SS,realContext); //top in SS
+        realSubtract(SIGMA_Y2, &UU,&TT,realContext);
+        realDivide  (&SS, &TT,&RR2,realContext); //R^2
+        realSquareRoot(&RR2, RR_, realContext);
 
         #if defined(STAT_DISPLAY_ABCDEFG) && defined(PC_BUILD)
           realToDouble(SIGMA_N, &v); printf("§§ n: %f\n", v);
@@ -736,32 +736,32 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
       case CF_GAUSS_FITTING :
 
         //        B = n.sumx2lny - sumx2 . sumlny
-        realMultiply(SIGMA_N,    SIGMA_X2lnY, &SS,  realContext);
-        realMultiply(SIGMA_X2,   SIGMA_lnY,   &TT,  realContext);
-        realSubtract(&SS,        &TT,         &BB,  realContext);
+        realMultiply(SIGMA_N, SIGMA_X2lnY, &SS, realContext);
+        realMultiply(SIGMA_X2, SIGMA_lnY, &TT, realContext);
+        realSubtract(&SS,&TT,&BB,realContext);
 
         //        C = nn * sumx3 - sumx2 * sumx;              //Copy from parabola
-        realMultiply(SIGMA_N,    SIGMA_X3,    &SS,  realContext);
-        realMultiply(SIGMA_X2,   SIGMA_X,     &TT,  realContext);
-        realSubtract(&SS,        &TT,         &CC,  realContext);
+        realMultiply(SIGMA_N, SIGMA_X3, &SS, realContext);
+        realMultiply(SIGMA_X2, SIGMA_X, &TT, realContext);
+        realSubtract(&SS, &TT, &CC, realContext);
 
         //        D = n.sumxlny - sumx . sumlny
-        realMultiply(SIGMA_N,    SIGMA_XlnY,  &SS,  realContext);
-        realMultiply(SIGMA_X,    SIGMA_lnY,   &TT,  realContext);
-        realSubtract(&SS,        &TT,         &DD,  realContext);
+        realMultiply(SIGMA_N, SIGMA_XlnY, &SS, realContext);
+        realMultiply(SIGMA_X, SIGMA_lnY, &TT, realContext);
+        realSubtract(&SS,&TT,&DD,realContext);
 
 
-        calc_AEFG(&AA, &BB, &CC, &DD, &EE, &FF, &GG);
+        calc_AEFG(&AA,&BB,&CC,&DD,&EE,&FF,&GG);
 
         //        H = (1.0)/nn * (sumlny - F * sumx2 - G * sumx);
-        realMultiply(&FF,        SIGMA_X2,    &TT,  realContext);
-        realSubtract(SIGMA_lnY,  &TT,         &HH,  realContext);
-        realMultiply(&GG,        SIGMA_X,     &TT,  realContext);
-        realSubtract(&HH,        &TT,         &HH,  realContext);
-        realDivide  (&HH,        SIGMA_N,     &HH,  realContext);
+        realMultiply(&FF, SIGMA_X2, &TT, realContext);
+        realSubtract(SIGMA_lnY, &TT, &HH, realContext);
+        realMultiply(&GG, SIGMA_X, &TT, realContext);
+        realSubtract(&HH, &TT, &HH, realContext);
+        realDivide  (&HH,SIGMA_N,&HH,realContext);
 
         //        a2 = (1.0)/F;
-        realDivide  (const_1,    &FF,         aa2,  realContext);
+        realDivide  (const_1,&FF,aa2,realContext);
 
         //        a1 = -G/(2.0) * a2;
         realDivide  (&GG,        const__1,    &TT,  realContext);
@@ -769,24 +769,24 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realMultiply(&TT,        aa2,         aa1,  realContext);
 
         //GAUSS  a0 = exp (H - F * a1 * a1); //maxy;
-        realMultiply(aa1,        aa1,         &SS,  realContext);
-        realMultiply(&SS,        &FF,         &SS,  realContext);
-        realSubtract(&HH,        &SS,         aa0,  realContext);
-        realExp(aa0,             aa0,               realContext);
+        realMultiply(aa1,aa1,&SS,realContext);
+        realMultiply(&SS,&FF,&SS,realContext);
+        realSubtract(&HH,&SS,aa0,realContext);
+        realExp(aa0,aa0,realContext);
 
         //        r  = sqrt ( ( H * sumlny + G * sumxlny + F * sumx2lny - 1.0/nn * sumlny * sumlny ) / (sumln2y - 1.0/nn * sumlny * sumlny) );
-        realMultiply(&HH,        SIGMA_lnY,   &SS,  realContext);
-        realMultiply(&GG,        SIGMA_XlnY,  &TT,  realContext);
-        realAdd     (&SS,        &TT,         &SS,  realContext);
-        realMultiply(&FF,        SIGMA_X2lnY, &TT,  realContext);
-        realAdd     (&SS,        &TT,         &SS,  realContext); //interim in SS
-        realMultiply(SIGMA_lnY,  SIGMA_lnY,   &TT,  realContext);
-        realDivide  (&TT,        SIGMA_N,     &UU,  realContext);
-        realSubtract(&SS,        &UU,         &SS,  realContext); //top in SS
+        realMultiply(&HH, SIGMA_lnY, &SS, realContext);
+        realMultiply(&GG, SIGMA_XlnY, &TT, realContext);
+        realAdd     (&SS, &TT,&SS,realContext);
+        realMultiply(&FF, SIGMA_X2lnY, &TT, realContext);
+        realAdd     (&SS, &TT,&SS,realContext); //interim in SS
+        realMultiply(SIGMA_lnY, SIGMA_lnY, &TT, realContext);
+        realDivide  (&TT, SIGMA_N,&UU,realContext);
+        realSubtract(&SS, &UU,&SS,realContext); //top in SS
 
-        realSubtract(SIGMA_ln2Y, &UU,         &TT,  realContext); //use UU from above
-        realDivide  (&SS,        &TT,         &RR2, realContext); //R^2
-        realSquareRoot(&RR2,     RR_,               realContext);
+        realSubtract(SIGMA_ln2Y, &UU,&TT,realContext); //use UU from above
+        realDivide  (&SS, &TT,&RR2,realContext); //R^2
+        realSquareRoot(&RR2, RR_, realContext);
 
         #if defined(STAT_DISPLAY_ABCDEFG) && defined(PC_BUILD)
           realToDouble(SIGMA_N, &v); printf("§§ n: %f\n", v);
@@ -817,21 +817,21 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
 
       case CF_CAUCHY_FITTING :
         //      B = nn * sumx2ony - sumx2 * sum1ony;
-        realMultiply(SIGMA_N,     SIGMA_X2onY, &SS,  realContext);
-        realMultiply(SIGMA_X2,    SIGMA_1onY,  &TT,  realContext);
-        realSubtract(&SS,         &TT,         &BB,  realContext);
+        realMultiply(SIGMA_N, SIGMA_X2onY, &SS, realContext);
+        realMultiply(SIGMA_X2, SIGMA_1onY, &TT, realContext);
+        realSubtract(&SS, &TT, &BB, realContext);
 
         //      C = nn * sumx3 - sumx * sumx2;                     //vv C copied from PARABF. Exactly the same
-        realMultiply(SIGMA_N,     SIGMA_X3,    &SS,  realContext);
-        realMultiply(SIGMA_X2,    SIGMA_X,     &TT,  realContext);
-        realSubtract(&SS,         &TT,         &CC,  realContext);
+        realMultiply(SIGMA_N, SIGMA_X3, &SS, realContext);
+        realMultiply(SIGMA_X2, SIGMA_X, &TT, realContext);
+        realSubtract(&SS, &TT, &CC, realContext);
 
         //      D = nn * sumxony - sumx * sum1ony;
-        realMultiply(SIGMA_N,     SIGMA_XonY,  &SS,  realContext);
-        realMultiply(SIGMA_X,     SIGMA_1onY,  &TT,  realContext);
-        realSubtract(&SS,         &TT,         &DD,  realContext);
+        realMultiply(SIGMA_N, SIGMA_XonY, &SS, realContext);
+        realMultiply(SIGMA_X, SIGMA_1onY, &TT, realContext);
+        realSubtract(&SS, &TT, &DD, realContext);
 
-        calc_AEFG(&AA, &BB, &CC, &DD, &EE, &FF, &GG);
+        calc_AEFG(&AA,&BB,&CC,&DD,&EE,&FF,&GG);
 
         //    H = 1.0/nn * (sum1ony - R12 * sumx - R13 * sumx2);
         //old GAUSS CHANGED TO 1/y ; F and G left:      H = (1.0)/nn * (sum1ony - F * sumx2 - G * sumx);
@@ -842,30 +842,30 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         realDivide  (&HH,         SIGMA_N,     &HH,  realContext);
 
         //        a0 = F;
-        realCopy    (&FF,         aa0);
+        realCopy    (&FF,aa0);
 
         //        a1 = G/2.0 * a0;
-        realDivide  (&GG,         const_2,     &TT,  realContext);
-        realDivide  (&TT,         aa0,         aa1,  realContext);         //err
+        realDivide  (&GG,const_2,&TT,realContext);
+        realDivide  (&TT, aa0, aa1, realContext);         //err
 
         //      a2 = H - F * a1 * a1;
-        realMultiply(aa1,         aa1,         &SS,  realContext);
-        realMultiply(&SS,         &FF,         &SS,  realContext);
-        realSubtract(&HH,         &SS,         aa2,  realContext);
+        realMultiply(aa1,aa1,&SS,realContext);
+        realMultiply(&SS,&FF,&SS,realContext);
+        realSubtract(&HH,&SS,aa2,realContext);
 
         //    r  = sqrt ( (H * sum1ony + G * sumxony + F * sumx2ony - 1.0/nn * sum1ony * sum1ony) / (sum1ony2 - 1.0/nn * sum1ony * sum1ony) );
-        realMultiply(&HH,         SIGMA_1onY,  &SS,  realContext);
-        realMultiply(&GG,         SIGMA_XonY,  &TT,  realContext);
-        realAdd     (&SS,         &TT,         &SS,  realContext);
-        realMultiply(&FF,         SIGMA_X2onY, &TT,  realContext);
-        realAdd     (&SS,         &TT,         &SS,  realContext); //interim in SS
-        realMultiply(SIGMA_1onY,  SIGMA_1onY,  &TT,  realContext);
-        realDivide  (&TT,         SIGMA_N,     &UU,  realContext);
-        realSubtract(&SS,         &UU,         &SS,  realContext); //top in SS
+        realMultiply(&HH, SIGMA_1onY, &SS, realContext);
+        realMultiply(&GG, SIGMA_XonY, &TT, realContext);
+        realAdd     (&SS, &TT,&SS,realContext);
+        realMultiply(&FF, SIGMA_X2onY, &TT, realContext);
+        realAdd     (&SS, &TT,&SS,realContext); //interim in SS
+        realMultiply(SIGMA_1onY, SIGMA_1onY, &TT, realContext);
+        realDivide  (&TT, SIGMA_N,&UU,realContext);
+        realSubtract(&SS, &UU,&SS,realContext); //top in SS
 
-        realSubtract(SIGMA_1onY2, &UU,         &TT,  realContext); //use UU from above
-        realDivide  (&SS,         &TT,         &RR2, realContext); //R^2
-        realSquareRoot(&RR2,      RR_,               realContext);
+        realSubtract(SIGMA_1onY2, &UU,&TT,realContext); //use UU from above
+        realDivide  (&SS, &TT,&RR2,realContext); //R^2
+        realSquareRoot(&RR2, RR_, realContext);
 
         #if defined(STAT_DISPLAY_ABCDEFG) && defined(PC_BUILD)
           realToDouble(SIGMA_N, &v); printf("§§ n: %f\n", v);
@@ -897,44 +897,44 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
       case CF_ORTHOGONAL_FITTING :
         // a1 = 1.0 / (2.0 * sxy) * ( sy * sy - sx * sx + sqrt( (sy * sy - sx * sx) * (sy * sy - sx * sx) + 4 * sxy * sxy) );
         // a0  = y_ - a1 * x_;
-        realMultiply(&S_Y,    &S_Y,     &SS, realContext);
-        realMultiply(&S_X,    &S_X,     &TT, realContext);
-        realSubtract(&SS,     &TT,      &UU, realContext);    //keep  uu = sy2-sx2
-        realMultiply(&UU,     &UU,      &VV, realContext);
-        realMultiply(&S_XY,   &S_XY,    &WW, realContext);
-        realMultiply(&WW,     const_2,  &WW, realContext);
-        realMultiply(&WW,     const_2,  &WW, realContext);
-        realAdd     (&WW,     &VV,      &VV, realContext);
-        realSquareRoot(&VV,   &VV,           realContext);  //sqrt term
+        realMultiply(&S_Y,&S_Y,&SS,realContext);
+        realMultiply(&S_X,&S_X,&TT,realContext);
+        realSubtract(&SS,&TT,&UU,realContext);    //keep  uu = sy2-sx2
+        realMultiply(&UU,&UU,&VV,realContext);
+        realMultiply(&S_XY,&S_XY,&WW,realContext);
+        realMultiply(&WW,const_2,&WW,realContext);
+        realMultiply(&WW,const_2,&WW,realContext);
+        realAdd     (&WW,&VV,&VV,realContext);
+        realSquareRoot(&VV,&VV,realContext);  //sqrt term
 
-        realDivide(&UU,       const_2,  &UU, realContext); //term1
-        realDivide(&UU,       &S_XY,    &UU, realContext);
+        realDivide(&UU,const_2,&UU,realContext);  //term1
+        realDivide(&UU,&S_XY,&UU,realContext);
 
-        realDivide(&VV,       const_2,  &VV, realContext); //term2
-        realDivide(&VV,       &S_XY,    &VV, realContext);
+        realDivide(&VV,const_2,&VV,realContext);  //term2
+        realDivide(&VV,&S_XY,&VV,realContext);
 
-        realAdd     (&UU,     &VV,      aa1, realContext);   //a1
-        realMultiply(aa1,     &M_X,     &SS, realContext);
-        realSubtract(&M_Y,    &SS,      aa0, realContext);  //a0
+        realAdd     (&UU,&VV,aa1,realContext);   //a1
+        realMultiply(aa1,&M_X,&SS,realContext);
+        realSubtract(&M_Y,&SS,aa0,realContext);  //a0
 
         //r is copied from LINF
         //       r  = (nn * sumxy - sumx * sumy) / (sqrt (nn * sumx2 - sumx * sumx) * sqrt(nn * sumy2 - sumy * sumy) );
-        realMultiply(SIGMA_N, SIGMA_XY, &SS, realContext);
-        realMultiply(SIGMA_X, SIGMA_Y,  &TT, realContext);
-        realSubtract(&SS,     &TT,      &SS, realContext);          //SS is top
+        realMultiply(SIGMA_N,SIGMA_XY,&SS,realContext);
+        realMultiply(SIGMA_X,SIGMA_Y,&TT,realContext);
+        realSubtract(&SS,&TT,&SS,realContext);          //SS is top
 
-        realMultiply(SIGMA_N, SIGMA_X2, &TT, realContext);
-        realMultiply(SIGMA_X, SIGMA_X,  &UU, realContext);
-        realSubtract(&TT,     &UU,      &TT, realContext);
-        realSquareRoot(&TT,   &TT,           realContext);             //TT is bottom, factor 1
+        realMultiply(SIGMA_N,SIGMA_X2,&TT,realContext);
+        realMultiply(SIGMA_X,SIGMA_X,&UU,realContext);
+        realSubtract(&TT,&UU,&TT,realContext);
+        realSquareRoot(&TT,&TT,realContext);            //TT is bottom, factor 1
 
-        realMultiply(SIGMA_N, SIGMA_Y2, &UU, realContext);
-        realMultiply(SIGMA_Y, SIGMA_Y,  &VV, realContext);
-        realSubtract(&UU,     &VV,      &UU, realContext);
-        realSquareRoot(&UU,   &UU,           realContext);             //UU is bottom factor 2
+        realMultiply(SIGMA_N,SIGMA_Y2,&UU,realContext);
+        realMultiply(SIGMA_Y,SIGMA_Y,&VV,realContext);
+        realSubtract(&UU,&VV,&UU,realContext);
+        realSquareRoot(&UU,&UU,realContext);            //UU is bottom factor 2
 
-        realDivide(&SS,       &TT,      RR_, realContext);
-        realDivide(RR_,       &UU,      RR_, realContext);            //r
+        realDivide(&SS,&TT,RR_,realContext);
+        realDivide(RR_,&UU,RR_,realContext);            //r
 
         #if defined(STATDEBUG) && defined(PC_BUILD)
           formatRealDebug(ss, &S_X); printf("§§ S_X: %s\n", ss);
@@ -1220,8 +1220,8 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
         temporaryInformation = TI_CALCX2;
         break;
 
-      default:break;
-    }
+        default:break;
+      }
   }
 
 

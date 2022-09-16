@@ -714,7 +714,7 @@ void execTimerApp(uint16_t timerType) {
           byte = *(data++);
         }
 
-        if(byte & 0x80) { // MSB set
+        if(byte & 0x80) {// MSB set
           if(videoMode == vmNormal) { // Black pixel for white background
             setBlackPixel(x + col, y);
           }
@@ -797,7 +797,7 @@ void execTimerApp(uint16_t timerType) {
 
     ch = 0;
     while(string[ch] != 0) {
-      if(lg == 1 || (lg == 2 && (string[0] & 0x80))) { // The string is 1 glyph long
+      if(lg == 1 || (lg == 2 && (string[0] & 0x80))) {// The string is 1 glyph long
         slc = showLeadingCols;
         sec = showEndingCols;
       }
@@ -805,11 +805,11 @@ void execTimerApp(uint16_t timerType) {
         slc = showLeadingCols;
         sec = true;
       }
-      else if(ch == lg-1 || (ch == lg-2 && (string[ch] & 0x80))) { // Last glyph
+      else if(ch == lg-1 || (ch == lg-2 && (string[ch] & 0x80))) {// Last glyph
         slc = true;
         sec = showEndingCols;
       }
-      else { // Glyph between first and last glyph
+      else {// Glyph between first and last glyph
         slc = true;
         sec = true;
       }
@@ -1588,6 +1588,21 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
+        else if(temporaryInformation == TI_STATISTIC_HISTO) {
+              if(regist == REGISTER_X) {
+                strcpy(prefix,STD_UP_ARROW "BIN" " =");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              } else
+              if(regist == REGISTER_Y) {
+                strcpy(prefix,STD_DOWN_ARROW "BIN" " =");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              }
+              else if(regist == REGISTER_Z) {
+                strcpy(prefix,"nBINS" " =");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              }
+          }
+
           //L.R. Display
           else if(temporaryInformation == TI_LR && lrChosen != 0) {
             #define LRWidth 140
@@ -1643,7 +1658,7 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
-          /*
+/*
           else if(temporaryInformation == TI_SXY) {
             if(regist == REGISTER_X) {
               strcpy(prefix, "s" STD_SUB_x STD_SUB_y " =");
@@ -1657,7 +1672,7 @@ void execTimerApp(uint16_t timerType) {
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
-          */
+*/
           else if(temporaryInformation == TI_CALCY) {
             if(regist == REGISTER_X) {
               prefix[0]=0;
@@ -2339,16 +2354,25 @@ void execTimerApp(uint16_t timerType) {
         break;
 
       case CM_GRAPH:
+        clearScreen();
+        displayShiftAndTamBuffer();
+        showSoftmenuCurrentPart();
+        hourGlassIconEnabled = true;
+        refreshStatusBar();
+        graphPlotstat(plotSelection);
+        hourGlassIconEnabled = false;
+        showHideHourGlass();
+        refreshStatusBar();
+        break;
+
       case CM_PLOT_STAT:
         clearScreen();
         displayShiftAndTamBuffer();
         showSoftmenuCurrentPart();
-        refreshStatusBar();
         hourGlassIconEnabled = true;
+        refreshStatusBar();
         graphPlotstat(plotSelection);
-        if(calcMode == CM_PLOT_STAT) {
-          graphDrawLRline(plotSelection);
-        }
+        graphDrawLRline(plotSelection);
         hourGlassIconEnabled = false;
         showHideHourGlass();
         refreshStatusBar();
@@ -2492,8 +2516,8 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
   static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue) {
     int32_t value;
 
-    if(getRegisterDataType(regist) == dtReal34) {
-      real34_t maxValue34;
+  if(getRegisterDataType(regist) == dtReal34) {
+    real34_t maxValue34;
 
       int32ToReal34(maxValue, &maxValue34);
       if(real34CompareLessThan(REGISTER_REAL34_DATA(regist), const34_0) || real34CompareLessThan(&maxValue34, REGISTER_REAL34_DATA(regist))) {
@@ -2508,8 +2532,8 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
       value = real34ToInt32(REGISTER_REAL34_DATA(regist));
     }
 
-    else if(getRegisterDataType(regist) == dtLongInteger) {
-      longInteger_t lgInt;
+  else if(getRegisterDataType(regist) == dtLongInteger) {
+    longInteger_t lgInt;
 
       convertLongIntegerRegisterToLongInteger(regist, lgInt);
       if(longIntegerCompareUInt(lgInt, 0) < 0 || longIntegerCompareUInt(lgInt, maxValue) > 0) {
@@ -2535,13 +2559,13 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
       return -1;
     }
 
-    return value;
-  }
+  return value;
+}
 
-  static void getPixelPos(int32_t *x, int32_t *y) {
-    *x = _getPositionFromRegister(REGISTER_X, SCREEN_WIDTH  - 1);
-    *y = _getPositionFromRegister(REGISTER_Y, SCREEN_HEIGHT - 1);
-  }
+static void getPixelPos(int32_t *x, int32_t *y) {
+  *x = _getPositionFromRegister(REGISTER_X, SCREEN_WIDTH  - 1);
+  *y = _getPositionFromRegister(REGISTER_Y, SCREEN_HEIGHT - 1);
+}
 #endif // !TESTSUITE_BUILD
 
 void fnClLcd(uint16_t unusedButMandatoryParameter) {
@@ -2631,8 +2655,8 @@ void fnAGraph(uint16_t regist) {
           val >>= 1;
         }
 
-        fnInc(REGISTER_X);
-      }
+      fnInc(REGISTER_X);
+    }
 
       else {
         displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);

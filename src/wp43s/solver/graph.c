@@ -67,10 +67,6 @@
 #define NUMBERITERATIONS 35      // Must be smaller than LIM (see STATS)
 
 
-char     plotStatMx[8];
-
-
-
 void fnPlot(uint16_t unusedButMandatoryParameter) {
   lastPlotMode = PLOT_NOTHING;
   fnPlotStat(PLOT_GRAPH);
@@ -107,7 +103,7 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
           #endif // VERBOSE_SOLVER00
           lastErrorCode = 0;
         }
-      #endif // PC_BUILD
+      #endif //PC_BUILD
     }
     else {
       #if defined(PC_BUILD)
@@ -115,7 +111,7 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
         #if defined(VERBOSE_SOLVER00)
           printf("ERROR CODE in initialize_functionB: %u\n",lastErrorCode);
         #endif // VERBOSE_SOLVER00
-      #endif // PC_BUILD
+      #endif //PC_BUILD
     }
   }
 
@@ -195,30 +191,30 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
   }
 
 
-  int16_t osc = 0;
-  uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
+int16_t osc = 0;
+uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
 
 
-  void check_osc(uint8_t ii){
-     switch(ii & 0b00111111) {
-       case 0b001111:
-       case 0b011110:
-       case 0b111100:
-       case 0b010101:
-       case 0b101010:
+void check_osc(uint8_t ii){
+   switch (ii & 0b00111111) {
+     case 0b001111:
+     case 0b011110:
+     case 0b111100:
+     case 0b010101:
+     case 0b101010:
 
-       case 0b011011:
-       case 0b110110:
-       case 0b101101: osc++;
-       default:;
-     }
-     switch(ii) {
-       case 0b01001001:
-       case 0b10010010:
-       case 0b00100100: osc++;
-       default:;
-     }
-  }
+     case 0b011011:
+     case 0b110110:
+     case 0b101101: osc++;
+     default:;
+   }
+   switch (ii) {
+     case 0b01001001:
+     case 0b10010010:
+     case 0b00100100: osc++;
+     default:;
+   }
+}
 
 //###################################################################################
 //PLOTTER
@@ -237,6 +233,28 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
     }
     else {
       return 0;
+    }
+  }
+
+
+
+  void fnClDrawMx(void) {
+    PLOT_ZOOM = 0;
+    if(plotStatMx[0]!='D') {
+      strcpy(plotStatMx,"DrwMX");
+    }    
+    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    if(regStats == INVALID_VARIABLE) {
+      allocateNamedVariable(plotStatMx, dtReal34, REAL34_SIZE);
+      regStats = findNamedVariable(plotStatMx);
+    }
+    clearRegister(regStats);                  // this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
+    if(regStats == INVALID_VARIABLE) {
+      displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "DrwMX matrix not created");
+        moreInfoOnError("In function fnClPlotData:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
 
@@ -279,27 +297,6 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
   }
 #endif // !TESTSUITE_BUILD
 
-
-
-void fnClDrawMx(void) {
-  PLOT_ZOOM = 0;
-  if(plotStatMx[0]!='D') {
-    strcpy(plotStatMx,"DrwMX");
-  }
-  calcRegister_t regStats = findNamedVariable(plotStatMx);
-  if(regStats == INVALID_VARIABLE) {
-    allocateNamedVariable(plotStatMx, dtReal34, REAL34_SIZE);
-    regStats = findNamedVariable(plotStatMx);
-  }
-  clearRegister(regStats);                  // TODO this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
-  if(regStats == INVALID_VARIABLE) {
-    displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "DrwMX matrix not created");
-      moreInfoOnError("In function fnClPlotData:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-}
 
 
 void graph_eqn(uint16_t mode) {
@@ -501,7 +498,7 @@ void graph_eqn(uint16_t mode) {
           printf(">>> ERROR CODE INITIALLY NON-ZERO = %d <<<<<\n",lastErrorCode);
           goto to_return;
         }
-      #endif // PC_BUILD
+      #endif //PC_BUILD
 
       //assumes X2 is in R91
       //Identify oscillations in real or imag: increment osc flag
@@ -960,7 +957,7 @@ void graph_eqn(uint16_t mode) {
 
       copySourceRegisterToDestRegister(SREG_X2N,SREG_X2);  //new x2
 
-      // plots the ix vs abs.difference
+      //plots the ix vs abs.difference
       // |dy| is still in Y
       // replace X with ix
       // plot (ix,|dy|)
@@ -1050,8 +1047,10 @@ void fnEqSolvGraph (uint16_t func) {
     refreshLcd(NULL);
   #endif // DMCP_BUILD
 
-//  if(!(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE)) return;
-
+  graphVariable = currentSolverVariable;
+  if(graphVariable<0) {
+    graphVariable = -graphVariable;
+  }
 
   if(graphVariable >= FIRST_NAMED_VARIABLE && graphVariable <= LAST_NAMED_VARIABLE) {
     #if (defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
@@ -1065,13 +1064,14 @@ void fnEqSolvGraph (uint16_t func) {
       moreInfoOnError("In function fnEqSolvGraph:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+    return;
   }
 
 
   //initialize x
   currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;
 
-  switch(func) {
+  switch (func) {
      case EQ_SOLVE:{
             fnClDrawMx();
             statGraphReset();

@@ -1448,10 +1448,10 @@ void debugNIM(void) {
         gtk_widget_show(lbl2[row++]);
 
         row++;
-        sprintf(string, "STATS %s %7d %7d", getRegisterDataTypeName(findNamedVariable("STATS"), false, true), TO_WP43SMEMPTR(getRegisterDataPointer(findNamedVariable("STATS"))), TO_BYTES(getRegisterFullSize(findNamedVariable("STATS"))));
+        sprintf(string, "STATS %s %7d %7d", getRegisterDataTypeName(findNamedVariable(statMx), false, true), TO_WP43SMEMPTR(getRegisterDataPointer(findNamedVariable(statMx))), TO_BYTES(getRegisterFullSize(findNamedVariable(statMx))));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row]);
-        debugRegisterValue(findNamedVariable("STATS"), row++);
+        debugRegisterValue(findNamedVariable(statMx), row++);
 
         sprintf(string, "SAVED STATS %s %7d %7d", getRegisterDataTypeName(TEMP_REGISTER_2_SAVED_STATS, false, true), TO_WP43SMEMPTR(getRegisterDataPointer(TEMP_REGISTER_2_SAVED_STATS)), TO_BYTES(getRegisterFullSize(TEMP_REGISTER_2_SAVED_STATS)));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);

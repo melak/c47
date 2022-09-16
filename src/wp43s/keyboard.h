@@ -26,65 +26,65 @@
     #include <gdk/gdk.h>
   #endif // PC_BUILD
 
-  void leavePem        (void);
-  void showShiftState  (void);
-  void processKeyAction(int16_t item);
+void leavePem        (void);
+void showShiftState  (void);
+void processKeyAction(int16_t item);
 
-  /**
-   * Processing ENTER key.
-   *
-   * \param[in] unusedButMandatoryParameter
-   */
-  void fnKeyEnter      (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing ENTER key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
+void fnKeyEnter      (uint16_t unusedButMandatoryParameter);
 
-  /**
-   * Processing EXIT key.
-   *
-   * \param[in] unusedButMandatoryParameter
-   */
-  void fnKeyExit       (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing EXIT key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
+void fnKeyExit       (uint16_t unusedButMandatoryParameter);
 
-  /**
-   * Processing CC key.
-   *
-   * \param[in] unusedButMandatoryParameter
-   */
-  void fnKeyCC         (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing CC key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
+void fnKeyCC         (uint16_t unusedButMandatoryParameter);
 
-  /**
-   * Processing BACKSPACE key.
-   *
-   * \param[in] unusedButMandatoryParameter
-   */
-  void fnKeyBackspace  (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing BACKSPACE key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
+void fnKeyBackspace  (uint16_t unusedButMandatoryParameter);
 
-  /**
-   * Processing UP key.
-   *
-   * \param[in] unusedButMandatoryParameter
-   */
-  void fnKeyUp         (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing UP key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
+void fnKeyUp         (uint16_t unusedButMandatoryParameter);
 
-  /**
-   * Processing DOWN key.
-   *
-   * \param[in] unusedButMandatoryParameter
-   */
-  void fnKeyDown       (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing DOWN key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
+void fnKeyDown       (uint16_t unusedButMandatoryParameter);
 
-  /**
-   * Processing .d key.
-   *
-   * \param[in] unusedButMandatoryParameter
-   */
-  void fnKeyDotD       (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing .d key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
+void fnKeyDotD       (uint16_t unusedButMandatoryParameter);
 
-  /**
-   * Processing ANGLE key.
-   *
-   * \param[in] unusedButMandatoryParameter
-   */
-  void fnKeyAngle      (uint16_t unusedButMandatoryParameter);
+/**
+ * Processing ANGLE key.
+ *
+ * \param[in] unusedButMandatoryParameter
+ */
+void fnKeyAngle      (uint16_t unusedButMandatoryParameter);
 
   #if defined(PC_BUILD)
     /**
@@ -152,7 +152,7 @@
     void btnReleased   (GtkWidget *notUsed, GdkEvent *event, gpointer data);
   #endif // PC_BUILD
 
-  void execAutoRepeat(uint16_t key);
+void execAutoRepeat(uint16_t key);
 
   #if defined(DMCP_BUILD)
     void btnFnClicked (void *w, void *data);
@@ -163,5 +163,5 @@
     void btnReleased  (void *data);
   #endif // DMCP_BUILD
 
-  void setLastKeyCode  (int key);
+void setLastKeyCode  (int key);
 #endif // !KEYBOARD_H
