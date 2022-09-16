@@ -2663,7 +2663,7 @@ void fnKeyAngle(uint16_t unusedButMandatoryParameter) {
 
 void setLastKeyCode(int key) {
   if(1 <= key && key <= 43) {
-    if     (key <=  6) lastKeyCode = key      + 20;
+    if(     key <=  6) lastKeyCode = key      + 20;
     else if(key <= 12) lastKeyCode = key -  6 + 30;
     else if(key <= 17) lastKeyCode = key - 12 + 40;
     else if(key <= 22) lastKeyCode = key - 17 + 50;

@@ -431,7 +431,7 @@ static void compareRegisters(uint16_t regist, uint8_t mode) {
       comparisonTypeError(regist);
     }
   }
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     else {
       sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
       moreInfoOnError("In function compareRegisters:", errorMessage, "is not defined!", NULL);

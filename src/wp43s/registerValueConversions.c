@@ -496,7 +496,7 @@ void convertReal34RegisterToDateRegister(calcRegister_t source, calcRegister_t d
   }
 
   reallocateRegister(destination, dtDate, REAL34_SIZE, amNone);
-  if     (getSystemFlag(FLAG_YMD)) composeJulianDay(&part1, &part2, &part3, REGISTER_REAL34_DATA(destination));
+  if(     getSystemFlag(FLAG_YMD)) composeJulianDay(&part1, &part2, &part3, REGISTER_REAL34_DATA(destination));
   else if(getSystemFlag(FLAG_MDY)) composeJulianDay(&part3, &part1, &part2, REGISTER_REAL34_DATA(destination));
   else if(getSystemFlag(FLAG_DMY)) composeJulianDay(&part3, &part2, &part1, REGISTER_REAL34_DATA(destination));
 
