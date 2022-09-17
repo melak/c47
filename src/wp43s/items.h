@@ -23,6 +23,7 @@
 
 #include <stdint.h>
 
+
 #define ITM_NULL                       0
 
 // Items from 1 to 127 are 1 byte OP codes
@@ -1457,8 +1458,8 @@
 #define MNU_MVAR                    1398
 #define MNU_EQ_EDIT                 1399
 #define MNU_TIMERF                  1400
-#define MNU_1401                    1401
-#define MNU_1402                    1402
+#define MNU_HIST                    1401
+#define MNU_HPLOT                   1402
 #define MNU_1403                    1403
 
 
@@ -2134,7 +2135,7 @@
 #define ITM_COS_SIGN                2067
 #define ITM_TAN_SIGN                2068
 
-#define LAST_ITEM                     2069
+#define LAST_ITEM                   2069
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

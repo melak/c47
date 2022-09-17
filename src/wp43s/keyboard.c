@@ -1123,6 +1123,9 @@ bool_t allowShiftsToClearError = false;
     }
   #endif // DMCP_BUILD
 
+bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
+
+
 #if defined(PC_BUILD)
   void btnClickedP(GtkWidget *w, gpointer data) {                          //JM PRESSED FOR KEYBOARD F REPEAT
     GdkEvent mouseButton;
@@ -1136,39 +1139,8 @@ bool_t allowShiftsToClearError = false;
     mouseButton.button.button = 1;
     btnReleased(w, &mouseButton, data);
   }
-#endif // DMCP_BUILD
 
 
-  bool_t checkShifts(const char *data) {
-    const calcKey_t *key;
-
-    int8_t key_no = stringToKeyNumber(data);
-
-    key = getSystemFlag(FLAG_USER) && ((calcMode == CM_NORMAL) || (calcMode == CM_AIM) || (calcMode == CM_EIM) || (calcMode == CM_NIM)) ? (kbd_usr + key_no) : (kbd_std + key_no);
-
-    if(key->primary == ITM_SHIFTf || key->primary == ITM_SHIFTg || key->primary == KEY_fg) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
-
-
-bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
-
-  /********************************************//**
-   * \brief A calc button was pressed
-   *
-   * \param notUsed GtkWidget*
-   * \param data gpointer pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
-   * \return void
-   ***********************************************/
-
-
-
-
-#if defined(PC_BUILD)
     void btnPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
       nimWhenButtonPressed = (calcMode == CM_NIM);                  //PHM eRPN 2021-07
 
@@ -1224,18 +1196,12 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       }
 
       showFunctionNameItem = 0;
-      #ifdef PC_BUILD
-        char tmp[200]; sprintf(tmp,"^^^^btnPressed START item=%d data=\'%s\'",item,(char *)data); jm_show_comment(tmp);
-      #endif //PC_BUILD
+      char tmp[200]; sprintf(tmp,"^^^^btnPressed START item=%d data=\'%s\'",item,(char *)data); jm_show_comment(tmp);
 
       if(item != ITM_NOP && item != ITM_NULL) {
-        #ifdef PC_BUILD
-          sprintf(tmp,"keyboard.c: btnPressed 1--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
-        #endif
+        sprintf(tmp,"keyboard.c: btnPressed 1--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
         processKeyAction(item);
-        #ifdef PC_BUILD
-          sprintf(tmp,"keyboard.c: btnPressed 2--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
-        #endif
+        sprintf(tmp,"keyboard.c: btnPressed 2--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
         if(!keyActionProcessed) {
           showFunctionName(item, 1000); // 1000ms = 1s
         }
@@ -1247,9 +1213,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         lastshiftG = gg;
       }
 
-      #ifdef PC_BUILD
         sprintf(tmp,"^^^^btnPressed End item=%d:\'%s\' showFunctionNameItem=%d\n",item,(char *)data,showFunctionNameItem); jm_show_comment(tmp);
-      #endif //PC_BUILD
     }
 
     char key[3] = {0, 0, 0};
@@ -1374,6 +1338,23 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       }
     }
   #endif // DMCP_BUILD
+
+
+
+  bool_t checkShifts(const char *data) {
+    const calcKey_t *key;
+
+    int8_t key_no = stringToKeyNumber(data);
+
+    key = getSystemFlag(FLAG_USER) && ((calcMode == CM_NORMAL) || (calcMode == CM_AIM) || (calcMode == CM_EIM) || (calcMode == CM_NIM)) ? (kbd_usr + key_no) : (kbd_std + key_no);
+
+    if(key->primary == ITM_SHIFTf || key->primary == ITM_SHIFTg || key->primary == KEY_fg) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
 
 

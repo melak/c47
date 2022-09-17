@@ -38,7 +38,7 @@
   #undef SAVE_SPACE_DM42_11
   #undef SAVE_SPACE_DM42_12
   #undef SAVE_SPACE_DM42_13GRF
-  #undef SAVE_SPACE_DM42_13GRF_JM
+  #define SAVE_SPACE_DM42_13GRF_JM
   #undef SAVE_SPACE_DM42_14
   #undef SAVE_SPACE_DM42_15
   #undef SAVE_SPACE_DM42_20
@@ -92,7 +92,7 @@
 //    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
 //    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
 //    #define SAVE_SPACE_DM42_4  //000736 bytes: XY GRAPHDEMOS (Plot)
-//    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
+    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
     #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
   #endif
 
@@ -265,7 +265,7 @@
 //* Other defines         *
 //*************************
 // Define the second tagline
-#define WHO2                                      "C43" STD_SPACE_3_PER_EM "HP42S" STD_SPACE_3_PER_EM "style" STD_SPACE_3_PER_EM "keys," STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Jaymos, DaniR, H2X, Inautilus"   //JM ID
+#define WHO2                                      "C43" STD_SPACE_3_PER_EM "42-style" STD_SPACE_3_PER_EM "keys," STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Jaco, DaniR, H2X, Inautilus"   //JM ID
 #define CHARS_PER_LINE                            80 // Used in the flag browser application
 
 #define NUMERIC_FONT_HEIGHT                       36 // In pixel. Used in the font browser application

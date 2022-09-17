@@ -3362,41 +3362,54 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
         #endif // (REAL34_WIDTH_TEST == 1)
       break;
 
-    case CM_LISTXY:                     //JM
-      if((last_CM != calcMode) || (doRefreshSoftMenu)) {
-        last_CM = calcMode;
-        doRefreshSoftMenu = false;
-        displayShiftAndTamBuffer();
-        refreshStatusBar();
-        fnStatList();
-        hourGlassIconEnabled = false;
-        refreshStatusBar();
-      }
-      break;
-      case CM_GRAPH:
-      case CM_PLOT_STAT:
-      if((last_CM != calcMode) || (doRefreshSoftMenu)) {
-        if(last_CM == 252) last_CM--; else last_CM = 252; //calcMode;
-        doRefreshSoftMenu = false;
-        //clearScreen();
-        displayShiftAndTamBuffer();
-        showSoftmenuCurrentPart();
-        refreshStatusBar();
-        hourGlassIconEnabled = true;
-        if (calcMode == CM_PLOT_STAT) {
-          graphPlotstat(plotSelection);
+      case CM_LISTXY: {                    //JM
+        if((last_CM != calcMode) || (doRefreshSoftMenu)) {
+          last_CM = calcMode;
+          doRefreshSoftMenu = false;
+          displayShiftAndTamBuffer();
+          refreshStatusBar();
+          fnStatList();
+          hourGlassIconEnabled = false;
+          refreshStatusBar();
         }
-        else {
+        break;
+      }
+
+      case CM_GRAPH: {
+        if((last_CM != calcMode) || (doRefreshSoftMenu)) {
+          if(last_CM == 252) last_CM--; else last_CM = 252; //calcMode;
+          doRefreshSoftMenu = false;
+          //clearScreen();
+          displayShiftAndTamBuffer();
+          showSoftmenuCurrentPart();
+          hourGlassIconEnabled = true;
+          refreshStatusBar();
+          //graphPlotstat(plotSelection);
           graph_plotmem();
+          hourGlassIconEnabled = false;
+          showHideHourGlass();
+          refreshStatusBar();
         }
-        if (calcMode == CM_PLOT_STAT) {
-          graphDrawLRline(plotSelection);
-        }
-        hourGlassIconEnabled = false;
-        showHideHourGlass();
-        refreshStatusBar();
-      }
       break;
+      }
+
+      case CM_PLOT_STAT: {
+        if((last_CM != calcMode) || (doRefreshSoftMenu)) {
+          if(last_CM == 252) last_CM--; else last_CM = 252; //calcMode;
+          doRefreshSoftMenu = false;
+          //clearScreen();
+          displayShiftAndTamBuffer();
+          showSoftmenuCurrentPart();
+          hourGlassIconEnabled = true;
+          refreshStatusBar();
+          graphPlotstat(plotSelection);
+          graphDrawLRline(plotSelection);
+          hourGlassIconEnabled = false;
+          showHideHourGlass();
+          refreshStatusBar();
+        }
+      break;
+      }
 
       default: {
       }
