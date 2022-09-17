@@ -1160,6 +1160,61 @@ void graphPlotstat(uint16_t selection) {
         eformat_eng2(ss, "y: ", tick_int_y, 2, "/tick");
         showString(padEquals(ss), &standardFont,horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++ + 2       + autoshift, vmNormal, false, false);
       }
+
+
+    if(drawHistogram == 1 && selection == 0) { // HISTO
+      int32_t n;
+      float lB, hB, nB;
+      real_t lBr, hBr, nBr;
+      char ss[100], tt[100];
+      int16_t index = -1;
+      real34ToReal(&loBinR ,&lBr);
+      real34ToReal(&hiBinR ,&hBr);
+      real34ToReal(&nBins  ,&nBr);
+      realToFloat(&lBr, &lB);
+      realToFloat(&hBr, &hB);
+      realToFloat(&nBr, &nB);
+
+      strcpy(ss,histElementXorY == 1 ? "Histogram(y)" : "Histogram(x)");
+      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
+
+      eformat_eng2(ss, "(", x_max, 2, "");
+      eformat_eng2(tt,radixProcess("#"),y_max,2,")");
+      strcat(tt, ss);
+      n = showString(padEquals(ss), &standardFont, 160-2 - stringWidth(tt, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index + 2       +autoshift, vmNormal, false, false);
+      eformat_eng2(ss, radixProcess("#"), y_max, 2, ")");
+      showString(padEquals(ss), &standardFont, n+3,           Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++      + autoshift + 2, vmNormal, false, false);
+      eformat_eng2(ss, "(", x_min, 2, "");
+      n = showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index    -2  + autoshift + 2, vmNormal, false, false);
+      eformat_eng2(ss, radixProcess("#"), y_min, 2, ")");
+      showString(padEquals(ss), &standardFont, n+3,           Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++  -2  + autoshift + 2, vmNormal, false, false);
+ 
+      strcpy(ss,"Bin centres:");                   
+      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
+      eformat_eng2(ss,"",lB,3,"");
+      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
+      strcpy(ss,STD_DOWN_ARROW "BIN" "=");                   
+      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
+
+      eformat_eng2(ss,"",hB,3,"");           
+      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
+      strcpy(ss,STD_UP_ARROW "BIN" "=");                   
+      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
+
+      eformat_eng2(ss,"",nB,3,"");           
+      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
+      strcpy(ss,"nBINS" "=");                   
+      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
+      eformat_eng2(ss,"",(hB-lB)/nB,3,"");           
+      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
+      strcpy(ss,"Width" "=");                   
+      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
+
+    }
+
+
+
+
     }
     else {
       calcMode = CM_NORMAL;
@@ -1219,7 +1274,7 @@ void graphDrawLRline(uint16_t selection) {
 
 
 #if !defined(TESTSUITE_BUILD)
-  void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2, real_t *sa0, real_t *sa1) {
+static  void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2, real_t *sa0, real_t *sa1) {
     int32_t n = 0;
     uint16_t NN;
 
@@ -1258,32 +1313,8 @@ void graphDrawLRline(uint16_t selection) {
     #if defined (STATDEBUG) && defined (PC_BUILD)
       printf("#####>>> drawline: selection:%u:%s  lastplotmode:%u  lrSelection:%u lrChosen:%u\n",selection, getCurveFitModeName(selection), lastPlotMode, lrSelection, lrChosen);
     #endif //  STATDEBUG && PC_BUILD
-    float rr, smi, a0, a1, a2, ssa0, ssa1, lB, hB, nB;
-    real_t lBr, hBr, nBr;
+    float rr, smi, a0, a1, a2, ssa0, ssa1;
     char ss[100], tt[100];
-
-    if(drawHistogram == 1 && selection == 0) { // HISTO
-      int16_t index = -1;
-      real34ToReal(&loBinR ,&lBr);
-      real34ToReal(&hiBinR ,&hBr);
-      real34ToReal(&nBins  ,&nBr);
-      realToFloat(&lBr, &lB);
-      realToFloat(&hBr, &hB);
-      realToFloat(&nBr, &nB);
-      eformat_eng2(ss,"",lB,3,"");           
-      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
-      strcpy(ss,"lB" "=");                   
-      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
-      eformat_eng2(ss,"",hB,3,"");           
-      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
-      strcpy(ss,"hB" "=");                   
-      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
-      eformat_eng2(ss,"",nB,3,"");           
-      showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
-      strcpy(ss,"nB" "=");                   
-      showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
-      return;
-    }
 
     real_t XX,YY;
     if(!selection) {

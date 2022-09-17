@@ -307,6 +307,7 @@
 
   extern uint16_t               lrSelectionHistobackup;
   extern uint16_t               lrChosenHistobackup;
+  extern uint16_t               histElementXorY;
   extern real34_t               loBinR;
   extern real34_t               nBins ;
   extern real34_t               hiBinR;
