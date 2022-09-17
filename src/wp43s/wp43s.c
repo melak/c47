@@ -230,7 +230,7 @@ int32_t                SAVED_SIGMA_LAct;
 
 uint16_t               lrSelectionHistobackup;
 uint16_t               lrChosenHistobackup;
-uint16_t               histElementXorY;
+int16_t                histElementXorY;
 real34_t               loBinR;
 real34_t               nBins ;
 real34_t               hiBinR;
@@ -290,38 +290,39 @@ char                   plotStatMx[8];
         case  4: key =  5; break; // LOG
         case  5: key =  4; break; // LN
         case  6: key = 22; break; // XEQ
-        //case  7: key =  7; break; // STO
-        //case  8: key =  8; break; // RCL
-        //case  9: key =  9; break; // RDN
+      //case  7: key =  7; break; // STO
+      //case  8: key =  8; break; // RCL
+      //case  9: key =  9; break; // RDN
         case 10: key =  3; break; // SIN
         case 11: key = 10; break; // COS
         case 12: key = 11; break; // TAN
-        //case 13: key = 13; break; // ENTER
-        //case 14: key = 14; break; // x<>y
-        //case 15: key = 15; break; // +/-
-        //case 16: key = 16; break; // E
-        //case 17: key = 17; break; // <--
+      //case 13: key = 13; break; // ENTER
+      //case 14: key = 14; break; // x<>y
+      //case 15: key = 15; break; // +/-
+      //case 16: key = 16; break; // E
+      //case 17: key = 17; break; // <--
         case 18: key = 27; break; // UP
-        //case 19: key = 19; break; // 7
-        //case 20: key = 20; break; // 8
-        //case 21: key = 21; break; // 9
+      //case 19: key = 19; break; // 7
+      //case 20: key = 20; break; // 8
+      //case 21: key = 21; break; // 9
         case 22: key = 18; break; // /
         case 23: key = 32; break; // DOWN
-        //case 24: key = 24; break; // 4
-        //case 25: key = 25; break; // 5
-        //case 26: key = 26; break; // 6
+      //case 24: key = 24; break; // 4
+      //case 25: key = 25; break; // 5
+      //case 26: key = 26; break; // 6
         case 27: key = 23; break; // x
         case 28: key = 12; break; // SHIFT
-        //case 29: key = 29; break; // 1
-        //case 30: key = 30; break; // 2
-        //case 31: key = 31; break; // 3
+      //case 29: key = 29; break; // 1
+      //case 30: key = 30; break; // 2
+      //case 31: key = 31; break; // 3
         case 32: key = 28; break; // -
         case 33: key = 37; break; // EXIT
-        //case 34: key = 34; break; // 0
-        //case 35: key = 35; break; // .
-        //case 36: key = 36; break; // R/S
+      //case 34: key = 34; break; // 0
+      //case 35: key = 35; break; // .
+      //case 36: key = 36; break; // R/S
         case 37: key = 33; break; // +
-        default: {}
+        default: {
+        }
       }
     }
     return key;

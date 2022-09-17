@@ -913,9 +913,9 @@ void graphPlotstat(uint16_t selection) {
           break;
         }
       }
-      #if defined STATDEBUG && defined PC_BUILD
+      #if defined(STATDEBUG) && defined(PC_BUILD)
         printf("graphPlotstat: statnum n=%d\n",statnum);
-      #endif
+      #endif // STATDEBUG && PC_BUILD
 
 
       //AUTOSCALE
@@ -1295,9 +1295,9 @@ static  void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, 
         break;
       }
     }
-    #if defined STATDEBUG && defined PC_BUILD
+    #if defined(STATDEBUG) && defined(PC_BUILD)
       printf("drawline: n=%d\n",n);
-    #endif
+    #endif // STATDEBUG && PC_BUILD
 
     NN = (uint16_t) n;
     bool_t isValidDraw =

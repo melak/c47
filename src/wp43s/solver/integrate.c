@@ -45,11 +45,25 @@ void fnPgmInt(uint16_t label) {
     // Interactive mode
     char buf[4];
     switch(label) {
-      case REGISTER_X:        buf[0] = 'X'; break;
-      case REGISTER_Y:        buf[0] = 'Y'; break;
-      case REGISTER_Z:        buf[0] = 'Z'; break;
-      case REGISTER_T:        buf[0] = 'T'; break;
-      default: /* unlikely */ buf[0] = 0;
+      case REGISTER_X: {
+        buf[0] = 'X';
+        break;
+      }
+      case REGISTER_Y: {
+        buf[0] = 'Y';
+        break;
+      }
+      case REGISTER_Z: {
+        buf[0] = 'Z';
+        break;
+      }
+      case REGISTER_T: {
+        buf[0] = 'T';
+        break;
+      }
+      default: { /* unlikely */
+        buf[0] = 0;
+      }
     }
     buf[1] = 0;
     label = findNamedLabel(buf);
@@ -86,9 +100,18 @@ void fnIntegrate(uint16_t labelOrVariable) {
     if(lastErrorCode == ERROR_NONE) {
       real34Copy(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(labelOrVariable));
       switch(labelOrVariable) {
-        case RESERVED_VARIABLE_ACC:  temporaryInformation = TI_ACC;  break;
-        case RESERVED_VARIABLE_ULIM: temporaryInformation = TI_ULIM; break;
-        case RESERVED_VARIABLE_LLIM: temporaryInformation = TI_LLIM; break;
+        case RESERVED_VARIABLE_ACC: {
+          temporaryInformation = TI_ACC;
+          break;
+        }
+        case RESERVED_VARIABLE_ULIM: {
+          temporaryInformation = TI_ULIM;
+          break;
+        }
+        case RESERVED_VARIABLE_LLIM: {
+          temporaryInformation = TI_LLIM;
+          break;
+        }
       }
     }
   }

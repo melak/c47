@@ -282,7 +282,6 @@ void processCurvefitSA(real_t *SA0, real_t *SA1) {
   realCopy(const_0,&aa1);
   realCopy(const_0,&aa2);
 
-
   if(checkMinimumDataPoints(const_2)) {
 
     if(lrChosen == 0) {                    //if lrChosen contains something, the stat data exists, otherwise set it to linear. lrSelection still has 1 at this point, i.e. the * will not appear.
@@ -303,41 +302,41 @@ void processCurvefitSA(real_t *SA0, real_t *SA1) {
 
 
     switch(lrChosen) {
-      case CF_LINEAR_FITTING :
-      case CF_ORTHOGONAL_FITTING :
-      case CF_EXPONENTIAL_FITTING :
-      case CF_POWER_FITTING :
-      case CF_LOGARITHMIC_FITTING :
+      case CF_LINEAR_FITTING:
+      case CF_ORTHOGONAL_FITTING:
+      case CF_EXPONENTIAL_FITTING:
+      case CF_POWER_FITTING:
+      case CF_LOGARITHMIC_FITTING: {
         //All parameters set from processCurvefitSelectionAll
         break;
-      default :
+      }
+      default: {
         displayCalcErrorMessage(ERROR_NO_ERRORS_CALCULABLE, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function fnStatSa:", "No errors are calculable for the selected/chosen model!", NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return;
-        //break;
+      }
     }
 
     realSquareRoot(&SX2,&SX,realContext);
     realSquareRoot(&SY2,&SY,realContext);
 
     //RR2,SY,SX,SX2,MX2 SS,TT,UU > SA1 SA0
-    realSubtract  (const_1,&RR2,&SS,realContext);       //SA1 = f( RR2, n, SY, SX )
-    realSubtract  (SIGMA_N,const_2,&TT,realContext);
-    realDivide    (&SS,&TT,&UU,realContext);
-    realSquareRoot(&UU,&UU,&ctxtReal39);
-    realMultiply  (&UU,&SY,&UU,&ctxtReal39);
-    realDivide    (&UU,&SX,SA1,&ctxtReal39);
+    realSubtract  (const_1, &RR2, &SS, realContext);       //SA1 = f( RR2, n, SY, SX )
+    realSubtract  (SIGMA_N, const_2, &TT, realContext);
+    realDivide    (&SS, &TT, &UU, realContext);
+    realSquareRoot(&UU, &UU, &ctxtReal39);
+    realMultiply  (&UU, &SY, &UU, &ctxtReal39);
+    realDivide    (&UU, &SX, SA1, &ctxtReal39);
 
-    realSubtract  (SIGMA_N,const_1,&SS,realContext);    //SA0 = f( n, SX2, MX2, SA1 )
-    realDivide    (&SS,SIGMA_N,&SS,realContext);             //SS = (n-1)/n
-    realMultiply  (&SS,&SX2,&SS,realContext);                //SS = SS * SX^2
-    realAdd       (&SS,&MX2,&SS,realContext);
-    realSquareRoot(&SS,&SS,&ctxtReal39);
-    realMultiply  (&SS,SA1,SA0,&ctxtReal39);
+    realSubtract  (SIGMA_N, const_1, &SS, realContext);    //SA0 = f( n, SX2, MX2, SA1 )
+    realDivide    (&SS, SIGMA_N, &SS, realContext);        //SS = (n-1)/n
+    realMultiply  (&SS, &SX2, &SS, realContext);           //SS = SS * SX^2
+    realAdd       (&SS, &MX2, &SS, realContext);
+    realSquareRoot(&SS, &SS, &ctxtReal39);
+    realMultiply  (&SS, SA1, SA0, &ctxtReal39);
   }
-
 }
 
 

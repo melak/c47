@@ -30,6 +30,7 @@
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "stack.h"
+#include <string.h>
 
 #include "wp43s.h"
 
@@ -37,11 +38,11 @@
 #if !defined(TESTSUITE_BUILD) //TESTSUITE_BUILD
   static void calcMax(uint16_t maxOffset);
   static void calcMin(uint16_t maxOffset);
-#endif
+#endif // !TESTSUITE_BUILD
 
 
-#if !defined(TESTSUITE_BUILD)
-  bool_t isStatsMatrix(uint16_t *rows, char *mx) {
+bool_t isStatsMatrix(uint16_t *rows, char *mx) {
+  #if !defined(TESTSUITE_BUILD)
     *rows = 0;
     calcRegister_t regStats = findNamedVariable(mx);
     if(regStats == INVALID_VARIABLE) {
@@ -60,11 +61,13 @@
         }
       }
     }
-    return true;
-  }
+  #endif // !TESTSUITE_BUILD
+  return true;
+}
 
 
 
+#if !defined(TESTSUITE_BUILD)
   static void addMax(real_t *x, real_t *y) {
     // xmax
     if(realCompareGreaterThan(x, SIGMA_XMAX)) {
@@ -564,6 +567,8 @@ static calcRegister_t fnClHisto(void){
     }
     clearRegister(regHisto);                  // this should change to delete the named variable HISTO once the delete function is available. Until then write 0.0 into STATS.
     return regHisto;
+#else
+    return INVALID_VARIABLE;
 #endif //TESTSUITE_BUILD
 }
 
@@ -845,21 +850,28 @@ void fnXmax(uint16_t unusedButMandatoryParameter) {
 #endif //!defined(TESTSUITE_BUILD)
 
 
+static void convertStatsMatrixToHistoMatrix(uint16_t statsVariableToHistogram);
+
 void fnSetLoBin(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
+    if(histElementXorY == -1) {
+      return;
+    }
     if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
       convertLongIntegerRegisterToReal34(REGISTER_X, &loBinR);
       convertStatsMatrixToHistoMatrix(histElementXorY == 1 ? ITM_Y : histElementXorY == 0 ? ITM_X : -1);
-    } else {
+    }
+    else {
       if(getRegisterDataType(REGISTER_X) == dtReal34) {
         real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loBinR);
         convertStatsMatrixToHistoMatrix(histElementXorY == 1 ? ITM_Y : histElementXorY == 0 ? ITM_X : -1);
-      } else {
+      }
+      else {
         displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-        #ifdef PC_BUILD
+        #if defined(PC_BUILD)
         sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
         moreInfoOnError("In function fnSetLoBin:", errorMessage, "is not a long integer or real.", "");
-        #endif
+        #endif // PC_BUILD
       }
     }
   #endif //!defined(TESTSUITE_BUILD)
@@ -869,6 +881,9 @@ static void convertStatsMatrixToHistoMatrix(uint16_t statsVariableToHistogram);
 
 void fnSetHiBin(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
+    if(histElementXorY == -1) {
+      return;
+    }
     if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
       convertLongIntegerRegisterToReal34(REGISTER_X, &hiBinR);
       convertStatsMatrixToHistoMatrix(histElementXorY == 1 ? ITM_Y : histElementXorY == 0 ? ITM_X : -1);
@@ -877,12 +892,13 @@ void fnSetHiBin(uint16_t unusedButMandatoryParameter) {
       if(getRegisterDataType(REGISTER_X) == dtReal34) {
         real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &hiBinR);
         convertStatsMatrixToHistoMatrix(histElementXorY == 1 ? ITM_Y : histElementXorY == 0 ? ITM_X : -1);
-      } else {
+      }
+      else {
         displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-        #ifdef PC_BUILD
+        #if defined(PC_BUILD)
         sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
         moreInfoOnError("In function fnSetHiBin:", errorMessage, "is not a long integer or real.", "");
-        #endif
+        #endif // PC_BUILD
       }
     }
   #endif //!defined(TESTSUITE_BUILD)
@@ -891,19 +907,24 @@ void fnSetHiBin(uint16_t unusedButMandatoryParameter) {
 
 void fnSetNBins(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
+    if(histElementXorY == -1) {
+      return;
+    }
     if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
       convertLongIntegerRegisterToReal34(REGISTER_X, &nBins);
       convertStatsMatrixToHistoMatrix(histElementXorY == 1 ? ITM_Y : histElementXorY == 0 ? ITM_X : -1);
-    } else {
+    }
+    else {
       if(getRegisterDataType(REGISTER_X) == dtReal34) {
         real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &nBins);
         convertStatsMatrixToHistoMatrix(histElementXorY == 1 ? ITM_Y : histElementXorY == 0 ? ITM_X : -1);
-      } else {
+      }
+      else {
         displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-        #ifdef PC_BUILD
+        #if defined(PC_BUILD)
         sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
         moreInfoOnError("In function fnSetNBins:", errorMessage, "is not a long integer or real.", "");
-        #endif
+        #endif // PC_BUILD
       }
     }
   #endif //!defined(TESTSUITE_BUILD)
@@ -924,7 +945,8 @@ void fnConvertStatsToHisto(uint16_t statsVariableToHistogram) {
         realToReal34(SIGMA_XMIN, &loBinR);                                     //set up the user variables from auto estimates from the data
         realToReal34(SIGMA_XMAX, &hiBinR);                                     //set up the user variables from auto estimates from the data
         histElementXorY = 0;
-      } else {
+      }
+      else {
         return;
       }
 
@@ -947,7 +969,7 @@ void fnConvertStatsToHisto(uint16_t statsVariableToHistogram) {
 
 }
 
-#define HISTDEBUG
+//#define HISTDEBUG
 
 //Histogram bin limits are:
 // data points larger than loBinR (inclusive) and smaller than hiBinR (exclusive), except the right most bin right hand limit is inclusive)
@@ -1075,5 +1097,5 @@ static void convertStatsMatrixToHistoMatrix(uint16_t statsVariableToHistogram) {
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return;
     }
-  #endif //TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
