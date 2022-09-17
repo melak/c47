@@ -321,16 +321,47 @@ void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
 void fnRoundingMode(uint16_t RM) {
   roundingMode = RM;
 
-  if(RM == 0) ctxtReal34.round = DEC_ROUND_HALF_EVEN;
-  else if(RM == 1) ctxtReal34.round = DEC_ROUND_HALF_UP;
-  else if(RM == 2) ctxtReal34.round = DEC_ROUND_HALF_DOWN;
-  else if(RM == 3) ctxtReal34.round = DEC_ROUND_UP;
-  else if(RM == 4) ctxtReal34.round = DEC_ROUND_DOWN;
-  else if(RM == 5) ctxtReal34.round = DEC_ROUND_CEILING;
-  else if(RM == 6) ctxtReal34.round = DEC_ROUND_FLOOR;
-  else {
-    sprintf(errorMessage, "In function fnRoundingMode: %d is an unexpected value for RM! Must be from 0 to 6", RM);
-    displayBugScreen(errorMessage);
+  switch(RM) {
+    case 0: {
+      ctxtReal34.round = DEC_ROUND_HALF_EVEN;
+      break;
+    }
+
+    case 1: {
+      ctxtReal34.round = DEC_ROUND_HALF_UP;
+      break;
+    }
+
+    case 2: {
+      ctxtReal34.round = DEC_ROUND_HALF_DOWN;
+      break;
+    }
+
+    case 3: {
+      ctxtReal34.round = DEC_ROUND_UP;
+      break;
+    }
+
+    case 4: {
+      ctxtReal34.round = DEC_ROUND_DOWN;
+      break;
+    }
+
+    case 5: {
+      ctxtReal34.round = DEC_ROUND_CEILING;
+      break;
+    }
+
+    case 6: {
+      ctxtReal34.round = DEC_ROUND_FLOOR;
+      break;
+    }
+
+    default: {
+      sprintf(errorMessage, "In function fnRoundingMode: %d is an unexpected value for RM! Must be from 0 to 6", RM);
+      displayBugScreen(errorMessage);
+      break;
+    }
   }
 }
 

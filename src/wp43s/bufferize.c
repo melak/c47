@@ -271,8 +271,12 @@
           char *aimCursorPos = aimBuffer;
           char *aimBottomPos = aimBuffer + stringByteLength(aimBuffer);
           uint32_t itemLen = stringByteLength(addChar);
-          for(uint32_t i = 0; i < xCursor; ++i) aimCursorPos += (*aimCursorPos & 0x80) ? 2 : 1;
-          for(; aimBottomPos >= aimCursorPos; --aimBottomPos) *(aimBottomPos + itemLen) = *aimBottomPos;
+          for(uint32_t i = 0; i < xCursor; ++i) {
+            aimCursorPos += (*aimCursorPos & 0x80) ? 2 : 1;
+          }
+          for(; aimBottomPos >= aimCursorPos; --aimBottomPos) {
+            *(aimBottomPos + itemLen) = *aimBottomPos;
+          }
           xcopy(aimCursorPos, addChar, itemLen);
           switch(item) {
             case ITM_ALOG_SYMBOL:
@@ -1558,12 +1562,14 @@
           nimBufferToDisplayBuffer(aimBuffer, nimBufferDisplay + 2);
           strcat(nimBufferDisplay, STD_SPACE_4_PER_EM);
 
-          for(index=2; aimBuffer[index]!=' '; index++); // The ending semi colon is OK here
+          for(index=2; aimBuffer[index]!=' '; index++) {
+          }
           supNumberToDisplayString(stringToInt32(aimBuffer + index + 1), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
 
           strcat(nimBufferDisplay, "/");
 
-          for(; aimBuffer[index]!='/'; index++); // The ending semi colon is OK here
+          for(; aimBuffer[index]!='/'; index++) {
+          }
           if(aimBuffer[++index] != 0) {
             subNumberToDisplayString(stringToInt32(aimBuffer + index), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL);
           }
@@ -1575,12 +1581,14 @@
           // Real part
           savedNimNumberPart = nimNumberPart;
 
-          for(index=2; index<imaginaryMantissaSignLocation && aimBuffer[index] != '.'; index++); // The ending semi colon is OK here
+          for(index=2; index<imaginaryMantissaSignLocation && aimBuffer[index] != '.'; index++) {
+          }
           if(index < imaginaryMantissaSignLocation) { // There is a decimal part in the real part
             nimNumberPart = NP_REAL_FLOAT_PART;
           }
 
-          for(index=2; index<imaginaryMantissaSignLocation && aimBuffer[index] != 'e'; index++); // The ending semi colon is OK here
+          for(index=2; index<imaginaryMantissaSignLocation && aimBuffer[index] != 'e'; index++) {
+          }
           if(index < imaginaryMantissaSignLocation) { // There is an exposant in the real part
             nimNumberPart = NP_REAL_EXPONENT;
           }
@@ -1625,12 +1633,14 @@
           if(aimBuffer[imaginaryMantissaSignLocation+2] != 0) {
             savedNimNumberPart = nimNumberPart;
 
-            for(index=imaginaryMantissaSignLocation+1; index<(int16_t)strlen(aimBuffer) && aimBuffer[index] != '.'; index++); // The ending semi colon is OK here
+            for(index=imaginaryMantissaSignLocation+1; index<(int16_t)strlen(aimBuffer) && aimBuffer[index] != '.'; index++) {
+            }
             if(index < (int16_t)strlen(aimBuffer)) { // There is a decimal part in the real part
               nimNumberPart = NP_REAL_FLOAT_PART;
             }
 
-            for(index=imaginaryMantissaSignLocation+1; index<(int16_t)strlen(aimBuffer) && aimBuffer[index] != 'e'; index++); // The ending semi colon is OK here
+            for(index=imaginaryMantissaSignLocation+1; index<(int16_t)strlen(aimBuffer) && aimBuffer[index] != 'e'; index++) {
+            }
             if(index < (int16_t)strlen(aimBuffer)) { // There is an exposant in the real part
               nimNumberPart = NP_REAL_EXPONENT;
             }
@@ -1685,9 +1695,15 @@
 
 
   static int16_t insertGapIP(char *displayBuffer, int16_t numDigits, int16_t nth) {
-    if(groupingGap == 0)         return 0; // no gap when none is required!
-    if(numDigits <= groupingGap) return 0; // there are less than groupingGap digits
-    if(nth + 1 == numDigits)     return 0; // no gap after the last digit
+    if(groupingGap == 0) {
+      return 0; // no gap when none is required!
+    }
+    if(numDigits <= groupingGap) {
+      return 0; // there are less than groupingGap digits
+    }
+    if(nth + 1 == numDigits) {
+      return 0; // no gap after the last digit
+    }
 
     if((numDigits - nth) % groupingGap == 1 || groupingGap == 1) {
       strcpy(displayBuffer, STD_SPACE_PUNCTUATION);
@@ -1698,9 +1714,15 @@
   }
 
   static int16_t insertGapFP(char *displayBuffer, int16_t numDigits, int16_t nth) {
-    if(groupingGap == 0)         return 0; // no gap when none is required!
-    if(numDigits <= groupingGap) return 0; // there are less than groupingGap digits
-    if(nth + 1 == numDigits)     return 0; // no gap after the last digit
+    if(groupingGap == 0) {
+      return 0; // no gap when none is required!
+    }
+    if(numDigits <= groupingGap) {
+      return 0; // there are less than groupingGap digits
+    }
+    if(nth + 1 == numDigits) {
+      return 0; // no gap after the last digit
+    }
 
     if(nth % groupingGap == groupingGap - 1) {
       strcpy(displayBuffer, STD_SPACE_PUNCTUATION);
@@ -1720,7 +1742,8 @@
     }
     buffer++;
 
-    for(numDigits=0; buffer[numDigits]!=0 && buffer[numDigits]!='e' && buffer[numDigits]!='.' && buffer[numDigits]!=' ' && buffer[numDigits]!='#' && buffer[numDigits]!='+' && buffer[numDigits]!='-'; numDigits++); // The semicolon here is OK
+    for(numDigits=0; buffer[numDigits]!=0 && buffer[numDigits]!='e' && buffer[numDigits]!='.' && buffer[numDigits]!=' ' && buffer[numDigits]!='#' && buffer[numDigits]!='+' && buffer[numDigits]!='-'; numDigits++) {
+    }
 
     for(source=0, dest=0; source<numDigits; source++) {
       displayBuffer[dest++] = buffer[source];
@@ -1734,7 +1757,8 @@
 
       buffer += source + 1;
 
-      for(numDigits=0; buffer[numDigits]!=0 && buffer[numDigits]!='e' && buffer[numDigits]!='+' && buffer[numDigits]!='-'; numDigits++); // The semicolon here is OK
+      for(numDigits=0; buffer[numDigits]!=0 && buffer[numDigits]!='e' && buffer[numDigits]!='+' && buffer[numDigits]!='-'; numDigits++) {
+      }
 
       for(source=0; source<numDigits; source++) {
         displayBuffer[dest++] = buffer[source];

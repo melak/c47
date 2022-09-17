@@ -147,8 +147,9 @@
     realToInt32(&ry, a);
     realToInt32(&rx, b);
     if(realIsPositive(&rx) && realIsPositive(&ry) && realCompareLessEqual(&rx, &rrows) && realCompareLessEqual(&ry, &rrows)) {
-      if(!realCompareEqual(&ry, &rx))
+      if(!realCompareEqual(&ry, &rx)) {
         realMatrixSwapRows(matrix, matrix, a - 1, b - 1);
+      }
     }
     else {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
@@ -418,7 +419,9 @@ void fnNewMatrix(uint16_t unusedParamButMandatory) {
   #if !defined(TESTSUITE_BUILD)
     uint32_t rows, cols;
 
-    if(!getDimensionArg(&rows, &cols)) return;
+    if(!getDimensionArg(&rows, &cols)) {
+      return;
+    }
 
     if(!saveLastX()) {
       return;
@@ -959,10 +962,14 @@ void fnLuDecomposition(uint16_t unusedParamButMandatory) {
                 }
                 realMatrixFree(&pivot);
               }
-              else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+              else {
+                displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+              }
               complexMatrixFree(&u);
             }
-            else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+            else {
+              displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+            }
             complexMatrixFree(&l);
           }
           else {
@@ -1243,7 +1250,9 @@ void fnRowSum(uint16_t unusedParamButMandatory) {
         convertComplex34MatrixToComplex34MatrixRegister(&res, REGISTER_X);
         complexMatrixFree(&res);
       }
-      else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      else {
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+      }
     }
     else {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -2355,8 +2364,12 @@ smallFont:
     if(forEditor) {
       clearRegisterLine(REGISTER_X, true, true);
       clearRegisterLine(REGISTER_Y, true, true);
-      if(rows >= (font == &standardFont ? 3 : 2)) clearRegisterLine(REGISTER_Z, true, true);
-      if(rows >= (font == &standardFont ? 4 : 3)) clearRegisterLine(REGISTER_T, true, true);
+      if(rows >= (font == &standardFont ? 3 : 2)) {
+        clearRegisterLine(REGISTER_Z, true, true);
+      }
+      if(rows >= (font == &standardFont ? 4 : 3)) {
+        clearRegisterLine(REGISTER_T, true, true);
+      }
     }
     else if(prefixWidth > 0) {
       clearRegisterLine(REGISTER_T, true, true);
@@ -2551,7 +2564,9 @@ smallFont:
     int16_t matSelCol = colVector ? getIRegisterAsInt(true) : getJRegisterAsInt(true);
 
     videoMode_t vm = vmNormal;
-    if(maxCols + sCol >= cols) maxCols = cols - sCol;
+    if(maxCols + sCol >= cols) {
+      maxCols = cols - sCol;
+    }
 
     font = &numericFont;
     if(rows >= (forEditor ? 4 : 5)) {
@@ -2992,7 +3007,9 @@ smallFont:
             return false;
           }
         }
-        else return false;
+        else {
+          return false;
+        }
       }
     }
     else if(getRegisterDataType(regist) == dtComplex34Matrix) {
@@ -4057,7 +4074,9 @@ void linkToComplexMatrixRegister(calcRegister_t regist, complex34Matrix_t *linke
     uint16_t i;
     real34_t t;
 
-    if(matrix != res) copyRealMatrix(matrix, res);
+    if(matrix != res) {
+      copyRealMatrix(matrix, res);
+    }
     if(res->matrixElements) {
       if((a < rows) && (b < rows) && (a != b)) {
         for(i = 0; i < cols; i++) {
@@ -4079,7 +4098,9 @@ void linkToComplexMatrixRegister(calcRegister_t regist, complex34Matrix_t *linke
     uint16_t i;
     real34_t t;
 
-    if(matrix != res) copyComplexMatrix(matrix, res);
+    if(matrix != res) {
+      copyComplexMatrix(matrix, res);
+    }
     if(res->matrixElements) {
       if((a < rows) && (b < rows) && (a != b)) {
         for(i = 0; i < cols; i++) {
@@ -4378,10 +4399,12 @@ void linkToComplexMatrixRegister(calcRegister_t regist, complex34Matrix_t *linke
             realCopy(lu + (i * n + i) * 2,     &p);
             realCopy(lu + (i * n + i) * 2 + 1, &q);
             complexMagnitude(&p, &q, &p, realContext);
-            if(realCompareLessThan(&p, &minVal))
+            if(realCompareLessThan(&p, &minVal)) {
               real34Copy(&p, &minVal);
-            if(realCompareGreaterThan(&p, &maxVal))
+            }
+            if(realCompareGreaterThan(&p, &maxVal)) {
               real34Copy(&p, &maxVal);
+            }
           }
           WP34S_Log10(&maxVal, &p, realContext);
           WP34S_Log10(&minVal, &q, realContext);
@@ -4451,7 +4474,9 @@ void linkToComplexMatrixRegister(calcRegister_t regist, complex34Matrix_t *linke
       }
 
       if(invCpxMat(tmpMat, n, &ctxtReal39)) {
-        if(matrix != res) copyComplexMatrix(matrix, res);
+        if(matrix != res) {
+          copyComplexMatrix(matrix, res);
+        }
         if(res->matrixElements) {
           for(i = 0; i < n; i++) {
             for(j = 0; j < n; j++) {
@@ -5315,8 +5340,9 @@ void complex_QR_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t
           // Singular (a variant not mentioned)
           isIndeterminate = true;
           for(j = 0; j < size; j++) {
-            if(!realIsZero(a + (j * size + i) * 2) || !realIsZero(a + (j * size + i) * 2 + 1))
+            if(!realIsZero(a + (j * size + i) * 2) || !realIsZero(a + (j * size + i) * 2 + 1)) {
               isIndeterminate = false;
+            }
           }
           if(isIndeterminate) {
             for(j = 0; j < size; j++) {

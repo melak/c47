@@ -470,8 +470,9 @@ uint64_t WP34S_intDivide(uint64_t y, uint64_t x) {
   }
 
   if(shortIntegerMode != SIM_UNSIGN) {
-    if(quotient & shortIntegerSignBit)
+    if(quotient & shortIntegerSignBit) {
       setSystemFlag(FLAG_CARRY);
+    }
     // Special case for 0x8000...00 / -1 in 2's complement
     if(shortIntegerMode == SIM_2COMPL && divisorSign && divisor == 1 && y == shortIntegerSignBit) {
       setSystemFlag(FLAG_OVERFLOW);
@@ -1380,10 +1381,18 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
       return 16;
     }
     n = 0;
-    if(x <= 0x00ff) {n = n + 8; x = x << 8;}
-    if(x <= 0x0fff) {n = n + 4; x = x << 4;}
-    if(x <= 0x3fff) {n = n + 2; x = x << 2;}
-    if(x <= 0x7fff) {n = n + 1;}
+    if(x <= 0x00ff) {
+      n = n + 8; x = x << 8;
+    }
+    if(x <= 0x0fff) {
+      n = n + 4; x = x << 4;
+    }
+    if(x <= 0x3fff) {
+      n = n + 2; x = x << 2;
+    }
+    if(x <= 0x7fff) {
+      n = n + 1;
+    }
     return n;
   }
 
@@ -1543,8 +1552,10 @@ again:
     breakup(l, numer);
     breakup(h, numer+4);
 
-    for(num_denom = 4; num_denom > 1 && denom[num_denom-1] == 0; num_denom--);
-    for(num_numer = 8; num_numer > num_denom && numer[num_numer-1] == 0; num_numer--);
+    for(num_denom = 4; num_denom > 1 && denom[num_denom-1] == 0; num_denom--) {
+    }
+    for(num_numer = 8; num_numer > num_denom && numer[num_numer-1] == 0; num_numer--) {
+    }
 
     divmnu(quot, rmdr, numer, denom, num_numer, num_denom);
 

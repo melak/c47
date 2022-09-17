@@ -573,8 +573,12 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
 
 
 bool_t validateName(const char *name) {
-  if(stringGlyphLength(name)  > 7) return false; // Given name is too long
-  if(stringGlyphLength(name) == 0) return false; // Given name is empty
+  if(stringGlyphLength(name)  > 7) {
+    return false; // Given name is too long
+  }
+  else if(stringGlyphLength(name) == 0) {
+    return false; // Given name is empty
+  }
 
   // Check for the 1st character
   if(                                          compareChar(name, STD_A                   ) < 0) return false;
@@ -589,7 +593,7 @@ bool_t validateName(const char *name) {
   if(compareChar(name, STD_SUB_mu     ) > 0 && compareChar(name, STD_SUB_h               ) < 0) return false;
   if(compareChar(name, STD_SUB_h      ) > 0 && compareChar(name, STD_SUB_t               ) < 0) return false;
   if(compareChar(name, STD_SUB_t      ) > 0 && compareChar(name, STD_SUB_a               ) < 0) return false;
-  if(compareChar(name, STD_SUB_Z      ) > 0                                                           ) return false;
+  if(compareChar(name, STD_SUB_Z      ) > 0                                                   ) return false;
 
   // Check for the following characters
   for(name += (*name & 0x80) ? 2 : 1; *name != 0; name += (*name & 0x80) ? 2 : 1) {
@@ -608,7 +612,9 @@ bool_t validateName(const char *name) {
       case ' ':
         return false;
       default:
-        if(compareChar(name, STD_CROSS) == 0) return false;
+        if(compareChar(name, STD_CROSS) == 0) {
+          return false;
+        }
     }
   }
 
@@ -751,7 +757,9 @@ calcRegister_t findNamedVariable(const char *variableName) {
   }
 
   regist = _findReservedVariable(variableName);
-  if(regist != INVALID_VARIABLE) return regist;
+  if(regist != INVALID_VARIABLE) {
+    return regist;
+  }
 
   for(int i = 0; i < numberOfNamedVariables; i++) {
     if(compareString((char *)(allNamedVariables[i].variableName + 1), variableName, CMP_NAME) == 0) {
@@ -861,7 +869,7 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
   dataBlock_t *db = NULL;
 
   if(regist <= LAST_GLOBAL_REGISTER) { // Global register
-      db = (dataBlock_t *)TO_PCMEMPTR(globalRegister[regist].pointerToRegisterData);
+    db = (dataBlock_t *)TO_PCMEMPTR(globalRegister[regist].pointerToRegisterData);
   }
 
   else if(regist <= LAST_LOCAL_REGISTER) { // Local register
@@ -1028,7 +1036,7 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
     switch(resultDataType) {
       case dtReal34:
       case dtTime:
-      case dtDate:
+      case dtDate: {
         if(real34IsInfinite(REGISTER_REAL34_DATA(res))) {
           displayCalcErrorMessage(real34IsPositive(REGISTER_REAL34_DATA(res)) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF , ERR_REGISTER_LINE, res);
         }
@@ -1036,8 +1044,9 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
           real34SetPositiveSign(REGISTER_REAL34_DATA(res));
         }
         break;
+      }
 
-      case dtComplex34:
+      case dtComplex34: {
         if(real34IsInfinite(REGISTER_REAL34_DATA(res))) {
           displayCalcErrorMessage(real34IsPositive(REGISTER_REAL34_DATA(res)) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF , ERR_REGISTER_LINE, res);
         }
@@ -1052,25 +1061,24 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
           real34SetPositiveSign(REGISTER_IMAG34_DATA(res));
         }
         break;
+      }
 
       #if !defined(TESTSUITE_BUILD)
-        case dtReal34Matrix:
-          {
-            real34Matrix_t matrix;
-            linkToRealMatrixRegister(res, &matrix);
-            for(uint32_t i = 0; i < matrix.header.matrixRows * matrix.header.matrixColumns; i++) {
-              if(real34IsInfinite(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]))) {
-                displayCalcErrorMessage(real34IsPositive(VARIABLE_REAL34_DATA(&matrix.matrixElements[i])) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF , ERR_REGISTER_LINE, res);
-              }
-              else if(real34IsZero(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]))) {
-                real34SetPositiveSign(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]));
-              }
+        case dtReal34Matrix: {
+          real34Matrix_t matrix;
+          linkToRealMatrixRegister(res, &matrix);
+          for(uint32_t i = 0; i < matrix.header.matrixRows * matrix.header.matrixColumns; i++) {
+            if(real34IsInfinite(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]))) {
+              displayCalcErrorMessage(real34IsPositive(VARIABLE_REAL34_DATA(&matrix.matrixElements[i])) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF , ERR_REGISTER_LINE, res);
+            }
+            else if(real34IsZero(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]))) {
+              real34SetPositiveSign(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]));
             }
           }
           break;
+        }
 
-      case dtComplex34Matrix:
-        {
+        case dtComplex34Matrix: {
           complex34Matrix_t matrix;
           linkToComplexMatrixRegister(res, &matrix);
           for(uint32_t i = 0; i < matrix.header.matrixRows * matrix.header.matrixColumns; i++) {
@@ -1088,17 +1096,22 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
               real34SetPositiveSign(VARIABLE_IMAG34_DATA(&matrix.matrixElements[i]));
             }
           }
+          break;
         }
-        break;
       #endif // !TESTSUITE_BUILD
 
-      default:
+      default: {
         break;
+      }
     }
   }
 
-  if(resultDataType == dtTime) checkTimeRange(REGISTER_REAL34_DATA(res));
-  if(resultDataType == dtDate) checkDateRange(REGISTER_REAL34_DATA(res));
+  if(resultDataType == dtTime) {
+    checkTimeRange(REGISTER_REAL34_DATA(res));
+  }
+  if(resultDataType == dtDate) {
+    checkDateRange(REGISTER_REAL34_DATA(res));
+  }
 
   if(lastErrorCode != 0) {
     #if defined(TESTSUITE_BUILD)
@@ -1118,7 +1131,7 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
   switch(resultDataType) {
     real_t tmp;
 
-    case dtReal34:
+    case dtReal34: {
       if(significantDigits == 0 || significantDigits >= 34) {
         break;
       }
@@ -1126,8 +1139,9 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
       real34ToReal(REGISTER_REAL34_DATA(res), &tmp);
       convertRealToReal34ResultRegister(&tmp, res);
       break;
+    }
 
-    case dtComplex34:
+    case dtComplex34: {
       if(significantDigits == 0 || significantDigits >= 34) {
         break;
       }
@@ -1137,27 +1151,31 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
       real34ToReal(REGISTER_IMAG34_DATA(res), &tmp);
       convertRealToImag34ResultRegister(&tmp, res);
       break;
+    }
 
     #if !defined(TESTSUITE_BUILD)
-      case dtReal34Matrix:
+      case dtReal34Matrix: {
         if(significantDigits == 0 || significantDigits >= 34) {
           break;
         }
 
-      rsdRema(significantDigits);
-      break;
-
-    case dtComplex34Matrix:
-      if(significantDigits == 0 || significantDigits >= 34) {
+        rsdRema(significantDigits);
         break;
       }
 
-      rsdCxma(significantDigits);
-      break;
+      case dtComplex34Matrix: {
+        if(significantDigits == 0 || significantDigits >= 34) {
+          break;
+        }
+
+        rsdCxma(significantDigits);
+        break;
+      }
     #endif // !TESTSUITE_BUILD
 
-    default:
+    default: {
       break;
+    }
   }
 
   if(dropY) {
@@ -1179,11 +1197,26 @@ void copySourceRegisterToDestRegister(calcRegister_t sourceRegister, calcRegiste
     longInteger_t longIntVar;
     longIntegerInit(longIntVar);
     switch(currentAngularMode) {
-      case amDMS:    intToLongInteger(1, longIntVar); break;
-      case amRadian: intToLongInteger(2, longIntVar); break;
-      case amMultPi: intToLongInteger(3, longIntVar); break;
-      case amGrad:   intToLongInteger(4, longIntVar); break;
-      default:       intToLongInteger(0, longIntVar); break;
+      case amDMS: {
+        intToLongInteger(1, longIntVar);
+        break;
+      }
+      case amRadian: {
+        intToLongInteger(2, longIntVar);
+        break;
+      }
+      case amMultPi: {
+        intToLongInteger(3, longIntVar);
+        break;
+      }
+      case amGrad: {
+        intToLongInteger(4, longIntVar);
+        break;
+      }
+      default: {
+        intToLongInteger(0, longIntVar);
+        break;
+      }
     }
     convertLongIntegerToLongIntegerRegister(longIntVar, destRegister);
     longIntegerFree(longIntVar);
@@ -1223,25 +1256,56 @@ void copySourceRegisterToDestRegister(calcRegister_t sourceRegister, calcRegiste
   }
 
   if(   getRegisterDataType(destRegister) != getRegisterDataType(sourceRegister)
-    || getRegisterFullSize(destRegister) != getRegisterFullSize(sourceRegister)) {
+     || getRegisterFullSize(destRegister) != getRegisterFullSize(sourceRegister)) {
     uint32_t sizeInBlocks;
 
     switch(getRegisterDataType(sourceRegister)) {
-      case dtLongInteger:     sizeInBlocks = getRegisterDataPointer(sourceRegister)->dataMaxLength; break;
-      case dtTime:            sizeInBlocks = REAL34_SIZE;                                           break;
-      case dtDate:            sizeInBlocks = REAL34_SIZE;                                           break;
-      case dtString:          sizeInBlocks = getRegisterDataPointer(sourceRegister)->dataMaxLength; break;
-      case dtReal34Matrix:    sizeInBlocks = TO_BLOCKS((getRegisterDataPointer(sourceRegister)->matrixRows * getRegisterDataPointer(sourceRegister)->matrixColumns) * sizeof(real34_t)); break;
-      case dtComplex34Matrix: sizeInBlocks = TO_BLOCKS((getRegisterDataPointer(sourceRegister)->matrixRows * getRegisterDataPointer(sourceRegister)->matrixColumns) * sizeof(complex34_t)); break;
-      case dtShortInteger:    sizeInBlocks = SHORT_INTEGER_SIZE;                                    break;
-      case dtReal34:          sizeInBlocks = REAL34_SIZE;                                           break;
-      case dtComplex34:       sizeInBlocks = COMPLEX34_SIZE;                                        break;
-      case dtConfig:          sizeInBlocks = CONFIG_SIZE;                                           break;
+      case dtLongInteger: {
+        sizeInBlocks = getRegisterDataPointer(sourceRegister)->dataMaxLength;
+        break;
+      }
+      case dtTime: {
+        sizeInBlocks = REAL34_SIZE;
+        break;
+      }
+      case dtDate: {
+        sizeInBlocks = REAL34_SIZE;
+        break;
+      }
+      case dtString: {
+        sizeInBlocks = getRegisterDataPointer(sourceRegister)->dataMaxLength;
+        break;
+      }
+      case dtReal34Matrix: {
+        sizeInBlocks = TO_BLOCKS((getRegisterDataPointer(sourceRegister)->matrixRows * getRegisterDataPointer(sourceRegister)->matrixColumns) * sizeof(real34_t));
+        break;
+      }
+      case dtComplex34Matrix: {
+        sizeInBlocks = TO_BLOCKS((getRegisterDataPointer(sourceRegister)->matrixRows * getRegisterDataPointer(sourceRegister)->matrixColumns) * sizeof(complex34_t));
+        break;
+      }
+      case dtShortInteger: {
+        sizeInBlocks = SHORT_INTEGER_SIZE;
+        break;
+      }
+      case dtReal34: {
+        sizeInBlocks = REAL34_SIZE;
+        break;
+      }
+      case dtComplex34: {
+        sizeInBlocks = COMPLEX34_SIZE;
+        break;
+      }
+      case dtConfig: {
+        sizeInBlocks = CONFIG_SIZE;
+        break;
+      }
 
-      default:
+      default: {
         sprintf(errorMessage, "In function copySourceRegisterToDestRegister: data type %s is unknown!", getDataTypeName(getRegisterDataType(sourceRegister), false, false));
         displayBugScreen(errorMessage);
         sizeInBlocks = 0;
+      }
     }
     reallocateRegister(destRegister, getRegisterDataType(sourceRegister), sizeInBlocks, amNone);
     if(lastErrorCode == ERROR_RAM_FULL) {
@@ -1250,19 +1314,21 @@ void copySourceRegisterToDestRegister(calcRegister_t sourceRegister, calcRegiste
   }
 
   switch(getRegisterDataType(sourceRegister)) {
-    case dtReal34Matrix:
+    case dtReal34Matrix: {
       xcopy(REGISTER_REAL34_MATRIX_DBLOCK(destRegister), REGISTER_REAL34_MATRIX_DBLOCK(sourceRegister), sizeof(dataBlock_t));
       xcopy(REGISTER_REAL34_MATRIX_M_ELEMENTS(destRegister), REGISTER_REAL34_MATRIX_M_ELEMENTS(sourceRegister),
-        getRegisterDataPointer(sourceRegister)->matrixRows * getRegisterDataPointer(sourceRegister)->matrixColumns * TO_BYTES(REAL34_SIZE));
+      getRegisterDataPointer(sourceRegister)->matrixRows * getRegisterDataPointer(sourceRegister)->matrixColumns * TO_BYTES(REAL34_SIZE));
       break;
-    case dtComplex34Matrix:
+    }
+    case dtComplex34Matrix: {
       xcopy(REGISTER_COMPLEX34_MATRIX_DBLOCK(destRegister), REGISTER_COMPLEX34_MATRIX_DBLOCK(sourceRegister), sizeof(dataBlock_t));
       xcopy(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(destRegister), REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(sourceRegister),
-        getRegisterDataPointer(sourceRegister)->matrixRows * getRegisterDataPointer(sourceRegister)->matrixColumns * TO_BYTES(COMPLEX34_SIZE));
+      getRegisterDataPointer(sourceRegister)->matrixRows * getRegisterDataPointer(sourceRegister)->matrixColumns * TO_BYTES(COMPLEX34_SIZE));
       break;
-
-    default:
+    }
+    default: {
       xcopy(REGISTER_DATA(destRegister), REGISTER_DATA(sourceRegister), TO_BYTES(getRegisterFullSize(sourceRegister)));
+    }
   }
   setRegisterTag(destRegister, getRegisterTag(sourceRegister));
 }
@@ -1276,14 +1342,16 @@ int16_t indirectAddressing(calcRegister_t regist, uint16_t parameterType, int16_
   printf("currentNumberOfLocalFlags %u\n", currentNumberOfLocalFlags); fflush(stdout);
 
   switch(parameterType) {
-    case INDPM_REGISTER:
+    case INDPM_REGISTER: {
       // Temorarily assign the maximum value to the maximum register
       // We need to do better range checking later
       maxValue = FIRST_NAMED_VARIABLE + numberOfNamedVariables - 1;
       break;
-    case INDPM_FLAG:
+    }
+    case INDPM_FLAG: {
       maxValue = NUMBER_OF_GLOBAL_FLAGS + currentNumberOfLocalFlags - 1;
       break;
+    }
   }
 
   if(regist >= FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters &&
@@ -1548,7 +1616,7 @@ int16_t indirectAddressing(calcRegister_t regist, uint16_t parameterType, int16_
     realToString(value, str);
     printf("%sreal%" PRId32 " %s%s", before, value->digits, str, after);
 
-  /*  int32_t i, exponent, last;
+    /*int32_t i, exponent, last;
 
     if(realIsNaN(value)) {
       printf("NaN");
@@ -1733,38 +1801,44 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
 
 void fnToReal(uint16_t unusedButMandatoryParameter) {
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger :
+    case dtLongInteger: {
       copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
       convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
       break;
+    }
 
-    case dtShortInteger :
+    case dtShortInteger: {
       copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
       convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
       break;
+    }
 
-    case dtReal34:
+    case dtReal34: {
       copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
       setRegisterAngularMode(REGISTER_X, amNone);
       break;
+    }
 
-    case dtTime:
+    case dtTime: {
       copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
       convertTimeRegisterToReal34Register(REGISTER_X, REGISTER_X);
       break;
+    }
 
-    case dtDate:
+    case dtDate: {
       copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
       convertDateRegisterToReal34Register(REGISTER_X, REGISTER_X);
       break;
+    }
 
-    default :
+    default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "data type %s cannot be converted to a real34!", getRegisterDataTypeName(REGISTER_X, false, false));
         moreInfoOnError("In function fnToReal:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
+    }
   }
 }
 
@@ -1781,7 +1855,9 @@ static uint8_t getRegParam(bool_t *f, uint16_t *s, uint16_t *n, uint16_t *d) {
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {
     *s = *n = 0;
-    if(d) *d = 0;
+    if(d) {
+      *d = 0;
+    }
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
     if(!realCompareAbsLessThan(&x, const_1000)) {
       return ERROR_OUT_OF_RANGE;
@@ -1866,7 +1942,9 @@ static uint8_t getRegParam(bool_t *f, uint16_t *s, uint16_t *n, uint16_t *d) {
   }
   else {
     *s = *n = 0;
-    if(d) *d = 0;
+    if(d) {
+      *d = 0;
+    }
     return ERROR_INVALID_DATA_TYPE_FOR_OP;
   }
 }
@@ -1905,7 +1983,9 @@ static void sortReg(uint16_t range_start, uint16_t range_end) {
     const uint16_t range_center = (range_end - range_start) / 2 + range_start;
     uint16_t pos1 = range_start, pos2 = range_center + 1;
     registerHeader_t *sortedReg = allocWp43s(TO_BLOCKS(sizeof(registerHeader_t)) * (range_end - range_start + 1));
-    if(lastErrorCode == ERROR_RAM_FULL) return; // unlikely
+    if(lastErrorCode == ERROR_RAM_FULL) {
+      return; // unlikely
+    }
 
     if(sortedReg) {
       sortReg(range_start,      range_center);
@@ -1946,7 +2026,7 @@ void fnRegSort(uint16_t unusedButMandatoryParameter) {
     switch(getRegisterDataType(s)) {
       case dtLongInteger:
       case dtShortInteger:
-      case dtReal34:
+      case dtReal34: {
         for(int i = s + 1; i < (s + n); ++i) {
           if((getRegisterDataType(i) != dtLongInteger) && (getRegisterDataType(i) != dtShortInteger) && (getRegisterDataType(i) != dtReal34)) {
             displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -1954,9 +2034,10 @@ void fnRegSort(uint16_t unusedButMandatoryParameter) {
           }
         }
         break;
+      }
       case dtTime:
       case dtDate:
-      case dtString:
+      case dtString: {
         for(int i = s + 1; i < (s + n); ++i) {
           if(getRegisterDataType(i) != getRegisterDataType(s)) {
             displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -1964,6 +2045,7 @@ void fnRegSort(uint16_t unusedButMandatoryParameter) {
           }
         }
         break;
+      }
     }
     if(lastErrorCode == ERROR_NONE) {
       sortReg(s, s + n - 1);
@@ -1987,13 +2069,17 @@ void fnRegCopy(uint16_t unusedButMandatoryParameter) {
       if(s > d) {
         for(int i = 0; i < n; ++i) {
           copySourceRegisterToDestRegister(s + i, d + i);
-          if(lastErrorCode == ERROR_RAM_FULL) return; // abort if not enough memory
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            return; // abort if not enough memory
+          }
         }
       }
       else if(s < d) {
         for(int i = n - 1; i >= 0; --i) {
           copySourceRegisterToDestRegister(s + i, d + i);
-          if(lastErrorCode == ERROR_RAM_FULL) return; // abort if not enough memory
+          if(lastErrorCode == ERROR_RAM_FULL) {
+            return; // abort if not enough memory
+          }
         }
       }
     }

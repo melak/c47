@@ -136,7 +136,9 @@ TO_QSPI uint16_t unSupSubTable[] = {
 
 static uint16_t _charCodeUnSupSub(uint16_t charCode) {
   for(int i = 0; unSupSubTable[i] != 0; i += 2) {
-    if(charCode == unSupSubTable[i]) return unSupSubTable[i + 1];
+    if(charCode == unSupSubTable[i]) {
+      return unSupSubTable[i + 1];
+    }
   }
   return charCode;
 }
@@ -159,7 +161,9 @@ int32_t compareString(const char *stra, const char *strb, int32_t comparisonType
       if(charCode >= 0x80) {
         charCode = (charCode << 8) + (uint8_t)stra[posa + 1];
       }
-      if(comparisonType == CMP_NAME) charCode = _charCodeUnSupSub(charCode);
+      if(comparisonType == CMP_NAME) {
+        charCode = _charCodeUnSupSub(charCode);
+      }
       ranka = charCode;
 
       charCode = (uint8_t)strb[posb];

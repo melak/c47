@@ -103,13 +103,32 @@
 
   static void angularUnitToString(angularMode_t angularMode, char *string) {
     switch(angularMode) {
-      case amRadian: strcpy(string, "r");        break;
-      case amMultPi: strcpy(string, STD_pi);     break;
-      case amGrad:   strcpy(string, "g");        break;
-      case amDegree: strcpy(string, STD_DEGREE); break;
-      case amDMS:    strcpy(string, "d.ms");     break;
-      case amNone:   break;
-      default:        strcpy(string, "?");
+      case amRadian: {
+        strcpy(string, "r");
+        break;
+      }
+      case amMultPi: {
+        strcpy(string, STD_pi);
+        break;
+      }
+      case amGrad: {
+        strcpy(string, "g");
+        break;
+      }
+      case amDegree: {
+        strcpy(string, STD_DEGREE);
+        break;
+      }
+      case amDMS: {
+        strcpy(string, "d.ms");
+        break;
+      }
+      case amNone: {
+        break;
+      }
+      default: {
+        strcpy(string, "?");
+      }
     }
   }
 
@@ -122,23 +141,27 @@
     char string[30000];
 
     switch(getRegisterDataType(regist)) {
-      case dtLongInteger:
+      case dtLongInteger: {
         convertLongIntegerRegisterToLongInteger(regist, lgInt);
         longIntegerToAllocatedString(lgInt, string, 30000);
         longIntegerFree(lgInt);
         break;
+      }
 
-      case dtTime:
+      case dtTime: {
         timeToDisplayString(regist, string, false);
         break;
+      }
 
-      case dtDate:
+      case dtDate: {
         dateToDisplayString(regist, string);
         break;
+      }
 
-      case dtString:
+      case dtString: {
         xcopy(string, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
         break;
+      }
 
       case dtReal34Matrix: {
         dataBlock_t* dblock = REGISTER_REAL34_MATRIX_DBLOCK(regist);
@@ -206,7 +229,7 @@
         break;
       }
 
-      case dtShortInteger:
+      case dtShortInteger: {
         convertShortIntegerRegisterToUInt64(regist, &sign, &shortInt);
         base = getRegisterShortIntegerBase(regist);
 
@@ -229,6 +252,7 @@
 
         strcpy(string, errorMessage + n);
         break;
+      }
 
       case dtReal34: {
         real34_t reduced;
@@ -275,12 +299,14 @@
         break;
       }
 
-      case dtConfig:
+      case dtConfig: {
         xcopy(string, "Configuration data", 19);
         break;
+      }
 
-      default:
+      default: {
         sprintf(string, "In function copyRegisterXToClipboard, the data type %" PRIu32 " is unknown! Please try to reproduce and submit a bug.", getRegisterDataType(regist));
+      }
     }
 
     stringToUtf8(string, (uint8_t *)clipboardString);
@@ -797,7 +823,7 @@ void execTimerApp(uint16_t timerType) {
 
     ch = 0;
     while(string[ch] != 0) {
-      if(lg == 1 || (lg == 2 && (string[0] & 0x80))) {// The string is 1 glyph long
+      if(lg == 1 || (lg == 2 && (string[0] & 0x80))) { // The string is 1 glyph long
         slc = showLeadingCols;
         sec = showEndingCols;
       }
@@ -805,7 +831,7 @@ void execTimerApp(uint16_t timerType) {
         slc = showLeadingCols;
         sec = true;
       }
-      else if(ch == lg-1 || (ch == lg-2 && (string[ch] & 0x80))) {// Last glyph
+      else if(ch == lg-1 || (ch == lg-2 && (string[ch] & 0x80))) { // Last glyph
         slc = true;
         sec = showEndingCols;
       }
@@ -1588,19 +1614,19 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
-        else if(temporaryInformation == TI_STATISTIC_HISTO) {
-              if(regist == REGISTER_X) {
-                strcpy(prefix,STD_UP_ARROW "BIN" " =");
-                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
-              } else
-              if(regist == REGISTER_Y) {
-                strcpy(prefix,STD_DOWN_ARROW "BIN" " =");
-                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
-              }
-              else if(regist == REGISTER_Z) {
-                strcpy(prefix,"nBINS" " =");
-                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
-              }
+          else if(temporaryInformation == TI_STATISTIC_HISTO) {
+            if(regist == REGISTER_X) {
+              strcpy(prefix,STD_UP_ARROW "BIN" " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            } else
+            if(regist == REGISTER_Y) {
+              strcpy(prefix,STD_DOWN_ARROW "BIN" " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_Z) {
+              strcpy(prefix,"nBINS" " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
           }
 
           //L.R. Display
@@ -2210,31 +2236,35 @@ void execTimerApp(uint16_t timerType) {
 
   void refreshScreen(void) {
     switch(calcMode) {
-      case CM_FLAG_BROWSER:
+      case CM_FLAG_BROWSER: {
         clearScreen();
         flagBrowser(NOPARAM);
         refreshStatusBar();
         break;
+      }
 
-      case CM_FONT_BROWSER:
+      case CM_FONT_BROWSER: {
         clearScreen();
         fontBrowser(NOPARAM);
         refreshStatusBar();
         break;
+      }
 
-      case CM_REGISTER_BROWSER:
+      case CM_REGISTER_BROWSER: {
         clearScreen();
         registerBrowser(NOPARAM);
         refreshStatusBar();
         break;
+      }
 
-      case CM_PEM:
+      case CM_PEM: {
         clearScreen();
         showSoftmenuCurrentPart();
         fnPem(NOPARAM);
         displayShiftAndTamBuffer();
         refreshStatusBar();
         break;
+      }
 
       case CM_NORMAL:
       case CM_AIM:
@@ -2244,7 +2274,7 @@ void execTimerApp(uint16_t timerType) {
       case CM_ASSIGN:
       case CM_ERROR_MESSAGE:
       case CM_CONFIRMATION:
-      case CM_TIMER:
+      case CM_TIMER: {
         if(calcMode == CM_CONFIRMATION) {
           screenUpdatingMode = SCRUPD_AUTO;
         }
@@ -2352,8 +2382,9 @@ void execTimerApp(uint16_t timerType) {
           for(int y=Y_POSITION_OF_REGISTER_Y_LINE; y<Y_POSITION_OF_REGISTER_Y_LINE + 2*REGISTER_LINE_HEIGHT; y++ ) setBlackPixel(SCREEN_WIDTH - largeur - 1, y);
         #endif // (REAL34_WIDTH_TEST == 1)
         break;
+      }
 
-      case CM_GRAPH:
+      case CM_GRAPH: {
         clearScreen();
         displayShiftAndTamBuffer();
         showSoftmenuCurrentPart();
@@ -2364,8 +2395,9 @@ void execTimerApp(uint16_t timerType) {
         showHideHourGlass();
         refreshStatusBar();
         break;
+      }
 
-      case CM_PLOT_STAT:
+      case CM_PLOT_STAT: {
         clearScreen();
         displayShiftAndTamBuffer();
         showSoftmenuCurrentPart();
@@ -2377,8 +2409,10 @@ void execTimerApp(uint16_t timerType) {
         showHideHourGlass();
         refreshStatusBar();
         break;
+      }
 
-      default: {}
+      default: {
+      }
     }
 
     #if !defined(DMCP_BUILD)
@@ -2516,8 +2550,8 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
   static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue) {
     int32_t value;
 
-  if(getRegisterDataType(regist) == dtReal34) {
-    real34_t maxValue34;
+    if(getRegisterDataType(regist) == dtReal34) {
+      real34_t maxValue34;
 
       int32ToReal34(maxValue, &maxValue34);
       if(real34CompareLessThan(REGISTER_REAL34_DATA(regist), const34_0) || real34CompareLessThan(&maxValue34, REGISTER_REAL34_DATA(regist))) {
@@ -2532,8 +2566,8 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
       value = real34ToInt32(REGISTER_REAL34_DATA(regist));
     }
 
-  else if(getRegisterDataType(regist) == dtLongInteger) {
-    longInteger_t lgInt;
+    else if(getRegisterDataType(regist) == dtLongInteger) {
+      longInteger_t lgInt;
 
       convertLongIntegerRegisterToLongInteger(regist, lgInt);
       if(longIntegerCompareUInt(lgInt, 0) < 0 || longIntegerCompareUInt(lgInt, maxValue) > 0) {
@@ -2631,26 +2665,30 @@ void fnAGraph(uint16_t regist) {
         shortIntegerMode = savedShortIntegerMode;
         for(uint32_t i = 0; i < shortIntegerWordSize; ++i) {
           switch(gramod) {
-            case 1:
+            case 1: {
               if(!(val & 1)) {
                 setWhitePixel(x, SCREEN_HEIGHT - y - 1 - i);
               }
-              /* fallthrough */
-            case 0:
+            }
+            /* fallthrough */
+            case 0: {
               if(val & 1) {
                 setBlackPixel(x, SCREEN_HEIGHT - y - 1 - i);
               }
               break;
-            case 2:
+            }
+            case 2: {
               if(val & 1) {
                 setWhitePixel(x, SCREEN_HEIGHT - y - 1 - i);
               }
               break;
-            case 3:
+            }
+            case 3: {
               if(val & 1) {
                 flipPixel(x, SCREEN_HEIGHT - y - 1 - i);
               }
               break;
+            }
           }
           val >>= 1;
         }
