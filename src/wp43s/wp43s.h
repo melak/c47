@@ -60,10 +60,10 @@
   #include "typeDefinitions.h"
 
   // Variables for the simulator
-  #if defined(PC_BUILD) || defined (TESTSUITE_BUILD)
+  #if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
     extern bool_t               debugMemAllocation;
   #endif // PC_BUILD || TESTSUITE_BUILD
-  
+
   #if defined(PC_BUILD)
     extern bool_t               calcLandscape;
     extern bool_t               calcAutoLandscapePortrait;
