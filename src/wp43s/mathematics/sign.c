@@ -82,15 +82,18 @@ void signLonI(void) {
   longIntegerInit(lgInt);
 
   switch(getRegisterLongIntegerSign(REGISTER_X)) {
-    case LI_POSITIVE:
+    case LI_POSITIVE: {
       intToLongInteger(1, lgInt);
       break;
+    }
 
-    case LI_NEGATIVE:
+    case LI_NEGATIVE: {
       intToLongInteger(-1, lgInt);
       break;
+    }
 
-    default: {}
+    default: {
+    }
   }
 
   convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_X);
@@ -111,23 +114,27 @@ void signShoI(void) {
   longIntegerInit(lgInt);
 
   switch(WP34S_intSign(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)))) {
-    case -1 :
+    case -1: {
       uIntToLongInteger(1, lgInt);
       longIntegerSetNegativeSign(lgInt);
       break;
+    }
 
-    case 0 :
+    case 0: {
       uIntToLongInteger(0, lgInt);
       break;
+    }
 
-    case 1 :
+    case 1: {
       uIntToLongInteger(1, lgInt);
       break;
+    }
 
-    default :
+    default: {
       uIntToLongInteger(0, lgInt);
       sprintf(errorMessage, "In function signShoI: %" PRIu64 " is an unexpected value returned by WP34S_intSign!", WP34S_intSign(*(REGISTER_SHORT_INTEGER_DATA(REGISTER_X))));
       displayBugScreen(errorMessage);
+    }
   }
 
   convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_X);

@@ -147,24 +147,27 @@ void fnErrorMessage(uint16_t unusedButMandatoryParameter) {
   uInt32ToReal34(NUMBER_OF_ERROR_CODES, &maxErr);
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       convertLongIntegerRegisterToReal34(REGISTER_X, &r);
       break;
+    }
 
-    case dtReal34:
+    case dtReal34: {
       if(getRegisterAngularMode(REGISTER_X) == amNone) {
         real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &r);
         break;
       }
       /* fallthrough */
+    }
 
-    default :
+    default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "data type %s cannot be used for this function!", getRegisterDataTypeName(REGISTER_X, false, false));
         moreInfoOnError("In function fnErrorMessage:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
+    }
   }
 
   if(real34CompareLessEqual(const34_1, &r) && real34CompareLessThan(&r, &maxErr)) {

@@ -41,11 +41,25 @@ void fn1stDeriv(uint16_t label) {
     // Interactive mode
     char buf[4];
     switch(label) {
-      case REGISTER_X:        buf[0] = 'X'; break;
-      case REGISTER_Y:        buf[0] = 'Y'; break;
-      case REGISTER_Z:        buf[0] = 'Z'; break;
-      case REGISTER_T:        buf[0] = 'T'; break;
-      default: /* unlikely */ buf[0] = 0;
+      case REGISTER_X: {
+        buf[0] = 'X';
+        break;
+      }
+      case REGISTER_Y: {
+        buf[0] = 'Y';
+        break;
+      }
+      case REGISTER_Z: {
+        buf[0] = 'Z';
+        break;
+      }
+      case REGISTER_T: {
+        buf[0] = 'T';
+        break;
+      }
+      default: { /* unlikely */
+        buf[0] = 0;
+      }
     }
     buf[1] = 0;
     label = findNamedLabel(buf);
@@ -77,11 +91,21 @@ void fn2ndDeriv(uint16_t label) {
     // Interactive mode
     char buf[4];
     switch(label) {
-      case REGISTER_X:        buf[0] = 'X'; break;
-      case REGISTER_Y:        buf[0] = 'Y'; break;
-      case REGISTER_Z:        buf[0] = 'Z'; break;
-      case REGISTER_T:        buf[0] = 'T'; break;
-      default: /* unlikely */ buf[0] = 0;
+      case REGISTER_X: {
+        buf[0] = 'X';
+        break;}
+      case REGISTER_Y: {
+        buf[0] = 'Y';
+        break;}
+      case REGISTER_Z: {
+        buf[0] = 'Z';
+        break;}
+      case REGISTER_T: {
+        buf[0] = 'T';
+        break;}
+      default: { /* unlikely */
+        buf[0] = 0;
+      }
     }
     buf[1] = 0;
     label = findNamedLabel(buf);
@@ -368,19 +392,22 @@ static void _2ndDerivative(calcRegister_t label, const real_t *x, real_t *res, r
 void firstDerivative(calcRegister_t label) {
   real_t x;
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtReal34:
+    case dtReal34: {
       real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
       break;
-    case dtLongInteger:
+    }
+    case dtLongInteger: {
       convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
       break;
-    default:
+    }
+    default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot use %s for derivative", getRegisterDataTypeName(REGISTER_X, true, true));
         moreInfoOnError("In function firstDerivative:", errorMessage, NULL, NULL);
       #endif //  (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
+    }
   }
   _1stDerivative(label, &x, &x, &ctxtReal39);
   fnClearStack(NOPARAM);
@@ -391,19 +418,22 @@ void firstDerivative(calcRegister_t label) {
 void secondDerivative(calcRegister_t label) {
   real_t x;
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtReal34:
+    case dtReal34: {
       real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
       break;
-    case dtLongInteger:
+    }
+    case dtLongInteger: {
       convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
       break;
-    default:
+    }
+    default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot use %s for derivative", getRegisterDataTypeName(REGISTER_X, true, true));
         moreInfoOnError("In function firstDerivative:", errorMessage, NULL, NULL);
       #endif //  (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
+    }
   }
   _2ndDerivative(label, &x, &x, &ctxtReal39);
   fnClearStack(NOPARAM);
