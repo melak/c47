@@ -453,13 +453,18 @@ void fnBst(uint16_t unusedButMandatoryParameter) {
   screenUpdatingMode = SCRUPD_AUTO;
   if(calcMode == CM_PEM) {
     if(aimBuffer[0] != 0) {
-      if(getSystemFlag(FLAG_ALPHA)) pemCloseAlphaInput();
-      else                          pemCloseNumberInput();
+      if(getSystemFlag(FLAG_ALPHA)) {
+        pemCloseAlphaInput();
+      }
+      else {
+        pemCloseNumberInput();
+      }
       aimBuffer[0] = 0;
       --currentLocalStepNumber;
       currentStep = findPreviousStep(currentStep);
-      if(!programListEnd)
+      if(!programListEnd) {
         scrollPemBackwards();
+      }
     }
   }
   currentInputVariable = INVALID_VARIABLE;
@@ -509,13 +514,18 @@ void fnSst(uint16_t unusedButMandatoryParameter) {
   screenUpdatingMode = SCRUPD_AUTO;
   if(calcMode == CM_PEM) {
     if(aimBuffer[0] != 0) {
-      if(getSystemFlag(FLAG_ALPHA)) pemCloseAlphaInput();
-      else                          pemCloseNumberInput();
+      if(getSystemFlag(FLAG_ALPHA)) {
+        pemCloseAlphaInput();
+      }
+      else {
+        pemCloseNumberInput();
+      }
       aimBuffer[0] = 0;
       --currentLocalStepNumber;
       currentStep = findPreviousStep(currentStep);
-      if(!programListEnd)
+      if(!programListEnd) {
         scrollPemBackwards();
+      }
     }
     currentInputVariable = INVALID_VARIABLE;
     _sstInPem();
@@ -523,7 +533,9 @@ void fnSst(uint16_t unusedButMandatoryParameter) {
   else {
     _showStep();
     if(currentInputVariable != INVALID_VARIABLE) {
-      if(currentInputVariable & 0x8000) fnDropY(NOPARAM);
+      if(currentInputVariable & 0x8000) {
+        fnDropY(NOPARAM);
+      }
       fnStore(currentInputVariable & 0x3fff);
       currentInputVariable = INVALID_VARIABLE;
     }

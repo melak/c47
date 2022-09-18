@@ -618,8 +618,9 @@ void convertReal34RegisterToDateRegister(calcRegister_t source, calcRegister_t d
       i = 3;
       j = 3;
       while(buff[i] != 0) {
-        if(buff[i]==',' || buff[i]=='.' || buff[i]==' ')
+        if(buff[i]==',' || buff[i]=='.' || buff[i]==' ') {
           buff[j] = 0;
+        }
         else {
           buff[j] = buff[i];
           j++;

@@ -86,7 +86,9 @@ bool_t checkDateArgument(calcRegister_t regist, real34_t *jd) {
       if(getRegisterAngularMode(regist) == amNone) {
         reallocateRegister(TEMP_REGISTER_1, dtReal34, REAL34_SIZE, amNone); // make sure TEMP_REGISTER_1 is not of dtDate type here
         convertReal34RegisterToDateRegister(regist, TEMP_REGISTER_1);
-        if(getRegisterDataType(TEMP_REGISTER_1) != dtDate) return false; // invalid date
+        if(getRegisterDataType(TEMP_REGISTER_1) != dtDate) {
+          return false; // invalid date
+        }
         internalDateToJulianDay(REGISTER_REAL34_DATA(TEMP_REGISTER_1), jd);
         return true;
       }
@@ -436,7 +438,9 @@ void fnJulianToDate(uint16_t unusedButMandatoryParameter) {
 
   // check range
   checkDateRange(REGISTER_REAL34_DATA(REGISTER_X));
-  if(lastErrorCode != 0) undo();
+  if(lastErrorCode != 0) {
+    undo();
+  }
 }
 
 void fnDateToJulian(uint16_t unusedButMandatoryParameter) {
@@ -476,10 +480,12 @@ void fnSetFirstGregorianDay(uint16_t unusedButMandatoryParameter) {
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      if(getRegisterDataType(REGISTER_X) == dtDate)
+      if(getRegisterDataType(REGISTER_X) == dtDate) {
         sprintf(errorMessage, "data type %s is disabled as input because of complicated Julian-Gregorian issue!", getRegisterDataTypeName(REGISTER_X, false, false));
-      else
+      }
+      else {
         sprintf(errorMessage, "data type %s cannot be interpreted as a date!", getRegisterDataTypeName(REGISTER_X, false, false));
+      }
       moreInfoOnError("In function fnSetFirstGregorianDay:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
@@ -511,7 +517,9 @@ void fnXToDate(uint16_t unusedButMandatoryParameter) {
       if(getRegisterAngularMode(REGISTER_X) == amNone) {
         convertReal34RegisterToDateRegister(REGISTER_X, REGISTER_X);
         checkDateRange(REGISTER_REAL34_DATA(REGISTER_X));
-        if(lastErrorCode != 0) undo();
+        if(lastErrorCode != 0) {
+          undo();
+        }
         break;
       }
       /* fallthrough */

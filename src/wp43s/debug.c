@@ -445,7 +445,9 @@ char * getCurveFitModeNames(uint16_t selection) {
       strcat(errorMessage, eatSpacesEnd(getCurveFitModeName(1 << ix)));
     }
   }
-  if(errorMessage[0] == 0) return "???        ";
+  if(errorMessage[0] == 0) {
+    return "???        ";
+  }
   return errorMessage;
 }
 
@@ -963,8 +965,12 @@ void debugNIM(void) {
    * \return char*          Name of the alphacase mode
    ***********************************************/
   char * getAlphaCaseName(uint16_t ac) {
-    if(ac == AC_LOWER) return "lower";
-    if(ac == AC_UPPER) return "upper";
+    if(ac == AC_LOWER) {
+      return "lower";
+    }
+    if(ac == AC_UPPER) {
+      return "upper";
+    }
 
     return "???  ";
   }

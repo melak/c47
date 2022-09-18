@@ -167,13 +167,17 @@ void statGraphReset(void) {
 
     if(Aspect_Square) {
       tempr = ((x - x_min) / (x_max - x_min) * (float)(SCREEN_HEIGHT_GRAPH - 1));
-      if(tempr > 32766) temp = 32767; else
+      if(tempr > 32766) {
+        temp = 32767;
+      }
+      else {
         if(tempr < -32766) {
           temp = -32767;
         }
         else {
           temp = (int16_t) tempr;
         }
+      }
       if(temp > SCREEN_HEIGHT_GRAPH-1) {
         temp = SCREEN_HEIGHT_GRAPH-1;
       }
@@ -223,13 +227,17 @@ void statGraphReset(void) {
     }
 
     tempr = ((y - y_min) / (y_max - y_min) * (float)(SCREEN_HEIGHT_GRAPH - 1 - minn));
-    if(tempr > 32766) temp = 32767; else
+    if(tempr > 32766) {
+      temp = 32767;
+    }
+    else {
       if(tempr < -32766) {
         temp = -32767;
       }
       else {
         temp = (int16_t) tempr;
       }
+    }
     if(temp > SCREEN_HEIGHT_GRAPH - 1 - minn) {
       temp = SCREEN_HEIGHT_GRAPH - 1 - minn;
     }
@@ -609,13 +617,34 @@ float auto_tick(float tick_int_f) {
   //tick_int_f = (float)(tx[0]-48) + (float)(tx[2]-48)/10.0f;
   //printf("tick1 %f orgstr %s tx %s \n",tick_int_f, tmpString2, tx);
 
-       if(tick_int_f > 0   && tick_int_f <=  0.3) {tmpString2[0] = '0'; tmpString2[2]='2'; }
-  else if(tick_int_f > 0.3 && tick_int_f <=  0.6) {tmpString2[0] = '0'; tmpString2[2]='5'; }
-  else if(tick_int_f > 0.6 && tick_int_f <=  1.3) {tmpString2[0] = '1'; tmpString2[2]='0'; }
-  else if(tick_int_f > 1.3 && tick_int_f <=  1.7) {tmpString2[0] = '1'; tmpString2[2]='5'; }
-  else if(tick_int_f > 1.7 && tick_int_f <=  3.0) {tmpString2[0] = '2'; tmpString2[2]='0'; }
-  else if(tick_int_f > 3.0 && tick_int_f <=  6.5) {tmpString2[0] = '5'; tmpString2[2]='0'; }
-  else if(tick_int_f > 6.5 && tick_int_f <=  9.9) {tmpString2[0] = '7'; tmpString2[2]='5'; }
+  if(tick_int_f > 0   && tick_int_f <=  0.3) {
+    tmpString2[0] = '0';
+    tmpString2[2] = '2';
+  }
+  else if(tick_int_f > 0.3 && tick_int_f <=  0.6) {
+    tmpString2[0] = '0';
+    tmpString2[2] = '5';
+  }
+  else if(tick_int_f > 0.6 && tick_int_f <=  1.3) {
+    tmpString2[0] = '1';
+    tmpString2[2] = '0';
+  }
+  else if(tick_int_f > 1.3 && tick_int_f <=  1.7) {
+    tmpString2[0] = '1';
+    tmpString2[2] = '5';
+  }
+  else if(tick_int_f > 1.7 && tick_int_f <=  3.0) {
+    tmpString2[0] = '2';
+    tmpString2[2] = '0';
+  }
+  else if(tick_int_f > 3.0 && tick_int_f <=  6.5) {
+    tmpString2[0] = '5';
+    tmpString2[2] = '0';
+  }
+  else if(tick_int_f > 6.5 && tick_int_f <=  9.9) {
+    tmpString2[0] = '7';
+    tmpString2[2] = '5';
+  }
 
   tick_int_f = strtof (tmpString2, NULL);                                        //printf("string:%s converted:%f \n",tmpString2, tick_int_f);
 
@@ -752,7 +781,9 @@ char * padEquals(const char * ss) {
     }
     else {
       tmp_names1[iy++] = ss[ix];
-      if(ss[ix+1] != 0) tmp_names1[iy++] = ss[++ix];
+      if(ss[ix+1] != 0) {
+        tmp_names1[iy++] = ss[++ix];
+      }
       tmp_names1[iy] = 0;
     }
     ix++;
@@ -812,16 +843,36 @@ static char *eng(double value, int digits) {
     digits -= 1;
   }
 
-       if(isnan(old) || isinf(old)) sprintf(result,"%s%f",sign,old);
-  else if(old>999.9       && old<100000.0) sprintf(result,"%s%.i",     sign, (int)old);
-  else if(old>99.9999     && old<1000.0  ) sprintf(result,"%s%.i",     sign, (int)old);
-  else if(old>9.99999     && old<100.0   ) sprintf(result,"%s%.*f",    sign, 1+digits+1-3, old);
-  else if(old>0.999999    && old<10.0    ) sprintf(result,"%s%.*f",    sign, digits+2-3  , old);
-  else if(old>0.0999999   && old<1.0     ) sprintf(result,"%s%.*f",    sign, 2+digits+3-3, old);
-  else if(old>0.00999999  && old<0.1     ) sprintf(result,"%s%.*f",    sign, 1+digits+4-3, old);
-  else if(old == 0.0)                      sprintf(result,"%s%.*f",    " ",  digits-1    , old);
-  else if(digits-1 <= 0)                   sprintf(result,"%s%.0fe%d", sign, value, expof10);
-  else                                     sprintf(result,"%s%.*fe%d", sign, digits-1, value, expof10);
+  if(isnan(old) || isinf(old)) {
+    sprintf(result, "%s%f", sign, old);
+  }
+  else if(old>999.9       && old<100000.0) {
+    sprintf(result,"%s%.i",     sign, (int)old);
+  }
+  else if(old>99.9999     && old<1000.0  ) {
+    sprintf(result,"%s%.i",     sign, (int)old);
+  }
+  else if(old>9.99999     && old<100.0   ) {
+    sprintf(result,"%s%.*f",    sign, 1+digits+1-3, old);
+  }
+  else if(old>0.999999    && old<10.0    ) {
+    sprintf(result,"%s%.*f",    sign, digits+2-3  , old);
+  }
+  else if(old>0.0999999   && old<1.0     ) {
+    sprintf(result,"%s%.*f",    sign, 2+digits+3-3, old);
+  }
+  else if(old>0.00999999  && old<0.1     ) {
+    sprintf(result,"%s%.*f",    sign, 1+digits+4-3, old);
+  }
+  else if(old == 0.0) {
+    sprintf(result,"%s%.*f",    " ",  digits-1    , old);
+  }
+  else if(digits-1 <= 0) {
+    sprintf(result,"%s%.0fe%d", sign, value, expof10);
+  }
+  else {
+    sprintf(result,"%s%.*fe%d", sign, digits-1, value, expof10);
+  }
   return result;
 }
 
@@ -1860,10 +1911,12 @@ void fnPlotZoom(uint16_t unusedButMandatoryParameter) {
   PLOT_ZOOM = (PLOT_ZOOM + 1) & 0x03;
   switch(calcMode) {
     case CM_PLOT_STAT: {
-      if(PLOT_ZOOM != 0)
+      if(PLOT_ZOOM != 0) {
         PLOT_AXIS = true;
-      else
+      }
+      else {
         PLOT_AXIS = false;
+      }
       break;
     }
     case CM_GRAPH: {

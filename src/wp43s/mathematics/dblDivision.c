@@ -97,7 +97,9 @@ void dblDivide(bool_t remainder_mode) {
       else {
         longIntegerSetZero(wd);
         longInteger2Pow(shortIntegerWordSize * 2, wd);
-        if(sim == SIM_1COMPL) longIntegerSubtractUInt(wd, 1, wd);
+        if(sim == SIM_1COMPL) {
+          longIntegerSubtractUInt(wd, 1, wd);
+        }
         longIntegerSubtract(wd, dividend, dividend);
         longIntegerSetNegativeSign(dividend);
       }

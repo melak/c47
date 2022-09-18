@@ -191,7 +191,9 @@ static int _realAgm(int mode, const real_t *a, const real_t *b, real_t *c, real_
     if(mode==AGM_MODE_STEP) {
       realCopy(&aReal, _a + n);
       realCopy(&bReal, _b + n);
-      if(n >= (int)_sz - 1) break;
+      if(n >= (int)_sz - 1) {
+        break;
+      }
     }
   }
 

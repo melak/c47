@@ -156,7 +156,9 @@ void fnReToCx(uint16_t unusedButMandatoryParameter) {
           convertComplex34MatrixToComplex34MatrixRegister(&cMat, REGISTER_X);
           complexMatrixFree(&cMat);
         }
-        else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        else {
+          displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+        }
       }
       else {
         displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);

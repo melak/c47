@@ -264,7 +264,9 @@ static void _clearAlpha(void) {
   if(calcMode == CM_EIM) {
     if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQ_EDIT) {
       calcModeNormal();
-      if(allFormulae[currentFormula].pointerToFormulaData == WP43S_NULL) deleteEquation(currentFormula);
+      if(allFormulae[currentFormula].pointerToFormulaData == WP43S_NULL) {
+        deleteEquation(currentFormula);
+      }
     }
     popSoftmenu();
   }

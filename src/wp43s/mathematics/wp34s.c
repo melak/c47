@@ -1596,7 +1596,9 @@ void WP34S_LambertW(const real_t *x, real_t *res, bool_t negativeBranch, realCon
     realCopy(&q, &reg2);
     realMultiply(&q, const_2, &q, realContext);
     realSquareRoot(&q, &r, realContext);
-    if(negativeBranch) realChangeSign(&r);
+    if(negativeBranch) {
+      realChangeSign(&r);
+    }
     realDivide(&q, const_3, &q, realContext);
     realSubtract(&r, &q, &q, realContext);
 
@@ -1611,9 +1613,12 @@ void WP34S_LambertW(const real_t *x, real_t *res, bool_t negativeBranch, realCon
       realAdd(&p, &reg2, &p, realContext);
       realDivide(&p, &q, &p, realContext);
       realAdd(&p, &q, &p, realContext);
-      if(converged) break;
-      if(WP34S_AbsoluteError(&p, &q, (realContext == &ctxtReal39) ? const_1e_37 : const_1e_49, realContext)) // test if absolute error
+      if(converged) {
+        break;
+      }
+      if(WP34S_AbsoluteError(&p, &q, (realContext == &ctxtReal39) ? const_1e_37 : const_1e_49, realContext)) { // test if absolute error
         converged = true;
+      }
       realSubtract(&reg1, const_1, &reg1, realContext);
       realCopy(&p, &q);
     } while(realCompareGreaterThan(&reg1, const_0));
@@ -1652,9 +1657,12 @@ void WP34S_LambertW(const real_t *x, real_t *res, bool_t negativeBranch, realCon
       realDivide(&r, &p, &r, realContext);
       realSubtract(&q, &r, &r, realContext);
       // R Q Q
-      if(converged) break;
-      if(WP34S_RelativeError(&r, &q, (realContext == &ctxtReal39) ? const_1e_37 : const_1e_49, realContext)) // test if relative error
+      if(converged) {
+        break;
+      }
+      if(WP34S_RelativeError(&r, &q, (realContext == &ctxtReal39) ? const_1e_37 : const_1e_49, realContext)) { // test if relative error
         converged = true;
+      }
       realSubtract(&reg1, const_1, &reg1, realContext);
       realCopy(&r, &q);
     } while(realCompareGreaterThan(&reg1, const_0));
@@ -1693,7 +1701,9 @@ void WP34S_ComplexLambertW(const real_t *xReal, const real_t *xImag, real_t *res
     realSubtract(&qr, &zr, &qr, realContext), realSubtract(&qi, &zi, &qi, realContext);
     divComplexComplex(&qr, &qi, &tr, &ti, &qr, &qi, realContext);
     realSubtract(&wr, &qr, &wr, realContext), realSubtract(&wi, &qi, &wi, realContext);
-    if(WP34S_ComplexAbsError(&wr, &wi, &pr, &pi, (realContext == &ctxtReal39) ? const_1e_37 : const_1e_49, realContext)) break;
+    if(WP34S_ComplexAbsError(&wr, &wi, &pr, &pi, (realContext == &ctxtReal39) ? const_1e_37 : const_1e_49, realContext)) {
+      break;
+    }
     realCopy(&wr, &pr), realCopy(&wi, &pi);
   }
   realCopy(&wr, resReal), realCopy(&wi, resImag);

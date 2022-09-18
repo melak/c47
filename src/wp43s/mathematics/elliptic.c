@@ -594,7 +594,9 @@ static void _ellipticF_2(const real_t *phi, const real_t *m, real_t *res, realCo
     realAdd(&phiQuotient, &phiQuotient, &phiQuotient, realContext);
     ellipticKE(m, &phi1, NULL, NULL, NULL, realContext);
     _ellipticF_1(&phiRemainder, m, res, realContext);
-    if(remainderNegative) realChangeSign(res);
+    if(remainderNegative) {
+      realChangeSign(res);
+    }
     realFMA(&phiQuotient, &phi1, res, res, realContext);
   }
 
@@ -768,7 +770,9 @@ void ellipticF(const real_t *phi, const real_t *psi, const real_t *m, real_t *re
     else {
       TanComplex(&p, &q, &p, &q, realContext);
       lnComplex(&p, &q, res, resi, realContext);
-      if(realIsZero(&p)) realZero(res);
+      if(realIsZero(&p)) {
+        realZero(res);
+      }
     }
     return;
   }
@@ -940,7 +944,9 @@ void ellipticE(const real_t *phi, const real_t *psi, const real_t *m, real_t *re
       realContext_t *realContext2 = &ctxtReal51;
       realContext_t *realContext3 = &ctxtReal75;
 
-      if(remainderNegative) realChangeSign(&phiRemainder);
+      if(remainderNegative) {
+        realChangeSign(&phiRemainder);
+      }
       realSubtract(const_1, m, M1, realContext2);
       _ellipticFE_lambda_mu(&phiRemainder, &psi1, m, LAMBDA, LAMBDA_I, MU, MU_I, realContext2);
       sinComplex(LAMBDA, LAMBDA_I, SIN_LAMBDA, SIN_LAMBDA_I, realContext2);
@@ -1064,7 +1070,9 @@ static void _jacobiZeta_Agm(const real_t *phi, const real_t *psi, const real_t *
           for(int i = n; i > 0; --i) {
             realCopy(&k, &q);
             WP34S_Mod(&q, const1071_2pi, &k, realContext);
-            if(realCompareGreaterThan(&k, const_pi)) realSubtract(&k, const1071_2pi, &k, realContext);
+            if(realCompareGreaterThan(&k, const_pi)) {
+              realSubtract(&k, const1071_2pi, &k, realContext);
+            }
             realSubtract(&q, &k, &q, realContext);
             realSubtract(a + i - 1, b + i - 1, &c, realContext); realSubtract(ai + i - 1, bi + i - 1, &ci, realContext);
             realMultiply(&c, const_1on2, &c, realContext); realMultiply(&ci, const_1on2, &ci, realContext);

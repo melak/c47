@@ -67,7 +67,9 @@ TO_QSPI void (* const twoPow[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fn2Pow(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   twoPow[getRegisterDataType(REGISTER_X)]();
 

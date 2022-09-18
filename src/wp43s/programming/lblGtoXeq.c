@@ -131,8 +131,12 @@ void fnGotoDot(uint16_t globalStepNumber) {
     for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
       uint8_t tmpLabel[16];
       uint8_t *lblPtr;
-      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_RAM   && labelList[lbl].program < 0) continue;
-      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_FLASH && labelList[lbl].program > 0) continue;
+      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_RAM   && labelList[lbl].program < 0) {
+        continue;
+      }
+      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_FLASH && labelList[lbl].program > 0) {
+        continue;
+      }
       if(labelList[lbl].program < 0) {
         readStepInFlashPgmLibrary(tmpLabel, 16, labelList[lbl].labelPointer.flash);
         lblPtr = tmpLabel;
@@ -296,7 +300,9 @@ void fnReturn(uint16_t skip) {
 
 void fnRunProgram(uint16_t unusedButMandatoryParameter) {
   if(currentInputVariable != INVALID_VARIABLE) {
-    if(currentInputVariable & 0x8000) fnDropY(NOPARAM);
+    if(currentInputVariable & 0x8000) {
+      fnDropY(NOPARAM);
+    }
     fnStore(currentInputVariable & 0x3fff);
     currentInputVariable = INVALID_VARIABLE;
   }
@@ -323,7 +329,9 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
     uint8_t opParam = *(uint8_t *)paramAddress;
     if(opParam <= LAST_LOCAL_REGISTER) { // Local register from .00 to .98
       int16_t realParam = indirectAddressing(opParam, (indexOfItems[op].param == TM_FLAGR || indexOfItems[op].param == TM_FLAGW) ? INDPM_FLAG : (indexOfItems[op].param == TM_STORCL || indexOfItems[op].param == TM_M_DIM) ? INDPM_REGISTER : INDPM_PARAM, indexOfItems[op].tamMinMax >> TAM_MAX_BITS, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
-      if(realParam < 9999) reallyRunFunction(op, realParam);
+      if(realParam < 9999) {
+        reallyRunFunction(op, realParam);
+      }
     }
     else {
       sprintf(tmpString, "\nIn function _executeWithIndirectRegister: %s " STD_RIGHT_ARROW " %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
@@ -336,7 +344,9 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
     regist = findNamedVariable(tmpStringLabelOrVariableName);
     if(regist != INVALID_VARIABLE) {
       int16_t realParam = indirectAddressing(regist, (indexOfItems[op].param == TM_FLAGR || indexOfItems[op].param == TM_FLAGW) ? INDPM_FLAG : (indexOfItems[op].param == TM_STORCL || indexOfItems[op].param == TM_M_DIM) ? INDPM_REGISTER : INDPM_PARAM, indexOfItems[op].tamMinMax >> TAM_MAX_BITS, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
-      if(realParam < 9999) reallyRunFunction(op, realParam);
+      if(realParam < 9999) {
+        reallyRunFunction(op, realParam);
+      }
     }
     else {
       displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);

@@ -58,7 +58,9 @@ void fnDrop(uint16_t unusedButMandatoryParameter) {
 
 void liftStack(void) {
   if(getSystemFlag(FLAG_ASLIFT)) {
-    if(currentInputVariable != INVALID_VARIABLE) currentInputVariable |= 0x8000;
+    if(currentInputVariable != INVALID_VARIABLE) {
+      currentInputVariable |= 0x8000;
+    }
     freeRegisterData(getStackTop());
     for(uint16_t i=getStackTop(); i>REGISTER_X; i--) {
       globalRegister[i] = globalRegister[i-1];
@@ -244,8 +246,12 @@ void fnGetStackSize(uint16_t unusedButMandatoryParameter) {
 void saveForUndo(void) {
   if(((calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_MIM) && thereIsSomethingToUndo) || calcMode == CM_NO_UNDO) {
     #if defined(DEBUGUNDO)
-      if(thereIsSomethingToUndo) printf(">>> saveForUndo; calcMode = %i, nothing stored as there is something to undo\n", calcMode);
-      if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_MIM || calcMode == CM_NO_UNDO) printf(">>> saveForUndo; calcMode = %i, nothing stored, wrong mode\n", calcMode);
+      if(thereIsSomethingToUndo) {
+        printf(">>> saveForUndo; calcMode = %i, nothing stored as there is something to undo\n", calcMode);
+      }
+      if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_MIM || calcMode == CM_NO_UNDO) {
+        printf(">>> saveForUndo; calcMode = %i, nothing stored, wrong mode\n", calcMode);
+      }
     #endif // DEBUGUNDO
     return;
   }

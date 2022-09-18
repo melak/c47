@@ -278,8 +278,12 @@ void defineCurrentProgramFromGlobalStepNumber(int16_t globalStepNumber) {
   currentProgramNumber = 0;
   while(abs(globalStepNumber) >= abs(programList[currentProgramNumber].step) || (globalStepNumber < 0 && programList[currentProgramNumber].step > 0)) {
     currentProgramNumber++;
-    if(globalStepNumber > 0 && currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) break;
-    if(currentProgramNumber >= numberOfPrograms) break;
+    if(globalStepNumber > 0 && currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) {
+      break;
+    }
+    if(currentProgramNumber >= numberOfPrograms) {
+      break;
+    }
   }
 
   if(programList[currentProgramNumber - 1].step < 0) {
@@ -309,7 +313,9 @@ void defineCurrentProgramFromCurrentStep(void) {
     currentProgramNumber = 0;
     while(currentStep.ram >= programList[currentProgramNumber].instructionPointer.ram) {
       currentProgramNumber++;
-      if(currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) break;
+      if(currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) {
+        break;
+      }
     }
 
     if(currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) {

@@ -107,8 +107,7 @@ static bool_t percentPlusMGReal(real_t *xReal, real_t *yReal, real_t *rReal, rea
       return false;
     }
   }
-  else if(realCompareEqual(xReal, const_100))
-  {
+  else if(realCompareEqual(xReal, const_100)) {
     if(getSystemFlag(FLAG_SPCRES)) {
       realCopy((realIsPositive(yReal) ? const_plusInfinity : const_minusInfinity), rReal);
     }

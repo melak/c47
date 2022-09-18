@@ -132,11 +132,15 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
     if(lastErrorCode != 0) {
       if(getSystemFlag(FLAG_IGN1ER)) {
-        if(thereIsSomethingToUndo) undo();
+        if(thereIsSomethingToUndo) {
+          undo();
+        }
         lastErrorCode = ERROR_NONE;
       }
       else {
-        if(thereIsSomethingToUndo) undo();
+        if(thereIsSomethingToUndo) {
+          undo();
+        }
       }
       clearSystemFlag(FLAG_IGN1ER);
     }

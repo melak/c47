@@ -1391,7 +1391,9 @@ void execTimerApp(uint16_t timerType) {
           }
         }
 
-        if(regist == REGISTER_X && currentInputVariable != INVALID_VARIABLE) inputRegName(prefix, &prefixWidth);
+        if(regist == REGISTER_X && currentInputVariable != INVALID_VARIABLE) {
+          inputRegName(prefix, &prefixWidth);
+        }
 
         if(lastErrorCode != 0 && regist == errorMessageRegisterLine) {
           if(stringWidth(errorMessages[lastErrorCode], &standardFont, true, true) <= SCREEN_WIDTH - 1) {
@@ -1737,7 +1739,9 @@ void execTimerApp(uint16_t timerType) {
               }
               else if(regist == REGISTER_Z) {
                 strcpy(prefix, eatSpacesEnd(getCurveFitModeName(lrChosen)));
-                if(lrCountOnes(lrSelection)>1) strcat(prefix,lrChosen == 0 ? "" : STD_SUP_ASTERISK);
+                if(lrCountOnes(lrSelection)>1) {
+                  strcat(prefix,lrChosen == 0 ? "" : STD_SUP_ASTERISK);
+                }
                 while(stringWidth(prefix, &standardFont, prefixPre, prefixPost) + 1 < LRWidth) {
                   strcat(prefix,STD_SPACE_6_PER_EM);
                 }
@@ -1757,7 +1761,9 @@ void execTimerApp(uint16_t timerType) {
               }
               else if(regist == REGISTER_Y) {
                 strcpy(prefix, eatSpacesEnd(getCurveFitModeName(lrChosen)));
-                if(lrCountOnes(lrSelection)>1) strcat(prefix,lrChosen == 0 ? "" : STD_SUP_ASTERISK);
+                if(lrCountOnes(lrSelection)>1) {
+                  strcat(prefix,lrChosen == 0 ? "" : STD_SUP_ASTERISK);
+                }
                 while(stringWidth(prefix, &standardFont, prefixPre, prefixPost) + 1 < LRWidth) {
                   strcat(prefix,STD_SPACE_6_PER_EM);
                 }
@@ -1787,7 +1793,9 @@ void execTimerApp(uint16_t timerType) {
               prefix[0]=0;
               if(lrChosen != 0) {
                 strcpy(prefix,eatSpacesEnd(getCurveFitModeName(lrChosen)));
-                if(lrCountOnes(lrSelection)>1) strcat(prefix,STD_SUP_ASTERISK);
+                if(lrCountOnes(lrSelection)>1) {
+                  strcat(prefix,STD_SUP_ASTERISK);
+                }
                 strcat(prefix, STD_SPACE_FIGURE);
               }
               strcat(prefix, STD_y_CIRC " =");
@@ -1800,7 +1808,9 @@ void execTimerApp(uint16_t timerType) {
               prefix[0]=0;
               if(lrChosen != 0) {
                 strcpy(prefix,eatSpacesEnd(getCurveFitModeName(lrChosen)));
-                if(lrCountOnes(lrSelection)>1) strcat(prefix,STD_SUP_ASTERISK);
+                if(lrCountOnes(lrSelection)>1) {
+                  strcat(prefix,STD_SUP_ASTERISK);
+                }
                 strcat(prefix, STD_SPACE_FIGURE);
               }
               strcat(prefix, STD_x_CIRC " =");
@@ -1813,7 +1823,9 @@ void execTimerApp(uint16_t timerType) {
               prefix[0]=0;
               if(lrChosen != 0) {
                 strcpy(prefix,eatSpacesEnd(getCurveFitModeName(lrChosen)));
-                if(lrCountOnes(lrSelection)>1) strcat(prefix,STD_SUP_ASTERISK);
+                if(lrCountOnes(lrSelection)>1) {
+                  strcat(prefix,STD_SUP_ASTERISK);
+                }
                 strcat(prefix, STD_SPACE_FIGURE);
               }
               strcat(prefix, STD_x_CIRC STD_SUB_1 " =" );
@@ -1824,7 +1836,9 @@ void execTimerApp(uint16_t timerType) {
                 prefix[0]=0;
                 if(lrChosen != 0) {
                   strcpy(prefix,eatSpacesEnd(getCurveFitModeName(lrChosen)));
-                  if(lrCountOnes(lrSelection)>1) strcat(prefix,STD_SUP_ASTERISK);
+                  if(lrCountOnes(lrSelection)>1) {
+                    strcat(prefix,STD_SUP_ASTERISK);
+                  }
                   strcat(prefix, STD_SPACE_FIGURE);
                 }
                 strcat(prefix, STD_x_CIRC STD_SUB_2 " =");
@@ -1838,7 +1852,9 @@ void execTimerApp(uint16_t timerType) {
               prefix[0]=0;
               if(lrChosen != 0) {
                 strcpy(prefix,eatSpacesEnd(getCurveFitModeName(lrChosen)));
-                if(lrCountOnes(lrSelection)>1) strcat(prefix,STD_SUP_ASTERISK);
+                if(lrCountOnes(lrSelection)>1) {
+                  strcat(prefix,STD_SUP_ASTERISK);
+                }
                 strcat(prefix, STD_SPACE_FIGURE);
               }
               strcat(prefix, "r =");
@@ -1881,10 +1897,12 @@ void execTimerApp(uint16_t timerType) {
           else if(temporaryInformation == TI_STATISTIC_SUMS) {
             realToInt32(SIGMA_N, w);
             if(regist == REGISTER_Y) {
-              if(w == 1)
+              if(w == 1) {
                 sprintf(prefix, "%03" PRId16 " data point", w);
-              else
+              }
+              else {
                 sprintf(prefix, "%03" PRId16 " data points", w);
+              }
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Y_LINE - 2, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
             }
@@ -1959,7 +1977,9 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
-          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+            viewRegName(prefix, &prefixWidth);
+          }
           real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
 
           w = stringWidth(tmpString, &numericFont, false, true);
@@ -1984,7 +2004,9 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
-          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+            viewRegName(prefix, &prefixWidth);
+          }
           complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
 
           w = stringWidth(tmpString, &numericFont, false, true);
@@ -2061,7 +2083,9 @@ void execTimerApp(uint16_t timerType) {
         }
 
         else if(getRegisterDataType(regist) == dtShortInteger) {
-          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+            viewRegName(prefix, &prefixWidth);
+          }
           shortIntegerToDisplayString(regist, tmpString, true);
           if(prefixWidth > 0) {
             showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
@@ -2079,19 +2103,37 @@ void execTimerApp(uint16_t timerType) {
             }
           }
 
-          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+            viewRegName(prefix, &prefixWidth);
+          }
           longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - prefixWidth, 50, STD_SPACE_PUNCTUATION);
 
           if(temporaryInformation == TI_DAY_OF_WEEK) {
             if(regist == REGISTER_X) {
-              if(strcmp(tmpString, "1") == 0) strcpy(prefix, nameOfWday_en[1]);
-              else if(strcmp(tmpString, "2") == 0) strcpy(prefix, nameOfWday_en[2]);
-              else if(strcmp(tmpString, "3") == 0) strcpy(prefix, nameOfWday_en[3]);
-              else if(strcmp(tmpString, "4") == 0) strcpy(prefix, nameOfWday_en[4]);
-              else if(strcmp(tmpString, "5") == 0) strcpy(prefix, nameOfWday_en[5]);
-              else if(strcmp(tmpString, "6") == 0) strcpy(prefix, nameOfWday_en[6]);
-              else if(strcmp(tmpString, "7") == 0) strcpy(prefix, nameOfWday_en[7]);
-              else strcpy(prefix, nameOfWday_en[0]);
+              if(strcmp(tmpString, "1") == 0) {
+                strcpy(prefix, nameOfWday_en[1]);
+              }
+              else if(strcmp(tmpString, "2") == 0) {
+                strcpy(prefix, nameOfWday_en[2]);
+              }
+              else if(strcmp(tmpString, "3") == 0) {
+                strcpy(prefix, nameOfWday_en[3]);
+              }
+              else if(strcmp(tmpString, "4") == 0) {
+                strcpy(prefix, nameOfWday_en[4]);
+              }
+              else if(strcmp(tmpString, "5") == 0) {
+                strcpy(prefix, nameOfWday_en[5]);
+              }
+              else if(strcmp(tmpString, "6") == 0) {
+                strcpy(prefix, nameOfWday_en[6]);
+              }
+              else if(strcmp(tmpString, "7") == 0) {
+                strcpy(prefix, nameOfWday_en[7]);
+              }
+              else {
+                strcpy(prefix, nameOfWday_en[0]);
+              }
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
             }
           }
@@ -2120,7 +2162,9 @@ void execTimerApp(uint16_t timerType) {
         }
 
         else if(getRegisterDataType(regist) == dtTime) {
-          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+            viewRegName(prefix, &prefixWidth);
+          }
           timeToDisplayString(regist, tmpString, false);
           w = stringWidth(tmpString, &numericFont, false, true);
           if(prefixWidth > 0) {
@@ -2136,7 +2180,9 @@ void execTimerApp(uint16_t timerType) {
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
             }
           }
-          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+            viewRegName(prefix, &prefixWidth);
+          }
 
           dateToDisplayString(regist, tmpString);
           w = stringWidth(tmpString, &numericFont, false, true);
@@ -2147,7 +2193,9 @@ void execTimerApp(uint16_t timerType) {
         }
 
         else if(getRegisterDataType(regist) == dtConfig) {
-          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+            viewRegName(prefix, &prefixWidth);
+          }
           xcopy(tmpString, "Configuration data", 19);
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;
@@ -2162,14 +2210,19 @@ void execTimerApp(uint16_t timerType) {
             real34Matrix_t matrix;
             prefixWidth = 0; prefix[0] = 0;
             linkToRealMatrixRegister(regist, &matrix);
-            if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+            if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+              viewRegName(prefix, &prefixWidth);
+            }
             showRealMatrix(&matrix, prefixWidth);
-            if(lastErrorCode != 0)
+            if(lastErrorCode != 0) {
               refreshRegisterLine(errorMessageRegisterLine);
-            if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE)
+            }
+            if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE) {
               refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
-            if(prefixWidth > 0)
+            }
+            if(prefixWidth > 0) {
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
+            }
           }
           else {
             real34MatrixToDisplayString(regist, tmpString);
@@ -2187,14 +2240,19 @@ void execTimerApp(uint16_t timerType) {
           if((origRegist == REGISTER_X && calcMode != CM_MIM) || (temporaryInformation == TI_VIEW && origRegist == REGISTER_T)) {
             complex34Matrix_t matrix;
             linkToComplexMatrixRegister(regist, &matrix);
-            if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+            if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+              viewRegName(prefix, &prefixWidth);
+            }
             showComplexMatrix(&matrix, prefixWidth);
-            if(lastErrorCode != 0)
+            if(lastErrorCode != 0) {
               refreshRegisterLine(errorMessageRegisterLine);
-            if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE)
+            }
+            if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE) {
               refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
-            if(prefixWidth > 0)
+            }
+            if(prefixWidth > 0) {
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
+            }
           }
           else {
             complex34MatrixToDisplayString(regist, tmpString);
@@ -2213,7 +2271,9 @@ void execTimerApp(uint16_t timerType) {
           showString(tmpString, &standardFont, SCREEN_WIDTH - stringWidth(tmpString, &standardFont, false, true), baseY + 6, vmNormal, false, true);
         }
 
-        if(temporaryInformation == TI_VIEW && origRegist == REGISTER_X) regist = REGISTER_X;
+        if(temporaryInformation == TI_VIEW && origRegist == REGISTER_X) {
+          regist = REGISTER_X;
+        }
       }
 
       if(regist == REGISTER_T) {

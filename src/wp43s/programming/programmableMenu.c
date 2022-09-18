@@ -53,7 +53,9 @@
     uint8_t opParam = *(uint8_t *)paramAddress;
     if(opParam <= LAST_LOCAL_REGISTER) { // Local register from .00 to .98
       int16_t realParam = indirectAddressing(opParam, INDPM_REGISTER, 0, 99);
-      if(realParam < 9999) return realParam;
+      if(realParam < 9999) {
+        return realParam;
+      }
     }
     else {
       sprintf(tmpString, "\nIn function _indirectRegister: " STD_RIGHT_ARROW " %u is not a valid parameter!", opParam);

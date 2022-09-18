@@ -39,15 +39,17 @@
 
 static bool_t besselGetParam(calcRegister_t regist, real_t *r, realContext_t *realContext) {
   switch(getRegisterDataType(regist)) {
-    case dtReal34:
+    case dtReal34: {
       if(getRegisterAngularMode(regist) == amNone) {
         real34ToReal(REGISTER_REAL34_DATA(regist), r);
         return true;
       }
       break;
-    case dtLongInteger:
+    }
+    case dtLongInteger: {
       convertLongIntegerRegisterToReal(regist, r, realContext);
       return true;
+    }
   }
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -585,7 +587,9 @@ static void bessel2_int_series(const real_t *n, const real_t *x, real_t *res, re
     n = &absn;
     n_neg = 1;
   }
-  else n_neg = 0;
+  else {
+    n_neg = 0;
+  }
   realToInt32(n, in);
 
   realDivide(x, const_2, &xon2, realContext);      // xon2 = x/2
@@ -645,8 +649,9 @@ static void bessel2_int_series(const real_t *n, const real_t *x, real_t *res, re
 
     realMultiply(&v, &p, &t, realContext);
     realAdd(&t, &s, &u, realContext);
-    if(realCompareEqual(&u, &s))
+    if(realCompareEqual(&u, &s)) {
       break;
+    }
     realCopy(&u, &s);
   }
   realMultiply(&s, &xon2n, &t, realContext);
