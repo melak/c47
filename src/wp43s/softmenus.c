@@ -1863,17 +1863,34 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
               if(*ptr != 0) {
                 videoMode_t vm = vmNormal;
                 switch(-softmenu[m].menuItem) {
-                  case MNU_MENUS:   vm =                                                            vmReverse;            break;
-                  case MNU_MyMenu:  vm = (                      userMenuItems[x + 6*y].item < 0) ? vmReverse : vmNormal; break;
-                  case MNU_MyAlpha: vm = (                     userAlphaItems[x + 6*y].item < 0) ? vmReverse : vmNormal; break;
-                  case MNU_DYNAMIC: vm = (userMenus[currentUserMenu].menuItem[x + 6*y].item < 0) ? vmReverse : vmNormal; break;
+                  case MNU_MENUS: {
+                    vm = vmReverse;
+                    break;
+                  }
+                  case MNU_MyMenu: {
+                    vm = (userMenuItems[x + 6*y].item < 0) ? vmReverse : vmNormal;
+                    break;
+                  }
+                  case MNU_MyAlpha: {
+                    vm = (userAlphaItems[x + 6*y].item < 0) ? vmReverse : vmNormal;
+                    break;
+                  }
+                  case MNU_DYNAMIC: {
+                    vm = (userMenus[currentUserMenu].menuItem[x + 6*y].item < 0) ? vmReverse : vmNormal;
+                    break;
+                  }
                   case MNU_1STDERIV:
                   case MNU_2NDDERIV:
-                  case MNU_MVAR:    if(!compareString((char *)getNthString(dynamicSoftmenu[m].menuContent, x+6*y), indexOfItems[ITM_DRAW].itemSoftmenuName, CMP_NAME)) {
+                  case MNU_MVAR: {
+                    if(!compareString((char *)getNthString(dynamicSoftmenu[m].menuContent, x+6*y), indexOfItems[ITM_DRAW].itemSoftmenuName, CMP_NAME)) {
                                       vm = vmReverse;
                                     }
                                     break;
-                  default:          vm =                                                  vmNormal; break;
+                  }
+                  default: {
+                    vm = vmNormal;
+                    break;
+                  }
                 }
                 showSoftkey((char *)ptr, x, y, vm, true, true, NOVAL, NOVAL);
               }
@@ -2198,10 +2215,22 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
       int32_t numberOfVars = -1;
       currentSolverStatus = SOLVER_STATUS_USES_FORMULA | SOLVER_STATUS_INTERACTIVE;
       switch(-id) {
-        case MNU_Solver:   currentSolverStatus |= SOLVER_STATUS_EQUATION_SOLVER;         break;
-        case MNU_Sf:       currentSolverStatus |= SOLVER_STATUS_EQUATION_INTEGRATE;      break;
-        case MNU_1STDERIV: currentSolverStatus |= SOLVER_STATUS_EQUATION_1ST_DERIVATIVE; break;
-        case MNU_2NDDERIV: currentSolverStatus |= SOLVER_STATUS_EQUATION_2ND_DERIVATIVE; break;
+        case MNU_Solver: {
+          currentSolverStatus |= SOLVER_STATUS_EQUATION_SOLVER;
+          break;
+        }
+        case MNU_Sf: {
+          currentSolverStatus |= SOLVER_STATUS_EQUATION_INTEGRATE;
+          break;
+        }
+        case MNU_1STDERIV: {
+          currentSolverStatus |= SOLVER_STATUS_EQUATION_1ST_DERIVATIVE;
+          break;
+        }
+        case MNU_2NDDERIV: {
+          currentSolverStatus |= SOLVER_STATUS_EQUATION_2ND_DERIVATIVE;
+          break;
+        }
       }
       cachedDynamicMenu = 0;
       parseEquation(currentFormula, EQUATION_PARSER_MVAR, aimBuffer, tmpString);

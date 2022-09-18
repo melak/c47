@@ -49,7 +49,7 @@
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         576  // Save screen
+#define BACKUP_VERSION         577  // Save screen
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -310,7 +310,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&loBinR,                             sizeof(loBinR),                             BACKUP);
     save(&nBins ,                             sizeof(nBins ),                             BACKUP);
     save(&hiBinR,                             sizeof(hiBinR),                             BACKUP);
-
+    save(&histElementXorY,                    sizeof(histElementXorY),                    BACKUP);
 
     save(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
     for(int y = 0; y < SCREEN_HEIGHT; ++y) {
@@ -617,6 +617,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&loBinR,                             sizeof(loBinR),                             BACKUP);
       restore(&nBins ,                             sizeof(nBins ),                             BACKUP);
       restore(&hiBinR,                             sizeof(hiBinR),                             BACKUP);
+      restore(&histElementXorY,                    sizeof(histElementXorY),                    BACKUP);
 
       restore(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
       restore(loadedScreen,                        SCREEN_WIDTH * SCREEN_HEIGHT / 8,           BACKUP);

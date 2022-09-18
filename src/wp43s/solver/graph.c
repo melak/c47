@@ -251,7 +251,31 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
       return 0;
     }
   }
+#endif // !TESTSUITE_BUILD
 
+
+  void fnClDrawMx(void) {
+    PLOT_ZOOM = 0;
+    if(plotStatMx[0]!='D') {
+      strcpy(plotStatMx,"DrwMX");
+    }
+    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    if(regStats == INVALID_VARIABLE) {
+      allocateNamedVariable(plotStatMx, dtReal34, REAL34_SIZE);
+      regStats = findNamedVariable(plotStatMx);
+    }
+    clearRegister(regStats);                  // this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
+    if(regStats == INVALID_VARIABLE) {
+      displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "DrwMX matrix not created");
+        moreInfoOnError("In function fnClPlotData:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
+  }
+
+
+#ifndef TESTSUITE_BUILD
   static void AddtoDrawMx() {
     real_t x, y;
     uint16_t rows = 0, cols;
@@ -291,27 +315,6 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
   }
 #endif // !TESTSUITE_BUILD
 
-
-
-  void fnClDrawMx(void) {
-    PLOT_ZOOM = 0;
-    if(plotStatMx[0]!='D') {
-      strcpy(plotStatMx,"DrwMX");
-    }
-    calcRegister_t regStats = findNamedVariable(plotStatMx);
-    if(regStats == INVALID_VARIABLE) {
-      allocateNamedVariable(plotStatMx, dtReal34, REAL34_SIZE);
-      regStats = findNamedVariable(plotStatMx);
-    }
-    clearRegister(regStats);                  // this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
-    if(regStats == INVALID_VARIABLE) {
-      displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "DrwMX matrix not created");
-        moreInfoOnError("In function fnClPlotData:", errorMessage, NULL, NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    }
-  }
 
 
 void graph_eqn(uint16_t mode) {

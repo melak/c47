@@ -2131,7 +2131,7 @@ void callFunction(void) {
   lastErrorCode = 0;
 
   switch(funcType) {
-    case FUNC_NOPARAM:
+    case FUNC_NOPARAM: {
       if((indexOfItems[functionIndex].status & US_STATUS) == US_ENABLED) {
         saveForUndo();
       }
@@ -2141,12 +2141,15 @@ void callFunction(void) {
 
       funcNoParam(NOPARAM);
       break;
+    }
 
-    case FUNC_CVT:
+    case FUNC_CVT: {
       funcCvt(NOPARAM);
       break;
+    }
 
-    default: {}
+    default: {
+    }
   }
 
   if(lastErrorCode == 0) {

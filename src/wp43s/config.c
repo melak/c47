@@ -849,6 +849,7 @@ void fnReset(uint16_t confirmation) {
     real34Zero(&loBinR);
     real34Zero(&nBins );
     real34Zero(&hiBinR);
+    histElementXorY = -1;
 
 
     x_min = -10;

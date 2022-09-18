@@ -162,7 +162,8 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
   strcpy(ttfName2, ttfName);
   x = strlen(ttfName2) - 4;
   ttfName2[x] = 0; // truncates .ttf
-  while(--x>=0 && ttfName2[x] != '/') ;
+  while(--x>=0 && ttfName2[x] != '/') {
+  }
   if(x < 0) {
     x = 0;
   }
@@ -368,7 +369,8 @@ void processFiles(const char *fontsPath, const char *outputFile) {
     pos = 9;
     glyphRank[nbGlyphRanks].rank1 = atoi(line + pos);
 
-    while(line[pos++] != ',') ;
+    while(line[pos++] != ',') {
+    }
     glyphRank[nbGlyphRanks].rank2 = atoi(line + pos);
 
     nbGlyphRanks++;

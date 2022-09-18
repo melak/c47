@@ -1,6 +1,6 @@
 /* This file is part of 43S.
  *
- * 43S is free software: you can redistribute it and/or modify
+ * 43S is free software:you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -75,16 +75,16 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       if(item >= ITM_s && item <= ITM_z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_s - (int16_t)ITM_s); else //JM optimized
       if(item >= ITM_A && item <= ITM_Z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_A - (int16_t)ITM_A); else //JM optimized
       switch(item) {
-        case ITM_alpha    : return ITM_SUB_alpha;
-        case ITM_delta    : return ITM_SUB_delta;
-        case ITM_mu       : return ITM_SUB_mu;
-        case ITM_SUN      : return ITM_SUB_SUN;
-        case ITM_h        : return ITM_SUB_h;
-        case ITM_t        : return ITM_SUB_t;
-        case ITM_INFINITY : return ITM_SUB_INFINITY;
-        case ITM_s        : return ITM_SUB_s;
-        case ITM_PLUS     : return ITM_SUB_PLUS;
-        case ITM_MINUS    : return ITM_SUB_MINUS;
+        case ITM_alpha    :return ITM_SUB_alpha;
+        case ITM_delta    :return ITM_SUB_delta;
+        case ITM_mu       :return ITM_SUB_mu;
+        case ITM_SUN      :return ITM_SUB_SUN;
+        case ITM_h        :return ITM_SUB_h;
+        case ITM_t        :return ITM_SUB_t;
+        case ITM_INFINITY :return ITM_SUB_INFINITY;
+        case ITM_s        :return ITM_SUB_s;
+        case ITM_PLUS     :return ITM_SUB_PLUS;
+        case ITM_MINUS    :return ITM_SUB_MINUS;
 /* //JM optimized
         case ITM_0        :
         case ITM_1        :
@@ -143,33 +143,33 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         case ITM_Y        :
         case ITM_Z        :
 */
-        default           : return item;
+        default           :return item;
       }
     }
     else if(subOrSup == NC_SUPERSCRIPT) {
       nextChar = NC_NORMAL;            //JM de-latching superscript / suscript /sup/sub, removing the lock. Comment out to let sup/sub lock
       switch(item) {
-        case ITM_a        : return ITM_SUP_a;
-        case ITM_x        : return ITM_SUP_x;
-        case ITM_INFINITY : return ITM_SUP_INFINITY;
-        case ITM_PLUS     : return ITM_SUP_PLUS;
-        case ITM_MINUS    : return ITM_SUP_MINUS;
-        case ITM_0        : 
-        case ITM_1        : 
-        case ITM_2        : 
-        case ITM_3        : 
-        case ITM_4        : 
-        case ITM_5        : 
-        case ITM_6        : 
-        case ITM_7        : 
-        case ITM_8        : 
-        case ITM_9        : return item + (ITM_SUP_0 - ITM_0);
-        case ITM_f        : return ITM_SUP_f;
-        case ITM_g        : return ITM_SUP_g;
-        case ITM_h        : return ITM_SUP_h;
-        case ITM_r        : return ITM_SUP_r;
-        case ITM_T        : return ITM_SUP_T;
-        default           : return item;
+        case ITM_a        :return ITM_SUP_a;
+        case ITM_x        :return ITM_SUP_x;
+        case ITM_INFINITY :return ITM_SUP_INFINITY;
+        case ITM_PLUS     :return ITM_SUP_PLUS;
+        case ITM_MINUS    :return ITM_SUP_MINUS;
+        case ITM_0        :
+        case ITM_1        :
+        case ITM_2        :
+        case ITM_3        :
+        case ITM_4        :
+        case ITM_5        :
+        case ITM_6        :
+        case ITM_7        :
+        case ITM_8        :
+        case ITM_9        :return item + (ITM_SUP_0 - ITM_0);
+        case ITM_f        :return ITM_SUP_f;
+        case ITM_g        :return ITM_SUP_g;
+        case ITM_h        :return ITM_SUP_h;
+        case ITM_r        :return ITM_SUP_r;
+        case ITM_T        :return ITM_SUP_T;
+        default           :return item;
       }
     }
 
@@ -303,13 +303,13 @@ void kill_ASB_icon(void) {
   void addItemToBuffer(uint16_t item) {
 
     #ifdef PC_BUILD
-      char tmp[200]; sprintf(tmp,"bufferize.c: addItemToBuffer item=%d tam.mode=%d\n",item,tam.mode); jm_show_calc_state(tmp);
+      char tmp[200]; sprintf(tmp,"bufferize.c:addItemToBuffer item=%d tam.mode=%d\n",item,tam.mode); jm_show_calc_state(tmp);
     #endif
     resetKeytimers();  //JM
 
 
     if(item == NOPARAM) {
-      displayBugScreen("In function addItemToBuffer: item should not be NOPARAM=7654!");
+      displayBugScreen("In function addItemToBuffer:item should not be NOPARAM=7654!");
     }
     else {
       screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
@@ -320,7 +320,7 @@ void kill_ASB_icon(void) {
       if((fnKeyInCatalog || !catalog || catalog == CATALOG_MVAR) && (((calcMode == CM_AIM || calcMode == CM_EIM) && !tam.mode) || tam.alpha)) {
         item = convertItemToSubOrSup(item, nextChar);
         if(stringByteLength(aimBuffer) + stringByteLength(indexOfItems[item].itemSoftmenuName) >= AIM_BUFFER_LENGTH) { /// TODO this error should never happen but who knows!
-          sprintf(errorMessage, "In function addItemToBuffer: the AIM input buffer is full! %d bytes for now", AIM_BUFFER_LENGTH);
+          sprintf(errorMessage, "In function addItemToBuffer:the AIM input buffer is full! %d bytes for now", AIM_BUFFER_LENGTH);
           displayBugScreen(errorMessage);
         }
         else if(calcMode == CM_EIM) {
@@ -328,45 +328,51 @@ void kill_ASB_icon(void) {
                                 item == ITM_VERTICAL_BAR        ? "||" :
                                 item == ITM_ROOT_SIGN           ? STD_SQUARE_ROOT "()" :
                                 item == ITM_ALOG_SYMBOL         ? "e" STD_SUB_E "^()" :
-                                item == ITM_LG_SIGN             ? "LOG()" :   //JM C43
-                                item == ITM_LN_SIGN             ? "LN()"  :   //JM C43
-                                item == ITM_SIN_SIGN            ? "SIN()" :   //JM C43
-                                item == ITM_COS_SIGN            ? "COS()" :   //JM C43
-                                item == ITM_TAN_SIGN            ? "TAN()" :   //JM C43
-                                item == ITM_OBELUS              ? STD_SLASH  :   //JM C43
+                                item == ITM_LG_SIGN             ? "LOG()" :  //JM C43
+                                item == ITM_LN_SIGN             ? "LN()"  :  //JM C43
+                                item == ITM_SIN_SIGN            ? "SIN()" :  //JM C43
+                                item == ITM_COS_SIGN            ? "COS()" :  //JM C43
+                                item == ITM_TAN_SIGN            ? "TAN()" :  //JM C43
+                                item == ITM_OBELUS              ? STD_SLASH  :  //JM C43
                                 indexOfItems[item].itemSoftmenuName;
           char *aimCursorPos = aimBuffer;
           char *aimBottomPos = aimBuffer + stringByteLength(aimBuffer);
           uint32_t itemLen = stringByteLength(addChar);
           for(uint32_t i = 0; i < xCursor; ++i) {
-            aimCursorPos += (*aimCursorPos & 0x80) ? 2 : 1;
+            aimCursorPos += (*aimCursorPos & 0x80) ? 2 :1;
           }
           for(; aimBottomPos >= aimCursorPos; --aimBottomPos) {
             *(aimBottomPos + itemLen) = *aimBottomPos;
           }
           xcopy(aimCursorPos, addChar, itemLen);
           switch(item) {
-            case ITM_ALOG_SYMBOL:
+            case ITM_ALOG_SYMBOL: {
               xCursor += 4;
               break;
-            case ITM_LG_SIGN :    //JM C43
-            case ITM_SIN_SIGN :    //JM C43
-            case ITM_COS_SIGN :    //JM C43
-            case ITM_TAN_SIGN :    //JM C43
+            }
+            case ITM_LG_SIGN:   //JM C43
+            case ITM_SIN_SIGN:   //JM C43
+            case ITM_COS_SIGN:   //JM C43
+            case ITM_TAN_SIGN: {    //JM C43
               xCursor += 4;
               break;
-            case ITM_ROOT_SIGN:
+            }
+            case ITM_ROOT_SIGN: {
               xCursor += 2;
               break;
-            case ITM_LN_SIGN :   //JM C43
+            }
+            case ITM_LN_SIGN: {   //JM C43
               xCursor += 3;
               break;
+            }
             case ITM_PAIR_OF_PARENTHESES:
-            case ITM_VERTICAL_BAR:
+            case ITM_VERTICAL_BAR: {
               xCursor += 1;
               break;
-            default:
+            }
+            default: {
               xCursor += stringGlyphLength(indexOfItems[item].itemSoftmenuName);
+            }
           }
         }
         else if (stringByteLength(aimBuffer) <= AIM_BUFFER_LENGTH-1 &&
@@ -401,15 +407,15 @@ void kill_ASB_icon(void) {
           T_cursorPos = stringNextGlyph(aimBuffer, T_cursorPos);  //place the cursor at the next glyph boundary
           //JMCURSOR ^^ REPLACES THE FOLLOWING XCOPY, WHICH NORMALLY JUST ADDS A CHARACTER TO THE END OF THE STRING
           // xcopy(aimBuffer + stringNextGlyph(aimBuffer, stringLastGlyph(aimBuffer)), indexOfItems[item].itemSoftmenuName, stringByteLength(indexOfItems[item].itemSoftmenuName) + 1);
-          switch(item) { // NOTE: cursor must jump on 3 places for the new COS_SIGN etc.
-            case ITM_LG_SIGN :    //JM C43
-            case ITM_SIN_SIGN :   //JM C43
-            case ITM_COS_SIGN :   //JM C43
-            case ITM_TAN_SIGN :   //JM C43
+          switch(item) { // NOTE:cursor must jump on 3 places for the new COS_SIGN etc.
+            case ITM_LG_SIGN :   //JM C43
+            case ITM_SIN_SIGN :  //JM C43
+            case ITM_COS_SIGN :  //JM C43
+            case ITM_TAN_SIGN :  //JM C43
               T_cursorPos += 2;
               break;
             case ITM_ROOT_SIGN:
-            case ITM_LN_SIGN :   //JM C43
+            case ITM_LN_SIGN :  //JM C43
               T_cursorPos += 1;
               break;
             case ITM_PAIR_OF_PARENTHESES:
@@ -435,7 +441,7 @@ void kill_ASB_icon(void) {
         // NOP if not a single character input for search
         // or if we already have two characters in the search buffer
         else if(stringGlyphLength(indexOfItems[item].itemSoftmenuName) == 1 &&
-                (lgCatalogSelection < ((asmBuffer[0] & 0x80) ? 3 : 2)) &&
+                (lgCatalogSelection < ((asmBuffer[0] & 0x80) ? 3 :2)) &&
                 currentSoftmenuScrolls()) {
           int32_t pos = lgCatalogSelection++;
           if(asmBuffer[pos] != 0) {
@@ -495,7 +501,6 @@ void kill_ASB_icon(void) {
         switch(item) {
           case ITM_EXPONENT :
           case ITM_PERIOD :
-
           case ITM_0 :
           case ITM_1 :
           case ITM_2 :
@@ -506,16 +511,15 @@ void kill_ASB_icon(void) {
           case ITM_7 :
           case ITM_8 :
           case ITM_9 :
-
-          case ITM_CHS : // +/-
-
-          case ITM_CONSTpi :
+          case ITM_CHS :// +/-
+          case ITM_CONSTpi: {
             mimAddNumber(item);
             break;
+          }
 
 #ifdef SAVE_SPACE_DM42_11
-          case ITM_STO : //JM optimized, to be grouped, so that a single SAVE_SPACE can be used
-          case ITM_RCL : //JM optimized
+          case ITM_STO ://JM optimized, to be grouped, so that a single SAVE_SPACE can be used
+          case ITM_RCL ://JM optimized
               lastErrorCode = ERROR_NONE;
               mimEnter(true);
               runFunction(item);
@@ -528,7 +532,6 @@ void kill_ASB_icon(void) {
           case ITM_STODIV :
           case ITM_STOMAX :
           case ITM_STOMIN :
-
           case ITM_RCL :
           case ITM_RCLADD :
           case ITM_RCLSUB :
@@ -536,35 +539,30 @@ void kill_ASB_icon(void) {
           case ITM_RCLDIV :
           case ITM_RCLMAX :
           case ITM_RCLMIN :
-
           case ITM_CF :
           case ITM_SF :
           case ITM_FF :
-
           case ITM_CNST :
-
           case ITM_ALL :
           case ITM_ENG :
           case ITM_FIX :
           case ITM_DSP :
           case ITM_SCI :
-
           case ITM_SDL :
           case ITM_SDR :
-
           case ITM_RDP :
           case ITM_RM :
-          case ITM_RMODE : //JM
+          case ITM_RMODE ://JM
           case ITM_RSD :
-
           case ITM_DEG :
           case ITM_GRAD :
           case ITM_MULPI :
-          case ITM_RAD :
+          case ITM_RAD: {
               lastErrorCode = ERROR_NONE;
               mimEnter(true);
               runFunction(item);
               break;
+          }
 
           case ITM_SQUARE :
           case ITM_CUBE :
@@ -607,7 +605,6 @@ void kill_ASB_icon(void) {
           case ITM_DtoR :
           case ITM_RtoD :
           case ITM_LOGICALNOT :
-
           case CST_01 :
           case CST_02 :
           case CST_03 :
@@ -687,7 +684,6 @@ void kill_ASB_icon(void) {
           case CST_77 :
           case CST_78 :
           case CST_79 :
-
           case ITM_CtoF :
           case ITM_FtoC :
           case ITM_DBtoPR :
@@ -856,7 +852,6 @@ void kill_ASB_icon(void) {
           case ITM_MtoMILE :
           case ITM_NMItoM :
           case ITM_MtoNMI :
-
           case ITM_NSIGMA :
           case ITM_SIGMAx :
           case ITM_SIGMAy :
@@ -881,7 +876,6 @@ void kill_ASB_icon(void) {
           case ITM_SIGMA1ony2 :
           case ITM_SIGMAx3 :
           case ITM_SIGMAx4 :
-
           case ITM_ABS :
           case ITM_BATT :
           case ITM_BN :
@@ -916,7 +910,7 @@ void kill_ASB_icon(void) {
           case ITM_RE :
           case ITM_REexIM :
           case ITM_RMQ :
-          case ITM_RMODEQ :  //JM
+          case ITM_RMODEQ : //JM
           case ITM_EX1 :
           case ITM_ROUNDI :
           case ITM_SDIGS :
@@ -945,26 +939,27 @@ void kill_ASB_icon(void) {
           case ITM_toREAL :
           case ITM_DtoDMS :
           case ITM_MULPIto :
-
           case ITM_Kk :
-          case ITM_Ek :
+          case ITM_Ek:
 #endif //SAVE_SPACE_DM42_11          
-          case ITM_op_a :                 //C43
-          case ITM_op_a2:                 //C43
-          case ITM_op_j :                 //C43
-          case ITM_EE_EXP_TH :            //C43
-
+          case ITM_op_a :                //C43
+          case ITM_op_a2:                //C43
+          case ITM_op_j :                //C43
+          case ITM_EE_EXP_TH: {           //C43
             if(item == ITM_ANGLE) item = ITM_ARG;
             mimRunFunction(item, indexOfItems[item].param);
             break;
+          }
 
-          case ITM_ANGLE :
+          case ITM_ANGLE: {
             mimRunFunction(ITM_ARG, indexOfItems[ITM_ARG].param);
             break;
+          }
 
-          case ITM_OFF :
+          case ITM_OFF: {
             runFunction(ITM_OFF);
             break;
+          }
         }
       }
 
@@ -998,7 +993,7 @@ void kill_ASB_icon(void) {
 
     if(calcMode == CM_NORMAL) {
       switch(item) {
-        case ITM_EXPONENT :
+        case ITM_EXPONENT: {
           calcModeNim(NOPARAM);
           aimBuffer[0] = '+';
           aimBuffer[1] = '1';
@@ -1008,14 +1003,16 @@ void kill_ASB_icon(void) {
           lastIntegerBase = 0;
           fnRefreshState();                                                //JMNIM
           break;
+        }
 
-        case ITM_PERIOD :
+        case ITM_PERIOD: {
           calcModeNim(NOPARAM);
           aimBuffer[0] = '+';
           aimBuffer[1] = '0';
           aimBuffer[2] = 0;
           nimNumberPart = NP_INT_10;
           break;
+        }
 
         case ITM_0 :
         case ITM_1 :
@@ -1032,17 +1029,19 @@ void kill_ASB_icon(void) {
         case ITM_C :
         case ITM_D :
         case ITM_E :
-        case ITM_F :
+        case ITM_F: {
           calcModeNim(NOPARAM);
           aimBuffer[0] = '+';
           aimBuffer[1] = 0;
           nimNumberPart = NP_EMPTY;
           break;
+        }
 
-        default :
-          sprintf(errorMessage, "In function addItemToNimBuffer: %d is an unexpected item value when initializing NIM!", item);
+        default: {
+          sprintf(errorMessage, "In function addItemToNimBuffer:%d is an unexpected item value when initializing NIM!", item);
           displayBugScreen(errorMessage);
           return;
+      }
       }
 
       if(programRunStop != PGM_RUNNING) {
@@ -1068,11 +1067,11 @@ void kill_ASB_icon(void) {
       case ITM_6 :
       case ITM_7 :
       case ITM_8 :
-      case ITM_9 :
+      case ITM_9: {
         done = true;
 
         switch(nimNumberPart) {
-          case NP_INT_10 :
+          case NP_INT_10: {
             if(item == ITM_0) {
               //if(aimBuffer[1] != '0') {  //JM_vv TYPE0; Allow starting the NIM buffer with 0000
                 strcat(aimBuffer, "0");
@@ -1086,8 +1085,9 @@ void kill_ASB_icon(void) {
               strcat(aimBuffer, indexOfItems[item].itemSoftmenuName);
             }
             break;
+          }
 
-          case NP_REAL_EXPONENT :
+          case NP_REAL_EXPONENT: {
             if(item == ITM_0) {
               if(aimBuffer[exponentSignLocation + 1] == '0') {
                 aimBuffer[strlen(aimBuffer) - 1] = 0;
@@ -1113,8 +1113,9 @@ void kill_ASB_icon(void) {
               }
             }
             break;
+          }
 
-          case NP_FRACTION_DENOMINATOR :
+          case NP_FRACTION_DENOMINATOR: {
             if(item == ITM_0) {
               strcat(aimBuffer, "0");
 
@@ -1134,8 +1135,9 @@ void kill_ASB_icon(void) {
               }
             }
             break;
+          }
 
-          case NP_COMPLEX_INT_PART :
+          case NP_COMPLEX_INT_PART: {
             if(item == ITM_0) {
               if(aimBuffer[imaginaryMantissaSignLocation + 2] != '0') {
                 strcat(aimBuffer, "0");
@@ -1149,8 +1151,9 @@ void kill_ASB_icon(void) {
               strcat(aimBuffer, indexOfItems[item].itemSoftmenuName);
             }
             break;
+          }
 
-          case NP_COMPLEX_EXPONENT :
+          case NP_COMPLEX_EXPONENT: {
             if(item == ITM_0) {
               if(aimBuffer[imaginaryExponentSignLocation + 1] == '0') {
                 aimBuffer[strlen(aimBuffer) - 1] = 0;
@@ -1176,8 +1179,9 @@ void kill_ASB_icon(void) {
               }
             }
             break;
+          }
 
-          case NP_INT_BASE :
+          case NP_INT_BASE: {
             strcat(aimBuffer, indexOfItems[item].itemSoftmenuName);
             strBase = strchr(aimBuffer, '#') + 1;
             if(atoi(strBase) > 16) {
@@ -1187,8 +1191,9 @@ void kill_ASB_icon(void) {
               goto addItemToNimBuffer_exit;
             }
             break;
+          }
 
-          default :
+          default: {
             if(nimNumberPart == NP_EMPTY) {
               nimNumberPart = NP_INT_10;
               //debugNIM();
@@ -1196,14 +1201,16 @@ void kill_ASB_icon(void) {
 
             strcat(aimBuffer, indexOfItems[item].itemSoftmenuName);
         }
+        }
         break;
+      }
 
       case ITM_A :
       case ITM_B :
       case ITM_C :
       case ITM_D :
       case ITM_E :
-      case ITM_F :
+      case ITM_F: {
         done = true;
 
         if(nimNumberPart == NP_EMPTY || nimNumberPart == NP_INT_10 || nimNumberPart == NP_INT_16) {
@@ -1218,8 +1225,9 @@ void kill_ASB_icon(void) {
           //debugNIM();
         }
         break;
+      }
 
-      case ITM_PERIOD :
+      case ITM_PERIOD: {
         done = true;
 
         if(aimBuffer[strlen(aimBuffer)-1] == 'i') {
@@ -1230,14 +1238,15 @@ void kill_ASB_icon(void) {
         fnRefreshState();                                                //JMNIM
 
         switch(nimNumberPart) {
-          case NP_INT_10 :
+          case NP_INT_10: {
             strcat(aimBuffer, ".");
 
             nimNumberPart = NP_REAL_FLOAT_PART;
             //debugNIM();
             break;
+          }
 
-          case NP_REAL_FLOAT_PART :
+          case NP_REAL_FLOAT_PART: {
             if(aimBuffer[strlen(aimBuffer) - 1] == '.') {
               strcat(aimBuffer, "0");
             }
@@ -1254,19 +1263,23 @@ void kill_ASB_icon(void) {
             nimNumberPart = NP_FRACTION_DENOMINATOR;
             //debugNIM();
             break;
+          }
 
-          case NP_COMPLEX_INT_PART :
+          case NP_COMPLEX_INT_PART: {
             strcat(aimBuffer, ".");
 
             nimNumberPart = NP_COMPLEX_FLOAT_PART;
             //debugNIM();
             break;
+          }
 
-          default : {}
+          default: {
+          }
         }
         break;
+      }
 
-      case ITM_EXPONENT :
+      case ITM_EXPONENT: {
         done = true;
 
         if(aimBuffer[strlen(aimBuffer)-1] == 'i') {
@@ -1277,37 +1290,41 @@ void kill_ASB_icon(void) {
         fnRefreshState();                                                //JMNIM
 
         switch(nimNumberPart) {
-          case NP_INT_10 :
+          case NP_INT_10: {
             strcat(aimBuffer, "."); // no break here
             #if !defined(OSX)
               __attribute__ ((fallthrough));
             #endif // !OSX
-          case NP_REAL_FLOAT_PART :
+          }
+          case NP_REAL_FLOAT_PART: {
             strcat(aimBuffer, "e+");
             exponentSignLocation = strlen(aimBuffer) - 1;
 
             nimNumberPart = NP_REAL_EXPONENT;
             //debugNIM();
             break;
-
-          case NP_COMPLEX_INT_PART :
+          }
+          case NP_COMPLEX_INT_PART: {
             strcat(aimBuffer, "."); // no break here
             #if !defined(OSX)
               __attribute__ ((fallthrough));
             #endif // !OSX
-          case NP_COMPLEX_FLOAT_PART :
+          }
+          case NP_COMPLEX_FLOAT_PART: {
             strcat(aimBuffer, "e+");
             imaginaryExponentSignLocation = strlen(aimBuffer) - 1;
 
             nimNumberPart = NP_COMPLEX_EXPONENT;
             //debugNIM();
             break;
-
-          default : {}
+          }
+          default: {
+          }
         }
         break;
+      }
 
-      case ITM_toINT : // #
+      case ITM_toINT: { // #
         done = true;
 
         lastIntegerBase = 0;
@@ -1320,8 +1337,9 @@ void kill_ASB_icon(void) {
           //debugNIM();
         }
         break;
+      }
 
-      case ITM_CHS : // +/-
+      case ITM_CHS: { // +/-
         done = true;
 
         switch(nimNumberPart) {
@@ -1329,7 +1347,7 @@ void kill_ASB_icon(void) {
           case NP_INT_16 :
           case NP_INT_BASE :
           case NP_REAL_FLOAT_PART :
-          case NP_FRACTION_DENOMINATOR :
+          case NP_FRACTION_DENOMINATOR: {
             if(aimBuffer[0] == '+') {
               aimBuffer[0] = '-';
             }
@@ -1337,8 +1355,9 @@ void kill_ASB_icon(void) {
               aimBuffer[0] = '+';
             }
             break;
+          }
 
-          case NP_REAL_EXPONENT :
+          case NP_REAL_EXPONENT: {
             if(aimBuffer[exponentSignLocation] == '+') {
               aimBuffer[exponentSignLocation] = '-';
               if(aimBuffer[exponentSignLocation + 1] == '0') {
@@ -1349,9 +1368,10 @@ void kill_ASB_icon(void) {
               aimBuffer[exponentSignLocation] = '+';
             }
             break;
+          }
 
           case NP_COMPLEX_INT_PART :
-          case NP_COMPLEX_FLOAT_PART :
+          case NP_COMPLEX_FLOAT_PART: {
             if(aimBuffer[imaginaryMantissaSignLocation] == '+') {
               aimBuffer[imaginaryMantissaSignLocation] = '-';
             }
@@ -1359,8 +1379,9 @@ void kill_ASB_icon(void) {
               aimBuffer[imaginaryMantissaSignLocation] = '+';
             }
             break;
+          }
 
-          case NP_COMPLEX_EXPONENT :
+          case NP_COMPLEX_EXPONENT: {
             if(aimBuffer[imaginaryExponentSignLocation] == '+') {
               aimBuffer[imaginaryExponentSignLocation] = '-';
               if(aimBuffer[imaginaryExponentSignLocation + 1] == '0') {
@@ -1371,14 +1392,17 @@ void kill_ASB_icon(void) {
               aimBuffer[imaginaryExponentSignLocation] = '+';
             }
             break;
+          }
 
-          default : {}
+          default: {
+          }
         }
         break;
+      }
 
 
-      case ITM_i :                          //JM HP35 compatible, in NIM
-      case ITM_CC :
+      case ITM_i :                         //JM HP35 compatible, in NIM
+        case ITM_CC: {
         if (item == ITM_i) resetShiftState();    //JM HP35 compatible, in NIM
         lastChar = strlen(aimBuffer) - 1;
 
@@ -1388,7 +1412,7 @@ void kill_ASB_icon(void) {
         fnRefreshState();                                                //JMNIM
 
         switch(nimNumberPart) {
-         case NP_REAL_EXPONENT :
+         case NP_REAL_EXPONENT: {
             if((aimBuffer[lastChar] == '+' || aimBuffer[lastChar] == '-') && aimBuffer[lastChar - 1] == 'e') {
               aimBuffer[lastChar - 1] = 0;
             }
@@ -1403,43 +1427,49 @@ void kill_ASB_icon(void) {
               //debugNIM();
             }
             break;
+         }
 
-          case NP_INT_10 :
+          case NP_INT_10: {
             strcat(aimBuffer, "."); // no break here
             #if !defined(OSX)
               __attribute__ ((fallthrough));
             #endif // !OSX
+          }
 
-          case NP_REAL_FLOAT_PART :
+          case NP_REAL_FLOAT_PART: {
             imaginaryMantissaSignLocation = strlen(aimBuffer);
             strcat(aimBuffer, "+i");
 
             nimNumberPart = NP_COMPLEX_INT_PART;
             //debugNIM();
             break;
-
-          default : {}
+          }
+          default: {
+          }
         }
         break;
+      }
 
-      case ITM_CONSTpi :
+      case ITM_CONSTpi: {
         if(nimNumberPart == NP_COMPLEX_INT_PART && aimBuffer[strlen(aimBuffer) - 1] == 'i') {
           done = true;
           strcat(aimBuffer, "3.141592653589793238462643383279503");
           reallyRunFunction(ITM_EXIT1, NOPARAM);
         }
         break;
+      }
 
-      case ITM_BACKSPACE :
+      case ITM_BACKSPACE: {
         lastChar = strlen(aimBuffer) - 1;
 
         done = true;
 
         switch(nimNumberPart) {
-          case NP_INT_10 :
+          case NP_INT_10: {
             break;
+          }
 
-          case NP_INT_16 :
+          case NP_INT_16: {
             if(aimBuffer[lastChar] >= 'A') {
               hexDigits--;
             }
@@ -1449,8 +1479,9 @@ void kill_ASB_icon(void) {
               //debugNIM();
             }
             break;
+          }
 
-          case NP_INT_BASE :
+          case NP_INT_BASE: {
             if(aimBuffer[lastChar] == '#') {
               if(hexDigits > 0) {
                 nimNumberPart = NP_INT_16;
@@ -1461,15 +1492,17 @@ void kill_ASB_icon(void) {
               //debugNIM();
             }
             break;
+          }
 
-          case NP_REAL_FLOAT_PART :
+          case NP_REAL_FLOAT_PART: {
             if(aimBuffer[lastChar] == '.') {
               nimNumberPart = NP_INT_10;
               //debugNIM();
             }
             break;
+          }
 
-          case NP_REAL_EXPONENT :
+          case NP_REAL_EXPONENT: {
             if(aimBuffer[lastChar] == '+' || aimBuffer[lastChar] == '-') {
               aimBuffer[lastChar--] = 0;
             }
@@ -1485,8 +1518,9 @@ void kill_ASB_icon(void) {
               //debugNIM();
             }
             break;
+          }
 
-          case NP_FRACTION_DENOMINATOR :
+          case NP_FRACTION_DENOMINATOR: {
             if(aimBuffer[lastChar] == '/') {
               nimNumberPart = NP_REAL_FLOAT_PART;
               for(int16_t i=0; i<lastChar; i++) {
@@ -1498,8 +1532,9 @@ void kill_ASB_icon(void) {
               //debugNIM();
             }
             break;
+          }
 
-          case NP_COMPLEX_INT_PART :
+          case NP_COMPLEX_INT_PART: {
             if(aimBuffer[lastChar] == 'i') {
               nimNumberPart = NP_INT_10;
               for(int16_t i=0; i<lastChar; i++) {
@@ -1515,15 +1550,17 @@ void kill_ASB_icon(void) {
               lastChar--;
             }
             break;
+          }
 
-          case NP_COMPLEX_FLOAT_PART :
+          case NP_COMPLEX_FLOAT_PART: {
             if(aimBuffer[lastChar] == '.') {
               nimNumberPart = NP_COMPLEX_INT_PART;
               //debugNIM();
             }
             break;
+          }
 
-          case NP_COMPLEX_EXPONENT :
+          case NP_COMPLEX_EXPONENT: {
             if(aimBuffer[lastChar] == '+' || aimBuffer[lastChar] == '-') {
               aimBuffer[lastChar--] = 0;
             }
@@ -1539,8 +1576,10 @@ void kill_ASB_icon(void) {
               //debugNIM();
             }
             break;
+          }
 
-          default : {}
+          default: {
+          }
         }
 
         aimBuffer[lastChar--] = 0;
@@ -1554,8 +1593,9 @@ void kill_ASB_icon(void) {
           undo();
         }
         break;
+      }
 
-      case ITM_EXIT1 :
+      case ITM_EXIT1: {
         addItemToNimBuffer_exit:
         done = true;
         screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
@@ -1591,30 +1631,34 @@ void kill_ASB_icon(void) {
           }
         }
         break;
+      }
 
-      case ITM_1ONX : // B for binary base    Only works in direct NIM
+      case ITM_1ONX: { // B for binary base    Only works in direct NIM
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "2");
           goto addItemToNimBuffer_exit;
         }
         break;
+      }
 
-      case ITM_ENTER:                                 //JM
-      case ITM_LOG10 : // D for decimal base          //JM
+      case ITM_ENTER:                                //JM
+      case ITM_LOG10: { // D for decimal base          //JM
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "10");
           goto addItemToNimBuffer_exit;
         }
         break;
+      }
 
-      case ITM_RCL : // H for hexadecimal base
+      case ITM_RCL: { // H for hexadecimal base
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "16");
           goto addItemToNimBuffer_exit;
         }
         break;
+      }
 
-      case ITM_DMS :
+      case ITM_DMS: {
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART) {
           done = true;
 
@@ -1633,8 +1677,9 @@ void kill_ASB_icon(void) {
           }
         }
         break;
+    }
 
-      case ITM_dotD :
+      case ITM_dotD: {
         if(nimNumberPart == NP_REAL_FLOAT_PART) {
           done = true;
 
@@ -1660,9 +1705,10 @@ void kill_ASB_icon(void) {
           closeNim();                 //JM
         }
         break;
+    }
 
-      case ITM_ms :                        //JM
-      case ITM_toHMS :
+      case ITM_ms :                       //JM
+      case ITM_toHMS:{
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
           done = true;
 
@@ -1687,8 +1733,9 @@ void kill_ASB_icon(void) {
           }
         }
         break;
+      }
 
-      case ITM_DMS2:                        //JM
+      case ITM_DMS2:                       //JM
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
           done = true;
           closeNim(); 
@@ -1696,7 +1743,7 @@ void kill_ASB_icon(void) {
         }
         break;
 
-      case ITM_DRG :                        //JM
+      case ITM_DRG :                       //JM
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
           done = true;
 
@@ -1722,9 +1769,9 @@ void kill_ASB_icon(void) {
         }
         break;
 
-
-
-      default : keyActionProcessed = false;
+      default: {
+        keyActionProcessed = false;
+      }
     }
 
     if(done) {
@@ -1733,17 +1780,19 @@ void kill_ASB_icon(void) {
       strcpy(nimBufferDisplay, STD_SPACE_HAIR);
 
       switch(nimNumberPart) {
-        case NP_INT_10 :          // +12345
-        case NP_INT_16 :          // +123AB
-        case NP_INT_BASE :        // +123AB#16
+        case NP_INT_10 :         // +12345
+        case NP_INT_16 :         // +123AB
+        case NP_INT_BASE: { // +123AB#16
           nimBufferToDisplayBuffer(aimBuffer, nimBufferDisplay + 2);
           break;
+        }
 
-        case NP_REAL_FLOAT_PART : // +12345.6789
+        case NP_REAL_FLOAT_PART: { // +12345.6789
           nimBufferToDisplayBuffer(aimBuffer, nimBufferDisplay + 2);
           break;
+        }
 
-        case NP_REAL_EXPONENT : // +12345.678e+3
+        case NP_REAL_EXPONENT: { // +12345.678e+3
           nimBufferToDisplayBuffer(aimBuffer, nimBufferDisplay + 2);
 
           exponentToDisplayString(stringToInt32(aimBuffer + exponentSignLocation), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL, true, STD_SPACE_PUNCTUATION);
@@ -1754,8 +1803,9 @@ void kill_ASB_icon(void) {
             strcat(nimBufferDisplay, STD_SUP_0);
           }
           break;
+        }
 
-        case NP_FRACTION_DENOMINATOR : // +123 12/7
+        case NP_FRACTION_DENOMINATOR: { // +123 12/7
           nimBufferToDisplayBuffer(aimBuffer, nimBufferDisplay + 2);
           strcat(nimBufferDisplay, STD_SPACE_4_PER_EM);
 
@@ -1771,10 +1821,11 @@ void kill_ASB_icon(void) {
             subNumberToDisplayString(stringToInt32(aimBuffer + index), nimBufferDisplay + stringByteLength(nimBufferDisplay), NULL);
           }
           break;
+        }
 
-        case NP_COMPLEX_INT_PART :   // +1.2+i15
-        case NP_COMPLEX_FLOAT_PART : // +1.2+i15.69
-        case NP_COMPLEX_EXPONENT :   // +1.2+i15.69e2
+        case NP_COMPLEX_INT_PART :  // +1.2+i15
+        case NP_COMPLEX_FLOAT_PART :// +1.2+i15.69
+        case NP_COMPLEX_EXPONENT: { // +1.2+i15.69e2
           // Real part
           savedNimNumberPart = nimNumberPart;
 
@@ -1857,10 +1908,12 @@ void kill_ASB_icon(void) {
             nimNumberPart = savedNimNumberPart;
           }
           break;
+        }
 
-        default :
-          sprintf(errorMessage, "In function addItemToNimBuffer: %d is an unexpected nimNumberPart value while converting buffer to display!", nimNumberPart);
+        default: {
+          sprintf(errorMessage, "In function addItemToNimBuffer:%d is an unexpected nimNumberPart value while converting buffer to display!", nimNumberPart);
           displayBugScreen(errorMessage);
+      }
       }
 
       if(!getSystemFlag(FLAG_DECIMP)) {
@@ -1874,10 +1927,10 @@ void kill_ASB_icon(void) {
 
     else {
       switch (item) {           //JMCLOSE remove auto closenim for these functions only.
-        case ITM_SQUAREROOTX :  //closeNim moved to keyboard.c / btnkeyrelease, as .ms is on longpress underneath sqrt
-        case ITM_HASH_JM :      //closeNim simply not needed
+        case ITM_SQUAREROOTX : //closeNim moved to keyboard.c / btnkeyrelease, as .ms is on longpress underneath sqrt
+        case ITM_HASH_JM :     //closeNim simply not needed
           break;
-          default : 
+          default :
           if(item != -MNU_INTS && item != -MNU_BITS) {
             screenUpdatingMode &= ~SCRUPD_SKIP_STACK_ONE_TIME;
             closeNim();
@@ -1949,13 +2002,13 @@ void kill_ASB_icon(void) {
 
     int16_t groupingGapM = groupingGap;                       //JMGAP vv
     switch(nimNumberPart) {
-      case NP_INT_10:                     // +12345 longint; Do not change groupingGap. Leave at user setting, default 3.
-      case NP_INT_BASE:                   // +123AB#16.    ; Change groupinggap from user selection to this table, for entry
+      case NP_INT_10:                    // +12345 longint; Do not change groupingGap. Leave at user setting, default 3.
+      case NP_INT_BASE:                  // +123AB#16.    ; Change groupinggap from user selection to this table, for entry
         switch(lastIntegerBase) {
-          case  0: groupingGap = groupingGapM; break;
-          case  2: groupingGap = 4; break;
-          case  3: groupingGap = 3; break;
-          case  4: groupingGap = 2; break;
+          case  0:groupingGap = groupingGapM; break;
+          case  2:groupingGap = 4; break;
+          case  3:groupingGap = 3; break;
+          case  4:groupingGap = 2; break;
           case  5:
           case  6:
           case  7:
@@ -1966,12 +2019,12 @@ void kill_ASB_icon(void) {
           case 12:
           case 13:
           case 14:
-          case 15: groupingGap = 3; break;
-          case 16: groupingGap = 2; break;
-          default: break;
+          case 15:groupingGap = 3; break;
+          case 16:groupingGap = 2; break;
+          default:break;
         }
         break;
-      case NP_INT_16:                     // +123AB.       ; Change to 2 for hex.
+      case NP_INT_16:                    // +123AB.       ; Change to 2 for hex.
         groupingGap = 2;
         break;
       default:
@@ -2138,18 +2191,19 @@ void kill_ASB_icon(void) {
   }
 
   void closeNim(void) {
+    setSystemFlag(FLAG_ASLIFT);
   //printf("closeNim\n");
     
     if(nimNumberPart == NP_INT_10) {                //JM Input default type vv
       switch (Input_Default) {
-      case ID_43S:                                  //   Do nothing, this is default LI/DP
-      case ID_LI:                                   //   Do nothing, because default is LI/DP 
+      case ID_43S:                                 //   Do nothing, this is default LI/DP
+      case ID_LI:                                  //   Do nothing, because default is LI/DP 
         break;
-      case ID_DP:                                   //   Do Real default for DP
-      case ID_CPXDP:                                //                       CPX
+      case ID_DP:                                  //   Do Real default for DP
+      case ID_CPXDP:                               //                       CPX
         nimNumberPart = NP_REAL_FLOAT_PART;
         break;
-      case ID_SI:                                   //   lastIntegerBase is set in fnInDefault; I do not set it here, as the user can change it of course.
+      case ID_SI:                                  //   lastIntegerBase is set in fnInDefault; I do not set it here, as the user can change it of course.
         break;
       }
     }                                               //JM ^^
@@ -2202,13 +2256,13 @@ void kill_ASB_icon(void) {
             longInteger_t lgInt;
 
             longIntegerInit(lgInt);
-            stringToLongInteger(aimBuffer + (aimBuffer[0] == '+' ? 1 : 0), 10, lgInt);
+            stringToLongInteger(aimBuffer + (aimBuffer[0] == '+' ? 1 :0), 10, lgInt);
             convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_X);
             longIntegerFree(lgInt);
           }
           else if(nimNumberPart == NP_INT_BASE) {
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // Any change in this part must be reported in the function strToShortInteger from file testSuite.c after the line: else if(nimNumberPart == NP_INT_BASE) {
+            // Any change in this part must be reported in the function strToShortInteger from file testSuite.c after the line:else if(nimNumberPart == NP_INT_BASE) {
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             longInteger_t minVal, value, maxVal;
             int16_t posHash, i, lg;
@@ -2243,8 +2297,8 @@ void kill_ASB_icon(void) {
               return;
             }
 
-            for(i=aimBuffer[0] == '-' ? 1 : 0; i<posHash; i++) {
-              if((aimBuffer[i] > '9' ? aimBuffer[i] - 'A' + 10 : aimBuffer[i] - '0') >= base) {
+            for(i=aimBuffer[0] == '-' ? 1 :0; i<posHash; i++) {
+              if((aimBuffer[i] > '9' ? aimBuffer[i] - 'A' + 10 :aimBuffer[i] - '0') >= base) {
                 displayCalcErrorMessage(ERROR_INVALID_INTEGER_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
                 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
                   sprintf(errorMessage, "digit %c is not allowed in base %d!", aimBuffer[i], base);
@@ -2261,7 +2315,7 @@ void kill_ASB_icon(void) {
 
             longIntegerInit(value);
             aimBuffer[posHash] = 0;
-            stringToLongInteger(aimBuffer + (aimBuffer[0] == '+' ? 1 : 0), base, value);
+            stringToLongInteger(aimBuffer + (aimBuffer[0] == '+' ? 1 :0), base, value);
 
             // maxVal = 2^shortIntegerWordSize
             longIntegerInit(maxVal);
@@ -2269,7 +2323,7 @@ void kill_ASB_icon(void) {
               longInteger2Pow(shortIntegerWordSize, maxVal);
             }
             else {
-              sprintf(errorMessage, "In function closeNIM: %d is an unexpected value for shortIntegerWordSize!", shortIntegerWordSize);
+              sprintf(errorMessage, "In function closeNIM:%d is an unexpected value for shortIntegerWordSize!", shortIntegerWordSize);
               displayBugScreen(errorMessage);
               longIntegerFree(maxVal);
               longIntegerFree(value);
@@ -2302,7 +2356,7 @@ void kill_ASB_icon(void) {
                 char strMin[22], strMax[22];
                 longIntegerToAllocatedString(minVal, strMin, sizeof(strMin));
                 longIntegerToAllocatedString(maxVal, strMax, sizeof(strMax));
-                sprintf(errorMessage, "For word size of %d bit%s and integer mode %s,", shortIntegerWordSize, shortIntegerWordSize>1 ? "s" : "", getShortIntegerModeName(shortIntegerMode));
+                sprintf(errorMessage, "For word size of %d bit%s and integer mode %s,", shortIntegerWordSize, shortIntegerWordSize>1 ? "s" :"", getShortIntegerModeName(shortIntegerMode));
                 sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "the entered number must be from %s to %s!", strMin, strMax);
                 moreInfoOnError("In function closeNIM:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
               #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -2317,7 +2371,7 @@ void kill_ASB_icon(void) {
             char strValue[22];
             longIntegerToAllocatedString(value, strValue, sizeof(strValue));
 
-            uint64_t val = strtoull(strValue + (longIntegerIsNegative(value) ? 1 : 0), NULL, 10); // when value is negative: discard the minus sign
+            uint64_t val = strtoull(strValue + (longIntegerIsNegative(value) ? 1 :0), NULL, 10); // when value is negative:discard the minus sign
 
             if(shortIntegerMode == SIM_UNSIGN) {
             }
@@ -2337,7 +2391,7 @@ void kill_ASB_icon(void) {
               }
             }
             else {
-              sprintf(errorMessage, "In function closeNIM: %d is an unexpected value for shortIntegerMode!", shortIntegerMode);
+              sprintf(errorMessage, "In function closeNIM:%d is an unexpected value for shortIntegerMode!", shortIntegerMode);
               displayBugScreen(errorMessage);
               *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = 0;
             }
@@ -2373,7 +2427,7 @@ void kill_ASB_icon(void) {
             closeNimWithComplex(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
           }
           else {
-            sprintf(errorMessage, "In function closeNIM: %d is an unexpected nimNumberPart value!", nimNumberPart);
+            sprintf(errorMessage, "In function closeNIM:%d is an unexpected nimNumberPart value!", nimNumberPart);
             displayBugScreen(errorMessage);
           }
         }

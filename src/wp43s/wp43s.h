@@ -60,10 +60,10 @@
   #include "typeDefinitions.h"
 
   // Variables for the simulator
-  #if defined(PC_BUILD) || defined (TESTSUITE_BUILD)
+  #if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
     extern bool_t               debugMemAllocation;
   #endif // PC_BUILD || TESTSUITE_BUILD
-  
+
   #if defined(PC_BUILD)
     extern bool_t               calcLandscape;
     extern bool_t               calcAutoLandscapePortrait;
@@ -336,6 +336,7 @@
 
   extern uint16_t               lrSelectionHistobackup;
   extern uint16_t               lrChosenHistobackup;
+  extern int16_t                histElementXorY;
   extern real34_t               loBinR;
   extern real34_t               nBins ;
   extern real34_t               hiBinR;
