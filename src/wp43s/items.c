@@ -140,13 +140,15 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
       #else // !DMCP_BUILD
         refreshLcd(NULL);
       #endif // DMCP_BUILD
-    } else {
-      #ifdef PC_BUILD
-        printf("   >>>   reallyRunFunction: §%s§%s§\n",indexOfItems[abs(func)].itemCatalogName, indexOfItems[abs(func)].itemSoftmenuName);
-      #endif // DMCP_BUILD
-    }
 
     screenUpdatingMode = SCRUPD_AUTO;
+    } 
+    else {
+      #ifdef PC_BUILD
+        printf("   >>>   reallyRunFunction: §%s§%s§\n",indexOfItems[abs(func)].itemCatalogName, indexOfItems[abs(func)].itemSoftmenuName);
+      #endif // PC_BUILD
+    }
+
 
     indexOfItems[func].func(param);
 

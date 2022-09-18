@@ -1245,19 +1245,37 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
 
 
   lg = stringByteLength(string + offset);
+
+
+//Removed the "new" fixed 3-line text input in favour of 1 line, which jumps to 3.
+/*
   if(combinationFonts !=0) {
     editlines     = 3 ;       //JM ENLARGE 5    number of editing lines                                        //JMCURSOR vv
     yincr         = 35;       //JM ENLARGE 21   distasnce between editing wrapped lines
     x_offset      = 0;    //pixels 40
-    lines = editlines;
+    lines = 1;
     y_offset = 1;
-  } else {
-    editlines     = 5 ;       //JM ENLARGE 5    number of editing lines                                        //JMCURSOR vv
-    yincr         = 21;       //JM ENLARGE 21   distasnce between editing wrapped lines
-    x_offset      = 0;    //pixels 40
-    lines = 2;
-    y_offset = 3;
   }
+*/
+
+//see original size jumping code: c7de947 108_02 2022-08-31
+    editlines     = 3 ;       //JM ENLARGE 5    number of editing lines                                        //JMCURSOR vv
+    yincr         = 35;       //JM ENLARGE 21   distasnce between editing wrapped lines
+    x_offset      = 0;    //pixels 40
+    if(stringWidth(string + offset, &numericFont, showLeadingCols, showEndingCols) > SCREEN_WIDTH - 50 ) {  //jump from large letters to small letters
+      lines = editlines;
+      y_offset = 1;
+    } else {
+      lines = 2;              //jump back to small letters
+      y_offset = 3;
+      last_CM = 253; //Force redraw
+    }
+
+
+
+
+
+
 
   if(lines == editlines || lg == 0) last_CM = 253; //Force redraw if 
 
