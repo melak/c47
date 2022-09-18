@@ -131,8 +131,12 @@ void fnEqNew(uint16_t unusedButMandatoryParameter) {
 void fnEqEdit(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
     const char *equationString = TO_PCMEMPTR(allFormulae[currentFormula].pointerToFormulaData);
-    if(equationString) xcopy(aimBuffer, equationString, stringByteLength(equationString) + 1);
-    else               aimBuffer[0] = 0;
+    if(equationString) {
+      xcopy(aimBuffer, equationString, stringByteLength(equationString) + 1);
+    }
+    else {
+      aimBuffer[0] = 0;
+    }
     calcMode = CM_EIM;
     alphaCase = AC_LOWER;
     setSystemFlag(FLAG_ALPHA);
@@ -153,14 +157,18 @@ void fnEqCursorLeft(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnEqCursorRight(uint16_t unusedButMandatoryParameter) {
-  if(xCursor < (uint32_t)stringGlyphLength(aimBuffer)) ++xCursor;
+  if(xCursor < (uint32_t)stringGlyphLength(aimBuffer)) {
+    ++xCursor;
+  }
 }
 
 void fnEqCalc(uint16_t unusedButMandatoryParameter) {
   #if defined(DEBUGUNDO)
     printf(">>> saveForUndo from fnEqCalc, calcMode = %i, something to undo (pre) = %i \n",calcMode, thereIsSomethingToUndo);
   #endif // DEBUGUNDO
-  if(!thereIsSomethingToUndo && !CM_NO_UNDO) saveForUndo();
+  if(!thereIsSomethingToUndo && !CM_NO_UNDO) {
+    saveForUndo();
+  }
   parseEquation(currentFormula, EQUATION_PARSER_XEQ, tmpString, tmpString + AIM_BUFFER_LENGTH);
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
@@ -195,8 +203,9 @@ void deleteEquation(uint16_t equationId) {
     if(allFormulae[equationId].sizeInBlocks > 0) {
       freeWp43s(TO_PCMEMPTR(allFormulae[equationId].pointerToFormulaData), allFormulae[equationId].sizeInBlocks);
     }
-    for(uint16_t i = equationId + 1; i < numberOfFormulae; ++i)
+    for(uint16_t i = equationId + 1; i < numberOfFormulae; ++i) {
       allFormulae[i - 1] = allFormulae[i];
+    }
     freeWp43s(allFormulae + (--numberOfFormulae), TO_BLOCKS(sizeof(formulaHeader_t)));
     if(numberOfFormulae == 0) {
       allFormulae = NULL;
@@ -290,8 +299,12 @@ void deleteEquation(uint16_t equationId) {
 
   static void _addSpace(char **bufPtr, int16_t *strWidth, uint32_t *doubleBytednessHistory) { // space between an operand and an operator
     bool_t spaceShallBeAdded = true;
-    if(((*bufPtr) >= (tmpString + 2)) && (compareChar((*bufPtr) - 2, STD_SPACE_PUNCTUATION) == 0)) spaceShallBeAdded = false;
-    if(((*bufPtr) >= (tmpString + 1)) && (((*doubleBytednessHistory) & 1) == 0 && *((*bufPtr) - 1) == ' ')) spaceShallBeAdded = false;
+    if(((*bufPtr) >= (tmpString + 2)) && (compareChar((*bufPtr) - 2, STD_SPACE_PUNCTUATION) == 0)) {
+      spaceShallBeAdded = false;
+    }
+    if(((*bufPtr) >= (tmpString + 1)) && (((*doubleBytednessHistory) & 1) == 0 && *((*bufPtr) - 1) == ' ')) {
+      spaceShallBeAdded = false;
+    }
     if(spaceShallBeAdded) {
       **bufPtr         = STD_SPACE_PUNCTUATION[0];
       *((*bufPtr) + 1) = STD_SPACE_PUNCTUATION[1];
@@ -322,8 +335,12 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
       const char *tmpPtr = strPtr;
 
       bool_t _cursorShown, _rightEllipsis;
-      if(cursorShown == NULL)   cursorShown   = &_cursorShown;
-      if(rightEllipsis == NULL) rightEllipsis = &_rightEllipsis;
+      if(cursorShown == NULL) {
+        cursorShown = &_cursorShown;
+      }
+      if(rightEllipsis == NULL) {
+        rightEllipsis = &_rightEllipsis;
+      }
       *cursorShown = false;
       *rightEllipsis = false;
 
@@ -394,7 +411,9 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
 
           /* Unary minus */
           else if((!inLabel) && unaryMinus && (*strPtr) == '-') {
-            if(strLength > 1) _addSpace(&bufPtr, &strWidth, &doubleBytednessHistory);
+            if(strLength > 1) {
+              _addSpace(&bufPtr, &strWidth, &doubleBytednessHistory);
+            }
             *bufPtr       = *strPtr;
             *(bufPtr + 1) = 0;
             unaryMinus = false;
@@ -419,8 +438,9 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
 
           /* Power (if not editing) */
           else if((!inLabel) && (cursorAt == EQUATION_NO_CURSOR && (*strPtr) == '^' && (tmpVal = _checkExponent(strPtr + 1)))) {
-            for(uint32_t i = 0; i < tmpVal; ++i)
+            for(uint32_t i = 0; i < tmpVal; ++i) {
               _showExponent(&bufPtr, &strPtr, &strWidth);
+            }
             *bufPtr = 0;
             bufPtr -= 2;
             strWidth -= stringWidth(bufPtr, &standardFont, true, true);
@@ -453,8 +473,9 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
 
           /* Operators */
           else if((!inLabel) && ((*strPtr) == '=' || (*strPtr) == '+' || (*strPtr) == '-' || (*strPtr) == '/' || (*strPtr) == '!' || (*strPtr) == '|')) {
-            if((*strPtr) != '|' || (strLength > (startAt + 1)))
+            if((*strPtr) != '|' || (strLength > (startAt + 1))) {
               _addSpace(&bufPtr, &strWidth, &doubleBytednessHistory);
+            }
             *bufPtr       = *strPtr;
             *(bufPtr + 1) = 0;
             strWidth += stringWidth(bufPtr, &standardFont, true, true);
@@ -516,8 +537,9 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
               strWidth += stringWidth(bufPtr, &standardFont, true, true);
               bufPtr += 4;
               tmpVal = _checkExponent(strPtr + 1);
-              for(uint32_t i = 0; i < tmpVal; ++i)
+              for(uint32_t i = 0; i < tmpVal; ++i) {
                 _showExponent(&bufPtr, &strPtr, &strWidth);
+              }
               *bufPtr = 0;
               bufPtr -= 2;
               strWidth -= stringWidth(bufPtr, &standardFont, true, true);
@@ -863,7 +885,9 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
             }
             default: {
               PARSER_OPERATOR_STACK[i] = 0;
-              if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT || func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT) return;
+              if(func == PARSER_OPERATOR_ITM_PARENTHESIS_RIGHT || func == PARSER_OPERATOR_ITM_VERTICAL_BAR_RIGHT) {
+                return;
+              }
               displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
               #if (EXTRA_INFO_ON_CALC_ERROR == 1)
                 moreInfoOnError("In function parseEquation:", "parentheses mismatch!", "parenthesis not closed", NULL);
@@ -926,11 +950,10 @@ void showEquation(uint16_t equationId, uint16_t startAt, uint16_t cursorAt, bool
         }
 
         /* push an operator */
-        else if(
-          (_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) < 4) || /* parenthesis */
-          (_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) > (_operatorPriority(func) & (~1u)) || /* higher priority */
-          ((_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) == (_operatorPriority(func) & (~1u)) && (_operatorPriority(func) & 1) /* same priority and right-associative */ )
-        ) {
+        else if(( _operatorPriority(PARSER_OPERATOR_STACK[i - 1]) < 4) || /* parenthesis */
+                ( _operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) > (_operatorPriority(func) & (~1u)) || /* higher priority */
+                ((_operatorPriority(PARSER_OPERATOR_STACK[i - 1]) & (~1u)) == (_operatorPriority(func) & (~1u)) && (_operatorPriority(func) & 1) /* same priority and right-associative */ )
+               ) {
           if(i < PARSER_OPERATOR_STACK_SIZE) {
             PARSER_OPERATOR_STACK[i] = func;
           }
@@ -1198,6 +1221,8 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         ++strPtr;
       }
 
+      #pragma GCC diagnostic push
+      #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
       switch(*strPtr) {
         case ';':
         case ',': {
@@ -1409,6 +1434,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
           afterSpace = false;
         }
       }
+      #pragma GCC diagnostic pop
       if(lastErrorCode != ERROR_NONE) {
         return;
       }

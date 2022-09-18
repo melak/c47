@@ -681,7 +681,7 @@ void pemAddNumber(int16_t item) {
       --currentLocalStepNumber;
       currentStep = findPreviousStep(currentStep);
       switch(item) {
-        case ITM_EXPONENT :
+        case ITM_EXPONENT : {
           aimBuffer[0] = '+';
           aimBuffer[1] = '1';
           aimBuffer[2] = '.';
@@ -689,13 +689,15 @@ void pemAddNumber(int16_t item) {
           nimNumberPart = NP_REAL_FLOAT_PART;
           lastIntegerBase = 0;
           break;
+        }
 
-        case ITM_PERIOD :
+        case ITM_PERIOD : {
           aimBuffer[0] = '+';
           aimBuffer[1] = '0';
           aimBuffer[2] = 0;
           nimNumberPart = NP_INT_10;
           break;
+        }
 
         case ITM_0 :
         case ITM_1 :
@@ -712,11 +714,12 @@ void pemAddNumber(int16_t item) {
         case ITM_C :
         case ITM_D :
         case ITM_E :
-        case ITM_F :
+        case ITM_F : {
           aimBuffer[0] = '+';
           aimBuffer[1] = 0;
           nimNumberPart = NP_EMPTY;
           break;
+        }
       }
     }
     if(item == ITM_BACKSPACE && ((aimBuffer[0] == '+' && aimBuffer[1] != 0 && aimBuffer[2] == 0) || aimBuffer[1] == 0)) {
@@ -737,22 +740,26 @@ void pemAddNumber(int16_t item) {
         tmpString[0] = ITM_LITERAL;
         switch(nimNumberPart) {
           //case NP_INT_16:
-          //case NP_INT_BASE:
+          //case NP_INT_BASE: {
           //  tmpString[1] = STRING_SHORT_INTEGER;
           //  break;
+          //}
           case NP_REAL_FLOAT_PART:
           case NP_REAL_EXPONENT:
-          case NP_FRACTION_DENOMINATOR:
+          case NP_FRACTION_DENOMINATOR: {
             tmpString[1] = STRING_REAL34;
             break;
+          }
           case NP_COMPLEX_INT_PART:
           case NP_COMPLEX_FLOAT_PART:
-          case NP_COMPLEX_EXPONENT:
+          case NP_COMPLEX_EXPONENT: {
             tmpString[1] = STRING_COMPLEX34;
             break;
-          default:
+          }
+          default: {
             tmpString[1] = STRING_LONG_INTEGER;
             break;
+          }
         }
         tmpString[2] = stringByteLength(numBuffer);
         xcopy(tmpString + 3, numBuffer, stringByteLength(numBuffer));
@@ -781,26 +788,32 @@ void pemCloseNumberInput(void) {
       *(tmpPtr++) = ITM_LITERAL;
       switch(nimNumberPart) {
         //case NP_INT_16:
-        case NP_INT_BASE:
+        case NP_INT_BASE: {
           *(tmpPtr++) = STRING_SHORT_INTEGER;
-          while(*basePtr != '#') ++basePtr;
+          while(*basePtr != '#') {
+            ++basePtr;
+          }
           *(basePtr++) = 0;
           *(tmpPtr++) = (char)atoi(basePtr);
           fflush(stdout);
           break;
+        }
         case NP_REAL_FLOAT_PART:
         case NP_REAL_EXPONENT:
-        case NP_FRACTION_DENOMINATOR:
+        case NP_FRACTION_DENOMINATOR: {
           *(tmpPtr++) = STRING_REAL34;
           break;
+        }
         case NP_COMPLEX_INT_PART:
         case NP_COMPLEX_FLOAT_PART:
-        case NP_COMPLEX_EXPONENT:
+        case NP_COMPLEX_EXPONENT: {
           *(tmpPtr++) = STRING_COMPLEX34;
           break;
-        default:
+        }
+        default: {
           *(tmpPtr++) = STRING_LONG_INTEGER;
           break;
+        }
       }
       *(tmpPtr++) = stringByteLength(numBuffer);
       xcopy(tmpPtr, numBuffer, stringByteLength(numBuffer));
@@ -816,7 +829,7 @@ static void _pemCloseTimeInput(void) {
   #if !defined(TESTSUITE_BUILD)
     switch(nimNumberPart) {
       case NP_INT_10:
-      case NP_REAL_FLOAT_PART:
+      case NP_REAL_FLOAT_PART: {
         deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
         if(aimBuffer[0] != 0) {
           char *numBuffer = aimBuffer[0] == '+' ? aimBuffer + 1 : aimBuffer;
@@ -830,6 +843,7 @@ static void _pemCloseTimeInput(void) {
 
         aimBuffer[0] = '!';
         break;
+      }
     }
   #endif // !TESTSUITE_BUILD
 }
@@ -865,7 +879,7 @@ static void _pemCloseDmsInput(void) {
   #if !defined(TESTSUITE_BUILD)
     switch(nimNumberPart) {
       case NP_INT_10:
-      case NP_REAL_FLOAT_PART:
+      case NP_REAL_FLOAT_PART: {
         deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
         if(aimBuffer[0] != 0) {
           char *numBuffer = aimBuffer[0] == '+' ? aimBuffer + 1 : aimBuffer;
@@ -879,6 +893,7 @@ static void _pemCloseDmsInput(void) {
 
         aimBuffer[0] = '!';
         break;
+      }
     }
   #endif // !TESTSUITE_BUILD
 }
@@ -933,75 +948,79 @@ void insertStepInProgram(int16_t func) {
   }
 
   switch(indexOfItems[func].status & PTP_STATUS) {
-    case PTP_DISABLED:
+    case PTP_DISABLED: {
       switch(func) {
         case ITM_KEYG:           // 1498
-        case ITM_KEYX:           // 1499
-          {
-            int opLen;
-            tmpString[0] = (char)((ITM_KEY >> 8) | 0x80);
-            tmpString[1] = (char)( ITM_KEY       & 0xff);
-            if(tam.keyAlpha) {
-              uint16_t nameLength = stringByteLength(aimBuffer + AIM_BUFFER_LENGTH / 2);
-              tmpString[2] = (char)INDIRECT_VARIABLE;
-              tmpString[3] = (char)nameLength;
-              xcopy(tmpString + 4, aimBuffer + AIM_BUFFER_LENGTH / 2, nameLength);
-              opLen = nameLength + 4;
-            }
-            else if(tam.keyIndirect) {
-              tmpString[2] = (char)INDIRECT_REGISTER;
-              tmpString[3] = tam.key;
-              opLen = 4;
-            }
-            else {
-              tmpString[2] = tam.key;
-              opLen = 3;
-            }
+        case ITM_KEYX: {         // 1499
+          int opLen;
+          tmpString[0] = (char)((ITM_KEY >> 8) | 0x80);
+          tmpString[1] = (char)( ITM_KEY       & 0xff);
+          if(tam.keyAlpha) {
+            uint16_t nameLength = stringByteLength(aimBuffer + AIM_BUFFER_LENGTH / 2);
+            tmpString[2] = (char)INDIRECT_VARIABLE;
+            tmpString[3] = (char)nameLength;
+            xcopy(tmpString + 4, aimBuffer + AIM_BUFFER_LENGTH / 2, nameLength);
+            opLen = nameLength + 4;
+          }
+          else if(tam.keyIndirect) {
+            tmpString[2] = (char)INDIRECT_REGISTER;
+            tmpString[3] = tam.key;
+            opLen = 4;
+          }
+          else {
+            tmpString[2] = tam.key;
+            opLen = 3;
+          }
 
-            tmpString[opLen + 0] = (func == ITM_KEYX ? ITM_XEQ : ITM_GTO);
-            if(tam.alpha) {
-              uint16_t nameLength = stringByteLength(aimBuffer);
-              tmpString[opLen + 1] = (char)(tam.indirect ? INDIRECT_VARIABLE : STRING_LABEL_VARIABLE);
-              tmpString[opLen + 2] = nameLength;
-              xcopy(tmpString + opLen + 3, aimBuffer, nameLength);
-              _insertInProgram((uint8_t *)tmpString, nameLength + opLen + 3);
-            }
-            else if(tam.indirect) {
-              tmpString[opLen + 1] = (char)INDIRECT_REGISTER;
-              tmpString[opLen + 2] = tam.value;
-              _insertInProgram((uint8_t *)tmpString, opLen + 3);
-            }
-            else {
-              tmpString[opLen + 1] = tam.value;
-              _insertInProgram((uint8_t *)tmpString, opLen + 2);
-            }
+          tmpString[opLen + 0] = (func == ITM_KEYX ? ITM_XEQ : ITM_GTO);
+          if(tam.alpha) {
+            uint16_t nameLength = stringByteLength(aimBuffer);
+            tmpString[opLen + 1] = (char)(tam.indirect ? INDIRECT_VARIABLE : STRING_LABEL_VARIABLE);
+            tmpString[opLen + 2] = nameLength;
+            xcopy(tmpString + opLen + 3, aimBuffer, nameLength);
+            _insertInProgram((uint8_t *)tmpString, nameLength + opLen + 3);
+          }
+          else if(tam.indirect) {
+            tmpString[opLen + 1] = (char)INDIRECT_REGISTER;
+            tmpString[opLen + 2] = tam.value;
+            _insertInProgram((uint8_t *)tmpString, opLen + 3);
+          }
+          else {
+            tmpString[opLen + 1] = tam.value;
+            _insertInProgram((uint8_t *)tmpString, opLen + 2);
           }
           break;
+        }
 
-        case ITM_GTOP:           // 1482
+        case ITM_GTOP: {         // 1482
           #if !defined(DMCP_BUILD)
             stringToUtf8(indexOfItems[func].itemCatalogName, (uint8_t *)tmpString);
             printf("insertStepInProgram: %s\n", tmpString);
           #endif // DMCP_BUILD
           break;
+        }
 
-        case ITM_CLP:            // 1425
+        case ITM_CLP: {          // 1425
           fnClP(NOPARAM);
           break;
+        }
 
-        case ITM_CLPALL:         // 1426
+        case ITM_CLPALL: {       // 1426
           fnClPAll(NOT_CONFIRMED);
           break;
+        }
 
-        case ITM_BST:            // 1734
+        case ITM_BST: {          // 1734
           fnBst(NOPARAM);
           break;
+        }
 
-        case ITM_SST:            // 1736
+        case ITM_SST: {          // 1736
           fnSst(NOPARAM);
           break;
+        }
 
-        case VAR_ACC:            // 1192
+        case VAR_ACC: {          // 1192
           tmpString[0] = ITM_STO;
           tmpString[1] = (char)STRING_LABEL_VARIABLE;
           tmpString[2] = 3;
@@ -1010,9 +1029,10 @@ void insertStepInProgram(int16_t func) {
           tmpString[5] = 'C';
           _insertInProgram((uint8_t *)tmpString, 6);
           break;
+        }
 
         case VAR_ULIM:           // 1193
-        case VAR_LLIM:           // 1194
+        case VAR_LLIM: {         // 1194
           tmpString[0] = ITM_STO;
           tmpString[1] = (char)STRING_LABEL_VARIABLE;
           tmpString[2] = 5;
@@ -1029,10 +1049,12 @@ void insertStepInProgram(int16_t func) {
           tmpString[7] = 'm';
           _insertInProgram((uint8_t *)tmpString, 8);
           break;
+        }
       }
       break;
+    }
 
-    case PTP_NONE:
+    case PTP_NONE: {
       if(func == ITM_toHMS && aimBuffer[0] != 0 && !getSystemFlag(FLAG_ALPHA)) {
         _pemCloseTimeInput();
         if(aimBuffer[0] != '!') {
@@ -1048,18 +1070,21 @@ void insertStepInProgram(int16_t func) {
         _insertInProgram((uint8_t *)tmpString, (func >= 128) ? 2 : 1);
       }
       break;
+    }
 
-    case PTP_NUMBER_16:
+    case PTP_NUMBER_16: {
       tmpString[2] = (char)(tam.value & 0xff); // little endian
       tmpString[3] = (char)(tam.value >> 8);
       _insertInProgram((uint8_t *)tmpString, 4);
       break;
+    }
 
-    case PTP_LITERAL:
+    case PTP_LITERAL: {
       // nothing to do here
       break;
+    }
 
-    default:
+    default: {
       if(tam.mode == TM_CMP && tam.value == TEMP_REGISTER_1) {
         tmpString[opBytes    ] = (char)(real34IsZero(REGISTER_REAL34_DATA(TEMP_REGISTER_1)) ? VALUE_0 : VALUE_1);
         _insertInProgram((uint8_t *)tmpString, opBytes + 1);
@@ -1085,6 +1110,7 @@ void insertStepInProgram(int16_t func) {
         tmpString[opBytes    ] = tam.value + (tam.dot ? FIRST_LOCAL_REGISTER : 0);
         _insertInProgram((uint8_t *)tmpString, opBytes + 1);
       }
+    }
   }
 
   aimBuffer[0] = 0;
@@ -1123,10 +1149,12 @@ void addStepInProgram(int16_t func) {
         case ITM_KEYG:           // 1498
         case ITM_KEYX:           // 1499
         case ITM_BST:            // 1734
-        case ITM_SST:            // 1736
+        case ITM_SST: {          // 1736
           break;
-        default:
+        }
+        default: {
           return;
+        }
       }
     }
     if(!programListEnd) {

@@ -198,7 +198,7 @@ static int32_t WP34S_calc_overflow(uint64_t xv, uint64_t yv, int32_t neg) {
   int32_t i;
 
   switch(shortIntegerMode) {
-    case SIM_UNSIGN:
+    case SIM_UNSIGN: {
       // C doesn't expose the processor's status bits to us so we
       // break the addition down so we don't lose the overflow.
       u = (yv & (shortIntegerSignBit-1)) + (xv & (shortIntegerSignBit-1));
@@ -207,8 +207,9 @@ static int32_t WP34S_calc_overflow(uint64_t xv, uint64_t yv, int32_t neg) {
         break;
       }
       return 0;
+    }
 
-    case SIM_2COMPL:
+    case SIM_2COMPL: {
       u = xv + yv;
       if(neg && u == shortIntegerSignBit) {
         return 0;
@@ -222,18 +223,21 @@ static int32_t WP34S_calc_overflow(uint64_t xv, uint64_t yv, int32_t neg) {
         break;
       }
       return 0;
+    }
 
     case SIM_SIGNMT:
-    case SIM_1COMPL:
+    case SIM_1COMPL: {
       if(shortIntegerSignBit & (xv + yv)) {
         break;
       }
       return 0;
+    }
 
-    default:
+    default: {
       sprintf(errorMessage, "In function calc_overflow: %" PRIu8 " is an unexpected value for shortIntegerMode!", shortIntegerMode);
       displayBugScreen(errorMessage);
       return 0;
+    }
   }
 
   setSystemFlag(FLAG_OVERFLOW);
@@ -936,12 +940,32 @@ uint64_t WP34S_expmod(const uint64_t a, uint64_t b, const uint64_t c) {
     x = getX_int();
 
     switch(op) {
-      case RARG_SB: x |= m;                              setlastX();  break;
-      case RARG_CB: x &= ~m;                             setlastX();  break;
-      case RARG_FB: x ^= m;                              setlastX();  break;
-      case RARG_BS: fin_tst((x&m)?1:0);                               break;
-      case RARG_BC: fin_tst((m != 0 && (x&m) != 0)?0:1);              break;
-      default: return;
+      case RARG_SB: {
+        x |= m;
+        setlastX();
+        break;
+      }
+      case RARG_CB: {
+        x &= ~m;
+        setlastX();
+        break;
+      }
+      case RARG_FB: {
+        x ^= m;
+        setlastX();
+        break;
+      }
+      case RARG_BS: {
+        fin_tst((x&m)?1:0);
+        break;
+      }
+      case RARG_BC: {
+        fin_tst((m != 0 && (x&m) != 0)?0:1);
+        break;
+      }
+      default: {
+        return;
+      }
     }
 
     setX_int(x);
@@ -1588,10 +1612,18 @@ again:
     const int32_t not = op >= 3 ? 3 : 0;
 
     switch(op - not) {
-      case 0:  result = y & x; break;
-      case 1:  result = y | x; break;
-      default: result = y ^ x; break;
-     }
+      case 0: {
+        result = y & x;
+        break;
+      }
+      case 1: {
+        result = y | x;
+        break;
+      }
+      default: {
+        result = y ^ x;
+      }
+    }
 
     if(not) {
       result = ~result;
@@ -1681,14 +1713,37 @@ again:
 
     if(arg != 0) {
       switch(op) {
-        case RARG_RL:  f = &intRL;  mod = shortIntegerWordSize;     break;
-        case RARG_RR:  f = &intRR;  mod = shortIntegerWordSize;     break;
-        case RARG_RLC: f = &intRLC; mod = shortIntegerWordSize + 1; break;
-        case RARG_RRC: f = &intRRC; mod = shortIntegerWordSize + 1; break;
-        case RARG_SL:  f = &intLSL; mod = 0;            break;
-        case RARG_SR:  f = &intLSR; mod = 0;            break;
-        case RARG_ASR: f = &intASR; mod = 0;            break;
-        default: return;
+        case RARG_RL: {
+          f = &intRL;  mod = shortIntegerWordSize;
+          break;
+        }
+        case RARG_RR: {
+          f = &intRR;  mod = shortIntegerWordSize;
+          break;
+        }
+        case RARG_RLC: {
+          f = &intRLC; mod = shortIntegerWordSize + 1;
+          break;
+        }
+        case RARG_RRC: {
+          f = &intRRC; mod = shortIntegerWordSize + 1;
+          break;
+        }
+        case RARG_SL: {
+          f = &intLSL; mod = 0;
+          break;
+        }
+        case RARG_SR: {
+          f = &intLSR; mod = 0;
+          break;
+        }
+        case RARG_ASR: {
+          f = &intASR; mod = 0;
+          break;
+        }
+        default: {
+          return;
+        }
       }
 
       if(arg > shortIntegerWordSize) {

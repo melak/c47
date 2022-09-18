@@ -2012,7 +2012,7 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
     const int16_t col = getJRegisterAsInt(true);
 
     switch(item) {
-      case ITM_EXPONENT :
+      case ITM_EXPONENT: {
         if(aimBuffer[0] == 0) {
           aimBuffer[0] = '+';
           aimBuffer[1] = '1';
@@ -2022,8 +2022,9 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
           _resetCursorPos();
         }
         break;
+      }
 
-      case ITM_PERIOD :
+      case ITM_PERIOD: {
         if(aimBuffer[0] == 0) {
           aimBuffer[0] = '+';
           aimBuffer[1] = '0';
@@ -2032,17 +2033,18 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
           _resetCursorPos();
         }
         break;
+      }
 
-      case ITM_0 :
-      case ITM_1 :
-      case ITM_2 :
-      case ITM_3 :
-      case ITM_4 :
-      case ITM_5 :
-      case ITM_6 :
-      case ITM_7 :
-      case ITM_8 :
-      case ITM_9 :
+      case ITM_0:
+      case ITM_1:
+      case ITM_2:
+      case ITM_3:
+      case ITM_4:
+      case ITM_5:
+      case ITM_6:
+      case ITM_7:
+      case ITM_8:
+      case ITM_9: {
         if(aimBuffer[0] == 0) {
           aimBuffer[0] = '+';
           aimBuffer[1] = 0;
@@ -2050,8 +2052,9 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
           _resetCursorPos();
         }
         break;
+      }
 
-      case ITM_BACKSPACE :
+      case ITM_BACKSPACE: {
         if(aimBuffer[0] == 0) {
           const int cols = openMatrixMIMPointer.header.matrixColumns;
           const int16_t row = getIRegisterAsInt(true);
@@ -2073,8 +2076,9 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
           cursorEnabled = false;
         }
         break;
+      }
 
-      case ITM_CHS :
+      case ITM_CHS: {
         if(aimBuffer[0] == 0) {
           if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
             real34ChangeSign(&openMatrixMIMPointer.realMatrix.matrixElements[row * cols + col]);
@@ -2087,14 +2091,16 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
           return;
         }
         break;
+      }
 
-      case ITM_CC :
+      case ITM_CC: {
         if(aimBuffer[0] == 0) {
           return;
         }
         break;
+      }
 
-      case ITM_CONSTpi :
+      case ITM_CONSTpi: {
         if(aimBuffer[0] == 0) {
           if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
             realToReal34(const_pi, &openMatrixMIMPointer.realMatrix.matrixElements[row * cols + col]);
@@ -2109,9 +2115,11 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
           reallyRunFunction(ITM_ENTER, NOPARAM);
         }
         return;
+      }
 
-      default:
+      default: {
         return;
+      }
     }
     addItemToNimBuffer(item);
     calcMode = CM_MIM;
@@ -2159,17 +2167,21 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
     reallyRunFunction(func, param);
 
     switch(getRegisterDataType(REGISTER_X)) {
-      case dtLongInteger:
+      case dtLongInteger: {
         convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
         break;
-      case dtShortInteger:
+      }
+      case dtShortInteger: {
         convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
         break;
+      }
       case dtReal34:
-      case dtComplex34:
+      case dtComplex34: {
         break;
-      default:
+      }
+      default: {
         lastErrorCode = ERROR_INVALID_DATA_TYPE_FOR_OP;
+      }
     }
 
     if(lastErrorCode == ERROR_NONE) {

@@ -634,30 +634,34 @@ void fnRecallTimerApp(uint16_t regist) {
     uint32_t val;
 
     switch(getRegisterDataType(regist)) {
-      case dtTime:
+      case dtTime: {
         real34ToReal(REGISTER_REAL34_DATA(regist), &tmp);
         tmp.exponent += 3;
         realToUInt32(&tmp, DEC_ROUND_DOWN, &val, &overflow);
         break;
-      case dtReal34:
+      }
+      case dtReal34: {
         real34ToReal(REGISTER_REAL34_DATA(regist), &tmp);
         realMultiply(&tmp, const_3600, &tmp, &ctxtReal39);
         tmp.exponent += 3;
         realToUInt32(&tmp, DEC_ROUND_HALF_EVEN, &val, &overflow);
         break;
-      case dtLongInteger:
+      }
+      case dtLongInteger: {
         convertLongIntegerRegisterToReal(regist, &tmp, &ctxtReal39);
         realMultiply(&tmp, const_3600, &tmp, &ctxtReal39);
         tmp.exponent += 3;
         realToUInt32(&tmp, DEC_ROUND_HALF_EVEN, &val, &overflow);
         break;
-      default:
+      }
+      default: {
         displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "cannot recall %s to the stopwatch", getRegisterDataTypeName(regist, true, false));
           moreInfoOnError("In function fnRecallTimerApp:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return;
+      }
     }
 
     if(overflow) {

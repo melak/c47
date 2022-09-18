@@ -233,23 +233,29 @@ void WP34S_qf_discrete_final(uint16_t dist, const real_t *r, const real_t *p, co
   real_t q;
 
   switch(dist) { // qf_discrete_cdf
-    case QF_DISCRETE_CDF_POISSON:
+    case QF_DISCRETE_CDF_POISSON: {
       WP34S_Cdf_Poisson2(r, i, &q, &ctxtReal51);
       break;
-    case QF_DISCRETE_CDF_BINOMIAL:
+    }
+    case QF_DISCRETE_CDF_BINOMIAL: {
       WP34S_Cdf_Binomial2(r, i, j, &q, &ctxtReal51);
       break;
-    case QF_DISCRETE_CDF_GEOMETRIC:
+    }
+    case QF_DISCRETE_CDF_GEOMETRIC: {
       WP34S_Cdf_Geom(r, i, &q, &ctxtReal51);
       break;
-    case QF_DISCRETE_CDF_NEGBINOM:
+    }
+    case QF_DISCRETE_CDF_NEGBINOM: {
       cdf_NegBinomial2(r, i, j, &q, &ctxtReal51);
       break;
-    case QF_DISCRETE_CDF_HYPERGEOMETRIC:
+    }
+    case QF_DISCRETE_CDF_HYPERGEOMETRIC: {
       cdf_Hypergeometric2(r, i, j, k, &q, &ctxtReal75);
       break;
-    default: // unlikely
+    }
+    default: { // unlikely
       realZero(&q);
+    }
   }
   realAdd(&q, const_0, &q, realContext);
   if(realCompareLessThan(&q, p)) {

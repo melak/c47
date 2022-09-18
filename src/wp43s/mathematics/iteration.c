@@ -71,15 +71,17 @@ static void incDecAndCompare(uint16_t regist, uint16_t mode) {
   reallocateRegister(TEMP_REGISTER_1, dtReal34, REAL34_SIZE, amNone);
   getIterParam(regist, &fp, REGISTER_REAL34_DATA(TEMP_REGISTER_1), &step);
   switch(getRegisterDataType(regist)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       incDecLonI(regist, mode >> 2);
       registerCmpLonIReal(regist, TEMP_REGISTER_1, &compared);
       break;
-    case dtShortInteger:
+    }
+    case dtShortInteger: {
       incDecShoI(regist, mode >> 2);
       registerCmpShoIReal(regist, TEMP_REGISTER_1, &compared);
       break;
-    case dtReal34:
+    }
+    case dtReal34: {
       if((mode & 2) == 2) {
         real34Copy(const34_1, &step);
         incDecReal(regist, mode >> 2);
@@ -96,8 +98,10 @@ static void incDecAndCompare(uint16_t regist, uint16_t mode) {
         break;
       }
     /* fallthrough */
-    default:
+    }
+    default: {
       goto invalidType;
+    }
   }
   if(     compared > 0) temporaryInformation = ((mode & 6) == (INC_FLAG << 2)) ? TI_FALSE : TI_TRUE;
   else if(compared < 0) temporaryInformation = ((mode & 6) == (DEC_FLAG << 2)) ? TI_FALSE : TI_TRUE;

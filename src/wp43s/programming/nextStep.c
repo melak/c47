@@ -48,7 +48,7 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
   uint8_t opParam = *(uint8_t *)(step++);
 
   switch(paramMode) {
-    case PARAM_DECLARE_LABEL:
+    case PARAM_DECLARE_LABEL: {
       if(opParam <= 104) { // Local labels from 00 to 99 and from A to E
         return step;
       }
@@ -61,8 +61,9 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
         #endif // !DMCP_BUILD
         return NULL;
       }
+    }
 
-    case PARAM_LABEL:
+    case PARAM_LABEL: {
       if(opParam <= 104) { // Local labels from 00 to 99 and from A to E
         return step;
       }
@@ -78,8 +79,9 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
         #endif // !DMCP_BUILD
         return NULL;
       }
+    }
 
-    case PARAM_REGISTER:
+    case PARAM_REGISTER: {
       if(opParam <= LAST_LOCAL_REGISTER) { // Global registers from 00 to 99, lettered registers from X to K, and local registers from .00 to .98
         return step;
       }
@@ -95,8 +97,9 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
         #endif // !DMCP_BUILD
         return NULL;
       }
+    }
 
-    case PARAM_FLAG:
+    case PARAM_FLAG: {
       if(opParam <= LAST_LOCAL_FLAG) { // Global flags from 00 to 99, lettered flags from X to K, and local flags from .00 to .15 (or .31)
         return step;
       }
@@ -112,8 +115,9 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
         #endif // !DMCP_BUILD
         return NULL;
       }
+    }
 
-    case PARAM_NUMBER_8:
+    case PARAM_NUMBER_8: {
       if(opParam <= 249) { // Value from 0 to 99
         return step;
       }
@@ -129,11 +133,13 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
         #endif // !DMCP_BUILD
         return NULL;
       }
+    }
 
-    case PARAM_NUMBER_16:
+    case PARAM_NUMBER_16: {
       return step + 1;
+    }
 
-    case PARAM_COMPARE:
+    case PARAM_COMPARE: {
       if(opParam <= LAST_LOCAL_REGISTER || opParam == VALUE_0 || opParam == VALUE_1) { // Global registers from 00 to 99, lettered registers from X to K, and local registers from .00 to .98 OR value 0 OR value 1
         return step;
       }
@@ -149,42 +155,52 @@ uint8_t *countOpBytes(uint8_t *step, uint16_t paramMode) {
         #endif // !DMCP_BUILD
         return NULL;
       }
+    }
 
     case PARAM_SKIP_BACK:
-    case PARAM_SHUFFLE:
+    case PARAM_SHUFFLE: {
       return step;
+    }
 
-    default:
+    default: {
       #if !defined(DMCP_BUILD)
         printf("\nIn function countOpBytes: paramMode %u is not valid!\n", paramMode);
       #endif // !DMCP_BUILD
       return NULL;
+    }
   }
 }
 
 
 uint8_t *countLiteralBytes(uint8_t *step) {
   switch(*(uint8_t *)(step++)) {
-    case BINARY_SHORT_INTEGER:
+    case BINARY_SHORT_INTEGER: {
       return step + 9;
+    }
 
-    //case BINARY_LONG_INTEGER:
+    //case BINARY_LONG_INTEGER: {
     //  break;
+    //}
 
-    case BINARY_REAL34:
+    case BINARY_REAL34: {
       return step + TO_BYTES(REAL34_SIZE);
+    }
 
-    case BINARY_COMPLEX34:
+    case BINARY_COMPLEX34: {
       return step + TO_BYTES(REAL34_SIZE * 2);
+    }
 
-    //case BINARY_DATE:
+    //case BINARY_DATE: {
     //  break;
+    //}
 
-    //case BINARY_TIME:
+    //case BINARY_TIME: {
     //  break;
+    //}
 
-    case STRING_SHORT_INTEGER:
+    case STRING_SHORT_INTEGER: {
       return step + *(step + 1) + 2;
+    }
 
     case STRING_LONG_INTEGER:
     case STRING_REAL34:
@@ -192,14 +208,16 @@ uint8_t *countLiteralBytes(uint8_t *step) {
     case STRING_COMPLEX34:
     case STRING_DATE:
     case STRING_TIME:
-    case STRING_ANGLE_DMS:
+    case STRING_ANGLE_DMS: {
       return step + *step + 1;
+    }
 
-    default:
+    default: {
       #if !defined(DMCP_BUILD)
         printf("\nERROR: %u is not an acceptable parameter for ITM_LITERAL!\n", *(uint8_t *)(step - 1));
       #endif // !DMCP_BUILD
       return NULL;
+    }
   }
 }
 
@@ -249,17 +267,21 @@ uint8_t *findKey2ndParam_ram(uint8_t *step) {
   else {
     switch(indexOfItems[op].status & PTP_STATUS) {
       case PTP_NONE:
-      case PTP_DISABLED:
+      case PTP_DISABLED: {
         return step;
+      }
 
-      case PTP_LITERAL:
+      case PTP_LITERAL: {
         return countLiteralBytes(step);
+      }
 
-      case PTP_KEYG_KEYX:
+      case PTP_KEYG_KEYX: {
         return countOpBytes(step, PARAM_NUMBER_8);
+      }
 
-      default:
+      default: {
         return countOpBytes(step, (indexOfItems[op].status & PTP_STATUS) >> 9);
+      }
     }
   }
 }
@@ -285,20 +307,24 @@ pgmPtr_t findKey2ndParam(pgmPtr_t step) {
     else {
       switch(indexOfItems[op].status & PTP_STATUS) {
         case PTP_NONE:
-        case PTP_DISABLED:
+        case PTP_DISABLED: {
           ptr.flash = step.ram - (uint8_t *)(tmpString + 1600) + origStep;
           break;
+        }
 
-        case PTP_LITERAL:
+        case PTP_LITERAL: {
           ptr.flash = countLiteralBytes(step.ram) - (uint8_t *)(tmpString + 1600) + origStep;
           break;
+        }
 
-        case PTP_KEYG_KEYX:
+        case PTP_KEYG_KEYX: {
           ptr.flash = countOpBytes(step.ram, PARAM_NUMBER_8) - (uint8_t *)(tmpString + 1600) + origStep;
           break;
+        }
 
-        default:
+        default: {
           ptr.flash = countOpBytes(step.ram, (indexOfItems[op].status & PTP_STATUS) >> 9) - (uint8_t *)(tmpString + 1600) + origStep;
+        }
       }
     }
   }
@@ -545,24 +571,31 @@ void fnSkip(uint16_t numberOfSteps) {
 
 void fnCase(uint16_t regist) {
   real34_t arg;
+
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
   switch(getRegisterDataType(regist)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       convertLongIntegerRegisterToReal34(regist, &arg);
       break;
-    case dtReal34:
+    }
+    case dtReal34: {
       if(getRegisterAngularMode(regist) == amNone) {
         real34ToIntegralValue(REGISTER_REAL34_DATA(regist), &arg, DEC_ROUND_DOWN);
         break;
       }
       /* fallthrough */
-    default:
+    }
+    default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot use %s for the parameter of CASE", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnCase:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
+    }
   }
+  #pragma GCC diagnostic pop
 
   if(real34CompareLessThan(&arg, const34_1)) {
     fnSkip(0);

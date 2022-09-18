@@ -34,16 +34,19 @@ static bool_t convertRegisterToReal(calcRegister_t regist, real_t *r) {
   bool_t result = true;
 
   switch(getRegisterDataType(regist)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       convertLongIntegerRegisterToReal(regist, r, &ctxtReal34);
       break;
+    }
 
-    case dtReal34:
+    case dtReal34: {
       real34ToReal(REGISTER_REAL34_DATA(regist), r);
       break;
+    }
 
-    default:
+    default: {
       result = false;
+    }
   }
 
   return result;

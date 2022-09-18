@@ -331,8 +331,9 @@
         copyAllRegistersToClipboard();
         break;
 
-      default:
+      default: {
         break;
+      }
     }
     return FALSE;
   }
@@ -404,7 +405,9 @@
 
       // removing spaces in front of parameter value
       equalSign++;
-      while(*equalSign == ' ') equalSign++;
+      while(*equalSign == ' ') {
+        equalSign++;
+      }
 
       strcpy(parameterValue, equalSign);
     }
@@ -1140,31 +1143,87 @@
 
   void enterAsmModeIfMenuIsACatalog(int16_t id) {
     switch(-id) {
-      case MNU_FCNS:      catalog = CATALOG_FCNS;    break;
-      case MNU_CONST:     catalog = CATALOG_CNST;    break;
-      case MNU_MENUS:     catalog = CATALOG_MENU;    break;
-      case MNU_SYSFL:     catalog = CATALOG_SYFL;    break;
-      case MNU_ALPHAINTL: catalog = CATALOG_AINT;    break;
-      case MNU_ALPHAintl: catalog = CATALOG_aint;    break;
+      case MNU_FCNS: {
+        catalog = CATALOG_FCNS;
+        break;
+      }
+      case MNU_CONST: {
+        catalog = CATALOG_CNST;
+        break;
+      }
+      case MNU_MENUS: {
+        catalog = CATALOG_MENU;
+        break;
+      }
+      case MNU_SYSFL: {
+        catalog = CATALOG_SYFL;
+        break;
+      }
+      case MNU_ALPHAINTL: {
+        catalog = CATALOG_AINT;
+        break;
+      }
+      case MNU_ALPHAintl: {
+        catalog = CATALOG_aint;
+        break;
+      }
       case MNU_PROG:
       case MNU_RAM:
-      case MNU_FLASH:     catalog = CATALOG_PROG;    break;
-      case MNU_VAR:       catalog = CATALOG_VAR;     break;
-      case MNU_MATRS:     catalog = CATALOG_MATRS;   break;
-      case MNU_STRINGS:   catalog = CATALOG_STRINGS; break;
-      case MNU_DATES:     catalog = CATALOG_DATES;   break;
-      case MNU_TIMES:     catalog = CATALOG_TIMES;   break;
-      case MNU_ANGLES:    catalog = CATALOG_ANGLES;  break;
-      case MNU_SINTS:     catalog = CATALOG_SINTS;   break;
-      case MNU_LINTS:     catalog = CATALOG_LINTS;   break;
-      case MNU_REALS:     catalog = CATALOG_REALS;   break;
-      case MNU_CPXS:      catalog = CATALOG_CPXS;    break;
+      case MNU_FLASH: {
+        catalog = CATALOG_PROG;
+        break;
+      }
+      case MNU_VAR: {
+        catalog = CATALOG_VAR;
+        break;
+      }
+      case MNU_MATRS: {
+        catalog = CATALOG_MATRS;
+        break;
+      }
+      case MNU_STRINGS: {
+        catalog = CATALOG_STRINGS;
+        break;
+      }
+      case MNU_DATES: {
+        catalog = CATALOG_DATES;
+        break;
+      }
+      case MNU_TIMES: {
+        catalog = CATALOG_TIMES;
+        break;
+      }
+      case MNU_ANGLES: {
+        catalog = CATALOG_ANGLES;
+        break;
+      }
+      case MNU_SINTS: {
+        catalog = CATALOG_SINTS;
+        break;
+      }
+      case MNU_LINTS: {
+        catalog = CATALOG_LINTS;
+        break;
+      }
+      case MNU_REALS: {
+        catalog = CATALOG_REALS;
+        break;
+      }
+      case MNU_CPXS: {
+        catalog = CATALOG_CPXS;
+        break;
+      }
       case MNU_Solver:
       case MNU_Sf:
       case MNU_1STDERIV:
       case MNU_2NDDERIV:
-      case MNU_MVAR:      catalog = CATALOG_MVAR;    break;
-      default:            catalog = CATALOG_NONE;
+      case MNU_MVAR: {
+        catalog = CATALOG_MVAR;
+        break;
+      }
+      default: {
+        catalog = CATALOG_NONE;
+      }
     }
 
     if(catalog) {

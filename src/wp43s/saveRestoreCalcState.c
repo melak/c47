@@ -674,94 +674,112 @@ static void registerToSaveString(calcRegister_t regist) {
   tmpRegisterString = tmpString + START_REGISTER_VALUE;
 
   switch(getRegisterDataType(regist)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       convertLongIntegerRegisterToLongInteger(regist, lgInt);
       longIntegerToAllocatedString(lgInt, tmpRegisterString, TMP_STR_LENGTH - START_REGISTER_VALUE - 1);
       longIntegerFree(lgInt);
       strcpy(aimBuffer, "LonI");
       break;
+    }
 
-    case dtString:
+    case dtString: {
       stringToUtf8(REGISTER_STRING_DATA(regist), (uint8_t *)(tmpRegisterString));
       strcpy(aimBuffer, "Stri");
       break;
+    }
 
-    case dtShortInteger:
+    case dtShortInteger: {
       convertShortIntegerRegisterToUInt64(regist, &sign, &value);
       sprintf(tmpRegisterString, "%c%" PRIu64 " %" PRIu32, sign ? '-' : '+', value, getRegisterShortIntegerBase(regist));
       strcpy(aimBuffer, "ShoI");
       break;
+    }
 
-    case dtReal34:
+    case dtReal34: {
       real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
       switch(getRegisterAngularMode(regist)) {
-        case amDegree:
+        case amDegree: {
           strcpy(aimBuffer, "Real:DEG");
           break;
+        }
 
-        case amDMS:
+        case amDMS: {
           strcpy(aimBuffer, "Real:DMS");
           break;
+        }
 
-        case amRadian:
+        case amRadian: {
           strcpy(aimBuffer, "Real:RAD");
           break;
+        }
 
-        case amMultPi:
+        case amMultPi: {
           strcpy(aimBuffer, "Real:MULTPI");
           break;
+        }
 
-        case amGrad:
+        case amGrad: {
           strcpy(aimBuffer, "Real:GRAD");
           break;
+        }
 
-        case amNone:
+        case amNone: {
           strcpy(aimBuffer, "Real");
           break;
+        }
 
-        default:
+        default: {
           strcpy(aimBuffer, "Real:???");
           break;
+        }
       }
       break;
+    }
 
-    case dtComplex34:
+    case dtComplex34: {
       real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
       strcat(tmpRegisterString, " ");
       real34ToString(REGISTER_IMAG34_DATA(regist), tmpRegisterString + strlen(tmpRegisterString));
       strcpy(aimBuffer, "Cplx");
       break;
+    }
 
-    case dtTime:
+    case dtTime: {
       real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
       strcpy(aimBuffer, "Time");
       break;
+    }
 
-    case dtDate:
+    case dtDate: {
       real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
       strcpy(aimBuffer, "Date");
       break;
+    }
 
-    case dtReal34Matrix:
+    case dtReal34Matrix: {
       sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns);
       strcpy(aimBuffer, "Rema");
       break;
+    }
 
-    case dtComplex34Matrix:
+    case dtComplex34Matrix: {
       sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns);
       strcpy(aimBuffer, "Cxma");
       break;
+    }
 
-    case dtConfig:
+    case dtConfig: {
       for(str=tmpRegisterString, cfg=(uint8_t *)REGISTER_CONFIG_DATA(regist), value=0; value<sizeof(dtConfigDescriptor_t); value++, cfg++, str+=2) {
         sprintf(str, "%02X", *cfg);
       }
       strcpy(aimBuffer, "Conf");
       break;
+    }
 
-    default:
+    default: {
       strcpy(tmpRegisterString, "???");
       strcpy(aimBuffer, "????");
+    }
   }
 }
 
@@ -1216,7 +1234,9 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
 
     reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, amNone);
     imaginaryPart = value;
-    while(*imaginaryPart != ' ') imaginaryPart++;
+    while(*imaginaryPart != ' ') {
+      imaginaryPart++;
+    }
     *(imaginaryPart++) = 0;
     stringToReal34(value, REGISTER_REAL34_DATA(regist));
     stringToReal34(imaginaryPart, REGISTER_IMAG34_DATA(regist));
@@ -1228,7 +1248,9 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
     uint16_t rows, cols;
 
     numOfCols = value;
-    while(*numOfCols != ' ') numOfCols++;
+    while(*numOfCols != ' ') {
+      numOfCols++;
+    }
     *(numOfCols++) = 0;
     rows = stringToUint16(value);
     cols = stringToUint16(numOfCols);
@@ -1242,7 +1264,9 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
     uint16_t rows, cols;
 
     numOfCols = value;
-    while(*numOfCols != ' ') numOfCols++;
+    while(*numOfCols != ' ') {
+      numOfCols++;
+    }
     *(numOfCols++) = 0;
     rows = stringToUint16(value);
     cols = stringToUint16(numOfCols);
@@ -1312,7 +1336,9 @@ static void skipMatrixData(char *type, char *value, void *stream) {
 
     if(strcmp(type, "Rema") == 0 || strcmp(type, "Cxma") == 0) {
       numOfCols = value;
-      while(*numOfCols != ' ') numOfCols++;
+      while(*numOfCols != ' ') {
+        numOfCols++;
+      }
       *(numOfCols++) = 0;
       rows = stringToUint16(value);
       cols = stringToUint16(numOfCols);
@@ -1358,28 +1384,52 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
       str = tmpString;
       globalFlags[0] = stringToInt16(str);
 
-      while(*str != ' ') str++;
-      while(*str == ' ') str++;
+      while(*str != ' ') {
+        str++;
+      }
+      while(*str == ' ') {
+        str++;
+      }
       globalFlags[1] = stringToInt16(str);
 
-      while(*str != ' ') str++;
-      while(*str == ' ') str++;
+      while(*str != ' ') {
+        str++;
+      }
+      while(*str == ' ') {
+        str++;
+      }
       globalFlags[2] = stringToInt16(str);
 
-      while(*str != ' ') str++;
-      while(*str == ' ') str++;
+      while(*str != ' ') {
+        str++;
+      }
+      while(*str == ' ') {
+        str++;
+      }
       globalFlags[3] = stringToInt16(str);
 
-      while(*str != ' ') str++;
-      while(*str == ' ') str++;
+      while(*str != ' ') {
+        str++;
+      }
+      while(*str == ' ') {
+        str++;
+      }
       globalFlags[4] = stringToInt16(str);
 
-      while(*str != ' ') str++;
-      while(*str == ' ') str++;
+      while(*str != ' ') {
+        str++;
+      }
+      while(*str == ' ') {
+        str++;
+      }
       globalFlags[5] = stringToInt16(str);
 
-      while(*str != ' ') str++;
-      while(*str == ' ') str++;
+      while(*str != ' ') {
+        str++;
+      }
+      while(*str == ' ') {
+        str++;
+      }
       globalFlags[6] = stringToInt16(str);
     }
   }
@@ -1466,36 +1516,68 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         str = tmpString;
         kbd_usr[i].keyId = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].primary = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].fShifted = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].gShifted = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].keyLblAim = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].primaryAim = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].fShiftedAim = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].gShiftedAim = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].primaryTam = stringToInt16(str);
       }
     }

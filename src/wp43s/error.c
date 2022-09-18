@@ -146,6 +146,8 @@ void fnErrorMessage(uint16_t unusedButMandatoryParameter) {
   real34_t r, maxErr;
   uInt32ToReal34(NUMBER_OF_ERROR_CODES, &maxErr);
 
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger: {
       convertLongIntegerRegisterToReal34(REGISTER_X, &r);
@@ -169,6 +171,7 @@ void fnErrorMessage(uint16_t unusedButMandatoryParameter) {
       return;
     }
   }
+  #pragma GCC diagnostic pop
 
   if(real34CompareLessEqual(const34_1, &r) && real34CompareLessThan(&r, &maxErr)) {
     displayCalcErrorMessage((uint8_t)real34ToUInt32(&r), ERR_REGISTER_LINE, REGISTER_X);
