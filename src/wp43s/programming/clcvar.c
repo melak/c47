@@ -43,64 +43,68 @@
 #if !defined(TESTSUITE_BUILD)
   static void _clearVar(calcRegister_t regist) {
     switch(getRegisterDataType(regist)) {
-      case dtLongInteger:
-        {
-          longInteger_t l;
-          longIntegerInit(l);
-          convertLongIntegerToLongIntegerRegister(l, regist);
-          longIntegerFree(l);
-        }
+      case dtLongInteger: {
+        longInteger_t l;
+        longIntegerInit(l);
+        convertLongIntegerToLongIntegerRegister(l, regist);
+        longIntegerFree(l);
         break;
+      }
 
       case dtReal34:
-      case dtTime:
+      case dtTime: {
         real34Zero(REGISTER_REAL34_DATA(regist));
         break;
+      }
 
-      case dtComplex34:
+      case dtComplex34: {
         real34Zero(REGISTER_REAL34_DATA(regist));
         real34Zero(REGISTER_IMAG34_DATA(regist));
         break;
+      }
 
-      case dtDate:
+      case dtDate: {
         composeJulianDay(const34_0, const34_1, const34_1, REGISTER_REAL34_DATA(regist));
         julianDayToInternalDate(REGISTER_REAL34_DATA(regist), REGISTER_REAL34_DATA(regist));
         break;
+      }
 
-      case dtString:
+      case dtString: {
         reallocateRegister(regist, dtString, 1, amNone);
         break;
+      }
 
-      case dtReal34Matrix:
-        {
-          real34Matrix_t m;
-          linkToRealMatrixRegister(regist, &m);
-          for(uint32_t i = 0; i < m.header.matrixRows * m.header.matrixColumns; i++) {
-            real34Zero(VARIABLE_REAL34_DATA(&m.matrixElements[i]));
-          }
+      case dtReal34Matrix: {
+        real34Matrix_t m;
+        linkToRealMatrixRegister(regist, &m);
+        for(uint32_t i = 0; i < m.header.matrixRows * m.header.matrixColumns; i++) {
+          real34Zero(VARIABLE_REAL34_DATA(&m.matrixElements[i]));
         }
         break;
+      }
 
-      case dtComplex34Matrix:
-        {
-          complex34Matrix_t m;
-          linkToComplexMatrixRegister(regist, &m);
-          for(uint32_t i = 0; i < m.header.matrixRows * m.header.matrixColumns; i++) {
-            real34Zero(VARIABLE_REAL34_DATA(&m.matrixElements[i]));
-            real34Zero(VARIABLE_IMAG34_DATA(&m.matrixElements[i]));
-          }
+      case dtComplex34Matrix: {
+        complex34Matrix_t m;
+        linkToComplexMatrixRegister(regist, &m);
+        for(uint32_t i = 0; i < m.header.matrixRows * m.header.matrixColumns; i++) {
+          real34Zero(VARIABLE_REAL34_DATA(&m.matrixElements[i]));
+          real34Zero(VARIABLE_IMAG34_DATA(&m.matrixElements[i]));
         }
         break;
+      }
 
-      case dtShortInteger:
+      case dtShortInteger: {
         convertUInt64ToShortIntegerRegister(false, 0, getRegisterTag(regist), regist);
         break;
+      }
 
-      case dtConfig:
+      case dtConfig: {
         break;
+      }
 
-      default:
+      default: {
         printf("In function _clearVar, the data type %" PRIu32 " is unknown! Please try to reproduce and submit a bug.\n", getRegisterDataType(regist));
+      }
     }
   }
 
@@ -131,11 +135,12 @@
     uint8_t opParam = *(uint8_t *)(paramAddress++);
 
     switch(paramMode) {
-      case PARAM_DECLARE_LABEL:
+      case PARAM_DECLARE_LABEL: {
         // nothing to do
         break;
+      }
 
-      case PARAM_LABEL:
+      case PARAM_LABEL: {
         if(opParam <= 104) { // Local label from 00 to 99 or from A to E
           // nothing to do
         }
@@ -152,8 +157,9 @@
           sprintf(tmpString, "\nIn function _processOp: case PARAM_LABEL, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
         }
         break;
+      }
 
-      case PARAM_FLAG:
+      case PARAM_FLAG: {
         if(opParam <= LAST_LOCAL_FLAG) { // Global flag from 00 to 99, Lettered flag from X to K, or Local flag from .00 to .15 (or .31)
           // nothing to do
         }
@@ -173,8 +179,9 @@
           sprintf(tmpString, "\nIn function _processOp: case PARAM_FLAG, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
         }
         break;
+      }
 
-      case PARAM_NUMBER_8:
+      case PARAM_NUMBER_8: {
         if(opParam <= (indexOfItems[op].tamMinMax & TAM_MAX_MASK)) { // Value from 0 to 99
           // nothing to do
         }
@@ -188,15 +195,17 @@
           sprintf(tmpString, "\nIn function _processOp: case PARAM_NUMBER, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
         }
         break;
+      }
 
       case PARAM_NUMBER_16:
       case PARAM_SKIP_BACK:
-      case PARAM_SHUFFLE:
+      case PARAM_SHUFFLE: {
         // nothing to do
         break;
+      }
 
       case PARAM_REGISTER:
-      case PARAM_COMPARE:
+      case PARAM_COMPARE: {
         if(opParam <= LAST_LOCAL_REGISTER) { // Global register from 00 to 99, Lettered register from X to K, or Local register from .00 to .98
           _clearVar(opParam);
         }
@@ -217,9 +226,11 @@
           sprintf(tmpString, "\nIn function _processOp: case PARAM_REGISTER / PARAM_COMPARE, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
         }
         break;
+      }
 
-      default:
+      default: {
         sprintf(tmpString, "\nIn function _processOp: paramMode %u is not valid!\n", paramMode);
+      }
     }
   }
 
@@ -244,27 +255,29 @@
       switch(indexOfItems[op].status & PTP_STATUS) {
         case PTP_NONE:
         case PTP_DECLARE_LABEL:
-        case PTP_LITERAL:
+        case PTP_LITERAL: {
           return true;
+        }
 
-        case PTP_DISABLED:
+        case PTP_DISABLED: {
           displayCalcErrorMessage(ERROR_NON_PROGRAMMABLE_COMMAND, ERR_REGISTER_LINE, REGISTER_X);
           #if (EXTRA_INFO_ON_CALC_ERROR == 1)
             moreInfoOnError("In function decodeOneStep:", "non-programmable function", indexOfItems[op].itemCatalogName, "appeared in the program!");
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
           return false;
+        }
 
-        case PTP_KEYG_KEYX:
-          {
-            uint8_t *secondParam = findKey2ndParam_ram(step.ram - 2);
-            _processOp(step.ram, op, PARAM_NUMBER_8);
-            _processOp(secondParam, *secondParam, PARAM_LABEL);
-          }
+        case PTP_KEYG_KEYX: {
+          uint8_t *secondParam = findKey2ndParam_ram(step.ram - 2);
+          _processOp(step.ram, op, PARAM_NUMBER_8);
+          _processOp(secondParam, *secondParam, PARAM_LABEL);
           return true;
+        }
 
-        default:
+        default: {
           _processOp(step.ram, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
           return true;
+        }
       }
     }
   }

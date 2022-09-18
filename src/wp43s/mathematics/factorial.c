@@ -130,11 +130,13 @@ uint64_t fact_uint64(uint64_t value)
 {
   uint64_t result = value;
 
-  if(value <= 1)
+  if(value <= 1) {
     result = 1;
-  else
-    for(uint64_t i=value-1 ; i > 1 ; result *= i--)
-      ;
+  }
+  else {
+    for(uint64_t i=value-1 ; i > 1 ; result *= i--) {
+    }
+  }
 
   return result;
 }

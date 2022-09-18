@@ -74,6 +74,8 @@ void julianDayToInternalDate(const real34_t *source, real34_t *destination) {
 }
 
 bool_t checkDateArgument(calcRegister_t regist, real34_t *jd) {
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
   switch(getRegisterDataType(regist)) {
     case dtDate: {
       internalDateToJulianDay(REGISTER_REAL34_DATA(regist), jd);
@@ -100,6 +102,7 @@ bool_t checkDateArgument(calcRegister_t regist, real34_t *jd) {
       return false;
     }
   }
+  #pragma GCC diagnostic pop
 }
 
 bool_t isLeapYear(const real34_t *year) {
@@ -171,10 +174,16 @@ bool_t isValidDay(const real34_t *year, const real34_t *month, const real34_t *d
   // Thirty days hath September...
   if(real34ToInt32(day) == 31) {
     switch(real34ToInt32(month)) {
-      case 2: case 4: case 6: case 9: case 11:
+      case 2:
+      case 4:
+      case 6:
+      case 9:
+      case 11: {
         return false;
-      default:
+      }
+      default: {
         return true;
+      }
     }
   }
 
@@ -490,6 +499,8 @@ void fnXToDate(uint16_t unusedButMandatoryParameter) {
     return;
   }
 
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
   switch(getRegisterDataType(REGISTER_X)) {
     case dtDate: {
       /* already in date: do nothing */
@@ -515,6 +526,7 @@ void fnXToDate(uint16_t unusedButMandatoryParameter) {
       return;
     }
   }
+  #pragma GCC diagnostic pop
 }
 
 
@@ -618,6 +630,8 @@ void fnToDate(uint16_t unusedButMandatoryParameter) {
   }
 
   for(i = 0; i < 3; ++i) {
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
     switch(getRegisterDataType(r[i])) {
       case dtLongInteger: {
         convertLongIntegerRegisterToReal34(r[i], part[i]);
@@ -641,6 +655,7 @@ void fnToDate(uint16_t unusedButMandatoryParameter) {
         return;
       }
     }
+    #pragma GCC diagnostic pop
   }
 
   if(!isValidDay(&y, &m, &d)) {
@@ -697,6 +712,8 @@ void fnToHms(uint16_t unusedButMandatoryParameter) {
     return;
   }
 
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger: {
       convertLongIntegerRegisterToTimeRegister(REGISTER_X, REGISTER_X);
@@ -725,8 +742,11 @@ void fnToHms(uint16_t unusedButMandatoryParameter) {
       return;
     }
   }
+  #pragma GCC diagnostic pop
   checkTimeRange(REGISTER_REAL34_DATA(REGISTER_X));
-  if(lastErrorCode != 0) undo();
+  if(lastErrorCode != 0) {
+    undo();
+  }
 }
 
 

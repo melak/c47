@@ -1871,7 +1871,7 @@ void timeToDisplayString(calcRegister_t regist, char *displayString, bool_t igno
   // Pre-rounding
   if(!ignoreTDisp) {
     switch(timeDisplayFormatDigits) {
-      case 0:
+      case 0: {
         int32ToReal(86400, &value);
         if((!sign) && (!getSystemFlag(FLAG_TDM24)) && realCompareLessThan(&real, &value)) {
           isValid12hTime = true;
@@ -1885,12 +1885,15 @@ void timeToDisplayString(calcRegister_t regist, char *displayString, bool_t igno
         tDigits = isValid12hTime ? 13 : 15;
         isValid12hTime = false;
         goto do_rounding;
-      case 1: case 2: // round to minutes
+      }
+      case 1:
+      case 2: { // round to minutes
         realDivide(&real, const_60, &real, &ctxtReal39);
         realToIntegralValue(&real, &real, DEC_ROUND_DOWN, &ctxtReal39);
         realMultiply(&real, const_60, &real, &ctxtReal39);
         break;
-      default: // round to seconds, milliseconds, microseconds, ...
+      }
+      default: { // round to seconds, milliseconds, microseconds, ...
         tDigits = timeDisplayFormatDigits + 1;
         bDigits = 4u;
       do_rounding:
@@ -1902,6 +1905,7 @@ void timeToDisplayString(calcRegister_t regist, char *displayString, bool_t igno
           --real.exponent;
         }
         tDigits = 0u;
+      }
     }
   }
   realSetPositiveSign(&real);
@@ -2039,7 +2043,7 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
   temporaryInformation = TI_SHOW_REGISTER;
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       separator = STD_SPACE_4_PER_EM;
       longIntegerRegisterToDisplayString(REGISTER_X, errorMessage, WRITE_BUFFER_LEN, 3200, 400, separator);
 
@@ -2074,12 +2078,14 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
         tmpString[dest + 2] = 0;
       }
       break;
+    }
 
-    case dtReal34:
+    case dtReal34: {
       real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString, &standardFont, 2000, 34, false, STD_SPACE_4_PER_EM, false);
       break;
+    }
 
-    case dtComplex34:
+    case dtComplex34: {
       // Real part
       separator = STD_SPACE_4_PER_EM;
       real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), amNone, tmpString, &standardFont, 2000, 34, false, separator, false);
@@ -2117,16 +2123,19 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
         tmpString[600] = 0;
       }
       break;
+    }
 
-    case dtTime:
+    case dtTime: {
       timeToDisplayString(REGISTER_X, tmpString, true);
       break;
+    }
 
-    case dtDate:
+    case dtDate: {
       dateToDisplayString(REGISTER_X, tmpString);
       break;
+    }
 
-    case dtString:
+    case dtString: {
       offset = 0;
       thereIsANextLine = true;
       bytesProcessed = 0;
@@ -2142,12 +2151,14 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
         tmpString[offset] = 0;
       }
       break;
+    }
 
-    case dtConfig:
+    case dtConfig: {
       xcopy(tmpString, "Configuration data", 19);
       break;
+    }
 
-    default:
+    default: {
       temporaryInformation = TI_NO_INFO;
       if(programRunStop == PGM_WAITING) {
         programRunStop = PGM_STOPPED;
@@ -2158,6 +2169,7 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
         moreInfoOnError("In function fnShow:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
+    }
   }
 
   displayFormat = savedDisplayFormat;

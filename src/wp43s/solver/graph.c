@@ -117,7 +117,9 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
 
 
   static void execute_rpn_function(void){
-    if(graphVariable <= 0 || graphVariable > 65535) return;
+    if(graphVariable <= 0 || graphVariable > 65535) {
+      return;
+    }
 
     calcRegister_t regStats = graphVariable;
     if(regStats != INVALID_VARIABLE) {
@@ -225,7 +227,9 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
   //PLOTTER
   int32_t drawMxN(void) {
     uint16_t rows = 0;
-    if(plotStatMx[0]!='D') return 0;
+    if(plotStatMx[0]!='D') {
+      return 0;
+    }
     calcRegister_t regStats = findNamedVariable(plotStatMx);
     if(regStats == INVALID_VARIABLE) {
       return 0;
@@ -510,7 +514,7 @@ void graph_eqn(uint16_t mode) {
 
       if( (real34IsNegative(REGISTER_REAL34_DATA(SREG_DX)) && real34IsPositive(REGISTER_REAL34_DATA(SREG_Xold))) ||
           (real34IsPositive(REGISTER_REAL34_DATA(SREG_DX)) && real34IsNegative(REGISTER_REAL34_DATA(SREG_Xold))) ) {
-          DXR = (DXR << 1) + 1;
+        DXR = (DXR << 1) + 1;
       }
       else {
         DXR = DXR << 1;
@@ -518,7 +522,7 @@ void graph_eqn(uint16_t mode) {
 
       if( (real34IsNegative(REGISTER_REAL34_DATA(SREG_DY)) && real34IsPositive(REGISTER_REAL34_DATA(SREG_Yold))) ||
           (real34IsPositive(REGISTER_REAL34_DATA(SREG_DY)) && real34IsNegative(REGISTER_REAL34_DATA(SREG_Yold))) ) {
-          DYR = (DYR << 1) + 1;
+        DYR = (DYR << 1) + 1;
       }
       else {
         DYR = DYR << 1;
@@ -527,7 +531,7 @@ void graph_eqn(uint16_t mode) {
       if((getRegisterDataType(SREG_DX) == dtComplex34 && getRegisterDataType(SREG_Xold) == dtComplex34) &&
            ((real34IsNegative(REGISTER_IMAG34_DATA(SREG_DX)) && real34IsPositive(REGISTER_IMAG34_DATA(SREG_Xold))) ||
             (real34IsPositive(REGISTER_IMAG34_DATA(SREG_DX)) && real34IsNegative(REGISTER_IMAG34_DATA(SREG_Xold))) )) {
-               DXI = (DXI << 1) + 1;
+        DXI = (DXI << 1) + 1;
       }
       else {
         DXI = DXI << 1;
@@ -536,7 +540,7 @@ void graph_eqn(uint16_t mode) {
       if((getRegisterDataType(SREG_DY) == dtComplex34 && getRegisterDataType(SREG_Yold) == dtComplex34) &&
            ((real34IsNegative(REGISTER_IMAG34_DATA(SREG_DY)) && real34IsPositive(REGISTER_IMAG34_DATA(SREG_Yold))) ||
             (real34IsPositive(REGISTER_IMAG34_DATA(SREG_DY)) && real34IsNegative(REGISTER_IMAG34_DATA(SREG_Yold))) )) {
-               DYI = (DYI << 1) + 1;
+        DYI = (DYI << 1) + 1;
       }
       else {
         DYI = DYI << 1;
@@ -559,9 +563,7 @@ void graph_eqn(uint16_t mode) {
       if((!real34CompareAbsGreaterThan(REGISTER_REAL34_DATA(SREG_DX), REGISTER_REAL34_DATA(SREG_Xold)) &&
          (getRegisterDataType(SREG_DX) == dtComplex34 && getRegisterDataType(SREG_Xold) == dtComplex34 ?
            !real34CompareAbsGreaterThan(REGISTER_IMAG34_DATA(SREG_DX), REGISTER_IMAG34_DATA(SREG_Xold)) : true))
-
          &&
-
          (!real34CompareAbsGreaterThan(REGISTER_REAL34_DATA(SREG_DY), REGISTER_REAL34_DATA(SREG_Yold)) &&
          (getRegisterDataType(SREG_DY) == dtComplex34 && getRegisterDataType(SREG_Yold) == dtComplex34 ?
            !real34CompareAbsGreaterThan(REGISTER_IMAG34_DATA(SREG_DY), REGISTER_IMAG34_DATA(SREG_Yold)) : true))
@@ -594,7 +596,6 @@ void graph_eqn(uint16_t mode) {
       //assumes X2 is in R91
       if((((oscillations >= 3) && (ixd > 9) && (convergent <= 2))
          //|| (oscillations == 0 && convergent > 6 && real34CompareAbsLessThan(REGISTER_REAL34_DATA(SREG_DX), const34_1e_4) && (getRegisterDataType(SREG_DX) == dtComplex34 ? real34CompareAbsLessThan(REGISTER_IMAG34_DATA(SREG_DX), const34_1e_4) : 1 )  )
-
         )) {
         if(COMPLEXKICKER && (kicker ==0) && (convergent <= 1)) {
           kicker = kicker +2;

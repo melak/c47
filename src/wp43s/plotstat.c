@@ -324,9 +324,9 @@ void clearScreenPixels(void) {
   }
 
 
-  static void plotHisto_col(uint16_t ix, uint16_t ixn, uint16_t x, uint16_t y, uint16_t x_min, uint16_t x_wid, uint16_t y_min, uint16_t y_wid) {  //x is 0..(n-1)   
+  static void plotHisto_col(uint16_t ix, uint16_t ixn, uint16_t x, uint16_t y, uint16_t x_min, uint16_t x_wid, uint16_t y_min, uint16_t y_wid) {  //x is 0..(n-1)
     float col_width = (int16_t)(x_wid*(float)(1.0f) / (float)(ixn + 2)) - 0.6f;              // Scaled to always have the histogram in the same scale as the STATS ASSESS graph
-    
+
     plotrect(x - (int)((+0.1f + col_width)/2), y_min + y_wid,  x + (int)((-0.1f + col_width)/2), y);
   }
 
@@ -828,7 +828,7 @@ static char *eng(double value, int digits) {
 
 void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, const char* s05) {
   char s03[100];
-  
+
   strcpy(s03, eng(inreal, digits));
   strcpy(s02, s01);
   strcat(s02, eatSpacesMid(radixProcess(s03)));
@@ -846,7 +846,7 @@ void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, con
 #if !defined (TESTSUITE_BUILD) //TESTSUITE_BUILD
   int32_t statMxN(void) {
     uint16_t rows = 0;
-    
+
     if(plotStatMx[0]=='D') {
       return 0;                //Only allow S and H
     }
@@ -896,7 +896,7 @@ void graphPlotstat(uint16_t selection) {
     if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) ||
       (plotStatMx[0]=='D' && drawMxN() >= 2) ||
       (plotStatMx[0]=='H' && statMxN() >= 3)) {
-      switch (plotStatMx[0]) {
+      switch(plotStatMx[0]) {
         case 'S': {
           realToInt32(SIGMA_N, statnum);
           break;
@@ -1188,26 +1188,26 @@ void graphPlotstat(uint16_t selection) {
       n = showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index    -2  + autoshift + 2, vmNormal, false, false);
       eformat_eng2(ss, radixProcess("#"), y_min, 2, ")");
       showString(padEquals(ss), &standardFont, n+3,           Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++  -2  + autoshift + 2, vmNormal, false, false);
- 
-      strcpy(ss,"Bin centres:");                   
+
+      strcpy(ss,"Bin centres:");
       showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
       eformat_eng2(ss,"",lB,3,"");
       showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -4 +autoshift, vmNormal, false, false);
-      strcpy(ss,STD_DOWN_ARROW "BIN" "=");                   
+      strcpy(ss,STD_DOWN_ARROW "BIN" "=");
       showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -4 +autoshift, vmNormal, false, false);
 
-      eformat_eng2(ss,"",hB,3,"");           
+      eformat_eng2(ss,"",hB,3,"");
       showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
-      strcpy(ss,STD_UP_ARROW "BIN" "=");                   
+      strcpy(ss,STD_UP_ARROW "BIN" "=");
       showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
 
-      eformat_eng2(ss,"",nB,3,"");           
+      eformat_eng2(ss,"",nB,3,"");
       showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
-      strcpy(ss,"nBINS" "=");                   
+      strcpy(ss,"nBINS" "=");
       showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
-      eformat_eng2(ss,"",(hB-lB)/nB,3,"");           
+      eformat_eng2(ss,"",(hB-lB)/nB,3,"");
       showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  -1 +autoshift, vmNormal, false, false);
-      strcpy(ss,"Width" "=");                   
+      strcpy(ss,"Width" "=");
       showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   -1 +autoshift, vmNormal, false, false);
 
     }
@@ -1278,7 +1278,7 @@ static  void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, 
     int32_t n = 0;
     uint16_t NN;
 
-    switch (plotStatMx[0]) {
+    switch(plotStatMx[0]) {
       case 'S': {
         realToInt32(SIGMA_N, n);
         break;
@@ -1310,7 +1310,7 @@ static  void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, 
       && (!realIsNaN(aa2) || minLRDataPoints(selection)==2)
       && (!realIsNaN(SMI) || !(selection & CF_ORTHOGONAL_FITTING));
 
-    #if defined (STATDEBUG) && defined (PC_BUILD)
+    #if defined(STATDEBUG) && defined(PC_BUILD)
       printf("#####>>> drawline: selection:%u:%s  lastplotmode:%u  lrSelection:%u lrChosen:%u\n",selection, getCurveFitModeName(selection), lastPlotMode, lrSelection, lrChosen);
     #endif //  STATDEBUG && PC_BUILD
     float rr, smi, a0, a1, a2, ssa0, ssa1;
@@ -1598,7 +1598,7 @@ void fnPlotCloseSmi(uint16_t unusedButMandatoryParameter){
 void fnPlotStat(uint16_t plotMode){
   #if !defined(TESTSUITE_BUILD)
 //restoreStats();
-    switch (plotMode) {
+    switch(plotMode) {
       case PLOT_GRAPH: {
         drawHistogram = 0;
         if(plotStatMx[0] != 'D') {
@@ -1646,11 +1646,11 @@ void fnPlotStat(uint16_t plotMode){
     #if defined(STATDEBUG) && defined(PC_BUILD)
       printf("fnPlotStat1: plotSelection = %u; Plotmode=%u\n",plotSelection,plotMode);
       printf("#####>>> fnPlotStat1: plotSelection:%u:%s  Plotmode:%u lastplotmode:%u  lrSelection:%u lrChosen:%u plotStatMx:%s\n",plotSelection, getCurveFitModeName(plotSelection), plotMode, lastPlotMode, lrSelection, lrChosen, plotStatMx);
-      if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || 
+      if( (plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) ||
           (plotStatMx[0]=='D' && drawMxN() >= 2) ||
           (plotStatMx[0]=='H' && statMxN() >= 3) ) {
         int16_t cnt = 0;
-        switch (plotStatMx[0]) {
+        switch(plotStatMx[0]) {
           case 'S': {
             realToInt32(SIGMA_N, cnt);
             break;
@@ -1670,9 +1670,9 @@ void fnPlotStat(uint16_t plotMode){
         printf("Stored values %i\n",cnt);
       }
     #endif //STATDEBUG
-    
-    if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) || 
-       (plotStatMx[0]=='D' && drawMxN() >= 2) || 
+
+    if((plotStatMx[0]=='S' && checkMinimumDataPoints(const_2)) ||
+       (plotStatMx[0]=='D' && drawMxN() >= 2) ||
        (plotStatMx[0]=='H' && statMxN() >= 3) ) {
       PLOT_SCALE = false;
 
@@ -1710,7 +1710,7 @@ void fnPlotStat(uint16_t plotMode){
             }
           }
         }
-      
+
         hourGlassIconEnabled = true;
         showHideHourGlass();
 
@@ -1791,8 +1791,8 @@ void fnPlotRegressionLine(uint16_t plotMode) {
       break;
     }
 
-      //Show data and one curve fit selected: Scans lrSelection from LSB and stop after the first one is found. If a chosen curve is there, override.
-      //printf("#####X %u %u \n",plotSelection, lrSelection);
+    //Show data and one curve fit selected: Scans lrSelection from LSB and stop after the first one is found. If a chosen curve is there, override.
+    //printf("#####X %u %u \n",plotSelection, lrSelection);
     case PLOT_NXT: {
       plotSelection = plotSelection << 1;
       if(plotSelection == 0){
@@ -1848,7 +1848,7 @@ void fnPlotRegressionLine(uint16_t plotMode) {
     case PLOT_NOTHING: {
       break;
     }
-    
+
     default: {
       break;
     }

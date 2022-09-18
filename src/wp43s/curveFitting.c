@@ -188,10 +188,10 @@ void fnProcessLRfind(uint16_t curveFitting){
     printf("Processing for best fit: %s\n",getCurveFitModeNames(curveFitting));
   #endif //PC_BUILD
   realCopy(const__4,&RRMAX);
-  uint16_t s = 0;       //default
-  uint16_t ix, jx;      //only a single graph can be evaluated at once, so retain the single lowest bit, and clear the higher order bits.
+  uint16_t s = 0;       // default
+  uint16_t ix, jx;      // only a single graph can be evaluated at once, so retain the single lowest bit, and clear the higher order bits.
   jx = 0;
-  for(ix=0; ix<10; ix++) { //up to 2^9 inclusive of 512 which is ORTHOF. The ReM is respectedby usage of 0 only, not by manual selection.
+  for(ix=0; ix<10; ix++) { // up to 2^9 inclusive of 512 which is ORTHOF. The ReM is respectedby usage of 0 only, not by manual selection.
     jx = curveFitting & ((1 << ix));
     if(jx) {
       #if defined(PC_BUILD)
@@ -202,14 +202,16 @@ void fnProcessLRfind(uint16_t curveFitting){
         processCurvefitSelection(jx,&RR,&SMI, &aa0, &aa1, &aa2);
         realMultiply(&RR,&RR,&RR2,&ctxtReal39);
 
-        if(realCompareGreaterThan(&RR2, &RRMAX) && realCompareLessEqual(&RR2, const_1)) { //Only consider L.R. models where R^2<=1
+        if(realCompareGreaterThan(&RR2, &RRMAX) && realCompareLessEqual(&RR2, const_1)) { // Only consider L.R. models where R^2<=1
           realCopy(&RR2,&RRMAX);
           s = jx;
         }
       }
     }
   }
-  if(lrCountOnes(s) > 1) s = 0; //error condition, cannot have >1 solutions, do not do L.R.
+  if(lrCountOnes(s) > 1) {
+    s = 0; // error condition, cannot have >1 solutions, do not do L.R.
+  }
 
   #if defined(PC_BUILD)
     if(s != 0) {
@@ -340,7 +342,9 @@ void processCurvefitSelectionAll(uint16_t selection, real_t *RR_, real_t *MX, re
   jx = 0;
   for(ix=0; ix!=10; ix++) {     //up to 2^9 inclusive of 512 which is ORTHOF. The ReM is respectedby usage of 0 only, not by manual selection.
     jx = selection & ((1 << ix));
-    if(jx) break;
+    if(jx) {
+      break;
+    }
   }
   selection = jx;
   #if (defined(STATDEBUG) || defined(STAT_DISPLAY_ABCDEFG)) && defined(PC_BUILD)

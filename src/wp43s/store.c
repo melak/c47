@@ -202,7 +202,9 @@ static void _storeValue(uint16_t regist) {
 void fnStore(uint16_t regist) {
   if(_checkReadOnlyVariable(regist) && regInRange(regist)) {
     _storeValue(regist);
-    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
+    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) {
+      calcSigma(0);
+    }
   }
 }
 
@@ -230,7 +232,9 @@ void fnStoreAdd(uint16_t regist) {
     }
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
+    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) {
+      calcSigma(0);
+    }
   }
 }
 
@@ -258,7 +262,9 @@ void fnStoreSub(uint16_t regist) {
     }
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
+    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) {
+      calcSigma(0);
+    }
   }
 }
 
@@ -286,7 +292,9 @@ void fnStoreMult(uint16_t regist) {
     }
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
+    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) {
+      calcSigma(0);
+    }
   }
 }
 
@@ -314,7 +322,9 @@ void fnStoreDiv(uint16_t regist) {
     }
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, regist, -1);
-    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) calcSigma(0);
+    if(regist >= FIRST_NAMED_VARIABLE && regist == findNamedVariable("STATS")) {
+      calcSigma(0);
+    }
   }
 }
 
@@ -425,7 +435,9 @@ void fnStoreElement(uint16_t unusedButMandatoryParameter) {
         convertReal34MatrixRegisterToComplex34MatrixRegister(matrixIndex, matrixIndex);
       }
       callByIndexedMatrix(storeElementReal, storeElementComplex);
-      if(matrixIndex >= FIRST_NAMED_VARIABLE && matrixIndex == findNamedVariable("STATS")) calcSigma(0);
+      if(matrixIndex >= FIRST_NAMED_VARIABLE && matrixIndex == findNamedVariable("STATS")) {
+        calcSigma(0);
+      }
     }
   #endif // !TESTSUITE_BUILD
 }
@@ -443,7 +455,9 @@ void fnStoreIJ(uint16_t unusedButMandatoryParameter) {
     }
     else {
       callByIndexedMatrix(storeIjReal, storeIjComplex);
-      if(matrixIndex >= FIRST_NAMED_VARIABLE && matrixIndex == findNamedVariable("STATS")) calcSigma(0);
+      if(matrixIndex >= FIRST_NAMED_VARIABLE && matrixIndex == findNamedVariable("STATS")) {
+        calcSigma(0);
+      }
     }
   #endif // !TESTSUITE_BUILD
 }

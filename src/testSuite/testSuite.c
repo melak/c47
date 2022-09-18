@@ -962,7 +962,9 @@ void setParameter(char *p) {
 
       // remove beginning and ending " and removing leading spaces
       xcopy(r, r + 1, strlen(r));
-      while(r[0] == ' ') xcopy(r, r + 1, strlen(r));
+      while(r[0] == ' ') {
+        xcopy(r, r + 1, strlen(r));
+      }
       r[strlen(r) - 1] = 0;
 
       // replace , with .

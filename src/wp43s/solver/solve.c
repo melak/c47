@@ -109,8 +109,9 @@ void fnSolve(uint16_t labelOrVariable) {
   if((labelOrVariable >= FIRST_LABEL && labelOrVariable <= LAST_LABEL) || (labelOrVariable >= REGISTER_X && labelOrVariable <= REGISTER_T)) {
     // Interactive mode
     fnPgmSlv(labelOrVariable);
-    if(lastErrorCode == ERROR_NONE)
+    if(lastErrorCode == ERROR_NONE) {
       currentSolverStatus = SOLVER_STATUS_INTERACTIVE;
+    }
     adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
   else if(labelOrVariable >= FIRST_NAMED_VARIABLE && labelOrVariable <= LAST_NAMED_VARIABLE) {
@@ -354,7 +355,9 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
     real34Subtract(&b, &a, &s);
     if(real34CompareAbsLessThan(&s, const34_1e_32)) {
       real34Copy(const34_1e_32, &s);
-      if(real34CompareLessThan(&b, &a)) real34SetNegativeSign(&s);
+      if(real34CompareLessThan(&b, &a)) {
+        real34SetNegativeSign(&s);
+      }
       real34Subtract(&a, &s, &a);
       real34Add(&b, &s, &b);
     }
@@ -431,7 +434,9 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
           real34Subtract(&b, &a, &s);
           if(real34CompareAbsLessThan(&s, const34_1e_32)) {
             real34Copy(const34_1e_32, &s);
-            if(real34CompareLessThan(&b, &a)) real34SetNegativeSign(&s);
+            if(real34CompareLessThan(&b, &a)) {
+              real34SetNegativeSign(&s);
+            }
           }
           if(real34CompareAbsLessThan(const34_1e6, &s)) {
             real34Multiply(&s, const34_1e6, &s);
@@ -452,7 +457,9 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
           real34Multiply(&b, const34_1e_32, &s);
           if(real34CompareAbsLessThan(&s, const34_1e_32)) {
             real34Copy(const34_1e_32, &s);
-            if(real34CompareLessThan(&b, &a)) real34SetNegativeSign(&s);
+            if(real34CompareLessThan(&b, &a)) {
+              real34SetNegativeSign(&s);
+            }
           }
           if(real34IsNegative(&fb)) {
             real34Subtract(&b, &s, &s);
@@ -467,10 +474,12 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
         bp1 = &m;
       }
       else if(!real34IsSpecial(&s) && ((real34CompareLessThan(&b, &s) && real34CompareLessThan(&s, &m)) || (real34CompareLessThan(&m, &s) && real34CompareLessThan(&s, &m)))) {
-        if(realCompareLessThan(&delta, &deltaB) && realCompareLessThan(&smb, &deltaB))
+        if(realCompareLessThan(&delta, &deltaB) && realCompareLessThan(&smb, &deltaB)) {
           bp1 = &s;
-        else
+        }
+        else {
           bp1 = &m;
+        }
       }
       else {
         bp1 = &m;
@@ -560,8 +569,9 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
       setSystemFlag(FLAG_INTING);
     }
 
-    if(real34IsZero(&fb))
+    if(real34IsZero(&fb)) {
       result = SOLVER_RESULT_NORMAL;
+    }
 
     real34Copy(&fb, resZ);
     real34Copy(&b1, resY);

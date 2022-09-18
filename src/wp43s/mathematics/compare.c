@@ -556,16 +556,34 @@ static void almostEqualScalar(uint16_t regist) {
   real34Copy(REGISTER_REAL34_DATA(regist), &val2r);
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtComplex34:       roundCplx(); break;
-    case dtReal34:          roundReal(); break;
-    default: /* dtTime */   roundTime(); break;
+    case dtComplex34: {
+      roundCplx();
+      break;
+    }
+    case dtReal34: {
+      roundReal();
+      break;
+    }
+    default: { /* dtTime */
+     roundTime();
+     break;
+    }
   }
   if(regist != TEMP_REGISTER_1) {
     fnSwapX(regist);
     switch(getRegisterDataType(REGISTER_X)) {
-      case dtComplex34:       roundCplx(); break;
-      case dtReal34:          roundReal(); break;
-      default: /* dtTime */   roundTime(); break;
+      case dtComplex34: {
+        roundCplx();
+        break;
+      }
+      case dtReal34: {
+        roundReal();
+        break;
+      }
+      default: { /* dtTime */
+        roundTime();
+        break;
+      }
     }
     fnSwapX(regist);
   }

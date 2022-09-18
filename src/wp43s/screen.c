@@ -438,34 +438,117 @@
         ptr += strlen(ptr);
 
         switch(sum) {
-          case  0: strcpy(sumName,           "n             "           ); break;
-          case  1: strcpy(sumName, STD_SIGMA "(x)          "            ); break;
-          case  2: strcpy(sumName, STD_SIGMA "(y)          "            ); break;
-          case  3: strcpy(sumName, STD_SIGMA "(x" STD_SUP_2 ")         "); break;
-          case  4: strcpy(sumName, STD_SIGMA "(x" STD_SUP_2 "y)        "); break;
-          case  5: strcpy(sumName, STD_SIGMA "(y" STD_SUP_2 ")         "); break;
-          case  6: strcpy(sumName, STD_SIGMA "(xy)         "            ); break;
-          case  7: strcpy(sumName, STD_SIGMA "(ln(x)" STD_CROSS "ln(y))"); break;
-          case  8: strcpy(sumName, STD_SIGMA "(ln(x))      "            ); break;
-          case  9: strcpy(sumName, STD_SIGMA "(ln" STD_SUP_2 "(x))     "); break;
-          case 10: strcpy(sumName, STD_SIGMA "(y ln(x))    "            ); break;
-          case 11: strcpy(sumName, STD_SIGMA "(ln(y))      "            ); break;
-          case 12: strcpy(sumName, STD_SIGMA "(ln" STD_SUP_2 "(y))     "); break;
-          case 13: strcpy(sumName, STD_SIGMA "(x ln(y))    "            ); break;
-          case 14: strcpy(sumName, STD_SIGMA "(ln(y)/x)    "            ); break;
-          case 15: strcpy(sumName, STD_SIGMA "(x" STD_SUP_2 "/y)       "); break;
-          case 16: strcpy(sumName, STD_SIGMA "(1/x)        "            ); break;
-          case 17: strcpy(sumName, STD_SIGMA "(1/x" STD_SUP_2 ")       "); break;
-          case 18: strcpy(sumName, STD_SIGMA "(x/y)        "            ); break;
-          case 19: strcpy(sumName, STD_SIGMA "(1/y)        "            ); break;
-          case 20: strcpy(sumName, STD_SIGMA "(1/y" STD_SUP_2 ")       "); break;
-          case 21: strcpy(sumName, STD_SIGMA "(x" STD_SUP_3 ")         "); break;
-          case 22: strcpy(sumName, STD_SIGMA "(x" STD_SUP_4 ")         "); break;
-          case 23: strcpy(sumName,           "x min         "           ); break;
-          case 24: strcpy(sumName,           "x max         "           ); break;
-          case 25: strcpy(sumName,           "y min         "           ); break;
-          case 26: strcpy(sumName,           "y max         "           ); break;
-          default: strcpy(sumName,           "?             "           );
+          case 0: {
+            strcpy(sumName,           "n             "           );
+            break;
+          }
+          case 1: {
+            strcpy(sumName, STD_SIGMA "(x)          "            );
+            break;
+          }
+          case 2: {
+            strcpy(sumName, STD_SIGMA "(y)          "            );
+            break;
+          }
+          case 3: {
+            strcpy(sumName, STD_SIGMA "(x" STD_SUP_2 ")         ");
+            break;
+          }
+          case 4: {
+            strcpy(sumName, STD_SIGMA "(x" STD_SUP_2 "y)        ");
+            break;
+          }
+          case 5: {
+            strcpy(sumName, STD_SIGMA "(y" STD_SUP_2 ")         ");
+            break;
+          }
+          case 6: {
+            strcpy(sumName, STD_SIGMA "(xy)         "            );
+            break;
+          }
+          case 7: {
+            strcpy(sumName, STD_SIGMA "(ln(x)" STD_CROSS "ln(y))");
+            break;
+          }
+          case 8: {
+            strcpy(sumName, STD_SIGMA "(ln(x))      "            );
+            break;
+          }
+          case 9: {
+            strcpy(sumName, STD_SIGMA "(ln" STD_SUP_2 "(x))     ");
+            break;
+          }
+          case 10: {
+            strcpy(sumName, STD_SIGMA "(y ln(x))    "            );
+            break;
+          }
+          case 11: {
+            strcpy(sumName, STD_SIGMA "(ln(y))      "            );
+            break;
+          }
+          case 12: {
+            strcpy(sumName, STD_SIGMA "(ln" STD_SUP_2 "(y))     ");
+            break;
+          }
+          case 13: {
+            strcpy(sumName, STD_SIGMA "(x ln(y))    "            );
+            break;
+          }
+          case 14: {
+            strcpy(sumName, STD_SIGMA "(ln(y)/x)    "            );
+            break;
+          }
+          case 15: {
+            strcpy(sumName, STD_SIGMA "(x" STD_SUP_2 "/y)       ");
+            break;
+          }
+          case 16: {
+            strcpy(sumName, STD_SIGMA "(1/x)        "            );
+            break;
+          }
+          case 17: {
+            strcpy(sumName, STD_SIGMA "(1/x" STD_SUP_2 ")       ");
+            break;
+          }
+          case 18: {
+            strcpy(sumName, STD_SIGMA "(x/y)        "            );
+            break;
+          }
+          case 19: {
+            strcpy(sumName, STD_SIGMA "(1/y)        "            );
+            break;
+          }
+          case 20: {
+            strcpy(sumName, STD_SIGMA "(1/y" STD_SUP_2 ")       ");
+            break;
+          }
+          case 21: {
+            strcpy(sumName, STD_SIGMA "(x" STD_SUP_3 ")         ");
+            break;
+          }
+          case 22: {
+            strcpy(sumName, STD_SIGMA "(x" STD_SUP_4 ")         ");
+            break;
+          }
+          case 23: {
+            strcpy(sumName,           "x min         "           );
+            break;
+          }
+          case 24: {
+            strcpy(sumName,           "x max         "           );
+            break;
+          }
+          case 25: {
+            strcpy(sumName,           "y min         "           );
+            break;
+          }
+          case 26: {
+            strcpy(sumName,           "y max         "           );
+            break;
+          }
+          default: {
+            strcpy(sumName,           "?             "           );
+          }
         }
 
         sprintf(ptr, LINEBREAK "SR%02d = ", sum);
@@ -2379,7 +2462,9 @@ void execTimerApp(uint16_t timerType) {
           refreshStatusBar();
         }
         #if (REAL34_WIDTH_TEST == 1)
-          for(int y=Y_POSITION_OF_REGISTER_Y_LINE; y<Y_POSITION_OF_REGISTER_Y_LINE + 2*REGISTER_LINE_HEIGHT; y++ ) setBlackPixel(SCREEN_WIDTH - largeur - 1, y);
+          for(int y=Y_POSITION_OF_REGISTER_Y_LINE; y<Y_POSITION_OF_REGISTER_Y_LINE + 2*REGISTER_LINE_HEIGHT; y++ ) {
+            setBlackPixel(SCREEN_WIDTH - largeur - 1, y);
+          }
         #endif // (REAL34_WIDTH_TEST == 1)
         break;
       }

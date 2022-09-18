@@ -596,7 +596,7 @@ void fnClSigma(uint16_t unusedButMandatoryParameter) {
   drawHistogram = 0;
   histElementXorY = 0;
 
- 
+
   if(statisticalSumsPointer != NULL) {
     freeWp43s(statisticalSumsPointer, NUMBER_OF_STATISTICAL_SUMS * REAL_SIZE);
     statisticalSumsPointer = NULL;
@@ -794,9 +794,9 @@ void fnXmax(uint16_t unusedButMandatoryParameter) {
     if(regHisto == INVALID_VARIABLE) {
       return false;
     }
-    else {   
+    else {
       if(getRegisterDataType(regHisto) != dtReal34Matrix) {
-        return false;} 
+        return false;}
       else
       {
         real34Matrix_t histo;
@@ -887,7 +887,7 @@ void fnSetHiBin(uint16_t unusedButMandatoryParameter) {
     if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
       convertLongIntegerRegisterToReal34(REGISTER_X, &hiBinR);
       convertStatsMatrixToHistoMatrix(histElementXorY == 1 ? ITM_Y : histElementXorY == 0 ? ITM_X : -1);
-    } 
+    }
     else {
       if(getRegisterDataType(REGISTER_X) == dtReal34) {
         real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &hiBinR);
@@ -935,7 +935,7 @@ void fnSetNBins(uint16_t unusedButMandatoryParameter) {
 void fnConvertStatsToHisto(uint16_t statsVariableToHistogram) {
     uint16_t rows;
     real_t lb, hb, nb, nn;
-    
+
     if(statMx[0]=='S' && isStatsMatrix(&rows,statMx)) {
       if(statsVariableToHistogram == ITM_Y) {
         realToReal34(SIGMA_YMIN, &loBinR);                                     //set up the user variables from auto estimates from the data
@@ -978,8 +978,8 @@ static void convertStatsMatrixToHistoMatrix(uint16_t statsVariableToHistogram) {
     real_t ii, lb, hb, nb, bw, bwon2;
     uint16_t i = 0;
     uint16_t j = 0;
-    
-    if (!checkMinimumDataPoints(const_3)) {
+
+    if(!checkMinimumDataPoints(const_3)) {
       return;
     }
     if(statMx[0]!='S') {
@@ -1047,7 +1047,7 @@ static void convertStatsMatrixToHistoMatrix(uint16_t statsVariableToHistogram) {
               if( (j <  NN - 1 && realCompareLessThan(&t, &th) && realCompareGreaterEqual(&t, &tl)) ||
                   (j == NN - 1 && realCompareLessEqual(&t, &th) && realCompareGreaterEqual(&t, &tl)) )  {
                 real34Add(&histo.matrixElements[j * histo.header.matrixColumns + 1], const34_1, &histo.matrixElements[j * histo.header.matrixColumns + 1]);
-                #if defined (PC_BUILD) && defined (HISTDEBUG)
+                #if defined(PC_BUILD) && defined(HISTDEBUG)
                   printf("Stats element %d in bin no %d, lying between: ",i,j);
                   printRealToConsole(&tl,"low (inclusive):"," and ");
                   if(j == NN - 1) {

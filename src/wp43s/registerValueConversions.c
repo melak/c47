@@ -677,19 +677,22 @@ double convertRegisterToDouble(calcRegister_t regist) {
   real_t tmpy;
 
   switch(getRegisterDataType(regist)) {
-  case dtLongInteger:
-    convertLongIntegerRegisterToReal(regist, &tmpy, &ctxtReal39);
-    break;
-  case dtReal34:
-  case dtComplex34:
-    real34ToReal(REGISTER_REAL34_DATA(regist), &tmpy);
-    break;
-  default:
-    #if defined(PC_BUILD)
-      printf("ERROR IN convertRegisterToDouble\n");
-    #endif
-    return DOUBLE_NOT_INIT;
-    break;
+    case dtLongInteger: {
+      convertLongIntegerRegisterToReal(regist, &tmpy, &ctxtReal39);
+      break;
+    }
+    case dtReal34:
+    case dtComplex34: {
+      real34ToReal(REGISTER_REAL34_DATA(regist), &tmpy);
+      break;
+    }
+    default: {
+      #if defined(PC_BUILD)
+        printf("ERROR IN convertRegisterToDouble\n");
+      #endif
+      return DOUBLE_NOT_INIT;
+      break;
+    }
   }
   realToDouble(&tmpy, &y);
   return y;
