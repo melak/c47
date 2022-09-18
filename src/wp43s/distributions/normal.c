@@ -135,7 +135,9 @@ static void normalL(bool_t logNormal) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      if(logNormal) WP34S_Ln(&val, &val, &ctxtReal39);
+      if(logNormal) {
+        WP34S_Ln(&val, &val, &ctxtReal39);
+      }
       realSubtract(&val, &mu, &val, &ctxtReal39);
       realDivide(&val, &sigma, &val, &ctxtReal39);
       WP34S_Cdf_Q(&val, &ans, &ctxtReal39);
@@ -166,7 +168,9 @@ static void normalR(bool_t logNormal) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      if(logNormal) WP34S_Ln(&val, &val, &ctxtReal39);
+      if(logNormal) {
+        WP34S_Ln(&val, &val, &ctxtReal39);
+      }
       realSubtract(&val, &mu, &val, &ctxtReal39);
       realDivide(&val, &sigma, &val, &ctxtReal39);
       WP34S_Cdfu_Q(&val, &ans, &ctxtReal39);
@@ -197,7 +201,9 @@ static void normalI(bool_t logNormal) {
       WP34S_Qf_Q(&val, &ans, &ctxtReal39);
       realMultiply(&ans, &sigma, &ans, &ctxtReal39);
       realAdd(&ans, &mu, &ans, &ctxtReal39);
-      if(logNormal) realExp(&ans, &ans, &ctxtReal39);
+      if(logNormal) {
+        realExp(&ans, &ans, &ctxtReal39);
+      }
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       convertRealToReal34ResultRegister(&ans, REGISTER_X);
     }
@@ -344,10 +350,13 @@ void WP34S_qf_q_est(const real_t *x, real_t *res, real_t* resY, realContext_t *r
   }
 
   realCopy(&q, res);
-  if(resY) realCopy(&p, resY);
+  if(resY) {
+    realCopy(&p, resY);
+  }
   // qf_q_signfix
-  if(isSmall)
+  if(isSmall) {
     realChangeSign(res);
+  }
 }
 
 void WP34S_Qf_Q(const real_t *x, real_t *res, realContext_t *realContext) {
@@ -406,6 +415,8 @@ void WP34S_Qf_Q(const real_t *x, real_t *res, realContext_t *realContext) {
     } while(--loops > 0);
   }
   // qf_q_out
-  if(half) realChangeSign(&p);
+  if(half) {
+    realChangeSign(&p);
+  }
   realCopy(&p, res);
 }

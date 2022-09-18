@@ -102,7 +102,9 @@ void magnitudeCxma(void) {
       convertReal34MatrixToReal34MatrixRegister(&rMat, REGISTER_X);
       realMatrixFree(&rMat);
     }
-    else displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    else {
+      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+    }
   #endif // !TESTSUITE_BUILD
 }
 

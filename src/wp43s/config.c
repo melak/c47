@@ -296,7 +296,9 @@ void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
     convertLongIntegerRegisterToLongInteger(REGISTER_X, sigDigits);
     if((longIntegerCompareInt(sigDigits, 0) >= 0) && (longIntegerCompareInt(sigDigits, 34) <= 0)) {
       longIntegerToUInt(sigDigits, significantDigits);
-      if(significantDigits == 0) significantDigits = 34;
+      if(significantDigits == 0) {
+        significantDigits = 34;
+      }
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -604,8 +606,12 @@ void addTestPrograms(void) {
 
 
 void restoreStats(void){
-  if(lrChosen    !=65535) lrChosen = lrChosenHistobackup;
-  if(lrSelection !=65535) lrSelection = lrSelectionHistobackup;
+  if(lrChosen !=65535) {
+    lrChosen = lrChosenHistobackup;
+  }
+  if(lrSelection !=65535) {
+    lrSelection = lrSelectionHistobackup;
+  }
   strcpy(statMx,"STATS");
   lrSelectionHistobackup = 65535;
   lrChosenHistobackup = 65535;
@@ -887,7 +893,9 @@ void fnReset(uint16_t confirmation) {
     #if defined(TESTSUITE_BUILD)
       calcMode = CM_NORMAL;
     #else // TESTSUITE_BUILD
-      if(calcMode == CM_MIM) mimFinalize();
+      if(calcMode == CM_MIM) {
+        mimFinalize();
+      }
       calcModeNormal();
     #endif // !TESTSUITE_BUILD
 

@@ -63,7 +63,9 @@ void fnVarMnu(uint16_t label) {
 void fnPause(uint16_t duration) {
   #if !defined(TESTSUITE_BUILD)
     uint8_t previousProgramRunStop = programRunStop;
-    if(tam.mode) tamLeaveMode();
+    if(tam.mode) {
+      tamLeaveMode();
+    }
     programRunStop = PGM_PAUSED;
     if(previousProgramRunStop != PGM_RUNNING) {
       refreshScreen();
@@ -118,7 +120,7 @@ static uint16_t _getKeyArg(uint16_t regist) {
     return 0;
   #else // TESTSUITE_BUILD
     real34_t arg;
-    
+
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
     switch(getRegisterDataType(regist)) {

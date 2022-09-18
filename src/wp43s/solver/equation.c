@@ -153,7 +153,9 @@ void fnEqDelete(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnEqCursorLeft(uint16_t unusedButMandatoryParameter) {
-  if(xCursor > 0) --xCursor;
+  if(xCursor > 0) {
+    --xCursor;
+  }
 }
 
 void fnEqCursorRight(uint16_t unusedButMandatoryParameter) {

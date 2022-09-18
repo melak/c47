@@ -617,37 +617,80 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       free(loadedScreen);
 
       #if (SCREEN_800X480 == 1)
-        if(calcMode == CM_NORMAL)                     {}
-        else if(calcMode == CM_AIM)                   {cursorEnabled = true;}
-        else if(calcMode == CM_NIM)                   {cursorEnabled = true;}
-        else if(calcMode == CM_REGISTER_BROWSER)      {}
-        else if(calcMode == CM_FLAG_BROWSER)          {}
-        else if(calcMode == CM_FONT_BROWSER)          {}
-        else if(calcMode == CM_PEM)                   {}
-        else if(calcMode == CM_PLOT_STAT)             {}
-        else if(calcMode == CM_GRAPH)                 {}
-        else if(calcMode == CM_MIM)                   {mimRestore();}
-        else if(calcMode == CM_EIM)                   {}
-        else if(calcMode == CM_ASSIGN)                {}
-        else if(calcMode == CM_TIMER)                 {}
+        if(calcMode == CM_NORMAL) {
+        }
+        else if(calcMode == CM_AIM) {
+          cursorEnabled = true;
+        }
+        else if(calcMode == CM_NIM) {
+          cursorEnabled = true;
+        }
+        else if(calcMode == CM_REGISTER_BROWSER) {
+        }
+        else if(calcMode == CM_FLAG_BROWSER) {
+        }
+        else if(calcMode == CM_FONT_BROWSER) {
+        }
+        else if(calcMode == CM_PEM) {
+        }
+        else if(calcMode == CM_PLOT_STAT) {
+        }
+        else if(calcMode == CM_GRAPH) {
+        }
+        else if(calcMode == CM_MIM) {
+          mimRestore();
+        }
+        else if(calcMode == CM_EIM) {
+        }
+        else if(calcMode == CM_ASSIGN) {
+        }
+        else if(calcMode == CM_TIMER) {
+        }
         else {
           sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
           displayBugScreen(errorMessage);
         }
       #else // (SCREEN_800X480 == 0)
-        if(calcMode == CM_NORMAL)                      calcModeNormalGui();
-        else if(calcMode == CM_AIM)                   {calcModeAimGui();    cursorEnabled = true;}
-        else if(calcMode == CM_NIM)                   {calcModeNormalGui(); cursorEnabled = true;}
-        else if(calcMode == CM_REGISTER_BROWSER)       calcModeNormalGui();
-        else if(calcMode == CM_FLAG_BROWSER)           calcModeNormalGui();
-        else if(calcMode == CM_FONT_BROWSER)           calcModeNormalGui();
-        else if(calcMode == CM_PEM)                    calcModeNormalGui();
-        else if(calcMode == CM_PLOT_STAT)              calcModeNormalGui();
-        else if(calcMode == CM_GRAPH)                  calcModeNormalGui();
-        else if(calcMode == CM_MIM)                   {calcModeNormalGui(); mimRestore();}
-        else if(calcMode == CM_EIM)                   {calcModeAimGui();}
-        else if(calcMode == CM_ASSIGN)                {calcModeNormalGui();}
-        else if(calcMode == CM_TIMER)                 {calcModeNormalGui();}
+        if(calcMode == CM_NORMAL) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_AIM) {
+          calcModeAimGui();
+          cursorEnabled = true;
+        }
+        else if(calcMode == CM_NIM) {
+          calcModeNormalGui(); cursorEnabled = true;
+        }
+        else if(calcMode == CM_REGISTER_BROWSER) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_FLAG_BROWSER) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_FONT_BROWSER) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_PEM) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_PLOT_STAT) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_GRAPH) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_MIM) {
+          calcModeNormalGui(); mimRestore();
+        }
+        else if(calcMode == CM_EIM) {
+          calcModeAimGui();
+        }
+        else if(calcMode == CM_ASSIGN) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_TIMER) {
+          calcModeNormalGui();
+        }
         else {
           sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
           displayBugScreen(errorMessage);
@@ -916,7 +959,9 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
 
   uint32_t num = 0;
   for(i = 0; i < 37 * 6; ++i) {
-    if(*(getNthString((uint8_t *)userKeyLabel, i)) != 0) ++num;
+    if(*(getNthString((uint8_t *)userKeyLabel, i)) != 0) {
+      ++num;
+    }
   }
   sprintf(tmpString, "%" PRIu32 "\n", num);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1170,12 +1215,24 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
   uint32_t tag = amNone;
 
   if(type[4] == ':') {
-         if(type[5] == 'R')                   tag = amRadian;
-    else if(type[5] == 'M')                   tag = amMultPi;
-    else if(type[5] == 'G')                   tag = amGrad;
-    else if(type[5] == 'D' && type[6] == 'E') tag = amDegree;
-    else if(type[5] == 'D' && type[6] == 'M') tag = amDMS;
-    else                                      tag = amNone;
+    if(type[5] == 'R') {
+      tag = amRadian;
+    }
+    else if(type[5] == 'M') {
+      tag = amMultPi;
+    }
+    else if(type[5] == 'G') {
+      tag = amGrad;
+    }
+    else if(type[5] == 'D' && type[6] == 'E') {
+      tag = amDegree;
+    }
+    else if(type[5] == 'D' && type[6] == 'M') {
+      tag = amDMS;
+    }
+    else {
+      tag = amNone;
+    }
 
     reallocateRegister(regist, dtReal34, REAL34_SIZE, tag);
     stringToReal34(value, REGISTER_REAL34_DATA(regist));

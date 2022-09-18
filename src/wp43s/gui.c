@@ -385,16 +385,22 @@
           break;
         }
       }
-      if(textLine[0] == 0) return;
+      if(textLine[0] == 0) {
+        return;
+      }
 
       // removing trailing spaces
       while(textLine[strlen(textLine) - 1] == ' ') {
         textLine[strlen(textLine) - 1] = 0;
       }
-      if(textLine[0] == 0) return;
+      if(textLine[0] == 0) {
+        return;
+      }
 
       equalSign = strchr(textLine, '=');
-      if(equalSign == NULL) return;
+      if(equalSign == NULL) {
+        return;
+      }
 
       // remove spaces beheind parameter name
       *equalSign = 0;
@@ -589,14 +595,30 @@
 
           if(!strncmp(parameter, "key", 3)) {
             calcKey = 10*(parameter[3] - '0') + parameter[4] - '0';
-                 if(calcKey <= 16) calcKey -= 11;
-            else if(calcKey <= 26) calcKey -= 15;
-            else if(calcKey <= 36) calcKey -= 19;
-            else if(calcKey <= 45) calcKey -= 23;
-            else if(calcKey <= 55) calcKey -= 28;
-            else if(calcKey <= 65) calcKey -= 33;
-            else if(calcKey <= 75) calcKey -= 38;
-            else if(calcKey <= 85) calcKey -= 43;
+            if(calcKey <= 16) {
+              calcKey -= 11;
+            }
+            else if(calcKey <= 26) {
+              calcKey -= 15;
+            }
+            else if(calcKey <= 36) {
+              calcKey -= 19;
+            }
+            else if(calcKey <= 45) {
+              calcKey -= 23;
+            }
+            else if(calcKey <= 55) {
+              calcKey -= 28;
+            }
+            else if(calcKey <= 65) {
+              calcKey -= 33;
+            }
+            else if(calcKey <= 75) {
+              calcKey -= 38;
+            }
+            else if(calcKey <= 85) {
+              calcKey -= 43;
+            }
 
             if(!strcmp(parameter + 5, "x")) {
               calcKeyboard[calcKey].x = atoi(value);
@@ -1076,12 +1098,14 @@
     #if defined(PC_BUILD)
       if(matrixIndex != INVALID_VARIABLE) {
         if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
-          if(openMatrixMIMPointer.realMatrix.matrixElements)
-          realMatrixFree(&openMatrixMIMPointer.realMatrix);
+          if(openMatrixMIMPointer.realMatrix.matrixElements) {
+            realMatrixFree(&openMatrixMIMPointer.realMatrix);
+          }
         }
         else if(getRegisterDataType(matrixIndex) == dtComplex34Matrix) {
-          if(openMatrixMIMPointer.complexMatrix.matrixElements)
-          complexMatrixFree(&openMatrixMIMPointer.complexMatrix);
+          if(openMatrixMIMPointer.complexMatrix.matrixElements) {
+            complexMatrixFree(&openMatrixMIMPointer.complexMatrix);
+          }
         }
       }
       saveCalc();
@@ -1239,8 +1263,9 @@
         resetAlphaSelectionBuffer();
 
         #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-          if(catalog != CATALOG_MVAR)
+          if(catalog != CATALOG_MVAR) {
             calcModeAimGui();
+          }
         #endif // PC_BUILD && (SCREEN_800X480 == 0)
       }
     }

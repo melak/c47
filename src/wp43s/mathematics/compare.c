@@ -410,8 +410,12 @@ static void compareRegisters(uint16_t regist, uint8_t mode) {
         temporaryInformation = isEqualRealComplex(regist, REGISTER_X) ? TI_TRUE : TI_FALSE;
       }
       if(mode == COMPARE_MODE_NOT_EQUAL) {
-        if(temporaryInformation == TI_TRUE) temporaryInformation = TI_FALSE;
-        else                                temporaryInformation = TI_TRUE;
+        if(temporaryInformation == TI_TRUE) {
+          temporaryInformation = TI_FALSE;
+        }
+        else {
+         temporaryInformation = TI_TRUE;
+        }
       }
     }
 

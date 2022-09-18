@@ -280,10 +280,11 @@ static void cdf_Hypergeometric_common(const real_t *x, const real_t *p0, const r
   do {
     realCopy(&b, &c);
 
-    if(realIsZero(&a2) || realIsZero(&a3) || realIsZero(&b1) || realIsZero(&b2)) break;
+    if(realIsZero(&a2) || realIsZero(&a3) || realIsZero(&b1) || realIsZero(&b2)) {
+      break;
+    }
 
-    signHgp = (realIsNegative(&a1) ? 1 : 0) ^ (realIsNegative(&a2) ? 1 : 0) ^ (realIsNegative(&a3) ? 1 : 0) ^
-              (realIsNegative(&b1) ? 1 : 0) ^ (realIsNegative(&b2) ? 1 : 0);
+    signHgp = (realIsNegative(&a1) ? 1 : 0) ^ (realIsNegative(&a2) ? 1 : 0) ^ (realIsNegative(&a3) ? 1 : 0) ^ (realIsNegative(&b1) ? 1 : 0) ^ (realIsNegative(&b2) ? 1 : 0);
     realCopyAbs(&a1, &a), WP34S_Ln(&a, &a, realContext), realAdd(&hypergeomPart, &a, &hypergeomPart, realContext);
     realCopyAbs(&a2, &a), WP34S_Ln(&a, &a, realContext), realAdd(&hypergeomPart, &a, &hypergeomPart, realContext);
     realCopyAbs(&a3, &a), WP34S_Ln(&a, &a, realContext), realAdd(&hypergeomPart, &a, &hypergeomPart, realContext);
@@ -293,7 +294,9 @@ static void cdf_Hypergeometric_common(const real_t *x, const real_t *p0, const r
 
     realAdd(&binomPart, &hypergeomPart, &a, realContext);
     realExp(&a, &a, realContext);
-    if(signHgp) realSetNegativeSign(&a);
+    if(signHgp) {
+      realSetNegativeSign(&a);
+    }
     if(complementary) {
       realAdd(&b, &a, &b, realContext);
     }

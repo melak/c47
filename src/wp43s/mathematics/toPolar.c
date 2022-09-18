@@ -45,8 +45,14 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
   }
 
     switch(dataTypeX) {
-      case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39); break;
-      case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);            break;
+      case dtLongInteger: {
+        convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+        break;
+      }
+      case dtReal34: {
+        real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+        break;
+      }
       default: {
         sprintf(errorMessage, "In function fnToPolar: %" PRIu32 " is an unexpected dataTypeX value!", dataTypeX);
         displayBugScreen(errorMessage);
@@ -54,8 +60,14 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
     }
 
     switch(dataTypeY) {
-      case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39); break;
-      case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);            break;
+      case dtLongInteger: {
+        convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+        break;
+      }
+      case dtReal34: {
+        real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
+        break;
+      }
       default: {
         sprintf(errorMessage, "In function fnToPolar: %" PRIu32 " is an unexpected dataTypeY value!", dataTypeY);
         displayBugScreen(errorMessage);
