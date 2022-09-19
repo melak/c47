@@ -58,7 +58,9 @@ void fnDrop(uint16_t unusedButMandatoryParameter) {
 
 void liftStack(void) {
   if(getSystemFlag(FLAG_ASLIFT)) {
-    if(currentInputVariable != INVALID_VARIABLE) currentInputVariable |= 0x8000;
+    if(currentInputVariable != INVALID_VARIABLE) {
+      currentInputVariable |= 0x8000;
+    }
     freeRegisterData(getStackTop());
     for(uint16_t i=getStackTop(); i>REGISTER_X; i--) {
       globalRegister[i] = globalRegister[i-1];
@@ -134,7 +136,7 @@ static void _swapRegs(uint16_t srcReg, uint16_t regist) {
     currentLocalRegisters[regist - FIRST_LOCAL_REGISTER] = savedRegisterHeader;
   }
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     else if(regist <= LAST_LOCAL_REGISTER) {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
@@ -143,7 +145,7 @@ static void _swapRegs(uint16_t srcReg, uint16_t regist) {
   #endif // PC_BUILD
 
   else if(regist <= LAST_TEMP_REGISTER) {
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       sprintf(errorMessage, "register %d", regist);
       moreInfoOnError("In function _swapRegs:", errorMessage, "is unsupported!", NULL);
@@ -155,7 +157,7 @@ static void _swapRegs(uint16_t srcReg, uint16_t regist) {
     allNamedVariables[regist - FIRST_NAMED_VARIABLE].header = savedRegisterHeader;
   }
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     else {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       sprintf(errorMessage, "register %d", regist);
@@ -243,16 +245,20 @@ void fnGetStackSize(uint16_t unusedButMandatoryParameter) {
 
 void saveForUndo(void) {
   if(((calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_MIM) && thereIsSomethingToUndo) || calcMode == CM_NO_UNDO) {
-    #ifdef DEBUGUNDO
-      if(thereIsSomethingToUndo) printf(">>> saveForUndo; calcMode = %i, nothing stored as there is something to undo\n",calcMode);
-      if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_MIM || calcMode == CM_NO_UNDO) printf(">>> saveForUndo; calcMode = %i, nothing stored, wrong mode\n",calcMode);
-    #endif
+    #if defined(DEBUGUNDO)
+      if(thereIsSomethingToUndo) {
+        printf(">>> saveForUndo; calcMode = %i, nothing stored as there is something to undo\n", calcMode);
+      }
+      if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_MIM || calcMode == CM_NO_UNDO) {
+        printf(">>> saveForUndo; calcMode = %i, nothing stored, wrong mode\n", calcMode);
+      }
+    #endif // DEBUGUNDO
     return;
   }
-  #ifdef DEBUGUNDO
-    printf(">>> in saveForUndo, saving; calcMode = %i pre:thereIsSomethingToUndo = %i ;",calcMode, thereIsSomethingToUndo);
+  #if defined(DEBUGUNDO)
+    printf(">>> in saveForUndo, saving; calcMode = %i pre:thereIsSomethingToUndo = %i ;", calcMode, thereIsSomethingToUndo);
     printf("Clearing TEMP_REGISTER_2_SAVED_STATS\n\n");
-  #endif
+  #endif // DEBUGUNDO
 
   clearRegister(TEMP_REGISTER_2_SAVED_STATS); //clear it here for every saveForUndo call, and explicitly set it in fnEditMatrix() and fnEqSolvGraph() only
   SAVED_SIGMA_LAct = 0;
@@ -278,8 +284,9 @@ void saveForUndo(void) {
   for(calcRegister_t regist=getStackTop(); regist>=REGISTER_X; regist--) {
     copySourceRegisterToDestRegister(regist, SAVED_REGISTER_X - REGISTER_X + regist);
     if(lastErrorCode == ERROR_RAM_FULL) {
-      #ifdef PC_BUILD
-        printf("In function saveForUndo: not enough space for saving register #%" PRId16 "!\n", regist); fflush(stdout);
+      #if defined(PC_BUILD)
+        printf("In function saveForUndo: not enough space for saving register #%" PRId16 "!\n", regist);
+        fflush(stdout);
       #endif // PC_BUILD
       goto failed;
     }
@@ -287,8 +294,9 @@ void saveForUndo(void) {
 
   copySourceRegisterToDestRegister(REGISTER_L, SAVED_REGISTER_L);
   if(lastErrorCode == ERROR_RAM_FULL) {
-    #ifdef PC_BUILD
-      printf("In function saveForUndo: not enough space for saving register L!\n"); fflush(stdout);
+    #if defined(PC_BUILD)
+      printf("In function saveForUndo: not enough space for saving register L!\n");
+      fflush(stdout);
     #endif // PC_BUILD
     goto failed;
   }
@@ -332,9 +340,9 @@ void fnUndo(uint16_t unusedButMandatoryParameter) {
 
 
 void undo(void) {
-  #ifdef DEBUGUNDO
-    printf(">>> Undoing, calcMode = %i ...",calcMode);
-  #endif
+  #if defined(DEBUGUNDO)
+    printf(">>> Undoing, calcMode = %i ...", calcMode);
+  #endif // DEBUGUNDO
   recallStatsMatrix();
 
   if(currentInputVariable != INVALID_VARIABLE) {
@@ -392,8 +400,8 @@ void undo(void) {
   SAVED_SIGMA_LAct = 0;
   thereIsSomethingToUndo = false;
   clearRegister(TEMP_REGISTER_2_SAVED_STATS);
-  #ifdef DEBUGUNDO
-    printf(">>> Undone, calcMode = %i\n",calcMode);
-  #endif
+  #if defined(DEBUGUNDO)
+    printf(">>> Undone, calcMode = %i\n", calcMode);
+  #endif // DEBUGUNDO
 
 }

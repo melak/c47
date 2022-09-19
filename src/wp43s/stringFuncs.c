@@ -109,11 +109,12 @@ void fnXToAlpha(uint16_t unusedButMandatoryParameter) {
 
   longIntegerInit(lgInt);
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       convertLongIntegerRegisterToLongInteger(REGISTER_X, lgInt);
       break;
+    }
 
-    case dtReal34:
+    case dtReal34: {
       if(real34CompareAbsGreaterThan(REGISTER_REAL34_DATA(REGISTER_X), const34_1e6)) {
         uIntToLongInteger(1000000, lgInt);
       }
@@ -121,18 +122,21 @@ void fnXToAlpha(uint16_t unusedButMandatoryParameter) {
         convertReal34ToLongInteger(REGISTER_REAL34_DATA(REGISTER_X), lgInt, DEC_ROUND_DOWN);
       }
       break;
+    }
 
-    case dtShortInteger:
+    case dtShortInteger: {
       convertShortIntegerRegisterToLongInteger(REGISTER_X, lgInt);
       break;
+    }
 
-    default:
+    default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot x" STD_RIGHT_ARROW STD_alpha " when X is %s", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnXToAlpha:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
+    }
   }
 
   longIntegerSetPositiveSign(lgInt);
@@ -204,7 +208,9 @@ void fnAlphaPos(uint16_t regist) {
     return;
   }
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   longIntegerInit(lgInt);
   ptrTarget = REGISTER_STRING_DATA(REGISTER_X);
@@ -261,11 +267,12 @@ void fnAlphaRR(uint16_t regist) {
 
   longIntegerInit(lgInt);
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       convertLongIntegerRegisterToLongInteger(REGISTER_X, lgInt);
       break;
+    }
 
-    case dtReal34:
+    case dtReal34: {
       if(stringGlyphLen == 0) {
         lgInt->_mp_size = 0; // lgInt = 0
       }
@@ -277,25 +284,30 @@ void fnAlphaRR(uint16_t regist) {
         convertRealToLongInteger(&real, lgInt, DEC_ROUND_DOWN);
       }
       break;
+    }
 
-    case dtShortInteger:
+    case dtShortInteger: {
       convertShortIntegerRegisterToLongInteger(REGISTER_X, lgInt);
       break;
+    }
 
-    default:
+    default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot " STD_alpha "RR when X is %s", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnAlphaRR:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
+    }
   }
 
   longIntegerSetPositiveSign(lgInt);
   steps = longIntegerModuloUInt(lgInt, stringGlyphLen);
   longIntegerFree(lgInt);
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(steps > 0) {
     for(glyphPointer=0, steps=stringGlyphLen-steps; steps > 0; steps--) {
@@ -340,11 +352,12 @@ void fnAlphaRL(uint16_t regist) {
 
   longIntegerInit(lgInt);
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       convertLongIntegerRegisterToLongInteger(REGISTER_X, lgInt);
       break;
+    }
 
-    case dtReal34:
+    case dtReal34: {
       if(stringGlyphLen == 0) {
         lgInt->_mp_size = 0; // lgInt = 0
       }
@@ -356,25 +369,30 @@ void fnAlphaRL(uint16_t regist) {
         convertRealToLongInteger(&real, lgInt, DEC_ROUND_DOWN);
       }
       break;
+    }
 
-    case dtShortInteger:
+    case dtShortInteger: {
       convertShortIntegerRegisterToLongInteger(REGISTER_X, lgInt);
       break;
+    }
 
-    default:
+    default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot " STD_alpha "RL when X is %s", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnAlphaRL:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
+    }
   }
 
   longIntegerSetPositiveSign(lgInt);
   steps = longIntegerModuloUInt(lgInt, stringGlyphLen);
   longIntegerFree(lgInt);
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(steps > 0) {
     for(glyphPointer=0; steps > 0; steps--) {
@@ -417,11 +435,12 @@ void fnAlphaSR(uint16_t regist) {
 
   longIntegerInit(lgInt);
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       convertLongIntegerRegisterToLongInteger(REGISTER_X, lgInt);
       break;
+    }
 
-    case dtReal34:
+    case dtReal34: {
       if(real34CompareAbsGreaterThan(REGISTER_REAL34_DATA(REGISTER_X), const34_1e6)) {
         uIntToLongInteger(1000000, lgInt);
       }
@@ -429,18 +448,21 @@ void fnAlphaSR(uint16_t regist) {
         convertReal34ToLongInteger(REGISTER_REAL34_DATA(REGISTER_X), lgInt, DEC_ROUND_DOWN);
       }
       break;
+    }
 
-    case dtShortInteger:
+    case dtShortInteger: {
       convertShortIntegerRegisterToLongInteger(REGISTER_X, lgInt);
       break;
+    }
 
-    default:
+    default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot " STD_alpha "SR when X is %s", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnAlphaSR:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
+    }
   }
 
   longIntegerSetPositiveSign(lgInt);
@@ -451,7 +473,9 @@ void fnAlphaSR(uint16_t regist) {
   longIntegerToInt(lgInt, steps);
   longIntegerFree(lgInt);
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(steps > 0) {
     for(glyphPointer=0, steps=stringGlyphLen-steps; steps > 0; steps--) {
@@ -491,11 +515,12 @@ void fnAlphaSL(uint16_t regist) {
 
   longIntegerInit(lgInt);
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       convertLongIntegerRegisterToLongInteger(REGISTER_X, lgInt);
       break;
+    }
 
-    case dtReal34:
+    case dtReal34: {
       if(real34CompareAbsGreaterThan(REGISTER_REAL34_DATA(REGISTER_X), const34_1e6)) {
         uIntToLongInteger(1000000, lgInt);
       }
@@ -503,18 +528,21 @@ void fnAlphaSL(uint16_t regist) {
         convertReal34ToLongInteger(REGISTER_REAL34_DATA(REGISTER_X), lgInt, DEC_ROUND_DOWN);
       }
       break;
+    }
 
-    case dtShortInteger:
+    case dtShortInteger: {
       convertShortIntegerRegisterToLongInteger(REGISTER_X, lgInt);
       break;
+    }
 
-    default:
+    default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot " STD_alpha "SL when X is %s", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnAlphaSL:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
+    }
   }
 
   longIntegerSetPositiveSign(lgInt);
@@ -525,7 +553,9 @@ void fnAlphaSL(uint16_t regist) {
   longIntegerToInt(lgInt, steps);
   longIntegerFree(lgInt);
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(steps > 0) {
     for(glyphPointer=0; steps > 0; steps--) {

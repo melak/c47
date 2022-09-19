@@ -31,7 +31,7 @@
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
     #define gammaError typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void lnGammaError(void);
 
   void gammaLonI   (void);

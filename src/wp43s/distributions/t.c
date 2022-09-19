@@ -218,8 +218,9 @@ static void cdf_t(const real_t *x, const real_t *nu, real_t *res, realContext_t 
     realAdd(&r, const_1on2, res, realContext);
   }
   // cdf_t_invert
-  if(invert)
+  if(invert) {
     realSubtract(const_1, res, res, realContext);
+  }
 }
 
 void WP34S_Cdfu_T(const real_t *x, const real_t *nu, real_t *res, realContext_t *realContext) {

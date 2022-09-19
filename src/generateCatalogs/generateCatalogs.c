@@ -50,7 +50,7 @@ void sortOneCatalog(const char *menuName, int catalogType, int16_t generationTyp
   #if defined(DEBUG)
     printf("Generating catalog %s\n", menuName);
   #endif // DEBUG
-  fprintf(catalogFile, "  TO_QSPI const int16_t menu_%s[] = {\n", menuName);
+  fprintf(catalogFile, "%s  TO_QSPI const int16_t menu_%s[] = {\n", (generationType == GENERATION_FOR_BOTH ? "" : "  "), menuName);
 
   numberOfItems = 0;
   for(item=1; item<LAST_ITEM; item++) {
@@ -72,14 +72,14 @@ void sortOneCatalog(const char *menuName, int catalogType, int16_t generationTyp
   qsort(itemList, numberOfItems, sizeof(*itemList), sortItems);
 
   if(generationType == GENERATION_FOR_PC || generationType == GENERATION_FOR_DMCP) {
-    fprintf(catalogFile, "    ");
+    fprintf(catalogFile, "%s    ", (generationType == GENERATION_FOR_BOTH ? "" : "  "));
   }
   for(item=0; item<numberOfItems; item++) {
     fprintf(catalogFile, "%5d,", itemList[item] * (catalogType == CAT_MENU ? -1 : 1)); // Menus are negative
     if((item + 1) % 6 == 0) {
       fprintf(catalogFile, "\n");
       if(generationType == GENERATION_FOR_PC || generationType == GENERATION_FOR_DMCP) {
-        fprintf(catalogFile, "    ");
+        fprintf(catalogFile, "%s    ", (generationType == GENERATION_FOR_BOTH ? "" : "  "));
       }
     }
   }

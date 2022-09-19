@@ -29,56 +29,56 @@
   void leavePem        (void);
   void showShiftState  (void);
   void processKeyAction(int16_t item);
-  
+
   /**
    * Processing ENTER key.
    *
    * \param[in] unusedButMandatoryParameter
    */
   void fnKeyEnter      (uint16_t unusedButMandatoryParameter);
-  
+
   /**
    * Processing EXIT key.
    *
    * \param[in] unusedButMandatoryParameter
    */
   void fnKeyExit       (uint16_t unusedButMandatoryParameter);
-  
+
   /**
    * Processing CC key.
    *
    * \param[in] unusedButMandatoryParameter
    */
   void fnKeyCC         (uint16_t unusedButMandatoryParameter);
-  
+
   /**
    * Processing BACKSPACE key.
    *
    * \param[in] unusedButMandatoryParameter
    */
   void fnKeyBackspace  (uint16_t unusedButMandatoryParameter);
-  
+
   /**
    * Processing UP key.
    *
    * \param[in] unusedButMandatoryParameter
    */
   void fnKeyUp         (uint16_t unusedButMandatoryParameter);
-  
+
   /**
    * Processing DOWN key.
    *
    * \param[in] unusedButMandatoryParameter
    */
   void fnKeyDown       (uint16_t unusedButMandatoryParameter);
-  
+
   /**
    * Processing .d key.
    *
    * \param[in] unusedButMandatoryParameter
    */
   void fnKeyDotD       (uint16_t unusedButMandatoryParameter);
-  
+
   /**
    * Processing ANGLE key.
    *
@@ -94,7 +94,7 @@
      * \param data String containing the key ID
      */
     void btnFnClicked  (GtkWidget *notUsed, gpointer data);
-    
+
     /**
      * A calc function key was pressed.
      *
@@ -102,7 +102,7 @@
      * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
      */
     void btnFnPressed  (GtkWidget *notUsed, GdkEvent *event, gpointer data);
-    
+
     /**
      * A calc function key was released.
      *
@@ -110,7 +110,7 @@
      * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
      */
     void btnFnReleased (GtkWidget *notUsed, GdkEvent *event, gpointer data);
-    
+
     /**
      * Simulate a button click.
      *
@@ -118,7 +118,7 @@
      * \param data String containing the key ID
      */
     void btnClicked    (GtkWidget *notUsed, gpointer data);
-    
+
     /**
      * A calc button was pressed.
      *
@@ -126,7 +126,7 @@
      * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
      */
     void btnPressed    (GtkWidget *notUsed, GdkEvent *event, gpointer data);
-    
+
     /**
      * A calc button was released.
      *
@@ -134,7 +134,7 @@
      * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
      */
     void frmCalcMouseButtonPressed(GtkWidget *notUsed, GdkEvent *event, gpointer data);
-    
+
     /**
      * A calc button was pressed.
      *
@@ -142,7 +142,7 @@
      * \param data pointer to a string containing the key number pressed: 00=1/x, ..., 36=EXIT
      */
     void frmCalcMouseButtonReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data);
-    
+
     /**
      * A calc button was released.
      *

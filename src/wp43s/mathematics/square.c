@@ -66,7 +66,9 @@ TO_QSPI void (* const square[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnSquare(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   square[getRegisterDataType(REGISTER_X)]();
 

@@ -34,7 +34,7 @@
                                      //   Note that limited precision is required as only the pixels on screen need to be considered
                                      //   useFLOAT is much faster plotting STATS graphs on the real hardware than useREAL4 and useREAL39
   #define   FLoatingMax    1e38f     //convenient round figures used for maxima and minima determination
-  #define   FLoatingMin   -1e38f
+  #define   FLoatingMin    -1e38f
 
 
   //Graph options
@@ -58,6 +58,7 @@
   extern  int8_t   PLOT_ZMX;
   extern  int8_t   PLOT_ZMY;
   extern  uint8_t  PLOT_ZOOM;
+  extern  uint8_t  drawHistogram;
 
   #define _VECT 0
   #define _SCAT 1
@@ -104,10 +105,10 @@
   char * padEquals(const char * ss);
 
 
-  #if !defined(TESTSUITE_BUILD)
-    int16_t screen_window_x(float x_min, float x, float x_max);
-    int16_t screen_window_y(float y_min, float y, float y_max);
-  #endif // !TESTSUITE_BUILD
+    #if !defined(TESTSUITE_BUILD)
+      int16_t screen_window_x(float x_min, float x, float x_max);
+      int16_t screen_window_y(float y_min, float y, float y_max);
+    #endif // !TESTSUITE_BUILD
 
   void    statGraphReset     (void);
   void    fnStatDemo0        (uint16_t unusedButMandatoryParameter);

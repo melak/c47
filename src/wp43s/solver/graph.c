@@ -51,12 +51,12 @@
   //#define VERBOSE_SOLVER0  // a lot less text
   //#define VERBOSE_SOLVER1  // a lot less text
   //#define VERBOSE_SOLVER2  // verbose a lot
-#else
+#else // !PC_BUILD
   #undef VERBOSE_SOLVER00
   #undef VERBOSE_SOLVER0
   #undef VERBOSE_SOLVER1
   #undef VERBOSE_SOLVER2
-#endif
+#endif // PC_BUILD
 
 
 //Todo: involve https://en.wikipedia.org/wiki/Brent%27s_method#Brent's_method
@@ -65,10 +65,6 @@
 #define CHANGE_TO_MOD_SECANT 0   //at iteration nn go to the modified secant method. 0 means immediately
 #define CONVERGE_FACTOR 1.0f        //
 #define NUMBERITERATIONS 35      // Must be smaller than LIM (see STATS)
-
-
-char     plotStatMx[8];
-
 
 
 void fnPlot(uint16_t unusedButMandatoryParameter) {
@@ -107,7 +103,7 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
           #endif // VERBOSE_SOLVER00
           lastErrorCode = 0;
         }
-      #endif // PC_BUILD
+      #endif //PC_BUILD
     }
     else {
       #if defined(PC_BUILD)
@@ -115,13 +111,15 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
         #if defined(VERBOSE_SOLVER00)
           printf("ERROR CODE in initialize_functionB: %u\n",lastErrorCode);
         #endif // VERBOSE_SOLVER00
-      #endif // PC_BUILD
+      #endif //PC_BUILD
     }
   }
 
 
   static void execute_rpn_function(void){
-    if(graphVariable <= 0 || graphVariable > 65535) return;
+    if(graphVariable <= 0 || graphVariable > 65535) {
+      return;
+    }
 
     calcRegister_t regStats = graphVariable;
     if(regStats != INVALID_VARIABLE) {
@@ -200,32 +198,38 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
 
 
   void check_osc(uint8_t ii){
-     switch (ii & 0b00111111) {
+     switch(ii & 0b00111111) {
        case 0b001111:
        case 0b011110:
        case 0b111100:
        case 0b010101:
        case 0b101010:
-
        case 0b011011:
        case 0b110110:
-       case 0b101101: osc++;
-       default:;
+       case 0b101101: {
+         osc++;
+       }
+       default: {
+       }
      }
-     switch (ii) {
+     switch(ii) {
        case 0b01001001:
        case 0b10010010:
-       case 0b00100100: osc++;
-       default:;
+       case 0b00100100: {
+         osc++;
+       }
+       default: {
+       }
      }
   }
 
-//###################################################################################
-//PLOTTER
-
-  int32_t drawMxN(void){
+  //###################################################################################
+  //PLOTTER
+  int32_t drawMxN(void) {
     uint16_t rows = 0;
-    if(plotStatMx[0]!='D') return 0;
+    if(plotStatMx[0]!='D') {
+      return 0;
+    }
     calcRegister_t regStats = findNamedVariable(plotStatMx);
     if(regStats == INVALID_VARIABLE) {
       return 0;
@@ -237,6 +241,28 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
     }
     else {
       return 0;
+    }
+  }
+
+
+
+  void fnClDrawMx(void) {
+    PLOT_ZOOM = 0;
+    if(plotStatMx[0]!='D') {
+      strcpy(plotStatMx,"DrwMX");
+    }
+    calcRegister_t regStats = findNamedVariable(plotStatMx);
+    if(regStats == INVALID_VARIABLE) {
+      allocateNamedVariable(plotStatMx, dtReal34, REAL34_SIZE);
+      regStats = findNamedVariable(plotStatMx);
+    }
+    clearRegister(regStats);                  // this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
+    if(regStats == INVALID_VARIABLE) {
+      displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "DrwMX matrix not created");
+        moreInfoOnError("In function fnClPlotData:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
 
@@ -279,27 +305,6 @@ void fnPlot(uint16_t unusedButMandatoryParameter) {
   }
 #endif // !TESTSUITE_BUILD
 
-
-
-void fnClDrawMx(void) {
-  PLOT_ZOOM = 0;
-  if(plotStatMx[0]!='D') {
-    strcpy(plotStatMx,"DrwMX");
-  }
-  calcRegister_t regStats = findNamedVariable(plotStatMx);
-  if(regStats == INVALID_VARIABLE) {
-    allocateNamedVariable(plotStatMx, dtReal34, REAL34_SIZE);
-    regStats = findNamedVariable(plotStatMx);
-  }
-  clearRegister(regStats);                  // TODO this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
-  if(regStats == INVALID_VARIABLE) {
-    displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "DrwMX matrix not created");
-      moreInfoOnError("In function fnClPlotData:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  }
-}
 
 
 void graph_eqn(uint16_t mode) {
@@ -501,7 +506,7 @@ void graph_eqn(uint16_t mode) {
           printf(">>> ERROR CODE INITIALLY NON-ZERO = %d <<<<<\n",lastErrorCode);
           goto to_return;
         }
-      #endif // PC_BUILD
+      #endif //PC_BUILD
 
       //assumes X2 is in R91
       //Identify oscillations in real or imag: increment osc flag
@@ -509,7 +514,7 @@ void graph_eqn(uint16_t mode) {
 
       if( (real34IsNegative(REGISTER_REAL34_DATA(SREG_DX)) && real34IsPositive(REGISTER_REAL34_DATA(SREG_Xold))) ||
           (real34IsPositive(REGISTER_REAL34_DATA(SREG_DX)) && real34IsNegative(REGISTER_REAL34_DATA(SREG_Xold))) ) {
-          DXR = (DXR << 1) + 1;
+        DXR = (DXR << 1) + 1;
       }
       else {
         DXR = DXR << 1;
@@ -517,7 +522,7 @@ void graph_eqn(uint16_t mode) {
 
       if( (real34IsNegative(REGISTER_REAL34_DATA(SREG_DY)) && real34IsPositive(REGISTER_REAL34_DATA(SREG_Yold))) ||
           (real34IsPositive(REGISTER_REAL34_DATA(SREG_DY)) && real34IsNegative(REGISTER_REAL34_DATA(SREG_Yold))) ) {
-          DYR = (DYR << 1) + 1;
+        DYR = (DYR << 1) + 1;
       }
       else {
         DYR = DYR << 1;
@@ -526,7 +531,7 @@ void graph_eqn(uint16_t mode) {
       if((getRegisterDataType(SREG_DX) == dtComplex34 && getRegisterDataType(SREG_Xold) == dtComplex34) &&
            ((real34IsNegative(REGISTER_IMAG34_DATA(SREG_DX)) && real34IsPositive(REGISTER_IMAG34_DATA(SREG_Xold))) ||
             (real34IsPositive(REGISTER_IMAG34_DATA(SREG_DX)) && real34IsNegative(REGISTER_IMAG34_DATA(SREG_Xold))) )) {
-               DXI = (DXI << 1) + 1;
+        DXI = (DXI << 1) + 1;
       }
       else {
         DXI = DXI << 1;
@@ -535,7 +540,7 @@ void graph_eqn(uint16_t mode) {
       if((getRegisterDataType(SREG_DY) == dtComplex34 && getRegisterDataType(SREG_Yold) == dtComplex34) &&
            ((real34IsNegative(REGISTER_IMAG34_DATA(SREG_DY)) && real34IsPositive(REGISTER_IMAG34_DATA(SREG_Yold))) ||
             (real34IsPositive(REGISTER_IMAG34_DATA(SREG_DY)) && real34IsNegative(REGISTER_IMAG34_DATA(SREG_Yold))) )) {
-               DYI = (DYI << 1) + 1;
+        DYI = (DYI << 1) + 1;
       }
       else {
         DYI = DYI << 1;
@@ -558,9 +563,7 @@ void graph_eqn(uint16_t mode) {
       if((!real34CompareAbsGreaterThan(REGISTER_REAL34_DATA(SREG_DX), REGISTER_REAL34_DATA(SREG_Xold)) &&
          (getRegisterDataType(SREG_DX) == dtComplex34 && getRegisterDataType(SREG_Xold) == dtComplex34 ?
            !real34CompareAbsGreaterThan(REGISTER_IMAG34_DATA(SREG_DX), REGISTER_IMAG34_DATA(SREG_Xold)) : true))
-
          &&
-
          (!real34CompareAbsGreaterThan(REGISTER_REAL34_DATA(SREG_DY), REGISTER_REAL34_DATA(SREG_Yold)) &&
          (getRegisterDataType(SREG_DY) == dtComplex34 && getRegisterDataType(SREG_Yold) == dtComplex34 ?
            !real34CompareAbsGreaterThan(REGISTER_IMAG34_DATA(SREG_DY), REGISTER_IMAG34_DATA(SREG_Yold)) : true))
@@ -593,7 +596,6 @@ void graph_eqn(uint16_t mode) {
       //assumes X2 is in R91
       if((((oscillations >= 3) && (ixd > 9) && (convergent <= 2))
          //|| (oscillations == 0 && convergent > 6 && real34CompareAbsLessThan(REGISTER_REAL34_DATA(SREG_DX), const34_1e_4) && (getRegisterDataType(SREG_DX) == dtComplex34 ? real34CompareAbsLessThan(REGISTER_IMAG34_DATA(SREG_DX), const34_1e_4) : 1 )  )
-
         )) {
         if(COMPLEXKICKER && (kicker ==0) && (convergent <= 1)) {
           kicker = kicker +2;
@@ -960,7 +962,7 @@ void graph_eqn(uint16_t mode) {
 
       copySourceRegisterToDestRegister(SREG_X2N,SREG_X2);  //new x2
 
-      // plots the ix vs abs.difference
+      //plots the ix vs abs.difference
       // |dy| is still in Y
       // replace X with ix
       // plot (ix,|dy|)
@@ -1036,7 +1038,6 @@ void graph_eqn(uint16_t mode) {
 
 
 
-
 //-----------------------------------------------------//-----------------------------------------------------
 
 
@@ -1050,8 +1051,10 @@ void fnEqSolvGraph (uint16_t func) {
     refreshLcd(NULL);
   #endif // DMCP_BUILD
 
-//  if(!(currentSolverStatus & SOLVER_STATUS_READY_TO_EXECUTE)) return;
-
+  graphVariable = currentSolverVariable;
+  if(graphVariable<0) {
+    graphVariable = -graphVariable;
+  }
 
   if(graphVariable >= FIRST_NAMED_VARIABLE && graphVariable <= LAST_NAMED_VARIABLE) {
     #if (defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
@@ -1065,77 +1068,79 @@ void fnEqSolvGraph (uint16_t func) {
       moreInfoOnError("In function fnEqSolvGraph:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+    return;
   }
 
 
   //initialize x
   currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;
 
-  switch (func) {
-     case EQ_SOLVE:{
-            fnClDrawMx();
-            statGraphReset();
+  switch(func) {
+     case EQ_SOLVE: {
+       fnClDrawMx();
+       statGraphReset();
 
-            double ix1 = convertRegisterToDouble(REGISTER_X);
-            double ix0 = convertRegisterToDouble(REGISTER_Y);
-            #if (defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
-              printRegisterToConsole(REGISTER_Y,">>> ix0=","");
-              printRegisterToConsole(REGISTER_X," ix1=","\n");
-            #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
-            calcRegister_t SREG_STARTX0 = __STARTX0;
-            calcRegister_t SREG_STARTX1 = __STARTX1;
-            copySourceRegisterToDestRegister(REGISTER_Y,SREG_STARTX0);
-            copySourceRegisterToDestRegister(REGISTER_X,SREG_STARTX1);
-            if(ix1>ix0 + 0.01 && ix1!=DOUBLE_NOT_INIT && ix0!=DOUBLE_NOT_INIT) { //pre-condition the plotter
-              x_min = ix0;
-              x_max = ix1;
-            }
-            #if (defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
-              printf("xmin:%f, xmax:%f\n",x_min,x_max);
-            #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
-            initialize_function();
-            graph_solver();
-            break;
-          }
-     case EQ_PLOT: {
-            double ix1 = convertRegisterToDouble(REGISTER_X);
-            double ix0 = convertRegisterToDouble(REGISTER_Y);
-            #if (defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
-              printRegisterToConsole(REGISTER_Y,">>> ix0=","");
-              printRegisterToConsole(REGISTER_X," ix1=","\n");
-            #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
-
-            fnClDrawMx();
-            statGraphReset();
-
-            fnDrop(0);
-            fnDrop(0);
-            if(ix1>ix0 + 0.01 && ix1!=DOUBLE_NOT_INIT && ix0!=DOUBLE_NOT_INIT) { //pre-condition the plotter
-              x_min = ix0;
-              x_max = ix1;
-            }
-            if(x_min > x_max) { //swap if entered in incorrect sequence
-              float kk = x_max;
-              x_max = x_min;
-              x_min = kk;
-            }
-            float x_d = fabs(x_max-x_min);
-            if(x_d < 0.0001) { //too close together for float type
-              if(fabs(x_min)<0.0001 || fabs(x_max)<0.0001) { //abort old values and show -1 to 1
-                x_d = 10;
-              }
-              x_min = x_min - 0.1 * x_d;
-              x_max = x_max + 0.1 * x_d;
-            }
-            #if (defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
-              printf("xmin:%f, xmax:%f\n",x_min,x_max);
-            #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
-
-            initialize_function();
-            graph_eqn(0);
-            break;
-          }
-     default:;
+       double ix1 = convertRegisterToDouble(REGISTER_X);
+       double ix0 = convertRegisterToDouble(REGISTER_Y);
+       #if (defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
+         printRegisterToConsole(REGISTER_Y,">>> ix0=","");
+         printRegisterToConsole(REGISTER_X," ix1=","\n");
+       #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
+       calcRegister_t SREG_STARTX0 = __STARTX0;
+       calcRegister_t SREG_STARTX1 = __STARTX1;
+       copySourceRegisterToDestRegister(REGISTER_Y,SREG_STARTX0);
+       copySourceRegisterToDestRegister(REGISTER_X,SREG_STARTX1);
+       if(ix1>ix0 + 0.01 && ix1!=DOUBLE_NOT_INIT && ix0!=DOUBLE_NOT_INIT) { //pre-condition the plotter
+         x_min = ix0;
+         x_max = ix1;
+       }
+       #if (defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
+         printf("xmin:%f, xmax:%f\n",x_min,x_max);
+       #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
+       initialize_function();
+       graph_solver();
+       break;
      }
-#endif // !TESTSUITE_BUILD
+     case EQ_PLOT: {
+       double ix1 = convertRegisterToDouble(REGISTER_X);
+       double ix0 = convertRegisterToDouble(REGISTER_Y);
+       #if (defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
+         printRegisterToConsole(REGISTER_Y,">>> ix0=","");
+         printRegisterToConsole(REGISTER_X," ix1=","\n");
+       #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
+
+       fnClDrawMx();
+       statGraphReset();
+
+       fnDrop(0);
+       fnDrop(0);
+       if(ix1>ix0 + 0.01 && ix1!=DOUBLE_NOT_INIT && ix0!=DOUBLE_NOT_INIT) { //pre-condition the plotter
+         x_min = ix0;
+         x_max = ix1;
+       }
+       if(x_min > x_max) { //swap if entered in incorrect sequence
+         float kk = x_max;
+         x_max = x_min;
+         x_min = kk;
+       }
+       float x_d = fabs(x_max-x_min);
+       if(x_d < 0.0001) { //too close together for float type
+         if(fabs(x_min)<0.0001 || fabs(x_max)<0.0001) { //abort old values and show -1 to 1
+           x_d = 10;
+         }
+         x_min = x_min - 0.1 * x_d;
+         x_max = x_max + 0.1 * x_d;
+       }
+       #if (defined(VERBOSE_SOLVER00) || defined(VERBOSE_SOLVER0)) && defined(PC_BUILD)
+         printf("xmin:%f, xmax:%f\n",x_min,x_max);
+       #endif // (VERBOSE_SOLVER00 || VERBOSE_SOLVER0) && PC_BUILD
+
+       initialize_function();
+       graph_eqn(0);
+       break;
+     }
+     default: {
+     }
+   }
+  #endif // !TESTSUITE_BUILD
 }

@@ -40,24 +40,24 @@
      * \param[in] bottomLine Draw a bottom line
      */
     void   showSoftkey            (const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine);
-    
+
     /**
      * Displays the current part of the displayed softmenu.
      */
     void   showSoftmenuCurrentPart(void);
-    
+
     /**
      * Displays a softmenu.
      *
      * \param[in] id ID of softmenu
      */
     void   showSoftmenu           (int16_t id);
-    
+
     /**
      * Pops a softmenu from the softmenu stack.
      */
     void   popSoftmenu            (void);
-    
+
     void   setCatalogLastPos      (void);
     bool_t currentSoftmenuScrolls (void);
     bool_t isAlphabeticSoftmenu   (void);

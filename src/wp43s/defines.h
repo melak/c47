@@ -506,7 +506,7 @@ typedef enum {
 #define CF_GAUSS_FITTING_EX                      (~CF_GAUSS_FITTING) & 0x01FF
 #define CF_ORTHOGONAL_FITTING_EX                 (~CF_ORTHOGONAL_FITTING) & 0x01FF
 
-// Plot curve fitting 3 bits
+  // Plot curve fitting 4 bits
 #define PLOT_ORTHOF                                0
 #define PLOT_NXT                                   1
 #define PLOT_REV                                   2
@@ -514,6 +514,8 @@ typedef enum {
 #define PLOT_START                                 4
 #define PLOT_NOTHING                               5
 #define PLOT_GRAPH                                 6
+  #define H_PLOT                                     7
+  #define H_NORM                                     8
 
 // Rounding mode 3 bits
 #define RM_HALF_EVEN                               0
@@ -624,18 +626,19 @@ typedef enum {
 #define TI_CALCY                                  40
 #define TI_CALCX2                                 41
 #define TI_STATISTIC_LR                           42
-#define TI_SA                                     43
-#define TI_INACCURATE                             44
-#define TI_UNDO_DISABLED                          45
-#define TI_VIEW                                   46
-#define TI_SOLVER_VARIABLE                        47
-#define TI_SOLVER_FAILED                          48
-#define TI_ACC                                    49
-#define TI_ULIM                                   50
-#define TI_LLIM                                   51
-#define TI_INTEGRAL                               52
-#define TI_1ST_DERIVATIVE                         53
-#define TI_2ND_DERIVATIVE                         54
+  #define TI_STATISTIC_HISTO                        43
+  #define TI_SA                                     44
+  #define TI_INACCURATE                             45
+  #define TI_UNDO_DISABLED                          46
+  #define TI_VIEW                                   47
+  #define TI_SOLVER_VARIABLE                        48
+  #define TI_SOLVER_FAILED                          49
+  #define TI_ACC                                    50
+  #define TI_ULIM                                   51
+  #define TI_LLIM                                   52
+  #define TI_INTEGRAL                               53
+  #define TI_1ST_DERIVATIVE                         54
+  #define TI_2ND_DERIVATIVE                         55
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed
@@ -678,6 +681,11 @@ typedef enum {
 #define CMP_CLEANED_STRING_ONLY                    1
 #define CMP_EXTENSIVE                              2
 #define CMP_NAME                                   3
+
+  // Indirect parameter mode
+  #define INDPM_PARAM                                0
+  #define INDPM_REGISTER                             1
+  #define INDPM_FLAG                                 2
 
 // Combination / permutation
 #define CP_PERMUTATION                             0

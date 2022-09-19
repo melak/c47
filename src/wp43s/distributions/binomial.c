@@ -304,7 +304,9 @@ void WP34S_Cdf_Binomial2(const real_t *x, const real_t *p0, const real_t *n, rea
 void WP34S_Qf_Binomial(const real_t *x, const real_t *p0, const real_t *n, real_t *res, realContext_t *realContext) {
   real_t p, q, r;
 
-  if(!binomial_param(n, res)) return;
+  if(!binomial_param(n, res)) {
+    return;
+  }
   if(realCompareLessEqual(x, const_0)) {
     realZero(res);
     return;

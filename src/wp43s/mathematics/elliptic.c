@@ -160,8 +160,9 @@ static void _calc_real_elliptic(real_t *sn, real_t *cn, real_t *dn, const real_t
             realDivide(&g, d(0), dn, realContext);
 
             realDivide(dn, &f, cn, realContext);
-            if(realIsNegative(&cos_umu))
+            if(realIsNegative(&cos_umu)) {
               realChangeSign(cn);
+            }
 
             realDivide(c(0), &g, &a, realContext);
             realMultiply(cn, &a, sn, realContext);
@@ -170,8 +171,9 @@ static void _calc_real_elliptic(real_t *sn, real_t *cn, real_t *dn, const real_t
             realCopy(d(0), dn);
 
             realDivide(const_1, &f, sn, realContext);
-            if(realIsNegative(&sin_umu))
+            if(realIsNegative(&sin_umu)) {
               realChangeSign(sn);
+            }
             realMultiply(c(0), sn, cn, realContext);
           }
 
@@ -268,40 +270,54 @@ static int jacobi_check_inputs(real_t *m, real_t *uReal, real_t *uImag, bool_t *
   *realInput = true;
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_X, uReal, &ctxtReal39);
-                        realZero(uImag);
-                        break;
+    case dtLongInteger: {
+      convertLongIntegerRegisterToReal(REGISTER_X, uReal, &ctxtReal39);
+      realZero(uImag);
+      break;
+    }
 
-    case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), uReal);
-                        realZero(uImag);
-                        break;
+    case dtReal34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), uReal);
+      realZero(uImag);
+      break;
+    }
 
-    case dtComplex34:   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), uReal);
-                        real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), uImag);
-                        *realInput = false;
-                        break;
+    case dtComplex34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), uReal);
+      real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), uImag);
+      *realInput = false;
+      break;
+    }
 
-    default:            displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-                        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                          sprintf(errorMessage, "cannot calculate elliptic integral or Jacobi elliptic function with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
-                          moreInfoOnError("In function jacobi_check_inputs:", errorMessage, NULL, NULL);
-                        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-                        return 0;
+    default: {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot calculate elliptic integral or Jacobi elliptic function with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
+        moreInfoOnError("In function jacobi_check_inputs:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return 0;
+    }
   }
 
   switch(getRegisterDataType(REGISTER_Y)) {
-    case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_Y, m, &ctxtReal39);
-                        break;
+    case dtLongInteger: {
+      convertLongIntegerRegisterToReal(REGISTER_Y, m, &ctxtReal39);
+      break;
+    }
 
-    case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), m);
-                        break;
+    case dtReal34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), m);
+      break;
+    }
 
-    default:            displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Y);
-                        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                          sprintf(errorMessage, "cannot calculate elliptic integral or Jacobi elliptic function with %s in Y", getRegisterDataTypeName(REGISTER_Y, true, false));
-                          moreInfoOnError("In function jacobi_check_inputs:", errorMessage, NULL, NULL);
-                        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-                        return 0;
+    default: {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Y);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot calculate elliptic integral or Jacobi elliptic function with %s in Y", getRegisterDataTypeName(REGISTER_Y, true, false));
+        moreInfoOnError("In function jacobi_check_inputs:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return 0;
+    }
   }
   return 1;
 }
@@ -380,19 +396,35 @@ void jacobiComplexDn(const real_t *ur, const real_t *ui, const real_t *m, real_t
 void ellipticKE(const real_t *m, real_t *k, real_t *ki, real_t *e, real_t *ei, realContext_t *realContext) {
   real_t a, b, cr, ci;
 
-  if(k) realCopy(const_NaN, k);
-  if(ki) realZero(ki);
-  if(e) realCopy(const_NaN, e);
-  if(ei) realZero(ei);
+  if(k) {
+    realCopy(const_NaN, k);
+  }
+  if(ki) {
+    realZero(ki);
+  }
+  if(e) {
+    realCopy(const_NaN, e);
+  }
+  if(ei) {
+    realZero(ei);
+  }
 
   if(realCompareLessEqual(m, const_1)) {
     if(realCompareEqual(m, const_1)) {
-      if(k) realCopy(const_plusInfinity, k);
-      if(e) realCopy(const_1, e);
+      if(k) {
+        realCopy(const_plusInfinity, k);
+      }
+      if(e) {
+        realCopy(const_1, e);
+      }
     }
     else if(realCompareEqual(m, const_0)) {
-      if(k) realCopy(const_piOn2, k);
-      if(e) realCopy(const_piOn2, e);
+      if(k) {
+        realCopy(const_piOn2, k);
+      }
+      if(e) {
+        realCopy(const_piOn2, e);
+      }
     }
     else {
       realSubtract(const_1, m, &b, &ctxtReal39);
@@ -400,7 +432,9 @@ void ellipticKE(const real_t *m, real_t *k, real_t *ki, real_t *e, real_t *ei, r
       realCopy(m, &a);
       realAgmForE(const_1, &b, &a, &b, &ctxtReal39);
       realDivide(const_piOn2, &b, &b, &ctxtReal39);
-      if(k) realCopy(&b, k);
+      if(k) {
+        realCopy(&b, k);
+      }
 
       if(e) {
         realSubtract(&a, const_1, &a, &ctxtReal39);
@@ -411,8 +445,12 @@ void ellipticKE(const real_t *m, real_t *k, real_t *ki, real_t *e, real_t *ei, r
     }
   }
   else if(ki || ei) {
-    if(k) realCopy(const_NaN, k);
-    if(e) realCopy(const_NaN, e);
+    if(k) {
+      realCopy(const_NaN, k);
+    }
+    if(e) {
+      realCopy(const_NaN, e);
+    }
 
     realSubtract(m, const_1, &b, realContext);
     realSquareRoot(&b, &b, realContext);
@@ -579,11 +617,15 @@ static void _ellipticF_2(const real_t *phi, const real_t *m, real_t *res, realCo
     realAdd(&phiQuotient, &phiQuotient, &phiQuotient, realContext);
     ellipticKE(m, &phi1, NULL, NULL, NULL, realContext);
     _ellipticF_1(&phiRemainder, m, res, realContext);
-    if(remainderNegative) realChangeSign(res);
+    if(remainderNegative) {
+      realChangeSign(res);
+    }
     realFMA(&phiQuotient, &phi1, res, res, realContext);
   }
 
-  if(realIsNegative(phi)) realChangeSign(res);
+  if(realIsNegative(phi)) {
+    realChangeSign(res);
+  }
 }
 
 static void _ellipticF_3(const real_t *phi, const real_t *m, real_t *res, real_t *resi, realContext_t *realContext) {
@@ -672,32 +714,41 @@ static void _ellipticF_5(const real_t *phi, const real_t *psi, const real_t *m, 
     real_t psir, psii, m1, k1, k1i, tanPhi, tanPhiI, k, ki;
 
     ellipticKE(m, &k, &ki, NULL, NULL, realContext);
-    if(realIsNegative(psi)) realChangeSign(&ki); // conjugate
+    if(realIsNegative(psi)) {
+      realChangeSign(&ki); // conjugate
+    }
     TanComplex(phi, psi, &tanPhi, &tanPhiI, realContext);
     realSubtract(const_1, m, &m1, realContext);
     rcSqrt(&m1, &k1, &k1i, realContext);
     mulComplexComplex(&k1, &k1i, &tanPhi, &tanPhiI, &psir, &psii, realContext);
     divRealComplex(const_1, &psir, &psii, &psir, &psii, realContext);
-    if(realIsZero(&psii))
+    if(realIsZero(&psii)) {
       WP34S_Atan(&psir, &psir, realContext);
-    else
+    }
+    else {
       ArctanComplex(&psir, &psii, &psir, &psii, realContext);
+    }
     _ellipticF_4(&psir, &psii, m, res, resi, realContext);
 
     if(!realIsZero(&ki)) {
-      if(realIsPositive(&ki))
+      if(realIsPositive(&ki)) {
         realSetPositiveSign(resi);
-      else
+      }
+      else {
         realSetNegativeSign(resi);
+      }
     }
     realSubtract(&k, res, res, realContext); realSubtract(&ki, resi, resi, realContext);
 
-    if(realIsPositive(psi))
+    if(realIsPositive(psi)) {
       realSetPositiveSign(resi);
-    else
+    }
+    else {
       realSetNegativeSign(resi);
-    if(!realIsZero(&ki) && realIsNegative(&ki))
+    }
+    if(!realIsZero(&ki) && realIsNegative(&ki)) {
       realChangeSign(resi);
+    }
   }
   else {
     _ellipticF_4(phi, psi, m, res, resi, realContext);
@@ -742,7 +793,9 @@ void ellipticF(const real_t *phi, const real_t *psi, const real_t *m, real_t *re
     else {
       TanComplex(&p, &q, &p, &q, realContext);
       lnComplex(&p, &q, res, resi, realContext);
-      if(realIsZero(&p)) realZero(res);
+      if(realIsZero(&p)) {
+        realZero(res);
+      }
     }
     return;
   }
@@ -852,7 +905,9 @@ void ellipticE(const real_t *phi, const real_t *psi, const real_t *m, real_t *re
     jacobiComplexAm(&a, &b, &m_1, &a, &b, realContext);
 
     _ellipticE_fromZeta(phi, const_0, m, res, resi, realContext);
-    if(realIsZero(&b)) realZero(resi);
+    if(realIsZero(&b)) {
+      realZero(resi);
+    }
   }
   else if(realIsZero(psi)) {
     _ellipticE_fromZeta(phi, const_0, m, res, resi, realContext);
@@ -912,7 +967,9 @@ void ellipticE(const real_t *phi, const real_t *psi, const real_t *m, real_t *re
       realContext_t *realContext2 = &ctxtReal51;
       realContext_t *realContext3 = &ctxtReal75;
 
-      if(remainderNegative) realChangeSign(&phiRemainder);
+      if(remainderNegative) {
+        realChangeSign(&phiRemainder);
+      }
       realSubtract(const_1, m, M1, realContext2);
       _ellipticFE_lambda_mu(&phiRemainder, &psi1, m, LAMBDA, LAMBDA_I, MU, MU_I, realContext2);
       sinComplex(LAMBDA, LAMBDA_I, SIN_LAMBDA, SIN_LAMBDA_I, realContext2);
@@ -953,7 +1010,9 @@ void ellipticE(const real_t *phi, const real_t *psi, const real_t *m, real_t *re
       realAdd(res, B2_I, res, realContext); realSubtract(resi, B2, resi, realContext);
       realAdd(res, B1, res, realContext); realAdd(resi, B1_I, resi, realContext);
 
-      if(remainderNegative) realChangeSign(res);
+      if(remainderNegative) {
+        realChangeSign(res);
+      }
 
       if(!realIsZero(&phiQuotient)) {
         ellipticKE(m, NULL, NULL, B1, B1_I, realContext);
@@ -963,7 +1022,9 @@ void ellipticE(const real_t *phi, const real_t *psi, const real_t *m, real_t *re
         realAdd(res, B1, res, realContext); realAdd(resi, B1_I, resi, realContext);
       }
 
-      if(realIsNegative(psi)) realChangeSign(resi);
+      if(realIsNegative(psi)) {
+        realChangeSign(resi);
+      }
 
       freeWp43s(tmpVal, 25 * REAL_SIZE);
     }
@@ -1032,7 +1093,9 @@ static void _jacobiZeta_Agm(const real_t *phi, const real_t *psi, const real_t *
           for(int i = n; i > 0; --i) {
             realCopy(&k, &q);
             WP34S_Mod(&q, const1071_2pi, &k, realContext);
-            if(realCompareGreaterThan(&k, const_pi)) realSubtract(&k, const1071_2pi, &k, realContext);
+            if(realCompareGreaterThan(&k, const_pi)) {
+              realSubtract(&k, const1071_2pi, &k, realContext);
+            }
             realSubtract(&q, &k, &q, realContext);
             realSubtract(a + i - 1, b + i - 1, &c, realContext); realSubtract(ai + i - 1, bi + i - 1, &ci, realContext);
             realMultiply(&c, const_1on2, &c, realContext); realMultiply(&ci, const_1on2, &ci, realContext);
@@ -1040,10 +1103,12 @@ static void _jacobiZeta_Agm(const real_t *phi, const real_t *psi, const real_t *
             mulComplexComplex(&s, &si, &c, &ci, &s, &si, realContext);
             realAdd(&s, res, res, realContext); realAdd(&si, resi, resi, realContext);
             divComplexComplex(&s, &si, a + i, ai + i, &s, &si, realContext);
-            if(realIsZero(&si) && !realCompareAbsLessThan(const_1, &s))
+            if(realIsZero(&si) && !realCompareAbsLessThan(const_1, &s)) {
               WP34S_Asin(&s, &s, realContext);
-            else
+            }
+            else {
               ArcsinComplex(&s, &si, &s, &si, realContext);
+            }
             realAdd(&s, &k, &s, realContext); realAdd(&si, &ki, &si, realContext);
             realAdd(&s, &q, &s, realContext);
             realMultiply(&s, const_1on2, &k, realContext); realMultiply(&si, const_1on2, &ki, realContext);
@@ -1073,6 +1138,7 @@ static void _jacobiZeta_Agm(const real_t *phi, const real_t *psi, const real_t *
     realCopy(const_NaN, res); realCopy(const_NaN, resi);
   }
 }
+
 static void _jacobiZeta(const real_t *phi, const real_t *psi, const real_t *m, real_t *res, real_t *resi, realContext_t *realContext) {
   if(realCompareLessEqual(m, const_1)) {
     _jacobiZeta_Agm(phi, psi, m, res, resi, realContext);
@@ -1083,10 +1149,12 @@ static void _jacobiZeta(const real_t *phi, const real_t *psi, const real_t *m, r
     realCopy(phi, &phir); realCopy(psi, &phii);
     ellipticF(&phir, &phii, m, &ur, &ui, realContext);
 
-    if(realCompareLessEqual(m, const_2))
+    if(realCompareLessEqual(m, const_2)) {
       realCopy(const_1on4, &pp);
-    else
+    }
+    else {
       realDivide(const_1on2, m, &pp, realContext);
+    }
 
     while(realCompareGreaterThan(&phir, &pp)) {
       ++n;
@@ -1108,6 +1176,7 @@ static void _jacobiZeta(const real_t *phi, const real_t *psi, const real_t *m, r
     }
   }
 }
+
 void jacobiZeta(const real_t *phi, const real_t *psi, const real_t *m, real_t *res, real_t *resi, realContext_t *realContext) {
   real_t v, vi;
   bool_t negative = realIsNegative(phi);
@@ -1339,7 +1408,9 @@ void fnJacobiCn(uint16_t unusedButMandatoryParameter) {
     return;
   }
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(realInput) {
     jacobiElliptic(&uReal, &m, NULL, NULL, &rReal, NULL, &ctxtReal39);
@@ -1421,20 +1492,26 @@ void fnEllipticK(uint16_t unusedButMandatoryParameter) {
   }
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_X, &m, &ctxtReal39);
-                        break;
+    case dtLongInteger: {
+      convertLongIntegerRegisterToReal(REGISTER_X, &m, &ctxtReal39);
+      break;
+    }
 
-    case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &m);
-                        break;
+    case dtReal34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &m);
+      break;
+    }
 
     //case dtComplex34:   // intentionally left unimplemented
 
-    default:            displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-                        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                          sprintf(errorMessage, "cannot calculate elliptic integral K with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
-                          moreInfoOnError("In function fnEllipticK:", errorMessage, NULL, NULL);
-                        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-                        return;
+    default: {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot calculate elliptic integral K with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
+        moreInfoOnError("In function fnEllipticK:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
   }
 
   if(realCompareLessEqual(&m, const_1)) {
@@ -1464,23 +1541,31 @@ void fnEllipticK(uint16_t unusedButMandatoryParameter) {
 void fnEllipticE(uint16_t unusedButMandatoryParameter) {
   real_t m, a, b;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_X, &m, &ctxtReal39);
-                        break;
+    case dtLongInteger: {
+      convertLongIntegerRegisterToReal(REGISTER_X, &m, &ctxtReal39);
+      break;
+    }
 
-    case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &m);
-                        break;
+    case dtReal34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &m);
+      break;
+    }
 
     //case dtComplex34:   // intentionally left unimplemented
 
-    default:            displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-                        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                          sprintf(errorMessage, "cannot calculate elliptic integral K with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
-                          moreInfoOnError("In function fnEllipticE:", errorMessage, NULL, NULL);
-                        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-                        return;
+    default: {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot calculate elliptic integral K with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
+        moreInfoOnError("In function fnEllipticE:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
   }
 
   if(realCompareLessEqual(&m, const_1)) {
@@ -1511,9 +1596,13 @@ void fnEllipticPi(uint16_t unusedButMandatoryParameter) {
   real_t m, ur, ui, rr, ri;
   bool_t realInput;
 
-  if(!jacobi_check_inputs(&m, &ur, &ui, &realInput)) return;
+  if(!jacobi_check_inputs(&m, &ur, &ui, &realInput)) {
+    return;
+  }
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(realIsNegative(&m) || realCompareGreaterEqual(&m, const_1)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);

@@ -41,24 +41,24 @@ void dblDivide(bool_t remainder_mode) {
   if(getRegisterDataType(REGISTER_X) != dtShortInteger) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_T);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-    sprintf(errorMessage, "the input type %s is not allowed for DBL" STD_CROSS "!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false));
-    moreInfoOnError("In function fnDblDivide:", errorMessage, NULL, NULL);
+      sprintf(errorMessage, "the input type %s is not allowed for DBL" STD_CROSS "!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false));
+      moreInfoOnError("In function fnDblDivide:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
   if(getRegisterDataType(REGISTER_Y) != dtShortInteger) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_T);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-    sprintf(errorMessage, "the input type %s is not allowed for DBL" STD_CROSS "!", getDataTypeName(getRegisterDataType(REGISTER_Y), false, false));
-    moreInfoOnError("In function fnDblDivide:", errorMessage, NULL, NULL);
+      sprintf(errorMessage, "the input type %s is not allowed for DBL" STD_CROSS "!", getDataTypeName(getRegisterDataType(REGISTER_Y), false, false));
+      moreInfoOnError("In function fnDblDivide:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
   if(getRegisterDataType(REGISTER_Z) != dtShortInteger) {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_T);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-    sprintf(errorMessage, "the input type %s is not allowed for DBL" STD_CROSS "!", getDataTypeName(getRegisterDataType(REGISTER_Z), false, false));
-    moreInfoOnError("In function fnDblDivide:", errorMessage, NULL, NULL);
+      sprintf(errorMessage, "the input type %s is not allowed for DBL" STD_CROSS "!", getDataTypeName(getRegisterDataType(REGISTER_Z), false, false));
+      moreInfoOnError("In function fnDblDivide:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return;
   }
@@ -97,7 +97,9 @@ void dblDivide(bool_t remainder_mode) {
       else {
         longIntegerSetZero(wd);
         longInteger2Pow(shortIntegerWordSize * 2, wd);
-        if(sim == SIM_1COMPL) longIntegerSubtractUInt(wd, 1, wd);
+        if(sim == SIM_1COMPL) {
+          longIntegerSubtractUInt(wd, 1, wd);
+        }
         longIntegerSubtract(wd, dividend, dividend);
         longIntegerSetNegativeSign(dividend);
       }
@@ -109,7 +111,9 @@ void dblDivide(bool_t remainder_mode) {
   longIntegerDivideQuotientRemainder(dividend, x, z, y);
 
   if(remainder_mode) {
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
     convertLongIntegerToShortIntegerRegister(y, base, REGISTER_X);
   }
   else {
@@ -127,7 +131,9 @@ void dblDivide(bool_t remainder_mode) {
       }
     }
 
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+      return;
+    }
     convertLongIntegerToShortIntegerRegister(z, base, REGISTER_X);
 
     if(longIntegerIsZero(y)) {

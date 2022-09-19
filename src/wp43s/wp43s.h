@@ -63,6 +63,7 @@
   #if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
     extern bool_t               debugMemAllocation;
   #endif // PC_BUILD || TESTSUITE_BUILD
+
   #if defined(PC_BUILD)
     extern bool_t               calcLandscape;
     extern bool_t               calcAutoLandscapePortrait;
@@ -82,7 +83,7 @@
     #endif // (SHOW_MEMORY_STATUS == 1)
     extern calcKeyboard_t       calcKeyboard[43];
     extern int                  currentBezel; // 0=normal, 1=AIM, 2=TAM
-  #endif // PC_BUILD
+  #endif //PC_BUILD
 
   // Variables stored in FLASH
   extern const item_t                    indexOfItems[];
@@ -304,6 +305,15 @@
   extern real_t                 SAVED_SIGMA_LASTY;
   extern int32_t                SAVED_SIGMA_LAct;
 
+  extern uint16_t               lrSelectionHistobackup;
+  extern uint16_t               lrChosenHistobackup;
+  extern int16_t                histElementXorY;
+  extern real34_t               loBinR;
+  extern real34_t               nBins ;
+  extern real34_t               hiBinR;
+  extern char                   statMx[8];
+  extern char                   plotStatMx[8];
+
   #if defined(DMCP_BUILD)
     extern bool_t               backToDMCP;
     //extern int                  keyAutoRepeat; // Key repetition
@@ -312,5 +322,4 @@
 
     int                         convertKeyCode(int key);
   #endif // DMCP_BUILD
-
 #endif // !WP43S_H

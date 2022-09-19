@@ -52,8 +52,10 @@
   static uint16_t _indirectRegister(uint8_t *paramAddress) {
     uint8_t opParam = *(uint8_t *)paramAddress;
     if(opParam <= LAST_LOCAL_REGISTER) { // Local register from .00 to .98
-      int16_t realParam = indirectAddressing(opParam, false, 0, 99);
-      if(realParam < 9999) return realParam;
+      int16_t realParam = indirectAddressing(opParam, INDPM_REGISTER, 0, 99);
+      if(realParam < 9999) {
+        return realParam;
+      }
     }
     else {
       sprintf(tmpString, "\nIn function _indirectRegister: " STD_RIGHT_ARROW " %u is not a valid parameter!", opParam);
@@ -66,7 +68,7 @@
     _getStringLabelOrVariableName(stringAddress);
     regist = findNamedVariable(tmpStringLabelOrVariableName);
     if(regist != INVALID_VARIABLE) {
-      int16_t realParam = indirectAddressing(regist, false, 0, 99);
+      int16_t realParam = indirectAddressing(regist, INDPM_REGISTER, 0, 99);
       if(realParam < 9999) {
         return realParam;
       }
@@ -191,48 +193,59 @@
     if(1 <= keyNum && keyNum <= 18) {
       char *ts = tmpString;
       switch(getRegisterDataType(REGISTER_K)) {
-        case dtString:
+        case dtString: {
           xcopy(tmpString, REGISTER_STRING_DATA(REGISTER_K), stringByteLength(REGISTER_STRING_DATA(REGISTER_K)) + 1);
           break;
+        }
 
-        case dtLongInteger:
+        case dtLongInteger: {
           longIntegerRegisterToDisplayString(REGISTER_K, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION);
           break;
+        }
 
-        case dtTime:
+        case dtTime: {
           timeToDisplayString(REGISTER_K, tmpString, false);
           break;
+        }
 
-        case dtDate:
+        case dtDate: {
           dateToDisplayString(REGISTER_K, tmpString);
           break;
+        }
 
-        case dtReal34Matrix:
+        case dtReal34Matrix: {
           real34MatrixToDisplayString(REGISTER_K, tmpString);
           break;
+        }
 
-        case dtComplex34Matrix:
+        case dtComplex34Matrix: {
           complex34MatrixToDisplayString(REGISTER_K, tmpString);
           break;
+        }
 
-        case dtShortInteger:
+        case dtShortInteger: {
           shortIntegerToDisplayString(REGISTER_K, tmpString, false);
           break;
+        }
 
-        case dtReal34:
+        case dtReal34: {
           real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_K), getRegisterAngularMode(REGISTER_K), tmpString, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true);
           break;
+        }
 
-        case dtComplex34:
+        case dtComplex34: {
           complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_K), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true);
           break;
+        }
 
-        case dtConfig:
+        case dtConfig: {
           xcopy(tmpString, "Configu", 8);
           break;
+        }
 
-        default:
+        default: {
           tmpString[0] = 0;
+        }
       }
 
       for(int i = 0; i < 7 && *ts != 0; ++i) {

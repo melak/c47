@@ -40,76 +40,207 @@
  ***********************************************/
 char * getDataTypeName(uint16_t dt, bool_t article, bool_t padWithBlanks) {
   if(article && padWithBlanks) {
-    if(dt == dtLongInteger     ) return "a long integer       ";
-    if(dt == dtTime            ) return "a time               ";
-    if(dt == dtDate            ) return "a date               ";
-    if(dt == dtString          ) return "a string             ";
-    if(dt == dtReal34Matrix    ) return "a real34 matrix      ";
-    if(dt == dtComplex34Matrix ) return "a complex34 matrix   ";
-    if(dt == dtShortInteger    ) return "a short integer      ";
-    if(dt == dtReal34          ) return "a real34             ";
-    if(dt == dtComplex34       ) return "a complex34          ";
-    if(dt == dtConfig          ) return "a config data        ";
-    //if(dt == dtLabel           ) return "a label              ";
-    //if(dt == dtSystemInteger   ) return "a system integer     ";
-    //if(dt == dtFlags           ) return "a flags              ";
-    //if(dt == dtPgmStep         ) return "a pgm step           ";
-    //if(dt == dtDirectory       ) return "a directory          ";
-    return                              "a ???                ";
+    switch(dt) {
+      case dtLongInteger: {
+        return "a long integer       ";
+      }
+      case dtTime: {
+        return "a time               ";
+      }
+      case dtDate: {
+        return "a date               ";
+      }
+      case dtString: {
+        return "a string             ";
+      }
+      case dtReal34Matrix: {
+        return "a real34 matrix      ";
+      }
+      case dtComplex34Matrix: {
+        return "a complex34 matrix   ";
+      }
+      case dtShortInteger: {
+        return "a short integer      ";
+      }
+      case dtReal34: {
+        return "a real34             ";
+      }
+      case dtComplex34: {
+        return "a complex34          ";
+      }
+      case dtConfig: {
+        return "a config data        ";
+      }
+      //case dtLabel: {
+      //  return "a label              ";
+      //}
+      //case dtSystemInteger: {
+      //  return "a system integer     ";
+      //}
+      //case dtFlags: {
+      //  return "a flags              ";
+      //}
+      //case dtPgmStep: {
+      //  return "a pgm step           ";
+      //}
+      //case dtDirectory: {
+      //  return "a directory          ";
+      //}
+      default: {
+        return                              "a ???                ";
+      }
+    }
   }
   else if(article && !padWithBlanks) {
-    if(dt == dtLongInteger     ) return "a long integer";
-    if(dt == dtTime            ) return "a time";
-    if(dt == dtDate            ) return "a date";
-    if(dt == dtString          ) return "a string";
-    if(dt == dtReal34Matrix    ) return "a real34 matrix";
-    if(dt == dtComplex34Matrix ) return "a complex34 matrix";
-    if(dt == dtShortInteger    ) return "a short integer";
-    if(dt == dtReal34          ) return "a real34";
-    if(dt == dtComplex34       ) return "a complex34";
-    if(dt == dtConfig          ) return "a config data";
-    //if(dt == dtLabel           ) return "a label";
-    //if(dt == dtSystemInteger   ) return "a system integer";
-    //if(dt == dtFlags           ) return "a flags";
-    //if(dt == dtPgmStep         ) return "a pgm step";
-    //if(dt == dtDirectory       ) return "a directory";
-    return                              "a ???";
+    switch(dt) {
+      case dtLongInteger: {
+        return "a long integer";
+      }
+      case dtTime: {
+        return "a time";
+      }
+      case dtDate: {
+        return "a date";
+      }
+      case dtString: {
+        return "a string";
+      }
+      case dtReal34Matrix: {
+        return "a real34 matrix";
+      }
+      case dtComplex34Matrix: {
+        return "a complex34 matrix";
+      }
+      case dtShortInteger: {
+        return "a short integer";
+      }
+      case dtReal34: {
+        return "a real34";
+      }
+      case dtComplex34: {
+        return "a complex34";
+      }
+      case dtConfig: {
+        return "a config data";
+      }
+      //case dtLabel: {          return "a label";
+      //}
+      //case dtSystemInteger: {  return "a system integer";
+      //}
+      //case dtFlags: {          return "a flags";
+      //}
+      //case dtPgmStep: {        return "a pgm step";
+      //}
+      //case dtDirectory: {      return "a directory";
+      //}
+      default: {
+        return                              "a ???";
+      }
+    }
   }
   else if(!article && padWithBlanks) {
-    if(dt == dtLongInteger     ) return "long integer         ";
-    if(dt == dtTime            ) return "time                 ";
-    if(dt == dtDate            ) return "date                 ";
-    if(dt == dtString          ) return "string               ";
-    if(dt == dtReal34Matrix    ) return "real34 matrix        ";
-    if(dt == dtComplex34Matrix ) return "complex34 matrix     ";
-    if(dt == dtShortInteger    ) return "short integer        ";
-    if(dt == dtReal34          ) return "real34               ";
-    if(dt == dtComplex34       ) return "complex34            ";
-    if(dt == dtConfig          ) return "config data          ";
-    //if(dt == dtLabel           ) return "label                ";
-    //if(dt == dtSystemInteger   ) return "system integer       ";
-    //if(dt == dtFlags           ) return "flags                ";
-    //if(dt == dtPgmStep         ) return "pgm step             ";
-    //if(dt == dtDirectory       ) return "directory            ";
-    return                              "???                  ";
+    switch(dt) {
+      case dtLongInteger: {
+        return "long integer         ";
+      }
+      case dtTime: {
+        return "time                 ";
+      }
+      case dtDate: {
+        return "date                 ";
+      }
+      case dtString: {
+        return "string               ";
+      }
+      case dtReal34Matrix: {
+        return "real34 matrix        ";
+      }
+      case dtComplex34Matrix: {
+        return "complex34 matrix     ";
+      }
+      case dtShortInteger: {
+        return "short integer        ";
+      }
+      case dtReal34: {
+        return "real34               ";
+      }
+      case dtComplex34: {
+        return "complex34            ";
+      }
+      case dtConfig: {
+        return "config data          ";
+      }
+      //case dtLabel: {
+      //  return "label                ";
+      //}
+      //case dtSystemInteger: {
+      //  return "system integer       ";
+      //}
+      //case dtFlags: {
+      //  return "flags                ";
+      //}
+      //case dtPgmStep: {
+      //  return "pgm step             ";
+      //}
+      //case dtDirectory: {
+      //  return "directory            ";
+      //}
+      default: {
+        return                              "???                  ";
+      }
+    }
   }
   else if(!article && !padWithBlanks) {
-    if(dt == dtLongInteger     ) return "long integer";
-    if(dt == dtTime            ) return "time";
-    if(dt == dtDate            ) return "date";
-    if(dt == dtString          ) return "string";
-    if(dt == dtReal34Matrix    ) return "real34 matrix";
-    if(dt == dtComplex34Matrix ) return "complex34 matrix";
-    if(dt == dtShortInteger    ) return "short integer";
-    if(dt == dtReal34          ) return "real34";
-    if(dt == dtComplex34       ) return "complex34";
-    if(dt == dtConfig          ) return "config data";
-    //if(dt == dtLabel           ) return "label";
-    //if(dt == dtSystemInteger   ) return "system integer";
-    //if(dt == dtFlags           ) return "flags";
-    //if(dt == dtPgmStep         ) return "pgm step";
-    //if(dt == dtDirectory       ) return "directory";
-    return                              "???";
+    switch(dt) {
+      case dtLongInteger: {
+        return "long integer";
+      }
+      case dtTime: {
+        return "time";
+      }
+      case dtDate: {
+        return "date";
+      }
+      case dtString: {
+        return "string";
+      }
+      case dtReal34Matrix: {
+        return "real34 matrix";
+      }
+      case dtComplex34Matrix: {
+        return "complex34 matrix";
+      }
+      case dtShortInteger: {
+        return "short integer";
+      }
+      case dtReal34: {
+        return "real34";
+      }
+      case dtComplex34: {
+        return "complex34";
+      }
+      case dtConfig: {
+        return "config data";
+      }
+      //case dtLabel: {
+      //  return "label";
+      //}
+      //case dtSystemInteger: {
+      //  return "system integer";
+      //}
+      //case dtFlags: {
+      //  return "flags";
+      //}
+      //case dtPgmStep: {
+      //  return "pgm step";
+      //}
+      //case dtDirectory: {
+      //  return "directory";
+      //}
+      default: {
+        return                              "???";
+      }
+    }
   }
   else {
     return                              "???";
@@ -134,24 +265,48 @@ char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
   static char base[9];
 
   switch(getRegisterDataType(regist)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       switch(getRegisterTag(regist)) {
-        case LI_ZERO:     return "zero    ";
-        case LI_NEGATIVE: return "negative";
-        case LI_POSITIVE: return "positive";
-        default:                    return "???     ";
+        case LI_ZERO: {
+          return "zero    ";
+        }
+        case LI_NEGATIVE: {
+          return "negative";
+        }
+        case LI_POSITIVE: {
+          return "positive";
+        }
+        default: {
+          return "???     ";
+        }
       }
+    }
 
-    case dtReal34:
+    case dtReal34: {
       switch(getRegisterTag(regist)) {
-        case amRadian:             return "radian  ";
-        case amMultPi:             return "multPi  ";
-        case amGrad:               return "grad    ";
-        case amDegree:             return "degree  ";
-        case amDMS:                return "dms     ";
-        case amNone:               return "none    ";
-        default:                   return "???     ";
+        case amRadian: {
+          return "radian  ";
+        }
+        case amMultPi: {
+          return "multPi  ";
+        }
+        case amGrad: {
+          return "grad    ";
+        }
+        case amDegree: {
+          return "degree  ";
+        }
+        case amDMS: {
+          return "dms     ";
+        }
+        case amNone: {
+          return "none    ";
+        }
+        default: {
+         return "???     ";
+        }
       }
+    }
 
     case dtComplex34:
     case dtString:
@@ -159,17 +314,25 @@ char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
     case dtComplex34Matrix:
     case dtDate:
     case dtTime:
-    case dtConfig:
+    case dtConfig: {
       switch(getRegisterTag(regist)) {
-        case amNone:               return "        ";
-        default:                    return "???     ";
+        case amNone: {
+          return "        ";
+        }
+        default: {
+          return "???     ";
+        }
       }
+    }
 
-    case dtShortInteger:
+    case dtShortInteger: {
       sprintf(base, "base %2" PRIu32 " ", getRegisterTag(regist));
-                                    return base;
+      return base;
+    }
 
-    default:                        return "???     ";
+    default: {
+      return "???     ";
+    }
   }
 }
 
@@ -180,18 +343,41 @@ char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
  * \return char*          Name of the curvefitting mode
  ***********************************************/
 char * getCurveFitModeName(uint16_t selection) {          //Can be only one bit. ??? if invalid.
-    switch( selection & 0x03FF ){
-      case CF_LINEAR_FITTING:      return "Linear     ";
-      case CF_EXPONENTIAL_FITTING: return "Exponential";
-      case CF_LOGARITHMIC_FITTING: return "Logarithmic";
-      case CF_POWER_FITTING:       return "Power      ";
-      case CF_ROOT_FITTING:        return "Root       ";
-      case CF_HYPERBOLIC_FITTING:  return "Hyperbolic ";
-      case CF_PARABOLIC_FITTING:   return "Parabolic  ";
-      case CF_CAUCHY_FITTING:      return "Cauchy peak";
-      case CF_GAUSS_FITTING:       return "Gauss peak ";
-      case CF_ORTHOGONAL_FITTING:  return "Orthogonal ";
-      default: return "???        "; break;
+    switch(selection & 0x03FF) {
+      case CF_LINEAR_FITTING: {
+        return "Linear     ";
+      }
+      case CF_EXPONENTIAL_FITTING: {
+        return "Exponential";
+      }
+      case CF_LOGARITHMIC_FITTING: {
+        return "Logarithmic";
+      }
+      case CF_POWER_FITTING: {
+        return "Power      ";
+      }
+      case CF_ROOT_FITTING: {
+        return "Root       ";
+      }
+      case CF_HYPERBOLIC_FITTING: {
+        return "Hyperbolic ";
+      }
+      case CF_PARABOLIC_FITTING: {
+        return "Parabolic  ";
+      }
+      case CF_CAUCHY_FITTING: {
+        return "Cauchy peak";
+      }
+      case CF_GAUSS_FITTING: {
+        return "Gauss peak ";
+      }
+      case CF_ORTHOGONAL_FITTING: {
+        return "Orthogonal ";
+      }
+      default: {
+        return "???        ";
+        break;
+      }
     }
   }
 
@@ -203,11 +389,12 @@ char * getCurveFitModeName(uint16_t selection) {          //Can be only one bit.
 char * eatSpacesEnd(const char * ss) {
   static char tmp_names[20];
   int8_t ix;
-  strcpy(tmp_names,ss);
+
+  strcpy(tmp_names, ss);
   ix = stringByteLength(ss)-1;
-  while( ix > 0 ){
-    if(ss[ix]==' ') {
-      tmp_names[ix]=0;
+  while(ix > 0) {
+    if(ss[ix] == ' ') {
+      tmp_names[ix] = 0;
     }
     else {
       break;
@@ -225,15 +412,18 @@ char * eatSpacesEnd(const char * ss) {
 char * eatSpacesMid(const char * ss) {
   static char tmp_names[20];
   char tt[50];
-  strcpy(tt,ss);
-  int8_t ix=0,iy=0;
-  tmp_names[0]=0;
-  while( tt[ix] != 0 && ix < 50){
-    if(tt[ix]!=' ') tmp_names[iy++]=tt[ix];
+  int8_t ix = 0, iy = 0;
+
+  strcpy(tt, ss);
+  tmp_names[0] = 0;
+  while(tt[ix] != 0 && ix < 50) {
+    if(tt[ix] != ' ') {
+      tmp_names[iy++] = tt[ix];
+    }
     ix++;
   }
-  tmp_names[iy]=0;
-  tmp_names[iy++]=0;
+  tmp_names[iy] = 0;
+  tmp_names[iy++] = 0;
   return tmp_names;
 }
 
@@ -247,14 +437,17 @@ char * eatSpacesMid(const char * ss) {
  ***********************************************/
 char * getCurveFitModeNames(uint16_t selection) {
   uint16_t ix;
-  errorMessage[0]=0;
+
+  errorMessage[0] = 0;
   for(ix = 0; ix < 10; ix++) {
     if(selection & (1 << ix)) {
       strcat(errorMessage, errorMessage[0] == 0 ? "" : " ");
       strcat(errorMessage, eatSpacesEnd(getCurveFitModeName(1 << ix)));
     }
   }
-  if(errorMessage[0]==0) return "???        ";
+  if(errorMessage[0] == 0) {
+    return "???        ";
+  }
   return errorMessage;
 }
 
@@ -266,20 +459,42 @@ char * getCurveFitModeNames(uint16_t selection) {
  * \return char*          Formula of the curvefitting mode
  ***********************************************/
 char * getCurveFitModeFormula(uint16_t selection) {          //Can be only one bit. ??? if invalid.
-    switch( selection & 0x03FF ){
-      case CF_LINEAR_FITTING:      return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
-      case CF_EXPONENTIAL_FITTING: return "a" STD_SUB_0 STD_SPACE_3_PER_EM "e^(a" STD_SUB_1 "x)";
-      case CF_LOGARITHMIC_FITTING: return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "ln(x)";
-      case CF_POWER_FITTING:       return "a" STD_SUB_0 STD_SPACE_3_PER_EM "x^a" STD_SUB_1 ;
-      case CF_ROOT_FITTING:        return "a" STD_SUB_0 STD_SPACE_3_PER_EM "a" STD_SUB_1 "^(1/x)";
-      case CF_HYPERBOLIC_FITTING:  return "(a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x)" STD_SUP_MINUS_1;
-      case CF_PARABOLIC_FITTING:   return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x" STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_2 "x" STD_SUP_2;
-      case CF_CAUCHY_FITTING:      return STD_LEFT_SQUARE_BRACKET "a" STD_SUB_0 "(x+a" STD_SUB_1 ")" STD_SUP_2 "+a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET STD_SUP_MINUS_1;
-      case CF_GAUSS_FITTING:       return "a" STD_SUB_0 "e^" STD_LEFT_SQUARE_BRACKET  "(x-a" STD_SUB_1 ")" STD_SUP_2 "/a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET;
-      case CF_ORTHOGONAL_FITTING:  return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
-      default: return "???        "; break;
+  switch(selection & 0x03FF) {
+    case CF_LINEAR_FITTING: {
+      return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
+    }
+    case CF_EXPONENTIAL_FITTING: {
+      return "a" STD_SUB_0 STD_SPACE_3_PER_EM "e^(a" STD_SUB_1 "x)";
+    }
+    case CF_LOGARITHMIC_FITTING: {
+      return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "ln(x)";
+    }
+    case CF_POWER_FITTING: {
+      return "a" STD_SUB_0 STD_SPACE_3_PER_EM "x^a" STD_SUB_1 ;
+    }
+    case CF_ROOT_FITTING: {
+      return "a" STD_SUB_0 STD_SPACE_3_PER_EM "a" STD_SUB_1 "^(1/x)";
+    }
+    case CF_HYPERBOLIC_FITTING: {
+      return "(a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x)" STD_SUP_MINUS_1;
+    }
+    case CF_PARABOLIC_FITTING: {
+      return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x" STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_2 "x" STD_SUP_2;
+    }
+    case CF_CAUCHY_FITTING: {
+      return STD_LEFT_SQUARE_BRACKET "a" STD_SUB_0 "(x+a" STD_SUB_1 ")" STD_SUP_2 "+a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET STD_SUP_MINUS_1;
+    }
+    case CF_GAUSS_FITTING: {
+      return "a" STD_SUB_0 "e^" STD_LEFT_SQUARE_BRACKET  "(x-a" STD_SUB_1 ")" STD_SUP_2 "/a" STD_SUB_2 STD_RIGHT_SQUARE_BRACKET;
+    }
+    case CF_ORTHOGONAL_FITTING: {
+      return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
+    }
+    default: {
+      return "???        "; break;
     }
   }
+}
 
 
 
@@ -290,14 +505,29 @@ char * getCurveFitModeFormula(uint16_t selection) {          //Can be only one b
  * \return char*          Name of the angular mode
  ***********************************************/
 char * getAngularModeName(angularMode_t angularMode) {
-  if(angularMode == amRadian) return "radian";
-  if(angularMode == amMultPi) return "multPi";
-  if(angularMode == amGrad  ) return "grad  ";
-  if(angularMode == amDegree) return "degree";
-  if(angularMode == amDMS   ) return "d.ms  ";
-  if(angularMode == amNone)   return "none  ";
-
-  return "???   ";
+  switch(angularMode) {
+    case amRadian: {
+      return "radian";
+    }
+    case amMultPi: {
+      return "multPi";
+    }
+    case amGrad: {
+      return "grad  ";
+    }
+    case amDegree: {
+      return "degree";
+    }
+    case amDMS: {
+      return "d.ms  ";
+    }
+    case amNone: {
+      return "none  ";
+    }
+    default: {
+      return "???   ";
+    }
+  }
 }
 
 
@@ -308,28 +538,63 @@ char * getAngularModeName(angularMode_t angularMode) {
  * \return char*          Name of the integer mode
  ***********************************************/
 char * getShortIntegerModeName(uint16_t im) {
-  if(im == SIM_1COMPL) return "1compl";
-  if(im == SIM_2COMPL) return "2compl";
-  if(im == SIM_SIGNMT) return "signmt";
-  if(im == SIM_UNSIGN) return "unsign";
-
-  return "???   ";
+  switch(im) {
+    case SIM_1COMPL: {
+      return "1compl";
+    }
+    case SIM_2COMPL: {
+      return "2compl";
+    }
+    case SIM_SIGNMT: {
+      return "signmt";
+    }
+    case SIM_UNSIGN: {
+      return "unsign";
+    }
+    default: {
+      return "???   ";
+    }
+  }
 }
 
 
 /* Never used
 void debugNIM(void) {
-  if     (nimNumberPart == NP_EMPTY               ) printf("nimNumberPart = NP_EMPTY               \n");
-  else if(nimNumberPart == NP_INT_10              ) printf("nimNumberPart = NP_INT_10              \n");
-  else if(nimNumberPart == NP_INT_16              ) printf("nimNumberPart = NP_INT_16              \n");
-  else if(nimNumberPart == NP_INT_BASE            ) printf("nimNumberPart = NP_INT_BASE            \n");
-  else if(nimNumberPart == NP_REAL_FLOAT_PART     ) printf("nimNumberPart = NP_REAL_FLOAT_PART     \n");
-  else if(nimNumberPart == NP_REAL_EXPONENT       ) printf("nimNumberPart = NP_REAL_EXPONENT       \n");
-  else if(nimNumberPart == NP_FRACTION_DENOMINATOR) printf("nimNumberPart = NP_FRACTION_DENOMINATOR\n");
-  else if(nimNumberPart == NP_COMPLEX_INT_PART    ) printf("nimNumberPart = NP_COMPLEX_INT_PART    \n");
-  else if(nimNumberPart == NP_COMPLEX_FLOAT_PART  ) printf("nimNumberPart = NP_COMPLEX_FLOAT_PART  \n");
-  else if(nimNumberPart == NP_COMPLEX_EXPONENT    ) printf("nimNumberPart = NP_COMPLEX_EXPONENT    \n");
-  else                                              printf("nimNumberPart = NP_???                 \n");
+  switch(nimNumberPart) {
+    case NP_EMPTY: {
+      printf("nimNumberPart = NP_EMPTY               \n");
+    }
+    case NP_INT_10: {
+      printf("nimNumberPart = NP_INT_10              \n");
+    }
+    case NP_INT_16: {
+      printf("nimNumberPart = NP_INT_16              \n");
+    }
+    case NP_INT_BASE: {
+      printf("nimNumberPart = NP_INT_BASE            \n");
+    }
+    case NP_REAL_FLOAT_PART: {
+      printf("nimNumberPart = NP_REAL_FLOAT_PART     \n");
+    }
+    case NP_REAL_EXPONENT: {
+      printf("nimNumberPart = NP_REAL_EXPONENT       \n");
+    }
+    case NP_FRACTION_DENOMINATOR: {
+      printf("nimNumberPart = NP_FRACTION_DENOMINATOR\n");
+    }
+    case NP_COMPLEX_INT_PART: {
+      printf("nimNumberPart = NP_COMPLEX_INT_PART    \n");
+    }
+    case NP_COMPLEX_FLOAT_PART: {
+      printf("nimNumberPart = NP_COMPLEX_FLOAT_PART  \n");
+    }
+    case NP_COMPLEX_EXPONENT: {
+      printf("nimNumberPart = NP_COMPLEX_EXPONENT    \n");
+    }
+    default: {
+      printf("nimNumberPart = NP_???                 \n");
+    }
+  }
 }
 */
 
@@ -342,12 +607,23 @@ void debugNIM(void) {
    * \return char*          Name of the display format
    ***********************************************/
   char * getDisplayFormatName(uint16_t df) {
-    if(df == DF_ALL) return "ALL";
-    if(df == DF_FIX) return "FIX";
-    if(df == DF_SCI) return "SCI";
-    if(df == DF_ENG) return "ENG";
-
-    return "???";
+    switch(df) {
+      case DF_ALL: {
+        return "ALL";
+      }
+      case DF_FIX: {
+        return "FIX";
+      }
+      case DF_SCI: {
+        return "SCI";
+      }
+      case DF_ENG: {
+        return "ENG";
+      }
+      default: {
+        return "???";
+      }
+    }
   }
 
 
@@ -370,11 +646,20 @@ void debugNIM(void) {
    *
    ***********************************************/
   char * getDateFormatName(uint16_t df) {
-    if(df == DF_DMY) return "D.MY";
-    if(df == DF_MDY) return "M.DY";
-    if(df == DF_YMD) return "Y.MD";
-
-    return "??? ";
+    switch(df) {
+      case DF_DMY: {
+        return "D.MY";
+      }
+      case DF_MDY: {
+        return "M.DY";
+      }
+      case DF_YMD: {
+        return "Y.MD";
+      }
+      default: {
+        return "??? ";
+      }
+    }
   }
 
 
@@ -396,18 +681,20 @@ void debugNIM(void) {
    * \return char*         Name of the mode
    ***********************************************/
   char * getRbrModeName(uint16_t mode) {
-    if(mode == RBR_GLOBAL) {
-      return "RBR_GLOBAL";
+    switch(mode) {
+      case RBR_GLOBAL:  {
+        return "RBR_GLOBAL";
+      }
+      case RBR_LOCAL: {
+        return "RBR_LOCAL";
+      }
+      case RBR_NAMED: {
+        return "RBR_NAMED";
+      }
+      default: {
+        return "RBR_???";
+      }
     }
-    else if(mode == RBR_LOCAL) {
-      return "RBR_LOCAL";
-    }
-    else if(mode == RBR_NAMED) {
-      return "RBR_NAMED";
-    }
-   else {
-     return "RBR_???";
-   }
   }
 
 
@@ -418,15 +705,32 @@ void debugNIM(void) {
    * \return char*          Name of the rounding mode
    ***********************************************/
   char * getRoundingModeName(uint16_t rm) {
-    if(rm == RM_CEIL)      return "ceil     ";
-    if(rm == RM_DOWN)      return "down     ";
-    if(rm == RM_FLOOR)     return "floor    ";
-    if(rm == RM_HALF_DOWN) return "half down";
-    if(rm == RM_HALF_EVEN) return "half even";
-    if(rm == RM_HALF_UP)   return "half up  ";
-    if(rm == RM_UP)        return "up       ";
-
-    return "???      ";
+    switch(rm) {
+      case RM_CEIL: {
+        return "ceil     ";
+      }
+      case RM_DOWN: {
+        return "down     ";
+      }
+      case RM_FLOOR: {
+        return "floor    ";
+      }
+      case RM_HALF_DOWN: {
+        return "half down";
+      }
+      case RM_HALF_EVEN: {
+        return "half even";
+      }
+      case RM_HALF_UP: {
+        return "half up  ";
+      }
+      case RM_UP: {
+        return "up       ";
+      }
+      default: {
+        return "???      ";
+      }
+    }
   }
 
 
@@ -437,24 +741,53 @@ void debugNIM(void) {
    * \return char*          Name of the calc mode
    ***********************************************/
   char * getCalcModeName(uint16_t cm) {
-    if(cm == CM_NORMAL)                return "normal ";
-    if(cm == CM_AIM)                   return "aim    ";
-    if(cm == CM_EIM)                   return "eim    ";
-    if(cm == CM_PEM)                   return "pem    ";
-    if(cm == CM_NIM)                   return "nim    ";
-    if(cm == CM_ASSIGN)                return "assign ";
-    if(cm == CM_REGISTER_BROWSER)      return "reg.bro";
-    if(cm == CM_FLAG_BROWSER)          return "flg.bro";
-    if(cm == CM_FONT_BROWSER)          return "fnt.bro";
-    if(cm == CM_PLOT_STAT)             return "plot.st";
-    if(cm == CM_GRAPH)                 return "plot.gr";
-    if(cm == CM_ERROR_MESSAGE)         return "err.msg";
-    if(cm == CM_BUG_ON_SCREEN)         return "bug.scr";
-    if(cm == CM_MIM)                   return "mim    ";
-    if(cm == CM_EIM)                   return "eim    ";
-    if(cm == CM_TIMER)                 return "timer  ";
-
-    return "???    ";
+    switch(cm) {
+      case CM_NORMAL: {
+        return "normal ";
+      }
+      case CM_AIM: {
+        return "aim    ";
+      }
+      case CM_EIM: {
+        return "eim    ";
+      }
+      case CM_PEM: {
+        return "pem    ";
+      }
+      case CM_NIM: {
+        return "nim    ";
+      }
+      case CM_ASSIGN: {
+        return "assign ";
+      }
+      case CM_REGISTER_BROWSER: {
+        return "reg.bro";
+      }
+      case CM_FLAG_BROWSER: {
+        return "flg.bro";
+      }
+      case CM_FONT_BROWSER: {
+        return "fnt.bro";
+      }
+      case CM_PLOT_STAT: {
+        return "plot.st";
+      }
+      case CM_GRAPH: {
+        return "plot.gr";
+      }
+      case CM_ERROR_MESSAGE: {
+        return "err.msg";
+      }
+      case CM_BUG_ON_SCREEN: {
+        return "bug.scr";
+      }
+      case CM_TIMER: {
+        return "timer  ";
+      }
+      default: {
+        return "???    ";
+      }
+    }
   }
 
 
@@ -465,14 +798,29 @@ void debugNIM(void) {
    * \return char*          Name of the TAM mode
    ***********************************************/
   char * getTamModeName(uint16_t tmm) {
-    if(tmm == TM_VALUE)     return "Value   ";
-    if(tmm == TM_VALUE_CHB) return "Valuechb"; // change base (->#)
-    if(tmm == TM_REGISTER)  return "Register";
-    if(tmm == TM_CMP)       return "Compare ";
-    if(tmm == TM_STORCL)    return "STORCL  ";
-    if(tmm == TM_M_DIM)     return "M_DIM   ";
-
-    return "???     ";
+    switch(tmm) {
+      case TM_VALUE: {
+        return "Value   ";
+      }
+      case TM_VALUE_CHB: {
+        return "Valuechb"; // change base (->#)
+      }
+      case TM_REGISTER: {
+        return "Register";
+      }
+      case TM_CMP: {
+        return "Compare ";
+      }
+      case TM_STORCL: {
+        return "STORCL  ";
+      }
+      case TM_M_DIM: {
+        return "M_DIM   ";
+      }
+      default: {
+        return "???     ";
+      }
+    }
   }
 
 
@@ -483,11 +831,20 @@ void debugNIM(void) {
    * \return char*          Name of the "next char indicator"
    ***********************************************/
   char * getNextCharName(uint16_t nc) {
-    if(nc == NC_NORMAL)      return "normal     ";
-    if(nc == NC_SUBSCRIPT)   return "subscript  ";
-    if(nc == NC_SUPERSCRIPT) return "superscript";
-
-    return "???        ";
+    switch(nc) {
+      case NC_NORMAL: {
+        return "normal     ";
+      }
+      case NC_SUBSCRIPT: {
+        return "subscript  ";
+      }
+      case NC_SUPERSCRIPT: {
+        return "superscript";
+      }
+      default: {
+        return "???        ";
+      }
+    }
   }
 
 
@@ -608,8 +965,12 @@ void debugNIM(void) {
    * \return char*          Name of the alphacase mode
    ***********************************************/
   char * getAlphaCaseName(uint16_t ac) {
-    if(ac == AC_LOWER) return "lower";
-    if(ac == AC_UPPER) return "upper";
+    if(ac == AC_LOWER) {
+      return "lower";
+    }
+    if(ac == AC_UPPER) {
+      return "upper";
+    }
 
     return "???  ";
   }
@@ -622,27 +983,68 @@ void debugNIM(void) {
    * \return char*          Name of the alpha selection menu
    ***********************************************/
   char * getAlphaSelectionMenuName(uint16_t alsm) {
-    if(alsm == CATALOG_NONE)     return "CATALOG_NONE";
-    if(alsm == CATALOG_FCNS)     return "CATALOG_FCNS";
-    if(alsm == CATALOG_CNST)     return "CATALOG_CNST";
-    if(alsm == CATALOG_MENU)     return "CATALOG_MENU";
-    if(alsm == CATALOG_SYFL)     return "CATALOG_SYFL";
-    if(alsm == CATALOG_AINT)     return "CATALOG_AINT";
-    if(alsm == CATALOG_aint)     return "CATALOG_aint";
-    if(alsm == CATALOG_PROG)     return "CATALOG_PROG";
-    if(alsm == CATALOG_VAR)      return "CATALOG_VAR";
-    if(alsm == CATALOG_MATRS)    return "CATALOG_MATRS";
-    if(alsm == CATALOG_STRINGS)  return "CATALOG_STRINGS";
-    if(alsm == CATALOG_DATES)    return "CATALOG_DATES";
-    if(alsm == CATALOG_TIMES)    return "CATALOG_TIMES";
-    if(alsm == CATALOG_ANGLES)   return "CATALOG_ANGLES";
-    if(alsm == CATALOG_SINTS)    return "CATALOG_SINTS";
-    if(alsm == CATALOG_LINTS)    return "CATALOG_LINTS";
-    if(alsm == CATALOG_REALS)    return "CATALOG_REALS";
-    if(alsm == CATALOG_CPXS)     return "CATALOG_CPXS";
-    if(alsm == CATALOG_MVAR)     return "CATALOG_MVAR";
-
-    return "CATALOG_????";
+    switch(alsm) {
+      case CATALOG_NONE: {
+        return "CATALOG_NONE";
+      }
+      case CATALOG_FCNS: {
+        return "CATALOG_FCNS";
+      }
+      case CATALOG_CNST: {
+        return "CATALOG_CNST";
+      }
+      case CATALOG_MENU: {
+        return "CATALOG_MENU";
+      }
+      case CATALOG_SYFL: {
+        return "CATALOG_SYFL";
+      }
+      case CATALOG_AINT: {
+        return "CATALOG_AINT";
+      }
+      case CATALOG_aint: {
+        return "CATALOG_aint";
+      }
+      case CATALOG_PROG: {
+        return "CATALOG_PROG";
+      }
+      case CATALOG_VAR: {
+        return "CATALOG_VAR";
+      }
+      case CATALOG_MATRS: {
+        return "CATALOG_MATRS";
+      }
+      case CATALOG_STRINGS: {
+        return "CATALOG_STRINGS";
+      }
+      case CATALOG_DATES: {
+        return "CATALOG_DATES";
+      }
+      case CATALOG_TIMES: {
+        return "CATALOG_TIMES";
+      }
+      case CATALOG_ANGLES: {
+        return "CATALOG_ANGLES";
+      }
+      case CATALOG_SINTS: {
+        return "CATALOG_SINTS";
+      }
+      case CATALOG_LINTS: {
+        return "CATALOG_LINTS";
+      }
+      case CATALOG_REALS: {
+        return "CATALOG_REALS";
+      }
+      case CATALOG_CPXS: {
+        return "CATALOG_CPXS";
+      }
+      case CATALOG_MVAR: {
+        return "CATALOG_MVAR";
+      }
+      default: {
+        return "CATALOG_????";
+      }
+    }
   }
 
 
@@ -1443,10 +1845,10 @@ void debugNIM(void) {
         gtk_widget_show(lbl2[row++]);
 
         row++;
-        sprintf(string, "STATS %s %7d %7d", getRegisterDataTypeName(findNamedVariable("STATS"), false, true), TO_WP43SMEMPTR(getRegisterDataPointer(findNamedVariable("STATS"))), TO_BYTES(getRegisterFullSize(findNamedVariable("STATS"))));
+        sprintf(string, "STATS %s %7d %7d", getRegisterDataTypeName(findNamedVariable(statMx), false, true), TO_WP43SMEMPTR(getRegisterDataPointer(findNamedVariable(statMx))), TO_BYTES(getRegisterFullSize(findNamedVariable(statMx))));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row]);
-        debugRegisterValue(findNamedVariable("STATS"), row++);
+        debugRegisterValue(findNamedVariable(statMx), row++);
 
         sprintf(string, "SAVED STATS %s %7d %7d", getRegisterDataTypeName(TEMP_REGISTER_2_SAVED_STATS, false, true), TO_WP43SMEMPTR(getRegisterDataPointer(TEMP_REGISTER_2_SAVED_STATS)), TO_BYTES(getRegisterFullSize(TEMP_REGISTER_2_SAVED_STATS)));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
@@ -1607,7 +2009,9 @@ void debugNIM(void) {
     }
 
     coef = 0;
-    while(coef<34 && bcd[coef] == 0) coef++;
+    while(coef<34 && bcd[coef] == 0) {
+      coef++;
+    }
 
     str[1] = '0' + bcd[coef++];
     digit = 1;
@@ -1665,7 +2069,7 @@ void debugNIM(void) {
   }
 #endif // DEBUG_PANEL == 1 || DEBUG_REGISTER_L == 1
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   void dumpScreenToConsole(void) {
     int x, y;
 
@@ -1729,8 +2133,8 @@ void debugNIM(void) {
     uint32_t dataType;
     calcRegister_t regist;
 
-  //  if(debug) {
-  //    debugCounter++;
+    //if(debug) {
+    //  debugCounter++;
       printf("\n\n%s\nTotal memory = %d bytes = %d blocks\n", text, TO_BYTES(RAM_SIZE), RAM_SIZE);
       printf("Free blocks (%" PRId32 "):\n", numberOfFreeMemoryRegions);
 

@@ -63,7 +63,9 @@ void fnVarMnu(uint16_t label) {
 void fnPause(uint16_t duration) {
   #if !defined(TESTSUITE_BUILD)
     uint8_t previousProgramRunStop = programRunStop;
-    if(tam.mode) tamLeaveMode();
+    if(tam.mode) {
+      tamLeaveMode();
+    }
     programRunStop = PGM_PAUSED;
     if(previousProgramRunStop != PGM_RUNNING) {
       refreshScreen();
@@ -118,24 +120,31 @@ static uint16_t _getKeyArg(uint16_t regist) {
     return 0;
   #else // TESTSUITE_BUILD
     real34_t arg;
+
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
     switch(getRegisterDataType(regist)) {
-      case dtLongInteger:
+      case dtLongInteger: {
         convertLongIntegerRegisterToReal34(regist, &arg);
         break;
-      case dtReal34:
+      }
+      case dtReal34: {
         if(getRegisterAngularMode(regist) == amNone) {
           real34ToIntegralValue(REGISTER_REAL34_DATA(regist), &arg, DEC_ROUND_DOWN);
           break;
         }
         /* fallthrough */
-      default:
+      }
+      default: {
         displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "cannot use %s for the parameter of CASE", getRegisterDataTypeName(REGISTER_X, true, false));
           moreInfoOnError("In function fnCase:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return 0;
+      }
     }
+  #pragma GCC diagnostic pop
 
     if(real34CompareLessThan(&arg, const34_1)) {
       return 0;
@@ -185,30 +194,69 @@ void fnKeyType(uint16_t regist) {
   longInteger_t kt;
   longIntegerInit(kt);
   switch(keyCode) {
-    case 82: uIntToLongInteger( 0, kt); break;
-    case 72: uIntToLongInteger( 1, kt); break;
-    case 73: uIntToLongInteger( 2, kt); break;
-    case 74: uIntToLongInteger( 3, kt); break;
-    case 62: uIntToLongInteger( 4, kt); break;
-    case 63: uIntToLongInteger( 5, kt); break;
-    case 64: uIntToLongInteger( 6, kt); break;
-    case 52: uIntToLongInteger( 7, kt); break;
-    case 53: uIntToLongInteger( 8, kt); break;
-    case 54: uIntToLongInteger( 9, kt); break;
+    case 82: {
+      uIntToLongInteger( 0, kt);
+      break;
+    }
+    case 72: {
+      uIntToLongInteger( 1, kt);
+      break;
+    }
+    case 73: {
+      uIntToLongInteger( 2, kt);
+      break;
+    }
+    case 74: {
+      uIntToLongInteger( 3, kt);
+      break;
+    }
+    case 62: {
+      uIntToLongInteger( 4, kt);
+      break;
+    }
+    case 63: {
+      uIntToLongInteger( 5, kt);
+      break;
+    }
+    case 64: {
+      uIntToLongInteger( 6, kt);
+      break;
+    }
+    case 52: {
+      uIntToLongInteger( 7, kt);
+      break;
+    }
+    case 53: {
+      uIntToLongInteger( 8, kt);
+      break;
+    }
+    case 54: {
+      uIntToLongInteger( 9, kt);
+      break;
+    }
 
     case 43:
     case 44:
-    case 83: uIntToLongInteger(10, kt); break;
+    case 83: {
+      uIntToLongInteger(10, kt);
+      break;
+    }
 
     case 35:
-    case 36: uIntToLongInteger(11, kt); break;
+    case 36: {
+      uIntToLongInteger(11, kt);
+      break;
+    }
 
     case 11:
     case 12:
     case 13:
     case 14:
     case 15:
-    case 16: uIntToLongInteger(12, kt); break;
+    case 16: {
+      uIntToLongInteger(12, kt);
+      break;
+    }
 
     case 21:
     case 22:
@@ -231,9 +279,12 @@ void fnKeyType(uint16_t regist) {
     case 75:
     case 81:
     case 84:
-    case 85: uIntToLongInteger(13, kt); break;
+    case 85: {
+      uIntToLongInteger(13, kt);
+      break;
+    }
 
-    default:
+    default: {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "keycode %u is out of range", keyCode);
@@ -241,6 +292,7 @@ void fnKeyType(uint16_t regist) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       longIntegerFree(kt);
       return;
+    }
   }
   liftStack();
   convertLongIntegerToLongIntegerRegister(kt, REGISTER_X);
@@ -262,83 +314,92 @@ void fnPutKey(uint16_t regist) {
       case 13:
       case 14:
       case 15:
-      case 16:
+      case 16: {
         kc[0] = keyCode - 10 + '0';
         kc[1] = 0;
         btnFnClicked(NULL, kc);
         break;
+      }
 
       case 21:
       case 22:
       case 23:
       case 24:
       case 25:
-      case 26:
+      case 26: {
         sprintf(kc, "%02u", keyCode - 21 + 0);
         btnClicked(NULL, kc);
         break;
+      }
 
       case 31:
       case 32:
       case 33:
       case 34:
       case 35:
-      case 36:
+      case 36: {
         sprintf(kc, "%02u", keyCode - 31 + 6);
         btnClicked(NULL, kc);
         break;
+      }
 
       case 41:
       case 42:
       case 43:
       case 44:
-      case 45:
+      case 45: {
         sprintf(kc, "%02u", keyCode - 41 + 12);
         btnClicked(NULL, kc);
         break;
+      }
 
       case 51:
       case 52:
       case 53:
       case 54:
-      case 55:
+      case 55: {
         sprintf(kc, "%02u", keyCode - 51 + 17);
         btnClicked(NULL, kc);
         break;
+      }
 
       case 61:
       case 62:
       case 63:
       case 64:
-      case 65:
+      case 65: {
         sprintf(kc, "%02u", keyCode - 61 + 22);
         btnClicked(NULL, kc);
         break;
+      }
 
       case 71:
       case 72:
       case 73:
       case 74:
-      case 75:
+      case 75: {
         sprintf(kc, "%02u", keyCode - 71 + 27);
         btnClicked(NULL, kc);
         break;
+      }
 
       case 81:
       case 82:
       case 83:
       case 84:
-      case 85:
+      case 85: {
         sprintf(kc, "%02u", keyCode - 81 + 32);
         btnClicked(NULL, kc);
         break;
+      }
 
-      default:
+      default: {
         displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "keycode %u is out of range", keyCode);
           moreInfoOnError("In function fnPutKey:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      }
     }
 
     programRunStop = PGM_WAITING;

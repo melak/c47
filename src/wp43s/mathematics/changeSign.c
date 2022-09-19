@@ -63,7 +63,9 @@ TO_QSPI void (* const chs[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnChangeSign(uint16_t unusedButMandatoryParameter) {
-  //if(!saveLastX()) return;
+  //if(!saveLastX()) {
+  //  return;
+  //}
 
   chs[getRegisterDataType(REGISTER_X)]();
 }
@@ -72,9 +74,16 @@ void fnChangeSign(uint16_t unusedButMandatoryParameter) {
 
 void chsLonI(void) {
   switch(getRegisterLongIntegerSign(REGISTER_X)) {
-    case LI_POSITIVE : setRegisterLongIntegerSign(REGISTER_X, LI_NEGATIVE); break;
-    case LI_NEGATIVE : setRegisterLongIntegerSign(REGISTER_X, LI_POSITIVE); break;
-    default : {}
+    case LI_POSITIVE: {
+      setRegisterLongIntegerSign(REGISTER_X, LI_NEGATIVE);
+      break;
+    }
+    case LI_NEGATIVE: {
+      setRegisterLongIntegerSign(REGISTER_X, LI_POSITIVE);
+      break;
+    }
+    default: {
+    }
   }
 }
 

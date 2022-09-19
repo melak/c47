@@ -33,7 +33,7 @@
 
 #include "wp43s.h"
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   GtkWidget *grid;
   #if (SCREEN_800X480 == 0)
     GtkWidget *backgroundImage, *bezelImage[3], *behindScreenImage, *fgShiftedArea1, *fgShiftedArea2;
@@ -331,15 +331,16 @@
         copyAllRegistersToClipboard();
         break;
 
-      default:
+      default: {
         break;
+      }
     }
     return FALSE;
   }
 #endif // PC_BUILD
 
 
-#ifndef DMCP_BUILD
+#if !defined(DMCP_BUILD)
   void strReplace(char *haystack, const char *needle, const char *newNeedle) {
     ////////////////////////////////////////////////////////
     // There MUST be enough memory allocated to *haystack //
@@ -352,7 +353,7 @@
       needleLg = strlen(needle);
       needleLocation = strstr(haystack, needle);
       str = malloc(strlen(needleLocation + needleLg) + 1);
-      #ifdef PC_BUILD
+      #if defined(PC_BUILD)
         if(str == NULL) {
           moreInfoOnError("In function strReplace:", "error allocating memory for str!", NULL, NULL);
           exit(1);
@@ -369,7 +370,7 @@
 #endif // !DMCP_BUILD
 
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   #if (SCREEN_800X480 == 0)
     static void getParameter(char *textLine, char *parameterName, char *parameterValue) {
       char *equalSign;
@@ -384,16 +385,22 @@
           break;
         }
       }
-      if(textLine[0] == 0) return;
+      if(textLine[0] == 0) {
+        return;
+      }
 
       // removing trailing spaces
       while(textLine[strlen(textLine) - 1] == ' ') {
         textLine[strlen(textLine) - 1] = 0;
       }
-      if(textLine[0] == 0) return;
+      if(textLine[0] == 0) {
+        return;
+      }
 
       equalSign = strchr(textLine, '=');
-      if(equalSign == NULL) return;
+      if(equalSign == NULL) {
+        return;
+      }
 
       // remove spaces beheind parameter name
       *equalSign = 0;
@@ -404,7 +411,9 @@
 
       // removing spaces in front of parameter value
       equalSign++;
-      while(*equalSign == ' ') equalSign++;
+      while(*equalSign == ' ') {
+        equalSign++;
+      }
 
       strcpy(parameterValue, equalSign);
     }
@@ -586,14 +595,30 @@
 
           if(!strncmp(parameter, "key", 3)) {
             calcKey = 10*(parameter[3] - '0') + parameter[4] - '0';
-                 if(calcKey <= 16) calcKey -= 11;
-            else if(calcKey <= 26) calcKey -= 15;
-            else if(calcKey <= 36) calcKey -= 19;
-            else if(calcKey <= 45) calcKey -= 23;
-            else if(calcKey <= 55) calcKey -= 28;
-            else if(calcKey <= 65) calcKey -= 33;
-            else if(calcKey <= 75) calcKey -= 38;
-            else if(calcKey <= 85) calcKey -= 43;
+            if(calcKey <= 16) {
+              calcKey -= 11;
+            }
+            else if(calcKey <= 26) {
+              calcKey -= 15;
+            }
+            else if(calcKey <= 36) {
+              calcKey -= 19;
+            }
+            else if(calcKey <= 45) {
+              calcKey -= 23;
+            }
+            else if(calcKey <= 55) {
+              calcKey -= 28;
+            }
+            else if(calcKey <= 65) {
+              calcKey -= 33;
+            }
+            else if(calcKey <= 75) {
+              calcKey -= 38;
+            }
+            else if(calcKey <= 85) {
+              calcKey -= 43;
+            }
 
             if(!strcmp(parameter + 5, "x")) {
               calcKeyboard[calcKey].x = atoi(value);
@@ -852,7 +877,7 @@
       gtk_window_set_title(GTK_WINDOW(frmCalc), "WP 43S");
       g_signal_connect(frmCalc, "destroy", G_CALLBACK(destroyCalc), NULL);
       g_signal_connect(frmCalc, "key_press_event", G_CALLBACK(keyPressed), NULL);
-      #ifdef RASPBERRY
+      #if defined(RASPBERRY)
         gtk_window_set_decorated(GTK_WINDOW(frmCalc), FALSE);
         gtk_window_set_position(GTK_WINDOW(frmCalc), GTK_WIN_POS_CENTER);
       #endif // RASPBERRY
@@ -1019,7 +1044,7 @@
         gtk_widget_show(chkHexaString);
 
         debugWindow = DBG_REGISTERS;
-      #endif // (DEBUG_PANEL == 1)
+      #endif // DEBUG_PANEL == 0
 
       gtk_widget_show_all(frmCalc);
 
@@ -1063,29 +1088,31 @@
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   void fnOff(uint16_t unsuedParamButMandatory) {
     shiftF = false;
     shiftG = false;
 
     fnStopTimerApp();
 
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       if(matrixIndex != INVALID_VARIABLE) {
         if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
-          if(openMatrixMIMPointer.realMatrix.matrixElements)
-          realMatrixFree(&openMatrixMIMPointer.realMatrix);
+          if(openMatrixMIMPointer.realMatrix.matrixElements) {
+            realMatrixFree(&openMatrixMIMPointer.realMatrix);
+          }
         }
         else if(getRegisterDataType(matrixIndex) == dtComplex34Matrix) {
-          if(openMatrixMIMPointer.complexMatrix.matrixElements)
-          complexMatrixFree(&openMatrixMIMPointer.complexMatrix);
+          if(openMatrixMIMPointer.complexMatrix.matrixElements) {
+            complexMatrixFree(&openMatrixMIMPointer.complexMatrix);
+          }
         }
       }
       saveCalc();
       gtk_main_quit();
     #endif // PC_BUILD
 
-    #ifdef DMCP_BUILD
+    #if defined(DMCP_BUILD)
       SET_ST(STAT_PGM_END);
     #endif // DMCP_BUILD
   }
@@ -1140,31 +1167,87 @@
 
   void enterAsmModeIfMenuIsACatalog(int16_t id) {
     switch(-id) {
-      case MNU_FCNS:      catalog = CATALOG_FCNS;    break;
-      case MNU_CONST:     catalog = CATALOG_CNST;    break;
-      case MNU_MENUS:     catalog = CATALOG_MENU;    break;
-      case MNU_SYSFL:     catalog = CATALOG_SYFL;    break;
-      case MNU_ALPHAINTL: catalog = CATALOG_AINT;    break;
-      case MNU_ALPHAintl: catalog = CATALOG_aint;    break;
+      case MNU_FCNS: {
+        catalog = CATALOG_FCNS;
+        break;
+      }
+      case MNU_CONST: {
+        catalog = CATALOG_CNST;
+        break;
+      }
+      case MNU_MENUS: {
+        catalog = CATALOG_MENU;
+        break;
+      }
+      case MNU_SYSFL: {
+        catalog = CATALOG_SYFL;
+        break;
+      }
+      case MNU_ALPHAINTL: {
+        catalog = CATALOG_AINT;
+        break;
+      }
+      case MNU_ALPHAintl: {
+        catalog = CATALOG_aint;
+        break;
+      }
       case MNU_PROG:
       case MNU_RAM:
-      case MNU_FLASH:     catalog = CATALOG_PROG;    break;
-      case MNU_VAR:       catalog = CATALOG_VAR;     break;
-      case MNU_MATRS:     catalog = CATALOG_MATRS;   break;
-      case MNU_STRINGS:   catalog = CATALOG_STRINGS; break;
-      case MNU_DATES:     catalog = CATALOG_DATES;   break;
-      case MNU_TIMES:     catalog = CATALOG_TIMES;   break;
-      case MNU_ANGLES:    catalog = CATALOG_ANGLES;  break;
-      case MNU_SINTS:     catalog = CATALOG_SINTS;   break;
-      case MNU_LINTS:     catalog = CATALOG_LINTS;   break;
-      case MNU_REALS:     catalog = CATALOG_REALS;   break;
-      case MNU_CPXS:      catalog = CATALOG_CPXS;    break;
+      case MNU_FLASH: {
+        catalog = CATALOG_PROG;
+        break;
+      }
+      case MNU_VAR: {
+        catalog = CATALOG_VAR;
+        break;
+      }
+      case MNU_MATRS: {
+        catalog = CATALOG_MATRS;
+        break;
+      }
+      case MNU_STRINGS: {
+        catalog = CATALOG_STRINGS;
+        break;
+      }
+      case MNU_DATES: {
+        catalog = CATALOG_DATES;
+        break;
+      }
+      case MNU_TIMES: {
+        catalog = CATALOG_TIMES;
+        break;
+      }
+      case MNU_ANGLES: {
+        catalog = CATALOG_ANGLES;
+        break;
+      }
+      case MNU_SINTS: {
+        catalog = CATALOG_SINTS;
+        break;
+      }
+      case MNU_LINTS: {
+        catalog = CATALOG_LINTS;
+        break;
+      }
+      case MNU_REALS: {
+        catalog = CATALOG_REALS;
+        break;
+      }
+      case MNU_CPXS: {
+        catalog = CATALOG_CPXS;
+        break;
+      }
       case MNU_Solver:
       case MNU_Sf:
       case MNU_1STDERIV:
       case MNU_2NDDERIV:
-      case MNU_MVAR:      catalog = CATALOG_MVAR;    break;
-      default:            catalog = CATALOG_NONE;
+      case MNU_MVAR: {
+        catalog = CATALOG_MVAR;
+        break;
+      }
+      default: {
+        catalog = CATALOG_NONE;
+      }
     }
 
     if(catalog) {
@@ -1180,8 +1263,9 @@
         resetAlphaSelectionBuffer();
 
         #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-          if(catalog != CATALOG_MVAR)
+          if(catalog != CATALOG_MVAR) {
             calcModeAimGui();
+          }
         #endif // PC_BUILD && (SCREEN_800X480 == 0)
       }
     }
@@ -1208,9 +1292,9 @@
 
 
   void calcModeNim(uint16_t unusedButMandatoryParameter) {
-    #ifdef DEBUGUNDO
+    #if defined(DEBUGUNDO)
       printf(">>> saveForUndo from gui: calcModeNim\n");
-    #endif
+    #endif // DEBUGUNDO
     saveForUndo();
     if(lastErrorCode == ERROR_RAM_FULL) {
       displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);

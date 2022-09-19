@@ -49,47 +49,63 @@ void fnAgm(uint16_t unusedButMandatoryParameter) {
   real_t aImag, bImag;
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_X, &aReal, &ctxtReal39);
-                        realZero(&aImag);
-                        break;
+    case dtLongInteger: {
+      convertLongIntegerRegisterToReal(REGISTER_X, &aReal, &ctxtReal39);
+      realZero(&aImag);
+      break;
+    }
 
-    case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &aReal);
-                        realZero(&aImag);
-                        break;
+    case dtReal34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &aReal);
+      realZero(&aImag);
+      break;
+    }
 
-    case dtComplex34:   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &aReal);
-                        real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &aImag);
-                        realInput = false;
-                        break;
+    case dtComplex34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &aReal);
+      real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &aImag);
+      realInput = false;
+      break;
+    }
 
-    default:            displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-                        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                          sprintf(errorMessage, "cannot calculate AGM with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
-                          moreInfoOnError("In function fnAgm:", errorMessage, NULL, NULL);
-                        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-                        return;
+    default: {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot calculate AGM with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
+        moreInfoOnError("In function fnAgm:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
   }
 
   switch(getRegisterDataType(REGISTER_Y)) {
-    case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_Y, &bReal, &ctxtReal39);
-                        realZero(&bImag);
-                        break;
+    case dtLongInteger: {
+      convertLongIntegerRegisterToReal(REGISTER_Y, &bReal, &ctxtReal39);
+      realZero(&bImag);
+      break;
+    }
 
-    case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &bReal);
-                        realZero(&bImag);
-                        break;
+    case dtReal34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &bReal);
+      realZero(&bImag);
+      break;
+    }
 
-    case dtComplex34:   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &bReal);
-                        real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &bImag);
-                        realInput = false;
-                        break;
+    case dtComplex34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &bReal);
+      real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &bImag);
+      realInput = false;
+      break;
+    }
 
-    default:            displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Y);
-                        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                          sprintf(errorMessage, "cannot calculate AGM with %s in Y", getRegisterDataTypeName(REGISTER_Y, true, false));
-                          moreInfoOnError("In function fnAgm:", errorMessage, NULL, NULL);
-                        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-                        return;
+    default: {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Y);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot calculate AGM with %s in Y", getRegisterDataTypeName(REGISTER_Y, true, false));
+        moreInfoOnError("In function fnAgm:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
   }
 
   if(realInput && (realIsNegative(&aReal) || realIsNegative(&bReal))) {
@@ -100,7 +116,9 @@ void fnAgm(uint16_t unusedButMandatoryParameter) {
     return;
   }
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   if(realInput) {
     realAgm(&aReal, &bReal, &aReal, &ctxtReal39);
@@ -173,7 +191,9 @@ static int _realAgm(int mode, const real_t *a, const real_t *b, real_t *c, real_
     if(mode==AGM_MODE_STEP) {
       realCopy(&aReal, _a + n);
       realCopy(&bReal, _b + n);
-      if(n >= (int)_sz - 1) break;
+      if(n >= (int)_sz - 1) {
+        break;
+      }
     }
   }
 
@@ -236,7 +256,9 @@ static int _complexAgm(int mode, const real_t *ar, const real_t *ai, const real_
       realCopy(&aImag, _ai + n);
       realCopy(&bReal, _br + n);
       realCopy(&bImag, _bi + n);
-      if(n >= (int)_sz - 1) break;
+      if(n >= (int)_sz - 1) {
+        break;
+      }
     }
   }
 

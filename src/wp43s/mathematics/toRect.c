@@ -42,11 +42,19 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
   if((dataTypeX == dtReal34 || dataTypeX == dtLongInteger) && (dataTypeY == dtReal34 || dataTypeY == dtLongInteger)) {
     angularMode_t yAngularMode = getRegisterAngularMode(REGISTER_Y);
 
-    if(!saveLastX()) return;
+    if(!saveLastX()) {
+    return;
+  }
 
     switch(dataTypeX) {
-      case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39); break;
-      case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);            break;
+      case dtLongInteger: {
+        convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+        break;
+      }
+      case dtReal34: {
+        real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+        break;
+      }
       default: {
         sprintf(errorMessage, "In function fnToRect: %" PRIu32 " is an unexpected dataTypeX value!", dataTypeX);
         displayBugScreen(errorMessage);
@@ -58,13 +66,17 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
     }
 
     switch(dataTypeY) {
-      case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
-                          convertAngleFromTo(&y, currentAngularMode, amRadian, &ctxtReal39);
-                          break;
+      case dtLongInteger: {
+        convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+        convertAngleFromTo(&y, currentAngularMode, amRadian, &ctxtReal39);
+        break;
+      }
 
-      case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
-                          convertAngleFromTo(&y, yAngularMode, amRadian, &ctxtReal39);
-                          break;
+      case dtReal34: {
+        real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
+        convertAngleFromTo(&y, yAngularMode, amRadian, &ctxtReal39);
+        break;
+      }
 
       default: {
         sprintf(errorMessage, "In function fnToRect: %" PRIu32 " is an unexpected dataTypeY value!", dataTypeY);
@@ -266,8 +278,12 @@ void realPolarToRectangular(const real_t *mag, const real_t *the, real_t *real, 
       //  |-∞  |θ   |π/2 < θ < π  |+∞    |-∞    | 10
       //  |-∞  |θ   |-π < θ < -π/2|+∞    |+∞    | 11
       //  |-∞  |θ   |-π/2 < θ < 0 |-∞    |+∞    | 12
-      if(!realIsNaN(real) && !realIsZero(real)) realChangeSign(real);
-      if(!realIsNaN(imag) && !realIsZero(imag)) realChangeSign(imag);
+      if(!realIsNaN(real) && !realIsZero(real)) {
+        realChangeSign(real);
+      }
+      if(!realIsNaN(imag) && !realIsZero(imag)) {
+        realChangeSign(imag);
+      }
     }
 
     return;

@@ -33,114 +33,227 @@
 
 void systemFlagAction(uint16_t systemFlag, uint16_t action) {
   switch(systemFlag) {
-    case FLAG_ALLENG:   switch(action) {
-                          case 0: globalFlags[FLAG_A/16] &= ~(1u << (FLAG_A%16));
-                                  break;
-                          case 1: globalFlags[FLAG_A/16] |=   1u << (FLAG_A%16);
-                                  break;
-                          case 2: globalFlags[FLAG_A/16] ^=   1u << (FLAG_A%16);
-                                  break;
-                          default: {}
-                        }
-                        break;
+    case FLAG_ALLENG: {
+      switch(action) {
+        case 0: {
+          globalFlags[FLAG_A/16] &= ~(1u << (FLAG_A%16));
+          break;
+        }
+        case 1: {
+          globalFlags[FLAG_A/16] |=   1u << (FLAG_A%16);
+          break;
+        }
+        case 2: {
+          globalFlags[FLAG_A/16] ^=   1u << (FLAG_A%16);
+          break;
+        }
+        default: {
+        }
+      }
+      break;
+    }
 
-    case FLAG_OVERFLOW: switch(action) {
-                          case 0: globalFlags[FLAG_B/16] &= ~(1u << (FLAG_B%16));
-                                  break;
-                          case 1: globalFlags[FLAG_B/16] |=   1u << (FLAG_B%16);
-                                  break;
-                          case 2: globalFlags[FLAG_B/16] ^=   1u << (FLAG_B%16);
-                                  break;
-                          default: {}
-                        }
-                        break;
+    case FLAG_OVERFLOW: {
+      switch(action) {
+        case 0: {
+          globalFlags[FLAG_B/16] &= ~(1u << (FLAG_B%16));
+          break;
+        }
+        case 1: {
+          globalFlags[FLAG_B/16] |=   1u << (FLAG_B%16);
+          break;
+        }
+        case 2: {
+          globalFlags[FLAG_B/16] ^=   1u << (FLAG_B%16);
+          break;
+        }
+        default: {
+        }
+      }
+      break;
+    }
 
-    case FLAG_CARRY:    switch(action) {
-                          case 0: globalFlags[FLAG_C/16] &= ~(1u << (FLAG_C%16));
-                                  break;
-                          case 1: globalFlags[FLAG_C/16] |=   1u << (FLAG_C%16);
-                                  break;
-                          case 2: globalFlags[FLAG_C/16] ^=   1u << (FLAG_C%16);
-                                  break;
-                          default: {}
-                        }
-                        break;
+    case FLAG_CARRY: {
+      switch(action) {
+        case 0: {
+          globalFlags[FLAG_C/16] &= ~(1u << (FLAG_C%16));
+          break;
+        }
+        case 1: {
+          globalFlags[FLAG_C/16] |=   1u << (FLAG_C%16);
+          break;
+        }
+        case 2: {
+          globalFlags[FLAG_C/16] ^=   1u << (FLAG_C%16);
+          break;
+        }
+        default: {
+        }
+      }
+      break;
+    }
 
-    case FLAG_SPCRES:   switch(action) {
-                          case 0: globalFlags[FLAG_D/16] &= ~(1u << (FLAG_D%16));
-                                  break;
-                          case 1: globalFlags[FLAG_D/16] |=   1u << (FLAG_D%16);
-                                  break;
-                          case 2: globalFlags[FLAG_D/16] ^=   1u << (FLAG_D%16);
-                                  break;
-                          default: {}
-                        }
-                        break;
+    case FLAG_SPCRES: {
+      switch(action) {
+        case 0: {
+          globalFlags[FLAG_D/16] &= ~(1u << (FLAG_D%16));
+          break;
+        }
+        case 1: {
+          globalFlags[FLAG_D/16] |=   1u << (FLAG_D%16);
+          break;
+        }
+        case 2: {
+          globalFlags[FLAG_D/16] ^=   1u << (FLAG_D%16);
+          break;
+        }
+        default: {
+        }
+      }
+      break;
+    }
 
-    case FLAG_CPXRES:   switch(action) {
-                          case 0: globalFlags[FLAG_I/16] &= ~(1u << (FLAG_I%16));
-                                  break;
-                          case 1: globalFlags[FLAG_I/16] |=   1u << (FLAG_I%16);
-                                  break;
-                          case 2: globalFlags[FLAG_I/16] ^=   1u << (FLAG_I%16);
-                                  break;
-                          default: {}
-                        }
-                        break;
+    case FLAG_CPXRES: {
+      switch(action) {
+        case 0: {
+          globalFlags[FLAG_I/16] &= ~(1u << (FLAG_I%16));
+          break;
+        }
+        case 1: {
+          globalFlags[FLAG_I/16] |=   1u << (FLAG_I%16);
+          break;
+        }
+        case 2: {
+          globalFlags[FLAG_I/16] ^=   1u << (FLAG_I%16);
+          break;
+        }
+        default: {
+        }
+      }
+      break;
+    }
 
-    case FLAG_LEAD0:    switch(action) {
-                          case 0: globalFlags[FLAG_L/16] &= ~(1u << (FLAG_L%16));
-                                  break;
-                          case 1: globalFlags[FLAG_L/16] |=   1u << (FLAG_L%16);
-                                  break;
-                          case 2: globalFlags[FLAG_L/16] ^=   1u << (FLAG_L%16);
-                                  break;
-                          default: {}
-                        }
-                        break;
+    case FLAG_LEAD0: {
+      switch(action) {
+        case 0: {
+          globalFlags[FLAG_L/16] &= ~(1u << (FLAG_L%16));
+          break;
+        }
+        case 1: {
+          globalFlags[FLAG_L/16] |=   1u << (FLAG_L%16);
+          break;
+        }
+        case 2: {
+          globalFlags[FLAG_L/16] ^=   1u << (FLAG_L%16);
+          break;
+        }
+        default: {
+        }
+      }
+      break;
+    }
 
-    case FLAG_TRACE:   switch(action) {
-                          case 0: globalFlags[FLAG_T/16] &= ~(1u << (FLAG_T%16));
-                                  break;
-                          case 1: globalFlags[FLAG_T/16] |=   1u << (FLAG_T%16);
-                                  break;
-                          case 2: globalFlags[FLAG_T/16] ^=   1u << (FLAG_T%16);
-                                  break;
-                          default: {}
-                        }
-                        break;
+    case FLAG_TRACE: {
+      switch(action) {
+        case 0: {
+          globalFlags[FLAG_T/16] &= ~(1u << (FLAG_T%16));
+          break;
+        }
+        case 1: {
+          globalFlags[FLAG_T/16] |=   1u << (FLAG_T%16);
+          break;
+        }
+        case 2: {
+          globalFlags[FLAG_T/16] ^=   1u << (FLAG_T%16);
+          break;
+        }
+        default: {
+        }
+      }
+      break;
+    }
 
-    case FLAG_POLAR:    switch(action) {
-                          case 0: globalFlags[FLAG_X/16] &= ~(1u << (FLAG_X%16));
-                                  break;
-                          case 1: globalFlags[FLAG_X/16] |=   1u << (FLAG_X%16);
-                                  break;
-                          case 2: globalFlags[FLAG_X/16] ^=   1u << (FLAG_X%16);
-                                  break;
-                          default: {}
-                        }
-                        break;
+    case FLAG_POLAR: {
+      switch(action) {
+        case 0: {
+          globalFlags[FLAG_X/16] &= ~(1u << (FLAG_X%16));
+          break;
+        }
+        case 1: {
+          globalFlags[FLAG_X/16] |=   1u << (FLAG_X%16);
+          break;
+        }
+        case 2: {
+          globalFlags[FLAG_X/16] ^=   1u << (FLAG_X%16);
+          break;
+        }
+        default: {
+        }
+      }
+      break;
+    }
 
-    default: {}
+    default: {
+    }
   }
 }
 
 
 
 void synchronizeLetteredFlags(void) {
-  if(getSystemFlag(FLAG_ALLENG))   setSystemFlag(FLAG_ALLENG)   else clearSystemFlag(FLAG_ALLENG)
-  if(getSystemFlag(FLAG_OVERFLOW)) setSystemFlag(FLAG_OVERFLOW) else clearSystemFlag(FLAG_OVERFLOW)
-  if(getSystemFlag(FLAG_CARRY))    setSystemFlag(FLAG_CARRY)    else clearSystemFlag(FLAG_CARRY)
-  if(getSystemFlag(FLAG_SPCRES))   setSystemFlag(FLAG_SPCRES)   else clearSystemFlag(FLAG_SPCRES)
-  if(getSystemFlag(FLAG_CPXRES))   setSystemFlag(FLAG_CPXRES)   else clearSystemFlag(FLAG_CPXRES)
-  if(getSystemFlag(FLAG_LEAD0))    setSystemFlag(FLAG_LEAD0)    else clearSystemFlag(FLAG_LEAD0)
-  if(getSystemFlag(FLAG_TRACE))    setSystemFlag(FLAG_TRACE)    else clearSystemFlag(FLAG_TRACE)
-  if(getSystemFlag(FLAG_POLAR))    setSystemFlag(FLAG_POLAR)    else clearSystemFlag(FLAG_POLAR)
+  if(getSystemFlag(FLAG_ALLENG)) {
+    setSystemFlag(FLAG_ALLENG)
+  }
+  else {
+    clearSystemFlag(FLAG_ALLENG)
+  }
+  if(getSystemFlag(FLAG_OVERFLOW)) {
+    setSystemFlag(FLAG_OVERFLOW)
+  }
+  else {
+    clearSystemFlag(FLAG_OVERFLOW)
+  }
+  if(getSystemFlag(FLAG_CARRY)) {
+    setSystemFlag(FLAG_CARRY)
+  }
+  else {
+    clearSystemFlag(FLAG_CARRY)
+  }
+  if(getSystemFlag(FLAG_SPCRES)) {
+    setSystemFlag(FLAG_SPCRES)
+  }
+  else {
+    clearSystemFlag(FLAG_SPCRES)
+  }
+  if(getSystemFlag(FLAG_CPXRES)) {
+    setSystemFlag(FLAG_CPXRES)
+  }
+  else {
+    clearSystemFlag(FLAG_CPXRES)
+  }
+  if(getSystemFlag(FLAG_LEAD0)) {
+    setSystemFlag(FLAG_LEAD0)
+  }
+  else {
+    clearSystemFlag(FLAG_LEAD0)
+  }
+  if(getSystemFlag(FLAG_TRACE)) {
+    setSystemFlag(FLAG_TRACE)
+  }
+  else {
+    clearSystemFlag(FLAG_TRACE)
+  }
+  if(getSystemFlag(FLAG_POLAR)) {
+    setSystemFlag(FLAG_POLAR)
+  }
+  else {
+    clearSystemFlag(FLAG_POLAR)
+  }
 }
 
 
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
 static void _setAlpha(void) {
   if(calcMode != CM_EIM) {
     calcModeAim(NOPARAM);
@@ -151,7 +264,9 @@ static void _clearAlpha(void) {
   if(calcMode == CM_EIM) {
     if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_EQ_EDIT) {
       calcModeNormal();
-      if(allFormulae[currentFormula].pointerToFormulaData == WP43S_NULL) deleteEquation(currentFormula);
+      if(allFormulae[currentFormula].pointerToFormulaData == WP43S_NULL) {
+        deleteEquation(currentFormula);
+      }
     }
     popSoftmenu();
   }
@@ -187,10 +302,10 @@ bool_t getFlag(uint16_t flag) {
         displayBugScreen(errorMessage);
       }
     }
-    #ifdef PC_BUILD
-    else {
-      moreInfoOnError("In function getFlag:", "no local flags defined!", "To do so, you can find LocR here:", "[g] [P.FN] [g] [F5]");
-    }
+    #if defined(PC_BUILD)
+      else {
+        moreInfoOnError("In function getFlag:", "no local flags defined!", "To do so, you can find LocR here:", "[g] [P.FN] [g] [F5]");
+      }
     #endif // PC_BUILD
   }
   return false;
@@ -235,27 +350,53 @@ void fnSetFlag(uint16_t flag) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
-#ifndef TESTSUITE_BUILD
-    else if(flag == FLAG_ALPHA) {
-      tamLeaveMode();
-      _setAlpha();
-    }
-#endif // TESTSUITE_BUILD
+    #if !defined(TESTSUITE_BUILD)
+      else if(flag == FLAG_ALPHA) {
+        tamLeaveMode();
+        _setAlpha();
+      }
+    #endif // !TESTSUITE_BUILD
     else {
       setSystemFlag(flag);
     }
   }
   else if(flag < NUMBER_OF_GLOBAL_FLAGS) { // Global flag
     switch(flag) {
-      case FLAG_A: setSystemFlag(FLAG_ALLENG);   break;
-      case FLAG_B: setSystemFlag(FLAG_OVERFLOW); break;
-      case FLAG_C: setSystemFlag(FLAG_CARRY);    break;
-      case FLAG_D: setSystemFlag(FLAG_SPCRES);   break;
-      case FLAG_I: setSystemFlag(FLAG_CPXRES);   break;
-      case FLAG_L: setSystemFlag(FLAG_LEAD0);    break;
-      case FLAG_T: setSystemFlag(FLAG_TRACE);    break;
-      case FLAG_X: setSystemFlag(FLAG_POLAR);    break;
-      default: globalFlags[flag/16] |= 1u << (flag%16);
+      case FLAG_A: {
+        setSystemFlag(FLAG_ALLENG);
+        break;
+      }
+      case FLAG_B: {
+        setSystemFlag(FLAG_OVERFLOW);
+        break;
+      }
+      case FLAG_C: {
+        setSystemFlag(FLAG_CARRY);
+        break;
+      }
+      case FLAG_D: {
+        setSystemFlag(FLAG_SPCRES);
+        break;
+      }
+      case FLAG_I: {
+        setSystemFlag(FLAG_CPXRES);
+        break;
+      }
+      case FLAG_L: {
+        setSystemFlag(FLAG_LEAD0);
+        break;
+      }
+      case FLAG_T: {
+        setSystemFlag(FLAG_TRACE);
+        break;
+      }
+      case FLAG_X: {
+        setSystemFlag(FLAG_POLAR);
+        break;
+      }
+      default: {
+        globalFlags[flag/16] |= 1u << (flag%16);
+      }
     }
   }
   else { // Local flag
@@ -269,7 +410,7 @@ void fnSetFlag(uint16_t flag) {
         displayBugScreen(errorMessage);
       }
     }
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       else {
         moreInfoOnError("In function fnSetFlag:", "no local flags defined!", "To do so, you can find LocR here:", "[g] [P.FN] [g] [F5]");
       }
@@ -299,27 +440,53 @@ void fnClearFlag(uint16_t flag) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
-#ifndef TESTSUITE_BUILD
-    else if(flag == FLAG_ALPHA) {
-      tamLeaveMode();
-      _clearAlpha();
-    }
-#endif // TESTSUITE_BUILD
+    #if !defined(TESTSUITE_BUILD)
+      else if(flag == FLAG_ALPHA) {
+        tamLeaveMode();
+        _clearAlpha();
+      }
+    #endif // !TESTSUITE_BUILD
     else {
       clearSystemFlag(flag);
     }
   }
   else if(flag < NUMBER_OF_GLOBAL_FLAGS) { // Global flag
     switch(flag) {
-      case FLAG_A: clearSystemFlag(FLAG_ALLENG);   break;
-      case FLAG_B: clearSystemFlag(FLAG_OVERFLOW); break;
-      case FLAG_C: clearSystemFlag(FLAG_CARRY);    break;
-      case FLAG_D: clearSystemFlag(FLAG_SPCRES);   break;
-      case FLAG_I: clearSystemFlag(FLAG_CPXRES);   break;
-      case FLAG_L: clearSystemFlag(FLAG_LEAD0);    break;
-      case FLAG_T: clearSystemFlag(FLAG_TRACE);    break;
-      case FLAG_X: clearSystemFlag(FLAG_POLAR);    break;
-      default: globalFlags[flag/16] &= ~(1u << (flag%16));
+      case FLAG_A: {
+        clearSystemFlag(FLAG_ALLENG);
+        break;
+      }
+      case FLAG_B: {
+        clearSystemFlag(FLAG_OVERFLOW);
+        break;
+      }
+      case FLAG_C: {
+        clearSystemFlag(FLAG_CARRY);
+        break;
+      }
+      case FLAG_D: {
+        clearSystemFlag(FLAG_SPCRES);
+        break;
+      }
+      case FLAG_I: {
+        clearSystemFlag(FLAG_CPXRES);
+        break;
+      }
+      case FLAG_L: {
+        clearSystemFlag(FLAG_LEAD0);
+        break;
+      }
+      case FLAG_T: {
+        clearSystemFlag(FLAG_TRACE);
+        break;
+      }
+      case FLAG_X: {
+        clearSystemFlag(FLAG_POLAR);
+        break;
+      }
+      default: {
+        globalFlags[flag/16] &= ~(1u << (flag%16));
+      }
     }
   }
   else { // Local flag
@@ -333,7 +500,7 @@ void fnClearFlag(uint16_t flag) {
         displayBugScreen(errorMessage);
       }
     }
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       else {
        moreInfoOnError("In function fnClearFlag:", "no local flags defined!", "To do so, you can find LocR here:", "[g] [P.FN] [g] [F5]");
       }
@@ -363,32 +530,58 @@ void fnFlipFlag(uint16_t flag) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
-#ifndef TESTSUITE_BUILD
-    else if(flag == FLAG_ALPHA) {
-      tamLeaveMode();
-      if(getSystemFlag(FLAG_ALPHA)) {
-        _clearAlpha();
+    #if !defined(TESTSUITE_BUILD)
+      else if(flag == FLAG_ALPHA) {
+        tamLeaveMode();
+        if(getSystemFlag(FLAG_ALPHA)) {
+          _clearAlpha();
+        }
+        else {
+          _setAlpha();
+        }
       }
-      else {
-        _setAlpha();
-      }
-    }
-#endif // TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
     else {
       flipSystemFlag(flag);
     }
   }
   else if(flag < NUMBER_OF_GLOBAL_FLAGS) { // Global flag
     switch(flag) {
-      case FLAG_A: flipSystemFlag(FLAG_ALLENG);   break;
-      case FLAG_B: flipSystemFlag(FLAG_OVERFLOW); break;
-      case FLAG_C: flipSystemFlag(FLAG_CARRY);    break;
-      case FLAG_D: flipSystemFlag(FLAG_SPCRES);   break;
-      case FLAG_I: flipSystemFlag(FLAG_CPXRES);   break;
-      case FLAG_L: flipSystemFlag(FLAG_LEAD0);    break;
-      case FLAG_T: flipSystemFlag(FLAG_TRACE);    break;
-      case FLAG_X: flipSystemFlag(FLAG_POLAR);    break;
-      default: globalFlags[flag/16] ^=  1u << (flag%16);
+      case FLAG_A: {
+        flipSystemFlag(FLAG_ALLENG);
+        break;
+      }
+      case FLAG_B: {
+        flipSystemFlag(FLAG_OVERFLOW);
+        break;
+      }
+      case FLAG_C: {
+        flipSystemFlag(FLAG_CARRY);
+        break;
+      }
+      case FLAG_D: {
+        flipSystemFlag(FLAG_SPCRES);
+        break;
+      }
+      case FLAG_I: {
+        flipSystemFlag(FLAG_CPXRES);
+        break;
+      }
+      case FLAG_L: {
+        flipSystemFlag(FLAG_LEAD0);
+        break;
+      }
+      case FLAG_T: {
+        flipSystemFlag(FLAG_TRACE);
+        break;
+      }
+      case FLAG_X: {
+        flipSystemFlag(FLAG_POLAR);
+        break;
+      }
+      default: {
+        globalFlags[flag/16] ^=  1u << (flag%16);
+      }
     }
   }
   else { // Local flag
@@ -402,7 +595,7 @@ void fnFlipFlag(uint16_t flag) {
         displayBugScreen(errorMessage);
       }
     }
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       else {
         moreInfoOnError("In function fnFlipFlag:", "no local flags defined!", "To do so, you can find LocR here:", "[g] [P.FN] [g] [F5]");
       }

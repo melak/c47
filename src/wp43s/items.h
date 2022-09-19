@@ -1457,8 +1457,8 @@
   #define MNU_MVAR                      1398
   #define MNU_EQ_EDIT                   1399
   #define MNU_TIMERF                    1400
-  #define MNU_1401                      1401
-  #define MNU_1402                      1402
+  #define MNU_HIST                      1401
+  #define MNU_HPLOT                     1402
   #define MNU_1403                      1403
 
 
@@ -1853,7 +1853,16 @@
   #define ITM_FPHERE                    1785
   #define ITM_FPPHERE                   1786
 
-  #define LAST_ITEM                     1787
+  #define ITM_nBINS                     1787
+  #define ITM_LOBIN                     1788
+  #define ITM_HIBIN                     1789
+  #define ITM_HISTOX                    1790
+  #define ITM_HISTOY                    1791
+  #define ITM_HPLOT                     1792
+  #define ITM_HNORM                     1793
+
+
+  #define LAST_ITEM                     1794
 
   #define NOPARAM                       9876 // Item for function who don't need an item
   #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
@@ -1861,28 +1870,28 @@
   #define ITM_PROD_SIGN                 9999 // Multiplication sign × or ·
 
   void reallyRunFunction(int16_t func, uint16_t param);
-  
+
   /**
    * Runs a function.
    *
    * \param[in] func Index in the indexOfItems area of the function to run
    */
   void runFunction      (int16_t func);
-  
+
   ///**
   // * Dummy function for a function (part of an item) to be coded.
   // *
   // * \param[in] unusedButMandatoryParameter
   // */
   //void fnToBeCoded      (void);
-  
+
   /**
    * Dummy function for an item to be coded.
    *
    * \param[in] unusedButMandatoryParameter
    */
   void itemToBeCoded    (uint16_t unusedButMandatoryParameter);
-  
+
   /**
    * No OPeration.
    *

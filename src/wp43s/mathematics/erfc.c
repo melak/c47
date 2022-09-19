@@ -62,7 +62,9 @@ TO_QSPI void (* const Erfc[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnErfc(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Erfc[getRegisterDataType(REGISTER_X)]();
 

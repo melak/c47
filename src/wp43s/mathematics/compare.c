@@ -57,8 +57,9 @@ TO_QSPI void (* const cmpFunc[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_D
 bool_t registerCmp(calcRegister_t regist1, calcRegister_t regist2, int8_t *result) {
   void (*func)(calcRegister_t, calcRegister_t, int8_t*) = cmpFunc[getRegisterDataType(regist1)][getRegisterDataType(regist2)];
 
-  if(func == NULL)
+  if(func == NULL) {
     return false;
+  }
 
   func(regist1, regist2, result);
 
@@ -122,10 +123,12 @@ void registerCmpLonIReal(calcRegister_t regist1, calcRegister_t regist2, int8_t 
   convertLongIntegerRegisterToReal(regist1, &r1, &ctxtReal39);
   real34ToReal(REGISTER_REAL34_DATA(regist2), &r2);
 
-  if(realCompareEqual(&r1, &r2))
+  if(realCompareEqual(&r1, &r2)) {
     *result = 0;
-  else
+  }
+  else {
     *result = realCompareGreaterThan(&r1, &r2) ? 1 : -1;
+  }
 }
 
 
@@ -190,10 +193,12 @@ void registerCmpShoIReal(calcRegister_t regist1, calcRegister_t regist2, int8_t 
   convertShortIntegerRegisterToReal(regist1, &r1, &ctxtReal39);
   real34ToReal(REGISTER_REAL34_DATA(regist2), &r2);
 
-  if(realCompareEqual(&r1, &r2))
+  if(realCompareEqual(&r1, &r2)) {
     *result = 0;
-  else
+  }
+  else {
     *result = realCompareGreaterThan(&r1, &r2) ? 1 : -1;
+  }
 }
 
 
@@ -206,10 +211,12 @@ void registerCmpRealLonI(calcRegister_t regist1, calcRegister_t regist2, int8_t 
   real34ToReal(REGISTER_REAL34_DATA(regist1), &r1);
   convertLongIntegerRegisterToReal(regist2, &r2, &ctxtReal39);
 
-  if(realCompareEqual(&r1, &r2))
+  if(realCompareEqual(&r1, &r2)) {
     *result = 0;
-  else
+  }
+  else {
     *result = realCompareGreaterThan(&r1, &r2) ? 1 : -1;
+  }
 }
 
 
@@ -222,10 +229,12 @@ void registerCmpRealShoI(calcRegister_t regist1, calcRegister_t regist2, int8_t 
   real34ToReal(REGISTER_REAL34_DATA(regist1), &r1);
   convertShortIntegerRegisterToReal(regist2, &r2, &ctxtReal39);
 
-  if(realCompareEqual(&r1, &r2))
+  if(realCompareEqual(&r1, &r2)) {
     *result = 0;
-  else
+  }
+  else {
     *result = realCompareGreaterThan(&r1, &r2) ? 1 : -1;
+  }
 }
 
 
@@ -238,10 +247,12 @@ void registerCmpRealReal(calcRegister_t regist1, calcRegister_t regist2, int8_t 
   real34ToReal(REGISTER_REAL34_DATA(regist1), &r1);
   real34ToReal(REGISTER_REAL34_DATA(regist2), &r2);
 
-  if(realCompareEqual(&r1, &r2))
+  if(realCompareEqual(&r1, &r2)) {
     *result = 0;
-  else
+  }
+  else {
     *result = realCompareGreaterThan(&r1, &r2) ? 1 : -1;
+  }
 }
 
 
@@ -249,8 +260,9 @@ void registerCmpRealReal(calcRegister_t regist1, calcRegister_t regist2, int8_t 
 void registerMax(calcRegister_t regist1, calcRegister_t regist2, calcRegister_t dest) {
   int8_t result = 0;
 
-  if(!registerCmp(regist1, regist2, &result))
+  if(!registerCmp(regist1, regist2, &result)) {
     registerCmpError(regist1, regist2);
+  }
   else if(result != 0) {
     copySourceRegisterToDestRegister(result>0 ? regist1 : regist2, dest);
     if(getRegisterDataType(dest) == dtShortInteger) {
@@ -264,8 +276,9 @@ void registerMax(calcRegister_t regist1, calcRegister_t regist2, calcRegister_t 
 void registerMin(calcRegister_t regist1, calcRegister_t regist2, calcRegister_t dest) {
   int8_t result = 0;
 
-  if(!registerCmp(regist1, regist2, &result))
+  if(!registerCmp(regist1, regist2, &result)) {
     registerCmpError(regist1, regist2);
+  }
   else if(result != 0) {
     copySourceRegisterToDestRegister(result>0 ? regist2 : regist1, dest);
     if(getRegisterDataType(dest) == dtShortInteger) {
@@ -315,54 +328,76 @@ static void compareRegisters(uint16_t regist, uint8_t mode) {
   int8_t result;
 
   if((regist < FIRST_LOCAL_REGISTER + currentNumberOfLocalRegisters) || (FIRST_NAMED_VARIABLE <= regist && regist <= FIRST_NAMED_VARIABLE + numberOfNamedVariables) || (FIRST_RESERVED_VARIABLE <= regist && regist <= LAST_RESERVED_VARIABLE) || (regist == TEMP_REGISTER_1)) {
-  #ifndef TESTSUITE_BUILD
-    // Compare matrices
-    if((mode == COMPARE_MODE_EQUAL || mode == COMPARE_MODE_NOT_EQUAL) && getRegisterDataType(REGISTER_X) == dtReal34Matrix && getRegisterDataType(regist) == dtReal34Matrix) {
-      real34Matrix_t x, r;
-      linkToRealMatrixRegister(REGISTER_X, &x);
-      linkToRealMatrixRegister(regist, &r);
-      if(x.header.matrixRows == r.header.matrixRows && x.header.matrixColumns == r.header.matrixColumns) {
-        temporaryInformation = TI_TRUE;
-        for(int i = 0; i < x.header.matrixRows * x.header.matrixColumns; ++i) {
-          if(!real34CompareEqual(&x.matrixElements[i], &r.matrixElements[i])) {
+    #if !defined(TESTSUITE_BUILD)
+      // Compare matrices
+      if((mode == COMPARE_MODE_EQUAL || mode == COMPARE_MODE_NOT_EQUAL) && getRegisterDataType(REGISTER_X) == dtReal34Matrix && getRegisterDataType(regist) == dtReal34Matrix) {
+        real34Matrix_t x, r;
+        linkToRealMatrixRegister(REGISTER_X, &x);
+        linkToRealMatrixRegister(regist, &r);
+        if(x.header.matrixRows == r.header.matrixRows && x.header.matrixColumns == r.header.matrixColumns) {
+          temporaryInformation = TI_TRUE;
+          for(int i = 0; i < x.header.matrixRows * x.header.matrixColumns; ++i) {
+            if(!real34CompareEqual(&x.matrixElements[i], &r.matrixElements[i])) {
+              temporaryInformation = TI_FALSE;
+              break;
+            }
+          }
+        }
+        else {
+          temporaryInformation = TI_FALSE;
+        }
+        if(mode == COMPARE_MODE_NOT_EQUAL) {
+          if(temporaryInformation == TI_TRUE) {
             temporaryInformation = TI_FALSE;
-            break;
+          }
+          else {
+            temporaryInformation = TI_TRUE;
           }
         }
       }
-      else {
-        temporaryInformation = TI_FALSE;
-      }
-      if(mode == COMPARE_MODE_NOT_EQUAL) {
-        if(temporaryInformation == TI_TRUE) temporaryInformation = TI_FALSE;
-        else                                temporaryInformation = TI_TRUE;
-      }
-    }
-    else if((mode == COMPARE_MODE_EQUAL || mode == COMPARE_MODE_NOT_EQUAL) && (getRegisterDataType(REGISTER_X) == dtReal34Matrix || getRegisterDataType(REGISTER_X) == dtComplex34Matrix) && (getRegisterDataType(regist) == dtReal34Matrix || getRegisterDataType(regist) == dtComplex34Matrix)) {
-      complex34Matrix_t x, r;
-      if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix) linkToComplexMatrixRegister(REGISTER_X, &x); else convertReal34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
-      if(getRegisterDataType(regist)     == dtComplex34Matrix) linkToComplexMatrixRegister(regist,     &r); else convertReal34MatrixRegisterToComplex34Matrix(regist,     &r);
-      if(x.header.matrixRows == r.header.matrixRows && x.header.matrixColumns == r.header.matrixColumns) {
-        temporaryInformation = TI_TRUE;
-        for(int i = 0; i < x.header.matrixRows * x.header.matrixColumns; ++i) {
-          if((!real34CompareEqual(VARIABLE_REAL34_DATA(&x.matrixElements[i]), VARIABLE_REAL34_DATA(&r.matrixElements[i]))) || (!real34CompareEqual(VARIABLE_IMAG34_DATA(&x.matrixElements[i]), VARIABLE_IMAG34_DATA(&r.matrixElements[i])))) {
-            temporaryInformation = TI_FALSE;
-            break;
+      else if((mode == COMPARE_MODE_EQUAL || mode == COMPARE_MODE_NOT_EQUAL) && (getRegisterDataType(REGISTER_X) == dtReal34Matrix || getRegisterDataType(REGISTER_X) == dtComplex34Matrix) && (getRegisterDataType(regist) == dtReal34Matrix || getRegisterDataType(regist) == dtComplex34Matrix)) {
+        complex34Matrix_t x, r;
+        if(getRegisterDataType(REGISTER_X) == dtComplex34Matrix) {
+          linkToComplexMatrixRegister(REGISTER_X, &x);
+        }
+        else {
+          convertReal34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
+        }
+        if(getRegisterDataType(regist) == dtComplex34Matrix) {
+          linkToComplexMatrixRegister(regist,     &r);
+        }
+        else {
+          convertReal34MatrixRegisterToComplex34Matrix(regist,     &r);
+        }
+        if(x.header.matrixRows == r.header.matrixRows && x.header.matrixColumns == r.header.matrixColumns) {
+          temporaryInformation = TI_TRUE;
+          for(int i = 0; i < x.header.matrixRows * x.header.matrixColumns; ++i) {
+            if((!real34CompareEqual(VARIABLE_REAL34_DATA(&x.matrixElements[i]), VARIABLE_REAL34_DATA(&r.matrixElements[i]))) || (!real34CompareEqual(VARIABLE_IMAG34_DATA(&x.matrixElements[i]), VARIABLE_IMAG34_DATA(&r.matrixElements[i])))) {
+              temporaryInformation = TI_FALSE;
+              break;
+            }
           }
         }
+        else {
+          temporaryInformation = TI_FALSE;
+        }
+        if(mode == COMPARE_MODE_NOT_EQUAL) {
+          if(temporaryInformation == TI_TRUE) {
+            temporaryInformation = TI_FALSE;
+          }
+          else {
+           temporaryInformation = TI_TRUE;
+          }
+        }
+        if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) {
+          complexMatrixFree(&x);
+        }
+        if(getRegisterDataType(regist) == dtReal34Matrix) {
+          complexMatrixFree(&r);
+        }
       }
-      else {
-        temporaryInformation = TI_FALSE;
-      }
-      if(mode == COMPARE_MODE_NOT_EQUAL) {
-        if(temporaryInformation == TI_TRUE) temporaryInformation = TI_FALSE;
-        else                                temporaryInformation = TI_TRUE;
-      }
-      if(getRegisterDataType(REGISTER_X) == dtReal34Matrix) complexMatrixFree(&x);
-      if(getRegisterDataType(regist)     == dtReal34Matrix) complexMatrixFree(&r);
-    }
-    else
-  #endif // !TESTSUITE_BUILD
+      else
+    #endif // !TESTSUITE_BUILD
     // Compare complex numbers
     if((mode == COMPARE_MODE_EQUAL || mode == COMPARE_MODE_NOT_EQUAL) && (getRegisterDataType(REGISTER_X) == dtComplex34 || getRegisterDataType(regist) == dtComplex34)) {
       if(getRegisterDataType(REGISTER_X) == getRegisterDataType(regist)) { // == dtComplex34
@@ -375,8 +410,12 @@ static void compareRegisters(uint16_t regist, uint8_t mode) {
         temporaryInformation = isEqualRealComplex(regist, REGISTER_X) ? TI_TRUE : TI_FALSE;
       }
       if(mode == COMPARE_MODE_NOT_EQUAL) {
-        if(temporaryInformation == TI_TRUE) temporaryInformation = TI_FALSE;
-        else                                temporaryInformation = TI_TRUE;
+        if(temporaryInformation == TI_TRUE) {
+          temporaryInformation = TI_FALSE;
+        }
+        else {
+         temporaryInformation = TI_TRUE;
+        }
       }
     }
 
@@ -396,7 +435,7 @@ static void compareRegisters(uint16_t regist, uint8_t mode) {
       comparisonTypeError(regist);
     }
   }
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     else {
       sprintf(errorMessage, "local register .%02d", regist - FIRST_LOCAL_REGISTER);
       moreInfoOnError("In function compareRegisters:", errorMessage, "is not defined!", NULL);
@@ -430,68 +469,79 @@ void fnXNotEqual(uint16_t regist) {
 }
 
 static void almostEqualMatrix(uint16_t regist) {
-#ifndef TESTSUITE_BUILD
-  if(getRegisterDataType(REGISTER_X) == dtReal34Matrix && getRegisterDataType(regist) == dtReal34Matrix) {
-    real34Matrix_t x, r;
-    convertReal34MatrixRegisterToReal34Matrix(REGISTER_X, &x);
-    convertReal34MatrixRegisterToReal34Matrix(regist, &r);
-    roundRema();
-    fnSwapX(regist);
-    roundRema();
-    fnSwapX(regist);
-    compareRegisters(regist, COMPARE_MODE_EQUAL);
-    convertReal34MatrixToReal34MatrixRegister(&r, regist);
-    convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
-    realMatrixFree(&r);
-    realMatrixFree(&x);
-  }
-  else {
-    const bool_t xIsCxma = getRegisterDataType(REGISTER_X) == dtComplex34Matrix;
-    const bool_t rIsCxma = getRegisterDataType(regist)     == dtComplex34Matrix;
-    complex34Matrix_t x, r;
-    real34Matrix_t m;
-
-    if(xIsCxma) {
-      convertComplex34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
+  #if !defined(TESTSUITE_BUILD)
+    if(getRegisterDataType(REGISTER_X) == dtReal34Matrix && getRegisterDataType(regist) == dtReal34Matrix) {
+      real34Matrix_t x, r;
+      convertReal34MatrixRegisterToReal34Matrix(REGISTER_X, &x);
+      convertReal34MatrixRegisterToReal34Matrix(regist, &r);
+      roundRema();
+      fnSwapX(regist);
+      roundRema();
+      fnSwapX(regist);
+      compareRegisters(regist, COMPARE_MODE_EQUAL);
+      convertReal34MatrixToReal34MatrixRegister(&r, regist);
+      convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
+      realMatrixFree(&r);
+      realMatrixFree(&x);
     }
     else {
-      convertReal34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
-      convertReal34MatrixRegisterToReal34Matrix(REGISTER_X, &m);
-    }
-    if(rIsCxma) {
-      convertComplex34MatrixRegisterToComplex34Matrix(regist, &r);
-    }
-    else {
-      convertReal34MatrixRegisterToComplex34Matrix(regist, &r);
-      convertReal34MatrixRegisterToReal34Matrix(regist, &m);
-    }
+      const bool_t xIsCxma = getRegisterDataType(REGISTER_X) == dtComplex34Matrix;
+      const bool_t rIsCxma = getRegisterDataType(regist)     == dtComplex34Matrix;
+      complex34Matrix_t x, r;
+      real34Matrix_t m;
 
-    if(xIsCxma) roundCxma(); else roundRema();
-    fnSwapX(regist);
-    if(rIsCxma) roundCxma(); else roundRema();
-    fnSwapX(regist);
+      if(xIsCxma) {
+        convertComplex34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
+      }
+      else {
+        convertReal34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
+        convertReal34MatrixRegisterToReal34Matrix(REGISTER_X, &m);
+      }
+      if(rIsCxma) {
+        convertComplex34MatrixRegisterToComplex34Matrix(regist, &r);
+      }
+      else {
+        convertReal34MatrixRegisterToComplex34Matrix(regist, &r);
+        convertReal34MatrixRegisterToReal34Matrix(regist, &m);
+      }
 
-    compareRegisters(regist, COMPARE_MODE_EQUAL);
+      if(xIsCxma) {
+        roundCxma();
+      }
+      else {
+        roundRema();
+      }
+      fnSwapX(regist);
+      if(rIsCxma) {
+        roundCxma();
+      }
+      else {
+        roundRema();
+      }
+      fnSwapX(regist);
 
-    if(rIsCxma) {
-      convertComplex34MatrixToComplex34MatrixRegister(&r, regist);
-    }
-    else {
-      convertReal34MatrixToReal34MatrixRegister(&m, regist);
-    }
-    if(xIsCxma) {
-      convertComplex34MatrixToComplex34MatrixRegister(&x, REGISTER_X);
-    }
-    else {
-      convertReal34MatrixToReal34MatrixRegister(&m, REGISTER_X);
-    }
+      compareRegisters(regist, COMPARE_MODE_EQUAL);
 
-    complexMatrixFree(&r);
-    complexMatrixFree(&x);
-    if(!xIsCxma || !rIsCxma)
-      realMatrixFree(&m);
-  }
-#endif // !TESTSUITE_BUILD
+      if(rIsCxma) {
+        convertComplex34MatrixToComplex34MatrixRegister(&r, regist);
+      }
+      else {
+        convertReal34MatrixToReal34MatrixRegister(&m, regist);
+      }
+      if(xIsCxma) {
+        convertComplex34MatrixToComplex34MatrixRegister(&x, REGISTER_X);
+      }
+      else {
+        convertReal34MatrixToReal34MatrixRegister(&m, REGISTER_X);
+      }
+
+      complexMatrixFree(&r);
+      complexMatrixFree(&x);
+      if(!xIsCxma || !rIsCxma) {
+        realMatrixFree(&m);
+      }
+    }
+  #endif // !TESTSUITE_BUILD
 }
 
 static void almostEqualScalar(uint16_t regist) {
@@ -510,16 +560,34 @@ static void almostEqualScalar(uint16_t regist) {
   real34Copy(REGISTER_REAL34_DATA(regist), &val2r);
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtComplex34:       roundCplx(); break;
-    case dtReal34:          roundReal(); break;
-    default: /* dtTime */   roundTime(); break;
+    case dtComplex34: {
+      roundCplx();
+      break;
+    }
+    case dtReal34: {
+      roundReal();
+      break;
+    }
+    default: { /* dtTime */
+     roundTime();
+     break;
+    }
   }
   if(regist != TEMP_REGISTER_1) {
     fnSwapX(regist);
     switch(getRegisterDataType(REGISTER_X)) {
-      case dtComplex34:       roundCplx(); break;
-      case dtReal34:          roundReal(); break;
-      default: /* dtTime */   roundTime(); break;
+      case dtComplex34: {
+        roundCplx();
+        break;
+      }
+      case dtReal34: {
+        roundReal();
+        break;
+      }
+      default: { /* dtTime */
+        roundTime();
+        break;
+      }
     }
     fnSwapX(regist);
   }

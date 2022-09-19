@@ -25,13 +25,13 @@
   #include <stdint.h>
 
   void fnTanh   (uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void tanhError(void);
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
     #define tanhError typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void tanhLonI (void);
   void tanhRema (void);
   void tanhCxma (void);

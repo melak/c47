@@ -64,7 +64,9 @@ TO_QSPI void (* const Floor[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnFloor(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Floor[getRegisterDataType(REGISTER_X)]();
 

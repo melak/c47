@@ -24,13 +24,13 @@
   #include <stdint.h>
 
   void fnCubeRoot(uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void curtError  (void);
   #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
     #define curtError typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void curtLonI   (void);
   void curtRema   (void);
   void curtCxma   (void);

@@ -104,11 +104,25 @@
       // Interactive mode
       char buf[4];
       switch(label) {
-        case REGISTER_X:        buf[0] = 'X'; break;
-        case REGISTER_Y:        buf[0] = 'Y'; break;
-        case REGISTER_Z:        buf[0] = 'Z'; break;
-        case REGISTER_T:        buf[0] = 'T'; break;
-        default: /* unlikely */ buf[0] = 0;
+        case REGISTER_X: {
+          buf[0] = 'X';
+          break;
+        }
+        case REGISTER_Y: {
+          buf[0] = 'Y';
+          break;
+        }
+        case REGISTER_Z: {
+          buf[0] = 'Z';
+          break;
+        }
+        case REGISTER_T: {
+          buf[0] = 'T';
+          break;
+        }
+        default: { /* unlikely */
+          buf[0] = 0;
+        }
       }
       buf[1] = 0;
       label = findNamedLabel(buf);

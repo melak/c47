@@ -103,8 +103,12 @@ void fnNegBinomialP(uint16_t unusedButMandatoryParameter) {
   }
 
   if(checkParamNegBinom(&val, &prob, &num)) {
-    if(realIsAnInteger(&val)) pdf_NegBinomial(&val, &prob, &num, &ans, &ctxtReal39);
-    else                      realZero(&ans);
+    if(realIsAnInteger(&val)) {
+      pdf_NegBinomial(&val, &prob, &num, &ans, &ctxtReal39);
+    }
+    else {
+      realZero(&ans);
+    }
     if(realIsNaN(&ans)) {
       displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)

@@ -256,11 +256,11 @@ void fnBatteryVoltage(uint16_t unusedButMandatoryParameter) {
 
   liftStack();
 
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     int32ToReal(3100, &value);
   #endif // PC_BUILD
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     int32ToReal(get_vbat(), &value);
   #endif // DMCP_BUILD
 
@@ -296,23 +296,25 @@ void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
     convertLongIntegerRegisterToLongInteger(REGISTER_X, sigDigits);
     if((longIntegerCompareInt(sigDigits, 0) >= 0) && (longIntegerCompareInt(sigDigits, 34) <= 0)) {
       longIntegerToUInt(sigDigits, significantDigits);
-      if(significantDigits == 0) significantDigits = 34;
+      if(significantDigits == 0) {
+        significantDigits = 34;
+      }
     }
     else {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-      #ifdef PC_BUILD
-      longIntegerToAllocatedString(sigDigits, errorMessage, sizeof(errorMessage));
-      moreInfoOnError("In function fnSetSignificantDigits:", errorMessage, "is out of range.", "");
-      #endif
+      #if defined(PC_BUILD)
+        longIntegerToAllocatedString(sigDigits, errorMessage, sizeof(errorMessage));
+        moreInfoOnError("In function fnSetSignificantDigits:", errorMessage, "is out of range.", "");
+      #endif // PC_BUILD
     }
     longIntegerFree(sigDigits);
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    #ifdef PC_BUILD
-    sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
-    moreInfoOnError("In function fnSetSignificantDigits:", errorMessage, "is not a long integer.", "");
-    #endif
+    #if defined(PC_BUILD)
+      sprintf(errorMessage, "DataType %" PRIu32, getRegisterDataType(REGISTER_X));
+      moreInfoOnError("In function fnSetSignificantDigits:", errorMessage, "is not a long integer.", "");
+    #endif // PC_BUILD
   }
 }
 
@@ -321,16 +323,47 @@ void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
 void fnRoundingMode(uint16_t RM) {
   roundingMode = RM;
 
-  if(RM == 0) ctxtReal34.round = DEC_ROUND_HALF_EVEN;
-  else if(RM == 1) ctxtReal34.round = DEC_ROUND_HALF_UP;
-  else if(RM == 2) ctxtReal34.round = DEC_ROUND_HALF_DOWN;
-  else if(RM == 3) ctxtReal34.round = DEC_ROUND_UP;
-  else if(RM == 4) ctxtReal34.round = DEC_ROUND_DOWN;
-  else if(RM == 5) ctxtReal34.round = DEC_ROUND_CEILING;
-  else if(RM == 6) ctxtReal34.round = DEC_ROUND_FLOOR;
-  else {
-    sprintf(errorMessage, "In function fnRoundingMode: %d is an unexpected value for RM! Must be from 0 to 6", RM);
-    displayBugScreen(errorMessage);
+  switch(RM) {
+    case 0: {
+      ctxtReal34.round = DEC_ROUND_HALF_EVEN;
+      break;
+    }
+
+    case 1: {
+      ctxtReal34.round = DEC_ROUND_HALF_UP;
+      break;
+    }
+
+    case 2: {
+      ctxtReal34.round = DEC_ROUND_HALF_DOWN;
+      break;
+    }
+
+    case 3: {
+      ctxtReal34.round = DEC_ROUND_UP;
+      break;
+    }
+
+    case 4: {
+      ctxtReal34.round = DEC_ROUND_DOWN;
+      break;
+    }
+
+    case 5: {
+      ctxtReal34.round = DEC_ROUND_CEILING;
+      break;
+    }
+
+    case 6: {
+      ctxtReal34.round = DEC_ROUND_FLOOR;
+      break;
+    }
+
+    default: {
+      sprintf(errorMessage, "In function fnRoundingMode: %d is an unexpected value for RM! Must be from 0 to 6", RM);
+      displayBugScreen(errorMessage);
+      break;
+    }
   }
 }
 
@@ -514,7 +547,7 @@ void addTestPrograms(void) {
   currentLocalStepNumber        = 1;
   firstDisplayedLocalStepNumber = 0;
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     if(f_open(ppgm_fp, "testPgms.bin", FA_READ) != FR_OK) {
       *(beginOfProgramMemory)     = 255; // .END.
       *(beginOfProgramMemory + 1) = 255; // .END.
@@ -561,13 +594,28 @@ void addTestPrograms(void) {
     printf("freeProgramBytes = %u\n", freeProgramBytes);
 
     scanLabelsAndPrograms();
-    #ifndef TESTSUITE_BUILD
+    #if !defined(TESTSUITE_BUILD)
       leavePem();
-    #endif // TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
     printf("freeProgramBytes = %u\n", freeProgramBytes);
     //listPrograms();
     //listLabelsAndPrograms();
-  #endif // !DMCP_BUILD
+  #endif // DMCP_BUILD
+}
+
+
+
+void restoreStats(void){
+  if(lrChosen !=65535) {
+    lrChosen = lrChosenHistobackup;
+  }
+  if(lrSelection !=65535) {
+    lrSelection = lrSelectionHistobackup;
+  }
+  strcpy(statMx,"STATS");
+  lrSelectionHistobackup = 65535;
+  lrChosenHistobackup = 65535;
+  calcSigma(0);
 }
 
 
@@ -588,7 +636,7 @@ void fnReset(uint16_t confirmation) {
     freeMemoryRegions[0].sizeInBlocks = RAM_SIZE - 40 - 1; // - 1: one block for an empty program
 
     if(tmpString == NULL) {
-      #ifdef DMCP_BUILD
+      #if defined(DMCP_BUILD)
          tmpString        = aux_buf_ptr();   // 2560 byte buffer provided by DMCP
          errorMessage     = write_buf_ptr(); // 4096 byte buffer provided by DMCP
        #else // !DMCP_BUILD
@@ -651,7 +699,7 @@ void fnReset(uint16_t confirmation) {
     }
 
     // initialize 1 long integer reserved variables: GRAMOD
-    #ifdef OS64BIT
+    #if defined(OS64BIT)
       memPtr = allocWp43s(3);
       ((dataBlock_t *)memPtr)->dataMaxLength = 2;
     #else // !OS64BIT
@@ -717,12 +765,12 @@ void fnReset(uint16_t confirmation) {
     ((dataBlock_t *)memPtr)->matrixColumns = 1;
     real34Zero(memPtr + 4);
 
-    #ifndef TESTSUITE_BUILD
+    #if !defined(TESTSUITE_BUILD)
       matrixIndex = INVALID_VARIABLE; // Unset matrix index
-    #endif // TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
 
 
-    #ifdef PC_BUILD
+    #if defined(PC_BUILD)
       debugWindow = DBG_REGISTERS;
     #endif // PC_BUILD
 
@@ -760,6 +808,7 @@ void fnReset(uint16_t confirmation) {
     //ctxtReal2139.digits = 2139;
     //ctxtReal2139.traps  = 0;
 
+
     statisticalSumsPointer = NULL;
     savedStatisticalSumsPointer = NULL;
     lrSelection = CF_LINEAR_FITTING;
@@ -768,9 +817,18 @@ void fnReset(uint16_t confirmation) {
     lrChosenUndo = 0;
     lastPlotMode = PLOT_NOTHING;
     plotSelection = 0;
+    drawHistogram = 0;
     realZero(&SAVED_SIGMA_LASTX);
     realZero(&SAVED_SIGMA_LASTY);
     SAVED_SIGMA_LAct = 0;
+
+    restoreStats();
+    plotStatMx[0] = 0;
+    real34Zero(&loBinR);
+    real34Zero(&nBins );
+    real34Zero(&hiBinR);
+    histElementXorY = -1;
+
 
     x_min = -10;
     x_max = 10;
@@ -828,16 +886,18 @@ void fnReset(uint16_t confirmation) {
     angle90  = (real51_t *)const_piOn2_51;
     angle45  = (real51_t *)const_piOn4_51;
 
-    #ifndef TESTSUITE_BUILD
+    #if !defined(TESTSUITE_BUILD)
       resetAlphaSelectionBuffer();
     #endif // !TESTSUITE_BUILD
 
-    #ifdef TESTSUITE_BUILD
+    #if defined(TESTSUITE_BUILD)
       calcMode = CM_NORMAL;
     #else // TESTSUITE_BUILD
-      if(calcMode == CM_MIM) mimFinalize();
+      if(calcMode == CM_MIM) {
+        mimFinalize();
+      }
       calcModeNormal();
-    #endif // TESTSUITE_BUILD
+    #endif // !TESTSUITE_BUILD
 
     #if defined(PC_BUILD) || defined(TESTSUITE_BUILD)
       debugMemAllocation = true;
@@ -963,7 +1023,7 @@ void fnReset(uint16_t confirmation) {
       debugWindow = DBG_REGISTERS;
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkHexaString), false);
       refreshDebugPanel();
-    #endif //  (DEBUG_PANEL == 1)
+    #endif // DEBUG_PANEL == 1
   }
 
 //JM LOAD ID
@@ -994,11 +1054,11 @@ void fnReset(uint16_t confirmation) {
 
 
 void backToSystem(uint16_t unusedButMandatoryParameter) {
-  #ifdef PC_BUILD
+  #if defined(PC_BUILD)
     fnOff(NOPARAM);
   #endif // PC_BUILD
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     backToDMCP = true;
   #endif // DMCP_BUILD
 }

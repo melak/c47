@@ -25,7 +25,7 @@
 
 #include "wp43s.h"
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   void refreshStatusBar(void) {
     if(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR) {
       switch(calcMode) {
@@ -37,12 +37,14 @@
         case CM_CONFIRMATION:
         case CM_MIM:
         case CM_TIMER:
-        case CM_GRAPH:
+        case CM_GRAPH: {
           screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR;
           break;
+        }
 
-        default:
+        default: {
           return;
+        }
       }
     }
     #if (DEBUG_INSTEAD_STATUS_BAR == 1)
@@ -50,7 +52,9 @@
       showString(tmpString, &standardFont, X_DATE, 0, vmNormal, true, true);
     #else // DEBUG_INSTEAD_STATUS_BAR != 1
       showDateTime();
-      if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) return;    // With graph displayed, only update the time, as the other items are clashing with the graph display screen
+      if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) {
+        return;    // With graph displayed, only update the time, as the other items are clashing with the graph display screen
+      }
       showRealComplexResult();
       showComplexMode();
       showAngularMode();
@@ -71,7 +75,7 @@
       showHideSerialIO();
       showHidePrinter();
       showHideUserMode();
-      #ifdef DMCP_BUILD
+      #if defined(DMCP_BUILD)
         showHideUsbLowBattery();
       #else // !DMCP_BUILD
         showHideStackLift();
@@ -122,22 +126,34 @@
     x = showGlyph(STD_MEASURED_ANGLE, &standardFont, X_ANGULAR_MODE, 0, vmNormal, true, true); // Angle is 0+9 pixel wide
 
     switch(currentAngularMode) {
-      case amRadian: showGlyph(STD_SUP_r,              &standardFont, x, 0, vmNormal, true, false); // r  is 0+6 pixel wide
-                      break;
+      case amRadian: {
+        showGlyph(STD_SUP_r,              &standardFont, x, 0, vmNormal, true, false); // r  is 0+6 pixel wide
+        break;
+      }
 
-      case amMultPi: showGlyph(STD_pi,                 &standardFont, x, 0, vmNormal, true, false); // pi is 0+9 pixel wide
-                      break;
+      case amMultPi: {
+        showGlyph(STD_pi,                 &standardFont, x, 0, vmNormal, true, false); // pi is 0+9 pixel wide
+        break;
+      }
 
-      case amGrad:   showGlyph(STD_SUP_g,              &standardFont, x, 0, vmNormal, true, false); // g  is 0+6 pixel wide
-                      break;
+      case amGrad: {
+        showGlyph(STD_SUP_g,              &standardFont, x, 0, vmNormal, true, false); // g  is 0+6 pixel wide
+        break;
+      }
 
-      case amDegree: showGlyph(STD_DEGREE,             &standardFont, x, 0, vmNormal, true, false); // °  is 0+6 pixel wide
-                      break;
+      case amDegree: {
+        showGlyph(STD_DEGREE,             &standardFont, x, 0, vmNormal, true, false); // °  is 0+6 pixel wide
+        break;
+      }
 
-      case amDMS:    showGlyph(STD_RIGHT_DOUBLE_QUOTE, &standardFont, x, 0, vmNormal, true, false); // "  is 0+6 pixel wide
-                      break;
+      case amDMS: {
+        showGlyph(STD_RIGHT_DOUBLE_QUOTE, &standardFont, x, 0, vmNormal, true, false); // "  is 0+6 pixel wide
+        break;
+      }
 
-      default:        showGlyph(STD_QUESTION_MARK, &standardFont, x, 0, vmNormal, true, false); // ?
+      default: {
+        showGlyph(STD_QUESTION_MARK,      &standardFont, x, 0, vmNormal, true, false); // ?
+      }
     }
   }
 
@@ -250,27 +266,32 @@
         case CM_CONFIRMATION:
         case CM_MIM:
         case CM_TIMER:
-        case CM_GRAPH:
+        case CM_GRAPH: {
           screenUpdatingMode &= ~SCRUPD_MANUAL_STATUSBAR;
           break;
+        }
 
-        default:
+        default: {
           return;
+        }
       }
     }
     switch(programRunStop) {
-      case PGM_WAITING:
+      case PGM_WAITING: {
         showGlyph(STD_NEG_EXCLAMATION_MARK, &standardFont, (calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH  ? 160-20 : X_HOURGLASS) - 1, 0, vmNormal, true, false);
         break;
-      case PGM_RUNNING:
+      }
+      case PGM_RUNNING: {
         lcd_fill_rect((calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? 160-20 : X_HOURGLASS) - 1, 0, stringWidth(STD_NEG_EXCLAMATION_MARK, &standardFont, true, false), 20, LCD_SET_VALUE);
         showGlyph(STD_P, &standardFont, (calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? 160-20 : X_HOURGLASS) + 1, 0, vmNormal, true, false);
         break;
-      default:
+      }
+      default: {
         lcd_fill_rect((calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? 160-20 : X_HOURGLASS) - 1, 0, stringWidth(STD_NEG_EXCLAMATION_MARK, &standardFont, true, false), 20, LCD_SET_VALUE);
         if(hourGlassIconEnabled) {
           showGlyph(STD_HOURGLASS, &standardFont, calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH ? 160-20 : X_HOURGLASS, 0, vmNormal, true, false); // is 0+11+3 pixel wide //Shift the hourglass to a visible part of the status bar
         }
+      }
     }
   }
 
@@ -308,7 +329,7 @@
 
 
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     void showHideUsbLowBattery(void) {
       if(getSystemFlag(FLAG_USB)) {
         showGlyph(STD_USB, &standardFont, X_BATTERY, 0, vmNormal, true, false); // is 0+9+2 pixel wide
@@ -323,7 +344,7 @@
 
 
 
-  #ifndef DMCP_BUILD
+  #if !defined(DMCP_BUILD)
     void showHideStackLift(void) {
       if(getSystemFlag(FLAG_ASLIFT)) {
         // Draw S

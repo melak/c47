@@ -34,24 +34,30 @@
 
 #ifndef SAVE_SPACE_DM42_12
 static bool_t getOrthoPolyParam(calcRegister_t regist, real_t *val, realContext_t *realContext) {
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
   switch(getRegisterDataType(regist)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       convertLongIntegerRegisterToReal(regist, val, realContext);
       return true;
-    case dtReal34:
+    }
+    case dtReal34: {
       if(getRegisterAngularMode(regist) == amNone) {
         real34ToReal(REGISTER_REAL34_DATA(regist), val);
         return true;
       }
       /* fallthrough */
-    default:
+    }
+    default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, regist);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Incompatible type for orthogonal polynomial.");
         moreInfoOnError("In function fnOrthoPoly:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return false;
+    }
   }
+  #pragma GCC diagnostic pop
 }
 #endif
 
@@ -59,7 +65,9 @@ void fnOrthoPoly(uint16_t kind) {
 #ifndef SAVE_SPACE_DM42_12
   real_t x, y, z, ans;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
   if(getOrthoPolyParam(REGISTER_X, &x, &ctxtReal39) && getOrthoPolyParam(REGISTER_Y, &y, &ctxtReal39)) {
     realCopy(const_0, &z);
     if((kind != ORTHOPOLY_LAGUERRE_L_ALPHA) || getOrthoPolyParam(REGISTER_Z, &z, &ctxtReal39)) {
@@ -73,7 +81,9 @@ void fnOrthoPoly(uint16_t kind) {
         WP34S_OrthoPoly(kind, &x, &y, &z, &ans, &ctxtReal39);
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
         convertRealToReal34ResultRegister(&ans, REGISTER_X);
-        if(kind == ORTHOPOLY_LAGUERRE_L_ALPHA) fnDropY(NOPARAM);
+        if(kind == ORTHOPOLY_LAGUERRE_L_ALPHA) {
+          fnDropY(NOPARAM);
+        }
       }
     }
   }

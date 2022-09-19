@@ -22,11 +22,11 @@
 #include FT_FREETYPE_H
 
 /* Turn off -Wunused-result for a specific function call */
-#ifdef OS32BIT
+#if defined(OS32BIT)
   #define ignore_result(M) if(1==((uint32_t)M)){;}
-#else
+#else // !OS32BIT
   #define ignore_result(M) if(1==((uint64_t)M)){;}
-#endif
+#endif // OS32BIT
 
 FT_Library library;
 FT_Error   error;
@@ -43,7 +43,7 @@ struct {
 const char* getErrorMessage(FT_Error err) {
   #undef __FTERRORS_H__
   #define FT_ERRORDEF( e, v, s )  case e: return s;
-  #define FT_ERROR_START_LIST     switch (err) {
+  #define FT_ERROR_START_LIST     switch(err) {
   #define FT_ERROR_END_LIST       }
   #include FT_ERRORS_H
   return "(Unknown error)";
@@ -162,7 +162,8 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
   strcpy(ttfName2, ttfName);
   x = strlen(ttfName2) - 4;
   ttfName2[x] = 0; // truncates .ttf
-  while(--x>=0 && ttfName2[x] != '/') ;
+  while(--x>=0 && ttfName2[x] != '/') {
+  }
   if(x < 0) {
     x = 0;
   }
@@ -174,9 +175,9 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
   }
 
   fontName[0] |= 0x20; // 1st letter lower case
-  #ifdef DEBUG
+  #if defined(DEBUG)
     printf("fontName=<%s>\n", fontName);
-  #endif
+  #endif // DEBUG
 
 
   //////////////////////////////////////////////////////////////
@@ -198,10 +199,10 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
   //////////////////////
   // Face infomations //
   //////////////////////
-  #ifdef DEBUG
+  #if defined(DEBUG)
     printf("There are %3d glyphs in face 0 of %s\n", numberOfGlyphs,  ttfName);
     printf("ascender=%d descender=%d\n", face->ascender/onePixelSize, face->descender/onePixelSize);
-  #endif
+  #endif // DEBUG
 
   ///////////////////////////////////////
   // Go thru all glyphs to render them //
@@ -229,9 +230,9 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
       }
 
       FT_Get_Glyph_Name(face, glyphIndex, glyphName, 100);
-      #ifdef DEBUG
+      #if defined(DEBUG)
         printf("glyphIndex=%4d   charCode=0x%04x   %s\n", glyphIndex, (unsigned int)(charCodes[cc]>=0x0080 ? charCodes[cc]|0x8000 : charCodes[cc]), glyphName);
-      #endif
+      #endif // DEBUG
 
       if((error = FT_Load_Glyph(face, glyphIndex, FT_LOAD_RENDER)) != FT_Err_Ok) {
         fprintf(stderr, "warning: failed FT_Load_Glyph 0x%04x\n", (unsigned int)charCodes[cc]);
@@ -260,9 +261,9 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
         rank1 = 0;
         rank2 = 0;
       }
-      #ifdef DEBUG
+      #if defined(DEBUG)
         printf("rank1: %3d    rank2: %3d\n", rank1, rank2);
-      #endif
+      #endif // DEBUG
 
       //////////////////////////
       // Columns in the glyph //
@@ -274,9 +275,9 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
         colsGlyph += colsBeforeGlyph;
         colsBeforeGlyph = 0;
       }
-      #ifdef DEBUG
+      #if defined(DEBUG)
         printf("Columns: %2d %2d %2d\n", colsBeforeGlyph, colsGlyph, colsAfterGlyph);
-      #endif
+      #endif // DEBUG
 
       ///////////////////////
       // Rows in the glyph //
@@ -288,9 +289,9 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
         rowsGlyph += rowsAboveGlyph;
         rowsAboveGlyph = 0;
       }
-      #ifdef DEBUG
+      #if defined(DEBUG)
         printf("Rows   : %2d %2d %2d\n", rowsAboveGlyph, rowsGlyph, rowsBelowGlyph);
-      #endif
+      #endif // DEBUG
 
       //////////////////////
       // Render the glyph //
@@ -306,15 +307,15 @@ void exportCStructure(const char *fontsPath, const char *ttfName) {
 
         for(x=0; x<colsGlyph; x++) {
           bit = face->glyph->bitmap.buffer[y * face->glyph->bitmap.width + x] >= 128 ? 1 : 0;
-          #ifdef DEBUG
+          #if defined(DEBUG)
             putchar(bit == 1 ? '#' : '.');
-          #endif
+          #endif // DEBUG
           addBit(bit);
         }
 
-        #ifdef DEBUG
+        #if defined(DEBUG)
           putchar('\n');
-        #endif
+        #endif // DEBUG
         while(numBits != 0) {
           addBit(0);
         }
@@ -368,7 +369,8 @@ void processFiles(const char *fontsPath, const char *outputFile) {
     pos = 9;
     glyphRank[nbGlyphRanks].rank1 = atoi(line + pos);
 
-    while(line[pos++] != ',') ;
+    while(line[pos++] != ',') {
+    }
     glyphRank[nbGlyphRanks].rank2 = atoi(line + pos);
 
     nbGlyphRanks++;

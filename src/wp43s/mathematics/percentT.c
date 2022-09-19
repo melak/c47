@@ -78,7 +78,9 @@ static void dataTypeError(void) {
  * \return void
  ***********************************************/
 void fnPercentT(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   percentT[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 
@@ -105,8 +107,7 @@ static bool_t percentTReal(real_t *xReal, real_t *yReal, real_t *rReal, realCont
       return false;
     }
   }
-  else if(realIsZero(yReal))
-  {
+  else if(realIsZero(yReal)) {
     if(getSystemFlag(FLAG_SPCRES)) {
       realCopy((realIsPositive(xReal) ? const_plusInfinity : const_minusInfinity), rReal);
     }

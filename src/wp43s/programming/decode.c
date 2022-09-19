@@ -189,7 +189,7 @@ static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, 
   uint8_t opParam = *(uint8_t *)(paramAddress++);
 
   switch(paramMode) {
-    case PARAM_DECLARE_LABEL:
+    case PARAM_DECLARE_LABEL: {
       if(opParam <= 99) { // Local label from 00 to 99
         sprintf(tmpString, "%s %02u", op, opParam);
       }
@@ -204,8 +204,9 @@ static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, 
         sprintf(tmpString, "\nIn function decodeOp case PARAM_DECLARE_LABEL: opParam %u is not a valid label!\n", opParam);
       }
       break;
+    }
 
-    case PARAM_LABEL:
+    case PARAM_LABEL: {
       if(opParam <= 99) { // Local label from 00 to 99
         sprintf(tmpString, "%s %02u", op, opParam);
       }
@@ -226,8 +227,9 @@ static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, 
         sprintf(tmpString, "\nIn function decodeOp: case PARAM_LABEL, %s  %u is not a valid parameter!", op, opParam);
       }
       break;
+    }
 
-    case PARAM_REGISTER:
+    case PARAM_REGISTER: {
       if(opParam < REGISTER_X) { // Global register from 00 to 99
         sprintf(tmpString, "%s %02u", op, opParam);
       }
@@ -251,8 +253,9 @@ static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, 
         sprintf(tmpString, "\nIn function decodeOp: case PARAM_REGISTER, %s  %u is not a valid parameter!", op, opParam);
       }
       break;
+    }
 
-    case PARAM_FLAG:
+    case PARAM_FLAG: {
       if(opParam < REGISTER_X) { // Global flag from 00 to 99
         sprintf(tmpString, "%s %02u", op, opParam);
       }
@@ -278,8 +281,9 @@ static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, 
         sprintf(tmpString, "\nIn function decodeOp: case PARAM_FLAG, %s  %u is not a valid parameter!", op, opParam);
       }
       break;
+    }
 
-    case PARAM_NUMBER_8:
+    case PARAM_NUMBER_8: {
       if(opParam <= tamMax) { // Value from 0 to 99
         if(tamMax <= 9) {
           sprintf(tmpString, "%s %u", op, opParam);
@@ -301,12 +305,14 @@ static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, 
         sprintf(tmpString, "\nIn function decodeOp: case PARAM_NUMBER, %s  %u is not a valid parameter!", op, opParam);
       }
       break;
+    }
 
-    case PARAM_NUMBER_16:
+    case PARAM_NUMBER_16: {
       sprintf(tmpString, "%s %u", op, opParam + 256 * *(paramAddress));
       break;
+    }
 
-    case PARAM_COMPARE:
+    case PARAM_COMPARE: {
       if(opParam < REGISTER_X) { // Global register from 00 to 99
         sprintf(tmpString, "%s %02u", op, opParam);
       }
@@ -336,33 +342,35 @@ static void decodeOp(uint8_t *paramAddress, const char *op, uint16_t paramMode, 
         sprintf(tmpString, "\nIn function decodeOp: case PARAM_COMPARE, %s  %u is not a valid parameter!", op, opParam);
       }
       break;
+    }
 
-    case PARAM_KEYG_KEYX:
-      {
-        uint8_t *secondParam = findKey2ndParam_ram(paramAddress - 3);
-        decodeOp(secondParam + 1, indexOfItems[*secondParam].itemCatalogName, PARAM_LABEL, indexOfItems[*secondParam].tamMinMax & TAM_MAX_MASK);
-        xcopy(tmpString + TMP_STR_LENGTH / 2, tmpString, stringByteLength(tmpString) + 1);
-        decodeOp(paramAddress - 1, op, PARAM_NUMBER_8, 21);
-        tmpString[stringByteLength(tmpString) + 1] = 0;
-        tmpString[stringByteLength(tmpString)    ] = ' ';
-        xcopy(tmpString + stringByteLength(tmpString), tmpString + TMP_STR_LENGTH / 2, stringByteLength(tmpString + TMP_STR_LENGTH / 2) + 1);
-      }
+    case PARAM_KEYG_KEYX: {
+      uint8_t *secondParam = findKey2ndParam_ram(paramAddress - 3);
+      decodeOp(secondParam + 1, indexOfItems[*secondParam].itemCatalogName, PARAM_LABEL, indexOfItems[*secondParam].tamMinMax & TAM_MAX_MASK);
+      xcopy(tmpString + TMP_STR_LENGTH / 2, tmpString, stringByteLength(tmpString) + 1);
+      decodeOp(paramAddress - 1, op, PARAM_NUMBER_8, 21);
+      tmpString[stringByteLength(tmpString) + 1] = 0;
+      tmpString[stringByteLength(tmpString)    ] = ' ';
+      xcopy(tmpString + stringByteLength(tmpString), tmpString + TMP_STR_LENGTH / 2, stringByteLength(tmpString + TMP_STR_LENGTH / 2) + 1);
       break;
+    }
 
-    case PARAM_SKIP_BACK:
+    case PARAM_SKIP_BACK: {
       sprintf(tmpString, "%s %03u", op, opParam);
       break;
+    }
 
-    case PARAM_SHUFFLE:
+    case PARAM_SHUFFLE: {
       sprintf(tmpString, "%s %c%c%c%c", op, shuffleReg[ opParam & 0x03      ],
                                             shuffleReg[(opParam & 0x0c) >> 2],
                                             shuffleReg[(opParam & 0x30) >> 4],
                                             shuffleReg[(opParam & 0xc0) >> 6]);
       break;
+    }
 
-
-    default:
+    default: {
       sprintf(tmpString, "\nIn function decodeOp: paramMode %u is not valid!\n", paramMode);
+    }
   }
 }
 
@@ -375,7 +383,8 @@ static void _decodeNumeral(char *startPtr, const char *srcStartPtr, bool_t isLon
   if(*srcStr == '-') {
     ++srcStr;
   }
-  for(digit = 0; ((*srcStr >= '0' && *srcStr <= '9') || (*srcStr >= 'A' && *srcStr <= 'F')); ++digit, ++srcStr);
+  for(digit = 0; ((*srcStr >= '0' && *srcStr <= '9') || (*srcStr >= 'A' && *srcStr <= 'F')); ++digit, ++srcStr) {
+  }
   srcStr = srcStartPtr;
 
   if(*srcStr == '-') {
@@ -441,215 +450,220 @@ static void _decodeNumeral(char *startPtr, const char *srcStartPtr, bool_t isLon
 
 static void decodeLiteral(uint8_t *literalAddress) {
   switch(*(uint8_t *)(literalAddress++)) {
-    case BINARY_SHORT_INTEGER:
+    case BINARY_SHORT_INTEGER: {
       reallocateRegister(TEMP_REGISTER_1, dtShortInteger, SHORT_INTEGER_SIZE, *(uint8_t *)(literalAddress++));
       xcopy(REGISTER_DATA(TEMP_REGISTER_1), literalAddress, TO_BYTES(SHORT_INTEGER_SIZE));
       shortIntegerToDisplayString(TEMP_REGISTER_1, tmpString, false);
       break;
+    }
 
-    //case BINARY_LONG_INTEGER:
+    //case BINARY_LONG_INTEGER: {
     //  break;
+    //}
 
-    case BINARY_REAL34:
+    case BINARY_REAL34: {
       real34ToDisplayString((real34_t *)literalAddress, amNone, tmpString, &standardFont, 9999, 34, false, STD_SPACE_PUNCTUATION, false);
       break;
+    }
 
-    case BINARY_COMPLEX34:
-      {
-        complex34_t complexLiteral;
-        xcopy(VARIABLE_REAL34_DATA(&complexLiteral), literalAddress     , 16);
-        xcopy(VARIABLE_IMAG34_DATA(&complexLiteral), literalAddress + 16, 16);
-        complex34ToDisplayString(&complexLiteral, tmpString, &standardFont, 9999, 34, false, STD_SPACE_PUNCTUATION, false);
-      }
+    case BINARY_COMPLEX34: {
+      complex34_t complexLiteral;
+      xcopy(VARIABLE_REAL34_DATA(&complexLiteral), literalAddress     , 16);
+      xcopy(VARIABLE_IMAG34_DATA(&complexLiteral), literalAddress + 16, 16);
+      complex34ToDisplayString(&complexLiteral, tmpString, &standardFont, 9999, 34, false, STD_SPACE_PUNCTUATION, false);
       break;
+    }
 
-    //case BINARY_DATE:
+    //case BINARY_DATE: {
     //  break;
+    //}
 
-    //case BINARY_TIME:
+    //case BINARY_TIME: {
     //  break;
+    //}
 
-    case STRING_SHORT_INTEGER:
-      {
-        int32_t digit;
-        uint8_t gap = groupingGap;
-        char *dispStringPtr = tmpString;
-        char *sourceStringPtr = tmpStringLabelOrVariableName;
-        uint8_t base = (uint8_t)(*literalAddress);
-        getStringLabelOrVariableName(literalAddress + 1);
+    case STRING_SHORT_INTEGER: {
+      int32_t digit;
+      uint8_t gap = groupingGap;
+      char *dispStringPtr = tmpString;
+      char *sourceStringPtr = tmpStringLabelOrVariableName;
+      uint8_t base = (uint8_t)(*literalAddress);
+      getStringLabelOrVariableName(literalAddress + 1);
 
-        if(groupingGap > 0) {
-          if(base == 2) {
-            gap = 4;
-          }
-          else if(base == 4 || base == 8 || base == 16) {
-            gap = 2;
-          }
+      if(groupingGap > 0) {
+        if(base == 2) {
+          gap = 4;
         }
-
-        if(*sourceStringPtr == '-') {
-          ++sourceStringPtr;
+        else if(base == 4 || base == 8 || base == 16) {
+          gap = 2;
         }
-        for(digit = 0; (*sourceStringPtr >= '0' && *sourceStringPtr <= '9') || (*sourceStringPtr >= 'A' && *sourceStringPtr <= 'F'); ++digit, ++sourceStringPtr);
-        sourceStringPtr = tmpStringLabelOrVariableName;
-
-        if(*sourceStringPtr == '-') {
-          *(dispStringPtr++) = *(sourceStringPtr++);
-        }
-        while((*sourceStringPtr >= '0' && *sourceStringPtr <= '9') || (*sourceStringPtr >= 'A' && *sourceStringPtr <= 'F')) {
-          *(dispStringPtr++) = *(sourceStringPtr++);
-          if(gap > 0 && digit > 1 && (digit % gap) == 1) {
-            *(dispStringPtr++) = STD_SPACE_PUNCTUATION[0];
-            *(dispStringPtr++) = STD_SPACE_PUNCTUATION[1];
-          }
-          --digit;
-        }
-        *(dispStringPtr++) = baseChars[base * 2    ];
-        *(dispStringPtr++) = baseChars[base * 2 + 1];
-        *dispStringPtr = 0;
       }
-      break;
 
-    case STRING_LONG_INTEGER:
+      if(*sourceStringPtr == '-') {
+        ++sourceStringPtr;
+      }
+      for(digit = 0; (*sourceStringPtr >= '0' && *sourceStringPtr <= '9') || (*sourceStringPtr >= 'A' && *sourceStringPtr <= 'F'); ++digit, ++sourceStringPtr) {
+      }
+      sourceStringPtr = tmpStringLabelOrVariableName;
+
+      if(*sourceStringPtr == '-') {
+        *(dispStringPtr++) = *(sourceStringPtr++);
+      }
+      while((*sourceStringPtr >= '0' && *sourceStringPtr <= '9') || (*sourceStringPtr >= 'A' && *sourceStringPtr <= 'F')) {
+        *(dispStringPtr++) = *(sourceStringPtr++);
+        if(gap > 0 && digit > 1 && (digit % gap) == 1) {
+          *(dispStringPtr++) = STD_SPACE_PUNCTUATION[0];
+          *(dispStringPtr++) = STD_SPACE_PUNCTUATION[1];
+        }
+        --digit;
+      }
+      *(dispStringPtr++) = baseChars[base * 2    ];
+      *(dispStringPtr++) = baseChars[base * 2 + 1];
+      *dispStringPtr = 0;
+      break;
+    }
+
+    case STRING_LONG_INTEGER: {
       getStringLabelOrVariableName(literalAddress);
       _decodeNumeral(tmpString, tmpStringLabelOrVariableName, true, NULL, NULL);
       break;
+    }
 
-    case STRING_REAL34:
+    case STRING_REAL34: {
       getStringLabelOrVariableName(literalAddress);
       _decodeNumeral(tmpString, tmpStringLabelOrVariableName, false, NULL, NULL);
       break;
+    }
 
-    case STRING_COMPLEX34:
-      {
-        char *dispStringPtr = tmpString;
-        char *sourceStringPtr = tmpStringLabelOrVariableName;
-        getStringLabelOrVariableName(literalAddress);
-        _decodeNumeral(dispStringPtr, sourceStringPtr, false, &dispStringPtr, (const char **)&sourceStringPtr);
-        if(*sourceStringPtr == 'i' || *sourceStringPtr == 'j') {
-          *(dispStringPtr++) = '+';
-          *(dispStringPtr++) = '+';
-          *(dispStringPtr++) = COMPLEX_UNIT[0];
-          ++sourceStringPtr;
-        }
-        else if(*sourceStringPtr == '+' || *sourceStringPtr == '-') {
-          *(dispStringPtr++) = *(sourceStringPtr++);
-          *(dispStringPtr++) = COMPLEX_UNIT[0];
-          ++sourceStringPtr;
-        }
-        *(dispStringPtr++) = PRODUCT_SIGN[0];
-        *(dispStringPtr++) = PRODUCT_SIGN[1];
-        _decodeNumeral(dispStringPtr, sourceStringPtr, calcMode == CM_PEM && aimBuffer[0] != 0 && (currentStep.ram + 2 == literalAddress), NULL, NULL);
+    case STRING_COMPLEX34:  {
+      char *dispStringPtr = tmpString;
+      char *sourceStringPtr = tmpStringLabelOrVariableName;
+      getStringLabelOrVariableName(literalAddress);
+      _decodeNumeral(dispStringPtr, sourceStringPtr, false, &dispStringPtr, (const char **)&sourceStringPtr);
+      if(*sourceStringPtr == 'i' || *sourceStringPtr == 'j') {
+        *(dispStringPtr++) = '+';
+        *(dispStringPtr++) = '+';
+        *(dispStringPtr++) = COMPLEX_UNIT[0];
+        ++sourceStringPtr;
       }
+      else if(*sourceStringPtr == '+' || *sourceStringPtr == '-') {
+        *(dispStringPtr++) = *(sourceStringPtr++);
+        *(dispStringPtr++) = COMPLEX_UNIT[0];
+        ++sourceStringPtr;
+      }
+      *(dispStringPtr++) = PRODUCT_SIGN[0];
+      *(dispStringPtr++) = PRODUCT_SIGN[1];
+      _decodeNumeral(dispStringPtr, sourceStringPtr, calcMode == CM_PEM && aimBuffer[0] != 0 && (currentStep.ram + 2 == literalAddress), NULL, NULL);
       break;
+    }
 
-    case STRING_LABEL_VARIABLE:
+    case STRING_LABEL_VARIABLE: {
       getStringLabelOrVariableName(literalAddress);
       sprintf(tmpString, STD_LEFT_SINGLE_QUOTE "%s" STD_RIGHT_SINGLE_QUOTE, tmpStringLabelOrVariableName);
       break;
+    }
 
-    case STRING_DATE:
+    case STRING_DATE: {
       getStringLabelOrVariableName(literalAddress);
       reallocateRegister(TEMP_REGISTER_1, dtDate, REAL34_SIZE, amNone);
       stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(TEMP_REGISTER_1));
       julianDayToInternalDate(REGISTER_REAL34_DATA(TEMP_REGISTER_1), REGISTER_REAL34_DATA(TEMP_REGISTER_1));
       dateToDisplayString(TEMP_REGISTER_1, tmpString);
       break;
+    }
 
-    case STRING_TIME:
-      {
-        char *timeStringPtr = tmpString;
-        char *sourceStringPtr = tmpStringLabelOrVariableName;
-        getStringLabelOrVariableName(literalAddress);
-        for(; *sourceStringPtr != '.' && *sourceStringPtr != 0; ++sourceStringPtr) {
-          *(timeStringPtr++) = *sourceStringPtr;
-        }
-        if(*sourceStringPtr == '.') {
-          ++sourceStringPtr;
-        }
-        *(timeStringPtr++) = ':';
-        if(*sourceStringPtr != 0) {
-          *(timeStringPtr++) = *(sourceStringPtr++);
-        }
-        else {
-          *(timeStringPtr++) = '0';
-        }
-        if(*sourceStringPtr != 0) {
-          *(timeStringPtr++) = *(sourceStringPtr++);
-        }
-        else {*(timeStringPtr++) = '0';
-        }
-        *(timeStringPtr++) = ':';
-        if(*sourceStringPtr != 0) {
-          *(timeStringPtr++) = *(sourceStringPtr++);
-        }
-        else {
-          *(timeStringPtr++) = '0';
-        }
-        if(*sourceStringPtr != 0) {
-          *(timeStringPtr++) = *(sourceStringPtr++);
-        }
-        else {
-          *(timeStringPtr++) = '0';
-        }
-        if(*sourceStringPtr != 0) {
-          *(timeStringPtr++) = '.';
-        }
-        for(; *sourceStringPtr != 0; ++sourceStringPtr) {
-          *(timeStringPtr++) = *sourceStringPtr;
-        }
-        *(timeStringPtr++) = 0;
+    case STRING_TIME: {
+      char *timeStringPtr = tmpString;
+      char *sourceStringPtr = tmpStringLabelOrVariableName;
+      getStringLabelOrVariableName(literalAddress);
+      for(; *sourceStringPtr != '.' && *sourceStringPtr != 0; ++sourceStringPtr) {
+        *(timeStringPtr++) = *sourceStringPtr;
       }
+      if(*sourceStringPtr == '.') {
+        ++sourceStringPtr;
+      }
+      *(timeStringPtr++) = ':';
+      if(*sourceStringPtr != 0) {
+        *(timeStringPtr++) = *(sourceStringPtr++);
+      }
+      else {
+        *(timeStringPtr++) = '0';
+      }
+      if(*sourceStringPtr != 0) {
+        *(timeStringPtr++) = *(sourceStringPtr++);
+      }
+      else {*(timeStringPtr++) = '0';
+      }
+      *(timeStringPtr++) = ':';
+      if(*sourceStringPtr != 0) {
+        *(timeStringPtr++) = *(sourceStringPtr++);
+      }
+      else {
+        *(timeStringPtr++) = '0';
+      }
+      if(*sourceStringPtr != 0) {
+        *(timeStringPtr++) = *(sourceStringPtr++);
+      }
+      else {
+        *(timeStringPtr++) = '0';
+      }
+      if(*sourceStringPtr != 0) {
+        *(timeStringPtr++) = '.';
+      }
+      for(; *sourceStringPtr != 0; ++sourceStringPtr) {
+        *(timeStringPtr++) = *sourceStringPtr;
+      }
+      *(timeStringPtr++) = 0;
       break;
+    }
 
-    case STRING_ANGLE_DMS:
-      {
-        char *angleStringPtr = tmpString;
-        char *sourceStringPtr = tmpStringLabelOrVariableName;
-        getStringLabelOrVariableName(literalAddress);
-        for(; *sourceStringPtr != '.' && *sourceStringPtr != 0; ++sourceStringPtr) {
-          *(angleStringPtr++) = *sourceStringPtr;
-        }
-        if(*sourceStringPtr == '.') {
-          ++sourceStringPtr;
-        }
-        *(angleStringPtr++) = STD_DEGREE[0];
-        *(angleStringPtr++) = STD_DEGREE[1];
-        if(*sourceStringPtr != 0) {
-          *(angleStringPtr++) = *(sourceStringPtr++);
-        }
-        else {
-          *(angleStringPtr++) = '0';
-        }
-        if(*sourceStringPtr != 0) {
-          *(angleStringPtr++) = *(sourceStringPtr++);
-        }
-        else {
-          *(angleStringPtr++) = '0';
-        }
-        *(angleStringPtr++) = '\'';
-        if(*sourceStringPtr != 0) {
-          *(angleStringPtr++) = *(sourceStringPtr++);
-        }
-        else {
-          *(angleStringPtr++) = '0';
-        }
-        if(*sourceStringPtr != 0) {
-          *(angleStringPtr++) = *(sourceStringPtr++);
-        }
-        else {
-          *(angleStringPtr++) = '0';
-        }
-        if(*sourceStringPtr != 0) {
-          *(angleStringPtr++) = '.';
-        }
-        for(; *sourceStringPtr != 0; ++sourceStringPtr) {
-          *(angleStringPtr++) = *sourceStringPtr;
-        }
-        *(angleStringPtr++) = '"';
-        *(angleStringPtr++) = 0;
+    case STRING_ANGLE_DMS: {
+      char *angleStringPtr = tmpString;
+      char *sourceStringPtr = tmpStringLabelOrVariableName;
+      getStringLabelOrVariableName(literalAddress);
+      for(; *sourceStringPtr != '.' && *sourceStringPtr != 0; ++sourceStringPtr) {
+        *(angleStringPtr++) = *sourceStringPtr;
       }
+      if(*sourceStringPtr == '.') {
+        ++sourceStringPtr;
+      }
+      *(angleStringPtr++) = STD_DEGREE[0];
+      *(angleStringPtr++) = STD_DEGREE[1];
+      if(*sourceStringPtr != 0) {
+        *(angleStringPtr++) = *(sourceStringPtr++);
+      }
+      else {
+        *(angleStringPtr++) = '0';
+      }
+      if(*sourceStringPtr != 0) {
+        *(angleStringPtr++) = *(sourceStringPtr++);
+      }
+      else {
+        *(angleStringPtr++) = '0';
+      }
+      *(angleStringPtr++) = '\'';
+      if(*sourceStringPtr != 0) {
+        *(angleStringPtr++) = *(sourceStringPtr++);
+      }
+      else {
+        *(angleStringPtr++) = '0';
+      }
+      if(*sourceStringPtr != 0) {
+        *(angleStringPtr++) = *(sourceStringPtr++);
+      }
+      else {
+        *(angleStringPtr++) = '0';
+      }
+      if(*sourceStringPtr != 0) {
+        *(angleStringPtr++) = '.';
+      }
+      for(; *sourceStringPtr != 0; ++sourceStringPtr) {
+        *(angleStringPtr++) = *sourceStringPtr;
+      }
+      *(angleStringPtr++) = '"';
+      *(angleStringPtr++) = 0;
       break;
+    }
 
     default: {
       #if !defined(DMCP_BUILD)
@@ -683,20 +697,24 @@ void decodeOneStep_ram(uint8_t *step) {
   }
   else {
     switch(indexOfItems[op].status & PTP_STATUS) {
-      case PTP_NONE:
+      case PTP_NONE: {
         sprintf(tmpString, "%s%s", (CST_01 <= op && op <= CST_79) ? "# " : "", indexOfItems[op].itemCatalogName);
         break;
+      }
 
-      case PTP_DISABLED:
+      case PTP_DISABLED: {
         printf("\nERROR in decodeOneStep: instruction %u is not programmable!\n", op);
         break;
+      }
 
-      case PTP_LITERAL:
+      case PTP_LITERAL: {
         decodeLiteral(step);
         break;
+      }
 
-      default:
+      default: {
         decodeOp(step, (op == ITM_INTEGRAL) ? STD_INTEGRAL "fd" : indexOfItems[op].itemCatalogName, (indexOfItems[op].status & PTP_STATUS) >> 9, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
+      }
     }
   }
 }

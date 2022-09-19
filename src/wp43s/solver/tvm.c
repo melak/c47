@@ -41,7 +41,7 @@ void fnTvmVar(uint16_t variable) {
       case RESERVED_VARIABLE_NPER:
       case RESERVED_VARIABLE_PERONA:
       case RESERVED_VARIABLE_PMT:
-      case RESERVED_VARIABLE_PV:
+      case RESERVED_VARIABLE_PV: {
         currentSolverStatus |= SOLVER_STATUS_TVM_APPLICATION;
         currentSolverVariable = variable;
 
@@ -54,31 +54,35 @@ void fnTvmVar(uint16_t variable) {
           real34Multiply(REGISTER_REAL34_DATA(variable), const34_2, &y);
           real34Multiply(REGISTER_REAL34_DATA(variable), const34_1on2, &x);
           switch(variable) {
-            case RESERVED_VARIABLE_PV:
+            case RESERVED_VARIABLE_PV: {
               if(real34IsZero(REGISTER_REAL34_DATA(RESERVED_VARIABLE_PV))) {
                 real34Multiply(REGISTER_REAL34_DATA(RESERVED_VARIABLE_FV), const34_2, &y);
                 real34Multiply(REGISTER_REAL34_DATA(RESERVED_VARIABLE_FV), const34_1on2, &x);
               }
               break;
-            case RESERVED_VARIABLE_FV:
+            }
+            case RESERVED_VARIABLE_FV: {
               if(real34IsZero(REGISTER_REAL34_DATA(RESERVED_VARIABLE_FV))) {
                 real34Multiply(REGISTER_REAL34_DATA(RESERVED_VARIABLE_PV), const34_2, &y);
                 real34Multiply(REGISTER_REAL34_DATA(RESERVED_VARIABLE_PV), const34_1on2, &x);
               }
               break;
-            case RESERVED_VARIABLE_IPONA:
+            }
+            case RESERVED_VARIABLE_IPONA: {
               if(real34CompareLessThan(REGISTER_REAL34_DATA(variable), const34_1)) {
                 real34Copy(const34_100, &y);
                 real34Copy(const34_1, &x);
               }
               break;
+            }
             case RESERVED_VARIABLE_NPER:
-            case RESERVED_VARIABLE_PERONA:
+            case RESERVED_VARIABLE_PERONA: {
               if(real34CompareLessThan(REGISTER_REAL34_DATA(variable), const34_1)) {
                 real34Copy(const34_2, &y);
                 real34Copy(const34_1, &x);
               }
               break;
+            }
           }
           if((variable == RESERVED_VARIABLE_PV || variable == RESERVED_VARIABLE_FV) &&
             !real34IsZero(REGISTER_REAL34_DATA(RESERVED_VARIABLE_PV)) &&
@@ -113,9 +117,11 @@ void fnTvmVar(uint16_t variable) {
           adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
         }
         break;
+      }
 
-      default:
+      default: {
         displayBugScreen("In function fnTvmVar: this variable is not intended for TVM application!");
+      }
     }
   #endif // !TESTSUITE_BUILD
 }
@@ -157,7 +163,7 @@ void tvmEquation(void) {
   else {
     realAdd(const_1, &i, &val, &ctxtReal39); // BEGIN mode
   }
-  
+
   realMultiply(&val, &pmt, &val, &ctxtReal39);
   realDivide(&val, &i, &val, &ctxtReal39);
 

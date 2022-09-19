@@ -61,7 +61,7 @@ int16_t stringWidth(const char *str, const font_t *font, bool_t withLeadingEmpty
     }
 
     if(glyph == NULL) {
-      #ifdef GENERATE_CATALOGS
+      #if defined(GENERATE_CATALOGS)
         printf("\n---------------------------------------------------------------------------\n"
                  "In function stringWidth: %d is an unexpected value returned by findGlyph!"
                "/n---------------------------------------------------------------------------\n", glyphId);
@@ -350,9 +350,8 @@ void *xcopy(void *dest, const void *source, int n) {
 }
 
 
-#ifdef WIN32
-  char *stpcpy(char *dest, const char *source)
-  {
+#if defined(WIN32)
+  char *stpcpy(char *dest, const char *source) {
     const size_t l = strlen(source);
     return (char *)memcpy(dest, source, l + 1) + l;
   }

@@ -25,7 +25,7 @@
   #include <stdint.h>
 
   void fnDivide(uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void divError(void);
   #else // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -37,6 +37,8 @@
 
   //      RegYRegX
   void divLonILonI(void);
+  void divLonIRema(void);
+  void divLonICxma(void);
   void divLonIShoI(void);
   void divLonIReal(void);
   void divLonICplx(void);
@@ -66,6 +68,8 @@
 
   //      RegYRegX
   void divShoILonI(void);
+  void divShoIRema(void);
+  void divShoICxma(void);
   void divShoIShoI(void);
   void divShoIReal(void);
   void divShoICplx(void);
@@ -73,6 +77,8 @@
 
   //      RegYRegX
   void divRealLonI(void);
+  void divRealRema(void);
+  void divRealCxma(void);
   void divRealShoI(void);
   void divRealReal(void);
   void divRealCplx(void);
@@ -80,6 +86,8 @@
 
   //      RegYRegX
   void divCplxLonI(void);
+  void divCplxRema(void);
+  void divCplxCxma(void);
   void divCplxShoI(void);
   void divCplxReal(void);
   void divCplxCplx(void);

@@ -26,13 +26,13 @@
   #include <stdint.h>
 
   void fnSincpi(uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void sincpiError(void);
   #else // (EXTRA_INFO_ON_CALC_ERROR != 1)
     #define sincpiError typeError
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-  
+
   void sincpiLonI (void);
   void sincpiRema (void);
   void sincpiCxma (void);

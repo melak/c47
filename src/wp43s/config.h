@@ -188,6 +188,7 @@
    ***********************************************/
   void     fnFractionType        (uint16_t unusedButMandatoryParameter);
 
+  void     restoreStats          (void);
   void     fnReset               (uint16_t confirmation);
   void     setConfirmationMode   (void (*func)(uint16_t));
   void     fnClAll               (uint16_t confirmation);

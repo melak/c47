@@ -113,7 +113,9 @@ void rdpError(uint16_t unusedButMandatoryParameter) {
  * \return void
  ***********************************************/
 void fnRdp(uint16_t digits) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Rdp[getRegisterDataType(REGISTER_X)](digits);
 

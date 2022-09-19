@@ -131,8 +131,12 @@ void fnGotoDot(uint16_t globalStepNumber) {
     for(uint16_t lbl=0; lbl<numberOfLabels; lbl++) {
       uint8_t tmpLabel[16];
       uint8_t *lblPtr;
-      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_RAM   && labelList[lbl].program < 0) continue;
-      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_FLASH && labelList[lbl].program > 0) continue;
+      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_RAM   && labelList[lbl].program < 0) {
+        continue;
+      }
+      if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_FLASH && labelList[lbl].program > 0) {
+        continue;
+      }
       if(labelList[lbl].program < 0) {
         readStepInFlashPgmLibrary(tmpLabel, 16, labelList[lbl].labelPointer.flash);
         lblPtr = tmpLabel;
@@ -296,7 +300,9 @@ void fnReturn(uint16_t skip) {
 
 void fnRunProgram(uint16_t unusedButMandatoryParameter) {
   if(currentInputVariable != INVALID_VARIABLE) {
-    if(currentInputVariable & 0x8000) fnDropY(NOPARAM);
+    if(currentInputVariable & 0x8000) {
+      fnDropY(NOPARAM);
+    }
     fnStore(currentInputVariable & 0x3fff);
     currentInputVariable = INVALID_VARIABLE;
   }
@@ -322,8 +328,10 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
   static void _executeWithIndirectRegister(uint8_t *paramAddress, uint16_t op) {
     uint8_t opParam = *(uint8_t *)paramAddress;
     if(opParam <= LAST_LOCAL_REGISTER) { // Local register from .00 to .98
-      int16_t realParam = indirectAddressing(opParam, (indexOfItems[op].param == TM_STORCL || indexOfItems[op].param == TM_M_DIM), indexOfItems[op].tamMinMax >> TAM_MAX_BITS, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
-      if(realParam < 9999) reallyRunFunction(op, realParam);
+      int16_t realParam = indirectAddressing(opParam, (indexOfItems[op].param == TM_FLAGR || indexOfItems[op].param == TM_FLAGW) ? INDPM_FLAG : (indexOfItems[op].param == TM_STORCL || indexOfItems[op].param == TM_M_DIM) ? INDPM_REGISTER : INDPM_PARAM, indexOfItems[op].tamMinMax >> TAM_MAX_BITS, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
+      if(realParam < 9999) {
+        reallyRunFunction(op, realParam);
+      }
     }
     else {
       sprintf(tmpString, "\nIn function _executeWithIndirectRegister: %s " STD_RIGHT_ARROW " %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
@@ -335,8 +343,10 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
     _getStringLabelOrVariableName(stringAddress);
     regist = findNamedVariable(tmpStringLabelOrVariableName);
     if(regist != INVALID_VARIABLE) {
-      int16_t realParam = indirectAddressing(regist, (indexOfItems[op].param == TM_STORCL || indexOfItems[op].param == TM_M_DIM), indexOfItems[op].tamMinMax >> TAM_MAX_BITS, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
-      if(realParam < 9999) reallyRunFunction(op, realParam);
+      int16_t realParam = indirectAddressing(regist, (indexOfItems[op].param == TM_FLAGR || indexOfItems[op].param == TM_FLAGW) ? INDPM_FLAG : (indexOfItems[op].param == TM_STORCL || indexOfItems[op].param == TM_M_DIM) ? INDPM_REGISTER : INDPM_PARAM, indexOfItems[op].tamMinMax >> TAM_MAX_BITS, indexOfItems[op].tamMinMax & TAM_MAX_MASK);
+      if(realParam < 9999) {
+        reallyRunFunction(op, realParam);
+      }
     }
     else {
       displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
@@ -352,11 +362,12 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
     bool_t tryAllocate = (op == ITM_STO || op == ITM_M_DIM || op == ITM_MVAR || op == ITM_INPUT);
 
     switch(paramMode) {
-      case PARAM_DECLARE_LABEL:
+      case PARAM_DECLARE_LABEL: {
         // nothing to do
         break;
+      }
 
-      case PARAM_LABEL:
+      case PARAM_LABEL: {
         if(opParam <= 104) { // Local label from 00 to 99 or from A to E
           reallyRunFunction(op, opParam);
         }
@@ -384,8 +395,9 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
           sprintf(tmpString, "\nIn function _executeOp: case PARAM_LABEL, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
         }
         break;
+      }
 
-      case PARAM_FLAG:
+      case PARAM_FLAG: {
         if(opParam <= LAST_LOCAL_FLAG) { // Global flag from 00 to 99, Lettered flag from X to K, or Local flag from .00 to .15 (or .31)
           reallyRunFunction(op, opParam);
         }
@@ -409,11 +421,13 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
             case FLAG_SOLVING:
             case FLAG_VMDISP:
             case FLAG_USB:
-            case FLAG_ENDPMT:
+            case FLAG_ENDPMT: {
               reallyRunFunction(op, (uint16_t)(*paramAddress) | 0xc000);
               break;
-            default:
+            }
+            default: {
               reallyRunFunction(op, (uint16_t)(*paramAddress) | 0x8000);
+            }
           }
         }
         else if(opParam == INDIRECT_REGISTER) {
@@ -426,8 +440,9 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
           sprintf(tmpString, "\nIn function _executeOp: case PARAM_FLAG, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
         }
         break;
+      }
 
-      case PARAM_NUMBER_8:
+      case PARAM_NUMBER_8: {
         if(opParam <= (indexOfItems[op].tamMinMax & TAM_MAX_MASK)) { // Value from 0 to 99
           reallyRunFunction(op, opParam);
         }
@@ -441,13 +456,15 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
           sprintf(tmpString, "\nIn function _executeOp: case PARAM_NUMBER, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
         }
         break;
+      }
 
-      case PARAM_NUMBER_16:
+      case PARAM_NUMBER_16: {
         reallyRunFunction(op, opParam + 256 * *(paramAddress));
         break;
+      }
 
       case PARAM_REGISTER:
-      case PARAM_COMPARE:
+      case PARAM_COMPARE: {
         if(opParam <= LAST_LOCAL_REGISTER) { // Global register from 00 to 99, Lettered register from X to K, or Local register from .00 to .98
           reallyRunFunction(op, opParam);
         }
@@ -488,127 +505,135 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
           sprintf(tmpString, "\nIn function _executeOp: case PARAM_REGISTER / PARAM_COMPARE, %s  %u is not a valid parameter!", indexOfItems[op].itemCatalogName, opParam);
         }
         break;
+      }
 
       case PARAM_SKIP_BACK:
-      case PARAM_SHUFFLE:
+      case PARAM_SHUFFLE: {
         reallyRunFunction(op, opParam);
         break;
+      }
 
-      default:
+      default: {
         sprintf(tmpString, "\nIn function _executeOp: paramMode %u is not valid!\n", paramMode);
+      }
     }
   }
 
   static void _putLiteral(uint8_t *literalAddress) {
     switch(*(uint8_t *)(literalAddress++)) {
-      case BINARY_SHORT_INTEGER:
+      case BINARY_SHORT_INTEGER: {
         liftStack();
         setSystemFlag(FLAG_ASLIFT);
         reallocateRegister(REGISTER_X, dtShortInteger, SHORT_INTEGER_SIZE, *(uint8_t *)(literalAddress++));
         xcopy(REGISTER_DATA(REGISTER_X), literalAddress, TO_BYTES(SHORT_INTEGER_SIZE));
         break;
+      }
 
-      //case BINARY_LONG_INTEGER:
+      //case BINARY_LONG_INTEGER: {
       //  break;
+      //}
 
-      case BINARY_REAL34:
+      case BINARY_REAL34: {
         liftStack();
         setSystemFlag(FLAG_ASLIFT);
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
         real34Copy((real34_t *)literalAddress, REGISTER_REAL34_DATA(REGISTER_X));
         break;
+      }
 
-      case BINARY_COMPLEX34:
-        {
-          complex34_t complexLiteral;
-          liftStack();
-          setSystemFlag(FLAG_ASLIFT);
-          reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-          xcopy(VARIABLE_REAL34_DATA(&complexLiteral), literalAddress     , 16);
-          xcopy(VARIABLE_IMAG34_DATA(&complexLiteral), literalAddress + 16, 16);
-          complex34Copy(&complexLiteral, REGISTER_COMPLEX34_DATA(REGISTER_X));
-        }
+      case BINARY_COMPLEX34: {
+        complex34_t complexLiteral;
+        liftStack();
+        setSystemFlag(FLAG_ASLIFT);
+        reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+        xcopy(VARIABLE_REAL34_DATA(&complexLiteral), literalAddress     , 16);
+        xcopy(VARIABLE_IMAG34_DATA(&complexLiteral), literalAddress + 16, 16);
+        complex34Copy(&complexLiteral, REGISTER_COMPLEX34_DATA(REGISTER_X));
         break;
+      }
 
-      //case BINARY_DATE:
+      //case BINARY_DATE: {
       //  break;
+      //}
 
-      //case BINARY_TIME:
+      //case BINARY_TIME: {
       //  break;
+      //}
 
-      case STRING_SHORT_INTEGER:
-        {
-          uint8_t base = *literalAddress;
-          longInteger_t val;
-          longIntegerInit(val);
+      case STRING_SHORT_INTEGER: {
+        uint8_t base = *literalAddress;
+        longInteger_t val;
+        longIntegerInit(val);
 
-          _getStringLabelOrVariableName(literalAddress + 1);
-          stringToLongInteger(tmpStringLabelOrVariableName, base, val);
-          liftStack();
-          setSystemFlag(FLAG_ASLIFT);
-          convertLongIntegerToShortIntegerRegister(val, (uint32_t)(*literalAddress), REGISTER_X);
+        _getStringLabelOrVariableName(literalAddress + 1);
+        stringToLongInteger(tmpStringLabelOrVariableName, base, val);
+        liftStack();
+        setSystemFlag(FLAG_ASLIFT);
+        convertLongIntegerToShortIntegerRegister(val, (uint32_t)(*literalAddress), REGISTER_X);
 
-          longIntegerFree(val);
-        }
+        longIntegerFree(val);
         break;
+      }
 
-      case STRING_LONG_INTEGER:
-        {
-          longInteger_t val;
-          longIntegerInit(val);
+      case STRING_LONG_INTEGER: {
+        longInteger_t val;
+        longIntegerInit(val);
 
-          _getStringLabelOrVariableName(literalAddress);
-          stringToLongInteger(tmpStringLabelOrVariableName, 10, val);
-          liftStack();
-          setSystemFlag(FLAG_ASLIFT);
-          convertLongIntegerToLongIntegerRegister(val, REGISTER_X);
+        _getStringLabelOrVariableName(literalAddress);
+        stringToLongInteger(tmpStringLabelOrVariableName, 10, val);
+        liftStack();
+        setSystemFlag(FLAG_ASLIFT);
+        convertLongIntegerToLongIntegerRegister(val, REGISTER_X);
 
-          longIntegerFree(val);
-        }
+        longIntegerFree(val);
         break;
+      }
 
-      case STRING_REAL34:
+      case STRING_REAL34: {
         _getStringLabelOrVariableName(literalAddress);
         liftStack();
         setSystemFlag(FLAG_ASLIFT);
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
         stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
         break;
+      }
 
-      case STRING_COMPLEX34:
-        {
-          char *imag = tmpStringLabelOrVariableName;
-          _getStringLabelOrVariableName(literalAddress);
-          while(*imag != 'i' && *imag != 0) ++imag;
-          if(*imag == 'i') {
-            if(imag > tmpStringLabelOrVariableName && *(imag - 1) == '-') {
-              *imag = '-'; *(imag - 1) = 0;
-            }
-            else if(imag > tmpStringLabelOrVariableName && *(imag - 1) == '+') {
-              *imag = 0; *(imag - 1) = 0;
-              ++imag;
-            }
-            else {
-              *imag = 0;
-            }
-          }
-          liftStack();
-          setSystemFlag(FLAG_ASLIFT);
-          reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-          stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
-          stringToReal34(imag,                         REGISTER_IMAG34_DATA(REGISTER_X));
+      case STRING_COMPLEX34: {
+        char *imag = tmpStringLabelOrVariableName;
+        _getStringLabelOrVariableName(literalAddress);
+        while(*imag != 'i' && *imag != 0) {
+          ++imag;
         }
+        if(*imag == 'i') {
+          if(imag > tmpStringLabelOrVariableName && *(imag - 1) == '-') {
+            *imag = '-'; *(imag - 1) = 0;
+          }
+          else if(imag > tmpStringLabelOrVariableName && *(imag - 1) == '+') {
+            *imag = 0; *(imag - 1) = 0;
+            ++imag;
+          }
+          else {
+            *imag = 0;
+          }
+        }
+        liftStack();
+        setSystemFlag(FLAG_ASLIFT);
+        reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+        stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
+        stringToReal34(imag,                         REGISTER_IMAG34_DATA(REGISTER_X));
         break;
+      }
 
-      case STRING_LABEL_VARIABLE:
+      case STRING_LABEL_VARIABLE: {
         _getStringLabelOrVariableName(literalAddress);
         liftStack();
         setSystemFlag(FLAG_ASLIFT);
         reallocateRegister(REGISTER_X, dtString, TO_BLOCKS(stringByteLength(tmpStringLabelOrVariableName) + 1), amNone);
         xcopy(REGISTER_STRING_DATA(REGISTER_X), tmpStringLabelOrVariableName, stringByteLength(tmpStringLabelOrVariableName) + 1);
         break;
+      }
 
-      case STRING_DATE:
+      case STRING_DATE: {
         _getStringLabelOrVariableName(literalAddress);
         liftStack();
         setSystemFlag(FLAG_ASLIFT);
@@ -616,8 +641,9 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
         stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
         julianDayToInternalDate(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(REGISTER_X));
         break;
+      }
 
-      case STRING_TIME:
+      case STRING_TIME: {
         _getStringLabelOrVariableName(literalAddress);
         liftStack();
         setSystemFlag(FLAG_ASLIFT);
@@ -625,8 +651,9 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
         stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
         hmmssInRegisterToSeconds(REGISTER_X);
         break;
+      }
 
-      case STRING_ANGLE_DMS:
+      case STRING_ANGLE_DMS: {
         _getStringLabelOrVariableName(literalAddress);
         liftStack();
         setSystemFlag(FLAG_ASLIFT);
@@ -634,6 +661,7 @@ void fnStopProgram(uint16_t unusedButMandatoryParameter) {
         stringToReal34(tmpStringLabelOrVariableName, REGISTER_REAL34_DATA(REGISTER_X));
         real34FromDmsToDeg(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(REGISTER_X));
         break;
+      }
 
       default: {
         #if !defined(DMCP_BUILD)
@@ -666,21 +694,24 @@ int16_t executeOneStep(pgmPtr_t step) {
       case ITM_XEQ:         //     3
       case ITM_BACK:        //  1412
       case ITM_CASE:        //  1418
-      case ITM_SKIP:        //  1603
+      case ITM_SKIP: {      //  1603
         _executeOp(step.ram, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
         return -1;
+      }
 
       case ITM_RTN:         //     4
       case ITM_END:         //  1458
-      case ITM_RTNP1:       //  1579
+      case ITM_RTNP1: {     //  1579
         runFunction(op);
         return 0;
+      }
 
-      case 0x7fff:          // 32767  .END.
+      case 0x7fff: {        // 32767  .END.
         fnReturn(0);
         return 0;
+      }
 
-      case ITM_SOLVE:       //  1608
+      case ITM_SOLVE: {     //  1608
         _executeOp(step.ram, op, PARAM_REGISTER);
         if(temporaryInformation == TI_SOLVER_FAILED) {
           lastErrorCode = ERROR_NONE;
@@ -689,35 +720,43 @@ int16_t executeOneStep(pgmPtr_t step) {
         else {
           return 1;
         }
+      }
 
-      default:
+      default: {
         switch(indexOfItems[op].status & PTP_STATUS) {
-          case PTP_NONE:
+          case PTP_NONE: {
             runFunction(op);
             break;
+          }
 
-          case PTP_DECLARE_LABEL:
+          case PTP_DECLARE_LABEL: {
             return 1;
+          }
 
-          case PTP_DISABLED:
+          case PTP_DISABLED: {
             displayCalcErrorMessage(ERROR_NON_PROGRAMMABLE_COMMAND, ERR_REGISTER_LINE, REGISTER_X);
             #if (EXTRA_INFO_ON_CALC_ERROR == 1)
               moreInfoOnError("In function decodeOneStep:", "non-programmable function", indexOfItems[op].itemCatalogName, "appeared in the program!");
             #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
             return 0;
+          }
 
-          case PTP_LITERAL:
+          case PTP_LITERAL: {
             _putLiteral(step.ram);
             return 1;
+          }
 
-          case PTP_KEYG_KEYX:
+          case PTP_KEYG_KEYX: {
             _executeOp(step.ram, op, PARAM_NUMBER_8);
             break;
+          }
 
-          default:
+          default: {
             _executeOp(step.ram, op, (indexOfItems[op].status & PTP_STATUS) >> 9);
+          }
         }
         return temporaryInformation == TI_FALSE ? 2 : 1;
+      }
     }
   #endif // !TESTSUITE_BUILD
 }
@@ -776,18 +815,21 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
       stepsToBeAdvanced = executeOneStep(currentStep);
       if(lastErrorCode == ERROR_NONE) {
         switch(stepsToBeAdvanced) {
-          case -1: // Already the pointer is set
+          case -1: { // Already the pointer is set
             break;
+          }
 
-          case 0: // End of the routine
+          case 0: { // End of the routine
             if(subLevel == startingSubLevel) {
               goto stopProgram;
             }
             break;
+          }
 
-          default: // Find the next step
+          default: { // Find the next step
             fnSkip((uint16_t)(stepsToBeAdvanced - 1));
             break;
+          }
         }
       }
       else {

@@ -26,7 +26,7 @@
   #include "typeDefinitions.h"
 
   void fnXthRoot      (uint16_t unusedButMandatoryParameter);
-  
+
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
     void xthRootError   (void);
   #else // (EXTRA_INFO_ON_CALC_ERROR == 1)

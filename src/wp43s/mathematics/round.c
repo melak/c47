@@ -66,7 +66,9 @@ TO_QSPI void (* const Round[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
  * \return void
  ***********************************************/
 void fnRound(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   Round[getRegisterDataType(REGISTER_X)]();
 
@@ -82,15 +84,18 @@ void roundTime(void) {
   real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &real34);
 
   switch(timeDisplayFormatDigits) {
-    case 0: // no rounding
+    case 0: { // no rounding
       break;
-    case 1: case 2: // round to minutes
+    }
+    case 1:
+    case 2: { // round to minutes
       int32ToReal34(60, &value34);
       real34Divide(&real34, &value34, &real34);
       real34ToIntegralValue(&real34, &real34, DEC_ROUND_DOWN);
       real34Multiply(&real34, &value34, &real34);
       break;
-    default: // round to seconds, milliseconds, microseconds, ...
+    }
+    default: { // round to seconds, milliseconds, microseconds, ...
       int32ToReal34(10, &value34);
       for(digits = 4; digits <= timeDisplayFormatDigits; ++digits) {
         real34Multiply(&real34, &value34, &real34);
@@ -99,6 +104,7 @@ void roundTime(void) {
       for(digits = 4; digits <= timeDisplayFormatDigits; ++digits) {
         real34Divide(&real34, &value34, &real34);
       }
+    }
   }
 
   real34Copy(&real34, REGISTER_REAL34_DATA(REGISTER_X));
@@ -152,7 +158,8 @@ void roundReal(void) {
 
     endOfIntegerPart = -1;
     if(getSystemFlag(FLAG_PROPFR)) { // a b/c
-      while(displayValueX[++endOfIntegerPart] != ' '); // The ending ; is OK here
+      while(displayValueX[++endOfIntegerPart] != ' ') {
+      }
       displayValueX[endOfIntegerPart] = 0;
       stringToReal34(displayValueX, REGISTER_REAL34_DATA(REGISTER_X));
     }
@@ -161,7 +168,8 @@ void roundReal(void) {
     }
 
     slashPos = endOfIntegerPart++;
-    while(displayValueX[++slashPos] != '/'); // The ending ; is OK here
+    while(displayValueX[++slashPos] != '/') {
+    }
     displayValueX[slashPos++] = 0;
     int32ToReal34(stringToInt32(displayValueX + endOfIntegerPart), &numerator);
     int32ToReal34(stringToInt32(displayValueX + slashPos), &denominator);

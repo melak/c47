@@ -71,7 +71,9 @@ TO_QSPI void (* const beta[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_DATA
  * \return void
  ***********************************************/
 void fnBeta(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   beta[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

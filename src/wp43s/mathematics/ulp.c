@@ -32,24 +32,28 @@ void fnUlp(uint16_t unusedButMandatoryParameter) {
   real34_t x34;
   longInteger_t lgInt;
 
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       longIntegerInit(lgInt);
       intToLongInteger(1, lgInt);
       convertLongIntegerToLongIntegerRegister(lgInt, REGISTER_X);
       longIntegerFree(lgInt);
       break;
+    }
 
-    case dtShortInteger:
+    case dtShortInteger: {
       longIntegerInit(lgInt);
       intToLongInteger(1, lgInt);
       convertLongIntegerToShortIntegerRegister(lgInt, getRegisterShortIntegerBase(REGISTER_X), REGISTER_X);
       longIntegerFree(lgInt);
       break;
+    }
 
-    case dtReal34:
+    case dtReal34: {
       if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -68,14 +72,16 @@ void fnUlp(uint16_t unusedButMandatoryParameter) {
 
       setRegisterAngularMode(REGISTER_X, amNone);
       break;
+    }
 
-    default:
+    default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "cannot calculate ULP? with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
         moreInfoOnError("In function fnUlp:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
+    }
   }
 
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);

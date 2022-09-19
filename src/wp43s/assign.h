@@ -18,7 +18,7 @@
  * \file assign.h
  */
 #if !defined(ASSIGN_H)
-#define ASSIGN_H
+  #define ASSIGN_H
 
   #include <stdint.h>
 

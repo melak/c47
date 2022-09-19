@@ -40,21 +40,21 @@
 #include "sort.h"
 #include "stats.h"
 #include <string.h>
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
 #include <stdio.h>
 #include <errno.h>
 #endif
 
 #include "wp43s.h"
 
-#define BACKUP_VERSION         74  // Save screen
+#define BACKUP_VERSION         77  // Histo Update
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
 static char *tmpRegisterString = NULL;
 
 static void save(const void *buffer, uint32_t size, void *stream) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     UINT bytesWritten;
     f_write(stream, buffer, size, &bytesWritten);
   #else // !DMCP_BUILD
@@ -65,7 +65,7 @@ static void save(const void *buffer, uint32_t size, void *stream) {
 
 
 static uint32_t restore(void *buffer, uint32_t size, void *stream) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     UINT bytesRead;
     f_read(stream, buffer, size, &bytesRead);
     return(bytesRead);
@@ -76,7 +76,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 
 
 
-#ifdef PC_BUILD
+#if defined(PC_BUILD)
   void saveCalc(void) {
     uint32_t backupVersion = BACKUP_VERSION;
     uint32_t ramSize       = RAM_SIZE;
@@ -301,6 +301,14 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
     save(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
     save(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
+    save(&drawHistogram,                      sizeof(drawHistogram),                      BACKUP);
+    save(&statMx,                             sizeof(statMx),                             BACKUP);
+    save(&lrSelectionHistobackup,             sizeof(lrSelectionHistobackup),             BACKUP);
+    save(&lrChosenHistobackup,                sizeof(lrChosenHistobackup),                BACKUP);
+    save(&loBinR,                             sizeof(loBinR),                             BACKUP);
+    save(&nBins ,                             sizeof(nBins ),                             BACKUP);
+    save(&hiBinR,                             sizeof(hiBinR),                             BACKUP);
+    save(&histElementXorY,                    sizeof(histElementXorY),                    BACKUP);
 
     save(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
     for(int y = 0; y < SCREEN_HEIGHT; ++y) {
@@ -559,6 +567,14 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&currentMvarLabel,                   sizeof(currentMvarLabel),                   BACKUP);
       restore(&graphVariable,                      sizeof(graphVariable),                      BACKUP);
       restore(&plotStatMx,                         sizeof(plotStatMx),                         BACKUP);
+      restore(&drawHistogram,                      sizeof(drawHistogram),                      BACKUP);
+      restore(&statMx,                             sizeof(statMx),                             BACKUP);
+      restore(&lrSelectionHistobackup,             sizeof(lrSelectionHistobackup),             BACKUP);
+      restore(&lrChosenHistobackup,                sizeof(lrChosenHistobackup),                BACKUP);
+      restore(&loBinR,                             sizeof(loBinR),                             BACKUP);
+      restore(&nBins ,                             sizeof(nBins ),                             BACKUP);
+      restore(&hiBinR,                             sizeof(hiBinR),                             BACKUP);
+      restore(&histElementXorY,                    sizeof(histElementXorY),                    BACKUP);
 
       restore(&screenUpdatingMode,                 sizeof(screenUpdatingMode),                 BACKUP);
       restore(loadedScreen,                        SCREEN_WIDTH * SCREEN_HEIGHT / 8,           BACKUP);
@@ -601,45 +617,88 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       free(loadedScreen);
 
       #if (SCREEN_800X480 == 1)
-        if(calcMode == CM_NORMAL)                     {}
-        else if(calcMode == CM_AIM)                   {cursorEnabled = true;}
-        else if(calcMode == CM_NIM)                   {cursorEnabled = true;}
-        else if(calcMode == CM_REGISTER_BROWSER)      {}
-        else if(calcMode == CM_FLAG_BROWSER)          {}
-        else if(calcMode == CM_FONT_BROWSER)          {}
-        else if(calcMode == CM_PEM)                   {}
-        else if(calcMode == CM_PLOT_STAT)             {}
-        else if(calcMode == CM_GRAPH)                 {}
-        else if(calcMode == CM_MIM)                   {mimRestore();}
-        else if(calcMode == CM_EIM)                   {}
-        else if(calcMode == CM_ASSIGN)                {}
-        else if(calcMode == CM_TIMER)                 {}
+        if(calcMode == CM_NORMAL) {
+        }
+        else if(calcMode == CM_AIM) {
+          cursorEnabled = true;
+        }
+        else if(calcMode == CM_NIM) {
+          cursorEnabled = true;
+        }
+        else if(calcMode == CM_REGISTER_BROWSER) {
+        }
+        else if(calcMode == CM_FLAG_BROWSER) {
+        }
+        else if(calcMode == CM_FONT_BROWSER) {
+        }
+        else if(calcMode == CM_PEM) {
+        }
+        else if(calcMode == CM_PLOT_STAT) {
+        }
+        else if(calcMode == CM_GRAPH) {
+        }
+        else if(calcMode == CM_MIM) {
+          mimRestore();
+        }
+        else if(calcMode == CM_EIM) {
+        }
+        else if(calcMode == CM_ASSIGN) {
+        }
+        else if(calcMode == CM_TIMER) {
+        }
         else {
           sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
           displayBugScreen(errorMessage);
         }
       #else // (SCREEN_800X480 == 0)
-        if(calcMode == CM_NORMAL)                      calcModeNormalGui();
-        else if(calcMode == CM_AIM)                   {calcModeAimGui();    cursorEnabled = true;}
-        else if(calcMode == CM_NIM)                   {calcModeNormalGui(); cursorEnabled = true;}
-        else if(calcMode == CM_REGISTER_BROWSER)       calcModeNormalGui();
-        else if(calcMode == CM_FLAG_BROWSER)           calcModeNormalGui();
-        else if(calcMode == CM_FONT_BROWSER)           calcModeNormalGui();
-        else if(calcMode == CM_PEM)                    calcModeNormalGui();
-        else if(calcMode == CM_PLOT_STAT)              calcModeNormalGui();
-        else if(calcMode == CM_GRAPH)                  calcModeNormalGui();
-        else if(calcMode == CM_MIM)                   {calcModeNormalGui(); mimRestore();}
-        else if(calcMode == CM_EIM)                   {calcModeAimGui();}
-        else if(calcMode == CM_ASSIGN)                {calcModeNormalGui();}
-        else if(calcMode == CM_TIMER)                 {calcModeNormalGui();}
+        if(calcMode == CM_NORMAL) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_AIM) {
+          calcModeAimGui();
+          cursorEnabled = true;
+        }
+        else if(calcMode == CM_NIM) {
+          calcModeNormalGui(); cursorEnabled = true;
+        }
+        else if(calcMode == CM_REGISTER_BROWSER) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_FLAG_BROWSER) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_FONT_BROWSER) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_PEM) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_PLOT_STAT) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_GRAPH) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_MIM) {
+          calcModeNormalGui(); mimRestore();
+        }
+        else if(calcMode == CM_EIM) {
+          calcModeAimGui();
+        }
+        else if(calcMode == CM_ASSIGN) {
+          calcModeNormalGui();
+        }
+        else if(calcMode == CM_TIMER) {
+          calcModeNormalGui();
+        }
         else {
           sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
           displayBugScreen(errorMessage);
         }
       #endif // (SCREEN_800X480 == 1)
-        if(catalog) {
-          clearSystemFlag(FLAG_ALPHA);
-        }
+      if(catalog) {
+        clearSystemFlag(FLAG_ALPHA);
+      }
 
       updateMatrixHeightCache();
       refreshScreen();
@@ -658,117 +717,135 @@ static void registerToSaveString(calcRegister_t regist) {
   tmpRegisterString = tmpString + START_REGISTER_VALUE;
 
   switch(getRegisterDataType(regist)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       convertLongIntegerRegisterToLongInteger(regist, lgInt);
       longIntegerToAllocatedString(lgInt, tmpRegisterString, TMP_STR_LENGTH - START_REGISTER_VALUE - 1);
       longIntegerFree(lgInt);
       strcpy(aimBuffer, "LonI");
       break;
+    }
 
-    case dtString:
+    case dtString: {
       stringToUtf8(REGISTER_STRING_DATA(regist), (uint8_t *)(tmpRegisterString));
       strcpy(aimBuffer, "Stri");
       break;
+    }
 
-    case dtShortInteger:
+    case dtShortInteger: {
       convertShortIntegerRegisterToUInt64(regist, &sign, &value);
       sprintf(tmpRegisterString, "%c%" PRIu64 " %" PRIu32, sign ? '-' : '+', value, getRegisterShortIntegerBase(regist));
       strcpy(aimBuffer, "ShoI");
       break;
+    }
 
-    case dtReal34:
+    case dtReal34: {
       real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
       switch(getRegisterAngularMode(regist)) {
-        case amDegree:
+        case amDegree: {
           strcpy(aimBuffer, "Real:DEG");
           break;
+        }
 
-        case amDMS:
+        case amDMS: {
           strcpy(aimBuffer, "Real:DMS");
           break;
+        }
 
-        case amRadian:
+        case amRadian: {
           strcpy(aimBuffer, "Real:RAD");
           break;
+        }
 
-        case amMultPi:
+        case amMultPi: {
           strcpy(aimBuffer, "Real:MULTPI");
           break;
+        }
 
-        case amGrad:
+        case amGrad: {
           strcpy(aimBuffer, "Real:GRAD");
           break;
+        }
 
-        case amNone:
+        case amNone: {
           strcpy(aimBuffer, "Real");
           break;
+        }
 
-        default:
+        default: {
           strcpy(aimBuffer, "Real:???");
           break;
+        }
       }
       break;
+    }
 
-    case dtComplex34:
+    case dtComplex34: {
       real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
       strcat(tmpRegisterString, " ");
       real34ToString(REGISTER_IMAG34_DATA(regist), tmpRegisterString + strlen(tmpRegisterString));
       strcpy(aimBuffer, "Cplx");
       break;
+    }
 
-    case dtTime:
+    case dtTime: {
       real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
       strcpy(aimBuffer, "Time");
       break;
+    }
 
-    case dtDate:
+    case dtDate: {
       real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
       strcpy(aimBuffer, "Date");
       break;
+    }
 
-    case dtReal34Matrix:
+    case dtReal34Matrix: {
       sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns);
       strcpy(aimBuffer, "Rema");
       break;
+    }
 
-    case dtComplex34Matrix:
+    case dtComplex34Matrix: {
       sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns);
       strcpy(aimBuffer, "Cxma");
       break;
+    }
 
-    case dtConfig:
+    case dtConfig: {
       for(str=tmpRegisterString, cfg=(uint8_t *)REGISTER_CONFIG_DATA(regist), value=0; value<sizeof(dtConfigDescriptor_t); value++, cfg++, str+=2) {
         sprintf(str, "%02X", *cfg);
       }
       strcpy(aimBuffer, "Conf");
       break;
+    }
 
-    default:
+    default: {
       strcpy(tmpRegisterString, "???");
       strcpy(aimBuffer, "????");
+    }
   }
 }
 
 
 static void saveMatrixElements(calcRegister_t regist, void *stream) {
-#ifndef TESTSUITE_BUILD
-  if(getRegisterDataType(regist) == dtReal34Matrix) {
-    for(uint32_t element = 0; element < REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
-      real34ToString(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + element, tmpString);
-      strcat(tmpString, "\n");
-      save(tmpString, strlen(tmpString), stream);
+  #if !defined(TESTSUITE_BUILD)
+    if(getRegisterDataType(regist) == dtReal34Matrix) {
+      for(uint32_t element = 0; element < REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
+        real34ToString(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + element, tmpString);
+        strcat(tmpString, "\n");
+        save(tmpString, strlen(tmpString), stream);
+      }
     }
-  }
-  else if(getRegisterDataType(regist) == dtComplex34Matrix) {
-    for(uint32_t element = 0; element < REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
-      real34ToString(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString);
-      strcat(tmpString, " ");
-      real34ToString(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString + strlen(tmpString));
-      strcat(tmpString, "\n");
-      save(tmpString, strlen(tmpString), stream);
+    else if(getRegisterDataType(regist) == dtComplex34Matrix) {
+      for(uint32_t element = 0; element < REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
+        real34ToString(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString);
+        strcat(tmpString, " ");
+        real34ToString(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString + strlen(tmpString));
+        strcat(tmpString, "\n");
+        save(tmpString, strlen(tmpString), stream);
+      }
     }
-  }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -777,7 +854,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   calcRegister_t regist;
   uint32_t i;
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     FRESULT result;
 
     sys_disk_write_enable(1);
@@ -879,14 +956,16 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   // Keyboard arguments
   sprintf(tmpString, "KEYBOARD_ARGUMENTS\n");
   save(tmpString, strlen(tmpString), BACKUP);
-  {
-    uint32_t num = 0;
-    for(i = 0; i < 37 * 6; ++i) {
-      if(*(getNthString((uint8_t *)userKeyLabel, i)) != 0) ++num;
+
+  uint32_t num = 0;
+  for(i = 0; i < 37 * 6; ++i) {
+    if(*(getNthString((uint8_t *)userKeyLabel, i)) != 0) {
+      ++num;
     }
-    sprintf(tmpString, "%" PRIu32 "\n", num);
-    save(tmpString, strlen(tmpString), BACKUP);
   }
+  sprintf(tmpString, "%" PRIu32 "\n", num);
+  save(tmpString, strlen(tmpString), BACKUP);
+
   for(i = 0; i < 37 * 6; ++i) {
     if(*(getNthString((uint8_t *)userKeyLabel, i)) != 0) {
       sprintf(tmpString, "%" PRIu32 " ", i);
@@ -1007,11 +1086,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   sprintf(tmpString, "notBestF\n%" PRIu16 "\n", lrSelection);
   save(tmpString, strlen(tmpString), BACKUP);
 
-
-
-
-
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     f_close(BACKUP);
     sys_disk_write_enable(0);
   #else // !DMCP_BUILD
@@ -1140,12 +1215,24 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
   uint32_t tag = amNone;
 
   if(type[4] == ':') {
-         if(type[5] == 'R')                   tag = amRadian;
-    else if(type[5] == 'M')                   tag = amMultPi;
-    else if(type[5] == 'G')                   tag = amGrad;
-    else if(type[5] == 'D' && type[6] == 'E') tag = amDegree;
-    else if(type[5] == 'D' && type[6] == 'M') tag = amDMS;
-    else                                      tag = amNone;
+    if(type[5] == 'R') {
+      tag = amRadian;
+    }
+    else if(type[5] == 'M') {
+      tag = amMultPi;
+    }
+    else if(type[5] == 'G') {
+      tag = amGrad;
+    }
+    else if(type[5] == 'D' && type[6] == 'E') {
+      tag = amDegree;
+    }
+    else if(type[5] == 'D' && type[6] == 'M') {
+      tag = amDMS;
+    }
+    else {
+      tag = amNone;
+    }
 
     reallocateRegister(regist, dtReal34, REAL34_SIZE, tag);
     stringToReal34(value, REGISTER_REAL34_DATA(regist));
@@ -1188,8 +1275,12 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
     uint16_t sign = (value[0] == '-' ? 1 : 0);
     uint64_t val  = stringToUint64(value + 1);
 
-    while(*value != ' ') value++;
-    while(*value == ' ') value++;
+    while(*value != ' ') {
+      value++;
+    }
+    while(*value == ' ') {
+      value++;
+    }
     uint32_t base = stringToUint32(value);
 
     convertUInt64ToShortIntegerRegister(sign, val, base, regist);
@@ -1200,19 +1291,23 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
 
     reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, amNone);
     imaginaryPart = value;
-    while(*imaginaryPart != ' ') imaginaryPart++;
+    while(*imaginaryPart != ' ') {
+      imaginaryPart++;
+    }
     *(imaginaryPart++) = 0;
     stringToReal34(value, REGISTER_REAL34_DATA(regist));
     stringToReal34(imaginaryPart, REGISTER_IMAG34_DATA(regist));
   }
 
-#ifndef TESTSUITE_BUILD
+#if !defined(TESTSUITE_BUILD)
   else if(strcmp(type, "Rema") == 0) {
     char *numOfCols;
     uint16_t rows, cols;
 
     numOfCols = value;
-    while(*numOfCols != ' ') numOfCols++;
+    while(*numOfCols != ' ') {
+      numOfCols++;
+    }
     *(numOfCols++) = 0;
     rows = stringToUint16(value);
     cols = stringToUint16(numOfCols);
@@ -1226,7 +1321,9 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
     uint16_t rows, cols;
 
     numOfCols = value;
-    while(*numOfCols != ' ') numOfCols++;
+    while(*numOfCols != ' ') {
+      numOfCols++;
+    }
     *(numOfCols++) = 0;
     rows = stringToUint16(value);
     cols = stringToUint16(numOfCols);
@@ -1253,57 +1350,61 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
 
 
 static void restoreMatrixData(calcRegister_t regist, void *stream) {
-#ifndef TESTSUITE_BUILD
-  uint16_t rows, cols;
-  uint32_t i;
+  #if !defined(TESTSUITE_BUILD)
+    uint16_t rows, cols;
+    uint32_t i;
 
-  if(getRegisterDataType(regist) == dtReal34Matrix) {
-    rows = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows;
-    cols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
+    if(getRegisterDataType(regist) == dtReal34Matrix) {
+      rows = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows;
+      cols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
 
-    for(i = 0; i < rows * cols; ++i) {
-      readLine(stream, tmpString);
-      stringToReal34(tmpString, REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i);
+      for(i = 0; i < rows * cols; ++i) {
+        readLine(stream, tmpString);
+        stringToReal34(tmpString, REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i);
+      }
     }
-  }
 
-  if(getRegisterDataType(regist) == dtComplex34Matrix) {
-    rows = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows;
-    cols = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns;
+    if(getRegisterDataType(regist) == dtComplex34Matrix) {
+      rows = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows;
+      cols = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns;
 
-    for(i = 0; i < rows * cols; ++i) {
-      char *imaginaryPart;
+      for(i = 0; i < rows * cols; ++i) {
+        char *imaginaryPart;
 
-      readLine(stream, tmpString);
-      imaginaryPart = tmpString;
-      while(*imaginaryPart != ' ') imaginaryPart++;
-      *(imaginaryPart++) = 0;
-      stringToReal34(tmpString,     VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
-      stringToReal34(imaginaryPart, VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+        readLine(stream, tmpString);
+        imaginaryPart = tmpString;
+        while(*imaginaryPart != ' ') {
+          imaginaryPart++;
+        }
+        *(imaginaryPart++) = 0;
+        stringToReal34(tmpString,     VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+        stringToReal34(imaginaryPart, VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+      }
     }
-  }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
 static void skipMatrixData(char *type, char *value, void *stream) {
-#ifndef TESTSUITE_BUILD
-  uint16_t rows, cols;
-  uint32_t i;
-  char *numOfCols;
+  #if !defined(TESTSUITE_BUILD)
+    uint16_t rows, cols;
+    uint32_t i;
+    char *numOfCols;
 
-  if(strcmp(type, "Rema") == 0 || strcmp(type, "Cxma") == 0) {
-    numOfCols = value;
-    while(*numOfCols != ' ') numOfCols++;
-    *(numOfCols++) = 0;
-    rows = stringToUint16(value);
-    cols = stringToUint16(numOfCols);
+    if(strcmp(type, "Rema") == 0 || strcmp(type, "Cxma") == 0) {
+      numOfCols = value;
+      while(*numOfCols != ' ') {
+        numOfCols++;
+      }
+      *(numOfCols++) = 0;
+      rows = stringToUint16(value);
+      cols = stringToUint16(numOfCols);
 
-    for(i = 0; i < rows * cols; ++i) {
-      readLine(stream, tmpString);
+      for(i = 0; i < rows * cols; ++i) {
+        readLine(stream, tmpString);
+      }
     }
-  }
-#endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -1340,28 +1441,52 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
       str = tmpString;
       globalFlags[0] = stringToInt16(str);
 
-      while(*str != ' ') str++;
-      while(*str == ' ') str++;
+      while(*str != ' ') {
+        str++;
+      }
+      while(*str == ' ') {
+        str++;
+      }
       globalFlags[1] = stringToInt16(str);
 
-      while(*str != ' ') str++;
-      while(*str == ' ') str++;
+      while(*str != ' ') {
+        str++;
+      }
+      while(*str == ' ') {
+        str++;
+      }
       globalFlags[2] = stringToInt16(str);
 
-      while(*str != ' ') str++;
-      while(*str == ' ') str++;
+      while(*str != ' ') {
+        str++;
+      }
+      while(*str == ' ') {
+        str++;
+      }
       globalFlags[3] = stringToInt16(str);
 
-      while(*str != ' ') str++;
-      while(*str == ' ') str++;
+      while(*str != ' ') {
+        str++;
+      }
+      while(*str == ' ') {
+        str++;
+      }
       globalFlags[4] = stringToInt16(str);
 
-      while(*str != ' ') str++;
-      while(*str == ' ') str++;
+      while(*str != ' ') {
+        str++;
+      }
+      while(*str == ' ') {
+        str++;
+      }
       globalFlags[5] = stringToInt16(str);
 
-      while(*str != ' ') str++;
-      while(*str == ' ') str++;
+      while(*str != ' ') {
+        str++;
+      }
+      while(*str == ' ') {
+        str++;
+      }
       globalFlags[6] = stringToInt16(str);
     }
   }
@@ -1448,36 +1573,68 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         str = tmpString;
         kbd_usr[i].keyId = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].primary = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].fShifted = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].gShifted = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].keyLblAim = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].primaryAim = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].fShiftedAim = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].gShiftedAim = stringToInt16(str);
 
-        while(*str != ' ') str++;
-        while(*str == ' ') str++;
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
         kbd_usr[i].primaryTam = stringToInt16(str);
       }
     }
@@ -1499,9 +1656,13 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         uint16_t key = stringToUint16(str);
         userMenuItems[i].argumentName[0] = 0;
 
-        while((*str != ' ') && (*str != '\n') && (*str != 0)) str++;
+        while((*str != ' ') && (*str != '\n') && (*str != 0)) {
+          str++;
+        }
         if(*str == ' ') {
-          while(*str == ' ') str++;
+          while(*str == ' ') {
+            str++;
+          }
           if((*str != '\n') && (*str != 0)) {
             utf8ToString((uint8_t *)str, tmpString + TMP_STR_LENGTH / 2);
             setUserKeyArgument(key, tmpString + TMP_STR_LENGTH / 2);
@@ -1521,9 +1682,13 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         userMenuItems[i].item            = stringToInt16(str);
         userMenuItems[i].argumentName[0] = 0;
 
-        while((*str != ' ') && (*str != '\n') && (*str != 0)) str++;
+        while((*str != ' ') && (*str != '\n') && (*str != 0)) {
+          str++;
+        }
         if(*str == ' ') {
-          while(*str == ' ') str++;
+          while(*str == ' ') {
+            str++;
+          }
           if((*str != '\n') && (*str != 0)) {
             utf8ToString((uint8_t *)str, userMenuItems[i].argumentName);
           }
@@ -1542,9 +1707,13 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         userAlphaItems[i].item            = stringToInt16(str);
         userAlphaItems[i].argumentName[0] = 0;
 
-        while((*str != ' ') && (*str != '\n') && (*str != 0)) str++;
+        while((*str != ' ') && (*str != '\n') && (*str != 0)) {
+          str++;
+        }
         if(*str == ' ') {
-          while(*str == ' ') str++;
+          while(*str == ' ') {
+            str++;
+          }
           if((*str != '\n') && (*str != 0)) {
             utf8ToString((uint8_t *)str, userAlphaItems[i].argumentName);
           }
@@ -1581,9 +1750,13 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
           userMenus[target].menuItem[i].item            = stringToInt16(str);
           userMenus[target].menuItem[i].argumentName[0] = 0;
 
-          while((*str != ' ') && (*str != '\n') && (*str != 0)) str++;
+          while((*str != ' ') && (*str != '\n') && (*str != 0)) {
+            str++;
+          }
           if(*str == ' ') {
-            while(*str == ' ') str++;
+            while(*str == ' ') {
+              str++;
+            }
             if((*str != '\n') && (*str != 0)) {
               utf8ToString((uint8_t *)str, userMenus[target].menuItem[i].argumentName);
             }
@@ -1757,8 +1930,12 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "rngState") == 0) {
           pcg32_global.state = stringToUint64(tmpString);
           str = tmpString;
-          while(*str != ' ') str++;
-          while(*str == ' ') str++;
+          while(*str != ' ') {
+            str++;
+          }
+          while(*str == ' ') {
+            str++;
+          }
           pcg32_global.inc = stringToUint64(str);
         }
         else if(strcmp(aimBuffer, "exponentLimit") == 0) {
@@ -1781,7 +1958,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 
 
 void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     if(f_open(BACKUP, "SAVFILES\\wp43s.sav", FA_READ) != FR_OK) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1812,17 +1989,17 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
 
   lastErrorCode = ERROR_NONE;
 
-  #ifdef DMCP_BUILD
+  #if defined(DMCP_BUILD)
     f_close(BACKUP);
   #else // !DMCP_BUILD
     fclose(BACKUP);
   #endif //DMCP_BUILD
 
-  #ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
     if(loadMode == LM_ALL) {
       temporaryInformation = TI_BACKUP_RESTORED;
     }
-  #endif // TESTSUITE_BUILD
+  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -1840,7 +2017,7 @@ void fnDeleteBackup(uint16_t confirmation) {
     setConfirmationMode(fnDeleteBackup);
   }
   else {
-    #ifdef DMCP_BUILD
+    #if defined(DMCP_BUILD)
       FRESULT result;
       sys_disk_write_enable(1);
       result = f_unlink("SAVFILES\\wp43s.sav");
@@ -1851,7 +2028,7 @@ void fnDeleteBackup(uint16_t confirmation) {
     #else // !DMCP_BUILD
       int result = remove("wp43s.sav");
       if(result == -1) {
-        #ifndef TESTSUITE_BUILD
+        #if !defined(TESTSUITE_BUILD)
           int e = errno;
           if(e != ENOENT) {
             displayCalcErrorMessage(ERROR_IO, ERR_REGISTER_LINE, REGISTER_X);
@@ -1860,7 +2037,7 @@ void fnDeleteBackup(uint16_t confirmation) {
               moreInfoOnError("In function fnDeleteBackup:", errorMessage, NULL, NULL);
             #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
           }
-        #endif // TESTSUITE_BUILD
+        #endif // !TESTSUITE_BUILD
       }
     #endif // DMCP_BUILD
   }
