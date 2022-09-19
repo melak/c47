@@ -23,7 +23,7 @@
 #include "items.h"
 #include "defines.h"
 
-#include "wp43s.h"
+#include "wp43.h"
 
 
 int main(int argc, char* argv[]) {

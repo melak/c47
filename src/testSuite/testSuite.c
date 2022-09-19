@@ -46,7 +46,7 @@
 #include <string.h>
 #include <libgen.h>
 
-#include "wp43s.h"
+#include "wp43.h"
 
 #define NUMBER_OF_CORRECT_SIGNIFICANT_DIGITS_EXPECTED 34
 
@@ -2537,7 +2537,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  wp43sMemInBlocks = 0;
+  wp43MemInBlocks = 0;
   gmpMemInBytes = 0;
   mp_set_memory_functions(allocGmp, reallocGmp, freeGmp);
 
