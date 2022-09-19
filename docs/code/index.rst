@@ -1,7 +1,7 @@
-WP43S Code Documentation
+WP43 Code Documentation
 ========================
 
-WP43S is a modern pocket RPN calculator in the style of the HP-42S.
+WP43 is a modern pocket RPN calculator in the style of the HP-42S.
 This documents the code for the firmware. Other documents and resources
 are available:
 
