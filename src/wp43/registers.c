@@ -73,6 +73,12 @@ const reservedVariableHeader_t allReservedVariables[] = { // MUST be in the same
 
 
 
+static inline registerHeader_t *POINTER_TO_LOCAL_REGISTER(calcRegister_t a) {
+  return ((registerHeader_t *)(currentLocalRegisters + (a)));
+}
+
+
+
 uint32_t getRegisterDataType(calcRegister_t regist) {
   if(regist <= LAST_GLOBAL_REGISTER) { // Global register
     return globalRegister[regist].dataType;

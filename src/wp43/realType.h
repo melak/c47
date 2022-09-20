@@ -77,51 +77,24 @@
   //  decNumberUnit lsu[(2139+DECDPUN-1)/DECDPUN]; // 2139 = 39 + 175*12
   //} real2139_t;
 
-  #define realContext_t                                          decContext
-  #define real34_t                                               decQuad      // 34 digits and 128 bits = 16 bytes
+  typedef decContext realContext_t;
+  typedef decQuad    real34_t; // 34 digits and 128 bits = 16 bytes
 
   typedef struct {
     real34_t real, imag;
   } complex34_t;
 
-  #define real_t                                                 decNumber
+  typedef decNumber  real_t;
 
-  #define REAL_SIZE                                              TO_BLOCKS(sizeof(real_t))
-  #define REAL4_SIZE                                             TO_BLOCKS(sizeof(real4_t))
-  #define REAL34_SIZE                                            TO_BLOCKS(sizeof(real34_t))
-  #define REAL39_SIZE                                            TO_BLOCKS(sizeof(real39_t))
-  #define REAL51_SIZE                                            TO_BLOCKS(sizeof(real51_t))
-  #define REAL1071_SIZE                                          TO_BLOCKS(sizeof(real1071_t))
-  #define COMPLEX34_SIZE                                         TO_BLOCKS(sizeof(complex34_t))
+  static const size_t REAL_SIZE      = TO_BLOCKS(sizeof(real_t));
+  static const size_t REAL34_SIZE    = TO_BLOCKS(sizeof(real34_t));
+  static const size_t REAL39_SIZE    = TO_BLOCKS(sizeof(real39_t));
+  static const size_t REAL51_SIZE    = TO_BLOCKS(sizeof(real51_t));
+  static const size_t REAL1071_SIZE  = TO_BLOCKS(sizeof(real1071_t));
+  static const size_t COMPLEX34_SIZE = TO_BLOCKS(sizeof(complex34_t));
 
-  #define POINTER_TO_LOCAL_REGISTER(a)                           ((registerHeader_t *)(currentLocalRegisters + (a)))
-
-  #define POINTER_TO_NAMED_VARIABLE(a)                           ((registerHeader_t *)(allNamedVariablePointer + 1 + 2u*(a)))
-  #define POINTER_TO_POINTER_TO_NAMED_VARIABLE_NAME(a)           ((dataBlock_t *)(allNamedVariablePointer + 2u + 2u*(a)))
-  #define POINTER_TO_NAMED_VARIABLE_NAME(a)                      ((char        *)(*POINTER_TO_POINTER_TO_NAMED_VARIABLE_NAME(a) << 1))
-
-
-  #define REGISTER_DATA(a)                                       ((dataBlock_t *)(getRegisterDataPointer(a)))
-  #define REGISTER_REAL34_DATA(a)                                ((real34_t    *)(getRegisterDataPointer(a)))
-  #define REGISTER_IMAG34_DATA(a)                                ((real34_t    *)(getRegisterDataPointer(a) + REAL34_SIZE))
-  #define REGISTER_COMPLEX34_DATA(a)                             ((complex34_t *)(getRegisterDataPointer(a)))
-
-  #define REGISTER_STRING_DATA(a)                                ((char        *)(getRegisterDataPointer(a) + 1)) // Memory pointer to the string of a register
-
-  #define REGISTER_CONFIG_DATA(a)                                ((dtConfigDescriptor_t *)(getRegisterDataPointer(a)))
-
-  #define REGISTER_REAL34_MATRIX_DBLOCK(a)                       ((dataBlock_t *)(getRegisterDataPointer(a)))
-  #define REGISTER_REAL34_MATRIX_M_ELEMENTS(a)                   ((real34_t *)((void *)getRegisterDataPointer(a) + sizeof(dataBlock_t)))
-  #define REGISTER_REAL34_MATRIX(a)                              ((real34Matrix_t *)(getRegisterDataPointer(a)))
-
-  #define REGISTER_COMPLEX34_MATRIX_DBLOCK(a)                    ((dataBlock_t *)(getRegisterDataPointer(a)))
-  #define REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(a)                ((complex34_t *)((void *)getRegisterDataPointer(a) + sizeof(dataBlock_t)))
-  #define REGISTER_COMPLEX34_MATRIX(a)                           ((complex34Matrix_t *)(getRegisterDataPointer(a)))
-
-  #define REGISTER_SHORT_INTEGER_DATA(a)                         ((uint64_t    *)(getRegisterDataPointer(a)))
   #define VARIABLE_REAL34_DATA(a)                                ((real34_t    *)(a))
   #define VARIABLE_IMAG34_DATA(a)                                ((real34_t    *)((dataBlock_t *)(a) + REAL34_SIZE))
-  #define VARIABLE_COMPLEX34_DATA(a)                             ((complex34_t *)(a))
 
 
   #define complex34ChangeSign(operand)                           {real34ChangeSign((real34_t *)(operand)); \
