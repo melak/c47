@@ -9,10 +9,12 @@ dmcp_linkargs = [
   '-Wl,-Map=' + meson.current_build_dir() + '/WP43.map,--cref',
   '-T' + meson.current_source_dir() + '/stm32_program.ld']
 
+wp43_dmcp_src = files(
+  'hal/audio.c')
 wp43_lib = static_library(
   'libwp43',
   build_by_default    : false,
-  sources             : decNumber_src + wp43_src +
+  sources             : decNumber_src + wp43_src + wp43_dmcp_src +
                         [rasterFontsData_c, softmenuCatalogs_h,
                           constantPointers_ch, vcs_h, version_h],
   c_args              : dmcp_cargs,

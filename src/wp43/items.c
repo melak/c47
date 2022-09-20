@@ -52,8 +52,8 @@
 #include "store.h"
 #include "stringFuncs.h"
 #include "timer.h"
-#include "tone.h"
 #include "ui/tam.h"
+#include "ui/tone.h"
 
 #include "wp43.h"
 

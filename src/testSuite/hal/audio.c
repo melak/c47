@@ -14,14 +14,7 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * \file tone.h
- */
-#if !defined(TONE_H)
-  #define TONE_H
+#include "hal/audio.h"
 
-  #include <stdint.h>
-
-  void fnTone(uint16_t toneNum);
-  void fnBeep(uint16_t unusedButMandatoryParameter);
-#endif // .TONE_H
+void audioTone(uint32_t frequency) {
+}
