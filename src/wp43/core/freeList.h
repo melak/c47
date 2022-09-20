@@ -26,9 +26,9 @@
    * Allocate memory.
    * Allocates a given amount of memory and returns a pointer to the start of
    * that memory. The allocator doesn't keep track of how much memory has been
-   * allocated, so this must be kept for when calling the freeListFree function.
-   * Any allocated memory must be freed with freeListFree or reallocated with
-   * freeListRealloc. Allocated memory is whatever was previously in memory (it
+   * allocated, so this must be kept for when calling the ::freeListFree function.
+   * Any allocated memory must be freed with ::freeListFree or reallocated with
+   * ::freeListRealloc. Allocated memory is whatever was previously in memory (it
    * is not zeroed).
    *
    * \param[in] sizeInBlocks size of the memory in blocks, not bytes
@@ -55,10 +55,10 @@
 
   /**
    * Free allocated memory.
-   * Frees memory previous allocated with freeListAlloc or freeListRealloc.
+   * Frees memory previous allocated with ::freeListAlloc or ::freeListRealloc.
    * This must be called at some point after memory has been allocated. The
    * allocator does not keep track of how much memory has been allocated, so
-   * this must be provided. If the memory has been reallocated with freeListRealloc
+   * this must be provided. If the memory has been reallocated with ::freeListRealloc
    * then the size of the last alloc should be provided, along with the latest
    * pointer allocated.
    *

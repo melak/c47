@@ -18,13 +18,14 @@
 
 #include "assign.h"
 #include "bufferize.h"
+#include "calcMode.h"
 #include "charString.h"
 #include "config.h"
 #include "constants.h"
 #include "debug.h"
 #include "error.h"
 #include "flags.h"
-#include "gui.h"
+#include "hal/gui.h"
 #include "items.h"
 #include "matrix.h"
 #include "memory.h"
@@ -1308,9 +1309,7 @@
           }
           if(previousCalcMode == CM_AIM) {
             softmenuStack[0].softmenuId = 1;
-            #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-              calcModeAimGui();
-            #endif // PC_BUILD && (SCREEN_800X480 == 0)
+            calcModeAimGui();
           }
           else {
             leaveAsmMode();

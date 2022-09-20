@@ -27,7 +27,7 @@
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
-#include "gui.h"
+#include "hal/gui.h"
 #include "items.h"
 #include "longIntegerType.h"
 #include "mathematics/comparisonReals.h"
@@ -662,9 +662,7 @@ void fnGoToColumn(uint16_t col) {
         setIRegisterAsInt(false, tmpRow);
         setJRegisterAsInt(false, col);
       }
-      #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-        calcModeNormalGui();
-      #endif // PC_BUILD && (SCREEN_800X480 == 0)
+      calcModeNormalGui();
     }
     else {
       displayCalcErrorMessage(ERROR_OPERATION_UNDEFINED, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -1864,11 +1862,9 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
     if(width == 0) {
       showSoftmenu(-MNU_M_EDIT);
     }
-    #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
     if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_M_EDIT) {
       calcModeNormalGui();
     }
-    #endif // PC_BUILD && (SCREEN_800X480 == 0)
 
     bool_t colVector = false;
     if(cols == 1 && rows > 1) {

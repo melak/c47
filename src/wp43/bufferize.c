@@ -16,6 +16,7 @@
 
 #include "bufferize.h"
 
+#include "calcMode.h"
 #include "charString.h"
 #include "constantPointers.h"
 #include "constants.h"
@@ -26,7 +27,6 @@
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
-#include "gui.h"
 #include "items.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/toRect.h"

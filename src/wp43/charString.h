@@ -90,6 +90,9 @@
   void     utf8ToString     (const uint8_t *utf8, char *str);
   void    *xcopy            (void *dest, const void *source, int n);
   #if defined(WIN32)
-    char    *stpcpy           (char *dest, const char *source);
-  #endif //WIN32
+    char    *stpcpy         (char *dest, const char *source);
+  #endif // WIN32
+  #if !defined(DMCP_BUILD)
+    void strReplace         (char *haystack, const char *needle, const char *newNeedle);
+  #endif // !DMCP_BUILD
 #endif // !CHARSTRING_H
