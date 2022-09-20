@@ -18,6 +18,7 @@
 
 #include "charString.h"
 #include "config.h"
+#include "core/freeList.h"
 #include "debug.h"
 #include "items.h"
 #include "registers.h"
@@ -76,9 +77,9 @@ void *allocWp43(size_t sizeInBlocks) {
     //  printf("WP43 claims %6" PRIu64 " blocks\n", sizeInBlocks);
     //}
   #endif // !DMCP_BUILD
-  //return wp43Allocate(sizeInBlocks);
+  //return freeListAlloc(sizeInBlocks);
 
-  void *allocated = wp43Allocate(sizeInBlocks);
+  void *allocated = freeListAlloc(sizeInBlocks);
   if(allocated) {
     wp43MemInBlocks += sizeInBlocks;
     return allocated;
@@ -102,9 +103,9 @@ void *reallocWp43(void *pcMemPtr, size_t oldSizeInBlocks, size_t newSizeInBlocks
     //  printf("WP43 claimed %6" PRIu64 " blocks, freed %6" PRIu64 " blocks and holds now %6" PRIu64 " blocks\n", (uint64_t)newSizeInBlocks, (uint64_t)oldSizeInBlocks, (uint64_t)wp43MemInBlocks);
     //}
   #endif // !DMCP_BUILD
-  //return wp43Reallocate(pcMemPtr, oldSizeInBlocks, newSizeInBlocks);
+  //return freeListRealloc(pcMemPtr, oldSizeInBlocks, newSizeInBlocks);
 
-  void *allocated = wp43Reallocate(pcMemPtr, oldSizeInBlocks, newSizeInBlocks);
+  void *allocated = freeListRealloc(pcMemPtr, oldSizeInBlocks, newSizeInBlocks);
   if(allocated) {
     wp43MemInBlocks += newSizeInBlocks - oldSizeInBlocks;
     return allocated;
@@ -132,7 +133,7 @@ void freeWp43(void *pcMemPtr, size_t sizeInBlocks) {
     //  printf("WP43 frees  %6" PRIu64 " blocks\n", sizeInBlocks);
     //}
   #endif // !DMCP_BUILD
-  wp43Free(pcMemPtr, sizeInBlocks);
+  freeListFree(pcMemPtr, sizeInBlocks);
 }
 
 
@@ -154,7 +155,7 @@ void *allocGmp(size_t sizeInBytes) {
     //  printf("GMP claimed %6" PRIu64 " bytes and holds now %6" PRIu64 " bytes\n", (uint64_t)sizeInBytes, (uint64_t)gmpMemInBytes);
     //}
   #endif // !DMCP_BUILD
-  //return wp43Allocate(TO_BLOCKS(sizeInBytes));
+  //return freeListAlloc(TO_BLOCKS(sizeInBytes));
   return malloc(sizeInBytes);
 }
 
@@ -175,7 +176,7 @@ void *reallocGmp(void *pcMemPtr, size_t oldSizeInBytes, size_t newSizeInBytes) {
     //  printf("GMP claimed %6" PRIu64 " bytes, freed %6" PRIu64 " bytes and holds now %6" PRIu64 " bytes\n", (uint64_t)newSizeInBytes, (uint64_t)oldSizeInBytes, (uint64_t)gmpMemInBytes);
     //}
   #endif // !DMCP_BUILD
-  //return wp43Reallocate(pcMemPtr, TO_BLOCKS(oldSizeInBytes), TO_BLOCKS(newSizeInBytes));
+  //return freeListRealloc(pcMemPtr, TO_BLOCKS(oldSizeInBytes), TO_BLOCKS(newSizeInBytes));
   return realloc(pcMemPtr, newSizeInBytes);
 }
 
@@ -194,197 +195,10 @@ void freeGmp(void *pcMemPtr, size_t sizeInBytes) {
     //  printf("GMP freed   %6" PRIu64 " bytes and holds now %6" PRIu64 " bytes\n", (uint64_t)sizeInBytes, (uint64_t)gmpMemInBytes);
     //}
   #endif // !DMCP_BUILD
-  //wp43Free(pcMemPtr, TO_BLOCKS(sizeInBytes));
+  //freeListFree(pcMemPtr, TO_BLOCKS(sizeInBytes));
   free(pcMemPtr);
 }
 
-
-
-
-
-void *wp43Allocate(size_t sizeInBlocks) {
-  uint16_t minSizeInBlocks = 65535u, minBlock = WP43_NULL;
-  int i;
-  void *pcMemPtr;
-
-  if(sizeInBlocks == 0) {
-    sizeInBlocks = 1;
-  }
-
-  #if !defined(DMCP_BUILD)
-    //if(debugMemAllocation) {
-    //  printf("Allocating %" PRIu64 " bytes (%" PRIu16 " blocks)\n", (uint64_t)TO_BYTES(sizeInBlocks), sizeInBlocks);
-    //}
-  #endif // !DMCP_BUILD
-
-  // Search the smalest hole where the claimed block fits
-  //debugMemory();
-  for(i=0; i<numberOfFreeMemoryRegions; i++) {
-    if(freeMemoryRegions[i].sizeInBlocks == sizeInBlocks) {
-      #if !defined(DMCP_BUILD)
-        //if(debugMemAllocation) {
-        //  printf("The block found is the size of the one claimed at address %u\n", freeMemoryRegions[i].address);
-        //}
-      #endif // !DMCP_BUILD
-      pcMemPtr = TO_PCMEMPTR(freeMemoryRegions[i].address);
-      xcopy(freeMemoryRegions + i, freeMemoryRegions + i + 1, (numberOfFreeMemoryRegions - i - 1) * sizeof(freeMemoryRegion_t));
-      numberOfFreeMemoryRegions--;
-      //debugMemory("wp43Allocate: found a memory region with the exact requested size!");
-      return pcMemPtr;
-    }
-    else if(freeMemoryRegions[i].sizeInBlocks > sizeInBlocks && freeMemoryRegions[i].sizeInBlocks < minSizeInBlocks) {
-      minSizeInBlocks = freeMemoryRegions[i].sizeInBlocks;
-      minBlock = i;
-    }
-  }
-
-  if(minBlock == WP43_NULL) {
-    #if defined(DMCP_BUILD)
-      //backToSystem(NOPARAM);
-    #else // !DMCP_BUILD
-      minSizeInBlocks = 0;
-      for(i=0; i<numberOfFreeMemoryRegions; i++) {
-        minSizeInBlocks += freeMemoryRegions[i].sizeInBlocks;
-      }
-      printf("\nOUT OF MEMORY\nMemory claimed: %" PRIu64 " bytes\nFragmented free memory: %u bytes\n", (uint64_t)TO_BYTES(sizeInBlocks), TO_BYTES(minSizeInBlocks));
-      //exit(-3);
-    #endif // DMCP_BUILD
-    return NULL;
-  }
-
-  #if !defined(DMCP_BUILD)
-    //if(debugMemAllocation) {
-    //  printf("The block found is larger than the one claimed\n");
-    //}
-  #endif // !DMCP_BUILD
-  pcMemPtr = TO_PCMEMPTR(freeMemoryRegions[minBlock].address);
-  freeMemoryRegions[minBlock].address += sizeInBlocks;
-  freeMemoryRegions[minBlock].sizeInBlocks -= sizeInBlocks;
-
-  //debugMemory("wp43Allocate: allocated within the smalest memory region found that is large enough.");
-  return pcMemPtr;
-}
-
-void *wp43Reallocate(void *pcMemPtr, size_t oldSizeInBlocks, size_t newSizeInBlocks) {
-  void *newMemPtr;
-
-  // GMP never calls realloc with pcMemPtr beeing NULL
-  if(oldSizeInBlocks == 0) {
-    oldSizeInBlocks = 1;
-  }
-
-  if(newSizeInBlocks == 0) {
-    newSizeInBlocks = 1;
-  }
-
-  #if !defined(DMCP_BUILD)
-    //printf("Allocating %zd bytes and freeing %zd blocks\n", newSizeInBlocks, oldSizeInBlocks);
-  #endif // !DMCP_BUILD
-
-  if((newMemPtr = wp43Allocate(newSizeInBlocks))) {
-    xcopy(newMemPtr, pcMemPtr, TO_BYTES(min(newSizeInBlocks, oldSizeInBlocks)));
-    wp43Free(pcMemPtr, oldSizeInBlocks);
-
-    return newMemPtr;
-  }
-  else { // not enough memory!
-    return NULL;
-  }
-}
-
-void wp43Free(void *pcMemPtr, size_t sizeInBlocks) {
-  uint16_t ramPtr, addr;
-  int32_t i, j;
-  bool_t done;
-
-  // GMP never calls free with pcMemPtr beeing NULL
-  if(pcMemPtr == NULL) {
-    return;
-  }
-
-  if(sizeInBlocks == 0) {
-    sizeInBlocks = 1;
-  }
-  ramPtr = TO_WP43MEMPTR(pcMemPtr);
-  #if !defined(DMCP_BUILD)
-    //printf("Freeing %zd bytes\n", TO_BYTES(sizeInBlocks));
-  #endif // !DMCP_BUILD
-
-  done = false;
-
-  // is the freed block just before an other free block?
-  addr = ramPtr + sizeInBlocks;
-  for(i=0; i<numberOfFreeMemoryRegions && freeMemoryRegions[i].address<=addr; i++) {
-    if(freeMemoryRegions[i].address == addr) {
-      freeMemoryRegions[i].address = ramPtr;
-      freeMemoryRegions[i].sizeInBlocks += sizeInBlocks;
-      sizeInBlocks = freeMemoryRegions[i].sizeInBlocks;
-      j = i;
-      done = true;
-      break;
-    }
-  }
-
-  // is the freed block just after an other free block?
-  for(i=0; i<numberOfFreeMemoryRegions && freeMemoryRegions[i].address+freeMemoryRegions[i].sizeInBlocks<=ramPtr; i++) {
-    if(freeMemoryRegions[i].address + freeMemoryRegions[i].sizeInBlocks == ramPtr) {
-      freeMemoryRegions[i].sizeInBlocks += sizeInBlocks;
-      if(done) {
-        xcopy(freeMemoryRegions + j, freeMemoryRegions + j + 1, (numberOfFreeMemoryRegions - j - 1) * sizeof(freeMemoryRegion_t));
-        numberOfFreeMemoryRegions--;
-      }
-      else {
-        done = true;
-      }
-      break;
-    }
-  }
-
-  #if defined(PC_BUILD)
-    // check for overlap
-    for(i=1; i<numberOfFreeMemoryRegions; i++) {
-      if((freeMemoryRegions[i-1].address + freeMemoryRegions[i-1].sizeInBlocks) >= freeMemoryRegions[i].address) {
-        printf("\n*** Free memory regions overlap!\n");
-        printf("*** This suggests there was double-free!\n");
-        printf("Free blocks (%" PRId32 "):\n", numberOfFreeMemoryRegions);
-        for(j=0; j<numberOfFreeMemoryRegions; j++) {
-          printf("  %2" PRId32 " starting at %5" PRIu16 ": %5" PRIu16 " blocks = %6" PRIu32 " bytes\n", j, freeMemoryRegions[j].address, freeMemoryRegions[j].sizeInBlocks, TO_BYTES((uint32_t)freeMemoryRegions[j].sizeInBlocks));
-        }
-        break;
-      }
-    }
-  #endif // PC_BUILD
-
-  // new free block
-  if(!done) {
-    if(numberOfFreeMemoryRegions == MAX_FREE_REGION) {
-      #if defined(DMCP_BUILD)
-        backToSystem(NOPARAM);
-      #else // !DMCP_BUILD
-        printf("\n**********************************************************************\n");
-        printf("* The maximum number of free memory blocks has been exceeded!        *\n");
-        printf("* This number must be increased or the compaction function improved. *\n");
-        printf("**********************************************************************\n");
-        exit(-2);
-      #endif // DMCP_BUILD
-    }
-
-    i = 0;
-    while(i<numberOfFreeMemoryRegions && freeMemoryRegions[i].address < ramPtr) {
-      i++;
-    }
-
-    if(i < numberOfFreeMemoryRegions) {
-      xcopy(freeMemoryRegions + i + 1, freeMemoryRegions + i, (numberOfFreeMemoryRegions - i) * sizeof(freeMemoryRegion_t));
-    }
-
-    freeMemoryRegions[i].address = ramPtr;
-    freeMemoryRegions[i].sizeInBlocks = sizeInBlocks;
-    numberOfFreeMemoryRegions++;
-  }
-
-  //debugMemory("wp43Free : end");
-}
 
 
 void resizeProgramMemory(uint16_t newSizeInBlocks) {

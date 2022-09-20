@@ -9,6 +9,7 @@ wp43_src = files(
   'constants.c',
   'conversionAngles.c',
   'conversionUnits.c',
+  'core/freeList.c',
   'curveFitting.c',
   'dateTime.c',
   'debug.c',

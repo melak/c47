@@ -24,10 +24,6 @@
   #include <stddef.h>
   #include "typeDefinitions.h"
 
-  void    *wp43Allocate        (size_t sizeInBlocks);
-  void    *wp43Reallocate      (void *pcMemPtr, size_t oldSizeInBlocks, size_t newSizeInBlocks);
-  void    wp43Free             (void *pcMemPtr, size_t sizeInBlocks);
-
   // The 6 followoing functions are only there to know who allocates and frees memory
   void    *allocWp43           (size_t sizeInBlocks);
   void    *reallocWp43         (void *pcMemPtr, size_t oldSizeInBlocks, size_t newSizeInBlocks);

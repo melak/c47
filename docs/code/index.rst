@@ -23,6 +23,12 @@ Contents
 
 .. toctree::
    :maxdepth: 2
+   :caption: Core
+
+   freeList
+
+.. toctree::
+   :maxdepth: 2
    :caption: User Interface
 
    tam

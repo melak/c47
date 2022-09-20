@@ -5,7 +5,7 @@ The hardware abstraction layer only supports a minimal audio interface. It is on
 a single short tone. Any platform that wants to support audio should implement this function.
 
 Functions
---------
+---------
 
 .. doxygenfile:: hal/audio.h
 
