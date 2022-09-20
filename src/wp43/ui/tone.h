@@ -15,7 +15,7 @@
  */
 
 /**
- * \file tone.h
+ * \file ui/tone.h
  */
 #if !defined(TONE_H)
   #define TONE_H
