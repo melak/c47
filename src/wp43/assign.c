@@ -16,12 +16,13 @@
 
 #include "assign.h"
 #include "bufferize.h"
+#include "calcMode.h"
 #include "charString.h"
 #include "defines.h"
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
-#include "gui.h"
+#include "hal/gui.h"
 #include "items.h"
 #include "memory.h"
 #include "programming/flash.h"
@@ -622,9 +623,7 @@ void assignLeaveAlpha(void) {
   if(softmenuStack[0].softmenuId == 1) { // MyAlpha
     softmenuStack[0].softmenuId = 0; // MyMenu
   }
-  #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-    calcModeNormalGui();
-  #endif // PC_BUILD && (SCREEN_800X480 == 0)
+  calcModeNormalGui();
 #endif // !TESTSUITE_BUILD
 }
 

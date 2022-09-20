@@ -31,7 +31,6 @@
 #include "distributions/distributions.h"
 #include "flags.h"
 #include "fractions.h"
-#include "gui.h"
 #include "items.h"
 #include "logicalOps/logicalOps.h"
 #include "mathematics/mathematics.h"

@@ -16,9 +16,9 @@
 
 #include "softmenus.h"
 
+#include "calcMode.h"
 #include "charString.h"
 #include "error.h"
-#include "gui.h"
 #include "items.h"
 #include "memory.h"
 #include "programming/flash.h"

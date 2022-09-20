@@ -22,6 +22,7 @@
 
 #include "browsers/fontBrowser.h"
 #include "bufferize.h"
+#include "calcMode.h"
 #include "charString.h"
 #include "constantPointers.h"
 #include "debug.h"
@@ -29,7 +30,6 @@
 #include "error.h"
 #include "fonts.h"
 #include "flags.h"
-#include "gui.h"
 #include "items.h"
 #include "keyboard.h"
 #include "matrix.h"

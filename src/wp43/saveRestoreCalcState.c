@@ -22,8 +22,7 @@
 #include "display.h"
 #include "error.h"
 #include "flags.h"
-#include "gui.h"
-#include "solver/graph.h"
+#include "hal/gui.h"
 #include "items.h"
 #include "matrix.h"
 #include "memory.h"
@@ -37,6 +36,7 @@
 #include "screen.h"
 #include "softmenus.h"
 #include "solver/equation.h"
+#include "solver/graph.h"
 #include "sort.h"
 #include "stats.h"
 #include <string.h>
@@ -616,86 +616,52 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       }
       free(loadedScreen);
 
-      #if (SCREEN_800X480 == 1)
-        if(calcMode == CM_NORMAL) {
-        }
-        else if(calcMode == CM_AIM) {
-          cursorEnabled = true;
-        }
-        else if(calcMode == CM_NIM) {
-          cursorEnabled = true;
-        }
-        else if(calcMode == CM_REGISTER_BROWSER) {
-        }
-        else if(calcMode == CM_FLAG_BROWSER) {
-        }
-        else if(calcMode == CM_FONT_BROWSER) {
-        }
-        else if(calcMode == CM_PEM) {
-        }
-        else if(calcMode == CM_PLOT_STAT) {
-        }
-        else if(calcMode == CM_GRAPH) {
-        }
-        else if(calcMode == CM_MIM) {
-          mimRestore();
-        }
-        else if(calcMode == CM_EIM) {
-        }
-        else if(calcMode == CM_ASSIGN) {
-        }
-        else if(calcMode == CM_TIMER) {
-        }
-        else {
-          sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
-          displayBugScreen(errorMessage);
-        }
-      #else // (SCREEN_800X480 == 0)
-        if(calcMode == CM_NORMAL) {
-          calcModeNormalGui();
-        }
-        else if(calcMode == CM_AIM) {
-          calcModeAimGui();
-          cursorEnabled = true;
-        }
-        else if(calcMode == CM_NIM) {
-          calcModeNormalGui(); cursorEnabled = true;
-        }
-        else if(calcMode == CM_REGISTER_BROWSER) {
-          calcModeNormalGui();
-        }
-        else if(calcMode == CM_FLAG_BROWSER) {
-          calcModeNormalGui();
-        }
-        else if(calcMode == CM_FONT_BROWSER) {
-          calcModeNormalGui();
-        }
-        else if(calcMode == CM_PEM) {
-          calcModeNormalGui();
-        }
-        else if(calcMode == CM_PLOT_STAT) {
-          calcModeNormalGui();
-        }
-        else if(calcMode == CM_GRAPH) {
-          calcModeNormalGui();
-        }
-        else if(calcMode == CM_MIM) {
-          calcModeNormalGui(); mimRestore();
-        }
-        else if(calcMode == CM_EIM) {
-          calcModeAimGui();
-        }
-        else if(calcMode == CM_ASSIGN) {
-          calcModeNormalGui();
-        }
-        else if(calcMode == CM_TIMER) {
-          calcModeNormalGui();
-        }
-        else {
-          sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
-          displayBugScreen(errorMessage);
-        }
-      #endif // (SCREEN_800X480 == 1)
+      if(calcMode == CM_NORMAL) {
+        calcModeNormalGui();
+      }
+      else if(calcMode == CM_AIM) {
+        calcModeAimGui();
+        cursorEnabled = true;
+      }
+      else if(calcMode == CM_NIM) {
+        calcModeNormalGui();
+        cursorEnabled = true;
+      }
+      else if(calcMode == CM_REGISTER_BROWSER) {
+        calcModeNormalGui();
+      }
+      else if(calcMode == CM_FLAG_BROWSER) {
+        calcModeNormalGui();
+      }
+      else if(calcMode == CM_FONT_BROWSER) {
+        calcModeNormalGui();
+      }
+      else if(calcMode == CM_PEM) {
+        calcModeNormalGui();
+      }
+      else if(calcMode == CM_PLOT_STAT) {
+        calcModeNormalGui();
+      }
+      else if(calcMode == CM_GRAPH) {
+        calcModeNormalGui();
+      }
+      else if(calcMode == CM_MIM) {
+        calcModeNormalGui();
+        mimRestore();
+      }
+      else if(calcMode == CM_EIM) {
+        calcModeAimGui();
+      }
+      else if(calcMode == CM_ASSIGN) {
+        calcModeNormalGui();
+      }
+      else if(calcMode == CM_TIMER) {
+        calcModeNormalGui();
+      }
+      else {
+        sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
+        displayBugScreen(errorMessage);
+      }
       if(catalog) {
         clearSystemFlag(FLAG_ALPHA);
       }

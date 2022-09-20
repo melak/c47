@@ -17,12 +17,13 @@
 #include "ui/tam.h"
 
 #include "bufferize.h"
+#include "calcMode.h"
 #include "charString.h"
 #include "constantPointers.h"
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
-#include "gui.h"
+#include "hal/gui.h"
 #include "items.h"
 #include "mathematics/fractionalPart.h"
 #include "mathematics/integerPart.h"
@@ -315,9 +316,7 @@
           // backspaces within AIM are handled by addItemToBuffer, so this is if the aimBuffer is already empty
           tam.alpha = false;
           clearSystemFlag(FLAG_ALPHA);
-          #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-            calcModeTamGui();
-          #endif // PC_BUILD && (SCREEN_800X480 == 0)
+          calcModeTamGui();
         }
       }
       else if(tam.digitsSoFar > 0) {
@@ -377,9 +376,7 @@
           setSystemFlag(FLAG_ALPHA);
           calcModeAim(NOPARAM);
         }
-        #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-          calcModeTamGui();
-        #endif // PC_BUILD && (SCREEN_800X480 == 0)
+        calcModeTamGui();
       }
       else {
         tamLeaveMode();
@@ -696,9 +693,7 @@
         showSoftmenu(-MNU_TAMLABEL);
         --numberOfTamMenusToPop;
         clearSystemFlag(FLAG_ALPHA);
-        #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-          calcModeTamGui();
-        #endif // PC_BUILD && (SCREEN_800X480 == 0)
+        calcModeTamGui();
       }
       else if(tam.digitsSoFar == 2 && tam.value == 0) {
         tam.digitsSoFar = 1;

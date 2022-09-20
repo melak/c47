@@ -19,7 +19,7 @@
  ***********************************************/
 
 #include "flags.h"
-#include "gui.h"
+#include "gtkGui.h"
 #include "items.h"
 #include "keyboard.h"
 #include "longIntegerType.h"

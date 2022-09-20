@@ -15,10 +15,10 @@
  */
 
 /**
- * \file gui.h
+ * \file calcMode.h
  */
-#if !defined(GUI_H)
-  #define GUI_H
+#if !defined(CALCMODE_H)
+  #define CALCMODE_H
 
   #include "defines.h"
   #include <stdint.h>
@@ -55,21 +55,4 @@
      */
     void leaveAsmMode                (void);
   #endif // !TESTSUITE_BUILD
-
-  #if defined(PC_BUILD)
-    /**
-     * Creates the calc's GUI window with all the widgets.
-     */
-    void setupUI                     (void);
-
-    #if (SCREEN_800X480 == 0)
-      void calcModeNormalGui         (void);
-      void calcModeAimGui            (void);
-      void calcModeTamGui            (void);
-    #endif // SCREEN_800X480
-  #endif // PC_BUILD
-
-  #if !defined(DMCP_BUILD)
-    void strReplace                  (char *haystack, const char *needle, const char *newNeedle);
-  #endif // DMCP_BUILD
-#endif // !GUI_H
+#endif // !CALCMODE_H
