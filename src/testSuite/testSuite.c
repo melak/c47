@@ -48,7 +48,7 @@
 #include <string.h>
 #include <libgen.h>
 
-#include "wp43s.h"
+#include "wp43.h"
 
 #define NUMBER_OF_CORRECT_SIGNIFICANT_DIGITS_EXPECTED 34
 
@@ -655,28 +655,67 @@ void setParameter(char *p) {
     //System flag
     else {
       if(!strcmp(l+3, "SPCRES")) {
-        if(r[0] == '0') {clearSystemFlag(FLAG_SPCRES);}   else {setSystemFlag(FLAG_SPCRES);}
+        if(r[0] == '0') {
+          clearSystemFlag(FLAG_SPCRES);
+        }
+        else {
+          setSystemFlag(FLAG_SPCRES);
+        }
       }
       else if(!strcmp(l+3, "CPXRES")) {
-        if(r[0] == '0') {clearSystemFlag(FLAG_CPXRES);}   else {setSystemFlag(FLAG_CPXRES);}
+        if(r[0] == '0') {
+          clearSystemFlag(FLAG_CPXRES);
+        }
+        else {
+          setSystemFlag(FLAG_CPXRES);
+        }
       }
       else if(!strcmp(l+3, "CARRY")) {
-        if(r[0] == '0') {clearSystemFlag(FLAG_CARRY);}    else {setSystemFlag(FLAG_CARRY);}
+        if(r[0] == '0') {
+          clearSystemFlag(FLAG_CARRY);
+        }
+        else {
+          setSystemFlag(FLAG_CARRY);
+        }
       }
       else if(!strcmp(l+3, "OVERFL")) {
-        if(r[0] == '0') {clearSystemFlag(FLAG_OVERFLOW);} else {setSystemFlag(FLAG_OVERFLOW);}
+        if(r[0] == '0') {
+          clearSystemFlag(FLAG_OVERFLOW);
+        }
+        else {
+          setSystemFlag(FLAG_OVERFLOW);
+        }
       }
       else if(!strcmp(l+3, "ASLIFT")) {
-        if(r[0] == '0') {clearSystemFlag(FLAG_ASLIFT);}   else {setSystemFlag(FLAG_ASLIFT);}
+        if(r[0] == '0') {
+          clearSystemFlag(FLAG_ASLIFT);
+        }
+        else {
+          setSystemFlag(FLAG_ASLIFT);
+        }
       }
       else if(!strcmp(l+3, "YMD")) {
-        if(r[0] == '0') {clearSystemFlag(FLAG_YMD);}      else {setSystemFlag(FLAG_YMD);}
+        if(r[0] == '0') {
+          clearSystemFlag(FLAG_YMD);
+        }
+        else {
+          setSystemFlag(FLAG_YMD);
+        }
       }
       else if(!strcmp(l+3, "MDY")) {
-        if(r[0] == '0') {clearSystemFlag(FLAG_MDY);}      else {setSystemFlag(FLAG_MDY);}
+        if(r[0] == '0') {
+          clearSystemFlag(FLAG_MDY);}
+        else {
+          setSystemFlag(FLAG_MDY);
+        }
       }
       else if(!strcmp(l+3, "DMY")) {
-        if(r[0] == '0') {clearSystemFlag(FLAG_DMY);}      else {setSystemFlag(FLAG_DMY);}
+        if(r[0] == '0') {
+          clearSystemFlag(FLAG_DMY);
+        }
+        else {
+          setSystemFlag(FLAG_DMY);
+        }
       }
       else {
         printf("\nMissformed numbered flag setting. After FL_ there shall be a number from 0 to 111, a lettered, or a system flag.\n");
@@ -956,12 +995,24 @@ void setParameter(char *p) {
       r[i] = 0;
       strcpy(angMod, r + i + 1);
 
-           if(strcmp(angMod, "DEG"   ) == 0) am = amDegree;
-      else if(strcmp(angMod, "DMS"   ) == 0) am = amDMS;
-      else if(strcmp(angMod, "RAD"   ) == 0) am = amRadian;
-      else if(strcmp(angMod, "MULTPI") == 0) am = amMultPi;
-      else if(strcmp(angMod, "GRAD"  ) == 0) am = amGrad;
-      else if(strcmp(angMod, "NONE"  ) == 0) am = amNone;
+      if(strcmp(angMod, "DEG"   ) == 0) {
+        am = amDegree;
+      }
+      else if(strcmp(angMod, "DMS"   ) == 0) {
+        am = amDMS;
+      }
+      else if(strcmp(angMod, "RAD"   ) == 0) {
+        am = amRadian;
+      }
+      else if(strcmp(angMod, "MULTPI") == 0) {
+        am = amMultPi;
+      }
+      else if(strcmp(angMod, "GRAD"  ) == 0) {
+        am = amGrad;
+      }
+      else if(strcmp(angMod, "NONE"  ) == 0) {
+        am = amNone;
+      }
       else {
         printf("\nMissformed register real%d angular mode. Unknown angular mode after real value.\n", strcmp(l, "RE16") == 0 ? 16 : 34);
         abortTest();
@@ -969,7 +1020,9 @@ void setParameter(char *p) {
 
       // remove beginning and ending " and removing leading spaces
       xcopy(r, r + 1, strlen(r));
-      while(r[0] == ' ') xcopy(r, r + 1, strlen(r));
+      while(r[0] == ' ') {
+        xcopy(r, r + 1, strlen(r));
+      }
       r[strlen(r) - 1] = 0;
 
       // replace , with .
@@ -1323,15 +1376,29 @@ void expectedAndShouldBeValue(calcRegister_t regist, char letter, char *expected
 
 
 bool_t real34AreEqual(real34_t *a, real34_t *b) {
-  if( real34IsNaN(a) &&  real34IsNaN(b)) return true;
-  if( real34IsNaN(a) && !real34IsNaN(b)) return false;
-  if(!real34IsNaN(a) &&  real34IsNaN(b)) return false;
+  if( real34IsNaN(a) &&  real34IsNaN(b)) {
+    return true;
+  }
+  if( real34IsNaN(a) && !real34IsNaN(b)) {
+    return false;
+  }
+  if(!real34IsNaN(a) &&  real34IsNaN(b)) {
+    return false;
+  }
 
-  if( real34IsInfinite(a) && !real34IsInfinite(b)) return false;
-  if(!real34IsInfinite(a) &&  real34IsInfinite(b)) return false;
+  if( real34IsInfinite(a) && !real34IsInfinite(b)) {
+    return false;
+  }
+  if(!real34IsInfinite(a) &&  real34IsInfinite(b)) {
+    return false;
+  }
   if( real34IsInfinite(a) &&  real34IsInfinite(b)) {
-    if(real34IsPositive(a) && real34IsPositive(b)) return true;
-    if(real34IsNegative(a) && real34IsNegative(b)) return true;
+    if(real34IsPositive(a) && real34IsPositive(b)) {
+      return true;
+    }
+    if(real34IsNegative(a) && real34IsNegative(b)) {
+      return true;
+    }
     return false;
   }
 
@@ -2481,7 +2548,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  wp43sMemInBlocks = 0;
+  wp43MemInBlocks = 0;
   gmpMemInBytes = 0;
   mp_set_memory_functions(allocGmp, reallocGmp, freeGmp);
 
