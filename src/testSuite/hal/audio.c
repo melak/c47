@@ -16,5 +16,7 @@
 
 #include "hal/audio.h"
 
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 void audioTone(uint32_t frequency) {
 }

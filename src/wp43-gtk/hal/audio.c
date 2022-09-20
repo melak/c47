@@ -24,6 +24,8 @@
   #include <pulse/simple.h>
 #endif
 
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 void audioTone(uint32_t frequency) {
   #if defined(__MINGW64__)
     char filename[32];

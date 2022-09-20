@@ -195,8 +195,8 @@ wp43_src = files(
   'store.c',
   'stringFuncs.c',
   'timer.c',
-  'tone.c',
   'ui/tam.c',
+  'ui/tone.c',
   'wp43.c')
 generateCatalogs_src = files(
   'charString.c',
