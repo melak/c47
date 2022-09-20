@@ -37,29 +37,25 @@
 
 void fnSetDateFormat(uint16_t dateFormat) {
   switch(dateFormat) {
-    case ITM_DMY: {
+    case ITM_DMY:
       clearSystemFlag(FLAG_MDY);
       clearSystemFlag(FLAG_YMD);
       setSystemFlag(FLAG_DMY);
       break;
-    }
 
-    case ITM_MDY: {
+    case ITM_MDY:
       clearSystemFlag(FLAG_DMY);
       clearSystemFlag(FLAG_YMD);
       setSystemFlag(FLAG_MDY);
       break;
-    }
 
-    case ITM_YMD: {
+    case ITM_YMD:
       clearSystemFlag(FLAG_MDY);
       clearSystemFlag(FLAG_DMY);
       setSystemFlag(FLAG_YMD);
       break;
-    }
 
-    default: {
-    }
+    default: {}
   }
 }
 
@@ -76,12 +72,11 @@ void julianDayToInternalDate(const real34_t *source, real34_t *destination) {
 
 bool_t checkDateArgument(calcRegister_t regist, real34_t *jd) {
   switch(getRegisterDataType(regist)) {
-    case dtDate: {
+    case dtDate:
       internalDateToJulianDay(REGISTER_REAL34_DATA(regist), jd);
       return true;
-    }
 
-    case dtReal34: {
+    case dtReal34:
       if(getRegisterAngularMode(regist) == amNone) {
         reallocateRegister(TEMP_REGISTER_1, dtReal34, REAL34_SIZE, amNone); // make sure TEMP_REGISTER_1 is not of dtDate type here
         convertReal34RegisterToDateRegister(regist, TEMP_REGISTER_1);
@@ -90,16 +85,14 @@ bool_t checkDateArgument(calcRegister_t regist, real34_t *jd) {
         return true;
       }
       /* fallthrough */
-    }
 
-    default: {
+    default :
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "data type %s cannot be converted to date!", getRegisterDataTypeName(REGISTER_X, false, false));
         moreInfoOnError("In function checkDateArgument:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return false;
-    }
   }
 }
 
@@ -408,22 +401,20 @@ void fnJulianToDate(uint16_t unusedButMandatoryParameter) {
   }
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger: {
+    case dtLongInteger:
       convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
       julianDayToInternalDate(REGISTER_REAL34_DATA(REGISTER_X), &date);
       reallocateRegister(REGISTER_X, dtDate, REAL34_SIZE, amNone);
       real34Copy(&date, REGISTER_REAL34_DATA(REGISTER_X));
       break;
-    }
 
-    default: {
+    default :
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "data type %s cannot be converted to date!", getRegisterDataTypeName(REGISTER_X, false, false));
         moreInfoOnError("In function fnDateToJulian:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
-  }
   }
 
   // check range
@@ -492,12 +483,11 @@ void fnXToDate(uint16_t unusedButMandatoryParameter) {
   }
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtDate: {
+    case dtDate:
       /* already in date: do nothing */
       break;
-    }
 
-    case dtReal34: {
+    case dtReal34:
       if(getRegisterAngularMode(REGISTER_X) == amNone) {
         convertReal34RegisterToDateRegister(REGISTER_X, REGISTER_X);
         checkDateRange(REGISTER_REAL34_DATA(REGISTER_X));
@@ -505,9 +495,8 @@ void fnXToDate(uint16_t unusedButMandatoryParameter) {
         break;
       }
       /* fallthrough */
-    }
 
-    default: {
+    default :
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "data type %s cannot be converted to date!", getRegisterDataTypeName(REGISTER_X, false, false));
@@ -515,7 +504,6 @@ void fnXToDate(uint16_t unusedButMandatoryParameter) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
   }
-}
 }
 
 
@@ -620,20 +608,18 @@ void fnToDate(uint16_t unusedButMandatoryParameter) {
 
   for(i = 0; i < 3; ++i) {
     switch(getRegisterDataType(r[i])) {
-      case dtLongInteger: {
+      case dtLongInteger:
         convertLongIntegerRegisterToReal34(r[i], part[i]);
         break;
-      }
 
-      case dtReal34: {
+      case dtReal34:
         if(getRegisterAngularMode(r[i]) == amNone) {
           real34ToIntegralValue(REGISTER_REAL34_DATA(r[i]), part[i], DEC_ROUND_DOWN);
           break;
         }
         /* fallthrough */
-      }
 
-      default: {
+      default :
         displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "data type %s cannot be converted to a real34!", getRegisterDataTypeName(r[i], false, false));
@@ -641,7 +627,6 @@ void fnToDate(uint16_t unusedButMandatoryParameter) {
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return;
     }
-  }
   }
 
   if(!isValidDay(&y, &m, &d)) {
@@ -677,12 +662,11 @@ void fnToHr(uint16_t unusedButMandatoryParameter) {
   }
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtTime: {
+    case dtTime:
       convertTimeRegisterToReal34Register(REGISTER_X, REGISTER_X);
       break;
-    }
 
-    default: {
+    default :
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "data type %s cannot be converted to a real34!", getRegisterDataTypeName(REGISTER_X, false, false));
@@ -690,7 +674,6 @@ void fnToHr(uint16_t unusedButMandatoryParameter) {
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
   }
-}
 }
 
 void fnToHms(uint16_t unusedButMandatoryParameter) {
@@ -702,37 +685,36 @@ void fnToHms(uint16_t unusedButMandatoryParameter) {
       break;
 
     default:                             //JM ^^
-      if(!saveLastX()) {
-          return;
-      }
-      switch(getRegisterDataType(REGISTER_X)) {
-        case dtLongInteger: {
-          convertLongIntegerRegisterToTimeRegister(REGISTER_X, REGISTER_X);
-          break;
-        }
-
-        case dtTime: {
-          /* already in hours: do nothing */
-            break;
-        }
-
-        case dtReal34: {
-          if(getRegisterAngularMode(REGISTER_X) == amNone) {
-            convertReal34RegisterToTimeRegister(REGISTER_X, REGISTER_X);
-            break;
+          if(!saveLastX()) {
+              return;
           }
-          /* fallthrough */
-        }
 
-        default: {
-          displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-            sprintf(errorMessage, "data type %s cannot be converted to time!", getRegisterDataTypeName(REGISTER_X, false, false));
-            moreInfoOnError("In function fnToReal:", errorMessage, NULL, NULL);
-          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-          return;
-          }
-      }
+          switch(getRegisterDataType(REGISTER_X)) {
+            case dtLongInteger :
+              convertLongIntegerRegisterToTimeRegister(REGISTER_X, REGISTER_X);
+              break;
+
+            case dtTime:
+            /* already in hours: do nothing */
+              break;
+
+            case dtReal34:
+              if(getRegisterAngularMode(REGISTER_X) == amNone) {
+                convertReal34RegisterToTimeRegister(REGISTER_X, REGISTER_X);
+                break;
+              }
+            /* fallthrough */
+
+            default :
+              displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+              #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+                sprintf(errorMessage, "data type %s cannot be converted to time!", getRegisterDataTypeName(REGISTER_X, false, false));
+                moreInfoOnError("In function fnToReal:", errorMessage, NULL, NULL);
+              #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+              return;
+              break;
+              }
+    break;
   }
   checkTimeRange(REGISTER_REAL34_DATA(REGISTER_X));
   if(lastErrorCode != 0) undo();
