@@ -18,7 +18,7 @@
  * \file graphs.c Graphing module
  ***********************************************/
 
-/* C43 functions and routines written by JM, adapted from C43 to WP43S by JM */
+/* C43 functions and routines written by JM, adapted from C43 to WP43 by JM */
 
 #include "c43Extensions/graphs.h"
 
@@ -38,7 +38,7 @@
 #include "statusBar.h"
 #include <string.h>
 
-#include "wp43s.h"
+#include "wp43.h"
 
 //#define STATDEBUG
 

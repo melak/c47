@@ -728,6 +728,7 @@ void fnToHms(uint16_t unusedButMandatoryParameter) {
       if(!saveLastX()) {
           return;
       }
+    }
 
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"

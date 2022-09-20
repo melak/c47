@@ -1,17 +1,17 @@
-/* This file is part of WP 43S.
+/* This file is part of WP43.
  *
- * WP 43S is free software: you can redistribute it and/or modify
+ * WP43 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * WP 43S is distributed in the hope that it will be useful,
+ * WP43 is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with WP 43S.  If not, see <http://www.gnu.org/licenses/>.
+ * along with WP43.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /* ADDITIONAL C43 functions and routines */
@@ -36,7 +36,7 @@
 #include "softmenus.h"
 #include "timer.h"
 
-#include "wp43s.h"
+#include "wp43.h"
 
 void fnSHIFTf(uint16_t unusedButMandatoryParameter) {
    shiftF = true;
@@ -564,7 +564,7 @@ STATE1  | STATE2  | STATE3
         |t=0      |t=75 ms
 --------E______   |             Showing release and immediate execution at "E" (previous system, no LONGPRESS no DOUBLE click)
 --------x_________E_____        Showing release at x and delayed execution "E" (if double click is to be detected)
-         #########              ## shows DEAD TIME where 43C does not react to the key release that already happened
+         #########              ## shows DEAD TIME where C43 does not react to the key release that already happened
                   ^             ^ shows the point where the x command is executed if no double press recognised.
 
 --------x_______G-|-----        Starting with key already pressed, release at x, re-press shown at 60 ms, double click registered, g-shift activated, COMMAND displayed, timing started to NOP if not released.

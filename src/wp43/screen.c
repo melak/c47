@@ -2640,10 +2640,10 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             realToInt32(SIGMA_N, w);
             if(regist == REGISTER_Y) {
               if(w == 1) {
-                sprintf(prefix, "%03" PRId16 " data point", w);
+                sprintf(prefix, "%03" PRId32 " data point", w);
               }
               else {
-                sprintf(prefix, "%03" PRId16 " data points", w);
+                sprintf(prefix, "%03" PRId32 " data points", w);
               }
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               lcd_fill_rect(0, Y_POSITION_OF_REGISTER_Y_LINE - 2, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);

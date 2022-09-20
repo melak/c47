@@ -1618,7 +1618,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       }
 
 
-      case ITM_BST:                  //JMvv used for arrows in AIM vv
+      case ITM_BST: {                 //JMvv used for arrows in AIM vv
         if(calcMode == CM_AIM) {
           keyActionProcessed = true;
           fnT_ARROW(ITM_T_LEFT_ARROW);
@@ -1631,8 +1631,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           addItemToBuffer(ITM_BST);
         }
         break;
+      }
 
-      case ITM_SST:
+      case ITM_SST: {
         if(calcMode == CM_AIM) {
           keyActionProcessed = true;
           fnT_ARROW(ITM_T_RIGHT_ARROW);
@@ -1644,10 +1645,11 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           keyActionProcessed = true;
           addItemToBuffer(ITM_SST);
         }     
-        break;                       //JM ^^
+        break;
+      }                       //JM ^^
 
 
-      case ITM_EXIT1:
+      case ITM_EXIT1: {
         fnKeyExit(NOPARAM);
         if(temporaryInformation != TI_NO_INFO) {
           refreshScreen();
@@ -1720,40 +1722,45 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
 
 
-      case CHR_numL:                                             //JMvv
+      case CHR_numL: {                                            //JMvv
         if(!numLock)  { processKeyAction(CHR_num); } 
         keyActionProcessed = true;
         break;
+      }
 
-      case CHR_numU:
+      case CHR_numU: {
         if(numLock)  { processKeyAction(CHR_num); } 
         keyActionProcessed = true;
         break;
+      }
 
-      case CHR_num:                           
+      case CHR_num: {
         alphaCase = AC_UPPER;
         numLock = !numLock;
         if(!numLock) { nextChar = NC_NORMAL;}
         showAlphaModeonGui(); //dr JM, see keyboardtweaks
         keyActionProcessed = true;
         break;
+      }
 
-      case CHR_caseUP:
+      case CHR_caseUP: {
         if(numLock)  { } else
         if(alphaCase == AC_LOWER)  { processKeyAction(CHR_case); } else
         if(alphaCase == AC_UPPER)  { processKeyAction(CHR_numL); }
         nextChar = NC_NORMAL;
         keyActionProcessed = true;
         break;
+      }
 
-      case CHR_caseDN:
+      case CHR_caseDN: {
         if(numLock)  { alphaCase = AC_UPPER; processKeyAction(CHR_numU); } else
         if(alphaCase == AC_UPPER)  { processKeyAction(CHR_case); } 
         nextChar = NC_NORMAL;
         keyActionProcessed = true;
         break;
+      }
 
-      case CHR_case:
+      case CHR_case: {
         numLock = false;
         int16_t sm = softmenu[softmenuStack[0].softmenuId].menuItem;      //JMvv
         nextChar = NC_NORMAL;
@@ -1771,7 +1778,8 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         }
         showAlphaModeonGui(); //dr JM, see keyboardtweaks
         keyActionProcessed = true;
-        break;                                                                                                               //JM^^
+        break;  
+        }                                                                                                             //JM^^
 
 
 
@@ -2119,17 +2127,16 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
             default: {
               sprintf(errorMessage, "In function processKeyAction: %" PRIu8 " is an unexpected value while processing calcMode!", calcMode);
               displayBugScreen(errorMessage);
+            }
           }
+          #ifdef RECORDLOG
+            #ifdef PC_BUILD
+              if(keyActionProcessed) {                         //JMEXEC
+                capture_sequence("keyActionProcessed:", item);  //JMEXEC
+              }                                                //JMEXEC
+            #endif
+          #endif
         }
-    #ifdef RECORDLOG
-      #ifdef PC_BUILD
-        if(keyActionProcessed) {                         //JMEXEC
-          capture_sequence("keyActionProcessed:", item);  //JMEXEC
-        }                                                //JMEXEC
-      #endif
-    #endif
-      }
-    }
       }
     }
     #if (REAL34_WIDTH_TEST == 1)

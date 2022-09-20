@@ -498,7 +498,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
         } else isMemIssue = true;
       }
       else if((lastIntegerBase == 0) && (Input_Default == ID_CPXDP)) {                //JM defaults vv
-        void *newMem = allocWp43s(TO_BYTES(COMPLEX34_SIZE));
+        void *newMem = allocWp43(TO_BYTES(COMPLEX34_SIZE));
         if(newMem) {
           setRegisterDataType(r, dtComplex34, amNone);
           setRegisterDataPointer(r, newMem);
@@ -571,10 +571,10 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
           } else isMemIssue = true;
         }
         else if((lastIntegerBase == 0) && (Input_Default == ID_CPXDP)) {                //JM defaults vv
-          void *newMem = allocWp43s(TO_BYTES(COMPLEX34_SIZE));
+          void *newMem = allocWp43(TO_BYTES(COMPLEX34_SIZE));
           if(newMem) {
             setRegisterDataType(r, dtComplex34, amNone);
-            setRegisterDataPointer(r, allocWp43s(TO_BYTES(COMPLEX34_SIZE)));
+            setRegisterDataPointer(r, allocWp43(TO_BYTES(COMPLEX34_SIZE)));
             real34Zero(REGISTER_REAL34_DATA(r));
             real34Zero(REGISTER_IMAG34_DATA(r));
           } else isMemIssue = true;
