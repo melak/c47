@@ -25,11 +25,13 @@
 #include "screen.h"
 #include "wp43.h"
 
+GtkWidget *grid;
 #if (SCREEN_800X480 == 0)
-  GtkWidget *backgroundImage, *behindScreenImage, *fgShiftedArea1, *fgShiftedArea2;
+  GtkWidget *backgroundImage, *bezelImage[3], *behindScreenImage, *fgShiftedArea1, *fgShiftedArea2;
   GtkWidget *lblFSoftkeyArea, *lblGSoftkeyArea;
   int backgroundWidth, backgroundHeight;
   int lcdx, lcdy;
+  int bezelX[3], bezelY[3];
   int behindScreenX, behindScreenY;
   int fgShiftedArea1X, fgShiftedArea1Y;
   int fgShiftedArea2X, fgShiftedArea2Y;

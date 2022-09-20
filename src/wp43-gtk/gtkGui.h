@@ -25,9 +25,9 @@
    */
   void setupUI(void);
 
-  GtkWidget *grid;
+  extern GtkWidget *grid;
   #if (SCREEN_800X480 == 0)
-    GtkWidget *bezelImage[3];
-    int bezelX[3], bezelY[3];
+    extern GtkWidget *bezelImage[3];
+    extern int bezelX[3], bezelY[3];
   #endif // (SCREEN_800X480 == 0)
 #endif // !GTKGUI_H
