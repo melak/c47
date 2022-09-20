@@ -1,7 +1,7 @@
 font_files = files(
   '../../res/fonts/sortingOrder.csv',
-  '../../res/fonts/C43___NumericFont.ttf',
-  '../../res/fonts/C43___StandardFont.ttf')
+  '../../res/fonts/C43__NumericFont.ttf',
+  '../../res/fonts/C43__StandardFont.ttf')
 ttf2RasterFonts = executable(
   'ttf2RasterFonts',
   build_by_default : false,
@@ -19,6 +19,6 @@ testTtf2RasterFonts = executable(
   'testTtf2RasterFonts',
   build_by_default    : false,
   sources             : files('testTtf2RasterFonts.c') + [rasterFontsData_c],
-  include_directories : [decNumber_inc, wp43s_inc],
+  include_directories : [decNumber_inc, wp43_inc],
   dependencies        : [gtk_dep],
   native              : true)

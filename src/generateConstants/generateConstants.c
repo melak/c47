@@ -902,7 +902,7 @@ int main(int argc, char* argv[]) {
   fprintf(constantsC, "*************************************************************************************************/\n\n");
 
   fprintf(constantsC, "#include \"constantPointers.h\"\n\n");
-  fprintf(constantsC, "#include \"wp43s.h\"\n\n");
+  fprintf(constantsC, "#include \"wp43.h\"\n\n");
 
   fprintf(constantsC, "%s", realArray);
   fprintf(constantsC, "\n");
