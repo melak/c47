@@ -20,11 +20,13 @@
 
 #include "charString.h"
 
+#include <stdlib.h>
+#include <string.h>
 #include "error.h"
 #include "fonts.h"
 
 #include "wp43.h"
-#include <string.h>
+
 
 
 

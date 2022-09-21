@@ -22,11 +22,13 @@
 #include "flags.h"
 #include "hal/gui.h"
 #include "items.h"
+#include "c43Extensions/jm.h"
 #include "keyboard.h"
 #include "matrix.h"
 #include "registers.h"
 #include "saveRestoreCalcState.h"
 #include "screen.h"
+#include "softmenus.h"
 #include "stack.h"
 #include "timer.h"
 #include <string.h>
@@ -45,14 +47,14 @@
       if(matrixIndex != INVALID_VARIABLE) {
         if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
           if(openMatrixMIMPointer.realMatrix.matrixElements) {
-            realMatrixFree(&openMatrixMIMPointer.realMatrix);
-          }
+          realMatrixFree(&openMatrixMIMPointer.realMatrix);
+        }
         }
         else if(getRegisterDataType(matrixIndex) == dtComplex34Matrix) {
           if(openMatrixMIMPointer.complexMatrix.matrixElements) {
-            complexMatrixFree(&openMatrixMIMPointer.complexMatrix);
-          }
+          complexMatrixFree(&openMatrixMIMPointer.complexMatrix);
         }
+      }
       }
       saveCalc();
       gtk_main_quit();
@@ -66,6 +68,9 @@
 
 
   void calcModeNormal(void) {
+    #ifdef PC_BUILD
+      char tmp[200]; sprintf(tmp,"^^^^### calcModeNormal"); jm_show_comment(tmp);
+    #endif //PC_BUILD
     calcMode = CM_NORMAL;
 
     if(softmenuStack[0].softmenuId == 1) { // MyAlpha
@@ -76,14 +81,31 @@
     hideCursor();
     cursorEnabled = false;
 
-    calcModeNormalGui();
+    #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
+      calcModeNormalGui();
+    #endif // PC_BUILD && (SCREEN_800X480 == 0)
   }
 
 
 
   void calcModeAim(uint16_t unusedButMandatoryParameter) {
+    #ifdef PC_BUILD
+      char tmp[200]; sprintf(tmp,"^^^^### calcModeAim"); jm_show_comment(tmp);
+    #endif //PC_BUILD
+
+
+
+if(!tam.mode) {
+    if(!SH_BASE_AHOME) {
+        showSoftmenu(-MNU_MyAlpha);
+    } else
+    if(SH_BASE_AHOME) {
+        showSoftmenu(-MNU_ALPHA);        //JM ALPHA-HOME  Change to initialize the menu stack. it was true.
+    }
+}
     alphaCase = AC_UPPER;
     nextChar = NC_NORMAL;
+    numLock = false;
 
     if(!tam.mode && calcMode != CM_ASSIGN) {
       calcMode = CM_AIM;
@@ -102,7 +124,9 @@
 
     setSystemFlag(FLAG_ALPHA);
 
-    calcModeAimGui();
+    #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
+      calcModeAimGui();
+    #endif // PC_BUILD && (SCREEN_800X480 == 0)
   }
 
 
@@ -191,22 +215,28 @@
         catalog = CATALOG_NONE;
       }
     }
+    #ifdef PC_BUILD
+      char tmp[200]; sprintf(tmp,"^^^^### enterAsmMode catalog=%d",catalog); jm_show_comment(tmp);
+    #endif //PC_BUILD
 
     if(catalog) {
       if(calcMode == CM_NIM) {
         closeNim();
       }
-
       if(calcMode != CM_PEM || !getSystemFlag(FLAG_ALPHA)) {
         alphaCase = AC_UPPER;
         nextChar = NC_NORMAL;
+        numLock = false;
+
 
         clearSystemFlag(FLAG_ALPHA);
         resetAlphaSelectionBuffer();
 
-        if(catalog != CATALOG_MVAR) {
-          calcModeAimGui();
-        }
+        #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
+          if(catalog != CATALOG_MVAR) {
+            calcModeAimGui();
+          }
+        #endif // PC_BUILD && (SCREEN_800X480 == 0)
       }
     }
   }
@@ -216,7 +246,7 @@
   void leaveAsmMode(void) {
     catalog = CATALOG_NONE;
 
-    #if !defined(DMCP_BUILD)
+    #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
       if(tam.mode && !tam.alpha) {
         calcModeTamGui();
       }
@@ -226,7 +256,7 @@
       else if(calcMode == CM_NORMAL || calcMode == CM_PEM || calcMode == CM_MIM || calcMode == CM_ASSIGN) {
         calcModeNormalGui();
       }
-    #endif // !DMCP_BUILD
+    #endif // PC_BUILD && (SCREEN_800X480 == 0)
   }
 
 
@@ -235,6 +265,9 @@
     #if defined(DEBUGUNDO)
       printf(">>> saveForUndo from gui: calcModeNim\n");
     #endif // DEBUGUNDO
+    #ifdef PC_BUILD
+      char tmp[200]; sprintf(tmp,"^^^^### calcModeNim"); jm_show_comment(tmp);
+    #endif //PC_BUILD
     saveForUndo();
     if(lastErrorCode == ERROR_RAM_FULL) {
       displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
@@ -244,23 +277,18 @@
       return;
     }
 
+    calcMode = CM_NIM;
     clearSystemFlag(FLAG_ALPHA);
-    if(calcMode != CM_PEM && calcMode != CM_MIM) {
-      calcMode = CM_NIM;
 
-      liftStack();
-      real34Zero(REGISTER_REAL34_DATA(REGISTER_X));
-    }
+    liftStack();
+    real34Zero(REGISTER_REAL34_DATA(REGISTER_X));
 
     aimBuffer[0] = 0;
     hexDigits = 0;
 
-    if(calcMode != CM_PEM) {
-      clearRegisterLine(NIM_REGISTER_LINE, true, true);
-      xCursor = 1;
-      yCursor = Y_POSITION_OF_NIM_LINE;
-      cursorEnabled = true;
-      cursorFont = &numericFont;
-    }
+    clearRegisterLine(NIM_REGISTER_LINE, true, true);
+    xCursor = 1;
+    cursorEnabled = true;
+    cursorFont = &numericFont;
   }
 #endif // !TESTSUITE_BUILD

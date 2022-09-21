@@ -19,7 +19,7 @@
 #include "gtkGui.h"
 #include "items.h"
 #include "wp43.h"
-
+/*
 #if (SCREEN_800X480 == 0)
   void calcModeNormalGui(void) {
     int key;
@@ -84,3 +84,4 @@
   void calcModeAimGui    (void) {}
   void calcModeTamGui    (void) {}
 #endif
+*/
