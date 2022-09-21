@@ -723,7 +723,7 @@
             }
 
             if(lastErrorCode == 0) {
-              if(temporaryInformation == TI_VIEW) {
+              if(temporaryInformation == TI_VIEW_REGISTER) {
                 temporaryInformation = TI_NO_INFO;
                 updateMatrixHeightCache();
               }
@@ -782,7 +782,7 @@
 
     // Shift f pressed and shift g not active
     if(key->primary == ITM_SHIFTf && !shiftG && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN)) {
-      if(temporaryInformation == TI_VIEW) {
+      if(temporaryInformation == TI_VIEW_REGISTER) {
         temporaryInformation = TI_NO_INFO;
         updateMatrixHeightCache();
       }
@@ -800,7 +800,7 @@
 
     // Shift g pressed and shift f not active
     else if(key->primary == ITM_SHIFTg && !shiftF && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN)) {
-      if(temporaryInformation == TI_VIEW) {
+      if(temporaryInformation == TI_VIEW_REGISTER) {
         temporaryInformation = TI_NO_INFO;
         updateMatrixHeightCache();
       }
@@ -1179,11 +1179,11 @@
       lastErrorCode = 0;
     }
 
-    if(temporaryInformation == TI_VIEW) {
+    if(temporaryInformation == TI_VIEW_REGISTER) {
       temporaryInformation = TI_NO_INFO;
       updateMatrixHeightCache();
       if(item == ITM_UP || item == ITM_DOWN || item == ITM_EXIT) {
-        temporaryInformation = TI_VIEW;
+        temporaryInformation = TI_VIEW_REGISTER;
       }
     }
     else if(item != ITM_UP && item != ITM_DOWN && item != ITM_EXIT) {
@@ -1941,7 +1941,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
     switch(calcMode) {
       case CM_NORMAL: {
-        if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_VIEW) {
+        if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_VIEW_REGISTER) {
           temporaryInformation = TI_NO_INFO;
         }
         else if(lastErrorCode != 0) {
