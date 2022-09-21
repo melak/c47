@@ -23,9 +23,10 @@
 #include "c43Extensions/xeqm.h"
 
 #include "bufferize.h"
+#include "calcMode.h"
 #include "charString.h"
 #include "flags.h"
-#include "gui.h"
+#include "hal/gui.h"
 #include "c43Extensions/graphText.h"
 #include "items.h"
 #include "c43Extensions/jm.h"

@@ -26,7 +26,7 @@
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
-#include "gui.h"
+#include "hal/gui.h"
 #include "items.h"
 #include "memory.h"
 #include "realType.h"
@@ -166,9 +166,7 @@ void fnEqEdit(uint16_t unusedButMandatoryParameter) {
   setSystemFlag(FLAG_ALPHA);
   yCursor = 0;
   xCursor = equationString ? stringGlyphLength(equationString) : 0;
-  #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
     calcModeAimGui();
-  #endif // PC_BUILD && (SCREEN_800X480 == 0)
   #endif // !TESTSUITE_BUILD
 }
 

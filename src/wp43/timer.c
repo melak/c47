@@ -22,7 +22,7 @@
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
-#include "gui.h"
+#include "hal/gui.h"
 #include "items.h"
 #include "realType.h"
 #include "registers.h"
@@ -479,11 +479,9 @@ void fnShowTimerApp(void) {
       if(!timerMenu) {
         showSoftmenu(-MNU_TIMERF);
       }
-      #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
       if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_TIMERF) {
         calcModeNormalGui();
       }
-      #endif // PC_BUILD && (SCREEN_800X480 == 0)
     }
   #endif // !TESTSUITE_BUILD
 }

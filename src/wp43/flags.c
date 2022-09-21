@@ -20,9 +20,9 @@
 
 #include "flags.h"
 
+#include "calcMode.h"
 #include "config.h"
 #include "error.h"
-#include "gui.h"
 #include "items.h"
 #include "softmenus.h"
 #include "solver/equation.h"

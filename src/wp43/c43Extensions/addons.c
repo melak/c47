@@ -68,6 +68,7 @@ All the below: because both Last x and savestack does not work due to multiple s
 
 #include "bufferize.h"
 #include "c43Extensions/keyboardTweak.h"
+#include "calcMode.h"
 #include "charString.h"
 #include "config.h"
 #include "constantPointers.h"
@@ -80,7 +81,7 @@ All the below: because both Last x and savestack does not work due to multiple s
 #include "flags.h"
 #include "fonts.h"
 #include "c43Extensions/graphText.h"
-#include "gui.h"
+#include "hal/gui.h"
 #include "integers.h"
 #include "items.h"
 #include "c43Extensions/jm.h"

@@ -414,3 +414,33 @@ void *xcopy(void *dest, const void *source, int n) {
     return (char *)memcpy(dest, source, l + 1) + l;
   }
 #endif //WIN32
+
+
+#if !defined(DMCP_BUILD)
+void strReplace(char *haystack, const char *needle, const char *newNeedle) {
+  ////////////////////////////////////////////////////////
+  // There MUST be enough memory allocated to *haystack //
+  // when strlen(newNeedle) > strlen(needle)            //
+  ////////////////////////////////////////////////////////
+  char *str, *needleLocation;
+  int  needleLg;
+
+  while(strstr(haystack, needle) != NULL) {
+    needleLg = strlen(needle);
+    needleLocation = strstr(haystack, needle);
+    str = malloc(strlen(needleLocation + needleLg) + 1);
+    #if defined(PC_BUILD) && !defined(GENERATE_CATALOGS)
+      if(str == NULL) {
+        moreInfoOnError("In function strReplace:", "error allocating memory for str!", NULL, NULL);
+        exit(1);
+      }
+    #endif // PC_BUILD && !GENERATE_CATALOGS
+
+    strcpy(str, needleLocation + needleLg);
+    *strstr(haystack, needle) = 0;
+    strcat(haystack, newNeedle);
+    strcat(haystack, str);
+    free(str);
+  }
+}
+#endif // !DMCP_BUILD

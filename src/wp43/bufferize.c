@@ -17,6 +17,7 @@
 #include "bufferize.h"
 
 #include "c43Extensions/addons.h"
+#include "calcMode.h"
 #include "charString.h"
 #include "constantPointers.h"
 #include "constants.h"
@@ -27,7 +28,6 @@
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
-#include "gui.h"
 #include "items.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/keyboardTweak.h"

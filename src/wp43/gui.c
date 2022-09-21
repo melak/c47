@@ -4483,12 +4483,6 @@ if(!tam.mode) {
   }
 
 
-  void refreshModeGui(void) {  //JM Added here to force icon update in Gui
-  #ifdef PC_BUILD
-    if( ((calcMode == CM_AIM) || (calcMode == CM_EIM)) && !tam.mode) calcModeAimGui();
-  #endif
-
-
 
     #ifdef PC_BUILD
       if     ((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();

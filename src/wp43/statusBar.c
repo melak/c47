@@ -22,7 +22,7 @@
 #include "flags.h"
 #include "fonts.h"
 #include "items.h"
-#include "gui.h"
+#include "hal/gui.h"
 #include "c43Extensions/jm.h"
 #include "plotstat.h"
 #include "screen.h"
@@ -481,7 +481,7 @@ void showHideUserMode(void) {
     showGlyph(STD_USER_MODE, &standardFont, X_USER_MODE, 0, vmNormal, false, false); // STD_USER_MODE is 0+12+2 pixel wide
   }
   #ifndef DMCP_BUILD
-    refreshModeGui(); //JM Added here to force icon update in Gui
+    if( ((calcMode == CM_AIM) || (calcMode == CM_EIM)) && !tam.mode) calcModeAimGui(); //JM
   #endif //!TESTSUITE_BUILD
 }
   

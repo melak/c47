@@ -18,6 +18,7 @@
 
 #include "assign.h"
 #include "bufferize.h"
+#include "calcMode.h"
 #include "charString.h"
 #include "config.h"
 #include "constants.h"
@@ -25,7 +26,7 @@
 #include "display.h"
 #include "error.h"
 #include "flags.h"
-#include "gui.h"
+#include "hal/gui.h"
 #include "items.h"
 #include "matrix.h"
 #include "c43Extensions/jm.h"
@@ -1004,7 +1005,7 @@ bool_t allowShiftsToClearError = false;
       lastshiftG = shiftG;
       showShiftState();
       #ifdef PC_BUILD
-        if(calcMode == CM_AIM || calcMode == CM_EIM) refreshModeGui();
+        if( ((calcMode == CM_AIM) || (calcMode == CM_EIM)) && !tam.mode) calcModeAimGui(); //JM
       #endif
 
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
@@ -1037,7 +1038,7 @@ bool_t allowShiftsToClearError = false;
       lastshiftG = shiftG;
       showShiftState();
       #ifdef PC_BUILD
-        if(calcMode == CM_AIM || calcMode == CM_EIM) refreshModeGui();
+        if( ((calcMode == CM_AIM) || (calcMode == CM_EIM)) && !tam.mode) calcModeAimGui(); //JM
       #endif
 
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
@@ -1069,7 +1070,7 @@ bool_t allowShiftsToClearError = false;
       lastshiftG = shiftG;
       showShiftState();                                                                                                         //JM shifts
       #ifdef PC_BUILD
-        if(calcMode == CM_AIM || calcMode == CM_EIM) refreshModeGui();
+        if( ((calcMode == CM_AIM) || (calcMode == CM_EIM)) && !tam.mode) calcModeAimGui(); //JM
       #endif
 
       return ITM_NOP;
@@ -1791,9 +1792,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           }
           if(previousCalcMode == CM_AIM) {
             softmenuStack[0].softmenuId = 1;
-            #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
-              calcModeAimGui();
-            #endif // PC_BUILD && (SCREEN_800X480 == 0)
+            calcModeAimGui();
           }
           else {
             leaveAsmMode();

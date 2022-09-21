@@ -23,10 +23,11 @@
 #include "c43Extensions/keyboardTweak.h"
 
 #include "bufferize.h"
+#include "calcMode.h"
 #include "charString.h"
 #include "flags.h"
 #include "fonts.h"
-#include "gui.h"
+#include "hal/gui.h"
 #include "items.h"
 #include "c43Extensions/jm.h"
 #include "keyboard.h"
@@ -178,7 +179,7 @@ void resetShiftState(void) {
     refreshScreen();
   }                                                                             //^^
   #ifdef PC_BUILD
-    if(calcMode == CM_AIM || calcMode == CM_EIM) refreshModeGui();
+    if( ((calcMode == CM_AIM) || (calcMode == CM_EIM)) && !tam.mode) calcModeAimGui(); //JM
   #endif
 }
 

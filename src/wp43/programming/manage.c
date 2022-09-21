@@ -28,7 +28,7 @@
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
-#include "gui.h"
+#include "hal/gui.h"
 #include "items.h"
 #include "memory.h"
 #include "programming/decode.h"
@@ -600,9 +600,7 @@ void pemAlpha(int16_t item) {
 
     setSystemFlag(FLAG_ALPHA);
 
-    #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
       calcModeAimGui();
-    #endif // PC_BUILD && (SCREEN_800X480 == 0)
 
     tmpString[0] = ITM_LITERAL;
     tmpString[1] = (char)STRING_LABEL_VARIABLE;
@@ -636,9 +634,7 @@ void pemAlpha(int16_t item) {
     if(aimBuffer[0] == 0) {
       deleteStepsFromTo(currentStep.ram, findNextStep_ram(currentStep.ram));
       clearSystemFlag(FLAG_ALPHA);
-      #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
         calcModeNormalGui();
-      #endif // PC_BUILD && (SCREEN_800X480 == 0)
       return;
     }
     else {
@@ -670,9 +666,7 @@ void pemCloseAlphaInput(void) {
   #if !defined(TESTSUITE_BUILD)
   aimBuffer[0] = 0;
   clearSystemFlag(FLAG_ALPHA);
-  #if defined(PC_BUILD) && (SCREEN_800X480 == 0)
     calcModeNormalGui();
-  #endif // PC_BUILD && (SCREEN_800X480 == 0)
   ++currentLocalStepNumber;
   currentStep = findNextStep(currentStep);
   ++firstDisplayedLocalStepNumber;

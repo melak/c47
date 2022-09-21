@@ -19,9 +19,11 @@
  ***********************************************/
 
 #include "flags.h"
-#include "gui.h"
+#include "gtkGui.h"
 #include "items.h"
 #include "keyboard.h"
+#include "hal/gui.h"
+#include "calcMode.h"
 #include "c43Extensions/keyboardTweak.h"
 #include "longIntegerType.h"
 #include "memory.h"
