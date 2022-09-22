@@ -155,8 +155,8 @@ TO_QSPI const int16_t menu_MATX[]        = { ITM_M_NEW,                     ITM_
 
 TO_QSPI const int16_t menu_M_SIM_Q[]     = { VAR_MATA,                      VAR_MATB,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_MATX                      }; // Should VAR_MATA and VAR_MATB be reclaced by ITM_MATA (to be created) and ITM_MATB (to be created) here?
 
-TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_UP_ARROW,               ITM_M_OLD,                ITM_M_GOTO,            ITM_DOWN_ARROW,              ITM_RIGHT_ARROW,
-                                             ITM_M_INSR,                    ITM_NULL,                   ITM_M_DELR,               ITM_NULL,              ITM_M_WRAP,                  ITM_M_GROW                    };
+TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_UP_ARROW,               ITM_M_OLD,                ITM_CC,                ITM_DOWN_ARROW,              ITM_RIGHT_ARROW,                  //JM
+                                             ITM_M_INSR,                    ITM_NULL,                   ITM_M_DELR,               ITM_M_GOTO,            ITM_M_WRAP,                  ITM_M_GROW                    };  //JM
 
 
 #if defined (INLINE_TEST)
