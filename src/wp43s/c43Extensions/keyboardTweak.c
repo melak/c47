@@ -64,23 +64,7 @@ int16_t determineFunctionKeyItem_C43(const char *data, bool_t shiftF, bool_t shi
        item = determineFunctionKeyItem(data, itemShift);
     }
     else item = 0;
-  /*
-    else {              //if there is no SoftMenu showing
-      if(fn>=1 && fn<=6) {
-        if(itemShift == 0) {
-        //FN KEYS DIRECTLY ACCESSIBLE IF NO MENUS ARE UP;                       // FN Key will be the same as the yellow label underneath it, even if USER keys were selected.
-          temporaryInformation = TI_NO_INFO; item = ( !getSystemFlag(FLAG_USER) ? (kbd_std[fn-1].fShifted) : (kbd_usr[fn-1].fShifted) );  //Function key follows if the yellow key top 4 buttons are changed from default.      
-        }
-        else {
-        //FN KEYS DIRECTLY ACCESSIBLE IF NO MENUS ARE UP;                       // FN Key will be the same as the blue label underneath it, even if USER keys were selected.
-          temporaryInformation = TI_NO_INFO; item = ( !getSystemFlag(FLAG_USER) ? (kbd_std[fn-1].gShifted) : (kbd_usr[fn-1].gShifted) );  //Function key follows if the yellow key top 4 buttons are changed from default.              
-        }
-      }
-      else {
-        item = 0;
-      }
-    }
-*/
+
   #endif
   return item;
 }
@@ -662,7 +646,7 @@ void btnFnPressed_StateMachine(void *unused, void *data) {
   //**************JM DOUBLE CLICK DETECTION ******************************* // JM FN-DOUBLE
   double_click_detected = false;                                            //JM FN-DOUBLE - Dip detection flag
   int mI = softmenu[softmenuStack[0].softmenuId].menuItem;
-  if((jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ mI != -MNU_ALPHA && mI != -MNU_T_EDIT && mI != -MNU_EQ_EDIT)) {
+  if((jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ mI != -MNU_ALPHA && mI != -MNU_EQ_EDIT)) {
     if(exexute_double_g) {
       if(FN_key_pressed !=0 && FN_key_pressed == FN_key_pressed_last) {     //Identified valid double press dip, the same key in rapid succession
         shiftF = false;                                                     //JM
@@ -724,7 +708,7 @@ void btnFnReleased_StateMachine(void *unused, void *data) {
     FN_state =  ST_2_REL1;
   }
   int mI = softmenu[softmenuStack[0].softmenuId].menuItem;
-  if((jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ mI != -MNU_ALPHA && mI != -MNU_T_EDIT ) && FN_state == ST_2_REL1 && FN_handle_timed_out_to_EXEC) {
+  if((jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ mI != -MNU_ALPHA) && FN_state == ST_2_REL1 && FN_handle_timed_out_to_EXEC) {
     uint8_t                      offset =  0;
     if(shiftF && !shiftG)      { offset =  6; }
     else if(!shiftF && shiftG) { offset = 12; }
