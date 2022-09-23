@@ -20,6 +20,7 @@
 #include "charString.h"
 #include "error.h"
 #include "fonts.h"
+#include "flags.h"
 #include "items.h"
 #include "memory.h"
 #include "programming/flash.h"
@@ -155,8 +156,8 @@ TO_QSPI const int16_t menu_MATX[]        = { ITM_M_NEW,                     ITM_
 
 TO_QSPI const int16_t menu_M_SIM_Q[]     = { VAR_MATA,                      VAR_MATB,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_MATX                      }; // Should VAR_MATA and VAR_MATB be reclaced by ITM_MATA (to be created) and ITM_MATB (to be created) here?
 
-TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_UP_ARROW,               ITM_M_OLD,                ITM_M_GOTO,            ITM_DOWN_ARROW,              ITM_RIGHT_ARROW,
-                                             ITM_M_INSR,                    ITM_NULL,                   ITM_M_DELR,               ITM_NULL,              ITM_M_WRAP,                  ITM_M_GROW                    };
+TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_UP_ARROW,               ITM_M_OLD,                ITM_CC,                ITM_DOWN_ARROW,              ITM_RIGHT_ARROW,                  //JM
+                                             ITM_M_INSR,                    ITM_NULL,                   ITM_M_DELR,               ITM_M_GOTO,            ITM_M_WRAP,                  ITM_M_GROW                    };  //JM
 
 
 #if defined (INLINE_TEST)
@@ -774,13 +775,8 @@ TO_QSPI const int16_t menu_PLOT[]        = { ITM_PLINE,                     ITM_
 
 
 TO_QSPI const int16_t menu_ALPHA[]       = { ITM_T_UP_ARROW,                ITM_T_DOWN_ARROW,           ITM_T_LLEFT_ARROW,        ITM_T_RRIGHT_ARROW,    ITM_T_LEFT_ARROW,            ITM_T_RIGHT_ARROW, 
-                                             -MNU_MyAlpha,                  -MNU_T_EDIT,                -MNU_ALPHA_OMEGA,         -MNU_ALPHADOT,         -MNU_ALPHAMATH,              -MNU_ALPHAINTL,                     //JM
-                                             ITM_XEDIT,                     ITM_USERMODE,               -MNU_ASN,                 -MNU_CATALOG,          CHR_num,                     CHR_case                        };    //JM
-
-
-TO_QSPI const int16_t menu_T_EDIT[]      = { ITM_T_UP_ARROW,                ITM_T_DOWN_ARROW,           ITM_T_LLEFT_ARROW,       ITM_T_RRIGHT_ARROW,     ITM_T_LEFT_ARROW,            ITM_T_RIGHT_ARROW,                    //JM TEXTEDIT
-                                             ITM_DOUBLE_QUOTE,              -MNU_ALPHA,                 -MNU_ALPHA_OMEGA,        -MNU_ALPHADOT,         -MNU_ALPHAMATH,              -MNU_ALPHAINTL,               
-                                             ITM_QUOTE,                     ITM_ASTERISK,               ITM_CIRCUMFLEX,          ITM_SLASH,              ITM_LESS_THAN,               ITM_GREATER_THAN                }; 
+                                             -MNU_MyAlpha,                  ITM_NULL,                  -MNU_ALPHA_OMEGA,         -MNU_ALPHADOT,         -MNU_ALPHAMATH,              -MNU_ALPHAINTL,                     //JM
+                                             ITM_XEDIT,                     ITM_CLA,                    ITM_ASSIGN,               ITM_USERMODE,          CHR_num,                     CHR_case                        };    //JM
 
 TO_QSPI const int16_t menu_XXEQ[]        = { ITM_XSAVE,                     ITM_XLOAD,                  ITM_XEDIT,               ITM_XNEW,              ITM_XXEQ,                     -MNU_XEQ                        };   //JM
 
@@ -902,8 +898,7 @@ TO_QSPI const softmenu_t softmenu[] = {
 /* 109 */  {.menuItem = -MNU_ALPHA,       .numItems = sizeof(menu_ALPHA      )/sizeof(int16_t), .softkeyItem = menu_ALPHA       },  //JM ALPHA
 /* 110 */  {.menuItem = -MNU_BASE,        .numItems = sizeof(menu_BASE       )/sizeof(int16_t), .softkeyItem = menu_BASE        },  //JM BASE
 /* 111 */  {.menuItem = -MNU_EE,          .numItems = sizeof(menu_EE         )/sizeof(int16_t), .softkeyItem = menu_EE          },  //JM EE
-/* 112 */  {.menuItem = -MNU_T_EDIT,      .numItems = sizeof(menu_T_EDIT     )/sizeof(int16_t), .softkeyItem = menu_T_EDIT      },  //JM TEXTEDIT
-/* 113 */  {.menuItem = -MNU_XXEQ,        .numItems = sizeof(menu_XXEQ       )/sizeof(int16_t), .softkeyItem = menu_XXEQ        },  //JM TEXTEDIT
+/* 112 */  {.menuItem = -MNU_XXEQ,        .numItems = sizeof(menu_XXEQ       )/sizeof(int16_t), .softkeyItem = menu_XXEQ        },  //JM TEXTEDIT
 #ifdef INLINE_TEST                                                              //vv dr
 /*     */  {.menuItem= -MNU_INL_TST,     .numItems = sizeof(menu_Inl_Tst    )/sizeof(int16_t), .softkeyItem = menu_Inl_Tst     },
 #endif                                                                          //^^
@@ -1805,7 +1800,6 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
     }
     currentFirstItem = softmenuStack[0].firstItem;
 
-//JMTOCHECK
 /*
     //JMvv Temporary method to ensure AIM is active if the 3 ALPHA menus are shown //JM TOCHECK
     if((softmenuStackPointer > 0) && (calcMode != CM_AIM && (softmenu[m].menuId == -MNU_ALPHA || softmenu[m].menuId == -MNU_T_EDIT || softmenu[m].menuId == -MNU_MyAlpha))) {
@@ -2308,7 +2302,6 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
       case -MNU_ALPHAMATH:
       case -MNU_MyAlpha:
       case -MNU_ALPHADOT:
-      case -MNU_T_EDIT:  //JM
       case -MNU_ALPHA:   //JM
         return true;
       default:
@@ -2320,7 +2313,6 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
     int16_t menuItem = softmenu[menuId].menuItem;
     switch(menuItem) {
       case -MNU_MyAlpha:
-      case -MNU_T_EDIT:  //JM
       case -MNU_ALPHA:   //JM
         return true;
       default:

@@ -4264,6 +4264,9 @@ void setupUI(void) {
       char tmp[200]; sprintf(tmp,"^^^^### calcModeNormal"); jm_show_comment(tmp);
     #endif //PC_BUILD
     calcMode = CM_NORMAL;
+    if(!tam.mode && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) { //JM
+      popSoftmenu();    //JM
+    }                   //JM
 
     if(softmenuStack[0].softmenuId == 1) { // MyAlpha
       softmenuStack[0].softmenuId = 0; // MyMenu

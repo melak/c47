@@ -1048,7 +1048,7 @@ void fnReset(uint16_t confirmation) {
 
 
 
-#define VERSION1 "_108_05"
+#define VERSION1 "_108_05+"
 
     #ifdef JM_LAYOUT_1A
       #undef L1L2
@@ -1112,6 +1112,9 @@ void fnReset(uint16_t confirmation) {
       assignToMyMenu(fn - 1);
       }
     jm_NO_BASE_SCREEN = false;                                           //JM Menu system default (removed from reset_jm_defaults)
+
+    itemToBeAssigned = -MNU_ALPHA;
+    assignToMyAlpha(5);
     #endif // TESTSUITE_BUILD
 
 

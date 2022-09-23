@@ -1258,7 +1258,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         return;
         }
 
-        case '(': {
+        case '(': 
         if(bufPtr != buffer) {
           *(bufPtr++) = 0;
           ++strPtr;
@@ -1283,7 +1283,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
           }
         }
         /* fallthrough */
-        }
+        
 
       case '=':
       case '+':
@@ -1293,7 +1293,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
       case '^':
       case '!':
       case ':':
-        case '|': {
+        case '|': 
         if(equalAppeared && (*strPtr == '=')) {
           displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1413,7 +1413,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         inExponent = false;
         exponentSignCanOccur = false;
         break;
-        }
+        
 
         default: {
         if(afterSpace) {
