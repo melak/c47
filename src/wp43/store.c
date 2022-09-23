@@ -402,7 +402,6 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(Home3TimerMode);
   storeToDtConfigDescriptor(UNITDisplay);
   storeToDtConfigDescriptor(SH_BASE_HOME);
-  storeToDtConfigDescriptor(SH_BASE_AHOME);
   storeToDtConfigDescriptor(Norm_Key_00_VAR);
   storeToDtConfigDescriptor(Input_Default);
   storeToDtConfigDescriptor(jm_FG_LINE);

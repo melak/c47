@@ -107,7 +107,6 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
 /* 1562 */  { ITM_T_GAUSSF,         JC_GAUSS_FITTING        ,CB_JC },  //fnCurveFitting
 /*  438 */  { ITM_T_ORTHOF,         JC_ORTHOGONAL_FITTING   ,CB_JC },  //fnCurveFitting
 
-/* 1744 */  { ITM_BASE_AHOME,       JC_BASE_AHOME,          CB_JC },  //fnSetSetJM
 /* 1742 */  { ITM_BASE_HOME,        JC_BASE_HOME,           CB_JC },  //fnSetSetJM
 /* 1695 */  { ITM_CB_CPXRES,        JC_BCR,                 CB_JC },  //fnSetSetJM
 /* 1748 */  { ITM_CB_SPCRES,        JC_BSR,                 CB_JC },  //fnSetSetJM
@@ -272,11 +271,6 @@ int8_t fnCbIsSet(int16_t item) {
         case JC_ORTHOGONAL_FITTING  : {  cb_param = (lrSelection & CF_ORTHOGONAL_FITTING ) == CF_ORTHOGONAL_FITTING  ; } break;
 
 
-
-        case JC_BASE_AHOME: {
-          cb_param = SH_BASE_AHOME;
-        }
-        break;
 
         case JC_BASE_HOME: {
           cb_param = SH_BASE_HOME;

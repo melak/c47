@@ -277,7 +277,6 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(Home3TimerMode);   
     recallFromDtConfigDescriptor(UNITDisplay);      
     recallFromDtConfigDescriptor(SH_BASE_HOME);     
-    recallFromDtConfigDescriptor(SH_BASE_AHOME);    
     recallFromDtConfigDescriptor(Norm_Key_00_VAR); 
     recallFromDtConfigDescriptor(Input_Default);   
     recallFromDtConfigDescriptor(jm_FG_LINE);       

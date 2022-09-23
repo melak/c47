@@ -118,7 +118,6 @@ void reset_jm_defaults(int16_t toload) {
     Home3TimerMode = true;                                       //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER MODE FOR HOME.
     UNITDisplay = false;                                         //JM HOME Default. Create a flag to enable or disable UNIT display
     SH_BASE_HOME   = false;                                      //JM
-    SH_BASE_AHOME  = true;                                       //JM
     Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM
     Input_Default =  ID_43S;                                     //JM Input Default
     jm_FG_LINE = true;                                           //JM Screen / keyboard operation setup
@@ -224,13 +223,6 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
 
   case JC_BASE_HOME:                                        //JM HOME
     SH_BASE_HOME = !SH_BASE_HOME;
-    fnRefreshState();                                 //drJM
-    break;
-
-  case JC_BASE_AHOME:                                       //JM aHOME
-    SH_BASE_AHOME = !SH_BASE_AHOME;
-    if(SH_BASE_AHOME) MY_ALPHA_MENU = mm_MNU_ALPHA;
-    else              MY_ALPHA_MENU = MY_ALPHA_MENU_CNST;
     fnRefreshState();                                 //drJM
     break;
 
