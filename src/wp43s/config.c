@@ -968,6 +968,7 @@ void fnReset(uint16_t confirmation) {
     #ifndef TESTSUITE_BUILD
       mm_MNU_HOME       = mm(-MNU_HOME);     //printf("####BB> %i \n",mm_MNU_HOME);                      //JM
       mm_MNU_ALPHA      = mm(-MNU_ALPHA);    //printf("####CC> %i \n",mm_MNU_ALPHA);                      //JM
+
       calcModeNormal();
       if(SH_BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
     #endif // TESTSUITE_BUILD      

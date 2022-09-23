@@ -621,7 +621,6 @@ typedef enum {
 #define Y_POSITION_OF_REGISTER_X_LINE            132
 
 #define NUMBER_OF_DYNAMIC_SOFTMENUS               19
-#define MY_ALPHA_MENU_CNST                         1  //JM This is the index of the MyAlpha   softmenu in the softmenu[] array. //JM changed this to a variable: int16_t MY_ALPHA_MENU;
 #define SOFTMENU_HEIGHT                           23
 
 // Horizontal offsets in the status bar
