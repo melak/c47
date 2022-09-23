@@ -3251,10 +3251,11 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         break;
       }                                    //JM ^^
           
-      case CM_MIM: {
-        if(currentSoftmenuScrolls()) {
-          menuUp();
-        }
+      case CM_MIM:
+//        if(currentSoftmenuScrolls()) {  //JM commented out, to allow normal arrows to work as cursors
+//          menuUp();
+//        }
+keyActionProcessed = false;
         break;
       }
 
@@ -3445,10 +3446,11 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         break;
       }                                     //JM ^^
           
-      case CM_MIM: {
-        if(currentSoftmenuScrolls()) {
-          menuDown();
-        }
+      case CM_MIM:
+//        if(currentSoftmenuScrolls()) {   //JM commented out, to allow normal arrows to work as cursors
+//          menuDown();
+//        }
+keyActionProcessed = false;
         break;
       }
 

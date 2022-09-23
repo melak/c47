@@ -251,10 +251,10 @@
 
 
   #if defined(PC_BUILD)
-//  #define DEBUGUNDO
-  #undef DEBUGUNDO
+    //#define DEBUGUNDO
+    #undef DEBUGUNDO
   #else // !PC_BUILD
-  #undef DEBUGUNDO
+    #undef DEBUGUNDO
   #endif // PC_BUILD
 
 
@@ -1287,7 +1287,7 @@ typedef enum {
   #define ignore_result(M) if(1==((uint64_t)M)){;}
   #endif // OS32BIT
 
-#ifdef DMCP_BUILD
+#if defined(DMCP_BUILD)
   #define TMP_STR_LENGTH     2560 //2560 //dr - remove #include <dmcp.h> again - AUX_BUF_SIZE
 #else // !DMCP_BUILD
   #define TMP_STR_LENGTH     3000 //2560 //JMMAX ORG:2560
