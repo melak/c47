@@ -2042,7 +2042,7 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
         dottedTopLine = (numberOfFormulae >= 2);
         yDotted = 2;
       }
-      if(softmenu[m].menuItem == -MNU_EQ_EDIT && softmenu[softmenuStack[1].softmenuId].menuItem == -MNU_EQN) {
+      if(softmenu[m].menuItem == -MNU_EQ_EDIT) {
         bool_t cursorShown;
         bool_t rightEllipsis;
         while(1) {
