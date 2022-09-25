@@ -2475,7 +2475,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
     switch(calcMode) {
       case CM_NORMAL:
-        if(lastErrorCode != 0) {
+        if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_VIEW) {
+          temporaryInformation = TI_NO_INFO;
+        }
+        else if(lastErrorCode != 0) {
           lastErrorCode = 0;
         }
         else {
