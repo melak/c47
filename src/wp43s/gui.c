@@ -1565,8 +1565,10 @@ void moveLabels(void) {
   gtk_widget_get_preferred_size(  lbl41G, NULL, &lblG);
   gtk_fixed_move(GTK_FIXED(grid), lbl41F, (2*xPos+KEY_WIDTH_1+DELTA_KEYS_X-lblF.width-GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);
   gtk_fixed_move(GTK_FIXED(grid), lbl41G, (2*xPos+KEY_WIDTH_1+DELTA_KEYS_X+lblF.width+GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);
+  gtk_widget_get_preferred_size(  lbl41Gr, NULL, &lblG);                                                               //JM !! GR
+  gtk_fixed_move(GTK_FIXED(grid), lbl41Gr, xPos+KEY_WIDTH_1*4/3, yPos - Y_OFFSET_SHIFTED_LABEL);  //JM !! GR
   gtk_widget_get_preferred_size(  lbl41Fa, NULL, &lblF);                                                                        //vv dr - new AIM
-  gtk_fixed_move(GTK_FIXED(grid), lbl41Fa, (2*xPos+KEY_WIDTH_2-lblF.width-GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);  //^^
+  gtk_fixed_move(GTK_FIXED(grid), lbl41Fa, xPos-KEY_WIDTH_1*0, yPos - Y_OFFSET_SHIFTED_LABEL);  //^^
 
   xPos += 2*DELTA_KEYS_X;
   gtk_widget_get_preferred_size(  lbl42F, NULL, &lblF);
@@ -2660,6 +2662,7 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
 //  gtk_widget_show(lbl44P);
 //  gtk_widget_show(lbl45F);
 //  gtk_widget_show(lbl45G);
+  gtk_widget_show(lbl41Gr);
   gtk_widget_show(lbl42Gr);
   gtk_widget_show(lbl43Gr);
   gtk_widget_show(lbl44Gr);
