@@ -38,6 +38,10 @@
 
 #include "wp43.h"
 
+
+//#define DEBUGMODES
+
+
 #if defined(PC_BUILD)
   GtkWidget *grid;
   #if (SCREEN_800X480 == 0)
@@ -281,9 +285,9 @@ uint32_t event_keyval = 99999999;
 
 gboolean keyPressed(GtkWidget *w, GdkEventKey *event, gpointer data) {
   //printf("Pressed %d\n", event->keyval);                                  //JM
-  bool_t AlphaArrowsOffAndUpDn = (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA_OMEGA || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_alpha_omega) ||
-                            (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHADOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAMATH) ||
-                            (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAINTL);
+  bool_t AlphaArrowsOffAndUpDn =  !tam.alpha || ( (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA_OMEGA || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_alpha_omega) ||
+                                 (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHADOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAMATH) ||
+                                 (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAINTL) );
   if (event_keyval ==  event->keyval + CTRL_State) {
   	return FALSE;
   }
@@ -2205,6 +2209,10 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
 }
 
     void calcModeNormalGui(void) {
+      #if defined (DEBUGMODES) && defined PC_BUILD
+      printf(">>> @@@ calcModeNormalGui     calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
+      #endif //DEBUGMODES
+
       const calcKey_t *keys;
 
   if(running_program_jm) return;                        //JM faster during program excution
@@ -2458,6 +2466,11 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
 }
 
     void calcModeAimGui(void) {
+      #if defined (DEBUGMODES) && defined PC_BUILD
+      printf(">>> @@@ calcModeAimGui      calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
+      #endif //DEBUGMODES
+
+
       const calcKey_t *keys;
 
   if(running_program_jm) return;                        //JM faster during program excution
@@ -2767,6 +2780,10 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
 }
 
     void calcModeTamGui(void) {
+      #if defined (DEBUGMODES) && defined PC_BUILD
+      printf(">>> @@@ calcModeTamGui      calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
+      #endif //DEBUGMODES
+
       const calcKey_t *keys;
 
   if(running_program_jm) return;                        //JM faster during program excution
@@ -4260,6 +4277,11 @@ void setupUI(void) {
 
 
   void calcModeNormal(void) {
+      #if defined (DEBUGMODES) && defined PC_BUILD
+      printf(">>> @@@ calcModeNormal      calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
+      #endif //DEBUGMODES
+
+
     #ifdef PC_BUILD
       char tmp[200]; sprintf(tmp,"^^^^### calcModeNormal"); jm_show_comment(tmp);
     #endif //PC_BUILD
@@ -4284,6 +4306,10 @@ void setupUI(void) {
 
 
   void calcModeAim(uint16_t unusedButMandatoryParameter) {
+      #if defined (DEBUGMODES) && defined PC_BUILD
+      printf(">>> @@@ calcModeAim         calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
+      #endif //DEBUGMODES
+
     #ifdef PC_BUILD
       char tmp[200]; sprintf(tmp,"^^^^### calcModeAim"); jm_show_comment(tmp);
     #endif //PC_BUILD
@@ -4451,6 +4477,10 @@ void setupUI(void) {
 
 
   void calcModeNim(uint16_t unusedButMandatoryParameter) {
+      #if defined (DEBUGMODES) && defined PC_BUILD
+      printf(">>> @@@ calcModeNim         calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
+      #endif //DEBUGMODES
+
     #if defined(DEBUGUNDO)
       printf(">>> saveForUndo from gui: calcModeNim\n");
     #endif // DEBUGUNDO

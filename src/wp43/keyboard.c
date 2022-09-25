@@ -762,7 +762,6 @@ bool_t lowercaseselected;
 
       resetShiftState();                               //shift cancelling delayed to this point after state machine
 
-
 //TOCHECK: JM Changed showFunctionNameItem to item below, due to something 43S did to the showfunction sequencing
       if(/*showFunctionNameItem*/item != 0 || softmenuStack[0].softmenuId == 0) {  //JM added C43 condition, for FN keys operating on no menu present
 /* //JM vv Rmove the possibility for error by removing code that may conflict with the state machine
@@ -2561,7 +2560,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
     switch(calcMode) {
       case CM_NORMAL: {
-        if(lastErrorCode != 0) {
+        if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_VIEW) {
+          temporaryInformation = TI_NO_INFO;
+        }
+        else if(lastErrorCode != 0) {
           lastErrorCode = 0;
         }
         else {
@@ -3164,13 +3166,10 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuUp();
         }
-        else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_UPPER)) {
-          screenUpdatingMode = SCRUPD_AUTO;
+      else if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
+           screenUpdatingMode = SCRUPD_AUTO;
           if(calcMode == CM_NIM) {
             closeNim();
-          }
-          if(calcMode == CM_AIM) {
-            closeAim();
           }
           fnBst(NOPARAM);
           #if defined(DMCP_BUILD)
@@ -3237,10 +3236,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         else if(currentSoftmenuScrolls()) {
           menuUp();
         }
-        else {
-          if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
-            pemAlpha(ITM_BACKSPACE);
-          }
+        else if(!getSystemFlag(FLAG_ALPHA)) {
           fnBst(NOPARAM);
         }
         break;
@@ -3251,7 +3247,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         break;
       }                                    //JM ^^
           
-      case CM_MIM:
+      case CM_MIM: {
 //        if(currentSoftmenuScrolls()) {  //JM commented out, to allow normal arrows to work as cursors
 //          menuUp();
 //        }
@@ -3363,13 +3359,10 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuDown();
         }
-        else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_LOWER)) {
+        else if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
           screenUpdatingMode = SCRUPD_AUTO;
           if(calcMode == CM_NIM) {
             closeNim();
-          }
-          if(calcMode == CM_AIM) {
-            closeAim();
           }
           fnSst(NOPARAM);
         }
@@ -3431,11 +3424,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         else if(currentSoftmenuScrolls()) {
           menuDown();
         }
-        else {
-          if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
-            pemAlpha(ITM_BACKSPACE);
-            fnBst(NOPARAM); // Set the PGM pointer to the original position
-          }
+        else if(!getSystemFlag(FLAG_ALPHA)) {
           fnSst(NOPARAM);
         }
         break;
@@ -3446,7 +3435,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         break;
       }                                     //JM ^^
           
-      case CM_MIM:
+      case CM_MIM: {
 //        if(currentSoftmenuScrolls()) {   //JM commented out, to allow normal arrows to work as cursors
 //          menuDown();
 //        }
