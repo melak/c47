@@ -1997,7 +1997,7 @@
 #define ITM_T_HOME                  1929
 #define ITM_T_END                   1930
 #define ITM_STKTO3x1                1931
-#define ITM_1932                    1932
+#define ITM_XPARSE                  1932
 #define MNU_XXEQ                    1933
 #define ITM_RNG                     1934
 #define ITM_FLGSV                   1935

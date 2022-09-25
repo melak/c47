@@ -775,7 +775,7 @@ TO_QSPI const int16_t menu_PLOT[]        = { ITM_PLINE,                     ITM_
 
 
 TO_QSPI const int16_t menu_ALPHA[]       = { ITM_T_UP_ARROW,                ITM_T_DOWN_ARROW,           ITM_T_LLEFT_ARROW,        ITM_T_RRIGHT_ARROW,    ITM_T_LEFT_ARROW,            ITM_T_RIGHT_ARROW, 
-                                             -MNU_MyAlpha,                  ITM_NULL,                  -MNU_ALPHA_OMEGA,         -MNU_ALPHADOT,         -MNU_ALPHAMATH,              -MNU_ALPHAINTL,                     //JM
+                                             -MNU_MyAlpha,                  ITM_XPARSE,                -MNU_ALPHA_OMEGA,         -MNU_ALPHADOT,         -MNU_ALPHAMATH,              -MNU_ALPHAINTL,                     //JM
                                              ITM_XEDIT,                     ITM_CLA,                    ITM_ASSIGN,               ITM_USERMODE,          CHR_num,                     CHR_case                        };    //JM
 
 TO_QSPI const int16_t menu_XXEQ[]        = { ITM_XSAVE,                     ITM_XLOAD,                  ITM_XEDIT,               ITM_XNEW,              ITM_XXEQ,                     -MNU_XEQ                        };   //JM
