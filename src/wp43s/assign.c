@@ -104,7 +104,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
       {35,   ITM_cos,           ITM_arccos,        ITM_LBL,           ITM_NULL,          ITM_K,             ITM_k,             ITM_COS_SIGN,       ITM_REG_K          },
       {36,   ITM_tan,           ITM_arctan,        ITM_RTN,           ITM_NULL,          ITM_L,             ITM_l,             ITM_TAN_SIGN,       ITM_REG_L          },
 
-      {41,   ITM_ENTER,         KEY_COMPLEX,       -MNU_CPX,          ITM_ENTER,         ITM_ENTER,         ITM_XEDIT,         ITM_XEDIT,          ITM_ENTER          },
+      {41,   ITM_ENTER,         KEY_COMPLEX,       -MNU_CPX,          ITM_ENTER,         ITM_ENTER,         ITM_XEDIT,         ITM_XPARSE,         ITM_ENTER          },
       {42,   ITM_XexY,          ITM_LASTX,         ITM_Rup,           ITM_ex,            ITM_M,             ITM_m,             ITM_ex,             ITM_NULL           },
       {43,   ITM_CHS,           -MNU_MODE,         -MNU_STK,          ITM_PLUS_MINUS,    ITM_N,             ITM_n,             ITM_PLUS_MINUS,     ITM_NULL           },
       {44,   ITM_EXPONENT,      -MNU_DISP,         -MNU_EXP,          ITM_NULL,          ITM_O,             ITM_o,             ITM_NULL,           ITM_NULL           },

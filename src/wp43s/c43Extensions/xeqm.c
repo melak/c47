@@ -1691,7 +1691,7 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
       #ifndef TESTSUITE_BUILD
         resetShiftState();
         calcModeAim(NOPARAM); // Alpha Input Mode
-        showSoftmenu(-MNU_T_EDIT);
+        showSoftmenu(-MNU_ALPHA);
       #endif
     } 
 //    else {

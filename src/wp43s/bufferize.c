@@ -412,9 +412,9 @@ void kill_ASB_icon(void) {
             case ITM_SIN_SIGN :  //JM C43
             case ITM_COS_SIGN :  //JM C43
             case ITM_TAN_SIGN :  //JM C43
+            case ITM_ROOT_SIGN:
               T_cursorPos += 2;
               break;
-            case ITM_ROOT_SIGN:
             case ITM_LN_SIGN :  //JM C43
               T_cursorPos += 1;
               break;

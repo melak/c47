@@ -968,6 +968,7 @@ void fnReset(uint16_t confirmation) {
     #ifndef TESTSUITE_BUILD
       mm_MNU_HOME       = mm(-MNU_HOME);     //printf("####BB> %i \n",mm_MNU_HOME);                      //JM
       mm_MNU_ALPHA      = mm(-MNU_ALPHA);    //printf("####CC> %i \n",mm_MNU_ALPHA);                      //JM
+
       calcModeNormal();
       if(SH_BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
     #endif // TESTSUITE_BUILD      
@@ -1040,7 +1041,7 @@ void fnReset(uint16_t confirmation) {
 
 
 
-#define VERSION1 "_108_05"
+#define VERSION1 "_108_05A"
 
     #ifdef JM_LAYOUT_1A
       #undef L1L2
@@ -1104,6 +1105,9 @@ void fnReset(uint16_t confirmation) {
       assignToMyMenu(fn - 1);
       }
     jm_NO_BASE_SCREEN = false;                                           //JM Menu system default (removed from reset_jm_defaults)
+
+    itemToBeAssigned = -MNU_ALPHA;
+    assignToMyAlpha(5);
     #endif // TESTSUITE_BUILD
 
 

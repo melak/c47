@@ -333,7 +333,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&UNITDisplay,                        sizeof(UNITDisplay),                        BACKUP);
     save(&SigFigMode,                         sizeof(SigFigMode),                         BACKUP);
     save(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     BACKUP);
-    save(&SH_BASE_AHOME,                      sizeof(SH_BASE_AHOME ),                     BACKUP);
     save(&Home3TimerMode,                     sizeof(Home3TimerMode),                     BACKUP);
     save(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
     save(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
@@ -360,7 +359,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&SHOWregis,                          sizeof(SHOWregis),                          BACKUP);   //JM ^^
     save(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME),                        BACKUP);   //JM ^^
     save(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA),                       BACKUP);   //JM ^^
-    save(&MY_ALPHA_MENU,                      sizeof(MY_ALPHA_MENU),                      BACKUP);   //JM ^^
     save(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP),               BACKUP);   //JM ^^
     save(&ListXYposition,                     sizeof(ListXYposition),                     BACKUP);   //JM ^^
     save(&numLock,                            sizeof(numLock),                            BACKUP);   //JM ^^
@@ -628,7 +626,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&UNITDisplay,                        sizeof(UNITDisplay),                        BACKUP);
       restore(&SigFigMode,                         sizeof(SigFigMode),                         BACKUP);
       restore(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     BACKUP);
-      restore(&SH_BASE_AHOME,                      sizeof(SH_BASE_AHOME ),                     BACKUP);
       restore(&Home3TimerMode,                     sizeof(Home3TimerMode),                     BACKUP);
       restore(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
       restore(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
@@ -655,7 +652,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&SHOWregis,                          sizeof(SHOWregis),                          BACKUP);   //JM ^^
       restore(&mm_MNU_HOME,                        sizeof(mm_MNU_HOME),                        BACKUP);   //JM ^^
       restore(&mm_MNU_ALPHA,                       sizeof(mm_MNU_ALPHA),                       BACKUP);   //JM ^^
-      restore(&MY_ALPHA_MENU,                      sizeof(MY_ALPHA_MENU),                      BACKUP);   //JM ^^
       restore(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP),               BACKUP);   //JM ^^
       restore(&ListXYposition,                     sizeof(ListXYposition),                     BACKUP);   //JM ^^
       restore(&numLock,                            sizeof(numLock),                            BACKUP);   //JM ^^
@@ -666,7 +662,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       fclose(BACKUP);
       printf("End of calc's restoration\n");
 
-      if(SH_BASE_AHOME) MY_ALPHA_MENU = mm_MNU_ALPHA; else MY_ALPHA_MENU = MY_ALPHA_MENU_CNST;              //JM
+      MY_ALPHA_MENU = mm_MNU_ALPHA;
+
       if(temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) 
         temporaryInformation = TI_NO_INFO;                                                                  //JM
 
@@ -890,7 +887,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
 
     sys_disk_write_enable(1);
     check_create_dir("SAVFILES");
-    result = f_open(BACKUP, "SAVFILES\\wp43s.sav", FA_CREATE_ALWAYS | FA_WRITE);
+    result = f_open(BACKUP, "SAVFILES\\C43.sav", FA_CREATE_ALWAYS | FA_WRITE);
     if(result != FR_OK) {
       sys_disk_write_enable(0);
       return;
@@ -898,9 +895,9 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
-    BACKUP = fopen("wp43s.sav", "wb");
+    BACKUP = fopen("C43.sav", "wb");
     if(BACKUP == NULL) {
-      printf("Cannot SAVE in file wp43s.sav!\n");
+      printf("Cannot SAVE in file C43.sav!\n");
       return;
     }
   #endif // DMCP_BUILD
@@ -1927,20 +1924,20 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 
 void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
   #if defined(DMCP_BUILD)
-    if(f_open(BACKUP, "SAVFILES\\wp43s.sav", FA_READ) != FR_OK) {
+    if(f_open(BACKUP, "SAVFILES\\C43.sav", FA_READ) != FR_OK) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        moreInfoOnError("In function fnLoad: cannot find or read backup data file wp43s.sav", NULL, NULL, NULL);
+        moreInfoOnError("In function fnLoad: cannot find or read backup data file C43.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
-    if((BACKUP = fopen("wp43s.sav", "rb")) == NULL) {
+    if((BACKUP = fopen("C43.sav", "rb")) == NULL) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        moreInfoOnError("In function fnLoad: cannot find or read backup data file wp43s.sav", NULL, NULL, NULL);
+        moreInfoOnError("In function fnLoad: cannot find or read backup data file C43.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
@@ -1988,13 +1985,13 @@ void fnDeleteBackup(uint16_t confirmation) {
     #if defined(DMCP_BUILD)
       FRESULT result;
       sys_disk_write_enable(1);
-      result = f_unlink("SAVFILES\\wp43s.sav");
+      result = f_unlink("SAVFILES\\C43.sav");
       if(result != FR_OK && result != FR_NO_FILE && result != FR_NO_PATH) {
         displayCalcErrorMessage(ERROR_IO, ERR_REGISTER_LINE, REGISTER_X);
       }
       sys_disk_write_enable(0);
     #else // !DMCP_BUILD
-      int result = remove("wp43s.sav");
+      int result = remove("C43.sav");
       if(result == -1) {
         #if !defined(TESTSUITE_BUILD)
           int e = errno;

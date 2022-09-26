@@ -115,7 +115,7 @@ void       fnAGraph                           (uint16_t regist);
 #endif // DMCP_BUILD
 
   void     execTimerApp                         (uint16_t timerType);
-#ifndef TESTSUITE_BUILD
+  #if !defined(TESTSUITE_BUILD)
 //JM vv
   void     refreshFn                            (uint16_t timerType);                                           //dr - general timeout handler 
 //  uint8_t  combinationFonts;    //TO REMOVE from .h

@@ -84,7 +84,6 @@ extern bool_t ShiftTimoutMode;                                       //JM HOME C
 extern bool_t Home3TimerMode;                                        //JM HOME Create a flag to enable or disable TRIPLE SHIFT TIMER FOR HOME.
 extern bool_t UNITDisplay;                                           //JM UNIT Create a flag to enable or disable unit display 
 extern bool_t SH_BASE_HOME;                                          //JM BASEHOME Create a flag to enable or disable triple shift
-extern bool_t SH_BASE_AHOME;                                         //JM BASEHOME Create a flag to enable or disable triple shift
 extern int16_t Norm_Key_00_VAR;                                      //JM USER NORMAL
 extern uint8_t Input_Default;                                        //JM Input Default
 extern bool_t jm_FG_LINE;                                            //JM Screen / keyboard operation setup
@@ -161,9 +160,6 @@ void fnRCL          (int16_t inp);
 #define JC_HOME_TRIPLE          2    // HOME.3
 #define JC_SHFT_4s              3    // SH_4s
 #define JC_BASE_HOME            4    // HOME
-//#define JC_BASE_MYMENU          5    // MYMNU
-#define JC_BASE_AHOME           6    // aHOME
-//#define JC_BASE_MYA             7    // MYa
 #define JC_SH_3T                8    // SH.3T
 #define JC_BCR                  9    // CB ComplexResult
 #define JC_BLZ                 10    // CB LeadingZeros

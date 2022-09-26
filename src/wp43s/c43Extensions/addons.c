@@ -567,6 +567,12 @@ uint16_t dest = 9999;
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {                        // if real
     dest = getRegisterAngularMode(REGISTER_X);
+
+    if(dest != amNone && dest != currentAngularMode) {                     //first step: covert tagged angle to ADM
+      fnCvtToCurrentAngularMode(dest);
+      return;
+    }
+
     switch(dest) {
       case amNone:      dest = currentAngularMode;  break; //converts from to the same, i.e. get to current angle mode
       case amRadian:    dest = amGrad;              break;

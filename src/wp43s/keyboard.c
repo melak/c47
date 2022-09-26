@@ -708,11 +708,20 @@ bool_t lowercaseselected;
     int16_t item = ITM_NOP;
     if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
   
-      if(data[0] == 0) { item = item_; }
-      else             { item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG); }
+      if(data[0] == 0) { item = item_; 
+
+      }
+      else             { 
+
+        item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG); }
+
+        #if defined (PC_BUILD)
+          printf(">>>Function selected: executeFunction |%s| %d %d \n",(char *)data, shiftF, shiftG);
+          if(item<0)  printf("    item=%d=%s f=%d g=%d\n",item,indexOfItems[-item].itemCatalogName, shiftF, shiftG);
+          if(item>=0) printf("    item=%d=%s f=%d g=%d\n",item,indexOfItems[item].itemCatalogName, shiftF, shiftG);
+        #endif //PC_BUILD
 
       resetShiftState();                               //shift cancelling delayed to this point after state machine
-
 
 //TOCHECK: JM Changed showFunctionNameItem to item below, due to something 43S did to the showfunction sequencing
       if(/*showFunctionNameItem*/item != 0 || softmenuStack[0].softmenuId == 0) {  //JM added C43 condition, for FN keys operating on no menu present
@@ -872,6 +881,20 @@ bool_t lowercaseselected;
                 }
                 else {
                   itemToBeAssigned = item;
+
+                  if(previousCalcMode == CM_AIM) {                            //JMvv close menu to allow only one charac
+                    switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
+                      case MNU_ALPHAINTL:
+                      case MNU_ALPHA_OMEGA:
+                      case MNU_ALPHAMATH:
+                      case MNU_MyAlpha:
+                      case MNU_ALPHADOT: {
+                        popSoftmenu();
+                        showSoftmenu(-MNU_MyAlpha); //push MyAlpha in case ALPHA is up (likely)
+                      }
+                    }
+                  }                           //JM^^                          //JM^^
+
                 }
               }
               else if(calcMode == CM_ASSIGN && tam.alpha && tam.mode != TM_NEWMENU && item != ITM_NOP) {
@@ -1199,9 +1222,16 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       char tmp[200]; sprintf(tmp,"^^^^btnPressed START item=%d data=\'%s\'",item,(char *)data); jm_show_comment(tmp);
 
       if(item != ITM_NOP && item != ITM_NULL) {
-        sprintf(tmp,"keyboard.c: btnPressed 1--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
+        #if defined (PC_BUILD_TELLTALE)
+          sprintf(tmp,"keyboard.c: btnPressed 1--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
+        #endif //PC_BUILD_TELLTALE
+  
         processKeyAction(item);
-        sprintf(tmp,"keyboard.c: btnPressed 2--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
+  
+        #if defined (PC_BUILD_TELLTALE)
+          sprintf(tmp,"keyboard.c: btnPressed 2--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
+        #endif //PC_BUILD_TELLTALE
+  
         if(!keyActionProcessed) {
           showFunctionName(item, 1000); // 1000ms = 1s
         }
@@ -1735,6 +1765,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
       default:
       {
+        #if defined (PC_BUILD)
+          printf("Switch - default: processKeyAction: calcMode=%d itemToBeAssigned=%d item=%d\n",calcMode, itemToBeAssigned, item);
+        #endif //PC_BUILD
         if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && item == ITM_USERMODE) {
           while(softmenuStack[0].softmenuId > 1) {
             popSoftmenu();
@@ -1992,6 +2025,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
                 }
                 else {
                   itemToBeAssigned = item;
+                  if(previousCalcMode == CM_AIM) softmenuStack[0].softmenuId = 1;     //JM change ALPHA to MyAlpha to be able to write ASN target
                 }
                 keyActionProcessed = true;
               }
@@ -2204,7 +2238,7 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_AIM:
-        if(softmenuStack[0].softmenuId == mm_MNU_ALPHA || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_T_EDIT) {     //JMvv
+        if(softmenuStack[0].softmenuId == mm_MNU_ALPHA) {     //JMvv
           popSoftmenu();
         }                                                     //JM^^
 
@@ -2339,6 +2373,26 @@ ram_full:
 
 
 
+#if !defined(TESTSUITE_BUILD)
+  static void stayInAIM(void) {
+    if(calcMode == CM_AIM && (softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_ALPHA && softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_MyAlpha) ) {   //JM
+      softmenuStack[0].softmenuId = mm_MNU_ALPHA;    //JM
+      setSystemFlag(FLAG_ALPHA);                     //JM
+    }                                                //JM ^^
+
+    if(calcMode != CM_AIM && (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA)) { //JMvv : If ALPHA, switch back to AIM
+      setSystemFlag(FLAG_ALPHA);                                          //JM
+      calcMode = CM_AIM;
+    }                                                                     //JM ^^
+
+    #if defined(PC_BUILD) && (SCREEN_800X480 == 0) //JM
+      calcModeAimGui();                            //JM
+    #endif // PC_BUILD && (SCREEN_800X480 == 0)    //JM  
+  }
+#endif // !TESTSUITE_BUILD
+
+
+
 void fnKeyExit(uint16_t unusedButMandatoryParameter) {
   #if !defined(TESTSUITE_BUILD)
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {
@@ -2354,9 +2408,6 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;
     }
 
-    int16_t tmp1 = softmenu[softmenuStack[0].softmenuId].menuItem;            //JM
-    int16_t tmp2 = softmenu[softmenuStack[1].softmenuId].menuItem;            //JM
-    int16_t tmp3 = softmenu[softmenuStack[2].softmenuId].menuItem;            //JM
     doRefreshSoftMenu = true;     //dr
   
   #ifdef PC_BUILD
@@ -2379,7 +2430,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
                     lastErrorCode = 0;
                 }
                 else {
-                    if(tmp1 == -MNU_SYSFL) {                                                       //JM auto recover out of SYSFL
+                    if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SYSFL) {                                                       //JM auto recover out of SYSFL
                       numberOfTamMenusToPop = 2;                                                   //JM
                       tamLeaveMode();                                                              //JM
                       return;                                                                      //JM
@@ -2431,7 +2482,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
     switch(calcMode) {
       case CM_NORMAL:
-        if(lastErrorCode != 0) {
+        if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_VIEW) {
+          temporaryInformation = TI_NO_INFO;
+        }
+        else if(lastErrorCode != 0) {
           lastErrorCode = 0;
         }
         else {
@@ -2440,6 +2494,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           }
           else {                  //jm: this is where 43S cleared an error
             popSoftmenu();
+            stayInAIM(); //JM
           }
           screenUpdatingMode &= ~SCRUPD_MANUAL_MENU;
           if(temporaryInformation == TI_NO_INFO) {
@@ -2449,12 +2504,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         break;
 
       case CM_AIM:
-//TOFIX vv
-        if(tmp1 == -MNU_ALPHA || tmp1 == -MNU_T_EDIT) {  //JM
-          if(tmp1 == -MNU_T_EDIT && tmp2 == -MNU_ALPHA && tmp3 == -MNU_XXEQ) {popSoftmenu();}       //JM auto double pop
-          softmenuStack[0].softmenuId = 1;               //JM
-        }                                                //JM
-//TOFIX ^^
+        if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) {  //JM
+          softmenuStack[0].softmenuId = 1;                                  //JM
+        }                                                                   //JM
+
         if(running_program_jm || softmenuStack[0].softmenuId <= 1) { // MyMenu or MyAlpha is displayed
           closeAim();
           #if defined(DEBUGUNDO)
@@ -2468,6 +2521,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         }
         else {
           popSoftmenu();
+          stayInAIM();
         }
         break;
 
@@ -2579,7 +2633,6 @@ if(lastPlotMode == H_PLOT && calcMode == CM_PLOT_STAT) popSoftmenu();
         plotSelection = 0;
 
         calcModeNormal();
-//        calcMode = CM_NORMAL;
         #if defined(DEBUGUNDO)
           printf(">>> Undo from fnKeyExit\n");
         #endif // DEBUGUNDO
@@ -2605,6 +2658,7 @@ if(lastPlotMode == H_PLOT && calcMode == CM_PLOT_STAT) popSoftmenu();
         }
         else {
           popSoftmenu();
+          stayInAIM();
         }
         break;
 
@@ -2934,6 +2988,7 @@ static bool_t activatescroll(void) {
  }
  #endif // !TESTSUITE_BUILD
 
+#define RBR_INCDEC1 10
 
 void fnKeyUp(uint16_t unusedButMandatoryParameter) {
   doRefreshSoftMenu = true;     //dr
@@ -3000,13 +3055,10 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuUp();
         }
-        else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_UPPER)) {
-          screenUpdatingMode = SCRUPD_AUTO;
+      else if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
+           screenUpdatingMode = SCRUPD_AUTO;
           if(calcMode == CM_NIM) {
             closeNim();
-          }
-          if(calcMode == CM_AIM) {
-            closeAim();
           }
           fnBst(NOPARAM);
           #if defined(DMCP_BUILD)
@@ -3034,13 +3086,13 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       case CM_REGISTER_BROWSER:
         rbr1stDigit = true;
         if(rbrMode == RBR_GLOBAL) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen + 1, FIRST_LOCAL_REGISTER);
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen + RBR_INCDEC1, FIRST_LOCAL_REGISTER);
         }
         else if(rbrMode == RBR_LOCAL) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER + 1, currentNumberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER + RBR_INCDEC1, currentNumberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
         }
         else if(rbrMode == RBR_NAMED) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_NAMED_VARIABLE + 1, numberOfNamedVariables) + FIRST_NAMED_VARIABLE;
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_NAMED_VARIABLE + RBR_INCDEC1, numberOfNamedVariables) + FIRST_NAMED_VARIABLE;
         }
         else {
           sprintf(errorMessage, "In function fnKeyUp: unexpected case while processing key UP! %" PRIu8 " is an unexpected value for rbrMode.", rbrMode);
@@ -3069,10 +3121,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         else if(currentSoftmenuScrolls()) {
           menuUp();
         }
-        else {
-          if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
-            pemAlpha(ITM_BACKSPACE);
-          }
+        else if(!getSystemFlag(FLAG_ALPHA)) {
           fnBst(NOPARAM);
         }
         break;
@@ -3082,9 +3131,10 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         break;                            //JM ^^
           
       case CM_MIM:
-        if(currentSoftmenuScrolls()) {
-          menuUp();
-        }
+//        if(currentSoftmenuScrolls()) {  //JM commented out, to allow normal arrows to work as cursors
+//          menuUp();
+//        }
+keyActionProcessed = false;
         break;
 
       case CM_ASSIGN:
@@ -3188,13 +3238,10 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuDown();
         }
-        else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN) && (calcMode != CM_AIM || alphaCase == AC_LOWER)) {
+        else if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
           screenUpdatingMode = SCRUPD_AUTO;
           if(calcMode == CM_NIM) {
             closeNim();
-          }
-          if(calcMode == CM_AIM) {
-            closeAim();
           }
           fnSst(NOPARAM);
         }
@@ -3217,13 +3264,13 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
       case CM_REGISTER_BROWSER:
         rbr1stDigit = true;
         if(rbrMode == RBR_GLOBAL) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - 1, FIRST_LOCAL_REGISTER);
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - RBR_INCDEC1, FIRST_LOCAL_REGISTER);
         }
         else if(rbrMode == RBR_LOCAL) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER - 1, currentNumberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER - RBR_INCDEC1, currentNumberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
         }
         else if(rbrMode == RBR_NAMED) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - 1000 - 1, numberOfNamedVariables) + 1000;
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - 1000 - RBR_INCDEC1, numberOfNamedVariables) + 1000;
         }
         else {
           sprintf(errorMessage, "In function fnKeyDown: unexpected case while processing key DOWN! %" PRIu8 " is an unexpected value for rbrMode.", rbrMode);
@@ -3252,11 +3299,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         else if(currentSoftmenuScrolls()) {
           menuDown();
         }
-        else {
-          if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
-            pemAlpha(ITM_BACKSPACE);
-            fnBst(NOPARAM); // Set the PGM pointer to the original position
-          }
+        else if(!getSystemFlag(FLAG_ALPHA)) {
           fnSst(NOPARAM);
         }
         break;
@@ -3266,9 +3309,10 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         break;                            //JM ^^
           
       case CM_MIM:
-        if(currentSoftmenuScrolls()) {
-          menuDown();
-        }
+//        if(currentSoftmenuScrolls()) {   //JM commented out, to allow normal arrows to work as cursors
+//          menuDown();
+//        }
+keyActionProcessed = false;
         break;
 
       case CM_ASSIGN:

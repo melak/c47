@@ -82,14 +82,12 @@
 
   void jm_show_calc_state(char comment[]) {
   #ifdef PC_BUILD_TELLTALE
-    printf("\n%s-----------------------------------------------------------------------------------------------------------------\n",comment);
-    printf(".  calcMode: %s   last_CM=%s  doRefreshSoftMenu=%d    lastErrorCode=%d\n",getCalcModeName(calcMode), getCalcModeName(last_CM), doRefreshSoftMenu,lastErrorCode);
-    printf(".  AlphaCase: %s  \n",getAlphaCaseName(alphaCase));
+    printf("\n%s--------------------------------------------------------------------------------\n",comment);
+    printf(".  calcMode: %s   last_CM=%s  AlphaCase=%s  doRefreshSoftMenu=%d    lastErrorCode=%d\n",getCalcModeName(calcMode), getCalcModeName(last_CM), getAlphaCaseName(alphaCase), doRefreshSoftMenu,lastErrorCode);
     printf(".  softmenuStack[0].softmenuId=%d       MY_ALPHA_MENU=%d    softmenu[softmenuStack[0].softmenuId].menuItem=%d -MNU_ALPHA=%d\n",softmenuStack[0].softmenuId,MY_ALPHA_MENU,softmenu[softmenuStack[0].softmenuId].menuItem, -MNU_ALPHA);
     printf(".  ");int8_t ix=0; while(ix<SOFTMENU_STACK_SIZE) {printf("(%d)=%5d ", ix, softmenuStack[ix].softmenuId); ix++;} printf("\n");
     printf(".  ");       ix=0; while(ix<SOFTMENU_STACK_SIZE) {printf("%9s ", indexOfItems[-softmenu[softmenuStack[ix].softmenuId].menuItem].itemSoftmenuName  ); ix++;} printf("\n");
-    printf(".  (tam.mode=%d, catalog=%d)\n",tam.mode, catalog);
-    printf(".  (mm_MNU_HOME=%d, mm_MNU_ALPHA=%d)\n",mm_MNU_HOME, mm_MNU_ALPHA);
+    printf(".  (tam.mode=%d, catalog=%d) (mm_MNU_HOME=%d, mm_MNU_ALPHA=%d)\n",tam.mode, catalog, mm_MNU_HOME, mm_MNU_ALPHA);
     jm_show_comment("calcstate END:");
   #endif //PC_BUILD_TELLTALE
   }
@@ -120,7 +118,6 @@ void reset_jm_defaults(int16_t toload) {
     Home3TimerMode = true;                                       //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER MODE FOR HOME.
     UNITDisplay = false;                                         //JM HOME Default. Create a flag to enable or disable UNIT display
     SH_BASE_HOME   = false;                                      //JM
-    SH_BASE_AHOME  = true;                                       //JM
     Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM
     Input_Default =  ID_43S;                                     //JM Input Default
     jm_FG_LINE = true;                                           //JM Screen / keyboard operation setup
@@ -226,13 +223,6 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
 
   case JC_BASE_HOME:                                        //JM HOME
     SH_BASE_HOME = !SH_BASE_HOME;
-    fnRefreshState();                                 //drJM
-    break;
-
-  case JC_BASE_AHOME:                                       //JM aHOME
-    SH_BASE_AHOME = !SH_BASE_AHOME;
-    if(SH_BASE_AHOME) MY_ALPHA_MENU = mm_MNU_ALPHA;
-    else              MY_ALPHA_MENU = MY_ALPHA_MENU_CNST;
     fnRefreshState();                                 //drJM
     break;
 
@@ -1240,57 +1230,6 @@ kbd_usr[36].primary=ITM_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].
   }
 }
 
-
-
-
-//JM Check if JM ASSIGN IS IN PROGRESS AND CAPTURE THE FUNCTION AND KEY TO BE ASSIGNED
-//gets here only after valid function and any key is selected
-void fnASSIGN(int16_t JM_ASN_MODE, int16_t tempkey) {           //JM ASSIGN - REMEMBER NEXT KEYBOARD FUNCTION
-  switch(tempkey) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-    case 9:
-    case 10:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
-    case 21:
-    case 26:
-    case 31:
-    case 35:
-    case 36:
-
-      //JM_convertIntegerToShortIntegerRegister(tempkey, 10, REGISTER_X);
-      //JM_convertIntegerToShortIntegerRegister(JM_ASN_MODE, 10, REGISTER_X);
-      if(shiftF) {
-        (kbd_usr + tempkey)->fShifted = JM_ASN_MODE;  //Assign function into keyboard array
-      }
-      else if(shiftG) {
-        (kbd_usr + tempkey)->gShifted = JM_ASN_MODE;  //Assign function into keyboard array
-      }
-      else {
-        (kbd_usr + tempkey)->primary = JM_ASN_MODE;   //Assign function into keyboard array
-      }
-
-      fnSetFlag(FLAG_USER);
-      break;
-    default:
-#ifndef TESTSUITE_BUILD
-//        clearScreen(false,true,false);
-        showString("Invalid key", &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X), vmNormal, true, true);
-#endif
-    break;
-  }
-}
 
 
 
