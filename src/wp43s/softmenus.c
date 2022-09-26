@@ -81,7 +81,7 @@ TO_QSPI const int16_t menu_CLR[]         = { ITM_CLSIGMA,                   ITM_
 /*      Menu name                           <----------------------------------------------------------------------------- 6 functions ---------------------------------------------------------------------------->  */
 /*                                          <---------------------------------------------------------------------- 6 f shifted functions ------------------------------------------------------------------------->  */
 /*                                          <---------------------------------------------------------------------- 6 g shifted functions ------------------------------------------------------------------------->  */
-TO_QSPI const int16_t menu_CPX[]         = { ITM_CC,                        ITM_RE,                     ITM_IM,                   ITM_MAGNITUDE,         ITM_ANGLE,                   ITM_REexIM,                                         //JM re-arranged menu. CPX menu
+TO_QSPI const int16_t menu_CPX[]         = { ITM_RE,                        ITM_IM,                     ITM_MAGNITUDE,            ITM_ANGLE,             ITM_REexIM,                  ITM_CC,                      //JM re-arranged menu. CPX menu
                                              KEY_COMPLEX,                   ITM_CONJ,                   ITM_DOT_PROD,             ITM_CROSS_PROD,        ITM_SIGN,                    ITM_UNITV,                                          //JM re-arranged menu. CPX menu
                                              ITM_CPXI,                      ITM_CPXJ,                   ITM_CXtoRE,               ITM_REtoCX,            ITM_RECT,                    ITM_POLAR                     };    //JM re-arranged menu
 
@@ -166,8 +166,8 @@ TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_
   #define ITM_SYS ITM_RESERVE
 #endif
 
-TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_RAD,                    ITM_GRAD,                 ITM_MULPI,             ITM_DMS,                     ITM_DRG,                       
-                                             ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_MULPI2,            ITM_DMS2,                    ITM_CFG,                         //JM
+TO_QSPI const int16_t menu_MODE[]        = { ITM_DRG,                       ITM_DEG,                    ITM_RAD,                  ITM_GRAD,              ITM_MULPI,                   ITM_DMS,                                            
+                                             ITM_CFG,                       ITM_DEG2,                   ITM_RAD2,                 ITM_GRAD2,             ITM_MULPI2,                  ITM_DMS2,                                             //JM
                                              ITM_SYS,                       -MNU_TRI,                   ITM_NULL,                 ITM_NULL,              ITM_RECT,                    ITM_POLAR,                         //JM
 
                                              ITM_SSIZE4,                    ITM_SSIZE8,                 ITM_CB_CPXRES,            ITM_CB_SPCRES,         ITM_DENMAX2,                 ITM_CFG,                           //JM
@@ -585,17 +585,17 @@ TO_QSPI const int16_t menu_A_HOME[360]   = { -1,-1,-1,-1,-1,-1,        -1,-1,-1,
 
 TO_QSPI const int16_t menu_HOME[360]     = { //JMHOMEDEMO: NOTE REMOVE CONST TO MAKE JMHOME DEMO WORK
 /*HOME0 */           
-/*0x18*/                                     ITM_CC,              ITM_YX,         ITM_SQUARE,        ITM_10x,          ITM_EXP,          ITM_DRG,                         //JM HOME
+/*0x18*/                                     ITM_DRG,              ITM_YX,         ITM_SQUARE,        ITM_10x,          ITM_EXP,         ITM_CC,                    //JM HOME
                                              ITM_MAGNITUDE,       ITM_ARG,        ITM_PARALLEL,      ITM_XFACT,        ITM_toREC2,       ITM_toPOL2,                    //JM HOME
                                              ITM_DEG2,            ITM_RAD2,       ITM_SIGMAMINUS,    ITM_op_j,         ITM_RECT,         ITM_POLAR,                          //JM HOME
 /*HOME-1*/                                                                                                                                                                     //JM HOME
-/*1*18*/                                     ITM_CC,              ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,          ITM_DRG,                        //JM HOME
-                                             ITM_FP,              ITM_IP,          ITM_PARALLEL,      ITM_XFACT,        -MNU_BASE,        -MNU_INTS,                          //JM HOME
-                                             ITM_SF,              ITM_CF,          ITM_RL,            ITM_RR,           ITM_RMD,          ITM_IDIV,                           //JM HOME
+/*1*18*/                                     ITM_DRG,             ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,         ITM_CC,                        //JM HOME
+                                             ITM_FP,              ITM_IP,          ITM_PARALLEL,      ITM_XFACT,       -MNU_BASE,       -MNU_INTS,                          //JM HOME
+                                             ITM_SF,              ITM_CF,          ITM_RL,            ITM_RR,           ITM_RMD,         ITM_IDIV,                           //JM HOME
 /*HOME-2*/                                                                                                                                                                     //JM HOME
-/*2*18*/                                     ITM_CC,              ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,          ITM_DRG,                         //JM HOME
+/*2*18*/                                     ITM_DRG,             ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,         ITM_CC,                         //JM HOME
                                              -MNU_CONST,         -MNU_CPX,        -MNU_EXP,          -MNU_XEQ,         -MNU_MyMenu,      CC_EE,                            //JM HOME
-                                             ITM_DEG2,            ITM_RAD2,        ITM_SIGMAMINUS,    ITM_op_j,         ITM_RECT,         ITM_POLAR, 
+                                             ITM_DEG2,            ITM_RAD2,        ITM_SIGMAMINUS,    ITM_op_j,         ITM_RECT,        ITM_POLAR, 
 
                                        
 // 03 -- 09 HAAKON SUGGESTIONS OF FULL REPLICA
