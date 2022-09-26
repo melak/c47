@@ -887,7 +887,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
 
     sys_disk_write_enable(1);
     check_create_dir("SAVFILES");
-    result = f_open(BACKUP, "SAVFILES\\wp43s.sav", FA_CREATE_ALWAYS | FA_WRITE);
+    result = f_open(BACKUP, "SAVFILES\\C43.sav", FA_CREATE_ALWAYS | FA_WRITE);
     if(result != FR_OK) {
       sys_disk_write_enable(0);
       return;
@@ -895,9 +895,9 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
-    BACKUP = fopen("wp43s.sav", "wb");
+    BACKUP = fopen("C43.sav", "wb");
     if(BACKUP == NULL) {
-      printf("Cannot SAVE in file wp43s.sav!\n");
+      printf("Cannot SAVE in file C43.sav!\n");
       return;
     }
   #endif // DMCP_BUILD
@@ -1924,20 +1924,20 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 
 void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
   #if defined(DMCP_BUILD)
-    if(f_open(BACKUP, "SAVFILES\\wp43s.sav", FA_READ) != FR_OK) {
+    if(f_open(BACKUP, "SAVFILES\\C43.sav", FA_READ) != FR_OK) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        moreInfoOnError("In function fnLoad: cannot find or read backup data file wp43s.sav", NULL, NULL, NULL);
+        moreInfoOnError("In function fnLoad: cannot find or read backup data file C43.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
-    if((BACKUP = fopen("wp43s.sav", "rb")) == NULL) {
+    if((BACKUP = fopen("C43.sav", "rb")) == NULL) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        moreInfoOnError("In function fnLoad: cannot find or read backup data file wp43s.sav", NULL, NULL, NULL);
+        moreInfoOnError("In function fnLoad: cannot find or read backup data file C43.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
@@ -1985,13 +1985,13 @@ void fnDeleteBackup(uint16_t confirmation) {
     #if defined(DMCP_BUILD)
       FRESULT result;
       sys_disk_write_enable(1);
-      result = f_unlink("SAVFILES\\wp43s.sav");
+      result = f_unlink("SAVFILES\\C43.sav");
       if(result != FR_OK && result != FR_NO_FILE && result != FR_NO_PATH) {
         displayCalcErrorMessage(ERROR_IO, ERR_REGISTER_LINE, REGISTER_X);
       }
       sys_disk_write_enable(0);
     #else // !DMCP_BUILD
-      int result = remove("wp43s.sav");
+      int result = remove("C43.sav");
       if(result == -1) {
         #if !defined(TESTSUITE_BUILD)
           int e = errno;
