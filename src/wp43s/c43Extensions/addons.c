@@ -569,7 +569,7 @@ uint16_t dest = 9999;
     dest = getRegisterAngularMode(REGISTER_X);
 
     if(dest != amNone && dest != currentAngularMode) {                     //first step: covert tagged angle to ADM
-      setRegisterAngularMode(REGISTER_X, currentAngularMode);
+      fnCvtToCurrentAngularMode(dest);
       return;
     }
 
