@@ -350,11 +350,13 @@ static void plotrect(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {            
 }
 
 
+#if !defined(SAVE_SPACE_DM42_13GRF)
   static void plotHisto_col(uint16_t ix, uint16_t ixn, uint16_t x, uint16_t y, uint16_t x_min, uint16_t x_wid, uint16_t y_min, uint16_t y_wid) {  //x is 0..(n-1)   
     float col_width = (int16_t)(x_wid*(float)(1.0f) / (float)(ixn + 2)) - 0.6f;              // Scaled to always have the histogram in the same scale as the STATS ASSESS graph
     
     plotrect(x - (int)((+0.1f + col_width)/2), y_min + y_wid,  x + (int)((-0.1f + col_width)/2), y);
   }
+#endif //SAVE_SPACE_DM42_13GRF
 
 
 
@@ -1639,8 +1641,8 @@ void graphDrawLRline(uint16_t selection) {
       else {
         showString("L.R. error", &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc * index++ -7+2 +autoshift, vmNormal, false, false);
     }
-#endif //SAVE_SPACE_DM42_13GRF
   }
+#endif //SAVE_SPACE_DM42_13GRF
   }
 #endif // !TESTSUITE_BUILD
 

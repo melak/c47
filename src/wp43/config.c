@@ -181,7 +181,7 @@ void fnSetRoundingMode(uint16_t RM) {
   roundingMode = RM;
 }
 
-// "enum rounding" does not match with the specification of WP43 rounding mode.
+// "enum rounding" does not match with the specification of WP 43s rounding mode.
 // So you need roundingModeTable[roundingMode] rather than roundingMode
 // to specify rounding mode in the real number functions.
 TO_QSPI const enum rounding roundingModeTable[7] = {
