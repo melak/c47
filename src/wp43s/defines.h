@@ -26,11 +26,12 @@
 
 #ifdef DMCP_BUILD
   #ifndef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
-    #define SAVESPACE_JM_FLB   //To remove some code to make fit without QSPI: Less flagbrowser
-    #define SAVESPACE_JM_RB    //To remove some code to make fit without QSPI: Less registerbrowser
-    #define SAVESPACE_JM_FB    //To remove some code to make fit without QSPI: Less fontbrowser
-    #undef  SAVESPACE_JM_SHOW  //To remove some code to make fit without QSPI: Less show
+    //#define SAVESPACE_JM_FLB   //To remove some code to make fit without QSPI: Less flagbrowser
+    //#define SAVESPACE_JM_RB    //To remove some code to make fit without QSPI: Less registerbrowser
+    //#define SAVESPACE_JM_FB    //To remove some code to make fit without QSPI: Less fontbrowser
+    //#define SAVESPACE_JM_SHOW  //To remove some code to make fit without QSPI: Less show
     #define SAVE_SPACE_DM42_12 //To remove math functions Zeta, Slvq, ortho_poly, elliptic, beta, bessel
+    #define SAVESPACE_JM_PLOT  //To remove all plotting and complex solver
   #endif //TWO_FILE_PGM
 #else
     #undef  SAVESPACE_JM_FLB

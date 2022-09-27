@@ -52,11 +52,13 @@ void fnPlotRegressionLine(uint16_t plotMode);
 // This module originates and is part of the C43 fork, and is copied here.
 // Do not change the shared functions otherwise the C43 fork will break. JM 2021-03-20
 
+#ifndef SAVESPACE_JM_PLOT
 #if !defined(TESTSUITE_BUILD)
   static real_t RR,SMI,aa0,aa1,aa2,sa0, sa1; //L.R. variables
   static void drawline(uint16_t selection, real_t *RR, real_t *SMI, real_t *aa0, real_t *aa1, real_t *aa2, real_t *sa0, real_t *sa1);
 #endif // !TESTSUITE_BUILD
 
+#endif //SAVESPACE_JM_PLOT
 
 float     graph_dx;           // Many unused functions in WP43S. Do not change the variables.
 float     graph_dy;
@@ -92,6 +94,39 @@ uint32_t  yzero;
 
 
 
+#ifdef SAVESPACE_JM_PLOT
+  //Utility functions
+  void    placePixel         (uint32_t x, uint32_t y) {}
+  void    removePixel        (uint32_t x, uint32_t y) {}
+  void    clearScreenPixels  () {}
+  void    plotcross          (uint16_t xn, uint8_t yn) {}              // Plots line from xo,yo to xn,yn; uses temporary x1,y1
+  void    plotbox            (uint16_t xn, uint8_t yn) {}                // Plots line from xo,yo to xn,yn; uses temporary x1,y1
+  void    pixelline          (uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn, bool_t vmNormal) {}              // Plots line from xo,yo to xn,yn; uses temporary x1,y1
+  void    plotline           (uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn) {}
+  void    graphAxisDraw      (void) {}
+  void    graph_axis         (void) {}
+  float   auto_tick          (float tick_int_f) {return tick_int_f;}
+  float grf_x(int i) { return 1.0;}
+  float grf_y(int i) { return 1.0;}
+  char * radixProcess(const char * ss) {return tmp_names1;}
+  void eformat_eng2 (char* s02, const char* s01, double inreal, int8_t digits, const char* s05) {}
+  char * padEquals(const char * ss) {return tmp_names1;}
+      int16_t screen_window_x(float x_min, float x, float x_max) {return 0;}
+      int16_t screen_window_y(float y_min, float y, float y_max) {return 0;}
+  void    statGraphReset     (void) {}
+  void    fnStatDemo0        (uint16_t unusedButMandatoryParameter) {}
+  void    fnStatDemo1        (uint16_t unusedButMandatoryParameter) {}
+  void    fnStatDemo2        (uint16_t unusedButMandatoryParameter) {}
+  void    fnStatDemo105      (uint16_t unusedButMandatoryParameter) {}
+  void    fnStatDemo107      (uint16_t unusedButMandatoryParameter) {}
+  void    fnStatDemo109      (uint16_t unusedButMandatoryParameter) {}
+  void    graphPlotstat      (uint16_t selection) {}
+  void    graphDrawLRline    (uint16_t selection) {}
+  void    fnPlotClose        (uint16_t unusedButMandatoryParameter) {}
+  void    fnPlotCloseSmi     (uint16_t unusedButMandatoryParameter) {}
+  void    fnPlotStat         (uint16_t unusedButMandatoryParameter) {}
+  void    fnPlotZoom         (uint16_t unusedButMandatoryParameter) {}
+#else //SAVESPACE_JM_PLOT
 
 void statGraphReset(void) {
   graph_dx      = 0;
@@ -2183,3 +2218,4 @@ void fnStatDemo109(uint16_t unusedButMandatoryParameter){
   #endif // DEMO109
 }
 */
+#endif //SAVESPACE_JM_PLOT
