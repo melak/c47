@@ -539,7 +539,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
         currentLocalRegisters = NULL;
         currentNumberOfLocalRegisters = 0;
         currentNumberOfLocalFlags = NUMBER_OF_LOCAL_FLAGS;
-        lastErrorCode = ERROR_RAM_FULL;
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
         return;
       }
 

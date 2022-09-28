@@ -727,10 +727,10 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_PLOT_STAT) {
         calcModeNormalGui();
         }
-        else if(calcMode == CM_GRAPH) {
+        else if(calcMode == CM_GRAPH) {   //JM
         calcModeNormalGui();
         }
-        else if(calcMode == CM_LISTXY) {
+        else if(calcMode == CM_LISTXY) {   //JM
         calcModeNormalGui();
         }
         else if(calcMode == CM_MIM) {

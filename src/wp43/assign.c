@@ -42,7 +42,7 @@
 TO_QSPI const calcKey_t kbd_std[37] = {
 //keyId primary          fShifted         gShifted         keyLblAim        primaryAim         fShiftedAim            gShiftedAim    primaryTam
 /*
- {21,   ITM_1ONX,        ITM_TGLFRT,     -MNU_ALPHAFN,     ITM_NULL,        ITM_A,            -MNU_ALPHAINTL,         ITM_ALPHA,     ITM_REG_A    },
+ {21,   ITM_1ONX,        ITM_TGLFRT,     -MNU_UNITCONV,     ITM_NULL,        ITM_A,            -MNU_ALPHAINTL,         ITM_ALPHA,     ITM_REG_A    },
  {22,  -MNU_EXP,         ITM_toINT,      -MNU_BITS,        ITM_NUMBER_SIGN, ITM_B,             ITM_NUMBER_SIGN,       ITM_BETA,      ITM_REG_B    },
  {23,  -MNU_TRI,         ITM_DMS,        -MNU_ANGLECONV,   ITM_NULL,        ITM_C,             ITM_LEFT_PARENTHESIS,  ITM_GAMMA,     ITM_REG_C    },
  {24,   ITM_LN,          ITM_dotD,        ITM_LOG10,       ITM_NULL,        ITM_D,             ITM_RIGHT_PARENTHESIS, ITM_DELTA,     ITM_REG_D    }, // if f or g are changed: adapt the function btnClicked section if(calcMode == CM_NIM) in keyboard.c. Case D for decimal base
@@ -65,7 +65,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
  {51,   ITM_DIV,         ITM_PARALLEL,    ITM_MOD,         ITM_SLASH,       ITM_N,             ITM_SLASH,             ITM_NU,        ITM_DIV      },
  {52,   ITM_7,           ITM_NULL,        ITM_NULL,        ITM_7,           ITM_O,             ITM_7,                 ITM_OMEGA,     ITM_7        },
  {53,   ITM_8,           ITM_NULL,       -MNU_MODE,        ITM_8,           ITM_P,             ITM_8,                 ITM_PI,        ITM_8        },
- {54,   ITM_9,           ITM_LBL,         ITM_RTN,         ITM_9,           ITM_Q,             ITM_9,                 ITM_OMICRON,   ITM_9        },
+ {54,   ITM_9,           ITM_LBL,         ITM_RTN,         ITM_9,           ITM_Q,             ITM_9,                 ITM_NULL,      ITM_9        },
  {55,   ITM_XEQ,         ITM_GTO,        -MNU_FLAGS,       ITM_NULL,        ITM_NULL,          ITM_NULL,             -MNU_FLAGS,     ITM_NULL     },
 
  {61,   ITM_MULT,        ITM_XFACT,      -MNU_PROB,        ITM_CROSS,       ITM_R,             ITM_PROD_SIGN,         ITM_RHO,       ITM_MULT     },
@@ -366,7 +366,7 @@ static int _typeOfFunction(int16_t func) {
     case ITM_ENTER:
     case ITM_UP1:
     case ITM_DOWN1:
-      case ITM_BACKSPACE: {
+    case ITM_BACKSPACE: {
       return 1;
     }
 
@@ -403,8 +403,8 @@ static int _typeOfFunction(int16_t func) {
 
     default: {
       return 4;
+    }
   }
-}
 }
 
 void assignToKey(const char *data) {
@@ -440,8 +440,8 @@ void assignToKey(const char *data) {
         }
         case 0: {
           key->primary     = stdKey->primary;
-                key->primaryTam  = stdKey->primaryTam;
-      }
+          key->primaryTam  = stdKey->primaryTam;
+        }
       }
       break;
     }

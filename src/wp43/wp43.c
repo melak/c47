@@ -905,14 +905,18 @@ char                   plotStatMx[8];
       }
 #endif //FN_RELEASE_CODE_WP43S
 
-      else if(key == 0 && FN_key_pressed != 0) {            //JM, key=0 is release, therefore there must have been a press before that. If the press was a FN key, FN_key_pressed > 0 when it comes back here for release.
-        btnFnReleased(NULL);                                //    in short, it can only execute FN release after there was a FN press.
+      else if(key == 0 && charKey[1] == 0) {            //JM, key=0 is release, therefore there must have been a press before that. If the press was a FN key, FN_key_pressed > 0 when it comes back here for release.
+        btnFnReleased(charKey);                                //    in short, it can only execute FN release after there was a FN press.
         keyClick(4);
       //lcd_refresh_dma();
       }
       else if(key == 0) {
-        btnReleased(NULL);
+        btnReleased(charKey);
         keyClick(2);
+          if(calcMode == CM_PEM && shiftF && ((charKey[0] == '2' && charKey[1] == '6') || (charKey[0] == '3' && charKey[1] == '1'))) {
+            shiftF = false;
+            refreshScreen();
+          }
         //lcd_refresh_dma();
       }
 

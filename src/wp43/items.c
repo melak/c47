@@ -185,12 +185,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
 
 
-  /********************************************//**
-   * \brief Runs a function
-   *
-   * \param[in] fn int16_t Index in the indexOfItems area of the function to run
-   * \return void
-   ***********************************************/
   void runFunction(int16_t func) {
     funcOK = true;
     #ifdef RECORDLOG                               //JMEXEC
