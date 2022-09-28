@@ -80,22 +80,26 @@ void WP34S_Cvt2RadSinCosTan(const real_t *an, angularMode_t angularMode, real_t 
 
   switch(angularMode) {
     case amRadian:
-    case amMultPi:
+    case amMultPi: {
       WP34S_Mod(&angle, const1071_2pi, &angle, realContext); // mod(angle, 2pi) --> angle
       angularMode = amRadian;
       break;
+    }
 
-    case amGrad:
+    case amGrad: {
       WP34S_Mod(&angle, const_400,     &angle, realContext); // mod(angle, 400g) --> angle
       break;
+    }
 
     case amDegree:
-    case amDMS:
+    case amDMS: {
       WP34S_Mod(&angle, const_360,     &angle, realContext); // mod(angle, 360°) --> angle
       angularMode = amDegree;
       break;
+    }
 
-    default: {}
+    default: {
+    }
   }
 
   // sin(180+x) = -sin(x), cos(180+x) = -cos(x)
@@ -1592,7 +1596,9 @@ void WP34S_LambertW(const real_t *x, real_t *res, bool_t negativeBranch, realCon
     realCopy(&q, &reg2);
     realMultiply(&q, const_2, &q, realContext);
     realSquareRoot(&q, &r, realContext);
-    if(negativeBranch) realChangeSign(&r);
+    if(negativeBranch) {
+      realChangeSign(&r);
+    }
     realDivide(&q, const_3, &q, realContext);
     realSubtract(&r, &q, &q, realContext);
 
@@ -1607,9 +1613,12 @@ void WP34S_LambertW(const real_t *x, real_t *res, bool_t negativeBranch, realCon
       realAdd(&p, &reg2, &p, realContext);
       realDivide(&p, &q, &p, realContext);
       realAdd(&p, &q, &p, realContext);
-      if(converged) break;
-      if(WP34S_AbsoluteError(&p, &q, (realContext == &ctxtReal39) ? const_1e_37 : const_1e_49, realContext)) // test if absolute error
+      if(converged) {
+        break;
+      }
+      if(WP34S_AbsoluteError(&p, &q, (realContext == &ctxtReal39) ? const_1e_37 : const_1e_49, realContext)) { // test if absolute error
         converged = true;
+      }
       realSubtract(&reg1, const_1, &reg1, realContext);
       realCopy(&p, &q);
     } while(realCompareGreaterThan(&reg1, const_0));
@@ -1648,9 +1657,12 @@ void WP34S_LambertW(const real_t *x, real_t *res, bool_t negativeBranch, realCon
       realDivide(&r, &p, &r, realContext);
       realSubtract(&q, &r, &r, realContext);
       // R Q Q
-      if(converged) break;
-      if(WP34S_RelativeError(&r, &q, (realContext == &ctxtReal39) ? const_1e_37 : const_1e_49, realContext)) // test if relative error
+      if(converged) {
+        break;
+      }
+      if(WP34S_RelativeError(&r, &q, (realContext == &ctxtReal39) ? const_1e_37 : const_1e_49, realContext)) { // test if relative error
         converged = true;
+      }
       realSubtract(&reg1, const_1, &reg1, realContext);
       realCopy(&r, &q);
     } while(realCompareGreaterThan(&reg1, const_0));
@@ -1689,7 +1701,9 @@ void WP34S_ComplexLambertW(const real_t *xReal, const real_t *xImag, real_t *res
     realSubtract(&qr, &zr, &qr, realContext), realSubtract(&qi, &zi, &qi, realContext);
     divComplexComplex(&qr, &qi, &tr, &ti, &qr, &qi, realContext);
     realSubtract(&wr, &qr, &wr, realContext), realSubtract(&wi, &qi, &wi, realContext);
-    if(WP34S_ComplexAbsError(&wr, &wi, &pr, &pi, (realContext == &ctxtReal39) ? const_1e_37 : const_1e_49, realContext)) break;
+    if(WP34S_ComplexAbsError(&wr, &wi, &pr, &pi, (realContext == &ctxtReal39) ? const_1e_37 : const_1e_49, realContext)) {
+      break;
+    }
     realCopy(&wr, &pr), realCopy(&wi, &pi);
   }
   realCopy(&wr, resReal), realCopy(&wi, resImag);
@@ -1753,29 +1767,29 @@ void WP34S_OrthoPoly(uint16_t kind, const real_t *rX, const real_t *rN, const re
   switch(kind) {
   /**************************************************************************/
   /* Legendre's Pn                                                          */
-    case ORTHOPOLY_LEGENDRE_P:
+    case ORTHOPOLY_LEGENDRE_P: {
       realAdd(&a, rX, &a, realContext);
       realMultiply(rX, const_2, &d, realContext);
       goto ortho_allinc;
+    }
 
   /**************************************************************************/
   /* Chebychev's Tn                                                         */
-    case ORTHOPOLY_CHEBYSHEV_T:
+    case ORTHOPOLY_CHEBYSHEV_T: {
       break;
+    }
 
   /**************************************************************************/
   /* Chebychev's Un                                                         */
-    case ORTHOPOLY_CHEBYSHEV_U:
+    case ORTHOPOLY_CHEBYSHEV_U: {
       realAdd(&rT1, rX, &rT1, realContext);
       break;
+    }
 
   /**************************************************************************/
   /* Laguerre's Ln                                                          */
     case ORTHOPOLY_LAGUERRE_L:
-
-  /**************************************************************************/
-  /* Laguerre's Ln with parameter alpha                                     */
-    case ORTHOPOLY_LAGUERRE_L_ALPHA:
+    case ORTHOPOLY_LAGUERRE_L_ALPHA: {
       // laguerre_common
       if(realIsSpecial(rParam) || realCompareLessEqual(rParam, const__1)) {
         realCopy(const_NaN, res);
@@ -1791,21 +1805,24 @@ void WP34S_OrthoPoly(uint16_t kind, const real_t *rX, const real_t *rN, const re
       realCopy(const_1, &incB);
       incC = true;
       break;
+    }
 
   /**************************************************************************/
   /* Hermite's He (Hn)                                                      */
-    case ORTHOPOLY_HERMITE_HE:
+    case ORTHOPOLY_HERMITE_HE: {
       realCopy(rX, &a);
       realCopy(const_1, &incB);
       break;
+    }
 
   /**************************************************************************/
   /* Hermite's H  (Hnp)                                                     */
-    case ORTHOPOLY_HERMITE_H:
+    case ORTHOPOLY_HERMITE_H: {
       realAdd(&rT1, rX, &rT1, realContext);
       realCopy(const_2, &b);
       realCopy(const_2, &incB);
       break;
+    }
   }
 
   /**************************************************************************/

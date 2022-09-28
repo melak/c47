@@ -37,14 +37,17 @@
 
 static bool_t ixyzConvert(calcRegister_t reg, real_t *val) {
   switch(getRegisterDataType(reg)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       convertLongIntegerRegisterToReal(reg, val, &ctxtReal39);
       return true;
-    case dtReal34:
+    }
+    case dtReal34: {
       real34ToReal(REGISTER_REAL34_DATA(reg), val);
       return true;
-    default:
+    }
+    default: {
       return false;
+    }
   }
 }
 

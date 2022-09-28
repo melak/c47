@@ -38,7 +38,7 @@
 #ifndef SAVE_SPACE_DM42_8
   static void _showRegisterInRbr(calcRegister_t regist, int16_t registerNameWidth) {
     switch(getRegisterDataType(regist)) {
-      case dtReal34:
+      case dtReal34: {
         if(showContent) {
           real34ToDisplayString(REGISTER_REAL34_DATA(regist), getRegisterAngularMode(regist), tmpString, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, STD_SPACE_4_PER_EM, false);
         }
@@ -46,8 +46,9 @@
           sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(REAL34_SIZE));
         }
         break;
+      }
 
-      case dtComplex34:
+      case dtComplex34: {
         if(showContent) {
           complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &standardFont, SCREEN_WIDTH - 1 - registerNameWidth, 34, false, STD_SPACE_4_PER_EM, false);
         }
@@ -55,8 +56,9 @@
           sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(COMPLEX34_SIZE));
         }
         break;
+      }
 
-      case dtLongInteger:
+      case dtLongInteger: {
         if(showContent) {
           if(getRegisterLongIntegerSign(regist) == LI_NEGATIVE) {
             longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, STD_SPACE_4_PER_EM, false);   //JM added last parameter: Allow LARGELI
@@ -69,8 +71,9 @@
           sprintf(tmpString, "%" PRIu32 " bits " STD_CORRESPONDS_TO " 4+%" PRIu32 " bytes", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)) * 8, (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
         }
         break;
+      }
 
-      case dtShortInteger:
+      case dtShortInteger: {
         if(showContent) {
           shortIntegerToDisplayString(regist, tmpString, false);
         }
@@ -78,8 +81,9 @@
           strcpy(tmpString, "64 bits " STD_CORRESPONDS_TO " 8 bytes");
         }
         break;
+      }
 
-      case dtString:
+      case dtString: {
         if(showContent) {
           strcpy(tmpString, STD_LEFT_SINGLE_QUOTE);
           strncat(tmpString, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
@@ -96,8 +100,9 @@
           sprintf(tmpString, "%" PRIu32 " character%s " STD_CORRESPONDS_TO " 4+%" PRIu32 " bytes", (uint32_t)stringGlyphLength(REGISTER_STRING_DATA(regist)), stringGlyphLength(REGISTER_STRING_DATA(regist))==1 ? "" : "s", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
         }
         break;
+      }
 
-      case dtTime:
+      case dtTime: {
         if(showContent) {
           timeToDisplayString(regist, tmpString, true);
         }
@@ -105,8 +110,9 @@
           sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(REAL34_SIZE));
         }
         break;
+      }
 
-      case dtDate:
+      case dtDate: {
         if(showContent) {
           dateToDisplayString(regist, tmpString);
         }
@@ -114,8 +120,9 @@
           sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(REAL34_SIZE));
         }
         break;
+      }
 
-      case dtReal34Matrix:
+      case dtReal34Matrix: {
         if(showContent) {
           real34MatrixToDisplayString(regist, tmpString);
         }
@@ -124,8 +131,9 @@
           sprintf(tmpString, "%" PRIu16 " element%s " STD_CORRESPONDS_TO " 4+%" PRIu32 " bytes", (uint16_t)(dblock->matrixRows * dblock->matrixColumns), (dblock->matrixRows * dblock->matrixColumns)==1 ? "" : "s", (uint32_t)TO_BYTES(dblock->matrixRows * dblock->matrixColumns * REAL34_SIZE));
         }
         break;
+      }
 
-      case dtComplex34Matrix:
+      case dtComplex34Matrix: {
         if(showContent) {
           complex34MatrixToDisplayString(regist, tmpString);
         }
@@ -134,8 +142,9 @@
           sprintf(tmpString, "%" PRIu16 " element%s " STD_CORRESPONDS_TO " 4+%" PRIu32 " bytes", (uint16_t)(dblock->matrixRows * dblock->matrixColumns), (dblock->matrixRows * dblock->matrixColumns)==1 ? "" : "s", (uint32_t)TO_BYTES(dblock->matrixRows * dblock->matrixColumns * COMPLEX34_SIZE));
         }
         break;
+      }
 
-      case dtConfig:
+      case dtConfig: {
         if(showContent) {
           strcpy(tmpString, "Configuration data");
         }
@@ -143,11 +152,13 @@
           sprintf(tmpString, "%d bytes", (int16_t)TO_BYTES(CONFIG_SIZE));
         }
         break;
+      }
 
-      default:
+      default: {
         sprintf(tmpString, "Data type %s: to be coded", getDataTypeName(getRegisterDataType(regist), false, true));
     }
   }
+}
   #endif //SAVE_SPACE_DM42_8
 
   void registerBrowser(uint16_t unusedButMandatoryParameter) {

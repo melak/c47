@@ -533,7 +533,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
         currentLocalRegisters = NULL;
         currentNumberOfLocalRegisters = 0;
         currentNumberOfLocalFlags = NUMBER_OF_LOCAL_FLAGS;
-        lastErrorCode = ERROR_RAM_FULL;
+        displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
         return;
       }
 
@@ -651,19 +651,45 @@ bool_t validateName(const char *name) {
   }
 
   // Check for the 1st character
-  if(                                          compareChar(name, STD_A                   ) < 0) return false;
-  if(compareChar(name, STD_Z          ) > 0 && compareChar(name, STD_a                   ) < 0) return false;
-  if(compareChar(name, STD_Z          ) > 0 && compareChar(name, STD_a                   ) < 0) return false;
-  if(compareChar(name, STD_z          ) > 0 && compareChar(name, STD_A_GRAVE             ) < 0) return false;
-  if(                                          compareChar(name, STD_CROSS               ) ==0) return false;
-  if(                                          compareChar(name, STD_DIVIDE              ) ==0) return false;
-  if(compareChar(name, STD_z_CARON    ) > 0 && compareChar(name, STD_iota_DIALYTIKA_TONOS) < 0) return false;
-  if(compareChar(name, STD_omega_TONOS) > 0 && compareChar(name, STD_SUP_x               ) < 0) return false;
-  if(compareChar(name, STD_SUP_x      ) > 0 && compareChar(name, STD_SUB_alpha           ) < 0) return false;
-  if(compareChar(name, STD_SUB_mu     ) > 0 && compareChar(name, STD_SUB_h               ) < 0) return false;
-  if(compareChar(name, STD_SUB_h      ) > 0 && compareChar(name, STD_SUB_t               ) < 0) return false;
-  if(compareChar(name, STD_SUB_t      ) > 0 && compareChar(name, STD_SUB_a               ) < 0) return false;
-  if(compareChar(name, STD_SUB_Z      ) > 0                                                           ) return false;
+  if(                                          compareChar(name, STD_A                   ) < 0) {
+    return false;
+  }
+  if(compareChar(name, STD_Z          ) > 0 && compareChar(name, STD_a                   ) < 0) {
+    return false;
+  }
+  if(compareChar(name, STD_Z          ) > 0 && compareChar(name, STD_a                   ) < 0) {
+    return false;
+  }
+  if(compareChar(name, STD_z          ) > 0 && compareChar(name, STD_A_GRAVE             ) < 0) {
+    return false;
+  }
+  if(                                          compareChar(name, STD_CROSS               ) ==0) {
+    return false;
+  }
+  if(                                          compareChar(name, STD_DIVIDE              ) ==0) {
+    return false;
+  }
+  if(compareChar(name, STD_z_CARON    ) > 0 && compareChar(name, STD_iota_DIALYTIKA_TONOS) < 0) {
+    return false;
+  }
+  if(compareChar(name, STD_omega_TONOS) > 0 && compareChar(name, STD_SUP_x               ) < 0) {
+    return false;
+  }
+  if(compareChar(name, STD_SUP_x      ) > 0 && compareChar(name, STD_SUB_alpha           ) < 0) {
+    return false;
+  }
+  if(compareChar(name, STD_SUB_mu     ) > 0 && compareChar(name, STD_SUB_h               ) < 0) {
+    return false;
+  }
+  if(compareChar(name, STD_SUB_h      ) > 0 && compareChar(name, STD_SUB_t               ) < 0) {
+    return false;
+  }
+  if(compareChar(name, STD_SUB_t      ) > 0 && compareChar(name, STD_SUB_a               ) < 0) {
+    return false;
+  }
+  if(compareChar(name, STD_SUB_Z      ) > 0                                                   ) {
+    return false;
+  }
 
   // Check for the following characters
   for(name += (*name & 0x80) ? 2 : 1; *name != 0; name += (*name & 0x80) ? 2 : 1) {
@@ -679,12 +705,14 @@ bool_t validateName(const char *name) {
       case ';':
       case '|':
       case '!':
-      case ' ':
+      case ' ': {
         return false;
-      default:
+      }
+      default: {
         if(compareChar(name, STD_CROSS) == 0) {
           return false;
         }
+      }
     }
   }
 
@@ -701,10 +729,11 @@ bool_t isUniqueName(const char *name) {
       case CAT_MENU:
       case CAT_CNST:
       case CAT_RVAR:
-      case CAT_SYFL:
+      case CAT_SYFL: {
         if(compareString(name, indexOfItems[i].itemCatalogName, CMP_NAME) == 0) {
           return false;
         }
+      }
     }
   }
 
@@ -1009,21 +1038,41 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
 
 uint16_t getRegisterFullSize(calcRegister_t regist) {
   switch(getRegisterDataType(regist)) {
-    case dtLongInteger:     return getRegisterDataPointer(regist)->dataMaxLength + 1;
-    case dtTime:            return REAL34_SIZE;
-    case dtDate:            return REAL34_SIZE;
-    case dtString:          return getRegisterDataPointer(regist)->dataMaxLength + 1;
-    case dtReal34Matrix:    return TO_BLOCKS((getRegisterDataPointer(regist)->matrixRows * getRegisterDataPointer(regist)->matrixColumns) * sizeof(real34_t)) + 1; break;
-    case dtComplex34Matrix: return TO_BLOCKS((getRegisterDataPointer(regist)->matrixRows * getRegisterDataPointer(regist)->matrixColumns) * sizeof(complex34_t)) + 1; break;
-    case dtShortInteger:    return SHORT_INTEGER_SIZE;
-    case dtReal34:          return REAL34_SIZE;
-    case dtComplex34:       return COMPLEX34_SIZE;
-    case dtConfig:          return CONFIG_SIZE;
-
-    default:
+    case dtLongInteger: {
+      return getRegisterDataPointer(regist)->dataMaxLength + 1;
+    }
+    case dtTime: {
+      return REAL34_SIZE;
+    }
+    case dtDate: {
+      return REAL34_SIZE;
+    }
+    case dtString: {
+      return getRegisterDataPointer(regist)->dataMaxLength + 1;
+    }
+    case dtReal34Matrix: {
+      return TO_BLOCKS((getRegisterDataPointer(regist)->matrixRows * getRegisterDataPointer(regist)->matrixColumns) * sizeof(real34_t)) + 1; break;
+    }
+    case dtComplex34Matrix: {
+      return TO_BLOCKS((getRegisterDataPointer(regist)->matrixRows * getRegisterDataPointer(regist)->matrixColumns) * sizeof(complex34_t)) + 1; break;
+    }
+    case dtShortInteger: {
+      return SHORT_INTEGER_SIZE;
+    }
+    case dtReal34: {
+      return REAL34_SIZE;
+    }
+    case dtComplex34: {
+      return COMPLEX34_SIZE;
+    }
+    case dtConfig: {
+      return CONFIG_SIZE;
+    }
+    default: {
       sprintf(errorMessage, "In function getRegisterFullSize: data type %s is unknown!", getDataTypeName(getRegisterDataType(regist), false, false));
       displayBugScreen(errorMessage);
       return 0;
+    }
   }
 }
 

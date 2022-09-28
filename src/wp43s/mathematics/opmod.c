@@ -114,17 +114,21 @@ void fnOpMod(uint16_t mode) {
 
 
   switch(getRegisterDataType(REGISTER_Z)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       opModL[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)](mode);
       break;
-    case dtShortInteger:
+    }
+    case dtShortInteger: {
       opModS[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)](mode);
       break;
-    case dtReal34:
+    }
+    case dtReal34: {
       opModR[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)](mode);
       break;
-    default:
+    }
+    default: {
       opModError(mode);
+    }
   }
   adjustResult(REGISTER_X, true, false, REGISTER_X, REGISTER_Y, REGISTER_Z);
   if(lastErrorCode == ERROR_NONE) {
@@ -163,7 +167,9 @@ void longInteger_mulmod(const longInteger_t a, int32_t exp_a, const longInteger_
   longInteger_t x, y, aa, bb, cc;
   int32_t i;
 
-  if(exp_res) *exp_res = exp_a + exp_b;
+  if(exp_res) {
+    *exp_res = exp_a + exp_b;
+  }
 
   longIntegerInit(x);
   longIntegerInit(y);
@@ -215,7 +221,9 @@ void longInteger_expmod(const longInteger_t a, const longInteger_t b, const long
   longIntegerCopy(b, bb);
 
   while(longIntegerCompareInt(bb, 0) > 0) {
-    if(longIntegerIsOdd(bb)) longInteger_mulmod(x, 0, y, 0, c, 0, x, NULL);
+    if(longIntegerIsOdd(bb)) {
+      longInteger_mulmod(x, 0, y, 0, c, 0, x, NULL);
+    }
     longInteger_mulmod(y, 0, y, 0, c, 0, y, NULL);
     longIntegerDivideUInt(bb, 2u, bb);
   }

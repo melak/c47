@@ -43,33 +43,77 @@
     switch(tam.function) {
       case ITM_STO: {
         switch(tam.currentOperation) {
-          case ITM_ADD:    return ITM_STOADD;
-          case ITM_SUB:    return ITM_STOSUB;
-          case ITM_MULT:   return ITM_STOMULT;
-          case ITM_DIV:    return ITM_STODIV;
-          case ITM_Max:    return ITM_STOMAX;
-          case ITM_Min:    return ITM_STOMIN;
-          case ITM_Config: return ITM_STOCFG;
-          case ITM_Stack:  return ITM_STOS;
-          case ITM_dddEL:  return ITM_STOEL;
-          case ITM_dddIJ:  return ITM_STOIJ;
-          default:         return ITM_STO;
+          case ITM_ADD: {
+            return ITM_STOADD;
+          }
+          case ITM_SUB: {
+            return ITM_STOSUB;
+          }
+          case ITM_MULT: {
+            return ITM_STOMULT;
+          }
+          case ITM_DIV: {
+            return ITM_STODIV;
+          }
+          case ITM_Max: {
+            return ITM_STOMAX;
+          }
+          case ITM_Min: {
+            return ITM_STOMIN;
+          }
+          case ITM_Config: {
+            return ITM_STOCFG;
+          }
+          case ITM_Stack: {
+            return ITM_STOS;
+          }
+          case ITM_dddEL: {
+            return ITM_STOEL;
+          }
+          case ITM_dddIJ: {
+           return ITM_STOIJ;
+          }
+          default: {
+            return ITM_STO;
+          }
         }
       }
 
       case ITM_RCL: {
         switch(tam.currentOperation) {
-          case ITM_ADD:    return ITM_RCLADD;
-          case ITM_SUB:    return ITM_RCLSUB;
-          case ITM_MULT:   return ITM_RCLMULT;
-          case ITM_DIV:    return ITM_RCLDIV;
-          case ITM_Max:    return ITM_RCLMAX;
-          case ITM_Min:    return ITM_RCLMIN;
-          case ITM_Config: return ITM_RCLCFG;
-          case ITM_Stack:  return ITM_RCLS;
-          case ITM_dddEL:  return ITM_RCLEL;
-          case ITM_dddIJ:  return ITM_RCLIJ;
-          default:         return ITM_RCL;
+          case ITM_ADD: {
+            return ITM_RCLADD;
+          }
+          case ITM_SUB: {
+            return ITM_RCLSUB;
+          }
+          case ITM_MULT: {
+            return ITM_RCLMULT;
+          }
+          case ITM_DIV: {
+            return ITM_RCLDIV;
+          }
+          case ITM_Max: {
+            return ITM_RCLMAX;
+          }
+          case ITM_Min: {
+            return ITM_RCLMIN;
+          }
+          case ITM_Config: {
+            return ITM_RCLCFG;
+          }
+          case ITM_Stack: {
+            return ITM_RCLS;
+          }
+          case ITM_dddEL: {
+            return ITM_RCLEL;
+          }
+          case ITM_dddIJ: {
+            return ITM_RCLIJ;
+          }
+          default: {
+            return ITM_RCL;
+          }
         }
       }
 
@@ -679,7 +723,9 @@
           }
           else {
             pemCursorIsZerothStep = (value == 0);
-            if(value == 0) value = 1;
+            if(value == 0) {
+              value = 1;
+            }
             reallyRunFunction(tamOperation(), value + programList[currentProgramNumber - 1].step - 1);
           }
         }
@@ -703,7 +749,9 @@
           tamEnterMode(ITM_M_GOTO_COLUMN);
         }
         else {
-          if(tam.mode) tamLeaveMode();
+          if(tam.mode) {
+            tamLeaveMode();
+          }
         }
       }
     }
@@ -719,7 +767,9 @@
         if(value == INVALID_VARIABLE) {
           for(int i = 0; i < LAST_ITEM; ++i) {
             if((indexOfItems[i].status & CAT_STATUS) == CAT_FNCT && compareString(buffer, indexOfItems[i].itemCatalogName, CMP_NAME) == 0) {
-              if(tam.mode) tamLeaveMode();
+              if(tam.mode) {
+                tamLeaveMode();
+              }
               if(calcMode == CM_PEM) {
                 aimBuffer[0] = 0;
                 if(!programListEnd) {
@@ -731,7 +781,9 @@
             }
           }
           if(calcMode != CM_PEM) {
-            if(tam.mode) tamLeaveMode();
+            if(tam.mode) {
+              tamLeaveMode();
+            }
             displayCalcErrorMessage(ERROR_FUNCTION_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
             #if (EXTRA_INFO_ON_CALC_ERROR == 1)
               sprintf(errorMessage, "string '%s' is neither a named label nor a function name", buffer);
@@ -767,7 +819,9 @@
       if(calcMode == CM_PEM) {
         addStepInProgram(tamOperation());
       }
-      if(tam.mode != TM_NEWMENU) aimBuffer[0] = 0;
+      if(tam.mode != TM_NEWMENU) {
+        aimBuffer[0] = 0;
+      }
       if(tam.indirect && value != INVALID_VARIABLE && calcMode != CM_PEM) {
         value = indirectAddressing(value, (indexOfItems[tam.function].param == TM_FLAGR || indexOfItems[tam.function].param == TM_FLAGW) ? INDPM_FLAG : (tam.mode == TM_STORCL || tam.mode == TM_M_DIM) ? INDPM_REGISTER : INDPM_PARAM, min, max);
         if(lastErrorCode != 0) {
@@ -793,7 +847,9 @@
         tamEnterMode(ITM_M_GOTO_COLUMN);
       }
       else {
-        if(tam.mode) tamLeaveMode();
+        if(tam.mode) {
+          tamLeaveMode();
+        }
       }
     }
   }
@@ -820,8 +876,12 @@
       closeNim();
     }
     else if(calcMode == CM_PEM && aimBuffer[0] != 0) {
-      if(getSystemFlag(FLAG_ALPHA)) pemCloseAlphaInput();
-      else                          pemCloseNumberInput();
+      if(getSystemFlag(FLAG_ALPHA)) {
+        pemCloseAlphaInput();
+      }
+      else {
+        pemCloseNumberInput();
+      }
       aimBuffer[0] = 0;
       --currentLocalStepNumber;
       currentStep = findPreviousStep(currentStep);
@@ -830,7 +890,9 @@
       scrollPemForwards();
     }
 
-    if(func == ITM_ASSIGN) aimBuffer[0] = 0;
+    if(func == ITM_ASSIGN) {
+      aimBuffer[0] = 0;
+    }
 
     tam.alpha = (func == ITM_ASSIGN);
     tam.currentOperation = tam.function;

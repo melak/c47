@@ -270,40 +270,54 @@ static int jacobi_check_inputs(real_t *m, real_t *uReal, real_t *uImag, bool_t *
   *realInput = true;
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_X, uReal, &ctxtReal39);
-                        realZero(uImag);
-                        break;
+    case dtLongInteger: {
+      convertLongIntegerRegisterToReal(REGISTER_X, uReal, &ctxtReal39);
+      realZero(uImag);
+      break;
+    }
 
-    case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), uReal);
-                        realZero(uImag);
-                        break;
+    case dtReal34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), uReal);
+      realZero(uImag);
+      break;
+    }
 
-    case dtComplex34:   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), uReal);
-                        real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), uImag);
-                        *realInput = false;
-                        break;
+    case dtComplex34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), uReal);
+      real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), uImag);
+      *realInput = false;
+      break;
+    }
 
-    default:            displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-                        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                          sprintf(errorMessage, "cannot calculate elliptic integral or Jacobi elliptic function with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
-                          moreInfoOnError("In function jacobi_check_inputs:", errorMessage, NULL, NULL);
-                        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-                        return 0;
+    default: {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot calculate elliptic integral or Jacobi elliptic function with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
+        moreInfoOnError("In function jacobi_check_inputs:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return 0;
+    }
   }
 
   switch(getRegisterDataType(REGISTER_Y)) {
-    case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_Y, m, &ctxtReal39);
-                        break;
+    case dtLongInteger: {
+      convertLongIntegerRegisterToReal(REGISTER_Y, m, &ctxtReal39);
+      break;
+    }
 
-    case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), m);
-                        break;
+    case dtReal34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), m);
+      break;
+    }
 
-    default:            displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Y);
-                        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                          sprintf(errorMessage, "cannot calculate elliptic integral or Jacobi elliptic function with %s in Y", getRegisterDataTypeName(REGISTER_Y, true, false));
-                          moreInfoOnError("In function jacobi_check_inputs:", errorMessage, NULL, NULL);
-                        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-                        return 0;
+    default: {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Y);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot calculate elliptic integral or Jacobi elliptic function with %s in Y", getRegisterDataTypeName(REGISTER_Y, true, false));
+        moreInfoOnError("In function jacobi_check_inputs:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return 0;
+    }
   }
   return 1;
 }
@@ -603,7 +617,9 @@ static void _ellipticF_2(const real_t *phi, const real_t *m, real_t *res, realCo
     realAdd(&phiQuotient, &phiQuotient, &phiQuotient, realContext);
     ellipticKE(m, &phi1, NULL, NULL, NULL, realContext);
     _ellipticF_1(&phiRemainder, m, res, realContext);
-    if(remainderNegative) realChangeSign(res);
+    if(remainderNegative) {
+      realChangeSign(res);
+    }
     realFMA(&phiQuotient, &phi1, res, res, realContext);
   }
 
@@ -777,7 +793,9 @@ void ellipticF(const real_t *phi, const real_t *psi, const real_t *m, real_t *re
     else {
       TanComplex(&p, &q, &p, &q, realContext);
       lnComplex(&p, &q, res, resi, realContext);
-      if(realIsZero(&p)) realZero(res);
+      if(realIsZero(&p)) {
+        realZero(res);
+      }
     }
     return;
   }
@@ -949,7 +967,9 @@ void ellipticE(const real_t *phi, const real_t *psi, const real_t *m, real_t *re
       realContext_t *realContext2 = &ctxtReal51;
       realContext_t *realContext3 = &ctxtReal75;
 
-      if(remainderNegative) realChangeSign(&phiRemainder);
+      if(remainderNegative) {
+        realChangeSign(&phiRemainder);
+      }
       realSubtract(const_1, m, M1, realContext2);
       _ellipticFE_lambda_mu(&phiRemainder, &psi1, m, LAMBDA, LAMBDA_I, MU, MU_I, realContext2);
       sinComplex(LAMBDA, LAMBDA_I, SIN_LAMBDA, SIN_LAMBDA_I, realContext2);
@@ -1073,7 +1093,9 @@ static void _jacobiZeta_Agm(const real_t *phi, const real_t *psi, const real_t *
           for(int i = n; i > 0; --i) {
             realCopy(&k, &q);
             WP34S_Mod(&q, const1071_2pi, &k, realContext);
-            if(realCompareGreaterThan(&k, const_pi)) realSubtract(&k, const1071_2pi, &k, realContext);
+            if(realCompareGreaterThan(&k, const_pi)) {
+              realSubtract(&k, const1071_2pi, &k, realContext);
+            }
             realSubtract(&q, &k, &q, realContext);
             realSubtract(a + i - 1, b + i - 1, &c, realContext); realSubtract(ai + i - 1, bi + i - 1, &ci, realContext);
             realMultiply(&c, const_1on2, &c, realContext); realMultiply(&ci, const_1on2, &ci, realContext);
@@ -1470,20 +1492,26 @@ void fnEllipticK(uint16_t unusedButMandatoryParameter) {
   }
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_X, &m, &ctxtReal39);
-                        break;
+    case dtLongInteger: {
+      convertLongIntegerRegisterToReal(REGISTER_X, &m, &ctxtReal39);
+      break;
+    }
 
-    case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &m);
-                        break;
+    case dtReal34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &m);
+      break;
+    }
 
     //case dtComplex34:   // intentionally left unimplemented
 
-    default:            displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-                        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                          sprintf(errorMessage, "cannot calculate elliptic integral K with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
-                          moreInfoOnError("In function fnEllipticK:", errorMessage, NULL, NULL);
-                        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-                        return;
+    default: {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot calculate elliptic integral K with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
+        moreInfoOnError("In function fnEllipticK:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
   }
 
   if(realCompareLessEqual(&m, const_1)) {
@@ -1518,20 +1546,26 @@ void fnEllipticE(uint16_t unusedButMandatoryParameter) {
   }
 
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger: convertLongIntegerRegisterToReal(REGISTER_X, &m, &ctxtReal39);
-                        break;
+    case dtLongInteger: {
+      convertLongIntegerRegisterToReal(REGISTER_X, &m, &ctxtReal39);
+      break;
+    }
 
-    case dtReal34:      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &m);
-                        break;
+    case dtReal34: {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &m);
+      break;
+    }
 
     //case dtComplex34:   // intentionally left unimplemented
 
-    default:            displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-                        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-                          sprintf(errorMessage, "cannot calculate elliptic integral K with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
-                          moreInfoOnError("In function fnEllipticE:", errorMessage, NULL, NULL);
-                        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-                        return;
+    default: {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "cannot calculate elliptic integral K with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
+        moreInfoOnError("In function fnEllipticE:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
   }
 
   if(realCompareLessEqual(&m, const_1)) {

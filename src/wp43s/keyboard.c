@@ -47,6 +47,12 @@
 #include "timer.h"
 #include "ui/tam.h"
 #include "c43Extensions/xeqm.h"
+
+#include "c43Extensions/textfiles.h"
+#include "c43Extensions/keyboardTweak.h"
+#include "c43Extensions/graphText.h"
+#include "c43Extensions/xeqm.h"
+
 #if (REAL34_WIDTH_TEST == 1)
   #include "registerValueConversions.h"
 #endif // (REAL34_WIDTH_TEST == 1)
@@ -581,6 +587,8 @@ bool_t lowercaseselected;
         }
       }
     }
+
+
 
 
 
@@ -1388,6 +1396,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
 
 
+
   #if defined(PC_BUILD)
     void btnReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
         jm_show_calc_state("##### keyboard.c: btnReleased begin");
@@ -1429,7 +1438,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           int keyCode = (*((char *)data) - '0')*10 + *(((char *)data) + 1) - '0';
           int keyStateCode = (getSystemFlag(FLAG_ALPHA) ? 3 : 0) + (shiftG ? 2 : shiftF ? 1 : 0);
           char *funcParam = (char *)getNthString((uint8_t *)userKeyLabel, keyCode * 6 + keyStateCode);
-
         #if defined(PC_BUILD)
           if(item == ITM_RS || item == ITM_XEQ) {
             key[0] = 0;

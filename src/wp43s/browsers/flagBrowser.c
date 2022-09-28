@@ -188,28 +188,44 @@
       // Rounding mode
       strcpy(tmpString + CHARS_PER_LINE * ++line, "RM=");
       switch(roundingMode) {
-        case RM_HALF_EVEN: strcat(tmpString + CHARS_PER_LINE * line, STD_ONE_HALF "E");
-                           break;
+        case RM_HALF_EVEN: {
+          strcat(tmpString + CHARS_PER_LINE * line, STD_ONE_HALF "E");
+          break;
+        }
 
-        case RM_HALF_UP:   strcat(tmpString + CHARS_PER_LINE * line, STD_ONE_HALF STD_UP_ARROW);
-                           break;
+        case RM_HALF_UP: {
+          strcat(tmpString + CHARS_PER_LINE * line, STD_ONE_HALF STD_UP_ARROW);
+          break;
+        }
 
-        case RM_HALF_DOWN: strcat(tmpString + CHARS_PER_LINE * line, STD_ONE_HALF STD_DOWN_ARROW);
-                           break;
+        case RM_HALF_DOWN: {
+          strcat(tmpString + CHARS_PER_LINE * line, STD_ONE_HALF STD_DOWN_ARROW);
+          break;
+        }
 
-        case RM_UP:        strcat(tmpString + CHARS_PER_LINE * line, STD_LEFT_ARROW "0" STD_RIGHT_ARROW);
-                           break;
+        case RM_UP: {
+          strcat(tmpString + CHARS_PER_LINE * line, STD_LEFT_ARROW "0" STD_RIGHT_ARROW);
+          break;
+        }
 
-        case RM_DOWN:      strcat(tmpString + CHARS_PER_LINE * line, STD_RIGHT_ARROW "0" STD_LEFT_ARROW);
-                           break;
+        case RM_DOWN: {
+          strcat(tmpString + CHARS_PER_LINE * line, STD_RIGHT_ARROW "0" STD_LEFT_ARROW);
+          break;
+        }
 
-        case RM_CEIL:      strcat(tmpString + CHARS_PER_LINE * line, STD_LEFT_CEILING "x" STD_RIGHT_CEILING);
-                           break;
+        case RM_CEIL: {
+          strcat(tmpString + CHARS_PER_LINE * line, STD_LEFT_CEILING "x" STD_RIGHT_CEILING);
+          break;
+        }
 
-        case RM_FLOOR:     strcat(tmpString + CHARS_PER_LINE * line, STD_LEFT_FLOOR "x" STD_RIGHT_FLOOR);
-                           break;
+        case RM_FLOOR: {
+          strcat(tmpString + CHARS_PER_LINE * line, STD_LEFT_FLOOR "x" STD_RIGHT_FLOOR);
+          break;
+        }
 
-        default:           strcat(tmpString + CHARS_PER_LINE * line, "???");
+        default: {
+          strcat(tmpString + CHARS_PER_LINE * line, "???");
+        }
       }
 
       // Significant digits
@@ -229,28 +245,33 @@
       // ULP of X
       switch(getRegisterDataType(REGISTER_X)) {
         case dtLongInteger:
-        case dtShortInteger: strcat(tmpString + CHARS_PER_LINE * line, "  ULP of reg X = 1");
-                             break;
+        case dtShortInteger: {
+          strcat(tmpString + CHARS_PER_LINE * line, "  ULP of reg X = 1");
+          break;
+        }
 
-        case dtReal34:       if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
-                               strcat(tmpString + CHARS_PER_LINE * line, "  ULP of reg X = " STD_INFINITY);
-                             }
-                             else {
-                               real34_t x34;
-                               real34NextPlus(REGISTER_REAL34_DATA(REGISTER_X), &x34);
-                               if(real34IsInfinite(&x34)) {
-                                 real34NextMinus(REGISTER_REAL34_DATA(REGISTER_X), &x34);
-                                 real34Subtract(REGISTER_REAL34_DATA(REGISTER_X), &x34, &x34);
-                               }
-                               else {
-                                 real34Subtract(&x34, REGISTER_REAL34_DATA(REGISTER_X), &x34);
-                               }
-                               strcat(tmpString + CHARS_PER_LINE * line, "  ULP of reg X = 10");
-                               supNumberToDisplayString(real34GetExponent(&x34), tmpString + CHARS_PER_LINE * line + strlen(tmpString + CHARS_PER_LINE * line), NULL, false, NULL);
-                             }
-                             break;
+        case dtReal34: {
+          if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
+            strcat(tmpString + CHARS_PER_LINE * line, "  ULP of reg X = " STD_INFINITY);
+          }
+          else {
+            real34_t x34;
+            real34NextPlus(REGISTER_REAL34_DATA(REGISTER_X), &x34);
+            if(real34IsInfinite(&x34)) {
+              real34NextMinus(REGISTER_REAL34_DATA(REGISTER_X), &x34);
+              real34Subtract(REGISTER_REAL34_DATA(REGISTER_X), &x34, &x34);
+            }
+            else {
+              real34Subtract(&x34, REGISTER_REAL34_DATA(REGISTER_X), &x34);
+            }
+            strcat(tmpString + CHARS_PER_LINE * line, "  ULP of reg X = 10");
+            supNumberToDisplayString(real34GetExponent(&x34), tmpString + CHARS_PER_LINE * line + strlen(tmpString + CHARS_PER_LINE * line), NULL, false, NULL);
+          }
+          break;
+        }
 
-        default:             {}
+        default: {
+        }
       }
 
       // System flags

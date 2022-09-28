@@ -81,7 +81,9 @@ TO_QSPI void (* const addition[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_
  * \return void
  ***********************************************/
 void fnAdd(uint16_t unusedButMandatoryParameter) {
-  if(!saveLastX()) return;
+  if(!saveLastX()) {
+    return;
+  }
 
   addition[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 

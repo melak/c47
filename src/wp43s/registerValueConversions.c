@@ -618,8 +618,9 @@ void convertReal34RegisterToDateRegister(calcRegister_t source, calcRegister_t d
       i = 3;
       j = 3;
       while(buff[i] != 0) {
-        if(buff[i]==',' || buff[i]=='.' || buff[i]==' ')
+        if(buff[i]==',' || buff[i]=='.' || buff[i]==' ') {
           buff[j] = 0;
+        }
         else {
           buff[j] = buff[i];
           j++;
@@ -677,19 +678,22 @@ double convertRegisterToDouble(calcRegister_t regist) {
   real_t tmpy;
 
   switch(getRegisterDataType(regist)) {
-  case dtLongInteger:
-    convertLongIntegerRegisterToReal(regist, &tmpy, &ctxtReal39);
-    break;
-  case dtReal34:
-  case dtComplex34:
-    real34ToReal(REGISTER_REAL34_DATA(regist), &tmpy);
-    break;
-  default:
-    #if defined(PC_BUILD)
-      printf("ERROR IN convertRegisterToDouble\n");
-    #endif
-    return DOUBLE_NOT_INIT;
-    break;
+    case dtLongInteger: {
+      convertLongIntegerRegisterToReal(regist, &tmpy, &ctxtReal39);
+      break;
+    }
+    case dtReal34:
+    case dtComplex34: {
+      real34ToReal(REGISTER_REAL34_DATA(regist), &tmpy);
+      break;
+    }
+    default: {
+      #if defined(PC_BUILD)
+        printf("ERROR IN convertRegisterToDouble\n");
+      #endif
+      return DOUBLE_NOT_INIT;
+      break;
+    }
   }
   realToDouble(&tmpy, &y);
   return y;

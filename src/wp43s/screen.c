@@ -453,34 +453,117 @@
         ptr += strlen(ptr);
 
         switch(sum) {
-          case  0: strcpy(sumName,           "n             "           ); break;
-          case  1: strcpy(sumName, STD_SIGMA "(x)          "            ); break;
-          case  2: strcpy(sumName, STD_SIGMA "(y)          "            ); break;
-          case  3: strcpy(sumName, STD_SIGMA "(x" STD_SUP_2 ")         "); break;
-          case  4: strcpy(sumName, STD_SIGMA "(x" STD_SUP_2 "y)        "); break;
-          case  5: strcpy(sumName, STD_SIGMA "(y" STD_SUP_2 ")         "); break;
-          case  6: strcpy(sumName, STD_SIGMA "(xy)         "            ); break;
-          case  7: strcpy(sumName, STD_SIGMA "(ln(x)" STD_CROSS "ln(y))"); break;
-          case  8: strcpy(sumName, STD_SIGMA "(ln(x))      "            ); break;
-          case  9: strcpy(sumName, STD_SIGMA "(ln" STD_SUP_2 "(x))     "); break;
-          case 10: strcpy(sumName, STD_SIGMA "(y ln(x))    "            ); break;
-          case 11: strcpy(sumName, STD_SIGMA "(ln(y))      "            ); break;
-          case 12: strcpy(sumName, STD_SIGMA "(ln" STD_SUP_2 "(y))     "); break;
-          case 13: strcpy(sumName, STD_SIGMA "(x ln(y))    "            ); break;
-          case 14: strcpy(sumName, STD_SIGMA "(ln(y)/x)    "            ); break;
-          case 15: strcpy(sumName, STD_SIGMA "(x" STD_SUP_2 "/y)       "); break;
-          case 16: strcpy(sumName, STD_SIGMA "(1/x)        "            ); break;
-          case 17: strcpy(sumName, STD_SIGMA "(1/x" STD_SUP_2 ")       "); break;
-          case 18: strcpy(sumName, STD_SIGMA "(x/y)        "            ); break;
-          case 19: strcpy(sumName, STD_SIGMA "(1/y)        "            ); break;
-          case 20: strcpy(sumName, STD_SIGMA "(1/y" STD_SUP_2 ")       "); break;
-          case 21: strcpy(sumName, STD_SIGMA "(x" STD_SUP_3 ")         "); break;
-          case 22: strcpy(sumName, STD_SIGMA "(x" STD_SUP_4 ")         "); break;
-          case 23: strcpy(sumName,           "x min         "           ); break;
-          case 24: strcpy(sumName,           "x max         "           ); break;
-          case 25: strcpy(sumName,           "y min         "           ); break;
-          case 26: strcpy(sumName,           "y max         "           ); break;
-          default: strcpy(sumName,           "?             "           );
+          case 0: {
+            strcpy(sumName,           "n             "           );
+            break;
+          }
+          case 1: {
+            strcpy(sumName, STD_SIGMA "(x)          "            );
+            break;
+          }
+          case 2: {
+            strcpy(sumName, STD_SIGMA "(y)          "            );
+            break;
+          }
+          case 3: {
+            strcpy(sumName, STD_SIGMA "(x" STD_SUP_2 ")         ");
+            break;
+          }
+          case 4: {
+            strcpy(sumName, STD_SIGMA "(x" STD_SUP_2 "y)        ");
+            break;
+          }
+          case 5: {
+            strcpy(sumName, STD_SIGMA "(y" STD_SUP_2 ")         ");
+            break;
+          }
+          case 6: {
+            strcpy(sumName, STD_SIGMA "(xy)         "            );
+            break;
+          }
+          case 7: {
+            strcpy(sumName, STD_SIGMA "(ln(x)" STD_CROSS "ln(y))");
+            break;
+          }
+          case 8: {
+            strcpy(sumName, STD_SIGMA "(ln(x))      "            );
+            break;
+          }
+          case 9: {
+            strcpy(sumName, STD_SIGMA "(ln" STD_SUP_2 "(x))     ");
+            break;
+          }
+          case 10: {
+            strcpy(sumName, STD_SIGMA "(y ln(x))    "            );
+            break;
+          }
+          case 11: {
+            strcpy(sumName, STD_SIGMA "(ln(y))      "            );
+            break;
+          }
+          case 12: {
+            strcpy(sumName, STD_SIGMA "(ln" STD_SUP_2 "(y))     ");
+            break;
+          }
+          case 13: {
+            strcpy(sumName, STD_SIGMA "(x ln(y))    "            );
+            break;
+          }
+          case 14: {
+            strcpy(sumName, STD_SIGMA "(ln(y)/x)    "            );
+            break;
+          }
+          case 15: {
+            strcpy(sumName, STD_SIGMA "(x" STD_SUP_2 "/y)       ");
+            break;
+          }
+          case 16: {
+            strcpy(sumName, STD_SIGMA "(1/x)        "            );
+            break;
+          }
+          case 17: {
+            strcpy(sumName, STD_SIGMA "(1/x" STD_SUP_2 ")       ");
+            break;
+          }
+          case 18: {
+            strcpy(sumName, STD_SIGMA "(x/y)        "            );
+            break;
+          }
+          case 19: {
+            strcpy(sumName, STD_SIGMA "(1/y)        "            );
+            break;
+          }
+          case 20: {
+            strcpy(sumName, STD_SIGMA "(1/y" STD_SUP_2 ")       ");
+            break;
+          }
+          case 21: {
+            strcpy(sumName, STD_SIGMA "(x" STD_SUP_3 ")         ");
+            break;
+          }
+          case 22: {
+            strcpy(sumName, STD_SIGMA "(x" STD_SUP_4 ")         ");
+            break;
+          }
+          case 23: {
+            strcpy(sumName,           "x min         "           );
+            break;
+          }
+          case 24: {
+            strcpy(sumName,           "x max         "           );
+            break;
+          }
+          case 25: {
+            strcpy(sumName,           "y min         "           );
+            break;
+          }
+          case 26: {
+            strcpy(sumName,           "y max         "           );
+            break;
+          }
+          default: {
+            strcpy(sumName,           "?             "           );
+          }
         }
 
         sprintf(ptr, LINEBREAK "SR%02d = ", sum);
@@ -2969,14 +3052,30 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
           if(temporaryInformation == TI_DAY_OF_WEEK) {
             if(regist == REGISTER_X) {
-              if(strcmp(tmpString, "1") == 0) strcpy(prefix, nameOfWday_en[1]);
-              else if(strcmp(tmpString, "2") == 0) strcpy(prefix, nameOfWday_en[2]);
-              else if(strcmp(tmpString, "3") == 0) strcpy(prefix, nameOfWday_en[3]);
-              else if(strcmp(tmpString, "4") == 0) strcpy(prefix, nameOfWday_en[4]);
-              else if(strcmp(tmpString, "5") == 0) strcpy(prefix, nameOfWday_en[5]);
-              else if(strcmp(tmpString, "6") == 0) strcpy(prefix, nameOfWday_en[6]);
-              else if(strcmp(tmpString, "7") == 0) strcpy(prefix, nameOfWday_en[7]);
-              else strcpy(prefix, nameOfWday_en[0]);
+              if(strcmp(tmpString, "1") == 0) {
+                strcpy(prefix, nameOfWday_en[1]);
+              }
+              else if(strcmp(tmpString, "2") == 0) {
+                strcpy(prefix, nameOfWday_en[2]);
+              }
+              else if(strcmp(tmpString, "3") == 0) {
+                strcpy(prefix, nameOfWday_en[3]);
+              }
+              else if(strcmp(tmpString, "4") == 0) {
+                strcpy(prefix, nameOfWday_en[4]);
+              }
+              else if(strcmp(tmpString, "5") == 0) {
+                strcpy(prefix, nameOfWday_en[5]);
+              }
+              else if(strcmp(tmpString, "6") == 0) {
+                strcpy(prefix, nameOfWday_en[6]);
+              }
+              else if(strcmp(tmpString, "7") == 0) {
+                strcpy(prefix, nameOfWday_en[7]);
+              }
+              else {
+                strcpy(prefix, nameOfWday_en[0]);
+              }
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
             }
           }
@@ -3005,7 +3104,9 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         }
 
         else if(getRegisterDataType(regist) == dtTime) {
-          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+            viewRegName(prefix, &prefixWidth);
+          }
           timeToDisplayString(regist, tmpString, false);
           w = stringWidth(tmpString, &numericFont, false, true);
           if(prefixWidth > 0) {
@@ -3021,7 +3122,9 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
             }
           }
-          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+          else if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+            viewRegName(prefix, &prefixWidth);
+          }
 
           dateToDisplayString(regist, tmpString);
           w = stringWidth(tmpString, &numericFont, false, true);
@@ -3032,7 +3135,9 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         }
 
         else if(getRegisterDataType(regist) == dtConfig) {
-          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+            viewRegName(prefix, &prefixWidth);
+          }
           xcopy(tmpString, "Configuration data", 19);
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;
@@ -3047,14 +3152,19 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             real34Matrix_t matrix;
             prefixWidth = 0; prefix[0] = 0;
             linkToRealMatrixRegister(regist, &matrix);
-            if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+            if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+              viewRegName(prefix, &prefixWidth);
+            }
             showRealMatrix(&matrix, prefixWidth);
-            if(lastErrorCode != 0)
+            if(lastErrorCode != 0) {
               refreshRegisterLine(errorMessageRegisterLine);
-            if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE)
+            }
+            if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE) {
               refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
-            if(prefixWidth > 0)
+            }
+            if(prefixWidth > 0) {
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
+            }
           }
           else {
             real34MatrixToDisplayString(regist, tmpString);
@@ -3072,14 +3182,19 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
           if((origRegist == REGISTER_X && calcMode != CM_MIM) || (temporaryInformation == TI_VIEW && origRegist == REGISTER_T)) {
             complex34Matrix_t matrix;
             linkToComplexMatrixRegister(regist, &matrix);
-            if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
+            if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
+              viewRegName(prefix, &prefixWidth);
+            }
             showComplexMatrix(&matrix, prefixWidth);
-            if(lastErrorCode != 0)
+            if(lastErrorCode != 0) {
               refreshRegisterLine(errorMessageRegisterLine);
-            if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE)
+            }
+            if(temporaryInformation == TI_TRUE || temporaryInformation == TI_FALSE) {
               refreshRegisterLine(TRUE_FALSE_REGISTER_LINE);
-            if(prefixWidth > 0)
+            }
+            if(prefixWidth > 0) {
               showString(prefix, &standardFont, 1, baseY + TEMPORARY_INFO_OFFSET, vmNormal, prefixPre, prefixPost);
+            }
           }
           else {
             complex34MatrixToDisplayString(regist, tmpString);
@@ -3098,7 +3213,9 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
           showString(tmpString, &standardFont, SCREEN_WIDTH - stringWidth(tmpString, &standardFont, false, true), baseY + 6, vmNormal, false, true);
         }
 
-        if(temporaryInformation == TI_VIEW && origRegist == REGISTER_X) regist = REGISTER_X;
+        if(temporaryInformation == TI_VIEW && origRegist == REGISTER_X) {
+          regist = REGISTER_X;
+        }
       }
 
       if(regist == REGISTER_T) {

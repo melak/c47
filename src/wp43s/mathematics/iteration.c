@@ -53,7 +53,9 @@ static void getIterParam(uint16_t regist, real34_t *fp, real34_t *target, real34
     int32ToReal34(100, &tmpval);
     real34Multiply(step, &tmpval, step);
     real34ToIntegralValue(step, step, DEC_ROUND_DOWN);
-    if(real34IsZero(step)) real34Copy(const34_1, step);
+    if(real34IsZero(step)) {
+      real34Copy(const34_1, step);
+    }
   }
   else {
     real34Copy(const34_0, fp);
@@ -71,15 +73,17 @@ static void incDecAndCompare(uint16_t regist, uint16_t mode) {
   reallocateRegister(TEMP_REGISTER_1, dtReal34, REAL34_SIZE, amNone);
   getIterParam(regist, &fp, REGISTER_REAL34_DATA(TEMP_REGISTER_1), &step);
   switch(getRegisterDataType(regist)) {
-    case dtLongInteger:
+    case dtLongInteger: {
       incDecLonI(regist, mode >> 2);
       registerCmpLonIReal(regist, TEMP_REGISTER_1, &compared);
       break;
-    case dtShortInteger:
+    }
+    case dtShortInteger: {
       incDecShoI(regist, mode >> 2);
       registerCmpShoIReal(regist, TEMP_REGISTER_1, &compared);
       break;
-    case dtReal34:
+    }
+    case dtReal34: {
       if((mode & 2) == 2) {
         real34Copy(const34_1, &step);
         incDecReal(regist, mode >> 2);
@@ -88,20 +92,32 @@ static void incDecAndCompare(uint16_t regist, uint16_t mode) {
       }
       else if(getRegisterAngularMode(regist) == amNone) {
         real34ToIntegralValue(REGISTER_REAL34_DATA(regist), REGISTER_REAL34_DATA(regist), DEC_ROUND_DOWN);
-        if((mode >> 2) == DEC_FLAG) real34SetNegativeSign(&step);
+        if((mode >> 2) == DEC_FLAG) {
+          real34SetNegativeSign(&step);
+        }
         real34Add(REGISTER_REAL34_DATA(regist), &step, REGISTER_REAL34_DATA(regist));
         registerCmpRealReal(regist, TEMP_REGISTER_1, &compared);
-        if(real34IsNegative(REGISTER_REAL34_DATA(regist))) real34SetNegativeSign(&fp);
+        if(real34IsNegative(REGISTER_REAL34_DATA(regist))) {
+          real34SetNegativeSign(&fp);
+        }
         real34Add(REGISTER_REAL34_DATA(regist), &fp, REGISTER_REAL34_DATA(regist));
         break;
       }
     /* fallthrough */
-    default:
+    }
+    default: {
       goto invalidType;
+    }
   }
-  if(     compared > 0) temporaryInformation = ((mode & 6) == (INC_FLAG << 2)) ? TI_FALSE : TI_TRUE;
-  else if(compared < 0) temporaryInformation = ((mode & 6) == (DEC_FLAG << 2)) ? TI_FALSE : TI_TRUE;
-  else  /*compared==0*/ temporaryInformation = ((mode & 1) ==              0 ) ? TI_FALSE : TI_TRUE;
+  if(compared > 0) {
+    temporaryInformation = ((mode & 6) == (INC_FLAG << 2)) ? TI_FALSE : TI_TRUE;
+  }
+  else if(compared < 0) {
+    temporaryInformation = ((mode & 6) == (DEC_FLAG << 2)) ? TI_FALSE : TI_TRUE;
+  }
+  else { // compared==0
+    temporaryInformation = ((mode & 1) ==              0 ) ? TI_FALSE : TI_TRUE;
+  }
   return;
 
 invalidType:

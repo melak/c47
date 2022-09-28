@@ -154,11 +154,15 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
     if(lastErrorCode != 0) {
       if(getSystemFlag(FLAG_IGN1ER)) {
-        if(thereIsSomethingToUndo) undo();
+        if(thereIsSomethingToUndo) {
+          undo();
+        }
         lastErrorCode = ERROR_NONE;
       }
       else {
-        if(thereIsSomethingToUndo) undo();
+        if(thereIsSomethingToUndo) {
+          undo();
+        }
       }
       clearSystemFlag(FLAG_IGN1ER);
     }
@@ -182,12 +186,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
 
 
-  /********************************************//**
-   * \brief Runs a function
-   *
-   * \param[in] fn int16_t Index in the indexOfItems area of the function to run
-   * \return void
-   ***********************************************/
   void runFunction(int16_t func) {
     funcOK = true;
     #ifdef RECORDLOG                               //JMEXEC

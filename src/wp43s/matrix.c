@@ -2012,111 +2012,119 @@ void mimAddNumber(int16_t item) {
   const int16_t row = getIRegisterAsInt(true);
   const int16_t col = getJRegisterAsInt(true);
 
-  switch(item) {
-    case ITM_EXPONENT :
-      if(aimBuffer[0] == 0) {
-        aimBuffer[0] = '+';
-        aimBuffer[1] = '1';
-        aimBuffer[2] = '.';
-        aimBuffer[3] = 0;
-        nimNumberPart = NP_REAL_FLOAT_PART;
-        _resetCursorPos();
-      }
-      break;
-
-    case ITM_PERIOD :
-      if(aimBuffer[0] == 0) {
-        aimBuffer[0] = '+';
-        aimBuffer[1] = '0';
-        aimBuffer[2] = 0;
-        nimNumberPart = NP_INT_10;
-        _resetCursorPos();
-      }
-      break;
-
-    case ITM_0 :
-    case ITM_1 :
-    case ITM_2 :
-    case ITM_3 :
-    case ITM_4 :
-    case ITM_5 :
-    case ITM_6 :
-    case ITM_7 :
-    case ITM_8 :
-    case ITM_9 :
-      if(aimBuffer[0] == 0) {
-        aimBuffer[0] = '+';
-        aimBuffer[1] = 0;
-        nimNumberPart = NP_INT_10;
-        _resetCursorPos();
-      }
-      break;
-
-    case ITM_BACKSPACE :
-      if(aimBuffer[0] == 0) {
-        const int cols = openMatrixMIMPointer.header.matrixColumns;
-        const int16_t row = getIRegisterAsInt(true);
-        const int16_t col = getJRegisterAsInt(true);
-
-        if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
-          real34Zero(&openMatrixMIMPointer.realMatrix.matrixElements[row * cols + col]);
+    switch(item) {
+      case ITM_EXPONENT: {
+        if(aimBuffer[0] == 0) {
+          aimBuffer[0] = '+';
+          aimBuffer[1] = '1';
+          aimBuffer[2] = '.';
+          aimBuffer[3] = 0;
+          nimNumberPart = NP_REAL_FLOAT_PART;
+          _resetCursorPos();
         }
-        else {
-          real34Zero(VARIABLE_REAL34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
-          real34Zero(VARIABLE_IMAG34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
-        }
-        setSystemFlag(FLAG_ASLIFT);
-        return;
+        break;
       }
-      else if((aimBuffer[0] == '+') && (aimBuffer[1] != 0) && (aimBuffer[2] == 0)) {
-        aimBuffer[1] = 0;
-        hideCursor();
-        cursorEnabled = false;
-      }
-      break;
 
-    case ITM_CHS :
-      if(aimBuffer[0] == 0) {
-        if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
-          real34ChangeSign(&openMatrixMIMPointer.realMatrix.matrixElements[row * cols + col]);
+      case ITM_PERIOD: {
+        if(aimBuffer[0] == 0) {
+          aimBuffer[0] = '+';
+          aimBuffer[1] = '0';
+          aimBuffer[2] = 0;
+          nimNumberPart = NP_INT_10;
+          _resetCursorPos();
         }
-        else {
-          real34ChangeSign(VARIABLE_REAL34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
-          real34ChangeSign(VARIABLE_IMAG34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
-        }
-        setSystemFlag(FLAG_ASLIFT);
-        return;
+        break;
       }
-      break;
 
-    case ITM_CC :
+      case ITM_0:
+      case ITM_1:
+      case ITM_2:
+      case ITM_3:
+      case ITM_4:
+      case ITM_5:
+      case ITM_6:
+      case ITM_7:
+      case ITM_8:
+      case ITM_9: {
+        if(aimBuffer[0] == 0) {
+          aimBuffer[0] = '+';
+          aimBuffer[1] = 0;
+          nimNumberPart = NP_INT_10;
+          _resetCursorPos();
+        }
+        break;
+      }
+
+      case ITM_BACKSPACE: {
+        if(aimBuffer[0] == 0) {
+          const int cols = openMatrixMIMPointer.header.matrixColumns;
+          const int16_t row = getIRegisterAsInt(true);
+          const int16_t col = getJRegisterAsInt(true);
+
+          if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
+            real34Zero(&openMatrixMIMPointer.realMatrix.matrixElements[row * cols + col]);
+          }
+          else {
+            real34Zero(VARIABLE_REAL34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
+            real34Zero(VARIABLE_IMAG34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
+          }
+          setSystemFlag(FLAG_ASLIFT);
+          return;
+        }
+        else if((aimBuffer[0] == '+') && (aimBuffer[1] != 0) && (aimBuffer[2] == 0)) {
+          aimBuffer[1] = 0;
+          hideCursor();
+          cursorEnabled = false;
+        }
+        break;
+      }
+
+      case ITM_CHS: {
+        if(aimBuffer[0] == 0) {
+          if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
+            real34ChangeSign(&openMatrixMIMPointer.realMatrix.matrixElements[row * cols + col]);
+          }
+          else {
+            real34ChangeSign(VARIABLE_REAL34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
+            real34ChangeSign(VARIABLE_IMAG34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
+          }
+          setSystemFlag(FLAG_ASLIFT);
+          return;
+        }
+        break;
+      }
+
+      case ITM_CC: {
         if(aimBuffer[0] == 0) {
           return;
         }
-      break;
-
-    case ITM_CONSTpi :
-      if(aimBuffer[0] == 0) {
-        if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
-          realToReal34(const_pi, &openMatrixMIMPointer.realMatrix.matrixElements[row * cols + col]);
-        }
-        else {
-          realToReal34(const_pi, VARIABLE_REAL34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
-          real34Zero(VARIABLE_IMAG34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
-        }
+        break;
       }
-      else if(nimNumberPart == NP_COMPLEX_INT_PART && aimBuffer[strlen(aimBuffer) - 1] == 'i') {
-        strcat(aimBuffer, "3.141592653589793238462643383279503");
-        reallyRunFunction(ITM_ENTER, NOPARAM);
-      }
-      return;
 
-    default:
-      return;
+      case ITM_CONSTpi: {
+        if(aimBuffer[0] == 0) {
+          if(getRegisterDataType(matrixIndex) == dtReal34Matrix) {
+            realToReal34(const_pi, &openMatrixMIMPointer.realMatrix.matrixElements[row * cols + col]);
+          }
+          else {
+            realToReal34(const_pi, VARIABLE_REAL34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
+            real34Zero(VARIABLE_IMAG34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[row * cols + col]));
+          }
+        }
+        else if(nimNumberPart == NP_COMPLEX_INT_PART && aimBuffer[strlen(aimBuffer) - 1] == 'i') {
+          strcat(aimBuffer, "3.141592653589793238462643383279503");
+          reallyRunFunction(ITM_ENTER, NOPARAM);
+        }
+        return;
+      }
+
+      default: {
+        return;
+      }
+    }
+    addItemToNimBuffer(item);
+    calcMode = CM_MIM;
   }
-  addItemToNimBuffer(item);
-  calcMode = CM_MIM;
-}
 
 void mimRunFunction(int16_t func, uint16_t param) {
   int16_t i = getIRegisterAsInt(true);
@@ -2159,19 +2167,23 @@ void mimRunFunction(int16_t func, uint16_t param) {
 
   reallyRunFunction(func, param);
 
-  switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger:
-      convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
-      break;
-    case dtShortInteger:
-      convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
-      break;
-    case dtReal34:
-    case dtComplex34:
-      break;
-    default:
-      lastErrorCode = ERROR_INVALID_DATA_TYPE_FOR_OP;
-  }
+    switch(getRegisterDataType(REGISTER_X)) {
+      case dtLongInteger: {
+        convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+        break;
+      }
+      case dtShortInteger: {
+        convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+        break;
+      }
+      case dtReal34:
+      case dtComplex34: {
+        break;
+      }
+      default: {
+        lastErrorCode = ERROR_INVALID_DATA_TYPE_FOR_OP;
+      }
+    }
 
   if(lastErrorCode == ERROR_NONE) {
     if(isComplex && getRegisterDataType(REGISTER_X) == dtComplex34) {
