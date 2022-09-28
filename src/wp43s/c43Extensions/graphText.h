@@ -21,7 +21,7 @@
  * \file graphText.c TEXTFILES module
  ***********************************************/
 
-/* ADDITIONAL WP43C functions and routines */
+/* ADDITIONAL C43 functions and routines */
 
 #ifndef GRAPHTEXT_H
 #define GRAPHTEXT_H

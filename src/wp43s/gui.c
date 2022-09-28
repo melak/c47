@@ -175,7 +175,7 @@ void btnClicked_LC(GtkWidget *w, gpointer data) {
 }
 
 
-//JM ALPHA SECTION FOR ALPHAMODE -  UPPER CASE PC LETTER INPUT. INVERT 43C CASE. USE LETTER.
+//JM ALPHA SECTION FOR ALPHAMODE -  UPPER CASE PC LETTER INPUT. INVERT C43 CASE. USE LETTER.
 void btnClicked_UC(GtkWidget *w, gpointer data) {
   uint8_t alphaCase_MEM;
   bool_t numLock_MEM;
@@ -379,7 +379,7 @@ switch (event_keyval) {
       break;
 //ROW 2
     case 65:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM.    //**************-- ALPHA KEYS UPPER CASE --***************//
-      btnClicked_UC(w, "00");                                          //UPPER CASE PC LETTER INPUT. INVERT 43C CASE. USE LETTER.
+      btnClicked_UC(w, "00");                                          //UPPER CASE PC LETTER INPUT. INVERT C43 CASE. USE LETTER.
       break;
     case 66:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_UC(w, "01");
@@ -493,7 +493,7 @@ switch (event_keyval) {
 //JM ALPHA LOWER CASE SECTION FOR ALPHAMODE - TAKE OVER ALPHA KEYBOARD
 //ROW 2
     case 65+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM     //**************-- ALPHA KEYS LOWER CASE --***************//
-      btnClicked_LC(w, "00");                                             //LOWER CASE PC LETTER INPUT. USE LETTER IN THE CURRENT 43C CASE.
+      btnClicked_LC(w, "00");                                             //LOWER CASE PC LETTER INPUT. USE LETTER IN THE CURRENT C43 CASE.
       break;
     case 66+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_LC(w, "01");
@@ -2050,7 +2050,7 @@ void labelCaptionAim(const calcKey_t *key, GtkWidget *button, GtkWidget *lblGree
   }
 
 //JM remove this because CAT is not on keyboard anymore, but in menu
-//JM was 85  //JM Changed CATALOG to CAT. Actually not needed, as the WP43C already has a shortened CAT to start with
+//JM was 85  //JM Changed CATALOG to CAT. Actually not needed, as the C43 already has a shortened CAT to start with
 //JM  if(strcmp((char *)lbl, "CAT") == 0 && key->keyId != 85) {
 //JM    lbl[3] = 0;
 //JM  }
