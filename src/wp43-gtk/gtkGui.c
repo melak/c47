@@ -281,9 +281,14 @@ uint32_t event_keyval = 99999999;
 
 gboolean keyPressed(GtkWidget *w, GdkEventKey *event, gpointer data) {
   //printf("Pressed %d\n", event->keyval);                                  //JM
-  bool_t AlphaArrowsOffAndUpDn = (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA_OMEGA || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_alpha_omega) ||
-                            (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHADOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAMATH) ||
-                            (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAINTL);
+  bool_t AlphaArrowsOffAndUpDn = (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SYSFL || 
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_VAR || 
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PROG || 
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA_OMEGA || 
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_alpha_omega ||
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHADOT || 
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAMATH ||
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAINTL );
   if (event_keyval ==  event->keyval + CTRL_State) {
     return FALSE;
   }
