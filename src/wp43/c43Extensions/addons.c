@@ -577,10 +577,9 @@ uint16_t dest = 9999;
     switch(dest) {
       case amNone:      dest = currentAngularMode;  break; //converts from to the same, i.e. get to current angle mode
       case amRadian:    dest = amGrad;              break;
-      case amMultPi:    dest = amDMS;               break;
-      case amGrad:      dest = amMultPi;            break;
-      case amDegree:    dest = amRadian;            break;
+      case amGrad:      dest = amDMS;               break;
       case amDMS:       dest = amDegree;            break;
+      case amDegree:    dest = amRadian;            break;
       default:      break;
     }
     fnCvtFromCurrentAngularMode(dest);
@@ -592,10 +591,9 @@ uint16_t dest = 9999;
     switch(dest) {
       case amNone:      dest = currentAngularMode;  break; //converts from to the same, i.e. get to current angle mode
       case amRadian:    dest = amGrad;              break;
-      case amMultPi:    dest = amDMS;               break;
-      case amGrad:      dest = amMultPi;            break;
-      case amDegree:    dest = amRadian;            break;
+      case amGrad:      dest = amDMS;               break;
       case amDMS:       dest = amDegree;            break;
+      case amDegree:    dest = amRadian;            break;
       default:      break;
     }
     currentAngularMode = dest;
