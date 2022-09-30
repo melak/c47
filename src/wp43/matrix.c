@@ -1924,12 +1924,22 @@ void showMatrixEditor() {
       complex34ToDisplayString(&openMatrixMIMPointer.complexMatrix.matrixElements[matSelRow*cols+matSelCol], &tmpString[strlen(tmpString)], &numericFont, SCREEN_WIDTH - width, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_4_PER_EM, true);
       }
 
-    showString(tmpString, &numericFont, 0, Y_POSITION_OF_NIM_LINE, vmNormal, true, false);
+      showString(tmpString, &numericFont, 0, Y_POSITION_OF_NIM_LINE, vmNormal, true, false);
+    }
+    else {
+      displayNim(tmpString, "", 0, 0);
+    }
+
+    if(temporaryInformation == TI_SHOW_REGISTER && calcMode == CM_MIM) {
+      mimShowElement();
+      clearRegisterLine(REGISTER_T, true, true);
+      refreshRegisterLine(REGISTER_T);
+      if(tmpString[300]) {
+        clearRegisterLine(REGISTER_Z, true, true);
+        refreshRegisterLine(REGISTER_Z);
+      }
+    }
   }
-  else {
-    displayNim(tmpString, "", 0, 0);
-  }
-}
 
 void mimEnter(bool_t commit) {
   int cols = openMatrixMIMPointer.header.matrixColumns;
@@ -2651,7 +2661,7 @@ smallFont:
       if(rows >= (font == &standardFont ? 3 : 2)) {
         clearRegisterLine(REGISTER_Z, true, true);
       }
-      if(rows >= (font == &standardFont ? 4 : 2)) {
+      if(rows >= (font == &standardFont ? 4 : 3)) {
         clearRegisterLine(REGISTER_T, true, true);
       }
   }

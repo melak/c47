@@ -471,6 +471,10 @@ void kill_ASB_icon(void) {
 
       //Probably wrong place for this function?! Should Arrow be processed in buffercize.c in this case? //Switch statement better.
       else if(calcMode == CM_MIM) {
+        if(temporaryInformation == TI_SHOW_REGISTER) {
+          temporaryInformation = TI_NO_INFO;
+        }
+
         if(item == ITM_RIGHT_ARROW) {
           mimEnter(true);
           setJRegisterAsInt(true, getJRegisterAsInt(true) + 1);
@@ -953,6 +957,12 @@ void kill_ASB_icon(void) {
 
           case ITM_ANGLE: {
             mimRunFunction(ITM_ARG, indexOfItems[ITM_ARG].param);
+            break;
+          }
+
+          case ITM_SHOW: {
+            mimEnter(true);
+            temporaryInformation = TI_SHOW_REGISTER;
             break;
           }
 
