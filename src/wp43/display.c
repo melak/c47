@@ -397,37 +397,52 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 // JM^^ ***********************
 
 
-  //printReal34ToConsole(real34," ------- >>>>>"," <<<<<\n");   //JM
+
+
+  //printReal34ToConsole(real34," ------- 001 >>>>>"," <<<<<\n");   //JM
   if(SigFigMode!=0) {                             //vvJM convert real34 to string, eat away all zeroes from the right and give back to FIX as a real
     char tmpString100[100];
     real34ToString(real34, tmpString100);
-    //printf(">>>%s<<<\n",tmpString100);
-    int16_t tmpi;
-    tmpi = stringByteLength(tmpString100)-1;
-    while(tmpString100[tmpi]!='.' &&
-          tmpString100[tmpi]!=',' &&
-          tmpi > 0
-          ) {
-      tmpi--;
-    }
-    //printf("### %d \n",tmpi);
-    if(tmpi > 0) {                               //proceed with eating only if a decimal point is present
-      tmpi = stringByteLength(tmpString100)-1;
-      while(tmpString100[tmpi]  ==48 && 
-            tmpi > 0 && 
-            tmpString100[tmpi-1]!='.' && 
-            tmpString100[tmpi-1]!=',') {
-        tmpString100[tmpi] = 0;
-        tmpi--;
+    //printf(" ------- 002 >>>%s<<<\n",tmpString100);
+    int16_t ii, tmp_i;
+    tmp_i = ii = stringByteLength(tmpString100)-1;
+    while(tmp_i > 0) {
+      if(tmpString100[tmp_i]=='E') {
+        ii = tmp_i;                   //prevent eating trailing zeroes to the right of E
       }
-      //printf(">>>%s<<<\n",tmpString100);
+      if(tmpString100[tmp_i]!='.' && tmpString100[tmp_i]!=',') {
+        tmp_i--;
+      } else {
+        break;                        //break with the position of the decimal in tmp_i
+      }
     }
+    char tmpString10[10];
+    tmpString10[0]=0;
+    if(ii != stringByteLength(tmpString100)-1 && ii > 0) {
+       strcpy(tmpString10, tmpString100 + ii);
+       tmpString100[ii]=0;
+    }
+    //printf("   EXP:%s:\n",tmpString10);
+    //printf("   MANT:%s:\n",tmpString100);
+    //printf("### ---- 003 decimal=%d, E=%d\n",tmp_i,ii);
+    ii = stringByteLength(tmpString100)-1;
+    while(ii > tmp_i) {            //only consider decimals trailing the decimal
+      if(tmpString100[ii] == 48) { //eat if 0
+        tmpString100[ii] = 0;      //break if trailing 0 stream is interrupted
+      } else {
+        break;
+      }
+      ii--;
+    }
+    //printf(" ------- 004 >>>%s<<<\n",tmpString100);
+    strcat(tmpString100,tmpString10);
+    //printf(" ------- 005 >>>%s<<<\n",tmpString100);
     stringToReal(tmpString100,&value,&ctxtReal39);
   }                                               //^^JM
   else {
     real34ToReal(real34, &value);
   }
-  //printRealToConsole(&value," ------- >>>>>"," <<<<<\n\n");   //JM
+  //printRealToConsole(&value," ------- 006 >>>>>"," <<<<<\n\n");   //JM
 
 
   ctxtReal39.digits =  (displayFormat == DF_FIX ? 24 : displayHasNDigits); // This line is for FIX n displaying more than 16 digits. e.g. in FIX 15: 123 456.789 123 456 789 123
