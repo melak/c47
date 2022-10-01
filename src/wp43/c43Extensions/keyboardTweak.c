@@ -618,10 +618,7 @@ void btnFnPressed_StateMachine(void *unused, void *data) {
 
   if(FN_state == ST_3_PRESS2 && fnTimerGetStatus(TO_FN_EXEC) != TMR_RUNNING) {  //JM BUGFIX (INVERTED) The first  usage did not work due to the timer which was in stopped mode, not in expired mode.
     //----------------Copied here
-    char charKey[3];
     underline_softkey(FN_key_pressed-38, 3, false);   //Purposely in row 3 which does not exist, just to activate the clear previous line
-    charKey[1]=0;
-    charKey[0]=FN_key_pressed + (-37+48);
 
     hideFunctionName();
 

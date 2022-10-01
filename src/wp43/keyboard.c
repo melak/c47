@@ -1801,8 +1801,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
             else {
               itemToBeAssigned = ASSIGN_CLEAR;
               popSoftmenu();              //JM
-              showSoftmenu(-MNU_MyAlpha); //JM push MyAlpha in case ALPHA is up (likely)
-
+              if (previousCalcMode == CM_AIM) {
+                showSoftmenu(-MNU_MyAlpha); //JM push MyAlpha in case ALPHA is up (likely)
+              }
             }
           }
           else {
