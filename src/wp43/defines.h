@@ -105,6 +105,9 @@
 
 
 //Verbose options
+#define VERBOSEKEYS
+#undef VERBOSEKEYS
+
 #define VERBOSE_LEVEL 0              //JM 0 = no text; 1 = essential text; 2 = extra debugging: on calc screen
 
 #define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment

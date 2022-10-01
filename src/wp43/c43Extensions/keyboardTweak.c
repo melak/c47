@@ -61,8 +61,17 @@ int16_t determineFunctionKeyItem_C43(const char *data, bool_t shiftF, bool_t shi
       char tmp[200]; sprintf(tmp,"^^^^determineFunctionKeyItem_C43(%d): itemShift=%d menuId=%d menuItem=%d", fn, itemShift, menuId, -softmenu[menuId].menuItem); jm_show_comment(tmp);
     #endif //PC_BUILD
 
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0100 determineFunctionKeyItem_C43 data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
+#endif //VERBOSEKEYS
+
     if(!(menuId==0 && jm_NO_BASE_SCREEN) ) {
        item = determineFunctionKeyItem(data, itemShift);
+
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0100 determineFunctionKeyItem_C43 data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
+#endif //VERBOSEKEYS
+
     }
     else item = 0;
 
@@ -605,13 +614,15 @@ void btnFnPressed_StateMachine(void *unused, void *data) {
     FN_state =  ST_1_PRESS1;
   }
 
-  FN_key_pressed = *((char *)data) - '0' + 37;                            //to render 38-43, as per original keypress
+  //FN_key_pressed = *((char *)data) - '0' + 37;  //to render 38-43, as per original keypress
 
   if(FN_state == ST_3_PRESS2 && fnTimerGetStatus(TO_FN_EXEC) != TMR_RUNNING) {  //JM BUGFIX (INVERTED) The first  usage did not work due to the timer which was in stopped mode, not in expired mode.
     //----------------Copied here
     char charKey[3];
     underline_softkey(FN_key_pressed-38, 3, false);   //Purposely in row 3 which does not exist, just to activate the clear previous line
-    sprintf(charKey, "%c", FN_key_pressed + 11);
+    charKey[1]=0;
+    charKey[0]=FN_key_pressed + (-37+48);
+
     hideFunctionName();
 
     //IF 2-->3 is longer than double click time, then move back to state 1
@@ -714,17 +725,26 @@ void btnFnReleased_StateMachine(void *unused, void *data) {
     if(shiftF && !shiftG)      { offset =  6; }
     else if(!shiftF && shiftG) { offset = 12; }
     fnTimerStart(TO_FN_EXEC, FN_key_pressed + offset, JM_FN_DOUBLE_TIMER);
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0050 btnFnReleased_StateMachine ------------------ Start TO_FN_EXEC\n          data=|%s| data[0]=%d (Global) FN_key_pressed=%d +offset=%d\n",(char*)data,((char*)data)[0], FN_key_pressed, offset);
+#endif //VERBOSEKEYS
+
+    //FN_key_pressed = *((char *)data) - '0' + 37;  //to render 38-43, as per original keypress
+    //This parameter of the timer is non-standard: 38-43 for unshifted, +6 for f, +12 for g.
   }
 
 
      // **************JM LONGPRESS EXECUTE****************************************************
   char charKey[3];
+  charKey[0]=0;
   bool_t EXEC_pri;
   EXEC_pri = (FN_timeouts_in_progress && (FN_key_pressed != 0));
   // EXEC_FROM_LONGPRESS_RELEASE     EXEC_FROM_LONGPRESS_TIMEOUT  EXEC FN primary
   if( (FN_timed_out_to_RELEASE_EXEC || FN_timed_out_to_NOP || EXEC_pri ))  {                  //JM DOUBLE: If slower ON-OFF than half the limit (250 ms)
     underline_softkey(FN_key_pressed-38, 3, false);   //Purposely in row 3 which does not exist, just to activate the clear previous line
-    sprintf(charKey, "%c", FN_key_pressed + 11);
+    charKey[1]=0;
+    charKey[0]=FN_key_pressed + (-37+48);
+
     hideFunctionName();
 
     if(!FN_timed_out_to_NOP && fnTimerGetStatus(TO_FN_EXEC) != TMR_RUNNING) {
@@ -749,7 +769,13 @@ void btnFnReleased_StateMachine(void *unused, void *data) {
 
 void execFnTimeout(uint16_t key) {                          //dr - delayed call of the primary function key
   char charKey[3];
-  sprintf(charKey, "%c", key + 11);
+  charKey[1]=0;
+  charKey[0]=key + (-37+48);
+
+#ifdef VERBOSEKEYS
+printf(">>>>Z RRR3 execFnTimeout              ------------------       TO_FN_EXEC\n          charKey=|%s| charkey[0]=%d key+11=%d \n",charKey,charKey[0],key+11);
+#endif //VERBOSEKEYS
+
   btnFnClicked(NULL, (char *)charKey);
 }
 

@@ -64,6 +64,9 @@
 #if !defined(TESTSUITE_BUILD)
   int16_t determineFunctionKeyItem(const char *data, int16_t itemShift) { //Added itemshift param JM
     int16_t item = ITM_NOP;
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0090 determineFunctionKeyItem       data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
+#endif //VERBOSEKEYS
 
     dynamicMenuItem = -1;
 
@@ -85,6 +88,12 @@
       case MNU_MyAlpha: {
         dynamicMenuItem = firstItem + itemShift + (fn - 1);
         item = userAlphaItems[dynamicMenuItem].item;
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0091   case MNU_MyAlpha             data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
+printf(">>>>  0092     dynamicMenuItem=%d\n",dynamicMenuItem);
+printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn);
+#endif //VERBOSEKEYS
+
         break;
       }
 
@@ -223,7 +232,15 @@
         }
     }
     }
+
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0094 if(calcMode == CM_ASSIGN       data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
+printf(">>>>  0095     dynamicMenuItem=%d\n",dynamicMenuItem);
+printf(">>>>  0096     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn);
+#endif //VERBOSEKEYS
+
   #pragma GCC diagnostic pop
+//hierdie ding iewers return 265 !! waar kom dit vandaan
 
     if(calcMode == CM_ASSIGN && item != ITM_NOP && item != ITM_NULL) {
       switch(-softmenu[menuId].menuItem) {
@@ -252,18 +269,30 @@
               }
             }
             displayBugScreen("In function determineFunctionKeyItem: nonexistent menu specified!");
+#ifdef VERBOSEKEYS
+printf(">>>>  0086 item=%d \n",item);
+#endif //VERBOSEKEYS
             return item;
           }
           else {
+#ifdef VERBOSEKEYS
+printf(">>>>  0087 item=%d \n",item);
+#endif //VERBOSEKEYS
             return item;
           }
         }
         default: {
+#ifdef VERBOSEKEYS
+printf(">>>>  0088 item=%d \n",item);
+#endif //VERBOSEKEYS
           return item;
       }
     }
     }
     else {
+#ifdef VERBOSEKEYS
+printf(">>>>  0089 item=%d \n",item);
+#endif //VERBOSEKEYS
       return item;
     }
   }
@@ -274,6 +303,9 @@
     void btnFnClicked(GtkWidget *notUsed, gpointer data) {
 //      GdkEvent mouseButton; //JM
 //      mouseButton.button.button = 1; //JM
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)data)[0]);
+#endif //VERBOSEKEYS
       executeFunction(data, 0);
     }
 #endif // PC_BUILD
@@ -499,6 +531,12 @@ bool_t lowercaseselected;
   #if defined(DMCP_BUILD)
     void btnFnPressed(void *data) {
   #endif // DMCP_BUILD
+
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0010 btnFnPressed SET FN_key_pressed            ; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
+#endif //VERBOSEKEYS
+      FN_key_pressed = *((char *)data) - '0' + 37;  //to render 38-43, as per original keypress
+
       asnKey[0] = ((uint8_t *)data)[0];
       asnKey[1] = 0;
 
@@ -524,6 +562,10 @@ bool_t lowercaseselected;
         return;
       }
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && !(tam.alpha && tam.mode != TM_NEWMENU)) {
+
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0011 btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
+#endif //VERBOSEKEYS
         int16_t item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG);
 
       #pragma GCC diagnostic push
@@ -539,7 +581,7 @@ bool_t lowercaseselected;
           case MNU_CATALOG:
           case MNU_CHARS:
           case MNU_PROGS:
-        case MNU_VARS: {
+          case MNU_VARS: {
             #if (FN_KEY_TIMEOUT_TO_NOP == 1)
               showFunctionName(item, 1000); // 1000ms = 1s
             #else // (FN_KEY_TIMEOUT_TO_NOP == 0)
@@ -555,6 +597,9 @@ bool_t lowercaseselected;
         _closeCatalog();
       }
       else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0012 btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
+#endif //VERBOSEKEYS
         int16_t item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG);
 /*
         if(shiftF || shiftG) {
@@ -565,10 +610,17 @@ bool_t lowercaseselected;
         shiftF = false;
         shiftG = false;
 */
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0012 btnFnPressed >determineFunctionKeyItem_C43?; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
+#endif //VERBOSEKEYS
         if( (item != ITM_NOP && item != ITM_NULL) ||                  //JM allow entry into statemachine if item=blank (NOP) but f(item) or g(item) is not blank
             (determineFunctionKeyItem_C43((char *)data, true, false) != ITM_NOP && determineFunctionKeyItem_C43((char *)data, true, false) != ITM_NULL) ||
             (determineFunctionKeyItem_C43((char *)data, false, true) != ITM_NOP && determineFunctionKeyItem_C43((char *)data, false, true) != ITM_NULL)
            ) {
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
+#endif //VERBOSEKEYS
+
           lastErrorCode = 0;
 
           btnFnPressed_StateMachine(NULL, data);    //JM This calls original state analysing btnFnPressed routing, which is now renamed to "statemachine" in keyboardtweaks
@@ -658,6 +710,7 @@ bool_t lowercaseselected;
         return true;
       }
       case MNU_CATALOG:
+      case MNU_ALPHA: //JM
       case MNU_CHARS:
       case MNU_PROGS:
       case MNU_VARS:
@@ -676,8 +729,8 @@ bool_t lowercaseselected;
         refreshScreen();
         screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
         return true;
+      }
     }
-  }
   }
 
   #if defined(PC_BUILD)
@@ -735,6 +788,10 @@ bool_t lowercaseselected;
 
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && !(tam.alpha && tam.mode != TM_NEWMENU)) {
         if(_assignToMenu((uint8_t *)data)) {
+        if(previousCalcMode == CM_AIM) {         //vvJM btnFnReleased
+          showSoftmenu(-MNU_ALPHA);              //
+          refreshScreen();                       //
+        }                                        //^^JM
           return;
         }
       }
@@ -758,9 +815,17 @@ bool_t lowercaseselected;
       if(data[0] == 0) { item = item_; 
 
       }
-      else             { 
+      else {
+
+#ifdef VERBOSEKEYS
+printf(">>>> R000A >>determineFunctionKeyItem_C43 %d |%s| shiftF=%d, shiftG=%d \n",item, data, shiftF, shiftG);
+#endif //VERBOSEKEYS
 
         item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG); }
+
+#ifdef VERBOSEKEYS
+printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \n",item, data, shiftF, shiftG);
+#endif //VERBOSEKEYS
 
         #if defined (PC_BUILD)
           printf(">>>Function selected: executeFunction |%s| %d %d \n",(char *)data, shiftF, shiftG);
@@ -800,10 +865,13 @@ bool_t lowercaseselected;
             return;
           }
           else if(item < 0) { // softmenu
+printf(">>>>> RR0 %d\n",item);
             if(calcMode == CM_ASSIGN && itemToBeAssigned == 0 && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MENUS) {
+printf(">>>>> RR1\n");
               itemToBeAssigned = item;
             }
             else {
+printf(">>>>> RR2\n");
               showSoftmenu(item);
               if((item == -MNU_Solver || item == -MNU_Sf || item == -MNU_1STDERIV || item == -MNU_2NDDERIV) && lastErrorCode != 0) {
                 popSoftmenu();
@@ -939,6 +1007,7 @@ bool_t lowercaseselected;
                         popSoftmenu();
                         showSoftmenu(-MNU_MyAlpha); //push MyAlpha in case ALPHA is up (likely)
                       }
+                      default:;
                     }
                   }                           //JM^^                          //JM^^
 
@@ -1455,6 +1524,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
         assignToKey((char *)data);
+        if(previousCalcMode == CM_AIM) {             //vv JM RETURN TO AIM MODE
+          showSoftmenu(-MNU_ALPHA);                  //
+        }                                            //^^ JM
         calcMode = previousCalcMode;
         shiftF = shiftG = false;
         refreshScreen();
@@ -1728,6 +1800,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
             }
             else {
               itemToBeAssigned = ASSIGN_CLEAR;
+              popSoftmenu();              //JM
+              showSoftmenu(-MNU_MyAlpha); //JM push MyAlpha in case ALPHA is up (likely)
+
             }
           }
           else {
@@ -2769,7 +2844,9 @@ printf(">>> ####@@@@ D %i\n",calcMode);
         }
         else {
           popSoftmenu();
-          stayInAIM();
+          if (previousCalcMode == CM_AIM){   //JM
+            stayInAIM();                     //JM
+          }                                  //JM
         }
         break;
       }
