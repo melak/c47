@@ -65,7 +65,7 @@
 #calcKey {
   background:    $keyBackground;
   color:         $keyLabelColor;
-  font-family:   WP43S_StandardFont;
+  font-family:   C43__StandardFont;
   font-style:    normal;
   font-weight:   normal;
   font-size:     22px;
@@ -82,7 +82,7 @@
 #calcNumericKey {
   background:    $numericKeyBackground;
   color:         $numericKeyLabelColor;
-  font-family:   WP43S_StandardFont;
+  font-family:   C43__StandardFont;
   font-style:    normal;
   font-weight:   normal;
   font-size:     33px;
@@ -99,7 +99,7 @@
 #calcKeyGoldenBorder {
   background:    $keyBackground;
   color:         $keyLabelColor;
-  font-family:   WP43S_StandardFont;
+  font-family:   C43__StandardFont;
   font-style:    normal;
   font-weight:   normal;
   font-size:     22px;
@@ -116,7 +116,7 @@
 #calcKeyF {
   background:    $fGold;
   color:         black;
-  font-family:   WP43S_StandardFont;
+  font-family:   C43__StandardFont;
   font-style:    normal;
   font-weight:   normal;
   font-size:     27px;
@@ -132,7 +132,7 @@
 #calcKeyG {
   background:    $gBlue;
   color:         black;
-  font-family:   WP43S_StandardFont;
+  font-family:   C43__StandardFont;
   font-style:    normal;
   font-weight:   normal;
   font-size:     27px;
@@ -148,7 +148,7 @@
 #calcKeyFG {
   background:    $fgGold;
   color:         black;
-  font-family:   WP43S_StandardFont;
+  font-family:   C43__StandardFont;
   font-style:    normal;
   font-weight:   normal;
   font-size:     27px;
@@ -164,7 +164,7 @@
 #fShifted {
   background:  $bezelBackground;
   color:       $fGold;
-  font-family: WP43S_StandardFont;
+  font-family: C43__StandardFont;
   font-style:  normal;
   font-weight: normal;
   font-size:   18px;
@@ -174,7 +174,7 @@
 #fShiftedUnderline {
   background:  #303030;
   color:       $fGold;
-  font-family: WP43S_StandardFont;
+  font-family: C43__StandardFont;
   font-style:  normal;
   font-weight: normal;
   font-size:   18px;  
@@ -185,7 +185,7 @@
 #gShifted {
   background:  $bezelBackground;
   color:       $bezelBackground;
-  font-family: WP43S_StandardFont;
+  font-family: C43__StandardFont;
   font-style:  normal;
   font-weight: normal;
   font-size:   18px;
@@ -195,7 +195,7 @@
 #gShiftedUnderline {
   background:  $bezelBackground;
   color:       $bezelBackground;
-  font-family: WP43S_StandardFont;
+  font-family: C43__StandardFont;
   font-style:  normal;
   font-weight: normal;
   font-size:   18px;
@@ -206,7 +206,7 @@
 #greek {
   background:  $bezelBackground;
   color:       $gBlue;
-  font-family: WP43S_StandardFont;
+  font-family: C43__StandardFont;
   font-style:  normal;
   font-weight: normal;
   font-size:   20px;
@@ -216,7 +216,7 @@
 #greekUnderline {
   background:  #303030;
   color:       $gBlue;
-  font-family: WP43S_StandardFont;
+  font-family: C43__StandardFont;
   font-style:  normal;
   font-weight: normal;
   font-size:   18px;
@@ -226,7 +226,7 @@
 #On {
   background:  $bezelBackground;
   color:       $keyLabelColor;
-  font-family: WP43S_StandardFont;
+  font-family: C43__StandardFont;
   font-style:  normal;
   font-weight: normal;
   font-size:   18px;
@@ -238,7 +238,7 @@
 #letter {
   background:  $bezelBackground;
   color:       $letterGrey;
-  font-family: WP43S_StandardFont;
+  font-family: C43__StandardFont;
   font-style:  normal;
   font-weight: normal;
   font-size:   19px;
@@ -257,7 +257,7 @@
 }
 
 #debugWP43S {
-  font-family: WP43S_StandardFont;
+  font-family: C43__StandardFont;
   font-style:  normal;
   font-weight: normal;
   font-size:   14px;
@@ -266,7 +266,7 @@
 }
 
 #registerL {
-  font-family: WP43S_StandardFont;
+  font-family: C43__StandardFont;
   font-style:  normal;
   font-weight: normal;
   font-size:   16px;
@@ -275,7 +275,7 @@
 }
 
 #memoryStatus {
-  font-family: WP43S_StandardFont;
+  font-family: C43__StandardFont;
   font-style:  normal;
   font-weight: normal;
   font-size:   13px;
@@ -310,14 +310,14 @@
 }
 
 #errorBox {
-  font-family:   WP43S_StandardFont;
+  font-family:   C43__StandardFont;
   font-style:    normal;
   font-weight:   normal;
   font-size:     18px;
 }
 
 tooltip {
-  font-family:      WP43S_StandardFont;
+  font-family:      C43__StandardFont;
   font-size:        20px;
   background-color: #808080;
   color:            black;
