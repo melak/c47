@@ -136,3 +136,5 @@ C43 Font:
            Ϡ  GREEK LETTER SAMPI
            ϡ  GREEK SMALL LETTER SAMPI
 
+
+2022-10-01 Update both new WP43 fonts
