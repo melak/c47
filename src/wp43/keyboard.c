@@ -1105,7 +1105,8 @@ bool_t allowShiftsToClearError = false;
       lastshiftG = shiftG;
       showShiftState();
       #ifdef PC_BUILD
-        if( ((calcMode == CM_AIM) || (calcMode == CM_EIM)) && !tam.mode) calcModeAimGui(); //JM
+        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
+        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
       #endif
 
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
@@ -1138,7 +1139,8 @@ bool_t allowShiftsToClearError = false;
       lastshiftG = shiftG;
       showShiftState();
       #ifdef PC_BUILD
-        if( ((calcMode == CM_AIM) || (calcMode == CM_EIM)) && !tam.mode) calcModeAimGui(); //JM
+        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
+        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
       #endif
 
       screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
@@ -1170,7 +1172,8 @@ bool_t allowShiftsToClearError = false;
       lastshiftG = shiftG;
       showShiftState();                                                                                                         //JM shifts
       #ifdef PC_BUILD
-        if( ((calcMode == CM_AIM) || (calcMode == CM_EIM)) && !tam.mode) calcModeAimGui(); //JM
+        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
+        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
       #endif
 
       return ITM_NOP;

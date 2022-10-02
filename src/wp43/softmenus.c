@@ -552,9 +552,9 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
 #endif                                             
 
 
-TO_QSPI const int16_t menu_ASN[]         = { ITM_USER_DEFAULTS,             ITM_USER_COMPLEX,           CC_C43,                   CC_V43,                CC_DM42,                    ITM_USER_RESET,
-                                             ITM_NULL,                      ITM_NULL,                   CC_USER_SHIFTS,           CC_V43M,               CC_43S,                     ITM_NULL,
-                                             -MNU_ASN_N,                    ITM_ASSIGN,                 ITM_USERMODE,             ITM_NULL,              ITM_NULL,                   ITM_NULL    };
+TO_QSPI const int16_t menu_ASN[]         = { ITM_USER_DEFAULTS,             ITM_USER_COMPLEX,           CC_USER_SHIFTS,           CC_C43,                CC_DM42,                    CC_43S,
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 CC_V43M,               CC_V43,                     ITM_ASSIGN,
+                                             -MNU_ASN_N,                    ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_USER_RESET,             ITM_USERMODE    };
 
 
 TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_X_P2,                   ITM_X_P3,                 ITM_X_P4,              ITM_X_P5,                    ITM_X_P6,

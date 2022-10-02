@@ -172,7 +172,8 @@ void resetShiftState(void) {
     refreshScreen();
   }                                                                             //^^
   #ifdef PC_BUILD
-    if( ((calcMode == CM_AIM) || (calcMode == CM_EIM)) && !tam.mode) calcModeAimGui(); //JM
+        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
+        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
   #endif
 }
 
