@@ -115,17 +115,19 @@ WP43S Font:
            removed in standard font U+2068 (subscript sun),
            removed in standard font U+2069 (subscript earth)
 
-
 C43 Font:
 2022-08-17 Updated accordingly.
+           Ditched the custom C43 USB glyph as the 43S now has an acceptable font.
+
+2022-10-01 Update both new WP43 fonts
 
 ----
            When new WP43S fonts come out, the easiest procedure is to
-           1. Copy the new WP43S...ttf files to C43...ttf files, and add 6 blank glyphs.
-           2. From the old C43 font files, copy the last 6 glyphs including the descriptions to the new C43 fonts.
-           3. Add the contents of C43_sortingOrder_additions.csv to the bottom of sortingOrder.csv.
-           4. Both fonts updated.
-           5. Ditched the custom C43 USB glyph as the 43S now has an acceptable font.
+           1. Copy the new WP43...ttf files to C43...ttf files, and add 6 blank glyphs.
+           2. From the old C43 font files, copy and paste special, the last 6 glyphs including the descriptions to the new C43 fonts.
+           3. Change the font name to "C43__....ttf"
+           4. Add the contents of C43_sortingOrder_additions.csv to the bottom of sortingOrder.csv.
+           5. Both fonts updated.
 
            Transferred the only different glyphs now are:
 
@@ -136,5 +138,3 @@ C43 Font:
            Ϡ  GREEK LETTER SAMPI
            ϡ  GREEK SMALL LETTER SAMPI
 
-
-2022-10-01 Update both new WP43 fonts

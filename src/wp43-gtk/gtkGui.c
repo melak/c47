@@ -1,17 +1,17 @@
-/* This file is part of 43S.
+/* This file is part of C43.
  *
- * 43S is free software: you can redistribute it and/or modify
+ * C43 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * 43S is distributed in the hope that it will be useful,
+ * C43 is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
+ * along with C43.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "gtkGui.h"
@@ -37,6 +37,10 @@
 #include <string.h>
 
 #include "wp43.h"
+
+
+//#define DEBUGMODES
+
 
 #if defined(PC_BUILD)
   GtkWidget *grid;
@@ -171,7 +175,7 @@ void btnClicked_LC(GtkWidget *w, gpointer data) {
 }
 
 
-//JM ALPHA SECTION FOR ALPHAMODE -  UPPER CASE PC LETTER INPUT. INVERT 43C CASE. USE LETTER.
+//JM ALPHA SECTION FOR ALPHAMODE -  UPPER CASE PC LETTER INPUT. INVERT C43 CASE. USE LETTER.
 void btnClicked_UC(GtkWidget *w, gpointer data) {
   uint8_t alphaCase_MEM;
   bool_t numLock_MEM;
@@ -377,7 +381,7 @@ switch (event_keyval) {
       break;
 //ROW 2
     case 65:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM.    //**************-- ALPHA KEYS UPPER CASE --***************//
-      btnClicked_UC(w, "00");                                          //UPPER CASE PC LETTER INPUT. INVERT 43C CASE. USE LETTER.
+      btnClicked_UC(w, "00");                                          //UPPER CASE PC LETTER INPUT. INVERT C43 CASE. USE LETTER.
       break;
     case 66:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_UC(w, "01");
@@ -491,7 +495,7 @@ switch (event_keyval) {
 //JM ALPHA LOWER CASE SECTION FOR ALPHAMODE - TAKE OVER ALPHA KEYBOARD
 //ROW 2
     case 65+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM     //**************-- ALPHA KEYS LOWER CASE --***************//
-      btnClicked_LC(w, "00");                                             //LOWER CASE PC LETTER INPUT. USE LETTER IN THE CURRENT 43C CASE.
+      btnClicked_LC(w, "00");                                             //LOWER CASE PC LETTER INPUT. USE LETTER IN THE CURRENT C43 CASE.
       break;
     case 66+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_LC(w, "01");
@@ -1538,8 +1542,10 @@ void moveLabels(void) {
   gtk_widget_get_preferred_size(  lbl41G, NULL, &lblG);
   gtk_fixed_move(GTK_FIXED(grid), lbl41F, (2*xPos+KEY_WIDTH_1+DELTA_KEYS_X-lblF.width-GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);
   gtk_fixed_move(GTK_FIXED(grid), lbl41G, (2*xPos+KEY_WIDTH_1+DELTA_KEYS_X+lblF.width+GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);
+  gtk_widget_get_preferred_size(  lbl41Gr, NULL, &lblG);                                                               //JM !! GR
+  gtk_fixed_move(GTK_FIXED(grid), lbl41Gr, xPos+KEY_WIDTH_1*4/3, yPos - Y_OFFSET_SHIFTED_LABEL);  //JM !! GR
   gtk_widget_get_preferred_size(  lbl41Fa, NULL, &lblF);                                                                        //vv dr - new AIM
-  gtk_fixed_move(GTK_FIXED(grid), lbl41Fa, (2*xPos+KEY_WIDTH_2-lblF.width-GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);  //^^
+  gtk_fixed_move(GTK_FIXED(grid), lbl41Fa, xPos-KEY_WIDTH_1*0, yPos - Y_OFFSET_SHIFTED_LABEL);  //^^
 
   xPos += 2*DELTA_KEYS_X;
   gtk_widget_get_preferred_size(  lbl42F, NULL, &lblF);
@@ -2018,7 +2024,7 @@ void labelCaptionAim(const calcKey_t *key, GtkWidget *button, GtkWidget *lblGree
   }
 
 //JM remove this because CAT is not on keyboard anymore, but in menu
-//JM was 85  //JM Changed CATALOG to CAT. Actually not needed, as the WP43C already has a shortened CAT to start with
+//JM was 85  //JM Changed CATALOG to CAT. Actually not needed, as the C43 already has a shortened CAT to start with
 //JM  if(strcmp((char *)lbl, "CAT") == 0 && key->keyId != 85) {
 //JM    lbl[3] = 0;
 //JM  }
@@ -2181,6 +2187,10 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
 }
 
     void calcModeNormalGui(void) {
+      #if defined (DEBUGMODES) && defined PC_BUILD
+      printf(">>> @@@ calcModeNormalGui     calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
+      #endif //DEBUGMODES
+
       const calcKey_t *keys;
 
   if(running_program_jm) return;                        //JM faster during program excution
@@ -2434,6 +2444,11 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
 }
 
     void calcModeAimGui(void) {
+      #if defined (DEBUGMODES) && defined PC_BUILD
+      printf(">>> @@@ calcModeAimGui      calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
+      #endif //DEBUGMODES
+
+
       const calcKey_t *keys;
 
   if(running_program_jm) return;                        //JM faster during program excution
@@ -2624,6 +2639,7 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
 //  gtk_widget_show(lbl44P);
 //  gtk_widget_show(lbl45F);
 //  gtk_widget_show(lbl45G);
+  gtk_widget_show(lbl41Gr);
   gtk_widget_show(lbl42Gr);
   gtk_widget_show(lbl43Gr);
   gtk_widget_show(lbl44Gr);
@@ -2737,12 +2753,16 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   //JM7 gtk_widget_show(lblConfirmY);  //JM Y/N
   //JM7 gtk_widget_show(lblConfirmN);  //JM Y/N
 
-//  gtk_widget_show(lbl31G);   //JM Remnanty from 43S. Not sure why. Removed.
+//  gtk_widget_show(lbl31G);   //JM Remnanty from WP43. Not sure why. Removed.
   moveLabels();
-//  gtk_widget_hide(lbl31G);   //JM Remnanty from 43S. Not sure why. Removed.
+//  gtk_widget_hide(lbl31G);   //JM Remnanty from WP43. Not sure why. Removed.
 }
 
     void calcModeTamGui(void) {
+      #if defined (DEBUGMODES) && defined PC_BUILD
+      printf(">>> @@@ calcModeTamGui      calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
+      #endif //DEBUGMODES
+
       const calcKey_t *keys;
 
   if(running_program_jm) return;                        //JM faster during program excution

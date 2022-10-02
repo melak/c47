@@ -70,19 +70,17 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     if(subOrSup == NC_SUBSCRIPT) {
       nextChar = NC_NORMAL;            //JM de-latching superscript / suscript /sup/sub, removing the lock. Comment out to let sup/sub lock
       if(item >= ITM_0 && item <= ITM_9) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_0 - (int16_t)ITM_0); else //JM optimized
-      if(item >= ITM_a && item <= ITM_e) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_a - (int16_t)ITM_a); else //JM optimized
-      if(item >= ITM_h && item <= ITM_q) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_h - (int16_t)ITM_h); else //JM optimized
-      if(item >= ITM_s && item <= ITM_z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_s - (int16_t)ITM_s); else //JM optimized
+      if(item >= ITM_a && item <= ITM_z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_a - (int16_t)ITM_a); else //JM optimized
       if(item >= ITM_A && item <= ITM_Z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_A - (int16_t)ITM_A); else //JM optimized
       switch(item) {
         case ITM_alpha    :return ITM_SUB_alpha;
         case ITM_delta    :return ITM_SUB_delta;
         case ITM_mu       :return ITM_SUB_mu;
         case ITM_SUN      :return ITM_SUB_SUN;
-        case ITM_h        :return ITM_SUB_h;
-        case ITM_t        :return ITM_SUB_t;
+//        case ITM_h        :return ITM_SUB_h;
+//        case ITM_t        :return ITM_SUB_t;
         case ITM_INFINITY :return ITM_SUB_INFINITY;
-        case ITM_s        :return ITM_SUB_s;
+//        case ITM_s        :return ITM_SUB_s;
         case ITM_PLUS     :return ITM_SUB_PLUS;
         case ITM_MINUS    :return ITM_SUB_MINUS;
 /* //JM optimized
@@ -148,12 +146,16 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     }
     else if(subOrSup == NC_SUPERSCRIPT) {
       nextChar = NC_NORMAL;            //JM de-latching superscript / suscript /sup/sub, removing the lock. Comment out to let sup/sub lock
+      if(item >= ITM_0 && item <= ITM_9) return (uint16_t)((int16_t)item + (int16_t)ITM_SUP_0 - (int16_t)ITM_0); else //JM optimized
+      if(item >= ITM_a && item <= ITM_z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUP_a - (int16_t)ITM_a); else //JM optimized
+      if(item >= ITM_A && item <= ITM_Z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUP_A - (int16_t)ITM_A); else //JM optimized
       switch(item) {
-        case ITM_a        :return ITM_SUP_a;
-        case ITM_x        :return ITM_SUP_x;
+//        case ITM_a        :return ITM_SUP_a;
+//        case ITM_x        :return ITM_SUP_x;
         case ITM_INFINITY :return ITM_SUP_INFINITY;
         case ITM_PLUS     :return ITM_SUP_PLUS;
         case ITM_MINUS    :return ITM_SUP_MINUS;
+/*JM optimized
         case ITM_0        :
         case ITM_1        :
         case ITM_2        :
@@ -169,6 +171,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         case ITM_h        :return ITM_SUP_h;
         case ITM_r        :return ITM_SUP_r;
         case ITM_T        :return ITM_SUP_T;
+*/
         default           :return item;
       }
     }
