@@ -2548,13 +2548,15 @@ ram_full:
       setSystemFlag(FLAG_ALPHA);                     //JM
     }                                                //JM ^^
 
-    if(calcMode != CM_AIM && (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA)) { //JMvv : If ALPHA, switch back to AIM
+    if(calcMode != CM_AIM && (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA ||
+                              softmenu[softmenuStack[1].softmenuId].menuItem == -MNU_ALPHA)) { //JMvv : If ALPHA, switch back to AIM
       setSystemFlag(FLAG_ALPHA);                                          //JM
       calcMode = CM_AIM;
     }                                                                     //JM ^^
 
     #if defined(PC_BUILD) && (SCREEN_800X480 == 0) //JM
-      calcModeAimGui();                            //JM
+    if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
+    if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
     #endif // PC_BUILD && (SCREEN_800X480 == 0)    //JM  
   }
 #endif // !TESTSUITE_BUILD
