@@ -580,6 +580,7 @@ uint16_t dest = 9999;
       case amGrad:      dest = amDMS;               break;
       case amDMS:       dest = amDegree;            break;
       case amDegree:    dest = amRadian;            break;
+      case amMultPi:    dest = amRadian;            break; //do not support Mulpi but at least get out of it
       default:      break;
     }
     fnCvtFromCurrentAngularMode(dest);
@@ -594,6 +595,7 @@ uint16_t dest = 9999;
       case amGrad:      dest = amDMS;               break;
       case amDMS:       dest = amDegree;            break;
       case amDegree:    dest = amRadian;            break;
+      case amMultPi:    dest = amRadian;            break; //do not support Mulpi but at least get out of it
       default:      break;
     }
     currentAngularMode = dest;
