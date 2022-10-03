@@ -577,9 +577,10 @@ uint16_t dest = 9999;
     switch(dest) {
       case amNone:      dest = currentAngularMode;  break; //converts from to the same, i.e. get to current angle mode
       case amRadian:    dest = amGrad;              break;
-      case amGrad:      dest = amDMS;               break;
-      case amDMS:       dest = amDegree;            break;
+      case amGrad:      dest = amDegree;            break;
       case amDegree:    dest = amRadian;            break;
+
+      case amDMS:       dest = amDegree;            break;
       case amMultPi:    dest = amRadian;            break; //do not support Mulpi but at least get out of it
       default:      break;
     }
@@ -592,9 +593,10 @@ uint16_t dest = 9999;
     switch(dest) {
       case amNone:      dest = currentAngularMode;  break; //converts from to the same, i.e. get to current angle mode
       case amRadian:    dest = amGrad;              break;
-      case amGrad:      dest = amDMS;               break;
-      case amDMS:       dest = amDegree;            break;
+      case amGrad:      dest = amDegree;            break;
       case amDegree:    dest = amRadian;            break;
+
+      case amDMS:       dest = amDegree;            break;
       case amMultPi:    dest = amRadian;            break; //do not support Mulpi but at least get out of it
       default:      break;
     }
