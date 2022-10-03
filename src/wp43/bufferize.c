@@ -1768,7 +1768,8 @@ void kill_ASB_icon(void) {
             }
             if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone) {
               if(currentAngularMode == amDMS) fnCvtFromCurrentAngularMode(amDMS); else
-              setRegisterAngularMode(REGISTER_X, currentAngularMode);
+                if(currentAngularMode == amMultPi) fnCvtFromCurrentAngularMode(amMultPi); else
+                  setRegisterAngularMode(REGISTER_X, currentAngularMode);
             }
 
             if(lastErrorCode == 0) {
