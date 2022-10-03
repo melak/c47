@@ -79,15 +79,16 @@ void WP34S_Cvt2RadSinCosTan(const real_t *an, angularMode_t angularMode, real_t 
   }
 
   switch(angularMode) {
-    case amRadian:
-    case amMultPi: {
+    case amRadian: {
       WP34S_Mod(&angle, const1071_2pi, &angle, realContext); // mod(angle, 2pi) --> angle
       angularMode = amRadian;
       break;
     }
 
-    case amGrad: {
-      WP34S_Mod(&angle, const_400,     &angle, realContext); // mod(angle, 400g) --> angle
+    case amMultPi: {
+      WP34S_Mod(&angle, const_2, &angle, realContext); // pi * mod(angle, 2) --> angle
+      realMultiply(&angle, const_pi, &angle, realContext);
+      angularMode = amRadian;
       break;
     }
 
