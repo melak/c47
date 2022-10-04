@@ -390,7 +390,15 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
   //printReal34ToConsole(real34," ------- 001 >>>>>"," <<<<<\n");   //JM
   if(SigFigMode!=0) {                             //vvJM convert real34 to string, eat away all zeroes from the right and give back to FIX as a real
     char tmpString100[100];
+
+    //Try this out for cleaning up the REAL instead of manually searching for the
+      real34_t reduced;
+      real34Reduce(real34, &reduced);
+      real34ToString(&reduced, tmpString100);
+      stringToReal(tmpString100,&value,&ctxtReal39);
+/*
     real34ToString(real34, tmpString100);
+    
     //printf(" ------- 002 >>>%s<<<\n",tmpString100);
     int16_t ii, tmp_i;
     tmp_i = ii = stringByteLength(tmpString100)-1;
@@ -426,6 +434,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
     strcat(tmpString100,tmpString10);
     //printf(" ------- 005 >>>%s<<<\n",tmpString100);
     stringToReal(tmpString100,&value,&ctxtReal39);
+*/
   }                                               //^^JM
   else {
     real34ToReal(real34, &value);
