@@ -73,7 +73,7 @@
     #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
     #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
     #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
-  //#define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42; USER_SHIFTS;
+    #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42; USER_SHIFTS;
   //#define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
   //#define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
   //#define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
