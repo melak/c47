@@ -2464,7 +2464,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
     uint8_t savedDisplayFormat = displayFormat, savedDisplayFormatDigits = displayFormatDigits, savedSigFigMode = SigFigMode;
     bool_t savedUNITDisplay = UNITDisplay;
     bool_t thereIsANextLine;
-    int16_t source, dest, last, d, maxWidth, i, offset, bytesProcessed, aa, aa2=0, aa3=0, aa4=0;
+    int16_t source, dest, last, d, maxWidth, i, offset, bytesProcessed, aa, bb, aa2=0, aa3=0, aa4=0;
     uint64_t nn;
     real34_t real34;
     char *separator;
@@ -2603,7 +2603,8 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
                 }
                 source++;
                 tmpString[++dest] = 0;
-              } while(source < last && groupingGap > 0 && (errorMessage[source] != *separator || errorMessage[source + 1] != *(separator + 1)));
+              } 
+            while(source < last && groupingGap > 0 && (errorMessage[source] != *separator || errorMessage[source + 1] != *(separator + 1)));
             }
           }
           if(source < last) { // The long integer is too long
@@ -2621,12 +2622,30 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
         #endif
         temporaryInformation = TI_SHOW_REGISTER_BIG;
         separator = STD_SPACE_4_PER_EM;
-        real34ToDisplayString(REGISTER_REAL34_DATA(SHOWregis), getRegisterAngularMode(SHOWregis), tmpString + 2100+stringByteLength(tmpString + 2100), &numericFont, 2000, 34, false, separator, false);
+        real34ToDisplayString(REGISTER_REAL34_DATA(SHOWregis), getRegisterAngularMode(SHOWregis), tmpString + 2100+stringByteLength(tmpString + 2100), &numericFont, SCREEN_WIDTH * 2, 34, false, separator, false);
         last = 2100 + stringByteLength(tmpString + 2100);
         source = 2100;
         for(d=0; d<=900 ; d+=300) {
           dest = d;
           while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
+            //check if a full triplet of digits will fit otherwise break line
+            if((tmpString[source] == *separator && tmpString[source + 1] == *(separator + 1))) {
+              aa = source;
+              if(tmpString[aa] & 0x80) aa++;
+              aa++;
+              if(tmpString[aa] & 0x80) aa++;
+              aa++;
+              if(tmpString[aa] & 0x80) aa++;
+              aa++;
+              if(tmpString[aa] & 0x80) aa++;
+              aa++;
+              char tmpString20[20];
+              tmpString20[0]=0;
+              xcopy(tmpString20, tmpString + source, aa - source);
+              tmpString20[aa - source]=0;
+              if(stringWidth(tmpString + d, &numericFont, true, true) + stringWidth(tmpString20, &numericFont, true, true) > SCREEN_WIDTH - 8*2) break;
+            }
+
             tmpString[dest] = tmpString[source];
             if(tmpString[dest] & 0x80) {
               tmpString[++dest] = tmpString[++source];
@@ -2637,31 +2656,54 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
         }
 
         if(getRegisterAngularMode(SHOWregis) != amNone) {
-          aa = getRegisterAngularMode(SHOWregis);
+          aa = 0;
+          bb = 0;
           switch(getRegisterAngularMode(SHOWregis)) {
-            case amDegree: aa = amDMS; break;
-            case amRadian: aa = amDegree; break;
-            case amGrad: aa = amRadian; break;
-            case amMultPi: aa = amRadian; break;
-            case amDMS: aa = amDegree; break;
+            case amDegree: aa = amDMS;    bb=amRadian; break;
+            case amRadian: aa = amMultPi; bb=amDegree; break;
+            case amGrad:   aa = amRadian; bb=amDegree; break;
+            case amMultPi: aa = amRadian; bb=amDegree; break;
+            case amDMS:    aa = amDegree; bb=amRadian; break;
             default:break;
           }
+          //third line
           real34Copy(REGISTER_REAL34_DATA(SHOWregis), &real34);
           convertAngle34FromTo(&real34, getRegisterAngularMode(SHOWregis), aa);
-          real34ToDisplayString(&real34, aa, tmpString + 2103, &numericFont, 2000, 34, false, separator, false);
+          tmpString[2103]=0;
+          int16_t ww = stringWidth(tmpString + 2100, &numericFont, true, true);
+          real34ToDisplayString(&real34, aa, tmpString + 2103, &numericFont, SCREEN_WIDTH - ww, 34, false, separator, false);
           last = 2100 + stringByteLength(tmpString + 2100);
           source = 2100;
-          for(d=600; d<=900 ; d+=300) {
-            dest = d;
-            while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
-              tmpString[dest] = tmpString[source];
-              if(tmpString[dest] & 0x80) {
-                tmpString[++dest] = tmpString[++source];
-              }
-              source++;
-              tmpString[++dest] = 0;
+          d=600;
+          dest = d;
+          while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
+            tmpString[dest] = tmpString[source];
+            if(tmpString[dest] & 0x80) {
+              tmpString[++dest] = tmpString[++source];
             }
+            source++;
+            tmpString[++dest] = 0;
           }
+          //Fourth line
+          real34Copy(REGISTER_REAL34_DATA(SHOWregis), &real34);
+          convertAngle34FromTo(&real34, getRegisterAngularMode(SHOWregis), bb);
+          tmpString[2103]=0;
+          ww = stringWidth(tmpString + 2100, &numericFont, true, true);
+          real34ToDisplayString(&real34, bb, tmpString + 2103, &numericFont, SCREEN_WIDTH - ww, 34, false, separator, false);
+          last = 2100 + stringByteLength(tmpString + 2100);
+          source = 2100;
+          d=900;
+          dest = d;
+          while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
+            tmpString[dest] = tmpString[source];
+            if(tmpString[dest] & 0x80) {
+              tmpString[++dest] = tmpString[++source];
+            }
+            source++;
+            tmpString[++dest] = 0;
+          }
+
+
         }
         
 
