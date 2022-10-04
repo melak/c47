@@ -1974,8 +1974,8 @@
 #define ITM_N_KEY_SIGMA             1906
 #define ITM_N_KEY_SNAP              1907
 #define ITM_SH_NORM_E               1908
-#define ITM_1909                    1909
-#define ITM_1910                    1910
+#define ITM_ms                      1909
+#define ITM_msTo                    1910
 #define ITM_INP_DEF_43S             1911
 #define ITM_XXEQ                    1912
 #define ITM_USER_V43MIN             1913
@@ -2023,7 +2023,7 @@
 #define ITM_T_RRIGHT_ARROW          1955
 #define ITM_XNEW                    1956
 #define ITM_XEDIT                   1957
-#define ITM_ms                      1958
+#define ITM_1958                    1958
 #define ITM_DEG2                    1959
 #define ITM_DMS2                    1960
 #define ITM_GRAD2                   1961

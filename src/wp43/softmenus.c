@@ -107,7 +107,7 @@ TO_QSPI const int16_t menu_EXP[]         = { ITM_CUBE,                      ITM_
                                              ITM_sinh,                      ITM_cosh,                   ITM_tanh,                 ITM_arsinh,            ITM_arcosh,                  ITM_artanh                    };
 
 TO_QSPI const int16_t menu_TRI[]         = { ITM_sin,                       ITM_cos,                    ITM_tan,                  ITM_arcsin,            ITM_arccos,                  ITM_arctan,                         //JM re-arranged menu TRIG menu
-                                             ITM_sinc,                      ITM_sincpi,                 ITM_DEG,                  ITM_RAD,               ITM_DMS,                     ITM_atan2,                                         //  ITM_toREC,                   ITM_toPOL,                          //JM re-arranged menu TRIG menu
+                                             ITM_sinc,                      ITM_sincpi,                 ITM_atan2,                ITM_DEG2,              ITM_RAD2,                    ITM_GRAD2,    //  ITM_toREC,                   ITM_toPOL,                          //JM re-arranged menu TRIG menu
                                              ITM_sinh,                      ITM_cosh,                   ITM_tanh,                 ITM_arsinh,            ITM_arcosh,                  ITM_artanh                    };    //JM re-arranged menu TRIG menu
 
 TO_QSPI const int16_t menu_FIN[]         = { ITM_PC,                        ITM_PCMRR,                  ITM_PCT,                  ITM_PCSIGMA,           ITM_PCPMG,                   -MNU_TVM,                     
@@ -166,18 +166,12 @@ TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_
   #define ITM_SYS ITM_RESERVE
 #endif
 
-/*
-TO_QSPI const int16_t menu_MODE[]        = { ITM_DRG,                       ITM_DEG,                    ITM_RAD,                  ITM_GRAD,              ITM_MULPI,                   ITM_DMS,                                            
-                                             ITM_CFG,                       ITM_DEG2,                   ITM_RAD2,                 ITM_GRAD2,             ITM_MULPI2,                  ITM_DMS2,                                             //JM
-                                             ITM_SYS,                       -MNU_TRI,                   ITM_NULL,                 ITM_NULL,              ITM_RECT,                    ITM_POLAR,                         //JM
-*/
-
-TO_QSPI const int16_t menu_MODE[]        = { ITM_DRG,                       ITM_DEG,                    ITM_RAD,                  ITM_GRAD,             -MNU_TRI,                     ITM_CFG,                       
+TO_QSPI const int16_t menu_MODE[]        = { ITM_DRG,                       ITM_DEG,                    ITM_RAD,                  ITM_GRAD,              ITM_ERPN,                    ITM_CFG,                       
                                              ITM_SYS,                       ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_RECT,                    ITM_POLAR,              //JM
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                                       //JM
 
                                              ITM_SSIZE4,                    ITM_SSIZE8,                 ITM_CB_CPXRES,            ITM_CB_SPCRES,         ITM_DENMAX2,                 ITM_CFG,                           //JM
-                                             ITM_ERPN,                      ITM_SETSIG2,                ITM_RMODE,                ITM_EXFRAC,            ITM_DENANY,                  ITM_DENFIX,                          //JM
+                                             ITM_SETSIG2,                   ITM_RMODE,                  ITM_EXFRAC,               ITM_DENANY,            ITM_DENFIX,                  ITM_NULL,        //JM
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_INP_DEF_SI,              ITM_NULL,                          //JM
 
                                              ITM_NO_BASE_SCREEN,            ITM_BASE_HOME,             ITM_G_DOUBLETAP,           ITM_HOMEx3T,           ITM_SHTIM,                   ITM_HOMEx3,                    //JM
@@ -361,21 +355,9 @@ TO_QSPI const int16_t menu_alpha_omega[] = { ITM_alpha,                     ITM_
 
                                              ITM_iota_DIALYTIKA,            ITM_omicron_TONOS,          ITM_upsilon_TONOS,        ITM_upsilon_DIALYTIKA, ITM_upsilon_DIALYTIKA_TONOS, ITM_omega_TONOS               };
 
-/* Original 43S
-TO_QSPI const int16_t menu_AngleConv[]   = { ITM_toDEG,                     ITM_toRAD,                  ITM_toMULpi,              ITM_NULL,              ITM_toGRAD,                  ITM_toDMS,
-                                             ITM_DEGto,                     ITM_RADto,                  ITM_MULPIto,              ITM_NULL,              ITM_GRADto,                  ITM_DMSto,
-                                             ITM_DtoR,                      ITM_RtoD,                   ITM_MPItoR,               ITM_RtoMPI,            ITM_DtoDMS,                  ITM_DMStoD                    };
-*/
-
-/*
-TO_QSPI const int16_t menu_AngleConv[]   = { ITM_DtoR,                      ITM_RtoD,                   ITM_DtoDMS,               ITM_DMStoD,            ITM_ms,                      ITM_dotD,
-                                             ITM_toDEG,                     ITM_toRAD,                  ITM_toGRAD,               ITM_toMULpi,           ITM_toDMS,                   ITM_toHMS,
-                                             ITM_MPItoR,                    ITM_RtoMPI,                 ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                    };   //JM test new MPI stuff
-*/
-
 TO_QSPI const int16_t menu_AngleConv[]   = { ITM_DRG,                       ITM_DEG2,                   ITM_RAD2,                 ITM_GRAD2,             ITM_DMS2,                    ITM_MULPI2,
-                                             ITM_DtoR,                      ITM_RtoD,                   ITM_DtoDMS,               ITM_DMStoD,            ITM_ms,                      ITM_dotD,
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_toHMS                   };   //JM test new MPI stuff
+                                             ITM_DtoR,                      ITM_RtoD,                   ITM_DtoDMS,               ITM_DMStoD,            ITM_ms,                      ITM_msTo,     
+                                             -MNU_TRI,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_toHMS,                   ITM_dotD                  };   //JM test new MPI stuff
 
 
 

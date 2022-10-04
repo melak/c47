@@ -99,6 +99,7 @@ All the below: because both Last x and savestack does not work due to multiple s
 #include "plotstat.h"
 #include "c43Extensions/radioButtonCatalog.h"
 #include "c43Extensions/keyboardTweak.h"
+#include "realType.h"
 #include "recall.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -242,6 +243,105 @@ void fnRound2(uint16_t unusedButMandatoryParameter) {
     fnRound(0);
 }
 
+//=-=-=-=-=-=-==-=-
+//input is time or DMS
+//output is sexagesima coded decimal ddd.mmsssssss in the form of a normal decimal
+void fnFrom_ms(uint16_t unusedButMandatoryParameter){
+  #ifndef TESTSUITE_BUILD
+    char tmpString100[100];
+    char tmpString100_OUT[100];
+    tmpString100[0]=0;
+    tmpString100_OUT[0]=0;
+     
+    if(getRegisterDataType(REGISTER_X) == dtTime) {
+      temporaryInformation = TI_FROM_MS_TIME;
+    }
+    else if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) == amDMS) {
+      temporaryInformation = TI_FROM_MS_DEG;
+    }
+    else {
+      temporaryInformation = TI_NO_INFO;
+    }
+
+    if(temporaryInformation != TI_NO_INFO) {
+      if(temporaryInformation == TI_FROM_MS_TIME) {
+        copyRegisterToClipboardString2(REGISTER_X, tmpString100);
+      }
+      if(temporaryInformation == TI_FROM_MS_DEG) {
+        real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString100, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, " ", true);
+        int16_t tmp_i = 0;
+        while(tmpString100[tmp_i] != 0 && tmpString100[tmp_i+1] != 0) { //pre-condition the dd.mmssss to replaxce spaces with zeroes
+          //printf("%c %d",tmpString100[tmp_i],tmpString100[tmp_i]);
+          if((uint8_t)tmpString100[tmp_i] == 128 && (uint8_t)tmpString100[tmp_i+1] == 176) {
+            tmpString100[tmp_i] = ' ';
+            tmpString100[tmp_i+1] = 'o';
+          }
+          if((uint8_t)tmpString100[tmp_i] == 'o' && (uint8_t)tmpString100[tmp_i+1] == ' ') {
+            tmpString100[tmp_i+1] = '0';
+          }
+          if((uint8_t)tmpString100[tmp_i] == ':' && (uint8_t)tmpString100[tmp_i+1] == ' ') {
+            tmpString100[tmp_i+1] = '0';
+          }
+          if((uint8_t)tmpString100[tmp_i] == '\'' && (uint8_t)tmpString100[tmp_i+1] == ' ') {
+            tmpString100[tmp_i+1] = '0';
+          }
+          tmp_i++;
+        }
+      }
+
+      //printf(" ------- 002 >>>%s<<<\n",tmpString100);
+
+      int16_t tmp_j, tmp_i;
+      tmp_i = tmp_j = 0;
+      bool_t decimalflag = false;
+      while(tmpString100[tmp_i] != 0) {
+      //printf("%c %d",(uint8_t)tmpString100[tmp_i],(uint8_t)tmpString100[tmp_i]);
+        switch ((uint8_t)tmpString100[tmp_i]) {
+          case '0' :
+          case '1' :
+          case '2' :
+          case '3' :
+          case '4' :
+          case '5' :
+          case '6' :
+          case '7' :
+          case '8' :
+          case '9' :
+          case '+' :
+          case '-' :
+            //printf("-\n");
+            tmpString100_OUT[tmp_j]=(uint8_t)tmpString100[tmp_i];
+            tmpString100_OUT[++tmp_j]=0;
+            break;
+          case 'o' :
+          case ':' :
+          case '.' :
+          case ',' :
+            if(!decimalflag) {
+              //printf("decimal\n");
+              decimalflag = true;
+              tmpString100_OUT[tmp_j]='.';
+              tmpString100_OUT[++tmp_j]=0;
+            }
+            break;
+          default:
+            //printf("ignore.\n");
+            break;
+          }
+          tmp_i++;
+        }
+      if(tmpString100_OUT[0] != 0) {
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+        stringToReal34(tmpString100_OUT,REGISTER_REAL34_DATA(REGISTER_X));
+        printf("\n ------- 003 >>>%s<<<\n",tmpString100_OUT);
+      }
+    }
+
+    
+//    stringToReal(tmpString100,&value,&ctxtReal39);
+#endif //TESTSUITE_BUILD
+}
+
 
 /*
 * If in direct entry, accept h.ms, example 1.23 [.ms] would be 1:23:00. Do not change the ADM.
@@ -275,7 +375,6 @@ void fnTo_ms(uint16_t unusedButMandatoryParameter) {
     if(getRegisterDataType(REGISTER_X) == dtReal34) {
       if(getRegisterAngularMode(REGISTER_X) == amDMS || getRegisterAngularMode(REGISTER_X) == amDegree) {
         fnKeyDotD(0);
-        //          fnKeyDotD(0);  //2nd time to make sure it goes to REAL, not DEGREES as per           fnToReal(0); mod.
       }
       if(getRegisterAngularMode(REGISTER_X) == amNone) {
         fnToHms(0);

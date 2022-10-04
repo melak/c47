@@ -2775,6 +2775,19 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
               }
             }
 
+            else if(temporaryInformation == TI_FROM_MS_TIME) {
+              if(regist == REGISTER_X) {
+                strcpy(prefix, "hh.mmss" STD_SPACE_FIGURE "=");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              }
+            }
+            else if(temporaryInformation == TI_FROM_MS_DEG) {
+              if(regist == REGISTER_X) {
+                strcpy(prefix, "dd.mmss" STD_SPACE_FIGURE "=");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              }
+            }
+
             if(prefixWidth > 0) {
               if(regist == REGISTER_X) {
                 showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
