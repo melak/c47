@@ -400,15 +400,6 @@ void fnShowJM(uint16_t jmConfig) {                               //DONE
   case JC_ERPN:
     uIntToLongInteger(eRPN ? 1:0, mem);
     break;
-
-  case JM_INP_DFLT:
-    if(Input_Default == ID_43S) { stringToLongInteger("0",10,mem); }
-    else if(Input_Default == ID_DP) { stringToLongInteger("2",10,mem); }
-    else if(Input_Default == ID_CPXDP) { stringToLongInteger("4",10,mem); }
-    else if(Input_Default == ID_SI) { stringToLongInteger("6",10,mem); }
-    else if(Input_Default == ID_LI) { stringToLongInteger("7",10,mem); }
-    break;
-
   default:
     break;
   }
