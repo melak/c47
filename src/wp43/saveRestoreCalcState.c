@@ -333,7 +333,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&UNITDisplay,                        sizeof(UNITDisplay),                        BACKUP);
     save(&SigFigMode,                         sizeof(SigFigMode),                         BACKUP);
     save(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     BACKUP);
-    save(&Home3TimerMode,                     sizeof(Home3TimerMode),                     BACKUP);
     save(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
     save(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
     save(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);
@@ -626,7 +625,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&UNITDisplay,                        sizeof(UNITDisplay),                        BACKUP);
       restore(&SigFigMode,                         sizeof(SigFigMode),                         BACKUP);
       restore(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     BACKUP);
-      restore(&Home3TimerMode,                     sizeof(Home3TimerMode),                     BACKUP);
       restore(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
       restore(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
       restore(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);

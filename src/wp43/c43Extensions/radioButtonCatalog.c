@@ -117,7 +117,6 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
 /* 1906 */  { ITM_FG_LINE,          JC_FG_LINE,             CB_JC },  //fnSetSetJM
 /* 1911 */  { ITM_G_DOUBLETAP,      JC_G_DOUBLETAP,         CB_JC },  //fnSetSetJM
 /* 1679 */  { ITM_HOMEx3,           JC_HOME_TRIPLE,         CB_JC },  //fnSetSetJM
-/* 1770 */  { ITM_HOMEx3T,          JC_SH_3T,               CB_JC },  //fnSetSetJM
 /* 1680 */  { ITM_SHTIM,            JC_SHFT_4s,             CB_JC },  //fnSetSetJM
 /* 1943 */  { ITM_VECT,             JC_VECT,                CB_JC },  //fnSetSetJM
 /* 1943 */  { ITM_NVECT,            JC_NVECT,               CB_JC },  //fnSetSetJM
@@ -329,11 +328,6 @@ int8_t fnCbIsSet(int16_t item) {
 
         case JC_HOME_TRIPLE: {
           cb_param = HOME3;
-        }
-        break;
-
-        case JC_SH_3T: {
-          cb_param = Home3TimerMode;
         }
         break;
 

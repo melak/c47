@@ -259,8 +259,8 @@ void clear_fg_jm(void) {
 
 
 void fg_processing_jm(void) {
-  if(ShiftTimoutMode || Home3TimerMode) {
-    if(Home3TimerMode) {
+  if(ShiftTimoutMode || HOME3) {
+    if(HOME3) {
       if(fnTimerGetStatus(TO_3S_CTFF) == TMR_RUNNING) {
         JM_SHIFT_HOME_TIMER1++;
         if(JM_SHIFT_HOME_TIMER1 >= 3) {

@@ -24,7 +24,7 @@ Modes available in the mode menu:
 
 1. HOME.3    This switches on/off whether the HOME menu pops on/off within SH.3T timeout. This is a testing option, makes no sense in real life.
 2. SH.4s     ShiftTimoutMode:  This switches off the 4 second shift time-out
-3. SH.3T.    Home3TimerMode:   This switches off the 600 ms triple shift timer
+3. HOME.3    This switches off the 600 ms triple shift timer
 4. ERPN      This disables the stack duplication and lift after entry
 
 5. MYMENU
@@ -79,9 +79,8 @@ void reset_jm_defaults (int16_t toload);
 // Define variables that are saved with the config
 extern uint8_t SigFigMode;                                           //JM SIGFIG 
 extern bool_t eRPN;                                                  //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
-extern bool_t HOME3;                                                 //JM HOME Create a flag to enable or disable triple shift HOME3.
+extern bool_t HOME3;                                                 //JM HOME Create a flag to enable or disable triple shift HOME3; enable or disable TRIPLE SHIFT TIMER FOR HOME.
 extern bool_t ShiftTimoutMode;                                       //JM HOME Create a flag to enable or disable SHIFT TIMER CANCEL.
-extern bool_t Home3TimerMode;                                        //JM HOME Create a flag to enable or disable TRIPLE SHIFT TIMER FOR HOME.
 extern bool_t UNITDisplay;                                           //JM UNIT Create a flag to enable or disable unit display 
 extern bool_t SH_BASE_HOME;                                          //JM BASEHOME Create a flag to enable or disable triple shift
 extern int16_t Norm_Key_00_VAR;                                      //JM USER NORMAL
@@ -162,7 +161,6 @@ void fnRCL          (int16_t inp);
 #define JC_HOME_TRIPLE          2    // HOME.3
 #define JC_SHFT_4s              3    // SH_4s
 #define JC_BASE_HOME            4    // HOME
-#define JC_SH_3T                8    // SH.3T
 #define JC_BCR                  9    // CB ComplexResult
 #define JC_BLZ                 10    // CB LeadingZeros
 #define JC_PROPER              11    // CB FractionType

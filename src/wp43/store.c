@@ -399,7 +399,6 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(eRPN);
   storeToDtConfigDescriptor(HOME3);
   storeToDtConfigDescriptor(ShiftTimoutMode);
-  storeToDtConfigDescriptor(Home3TimerMode);
   storeToDtConfigDescriptor(UNITDisplay);
   storeToDtConfigDescriptor(SH_BASE_HOME);
   storeToDtConfigDescriptor(Norm_Key_00_VAR);

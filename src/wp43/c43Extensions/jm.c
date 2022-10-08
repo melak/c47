@@ -115,7 +115,6 @@ void reset_jm_defaults(int16_t toload) {
     eRPN = true;                 //TEMPORARY FOR TESTING         //JM eRPN Default. Create a flag to enable or disable eRPN. See bufferize.c
     HOME3 = true;                                                //JM HOME Default. Create a flag to enable or disable triple shift HOME3.
     ShiftTimoutMode = true;                                      //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER CANCEL.
-    Home3TimerMode = true;                                       //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER MODE FOR HOME.
     UNITDisplay = false;                                         //JM HOME Default. Create a flag to enable or disable UNIT display
     SH_BASE_HOME   = false;                                      //JM
     Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM
@@ -223,11 +222,6 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
 
   case JC_BASE_HOME:                                        //JM HOME
     SH_BASE_HOME = !SH_BASE_HOME;
-    fnRefreshState();                                 //drJM
-    break;
-
-  case JC_SH_3T:                                            //JM SH.3T
-    Home3TimerMode = !Home3TimerMode;
     fnRefreshState();                                 //drJM
     break;
 
@@ -1201,6 +1195,32 @@ kbd_usr[36].primary=ITM_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].
       kbd_usr[11].fShifted   = ITM_NULL;
       kbd_usr[11].gShifted   = ITM_NULL;
 
+      kbd_usr[27].primary    = ITM_GTO;
+      kbd_usr[27].fShifted   = ITM_LBL;
+      kbd_usr[27].gShifted   = ITM_RTN;
+
+      kbd_usr[13].primaryAim = ITM_K;
+      kbd_usr[14].primaryAim = ITM_L;
+      kbd_usr[15].primaryAim = ITM_M;
+      kbd_usr[18].primaryAim = ITM_N;
+      kbd_usr[19].primaryAim = ITM_O;
+      kbd_usr[20].primaryAim = ITM_P;
+      kbd_usr[21].primaryAim = ITM_Q;
+      kbd_usr[23].primaryAim = ITM_R;
+      kbd_usr[24].primaryAim = ITM_S;
+      kbd_usr[25].primaryAim = ITM_T;
+      kbd_usr[26].primaryAim = ITM_U;
+      kbd_usr[27].primaryAim = ITM_V;
+      kbd_usr[28].primaryAim = ITM_W;
+      kbd_usr[29].primaryAim = ITM_X;
+      kbd_usr[30].primaryAim = ITM_Y;
+      kbd_usr[31].primaryAim = ITM_Z;
+
+      jm_FG_LINE     = false;
+      jm_G_DOUBLETAP = false;
+      ShiftTimoutMode= false;
+      HOME3          = false;    
+      
       Norm_Key_00_VAR        = ITM_USERMODE;
       fnRefreshState();                                 //drJM
       fnSetFlag(FLAG_USER);
@@ -1213,6 +1233,10 @@ kbd_usr[36].primary=ITM_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].
     Norm_Key_00_VAR        = ITM_SIGMAPLUS;
     fnRefreshState();                                 //drJM
     fnClearFlag(FLAG_USER); //userModeEnabled = false;
+    jm_FG_LINE     = true;
+    jm_G_DOUBLETAP = true;
+    ShiftTimoutMode= true;
+    HOME3          = true;
     break;
 
 

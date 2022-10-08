@@ -274,7 +274,6 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(eRPN);             
     recallFromDtConfigDescriptor(HOME3);            
     recallFromDtConfigDescriptor(ShiftTimoutMode);  
-    recallFromDtConfigDescriptor(Home3TimerMode);   
     recallFromDtConfigDescriptor(UNITDisplay);      
     recallFromDtConfigDescriptor(SH_BASE_HOME);     
     recallFromDtConfigDescriptor(Norm_Key_00_VAR); 

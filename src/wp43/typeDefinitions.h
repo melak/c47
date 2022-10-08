@@ -171,7 +171,6 @@ typedef struct {
   bool_t eRPN;
   bool_t HOME3;
   bool_t ShiftTimoutMode;
-  bool_t Home3TimerMode;
   bool_t UNITDisplay;
   bool_t SH_BASE_HOME;
   bool_t SH_BASE_AHOME;
