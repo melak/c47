@@ -830,6 +830,11 @@ void fnJM(uint16_t JM_OPCODE) {
  ***********************************************/
 void fnUserJM(uint16_t jmUser) {
   switch(jmUser) {
+
+
+//---KEYS SIGMA+ ALLOCATIONS: U_CC
+//    1. MyMemu on Sigma+ (all modes)
+//-----------------------------------------------------------------------
   case USER_DEFAULTS:                                           //USER_DEFAULTS FOR USER: E+ CC
     kbd_usr[0].primary     = ITM_CC;
     //kbd_usr[0].fShifted    = ITM_RI;
@@ -840,6 +845,8 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
 
+//---KEYS SIGMA+ ALLOCATIONS: COPY SIGMA+ USER MODE primary to -> ALLMODE
+//-----------------------------------------------------------------------
   case USER_COPY:                                            //USER_COMPLEX FOR USER: U^ ENTER^ CC
     kbd_usr[0].primary     = Norm_Key_00_VAR;
     fnRefreshState();                                 //drJM
@@ -847,6 +854,10 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
 
+//---KEYS SIGMA+ ALLOCATIONS: U^CC meaning: 
+//    1. CC on f[ENTER] instead of COMPLEX in USER mode
+//    2. MyMemu on Sigma+ (all modes)
+//-----------------------------------------------------------------------
 #if defined (JM_LAYOUT_1A)  && !defined (TESTSUITE_BUILD)                          //JM LAYOUT 1A.
   case USER_COMPLEX:                                            //USER_COMPLEX FOR USER: U^ ENTER^ CC
     kbd_usr[12].fShifted   = ITM_CC;                            //JM Changed CPX menu therefore USER MODE changes
@@ -873,6 +884,9 @@ void fnUserJM(uint16_t jmUser) {
 #endif
 
 
+
+//---KEYS PROFILE: V43 LT
+//------------------------
   case USER_V43LT:
     #ifndef SAVE_SPACE_DM42 
         fnUserJM(USER_V43);
@@ -913,6 +927,8 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
 
+//---KEYS PROFILE: V43 RT
+//------------------------
   case USER_V43:          //USER
       #ifndef SAVE_SPACE_DM42 
           fnUserJM(USER_RESET);
@@ -1042,6 +1058,8 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
 
+//---KEYS PROFILE: C43
+//------------------------
   case USER_C43:          //USER
       fnUserJM(USER_RESET);
       #ifndef SAVE_SPACE_DM42 
@@ -1087,7 +1105,8 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
 
-
+//---KEYS PROFILE: DM42
+//------------------------
   case USER_DM42:
       fnUserJM(USER_RESET);
       #ifndef SAVE_SPACE_DM42_7
@@ -1134,6 +1153,8 @@ void fnUserJM(uint16_t jmUser) {
 
 
 
+//---KEYS PROFILE: WP43
+//------------------------
   case USER_43S:          //USER
     #ifndef SAVE_SPACE_DM42
      fnUserJM(USER_RESET);
@@ -1181,6 +1202,8 @@ kbd_usr[36].primary=ITM_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].
 
 
 
+//---KEYS PROFILE: C43-ALT
+//------------------------
   case USER_SHIFTS:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
     #ifndef SAVE_SPACE_DM42_7
       fnUserJM(USER_C43);  
@@ -1223,10 +1246,10 @@ kbd_usr[36].primary=ITM_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].
       kbd_usr[30].primaryAim = ITM_Y;
       kbd_usr[31].primaryAim = ITM_Z;
 
-      jm_FG_LINE     = false;
-      jm_G_DOUBLETAP = false;
-      ShiftTimoutMode= false;
-      HOME3          = false;    
+//      jm_FG_LINE     = false;
+//      jm_G_DOUBLETAP = false;
+//      ShiftTimoutMode= false;
+//      HOME3          = false;    
       
       Norm_Key_00_VAR        = ITM_USERMODE;
       fnRefreshState();                                 //drJM
@@ -1235,15 +1258,18 @@ kbd_usr[36].primary=ITM_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].
     break;
 
 
+
   case USER_RESET:                                              //USER_RESET 26
     xcopy(kbd_usr, kbd_std, sizeof(kbd_std));
     Norm_Key_00_VAR        = ITM_SIGMAPLUS;
     fnRefreshState();                                 //drJM
     fnClearFlag(FLAG_USER); //userModeEnabled = false;
-    jm_FG_LINE     = true;
-    jm_G_DOUBLETAP = true;
-    ShiftTimoutMode= true;
-    HOME3          = true;
+
+//    jm_FG_LINE     = true;
+//    jm_G_DOUBLETAP = true;
+//    ShiftTimoutMode= true;
+//    HOME3          = true;
+
     break;
 
 
