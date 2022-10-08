@@ -1188,16 +1188,23 @@ kbd_usr[36].primary=ITM_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].
       kbd_usr[9].primary     = -MNU_TRI;
       kbd_usr[9].gShifted    = ITM_SNAP;
       kbd_usr[9].fShifted    = ITM_CC;
+
       kbd_usr[10].primary    = ITM_SHIFTf;
       kbd_usr[10].fShifted   = ITM_NULL;
       kbd_usr[10].gShifted   = ITM_NULL;
+      kbd_usr[10].keyLblAim  = ITM_SHIFTf;
+      kbd_usr[10].primaryAim = ITM_SHIFTf;
+
       kbd_usr[11].primary    = ITM_SHIFTg;
       kbd_usr[11].fShifted   = ITM_NULL;
       kbd_usr[11].gShifted   = ITM_NULL;
+      kbd_usr[11].keyLblAim  = ITM_SHIFTg;
+      kbd_usr[11].primaryAim = ITM_SHIFTg;
 
       kbd_usr[27].primary    = ITM_GTO;
       kbd_usr[27].fShifted   = ITM_LBL;
       kbd_usr[27].gShifted   = ITM_RTN;
+      kbd_usr[27].keyLblAim  = ITM_V;
 
       kbd_usr[13].primaryAim = ITM_K;
       kbd_usr[14].primaryAim = ITM_L;

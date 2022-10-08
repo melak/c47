@@ -107,7 +107,7 @@ GtkWidget *lbl71G,  *lbl72G,  *lbl73G,  *lbl74G,  *lbl75G;
 GtkWidget *lbl71L,  *lbl72L,  *lbl73L,  *lbl74L,  *lbl75L;
 GtkWidget           *lbl72H,  *lbl73H;                      //JM
 GtkWidget *lbl71Gr, *lbl72Gr, *lbl73Gr, *lbl74Gr, *lbl75Gr;
-GtkWidget           *btn72A,  *btn73A,  *btn74A,  *btn75A;              //vv dr - new AIM
+GtkWidget *btn71A,  *btn72A,  *btn73A,  *btn74A,  *btn75A;              //vv dr - new AIM
 GtkWidget           *lbl72Fa, *lbl73Fa, *lbl74Fa, *lbl75Fa;             //^^
 
     GtkWidget *btn81,   *btn82,   *btn83,   *btn84,   *btn85;
@@ -1317,6 +1317,7 @@ void hideAllWidgets(void) {
   gtk_widget_hide(btn73);
   gtk_widget_hide(btn74);
   gtk_widget_hide(btn75);
+  gtk_widget_hide(btn71A);
   gtk_widget_hide(btn72A);  //vv dr - new AIM
   gtk_widget_hide(btn73A);
   gtk_widget_hide(btn74A);
@@ -1690,13 +1691,16 @@ void moveLabels(void) {
   xPos = calcLandscape ? X_LEFT_LANDSCAPE : X_LEFT_PORTRAIT;
 
   yPos += DELTA_KEYS_Y + 1;
-/*  gtk_widget_get_preferred_size(  lbl71F, NULL, &lblF); //JM REMOVE SHIFT LABELS
-  gtk_widget_get_preferred_size(  lbl71G, NULL, &lblG);
-  gtk_fixed_move(GTK_FIXED(grid), lbl71F, (2*xPos+KEY_WIDTH_1-lblF.width-GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);
-  gtk_fixed_move(GTK_FIXED(grid), lbl71G, (2*xPos+KEY_WIDTH_1+lblF.width+GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);
-  gtk_widget_get_preferred_size(  lbl71Gr, NULL, &lblG);
-  gtk_fixed_move(GTK_FIXED(grid), lbl71Gr, xPos+KEY_WIDTH_1*2/3,                              yPos - Y_OFFSET_GREEK);
-*/
+
+  if(getSystemFlag(FLAG_USER) ? kbd_usr[27].primary : kbd_std[27].primary != KEY_fg) {
+      gtk_widget_get_preferred_size(  lbl71F, NULL, &lblF); //JM REMOVE SHIFT LABELS
+      gtk_widget_get_preferred_size(  lbl71G, NULL, &lblG);
+      gtk_fixed_move(GTK_FIXED(grid), lbl71F, (2*xPos+KEY_WIDTH_1-lblF.width-GAP*0-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);  //Gap removed to cover up fixed squares
+      gtk_fixed_move(GTK_FIXED(grid), lbl71G, (2*xPos+KEY_WIDTH_1+lblF.width+GAP*0-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);  //Gap removed to cover up fixed squares
+      //  gtk_widget_get_preferred_size(  lbl71Gr, NULL, &lblG);
+      //  gtk_fixed_move(GTK_FIXED(grid), lbl71Gr, xPos+KEY_WIDTH_1*2/3,                              yPos - Y_OFFSET_GREEK);
+    }
+
   xPos += DELTA_KEYS_X + 18;
   gtk_widget_get_preferred_size(  lbl72F, NULL, &lblF);
   gtk_widget_get_preferred_size(  lbl72G, NULL, &lblG);
@@ -2390,8 +2394,10 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   gtk_widget_show(btn74);
   gtk_widget_show(btn75);
 
-//  gtk_widget_show(lbl71F); //JM REMOVE SHIFT LABEL
-//  gtk_widget_show(lbl71G); //JM REMOVE SHIFT LABEL
+  if(getSystemFlag(FLAG_USER) ? kbd_usr[27].primary : kbd_std[27].primary != KEY_fg) {
+    gtk_widget_show(lbl71F); //JM REMOVE SHIFT LABEL
+    gtk_widget_show(lbl71G); //JM REMOVE SHIFT LABEL
+  }
   gtk_widget_show(lbl71L);
   gtk_widget_show(lbl72H); //JM
   gtk_widget_show(lbl72F);
@@ -2521,7 +2527,7 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   labelCaptionAimFa(keys, lbl65Fa);
   labelCaptionAim(keys++, btn65A, lbl65Gr, lbl65L);     //^^
 
-  labelCaptionAim(keys++, btn71,  lbl71Gr, lbl71L);
+  labelCaptionAim(keys++, btn71A, lbl71Gr, lbl71L);
   labelCaptionAimFa(keys, lbl72Fa);                     //vv dr - new AIM
   labelCaptionAim(keys++, btn72A, lbl72Gr, lbl72L);
   labelCaptionAimFa(keys, lbl73Fa);
@@ -2697,6 +2703,7 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   gtk_widget_show(lbl65Gr); //JM ==
 
   gtk_widget_show(btn71);
+  gtk_widget_show(btn71A);
   gtk_widget_show(btn72A);      //vv dr - new AIM
   gtk_widget_show(btn73A);
   gtk_widget_show(btn74A);
@@ -2711,8 +2718,8 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   gtk_widget_show(lbl73Fa);
   gtk_widget_show(lbl74Fa);
   gtk_widget_show(lbl75Fa);     //^^
-  //gtk_widget_show(lbl71F);  //JM_          //JM REMOVE SHIFT LABEL
-  //gtk_widget_show(lbl75G); //JM_
+  gtk_widget_show(lbl71F);  //JM_          //JM REMOVE SHIFT LABEL
+  gtk_widget_show(lbl71G); //JM_
   gtk_widget_show(lbl71Gr);
   gtk_widget_show(lbl72Gr);
   gtk_widget_show(lbl73Gr);
@@ -3863,10 +3870,12 @@ void setupUI(void) {
   gtk_widget_set_tooltip_text(GTK_WIDGET(btn73), "2");
   gtk_widget_set_tooltip_text(GTK_WIDGET(btn74), "3");
   gtk_widget_set_tooltip_text(GTK_WIDGET(btn75), "-");  //JM
+  btn71A  = gtk_button_new();                           //vv dr - new AIM
   btn72A   = gtk_button_new();                          //vv dr - new AIM
   btn73A   = gtk_button_new();
   btn74A   = gtk_button_new();
   btn75A   = gtk_button_new();
+  gtk_widget_set_tooltip_text(GTK_WIDGET(btn71A), "V");
   gtk_widget_set_tooltip_text(GTK_WIDGET(btn72A), "X");
   gtk_widget_set_tooltip_text(GTK_WIDGET(btn73A), "Y");
   gtk_widget_set_tooltip_text(GTK_WIDGET(btn74A), "Z");
@@ -3899,6 +3908,7 @@ void setupUI(void) {
   lbl75Gr = gtk_label_new("");
 
   gtk_widget_set_size_request(btn71, KEY_WIDTH_1, 0);
+  gtk_widget_set_size_request(btn71A,KEY_WIDTH_1, 0);
   gtk_widget_set_size_request(btn72, KEY_WIDTH_2, 0);
   gtk_widget_set_size_request(btn73, KEY_WIDTH_2, 0);
   gtk_widget_set_size_request(btn74, KEY_WIDTH_2, 0);
@@ -3921,10 +3931,12 @@ void setupUI(void) {
   g_signal_connect(btn73, "button-release-event", G_CALLBACK(btnReleased), "29");
   g_signal_connect(btn74, "button-release-event", G_CALLBACK(btnReleased), "30");
   g_signal_connect(btn75, "button-release-event", G_CALLBACK(btnReleased), "31");
+  g_signal_connect(btn71A, "button-press-event", G_CALLBACK(btnPressed), "27");
   g_signal_connect(btn72A, "button-press-event", G_CALLBACK(btnPressed), "28");    //vv dr - new AIM
   g_signal_connect(btn73A, "button-press-event", G_CALLBACK(btnPressed), "29");
   g_signal_connect(btn74A, "button-press-event", G_CALLBACK(btnPressed), "30");
   g_signal_connect(btn75A, "button-press-event", G_CALLBACK(btnPressed), "31");
+  g_signal_connect(btn71A, "button-release-event", G_CALLBACK(btnPressed), "27");
   g_signal_connect(btn72A, "button-release-event", G_CALLBACK(btnReleased), "28");
   g_signal_connect(btn73A, "button-release-event", G_CALLBACK(btnReleased), "29");
   g_signal_connect(btn74A, "button-release-event", G_CALLBACK(btnReleased), "30");
@@ -3956,6 +3968,7 @@ void setupUI(void) {
   gtk_fixed_put(GTK_FIXED(grid), btn71,  xPos,                         yPos);
   //gtk_fixed_put(GTK_FIXED(grid), lbl71L, xPos + KEY_WIDTH_1 + X_OFFSET_LETTER, yPos + Y_OFFSET_LETTER); //JM
   //gtk_fixed_put(GTK_FIXED(grid), lbl71H, xPos + KEY_WIDTH_1 + X_OFFSET_LETTER, yPos -  1); //JM
+  gtk_fixed_put(GTK_FIXED(grid), btn71A, xPos,                         yPos);   //dr - new AIM
 
   xPos += DELTA_KEYS_X + 18;
   gtk_fixed_put(GTK_FIXED(grid), btn72,  xPos,                         yPos);
