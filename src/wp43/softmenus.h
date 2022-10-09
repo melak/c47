@@ -40,7 +40,7 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
    * \param[in] topLine    Draw a top line
    * \param[in] bottomLine Draw a bottom line
    */
-  void   showSoftkey            (const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue);     //dr);
+  void   showSoftkey            (const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText);     //dr);
 
 /**
    * Displays the current part of the displayed softmenu.

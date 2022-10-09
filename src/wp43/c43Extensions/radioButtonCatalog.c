@@ -559,6 +559,22 @@ int16_t fnItemShowValue(int16_t item) {
     result = significantDigits == 0 ? 34 : significantDigits;
     break;
 
+  case ITM_DSPCYCLE:     //
+    result = 32700 + displayFormat;
+    switch (displayFormat) {
+      case DF_ALL:
+      case DF_FIX: result += SigFigMode == 0 ? 0 : 3;
+      case DF_SCI:
+      case DF_ENG: result += UNITDisplay ? 2 : 0;
+      default: break;
+    }    
+    break;
+
+  case ITM_DSP:     //
+    result = displayFormatDigits;
+    break;
+
+
   case ITM_HIDE:     //
     result = exponentHideLimit;
     break;
@@ -651,7 +667,7 @@ void use_base_glyphs(char* tmp1, int16_t xx) {              // Needs non-local v
 
 
 
-char *figlabel(const char *label, int16_t showValue) {      //JM
+char *figlabel(const char *label, const char* showText, int16_t showValue) {      //JM
   char tmp1[12];
   tmp[0] = 0;
 
@@ -669,5 +685,16 @@ char *figlabel(const char *label, int16_t showValue) {      //JM
     strcat(tmp, tmp1);
   }
 
+  if(showText[0] != 0 && strlen(tmp)+strlen(showText) + 1 <= 12) {
+    //strcat(tmp, showText);
+    uint16_t ii = 0;
+    while (showText[ii] != 0) {
+       if(showText[ii]>='A' & showText[ii]<='Z') {
+         strcat(tmp, STD_SUB_A);
+         tmp[strlen(tmp)-1] += showText[ii]-'A';
+       }
+    ii++;
+    }
+  }
   return tmp;
 }                                                           //JM ^^

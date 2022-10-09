@@ -749,8 +749,8 @@ TO_QSPI const int16_t menu_HOME[360]     = { //JMHOMEDEMO: NOTE REMOVE CONST TO 
 
 /*HOME+1*/
                                            ITM_SI_p,                  ITM_SI_n,                ITM_SI_u,                 ITM_SI_m,                 ITM_SI_k,              ITM_SI_M,                         //JM HOME
-                                           ITM_SI_f,                  ITM_UNIT,                ITM_PARALLEL,             ITM_XFACT,                ITM_SI_G,              ITM_SI_T,                         //JM HOME                                    
-                                           ITM_DEG2,                  ITM_RAD2,                ITM_DRG,                  ITM_op_j,                 ITM_RECT,              ITM_POLAR,                        //JM UNITS SI
+                                           ITM_SI_f,                  ITM_DSPCYCLE,            ITM_DSP,                  ITM_XFACT,                ITM_SI_G,              ITM_SI_T,                         //JM HOME                                    
+                                           ITM_DEG2,                  ITM_RAD2,                ITM_DRG,                  ITM_PARALLEL,             ITM_RECT,              ITM_POLAR,                        //JM UNITS SI
 
 //##################################################################################################################################################################################################################################
 
@@ -1651,7 +1651,7 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
    * \param[in] bottomLine bool_t     Draw a bottom line
    * \return void
    ***********************************************/
-  void showSoftkey(const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue) {     //dr
+  void showSoftkey(const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {     //dr
     int16_t x1, y1, x2, y2;
     int16_t w;
     char l[15];
@@ -1712,18 +1712,18 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
     }
 
 //continue with trimmed label
-  w = stringWidth(figlabel(l, showValue), &standardFont, false, false);                      //JM & dr vv
+  w = stringWidth(figlabel(l, showText,showValue), &standardFont, false, false);                      //JM & dr vv
   if((showCb >= 0) || (w >= 50)) {
-    w = stringWidth(figlabel(l, showValue), &standardFont, false, false);
+    w = stringWidth(figlabel(l, showText, showValue), &standardFont, false, false);
     if(showCb >= 0) { w = w + 8; }
     compressString = 1;       //JM compressString
-    showString(figlabel(l, showValue), &standardFont, compressString + x1 + (xSoftkey == 5 ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
+    showString(figlabel(l, showText, showValue), &standardFont, compressString + x1 + (xSoftkey == 5 ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
 //  showString(l, &standardFont, x1 + (xSoftkey == 5 ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
     compressString = 0;       //JM compressString
   }
   else {
 //  w = stringWidth(l, &standardFont, false, false);
-     showString(figlabel(l, showValue), &standardFont, x1 + (xSoftkey == 5 ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
+     showString(figlabel(l, showText, showValue), &standardFont, x1 + (xSoftkey == 5 ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
   }                                                                                              //JM & dr ^^
 
 //  w = stringWidth(l, &standardFont, false, false);
@@ -1775,7 +1775,7 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {
       for(y=0; y<=2; y++) {
         for(x=0; x<6; x++) {
-          showSoftkey("", x, y, vmReverse, true, true, NOVAL, NOVAL);
+          showSoftkey("", x, y, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
         }
       }
       return;
@@ -1842,7 +1842,7 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
     if(m < NUMBER_OF_DYNAMIC_SOFTMENUS) { // Dynamic softmenu
       if(numberOfItems == 0) {
         for(x=0; x<6; x++) {
-          showSoftkey("", x, 0, vmNormal, true, true, NOVAL, NOVAL);
+          showSoftkey("", x, 0, vmNormal, true, true, NOVAL, NOVAL, NOTEXT);
         }
       }
       else {
@@ -1882,7 +1882,7 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
                     break;
                   }
                 }
-                showSoftkey((char *)ptr, x, y, vm, true, true, NOVAL, NOVAL);
+                showSoftkey((char *)ptr, x, y, vm, true, true, NOVAL, NOVAL, NOTEXT);
               }
               ptr += stringByteLength((char *)ptr) + 1;
             }
@@ -1922,8 +1922,19 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
                 //printf("item (-1)=%d \n",item);                 
               }
             }
-            int8_t showCb = fnCbIsSet(item%10000);                                  //dr
+            int8_t showCb = fnCbIsSet(item%10000);                 //JM vv          //dr
             int16_t showValue = fnItemShowValue(item%10000);                        //dr
+            char showText[10];
+            showText[0] = 0;
+            switch (showValue) {
+              case 32700 : strcat(showText, "ALL" ); showValue = NOVAL; break;
+              case 32701 : strcat(showText, "FIX" ); showValue = NOVAL; break;
+              case 32702 : strcat(showText, "SCI" ); showValue = NOVAL; break;
+              case 32703 : strcat(showText, "ENG" ); showValue = NOVAL; break;
+              case 32704 : strcat(showText, "SIG" ); showValue = NOVAL; break; 
+              case 32705 : strcat(showText, "UNIT"); showValue = NOVAL; break;
+              default: break;
+            }                                                     //JM ^^
 
           if(item < 0) { // softmenu
             int16_t menu = 0;
@@ -1940,22 +1951,22 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
             }
 //                showSoftkey(indexOfItems[-softmenu[menu].menuId].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true);
             else if(softmenu[menu].menuItem == -MNU_ALPHA_OMEGA && alphaCase == AC_UPPER) { //JMvv
-                showSoftkey(indexOfItems[MNU_ALPHA_OMEGA].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL);
+                showSoftkey(indexOfItems[MNU_ALPHA_OMEGA].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
             }     //JM ^^
             else if(softmenu[menu].menuItem == -MNU_ALPHA_OMEGA && alphaCase == AC_LOWER) { //JMvv
-                showSoftkey(indexOfItems[MNU_alpha_omega].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL);
+                showSoftkey(indexOfItems[MNU_alpha_omega].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
             }
             else {
                   //JMCHECKvv
 #ifdef INLINE_TEST                                                              //vv dr
               if(softmenu[menu].menuItem == -MNU_INL_TST) {
-                showSoftkey(/*STD_omicron*/STD_SPACE_3_PER_EM, x, y-currentFirstItem/6, vmNormal, false, false, NOVAL, NOVAL);
+                showSoftkey(/*STD_omicron*/STD_SPACE_3_PER_EM, x, y-currentFirstItem/6, vmNormal, false, false, NOVAL, NOVAL, NOTEXT);
               }
               else {
                   //JMCHECKvv
 
 #endif                                                                          //^^
-              showSoftkey(indexOfItems[-softmenu[menu].menuItem].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL);
+              showSoftkey(indexOfItems[-softmenu[menu].menuItem].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
 #ifdef INLINE_TEST                                                              //vv dr
               }
 #endif                                                                          //^^
@@ -1967,46 +1978,46 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
         else                                                                   //JMXEQvv
         if(softmenu[m].menuItem == -MNU_XEQ) {
           if(indexOfItems[item%10000].func == fnXEQMENU) {
-            showSoftkey(indexOfItemsXEQM + 8*(item%10000-fnXEQMENUpos),  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue);
+            showSoftkey(indexOfItemsXEQM + 8*(item%10000-fnXEQMENUpos),  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue,  showText);
           } else
-            showSoftkey(indexOfItems    [item%10000].itemSoftmenuName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue);
+            showSoftkey(indexOfItems    [item%10000].itemSoftmenuName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue,  showText);
         }                                                                      //JMXEQ^^
         else                                                                   //JMvv add radiobuttons
         if(softmenu[m].menuItem == -MNU_SYSFL) {
           if(indexOfItems[item%10000].itemCatalogName[0] != 0) {
             if(isSystemFlagWriteProtected(indexOfItems[item%10000].param)) {
-              showSoftkey(indexOfItems[item%10000].itemCatalogName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, getSystemFlag(indexOfItems[item%10000].param) ?  1 : 0);
+              showSoftkey(indexOfItems[item%10000].itemCatalogName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, getSystemFlag(indexOfItems[item%10000].param) ?  1 : 0, NOTEXT);
             }
             else {
-              showSoftkey(indexOfItems[item%10000].itemCatalogName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, getSystemFlag(indexOfItems[item%10000].param) ?  CB_TRUE : CB_FALSE, NOVAL);
+              showSoftkey(indexOfItems[item%10000].itemCatalogName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, getSystemFlag(indexOfItems[item%10000].param) ?  CB_TRUE : CB_FALSE, NOVAL, NOTEXT);
             }
           }
         }                                                                      //JM^^
 
             else if(item == 9999) {
-              showSoftkey(indexOfItems[getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS].itemSoftmenuName, x, y-currentFirstItem/6, vmNormal, true, true, NOVAL, NOVAL);
+              showSoftkey(indexOfItems[getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS].itemSoftmenuName, x, y-currentFirstItem/6, vmNormal, true, true, NOVAL, NOVAL, NOTEXT);
             }
             else if(item > 0 && indexOfItems[item%10000].itemSoftmenuName[0] != 0) { // softkey
               // item : +10000 -> no top line
               //        +20000 -> no bottom line
               //        +30000 -> neither top nor bottom line
               if(softmenu[m].menuItem == -MNU_FCNS) {
-                showSoftkey(indexOfItems[item%10000].itemCatalogName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue);
+                showSoftkey(indexOfItems[item%10000].itemCatalogName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
               }
 
               else                                                                            //JM vv display i or j properly on display
               if(item%10000 == ITM_op_j && getSystemFlag(FLAG_CPXj)) {
-                showSoftkey(STD_j, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue);
+                showSoftkey(STD_j, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
               }
               else if(item%10000 == ITM_op_j && !getSystemFlag(FLAG_CPXj)) {
-                showSoftkey(STD_i, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue);
+                showSoftkey(STD_i, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
               }                                                                                //JM ^^
               else if(item == ITM_PLOT || item == ITM_PLOT_LR || item == ITM_HPLOT  || item == ITM_DRAW || item == ITM_CFG || item == ITM_PLOT_STAT || (item == ITM_PLOT_LRALL) /*|| (item == ITM_TIMER)*/) {       //JMvv colour PLOT in reverse font to appear to be menus
-                showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue);
+                showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
               }                                                                                //JM^^
 
               else {
-                showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue);
+                showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
               }
 
               if(jm_G_DOUBLETAP && softmenu[m].menuItem == -MNU_ALPHA && y == 0 ){  // Indicate disabled double tap

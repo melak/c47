@@ -864,6 +864,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnSetSetJM                 (uint16_t unusedButMandatoryParameter) {}
   void fnDisplayFormatSigFig      (uint16_t unusedButMandatoryParameter) {}
   void fnDisplayFormatUnit        (uint16_t unusedButMandatoryParameter) {}
+  void fnDisplayFormatCycle       (uint16_t unusedButMandatoryParameter) {}
   void fnShowJM                   (uint16_t unusedButMandatoryParameter) {}
   void fnUserJM                   (uint16_t unusedButMandatoryParameter) {}
   void fnSigmaAssign              (uint16_t unusedButMandatoryParameter) {}
@@ -2859,7 +2860,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1861 */  { fnSetSetJM,                   JC_H_SUM,                    "",                                            "SUMRY",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JMHOME
 /* 1862 */  { fnSetSetJM,                   JC_H_MIR,                    "",                                            "REPLCA",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JMHOME
 /* 1863 */  { fnSetSetJM,                   JC_H_FIX,                    "",                                            "FIXED",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JMHOME
-/* 1864 */  { itemToBeCoded,                NOPARAM,                     "1864",                                        "1864",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1864 */  { fnDisplayFormatCycle,         NOPARAM,                     STD_SUN,                                       STD_SUN,                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM UNIT
 /* 1865 */  { fnSetSetJM,                   JC_LARGELI,                  "LARGELI",                                     "LRG_LI",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1866 */  { fnDisplayFormatSigFig,        TM_VALUE,                    "SIG",                                         "SIG",                                         (0 << TAM_MAX_BITS) |    15, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM SIGFIG
 /* 1867 */  { fnDisplayFormatUnit,          TM_VALUE,                    "UNIT",                                        "UNIT",                                        (0 << TAM_MAX_BITS) |    15, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM UNIT

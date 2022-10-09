@@ -1929,7 +1929,7 @@
 #define ITM_H_SUMRY                 1861
 #define ITM_H_REPLCA                1862
 #define ITM_H_FIXED                 1863
-#define ITM_1864                    1864
+#define ITM_DSPCYCLE                1864
 #define ITM_LARGELI                 1865
 #define ITM_SIGFIG                  1866
 #define ITM_UNIT                    1867
