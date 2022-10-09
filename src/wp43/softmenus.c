@@ -155,7 +155,7 @@ TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_
                                              ITM_M_INSR,                    ITM_NULL,                   ITM_M_DELR,               ITM_M_GOTO,            ITM_M_WRAP,                  ITM_M_GROW                    };  //JM
 
 
-#if defined (INLINE_TEST)
+#if defined (INLINE_TEST) && defined (DMCP_BUILD)
   #define ITM_TST -MNU_INL_TST
 #else
   #define ITM_TST ITM_RESERVE
@@ -175,9 +175,9 @@ TO_QSPI const int16_t menu_MODE[]        = { ITM_DRG,                       ITM_
                                              ITM_SETSIG2,                   ITM_RMODE,                  ITM_EXFRAC,               ITM_DENANY,            ITM_DENFIX,                  ITM_NULL,        //JM
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_INP_DEF_SI,              ITM_NULL,                          //JM
 
-                                             ITM_NO_BASE_SCREEN,            ITM_BASE_HOME,             ITM_G_DOUBLETAP,           ITM_NULL,              ITM_SHTIM,                   ITM_HOMEx3,                    //JM
-                                             ITM_SAFERESET,                 ITM_TST,                   ITM_SYS,                   ITM_NULL,              ITM_NULL,                    ITM_FG_LINE,                        //JM
-                                             ITM_NULL,                      ITM_NULL,                  ITM_NULL,                  ITM_H_SUMRY,           ITM_H_REPLCA,                ITM_H_FIXED                    };
+                                             ITM_NO_BASE_SCREEN,            ITM_BASE_HOME,             ITM_HOMEx3,                ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
+                                             ITM_SAFERESET,                 ITM_TST,                   ITM_NULL,                  ITM_NULL,              ITM_NULL,                    ITM_NULL,                        //JM
+                                             ITM_SYS,                       ITM_NULL,                  ITM_NULL,                  ITM_H_SUMRY,           ITM_H_REPLCA,                ITM_H_FIXED                    };
 
 
 TO_QSPI const int16_t menu_PARTS[]       = { ITM_IP,                        ITM_FP,                     ITM_MANT,                 ITM_EXPT,              ITM_SIGN,                    ITM_DECOMP,
