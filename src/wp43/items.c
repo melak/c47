@@ -143,7 +143,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     screenUpdatingMode = SCRUPD_AUTO;
     } 
     else {
-      #ifdef PC_BUILD
+      #if defined (PC_BUILD) && VERBOSE_LEVEL > -1
         printf("   >>>   reallyRunFunction: §%s§%s§\n",indexOfItems[abs(func)].itemCatalogName, indexOfItems[abs(func)].itemSoftmenuName);
       #endif // PC_BUILD
     }
