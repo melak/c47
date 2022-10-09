@@ -621,26 +621,21 @@ void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *di
 
 void fnDisplayFormatCycle (uint16_t unusedButMandatoryParameter) {
   if(displayFormat == DF_ALL) {
-    fnDisplayFormatFix(displayFormatDigits);
-  } else
-  if(displayFormat == DF_FIX && SigFigMode == 0)
-  {
-    fnDisplayFormatSci(displayFormatDigits);
-  } else
-  if(displayFormat == DF_SCI)
-  {
-    fnDisplayFormatEng(displayFormatDigits);
-  } else
-  if(displayFormat == DF_ENG && !UNITDisplay)
-  {
-    fnDisplayFormatSigFig(displayFormatDigits);
-  } else
-  if(displayFormat == DF_FIX && SigFigMode != 0 ) //DF_SF)
-  {
     fnDisplayFormatUnit(displayFormatDigits);
   } else
-  if(displayFormat == DF_ENG && UNITDisplay ) //DF_UN)
-  {
+  if(displayFormat == DF_ENG && UNITDisplay) { //DF_UN)
+    fnDisplayFormatSigFig(displayFormatDigits);
+  } else
+  if(displayFormat == DF_FIX && SigFigMode != 0 ) { //DF_SF)
+    fnDisplayFormatFix(displayFormatDigits);
+  } else
+  if(displayFormat == DF_FIX && SigFigMode == 0) {
+    fnDisplayFormatSci(displayFormatDigits);
+  } else
+  if(displayFormat == DF_SCI) {
+    fnDisplayFormatEng(displayFormatDigits); 
+  } else
+  if(displayFormat == DF_ENG && !UNITDisplay) {
     fnDisplayFormatAll(displayFormatDigits);
   }
 }

@@ -562,10 +562,10 @@ int16_t fnItemShowValue(int16_t item) {
   case ITM_DSPCYCLE:     //
     result = 32700 + displayFormat;
     switch (displayFormat) {
-      case DF_ALL:
-      case DF_FIX: result += SigFigMode == 0 ? 0 : 3;
-      case DF_SCI:
-      case DF_ENG: result += UNITDisplay ? 2 : 0;
+      case DF_ALL: break;
+      case DF_FIX: result += SigFigMode == 0 ? 0 : 3; break;
+      case DF_SCI: break;
+      case DF_ENG: result += UNITDisplay ? 2 : 0; break;
       default: break;
     }    
     break;
@@ -689,7 +689,7 @@ char *figlabel(const char *label, const char* showText, int16_t showValue) {    
     //strcat(tmp, showText);
     uint16_t ii = 0;
     while (showText[ii] != 0) {
-       if(showText[ii]>='A' & showText[ii]<='Z') {
+       if(showText[ii]>='A' && showText[ii]<='Z') {
          strcat(tmp, STD_SUB_A);
          tmp[strlen(tmp)-1] += showText[ii]-'A';
        }
