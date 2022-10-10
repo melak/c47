@@ -1267,8 +1267,8 @@ kbd_usr[36].primary=ITM_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].
 
       kbd_usr[7].gShifted    = ITM_XTHROOT;
       kbd_usr[8].gShifted    = ITM_Rup;
-      kbd_usr[13].gShifted   = MNU_STK;
-      kbd_usr[14].gShifted   = MNU_TRI;
+      kbd_usr[13].gShifted   = -MNU_STK;
+      kbd_usr[14].gShifted   = -MNU_TRI;
       
       Norm_Key_00_VAR        = ITM_DRG;
       fnRefreshState();                                 //drJM
