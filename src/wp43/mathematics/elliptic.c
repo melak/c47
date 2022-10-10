@@ -35,8 +35,8 @@
 #include "mathematics/ln.h"
 #include "mathematics/magnitude.h"
 #include "mathematics/multiplication.h"
-#include "mathematics/power.h"
 #include "mathematics/sin.h"
+#include "mathematics/squareRoot.h"
 #include "mathematics/tan.h"
 #include "mathematics/tanh.h"
 #include "mathematics/wp34s.h"
@@ -44,32 +44,10 @@
 #include "realType.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+
 #include "wp43.h"
 
 #define ELLIPTIC_N 16
-
-#ifdef SAVE_SPACE_DM42_12
-void fnJacobiSn       (uint16_t unusedButMandatoryParameter){}
-void fnJacobiCn       (uint16_t unusedButMandatoryParameter){}
-void fnJacobiDn       (uint16_t unusedButMandatoryParameter){}
-void fnJacobiAmplitude(uint16_t unusedButMandatoryParameter){}
-void fnEllipticK      (uint16_t unusedButMandatoryParameter){}
-void fnEllipticE      (uint16_t unusedButMandatoryParameter){}
-void fnEllipticPi     (uint16_t unusedButMandatoryParameter){}
-void fnEllipticFphi   (uint16_t unusedButMandatoryParameter){}
-void fnEllipticEphi   (uint16_t unusedButMandatoryParameter){}
-void fnJacobiZeta     (uint16_t unusedButMandatoryParameter){}
-void jacobiElliptic   (const real_t *u, const real_t *m, real_t *am, real_t *sn, real_t *cn, real_t *dn, realContext_t *realContext){}
-void jacobiComplexAm  (const real_t *ur, const real_t *ui, const real_t *m, real_t *rr, real_t *ri, realContext_t *realContext){}
-void jacobiComplexSn  (const real_t *ur, const real_t *ui, const real_t *m, real_t *rr, real_t *ri, realContext_t *realContext){}
-void jacobiComplexCn  (const real_t *ur, const real_t *ui, const real_t *m, real_t *rr, real_t *ri, realContext_t *realContext){}
-void jacobiComplexDn  (const real_t *ur, const real_t *ui, const real_t *m, real_t *rr, real_t *ri, realContext_t *realContext){}
-void ellipticKE       (const real_t *m, real_t *k, real_t *ki, real_t *e, real_t *ei, realContext_t *realContext){}
-void ellipticPi       (const real_t *n, const real_t *m, real_t *res, real_t *resi, realContext_t *realContext){}
-void ellipticF        (const real_t *phi, const real_t *psi, const real_t *m, real_t *res, real_t *resi, realContext_t *realContext){}
-void ellipticE        (const real_t *phi, const real_t *psi, const real_t *m, real_t *res, real_t *resi, realContext_t *realContext){}
-void jacobiZeta       (const real_t *phi, const real_t *psi, const real_t *m, real_t *res, real_t *resi, realContext_t *realContext){}
-#else
 
 static void _calc_real_elliptic(real_t *sn, real_t *cn, real_t *dn, const real_t *u, const real_t *m, realContext_t *realContext) {
   real_t a, b, e, f, g;
@@ -541,7 +519,7 @@ static void _ellipticFE_lambda_mu(const real_t *phi, const real_t *psi, const re
   }
   else {
     divRealComplex(const_1, &cot2Lambda, &cot2LambdaI, lambda, lambdaI, realContext);
-    PowerComplex(lambda, lambdaI, const_1on2, const_0, lambda, lambdaI, realContext);
+    sqrtComplex(lambda, lambdaI, lambda, lambdaI, realContext);
     ArctanComplex(lambda, lambdaI, lambda, lambdaI, realContext);
 
     if(realIsZero(&cot2Lambda) && realIsZero(&cot2LambdaI)) {
@@ -551,7 +529,7 @@ static void _ellipticFE_lambda_mu(const real_t *phi, const real_t *psi, const re
       realFMA(&tan2Phi, &cot2Lambda, const__1, mu, realContext); realMultiply(&tan2Phi, &cot2LambdaI, muI, realContext);
     }
     realDivide(mu, m, mu, realContext); realDivide(muI, m, muI, realContext);
-    PowerComplex(mu, muI, const_1on2, const_0, mu, muI, realContext);
+    sqrtComplex(mu, muI, mu, muI, realContext);
     ArctanComplex(mu, muI, mu, muI, realContext);
   }
 }
@@ -598,7 +576,7 @@ static void _ellipticF_2(const real_t *phi, const real_t *m, real_t *res, realCo
   // assumes phi is real and 0 ≤ m ≤ 1
   // Abramowitz & Stegun §17.4.1, §17.4.3
   real_t phi1, phiQuotient, phiRemainder;
-  bool_t remainderNegative = false;
+  bool_t   remainderNegative = false;
 
   realCopyAbs(phi, &phi1);
   realDivide(&phi1, const_pi, &phiQuotient, realContext);
@@ -758,7 +736,7 @@ static void _ellipticF_5(const real_t *phi, const real_t *psi, const real_t *m, 
 void ellipticF(const real_t *phi, const real_t *psi, const real_t *m, real_t *res, real_t *resi, realContext_t *realContext) {
   // Abramowitz & Stegun §17.4.1, §17.4.3
   real_t phi1, phiQuotient, phiRemainder, psi1;
-  bool_t remainderNegative = false;
+  bool_t   remainderNegative = false;
 
   realCopy(phi, &phi1); realCopy(psi, &psi1);
   if(realIsNegative(phi)) {
@@ -963,7 +941,7 @@ void ellipticE(const real_t *phi, const real_t *psi, const real_t *m, real_t *re
     #define M1            (tmpVal + 24)
 
     if((tmpVal = allocWp43(25 * REAL_SIZE))) {
-      bool_t remainderNegative = realIsNegative(&phiRemainder);
+      bool_t           remainderNegative = realIsNegative(&phiRemainder);
       realContext_t *realContext2 = &ctxtReal51;
       realContext_t *realContext3 = &ctxtReal75;
 
@@ -982,7 +960,7 @@ void ellipticE(const real_t *phi, const real_t *psi, const real_t *m, real_t *re
 
       realMultiply(m, SIN2_LAMBDA, B1, realContext2); realMultiply(m, SIN2_LAMBDA_I, B1_I, realContext2);
       realSubtract(const_1, B1, B2, realContext2); realSubtract(const_0, B1_I, B2_I, realContext2);
-      PowerComplex(B2, B2_I, const_1on2, const_0, B1, B1_I, realContext2);
+      sqrtComplex(B2, B2_I, B1, B1_I, realContext2);
       mulComplexComplex(SIN2_MU, SIN2_MU_I, B1, B1_I, B1, B1_I, realContext2);
       mulComplexComplex(COS_LAMBDA, COS_LAMBDA_I, B1, B1_I, B1, B1_I, realContext2);
       mulComplexComplex(SIN_LAMBDA, SIN_LAMBDA_I, B1, B1_I, B1, B1_I, realContext2);
@@ -990,7 +968,7 @@ void ellipticE(const real_t *phi, const real_t *psi, const real_t *m, real_t *re
 
       realMultiply(M1, SIN2_MU, B3, realContext2); realMultiply(M1, SIN2_MU_I, B3_I, realContext2);
       realSubtract(const_1, B3, B3, realContext2); realSubtract(const_0, B3_I, B3_I, realContext2);
-      PowerComplex(B3, B3_I, const_1on2, const_0, B3, B3_I, realContext2);
+      sqrtComplex(B3, B3_I, B3, B3_I, realContext2);
       mulComplexComplex(B2, B2_I, B3, B3_I, B2, B2_I, realContext2);
       mulComplexComplex(B2, B2_I, SIN_MU, SIN_MU_I, B2, B2_I, realContext2);
       mulComplexComplex(B2, B2_I, COS_MU, COS_MU_I, B2, B2_I, realContext2);
@@ -1179,7 +1157,7 @@ static void _jacobiZeta(const real_t *phi, const real_t *psi, const real_t *m, r
 
 void jacobiZeta(const real_t *phi, const real_t *psi, const real_t *m, real_t *res, real_t *resi, realContext_t *realContext) {
   real_t v, vi;
-  bool_t negative = realIsNegative(phi);
+  bool_t   negative = realIsNegative(phi);
 
   if(realIsZero(m)) {
     realZero(res); realZero(resi);
@@ -1372,7 +1350,7 @@ void ellipticPi(const real_t *n, const real_t *m, real_t *res, real_t *resi, rea
 
 
 void fnJacobiSn(uint16_t unusedButMandatoryParameter) {
-  bool_t realInput;
+  bool_t   realInput;
   real_t m, uReal, uImag;
   real_t rReal, rImag;
 
@@ -1400,7 +1378,7 @@ void fnJacobiSn(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnJacobiCn(uint16_t unusedButMandatoryParameter) {
-  bool_t realInput;
+  bool_t   realInput;
   real_t m, uReal, uImag;
   real_t rReal, rImag;
 
@@ -1428,7 +1406,7 @@ void fnJacobiCn(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnJacobiDn(uint16_t unusedButMandatoryParameter) {
-  bool_t realInput;
+  bool_t   realInput;
   real_t m, uReal, uImag;
   real_t rReal, rImag;
 
@@ -1456,7 +1434,7 @@ void fnJacobiDn(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnJacobiAmplitude(uint16_t unusedButMandatoryParameter) {
-  bool_t realInput;
+  bool_t   realInput;
   real_t m, uReal, uImag;
   real_t rReal, rImag;
 
@@ -1594,7 +1572,7 @@ void fnEllipticE(uint16_t unusedButMandatoryParameter) {
 
 void fnEllipticPi(uint16_t unusedButMandatoryParameter) {
   real_t m, ur, ui, rr, ri;
-  bool_t realInput;
+  bool_t   realInput;
 
   if(!jacobi_check_inputs(&m, &ur, &ui, &realInput)) {
     return;
@@ -1642,7 +1620,7 @@ void fnEllipticPi(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnEllipticFphi(uint16_t unusedButMandatoryParameter) {
-  bool_t realInput;
+  bool_t   realInput;
   real_t m, uReal, uImag;
   real_t rReal, rImag;
 
@@ -1684,7 +1662,7 @@ void fnEllipticFphi(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnEllipticEphi(uint16_t unusedButMandatoryParameter) {
-  bool_t realInput;
+  bool_t   realInput;
   real_t m, uReal, uImag;
   real_t rReal, rImag;
 
@@ -1726,7 +1704,7 @@ void fnEllipticEphi(uint16_t unusedButMandatoryParameter) {
 }
 
 void fnJacobiZeta(uint16_t unusedButMandatoryParameter) {
-  bool_t realInput;
+  bool_t   realInput;
   real_t m, uReal, uImag;
   real_t rReal, rImag;
 
@@ -1766,6 +1744,3 @@ void fnJacobiZeta(uint16_t unusedButMandatoryParameter) {
 
   adjustResult(REGISTER_X, true, true, REGISTER_X, -1, -1);
 }
-
-#endif //SAVE_SPACE_DM42_12
-

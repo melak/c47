@@ -1855,7 +1855,7 @@
 #define ITM_HISTOY                  1791
 #define ITM_HPLOT                   1792
 #define ITM_HNORM                   1793
-#define MNU_1794                    1794
+#define ITM_SQRT1PX2                1794
 
 
 
