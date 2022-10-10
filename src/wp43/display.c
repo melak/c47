@@ -139,6 +139,8 @@ void fnDisplayFormatDsp(uint16_t displayFormatN) {
   displayFormatDigits = displayFormatN;
   clearSystemFlag(FLAG_FRACT);
 //  constantFractionsOn = false; //JM
+
+  fnRefreshState();                              //drJM
 }
 
 
@@ -2470,7 +2472,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
     char *separator;
 
     displayFormat = DF_ALL;
-    displayFormatDigits = 0;
+    displayFormatDigits = 3;
 
     #define lowest_SHOW REGISTER_X //0                // Lowest register. Change to 0 for all registers, or use REGISTER_X 
     switch(fnShow_param) {

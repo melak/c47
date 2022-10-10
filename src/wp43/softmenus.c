@@ -2177,7 +2177,9 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
       softmenuStack[0].softmenuId = mm_MNU_ALPHA;
     } 
                                                               //JM ^^
-        softmenuStack[0].firstItem = 0;
+    if(softmenuStack[0].softmenuId != mm_MNU_HOME) {          //JM reset menu base point only if not HOME menu
+      softmenuStack[0].firstItem = 0;
+    }
 
     enterAsmModeIfMenuIsACatalog(softmenu[softmenuStack[0].softmenuId].menuItem);
 
