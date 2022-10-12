@@ -747,7 +747,7 @@ TO_QSPI const function_t indexOfFunctions[] = {
 //           {ITM_Ek,   "E(M)"},
 //           {ITM_PInk,   "PI(N,M)"},
            {ITM_EXIT1,   "EXIT"},
-//           {ITM_ANGLE,   "ANGLE"},
+//           {ITM_ARG,   "ARG"},
            {ITM_AIM,   "ALPHA"},
            {ITM_dotD,   "DOTD"},
 //           {ITM_SHOW,   "SHOW"},

@@ -52,7 +52,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
  {31,   ITM_STO,         ITM_ASSIGN,      ITM_SAVE,        ITM_NULL,        ITM_G,             ITM_ASSIGN,            ITM_GAMMA,     ITM_NULL     },
  {32,   ITM_RCL,         ITM_RBR,         ITM_VIEW,        ITM_NULL,        ITM_H,             ITM_RBR,               ITM_CHI,       ITM_HEX      }, // if f or g are changed: adapt the function btnClicked section if(calcMode == CM_NIM) in keyboard.c. Case H for hexadecimal base
  {33,   ITM_Rdown,       ITM_Rup,        -MNU_CPX,         ITM_NULL,        ITM_I,             ITM_DOWN_ARROW,        ITM_IOTA,      ITM_REG_I    },
- {34,   ITM_CC,          ITM_MAGNITUDE,   ITM_ANGLE,       ITM_NULL,        ITM_J,             ITM_VERTICAL_BAR,      ITM_ETA,       ITM_REG_J    },
+ {34,   ITM_CC,          ITM_MAGNITUDE,   ITM_ARG,         ITM_NULL,        ITM_J,             ITM_VERTICAL_BAR,      ITM_ETA,       ITM_REG_J    },
  {35,   ITM_SHIFTf,      ITM_NULL,        ITM_SNAP,        ITM_SHIFTf,      ITM_SHIFTf,        ITM_NULL,              ITM_SNAP,      ITM_SHIFTf   },
  {36,   ITM_SHIFTg,      ITM_USERMODE,    ITM_NULL,        ITM_SHIFTg,      ITM_SHIFTg,        ITM_USERMODE,          ITM_NULL,      ITM_SHIFTg   },
 
@@ -98,7 +98,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
       {25,   ITM_LN,            ITM_EXP,           ITM_toREC2,        ITM_NULL,          ITM_E,             ITM_e,             ITM_LN_SIGN,        ITM_E              },
       {26,   ITM_XEQ,           ITM_AIM,           ITM_toPOL2,        ITM_NULL,          ITM_F,             ITM_f,             ITM_alpha,          ITM_alpha          },
 
-      {31,   ITM_STO,           ITM_MAGNITUDE,     ITM_ANGLE,         ITM_NULL,          ITM_G,             ITM_g,             ITM_VERTICAL_BAR,   ITM_NULL           },
+      {31,   ITM_STO,           ITM_MAGNITUDE,     ITM_ARG,           ITM_NULL,          ITM_G,             ITM_g,             ITM_VERTICAL_BAR,   ITM_NULL           },
       {32,   ITM_RCL,           ITM_PC,            ITM_DELTAPC,       ITM_NULL,          ITM_H,             ITM_h,             ITM_DELTA,          ITM_HEX            },
       {33,   ITM_Rdown,         ITM_CONSTpi,       ITM_XTHROOT,       ITM_NULL,          ITM_I,             ITM_i,             ITM_pi,             ITM_REG_I          },
       {34,   ITM_sin,           ITM_arcsin,        ITM_GTO,           ITM_NULL,          ITM_J,             ITM_j,             ITM_SIN_SIGN,       ITM_REG_J          },
@@ -149,7 +149,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
       {26,   ITM_XEQ,           ITM_GTO,           ITM_toPOL2,        ITM_NULL,          ITM_F,             ITM_f,             ITM_alpha,          ITM_alpha          },
 
       {31,   ITM_STO,           KEY_COMPLEX,       ITM_MAGNITUDE,     ITM_NULL,          ITM_G,             ITM_g,             ITM_VERTICAL_BAR,   ITM_NULL           },
-      {32,   ITM_RCL,           ITM_PC,            ITM_ANGLE,         ITM_NULL,          ITM_H,             ITM_h,             ITM_DELTA,          ITM_HEX            },
+      {32,   ITM_RCL,           ITM_PC,            ITM_ARG,           ITM_NULL,          ITM_H,             ITM_h,             ITM_DELTA,          ITM_HEX            },
       {33,   ITM_Rdown,         ITM_CONSTpi,       ITM_XTHROOT,       ITM_NULL,          ITM_I,             ITM_i,             ITM_pi,             ITM_REG_I          },
       {34,   ITM_sin,           ITM_arcsin,        ITM_CC,            ITM_NULL,          ITM_J,             ITM_j,             ITM_SIN_SIGN,       ITM_REG_J          },
       {35,   ITM_cos,           ITM_arccos,        ITM_LBL,           ITM_NULL,          ITM_K,             ITM_k,             ITM_COS_SIGN,       ITM_REG_K          },

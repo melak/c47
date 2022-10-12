@@ -948,18 +948,13 @@ void kill_ASB_icon(void) {
           case ITM_MULPIto :
           case ITM_Kk :
           case ITM_Ek:
+          case ITM_ARG:
 #endif //SAVE_SPACE_DM42_11          
           case ITM_op_a :                //C43
           case ITM_op_a2:                //C43
           case ITM_op_j :                //C43
           case ITM_EE_EXP_TH: {           //C43
-            if(item == ITM_ANGLE) item = ITM_ARG;
             mimRunFunction(item, indexOfItems[item].param);
-            break;
-          }
-
-          case ITM_ANGLE: {
-            mimRunFunction(ITM_ARG, indexOfItems[ITM_ARG].param);
             break;
           }
 
