@@ -647,7 +647,7 @@ void fnDisplayFormatCycle (uint16_t unusedButMandatoryParameter) {
 void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
   if(AMODE == TM_HMS) {
     if(getRegisterDataType(REGISTER_X) == dtTime)
-      return;
+      goto to_return;
     if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) != amNone)
       fnCvtFromCurrentAngularMode(amDegree);
     fnKeyDotD(0);
@@ -677,11 +677,19 @@ void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
   fnRefreshState();
   refreshStatusBar();
 #endif //!TESTSUITE_BUILD
+
+  to_return:
+  copySourceRegisterToDestRegister(SAVED_REGISTER_L, REGISTER_L);
 }
 
 
 void fnDRG(uint16_t unusedButMandatoryParameter) {
+if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+  goto to_return;
+} 
+
 uint16_t dest = 9999;
+
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {                  // If shortinteger in X, convert to real
     convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone); //is probably none already
@@ -695,7 +703,7 @@ uint16_t dest = 9999;
 
     if(dest != amNone && dest != currentAngularMode) {                     //first step: covert tagged angle to ADM
       fnCvtToCurrentAngularMode(dest);
-      return;
+      goto to_return;
     }
 
     switch(dest) {
@@ -703,7 +711,6 @@ uint16_t dest = 9999;
       case amRadian:    dest = amGrad;              break;
       case amGrad:      dest = amDegree;            break;
       case amDegree:    dest = amRadian;            break;
-
       case amDMS:       dest = amDegree;            break;
       case amMultPi:    dest = amRadian;            break; //do not support Mulpi but at least get out of it
       default:      break;
@@ -711,6 +718,8 @@ uint16_t dest = 9999;
     fnCvtFromCurrentAngularMode(dest);
     currentAngularMode = dest;
   }
+
+/* Remove complex number support and cycling 8-level stack support
   else //if(getRegisterDataType(REGISTER_X) == dtComplex34)
   {
     dest = currentAngularMode;
@@ -719,7 +728,6 @@ uint16_t dest = 9999;
       case amRadian:    dest = amGrad;              break;
       case amGrad:      dest = amDegree;            break;
       case amDegree:    dest = amRadian;            break;
-
       case amDMS:       dest = amDegree;            break;
       case amMultPi:    dest = amRadian;            break; //do not support Mulpi but at least get out of it
       default:      break;
@@ -736,6 +744,9 @@ uint16_t dest = 9999;
     if(getRegisterDataType(REGISTER_C) == dtReal34 && getRegisterAngularMode(REGISTER_C) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_C, dest);
     if(getRegisterDataType(REGISTER_D) == dtReal34 && getRegisterAngularMode(REGISTER_D) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_D, dest);
   }
+*/
+  to_return:
+  copySourceRegisterToDestRegister(SAVED_REGISTER_L, REGISTER_L);
 }
 
 

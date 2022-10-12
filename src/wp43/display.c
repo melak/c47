@@ -140,6 +140,10 @@ void fnDisplayFormatDsp(uint16_t displayFormatN) {
   clearSystemFlag(FLAG_FRACT);
 //  constantFractionsOn = false; //JM
 
+
+  if(SigFigMode != 0) {             //JM
+    SigFigMode = displayFormatN;    //JM
+  }                                 //JM
   fnRefreshState();                              //drJM
 }
 
