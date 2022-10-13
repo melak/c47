@@ -1579,9 +1579,11 @@ void force_refresh(void) {
   showFunctionNameItem = item;
   if(running_program_jm) return;                             //JM
   showFunctionNameCounter = delayInMs;
-  strcpy(padding,functionName);   //JM
+  strcpy(padding,functionName);                              //JM
   strcat(padding,"    ");                                    //JM
-  clearRegisterLine(REGISTER_T, true, false);
+  if(stringWidth(padding, &standardFont, true, true) + 1 /*JM 20*/ + lineTWidth > SCREEN_WIDTH) {                //JM T-Register clearing
+    clearRegisterLine(REGISTER_T, true, false);
+  }
 
     // Draw over SHIFT f and SHIFT g in case they were present (otherwise they will be obscured by the function name)
     getGlyphBounds(STD_SUP_f, 0, &numericFont, &fcol, &frow);
@@ -3317,10 +3319,12 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
   void clearTamBuffer(void) {
     if(shiftF || shiftG) {
-      lcd_fill_rect(18, Y_POSITION_OF_TAM_LINE, SCREEN_WIDTH - 18, 32, LCD_SET_VALUE); //JM Clear the whole t-reg instead of only 120+18 oixels
+      //lcd_fill_rect(18, Y_POSITION_OF_TAM_LINE, 120, 32, LCD_SET_VALUE);
+      lcd_fill_rect(18, Y_POSITION_OF_TAM_LINE, SCREEN_WIDTH - 18, 32, LCD_SET_VALUE); //JM Clear the whole t-register instead of only 120+18 oixels
     }
     else {
-      lcd_fill_rect(0, Y_POSITION_OF_TAM_LINE, SCREEN_WIDTH, 32, LCD_SET_VALUE); //JM Clear the whole t-reg  instead of 138
+      //lcd_fill_rect(0, Y_POSITION_OF_TAM_LINE, 138, 32, LCD_SET_VALUE);
+      lcd_fill_rect(0, Y_POSITION_OF_TAM_LINE, SCREEN_WIDTH, 32, LCD_SET_VALUE); //JM Clear the whole t-register instead of 138
     }
   }
 
