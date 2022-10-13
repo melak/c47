@@ -48,6 +48,7 @@
 #include "timer.h"
 #include "ui/tam.h"
 #include "c43Extensions/xeqm.h"
+#include "c43Extensions/addons.h"
 
 #include "c43Extensions/textfiles.h"
 #include "c43Extensions/keyboardTweak.h"
@@ -865,13 +866,10 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
             return;
           }
           else if(item < 0) { // softmenu
-printf(">>>>> RR0 %d\n",item);
             if(calcMode == CM_ASSIGN && itemToBeAssigned == 0 && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MENUS) {
-printf(">>>>> RR1\n");
               itemToBeAssigned = item;
             }
             else {
-printf(">>>>> RR2\n");
               showSoftmenu(item);
               if((item == -MNU_Solver || item == -MNU_Sf || item == -MNU_1STDERIV || item == -MNU_2NDDERIV) && lastErrorCode != 0) {
                 popSoftmenu();
@@ -929,7 +927,17 @@ printf(">>>>> RR2\n");
             // disabled
           }
           else if(tam.mode && (!tam.alpha || isAlphabeticSoftmenu())) {
+
+            bool_t ii = tam.mode == TM_FLAGW && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SYSFL;   //JM Do not drop out of SYSFLG
+            
             addItemToBuffer(item);
+
+            if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MODE && ii && item != ITM_EXIT1 && item != ITM_BACKSPACE) { //JM do not drop out of SYSFLG
+              fnCFGsettings(0); //JM
+            }  //JM
+
+
+
           }
   //          else if((calcMode == CM_NORMAL || calcMode == CM_AIM) && isAlphabeticSoftmenu()) {
   //            if(calcMode == CM_NORMAL) {
