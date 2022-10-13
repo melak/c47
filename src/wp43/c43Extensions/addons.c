@@ -716,7 +716,7 @@ uint16_t dest = 9999;
       default:      break;
     }
     fnCvtFromCurrentAngularMode(dest);
-    currentAngularMode = dest;
+    //currentAngularMode = dest;          //remove setting of ADM!
   }
 
 /* Remove complex number support and cycling 8-level stack support
