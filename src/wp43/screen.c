@@ -1082,24 +1082,26 @@ uint8_t  displaymode = stdNoEnlarge;
   for(row=0; row<glyph->rowsGlyph; row++, y++) {
     if(displaymode == numHalf) {if((int)((REDUCT_A*row+REDUCT_OFF)) % REDUCT_B == 0) y--;}                           //JM REDUCE
     if(enlarge && combinationFonts !=0) rep_enlarge = 1; else rep_enlarge = 0;                //JM ENLARGE
-    while (rep_enlarge >= 0) {                                             //JM ENLARGE ^^
-
-        // Drawing the columns of the glyph
+      // Drawing the columns of the glyph
       int32_t bit = 7;
       for(col=0; col<glyph->colsGlyph; col++) {
         if(bit == 7) {
-            //        byte = *(data++);
-            byte = *(data);                                                  //JM ENLARGE
-            if(rep_enlarge == 0) data++;                                     //JM ENLARGE
+            byte = *(data++);
             if(miniC!=0) byte = (uint8_t)byte | (((uint8_t)byte) << 1);           //JMmini
         }
 
         if(byte & 0x80) {// MSB set
           if(videoMode == vmNormal) { // Black pixel for white background
             if(!noShow) setBlackPixel(x+((xGlyph+col) >> miniC), y0+((y-y0) >> miniC));       //JMmini
+            if(rep_enlarge == 1) {
+              if(!noShow) setBlackPixel(x+((xGlyph+col) >> miniC), 1+(y0+((y-y0) >> miniC)));       //JMmini              
+            }
           }
           else { // White pixel for black background
             if(!noShow) setWhitePixel(x+((xGlyph+col) >> miniC), y0+((y-y0) >> miniC));       //JMmini
+            if(rep_enlarge == 1) {
+              if(!noShow) setWhitePixel(x+((xGlyph+col) >> miniC), 1+(y0+((y-y0) >> miniC)));       //JMmini
+            }
           }
         }
 
@@ -1109,9 +1111,7 @@ uint8_t  displaymode = stdNoEnlarge;
           bit = 7;
         }
       }
-      if(rep_enlarge == 1 && row!=3 && row!=6 && row!=9 && row!=12) y++;     //JM ENLARGE vv do not advance the row counter for four rows, to match the row height of the enlarge font
-      rep_enlarge--;
-    }
+    if(rep_enlarge == 1 && row!=3 && row!=6 && row!=9 && row!=12) y++; //JM ENLARGE vv do not advance the row counter for four rows, to match the row height of the enlarge font
   }
   return x + ((xGlyph + glyph->colsGlyph + endingCols) >> miniC);        //JMmini
 }
