@@ -2179,7 +2179,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         }
   //JMCURSOR  ^^
 
-#else
+#else //!TEXT_MULTILINE_EDIT
 
 // JM Removed and replaced with JMCURSOR vv
           if(stringWidth(aimBuffer, &standardFont, true, true) < SCREEN_WIDTH - 8) { // 8 is the standard font cursor width
@@ -2208,7 +2208,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             }
           }
 // // JM Removed and replaced with JMCURSOR ^^
-#endif //TEXT_MULTILINE_EDIT
+#endif //!TEXT_MULTILINE_EDIT
 
 
       }
@@ -3375,7 +3375,7 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
   jm_show_calc_state("refreshScreen");
   printf(">>> refreshScreenCounter=%d calcMode=%d last_CM=%d doRefreshSoftMenu=%d screenUpdatingMode=%d\n",refreshScreenCounter++, calcMode, last_CM,doRefreshSoftMenu, screenUpdatingMode);    //JMYY
 #endif
-screenUpdatingMode = ~0;
+//screenUpdatingMode = 0; //0 is ALL REFRESHES; ~0 is NO REFRESHES
 
   if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {last_CM = 254;}  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S 
 
