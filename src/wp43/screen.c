@@ -56,7 +56,7 @@
 #include "wp43.h"
 
 
-#define DEBUGCLEARS
+//#define DEBUGCLEARS
 
 
 #if !defined(TESTSUITE_BUILD)
@@ -1269,40 +1269,50 @@ uint8_t  displaymode = stdNoEnlarge;
 
   void showDisp(uint16_t offset, uint8_t _h1) {
   #define line_h1 38
+  const uint32_t line_h_offset = Y_POSITION_OF_REGISTER_T_LINE - 3;
 
         uint32_t w = stringWidthC43(tmpString + offset, stdnumEnlarge, nocompress, true, true);
         if(w < SCREEN_WIDTH) {
-          showStringC43(tmpString + offset, stdnumEnlarge, nocompress,  SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h1 * _h1, vmNormal, true, true);
-          return;
+          showStringC43(tmpString + offset, stdnumEnlarge, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+          goto gotoReturn;
         }
 
         w = stringWidthC43(tmpString + offset, stdEnlarge, nocompress, true, true);
         if(w < SCREEN_WIDTH) {
-          showStringC43(tmpString + offset, stdEnlarge, nocompress,  SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h1 * _h1, vmNormal, true, true);
-          return;
+          showStringC43(tmpString + offset, stdEnlarge, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+          goto gotoReturn;
         }
 
         w = stringWidthC43(tmpString + offset, stdNoEnlarge, nocompress, true, true);
         if(w < SCREEN_WIDTH) {
-          showStringC43(tmpString + offset, stdNoEnlarge, nocompress,  SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h1 * _h1, vmNormal, true, true);
-          return;
+          showStringC43(tmpString + offset, stdNoEnlarge, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+          goto gotoReturn;
         }
 
         w = stringWidthC43(tmpString + offset, numSmall, nocompress, true, true);
         if(w < SCREEN_WIDTH) {
-          showStringC43(tmpString + offset, numSmall, nocompress,  SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h1 * _h1, vmNormal, true, true);
-          return;
+          showStringC43(tmpString + offset, numSmall, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+          goto gotoReturn;
         }
 
         w = stringWidthC43(tmpString + offset, numSmall, stdcompress, true, true);
         if(w < SCREEN_WIDTH) {
-          showStringC43(tmpString + offset, numSmall, stdcompress,  SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h1 * _h1, vmNormal, true, true);
-          return;
+          showStringC43(tmpString + offset, numSmall, stdcompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+          goto gotoReturn;
         }
         w = stringWidth(tmpString + offset + 2, &standardFont, true, true);
         if(w < SCREEN_WIDTH) {
-          showString(tmpString + offset + 2, &standardFont,  SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h1 * _h1, vmNormal, true, true);
-          return;
+          showString(tmpString + offset + 2, &standardFont,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+          goto gotoReturn;
+        }
+        return;
+        gotoReturn:
+        if(_h1 == 0) {
+          if(tmpString[1500] != 0) {
+            lcd_fill_rect(0, line_h_offset + line_h1 * 2 - 3,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);          
+          } else {
+            lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);          
+          }
         }
     }
 
@@ -1822,7 +1832,9 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
     if((temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) && regist == REGISTER_X) { //JM frame the SHOW window
       lcd_fill_rect(0,Y_POSITION_OF_REGISTER_T_LINE-4,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
-      lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
+      if(temporaryInformation != TI_SHOW_REGISTER_BIG) {                                 //JM TI_SHOW_REGISTER_BIG is drawn elsewhere
+        lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
+      }
     }
 
     if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT) && (calcMode != CM_GRAPH) && (calcMode != CM_LISTXY)) {               //JM      
@@ -2088,6 +2100,16 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         }
 
         else if(temporaryInformation == TI_SHOW_REGISTER_BIG) {            //JMSHOW ^^
+          if(regist == REGISTER_T) {
+             showDisp(0  ,0);
+             showDisp(300,1);
+             showDisp(600,2);
+             showDisp(900,3);
+             showDisp(1200,4);
+             showDisp(1500,5);
+             screenUpdatingMode = SCRUPD_AUTO;
+           }
+/*
           switch(regist) {
             // L1
             case REGISTER_T: showDisp(0  ,0);
@@ -2103,6 +2125,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
                              break;
             default: {}
           }
+*/
         }                                                                 //JMSHOW ^^
 
       else if(regist < REGISTER_X + min(displayStack, origDisplayStack) || (lastErrorCode != 0 && regist == errorMessageRegisterLine) || (temporaryInformation == TI_VIEW && regist == REGISTER_T)) {
@@ -3520,7 +3543,9 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
           doRefreshSoftMenu = false;
           displayShiftAndTamBuffer();
 
-          showSoftmenuCurrentPart();
+          if(temporaryInformation != TI_SHOW_REGISTER_BIG) {       //JM
+            showSoftmenuCurrentPart();
+          }
         } else {
 
           if(!(screenUpdatingMode & SCRUPD_MANUAL_SHIFT_STATUS)) {
