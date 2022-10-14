@@ -55,6 +55,10 @@
 
 #include "wp43.h"
 
+
+#define DEBUGCLEARS
+
+
 #if !defined(TESTSUITE_BUILD)
   static const char *whoStr = "WP43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter," STD_SPACE_3_PER_EM "Mihail," STD_SPACE_3_PER_EM "Jaco," STD_SPACE_3_PER_EM "and" STD_SPACE_3_PER_EM "Martin";
   static const char *versionStr = "WP43" STD_SPACE_3_PER_EM VERSION_STRING;
@@ -1003,6 +1007,10 @@ void Shft_stop() {
         }
       }
 
+    #if defined (DEBUGCLEARS)
+      plotrect(x,y,x+dx,y+dy);
+    #endif //DEBUGCLEARS
+
       screenChange = true;
     }
   #endif // !DMCP_BUILD
@@ -1589,7 +1597,7 @@ void force_refresh(void) {
     getGlyphBounds(STD_SUP_f, 0, &numericFont, &fcol, &frow);
     getGlyphBounds(STD_SUP_g, 0, &numericFont, &gcol, &grow);
     lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, (fcol > gcol ? fcol : gcol), (frow > grow ? frow : grow), LCD_SET_VALUE);
-
+  
   showString(padding, &standardFont, /*1*/ 20, Y_POSITION_OF_REGISTER_T_LINE /*+ 6*/, vmNormal, true, true);      //JM
 }
 
