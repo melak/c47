@@ -1752,6 +1752,7 @@ void kill_ASB_icon(void) {
         break;
 
       case ITM_DRG :                       //JM
+        DRG_Cycling = 0;
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
           done = true;
 

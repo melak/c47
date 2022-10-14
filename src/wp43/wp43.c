@@ -191,7 +191,7 @@ float                 graph_xmin;                              //JM Graph
 float                 graph_xmax;                              //JM Graph
 float                 graph_ymin;                              //JM Graph
 float                 graph_ymax;                              //JM Graph
-uint8_t               lastSetAngularMode;
+uint8_t               DRG_Cycling = 0;
 bool_t                AlphaSelectionBufferTimerRunning;        //JM
 #ifdef INLINE_TEST                                             //vv dr
 bool_t                testEnabled;                             //

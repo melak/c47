@@ -352,7 +352,6 @@ void fnFrom_ms(uint16_t unusedButMandatoryParameter){
 //
 void fnTo_ms(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
-  //  uint8_t oldAngularMode1 = lastSetAngularMode;
   switch(calcMode) { //JM
   case CM_NIM:
     addItemToNimBuffer(ITM_ms);
@@ -701,11 +700,12 @@ uint16_t dest = 9999;
   if(getRegisterDataType(REGISTER_X) == dtReal34) {                        // if real
     dest = getRegisterAngularMode(REGISTER_X);
 
-    if(dest != amNone && dest != currentAngularMode) {                     //first step: covert tagged angle to ADM
+    if(dest != amNone && dest != currentAngularMode && DRG_Cycling != 1) {   //first step: convert tagged angle to ADM
       fnCvtToCurrentAngularMode(dest);
       goto to_return;
     }
 
+    DRG_Cycling = 1;
     switch(dest) {
       case amNone:      dest = currentAngularMode;  break; //converts from to the same, i.e. get to current angle mode
       case amRadian:    dest = amGrad;              break;

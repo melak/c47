@@ -361,7 +361,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP),               BACKUP);   //JM ^^
     save(&ListXYposition,                     sizeof(ListXYposition),                     BACKUP);   //JM ^^
     save(&numLock,                            sizeof(numLock),                            BACKUP);   //JM ^^
-    save(&lastSetAngularMode,                 sizeof(lastSetAngularMode),                 BACKUP);   //JM
+    save(&DRG_Cycling,                        sizeof(DRG_Cycling),                        BACKUP);   //JM
     save(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);   //C43 JM
     save(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset),             BACKUP);   //C43 JM
 
@@ -653,7 +653,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&displayStackSHOIDISP,               sizeof(displayStackSHOIDISP),               BACKUP);   //JM ^^
       restore(&ListXYposition,                     sizeof(ListXYposition),                     BACKUP);   //JM ^^
       restore(&numLock,                            sizeof(numLock),                            BACKUP);   //JM ^^
-      restore(&lastSetAngularMode,                 sizeof(lastSetAngularMode),                 BACKUP);   //JM
+      restore(&DRG_Cycling,                        sizeof(DRG_Cycling),                        BACKUP);   //JM
       restore(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);
       restore(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset),             BACKUP);   //C43 JM
 
@@ -1136,7 +1136,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "displayStackSHOIDISP\n%" PRIu8 "\n", displayStackSHOIDISP);   //JM
   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "lastSetAngularMode\n%" PRIu8 "\n", lastSetAngularMode);               //JM
+  sprintf(tmpString, "DRG_Cycling\n%" PRIu8 "\n", DRG_Cycling);               //JM
   save(tmpString, strlen(tmpString), BACKUP);
 //JM if added here remember the 18 digit up top
 
@@ -1974,7 +1974,6 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         }
         else if(strcmp(aimBuffer, "currentAngularMode") == 0) {
           currentAngularMode = stringToUint8(tmpString);
-          lastSetAngularMode = currentAngularMode;                       //JM, lastSetAngularMode will overwrite when it loads later. Initialisez for if it does not load
         }
         else if(strcmp(aimBuffer, "groupingGap") == 0) {
           groupingGap = stringToUint8(tmpString);
@@ -2008,8 +2007,8 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "displayStackSHOIDISP") == 0) {         //JM SHOIDISP
           displayStackSHOIDISP = stringToUint8(tmpString);
         }
-        else if(strcmp(aimBuffer, "lastSetAngularMode") == 0) {               //JM
-          lastSetAngularMode = stringToUint8(tmpString);
+        else if(strcmp(aimBuffer, "DRG_Cycling") == 0) {               //JM
+          DRG_Cycling = stringToUint8(tmpString);
         }
       }
     }

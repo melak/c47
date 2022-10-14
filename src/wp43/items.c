@@ -89,6 +89,9 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     if(func != ITM_CLX) { //JM Do not reset for backspace, because the timers need to run after the first action, CLX
       resetKeytimers();  //JM
     }
+    if(func != ITM_DRG) { //JM Reset DRG cycling flag for any command except DRG 
+      DRG_Cycling = 0;  //JM
+    }
 
     if((indexOfItems[func].status & US_STATUS) == US_ENABLED || (indexOfItems[func].status & US_STATUS) == US_ENABL_XEQ) {
       if((programRunStop != PGM_RUNNING || getSystemFlag(FLAG_IGN1ER)) && calcMode != CM_GRAPH && calcMode != CM_NO_UNDO) {
