@@ -14,14 +14,17 @@ variables:
 
 macOS:
   stage: build
+  image: macos-12-xcode-14
   script:
+    - HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 brew install ccache ninja python@3.9 gtk+3 gmp pulseaudio
+    - python3 -m pip install meson
     - make dist_macos
   artifacts:
     expire_in: 1 day
     paths:
       - wp43-macos.zip
   tags:
-    - macos
+    - shared-macos-amd64
 
 linux:
   stage: build
@@ -31,7 +34,7 @@ linux:
     - python3 -m pip install meson
     - make sim
   tags:
-    - linux
+    - saas-linux-small-amd64
 
 windows:
   stage: build
@@ -56,7 +59,7 @@ dm42:
     paths:
       - wp43-dm42.zip
   tags:
-    - linux
+    - saas-linux-small-amd64
 
 testSuite:
   stage: test
@@ -66,7 +69,7 @@ testSuite:
     - python3 -m pip install meson
     - make test
   tags:
-    - linux
+    - saas-linux-small-amd64
 
 codeDocs:
   stage: test
@@ -93,7 +96,7 @@ upload:
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file docs/OwnersManual.pdf ${PACKAGE_REGISTRY_URL}/wp43-owners-manual-${CI_COMMIT_TAG}.pdf
   tags:
-    - linux
+    - saas-linux-small-amd64
 
 release:
   stage: release
@@ -108,4 +111,4 @@ release:
         --assets-link "{\"name\":\"Reference Manual\",\"url\":\"${PACKAGE_REGISTRY_URL}/wp43-reference-manual-${CI_COMMIT_TAG}.pdf\"}" \
         --assets-link "{\"name\":\"Owner's Manual\",\"url\":\"${PACKAGE_REGISTRY_URL}/wp43-owners-manual-${CI_COMMIT_TAG}.pdf\"}"
   tags:
-    - linux
+    - saas-linux-small-amd64
