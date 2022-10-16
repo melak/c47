@@ -1238,11 +1238,11 @@ bool_t allowShiftsToClearError = false;
       result = (getSystemFlag(FLAG_MULTx) ? ITM_CROSS : ITM_DOT);
     }
 
-    if(shiftF || shiftG) {
-      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
-      clearShiftState();
-    }
-    resetShiftState();
+//    if((shiftF || shiftG) && result != ITM_SNAP) {
+//      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
+//      clearShiftState();
+//    }
+    if (result != ITM_SNAP) resetShiftState();
 
     if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && (result == ITM_NOP || result == ITM_NULL)) {
       result = ITM_LBL;
@@ -2110,6 +2110,10 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
             case CM_GRAPH:
             case CM_PLOT_STAT:
             case CM_LISTXY: {       //JM
+              if(item == ITM_SNAP) {
+                runFunction(item);
+                keyActionProcessed = true;
+              }
               break;
             }
 
@@ -2818,13 +2822,17 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_GRAPH:
       case CM_PLOT_STAT: {
-//Temporary - TODO JM
-            restoreStats();
-printf(">>> ####@@@@ D %i\n",calcMode);
-        if(lastPlotMode == H_PLOT && calcMode == CM_PLOT_STAT) {
+        restoreStats();
+        if(calcMode == CM_PLOT_STAT) {
+          for(int16_t ii = 0; ii < 3; ii++) {
+            if( (softmenuStack[0].softmenuId > 1) && !((-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_HIST) || (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_STAT))) {
+              popSoftmenu();
+            }
+          }
+        } else {
           popSoftmenu();
         }
-//TODO
+
         lastPlotMode = PLOT_NOTHING;
         plotSelection = 0;
 
@@ -2834,7 +2842,6 @@ printf(">>> ####@@@@ D %i\n",calcMode);
         #endif // DEBUGUNDO
         fnUndo(NOPARAM);
         fnClDrawMx();
-        popSoftmenu();
         break;
       }
 
@@ -3061,8 +3068,27 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
       case CM_BUG_ON_SCREEN:
       case CM_PLOT_STAT:
-      case CM_GRAPH: {                //TODO maybe move down to the next case
-        calcMode = previousCalcMode;
+      case CM_GRAPH: {
+        restoreStats();
+        if(calcMode == CM_PLOT_STAT) {
+          for(int16_t ii = 0; ii < 3; ii++) {
+            if( (softmenuStack[0].softmenuId > 1) && !((-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_HIST) || (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_STAT))) {
+              popSoftmenu();
+            }
+          }
+        } else {
+          popSoftmenu();
+        }
+
+        lastPlotMode = PLOT_NOTHING;
+        plotSelection = 0;
+
+        calcModeNormal();
+        #if defined(DEBUGUNDO)
+          printf(">>> Undo from fnKeyExit\n");
+        #endif // DEBUGUNDO
+        fnUndo(NOPARAM);
+        fnClDrawMx();
         break;
       }
 
