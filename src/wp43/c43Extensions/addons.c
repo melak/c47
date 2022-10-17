@@ -66,6 +66,7 @@ All the below: because both Last x and savestack does not work due to multiple s
 
 #include "c43Extensions/addons.h"
 
+#include "assign.h"
 #include "bufferize.h"
 #include "c43Extensions/keyboardTweak.h"
 #include "calcMode.h"
@@ -1703,6 +1704,22 @@ void fnSafeReset (uint16_t unusedButMandatoryParameter) {
   }
 }
 
+
+void fnRESET_MyM_Mya(void){
+//Pre-assign the MyMenu                   //JM
+    #ifndef TESTSUITE_BUILD
+    jm_NO_BASE_SCREEN = true;                                           //JM prevent slow updating of 6 menu items
+    for(int8_t fn = 1; fn <= 6; fn++) {
+      //itemToBeAssigned = ( !getSystemFlag(FLAG_USER) ? (kbd_std[fn-1].fShifted) : (kbd_usr[fn-1].fShifted) );  //Function key follows if the yellow key
+      itemToBeAssigned = menu_HOME[fn -1];  //Function key follows if the yellow key
+      assignToMyMenu(fn - 1);
+      }
+    jm_NO_BASE_SCREEN = false;                                           //JM Menu system default (removed from reset_jm_defaults)
+
+    itemToBeAssigned = -MNU_ALPHA;
+    assignToMyAlpha(5);
+    #endif // TESTSUITE_BUILD
+}
 
 
 

@@ -1284,6 +1284,8 @@ kbd_usr[36].primary=ITM_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].
     fnRefreshState();                                 //drJM
     fnClearFlag(FLAG_USER); //userModeEnabled = false;
 
+    fnRESET_MyM_Mya();
+
 //    jm_FG_LINE     = true;
 //    jm_G_DOUBLETAP = true;
 //    ShiftTimoutMode= true;

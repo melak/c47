@@ -61,6 +61,7 @@ void fnTimeTo       (uint16_t unusedButMandatoryParameter);
 void fnToTime       (uint16_t unusedButMandatoryParameter);
 void fnSafeReset    (uint16_t unusedButMandatoryParameter);
 
+void fnRESET_MyM_Mya(void);
 
 void fnByteShortcutsS   (uint16_t size);                    //JM POC BASE2 vv
 void fnByteShortcutsU   (uint16_t size);

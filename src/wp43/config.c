@@ -34,6 +34,7 @@
 #include "fractions.h"
 #include "items.h"
 #include "c43Extensions/jm.h"
+#include "c43Extensions/addons.h"
 #include "keyboard.h"
 #include "matrix.h"
 #include "memory.h"
@@ -645,7 +646,6 @@ void restoreStats(void){
 }
 
 
-
 void fnReset(uint16_t confirmation) {
   if(confirmation == NOT_CONFIRMED) {
     setConfirmationMode(fnReset);
@@ -1047,7 +1047,7 @@ void fnReset(uint16_t confirmation) {
 
 
 
-#define VERSION1 "_108_06+9"
+#define VERSION1 "_108_06+10"
 
     #ifdef JM_LAYOUT_1A
       #undef L1L2
@@ -1102,20 +1102,7 @@ void fnReset(uint16_t confirmation) {
 //    fnStrtoX("C43 LARGE TEXT");
 
 
-    //Pre-assign the MyMenu                   //JM
-    #ifndef TESTSUITE_BUILD
-    jm_NO_BASE_SCREEN = true;                                           //JM prevent slow updating of 6 menu items
-    for(int8_t fn = 1; fn <= 6; fn++) {
-      //itemToBeAssigned = ( !getSystemFlag(FLAG_USER) ? (kbd_std[fn-1].fShifted) : (kbd_usr[fn-1].fShifted) );  //Function key follows if the yellow key
-      itemToBeAssigned = menu_HOME[fn -1];  //Function key follows if the yellow key
-      assignToMyMenu(fn - 1);
-      }
-    jm_NO_BASE_SCREEN = false;                                           //JM Menu system default (removed from reset_jm_defaults)
-
-    itemToBeAssigned = -MNU_ALPHA;
-    assignToMyAlpha(5);
-    #endif // TESTSUITE_BUILD
-
+fnRESET_MyM_Mya();
 
 
 #ifndef SAVE_SPACE_DM42_0
