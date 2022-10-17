@@ -646,7 +646,7 @@ void fnDisplayFormatCycle (uint16_t unusedButMandatoryParameter) {
 
 void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
 
-  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
+  copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
   if(AMODE == TM_HMS) {
     if(getRegisterDataType(REGISTER_X) == dtTime)
       goto to_return;
@@ -680,8 +680,8 @@ void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
   refreshStatusBar();
 #endif //!TESTSUITE_BUILD
 
-  to_return:;
-//  copySourceRegisterToDestRegister(SAVED_REGISTER_L, REGISTER_L);
+  to_return:
+  copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_L);
 }
 
 
@@ -751,7 +751,6 @@ printf("@@@@\n");
 */
   to_return:
     copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_L);
-//  copySourceRegisterToDestRegister(SAVED_REGISTER_L, REGISTER_L);
 }
 
 
