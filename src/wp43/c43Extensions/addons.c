@@ -645,6 +645,8 @@ void fnDisplayFormatCycle (uint16_t unusedButMandatoryParameter) {
 //change the current state from the old state?
 
 void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
+
+  copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
   if(AMODE == TM_HMS) {
     if(getRegisterDataType(REGISTER_X) == dtTime)
       goto to_return;
@@ -678,17 +680,18 @@ void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
   refreshStatusBar();
 #endif //!TESTSUITE_BUILD
 
-  to_return:
-  copySourceRegisterToDestRegister(SAVED_REGISTER_L, REGISTER_L);
+  to_return:;
+//  copySourceRegisterToDestRegister(SAVED_REGISTER_L, REGISTER_L);
 }
 
 
 void fnDRG(uint16_t unusedButMandatoryParameter) {
-if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-  goto to_return;
-} 
-
-uint16_t dest = 9999;
+  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+    goto to_return;
+  } 
+printf("@@@@\n");
+  copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
+  uint16_t dest = 9999;
 
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {                  // If shortinteger in X, convert to real
     convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
@@ -747,7 +750,8 @@ uint16_t dest = 9999;
   }
 */
   to_return:
-  copySourceRegisterToDestRegister(SAVED_REGISTER_L, REGISTER_L);
+    copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_L);
+//  copySourceRegisterToDestRegister(SAVED_REGISTER_L, REGISTER_L);
 }
 
 

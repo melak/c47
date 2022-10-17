@@ -1759,6 +1759,7 @@ void kill_ASB_icon(void) {
           closeNim();
 
           if(calcMode != CM_NIM && lastErrorCode == 0) {
+            copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
             if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
               convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
             }
@@ -1774,6 +1775,7 @@ void kill_ASB_icon(void) {
             else {
               undo();
             }
+            copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_L);
             return;
           }
         }
