@@ -66,7 +66,7 @@ TO_QSPI const int16_t menu_BITS[]        = { ITM_LOGICALAND,                ITM_
 
 TO_QSPI const int16_t menu_CLK[]         = { ITM_DATE,                      ITM_DATEto,                 ITM_toDATE,               ITM_DAY,               ITM_MONTH,                   ITM_YEAR,
                                              ITM_TIME,                      ITM_TIMEto,                 ITM_toTIME,               ITM_SECOND,            ITM_MINUTE,                  ITM_HR_DEG,
-                                             ITM_toHMS,                     ITM_NULL,                   ITM_XtoDATE,              ITM_WDAY,              ITM_JtoD,                    ITM_DtoJ,                 
+                                             ITM_toHMS,                     ITM_msTo,                   ITM_XtoDATE,              ITM_WDAY,              ITM_JtoD,                    ITM_DtoJ,                 
 #if DMCP_BUILD
                                              ITM_SETTIM,                    ITM_TDISP,                  ITM_SETDAT,               ITM_DMY,               ITM_YMD,                     ITM_MDY,
 #else // !DMCP_BUILD
@@ -356,9 +356,8 @@ TO_QSPI const int16_t menu_alpha_omega[] = { ITM_alpha,                     ITM_
 
                                              ITM_iota_DIALYTIKA,            ITM_omicron_TONOS,          ITM_upsilon_TONOS,        ITM_upsilon_DIALYTIKA, ITM_upsilon_DIALYTIKA_TONOS, ITM_omega_TONOS               };
 
-TO_QSPI const int16_t menu_AngleConv[]   = { ITM_DRG,                       ITM_DEG2,                   ITM_RAD2,                 ITM_GRAD2,             ITM_DMS2,                    ITM_MULPI2,
-                                             ITM_DtoR,                      ITM_RtoD,                   ITM_DtoDMS,               ITM_DMStoD,            ITM_ms,                      ITM_msTo,     
-                                             -MNU_TRI,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_toHMS,                   ITM_dotD                  };   //JM test new MPI stuff
+TO_QSPI const int16_t menu_AngleConv[]   = { ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_DMS2,              ITM_MULPI2,                 -MNU_TRI,
+                                             ITM_RtoD,                      ITM_DtoR,                   ITM_DMStoD,               ITM_DtoDMS,            ITM_dotD,                    ITM_msTo                      };   //JM test new MPI stuff
 
 
 
