@@ -177,7 +177,7 @@ TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_
 
                                              ITM_NO_BASE_SCREEN,            ITM_BASE_HOME,             ITM_HOMEx3,                ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
                                              ITM_SAFERESET,                 ITM_TST,                   ITM_NULL,                  ITM_NULL,              ITM_NULL,                    ITM_NULL,                        //JM
-                                             ITM_SYS,                       ITM_NULL,                  ITM_NULL,                  ITM_H_SUMRY,           ITM_H_REPLCA,                ITM_H_FIXED                    };
+                                             ITM_SYS,                       ITM_NULL,                  ITM_H_ASNKEY,              ITM_H_REPLCA,          ITM_H_SUMRY,                 ITM_H_FIXED                    };
 
 
 TO_QSPI const int16_t menu_PARTS[]       = { ITM_IP,                        ITM_FP,                     ITM_MANT,                 ITM_EXPT,              ITM_SIGN,                    ITM_DECOMP,
@@ -1905,11 +1905,18 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
 
               int16_t xx = x + y*6;
               //printf("x:%d y:%d 6y:%d xx:%d menu_A_HOME[xx]=%d menuId=%d currentFirstItem=%d/18=%d --> ",x,y,6*y,xx,menu_A_HOME[xx],softmenu[softmenuStack[0].softmenu].menuId,currentFirstItem,currentFirstItem/18);  //JMHOME
-              if(  menu_A_HOME[xx] >= 0  &&  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HOME)
-              {                                          //JMHOME
+              if(  menu_A_HOME[xx] >= 0  &&  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HOME) {                                          //JMHOME
+               
+                if(jm_HOME_ASN) {
+                  if(menu_A_HOME[xx] < 100) {item = (kbd_std[menu_A_HOME[xx]    ].primary ) != (kbd_usr[menu_A_HOME[xx]    ].primary ) ? (kbd_std[menu_A_HOME[xx]    ].primary ) : ITM_NULL;}             else
+                  if(menu_A_HOME[xx] < 200) {item = (kbd_std[menu_A_HOME[xx]-100].fShifted) != (kbd_usr[menu_A_HOME[xx]-100].fShifted) ? (kbd_std[menu_A_HOME[xx]-100].fShifted) : ITM_NULL;}             else
+                  if(menu_A_HOME[xx]>= 200) {item = (kbd_std[menu_A_HOME[xx]-200].gShifted) != (kbd_usr[menu_A_HOME[xx]-200].gShifted) ? (kbd_std[menu_A_HOME[xx]-200].gShifted) : ITM_NULL;}
+                } else {
                   if(menu_A_HOME[xx] < 100) {item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[xx]    ].primary ) : (kbd_usr[menu_A_HOME[xx]    ].primary );}             else
                   if(menu_A_HOME[xx] < 200) {item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[xx]-100].fShifted) : (kbd_usr[menu_A_HOME[xx]-100].fShifted);}             else
                   if(menu_A_HOME[xx]>= 200) {item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[xx]-200].gShifted) : (kbd_usr[menu_A_HOME[xx]-200].gShifted);}
+                }
+
                   //printf("item (std/usr)=%d \n",item);                              //JMHOME
                   
                   if(!getSystemFlag(FLAG_USER) && menu_A_HOME[xx] == 0 && (calcMode == CM_NORMAL || calcMode == CM_NIM) && (Norm_Key_00_VAR != kbd_std[0].primary)){

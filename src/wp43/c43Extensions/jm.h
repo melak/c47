@@ -92,6 +92,7 @@ extern float graph_xmin;                                             //JM Graph
 extern float graph_xmax;                                             //JM Graph
 extern float graph_ymin;                                             //JM Graph
 extern float graph_ymax;                                             //JM Graph
+extern bool_t jm_HOME_ASN;                                          //JMHOME
 extern bool_t jm_HOME_SUM;                                          //JMHOME
 extern bool_t jm_HOME_MIR;                                          //JMHOME
 extern bool_t jm_HOME_FIX;                                          //JMHOME
@@ -175,11 +176,12 @@ void fnRCL          (int16_t inp);
 #define JC_NO_BASE_SCREEN      21    // screen setup
 #define JC_G_DOUBLETAP         22    // screen setup
 
-#define JC_H_SUM               24    //JMHOME
-#define JC_H_MIR               25    //JMHOME
-#define JC_H_FIX               26    //JMHOME
+#define JC_H_ASN               25    //JMHOME
+#define JC_H_SUM               26    //JMHOME
+#define JC_H_MIR               27    //JMHOME
+#define JC_H_FIX               28    //JMHOME
 
-#define JC_LARGELI             27
+#define JC_LARGELI             29
 
 #define JC_ITM_TST             31    //dr
 

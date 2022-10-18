@@ -2278,6 +2278,12 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
   }
 
 
+   #define A1 3   //HAAKON //jm_HOME_MIR
+   #define A2 9   //HAAKON
+   #define B1 10  //NIGEL  //jm_HOME_SUM
+   #define B2 11  //NIGEL
+   #define C1 12  //JACO   //jm_HOME_FIX
+   #define C2 18  //JACO
 
   static void menuUp(void) {
     int16_t menuId = softmenuStack[0].softmenuId;
@@ -2302,12 +2308,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       if((softmenuStack[0].firstItem + itemShift) < (menuId < NUMBER_OF_DYNAMIC_SOFTMENUS ? dynamicSoftmenu[menuId].numItems : softmenu[menuId].numItems)) {
         softmenuStack[0].firstItem += itemShift;
         //JM Include or exclude HOME menu screens  //JMHOME
-        #define A1 3   //HAAKON //jm_HOME_MIR
-        #define A2 9   //HAAKON
-        #define B1 10  //NIGEL  //jm_HOME_SUM
-        #define B2 11  //NIGEL
-        #define C1 12  //JACO   //jm_HOME_FIX
-        #define C2 18  //JACO
         //printf("^^--1:%d %d %d menuId:%d item:%d  \n",jm_HOME_MIR,jm_HOME_SUM,jm_HOME_FIX,sm,softmenuStack[softmenuStackPointer].firstItem/18);
         if(!jm_HOME_MIR && sm == -MNU_HOME && softmenuStack[0].firstItem == A1*18) {softmenuStack[0].firstItem = (A2+1)*18;} 
         if(!jm_HOME_SUM && sm == -MNU_HOME && softmenuStack[0].firstItem == B1*18) {softmenuStack[0].firstItem = (B2+1)*18;} 
@@ -2352,7 +2352,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         if(!jm_HOME_FIX && sm == -MNU_HOME && softmenuStack[0].firstItem == C2*18) {softmenuStack[0].firstItem = (C1-1)*18;}
         if(!jm_HOME_SUM && sm == -MNU_HOME && softmenuStack[0].firstItem == B2*18) {softmenuStack[0].firstItem = (B1-1)*18;} 
         if(!jm_HOME_MIR && sm == -MNU_HOME && softmenuStack[0].firstItem == A2*18) {softmenuStack[0].firstItem = (A1-1)*18;}
-        printf("vv--2:      menuId:%d item:%d  \n",sm,softmenuStack[0].firstItem/18);
+        //printf("vv--2:      menuId:%d item:%d  \n",sm,softmenuStack[0].firstItem/18);
       }
       else if((softmenuStack[0].firstItem - itemShift) >= -5) {
         softmenuStack[0].firstItem = 0;

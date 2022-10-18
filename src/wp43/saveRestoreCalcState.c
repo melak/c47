@@ -338,6 +338,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);
     save(&jm_NO_BASE_SCREEN,                  sizeof(jm_NO_BASE_SCREEN),                  BACKUP);
     save(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
+    save(&jm_HOME_ASN,                        sizeof(jm_HOME_ASN),                        BACKUP);
     save(&jm_HOME_SUM,                        sizeof(jm_HOME_SUM),                        BACKUP);
     save(&jm_HOME_MIR,                        sizeof(jm_HOME_MIR),                        BACKUP);
     save(&jm_HOME_FIX,                        sizeof(jm_HOME_FIX),                        BACKUP);
@@ -630,6 +631,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);
       restore(&jm_NO_BASE_SCREEN,                  sizeof(jm_NO_BASE_SCREEN),                  BACKUP);
       restore(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
+      restore(&jm_HOME_ASN,                        sizeof(jm_HOME_ASN),                        BACKUP);
       restore(&jm_HOME_SUM,                        sizeof(jm_HOME_SUM),                        BACKUP);
       restore(&jm_HOME_MIR,                        sizeof(jm_HOME_MIR),                        BACKUP);
       restore(&jm_HOME_FIX,                        sizeof(jm_HOME_FIX),                        BACKUP);

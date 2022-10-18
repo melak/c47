@@ -2862,7 +2862,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1857 */  { fnSetSetJM,                   JC_BLZ,                      "",                                            "LEAD.0",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//dr
 /* 1858 */  { fnSetSetJM,                   JC_UC,                       "",                                            STD_case,                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM CASE
 /* 1859 */  { fnSetSetJM,                   JC_BASE_HOME,                "_HOME",                                       "HOME",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM eRPN
-/* 1860 */  { itemToBeCoded,                NOPARAM,                     "1860",                                        "1860",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1860 */  { fnSetSetJM,                   JC_H_ASN,                    "",                                            "ASNKEY",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JMHOME
 /* 1861 */  { fnSetSetJM,                   JC_H_SUM,                    "",                                            "SUMRY",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JMHOME
 /* 1862 */  { fnSetSetJM,                   JC_H_MIR,                    "",                                            "REPLCA",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JMHOME
 /* 1863 */  { fnSetSetJM,                   JC_H_FIX,                    "",                                            "FIXED",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JMHOME
@@ -3071,6 +3071,8 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2066 */  { addItemToBuffer,              ITM_SIN_SIGN,                "SIN",                                         "SIN",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2067 */  { addItemToBuffer,              ITM_COS_SIGN,                "COS",                                         "COS",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2068 */  { addItemToBuffer,              ITM_TAN_SIGN,                "TAN",                                         "TAN",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+
+
 
 /* 2069 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
 };
