@@ -82,16 +82,16 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
 /* 1958 */  { ITM_CLK12,            TF_H12,                 RB_TF },  //fnSetSetJM          /*   75 */ //fnTimeFormat
 /* 1959 */  { ITM_CLK24,            TF_H24,                 RB_TF },  //fnSetSetJM          /*   76 */ //fnTimeFormat
 
-/* 1899 */  { ITM_N_KEY_ALPHA,      ITM_AIM,                RB_SA },  //fnSigmaAssign
-/* 1891 */  { ITM_N_KEY_CC,         ITM_CC,                 RB_SA },  //fnSigmaAssign
-/*      */  { ITM_N_KEY_GSH,        ITM_SHIFTg,             RB_SA },  //fnSigmaAssign
-/* 1893 */  { ITM_N_KEY_MM,         -MNU_MyMenu,            RB_SA },  //fnSigmaAssign
-/*      */  { ITM_N_KEY_DRG,        ITM_DRG,                RB_SA },  //fnSigmaAssign
-/* 1897 */  { ITM_N_KEY_PRGM,       ITM_PR,                 RB_SA },  //fnSigmaAssign
-/* 1889 */  { ITM_N_KEY_USER,       ITM_USERMODE,           RB_SA },  //fnSigmaAssign
-/*      */  { ITM_N_KEY_HOME,       -MNU_HOME,              RB_SA },  //fnSigmaAssign
-/* 1895 */  { ITM_N_KEY_SIGMA,      ITM_SIGMAPLUS,          RB_SA },  //fnSigmaAssign
-/*      */  { ITM_N_KEY_SNAP,       ITM_SNAP,               RB_SA },  //fnSigmaAssign
+/* 1899 */  { ITM_N_KEY_ALPHA,      16384+ITM_AIM,          RB_SA },  //fnSigmaAssign
+/* 1891 */  { ITM_N_KEY_CC,         16384+ITM_CC,           RB_SA },  //fnSigmaAssign
+/*      */  { ITM_N_KEY_GSH,        16384+ITM_SHIFTg,       RB_SA },  //fnSigmaAssign
+/* 1893 */  { ITM_N_KEY_MM,         16384+-MNU_MyMenu,      RB_SA },  //fnSigmaAssign
+/*      */  { ITM_N_KEY_DRG,        16384+ITM_DRG,          RB_SA },  //fnSigmaAssign
+/* 1897 */  { ITM_N_KEY_PRGM,       16384+ITM_PR,           RB_SA },  //fnSigmaAssign
+/* 1889 */  { ITM_N_KEY_USER,       16384+ITM_USERMODE,     RB_SA },  //fnSigmaAssign
+/*      */  { ITM_N_KEY_HOME,       16384+-MNU_HOME,        RB_SA },  //fnSigmaAssign
+/* 1895 */  { ITM_N_KEY_SIGMA,      16384+ITM_SIGMAPLUS,    RB_SA },  //fnSigmaAssign
+/*      */  { ITM_N_KEY_SNAP,       16384+ITM_SNAP,         RB_SA },  //fnSigmaAssign
 
 /*      */  { ITM_DENANY,           DM_ANY,                 CB_JC },  //  --fnDenMode
 /*      */  { ITM_DENFIX,           DM_FIX,                 CB_JC },  //  --fnDenMode
@@ -241,7 +241,7 @@ int8_t fnCbIsSet(int16_t item) {
       break;
 
       case RB_SA: {
-        rb_param = Norm_Key_00_VAR;
+        rb_param = 16384+Norm_Key_00_VAR;
         //printf("^^^^*** activated %d\n",rb_param);
       }
       break;

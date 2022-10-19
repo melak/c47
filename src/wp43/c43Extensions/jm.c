@@ -381,7 +381,8 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
  * \return void
  ***********************************************/
 void fnSigmaAssign(uint16_t sigmaAssign) {             //DONE
-  Norm_Key_00_VAR = sigmaAssign;
+  int16_t tt = (int16_t)sigmaAssign;
+  Norm_Key_00_VAR = tt - 16384;
   fnRefreshState();                                 //drJM
   fnClearFlag(FLAG_USER);
 }
