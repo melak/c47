@@ -589,8 +589,8 @@ TO_QSPI const int16_t menu_A_HOME[360]   = { -1,-1,-1,-1,-1,-1,        -1,-1,-1,
 TO_QSPI const int16_t menu_HOME[360]     = { //JMHOMEDEMO: NOTE REMOVE CONST TO MAKE JMHOME DEMO WORK
 /*HOME0 */           
 /*0x18*/                                     ITM_DRG,              ITM_YX,         ITM_SQUARE,        ITM_10x,          ITM_EXP,         ITM_CC,                    //JM HOME
-                                             ITM_MAGNITUDE,       ITM_ARG,        ITM_PARALLEL,      ITM_XFACT,        ITM_toREC2,       ITM_toPOL2,                    //JM HOME
-                                             ITM_DEG2,            ITM_RAD2,       ITM_SIGMAMINUS,    ITM_op_j,         ITM_RECT,         ITM_POLAR,                          //JM HOME
+                                             ITM_MAGNITUDE,       ITM_ARG,         ITM_PARALLEL,      ITM_XFACT,        ITM_toREC2,       ITM_toPOL2,                    //JM HOME
+                                             ITM_DEG2,            ITM_RAD2,        ITM_GRAD2,         ITM_op_j,         ITM_RECT,         ITM_POLAR,                          //JM HOME
 /*HOME-1*/                                                                                                                                                                     //JM HOME
 /*1*18*/                                     ITM_DRG,             ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,         ITM_CC,                        //JM HOME
                                              ITM_FP,              ITM_IP,          ITM_PARALLEL,      ITM_XFACT,       -MNU_BASE,       -MNU_INTS,                          //JM HOME
@@ -598,7 +598,7 @@ TO_QSPI const int16_t menu_HOME[360]     = { //JMHOMEDEMO: NOTE REMOVE CONST TO 
 /*HOME-2*/                                                                                                                                                                     //JM HOME
 /*2*18*/                                     ITM_DRG,             ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,         ITM_CC,                         //JM HOME
                                              -MNU_CONST,         -MNU_CPX,        -MNU_EXP,          -MNU_XEQ,         -MNU_MyMenu,      CC_EE,                            //JM HOME
-                                             ITM_DEG2,            ITM_RAD2,        ITM_SIGMAMINUS,    ITM_op_j,         ITM_RECT,        ITM_POLAR, 
+                                             ITM_DEG2,            ITM_RAD2,        ITM_GRAD2,         ITM_op_j,         ITM_RECT,        ITM_POLAR, 
 
                                        
 // 03 -- 09 HAAKON SUGGESTIONS OF FULL REPLICA
@@ -751,7 +751,7 @@ TO_QSPI const int16_t menu_HOME[360]     = { //JMHOMEDEMO: NOTE REMOVE CONST TO 
 /*HOME+1*/
                                            ITM_SI_p,                  ITM_SI_n,                ITM_SI_u,                 ITM_SI_m,                 ITM_SI_k,              ITM_SI_M,                         //JM HOME
                                            ITM_SI_f,                  ITM_DSPCYCLE,            ITM_DSP,                  ITM_XFACT,                ITM_SI_G,              ITM_SI_T,                         //JM HOME                                    
-                                           ITM_DEG2,                  ITM_RAD2,                ITM_DRG,                  ITM_PARALLEL,             ITM_RECT,              ITM_POLAR,                        //JM UNITS SI
+                                           ITM_DEG2,                  ITM_RAD2,                ITM_GRAD2,                ITM_PARALLEL,             ITM_RECT,              ITM_POLAR,                        //JM UNITS SI
 
 //##################################################################################################################################################################################################################################
 
@@ -1908,9 +1908,9 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
               if(  menu_A_HOME[xx] >= 0  &&  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HOME) {                                          //JMHOME
                
                 if(jm_HOME_ASN) {
-                  if(menu_A_HOME[xx] < 100) {item = (kbd_std[menu_A_HOME[xx]    ].primary ) != (kbd_usr[menu_A_HOME[xx]    ].primary ) ? (kbd_std[menu_A_HOME[xx]    ].primary ) : ITM_NULL;}             else
-                  if(menu_A_HOME[xx] < 200) {item = (kbd_std[menu_A_HOME[xx]-100].fShifted) != (kbd_usr[menu_A_HOME[xx]-100].fShifted) ? (kbd_std[menu_A_HOME[xx]-100].fShifted) : ITM_NULL;}             else
-                  if(menu_A_HOME[xx]>= 200) {item = (kbd_std[menu_A_HOME[xx]-200].gShifted) != (kbd_usr[menu_A_HOME[xx]-200].gShifted) ? (kbd_std[menu_A_HOME[xx]-200].gShifted) : ITM_NULL;}
+                  if(menu_A_HOME[xx] < 100) {item = (kbd_std[menu_A_HOME[xx]    ].primary ) != (kbd_usr[menu_A_HOME[xx]    ].primary ) ? (kbd_usr[menu_A_HOME[xx]    ].primary ) : ITM_NULL;}             else
+                  if(menu_A_HOME[xx] < 200) {item = (kbd_std[menu_A_HOME[xx]-100].fShifted) != (kbd_usr[menu_A_HOME[xx]-100].fShifted) ? (kbd_usr[menu_A_HOME[xx]-100].fShifted) : ITM_NULL;}             else
+                  if(menu_A_HOME[xx]>= 200) {item = (kbd_std[menu_A_HOME[xx]-200].gShifted) != (kbd_usr[menu_A_HOME[xx]-200].gShifted) ? (kbd_usr[menu_A_HOME[xx]-200].gShifted) : ITM_NULL;}
                 } else {
                   if(menu_A_HOME[xx] < 100) {item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[xx]    ].primary ) : (kbd_usr[menu_A_HOME[xx]    ].primary );}             else
                   if(menu_A_HOME[xx] < 200) {item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[xx]-100].fShifted) : (kbd_usr[menu_A_HOME[xx]-100].fShifted);}             else
