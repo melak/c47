@@ -264,7 +264,7 @@
 //* Other defines         *
 //*************************
 // Define the second tagline
-#define WHO2                                      "C43" STD_SPACE_3_PER_EM "42-style" STD_SPACE_3_PER_EM "keys," STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Jaco, DaniR, H2X, Inautilus"   //JM ID
+#define WHO2                                      "C43" STD_SPACE_3_PER_EM "42-style" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Jaco, Dani, Haakon, DA & Robb"   //JM ID
 #define CHARS_PER_LINE                            80 // Used in the flag browser application
 
 #define NUMERIC_FONT_HEIGHT                       36 // In pixel. Used in the font browser application

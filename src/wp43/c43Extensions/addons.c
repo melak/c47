@@ -623,16 +623,16 @@ void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *di
 
 
 void fnDisplayFormatCycle (uint16_t unusedButMandatoryParameter) {
-  if(DM_Cycling == 0) {
+  if(DM_Cycling == 0 && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HOME) {
     fnDisplayFormatUnit(displayFormatDigits);
   } else
   if(displayFormat == DF_ALL) {
-    fnDisplayFormatUnit(displayFormatDigits);
-  } else
-  if(displayFormat == DF_ENG && UNITDisplay) { //DF_UN)
     fnDisplayFormatSigFig(displayFormatDigits);
   } else
   if(displayFormat == DF_FIX && SigFigMode != 0 ) { //DF_SF)
+    fnDisplayFormatUnit(displayFormatDigits);
+  } else
+  if(displayFormat == DF_ENG && UNITDisplay) { //DF_UN)
     fnDisplayFormatFix(displayFormatDigits);
   } else
   if(displayFormat == DF_FIX && SigFigMode == 0) {
