@@ -1102,7 +1102,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   }
 
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n18\n");
+  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n20\n");
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1140,7 +1140,9 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "DRG_Cycling\n%" PRIu8 "\n", DRG_Cycling);               //JM
   save(tmpString, strlen(tmpString), BACKUP);
-//JM if added here remember the 18 digit up top
+  sprintf(tmpString, "DRG_Cycling\n%" PRIu8 "\n", DM_Cycling);               //JM
+  save(tmpString, strlen(tmpString), BACKUP);
+//JM if added here remember the 20 digit up top
 
 
 
@@ -2011,6 +2013,9 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         }
         else if(strcmp(aimBuffer, "DRG_Cycling") == 0) {               //JM
           DRG_Cycling = stringToUint8(tmpString);
+        }
+        else if(strcmp(aimBuffer, "DM_Cycling") == 0) {               //JM
+          DM_Cycling = stringToUint8(tmpString);
         }
       }
     }

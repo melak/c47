@@ -560,6 +560,7 @@ void fnDisplayFormatSigFig(uint16_t displayFormatN) { //DONE          //JM SIGFI
   constantFractionsOn = false; //JM
   SigFigMode = displayFormatN; //JM SIGFIG
   UNITDisplay = false;         //JM SIGFIG display Reset
+  DM_Cycling = 0;
 
   fnRefreshState();
 } //JM SIGFIG
@@ -576,6 +577,8 @@ void fnDisplayFormatUnit(uint16_t displayFormatN) { //DONE           //JM UNIT
   constantFractionsOn = false; //JM
   SigFigMode = 0;     //JM UNIT Sigfig works in FIX mode and it makes not sense in UNIT (ENG) mode
   UNITDisplay = true; //JM UNIT display
+  DM_Cycling = 0;
+
 
   fnRefreshState();
   // Convert longint to real, to force UNIT to work.
@@ -620,6 +623,9 @@ void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *di
 
 
 void fnDisplayFormatCycle (uint16_t unusedButMandatoryParameter) {
+  if(DM_Cycling == 0) {
+    fnDisplayFormatUnit(displayFormatDigits);
+  } else
   if(displayFormat == DF_ALL) {
     fnDisplayFormatUnit(displayFormatDigits);
   } else
@@ -638,6 +644,7 @@ void fnDisplayFormatCycle (uint16_t unusedButMandatoryParameter) {
   if(displayFormat == DF_ENG && !UNITDisplay) {
     fnDisplayFormatAll(displayFormatDigits);
   }
+  DM_Cycling = 1;
 }
 
 

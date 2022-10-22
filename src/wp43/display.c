@@ -62,6 +62,7 @@ void fnDisplayFormatFix(uint16_t displayFormatN) {
   constantFractionsOn = false; //JM
   SigFigMode = 0;                                                //JM SIGFIG Reset SIGFIG 
   UNITDisplay = false;                                           //JM UNIT display Reset
+  DM_Cycling = 0;  //JM
   if(getRegisterDataType(REGISTER_X) == dtTime || getRegisterDataType(REGISTER_Y) == dtTime || getRegisterDataType(REGISTER_Z) == dtTime || getRegisterDataType(REGISTER_T) == dtTime) {     //JM let FIX operate on time as well
     fnDisplayFormatTime(displayFormatN);
   }
@@ -84,6 +85,7 @@ void fnDisplayFormatSci(uint16_t displayFormatN) {
   constantFractionsOn = false; //JM
   SigFigMode = 0;                                                //JM SIGFIG Reset SIGFIG 
   UNITDisplay = false;                                           //JM UNIT display Reset
+  DM_Cycling = 0;  //JM
 
   fnRefreshState();                              //drJM
 }
@@ -103,6 +105,7 @@ void fnDisplayFormatEng(uint16_t displayFormatN) {
   constantFractionsOn = false; //JM
   SigFigMode = 0;                                                //JM SIGFIG Reset SIGFIG 
   UNITDisplay = false;                                           //JM UNIT display Reset
+  DM_Cycling = 0;  //JM
 
   fnRefreshState();                              //drJM
 }
@@ -123,6 +126,7 @@ void fnDisplayFormatAll(uint16_t displayFormatN) {
   constantFractionsOn = false; //JM
   SigFigMode = 0;                                                //JM SIGFIG Reset SIGFIG
   UNITDisplay = false;                                           //JM UNIT display Reset
+  DM_Cycling = 0;  //JM
 
   fnRefreshState();                              //drJM
 }

@@ -873,6 +873,7 @@ void fnReset(uint16_t confirmation) {
     timeDisplayFormatDigits = 0;
     currentAngularMode = amDegree;
     DRG_Cycling = 0;                                     //JM
+    DM_Cycling = 0;  //JM
     denMax = MAX_DENMAX;
     setSystemFlag(FLAG_DENANY);
     setSystemFlag(FLAG_MULTx);
