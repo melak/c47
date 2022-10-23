@@ -1763,7 +1763,7 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
 
 static void greyOutSoftMenuItem(int16_t x, int16_t y, int16_t currentFirstItem) {
 //printf(">>>> #### x=%d y=%d c1st=%d %d %d %d\n",x,y, currentFirstItem, menu_A_HOME[x + y*6] , kbd_std[menu_A_HOME[x + y*6]    ].primary, kbd_usr[menu_A_HOME[x + y*6]    ].primary);
-  if(jm_HOME_ASN &&
+  if(jm_HOME_ASN && menu_A_HOME[x + y*6] >= 0  &&  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HOME &&
        (
          ((menu_A_HOME[x + y*6] <  100)                                 && ((kbd_std[menu_A_HOME[x + y*6]    ].primary ) == (kbd_usr[menu_A_HOME[x + y*6]    ].primary ))) ||
          ((menu_A_HOME[x + y*6] >= 100) && (menu_A_HOME[x + y*6] < 200) && ((kbd_std[menu_A_HOME[x + y*6]-100].fShifted) == (kbd_usr[menu_A_HOME[x + y*6]-100].fShifted))) ||
