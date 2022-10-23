@@ -91,7 +91,30 @@ void   fnConstantR              (uint16_t constantAddr, uint16_t *constNr, real_
 bool_t checkForAndChange_       (char *displayString, const real34_t *val, const real_t *constant, const real34_t *tol34, const char *constantStr,  bool_t frontSpace);
 
 void fnDisplayFormatCycle       (uint16_t unusedButMandatoryParameter);
+
+
+//JM To determine the menu number for a given menuId          //JMvv
+int16_t mm(int16_t id);
+//vv EXTRA DRAWINGS FOR RADIO_BUTTON AND CHECK_BOX
+void JM_LINE2(uint32_t xx, uint32_t yy);
+void rbColumnCcccccc(uint32_t xx, uint32_t yy);
+void rbColumnCcSssssCc(uint32_t xx, uint32_t yy);
+void rbColumnCcSssssssCc(uint32_t xx, uint32_t yy);
+void rbColumnCSssCccSssC(uint32_t xx, uint32_t yy);
+void rbColumnCSsCSssCSsC(uint32_t xx, uint32_t yy);
+void rbColumnCcSsNnnSsCc(uint32_t xx, uint32_t yy);
+void rbColumnCSsNnnnnSsC(uint32_t xx, uint32_t yy);
+void rbColumnCSNnnnnnnSC(uint32_t xx, uint32_t yy);
+void cbColumnCcccccccccc(uint32_t xx, uint32_t yy);
+void cbColumnCSssssssssC(uint32_t xx, uint32_t yy);
+void cbColumnCSsCccccSsC(uint32_t xx, uint32_t yy);
+void cbColumnCSNnnnnnnSC(uint32_t xx, uint32_t yy);
+void RB_CHECKED(uint32_t xx, uint32_t yy);
+void RB_UNCHECKED(uint32_t xx, uint32_t yy);
+void CB_CHECKED(uint32_t xx, uint32_t yy);
+void CB_UNCHECKED(uint32_t xx, uint32_t yy);
 void greyOutSoftMenuItem        (int16_t x, int16_t y, int16_t currentFirstItem);
+bool_t interceptSoftMenuItem(int16_t * item, int16_t x, int16_t y);
 
 
 #endif //ADDONS_H

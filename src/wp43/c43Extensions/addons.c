@@ -1733,6 +1733,292 @@ void fnRESET_MyM_Mya(void){
 
 
 //Softmenus:
+//--------------------------------------------------------------------------------------------
+
+//JM To determine the menu number for a given menuId          //JMvv
+int16_t mm(int16_t id) {
+  int16_t m;
+  m = 0;
+  if(id != 0) { // Search by ID
+    while(softmenu[m].menuItem != 0) {
+      //printf(">>> mm %d %d %d %s \n",id, m, softmenu[m].menuItem, indexOfItems[-softmenu[m].menuItem].itemSoftmenuName);
+      if(softmenu[m].menuItem == id) {
+       //printf("####>> mm() broken out id=%i m=%i\n",id,m);
+       break;
+      }
+      m++;
+    }
+  }
+  return m;
+}                                                             //JM^^
+
+
+
+//vv EXTRA DRAWINGS FOR RADIO_BUTTON AND CHECK_BOX
+#define JM_LINE2_DRAW
+#undef JM_LINE2_DRAW
+#ifdef JM_LINE2_DRAW
+void JM_LINE2(uint32_t xx, uint32_t yy) {                          // To draw the lines for radiobutton on screen
+  uint32_t x, y;
+  y = yy-3-1;
+  for(x=xx-66+1; x<min(xx-1,SCREEN_WIDTH); x++) {
+    if(mod(x, 2) == 0) {
+      setBlackPixel(x, y);
+      setBlackPixel(x, y+2);
+    }
+    else {
+      setBlackPixel(x, y+1);
+    }
+  }
+}
+#endif //JM_LINE2_DRAW
+
+
+#define RB_EXTRA_BORDER
+//#undef RB_EXTRA_BORDER
+#define RB_CLEAR_CENTER
+#undef RB_CLEAR_CENTER
+#ifdef RB_EXTRA_BORDER
+void rbColumnCcccccc(uint32_t xx, uint32_t yy) {
+  lcd_fill_rect(xx,yy+2,1,7,  0);
+}
+#endif //RB_EXTRA_BORDER
+
+
+
+void rbColumnCcSssssCc(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+8,1,2,  0);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+3,1,5,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+1,1,1,  0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void rbColumnCcSssssssCc(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+9,1,2,  0);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+2,1,7,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy,1,2,  0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void rbColumnCSssCccSssC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+7,1,3,  0xFF);
+  lcd_fill_rect(xx,yy+4,1,3,  0);
+  lcd_fill_rect(xx,yy+1,1,3,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void rbColumnCSsCSssCSsC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+8,1,2,  0xFF);
+  setWhitePixel (xx,yy+7);
+  lcd_fill_rect(xx,yy+4,1,3,  0xFF);
+  setWhitePixel (xx,yy+3);
+  lcd_fill_rect(xx,yy+1,1,2,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void rbColumnCcSsNnnSsCc(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+9,1,2,  0);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+7,1,2,  0xFF);
+#ifdef RB_CLEAR_CENTER
+  lcd_fill_rect(xx,yy+4,1,3,  0);
+#endif //RB_CLEAR_CENTER
+  lcd_fill_rect(xx,yy+2,1,2,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+0,1,2,  0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void rbColumnCSsNnnnnSsC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+8,1,2,  0xFF);
+#ifdef RB_CLEAR_CENTER
+  lcd_fill_rect(xx,yy+3,1,5,  0);
+#endif //RB_CLEAR_CENTER
+  lcd_fill_rect(xx,yy+1,1,2,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDERf
+}
+
+
+
+void rbColumnCSNnnnnnnSC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  setBlackPixel (xx,yy+9);
+#ifdef RB_CLEAR_CENTER
+  lcd_fill_rect(xx,yy+2,1,7,  0);
+#endif //RB_CLEAR_CENTER
+  setBlackPixel (xx,yy+1);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+#ifdef RB_EXTRA_BORDER
+void cbColumnCcccccccccc(uint32_t xx, uint32_t yy) {
+  lcd_fill_rect(xx,yy+0,1,11,  0);
+}
+#endif
+
+
+
+void cbColumnCSssssssssC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+1,1,9,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void cbColumnCSsCccccSsC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+8,1,2,  0xFF);
+  lcd_fill_rect(xx,yy+3,1,5,  0);
+  lcd_fill_rect(xx,yy+1,1,2,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void cbColumnCSNnnnnnnSC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  setBlackPixel (xx,yy+9);
+#ifdef RB_CLEAR_CENTER
+  lcd_fill_rect(xx,yy+2,1,7,  0);
+#endif //RB_CLEAR_CENTER
+  setBlackPixel (xx,yy+1);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void RB_CHECKED(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  rbColumnCcccccc(xx+0, yy);
+#endif
+  rbColumnCcSssssCc(xx+1, yy);
+  rbColumnCcSssssssCc(xx+2, yy);
+  rbColumnCSssCccSssC(xx+3, yy);
+  rbColumnCSsCSssCSsC(xx+4, yy);
+  rbColumnCSsCSssCSsC(xx+5, yy);
+  rbColumnCSsCSssCSsC(xx+6, yy);
+  rbColumnCSssCccSssC(xx+7, yy);
+  rbColumnCcSssssssCc(xx+8, yy);
+  rbColumnCcSssssCc(xx+9, yy);
+//#ifdef RB_EXTRA_BORDER
+//  rbColumnCcccccc(xx+10, yy);
+//#endif
+}
+
+
+
+void RB_UNCHECKED(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  rbColumnCcccccc(xx+0, yy);
+#endif //RB_EXTRA_BORDER
+  rbColumnCcSssssCc(xx+1, yy);
+  rbColumnCcSsNnnSsCc(xx+2, yy);
+  rbColumnCSsNnnnnSsC(xx+3, yy);
+  rbColumnCSNnnnnnnSC(xx+4, yy);
+  rbColumnCSNnnnnnnSC(xx+5, yy);
+  rbColumnCSNnnnnnnSC(xx+6, yy);
+  rbColumnCSsNnnnnSsC(xx+7, yy);
+  rbColumnCcSsNnnSsCc(xx+8, yy);
+  rbColumnCcSssssCc(xx+9, yy);
+//#ifdef RB_EXTRA_BORDER
+//  rbColumnCcccccc(xx+10, yy);
+//#endif //RB_EXTRA_BORDER
+}
+
+
+
+void CB_CHECKED(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy-1,10,11,0);
+  cbColumnCcccccccccc(xx+0, yy);
+#endif //RB_EXTRA_BORDER
+  cbColumnCSssssssssC(xx+1, yy);
+  cbColumnCSssssssssC(xx+2, yy);
+  cbColumnCSsCccccSsC(xx+3, yy);
+  rbColumnCSsCSssCSsC(xx+4, yy);
+  rbColumnCSsCSssCSsC(xx+5, yy);
+  rbColumnCSsCSssCSsC(xx+6, yy);
+  cbColumnCSsCccccSsC(xx+7, yy);
+  cbColumnCSssssssssC(xx+8, yy);
+  cbColumnCSssssssssC(xx+9, yy);
+//#ifdef RB_EXTRA_BORDER
+//  cbColumnCcccccccccc(xx+10, yy);
+//#endif //RB_EXTRA_BORDER
+}
+
+
+
+void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy-1,10,11,0);
+  cbColumnCcccccccccc(xx+0, yy);
+#endif
+  cbColumnCSssssssssC(xx+1, yy);
+  cbColumnCSNnnnnnnSC(xx+2, yy);
+  cbColumnCSNnnnnnnSC(xx+3, yy);
+  cbColumnCSNnnnnnnSC(xx+4, yy);
+  cbColumnCSNnnnnnnSC(xx+5, yy);
+  cbColumnCSNnnnnnnSC(xx+6, yy);
+  cbColumnCSNnnnnnnSC(xx+7, yy);
+  cbColumnCSNnnnnnnSC(xx+8, yy);
+  cbColumnCSssssssssC(xx+9, yy);
+//#ifdef RB_EXTRA_BORDER
+//  cbColumnCcccccccccc(xx+10, yy);
+//#endif //RB_EXTRA_BORDER
+}
+//^^
+
 
 void greyOutSoftMenuItem(int16_t x, int16_t y, int16_t currentFirstItem) {
 //printf(">>>> #### x=%d y=%d c1st=%d %d %d %d\n",x,y, currentFirstItem, menu_A_HOME[x + y*6] , kbd_std[menu_A_HOME[x + y*6]    ].primary, kbd_usr[menu_A_HOME[x + y*6]    ].primary);
@@ -1754,5 +2040,25 @@ void greyOutSoftMenuItem(int16_t x, int16_t y, int16_t currentFirstItem) {
     }                
   }
 }
+
+
+bool_t interceptSoftMenuItem(int16_t *item, int16_t x, int16_t y) {
+  bool_t ret = false;
+    if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HOME) {
+      //printf("x:%d y:%d 6y:%d x + y*6:%d menu_A_HOME[x + y*6]=%d menuId=%d currentFirstItem=%d/18=%d --> ",x,y,6*y,x + y*6,menu_A_HOME[x + y*6],softmenu[softmenuStack[0].softmenu].menuId,currentFirstItem,currentFirstItem/18);  //JMHOME
+      if(  menu_A_HOME[x + y*6] >= 0) {                                          //JMHOME
+        if(menu_A_HOME[x + y*6] < 100) {*item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[x + y*6]    ].primary ) : (kbd_usr[menu_A_HOME[x + y*6]    ].primary );ret = true;} else
+        if(menu_A_HOME[x + y*6] < 200) {*item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[x + y*6]-100].fShifted) : (kbd_usr[menu_A_HOME[x + y*6]-100].fShifted);ret = true;} else
+        if(menu_A_HOME[x + y*6]>= 200) {*item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[x + y*6]-200].gShifted) : (kbd_usr[menu_A_HOME[x + y*6]-200].gShifted);ret = true;}
+      } else {
+        if(!getSystemFlag(FLAG_USER) && menu_A_HOME[x + y*6] == 0 && (calcMode == CM_NORMAL || calcMode == CM_NIM) && (Norm_Key_00_VAR != kbd_std[0].primary)){
+            *item = Norm_Key_00_VAR;
+            ret = true;
+        }
+      }
+    }
+    return ret;
+  }
+
 
 
