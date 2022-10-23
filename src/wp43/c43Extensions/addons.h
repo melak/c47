@@ -91,7 +91,7 @@ void   fnConstantR              (uint16_t constantAddr, uint16_t *constNr, real_
 bool_t checkForAndChange_       (char *displayString, const real34_t *val, const real_t *constant, const real34_t *tol34, const char *constantStr,  bool_t frontSpace);
 
 void fnDisplayFormatCycle       (uint16_t unusedButMandatoryParameter);
-
+void greyOutSoftMenuItem        (int16_t x, int16_t y, int16_t currentFirstItem);
 
 
 #endif //ADDONS_H
