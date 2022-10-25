@@ -1048,7 +1048,7 @@ void fnReset(uint16_t confirmation) {
 
 
 
-#define VERSION1 "_108_07d"
+#define VERSION1 "_108_07e"
 
     #ifdef JM_LAYOUT_1A
       #undef L1L2

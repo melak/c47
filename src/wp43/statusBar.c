@@ -175,7 +175,7 @@
       while(str20[x]!=0) {
         if(str20[x]>='A' && str20[x]<='Z') {
           str40[y++] = 0xa4;
-          str40[y++] = str20[x++] + 0x75;
+          str40[y++] = str20[x++] + 0x8F;
           str40[y] = 0;
         } 
         else if(str20[x]>='0' && str20[x]<='9') {
