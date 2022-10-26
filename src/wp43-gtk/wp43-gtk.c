@@ -156,6 +156,7 @@
     fnTimerConfig(TO_CL_DROP, fnTimerDummyTest, TO_CL_DROP/*, 500*/);
   //fnTimerConfig(TO_AUTO_REPEAT, execAutoRepeat, 0/*, 200*/);          //dr no autorepeat for emulator
     fnTimerConfig(TO_TIMER_APP, execTimerApp, 0/*, 100*/);
+    fnTimerConfig(TO_ASM_ACTIVE, refreshFn, TO_ASM_ACTIVE);
   //fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV/*, 6000*/);  //dr no keyboard scan boost for emulator
     gdk_threads_add_timeout(5, refreshTimer, NULL);                     //dr refreshTimer is called every 5 ms    //^^
 

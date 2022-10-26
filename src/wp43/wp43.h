@@ -125,7 +125,6 @@
   extern bool_t                 serialIOIconEnabled;
   extern bool_t                 pemCursorIsZerothStep;
 
-  extern bool_t                 AlphaSelectionBufferTimerRunning;                  //JM  #ifndef USEFLOAT
   extern realContext_t          ctxtReal4;    //   Limited digits: used for high speed internal calcs
   extern realContext_t          ctxtReal34;   //   34 digits
   extern realContext_t          ctxtReal39;   //   39 digits: used for 34 digits intermediate calculations
@@ -313,7 +312,6 @@
   extern uint32_t               firstGregorianDay;
   extern uint32_t               denMax;
   extern uint32_t               lastIntegerBase;
-  extern uint32_t               alphaSelectionTimer;
   extern uint32_t               xCursor;
   extern uint32_t               yCursor;
   extern uint32_t               tamOverPemYPos;

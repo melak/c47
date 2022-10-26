@@ -641,13 +641,6 @@
       }
     }
 
-    // Alpha selection timer
-    if(AlphaSelectionBufferTimerRunning) {         //JMvv
-      if(catalog/* && alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000*/) { // More than 3 seconds elapsed since last keypress
-        timeoutAlphaSelectionBuffer();             //JM^^
-      }
-    }
-
     return TRUE;
   }
 #elif defined(DMCP_BUILD)
@@ -726,13 +719,6 @@
         }
       }
     }
-
-    // Alpha selection timer
-  if(AlphaSelectionBufferTimerRunning) {         //JMvv
-    if(catalog)/* && alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000)*/ { // More than 3 seconds elapsed since last keypress
-      timeoutAlphaSelectionBuffer();             //JM^^
-    }
-  }
 }
 #endif // PC_BUILD DMCP_BUILD
 
@@ -751,6 +737,11 @@ void refreshFn(uint16_t timerType) {                        //vv dr - general ti
   if(timerType == TO_CL_LONG) { LongpressKey_handler(); }
   if(timerType == TO_FG_TIMR) { Shft_stop(); }
   if(timerType == TO_FN_LONG) { FN_handler(); }
+  if(timerType == TO_ASM_ACTIVE) {
+    if(catalog) {
+        resetAlphaSelectionBuffer();
+    }
+  }
 }                                                           //^^
 
 

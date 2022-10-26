@@ -642,7 +642,7 @@ typedef enum {
 #define TIMER_IDX_REFRESH_SLEEP                    0 // use timer 0 to wake up for screen refresh
 //#define TIMER_IDX_AUTO_REPEAT                    1 // use timer 1 to wake up for key auto-repeat
 
-#define TMR_NUMBER                                10
+#define TMR_NUMBER                                11
 
 // timer
 #define TO_FG_LONG                                 0
@@ -654,7 +654,8 @@ typedef enum {
 #define TO_CL_DROP                                 6
 #define TO_AUTO_REPEAT                             7
 #define TO_TIMER_APP                               8
-#define TO_KB_ACTV                                 9
+#define TO_ASM_ACTIVE                              9
+#define TO_KB_ACTV                                 10
 
 
 

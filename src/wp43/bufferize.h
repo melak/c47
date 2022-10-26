@@ -28,8 +28,6 @@
   void     fnAim                    (uint16_t unusedButMandatoryParameter);
   void     resetAlphaSelectionBuffer(void);
   uint16_t convertItemToSubOrSup    (uint16_t item, int16_t subOrSup);
-  bool_t   timeoutAlphaSelectionBuffer(void);           //JM
-  void     startAlphaSelectionBuffer  (void);           //JM
   void     light_ASB_icon(void);                        //JM
   void     kill_ASB_icon(void);                         //JM
 
