@@ -271,34 +271,13 @@ void kill_ASB_icon(void) {
 
   void resetAlphaSelectionBuffer(void) {
     lgCatalogSelection = 0;
-    alphaSelectionTimer = 0;
     asmBuffer[0] = 0;
     fnKeyInCatalog = 0;
-    AlphaSelectionBufferTimerRunning = false;     //JMvv
-    #ifndef TESTSUITE_BUILD
+    fnTimerStop(TO_ASM_ACTIVE);
+    #ifndef TESTSUITE_BUILD                         //JMvv
       kill_ASB_icon();
     #endif // TESTSUITE_BUILD                       //JM^^
   }
-
-
-  bool_t timeoutAlphaSelectionBuffer(void) {       //JM
-    if(alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000){
-      resetAlphaSelectionBuffer();
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  void startAlphaSelectionBuffer(void) {           //JM
-    alphaSelectionTimer = getUptimeMs();
-    AlphaSelectionBufferTimerRunning = true;
-    #ifndef TESTSUITE_BUILD
-    light_ASB_icon();
-    #endif // TESTSUITE_BUILD                       //JM^^
-  }
-
-
 
 
 
@@ -459,8 +438,10 @@ void kill_ASB_icon(void) {
 
           softmenuStack[0].firstItem = findFirstItem(asmBuffer);
           setCatalogLastPos();
-//          alphaSelectionTimer = getUptimeMs();     //JM
-          startAlphaSelectionBuffer();               //JM
+          fnTimerStart(TO_ASM_ACTIVE, TO_ASM_ACTIVE, 3000);
+#ifndef TESTSUITE_BUILD
+          light_ASB_icon();
+#endif // TESTSUITE_BUILD
         }
       }
 

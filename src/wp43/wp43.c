@@ -194,7 +194,6 @@ float                 graph_ymin;                              //JM Graph
 float                 graph_ymax;                              //JM Graph
 uint8_t               DRG_Cycling = 0;
 uint8_t               DM_Cycling = 0;
-bool_t                AlphaSelectionBufferTimerRunning;        //JM
 #ifdef INLINE_TEST                                             //vv dr
 bool_t                testEnabled;                             //
 uint16_t              testBitset;                              //
@@ -276,7 +275,6 @@ int32_t                graphVariable;
 uint32_t               firstGregorianDay;
 uint32_t               denMax;
 uint32_t               lastIntegerBase;
-uint32_t               alphaSelectionTimer;
 uint32_t               xCursor;
 uint32_t               yCursor;
 uint32_t               tamOverPemYPos;
@@ -559,6 +557,7 @@ char                   plotStatMx[8];
     fnTimerConfig(TO_CL_DROP, fnTimerDummyTest, TO_CL_DROP);
     fnTimerConfig(TO_AUTO_REPEAT, execAutoRepeat, 0);
     fnTimerConfig(TO_TIMER_APP, execTimerApp, 0);
+    fnTimerConfig(TO_ASM_ACTIVE, refreshFn, TO_ASM_ACTIVE);
     fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV);
 //--fnTimerConfig(TO_SHOW_NOP, execNOPTimeout, TO_SHOW_NOP);
     nextTimerRefresh = 0;

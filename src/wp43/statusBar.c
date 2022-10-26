@@ -27,6 +27,7 @@
 #include "plotstat.h"
 #include "screen.h"
 #include "softmenus.h"
+#include "timer.h"
 #include <string.h>
 
 #include "wp43.h"
@@ -465,7 +466,7 @@ void showFracMode(void) {
 
 
 void showHideASB(void) {                     //JMvv
-  if(AlphaSelectionBufferTimerRunning) {
+  if(fnTimerGetStatus(TO_ASM_ACTIVE) == TMR_RUNNING) {
     light_ASB_icon();
   }
   else {
