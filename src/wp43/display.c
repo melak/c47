@@ -2464,7 +2464,6 @@ static void checkAndEat(int16_t *source, int16_t last, int16_t *dest) {
     tmpString[*dest] = 0;
   }            
 }
-#endif //TESTSUITE_BUILD
 
 
 
@@ -2492,6 +2491,7 @@ static void printXAngle(int16_t cc, int16_t d, char *separator) {
 
   }
 
+#endif //TESTSUITE_BUILD
 
 
 
