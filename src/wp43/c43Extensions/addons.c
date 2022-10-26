@@ -1752,6 +1752,7 @@ int16_t mm(int16_t id) {
   return m;
 }                                                             //JM^^
 
+#ifndef TESTSUITE_BUILD
 
 
 //vv EXTRA DRAWINGS FOR RADIO_BUTTON AND CHECK_BOX
@@ -2060,5 +2061,6 @@ bool_t interceptSoftMenuItem(int16_t *item, int16_t x, int16_t y) {
     return ret;
   }
 
+#endif //TESTSUITE_BUILD
 
 
