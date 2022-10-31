@@ -481,7 +481,7 @@ TO_QSPI const int16_t menu_Timer[]       = { ITM_TIMER_ADD,                 ITM_
 
 
 
-TO_QSPI const int16_t menu_BASE[]        = { ITM_HASH_JM,                   ITM_2HEX,                   ITM_2DEC,                 ITM_2OCT,              ITM_2BIN,                    ITM_BCD,      //JM BASE MENU ADDED
+TO_QSPI const int16_t menu_BASE[]        = { ITM_BCD,                       ITM_HASH_JM,                ITM_2HEX,                 ITM_2DEC,              ITM_2OCT,                    ITM_2BIN,                          //JM BASE MENU ADDED
                                              -MNU_BITS,                     -MNU_INTS,                  ITM_LOGICALAND,           ITM_LOGICALOR,         ITM_LOGICALXOR,              ITM_LOGICALNOT,    
                                              ITM_CB_LEADING_ZERO,           ITM_WSIZE,                  ITM_WS64,                 ITM_WS32,              ITM_WS16,                    ITM_WS8,
 
