@@ -130,6 +130,23 @@ void fneRPN(uint16_t state) {
 }
 
 
+
+
+void fnShoiXRepeats(uint16_t numberOfRepeats) {           //JM SHOIDISP
+  displayStackSHOIDISP = numberOfRepeats;                 //   0-3
+  fnRefreshState();
+/*
+  if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
+    fnChangeBaseJM(getRegisterTag(REGISTER_X));
+  } else {
+    if(lastIntegerBase > 1 && lastIntegerBase <= 16) {
+      fnChangeBaseJM(lastIntegerBase);
+    }
+  }
+*/
+}
+
+
 void fnCFGsettings(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   runFunction(ITM_FF);

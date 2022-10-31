@@ -3046,7 +3046,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             if(displayStack == 1){
               copySourceRegisterToDestRegister(REGISTER_Y,TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X,REGISTER_Y);
-              setRegisterTag(REGISTER_Y, 2);
+              setRegisterTag(REGISTER_Y,  !bcdDisplay ? 2 : 10);
               shortIntegerToDisplayString(REGISTER_Y, tmpString, true);
               if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
                 showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
@@ -3057,7 +3057,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             if(displayStack == 1 || displayStack == 2){
               copySourceRegisterToDestRegister(REGISTER_Z,TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X,REGISTER_Z);
-              if(displayStack == 2) setRegisterTag(REGISTER_Z, 2); else 
+              if(displayStack == 2) setRegisterTag(REGISTER_Z,  !bcdDisplay ? 2 : 10); else 
                 if(displayStack == 1) setRegisterTag(REGISTER_Z, 8);
               shortIntegerToDisplayString(REGISTER_Z, tmpString, true);
               if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
@@ -3069,7 +3069,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             if(displayStack == 1 || displayStack == 2 || displayStack ==3){
               copySourceRegisterToDestRegister(REGISTER_T,TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X,REGISTER_T);
-              setRegisterTag(REGISTER_T, 16);
+              setRegisterTag(REGISTER_T, !bcdDisplay ? 16 : 17);
               shortIntegerToDisplayString(REGISTER_T, tmpString, true);
               if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
                 showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);

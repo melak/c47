@@ -315,6 +315,7 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(constantFractionsMode);
     recallFromDtConfigDescriptor(constantFractionsOn);
     recallFromDtConfigDescriptor(displayStackSHOIDISP);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(bcdDisplay);                                  //JMCFG^^         
 
     synchronizeLetteredFlags();
   }

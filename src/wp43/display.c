@@ -1473,6 +1473,12 @@ str3[j] = 0;
   number  = *(REGISTER_SHORT_INTEGER_DATA(regist));
   orgnumber = number;
 
+  bool_t bcdFlag = false;   //JM BCDvv Base 17 is reserved for BCD
+  if(base == 17) {        
+    base = 10;
+    bcdFlag = true;
+  }                         ////JMBCD ^^ Base 17 is reserved for BCD
+
   if(base <= 1 || base >= 17) {
     sprintf(errorMessage, "In function shortIntegerToDisplayString: %d is an unexpected value for base!", base);
     displayBugScreen(errorMessage);
@@ -1510,8 +1516,18 @@ str3[j] = 0;
   i = ERROR_MESSAGE_LENGTH / 2;
 
   if(number == 0) {
-    displayString[i++] = '0';
-    digit = 1;
+    if(base == 10 && bcdFlag) {           //JM BCDvv
+      strcpy(displayString + i, "0000");
+      i += 4;
+      digit = 1;
+      char ss[5];
+      strcpy(ss,STD_SUB_o);
+      displayString[i++] = ss[1];
+      displayString[i++] = ss[0];          
+    } else {                              //JM BCD^^
+      displayString[i++] = '0';
+      digit = 1;
+    }
   }
   else {
     digit = 0;
@@ -1530,6 +1546,9 @@ str3[j] = 0;
     else if(base == 8) {
       gap = 3;                         //  keeping base == 8 separate as opposed to just dropping it from base == 4 and base == 16  allows it to be changed back to 2 easily.
     }                                  //JMGAP ^^
+    else if(base == 10 && bcdFlag) {   //JM BCD
+      gap = 1;
+    }
     else {
       gap = 3;
     }
@@ -1543,7 +1562,37 @@ str3[j] = 0;
 
     unit = number % base;
     number /= base;
-    displayString[i++] = digits[unit];
+
+    if(bcdFlag && base == 10) {                //JM BCDVV conversion - Note base 17 is code for BCD display od base 10
+      switch(unit){
+        case 0:  displayString[i++] = '0'; displayString[i++] = '0'; displayString[i++] = '0'; displayString[i++] = '0'; break;
+        case 1:  displayString[i++] = '1'; displayString[i++] = '0'; displayString[i++] = '0'; displayString[i++] = '0'; break;
+        case 2:  displayString[i++] = '0'; displayString[i++] = '1'; displayString[i++] = '0'; displayString[i++] = '0'; break;
+        case 3:  displayString[i++] = '1'; displayString[i++] = '1'; displayString[i++] = '0'; displayString[i++] = '0'; break;
+        case 4:  displayString[i++] = '0'; displayString[i++] = '0'; displayString[i++] = '1'; displayString[i++] = '0'; break;
+        case 5:  displayString[i++] = '1'; displayString[i++] = '1'; displayString[i++] = '1'; displayString[i++] = '0'; break;
+        case 6:  displayString[i++] = '0'; displayString[i++] = '1'; displayString[i++] = '1'; displayString[i++] = '0'; break;
+        case 7:  displayString[i++] = '1'; displayString[i++] = '0'; displayString[i++] = '1'; displayString[i++] = '0'; break;
+        case 8:  displayString[i++] = '0'; displayString[i++] = '1'; displayString[i++] = '0'; displayString[i++] = '1'; break;
+        case 9:  displayString[i++] = '1'; displayString[i++] = '1'; displayString[i++] = '0'; displayString[i++] = '1'; break;
+        default: break;
+      }
+      if((orgnumber & 0x0FFFFFFFFFFFFFFF) <= 99999999999) {    //JM BCD add decimal to each BCD nibble
+        char ss[5];
+        if(unit == 0) {
+          strcpy(ss,STD_SUB_o);
+          displayString[i++] = ss[1];
+          displayString[i++] = ss[0];          
+        } else {
+          strcpy(ss,STD_BASE_1);
+          displayString[i++] = ss[1] + unit - 1;
+          displayString[i++] = ss[0];
+        }
+      }
+    } else {                                   //JM BCD^^
+      displayString[i++] = digits[unit];
+    }                                          //JM
+
   }
 
   // Add leading zeros
@@ -1615,8 +1664,12 @@ if( str3[1] >= '0' && str3[1] <= '9' && str3[2] >= '0' && str3[2] <= '9' && str3
     }
     displayString[j] = 0;
 
-    strcat(displayString, STD_BASE_2);
-    displayString[strlen(displayString) - 1] += base - 2;
+    if(bcdFlag && base == 10) {                              //JM BCD id display instead of base 10
+      strcat(displayString, STD_SUB_b STD_SUB_c STD_SUB_d);
+    } else {
+      strcat(displayString, STD_BASE_2);
+      displayString[strlen(displayString) - 1] += base - 2;
+    }
 
     if(stringWidth(displayString, fontForShortInteger, false, false) < SCREEN_WIDTH) {
       return;
@@ -1638,8 +1691,12 @@ if( str3[1] >= '0' && str3[1] <= '9' && str3[2] >= '0' && str3[2] <= '9' && str3
     }
     displayString[j] = 0;
 
-    strcat(displayString, STD_BASE_2);
-    displayString[strlen(displayString) - 1] += base - 2;
+    if(bcdFlag && base == 10) {                             //JM BCD id display instead of base 10
+      strcat(displayString, STD_SUB_b STD_SUB_c STD_SUB_d);
+    } else {
+      strcat(displayString, STD_BASE_2);
+      displayString[strlen(displayString) - 1] += base - 2;
+    }
 
     if(stringWidth(displayString, fontForShortInteger, false, false) < SCREEN_WIDTH) {
       return;
@@ -1659,8 +1716,12 @@ if( str3[1] >= '0' && str3[1] <= '9' && str3[2] >= '0' && str3[2] <= '9' && str3
     }
     displayString[j] = 0;
 
-    strcat(displayString, STD_BASE_2);
-    displayString[strlen(displayString) - 1] += base - 2;
+    if(bcdFlag && base == 10) {                             //JM BCD id display instead of base 10
+      strcat(displayString, STD_SUB_b STD_SUB_c STD_SUB_d);
+    } else {
+      strcat(displayString, STD_BASE_2);
+      displayString[strlen(displayString) - 1] += base - 2;
+    }
 
     if(/*temporaryInformation == TI_SHOW_REGISTER_BIG ||*/ stringWidth(displayString, fontForShortInteger, false, false) < SCREEN_WIDTH) {     //JMSHOW
       return;
@@ -1686,8 +1747,12 @@ if( str3[1] >= '0' && str3[1] <= '9' && str3[2] >= '0' && str3[2] <= '9' && str3
     }
     displayString[j] = 0;
 
-    strcat(displayString, STD_BASE_2);
-    displayString[strlen(displayString) - 1] += base - 2;
+    if(bcdFlag && base == 10) {                             //JM BCD id display instead of base 10
+      strcat(displayString, STD_SUB_b STD_SUB_c STD_SUB_d);
+    } else {
+      strcat(displayString, STD_BASE_2);
+      displayString[strlen(displayString) - 1] += base - 2;
+    }
 
     if(stringWidth(displayString, fontForShortInteger, false, false) < SCREEN_WIDTH) {
       return;
@@ -1715,8 +1780,12 @@ if( str3[1] >= '0' && str3[1] <= '9' && str3[2] >= '0' && str3[2] <= '9' && str3
     }
     displayString[j] = 0;
 
-    strcat(displayString, STD_BASE_2);
-    displayString[strlen(displayString) - 1] += base - 2;
+    if(bcdFlag && base == 10) {                             //JM BCD id display instead of base 10
+      strcat(displayString, STD_SUB_b STD_SUB_c STD_SUB_d);
+    } else {
+      strcat(displayString, STD_BASE_2);
+      displayString[strlen(displayString) - 1] += base - 2;
+    }
 
     if(stringWidth(displayString, fontForShortInteger, false, false) < SCREEN_WIDTH) {
       return;
@@ -1742,8 +1811,12 @@ if( str3[1] >= '0' && str3[1] <= '9' && str3[2] >= '0' && str3[2] <= '9' && str3
     }
     displayString[j] = 0;
 
-    strcat(displayString, STD_BASE_2);
-    displayString[strlen(displayString) - 1] += base - 2;
+    if(bcdFlag && base == 10) {                             //JM BCD id display instead of base 10
+      strcat(displayString, STD_SUB_b STD_SUB_c STD_SUB_d);
+    } else {
+      strcat(displayString, STD_BASE_2);
+      displayString[strlen(displayString) - 1] += base - 2;
+    }
 
     if(stringWidth(displayString, fontForShortInteger, false, false) < SCREEN_WIDTH) {
       return;

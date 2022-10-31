@@ -216,6 +216,8 @@ void fnRCL          (int16_t inp);
 
 #define JC_EXFRAC              65
 #define JC_UU                  66
+#define JC_BCD                 67
+
 
 #ifdef PC_BUILD
 //keyboard.c

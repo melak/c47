@@ -217,6 +217,7 @@ bool_t                 Shft_timeouts;                //JM SHIFT NEW FN
 bool_t                 FN_timed_out_to_NOP;          //JM LONGPRESS FN
 bool_t                 FN_timed_out_to_RELEASE_EXEC; //JM LONGPRESS FN
 bool_t                 FN_handle_timed_out_to_EXEC;
+bool_t                 bcdDisplay = false;
 char                   indexOfItemsXEQM[18*8];       //JMXEQ
 int16_t                fnXEQMENUpos;                 //JMXEQ
 uint8_t                last_CM = 255;                //Do extern !!

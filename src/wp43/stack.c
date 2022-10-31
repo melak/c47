@@ -121,10 +121,6 @@ void fnDisplayStack(uint16_t numberOfStackLines) {
   displayStack = numberOfStackLines;
 }
 
-void fnShoiXRepeats(uint16_t numberOfRepeats) {           //JM SHOIDISP
-  displayStackSHOIDISP = numberOfRepeats;                 //   0-3
-}
-
 
 static void _swapRegs(uint16_t srcReg, uint16_t regist) {
   registerHeader_t savedRegisterHeader = globalRegister[srcReg];

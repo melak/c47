@@ -365,6 +365,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&DRG_Cycling,                        sizeof(DRG_Cycling),                        BACKUP);   //JM
     save(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);   //C43 JM
     save(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset),             BACKUP);   //C43 JM
+    save(&bcdDisplay,                         sizeof(bcdDisplay),                         BACKUP);   //C43 JM
 
     fclose(BACKUP);
     printf("End of calc's backup\n");
@@ -658,6 +659,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&DRG_Cycling,                        sizeof(DRG_Cycling),                        BACKUP);   //JM
       restore(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);
       restore(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset),             BACKUP);   //C43 JM
+      restore(&bcdDisplay,                         sizeof(bcdDisplay),                         BACKUP);   //C43 JM
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
@@ -1102,7 +1104,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   }
 
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n20\n");
+  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n21\n");
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1142,7 +1144,9 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "DRG_Cycling\n%" PRIu8 "\n", DM_Cycling);               //JM
   save(tmpString, strlen(tmpString), BACKUP);
-//JM if added here remember the 20 digit up top
+  sprintf(tmpString, "BCD_Display\n%" PRIu8 "\n", (uint8_t)bcdDisplay);               //JM
+  save(tmpString, strlen(tmpString), BACKUP);
+//JM if added here remember the 21 digit up top
 
 
 
@@ -2016,6 +2020,9 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         }
         else if(strcmp(aimBuffer, "DM_Cycling") == 0) {               //JM
           DM_Cycling = stringToUint8(tmpString);
+        }
+        else if(strcmp(aimBuffer, "BCD_Display") == 0) {               //JM
+          bcdDisplay = stringToUint8(tmpString) != 0;
         }
       }
     }

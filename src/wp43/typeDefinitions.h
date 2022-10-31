@@ -211,6 +211,7 @@ typedef struct {
   uint8_t constantFractionsMode;
   bool_t constantFractionsOn;
   uint8_t displayStackSHOIDISP;                                             //JMCFG^^
+  bool_t bcdDisplay;
 
 } dtConfigDescriptor_t;
 
