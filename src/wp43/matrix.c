@@ -3968,7 +3968,13 @@ void WP34S_LU_decomposition(const real34Matrix_t *matrix, real34Matrix_t *lu, ui
             realMultiply(&t, &u, &max, &ctxtReal39);
             realCopy(&tmpMat[i * n + j], &t);
             realSubtract(&t, &max, &u, &ctxtReal39);
-            realCopy(&u, &tmpMat[i * n + j]);
+            realDivide(&u, &t, &max, &ctxtReal39); // condition number
+            if(realCompareAbsLessThan(&max, const_1e_37)) {
+              realZero(&tmpMat[i * n + j]); // prevent ill-conditionedness (likely singular)
+            }
+            else {
+              realCopy(&u, &tmpMat[i * n + j]);
+            }
           }
         }
       }
@@ -4047,6 +4053,14 @@ static bool_t luCpxMat(real_t *tmpMat, uint16_t size, uint16_t *p, realContext_t
         realCopy(&tmpMat[(i * n + j) * 2], &v), realCopy(&tmpMat[(i * n + j) * 2 + 1], &max);
         realSubtract(&v,   &t, &tmpMat[(i * n + j) * 2    ], realContext);
         realSubtract(&max, &u, &tmpMat[(i * n + j) * 2 + 1], realContext);
+        realDivide(&tmpMat[(i * n + j) * 2    ], &v,   &t, &ctxtReal39); // condition number
+        realDivide(&tmpMat[(i * n + j) * 2 + 1], &max, &u, &ctxtReal39);
+        if(realCompareAbsLessThan(&t, const_1e_37)) {
+          realZero(&tmpMat[(i * n + j) * 2    ]); // prevent ill-conditionedness
+        }
+        if(realCompareAbsLessThan(&u, const_1e_37)) {
+          realZero(&tmpMat[(i * n + j) * 2 + 1]);
+        }
       }
     }
   }
@@ -6090,8 +6104,8 @@ void elementwiseRemaShoI(void (*f)(void)) {
   #if !defined(TESTSUITE_BUILD)
   real34Matrix_t y;
   complex34Matrix_t yc;
-  uint64_t x; 
-  uint32_t base; 
+  uint64_t x;
+  uint32_t base;
   int16_t sign;
   bool_t complex = false;
 
