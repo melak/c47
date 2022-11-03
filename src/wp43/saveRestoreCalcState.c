@@ -49,7 +49,7 @@
 
 #include "wp43.h"
 
-#define BACKUP_VERSION         577  // Save screen
+#define BACKUP_VERSION         677  // Save screen
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -366,6 +366,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);   //C43 JM
     save(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset),             BACKUP);   //C43 JM
     save(&bcdDisplay,                         sizeof(bcdDisplay),                         BACKUP);   //C43 JM
+    save(&DM_Cycling,                         sizeof(DM_Cycling),                        BACKUP);   //JM
 
     fclose(BACKUP);
     printf("End of calc's backup\n");
@@ -660,6 +661,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);
       restore(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset),             BACKUP);   //C43 JM
       restore(&bcdDisplay,                         sizeof(bcdDisplay),                         BACKUP);   //C43 JM
+      restore(&DM_Cycling,                         sizeof(DM_Cycling),                        BACKUP);   //JM
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
@@ -1104,7 +1106,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   }
 
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n21\n");
+  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n39\n"); //JM 16+23
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1138,15 +1140,87 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "notBestF\n%" PRIu16 "\n", lrSelection);
   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "displayStackSHOIDISP\n%" PRIu8 "\n", displayStackSHOIDISP);   //JM
-  save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "DRG_Cycling\n%" PRIu8 "\n", DRG_Cycling);               //JM
-  save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "DRG_Cycling\n%" PRIu8 "\n", DM_Cycling);               //JM
-  save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "BCD_Display\n%" PRIu8 "\n", (uint8_t)bcdDisplay);               //JM
-  save(tmpString, strlen(tmpString), BACKUP);
-//JM if added here remember the 21 digit up top
+//Number 16: digit
+
+
+  sprintf(tmpString, "SigFigMode\n%"          PRIu8 "\n",       SigFigMode);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "eRPN\n%"                PRIu8 "\n",       (uint8_t)eRPN);                save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "HOME3\n%"               PRIu8 "\n",       (uint8_t)HOME3);               save(tmpString, strlen(tmpString), BACKUP); 
+  sprintf(tmpString, "ShiftTimoutMode\n%"     PRIu8 "\n",       (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString), BACKUP);           
+  sprintf(tmpString, "UNITDisplay\n%"         PRIu8 "\n",       (uint8_t)UNITDisplay);         save(tmpString, strlen(tmpString), BACKUP);       
+  sprintf(tmpString, "SH_BASE_HOME\n%"        PRIu8 "\n",       (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString), BACKUP);        
+  sprintf(tmpString, "Norm_Key_00_VAR\n%"     PRId16 "\n",      Norm_Key_00_VAR);              save(tmpString, strlen(tmpString), BACKUP);           
+  sprintf(tmpString, "Input_Default\n%"       PRIu8 "\n",       Input_Default);                save(tmpString, strlen(tmpString), BACKUP);         
+  sprintf(tmpString, "jm_FG_LINE\n%"          PRIu8 "\n",       (uint8_t)jm_FG_LINE);          save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "jm_NO_BASE_SCREEN\n%"   PRIu8 "\n",       (uint8_t)jm_NO_BASE_SCREEN);   save(tmpString, strlen(tmpString), BACKUP);             
+  sprintf(tmpString, "jm_G_DOUBLETAP\n%"      PRIu8 "\n",       (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString), BACKUP);          
+
+
+/*
+  float  graph_xmin;
+  float  graph_xmax;
+  float  graph_ymin;
+  float  graph_ymax;
+  float  graph_dx;
+  float  graph_dy;
+  bool_t roundedTicks;
+  bool_t extentx;
+  bool_t extenty;
+  bool_t PLOT_VECT;
+  bool_t PLOT_NVECT;
+  bool_t PLOT_SCALE;
+  bool_t Aspect_Square;
+  bool_t PLOT_LINE;
+  bool_t PLOT_CROSS;
+  bool_t PLOT_BOX;
+  bool_t PLOT_INTG;
+  bool_t PLOT_DIFF;
+  bool_t PLOT_RMS;
+  bool_t PLOT_SHADE;
+  bool_t PLOT_AXIS;
+  int8_t PLOT_ZMX;
+  int8_t PLOT_ZMY;
+
+  sprintf(tmpString, "graph_xmin\n%"                            graph_xmin);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "graph_xmax\n%"                            graph_xmax);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "graph_ymin\n%"                            graph_ymin);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "graph_ymax\n%"                            graph_ymax);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "graph_dx\n%"                              graph_dx);                     save(tmpString, strlen(tmpString), BACKUP);    
+  sprintf(tmpString, "graph_dy\n%"                              graph_dy);                     save(tmpString, strlen(tmpString), BACKUP);    
+  sprintf(tmpString, "roundedTicks\n%"                          roundedTicks);                 save(tmpString, strlen(tmpString), BACKUP);        
+  sprintf(tmpString, "extentx\n%"                               extentx);                      save(tmpString, strlen(tmpString), BACKUP);   
+  sprintf(tmpString, "extenty\n%"                               extenty);                      save(tmpString, strlen(tmpString), BACKUP);   
+  sprintf(tmpString, "PLOT_VECT\n%"                             PLOT_VECT);                    save(tmpString, strlen(tmpString), BACKUP);     
+  sprintf(tmpString, "PLOT_NVECT\n%"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "PLOT_SCALE\n%"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "Aspect_Square\n%"                         Aspect_Square);                save(tmpString, strlen(tmpString), BACKUP);         
+  sprintf(tmpString, "PLOT_LINE\n%"                             PLOT_LINE);                    save(tmpString, strlen(tmpString), BACKUP);     
+  sprintf(tmpString, "PLOT_CROSS\n%"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "PLOT_BOX\n%"                              PLOT_BOX);                     save(tmpString, strlen(tmpString), BACKUP);    
+  sprintf(tmpString, "PLOT_INTG\n%"                             PLOT_INTG);                    save(tmpString, strlen(tmpString), BACKUP);     
+  sprintf(tmpString, "PLOT_DIFF\n%"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString), BACKUP);     
+  sprintf(tmpString, "PLOT_RMS\n%"                              PLOT_RMS);                     save(tmpString, strlen(tmpString), BACKUP);    
+  sprintf(tmpString, "PLOT_SHADE\n%"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "PLOT_AXIS\n%"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString), BACKUP);     
+  sprintf(tmpString, "PLOT_ZMX\n%"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString), BACKUP);    
+  sprintf(tmpString, "PLOT_ZMY\n%"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
+*/
+
+
+  sprintf(tmpString, "jm_HOME_ASN\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_ASN);         save(tmpString, strlen(tmpString), BACKUP);       
+  sprintf(tmpString, "jm_HOME_SUM\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_SUM);         save(tmpString, strlen(tmpString), BACKUP);       
+  sprintf(tmpString, "jm_HOME_MIR\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_MIR);         save(tmpString, strlen(tmpString), BACKUP);       
+  sprintf(tmpString, "jm_HOME_FIX\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_FIX);         save(tmpString, strlen(tmpString), BACKUP);       
+  sprintf(tmpString, "jm_LARGELI\n%"            PRIu8 "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString), BACKUP);                 
+  sprintf(tmpString, "constantFractions\n%"     PRIu8 "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString), BACKUP);                 
+  sprintf(tmpString, "constantFractionsMode\n%" PRIu8 "\n",     constantFractionsMode);        save(tmpString, strlen(tmpString), BACKUP);                 
+  sprintf(tmpString, "constantFractionsOn\n%"   PRIu8 "\n",     (uint8_t)constantFractionsOn); save(tmpString, strlen(tmpString), BACKUP);               
+  
+  sprintf(tmpString, "displayStackSHOIDISP\n%" PRIu8 "\n",     displayStackSHOIDISP);         save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "bcdDisplay\n%"           PRIu8 "\n",     (uint8_t)bcdDisplay);          save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "DRG_Cycling\n%"          PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "DM_Cycling\n%"           PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString), BACKUP);
+
 
 
 
@@ -2012,18 +2086,59 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "notBestF") == 0) {
           lrSelection = stringToUint16(tmpString);
         }
-        else if(strcmp(aimBuffer, "displayStackSHOIDISP") == 0) {         //JM SHOIDISP
-          displayStackSHOIDISP = stringToUint8(tmpString);
-        }
-        else if(strcmp(aimBuffer, "DRG_Cycling") == 0) {               //JM
-          DRG_Cycling = stringToUint8(tmpString);
-        }
-        else if(strcmp(aimBuffer, "DM_Cycling") == 0) {               //JM
-          DM_Cycling = stringToUint8(tmpString);
-        }
-        else if(strcmp(aimBuffer, "BCD_Display") == 0) {               //JM
-          bcdDisplay = stringToUint8(tmpString) != 0;
-        }
+
+        else if(strcmp(aimBuffer, "SigFigMode"                  ) == 0) { SigFigMode            = stringToUint8(tmpString); }
+        else if(strcmp(aimBuffer, "eRPN"                        ) == 0) { eRPN                  = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "HOME3"                       ) == 0) { HOME3                 = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "ShiftTimoutMode"             ) == 0) { ShiftTimoutMode       = (bool_t)stringToUint8(tmpString) != 0; }          
+        else if(strcmp(aimBuffer, "UNITDisplay"                 ) == 0) { UNITDisplay           = (bool_t)stringToUint8(tmpString) != 0; }      
+        else if(strcmp(aimBuffer, "SH_BASE_HOME"                ) == 0) { SH_BASE_HOME          = (bool_t)stringToUint8(tmpString) != 0; }   
+        else if(strcmp(aimBuffer, "Norm_Key_00_VAR"             ) == 0) { Norm_Key_00_VAR       = stringToUint16(tmpString); }
+        else if(strcmp(aimBuffer, "Input_Default"               ) == 0) { Input_Default         = stringToUint8(tmpString); }
+        else if(strcmp(aimBuffer, "jm_FG_LINE"                  ) == 0) { jm_FG_LINE            = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "jm_NO_BASE_SCREEN"           ) == 0) { jm_NO_BASE_SCREEN     = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "jm_G_DOUBLETAP"              ) == 0) { jm_G_DOUBLETAP        = (bool_t)stringToUint8(tmpString) != 0; }
+
+/*
+        else if(strcmp(aimBuffer, "graph_xmin\n"                            graph_xmin);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "graph_xmax\n"                            graph_xmax);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "graph_ymin\n"                            graph_ymin);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "graph_ymax\n"                            graph_ymax);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "graph_dx\n"                              graph_dx);                     save(tmpString, strlen(tmpString), BACKUP);    
+        else if(strcmp(aimBuffer, "graph_dy\n"                              graph_dy);                     save(tmpString, strlen(tmpString), BACKUP);    
+        else if(strcmp(aimBuffer, "roundedTicks\n"                          roundedTicks);                 save(tmpString, strlen(tmpString), BACKUP);        
+        else if(strcmp(aimBuffer, "extentx\n"                               extentx);                      save(tmpString, strlen(tmpString), BACKUP);   
+        else if(strcmp(aimBuffer, "extenty\n"                               extenty);                      save(tmpString, strlen(tmpString), BACKUP);   
+        else if(strcmp(aimBuffer, "PLOT_VECT\n"                             PLOT_VECT);                    save(tmpString, strlen(tmpString), BACKUP);     
+        else if(strcmp(aimBuffer, "PLOT_NVECT\n"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "PLOT_SCALE\n"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "Aspect_Square\n"                         Aspect_Square);                save(tmpString, strlen(tmpString), BACKUP);         
+        else if(strcmp(aimBuffer, "PLOT_LINE\n"                             PLOT_LINE);                    save(tmpString, strlen(tmpString), BACKUP);     
+        else if(strcmp(aimBuffer, "PLOT_CROSS\n"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "PLOT_BOX\n"                              PLOT_BOX);                     save(tmpString, strlen(tmpString), BACKUP);    
+        else if(strcmp(aimBuffer, "PLOT_INTG\n"                             PLOT_INTG);                    save(tmpString, strlen(tmpString), BACKUP);     
+        else if(strcmp(aimBuffer, "PLOT_DIFF\n"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString), BACKUP);     
+        else if(strcmp(aimBuffer, "PLOT_RMS\n"                              PLOT_RMS);                     save(tmpString, strlen(tmpString), BACKUP);    
+        else if(strcmp(aimBuffer, "PLOT_SHADE\n"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "PLOT_AXIS\n"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString), BACKUP);     
+        else if(strcmp(aimBuffer, "PLOT_ZMX\n"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString), BACKUP);    
+        else if(strcmp(aimBuffer, "PLOT_ZMY\n"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
+*/
+        else if(strcmp(aimBuffer, "jm_HOME_ASN"                 ) == 0) { jm_HOME_ASN           = (bool_t)stringToUint8(tmpString) != 0; }  
+        else if(strcmp(aimBuffer, "jm_HOME_SUM"                 ) == 0) { jm_HOME_SUM           = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "jm_HOME_MIR"                 ) == 0) { jm_HOME_MIR           = (bool_t)stringToUint8(tmpString) != 0; } 
+        else if(strcmp(aimBuffer, "jm_HOME_FIX"                 ) == 0) { jm_HOME_FIX           = (bool_t)stringToUint8(tmpString) != 0; }     
+        else if(strcmp(aimBuffer, "jm_LARGELI"                  ) == 0) { jm_LARGELI            = (bool_t)stringToUint8(tmpString) != 0; }         
+        else if(strcmp(aimBuffer, "constantFractions"           ) == 0) { constantFractions     = (bool_t)stringToUint8(tmpString) != 0; }             
+        else if(strcmp(aimBuffer, "constantFractionsMode"       ) == 0) { constantFractionsMode = stringToUint8(tmpString); }      
+        else if(strcmp(aimBuffer, "constantFractionsOn"         ) == 0) { constantFractionsOn   = (bool_t)stringToUint8(tmpString) != 0; }            
+  
+
+        else if(strcmp(aimBuffer, "displayStackSHOIDISP"        ) == 0) { displayStackSHOIDISP = stringToUint8(tmpString); }
+        else if(strcmp(aimBuffer, "BCD_Display"                 ) == 0) { bcdDisplay           = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "DRG_Cycling"                 ) == 0) { DRG_Cycling          = stringToUint8(tmpString); }
+        else if(strcmp(aimBuffer, "DM_Cycling"                  ) == 0) { DM_Cycling           = stringToUint8(tmpString); }
+
       }
     }
     return false; //Signal that this was the last section loaded and no more sections to follow

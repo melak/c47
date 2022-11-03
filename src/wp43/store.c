@@ -394,7 +394,6 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(systemFlags);
   xcopy(configToStore->kbd_usr, kbd_usr, sizeof(kbd_usr));
 
-//    storeToDtConfigDescriptor(Norm_Key_00_VAR);                          //JMCFG
   storeToDtConfigDescriptor(SigFigMode);
   storeToDtConfigDescriptor(eRPN);
   storeToDtConfigDescriptor(HOME3);
@@ -439,6 +438,8 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(constantFractionsOn);                         //JM
   storeToDtConfigDescriptor(displayStackSHOIDISP);                                   //JMCFG^^
   storeToDtConfigDescriptor(bcdDisplay);                                   //JM
+  storeToDtConfigDescriptor(DRG_Cycling);                                   //JM
+  storeToDtConfigDescriptor(DM_Cycling);                                   //JM
 
 }
 
