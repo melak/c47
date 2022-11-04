@@ -1517,11 +1517,20 @@ str3[j] = 0;
 
   if(number == 0) {
     if(base == 10 && bcdFlag) {           //JM BCDvv
+      char ss[5];
+      if(bcdDisplaySign == BCD9c) {      
+      strcpy(displayString + i, "1001");
+      strcpy(ss,STD_BASE_9);
+      } else
+      if(bcdDisplaySign == BCD10c) {
       strcpy(displayString + i, "0000");
+      strcpy(ss,STD_SUB_o);
+      } else {
+      strcpy(displayString + i, "0000");
+      strcpy(ss,STD_SUB_o);
+      }
       i += 4;
       digit = 1;
-      char ss[5];
-      strcpy(ss,STD_SUB_o);
       displayString[i++] = ss[1];
       displayString[i++] = ss[0];          
     } else {                              //JM BCD^^
@@ -1554,6 +1563,7 @@ str3[j] = 0;
     }
   }
 
+  uint8_t firstNonZero = 0;
   while(number) {
     if(gap != 0 && digit != 0 && digit%gap == 0) {
       displayString[i++] = ' ';
@@ -1562,8 +1572,24 @@ str3[j] = 0;
 
     unit = number % base;
     number /= base;
+    if(unit != 0) {firstNonZero++;}
 
     if(bcdFlag && base == 10) {                //JM BCDVV conversion - Note base 17 is code for BCD display od base 10
+      if(bcdDisplaySign == BCD9c) {
+        unit = 9 - unit;
+      } else
+      if(bcdDisplaySign == BCD10c) {           //see https://madformath.com/calculators/digital-systems/complement-calculators/10-s-complement-calculator-alternative/10-s-complement-calculator-alternative
+        if(firstNonZero == 0) {
+          unit = 0;          
+        } else
+        if(firstNonZero == 1) {
+          unit = 9 - unit + 1;
+          firstNonZero++;          
+        } else {
+          unit = 9 - unit;
+          firstNonZero++;          
+        }
+      }
       switch(unit){
         case 0:  displayString[i++] = '0'; displayString[i++] = '0'; displayString[i++] = '0'; displayString[i++] = '0'; break;
         case 1:  displayString[i++] = '1'; displayString[i++] = '0'; displayString[i++] = '0'; displayString[i++] = '0'; break;

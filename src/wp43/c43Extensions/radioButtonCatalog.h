@@ -68,6 +68,7 @@ char*    figlabel              (const char* label, const char* showText, int16_t
 #define CB_JC   'A' // CheckBox 
 #define RB_HX   'B' // BASE
 #define RB_NM   'C' // NORMALMODE
+#define RB_BCD  'D' // NORMALMODE
 //??? #define RB_AM2  'C' // AngularMode
 //??? #define RB_ZM   'D' // AngularMode
 

@@ -2080,4 +2080,13 @@ bool_t interceptSoftMenuItem(int16_t *item, int16_t x, int16_t y) {
 
 #endif //TESTSUITE_BUILD
 
+void fnSetBCD (uint16_t bcd) {
+  switch (bcd) {
+    case JC_BCD:  bcdDisplay = !bcdDisplay;  break;
+    case BCD9c :  
+    case BCD10c:
+    case BCDu  :  bcdDisplaySign = bcd; break;
+    default:break;
+  }
+}
 

@@ -61,7 +61,10 @@ Modes available in the mode menu:
 // Display override 1 bit
 #define DO_SCI                  115
 #define DO_ENG                  116
-
+//BCD options
+#define BCDu                    0
+#define BCD9c                   1
+#define BCD10c                  2
 
 void jm_show_calc_state(char comment[]);
 void jm_show_comment   (char comment[]);

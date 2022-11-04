@@ -438,6 +438,7 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(constantFractionsOn);                         //JM
   storeToDtConfigDescriptor(displayStackSHOIDISP);                                   //JMCFG^^
   storeToDtConfigDescriptor(bcdDisplay);                                   //JM
+  storeToDtConfigDescriptor(bcdDisplaySign);                                   //JM
   storeToDtConfigDescriptor(DRG_Cycling);                                   //JM
   storeToDtConfigDescriptor(DM_Cycling);                                   //JM
 

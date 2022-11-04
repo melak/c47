@@ -93,6 +93,10 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
 /* 1895 */  { ITM_N_KEY_SIGMA,      16384+ITM_SIGMAPLUS,    RB_SA },  //fnSigmaAssign
 /*      */  { ITM_N_KEY_SNAP,       16384+ITM_SNAP,         RB_SA },  //fnSigmaAssign
 
+/*      */  { ITM_BCDU,             BCDu,                   RB_BCD },  //
+/*      */  { ITM_BCD9,             BCD9c,                  RB_BCD },  //
+/*      */  { ITM_BCD10,            BCD10c,                 RB_BCD },  //
+
 /*      */  { ITM_DENANY,           DM_ANY,                 CB_JC },  //  --fnDenMode
 /*      */  { ITM_DENFIX,           DM_FIX,                 CB_JC },  //  --fnDenMode
 
@@ -239,6 +243,11 @@ int8_t fnCbIsSet(int16_t item) {
       case RB_TF: {
         if(getSystemFlag(FLAG_TDM24)) { rb_param = TF_H24;  }
         else {                          rb_param = TF_H12;  }
+      }
+      break;
+
+      case RB_BCD: {
+        rb_param = bcdDisplaySign;
       }
       break;
 

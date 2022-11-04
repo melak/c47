@@ -120,6 +120,7 @@ void reset_jm_defaults(int16_t toload) {
     Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM
     Input_Default =  ID_43S;                                     //JM Input Default
     bcdDisplay = false;
+    bcdDisplaySign = BCDu;
     jm_FG_LINE = true;                                           //JM Screen / keyboard operation setup
     jm_G_DOUBLETAP = true;                                       //JM Screen / keyboard operation setup
     graph_xmin = -3*3.14159265;                                //JM GRAPH
@@ -365,11 +366,6 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
        alphaCase = AC_LOWER;
      showAlphaModeonGui(); //dr JM, see keyboardtweaks
      break;
-
-    
-    case JC_BCD:
-      bcdDisplay = !bcdDisplay;
-      break;
 
 
   default:
