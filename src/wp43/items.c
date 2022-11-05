@@ -57,6 +57,7 @@
 #include "store.h"
 #include "stringFuncs.h"
 #include "timer.h"
+#include "ui/matrixEditor.h"
 #include "ui/tam.h"
 #include "ui/tone.h"
 #include "c43Extensions/xeqm.h"
@@ -89,7 +90,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     if(func != ITM_CLX) { //JM Do not reset for backspace, because the timers need to run after the first action, CLX
       resetKeytimers();  //JM
     }
-    if(func != ITM_DRG) { //JM Reset DRG cycling flag for any command except DRG 
+    if(func != ITM_DRG) { //JM Reset DRG cycling flag for any command except DRG
       DRG_Cycling = 0;  //JM
     }
 
@@ -146,7 +147,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
       #endif // DMCP_BUILD
 
     screenUpdatingMode = SCRUPD_AUTO;
-    } 
+    }
     else {
       #if defined (PC_BUILD) && VERBOSE_LEVEL > -1
         printf("   >>>   reallyRunFunction: §%s§%s§\n",indexOfItems[abs(func)].itemCatalogName, indexOfItems[abs(func)].itemSoftmenuName);

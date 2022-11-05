@@ -206,6 +206,7 @@ wp43_src = files(
   'store.c',
   'stringFuncs.c',
   'timer.c',
+  'ui/matrixEditor.c',
   'ui/tam.c',
   'ui/tone.c',
   'wp43.c')

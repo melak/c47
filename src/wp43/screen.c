@@ -50,6 +50,7 @@
 #include "stack.h"
 #include "statusBar.h"
 #include "timer.h"
+#include "ui/matrixEditor.h"
 #include "version.h"
 #include <string.h>
 

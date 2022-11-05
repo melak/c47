@@ -30,6 +30,7 @@
 #include "registers.h"
 #include "stats.h"
 #include "typeDefinitions.h"
+#include "ui/matrixEditor.h"
 
 #include "wp43.h"
 
@@ -417,9 +418,9 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(PLOT_VECT);
   storeToDtConfigDescriptor(PLOT_NVECT);
   storeToDtConfigDescriptor(PLOT_SCALE);
-  storeToDtConfigDescriptor(Aspect_Square);          
-  storeToDtConfigDescriptor(PLOT_LINE);          
-  storeToDtConfigDescriptor(PLOT_CROSS);          
+  storeToDtConfigDescriptor(Aspect_Square);
+  storeToDtConfigDescriptor(PLOT_LINE);
+  storeToDtConfigDescriptor(PLOT_CROSS);
   storeToDtConfigDescriptor(PLOT_BOX);
   storeToDtConfigDescriptor(PLOT_INTG);
   storeToDtConfigDescriptor(PLOT_DIFF);
