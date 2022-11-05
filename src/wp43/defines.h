@@ -68,8 +68,8 @@
 
 //THESE ARE DMCP COMPILE OPTIONS
   #ifndef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
-    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
-    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
+    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2;
+    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers;
     #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
     #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
     #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
@@ -86,8 +86,8 @@
   #endif
 
   #ifdef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
-    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
-//    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
+    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2;
+//    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers;
     #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
 //    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
     #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
@@ -157,7 +157,7 @@
 #undef BUFFER_KEY_COUNT
 
 #define BUFFER_SIZE 2             //dr muss 2^n betragen (8, 16, 32, 64 ...)
-//* Longpress repeat 
+//* Longpress repeat
 #define FUNCTION_NOPTIME   800   //JM SCREEN NOP TIMEOUT FOR FIRST 15 FUNCTIONS
 
 #define JM_SHIFT_TIMER     4000  //ms TO_FG_TIMR
@@ -186,7 +186,7 @@
 
 //wrapping editor
 #define  combinationFontsDefault 2  //JM 0 = no large font; 1 = enlarged standardfont; 2 = combination font enlargement
-                                    //JM for text wrapping editor. 
+                                    //JM for text wrapping editor.
                                     //JM Combintionfonts uses large numericfont characters, and if glyph not available then takes standardfont and enlarges it
                                     //JM Otherwise, full enlarged standardfont is used.
 
@@ -680,7 +680,7 @@ typedef enum {
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
 
 // Number of constants
-#define NUMBER_OF_CONSTANTS_39                   201+1   //JM 2 additionalconstants
+#define NUMBER_OF_CONSTANTS_39                   202+1   //JM 2 additionalconstants
 #define NUMBER_OF_CONSTANTS_51                    39
 #define NUMBER_OF_CONSTANTS_1071                   1
 #define NUMBER_OF_CONSTANTS_34                    44
