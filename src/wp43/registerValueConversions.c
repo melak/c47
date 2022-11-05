@@ -22,7 +22,7 @@
 #include "display.h"
 #include "error.h"
 #include "integers.h"
-#include "matrix.h"
+#include "mathematics/matrix.h"
 #include "mathematics/rsd.h"
 #include "memory.h"
 #include "registers.h"

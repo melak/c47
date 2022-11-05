@@ -24,7 +24,7 @@
 #include "items.h"
 #include "c43Extensions/jm.h"
 #include "mathematics/compare.h"
-#include "matrix.h"
+#include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
 #include "registerValueConversions.h"

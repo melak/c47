@@ -27,10 +27,10 @@
 #include "fonts.h"
 #include "items.h"
 #include "mathematics/exp.h"
+#include "mathematics/matrix.h"
 #include "mathematics/multiplication.h"
 #include "mathematics/sin.h"
 #include "mathematics/wp34s.h"
-#include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 

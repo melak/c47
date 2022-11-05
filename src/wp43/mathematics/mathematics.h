@@ -89,6 +89,7 @@
   #include "beta.h"
   #include "magnitude.h"
   #include "mant.h"
+  #include "matrix.h"
   #include "max.h"
   #include "mean.h"
   #include "min.h"

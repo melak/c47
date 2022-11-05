@@ -27,6 +27,7 @@
 #include "fonts.h"
 #include "mathematics/cos.h"
 #include "mathematics/division.h"
+#include "mathematics/matrix.h"
 #include "mathematics/multiplication.h"
 #include "mathematics/power.h"
 #include "mathematics/wp34s.h"

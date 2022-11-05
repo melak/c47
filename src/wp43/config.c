@@ -36,7 +36,7 @@
 #include "c43Extensions/jm.h"
 #include "c43Extensions/addons.h"
 #include "keyboard.h"
-#include "matrix.h"
+#include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
 #include "programming/flash.h"
@@ -133,7 +133,7 @@ void fnConfigUsa(uint16_t unusedButMandatoryParameter) {
 
 void fnIntegerMode(uint16_t mode) {
   shortIntegerMode = mode;
-  
+
   fnRefreshState();                            //dr
 
 }
@@ -1015,7 +1015,7 @@ void fnReset(uint16_t confirmation) {
 
 
 
-      
+
         clearSystemFlag(FLAG_DENANY);                              //JM Default
         fnDenMax(0);                                               //JM Default
         clearSystemFlag(FLAG_ASLIFT);  //JM??
@@ -1023,21 +1023,21 @@ void fnReset(uint16_t confirmation) {
         setSystemFlag(FLAG_SSIZE8);                                //JM Default
         setSystemFlag(FLAG_CPXRES);                                //JM Default
         clearSystemFlag(FLAG_FRCSRN);  //JM??                      //JM Default
-            
+
     #ifndef TESTSUITE_BUILD
       mm_MNU_HOME       = mm(-MNU_HOME);     //printf("####BB> %i \n",mm_MNU_HOME);                      //JM
       mm_MNU_ALPHA      = mm(-MNU_ALPHA);    //printf("####CC> %i \n",mm_MNU_ALPHA);                      //JM
 
       calcModeNormal();
       if(SH_BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
-    #endif // TESTSUITE_BUILD      
+    #endif // TESTSUITE_BUILD
 
-      reset_jm_defaults(true); 
+      reset_jm_defaults(true);
 
 //********** JM CHECKQQ
 
-      
-      
+
+
     //JM Default USER
     fnUserJM(USER_RESET);                                      //JM USER
 //    kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
@@ -1126,7 +1126,7 @@ void fnReset(uint16_t confirmation) {
     fnStrtoX(build_str);
     fnStore(102);
     fnDrop(0);
-        
+
 
     #ifdef PC_BUILD
       #if defined(JM_LAYOUT_1A)
@@ -1159,13 +1159,13 @@ void fnReset(uint16_t confirmation) {
     fnStore(103);
     fnDrop(0);
 
-    
+
     fnRESET_MyM_Mya();
 
 
 
 
-        
+
 //    TO_QSPI const numberstr indexOfStrings[] = {
 //      {0,"Reg 11,12 & 13 have: The 3 cubes = 3."},
 //      {1,"569936821221962380720"},
@@ -1206,7 +1206,7 @@ void fnReset(uint16_t confirmation) {
         fnStrtoX(indexOfStrings[i].itemName);
       } else
       if( indexOfStrings[i].itemType== 1) {
-        fnStrInputLongint(indexOfStrings[i].itemName);        
+        fnStrInputLongint(indexOfStrings[i].itemName);
       }
       fnStore(i+10);
       fnDrop(0);
