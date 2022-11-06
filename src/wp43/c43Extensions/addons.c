@@ -612,30 +612,34 @@ void fnDisplayFormatUnit(uint16_t displayFormatN) { //DONE           //JM UNIT
  * \return void                                                                                           JM UNIT
  ***********************************************                                                          JM UNIT */
 void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode, const char *separator) {               //JM UNIT
-  if     (exponent == -15) { displayString[0] = ' '; displayString[1] = 'f'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent == -12) { displayString[0] = ' '; displayString[1] = 'p'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent == -9 ) { displayString[0] = ' '; displayString[1] = 'n'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent == -6 ) { displayString[0] = ' '; displayString[1] = STD_mu[0]; displayString[2] = STD_mu[1]; displayString[3] = 0; }   //JM UNIT
-  else if(exponent == -3 ) { displayString[0] = ' '; displayString[1] = 'm'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent ==  3 ) { displayString[0] = ' '; displayString[1] = 'k'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent ==  6 ) { displayString[0] = ' '; displayString[1] = 'M'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent ==  9 ) { displayString[0] = ' '; displayString[1] = 'G'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent == 12 ) { displayString[0] = ' '; displayString[1] = 'T'; displayString[2] = 0; }    //JM UNIT
-  else {                                                                                                //JM UNIT
-    strcpy(displayString, PRODUCT_SIGN);                                                                //JM UNIT Below, copy of
-    displayString += 2;                                                                                 //JM UNIT exponentToDisplayString in display.c
-    strcpy(displayString, STD_SUB_10);                                                                  //JM UNIT
-    displayString += 2;                                                                                 //JM UNIT
-    displayString[0] = 0;                                                                               //JM UNIT
-    if(nimMode) {                                                                                       //JM UNIT
-      if(exponent != 0) {                                                                               //JM UNIT
-        supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                 //JM UNIT
-      }                                                                                                 //JM UNIT
-    }                                                                                                   //JM UNIT
-    else {                                                                                              //JM UNIT
-      supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                   //JM UNIT
-    }                                                                                                   //JM UNIT
-  }                                                                                                     //JM UNIT
+  displayString[0] = ' ';
+  displayString[2] = 0;
+  switch(exponent) {
+    case -15 : displayString[1] = 'f'; break;
+    case -12 : displayString[1] = 'p'; break;
+    case -9  : displayString[1] = 'n'; break;
+    case -6  : displayString[1] = STD_mu[0]; displayString[2] = STD_mu[1]; displayString[3] = 0;  break;   //JM UNIT
+    case -3  : displayString[1] = 'm'; break;
+    case  3  : displayString[1] = 'k'; break;
+    case  6  : displayString[1] = 'M'; break;
+    case  9  : displayString[1] = 'G'; break;
+    case 12  : displayString[1] = 'T'; break;
+    default: {
+      strcpy(displayString, PRODUCT_SIGN);                                                                //JM UNIT Below, copy of
+      displayString += 2;                                                                                 //JM UNIT exponentToDisplayString in display.c
+      strcpy(displayString, STD_SUB_10);                                                                  //JM UNIT
+      displayString += 2;                                                                                 //JM UNIT
+      displayString[0] = 0;                                                                               //JM UNIT
+      if(nimMode) {                                                                                       //JM UNIT
+        if(exponent != 0) {                                                                               //JM UNIT
+          supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                 //JM UNIT
+        }                                                                                                 //JM UNIT
+      }                                                                                                   //JM UNIT
+      else {                                                                                              //JM UNIT
+        supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                   //JM UNIT
+      }                                                                                                   //JM UNIT
+    }                                                                                                     //JM UNIT
+  }
 }                                                                                                       //JM UNIT
 
 
@@ -2082,7 +2086,13 @@ bool_t interceptSoftMenuItem(int16_t *item, int16_t x, int16_t y) {
 
 void fnSetBCD (uint16_t bcd) {
   switch (bcd) {
-    case JC_BCD:  bcdDisplay = !bcdDisplay;  break;
+    case JC_BCD:  {
+    	bcdDisplay = !bcdDisplay;
+      if(lastIntegerBase == 0) {
+        fnChangeBaseJM(10);
+      }
+    }
+    break;
     case BCD9c :  
     case BCD10c:
     case BCDu  :  bcdDisplaySign = bcd; break;

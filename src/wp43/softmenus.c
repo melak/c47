@@ -63,7 +63,7 @@ TO_QSPI const int16_t menu_BITS[]        = { ITM_LOGICALAND,                ITM_
                                              ITM_A,                         ITM_B,                      ITM_C,                    ITM_D,                 ITM_E,                       ITM_F,
                                              ITM_SL,                        ITM_RL,                     ITM_RLC,                  ITM_RRC,               ITM_RR,                      ITM_SR,
                                              ITM_LJ,                        ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_RJ,                      ITM_ASR,
-                                             ITM_1COMPL,                    ITM_2COMPL,                 ITM_UNSIGN,               ITM_SIGNMT,            ITM_NULL,                    ITM_WSIZE                     };
+                                             ITM_SIGNMT,                    ITM_UNSIGN,                 ITM_1COMPL,               ITM_2COMPL,            ITM_NULL,                    ITM_WSIZE                     };
 
 TO_QSPI const int16_t menu_CLK[]         = { ITM_DATE,                      ITM_DATEto,                 ITM_toDATE,               ITM_DAY,               ITM_MONTH,                   ITM_YEAR,
                                              ITM_TIME,                      ITM_TIMEto,                 ITM_toTIME,               ITM_SECOND,            ITM_MINUTE,                  ITM_HR_DEG,
@@ -135,7 +135,7 @@ TO_QSPI const int16_t menu_INFO[]        = { ITM_SSIZE,                     ITM_
 TO_QSPI const int16_t menu_INTS[]        = { ITM_A,                         ITM_B,                      ITM_C,                    ITM_D,                 ITM_E,                       ITM_F,
                                              ITM_IDIV,                      ITM_RMD,                    ITM_MOD,                  ITM_XMOD,              ITM_FLOOR,                   ITM_LCM,
                                              ITM_DBLDIV,                    ITM_DBLR,                   ITM_DBLMULT,              ITM_PMOD,              ITM_CEIL,                    ITM_GCD,
-                                             ITM_1COMPL,                    ITM_2COMPL,                 ITM_UNSIGN,               ITM_SIGNMT,            ITM_NULL,                    ITM_WSIZE                     };    //JM
+                                             ITM_SIGNMT,                    ITM_UNSIGN,                 ITM_1COMPL,               ITM_2COMPL,            ITM_NULL,                    ITM_WSIZE                     };
 
 TO_QSPI const int16_t menu_LOOP[]        = { ITM_DSE,                       ITM_DSZ,                    ITM_DSL,                  ITM_ISE,               ITM_ISZ,                     ITM_ISG,
                                              ITM_DEC,                       ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_INC                       };
@@ -489,7 +489,7 @@ TO_QSPI const int16_t menu_BASE[]        = { ITM_BCD,                       ITM_
                                              ITM_S06,                       ITM_S08,                    ITM_S16,                  ITM_S32,               ITM_S64,                     ITM_FWORD,     
                                              ITM_U06,                       ITM_U08,                    ITM_U16,                  ITM_U32,               ITM_U64,                     ITM_FBYTE,
 
-                                             ITM_1COMPL,                    ITM_2COMPL,                 ITM_UNSIGN,               ITM_SIGNMT,            ITM_NULL,                    ITM_WSIZE,
+                                             ITM_SIGNMT,                    ITM_UNSIGN,                 ITM_1COMPL,               ITM_2COMPL,            ITM_NULL,                    ITM_WSIZE,
                                              ITM_BCD,                       ITM_BCDU,                   ITM_BCD9,                 ITM_BCD10,             ITM_NULL,                    ITM_NULL                           };    //JM BASE MENU ADDED 
 
 

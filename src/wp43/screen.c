@@ -3042,7 +3042,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
           showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
   
           //JM SHOIDISP // use the top part of the screen for HEX and BIN    //JM vv SHOIDISP
-          if(displayStack == 4-displayStackSHOIDISP && lastIntegerBase != 0) {
+          if(displayStack == 4-displayStackSHOIDISP && lastIntegerBase != 0 && lastErrorCode == 0) {
             if(displayStack == 1){
               copySourceRegisterToDestRegister(REGISTER_Y,TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X,REGISTER_Y);
