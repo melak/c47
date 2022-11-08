@@ -479,55 +479,71 @@ void fnMultiplySI(uint16_t multiplier)
 }
 
 
-void fn_cnst_op_j(uint16_t unusedButMandatoryParameter) {
+static void cpxToStk(const real_t *real1, const real_t *real2) {
   setSystemFlag(FLAG_ASLIFT);
   liftStack();
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(const_1, REGISTER_IMAG34_DATA(REGISTER_X));
+  realToReal34(real1, REGISTER_REAL34_DATA(REGISTER_X));
+  realToReal34(real2, REGISTER_IMAG34_DATA(REGISTER_X));
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+}
+
+void fn_cnst_op_j(uint16_t unusedButMandatoryParameter) {
+  cpxToStk(const_0, const_1);
+//  setSystemFlag(FLAG_ASLIFT);
+//  liftStack();
+//  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+//  realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
+//  realToReal34(const_1, REGISTER_IMAG34_DATA(REGISTER_X));
+//  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
 void fn_cnst_op_aa(uint16_t unusedButMandatoryParameter) {
-  setSystemFlag(FLAG_ASLIFT);
-  liftStack();
-  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(const_1on2, REGISTER_REAL34_DATA(REGISTER_X)); //-0.5 - 0.866
-  realToReal34(const_root3on2, REGISTER_IMAG34_DATA(REGISTER_X));
+  cpxToStk(const_1on2, const_root3on2);
   chsCplx();
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+//  setSystemFlag(FLAG_ASLIFT);
+//  liftStack();
+//  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+//  realToReal34(const_1on2, REGISTER_REAL34_DATA(REGISTER_X)); //-0.5 - 0.866
+//  realToReal34(const_root3on2, REGISTER_IMAG34_DATA(REGISTER_X));
+//  chsCplx();
+//  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
 void fn_cnst_op_a(uint16_t unusedButMandatoryParameter) {
-  setSystemFlag(FLAG_ASLIFT);
-  liftStack();
-  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(const_1on2, REGISTER_REAL34_DATA(REGISTER_X)); //-0.5 + 0.866i  : op a
+  cpxToStk(const_1on2, const_root3on2);
   chsReal();
-  realToReal34(const_root3on2, REGISTER_IMAG34_DATA(REGISTER_X));
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+//  setSystemFlag(FLAG_ASLIFT);
+//  liftStack();
+//  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+//  realToReal34(const_1on2, REGISTER_REAL34_DATA(REGISTER_X)); //-0.5 + 0.866i  : op a
+//  chsReal();
+//  realToReal34(const_root3on2, REGISTER_IMAG34_DATA(REGISTER_X));
+//  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
 void fn_cnst_0_cpx(uint16_t unusedButMandatoryParameter) {
-  setSystemFlag(FLAG_ASLIFT);
-  liftStack();
-  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X)); // 0+i0
-  realToReal34(const_0, REGISTER_IMAG34_DATA(REGISTER_X));
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+  cpxToStk(const_0, const_0);
+//  setSystemFlag(FLAG_ASLIFT);
+//  liftStack();
+//  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+//  realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X)); // 0+i0
+//  realToReal34(const_0, REGISTER_IMAG34_DATA(REGISTER_X));
+//  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
 void fn_cnst_1_cpx(uint16_t unusedButMandatoryParameter) {
-  setSystemFlag(FLAG_ASLIFT);
-  liftStack();
-  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(const_1, REGISTER_REAL34_DATA(REGISTER_X)); // 0+i0
-  realToReal34(const_0, REGISTER_IMAG34_DATA(REGISTER_X));
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+  cpxToStk(const_1, const_0);
+//  setSystemFlag(FLAG_ASLIFT);
+//  liftStack();
+//  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+//  realToReal34(const_1, REGISTER_REAL34_DATA(REGISTER_X)); // 0+i0
+//  realToReal34(const_0, REGISTER_IMAG34_DATA(REGISTER_X));
+//  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
