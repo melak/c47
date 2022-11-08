@@ -3058,7 +3058,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
               copySourceRegisterToDestRegister(REGISTER_Z,TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X,REGISTER_Z);
               if(displayStack == 2) setRegisterTag(REGISTER_Z,  !bcdDisplay ? 2 : 10); else 
-                if(displayStack == 1) setRegisterTag(REGISTER_Z, 8);
+                if(displayStack == 1) setRegisterTag(REGISTER_Z, !bcdDisplay ? 8 : 2);
               shortIntegerToDisplayString(REGISTER_Z, tmpString, true);
               if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
                 showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);

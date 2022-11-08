@@ -435,7 +435,8 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
     switch(*result) {
       case ITM_XEQ      : longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ; break;    //XEQ longpress to XEQMENU 
       case ITM_BACKSPACE: longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = ITM_CLSTK; break;    //backspace longpress to CLSTK
-      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
+//    case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
+      case ITM_EXIT1    :  longpressDelayedkey2=-MNU_MyMenu;          longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
     //case ITM_CHS      :                                             longpressDelayedkey1 = ITM_XexY;  break;    //sample on CHS, operating X<>Y. XEQ must still be created.
       default:;
     }
@@ -444,14 +445,16 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
     switch(*result) {
       case ITM_XEQ      : longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ; break;    //XEQ longpress to XEQMENU 
       case ITM_BACKSPACE:                                             longpressDelayedkey1 = ITM_CLN;   break;    //BACKSPACE longpress clears input buffer
-      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
+//    case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
+      case ITM_EXIT1    :  longpressDelayedkey2=-MNU_MyMenu;          longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
       default:;
     }
   }
   else if(calcMode == CM_AIM) {
     switch(*result) {
       case ITM_BACKSPACE:                                             longpressDelayedkey1 = ITM_CLA;   break;    //BACKSPACE longpress clears input buffer
-      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
+//    case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
+      case ITM_EXIT1    :  longpressDelayedkey2=-MNU_MyAlpha;         longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
       case ITM_ENTER    :                                             longpressDelayedkey1 = ITM_XEDIT; break;
       default:;
     }
@@ -459,14 +462,14 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   else if(calcMode == CM_EIM) {
     switch(*result) {
       case ITM_BACKSPACE:                                             longpressDelayedkey1 = ITM_CLA;   break;    //BACKSPACE longpress clears input buffer
-      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
+      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
       case ITM_ENTER    :                                             longpressDelayedkey1 = ITM_XEDIT; break;
       default:;
     }
   }
   else {
     switch(*result) {
-      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
+      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
       default:;
     }
   }

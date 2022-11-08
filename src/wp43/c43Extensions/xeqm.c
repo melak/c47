@@ -840,7 +840,7 @@ TO_QSPI const function_t indexOfFunctions[] = {
 //           {ITM_X_g6,   "XEQM18"},
 //           {ITM_XSAVE,   "X.SAVE"},
 //           {ITM_XLOAD,   "X.LOAD"},
-//           {ITM_CLAIM,   "EXITCLR"},
+//           {ITM_CLRMOD,  "CLRMOD"},
            {ITM_INTG,   "P_INT"},
            {ITM_DIFF,   "P_DIFF"},
            {ITM_RMS,   "P_RMS"},

@@ -913,7 +913,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnByteShortcutsS           (uint16_t unusedButMandatoryParameter) {}  //JM POC BASE2
   void fnByteShortcutsU           (uint16_t unusedButMandatoryParameter) {}  //JM POC BASE2
   void fnByte                     (uint16_t unusedButMandatoryParameter) {}  //JM POC BASE2
-  void fnClAIM                    (uint16_t unusedButMandatoryParameter) {}  //JM POC BASE2
+  void fnClrMod                   (uint16_t unusedButMandatoryParameter) {}  //JM POC BASE2
   void fnShoiXRepeats             (uint16_t unusedButMandatoryParameter) {}  //JM SHOIDISP
   void fnDumpMenus                (uint16_t unusedButMandatoryParameter) {}  //JM
   void fnCFGsettings              (uint16_t unusedButMandatoryParameter) {}
@@ -3007,10 +3007,10 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2002 */  { fnByte,                       4,                           "RR1",                                         "RR1",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },//JM SHOI
 /* 2003 */  { fnByte,                       5,                           "SWAP.W",                                      "SWAP.W",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },//JM SHOI
 /* 2004 */  { fnByte,                       6,                           "SWAP.B",                                      "SWAP.B",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },//JM SHOI
-/* 2005 */  { fnClAIM,                      NOPARAM,                     "EXITCLR",                                     "EXITCLR",                                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },//clear HEX mode
+/* 2005 */  { fnClrMod,                     NOPARAM,                     "CLRMOD",                                      "CLRMOD",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },//clear HEX mode
 /* 2006 */  { fnShoiXRepeats,               TM_VALUE,                    "",                                            "DISP_SI",                                     (0 << TAM_MAX_BITS) |     3, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM SHOI
 /* 2007 */  { fnScale,                      NOPARAM,                     "",                                            "X:Y=1",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM GRAPHING
-/* 2008 */  { fnSetBCD,                     JC_TOPHEX,                   "",                                            "TOP.HEX",                                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2008 */  { fnSetBCD,                     JC_TOPHEX,                   "",                                            "TOP" STD_SUB_A STD_SUB_MINUS STD_SUB_F,       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2009 */  { fnPline,                      NOPARAM,                     "",                                            "LINE",                                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//GRAPH
 /* 2010 */  { fnPcros,                      NOPARAM,                     "",                                            "CROSS",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//GRAPH
 /* 2011 */  { fnPbox,                       NOPARAM,                     "",                                            "BOX",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//GRAPH

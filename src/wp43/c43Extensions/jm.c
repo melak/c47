@@ -176,7 +176,7 @@ void reset_jm_defaults(int16_t toload) {
     }
 
 
-    fnClAIM(0);
+    fnClrMod(0);
     if(toload) XEQMENU_loadAllfromdisk();
 
     displayAIMbufferoffset = 0;

@@ -975,7 +975,9 @@ void kill_ASB_icon(void) {
     bool_t done;
     char *strBase;
 
-    resetKeytimers();  //JM
+
+    if(item >= ITM_A && item <= ITM_F && lastIntegerBase == 0) lastIntegerBase = 16;
+    if(item != ITM_EXIT1) resetKeytimers();  //JM
 
     screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
     currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;

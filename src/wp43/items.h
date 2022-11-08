@@ -2070,7 +2070,7 @@
 #define ITM_RR1                     2002
 #define ITM_FWORD                   2003
 #define ITM_FBYTE                   2004
-#define ITM_CLAIM                   2005
+#define ITM_CLRMOD                  2005
 #define ITM_SHOIREP                 2006
 #define ITM_SCALE                   2007
 #define ITM_TOPHEX                  2008

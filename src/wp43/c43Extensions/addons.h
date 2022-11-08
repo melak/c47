@@ -33,7 +33,7 @@ void fnPlotStatJM   (uint16_t mode);
 void fneRPN         (uint16_t unusedButMandatoryParameter);
 void fnCFGsettings  (uint16_t unusedButMandatoryParameter);
 void fnShoiXRepeats (uint16_t numberOfRepeats);
-void fnClAIM        (uint16_t unusedButMandatoryParameter);
+void fnClrMod       (uint16_t unusedButMandatoryParameter);
 void fnArg_all      (uint16_t unusedButMandatoryParameter);
 void fnToPolar2     (uint16_t unusedButMandatoryParameter);
 void fnToRect2      (uint16_t unusedButMandatoryParameter);

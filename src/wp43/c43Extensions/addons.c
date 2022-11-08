@@ -155,9 +155,9 @@ void fnCFGsettings(uint16_t unusedButMandatoryParameter) {
 }
 
 
-void fnClAIM(uint16_t unusedButMandatoryParameter) {        //clear input buffe
+void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
   #ifdef PC_BUILD
-    jm_show_comment("^^^^fnClAIMa");
+    jm_show_comment("^^^^fnClrModa");
   #endif //PC_BUILD
   #ifndef TESTSUITE_BUILD
     resetKeytimers();  //JM
@@ -170,13 +170,11 @@ void fnClAIM(uint16_t unusedButMandatoryParameter) {        //clear input buffe
     }
     lastIntegerBase = 0;
 
-  //  memset(softmenuStack, 0, sizeof(softmenuStack)); // This works because the ID of MyMenu is 0
-
   #ifndef TESTSUITE_BUILD
     uint_fast8_t ix = 0;
     while(ix < SOFTMENU_STACK_SIZE && softmenuStack[0].softmenuId != 0) {
     #ifdef PC_BUILD
-      jm_show_comment("^^^^fnClAIMb");
+      jm_show_comment("^^^^fnClrModb");
     #endif //PC_BUILD
       popSoftmenu();
       ix++;
@@ -192,7 +190,7 @@ void fnClAIM(uint16_t unusedButMandatoryParameter) {        //clear input buffe
 
     calcModeNormal();
     refreshScreen();
-    fnKeyExit(0); //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
+    fnKeyExit(0);                         //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
     popSoftmenu();
   #endif
 #endif //TESTSUITE_BUILD
