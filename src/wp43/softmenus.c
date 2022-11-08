@@ -483,12 +483,13 @@ TO_QSPI const int16_t menu_Timer[]       = { ITM_TIMER_ADD,                 ITM_
 
 TO_QSPI const int16_t menu_BASE[]        = { ITM_BCD,                       ITM_HASH_JM,                ITM_2HEX,                 ITM_2DEC,              ITM_2OCT,                    ITM_2BIN,                          //JM BASE MENU ADDED
                                              -MNU_BITS,                     -MNU_INTS,                  ITM_LOGICALAND,           ITM_LOGICALOR,         ITM_LOGICALXOR,              ITM_LOGICALNOT,    
-                                             ITM_CB_LEADING_ZERO,           ITM_WSIZE,                  ITM_WS64,                 ITM_WS32,              ITM_WS16,                    ITM_WS8,
+                                             ITM_CB_LEADING_ZERO,           ITM_TOPHEX,                 ITM_WS64,                 ITM_WS32,              ITM_WS16,                    ITM_WS8,
 
                                              ITM_SL1,                       ITM_SR1,                    ITM_RL1,                  ITM_RR1,               ITM_RL,                      ITM_RR,
                                              ITM_S06,                       ITM_S08,                    ITM_S16,                  ITM_S32,               ITM_S64,                     ITM_FWORD,     
                                              ITM_U06,                       ITM_U08,                    ITM_U16,                  ITM_U32,               ITM_U64,                     ITM_FBYTE,
 
+                                             ITM_A,                         ITM_B,                      ITM_C,                    ITM_D,                 ITM_E,                       ITM_F,
                                              ITM_SIGNMT,                    ITM_UNSIGN,                 ITM_1COMPL,               ITM_2COMPL,            ITM_NULL,                    ITM_WSIZE,
                                              ITM_BCD,                       ITM_BCDU,                   ITM_BCD9,                 ITM_BCD10,             ITM_NULL,                    ITM_NULL                           };    //JM BASE MENU ADDED 
 

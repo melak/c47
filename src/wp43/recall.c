@@ -314,6 +314,7 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(constantFractionsOn);
     recallFromDtConfigDescriptor(displayStackSHOIDISP);                                  //JMCFG^^         
     recallFromDtConfigDescriptor(bcdDisplay);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(topHex);                                  //JMCFG^^         
     recallFromDtConfigDescriptor(bcdDisplaySign);                                  //JMCFG^^         
     recallFromDtConfigDescriptor(DRG_Cycling);                                   //JM
     recallFromDtConfigDescriptor(DM_Cycling);                                   //JM

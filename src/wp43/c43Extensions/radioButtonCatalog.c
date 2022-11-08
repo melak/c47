@@ -147,6 +147,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
 /*      */  { ITM_USERMODE,         JC_UU,                  CB_JC },  //
 
 /*      */  { ITM_BCD,              JC_BCD,                 CB_JC },  //
+/*      */  { ITM_TOPHEX,           JC_TOPHEX,              CB_JC },  //
 
 /* 1685 */  { ITM_2BIN,             2,                      RB_HX  }, //fnChangeBaseJM
 /* 1686 */  { ITM_2OCT,             8,                      RB_HX  }, //fnChangeBaseJM
@@ -458,6 +459,10 @@ int8_t fnCbIsSet(int16_t item) {
         }
         break;
 
+        case JC_TOPHEX: {
+          cb_param = topHex;
+        }
+        break;
 
 
 #ifdef INLINE_TEST

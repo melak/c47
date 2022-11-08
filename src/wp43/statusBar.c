@@ -204,17 +204,18 @@ void showFracMode(void) {
   if(lastIntegerBase > 0 && lastIntegerBase <= 16) {                               //JMvv HEXKEYS
     str20[0]=0;
     
-    if(lastIntegerBase>10 && lastIntegerBase<=16){
-      x = showString("#KEY", &standardFont, X_FRAC_MODE, 0 , vmNormal, true, true);//-4 looks good
-      strcpy(str20,"A"); conv(str20, str40);
-      x = showString(str40,  &standardFont, x, -4 , vmNormal, true, true);         //-4 looks good
-      x = showString("-",    &standardFont, x,  2 , vmNormal, true, true);         //-4 looks good
-      strcpy(str20,"F"); conv(str20, str40);
-      x = showString(str40,  &standardFont, x, -4 , vmNormal, true, true);         //-4 looks good
-
-    } else
-    if(lastIntegerBase>=2 && lastIntegerBase<=10){
-      x = showString("#BASE", &standardFont, X_FRAC_MODE, 0, vmNormal, true, true); //-4 looks good
+    if(lastIntegerBase>2 && lastIntegerBase<=16){
+      if(topHex) {
+        x = showString("#KEY", &standardFont, X_FRAC_MODE, 0 , vmNormal, true, true);//-4 looks good
+        strcpy(str20,"A"); conv(str20, str40);
+        x = showString(str40,  &standardFont, x, -4 , vmNormal, true, true);         //-4 looks good
+        x = showString("-",    &standardFont, x,  2 , vmNormal, true, true);         //-4 looks good
+        strcpy(str20,"F"); conv(str20, str40);
+        x = showString(str40,  &standardFont, x, -4 , vmNormal, true, true);         //-4 looks good
+      } 
+      else {
+        x = showString("#BASE", &standardFont, X_FRAC_MODE, 0, vmNormal, true, true); //-4 looks good
+      }
     }
     return;
   }                                                                                //JM^^

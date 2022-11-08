@@ -220,6 +220,7 @@ void fnRCL          (int16_t inp);
 #define JC_EXFRAC              65
 #define JC_UU                  66
 #define JC_BCD                 67
+#define JC_TOPHEX              68
 
 
 #ifdef PC_BUILD

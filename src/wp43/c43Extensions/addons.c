@@ -2096,6 +2096,7 @@ void fnSetBCD (uint16_t bcd) {
     case BCD9c :  
     case BCD10c:
     case BCDu  :  bcdDisplaySign = bcd; break;
+    case JC_TOPHEX : topHex = !topHex;
     default:break;
   }
 }

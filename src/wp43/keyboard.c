@@ -1190,7 +1190,7 @@ bool_t allowShiftsToClearError = false;
   #endif //PC_BUILD
 
                                                                                                                          //JM shifts
-    if((calcMode == CM_NIM || calcMode == CM_NORMAL) && lastIntegerBase >= 11 && (key_no >= 0 && key_no <= 5 )) {               //JMNIM vv Added direct A-F for hex entry
+    if((calcMode == CM_NIM || calcMode == CM_NORMAL) && (lastIntegerBase >= 2 && topHex) && (key_no >= 0 && key_no <= 5 )) {               //JMNIM vv Added direct A-F for hex entry
       result = shiftF ? key->fShifted :
                shiftG ? key->gShifted :
                         key->primaryAim;
@@ -2021,7 +2021,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
               else {
                 keyActionProcessed = true;
                 addItemToNimBuffer(item);
-                if( ((ITM_0 <= item && item <= ITM_9) || ((ITM_A <= item && item <= ITM_F) && lastIntegerBase >= 11) ) || item == ITM_CHS || item == ITM_EXPONENT || item == ITM_PERIOD) {   //JMvv Direct keypresses; //JMNIM Added direct A-F for hex entry
+                if( ((ITM_0 <= item && item <= ITM_9) || ((ITM_A <= item && item <= ITM_F) && (lastIntegerBase >= 2) && topHex) ) || item == ITM_CHS || item == ITM_EXPONENT || item == ITM_PERIOD) {   //JMvv Direct keypresses; //JMNIM Added direct A-F for hex entry
                   refreshRegisterLine(REGISTER_X);
                 }                                                                                   //JM^^
               }

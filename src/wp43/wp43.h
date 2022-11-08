@@ -269,6 +269,7 @@
   extern bool_t                 FN_timed_out_to_RELEASE_EXEC; //JM LONGPRESS FN
   extern bool_t                 FN_handle_timed_out_to_EXEC;
   extern bool_t                 bcdDisplay;
+  extern bool_t                 topHex;
   extern uint8_t                bcdDisplaySign;
   extern char                   indexOfItemsXEQM[18*8];       //JMXEQ
   extern int16_t                fnXEQMENUpos;                 //JMXEQ

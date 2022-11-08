@@ -49,7 +49,7 @@
 
 #include "wp43.h"
 
-#define BACKUP_VERSION         677  // Save screen
+#define BACKUP_VERSION         777  // Save screen
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -366,6 +366,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);   //C43 JM
     save(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset),             BACKUP);   //C43 JM
     save(&bcdDisplay,                         sizeof(bcdDisplay),                         BACKUP);   //C43 JM
+    save(&topHex,                             sizeof(topHex),                             BACKUP);   //C43 JM
     save(&bcdDisplaySign,                     sizeof(bcdDisplaySign),                     BACKUP);   //C43 JM
     save(&DM_Cycling,                         sizeof(DM_Cycling),                         BACKUP);   //JM
 
@@ -662,6 +663,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&lastFlgScr,                         sizeof(lastFlgScr),                         BACKUP);
       restore(&displayAIMbufferoffset,             sizeof(displayAIMbufferoffset),             BACKUP);   //C43 JM
       restore(&bcdDisplay,                         sizeof(bcdDisplay),                         BACKUP);   //C43 JM
+      restore(&topHex,                             sizeof(topHex),                             BACKUP);   //C43 JM
       restore(&bcdDisplaySign,                     sizeof(bcdDisplaySign),                     BACKUP);   //C43 JM
       restore(&DM_Cycling,                         sizeof(DM_Cycling),                         BACKUP);   //JM
 
@@ -1220,7 +1222,8 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   
   sprintf(tmpString, "displayStackSHOIDISP\n%" PRIu8 "\n",     displayStackSHOIDISP);         save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "bcdDisplay\n%"           PRIu8 "\n",     (uint8_t)bcdDisplay);          save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "bcdDisplaySign\n%"       PRIu8 "\n",     bcdDisplaySign);                   save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "topHex\n%"               PRIu8 "\n",     (uint8_t)topHex);              save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "bcdDisplaySign\n%"       PRIu8 "\n",     bcdDisplaySign);               save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "DRG_Cycling\n%"          PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "DM_Cycling\n%"           PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString), BACKUP);
 
@@ -2139,6 +2142,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 
         else if(strcmp(aimBuffer, "displayStackSHOIDISP"        ) == 0) { displayStackSHOIDISP = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "bcdDisplay"                  ) == 0) { bcdDisplay           = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "topHex"                      ) == 0) { topHex               = (bool_t)stringToUint8(tmpString) != 0; }
         else if(strcmp(aimBuffer, "bcdDisplaySign"              ) == 0) { bcdDisplaySign       = stringToUint8(tmpString) != 0; }
         else if(strcmp(aimBuffer, "DRG_Cycling"                 ) == 0) { DRG_Cycling          = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "DM_Cycling"                  ) == 0) { DM_Cycling           = stringToUint8(tmpString); }

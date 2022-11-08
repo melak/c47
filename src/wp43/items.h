@@ -2073,7 +2073,7 @@
 #define ITM_CLAIM                   2005
 #define ITM_SHOIREP                 2006
 #define ITM_SCALE                   2007
-#define ITM_2008                    2008
+#define ITM_TOPHEX                  2008
 #define ITM_PLINE                   2009
 #define ITM_PCROS                   2010
 #define ITM_PBOX                    2011
