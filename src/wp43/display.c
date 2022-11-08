@@ -2768,14 +2768,10 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
             //check if a full triplet of digits will fit otherwise break line
             if((tmpString[source] == *separator && tmpString[source + 1] == *(separator + 1))) {
               aa = source;
-              if(tmpString[aa] & 0x80) aa++;
-              aa++;
-              if(tmpString[aa] & 0x80) aa++;
-              aa++;
-              if(tmpString[aa] & 0x80) aa++;
-              aa++;
-              if(tmpString[aa] & 0x80) aa++;
-              aa++;
+              if(tmpString[aa] & 0x80) aa += 2;
+              if(tmpString[aa] & 0x80) aa += 2;
+              if(tmpString[aa] & 0x80) aa += 2;
+              if(tmpString[aa] & 0x80) aa += 2;
               char tmpString20[20];
               tmpString20[0]=0;
               xcopy(tmpString20, tmpString + source, aa - source);

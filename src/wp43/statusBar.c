@@ -204,7 +204,7 @@ void showFracMode(void) {
   if(lastIntegerBase > 0 && lastIntegerBase <= 16) {                               //JMvv HEXKEYS
     str20[0]=0;
     
-    if(lastIntegerBase>2 && lastIntegerBase<=16){
+    if(lastIntegerBase>=2 && lastIntegerBase<=16){
       if(topHex) {
         x = showString("#KEY", &standardFont, X_FRAC_MODE, 0 , vmNormal, true, true);//-4 looks good
         strcpy(str20,"A"); conv(str20, str40);
