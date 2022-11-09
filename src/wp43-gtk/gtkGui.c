@@ -300,6 +300,7 @@ gboolean keyPressed(GtkWidget *w, GdkEventKey *event, gpointer data) {
   //printf("#######%d\n",event_keyval);
 //JM ALPHA SECTION FOR ALPHAMODE - TAKE OVER ALPHA KEYBOARD
 if (calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
+printf(">>>>> %d\n",event_keyval);
 switch (event_keyval) {
 
     case 65507: // left Ctrl
@@ -312,6 +313,26 @@ switch (event_keyval) {
       printf("key pressed: CTRL+h Hardcopy\n");
       copyScreenToClipboard();
       break;
+
+case 40:
+      if(calcMode == CM_EIM) {
+        shiftF = true;
+        btnFnClicked(w, "3");  //( F3
+      }
+      break;
+case 41:
+      if(calcMode == CM_EIM) {
+        shiftF = true;
+        btnFnClicked(w, "4");  //) F4
+      }
+      break;
+case 61:
+      if(calcMode == CM_EIM) {
+        shiftF = true;
+        btnFnClicked(w, "5");  //= F5
+      }
+      break;
+
 
 //ROW 0
     case 65362:                                               //JM     // CursorUp //JM
@@ -398,6 +419,13 @@ switch (event_keyval) {
     case 70:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_UC(w, "05");
       break;
+    case 94:  //^
+      if(calcMode == CM_AIM || calcMode == CM_EIM) {
+        shiftG = true;
+        btnClicked(w, "01");
+      }
+      break;
+
 //ROW 3
     case 71:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_UC(w, "06");
@@ -417,6 +445,11 @@ switch (event_keyval) {
     case 76:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_UC(w, "11");
       break;
+    case 124:  //|
+      if(calcMode == CM_AIM || calcMode == CM_EIM) {
+        shiftG = true;
+        btnClicked(w, "06");
+      }
 //ROW 4
     case 65421:                                               //JM    // Enter
     case 65293:                                               //JM    // Enter
@@ -438,6 +471,12 @@ switch (event_keyval) {
     case 65535: // Delete
       fnT_ARROW(ITM_T_RIGHT_ARROW);
       btnClicked(w, "16");
+      break;
+    case 177: //+-
+      if(calcMode == CM_AIM || calcMode == CM_EIM) {
+        shiftG = true;
+        btnClicked(w, "14");
+      }
       break;
 //ROW 5
     case 65360:                                               //JM     // HOME  //JM
@@ -2062,9 +2101,9 @@ void labelCaptionAim(const calcKey_t *key, GtkWidget *button, GtkWidget *lblGree
   /*stringToUtf8(indexOfItems[key->gShiftedAim].itemSoftmenuName, lbl);  //vv dr - new AIM
     lbl[2] = ' ';
     lbl[3] = 0;
-    stringToUtf8(indexOfItems[key->gShiftedAim + 36].itemSoftmenuName, lbl + 3);*/
+    stringToUtf8(indexOfItems[key->gShiftedAim + (ITM_alpha - ITM_ALPHA)].itemSoftmenuName, lbl + 3);*/
     if(alphaCase == AC_LOWER) {
-      stringToUtf8(indexOfItems[numlockReplacements(8,key->gShiftedAim + 36, numLock, false, true)].itemSoftmenuName, lbl);
+      stringToUtf8(indexOfItems[numlockReplacements(8,key->gShiftedAim + (ITM_alpha - ITM_ALPHA), numLock, false, true)].itemSoftmenuName, lbl);
     }
     else {
       stringToUtf8(indexOfItems[numlockReplacements(9,key->gShiftedAim, numLock, false, true)].itemSoftmenuName, lbl);
@@ -3936,7 +3975,7 @@ void setupUI(void) {
   g_signal_connect(btn73A, "button-press-event", G_CALLBACK(btnPressed), "29");
   g_signal_connect(btn74A, "button-press-event", G_CALLBACK(btnPressed), "30");
   g_signal_connect(btn75A, "button-press-event", G_CALLBACK(btnPressed), "31");
-  g_signal_connect(btn71A, "button-release-event", G_CALLBACK(btnPressed), "27");
+  g_signal_connect(btn71A, "button-release-event", G_CALLBACK(btnReleased), "27");
   g_signal_connect(btn72A, "button-release-event", G_CALLBACK(btnReleased), "28");
   g_signal_connect(btn73A, "button-release-event", G_CALLBACK(btnReleased), "29");
   g_signal_connect(btn74A, "button-release-event", G_CALLBACK(btnReleased), "30");

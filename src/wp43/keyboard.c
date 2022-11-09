@@ -455,7 +455,7 @@ bool_t lowercaseselected;
     }
 
     else if(lowercaseselected && ((ITM_ALPHA <= item && item <= ITM_OMEGA) || (ITM_QOPPA <= item && item <= ITM_SAMPI))) {  //JM GREEK
-      addItemToBuffer(item /* +36 */); //JM Remove the ability to shift to lower cap greek
+      addItemToBuffer(item /* +(ITM_alpha - ITM_ALPHA) */); //JM Remove the ability to shift to lower cap greek
         #ifdef PAIMDEBUG
           printf("---#E %d\n",keyActionProcessed);
         #endif //PAIMDEBUG
@@ -1944,7 +1944,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           }
 
           else if(((ITM_ALPHA <= item && item <= ITM_OMEGA) || (ITM_QOPPA <= item && item <= ITM_SAMPI)) && lowercaseselected) {  //JM GREEK
-            addItemToBuffer(item + 36);
+            addItemToBuffer(item +  ((ITM_ALPHA <= item && item <= ITM_OMEGA) ? (ITM_alpha - ITM_ALPHA) : (ITM_qoppa - ITM_QOPPA)));
             keyActionProcessed = true;
           }
 
