@@ -120,7 +120,7 @@ void reset_jm_defaults(int16_t toload) {
     Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM
     Input_Default =  ID_43S;                                     //JM Input Default
     bcdDisplay = false;
-    topHex = false;
+    topHex = true;
     bcdDisplaySign = BCDu;
     jm_FG_LINE = true;                                           //JM Screen / keyboard operation setup
     jm_G_DOUBLETAP = true;                                       //JM Screen / keyboard operation setup

@@ -1664,7 +1664,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
     if(lastErrorCode != 0 && item != ITM_EXIT1 && item != ITM_BACKSPACE) {
       lastErrorCode = 0;
     }
-
+    //printf(">>>>>>%d\n",programRunStop);
     if(temporaryInformation == TI_VIEW) {
       temporaryInformation = TI_NO_INFO;
       updateMatrixHeightCache();
