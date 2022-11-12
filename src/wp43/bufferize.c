@@ -296,7 +296,7 @@ void kill_ASB_icon(void) {
     else {
       screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
       currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;
-      if(calcMode == CM_NORMAL && fnKeyInCatalog && isAlphabeticSoftmenu()) {
+      if(calcMode == CM_NORMAL && fnKeyInCatalog && (isAlphabeticSoftmenu() || isJMAlphaOnlySoftmenu())) {
         fnAim(NOPARAM);
       }
       if((fnKeyInCatalog || !catalog || catalog == CATALOG_MVAR) && (((calcMode == CM_AIM || calcMode == CM_EIM) && !tam.mode) || tam.alpha)) {

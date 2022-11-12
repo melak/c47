@@ -135,6 +135,9 @@
 //#undef TESTING
 
 
+#define NOMATRIXCURSORS             //JM allow matrix editing to be navigated by up down keys
+#undef NOMATRIXCURSORS
+
 //This is to allow the cursors to change the case. Normal on 43S. Off on C43
 #define arrowCasechange    false
 

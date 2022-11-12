@@ -300,7 +300,7 @@ gboolean keyPressed(GtkWidget *w, GdkEventKey *event, gpointer data) {
   //printf("#######%d\n",event_keyval);
 //JM ALPHA SECTION FOR ALPHAMODE - TAKE OVER ALPHA KEYBOARD
 if (calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
-printf(">>>>> %d\n",event_keyval);
+printf(">>>>> Keyboard Key Code = %d\n",event_keyval);
 switch (event_keyval) {
 
     case 65507: // left Ctrl

@@ -2016,14 +2016,13 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       case -MNU_ALPHAMATH:
       case -MNU_MyAlpha:
       case -MNU_ALPHADOT:
-      case -MNU_ALPHA:   //JM
         return true;
       default:
         return false;
     }
   }
 
-  bool_t isJMAlphaSoftmenu(int16_t menuId) {
+  bool_t isJMAlphaSoftmenu(int16_t menuId) {                   //JM
     int16_t menuItem = softmenu[menuId].menuItem;
     switch(menuItem) {
       case -MNU_MyAlpha:
@@ -2032,6 +2031,11 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       default:
         return false;
     }
+  }
+
+  bool_t isJMAlphaOnlySoftmenu(void) {                    //JM
+    if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA) return true;
+    else return false;
   }
 
 

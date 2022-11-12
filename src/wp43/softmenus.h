@@ -63,6 +63,7 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
   bool_t currentSoftmenuScrolls (void);
   bool_t isAlphabeticSoftmenu   (void);
   bool_t isJMAlphaSoftmenu      (int16_t menuId);             //JM
+  bool_t isJMAlphaOnlySoftmenu  (void);                       //JM
 
   int16_t mm(int16_t id);                                     //JM
   extern TO_QSPI const int16_t menu_A_HOME[360];              //JM
