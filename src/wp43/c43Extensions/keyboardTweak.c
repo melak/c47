@@ -317,7 +317,7 @@ void fg_processing_jm(void) {
 
 
 
-void  Check_Assigned(int16_t * result, int16_t tempkey) {
+void  Check_SigmaPlus_Assigned(int16_t * result, int16_t tempkey) {
   //JM NORMKEY _ CHANGE NORMAL MODE KEY SIGMA+ TO SOMETHING ELSE vv
   if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (!getSystemFlag(FLAG_USER) && !shiftF && !shiftG && ( tempkey == 0) && ((kbd_std + 0)->primary == *result) )) {
     *result = Norm_Key_00_VAR;

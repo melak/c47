@@ -935,7 +935,7 @@ void graph_plotmem(void) {
 
         if(PLOT_LINE) {
           #ifdef STATDEBUG
-            printf("Plotting line to x=%d y=%d\n",xn,yn);
+            printf("Plotting line from xo=%d yo=%d to x=%d y=%d\n",xo, yo, xn,yn);
           #endif
           plotline2(xo, yo, xn, yn);
         }
@@ -943,11 +943,11 @@ void graph_plotmem(void) {
       } else {
         #ifdef PC_BUILD
           printf("Not plotted: ");
-          if(!(xN<SCREEN_WIDTH_GRAPH )) printf("xN<SCREEN_WIDTH_GRAPH; ");
-          if(!(xN>minN_x              )) printf("xN>minN_x; ");
-          if(!(yN<SCREEN_HEIGHT_GRAPH)) printf("yN<SCREEN_HEIGHT_GRAPH");
-          if(!(yN>1+minN_y            )) printf("yN>1+minN_y; ");
-                    printf("Not plotted: xN=%d<SCREEN_WIDTH_GRAPH=%d && xN=%d>minN_x=%d && yN=%d<SCREEN_HEIGHT_GRAPH=%d && yN=%d>1+minN_y=%d\n",xN,SCREEN_WIDTH_GRAPH,xN,minN_x,yN,SCREEN_HEIGHT_GRAPH,yN,1+minN_y);
+          if(!(xN<SCREEN_WIDTH_GRAPH )) printf("NOT xN<SCREEN_WIDTH_GRAPH; ");
+          if(!(xN>minN_x              )) printf("NOT xN>minN_x; ");
+          if(!(yN<SCREEN_HEIGHT_GRAPH)) printf("NOT yN<SCREEN_HEIGHT_GRAPH");
+          if(!(yN>minN_y            )) printf("NOT yN>minN_y; ");
+                    printf("Not plotted: xN=%d<SCREEN_WIDTH_GRAPH=%d && xN=%d>minN_x=%d && yN=%d<SCREEN_HEIGHT_GRAPH=%d && yN=%d>minN_y=%d\n",xN,SCREEN_WIDTH_GRAPH,xN,minN_x,yN,SCREEN_HEIGHT_GRAPH,yN,minN_y);
         #endif
       }
     }

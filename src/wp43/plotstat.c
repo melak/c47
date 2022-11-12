@@ -325,19 +325,19 @@ void clearScreenPixels(void) {
 
 #if !defined(TESTSUITE_BUILD)
 void plotcross(uint16_t xn, uint8_t yn) {              // Plots line from xo,yo to xn,yn; uses temporary x1,y1
-  plotline(xn-2,yn-2,xn+2,yn+2);                       //   PLOT a cross
-  plotline(xn-2,yn+2,xn+2,yn-2);
+  plotline(max((int16_t)xn-2,0),max((int16_t)yn-2,0),xn+2,yn+2);                       //   PLOT a cross
+  plotline(max((int16_t)xn-2,0),yn+2,xn+2,max((int16_t)yn-2,0));
 }
 
 
 void plotbox(uint16_t xn, uint8_t yn) {                // Plots line from xo,yo to xn,yn; uses temporary x1,y1
-  plotline(xn-2,yn-2,xn-2,yn-1);                       //   PLOT a box
-  placePixel(xn-1,yn-2);
-  plotline(xn-2,yn+2,xn-2,yn+1);
-  placePixel(xn-1,yn+2);
-  plotline(xn+2,yn-2,xn+1,yn-2);
-  placePixel(xn+2,yn-1);
-  plotline(xn+2,yn+2,xn+2,yn+1);
+  plotline  (max((int16_t)xn-2,0),max((int16_t)yn-2,0),max((int16_t)xn-2,0),max((int16_t)yn-1,0));                       //   PLOT a box
+  placePixel(max((int16_t)xn-1,0),max((int16_t)yn-2,0));
+  plotline  (max((int16_t)xn-2,0),yn+2,max((int16_t)xn-2,0),yn+1);
+  placePixel(max((int16_t)xn-1,0),yn+2);
+  plotline  (xn+2,max((int16_t)yn-2,0),xn+1,max((int16_t)yn-2,0));
+  placePixel(xn+2,max((int16_t)yn-1,0));
+  plotline  (xn+2,yn+2,xn+2,yn+1);
   placePixel(xn+1,yn+2);
 }
 
@@ -352,15 +352,15 @@ static void plotrect(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {            
 
 #if !defined(SAVE_SPACE_DM42_13GRF)
   static void plotHisto_col(uint16_t x, uint16_t y, uint16_t y_min, uint16_t y_wid, int16_t colw) {  //x is 0..(n-1)
-    plotrect(x - colw, y_min + y_wid,  x + colw, y);
+    plotrect(max((int16_t)x - colw,0), y_min + y_wid,  x + colw, y);
     }
 #endif //SAVE_SPACE_DM42_13GRF
 
 
 
 void plotbox_fat(uint16_t xn, uint8_t yn) {                                         // Plots line from xo,yo to xn,yn; uses temporary x1,y1
-  plotrect(xn-3,yn-3,xn+3,yn+3);
-  plotrect(xn-2,yn-2,xn+2,yn+2);
+  plotrect(max((int16_t)xn-3,0),max((int16_t)yn-3,0),xn+3,yn+3);
+  plotrect(max((int16_t)xn-2,0),max((int16_t)yn-2,0),xn+2,yn+2);
 }
 #endif //!TESTSUITE_BUILD
 
@@ -371,8 +371,8 @@ void plotline(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn) {               
 
 void plotline2(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn) {                   // Plots line from xo,yo to xn,yn; uses temporary x1,y1
    pixelline(xo,yo,xn,yn,1);
-   pixelline(xo-1,yo,xn-1,yn,1);
-   pixelline(xo,yo-1,xn,yn-1,1);
+   pixelline(max((int16_t)xo-1,0),yo,max((int16_t)xn-1,0),yn,1);
+   pixelline(xo,max((int16_t)yo-1,0),xn,max((int16_t)yn-1,0),1);
    //   pixelline(xo+1,yo,xn+1,yn,1);   //Do not use the full doubling, without it give as nice profile if the slope changes
    //   pixelline(xo,yo+1,xn,yn+1,1);
  }

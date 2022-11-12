@@ -1271,6 +1271,11 @@ void kill_ASB_icon(void) {
       }
 
       case ITM_EXPONENT: {
+        if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') { //JM "BASE OCT" See below
+          strcat(aimBuffer, "8");
+          goto addItemToNimBuffer_exit;
+        }
+
         done = true;
 
         if(aimBuffer[strlen(aimBuffer)-1] == 'i') {
@@ -1392,7 +1397,7 @@ void kill_ASB_icon(void) {
       }
 
 
-      case ITM_i :                         //JM HP35 compatible, in NIM
+        case ITM_i :                         //JM HP35 compatible, in NIM
         case ITM_CC: {
         if (item == ITM_i) resetShiftState();    //JM HP35 compatible, in NIM
         lastChar = strlen(aimBuffer) - 1;
@@ -1624,7 +1629,8 @@ void kill_ASB_icon(void) {
         break;
       }
 
-      case ITM_1ONX: { // B for binary base    Only works in direct NIM
+      //JM Only works in direct NIM, that is only when the input buffer already contains #
+      case ITM_1ONX: { // B for binary base    
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "2");
           goto addItemToNimBuffer_exit;
@@ -1632,7 +1638,7 @@ void kill_ASB_icon(void) {
         break;
       }
 
-      case ITM_ENTER:                                //JM
+      case ITM_ENTER:                                //JM BASE SETTING HEX
       case ITM_LOG10: { // D for decimal base          //JM
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "10");
@@ -1648,6 +1654,10 @@ void kill_ASB_icon(void) {
         }
         break;
       }
+
+      //JM See abovr "BASE OCT", O for octal base
+      
+
 
       case ITM_DMS: {
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART) {

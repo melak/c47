@@ -500,7 +500,7 @@
       tamLeaveMode();
       return;
     }
-    else if(tam.function == ITM_toINT && (item == ITM_REG_D || item == ITM_ENTER)) {   //JM
+    else if(tam.function == ITM_toINT && (item == ITM_REG_D || item == ITM_ENTER)) {   //JM BASE
       tam.value = 10;
       forceTry = true;
     }
@@ -510,6 +510,10 @@
     }
     else if(tam.function == ITM_toINT && item == ITM_HEX) {
       tam.value = 16;
+      forceTry = true;
+    }
+    else if(tam.function == ITM_toINT && item == ITM_OCT) {     //JM BASE added OCT
+      tam.value = 8;
       forceTry = true;
     }
     else if((tam.mode == TM_LABEL || (tam.mode == TM_KEY && tam.keyInputFinished)) && !tam.indirect && item == ITM_E) {

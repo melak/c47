@@ -72,7 +72,7 @@ printf(">>>>Z 0090 determineFunctionKeyItem       data=|%s| data[0]=%d item=%d i
     dynamicMenuItem = -1;
 
     //int16_t itemShift = (shiftF ? 6 : (shiftG ? 12 : 0));    //removed JM
-    int16_t fn = *(data) - '0';
+    int16_t fn = *(data) - '0' - 1;
     const softmenu_t *sm;
     int16_t row, menuId = softmenuStack[0].softmenuId;
     int16_t firstItem = softmenuStack[0].firstItem;
@@ -81,13 +81,13 @@ printf(">>>>Z 0090 determineFunctionKeyItem       data=|%s| data[0]=%d item=%d i
     #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
     switch(-softmenu[menuId].menuItem) {
       case MNU_MyMenu: {
-        dynamicMenuItem = firstItem + itemShift + (fn - 1);
+        dynamicMenuItem = firstItem + itemShift + fn;
         item = userMenuItems[dynamicMenuItem].item;
         break;
       }
 
       case MNU_MyAlpha: {
-        dynamicMenuItem = firstItem + itemShift + (fn - 1);
+        dynamicMenuItem = firstItem + itemShift + fn;
         item = userAlphaItems[dynamicMenuItem].item;
 #ifdef VERBOSEKEYS
 printf(">>>>Z 0091   case MNU_MyAlpha             data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
@@ -99,13 +99,13 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
       }
 
       case MNU_DYNAMIC: {
-        dynamicMenuItem = firstItem + itemShift + (fn - 1);
+        dynamicMenuItem = firstItem + itemShift + fn;
         item = userMenus[currentUserMenu].menuItem[dynamicMenuItem].item;
         break;
       }
 
       case MNU_PROG: {
-        dynamicMenuItem = firstItem + itemShift + (fn - 1);
+        dynamicMenuItem = firstItem + itemShift + fn;
         if(tam.function == ITM_GTOP) {
           item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_GTOP);
         }
@@ -116,13 +116,13 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
       }
 
       case MNU_VAR: {
-        dynamicMenuItem = firstItem + itemShift + (fn - 1);
+        dynamicMenuItem = firstItem + itemShift + fn;
         item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : MNU_DYNAMIC);
         break;
       }
 
       case MNU_MVAR: {
-        dynamicMenuItem = firstItem + itemShift + (fn - 1);
+        dynamicMenuItem = firstItem + itemShift + fn;
         if(currentMvarLabel != INVALID_VARIABLE) {
           item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_SOLVE_VAR);
         }
@@ -177,20 +177,20 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
       case MNU_LINTS:
       case MNU_REALS:
       case MNU_CPXS: {
-        dynamicMenuItem = firstItem + itemShift + (fn - 1);
+        dynamicMenuItem = firstItem + itemShift + fn;
         item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_RCL);
         break;
       }
 
       case MNU_RAM:
       case MNU_FLASH: {
-        dynamicMenuItem = firstItem + itemShift + (fn - 1);
+        dynamicMenuItem = firstItem + itemShift + fn;
         item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_XEQ);
         break;
       }
 
       case MNU_MENUS: {
-        dynamicMenuItem = firstItem + itemShift + (fn - 1);
+        dynamicMenuItem = firstItem + itemShift + fn;
         item = ITM_NOP;
         if(dynamicMenuItem < dynamicSoftmenu[menuId].numItems) {
           for(uint32_t i = 0; softmenu[i].menuItem < 0; ++i) {
@@ -209,13 +209,13 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
       }
 
       case ITM_MENU: {
-        dynamicMenuItem = firstItem + itemShift + (fn - 1);
+        dynamicMenuItem = firstItem + itemShift + fn;
         item = ITM_MENU;
         break;
       }
 
       case MNU_EQN: {
-        if(numberOfFormulae == 0 && (firstItem + itemShift + (fn - 1)) > 0) {
+        if(numberOfFormulae == 0 && (firstItem + itemShift + fn) > 0) {
           break;
         }
         /* fallthrough */
@@ -224,8 +224,8 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
       default: {
         sm = &softmenu[menuId];
         row = min(3, (sm->numItems + modulo(firstItem - sm->numItems, 6))/6 - firstItem/6) - 1;
-        if(itemShift/6 <= row && firstItem + itemShift + (fn - 1) < sm->numItems) {
-          item = (sm->softkeyItem)[firstItem + itemShift + (fn - 1)] % 10000;
+        if(itemShift/6 <= row && firstItem + itemShift + fn < sm->numItems) {
+          item = (sm->softkeyItem)[firstItem + itemShift + fn] % 10000;
 
           if(item == ITM_PROD_SIGN) {
             item = (getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS);
@@ -1190,7 +1190,7 @@ bool_t allowShiftsToClearError = false;
   #endif //PC_BUILD
 
                                                                                                                          //JM shifts
-    if((calcMode == CM_NIM || calcMode == CM_NORMAL) && (lastIntegerBase >= 2 && topHex) && (key_no >= 0 && key_no <= 5 )) {               //JMNIM vv Added direct A-F for hex entry
+    if( !tam.mode && (calcMode == CM_NIM || calcMode == CM_NORMAL) && (lastIntegerBase >= 2 && topHex) && (key_no >= 0 && key_no <= 5 )) {               //JMNIM vv Added direct A-F for hex entry
       result = shiftF ? key->fShifted :
                shiftG ? key->gShifted :
                         key->primaryAim;
@@ -1222,7 +1222,7 @@ bool_t allowShiftsToClearError = false;
     sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result1: %d:",result); jm_show_comment(tmp);
   #endif //PC_BUILD
 
-    Check_Assigned(&result, key_no);  //JM
+    Check_SigmaPlus_Assigned(&result, key_no);  //JM
 
   #ifdef PC_BUILD
     sprintf(tmp,"^^^^^^^keyboard.c: determineitem: result2: %d:",result); jm_show_comment(tmp);
@@ -1658,6 +1658,9 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
 
   void processKeyAction(int16_t item) {
+    #ifdef PC_BUILD
+      printf(">>>> processKeyAction: item=%d",item);
+    #endif //PC_BUILD
     keyActionProcessed = false;
     lowercaseselected = ((alphaCase == AC_LOWER && !lastshiftF) || (alphaCase == AC_UPPER && lastshiftF /*&& !numLock*/)); //JM remove last !numlock if you want the shift, during numlock, to produce lower case
 
@@ -3223,9 +3226,12 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
 
 #ifndef TESTSUITE_BUILD  
-static bool_t activatescroll(void) {
+static bool_t activatescroll(void) { //jm
+   //This is the portion that allows the arrows shortcut to SHOW in NORMAL MODE
    int16_t menuId = softmenuStack[0].softmenuId; //JM
    return (calcMode == CM_NORMAL) && 
+           temporaryInformation == TI_SHOW_REGISTER_BIG &&     //jm removed pickup up from arrows; 
+           temporaryInformation == TI_SHOW_REGISTER_SMALL &&
           (softmenu[menuId].menuItem != -MNU_EQN) && 
           (
             ((menuId == 0) && jm_NO_BASE_SCREEN) ||
@@ -3302,10 +3308,13 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuUp();
         }
-      else if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
+      else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
            screenUpdatingMode = SCRUPD_AUTO;
           if(calcMode == CM_NIM) {
             closeNim();
+          }
+          if(calcMode == CM_AIM) {
+            closeAim();
           }
           fnBst(NOPARAM);
           #if defined(DMCP_BUILD)
@@ -3560,7 +3569,11 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         else if(currentSoftmenuScrolls()) {
           menuDown();
         }
-        else if(!getSystemFlag(FLAG_ALPHA)) {
+        else {
+          if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
+            pemAlpha(ITM_BACKSPACE);
+            fnBst(NOPARAM); // Set the PGM pointer to the original position
+          }
           fnSst(NOPARAM);
         }
         break;

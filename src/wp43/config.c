@@ -1052,7 +1052,7 @@ void fnReset(uint16_t confirmation) {
 
     #ifdef JM_LAYOUT_1A
       #undef L1L2
-      #define L1L2    "L1"
+      #define L1L2    "" //L1
     #endif
     #ifdef JM_LAYOUT_2_DM42_STRICT
       #undef L1L2
@@ -1067,7 +1067,7 @@ void fnReset(uint16_t confirmation) {
 
     #ifdef PC_BUILD
       #if defined(JM_LAYOUT_1A)
-        fnStrtoX("C43 L1: C43 template SIM");
+        fnStrtoX("C43 Layout L1: SIM");
       #else
         #if defined(JM_LAYOUT_2_DM42_STRICT)
           fnStrtoX("C43 L42: unmodified DM42 SIM");

@@ -108,7 +108,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
       {41,   ITM_ENTER,         KEY_COMPLEX,       -MNU_CPX,          ITM_ENTER,         ITM_ENTER,         ITM_XEDIT,         ITM_XPARSE,         ITM_ENTER          },
       {42,   ITM_XexY,          ITM_LASTX,         ITM_Rup,           ITM_ex,            ITM_M,             ITM_m,             ITM_ex,             ITM_NULL           },
       {43,   ITM_CHS,           -MNU_MODE,         -MNU_STK,          ITM_PLUS_MINUS,    ITM_N,             ITM_n,             ITM_PLUS_MINUS,     ITM_NULL           },
-      {44,   ITM_EXPONENT,      -MNU_DISP,         -MNU_EXP,          ITM_NULL,          ITM_O,             ITM_o,             ITM_NULL,           ITM_NULL           },
+      {44,   ITM_EXPONENT,      -MNU_DISP,         -MNU_EXP,          ITM_NULL,          ITM_O,             ITM_o,             ITM_NULL,           ITM_OCT            },
       {45,   ITM_BACKSPACE,     ITM_UNDO,          -MNU_CLR,          ITM_BACKSPACE,     ITM_BACKSPACE,     ITM_CLA,           ITM_CLA,            ITM_BACKSPACE      },
 
       {51,   ITM_UP1,           ITM_BST,           ITM_RBR,           ITM_UP1,           ITM_UP1,           CHR_caseUP,        ITM_UP_ARROW,       ITM_UP1            },
@@ -158,7 +158,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
       {41,   ITM_ENTER,         ITM_AIM,           -MNU_CPX,          ITM_ENTER,         ITM_ENTER,         ITM_XEDIT,         ITM_XEDIT,          ITM_ENTER          },
       {42,   ITM_XexY,          ITM_LASTX,         ITM_Rup,           ITM_ex,            ITM_M,             ITM_m,             ITM_ex,             ITM_NULL           },
       {43,   ITM_CHS,           -MNU_MODE,         -MNU_STK,          ITM_PLUS_MINUS,    ITM_N,             ITM_n,             ITM_PLUS_MINUS,     ITM_NULL           },
-      {44,   ITM_EXPONENT,      -MNU_DISP,         -MNU_EXP,          ITM_NULL,          ITM_O,             ITM_o,             ITM_NULL,           ITM_NULL           },
+      {44,   ITM_EXPONENT,      -MNU_DISP,         -MNU_EXP,          ITM_NULL,          ITM_O,             ITM_o,             ITM_NULL,           ITM_OCT            },
       {45,   ITM_BACKSPACE,     -MNU_CLR,          ITM_UNDO,          ITM_BACKSPACE,     ITM_BACKSPACE,     ITM_CLA,           ITM_CLA,            ITM_BACKSPACE      },
 
       {51,   ITM_UP1,           ITM_BST,           ITM_RBR,           ITM_UP1,           ITM_UP1,           CHR_caseUP,        ITM_UP_ARROW,       ITM_UP1            },

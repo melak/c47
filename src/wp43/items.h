@@ -2010,7 +2010,7 @@
 #define ITM_T_RRIGHT_ARROW          1955
 #define ITM_XNEW                    1956
 #define ITM_XEDIT                   1957
-#define ITM_1958                    1958
+#define ITM_OCT                     1958
 #define ITM_DEG2                    1959
 #define ITM_DMS2                    1960
 #define ITM_GRAD2                   1961
