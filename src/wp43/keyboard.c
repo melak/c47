@@ -470,6 +470,22 @@ bool_t lowercaseselected;
       keyActionProcessed = true;
     }
 
+    else if(item == ITM_DOWN_ARROW) {
+      if(nextChar == NC_NORMAL) nextChar = NC_SUBSCRIPT; else if(nextChar == NC_SUPERSCRIPT) nextChar = NC_NORMAL; //JM stack the SUP/NORMAL/SUB
+        #ifdef PAIMDEBUG
+          printf("---#C %d\n",keyActionProcessed);
+        #endif //PAIMDEBUG
+      keyActionProcessed = true;
+    }
+
+    else if(item == ITM_UP_ARROW) {
+      if(nextChar == NC_NORMAL) nextChar = NC_SUPERSCRIPT; else if(nextChar == NC_SUBSCRIPT) nextChar = NC_NORMAL; //JM stack the SUP/NORMAL/SUB
+        #ifdef PAIMDEBUG
+          printf("---#B %d\n",keyActionProcessed);
+        #endif //PAIMDEBUG
+      keyActionProcessed = true;
+    }
+
     else if(indexOfItems[item].func == addItemToBuffer) {
       addItemToBuffer(item);
         #ifdef PAIMDEBUG
@@ -908,18 +924,15 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
           if(tam.mode && catalog && (tam.digitsSoFar || tam.function == ITM_BESTF || tam.function == ITM_CNST || (!tam.indirect && (tam.mode == TM_VALUE || tam.mode == TM_VALUE_CHB)))) {
             // disabled
           }
-          else if(tam.mode && (!tam.alpha || isAlphabeticSoftmenu())) {      //JM mod
+          else if(tam.mode && (!tam.alpha || isAlphabeticSoftmenu())) {
 
-            bool_t ii = tam.mode == TM_FLAGW && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SYSFL;   //JM Do not drop out of SYSFLG
+            bool_t isInConfig = tam.mode == TM_FLAGW && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SYSFL;   //JM Do not drop out of SYSFLG
             
             addItemToBuffer(item);
 
-            if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MODE && ii && item != ITM_EXIT1 && item != ITM_BACKSPACE) { //JM do not drop out of SYSFLG
-              fnCFGsettings(0); //JM
-            }  //JM
-
-
-
+            if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MODE && isInConfig && item != ITM_EXIT1 && item != ITM_BACKSPACE) { //JM do not drop out of SYSFLG
+              fnCFGsettings(0);       //JM
+            }                         //JM
           }
   //          else if((calcMode == CM_NORMAL || calcMode == CM_AIM) && isAlphabeticSoftmenu()) {
   //            if(calcMode == CM_NORMAL) {
