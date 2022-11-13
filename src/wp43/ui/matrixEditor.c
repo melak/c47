@@ -40,6 +40,7 @@
 #include "screen.h"
 #include "softmenus.h"
 #include "wp43.h"
+#include <string.h>
 
 #if !defined(TESTSUITE_BUILD)
   any34Matrix_t         openMatrixMIMPointer;
