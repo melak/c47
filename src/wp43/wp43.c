@@ -898,7 +898,7 @@ char                   plotStatMx[8];
         else { // Last key pressed was not one of the 6 function keys
           //beep(440, 50);
           btnReleased(charKey);
-          if(calcMode == CM_PEM && shiftF && ((charKey[0] == '2' && charKey[1] == '6') || (charKey[0] == '3' && charKey[1] == '1'))) {
+          if(calcMode == CM_PEM && shiftF && ((charKey[0] == '1' && charKey[1] == '7') || (charKey[0] == '2' && charKey[1] == '2'))) {    //JM C43
             shiftF = false;
             refreshScreen();
           }
@@ -916,7 +916,7 @@ char                   plotStatMx[8];
       else if(key == 0) {
         btnReleased(charKey);
         keyClick(2);
-          if(calcMode == CM_PEM && shiftF && ((charKey[0] == '2' && charKey[1] == '6') || (charKey[0] == '3' && charKey[1] == '1'))) {
+          if(calcMode == CM_PEM && shiftF && ((charKey[0] == '1' && charKey[1] == '7') || (charKey[0] == '2' && charKey[1] == '2'))) {   //JM C43
             shiftF = false;
             refreshScreen();
           }

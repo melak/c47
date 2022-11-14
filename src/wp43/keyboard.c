@@ -304,6 +304,9 @@ printf(">>>>  0089 item=%d \n",item);
     void btnFnClicked(GtkWidget *notUsed, gpointer data) {
 //      GdkEvent mouseButton; //JM
 //      mouseButton.button.button = 1; //JM
+
+//      btnFnPressed(notUsed, &mouseButton, data);
+//      btnFnReleased(notUsed, &mouseButton, data);
 #ifdef VERBOSEKEYS
 printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)data)[0]);
 #endif //VERBOSEKEYS
@@ -1235,6 +1238,7 @@ bool_t allowShiftsToClearError = false;
 //      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
 //      clearShiftState();
 //    }
+
     if (result != ITM_SNAP) resetShiftState();
 
     if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && (result == ITM_NOP || result == ITM_NULL)) {
@@ -3193,8 +3197,7 @@ static bool_t activatescroll(void) { //jm
    //This is the portion that allows the arrows shortcut to SHOW in NORMAL MODE
    int16_t menuId = softmenuStack[0].softmenuId; //JM
    return (calcMode == CM_NORMAL) && 
-           temporaryInformation == TI_SHOW_REGISTER_BIG &&     //jm removed pickup up from arrows; 
-           temporaryInformation == TI_SHOW_REGISTER_SMALL &&
+          (temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) &&
           (softmenu[menuId].menuItem != -MNU_EQN) && 
           (
             ((menuId == 0) && jm_NO_BASE_SCREEN) ||
@@ -3213,6 +3216,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
 
     if(activatescroll() && !tam.mode) { //JMSHOW vv
       fnShow_SCROLL(1); 
+      refreshScreen();
       return;
     }                              //JMSHOW ^^
 
@@ -3416,6 +3420,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
     int16_t menuId = softmenuStack[0].softmenuId; //JM
     if(activatescroll() && !tam.mode) { //JMSHOW vv
       fnShow_SCROLL(2);
+      refreshScreen();
       return;
     }                             //JMSHOW ^^
 
