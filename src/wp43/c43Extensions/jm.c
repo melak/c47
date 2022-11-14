@@ -902,7 +902,22 @@ void fnUserJM(uint16_t jmUser) {
 //------------------------
   case USER_V43LT:
     #ifndef SAVE_SPACE_DM42 
-        fnUserJM(USER_V43);
+//        fnUserJM(USER_V43);
+          fnUserJM(USER_RESET);
+
+
+
+
+        kbd_usr[0].primary      = ITM_STO;
+        kbd_usr[1].primary      = ITM_RCL;
+        kbd_usr[2].primary      = ITM_1ONX;
+        kbd_usr[2].fShifted     = ITM_XTHROOT;
+        kbd_usr[3].primary      = ITM_SQUAREROOTX;
+        kbd_usr[3].fShifted     = ITM_SQUARE;
+        kbd_usr[4].primary      = ITM_LOG10;
+        kbd_usr[4].fShifted     = ITM_10x;
+        kbd_usr[5].primary      = ITM_LN;
+        kbd_usr[5].fShifted     = ITM_EXP;
 
         kbd_usr[6].primary      = ITM_SHIFTf;
         kbd_usr[6].fShifted     = ITM_NULL;
@@ -922,16 +937,47 @@ void fnUserJM(uint16_t jmUser) {
         kbd_usr[7].gShiftedAim     = ITM_NULL;
         kbd_usr[7].primaryTam     = ITM_SHIFTg;
 
+        kbd_usr[8].fShifted     = ITM_DRG;
+        kbd_usr[8].gShifted     = ITM_CONSTpi;
+        
+          kbd_usr[13].gShifted  = -MNU_STK;
+          kbd_usr[14].fShifted  = ITM_MAGNITUDE;
+          kbd_usr[14].gShifted  = ITM_ARG;
+          kbd_usr[15].fShifted  = -MNU_ANGLECONV;
+          kbd_usr[24].fShifted  = -MNU_MODE; //ITM_NULL;
 
-        kbd_usr[4].primary    = ITM_STO;
-        kbd_usr[4].fShifted   = ITM_MAGNITUDE;
-        kbd_usr[4].gShifted   = ITM_ARG;
-        kbd_usr[4].primaryAim     = ITM_E;
+        kbd_usr[17].primary      = ITM_XEQ;
+        kbd_usr[17].fShifted     = ITM_AIM;
+        kbd_usr[17].gShifted     = ITM_USERMODE;
 
-        kbd_usr[5].primary    = ITM_RCL;
-        kbd_usr[5].fShifted   = ITM_PC;
-        kbd_usr[5].gShifted   = ITM_DELTAPC;
-        kbd_usr[5].primaryAim     = ITM_F;
+        kbd_usr[22].primary      = ITM_UP1;
+        kbd_usr[22].fShifted     = ITM_BST;
+        kbd_usr[22].gShifted     = ITM_RBR;
+
+        kbd_usr[27].primary      = ITM_DOWN1;
+        kbd_usr[27].fShifted     = ITM_SST;
+        kbd_usr[27].gShifted     = ITM_FLGSV;
+
+        kbd_usr[ 8].primaryAim     = ITM_G;
+        kbd_usr[ 9].primaryAim     = ITM_H;
+        kbd_usr[10].primaryAim     = ITM_I;
+        kbd_usr[11].primaryAim     = ITM_J;
+        kbd_usr[13].primaryAim     = ITM_K;
+        kbd_usr[14].primaryAim     = ITM_L;
+        kbd_usr[15].primaryAim     = ITM_M;
+        kbd_usr[18].primaryAim     = ITM_N;
+        kbd_usr[19].primaryAim     = ITM_O;
+        kbd_usr[20].primaryAim     = ITM_P;
+        kbd_usr[21].primaryAim     = ITM_Q;
+        kbd_usr[23].primaryAim     = ITM_R;
+        kbd_usr[24].primaryAim     = ITM_S;
+        kbd_usr[25].primaryAim     = ITM_T;
+        kbd_usr[26].primaryAim     = ITM_U;
+        kbd_usr[28].primaryAim     = ITM_V;
+        kbd_usr[29].primaryAim     = ITM_W;
+        kbd_usr[30].primaryAim     = ITM_X;
+        kbd_usr[31].primaryAim     = ITM_Y;
+        kbd_usr[33].primaryAim     = ITM_Z;
 
         Norm_Key_00_VAR        = ITM_USERMODE;
         fnRefreshState();                                 //drJM

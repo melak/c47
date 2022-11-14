@@ -3035,19 +3035,23 @@ void setupUI(void) {
   gtk_fixed_put(GTK_FIXED(grid), lblFSoftkeyArea, 44, 72+170+24);
 #endif
 
+
+
   // Frame around the f key
   lblFKey2 = gtk_label_new("");  
   gtk_widget_set_name(lblFKey2, "fSoftkeyArea");
-  gtk_widget_set_size_request(lblFKey2, 61-8-2-2,  5-2);
-  gtk_fixed_put(GTK_FIXED(grid), lblFKey2, 350+4+2, 563-1);
-
+  if(kbd_usr[27].primary == KEY_fg) {                        //JM only draw the thin lines under the expansion f/g keys if the origianl fg key is used.
+    gtk_widget_set_size_request(lblFKey2, 61-8-2-2,  5-2);
+    gtk_fixed_put(GTK_FIXED(grid), lblFKey2, 350+4+2, 563-1);
+  }
 
   // Frame around the g key
   lblGKey2 = gtk_label_new("");
   gtk_widget_set_name(lblGKey2, "gSoftkeyArea");
-  gtk_widget_set_size_request(lblGKey2, 61-8-2-2,  5-2);
-  gtk_fixed_put(GTK_FIXED(grid), lblGKey2, 350+4+2 + DELTA_KEYS_X, 563-1);
-
+  if(kbd_usr[27].primary == KEY_fg) {                        //JM only draw the thin lines under the expansion f/g keys if the origianl fg key is used.
+    gtk_widget_set_size_request(lblGKey2, 61-8-2-2,  5-2);
+    gtk_fixed_put(GTK_FIXED(grid), lblGKey2, 350+4+2 + DELTA_KEYS_X, 563-1);
+  }
 
   // Frame around the Sigma+ key
 //  lblEKey = gtk_label_new("");
