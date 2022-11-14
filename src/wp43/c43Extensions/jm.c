@@ -958,6 +958,8 @@ void fnUserJM(uint16_t jmUser) {
         kbd_usr[27].fShifted     = ITM_SST;
         kbd_usr[27].gShifted     = ITM_FLGSV;
 
+        kbd_usr[29].fShifted     = -MNU_DISP;
+
         kbd_usr[ 8].primaryAim     = ITM_G;
         kbd_usr[ 9].primaryAim     = ITM_H;
         kbd_usr[10].primaryAim     = ITM_I;

@@ -1684,6 +1684,10 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       longIntegerInit(lgInt);
     #endif // (REAL34_WIDTH_TEST == 1)
 
+    if(item == KEY_COMPLEX && calcMode == CM_MIM) {   //JM Allow COMPLEX to function as CC if in Matrix
+      item = ITM_CC;
+    }
+
     switch(item) {
       case ITM_BACKSPACE: {
         if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_EIM) {

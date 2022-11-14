@@ -169,7 +169,7 @@ TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_
 #endif
 
 TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_RAD,                    ITM_GRAD,                 ITM_ERPN,              ITM_RECT,                    ITM_POLAR,
-                                             ITM_SYS,                       ITM_NULL,                   ITM_NULL,                 ITM_NULL,             -MNU_DISP,                    ITM_CFG,              //JM
+                                             ITM_SYS,                       ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_CFG,              //JM
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                                       //JM
 
                                              ITM_SSIZE4,                    ITM_SSIZE8,                 ITM_CB_CPXRES,            ITM_CB_SPCRES,         ITM_DENMAX2,                 ITM_CFG,                           //JM
