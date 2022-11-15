@@ -1048,7 +1048,7 @@ void fnReset(uint16_t confirmation) {
 
 
 
-#define VERSION1 "_108_08b"
+#define VERSION1 "_108_08c"
 
     #ifdef JM_LAYOUT_1A
       #undef L1L2
@@ -1065,28 +1065,43 @@ void fnReset(uint16_t confirmation) {
     fnDrop(0);
 
 
+    typedef struct {              //JM VALUES DEMO
+      uint8_t  itemType;
+      char     *itemName;
+    } numberstr;
+        
+      TO_QSPI const numberstr indexOfMsgs[] = {
+        {0,"C43 L1: C43, QSPI"},
+        {0,"C43 L1: C43, NO QSPI"},
+        {0,"C43 L42: unmod. DM42, QSPI"},
+        {0,"C43 L42: unmod. DM42, NO QSPI"},
+        {0,"C43 Layout L1: SIM"},
+        {0,"C43 L42: unmodified DM42 SIM"}
+      };
+
+
     #ifdef PC_BUILD
       #if defined(JM_LAYOUT_1A)
-        fnStrtoX("C43 Layout L1: SIM");
+        fnStrtoX(indexOfMsgs[4].itemName);
       #else
         #if defined(JM_LAYOUT_2_DM42_STRICT)
-          fnStrtoX("C43 L42: unmodified DM42 SIM");
+          fnStrtoX(indexOfMsgs[5].itemName);
         #endif
       #endif
 
     #else
 
       #if defined(JM_LAYOUT_1A) && defined(TWO_FILE_PGM)
-        fnStrtoX("C43 L1: C43, QSPI");
+        fnStrtoX(indexOfMsgs[0].itemName);
       #else
         #if defined(JM_LAYOUT_1A) && !defined(TWO_FILE_PGM)
-          fnStrtoX("C43 L1: C43, NO QSPI");
+          fnStrtoX(indexOfMsgs[1].itemName);
         #else
           #if defined(JM_LAYOUT_2_DM42_STRICT) && defined(TWO_FILE_PGM)
-            fnStrtoX("C43 L42: unmod. DM42, QSPI");
+            fnStrtoX(indexOfMsgs[2].itemName);
           #else
             #if defined(JM_LAYOUT_2_DM42_STRICT) && !defined(TWO_FILE_PGM)
-              fnStrtoX("C43 L42: unmod. DM42, NO QSPI");
+              fnStrtoX(indexOfMsgs[3].itemName);
             #endif
           #endif
         #endif
@@ -1106,66 +1121,55 @@ void fnReset(uint16_t confirmation) {
 fnRESET_MyM_Mya();
 
 
-#ifndef SAVE_SPACE_DM42_0
-    //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
-    fnStrtoX("Reg 11,12 & 13 have: The 3 cubes = 3.");
-    fnStore(10);
-    fnDrop(0);
-    fnStrInputLongint("569936821221962380720");
-    fnStore(11);
-    fnDrop(0);
-    fnStrInputLongint("-569936821113563493509");
-    fnStore(12);
-    fnDrop(0);
-    fnStrInputLongint("-472715493453327032");
-    fnStore(13);
-    fnDrop(0);
 
-    fnStrtoX("Reg 15, 16 & 17 have: The 3 cubes = 42.");
-    fnStore(14);
-    fnDrop(0);
-    fnStrInputLongint("-80538738812075974");
-    fnStore(15);
-    fnDrop(0);
-    fnStrInputLongint("80435758145817515");
-    fnStore(16);
-    fnDrop(0);
-    fnStrInputLongint("12602123297335631");
-    fnStore(17);
-    fnDrop(0);
 
-    fnStrtoX("37 digits of pi, Reg19 / Reg20.");
-    fnStore(18);
-    fnDrop(0);
-    fnStrInputLongint("2646693125139304345");
-    fnStore(19);
-    fnDrop(0);
-    fnStrInputLongint("842468587426513207");
-    fnStore(20);
-    fnDrop(0);
+        
+    TO_QSPI const numberstr indexOfStrings[] = {
+      {0,"Reg 11,12 & 13 have: The 3 cubes = 3."},
+      {1,"569936821221962380720"},
+      {1,"-569936821113563493509"},
+      {1,"-472715493453327032"},
 
-    fnStrtoX("Primes: Carol, Kynea, repunit, Woodal");
-    fnStore(21);
-    fnDrop(0);
-    fnStrInputLongint("18014398241046527");
-    fnStore(22);
-    fnDrop(0);
-    fnStrInputLongint("18446744082299486207");
-    fnStore(23);
-    fnDrop(0);
-    fnStrInputLongint("7369130657357778596659");
-    fnStore(24);
-    fnDrop(0);
-    fnStrInputLongint("195845982777569926302400511");
-    fnStore(25);
-    fnDrop(0);
-    fnStrInputLongint("4776913109852041418248056622882488319");
-    fnStore(26);
-    fnDrop(0);
-    fnStrInputLongint("225251798594466661409915431774713195745814267044878909733007331390393510002687");
-    fnStore(27);
-    fnDrop(0);
-#endif //SAVE_SPACE_DM42_0
+      {0,"Reg 15, 16 & 17 have: The 3 cubes = 42."},
+      {1,"-80538738812075974"},
+      {1,"80435758145817515"},
+      {1,"12602123297335631"},
+
+      {0,"37 digits of pi, Reg19 / Reg20."},
+      {1,"2646693125139304345"},
+      {1,"842468587426513207"},
+
+      {0,"Primes: Carol"},
+      {1,"18014398241046527"},
+
+      {0,"Primes: Kynea"},
+      {1,"18446744082299486207"},
+
+      {0,"Primes: repunit"},
+      {1,"7369130657357778596659"},
+
+      {0,"Primes: Woodal"},
+      {1,"195845982777569926302400511"},
+
+      {0,"Primes: Woodal"},
+      {1,"4776913109852041418248056622882488319"},
+
+      {0,"Primes: Woodal"},
+      {1,"225251798594466661409915431774713195745814267044878909733007331390393510002687"},
+    };
+
+    uint_fast16_t n = nbrOfElements(indexOfStrings);
+    for (uint_fast16_t i = 0; i < n; i++) {
+      if( indexOfStrings[i].itemType== 0) {
+        fnStrtoX(indexOfStrings[i].itemName);
+      } else
+      if( indexOfStrings[i].itemType== 1) {
+        fnStrInputLongint(indexOfStrings[i].itemName);        
+      }
+      fnStore(i+10);
+      fnDrop(0);
+    }
+
 
     doRefreshSoftMenu = true;     //jm dr
     last_CM = 253;
