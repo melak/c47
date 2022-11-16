@@ -116,7 +116,7 @@
       }
       qsort(name, nbrItems, 16, sortItems);
       printf("To be meaningfull, the list below must\n");
-      printf("be displayed with the WP43_StandardFont!\n");
+      printf("be displayed with the C43__StandardFont!\n");
       for(int i=0; i<nbrItems; i++) {
         stringToUtf8(name[i], (uint8_t *)nameUtf8);
         printf("%s\n", nameUtf8);
@@ -156,6 +156,7 @@
     fnTimerConfig(TO_CL_DROP, fnTimerDummyTest, TO_CL_DROP/*, 500*/);
   //fnTimerConfig(TO_AUTO_REPEAT, execAutoRepeat, 0/*, 200*/);          //dr no autorepeat for emulator
     fnTimerConfig(TO_TIMER_APP, execTimerApp, 0/*, 100*/);
+    fnTimerConfig(TO_ASM_ACTIVE, refreshFn, TO_ASM_ACTIVE);
   //fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV/*, 6000*/);  //dr no keyboard scan boost for emulator
     gdk_threads_add_timeout(5, refreshTimer, NULL);                     //dr refreshTimer is called every 5 ms    //^^
 

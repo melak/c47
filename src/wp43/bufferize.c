@@ -70,19 +70,17 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     if(subOrSup == NC_SUBSCRIPT) {
       nextChar = NC_NORMAL;            //JM de-latching superscript / suscript /sup/sub, removing the lock. Comment out to let sup/sub lock
       if(item >= ITM_0 && item <= ITM_9) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_0 - (int16_t)ITM_0); else //JM optimized
-      if(item >= ITM_a && item <= ITM_e) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_a - (int16_t)ITM_a); else //JM optimized
-      if(item >= ITM_h && item <= ITM_q) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_h - (int16_t)ITM_h); else //JM optimized
-      if(item >= ITM_s && item <= ITM_z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_s - (int16_t)ITM_s); else //JM optimized
+      if(item >= ITM_a && item <= ITM_z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_a - (int16_t)ITM_a); else //JM optimized
       if(item >= ITM_A && item <= ITM_Z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUB_A - (int16_t)ITM_A); else //JM optimized
       switch(item) {
         case ITM_alpha    :return ITM_SUB_alpha;
         case ITM_delta    :return ITM_SUB_delta;
         case ITM_mu       :return ITM_SUB_mu;
         case ITM_SUN      :return ITM_SUB_SUN;
-        case ITM_h        :return ITM_SUB_h;
-        case ITM_t        :return ITM_SUB_t;
+//        case ITM_h        :return ITM_SUB_h;
+//        case ITM_t        :return ITM_SUB_t;
         case ITM_INFINITY :return ITM_SUB_INFINITY;
-        case ITM_s        :return ITM_SUB_s;
+//        case ITM_s        :return ITM_SUB_s;
         case ITM_PLUS     :return ITM_SUB_PLUS;
         case ITM_MINUS    :return ITM_SUB_MINUS;
 /* //JM optimized
@@ -148,12 +146,16 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     }
     else if(subOrSup == NC_SUPERSCRIPT) {
       nextChar = NC_NORMAL;            //JM de-latching superscript / suscript /sup/sub, removing the lock. Comment out to let sup/sub lock
+      if(item >= ITM_0 && item <= ITM_9) return (uint16_t)((int16_t)item + (int16_t)ITM_SUP_0 - (int16_t)ITM_0); else //JM optimized
+      if(item >= ITM_a && item <= ITM_z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUP_a - (int16_t)ITM_a); else //JM optimized
+      if(item >= ITM_A && item <= ITM_Z) return (uint16_t)((int16_t)item + (int16_t)ITM_SUP_A - (int16_t)ITM_A); else //JM optimized
       switch(item) {
-        case ITM_a        :return ITM_SUP_a;
-        case ITM_x        :return ITM_SUP_x;
+//        case ITM_a        :return ITM_SUP_a;
+//        case ITM_x        :return ITM_SUP_x;
         case ITM_INFINITY :return ITM_SUP_INFINITY;
         case ITM_PLUS     :return ITM_SUP_PLUS;
         case ITM_MINUS    :return ITM_SUP_MINUS;
+/*JM optimized
         case ITM_0        :
         case ITM_1        :
         case ITM_2        :
@@ -169,6 +171,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         case ITM_h        :return ITM_SUP_h;
         case ITM_r        :return ITM_SUP_r;
         case ITM_T        :return ITM_SUP_T;
+*/
         default           :return item;
       }
     }
@@ -268,34 +271,13 @@ void kill_ASB_icon(void) {
 
   void resetAlphaSelectionBuffer(void) {
     lgCatalogSelection = 0;
-    alphaSelectionTimer = 0;
     asmBuffer[0] = 0;
     fnKeyInCatalog = 0;
-    AlphaSelectionBufferTimerRunning = false;     //JMvv
-    #ifndef TESTSUITE_BUILD
+    fnTimerStop(TO_ASM_ACTIVE);
+    #ifndef TESTSUITE_BUILD                         //JMvv
       kill_ASB_icon();
     #endif // TESTSUITE_BUILD                       //JM^^
   }
-
-
-  bool_t timeoutAlphaSelectionBuffer(void) {       //JM
-    if(alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000){
-      resetAlphaSelectionBuffer();
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  void startAlphaSelectionBuffer(void) {           //JM
-    alphaSelectionTimer = getUptimeMs();
-    AlphaSelectionBufferTimerRunning = true;
-    #ifndef TESTSUITE_BUILD
-    light_ASB_icon();
-    #endif // TESTSUITE_BUILD                       //JM^^
-  }
-
-
 
 
 
@@ -314,7 +296,7 @@ void kill_ASB_icon(void) {
     else {
       screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
       currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;
-      if(calcMode == CM_NORMAL && fnKeyInCatalog && isAlphabeticSoftmenu()) {
+      if(calcMode == CM_NORMAL && fnKeyInCatalog && (isAlphabeticSoftmenu() || isJMAlphaOnlySoftmenu())) {
         fnAim(NOPARAM);
       }
       if((fnKeyInCatalog || !catalog || catalog == CATALOG_MVAR) && (((calcMode == CM_AIM || calcMode == CM_EIM) && !tam.mode) || tam.alpha)) {
@@ -412,9 +394,9 @@ void kill_ASB_icon(void) {
             case ITM_SIN_SIGN :  //JM C43
             case ITM_COS_SIGN :  //JM C43
             case ITM_TAN_SIGN :  //JM C43
+            case ITM_ROOT_SIGN:
               T_cursorPos += 2;
               break;
-            case ITM_ROOT_SIGN:
             case ITM_LN_SIGN :  //JM C43
               T_cursorPos += 1;
               break;
@@ -456,8 +438,10 @@ void kill_ASB_icon(void) {
 
           softmenuStack[0].firstItem = findFirstItem(asmBuffer);
           setCatalogLastPos();
-//          alphaSelectionTimer = getUptimeMs();     //JM
-          startAlphaSelectionBuffer();               //JM
+          fnTimerStart(TO_ASM_ACTIVE, TO_ASM_ACTIVE, 3000);
+#ifndef TESTSUITE_BUILD
+          light_ASB_icon();
+#endif // TESTSUITE_BUILD
         }
       }
 
@@ -471,6 +455,10 @@ void kill_ASB_icon(void) {
 
       //Probably wrong place for this function?! Should Arrow be processed in buffercize.c in this case? //Switch statement better.
       else if(calcMode == CM_MIM) {
+        if(temporaryInformation == TI_SHOW_REGISTER) {
+          temporaryInformation = TI_NO_INFO;
+        }
+
         if(item == ITM_RIGHT_ARROW) {
           mimEnter(true);
           setJRegisterAsInt(true, getJRegisterAsInt(true) + 1);
@@ -941,18 +929,19 @@ void kill_ASB_icon(void) {
           case ITM_MULPIto :
           case ITM_Kk :
           case ITM_Ek:
+          case ITM_ARG:
 #endif //SAVE_SPACE_DM42_11          
           case ITM_op_a :                //C43
           case ITM_op_a2:                //C43
           case ITM_op_j :                //C43
           case ITM_EE_EXP_TH: {           //C43
-            if(item == ITM_ANGLE) item = ITM_ARG;
             mimRunFunction(item, indexOfItems[item].param);
             break;
           }
 
-          case ITM_ANGLE: {
-            mimRunFunction(ITM_ARG, indexOfItems[ITM_ARG].param);
+          case ITM_SHOW: {
+            mimEnter(true);
+            temporaryInformation = TI_SHOW_REGISTER;
             break;
           }
 
@@ -986,7 +975,9 @@ void kill_ASB_icon(void) {
     bool_t done;
     char *strBase;
 
-    resetKeytimers();  //JM
+
+    if(item >= ITM_A && item <= ITM_F && lastIntegerBase == 0) lastIntegerBase = 16;
+    if(item != ITM_EXIT1) resetKeytimers();  //JM
 
     screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
     currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;
@@ -1280,6 +1271,11 @@ void kill_ASB_icon(void) {
       }
 
       case ITM_EXPONENT: {
+        if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') { //JM "BASE OCT" See below
+          strcat(aimBuffer, "8");
+          goto addItemToNimBuffer_exit;
+        }
+
         done = true;
 
         if(aimBuffer[strlen(aimBuffer)-1] == 'i') {
@@ -1401,7 +1397,7 @@ void kill_ASB_icon(void) {
       }
 
 
-      case ITM_i :                         //JM HP35 compatible, in NIM
+        case ITM_i :                         //JM HP35 compatible, in NIM
         case ITM_CC: {
         if (item == ITM_i) resetShiftState();    //JM HP35 compatible, in NIM
         lastChar = strlen(aimBuffer) - 1;
@@ -1633,7 +1629,8 @@ void kill_ASB_icon(void) {
         break;
       }
 
-      case ITM_1ONX: { // B for binary base    Only works in direct NIM
+      //JM Only works in direct NIM, that is only when the input buffer already contains #
+      case ITM_1ONX: { // B for binary base    
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "2");
           goto addItemToNimBuffer_exit;
@@ -1641,7 +1638,7 @@ void kill_ASB_icon(void) {
         break;
       }
 
-      case ITM_ENTER:                                //JM
+      case ITM_ENTER:                                //JM BASE SETTING HEX
       case ITM_LOG10: { // D for decimal base          //JM
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "10");
@@ -1657,6 +1654,10 @@ void kill_ASB_icon(void) {
         }
         break;
       }
+
+      //JM See abovr "BASE OCT", O for octal base
+      
+
 
       case ITM_DMS: {
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART) {
@@ -1744,18 +1745,21 @@ void kill_ASB_icon(void) {
         break;
 
       case ITM_DRG :                       //JM
+        DRG_Cycling = 0;
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
           done = true;
 
           closeNim();
 
           if(calcMode != CM_NIM && lastErrorCode == 0) {
+            copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
             if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
               convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
             }
             if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone) {
               if(currentAngularMode == amDMS) fnCvtFromCurrentAngularMode(amDMS); else
-              setRegisterAngularMode(REGISTER_X, currentAngularMode);
+                if(currentAngularMode == amMultPi) fnCvtFromCurrentAngularMode(amMultPi); else
+                  setRegisterAngularMode(REGISTER_X, currentAngularMode);
             }
 
             if(lastErrorCode == 0) {
@@ -1764,6 +1768,7 @@ void kill_ASB_icon(void) {
             else {
               undo();
             }
+            copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_L);
             return;
           }
         }

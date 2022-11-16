@@ -85,13 +85,6 @@ void fnKeyDown       (uint16_t unusedButMandatoryParameter);
  */
 void fnKeyDotD       (uint16_t unusedButMandatoryParameter);
   
-/**
- * Processing ANGLE key.
- *
- * \param[in] unusedButMandatoryParameter
- */
-void fnKeyAngle      (uint16_t unusedButMandatoryParameter);
-
 void executeFunction(const char *data, int16_t item_);
 
 #define ST_0_INIT     0     //STATE 0 INIT             //JM vv FN-DOUBLE

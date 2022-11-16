@@ -394,15 +394,12 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(systemFlags);
   xcopy(configToStore->kbd_usr, kbd_usr, sizeof(kbd_usr));
 
-//    storeToDtConfigDescriptor(Norm_Key_00_VAR);                          //JMCFG
   storeToDtConfigDescriptor(SigFigMode);
   storeToDtConfigDescriptor(eRPN);
   storeToDtConfigDescriptor(HOME3);
   storeToDtConfigDescriptor(ShiftTimoutMode);
-  storeToDtConfigDescriptor(Home3TimerMode);
   storeToDtConfigDescriptor(UNITDisplay);
   storeToDtConfigDescriptor(SH_BASE_HOME);
-  storeToDtConfigDescriptor(SH_BASE_AHOME);
   storeToDtConfigDescriptor(Norm_Key_00_VAR);
   storeToDtConfigDescriptor(Input_Default);
   storeToDtConfigDescriptor(jm_FG_LINE);
@@ -431,14 +428,20 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(PLOT_AXIS);
   storeToDtConfigDescriptor(PLOT_ZMX);
   storeToDtConfigDescriptor(PLOT_ZMY);
-  storeToDtConfigDescriptor(jm_HOME_SUM);
-  storeToDtConfigDescriptor(jm_HOME_MIR);
-  storeToDtConfigDescriptor(jm_HOME_FIX);
+  storeToDtConfigDescriptor(jm_HOME_ASN);  //JM
+  storeToDtConfigDescriptor(jm_HOME_SUM);  //JM
+  storeToDtConfigDescriptor(jm_HOME_MIR);  //JM
+  storeToDtConfigDescriptor(jm_HOME_FIX);  //JM
   storeToDtConfigDescriptor(jm_LARGELI);                                   //JMCFG^^
   storeToDtConfigDescriptor(constantFractions);                           //JM
   storeToDtConfigDescriptor(constantFractionsMode);                           //JM
   storeToDtConfigDescriptor(constantFractionsOn);                         //JM
   storeToDtConfigDescriptor(displayStackSHOIDISP);                                   //JMCFG^^
+  storeToDtConfigDescriptor(bcdDisplay);                                   //JM
+  storeToDtConfigDescriptor(topHex);                                   //JM
+  storeToDtConfigDescriptor(bcdDisplaySign);                                   //JM
+  storeToDtConfigDescriptor(DRG_Cycling);                                   //JM
+  storeToDtConfigDescriptor(DM_Cycling);                                   //JM
 
 }
 

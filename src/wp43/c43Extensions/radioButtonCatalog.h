@@ -33,12 +33,13 @@
 
 #define NOVAL              -126
 #define ITEM_NOT_CODED     -127
+#define NOTEXT             ""
 
 
 int8_t   fnCbIsSet             (int16_t item);
 void     fnRefreshState        (void);
 int16_t  fnItemShowValue       (int16_t item);
-char*    figlabel              (const char* label, int16_t showValue);
+char*    figlabel              (const char* label, const char* showText, int16_t showValue);
 
 
 /********************************************//**
@@ -67,6 +68,7 @@ char*    figlabel              (const char* label, int16_t showValue);
 #define CB_JC   'A' // CheckBox 
 #define RB_HX   'B' // BASE
 #define RB_NM   'C' // NORMALMODE
+#define RB_BCD  'D' // NORMALMODE
 //??? #define RB_AM2  'C' // AngularMode
 //??? #define RB_ZM   'D' // AngularMode
 

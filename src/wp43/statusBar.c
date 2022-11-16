@@ -27,6 +27,7 @@
 #include "plotstat.h"
 #include "screen.h"
 #include "softmenus.h"
+#include "timer.h"
 #include <string.h>
 
 #include "wp43.h"
@@ -175,7 +176,7 @@
       while(str20[x]!=0) {
         if(str20[x]>='A' && str20[x]<='Z') {
           str40[y++] = 0xa4;
-          str40[y++] = str20[x++] + 0x75;
+          str40[y++] = str20[x++] + 0x8F;
           str40[y] = 0;
         } 
         else if(str20[x]>='0' && str20[x]<='9') {
@@ -203,17 +204,18 @@ void showFracMode(void) {
   if(lastIntegerBase > 0 && lastIntegerBase <= 16) {                               //JMvv HEXKEYS
     str20[0]=0;
     
-    if(lastIntegerBase>10 && lastIntegerBase<=16){
-      x = showString("#KEY", &standardFont, X_FRAC_MODE, 0 , vmNormal, true, true);//-4 looks good
-      strcpy(str20,"A"); conv(str20, str40);
-      x = showString(str40,  &standardFont, x, -4 , vmNormal, true, true);         //-4 looks good
-      x = showString("-",    &standardFont, x,  2 , vmNormal, true, true);         //-4 looks good
-      strcpy(str20,"F"); conv(str20, str40);
-      x = showString(str40,  &standardFont, x, -4 , vmNormal, true, true);         //-4 looks good
-
-    } else
-    if(lastIntegerBase>=2 && lastIntegerBase<=10){
-      x = showString("#BASE", &standardFont, X_FRAC_MODE, 0, vmNormal, true, true); //-4 looks good
+    if(lastIntegerBase>=2 && lastIntegerBase<=16){
+      if(topHex) {
+        x = showString("#KEY", &standardFont, X_FRAC_MODE, 0 , vmNormal, true, true);//-4 looks good
+        strcpy(str20,"A"); conv(str20, str40);
+        x = showString(str40,  &standardFont, x, -4 , vmNormal, true, true);         //-4 looks good
+        x = showString("-",    &standardFont, x,  2 , vmNormal, true, true);         //-4 looks good
+        strcpy(str20,"F"); conv(str20, str40);
+        x = showString(str40,  &standardFont, x, -4 , vmNormal, true, true);         //-4 looks good
+      } 
+      else {
+        x = showString("#BASE", &standardFont, X_FRAC_MODE, 0, vmNormal, true, true); //-4 looks good
+      }
     }
     return;
   }                                                                                //JM^^
@@ -465,7 +467,7 @@ void showFracMode(void) {
 
 
 void showHideASB(void) {                     //JMvv
-  if(AlphaSelectionBufferTimerRunning) {
+  if(fnTimerGetStatus(TO_ASM_ACTIVE) == TMR_RUNNING) {
     light_ASB_icon();
   }
   else {
@@ -481,7 +483,8 @@ void showHideUserMode(void) {
     showGlyph(STD_USER_MODE, &standardFont, X_USER_MODE, 0, vmNormal, false, false); // STD_USER_MODE is 0+12+2 pixel wide
   }
   #ifndef DMCP_BUILD
-    if( ((calcMode == CM_AIM) || (calcMode == CM_EIM)) && !tam.mode) calcModeAimGui(); //JM
+    if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
+    if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
   #endif //!TESTSUITE_BUILD
 }
   

@@ -125,7 +125,6 @@
   extern bool_t                 serialIOIconEnabled;
   extern bool_t                 pemCursorIsZerothStep;
 
-  extern bool_t                 AlphaSelectionBufferTimerRunning;                  //JM  #ifndef USEFLOAT
   extern realContext_t          ctxtReal4;    //   Limited digits: used for high speed internal calcs
   extern realContext_t          ctxtReal34;   //   34 digits
   extern realContext_t          ctxtReal39;   //   39 digits: used for 34 digits intermediate calculations
@@ -257,7 +256,8 @@
   extern int16_t                mm_MNU_HOME;                  //JM
   extern int16_t                mm_MNU_ALPHA;                 //JM
   extern int16_t                MY_ALPHA_MENU;                //JM Replaced define
-  extern uint8_t                lastSetAngularMode;           //JM
+  extern uint8_t                DRG_Cycling;                  //JM
+  extern uint8_t                DM_Cycling;                   //JM
   extern int16_t                JM_auto_doublepress_enabled;  //JM TIMER CLRDROP //drop
   extern int16_t                JM_auto_longpress_enabled;    //JM TIMER CLRDROP //clstk
   extern uint8_t                JM_SHIFT_HOME_TIMER1;         //Local to keyboard.c, but defined here
@@ -268,6 +268,9 @@
   extern bool_t                 FN_timed_out_to_NOP;          //JM LONGPRESS FN
   extern bool_t                 FN_timed_out_to_RELEASE_EXEC; //JM LONGPRESS FN
   extern bool_t                 FN_handle_timed_out_to_EXEC;
+  extern bool_t                 bcdDisplay;
+  extern bool_t                 topHex;
+  extern uint8_t                bcdDisplaySign;
   extern char                   indexOfItemsXEQM[18*8];       //JMXEQ
   extern int16_t                fnXEQMENUpos;                 //JMXEQ
   extern uint8_t                last_CM;                      //Do extern !!
@@ -312,7 +315,6 @@
   extern uint32_t               firstGregorianDay;
   extern uint32_t               denMax;
   extern uint32_t               lastIntegerBase;
-  extern uint32_t               alphaSelectionTimer;
   extern uint32_t               xCursor;
   extern uint32_t               yCursor;
   extern uint32_t               tamOverPemYPos;

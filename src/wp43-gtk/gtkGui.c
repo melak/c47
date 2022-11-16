@@ -1,17 +1,17 @@
-/* This file is part of 43S.
+/* This file is part of C43.
  *
- * 43S is free software: you can redistribute it and/or modify
+ * C43 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * 43S is distributed in the hope that it will be useful,
+ * C43 is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
+ * along with C43.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "gtkGui.h"
@@ -37,6 +37,10 @@
 #include <string.h>
 
 #include "wp43.h"
+
+
+//#define DEBUGMODES
+
 
 #if defined(PC_BUILD)
   GtkWidget *grid;
@@ -103,7 +107,7 @@ GtkWidget *lbl71G,  *lbl72G,  *lbl73G,  *lbl74G,  *lbl75G;
 GtkWidget *lbl71L,  *lbl72L,  *lbl73L,  *lbl74L,  *lbl75L;
 GtkWidget           *lbl72H,  *lbl73H;                      //JM
 GtkWidget *lbl71Gr, *lbl72Gr, *lbl73Gr, *lbl74Gr, *lbl75Gr;
-GtkWidget           *btn72A,  *btn73A,  *btn74A,  *btn75A;              //vv dr - new AIM
+GtkWidget *btn71A,  *btn72A,  *btn73A,  *btn74A,  *btn75A;              //vv dr - new AIM
 GtkWidget           *lbl72Fa, *lbl73Fa, *lbl74Fa, *lbl75Fa;             //^^
 
     GtkWidget *btn81,   *btn82,   *btn83,   *btn84,   *btn85;
@@ -171,7 +175,7 @@ void btnClicked_LC(GtkWidget *w, gpointer data) {
 }
 
 
-//JM ALPHA SECTION FOR ALPHAMODE -  UPPER CASE PC LETTER INPUT. INVERT 43C CASE. USE LETTER.
+//JM ALPHA SECTION FOR ALPHAMODE -  UPPER CASE PC LETTER INPUT. INVERT C43 CASE. USE LETTER.
 void btnClicked_UC(GtkWidget *w, gpointer data) {
   uint8_t alphaCase_MEM;
   bool_t numLock_MEM;
@@ -281,9 +285,14 @@ uint32_t event_keyval = 99999999;
 
 gboolean keyPressed(GtkWidget *w, GdkEventKey *event, gpointer data) {
   //printf("Pressed %d\n", event->keyval);                                  //JM
-  bool_t AlphaArrowsOffAndUpDn = (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA_OMEGA || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_alpha_omega) ||
-                            (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHADOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAMATH) ||
-                            (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAINTL);
+  bool_t AlphaArrowsOffAndUpDn = (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SYSFL || 
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_VAR || 
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PROG || 
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA_OMEGA || 
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_alpha_omega ||
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHADOT || 
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAMATH ||
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAINTL );
   if (event_keyval ==  event->keyval + CTRL_State) {
     return FALSE;
   }
@@ -291,6 +300,7 @@ gboolean keyPressed(GtkWidget *w, GdkEventKey *event, gpointer data) {
   //printf("#######%d\n",event_keyval);
 //JM ALPHA SECTION FOR ALPHAMODE - TAKE OVER ALPHA KEYBOARD
 if (calcMode == CM_AIM || calcMode == CM_EIM || tam.mode) {
+printf(">>>>> Keyboard Key Code = %d\n",event_keyval);
 switch (event_keyval) {
 
     case 65507: // left Ctrl
@@ -303,6 +313,26 @@ switch (event_keyval) {
       printf("key pressed: CTRL+h Hardcopy\n");
       copyScreenToClipboard();
       break;
+
+case 40:
+      if(calcMode == CM_EIM) {
+        shiftF = true;
+        btnFnClicked(w, "3");  //( F3
+      }
+      break;
+case 41:
+      if(calcMode == CM_EIM) {
+        shiftF = true;
+        btnFnClicked(w, "4");  //) F4
+      }
+      break;
+case 61:
+      if(calcMode == CM_EIM) {
+        shiftF = true;
+        btnFnClicked(w, "5");  //= F5
+      }
+      break;
+
 
 //ROW 0
     case 65362:                                               //JM     // CursorUp //JM
@@ -372,7 +402,7 @@ switch (event_keyval) {
       break;
 //ROW 2
     case 65:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM.    //**************-- ALPHA KEYS UPPER CASE --***************//
-      btnClicked_UC(w, "00");                                          //UPPER CASE PC LETTER INPUT. INVERT 43C CASE. USE LETTER.
+      btnClicked_UC(w, "00");                                          //UPPER CASE PC LETTER INPUT. INVERT C43 CASE. USE LETTER.
       break;
     case 66:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_UC(w, "01");
@@ -389,6 +419,13 @@ switch (event_keyval) {
     case 70:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_UC(w, "05");
       break;
+    case 94:  //^
+      if(calcMode == CM_AIM || calcMode == CM_EIM) {
+        shiftG = true;
+        btnClicked(w, "01");
+      }
+      break;
+
 //ROW 3
     case 71:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_UC(w, "06");
@@ -407,6 +444,12 @@ switch (event_keyval) {
       break;
     case 76:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_UC(w, "11");
+      break;
+    case 124:  //|
+      if(calcMode == CM_AIM || calcMode == CM_EIM) {
+        shiftG = true;
+        btnClicked(w, "06");
+      }
       break;
 //ROW 4
     case 65421:                                               //JM    // Enter
@@ -429,6 +472,12 @@ switch (event_keyval) {
     case 65535: // Delete
       fnT_ARROW(ITM_T_RIGHT_ARROW);
       btnClicked(w, "16");
+      break;
+    case 177: //+-
+      if(calcMode == CM_AIM || calcMode == CM_EIM) {
+        shiftG = true;
+        btnClicked(w, "14");
+      }
       break;
 //ROW 5
     case 65360:                                               //JM     // HOME  //JM
@@ -486,7 +535,7 @@ switch (event_keyval) {
 //JM ALPHA LOWER CASE SECTION FOR ALPHAMODE - TAKE OVER ALPHA KEYBOARD
 //ROW 2
     case 65+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM     //**************-- ALPHA KEYS LOWER CASE --***************//
-      btnClicked_LC(w, "00");                                             //LOWER CASE PC LETTER INPUT. USE LETTER IN THE CURRENT 43C CASE.
+      btnClicked_LC(w, "00");                                             //LOWER CASE PC LETTER INPUT. USE LETTER IN THE CURRENT C43 CASE.
       break;
     case 66+32:  //JM SHIFTED CAPITAL ALPHA AND SHIFTED NUMERAL  //JM
       btnClicked_LC(w, "01");
@@ -1308,6 +1357,7 @@ void hideAllWidgets(void) {
   gtk_widget_hide(btn73);
   gtk_widget_hide(btn74);
   gtk_widget_hide(btn75);
+  gtk_widget_hide(btn71A);
   gtk_widget_hide(btn72A);  //vv dr - new AIM
   gtk_widget_hide(btn73A);
   gtk_widget_hide(btn74A);
@@ -1533,8 +1583,10 @@ void moveLabels(void) {
   gtk_widget_get_preferred_size(  lbl41G, NULL, &lblG);
   gtk_fixed_move(GTK_FIXED(grid), lbl41F, (2*xPos+KEY_WIDTH_1+DELTA_KEYS_X-lblF.width-GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);
   gtk_fixed_move(GTK_FIXED(grid), lbl41G, (2*xPos+KEY_WIDTH_1+DELTA_KEYS_X+lblF.width+GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);
+  gtk_widget_get_preferred_size(  lbl41Gr, NULL, &lblG);                                                               //JM !! GR
+  gtk_fixed_move(GTK_FIXED(grid), lbl41Gr, xPos+KEY_WIDTH_1*4/3, yPos - Y_OFFSET_SHIFTED_LABEL);  //JM !! GR
   gtk_widget_get_preferred_size(  lbl41Fa, NULL, &lblF);                                                                        //vv dr - new AIM
-  gtk_fixed_move(GTK_FIXED(grid), lbl41Fa, (2*xPos+KEY_WIDTH_2-lblF.width-GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);  //^^
+  gtk_fixed_move(GTK_FIXED(grid), lbl41Fa, xPos-KEY_WIDTH_1*0, yPos - Y_OFFSET_SHIFTED_LABEL);  //^^
 
   xPos += 2*DELTA_KEYS_X;
   gtk_widget_get_preferred_size(  lbl42F, NULL, &lblF);
@@ -1679,13 +1731,16 @@ void moveLabels(void) {
   xPos = calcLandscape ? X_LEFT_LANDSCAPE : X_LEFT_PORTRAIT;
 
   yPos += DELTA_KEYS_Y + 1;
-/*  gtk_widget_get_preferred_size(  lbl71F, NULL, &lblF); //JM REMOVE SHIFT LABELS
-  gtk_widget_get_preferred_size(  lbl71G, NULL, &lblG);
-  gtk_fixed_move(GTK_FIXED(grid), lbl71F, (2*xPos+KEY_WIDTH_1-lblF.width-GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);
-  gtk_fixed_move(GTK_FIXED(grid), lbl71G, (2*xPos+KEY_WIDTH_1+lblF.width+GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);
-  gtk_widget_get_preferred_size(  lbl71Gr, NULL, &lblG);
-  gtk_fixed_move(GTK_FIXED(grid), lbl71Gr, xPos+KEY_WIDTH_1*2/3,                              yPos - Y_OFFSET_GREEK);
-*/
+
+  if(getSystemFlag(FLAG_USER) ? kbd_usr[27].primary : kbd_std[27].primary != KEY_fg) {
+      gtk_widget_get_preferred_size(  lbl71F, NULL, &lblF); //JM REMOVE SHIFT LABELS
+      gtk_widget_get_preferred_size(  lbl71G, NULL, &lblG);
+      gtk_fixed_move(GTK_FIXED(grid), lbl71F, (2*xPos+KEY_WIDTH_1-lblF.width-GAP*0-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);  //Gap removed to cover up fixed squares
+      gtk_fixed_move(GTK_FIXED(grid), lbl71G, (2*xPos+KEY_WIDTH_1+lblF.width+GAP*0-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);  //Gap removed to cover up fixed squares
+      //  gtk_widget_get_preferred_size(  lbl71Gr, NULL, &lblG);
+      //  gtk_fixed_move(GTK_FIXED(grid), lbl71Gr, xPos+KEY_WIDTH_1*2/3,                              yPos - Y_OFFSET_GREEK);
+    }
+
   xPos += DELTA_KEYS_X + 18;
   gtk_widget_get_preferred_size(  lbl72F, NULL, &lblF);
   gtk_widget_get_preferred_size(  lbl72G, NULL, &lblG);
@@ -2013,7 +2068,7 @@ void labelCaptionAim(const calcKey_t *key, GtkWidget *button, GtkWidget *lblGree
   }
 
 //JM remove this because CAT is not on keyboard anymore, but in menu
-//JM was 85  //JM Changed CATALOG to CAT. Actually not needed, as the WP43C already has a shortened CAT to start with
+//JM was 85  //JM Changed CATALOG to CAT. Actually not needed, as the C43 already has a shortened CAT to start with
 //JM  if(strcmp((char *)lbl, "CAT") == 0 && key->keyId != 85) {
 //JM    lbl[3] = 0;
 //JM  }
@@ -2047,9 +2102,9 @@ void labelCaptionAim(const calcKey_t *key, GtkWidget *button, GtkWidget *lblGree
   /*stringToUtf8(indexOfItems[key->gShiftedAim].itemSoftmenuName, lbl);  //vv dr - new AIM
     lbl[2] = ' ';
     lbl[3] = 0;
-    stringToUtf8(indexOfItems[key->gShiftedAim + 36].itemSoftmenuName, lbl + 3);*/
+    stringToUtf8(indexOfItems[key->gShiftedAim + (ITM_alpha - ITM_ALPHA)].itemSoftmenuName, lbl + 3);*/
     if(alphaCase == AC_LOWER) {
-      stringToUtf8(indexOfItems[numlockReplacements(8,key->gShiftedAim + 36, numLock, false, true)].itemSoftmenuName, lbl);
+      stringToUtf8(indexOfItems[numlockReplacements(8,key->gShiftedAim + (ITM_alpha - ITM_ALPHA), numLock, false, true)].itemSoftmenuName, lbl);
     }
     else {
       stringToUtf8(indexOfItems[numlockReplacements(9,key->gShiftedAim, numLock, false, true)].itemSoftmenuName, lbl);
@@ -2176,6 +2231,10 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
 }
 
     void calcModeNormalGui(void) {
+      #if defined (DEBUGMODES) && defined PC_BUILD
+      printf(">>> @@@ calcModeNormalGui     calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
+      #endif //DEBUGMODES
+
       const calcKey_t *keys;
 
   if(running_program_jm) return;                        //JM faster during program excution
@@ -2375,8 +2434,10 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   gtk_widget_show(btn74);
   gtk_widget_show(btn75);
 
-//  gtk_widget_show(lbl71F); //JM REMOVE SHIFT LABEL
-//  gtk_widget_show(lbl71G); //JM REMOVE SHIFT LABEL
+  if(getSystemFlag(FLAG_USER) ? kbd_usr[27].primary : kbd_std[27].primary != KEY_fg) {
+    gtk_widget_show(lbl71F); //JM REMOVE SHIFT LABEL
+    gtk_widget_show(lbl71G); //JM REMOVE SHIFT LABEL
+  }
   gtk_widget_show(lbl71L);
   gtk_widget_show(lbl72H); //JM
   gtk_widget_show(lbl72F);
@@ -2429,6 +2490,11 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
 }
 
     void calcModeAimGui(void) {
+      #if defined (DEBUGMODES) && defined PC_BUILD
+      printf(">>> @@@ calcModeAimGui      calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
+      #endif //DEBUGMODES
+
+
       const calcKey_t *keys;
 
   if(running_program_jm) return;                        //JM faster during program excution
@@ -2501,7 +2567,7 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   labelCaptionAimFa(keys, lbl65Fa);
   labelCaptionAim(keys++, btn65A, lbl65Gr, lbl65L);     //^^
 
-  labelCaptionAim(keys++, btn71,  lbl71Gr, lbl71L);
+  labelCaptionAim(keys++, btn71A, lbl71Gr, lbl71L);
   labelCaptionAimFa(keys, lbl72Fa);                     //vv dr - new AIM
   labelCaptionAim(keys++, btn72A, lbl72Gr, lbl72L);
   labelCaptionAimFa(keys, lbl73Fa);
@@ -2619,6 +2685,7 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
 //  gtk_widget_show(lbl44P);
 //  gtk_widget_show(lbl45F);
 //  gtk_widget_show(lbl45G);
+  gtk_widget_show(lbl41Gr);
   gtk_widget_show(lbl42Gr);
   gtk_widget_show(lbl43Gr);
   gtk_widget_show(lbl44Gr);
@@ -2676,6 +2743,7 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   gtk_widget_show(lbl65Gr); //JM ==
 
   gtk_widget_show(btn71);
+  gtk_widget_show(btn71A);
   gtk_widget_show(btn72A);      //vv dr - new AIM
   gtk_widget_show(btn73A);
   gtk_widget_show(btn74A);
@@ -2690,8 +2758,8 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   gtk_widget_show(lbl73Fa);
   gtk_widget_show(lbl74Fa);
   gtk_widget_show(lbl75Fa);     //^^
-  //gtk_widget_show(lbl71F);  //JM_          //JM REMOVE SHIFT LABEL
-  //gtk_widget_show(lbl75G); //JM_
+  gtk_widget_show(lbl71F);  //JM_          //JM REMOVE SHIFT LABEL
+  gtk_widget_show(lbl71G); //JM_
   gtk_widget_show(lbl71Gr);
   gtk_widget_show(lbl72Gr);
   gtk_widget_show(lbl73Gr);
@@ -2732,12 +2800,16 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   //JM7 gtk_widget_show(lblConfirmY);  //JM Y/N
   //JM7 gtk_widget_show(lblConfirmN);  //JM Y/N
 
-//  gtk_widget_show(lbl31G);   //JM Remnanty from 43S. Not sure why. Removed.
+//  gtk_widget_show(lbl31G);   //JM Remnanty from WP43. Not sure why. Removed.
   moveLabels();
-//  gtk_widget_hide(lbl31G);   //JM Remnanty from 43S. Not sure why. Removed.
+//  gtk_widget_hide(lbl31G);   //JM Remnanty from WP43. Not sure why. Removed.
 }
 
     void calcModeTamGui(void) {
+      #if defined (DEBUGMODES) && defined PC_BUILD
+      printf(">>> @@@ calcModeTamGui      calcMode=%d tam.alpha=%d\n", calcMode, tam.alpha);
+      #endif //DEBUGMODES
+
       const calcKey_t *keys;
 
   if(running_program_jm) return;                        //JM faster during program excution
@@ -2964,19 +3036,23 @@ void setupUI(void) {
   gtk_fixed_put(GTK_FIXED(grid), lblFSoftkeyArea, 44, 72+170+24);
 #endif
 
+
+
   // Frame around the f key
   lblFKey2 = gtk_label_new("");  
   gtk_widget_set_name(lblFKey2, "fSoftkeyArea");
-  gtk_widget_set_size_request(lblFKey2, 61-8-2-2,  5-2);
-  gtk_fixed_put(GTK_FIXED(grid), lblFKey2, 350+4+2, 563-1);
-
+  if(kbd_usr[27].primary == KEY_fg) {                        //JM only draw the thin lines under the expansion f/g keys if the origianl fg key is used.
+    gtk_widget_set_size_request(lblFKey2, 61-8-2-2,  5-2);
+    gtk_fixed_put(GTK_FIXED(grid), lblFKey2, 350+4+2, 563-1);
+  }
 
   // Frame around the g key
   lblGKey2 = gtk_label_new("");
   gtk_widget_set_name(lblGKey2, "gSoftkeyArea");
-  gtk_widget_set_size_request(lblGKey2, 61-8-2-2,  5-2);
-  gtk_fixed_put(GTK_FIXED(grid), lblGKey2, 350+4+2 + DELTA_KEYS_X, 563-1);
-
+  if(kbd_usr[27].primary == KEY_fg) {                        //JM only draw the thin lines under the expansion f/g keys if the origianl fg key is used.
+    gtk_widget_set_size_request(lblGKey2, 61-8-2-2,  5-2);
+    gtk_fixed_put(GTK_FIXED(grid), lblGKey2, 350+4+2 + DELTA_KEYS_X, 563-1);
+  }
 
   // Frame around the Sigma+ key
 //  lblEKey = gtk_label_new("");
@@ -3838,10 +3914,12 @@ void setupUI(void) {
   gtk_widget_set_tooltip_text(GTK_WIDGET(btn73), "2");
   gtk_widget_set_tooltip_text(GTK_WIDGET(btn74), "3");
   gtk_widget_set_tooltip_text(GTK_WIDGET(btn75), "-");  //JM
+  btn71A  = gtk_button_new();                           //vv dr - new AIM
   btn72A   = gtk_button_new();                          //vv dr - new AIM
   btn73A   = gtk_button_new();
   btn74A   = gtk_button_new();
   btn75A   = gtk_button_new();
+  gtk_widget_set_tooltip_text(GTK_WIDGET(btn71A), "V");
   gtk_widget_set_tooltip_text(GTK_WIDGET(btn72A), "X");
   gtk_widget_set_tooltip_text(GTK_WIDGET(btn73A), "Y");
   gtk_widget_set_tooltip_text(GTK_WIDGET(btn74A), "Z");
@@ -3874,6 +3952,7 @@ void setupUI(void) {
   lbl75Gr = gtk_label_new("");
 
   gtk_widget_set_size_request(btn71, KEY_WIDTH_1, 0);
+  gtk_widget_set_size_request(btn71A,KEY_WIDTH_1, 0);
   gtk_widget_set_size_request(btn72, KEY_WIDTH_2, 0);
   gtk_widget_set_size_request(btn73, KEY_WIDTH_2, 0);
   gtk_widget_set_size_request(btn74, KEY_WIDTH_2, 0);
@@ -3896,10 +3975,12 @@ void setupUI(void) {
   g_signal_connect(btn73, "button-release-event", G_CALLBACK(btnReleased), "29");
   g_signal_connect(btn74, "button-release-event", G_CALLBACK(btnReleased), "30");
   g_signal_connect(btn75, "button-release-event", G_CALLBACK(btnReleased), "31");
+  g_signal_connect(btn71A, "button-press-event", G_CALLBACK(btnPressed), "27");
   g_signal_connect(btn72A, "button-press-event", G_CALLBACK(btnPressed), "28");    //vv dr - new AIM
   g_signal_connect(btn73A, "button-press-event", G_CALLBACK(btnPressed), "29");
   g_signal_connect(btn74A, "button-press-event", G_CALLBACK(btnPressed), "30");
   g_signal_connect(btn75A, "button-press-event", G_CALLBACK(btnPressed), "31");
+  g_signal_connect(btn71A, "button-release-event", G_CALLBACK(btnReleased), "27");
   g_signal_connect(btn72A, "button-release-event", G_CALLBACK(btnReleased), "28");
   g_signal_connect(btn73A, "button-release-event", G_CALLBACK(btnReleased), "29");
   g_signal_connect(btn74A, "button-release-event", G_CALLBACK(btnReleased), "30");
@@ -3931,6 +4012,7 @@ void setupUI(void) {
   gtk_fixed_put(GTK_FIXED(grid), btn71,  xPos,                         yPos);
   //gtk_fixed_put(GTK_FIXED(grid), lbl71L, xPos + KEY_WIDTH_1 + X_OFFSET_LETTER, yPos + Y_OFFSET_LETTER); //JM
   //gtk_fixed_put(GTK_FIXED(grid), lbl71H, xPos + KEY_WIDTH_1 + X_OFFSET_LETTER, yPos -  1); //JM
+  gtk_fixed_put(GTK_FIXED(grid), btn71A, xPos,                         yPos);   //dr - new AIM
 
   xPos += DELTA_KEYS_X + 18;
   gtk_fixed_put(GTK_FIXED(grid), btn72,  xPos,                         yPos);

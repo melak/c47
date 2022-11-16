@@ -375,29 +375,29 @@ void fnListXY(uint16_t unusedButMandatoryParameter) {
     
   void convertDigits(char * refstr, uint16_t ii, uint16_t * oo, char * outstr) {
     switch (refstr[ii]) {
-      case  48: 
-      case  49: 
-      case  50: 
-      case  51: 
-      case  52: 
-      case  53: 
-      case  54: 
-      case  55: 
-      case  56: 
-      case  57: outstr[(*oo)++] = 0xa0; outstr[(*oo)++] = refstr[ii] + (0x80 - 48); break; //.
-      case 120: outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0xb3; break; //x
-      case 121: outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0xb4; break; //y
-      case 'a': outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0x9c; break; //a
-      case 's': outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0xae; break; //s
-      case  58: outstr[(*oo)++] = 0xa2; outstr[(*oo)++] = 0x36; break; //:
-      case  43: outstr[(*oo)++] = 0xa0; outstr[(*oo)++] = 0x8a; break; //+
-      case  45: outstr[(*oo)++] = 0xa0; outstr[(*oo)++] = 0x8b; break; //-
-      case  46: outstr[(*oo)++] = 0xa0; outstr[(*oo)++] = 0x1a; break; //.
-      case  47: outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0x25; break; ///
-      case 116: outstr[(*oo)++] = 0xa0; outstr[(*oo)++] = 0x9c; break; //t
-      case 105: outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0xa4; break; //i
-      case 99 : outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0x9e; break; //c
-      case 107: outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0xa6; break; //k
+      case '0': 
+      case '1': 
+      case '2': 
+      case '3': 
+      case '4': 
+      case '5': 
+      case '6': 
+      case '7': 
+      case '8': 
+      case '9': outstr[(*oo)++] = 0xa0; outstr[(*oo)++] = refstr[ii] + (0x80 - 48); break; //.
+      case 'x': outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0xb3; break; //x ok
+      case 'y': outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0xb4; break; //y ok
+      case 'a': outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0x9c; break; //a ok
+      case 's': outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0xae; break; //s ok
+      case ':': outstr[(*oo)++] = 0xa2; outstr[(*oo)++] = 0x36; break; //: ok
+      case '+': outstr[(*oo)++] = 0xa0; outstr[(*oo)++] = 0x8a; break; //+ ok
+      case '-': outstr[(*oo)++] = 0xa0; outstr[(*oo)++] = 0x8b; break; //- ok
+      case '.': outstr[(*oo)++] = 0xa0; outstr[(*oo)++] = 0x1a; break; //. ok
+      case '/': outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0x25; break; /// ok
+      case 't': outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0xaf; break; //t \xa4\xaf
+      case 'i': outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0xa4; break; //i ok
+      case 'c': outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0x9e; break; //c ok
+      case 'k': outstr[(*oo)++] = 0xa4; outstr[(*oo)++] = 0xa6; break; //k ok
       default : outstr[(*oo)++] = refstr[ii];
     }
   }
@@ -935,7 +935,7 @@ void graph_plotmem(void) {
 
         if(PLOT_LINE) {
           #ifdef STATDEBUG
-            printf("Plotting line to x=%d y=%d\n",xn,yn);
+            printf("Plotting line from xo=%d yo=%d to x=%d y=%d\n",xo, yo, xn,yn);
           #endif
           plotline2(xo, yo, xn, yn);
         }
@@ -943,11 +943,11 @@ void graph_plotmem(void) {
       } else {
         #ifdef PC_BUILD
           printf("Not plotted: ");
-          if(!(xN<SCREEN_WIDTH_GRAPH )) printf("xN<SCREEN_WIDTH_GRAPH; ");
-          if(!(xN>minN_x              )) printf("xN>minN_x; ");
-          if(!(yN<SCREEN_HEIGHT_GRAPH)) printf("yN<SCREEN_HEIGHT_GRAPH");
-          if(!(yN>1+minN_y            )) printf("yN>1+minN_y; ");
-                    printf("Not plotted: xN=%d<SCREEN_WIDTH_GRAPH=%d && xN=%d>minN_x=%d && yN=%d<SCREEN_HEIGHT_GRAPH=%d && yN=%d>1+minN_y=%d\n",xN,SCREEN_WIDTH_GRAPH,xN,minN_x,yN,SCREEN_HEIGHT_GRAPH,yN,1+minN_y);
+          if(!(xN<SCREEN_WIDTH_GRAPH )) printf("NOT xN<SCREEN_WIDTH_GRAPH; ");
+          if(!(xN>minN_x              )) printf("NOT xN>minN_x; ");
+          if(!(yN<SCREEN_HEIGHT_GRAPH)) printf("NOT yN<SCREEN_HEIGHT_GRAPH");
+          if(!(yN>minN_y            )) printf("NOT yN>minN_y; ");
+                    printf("Not plotted: xN=%d<SCREEN_WIDTH_GRAPH=%d && xN=%d>minN_x=%d && yN=%d<SCREEN_HEIGHT_GRAPH=%d && yN=%d>minN_y=%d\n",xN,SCREEN_WIDTH_GRAPH,xN,minN_x,yN,SCREEN_HEIGHT_GRAPH,yN,minN_y);
         #endif
       }
     }

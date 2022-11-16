@@ -82,14 +82,12 @@
 
   void jm_show_calc_state(char comment[]) {
   #ifdef PC_BUILD_TELLTALE
-    printf("\n%s-----------------------------------------------------------------------------------------------------------------\n",comment);
-    printf(".  calcMode: %s   last_CM=%s  doRefreshSoftMenu=%d    lastErrorCode=%d\n",getCalcModeName(calcMode), getCalcModeName(last_CM), doRefreshSoftMenu,lastErrorCode);
-    printf(".  AlphaCase: %s  \n",getAlphaCaseName(alphaCase));
+    printf("\n%s--------------------------------------------------------------------------------\n",comment);
+    printf(".  calcMode: %s   last_CM=%s  AlphaCase=%s  doRefreshSoftMenu=%d    lastErrorCode=%d\n",getCalcModeName(calcMode), getCalcModeName(last_CM), getAlphaCaseName(alphaCase), doRefreshSoftMenu,lastErrorCode);
     printf(".  softmenuStack[0].softmenuId=%d       MY_ALPHA_MENU=%d    softmenu[softmenuStack[0].softmenuId].menuItem=%d -MNU_ALPHA=%d\n",softmenuStack[0].softmenuId,MY_ALPHA_MENU,softmenu[softmenuStack[0].softmenuId].menuItem, -MNU_ALPHA);
     printf(".  ");int8_t ix=0; while(ix<SOFTMENU_STACK_SIZE) {printf("(%d)=%5d ", ix, softmenuStack[ix].softmenuId); ix++;} printf("\n");
     printf(".  ");       ix=0; while(ix<SOFTMENU_STACK_SIZE) {printf("%9s ", indexOfItems[-softmenu[softmenuStack[ix].softmenuId].menuItem].itemSoftmenuName  ); ix++;} printf("\n");
-    printf(".  (tam.mode=%d, catalog=%d)\n",tam.mode, catalog);
-    printf(".  (mm_MNU_HOME=%d, mm_MNU_ALPHA=%d)\n",mm_MNU_HOME, mm_MNU_ALPHA);
+    printf(".  (tam.mode=%d, catalog=%d) (mm_MNU_HOME=%d, mm_MNU_ALPHA=%d)\n",tam.mode, catalog, mm_MNU_HOME, mm_MNU_ALPHA);
     jm_show_comment("calcstate END:");
   #endif //PC_BUILD_TELLTALE
   }
@@ -117,25 +115,28 @@ void reset_jm_defaults(int16_t toload) {
     eRPN = true;                 //TEMPORARY FOR TESTING         //JM eRPN Default. Create a flag to enable or disable eRPN. See bufferize.c
     HOME3 = true;                                                //JM HOME Default. Create a flag to enable or disable triple shift HOME3.
     ShiftTimoutMode = true;                                      //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER CANCEL.
-    Home3TimerMode = true;                                       //JM SHIFT Default. Create a flag to enable or disable SHIFT TIMER MODE FOR HOME.
     UNITDisplay = false;                                         //JM HOME Default. Create a flag to enable or disable UNIT display
     SH_BASE_HOME   = false;                                      //JM
-    SH_BASE_AHOME  = true;                                       //JM
     Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM
     Input_Default =  ID_43S;                                     //JM Input Default
+    bcdDisplay = false;
+    topHex = true;
+    bcdDisplaySign = BCDu;
     jm_FG_LINE = true;                                           //JM Screen / keyboard operation setup
     jm_G_DOUBLETAP = true;                                       //JM Screen / keyboard operation setup
     graph_xmin = -3*3.14159265;                                //JM GRAPH
-    graph_xmax = +3*3.14159265;                                //JM GRAPH
+    graph_xmax = -graph_xmin;                                  //JM GRAPH
     graph_ymin = -2;                                           //JM GRAPH
     graph_ymax = +2;                                           //JM GRAPH
 
     graph_reset();
 
+    jm_HOME_ASN = false;                                       //JMHOME
     jm_HOME_SUM = false;                                       //JMHOME
     jm_HOME_MIR = true;                                        //JMHOME
     jm_HOME_FIX = false;                                       //JMHOME
     #if defined(DMCP_BUILD) || defined(JM_LAYOUT_2_DM42_STRICT)//JM LAYOUT 2. DM42 STRICT.
+    jm_HOME_ASN = false;                                       //JMHOME
     jm_HOME_SUM = false;                                       //JMHOME
     jm_HOME_MIR = true;                                        //JMHOME
     jm_HOME_FIX = false;                                       //JMHOME
@@ -175,7 +176,7 @@ void reset_jm_defaults(int16_t toload) {
     }
 
 
-    fnClAIM(0);
+    fnClrMod(0);
     if(toload) XEQMENU_loadAllfromdisk();
 
     displayAIMbufferoffset = 0;
@@ -229,18 +230,6 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
     fnRefreshState();                                 //drJM
     break;
 
-  case JC_BASE_AHOME:                                       //JM aHOME
-    SH_BASE_AHOME = !SH_BASE_AHOME;
-    if(SH_BASE_AHOME) MY_ALPHA_MENU = mm_MNU_ALPHA;
-    else              MY_ALPHA_MENU = MY_ALPHA_MENU_CNST;
-    fnRefreshState();                                 //drJM
-    break;
-
-  case JC_SH_3T:                                            //JM SH.3T
-    Home3TimerMode = !Home3TimerMode;
-    fnRefreshState();                                 //drJM
-    break;
-
   case JC_H_SUM:                                      //JM
     jm_HOME_SUM = !jm_HOME_SUM;
     fnRefreshState();                                 //drJM
@@ -248,6 +237,13 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
 
   case JC_H_MIR:                                      //JM
     jm_HOME_MIR = !jm_HOME_MIR;
+    if(!jm_HOME_MIR) jm_HOME_ASN = false;
+    fnRefreshState();                                 //drJM
+    break;
+
+  case JC_H_ASN:                                      //JM
+    jm_HOME_ASN = !jm_HOME_ASN;
+    if(jm_HOME_ASN) jm_HOME_MIR = true;
     fnRefreshState();                                 //drJM
     break;
 
@@ -388,7 +384,8 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
  * \return void
  ***********************************************/
 void fnSigmaAssign(uint16_t sigmaAssign) {             //DONE
-  Norm_Key_00_VAR = sigmaAssign;
+  int16_t tt = (int16_t)sigmaAssign;
+  Norm_Key_00_VAR = tt - 16384;
   fnRefreshState();                                 //drJM
   fnClearFlag(FLAG_USER);
 }
@@ -410,15 +407,6 @@ void fnShowJM(uint16_t jmConfig) {                               //DONE
   case JC_ERPN:
     uIntToLongInteger(eRPN ? 1:0, mem);
     break;
-
-  case JM_INP_DFLT:
-    if(Input_Default == ID_43S) { stringToLongInteger("0",10,mem); }
-    else if(Input_Default == ID_DP) { stringToLongInteger("2",10,mem); }
-    else if(Input_Default == ID_CPXDP) { stringToLongInteger("4",10,mem); }
-    else if(Input_Default == ID_SI) { stringToLongInteger("6",10,mem); }
-    else if(Input_Default == ID_LI) { stringToLongInteger("7",10,mem); }
-    break;
-
   default:
     break;
   }
@@ -855,6 +843,11 @@ void fnJM(uint16_t JM_OPCODE) {
  ***********************************************/
 void fnUserJM(uint16_t jmUser) {
   switch(jmUser) {
+
+
+//---KEYS SIGMA+ ALLOCATIONS: U_CC
+//    1. MyMemu on Sigma+ (all modes)
+//-----------------------------------------------------------------------
   case USER_DEFAULTS:                                           //USER_DEFAULTS FOR USER: E+ CC
     kbd_usr[0].primary     = ITM_CC;
     //kbd_usr[0].fShifted    = ITM_RI;
@@ -865,6 +858,8 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
 
+//---KEYS SIGMA+ ALLOCATIONS: COPY SIGMA+ USER MODE primary to -> ALLMODE
+//-----------------------------------------------------------------------
   case USER_COPY:                                            //USER_COMPLEX FOR USER: U^ ENTER^ CC
     kbd_usr[0].primary     = Norm_Key_00_VAR;
     fnRefreshState();                                 //drJM
@@ -872,6 +867,10 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
 
+//---KEYS SIGMA+ ALLOCATIONS: U^CC meaning: 
+//    1. CC on f[ENTER] instead of COMPLEX in USER mode
+//    2. MyMemu on Sigma+ (all modes)
+//-----------------------------------------------------------------------
 #if defined (JM_LAYOUT_1A)  && !defined (TESTSUITE_BUILD)                          //JM LAYOUT 1A.
   case USER_COMPLEX:                                            //USER_COMPLEX FOR USER: U^ ENTER^ CC
     kbd_usr[12].fShifted   = ITM_CC;                            //JM Changed CPX menu therefore USER MODE changes
@@ -898,9 +897,27 @@ void fnUserJM(uint16_t jmUser) {
 #endif
 
 
+
+//---KEYS PROFILE: V43 LT
+//------------------------
   case USER_V43LT:
     #ifndef SAVE_SPACE_DM42 
-        fnUserJM(USER_V43);
+//        fnUserJM(USER_V43);
+          fnUserJM(USER_RESET);
+
+
+
+
+        kbd_usr[0].primary      = ITM_STO;
+        kbd_usr[1].primary      = ITM_RCL;
+        kbd_usr[2].primary      = ITM_1ONX;
+        kbd_usr[2].fShifted     = ITM_XTHROOT;
+        kbd_usr[3].primary      = ITM_SQUAREROOTX;
+        kbd_usr[3].fShifted     = ITM_SQUARE;
+        kbd_usr[4].primary      = ITM_LOG10;
+        kbd_usr[4].fShifted     = ITM_10x;
+        kbd_usr[5].primary      = ITM_LN;
+        kbd_usr[5].fShifted     = ITM_EXP;
 
         kbd_usr[6].primary      = ITM_SHIFTf;
         kbd_usr[6].fShifted     = ITM_NULL;
@@ -920,16 +937,49 @@ void fnUserJM(uint16_t jmUser) {
         kbd_usr[7].gShiftedAim     = ITM_NULL;
         kbd_usr[7].primaryTam     = ITM_SHIFTg;
 
+        kbd_usr[8].fShifted     = ITM_DRG;
+        kbd_usr[8].gShifted     = ITM_CONSTpi;
+        
+          kbd_usr[13].gShifted  = -MNU_STK;
+          kbd_usr[14].fShifted  = ITM_MAGNITUDE;
+          kbd_usr[14].gShifted  = ITM_ARG;
+          kbd_usr[15].fShifted  = -MNU_ANGLECONV;
+          kbd_usr[24].fShifted  = -MNU_MODE; //ITM_NULL;
 
-        kbd_usr[4].primary    = ITM_STO;
-        kbd_usr[4].fShifted   = ITM_MAGNITUDE;
-        kbd_usr[4].gShifted   = ITM_ANGLE;
-        kbd_usr[4].primaryAim     = ITM_E;
+        kbd_usr[17].primary      = ITM_XEQ;
+        kbd_usr[17].fShifted     = ITM_AIM;
+        kbd_usr[17].gShifted     = ITM_USERMODE;
 
-        kbd_usr[5].primary    = ITM_RCL;
-        kbd_usr[5].fShifted   = ITM_PC;
-        kbd_usr[5].gShifted   = ITM_DELTAPC;
-        kbd_usr[5].primaryAim     = ITM_F;
+        kbd_usr[22].primary      = ITM_UP1;
+        kbd_usr[22].fShifted     = ITM_BST;
+        kbd_usr[22].gShifted     = ITM_RBR;
+
+        kbd_usr[27].primary      = ITM_DOWN1;
+        kbd_usr[27].fShifted     = ITM_SST;
+        kbd_usr[27].gShifted     = ITM_FLGSV;
+
+        kbd_usr[29].fShifted     = -MNU_DISP;
+
+        kbd_usr[ 8].primaryAim     = ITM_G;
+        kbd_usr[ 9].primaryAim     = ITM_H;
+        kbd_usr[10].primaryAim     = ITM_I;
+        kbd_usr[11].primaryAim     = ITM_J;
+        kbd_usr[13].primaryAim     = ITM_K;
+        kbd_usr[14].primaryAim     = ITM_L;
+        kbd_usr[15].primaryAim     = ITM_M;
+        kbd_usr[18].primaryAim     = ITM_N;
+        kbd_usr[19].primaryAim     = ITM_O;
+        kbd_usr[20].primaryAim     = ITM_P;
+        kbd_usr[21].primaryAim     = ITM_Q;
+        kbd_usr[23].primaryAim     = ITM_R;
+        kbd_usr[24].primaryAim     = ITM_S;
+        kbd_usr[25].primaryAim     = ITM_T;
+        kbd_usr[26].primaryAim     = ITM_U;
+        kbd_usr[28].primaryAim     = ITM_V;
+        kbd_usr[29].primaryAim     = ITM_W;
+        kbd_usr[30].primaryAim     = ITM_X;
+        kbd_usr[31].primaryAim     = ITM_Y;
+        kbd_usr[33].primaryAim     = ITM_Z;
 
         Norm_Key_00_VAR        = ITM_USERMODE;
         fnRefreshState();                                 //drJM
@@ -938,6 +988,8 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
 
+//---KEYS PROFILE: V43 RT
+//------------------------
   case USER_V43:          //USER
       #ifndef SAVE_SPACE_DM42 
           fnUserJM(USER_RESET);
@@ -1067,6 +1119,8 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
 
+//---KEYS PROFILE: C43
+//------------------------
   case USER_C43:          //USER
       fnUserJM(USER_RESET);
       #ifndef SAVE_SPACE_DM42 
@@ -1076,7 +1130,7 @@ void fnUserJM(uint16_t jmUser) {
         kbd_usr[3].primary=ITM_LOG10;                     kbd_usr[3].fShifted=ITM_10x;                      kbd_usr[3].gShifted=ITM_dotD;                     kbd_usr[3].keyLblAim=ITM_NULL;                    kbd_usr[3].primaryAim=ITM_D;                      kbd_usr[3].fShiftedAim=ITM_d;                     kbd_usr[3].gShiftedAim=ITM_LG_SIGN;               kbd_usr[3].primaryTam=ITM_REG_D;                  
         kbd_usr[4].primary=ITM_LN;                        kbd_usr[4].fShifted=ITM_EXP;                      kbd_usr[4].gShifted=ITM_toREC2;                   kbd_usr[4].keyLblAim=ITM_NULL;                    kbd_usr[4].primaryAim=ITM_E;                      kbd_usr[4].fShiftedAim=ITM_e;                     kbd_usr[4].gShiftedAim=ITM_LN_SIGN;               kbd_usr[4].primaryTam=ITM_E;                      
         kbd_usr[5].primary=ITM_XEQ;                       kbd_usr[5].fShifted=ITM_AIM;                      kbd_usr[5].gShifted=ITM_toPOL2;                   kbd_usr[5].keyLblAim=ITM_NULL;                    kbd_usr[5].primaryAim=ITM_F;                      kbd_usr[5].fShiftedAim=ITM_f;                     kbd_usr[5].gShiftedAim=ITM_alpha;                 kbd_usr[5].primaryTam=ITM_alpha;                  
-        kbd_usr[6].primary=ITM_STO;                       kbd_usr[6].fShifted=ITM_MAGNITUDE;                kbd_usr[6].gShifted=ITM_ANGLE;                    kbd_usr[6].keyLblAim=ITM_NULL;                    kbd_usr[6].primaryAim=ITM_G;                      kbd_usr[6].fShiftedAim=ITM_g;                     kbd_usr[6].gShiftedAim=ITM_VERTICAL_BAR;          kbd_usr[6].primaryTam=ITM_NULL;                   
+        kbd_usr[6].primary=ITM_STO;                       kbd_usr[6].fShifted=ITM_MAGNITUDE;                kbd_usr[6].gShifted=ITM_ARG;                    kbd_usr[6].keyLblAim=ITM_NULL;                    kbd_usr[6].primaryAim=ITM_G;                      kbd_usr[6].fShiftedAim=ITM_g;                     kbd_usr[6].gShiftedAim=ITM_VERTICAL_BAR;          kbd_usr[6].primaryTam=ITM_NULL;                   
         kbd_usr[7].primary=ITM_RCL;                       kbd_usr[7].fShifted=ITM_PC;                       kbd_usr[7].gShifted=ITM_DELTAPC;                  kbd_usr[7].keyLblAim=ITM_NULL;                    kbd_usr[7].primaryAim=ITM_H;                      kbd_usr[7].fShiftedAim=ITM_h;                     kbd_usr[7].gShiftedAim=ITM_DELTA;                 kbd_usr[7].primaryTam=ITM_HEX;                    
         kbd_usr[8].primary=ITM_Rdown;                     kbd_usr[8].fShifted=ITM_CONSTpi;                  kbd_usr[8].gShifted=ITM_XTHROOT;                  kbd_usr[8].keyLblAim=ITM_NULL;                    kbd_usr[8].primaryAim=ITM_I;                      kbd_usr[8].fShiftedAim=ITM_i;                     kbd_usr[8].gShiftedAim=ITM_pi;                    kbd_usr[8].primaryTam=ITM_REG_I;                  
         kbd_usr[9].primary=ITM_sin;                       kbd_usr[9].fShifted=ITM_arcsin;                   kbd_usr[9].gShifted=ITM_GTO;                      kbd_usr[9].keyLblAim=ITM_NULL;                    kbd_usr[9].primaryAim=ITM_J;                      kbd_usr[9].fShiftedAim=ITM_j;                     kbd_usr[9].gShiftedAim=ITM_SIN_SIGN;              kbd_usr[9].primaryTam=ITM_REG_J;                  
@@ -1085,7 +1139,7 @@ void fnUserJM(uint16_t jmUser) {
         kbd_usr[12].primary=ITM_ENTER;                    kbd_usr[12].fShifted=KEY_COMPLEX;                 kbd_usr[12].gShifted=-MNU_CPX;                    kbd_usr[12].keyLblAim=ITM_ENTER;                  kbd_usr[12].primaryAim=ITM_ENTER;                 kbd_usr[12].fShiftedAim=ITM_XEDIT;                kbd_usr[12].gShiftedAim=ITM_XEDIT;                kbd_usr[12].primaryTam=ITM_ENTER;                 
         kbd_usr[13].primary=ITM_XexY;                     kbd_usr[13].fShifted=ITM_LASTX;                   kbd_usr[13].gShifted=ITM_Rup;                     kbd_usr[13].keyLblAim=ITM_ex;                     kbd_usr[13].primaryAim=ITM_M;                     kbd_usr[13].fShiftedAim=ITM_m;                    kbd_usr[13].gShiftedAim=ITM_ex;                   kbd_usr[13].primaryTam=ITM_NULL;                  
         kbd_usr[14].primary=ITM_CHS;                      kbd_usr[14].fShifted=-MNU_MODE;                   kbd_usr[14].gShifted=-MNU_STK;                    kbd_usr[14].keyLblAim=ITM_PLUS_MINUS;             kbd_usr[14].primaryAim=ITM_N;                     kbd_usr[14].fShiftedAim=ITM_n;                    kbd_usr[14].gShiftedAim=ITM_PLUS_MINUS;           kbd_usr[14].primaryTam=ITM_NULL;                  
-        kbd_usr[15].primary=ITM_EXPONENT;                 kbd_usr[15].fShifted=-MNU_DISP;                   kbd_usr[15].gShifted=-MNU_EXP;                    kbd_usr[15].keyLblAim=ITM_NULL;                   kbd_usr[15].primaryAim=ITM_O;                     kbd_usr[15].fShiftedAim=ITM_o;                    kbd_usr[15].gShiftedAim=ITM_NULL;                 kbd_usr[15].primaryTam=ITM_NULL;                  
+        kbd_usr[15].primary=ITM_EXPONENT;                 kbd_usr[15].fShifted=-MNU_DISP;                   kbd_usr[15].gShifted=-MNU_EXP;                    kbd_usr[15].keyLblAim=ITM_NULL;                   kbd_usr[15].primaryAim=ITM_O;                     kbd_usr[15].fShiftedAim=ITM_o;                    kbd_usr[15].gShiftedAim=ITM_NULL;                 kbd_usr[15].primaryTam=ITM_OCT;                  
         kbd_usr[16].primary=ITM_BACKSPACE;                kbd_usr[16].fShifted=ITM_UNDO;                    kbd_usr[16].gShifted=-MNU_CLR;                    kbd_usr[16].keyLblAim=ITM_BACKSPACE;              kbd_usr[16].primaryAim=ITM_BACKSPACE;             kbd_usr[16].fShiftedAim=ITM_CLA;                  kbd_usr[16].gShiftedAim=ITM_CLA;                  kbd_usr[16].primaryTam=ITM_BACKSPACE;             
         kbd_usr[17].primary=ITM_UP1;                      kbd_usr[17].fShifted=ITM_BST;                     kbd_usr[17].gShifted=ITM_RBR;                     kbd_usr[17].keyLblAim=ITM_UP1;                    kbd_usr[17].primaryAim=ITM_UP1;                   kbd_usr[17].fShiftedAim=CHR_caseUP;               kbd_usr[17].gShiftedAim=ITM_UP_ARROW;             kbd_usr[17].primaryTam=ITM_UP1;                   
         kbd_usr[18].primary=ITM_7;                        kbd_usr[18].fShifted=-MNU_EQN;                    kbd_usr[18].gShifted=-MNU_HOME;                   kbd_usr[18].keyLblAim=ITM_7;                      kbd_usr[18].primaryAim=ITM_P;                     kbd_usr[18].fShiftedAim=ITM_p;                    kbd_usr[18].gShiftedAim=ITM_7;                    kbd_usr[18].primaryTam=ITM_7;                     
@@ -1112,7 +1166,8 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
 
-
+//---KEYS PROFILE: DM42
+//------------------------
   case USER_DM42:
       fnUserJM(USER_RESET);
       #ifndef SAVE_SPACE_DM42_7
@@ -1123,7 +1178,7 @@ void fnUserJM(uint16_t jmUser) {
         kbd_usr[4].primary=ITM_LN;                        kbd_usr[4].fShifted=ITM_EXP;                      kbd_usr[4].gShifted=ITM_toREC2;                   kbd_usr[4].keyLblAim=ITM_NULL;                    kbd_usr[4].primaryAim=ITM_E;                      kbd_usr[4].fShiftedAim=ITM_e;                     kbd_usr[4].gShiftedAim=ITM_LN_SIGN;               kbd_usr[4].primaryTam=ITM_E;                      
         kbd_usr[5].primary=ITM_XEQ;                       kbd_usr[5].fShifted=ITM_GTO;                      kbd_usr[5].gShifted=ITM_toPOL2;                   kbd_usr[5].keyLblAim=ITM_NULL;                    kbd_usr[5].primaryAim=ITM_F;                      kbd_usr[5].fShiftedAim=ITM_f;                     kbd_usr[5].gShiftedAim=ITM_alpha;                 kbd_usr[5].primaryTam=ITM_alpha;                  
         kbd_usr[6].primary=ITM_STO;                       kbd_usr[6].fShifted=KEY_COMPLEX;                  kbd_usr[6].gShifted=ITM_MAGNITUDE;                kbd_usr[6].keyLblAim=ITM_NULL;                    kbd_usr[6].primaryAim=ITM_G;                      kbd_usr[6].fShiftedAim=ITM_g;                     kbd_usr[6].gShiftedAim=ITM_VERTICAL_BAR;          kbd_usr[6].primaryTam=ITM_NULL;                   
-        kbd_usr[7].primary=ITM_RCL;                       kbd_usr[7].fShifted=ITM_PC;                       kbd_usr[7].gShifted=ITM_ANGLE;                    kbd_usr[7].keyLblAim=ITM_NULL;                    kbd_usr[7].primaryAim=ITM_H;                      kbd_usr[7].fShiftedAim=ITM_h;                     kbd_usr[7].gShiftedAim=ITM_DELTA;                 kbd_usr[7].primaryTam=ITM_HEX;                    
+        kbd_usr[7].primary=ITM_RCL;                       kbd_usr[7].fShifted=ITM_PC;                       kbd_usr[7].gShifted=ITM_ARG;                    kbd_usr[7].keyLblAim=ITM_NULL;                    kbd_usr[7].primaryAim=ITM_H;                      kbd_usr[7].fShiftedAim=ITM_h;                     kbd_usr[7].gShiftedAim=ITM_DELTA;                 kbd_usr[7].primaryTam=ITM_HEX;                    
         kbd_usr[8].primary=ITM_Rdown;                     kbd_usr[8].fShifted=ITM_CONSTpi;                  kbd_usr[8].gShifted=ITM_XTHROOT;                  kbd_usr[8].keyLblAim=ITM_NULL;                    kbd_usr[8].primaryAim=ITM_I;                      kbd_usr[8].fShiftedAim=ITM_i;                     kbd_usr[8].gShiftedAim=ITM_pi;                    kbd_usr[8].primaryTam=ITM_REG_I;                  
         kbd_usr[9].primary=ITM_sin;                       kbd_usr[9].fShifted=ITM_arcsin;                   kbd_usr[9].gShifted=ITM_CC;                       kbd_usr[9].keyLblAim=ITM_NULL;                    kbd_usr[9].primaryAim=ITM_J;                      kbd_usr[9].fShiftedAim=ITM_j;                     kbd_usr[9].gShiftedAim=ITM_SIN_SIGN;              kbd_usr[9].primaryTam=ITM_REG_J;                  
         kbd_usr[10].primary=ITM_cos;                      kbd_usr[10].fShifted=ITM_arccos;                  kbd_usr[10].gShifted=ITM_LBL;                     kbd_usr[10].keyLblAim=ITM_NULL;                   kbd_usr[10].primaryAim=ITM_K;                     kbd_usr[10].fShiftedAim=ITM_k;                    kbd_usr[10].gShiftedAim=ITM_COS_SIGN;             kbd_usr[10].primaryTam=ITM_REG_K;                 
@@ -1131,7 +1186,7 @@ void fnUserJM(uint16_t jmUser) {
         kbd_usr[12].primary=ITM_ENTER;                    kbd_usr[12].fShifted=ITM_AIM;                     kbd_usr[12].gShifted=-MNU_CPX;                    kbd_usr[12].keyLblAim=ITM_ENTER;                  kbd_usr[12].primaryAim=ITM_ENTER;                 kbd_usr[12].fShiftedAim=ITM_XEDIT;                kbd_usr[12].gShiftedAim=ITM_XEDIT;                kbd_usr[12].primaryTam=ITM_ENTER;                 
         kbd_usr[13].primary=ITM_XexY;                     kbd_usr[13].fShifted=ITM_LASTX;                   kbd_usr[13].gShifted=ITM_Rup;                     kbd_usr[13].keyLblAim=ITM_ex;                     kbd_usr[13].primaryAim=ITM_M;                     kbd_usr[13].fShiftedAim=ITM_m;                    kbd_usr[13].gShiftedAim=ITM_ex;                   kbd_usr[13].primaryTam=ITM_NULL;                  
         kbd_usr[14].primary=ITM_CHS;                      kbd_usr[14].fShifted=-MNU_MODE;                   kbd_usr[14].gShifted=-MNU_STK;                    kbd_usr[14].keyLblAim=ITM_PLUS_MINUS;             kbd_usr[14].primaryAim=ITM_N;                     kbd_usr[14].fShiftedAim=ITM_n;                    kbd_usr[14].gShiftedAim=ITM_PLUS_MINUS;           kbd_usr[14].primaryTam=ITM_NULL;                  
-        kbd_usr[15].primary=ITM_EXPONENT;                 kbd_usr[15].fShifted=-MNU_DISP;                   kbd_usr[15].gShifted=-MNU_EXP;                    kbd_usr[15].keyLblAim=ITM_NULL;                   kbd_usr[15].primaryAim=ITM_O;                     kbd_usr[15].fShiftedAim=ITM_o;                    kbd_usr[15].gShiftedAim=ITM_NULL;                 kbd_usr[15].primaryTam=ITM_NULL;                  
+        kbd_usr[15].primary=ITM_EXPONENT;                 kbd_usr[15].fShifted=-MNU_DISP;                   kbd_usr[15].gShifted=-MNU_EXP;                    kbd_usr[15].keyLblAim=ITM_NULL;                   kbd_usr[15].primaryAim=ITM_O;                     kbd_usr[15].fShiftedAim=ITM_o;                    kbd_usr[15].gShiftedAim=ITM_NULL;                 kbd_usr[15].primaryTam=ITM_OCT;                  
         kbd_usr[16].primary=ITM_BACKSPACE;                kbd_usr[16].fShifted=-MNU_CLR;                    kbd_usr[16].gShifted=ITM_UNDO;                    kbd_usr[16].keyLblAim=ITM_BACKSPACE;              kbd_usr[16].primaryAim=ITM_BACKSPACE;             kbd_usr[16].fShiftedAim=ITM_CLA;                  kbd_usr[16].gShiftedAim=ITM_CLA;                  kbd_usr[16].primaryTam=ITM_BACKSPACE;             
         kbd_usr[17].primary=ITM_UP1;                      kbd_usr[17].fShifted=ITM_BST;                     kbd_usr[17].gShifted=ITM_RBR;                     kbd_usr[17].keyLblAim=ITM_UP1;                    kbd_usr[17].primaryAim=ITM_UP1;                   kbd_usr[17].fShiftedAim=CHR_caseUP;               kbd_usr[17].gShiftedAim=ITM_UP_ARROW;             kbd_usr[17].primaryTam=ITM_UP1;                   
         kbd_usr[18].primary=ITM_7;                        kbd_usr[18].fShifted=-MNU_EQN;                    kbd_usr[18].gShifted=-MNU_INFO;                   kbd_usr[18].keyLblAim=ITM_7;                      kbd_usr[18].primaryAim=ITM_P;                     kbd_usr[18].fShiftedAim=ITM_p;                    kbd_usr[18].gShiftedAim=ITM_7;                    kbd_usr[18].primaryTam=ITM_7;                     
@@ -1159,6 +1214,8 @@ void fnUserJM(uint16_t jmUser) {
 
 
 
+//---KEYS PROFILE: WP43
+//------------------------
   case USER_43S:          //USER
     #ifndef SAVE_SPACE_DM42
      fnUserJM(USER_RESET);
@@ -1172,7 +1229,7 @@ kbd_usr[5].primary=ITM_SQUAREROOTX;   kbd_usr[5].fShifted=ITM_AIM;  kbd_usr[5].g
 kbd_usr[6].primary=ITM_STO;   kbd_usr[6].fShifted=ITM_ASSIGN;   kbd_usr[6].gShifted=ITM_SAVE;   kbd_usr[6].keyLblAim=ITM_NULL;  kbd_usr[6].primaryAim=ITM_G;  kbd_usr[6].fShiftedAim=ITM_ASSIGN;  kbd_usr[6].gShiftedAim=ITM_GAMMA;   kbd_usr[6].primaryTam=ITM_NULL; 
 kbd_usr[7].primary=ITM_RCL;   kbd_usr[7].fShifted=ITM_RBR;  kbd_usr[7].gShifted=ITM_VIEW;   kbd_usr[7].keyLblAim=ITM_NULL;  kbd_usr[7].primaryAim=ITM_H;  kbd_usr[7].fShiftedAim=ITM_RBR;   kbd_usr[7].gShiftedAim=ITM_CHI;   kbd_usr[7].primaryTam=ITM_HEX; 
 kbd_usr[8].primary=ITM_Rdown;   kbd_usr[8].fShifted=ITM_Rup;  kbd_usr[8].gShifted=-MNU_CPX;   kbd_usr[8].keyLblAim=ITM_NULL;  kbd_usr[8].primaryAim=ITM_I;  kbd_usr[8].fShiftedAim=ITM_DOWN_ARROW;  kbd_usr[8].gShiftedAim=ITM_IOTA;  kbd_usr[8].primaryTam=ITM_REG_I; 
-kbd_usr[9].primary=ITM_CC;  kbd_usr[9].fShifted=ITM_MAGNITUDE;  kbd_usr[9].gShifted=ITM_ANGLE;  kbd_usr[9].keyLblAim=ITM_NULL;  kbd_usr[9].primaryAim=ITM_J;  kbd_usr[9].fShiftedAim=ITM_VERTICAL_BAR;  kbd_usr[9].gShiftedAim=ITM_ETA;   kbd_usr[9].primaryTam=ITM_REG_J; 
+kbd_usr[9].primary=ITM_CC;  kbd_usr[9].fShifted=ITM_MAGNITUDE;  kbd_usr[9].gShifted=ITM_ARG;  kbd_usr[9].keyLblAim=ITM_NULL;  kbd_usr[9].primaryAim=ITM_J;  kbd_usr[9].fShiftedAim=ITM_VERTICAL_BAR;  kbd_usr[9].gShiftedAim=ITM_ETA;   kbd_usr[9].primaryTam=ITM_REG_J; 
 kbd_usr[10].primary=ITM_SHIFTf;   kbd_usr[10].fShifted=ITM_NULL;  kbd_usr[10].gShifted=ITM_NULL;  kbd_usr[10].keyLblAim=ITM_SHIFTf;   kbd_usr[10].primaryAim=ITM_SHIFTf;  kbd_usr[10].fShiftedAim=ITM_NULL;   kbd_usr[10].gShiftedAim=ITM_SNAP;   kbd_usr[10].primaryTam=ITM_SHIFTf; 
 kbd_usr[11].primary=ITM_SHIFTg;   kbd_usr[11].fShifted=ITM_NULL;  kbd_usr[11].gShifted=ITM_NULL;  kbd_usr[11].keyLblAim=ITM_SHIFTg;   kbd_usr[11].primaryAim=ITM_SHIFTg;  kbd_usr[11].fShiftedAim=ITM_USERMODE;   kbd_usr[11].gShiftedAim=ITM_NULL;   kbd_usr[11].primaryTam=ITM_SHIFTg; 
 kbd_usr[12].primary=ITM_ENTER;  kbd_usr[12].fShifted=ITM_FILL;  kbd_usr[12].gShifted=ITM_DROP;  kbd_usr[12].keyLblAim=ITM_ENTER;  kbd_usr[12].primaryAim=ITM_ENTER;   kbd_usr[12].fShiftedAim=ITM_NULL;   kbd_usr[12].gShiftedAim=ITM_NULL;   kbd_usr[12].primaryTam=ITM_ENTER; 
@@ -1183,7 +1240,7 @@ kbd_usr[16].primary=ITM_BACKSPACE;  kbd_usr[16].fShifted=ITM_UNDO;  kbd_usr[16].
 kbd_usr[17].primary=ITM_DIV;  kbd_usr[17].fShifted=-MNU_HOME;   kbd_usr[17].gShifted=ITM_MOD;   kbd_usr[17].keyLblAim=ITM_SLASH;  kbd_usr[17].primaryAim=ITM_N;   kbd_usr[17].fShiftedAim=ITM_SLASH;  kbd_usr[17].gShiftedAim=ITM_NU;   kbd_usr[17].primaryTam=ITM_DIV; 
 kbd_usr[18].primary=ITM_7;  kbd_usr[18].fShifted=ITM_SNAP;  kbd_usr[18].gShifted=-MNU_ASN;  kbd_usr[18].keyLblAim=ITM_7;  kbd_usr[18].primaryAim=ITM_O;   kbd_usr[18].fShiftedAim=ITM_7;  kbd_usr[18].gShiftedAim=ITM_OMEGA;  kbd_usr[18].primaryTam=ITM_7; 
 kbd_usr[19].primary=ITM_8;  kbd_usr[19].fShifted=ITM_USERMODE;  kbd_usr[19].gShifted=-MNU_MODE;   kbd_usr[19].keyLblAim=ITM_8;  kbd_usr[19].primaryAim=ITM_P;   kbd_usr[19].fShiftedAim=ITM_8;  kbd_usr[19].gShiftedAim=ITM_PI;   kbd_usr[19].primaryTam=ITM_8; 
-kbd_usr[20].primary=ITM_9;  kbd_usr[20].fShifted=ITM_LBL;   kbd_usr[20].gShifted=ITM_RTN;   kbd_usr[20].keyLblAim=ITM_9;  kbd_usr[20].primaryAim=ITM_Q;   kbd_usr[20].fShiftedAim=ITM_9;  kbd_usr[20].gShiftedAim=ITM_NULL;   kbd_usr[20].primaryTam=ITM_9; 
+kbd_usr[20].primary=ITM_9;  kbd_usr[20].fShifted=ITM_LBL;   kbd_usr[20].gShifted=ITM_RTN;   kbd_usr[20].keyLblAim=ITM_9;  kbd_usr[20].primaryAim=ITM_Q;   kbd_usr[20].fShiftedAim=ITM_9;  kbd_usr[20].gShiftedAim=ITM_OMICRON;  kbd_usr[20].primaryTam=ITM_9; 
 kbd_usr[21].primary=ITM_XEQ;  kbd_usr[21].fShifted=ITM_GTO;   kbd_usr[21].gShifted=-MNU_FLAGS;  kbd_usr[21].keyLblAim=ITM_NULL;   kbd_usr[21].primaryAim=ITM_NULL;  kbd_usr[21].fShiftedAim=ITM_NULL;   kbd_usr[21].gShiftedAim=-MNU_FLAGS;   kbd_usr[21].primaryTam=ITM_NULL; 
 kbd_usr[22].primary=ITM_MULT;   kbd_usr[22].fShifted=ITM_XFACT;   kbd_usr[22].gShifted=-MNU_PROB;   kbd_usr[22].keyLblAim=ITM_CROSS;  kbd_usr[22].primaryAim=ITM_R;   kbd_usr[22].fShiftedAim=ITM_PROD_SIGN;  kbd_usr[22].gShiftedAim=ITM_RHO;  kbd_usr[22].primaryTam=ITM_MULT; 
 kbd_usr[23].primary=ITM_4;  kbd_usr[23].fShifted=-MNU_SUMS;   kbd_usr[23].gShifted=-MNU_STAT;   kbd_usr[23].keyLblAim=ITM_4;  kbd_usr[23].primaryAim=ITM_S;   kbd_usr[23].fShiftedAim=ITM_4;  kbd_usr[23].gShiftedAim=ITM_SIGMA;  kbd_usr[23].primaryTam=ITM_4; 
@@ -1206,20 +1263,55 @@ kbd_usr[36].primary=ITM_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].
 
 
 
-  case USER_SHIFTS:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
+//---KEYS PROFILE: C43-ALTA
+//-------------------------
+  case USER_C43ALTA:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
     #ifndef SAVE_SPACE_DM42_7
       fnUserJM(USER_C43);  
       kbd_usr[0].primary     = ITM_USERMODE;
       kbd_usr[9].primary     = -MNU_TRI;
       kbd_usr[9].gShifted    = ITM_SNAP;
       kbd_usr[9].fShifted    = ITM_CC;
+
       kbd_usr[10].primary    = ITM_SHIFTf;
       kbd_usr[10].fShifted   = ITM_NULL;
       kbd_usr[10].gShifted   = ITM_NULL;
+      kbd_usr[10].keyLblAim  = ITM_SHIFTf;
+      kbd_usr[10].primaryAim = ITM_SHIFTf;
+
       kbd_usr[11].primary    = ITM_SHIFTg;
       kbd_usr[11].fShifted   = ITM_NULL;
       kbd_usr[11].gShifted   = ITM_NULL;
+      kbd_usr[11].keyLblAim  = ITM_SHIFTg;
+      kbd_usr[11].primaryAim = ITM_SHIFTg;
 
+      kbd_usr[27].primary    = ITM_GTO;
+      kbd_usr[27].fShifted   = ITM_LBL;
+      kbd_usr[27].gShifted   = ITM_RTN;
+      kbd_usr[27].keyLblAim  = ITM_V;
+
+      kbd_usr[13].primaryAim = ITM_K;
+      kbd_usr[14].primaryAim = ITM_L;
+      kbd_usr[15].primaryAim = ITM_M;
+      kbd_usr[18].primaryAim = ITM_N;
+      kbd_usr[19].primaryAim = ITM_O;
+      kbd_usr[20].primaryAim = ITM_P;
+      kbd_usr[21].primaryAim = ITM_Q;
+      kbd_usr[23].primaryAim = ITM_R;
+      kbd_usr[24].primaryAim = ITM_S;
+      kbd_usr[25].primaryAim = ITM_T;
+      kbd_usr[26].primaryAim = ITM_U;
+      kbd_usr[27].primaryAim = ITM_V;
+      kbd_usr[28].primaryAim = ITM_W;
+      kbd_usr[29].primaryAim = ITM_X;
+      kbd_usr[30].primaryAim = ITM_Y;
+      kbd_usr[31].primaryAim = ITM_Z;
+
+//      jm_FG_LINE     = false;
+//      jm_G_DOUBLETAP = false;
+//      ShiftTimoutMode= false;
+//      HOME3          = false;    
+      
       Norm_Key_00_VAR        = ITM_USERMODE;
       fnRefreshState();                                 //drJM
       fnSetFlag(FLAG_USER);
@@ -1227,11 +1319,39 @@ kbd_usr[36].primary=ITM_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].
     break;
 
 
+//---KEYS PROFILE: C43-ALTA
+//-------------------------
+  case USER_C43ALTB:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
+    #ifndef SAVE_SPACE_DM42_7
+      fnUserJM(USER_C43);  
+      kbd_usr[0].primary     = ITM_DRG;
+
+      kbd_usr[7].gShifted    = ITM_XTHROOT;
+      kbd_usr[8].gShifted    = ITM_Rup;
+      kbd_usr[13].gShifted   = -MNU_STK;
+      kbd_usr[14].gShifted   = -MNU_TRI;
+      
+      Norm_Key_00_VAR        = ITM_DRG;
+      fnRefreshState();                                 //drJM
+      fnSetFlag(FLAG_USER);
+    #endif
+    break;
+
+
+
   case USER_RESET:                                              //USER_RESET 26
     xcopy(kbd_usr, kbd_std, sizeof(kbd_std));
     Norm_Key_00_VAR        = ITM_SIGMAPLUS;
     fnRefreshState();                                 //drJM
     fnClearFlag(FLAG_USER); //userModeEnabled = false;
+
+    fnRESET_MyM_Mya();
+
+//    jm_FG_LINE     = true;
+//    jm_G_DOUBLETAP = true;
+//    ShiftTimoutMode= true;
+//    HOME3          = true;
+
     break;
 
 
@@ -1240,57 +1360,6 @@ kbd_usr[36].primary=ITM_EXIT1;  kbd_usr[36].fShifted=-MNU_CATALOG;  kbd_usr[36].
   }
 }
 
-
-
-
-//JM Check if JM ASSIGN IS IN PROGRESS AND CAPTURE THE FUNCTION AND KEY TO BE ASSIGNED
-//gets here only after valid function and any key is selected
-void fnASSIGN(int16_t JM_ASN_MODE, int16_t tempkey) {           //JM ASSIGN - REMEMBER NEXT KEYBOARD FUNCTION
-  switch(tempkey) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-    case 9:
-    case 10:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
-    case 21:
-    case 26:
-    case 31:
-    case 35:
-    case 36:
-
-      //JM_convertIntegerToShortIntegerRegister(tempkey, 10, REGISTER_X);
-      //JM_convertIntegerToShortIntegerRegister(JM_ASN_MODE, 10, REGISTER_X);
-      if(shiftF) {
-        (kbd_usr + tempkey)->fShifted = JM_ASN_MODE;  //Assign function into keyboard array
-      }
-      else if(shiftG) {
-        (kbd_usr + tempkey)->gShifted = JM_ASN_MODE;  //Assign function into keyboard array
-      }
-      else {
-        (kbd_usr + tempkey)->primary = JM_ASN_MODE;   //Assign function into keyboard array
-      }
-
-      fnSetFlag(FLAG_USER);
-      break;
-    default:
-#ifndef TESTSUITE_BUILD
-//        clearScreen(false,true,false);
-        showString("Invalid key", &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X), vmNormal, true, true);
-#endif
-    break;
-  }
-}
 
 
 

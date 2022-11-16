@@ -66,6 +66,7 @@ All the below: because both Last x and savestack does not work due to multiple s
 
 #include "c43Extensions/addons.h"
 
+#include "assign.h"
 #include "bufferize.h"
 #include "c43Extensions/keyboardTweak.h"
 #include "calcMode.h"
@@ -99,6 +100,7 @@ All the below: because both Last x and savestack does not work due to multiple s
 #include "plotstat.h"
 #include "c43Extensions/radioButtonCatalog.h"
 #include "c43Extensions/keyboardTweak.h"
+#include "realType.h"
 #include "recall.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -128,6 +130,23 @@ void fneRPN(uint16_t state) {
 }
 
 
+
+
+void fnShoiXRepeats(uint16_t numberOfRepeats) {           //JM SHOIDISP
+  displayStackSHOIDISP = numberOfRepeats;                 //   0-3
+  fnRefreshState();
+/*
+  if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
+    fnChangeBaseJM(getRegisterTag(REGISTER_X));
+  } else {
+    if(lastIntegerBase > 1 && lastIntegerBase <= 16) {
+      fnChangeBaseJM(lastIntegerBase);
+    }
+  }
+*/
+}
+
+
 void fnCFGsettings(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   runFunction(ITM_FF);
@@ -136,9 +155,9 @@ void fnCFGsettings(uint16_t unusedButMandatoryParameter) {
 }
 
 
-void fnClAIM(uint16_t unusedButMandatoryParameter) {        //clear input buffe
+void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
   #ifdef PC_BUILD
-    jm_show_comment("^^^^fnClAIMa");
+    jm_show_comment("^^^^fnClrModa");
   #endif //PC_BUILD
   #ifndef TESTSUITE_BUILD
     resetKeytimers();  //JM
@@ -151,13 +170,11 @@ void fnClAIM(uint16_t unusedButMandatoryParameter) {        //clear input buffe
     }
     lastIntegerBase = 0;
 
-  //  memset(softmenuStack, 0, sizeof(softmenuStack)); // This works because the ID of MyMenu is 0
-
   #ifndef TESTSUITE_BUILD
     uint_fast8_t ix = 0;
     while(ix < SOFTMENU_STACK_SIZE && softmenuStack[0].softmenuId != 0) {
     #ifdef PC_BUILD
-      jm_show_comment("^^^^fnClAIMb");
+      jm_show_comment("^^^^fnClrModb");
     #endif //PC_BUILD
       popSoftmenu();
       ix++;
@@ -173,7 +190,7 @@ void fnClAIM(uint16_t unusedButMandatoryParameter) {        //clear input buffe
 
     calcModeNormal();
     refreshScreen();
-    fnKeyExit(0); //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
+    fnKeyExit(0);                         //Call fnkeyExit to ensure the correct home screen is brought up, if HOME is selected.
     popSoftmenu();
   #endif
 #endif //TESTSUITE_BUILD
@@ -242,6 +259,105 @@ void fnRound2(uint16_t unusedButMandatoryParameter) {
     fnRound(0);
 }
 
+//=-=-=-=-=-=-==-=-
+//input is time or DMS
+//output is sexagesima coded decimal ddd.mmsssssss in the form of a normal decimal
+void fnFrom_ms(uint16_t unusedButMandatoryParameter){
+  #ifndef TESTSUITE_BUILD
+    char tmpString100[100];
+    char tmpString100_OUT[100];
+    tmpString100[0]=0;
+    tmpString100_OUT[0]=0;
+     
+    if(getRegisterDataType(REGISTER_X) == dtTime) {
+      temporaryInformation = TI_FROM_MS_TIME;
+    }
+    else if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) == amDMS) {
+      temporaryInformation = TI_FROM_MS_DEG;
+    }
+    else {
+      temporaryInformation = TI_NO_INFO;
+    }
+
+    if(temporaryInformation != TI_NO_INFO) {
+      if(temporaryInformation == TI_FROM_MS_TIME) {
+        copyRegisterToClipboardString2(REGISTER_X, tmpString100);
+      }
+      if(temporaryInformation == TI_FROM_MS_DEG) {
+        real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), tmpString100, &standardFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, " ", true);
+        int16_t tmp_i = 0;
+        while(tmpString100[tmp_i] != 0 && tmpString100[tmp_i+1] != 0) { //pre-condition the dd.mmssss to replaxce spaces with zeroes
+          //printf("%c %d",tmpString100[tmp_i],tmpString100[tmp_i]);
+          if((uint8_t)tmpString100[tmp_i] == 128 && (uint8_t)tmpString100[tmp_i+1] == 176) {
+            tmpString100[tmp_i] = ' ';
+            tmpString100[tmp_i+1] = 'o';
+          }
+          if((uint8_t)tmpString100[tmp_i] == 'o' && (uint8_t)tmpString100[tmp_i+1] == ' ') {
+            tmpString100[tmp_i+1] = '0';
+          }
+          if((uint8_t)tmpString100[tmp_i] == ':' && (uint8_t)tmpString100[tmp_i+1] == ' ') {
+            tmpString100[tmp_i+1] = '0';
+          }
+          if((uint8_t)tmpString100[tmp_i] == '\'' && (uint8_t)tmpString100[tmp_i+1] == ' ') {
+            tmpString100[tmp_i+1] = '0';
+          }
+          tmp_i++;
+        }
+      }
+
+      //printf(" ------- 002 >>>%s<<<\n",tmpString100);
+
+      int16_t tmp_j, tmp_i;
+      tmp_i = tmp_j = 0;
+      bool_t decimalflag = false;
+      while(tmpString100[tmp_i] != 0) {
+      //printf("%c %d",(uint8_t)tmpString100[tmp_i],(uint8_t)tmpString100[tmp_i]);
+        switch ((uint8_t)tmpString100[tmp_i]) {
+          case '0' :
+          case '1' :
+          case '2' :
+          case '3' :
+          case '4' :
+          case '5' :
+          case '6' :
+          case '7' :
+          case '8' :
+          case '9' :
+          case '+' :
+          case '-' :
+            //printf("-\n");
+            tmpString100_OUT[tmp_j]=(uint8_t)tmpString100[tmp_i];
+            tmpString100_OUT[++tmp_j]=0;
+            break;
+          case 'o' :
+          case ':' :
+          case '.' :
+          case ',' :
+            if(!decimalflag) {
+              //printf("decimal\n");
+              decimalflag = true;
+              tmpString100_OUT[tmp_j]='.';
+              tmpString100_OUT[++tmp_j]=0;
+            }
+            break;
+          default:
+            //printf("ignore.\n");
+            break;
+          }
+          tmp_i++;
+        }
+      if(tmpString100_OUT[0] != 0) {
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+        stringToReal34(tmpString100_OUT,REGISTER_REAL34_DATA(REGISTER_X));
+        printf("\n ------- 003 >>>%s<<<\n",tmpString100_OUT);
+      }
+    }
+
+    
+//    stringToReal(tmpString100,&value,&ctxtReal39);
+#endif //TESTSUITE_BUILD
+}
+
 
 /*
 * If in direct entry, accept h.ms, example 1.23 [.ms] would be 1:23:00. Do not change the ADM.
@@ -252,7 +368,6 @@ void fnRound2(uint16_t unusedButMandatoryParameter) {
 //
 void fnTo_ms(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
-  //  uint8_t oldAngularMode1 = lastSetAngularMode;
   switch(calcMode) { //JM
   case CM_NIM:
     addItemToNimBuffer(ITM_ms);
@@ -275,7 +390,6 @@ void fnTo_ms(uint16_t unusedButMandatoryParameter) {
     if(getRegisterDataType(REGISTER_X) == dtReal34) {
       if(getRegisterAngularMode(REGISTER_X) == amDMS || getRegisterAngularMode(REGISTER_X) == amDegree) {
         fnKeyDotD(0);
-        //          fnKeyDotD(0);  //2nd time to make sure it goes to REAL, not DEGREES as per           fnToReal(0); mod.
       }
       if(getRegisterAngularMode(REGISTER_X) == amNone) {
         fnToHms(0);
@@ -365,55 +479,71 @@ void fnMultiplySI(uint16_t multiplier)
 }
 
 
-void fn_cnst_op_j(uint16_t unusedButMandatoryParameter) {
+static void cpxToStk(const real_t *real1, const real_t *real2) {
   setSystemFlag(FLAG_ASLIFT);
   liftStack();
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
-  realToReal34(const_1, REGISTER_IMAG34_DATA(REGISTER_X));
+  realToReal34(real1, REGISTER_REAL34_DATA(REGISTER_X));
+  realToReal34(real2, REGISTER_IMAG34_DATA(REGISTER_X));
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+}
+
+void fn_cnst_op_j(uint16_t unusedButMandatoryParameter) {
+  cpxToStk(const_0, const_1);
+//  setSystemFlag(FLAG_ASLIFT);
+//  liftStack();
+//  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+//  realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X));
+//  realToReal34(const_1, REGISTER_IMAG34_DATA(REGISTER_X));
+//  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
 void fn_cnst_op_aa(uint16_t unusedButMandatoryParameter) {
-  setSystemFlag(FLAG_ASLIFT);
-  liftStack();
-  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(const_1on2, REGISTER_REAL34_DATA(REGISTER_X)); //-0.5 - 0.866
-  realToReal34(const_rt3on2, REGISTER_IMAG34_DATA(REGISTER_X));
+  cpxToStk(const_1on2, const_root3on2);
   chsCplx();
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+//  setSystemFlag(FLAG_ASLIFT);
+//  liftStack();
+//  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+//  realToReal34(const_1on2, REGISTER_REAL34_DATA(REGISTER_X)); //-0.5 - 0.866
+//  realToReal34(const_root3on2, REGISTER_IMAG34_DATA(REGISTER_X));
+//  chsCplx();
+//  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
 void fn_cnst_op_a(uint16_t unusedButMandatoryParameter) {
-  setSystemFlag(FLAG_ASLIFT);
-  liftStack();
-  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(const_1on2, REGISTER_REAL34_DATA(REGISTER_X)); //-0.5 + 0.866i  : op a
+  cpxToStk(const_1on2, const_root3on2);
   chsReal();
-  realToReal34(const_rt3on2, REGISTER_IMAG34_DATA(REGISTER_X));
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+//  setSystemFlag(FLAG_ASLIFT);
+//  liftStack();
+//  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+//  realToReal34(const_1on2, REGISTER_REAL34_DATA(REGISTER_X)); //-0.5 + 0.866i  : op a
+//  chsReal();
+//  realToReal34(const_root3on2, REGISTER_IMAG34_DATA(REGISTER_X));
+//  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
 void fn_cnst_0_cpx(uint16_t unusedButMandatoryParameter) {
-  setSystemFlag(FLAG_ASLIFT);
-  liftStack();
-  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X)); // 0+i0
-  realToReal34(const_0, REGISTER_IMAG34_DATA(REGISTER_X));
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+  cpxToStk(const_0, const_0);
+//  setSystemFlag(FLAG_ASLIFT);
+//  liftStack();
+//  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+//  realToReal34(const_0, REGISTER_REAL34_DATA(REGISTER_X)); // 0+i0
+//  realToReal34(const_0, REGISTER_IMAG34_DATA(REGISTER_X));
+//  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
 void fn_cnst_1_cpx(uint16_t unusedButMandatoryParameter) {
-  setSystemFlag(FLAG_ASLIFT);
-  liftStack();
-  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-  realToReal34(const_1, REGISTER_REAL34_DATA(REGISTER_X)); // 0+i0
-  realToReal34(const_0, REGISTER_IMAG34_DATA(REGISTER_X));
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+  cpxToStk(const_1, const_0);
+//  setSystemFlag(FLAG_ASLIFT);
+//  liftStack();
+//  reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+//  realToReal34(const_1, REGISTER_REAL34_DATA(REGISTER_X)); // 0+i0
+//  realToReal34(const_0, REGISTER_IMAG34_DATA(REGISTER_X));
+//  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -461,6 +591,7 @@ void fnDisplayFormatSigFig(uint16_t displayFormatN) { //DONE          //JM SIGFI
   constantFractionsOn = false; //JM
   SigFigMode = displayFormatN; //JM SIGFIG
   UNITDisplay = false;         //JM SIGFIG display Reset
+  DM_Cycling = 0;
 
   fnRefreshState();
 } //JM SIGFIG
@@ -477,6 +608,8 @@ void fnDisplayFormatUnit(uint16_t displayFormatN) { //DONE           //JM UNIT
   constantFractionsOn = false; //JM
   SigFigMode = 0;     //JM UNIT Sigfig works in FIX mode and it makes not sense in UNIT (ENG) mode
   UNITDisplay = true; //JM UNIT display
+  DM_Cycling = 0;
+
 
   fnRefreshState();
   // Convert longint to real, to force UNIT to work.
@@ -493,39 +626,72 @@ void fnDisplayFormatUnit(uint16_t displayFormatN) { //DONE           //JM UNIT
  * \return void                                                                                           JM UNIT
  ***********************************************                                                          JM UNIT */
 void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode, const char *separator) {               //JM UNIT
-  if     (exponent == -15) { displayString[0] = ' '; displayString[1] = 'f'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent == -12) { displayString[0] = ' '; displayString[1] = 'p'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent == -9 ) { displayString[0] = ' '; displayString[1] = 'n'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent == -6 ) { displayString[0] = ' '; displayString[1] = STD_mu[0]; displayString[2] = STD_mu[1]; displayString[3] = 0; }   //JM UNIT
-  else if(exponent == -3 ) { displayString[0] = ' '; displayString[1] = 'm'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent ==  3 ) { displayString[0] = ' '; displayString[1] = 'k'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent ==  6 ) { displayString[0] = ' '; displayString[1] = 'M'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent ==  9 ) { displayString[0] = ' '; displayString[1] = 'G'; displayString[2] = 0; }    //JM UNIT
-  else if(exponent == 12 ) { displayString[0] = ' '; displayString[1] = 'T'; displayString[2] = 0; }    //JM UNIT
-  else {                                                                                                //JM UNIT
-    strcpy(displayString, PRODUCT_SIGN);                                                                //JM UNIT Below, copy of
-    displayString += 2;                                                                                 //JM UNIT exponentToDisplayString in display.c
-    strcpy(displayString, STD_SUB_10);                                                                  //JM UNIT
-    displayString += 2;                                                                                 //JM UNIT
-    displayString[0] = 0;                                                                               //JM UNIT
-    if(nimMode) {                                                                                       //JM UNIT
-      if(exponent != 0) {                                                                               //JM UNIT
-        supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                 //JM UNIT
-      }                                                                                                 //JM UNIT
-    }                                                                                                   //JM UNIT
-    else {                                                                                              //JM UNIT
-      supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                   //JM UNIT
-    }                                                                                                   //JM UNIT
-  }                                                                                                     //JM UNIT
+  displayString[0] = ' ';
+  displayString[2] = 0;
+  switch(exponent) {
+    case -15 : displayString[1] = 'f'; break;
+    case -12 : displayString[1] = 'p'; break;
+    case -9  : displayString[1] = 'n'; break;
+    case -6  : displayString[1] = STD_mu[0]; displayString[2] = STD_mu[1]; displayString[3] = 0;  break;   //JM UNIT
+    case -3  : displayString[1] = 'm'; break;
+    case  3  : displayString[1] = 'k'; break;
+    case  6  : displayString[1] = 'M'; break;
+    case  9  : displayString[1] = 'G'; break;
+    case 12  : displayString[1] = 'T'; break;
+    default: {
+      strcpy(displayString, PRODUCT_SIGN);                                                                //JM UNIT Below, copy of
+      displayString += 2;                                                                                 //JM UNIT exponentToDisplayString in display.c
+      strcpy(displayString, STD_SUB_10);                                                                  //JM UNIT
+      displayString += 2;                                                                                 //JM UNIT
+      displayString[0] = 0;                                                                               //JM UNIT
+      if(nimMode) {                                                                                       //JM UNIT
+        if(exponent != 0) {                                                                               //JM UNIT
+          supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                 //JM UNIT
+        }                                                                                                 //JM UNIT
+      }                                                                                                   //JM UNIT
+      else {                                                                                              //JM UNIT
+        supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                   //JM UNIT
+      }                                                                                                   //JM UNIT
+    }                                                                                                     //JM UNIT
+  }
 }                                                                                                       //JM UNIT
+
+
+void fnDisplayFormatCycle (uint16_t unusedButMandatoryParameter) {
+  if(DM_Cycling == 0 && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HOME) {
+    fnDisplayFormatUnit(displayFormatDigits);
+  } else
+  if(displayFormat == DF_ALL) {
+    fnDisplayFormatSigFig(displayFormatDigits);
+  } else
+  if(displayFormat == DF_FIX && SigFigMode != 0 ) { //DF_SF)
+    fnDisplayFormatUnit(displayFormatDigits);
+  } else
+  if(displayFormat == DF_ENG && UNITDisplay) { //DF_UN)
+    fnDisplayFormatFix(displayFormatDigits);
+  } else
+  if(displayFormat == DF_FIX && SigFigMode == 0) {
+    fnDisplayFormatSci(displayFormatDigits);
+  } else
+  if(displayFormat == DF_SCI) {
+    fnDisplayFormatEng(displayFormatDigits); 
+  } else
+  if(displayFormat == DF_ENG && !UNITDisplay) {
+    fnDisplayFormatAll(displayFormatDigits);
+  }
+  DM_Cycling = 1;
+}
+
 
 
 //change the current state from the old state?
 
 void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
+
+  copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
   if(AMODE == TM_HMS) {
     if(getRegisterDataType(REGISTER_X) == dtTime)
-      return;
+      goto to_return;
     if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) != amNone)
       fnCvtFromCurrentAngularMode(amDegree);
     fnKeyDotD(0);
@@ -536,28 +702,39 @@ void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
       fnToHr(0); //covers time
       setRegisterAngularMode(REGISTER_X, amDegree);
       fnCvtFromCurrentAngularMode(AMODE);
-      fnAngularMode(AMODE);
+      //fnAngularMode(AMODE);                             Remove updating of ADM to the same mode
     }
 
     if((getRegisterDataType(REGISTER_X) != dtReal34) || ((getRegisterDataType(REGISTER_X) == dtReal34) && getRegisterAngularMode(REGISTER_X) == amNone)) {
       fnKeyDotD(0); //convert longint, and strip all angles to real.
+      uint16_t currentAngularModeOld = currentAngularMode;
       fnAngularMode(AMODE);
       fnCvtFromCurrentAngularMode(currentAngularMode);
+      currentAngularMode = currentAngularModeOld;       //Remove updating of ADM to the same mode
     }
     else { //convert existing tagged angle, and set the ADM
       fnCvtFromCurrentAngularMode(AMODE);
-      fnAngularMode(AMODE);
+      //fnAngularMode(AMODE);                             Remove updating of ADM to the same mode
     }
   }
 #ifndef TESTSUITE_BUILD
   fnRefreshState();
   refreshStatusBar();
 #endif //!TESTSUITE_BUILD
+
+  to_return:
+  copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_L);
 }
 
 
 void fnDRG(uint16_t unusedButMandatoryParameter) {
-uint16_t dest = 9999;
+  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+    goto to_return;
+  } 
+printf("@@@@\n");
+  copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
+  uint16_t dest = 9999;
+
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {                  // If shortinteger in X, convert to real
     convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone); //is probably none already
@@ -568,28 +745,37 @@ uint16_t dest = 9999;
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {                        // if real
     dest = getRegisterAngularMode(REGISTER_X);
+
+    if(dest != amNone && dest != currentAngularMode && DRG_Cycling != 1) {   //first step: convert tagged angle to ADM
+      fnCvtToCurrentAngularMode(dest);
+      goto to_return;
+    }
+
+    DRG_Cycling = 1;
     switch(dest) {
       case amNone:      dest = currentAngularMode;  break; //converts from to the same, i.e. get to current angle mode
       case amRadian:    dest = amGrad;              break;
-      case amMultPi:    dest = amDMS;               break;
-      case amGrad:      dest = amMultPi;            break;
+      case amGrad:      dest = amDegree;            break;
       case amDegree:    dest = amRadian;            break;
       case amDMS:       dest = amDegree;            break;
+      case amMultPi:    dest = amRadian;            break; //do not support Mulpi but at least get out of it
       default:      break;
     }
     fnCvtFromCurrentAngularMode(dest);
-    currentAngularMode = dest;
+    //currentAngularMode = dest;          //remove setting of ADM!
   }
+
+/* Remove complex number support and cycling 8-level stack support
   else //if(getRegisterDataType(REGISTER_X) == dtComplex34)
   {
     dest = currentAngularMode;
     switch(dest) {
       case amNone:      dest = currentAngularMode;  break; //converts from to the same, i.e. get to current angle mode
       case amRadian:    dest = amGrad;              break;
-      case amMultPi:    dest = amDMS;               break;
-      case amGrad:      dest = amMultPi;            break;
+      case amGrad:      dest = amDegree;            break;
       case amDegree:    dest = amRadian;            break;
       case amDMS:       dest = amDegree;            break;
+      case amMultPi:    dest = amRadian;            break; //do not support Mulpi but at least get out of it
       default:      break;
     }
     currentAngularMode = dest;
@@ -604,6 +790,9 @@ uint16_t dest = 9999;
     if(getRegisterDataType(REGISTER_C) == dtReal34 && getRegisterAngularMode(REGISTER_C) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_C, dest);
     if(getRegisterDataType(REGISTER_D) == dtReal34 && getRegisterAngularMode(REGISTER_D) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_D, dest);
   }
+*/
+  to_return:
+    copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_L);
 }
 
 
@@ -1546,21 +1735,383 @@ void fnConstantR(uint16_t constantAddr, uint16_t *constNr, real_t *rVal) {
 
 
 void fnSafeReset (uint16_t unusedButMandatoryParameter) {
-  if(!jm_FG_LINE && !jm_G_DOUBLETAP && !Home3TimerMode && !ShiftTimoutMode && !HOME3) {
+  if(!jm_FG_LINE && !jm_G_DOUBLETAP && !ShiftTimoutMode && !HOME3) {
     jm_FG_LINE     = true;
     jm_G_DOUBLETAP = true;
-    Home3TimerMode = true;
     ShiftTimoutMode= true;
     HOME3          = true;
   } else
   {
     jm_FG_LINE     = false;
     jm_G_DOUBLETAP = false;
-    Home3TimerMode = false;
     ShiftTimoutMode= false;
     HOME3          = false;    
   }
 }
 
 
+void fnRESET_MyM_Mya(void){
+//Pre-assign the MyMenu                   //JM
+    #ifndef TESTSUITE_BUILD
+    jm_NO_BASE_SCREEN = true;                                           //JM prevent slow updating of 6 menu items
+    for(int8_t fn = 1; fn <= 6; fn++) {
+      //itemToBeAssigned = ( !getSystemFlag(FLAG_USER) ? (kbd_std[fn-1].fShifted) : (kbd_usr[fn-1].fShifted) );  //Function key follows if the yellow key
+      itemToBeAssigned = menu_HOME[fn -1];  //Function key follows if the yellow key
+      assignToMyMenu(fn - 1);
+      }
+    jm_NO_BASE_SCREEN = false;                                           //JM Menu system default (removed from reset_jm_defaults)
+
+    itemToBeAssigned = -MNU_ALPHA;
+    assignToMyAlpha(5);
+    #endif // TESTSUITE_BUILD
+}
+
+
+//Softmenus:
+//--------------------------------------------------------------------------------------------
+
+//JM To determine the menu number for a given menuId          //JMvv
+int16_t mm(int16_t id) {
+  int16_t m;
+  m = 0;
+  if(id != 0) { // Search by ID
+    while(softmenu[m].menuItem != 0) {
+      //printf(">>> mm %d %d %d %s \n",id, m, softmenu[m].menuItem, indexOfItems[-softmenu[m].menuItem].itemSoftmenuName);
+      if(softmenu[m].menuItem == id) {
+       //printf("####>> mm() broken out id=%i m=%i\n",id,m);
+       break;
+      }
+      m++;
+    }
+  }
+  return m;
+}                                                             //JM^^
+
+#ifndef TESTSUITE_BUILD
+
+
+//vv EXTRA DRAWINGS FOR RADIO_BUTTON AND CHECK_BOX
+#define JM_LINE2_DRAW
+#undef JM_LINE2_DRAW
+#ifdef JM_LINE2_DRAW
+void JM_LINE2(uint32_t xx, uint32_t yy) {                          // To draw the lines for radiobutton on screen
+  uint32_t x, y;
+  y = yy-3-1;
+  for(x=xx-66+1; x<min(xx-1,SCREEN_WIDTH); x++) {
+    if(mod(x, 2) == 0) {
+      setBlackPixel(x, y);
+      setBlackPixel(x, y+2);
+    }
+    else {
+      setBlackPixel(x, y+1);
+    }
+  }
+}
+#endif //JM_LINE2_DRAW
+
+
+#define RB_EXTRA_BORDER
+//#undef RB_EXTRA_BORDER
+#define RB_CLEAR_CENTER
+#undef RB_CLEAR_CENTER
+#ifdef RB_EXTRA_BORDER
+void rbColumnCcccccc(uint32_t xx, uint32_t yy) {
+  lcd_fill_rect(xx,yy+2,1,7,  0);
+}
+#endif //RB_EXTRA_BORDER
+
+
+
+void rbColumnCcSssssCc(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+8,1,2,  0);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+3,1,5,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+1,1,1,  0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void rbColumnCcSssssssCc(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+9,1,2,  0);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+2,1,7,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy,1,2,  0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void rbColumnCSssCccSssC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+7,1,3,  0xFF);
+  lcd_fill_rect(xx,yy+4,1,3,  0);
+  lcd_fill_rect(xx,yy+1,1,3,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void rbColumnCSsCSssCSsC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+8,1,2,  0xFF);
+  setWhitePixel (xx,yy+7);
+  lcd_fill_rect(xx,yy+4,1,3,  0xFF);
+  setWhitePixel (xx,yy+3);
+  lcd_fill_rect(xx,yy+1,1,2,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void rbColumnCcSsNnnSsCc(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+9,1,2,  0);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+7,1,2,  0xFF);
+#ifdef RB_CLEAR_CENTER
+  lcd_fill_rect(xx,yy+4,1,3,  0);
+#endif //RB_CLEAR_CENTER
+  lcd_fill_rect(xx,yy+2,1,2,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+0,1,2,  0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void rbColumnCSsNnnnnSsC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+8,1,2,  0xFF);
+#ifdef RB_CLEAR_CENTER
+  lcd_fill_rect(xx,yy+3,1,5,  0);
+#endif //RB_CLEAR_CENTER
+  lcd_fill_rect(xx,yy+1,1,2,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDERf
+}
+
+
+
+void rbColumnCSNnnnnnnSC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  setBlackPixel (xx,yy+9);
+#ifdef RB_CLEAR_CENTER
+  lcd_fill_rect(xx,yy+2,1,7,  0);
+#endif //RB_CLEAR_CENTER
+  setBlackPixel (xx,yy+1);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+#ifdef RB_EXTRA_BORDER
+void cbColumnCcccccccccc(uint32_t xx, uint32_t yy) {
+  lcd_fill_rect(xx,yy+0,1,11,  0);
+}
+#endif
+
+
+
+void cbColumnCSssssssssC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+1,1,9,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void cbColumnCSsCccccSsC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy+8,1,2,  0xFF);
+  lcd_fill_rect(xx,yy+3,1,5,  0);
+  lcd_fill_rect(xx,yy+1,1,2,  0xFF);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void cbColumnCSNnnnnnnSC(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+10);
+#endif //RB_EXTRA_BORDER
+  setBlackPixel (xx,yy+9);
+#ifdef RB_CLEAR_CENTER
+  lcd_fill_rect(xx,yy+2,1,7,  0);
+#endif //RB_CLEAR_CENTER
+  setBlackPixel (xx,yy+1);
+#ifdef RB_EXTRA_BORDER
+  setWhitePixel (xx,yy+0);
+#endif //RB_EXTRA_BORDER
+}
+
+
+
+void RB_CHECKED(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  rbColumnCcccccc(xx+0, yy);
+#endif
+  rbColumnCcSssssCc(xx+1, yy);
+  rbColumnCcSssssssCc(xx+2, yy);
+  rbColumnCSssCccSssC(xx+3, yy);
+  rbColumnCSsCSssCSsC(xx+4, yy);
+  rbColumnCSsCSssCSsC(xx+5, yy);
+  rbColumnCSsCSssCSsC(xx+6, yy);
+  rbColumnCSssCccSssC(xx+7, yy);
+  rbColumnCcSssssssCc(xx+8, yy);
+  rbColumnCcSssssCc(xx+9, yy);
+//#ifdef RB_EXTRA_BORDER
+//  rbColumnCcccccc(xx+10, yy);
+//#endif
+}
+
+
+
+void RB_UNCHECKED(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  rbColumnCcccccc(xx+0, yy);
+#endif //RB_EXTRA_BORDER
+  rbColumnCcSssssCc(xx+1, yy);
+  rbColumnCcSsNnnSsCc(xx+2, yy);
+  rbColumnCSsNnnnnSsC(xx+3, yy);
+  rbColumnCSNnnnnnnSC(xx+4, yy);
+  rbColumnCSNnnnnnnSC(xx+5, yy);
+  rbColumnCSNnnnnnnSC(xx+6, yy);
+  rbColumnCSsNnnnnSsC(xx+7, yy);
+  rbColumnCcSsNnnSsCc(xx+8, yy);
+  rbColumnCcSssssCc(xx+9, yy);
+//#ifdef RB_EXTRA_BORDER
+//  rbColumnCcccccc(xx+10, yy);
+//#endif //RB_EXTRA_BORDER
+}
+
+
+
+void CB_CHECKED(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy-1,10,11,0);
+  cbColumnCcccccccccc(xx+0, yy);
+#endif //RB_EXTRA_BORDER
+  cbColumnCSssssssssC(xx+1, yy);
+  cbColumnCSssssssssC(xx+2, yy);
+  cbColumnCSsCccccSsC(xx+3, yy);
+  rbColumnCSsCSssCSsC(xx+4, yy);
+  rbColumnCSsCSssCSsC(xx+5, yy);
+  rbColumnCSsCSssCSsC(xx+6, yy);
+  cbColumnCSsCccccSsC(xx+7, yy);
+  cbColumnCSssssssssC(xx+8, yy);
+  cbColumnCSssssssssC(xx+9, yy);
+//#ifdef RB_EXTRA_BORDER
+//  cbColumnCcccccccccc(xx+10, yy);
+//#endif //RB_EXTRA_BORDER
+}
+
+
+
+void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
+#ifdef RB_EXTRA_BORDER
+  lcd_fill_rect(xx,yy-1,10,11,0);
+  cbColumnCcccccccccc(xx+0, yy);
+#endif
+  cbColumnCSssssssssC(xx+1, yy);
+  cbColumnCSNnnnnnnSC(xx+2, yy);
+  cbColumnCSNnnnnnnSC(xx+3, yy);
+  cbColumnCSNnnnnnnSC(xx+4, yy);
+  cbColumnCSNnnnnnnSC(xx+5, yy);
+  cbColumnCSNnnnnnnSC(xx+6, yy);
+  cbColumnCSNnnnnnnSC(xx+7, yy);
+  cbColumnCSNnnnnnnSC(xx+8, yy);
+  cbColumnCSssssssssC(xx+9, yy);
+//#ifdef RB_EXTRA_BORDER
+//  cbColumnCcccccccccc(xx+10, yy);
+//#endif //RB_EXTRA_BORDER
+}
+//^^
+
+
+void greyOutSoftMenuItem(int16_t x, int16_t y, int16_t currentFirstItem) {
+//printf(">>>> #### x=%d y=%d c1st=%d %d %d %d\n",x,y, currentFirstItem, menu_A_HOME[x + y*6] , kbd_std[menu_A_HOME[x + y*6]    ].primary, kbd_usr[menu_A_HOME[x + y*6]    ].primary);
+  if(jm_HOME_ASN && menu_A_HOME[x + y*6] >= 0  &&  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HOME &&
+       (
+         ((menu_A_HOME[x + y*6] <  100)                                 && ((kbd_std[menu_A_HOME[x + y*6]    ].primary ) == (kbd_usr[menu_A_HOME[x + y*6]    ].primary ))) ||
+         ((menu_A_HOME[x + y*6] >= 100) && (menu_A_HOME[x + y*6] < 200) && ((kbd_std[menu_A_HOME[x + y*6]-100].fShifted) == (kbd_usr[menu_A_HOME[x + y*6]-100].fShifted))) ||
+         ((menu_A_HOME[x + y*6] >= 200)                                 && ((kbd_std[menu_A_HOME[x + y*6]-200].gShifted) == (kbd_usr[menu_A_HOME[x + y*6]-200].gShifted)))  
+       )
+   ) {
+    // Grey out standard function names
+    int16_t yStroke = SCREEN_HEIGHT - (y-currentFirstItem/6)*23 - 1;
+    for(int16_t xStroke=x*67 + 4 - 2; xStroke<x*67 + 62 + 2; xStroke++) {      //JM mod stroke slash cross out
+      for (yStroke = SCREEN_HEIGHT - (y-currentFirstItem/6)*23 + 2; yStroke > SCREEN_HEIGHT - (y-currentFirstItem/6)*23 -18 - 2; yStroke--){
+          if(xStroke%2 == 0 && yStroke%2 == 0) {
+            flipPixel(xStroke, yStroke -3);                                      //JM mod
+          }
+      }
+    }                
+  }
+}
+
+
+bool_t interceptSoftMenuItem(int16_t *item, int16_t x, int16_t y) {
+  bool_t ret = false;
+    if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HOME) {
+      //printf("x:%d y:%d 6y:%d x + y*6:%d menu_A_HOME[x + y*6]=%d menuId=%d currentFirstItem=%d/18=%d --> ",x,y,6*y,x + y*6,menu_A_HOME[x + y*6],softmenu[softmenuStack[0].softmenu].menuId,currentFirstItem,currentFirstItem/18);  //JMHOME
+      if(  menu_A_HOME[x + y*6] >= 0) {                                          //JMHOME
+        if(menu_A_HOME[x + y*6] < 100) {*item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[x + y*6]    ].primary ) : (kbd_usr[menu_A_HOME[x + y*6]    ].primary );ret = true;} else
+        if(menu_A_HOME[x + y*6] < 200) {*item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[x + y*6]-100].fShifted) : (kbd_usr[menu_A_HOME[x + y*6]-100].fShifted);ret = true;} else
+        if(menu_A_HOME[x + y*6]>= 200) {*item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[x + y*6]-200].gShifted) : (kbd_usr[menu_A_HOME[x + y*6]-200].gShifted);ret = true;}
+      } else {
+        if(!getSystemFlag(FLAG_USER) && menu_A_HOME[x + y*6] == 0 && (calcMode == CM_NORMAL || calcMode == CM_NIM) && (Norm_Key_00_VAR != kbd_std[0].primary)){
+            *item = Norm_Key_00_VAR;
+            ret = true;
+        }
+      }
+    }
+    return ret;
+  }
+
+#endif //TESTSUITE_BUILD
+
+void fnSetBCD (uint16_t bcd) {
+  switch (bcd) {
+    case JC_BCD:  {
+    	bcdDisplay = !bcdDisplay;
+      if(lastIntegerBase == 0) {
+        fnChangeBaseJM(10);
+      }
+    }
+    break;
+    case BCD9c :  
+    case BCD10c:
+    case BCDu  :  bcdDisplaySign = bcd; break;
+    case JC_TOPHEX : topHex = !topHex;
+    default:break;
+  }
+}
 

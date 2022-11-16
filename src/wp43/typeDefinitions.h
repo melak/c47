@@ -166,12 +166,11 @@ typedef struct {
   uint64_t      systemFlags;
   calcKey_t     kbd_usr[37];
 
-  //    int16_t   Norm_Key_00_VAR;                                           //JMCFGvv
+  //                                                                         //JMCFGvv
   uint8_t SigFigMode;
   bool_t eRPN;
   bool_t HOME3;
   bool_t ShiftTimoutMode;
-  bool_t Home3TimerMode;
   bool_t UNITDisplay;
   bool_t SH_BASE_HOME;
   bool_t SH_BASE_AHOME;
@@ -180,12 +179,12 @@ typedef struct {
   bool_t jm_FG_LINE;
   bool_t jm_NO_BASE_SCREEN;
   bool_t jm_G_DOUBLETAP;
-  double graph_xmin;
-  double graph_xmax;
-  double graph_ymin;
-  double graph_ymax;
-  double graph_dx;
-  double graph_dy;
+  float  graph_xmin;
+  float  graph_xmax;
+  float  graph_ymin;
+  float  graph_ymax;
+  float  graph_dx;
+  float  graph_dy;
   bool_t roundedTicks;
   bool_t extentx;
   bool_t extenty;
@@ -203,6 +202,7 @@ typedef struct {
   bool_t PLOT_AXIS;
   int8_t PLOT_ZMX;
   int8_t PLOT_ZMY;
+  bool_t jm_HOME_ASN;
   bool_t jm_HOME_SUM;
   bool_t jm_HOME_MIR;
   bool_t jm_HOME_FIX;     
@@ -211,6 +211,11 @@ typedef struct {
   uint8_t constantFractionsMode;
   bool_t constantFractionsOn;
   uint8_t displayStackSHOIDISP;                                             //JMCFG^^
+  bool_t bcdDisplay;
+  bool_t topHex;
+  uint8_t bcdDisplaySign;
+  uint8_t DRG_Cycling;
+  uint8_t DM_Cycling;
 
 } dtConfigDescriptor_t;
 

@@ -404,69 +404,70 @@ void generateAllConstants(void) {
   generateConstantArray("ln2",           "+6.931471805599453094172321214581765680755001343602552541e-01"); // cnst142
   generateConstantArray("root2on2",      "+7.071067811865475244008443621048490392848359376884740366e-01"); // cnst143
   generateConstantArray("piOn4",         "+7.853981633974483096156608458198757210492923498437764552e-01"); // cnst144
-  generateConstantArray("9on10",         "+9.000000000000000000000000000000000000000000000000000000e-01"); // cnst145
-  generateConstantArray("1",             "+1.000000000000000000000000000000000000000000000000000000e+00"); // cnst146
-  generateConstantArray("3on2",          "+1.500000000000000000000000000000000000000000000000000000e+00"); // cnst147
-  generateConstantArray("piOn2",         "+1.570796326794896619231321691639751442098584699687552910e+00"); // cnst148
-  generateConstantArray("9on5",          "+1.800000000000000000000000000000000000000000000000000000e+00"); // cnst149
-  generateConstantArray("2",             "+2.000000000000000000000000000000000000000000000000000000e+00"); // cnst150
-  generateConstantArray("ln10",          "+2.302585092994045684017991454684364207601101488628772976e+00"); // cnst151
-  generateConstantArray("3piOn4",        "+2.356194490192344928846982537459627163147877049531329366e+00"); // cnst152
-  generateConstantArray("3",             "+3.000000000000000000000000000000000000000000000000000000e+00"); // cnst153
-  generateConstantArray("pi",            "+3.141592653589793238462643383279502884197169399375105821e+00"); // cnst154
+  generateConstantArray("root3on2",      "+8.660254037844386467637231707529361834714026269051903140e-01"); // cnst145
+  generateConstantArray("9on10",         "+9.000000000000000000000000000000000000000000000000000000e-01"); // cnst146
+  generateConstantArray("1",             "+1.000000000000000000000000000000000000000000000000000000e+00"); // cnst147
+  generateConstantArray("3on2",          "+1.500000000000000000000000000000000000000000000000000000e+00"); // cnst148
+  generateConstantArray("piOn2",         "+1.570796326794896619231321691639751442098584699687552910e+00"); // cnst149
+  generateConstantArray("9on5",          "+1.800000000000000000000000000000000000000000000000000000e+00"); // cnst150
+  generateConstantArray("2",             "+2.000000000000000000000000000000000000000000000000000000e+00"); // cnst151
+  generateConstantArray("ln10",          "+2.302585092994045684017991454684364207601101488628772976e+00"); // cnst152
+  generateConstantArray("3piOn4",        "+2.356194490192344928846982537459627163147877049531329366e+00"); // cnst153
+  generateConstantArray("3",             "+3.000000000000000000000000000000000000000000000000000000e+00"); // cnst154
+  generateConstantArray("pi",            "+3.141592653589793238462643383279502884197169399375105821e+00"); // cnst155
 
-  generateConstantArray("4",             "+4.000000000000000000000000000000000000000000000000000000e+00"); // cnst155
-  generateConstantArray("3piOn2",        "+4.712388980384689857693965074919254326295754099062658731e+00"); // cnst156
-  generateConstantArray("5",             "+5.000000000000000000000000000000000000000000000000000000e+00"); // cnst157
-  generateConstantArray("2pi",           "+6.283185307179586476925286766559005768394338798750211642e+00"); // cnst158
-  generateConstantArray("8",             "+8.000000000000000000000000000000000000000000000000000000e+00"); // cnst159
-  generateConstantArray("9",             "+9.000000000000000000000000000000000000000000000000000000e+00"); // cnst160
-  generateConstantArray("10",            "+1.000000000000000000000000000000000000000000000000000000e+01"); // cnst161
-  generateConstantArray("12",            "+1.200000000000000000000000000000000000000000000000000000e+01"); // cnst162
-  generateConstantArray("16",            "+1.600000000000000000000000000000000000000000000000000000e+01"); // cnst163
-  generateConstantArray("20",            "+2.000000000000000000000000000000000000000000000000000000e+01"); // cnst164
-  //generateConstantArray("21",            "+2.100000000000000000000000000000000000000000000000000000e+01"); // cnst165     used for Lanczos N=22
-  //generateConstantArray("gammaR",        "+2.311891000000000000000000000000000000000000000000000000e+01"); // cnst166     used for Lanczos N=22
-  generateConstantArray("25",            "+2.500000000000000000000000000000000000000000000000000000e+01"); // cnst165
-  generateConstantArray("29",            "+2.900000000000000000000000000000000000000000000000000000e+01"); // cnst166     used for Lanczos N=30
-  generateConstantArray("30",            "+3.000000000000000000000000000000000000000000000000000000e+01"); // cnst167
-  generateConstantArray("gammaR",        "+3.143188335932791233062744140625000000000000000000000000e+01"); // cnst168     used for Lanczos N=30
-  generateConstantArray("32",            "+3.200000000000000000000000000000000000000000000000000000e+01"); // cnst169
-  generateConstantArray("36",            "+3.600000000000000000000000000000000000000000000000000000e+01"); // cnst170
-  generateConstantArray("47",            "+4.700000000000000000000000000000000000000000000000000000e+01"); // cnst171
-  generateConstantArray("180onPi",       "+5.729577951308232087679815481410517033240547246656432155e+01"); // cnst172
-  generateConstantArray("60",            "+6.000000000000000000000000000000000000000000000000000000e+01"); // cnst173
-  generateConstantArray("200onPi",       "+6.366197723675813430755350534900574481378385829618257950e+01"); // cnst174
-  generateConstantArray("125",           "+1.250000000000000000000000000000000000000000000000000000e+02"); // cnst175
-  generateConstantArray("150",           "+1.500000000000000000000000000000000000000000000000000000e+02"); // cnst176
-  generateConstantArray("205",           "+2.050000000000000000000000000000000000000000000000000000e+02"); // cnst177
-  generateConstantArray("360",           "+3.600000000000000000000000000000000000000000000000000000e+02"); // cnst178
-  generateConstantArray("400",           "+4.000000000000000000000000000000000000000000000000000000e+02"); // cnst179
-  generateConstantArray("600",           "+6.000000000000000000000000000000000000000000000000000000e+02"); // cnst180
-  generateConstantArray("1000",          "+1.000000000000000000000000000000000000000000000000000000e+03"); // cnst181
-  generateConstantArray("2100",          "+2.100000000000000000000000000000000000000000000000000000e+03"); // cnst182
-  generateConstantArray("2520",          "+2.520000000000000000000000000000000000000000000000000000e+03"); // cnst183
-  generateConstantArray("3600",          "+3.600000000000000000000000000000000000000000000000000000e+03"); // cnst184
-  generateConstantArray("6000",          "+6.000000000000000000000000000000000000000000000000000000e+03"); // cnst185
-  generateConstantArray("9999",          "+9.999000000000000000000000000000000000000000000000000000e+03"); // cnst186
-  generateConstantArray("10000",         "+1.000000000000000000000000000000000000000000000000000000e+04"); // cnst187
-  generateConstantArray("25200",         "+2.520000000000000000000000000000000000000000000000000000e+04"); // cnst188
-  generateConstantArray("42000",         "+4.200000000000000000000000000000000000000000000000000000e+04"); // cnst189
-  generateConstantArray("73766",         "+7.376600000000000000000000000000000000000000000000000000e+04"); // cnst190
-  generateConstantArray("1e6",           "+1.000000000000000000000000000000000000000000000000000000e+06"); // cnst191
-  generateConstantArray("1e8",           "+1.000000000000000000000000000000000000000000000000000000e+08"); // cnst192
-  generateConstantArray("1e9",           "+1.000000000000000000000000000000000000000000000000000000e+09"); // cnst193
-  generateConstantArray("2p32",          "+4.294967296000000000000000000000000000000000000000000000e+09"); // cnst194
-  generateConstantArray("1e32",          "+1.000000000000000000000000000000000000000000000000000000e+32"); // cnst195
-  generateConstantArray("1e_10000",      "+1.000000000000000000000000000000000000000000000000000000e-10000"); // cnst196
-  generateConstantArray("995on1000",     "+9.950000000000000000000000000000000000000000000000000000e-01"); // cnst197
-  generateConstantArray("1e_32",         "+1.000000000000000000000000000000000000000000000000000000e-32"); // cnst198  if the number of constants changes: don't forget to update NUMBER_OF_CONSTANTS_* in defines.h
+  generateConstantArray("4",             "+4.000000000000000000000000000000000000000000000000000000e+00"); // cnst156
+  generateConstantArray("3piOn2",        "+4.712388980384689857693965074919254326295754099062658731e+00"); // cnst157
+  generateConstantArray("5",             "+5.000000000000000000000000000000000000000000000000000000e+00"); // cnst158
+  generateConstantArray("6",             "+6.000000000000000000000000000000000000000000000000000000e+00"); // cnst159
+  generateConstantArray("2pi",           "+6.283185307179586476925286766559005768394338798750211642e+00"); // cnst160
+  generateConstantArray("8",             "+8.000000000000000000000000000000000000000000000000000000e+00"); // cnst161
+  generateConstantArray("9",             "+9.000000000000000000000000000000000000000000000000000000e+00"); // cnst162
+  generateConstantArray("10",            "+1.000000000000000000000000000000000000000000000000000000e+01"); // cnst163
+  generateConstantArray("12",            "+1.200000000000000000000000000000000000000000000000000000e+01"); // cnst164
+  generateConstantArray("16",            "+1.600000000000000000000000000000000000000000000000000000e+01"); // cnst165
+  generateConstantArray("20",            "+2.000000000000000000000000000000000000000000000000000000e+01"); // cnst166
+  //generateConstantArray("21",            "+2.100000000000000000000000000000000000000000000000000000e+01"); // cnst167     used for Lanczos N=22
+  //generateConstantArray("gammaR",        "+2.311891000000000000000000000000000000000000000000000000e+01"); // cnst168     used for Lanczos N=22
+  generateConstantArray("25",            "+2.500000000000000000000000000000000000000000000000000000e+01"); // cnst167
+  generateConstantArray("27",            "+2.700000000000000000000000000000000000000000000000000000e+01"); // cnst168
+  generateConstantArray("29",            "+2.900000000000000000000000000000000000000000000000000000e+01"); // cnst169     used for Lanczos N=30
+  generateConstantArray("30",            "+3.000000000000000000000000000000000000000000000000000000e+01"); // cnst170
+  generateConstantArray("gammaR",        "+3.143188335932791233062744140625000000000000000000000000e+01"); // cnst171     used for Lanczos N=30
+  generateConstantArray("32",            "+3.200000000000000000000000000000000000000000000000000000e+01"); // cnst172
+  generateConstantArray("36",            "+3.600000000000000000000000000000000000000000000000000000e+01"); // cnst173
+  generateConstantArray("47",            "+4.700000000000000000000000000000000000000000000000000000e+01"); // cnst174
+  generateConstantArray("180onPi",       "+5.729577951308232087679815481410517033240547246656432155e+01"); // cnst175
+  generateConstantArray("60",            "+6.000000000000000000000000000000000000000000000000000000e+01"); // cnst176
+  generateConstantArray("200onPi",       "+6.366197723675813430755350534900574481378385829618257950e+01"); // cnst177
+  generateConstantArray("125",           "+1.250000000000000000000000000000000000000000000000000000e+02"); // cnst178
+  generateConstantArray("150",           "+1.500000000000000000000000000000000000000000000000000000e+02"); // cnst179
+  generateConstantArray("205",           "+2.050000000000000000000000000000000000000000000000000000e+02"); // cnst180
+  generateConstantArray("360",           "+3.600000000000000000000000000000000000000000000000000000e+02"); // cnst181
+  generateConstantArray("400",           "+4.000000000000000000000000000000000000000000000000000000e+02"); // cnst182
+  generateConstantArray("600",           "+6.000000000000000000000000000000000000000000000000000000e+02"); // cnst183
+  generateConstantArray("1000",          "+1.000000000000000000000000000000000000000000000000000000e+03"); // cnst184
+  generateConstantArray("2100",          "+2.100000000000000000000000000000000000000000000000000000e+03"); // cnst185
+  generateConstantArray("2520",          "+2.520000000000000000000000000000000000000000000000000000e+03"); // cnst186
+  generateConstantArray("3600",          "+3.600000000000000000000000000000000000000000000000000000e+03"); // cnst187
+  generateConstantArray("6000",          "+6.000000000000000000000000000000000000000000000000000000e+03"); // cnst188
+  generateConstantArray("9999",          "+9.999000000000000000000000000000000000000000000000000000e+03"); // cnst189
+  generateConstantArray("10000",         "+1.000000000000000000000000000000000000000000000000000000e+04"); // cnst190
+  generateConstantArray("25200",         "+2.520000000000000000000000000000000000000000000000000000e+04"); // cnst191
+  generateConstantArray("42000",         "+4.200000000000000000000000000000000000000000000000000000e+04"); // cnst192
+  generateConstantArray("73766",         "+7.376600000000000000000000000000000000000000000000000000e+04"); // cnst193
+  generateConstantArray("1e6",           "+1.000000000000000000000000000000000000000000000000000000e+06"); // cnst194
+  generateConstantArray("1e8",           "+1.000000000000000000000000000000000000000000000000000000e+08"); // cnst195
+  generateConstantArray("1e9",           "+1.000000000000000000000000000000000000000000000000000000e+09"); // cnst196
+  generateConstantArray("2p32",          "+4.294967296000000000000000000000000000000000000000000000e+09"); // cnst197
+  generateConstantArray("1e32",          "+1.000000000000000000000000000000000000000000000000000000e+32"); // cnst198
+  generateConstantArray("1e_10000",      "+1.000000000000000000000000000000000000000000000000000000e-10000"); // cnst199
+  generateConstantArray("995on1000",     "+9.950000000000000000000000000000000000000000000000000000e-01"); // cnst200
+  generateConstantArray("1e_32",         "+1.000000000000000000000000000000000000000000000000000000e-32"); // cnst201  if the number of constants changes: don't forget to update NUMBER_OF_CONSTANTS_* in defines.h
 
   //JM vv
   generateConstantArray("rt3",           "+1.732050807568877293527446341505872366942805253810380628e+00");                                         //JM ELEC Constants
-  generateConstantArray("rt3on2",        "+8.660254037844386467637231707529361834714026269051903140e-01");                                         //JM ELEC Constants
   //JM ^^
-
 
   // Lanczos's coefficients calculated for N=22 and G=22.61891 using Toth's program: https://www.vttoth.com/CMS/projects/41
   // source: https://www.vttoth.com/FILES/lanczos.tgz
@@ -831,29 +832,16 @@ int main(int argc, char* argv[]) {
     exit(1);
   }
 
-  fprintf(constantsH, "/* This file is part of 43S.\n");
-  fprintf(constantsH, " *\n");
-  fprintf(constantsH, " * 43S is free software: you can redistribute it and/or modify\n");
-  fprintf(constantsH, " * it under the terms of the GNU General Public License as published by\n");
-  fprintf(constantsH, " * the Free Software Foundation, either version 3 of the License, or\n");
-  fprintf(constantsH, " * (at your option) any later version.\n");
-  fprintf(constantsH, " *\n");
-  fprintf(constantsH, " * 43S is distributed in the hope that it will be useful,\n");
-  fprintf(constantsH, " * but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
-  fprintf(constantsH, " * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
-  fprintf(constantsH, " * GNU General Public License for more details.\n");
-  fprintf(constantsH, " *\n");
-  fprintf(constantsH, " * You should have received a copy of the GNU General Public License\n");
-  fprintf(constantsH, " * along with 43S.  If not, see <http://www.gnu.org/licenses/>.\n");
-  fprintf(constantsH, " */\n\n");
+  fprintf(constantsH, "// SPDX-License-Identifier: GPL-3.0-only\n");
+  fprintf(constantsH, "// SPDX-FileCopyrightText: Copyright The WP43 Authors\n\n");
 
-  fprintf(constantsH, "/********************************************//**\n");
-  fprintf(constantsH, "* \\file constantPointers.h constants\n");
-  fprintf(constantsH, "***********************************************/\n\n");
+  fprintf(constantsH, "/*************************************************************************************************\n");
+  fprintf(constantsH, " * Do not edit this file manually! It's automagically generated by the program generateConstants *\n");
+  fprintf(constantsH, " *************************************************************************************************/\n\n");
 
-  fprintf(constantsH, "/************************************************************************************************\n");
-  fprintf(constantsH, "* Do not edit this file manually! It's automagically generated by the program generateConstants *\n");
-  fprintf(constantsH, "*************************************************************************************************/\n\n");
+  fprintf(constantsH, "/**\n");
+  fprintf(constantsH, " * \\file constantPointers.h\n");
+  fprintf(constantsH, " */\n");
 
   fprintf(constantsH, "#if !defined(CONSTANTPOINTERS_H)\n");
   fprintf(constantsH, "  #define CONSTANTPOINTERS_H\n\n");
@@ -877,29 +865,12 @@ int main(int argc, char* argv[]) {
     exit(1);
   }
 
-  fprintf(constantsC, "/* This file is part of 43S.\n");
-  fprintf(constantsC, " *\n");
-  fprintf(constantsC, " * 43S is free software: you can redistribute it and/or modify\n");
-  fprintf(constantsC, " * it under the terms of the GNU General Public License as published by\n");
-  fprintf(constantsC, " * the Free Software Foundation, either version 3 of the License, or\n");
-  fprintf(constantsC, " * (at your option) any later version.\n");
-  fprintf(constantsC, " *\n");
-  fprintf(constantsC, " * 43S is distributed in the hope that it will be useful,\n");
-  fprintf(constantsC, " * but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
-  fprintf(constantsC, " * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
-  fprintf(constantsC, " * GNU General Public License for more details.\n");
-  fprintf(constantsC, " *\n");
-  fprintf(constantsC, " * You should have received a copy of the GNU General Public License\n");
-  fprintf(constantsC, " * along with 43S.  If not, see <http://www.gnu.org/licenses/>.\n");
-  fprintf(constantsC, " */\n\n");
+  fprintf(constantsC, "// SPDX-License-Identifier: GPL-3.0-only\n");
+  fprintf(constantsC, "// SPDX-FileCopyrightText: Copyright The WP43 Authors\n\n");
 
-  fprintf(constantsC, "/********************************************//**\n");
-  fprintf(constantsC, "* \\file constantPointers.c constants\n");
-  fprintf(constantsC, "***********************************************/\n\n");
-
-  fprintf(constantsC, "/************************************************************************************************\n");
-  fprintf(constantsC, "* Do not edit this file manually! It's automagically generated by the program generateConstants *\n");
-  fprintf(constantsC, "*************************************************************************************************/\n\n");
+  fprintf(constantsC, "/*************************************************************************************************\n");
+  fprintf(constantsC, " * Do not edit this file manually! It's automagically generated by the program generateConstants *\n");
+  fprintf(constantsC, " *************************************************************************************************/\n\n");
 
   fprintf(constantsC, "#include \"constantPointers.h\"\n\n");
   fprintf(constantsC, "#include \"wp43.h\"\n\n");

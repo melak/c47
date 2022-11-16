@@ -61,27 +61,20 @@ int16_t determineFunctionKeyItem_C43(const char *data, bool_t shiftF, bool_t shi
       char tmp[200]; sprintf(tmp,"^^^^determineFunctionKeyItem_C43(%d): itemShift=%d menuId=%d menuItem=%d", fn, itemShift, menuId, -softmenu[menuId].menuItem); jm_show_comment(tmp);
     #endif //PC_BUILD
 
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0100 determineFunctionKeyItem_C43 data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
+#endif //VERBOSEKEYS
+
     if(!(menuId==0 && jm_NO_BASE_SCREEN) ) {
        item = determineFunctionKeyItem(data, itemShift);
+
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0100 determineFunctionKeyItem_C43 data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
+#endif //VERBOSEKEYS
+
     }
     else item = 0;
-  /*
-    else {              //if there is no SoftMenu showing
-      if(fn>=1 && fn<=6) {
-        if(itemShift == 0) {
-        //FN KEYS DIRECTLY ACCESSIBLE IF NO MENUS ARE UP;                       // FN Key will be the same as the yellow label underneath it, even if USER keys were selected.
-          temporaryInformation = TI_NO_INFO; item = ( !getSystemFlag(FLAG_USER) ? (kbd_std[fn-1].fShifted) : (kbd_usr[fn-1].fShifted) );  //Function key follows if the yellow key top 4 buttons are changed from default.      
-        }
-        else {
-        //FN KEYS DIRECTLY ACCESSIBLE IF NO MENUS ARE UP;                       // FN Key will be the same as the blue label underneath it, even if USER keys were selected.
-          temporaryInformation = TI_NO_INFO; item = ( !getSystemFlag(FLAG_USER) ? (kbd_std[fn-1].gShifted) : (kbd_usr[fn-1].gShifted) );  //Function key follows if the yellow key top 4 buttons are changed from default.              
-        }
-      }
-      else {
-        item = 0;
-      }
-    }
-*/
+
   #endif
   return item;
 }
@@ -179,7 +172,8 @@ void resetShiftState(void) {
     refreshScreen();
   }                                                                             //^^
   #ifdef PC_BUILD
-    if( ((calcMode == CM_AIM) || (calcMode == CM_EIM)) && !tam.mode) calcModeAimGui(); //JM
+        if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
+        if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
   #endif
 }
 
@@ -265,8 +259,8 @@ void clear_fg_jm(void) {
 
 
 void fg_processing_jm(void) {
-  if(ShiftTimoutMode || Home3TimerMode) {
-    if(Home3TimerMode) {
+  if(ShiftTimoutMode || HOME3) {
+    if(HOME3) {
       if(fnTimerGetStatus(TO_3S_CTFF) == TMR_RUNNING) {
         JM_SHIFT_HOME_TIMER1++;
         if(JM_SHIFT_HOME_TIMER1 >= 3) {
@@ -323,7 +317,7 @@ void fg_processing_jm(void) {
 
 
 
-void  Check_Assigned(int16_t * result, int16_t tempkey) {
+void  Check_SigmaPlus_Assigned(int16_t * result, int16_t tempkey) {
   //JM NORMKEY _ CHANGE NORMAL MODE KEY SIGMA+ TO SOMETHING ELSE vv
   if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (!getSystemFlag(FLAG_USER) && !shiftF && !shiftG && ( tempkey == 0) && ((kbd_std + 0)->primary == *result) )) {
     *result = Norm_Key_00_VAR;
@@ -441,7 +435,8 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
     switch(*result) {
       case ITM_XEQ      : longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ; break;    //XEQ longpress to XEQMENU 
       case ITM_BACKSPACE: longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = ITM_CLSTK; break;    //backspace longpress to CLSTK
-      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
+//    case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
+      case ITM_EXIT1    :  longpressDelayedkey2=-MNU_MyMenu;          longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
     //case ITM_CHS      :                                             longpressDelayedkey1 = ITM_XexY;  break;    //sample on CHS, operating X<>Y. XEQ must still be created.
       default:;
     }
@@ -450,14 +445,16 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
     switch(*result) {
       case ITM_XEQ      : longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ; break;    //XEQ longpress to XEQMENU 
       case ITM_BACKSPACE:                                             longpressDelayedkey1 = ITM_CLN;   break;    //BACKSPACE longpress clears input buffer
-      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
+//    case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
+      case ITM_EXIT1    :  longpressDelayedkey2=-MNU_MyMenu;          longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
       default:;
     }
   }
   else if(calcMode == CM_AIM) {
     switch(*result) {
       case ITM_BACKSPACE:                                             longpressDelayedkey1 = ITM_CLA;   break;    //BACKSPACE longpress clears input buffer
-      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
+//    case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
+      case ITM_EXIT1    :  longpressDelayedkey2=-MNU_MyAlpha;         longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
       case ITM_ENTER    :                                             longpressDelayedkey1 = ITM_XEDIT; break;
       default:;
     }
@@ -465,14 +462,14 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   else if(calcMode == CM_EIM) {
     switch(*result) {
       case ITM_BACKSPACE:                                             longpressDelayedkey1 = ITM_CLA;   break;    //BACKSPACE longpress clears input buffer
-      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
+      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
       case ITM_ENTER    :                                             longpressDelayedkey1 = ITM_XEDIT; break;
       default:;
     }
   }
   else {
     switch(*result) {
-      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLAIM; break;    //EXIT longpress DOES CLAIM
+      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
       default:;
     }
   }
@@ -621,13 +618,12 @@ void btnFnPressed_StateMachine(void *unused, void *data) {
     FN_state =  ST_1_PRESS1;
   }
 
-  FN_key_pressed = *((char *)data) - '0' + 37;                            //to render 38-43, as per original keypress
+  //FN_key_pressed = *((char *)data) - '0' + 37;  //to render 38-43, as per original keypress
 
   if(FN_state == ST_3_PRESS2 && fnTimerGetStatus(TO_FN_EXEC) != TMR_RUNNING) {  //JM BUGFIX (INVERTED) The first  usage did not work due to the timer which was in stopped mode, not in expired mode.
     //----------------Copied here
-    char charKey[3];
     underline_softkey(FN_key_pressed-38, 3, false);   //Purposely in row 3 which does not exist, just to activate the clear previous line
-    sprintf(charKey, "%c", FN_key_pressed + 11);
+
     hideFunctionName();
 
     //IF 2-->3 is longer than double click time, then move back to state 1
@@ -663,7 +659,7 @@ void btnFnPressed_StateMachine(void *unused, void *data) {
   //**************JM DOUBLE CLICK DETECTION ******************************* // JM FN-DOUBLE
   double_click_detected = false;                                            //JM FN-DOUBLE - Dip detection flag
   int mI = softmenu[softmenuStack[0].softmenuId].menuItem;
-  if((jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ mI != -MNU_ALPHA && mI != -MNU_T_EDIT && mI != -MNU_EQ_EDIT)) {
+  if((jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ mI != -MNU_ALPHA && mI != -MNU_EQ_EDIT)) {
     if(exexute_double_g) {
       if(FN_key_pressed !=0 && FN_key_pressed == FN_key_pressed_last) {     //Identified valid double press dip, the same key in rapid succession
         shiftF = false;                                                     //JM
@@ -725,22 +721,31 @@ void btnFnReleased_StateMachine(void *unused, void *data) {
     FN_state =  ST_2_REL1;
   }
   int mI = softmenu[softmenuStack[0].softmenuId].menuItem;
-  if((jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ mI != -MNU_ALPHA && mI != -MNU_T_EDIT ) && FN_state == ST_2_REL1 && FN_handle_timed_out_to_EXEC) {
+  if((jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ mI != -MNU_ALPHA) && FN_state == ST_2_REL1 && FN_handle_timed_out_to_EXEC) {
     uint8_t                      offset =  0;
     if(shiftF && !shiftG)      { offset =  6; }
     else if(!shiftF && shiftG) { offset = 12; }
     fnTimerStart(TO_FN_EXEC, FN_key_pressed + offset, JM_FN_DOUBLE_TIMER);
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0050 btnFnReleased_StateMachine ------------------ Start TO_FN_EXEC\n          data=|%s| data[0]=%d (Global) FN_key_pressed=%d +offset=%d\n",(char*)data,((char*)data)[0], FN_key_pressed, offset);
+#endif //VERBOSEKEYS
+
+    //FN_key_pressed = *((char *)data) - '0' + 37;  //to render 38-43, as per original keypress
+    //This parameter of the timer is non-standard: 38-43 for unshifted, +6 for f, +12 for g.
   }
 
 
      // **************JM LONGPRESS EXECUTE****************************************************
   char charKey[3];
+  charKey[0]=0;
   bool_t EXEC_pri;
   EXEC_pri = (FN_timeouts_in_progress && (FN_key_pressed != 0));
   // EXEC_FROM_LONGPRESS_RELEASE     EXEC_FROM_LONGPRESS_TIMEOUT  EXEC FN primary
   if( (FN_timed_out_to_RELEASE_EXEC || FN_timed_out_to_NOP || EXEC_pri ))  {                  //JM DOUBLE: If slower ON-OFF than half the limit (250 ms)
     underline_softkey(FN_key_pressed-38, 3, false);   //Purposely in row 3 which does not exist, just to activate the clear previous line
-    sprintf(charKey, "%c", FN_key_pressed + 11);
+    charKey[1]=0;
+    charKey[0]=FN_key_pressed + (-37+48);
+
     hideFunctionName();
 
     if(!FN_timed_out_to_NOP && fnTimerGetStatus(TO_FN_EXEC) != TMR_RUNNING) {
@@ -765,7 +770,13 @@ void btnFnReleased_StateMachine(void *unused, void *data) {
 
 void execFnTimeout(uint16_t key) {                          //dr - delayed call of the primary function key
   char charKey[3];
-  sprintf(charKey, "%c", key + 11);
+  charKey[1]=0;
+  charKey[0]=key + (-37+48);
+
+#ifdef VERBOSEKEYS
+printf(">>>>Z RRR3 execFnTimeout              ------------------       TO_FN_EXEC\n          charKey=|%s| charkey[0]=%d key+11=%d \n",charKey,charKey[0],key+11);
+#endif //VERBOSEKEYS
+
   btnFnClicked(NULL, (char *)charKey);
 }
 

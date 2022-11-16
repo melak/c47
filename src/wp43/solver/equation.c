@@ -244,23 +244,23 @@ void deleteEquation(uint16_t equationId) {
 
 
 #if !defined(TESTSUITE_BUILD)
-static void _showExponent(char **bufPtr, const char **strPtr, int16_t *strWidth) {
-  switch(*(++(*strPtr))) {
-      case '1': {
-      **bufPtr         = STD_SUP_1[0];
-      *((*bufPtr) + 1) = STD_SUP_1[1];
-      break;
-      }
-      case '2': {
-      **bufPtr         = STD_SUP_2[0];
-      *((*bufPtr) + 1) = STD_SUP_2[1];
-      break;
-      }
-      case '3': {
-      **bufPtr         = STD_SUP_3[0];
-      *((*bufPtr) + 1) = STD_SUP_3[1];
-      break;
-      }
+  static void _showExponent(char **bufPtr, const char **strPtr, int16_t *strWidth) {
+    switch(*(++(*strPtr))) {
+      //case '1': {
+      //  **bufPtr         = STD_SUP_1[0];
+      //  *((*bufPtr) + 1) = STD_SUP_1[1];
+      //  break;
+      //}
+      //case '2': {
+      //  **bufPtr         = STD_SUP_2[0];
+      //  *((*bufPtr) + 1) = STD_SUP_2[1];
+      //  break;
+      //}
+      //case '3': {
+      //  **bufPtr         = STD_SUP_3[0];
+      //  *((*bufPtr) + 1) = STD_SUP_3[1];
+      //  break;
+      //}
       case '+': {
       **bufPtr         = STD_SUP_PLUS[0];
       *((*bufPtr) + 1) = STD_SUP_PLUS[1];
@@ -1258,7 +1258,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         return;
         }
 
-        case '(': {
+        case '(': 
         if(bufPtr != buffer) {
           *(bufPtr++) = 0;
           ++strPtr;
@@ -1283,7 +1283,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
           }
         }
         /* fallthrough */
-        }
+        
 
       case '=':
       case '+':
@@ -1293,7 +1293,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
       case '^':
       case '!':
       case ':':
-        case '|': {
+        case '|': 
         if(equalAppeared && (*strPtr == '=')) {
           displayCalcErrorMessage(ERROR_SYNTAX_ERROR_IN_EQUATION, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1413,7 +1413,7 @@ void parseEquation(uint16_t equationId, uint16_t parseMode, char *buffer, char *
         inExponent = false;
         exponentSignCanOccur = false;
         break;
-        }
+        
 
         default: {
         if(afterSpace) {

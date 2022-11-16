@@ -82,16 +82,20 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
 /* 1958 */  { ITM_CLK12,            TF_H12,                 RB_TF },  //fnSetSetJM          /*   75 */ //fnTimeFormat
 /* 1959 */  { ITM_CLK24,            TF_H24,                 RB_TF },  //fnSetSetJM          /*   76 */ //fnTimeFormat
 
-/* 1899 */  { ITM_N_KEY_ALPHA,      ITM_AIM,                RB_SA },  //fnSigmaAssign
-/* 1891 */  { ITM_N_KEY_CC,         ITM_CC,                 RB_SA },  //fnSigmaAssign
-/*      */  { ITM_N_KEY_GSH,        ITM_SHIFTg,             RB_SA },  //fnSigmaAssign
-/* 1893 */  { ITM_N_KEY_MM,         -MNU_MyMenu,            RB_SA },  //fnSigmaAssign
-/*      */  { ITM_N_KEY_DRG,        ITM_DRG,                RB_SA },  //fnSigmaAssign
-/* 1897 */  { ITM_N_KEY_PRGM,       ITM_PR,                 RB_SA },  //fnSigmaAssign
-/* 1889 */  { ITM_N_KEY_USER,       ITM_USERMODE,           RB_SA },  //fnSigmaAssign
-/*      */  { ITM_N_KEY_HOME,       -MNU_HOME,              RB_SA },  //fnSigmaAssign
-/* 1895 */  { ITM_N_KEY_SIGMA,      ITM_SIGMAPLUS,          RB_SA },  //fnSigmaAssign
-/*      */  { ITM_N_KEY_SNAP,       ITM_SNAP,               RB_SA },  //fnSigmaAssign
+/* 1899 */  { ITM_N_KEY_ALPHA,      16384+ITM_AIM,          RB_SA },  //fnSigmaAssign
+/* 1891 */  { ITM_N_KEY_CC,         16384+ITM_CC,           RB_SA },  //fnSigmaAssign
+/*      */  { ITM_N_KEY_GSH,        16384+ITM_SHIFTg,       RB_SA },  //fnSigmaAssign
+/* 1893 */  { ITM_N_KEY_MM,         16384+-MNU_MyMenu,      RB_SA },  //fnSigmaAssign
+/*      */  { ITM_N_KEY_DRG,        16384+ITM_DRG,          RB_SA },  //fnSigmaAssign
+/* 1897 */  { ITM_N_KEY_PRGM,       16384+ITM_PR,           RB_SA },  //fnSigmaAssign
+/* 1889 */  { ITM_N_KEY_USER,       16384+ITM_USERMODE,     RB_SA },  //fnSigmaAssign
+/*      */  { ITM_N_KEY_HOME,       16384+-MNU_HOME,        RB_SA },  //fnSigmaAssign
+/* 1895 */  { ITM_N_KEY_SIGMA,      16384+ITM_SIGMAPLUS,    RB_SA },  //fnSigmaAssign
+/*      */  { ITM_N_KEY_SNAP,       16384+ITM_SNAP,         RB_SA },  //fnSigmaAssign
+
+/*      */  { ITM_BCDU,             BCDu,                   RB_BCD },  //
+/*      */  { ITM_BCD9,             BCD9c,                  RB_BCD },  //
+/*      */  { ITM_BCD10,            BCD10c,                 RB_BCD },  //
 
 /*      */  { ITM_DENANY,           DM_ANY,                 CB_JC },  //  --fnDenMode
 /*      */  { ITM_DENFIX,           DM_FIX,                 CB_JC },  //  --fnDenMode
@@ -107,7 +111,6 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
 /* 1562 */  { ITM_T_GAUSSF,         JC_GAUSS_FITTING        ,CB_JC },  //fnCurveFitting
 /*  438 */  { ITM_T_ORTHOF,         JC_ORTHOGONAL_FITTING   ,CB_JC },  //fnCurveFitting
 
-/* 1744 */  { ITM_BASE_AHOME,       JC_BASE_AHOME,          CB_JC },  //fnSetSetJM
 /* 1742 */  { ITM_BASE_HOME,        JC_BASE_HOME,           CB_JC },  //fnSetSetJM
 /* 1695 */  { ITM_CB_CPXRES,        JC_BCR,                 CB_JC },  //fnSetSetJM
 /* 1748 */  { ITM_CB_SPCRES,        JC_BSR,                 CB_JC },  //fnSetSetJM
@@ -118,11 +121,11 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
 /* 1906 */  { ITM_FG_LINE,          JC_FG_LINE,             CB_JC },  //fnSetSetJM
 /* 1911 */  { ITM_G_DOUBLETAP,      JC_G_DOUBLETAP,         CB_JC },  //fnSetSetJM
 /* 1679 */  { ITM_HOMEx3,           JC_HOME_TRIPLE,         CB_JC },  //fnSetSetJM
-/* 1770 */  { ITM_HOMEx3T,          JC_SH_3T,               CB_JC },  //fnSetSetJM
 /* 1680 */  { ITM_SHTIM,            JC_SHFT_4s,             CB_JC },  //fnSetSetJM
 /* 1943 */  { ITM_VECT,             JC_VECT,                CB_JC },  //fnSetSetJM
 /* 1943 */  { ITM_NVECT,            JC_NVECT,               CB_JC },  //fnSetSetJM
 /*      */  { ITM_SCALE,            JC_SCALE,               CB_JC },  //fnSetSetJM
+/* 1745 */  { ITM_H_ASNKEY,         JC_H_ASN,               CB_JC },  //fnSetSetJM
 /* 1744 */  { ITM_H_SUMRY,          JC_H_SUM,               CB_JC },  //fnSetSetJM
 /* 1745 */  { ITM_H_REPLCA,         JC_H_MIR,               CB_JC },  //fnSetSetJM
 /* 1746 */  { ITM_H_FIXED,          JC_H_FIX,               CB_JC },  //fnSetSetJM
@@ -142,6 +145,9 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
 /*      */  { CHR_num,              JC_NL,                  CB_JC },  //
 /*      */  { CHR_case,             JC_UC,                  CB_JC },  //
 /*      */  { ITM_USERMODE,         JC_UU,                  CB_JC },  //
+
+/*      */  { ITM_BCD,              JC_BCD,                 CB_JC },  //
+/*      */  { ITM_TOPHEX,           JC_TOPHEX,              CB_JC },  //
 
 /* 1685 */  { ITM_2BIN,             2,                      RB_HX  }, //fnChangeBaseJM
 /* 1686 */  { ITM_2OCT,             8,                      RB_HX  }, //fnChangeBaseJM
@@ -241,8 +247,13 @@ int8_t fnCbIsSet(int16_t item) {
       }
       break;
 
+      case RB_BCD: {
+        rb_param = bcdDisplaySign;
+      }
+      break;
+
       case RB_SA: {
-        rb_param = Norm_Key_00_VAR;
+        rb_param = 16384+Norm_Key_00_VAR;
         //printf("^^^^*** activated %d\n",rb_param);
       }
       break;
@@ -272,11 +283,6 @@ int8_t fnCbIsSet(int16_t item) {
         case JC_ORTHOGONAL_FITTING  : {  cb_param = (lrSelection & CF_ORTHOGONAL_FITTING ) == CF_ORTHOGONAL_FITTING  ; } break;
 
 
-
-        case JC_BASE_AHOME: {
-          cb_param = SH_BASE_AHOME;
-        }
-        break;
 
         case JC_BASE_HOME: {
           cb_param = SH_BASE_HOME;
@@ -338,11 +344,6 @@ int8_t fnCbIsSet(int16_t item) {
         }
         break;
 
-        case JC_SH_3T: {
-          cb_param = Home3TimerMode;
-        }
-        break;
-
         case JC_SHFT_4s: {
           cb_param = ShiftTimoutMode;
         }
@@ -370,6 +371,11 @@ int8_t fnCbIsSet(int16_t item) {
 
         case JC_H_MIR: {
           cb_param = jm_HOME_MIR;
+        }
+        break;
+
+        case JC_H_ASN: {
+          cb_param = jm_HOME_ASN;
         }
         break;
 
@@ -445,6 +451,16 @@ int8_t fnCbIsSet(int16_t item) {
 
         case JC_UU: {
           cb_param = getSystemFlag(FLAG_USER);
+        }
+        break;
+
+        case JC_BCD: {
+          cb_param = bcdDisplay;
+        }
+        break;
+
+        case JC_TOPHEX: {
+          cb_param = topHex;
         }
         break;
 
@@ -571,6 +587,22 @@ int16_t fnItemShowValue(int16_t item) {
     result = significantDigits == 0 ? 34 : significantDigits;
     break;
 
+  case ITM_DSPCYCLE:     //
+    result = 32700 + displayFormat;
+    switch (displayFormat) {
+      case DF_ALL: break;
+      case DF_FIX: result += SigFigMode == 0 ? 0 : 3; break;
+      case DF_SCI: break;
+      case DF_ENG: result += UNITDisplay ? 2 : 0; break;
+      default: break;
+    }    
+    break;
+
+  case ITM_DSP:     //
+    result = displayFormatDigits;
+    break;
+
+
   case ITM_HIDE:     //
     result = exponentHideLimit;
     break;
@@ -663,7 +695,7 @@ void use_base_glyphs(char* tmp1, int16_t xx) {              // Needs non-local v
 
 
 
-char *figlabel(const char *label, int16_t showValue) {      //JM
+char *figlabel(const char *label, const char* showText, int16_t showValue) {      //JM
   char tmp1[12];
   tmp[0] = 0;
 
@@ -681,5 +713,16 @@ char *figlabel(const char *label, int16_t showValue) {      //JM
     strcat(tmp, tmp1);
   }
 
+  if(showText[0] != 0 && strlen(tmp)+strlen(showText) + 1 <= 12) {
+    //strcat(tmp, showText);
+    uint16_t ii = 0;
+    while (showText[ii] != 0) {
+       if(showText[ii]>='A' && showText[ii]<='Z') {
+         strcat(tmp, STD_SUB_A);
+         tmp[strlen(tmp)-1] += showText[ii]-'A';
+       }
+    ii++;
+    }
+  }
   return tmp;
 }                                                           //JM ^^

@@ -747,7 +747,7 @@ TO_QSPI const function_t indexOfFunctions[] = {
 //           {ITM_Ek,   "E(M)"},
 //           {ITM_PInk,   "PI(N,M)"},
            {ITM_EXIT1,   "EXIT"},
-//           {ITM_ANGLE,   "ANGLE"},
+//           {ITM_ARG,   "ARG"},
            {ITM_AIM,   "ALPHA"},
            {ITM_dotD,   "DOTD"},
 //           {ITM_SHOW,   "SHOW"},
@@ -840,7 +840,7 @@ TO_QSPI const function_t indexOfFunctions[] = {
 //           {ITM_X_g6,   "XEQM18"},
 //           {ITM_XSAVE,   "X.SAVE"},
 //           {ITM_XLOAD,   "X.LOAD"},
-//           {ITM_CLAIM,   "EXITCLR"},
+//           {ITM_CLRMOD,  "CLRMOD"},
            {ITM_INTG,   "P_INT"},
            {ITM_DIFF,   "P_DIFF"},
            {ITM_RMS,   "P_RMS"},
@@ -1692,7 +1692,7 @@ void fnXEQMEDIT (uint16_t unusedButMandatoryParameter) {
       #ifndef TESTSUITE_BUILD
         resetShiftState();
         calcModeAim(NOPARAM); // Alpha Input Mode
-        showSoftmenu(-MNU_T_EDIT);
+        showSoftmenu(-MNU_ALPHA);
       #endif
     } 
 //    else {

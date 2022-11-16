@@ -24,7 +24,7 @@ Modes available in the mode menu:
 
 1. HOME.3    This switches on/off whether the HOME menu pops on/off within SH.3T timeout. This is a testing option, makes no sense in real life.
 2. SH.4s     ShiftTimoutMode:  This switches off the 4 second shift time-out
-3. SH.3T.    Home3TimerMode:   This switches off the 600 ms triple shift timer
+3. HOME.3    This switches off the 600 ms triple shift timer
 4. ERPN      This disables the stack duplication and lift after entry
 
 5. MYMENU
@@ -61,7 +61,10 @@ Modes available in the mode menu:
 // Display override 1 bit
 #define DO_SCI                  115
 #define DO_ENG                  116
-
+//BCD options
+#define BCDu                    0
+#define BCD9c                   1
+#define BCD10c                  2
 
 void jm_show_calc_state(char comment[]);
 void jm_show_comment   (char comment[]);
@@ -79,12 +82,10 @@ void reset_jm_defaults (int16_t toload);
 // Define variables that are saved with the config
 extern uint8_t SigFigMode;                                           //JM SIGFIG 
 extern bool_t eRPN;                                                  //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
-extern bool_t HOME3;                                                 //JM HOME Create a flag to enable or disable triple shift HOME3.
+extern bool_t HOME3;                                                 //JM HOME Create a flag to enable or disable triple shift HOME3; enable or disable TRIPLE SHIFT TIMER FOR HOME.
 extern bool_t ShiftTimoutMode;                                       //JM HOME Create a flag to enable or disable SHIFT TIMER CANCEL.
-extern bool_t Home3TimerMode;                                        //JM HOME Create a flag to enable or disable TRIPLE SHIFT TIMER FOR HOME.
 extern bool_t UNITDisplay;                                           //JM UNIT Create a flag to enable or disable unit display 
 extern bool_t SH_BASE_HOME;                                          //JM BASEHOME Create a flag to enable or disable triple shift
-extern bool_t SH_BASE_AHOME;                                         //JM BASEHOME Create a flag to enable or disable triple shift
 extern int16_t Norm_Key_00_VAR;                                      //JM USER NORMAL
 extern uint8_t Input_Default;                                        //JM Input Default
 extern bool_t jm_FG_LINE;                                            //JM Screen / keyboard operation setup
@@ -94,6 +95,7 @@ extern float graph_xmin;                                             //JM Graph
 extern float graph_xmax;                                             //JM Graph
 extern float graph_ymin;                                             //JM Graph
 extern float graph_ymax;                                             //JM Graph
+extern bool_t jm_HOME_ASN;                                          //JMHOME
 extern bool_t jm_HOME_SUM;                                          //JMHOME
 extern bool_t jm_HOME_MIR;                                          //JMHOME
 extern bool_t jm_HOME_FIX;                                          //JMHOME
@@ -122,9 +124,10 @@ void fnUserJM(uint16_t jmUser);
 //fnUserJM
 #define USER_DEFAULTS    23
 #define USER_COMPLEX     24
-#define USER_SHIFTS      25
-#define USER_RESET       26
-#define JM_ASSIGN        27
+#define USER_C43ALTA     25
+#define USER_C43ALTB     26
+#define USER_RESET       27
+#define JM_ASSIGN        28
 #define USER_COPY        29
 #define USER_V43         40
 #define USER_SHIFTS2     41
@@ -149,6 +152,8 @@ void fnRCL          (int16_t inp);
 #define TI_SHOW_REGISTER_SMALL 100
 #define TI_ms                  101    //JMms
 #define TI_FROM_DMS            102
+#define TI_FROM_MS_TIME        103
+#define TI_FROM_MS_DEG         104
 
 #define ID_43S                  0    //JM Input Default
 #define ID_DP                   2    //JM Input Default
@@ -161,16 +166,11 @@ void fnRCL          (int16_t inp);
 #define JC_HOME_TRIPLE          2    // HOME.3
 #define JC_SHFT_4s              3    // SH_4s
 #define JC_BASE_HOME            4    // HOME
-//#define JC_BASE_MYMENU          5    // MYMNU
-#define JC_BASE_AHOME           6    // aHOME
-//#define JC_BASE_MYA             7    // MYa
-#define JC_SH_3T                8    // SH.3T
 #define JC_BCR                  9    // CB ComplexResult
 #define JC_BLZ                 10    // CB LeadingZeros
 #define JC_PROPER              11    // CB FractionType
 #define JC_IMPROPER            12    // CB FractionType
 #define JC_BSR                 13    // CB SpecialResult
-#define JM_INP_DFLT            15    // Input_Default
 #define DM_ANY                 16    // DENANY
 #define DM_FIX                 17    // DENFIX
 #define JC_FRC                 18    // CB FRACTION MODE
@@ -179,11 +179,12 @@ void fnRCL          (int16_t inp);
 #define JC_NO_BASE_SCREEN      21    // screen setup
 #define JC_G_DOUBLETAP         22    // screen setup
 
-#define JC_H_SUM               24    //JMHOME
-#define JC_H_MIR               25    //JMHOME
-#define JC_H_FIX               26    //JMHOME
+#define JC_H_ASN               25    //JMHOME
+#define JC_H_SUM               26    //JMHOME
+#define JC_H_MIR               27    //JMHOME
+#define JC_H_FIX               28    //JMHOME
 
-#define JC_LARGELI             27
+#define JC_LARGELI             29
 
 #define JC_ITM_TST             31    //dr
 
@@ -218,6 +219,9 @@ void fnRCL          (int16_t inp);
 
 #define JC_EXFRAC              65
 #define JC_UU                  66
+#define JC_BCD                 67
+#define JC_TOPHEX              68
+
 
 #ifdef PC_BUILD
 //keyboard.c

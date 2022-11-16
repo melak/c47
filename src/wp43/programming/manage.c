@@ -615,8 +615,8 @@ void pemAlpha(int16_t item) {
         if(ITM_A <= item && item <= ITM_Z) {
           item += 26;
         }
-        else if(ITM_ALPHA <= item && item <= ITM_OMEGA) {
-          item += 36;
+        else if((ITM_ALPHA <= item && item <= ITM_OMEGA) || (ITM_QOPPA <= item && item <= ITM_SAMPI) ) {
+          item +=  (ITM_ALPHA <= item && item <= ITM_OMEGA) ? (ITM_alpha - ITM_ALPHA) : (ITM_qoppa - ITM_QOPPA);
         }
     }
     item = convertItemToSubOrSup(item, nextChar);

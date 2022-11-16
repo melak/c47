@@ -268,16 +268,14 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(firstGregorianDay);
     recallFromDtConfigDescriptor(roundingMode);
     recallFromDtConfigDescriptor(systemFlags);
+    synchronizeLetteredFlags();
 
-//    setSystemFlagToRecalled(Norm_Key_00_VAR);                            //JMCFG vv
     recallFromDtConfigDescriptor(SigFigMode);      
     recallFromDtConfigDescriptor(eRPN);             
     recallFromDtConfigDescriptor(HOME3);            
     recallFromDtConfigDescriptor(ShiftTimoutMode);  
-    recallFromDtConfigDescriptor(Home3TimerMode);   
     recallFromDtConfigDescriptor(UNITDisplay);      
     recallFromDtConfigDescriptor(SH_BASE_HOME);     
-    recallFromDtConfigDescriptor(SH_BASE_AHOME);    
     recallFromDtConfigDescriptor(Norm_Key_00_VAR); 
     recallFromDtConfigDescriptor(Input_Default);   
     recallFromDtConfigDescriptor(jm_FG_LINE);       
@@ -299,8 +297,6 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(PLOT_LINE);          
     recallFromDtConfigDescriptor(PLOT_CROSS);          
     recallFromDtConfigDescriptor(PLOT_BOX);
-    recallFromDtConfigDescriptor(jm_HOME_SUM);      
-    recallFromDtConfigDescriptor(PLOT_BOX);
     recallFromDtConfigDescriptor(PLOT_INTG);
     recallFromDtConfigDescriptor(PLOT_DIFF);
     recallFromDtConfigDescriptor(PLOT_RMS );
@@ -308,15 +304,21 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(PLOT_AXIS );
     recallFromDtConfigDescriptor(PLOT_ZMX );
     recallFromDtConfigDescriptor(PLOT_ZMY );
-    recallFromDtConfigDescriptor(jm_HOME_MIR);      
+    recallFromDtConfigDescriptor(jm_HOME_ASN);
+    recallFromDtConfigDescriptor(jm_HOME_SUM);
+    recallFromDtConfigDescriptor(jm_HOME_MIR);
     recallFromDtConfigDescriptor(jm_HOME_FIX);
     recallFromDtConfigDescriptor(jm_LARGELI);                                  //JMCFG^^         
     recallFromDtConfigDescriptor(constantFractions);                           //JM
     recallFromDtConfigDescriptor(constantFractionsMode);
     recallFromDtConfigDescriptor(constantFractionsOn);
     recallFromDtConfigDescriptor(displayStackSHOIDISP);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(bcdDisplay);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(topHex);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(bcdDisplaySign);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(DRG_Cycling);                                   //JM
+    recallFromDtConfigDescriptor(DM_Cycling);                                   //JM
 
-    synchronizeLetteredFlags();
   }
 
   else {

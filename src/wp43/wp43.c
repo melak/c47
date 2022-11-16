@@ -171,6 +171,7 @@ bool_t                doRefreshSoftMenu;                       //dr
 bool_t                jm_FG_LINE;                              //JM Screen / keyboard operation setup
 bool_t                jm_NO_BASE_SCREEN;                              //JM Screen / keyboard operation setup
 bool_t                jm_G_DOUBLETAP;                          //JM Screen / keyboard operation setup
+bool_t                jm_HOME_ASN;                             //JMHOME
 bool_t                jm_HOME_SUM;                             //JMHOME
 bool_t                jm_HOME_MIR;                             //JMHOME
 bool_t                jm_HOME_FIX;                             //JMHOME
@@ -180,9 +181,8 @@ uint8_t               constantFractionsMode;
 bool_t                constantFractionsOn;                     //JM
 uint8_t               SigFigMode;                              //JM SIGFIG
 bool_t                eRPN;                                    //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
-bool_t                HOME3;                                   //JM HOME Create a flag to enable or disable triple shift HOME3.
+bool_t                HOME3;                                   //JM HOME Create a flag to enable or disable triple shift HOME3. Create a flag to enable or disable HOME TIMER CANCEL.
 bool_t                ShiftTimoutMode;                         //JM SHIFT Create a flag to enable or disable SHIFT TIMER CANCEL.
-bool_t                Home3TimerMode;                          //JM HOME Create a flag to enable or disable HOME TIMER CANCEL.
 bool_t                UNITDisplay;                             //JM UNITDisplay
 bool_t                SH_BASE_HOME;                            //JM BASEHOME
 bool_t                SH_BASE_AHOME;                           //JM BASEHOME
@@ -192,8 +192,8 @@ float                 graph_xmin;                              //JM Graph
 float                 graph_xmax;                              //JM Graph
 float                 graph_ymin;                              //JM Graph
 float                 graph_ymax;                              //JM Graph
-uint8_t               lastSetAngularMode;
-bool_t                AlphaSelectionBufferTimerRunning;        //JM
+uint8_t               DRG_Cycling = 0;
+uint8_t               DM_Cycling = 0;
 #ifdef INLINE_TEST                                             //vv dr
 bool_t                testEnabled;                             //
 uint16_t              testBitset;                              //
@@ -206,7 +206,7 @@ int16_t                SHOWregis;                    //JMSHOW
 int16_t                ListXYposition;               //JMSHOW
 int16_t                mm_MNU_HOME;                  //JM
 int16_t                mm_MNU_ALPHA;                 //JM
-int16_t                MY_ALPHA_MENU = MY_ALPHA_MENU_CNST;  //JM
+int16_t                MY_ALPHA_MENU = 1;            //JM
 int16_t                JM_auto_doublepress_enabled;  //JM TIMER CLRDROP //drop
 int16_t                JM_auto_longpress_enabled;    //JM TIMER CLRDROP //clstk
 uint8_t                JM_SHIFT_HOME_TIMER1;         //Local to keyboard.c, but defined here
@@ -217,6 +217,9 @@ bool_t                 Shft_timeouts;                //JM SHIFT NEW FN
 bool_t                 FN_timed_out_to_NOP;          //JM LONGPRESS FN
 bool_t                 FN_timed_out_to_RELEASE_EXEC; //JM LONGPRESS FN
 bool_t                 FN_handle_timed_out_to_EXEC;
+bool_t                 bcdDisplay = false;
+bool_t                 topHex = false;
+uint8_t                bcdDisplaySign = 0;
 char                   indexOfItemsXEQM[18*8];       //JMXEQ
 int16_t                fnXEQMENUpos;                 //JMXEQ
 uint8_t                last_CM = 255;                //Do extern !!
@@ -275,7 +278,6 @@ int32_t                graphVariable;
 uint32_t               firstGregorianDay;
 uint32_t               denMax;
 uint32_t               lastIntegerBase;
-uint32_t               alphaSelectionTimer;
 uint32_t               xCursor;
 uint32_t               yCursor;
 uint32_t               tamOverPemYPos;
@@ -558,6 +560,7 @@ char                   plotStatMx[8];
     fnTimerConfig(TO_CL_DROP, fnTimerDummyTest, TO_CL_DROP);
     fnTimerConfig(TO_AUTO_REPEAT, execAutoRepeat, 0);
     fnTimerConfig(TO_TIMER_APP, execTimerApp, 0);
+    fnTimerConfig(TO_ASM_ACTIVE, refreshFn, TO_ASM_ACTIVE);
     fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV);
 //--fnTimerConfig(TO_SHOW_NOP, execNOPTimeout, TO_SHOW_NOP);
     nextTimerRefresh = 0;
@@ -895,7 +898,7 @@ char                   plotStatMx[8];
         else { // Last key pressed was not one of the 6 function keys
           //beep(440, 50);
           btnReleased(charKey);
-          if(calcMode == CM_PEM && shiftF && ((charKey[0] == '2' && charKey[1] == '6') || (charKey[0] == '3' && charKey[1] == '1'))) {
+          if(calcMode == CM_PEM && shiftF && ((charKey[0] == '1' && charKey[1] == '7') || (charKey[0] == '2' && charKey[1] == '2'))) {    //JM C43
             shiftF = false;
             refreshScreen();
           }
@@ -905,14 +908,18 @@ char                   plotStatMx[8];
       }
 #endif //FN_RELEASE_CODE_WP43S
 
-      else if(key == 0 && FN_key_pressed != 0) {            //JM, key=0 is release, therefore there must have been a press before that. If the press was a FN key, FN_key_pressed > 0 when it comes back here for release.
-        btnFnReleased(NULL);                                //    in short, it can only execute FN release after there was a FN press.
+      else if(key == 0 && charKey[1] == 0) {            //JM, key=0 is release, therefore there must have been a press before that. If the press was a FN key, FN_key_pressed > 0 when it comes back here for release.
+        btnFnReleased(charKey);                                //    in short, it can only execute FN release after there was a FN press.
         keyClick(4);
       //lcd_refresh_dma();
       }
       else if(key == 0) {
-        btnReleased(NULL);
+        btnReleased(charKey);
         keyClick(2);
+          if(calcMode == CM_PEM && shiftF && ((charKey[0] == '1' && charKey[1] == '7') || (charKey[0] == '2' && charKey[1] == '2'))) {   //JM C43
+            shiftF = false;
+            refreshScreen();
+          }
         //lcd_refresh_dma();
       }
 

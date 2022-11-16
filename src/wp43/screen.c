@@ -55,8 +55,12 @@
 
 #include "wp43.h"
 
+
+//#define DEBUGCLEARS
+
+
 #if !defined(TESTSUITE_BUILD)
-  static const char *whoStr = "WP43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter," STD_SPACE_3_PER_EM "Mihail," STD_SPACE_3_PER_EM "Jaco," STD_SPACE_3_PER_EM "and" STD_SPACE_3_PER_EM "Martin";
+  static const char *whoStr = "WP43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter," STD_SPACE_3_PER_EM "Mihail," STD_SPACE_3_PER_EM "Jaco" STD_SPACE_3_PER_EM "and" STD_SPACE_3_PER_EM "Martin";
   static const char *versionStr = "WP43" STD_SPACE_3_PER_EM VERSION_STRING;
 
   /* Names of day of week */
@@ -637,13 +641,6 @@
       }
     }
 
-    // Alpha selection timer
-    if(AlphaSelectionBufferTimerRunning) {         //JMvv
-      if(catalog/* && alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000*/) { // More than 3 seconds elapsed since last keypress
-        timeoutAlphaSelectionBuffer();             //JM^^
-      }
-    }
-
     return TRUE;
   }
 #elif defined(DMCP_BUILD)
@@ -722,13 +719,6 @@
         }
       }
     }
-
-    // Alpha selection timer
-  if(AlphaSelectionBufferTimerRunning) {         //JMvv
-    if(catalog)/* && alphaSelectionTimer != 0 && (getUptimeMs() - alphaSelectionTimer) > 3000)*/ { // More than 3 seconds elapsed since last keypress
-      timeoutAlphaSelectionBuffer();             //JM^^
-    }
-  }
 }
 #endif // PC_BUILD DMCP_BUILD
 
@@ -747,6 +737,11 @@ void refreshFn(uint16_t timerType) {                        //vv dr - general ti
   if(timerType == TO_CL_LONG) { LongpressKey_handler(); }
   if(timerType == TO_FG_TIMR) { Shft_stop(); }
   if(timerType == TO_FN_LONG) { FN_handler(); }
+  if(timerType == TO_ASM_ACTIVE) {
+    if(catalog) {
+        resetAlphaSelectionBuffer();
+    }
+  }
 }                                                           //^^
 
 
@@ -1003,6 +998,10 @@ void Shft_stop() {
         }
       }
 
+    #if defined (DEBUGCLEARS)
+      plotrect(x,y,x+dx,y+dy);
+    #endif //DEBUGCLEARS
+
       screenChange = true;
     }
   #endif // !DMCP_BUILD
@@ -1082,24 +1081,26 @@ uint8_t  displaymode = stdNoEnlarge;
   for(row=0; row<glyph->rowsGlyph; row++, y++) {
     if(displaymode == numHalf) {if((int)((REDUCT_A*row+REDUCT_OFF)) % REDUCT_B == 0) y--;}                           //JM REDUCE
     if(enlarge && combinationFonts !=0) rep_enlarge = 1; else rep_enlarge = 0;                //JM ENLARGE
-    while (rep_enlarge >= 0) {                                             //JM ENLARGE ^^
-
-        // Drawing the columns of the glyph
+      // Drawing the columns of the glyph
       int32_t bit = 7;
       for(col=0; col<glyph->colsGlyph; col++) {
         if(bit == 7) {
-            //        byte = *(data++);
-            byte = *(data);                                                  //JM ENLARGE
-            if(rep_enlarge == 0) data++;                                     //JM ENLARGE
+            byte = *(data++);
             if(miniC!=0) byte = (uint8_t)byte | (((uint8_t)byte) << 1);           //JMmini
         }
 
         if(byte & 0x80) {// MSB set
           if(videoMode == vmNormal) { // Black pixel for white background
             if(!noShow) setBlackPixel(x+((xGlyph+col) >> miniC), y0+((y-y0) >> miniC));       //JMmini
+            if(rep_enlarge == 1) {
+              if(!noShow) setBlackPixel(x+((xGlyph+col) >> miniC), 1+(y0+((y-y0) >> miniC)));       //JMmini              
+            }
           }
           else { // White pixel for black background
             if(!noShow) setWhitePixel(x+((xGlyph+col) >> miniC), y0+((y-y0) >> miniC));       //JMmini
+            if(rep_enlarge == 1) {
+              if(!noShow) setWhitePixel(x+((xGlyph+col) >> miniC), 1+(y0+((y-y0) >> miniC)));       //JMmini
+            }
           }
         }
 
@@ -1109,9 +1110,7 @@ uint8_t  displaymode = stdNoEnlarge;
           bit = 7;
         }
       }
-      if(rep_enlarge == 1 && row!=3 && row!=6 && row!=9 && row!=12) y++;     //JM ENLARGE vv do not advance the row counter for four rows, to match the row height of the enlarge font
-      rep_enlarge--;
-    }
+    if(rep_enlarge == 1 && row!=3 && row!=6 && row!=9 && row!=12) y++; //JM ENLARGE vv do not advance the row counter for four rows, to match the row height of the enlarge font
   }
   return x + ((xGlyph + glyph->colsGlyph + endingCols) >> miniC);        //JMmini
 }
@@ -1261,40 +1260,50 @@ uint8_t  displaymode = stdNoEnlarge;
 
   void showDisp(uint16_t offset, uint8_t _h1) {
   #define line_h1 38
+  const uint32_t line_h_offset = Y_POSITION_OF_REGISTER_T_LINE - 3;
 
         uint32_t w = stringWidthC43(tmpString + offset, stdnumEnlarge, nocompress, true, true);
         if(w < SCREEN_WIDTH) {
-          showStringC43(tmpString + offset, stdnumEnlarge, nocompress,  SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h1 * _h1, vmNormal, true, true);
-          return;
+          showStringC43(tmpString + offset, stdnumEnlarge, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+          goto gotoReturn;
         }
 
         w = stringWidthC43(tmpString + offset, stdEnlarge, nocompress, true, true);
         if(w < SCREEN_WIDTH) {
-          showStringC43(tmpString + offset, stdEnlarge, nocompress,  SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h1 * _h1, vmNormal, true, true);
-          return;
+          showStringC43(tmpString + offset, stdEnlarge, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+          goto gotoReturn;
         }
 
         w = stringWidthC43(tmpString + offset, stdNoEnlarge, nocompress, true, true);
         if(w < SCREEN_WIDTH) {
-          showStringC43(tmpString + offset, stdNoEnlarge, nocompress,  SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h1 * _h1, vmNormal, true, true);
-          return;
+          showStringC43(tmpString + offset, stdNoEnlarge, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+          goto gotoReturn;
         }
 
         w = stringWidthC43(tmpString + offset, numSmall, nocompress, true, true);
         if(w < SCREEN_WIDTH) {
-          showStringC43(tmpString + offset, numSmall, nocompress,  SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h1 * _h1, vmNormal, true, true);
-          return;
+          showStringC43(tmpString + offset, numSmall, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+          goto gotoReturn;
         }
 
         w = stringWidthC43(tmpString + offset, numSmall, stdcompress, true, true);
         if(w < SCREEN_WIDTH) {
-          showStringC43(tmpString + offset, numSmall, stdcompress,  SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h1 * _h1, vmNormal, true, true);
-          return;
+          showStringC43(tmpString + offset, numSmall, stdcompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+          goto gotoReturn;
         }
         w = stringWidth(tmpString + offset + 2, &standardFont, true, true);
         if(w < SCREEN_WIDTH) {
-          showString(tmpString + offset + 2, &standardFont,  SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_T_LINE + line_h1 * _h1, vmNormal, true, true);
-          return;
+          showString(tmpString + offset + 2, &standardFont,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
+          goto gotoReturn;
+        }
+        return;
+        gotoReturn:
+        if(_h1 == 0) {
+          if(tmpString[1500] != 0) {
+            lcd_fill_rect(0, line_h_offset + line_h1 * 2 - 3,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);          
+          } else {
+            lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);          
+          }
         }
     }
 
@@ -1579,15 +1588,17 @@ void force_refresh(void) {
   showFunctionNameItem = item;
   if(running_program_jm) return;                             //JM
   showFunctionNameCounter = delayInMs;
-  strcpy(padding,functionName);   //JM
+  strcpy(padding,functionName);                              //JM
   strcat(padding,"    ");                                    //JM
-  clearRegisterLine(REGISTER_T, true, false);
+  if(stringWidth(padding, &standardFont, true, true) + 1 /*JM 20*/ + lineTWidth > SCREEN_WIDTH) {                //JM T-Register clearing
+    clearRegisterLine(REGISTER_T, true, false);
+  }
 
     // Draw over SHIFT f and SHIFT g in case they were present (otherwise they will be obscured by the function name)
     getGlyphBounds(STD_SUP_f, 0, &numericFont, &fcol, &frow);
     getGlyphBounds(STD_SUP_g, 0, &numericFont, &gcol, &grow);
     lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, (fcol > gcol ? fcol : gcol), (frow > grow ? frow : grow), LCD_SET_VALUE);
-
+  
   showString(padding, &standardFont, /*1*/ 20, Y_POSITION_OF_REGISTER_T_LINE /*+ 6*/, vmNormal, true, true);      //JM
 }
 
@@ -1812,7 +1823,9 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
     if((temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) && regist == REGISTER_X) { //JM frame the SHOW window
       lcd_fill_rect(0,Y_POSITION_OF_REGISTER_T_LINE-4,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
-      lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
+      if(temporaryInformation != TI_SHOW_REGISTER_BIG) {                                 //JM TI_SHOW_REGISTER_BIG is drawn elsewhere
+        lcd_fill_rect(0,240-3*SOFTMENU_HEIGHT,SCREEN_WIDTH,1,LCD_EMPTY_VALUE);
+      }
     }
 
     if((calcMode != CM_BUG_ON_SCREEN) && (calcMode != CM_PLOT_STAT) && (calcMode != CM_GRAPH) && (calcMode != CM_LISTXY)) {               //JM      
@@ -2078,6 +2091,16 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         }
 
         else if(temporaryInformation == TI_SHOW_REGISTER_BIG) {            //JMSHOW ^^
+          if(regist == REGISTER_T) {
+             showDisp(0  ,0);
+             showDisp(300,1);
+             showDisp(600,2);
+             showDisp(900,3);
+             showDisp(1200,4);
+             showDisp(1500,5);
+             screenUpdatingMode = SCRUPD_AUTO;
+           }
+/*
           switch(regist) {
             // L1
             case REGISTER_T: showDisp(0  ,0);
@@ -2093,6 +2116,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
                              break;
             default: {}
           }
+*/
         }                                                                 //JMSHOW ^^
 
       else if(regist < REGISTER_X + min(displayStack, origDisplayStack) || (lastErrorCode != 0 && regist == errorMessageRegisterLine) || (temporaryInformation == TI_VIEW && regist == REGISTER_T)) {
@@ -2169,7 +2193,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         }
   //JMCURSOR  ^^
 
-#else
+#else //!TEXT_MULTILINE_EDIT
 
 // JM Removed and replaced with JMCURSOR vv
           if(stringWidth(aimBuffer, &standardFont, true, true) < SCREEN_WIDTH - 8) { // 8 is the standard font cursor width
@@ -2198,7 +2222,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             }
           }
 // // JM Removed and replaced with JMCURSOR ^^
-#endif //TEXT_MULTILINE_EDIT
+#endif //!TEXT_MULTILINE_EDIT
 
 
       }
@@ -2775,6 +2799,19 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
               }
             }
 
+            else if(temporaryInformation == TI_FROM_MS_TIME) {
+              if(regist == REGISTER_X) {
+                strcpy(prefix, "hh.mmss" STD_SPACE_FIGURE "=");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              }
+            }
+            else if(temporaryInformation == TI_FROM_MS_DEG) {
+              if(regist == REGISTER_X) {
+                strcpy(prefix, "dd.mmss" STD_SPACE_FIGURE "=");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              }
+            }
+
             if(prefixWidth > 0) {
               if(regist == REGISTER_X) {
                 showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
@@ -3005,11 +3042,11 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
           showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
   
           //JM SHOIDISP // use the top part of the screen for HEX and BIN    //JM vv SHOIDISP
-          if(displayStack == 4-displayStackSHOIDISP && lastIntegerBase != 0) {
+          if(displayStack == 4-displayStackSHOIDISP && lastIntegerBase != 0 && lastErrorCode == 0) {
             if(displayStack == 1){
               copySourceRegisterToDestRegister(REGISTER_Y,TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X,REGISTER_Y);
-              setRegisterTag(REGISTER_Y, 2);
+              setRegisterTag(REGISTER_Y,  !bcdDisplay ? 2 : 10);
               shortIntegerToDisplayString(REGISTER_Y, tmpString, true);
               if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
                 showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
@@ -3020,8 +3057,8 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             if(displayStack == 1 || displayStack == 2){
               copySourceRegisterToDestRegister(REGISTER_Z,TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X,REGISTER_Z);
-              if(displayStack == 2) setRegisterTag(REGISTER_Z, 2); else 
-                if(displayStack == 1) setRegisterTag(REGISTER_Z, 8);
+              if(displayStack == 2) setRegisterTag(REGISTER_Z,  !bcdDisplay ? 2 : 10); else 
+                if(displayStack == 1) setRegisterTag(REGISTER_Z, !bcdDisplay ? 8 : 2);
               shortIntegerToDisplayString(REGISTER_Z, tmpString, true);
               if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
                 showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
@@ -3032,7 +3069,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             if(displayStack == 1 || displayStack == 2 || displayStack ==3){
               copySourceRegisterToDestRegister(REGISTER_T,TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X,REGISTER_T);
-              setRegisterTag(REGISTER_T, 16);
+              setRegisterTag(REGISTER_T, !bcdDisplay ? 16 : 17);
               shortIntegerToDisplayString(REGISTER_T, tmpString, true);
               if(lastErrorCode == 0 && stringWidth(tmpString, fontForShortInteger, false, true) + stringWidth("  X: ", &standardFont, false, true) <= SCREEN_WIDTH) {
                 showString("  X: ", &standardFont, 0, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
@@ -3304,10 +3341,12 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
   void clearTamBuffer(void) {
     if(shiftF || shiftG) {
-      lcd_fill_rect(18, Y_POSITION_OF_TAM_LINE, 120, 32, LCD_SET_VALUE);
+      //lcd_fill_rect(18, Y_POSITION_OF_TAM_LINE, 120, 32, LCD_SET_VALUE);
+      lcd_fill_rect(18, Y_POSITION_OF_TAM_LINE, SCREEN_WIDTH - 18, 32, LCD_SET_VALUE); //JM Clear the whole t-register instead of only 120+18 oixels
     }
     else {
-      lcd_fill_rect(0, Y_POSITION_OF_TAM_LINE, 138, 32, LCD_SET_VALUE);
+      //lcd_fill_rect(0, Y_POSITION_OF_TAM_LINE, 138, 32, LCD_SET_VALUE);
+      lcd_fill_rect(0, Y_POSITION_OF_TAM_LINE, SCREEN_WIDTH, 32, LCD_SET_VALUE); //JM Clear the whole t-register instead of 138
     }
   }
 
@@ -3348,9 +3387,9 @@ void refreshScreen(void) {
 if (running_program_jm) return;          //JM TEST PROGRAM!
 #ifdef PC_BUILD
   jm_show_calc_state("refreshScreen");
-  printf(">>> refreshScreenCounter=%d calcMode=%d last_CM=%d \n",refreshScreenCounter++, calcMode, last_CM);    //JMYY
+  printf(">>> refreshScreenCounter=%d calcMode=%d last_CM=%d doRefreshSoftMenu=%d screenUpdatingMode=%d\n",refreshScreenCounter++, calcMode, last_CM,doRefreshSoftMenu, screenUpdatingMode);    //JMYY
 #endif
-
+//screenUpdatingMode = 0; //0 is ALL REFRESHES; ~0 is NO REFRESHES
 
   if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {last_CM = 254;}  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S 
 
@@ -3495,7 +3534,9 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
           doRefreshSoftMenu = false;
           displayShiftAndTamBuffer();
 
-          showSoftmenuCurrentPart();
+          if(temporaryInformation != TI_SHOW_REGISTER_BIG) {       //JM
+            showSoftmenuCurrentPart();
+          }
         } else {
 
           if(!(screenUpdatingMode & SCRUPD_MANUAL_SHIFT_STATUS)) {

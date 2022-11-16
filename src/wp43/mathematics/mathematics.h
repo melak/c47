@@ -14,9 +14,9 @@
  * along with 43S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/********************************************//**
- * \file mathematics.h
- ***********************************************/
+/**
+ * \file mathematics/mathematics.h
+ */
 #if !defined(MATHEMATICS_H)
   #define MATHEMATICS_H
 
@@ -122,6 +122,7 @@
   #include "sincpi.h"
   #include "sinh.h"
   #include "slvq.h"
+  #include "sqrt1Px2.h"
   #include "square.h"
   #include "squareRoot.h"
   #include "subtraction.h"

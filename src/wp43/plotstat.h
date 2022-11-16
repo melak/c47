@@ -120,7 +120,7 @@ void    fnStatDemo107      (uint16_t unusedButMandatoryParameter);
 void    fnStatDemo109      (uint16_t unusedButMandatoryParameter);
 void    graphPlotstat      (uint16_t selection);
 void    graphDrawLRline    (uint16_t selection);
-void    fnPlotClose        (uint16_t unusedButMandatoryParameter);
+//void    fnPlotClose        (uint16_t unusedButMandatoryParameter);
 void    fnPlotCloseSmi     (uint16_t unusedButMandatoryParameter);
 void    fnPlotStat         (uint16_t unusedButMandatoryParameter);
 void    fnPlotZoom         (uint16_t unusedButMandatoryParameter);

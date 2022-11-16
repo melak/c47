@@ -154,13 +154,13 @@ void fnErrorMessage(uint16_t unusedButMandatoryParameter) {
       break;
     }
 
-    case dtReal34: {
+    case dtReal34:
       if(getRegisterAngularMode(REGISTER_X) == amNone) {
         real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &r);
         break;
       }
       /* fallthrough */
-    }
+
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);

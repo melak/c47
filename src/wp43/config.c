@@ -34,6 +34,7 @@
 #include "fractions.h"
 #include "items.h"
 #include "c43Extensions/jm.h"
+#include "c43Extensions/addons.h"
 #include "keyboard.h"
 #include "matrix.h"
 #include "memory.h"
@@ -181,7 +182,7 @@ void fnSetRoundingMode(uint16_t RM) {
   roundingMode = RM;
 }
 
-// "enum rounding" does not match with the specification of WP43 rounding mode.
+// "enum rounding" does not match with the specification of WP 43s rounding mode.
 // So you need roundingModeTable[roundingMode] rather than roundingMode
 // to specify rounding mode in the real number functions.
 TO_QSPI const enum rounding roundingModeTable[7] = {
@@ -384,10 +385,8 @@ void fnRoundingMode(uint16_t RM) {
 
 void fnAngularMode(uint16_t am) {
   currentAngularMode = am;
-  lastSetAngularMode = currentAngularMode;                         //JM
 
   fnRefreshState();                              //drJM
-
 }
 
 
@@ -647,6 +646,57 @@ void restoreStats(void){
 }
 
 
+    typedef struct {              //JM VALUES DEMO
+      uint8_t  itemType;
+      char     *itemName;
+    } numberstr;
+
+    TO_QSPI const numberstr indexOfStrings[] = {
+      {0,"Reg 11,12 & 13 have: The 3 cubes = 3."},
+      {1,"569936821221962380720"},
+      {1,"-569936821113563493509"},
+      {1,"-472715493453327032"},
+
+      {0,"Reg 15, 16 & 17 have: The 3 cubes = 42."},
+      {1,"-80538738812075974"},
+      {1,"80435758145817515"},
+      {1,"12602123297335631"},
+
+      {0,"37 digits of pi, Reg19 / Reg20."},
+      {1,"2646693125139304345"},
+      {1,"842468587426513207"},
+
+      {0,"Primes: Carol"},
+      {1,"18014398241046527"},
+
+      {0,"Primes: Kynea"},
+      {1,"18446744082299486207"},
+
+      {0,"Primes: repunit"},
+      {1,"7369130657357778596659"},
+
+      {0,"Primes: Woodal"},
+      {1,"195845982777569926302400511"},
+
+      {0,"Primes: Woodal"},
+      {1,"4776913109852041418248056622882488319"},
+
+      {0,"Primes: Woodal"},
+      {1,"225251798594466661409915431774713195745814267044878909733007331390393510002687"},
+    };
+
+
+    TO_QSPI const numberstr indexOfMsgs[] = {
+      {0,"C43 L1: C43, QSPI"},
+      {0,"C43 L1: C43, NO QSPI"},
+      {0,"C43 L42: unmod. DM42, QSPI"},
+      {0,"C43 L42: unmod. DM42, NO QSPI"},
+      {0,"C43 Layout L1: SIM"},
+      {0,"C43 L42: unmodified DM42 SIM"}
+    };
+
+
+
 
 void fnReset(uint16_t confirmation) {
   if(confirmation == NOT_CONFIRMED) {
@@ -850,7 +900,7 @@ void fnReset(uint16_t confirmation) {
     realZero(&SAVED_SIGMA_LASTY);
     SAVED_SIGMA_LAct = 0;
 
-    restoreStats();
+//    restoreStats();
     plotStatMx[0] = 0;
     real34Zero(&loBinR);
     real34Zero(&nBins );
@@ -874,7 +924,8 @@ void fnReset(uint16_t confirmation) {
     displayFormatDigits = 3;                             //JM Set to ALL 3
     timeDisplayFormatDigits = 0;
     currentAngularMode = amDegree;
-    lastSetAngularMode = currentAngularMode;             //JM
+    DRG_Cycling = 0;                                     //JM
+    DM_Cycling = 0;  //JM
     denMax = MAX_DENMAX;
     setSystemFlag(FLAG_DENANY);
     setSystemFlag(FLAG_MULTx);
@@ -976,6 +1027,7 @@ void fnReset(uint16_t confirmation) {
     #ifndef TESTSUITE_BUILD
       mm_MNU_HOME       = mm(-MNU_HOME);     //printf("####BB> %i \n",mm_MNU_HOME);                      //JM
       mm_MNU_ALPHA      = mm(-MNU_ALPHA);    //printf("####CC> %i \n",mm_MNU_ALPHA);                      //JM
+
       calcModeNormal();
       if(SH_BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
     #endif // TESTSUITE_BUILD      
@@ -1048,11 +1100,22 @@ void fnReset(uint16_t confirmation) {
 
 
 
-#define VERSION1 "_108_05"
+//      TO_QSPI const numberstr indexOfMsgs[] = {
+//        {0,"C43 L1: C43, QSPI"},
+//        {0,"C43 L1: C43, NO QSPI"},
+//        {0,"C43 L42: unmod. DM42, QSPI"},
+//        {0,"C43 L42: unmod. DM42, NO QSPI"},
+//        {0,"C43 Layout L1: SIM"},
+//        {0,"C43 L42: unmodified DM42 SIM"}
+//      };
+
+
+
+#define VERSION1 "_108_08c"
 
     #ifdef JM_LAYOUT_1A
       #undef L1L2
-      #define L1L2    "L1"
+      #define L1L2    "" //L1
     #endif
     #ifdef JM_LAYOUT_2_DM42_STRICT
       #undef L1L2
@@ -1063,30 +1126,30 @@ void fnReset(uint16_t confirmation) {
     fnStrtoX(build_str);
     fnStore(102);
     fnDrop(0);
-
+        
 
     #ifdef PC_BUILD
       #if defined(JM_LAYOUT_1A)
-        fnStrtoX("C43 L1: C43 template SIM");
+        fnStrtoX(indexOfMsgs[4].itemName);
       #else
         #if defined(JM_LAYOUT_2_DM42_STRICT)
-          fnStrtoX("C43 L42: unmodified DM42 SIM");
+          fnStrtoX(indexOfMsgs[5].itemName);
         #endif
       #endif
 
     #else
 
       #if defined(JM_LAYOUT_1A) && defined(TWO_FILE_PGM)
-        fnStrtoX("C43 L1: C43, QSPI");
+        fnStrtoX(indexOfMsgs[0].itemName);
       #else
         #if defined(JM_LAYOUT_1A) && !defined(TWO_FILE_PGM)
-          fnStrtoX("C43 L1: C43, NO QSPI");
+          fnStrtoX(indexOfMsgs[1].itemName);
         #else
           #if defined(JM_LAYOUT_2_DM42_STRICT) && defined(TWO_FILE_PGM)
-            fnStrtoX("C43 L42: unmod. DM42, QSPI");
+            fnStrtoX(indexOfMsgs[2].itemName);
           #else
             #if defined(JM_LAYOUT_2_DM42_STRICT) && !defined(TWO_FILE_PGM)
-              fnStrtoX("C43 L42: unmod. DM42, NO QSPI");
+              fnStrtoX(indexOfMsgs[3].itemName);
             #endif
           #endif
         #endif
@@ -1094,88 +1157,61 @@ void fnReset(uint16_t confirmation) {
 
     #endif
     fnStore(103);
-
-//    fnStrtoX("C43: Try POC pi and e and roots, ...");
-//    fnStore(104);
-
     fnDrop(0);
-//    fnDrop(0);
-//    fnStrtoX("C43 LARGE TEXT");
+
+    
+    fnRESET_MyM_Mya();
 
 
-    //Pre-assign the MyMenu                   //JM
-    #ifndef TESTSUITE_BUILD
-    jm_NO_BASE_SCREEN = true;                                           //JM prevent slow updating of 6 menu items
-    for(int8_t fn = 1; fn <= 6; fn++) {
-      //itemToBeAssigned = ( !getSystemFlag(FLAG_USER) ? (kbd_std[fn-1].fShifted) : (kbd_usr[fn-1].fShifted) );  //Function key follows if the yellow key
-      itemToBeAssigned = menu_HOME[fn -1];  //Function key follows if the yellow key
-      assignToMyMenu(fn - 1);
+
+
+        
+//    TO_QSPI const numberstr indexOfStrings[] = {
+//      {0,"Reg 11,12 & 13 have: The 3 cubes = 3."},
+//      {1,"569936821221962380720"},
+//      {1,"-569936821113563493509"},
+//      {1,"-472715493453327032"},
+//
+//      {0,"Reg 15, 16 & 17 have: The 3 cubes = 42."},
+//      {1,"-80538738812075974"},
+//      {1,"80435758145817515"},
+//      {1,"12602123297335631"},
+//
+//      {0,"37 digits of pi, Reg19 / Reg20."},
+//      {1,"2646693125139304345"},
+//      {1,"842468587426513207"},
+//
+//      {0,"Primes: Carol"},
+//      {1,"18014398241046527"},
+//
+//      {0,"Primes: Kynea"},
+//      {1,"18446744082299486207"},
+//
+//      {0,"Primes: repunit"},
+//      {1,"7369130657357778596659"},
+//
+//      {0,"Primes: Woodal"},
+//      {1,"195845982777569926302400511"},
+//
+//      {0,"Primes: Woodal"},
+//      {1,"4776913109852041418248056622882488319"},
+//
+//      {0,"Primes: Woodal"},
+//      {1,"225251798594466661409915431774713195745814267044878909733007331390393510002687"},
+//    };
+
+    uint_fast16_t n = nbrOfElements(indexOfStrings);
+    for (uint_fast16_t i = 0; i < n; i++) {
+      if( indexOfStrings[i].itemType== 0) {
+        fnStrtoX(indexOfStrings[i].itemName);
+      } else
+      if( indexOfStrings[i].itemType== 1) {
+        fnStrInputLongint(indexOfStrings[i].itemName);        
       }
-    jm_NO_BASE_SCREEN = false;                                           //JM Menu system default (removed from reset_jm_defaults)
-    #endif // TESTSUITE_BUILD
+      fnStore(i+10);
+      fnDrop(0);
+    }
 
-
-
-#ifndef SAVE_SPACE_DM42_0
-    //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
-    fnStrtoX("Reg 11,12 & 13 have: The 3 cubes = 3.");
-    fnStore(10);
-    fnDrop(0);
-    fnStrInputLongint("569936821221962380720");
-    fnStore(11);
-    fnDrop(0);
-    fnStrInputLongint("-569936821113563493509");
-    fnStore(12);
-    fnDrop(0);
-    fnStrInputLongint("-472715493453327032");
-    fnStore(13);
-    fnDrop(0);
-
-    fnStrtoX("Reg 15, 16 & 17 have: The 3 cubes = 42.");
-    fnStore(14);
-    fnDrop(0);
-    fnStrInputLongint("-80538738812075974");
-    fnStore(15);
-    fnDrop(0);
-    fnStrInputLongint("80435758145817515");
-    fnStore(16);
-    fnDrop(0);
-    fnStrInputLongint("12602123297335631");
-    fnStore(17);
-    fnDrop(0);
-
-    fnStrtoX("37 digits of pi, Reg19 / Reg20.");
-    fnStore(18);
-    fnDrop(0);
-    fnStrInputLongint("2646693125139304345");
-    fnStore(19);
-    fnDrop(0);
-    fnStrInputLongint("842468587426513207");
-    fnStore(20);
-    fnDrop(0);
-
-    fnStrtoX("Primes: Carol, Kynea, repunit, Woodal");
-    fnStore(21);
-    fnDrop(0);
-    fnStrInputLongint("18014398241046527");
-    fnStore(22);
-    fnDrop(0);
-    fnStrInputLongint("18446744082299486207");
-    fnStore(23);
-    fnDrop(0);
-    fnStrInputLongint("7369130657357778596659");
-    fnStore(24);
-    fnDrop(0);
-    fnStrInputLongint("195845982777569926302400511");
-    fnStore(25);
-    fnDrop(0);
-    fnStrInputLongint("4776913109852041418248056622882488319");
-    fnStore(26);
-    fnDrop(0);
-    fnStrInputLongint("225251798594466661409915431774713195745814267044878909733007331390393510002687");
-    fnStore(27);
-    fnDrop(0);
-#endif //SAVE_SPACE_DM42_0
 
     doRefreshSoftMenu = true;     //jm dr
     last_CM = 253;

@@ -38,7 +38,7 @@
   #undef SAVE_SPACE_DM42_11
   #undef SAVE_SPACE_DM42_12
   #undef SAVE_SPACE_DM42_13GRF
-  #define SAVE_SPACE_DM42_13GRF_JM
+  #undef SAVE_SPACE_DM42_13GRF_JM
   #undef SAVE_SPACE_DM42_14
   #undef SAVE_SPACE_DM42_15
   #undef SAVE_SPACE_DM42_20
@@ -70,12 +70,10 @@
   #ifndef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
     #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
     #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
-  //removed _1 for Windows compile!
-  #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
-  //#define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
-    #define SAVE_SPACE_DM42_4  //000736 bytes: XY GRAPHDEMOS (Plot)
-  //#define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
-  //#define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42; USER_SHIFTS;
+    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
+    #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
+    #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
+    #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42; USER_C43ALTA; USER_C43_ALTB;
   //#define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
   //#define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
   //#define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
@@ -88,14 +86,12 @@
   #endif
 
   #ifdef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
-//    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
+    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
 //    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
-//    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
-//    #define SAVE_SPACE_DM42_4  //000736 bytes: XY GRAPHDEMOS (Plot)
-    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
+    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
+//    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
     #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
   #endif
-
 #endif
 
 
@@ -109,7 +105,10 @@
 
 
 //Verbose options
-#define VERBOSE_LEVEL 0              //JM 0 = no text; 1 = essential text; 2 = extra debugging: on calc screen
+#define VERBOSEKEYS
+#undef VERBOSEKEYS
+
+#define VERBOSE_LEVEL -1              //JM -1 no text   0 = very little text; 1 = essential text; 2 = extra debugging: on calc screen
 
 #define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
 #undef  PC_BUILD_TELLTALE
@@ -135,6 +134,9 @@
 #define TESTING
 //#undef TESTING
 
+
+#define NOMATRIXCURSORS             //JM allow matrix editing to be navigated by up down keys
+#undef NOMATRIXCURSORS
 
 //This is to allow the cursors to change the case. Normal on 43S. Off on C43
 #define arrowCasechange    false
@@ -251,10 +253,10 @@
 
 
   #if defined(PC_BUILD)
-//  #define DEBUGUNDO
-  #undef DEBUGUNDO
+    //#define DEBUGUNDO
+    #undef DEBUGUNDO
   #else // !PC_BUILD
-  #undef DEBUGUNDO
+    #undef DEBUGUNDO
   #endif // PC_BUILD
 
 
@@ -264,8 +266,8 @@
 //*************************
 //* Other defines         *
 //*************************
-// Define the second tagline
-#define WHO2                                      "C43" STD_SPACE_3_PER_EM "42-style" STD_SPACE_3_PER_EM "keys," STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Jaco, DaniR, H2X, Inautilus"   //JM ID
+// Define the second tagline                     //C43 by Jaco, Dani, Håkon, Donald, Robbert could fit, maybe even Daniël
+#define WHO2                                      "C43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Jaco, Dani, H" STD_a_RING "kon, D A and Robbert"   //JM ID
 #define CHARS_PER_LINE                            80 // Used in the flag browser application
 
 #define NUMERIC_FONT_HEIGHT                       36 // In pixel. Used in the font browser application
@@ -621,7 +623,6 @@ typedef enum {
 #define Y_POSITION_OF_REGISTER_X_LINE            132
 
 #define NUMBER_OF_DYNAMIC_SOFTMENUS               19
-#define MY_ALPHA_MENU_CNST                         1  //JM This is the index of the MyAlpha   softmenu in the softmenu[] array. //JM changed this to a variable: int16_t MY_ALPHA_MENU;
 #define SOFTMENU_HEIGHT                           23
 
 // Horizontal offsets in the status bar
@@ -644,7 +645,7 @@ typedef enum {
 #define TIMER_IDX_REFRESH_SLEEP                    0 // use timer 0 to wake up for screen refresh
 //#define TIMER_IDX_AUTO_REPEAT                    1 // use timer 1 to wake up for key auto-repeat
 
-#define TMR_NUMBER                                10
+#define TMR_NUMBER                                11
 
 // timer
 #define TO_FG_LONG                                 0
@@ -656,7 +657,8 @@ typedef enum {
 #define TO_CL_DROP                                 6
 #define TO_AUTO_REPEAT                             7
 #define TO_TIMER_APP                               8
-#define TO_KB_ACTV                                 9
+#define TO_ASM_ACTIVE                              9
+#define TO_KB_ACTV                                 10
 
 
 
@@ -678,7 +680,7 @@ typedef enum {
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
 
 // Number of constants
-#define NUMBER_OF_CONSTANTS_39                   198+2   //JM 2 additionalconstants
+#define NUMBER_OF_CONSTANTS_39                   201+1   //JM 2 additionalconstants
 #define NUMBER_OF_CONSTANTS_51                    39
 #define NUMBER_OF_CONSTANTS_1071                   1
 #define NUMBER_OF_CONSTANTS_34                    44
@@ -1011,7 +1013,7 @@ typedef enum {
 #define SIGMA_YMAX   ((real_t *)(statisticalSumsPointer + REAL_SIZE * SUM_YMAX  )) // could be a real34
 
 #define MAX_NUMBER_OF_GLYPHS_IN_STRING           196
-#define NUMBER_OF_GLYPH_ROWS                     100+6  //JM 100-->106 // Used in the font browser application
+#define NUMBER_OF_GLYPH_ROWS                     107+6  //JM 100-->106 // Used in the font browser application
 
 #define MAX_DENMAX                              9999 // Biggest denominator in fraction display mode
 
@@ -1288,7 +1290,7 @@ typedef enum {
   #define ignore_result(M) if(1==((uint64_t)M)){;}
   #endif // OS32BIT
 
-#ifdef DMCP_BUILD
+#if defined(DMCP_BUILD)
   #define TMP_STR_LENGTH     2560 //2560 //dr - remove #include <dmcp.h> again - AUX_BUF_SIZE
 #else // !DMCP_BUILD
   #define TMP_STR_LENGTH     3000 //2560 //JMMAX ORG:2560
