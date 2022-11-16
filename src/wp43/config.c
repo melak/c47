@@ -646,6 +646,58 @@ void restoreStats(void){
 }
 
 
+    typedef struct {              //JM VALUES DEMO
+      uint8_t  itemType;
+      char     *itemName;
+    } numberstr;
+
+    TO_QSPI const numberstr indexOfStrings[] = {
+      {0,"Reg 11,12 & 13 have: The 3 cubes = 3."},
+      {1,"569936821221962380720"},
+      {1,"-569936821113563493509"},
+      {1,"-472715493453327032"},
+
+      {0,"Reg 15, 16 & 17 have: The 3 cubes = 42."},
+      {1,"-80538738812075974"},
+      {1,"80435758145817515"},
+      {1,"12602123297335631"},
+
+      {0,"37 digits of pi, Reg19 / Reg20."},
+      {1,"2646693125139304345"},
+      {1,"842468587426513207"},
+
+      {0,"Primes: Carol"},
+      {1,"18014398241046527"},
+
+      {0,"Primes: Kynea"},
+      {1,"18446744082299486207"},
+
+      {0,"Primes: repunit"},
+      {1,"7369130657357778596659"},
+
+      {0,"Primes: Woodal"},
+      {1,"195845982777569926302400511"},
+
+      {0,"Primes: Woodal"},
+      {1,"4776913109852041418248056622882488319"},
+
+      {0,"Primes: Woodal"},
+      {1,"225251798594466661409915431774713195745814267044878909733007331390393510002687"},
+    };
+
+
+    TO_QSPI const numberstr indexOfMsgs[] = {
+      {0,"C43 L1: C43, QSPI"},
+      {0,"C43 L1: C43, NO QSPI"},
+      {0,"C43 L42: unmod. DM42, QSPI"},
+      {0,"C43 L42: unmod. DM42, NO QSPI"},
+      {0,"C43 Layout L1: SIM"},
+      {0,"C43 L42: unmodified DM42 SIM"}
+    };
+
+
+
+
 void fnReset(uint16_t confirmation) {
   if(confirmation == NOT_CONFIRMED) {
     setConfirmationMode(fnReset);
@@ -1048,6 +1100,17 @@ void fnReset(uint16_t confirmation) {
 
 
 
+//      TO_QSPI const numberstr indexOfMsgs[] = {
+//        {0,"C43 L1: C43, QSPI"},
+//        {0,"C43 L1: C43, NO QSPI"},
+//        {0,"C43 L42: unmod. DM42, QSPI"},
+//        {0,"C43 L42: unmod. DM42, NO QSPI"},
+//        {0,"C43 Layout L1: SIM"},
+//        {0,"C43 L42: unmodified DM42 SIM"}
+//      };
+
+
+
 #define VERSION1 "_108_08c"
 
     #ifdef JM_LAYOUT_1A
@@ -1063,22 +1126,7 @@ void fnReset(uint16_t confirmation) {
     fnStrtoX(build_str);
     fnStore(102);
     fnDrop(0);
-
-
-    typedef struct {              //JM VALUES DEMO
-      uint8_t  itemType;
-      char     *itemName;
-    } numberstr;
         
-      TO_QSPI const numberstr indexOfMsgs[] = {
-        {0,"C43 L1: C43, QSPI"},
-        {0,"C43 L1: C43, NO QSPI"},
-        {0,"C43 L42: unmod. DM42, QSPI"},
-        {0,"C43 L42: unmod. DM42, NO QSPI"},
-        {0,"C43 Layout L1: SIM"},
-        {0,"C43 L42: unmodified DM42 SIM"}
-      };
-
 
     #ifdef PC_BUILD
       #if defined(JM_LAYOUT_1A)
@@ -1109,54 +1157,48 @@ void fnReset(uint16_t confirmation) {
 
     #endif
     fnStore(103);
-
-//    fnStrtoX("C43: Try POC pi and e and roots, ...");
-//    fnStore(104);
-
     fnDrop(0);
-//    fnDrop(0);
-//    fnStrtoX("C43 LARGE TEXT");
 
-
-fnRESET_MyM_Mya();
+    
+    fnRESET_MyM_Mya();
 
 
 
 
         
-    TO_QSPI const numberstr indexOfStrings[] = {
-      {0,"Reg 11,12 & 13 have: The 3 cubes = 3."},
-      {1,"569936821221962380720"},
-      {1,"-569936821113563493509"},
-      {1,"-472715493453327032"},
-
-      {0,"Reg 15, 16 & 17 have: The 3 cubes = 42."},
-      {1,"-80538738812075974"},
-      {1,"80435758145817515"},
-      {1,"12602123297335631"},
-
-      {0,"37 digits of pi, Reg19 / Reg20."},
-      {1,"2646693125139304345"},
-      {1,"842468587426513207"},
-
-      {0,"Primes: Carol"},
-      {1,"18014398241046527"},
-
-      {0,"Primes: Kynea"},
-      {1,"18446744082299486207"},
-
-      {0,"Primes: repunit"},
-      {1,"7369130657357778596659"},
-
-      {0,"Primes: Woodal"},
-      {1,"195845982777569926302400511"},
-
-      {0,"Primes: Woodal"},
-      {1,"4776913109852041418248056622882488319"},
-
-      {0,"Primes: Woodal"},
-      {1,"225251798594466661409915431774713195745814267044878909733007331390393510002687"},
-    };
+//    TO_QSPI const numberstr indexOfStrings[] = {
+//      {0,"Reg 11,12 & 13 have: The 3 cubes = 3."},
+//      {1,"569936821221962380720"},
+//      {1,"-569936821113563493509"},
+//      {1,"-472715493453327032"},
+//
+//      {0,"Reg 15, 16 & 17 have: The 3 cubes = 42."},
+//      {1,"-80538738812075974"},
+//      {1,"80435758145817515"},
+//      {1,"12602123297335631"},
+//
+//      {0,"37 digits of pi, Reg19 / Reg20."},
+//      {1,"2646693125139304345"},
+//      {1,"842468587426513207"},
+//
+//      {0,"Primes: Carol"},
+//      {1,"18014398241046527"},
+//
+//      {0,"Primes: Kynea"},
+//      {1,"18446744082299486207"},
+//
+//      {0,"Primes: repunit"},
+//      {1,"7369130657357778596659"},
+//
+//      {0,"Primes: Woodal"},
+//      {1,"195845982777569926302400511"},
+//
+//      {0,"Primes: Woodal"},
+//      {1,"4776913109852041418248056622882488319"},
+//
+//      {0,"Primes: Woodal"},
+//      {1,"225251798594466661409915431774713195745814267044878909733007331390393510002687"},
+//    };
 
     uint_fast16_t n = nbrOfElements(indexOfStrings);
     for (uint_fast16_t i = 0; i < n; i++) {
