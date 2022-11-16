@@ -450,6 +450,7 @@ case 61:
         shiftG = true;
         btnClicked(w, "06");
       }
+      break;
 //ROW 4
     case 65421:                                               //JM    // Enter
     case 65293:                                               //JM    // Enter
