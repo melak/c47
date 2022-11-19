@@ -994,46 +994,65 @@ void fnUserJM(uint16_t jmUser) {
       #ifndef SAVE_SPACE_DM42 
           fnUserJM(USER_RESET);
 
-          kbd_usr[0].primary      = ITM_1ONX;
-          kbd_usr[0].fShifted     = ITM_YX;
-          kbd_usr[0].gShifted     = ITM_HASH_JM/*ITM_toINT*/;
+        kbd_usr[6].primary      = ITM_STO;
+        kbd_usr[7].primary      = ITM_RCL;
+        kbd_usr[9].primary      = ITM_1ONX;
+        kbd_usr[6].fShifted     = ITM_XTHROOT;//8
+        kbd_usr[2].primary      = ITM_SQUAREROOTX;
+        kbd_usr[2].fShifted     = ITM_SQUARE;
+        kbd_usr[1].primary      = ITM_LOG10;  //0
+        kbd_usr[1].fShifted     = ITM_10x;    //0
+        kbd_usr[2].primary      = ITM_LN;     //1
+        kbd_usr[2].fShifted     = ITM_EXP;    //1
+        kbd_usr[0].primary=ITM_SQUAREROOTX;   //2
+        kbd_usr[0].fShifted=ITM_SQUARE;       //2
 
-          kbd_usr[1].primary      = ITM_SQUAREROOTX;
-          kbd_usr[1].fShifted     = ITM_SQUARE;
-          kbd_usr[1].gShifted     = ITM_ms;
+        kbd_usr[10].primary      = ITM_SHIFTf;
+        kbd_usr[10].fShifted     = ITM_NULL;
+        kbd_usr[10].gShifted     = ITM_NULL;
+        kbd_usr[10].keyLblAim     = ITM_SHIFTf;
+        kbd_usr[10].primaryAim     = ITM_SHIFTf;
+        kbd_usr[10].fShiftedAim     = ITM_NULL;
+        kbd_usr[10].gShiftedAim     = ITM_NULL;
+        kbd_usr[10].primaryTam     = ITM_SHIFTf;
 
-          kbd_usr[2].primary      = ITM_LOG10;
-          kbd_usr[2].fShifted     = ITM_10x;
-          kbd_usr[2].gShifted     = ITM_dotD;
+        kbd_usr[11].primary      = ITM_SHIFTg;
+        kbd_usr[11].fShifted     = ITM_NULL;
+        kbd_usr[11].gShifted     = ITM_NULL;
+        kbd_usr[11].keyLblAim     = ITM_SHIFTg;
+        kbd_usr[11].primaryAim     = ITM_SHIFTg;
+        kbd_usr[11].fShiftedAim     = ITM_NULL;
+        kbd_usr[11].gShiftedAim     = ITM_NULL;
+        kbd_usr[11].primaryTam     = ITM_SHIFTg;
 
-          kbd_usr[3].primary      = ITM_LN;
-          kbd_usr[3].fShifted     = ITM_EXP;
-          kbd_usr[3].gShifted     = ITM_TGLFRT;
+        kbd_usr[9].fShifted     = ITM_DRG;
+        kbd_usr[9].gShifted     = ITM_CONSTpi;
 
-          kbd_usr[4].primary      = ITM_SHIFTf;
-          kbd_usr[4].fShifted     = ITM_NULL;
-          kbd_usr[4].gShifted     = ITM_NULL;
-          kbd_usr[4].keyLblAim     = ITM_SHIFTf;
-          kbd_usr[4].primaryAim     = ITM_SHIFTf;
-          kbd_usr[4].fShiftedAim     = ITM_NULL;
-          kbd_usr[4].gShiftedAim     = ITM_NULL;
-          kbd_usr[4].primaryTam     = ITM_SHIFTf;
+        kbd_usr[3].primary=ITM_sin;
+        kbd_usr[3].fShifted=ITM_arcsin;
+        kbd_usr[6].gShifted=ITM_GTO;
+        kbd_usr[4].primary=ITM_cos;
+        kbd_usr[4].fShifted=ITM_arccos;
+        kbd_usr[7].gShifted=ITM_LBL;
+        kbd_usr[5].primary=ITM_tan;
+        kbd_usr[5].fShifted=ITM_arctan;
+        kbd_usr[8].gShifted=ITM_RTN;
+        kbd_usr[8].fShifted=ITM_RI;//6
+        kbd_usr[7].fShifted=ITM_YX; 
 
-          kbd_usr[5].primary      = ITM_SHIFTg;
-          kbd_usr[5].fShifted     = ITM_NULL;
-          kbd_usr[5].gShifted     = ITM_NULL;
-          kbd_usr[5].keyLblAim     = ITM_SHIFTg;
-          kbd_usr[5].primaryAim     = ITM_SHIFTg;
-          kbd_usr[5].fShiftedAim     = ITM_NULL;
-          kbd_usr[5].gShiftedAim     = ITM_NULL;
-          kbd_usr[5].primaryTam     = ITM_SHIFTg;
+          kbd_usr[13].gShifted  = -MNU_STK;
+          kbd_usr[14].fShifted  = ITM_MAGNITUDE;
+          kbd_usr[14].gShifted  = ITM_ARG;
+          kbd_usr[15].fShifted  = -MNU_ANGLECONV;
+          kbd_usr[24].fShifted  = -MNU_MODE; //ITM_NULL;
+          kbd_usr[29].fShifted  = -MNU_DISP;
 
-          kbd_usr[6].primaryAim     = ITM_E;
+          /*kbd_usr[6].primaryAim     = ITM_E;
           kbd_usr[7].primaryAim     = ITM_F;
           kbd_usr[8].primaryAim     = ITM_G;
-          kbd_usr[9].primaryAim     = ITM_H;
-          kbd_usr[10].primaryAim     = ITM_I;
-          kbd_usr[11].primaryAim     = ITM_J;
+          kbd_usr[9].primaryAim     = ITM_H;*/
+          kbd_usr[10].primaryAim     = ITM_NULL;
+          kbd_usr[11].primaryAim     = ITM_NULL;
 
           kbd_usr[13].primaryAim     = ITM_K;
           kbd_usr[14].primaryAim     = ITM_L;
