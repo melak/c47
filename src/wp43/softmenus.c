@@ -92,8 +92,8 @@ TO_QSPI const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_
                                              ITM_RNG,                       ITM_HIDE,                   ITM_NULL,                 ITM_NULL,              ITM_RECT,                    ITM_POLAR,                           //JM 
 
 
-                                             ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_DSTACK,               ITM_CB_LEADING_ZERO,   ITM_MULTCR,                  ITM_MULTDOT,                        //JM 
-                                             ITM_NULL,                      ITM_NULL,                   ITM_SHOIREP,              ITM_LARGELI,           ITM_CPXI,                    ITM_CPXJ,                           //JM 
+                                             ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_DSTACK,               ITM_SHOIREP,           ITM_MULTCR,                  ITM_MULTDOT,                        //JM 
+                                             ITM_SI_All,                    ITM_NULL,                   ITM_NULL,                 ITM_LARGELI,           ITM_CPXI,                    ITM_CPXJ,                           //JM 
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM 
 
                                              ITM_SETCHN,                    ITM_SETEUR,                 ITM_SETIND,               ITM_SETJPN,            ITM_SETUK,                   ITM_SETUSA,                    
@@ -519,12 +519,10 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
   #define CC_C43  ITM_NULL
   #define CC_V43  ITM_NULL
   #define CC_V43M ITM_NULL
-  #define CC_43S  ITM_NULL
 #else
   #define CC_C43  ITM_USER_C43
   #define CC_V43  ITM_USER_V43
   #define CC_V43M ITM_USER_V43MIN
-  #define CC_43S  ITM_USER_WP43S
 #endif                                             
 
 #ifdef SAVE_SPACE_DM42_7
@@ -538,10 +536,10 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
 #endif                                             
 
 
-TO_QSPI const int16_t menu_ASN[]         = { ITM_USER_DEFAULTS,             ITM_USER_COMPLEX,           CC_USER_SHIFTSA,          CC_USER_SHIFTSB,       CC_DM42,                    ITM_ASSIGN,
-                                             ITM_NULL,                      ITM_NULL,                   CC_C43,                   CC_V43M,               CC_V43,                     CC_43S,
-                                             -MNU_ASN_N,                    ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_USER_RESET,             ITM_USERMODE    };
-
+TO_QSPI const int16_t menu_ASN[]         = { CC_DM42,                       CC_USER_SHIFTSA,            CC_USER_SHIFTSB,          ITM_USER_WP43S,        ITM_NULL,                   ITM_ASSIGN,
+                                             CC_C43,                        CC_V43M,                    CC_V43,                   ITM_NULL,              ITM_NULL,                   ITM_USERMODE,
+                                            -MNU_ASN_N,                     ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                   ITM_USER_RESET    };
+ 
 
 TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_X_P2,                   ITM_X_P3,                 ITM_X_P4,              ITM_X_P5,                    ITM_X_P6,
                                              ITM_X_f1,                      ITM_X_f2,                   ITM_X_f3,                 ITM_X_f4,              ITM_X_f5,                    ITM_X_f6,

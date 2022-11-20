@@ -369,6 +369,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&topHex,                             sizeof(topHex),                             BACKUP);   //C43 JM
     save(&bcdDisplaySign,                     sizeof(bcdDisplaySign),                     BACKUP);   //C43 JM
     save(&DM_Cycling,                         sizeof(DM_Cycling),                         BACKUP);   //JM
+    save(&SI_All,                             sizeof(SI_All),                             BACKUP);   //JM
 
     fclose(BACKUP);
     printf("End of calc's backup\n");
@@ -666,6 +667,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&topHex,                             sizeof(topHex),                             BACKUP);   //C43 JM
       restore(&bcdDisplaySign,                     sizeof(bcdDisplaySign),                     BACKUP);   //C43 JM
       restore(&DM_Cycling,                         sizeof(DM_Cycling),                         BACKUP);   //JM
+      restore(&SI_All,                             sizeof(SI_All),                             BACKUP);   //JM
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
@@ -1226,7 +1228,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   sprintf(tmpString, "bcdDisplaySign\n%"       PRIu8 "\n",     bcdDisplaySign);               save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "DRG_Cycling\n%"          PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "DM_Cycling\n%"           PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString), BACKUP);
-
+  sprintf(tmpString, "SI_All\n%"               PRIu8 "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString), BACKUP);
 
 
 
@@ -2146,6 +2148,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "bcdDisplaySign"              ) == 0) { bcdDisplaySign       = stringToUint8(tmpString) != 0; }
         else if(strcmp(aimBuffer, "DRG_Cycling"                 ) == 0) { DRG_Cycling          = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "DM_Cycling"                  ) == 0) { DM_Cycling           = stringToUint8(tmpString); }
+        else if(strcmp(aimBuffer, "SI_All"                      ) == 0) { SI_All               = (bool_t)stringToUint8(tmpString) != 0; }
 
       }
     }

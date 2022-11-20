@@ -119,5 +119,6 @@ bool_t interceptSoftMenuItem(int16_t * item, int16_t x, int16_t y);
 
 
 void fnSetBCD (uint16_t bcd);
+void fnSetSI_All (uint16_t unusedButMandatoryParameter);
 
 #endif //ADDONS_H

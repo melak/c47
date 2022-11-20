@@ -955,6 +955,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void graph_stat                 (uint16_t unusedButMandatoryParameter) {}
   void fnSafeReset                (uint16_t unusedButMandatoryParameter) {}
   void fnSetBCD                   (uint16_t unusedButMandatoryParameter) {}
+  void fnSetSI_All                (uint16_t unusedButMandatoryParameter) {}
+
                                                                               //JM ^^
 #endif // GENERATE_CATALOGS
 
@@ -3022,8 +3024,8 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2017 */  { fnSetSignificantDigits,       NOPARAM,                     "SDIGS",                                       "SDIGS",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2018 */  { fnSetRoundingMode,            TM_VALUE,                    "RMODE",                                       "RMODE",                                       (0 << TAM_MAX_BITS) |     6, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NUMBER_8     },
 /* 2019 */  { fnGetRoundingMode,            NOPARAM,                     "RMODE?",                                      "RMODE?",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 2020 */  { itemToBeCoded,                NOPARAM,                     "2020",                                        "2020",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2021 */  { itemToBeCoded,                NOPARAM,                     "2021",                                        "2021",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2020 */  { fnSetSI_All,                  JC_SI_All,                   "",                                            "PFX.All",                                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2021 */  { itemToBeCoded,                NOPARAM,                     "2021",                                        "2021",                                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2022 */  { itemToBeCoded,                NOPARAM,                     "2022",                                        "2022",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2023 */  { itemToBeCoded,                NOPARAM,                     "2023",                                        "2023",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2024 */  { fnPintg,                      NOPARAM,                     "",                                            STD_SIGMA STD_y_BAR STD_DELTA "x",             (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//GRAPH

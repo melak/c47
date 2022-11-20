@@ -627,7 +627,25 @@ void fnDisplayFormatUnit(uint16_t displayFormatN) { //DONE           //JM UNIT
  ***********************************************                                                          JM UNIT */
 void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode, const char *separator) {               //JM UNIT
   displayString[0] = ' ';
+  displayString[1] = 0;
   displayString[2] = 0;
+
+  if(SI_All) {
+    switch(exponent) {
+      case -30 : displayString[1] = 'q'; break;
+      case -27 : displayString[1] = 'r'; break;
+      case -24 : displayString[1] = 'y'; break;
+      case -21 : displayString[1] = 'z'; break;
+      case -18 : displayString[1] = 'a'; break;
+      case  18 : displayString[1] = 'E'; break;
+      case  21 : displayString[1] = 'Z'; break;
+      case  24 : displayString[1] = 'Y'; break;
+      case  27 : displayString[1] = 'R'; break;
+      case  30 : displayString[1] = 'Q'; break;
+      default: break;
+    }
+  }
+
   switch(exponent) {
     case -15 : displayString[1] = 'f'; break;
     case -12 : displayString[1] = 'p'; break;
@@ -638,22 +656,26 @@ void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *di
     case  6  : displayString[1] = 'M'; break;
     case  9  : displayString[1] = 'G'; break;
     case 12  : displayString[1] = 'T'; break;
-    default: {
-      strcpy(displayString, PRODUCT_SIGN);                                                                //JM UNIT Below, copy of
-      displayString += 2;                                                                                 //JM UNIT exponentToDisplayString in display.c
-      strcpy(displayString, STD_SUB_10);                                                                  //JM UNIT
-      displayString += 2;                                                                                 //JM UNIT
-      displayString[0] = 0;                                                                               //JM UNIT
-      if(nimMode) {                                                                                       //JM UNIT
-        if(exponent != 0) {                                                                               //JM UNIT
-          supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                 //JM UNIT
-        }                                                                                                 //JM UNIT
-      }                                                                                                   //JM UNIT
-      else {                                                                                              //JM UNIT
-        supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                   //JM UNIT
-      }                                                                                                   //JM UNIT
-    }                                                                                                     //JM UNIT
+    case 15  : displayString[1] = 'P'; break;
+    default: break;
   }
+
+  if(displayString[1] == 0) {
+    strcpy(displayString, PRODUCT_SIGN);                                                                //JM UNIT Below, copy of
+    displayString += 2;                                                                                 //JM UNIT exponentToDisplayString in display.c
+    strcpy(displayString, STD_SUB_10);                                                                  //JM UNIT
+    displayString += 2;                                                                                 //JM UNIT
+    displayString[0] = 0;                                                                               //JM UNIT
+    if(nimMode) {                                                                                       //JM UNIT
+      if(exponent != 0) {                                                                               //JM UNIT
+        supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                 //JM UNIT
+      }                                                                                                 //JM UNIT
+    }                                                                                                   //JM UNIT
+    else {                                                                                              //JM UNIT
+      supNumberToDisplayString(exponent, displayString, displayValueString, false, separator);                                   //JM UNIT
+    }                                                                                                   //JM UNIT
+  }                                                                                                     //JM UNIT
+
 }                                                                                                       //JM UNIT
 
 
@@ -2114,4 +2136,10 @@ void fnSetBCD (uint16_t bcd) {
     default:break;
   }
 }
+
+
+void fnSetSI_All (uint16_t unusedButMandatoryParameter) {
+  SI_All = !SI_All;
+}
+
 

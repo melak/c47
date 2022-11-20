@@ -442,7 +442,7 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(bcdDisplaySign);                                   //JM
   storeToDtConfigDescriptor(DRG_Cycling);                                   //JM
   storeToDtConfigDescriptor(DM_Cycling);                                   //JM
-
+  storeToDtConfigDescriptor(SI_All);                                   //JM
 }
 
 
