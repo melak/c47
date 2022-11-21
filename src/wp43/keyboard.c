@@ -3279,13 +3279,10 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuUp();
         }
-      else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
-           screenUpdatingMode = SCRUPD_AUTO;
+        else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
+          screenUpdatingMode = SCRUPD_AUTO;
           if(calcMode == CM_NIM) {
             closeNim();
-          }
-          if(calcMode == CM_AIM) {
-            closeAim();
           }
           fnBst(NOPARAM);
           #if defined(DMCP_BUILD)
@@ -3352,10 +3349,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         else if(currentSoftmenuScrolls()) {
           menuUp();
         }
-        else {
-          if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
-            pemAlpha(ITM_BACKSPACE);
-          }
+        else if(!getSystemFlag(FLAG_ALPHA)) {
           fnBst(NOPARAM);
         }
         break;
@@ -3487,9 +3481,6 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           if(calcMode == CM_NIM) {
             closeNim();
           }
-          if(calcMode == CM_AIM) {
-            closeAim();
-          }
           fnSst(NOPARAM);
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
@@ -3550,11 +3541,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         else if(currentSoftmenuScrolls()) {
           menuDown();
         }
-        else {
-          if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
-            pemAlpha(ITM_BACKSPACE);
-            fnBst(NOPARAM); // Set the PGM pointer to the original position
-          }
+        else if(!getSystemFlag(FLAG_ALPHA)) {
           fnSst(NOPARAM);
         }
         break;
