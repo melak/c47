@@ -976,7 +976,7 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
             }
 
             if(lastErrorCode == 0) {
-              if(temporaryInformation == TI_VIEW) {
+              if(temporaryInformation == TI_VIEW_REGISTER) {
                 temporaryInformation = TI_NO_INFO;
                 updateMatrixHeightCache();
               }
@@ -1086,7 +1086,7 @@ bool_t allowShiftsToClearError = false;
     // Shift f pressed and JM REMOVED shift g not active
     if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) allowShiftsToClearError = true; //JM
-      if(temporaryInformation == TI_VIEW) {
+      if(temporaryInformation == TI_VIEW_REGISTER) {
         temporaryInformation = TI_NO_INFO;
         updateMatrixHeightCache();
       }
@@ -1119,7 +1119,7 @@ bool_t allowShiftsToClearError = false;
     // Shift g pressed and JM REMOVED shift f not active
     else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) allowShiftsToClearError = true; //JM
-      if(temporaryInformation == TI_VIEW) {
+      if(temporaryInformation == TI_VIEW_REGISTER) {
         temporaryInformation = TI_NO_INFO;
         updateMatrixHeightCache();
       }
@@ -1157,8 +1157,8 @@ bool_t allowShiftsToClearError = false;
       if(ShiftTimoutMode) {
         fnTimerStart(TO_FG_TIMR, TO_FG_TIMR, JM_SHIFT_TIMER); //^^
       }
-      if(temporaryInformation == TI_VIEW || temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) allowShiftsToClearError = true; //JM
-      if(temporaryInformation == TI_VIEW) {
+      if(temporaryInformation == TI_VIEW_REGISTER || temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) allowShiftsToClearError = true; //JM
+      if(temporaryInformation == TI_VIEW_REGISTER) {
         temporaryInformation = TI_NO_INFO;
         updateMatrixHeightCache();
       }
@@ -1665,11 +1665,11 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       lastErrorCode = 0;
     }
 
-    if(temporaryInformation == TI_VIEW) {
+    if(temporaryInformation == TI_VIEW_REGISTER) {
       temporaryInformation = TI_NO_INFO;
       updateMatrixHeightCache();
       if(item == ITM_UP1 || item == ITM_DOWN1 || item == ITM_EXIT1) {
-        temporaryInformation = TI_VIEW;
+        temporaryInformation = TI_VIEW_REGISTER;
       }
     }
     else if(item != ITM_UP1 && item != ITM_DOWN1 && item != ITM_EXIT1) {
@@ -2640,7 +2640,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
     switch(calcMode) {
       case CM_NORMAL: {
-        if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_VIEW) {
+        if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_SMALL || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_VIEW_REGISTER) {
           temporaryInformation = TI_NO_INFO;
         }
         else if(lastErrorCode != 0) {

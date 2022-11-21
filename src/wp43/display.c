@@ -3166,7 +3166,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
       case dtReal34Matrix:
       case dtComplex34Matrix:
         currentViewRegister = SHOWregis;
-        temporaryInformation = TI_VIEW;
+        temporaryInformation = TI_VIEW_REGISTER;
         if(programRunStop == PGM_RUNNING) {
           refreshScreen();
           fnPause(10);
@@ -3202,8 +3202,8 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
 
 void fnView(uint16_t regist) {
   if(regInRange(regist)) {
-  //  currentViewRegister = regist;
-  //  temporaryInformation = TI_VIEW;
+    // currentViewRegister = regist;
+    // temporaryInformation = TI_VIEW_REGISTER;
     SHOWregis = regist; //JM           Hack to make VIEW use the same routines as the extended SHOW
     fnShow_SCROLL(255); //JM
     if(programRunStop == PGM_RUNNING) {
