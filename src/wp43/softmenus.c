@@ -360,8 +360,8 @@ TO_QSPI const int16_t menu_alpha_omega[] = { ITM_alpha,                     ITM_
 
                                              ITM_iota_DIALYTIKA,            ITM_omicron_TONOS,          ITM_upsilon_TONOS,        ITM_upsilon_DIALYTIKA, ITM_upsilon_DIALYTIKA_TONOS, ITM_omega_TONOS               };
 
-TO_QSPI const int16_t menu_AngleConv[]   = { ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_DMS2,              ITM_MULPI2,                 -MNU_TRI,
-                                             ITM_RtoD,                      ITM_DtoR,                   ITM_DMStoD,               ITM_DtoDMS,            ITM_dotD,                    ITM_msTo                      };   //JM test new MPI stuff
+TO_QSPI const int16_t menu_AngleConv[]   = {ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_DMS2,              ITM_MULPI2,                 -MNU_TRI,
+                                             ITM_NULL,                      ITM_NULL,                   ITM_DMStoD,               ITM_DtoDMS,            ITM_dotD,                    ITM_msTo                      };   //JM test new MPI stuff
 
 
 
