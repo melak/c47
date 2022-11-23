@@ -1106,7 +1106,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   }
 
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n39\n"); //JM 16+11+12=
+  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n39\n"); //JM 16+23
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
   save(tmpString, strlen(tmpString), BACKUP);
