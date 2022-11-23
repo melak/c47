@@ -338,10 +338,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);
     save(&jm_NO_BASE_SCREEN,                  sizeof(jm_NO_BASE_SCREEN),                  BACKUP);
     save(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
-    save(&jm_HOME_ASN,                        sizeof(jm_HOME_ASN),                        BACKUP);
     save(&jm_HOME_SUM,                        sizeof(jm_HOME_SUM),                        BACKUP);
-    save(&jm_HOME_MIR,                        sizeof(jm_HOME_MIR),                        BACKUP);
-    save(&jm_HOME_FIX,                        sizeof(jm_HOME_FIX),                        BACKUP);
     save(&graph_xmin,                         sizeof(graph_xmin),                         BACKUP);
     save(&graph_xmax,                         sizeof(graph_xmax),                         BACKUP);
     save(&graph_ymin,                         sizeof(graph_ymin),                         BACKUP);
@@ -636,10 +633,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);
       restore(&jm_NO_BASE_SCREEN,                  sizeof(jm_NO_BASE_SCREEN),                  BACKUP);
       restore(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
-      restore(&jm_HOME_ASN,                        sizeof(jm_HOME_ASN),                        BACKUP);
       restore(&jm_HOME_SUM,                        sizeof(jm_HOME_SUM),                        BACKUP);
-      restore(&jm_HOME_MIR,                        sizeof(jm_HOME_MIR),                        BACKUP);
-      restore(&jm_HOME_FIX,                        sizeof(jm_HOME_FIX),                        BACKUP);
       restore(&graph_xmin,                         sizeof(graph_xmin),                         BACKUP);
       restore(&graph_xmax,                         sizeof(graph_xmax),                         BACKUP);
       restore(&graph_ymin,                         sizeof(graph_ymin),                         BACKUP);
@@ -1112,7 +1106,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   }
 
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n39\n"); //JM 16+23
+  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n39\n"); //JM 16+11+12=
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1148,7 +1142,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   save(tmpString, strlen(tmpString), BACKUP);
 //Number 16: digit
 
-
+//11
   sprintf(tmpString, "SigFigMode\n%"          PRIu8 "\n",       SigFigMode);                   save(tmpString, strlen(tmpString), BACKUP);      
   sprintf(tmpString, "eRPN\n%"                PRIu8 "\n",       (uint8_t)eRPN);                save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "HOME3\n%"               PRIu8 "\n",       (uint8_t)HOME3);               save(tmpString, strlen(tmpString), BACKUP); 
@@ -1212,23 +1206,19 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   sprintf(tmpString, "PLOT_ZMY\n%"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
 */
 
-
-  sprintf(tmpString, "jm_HOME_ASN\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_ASN);         save(tmpString, strlen(tmpString), BACKUP);       
+//12
   sprintf(tmpString, "jm_HOME_SUM\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_SUM);         save(tmpString, strlen(tmpString), BACKUP);       
-  sprintf(tmpString, "jm_HOME_MIR\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_MIR);         save(tmpString, strlen(tmpString), BACKUP);       
-  sprintf(tmpString, "jm_HOME_FIX\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_FIX);         save(tmpString, strlen(tmpString), BACKUP);       
   sprintf(tmpString, "jm_LARGELI\n%"            PRIu8 "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString), BACKUP);                 
   sprintf(tmpString, "constantFractions\n%"     PRIu8 "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString), BACKUP);                 
   sprintf(tmpString, "constantFractionsMode\n%" PRIu8 "\n",     constantFractionsMode);        save(tmpString, strlen(tmpString), BACKUP);                 
   sprintf(tmpString, "constantFractionsOn\n%"   PRIu8 "\n",     (uint8_t)constantFractionsOn); save(tmpString, strlen(tmpString), BACKUP);               
-  
-  sprintf(tmpString, "displayStackSHOIDISP\n%" PRIu8 "\n",     displayStackSHOIDISP);         save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "bcdDisplay\n%"           PRIu8 "\n",     (uint8_t)bcdDisplay);          save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "topHex\n%"               PRIu8 "\n",     (uint8_t)topHex);              save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "bcdDisplaySign\n%"       PRIu8 "\n",     bcdDisplaySign);               save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "DRG_Cycling\n%"          PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "DM_Cycling\n%"           PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "SI_All\n%"               PRIu8 "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "displayStackSHOIDISP\n%"  PRIu8 "\n",     displayStackSHOIDISP);         save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "bcdDisplay\n%"            PRIu8 "\n",     (uint8_t)bcdDisplay);          save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "topHex\n%"                PRIu8 "\n",     (uint8_t)topHex);              save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "bcdDisplaySign\n%"        PRIu8 "\n",     bcdDisplaySign);               save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "DRG_Cycling\n%"           PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "DM_Cycling\n%"            PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "SI_All\n%"                PRIu8 "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString), BACKUP);
 
 
 
@@ -2132,10 +2122,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "PLOT_ZMX\n"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString), BACKUP);    
         else if(strcmp(aimBuffer, "PLOT_ZMY\n"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
 */
-        else if(strcmp(aimBuffer, "jm_HOME_ASN"                 ) == 0) { jm_HOME_ASN           = (bool_t)stringToUint8(tmpString) != 0; }  
         else if(strcmp(aimBuffer, "jm_HOME_SUM"                 ) == 0) { jm_HOME_SUM           = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "jm_HOME_MIR"                 ) == 0) { jm_HOME_MIR           = (bool_t)stringToUint8(tmpString) != 0; } 
-        else if(strcmp(aimBuffer, "jm_HOME_FIX"                 ) == 0) { jm_HOME_FIX           = (bool_t)stringToUint8(tmpString) != 0; }     
         else if(strcmp(aimBuffer, "jm_LARGELI"                  ) == 0) { jm_LARGELI            = (bool_t)stringToUint8(tmpString) != 0; }         
         else if(strcmp(aimBuffer, "constantFractions"           ) == 0) { constantFractions     = (bool_t)stringToUint8(tmpString) != 0; }             
         else if(strcmp(aimBuffer, "constantFractionsMode"       ) == 0) { constantFractionsMode = stringToUint8(tmpString); }      

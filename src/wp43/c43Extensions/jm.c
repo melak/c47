@@ -131,15 +131,9 @@ void reset_jm_defaults(int16_t toload) {
 
     graph_reset();
 
-    jm_HOME_ASN = false;                                       //JMHOME
     jm_HOME_SUM = false;                                       //JMHOME
-    jm_HOME_MIR = true;                                        //JMHOME
-    jm_HOME_FIX = false;                                       //JMHOME
     #if defined(DMCP_BUILD) || defined(JM_LAYOUT_2_DM42_STRICT)//JM LAYOUT 2. DM42 STRICT.
-    jm_HOME_ASN = false;                                       //JMHOME
     jm_HOME_SUM = false;                                       //JMHOME
-    jm_HOME_MIR = true;                                        //JMHOME
-    jm_HOME_FIX = false;                                       //JMHOME
     #endif
     jm_LARGELI=true;
     constantFractions=false;                                   //JM
@@ -232,23 +226,6 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
 
   case JC_H_SUM:                                      //JM
     jm_HOME_SUM = !jm_HOME_SUM;
-    fnRefreshState();                                 //drJM
-    break;
-
-  case JC_H_MIR:                                      //JM
-    jm_HOME_MIR = !jm_HOME_MIR;
-    if(!jm_HOME_MIR) jm_HOME_ASN = false;
-    fnRefreshState();                                 //drJM
-    break;
-
-  case JC_H_ASN:                                      //JM
-    jm_HOME_ASN = !jm_HOME_ASN;
-    if(jm_HOME_ASN) jm_HOME_MIR = true;
-    fnRefreshState();                                 //drJM
-    break;
-
-  case JC_H_FIX:                                      //JM
-    jm_HOME_FIX = !jm_HOME_FIX;
     fnRefreshState();                                 //drJM
     break;
 

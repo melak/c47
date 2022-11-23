@@ -2079,6 +2079,7 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
 
 
 void greyOutSoftMenuItem(int16_t x, int16_t y, int16_t currentFirstItem) {
+/*
 //printf(">>>> #### x=%d y=%d c1st=%d %d %d %d\n",x,y, currentFirstItem, menu_A_HOME[x + y*6] , kbd_std[menu_A_HOME[x + y*6]    ].primary, kbd_usr[menu_A_HOME[x + y*6]    ].primary);
   if(jm_HOME_ASN && menu_A_HOME[x + y*6] >= 0  &&  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HOME &&
        (
@@ -2097,26 +2098,10 @@ void greyOutSoftMenuItem(int16_t x, int16_t y, int16_t currentFirstItem) {
       }
     }                
   }
+*/
 }
 
 
-bool_t interceptSoftMenuItem(int16_t *item, int16_t x, int16_t y) {
-  bool_t ret = false;
-    if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HOME) {
-      //printf("x:%d y:%d 6y:%d x + y*6:%d menu_A_HOME[x + y*6]=%d menuId=%d currentFirstItem=%d/18=%d --> ",x,y,6*y,x + y*6,menu_A_HOME[x + y*6],softmenu[softmenuStack[0].softmenu].menuId,currentFirstItem,currentFirstItem/18);  //JMHOME
-      if(  menu_A_HOME[x + y*6] >= 0) {                                          //JMHOME
-        if(menu_A_HOME[x + y*6] < 100) {*item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[x + y*6]    ].primary ) : (kbd_usr[menu_A_HOME[x + y*6]    ].primary );ret = true;} else
-        if(menu_A_HOME[x + y*6] < 200) {*item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[x + y*6]-100].fShifted) : (kbd_usr[menu_A_HOME[x + y*6]-100].fShifted);ret = true;} else
-        if(menu_A_HOME[x + y*6]>= 200) {*item = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[x + y*6]-200].gShifted) : (kbd_usr[menu_A_HOME[x + y*6]-200].gShifted);ret = true;}
-      } else {
-        if(!getSystemFlag(FLAG_USER) && menu_A_HOME[x + y*6] == 0 && (calcMode == CM_NORMAL || calcMode == CM_NIM) && (Norm_Key_00_VAR != kbd_std[0].primary)){
-            *item = Norm_Key_00_VAR;
-            ret = true;
-        }
-      }
-    }
-    return ret;
-  }
 
 #endif //TESTSUITE_BUILD
 
