@@ -1112,7 +1112,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   }
 
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n39\n"); //JM 16+23
+  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n42\n"); //JM 16+11+15 = 42
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1149,6 +1149,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
 //Number 16: digit
 
 
+//11
   sprintf(tmpString, "SigFigMode\n%"          PRIu8 "\n",       SigFigMode);                   save(tmpString, strlen(tmpString), BACKUP);      
   sprintf(tmpString, "eRPN\n%"                PRIu8 "\n",       (uint8_t)eRPN);                save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "HOME3\n%"               PRIu8 "\n",       (uint8_t)HOME3);               save(tmpString, strlen(tmpString), BACKUP); 
@@ -1212,7 +1213,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   sprintf(tmpString, "PLOT_ZMY\n%"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
 */
 
-
+//15
   sprintf(tmpString, "jm_HOME_ASN\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_ASN);         save(tmpString, strlen(tmpString), BACKUP);       
   sprintf(tmpString, "jm_HOME_SUM\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_SUM);         save(tmpString, strlen(tmpString), BACKUP);       
   sprintf(tmpString, "jm_HOME_MIR\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_MIR);         save(tmpString, strlen(tmpString), BACKUP);       
@@ -1220,15 +1221,14 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   sprintf(tmpString, "jm_LARGELI\n%"            PRIu8 "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString), BACKUP);                 
   sprintf(tmpString, "constantFractions\n%"     PRIu8 "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString), BACKUP);                 
   sprintf(tmpString, "constantFractionsMode\n%" PRIu8 "\n",     constantFractionsMode);        save(tmpString, strlen(tmpString), BACKUP);                 
-  sprintf(tmpString, "constantFractionsOn\n%"   PRIu8 "\n",     (uint8_t)constantFractionsOn); save(tmpString, strlen(tmpString), BACKUP);               
-  
-  sprintf(tmpString, "displayStackSHOIDISP\n%" PRIu8 "\n",     displayStackSHOIDISP);         save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "bcdDisplay\n%"           PRIu8 "\n",     (uint8_t)bcdDisplay);          save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "topHex\n%"               PRIu8 "\n",     (uint8_t)topHex);              save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "bcdDisplaySign\n%"       PRIu8 "\n",     bcdDisplaySign);               save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "DRG_Cycling\n%"          PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "DM_Cycling\n%"           PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "SI_All\n%"               PRIu8 "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "constantFractionsOn\n%"   PRIu8 "\n",     (uint8_t)constantFractionsOn); save(tmpString, strlen(tmpString), BACKUP);                 
+  sprintf(tmpString, "displayStackSHOIDISP\n%"  PRIu8 "\n",     displayStackSHOIDISP);         save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "bcdDisplay\n%"            PRIu8 "\n",     (uint8_t)bcdDisplay);          save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "topHex\n%"                PRIu8 "\n",     (uint8_t)topHex);              save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "bcdDisplaySign\n%"        PRIu8 "\n",     bcdDisplaySign);               save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "DRG_Cycling\n%"           PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "DM_Cycling\n%"            PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "SI_All\n%"                PRIu8 "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString), BACKUP);
 
 
 
