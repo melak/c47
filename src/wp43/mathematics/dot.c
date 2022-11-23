@@ -105,12 +105,15 @@ void fnDot(uint16_t unusedButMandatoryParameter) {
 // Complex dot product calculation functionS
 //-----------------------------------------------------------------------------
 
-static void dotCplx(real_t *xReal, real_t *xImag, real_t *yReal, real_t *yImag, real_t *rReal, realContext_t *realContext) {
-  real_t t;
+// Numerically stable dot product funtion.  Slower but accurate.
+static void dotCplx(const real_t *xReal, const real_t *xImag, const real_t *yReal, const real_t *yImag, real_t *rReal, realContext_t *realContext) {
+  real_t p, t;
 
-  realMultiply(xReal, yReal, &t, realContext);     // t = xReal * yReal
-  realMultiply(xImag, yImag, rReal, realContext);      // r = xImag * yImag
-  realAdd(&t, rReal, rReal, realContext);     // r = r + t
+  realMultiply(xReal, yReal, &p, realContext);
+  realFMA(xImag, yImag, &p, &t, realContext);
+  realChangeSign(&p);
+  realFMA(xReal, yReal, &p, rReal, realContext);
+  realAdd(rReal, &t, rReal, realContext);
 }
 
 /********************************************//**
@@ -149,10 +152,10 @@ void dotLonICplx(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
-  convertLongIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal39);
+  convertLongIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal75);
   real34ToReal(const34_0, &yImag);
 
-  dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
+  dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal75);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
   convertRealToReal34ResultRegister(&rReal, REGISTER_X);
@@ -237,13 +240,13 @@ void dotCplxLonI(void) {
   real_t xReal, xImag, yReal, yImag;
   real_t rReal;
 
-  convertLongIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal39);
+  convertLongIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal75);
   real34ToReal(const34_0, &xImag);
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &yImag);
 
-  dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
+  dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal75);
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
   convertRealToReal34ResultRegister(&rReal, REGISTER_X);
