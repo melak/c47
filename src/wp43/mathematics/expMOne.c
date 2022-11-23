@@ -26,6 +26,9 @@
 #include "error.h"
 #include "fonts.h"
 #include "items.h"
+#include "mathematics/exp.h"
+#include "mathematics/multiplication.h"
+#include "mathematics/sin.h"
 #include "mathematics/wp34s.h"
 #include "matrix.h"
 #include "registers.h"
@@ -82,7 +85,7 @@ void fnExpM1(uint16_t unusedButMandatoryParameter) {
 
 
 void expM1Complex(const real_t *real, const real_t *imag, real_t *resReal, real_t *resImag, realContext_t *realContext) {
-  real_t expa, sin, cos;
+  real_t z2_real, z2_imag, e_real, e_imag;
 
   if(realIsZero(imag)) {
     if(realIsInfinite(real) && realIsNegative(real)) {
@@ -90,8 +93,7 @@ void expM1Complex(const real_t *real, const real_t *imag, real_t *resReal, real_
       realZero(resImag);
       return;
     }
-    realExp(real, resReal, realContext);
-    realSubtract(resReal, const_1, resReal, realContext);
+    realExpM1(real, resReal, realContext);
     realZero(resImag);
     return;
   }
@@ -102,11 +104,24 @@ void expM1Complex(const real_t *real, const real_t *imag, real_t *resReal, real_
     return;
   }
 
- realExp(real, &expa, realContext);
- WP34S_Cvt2RadSinCosTan(imag, amRadian, &sin, &cos, NULL, realContext);
- realMultiply(&expa, &cos, resReal, realContext);
- realMultiply(&expa, &sin, resImag, realContext);
- realSubtract(resReal, const_1, resReal, realContext);
+  /* Complex (e^z)-1.
+   *
+   * With a bit of algebra it can be shown that:
+   *	e^z - 1 = -exp(z/2) * 2*i*sin(i*z/2)
+   * which has no obvious accuracy issues inherent here.
+   *
+   * The negation and multiplication by i are simplified to negates and swaps.
+   */
+  realMultiply(real, const_1on2, &z2_real, realContext);
+  realMultiply(imag, const_1on2, &z2_imag, realContext);
+  expComplex(&z2_real, &z2_imag, &e_real, &e_imag, realContext);
+  realChangeSign(&e_real);
+  realAdd(&e_real, &e_real, &e_real, realContext);
+  realAdd(&e_imag, &e_imag, &e_imag, realContext);
+  /* sin(i * z/2) */
+  realChangeSign(&z2_imag);
+  sinComplex(&z2_imag, &z2_real, &z2_real, &z2_imag, realContext);
+  mulComplexComplex(&z2_real, &z2_imag, &e_imag, &e_real, resReal, resImag, realContext);
 }
 
 
@@ -152,7 +167,21 @@ void expM1ShoI(void) {
   convertRealToReal34ResultRegister(&x, REGISTER_X);
 }
 
-
+void realExpM1(const real_t *x, real_t *res, realContext_t *realContext)
+{
+  if(realIsInfinite(x) && realIsNegative(x)) {
+    realCopy(const__1, res);
+  }
+  else if(realIsInfinite(x) && realIsPositive(x)) {
+    realCopy(const_plusInfinity, res);
+  }
+  else if(realIsSpecial(x)) {
+    realCopy(const_NaN, res);
+  }
+  else {
+    WP34S_ExpM1(x, res, realContext);
+  }
+}
 
 void expM1Real(void) {
   if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X)) && !getSystemFlag(FLAG_SPCRES)) {
@@ -166,20 +195,7 @@ void expM1Real(void) {
   real_t x;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
-
-  if(realIsInfinite(&x) && realIsNegative(&x)) {
-    realCopy(const__1, &x);
-  }
-  else if(realIsInfinite(&x) && realIsPositive(&x)) {
-    realCopy(const_plusInfinity, &x);
-  }
-  else if(realIsSpecial(&x)) {
-    realCopy(const_NaN, &x);
-  }
-  else {
-    realExp(&x, &x, &ctxtReal51);
-    realSubtract(&x, const_1, &x, &ctxtReal51);
-  }
+  realExpM1(&x, &x, &ctxtReal39);
   convertRealToReal34ResultRegister(&x, REGISTER_X);
   setRegisterAngularMode(REGISTER_X, amNone);
 }
