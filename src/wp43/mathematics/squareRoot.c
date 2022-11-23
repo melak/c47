@@ -27,8 +27,7 @@
 #include "fonts.h"
 #include "integers.h"
 #include "items.h"
-#include "mathematics/toPolar.h"
-#include "mathematics/toRect.h"
+#include "mathematics/magnitude.h"
 #include "matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -214,9 +213,22 @@ void sqrtComplex(const real_t *real, const real_t *imag, real_t *resReal, real_t
     realZero(resImag);
   }
   else {
-    realRectangularToPolar(real, imag, resReal, resImag, realContext);
-    realSquareRoot(resReal, resReal, realContext);
-    realMultiply(resImag, const_1on2, resImag, realContext);
-    realPolarToRectangular(resReal, resImag, resReal, resImag, realContext);
+    // Abramowitz and Stegun §3.7.27
+    //   √(a + b i) = √(½(r + a)) + i sgn(b) √(½(r - a)) where r = √(a² + b²)
+    // Hence
+    //   √(a + b i) = (√(2) / 2) (√(r + a) + i sgn(b) √(r - a))
+    real_t r, u, v;
+
+    complexMagnitude(real, imag, &r, realContext);
+    realSubtract(&r, real, &v, realContext);
+    realSquareRoot(&v, &u, realContext);    // u = sqrt(r - a)
+    realAdd(&r, real, &v, realContext);
+    if(realIsNegative(imag)) {
+      realChangeSign(&u);
+    }
+    realMultiply(&u, const_root2on2, resImag, realContext);
+
+    realSquareRoot(&v, &u, realContext);    // u = sqrt(r + a)
+    realMultiply(&u, const_root2on2, resReal, realContext);
   }
 }
