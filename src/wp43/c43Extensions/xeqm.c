@@ -330,7 +330,6 @@ TO_QSPI const function_t indexOfFunctions[] = {
 //           {ITM_RJ,   "RJ"},
 //           {ITM_MASKL,   "MASKL"},
 //           {ITM_MASKR,   "MASKR"},
-//           {ITM_MIRROR,   "MIRROR"},
 //           {ITM_NUMB,   "#B"},
 //           {ITM_SDL,   "SDL"},
 //           {ITM_SDR,   "SDR"},

@@ -171,10 +171,7 @@ bool_t                doRefreshSoftMenu;                       //dr
 bool_t                jm_FG_LINE;                              //JM Screen / keyboard operation setup
 bool_t                jm_NO_BASE_SCREEN;                              //JM Screen / keyboard operation setup
 bool_t                jm_G_DOUBLETAP;                          //JM Screen / keyboard operation setup
-bool_t                jm_HOME_ASN;                             //JMHOME
 bool_t                jm_HOME_SUM;                             //JMHOME
-bool_t                jm_HOME_MIR;                             //JMHOME
-bool_t                jm_HOME_FIX;                             //JMHOME
 bool_t                jm_LARGELI;
 bool_t                constantFractions;                       //JM
 uint8_t               constantFractionsMode;

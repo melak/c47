@@ -179,7 +179,7 @@ TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_
 
                                              ITM_NO_BASE_SCREEN,            ITM_BASE_HOME,             ITM_HOMEx3,                ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
                                              ITM_SAFERESET,                 ITM_TST,                   ITM_NULL,                  ITM_NULL,              ITM_NULL,                    ITM_NULL,                        //JM
-                                             ITM_SYS,                       ITM_NULL,                  ITM_H_ASNKEY,              ITM_H_REPLCA,          ITM_H_SUMRY,                 ITM_H_FIXED                    };
+                                             ITM_SYS,                       ITM_NULL,                  ITM_NULL,                  ITM_NULL,              ITM_H_SUMRY,                 ITM_NULL                    };
 
 
 TO_QSPI const int16_t menu_PARTS[]       = { ITM_IP,                        ITM_FP,                     ITM_MANT,                 ITM_EXPT,              ITM_SIGN,                    ITM_DECOMP,
@@ -546,38 +546,6 @@ TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_
                                              ITM_X_g1,                      ITM_X_g2,                   ITM_X_g3,                 ITM_X_g4,              ITM_X_g5,                    ITM_X_g6   };
 
 
-
-//##################################################################################################################################################################################################################################
-//#################################  -1     : softmenu contents not dynamically changing 
-//#################################   0- 36 : softmenu contents copied from key number Primary 0-36
-//################################# 100-136 : softmenu contents copied from key number f 0-36
-//################################# 200-236 : softmenu contents copied from key number g 0-36
-TO_QSPI const int16_t menu_A_HOME[360]   = { -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1,               //HOME  0
-                                             -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1,               //HOME -1  (Dn = -)
-                                             -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1,               //HOME -2
-        
-                                             -1,32,33,34,35,36,        -1 ,132,133,134,135,136,  -1 ,232,233,234,235,236,         //REPLICA ROW 7
-                                             -1,27,28,29,30,31,        -1 ,127,128,129,130,131,  -1 ,227,228,229,230,231,         //REPLICA ROW 6
-                                             -1,22,23,24,25,26,        -1 ,122,123,124,125,126,  -1 ,222,223,224,225,226,         //REPLICA ROW 5
-                                             -1,17,18,19,20,21,        -1 ,117,118,119,120,121,  -1 ,217,218,219,220,221,         //REPLICA ROW 4
-                                             -1,12,13,14,15,16,        -1 ,112,113,114,115,116,  -1 ,212,213,214,215,216,         //REPLICA ROW 3
-                                             6 , 7, 8, 9,10,11,        106,107,108,109,110,111,  206,207,208,209,210,211,         //REPLICA ROW 2
-                                             0 , 1, 2, 3, 4, 5,        100,101,102,103,104,105,  200,201,202,203,204,205,         //REPLICA ROW 1
-        
-                                             233,217,218,219,220,221,  234,222,223,224,225,226,  235,236,228,229,230,231,         //SUMMARY 2    Change all to -1 to have the fixed system
-                                             200,201,202,203,204,205,  206,207,208,209,210,211,  232,212,213,214,215,216,         //SUMMARY 1    Change all to -1 to have the fixed system
-        
-                                             -1,-1,-1,-1,-1,-1,        -1 ,132,133,134,135,136,  -1 ,232,233,234,235,136,         //FIXED ROW 7
-                                             -1,-1,-1,-1,-1,-1,        -1 ,127,128,129,130,131,  -1 ,227,228,229,230,231,         //FIXED ROW 6
-                                             -1,-1,-1,-1,-1,-1,        -1 ,122,123,124,125,126,  -1 ,222,223,224,225,226,         //FIXED ROW 5
-                                             -1,-1,-1,-1,-1,-1,        -1 ,117,118,119,120,121,  -1 ,217,218,219,220,221,         //FIXED ROW 4
-                                             -1,-1,-1,-1,-1,-1,        -1 ,112,113,114,115,116,  -1 ,212,213,214,215,216,         //FIXED ROW 3
-                                             -1,-1,-1,-1,-1,-1,        106,107,108,109,110,111,  206,207,208,209,210,211,         //FIXED ROW 2
-                                             -1,-1,-1,-1,-1,-1,        100,101,102,103,104,105,  200,201,202,203,204,205,         //FIXED ROW 1
-        
-                                             -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1,        -1,-1,-1,-1,-1,-1        };      //HOME  +1  (Up = +)
-        
-
 #ifdef SAVE_SPACE_DM42_6
   #define CC_EE  ITM_NULL
 #else
@@ -585,7 +553,7 @@ TO_QSPI const int16_t menu_A_HOME[360]   = { -1,-1,-1,-1,-1,-1,        -1,-1,-1,
 #endif                                             
 
 
-TO_QSPI const int16_t menu_HOME[360]     = { //JMHOMEDEMO: NOTE REMOVE CONST TO MAKE JMHOME DEMO WORK
+TO_QSPI const int16_t menu_HOME[]     = { //JM
 /*HOME0 */           
 /*0x18*/                                     ITM_DRG,              ITM_YX,         ITM_SQUARE,        ITM_10x,          ITM_EXP,         ITM_CC,                    //JM HOME
                                              ITM_MAGNITUDE,       ITM_ARG,         ITM_PARALLEL,      ITM_XFACT,        ITM_toREC2,       ITM_toPOL2,                    //JM HOME
@@ -599,73 +567,7 @@ TO_QSPI const int16_t menu_HOME[360]     = { //JMHOMEDEMO: NOTE REMOVE CONST TO 
                                              -MNU_CONST,         -MNU_CPX,        -MNU_EXP,          -MNU_XEQ,         -MNU_MyMenu,      CC_EE,                            //JM HOME
                                              ITM_DEG2,            ITM_RAD2,        ITM_GRAD2,         ITM_op_j,         ITM_RECT,        ITM_POLAR, 
 
-                                       
-// 03 -- 09 HAAKON SUGGESTIONS OF FULL REPLICA
-#ifdef JM_LAYOUT_1A  //JM UPDATED TO LAYOUT 1C. OPTIMAL. SIMULATOR.
-//keyId primary           fShifted         gShifted      keyLblAim       primaryAim         fShiftedAim      gShiftedAim    primaryTam
 
-                                             ITM_NULL,                 ITM_EXIT1,                ITM_0,                    ITM_PERIOD,               ITM_RS,                   ITM_ADD,                  
-                                             ITM_NULL,                 ITM_OFF,                  ITM_VIEW,                 ITM_SHOW,                 ITM_PR,                   -MNU_CATALOG,             
-                                             ITM_NULL,                 -MNU_PRINT,               ITM_TIMER,                -MNU_INFO,                -MNU_PFN,                 -MNU_IO,                  
-
-                                             ITM_NULL,                 KEY_fg,                   ITM_1,                    ITM_2,                    ITM_3,                    ITM_SUB,                  
-                                             ITM_NULL,                 ITM_NULL,                 ITM_ASSIGN,               ITM_USERMODE,             -MNU_PARTS,               -MNU_FIN,                 
-                                             ITM_NULL,                 ITM_NULL,                 -MNU_ASN,                 -MNU_LOOP,                -MNU_TEST,                -MNU_ALPHAFN,             
-
-                                             ITM_NULL,                 ITM_DOWN1,                ITM_4,                    ITM_5,                    ITM_6,                    ITM_MULT,                 
-                                             ITM_NULL,                 ITM_SST,                  -MNU_BASE,                -MNU_ANGLECONV,           -MNU_FLAGS,               -MNU_PROB,                
-                                             ITM_NULL,                 ITM_FLGSV,                -MNU_CLK,                 -MNU_UNITCONV,            -MNU_BITS,                -MNU_INTS,                
-
-                                             ITM_NULL,                 ITM_UP1,                  ITM_7,                    ITM_8,                    ITM_9,                    ITM_DIV,                  
-                                             ITM_NULL,                 ITM_BST,                  -MNU_EQN,                 -MNU_ADV,                 -MNU_MATX,                -MNU_STAT,                
-                                             ITM_NULL,                 ITM_RBR,                  -MNU_HOME,                -MNU_CONST,               -MNU_XFN,                 -MNU_SUMS,                
-
-                                             ITM_NULL,                 ITM_ENTER,                ITM_XexY,                 ITM_CHS,                  ITM_EXPONENT,             ITM_BACKSPACE,            
-                                             ITM_NULL,                 KEY_COMPLEX,              ITM_LASTX,                -MNU_MODE,                -MNU_DISP,                ITM_UNDO,                 
-                                             ITM_NULL,                 -MNU_CPX,                 ITM_Rup,                  -MNU_STK,                 -MNU_EXP,                 -MNU_CLR,                 
-
-                                             ITM_STO,                  ITM_RCL,                  ITM_Rdown,                ITM_sin,                  ITM_cos,                  ITM_tan,                  
-                                             ITM_MAGNITUDE,            ITM_PC,                   ITM_CONSTpi,              ITM_arcsin,               ITM_arccos,               ITM_arctan,               
-                                             ITM_ARG,                  ITM_DELTAPC,              ITM_XTHROOT,              ITM_GTO,                  ITM_LBL,                  ITM_RTN,                  
-
-                                             ITM_SIGMAPLUS,            ITM_1ONX,                 ITM_SQUAREROOTX,          ITM_LOG10,                ITM_LN,                   ITM_XEQ,                  
-                                             ITM_RI/*ITM_RND*/,        ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_AIM,                  
-                                             ITM_TGLFRT,               ITM_HASH_JM/*ITM_toINT*/, ITM_ms,                   ITM_dotD,                 ITM_toREC2,               ITM_toPOL2,
-//keyId primary           fShifted         gShifted      keyLblAim       primaryAim         fShiftedAim      gShiftedAim    primaryTam
-#endif //JM END OF LAYOUT 1a.
-
-
-#ifdef JM_LAYOUT_2_DM42_STRICT //JM DM42 STRICT. NAME CHANGE FROM LAYOUT 2 TO LAYOUT 42C
-//keyId primary           fShifted         gShifted      keyLblAim       primaryAim         fShiftedAim      gShiftedAim    primaryTam
-                                             ITM_NULL,                 ITM_EXIT1,                ITM_0,                    ITM_PERIOD,               ITM_RS,                   ITM_ADD,                  
-                                             ITM_NULL,                 ITM_OFF,                  -MNU_HOME,                ITM_SHOW,                 ITM_PR,                   -MNU_CATALOG,             
-                                             ITM_NULL,                 -MNU_PRINT,               ITM_TIMER,                ITM_VIEW,                 -MNU_CLK,                 -MNU_PARTS,               
-
-                                             ITM_NULL,                 KEY_fg,                   ITM_1,                    ITM_2,                    ITM_3,                    ITM_SUB,                  
-                                             ITM_NULL,                 ITM_NULL,                 ITM_ASSIGN,               ITM_USERMODE,             -MNU_PFN,                 -MNU_IO,                  
-                                             ITM_NULL,                 ITM_NULL,                 -MNU_ASN,                 -MNU_LOOP,                -MNU_TEST,                -MNU_ALPHAFN,             
-
-                                             ITM_NULL,                 ITM_DOWN1,                ITM_4,                    ITM_5,                    ITM_6,                    ITM_MULT,                 
-                                             ITM_NULL,                 ITM_SST,                  -MNU_BASE,                -MNU_ANGLECONV,           -MNU_FLAGS,               -MNU_PROB,                
-                                             ITM_NULL,                 ITM_FLGSV,                -MNU_FIN,                 -MNU_UNITCONV,            -MNU_BITS,                -MNU_INTS,                
-
-                                             ITM_NULL,                 ITM_UP1,                  ITM_7,                    ITM_8,                    ITM_9,                    ITM_DIV,                  
-                                             ITM_NULL,                 ITM_BST,                  -MNU_EQN,                 -MNU_ADV,                 -MNU_MATX,                -MNU_STAT,                
-                                             ITM_NULL,                 ITM_RBR,                  -MNU_INFO,                -MNU_CONST,               -MNU_XFN,                 -MNU_SUMS,                
-
-                                             ITM_NULL,                 ITM_ENTER,                ITM_XexY,                 ITM_CHS,                  ITM_EXPONENT,             ITM_BACKSPACE,            
-                                             ITM_NULL,                 ITM_AIM,                  ITM_LASTX,                -MNU_MODE,                -MNU_DISP,                -MNU_CLR,                 
-                                             ITM_NULL,                 -MNU_CPX,                 ITM_Rup,                  -MNU_STK,                 -MNU_EXP,                 ITM_UNDO,                 
-
-                                             ITM_STO,                  ITM_RCL,                  ITM_Rdown,                ITM_sin,                  ITM_cos,                  ITM_tan,                  
-                                             KEY_COMPLEX,              ITM_PC,                   ITM_CONSTpi,              ITM_arcsin,               ITM_arccos,               ITM_arctan,               
-                                             ITM_MAGNITUDE,            ITM_ARG,                  ITM_XTHROOT,              ITM_CC,                   ITM_LBL,                  ITM_RTN,                  
-
-                                             ITM_SIGMAPLUS,            ITM_1ONX,                 ITM_SQUAREROOTX,          ITM_LOG10,                ITM_LN,                   ITM_XEQ,                  
-                                             ITM_SIGMAMINUS,           ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_GTO,                  
-                                             ITM_TGLFRT,               ITM_HASH_JM,              ITM_ms,                   ITM_dotD,                 ITM_toREC2,               ITM_toPOL2,               
-//keyId primary           fShifted         gShifted      keyLblAim       primaryAim         fShiftedAim      gShiftedAim    primaryTam
-#endif //JM END OF LAYOUT 2 DM42 STRICT.
 
 
 
@@ -677,72 +579,6 @@ TO_QSPI const int16_t menu_HOME[360]     = { //JMHOMEDEMO: NOTE REMOVE CONST TO 
 /* g       */                                ITM_TGLFRT,           ITM_HASH_JM,      ITM_ms,           ITM_dotD,         ITM_toREC2,       ITM_toPOL2,    
 /* g       */                                ITM_MAGNITUDE,        ITM_ARG,          ITM_XTHROOT,      ITM_CC,           ITM_LBL,          ITM_RTN,      
 /* g       */                                -MNU_PRINT,           -MNU_CPX,         ITM_Rup,          -MNU_STK,         -MNU_EXP,         ITM_UNDO,       
-
-// 12 - 18 JACO PROPOSAL WITH FIXED BUTTONS RUNG #1, ALL F-functions on RUNG #2, ALL G-functions on RUNG #3
-//
-//################################################################################################
- #ifdef JM_LAYOUT_1A  //JM UPDATED TO LAYOUT 1C. OPTIMAL. SIMULATOR.
-//keyId primary           fShifted         gShifted      keyLblAim       primaryAim         fShiftedAim      gShiftedAim    primaryTam
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            ITM_EXIT1,                ITM_OFF,                  ITM_VIEW,                 ITM_SHOW,                 ITM_PR,                   -MNU_CATALOG,             
-                                            ITM_EXIT1,                -MNU_PRINT,               ITM_TIMER,                -MNU_INFO,                -MNU_PFN,                 -MNU_IO,                  
-                
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            KEY_fg,                   ITM_NULL,                 ITM_ASSIGN,               ITM_USERMODE,             -MNU_PARTS,               -MNU_FIN,                 
-                                            KEY_fg,                   ITM_NULL,                 -MNU_ASN,                 -MNU_LOOP,                -MNU_TEST,                -MNU_ALPHAFN,             
-                
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            ITM_DOWN1,                ITM_SST,                  -MNU_BASE,                -MNU_ANGLECONV,           -MNU_FLAGS,               -MNU_PROB,                
-                                            ITM_DOWN1,                ITM_FLGSV,                -MNU_CLK,                 -MNU_UNITCONV,            -MNU_BITS,                -MNU_INTS,                
-                
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            ITM_UP1,                  ITM_BST,                  -MNU_EQN,                 -MNU_ADV,                 -MNU_MATX,                -MNU_STAT,                
-                                            ITM_UP1,                  ITM_RBR,                  -MNU_HOME,                -MNU_CONST,               -MNU_XFN,                 -MNU_SUMS,                
-                
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            ITM_ENTER,                KEY_COMPLEX,              ITM_LASTX,                -MNU_MODE,                -MNU_DISP,                 ITM_UNDO,                 
-                                            ITM_ENTER,                -MNU_CPX,                 ITM_Rup,                  -MNU_STK,                 -MNU_EXP,                 -MNU_CLR,                 
-                
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            KEY_COMPLEX,              ITM_MAGNITUDE,            ITM_PC,                   ITM_CONSTpi,              ITM_arcsin,               ITM_arccos,               
-                                            ITM_MAGNITUDE,            ITM_ARG,                  ITM_DELTAPC,              ITM_XTHROOT,              ITM_GTO,                  ITM_LBL,                  
-                
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_GTO,  
-                                            ITM_TGLFRT,               ITM_TGLFRT,               ITM_HASH_JM/*ITM_toINT*/, ITM_ms,                   ITM_dotD,                 ITM_toREC2,
-#endif //JM END OF LAYOUT 1a.
-
-
-#ifdef JM_LAYOUT_2_DM42_STRICT //JM DM42 STRICT. NAME CHANGE FROM LAYOUT 2 TO LAYOUT 42C
-//keyId primary           fShifted         gShifted      keyLblAim       primaryAim         fShiftedAim      gShiftedAim    primaryTam
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            ITM_EXIT1,                ITM_OFF,                  -MNU_HOME,                ITM_SHOW,                 ITM_PR,                   -MNU_CATALOG,             
-                                            ITM_EXIT1,                -MNU_PRINT,               ITM_TIMER,                ITM_VIEW,                 -MNU_CLK,                 -MNU_PARTS,               
-
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            KEY_fg,                   ITM_NULL,                 ITM_ASSIGN,               ITM_USERMODE,             -MNU_PFN,                 -MNU_IO,                  
-                                            KEY_fg,                   ITM_NULL,                 -MNU_ASN,                 -MNU_LOOP,                -MNU_TEST,                -MNU_ALPHAFN,             
- 
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            ITM_DOWN1,                ITM_SST,                  -MNU_BASE,                -MNU_ANGLECONV,           -MNU_FLAGS,               -MNU_PROB,                
-                                            ITM_DOWN1,                ITM_FLGSV,                -MNU_FIN,                 -MNU_UNITCONV,            -MNU_BITS,                -MNU_INTS,                
-
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            ITM_UP1,                  ITM_BST,                  -MNU_EQN,                 -MNU_ADV,                 -MNU_MATX,                -MNU_STAT,                
-                                            ITM_UP1,                  ITM_RBR,                  -MNU_INFO,                -MNU_CONST,               -MNU_XFN,                 -MNU_SUMS,                
-
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            ITM_ENTER,                ITM_AIM,                  ITM_LASTX,                -MNU_MODE,                -MNU_DISP,                 -MNU_CLR,                 
-                                            ITM_ENTER,                -MNU_CPX,                 ITM_Rup,                  -MNU_STK,                 -MNU_EXP,                 ITM_UNDO,                 
-
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            KEY_COMPLEX,              KEY_COMPLEX,              ITM_PC,                   ITM_CONSTpi,              ITM_arcsin,               ITM_arccos,               
-                                            ITM_MAGNITUDE,            ITM_MAGNITUDE,            ITM_ARG,                  ITM_XTHROOT,              ITM_CC,                   ITM_LBL,                  
-
-                                            ITM_DRG,                  ITM_YX,                   ITM_SQUARE,               ITM_10x,                  ITM_EXP,                  ITM_CC, 
-                                            ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_NULL,                 ITM_GTO,  
-                                            ITM_TGLFRT,               ITM_TGLFRT,               ITM_HASH_JM,              ITM_ms,                   ITM_dotD,                 ITM_toREC2,
-#endif //JM END OF LAYOUT 2 DM42 STRICT.
 
 
 /*HOME+1*/
@@ -1616,12 +1452,8 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
             item = ITM_NULL;
           }
           else {
-            if(interceptSoftMenuItem(&item, x, y)) {} //JM
-              else {                                                                     //JMHOME vv
-                item = softkeyItem[x];
-                //printf("item (-1)=%d \n",item);                 
-              }
-            }
+            item = softkeyItem[x];
+          }
 
             int8_t showCb = fnCbIsSet(item%10000);                 //JM vv          //dr
             int16_t showValue = fnItemShowValue(item%10000);                        //dr
@@ -1670,7 +1502,6 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 //MAIN SOFTMENUMENU DISPLAY
               showSoftkey(indexOfItems[-softmenu[menu].menuItem].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
-              greyOutSoftMenuItem(x, y, currentFirstItem); //JM
 
 
 #ifdef INLINE_TEST                                                              //vv dr
@@ -1744,9 +1575,6 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
                   setBlackPixel(xStroke, yStroke -3);                                      //JM mod
                 }
               }
-
-              greyOutSoftMenuItem(x, y, currentFirstItem);  //JM
-
             }
           }
         }
