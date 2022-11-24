@@ -27,6 +27,9 @@
 #include "flags.h"
 #include "fonts.h"
 #include "items.h"
+#include "mathematics/comparisonReals.h"
+#include "mathematics/magnitude.h"
+#include "mathematics/multiplication.h"
 #include "mathematics/toPolar.h"
 #include "mathematics/wp34s.h"
 #include "matrix.h"
@@ -79,19 +82,59 @@ void fnLnP1(uint16_t unusedButMandatoryParameter) {
 }
 
 
-
+/**********************************************************************
+ * For |z| small, we use the series expansion:
+ *
+ *	log(1+z) = z - z^2/2 + z^3/3 - z^4/4 + ...
+ *
+ * Thresholding |z| against 1e-6, means each term after the first will produce
+ * approximately six more digits.
+ *
+ * For |z| larger, we can use the complex Ln function directly without loss.
+ */
 void lnP1Complex(const real_t *real, const real_t *imag, real_t *lnReal, real_t *lnImag, realContext_t *realContext) {
-  real_t r;
+  real_t sum_real, sum_imag, term_real, term_imag, r, t;
+  int n, i;
 
-  realAdd(real, const_1, &r, realContext);
-  if(realIsZero(&r) && realIsZero(imag)) {
-    realCopy(const_minusInfinity, lnReal);
-    realZero(lnImag);
+  complexMagnitude(real, imag, &t, realContext);
+  if (realCompareAbsLessThan(&t, const_1e_6)) {
+      realCopy(real, &term_real); /* Sequential terms */
+      realCopy(imag, &term_imag);
+      realCopy(real, &sum_real);  /* Running summation */
+      realCopy(imag, &sum_imag);
+
+      /* Calculate the number of iterations for the number of requied digits.
+       * The assumption is a worst case of five digits per iteration and
+       * always using an odd number of iterations.
+       */
+      n = (realContext->digits / 5) | 1;
+      for (i = 1; i <= n; i++) {
+        mulComplexComplex(&term_real, &term_imag, real, imag,
+                          &term_real, &term_imag, realContext);
+        realChangeSign(&term_real);
+        realChangeSign(&term_imag);
+        int32ToReal(i + 1, &r);
+        realDivide(&term_real, &r, &t, realContext);
+        realAdd(&sum_real, &t, &sum_real, realContext);
+        realDivide(&term_imag, &r, &t, realContext);
+        realAdd(&sum_imag, &t, &sum_imag, realContext);
+      }
+      realCopy(&sum_real, lnReal);
+      realCopy(&sum_imag, lnImag);
   }
   else {
-    realRectangularToPolar(&r, imag, lnReal, lnImag, realContext);
-    WP34S_Ln(lnReal, lnReal, realContext);
+    /* No numeric problems, so just do this directly */
+    realAdd(real, const_1, &r, realContext);
+    if(realIsZero(&r) && realIsZero(imag)) {
+      realCopy(const_minusInfinity, lnReal);
+      realZero(lnImag);
+    }
+    else {
+      realRectangularToPolar(&r, imag, lnReal, lnImag, realContext);
+      WP34S_Ln(lnReal, lnReal, realContext);
+    }
   }
+  realAdd(real, const_1, &r, realContext);
 }
 
 
@@ -213,10 +256,12 @@ void lnP1ShoI(void) {
 
 
 void lnP1Real(void) {
-  real34_t r;
-  int32ToReal34(1, &r);
-  real34Add(REGISTER_REAL34_DATA(REGISTER_X),&r,&r);
-  if(real34IsZero(&r)) {
+  real_t arg, r, x;
+
+  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &arg);
+
+  realAdd(&arg, const_1, &r, &ctxtReal39);
+  if (realIsZero(&r)) {
     if(getSystemFlag(FLAG_SPCRES)) {
       convertRealToReal34ResultRegister(const_minusInfinity, REGISTER_X);
     }
@@ -228,7 +273,7 @@ void lnP1Real(void) {
     }
   }
 
-  else if(real34IsInfinite(&r)) {
+  else if(realIsInfinite(&r)) {
     if(!getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -237,7 +282,7 @@ void lnP1Real(void) {
       return;
     }
     else if(getFlag(FLAG_CPXRES)) {
-      if(real34IsPositive(&r)) {
+      if(realIsPositive(&r)) {
         convertRealToReal34ResultRegister(const_plusInfinity, REGISTER_X);
       }
       else {
@@ -252,16 +297,13 @@ void lnP1Real(void) {
   }
 
   else {
-    real_t x;
-
     real34ToReal(&r, &x);
-    if(real34IsPositive(&r)) {
-      WP34S_Ln(&x, &x, &ctxtReal39);
+    if(realIsPositive(&r)) {
+      WP34S_Ln1P(&arg, &x, &ctxtReal39);
       convertRealToReal34ResultRegister(&x, REGISTER_X);
      }
     else if(getFlag(FLAG_CPXRES)) {
-      realSetPositiveSign(&x);
-      WP34S_Ln(&x, &x, &ctxtReal39);
+      lnP1Complex(&arg, const_0, &x, &r, &ctxtReal75);
       reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
       convertRealToReal34ResultRegister(&x, REGISTER_X);
       convertRealToImag34ResultRegister(const_pi, REGISTER_X);

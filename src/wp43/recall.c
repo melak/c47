@@ -304,10 +304,7 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(PLOT_AXIS );
     recallFromDtConfigDescriptor(PLOT_ZMX );
     recallFromDtConfigDescriptor(PLOT_ZMY );
-    recallFromDtConfigDescriptor(jm_HOME_ASN);
     recallFromDtConfigDescriptor(jm_HOME_SUM);
-    recallFromDtConfigDescriptor(jm_HOME_MIR);
-    recallFromDtConfigDescriptor(jm_HOME_FIX);
     recallFromDtConfigDescriptor(jm_LARGELI);                                  //JMCFG^^         
     recallFromDtConfigDescriptor(constantFractions);                           //JM
     recallFromDtConfigDescriptor(constantFractionsMode);
