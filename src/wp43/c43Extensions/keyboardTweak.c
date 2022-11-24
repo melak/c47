@@ -326,51 +326,6 @@ void  Check_SigmaPlus_Assigned(int16_t * result, int16_t tempkey) {
 
 
 
-
-//JM Changing the individual softmenu cell, based on the content of the assigned keyboard array
-bool_t func_lookup(int16_t fn, int16_t itemShift, int16_t *funk) {
-  int16_t ix_fn, ix_sm, ix, ix0; //JMXXX
-  bool_t tmp;
-  tmp = false;
-
-  ix = itemShift + (fn - 1);
-  ix0 = softmenuStack[0].firstItem;
-  ix_sm = softmenu[softmenuStack[0].softmenuId].menuItem;
-
-  if(ix_sm == -MNU_HOME) {
-    if(menu_A_HOME[ix0 + ix] != -1) {
-      ix_fn = -9999;
-
-      //The problem was at this point menu_A_HOME[ix0+ix] could be -1.
-      //Which means kbd_std or kbd_usr[-1] is looked up.
-  
-      if(menu_A_HOME[ix0+ix] < 100) {ix_fn = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[ix0+ix]    ].primary ) : (kbd_usr[menu_A_HOME[ix0+ix]    ].primary );}  else           
-      if(menu_A_HOME[ix0+ix] < 200) {ix_fn = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[ix0+ix]-100].fShifted) : (kbd_usr[menu_A_HOME[ix0+ix]-100].fShifted);}  else
-      if(menu_A_HOME[ix0+ix] < 300) {ix_fn = !getSystemFlag(FLAG_USER) ? (kbd_std[menu_A_HOME[ix0+ix]-200].gShifted) : (kbd_usr[menu_A_HOME[ix0+ix]-200].gShifted);}  else
-      if(menu_A_HOME[ix0+ix]>= 300) {ix_fn = -9999;}
-      //printf("--> MNU_HOME:%d (current menu %d): first item ix0:%d + ix:%d\n",MNU_HOME, ix_sm,ix0,ix);
-      //printf("    menu_A_HOME looked up key:%d menu_HOME original softkey function: %d\n", menu_A_HOME[ix0+ix], menu_HOME[ix0+ix]);
-      //printf("    Function on key: %d. ", ix_fn);
-      //printf(   "  Use this function: %d ", (userModeEnabled && (menu_A_HOME[ix0+ix]!=-1)) );
-      //printf(   "  %s\n", indexOfItems[ix_fn].itemSoftmenuName );
-  
-      //Handle normal mode key change in dynamic HOME menu
-      if(ix_fn != -9999 && ix == 0 && !getSystemFlag(FLAG_USER) && menu_A_HOME[ix0 + ix] == 0 &&
-        (calcMode == CM_NORMAL || calcMode == CM_NIM) && (Norm_Key_00_VAR != kbd_std[0].primary)) {
-        ix_fn = Norm_Key_00_VAR;
-        tmp = true;
-      }
-
-      *funk = ix_fn;
-      return ix_fn != -9999 && ((getSystemFlag(FLAG_USER)) || (!getSystemFlag(FLAG_USER) && tmp));
-    }
-    return false;
-  }
-  return false;
-}
-
-
-
 void Setup_MultiPresses(int16_t result) {
   JM_auto_doublepress_enabled = 0;                          //JM TIMER CLRDROP. Autodrop mean double click normal key.
   int16_t tmp = 0;
@@ -495,7 +450,6 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
 
 int16_t nameFunction(int16_t fn, int16_t itemShift) { //JM LONGPRESS vv
   int16_t func = 0;
-  int16_t ix_fn; //JMXXX
 
   char str[3];
   str[0] = '0' + fn;
@@ -507,13 +461,6 @@ int16_t nameFunction(int16_t fn, int16_t itemShift) { //JM LONGPRESS vv
   #endif //PC_BUILD
 
 
-  ix_fn = 0;
-  if(func_lookup(fn, itemShift, &ix_fn)) {
-    #ifdef PC_BUILD
-      printf(">>> nameFunction fn=%i itemShift=%i ix_fn=%i\n",fn, itemShift, ix_fn);
-    #endif //PC_BUILD
-    func = ix_fn;
-  }
 
 //XXX JM
   if(func < 0)  {

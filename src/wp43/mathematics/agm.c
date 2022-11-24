@@ -28,8 +28,8 @@
 #include "mathematics/division.h"
 #include "mathematics/multiplication.h"
 #include "mathematics/sin.h"
+#include "mathematics/squareRoot.h"
 #include "mathematics/tan.h"
-#include "mathematics/toRect.h"
 #include "mathematics/toPolar.h"
 #include "mathematics/wp34s.h"
 #include "registers.h"
@@ -159,7 +159,7 @@ static int _realAgm(int mode, const real_t *a, const real_t *b, real_t *c, real_
     realDivideRemainder(c, const_pi, c, realContext);
   }
 
-  while(!realCompareEqual(&aReal, &bReal) && realIdenticalDigits(&aReal, &bReal) <= 34) {
+  while(!WP34S_RelativeError(&aReal, &bReal, const_1e_37, realContext)) {
     if(mode==AGM_MODE_E) {
       realMultiply(&cCoeff, const_2, &cCoeff, realContext);
       realSubtract(&aReal, &bReal, &cReal, realContext);     // c = a - b
@@ -211,6 +211,7 @@ static int _realAgm(int mode, const real_t *a, const real_t *b, real_t *c, real_
 static int _complexAgm(int mode, const real_t *ar, const real_t *ai, const real_t *br, const real_t *bi, real_t *cr, real_t *ci, real_t *resr, real_t *resi, real_t *_ar, real_t *_ai, real_t *_br, real_t *_bi, size_t _sz, realContext_t *realContext) {
   real_t aReal, bReal, cReal;
   real_t aImag, bImag, cImag;
+  real_t aArg, bArg, cArg;
   real_t cCoeff;
   int n = 0;
 
@@ -226,7 +227,7 @@ static int _complexAgm(int mode, const real_t *ar, const real_t *ai, const real_
     realCopy(&bImag, _bi);
   }
 
-  while((!realCompareEqual(&aReal, &bReal) && realIdenticalDigits(&aReal, &bReal) <= 34) || (!realCompareEqual(&aImag, &bImag) && realIdenticalDigits(&aImag, &bImag) <= 34)) {
+  while(!WP34S_RelativeError(&aReal, &bReal, const_1e_37, realContext) || !WP34S_RelativeError(&aImag, &bImag, const_1e_37, realContext)) {
     if(mode==AGM_MODE_E) {
       realMultiply(&cCoeff, const_2, &cCoeff, realContext);
       realSubtract(&aReal, &bReal, &cReal, realContext); realSubtract(&aImag, &bImag, &cImag, realContext);     // c = a - b
@@ -236,21 +237,33 @@ static int _complexAgm(int mode, const real_t *ar, const real_t *ai, const real_
       realFMA(&cImag, &cCoeff, ci, ci, realContext);
     }
 
+    realRectangularToPolar(&aReal, &aImag, &cReal, &aArg, realContext);
+    realRectangularToPolar(&bReal, &bImag, &cReal, &bArg, realContext);
     realAdd(&aReal, &bReal, &cReal, realContext);                                   // c = a + b real part
     realAdd(&aImag, &bImag, &cImag, realContext);                                   // c = a + b imag part
 
     mulComplexComplex(&aReal, &aImag, &bReal, &bImag, &bReal, &bImag, realContext); // b = a * b
 
     // b = sqrt(a * b)
-    realRectangularToPolar(&bReal, &bImag, &bReal, &bImag, realContext);
-    realSquareRoot(&bReal, &bReal, realContext);
-    realMultiply(&bImag, const_1on2, &bImag, realContext);
-    realPolarToRectangular(&bReal, &bImag, &bReal, &bImag, realContext);
+    sqrtComplex(&bReal, &bImag, &bReal, &bImag, realContext);
 
     realMultiply(&cReal, const_1on2, &aReal, realContext); // a = (a + b) / 2 real part
     realMultiply(&cImag, const_1on2, &aImag, realContext); // a = (a + b) / 2 imag part
 
     ++n;
+
+    // choose appropriate one of 2 square roots
+    realRectangularToPolar(&bReal, &bImag, &cReal, &cArg, realContext);
+    realSubtract(&aArg, &cArg, &aArg, realContext);
+    realSetPositiveSign(&aArg);
+    realSubtract(&cArg, &bArg, &cArg, realContext);
+    realSetPositiveSign(&cArg);
+    realAdd(&aArg, &cArg, &bArg, realContext);
+    if(realCompareGreaterThan(&bArg, const_pi)) {
+      realChangeSign(&bReal);
+      realChangeSign(&bImag);
+    }
+
     if(mode==AGM_MODE_STEP) {
       realCopy(&aReal, _ar + n);
       realCopy(&aImag, _ai + n);

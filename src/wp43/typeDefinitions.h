@@ -202,10 +202,7 @@ typedef struct {
   bool_t PLOT_AXIS;
   int8_t PLOT_ZMX;
   int8_t PLOT_ZMY;
-  bool_t jm_HOME_ASN;
   bool_t jm_HOME_SUM;
-  bool_t jm_HOME_MIR;
-  bool_t jm_HOME_FIX;     
   bool_t jm_LARGELI;
   bool_t constantFractions;
   uint8_t constantFractionsMode;
