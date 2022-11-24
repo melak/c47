@@ -3570,7 +3570,8 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
           doRefreshSoftMenu = false;
           displayShiftAndTamBuffer();
           refreshStatusBar();
-          fnStatList();
+          //fnStatList();
+          fnTest(0);
           hourGlassIconEnabled = false;
           refreshStatusBar();
         }

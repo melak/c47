@@ -2078,8 +2078,8 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
 //^^
 
 
-void greyOutSoftMenuItem(int16_t x, int16_t y, int16_t currentFirstItem) {
-//printf(">>>> #### x=%d y=%d c1st=%d %d %d %d\n",x,y, currentFirstItem, menu_A_HOME[x + y*6] , kbd_std[menu_A_HOME[x + y*6]    ].primary, kbd_usr[menu_A_HOME[x + y*6]    ].primary);
+void greyOutSoftMenuItem(int16_t x, int16_t y, int16_t yy) {
+//printf(">>>> #### x=%d y=%d c1st=%d %d %d %d\n",x,y, yy, menu_A_HOME[x + y*6] , kbd_std[menu_A_HOME[x + y*6]    ].primary, kbd_usr[menu_A_HOME[x + y*6]    ].primary);
   if(jm_HOME_ASN && menu_A_HOME[x + y*6] >= 0  &&  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HOME &&
        (
          ((menu_A_HOME[x + y*6] <  100)                                 && ((kbd_std[menu_A_HOME[x + y*6]    ].primary ) == (kbd_usr[menu_A_HOME[x + y*6]    ].primary ))) ||
@@ -2088,9 +2088,9 @@ void greyOutSoftMenuItem(int16_t x, int16_t y, int16_t currentFirstItem) {
        )
    ) {
     // Grey out standard function names
-    int16_t yStroke = SCREEN_HEIGHT - (y-currentFirstItem/6)*23 - 1;
+    int16_t yStroke = SCREEN_HEIGHT - yy*23 - 1;
     for(int16_t xStroke=x*67 + 4 - 2; xStroke<x*67 + 62 + 2; xStroke++) {      //JM mod stroke slash cross out
-      for (yStroke = SCREEN_HEIGHT - (y-currentFirstItem/6)*23 + 2; yStroke > SCREEN_HEIGHT - (y-currentFirstItem/6)*23 -18 - 2; yStroke--){
+      for (yStroke = SCREEN_HEIGHT - yy*23 + 2; yStroke > SCREEN_HEIGHT - yy*23 -18 - 2; yStroke--){
           if(xStroke%2 == 0 && yStroke%2 == 0) {
             flipPixel(xStroke, yStroke -3);                                      //JM mod
           }

@@ -1351,7 +1351,70 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
   }
 
 
+static void greyOutBox(int16_t x1, int16_t x2, int16_t y1, int16_t y2) {
+  // Grey out standard function names
+  int16_t yStroke;
+  for(int16_t xStroke=x1 + 2; xStroke < x2 - 2; xStroke++) {
+    for (yStroke = y1 + 2; yStroke < y2 - 2; yStroke++){
+        if(xStroke%2 == 0 && yStroke%2 == 0) {
+          flipPixel(xStroke, yStroke);
+        }
+    }
+  }
+}
 
+
+
+static void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, bool_t rightMostSlot, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText);
+
+void fnTest(uint16_t fnShow_param) {                // Heavily modified by JM from the original fnShow
+  const int16_t page = 1; 
+  int xx,yy, kk;
+  int16_t key;
+  int16_t pixelsPerSoftKey;
+  xx = 0;
+  yy = 1;
+  clearScreen();
+  showString("f-key assignment schedule", &standardFont, 30, 20, vmNormal, false, false);
+
+  for(key=0; key<37; key++) {
+    if(key == 6 || key ==12 || key == 17 || key == 22 || key == 27 || key == 32) {
+        xx = 0;
+        yy ++;
+    }
+    if(key == 12) pixelsPerSoftKey = (int)((float)SCREEN_WIDTH / 3.0f + 0.5f); else
+    if(key <  12) pixelsPerSoftKey = (int)((float)SCREEN_WIDTH / 6.0f + 0.5f); else
+                  pixelsPerSoftKey = (int)((float)SCREEN_WIDTH / 5.0f + 0.5f);
+
+    if(getSystemFlag(FLAG_USER)) {
+      switch(page) {
+        case 0: kk = kbd_usr[key].primary; break;
+        case 1: kk = kbd_usr[key].fShifted; break;
+        case 2: kk = kbd_usr[key].gShifted; break;
+        default:break;
+      }
+    } else {
+      switch(page) {
+        case 0: kk = kbd_std[key].primary; break;
+        case 1: kk = kbd_std[key].fShifted; break;
+        case 2: kk = kbd_std[key].gShifted; break;
+        default:break;
+      }
+    }
+
+    showKey(indexOfItems[max(kk,-kk)].itemSoftmenuName, xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, 20+yy*SOFTMENU_HEIGHT, 20+(yy+1)*SOFTMENU_HEIGHT, xx == 5, kk > 0 ? vmNormal : vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
+    if(getSystemFlag(FLAG_USER) && 
+        ( ((page == 0) && (kbd_std[key].primary != kbd_usr[key].primary)  ) || 
+          ((page == 1) && (kbd_std[key].fShifted != kbd_usr[key].fShifted)) || 
+          ((page == 2) && (kbd_std[key].gShifted != kbd_usr[key].gShifted))    )
+      ) {
+        greyOutBox(xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, 20+yy*SOFTMENU_HEIGHT, 20+(yy+1)*SOFTMENU_HEIGHT);
+    }
+  xx++;
+  }
+
+  temporaryInformation = TI_NO_INFO;
+}
 
 
   /********************************************//**
@@ -1367,9 +1430,8 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
    * \return void
    ***********************************************/
   void showSoftkey(const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {     //dr
-    int16_t x1, y1, x2, y2;
-    int16_t w;
-    char l[15];
+    int16_t x1, y1;
+    int16_t x2, y2;
 
     if((calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) && xSoftkey >= 2) {           //prevent softkeys columns 3-6 from displaying over the graph
         return;
@@ -1394,6 +1456,15 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       displayBugScreen(errorMessage);
       return;
     }
+
+    showKey(label, x1, x2, y1, y2, xSoftkey == 5, videoMode, topLine, bottomLine, showCb, showValue, showText);
+
+}
+
+
+static void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, bool_t rightMostSlot, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {
+    int16_t w;
+    char l[15];
 
     // Draw the frame
     //   Top line
@@ -1421,7 +1492,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
     xcopy(l, label, stringByteLength(label) + 1);
     w = stringWidth(l, &standardFont, false, false);
-    while(w > (xSoftkey == 5 ? 65 : 66)) {
+    while(w > (rightMostSlot ? 65 : 66)) {
       l[stringLastGlyph(l)] = 0;
       w = stringWidth(l, &standardFont, false, false);
     }
@@ -1432,19 +1503,12 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     w = stringWidth(figlabel(l, showText, showValue), &standardFont, false, false);
     if(showCb >= 0) { w = w + 8; }
     compressString = 1;       //JM compressString
-    showString(figlabel(l, showText, showValue), &standardFont, compressString + x1 + (xSoftkey == 5 ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
-//  showString(l, &standardFont, x1 + (xSoftkey == 5 ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
+    showString(figlabel(l, showText, showValue), &standardFont, compressString + x1 + (rightMostSlot ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
     compressString = 0;       //JM compressString
   }
   else {
-//  w = stringWidth(l, &standardFont, false, false);
-     showString(figlabel(l, showText, showValue), &standardFont, x1 + (xSoftkey == 5 ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
+     showString(figlabel(l, showText, showValue), &standardFont, x1 + (rightMostSlot ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
   }                                                                                              //JM & dr ^^
-
-//  w = stringWidth(l, &standardFont, false, false);
-//  if(showCb >= 0) { compressString = 1; w = w +2; }         //JM compressString
-//  showString(l, &standardFont, x1 + 33 - w/2, y1 + 2, videoMode, false, false);
-//  if(showCb >= 0) { compressString = 0; }                   //JM unCompressString
 
 #ifdef JM_LINE2_DRAW
   if(showCb >= 0) {
@@ -1670,7 +1734,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 //MAIN SOFTMENUMENU DISPLAY
               showSoftkey(indexOfItems[-softmenu[menu].menuItem].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
-              greyOutSoftMenuItem(x, y, currentFirstItem); //JM
+              greyOutSoftMenuItem(x, y, y-currentFirstItem/6); //JM
 
 
 #ifdef INLINE_TEST                                                              //vv dr
@@ -1745,7 +1809,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
                 }
               }
 
-              greyOutSoftMenuItem(x, y, currentFirstItem);  //JM
+              greyOutSoftMenuItem(x, y, y-currentFirstItem/6);  //JM
 
             }
           }
