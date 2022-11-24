@@ -1502,7 +1502,6 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
 //MAIN SOFTMENUMENU DISPLAY
               showSoftkey(indexOfItems[-softmenu[menu].menuItem].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
-//              greyOutSoftMenuItem(x, y, currentFirstItem); //JM
 
 
 #ifdef INLINE_TEST                                                              //vv dr
@@ -1576,9 +1575,6 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
                   setBlackPixel(xStroke, yStroke -3);                                      //JM mod
                 }
               }
-
-//              greyOutSoftMenuItem(x, y, currentFirstItem);  //JM
-
             }
           }
         }
