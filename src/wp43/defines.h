@@ -45,20 +45,7 @@
   #undef SAVE_SPACE_DM42_21
 
 
-#ifdef PC_BUILD
-  //Key layout option
-  #define SWAP_TO_L42_ON_SIM           //JM SWAP THE BELOW TWO DEFINES TO HAVE THE DM42 VERSION ON SIMULATOR
-  #undef  SWAP_TO_L42_ON_SIM
-     #define BLUES_WHEN_SWAPPED        //JM Only applicable if SWAPLAYOUTS is defined. Otherwise ignored
-     //#undef  BLUES_WHEN_SWAPPED
-#endif //PC_BUILD
-
-
 #if defined(DMCP_BUILD) || (SCREEN_800X480 == 1)
-
-  //Key layout options
-  #define SWAP_TO_L1_ON_DM42           //JM Normally selected to Layout L1 in on the DM42
-  //#undef  SWAP_TO_L1_ON_DM42         //JM swap these to comments to allow L42 to be on the DM42
 
   #define TWO_FILE_PGM                 //JM Normally NOT have TWO_FILE. TWO_FILE means that QSPI is used.
 
@@ -88,7 +75,7 @@
   #ifdef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
     #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
 //    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
-    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
+//    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
 //    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
     #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
   #endif
@@ -417,31 +404,10 @@ typedef enum {
 } longIntegerSign_t;
 
 
-#ifdef PC_BUILD
-  #ifndef SWAP_TO_L42_ON_SIM
-      #define JM_LAYOUT_1A               //Preferred layout
-      #undef  JM_LAYOUT_2_DM42_STRICT
-  #endif
-
-  #ifdef SWAP_TO_L42_ON_SIM
-      #define JM_LAYOUT_2_DM42_STRICT    //DM42 compatible layout. Temporary SWAP. Change here for screen picture.
-      #undef  JM_LAYOUT_1A
-      #undef  JM_LAYOUT_SHOW_BLUES       //ONLY DEFINE IF BLUE MUST BE DISPLAYED. TEMPORARY FOR CREATING AN EMU FOR THE LAYOUT42
-      #ifdef BLUES_WHEN_SWAPPED
-        #define JM_LAYOUT_SHOW_BLUES       //ONLY DEFINE IF BLUE MUST BE DISPLAYED. TEMPORARY FOR CREATING AN EMU FOR THE LAYOUT42
-      #endif
-  #endif
-#endif
 
 
 // PC GUI
-#if   defined(JM_LAYOUT_2_DM42_STRICT) && !defined(JM_LAYOUT_SHOW_BLUES)                    //JM LAYOUT 2
-  #define CSSFILE "res/c43_pre_L2.css"              //JM L
-#elif defined(JM_LAYOUT_2_DM42_STRICT) && defined(JM_LAYOUT_SHOW_BLUES)                    //JM LAYOUT 2
-  #define CSSFILE "res/c43_pre_L2B.css"              //JM L
-#elif defined(JM_LAYOUT_1A) || defined(JM_LAYOUT_SHOW_BLUES)                                //JM LAYOUT 1
-  #define CSSFILE "res/c43_pre.css"
-#endif //JM L
+#define CSSFILE "res/c43_pre.css"
 
 #define GAP                                        6 //JM original GUI legacy
 #define Y_OFFSET_LETTER                           18 //JM original GUI legacy
@@ -1243,19 +1209,9 @@ typedef enum {
     #define SHOW_MEMORY_STATUS 0
     #undef  EXTRA_INFO_ON_CALC_ERROR
     #define EXTRA_INFO_ON_CALC_ERROR 0
-  #ifndef SWAP_TO_L1_ON_DM42
-    #undef  JM_LAYOUT_1A
-    #define JM_LAYOUT_2_DM42_STRICT    //DM42 compatible layout
-  #else
-    #define JM_LAYOUT_1A
-    #undef  JM_LAYOUT_2_DM42_STRICT    //DM42 compatible layout
-  #endif
   #endif // DMCP_BUILD || SCREEN_800X480 == 1
 
 #if defined(TESTSUITE_BUILD) && !defined(GENERATE_CATALOGS)
-    #undef  JM_LAYOUT_1A
-    #undef  JM_LAYOUT_2_DM42_STRICT     //DM42 compatible layout
-
     #undef  PC_BUILD
     #undef  DMCP_BUILD
     #undef  DEBUG_PANEL
@@ -1279,8 +1235,6 @@ typedef enum {
     #define refreshScreen()         {}
     #define refreshLcd(a)           {}
     #define initFontBrowser()       {}
-
-    #define JM_LAYOUT_1A                //JM Preferred layout
   #endif // TESTSUITE_BUILD && !GENERATE_CATALOGS
 
 /* Turn off -Wunused-result for a specific function call */

@@ -1946,8 +1946,8 @@
 #define ITM_INP_DEF_LI              1891
 #define ITM_USER_V43                1892
 #define KEY_fg                      1893
-#define ITM_USER_DEFAULTS           1894
-#define ITM_USER_COMPLEX            1895
+#define ITM_1894                    1894
+#define ITM_1895                    1895
 #define ITM_USER_C43ALTA            1896
 #define ITM_USER_RESET              1897
 #define ITM_N_KEY_ALPHA             1898

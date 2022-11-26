@@ -1113,14 +1113,7 @@ void fnReset(uint16_t confirmation) {
 
 #define VERSION1 "_108_08d"
 
-    #ifdef JM_LAYOUT_1A
-      #undef L1L2
-      #define L1L2    "" //L1
-    #endif
-    #ifdef JM_LAYOUT_2_DM42_STRICT
-      #undef L1L2
-      #define L1L2    "L42"
-    #endif
+    #define L1L2    "" //L1
 
     char *build_str = "C43" L1L2 VERSION1 ", " __DATE__;
     fnStrtoX(build_str);
@@ -1129,29 +1122,13 @@ void fnReset(uint16_t confirmation) {
         
 
     #ifdef PC_BUILD
-      #if defined(JM_LAYOUT_1A)
         fnStrtoX(indexOfMsgs[4].itemName);
-      #else
-        #if defined(JM_LAYOUT_2_DM42_STRICT)
-          fnStrtoX(indexOfMsgs[5].itemName);
-        #endif
-      #endif
-
     #else
-
-      #if defined(JM_LAYOUT_1A) && defined(TWO_FILE_PGM)
+      #if defined(TWO_FILE_PGM)
         fnStrtoX(indexOfMsgs[0].itemName);
       #else
-        #if defined(JM_LAYOUT_1A) && !defined(TWO_FILE_PGM)
+        #if !defined(TWO_FILE_PGM)
           fnStrtoX(indexOfMsgs[1].itemName);
-        #else
-          #if defined(JM_LAYOUT_2_DM42_STRICT) && defined(TWO_FILE_PGM)
-            fnStrtoX(indexOfMsgs[2].itemName);
-          #else
-            #if defined(JM_LAYOUT_2_DM42_STRICT) && !defined(TWO_FILE_PGM)
-              fnStrtoX(indexOfMsgs[3].itemName);
-            #endif
-          #endif
         #endif
       #endif
 

@@ -90,6 +90,9 @@
   extern const reservedVariableHeader_t  allReservedVariables[];
   extern const char                     *errorMessages[NUMBER_OF_ERROR_CODES];
   extern const calcKey_t                 kbd_std[37];
+  extern const calcKey_t                 kbd_std_WP43[37];
+  extern const calcKey_t                 kbd_std_DM42[37];
+  extern const calcKey_t                 kbd_std_C43A[37];
   extern const font_t                    standardFont, numericFont;
   extern const font_t                   *fontForShortInteger;
   extern const font_t                   *cursorFont;
