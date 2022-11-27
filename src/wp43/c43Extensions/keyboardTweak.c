@@ -39,18 +39,18 @@
 
 #include "wp43.h"
 
-TO_QSPI void fnSHIFTf(uint16_t unusedButMandatoryParameter) {
+void fnSHIFTf(uint16_t unusedButMandatoryParameter) {
    shiftF = true;
    shiftG = false;
 }
 
-TO_QSPI void fnSHIFTg(uint16_t unusedButMandatoryParameter) {
+void fnSHIFTg(uint16_t unusedButMandatoryParameter) {
    shiftF = false;
    shiftG = true;
 }
 
 
-TO_QSPI int16_t determineFunctionKeyItem_C43(const char *data, bool_t shiftF, bool_t shiftG) {
+int16_t determineFunctionKeyItem_C43(const char *data, bool_t shiftF, bool_t shiftG) {
   int16_t item = ITM_NOP;
   #ifndef TESTSUITE_BUILD
     int16_t itemShift = (shiftF ? 6 : (shiftG ? 12 : 0));
@@ -80,7 +80,7 @@ printf(">>>>Z 0100 determineFunctionKeyItem_C43 data=|%s| data[0]=%d item=%d ite
 }
 
 
-TO_QSPI void keyClick(uint8_t length){  //Debugging on scope, a pulse after every key edge. !!!!! Destroys the prior volume setting
+void keyClick(uint8_t length){  //Debugging on scope, a pulse after every key edge. !!!!! Destroys the prior volume setting
 #ifdef DMCP_BUILD
   #ifdef DM42_KEYCLICK
     while(get_beep_volume() < 11) {
@@ -93,7 +93,7 @@ TO_QSPI void keyClick(uint8_t length){  //Debugging on scope, a pulse after ever
 #endif
 }
 
-TO_QSPI void showAlphaModeonGui(void) {
+void showAlphaModeonGui(void) {
 #ifdef PC_BUILD
   char tmp[200];
   sprintf(tmp, "^^^^showAlphaModeonGui\n");
@@ -113,7 +113,7 @@ TO_QSPI void showAlphaModeonGui(void) {
 
 
 
-TO_QSPI void showShiftState(void) {
+void showShiftState(void) {
 #ifndef TESTSUITE_BUILD
 //showAlphaModeonGui();
 #ifdef PC_BUILD_TELLTALE
@@ -157,7 +157,7 @@ TO_QSPI void showShiftState(void) {
  * \return void
  *
  ***********************************************/
-TO_QSPI void resetShiftState(void) {
+void resetShiftState(void) {
   fnTimerStop(TO_FG_LONG);
   fnTimerStop(TO_FG_TIMR);
 
@@ -180,7 +180,7 @@ TO_QSPI void resetShiftState(void) {
 
 
 
-TO_QSPI void resetKeytimers(void) {
+void resetKeytimers(void) {
   resetShiftState();
   //fnTimerStop(TO_FG_LONG) ;
   //fnTimerStop(TO_FG_TIMR) ;
@@ -203,7 +203,7 @@ TO_QSPI void resetKeytimers(void) {
  * \return void
  ***********************************************/
 
-TO_QSPI void show_f_jm(void) {
+void show_f_jm(void) {
 //showSoftmenuCurrentPart();                                                    //JM - Redraw boxes etc after shift is shown
 //JMTOCHECK2        if(softmenuStackPointer >= 0) {                             //JM - Display dot in the f - line
     if(!FN_timeouts_in_progress) {
@@ -222,7 +222,7 @@ TO_QSPI void show_f_jm(void) {
 }
 
 
-TO_QSPI void show_g_jm(void) {
+void show_g_jm(void) {
 //showSoftmenuCurrentPart();                                                    //JM - Redraw boxes etc after shift is shown
 //JMTOCHECK2        if(softmenuStackPointer >= 0) {                             //JM - Display dot in the g - line
     if(!FN_timeouts_in_progress) {
@@ -241,7 +241,7 @@ TO_QSPI void show_g_jm(void) {
 }
 
 
-TO_QSPI void clear_fg_jm(void) {
+void clear_fg_jm(void) {
 //showSoftmenuCurrentPart();            //JM TO REMOVE STILL !!                 //JM - Redraw boxes etc after shift is shown
   if(!FN_timeouts_in_progress) {        //Cancel lines
     if(ULFL) {
@@ -258,7 +258,7 @@ TO_QSPI void clear_fg_jm(void) {
 }
 
 
-TO_QSPI void fg_processing_jm(void) {
+void fg_processing_jm(void) {
   if(ShiftTimoutMode || HOME3) {
     if(HOME3) {
       if(fnTimerGetStatus(TO_3S_CTFF) == TMR_RUNNING) {
@@ -317,7 +317,7 @@ TO_QSPI void fg_processing_jm(void) {
 
 
 
-TO_QSPI void  Check_SigmaPlus_Assigned(int16_t * result, int16_t tempkey) {
+void  Check_SigmaPlus_Assigned(int16_t * result, int16_t tempkey) {
   //JM NORMKEY _ CHANGE NORMAL MODE KEY SIGMA+ TO SOMETHING ELSE vv
   if((calcMode == CM_NORMAL || calcMode == CM_NIM) && (!getSystemFlag(FLAG_USER) && !shiftF && !shiftG && ( tempkey == 0) && ((kbd_std + 0)->primary == *result) )) {
     *result = Norm_Key_00_VAR;
@@ -326,7 +326,7 @@ TO_QSPI void  Check_SigmaPlus_Assigned(int16_t * result, int16_t tempkey) {
 
 
 
-TO_QSPI void Setup_MultiPresses(int16_t result) {
+void Setup_MultiPresses(int16_t result) {
   JM_auto_doublepress_enabled = 0;                          //JM TIMER CLRDROP. Autodrop mean double click normal key.
   int16_t tmp = 0;
   if(calcMode == CM_NORMAL) {
@@ -351,7 +351,7 @@ TO_QSPI void Setup_MultiPresses(int16_t result) {
 
 
 
-TO_QSPI void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
+void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   int16_t longpressDelayedkey1 = 0;
   longpressDelayedkey2 = 0;
   longpressDelayedkey3 = 0;
@@ -448,7 +448,7 @@ TO_QSPI void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longp
 
 //******************* JM LONGPRESS & JM DOUBLE CLICK START *******************************
 
-TO_QSPI int16_t nameFunction(int16_t fn, int16_t itemShift) { //JM LONGPRESS vv
+int16_t nameFunction(int16_t fn, int16_t itemShift) { //JM LONGPRESS vv
   int16_t func = 0;
 
   char str[3];
@@ -533,7 +533,7 @@ Timing is reset to start 800 ms from G again
 
 
 //**************JM DOUBLE CLICK SUPPORT vv **********************************
-TO_QSPI void FN_cancel() {
+void FN_cancel() {
   FN_key_pressed = 0;
   FN_timeouts_in_progress = false;
   fnTimerStop(TO_FN_LONG);                                  //dr
@@ -546,7 +546,7 @@ TO_QSPI void FN_cancel() {
 void btnFnPressed_StateMachine(GtkWidget *unused, gpointer data) { 
 #endif
 #ifdef DMCP_BUILD
-TO_QSPI void btnFnPressed_StateMachine(void *unused, void *data) {
+void btnFnPressed_StateMachine(void *unused, void *data) {
 #endif
   bool_t exexute_double_g;
   bool_t double_click_detected;
@@ -655,7 +655,7 @@ TO_QSPI void btnFnPressed_StateMachine(void *unused, void *data) {
 void btnFnReleased_StateMachine(GtkWidget *unused, gpointer data) {              //JM LONGPRESS FN
 #endif
 #ifdef DMCP_BUILD
-TO_QSPI void btnFnReleased_StateMachine(void *unused, void *data) {
+void btnFnReleased_StateMachine(void *unused, void *data) {
 #endif
 //#ifdef INLINE_TEST
 //  if(testEnabled) { fnSwStart(2); }     //dr
@@ -715,7 +715,7 @@ printf(">>>>Z 0050 btnFnReleased_StateMachine ------------------ Start TO_FN_EXE
 
 
 
-TO_QSPI void execFnTimeout(uint16_t key) {                          //dr - delayed call of the primary function key
+void execFnTimeout(uint16_t key) {                          //dr - delayed call of the primary function key
   char charKey[3];
   charKey[1]=0;
   charKey[0]=key + (-37+48);
@@ -729,7 +729,7 @@ printf(">>>>Z RRR3 execFnTimeout              ------------------       TO_FN_EXE
 
 
 
-TO_QSPI void shiftCutoff(uint16_t unusedButMandatoryParameter) {        //dr - press shift three times within one second to call HOME timer
+void shiftCutoff(uint16_t unusedButMandatoryParameter) {        //dr - press shift three times within one second to call HOME timer
   fnTimerStop(TO_3S_CTFF);
 }
 
@@ -742,7 +742,7 @@ TO_QSPI void shiftCutoff(uint16_t unusedButMandatoryParameter) {        //dr - p
 
 
 
-TO_QSPI uint16_t numlockReplacements(uint16_t id, int16_t item, bool_t NL, bool_t FSHIFT, bool_t GSHIFT) {
+uint16_t numlockReplacements(uint16_t id, int16_t item, bool_t NL, bool_t FSHIFT, bool_t GSHIFT) {
   int16_t item1 = 0;
 //printf("####A>>%u %u %u\n",id,item,item1);
   if(ITM_A + 26 <= item && item <= ITM_Z + 26) {
@@ -766,7 +766,7 @@ TO_QSPI uint16_t numlockReplacements(uint16_t id, int16_t item, bool_t NL, bool_
 
 
  //Note item1 MUST be set to 0 prior to calling.
- TO_QSPI bool_t keyReplacements(int16_t item, int16_t * item1, bool_t NL, bool_t FSHIFT, bool_t GSHIFT) {
+ bool_t keyReplacements(int16_t item, int16_t * item1, bool_t NL, bool_t FSHIFT, bool_t GSHIFT) {
  //printf("####B>> %d %d\n",item,* item1);
  if(calcMode == CM_AIM || calcMode == CM_EIM || (tam.mode && tam.alpha) ) {
 
@@ -879,7 +879,7 @@ TO_QSPI uint16_t numlockReplacements(uint16_t id, int16_t item, bool_t NL, bool_
 //#define JMSHOWCODES_KB2   // main screen      Telltales keys, times, etc.
 //#define JMSHOWCODES_KB3   // top line right   Single Double Triple
 
-TO_QSPI void keyBuffer_pop()
+void keyBuffer_pop()
 {
   int tmpKey;
 
@@ -910,7 +910,7 @@ TO_QSPI void keyBuffer_pop()
 //     BUFFER_FAIL       der Ringbuffer ist voll. Es kann kein weiteres Byte gespeichert werden
 //     BUFFER_SUCCESS    das Byte wurde gespeichert
 //
-TO_QSPI uint8_t inKeyBuffer(uint8_t byte)
+uint8_t inKeyBuffer(uint8_t byte)
 {
   #ifdef BUFFER_CLICK_DETECTION
     uint32_t now  = (uint32_t)sys_current_ms();
@@ -958,15 +958,15 @@ TO_QSPI uint8_t inKeyBuffer(uint8_t byte)
 //
 #ifdef BUFFER_CLICK_DETECTION
 #ifdef BUFFER_KEY_COUNT
-TO_QSPI uint8_t outKeyBuffer(uint8_t *pKey, uint8_t *pKeyCount, uint32_t *pTime, uint32_t *pTimeSpan_1, uint32_t *pTimeSpan_B)
+uint8_t outKeyBuffer(uint8_t *pKey, uint8_t *pKeyCount, uint32_t *pTime, uint32_t *pTimeSpan_1, uint32_t *pTimeSpan_B)
 #else
-TO_QSPI uint8_t outKeyBuffer(uint8_t *pKey, uint32_t *pTime, uint32_t *pTimeSpan_1, uint32_t *pTimeSpan_B)
+uint8_t outKeyBuffer(uint8_t *pKey, uint32_t *pTime, uint32_t *pTimeSpan_1, uint32_t *pTimeSpan_B)
 #endif
 #else
 #ifdef BUFFER_KEY_COUNT
-TO_QSPI uint8_t outKeyBuffer(uint8_t *pKey, uint8_t *pKeyCount)
+uint8_t outKeyBuffer(uint8_t *pKey, uint8_t *pKeyCount)
 #else
-TO_QSPI uint8_t outKeyBuffer(uint8_t *pKey)
+uint8_t outKeyBuffer(uint8_t *pKey)
 #endif
 #endif
 {
@@ -1210,7 +1210,7 @@ bool_t emptyKeyBuffer()
 
 //########################################
 
-TO_QSPI void fnT_ARROW(uint16_t command) {
+void fnT_ARROW(uint16_t command) {
 #ifndef TESTSUITE_BUILD
   #ifdef TEXT_MULTILINE_EDIT
     uint16_t ixx;
@@ -1308,7 +1308,7 @@ TO_QSPI void fnT_ARROW(uint16_t command) {
 
 
 
-TO_QSPI void fnCla(uint16_t unusedButMandatoryParameter){
+void fnCla(uint16_t unusedButMandatoryParameter){
   if(calcMode == CM_AIM) {
     //Not using calcModeAim becose some modes are reset which should not be
     aimBuffer[0]=0;
@@ -1334,7 +1334,7 @@ TO_QSPI void fnCla(uint16_t unusedButMandatoryParameter){
 }
 
 
-TO_QSPI void fnCln(uint16_t unusedButMandatoryParameter){
+void fnCln(uint16_t unusedButMandatoryParameter){
   #ifndef TESTSUITE_BUILD
     nimNumberPart = NP_EMPTY;
     calcModeNim(0);

@@ -36,40 +36,40 @@
 //extern uint32_t nextTimerRefresh;
 //#endif
 
-TO_QSPI void     keyClick(uint8_t length); 
+void     keyClick(uint8_t length); 
 
-TO_QSPI void     showAlphaModeonGui   (void);
-TO_QSPI void     resetShiftState      (void);
-TO_QSPI void     showShiftState       (void);
-TO_QSPI void     fnSHIFTf(uint16_t unusedButMandatoryParameter);
-TO_QSPI void     fnSHIFTg(uint16_t unusedButMandatoryParameter);
+void     showAlphaModeonGui   (void);
+void     resetShiftState      (void);
+void     showShiftState       (void);
+void     fnSHIFTf(uint16_t unusedButMandatoryParameter);
+void     fnSHIFTg(uint16_t unusedButMandatoryParameter);
 
 #ifndef TESTSUITE_BUILD
-TO_QSPI void     show_f_jm           (void);
-TO_QSPI void     show_g_jm           (void);
-TO_QSPI void     clear_fg_jm         (void);
-TO_QSPI void     fg_processing_jm    (void);
-TO_QSPI void     Check_SigmaPlus_Assigned(int16_t  * result, int16_t tempkey);
+void     show_f_jm           (void);
+void     show_g_jm           (void);
+void     clear_fg_jm         (void);
+void     fg_processing_jm    (void);
+void     Check_SigmaPlus_Assigned(int16_t  * result, int16_t tempkey);
 
-TO_QSPI bool_t   func_lookup         (int16_t  fn, int16_t itemShift, int16_t *funk);
-TO_QSPI void     execFnTimeout       (uint16_t key                    );                         //dr - delayed call of the primary function key
-TO_QSPI void     shiftCutoff         (uint16_t unusedButMandatoryParameter);     //dr - press shift three times within one second to call HOME timer
-TO_QSPI void     Check_MultiPresses  (int16_t  * result, int8_t key_no);
-TO_QSPI void     Setup_MultiPresses  (int16_t  result                 );
-TO_QSPI int16_t  nameFunction        (int16_t  fn, int16_t itemShift  );   //JM LONGPRESS FN
-TO_QSPI void     resetKeytimers      (void);
+bool_t   func_lookup         (int16_t  fn, int16_t itemShift, int16_t *funk);
+void     execFnTimeout       (uint16_t key                    );                         //dr - delayed call of the primary function key
+void     shiftCutoff         (uint16_t unusedButMandatoryParameter);     //dr - press shift three times within one second to call HOME timer
+void     Check_MultiPresses  (int16_t  * result, int8_t key_no);
+void     Setup_MultiPresses  (int16_t  result                 );
+int16_t  nameFunction        (int16_t  fn, int16_t itemShift  );   //JM LONGPRESS FN
+void     resetKeytimers      (void);
 #endif
 
-TO_QSPI uint16_t numlockReplacements(uint16_t id, int16_t item, bool_t NL, bool_t SHFT, bool_t GSHFT);
-TO_QSPI bool_t keyReplacements(int16_t item, int16_t * item1, bool_t NL, bool_t SHFT, bool_t GSHFT);
+uint16_t numlockReplacements(uint16_t id, int16_t item, bool_t NL, bool_t SHFT, bool_t GSHFT);
+bool_t keyReplacements(int16_t item, int16_t * item1, bool_t NL, bool_t SHFT, bool_t GSHFT);
 
 #ifdef PC_BUILD
-TO_QSPI void     btnFnPressed_StateMachine (GtkWidget *unused, gpointer data);
-TO_QSPI void     btnFnReleased_StateMachine(GtkWidget *unused, gpointer data);
+void     btnFnPressed_StateMachine (GtkWidget *unused, gpointer data);
+void     btnFnReleased_StateMachine(GtkWidget *unused, gpointer data);
 #endif
 
 #ifndef TESTSUITE_BUILD
-TO_QSPI int16_t determineFunctionKeyItem_C43(const char *data, bool_t ShiftF, bool_t ShiftG);
+int16_t determineFunctionKeyItem_C43(const char *data, bool_t ShiftF, bool_t ShiftG);
 #endif
 
 #ifdef DMCP_BUILD
@@ -86,33 +86,33 @@ typedef struct {
   uint8_t   write;  // zeigt immer auf leeres Feld
 } kb_buffer_t;
 
-TO_QSPI void     keyBuffer_pop        ();
-TO_QSPI uint8_t  inKeyBuffer          (uint8_t byte);
+void     keyBuffer_pop        ();
+uint8_t  inKeyBuffer          (uint8_t byte);
 #ifdef BUFFER_CLICK_DETECTION
 #ifdef BUFFER_KEY_COUNT
-TO_QSPI uint8_t  outKeyBuffer         (uint8_t *pByte, uint8_t *pByteCount, uint32_t *pTime, uint32_t *pTimeSpan_1, uint32_t *pTimeSpan_B);
+uint8_t  outKeyBuffer         (uint8_t *pByte, uint8_t *pByteCount, uint32_t *pTime, uint32_t *pTimeSpan_1, uint32_t *pTimeSpan_B);
 #else
-TO_QSPI uint8_t  outKeyBuffer         (uint8_t *pByte, uint32_t *pTime, uint32_t *pTimeSpan_1, uint32_t *pTimeSpan_B);
+uint8_t  outKeyBuffer         (uint8_t *pByte, uint32_t *pTime, uint32_t *pTimeSpan_1, uint32_t *pTimeSpan_B);
 #endif
 #else
 #ifdef BUFFER_KEY_COUNT
-TO_QSPI uint8_t  outKeyBuffer         (uint8_t *pByte, uint8_t *pByteCount);
+uint8_t  outKeyBuffer         (uint8_t *pByte, uint8_t *pByteCount);
 #else
-TO_QSPI uint8_t  outKeyBuffer         (uint8_t *pByte);
+uint8_t  outKeyBuffer         (uint8_t *pByte);
 #endif
 #endif
-TO_QSPI uint8_t  outKeyBufferDoubleClick();
-TO_QSPI bool_t   fullKeyBuffer        ();
-TO_QSPI bool_t   emptyKeyBuffer       ();                           //^^
+uint8_t  outKeyBufferDoubleClick();
+bool_t   fullKeyBuffer        ();
+bool_t   emptyKeyBuffer       ();                           //^^
 
 
-TO_QSPI void     btnFnPressed_StateMachine (void *unused, void *data);
-TO_QSPI void     btnFnReleased_StateMachine(void *unused, void *data);
+void     btnFnPressed_StateMachine (void *unused, void *data);
+void     btnFnReleased_StateMachine(void *unused, void *data);
 #endif
 
-TO_QSPI void fnCla                   (uint16_t unusedButMandatoryParameter);
-TO_QSPI void fnCln                   (uint16_t unusedButMandatoryParameter);
+void fnCla                   (uint16_t unusedButMandatoryParameter);
+void fnCln                   (uint16_t unusedButMandatoryParameter);
 
-TO_QSPI void fnT_ARROW(uint16_t command);
+void fnT_ARROW(uint16_t command);
 
 #endif // KEYBOARDTWEAK_H
