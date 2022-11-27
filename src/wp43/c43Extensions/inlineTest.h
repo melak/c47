@@ -31,14 +31,14 @@ extern uint16_t testBitset;
 
 
 
-void     fnSwStart            (uint8_t nr);       // Start StopWatch, 0..3
-void     fnSwStop             (uint8_t nr);       // Stop StopWatch, 0..3
+TO_QSPI void   fnSwStart              (uint8_t nr);       // Start StopWatch, 0..3
+TO_QSPI void   fnSwStop               (uint8_t nr);       // Stop StopWatch, 0..3
 
-void fnSetInlineTest          (uint16_t drConfig);
-void fnGetInlineTestBsToX     (uint16_t unusedButMandatoryParameter);
-void fnSetInlineTestXToBs     (uint16_t unusedButMandatoryParameter);
-void fnSysFreeMem             (uint16_t unusedButMandatoryParameter);
-bool_t fnTestBitIsSet         (uint8_t bit);
+TO_QSPI void   fnSetInlineTest        (uint16_t drConfig);
+TO_QSPI void   fnGetInlineTestBsToX   (uint16_t unusedButMandatoryParameter);
+TO_QSPI void   fnSetInlineTestXToBs   (uint16_t unusedButMandatoryParameter);
+TO_QSPI void   fnSysFreeMem           (uint16_t unusedButMandatoryParameter);
+TO_QSPI bool_t fnTestBitIsSet         (uint8_t bit);
 #endif
 
 #endif // INLINETEST_H

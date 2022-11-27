@@ -42,7 +42,7 @@ uint32_t swStop[4];
  * \param[in] void
  * \return void
  ***********************************************/
-void fnSwStart(uint8_t nr) {
+TO_QSPI void fnSwStart(uint8_t nr) {
 #ifdef DMCP_BUILD
   swStart[nr] = sys_current_ms();
 #endif
@@ -60,7 +60,7 @@ void fnSwStart(uint8_t nr) {
  * Written by Lukás Chmela
  * Released under GPLv3.
  */
-char* itoa(int value, char* result, int base) {      //DONE
+TO_QSPI char* itoa(int value, char* result, int base) {      //DONE
     // check that the base if valid
     if (base < 2 || base > 16) { *result = '\0'; return result; }
 
@@ -93,7 +93,7 @@ char* itoa(int value, char* result, int base) {      //DONE
  * \param[in] void
  * \return void
  ***********************************************/
-void fnSwStop(uint8_t nr) {
+TO_QSPI void fnSwStop(uint8_t nr) {
 #ifdef DMCP_BUILD
   swStop[nr] = sys_current_ms();
 #endif
@@ -127,7 +127,7 @@ void fnSwStop(uint8_t nr) {
  * \param[in] drConfig uint16_t
  * \return void
  ***********************************************/
-void fnSetInlineTest(uint16_t drConfig) {
+TO_QSPI void fnSetInlineTest(uint16_t drConfig) {
   switch(drConfig) {
   case JC_ITM_TST:
     testEnabled = !testEnabled;
@@ -147,7 +147,7 @@ void fnSetInlineTest(uint16_t drConfig) {
  * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnGetInlineTestBsToX(uint16_t unusedButMandatoryParameter) {
+TO_QSPI void fnGetInlineTestBsToX(uint16_t unusedButMandatoryParameter) {
   char snum[10];
   longInteger_t mem;
   longIntegerInit(mem);
@@ -170,7 +170,7 @@ void fnGetInlineTestBsToX(uint16_t unusedButMandatoryParameter) {
  * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnSetInlineTestXToBs(uint16_t unusedButMandatoryParameter) {
+TO_QSPI void fnSetInlineTestXToBs(uint16_t unusedButMandatoryParameter) {
   uint16_t X_REG;
   longInteger_t lgInt;
 
@@ -191,7 +191,7 @@ void fnSetInlineTestXToBs(uint16_t unusedButMandatoryParameter) {
  * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnSysFreeMem(uint16_t unusedButMandatoryParameter) {
+TO_QSPI void fnSysFreeMem(uint16_t unusedButMandatoryParameter) {
   real_t value;
 
   saveForUndo();
@@ -217,7 +217,7 @@ void fnSysFreeMem(uint16_t unusedButMandatoryParameter) {
  * \param[in] bit uint8_t
  * \return void
  ***********************************************/
-bool_t fnTestBitIsSet(uint8_t bit) {
+TO_QSPI bool_t fnTestBitIsSet(uint8_t bit) {
   uint16_t new_num = testBitset >> (bit);
 
   return (new_num & 1);

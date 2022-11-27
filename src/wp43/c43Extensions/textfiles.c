@@ -36,7 +36,7 @@
 
 #include "wp43.h"
 
-  uint8_t reg_Name(int16_t no) {
+  TO_QSPI uint8_t reg_Name(int16_t no) {
     switch(no) {
       case 100:   return 'X'; break;
       case 101:   return 'Y'; break;
@@ -56,7 +56,7 @@
 
 
 
-void addChrBothSides(uint8_t t, char * str) {
+TO_QSPI void addChrBothSides(uint8_t t, char * str) {
     char tt[4];
     tt[0]=t;
     tt[1]=0;
@@ -65,14 +65,14 @@ void addChrBothSides(uint8_t t, char * str) {
     strcat(str,tt);
   }
 
-void addStrBothSides(char * str, char * str_b, char * str_e) {
+TO_QSPI void addStrBothSides(char * str, char * str_b, char * str_e) {
     xcopy(str + stringByteLength(str_b), str, stringByteLength(str) + 1);
     xcopy(str, str_b, stringByteLength(str_b));
     xcopy(str + stringByteLength(str), str_e, stringByteLength(str_e) + 1);
   }
 
 
-void copyRegisterToClipboardString2(calcRegister_t regist, char *clipboardString) {
+TO_QSPI void copyRegisterToClipboardString2(calcRegister_t regist, char *clipboardString) {
   #ifndef TESTSUITE_BUILD
     switch(getRegisterDataType(regist)) {
       case dtLongInteger:
@@ -123,7 +123,7 @@ void copyRegisterToClipboardString2(calcRegister_t regist, char *clipboardString
 
 //USING tmpString !!
 
-void stackregister_csv_out(int16_t reg_b, int16_t reg_e) {
+TO_QSPI void stackregister_csv_out(int16_t reg_b, int16_t reg_e) {
 #ifndef TESTSUITE_BUILD
   char tmp_b[100], tmp_e[100];
 
@@ -183,7 +183,7 @@ void stackregister_csv_out(int16_t reg_b, int16_t reg_e) {
 //**********************************************************************************************************
 
 #ifndef TESTSUITE_BUILD
-int16_t export_string_to_file(const char line1[TMP_STR_LENGTH]) {
+TO_QSPI int16_t export_string_to_file(const char line1[TMP_STR_LENGTH]) {
   return export_string_to_filename(line1, APPEND, "res/PROGRAMS", "C43_LOG.TXT");
 }
 #endif
@@ -194,7 +194,7 @@ int16_t export_string_to_file(const char line1[TMP_STR_LENGTH]) {
 
 // OUTPUT is in TMPSTR
 
-void displaywords(char *line1) {  //Preprocessor and display
+TO_QSPI void displaywords(char *line1) {  //Preprocessor and display
   char bb[2];
   char aa[2];
   bool_t state_comments=false;
@@ -312,7 +312,7 @@ void displaywords(char *line1) {  //Preprocessor and display
 
 uint32_t t_line_x, t_line_y;
 
-void print_inlinestr(const char *line1, bool_t endline) {
+TO_QSPI void print_inlinestr(const char *line1, bool_t endline) {
 #ifndef TESTSUITE_BUILD
     char l1[100];    //Clip the string at 40
     l1[0]=0;
@@ -337,7 +337,7 @@ void print_inlinestr(const char *line1, bool_t endline) {
 
 
 
-void print_Register_line(calcRegister_t regist, char *before, char *after, bool_t line_init) {
+TO_QSPI void print_Register_line(calcRegister_t regist, char *before, char *after, bool_t line_init) {
 #ifndef TESTSUITE_BUILD
     char str[TMP_STR_LENGTH];
 
