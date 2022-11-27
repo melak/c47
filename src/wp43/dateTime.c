@@ -24,9 +24,11 @@
 #include "constantPointers.h"
 #include "debug.h"
 #include "error.h"
+#include "c43Extensions/addons.h"
 #include "flags.h"
 #include "items.h"
 #include "mathematics/comparisonReals.h"
+#include "mathematics/division.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "stack.h"
@@ -418,6 +420,10 @@ void fnJulianToDate(uint16_t unusedButMandatoryParameter) {
     return;
   }
 
+  if(getRegisterDataType(REGISTER_X) == dtReal34) {
+    convertReal34ToLongIntegerRegister(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_X, DEC_ROUND_DOWN);
+  }
+
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger: {
       convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
@@ -434,7 +440,7 @@ void fnJulianToDate(uint16_t unusedButMandatoryParameter) {
         moreInfoOnError("In function fnDateToJulian:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
-  }
+    }
   }
 
   // check range
@@ -443,6 +449,79 @@ void fnJulianToDate(uint16_t unusedButMandatoryParameter) {
     undo();
   }
 }
+
+
+void fnJulianToDateTime(uint16_t unusedButMandatoryParameter) {
+  real34_t date;
+
+  if(!saveLastX()) {
+    return;
+  }
+
+  switch(getRegisterDataType(REGISTER_X)) {
+    case dtLongInteger: {
+      liftStack();
+      convertLongIntegerRegisterToReal34Register(REGISTER_Y, REGISTER_Y);
+      julianDayToInternalDate(REGISTER_REAL34_DATA(REGISTER_Y), &date);
+      reallocateRegister(REGISTER_Y, dtDate, REAL34_SIZE, amNone);
+      real34Copy(&date, REGISTER_REAL34_DATA(REGISTER_Y));
+      reallocateRegister(REGISTER_X, dtTime, REAL34_SIZE, amNone);
+      real34Copy(const34_1on2, REGISTER_REAL34_DATA(REGISTER_X)); //Added offset so 0.00 -> 12:00:00
+      real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), const34_3600, REGISTER_REAL34_DATA(REGISTER_X));
+      real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), const34_24, REGISTER_REAL34_DATA(REGISTER_X));
+      break;
+    }
+    case dtReal34: {
+      liftStack();
+      real34Add(REGISTER_REAL34_DATA(REGISTER_Y), const34_1on2, REGISTER_REAL34_DATA(REGISTER_Y));       //handle 0.5 offset
+      copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_X);
+
+      //Get IP in Y
+      reallocateRegister(REGISTER_Y, dtDate, REAL34_SIZE, amNone);
+      real34ToIntegralValue(REGISTER_REAL34_DATA(REGISTER_Y), REGISTER_REAL34_DATA(REGISTER_Y), DEC_ROUND_DOWN);
+
+      //Get FP in x
+      real_t y, x,cc;
+      int32ToReal(3600*100, &cc);
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);  //IP
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);  //Org
+      realSubtract(&x, &y, &x, &ctxtReal39);               //FP = Org - IP
+      realMultiply(&x, &cc, &x, &ctxtReal39);              //(360000*(FP))          //round seconds to 0.01s: x3600x100 
+      realToIntegralValue(&x, &x, DEC_ROUND_HALF_UP, &ctxtReal39);   //round (360000*(FP))
+      realDivide  (&x, &cc, &x, &ctxtReal39);                        //(round (360000*(FP)))/360000
+
+      //Convert date to Y
+      julianDayToInternalDate(REGISTER_REAL34_DATA(REGISTER_Y), &date);
+      reallocateRegister(REGISTER_Y, dtDate, REAL34_SIZE, amNone);
+      real34Copy(&date, REGISTER_REAL34_DATA(REGISTER_Y));
+
+      //Convert x to time to X
+      real_t tmp;
+      int32ToReal(24*3600, &tmp);
+      realMultiply(&tmp, &x, &tmp, &ctxtReal39);                   //tmp is now seconds
+      reallocateRegister(REGISTER_X, dtTime, REAL34_SIZE, amNone); //this must be in front of the next line, otherwise accuracy is gone
+      convertRealToReal34ResultRegister(&tmp, REGISTER_X);
+      break;
+    }
+
+    default: {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "data type %s cannot be converted to date!", getRegisterDataTypeName(REGISTER_X, false, false));
+        moreInfoOnError("In function fnDateTimeToJulian:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      return;
+    }
+  }
+
+  // check range
+  checkDateRange(REGISTER_REAL34_DATA(REGISTER_Y));
+  if(lastErrorCode != 0) {
+    undo();
+  }
+}
+
+
 
 void fnDateToJulian(uint16_t unusedButMandatoryParameter) {
   real34_t jd34;
@@ -455,6 +534,38 @@ void fnDateToJulian(uint16_t unusedButMandatoryParameter) {
     convertReal34ToLongIntegerRegister(&jd34, REGISTER_X, DEC_ROUND_FLOOR);
   }
 }
+
+
+
+void fnDateTimeToJulian(uint16_t unusedButMandatoryParameter) {
+  real34_t jd34;
+
+  if(!saveLastX()) {
+    return;
+  }
+
+  if(getRegisterDataType(REGISTER_X) == dtDate && getRegisterDataType(REGISTER_Y) == dtTime) {
+    if(checkDateArgument(REGISTER_X, &jd34)) {
+      fnSwapXY(0);
+    }
+  }
+
+  if(checkDateArgument(REGISTER_Y, &jd34) && getRegisterDataType(REGISTER_X) == dtTime) {
+    {
+      convertReal34ToLongIntegerRegister(&jd34, REGISTER_Y, DEC_ROUND_DOWN);                      //Y is truncated date in real
+      convertLongIntegerRegisterToReal34Register(REGISTER_Y, REGISTER_Y);
+      timeToReal34(3);                                                                            //X is now Real seconds
+      real34_t tmp;
+      int32ToReal34 (3600*24,&tmp);
+      real34Divide  (REGISTER_REAL34_DATA(REGISTER_X), &tmp, REGISTER_REAL34_DATA(REGISTER_X));   //X is now in days
+      real34Add     (REGISTER_REAL34_DATA(REGISTER_X), REGISTER_REAL34_DATA(REGISTER_Y), REGISTER_REAL34_DATA(REGISTER_X));
+      real34Subtract(REGISTER_REAL34_DATA(REGISTER_X), const34_1on2, REGISTER_REAL34_DATA(REGISTER_X));                      //handle 0.5 offset
+      adjustResult(REGISTER_X, true, true, REGISTER_X, REGISTER_Y, -1);
+    }
+  } 
+}
+
+
 
 void fnIsLeap(uint16_t unusedButMandatoryParameter) {
   real34_t y, m, d, j;
@@ -518,6 +629,7 @@ void fnXToDate(uint16_t unusedButMandatoryParameter) {
       if(getRegisterAngularMode(REGISTER_X) == amNone) {
         convertReal34RegisterToDateRegister(REGISTER_X, REGISTER_X);
         checkDateRange(REGISTER_REAL34_DATA(REGISTER_X));
+        temporaryInformation = TI_DAY_OF_WEEK;
         if(lastErrorCode != 0) {
           undo();
         }
@@ -686,6 +798,7 @@ void fnToDate(uint16_t unusedButMandatoryParameter) {
 
       // check range
       checkDateRange(REGISTER_REAL34_DATA(REGISTER_X));
+      temporaryInformation = TI_DAY_OF_WEEK;
     }
   }
   if(lastErrorCode != 0) {

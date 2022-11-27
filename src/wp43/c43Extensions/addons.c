@@ -1156,6 +1156,13 @@ void timeToReal34(uint16_t hms) { //always 24 hour time;
   tDigits = 0u;
   real34SetPositiveSign(&real34);
 
+  if(hms == 3) {
+  //total seconds
+    reallocateRegister(regist, dtReal34, REAL34_SIZE, amNone);
+    real34Copy(&real34, REGISTER_REAL34_DATA(regist));
+    return;
+  }
+
   // Seconds
   //real34ToIntegralValue(&real34, &s34, DEC_ROUND_DOWN);
   real34Copy(&real34, &s34);

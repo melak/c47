@@ -1914,8 +1914,8 @@
 #define ITM_BASE_HOME               1859
 #define ITM_1860                    1860
 #define ITM_H_SUMRY                 1861
-#define ITM_1862                    1862
-#define ITM_1863                    1863
+#define ITM_DTtoJ                   1862
+#define ITM_JtoDT                   1863
 #define ITM_DSPCYCLE                1864
 #define ITM_LARGELI                 1865
 #define ITM_SIGFIG                  1866
