@@ -47,7 +47,7 @@ bool_t    invalid_diff = true;
 bool_t    invalid_rms  = true;
 
 
-TO_QSPI void graph_reset(void){
+void graph_reset(void){
   graph_dx      = 0;
   graph_dy      = 0;
   extentx       = false;
@@ -70,14 +70,14 @@ TO_QSPI void graph_reset(void){
 }
 
 
-TO_QSPI void fnClGrf(uint16_t unusedButMandatoryParameter) {
+void fnClGrf(uint16_t unusedButMandatoryParameter) {
   graph_reset();
   fnClDrawMx();
   fnRefreshState();                //jm
 }
 
 
-TO_QSPI void fnPline(uint16_t unusedButMandatoryParameter) {
+void fnPline(uint16_t unusedButMandatoryParameter) {
   PLOT_LINE = !PLOT_LINE;
   if(!PLOT_LINE && !PLOT_CROSS && !PLOT_BOX) PLOT_BOX = true;
   fnRefreshState();                //jm
@@ -85,7 +85,7 @@ TO_QSPI void fnPline(uint16_t unusedButMandatoryParameter) {
 }
 
 
-TO_QSPI void fnPcros(uint16_t unusedButMandatoryParameter) {
+void fnPcros(uint16_t unusedButMandatoryParameter) {
   PLOT_CROSS = !PLOT_CROSS;
   if(PLOT_CROSS) PLOT_BOX = false;
   if(!PLOT_LINE && !PLOT_CROSS && !PLOT_BOX) PLOT_LINE = true;
@@ -94,7 +94,7 @@ TO_QSPI void fnPcros(uint16_t unusedButMandatoryParameter) {
 }
 
 
-TO_QSPI void fnPbox (uint16_t unusedButMandatoryParameter) {
+void fnPbox (uint16_t unusedButMandatoryParameter) {
   PLOT_BOX = !PLOT_BOX;
   if(PLOT_BOX) PLOT_CROSS = false;
   if(!PLOT_LINE && !PLOT_CROSS && !PLOT_BOX) PLOT_LINE = true;
@@ -102,7 +102,7 @@ TO_QSPI void fnPbox (uint16_t unusedButMandatoryParameter) {
   fnPlotSQ(0);
 }
 
-TO_QSPI void fnPintg (uint16_t unusedButMandatoryParameter) {
+void fnPintg (uint16_t unusedButMandatoryParameter) {
   PLOT_INTG = !PLOT_INTG;
   if(!PLOT_INTG) PLOT_SHADE = false;
   PLOT_VECT       = false;
@@ -111,7 +111,7 @@ TO_QSPI void fnPintg (uint16_t unusedButMandatoryParameter) {
   fnPlotSQ(0);
 }
 
-TO_QSPI void fnPdiff (uint16_t unusedButMandatoryParameter) {
+void fnPdiff (uint16_t unusedButMandatoryParameter) {
   PLOT_DIFF = !PLOT_DIFF;
   PLOT_VECT       = false;
   PLOT_NVECT      = false;
@@ -119,7 +119,7 @@ TO_QSPI void fnPdiff (uint16_t unusedButMandatoryParameter) {
   fnPlotSQ(0);
 }
 
-TO_QSPI void fnPrms (uint16_t unusedButMandatoryParameter) {
+void fnPrms (uint16_t unusedButMandatoryParameter) {
   PLOT_RMS = !PLOT_RMS;
   PLOT_VECT       = false;
   PLOT_NVECT      = false;
@@ -127,7 +127,7 @@ TO_QSPI void fnPrms (uint16_t unusedButMandatoryParameter) {
   fnPlotSQ(0);
 }
 
-TO_QSPI void fnPzoom (uint16_t param) {
+void fnPzoom (uint16_t param) {
   if(param == 1) {
     if(PLOT_ZMX < 0+3) PLOT_ZMX++; else PLOT_ZMX = 0-1;
     fnRefreshState();                //jm
@@ -140,7 +140,7 @@ TO_QSPI void fnPzoom (uint16_t param) {
   }
 }
 
-TO_QSPI void fnPvect (uint16_t unusedButMandatoryParameter) {
+void fnPvect (uint16_t unusedButMandatoryParameter) {
   PLOT_VECT = !PLOT_VECT;
   if(PLOT_VECT) {PLOT_NVECT = false;}
   PLOT_INTG     = false;
@@ -151,7 +151,7 @@ TO_QSPI void fnPvect (uint16_t unusedButMandatoryParameter) {
   fnPlotSQ(0);
 }    
 
-TO_QSPI void fnPNvect (uint16_t unusedButMandatoryParameter) {
+void fnPNvect (uint16_t unusedButMandatoryParameter) {
   PLOT_NVECT = !PLOT_NVECT;
   if(PLOT_NVECT) {PLOT_VECT = false;}
   PLOT_INTG     = false;
@@ -162,13 +162,13 @@ TO_QSPI void fnPNvect (uint16_t unusedButMandatoryParameter) {
   fnPlotSQ(0);
 }    
 
-TO_QSPI void fnScale (uint16_t unusedButMandatoryParameter) {
+void fnScale (uint16_t unusedButMandatoryParameter) {
   PLOT_SCALE = !PLOT_SCALE;
   fnRefreshState();                //jm
   fnPlotSQ(0);
 }    
 
-TO_QSPI void fnPshade (uint16_t unusedButMandatoryParameter) {
+void fnPshade (uint16_t unusedButMandatoryParameter) {
   PLOT_SHADE = !PLOT_SHADE;
   if(PLOT_SHADE) PLOT_INTG = true;
   PLOT_VECT       = false;
@@ -177,20 +177,20 @@ TO_QSPI void fnPshade (uint16_t unusedButMandatoryParameter) {
   fnPlotSQ(0);
 }    
 
-TO_QSPI void fnPx (uint16_t unusedButMandatoryParameter) {
+void fnPx (uint16_t unusedButMandatoryParameter) {
   extentx = !extentx;
   fnRefreshState();                //jm
   fnPlotSQ(0);
 }
 
-TO_QSPI void fnPy (uint16_t unusedButMandatoryParameter) {
+void fnPy (uint16_t unusedButMandatoryParameter) {
   extenty = !extenty;
   fnRefreshState();                //jm
   fnPlotSQ(0);
 }
 
 
-TO_QSPI void fnPlotReset(uint16_t unusedButMandatoryParameter) {
+void fnPlotReset(uint16_t unusedButMandatoryParameter) {
   graph_dx      = 0;
   graph_dy      = 0;
   extentx       = true;
@@ -222,7 +222,7 @@ TO_QSPI void fnPlotReset(uint16_t unusedButMandatoryParameter) {
 }
 
 
-TO_QSPI void fnPlotSQ(uint16_t unusedButMandatoryParameter) {
+void fnPlotSQ(uint16_t unusedButMandatoryParameter) {
   #ifdef DMCP_BUILD
     lcd_refresh();
   #else // !DMCP_BUILD
@@ -245,7 +245,7 @@ TO_QSPI void fnPlotSQ(uint16_t unusedButMandatoryParameter) {
   doRefreshSoftMenu = true;             //Plot graph is part of refreshScreen
 }
 
-TO_QSPI void fnListXY(uint16_t unusedButMandatoryParameter) {
+void fnListXY(uint16_t unusedButMandatoryParameter) {
   #ifndef TESTSUITE_BUILD
   if( (plotStatMx[0]=='S' ? checkMinimumDataPoints(const_1):false) || (plotStatMx[0]=='D' ? drawMxN() >= 1:false) ) {
     calcMode = CM_LISTXY; //Used to view graph/listing
@@ -256,7 +256,7 @@ TO_QSPI void fnListXY(uint16_t unusedButMandatoryParameter) {
 
 //added this, to add a new command to plot advanced from the STATS
 #ifndef TESTSUITE_BUILD
-  TO_QSPI void fnPlotStatAdv(uint16_t unusedButMandatoryParameter) {
+  void fnPlotStatAdv(uint16_t unusedButMandatoryParameter) {
     lastPlotMode = PLOT_NOTHING;
     strcpy(plotStatMx, "STATS");
     PLOT_LINE = true;
@@ -271,7 +271,7 @@ TO_QSPI void fnListXY(uint16_t unusedButMandatoryParameter) {
 
 
 #ifndef TESTSUITE_BUILD
-      TO_QSPI void plotarrow(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn) {              // Plots line from xo,yo to xn,yn; uses temporary x1,y1
+      void plotarrow(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn) {              // Plots line from xo,yo to xn,yn; uses temporary x1,y1
         float dx, dy, ddx, dydx, zz, zzz;
         dydx = yn-yo;
         ddx = xn-xo;
@@ -291,14 +291,14 @@ TO_QSPI void fnListXY(uint16_t unusedButMandatoryParameter) {
       }
 
 
-      TO_QSPI void plotdeltabig(uint16_t xn, uint8_t yn) {              // Plots ldifferential sign; uses temporary x1,y1
+      void plotdeltabig(uint16_t xn, uint8_t yn) {              // Plots ldifferential sign; uses temporary x1,y1
         plotline(xn+0,yn-2,     xn+0+5,yn-2+8);
         plotline(xn+0+5,yn-2+8, xn+0-5,yn-2+8);
         plotline(xn+0-5,yn-2+8, xn+0,yn-2    );
       }
 
 
-      TO_QSPI void plotdelta(uint16_t xn, uint8_t yn) {              // Plots ldifferential sign; uses temporary x1,y1
+      void plotdelta(uint16_t xn, uint8_t yn) {              // Plots ldifferential sign; uses temporary x1,y1
         placePixel(xn+0,yn-2);                               //   PLOT a delta
         placePixel(xn-1,yn-1);
         placePixel(xn-1,yn+0);
@@ -313,7 +313,7 @@ TO_QSPI void fnListXY(uint16_t unusedButMandatoryParameter) {
         placePixel(xn+1,yn+2);
       }
 
-      TO_QSPI void plotintbig(uint16_t xn, uint8_t yn) {                // Plots integral sign; uses temporary x1,y1
+      void plotintbig(uint16_t xn, uint8_t yn) {                // Plots integral sign; uses temporary x1,y1
         plotline(xn-0,yn-2  ,     xn+3,yn-2);
         plotline(xn-0,yn-2+1,     xn+3,yn-2+1);
         plotline(xn-3,yn-2+8,     xn+0,yn-2+8);
@@ -323,7 +323,7 @@ TO_QSPI void fnListXY(uint16_t unusedButMandatoryParameter) {
         plotline(xn+1,yn-2+7,     xn+1,yn-2+0);
       }
 
-      TO_QSPI void plotint(uint16_t xn, uint8_t yn) {                // Plots integral sign; uses temporary x1,y1
+      void plotint(uint16_t xn, uint8_t yn) {                // Plots integral sign; uses temporary x1,y1
         placePixel(xn,yn);                                   //   PLOT a I
         placePixel(xn,yn-1);
         placePixel(xn,yn-2);
@@ -333,7 +333,7 @@ TO_QSPI void fnListXY(uint16_t unusedButMandatoryParameter) {
         placePixel(xn-1,yn+2);
       }
 
-      TO_QSPI void plotrms(uint16_t xn, uint8_t yn) {                // Plots line from xo,yo to xn,yn; uses temporary x1,y1
+      void plotrms(uint16_t xn, uint8_t yn) {                // Plots line from xo,yo to xn,yn; uses temporary x1,y1
         placePixel(xn+1,yn-1);                               //   PLOT a box
         placePixel(xn-1,yn-1);
         placePixel(xn-0,yn-1);
@@ -348,7 +348,7 @@ TO_QSPI void fnListXY(uint16_t unusedButMandatoryParameter) {
 
 
 
-      TO_QSPI void plotrect(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {                // Plots rectangle from xo,yo to xn,yn; uses temporary x1,y1
+      void plotrect(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {                // Plots rectangle from xo,yo to xn,yn; uses temporary x1,y1
         plotline(a, b, c, b);
         plotline(a, b, a, d);
         plotline(c, d, c, b);
@@ -356,7 +356,7 @@ TO_QSPI void fnListXY(uint16_t unusedButMandatoryParameter) {
       }
 
 
-      TO_QSPI void plottriangle(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {                // Plots rectangle from xo,yo to xn,yn; uses temporary x1,y1
+      void plottriangle(uint16_t a, uint8_t b, uint16_t c, uint8_t d) {                // Plots rectangle from xo,yo to xn,yn; uses temporary x1,y1
         plotline(a, b, c, b);
         plotline(a, b, c, d);
         plotline(c, d, c, b);
@@ -373,7 +373,7 @@ TO_QSPI void fnListXY(uint16_t unusedButMandatoryParameter) {
 
 
     
-  TO_QSPI void convertDigits(char * refstr, uint16_t ii, uint16_t * oo, char * outstr) {
+  void convertDigits(char * refstr, uint16_t ii, uint16_t * oo, char * outstr) {
     switch (refstr[ii]) {
       case '0': 
       case '1': 
@@ -402,7 +402,7 @@ TO_QSPI void fnListXY(uint16_t unusedButMandatoryParameter) {
     }
   }
 
-TO_QSPI void graph_text(void){
+void graph_text(void){
   #ifndef TESTSUITE_BUILD
   uint32_t ypos = Y_POSITION_OF_REGISTER_T_LINE -11 + 12 * 5 -45;
   uint16_t ii;
@@ -534,7 +534,7 @@ TO_QSPI void graph_text(void){
 //######### PLOT MEM #################################
 //####################################################
 
-TO_QSPI void graph_plotmem(void) {
+void graph_plotmem(void) {
 #ifndef SAVE_SPACE_DM42_13GRF_JM
 
   #ifndef TESTSUITE_BUILD
@@ -973,7 +973,7 @@ TO_QSPI void graph_plotmem(void) {
 //-----------------------------------------------------//-----------------------------------------------------
 
 
-TO_QSPI void fnStatList() {
+void fnStatList() {
   #ifndef TESTSUITE_BUILD
   char tmpstr1[100], tmpstr2[100];
   int16_t ix, ixx, statnum;

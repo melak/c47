@@ -49,7 +49,7 @@
 #ifdef PC_BUILD
 
   #ifdef PC_BUILD_TELLTALE
-    TO_QSPI static char * getCalcModeName(uint16_t cm) {
+    static char * getCalcModeName(uint16_t cm) {
       if(cm == CM_NORMAL)                return "normal ";
       if(cm == CM_AIM)                   return "aim    ";
       if(cm == CM_EIM)                   return "eim    ";
@@ -71,7 +71,7 @@
 
       return "???    ";
     }
-    TO_QSPI static char * getAlphaCaseName(uint16_t ac) {
+    static char * getAlphaCaseName(uint16_t ac) {
       if(ac == AC_LOWER) return "lower";
       if(ac == AC_UPPER) return "upper";
 
@@ -80,7 +80,7 @@
   #endif //PC_BUILD_TELLTALE
 
 
-  TO_QSPI void jm_show_calc_state(char comment[]) {
+  void jm_show_calc_state(char comment[]) {
   #ifdef PC_BUILD_TELLTALE
     printf("\n%s--------------------------------------------------------------------------------\n",comment);
     printf(".  calcMode: %s   last_CM=%s  AlphaCase=%s  doRefreshSoftMenu=%d    lastErrorCode=%d\n",getCalcModeName(calcMode), getCalcModeName(last_CM), getAlphaCaseName(alphaCase), doRefreshSoftMenu,lastErrorCode);
@@ -93,7 +93,7 @@
   }
 
 
-  TO_QSPI void jm_show_comment(char comment[]) {
+  void jm_show_comment(char comment[]) {
   #ifdef PC_BUILD_VERBOSE2
     char tmp[600];
     strcpy(tmp,comment);
@@ -106,7 +106,7 @@
 #endif //PC_BUILD
 
 
-TO_QSPI void reset_jm_defaults(int16_t toload) {
+void reset_jm_defaults(int16_t toload) {
 
     SHOWregis = 9999;                                          //JMSHOW
 
@@ -186,7 +186,7 @@ TO_QSPI void reset_jm_defaults(int16_t toload) {
  * \param[in] jmConfig uint16_t
  * \return void
  ***********************************************/
-TO_QSPI void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset setting
+void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset setting
   switch(jmConfig) {
   case JC_ERPN:                                             //JM eRPN
     eRPN = !eRPN;
@@ -360,7 +360,7 @@ TO_QSPI void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM S
  * \param[in] sigmaAssign uint16_t
  * \return void
  ***********************************************/
-TO_QSPI void fnSigmaAssign(uint16_t sigmaAssign) {             //DONE
+void fnSigmaAssign(uint16_t sigmaAssign) {             //DONE
   int16_t tt = (int16_t)sigmaAssign;
   Norm_Key_00_VAR = tt - 16384;
   fnRefreshState();                                 //drJM
@@ -374,7 +374,7 @@ TO_QSPI void fnSigmaAssign(uint16_t sigmaAssign) {             //DONE
  * \param[in] jmConfig to display uint16_t
  * \return void
  ***********************************************/
-TO_QSPI void fnShowJM(uint16_t jmConfig) {                               //DONE
+void fnShowJM(uint16_t jmConfig) {                               //DONE
   longInteger_t mem;
   longIntegerInit(mem);
   saveForUndo();
@@ -400,7 +400,7 @@ TO_QSPI void fnShowJM(uint16_t jmConfig) {                               //DONE
  * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-TO_QSPI void fnGetSigmaAssignToX(uint16_t unusedButMandatoryParameter) {       //DONE
+void fnGetSigmaAssignToX(uint16_t unusedButMandatoryParameter) {       //DONE
   longInteger_t mem;
   longIntegerInit(mem);
   liftStack();
@@ -422,7 +422,7 @@ TO_QSPI void fnGetSigmaAssignToX(uint16_t unusedButMandatoryParameter) {       /
  * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-TO_QSPI void fnJM_GetXToNORMmode(uint16_t unusedButMandatoryParameter) {      //DONE
+void fnJM_GetXToNORMmode(uint16_t unusedButMandatoryParameter) {      //DONE
   int16_t X_REG;
   longInteger_t lgInt;
 
@@ -451,7 +451,7 @@ uint16_t nprimes = 0;
  * \param[in] JM_OPCODE uint16_t
  * \return void
  ***********************************************/
-TO_QSPI void fnJM(uint16_t JM_OPCODE) {
+void fnJM(uint16_t JM_OPCODE) {
 #define JMTEMP    TEMP_REGISTER_1 // 98
 #define JM_TEMP_I REGISTER_I // 97
 #define JM_TEMP_J REGISTER_J // 96
@@ -818,7 +818,7 @@ TO_QSPI void fnJM(uint16_t JM_OPCODE) {
  * \param[in] jmConfig uint16_t
  * \return void
  ***********************************************/
-TO_QSPI void fnUserJM(uint16_t jmUser) {
+void fnUserJM(uint16_t jmUser) {
   switch(jmUser) {
 
 

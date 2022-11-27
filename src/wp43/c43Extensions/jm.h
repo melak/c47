@@ -66,9 +66,9 @@ Modes available in the mode menu:
 #define BCD9c                   1
 #define BCD10c                  2
 
-TO_QSPI void jm_show_calc_state(char comment[]);
-TO_QSPI void jm_show_comment   (char comment[]);
-TO_QSPI void reset_jm_defaults (int16_t toload);
+void jm_show_calc_state(char comment[]);
+void jm_show_comment   (char comment[]);
+void reset_jm_defaults (int16_t toload);
 
 
 //keyboard.c  screen.c
@@ -107,14 +107,14 @@ extern uint32_t indic_y;                                            //JM program
 // Additional routines needed in jm.c
 //void fnSeteRPN(uint16_t unusedButMandatoryParameter);         //dr - unused
 //void fnSetHOME3(uint16_t unusedButMandatoryParameter);        //dr - unused
-TO_QSPI void fnSetSetJM(uint16_t jmConfig);
-TO_QSPI void fnSigmaAssign(uint16_t sigmaAssign);
-TO_QSPI void fnGetSigmaAssignToX(uint16_t unusedButMandatoryParameter);
+void fnSetSetJM(uint16_t jmConfig);
+void fnSigmaAssign(uint16_t sigmaAssign);
+void fnGetSigmaAssignToX(uint16_t unusedButMandatoryParameter);
 
 //void fnInfo(bool_t Info);
 
-TO_QSPI void fnJM(uint16_t JM_OPCODE);
-TO_QSPI void fnUserJM(uint16_t jmUser);
+void fnJM(uint16_t JM_OPCODE);
+void fnUserJM(uint16_t jmUser);
 
 
 
@@ -136,11 +136,11 @@ TO_QSPI void fnUserJM(uint16_t jmUser);
 
 
 
-TO_QSPI void fnJM_GetXToNORMmode(uint16_t Rubbish);
-TO_QSPI void fnStrtoX       (char aimBuffer[]);
-TO_QSPI void fnStrInputReal34 (char inp1[]);
-TO_QSPI void fnStrInputLongint(char inp1[]);
-TO_QSPI void fnRCL          (int16_t inp);
+void fnJM_GetXToNORMmode(uint16_t Rubbish);
+void fnStrtoX       (char aimBuffer[]);
+void fnStrInputReal34 (char inp1[]);
+void fnStrInputLongint(char inp1[]);
+void fnRCL          (int16_t inp);
 
 #define TI_ABC                  96    //JM EE
 #define TI_ABBCCA               97    //JM EE
@@ -220,9 +220,9 @@ TO_QSPI void fnRCL          (int16_t inp);
 
 #ifdef PC_BUILD
 //keyboard.c
-TO_QSPI void JM_DOT(int16_t xx, int16_t yy);
+void JM_DOT(int16_t xx, int16_t yy);
 #endif
 
-TO_QSPI void fnShowJM  (uint16_t jmConfig);
+void fnShowJM  (uint16_t jmConfig);
 
 #endif // JM_H

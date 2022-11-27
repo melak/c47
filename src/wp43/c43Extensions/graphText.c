@@ -45,7 +45,7 @@ bool_t               cancelFilename = false;
 #ifdef DMCP_BUILD
 //###################################################################################
 /*-DMCP-*/ 
-/*-DMCP-*/ TO_QSPI TCHAR* f_gets ( //DMCP_BUILD ONLY
+/*-DMCP-*/ TCHAR* f_gets ( //DMCP_BUILD ONLY
 /*-DMCP-*/   TCHAR* buff,  /* Pointer to the buffer to store read string */
 /*-DMCP-*/   int len,    /* Size of string buffer (items) */
 /*-DMCP-*/   FIL* fp     /* Pointer to the file object */
@@ -74,7 +74,7 @@ bool_t               cancelFilename = false;
 /*-DMCP-*/ 
 /*-DMCP-*/ 
 /*-DMCP-*/ 
-/*-DMCP-*/ TO_QSPI TCHAR* f_getsline ( //DMCP_BUILD ONLY
+/*-DMCP-*/ TCHAR* f_getsline ( //DMCP_BUILD ONLY
 /*-DMCP-*/   TCHAR* buff,  /* Pointer to the buffer to store read string */
 /*-DMCP-*/   int len,    /* Size of string buffer (items) */
 /*-DMCP-*/   FIL* fp     /* Pointer to the file object */
@@ -114,7 +114,7 @@ bool_t               cancelFilename = false;
 /*-DMCP-*/ 
 /*-DMCP-*/ 
 /*-DMCP-*/ /* Buffered write with code conversion */
-/*-DMCP-*/ TO_QSPI static void putc_bfd (putbuff* pb, TCHAR c) //DMCP_BUILD ONLY
+/*-DMCP-*/ static void putc_bfd (putbuff* pb, TCHAR c) //DMCP_BUILD ONLY
 /*-DMCP-*/ {
 /*-DMCP-*/   UINT n;
 /*-DMCP-*/   int i, nc;
@@ -143,7 +143,7 @@ bool_t               cancelFilename = false;
 /*-DMCP-*/ 
 /*-DMCP-*/ 
 /*-DMCP-*/ /* Flush remaining characters in the buffer */
-/*-DMCP-*/ TO_QSPI static int putc_flush (putbuff* pb) //DMCP_BUILD ONLY
+/*-DMCP-*/ static int putc_flush (putbuff* pb) //DMCP_BUILD ONLY
 /*-DMCP-*/ {
 /*-DMCP-*/   UINT nw;
 /*-DMCP-*/ 
@@ -157,7 +157,7 @@ bool_t               cancelFilename = false;
 /*-DMCP-*/ /* Initialize write buffer */
 /*-DMCP-*/ 
 /*-DMCP-*/ /* Fill memory block */
-/*-DMCP-*/ TO_QSPI static void mem_set (void* dst, int val, UINT cnt) //DMCP_BUILD ONLY
+/*-DMCP-*/ static void mem_set (void* dst, int val, UINT cnt) //DMCP_BUILD ONLY
 /*-DMCP-*/ {
 /*-DMCP-*/   BYTE *d = (BYTE*)dst;
 /*-DMCP-*/ 
@@ -167,7 +167,7 @@ bool_t               cancelFilename = false;
 /*-DMCP-*/ }
 /*-DMCP-*/ 
 /*-DMCP-*/ 
-/*-DMCP-*/ TO_QSPI static void putc_init (putbuff* pb, FIL* fp) //DMCP_BUILD ONLY
+/*-DMCP-*/ static void putc_init (putbuff* pb, FIL* fp) //DMCP_BUILD ONLY
 /*-DMCP-*/ {
 /*-DMCP-*/   mem_set(pb, 0, sizeof (putbuff));
 /*-DMCP-*/   pb->fp = fp;
@@ -175,7 +175,7 @@ bool_t               cancelFilename = false;
 /*-DMCP-*/ 
 /*-DMCP-*/ 
 /*-DMCP-*/ 
-/*-DMCP-*/ TO_QSPI int f_putc ( //DMCP_BUILD ONLY
+/*-DMCP-*/ int f_putc ( //DMCP_BUILD ONLY
 /*-DMCP-*/   TCHAR c,  /* A character to be output */
 /*-DMCP-*/   FIL* fp   /* Pointer to the file object */
 /*-DMCP-*/ )
@@ -195,7 +195,7 @@ bool_t               cancelFilename = false;
 /*-DMCP-*/ /* Put a String to the File                                              */
 /*-DMCP-*/ /*-----------------------------------------------------------------------*/
 /*-DMCP-*/ 
-/*-DMCP-*/ TO_QSPI int f_puts ( //DMCP_BUILD ONLY
+/*-DMCP-*/ int f_puts ( //DMCP_BUILD ONLY
 /*-DMCP-*/   const TCHAR* str, /* Pointer to the string to be output */
 /*-DMCP-*/   FIL* fp       /* Pointer to the file object */
 /*-DMCP-*/ )

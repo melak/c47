@@ -116,13 +116,13 @@ All the below: because both Last x and savestack does not work due to multiple s
 
 
 
-TO_QSPI void fnPlotStatJM(uint16_t mode) {
+void fnPlotStatJM(uint16_t mode) {
   fnCurveFitting(0);
   fnPlotStat(mode);
 }
 
 
-TO_QSPI void fneRPN(uint16_t state) {
+void fneRPN(uint16_t state) {
   if(state == 1)
     eRPN = true;
   else if(state == 0)
@@ -132,7 +132,7 @@ TO_QSPI void fneRPN(uint16_t state) {
 
 
 
-TO_QSPI void fnShoiXRepeats(uint16_t numberOfRepeats) {           //JM SHOIDISP
+void fnShoiXRepeats(uint16_t numberOfRepeats) {           //JM SHOIDISP
   displayStackSHOIDISP = numberOfRepeats;                 //   0-3
   fnRefreshState();
 /*
@@ -147,7 +147,7 @@ TO_QSPI void fnShoiXRepeats(uint16_t numberOfRepeats) {           //JM SHOIDISP
 }
 
 
-TO_QSPI void fnCFGsettings(uint16_t unusedButMandatoryParameter) {
+void fnCFGsettings(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   runFunction(ITM_FF);
   showSoftmenu(-MNU_SYSFL);
@@ -155,7 +155,7 @@ TO_QSPI void fnCFGsettings(uint16_t unusedButMandatoryParameter) {
 }
 
 
-TO_QSPI void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
+void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
   #ifdef PC_BUILD
     jm_show_comment("^^^^fnClrModa");
   #endif //PC_BUILD
@@ -198,7 +198,7 @@ TO_QSPI void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear inp
 
 //fnArg for real and longints in addition to the standard complex. Simply returns 0 angle
 
-TO_QSPI void fnArg_all(uint16_t unusedButMandatoryParameter) {
+void fnArg_all(uint16_t unusedButMandatoryParameter) {
   longInteger_t li;
 
   if(getRegisterDataType(REGISTER_X) == dtLongInteger) {    //JM vv add the obvious case that a number has 0/180 degrees. Why error for this.
@@ -223,7 +223,7 @@ TO_QSPI void fnArg_all(uint16_t unusedButMandatoryParameter) {
 }
 
 
-TO_QSPI void fnToPolar2(uint16_t unusedButMandatoryParameter) {
+void fnToPolar2(uint16_t unusedButMandatoryParameter) {
   if(getRegisterDataType(REGISTER_X) == dtComplex34) {
     //    fnComplexMode(CM_POLAR);
     fnSetFlag(FLAG_POLAR);
@@ -233,7 +233,7 @@ TO_QSPI void fnToPolar2(uint16_t unusedButMandatoryParameter) {
 }
 
 
-TO_QSPI void fnToRect2(uint16_t unusedButMandatoryParameter) {
+void fnToRect2(uint16_t unusedButMandatoryParameter) {
   if(getRegisterDataType(REGISTER_X) == dtComplex34) {
     //     fnComplexMode(CM_RECTANGULAR);
     fnClearFlag(FLAG_POLAR);
@@ -242,7 +242,7 @@ TO_QSPI void fnToRect2(uint16_t unusedButMandatoryParameter) {
     fnToRect(0);
 }
 
-TO_QSPI void fnRoundi2(uint16_t unusedButMandatoryParameter) {
+void fnRoundi2(uint16_t unusedButMandatoryParameter) {
   if(getRegisterDataType(REGISTER_X) == dtLongInteger || getRegisterDataType(REGISTER_X) == dtShortInteger) {
     //nothing
   }
@@ -251,7 +251,7 @@ TO_QSPI void fnRoundi2(uint16_t unusedButMandatoryParameter) {
 }
 
 
-TO_QSPI void fnRound2(uint16_t unusedButMandatoryParameter) {
+void fnRound2(uint16_t unusedButMandatoryParameter) {
   if(getRegisterDataType(REGISTER_X) == dtLongInteger || getRegisterDataType(REGISTER_X) == dtShortInteger) {
     //nothing
   }
@@ -262,7 +262,7 @@ TO_QSPI void fnRound2(uint16_t unusedButMandatoryParameter) {
 //=-=-=-=-=-=-==-=-
 //input is time or DMS
 //output is sexagesima coded decimal ddd.mmsssssss in the form of a normal decimal
-TO_QSPI void fnFrom_ms(uint16_t unusedButMandatoryParameter){
+void fnFrom_ms(uint16_t unusedButMandatoryParameter){
   #ifndef TESTSUITE_BUILD
     char tmpString100[100];
     char tmpString100_OUT[100];
@@ -366,7 +366,7 @@ TO_QSPI void fnFrom_ms(uint16_t unusedButMandatoryParameter){
 * if closed in X: and X is already d.ms, then convert X to time in h:ms.Do not change the ADM.
 */
 //
-TO_QSPI void fnTo_ms(uint16_t unusedButMandatoryParameter) {
+void fnTo_ms(uint16_t unusedButMandatoryParameter) {
 #ifndef TESTSUITE_BUILD
   switch(calcMode) { //JM
   case CM_NIM:
@@ -420,7 +420,7 @@ TO_QSPI void fnTo_ms(uint16_t unusedButMandatoryParameter) {
 }
 
 
-TO_QSPI void addzeroes(char *st, uint8_t ix) {
+void addzeroes(char *st, uint8_t ix) {
   uint_fast8_t iy;
   strcpy(st, "1");
   for(iy = 0; iy < ix; iy++) {
@@ -428,7 +428,7 @@ TO_QSPI void addzeroes(char *st, uint8_t ix) {
   }
 }
 
-TO_QSPI void fnMultiplySI(uint16_t multiplier)
+void fnMultiplySI(uint16_t multiplier)
 {
   copySourceRegisterToDestRegister(REGISTER_L, TEMP_REGISTER_1); // STO TMP
   char mult[20];
@@ -479,7 +479,7 @@ TO_QSPI void fnMultiplySI(uint16_t multiplier)
 }
 
 
-static TO_QSPI void cpxToStk(const real_t *real1, const real_t *real2) {
+static void cpxToStk(const real_t *real1, const real_t *real2) {
   setSystemFlag(FLAG_ASLIFT);
   liftStack();
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
@@ -488,7 +488,7 @@ static TO_QSPI void cpxToStk(const real_t *real1, const real_t *real2) {
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
-TO_QSPI void fn_cnst_op_j(uint16_t unusedButMandatoryParameter) {
+void fn_cnst_op_j(uint16_t unusedButMandatoryParameter) {
   cpxToStk(const_0, const_1);
 //  setSystemFlag(FLAG_ASLIFT);
 //  liftStack();
@@ -499,7 +499,7 @@ TO_QSPI void fn_cnst_op_j(uint16_t unusedButMandatoryParameter) {
 }
 
 
-TO_QSPI void fn_cnst_op_aa(uint16_t unusedButMandatoryParameter) {
+void fn_cnst_op_aa(uint16_t unusedButMandatoryParameter) {
   cpxToStk(const_1on2, const_root3on2);
   chsCplx();
 //  setSystemFlag(FLAG_ASLIFT);
@@ -512,7 +512,7 @@ TO_QSPI void fn_cnst_op_aa(uint16_t unusedButMandatoryParameter) {
 }
 
 
-TO_QSPI void fn_cnst_op_a(uint16_t unusedButMandatoryParameter) {
+void fn_cnst_op_a(uint16_t unusedButMandatoryParameter) {
   cpxToStk(const_1on2, const_root3on2);
   chsReal();
 //  setSystemFlag(FLAG_ASLIFT);
@@ -525,7 +525,7 @@ TO_QSPI void fn_cnst_op_a(uint16_t unusedButMandatoryParameter) {
 }
 
 
-TO_QSPI void fn_cnst_0_cpx(uint16_t unusedButMandatoryParameter) {
+void fn_cnst_0_cpx(uint16_t unusedButMandatoryParameter) {
   cpxToStk(const_0, const_0);
 //  setSystemFlag(FLAG_ASLIFT);
 //  liftStack();
@@ -536,7 +536,7 @@ TO_QSPI void fn_cnst_0_cpx(uint16_t unusedButMandatoryParameter) {
 }
 
 
-TO_QSPI void fn_cnst_1_cpx(uint16_t unusedButMandatoryParameter) {
+void fn_cnst_1_cpx(uint16_t unusedButMandatoryParameter) {
   cpxToStk(const_1, const_0);
 //  setSystemFlag(FLAG_ASLIFT);
 //  liftStack();
@@ -549,7 +549,7 @@ TO_QSPI void fn_cnst_1_cpx(uint16_t unusedButMandatoryParameter) {
 
 
 //Rounding
-TO_QSPI void fnJM_2SI(uint16_t unusedButMandatoryParameter) { //Convert Real to Longint; Longint to shortint; shortint to longint
+void fnJM_2SI(uint16_t unusedButMandatoryParameter) { //Convert Real to Longint; Longint to shortint; shortint to longint
 
   switch(getRegisterDataType(REGISTER_X)) {
   case dtLongInteger:
@@ -584,7 +584,7 @@ TO_QSPI void fnJM_2SI(uint16_t unusedButMandatoryParameter) { //Convert Real to 
  *
  * FROM DISPLAY.C
  ***********************************************/
-TO_QSPI void fnDisplayFormatSigFig(uint16_t displayFormatN) { //DONE          //JM SIGFIG
+void fnDisplayFormatSigFig(uint16_t displayFormatN) { //DONE          //JM SIGFIG
   displayFormat = DF_FIX;
   displayFormatDigits = displayFormatN;
   clearSystemFlag(FLAG_FRACT);
@@ -601,7 +601,7 @@ TO_QSPI void fnDisplayFormatSigFig(uint16_t displayFormatN) { //DONE          //
  *
  * FROM DISPLAY.C
  ***********************************************/
-TO_QSPI void fnDisplayFormatUnit(uint16_t displayFormatN) { //DONE           //JM UNIT
+void fnDisplayFormatUnit(uint16_t displayFormatN) { //DONE           //JM UNIT
   displayFormat = DF_ENG;
   displayFormatDigits = displayFormatN;
   clearSystemFlag(FLAG_FRACT);
@@ -625,7 +625,7 @@ TO_QSPI void fnDisplayFormatUnit(uint16_t displayFormatN) { //DONE           //J
  * \param[in]  exponent int32_t Power of 10 to format                                                     JM UNIT
  * \return void                                                                                           JM UNIT
  ***********************************************                                                          JM UNIT */
-TO_QSPI void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode, const char *separator) {               //JM UNIT
+void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode, const char *separator) {               //JM UNIT
   displayString[0] = ' ';
   displayString[1] = 0;
   displayString[2] = 0;
@@ -679,7 +679,7 @@ TO_QSPI void exponentToUnitDisplayString(int32_t exponent, char *displayString, 
 }                                                                                                       //JM UNIT
 
 
-TO_QSPI void fnDisplayFormatCycle (uint16_t unusedButMandatoryParameter) {
+void fnDisplayFormatCycle (uint16_t unusedButMandatoryParameter) {
   if(DM_Cycling == 0 && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HOME) {
     fnDisplayFormatUnit(displayFormatDigits);
   } else
@@ -708,7 +708,7 @@ TO_QSPI void fnDisplayFormatCycle (uint16_t unusedButMandatoryParameter) {
 
 //change the current state from the old state?
 
-TO_QSPI void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
+void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
 
   copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
   if(AMODE == TM_HMS) {
@@ -749,7 +749,7 @@ TO_QSPI void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change 
 }
 
 
-TO_QSPI void fnDRG(uint16_t unusedButMandatoryParameter) {
+void fnDRG(uint16_t unusedButMandatoryParameter) {
   if(getRegisterDataType(REGISTER_X) == dtComplex34) {
     goto to_return;
   } 
@@ -818,12 +818,12 @@ printf("@@@@\n");
 }
 
 
-TO_QSPI void fnDRGto(uint16_t unusedButMandatoryParameter) {
+void fnDRGto(uint16_t unusedButMandatoryParameter) {
   fnDRG(0);
   fnAngularMode(getRegisterAngularMode(REGISTER_X));
 }
 
-TO_QSPI void shrinkNimBuffer(void) {                      //JMNIM vv
+void shrinkNimBuffer(void) {                      //JMNIM vv
   int16_t lastChar; //if digits in NIMBUFFER, ensure switch to NIM,
   int16_t hexD = 0;
   bool_t reached_end = false;
@@ -853,7 +853,7 @@ TO_QSPI void shrinkNimBuffer(void) {                      //JMNIM vv
 }                                                 //JMNIM ^^
 
 
-TO_QSPI void fnChangeBaseJM(uint16_t BASE) {
+void fnChangeBaseJM(uint16_t BASE) {
   //printf(">>> §§§ fnChangeBaseJMa Calmode:%d, nimbuffer:%s, lastbase:%d, nimnumberpart:%d\n", calcMode, nimBuffer, lastIntegerBase, nimNumberPart);
   shrinkNimBuffer();
   //printf(">>> §§§ fnChangeBaseJMb Calmode:%d, nimbuffer:%s, lastbase:%d, nimnumberpart:%d\n", calcMode, nimBuffer, lastIntegerBase, nimNumberPart);
@@ -871,7 +871,7 @@ TO_QSPI void fnChangeBaseJM(uint16_t BASE) {
 }
 
 
-TO_QSPI void fnChangeBaseMNU(uint16_t BASE) {
+void fnChangeBaseMNU(uint16_t BASE) {
 #ifndef TESTSUITE_BUILD
 
   if(calcMode == CM_AIM) {
@@ -925,7 +925,7 @@ TO_QSPI void fnChangeBaseMNU(uint16_t BASE) {
  * \param[in] inputDefault uint16_t
  * \return void
  ***********************************************/
-TO_QSPI void fnInDefault(uint16_t inputDefault) { //DONE
+void fnInDefault(uint16_t inputDefault) { //DONE
   Input_Default = inputDefault;
 
   if(Input_Default == ID_SI) {
@@ -939,19 +939,19 @@ TO_QSPI void fnInDefault(uint16_t inputDefault) { //DONE
 }
 
 
-TO_QSPI void fnByteShortcutsS(uint16_t size) { //JM POC BASE2 vv
+void fnByteShortcutsS(uint16_t size) { //JM POC BASE2 vv
   fnSetWordSize(size);
   fnIntegerMode(SIM_2COMPL);
 }
 
 
-TO_QSPI void fnByteShortcutsU(uint16_t size) {
+void fnByteShortcutsU(uint16_t size) {
   fnSetWordSize(size);
   fnIntegerMode(SIM_UNSIGN);
 }
 
 
-TO_QSPI void fnByte(uint16_t command) {
+void fnByte(uint16_t command) {
   switch(command) {
   case 1:     fnSl(1);            break;
   case 2:     fnSr(1);            break;
@@ -964,7 +964,7 @@ TO_QSPI void fnByte(uint16_t command) {
 } //JM POC BASE2 ^^
 
 
-TO_QSPI void fnP_All_Regs(uint16_t option) {
+void fnP_All_Regs(uint16_t option) {
 
 #ifndef TESTSUITE_BUILD
   if(calcMode != CM_NORMAL) {
@@ -1014,7 +1014,7 @@ TO_QSPI void fnP_All_Regs(uint16_t option) {
 #endif //TESTSUITE_BUILD
 }
 
-TO_QSPI void printf_cpx(calcRegister_t regist) {
+void printf_cpx(calcRegister_t regist) {
 #ifdef PC_BUILD
   if(getRegisterDataType(regist) == dtReal34 || getRegisterDataType(regist) == dtComplex34) {
     real34ToString(REGISTER_REAL34_DATA(regist), tmpString);
@@ -1036,7 +1036,7 @@ TO_QSPI void printf_cpx(calcRegister_t regist) {
 }
 
 
-TO_QSPI void print_stck(){
+void print_stck(){
   #ifdef PC_BUILD
   printf("Lasterrorcode=%d\n",lastErrorCode);
   printf("REGISTER T: ");printf_cpx(REGISTER_T);printf("\n");
@@ -1047,7 +1047,7 @@ TO_QSPI void print_stck(){
 }
 
 
-TO_QSPI void doubleToXRegisterReal34(double x) { //Convert from double to X register REAL34
+void doubleToXRegisterReal34(double x) { //Convert from double to X register REAL34
   setSystemFlag(FLAG_ASLIFT);
   liftStack();
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
@@ -1058,7 +1058,7 @@ TO_QSPI void doubleToXRegisterReal34(double x) { //Convert from double to X regi
 }
 
 
-TO_QSPI void fnStrtoX(char aimBuffer[]) {                             //DONE
+void fnStrtoX(char aimBuffer[]) {                             //DONE
   setSystemFlag(FLAG_ASLIFT); // 5
   liftStack();
   int16_t mem = stringByteLength(aimBuffer) + 1;
@@ -1068,7 +1068,7 @@ TO_QSPI void fnStrtoX(char aimBuffer[]) {                             //DONE
 }
 
 
-TO_QSPI void fnStrInputReal34(char inp1[]) { // CONVERT STRING to REAL IN X      //DONE
+void fnStrInputReal34(char inp1[]) { // CONVERT STRING to REAL IN X      //DONE
   tmpString[0] = 0;
   strcat(tmpString, inp1);
   setSystemFlag(FLAG_ASLIFT); // 5
@@ -1079,7 +1079,7 @@ TO_QSPI void fnStrInputReal34(char inp1[]) { // CONVERT STRING to REAL IN X     
 }
 
 
-TO_QSPI void fnStrInputLongint(char inp1[]) { // CONVERT STRING to Longint X      //DONE
+void fnStrInputLongint(char inp1[]) { // CONVERT STRING to Longint X      //DONE
   tmpString[0] = 0;
   strcat(tmpString, inp1);
   setSystemFlag(FLAG_ASLIFT); // 5
@@ -1094,7 +1094,7 @@ TO_QSPI void fnStrInputLongint(char inp1[]) { // CONVERT STRING to Longint X    
 }
 
 
-TO_QSPI void fnRCL(int16_t inp) { //DONE
+void fnRCL(int16_t inp) { //DONE
   setSystemFlag(FLAG_ASLIFT);
   if(inp == TEMP_REGISTER_1) {
     liftStack();
@@ -1106,7 +1106,7 @@ TO_QSPI void fnRCL(int16_t inp) { //DONE
 }
 
 
-TO_QSPI double convert_to_double(calcRegister_t regist) { //Convert from X register to double
+double convert_to_double(calcRegister_t regist) { //Convert from X register to double
   double y;
   real_t tmpy;
   switch(getRegisterDataType(regist)) {
@@ -1125,7 +1125,7 @@ TO_QSPI double convert_to_double(calcRegister_t regist) { //Convert from X regis
   return y;
 }
 
-TO_QSPI void timeToReal34(uint16_t hms) { //always 24 hour time;
+void timeToReal34(uint16_t hms) { //always 24 hour time;
   calcRegister_t regist = REGISTER_X;
   real34_t real34, value34, tmp34, h34, m34, s34;
   int32_t sign;
@@ -1198,7 +1198,7 @@ TO_QSPI void timeToReal34(uint16_t hms) { //always 24 hour time;
 }
 
 
-TO_QSPI void dms34ToReal34(uint16_t dms) {
+void dms34ToReal34(uint16_t dms) {
   real34_t angle34;
   calcRegister_t regist = REGISTER_X;
   real34_t value34, d34, m34, s34, fs34;
@@ -1289,7 +1289,7 @@ TO_QSPI void dms34ToReal34(uint16_t dms) {
 }
 
 
-TO_QSPI void notSexa(void) {
+void notSexa(void) {
   copySourceRegisterToDestRegister(REGISTER_L, REGISTER_X);
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -1299,26 +1299,26 @@ TO_QSPI void notSexa(void) {
 }
 
 
-TO_QSPI void fnHrDeg(uint16_t unusedButMandatoryParameter) {
+void fnHrDeg(uint16_t unusedButMandatoryParameter) {
   if(!saveLastX()) return;
   if(getRegisterAngularMode(REGISTER_X) == amDMS && getRegisterDataType(REGISTER_X) == dtReal34)  dms34ToReal34(0);
   else if(getRegisterDataType(REGISTER_X) == dtTime)  timeToReal34(0); 
   else                                                notSexa();
 }
-TO_QSPI void fnMinute(uint16_t unusedButMandatoryParameter) {
+void fnMinute(uint16_t unusedButMandatoryParameter) {
   if(!saveLastX()) return;
   if(getRegisterAngularMode(REGISTER_X) == amDMS && getRegisterDataType(REGISTER_X) == dtReal34)  dms34ToReal34(1);
   else if(getRegisterDataType(REGISTER_X) == dtTime)  timeToReal34(1);
   else                                                notSexa();
 }
-TO_QSPI void fnSecond(uint16_t unusedButMandatoryParameter){
+void fnSecond(uint16_t unusedButMandatoryParameter){
   if(!saveLastX()) return;
   if(getRegisterAngularMode(REGISTER_X) == amDMS && getRegisterDataType(REGISTER_X) == dtReal34)  dms34ToReal34(2);
   else if(getRegisterDataType(REGISTER_X) == dtTime)  timeToReal34(2);
   else                                                notSexa();
 }
 
-TO_QSPI void fnTimeTo(uint16_t unusedButMandatoryParameter) {
+void fnTimeTo(uint16_t unusedButMandatoryParameter) {
 
   if(!saveLastX()) return;
 
@@ -1355,7 +1355,7 @@ TO_QSPI void fnTimeTo(uint16_t unusedButMandatoryParameter) {
  * \param[in] second real34_t*
  * \return bool_t true if valid
  ***********************************************/
-TO_QSPI bool_t isValidTime(const real34_t *hour, const real34_t *minute, const real34_t *second) {
+bool_t isValidTime(const real34_t *hour, const real34_t *minute, const real34_t *second) {
   real34_t val;
 
   // second
@@ -1386,7 +1386,7 @@ TO_QSPI bool_t isValidTime(const real34_t *hour, const real34_t *minute, const r
 }
 
 
-TO_QSPI void fnToTime(uint16_t unusedButMandatoryParameter) {
+void fnToTime(uint16_t unusedButMandatoryParameter) {
   real34_t hr, m, s, tmp;
   real34_t *part[3];
   calcRegister_t r[3] = {REGISTER_Z, REGISTER_Y, REGISTER_X};
@@ -1449,7 +1449,7 @@ TO_QSPI void fnToTime(uint16_t unusedButMandatoryParameter) {
 
 // *******************************************************************
 
-TO_QSPI int32_t getD(const real34_t *val) {
+int32_t getD(const real34_t *val) {
 /*
 ** Adapted from:
 ** https://www.ics.uci.edu/~eppstein/numth/frap.c
@@ -1510,7 +1510,7 @@ TO_QSPI int32_t getD(const real34_t *val) {
 
 
 
-TO_QSPI void changeToSup(char *str){
+void changeToSup(char *str){
   char strtmp[100];
   strcpy(strtmp,str);
   int16_t u, src = 0;
@@ -1543,7 +1543,7 @@ TO_QSPI void changeToSup(char *str){
   str[insertAt]=0;
 }
 
-TO_QSPI void changeToSub(char *str){
+void changeToSub(char *str){
   char strtmp[100];
   strcpy(strtmp,str);
   int16_t u, src = 0;
@@ -1732,7 +1732,7 @@ TO_QSPI void changeToSub(char *str){
 
 
 
-TO_QSPI void fnConstantR(uint16_t constantAddr, uint16_t *constNr, real_t *rVal) {
+void fnConstantR(uint16_t constantAddr, uint16_t *constNr, real_t *rVal) {
 
   uint16_t constant =constantAddr;
   *constNr = constant;
@@ -1756,7 +1756,7 @@ TO_QSPI void fnConstantR(uint16_t constantAddr, uint16_t *constNr, real_t *rVal)
 
 
 
-TO_QSPI void fnSafeReset (uint16_t unusedButMandatoryParameter) {
+void fnSafeReset (uint16_t unusedButMandatoryParameter) {
   if(!jm_FG_LINE && !jm_G_DOUBLETAP && !ShiftTimoutMode && !HOME3) {
     jm_FG_LINE     = true;
     jm_G_DOUBLETAP = true;
@@ -1772,7 +1772,7 @@ TO_QSPI void fnSafeReset (uint16_t unusedButMandatoryParameter) {
 }
 
 
-TO_QSPI void fnRESET_MyM_Mya(void){
+void fnRESET_MyM_Mya(void){
 //Pre-assign the MyMenu                   //JM
     #ifndef TESTSUITE_BUILD
     jm_NO_BASE_SCREEN = true;                                           //JM prevent slow updating of 6 menu items
@@ -1793,7 +1793,7 @@ TO_QSPI void fnRESET_MyM_Mya(void){
 //--------------------------------------------------------------------------------------------
 
 //JM To determine the menu number for a given menuId          //JMvv
-TO_QSPI int16_t mm(int16_t id) {
+int16_t mm(int16_t id) {
   int16_t m;
   m = 0;
   if(id != 0) { // Search by ID
@@ -1816,7 +1816,7 @@ TO_QSPI int16_t mm(int16_t id) {
 #define JM_LINE2_DRAW
 #undef JM_LINE2_DRAW
 #ifdef JM_LINE2_DRAW
-TO_QSPI void JM_LINE2(uint32_t xx, uint32_t yy) {                          // To draw the lines for radiobutton on screen
+void JM_LINE2(uint32_t xx, uint32_t yy) {                          // To draw the lines for radiobutton on screen
   uint32_t x, y;
   y = yy-3-1;
   for(x=xx-66+1; x<min(xx-1,SCREEN_WIDTH); x++) {
@@ -1837,14 +1837,14 @@ TO_QSPI void JM_LINE2(uint32_t xx, uint32_t yy) {                          // To
 #define RB_CLEAR_CENTER
 #undef RB_CLEAR_CENTER
 #ifdef RB_EXTRA_BORDER
-TO_QSPI void rbColumnCcccccc(uint32_t xx, uint32_t yy) {
+void rbColumnCcccccc(uint32_t xx, uint32_t yy) {
   lcd_fill_rect(xx,yy+2,1,7,  0);
 }
 #endif //RB_EXTRA_BORDER
 
 
 
-TO_QSPI void rbColumnCcSssssCc(uint32_t xx, uint32_t yy) {
+void rbColumnCcSssssCc(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   lcd_fill_rect(xx,yy+8,1,2,  0);
 #endif //RB_EXTRA_BORDER
@@ -1856,7 +1856,7 @@ TO_QSPI void rbColumnCcSssssCc(uint32_t xx, uint32_t yy) {
 
 
 
-TO_QSPI void rbColumnCcSssssssCc(uint32_t xx, uint32_t yy) {
+void rbColumnCcSssssssCc(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   lcd_fill_rect(xx,yy+9,1,2,  0);
 #endif //RB_EXTRA_BORDER
@@ -1868,7 +1868,7 @@ TO_QSPI void rbColumnCcSssssssCc(uint32_t xx, uint32_t yy) {
 
 
 
-TO_QSPI void rbColumnCSssCccSssC(uint32_t xx, uint32_t yy) {
+void rbColumnCSssCccSssC(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   setWhitePixel (xx,yy+10);
 #endif //RB_EXTRA_BORDER
@@ -1882,7 +1882,7 @@ TO_QSPI void rbColumnCSssCccSssC(uint32_t xx, uint32_t yy) {
 
 
 
-TO_QSPI void rbColumnCSsCSssCSsC(uint32_t xx, uint32_t yy) {
+void rbColumnCSsCSssCSsC(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   setWhitePixel (xx,yy+10);
 #endif //RB_EXTRA_BORDER
@@ -1898,7 +1898,7 @@ TO_QSPI void rbColumnCSsCSssCSsC(uint32_t xx, uint32_t yy) {
 
 
 
-TO_QSPI void rbColumnCcSsNnnSsCc(uint32_t xx, uint32_t yy) {
+void rbColumnCcSsNnnSsCc(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   lcd_fill_rect(xx,yy+9,1,2,  0);
 #endif //RB_EXTRA_BORDER
@@ -1914,7 +1914,7 @@ TO_QSPI void rbColumnCcSsNnnSsCc(uint32_t xx, uint32_t yy) {
 
 
 
-TO_QSPI void rbColumnCSsNnnnnSsC(uint32_t xx, uint32_t yy) {
+void rbColumnCSsNnnnnSsC(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   setWhitePixel (xx,yy+10);
 #endif //RB_EXTRA_BORDER
@@ -1930,7 +1930,7 @@ TO_QSPI void rbColumnCSsNnnnnSsC(uint32_t xx, uint32_t yy) {
 
 
 
-TO_QSPI void rbColumnCSNnnnnnnSC(uint32_t xx, uint32_t yy) {
+void rbColumnCSNnnnnnnSC(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   setWhitePixel (xx,yy+10);
 #endif //RB_EXTRA_BORDER
@@ -1947,14 +1947,14 @@ TO_QSPI void rbColumnCSNnnnnnnSC(uint32_t xx, uint32_t yy) {
 
 
 #ifdef RB_EXTRA_BORDER
-TO_QSPI void cbColumnCcccccccccc(uint32_t xx, uint32_t yy) {
+void cbColumnCcccccccccc(uint32_t xx, uint32_t yy) {
   lcd_fill_rect(xx,yy+0,1,11,  0);
 }
 #endif
 
 
 
-TO_QSPI void cbColumnCSssssssssC(uint32_t xx, uint32_t yy) {
+void cbColumnCSssssssssC(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   setWhitePixel (xx,yy+10);
 #endif //RB_EXTRA_BORDER
@@ -1966,7 +1966,7 @@ TO_QSPI void cbColumnCSssssssssC(uint32_t xx, uint32_t yy) {
 
 
 
-TO_QSPI void cbColumnCSsCccccSsC(uint32_t xx, uint32_t yy) {
+void cbColumnCSsCccccSsC(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   setWhitePixel (xx,yy+10);
 #endif //RB_EXTRA_BORDER
@@ -1980,7 +1980,7 @@ TO_QSPI void cbColumnCSsCccccSsC(uint32_t xx, uint32_t yy) {
 
 
 
-TO_QSPI void cbColumnCSNnnnnnnSC(uint32_t xx, uint32_t yy) {
+void cbColumnCSNnnnnnnSC(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   setWhitePixel (xx,yy+10);
 #endif //RB_EXTRA_BORDER
@@ -1996,7 +1996,7 @@ TO_QSPI void cbColumnCSNnnnnnnSC(uint32_t xx, uint32_t yy) {
 
 
 
-TO_QSPI void RB_CHECKED(uint32_t xx, uint32_t yy) {
+void RB_CHECKED(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   rbColumnCcccccc(xx+0, yy);
 #endif
@@ -2016,7 +2016,7 @@ TO_QSPI void RB_CHECKED(uint32_t xx, uint32_t yy) {
 
 
 
-TO_QSPI void RB_UNCHECKED(uint32_t xx, uint32_t yy) {
+void RB_UNCHECKED(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   rbColumnCcccccc(xx+0, yy);
 #endif //RB_EXTRA_BORDER
@@ -2036,7 +2036,7 @@ TO_QSPI void RB_UNCHECKED(uint32_t xx, uint32_t yy) {
 
 
 
-TO_QSPI void CB_CHECKED(uint32_t xx, uint32_t yy) {
+void CB_CHECKED(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   lcd_fill_rect(xx,yy-1,10,11,0);
   cbColumnCcccccccccc(xx+0, yy);
@@ -2057,7 +2057,7 @@ TO_QSPI void CB_CHECKED(uint32_t xx, uint32_t yy) {
 
 
 
-TO_QSPI void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
+void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
 #ifdef RB_EXTRA_BORDER
   lcd_fill_rect(xx,yy-1,10,11,0);
   cbColumnCcccccccccc(xx+0, yy);
@@ -2081,7 +2081,7 @@ TO_QSPI void CB_UNCHECKED(uint32_t xx, uint32_t yy) {
 
 #endif //TESTSUITE_BUILD
 
-TO_QSPI void fnSetBCD (uint16_t bcd) {
+void fnSetBCD (uint16_t bcd) {
   switch (bcd) {
     case JC_BCD:  {
     	bcdDisplay = !bcdDisplay;
@@ -2099,7 +2099,7 @@ TO_QSPI void fnSetBCD (uint16_t bcd) {
 }
 
 
-TO_QSPI void fnSetSI_All (uint16_t unusedButMandatoryParameter) {
+void fnSetSI_All (uint16_t unusedButMandatoryParameter) {
   SI_All = !SI_All;
 }
 
