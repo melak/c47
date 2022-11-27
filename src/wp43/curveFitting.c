@@ -131,7 +131,9 @@ void fnCurveFitting_T(uint16_t curveFitting) {
     curveFitting = 0;                         // illegal value, therefore defaulting to none
   }
 
-   printf(">>>%u  %u\n",curveFitting,lrCountOnes(curveFitting));
+   #ifdef PC_BUILD
+     printf(">>>%u  %u\n",curveFitting,lrCountOnes(curveFitting));
+   #endif // PC_BUILD
    if(lrCountOnes(curveFitting) == 1) {         //Added experimental, toggle bits of the lrselection word
      lrSelection = lrSelection ^ curveFitting;  //Added  "
    } else                                       //Added  "

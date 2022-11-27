@@ -202,7 +202,11 @@
 //* General configuration defines *
 //*********************************
 #define DEBUG_INSTEAD_STATUS_BAR         0 // Debug data instead of the status bar
+#ifdef PC_BUILD
 #define EXTRA_INFO_ON_CALC_ERROR         1 // Print extra information on the console about an error
+#else // PC_BUILD
+#define EXTRA_INFO_ON_CALC_ERROR         0 // Print extra information on the console about an error
+#endif // PC_BUILD
 #define DEBUG_PANEL                      0 //1 JM Showing registers, local registers, saved stack registers, flags, statistical sums, ... in a debug panel
 #define DEBUG_REGISTER_L                 0 //1 JM Showing register L content on the PC GUI
 #define SHOW_MEMORY_STATUS               0 //1 JM Showing the memory status on the PC GUI

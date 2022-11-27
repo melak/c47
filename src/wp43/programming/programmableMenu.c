@@ -110,7 +110,9 @@ static uint16_t _get2ndParamOfKey(uint8_t *paramAddress) {
     return _indirectVariable(paramAddress);
   }
   else {
-    sprintf(tmpString, "\nIn function get2ndParamOfKey: %u is not a valid parameter!", opParam);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(tmpString, "\nIn function get2ndParamOfKey: %u is not a valid parameter!", opParam);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
   return INVALID_VARIABLE;
 }
