@@ -347,6 +347,20 @@
 
 #define NUMBER_OF_ERROR_CODES                     53
 
+// List of common bug messages
+#define BUGMSG_VALUE_FOR                           0
+#define BUGMSG_CALCMODE_WHILE_PROC_KEY             1
+#define BUGMSG_NUM_BYTE                            2
+#define BUGMSG_NO_NAMED_VARIABLES                  3
+#define BUGMSG_VALUE_RETURNED_BY_FINDGLYPH         4
+#define BUGMSG_UNEXPECTED_S_VALUE                  5
+#define BUGMSG_DATA_TYPE_UNKNOWN                   6
+#define BUGMSG_REGIST_MUST_BE_LESS_THAN            7
+#define BUGMSG_NOT_DEFINED_MUST_BE                 8
+#define BUGMSG_RBR_MODE                            9
+
+#define NUMBER_OF_BUG_SCREEN_MESSAGES             10
+
 #define NUMBER_OF_GLOBAL_FLAGS                   112
 #define FIRST_LOCAL_FLAG                         112 // There are 112 global flag from 0 to 111
 #define NUMBER_OF_LOCAL_FLAGS                     32

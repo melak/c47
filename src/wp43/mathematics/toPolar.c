@@ -54,7 +54,7 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
         break;
       }
       default: {
-        sprintf(errorMessage, "In function fnToPolar: %" PRIu32 " is an unexpected dataTypeX value!", dataTypeX);
+        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_UNEXPECTED_S_VALUE], "fnToPolar", dataTypeX, "dataTypeX");
         displayBugScreen(errorMessage);
       }
     }
@@ -69,7 +69,7 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
         break;
       }
       default: {
-        sprintf(errorMessage, "In function fnToPolar: %" PRIu32 " is an unexpected dataTypeY value!", dataTypeY);
+        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_UNEXPECTED_S_VALUE], "fnToPolar", dataTypeY, "dataTypeY");
         displayBugScreen(errorMessage);
       }
     }

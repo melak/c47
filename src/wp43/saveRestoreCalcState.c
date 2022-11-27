@@ -748,7 +748,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_TIMER) {
         }
         else {
-          sprintf(errorMessage, "In function restoreCalc: %" PRIu8 " is an unexpected value for calcMode", calcMode);
+          sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "restoreCalc", calcMode, "calcMode");
           displayBugScreen(errorMessage);
         }
         if(catalog) {

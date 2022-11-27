@@ -1233,7 +1233,7 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
     }
     else {
       strcpy(displayString, "?" STD_SPACE_PUNCTUATION);
-      sprintf(errorMessage, "In function fractionToDisplayString: %d is an unexpected value for lessEqualGreater!", lessEqualGreater);
+      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "fractionToDisplayString", lessEqualGreater, "lessEqualGreater");
       displayBugScreen(errorMessage);
     }
   }
@@ -1249,7 +1249,7 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
     }
     else {
       strcpy(displayString, "?" STD_SPACE_PUNCTUATION);
-      sprintf(errorMessage, "In function fractionToDisplayString: %d is an unexpected value for lessEqualGreater!", lessEqualGreater);
+      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "fractionToDisplayString", lessEqualGreater, "lessEqualGreater");
       displayBugScreen(errorMessage);
     }
   }
@@ -1449,7 +1449,7 @@ void angle34ToDisplayString2(const real34_t *angle34, uint8_t mode, char *displa
     }
     else {
       strcat(displayString, "?");
-      sprintf(errorMessage, "In function angle34ToDisplayString2: %" PRIu8 " is an unexpected value for mode!", mode);
+      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "angle34ToDisplayString2", mode, "mode");
       displayBugScreen(errorMessage);
     }
   }
@@ -1480,7 +1480,7 @@ str3[j] = 0;
   }                         ////JMBCD ^^ Base 17 is reserved for BCD
 
   if(base <= 1 || base >= 17) {
-    sprintf(errorMessage, "In function shortIntegerToDisplayString: %d is an unexpected value for base!", base);
+    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "shortIntegerToDisplayString", base, "base");
     displayBugScreen(errorMessage);
     base = 10;
   }
@@ -1506,7 +1506,7 @@ str3[j] = 0;
       number &= ~shortIntegerSignBit;
     }
     else {
-      sprintf(errorMessage, "In function shortIntegerToDisplayString: %d is an unexpected value for shortIntegerMode!", shortIntegerMode);
+      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "shortIntegerToDisplayString", shortIntegerMode, "shortIntegerMode");
       displayBugScreen(errorMessage);
     }
 

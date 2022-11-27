@@ -60,8 +60,8 @@
 
 
 #if !defined(TESTSUITE_BUILD)
-  static const char *whoStr = "WP43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter," STD_SPACE_3_PER_EM "Mihail," STD_SPACE_3_PER_EM "Jaco" STD_SPACE_3_PER_EM "and" STD_SPACE_3_PER_EM "Martin";
-  static const char *versionStr = "WP43" STD_SPACE_3_PER_EM VERSION_STRING;
+  TO_QSPI static const char *whoStr = "WP43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter," STD_SPACE_3_PER_EM "Mihail," STD_SPACE_3_PER_EM "Jaco" STD_SPACE_3_PER_EM "and" STD_SPACE_3_PER_EM "Martin";
+  TO_QSPI static const char *versionStr = "WP43" STD_SPACE_3_PER_EM VERSION_STRING;
 
   /* Names of day of week */
   TO_QSPI static const char *nameOfWday_en[8] = {"invalid day of week",                                   "Monday",            "Tuesday",                     "Wednesday",               "Thursday",           "Friday",             "Saturday",             "Sunday"};
@@ -1057,7 +1057,7 @@ uint8_t  displaymode = stdNoEnlarge;
     }
 
     if(glyph == NULL) {
-      sprintf(errorMessage, "In function showGlyphCode: %" PRIi32 " is an unexpected value returned by fingGlyph!", glyphId);
+      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_RETURNED_BY_FINDGLYPH], "showGlyphCode", glyphId);
       displayBugScreen(errorMessage);
       return 0;
     }
@@ -1159,7 +1159,7 @@ uint8_t  displaymode = stdNoEnlarge;
 
     glyphId = findGlyph(font, charCodeFromString(ch, offset));
     if(glyphId < 0) {
-      sprintf(errorMessage, "In function getGlyphBounds: %" PRIi32 " is an unexpected value returned by findGlyph!", glyphId);
+      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_RETURNED_BY_FINDGLYPH], "getGlyphBounds", glyphId);
       displayBugScreen(errorMessage);
       return;
     }

@@ -2328,7 +2328,7 @@ void kill_ASB_icon(void) {
               longInteger2Pow(shortIntegerWordSize, maxVal);
             }
             else {
-              sprintf(errorMessage, "In function closeNIM:%d is an unexpected value for shortIntegerWordSize!", shortIntegerWordSize);
+              sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "closeNIM", "shortIntegerWordSize", shortIntegerWordSize);
               displayBugScreen(errorMessage);
               longIntegerFree(maxVal);
               longIntegerFree(value);
@@ -2396,7 +2396,7 @@ void kill_ASB_icon(void) {
               }
             }
             else {
-              sprintf(errorMessage, "In function closeNIM:%d is an unexpected value for shortIntegerMode!", shortIntegerMode);
+              sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "closeNIM", "shortIntegerMode", shortIntegerMode);
               displayBugScreen(errorMessage);
               *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = 0;
             }
@@ -2432,7 +2432,7 @@ void kill_ASB_icon(void) {
             closeNimWithComplex(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
           }
           else {
-            sprintf(errorMessage, "In function closeNIM:%d is an unexpected nimNumberPart value!", nimNumberPart);
+            sprintf(errorMessage, commonBugScreenMessages[BUGMSG_UNEXPECTED_S_VALUE], "closeNIM", nimNumberPart, "nimNumberPart");
             displayBugScreen(errorMessage);
           }
         }

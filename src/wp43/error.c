@@ -34,6 +34,19 @@
 
 #include "wp43.h"
 
+TO_QSPI const char *commonBugScreenMessages[NUMBER_OF_BUG_SCREEN_MESSAGES] = {
+/*  0 */  "In function %s:%d is an unexpected value for %s!",
+/*  1 */  "In function %s: unexpected calcMode value (%" PRIu8 ") while processing key %s!",
+/*  2 */  "In function reallocateRegister: %" PRIu16 " is an unexpected numByte value for %s! It should be %s=%" PRIu16 "!",
+/*  3 */  "In function %s: no named variables defined!",
+/*  4 */  "In function %s: %d is an unexpected value returned by findGlyph!",
+/*  5 */  "In function %s: %" PRIu32 " is an unexpected %s value!",
+/*  6 */  "In function %s: data type %s is unknown!",
+/*  7 */  "In function %s: regist=%" PRId16 " must be less than %d!",
+/*  8 */  "In function %s: %s %" PRId16 " is not defined! Must be from 0 to %" PRIu16,
+/*  9 */  "In function %s: unexpected case while processing key %s! %" PRIu8 " is an unexpected value for rbrMode.",
+};
+
 TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /*  0 */  "No error",
 /*  1 */  "An argument exceeds the function domain",
@@ -189,17 +202,19 @@ void fnErrorMessage(uint16_t unusedButMandatoryParameter) {
 
 void displayCalcErrorMessage(uint8_t errorCode, calcRegister_t errMessageRegisterLine, calcRegister_t errRegisterLine) {
   if(errorCode >= NUMBER_OF_ERROR_CODES || errorCode == 0) {
-    sprintf(errorMessage, "In function displayCalcErrorMessage: %d is an unexpected value for errorCode!", errorCode);
+    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "displayCalcErrorMessage", errorCode, "errorCode");
     displayBugScreen(errorMessage);
   }
 
   else if(errMessageRegisterLine > REGISTER_T || errMessageRegisterLine < REGISTER_X) {
-    sprintf(errorMessage, "In function displayCalcErrorMessage: %d is an unexpected value for errMessageRegisterLine! Must be from 100 (register X) to 103 (register T)", errMessageRegisterLine);
+    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "displayCalcErrorMessage", errMessageRegisterLine, "errMessageRegisterLine");
+    sprintf(errorMessage + strlen(errorMessage), "Must be from 100 (register X) to 103 (register T)");
     displayBugScreen(errorMessage);
   }
 
   else if(errRegisterLine > REGISTER_T || errRegisterLine < REGISTER_X) {
-    sprintf(errorMessage, "In function displayCalcErrorMessage: %d is an unexpected value for errRegisterLine! Must be from 100 (register X) to 103 (register T)", errRegisterLine);
+    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "displayCalcErrorMessage", errRegisterLine, "errRegisterLine");
+    sprintf(errorMessage + strlen(errorMessage), "Must be from 100 (register X) to 103 (register T)");
     displayBugScreen(errorMessage);
   }
 

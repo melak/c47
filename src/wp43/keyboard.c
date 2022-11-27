@@ -2493,7 +2493,7 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyEnter: unexpected calcMode value (%" PRIu8 ") while processing key ENTER!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyEnter", calcMode, "ENTER");
         displayBugScreen(errorMessage);
     }
     }
@@ -2835,7 +2835,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyExit: unexpected calcMode value (%" PRIu8 ") while processing key EXIT!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyExit", calcMode, "EXIT");
         displayBugScreen(errorMessage);
     }
 
@@ -2920,7 +2920,7 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyCC: unexpected calcMode value (%" PRIu8 ") while processing key CC!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyCC", calcMode, "CC");
         displayBugScreen(errorMessage);
     }
     }
@@ -3178,7 +3178,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyBackspace: unexpected calcMode value (%" PRIu8 ") while processing key BACKSPACE!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyBackspace", calcMode, "BACKSPACE");
         displayBugScreen(errorMessage);
     }
     }
@@ -3313,7 +3313,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_NAMED_VARIABLE + RBR_INCDEC1, numberOfNamedVariables) + FIRST_NAMED_VARIABLE;
         }
         else {
-          sprintf(errorMessage, "In function fnKeyUp: unexpected case while processing key UP! %" PRIu8 " is an unexpected value for rbrMode.", rbrMode);
+          sprintf(errorMessage, commonBugScreenMessages[BUGMSG_RBR_MODE], "fnKeyUp", "UP", rbrMode);
           displayBugScreen(errorMessage);
         }
         break;
@@ -3399,7 +3399,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyUp: unexpected calcMode value (%" PRIu8 ") while processing key UP!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyUp", calcMode, "UP");
         displayBugScreen(errorMessage);
     }
     }
@@ -3511,7 +3511,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - 1000 - RBR_INCDEC1, numberOfNamedVariables) + 1000;
         }
         else {
-          sprintf(errorMessage, "In function fnKeyDown: unexpected case while processing key DOWN! %" PRIu8 " is an unexpected value for rbrMode.", rbrMode);
+          sprintf(errorMessage, commonBugScreenMessages[BUGMSG_RBR_MODE], "fnKeyDown", "DOWN", rbrMode);
           displayBugScreen(errorMessage);
         }
         break;
@@ -3598,7 +3598,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyDown: unexpected calcMode value (%" PRIu8 ") while processing key DOWN!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyDown", calcMode, "DOWN");
         displayBugScreen(errorMessage);
     }
     }
@@ -3639,9 +3639,9 @@ void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyDotD: unexpected calcMode value (%" PRIu8 ") while processing key .d!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyDotD", calcMode, ".d!");
         displayBugScreen(errorMessage);
-    }
+      }
     }
   #endif // !TESTSUITE_BUILD
 }
