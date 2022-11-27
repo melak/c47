@@ -33,6 +33,8 @@
 #include "stack.h"
 #include "wp43.h"
 
+TO_QSPI static const uint8_t bugScreenNotForTvm[] = {'I','n',' ','f','u','n','c','t','i','o','n',' ','f','n','T','v','m','V','a','r',':',' ','t','h','i','s',' ','v','a','r','i','a','b','l','e',' ','i','s',' ','n','o','t',' ','i','n','t','e','n','d','e','d',' ','f','o','r',' ','T','V','M',' ','a','p','p','l','i','c','a','t','i','o','n','!',0};
+
 void fnTvmVar(uint16_t variable) {
   #if !defined(TESTSUITE_BUILD)
     switch(variable) {
@@ -120,7 +122,7 @@ void fnTvmVar(uint16_t variable) {
       }
 
       default: {
-        displayBugScreen("In function fnTvmVar: this variable is not intended for TVM application!");
+        displayBugScreen((char *)bugScreenNotForTvm);
       }
     }
   #endif // !TESTSUITE_BUILD

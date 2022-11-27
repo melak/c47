@@ -33,6 +33,10 @@
 
 
 
+TO_QSPI static const uint8_t bugScreenShowFonts[] = {'I','n',' ','f','u','n','c','t','i','o','n',' ','s','h','o','w','F','o','n','t','s',':',' ','T','h','i','s',' ','s','h','o','u','l','d',' ','n','e','v','e','r',' ','h','a','p','p','e','n','!',0};
+
+
+
 #if !defined(TESTSUITE_BUILD)
   /********************************************//**
    * \brief The font browser application initialisation
@@ -159,7 +163,7 @@
       showString(tmpString, &standardFont, SCREEN_WIDTH-stringWidth(tmpString, &standardFont, false, true), 220, vmNormal, false, true);
     }
     else {
-      displayBugScreen("In function showFonts: This should never happen!");
+      displayBugScreen((char *)bugScreenShowFonts);
     }
   #endif //SAVE_SPACE_DM42_8
   }

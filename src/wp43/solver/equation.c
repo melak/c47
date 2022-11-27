@@ -37,6 +37,10 @@
 #include "wp43.h"
 
 
+TO_QSPI static const uint8_t bugScreenUnknownOperator[] = {'I','n',' ','f','u','n','c','t','i','o','n',' ','_','p','a','r','s','e','W','o','r','d',':',' ','U','n','k','n','o','w','n',' ','o','p','e','r','a','t','o','r',' ','a','p','p','e','a','r','e','d','!',0};
+TO_QSPI static const uint8_t bugScreenUnknownFormulaParserMode[] = {'I','n',' ','f','u','n','c','t','i','o','n',' ','_','p','a','r','s','e','W','o','r','d',':',' ','U','n','k','n','o','w','n',' ','m','o','d','e',' ','o','f',' ','f','o','r','m','u','l','a',' ','p','a','r','s','e','r','!',0};
+
+
 
 #if !defined(TESTSUITE_BUILD)
   typedef struct {
@@ -1164,7 +1168,7 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
           // label or parameter separator will be skipped
         }
         else {
-          displayBugScreen("In function _parseWord: Unknown operator appeared!");
+          displayBugScreen((char *)bugScreenUnknownOperator);
         }
       }
       else if(parserHint == PARSER_HINT_FUNCTION) {
@@ -1195,7 +1199,7 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
       }
 
       default: {
-      displayBugScreen("In function _parseWord: Unknown mode of formula parser!");
+      displayBugScreen((char *)bugScreenUnknownFormulaParserMode);
   }
 }
   }
