@@ -25,7 +25,7 @@
 #include <stdint.h>
 
 void     showSoftmenu          (int16_t id);  //JM repeat here to make DMCP compile
-
+void     fnShowVersion         (uint8_t option); 
 extern const enum rounding roundingModeTable[7];
 
 /********************************************//**

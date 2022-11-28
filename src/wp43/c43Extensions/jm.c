@@ -26,6 +26,7 @@
 #include "charString.h"
 #include "display.h"
 #include "flags.h"
+#include "config.h"
 #include "c43Extensions/graphs.h"
 #include "c43Extensions/graphText.h"
 #include "items.h"
@@ -826,8 +827,8 @@ void fnUserJM(uint16_t jmUser) {
 //------------------------
   case USER_V43LT:
     #ifndef SAVE_SPACE_DM42 
-//        fnUserJM(USER_V43);
-          fnUserJM(USER_RESET);
+        fnUserJM(USER_RESET);
+        fnShowVersion(4);
 
         kbd_usr[0].primary      = ITM_STO;
         kbd_usr[1].primary      = ITM_RCL;
@@ -913,7 +914,8 @@ void fnUserJM(uint16_t jmUser) {
 //------------------------
   case USER_V43:          //USER
       #ifndef SAVE_SPACE_DM42 
-          fnUserJM(USER_RESET);
+        fnUserJM(USER_RESET);
+        fnShowVersion(3);
 
         kbd_usr[6].primary      = ITM_STO;
         kbd_usr[7].primary      = ITM_RCL;
@@ -1064,6 +1066,7 @@ void fnUserJM(uint16_t jmUser) {
 //------------------------
   case USER_C43:          //USER
     fnUserJM(USER_RESET);
+    fnShowVersion(5);
     fnSetFlag(FLAG_USER);
     break;
 
@@ -1072,6 +1075,7 @@ void fnUserJM(uint16_t jmUser) {
 //------------------------
   case USER_DM42:
     fnUserJM(USER_RESET);
+    fnShowVersion(6);
     xcopy(kbd_usr, kbd_std_DM42, sizeof(kbd_std_DM42));
     fnSetFlag(FLAG_USER);
     break;
@@ -1081,14 +1085,18 @@ void fnUserJM(uint16_t jmUser) {
 //------------------------
   case USER_43S:
     fnUserJM(USER_RESET);
+    fnShowVersion(9);
     xcopy(kbd_usr, kbd_std_WP43, sizeof(kbd_std_WP43));
     kbd_usr[10].primary=KEY_fg;
     kbd_usr[10].keyLblAim=KEY_fg;
     kbd_usr[10].primaryAim=KEY_fg;
-    kbd_usr[10].gShiftedAim=ITM_SNAP;
+    kbd_usr[10].gShiftedAim=ITM_NULL;
+    kbd_usr[10].gShifted=ITM_NULL;
     kbd_usr[10].primaryTam=KEY_fg;
-    kbd_usr[18].fShifted=ITM_SNAP;  
-    kbd_usr[18].gShifted=-MNU_ASN; 
+    kbd_usr[11].fShiftedAim=ITM_NULL;
+    kbd_usr[11].fShifted=ITM_NULL;
+    kbd_usr[18].gShifted=ITM_SNAP;  
+    kbd_usr[18].fShifted=-MNU_ASN; 
     kbd_usr[19].fShifted=ITM_USERMODE;
     fnSetFlag(FLAG_USER);
     break;
@@ -1098,6 +1106,7 @@ void fnUserJM(uint16_t jmUser) {
 //-------------------------
   case USER_C43ALTA:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu      
       fnUserJM(USER_RESET);
+      fnShowVersion(7);
       xcopy(kbd_usr, kbd_std_C43A, sizeof(kbd_std_C43A));
       Norm_Key_00_VAR        = ITM_USERMODE;
       fnRefreshState();
@@ -1108,7 +1117,8 @@ void fnUserJM(uint16_t jmUser) {
 //---KEYS PROFILE: C43-ALTA
 //-------------------------
   case USER_C43ALTB:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
-      fnUserJM(USER_C43);  
+      fnShowVersion(8);
+      fnUserJM(USER_C43);
       kbd_usr[0].primary     = ITM_DRG;
       kbd_usr[7].gShifted    = ITM_XTHROOT;
       kbd_usr[8].gShifted    = ITM_Rup;
@@ -1122,6 +1132,7 @@ void fnUserJM(uint16_t jmUser) {
 
 
   case USER_RESET:                                              //USER_RESET 26
+    fnShowVersion(10);
     xcopy(kbd_usr, kbd_std, sizeof(kbd_std));
     Norm_Key_00_VAR        = ITM_SIGMAPLUS;
     fnRefreshState();                                 //drJM
