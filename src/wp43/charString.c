@@ -85,7 +85,7 @@ int16_t stringWidth(const char *str, const font_t *font, bool_t withLeadingEmpty
                  "In function stringWidth: %d is an unexpected value returned by findGlyph!"
                "/n---------------------------------------------------------------------------\n", glyphId);
       #else // !GENERATE_CATALOGS
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_RETURNED_BY_FINDGLYPH], "stringWidth", glyphId);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "stringWidth", glyphId);
         displayBugScreen(errorMessage);
       #endif // GENERATE_CATALOGS
       return 0;

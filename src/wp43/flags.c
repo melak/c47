@@ -317,7 +317,7 @@ bool_t getFlag(uint16_t flag) {
         return (currentLocalFlags->localFlags & (1u << (uint32_t)flag)) != 0;
       }
       else {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NOT_DEFINED_MUST_BE], "getFlag", "local flag", flag, NUMBER_OF_LOCAL_FLAGS - 1);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgNotDefinedMustBe], "getFlag", "local flag", flag, NUMBER_OF_LOCAL_FLAGS - 1);
         displayBugScreen(errorMessage);
       }
     }
@@ -425,7 +425,7 @@ void fnSetFlag(uint16_t flag) {
         currentLocalFlags->localFlags |=  (1u << (uint32_t)flag);
       }
       else {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NOT_DEFINED_MUST_BE], "fnSetFlag", "local flag", flag, NUMBER_OF_LOCAL_FLAGS - 1);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgNotDefinedMustBe], "fnSetFlag", "local flag", flag, NUMBER_OF_LOCAL_FLAGS - 1);
         displayBugScreen(errorMessage);
       }
     }
@@ -515,7 +515,7 @@ void fnClearFlag(uint16_t flag) {
         currentLocalFlags->localFlags &= ~(1u << (uint32_t)flag);
       }
       else {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NOT_DEFINED_MUST_BE], "fnClearFlag", "local flag", flag, NUMBER_OF_LOCAL_FLAGS - 1);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgNotDefinedMustBe], "fnClearFlag", "local flag", flag, NUMBER_OF_LOCAL_FLAGS - 1);
         displayBugScreen(errorMessage);
       }
     }
@@ -610,7 +610,7 @@ void fnFlipFlag(uint16_t flag) {
         currentLocalFlags->localFlags ^=  (1u << (uint32_t)flag);
       }
       else {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NOT_DEFINED_MUST_BE], "fnFlipFlag", "local flag", flag, NUMBER_OF_LOCAL_FLAGS - 1);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgNotDefinedMustBe], "fnFlipFlag", "local flag", flag, NUMBER_OF_LOCAL_FLAGS - 1);
         displayBugScreen(errorMessage);
       }
     }

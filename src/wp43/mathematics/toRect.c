@@ -56,7 +56,7 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
         break;
       }
       default: {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_UNEXPECTED_S_VALUE], "fnToRect", dataTypeX, "dataTypeX");
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgUnexpectedSValue], "fnToRect", dataTypeX, "dataTypeX");
         displayBugScreen(errorMessage);
       }
     }
@@ -79,7 +79,7 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_UNEXPECTED_S_VALUE], "fnToRect", dataTypeY, "dataTypeY");
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgUnexpectedSValue], "fnToRect", dataTypeY, "dataTypeY");
         displayBugScreen(errorMessage);
       }
     }

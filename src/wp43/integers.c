@@ -239,7 +239,7 @@ static int32_t WP34S_calc_overflow(uint64_t xv, uint64_t yv, int32_t neg) {
     }
 
     default: {
-      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "calc_overflow", shortIntegerMode, "shortIntegerMode");
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "calc_overflow", shortIntegerMode, "shortIntegerMode");
       displayBugScreen(errorMessage);
       return 0;
     }

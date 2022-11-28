@@ -957,7 +957,7 @@
       }
 
       default: {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "calcModeTam", tam.mode, "tam.mode");
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "calcModeTam", tam.mode, "tam.mode");
         displayBugScreen(errorMessage);
         return;
       }

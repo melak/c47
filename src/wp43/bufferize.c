@@ -2330,7 +2330,7 @@ void kill_ASB_icon(void) {
               longInteger2Pow(shortIntegerWordSize, maxVal);
             }
             else {
-              sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "closeNIM", "shortIntegerWordSize", shortIntegerWordSize);
+              sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "closeNIM", "shortIntegerWordSize", shortIntegerWordSize);
               displayBugScreen(errorMessage);
               longIntegerFree(maxVal);
               longIntegerFree(value);
@@ -2398,7 +2398,7 @@ void kill_ASB_icon(void) {
               }
             }
             else {
-              sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "closeNIM", "shortIntegerMode", shortIntegerMode);
+              sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "closeNIM", "shortIntegerMode", shortIntegerMode);
               displayBugScreen(errorMessage);
               *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = 0;
             }
@@ -2434,7 +2434,7 @@ void kill_ASB_icon(void) {
             closeNimWithComplex(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
           }
           else {
-            sprintf(errorMessage, commonBugScreenMessages[BUGMSG_UNEXPECTED_S_VALUE], "closeNIM", nimNumberPart, "nimNumberPart");
+            sprintf(errorMessage, commonBugScreenMessages[bugMsgUnexpectedSValue], "closeNIM", nimNumberPart, "nimNumberPart");
             displayBugScreen(errorMessage);
           }
         }

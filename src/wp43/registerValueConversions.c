@@ -186,7 +186,7 @@ void convertShortIntegerRegisterToUInt64(calcRegister_t regist, int16_t *sign, u
        *value -= shortIntegerSignBit;
       }
       else {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "convertShortIntegerRegisterToUInt64", shortIntegerMode, "shortIntegerMode");
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "convertShortIntegerRegisterToUInt64", shortIntegerMode, "shortIntegerMode");
         displayBugScreen(errorMessage);
         *sign = 0;
         *value = 0;
@@ -241,7 +241,7 @@ void convertUInt64ToShortIntegerRegister(int16_t sign, uint64_t value, uint32_t 
       value += shortIntegerSignBit;
     }
     else {
-      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "convertUInt64ToShortIntegerRegister", shortIntegerMode, "shortIntegerMode");
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "convertUInt64ToShortIntegerRegister", shortIntegerMode, "shortIntegerMode");
       displayBugScreen(errorMessage);
       value = 0;
     }

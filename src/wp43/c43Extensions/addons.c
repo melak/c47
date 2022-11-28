@@ -415,7 +415,7 @@ void fnTo_ms(uint16_t unusedButMandatoryParameter) {
     break;
 
   default:
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnTo_ms", calcMode, ".ms");
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnTo_ms", calcMode, ".ms");
     displayBugScreen(errorMessage);
   }
 #endif // !TESTSUITE_BUILD

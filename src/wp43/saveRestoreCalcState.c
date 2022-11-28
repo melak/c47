@@ -748,7 +748,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_TIMER) {
         }
         else {
-          sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "restoreCalc", calcMode, "calcMode");
+          sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "restoreCalc", calcMode, "calcMode");
           displayBugScreen(errorMessage);
         }
         if(catalog) {

@@ -124,7 +124,7 @@ uint32_t getRegisterDataType(calcRegister_t regist) {
       #endif // PC_BUILD
     }
     else {
-      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NO_NAMED_VARIABLES], "getRegisterDataType");
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgNoNamedVariables], "getRegisterDataType");
       displayBugScreen(errorMessage);
     }
   }
@@ -140,7 +140,7 @@ uint32_t getRegisterDataType(calcRegister_t regist) {
   }
 
   else {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_REGIST_MUST_BE_LESS_THAN], "getRegisterDataType", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "getRegisterDataType", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
 
@@ -194,7 +194,7 @@ dataBlock_t *getRegisterDataPointer(calcRegister_t regist) {
       #endif // PC_BUILD
     }
     else {
-      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NO_NAMED_VARIABLES], "getRegisterDataPointer");
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgNoNamedVariables], "getRegisterDataPointer");
       displayBugScreen(errorMessage);
     }
   }
@@ -205,7 +205,7 @@ dataBlock_t *getRegisterDataPointer(calcRegister_t regist) {
   }
 
   else {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_REGIST_MUST_BE_LESS_THAN], "getRegisterDataPointer", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "getRegisterDataPointer", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
   return 0;
@@ -258,7 +258,7 @@ uint32_t getRegisterTag(calcRegister_t regist) {
       #endif // PC_BUILD
     }
     else {
-      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NO_NAMED_VARIABLES], "getRegisterTag");
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgNoNamedVariables], "getRegisterTag");
       displayBugScreen(errorMessage);
     }
   }
@@ -269,7 +269,7 @@ uint32_t getRegisterTag(calcRegister_t regist) {
   }
 
   else {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_REGIST_MUST_BE_LESS_THAN], "getRegisterTag", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "getRegisterTag", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
   return 0;
@@ -326,7 +326,7 @@ void setRegisterDataType(calcRegister_t regist, uint16_t dataType, uint32_t tag)
       #endif // PC_BUILD
     }
     else {
-      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NO_NAMED_VARIABLES], "setRegisterDataType");
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgNoNamedVariables], "setRegisterDataType");
       displayBugScreen(errorMessage);
     }
   }
@@ -340,7 +340,7 @@ void setRegisterDataType(calcRegister_t regist, uint16_t dataType, uint32_t tag)
   }
 
   else {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_REGIST_MUST_BE_LESS_THAN], "setRegisterDataType", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "setRegisterDataType", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
 }
@@ -404,7 +404,7 @@ void setRegisterDataPointer(calcRegister_t regist, void *memPtr) {
   }
 
   else {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_REGIST_MUST_BE_LESS_THAN], "setRegisterDataPointer", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "setRegisterDataPointer", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
 }
@@ -456,7 +456,7 @@ void setRegisterTag(calcRegister_t regist, uint32_t tag) {
       #endif // PC_BUILD
     }
     else {
-      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NO_NAMED_VARIABLES], "setRegisterDataInfo");
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgNoNamedVariables], "setRegisterDataInfo");
       displayBugScreen(errorMessage);
     }
   }
@@ -465,7 +465,7 @@ void setRegisterTag(calcRegister_t regist, uint32_t tag) {
   }
 
   else {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_REGIST_MUST_BE_LESS_THAN], "setRegisterDataInfo", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "setRegisterDataInfo", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
 }
@@ -950,7 +950,7 @@ void setRegisterMaxDataLength(calcRegister_t regist, uint16_t maxDataLen) {
         getRegisterDataPointer(regist)->dataMaxLength = maxDataLen;
       }
       else {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NOT_DEFINED_MUST_BE], "setRegisterMaxDataLength", "named variable", (uint16_t)(regist - FIRST_NAMED_VARIABLE), (uint16_t)(numberOfNamedVariables - 1));
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgNotDefinedMustBe], "setRegisterMaxDataLength", "named variable", (uint16_t)(regist - FIRST_NAMED_VARIABLE), (uint16_t)(numberOfNamedVariables - 1));
         displayBugScreen(errorMessage);
       }
     }
@@ -967,7 +967,7 @@ void setRegisterMaxDataLength(calcRegister_t regist, uint16_t maxDataLen) {
   }
 
   else {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_REGIST_MUST_BE_LESS_THAN], "setRegisterMaxDataLength", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "setRegisterMaxDataLength", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
 }
@@ -987,7 +987,7 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
         db = (dataBlock_t *)TO_PCMEMPTR(POINTER_TO_LOCAL_REGISTER(regist-FIRST_LOCAL_REGISTER)->pointerToRegisterData);
       }
       else {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NOT_DEFINED_MUST_BE], "getRegisterMaxDataLength", "local register", (uint16_t)(regist - FIRST_LOCAL_REGISTER), (uint8_t)(currentNumberOfLocalRegisters - 1));
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgNotDefinedMustBe], "getRegisterMaxDataLength", "local register", (uint16_t)(regist - FIRST_LOCAL_REGISTER), (uint8_t)(currentNumberOfLocalRegisters - 1));
         displayBugScreen(errorMessage);
       }
     }
@@ -1009,7 +1009,7 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
         db = (dataBlock_t *)TO_PCMEMPTR(allNamedVariables[regist].header.pointerToRegisterData);
       }
       else {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NOT_DEFINED_MUST_BE], "getRegisterMaxDataLength", "named variable", regist, (uint16_t)(numberOfNamedVariables - 1));
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgNotDefinedMustBe], "getRegisterMaxDataLength", "named variable", regist, (uint16_t)(numberOfNamedVariables - 1));
         displayBugScreen(errorMessage);
       }
     }
@@ -1026,7 +1026,7 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
   }
 
   else {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_REGIST_MUST_BE_LESS_THAN], "getRegisterMaxDataLength", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "getRegisterMaxDataLength", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
 
@@ -1079,7 +1079,7 @@ uint16_t getRegisterFullSize(calcRegister_t regist) {
       return CONFIG_SIZE;
     }
     default: {
-      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_DATA_TYPE_UNKNOWN], "getRegisterFullSize", getDataTypeName(getRegisterDataType(regist), false, false));
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgDataTypeUnknown], "getRegisterFullSize", getDataTypeName(getRegisterDataType(regist), false, false));
       displayBugScreen(errorMessage);
       return 0;
   }
@@ -1464,7 +1464,7 @@ void copySourceRegisterToDestRegister(calcRegister_t sourceRegister, calcRegiste
       }
 
       default: {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_DATA_TYPE_UNKNOWN], "copySourceRegisterToDestRegister", getDataTypeName(getRegisterDataType(sourceRegister), false, false));
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgDataTypeUnknown], "copySourceRegisterToDestRegister", getDataTypeName(getRegisterDataType(sourceRegister), false, false));
         displayBugScreen(errorMessage);
         sizeInBlocks = 0;
     }
@@ -1896,19 +1896,19 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
 
   //printf("reallocateRegister: %d to %s tag=%u (%u bytes excluding maxSize) begin\n", regist, getDataTypeName(dataType, false, false), tag, dataSizeWithoutDataLenBlocks);
   if((dataType == dtReal34 || dataType == dtTime || dataType == dtDate) && dataSizeWithoutDataLenBlocks != REAL34_SIZE) {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NUM_BYTE], getDataTypeName(dataType, true, false), "REAL34_SIZE", dataSizeWithoutDataLenBlocks, (uint16_t)REAL34_SIZE);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgNumByte], getDataTypeName(dataType, true, false), "REAL34_SIZE", dataSizeWithoutDataLenBlocks, (uint16_t)REAL34_SIZE);
     displayBugScreen(errorMessage);
   }
   else if(dataType == dtComplex34 && dataSizeWithoutDataLenBlocks != COMPLEX34_SIZE) {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NUM_BYTE], getDataTypeName(dataType, true, false), "COMPLEX34_SIZE", dataSizeWithoutDataLenBlocks, (uint16_t)COMPLEX34_SIZE);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgNumByte], getDataTypeName(dataType, true, false), "COMPLEX34_SIZE", dataSizeWithoutDataLenBlocks, (uint16_t)COMPLEX34_SIZE);
     displayBugScreen(errorMessage);
   }
   else if(dataType == dtShortInteger && dataSizeWithoutDataLenBlocks != SHORT_INTEGER_SIZE) {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NUM_BYTE], getDataTypeName(dataType, true, false), "SHORT_INTEGER_SIZE", dataSizeWithoutDataLenBlocks, (uint16_t)SHORT_INTEGER_SIZE);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgNumByte], getDataTypeName(dataType, true, false), "SHORT_INTEGER_SIZE", dataSizeWithoutDataLenBlocks, (uint16_t)SHORT_INTEGER_SIZE);
     displayBugScreen(errorMessage);
   }
   else if(dataType == dtConfig && dataSizeWithoutDataLenBlocks != CONFIG_SIZE) {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_NUM_BYTE], getDataTypeName(dataType, true, false), "CONFIG_SIZE", dataSizeWithoutDataLenBlocks, (uint16_t)CONFIG_SIZE);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgNumByte], getDataTypeName(dataType, true, false), "CONFIG_SIZE", dataSizeWithoutDataLenBlocks, (uint16_t)CONFIG_SIZE);
     displayBugScreen(errorMessage);
   }
   else if(dataType == dtString || dataType == dtReal34Matrix || dataType == dtComplex34Matrix) {

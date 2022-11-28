@@ -1057,7 +1057,7 @@ uint8_t  displaymode = stdNoEnlarge;
     }
 
     if(glyph == NULL) {
-      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_RETURNED_BY_FINDGLYPH], "showGlyphCode", glyphId);
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "showGlyphCode", glyphId);
       displayBugScreen(errorMessage);
       return 0;
     }
@@ -1159,7 +1159,7 @@ uint8_t  displaymode = stdNoEnlarge;
 
     glyphId = findGlyph(font, charCodeFromString(ch, offset));
     if(glyphId < 0) {
-      sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_RETURNED_BY_FINDGLYPH], "getGlyphBounds", glyphId);
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "getGlyphBounds", glyphId);
       displayBugScreen(errorMessage);
       return;
     }

@@ -265,18 +265,18 @@ void fnErrorMessage(uint16_t unusedButMandatoryParameter) {
 
 void displayCalcErrorMessage(uint8_t errorCode, calcRegister_t errMessageRegisterLine, calcRegister_t errRegisterLine) {
   if(errorCode >= NUMBER_OF_ERROR_CODES || errorCode == 0) {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "displayCalcErrorMessage", errorCode, "errorCode");
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "displayCalcErrorMessage", errorCode, "errorCode");
     displayBugScreen(errorMessage);
   }
 
   else if(errMessageRegisterLine > REGISTER_T || errMessageRegisterLine < REGISTER_X) {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "displayCalcErrorMessage", errMessageRegisterLine, "errMessageRegisterLine");
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "displayCalcErrorMessage", errMessageRegisterLine, "errMessageRegisterLine");
     sprintf(errorMessage + strlen(errorMessage), "Must be from 100 (register X) to 103 (register T)");
     displayBugScreen(errorMessage);
   }
 
   else if(errRegisterLine > REGISTER_T || errRegisterLine < REGISTER_X) {
-    sprintf(errorMessage, commonBugScreenMessages[BUGMSG_VALUE_FOR], "displayCalcErrorMessage", errRegisterLine, "errRegisterLine");
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "displayCalcErrorMessage", errRegisterLine, "errRegisterLine");
     sprintf(errorMessage + strlen(errorMessage), "Must be from 100 (register X) to 103 (register T)");
     displayBugScreen(errorMessage);
   }

@@ -2496,7 +2496,7 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyEnter", calcMode, "ENTER");
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyEnter", calcMode, "ENTER");
         displayBugScreen(errorMessage);
     }
     }
@@ -2838,7 +2838,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyExit", calcMode, "EXIT");
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyExit", calcMode, "EXIT");
         displayBugScreen(errorMessage);
     }
 
@@ -2923,7 +2923,7 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
       }
 
       default: {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyCC", calcMode, "CC");
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyCC", calcMode, "CC");
         displayBugScreen(errorMessage);
     }
     }
@@ -3181,7 +3181,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyBackspace", calcMode, "BACKSPACE");
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyBackspace", calcMode, "BACKSPACE");
         displayBugScreen(errorMessage);
     }
     }
@@ -3316,7 +3316,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_NAMED_VARIABLE + RBR_INCDEC1, numberOfNamedVariables) + FIRST_NAMED_VARIABLE;
         }
         else {
-          sprintf(errorMessage, commonBugScreenMessages[BUGMSG_RBR_MODE], "fnKeyUp", "UP", rbrMode);
+          sprintf(errorMessage, commonBugScreenMessages[bugMsgRbrMode], "fnKeyUp", "UP", rbrMode);
           displayBugScreen(errorMessage);
         }
         break;
@@ -3402,7 +3402,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyUp", calcMode, "UP");
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyUp", calcMode, "UP");
         displayBugScreen(errorMessage);
     }
     }
@@ -3514,7 +3514,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - 1000 - RBR_INCDEC1, numberOfNamedVariables) + 1000;
         }
         else {
-          sprintf(errorMessage, commonBugScreenMessages[BUGMSG_RBR_MODE], "fnKeyDown", "DOWN", rbrMode);
+          sprintf(errorMessage, commonBugScreenMessages[bugMsgRbrMode], "fnKeyDown", "DOWN", rbrMode);
           displayBugScreen(errorMessage);
         }
         break;
@@ -3601,7 +3601,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyDown", calcMode, "DOWN");
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyDown", calcMode, "DOWN");
         displayBugScreen(errorMessage);
     }
     }
@@ -3642,7 +3642,7 @@ void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_CALCMODE_WHILE_PROC_KEY], "fnKeyDotD", calcMode, ".d!");
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyDotD", calcMode, ".d!");
         displayBugScreen(errorMessage);
       }
     }

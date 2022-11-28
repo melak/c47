@@ -54,7 +54,7 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
         break;
       }
       default: {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_UNEXPECTED_S_VALUE], "fnToPolar", dataTypeX, "dataTypeX");
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgUnexpectedSValue], "fnToPolar", dataTypeX, "dataTypeX");
         displayBugScreen(errorMessage);
       }
     }
@@ -69,7 +69,7 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
         break;
       }
       default: {
-        sprintf(errorMessage, commonBugScreenMessages[BUGMSG_UNEXPECTED_S_VALUE], "fnToPolar", dataTypeY, "dataTypeY");
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgUnexpectedSValue], "fnToPolar", dataTypeY, "dataTypeY");
         displayBugScreen(errorMessage);
       }
     }
