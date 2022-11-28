@@ -41,7 +41,7 @@
 
 #include "wp43.h"
 
-TO_QSPI static const uint8_t bugScreenIdMustNotBe0[] = {'I','n',' ','f','u','n','c','t','i','o','n',' ','s','h','o','w','S','o','f','t','m','e','n','u',':',' ','i','d',' ','m','u','s','t',' ','n','o','t',' ','b','e',' ','0','!',0};
+TO_QSPI static const char bugScreenIdMustNotBe0[] = "In function showSoftmenu: id must not be 0!";
 
 /* The numbers refer to the index of items in items.c
  *         item <     0  ==>  sub menu
@@ -1738,7 +1738,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     enterAsmModeIfMenuIsACatalog(id);
 
     if(id == 0) {
-      displayBugScreen((char *)bugScreenIdMustNotBe0);
+      displayBugScreen(bugScreenIdMustNotBe0);
       return;
     }
 

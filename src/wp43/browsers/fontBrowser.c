@@ -33,7 +33,7 @@
 
 
 
-TO_QSPI static const uint8_t bugScreenShowFonts[] = {'I','n',' ','f','u','n','c','t','i','o','n',' ','s','h','o','w','F','o','n','t','s',':',' ','T','h','i','s',' ','s','h','o','u','l','d',' ','n','e','v','e','r',' ','h','a','p','p','e','n','!',0};
+TO_QSPI static const char bugScreenShowFonts[] = "In function showFonts: This should never happen!";
 
 
 
@@ -163,7 +163,7 @@ TO_QSPI static const uint8_t bugScreenShowFonts[] = {'I','n',' ','f','u','n','c'
       showString(tmpString, &standardFont, SCREEN_WIDTH-stringWidth(tmpString, &standardFont, false, true), 220, vmNormal, false, true);
     }
     else {
-      displayBugScreen((char *)bugScreenShowFonts);
+      displayBugScreen(bugScreenShowFonts);
     }
   #endif //SAVE_SPACE_DM42_8
   }

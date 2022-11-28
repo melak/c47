@@ -50,7 +50,7 @@
 
 #include "wp43.h"
 
-TO_QSPI static const uint8_t bugScreenNoParam[] = {'I','n',' ','f','u','n','c','t','i','o','n',' ','a','d','d','I','t','e','m','T','o','B','u','f','f','e','r',':','i','t','e','m',' ','s','h','o','u','l','d',' ','n','o','t',' ','b','e',' ','N','O','P','A','R','A','M','=','7','6','5','4','!',0};
+TO_QSPI static const char bugScreenNoParam[] = "In function addItemToBuffer:item should not be NOPARAM=7654!";
 
 #if !defined(TESTSUITE_BUILD)
   void fnAim(uint16_t unusedButMandatoryParameter) {
@@ -293,7 +293,7 @@ void kill_ASB_icon(void) {
 
 
     if(item == NOPARAM) {
-      displayBugScreen((char *)bugScreenNoParam);
+      displayBugScreen(bugScreenNoParam);
     }
     else {
       screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);

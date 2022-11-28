@@ -34,126 +34,137 @@
 
 #include "wp43.h"
 
-/*TO_QSPI*/ const char *commonBugScreenMessages[NUMBER_OF_BUG_SCREEN_MESSAGES] = {
-/*  0 */  "In function %s:%d is an unexpected value for %s!",
-/*  1 */  "In function %s: unexpected calcMode value (%" PRIu8 ") while processing key %s!",
-/*  2 */  "In function reallocateRegister: %" PRIu16 " is an unexpected numByte value for %s! It should be %s=%" PRIu16 "!",
-/*  3 */  "In function %s: no named variables defined!",
-/*  4 */  "In function %s: %d is an unexpected value returned by findGlyph!",
-/*  5 */  "In function %s: %" PRIu32 " is an unexpected %s value!",
-/*  6 */  "In function %s: data type %s is unknown!",
-/*  7 */  "In function %s: regist=%" PRId16 " must be less than %d!",
-/*  8 */  "In function %s: %s %" PRId16 " is not defined! Must be from 0 to %" PRIu16,
-/*  9 */  "In function %s: unexpected case while processing key %s! %" PRIu8 " is an unexpected value for rbrMode.",
+TO_QSPI static const char commonBugScreenMessage00[] = "In function %s:%d is an unexpected value for %s!";
+TO_QSPI static const char commonBugScreenMessage01[] = "In function %s: unexpected calcMode value (%" PRIu8 ") while processing key %s!";
+TO_QSPI static const char commonBugScreenMessage02[] = "In function reallocateRegister: %" PRIu16 " is an unexpected numByte value for %s! It should be %s=%" PRIu16 "!";
+TO_QSPI static const char commonBugScreenMessage03[] = "In function %s: no named variables defined!";
+TO_QSPI static const char commonBugScreenMessage04[] = "In function %s: %d is an unexpected value returned by findGlyph!";
+TO_QSPI static const char commonBugScreenMessage05[] = "In function %s: %" PRIu32 " is an unexpected %s value!";
+TO_QSPI static const char commonBugScreenMessage06[] = "In function %s: data type %s is unknown!";
+TO_QSPI static const char commonBugScreenMessage07[] = "In function %s: regist=%" PRId16 " must be less than %d!";
+TO_QSPI static const char commonBugScreenMessage08[] = "In function %s: %s %" PRId16 " is not defined! Must be from 0 to %" PRIu16;
+TO_QSPI static const char commonBugScreenMessage09[] = "In function %s: unexpected case while processing key %s! %" PRIu8 " is an unexpected value for rbrMode.";
+
+const char *commonBugScreenMessages[NUMBER_OF_BUG_SCREEN_MESSAGES] = {
+  commonBugScreenMessage00,
+  commonBugScreenMessage01,
+  commonBugScreenMessage02,
+  commonBugScreenMessage03,
+  commonBugScreenMessage04,
+  commonBugScreenMessage05,
+  commonBugScreenMessage06,
+  commonBugScreenMessage07,
+  commonBugScreenMessage08,
+  commonBugScreenMessage09,
 };
 
-TO_QSPI const uint8_t errorMessages00[] = {'N','o',' ','e','r','r','o','r',0};
-TO_QSPI const uint8_t errorMessages01[] = {'A','n',' ','a','r','g','u','m','e','n','t',' ','e','x','c','e','e','d','s',' ','t','h','e',' ','f','u','n','c','t','i','o','n',' ','d','o','m','a','i','n',0};
-TO_QSPI const uint8_t errorMessages02[] = {'B','a','d',' ','t','i','m','e',' ','o','r',' ','d','a','t','e',' ','i','n','p','u','t',0};
-TO_QSPI const uint8_t errorMessages03[] = {'U','n','d','e','f','i','n','e','d',' ','o','p','-','c','o','d','e',0};
-TO_QSPI const uint8_t errorMessages04[] = {'O','v','e','r','f','l','o','w',' ','a','t',' ','+',STD_INFINITY[0],STD_INFINITY[1],0};
-TO_QSPI const uint8_t errorMessages05[] = {'O','v','e','r','f','l','o','w',' ','a','t',' ','-',STD_INFINITY[0],STD_INFINITY[1],0};
-TO_QSPI const uint8_t errorMessages06[] = {'N','o',' ','s','u','c','h',' ','l','a','b','e','l',' ','f','o','u','n','d',0};
-TO_QSPI const uint8_t errorMessages07[] = {'N','o',' ','s','u','c','h',' ','f','u','n','c','t','i','o','n',0};
-TO_QSPI const uint8_t errorMessages08[] = {'O','u','t',' ','o','f',' ','r','a','n','g','e',0};
-TO_QSPI const uint8_t errorMessages09[] = {'I','l','l','e','g','a','l',' ','d','i','g','i','t',' ','i','n',' ','i','n','t','e','g','e','r',' ','i','n','p','u','t',' ','f','o','r',' ','t','h','i','s',' ','b','a','s','e',0};
-TO_QSPI const uint8_t errorMessages10[] = {'I','n','p','u','t',' ','i','s',' ','t','o','o',' ','l','o','n','g',0};
-TO_QSPI const uint8_t errorMessages11[] = {'R','A','M',' ','i','s',' ','f','u','l','l',0};
-TO_QSPI const uint8_t errorMessages12[] = {'S','t','a','c','k',' ','c','l','a','s','h',0};
-TO_QSPI const uint8_t errorMessages13[] = {'O','p','e','r','a','t','i','o','n',' ','i','s',' ','u','n','d','e','f','i','n','e','d',' ','i','n',' ','t','h','i','s',' ','m','o','d','e',0};
-TO_QSPI const uint8_t errorMessages14[] = {'W','o','r','d',' ','s','i','z','e',' ','i','s',' ','t','o','o',' ','s','m','a','l','l',0};
-TO_QSPI const uint8_t errorMessages15[] = {'T','o','o',' ','f','e','w',' ','d','a','t','a',' ','p','o','i','n','t','s',' ','f','o','r',' ','t','h','i','s',' ','s','t','a','t','i','s','t','i','c',0};
-TO_QSPI const uint8_t errorMessages16[] = {'D','i','s','t','r','i','b','u','t','i','o','n',' ','p','a','r','a','m','e','t','e','r',' ','o','u','t',' ','o','f',' ','v','a','l','i','d',' ','r','a','n','g','e',0};
-TO_QSPI const uint8_t errorMessages17[] = {'I','/','O',' ','e','r','r','o','r',0};
-TO_QSPI const uint8_t errorMessages18[] = {'I','n','v','a','l','i','d',' ','o','r',' ','c','o','r','r','u','p','t','e','d',' ','d','a','t','a',0};
-TO_QSPI const uint8_t errorMessages19[] = {'F','l','a','s','h',' ','m','e','m','o','r','y',' ','i','s',' ','w','r','i','t','e',' ','p','r','o','t','e','c','t','e','d',0};
-TO_QSPI const uint8_t errorMessages20[] = {'N','o',' ','r','o','o','t',' ','f','o','u','n','d',0};
-TO_QSPI const uint8_t errorMessages21[] = {'M','a','t','r','i','x',' ','m','i','s','m','a','t','c','h',0};
-TO_QSPI const uint8_t errorMessages22[] = {'S','i','n','g','u','l','a','r',' ','m','a','t','r','i','x',0};
-TO_QSPI const uint8_t errorMessages23[] = {'F','l','a','s','h',' ','m','e','m','o','r','y',' ','i','s',' ','f','u','l','l',0};
-TO_QSPI const uint8_t errorMessages24[] = {'I','n','v','a','l','i','d',' ','i','n','p','u','t',' ','d','a','t','a',' ','t','y','p','e',' ','f','o','r',' ','t','h','i','s',' ','o','p','e','r','a','t','i','o','n',0};
-TO_QSPI const uint8_t errorMessages25[] = {0};
-TO_QSPI const uint8_t errorMessages26[] = {'P','l','e','a','s','e',' ','e','n','t','e','r',' ','a',' ','N','E','W',' ','n','a','m','e',0};
-TO_QSPI const uint8_t errorMessages27[] = {'C','a','n','n','o','t',' ','d','e','l','e','t','e',' ','a',' ','p','r','e','d','e','f','i','n','e','d',' ','i','t','e','m',0};
-TO_QSPI const uint8_t errorMessages28[] = {'N','o',' ','s','t','a','t','i','s','t','i','c',' ','d','a','t','a',' ','p','r','e','s','e','n','t',0};
-TO_QSPI const uint8_t errorMessages29[] = {'I','t','e','m',' ','t','o',' ','b','e',' ','c','o','d','e','d',0};
-TO_QSPI const uint8_t errorMessages30[] = {'F','u','n','c','t','i','o','n',' ','t','o',' ','b','e',' ','c','o','d','e','d',' ','f','o','r',' ','t','h','a','t',' ','d','a','t','a',' ','t','y','p','e',0};
-TO_QSPI const uint8_t errorMessages31[] = {'I','n','p','u','t',' ','d','a','t','a',' ','t','y','p','e','s',' ','d','o',' ','n','o','t',' ','m','a','t','c','h',0};
-TO_QSPI const uint8_t errorMessages32[] = {'T','h','i','s',' ','s','y','s','t','e','m',' ','f','l','a','g',' ','i','s',' ','w','r','i','t','e',' ','p','r','o','t','e','c','t','e','d',0};
-TO_QSPI const uint8_t errorMessages33[] = {'O','u','t','p','u','t',' ','w','o','u','l','d',' ','e','x','c','e','e','d',' ','1','9','6',' ','c','h','a','r','a','c','t','e','r','s',0};
-TO_QSPI const uint8_t errorMessages34[] = {'T','h','i','s',' ','d','o','e','s',' ','n','o','t',' ','w','o','r','k',' ','w','i','t','h',' ','a','n',' ','e','m','p','t','y',' ','s','t','r','i','n','g',0};
-TO_QSPI const uint8_t errorMessages35[] = {'N','o',' ','b','a','c','k','u','p',' ','d','a','t','a',' ','f','o','u','n','d',0};
-TO_QSPI const uint8_t errorMessages36[] = {'U','n','d','e','f','i','n','e','d',' ','s','o','u','r','c','e',' ','v','a','r','i','a','b','l','e',0};
-TO_QSPI const uint8_t errorMessages37[] = {'T','h','i','s',' ','v','a','r','i','a','b','l','e',' ','i','s',' ','w','r','i','t','e',' ','p','r','o','t','e','c','t','e','d',0};
-TO_QSPI const uint8_t errorMessages38[] = {'N','o',' ','m','a','t','r','i','x',' ','i','n','d','e','x','e','d',0};
-TO_QSPI const uint8_t errorMessages39[] = {'N','o','t',' ','e','n','o','u','g','h',' ','m','e','m','o','r','y',' ','f','o','r',' ','s','u','c','h',' ','a',' ','m','a','t','r','i','x',0};
-TO_QSPI const uint8_t errorMessages40[] = {'N','o',' ','e','r','r','o','r','s',' ','f','o','r',' ','s','e','l','e','c','t','e','d',' ','m','o','d','e','l',0};
-TO_QSPI const uint8_t errorMessages41[] = {'L','a','r','g','e',' ',STD_DELTA[0],STD_DELTA[1],' ','a','n','d',' ','o','p','p','o','s','i','t','e',' ','s','i','g','n','s',',',' ','m','a','y',' ','b','e',' ','a',' ','p','o','l','e',0};
-TO_QSPI const uint8_t errorMessages42[] = {'S','o','l','v','e','r',' ','r','e','a','c','h','e','d',' ','l','o','c','a','l',' ','e','x','t','r','e','m','u','m',',',' ','n','o',' ','r','o','o','t',0};
-TO_QSPI const uint8_t errorMessages43[] = {STD_GREATER_EQUAL[0],STD_GREATER_EQUAL[1],'1',' ','i','n','i','t','i','a','l',' ','g','u','e','s','s',' ','l','i','e','s',' ','o','u','t',' ','o','f',' ','t','h','e',' ','d','o','m','a','i','n',0};
-TO_QSPI const uint8_t errorMessages44[] = {'T','h','e',' ','f','u','n','c','t','i','o','n',' ','v','a','l','u','e',' ','l','o','o','k',' ','c','o','n','s','t','a','n','t',0};
-TO_QSPI const uint8_t errorMessages45[] = {'S','y','n','t','a','x',' ','e','r','r','o','r',' ','i','n',' ','t','h','i','s',' ','e','q','u','a','t','i','o','n',0};
-TO_QSPI const uint8_t errorMessages46[] = {'T','h','i','s',' ','e','q','u','a','t','i','o','n',' ','f','o','r','m','u','l','a',' ','i','s',' ','t','o','o',' ','c','o','m','p','l','e','x',0};
-TO_QSPI const uint8_t errorMessages47[] = {'T','h','i','s',' ','i','t','e','m',' ','c','a','n','n','o','t',' ','b','e',' ','a','s','s','i','g','n','e','d',' ','h','e','r','e',0};
-TO_QSPI const uint8_t errorMessages48[] = {'I','n','v','a','l','i','d',' ','n','a','m','e',0};
-TO_QSPI const uint8_t errorMessages49[] = {'T','o','o',' ','m','a','n','y',' ','v','a','r','i','a','b','l','e','s',0};
-TO_QSPI const uint8_t errorMessages50[] = {'N','o','n','-','p','r','o','g','r','a','m','m','a','b','l','e',' ','c','o','m','m','a','n','d',',',' ','p','l','e','a','s','e',' ','r','e','m','o','v','e',0};
-TO_QSPI const uint8_t errorMessages51[] = {'N','o',' ','g','l','o','b','a','l',' ','l','a','b','e','l',' ','i','n',' ','t','h','i','s',' ','p','r','o','g','r','a','m',0};
-TO_QSPI const uint8_t errorMessages52[] = {'B','a','d',' ','i','n','p','u','t',0}; // This error is not in ReM and cannot occur (theoretically).
-const uint8_t *errorMessages[NUMBER_OF_ERROR_CODES] = {
-  errorMessages00,
-  errorMessages01,
-  errorMessages02,
-  errorMessages03,
-  errorMessages04,
-  errorMessages05,
-  errorMessages06,
-  errorMessages07,
-  errorMessages08,
-  errorMessages09,
-  errorMessages10,
-  errorMessages11,
-  errorMessages12,
-  errorMessages13,
-  errorMessages14,
-  errorMessages15,
-  errorMessages16,
-  errorMessages17,
-  errorMessages18,
-  errorMessages19,
-  errorMessages20,
-  errorMessages21,
-  errorMessages22,
-  errorMessages23,
-  errorMessages24,
-  errorMessages25,
-  errorMessages26,
-  errorMessages27,
-  errorMessages28,
-  errorMessages29,
-  errorMessages30,
-  errorMessages31,
-  errorMessages32,
-  errorMessages33,
-  errorMessages34,
-  errorMessages35,
-  errorMessages36,
-  errorMessages37,
-  errorMessages38,
-  errorMessages39,
-  errorMessages40,
-  errorMessages41,
-  errorMessages42,
-  errorMessages43,
-  errorMessages44,
-  errorMessages45,
-  errorMessages46,
-  errorMessages47,
-  errorMessages48,
-  errorMessages49,
-  errorMessages50,
-  errorMessages51,
-  errorMessages52,
+TO_QSPI static const char errorMessage00[] = "No error";
+TO_QSPI static const char errorMessage01[] = "An argument exceeds the function domain";
+TO_QSPI static const char errorMessage02[] = "Bad time or date input";
+TO_QSPI static const char errorMessage03[] = "Undefined op-code";
+TO_QSPI static const char errorMessage04[] = "Overflow at +" STD_INFINITY;
+TO_QSPI static const char errorMessage05[] = "Overflow at -" STD_INFINITY;
+TO_QSPI static const char errorMessage06[] = "No such label found";
+TO_QSPI static const char errorMessage07[] = "No such function";
+TO_QSPI static const char errorMessage08[] = "Out of range";
+TO_QSPI static const char errorMessage09[] = "Illegal digit in integer input for this base";
+TO_QSPI static const char errorMessage10[] = "Input is too long";
+TO_QSPI static const char errorMessage11[] = "RAM is full";
+TO_QSPI static const char errorMessage12[] = "Stack clash";
+TO_QSPI static const char errorMessage13[] = "Operation is undefined in this mode";
+TO_QSPI static const char errorMessage14[] = "Word size is too small";
+TO_QSPI static const char errorMessage15[] = "Too few data points for this statistic";
+TO_QSPI static const char errorMessage16[] = "Distribution parameter out of valid range";
+TO_QSPI static const char errorMessage17[] = "I/O error";
+TO_QSPI static const char errorMessage18[] = "Invalid or corrupted data";
+TO_QSPI static const char errorMessage19[] = "Flash memory is write protected";
+TO_QSPI static const char errorMessage20[] = "No root found";
+TO_QSPI static const char errorMessage21[] = "Matrix mismatch";
+TO_QSPI static const char errorMessage22[] = "Singular matrix";
+TO_QSPI static const char errorMessage23[] = "Flash memory is full";
+TO_QSPI static const char errorMessage24[] = "Invalid input data type for this operation";
+TO_QSPI static const char errorMessage25[] = "";
+TO_QSPI static const char errorMessage26[] = "Please enter a NEW name";
+TO_QSPI static const char errorMessage27[] = "Cannot delete a predefined item";
+TO_QSPI static const char errorMessage28[] = "No statistic data present";
+TO_QSPI static const char errorMessage29[] = "Item to be coded";
+TO_QSPI static const char errorMessage30[] = "Function to be coded for that data type";
+TO_QSPI static const char errorMessage31[] = "Input data types do not match";
+TO_QSPI static const char errorMessage32[] = "This system flag is write protected";
+TO_QSPI static const char errorMessage33[] = "Output would exceed 196 characters";
+TO_QSPI static const char errorMessage34[] = "This does not work with an empty string";
+TO_QSPI static const char errorMessage35[] = "No backup data found";
+TO_QSPI static const char errorMessage36[] = "Undefined source variable";
+TO_QSPI static const char errorMessage37[] = "This variable is write protected";
+TO_QSPI static const char errorMessage38[] = "No matrix indexed";
+TO_QSPI static const char errorMessage39[] = "Not enough memory for such a matrix";
+TO_QSPI static const char errorMessage40[] = "No errors for selected model";
+TO_QSPI static const char errorMessage41[] = "Large " STD_DELTA " and opposite signs, may be a pole";
+TO_QSPI static const char errorMessage42[] = "Solver reached local extremum, no root";
+TO_QSPI static const char errorMessage43[] = STD_GREATER_EQUAL "1 initial guess lies out of the domain";
+TO_QSPI static const char errorMessage44[] = "The function value look static constant";
+TO_QSPI static const char errorMessage45[] = "Syntax error in this equation";
+TO_QSPI static const char errorMessage46[] = "This equation formula is too complex";
+TO_QSPI static const char errorMessage47[] = "This item cannot be assigned here";
+TO_QSPI static const char errorMessage48[] = "Invalid name";
+TO_QSPI static const char errorMessage49[] = "Too many variables";
+TO_QSPI static const char errorMessage50[] = "Non-programmable command, please remove";
+TO_QSPI static const char errorMessage51[] = "No global label in this program";
+TO_QSPI static const char errorMessage52[] = "Bad input"; // This error is not in ReM and cannot occur (theoretically).
+const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
+  errorMessage00,
+  errorMessage01,
+  errorMessage02,
+  errorMessage03,
+  errorMessage04,
+  errorMessage05,
+  errorMessage06,
+  errorMessage07,
+  errorMessage08,
+  errorMessage09,
+  errorMessage10,
+  errorMessage11,
+  errorMessage12,
+  errorMessage13,
+  errorMessage14,
+  errorMessage15,
+  errorMessage16,
+  errorMessage17,
+  errorMessage18,
+  errorMessage19,
+  errorMessage20,
+  errorMessage21,
+  errorMessage22,
+  errorMessage23,
+  errorMessage24,
+  errorMessage25,
+  errorMessage26,
+  errorMessage27,
+  errorMessage28,
+  errorMessage29,
+  errorMessage30,
+  errorMessage31,
+  errorMessage32,
+  errorMessage33,
+  errorMessage34,
+  errorMessage35,
+  errorMessage36,
+  errorMessage37,
+  errorMessage38,
+  errorMessage39,
+  errorMessage40,
+  errorMessage41,
+  errorMessage42,
+  errorMessage43,
+  errorMessage44,
+  errorMessage45,
+  errorMessage46,
+  errorMessage47,
+  errorMessage48,
+  errorMessage49,
+  errorMessage50,
+  errorMessage51,
+  errorMessage52,
 };
 
 

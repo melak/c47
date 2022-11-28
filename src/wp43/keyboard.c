@@ -62,8 +62,8 @@
 
 #include "wp43.h"
 
-TO_QSPI static const uint8_t bugScreenNonexistentMenu[] = {'I','n',' ','f','u','n','c','t','i','o','n',' ','d','e','t','e','r','m','i','n','e','F','u','n','c','t','i','o','n','K','e','y','I','t','e','m',':',' ','n','o','n','e','x','i','s','t','e','n','t',' ','m','e','n','u',' ','s','p','e','c','i','f','i','e','d','!',0};
-TO_QSPI static const uint8_t bugScreenItemNotDetermined[] = {'I','n',' ','f','u','n','c','t','i','o','n',' ','d','e','t','e','r','m','i','n','e','I','t','e','m',':',' ','i','t','e','m',' ','w','a','s',' ','n','o','t',' ','d','e','t','e','r','m','i','n','e','d','!',0};
+TO_QSPI static const char bugScreenNonexistentMenu[] = "In function determineFunctionKeyItem: nonexistent menu specified!";
+TO_QSPI static const char bugScreenItemNotDetermined[] = "In function determineItem: item was not determined!";
 
 #if !defined(TESTSUITE_BUILD)
   int16_t determineFunctionKeyItem(const char *data, int16_t itemShift) { //Added itemshift param JM
@@ -272,7 +272,7 @@ printf(">>>>  0096     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
                 return ASSIGN_USER_MENU - i;
               }
             }
-            displayBugScreen((char *)bugScreenNonexistentMenu);
+            displayBugScreen(bugScreenNonexistentMenu);
 #ifdef VERBOSEKEYS
 printf(">>>>  0086 item=%d \n",item);
 #endif //VERBOSEKEYS
@@ -1213,7 +1213,7 @@ bool_t allowShiftsToClearError = false;
                         key->primary;
     }
     else {
-      displayBugScreen((char *)bugScreenItemNotDetermined);
+      displayBugScreen(bugScreenItemNotDetermined);
       result = 0;
     }
 
