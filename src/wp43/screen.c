@@ -3605,7 +3605,21 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
           hourGlassIconEnabled = true;
           refreshStatusBar();
           graphPlotstat(plotSelection);
+          if(lastErrorCode != ERROR_NONE) {
+            if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_GRAPH) {
+              popSoftmenu();
+              calcMode = CM_NORMAL;
+              refreshScreen();
+            }
+          }
           graphDrawLRline(plotSelection);
+          if(lastErrorCode != ERROR_NONE) {
+            if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HPLOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HPLOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_STAT) {
+              popSoftmenu();
+              calcMode = CM_NORMAL;
+              refreshScreen();
+            }
+          }
           hourGlassIconEnabled = false;
           showHideHourGlass();
           refreshStatusBar();
