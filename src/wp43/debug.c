@@ -237,7 +237,6 @@ const char * getRegisterDataTypeName(calcRegister_t regist, bool_t article, bool
 
 
 const char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
-#ifdef PC_BUILD
   static char base[9];
 
   switch(getRegisterDataType(regist)) {
@@ -310,9 +309,6 @@ const char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
       return "???     ";
     }
   }
-#else // PC_BUILD
-  return ""; // not used in DMCP build
-#endif // PC_BUILD
 }
 
 
@@ -488,7 +484,6 @@ const char * getCurveFitModeFormula(uint16_t selection) {          //Can be only
  * \return char*          Name of the angular mode
  ***********************************************/
 const char * getAngularModeName(angularMode_t angularMode) {
-#if defined(PC_BUILD)
   switch(angularMode) {
     case amRadian: {
       return "radian";
@@ -512,9 +507,6 @@ const char * getAngularModeName(angularMode_t angularMode) {
       return "???   ";
     }
   }
-#else // defined(PC_BUILD)
-  return "";
-#endif // defined(PC_BUILD)
 }
 
 
@@ -525,7 +517,6 @@ const char * getAngularModeName(angularMode_t angularMode) {
  * \return char*          Name of the integer mode
  ***********************************************/
 const char * getShortIntegerModeName(uint16_t im) {
-#if defined(PC_BUILD)
   switch(im) {
     case SIM_1COMPL: {
       return "1compl";
@@ -543,9 +534,6 @@ const char * getShortIntegerModeName(uint16_t im) {
       return "???   ";
     }
   }
-#else // defined(PC_BUILD)
-  return "";
-#endif // defined(PC_BUILD)
 }
 
 
