@@ -342,8 +342,10 @@
 #define ERROR_BAD_INPUT                           52 // This error is not in ReM and cannot occur (theoretically).
 
 #define NUMBER_OF_ERROR_CODES                     53
+#define SIZE_OF_EACH_ERROR_MESSAGE                48
 
 #define NUMBER_OF_BUG_SCREEN_MESSAGES             10
+#define SIZE_OF_EACH_BUG_SCREEN_MESSAGE          100
 
 #define NUMBER_OF_GLOBAL_FLAGS                   112
 #define FIRST_LOCAL_FLAG                         112 // There are 112 global flag from 0 to 111

@@ -33,7 +33,7 @@
 
 
 
-TO_QSPI const char *typeName[4][10 + 1] = {
+TO_QSPI const char typeName[4][10 + 1][24 /* 21 characters + 1 sentinel + 2 padding */] = {
   {
     "???",
     "long integer",

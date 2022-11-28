@@ -34,137 +34,74 @@
 
 #include "wp43.h"
 
-TO_QSPI static const char commonBugScreenMessage00[] = "In function %s:%d is an unexpected value for %s!";
-TO_QSPI static const char commonBugScreenMessage01[] = "In function %s: unexpected calcMode value (%" PRIu8 ") while processing key %s!";
-TO_QSPI static const char commonBugScreenMessage02[] = "In function reallocateRegister: %" PRIu16 " is an unexpected numByte value for %s! It should be %s=%" PRIu16 "!";
-TO_QSPI static const char commonBugScreenMessage03[] = "In function %s: no named variables defined!";
-TO_QSPI static const char commonBugScreenMessage04[] = "In function %s: %d is an unexpected value returned by findGlyph!";
-TO_QSPI static const char commonBugScreenMessage05[] = "In function %s: %" PRIu32 " is an unexpected %s value!";
-TO_QSPI static const char commonBugScreenMessage06[] = "In function %s: data type %s is unknown!";
-TO_QSPI static const char commonBugScreenMessage07[] = "In function %s: regist=%" PRId16 " must be less than %d!";
-TO_QSPI static const char commonBugScreenMessage08[] = "In function %s: %s %" PRId16 " is not defined! Must be from 0 to %" PRIu16;
-TO_QSPI static const char commonBugScreenMessage09[] = "In function %s: unexpected case while processing key %s! %" PRIu8 " is an unexpected value for rbrMode.";
 
-const char *commonBugScreenMessages[NUMBER_OF_BUG_SCREEN_MESSAGES] = {
-  commonBugScreenMessage00,
-  commonBugScreenMessage01,
-  commonBugScreenMessage02,
-  commonBugScreenMessage03,
-  commonBugScreenMessage04,
-  commonBugScreenMessage05,
-  commonBugScreenMessage06,
-  commonBugScreenMessage07,
-  commonBugScreenMessage08,
-  commonBugScreenMessage09,
+TO_QSPI const char commonBugScreenMessages[NUMBER_OF_BUG_SCREEN_MESSAGES][SIZE_OF_EACH_BUG_SCREEN_MESSAGE] = {
+/*  0 */  "In function %s:%d is an unexpected value for %s!",
+/*  1 */  "In function %s: unexpected calcMode value (%" PRIu8 ") while processing key %s!",
+/*  2 */  "In function reallocateRegister: %" PRIu16 " is an unexpected numByte value for %s! It should be %s=%" PRIu16 "!",
+/*  3 */  "In function %s: no named variables defined!",
+/*  4 */  "In function %s: %d is an unexpected value returned by findGlyph!",
+/*  5 */  "In function %s: %" PRIu32 " is an unexpected %s value!",
+/*  6 */  "In function %s: data type %s is unknown!",
+/*  7 */  "In function %s: regist=%" PRId16 " must be less than %d!",
+/*  8 */  "In function %s: %s %" PRId16 " is not defined! Must be from 0 to %" PRIu16,
+/*  9 */  "In function %s: unexpected case while processing key %s! %" PRIu8 " is an unexpected value for rbrMode.",
 };
 
-TO_QSPI static const char errorMessage00[] = "No error";
-TO_QSPI static const char errorMessage01[] = "An argument exceeds the function domain";
-TO_QSPI static const char errorMessage02[] = "Bad time or date input";
-TO_QSPI static const char errorMessage03[] = "Undefined op-code";
-TO_QSPI static const char errorMessage04[] = "Overflow at +" STD_INFINITY;
-TO_QSPI static const char errorMessage05[] = "Overflow at -" STD_INFINITY;
-TO_QSPI static const char errorMessage06[] = "No such label found";
-TO_QSPI static const char errorMessage07[] = "No such function";
-TO_QSPI static const char errorMessage08[] = "Out of range";
-TO_QSPI static const char errorMessage09[] = "Illegal digit in integer input for this base";
-TO_QSPI static const char errorMessage10[] = "Input is too long";
-TO_QSPI static const char errorMessage11[] = "RAM is full";
-TO_QSPI static const char errorMessage12[] = "Stack clash";
-TO_QSPI static const char errorMessage13[] = "Operation is undefined in this mode";
-TO_QSPI static const char errorMessage14[] = "Word size is too small";
-TO_QSPI static const char errorMessage15[] = "Too few data points for this statistic";
-TO_QSPI static const char errorMessage16[] = "Distribution parameter out of valid range";
-TO_QSPI static const char errorMessage17[] = "I/O error";
-TO_QSPI static const char errorMessage18[] = "Invalid or corrupted data";
-TO_QSPI static const char errorMessage19[] = "Flash memory is write protected";
-TO_QSPI static const char errorMessage20[] = "No root found";
-TO_QSPI static const char errorMessage21[] = "Matrix mismatch";
-TO_QSPI static const char errorMessage22[] = "Singular matrix";
-TO_QSPI static const char errorMessage23[] = "Flash memory is full";
-TO_QSPI static const char errorMessage24[] = "Invalid input data type for this operation";
-TO_QSPI static const char errorMessage25[] = "";
-TO_QSPI static const char errorMessage26[] = "Please enter a NEW name";
-TO_QSPI static const char errorMessage27[] = "Cannot delete a predefined item";
-TO_QSPI static const char errorMessage28[] = "No statistic data present";
-TO_QSPI static const char errorMessage29[] = "Item to be coded";
-TO_QSPI static const char errorMessage30[] = "Function to be coded for that data type";
-TO_QSPI static const char errorMessage31[] = "Input data types do not match";
-TO_QSPI static const char errorMessage32[] = "This system flag is write protected";
-TO_QSPI static const char errorMessage33[] = "Output would exceed 196 characters";
-TO_QSPI static const char errorMessage34[] = "This does not work with an empty string";
-TO_QSPI static const char errorMessage35[] = "No backup data found";
-TO_QSPI static const char errorMessage36[] = "Undefined source variable";
-TO_QSPI static const char errorMessage37[] = "This variable is write protected";
-TO_QSPI static const char errorMessage38[] = "No matrix indexed";
-TO_QSPI static const char errorMessage39[] = "Not enough memory for such a matrix";
-TO_QSPI static const char errorMessage40[] = "No errors for selected model";
-TO_QSPI static const char errorMessage41[] = "Large " STD_DELTA " and opposite signs, may be a pole";
-TO_QSPI static const char errorMessage42[] = "Solver reached local extremum, no root";
-TO_QSPI static const char errorMessage43[] = STD_GREATER_EQUAL "1 initial guess lies out of the domain";
-TO_QSPI static const char errorMessage44[] = "The function value look static constant";
-TO_QSPI static const char errorMessage45[] = "Syntax error in this equation";
-TO_QSPI static const char errorMessage46[] = "This equation formula is too complex";
-TO_QSPI static const char errorMessage47[] = "This item cannot be assigned here";
-TO_QSPI static const char errorMessage48[] = "Invalid name";
-TO_QSPI static const char errorMessage49[] = "Too many variables";
-TO_QSPI static const char errorMessage50[] = "Non-programmable command, please remove";
-TO_QSPI static const char errorMessage51[] = "No global label in this program";
-TO_QSPI static const char errorMessage52[] = "Bad input"; // This error is not in ReM and cannot occur (theoretically).
-const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
-  errorMessage00,
-  errorMessage01,
-  errorMessage02,
-  errorMessage03,
-  errorMessage04,
-  errorMessage05,
-  errorMessage06,
-  errorMessage07,
-  errorMessage08,
-  errorMessage09,
-  errorMessage10,
-  errorMessage11,
-  errorMessage12,
-  errorMessage13,
-  errorMessage14,
-  errorMessage15,
-  errorMessage16,
-  errorMessage17,
-  errorMessage18,
-  errorMessage19,
-  errorMessage20,
-  errorMessage21,
-  errorMessage22,
-  errorMessage23,
-  errorMessage24,
-  errorMessage25,
-  errorMessage26,
-  errorMessage27,
-  errorMessage28,
-  errorMessage29,
-  errorMessage30,
-  errorMessage31,
-  errorMessage32,
-  errorMessage33,
-  errorMessage34,
-  errorMessage35,
-  errorMessage36,
-  errorMessage37,
-  errorMessage38,
-  errorMessage39,
-  errorMessage40,
-  errorMessage41,
-  errorMessage42,
-  errorMessage43,
-  errorMessage44,
-  errorMessage45,
-  errorMessage46,
-  errorMessage47,
-  errorMessage48,
-  errorMessage49,
-  errorMessage50,
-  errorMessage51,
-  errorMessage52,
+TO_QSPI const char errorMessages[NUMBER_OF_ERROR_CODES][SIZE_OF_EACH_ERROR_MESSAGE] = {
+/*  0 */  "No error",
+/*  1 */  "An argument exceeds the function domain",
+/*  2 */  "Bad time or date input",
+/*  3 */  "Undefined op-code",
+/*  4 */  "Overflow at +" STD_INFINITY,
+/*  5 */  "Overflow at -" STD_INFINITY,
+/*  6 */  "No such label found",
+/*  7 */  "No such function",
+/*  8 */  "Out of range",
+/*  9 */  "Illegal digit in integer input for this base",
+/* 10 */  "Input is too long",
+/* 11 */  "RAM is full",
+/* 12 */  "Stack clash",
+/* 13 */  "Operation is undefined in this mode",
+/* 14 */  "Word size is too small",
+/* 15 */  "Too few data points for this statistic",
+/* 16 */  "Distribution parameter out of valid range",
+/* 17 */  "I/O error",
+/* 18 */  "Invalid or corrupted data",
+/* 19 */  "Flash memory is write protected",
+/* 20 */  "No root found",
+/* 21 */  "Matrix mismatch",
+/* 22 */  "Singular matrix",
+/* 23 */  "Flash memory is full",
+/* 24 */  "Invalid input data type for this operation",
+/* 25 */  "",
+/* 26 */  "Please enter a NEW name",
+/* 27 */  "Cannot delete a predefined item",
+/* 28 */  "No statistic data present",
+/* 29 */  "Item to be coded",
+/* 30 */  "Function to be coded for that data type",
+/* 31 */  "Input data types do not match",
+/* 32 */  "This system flag is write protected",
+/* 33 */  "Output would exceed 196 characters",
+/* 34 */  "This does not work with an empty string",
+/* 35 */  "No backup data found",
+/* 36 */  "Undefined source variable",
+/* 37 */  "This variable is write protected",
+/* 38 */  "No matrix indexed",
+/* 39 */  "Not enough memory for such a matrix",
+/* 40 */  "No errors for selected model",
+/* 41 */  "Large " STD_DELTA " and opposite signs, may be a pole",
+/* 42 */  "Solver reached local extremum, no root",
+/* 43 */  STD_GREATER_EQUAL "1 initial guess lies out of the domain",
+/* 44 */  "The function value look static constant",
+/* 45 */  "Syntax error in this equation",
+/* 46 */  "This equation formula is too complex",
+/* 47 */  "This item cannot be assigned here",
+/* 48 */  "Invalid name",
+/* 49 */  "Too many variables",
+/* 50 */  "Non-programmable command, please remove",
+/* 51 */  "No global label in this program",
+/* 52 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
 };
 
 
