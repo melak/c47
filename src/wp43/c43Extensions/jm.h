@@ -119,8 +119,6 @@ void fnUserJM(uint16_t jmUser);
 
 
 //fnUserJM
-#define USER_DEFAULTS    23
-#define USER_COMPLEX     24
 #define USER_C43ALTA     25
 #define USER_C43ALTB     26
 #define USER_RESET       27

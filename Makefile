@@ -58,12 +58,11 @@ dist_windows: testPgms build.rel/wiki
 	cd build.rel && ninja sim
 	mkdir -p $(WIN_DIST_DIR)/res/artwork $(WIN_DIST_DIR)/res/dmcp $(WIN_DIST_DIR)/res/tone
 	cp build.rel/src/wp43-gtk/wp43.exe $(WIN_DIST_DIR)/
-	cp res/artwork/*.cfg $(WIN_DIST_DIR)/res/artwork/
-	cp -r res/artwork/standardSkin $(WIN_DIST_DIR)/res/artwork/
 	cp res/tone/*.wav $(WIN_DIST_DIR)/res/tone/
 	cp res/dmcp/testPgms.bin $(WIN_DIST_DIR)/res/dmcp/
-	cp res/wp43_pre.css $(WIN_DIST_DIR)/res/
-	cp res/fonts/WP43_StandardFont.ttf $(WIN_DIST_DIR)/
+	cp res/c43_pre.css $(WIN_DIST_DIR)/res/
+	cp res/dm42l_L1.png $(WIN_DIST_DIR)/res/
+	cp res/fonts/C43__StandardFont.ttf $(WIN_DIST_DIR)/
 	cp build.rel/wiki/Installation-on-Windows.md $(WIN_DIST_DIR)/readme.txt
 	zip -r wp43-windows.zip $(WIN_DIST_DIR)
 	rm -rf $(WIN_DIST_DIR)
@@ -72,11 +71,10 @@ dist_macos: testPgms build.rel
 	cd build.rel && ninja sim
 	mkdir -p $(MAC_DIST_DIR)/res/artwork $(MAC_DIST_DIR)/res/dmcp
 	cp build.rel/src/wp43-gtk/wp43 $(MAC_DIST_DIR)/
-	cp res/artwork/*.cfg $(MAC_DIST_DIR)/res/artwork/
-	cp -r res/artwork/standardSkin $(MAC_DIST_DIR)/res/artwork/
 	cp res/dmcp/testPgms.bin $(MAC_DIST_DIR)/res/dmcp/
-	cp res/wp43_pre.css $(MAC_DIST_DIR)/res/
-	cp res/fonts/WP43_StandardFont.ttf $(MAC_DIST_DIR)/
+	cp res/c43_pre.css $(MAC_DIST_DIR)/res/
+	cp res/dm42l_L1.png $(MAC_DIST_DIR)/res/
+	cp res/fonts/C43__StandardFont.ttf $(MAC_DIST_DIR)/
 	zip -r wp43-macos.zip $(MAC_DIST_DIR)
 	rm -rf $(MAC_DIST_DIR)
 
