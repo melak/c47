@@ -65,7 +65,7 @@ int16_t determineFunctionKeyItem_C43(const char *data, bool_t shiftF, bool_t shi
 printf(">>>>Z 0100 determineFunctionKeyItem_C43 data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
 #endif //VERBOSEKEYS
 
-    if(!(menuId==0 && jm_NO_BASE_SCREEN) ) {
+    if(!(menuId==0 && !jm_BASE_SCREEN) ) {
        item = determineFunctionKeyItem(data, itemShift);
 
 #ifdef VERBOSEKEYS

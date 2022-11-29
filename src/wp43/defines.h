@@ -253,8 +253,6 @@
 //*************************
 //* Other defines         *
 //*************************
-// Define the second tagline                     //C43 by Jaco, Dani, Håkon, Donald, Robbert could fit, maybe even Daniël
-#define WHO2                                      "C43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Jaco, Dani, H" STD_a_RING "kon, D A and Robbert"   //JM ID
 #define CHARS_PER_LINE                            80 // Used in the flag browser application
 
 #define NUMERIC_FONT_HEIGHT                       36 // In pixel. Used in the font browser application

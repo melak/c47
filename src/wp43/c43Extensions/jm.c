@@ -197,8 +197,8 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
     fnRefreshState();                                 //drJM
     break;
 
-  case JC_NO_BASE_SCREEN:                                          //JM
-    jm_NO_BASE_SCREEN = !jm_NO_BASE_SCREEN;
+  case JC_BASE_SCREEN:                                          //JM
+    jm_BASE_SCREEN = !jm_BASE_SCREEN;
     fnRefreshState();                                 //drJM
     break;
 
