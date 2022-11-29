@@ -206,7 +206,6 @@ const funcTest_t funcTestNoParam[] = {
   {"fnJacobiDn",             fnJacobiDn            },
   {"fnJacobiSn",             fnJacobiSn            },
   {"fnJacobiZeta",           fnJacobiZeta          },
-  {"fnJulianToDate",         fnJulianToDate        },
   {"fnJulianToDateTime",     fnJulianToDateTime    },
   {"fnLaguerre",             fnLaguerre            },
   {"fnLaguerreAlpha",        fnLaguerreAlpha       },
