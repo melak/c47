@@ -956,6 +956,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnSafeReset                (uint16_t unusedButMandatoryParameter) {}
   void fnSetBCD                   (uint16_t unusedButMandatoryParameter) {}
   void fnSetSI_All                (uint16_t unusedButMandatoryParameter) {}
+  void fnJulianToDateTime          (uint16_t unusedButMandatoryParameter) {}
+  void fnDateTimeToJulian          (uint16_t unusedButMandatoryParameter) {}
 
                                                                               //JM ^^
 #endif // GENERATE_CATALOGS
@@ -2866,8 +2868,8 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1859 */  { fnSetSetJM,                   JC_BASE_HOME,                "_HOME",                                       "HOME",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM eRPN
 /* 1860 */  { itemToBeCoded,                NOPARAM,                     "1860",                                        "1860",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1861 */  { fnSetSetJM,                   JC_H_SUM,                    "",                                            "SUMRY",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JMHOME
-/* 1862 */  { itemToBeCoded,                NOPARAM,                     "1862",                                        "1862",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 1863 */  { itemToBeCoded,                NOPARAM,                     "1863",                                        "1863",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1862 */  { fnDateTimeToJulian,           NOPARAM,                     "DT" STD_RIGHT_ARROW "J",                      "DT" STD_RIGHT_ARROW "J",                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1863 */  { fnJulianToDateTime,           NOPARAM,                     "J" STD_RIGHT_ARROW "DT",                      "J" STD_RIGHT_ARROW "DT",                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1864 */  { fnDisplayFormatCycle,         NOPARAM,                     "FSE",                                         "FSE",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM UNIT
 /* 1865 */  { fnSetSetJM,                   JC_LARGELI,                  "LARGELI",                                     "LRG_LI",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1866 */  { fnDisplayFormatSigFig,        TM_VALUE,                    "SIG",                                         "SIG",                                         (0 << TAM_MAX_BITS) |    15, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM SIGFIG

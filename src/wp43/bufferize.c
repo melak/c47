@@ -876,6 +876,7 @@ void kill_ASB_icon(void) {
           case ITM_DEGto :
           case ITM_DMSto :
           case ITM_DtoJ :
+          case ITM_DTtoJ :
           case ITM_ERF :
           case ITM_ERFC :
           case ITM_EXPT :
@@ -886,6 +887,7 @@ void kill_ASB_icon(void) {
           case ITM_GRADto :
           case ITM_IM :
           case ITM_JtoD :
+          case ITM_JtoDT :
           case ITM_LASTX :
           case ITM_LNGAMMA :
           case ITM_LocRQ :

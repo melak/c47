@@ -272,7 +272,9 @@ w_negative
 w_inverse
 
 jToD
+jToDT
 dToJ
+dtToJ
 year
 month
 day
