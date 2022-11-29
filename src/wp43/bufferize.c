@@ -886,7 +886,6 @@ void kill_ASB_icon(void) {
           case ITM_GDM1 :
           case ITM_GRADto :
           case ITM_IM :
-          case ITM_JtoD :
           case ITM_JtoDT :
           case ITM_LASTX :
           case ITM_LNGAMMA :

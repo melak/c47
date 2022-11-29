@@ -137,7 +137,6 @@
    ***********************************************/
   void checkTimeRange          (const real34_t *time34);
 
-  void fnJulianToDate          (uint16_t unusedButMandatoryParameter);
   void fnDateToJulian          (uint16_t unusedButMandatoryParameter);
   void fnJulianToDateTime      (uint16_t unusedButMandatoryParameter);
   void fnDateTimeToJulian      (uint16_t unusedButMandatoryParameter);

@@ -1542,7 +1542,7 @@
 #define ITM_JPLUS                   1493
 #define ITM_JMINUS                  1494
 #define ITM_JUL_GREG                1495
-#define ITM_JtoD                    1496
+#define ITM_1496                    1496
 #define ITM_KEY                     1497
 #define ITM_KEYG                    1498
 #define ITM_KEYX                    1499
