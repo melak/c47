@@ -412,45 +412,6 @@ void checkTimeRange(const real34_t *time34) {
 }
 
 
-
-void fnJulianToDate(uint16_t unusedButMandatoryParameter) {
-  real34_t date;
-
-  if(!saveLastX()) {
-    return;
-  }
-
-  if(getRegisterDataType(REGISTER_X) == dtReal34) {
-    convertReal34ToLongIntegerRegister(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_X, DEC_ROUND_DOWN);
-  }
-
-  switch(getRegisterDataType(REGISTER_X)) {
-    case dtLongInteger: {
-      convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
-      julianDayToInternalDate(REGISTER_REAL34_DATA(REGISTER_X), &date);
-      reallocateRegister(REGISTER_X, dtDate, REAL34_SIZE, amNone);
-      real34Copy(&date, REGISTER_REAL34_DATA(REGISTER_X));
-      break;
-    }
-
-    default: {
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "data type %s cannot be converted to date!", getRegisterDataTypeName(REGISTER_X, false, false));
-        moreInfoOnError("In function fnDateToJulian:", errorMessage, NULL, NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      return;
-    }
-  }
-
-  // check range
-  checkDateRange(REGISTER_REAL34_DATA(REGISTER_X));
-  if(lastErrorCode != 0) {
-    undo();
-  }
-}
-
-
 void fnJulianToDateTime(uint16_t unusedButMandatoryParameter) {
   real34_t date;
 
