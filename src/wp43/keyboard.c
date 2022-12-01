@@ -3194,7 +3194,7 @@ static bool_t activatescroll(void) { //jm
           (temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) &&
           (softmenu[menuId].menuItem != -MNU_EQN) && 
           (
-            ((menuId == 0) && jm_NO_BASE_SCREEN) ||
+            ((menuId == 0) && !jm_BASE_SCREEN) ||
             ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
             ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18)) 
           );

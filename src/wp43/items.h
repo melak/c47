@@ -1848,7 +1848,7 @@
 
 //Jaymos C43 extensions
 #define ITM_FG_LINE                 1795
-#define ITM_NO_BASE_SCREEN          1796
+#define ITM_BASE_SCREEN             1796
 #define ITM_G_DOUBLETAP             1797
 #define ITM_PLOT_LRALL              1798
 #define ITM_P_ALLREGS               1799

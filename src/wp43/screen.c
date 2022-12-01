@@ -58,10 +58,10 @@
 
 //#define DEBUGCLEARS
 
-
 #if !defined(TESTSUITE_BUILD)
-  static const char *whoStr = "WP43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter," STD_SPACE_3_PER_EM "Mihail," STD_SPACE_3_PER_EM "Jaco" STD_SPACE_3_PER_EM "and" STD_SPACE_3_PER_EM "Martin";
-  static const char *versionStr = "WP43" STD_SPACE_3_PER_EM VERSION_STRING;
+  static const char *whoStr1 = "C43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Ben" STD_SPACE_3_PER_EM "GB," STD_SPACE_3_PER_EM "D" STD_SPACE_3_PER_EM "A" STD_SPACE_3_PER_EM "CA," STD_SPACE_3_PER_EM "Dani" STD_SPACE_3_PER_EM "CH," STD_SPACE_3_PER_EM "H" STD_a_RING "kon" STD_SPACE_3_PER_EM "NO," STD_SPACE_3_PER_EM "Jaco" STD_SPACE_3_PER_EM "ZA,";
+  static const char *whoStr2 = "Martin" STD_SPACE_3_PER_EM "FR," STD_SPACE_3_PER_EM "Mihail" STD_SPACE_3_PER_EM "JP," STD_SPACE_3_PER_EM "Pauli" STD_SPACE_3_PER_EM "AU," STD_SPACE_3_PER_EM "RJvM" STD_SPACE_3_PER_EM "NL," STD_SPACE_3_PER_EM "Walter" STD_SPACE_3_PER_EM "DE.";
+  static const char *versionStr = "C43" STD_SPACE_3_PER_EM VERSION_STRING;
 
   /* Names of day of week */
   TO_QSPI static const char *nameOfWday_en[8] = {"invalid day of week",                                   "Monday",            "Tuesday",                     "Wednesday",               "Thursday",           "Friday",             "Saturday",             "Sunday"};
@@ -823,7 +823,7 @@ void underline_softkey(int16_t xSoftkey, int16_t ySoftKey, bool_t dontclear) {
 
 void FN_handler() {                          //JM FN LONGPRESS vv Handler FN Key shift longpress handler
                                              //   Processing cycles here while the key is pressed, that is, after PRESS #1, waiting for RELEASE #2
-  if((FN_state = ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !(softmenuStack[0].softmenuId==0 && jm_NO_BASE_SCREEN) ) {
+  if((FN_state = ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !(softmenuStack[0].softmenuId==0 && !jm_BASE_SCREEN) ) {
 
     if(fnTimerGetStatus(TO_FN_LONG) == TMR_COMPLETED) {
       FN_handle_timed_out_to_EXEC = false;
@@ -1914,7 +1914,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         #if (SHOW_MEMORY_STATUS == 1)
           char string[1000];
 
-          sprintf(string, "%" PRId32 " bytes free (%" PRId32 " region%s), C43 %" PRIu64 " bytes, GMP %" PRIu64 " bytes -> should always be 0", getFreeRamMemory(), numberOfFreeMemoryRegions, numberOfFreeMemoryRegions==1 ? "" : "s", TO_BYTES((uint64_t)wp43MemInBlocks), (uint64_t)gmpMemInBytes);
+          sprintf(string, "%" PRId32 " bytes free (%" PRId32 " region%s), C43 %" PRIu32 " bytes, GMP %" PRIu32 " bytes -> should always be 0", getFreeRamMemory(), numberOfFreeMemoryRegions, numberOfFreeMemoryRegions==1 ? "" : "s", (uint32_t)TO_BYTES((uint64_t)wp43MemInBlocks), (uint32_t)gmpMemInBytes);
           stringToUtf8(string, (uint8_t *)tmpStr);
           gtk_label_set_label(GTK_LABEL(lblMemoryStatus), tmpStr);
           gtk_widget_show(lblMemoryStatus);
@@ -1954,11 +1954,11 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
       }
 
       else if(temporaryInformation == TI_WHO)
-        if (regist == REGISTER_X) {
-          showString(whoStr, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
-        } else {
         if (regist == REGISTER_Y) {
-          showString(WHO2, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);          
+          showString(whoStr1, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+        } else {
+        if (regist == REGISTER_X) {
+          showString(whoStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);          
         }
       }
 
