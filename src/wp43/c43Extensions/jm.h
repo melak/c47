@@ -89,7 +89,7 @@ extern bool_t SH_BASE_HOME;                                          //JM BASEHO
 extern int16_t Norm_Key_00_VAR;                                      //JM USER NORMAL
 extern uint8_t Input_Default;                                        //JM Input Default
 extern bool_t jm_FG_LINE;                                            //JM Screen / keyboard operation setup
-extern bool_t jm_NO_BASE_SCREEN;                                            //JM Screen / keyboard operation setup
+extern bool_t jm_BASE_SCREEN;                                        //JM Screen / keyboard operation setup
 extern bool_t jm_G_DOUBLETAP;                                        //JM Screen / keyboard operation setup
 extern float graph_xmin;                                             //JM Graph
 extern float graph_xmax;                                             //JM Graph
@@ -171,7 +171,7 @@ void fnRCL          (int16_t inp);
 #define JC_FRC                 18    // CB FRACTION MODE
 
 #define JC_FG_LINE             20    // screen setup
-#define JC_NO_BASE_SCREEN      21    // screen setup
+#define JC_BASE_SCREEN         21    // screen setup
 #define JC_G_DOUBLETAP         22    // screen setup
 
 #define JC_H_SUM               26    //JMHOME
