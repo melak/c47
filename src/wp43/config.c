@@ -690,14 +690,15 @@ void restoreStats(void){
       {0,"C43 L1: C43, QSPI"},
       {0,"C43 L1: C43, NO QSPI"},
       {0,"C43 Layout L1: SIM"},
-      {0,"V43RT"},        //3
-      {0,"V43LT"},        //4
+      {0,"V43"},          //3
+      {0,"E43"},          //4
       {0,"C43"},          //5
       {0,"DM42"},         //6
       {0,"C43AltA"},      //7
-      {0,"C43AltB"},      //8
+      {0,"C43 ALT"},      //8   //used to be ALT B
       {0,"WP 43S Pilot"}, //9
       {0,"No USER keys"}, //10
+      {0,"D43"},          //11
     };
 
 void fnShowVersion(uint8_t option) {

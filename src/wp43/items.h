@@ -1940,7 +1940,7 @@
 #define ITM_GET_TEST_BS             1885
 #define ITM_SET_TEST_BS             1886
 #define ITM_INP_DEF_DP              1887
-#define ITM_USER_C43ALTB            1888
+#define ITM_USER_C43ALT             1888
 #define ITM_INP_DEF_CPXDP           1889
 #define ITM_INP_DEF_SI              1890
 #define ITM_INP_DEF_LI              1891
@@ -2121,8 +2121,9 @@
 #define ITM_SIN_SIGN                2066
 #define ITM_COS_SIGN                2067
 #define ITM_TAN_SIGN                2068
+#define ITM_USER_E43                2069
 
-#define LAST_ITEM                   2069
+#define LAST_ITEM                   2070
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
