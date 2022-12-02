@@ -1946,7 +1946,7 @@
 #define ITM_INP_DEF_LI              1891
 #define ITM_USER_V43                1892
 #define KEY_fg                      1893
-#define ITM_1894                    1894
+#define ITM_USER_DD43               1894
 #define ITM_1895                    1895
 #define ITM_USER_C43ALTA            1896
 #define ITM_USER_RESET              1897
@@ -1965,7 +1965,7 @@
 #define ITM_msTo                    1910
 #define ITM_INP_DEF_43S             1911
 #define ITM_XXEQ                    1912
-#define ITM_USER_V43MIN             1913
+#define ITM_USER_EE43               1913
 #define ITM_USER_COPY               1914
 #define ITM_USER_WP43S              1915
 #define ITM_USER_DM42               1916
@@ -2121,9 +2121,8 @@
 #define ITM_SIN_SIGN                2066
 #define ITM_COS_SIGN                2067
 #define ITM_TAN_SIGN                2068
-#define ITM_USER_E43                2069
 
-#define LAST_ITEM                   2070
+#define LAST_ITEM                   2069
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
