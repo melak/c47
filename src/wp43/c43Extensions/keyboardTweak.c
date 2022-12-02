@@ -326,22 +326,17 @@ void  Check_SigmaPlus_Assigned(int16_t * result, int16_t tempkey) {
 
 
 
-void Setup_MultiPresses(int16_t result) {
-  JM_auto_doublepress_enabled = 0;                          //JM TIMER CLRDROP. Autodrop mean double click normal key.
+void Setup_MultiPresses(int16_t result) {                         //Setup and start double press for DROP timer, and check for second press
+  JM_auto_doublepress_autodrop_enabled = 0;                          //JM TIMER CLRDROP. Autodrop means double click normal key.
   int16_t tmp = 0;
-  if(calcMode == CM_NORMAL) {
-    switch(result) {
-    case ITM_BACKSPACE:       tmp = ITM_DROP;     break;    //Set up backspace double click to DROP
-  //case ITM_XEQ:             tmp = -MNU_XXEQ;    break;    //XEQ XEQMENU, removed as it does not properly work on double clieck. It still accesses XEQ
-  //case ITM_CHS:             tmp = ITM_XexY;     break;    //sample on CHS, operating X<>Y. XEQ must still be created.
-    default:;
-    }
+  if(calcMode == CM_NORMAL && result == ITM_BACKSPACE) {             //Set up backspace double click to DROP
+    tmp = ITM_DROP;
   }
 
 
   if(tmp != 0) {
     if(fnTimerGetStatus(TO_CL_DROP) == TMR_RUNNING) {
-      JM_auto_doublepress_enabled = tmp;
+      JM_auto_doublepress_autodrop_enabled = tmp;                    //Signal to DROP, i.e. that the second press of the same button was received 
     }
     fnTimerStart(TO_CL_DROP, TO_CL_DROP, JM_CLRDROP_TIMER);
   }
@@ -352,47 +347,33 @@ void Setup_MultiPresses(int16_t result) {
 
 
 void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
-  int16_t longpressDelayedkey1 = 0;
-  longpressDelayedkey2 = 0;
-  longpressDelayedkey3 = 0;
+  int16_t longpressDelayedkey1 = 0;                                   //To Setup the timer locally for the next timed stage
+  longpressDelayedkey2 = 0;                                           //To Store the next timed stage
+  longpressDelayedkey3 = 0;                                           //To Store the next timed stage
+  int16_t tmpi;
 
-  if(longpressDelayedkey1 == 0 && (calcMode == CM_NORMAL || calcMode == CM_NIM)) { //longpress yellow math functions on the first 14 keys
-    for(int i = 0; i <= 16; i++) {  //16 //0=E+  6=STO  12=ENTER 13=X<>Y 14=CHS 15=E 16=BKSPC
-      if(key_no == i
-#ifndef TESTING
-          && i != 14      //Do not allow longpress CHS
-          && i != 15      //Do not allow longpress EEX as EEX is a leading edge button
-#endif
-          && i != 16) {   //Do not allow longpress BKSPC
-        if(getSystemFlag(FLAG_USER)) {
-          longpressDelayedkey1 = kbd_usr[i].fShifted;
-          if(i != 13 && i != 14 && i != 15)
-            longpressDelayedkey3 = kbd_usr[i].gShifted;
-        }
-        else {
-          longpressDelayedkey1 = kbd_std[i].fShifted;
-          if(
-              i    != 12  //Do not allow second longpress ENTER
-              && i != 13  //Do not allow second longpress x<>y
-#ifndef TESTING
-              && i != 14  //Do not allow second longpress CHS
-              && i != 15  //Do not allow second longpress EEX
-#endif
-              )
-            longpressDelayedkey3 = kbd_std[i].gShifted;
-        }
-        break;
+  if(calcMode == CM_NORMAL || calcMode == CM_NIM) {                   //longpress yellow math functions on the first two rows, excluding any menus
+    if(key_no >= 0 && key_no < 14) {
+      tmpi = getSystemFlag(FLAG_USER) ? kbd_usr[key_no].fShifted : kbd_std[key_no].fShifted;
+      if (tmpi > 0) {
+        longpressDelayedkey1 = tmpi;
+      } else {
+        longpressDelayedkey1 = 0;
+      }
+      tmpi = getSystemFlag(FLAG_USER) ? kbd_usr[key_no].gShifted : kbd_std[key_no].gShifted;
+      if (tmpi > 0) {
+        longpressDelayedkey3 = tmpi;
+      } else {
+        longpressDelayedkey3 = 0;
       }
     }
-  } //yellow and blue function keys ^^
+  }                                                                   //yellow and blue function keys ^^
 
-  if(calcMode == CM_NORMAL) {
+  if(calcMode == CM_NORMAL) {                                         //longpress special keys
     switch(*result) {
       case ITM_XEQ      : longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ; break;    //XEQ longpress to XEQMENU 
       case ITM_BACKSPACE: longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = ITM_CLSTK; break;    //backspace longpress to CLSTK
-//    case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
       case ITM_EXIT1    :  longpressDelayedkey2=-MNU_MyMenu;          longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
-    //case ITM_CHS      :                                             longpressDelayedkey1 = ITM_XexY;  break;    //sample on CHS, operating X<>Y. XEQ must still be created.
       default:;
     }
   }
@@ -400,7 +381,6 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
     switch(*result) {
       case ITM_XEQ      : longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ; break;    //XEQ longpress to XEQMENU 
       case ITM_BACKSPACE:                                             longpressDelayedkey1 = ITM_CLN;   break;    //BACKSPACE longpress clears input buffer
-//    case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
       case ITM_EXIT1    :  longpressDelayedkey2=-MNU_MyMenu;          longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
       default:;
     }
@@ -408,7 +388,6 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   else if(calcMode == CM_AIM) {
     switch(*result) {
       case ITM_BACKSPACE:                                             longpressDelayedkey1 = ITM_CLA;   break;    //BACKSPACE longpress clears input buffer
-//    case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
       case ITM_EXIT1    :  longpressDelayedkey2=-MNU_MyAlpha;         longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
       case ITM_ENTER    :                                             longpressDelayedkey1 = ITM_XEDIT; break;
       default:;
@@ -432,12 +411,15 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   if(longpressDelayedkey1 != 0) {       //if activated key pressed
     JM_auto_longpress_enabled = longpressDelayedkey1;
     fnTimerStart(TO_CL_LONG, TO_CL_LONG, JM_TO_CL_LONG);    //dr
+printf("Timer start %d %d %d %d \n",JM_auto_longpress_enabled, longpressDelayedkey1, longpressDelayedkey2, longpressDelayedkey3);
 
-    if(JM_auto_doublepress_enabled != 0) {
+
+    //JM TIMER CLRDROP. Autodrop means double click normal key.
+    if(JM_auto_doublepress_autodrop_enabled != 0) {
       hideFunctionName();
       undo();
-      showFunctionName(JM_auto_doublepress_enabled, FUNCTION_NOPTIME);          //JM CLRDROP
-      *result = JM_auto_doublepress_enabled;
+      showFunctionName(JM_auto_doublepress_autodrop_enabled, FUNCTION_NOPTIME);          //JM CLRDROP
+      *result = JM_auto_doublepress_autodrop_enabled;
       fnTimerStop(TO_CL_DROP);          //JM TIMER CLRDROP ON DOUBLE BACKSPACE
       setSystemFlag(FLAG_ASLIFT);       //JM TIMER CLRDROP ON DOUBLE BACKSPACE
     }
