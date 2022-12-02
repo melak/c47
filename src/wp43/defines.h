@@ -55,12 +55,12 @@
 
 //THESE ARE DMCP COMPILE OPTIONS
   #ifndef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
-    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
+    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
     #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
     #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
     #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
     #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
-    #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42; USER_C43ALTA; USER_C43_ALTB;
+    #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42; USER_C43ALTA; USER_C43_ALT;
   //#define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
   //#define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
   //#define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
@@ -73,7 +73,7 @@
   #endif
 
   #ifdef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
-    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
+    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
 //    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
 //    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
 //    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics

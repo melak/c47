@@ -526,27 +526,29 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
 #ifdef SAVE_SPACE_DM42
   #define CC_C43  ITM_NULL
   #define CC_V43  ITM_NULL
-  #define CC_V43M ITM_NULL
+  #define CC_E43  ITM_NULL
+  #define CC_D43  ITM_NULL
 #else
   #define CC_C43  ITM_USER_C43
   #define CC_V43  ITM_USER_V43
-  #define CC_V43M ITM_USER_V43MIN
+  #define CC_E43  ITM_USER_EE43
+  #define CC_D43  ITM_USER_DD43
 #endif                                             
 
 #ifdef SAVE_SPACE_DM42_7
   #define CC_DM42  ITM_NULL
   #define CC_USER_SHIFTSA ITM_NULL
-  #define CC_USER_SHIFTSB ITM_NULL
+  #define CC_USER_SHIFTS  ITM_NULL
 #else
   #define CC_DM42  ITM_USER_DM42
   #define CC_USER_SHIFTSA ITM_USER_C43ALTA
-  #define CC_USER_SHIFTSB ITM_USER_C43ALTB
+  #define CC_USER_SHIFTS  ITM_USER_C43ALT
 #endif                                             
 
 
-TO_QSPI const int16_t menu_ASN[]         = { CC_DM42,                       CC_USER_SHIFTSA,            CC_USER_SHIFTSB,          ITM_USER_WP43S,        ITM_NULL,                   ITM_ASSIGN,
-                                             CC_C43,                        CC_V43M,                    CC_V43,                   ITM_NULL,              ITM_NULL,                   ITM_USERMODE,
-                                            -MNU_ASN_N,                     ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                   ITM_USER_RESET    };
+TO_QSPI const int16_t menu_ASN[]         = { CC_DM42,                       CC_USER_SHIFTSA,            CC_USER_SHIFTS,           ITM_USER_WP43S,        ITM_NULL,                   ITM_ASSIGN,
+                                             CC_C43,                        CC_D43,                     CC_E43,                   CC_V43,                ITM_NULL,                   ITM_USERMODE,
+                                            -MNU_ASN_N,                     ITM_NULL,                   ITM_NULL,                 ITM_USER_ARESET,       ITM_USER_MRESET,            ITM_USER_KRESET    };
  
 
 TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_X_P2,                   ITM_X_P3,                 ITM_X_P4,              ITM_X_P5,                    ITM_X_P6,
