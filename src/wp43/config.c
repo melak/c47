@@ -690,13 +690,53 @@ void restoreStats(void){
     TO_QSPI const numberstr indexOfMsgs[] = {
       {0,"C43 L1: C43, QSPI"},
       {0,"C43 L1: C43, NO QSPI"},
-      {0,"C43 L42: unmod. DM42, QSPI"},
-      {0,"C43 L42: unmod. DM42, NO QSPI"},
       {0,"C43 Layout L1: SIM"},
-      {0,"C43 L42: unmodified DM42 SIM"}
+      {0,"V43RT"},        //3
+      {0,"V43LT"},        //4
+      {0,"C43"},          //5
+      {0,"DM42"},         //6
+      {0,"C43AltA"},      //7
+      {0,"C43AltB"},      //8
+      {0,"WP 43S Pilot"}, //9
+      {0,"No USER keys"}, //10
     };
 
+void fnShowVersion(uint8_t option) {
+#define VERSION1 "_108_08e"
 
+    #define L1L2    "" //L1
+    char *build_str = "C43" L1L2 VERSION1 ", " __DATE__;
+    fnStrtoX(build_str);
+    fnStore(102);
+    fnDrop(0);
+        
+    #ifdef PC_BUILD
+        fnStrtoX(indexOfMsgs[2].itemName);
+    #else
+      #if defined(TWO_FILE_PGM)
+        fnStrtoX(indexOfMsgs[0].itemName);
+      #else
+        #if !defined(TWO_FILE_PGM)
+          fnStrtoX(indexOfMsgs[1].itemName);
+        #endif
+      #endif
+
+    #endif
+    fnStore(103);
+    fnDrop(0);
+
+    if(option > 2 && option < 20) {
+      fnStrtoX(indexOfMsgs[option].itemName);
+      fnStore(104);
+      fnDrop(0);
+    } else {
+      fnStrtoX(indexOfMsgs[10].itemName);
+      fnStore(104);
+      fnDrop(0);
+    }
+
+
+}
 
 
 void fnReset(uint16_t confirmation) {
@@ -1101,66 +1141,7 @@ void fnReset(uint16_t confirmation) {
 
 
 
-//      TO_QSPI const numberstr indexOfMsgs[] = {
-//        {0,"C43 L1: C43, QSPI"},
-//        {0,"C43 L1: C43, NO QSPI"},
-//        {0,"C43 L42: unmod. DM42, QSPI"},
-//        {0,"C43 L42: unmod. DM42, NO QSPI"},
-//        {0,"C43 Layout L1: SIM"},
-//        {0,"C43 L42: unmodified DM42 SIM"}
-//      };
-
-
-
-#define VERSION1 "_108_08d"
-
-    #ifdef JM_LAYOUT_1A
-      #undef L1L2
-      #define L1L2    "" //L1
-    #endif
-    #ifdef JM_LAYOUT_2_DM42_STRICT
-      #undef L1L2
-      #define L1L2    "L42"
-    #endif
-
-    char *build_str = "C43" L1L2 VERSION1 ", " __DATE__;
-    fnStrtoX(build_str);
-    fnStore(102);
-    fnDrop(0);
-        
-
-    #ifdef PC_BUILD
-      #if defined(JM_LAYOUT_1A)
-        fnStrtoX(indexOfMsgs[4].itemName);
-      #else
-        #if defined(JM_LAYOUT_2_DM42_STRICT)
-          fnStrtoX(indexOfMsgs[5].itemName);
-        #endif
-      #endif
-
-    #else
-
-      #if defined(JM_LAYOUT_1A) && defined(TWO_FILE_PGM)
-        fnStrtoX(indexOfMsgs[0].itemName);
-      #else
-        #if defined(JM_LAYOUT_1A) && !defined(TWO_FILE_PGM)
-          fnStrtoX(indexOfMsgs[1].itemName);
-        #else
-          #if defined(JM_LAYOUT_2_DM42_STRICT) && defined(TWO_FILE_PGM)
-            fnStrtoX(indexOfMsgs[2].itemName);
-          #else
-            #if defined(JM_LAYOUT_2_DM42_STRICT) && !defined(TWO_FILE_PGM)
-              fnStrtoX(indexOfMsgs[3].itemName);
-            #endif
-          #endif
-        #endif
-      #endif
-
-    #endif
-    fnStore(103);
-    fnDrop(0);
-
-    
+    fnShowVersion(100);
     fnRESET_MyM_Mya();
 
 

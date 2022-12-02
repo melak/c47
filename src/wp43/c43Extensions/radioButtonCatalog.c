@@ -117,7 +117,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
 /* 1696 */  { ITM_CB_LEADING_ZERO,  JC_BLZ,                 CB_JC },  //fnSetSetJM
 /* 500  */  { ITM_CB_FRCSRN,        JC_FRC,                 CB_JC },  //fnSetSetJM
 /* 1678 */  { ITM_ERPN,             JC_ERPN,                CB_JC },  //fnSetSetJM
-/* 1909 */  { ITM_NO_BASE_SCREEN,   JC_NO_BASE_SCREEN,      CB_JC },  //fnSetSetJM
+/* 1909 */  { ITM_BASE_SCREEN,      JC_BASE_SCREEN,         CB_JC },  //fnSetSetJM
 /* 1906 */  { ITM_FG_LINE,          JC_FG_LINE,             CB_JC },  //fnSetSetJM
 /* 1911 */  { ITM_G_DOUBLETAP,      JC_G_DOUBLETAP,         CB_JC },  //fnSetSetJM
 /* 1679 */  { ITM_HOMEx3,           JC_HOME_TRIPLE,         CB_JC },  //fnSetSetJM
@@ -324,8 +324,8 @@ int8_t fnCbIsSet(int16_t item) {
         }
         break;
 
-        case JC_NO_BASE_SCREEN: {
-          cb_param = jm_NO_BASE_SCREEN;
+        case JC_BASE_SCREEN: {
+          cb_param = jm_BASE_SCREEN;
         }
         break;
 

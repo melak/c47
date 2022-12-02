@@ -1258,7 +1258,7 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
 
   if(getSystemFlag(FLAG_PROPFR)) { // a b/c
     if(updateDisplayValueX) {
-      sprintf(displayValueX, "%s%" PRIu64 " %" PRIu64 "/%" PRIu64, (sign == -1 ? "-" : ""), intPart, numer, denom);
+      sprintf(displayValueX, "%s%" PRIu32 " %" PRIu32 "/%" PRIu32, (sign == -1 ? "-" : ""), (uint32_t)intPart, (uint32_t)numer, (uint32_t)denom);
     }
 
     if(sign == -1) {
@@ -1292,7 +1292,7 @@ void fractionToDisplayString(calcRegister_t regist, char *displayString) {
 
   else { // FT_IMPROPER d/c
     if(updateDisplayValueX) {
-      sprintf(displayValueX, "%s%" PRIu64 "/%" PRIu64, (sign == -1 ? "-" : ""), numer, denom);
+      sprintf(displayValueX, "%s%" PRIu32 "/%" PRIu32, (sign == -1 ? "-" : ""), (uint32_t)numer, (uint32_t)denom);
     }
 
     if(sign == -1) {
@@ -2081,13 +2081,13 @@ void dateToDisplayString(calcRegister_t regist, char *displayString) {
   yearval64 = (((uint64_t)real34ToUInt32(&yy) << 32) | ((uint64_t)real34ToUInt32(&y)));
 
   if(getSystemFlag(FLAG_DMY)) {
-    sprintf(displayString, "%02" PRIu32 ".%02" PRIu32 ".%s%04" PRIu64, real34ToUInt32(&d), real34ToUInt32(&m), sign, yearval64);
+    sprintf(displayString, "%02" PRIu32 ".%02" PRIu32 ".%s%04" PRIu32, real34ToUInt32(&d), real34ToUInt32(&m), sign, (uint32_t)yearval64);
   }
   else if(getSystemFlag(FLAG_MDY)) {
-    sprintf(displayString, "%02" PRIu32 "/%02" PRIu32 "/%s%04" PRIu64, real34ToUInt32(&m), real34ToUInt32(&d), sign, yearval64);
+    sprintf(displayString, "%02" PRIu32 "/%02" PRIu32 "/%s%04" PRIu32, real34ToUInt32(&m), real34ToUInt32(&d), sign, (uint32_t)yearval64);
   }
   else { // YMD
-    sprintf(displayString, "%s%04" PRIu64 "-%02" PRIu32 "-%02" PRIu32, sign, yearval64, real34ToUInt32(&m), real34ToUInt32(&d));
+    sprintf(displayString, "%s%04" PRIu32 "-%02" PRIu32 "-%02" PRIu32, sign, (uint32_t)yearval64, real34ToUInt32(&m), real34ToUInt32(&d));
   }
 }
 
