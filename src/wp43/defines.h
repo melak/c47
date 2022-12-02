@@ -117,10 +117,6 @@
 
 
 
-//Allow longpress CHS and EEX
-#define TESTING
-//#undef TESTING
-
 
 #define NOMATRIXCURSORS             //JM allow matrix editing to be navigated by up down keys
 #undef NOMATRIXCURSORS

@@ -261,7 +261,7 @@
   extern int16_t                MY_ALPHA_MENU;                //JM Replaced define
   extern uint8_t                DRG_Cycling;                  //JM
   extern uint8_t                DM_Cycling;                   //JM
-  extern int16_t                JM_auto_doublepress_enabled;  //JM TIMER CLRDROP //drop
+  extern int16_t                JM_auto_doublepress_autodrop_enabled;  //JM TIMER CLRDROP //drop
   extern int16_t                JM_auto_longpress_enabled;    //JM TIMER CLRDROP //clstk
   extern uint8_t                JM_SHIFT_HOME_TIMER1;         //Local to keyboard.c, but defined here
   extern bool_t                 ULFL, ULGL;                   //JM Underline

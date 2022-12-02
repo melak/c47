@@ -287,7 +287,7 @@ void kill_ASB_icon(void) {
     #ifdef PC_BUILD
       char tmp[200]; sprintf(tmp,"bufferize.c:addItemToBuffer item=%d tam.mode=%d\n",item,tam.mode); jm_show_calc_state(tmp);
     #endif
-    resetKeytimers();  //JM
+//    resetKeytimers();  //JM
 
 
     if(item == NOPARAM) {
@@ -978,7 +978,7 @@ void kill_ASB_icon(void) {
 
 
     if(item >= ITM_A && item <= ITM_F && lastIntegerBase == 0) lastIntegerBase = 16;
-    if(item != ITM_EXIT1) resetKeytimers();  //JM
+//    if(item != ITM_EXIT1) resetKeytimers();  //JM
 
     screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
     currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;
@@ -1932,9 +1932,9 @@ void kill_ASB_icon(void) {
     }
 
     else {
-      switch (item) {           //JMCLOSE remove auto closenim for these functions only.
-        case ITM_SQUAREROOTX : //closeNim moved to keyboard.c / btnkeyrelease, as .ms is on longpress underneath sqrt
-        case ITM_HASH_JM :     //closeNim simply not needed
+        switch (item) {           //JMCLOSE remove auto closenim for these functions only.
+          case ITM_SQUAREROOTX : //closeNim moved to keyboard.c / btnkeyrelease, as .ms is on longpress underneath sqrt
+          case ITM_HASH_JM :     //closeNim simply not needed because we need to type the base while NIM remains open
           break;
           default :
           if(item != -MNU_INTS && item != -MNU_BITS) {
