@@ -1949,7 +1949,7 @@
 #define ITM_USER_DD43               1894
 #define ITM_1895                    1895
 #define ITM_USER_C43ALTA            1896
-#define ITM_USER_RESET              1897
+#define ITM_1897                    1897
 #define ITM_N_KEY_ALPHA             1898
 #define ITM_N_KEY_CC                1899
 #define ITM_N_KEY_GSH               1900
@@ -2073,9 +2073,9 @@
 #define ITM_RMODE                   2018
 #define ITM_RMODEQ                  2019
 #define ITM_SI_All                  2020
-#define ITM_2021                    2021
-#define ITM_2022                    2022
-#define ITM_2023                    2023
+#define ITM_USER_ARESET             2021
+#define ITM_USER_MRESET             2022
+#define ITM_USER_KRESET             2023
 #define ITM_INTG                    2024
 #define ITM_DIFF                    2025
 #define ITM_RMS                     2026
