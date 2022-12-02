@@ -56,7 +56,7 @@ endif
 
 dist_windows: testPgms build.rel/wiki
 	cd build.rel && ninja sim
-	mkdir -p $(WIN_DIST_DIR)/res/artwork $(WIN_DIST_DIR)/res/dmcp $(WIN_DIST_DIR)/res/tone
+	mkdir -p $(WIN_DIST_DIR)/res/dmcp $(WIN_DIST_DIR)/res/tone
 	cp build.rel/src/wp43-gtk/wp43.exe $(WIN_DIST_DIR)/
 	cp res/tone/*.wav $(WIN_DIST_DIR)/res/tone/
 	cp res/dmcp/testPgms.bin $(WIN_DIST_DIR)/res/dmcp/
@@ -69,7 +69,7 @@ dist_windows: testPgms build.rel/wiki
 
 dist_macos: testPgms build.rel
 	cd build.rel && ninja sim
-	mkdir -p $(MAC_DIST_DIR)/res/artwork $(MAC_DIST_DIR)/res/dmcp
+	mkdir -p $(MAC_DIST_DIR)/res/dmcp
 	cp build.rel/src/wp43-gtk/wp43 $(MAC_DIST_DIR)/
 	cp res/dmcp/testPgms.bin $(MAC_DIST_DIR)/res/dmcp/
 	cp res/c43_pre.css $(MAC_DIST_DIR)/res/
@@ -80,10 +80,11 @@ dist_macos: testPgms build.rel
 
 dist_dm42: dmcp testPgms build.rel/wiki
 	mkdir -p $(DM_DIST_DIR)
-	cp build.dmcp/src/wp43-dmcp/WP43.pgm build.dmcp/src/wp43-dmcp/WP43_qspi.bin $(DM_DIST_DIR)
+	mv build.dmcp/src/wp43-dmcp/WP43.pgm build.dmcp/src/wp43-dmcp/C43.pgm
+	mv build.dmcp/src/wp43-dmcp/WP43_qspi.bin build.dmcp/src/wp43-dmcp/C43_qspi.bin
+	cp build.dmcp/src/wp43-dmcp/C43.pgm build.dmcp/src/wp43-dmcp/C43_qspi.bin $(DM_DIST_DIR)
 	cp -r res/offimg $(DM_DIST_DIR)
-	cp res/dmcp/keymap.bin res/dmcp/original_DM42_keymap.bin res/dmcp/testPgms.bin $(DM_DIST_DIR)
-	cp res/artwork/WP43_layout.svg $(DM_DIST_DIR)/WP43_layout.svg
+	cp res/dmcp/original_DM42_keymap.bin res/dmcp/testPgms.bin $(DM_DIST_DIR)
 	cp build.rel/wiki/Installation-on-a-DM42.md $(DM_DIST_DIR)/readme.txt
 	zip -r wp43-dm42.zip $(DM_DIST_DIR)
 	rm -rf $(DM_DIST_DIR)
