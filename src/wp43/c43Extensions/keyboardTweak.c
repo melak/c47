@@ -353,7 +353,7 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   int16_t tmpi;
 
   if(calcMode == CM_NORMAL || calcMode == CM_NIM) {                   //longpress yellow math functions on the first two rows, excluding any menus
-    if(key_no >= 0 && key_no < 16) {
+    if(key_no >= 0 && key_no < 14) {
       tmpi = getSystemFlag(FLAG_USER) ? kbd_usr[key_no].fShifted : kbd_std[key_no].fShifted;
       if (tmpi > 0) {
         longpressDelayedkey1 = tmpi;
