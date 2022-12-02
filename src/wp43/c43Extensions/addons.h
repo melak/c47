@@ -61,6 +61,7 @@ void fnHrDeg        (uint16_t unusedButMandatoryParameter);
 void fnTimeTo       (uint16_t unusedButMandatoryParameter);
 void fnToTime       (uint16_t unusedButMandatoryParameter);
 void fnSafeReset    (uint16_t unusedButMandatoryParameter);
+void timeToReal34   (uint16_t hms);
 
 void fnRESET_MyM_Mya(void);
 

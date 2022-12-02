@@ -1546,7 +1546,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           char tmp[200]; sprintf(tmp,"^^^^btnReleased %d:\'%s\'",item,(char *)data); jm_show_comment(tmp);
         #endif //PC_BUILD
 
-        if(calcMode == CM_NIM && item == ITM_SQUAREROOTX) closeNim();      //JM moved here, from bufferize see JMCLOSE
+        if(calcMode == CM_NIM && (item == ITM_SQUAREROOTX || item == ITM_SQUARE)) closeNim();      //JM moved here, from bufferize see JMCLOSE, because SQRUAREROOT is not close due to .ms underneath it
 
         fnTimerStop(TO_3S_CTFF);      //dr
 
@@ -3197,7 +3197,7 @@ static bool_t activatescroll(void) { //jm
           (temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) &&
           (softmenu[menuId].menuItem != -MNU_EQN) && 
           (
-            ((menuId == 0) && jm_NO_BASE_SCREEN) ||
+            ((menuId == 0) && !jm_BASE_SCREEN) ||
             ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
             ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18)) 
           );

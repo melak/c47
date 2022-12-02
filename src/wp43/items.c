@@ -573,7 +573,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnLastX                     (uint16_t unusedButMandatoryParameter) {}
   void fnCyx                       (uint16_t unusedButMandatoryParameter) {}
   void fnPyx                       (uint16_t unusedButMandatoryParameter) {}
-  void fnJulianToDate              (uint16_t unusedButMandatoryParameter) {}
   void fnDateToJulian              (uint16_t unusedButMandatoryParameter) {}
   void fnToDate                    (uint16_t unusedButMandatoryParameter) {}
   void fnDateTo                    (uint16_t unusedButMandatoryParameter) {}
@@ -956,6 +955,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnSafeReset                (uint16_t unusedButMandatoryParameter) {}
   void fnSetBCD                   (uint16_t unusedButMandatoryParameter) {}
   void fnSetSI_All                (uint16_t unusedButMandatoryParameter) {}
+  void fnJulianToDateTime          (uint16_t unusedButMandatoryParameter) {}
+  void fnDateTimeToJulian          (uint16_t unusedButMandatoryParameter) {}
 
                                                                               //JM ^^
 #endif // GENERATE_CATALOGS
@@ -2494,7 +2495,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1493 */  { fnIncDecJ,                    INC_FLAG,                    "J+",                                          "J+",                                          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1494 */  { fnIncDecJ,                    DEC_FLAG,                    "J-",                                          "J-",                                          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1495 */  { fnSetFirstGregorianDay,       NOPARAM,                     "J/G",                                         "J/G",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 1496 */  { fnJulianToDate,               NOPARAM,                     "J" STD_RIGHT_ARROW "D",                       "J" STD_RIGHT_ARROW "D",                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1496 */  { itemToBeCoded,                NOPARAM,                     "1496",                                        "1496",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
 /* 1497 */  { fnKeyGtoXeq,                  TM_VALUE,                    "KEY",                                         "KEY",                                         (1 << TAM_MAX_BITS) |    21, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_KEYG_KEYX    },
 /* 1498 */  { fnKeyGto,                     TM_KEY,                      "KEYG",                                        "KEYG",                                        (1 << TAM_MAX_BITS) |    21, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1499 */  { fnKeyXeq,                     TM_KEY,                      "KEYX",                                        "KEYX",                                        (1 << TAM_MAX_BITS) |    21, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
@@ -2800,7 +2801,7 @@ TO_QSPI const item_t indexOfItems[] = {
 
 //Jaymos C43 extensions
 /* 1795 */  { fnSetSetJM,                   JC_FG_LINE,                  "fg" STD_SPACE_3_PER_EM "LINE",                "fg" STD_SPACE_3_PER_EM "LINE",                (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM UNDERLINING
-/* 1796 */  { fnSetSetJM,                   JC_NO_BASE_SCREEN,           "No" STD_SPACE_6_PER_EM "MyM",                 "No" STD_SPACE_6_PER_EM "MyM",                 (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM NOBASE MENU SETTING
+/* 1796 */  { fnSetSetJM,                   JC_BASE_SCREEN,              "MyM",                                         "MyM",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM NOBASE MENU SETTING
 /* 1797 */  { fnSetSetJM,                   JC_G_DOUBLETAP,              "g.2Tp",                                       "g.2Tp",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM KEY TAP DOUBLE SETTING
 /* 1798 */  { fnPlotStatJM,                 PLOT_LR,                     "ASS.ALL",                                     "ASS.ALL",                                     (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1799 */  { fnP_All_Regs,                 0,                           STD_PRINTER "ALLr",                            STD_PRINTER "ALLr",                            (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
@@ -2866,8 +2867,8 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1859 */  { fnSetSetJM,                   JC_BASE_HOME,                "_HOME",                                       "HOME",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM eRPN
 /* 1860 */  { itemToBeCoded,                NOPARAM,                     "1860",                                        "1860",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1861 */  { fnSetSetJM,                   JC_H_SUM,                    "",                                            "SUMRY",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JMHOME
-/* 1862 */  { itemToBeCoded,                NOPARAM,                     "1862",                                        "1862",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 1863 */  { itemToBeCoded,                NOPARAM,                     "1863",                                        "1863",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1862 */  { fnDateTimeToJulian,           NOPARAM,                     "DT" STD_RIGHT_ARROW "J",                      "DT" STD_RIGHT_ARROW "J",                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1863 */  { fnJulianToDateTime,           NOPARAM,                     "J" STD_RIGHT_ARROW "DT",                      "J" STD_RIGHT_ARROW "DT",                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1864 */  { fnDisplayFormatCycle,         NOPARAM,                     "FSE",                                         "FSE",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM UNIT
 /* 1865 */  { fnSetSetJM,                   JC_LARGELI,                  "LARGELI",                                     "LRG_LI",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1866 */  { fnDisplayFormatSigFig,        TM_VALUE,                    "SIG",                                         "SIG",                                         (0 << TAM_MAX_BITS) |    15, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM SIGFIG
@@ -2898,8 +2899,8 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1891 */  { fnInDefault,                  ID_LI,                       "",                                            "i" STD_SPACE_3_PER_EM "LI",                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM INPUT DEFAULT
 /* 1892 */  { fnUserJM,                     USER_V43,                    "",                                            "V43 RT",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//J=V43
 /* 1893 */  { fnJM,                         48,                          "",                                            "f/g",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM Shift replacement
-/* 1894 */  { fnUserJM,                     USER_DEFAULTS,               "",                                            "U" STD_SIGMA " CC",                           (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 1895 */  { fnUserJM,                     USER_COMPLEX,                "",                                            "U" STD_UP_ARROW " CC",                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1894 */  { itemToBeCoded,                NOPARAM,                     "1894",                                        "1894",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1895 */  { itemToBeCoded,                NOPARAM,                     "1895",                                        "1895",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1896 */  { fnUserJM,                     USER_C43ALTA,                "",                                            "C43AltA",                                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM USER
 /* 1897 */  { fnUserJM,                     USER_RESET,                  "",                                            "RESET",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1898 */  { fnSigmaAssign,                16384+ITM_AIM,               "",                                            STD_SIGMA STD_alpha,                           (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
