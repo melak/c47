@@ -823,7 +823,7 @@ void underline_softkey(int16_t xSoftkey, int16_t ySoftKey, bool_t dontclear) {
 
 void FN_handler() {                          //JM FN LONGPRESS vv Handler FN Key shift longpress handler
                                              //   Processing cycles here while the key is pressed, that is, after PRESS #1, waiting for RELEASE #2
-  if((FN_state = ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !(softmenuStack[0].softmenuId==0 && !jm_BASE_SCREEN) ) {
+  if((FN_state == ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !(softmenuStack[0].softmenuId == 0 && !jm_BASE_SCREEN) ) {
 
     if(fnTimerGetStatus(TO_FN_LONG) == TMR_COMPLETED) {
       FN_handle_timed_out_to_EXEC = false;
@@ -916,9 +916,21 @@ void Shft_handler() {                        //JM SHIFT NEW vv
 void LongpressKey_handler() {
   if(fnTimerGetStatus(TO_CL_LONG) == TMR_COMPLETED) {
     if(JM_auto_longpress_enabled != 0) {
-      showFunctionName(JM_auto_longpress_enabled, JM_TO_CL_LONG);
-      JM_auto_longpress_enabled = 0;
-    } 
+      showFunctionName(JM_auto_longpress_enabled, JM_TO_CL_LONG + 50);     //Add a marginal amout of time to prevent racing of end conditions. 
+      JM_auto_longpress_enabled = 0;                                       //showFunctionName must not time out longer than the timer that is started below
+
+      //Setup up next long press activation possibility
+      if(longpressDelayedkey2) {
+        JM_auto_longpress_enabled = longpressDelayedkey2;
+        longpressDelayedkey2 = 0;
+      } else if(longpressDelayedkey3) {
+        JM_auto_longpress_enabled = longpressDelayedkey3;
+        longpressDelayedkey3 = 0;
+      }
+      if(JM_auto_longpress_enabled) {
+        fnTimerStart(TO_CL_LONG, TO_CL_LONG, JM_TO_CL_LONG);
+      }
+    }
   }
 }
 
@@ -1556,30 +1568,16 @@ void force_refresh(void) {
 
   void showFunctionName(int16_t item, int16_t delayInMs) {
     uint32_t fcol, frow, gcol, grow;
-    
-    char padding[20];                                          //JM
-    if(item == ITM_NOP && delayInMs == 0) {                        //JMvv Handle second and third longpress
-      if(longpressDelayedkey2 != 0) {                              //  If a delayed key2 is defined, qeue it
-        item = longpressDelayedkey2; 
-        delayInMs = JM_TO_CL_LONG;
-        longpressDelayedkey2 = 0;
-      } else
-      if(longpressDelayedkey3 != 0) {                              //  If a delayed key3 is defined, qeue it
-        item = longpressDelayedkey3; 
-        delayInMs = JM_TO_CL_LONG;
-        longpressDelayedkey3 = 0;
-      }
-    }                                                              //JM^^
-
     char *functionName;
-//FIX //REMOVE DISPLAYING TEMP STRING as in C43 the tmpstring does NOT show the last keystroke or whatever. It gets executed from timers
+    char padding[20];                                          //JM
+
+//FIX //REMOVE DISPLAYING TEMP STRING as in C43 the tmpstring does NOT show the last keystroke or whatever this tempstr is needed for. It gets executed from timers
 //    if(tmpString[0] != 0) {
 //      functionName = tmpString;
 //    }
 //    else 
       if(item != MNU_DYNAMIC) {
       functionName = indexOfItems[abs(item)].itemCatalogName;
-// if(functionName[0]==0) functionName = indexOfItems[abs(item)].itemSoftmenuName; //test functio to show softmenu name if catalogue name not defuned
     }
     else {
       functionName = dynmenuGetLabel(dynamicMenuItem);
