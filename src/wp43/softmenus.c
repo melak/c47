@@ -526,8 +526,8 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
 #ifdef SAVE_SPACE_DM42
   #define CC_C43  ITM_NULL
   #define CC_V43  ITM_NULL
-  #define CC_V43M ITM_NULL
   #define CC_E43  ITM_NULL
+  #define CC_D43  ITM_NULL
 #else
   #define CC_C43  ITM_USER_C43
   #define CC_V43  ITM_USER_V43
