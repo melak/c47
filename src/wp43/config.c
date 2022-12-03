@@ -46,6 +46,7 @@
 #include "recall.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "saveRestoreCalcState.h"
 #include "screen.h"
 #include "softmenus.h"
 #include "solver/equation.h"
@@ -1123,7 +1124,7 @@ void fnReset(uint16_t confirmation) {
 
 
 
-    //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
+    //JM TEMPORARY TEST DATA IN REGISTERS
     uint_fast16_t n = nbrOfElements(indexOfStrings);
     for (uint_fast16_t i = 0; i < n; i++) {
       if( indexOfStrings[i].itemType== 0) {
@@ -1136,6 +1137,10 @@ void fnReset(uint16_t confirmation) {
       fnDrop(0);
     }
 
+    //Autoloading of C43Auto.sav
+    #if defined(DMCP_BUILD)
+      fnLoadAuto();
+    #endif
 
     doRefreshSoftMenu = true;     //jm dr
     last_CM = 253;
