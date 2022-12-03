@@ -691,18 +691,15 @@ void restoreStats(void){
 
 
     TO_QSPI const numberstr indexOfMsgs[] = {
-      {0,0, "C43 L1: C43, QSPI"},
-      {0,1, "C43 L1: C43, NO QSPI"},
-      {0,2, "C43 Layout L1: SIM"},
-      {0,USER_V43,     "V43"},          //3
-      {0,USER_E43,     "E43"},          //4
-      {0,USER_C43,     "C43"},          //5
-      {0,USER_DM42,    "DM42"},         //6
-      {0,USER_C43ALTA, "C43AltA"},      //7
-      {0,USER_C43ALT,  "C43 ALT"},      //8   //used to be ALT B
-      {0,USER_43S,     "WP 43S Pilot"}, //9
-      {0,USER_KRESET,  "No USER keys"}, //10
-      {0,USER_D43,     "D43"},          //11
+      {0,USER_V43,     "V43: Vintage, L operators, 2 top R shifts"},          //3
+      {0,USER_E43,     "E43: R operators, 2 L shifts"},          //4
+      {0,USER_C43,     "C43: Single Shift Classic"},          //5
+      {0,USER_DM42,    "DM42: Compatible layout"},         //6
+      {0,USER_C43ALTA, "C43AltA: Allschwil alternative"},      //7
+      {0,USER_C43ALT,  "C43 ALT: Two shift alternative"},      //8   //used to be ALT B
+      {0,USER_43S,     "WP 43S Pilot: Compatibility layout"}, //9
+      {0,USER_KRESET,  "USER keys cleaned"}, //10
+      {0,USER_D43,     "D43 R operators, double shift keys L"},          //11
       {0,100,"Error List"}
     };
 
@@ -719,46 +716,9 @@ return i;
 }
 
 
-void fnShowVersion(uint8_t option) {
-#define VERSION1 "_108_08e"
-
-    #define L1L2    "" //L1
-    char *build_str = "C43" L1L2 VERSION1 ", " __DATE__;
-    fnStrtoX(build_str);
-    fnStore(102);
-    fnDrop(0);
-        
-    #ifdef PC_BUILD
-        fnStrtoX(indexOfMsgs[2].itemName);
-    #else
-      #if defined(TWO_FILE_PGM)
-        fnStrtoX(indexOfMsgs[0].itemName);
-      #else
-        #if !defined(TWO_FILE_PGM)
-          fnStrtoX(indexOfMsgs[1].itemName);
-        #endif
-      #endif
-
-    #endif
-    fnStore(103);
-    fnDrop(0);
-
-    fnStrtoX(indexOfMsgs[searchMsg(option)].itemName);
-    fnStore(104);
-    fnDrop(0);
-
-/*
-    if(option > 2 && option < 20) {
-      fnStrtoX(indexOfMsgs[option].itemName);
-      fnStore(104);
-      fnDrop(0);
-    } else {
-      fnStrtoX(indexOfMsgs[10].itemName);
-      fnStore(104);
-      fnDrop(0);
-    }
-*/
-
+void fnShowVersion(uint8_t option) {  //KEYS VERSION LOADED
+    strcpy(errorMessage, indexOfMsgs[searchMsg(option)].itemName);
+    temporaryInformation = TI_KEYS;
 }
 
 
@@ -1110,7 +1070,7 @@ void fnReset(uint16_t confirmation) {
 //    kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].fShifted    = KEY_TYPCON_DN;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 
-
+    fnVersion(0);
 
     // The following lines are test data
   #ifndef SAVE_SPACE_DM42_14

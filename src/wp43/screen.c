@@ -59,9 +59,22 @@
 //#define DEBUGCLEARS
 
 #if !defined(TESTSUITE_BUILD)
-  static const char *whoStr1 = "C43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Ben" STD_SPACE_3_PER_EM "GB," STD_SPACE_3_PER_EM "D" STD_SPACE_3_PER_EM "A" STD_SPACE_3_PER_EM "CA," STD_SPACE_3_PER_EM "Dani" STD_SPACE_3_PER_EM "CH," STD_SPACE_3_PER_EM "H" STD_a_RING "kon" STD_SPACE_3_PER_EM "NO," STD_SPACE_3_PER_EM "Jaco" STD_SPACE_3_PER_EM "ZA,";
-  static const char *whoStr2 = "Martin" STD_SPACE_3_PER_EM "FR," STD_SPACE_3_PER_EM "Mihail" STD_SPACE_3_PER_EM "JP," STD_SPACE_3_PER_EM "Pauli" STD_SPACE_3_PER_EM "AU," STD_SPACE_3_PER_EM "RJvM" STD_SPACE_3_PER_EM "NL," STD_SPACE_3_PER_EM "Walter" STD_SPACE_3_PER_EM "DE.";
-  static const char *versionStr = "C43" STD_SPACE_3_PER_EM VERSION_STRING;
+  TO_QSPI static const char *whoStr1 = "C43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Ben" STD_SPACE_3_PER_EM "GB," STD_SPACE_3_PER_EM "D" STD_SPACE_3_PER_EM "A" STD_SPACE_3_PER_EM "CA," STD_SPACE_3_PER_EM "Dani" STD_SPACE_3_PER_EM "CH," STD_SPACE_3_PER_EM "H" STD_a_RING "kon" STD_SPACE_3_PER_EM "NO," STD_SPACE_3_PER_EM "Jaco" STD_SPACE_3_PER_EM "ZA,";
+  TO_QSPI static const char *whoStr2 = "Martin" STD_SPACE_3_PER_EM "FR," STD_SPACE_3_PER_EM "Mihail" STD_SPACE_3_PER_EM "JP," STD_SPACE_3_PER_EM "Pauli" STD_SPACE_3_PER_EM "AU," STD_SPACE_3_PER_EM "RJvM" STD_SPACE_3_PER_EM "NL," STD_SPACE_3_PER_EM "Walter" STD_SPACE_3_PER_EM "DE.";
+  TO_QSPI static const char *versionStr = "C43" STD_SPACE_3_PER_EM VERSION_STRING;
+
+  #ifdef PC_BUILD
+    TO_QSPI static const char *versionStr2 = "C43 Sim " VERSION1 ", compiled " __DATE__;
+  #else
+    #if defined(TWO_FILE_PGM)
+      TO_QSPI static const char *versionStr2 = "C43 Pgm QSPI " VERSION1 ", compiled " __DATE__;
+    #else
+      #if !defined(TWO_FILE_PGM)
+      TO_QSPI static const char *versionStr2 = "C43 Pgm " VERSION1 ", compiled " __DATE__;
+      #endif
+    #endif
+  #endif
+
 
   /* Names of day of week */
   TO_QSPI static const char *nameOfWday_en[8] = {"invalid day of week",                                   "Monday",            "Tuesday",                     "Wednesday",               "Thursday",           "Friday",             "Saturday",             "Sunday"};
@@ -1962,6 +1975,11 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
       else if(temporaryInformation == TI_VERSION && regist == REGISTER_X) {
         showString(versionStr, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+        showString(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+      }
+
+      else if(temporaryInformation == TI_KEYS && regist == REGISTER_X) {
+        showString(errorMessage, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
       }
 
       else if(temporaryInformation == TI_FALSE && regist == TRUE_FALSE_REGISTER_LINE) {
