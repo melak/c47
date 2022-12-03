@@ -649,93 +649,77 @@ void restoreStats(void){
 
     typedef struct {              //JM VALUES DEMO
       uint8_t  itemType;
+      uint8_t  count;
       char     *itemName;
     } numberstr;
 
     TO_QSPI const numberstr indexOfStrings[] = {
-      {0,"Reg 11,12 & 13 have: The 3 cubes = 3."},
-      {1,"569936821221962380720"},
-      {1,"-569936821113563493509"},
-      {1,"-472715493453327032"},
+      {0,10, "Reg 11,12 & 13 have: The 3 cubes = 3."},
+      {1,11, "569936821221962380720"},
+      {1,12, "-569936821113563493509"},
+      {1,13, "-472715493453327032"},
 
-      {0,"Reg 15, 16 & 17 have: The 3 cubes = 42."},
-      {1,"-80538738812075974"},
-      {1,"80435758145817515"},
-      {1,"12602123297335631"},
+      {0,14, "Reg 15, 16 & 17 have: The 3 cubes = 42."},
+      {1,15, "-80538738812075974"},
+      {1,16, "80435758145817515"},
+      {1,17, "12602123297335631"},
 
-      {0,"37 digits of pi, Reg19 / Reg20."},
-      {1,"2646693125139304345"},
-      {1,"842468587426513207"},
+      {0,18, "37 digits of pi, Reg19 / Reg20."},
+      {1,19, "2646693125139304345"},
+      {1,20, "842468587426513207"},
 
-      {0,"Primes: Carol"},
-      {1,"18014398241046527"},
+      {0,21, "Primes: Carol"},
+      {1,22, "18014398241046527"},
 
-      {0,"Primes: Kynea"},
-      {1,"18446744082299486207"},
+      {0,23, "Primes: Kynea"},
+      {1,24, "18446744082299486207"},
 
-      {0,"Primes: repunit"},
-      {1,"7369130657357778596659"},
+      {0,25, "Primes: repunit"},
+      {1,26, "7369130657357778596659"},
 
-      {0,"Primes: Woodal"},
-      {1,"195845982777569926302400511"},
+      {0,27, "Primes: Woodal"},
+      {1,28, "195845982777569926302400511"},
 
-      {0,"Primes: Woodal"},
-      {1,"4776913109852041418248056622882488319"},
+      {0,29, "Primes: Woodal"},
+      {1,30, "4776913109852041418248056622882488319"},
 
-      {0,"Primes: Woodal"},
-      {1,"225251798594466661409915431774713195745814267044878909733007331390393510002687"},
+      {0,31, "Primes: Woodal"},
+      {1,32, "225251798594466661409915431774713195745814267044878909733007331390393510002687"},
     };
+
+
+
 
 
     TO_QSPI const numberstr indexOfMsgs[] = {
-      {0,"C43 L1: C43, QSPI"},
-      {0,"C43 L1: C43, NO QSPI"},
-      {0,"C43 Layout L1: SIM"},
-      {0,"V43RT"},        //3
-      {0,"V43LT"},        //4
-      {0,"C43"},          //5
-      {0,"DM42"},         //6
-      {0,"C43AltA"},      //7
-      {0,"C43AltB"},      //8
-      {0,"WP 43S Pilot"}, //9
-      {0,"No USER keys"}, //10
+      {0,USER_V43,     "V43: Vintage, L operators, 2 top R shifts"},          //3
+      {0,USER_E43,     "E43: R operators, 2 L shifts"},          //4
+      {0,USER_C43,     "C43: Single Shift Classic"},          //5
+      {0,USER_DM42,    "DM42: Compatible layout"},         //6
+      {0,USER_C43ALTA, "C43AltA: Allschwil alternative"},      //7
+      {0,USER_C43ALT,  "C43 ALT: Two shift alternative"},      //8   //used to be ALT B
+      {0,USER_43S,     "WP 43S Pilot: Compatibility layout"}, //9
+      {0,USER_KRESET,  "USER keys cleaned"}, //10
+      {0,USER_D43,     "D43 R operators, double shift keys L"},          //11
+      {0,100,"Error List"}
     };
 
-void fnShowVersion(uint8_t option) {
-#define VERSION1 "_108_08e"
 
-    #define L1L2    "" //L1
-    char *build_str = "C43" L1L2 VERSION1 ", " __DATE__;
-    fnStrtoX(build_str);
-    fnStore(102);
-    fnDrop(0);
-        
-    #ifdef PC_BUILD
-        fnStrtoX(indexOfMsgs[2].itemName);
-    #else
-      #if defined(TWO_FILE_PGM)
-        fnStrtoX(indexOfMsgs[0].itemName);
-      #else
-        #if !defined(TWO_FILE_PGM)
-          fnStrtoX(indexOfMsgs[1].itemName);
-        #endif
-      #endif
-
-    #endif
-    fnStore(103);
-    fnDrop(0);
-
-    if(option > 2 && option < 20) {
-      fnStrtoX(indexOfMsgs[option].itemName);
-      fnStore(104);
-      fnDrop(0);
-    } else {
-      fnStrtoX(indexOfMsgs[10].itemName);
-      fnStore(104);
-      fnDrop(0);
+uint16_t searchMsg(uint16_t idStr) {
+  uint_fast16_t n = nbrOfElements(indexOfMsgs);
+  uint_fast16_t i;
+  for (i = 0; i < n; i++) {
+    if( indexOfMsgs[i].count == idStr) {
+       break;
     }
+  }
+return i;
+}
 
 
+void fnShowVersion(uint8_t option) {  //KEYS VERSION LOADED
+    strcpy(errorMessage, indexOfMsgs[searchMsg(option)].itemName);
+    temporaryInformation = TI_KEYS;
 }
 
 
@@ -1080,12 +1064,14 @@ void fnReset(uint16_t confirmation) {
       
       
     //JM Default USER
-    fnUserJM(USER_RESET);                                      //JM USER
+    fnUserJM(USER_ARESET);                                      //JM USER
+    fnUserJM(USER_MRESET);                                      //JM USER
+    fnUserJM(USER_KRESET);                                      //JM USER
 //    kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].fShifted    = KEY_TYPCON_DN;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 
-
+    fnVersion(0);
 
     // The following lines are test data
   #ifndef SAVE_SPACE_DM42_14
@@ -1136,52 +1122,9 @@ void fnReset(uint16_t confirmation) {
       refreshDebugPanel();
     #endif //  (DEBUG_PANEL == 1)
 
+
+
     //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
-
-
-
-
-    fnShowVersion(100);
-    fnRESET_MyM_Mya();
-
-
-
-
-        
-//    TO_QSPI const numberstr indexOfStrings[] = {
-//      {0,"Reg 11,12 & 13 have: The 3 cubes = 3."},
-//      {1,"569936821221962380720"},
-//      {1,"-569936821113563493509"},
-//      {1,"-472715493453327032"},
-//
-//      {0,"Reg 15, 16 & 17 have: The 3 cubes = 42."},
-//      {1,"-80538738812075974"},
-//      {1,"80435758145817515"},
-//      {1,"12602123297335631"},
-//
-//      {0,"37 digits of pi, Reg19 / Reg20."},
-//      {1,"2646693125139304345"},
-//      {1,"842468587426513207"},
-//
-//      {0,"Primes: Carol"},
-//      {1,"18014398241046527"},
-//
-//      {0,"Primes: Kynea"},
-//      {1,"18446744082299486207"},
-//
-//      {0,"Primes: repunit"},
-//      {1,"7369130657357778596659"},
-//
-//      {0,"Primes: Woodal"},
-//      {1,"195845982777569926302400511"},
-//
-//      {0,"Primes: Woodal"},
-//      {1,"4776913109852041418248056622882488319"},
-//
-//      {0,"Primes: Woodal"},
-//      {1,"225251798594466661409915431774713195745814267044878909733007331390393510002687"},
-//    };
-
     uint_fast16_t n = nbrOfElements(indexOfStrings);
     for (uint_fast16_t i = 0; i < n; i++) {
       if( indexOfStrings[i].itemType== 0) {
@@ -1190,7 +1133,7 @@ void fnReset(uint16_t confirmation) {
       if( indexOfStrings[i].itemType== 1) {
         fnStrInputLongint(indexOfStrings[i].itemName);        
       }
-      fnStore(i+10);
+      fnStore(indexOfStrings[i].count);
       fnDrop(0);
     }
 

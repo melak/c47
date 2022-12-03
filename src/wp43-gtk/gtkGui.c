@@ -3011,7 +3011,7 @@ void setupUI(void) {
   // Frame around the f key
   lblFKey2 = gtk_label_new("");  
   gtk_widget_set_name(lblFKey2, "fSoftkeyArea");
-  if(kbd_usr[27].primary == KEY_fg) {                        //JM only draw the thin lines under the expansion f/g keys if the origianl fg key is used.
+  if(kbd_usr[10].primary == ITM_SHIFTf) {                        //JM only draw the thin lines under the expansion f/g keys if the origianl fg key is used.
     gtk_widget_set_size_request(lblFKey2, 61-8-2-2,  5-2);
     gtk_fixed_put(GTK_FIXED(grid), lblFKey2, 350+4+2, 563-1);
   }
@@ -3019,7 +3019,7 @@ void setupUI(void) {
   // Frame around the g key
   lblGKey2 = gtk_label_new("");
   gtk_widget_set_name(lblGKey2, "gSoftkeyArea");
-  if(kbd_usr[27].primary == KEY_fg) {                        //JM only draw the thin lines under the expansion f/g keys if the origianl fg key is used.
+  if(kbd_usr[11].primary == ITM_SHIFTg) {                        //JM only draw the thin lines under the expansion f/g keys if the origianl fg key is used.
     gtk_widget_set_size_request(lblGKey2, 61-8-2-2,  5-2);
     gtk_fixed_put(GTK_FIXED(grid), lblGKey2, 350+4+2 + DELTA_KEYS_X, 563-1);
   }

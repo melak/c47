@@ -42,7 +42,7 @@ testPgms: build.sim
 	cp build.sim/src/generateTestPgms/testPgms.bin res/dmcp/
 
 build.rel/wiki: build.rel
-	git clone https://gitlab.com/Over_score/wp43s.wiki.git build.rel/wiki
+	git clone https://gitlab.com/rpncalculators/c43.wiki.git build.rel/wiki
 
 ifeq ($(CI_COMMIT_TAG),)
   WIN_DIST_DIR = wp43-windows
@@ -84,6 +84,7 @@ dist_dm42: dmcp testPgms build.rel/wiki
 	mv build.dmcp/src/wp43-dmcp/WP43_qspi.bin build.dmcp/src/wp43-dmcp/C43_qspi.bin
 	cp build.dmcp/src/wp43-dmcp/C43.pgm build.dmcp/src/wp43-dmcp/C43_qspi.bin $(DM_DIST_DIR)
 	cp -r res/offimg $(DM_DIST_DIR)
+	cp -r res/PROGRAMS $(DM_DIST_DIR)
 	cp res/dmcp/original_DM42_keymap.bin res/dmcp/testPgms.bin $(DM_DIST_DIR)
 	cp build.rel/wiki/Installation-on-a-DM42.md $(DM_DIST_DIR)/readme.txt
 	zip -r wp43-dm42.zip $(DM_DIST_DIR)

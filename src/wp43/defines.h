@@ -24,6 +24,9 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
+ #define VERSION1 "108_08f"
+
+
   #undef SAVE_SPACE_DM42
   #undef SAVE_SPACE_DM42_0
   #undef SAVE_SPACE_DM42_1
@@ -55,12 +58,12 @@
 
 //THESE ARE DMCP COMPILE OPTIONS
   #ifndef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT WHILE NOT USING QSPI
-    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
+    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
     #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
     #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
     #define SAVE_SPACE_DM42_2  //005672 bytes: XEQM
     #define SAVE_SPACE_DM42_6  //001648 bytes: ELEC functions
-    #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42; USER_C43ALTA; USER_C43_ALTB;
+    #define SAVE_SPACE_DM42_7  //002144 bytes: KEYS USER_DM42; USER_C43ALTA; USER_C43_ALT;
   //#define SAVE_SPACE_DM42_8  //007136 bytes: Standard Flag-, Register-, Font- Browser functions
   //#define SAVE_SPACE_DM42_9  //004448 bytes: SHOW (new C43)
   //#define SAVE_SPACE_DM42_10 //005800 bytes: WP43S programming ...
@@ -73,7 +76,7 @@
   #endif
 
   #ifdef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
-    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_V43LT, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
+    #define SAVE_SPACE_DM42    //013968 bytes: KEYS (USER_E43, USER_V43, USER_C43, USER_43S); STAT DEMOS 0,1,2; 
 //    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
 //    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
 //    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
@@ -819,19 +822,20 @@ typedef enum {
 #define TI_CALCY                                  40
 #define TI_CALCX2                                 41
 #define TI_STATISTIC_LR                           42
-  #define TI_STATISTIC_HISTO                        43
-  #define TI_SA                                     44
-  #define TI_INACCURATE                             45
-  #define TI_UNDO_DISABLED                          46
-  #define TI_VIEW                                   47
-  #define TI_SOLVER_VARIABLE                        48
-  #define TI_SOLVER_FAILED                          49
-  #define TI_ACC                                    50
-  #define TI_ULIM                                   51
-  #define TI_LLIM                                   52
-  #define TI_INTEGRAL                               53
-  #define TI_1ST_DERIVATIVE                         54
-  #define TI_2ND_DERIVATIVE                         55
+#define TI_STATISTIC_HISTO                        43
+#define TI_SA                                     44
+#define TI_INACCURATE                             45
+#define TI_UNDO_DISABLED                          46
+#define TI_VIEW                                   47
+#define TI_SOLVER_VARIABLE                        48
+#define TI_SOLVER_FAILED                          49
+#define TI_ACC                                    50
+#define TI_ULIM                                   51
+#define TI_LLIM                                   52
+#define TI_INTEGRAL                               53
+#define TI_1ST_DERIVATIVE                         54
+#define TI_2ND_DERIVATIVE                         55
+#define TI_KEYS                                   56
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed
