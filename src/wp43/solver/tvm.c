@@ -33,6 +33,10 @@
 #include "stack.h"
 #include "wp43.h"
 
+#if !defined(TESTSUITE_BUILD)
+  TO_QSPI static const char bugScreenNotForTvm[] = "In function fnTvmVar: this variable is not intended for TVM application!";
+#endif //TESTSUITE_BUILD
+
 void fnTvmVar(uint16_t variable) {
   #if !defined(TESTSUITE_BUILD)
     switch(variable) {
@@ -120,7 +124,7 @@ void fnTvmVar(uint16_t variable) {
       }
 
       default: {
-        displayBugScreen("In function fnTvmVar: this variable is not intended for TVM application!");
+        displayBugScreen(bugScreenNotForTvm);
       }
     }
   #endif // !TESTSUITE_BUILD

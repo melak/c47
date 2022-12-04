@@ -63,7 +63,7 @@ dist_windows: testPgms build.rel/wiki
 	cp res/c43_pre.css $(WIN_DIST_DIR)/res/
 	cp res/dm42l_L1.png $(WIN_DIST_DIR)/res/
 	cp res/fonts/C43__StandardFont.ttf $(WIN_DIST_DIR)/
-	cp build.rel/wiki/Installation-on-Windows.md $(WIN_DIST_DIR)/readme.txt
+#	cp build.rel/wiki/Installation-on-Windows.md $(WIN_DIST_DIR)/readme.txt
 	zip -r wp43-windows.zip $(WIN_DIST_DIR)
 	rm -rf $(WIN_DIST_DIR)
 
@@ -86,6 +86,6 @@ dist_dm42: dmcp testPgms build.rel/wiki
 	cp -r res/offimg $(DM_DIST_DIR)
 	cp -r res/PROGRAMS $(DM_DIST_DIR)
 	cp res/dmcp/original_DM42_keymap.bin res/dmcp/testPgms.bin $(DM_DIST_DIR)
-	cp build.rel/wiki/Installation-on-a-DM42.md $(DM_DIST_DIR)/readme.txt
+#	cp build.rel/wiki/Installation-on-a-DM42.md $(DM_DIST_DIR)/readme.txt
 	zip -r wp43-dm42.zip $(DM_DIST_DIR)
 	rm -rf $(DM_DIST_DIR)

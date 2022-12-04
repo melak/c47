@@ -39,6 +39,10 @@
 
 
 #if !defined(TESTSUITE_BUILD)
+
+TO_QSPI static const char bugScreenUnknownOperator[] = "In function _parseWord: Unknown operator appeared!";
+TO_QSPI static const char bugScreenUnknownFormulaParserMode[] = "In function _parseWord: Unknown mode of formula parser!";
+
   typedef struct {
     char     name[16];
     uint16_t opCode;
@@ -1164,7 +1168,7 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
           // label or parameter separator will be skipped
         }
         else {
-          displayBugScreen("In function _parseWord: Unknown operator appeared!");
+          displayBugScreen(bugScreenUnknownOperator);
         }
       }
       else if(parserHint == PARSER_HINT_FUNCTION) {
@@ -1195,7 +1199,7 @@ static void _parseWord(char *strPtr, uint16_t parseMode, uint16_t parserHint, ch
       }
 
       default: {
-      displayBugScreen("In function _parseWord: Unknown mode of formula parser!");
+      displayBugScreen(bugScreenUnknownFormulaParserMode);
   }
 }
   }

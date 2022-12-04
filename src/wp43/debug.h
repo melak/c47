@@ -71,14 +71,14 @@
   void   formatComplex34Debug               (char *str, void *addr);
 #endif // (DEBUG_PANEL == 1) || (DEBUG_REGISTER_L == 1)  || (DEBUG_STAT >= 1)
 
-char *getDataTypeName                     (uint16_t dt, bool_t article, bool_t padWithBlanks);
-char *getRegisterDataTypeName             (calcRegister_t regist, bool_t article, bool_t padWithBlanks);
-char *getRegisterTagName                  (calcRegister_t regist, bool_t padWithBlanks);
-char *getShortIntegerModeName             (uint16_t im);
-char *getAngularModeName                  (angularMode_t angularMode);
-char *getCurveFitModeName                 (uint16_t selection);
-char *getCurveFitModeNames                (uint16_t selection);
-char *getCurveFitModeFormula              (uint16_t selection);
+const char *getDataTypeName               (uint16_t dt, bool_t article, bool_t padWithBlanks);
+const char *getRegisterDataTypeName       (calcRegister_t regist, bool_t article, bool_t padWithBlanks);
+const char *getRegisterTagName            (calcRegister_t regist, bool_t padWithBlanks);
+const char *getShortIntegerModeName       (uint16_t im);
+const char *getAngularModeName            (angularMode_t angularMode);
+const char *getCurveFitModeName           (uint16_t selection);
+const char *getCurveFitModeNames          (uint16_t selection);
+const char *getCurveFitModeFormula        (uint16_t selection);
 char *eatSpacesEnd                        (const char * ss);
 char *eatSpacesMid                        (const char * ss);
 
