@@ -823,8 +823,6 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
 
-//---KEYS PROFILE: V43 LT
-//------------------------
   #ifndef SAVE_SPACE_DM42 
     case USER_E43:
         fnUserJM(USER_KRESET);
@@ -904,10 +902,22 @@ void fnUserJM(uint16_t jmUser) {
         kbd_usr[33].primaryAim     = ITM_Z;
 
         Norm_Key_00_VAR        = ITM_USERMODE;
-        fnRefreshState();                                 //drJM
+        fnRefreshState();
         fnSetFlag(FLAG_USER);
       break;
     #endif //SAVE_SPACE_DM42 
+
+
+    #ifndef SAVE_SPACE_DM42 
+        case USER_N43:          //USER
+          fnUserJM(USER_KRESET);
+          fnShowVersion(USER_N43);
+
+        fnRefreshState();
+        fnSetFlag(FLAG_USER);
+      break;
+    #endif //SAVE_SPACE_DM42 
+
 
 
 
@@ -918,19 +928,19 @@ void fnUserJM(uint16_t jmUser) {
 
           kbd_usr[0].primary      = ITM_1ONX;
           kbd_usr[0].fShifted     = ITM_YX;
-          kbd_usr[0].gShifted     = ITM_HASH_JM/*ITM_toINT*/;
+          kbd_usr[0].gShifted     = ITM_TGLFRT;
 
           kbd_usr[1].primary      = ITM_SQUAREROOTX;
           kbd_usr[1].fShifted     = ITM_SQUARE;
-          kbd_usr[1].gShifted     = ITM_ms;
+          kbd_usr[1].gShifted     = ITM_HASH_JM/*ITM_toINT*/;
 
           kbd_usr[2].primary      = ITM_LOG10;
           kbd_usr[2].fShifted     = ITM_10x;
-          kbd_usr[2].gShifted     = ITM_dotD;
+          kbd_usr[2].gShifted     = ITM_ms;
 
           kbd_usr[3].primary      = ITM_LN;
           kbd_usr[3].fShifted     = ITM_EXP;
-          kbd_usr[3].gShifted     = ITM_TGLFRT;
+          kbd_usr[3].gShifted     = ITM_dotD;
 
           kbd_usr[4].primary      = ITM_SHIFTf;
           kbd_usr[4].fShifted     = ITM_NULL;
@@ -1000,7 +1010,7 @@ void fnUserJM(uint16_t jmUser) {
           kbd_usr[26].primaryTam     = ITM_UP1;
 
           kbd_usr[27].primary     = ITM_MULT;       //ex-f/g
-          kbd_usr[27].fShifted    = -MNU_STK;
+          kbd_usr[27].fShifted    = -MNU_FIN;
           kbd_usr[27].gShifted    = -MNU_ALPHAFN;
           kbd_usr[27].keyLblAim     = ITM_CROSS;
           kbd_usr[27].primaryAim     = ITM_W;
@@ -1043,8 +1053,6 @@ void fnUserJM(uint16_t jmUser) {
 
 
 
-//---KEYS PROFILE: V43 RT
-//------------------------
     #ifndef SAVE_SPACE_DM42 
       case USER_D43:          //USER
         fnUserJM(USER_KRESET);
@@ -1147,7 +1155,7 @@ void fnUserJM(uint16_t jmUser) {
           kbd_usr[22].primaryTam    = ITM_UP1;
 
           kbd_usr[31].primary       = ITM_SUB;       //ex-f/g
-          kbd_usr[31].fShifted      = -MNU_STK;
+          kbd_usr[31].fShifted      = -MNU_FIN;
           kbd_usr[31].gShifted      = -MNU_ALPHAFN;
           kbd_usr[31].keyLblAim     = ITM_MINUS;
           kbd_usr[31].fShiftedAim   = ITM_MINUS;
@@ -1276,10 +1284,12 @@ void fnUserJM(uint16_t jmUser) {
 
   case USER_MRESET:                                              //USER_KRESET 26
     fnRESET_MyM();
+    fnShowVersion(USER_MRESET);
     break;
 
   case USER_ARESET:                                              //USER_KRESET 26
     fnRESET_Mya();
+    fnShowVersion(USER_ARESET);
     break;
 
   case USER_KRESET:                                              //USER_KRESET 26

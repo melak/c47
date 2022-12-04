@@ -46,6 +46,7 @@
 #include "recall.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "saveRestoreCalcState.h"
 #include "screen.h"
 #include "softmenus.h"
 #include "solver/equation.h"
@@ -692,18 +693,20 @@ void restoreStats(void){
 
 
     TO_QSPI const numberstr indexOfMsgs[] = {
-      {0,USER_V43,     "V43: Vintage, L operators, 2 top R shifts"},          //3
-      {0,USER_E43,     "E43: R operators, 2 L shifts"},          //4
-      {0,USER_C43,     "C43: Single Shift Classic"},          //5
-      {0,USER_DM42,    "DM42: Compatible layout"},         //6
-      {0,USER_C43ALTA, "C43AltA: Allschwil alternative"},      //7
-      {0,USER_C43ALT,  "C43 ALT: Two shift alternative"},      //8   //used to be ALT B
-      {0,USER_43S,     "WP 43S Pilot: Compatibility layout"}, //9
-      {0,USER_KRESET,  "USER keys cleaned"}, //10
-      {0,USER_D43,     "D43 R operators, double shift keys L"},          //11
+      {0,USER_C43,     "C43: Final classic single shift (DM42 mould)"    },
+      {0,USER_D43,     "D43: Exp 2 shifts R (43S mould) /x-+ R"          },
+      {0,USER_E43,     "E43: Exp 2 shifts L /x-+ R"                      },
+      {0,USER_N43,     "N43: Exp 2 shft L (32 mould) /x-+ R " STD_LEFT_ARROW STD_UP_ARROW STD_DOWN_ARROW STD_RIGHT_ARROW " top"  },
+      {0,USER_V43,     "V43: Exp Vintage 2 shifts TopR -+x/ L"           },
+      {0,USER_C43ALTA, "C43AltA: OLD 2 shift (43S mould) Allschwil alt." },
+      {0,USER_C43ALT,  "C43 ALT: Final 2 shift (43S mould) alternative"  },
+      {0,USER_DM42,    "DM42: Final Compatibility layout"                },
+      {0,USER_43S,     "WP 43S Pilot: Final Compatibility layout"        },
+      {0,USER_KRESET,  "All USER keys cleaned"                           },
+      {0,USER_MRESET,  "MyMenu menu cleaned"                             },
+      {0,USER_ARESET,  "My" STD_alpha " menu cleaned"                    },
       {0,100,"Error List"}
     };
-
 
 uint16_t searchMsg(uint16_t idStr) {
   uint_fast16_t n = nbrOfElements(indexOfMsgs);
@@ -1124,7 +1127,7 @@ void fnReset(uint16_t confirmation) {
 
 
 
-    //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
+    //JM TEMPORARY TEST DATA IN REGISTERS
     uint_fast16_t n = nbrOfElements(indexOfStrings);
     for (uint_fast16_t i = 0; i < n; i++) {
       if( indexOfStrings[i].itemType== 0) {
@@ -1137,6 +1140,10 @@ void fnReset(uint16_t confirmation) {
       fnDrop(0);
     }
 
+    //Autoloading of C43Auto.sav
+    #if defined(DMCP_BUILD)
+      fnLoadAuto();
+    #endif
 
     doRefreshSoftMenu = true;     //jm dr
     last_CM = 253;
