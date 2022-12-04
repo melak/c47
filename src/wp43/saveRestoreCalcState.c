@@ -49,10 +49,12 @@
 
 #include "wp43.h"
 
-#define BACKUP_VERSION         777  // Save screen
+#define BACKUP_VERSION       778  // file version number
+#define configFileVersion    10000002 // arbitrary starting point version 10 000 001
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
+static uint32_t loadedVersion = 0;
 static char *tmpRegisterString = NULL;
 
 static void save(const void *buffer, uint32_t size, void *stream) {
@@ -904,17 +906,33 @@ static void saveMatrixElements(calcRegister_t regist, void *stream) {
 }
 
 
+static void doSave(uint16_t saveType);
+
+void fnSaveAuto(void) {
+  doSave(autoSave);
+}
 
 void fnSave(uint16_t unusedButMandatoryParameter) {
+  doSave(manualSave);
+}
+
+
+void doSave(uint16_t saveType) {
   calcRegister_t regist;
   uint32_t i;
 
   #if defined(DMCP_BUILD)
     FRESULT result;
-
+    char fileName[30];
+    fileName[0] = 0;
+    if(saveType == manualSave) {
+      strcpy(fileName, "SAVFILES\\C43.sav");
+    } else if(saveType == autoSave) {
+      strcpy(fileName, "SAVFILES\\C43auto.sav");
+    } 
     sys_disk_write_enable(1);
     check_create_dir("SAVFILES");
-    result = f_open(BACKUP, "SAVFILES\\C43.sav", FA_CREATE_ALWAYS | FA_WRITE);
+    result = f_open(BACKUP, fileName, FA_CREATE_ALWAYS | FA_WRITE);
     if(result != FR_OK) {
       sys_disk_write_enable(0);
       return;
@@ -928,6 +946,13 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
       return;
     }
   #endif // DMCP_BUILD
+  // SAV file version number
+
+  sprintf(tmpString, "SAVE_FILE_REVISION\n%" PRIu8 "\n", (uint8_t)0);
+  save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "C43_save_file_00\n%" PRIu32 "\n", (uint32_t)configFileVersion);
+  save(tmpString, strlen(tmpString), BACKUP);
+
 
   // Global registers
   sprintf(tmpString, "GLOBAL_REGISTERS\n%" PRIu16 "\n", (uint16_t)(FIRST_LOCAL_REGISTER));
@@ -2147,12 +2172,22 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 
 
 
-void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
+void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t loadType) {
   #if defined(DMCP_BUILD)
-    if(f_open(BACKUP, "SAVFILES\\C43.sav", FA_READ) != FR_OK) {
+    char fileName[30];
+    fileName[0] = 0;
+    if(loadType == manualLoad) {
+      strcpy(fileName, "SAVFILES\\C43.sav");
+    } else if(loadType == autoLoad) {
+      strcpy(fileName, "SAVFILES\\C43auto.sav");
+    }
+    if(f_open(BACKUP, fileName, FA_READ) != FR_OK) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        moreInfoOnError("In function fnLoad: cannot find or read backup data file C43.sav", NULL, NULL, NULL);
+        char errMsg[200];
+        strcpy(errMsg,"In function fnLoad: cannot find or read backup data file ");
+        strcat(errMsg,fileName);
+        moreInfoOnError(errMsg, NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
@@ -2174,8 +2209,27 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
     }
   }
 
-  while(restoreOneSection(BACKUP, loadMode, s, n, d)) {
+
+  //Tentatively insist on perfect version match for autoloaded sav file
+  //  while doing no check on manual loading. This may allow manual loading of older files at risk
+  loadedVersion = 0;
+  if(loadType == autoLoad && loadMode == LM_ALL) {
+    readLine(BACKUP, tmpString);
+    if(strcmp(tmpString, "SAVE_FILE_REVISION") == 0) {
+      readLine(BACKUP, aimBuffer); // internal rev number (ignore now)
+      readLine(BACKUP, aimBuffer); // param
+      readLine(BACKUP, tmpString); // value
+      if(strcmp(aimBuffer, "C43_save_file_00") == 0) {
+        loadedVersion = stringToUint32(tmpString);
+      }    
+    }
   }
+
+  if(loadType == manualLoad || (loadType == autoLoad && loadedVersion == configFileVersion)) {
+    while(restoreOneSection(BACKUP, loadMode, s, n, d)) {
+    }
+  }
+
 
   lastErrorCode = ERROR_NONE;
 
@@ -2186,7 +2240,10 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
   #endif //DMCP_BUILD
 
   #if !defined(TESTSUITE_BUILD)
-    if(loadMode == LM_ALL) {
+    if(loadType == manualLoad && loadMode == LM_ALL) {
+      temporaryInformation = TI_BACKUP_RESTORED;
+    } else
+    if(loadType == autoLoad && loadedVersion == configFileVersion && loadMode == LM_ALL) {
       temporaryInformation = TI_BACKUP_RESTORED;
     }
   #endif // !TESTSUITE_BUILD
@@ -2195,8 +2252,13 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
 
 
 void fnLoad(uint16_t loadMode) {
-  doLoad(loadMode, 0, 0, 0);
+  doLoad(loadMode, 0, 0, 0, manualLoad);
 }
+
+void fnLoadAuto(void) {
+  doLoad(LM_ALL, 0, 0, 0, autoLoad);
+}
+
 
 #undef BACKUP
 
@@ -2211,6 +2273,10 @@ void fnDeleteBackup(uint16_t confirmation) {
       FRESULT result;
       sys_disk_write_enable(1);
       result = f_unlink("SAVFILES\\C43.sav");
+      if(result != FR_OK && result != FR_NO_FILE && result != FR_NO_PATH) {
+        displayCalcErrorMessage(ERROR_IO, ERR_REGISTER_LINE, REGISTER_X);
+      }
+      result = f_unlink("SAVFILES\\C43auto.sav");
       if(result != FR_OK && result != FR_NO_FILE && result != FR_NO_PATH) {
         displayCalcErrorMessage(ERROR_IO, ERR_REGISTER_LINE, REGISTER_X);
       }

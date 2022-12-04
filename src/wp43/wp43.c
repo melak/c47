@@ -23,6 +23,7 @@
 #include "keyboard.h"
 #include "longIntegerType.h"
 #include "memory.h"
+#include "saveRestoreCalcState.h"
 #include "screen.h"
 #include "softmenus.h"
 #include "timer.h"
@@ -966,5 +967,6 @@ char                   plotStatMx[8];
         }
       }
     }
+  fnSaveAuto();
   }
 #endif // DMCP_BUILD
