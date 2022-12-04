@@ -957,7 +957,7 @@
       }
 
       default: {
-        sprintf(errorMessage, "In function calcModeTam: %" PRIu16 " is an unexpected value for tam.mode!", tam.mode);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "calcModeTam", tam.mode, "tam.mode");
         displayBugScreen(errorMessage);
         return;
       }

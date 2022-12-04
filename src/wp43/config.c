@@ -374,7 +374,8 @@ void fnRoundingMode(uint16_t RM) {
     }
 
     default: {
-      sprintf(errorMessage, "In function fnRoundingMode: %d is an unexpected value for RM! Must be from 0 to 6", RM);
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "fnRoundingMode", RM, "RM");
+      sprintf(errorMessage + strlen(errorMessage), "Must be from 0 to 6");
       displayBugScreen(errorMessage);
       break;
     }

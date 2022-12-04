@@ -56,7 +56,7 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
         break;
       }
       default: {
-        sprintf(errorMessage, "In function fnToRect: %" PRIu32 " is an unexpected dataTypeX value!", dataTypeX);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgUnexpectedSValue], "fnToRect", dataTypeX, "dataTypeX");
         displayBugScreen(errorMessage);
       }
     }
@@ -79,7 +79,7 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, "In function fnToRect: %" PRIu32 " is an unexpected dataTypeY value!", dataTypeY);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgUnexpectedSValue], "fnToRect", dataTypeY, "dataTypeY");
         displayBugScreen(errorMessage);
       }
     }

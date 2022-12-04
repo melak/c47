@@ -34,7 +34,21 @@
 
 #include "wp43.h"
 
-TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
+
+TO_QSPI const char commonBugScreenMessages[NUMBER_OF_BUG_SCREEN_MESSAGES][SIZE_OF_EACH_BUG_SCREEN_MESSAGE] = {
+/*  0 */  "In function %s:%d is an unexpected value for %s!",
+/*  1 */  "In function %s: unexpected calcMode value (%" PRIu8 ") while processing key %s!",
+/*  2 */  "In function reallocateRegister: %" PRIu16 " is an unexpected numByte value for %s! It should be %s=%" PRIu16 "!",
+/*  3 */  "In function %s: no named variables defined!",
+/*  4 */  "In function %s: %d is an unexpected value returned by findGlyph!",
+/*  5 */  "In function %s: %" PRIu32 " is an unexpected %s value!",
+/*  6 */  "In function %s: data type %s is unknown!",
+/*  7 */  "In function %s: regist=%" PRId16 " must be less than %d!",
+/*  8 */  "In function %s: %s %" PRId16 " is not defined! Must be from 0 to %" PRIu16,
+/*  9 */  "In function %s: unexpected case while processing key %s! %" PRIu8 " is an unexpected value for rbrMode.",
+};
+
+TO_QSPI const char errorMessages[NUMBER_OF_ERROR_CODES][SIZE_OF_EACH_ERROR_MESSAGE] = {
 /*  0 */  "No error",
 /*  1 */  "An argument exceeds the function domain",
 /*  2 */  "Bad time or date input",
@@ -79,7 +93,7 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /* 41 */  "Large " STD_DELTA " and opposite signs, may be a pole",
 /* 42 */  "Solver reached local extremum, no root",
 /* 43 */  STD_GREATER_EQUAL "1 initial guess lies out of the domain",
-/* 44 */  "The function value look constant",
+/* 44 */  "The function value look static constant",
 /* 45 */  "Syntax error in this equation",
 /* 46 */  "This equation formula is too complex",
 /* 47 */  "This item cannot be assigned here",
@@ -89,7 +103,6 @@ TO_QSPI const char *errorMessages[NUMBER_OF_ERROR_CODES] = {
 /* 51 */  "No global label in this program",
 /* 52 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
 };
-
 
 
 #if defined(PC_BUILD)
@@ -189,17 +202,19 @@ void fnErrorMessage(uint16_t unusedButMandatoryParameter) {
 
 void displayCalcErrorMessage(uint8_t errorCode, calcRegister_t errMessageRegisterLine, calcRegister_t errRegisterLine) {
   if(errorCode >= NUMBER_OF_ERROR_CODES || errorCode == 0) {
-    sprintf(errorMessage, "In function displayCalcErrorMessage: %d is an unexpected value for errorCode!", errorCode);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "displayCalcErrorMessage", errorCode, "errorCode");
     displayBugScreen(errorMessage);
   }
 
   else if(errMessageRegisterLine > REGISTER_T || errMessageRegisterLine < REGISTER_X) {
-    sprintf(errorMessage, "In function displayCalcErrorMessage: %d is an unexpected value for errMessageRegisterLine! Must be from 100 (register X) to 103 (register T)", errMessageRegisterLine);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "displayCalcErrorMessage", errMessageRegisterLine, "errMessageRegisterLine");
+    sprintf(errorMessage + strlen(errorMessage), "Must be from 100 (register X) to 103 (register T)");
     displayBugScreen(errorMessage);
   }
 
   else if(errRegisterLine > REGISTER_T || errRegisterLine < REGISTER_X) {
-    sprintf(errorMessage, "In function displayCalcErrorMessage: %d is an unexpected value for errRegisterLine! Must be from 100 (register X) to 103 (register T)", errRegisterLine);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "displayCalcErrorMessage", errRegisterLine, "errRegisterLine");
+    sprintf(errorMessage + strlen(errorMessage), "Must be from 100 (register X) to 103 (register T)");
     displayBugScreen(errorMessage);
   }
 
