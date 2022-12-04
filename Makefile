@@ -10,6 +10,7 @@ endif
 clean:
 	rm -f wp43$(EXE)
 	rm -rf wp43-windows* wp43-macos* wp43-dm42*
+	rm -rf c43-windows* c43-macos* c43-dm42*
 	rm -rf build build.sim build.dmcp build.rel
 
 build.sim:
@@ -57,14 +58,18 @@ endif
 dist_windows: testPgms build.rel/wiki
 	cd build.rel && ninja sim
 	mkdir -p $(WIN_DIST_DIR)/res/dmcp $(WIN_DIST_DIR)/res/tone
-	cp build.rel/src/wp43-gtk/wp43.exe $(WIN_DIST_DIR)/
+	mv build.rel/src/wp43-gtk/wp43.exe build.rel/src/wp43-gtk/c43.exe
+	cp build.rel/src/wp43-gtk/c43.exe $(WIN_DIST_DIR)/
 	cp res/tone/*.wav $(WIN_DIST_DIR)/res/tone/
 	cp res/dmcp/testPgms.bin $(WIN_DIST_DIR)/res/dmcp/
 	cp res/c43_pre.css $(WIN_DIST_DIR)/res/
+	cp res/c43.reg $(WIN_DIST_DIR)/
+	cp res/c43.cmd $(WIN_DIST_DIR)/
+	cp -r res/PROGRAMS $(WIN_DIST_DIR)/res/
 	cp res/dm42l_L1.png $(WIN_DIST_DIR)/res/
 	cp res/fonts/C43__StandardFont.ttf $(WIN_DIST_DIR)/
 	cp build.rel/wiki/Installation-on-Windows.md $(WIN_DIST_DIR)/readme.txt
-	zip -r wp43-windows.zip $(WIN_DIST_DIR)
+	zip -r c43-windows.zip $(WIN_DIST_DIR)
 	rm -rf $(WIN_DIST_DIR)
 
 dist_macos: testPgms build.rel
@@ -75,7 +80,7 @@ dist_macos: testPgms build.rel
 	cp res/c43_pre.css $(MAC_DIST_DIR)/res/
 	cp res/dm42l_L1.png $(MAC_DIST_DIR)/res/
 	cp res/fonts/C43__StandardFont.ttf $(MAC_DIST_DIR)/
-	zip -r wp43-macos.zip $(MAC_DIST_DIR)
+	zip -r c43-macos.zip $(MAC_DIST_DIR)
 	rm -rf $(MAC_DIST_DIR)
 
 dist_dm42: dmcp testPgms build.rel/wiki
@@ -87,5 +92,5 @@ dist_dm42: dmcp testPgms build.rel/wiki
 	cp -r res/PROGRAMS $(DM_DIST_DIR)
 	cp res/dmcp/original_DM42_keymap.bin res/dmcp/testPgms.bin $(DM_DIST_DIR)
 	cp build.rel/wiki/Installation-on-a-DM42.md $(DM_DIST_DIR)/readme.txt
-	zip -r wp43-dm42.zip $(DM_DIST_DIR)
+	zip -r c43-dm42.zip $(DM_DIST_DIR)
 	rm -rf $(DM_DIST_DIR)
