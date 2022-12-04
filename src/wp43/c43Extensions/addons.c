@@ -349,7 +349,9 @@ void fnFrom_ms(uint16_t unusedButMandatoryParameter){
       if(tmpString100_OUT[0] != 0) {
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
         stringToReal34(tmpString100_OUT,REGISTER_REAL34_DATA(REGISTER_X));
-        printf("\n ------- 003 >>>%s<<<\n",tmpString100_OUT);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          printf("\n ------- 003 >>>%s<<<\n",tmpString100_OUT);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
     }
 
@@ -413,7 +415,7 @@ void fnTo_ms(uint16_t unusedButMandatoryParameter) {
     break;
 
   default:
-    sprintf(errorMessage, "In function fnTo_ms: unexpected calcMode value (%" PRIu8 ") while processing key .ms!", calcMode);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnTo_ms", calcMode, ".ms");
     displayBugScreen(errorMessage);
   }
 #endif // !TESTSUITE_BUILD
@@ -753,7 +755,9 @@ void fnDRG(uint16_t unusedButMandatoryParameter) {
   if(getRegisterDataType(REGISTER_X) == dtComplex34) {
     goto to_return;
   } 
-printf("@@@@\n");
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    printf("@@@@\n");
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
   uint16_t dest = 9999;
 

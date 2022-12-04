@@ -41,7 +41,7 @@
 
 #include "wp43.h"
 
-const reservedVariableHeader_t allReservedVariables[] = { // MUST be in the same order as the reserved variables in item.c item 1165 and upwards
+TO_QSPI const reservedVariableHeader_t allReservedVariables[] = { // MUST be in the same order as the reserved variables in item.c item 1165 and upwards
 /*  0 */  { .header = {.pointerToRegisterData = WP43_NULL,  .dataType = 0,             .tag = 0,           .readOnly = 0, .notUsed = 0}, .reservedVariableName = {1, 'X',  0,   0,   0,   0,   0,   0} },
 /*  1 */  { .header = {.pointerToRegisterData = WP43_NULL,  .dataType = 0,             .tag = 0,           .readOnly = 0, .notUsed = 0}, .reservedVariableName = {1, 'Y',  0,   0,   0,   0,   0,   0} },
 /*  2 */  { .header = {.pointerToRegisterData = WP43_NULL,  .dataType = 0,             .tag = 0,           .readOnly = 0, .notUsed = 0}, .reservedVariableName = {1, 'Z',  0,   0,   0,   0,   0,   0} },
@@ -124,7 +124,8 @@ uint32_t getRegisterDataType(calcRegister_t regist) {
       #endif // PC_BUILD
     }
     else {
-      displayBugScreen("In function getRegisterDataType: no named variables defined!");
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgNoNamedVariables], "getRegisterDataType");
+      displayBugScreen(errorMessage);
     }
   }
 
@@ -139,7 +140,7 @@ uint32_t getRegisterDataType(calcRegister_t regist) {
   }
 
   else {
-    sprintf(errorMessage, "In function getRegisterDataType: regist=%" PRId16 " must be less than %d!", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "getRegisterDataType", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
 
@@ -193,7 +194,8 @@ dataBlock_t *getRegisterDataPointer(calcRegister_t regist) {
       #endif // PC_BUILD
     }
     else {
-      displayBugScreen("In function getRegisterDataPointer: no named variables defined!");
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgNoNamedVariables], "getRegisterDataPointer");
+      displayBugScreen(errorMessage);
     }
   }
 
@@ -203,7 +205,7 @@ dataBlock_t *getRegisterDataPointer(calcRegister_t regist) {
   }
 
   else {
-    sprintf(errorMessage, "In function getRegisterDataPointer: regist=%" PRId16 " must be less than %d!", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "getRegisterDataPointer", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
   return 0;
@@ -256,7 +258,8 @@ uint32_t getRegisterTag(calcRegister_t regist) {
       #endif // PC_BUILD
     }
     else {
-      displayBugScreen("In function getRegisterTag: no named variables defined!");
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgNoNamedVariables], "getRegisterTag");
+      displayBugScreen(errorMessage);
     }
   }
 
@@ -266,7 +269,7 @@ uint32_t getRegisterTag(calcRegister_t regist) {
   }
 
   else {
-    sprintf(errorMessage, "In function getRegisterTag: regist=%" PRId16 " must be less than %d!", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "getRegisterTag", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
   return 0;
@@ -323,7 +326,8 @@ void setRegisterDataType(calcRegister_t regist, uint16_t dataType, uint32_t tag)
       #endif // PC_BUILD
     }
     else {
-      displayBugScreen("In function setRegisterDataType: no named variables defined!");
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgNoNamedVariables], "setRegisterDataType");
+      displayBugScreen(errorMessage);
     }
   }
 
@@ -336,7 +340,7 @@ void setRegisterDataType(calcRegister_t regist, uint16_t dataType, uint32_t tag)
   }
 
   else {
-    sprintf(errorMessage, "In function setRegisterDataType: regist=%" PRId16 " must be less than %d!", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "setRegisterDataType", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
 }
@@ -400,7 +404,7 @@ void setRegisterDataPointer(calcRegister_t regist, void *memPtr) {
   }
 
   else {
-    sprintf(errorMessage, "In function setRegisterDataPointer: regist=%" PRId16 " must be less than %d!", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "setRegisterDataPointer", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
 }
@@ -452,7 +456,8 @@ void setRegisterTag(calcRegister_t regist, uint32_t tag) {
       #endif // PC_BUILD
     }
     else {
-      displayBugScreen("In function setRegisterDataInfo: no named variables defined!");
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgNoNamedVariables], "setRegisterDataInfo");
+      displayBugScreen(errorMessage);
     }
   }
 
@@ -460,7 +465,7 @@ void setRegisterTag(calcRegister_t regist, uint32_t tag) {
   }
 
   else {
-    sprintf(errorMessage, "In function setRegisterDataInfo: regist=%" PRId16 " must be less than %d!", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "setRegisterDataInfo", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
 }
@@ -945,7 +950,7 @@ void setRegisterMaxDataLength(calcRegister_t regist, uint16_t maxDataLen) {
         getRegisterDataPointer(regist)->dataMaxLength = maxDataLen;
       }
       else {
-        sprintf(errorMessage, "In function setRegisterMaxDataLength: named variable %" PRId16 " is not defined! Must be from 0 to %" PRIu16, (uint16_t)(regist - FIRST_NAMED_VARIABLE), (uint16_t)(numberOfNamedVariables - 1));
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgNotDefinedMustBe], "setRegisterMaxDataLength", "named variable", (uint16_t)(regist - FIRST_NAMED_VARIABLE), (uint16_t)(numberOfNamedVariables - 1));
         displayBugScreen(errorMessage);
       }
     }
@@ -962,7 +967,7 @@ void setRegisterMaxDataLength(calcRegister_t regist, uint16_t maxDataLen) {
   }
 
   else {
-    sprintf(errorMessage, "In function setRegisterMaxDataLength: regist=%" PRId16 " must be less than %d!", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "setRegisterMaxDataLength", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
 }
@@ -982,7 +987,7 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
         db = (dataBlock_t *)TO_PCMEMPTR(POINTER_TO_LOCAL_REGISTER(regist-FIRST_LOCAL_REGISTER)->pointerToRegisterData);
       }
       else {
-        sprintf(errorMessage, "In function getRegisterMaxDataLength: local register %" PRId16 " is not defined! Must be from 0 to %" PRIu8, (uint16_t)(regist - FIRST_LOCAL_REGISTER), (uint8_t)(currentNumberOfLocalRegisters - 1));
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgNotDefinedMustBe], "getRegisterMaxDataLength", "local register", (uint16_t)(regist - FIRST_LOCAL_REGISTER), (uint8_t)(currentNumberOfLocalRegisters - 1));
         displayBugScreen(errorMessage);
       }
     }
@@ -1004,7 +1009,7 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
         db = (dataBlock_t *)TO_PCMEMPTR(allNamedVariables[regist].header.pointerToRegisterData);
       }
       else {
-        sprintf(errorMessage, "In function getRegisterMaxDataLength: named variable %" PRId16 " is not defined! Must be from 0 to %" PRIu16, regist, (uint16_t)(numberOfNamedVariables - 1));
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgNotDefinedMustBe], "getRegisterMaxDataLength", "named variable", regist, (uint16_t)(numberOfNamedVariables - 1));
         displayBugScreen(errorMessage);
       }
     }
@@ -1021,7 +1026,7 @@ uint16_t getRegisterMaxDataLength(calcRegister_t regist) {
   }
 
   else {
-    sprintf(errorMessage, "In function getRegisterMaxDataLength: regist=%" PRId16 " must be less than %d!", regist, LAST_RESERVED_VARIABLE + 1);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "getRegisterMaxDataLength", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
 
@@ -1074,7 +1079,7 @@ uint16_t getRegisterFullSize(calcRegister_t regist) {
       return CONFIG_SIZE;
     }
     default: {
-      sprintf(errorMessage, "In function getRegisterFullSize: data type %s is unknown!", getDataTypeName(getRegisterDataType(regist), false, false));
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgDataTypeUnknown], "getRegisterFullSize", getDataTypeName(getRegisterDataType(regist), false, false));
       displayBugScreen(errorMessage);
       return 0;
   }
@@ -1459,7 +1464,7 @@ void copySourceRegisterToDestRegister(calcRegister_t sourceRegister, calcRegiste
       }
 
       default: {
-        sprintf(errorMessage, "In function copySourceRegisterToDestRegister: data type %s is unknown!", getDataTypeName(getRegisterDataType(sourceRegister), false, false));
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgDataTypeUnknown], "copySourceRegisterToDestRegister", getDataTypeName(getRegisterDataType(sourceRegister), false, false));
         displayBugScreen(errorMessage);
         sizeInBlocks = 0;
     }
@@ -1890,28 +1895,20 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
   uint16_t dataSizeWithDataLenBlocks = dataSizeWithoutDataLenBlocks;
 
   //printf("reallocateRegister: %d to %s tag=%u (%u bytes excluding maxSize) begin\n", regist, getDataTypeName(dataType, false, false), tag, dataSizeWithoutDataLenBlocks);
-  if(dataType == dtReal34 && dataSizeWithoutDataLenBlocks != REAL34_SIZE) {
-    sprintf(errorMessage, "In function reallocateRegister: %" PRIu16 " is an unexpected numByte value for a real34 or an angle34! It should be REAL34_SIZE=%" PRIu16 "!", dataSizeWithoutDataLenBlocks, (uint16_t)REAL34_SIZE);
+  if((dataType == dtReal34 || dataType == dtTime || dataType == dtDate) && dataSizeWithoutDataLenBlocks != REAL34_SIZE) {
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgNumByte], getDataTypeName(dataType, true, false), "REAL34_SIZE", dataSizeWithoutDataLenBlocks, (uint16_t)REAL34_SIZE);
     displayBugScreen(errorMessage);
   }
   else if(dataType == dtComplex34 && dataSizeWithoutDataLenBlocks != COMPLEX34_SIZE) {
-    sprintf(errorMessage, "In function reallocateRegister: %" PRIu16 " is an unexpected numByte value for a complex34! It should be COMPLEX34_SIZE=%" PRIu16 "!", dataSizeWithoutDataLenBlocks, (uint16_t)COMPLEX34_SIZE);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgNumByte], getDataTypeName(dataType, true, false), "COMPLEX34_SIZE", dataSizeWithoutDataLenBlocks, (uint16_t)COMPLEX34_SIZE);
     displayBugScreen(errorMessage);
   }
   else if(dataType == dtShortInteger && dataSizeWithoutDataLenBlocks != SHORT_INTEGER_SIZE) {
-    sprintf(errorMessage, "In function reallocateRegister: %" PRIu16 " is an unexpected numByte value for an integer! It should be SHORT_INTEGER_SIZE=%" PRIu16 "!", dataSizeWithoutDataLenBlocks, (uint16_t)SHORT_INTEGER_SIZE);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgNumByte], getDataTypeName(dataType, true, false), "SHORT_INTEGER_SIZE", dataSizeWithoutDataLenBlocks, (uint16_t)SHORT_INTEGER_SIZE);
     displayBugScreen(errorMessage);
   }
   else if(dataType == dtConfig && dataSizeWithoutDataLenBlocks != CONFIG_SIZE) {
-    sprintf(errorMessage, "In function reallocateRegister: %" PRIu16 " is an unexpected numByte value for a configuration! It should be CONFIG_SIZE=%" PRIu16 "!", dataSizeWithoutDataLenBlocks, (uint16_t)CONFIG_SIZE);
-    displayBugScreen(errorMessage);
-  }
-  else if(dataType == dtTime && dataSizeWithoutDataLenBlocks != REAL34_SIZE) {
-    sprintf(errorMessage, "In function reallocateRegister: %" PRIu16 " is an unexpected numByte value for a time! It should be REAL34_SIZE=%" PRIu16 "!", dataSizeWithoutDataLenBlocks, (uint16_t)REAL34_SIZE);
-    displayBugScreen(errorMessage);
-  }
-  else if(dataType == dtDate && dataSizeWithoutDataLenBlocks != REAL34_SIZE) {
-    sprintf(errorMessage, "In function reallocateRegister: %" PRIu16 " is an unexpected numByte value for a date! It should be REAL34_SIZE=%" PRIu16 "!", dataSizeWithoutDataLenBlocks, (uint16_t)REAL34_SIZE);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgNumByte], getDataTypeName(dataType, true, false), "CONFIG_SIZE", dataSizeWithoutDataLenBlocks, (uint16_t)CONFIG_SIZE);
     displayBugScreen(errorMessage);
   }
   else if(dataType == dtString || dataType == dtReal34Matrix || dataType == dtComplex34Matrix) {
