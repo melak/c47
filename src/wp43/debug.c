@@ -21,6 +21,7 @@
 #include "debug.h"
 
 #include "charString.h"
+#include "defines.h"
 #include "display.h"
 #include "flags.h"
 #include "fonts.h"
@@ -32,218 +33,192 @@
 
 
 
+TO_QSPI const char typeName[4][10 + 1][24 /* 21 characters + 1 sentinel + 2 padding */] = {
+  {
+    "???",
+    "long integer",
+    "real34",
+    "complex34",
+    "time",
+    "date",
+    "string",
+    "real34 matrix",
+    "complex34 matrix",
+    "short integer",
+    "config data",
+    //"label",
+    //"system integer",
+    //"flags",
+    //"pgm step",
+    //"directory",
+  },
+  {
+    "???                  ",
+    "long integer         ",
+    "real34               ",
+    "complex34            ",
+    "time                 ",
+    "date                 ",
+    "string               ",
+    "real34 matrix        ",
+    "complex34 matrix     ",
+    "short integer        ",
+    "config data          ",
+    //"label                ",
+    //"system integer       ",
+    //"flags                ",
+    //"pgm step             ",
+    //"directory            ",
+  },
+  {
+    "a ???",
+    "a long integer",
+    "a real34",
+    "a complex34",
+    "a time",
+    "a date",
+    "a string",
+    "a real34 matrix",
+    "a complex34 matrix",
+    "a short integer",
+    "a config data",
+    //"a label",
+    //"a system integer",
+    //"a flags",
+    //"a pgm step",
+    //"a directory",
+  },
+  {
+    "a ???                ",
+    "a long integer       ",
+    "a real34             ",
+    "a complex34          ",
+    "a time               ",
+    "a date               ",
+    "a string             ",
+    "a real34 matrix      ",
+    "a complex34 matrix   ",
+    "a short integer      ",
+    "a config data        ",
+    //"a label              ",
+    //"a system integer     ",
+    //"a flags              ",
+    //"a pgm step           ",
+    //"a directory          ",
+  },
+};
+
+
+
 /********************************************//**
  * \brief Returns the name of a data type
  *
  * \param[in] dt uint16_t Data type
  * \return char*          Name of the data type
  ***********************************************/
-char * getDataTypeName(uint16_t dt, bool_t article, bool_t padWithBlanks) {
+const char * getDataTypeName(uint16_t dt, bool_t article, bool_t padWithBlanks) {
   if(article && padWithBlanks) {
     switch(dt) {
-      case dtLongInteger: {
-        return "a long integer       ";
+      case dtLongInteger:
+      case dtTime:
+      case dtDate:
+      case dtString:
+      case dtReal34Matrix:
+      case dtComplex34Matrix:
+      case dtShortInteger:
+      case dtReal34:
+      case dtComplex34:
+      case dtConfig:
+      //case dtLabel:
+      //case dtSystemInteger:
+      //case dtFlags:
+      //case dtPgmStep:
+      //case dtDirectory:
+      {
+        return typeName[3][dt + 1];
       }
-      case dtTime: {
-        return "a time               ";
-      }
-      case dtDate: {
-        return "a date               ";
-      }
-      case dtString: {
-        return "a string             ";
-      }
-      case dtReal34Matrix: {
-        return "a real34 matrix      ";
-      }
-      case dtComplex34Matrix: {
-        return "a complex34 matrix   ";
-      }
-      case dtShortInteger: {
-        return "a short integer      ";
-      }
-      case dtReal34: {
-        return "a real34             ";
-      }
-      case dtComplex34: {
-        return "a complex34          ";
-      }
-      case dtConfig: {
-        return "a config data        ";
-      }
-      //case dtLabel: {
-      //  return "a label              ";
-      //}
-      //case dtSystemInteger: {
-      //  return "a system integer     ";
-      //}
-      //case dtFlags: {
-      //  return "a flags              ";
-      //}
-      //case dtPgmStep: {
-      //  return "a pgm step           ";
-      //}
-      //case dtDirectory: {
-      //  return "a directory          ";
-      //}
       default: {
-    return                              "a ???                ";
-  }
+        return typeName[3][0];
+      }
     }
   }
   else if(article && !padWithBlanks) {
     switch(dt) {
-      case dtLongInteger: {
-        return "a long integer";
+      case dtLongInteger:
+      case dtTime:
+      case dtDate:
+      case dtString:
+      case dtReal34Matrix:
+      case dtComplex34Matrix:
+      case dtShortInteger:
+      case dtReal34:
+      case dtComplex34:
+      case dtConfig:
+      //case dtLabel:
+      //case dtSystemInteger:
+      //case dtFlags:
+      //case dtPgmStep:
+      //case dtDirectory:
+      {
+        return typeName[2][dt + 1];
       }
-      case dtTime: {
-        return "a time";
-      }
-      case dtDate: {
-        return "a date";
-      }
-      case dtString: {
-        return "a string";
-      }
-      case dtReal34Matrix: {
-        return "a real34 matrix";
-      }
-      case dtComplex34Matrix: {
-        return "a complex34 matrix";
-      }
-      case dtShortInteger: {
-        return "a short integer";
-      }
-      case dtReal34: {
-        return "a real34";
-      }
-      case dtComplex34: {
-        return "a complex34";
-      }
-      case dtConfig: {
-        return "a config data";
-      }
-      //case dtLabel: {          return "a label";
-      //}
-      //case dtSystemInteger: {  return "a system integer";
-      //}
-      //case dtFlags: {          return "a flags";
-      //}
-      //case dtPgmStep: {        return "a pgm step";
-      //}
-      //case dtDirectory: {      return "a directory";
-      //}
       default: {
-    return                              "a ???";
-  }
+        return typeName[2][0];
+      }
     }
   }
   else if(!article && padWithBlanks) {
     switch(dt) {
-      case dtLongInteger: {
-        return "long integer         ";
+      case dtLongInteger:
+      case dtTime:
+      case dtDate:
+      case dtString:
+      case dtReal34Matrix:
+      case dtComplex34Matrix:
+      case dtShortInteger:
+      case dtReal34:
+      case dtComplex34:
+      case dtConfig:
+      //case dtLabel:
+      //case dtSystemInteger:
+      //case dtFlags:
+      //case dtPgmStep:
+      //case dtDirectory:
+      {
+        return typeName[1][dt + 1];
       }
-      case dtTime: {
-        return "time                 ";
-      }
-      case dtDate: {
-        return "date                 ";
-      }
-      case dtString: {
-        return "string               ";
-      }
-      case dtReal34Matrix: {
-        return "real34 matrix        ";
-      }
-      case dtComplex34Matrix: {
-        return "complex34 matrix     ";
-      }
-      case dtShortInteger: {
-        return "short integer        ";
-      }
-      case dtReal34: {
-        return "real34               ";
-      }
-      case dtComplex34: {
-        return "complex34            ";
-      }
-      case dtConfig: {
-        return "config data          ";
-      }
-      //case dtLabel: {
-      //  return "label                ";
-      //}
-      //case dtSystemInteger: {
-      //  return "system integer       ";
-      //}
-      //case dtFlags: {
-      //  return "flags                ";
-      //}
-      //case dtPgmStep: {
-      //  return "pgm step             ";
-      //}
-      //case dtDirectory: {
-      //  return "directory            ";
-      //}
       default: {
-    return                              "???                  ";
-  }
+        return typeName[1][0];
+      }
     }
   }
   else if(!article && !padWithBlanks) {
     switch(dt) {
-      case dtLongInteger: {
-        return "long integer";
+      case dtLongInteger:
+      case dtTime:
+      case dtDate:
+      case dtString:
+      case dtReal34Matrix:
+      case dtComplex34Matrix:
+      case dtShortInteger:
+      case dtReal34:
+      case dtComplex34:
+      case dtConfig:
+      //case dtLabel:
+      //case dtSystemInteger:
+      //case dtFlags:
+      //case dtPgmStep:
+      //case dtDirectory:
+      {
+        return typeName[0][dt + 1];
       }
-      case dtTime: {
-        return "time";
-      }
-      case dtDate: {
-        return "date";
-      }
-      case dtString: {
-        return "string";
-      }
-      case dtReal34Matrix: {
-        return "real34 matrix";
-      }
-      case dtComplex34Matrix: {
-        return "complex34 matrix";
-      }
-      case dtShortInteger: {
-        return "short integer";
-      }
-      case dtReal34: {
-        return "real34";
-      }
-      case dtComplex34: {
-        return "complex34";
-      }
-      case dtConfig: {
-        return "config data";
-      }
-      //case dtLabel: {
-      //  return "label";
-      //}
-      //case dtSystemInteger: {
-      //  return "system integer";
-      //}
-      //case dtFlags: {
-      //  return "flags";
-      //}
-      //case dtPgmStep: {
-      //  return "pgm step";
-      //}
-      //case dtDirectory: {
-      //  return "directory";
-      //}
       default: {
-    return                              "???";
-  }
+        return typeName[0][0];
+      }
     }
   }
   else {
-    return                              "???";
+    return typeName[0][0];
   }
 }
 
@@ -255,13 +230,13 @@ char * getDataTypeName(uint16_t dt, bool_t article, bool_t padWithBlanks) {
  * \param[in] dt calcRegister_t register
  * \return char* Name of the data type
  ***********************************************/
-char * getRegisterDataTypeName(calcRegister_t regist, bool_t article, bool_t padWithBlanks) {
+const char * getRegisterDataTypeName(calcRegister_t regist, bool_t article, bool_t padWithBlanks) {
   return getDataTypeName(getRegisterDataType(regist), article, padWithBlanks);
 }
 
 
 
-char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
+const char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
   static char base[9];
 
   switch(getRegisterDataType(regist)) {
@@ -342,7 +317,7 @@ char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
  * \param[in] am uint16_t curvefitting mode
  * \return char*          Name of the curvefitting mode
  ***********************************************/
-char * getCurveFitModeName(uint16_t selection) {          //Can be only one bit. ??? if invalid.
+const char * getCurveFitModeName(uint16_t selection) {          //Can be only one bit. ??? if invalid.
     switch( selection & 0x03FF ){
       case CF_LINEAR_FITTING: {
         return "Linear     ";
@@ -435,7 +410,8 @@ char * eatSpacesMid(const char * ss) {
  * \param[in] dt uint16_t Data type
  * \return char*          Name of the curvefit type
  ***********************************************/
-char * getCurveFitModeNames(uint16_t selection) {
+const char * getCurveFitModeNames(uint16_t selection) {
+#if defined(PC_BUILD)
   uint16_t ix;
 
   errorMessage[0] = 0;
@@ -449,6 +425,9 @@ char * getCurveFitModeNames(uint16_t selection) {
     return "???        ";
   }
   return errorMessage;
+#else // defined(PC_BUILD)
+  return "";
+#endif // defined(PC_BUILD)
 }
 
 
@@ -458,7 +437,7 @@ char * getCurveFitModeNames(uint16_t selection) {
  * \param[in] am uint16_t curvefitting mode
  * \return char*          Formula of the curvefitting mode
  ***********************************************/
-char * getCurveFitModeFormula(uint16_t selection) {          //Can be only one bit. ??? if invalid.
+const char * getCurveFitModeFormula(uint16_t selection) {          //Can be only one bit. ??? if invalid.
   switch( selection & 0x03FF ){
     case CF_LINEAR_FITTING: {
       return "a" STD_SUB_0 STD_SPACE_3_PER_EM "+" STD_SPACE_3_PER_EM "a" STD_SUB_1 "x";
@@ -504,7 +483,7 @@ char * getCurveFitModeFormula(uint16_t selection) {          //Can be only one b
  * \param[in] am uint16_t Angular mode
  * \return char*          Name of the angular mode
  ***********************************************/
-char * getAngularModeName(angularMode_t angularMode) {
+const char * getAngularModeName(angularMode_t angularMode) {
   switch(angularMode) {
     case amRadian: {
       return "radian";
@@ -525,8 +504,8 @@ char * getAngularModeName(angularMode_t angularMode) {
       return "none  ";
     }
     default: {
-  return "???   ";
-}
+      return "???   ";
+    }
   }
 }
 
@@ -537,7 +516,7 @@ char * getAngularModeName(angularMode_t angularMode) {
  * \param[in] im uint16_t Integer mode
  * \return char*          Name of the integer mode
  ***********************************************/
-char * getShortIntegerModeName(uint16_t im) {
+const char * getShortIntegerModeName(uint16_t im) {
   switch(im) {
     case SIM_1COMPL: {
       return "1compl";
@@ -552,8 +531,8 @@ char * getShortIntegerModeName(uint16_t im) {
       return "unsign";
     }
     default: {
-  return "???   ";
-}
+      return "???   ";
+    }
   }
 }
 

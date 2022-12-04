@@ -88,7 +88,8 @@
   // Variables stored in FLASH
   extern const item_t                    indexOfItems[];
   extern const reservedVariableHeader_t  allReservedVariables[];
-  extern const char                     *errorMessages[NUMBER_OF_ERROR_CODES];
+  extern const char                      commonBugScreenMessages[NUMBER_OF_BUG_SCREEN_MESSAGES][SIZE_OF_EACH_BUG_SCREEN_MESSAGE];
+  extern const char                      errorMessages[NUMBER_OF_ERROR_CODES][SIZE_OF_EACH_ERROR_MESSAGE];
   extern const calcKey_t                 kbd_std[37];
   extern const calcKey_t                 kbd_std_WP43[37];
   extern const calcKey_t                 kbd_std_DM42[37];

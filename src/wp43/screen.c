@@ -1082,7 +1082,7 @@ uint8_t  displaymode = stdNoEnlarge;
     }
 
     if(glyph == NULL) {
-      sprintf(errorMessage, "In function showGlyphCode: %" PRIi32 " is an unexpected value returned by fingGlyph!", glyphId);
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "showGlyphCode", glyphId);
       displayBugScreen(errorMessage);
       return 0;
     }
@@ -1184,7 +1184,7 @@ uint8_t  displaymode = stdNoEnlarge;
 
     glyphId = findGlyph(font, charCodeFromString(ch, offset));
     if(glyphId < 0) {
-      sprintf(errorMessage, "In function getGlyphBounds: %" PRIi32 " is an unexpected value returned by findGlyph!", glyphId);
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "getGlyphBounds", glyphId);
       displayBugScreen(errorMessage);
       return;
     }
