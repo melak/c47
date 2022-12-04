@@ -404,7 +404,7 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(Norm_Key_00_VAR);
   storeToDtConfigDescriptor(Input_Default);
   storeToDtConfigDescriptor(jm_FG_LINE);
-  storeToDtConfigDescriptor(jm_NO_BASE_SCREEN);
+  storeToDtConfigDescriptor(jm_BASE_SCREEN);
   storeToDtConfigDescriptor(jm_G_DOUBLETAP);
   storeToDtConfigDescriptor(graph_xmin);
   storeToDtConfigDescriptor(graph_xmax);

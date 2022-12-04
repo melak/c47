@@ -336,7 +336,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
     save(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
     save(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);
-    save(&jm_NO_BASE_SCREEN,                  sizeof(jm_NO_BASE_SCREEN),                  BACKUP);
+    save(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN),                     BACKUP);
     save(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
     save(&jm_HOME_SUM,                        sizeof(jm_HOME_SUM),                        BACKUP);
     save(&graph_xmin,                         sizeof(graph_xmin),                         BACKUP);
@@ -631,7 +631,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
       restore(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
       restore(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);
-      restore(&jm_NO_BASE_SCREEN,                  sizeof(jm_NO_BASE_SCREEN),                  BACKUP);
+      restore(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN),                     BACKUP);
       restore(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
       restore(&jm_HOME_SUM,                        sizeof(jm_HOME_SUM),                        BACKUP);
       restore(&graph_xmin,                         sizeof(graph_xmin),                         BACKUP);
@@ -1145,15 +1145,15 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
 //11
   sprintf(tmpString, "SigFigMode\n%"          PRIu8 "\n",       SigFigMode);                   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "eRPN\n%"                PRIu8 "\n",       (uint8_t)eRPN);                save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "HOME3\n%"               PRIu8 "\n",       (uint8_t)HOME3);               save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "ShiftTimoutMode\n%"     PRIu8 "\n",       (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "UNITDisplay\n%"         PRIu8 "\n",       (uint8_t)UNITDisplay);         save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "SH_BASE_HOME\n%"        PRIu8 "\n",       (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "Norm_Key_00_VAR\n%"     PRId16 "\n",      Norm_Key_00_VAR);              save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "Input_Default\n%"       PRIu8 "\n",       Input_Default);                save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "jm_FG_LINE\n%"          PRIu8 "\n",       (uint8_t)jm_FG_LINE);          save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "jm_NO_BASE_SCREEN\n%"   PRIu8 "\n",       (uint8_t)jm_NO_BASE_SCREEN);   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "jm_G_DOUBLETAP\n%"      PRIu8 "\n",       (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "HOME3\n%"               PRIu8 "\n",       (uint8_t)HOME3);               save(tmpString, strlen(tmpString), BACKUP); 
+  sprintf(tmpString, "ShiftTimoutMode\n%"     PRIu8 "\n",       (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString), BACKUP);           
+  sprintf(tmpString, "UNITDisplay\n%"         PRIu8 "\n",       (uint8_t)UNITDisplay);         save(tmpString, strlen(tmpString), BACKUP);       
+  sprintf(tmpString, "SH_BASE_HOME\n%"        PRIu8 "\n",       (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString), BACKUP);        
+  sprintf(tmpString, "Norm_Key_00_VAR\n%"     PRId16 "\n",      Norm_Key_00_VAR);              save(tmpString, strlen(tmpString), BACKUP);           
+  sprintf(tmpString, "Input_Default\n%"       PRIu8 "\n",       Input_Default);                save(tmpString, strlen(tmpString), BACKUP);         
+  sprintf(tmpString, "jm_FG_LINE\n%"          PRIu8 "\n",       (uint8_t)jm_FG_LINE);          save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "jm_BASE_SCREEN\n%"      PRIu8 "\n",       (uint8_t)jm_BASE_SCREEN);      save(tmpString, strlen(tmpString), BACKUP);             
+  sprintf(tmpString, "jm_G_DOUBLETAP\n%"      PRIu8 "\n",       (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString), BACKUP);          
 
 
 /*
@@ -2094,7 +2094,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "Norm_Key_00_VAR"             ) == 0) { Norm_Key_00_VAR       = stringToUint16(tmpString); }
         else if(strcmp(aimBuffer, "Input_Default"               ) == 0) { Input_Default         = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "jm_FG_LINE"                  ) == 0) { jm_FG_LINE            = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "jm_NO_BASE_SCREEN"           ) == 0) { jm_NO_BASE_SCREEN     = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "jm_BASE_SCREEN"              ) == 0) { jm_BASE_SCREEN        = (bool_t)stringToUint8(tmpString) != 0; }
         else if(strcmp(aimBuffer, "jm_G_DOUBLETAP"              ) == 0) { jm_G_DOUBLETAP        = (bool_t)stringToUint8(tmpString) != 0; }
 
 /*

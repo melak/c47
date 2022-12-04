@@ -65,16 +65,24 @@ TO_QSPI const int16_t menu_BITS[]        = { ITM_LOGICALAND,                ITM_
                                              ITM_LJ,                        ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_RJ,                      ITM_ASR,
                                              ITM_1COMPL,                    ITM_2COMPL,                 ITM_UNSIGN,               ITM_SIGNMT,            ITM_NULL,                    ITM_WSIZE                     };
 
+#ifdef DMCP_BUILD
+  #define ITM_SD ITM_SETDAT
+  #define ITM_ST ITM_SETTIM
+#else
+  #define ITM_SD ITM_RESERVE
+  #define ITM_ST ITM_RESERVE
+#endif
 
-TO_QSPI const int16_t menu_CLK[]         = { ITM_DATE,                      ITM_DATEto,                 ITM_toDATE,               ITM_DAY,               ITM_MONTH,                   ITM_YEAR,
-                                             ITM_TIME,                      ITM_TIMEto,                 ITM_toTIME,               ITM_SECOND,            ITM_MINUTE,                  ITM_HR_DEG,
-                                             ITM_toHMS,                     ITM_msTo,                   ITM_XtoDATE,              ITM_WDAY,              ITM_JtoD,                    ITM_DtoJ,                 
-#if DMCP_BUILD
-                                             ITM_SETTIM,                    ITM_TDISP,                  ITM_SETDAT,               ITM_DMY,               ITM_YMD,                     ITM_MDY,
-#else // !DMCP_BUILD
-                                             ITM_RESERVE,                   ITM_TDISP,                  ITM_RESERVE,              ITM_DMY,               ITM_YMD,                     ITM_MDY,
-#endif // DMCP_BUILD
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_JUL_GREG                  };
+
+TO_QSPI const int16_t menu_CLK[]         = { ITM_DATE,                      ITM_TIME,                   ITM_DTtoJ,                ITM_JtoDT,             ITM_DtoJ,                    ITM_XtoDATE, 
+                                             ITM_DATEto,                    ITM_TIMEto,                 ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
+                                             ITM_toDATE,                    ITM_toTIME,                 ITM_NULL,                 ITM_NULL,              ITM_toHMS,                   ITM_msTo,
+
+                                             ITM_DATE,                      ITM_TIME,                   ITM_TDISP,                ITM_DMY,               ITM_YMD,                     ITM_MDY,
+                                             ITM_SD,                        ITM_ST,                     ITM_WDAY,                 ITM_DAY,               ITM_MONTH,                   ITM_YEAR,
+                                             ITM_JUL_GREG,                  ITM_NULL,                   ITM_NULL,                 ITM_SECOND,            ITM_MINUTE,                  ITM_HR_DEG                  };    
+
+
 
 TO_QSPI const int16_t menu_CLR[]         = { ITM_CLSIGMA,                   ITM_CLP,                    ITM_CF,                   ITM_CLMENU,            ITM_CLCVAR,                  ITM_CLX,
                                              ITM_CLREGS,                    ITM_CLPALL,                 ITM_CLFALL,               ITM_CLGRF,             ITM_CLLCD,                   ITM_CLSTK,
@@ -177,7 +185,7 @@ TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_
                                              ITM_SETSIG2,                   ITM_RMODE,                  ITM_EXFRAC,               ITM_DENANY,            ITM_DENFIX,                  ITM_NULL,        //JM
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_NULL,                    ITM_NULL,                          //JM
 
-                                             ITM_NO_BASE_SCREEN,            ITM_BASE_HOME,             ITM_HOMEx3,                ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
+                                             ITM_BASE_SCREEN,               ITM_BASE_HOME,             ITM_HOMEx3,                ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
                                              ITM_SAFERESET,                 ITM_TST,                   ITM_NULL,                  ITM_NULL,              ITM_NULL,                    ITM_NULL,                        //JM
                                              ITM_SYS,                       ITM_NULL,                  ITM_NULL,                  ITM_NULL,              ITM_H_SUMRY,                 ITM_NULL                    };
 
@@ -518,27 +526,29 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
 #ifdef SAVE_SPACE_DM42
   #define CC_C43  ITM_NULL
   #define CC_V43  ITM_NULL
-  #define CC_V43M ITM_NULL
+  #define CC_E43  ITM_NULL
+  #define CC_D43  ITM_NULL
 #else
   #define CC_C43  ITM_USER_C43
   #define CC_V43  ITM_USER_V43
-  #define CC_V43M ITM_USER_V43MIN
+  #define CC_E43  ITM_USER_EE43
+  #define CC_D43  ITM_USER_DD43
 #endif                                             
 
 #ifdef SAVE_SPACE_DM42_7
   #define CC_DM42  ITM_NULL
   #define CC_USER_SHIFTSA ITM_NULL
-  #define CC_USER_SHIFTSB ITM_NULL
+  #define CC_USER_SHIFTS  ITM_NULL
 #else
   #define CC_DM42  ITM_USER_DM42
   #define CC_USER_SHIFTSA ITM_USER_C43ALTA
-  #define CC_USER_SHIFTSB ITM_USER_C43ALTB
+  #define CC_USER_SHIFTS  ITM_USER_C43ALT
 #endif                                             
 
 
-TO_QSPI const int16_t menu_ASN[]         = { CC_DM42,                       CC_USER_SHIFTSA,            CC_USER_SHIFTSB,          ITM_USER_WP43S,        ITM_NULL,                   ITM_ASSIGN,
-                                             CC_C43,                        CC_V43M,                    CC_V43,                   ITM_NULL,              ITM_NULL,                   ITM_USERMODE,
-                                            -MNU_ASN_N,                     ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                   ITM_USER_RESET    };
+TO_QSPI const int16_t menu_ASN[]         = { CC_DM42,                       CC_USER_SHIFTSA,            CC_USER_SHIFTS,           ITM_USER_WP43S,        ITM_NULL,                   ITM_ASSIGN,
+                                             CC_C43,                        CC_D43,                     CC_E43,                   CC_V43,                ITM_NULL,                   ITM_USERMODE,
+                                            -MNU_ASN_N,                     ITM_NULL,                   ITM_NULL,                 ITM_USER_ARESET,       ITM_USER_MRESET,            ITM_USER_KRESET    };
  
 
 TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_X_P2,                   ITM_X_P3,                 ITM_X_P4,              ITM_X_P5,                    ITM_X_P6,
@@ -1320,7 +1330,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     #ifdef PC_BUILD
       char tmp[200]; sprintf(tmp,"^^^^showSoftmenuCurrentPart: Showing Softmenu id=%d\n",m); jm_show_comment(tmp);
     #endif //PC_BUILD
-    if(!(m==0 && jm_NO_BASE_SCREEN) && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER && calcMode != CM_REGISTER_BROWSER && calcMode != CM_BUG_ON_SCREEN) {           //JM: Added exclusions, as this procedure is not only called from refreshScreen, but from various places due to underline
+    if(!(m==0 && !jm_BASE_SCREEN) && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER && calcMode != CM_REGISTER_BROWSER && calcMode != CM_BUG_ON_SCREEN) {           //JM: Added exclusions, as this procedure is not only called from refreshScreen, but from various places due to underline
     clearScreen_old(false, false, true); //JM, added to ensure the f/g underlines are deleted
 
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {

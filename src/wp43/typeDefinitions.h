@@ -177,7 +177,7 @@ typedef struct {
   int16_t Norm_Key_00_VAR;
   uint8_t Input_Default;
   bool_t jm_FG_LINE;
-  bool_t jm_NO_BASE_SCREEN;
+  bool_t jm_BASE_SCREEN;
   bool_t jm_G_DOUBLETAP;
   float  graph_xmin;
   float  graph_xmax;

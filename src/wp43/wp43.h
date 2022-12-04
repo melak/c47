@@ -90,6 +90,9 @@
   extern const reservedVariableHeader_t  allReservedVariables[];
   extern const char                     *errorMessages[NUMBER_OF_ERROR_CODES];
   extern const calcKey_t                 kbd_std[37];
+  extern const calcKey_t                 kbd_std_WP43[37];
+  extern const calcKey_t                 kbd_std_DM42[37];
+  extern const calcKey_t                 kbd_std_C43AltA[37];
   extern const font_t                    standardFont, numericFont;
   extern const font_t                   *fontForShortInteger;
   extern const font_t                   *cursorFont;
@@ -258,7 +261,7 @@
   extern int16_t                MY_ALPHA_MENU;                //JM Replaced define
   extern uint8_t                DRG_Cycling;                  //JM
   extern uint8_t                DM_Cycling;                   //JM
-  extern int16_t                JM_auto_doublepress_enabled;  //JM TIMER CLRDROP //drop
+  extern int16_t                JM_auto_doublepress_autodrop_enabled;  //JM TIMER CLRDROP //drop
   extern int16_t                JM_auto_longpress_enabled;    //JM TIMER CLRDROP //clstk
   extern uint8_t                JM_SHIFT_HOME_TIMER1;         //Local to keyboard.c, but defined here
   extern bool_t                 ULFL, ULGL;                   //JM Underline

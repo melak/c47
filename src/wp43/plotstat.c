@@ -429,6 +429,9 @@ void force_refresh1(void) {
 void graphAxisDraw (void){
 #if !defined(SAVE_SPACE_DM42_13GRF)
   #if !defined(TESTSUITE_BUILD)
+    if(x_min <= FLoatingMin || x_min >= FLoatingMax || x_max <= FLoatingMin || x_max >= FLoatingMax || y_min <= FLoatingMin || y_min >= FLoatingMax || y_max <= FLoatingMin || y_max >= FLoatingMax) {
+      return;
+    }
   uint32_t cnt;
 
   clearScreenPixels();
@@ -1029,6 +1032,13 @@ void graphPlotstat(uint16_t selection){
       printf("Axis1a: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
       #endif // STATDEBUG && PC_BUILD
 
+      if(x_min <= FLoatingMin || x_max <= FLoatingMin || y_min <= FLoatingMin || y_max <= FLoatingMin) {
+        goto scaleMinusInfinity;
+      }
+      if(x_min >= FLoatingMax || x_max >= FLoatingMax || y_min >= FLoatingMax || y_max >= FLoatingMax) {
+        goto scalePlusInfinity;
+      }
+
     //Check and correct if min and max is swapped
     if(x_min>0.0f && x_min > x_max) {
       x_min = x_min - (-x_max+x_min)* 1.1f;
@@ -1140,6 +1150,15 @@ void graphPlotstat(uint16_t selection){
     else {
       roundedTicks = false;
     }
+
+    if(x_min <= FLoatingMin || x_max <= FLoatingMin || y_min <= FLoatingMin || y_max <= FLoatingMin) {
+       goto scaleMinusInfinity;
+     }
+     if(x_min >= FLoatingMax || x_max >= FLoatingMax || y_min >= FLoatingMax || y_max >= FLoatingMax) {
+       goto scalePlusInfinity;
+     }
+     
+
 
     graph_axis();
     yn = screen_window_y(y_min,grf_y(0),y_max);
@@ -1306,14 +1325,32 @@ void graphPlotstat(uint16_t selection){
 
   }
   else {
-    calcMode = CM_NORMAL;
     displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "There is no statistical data available!");
       moreInfoOnError("In function graphPlotstat:", errorMessage, NULL, NULL);
     #endif
   }
-#endif // !TESTSUITE_BUILD)
+ return;
+
+
+  scalePlusInfinity:
+  displayCalcErrorMessage(ERROR_OVERFLOW_PLUS_INF, ERR_REGISTER_LINE, REGISTER_X);
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    sprintf(errorMessage, "Plus Infinity encountered!");
+    moreInfoOnError("In function graphPlotstat:", errorMessage, NULL, NULL);
+  #endif
+  return;
+
+  scaleMinusInfinity:
+  displayCalcErrorMessage(ERROR_OVERFLOW_MINUS_INF, ERR_REGISTER_LINE, REGISTER_X);
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    sprintf(errorMessage, "Minus Infinity encountered!");
+    moreInfoOnError("In function graphPlotstat:", errorMessage, NULL, NULL);
+  #endif
+
+
+ #endif // !TESTSUITE_BUILD)
 #endif //SAVE_SPACE_DM42_13GRF
 }
 

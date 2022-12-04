@@ -1542,7 +1542,7 @@
 #define ITM_JPLUS                   1493
 #define ITM_JMINUS                  1494
 #define ITM_JUL_GREG                1495
-#define ITM_JtoD                    1496
+#define ITM_1496                    1496
 #define ITM_KEY                     1497
 #define ITM_KEYG                    1498
 #define ITM_KEYX                    1499
@@ -1848,7 +1848,7 @@
 
 //Jaymos C43 extensions
 #define ITM_FG_LINE                 1795
-#define ITM_NO_BASE_SCREEN          1796
+#define ITM_BASE_SCREEN             1796
 #define ITM_G_DOUBLETAP             1797
 #define ITM_PLOT_LRALL              1798
 #define ITM_P_ALLREGS               1799
@@ -1914,8 +1914,8 @@
 #define ITM_BASE_HOME               1859
 #define ITM_1860                    1860
 #define ITM_H_SUMRY                 1861
-#define ITM_1862                    1862
-#define ITM_1863                    1863
+#define ITM_DTtoJ                   1862
+#define ITM_JtoDT                   1863
 #define ITM_DSPCYCLE                1864
 #define ITM_LARGELI                 1865
 #define ITM_SIGFIG                  1866
@@ -1940,16 +1940,16 @@
 #define ITM_GET_TEST_BS             1885
 #define ITM_SET_TEST_BS             1886
 #define ITM_INP_DEF_DP              1887
-#define ITM_USER_C43ALTB            1888
+#define ITM_USER_C43ALT             1888
 #define ITM_INP_DEF_CPXDP           1889
 #define ITM_INP_DEF_SI              1890
 #define ITM_INP_DEF_LI              1891
 #define ITM_USER_V43                1892
 #define KEY_fg                      1893
-#define ITM_USER_DEFAULTS           1894
-#define ITM_USER_COMPLEX            1895
+#define ITM_USER_DD43               1894
+#define ITM_1895                    1895
 #define ITM_USER_C43ALTA            1896
-#define ITM_USER_RESET              1897
+#define ITM_1897                    1897
 #define ITM_N_KEY_ALPHA             1898
 #define ITM_N_KEY_CC                1899
 #define ITM_N_KEY_GSH               1900
@@ -1965,7 +1965,7 @@
 #define ITM_msTo                    1910
 #define ITM_INP_DEF_43S             1911
 #define ITM_XXEQ                    1912
-#define ITM_USER_V43MIN             1913
+#define ITM_USER_EE43               1913
 #define ITM_USER_COPY               1914
 #define ITM_USER_WP43S              1915
 #define ITM_USER_DM42               1916
@@ -2073,9 +2073,9 @@
 #define ITM_RMODE                   2018
 #define ITM_RMODEQ                  2019
 #define ITM_SI_All                  2020
-#define ITM_2021                    2021
-#define ITM_2022                    2022
-#define ITM_2023                    2023
+#define ITM_USER_ARESET             2021
+#define ITM_USER_MRESET             2022
+#define ITM_USER_KRESET             2023
 #define ITM_INTG                    2024
 #define ITM_DIFF                    2025
 #define ITM_RMS                     2026

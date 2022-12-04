@@ -1156,6 +1156,13 @@ void timeToReal34(uint16_t hms) { //always 24 hour time;
   tDigits = 0u;
   real34SetPositiveSign(&real34);
 
+  if(hms == 3) {
+  //total seconds
+    reallocateRegister(regist, dtReal34, REAL34_SIZE, amNone);
+    real34Copy(&real34, REGISTER_REAL34_DATA(regist));
+    return;
+  }
+
   // Seconds
   //real34ToIntegralValue(&real34, &s34, DEC_ROUND_DOWN);
   real34Copy(&real34, &s34);
@@ -1772,21 +1779,39 @@ void fnSafeReset (uint16_t unusedButMandatoryParameter) {
 }
 
 
-void fnRESET_MyM_Mya(void){
+void fnRESET_MyM(void){
 //Pre-assign the MyMenu                   //JM
     #ifndef TESTSUITE_BUILD
-    jm_NO_BASE_SCREEN = true;                                           //JM prevent slow updating of 6 menu items
+    jm_BASE_SCREEN = false;                                           //JM prevent slow updating of 6 menu items
     for(int8_t fn = 1; fn <= 6; fn++) {
-      //itemToBeAssigned = ( !getSystemFlag(FLAG_USER) ? (kbd_std[fn-1].fShifted) : (kbd_usr[fn-1].fShifted) );  //Function key follows if the yellow key
       itemToBeAssigned = menu_HOME[fn -1];  //Function key follows if the yellow key
       assignToMyMenu(fn - 1);
+      itemToBeAssigned = ASSIGN_CLEAR;
+      assignToMyMenu(6 + fn - 1);
+      itemToBeAssigned = ASSIGN_CLEAR;
+      assignToMyMenu(12 + fn - 1);
       }
-    jm_NO_BASE_SCREEN = false;                                           //JM Menu system default (removed from reset_jm_defaults)
+    jm_BASE_SCREEN = true;                                           //JM Menu system default (removed from reset_jm_defaults)
+    #endif // TESTSUITE_BUILD
+}
 
+
+void fnRESET_Mya(void){
+//Pre-assign the MyAlpha Menu                   //JM
+    #ifndef TESTSUITE_BUILD
+    for(int8_t fn = 1; fn <= 6; fn++) {
+      itemToBeAssigned = ASSIGN_CLEAR;
+      assignToMyAlpha(fn - 1);
+      itemToBeAssigned = ASSIGN_CLEAR;
+      assignToMyAlpha(6 + fn - 1);
+      itemToBeAssigned = ASSIGN_CLEAR;
+      assignToMyAlpha(12 + fn - 1);
+      }
     itemToBeAssigned = -MNU_ALPHA;
     assignToMyAlpha(5);
     #endif // TESTSUITE_BUILD
 }
+
 
 
 //Softmenus:

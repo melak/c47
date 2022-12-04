@@ -10699,9 +10699,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_JUL_GREG >> 8) | 0x80;
     *(currentStep++) =  ITM_JUL_GREG       & 0xff;
 
-    *(currentStep++) = (ITM_JtoD >> 8) | 0x80;
-    *(currentStep++) =  ITM_JtoD       & 0xff;
-
     *(currentStep++) = (ITM_KEY >> 8) | 0x80;
     *(currentStep++) =  ITM_KEY       & 0xff;
     *(currentStep++) = 1;
