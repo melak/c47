@@ -62,16 +62,16 @@
 #if !defined(TESTSUITE_BUILD)
   TO_QSPI static const char *whoStr1 = "C43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Ben" STD_SPACE_3_PER_EM "GB," STD_SPACE_3_PER_EM "D" STD_SPACE_3_PER_EM "A" STD_SPACE_3_PER_EM "CA," STD_SPACE_3_PER_EM "Dani" STD_SPACE_3_PER_EM "CH," STD_SPACE_3_PER_EM "H" STD_a_RING "kon" STD_SPACE_3_PER_EM "NO," STD_SPACE_3_PER_EM "Jaco" STD_SPACE_3_PER_EM "ZA,";
   TO_QSPI static const char *whoStr2 = "Martin" STD_SPACE_3_PER_EM "FR," STD_SPACE_3_PER_EM "Mihail" STD_SPACE_3_PER_EM "JP," STD_SPACE_3_PER_EM "Pauli" STD_SPACE_3_PER_EM "AU," STD_SPACE_3_PER_EM "RJvM" STD_SPACE_3_PER_EM "NL," STD_SPACE_3_PER_EM "Walter" STD_SPACE_3_PER_EM "DE.";
-  TO_QSPI static const char *versionStr = "C43" STD_SPACE_3_PER_EM VERSION_STRING;
+  TO_QSPI static const char *versionStr = VERSION_STRING " [EXIT]";
 
   #ifdef PC_BUILD
     TO_QSPI static const char *versionStr2 = "C43 Sim " VERSION1 ", compiled " __DATE__;
   #else
     #if defined(TWO_FILE_PGM)
-      TO_QSPI static const char *versionStr2 = "C43 Pgm QSPI " VERSION1 ", compiled " __DATE__;
+      TO_QSPI static const char *versionStr2 = "C43 QSPI " VERSION1 ", compiled " __DATE__;
     #else
       #if !defined(TWO_FILE_PGM)
-      TO_QSPI static const char *versionStr2 = "C43 Pgm " VERSION1 ", compiled " __DATE__;
+      TO_QSPI static const char *versionStr2 = "C43 No QSPI " VERSION1 ", compiled " __DATE__;
       #endif
     #endif
   #endif
@@ -1083,7 +1083,7 @@ uint8_t  displaymode = stdNoEnlarge;
     }
 
     if(glyph == NULL) {
-      sprintf(errorMessage, "In function showGlyphCode: %" PRIi32 " is an unexpected value returned by fingGlyph!", glyphId);
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "showGlyphCode", glyphId);
       displayBugScreen(errorMessage);
       return 0;
     }
@@ -1185,7 +1185,7 @@ uint8_t  displaymode = stdNoEnlarge;
 
     glyphId = findGlyph(font, charCodeFromString(ch, offset));
     if(glyphId < 0) {
-      sprintf(errorMessage, "In function getGlyphBounds: %" PRIi32 " is an unexpected value returned by findGlyph!", glyphId);
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "getGlyphBounds", glyphId);
       displayBugScreen(errorMessage);
       return;
     }
@@ -1975,6 +1975,8 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
       }
 
       else if(temporaryInformation == TI_VERSION && regist == REGISTER_X) {
+        clearRegisterLine(REGISTER_X,true,true);
+        clearRegisterLine(REGISTER_Y,true,true);
         showString(versionStr, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
         showString(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
       }

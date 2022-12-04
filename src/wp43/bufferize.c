@@ -52,6 +52,9 @@
 #include "wp43.h"
 
 #if !defined(TESTSUITE_BUILD)
+
+TO_QSPI static const char bugScreenNoParam[] = "In function addItemToBuffer:item should not be NOPARAM=7654!";
+
   void fnAim(uint16_t unusedButMandatoryParameter) {
     resetShiftState();  //JM
     displayAIMbufferoffset = 0;
@@ -292,7 +295,7 @@ void kill_ASB_icon(void) {
 
 
     if(item == NOPARAM) {
-      displayBugScreen("In function addItemToBuffer:item should not be NOPARAM=7654!");
+      displayBugScreen(bugScreenNoParam);
     }
     else {
       screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
@@ -2330,7 +2333,7 @@ void kill_ASB_icon(void) {
               longInteger2Pow(shortIntegerWordSize, maxVal);
             }
             else {
-              sprintf(errorMessage, "In function closeNIM:%d is an unexpected value for shortIntegerWordSize!", shortIntegerWordSize);
+              sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "closeNIM", "shortIntegerWordSize", shortIntegerWordSize);
               displayBugScreen(errorMessage);
               longIntegerFree(maxVal);
               longIntegerFree(value);
@@ -2398,7 +2401,7 @@ void kill_ASB_icon(void) {
               }
             }
             else {
-              sprintf(errorMessage, "In function closeNIM:%d is an unexpected value for shortIntegerMode!", shortIntegerMode);
+              sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "closeNIM", "shortIntegerMode", shortIntegerMode);
               displayBugScreen(errorMessage);
               *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = 0;
             }
@@ -2434,7 +2437,7 @@ void kill_ASB_icon(void) {
             closeNimWithComplex(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
           }
           else {
-            sprintf(errorMessage, "In function closeNIM:%d is an unexpected nimNumberPart value!", nimNumberPart);
+            sprintf(errorMessage, commonBugScreenMessages[bugMsgUnexpectedSValue], "closeNIM", nimNumberPart, "nimNumberPart");
             displayBugScreen(errorMessage);
           }
         }

@@ -32,8 +32,10 @@
 #include <stdlib.h>
 
 
-
 #if !defined(TESTSUITE_BUILD)
+
+TO_QSPI static const char bugScreenShowFonts[] = "In function showFonts: This should never happen!";
+
   /********************************************//**
    * \brief The font browser application initialisation
    *
@@ -159,7 +161,7 @@
       showString(tmpString, &standardFont, SCREEN_WIDTH-stringWidth(tmpString, &standardFont, false, true), 220, vmNormal, false, true);
     }
     else {
-      displayBugScreen("In function showFonts: This should never happen!");
+      displayBugScreen(bugScreenShowFonts);
     }
   #endif //SAVE_SPACE_DM42_8
   }
