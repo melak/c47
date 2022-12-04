@@ -37,12 +37,12 @@
 #include "wp43.h"
 
 
+
+#if !defined(TESTSUITE_BUILD)
+
 TO_QSPI static const char bugScreenUnknownOperator[] = "In function _parseWord: Unknown operator appeared!";
 TO_QSPI static const char bugScreenUnknownFormulaParserMode[] = "In function _parseWord: Unknown mode of formula parser!";
 
-
-
-#if !defined(TESTSUITE_BUILD)
   typedef struct {
     char     name[16];
     uint16_t opCode;

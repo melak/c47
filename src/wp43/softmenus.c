@@ -41,7 +41,9 @@
 
 #include "wp43.h"
 
-TO_QSPI static const char bugScreenIdMustNotBe0[] = "In function showSoftmenu: id must not be 0!";
+#if !defined(TESTSUITE_BUILD)
+  TO_QSPI static const char bugScreenIdMustNotBe0[] = "In function showSoftmenu: id must not be 0!";
+#endif //TESTSUITE_BUILD
 
 /* The numbers refer to the index of items in items.c
  *         item <     0  ==>  sub menu

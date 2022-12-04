@@ -32,12 +32,10 @@
 #include <stdlib.h>
 
 
+#if !defined(TESTSUITE_BUILD)
 
 TO_QSPI static const char bugScreenShowFonts[] = "In function showFonts: This should never happen!";
 
-
-
-#if !defined(TESTSUITE_BUILD)
   /********************************************//**
    * \brief The font browser application initialisation
    *

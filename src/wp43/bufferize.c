@@ -50,9 +50,10 @@
 
 #include "wp43.h"
 
+#if !defined(TESTSUITE_BUILD)
+
 TO_QSPI static const char bugScreenNoParam[] = "In function addItemToBuffer:item should not be NOPARAM=7654!";
 
-#if !defined(TESTSUITE_BUILD)
   void fnAim(uint16_t unusedButMandatoryParameter) {
     resetShiftState();  //JM
     displayAIMbufferoffset = 0;
