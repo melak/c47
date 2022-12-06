@@ -3438,6 +3438,14 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
   if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {last_CM = 254;}  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S 
 
   switch(calcMode) {
+      case CM_ASN_BROWSER: {
+        last_CM = calcMode;
+        clearScreen();
+        fnAsnViewer(NOPARAM);
+        refreshStatusBar();
+        break;
+      }
+
       case CM_FLAG_BROWSER: {
         last_CM = calcMode;
         clearScreen();
@@ -3614,8 +3622,7 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
           doRefreshSoftMenu = false;
           displayShiftAndTamBuffer();
           refreshStatusBar();
-          //fnStatList();
-          fnTest(0);
+          fnStatList();
           hourGlassIconEnabled = false;
           refreshStatusBar();
         }

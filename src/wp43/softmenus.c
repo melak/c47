@@ -554,7 +554,7 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
 
 TO_QSPI const int16_t menu_ASN[]         = { CC_DM42,                       CC_USER_SHIFTSA,            CC_USER_SHIFTS,           ITM_USER_WP43S,        ITM_NULL,                   ITM_ASSIGN,
                                              CC_C43,                        CC_D43,                     CC_E43,                   CC_N43,                CC_V43,                     ITM_USERMODE,
-                                            -MNU_ASN_N,                     ITM_NULL,                   ITM_NULL,                 ITM_USER_ARESET,       ITM_USER_MRESET,            ITM_USER_KRESET    };
+                                            -MNU_ASN_N,                     ITM_NULL,                   ITM_ASNVIEWER,            ITM_USER_ARESET,       ITM_USER_MRESET,            ITM_USER_KRESET    };
 
 TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_X_P2,                   ITM_X_P3,                 ITM_X_P4,              ITM_X_P5,                    ITM_X_P6,
                                              ITM_X_f1,                      ITM_X_f2,                   ITM_X_f3,                 ITM_X_f4,              ITM_X_f5,                    ITM_X_f6,
@@ -1218,15 +1218,19 @@ static void greyOutBox(int16_t x1, int16_t x2, int16_t y1, int16_t y2) {
 
 static void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, bool_t rightMostSlot, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText);
 
-void fnTest(uint16_t fnShow_param) {                // Heavily modified by JM from the original fnShow
-  const int16_t page = 1; 
+void fnTest(uint8_t page) {                // Heavily modified by JM from the original fnShow
   int xx,yy, kk;
   int16_t key;
   int16_t pixelsPerSoftKey;
   xx = 0;
   yy = 1;
   clearScreen();
-  showString("f-key assignment schedule", &standardFont, 30, 20, vmNormal, false, false);
+      switch(page) {
+        case 1:   showString("primary key assignment schedule", &standardFont, 30, 20, vmNormal, false, false); break;
+        case 2:   showString("f-key assignment schedule", &standardFont, 30, 20, vmNormal, false, false); break;
+        case 3:   showString("g-key assignment schedule", &standardFont, 30, 20, vmNormal, false, false); break;
+        default:break;
+      }
 
   for(key=0; key<37; key++) {
     if(key == 6 || key ==12 || key == 17 || key == 22 || key == 27 || key == 32) {
@@ -1239,25 +1243,25 @@ void fnTest(uint16_t fnShow_param) {                // Heavily modified by JM fr
 
     if(getSystemFlag(FLAG_USER)) {
       switch(page) {
-        case 0: kk = kbd_usr[key].primary; break;
-        case 1: kk = kbd_usr[key].fShifted; break;
-        case 2: kk = kbd_usr[key].gShifted; break;
+        case 1: kk = kbd_usr[key].primary; break;
+        case 2: kk = kbd_usr[key].fShifted; break;
+        case 3: kk = kbd_usr[key].gShifted; break;
         default:break;
       }
     } else {
       switch(page) {
-        case 0: kk = kbd_std[key].primary; break;
-        case 1: kk = kbd_std[key].fShifted; break;
-        case 2: kk = kbd_std[key].gShifted; break;
+        case 1: kk = kbd_std[key].primary; break;
+        case 2: kk = kbd_std[key].fShifted; break;
+        case 3: kk = kbd_std[key].gShifted; break;
         default:break;
       }
     }
 
     showKey(indexOfItems[max(kk,-kk)].itemSoftmenuName, xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, 20+yy*SOFTMENU_HEIGHT, 20+(yy+1)*SOFTMENU_HEIGHT, xx == 5, kk > 0 ? vmNormal : vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
     if(getSystemFlag(FLAG_USER) && 
-        ( ((page == 0) && (kbd_std[key].primary != kbd_usr[key].primary)  ) || 
-          ((page == 1) && (kbd_std[key].fShifted != kbd_usr[key].fShifted)) || 
-          ((page == 2) && (kbd_std[key].gShifted != kbd_usr[key].gShifted))    )
+        ( ((page == 1) && (kbd_std[key].primary == kbd_usr[key].primary)  ) || 
+          ((page == 2) && (kbd_std[key].fShifted == kbd_usr[key].fShifted)) || 
+          ((page == 3) && (kbd_std[key].gShifted == kbd_usr[key].gShifted))    )
       ) {
         greyOutBox(xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, 20+yy*SOFTMENU_HEIGHT, 20+(yy+1)*SOFTMENU_HEIGHT);
     }
@@ -1399,7 +1403,7 @@ static void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16
     #ifdef PC_BUILD
       char tmp[200]; sprintf(tmp,"^^^^showSoftmenuCurrentPart: Showing Softmenu id=%d\n",m); jm_show_comment(tmp);
     #endif //PC_BUILD
-    if(!(m==0 && !jm_BASE_SCREEN) && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER && calcMode != CM_REGISTER_BROWSER && calcMode != CM_BUG_ON_SCREEN) {           //JM: Added exclusions, as this procedure is not only called from refreshScreen, but from various places due to underline
+    if(!(m==0 && !jm_BASE_SCREEN) && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER && calcMode != CM_REGISTER_BROWSER && calcMode != CM_BUG_ON_SCREEN) {           //JM: Added exclusions, as this procedure is not only called from refreshScreen, but from various places due to underline
     clearScreen_old(false, false, true); //JM, added to ensure the f/g underlines are deleted
 
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {

@@ -264,6 +264,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 #endif // !TESTSUITE_BUILD && !GENERATE_CATALOGS
 
 #if defined(GENERATE_CATALOGS)
+  void fnAsnViewer                 (uint16_t unusedButMandatoryParameter) {}
   void registerBrowser             (uint16_t unusedButMandatoryParameter) {}
   void flagBrowser                 (uint16_t unusedButMandatoryParameter) {}
   void fontBrowser                 (uint16_t unusedButMandatoryParameter) {}
@@ -2903,7 +2904,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1894 */  { fnUserJM,                     USER_D43,                    "",                                            "D43",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM USER
 /* 1895 */  { fnUserJM,                     USER_N43,                    "",                                            "N43",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//J=V43
 /* 1896 */  { fnUserJM,                     USER_C43ALTA,                "",                                            "C43AltA",                                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM USER
-/* 1897 */  { itemToBeCoded,                NOPARAM,                     "1897",                                        "1897",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1897 */  { fnAsnViewer,                  NOPARAM,                     "",                                            "ASNVIEW",                                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//J=V43
 /* 1898 */  { fnSigmaAssign,                16384+ITM_AIM,               "",                                            STD_SIGMA STD_alpha,                           (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1899 */  { fnSigmaAssign,                16384+ITM_CC,                "",                                            STD_SIGMA "CC",                                (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1900 */  { fnSigmaAssign,                16384+ITM_SHIFTg,            "",                                            STD_SIGMA "g",                                 (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },

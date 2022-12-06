@@ -191,6 +191,7 @@
   extern char                   displayValueX[DISPLAY_VALUE_LEN];
 
   extern uint8_t                numScreensStandardFont;
+  extern uint8_t                currentAsnScr;
   extern uint8_t                currentFntScr;
   extern uint8_t                currentFlgScr;
   extern uint8_t                lastFlgScr;

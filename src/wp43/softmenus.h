@@ -25,7 +25,7 @@
 #include "typeDefinitions.h"
 #include <stdint.h>
 
-void fnTest(uint16_t unusedButMandatoryParameter);
+void fnTest(uint8_t page);
 
 uint8_t *getNthString           (uint8_t *ptr, int16_t n); // Starting with string 0 (the 1st string is returned for n=0)
 void     fnDynamicMenu          (uint16_t unusedButMandatoryParameter);

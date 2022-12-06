@@ -1,4 +1,4 @@
-/* This file is part of 43S.
+  /* This file is part of 43S.
  *
  * 43S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,13 +15,35 @@
  */
 
 /********************************************//**
- * \file browsers.h
+ * \file asnBrowser.c The assign browser application
  ***********************************************/
-#if !defined(BROWSERS_H)
-  #define BROWSERS_H
 
-  #include "asnBrowser.h"
-  #include "flagBrowser.h"
-  #include "fontBrowser.h"
-  #include "registerBrowser.h"
-#endif // !BROWSERS_H
+#include "browsers/registerBrowser.h"
+
+#include "flags.h"
+#include "softmenus.h"
+#include <string.h>
+
+#include "wp43.h"
+
+
+
+#if !defined(TESTSUITE_BUILD)
+#ifndef SAVE_SPACE_DM42_8
+  void fnAsnViewer(int16_t unusedButMandatoryParameter) {
+
+printf("currentAsnScr = %d\n",currentAsnScr);
+
+    if(calcMode != CM_ASN_BROWSER) {
+      previousCalcMode = calcMode;
+      calcMode = CM_ASN_BROWSER;
+      clearSystemFlag(FLAG_ALPHA);
+      return;
+    }
+
+
+  fnTest(currentAsnScr);
+
+  }
+    #endif //SAVE_SPACE_DM42_8
+#endif // !TESTSUITE_BUILD

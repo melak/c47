@@ -58,6 +58,7 @@
       if(cm == CM_NIM)                   return "nim    ";
       if(cm == CM_ASSIGN)                return "assign ";
       if(cm == CM_REGISTER_BROWSER)      return "reg.bro";
+      if(cm == CM_ASN_BROWSER)           return "asn.bro";
       if(cm == CM_FLAG_BROWSER)          return "flg.bro";
       if(cm == CM_FONT_BROWSER)          return "fnt.bro";
       if(cm == CM_PLOT_STAT)             return "plot.st";
