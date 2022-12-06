@@ -443,13 +443,13 @@ void fnJulianToDateTime(uint16_t unusedButMandatoryParameter) {
 
       //Get FP in x
       real_t y, x,cc;
-      int32ToReal(3600*100*24*10, &cc);                    //3600*100*24*10 rounds time up or down to 0.001 seconds
-      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);  //IP
-      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);  //Org
-      realSubtract(&x, &y, &x, &ctxtReal39);               //FP = Org - IP
-      realMultiply(&x, &cc, &x, &ctxtReal39);              //(360000*24*(FP))          //round seconds to 0.01s: x3600x100 
-      realToIntegralValue(&x, &x, DEC_ROUND_HALF_UP, &ctxtReal39);   //round (360000*24*(FP))
-      realDivide  (&x, &cc, &x, &ctxtReal39);                        //(round (360000*24*(FP)))/(24*360000)
+      int32ToReal(3600*100*24*10, &cc);                              // 3600*100*24*10 rounds time up or down to 0.001 seconds
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);            // IP
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);            // Org
+      realSubtract(&x, &y, &x, &ctxtReal39);                         // FP = Org - IP
+      realMultiply(&x, &cc, &x, &ctxtReal39);                        // (3600*100*24*10*(FP))          //round seconds to 0.001s
+      realToIntegralValue(&x, &x, DEC_ROUND_HALF_UP, &ctxtReal39);   // round (3600*100*24*10*(FP))
+      realDivide  (&x, &cc, &x, &ctxtReal39);                        // (round (3600*100*24*10*(FP))) / (3600*100*24*10)
 
       //Convert date to Y
       julianDayToInternalDate(REGISTER_REAL34_DATA(REGISTER_Y), &date);
@@ -459,8 +459,8 @@ void fnJulianToDateTime(uint16_t unusedButMandatoryParameter) {
       //Convert x to time to X
       real_t tmp;
       int32ToReal(24*3600, &tmp);
-      realMultiply(&tmp, &x, &tmp, &ctxtReal39);                   //tmp is now seconds
-      reallocateRegister(REGISTER_X, dtTime, REAL34_SIZE, amNone); //this must be in front of the next line, otherwise accuracy is gone
+      realMultiply(&tmp, &x, &tmp, &ctxtReal39);                      // tmp is now seconds
+      reallocateRegister(REGISTER_X, dtTime, REAL34_SIZE, amNone);    // this must be in front of the next line, otherwise accuracy is gone
       convertRealToReal34ResultRegister(&tmp, REGISTER_X);
       break;
     }
