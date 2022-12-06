@@ -316,6 +316,8 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(DRG_Cycling);                                   //JM
     recallFromDtConfigDescriptor(DM_Cycling);                                   //JM
     recallFromDtConfigDescriptor(SI_All);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(LongPressM);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(LongPressF);                                  //JMCFG^^         
 
   }
 

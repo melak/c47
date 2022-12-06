@@ -49,8 +49,8 @@
 
 #include "wp43.h"
 
-#define BACKUP_VERSION       778  // file version number
-#define configFileVersion    10000002 // arbitrary starting point version 10 000 001
+#define BACKUP_VERSION       779  // LongPressF M
+#define configFileVersion    10000003 // arbitrary starting point version 10 000 001
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -369,6 +369,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&bcdDisplaySign,                     sizeof(bcdDisplaySign),                     BACKUP);   //C43 JM
     save(&DM_Cycling,                         sizeof(DM_Cycling),                         BACKUP);   //JM
     save(&SI_All,                             sizeof(SI_All),                             BACKUP);   //JM
+    save(&LongPressM,                         sizeof(LongPressM),                         BACKUP);   //JM
+    save(&LongPressF,                         sizeof(LongPressF),                         BACKUP);   //JM
 
     fclose(BACKUP);
     printf("End of calc's backup\n");
@@ -664,6 +666,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&bcdDisplaySign,                     sizeof(bcdDisplaySign),                     BACKUP);   //C43 JM
       restore(&DM_Cycling,                         sizeof(DM_Cycling),                         BACKUP);   //JM
       restore(&SI_All,                             sizeof(SI_All),                             BACKUP);   //JM
+      restore(&LongPressM,                         sizeof(LongPressM),                         BACKUP);   //JM
+      restore(&LongPressF,                         sizeof(LongPressF),                         BACKUP);   //JM
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
@@ -1131,7 +1135,7 @@ void doSave(uint16_t saveType) {
   }
 
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n39\n"); //JM 16+23
+  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n41\n"); //JM 16+11+14
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1231,7 +1235,7 @@ void doSave(uint16_t saveType) {
   sprintf(tmpString, "PLOT_ZMY\n%"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
 */
 
-//12
+//14
   sprintf(tmpString, "jm_HOME_SUM\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_SUM);         save(tmpString, strlen(tmpString), BACKUP);       
   sprintf(tmpString, "jm_LARGELI\n%"            PRIu8 "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString), BACKUP);                 
   sprintf(tmpString, "constantFractions\n%"     PRIu8 "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString), BACKUP);                 
@@ -1244,7 +1248,8 @@ void doSave(uint16_t saveType) {
   sprintf(tmpString, "DRG_Cycling\n%"           PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "DM_Cycling\n%"            PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "SI_All\n%"                PRIu8 "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString), BACKUP);
-
+  sprintf(tmpString, "LongPressM\n%"            PRIu8 "\n",     (uint8_t)LongPressM);          save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "LongPressF\n%"            PRIu8 "\n",     (uint8_t)LongPressF);          save(tmpString, strlen(tmpString), BACKUP);
 
 
 
@@ -2161,6 +2166,8 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "DRG_Cycling"                 ) == 0) { DRG_Cycling          = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "DM_Cycling"                  ) == 0) { DM_Cycling           = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "SI_All"                      ) == 0) { SI_All               = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "LongPressM"                  ) == 0) { LongPressM           = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "LongPressF"                  ) == 0) { LongPressF           = (bool_t)stringToUint8(tmpString) != 0; }
 
       }
     }
@@ -2253,10 +2260,12 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
 
 void fnLoad(uint16_t loadMode) {
   doLoad(loadMode, 0, 0, 0, manualLoad);
+  fnClearFlag(FLAG_USER);
 }
 
 void fnLoadAuto(void) {
   doLoad(LM_ALL, 0, 0, 0, autoLoad);
+  fnClearFlag(FLAG_USER);
 }
 
 
