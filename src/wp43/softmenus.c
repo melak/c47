@@ -1202,7 +1202,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
   }
 
 
-static void greyOutBox(int16_t x1, int16_t x2, int16_t y1, int16_t y2) {
+void greyOutBox(int16_t x1, int16_t x2, int16_t y1, int16_t y2) {
   // Grey out standard function names
   int16_t yStroke;
   for(int16_t xStroke=x1 + 2; xStroke < x2 - 2; xStroke++) {
@@ -1214,62 +1214,6 @@ static void greyOutBox(int16_t x1, int16_t x2, int16_t y1, int16_t y2) {
   }
 }
 
-
-
-static void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, bool_t rightMostSlot, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText);
-
-void fnTest(uint8_t page) {                // Heavily modified by JM from the original fnShow
-  int xx,yy, kk;
-  int16_t key;
-  int16_t pixelsPerSoftKey;
-  xx = 0;
-  yy = 1;
-  clearScreen();
-      switch(page) {
-        case 1:   showString("primary key assignment schedule", &standardFont, 30, 20, vmNormal, false, false); break;
-        case 2:   showString("f-key assignment schedule", &standardFont, 30, 20, vmNormal, false, false); break;
-        case 3:   showString("g-key assignment schedule", &standardFont, 30, 20, vmNormal, false, false); break;
-        default:break;
-      }
-
-  for(key=0; key<37; key++) {
-    if(key == 6 || key ==12 || key == 17 || key == 22 || key == 27 || key == 32) {
-        xx = 0;
-        yy ++;
-    }
-    if(key == 12) pixelsPerSoftKey = (int)((float)SCREEN_WIDTH / 3.0f + 0.5f); else
-    if(key <  12) pixelsPerSoftKey = (int)((float)SCREEN_WIDTH / 6.0f + 0.5f); else
-                  pixelsPerSoftKey = (int)((float)SCREEN_WIDTH / 5.0f + 0.5f);
-
-    if(getSystemFlag(FLAG_USER)) {
-      switch(page) {
-        case 1: kk = kbd_usr[key].primary; break;
-        case 2: kk = kbd_usr[key].fShifted; break;
-        case 3: kk = kbd_usr[key].gShifted; break;
-        default:break;
-      }
-    } else {
-      switch(page) {
-        case 1: kk = kbd_std[key].primary; break;
-        case 2: kk = kbd_std[key].fShifted; break;
-        case 3: kk = kbd_std[key].gShifted; break;
-        default:break;
-      }
-    }
-
-    showKey(indexOfItems[max(kk,-kk)].itemSoftmenuName, xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, 20+yy*SOFTMENU_HEIGHT, 20+(yy+1)*SOFTMENU_HEIGHT, xx == 5, kk > 0 ? vmNormal : vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
-    if(getSystemFlag(FLAG_USER) && 
-        ( ((page == 1) && (kbd_std[key].primary == kbd_usr[key].primary)  ) || 
-          ((page == 2) && (kbd_std[key].fShifted == kbd_usr[key].fShifted)) || 
-          ((page == 3) && (kbd_std[key].gShifted == kbd_usr[key].gShifted))    )
-      ) {
-        greyOutBox(xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, 20+yy*SOFTMENU_HEIGHT, 20+(yy+1)*SOFTMENU_HEIGHT);
-    }
-  xx++;
-  }
-
-  temporaryInformation = TI_NO_INFO;
-}
 
 
   /********************************************//**
@@ -1317,7 +1261,7 @@ void fnTest(uint8_t page) {                // Heavily modified by JM from the or
 }
 
 
-static void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, bool_t rightMostSlot, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {
+void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, bool_t rightMostSlot, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {
     int16_t w;
     char l[15];
 

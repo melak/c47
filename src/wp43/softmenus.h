@@ -25,8 +25,6 @@
 #include "typeDefinitions.h"
 #include <stdint.h>
 
-void fnTest(uint8_t page);
-
 uint8_t *getNthString           (uint8_t *ptr, int16_t n); // Starting with string 0 (the 1st string is returned for n=0)
 void     fnDynamicMenu          (uint16_t unusedButMandatoryParameter);
 
@@ -43,6 +41,8 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
    * \param[in] bottomLine Draw a bottom line
    */
   void   showSoftkey            (const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText);     //dr);
+  void   showKey                (const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, bool_t rightMostSlot, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText);
+  void   greyOutBox             (int16_t x1, int16_t x2, int16_t y1, int16_t y2);
 
 /**
    * Displays the current part of the displayed softmenu.
