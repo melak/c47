@@ -21,8 +21,6 @@
   #define ASNBROWSER_H
 
   #include <stdint.h>
-
-  #if !defined(TESTSUITE_BUILD)
     /********************************************//**
      * \brief The assigned key browser
      *
@@ -30,5 +28,4 @@
      * \return void
      ***********************************************/
     void fnAsnViewer(uint16_t unusedButMandatoryParameter);
-  #endif // !TESTSUITE_BUILD
 #endif // !REGISTERBROWSER_H
