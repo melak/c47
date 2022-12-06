@@ -46,6 +46,7 @@
 #include "recall.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "saveRestoreCalcState.h"
 #include "screen.h"
 #include "softmenus.h"
 #include "solver/equation.h"
@@ -374,7 +375,8 @@ void fnRoundingMode(uint16_t RM) {
     }
 
     default: {
-      sprintf(errorMessage, "In function fnRoundingMode: %d is an unexpected value for RM! Must be from 0 to 6", RM);
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "fnRoundingMode", RM, "RM");
+      sprintf(errorMessage + strlen(errorMessage), "Must be from 0 to 6");
       displayBugScreen(errorMessage);
       break;
     }
@@ -566,7 +568,7 @@ void fnClAll(uint16_t confirmation) {
 
 
 void addTestPrograms(void) {
-  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(11509));
+  uint32_t numberOfBytesUsed, numberOfBytesForTheTestPrograms = TO_BYTES(TO_BLOCKS(11529));
 
   resizeProgramMemory(TO_BLOCKS(numberOfBytesForTheTestPrograms));
   firstDisplayedStep.ram        = beginOfProgramMemory;
@@ -648,54 +650,80 @@ void restoreStats(void){
 
     typedef struct {              //JM VALUES DEMO
       uint8_t  itemType;
+      uint8_t  count;
       char     *itemName;
     } numberstr;
 
     TO_QSPI const numberstr indexOfStrings[] = {
-      {0,"Reg 11,12 & 13 have: The 3 cubes = 3."},
-      {1,"569936821221962380720"},
-      {1,"-569936821113563493509"},
-      {1,"-472715493453327032"},
+      {0,10, "Reg 11,12 & 13 have: The 3 cubes = 3."},
+      {1,11, "569936821221962380720"},
+      {1,12, "-569936821113563493509"},
+      {1,13, "-472715493453327032"},
 
-      {0,"Reg 15, 16 & 17 have: The 3 cubes = 42."},
-      {1,"-80538738812075974"},
-      {1,"80435758145817515"},
-      {1,"12602123297335631"},
+      {0,14, "Reg 15, 16 & 17 have: The 3 cubes = 42."},
+      {1,15, "-80538738812075974"},
+      {1,16, "80435758145817515"},
+      {1,17, "12602123297335631"},
 
-      {0,"37 digits of pi, Reg19 / Reg20."},
-      {1,"2646693125139304345"},
-      {1,"842468587426513207"},
+      {0,18, "37 digits of pi, Reg19 / Reg20."},
+      {1,19, "2646693125139304345"},
+      {1,20, "842468587426513207"},
 
-      {0,"Primes: Carol"},
-      {1,"18014398241046527"},
+      {0,21, "Primes: Carol"},
+      {1,22, "18014398241046527"},
 
-      {0,"Primes: Kynea"},
-      {1,"18446744082299486207"},
+      {0,23, "Primes: Kynea"},
+      {1,24, "18446744082299486207"},
 
-      {0,"Primes: repunit"},
-      {1,"7369130657357778596659"},
+      {0,25, "Primes: repunit"},
+      {1,26, "7369130657357778596659"},
 
-      {0,"Primes: Woodal"},
-      {1,"195845982777569926302400511"},
+      {0,27, "Primes: Woodal"},
+      {1,28, "195845982777569926302400511"},
 
-      {0,"Primes: Woodal"},
-      {1,"4776913109852041418248056622882488319"},
+      {0,29, "Primes: Woodal"},
+      {1,30, "4776913109852041418248056622882488319"},
 
-      {0,"Primes: Woodal"},
-      {1,"225251798594466661409915431774713195745814267044878909733007331390393510002687"},
+      {0,31, "Primes: Woodal"},
+      {1,32, "225251798594466661409915431774713195745814267044878909733007331390393510002687"},
     };
+
+
+
 
 
     TO_QSPI const numberstr indexOfMsgs[] = {
-      {0,"C43 L1: C43, QSPI"},
-      {0,"C43 L1: C43, NO QSPI"},
-      {0,"C43 L42: unmod. DM42, QSPI"},
-      {0,"C43 L42: unmod. DM42, NO QSPI"},
-      {0,"C43 Layout L1: SIM"},
-      {0,"C43 L42: unmodified DM42 SIM"}
+      {0,USER_C43,     "C43: Final classic single shift (DM42 mould)"    },
+      {0,USER_D43,     "D43: Exp 2 shifts R (43S mould) /x-+ R"          },
+      {0,USER_E43,     "E43: Exp 2 shifts L /x-+ R"                      },
+      {0,USER_N43,     "N43: Exp 2 shft L (32 mould) /x-+ R " STD_LEFT_ARROW STD_UP_ARROW STD_DOWN_ARROW STD_RIGHT_ARROW " top"  },
+      {0,USER_V43,     "V43: Exp Vintage 2 shifts TopR -+x/ L"           },
+      {0,USER_C43ALTA, "C43AltA: OLD 2 shift (43S mould) Allschwil alt." },
+      {0,USER_C43ALT,  "C43 ALT: Final 2 shift (43S mould) alternative"  },
+      {0,USER_DM42,    "DM42: Final Compatibility layout"                },
+      {0,USER_43S,     "WP 43S Pilot: Final Compatibility layout"        },
+      {0,USER_KRESET,  "All USER keys cleaned"                           },
+      {0,USER_MRESET,  "MyMenu menu cleaned"                             },
+      {0,USER_ARESET,  "My" STD_alpha " menu cleaned"                    },
+      {0,100,"Error List"}
     };
 
+uint16_t searchMsg(uint16_t idStr) {
+  uint_fast16_t n = nbrOfElements(indexOfMsgs);
+  uint_fast16_t i;
+  for (i = 0; i < n; i++) {
+    if( indexOfMsgs[i].count == idStr) {
+       break;
+    }
+  }
+return i;
+}
 
+
+void fnShowVersion(uint8_t option) {  //KEYS VERSION LOADED
+    strcpy(errorMessage, indexOfMsgs[searchMsg(option)].itemName);
+    temporaryInformation = TI_KEYS;
+}
 
 
 void fnReset(uint16_t confirmation) {
@@ -1039,12 +1067,14 @@ void fnReset(uint16_t confirmation) {
       
       
     //JM Default USER
-    fnUserJM(USER_RESET);                                      //JM USER
+    fnUserJM(USER_ARESET);                                      //JM USER
+    fnUserJM(USER_MRESET);                                      //JM USER
+    fnUserJM(USER_KRESET);                                      //JM USER
 //    kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].fShifted    = KEY_TYPCON_DN;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 
-
+    fnVersion(0);
 
     // The following lines are test data
   #ifndef SAVE_SPACE_DM42_14
@@ -1095,111 +1125,9 @@ void fnReset(uint16_t confirmation) {
       refreshDebugPanel();
     #endif //  (DEBUG_PANEL == 1)
 
-    //JM                                                       //JM TEMPORARY TEST DATA IN REGISTERS
 
 
-
-
-//      TO_QSPI const numberstr indexOfMsgs[] = {
-//        {0,"C43 L1: C43, QSPI"},
-//        {0,"C43 L1: C43, NO QSPI"},
-//        {0,"C43 L42: unmod. DM42, QSPI"},
-//        {0,"C43 L42: unmod. DM42, NO QSPI"},
-//        {0,"C43 Layout L1: SIM"},
-//        {0,"C43 L42: unmodified DM42 SIM"}
-//      };
-
-
-
-#define VERSION1 "_108_08d"
-
-    #ifdef JM_LAYOUT_1A
-      #undef L1L2
-      #define L1L2    "" //L1
-    #endif
-    #ifdef JM_LAYOUT_2_DM42_STRICT
-      #undef L1L2
-      #define L1L2    "L42"
-    #endif
-
-    char *build_str = "C43" L1L2 VERSION1 ", " __DATE__;
-    fnStrtoX(build_str);
-    fnStore(102);
-    fnDrop(0);
-        
-
-    #ifdef PC_BUILD
-      #if defined(JM_LAYOUT_1A)
-        fnStrtoX(indexOfMsgs[4].itemName);
-      #else
-        #if defined(JM_LAYOUT_2_DM42_STRICT)
-          fnStrtoX(indexOfMsgs[5].itemName);
-        #endif
-      #endif
-
-    #else
-
-      #if defined(JM_LAYOUT_1A) && defined(TWO_FILE_PGM)
-        fnStrtoX(indexOfMsgs[0].itemName);
-      #else
-        #if defined(JM_LAYOUT_1A) && !defined(TWO_FILE_PGM)
-          fnStrtoX(indexOfMsgs[1].itemName);
-        #else
-          #if defined(JM_LAYOUT_2_DM42_STRICT) && defined(TWO_FILE_PGM)
-            fnStrtoX(indexOfMsgs[2].itemName);
-          #else
-            #if defined(JM_LAYOUT_2_DM42_STRICT) && !defined(TWO_FILE_PGM)
-              fnStrtoX(indexOfMsgs[3].itemName);
-            #endif
-          #endif
-        #endif
-      #endif
-
-    #endif
-    fnStore(103);
-    fnDrop(0);
-
-    
-    fnRESET_MyM_Mya();
-
-
-
-
-        
-//    TO_QSPI const numberstr indexOfStrings[] = {
-//      {0,"Reg 11,12 & 13 have: The 3 cubes = 3."},
-//      {1,"569936821221962380720"},
-//      {1,"-569936821113563493509"},
-//      {1,"-472715493453327032"},
-//
-//      {0,"Reg 15, 16 & 17 have: The 3 cubes = 42."},
-//      {1,"-80538738812075974"},
-//      {1,"80435758145817515"},
-//      {1,"12602123297335631"},
-//
-//      {0,"37 digits of pi, Reg19 / Reg20."},
-//      {1,"2646693125139304345"},
-//      {1,"842468587426513207"},
-//
-//      {0,"Primes: Carol"},
-//      {1,"18014398241046527"},
-//
-//      {0,"Primes: Kynea"},
-//      {1,"18446744082299486207"},
-//
-//      {0,"Primes: repunit"},
-//      {1,"7369130657357778596659"},
-//
-//      {0,"Primes: Woodal"},
-//      {1,"195845982777569926302400511"},
-//
-//      {0,"Primes: Woodal"},
-//      {1,"4776913109852041418248056622882488319"},
-//
-//      {0,"Primes: Woodal"},
-//      {1,"225251798594466661409915431774713195745814267044878909733007331390393510002687"},
-//    };
-
+    //JM TEMPORARY TEST DATA IN REGISTERS
     uint_fast16_t n = nbrOfElements(indexOfStrings);
     for (uint_fast16_t i = 0; i < n; i++) {
       if( indexOfStrings[i].itemType== 0) {
@@ -1208,10 +1136,14 @@ void fnReset(uint16_t confirmation) {
       if( indexOfStrings[i].itemType== 1) {
         fnStrInputLongint(indexOfStrings[i].itemName);        
       }
-      fnStore(i+10);
+      fnStore(indexOfStrings[i].count);
       fnDrop(0);
     }
 
+    //Autoloading of C43Auto.sav
+    #if defined(DMCP_BUILD)
+      fnLoadAuto();
+    #endif
 
     doRefreshSoftMenu = true;     //jm dr
     last_CM = 253;

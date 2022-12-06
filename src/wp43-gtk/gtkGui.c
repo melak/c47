@@ -1132,13 +1132,8 @@ return FALSE;
  * \return void
  ***********************************************/
 void hideAllWidgets(void) {
-#if defined(JM_LAYOUT_1A)  //JM LAYOUT 1. FINAL. Show colour band next to LCD
   gtk_widget_hide(lblFKey2);  //JMLINES
   gtk_widget_hide(lblGKey2);  //JMLINES
-//  gtk_widget_hide(lblEKey);   //JMLINES
-//  gtk_widget_hide(lblEEKey);   //JMLINES
-//  gtk_widget_hide(lblSKey);   //JMLINES
-#endif  
   gtk_widget_hide(btn11);
   gtk_widget_hide(btn12);
   gtk_widget_hide(btn13);
@@ -1849,14 +1844,8 @@ void moveLabels(void) {
   //gtk_widget_get_preferred_size(  lblOn,  NULL, &lblF); //JM
   gtk_widget_get_preferred_size(  lbl85G, NULL, &lblG);
 
-#ifdef JM_LAYOUT_2_DM42_STRICT //JM LAYOUT 2. DM42 STRICT.
-  gtk_fixed_move(GTK_FIXED(grid), lbl85F, (2*xPos+KEY_WIDTH_2-lblF.width-GAP*1.4-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL); //JM align provision for CAT
-  gtk_fixed_move(GTK_FIXED(grid), lbl85G, (2*xPos+KEY_WIDTH_2+lblF.width+GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL); //JM align provision for CAT
-#endif //JM END OF LAYOUT 2 DM42 STRICT.
-#ifdef JM_LAYOUT_1A                                                                                                             //JM LAYOUT 1
   gtk_fixed_move(GTK_FIXED(grid), lbl85F, (2*xPos+KEY_WIDTH_2-lblF.width-GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL); //JM
   gtk_fixed_move(GTK_FIXED(grid), lbl85G, (2*xPos+KEY_WIDTH_2+lblF.width+GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL); //JM
-#endif //JM END OF LAYOUT 1
   gtk_widget_get_preferred_size(  lbl85Gr, NULL, &lblG);                                                                              //JM ALPHA BLUE MENU LABELS
 //gtk_fixed_move(GTK_FIXED(grid), lbl85Gr, (2*xPos+KEY_WIDTH_2-GAP-lblG.width+2)/2,           yPos + GAP - Y_OFFSET_SHIFTED_LABEL);   //JM ALPHA BLUE MENU LABELS //vv dr - new AIM
   gtk_fixed_move(GTK_FIXED(grid), lbl85Gr, (2*xPos+KEY_WIDTH_2+lblF.width+2*GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);        //JM ALPHA BLUE MENU LABELS //^^
@@ -2243,13 +2232,8 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
 
   hideAllWidgets();
 
-#if defined(JM_LAYOUT_1A)  //JM LAYOUT 1. FINAL. Show colour band next to LCD
   gtk_widget_show( lblFKey2);  //JMLINES
   gtk_widget_show( lblGKey2);  //JMLINES
-//  gtk_widget_show( lblEKey);   //JMLINES
-//  gtk_widget_show( lblEEKey);   //JMLINES
-//  gtk_widget_show( lblSKey);   //JMLINES
-#endif
 
   labelCaptionNormal(keys++, btn21, lbl21F, lbl21G, lbl21L);
   labelCaptionNormal(keys++, btn22, lbl22F, lbl22G, lbl22L);
@@ -2350,10 +2334,8 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   gtk_widget_show(lbl34G);
   //gtk_widget_show(lbl34H);//JMALPHA2 temporary remove A from J
   gtk_widget_show(lbl34L);
-//#ifdef JM_LAYOUT_2_DM42_STRICT //JM LAYOUT 2. DM42 STRICT.
   gtk_widget_show(lbl35L); // JM !!
   gtk_widget_show(lbl36L); // JM !!
-//#endif //JM END OF LAYOUT 2 DM42 STRICT.
 
   gtk_widget_show(lbl35F); //JM3 SIN/COS/TAN to DM42
   gtk_widget_show(lbl35G); //JM3 SIN/COS/TAN to DM42
@@ -2654,10 +2636,8 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
 //  gtk_widget_show(lbl33H);
   //gtk_widget_show(lbl33L);    //dr - new AIM
   //gtk_widget_show(lbl34L);    //dr - new AIM
-//#ifdef JM_LAYOUT_2_DM42_STRICT //JM LAYOUT 2. DM42 STRICT.
   //gtk_widget_show(lbl35L); // JM !!    //dr - new AIM
   //gtk_widget_show(lbl36L); // JM !!    //dr - new AIM
-//#endif //JM END OF LAYOUT 2 DM42 STRICT.
   //gtk_widget_show(lbl34H);  //JMALPHA2 reinstate CAPS //JMALPHA2 temporary remove A from J
   gtk_widget_show(lbl31Gr);
   gtk_widget_show(lbl32Gr);
@@ -3006,19 +2986,11 @@ void setupUI(void) {
   }
   else {
 
-#ifdef JM_LAYOUT_2_DM42_STRICT //JM L2
-    backgroundImage = gtk_image_new_from_file("res/dm42l_L2.png");
-#endif //JM Layout
-#if defined(JM_LAYOUT_1A) //JM LAYOUT 1
     backgroundImage = gtk_image_new_from_file("res/dm42l_L1.png");
-#endif //JM Layout
 
   }
 
       gtk_fixed_put(GTK_FIXED(grid), backgroundImage, 0, 0);
-
-#if defined(JM_LAYOUT_1A)  //JM LAYOUT 1. FINAL. Show colour band next to LCD
-
 
 #ifdef S43
   // Areas for the g shifted softkeys
@@ -3026,8 +2998,6 @@ void setupUI(void) {
   gtk_widget_set_name(lblGSoftkeyArea, "gSoftkeyArea");
   gtk_widget_set_size_request(lblGSoftkeyArea, 438, 24);
   gtk_fixed_put(GTK_FIXED(grid), lblGSoftkeyArea, 44, 72+170);
-
-
 
   // Area for the f shifted softkeys
   lblFSoftkeyArea = gtk_label_new("");
@@ -3041,7 +3011,7 @@ void setupUI(void) {
   // Frame around the f key
   lblFKey2 = gtk_label_new("");  
   gtk_widget_set_name(lblFKey2, "fSoftkeyArea");
-  if(kbd_usr[27].primary == KEY_fg) {                        //JM only draw the thin lines under the expansion f/g keys if the origianl fg key is used.
+  if(kbd_usr[10].primary == ITM_SHIFTf) {                        //JM only draw the thin lines under the expansion f/g keys if the origianl fg key is used.
     gtk_widget_set_size_request(lblFKey2, 61-8-2-2,  5-2);
     gtk_fixed_put(GTK_FIXED(grid), lblFKey2, 350+4+2, 563-1);
   }
@@ -3049,7 +3019,7 @@ void setupUI(void) {
   // Frame around the g key
   lblGKey2 = gtk_label_new("");
   gtk_widget_set_name(lblGKey2, "gSoftkeyArea");
-  if(kbd_usr[27].primary == KEY_fg) {                        //JM only draw the thin lines under the expansion f/g keys if the origianl fg key is used.
+  if(kbd_usr[11].primary == ITM_SHIFTg) {                        //JM only draw the thin lines under the expansion f/g keys if the origianl fg key is used.
     gtk_widget_set_size_request(lblGKey2, 61-8-2-2,  5-2);
     gtk_fixed_put(GTK_FIXED(grid), lblGKey2, 350+4+2 + DELTA_KEYS_X, 563-1);
   }
@@ -3072,8 +3042,6 @@ void setupUI(void) {
 //  gtk_widget_set_name(lblSKey,"eSoftkeyArea");
 //  gtk_widget_set_size_request(lblSKey, 61-8-2-2,  5-2);
 //  gtk_fixed_put(GTK_FIXED(grid), lblSKey, 350+4+2 - 1 * DELTA_KEYS_X, 563-1 -0* DELTA_KEYS_Y);
-
-#endif //JM
 
   // Area for the softkeys
   //lblSoftkeyArea1 = gtk_label_new("");

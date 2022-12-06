@@ -23,6 +23,7 @@
 #include "keyboard.h"
 #include "longIntegerType.h"
 #include "memory.h"
+#include "saveRestoreCalcState.h"
 #include "screen.h"
 #include "softmenus.h"
 #include "timer.h"
@@ -169,7 +170,7 @@ uint8_t               displayStackSHOIDISP;          //JM SHOIDISP
 bool_t                numLock;                       //JM
 bool_t                doRefreshSoftMenu;                       //dr
 bool_t                jm_FG_LINE;                              //JM Screen / keyboard operation setup
-bool_t                jm_NO_BASE_SCREEN;                              //JM Screen / keyboard operation setup
+bool_t                jm_BASE_SCREEN;                          //JM Screen / keyboard operation setup
 bool_t                jm_G_DOUBLETAP;                          //JM Screen / keyboard operation setup
 bool_t                jm_HOME_SUM;                             //JMHOME
 bool_t                jm_LARGELI;
@@ -204,7 +205,7 @@ int16_t                ListXYposition;               //JMSHOW
 int16_t                mm_MNU_HOME;                  //JM
 int16_t                mm_MNU_ALPHA;                 //JM
 int16_t                MY_ALPHA_MENU = 1;            //JM
-int16_t                JM_auto_doublepress_enabled;  //JM TIMER CLRDROP //drop
+int16_t                JM_auto_doublepress_autodrop_enabled;  //JM TIMER CLRDROP //drop
 int16_t                JM_auto_longpress_enabled;    //JM TIMER CLRDROP //clstk
 uint8_t                JM_SHIFT_HOME_TIMER1;         //Local to keyboard.c, but defined here
 bool_t                 ULFL, ULGL;                   //JM Underline
@@ -966,5 +967,6 @@ char                   plotStatMx[8];
         }
       }
     }
+  fnSaveAuto();
   }
 #endif // DMCP_BUILD

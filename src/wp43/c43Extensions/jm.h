@@ -89,7 +89,7 @@ extern bool_t SH_BASE_HOME;                                          //JM BASEHO
 extern int16_t Norm_Key_00_VAR;                                      //JM USER NORMAL
 extern uint8_t Input_Default;                                        //JM Input Default
 extern bool_t jm_FG_LINE;                                            //JM Screen / keyboard operation setup
-extern bool_t jm_NO_BASE_SCREEN;                                            //JM Screen / keyboard operation setup
+extern bool_t jm_BASE_SCREEN;                                        //JM Screen / keyboard operation setup
 extern bool_t jm_G_DOUBLETAP;                                        //JM Screen / keyboard operation setup
 extern float graph_xmin;                                             //JM Graph
 extern float graph_xmax;                                             //JM Graph
@@ -119,19 +119,21 @@ void fnUserJM(uint16_t jmUser);
 
 
 //fnUserJM
-#define USER_DEFAULTS    23
-#define USER_COMPLEX     24
 #define USER_C43ALTA     25
-#define USER_C43ALTB     26
-#define USER_RESET       27
+#define USER_C43ALT      26
 #define JM_ASSIGN        28
 #define USER_COPY        29
 #define USER_V43         40
 #define USER_SHIFTS2     41
-#define USER_V43LT       43
+#define USER_E43         43
 #define USER_43S         44
 #define USER_DM42        45
 #define USER_C43         46
+#define USER_D43         47
+#define USER_ARESET      48
+#define USER_MRESET      49
+#define USER_KRESET      50
+#define USER_N43         51
  //last number
 
 
@@ -173,7 +175,7 @@ void fnRCL          (int16_t inp);
 #define JC_FRC                 18    // CB FRACTION MODE
 
 #define JC_FG_LINE             20    // screen setup
-#define JC_NO_BASE_SCREEN      21    // screen setup
+#define JC_BASE_SCREEN         21    // screen setup
 #define JC_G_DOUBLETAP         22    // screen setup
 
 #define JC_H_SUM               26    //JMHOME

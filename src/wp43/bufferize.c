@@ -51,6 +51,9 @@
 #include "wp43.h"
 
 #if !defined(TESTSUITE_BUILD)
+
+TO_QSPI static const char bugScreenNoParam[] = "In function addItemToBuffer:item should not be NOPARAM=7654!";
+
   void fnAim(uint16_t unusedButMandatoryParameter) {
     resetShiftState();  //JM
     displayAIMbufferoffset = 0;
@@ -287,11 +290,11 @@ void kill_ASB_icon(void) {
     #ifdef PC_BUILD
       char tmp[200]; sprintf(tmp,"bufferize.c:addItemToBuffer item=%d tam.mode=%d\n",item,tam.mode); jm_show_calc_state(tmp);
     #endif
-    resetKeytimers();  //JM
+//    resetKeytimers();  //JM
 
 
     if(item == NOPARAM) {
-      displayBugScreen("In function addItemToBuffer:item should not be NOPARAM=7654!");
+      displayBugScreen(bugScreenNoParam);
     }
     else {
       screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
@@ -876,6 +879,7 @@ void kill_ASB_icon(void) {
           case ITM_DEGto :
           case ITM_DMSto :
           case ITM_DtoJ :
+          case ITM_DTtoJ :
           case ITM_ERF :
           case ITM_ERFC :
           case ITM_EXPT :
@@ -885,7 +889,7 @@ void kill_ASB_icon(void) {
           case ITM_GDM1 :
           case ITM_GRADto :
           case ITM_IM :
-          case ITM_JtoD :
+          case ITM_JtoDT :
           case ITM_LASTX :
           case ITM_LNGAMMA :
           case ITM_LocRQ :
@@ -977,7 +981,7 @@ void kill_ASB_icon(void) {
 
 
     if(item >= ITM_A && item <= ITM_F && lastIntegerBase == 0) lastIntegerBase = 16;
-    if(item != ITM_EXIT1) resetKeytimers();  //JM
+//    if(item != ITM_EXIT1) resetKeytimers();  //JM
 
     screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
     currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;
@@ -1931,9 +1935,9 @@ void kill_ASB_icon(void) {
     }
 
     else {
-      switch (item) {           //JMCLOSE remove auto closenim for these functions only.
-        case ITM_SQUAREROOTX : //closeNim moved to keyboard.c / btnkeyrelease, as .ms is on longpress underneath sqrt
-        case ITM_HASH_JM :     //closeNim simply not needed
+        switch (item) {           //JMCLOSE remove auto closenim for these functions only.
+          case ITM_SQUAREROOTX : //closeNim moved to keyboard.c / btnkeyrelease, as .ms is on longpress underneath sqrt
+          case ITM_HASH_JM :     //closeNim simply not needed because we need to type the base while NIM remains open
           break;
           default :
           if(item != -MNU_INTS && item != -MNU_BITS) {
@@ -2328,7 +2332,7 @@ void kill_ASB_icon(void) {
               longInteger2Pow(shortIntegerWordSize, maxVal);
             }
             else {
-              sprintf(errorMessage, "In function closeNIM:%d is an unexpected value for shortIntegerWordSize!", shortIntegerWordSize);
+              sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "closeNIM", "shortIntegerWordSize", shortIntegerWordSize);
               displayBugScreen(errorMessage);
               longIntegerFree(maxVal);
               longIntegerFree(value);
@@ -2396,7 +2400,7 @@ void kill_ASB_icon(void) {
               }
             }
             else {
-              sprintf(errorMessage, "In function closeNIM:%d is an unexpected value for shortIntegerMode!", shortIntegerMode);
+              sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "closeNIM", "shortIntegerMode", shortIntegerMode);
               displayBugScreen(errorMessage);
               *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = 0;
             }
@@ -2432,7 +2436,7 @@ void kill_ASB_icon(void) {
             closeNimWithComplex(REGISTER_REAL34_DATA(REGISTER_X), REGISTER_IMAG34_DATA(REGISTER_X));
           }
           else {
-            sprintf(errorMessage, "In function closeNIM:%d is an unexpected nimNumberPart value!", nimNumberPart);
+            sprintf(errorMessage, commonBugScreenMessages[bugMsgUnexpectedSValue], "closeNIM", nimNumberPart, "nimNumberPart");
             displayBugScreen(errorMessage);
           }
         }

@@ -58,10 +58,23 @@
 
 //#define DEBUGCLEARS
 
-
 #if !defined(TESTSUITE_BUILD)
-  static const char *whoStr = "WP43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Pauli," STD_SPACE_3_PER_EM "Walter," STD_SPACE_3_PER_EM "Mihail," STD_SPACE_3_PER_EM "Jaco" STD_SPACE_3_PER_EM "and" STD_SPACE_3_PER_EM "Martin";
-  static const char *versionStr = "WP43" STD_SPACE_3_PER_EM VERSION_STRING;
+  TO_QSPI static const char *whoStr1 = "C43" STD_SPACE_3_PER_EM "by" STD_SPACE_3_PER_EM "Ben" STD_SPACE_3_PER_EM "GB," STD_SPACE_3_PER_EM "D" STD_SPACE_3_PER_EM "A" STD_SPACE_3_PER_EM "CA," STD_SPACE_3_PER_EM "Dani" STD_SPACE_3_PER_EM "CH," STD_SPACE_3_PER_EM "H" STD_a_RING "kon" STD_SPACE_3_PER_EM "NO," STD_SPACE_3_PER_EM "Jaco" STD_SPACE_3_PER_EM "ZA,";
+  TO_QSPI static const char *whoStr2 = "Martin" STD_SPACE_3_PER_EM "FR," STD_SPACE_3_PER_EM "Mihail" STD_SPACE_3_PER_EM "JP," STD_SPACE_3_PER_EM "Pauli" STD_SPACE_3_PER_EM "AU," STD_SPACE_3_PER_EM "RJvM" STD_SPACE_3_PER_EM "NL," STD_SPACE_3_PER_EM "Walter" STD_SPACE_3_PER_EM "DE.";
+  TO_QSPI static const char *versionStr = VERSION_STRING " [EXIT]";
+
+  #ifdef PC_BUILD
+    TO_QSPI static const char *versionStr2 = "C43 Sim " VERSION1 ", compiled " __DATE__;
+  #else
+    #if defined(TWO_FILE_PGM)
+      TO_QSPI static const char *versionStr2 = "C43 QSPI " VERSION1 ", compiled " __DATE__;
+    #else
+      #if !defined(TWO_FILE_PGM)
+      TO_QSPI static const char *versionStr2 = "C43 No QSPI " VERSION1 ", compiled " __DATE__;
+      #endif
+    #endif
+  #endif
+
 
   /* Names of day of week */
   TO_QSPI static const char *nameOfWday_en[8] = {"invalid day of week",                                   "Monday",            "Tuesday",                     "Wednesday",               "Thursday",           "Friday",             "Saturday",             "Sunday"};
@@ -823,7 +836,7 @@ void underline_softkey(int16_t xSoftkey, int16_t ySoftKey, bool_t dontclear) {
 
 void FN_handler() {                          //JM FN LONGPRESS vv Handler FN Key shift longpress handler
                                              //   Processing cycles here while the key is pressed, that is, after PRESS #1, waiting for RELEASE #2
-  if((FN_state = ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !(softmenuStack[0].softmenuId==0 && jm_NO_BASE_SCREEN) ) {
+  if((FN_state == ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !(softmenuStack[0].softmenuId == 0 && !jm_BASE_SCREEN) ) {
 
     if(fnTimerGetStatus(TO_FN_LONG) == TMR_COMPLETED) {
       FN_handle_timed_out_to_EXEC = false;
@@ -916,9 +929,21 @@ void Shft_handler() {                        //JM SHIFT NEW vv
 void LongpressKey_handler() {
   if(fnTimerGetStatus(TO_CL_LONG) == TMR_COMPLETED) {
     if(JM_auto_longpress_enabled != 0) {
-      showFunctionName(JM_auto_longpress_enabled, JM_TO_CL_LONG);
-      JM_auto_longpress_enabled = 0;
-    } 
+      showFunctionName(JM_auto_longpress_enabled, JM_TO_CL_LONG + 50);     //Add a marginal amout of time to prevent racing of end conditions. 
+      JM_auto_longpress_enabled = 0;                                       //showFunctionName must not time out longer than the timer that is started below
+
+      //Setup up next long press activation possibility
+      if(longpressDelayedkey2) {
+        JM_auto_longpress_enabled = longpressDelayedkey2;
+        longpressDelayedkey2 = 0;
+      } else if(longpressDelayedkey3) {
+        JM_auto_longpress_enabled = longpressDelayedkey3;
+        longpressDelayedkey3 = 0;
+      }
+      if(JM_auto_longpress_enabled) {
+        fnTimerStart(TO_CL_LONG, TO_CL_LONG, JM_TO_CL_LONG);
+      }
+    }
   }
 }
 
@@ -1057,7 +1082,7 @@ uint8_t  displaymode = stdNoEnlarge;
     }
 
     if(glyph == NULL) {
-      sprintf(errorMessage, "In function showGlyphCode: %" PRIi32 " is an unexpected value returned by fingGlyph!", glyphId);
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "showGlyphCode", glyphId);
       displayBugScreen(errorMessage);
       return 0;
     }
@@ -1159,7 +1184,7 @@ uint8_t  displaymode = stdNoEnlarge;
 
     glyphId = findGlyph(font, charCodeFromString(ch, offset));
     if(glyphId < 0) {
-      sprintf(errorMessage, "In function getGlyphBounds: %" PRIi32 " is an unexpected value returned by findGlyph!", glyphId);
+      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "getGlyphBounds", glyphId);
       displayBugScreen(errorMessage);
       return;
     }
@@ -1556,30 +1581,16 @@ void force_refresh(void) {
 
   void showFunctionName(int16_t item, int16_t delayInMs) {
     uint32_t fcol, frow, gcol, grow;
-    
-    char padding[20];                                          //JM
-    if(item == ITM_NOP && delayInMs == 0) {                        //JMvv Handle second and third longpress
-      if(longpressDelayedkey2 != 0) {                              //  If a delayed key2 is defined, qeue it
-        item = longpressDelayedkey2; 
-        delayInMs = JM_TO_CL_LONG;
-        longpressDelayedkey2 = 0;
-      } else
-      if(longpressDelayedkey3 != 0) {                              //  If a delayed key3 is defined, qeue it
-        item = longpressDelayedkey3; 
-        delayInMs = JM_TO_CL_LONG;
-        longpressDelayedkey3 = 0;
-      }
-    }                                                              //JM^^
-
     char *functionName;
-//FIX //REMOVE DISPLAYING TEMP STRING as in C43 the tmpstring does NOT show the last keystroke or whatever. It gets executed from timers
+    char padding[20];                                          //JM
+
+//FIX //REMOVE DISPLAYING TEMP STRING as in C43 the tmpstring does NOT show the last keystroke or whatever this tempstr is needed for. It gets executed from timers
 //    if(tmpString[0] != 0) {
 //      functionName = tmpString;
 //    }
 //    else 
       if(item != MNU_DYNAMIC) {
       functionName = indexOfItems[abs(item)].itemCatalogName;
-// if(functionName[0]==0) functionName = indexOfItems[abs(item)].itemSoftmenuName; //test functio to show softmenu name if catalogue name not defuned
     }
     else {
       functionName = dynmenuGetLabel(dynamicMenuItem);
@@ -1914,7 +1925,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         #if (SHOW_MEMORY_STATUS == 1)
           char string[1000];
 
-          sprintf(string, "%" PRId32 " bytes free (%" PRId32 " region%s), C43 %" PRIu64 " bytes, GMP %" PRIu64 " bytes -> should always be 0", getFreeRamMemory(), numberOfFreeMemoryRegions, numberOfFreeMemoryRegions==1 ? "" : "s", TO_BYTES((uint64_t)wp43MemInBlocks), (uint64_t)gmpMemInBytes);
+          sprintf(string, "%" PRId32 " bytes free (%" PRId32 " region%s), C43 %" PRIu32 " bytes, GMP %" PRIu32 " bytes -> should always be 0", getFreeRamMemory(), numberOfFreeMemoryRegions, numberOfFreeMemoryRegions==1 ? "" : "s", (uint32_t)TO_BYTES((uint64_t)wp43MemInBlocks), (uint32_t)gmpMemInBytes);
           stringToUtf8(string, (uint8_t *)tmpStr);
           gtk_label_set_label(GTK_LABEL(lblMemoryStatus), tmpStr);
           gtk_widget_show(lblMemoryStatus);
@@ -1954,16 +1965,23 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
       }
 
       else if(temporaryInformation == TI_WHO)
-        if (regist == REGISTER_X) {
-          showString(whoStr, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
-        } else {
         if (regist == REGISTER_Y) {
-          showString(WHO2, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);          
+          showString(whoStr1, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+        } else {
+        if (regist == REGISTER_X) {
+          showString(whoStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);          
         }
       }
 
       else if(temporaryInformation == TI_VERSION && regist == REGISTER_X) {
+        clearRegisterLine(REGISTER_X,true,true);
+        clearRegisterLine(REGISTER_Y,true,true);
         showString(versionStr, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+        showString(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
+      }
+
+      else if(temporaryInformation == TI_KEYS && regist == REGISTER_X) {
+        showString(errorMessage, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
       }
 
       else if(temporaryInformation == TI_FALSE && regist == TRUE_FALSE_REGISTER_LINE) {
@@ -3606,7 +3624,21 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
           hourGlassIconEnabled = true;
           refreshStatusBar();
           graphPlotstat(plotSelection);
+          if(lastErrorCode != ERROR_NONE) {
+            if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_GRAPH) {
+              popSoftmenu();
+              calcMode = CM_NORMAL;
+              refreshScreen();
+            }
+          }
           graphDrawLRline(plotSelection);
+          if(lastErrorCode != ERROR_NONE) {
+            if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HPLOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_HPLOT || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_STAT) {
+              popSoftmenu();
+              calcMode = CM_NORMAL;
+              refreshScreen();
+            }
+          }
           hourGlassIconEnabled = false;
           showHideHourGlass();
           refreshStatusBar();

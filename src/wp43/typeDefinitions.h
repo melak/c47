@@ -144,6 +144,25 @@ typedef enum {
 //#define TM_HMS    7   //JM
 
 
+
+/**
+ * \enum commonBugScreenMessageCode_t
+ * Common bug screen messages.
+ */
+typedef enum {
+  bugMsgValueFor                 = 0,
+  bugMsgCalcModeWhileProcKey     = 1,
+  bugMsgNumByte                  = 2,
+  bugMsgNoNamedVariables         = 3,
+  bugMsgValueReturnedByFindGlyph = 4,
+  bugMsgUnexpectedSValue         = 5,
+  bugMsgDataTypeUnknown          = 6,
+  bugMsgRegistMustBeLessThan     = 7,
+  bugMsgNotDefinedMustBe         = 8,
+  bugMsgRbrMode                  = 9,
+} commonBugScreenMessageCode_t;
+
+
 /**
  * \struct dtConfigDescriptor_t
  * Configuration for STOCFG and RCLCFG.
@@ -177,7 +196,7 @@ typedef struct {
   int16_t Norm_Key_00_VAR;
   uint8_t Input_Default;
   bool_t jm_FG_LINE;
-  bool_t jm_NO_BASE_SCREEN;
+  bool_t jm_BASE_SCREEN;
   bool_t jm_G_DOUBLETAP;
   float  graph_xmin;
   float  graph_xmax;

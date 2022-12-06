@@ -1,0 +1,87 @@
+;*************************************************************
+;*************************************************************
+;**                                                         **
+;**                        DT -> J                           **
+;**                                                         **
+;*************************************************************
+;*************************************************************
+In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
+Func: fnDateTimeToJulian
+
+
+
+;=======================================
+; dttoj(Long Integer) --> Error24
+;=======================================
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"1234567" RY=Date:"2022.1015"
+Out: EC=2 FL_CPXRES=0 FL_ASLIFT=0 RX=LonI:"1234567"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Time:"12:34:56.789" RY=LonI:"1234567"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Time:"12:34:56.789"
+
+
+
+;=======================================
+; dttoj(Time) --> Error24
+;=======================================
+;In:  FL_ASLIFT=0 FL_CPXRES=0 RY=LonI:"1234567" RX=Date:"2022.1015"
+;Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0  RX=Date:"2022.1015"
+;RY=LonI:"1234567"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 RY=Time:"12:34:56.789" RX=LonI:"1234567"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=LonI:"1234567"
+;RY=Time:"12:34:56.789"
+
+
+
+;=======================================
+; dttoj(Date Time) --> Real
+;=======================================
+In:  FL_YMD=1 FL_MDY=0 FL_DMY=0 JG=2361222 FL_ASLIFT=0 FL_CPXRES=0 RX=Time:"12:00:00" RY=Date:"1582.1015"
+Out: FL_YMD=1 FL_MDY=0 FL_DMY=0 JG=2361222 EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Time:"12:00:00" RX=Real:"2299171.0"
+
+In:  FL_YMD=1 FL_MDY=0 FL_DMY=0 JG=2299161 FL_ASLIFT=0 FL_CPXRES=0 RY=Date:"1582.1004" RX=Time:"0:00:00"
+Out: FL_YMD=1 FL_MDY=0 FL_DMY=0 JG=2299161 EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Time:"0:00:00" RX=Real:"2299159.50"
+
+
+
+;=======================================
+; dtoj(String) --> Error24
+;=======================================
+In:  FL_ASLIFT=0 RX=Stri:"String test"
+Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
+
+
+
+;=======================================
+; dtoj(Real Matrix) --> Error24
+;=======================================
+
+
+
+;=======================================
+; dtoj(Complex Matrix) --> Error24
+;=======================================
+
+
+
+;=======================================
+; dtoj(Short Integer) --> Error24
+;=======================================
+In:  FL_ASLIFT=0 FL_CPXRES=0 WS=64 IM=2compl RX=ShoI:"5#7"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"5#7"
+
+
+;=======================================
+; dttoj(Real) --> Long Integer
+;=======================================
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.0001":DEG
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"0.0001":DEG
+
+
+
+;=======================================
+; dtoj(Complex) --> Error24
+;=======================================
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
+Out: EC=24 FL_ASLIFT=0 RX=Cplx:"6.2 i -7.6"

@@ -62,7 +62,12 @@
 
 #include "wp43.h"
 
+
 #if !defined(TESTSUITE_BUILD)
+
+TO_QSPI static const char bugScreenNonexistentMenu[] = "In function determineFunctionKeyItem: nonexistent menu specified!";
+TO_QSPI static const char bugScreenItemNotDetermined[] = "In function determineItem: item was not determined!";
+
   int16_t determineFunctionKeyItem(const char *data, int16_t itemShift) { //Added itemshift param JM
     int16_t item = ITM_NOP;
 #ifdef VERBOSEKEYS
@@ -269,7 +274,7 @@ printf(">>>>  0096     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
                 return ASSIGN_USER_MENU - i;
               }
             }
-            displayBugScreen("In function determineFunctionKeyItem: nonexistent menu specified!");
+            displayBugScreen(bugScreenNonexistentMenu);
 #ifdef VERBOSEKEYS
 printf(">>>>  0086 item=%d \n",item);
 #endif //VERBOSEKEYS
@@ -1210,7 +1215,7 @@ bool_t allowShiftsToClearError = false;
                         key->primary;
     }
     else {
-      displayBugScreen("In function determineItem: item was not determined!");
+      displayBugScreen(bugScreenItemNotDetermined);
       result = 0;
     }
 
@@ -1543,7 +1548,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           char tmp[200]; sprintf(tmp,"^^^^btnReleased %d:\'%s\'",item,(char *)data); jm_show_comment(tmp);
         #endif //PC_BUILD
 
-        if(calcMode == CM_NIM && item == ITM_SQUAREROOTX) closeNim();      //JM moved here, from bufferize see JMCLOSE
+        if(calcMode == CM_NIM && (item == ITM_SQUAREROOTX || item == ITM_SQUARE)) closeNim();      //JM moved here, from bufferize see JMCLOSE, because SQRUAREROOT is not close due to .ms underneath it
 
         fnTimerStop(TO_3S_CTFF);      //dr
 
@@ -2493,7 +2498,7 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyEnter: unexpected calcMode value (%" PRIu8 ") while processing key ENTER!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyEnter", calcMode, "ENTER");
         displayBugScreen(errorMessage);
     }
     }
@@ -2835,7 +2840,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyExit: unexpected calcMode value (%" PRIu8 ") while processing key EXIT!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyExit", calcMode, "EXIT");
         displayBugScreen(errorMessage);
     }
 
@@ -2920,7 +2925,7 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyCC: unexpected calcMode value (%" PRIu8 ") while processing key CC!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyCC", calcMode, "CC");
         displayBugScreen(errorMessage);
     }
     }
@@ -3178,7 +3183,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyBackspace: unexpected calcMode value (%" PRIu8 ") while processing key BACKSPACE!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyBackspace", calcMode, "BACKSPACE");
         displayBugScreen(errorMessage);
     }
     }
@@ -3194,7 +3199,7 @@ static bool_t activatescroll(void) { //jm
           (temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) &&
           (softmenu[menuId].menuItem != -MNU_EQN) && 
           (
-            ((menuId == 0) && jm_NO_BASE_SCREEN) ||
+            ((menuId == 0) && !jm_BASE_SCREEN) ||
             ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
             ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18)) 
           );
@@ -3313,7 +3318,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_NAMED_VARIABLE + RBR_INCDEC1, numberOfNamedVariables) + FIRST_NAMED_VARIABLE;
         }
         else {
-          sprintf(errorMessage, "In function fnKeyUp: unexpected case while processing key UP! %" PRIu8 " is an unexpected value for rbrMode.", rbrMode);
+          sprintf(errorMessage, commonBugScreenMessages[bugMsgRbrMode], "fnKeyUp", "UP", rbrMode);
           displayBugScreen(errorMessage);
         }
         break;
@@ -3399,7 +3404,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyUp: unexpected calcMode value (%" PRIu8 ") while processing key UP!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyUp", calcMode, "UP");
         displayBugScreen(errorMessage);
     }
     }
@@ -3511,7 +3516,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - 1000 - RBR_INCDEC1, numberOfNamedVariables) + 1000;
         }
         else {
-          sprintf(errorMessage, "In function fnKeyDown: unexpected case while processing key DOWN! %" PRIu8 " is an unexpected value for rbrMode.", rbrMode);
+          sprintf(errorMessage, commonBugScreenMessages[bugMsgRbrMode], "fnKeyDown", "DOWN", rbrMode);
           displayBugScreen(errorMessage);
         }
         break;
@@ -3598,7 +3603,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyDown: unexpected calcMode value (%" PRIu8 ") while processing key DOWN!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyDown", calcMode, "DOWN");
         displayBugScreen(errorMessage);
     }
     }
@@ -3639,9 +3644,9 @@ void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
       }
 
       default: {
-        sprintf(errorMessage, "In function fnKeyDotD: unexpected calcMode value (%" PRIu8 ") while processing key .d!", calcMode);
+        sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnKeyDotD", calcMode, ".d!");
         displayBugScreen(errorMessage);
-    }
+      }
     }
   #endif // !TESTSUITE_BUILD
 }

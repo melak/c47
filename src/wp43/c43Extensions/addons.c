@@ -349,7 +349,9 @@ void fnFrom_ms(uint16_t unusedButMandatoryParameter){
       if(tmpString100_OUT[0] != 0) {
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
         stringToReal34(tmpString100_OUT,REGISTER_REAL34_DATA(REGISTER_X));
-        printf("\n ------- 003 >>>%s<<<\n",tmpString100_OUT);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          printf("\n ------- 003 >>>%s<<<\n",tmpString100_OUT);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
     }
 
@@ -413,7 +415,7 @@ void fnTo_ms(uint16_t unusedButMandatoryParameter) {
     break;
 
   default:
-    sprintf(errorMessage, "In function fnTo_ms: unexpected calcMode value (%" PRIu8 ") while processing key .ms!", calcMode);
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgCalcModeWhileProcKey], "fnTo_ms", calcMode, ".ms");
     displayBugScreen(errorMessage);
   }
 #endif // !TESTSUITE_BUILD
@@ -753,7 +755,9 @@ void fnDRG(uint16_t unusedButMandatoryParameter) {
   if(getRegisterDataType(REGISTER_X) == dtComplex34) {
     goto to_return;
   } 
-printf("@@@@\n");
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    printf("@@@@\n");
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
   uint16_t dest = 9999;
 
@@ -1155,6 +1159,13 @@ void timeToReal34(uint16_t hms) { //always 24 hour time;
   }
   tDigits = 0u;
   real34SetPositiveSign(&real34);
+
+  if(hms == 3) {
+  //total seconds
+    reallocateRegister(regist, dtReal34, REAL34_SIZE, amNone);
+    real34Copy(&real34, REGISTER_REAL34_DATA(regist));
+    return;
+  }
 
   // Seconds
   //real34ToIntegralValue(&real34, &s34, DEC_ROUND_DOWN);
@@ -1772,21 +1783,39 @@ void fnSafeReset (uint16_t unusedButMandatoryParameter) {
 }
 
 
-void fnRESET_MyM_Mya(void){
+void fnRESET_MyM(void){
 //Pre-assign the MyMenu                   //JM
     #ifndef TESTSUITE_BUILD
-    jm_NO_BASE_SCREEN = true;                                           //JM prevent slow updating of 6 menu items
+    jm_BASE_SCREEN = false;                                           //JM prevent slow updating of 6 menu items
     for(int8_t fn = 1; fn <= 6; fn++) {
-      //itemToBeAssigned = ( !getSystemFlag(FLAG_USER) ? (kbd_std[fn-1].fShifted) : (kbd_usr[fn-1].fShifted) );  //Function key follows if the yellow key
       itemToBeAssigned = menu_HOME[fn -1];  //Function key follows if the yellow key
       assignToMyMenu(fn - 1);
+      itemToBeAssigned = ASSIGN_CLEAR;
+      assignToMyMenu(6 + fn - 1);
+      itemToBeAssigned = ASSIGN_CLEAR;
+      assignToMyMenu(12 + fn - 1);
       }
-    jm_NO_BASE_SCREEN = false;                                           //JM Menu system default (removed from reset_jm_defaults)
+    jm_BASE_SCREEN = true;                                           //JM Menu system default (removed from reset_jm_defaults)
+    #endif // TESTSUITE_BUILD
+}
 
+
+void fnRESET_Mya(void){
+//Pre-assign the MyAlpha Menu                   //JM
+    #ifndef TESTSUITE_BUILD
+    for(int8_t fn = 1; fn <= 6; fn++) {
+      itemToBeAssigned = ASSIGN_CLEAR;
+      assignToMyAlpha(fn - 1);
+      itemToBeAssigned = ASSIGN_CLEAR;
+      assignToMyAlpha(6 + fn - 1);
+      itemToBeAssigned = ASSIGN_CLEAR;
+      assignToMyAlpha(12 + fn - 1);
+      }
     itemToBeAssigned = -MNU_ALPHA;
     assignToMyAlpha(5);
     #endif // TESTSUITE_BUILD
 }
+
 
 
 //Softmenus:
