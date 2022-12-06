@@ -123,6 +123,9 @@ void reset_jm_defaults(int16_t toload) {
     bcdDisplay = false;
     topHex = true;
     bcdDisplaySign = BCDu;
+    LongPressM = RB_M1234;
+    LongPressF = RB_F124;
+
     jm_FG_LINE = true;                                           //JM Screen / keyboard operation setup
     jm_G_DOUBLETAP = true;                                       //JM Screen / keyboard operation setup
     graph_xmin = -3*3.14159265;                                //JM GRAPH

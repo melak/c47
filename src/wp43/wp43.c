@@ -219,6 +219,8 @@ bool_t                 bcdDisplay = false;
 bool_t                 topHex = false;
 bool_t                 SI_All = true;
 uint8_t                bcdDisplaySign = 0;
+uint8_t                LongPressM = 0;
+uint8_t                LongPressF = 0;
 char                   indexOfItemsXEQM[18*8];       //JMXEQ
 int16_t                fnXEQMENUpos;                 //JMXEQ
 uint8_t                last_CM = 255;                //Do extern !!

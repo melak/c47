@@ -276,6 +276,8 @@
   extern bool_t                 topHex;
   extern bool_t                 SI_All;
   extern uint8_t                bcdDisplaySign;
+  extern uint8_t                LongPressM;
+  extern uint8_t                LongPressF;
   extern char                   indexOfItemsXEQM[18*8];       //JMXEQ
   extern int16_t                fnXEQMENUpos;                 //JMXEQ
   extern uint8_t                last_CM;                      //Do extern !!

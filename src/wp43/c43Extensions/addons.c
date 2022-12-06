@@ -2128,6 +2128,29 @@ void fnSetBCD (uint16_t bcd) {
 }
 
 
+void fnLongPressSwitches (uint16_t option) {
+  switch (option) {
+    case RB_F14   :
+    case RB_F124  : 
+    case RB_F1234 : {
+      LongPressF = option;
+      break;
+    } 
+    case RB_M14   : 
+    case RB_M1234 :  {
+      LongPressM = option;
+      break;
+    } 
+    default: {
+      LongPressM = RB_M1234;
+      LongPressF = RB_F124;      
+      break;
+    }
+  }
+}
+
+
+
 void fnSetSI_All (uint16_t unusedButMandatoryParameter) {
   SI_All = !SI_All;
 }
