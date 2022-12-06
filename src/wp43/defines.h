@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "108_08h"
+ #define VERSION1 "108_08i"
 
 
   #undef SAVE_SPACE_DM42
