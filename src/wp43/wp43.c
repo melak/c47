@@ -124,6 +124,7 @@ char                   dateTimeString[12];
 char                   displayValueX[DISPLAY_VALUE_LEN];
 
 uint8_t                numScreensStandardFont;
+uint8_t                currentAsnScr;
 uint8_t                currentFntScr;
 uint8_t                currentFlgScr;
 uint8_t                lastFlgScr;

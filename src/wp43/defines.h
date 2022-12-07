@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "108_08h"
+ #define VERSION1 "108_08i"
 
 
   #undef SAVE_SPACE_DM42
@@ -739,7 +739,8 @@ typedef enum {
 #define CM_TIMER                                  14 // Timer application
 #define CM_GRAPH                                  15 // Plot graph mode
 #define CM_NO_UNDO                                16 // Running functions without undo affected
-#define CM_LISTXY                                 98 //JM Display stat list   //JM
+#define CM_ASN_BROWSER                            17 // Display stat list   //JM
+#define CM_LISTXY                                 18 // Display stat list   //JM
 
 // Next character in AIM 2 bits
 #define NC_NORMAL                                  0
@@ -1227,6 +1228,7 @@ typedef enum {
     #define addItemToBuffer fnNop
     #define fnOff           fnNop
     #define fnAim           fnNop
+    #define asnBrowser      fnNop
     #define registerBrowser fnNop
     #define flagBrowser     fnNop
     #define fontBrowser     fnNop

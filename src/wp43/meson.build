@@ -1,5 +1,6 @@
 wp43_src = files(
   'assign.c',
+  'browsers/asnBrowser.c',
   'browsers/flagBrowser.c',
   'browsers/fontBrowser.c',
   'browsers/registerBrowser.c',

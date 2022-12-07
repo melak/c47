@@ -554,7 +554,7 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
 
 TO_QSPI const int16_t menu_ASN[]         = { CC_DM42,                       CC_USER_SHIFTSA,            CC_USER_SHIFTS,           ITM_USER_WP43S,        ITM_NULL,                   ITM_ASSIGN,
                                              CC_C43,                        CC_D43,                     CC_E43,                   CC_N43,                CC_V43,                     ITM_USERMODE,
-                                            -MNU_ASN_N,                     ITM_NULL,                   ITM_NULL,                 ITM_USER_ARESET,       ITM_USER_MRESET,            ITM_USER_KRESET    };
+                                            -MNU_ASN_N,                     ITM_NULL,                   ITM_ASNVIEWER,            ITM_USER_ARESET,       ITM_USER_MRESET,            ITM_USER_KRESET    };
 
 TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_X_P2,                   ITM_X_P3,                 ITM_X_P4,              ITM_X_P5,                    ITM_X_P6,
                                              ITM_X_f1,                      ITM_X_f2,                   ITM_X_f3,                 ITM_X_f4,              ITM_X_f5,                    ITM_X_f6,
@@ -1202,6 +1202,17 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
   }
 
 
+void greyOutBox(int16_t x1, int16_t x2, int16_t y1, int16_t y2) {
+  // Grey out standard function names
+  int16_t yStroke;
+  for(int16_t xStroke=x1 + 2; xStroke < x2 - 2; xStroke++) {
+    for (yStroke = y1 + 2; yStroke < y2 - 2; yStroke++){
+        if(xStroke%2 == 0 && yStroke%2 == 0) {
+          flipPixel(xStroke, yStroke);
+        }
+    }
+  }
+}
 
 
 
@@ -1218,9 +1229,8 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
    * \return void
    ***********************************************/
   void showSoftkey(const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {     //dr
-    int16_t x1, y1, x2, y2;
-    int16_t w;
-    char l[15];
+    int16_t x1, y1;
+    int16_t x2, y2;
 
     if((calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) && xSoftkey >= 2) {           //prevent softkeys columns 3-6 from displaying over the graph
         return;
@@ -1245,6 +1255,15 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       displayBugScreen(errorMessage);
       return;
     }
+
+    showKey(label, x1, x2, y1, y2, xSoftkey == 5, videoMode, topLine, bottomLine, showCb, showValue, showText);
+
+}
+
+
+void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, bool_t rightMostSlot, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {
+    int16_t w;
+    char l[15];
 
     // Draw the frame
     //   Top line
@@ -1272,7 +1291,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
 
     xcopy(l, label, stringByteLength(label) + 1);
     w = stringWidth(l, &standardFont, false, false);
-    while(w > (xSoftkey == 5 ? 65 : 66)) {
+    while(w > (rightMostSlot ? 65 : 66)) {
       l[stringLastGlyph(l)] = 0;
       w = stringWidth(l, &standardFont, false, false);
     }
@@ -1283,19 +1302,12 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     w = stringWidth(figlabel(l, showText, showValue), &standardFont, false, false);
     if(showCb >= 0) { w = w + 8; }
     compressString = 1;       //JM compressString
-    showString(figlabel(l, showText, showValue), &standardFont, compressString + x1 + (xSoftkey == 5 ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
-//  showString(l, &standardFont, x1 + (xSoftkey == 5 ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
+    showString(figlabel(l, showText, showValue), &standardFont, compressString + x1 + (rightMostSlot ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
     compressString = 0;       //JM compressString
   }
   else {
-//  w = stringWidth(l, &standardFont, false, false);
-     showString(figlabel(l, showText, showValue), &standardFont, x1 + (xSoftkey == 5 ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
+     showString(figlabel(l, showText, showValue), &standardFont, x1 + (rightMostSlot ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
   }                                                                                              //JM & dr ^^
-
-//  w = stringWidth(l, &standardFont, false, false);
-//  if(showCb >= 0) { compressString = 1; w = w +2; }         //JM compressString
-//  showString(l, &standardFont, x1 + 33 - w/2, y1 + 2, videoMode, false, false);
-//  if(showCb >= 0) { compressString = 0; }                   //JM unCompressString
 
 #ifdef JM_LINE2_DRAW
   if(showCb >= 0) {
@@ -1335,7 +1347,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     #ifdef PC_BUILD
       char tmp[200]; sprintf(tmp,"^^^^showSoftmenuCurrentPart: Showing Softmenu id=%d\n",m); jm_show_comment(tmp);
     #endif //PC_BUILD
-    if(!(m==0 && !jm_BASE_SCREEN) && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER && calcMode != CM_REGISTER_BROWSER && calcMode != CM_BUG_ON_SCREEN) {           //JM: Added exclusions, as this procedure is not only called from refreshScreen, but from various places due to underline
+    if(!(m==0 && !jm_BASE_SCREEN) && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER && calcMode != CM_REGISTER_BROWSER && calcMode != CM_BUG_ON_SCREEN) {           //JM: Added exclusions, as this procedure is not only called from refreshScreen, but from various places due to underline
     clearScreen_old(false, false, true); //JM, added to ensure the f/g underlines are deleted
 
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {

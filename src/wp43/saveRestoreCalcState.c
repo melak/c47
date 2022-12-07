@@ -371,6 +371,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&SI_All,                             sizeof(SI_All),                             BACKUP);   //JM
     save(&LongPressM,                         sizeof(LongPressM),                         BACKUP);   //JM
     save(&LongPressF,                         sizeof(LongPressF),                         BACKUP);   //JM
+    save(&currentAsnScr,                      sizeof(currentAsnScr),                      BACKUP);   //JM
 
     fclose(BACKUP);
     printf("End of calc's backup\n");
@@ -668,6 +669,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&SI_All,                             sizeof(SI_All),                             BACKUP);   //JM
       restore(&LongPressM,                         sizeof(LongPressM),                         BACKUP);   //JM
       restore(&LongPressF,                         sizeof(LongPressF),                         BACKUP);   //JM
+      restore(&currentAsnScr,                      sizeof(currentAsnScr),                      BACKUP);   //JM
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
@@ -726,6 +728,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         calcModeNormalGui();
         }
         else if(calcMode == CM_FLAG_BROWSER) {
+        calcModeNormalGui();
+        }
+        else if(calcMode == CM_ASN_BROWSER) {
         calcModeNormalGui();
         }
         else if(calcMode == CM_FONT_BROWSER) {

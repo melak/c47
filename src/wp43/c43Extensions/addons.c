@@ -407,6 +407,7 @@ void fnTo_ms(uint16_t unusedButMandatoryParameter) {
     break;
 
   case CM_REGISTER_BROWSER:
+  case CM_ASN_BROWSER:
   case CM_FLAG_BROWSER:
   case CM_FONT_BROWSER:
   case CM_PLOT_STAT:
