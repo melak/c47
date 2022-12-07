@@ -1397,10 +1397,10 @@ bool_t isValidTime(const real34_t *hour, const real34_t *minute, const real34_t 
 }
 
 
+TO_QSPI const calcRegister_t toTimeParamReg[3] = {REGISTER_Z, REGISTER_Y, REGISTER_X};
 void fnToTime(uint16_t unusedButMandatoryParameter) {
   real34_t hr, m, s;
   real34_t *part[3];
-  TO_QSPI const calcRegister_t r[3] = {REGISTER_Z, REGISTER_Y, REGISTER_X};
   uint_fast8_t i;
 
   if(!saveLastX()) return;
@@ -1410,14 +1410,14 @@ void fnToTime(uint16_t unusedButMandatoryParameter) {
   part[2] = &s; //hrMs
 
   for(i = 0; i < 3; ++i) {
-    switch(getRegisterDataType(r[i])) {
+    switch(getRegisterDataType(toTimeParamReg[i])) {
     case dtLongInteger:
-      convertLongIntegerRegisterToReal34(r[i], part[i]);
+      convertLongIntegerRegisterToReal34(toTimeParamReg[i], part[i]);
       break;
 
     case dtReal34:
-      if(getRegisterAngularMode(r[i])) {
-        real34ToIntegralValue(REGISTER_REAL34_DATA(r[i]), part[i], DEC_ROUND_DOWN);
+      if(getRegisterAngularMode(toTimeParamReg[i])) {
+        real34ToIntegralValue(REGISTER_REAL34_DATA(toTimeParamReg[i]), part[i], DEC_ROUND_DOWN);
         break;
       }
       /* fallthrough */
