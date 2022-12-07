@@ -1425,7 +1425,7 @@ void fnToTime(uint16_t unusedButMandatoryParameter) {
     default:
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "data type %s cannot be converted to a time!", getRegisterDataTypeName(r[i], false, false));
+      sprintf(errorMessage, "data type %s cannot be converted to a time!", getRegisterDataTypeName(toTimeParamReg[i], false, false));
       moreInfoOnError("In function fnToTime:", errorMessage, NULL, NULL);
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
