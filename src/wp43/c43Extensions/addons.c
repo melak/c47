@@ -1398,10 +1398,10 @@ bool_t isValidTime(const real34_t *hour, const real34_t *minute, const real34_t 
 }
 
 
+TO_QSPI const calcRegister_t toTimeParamReg[3] = {REGISTER_Z, REGISTER_Y, REGISTER_X};
 void fnToTime(uint16_t unusedButMandatoryParameter) {
-  real34_t hr, m, s, tmp;
+  real34_t hr, m, s;
   real34_t *part[3];
-  calcRegister_t r[3] = {REGISTER_Z, REGISTER_Y, REGISTER_X};
   uint_fast8_t i;
 
   if(!saveLastX()) return;
@@ -1411,14 +1411,14 @@ void fnToTime(uint16_t unusedButMandatoryParameter) {
   part[2] = &s; //hrMs
 
   for(i = 0; i < 3; ++i) {
-    switch(getRegisterDataType(r[i])) {
+    switch(getRegisterDataType(toTimeParamReg[i])) {
     case dtLongInteger:
-      convertLongIntegerRegisterToReal34(r[i], part[i]);
+      convertLongIntegerRegisterToReal34(toTimeParamReg[i], part[i]);
       break;
 
     case dtReal34:
-      if(getRegisterAngularMode(r[i])) {
-        real34ToIntegralValue(REGISTER_REAL34_DATA(r[i]), part[i], DEC_ROUND_DOWN);
+      if(getRegisterAngularMode(toTimeParamReg[i])) {
+        real34ToIntegralValue(REGISTER_REAL34_DATA(toTimeParamReg[i]), part[i], DEC_ROUND_DOWN);
         break;
       }
       /* fallthrough */
@@ -1426,29 +1426,19 @@ void fnToTime(uint16_t unusedButMandatoryParameter) {
     default:
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
 #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "data type %s cannot be converted to a time!", getRegisterDataTypeName(r[i], false, false));
+      sprintf(errorMessage, "data type %s cannot be converted to a time!", getRegisterDataTypeName(toTimeParamReg[i], false, false));
       moreInfoOnError("In function fnToTime:", errorMessage, NULL, NULL);
 #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
   }
 
-  if(!isValidTime(&hr, &m, &s)) {
-    displayCalcErrorMessage(ERROR_BAD_TIME_OR_DATE_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-    moreInfoOnError("In function fnToTime:", "Invalid time input!", NULL, NULL);
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return;
-  }
-
   // valid date
   fnDropY(NOPARAM);
   fnDropY(NOPARAM);
 
-  int32ToReal34(3600, &tmp);
-  real34Multiply(&tmp, &hr, &hr); //hr is now seconds
-  int32ToReal34(60, &tmp);
-  real34Multiply(&tmp, &m, &m); //m is now seconds
+  real34Multiply(const34_3600, &hr, &hr); //hr is now seconds
+  real34Multiply(const34_60, &m, &m); //m is now seconds
   real34Add(&hr, &m, &hr);
   real34Add(&hr, &s, &hr);
 
