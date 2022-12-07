@@ -1398,9 +1398,9 @@ bool_t isValidTime(const real34_t *hour, const real34_t *minute, const real34_t 
 
 
 void fnToTime(uint16_t unusedButMandatoryParameter) {
-  real34_t hr, m, s, tmp;
+  real34_t hr, m, s;
   real34_t *part[3];
-  calcRegister_t r[3] = {REGISTER_Z, REGISTER_Y, REGISTER_X};
+  TO_QSPI const calcRegister_t r[3] = {REGISTER_Z, REGISTER_Y, REGISTER_X};
   uint_fast8_t i;
 
   if(!saveLastX()) return;
@@ -1432,22 +1432,12 @@ void fnToTime(uint16_t unusedButMandatoryParameter) {
     }
   }
 
-  if(!isValidTime(&hr, &m, &s)) {
-    displayCalcErrorMessage(ERROR_BAD_TIME_OR_DATE_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-#if (EXTRA_INFO_ON_CALC_ERROR == 1)
-    moreInfoOnError("In function fnToTime:", "Invalid time input!", NULL, NULL);
-#endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return;
-  }
-
   // valid date
   fnDropY(NOPARAM);
   fnDropY(NOPARAM);
 
-  int32ToReal34(3600, &tmp);
-  real34Multiply(&tmp, &hr, &hr); //hr is now seconds
-  int32ToReal34(60, &tmp);
-  real34Multiply(&tmp, &m, &m); //m is now seconds
+  real34Multiply(const34_3600, &hr, &hr); //hr is now seconds
+  real34Multiply(const34_60, &m, &m); //m is now seconds
   real34Add(&hr, &m, &hr);
   real34Add(&hr, &s, &hr);
 
