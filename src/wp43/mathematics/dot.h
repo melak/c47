@@ -36,4 +36,6 @@
   void dotCpmaRema(void);
   void dotRemaCpma(void);
   void dotCpmaCpma(void);
+
+  void dotCplx    (const real_t *xReal, const real_t *xImag, const real_t *yReal, const real_t *yImag, real_t *rReal, realContext_t *realContext);
 #endif // !DOT_H

@@ -106,7 +106,7 @@ void fnDot(uint16_t unusedButMandatoryParameter) {
 //-----------------------------------------------------------------------------
 
 // Numerically stable dot product funtion.  Slower but accurate.
-static void dotCplx(const real_t *xReal, const real_t *xImag, const real_t *yReal, const real_t *yImag, real_t *rReal, realContext_t *realContext) {
+void dotCplx(const real_t *xReal, const real_t *xImag, const real_t *yReal, const real_t *yImag, real_t *rReal, realContext_t *realContext) {
   real_t p, t;
 
   realMultiply(xReal, yReal, &p, realContext);

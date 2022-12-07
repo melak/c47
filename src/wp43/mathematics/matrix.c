@@ -16,6 +16,7 @@
 #include "longIntegerType.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/division.h"
+#include "mathematics/dot.h"
 #include "mathematics/magnitude.h"
 #include "mathematics/multiplication.h"
 #include "mathematics/slvc.h"
@@ -3817,6 +3818,14 @@ void complex_QR_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t
 
 
 #if !defined(TESTSUITE_BUILD)
+static void abmcd(const real_t *a, const real_t *b, const real_t *c, const real_t *d, real_t *r, realContext_t *realContext) {
+  real_t p;
+
+  realCopy(c, &p);
+  realChangeSign(&p);
+  dotCplx(a, &p, b, d, r, realContext);
+}
+
 static void calculateEigenvalues22(const real_t *mat, uint16_t size, real_t *t1r, real_t *t1i, real_t *t2r, real_t *t2i, realContext_t *realContext) {
   // Calculate eigenvalues of 2x2 bottom right submatrix
   // Characteristic equation of A = [[a b] [c d]] : t^2 - trace(A) t +      det(A) = 0
@@ -3833,17 +3842,20 @@ static void calculateEigenvalues22(const real_t *mat, uint16_t size, real_t *t1r
 
   // determinant
   if(realIsZero(ai) && realIsZero(bi) && realIsZero(ci) && realIsZero(di)) {
-    realMultiply(ar, dr, &detR, realContext);
-    realChangeSign(&detR);
-    realFMA(br, cr, &detR, &detR, realContext);
-    realChangeSign(&detR);
+    abmcd(ar, dr, br, cr, &detR, realContext);
     realZero(&detI);
   }
   else {
-    mulComplexComplex(ar, ai, dr, di, &detR, &detI, realContext);
-    mulComplexComplex(br, bi, cr, ci, &trR,  &trI,  realContext);
-    realSubtract(&detR, &trR, &detR, realContext);
-    realSubtract(&detI, &trI, &detI, realContext);
+    //   a d =   Re(a) Re(d) - Im(a) Im(d) + (  Re(a) Im(d) + Im(a) Re(d)) i
+    // - b c = - Re(b) Re(c) + Im(b) Im(c) + (- Re(b) Im(c) - Im(b) Re(c)) i
+
+    abmcd(ar, dr, ai, di, &trR, realContext);
+    abmcd(bi, ci, br, cr, &trI, realContext);
+    realAdd(&trR, &trI, &detR, realContext);
+
+    abmcd(ar, di, br, ci, &trR, realContext);
+    abmcd(ai, dr, bi, cr, &trI, realContext);
+    realAdd(&trR, &trI, &detI, realContext);
   }
 
   // trace
