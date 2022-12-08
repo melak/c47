@@ -49,8 +49,8 @@
 
 #include "wp43.h"
 
-#define BACKUP_VERSION       778  // file version number
-#define configFileVersion    10000002 // arbitrary starting point version 10 000 001
+#define BACKUP_VERSION       779  // LongPressF M
+#define configFileVersion    10000003 // arbitrary starting point version 10 000 001
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 
@@ -369,6 +369,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&bcdDisplaySign,                     sizeof(bcdDisplaySign),                     BACKUP);   //C43 JM
     save(&DM_Cycling,                         sizeof(DM_Cycling),                         BACKUP);   //JM
     save(&SI_All,                             sizeof(SI_All),                             BACKUP);   //JM
+    save(&LongPressM,                         sizeof(LongPressM),                         BACKUP);   //JM
+    save(&LongPressF,                         sizeof(LongPressF),                         BACKUP);   //JM
+    save(&currentAsnScr,                      sizeof(currentAsnScr),                      BACKUP);   //JM
 
     fclose(BACKUP);
     printf("End of calc's backup\n");
@@ -664,13 +667,16 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&bcdDisplaySign,                     sizeof(bcdDisplaySign),                     BACKUP);   //C43 JM
       restore(&DM_Cycling,                         sizeof(DM_Cycling),                         BACKUP);   //JM
       restore(&SI_All,                             sizeof(SI_All),                             BACKUP);   //JM
+      restore(&LongPressM,                         sizeof(LongPressM),                         BACKUP);   //JM
+      restore(&LongPressF,                         sizeof(LongPressF),                         BACKUP);   //JM
+      restore(&currentAsnScr,                      sizeof(currentAsnScr),                      BACKUP);   //JM
 
       fclose(BACKUP);
       printf("End of calc's restoration\n");
 
       MY_ALPHA_MENU = mm_MNU_ALPHA;
 
-      if(temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL)
+      if(temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) 
         temporaryInformation = TI_NO_INFO;                                                                  //JM
 
       if(currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) {
@@ -722,6 +728,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         calcModeNormalGui();
         }
         else if(calcMode == CM_FLAG_BROWSER) {
+        calcModeNormalGui();
+        }
+        else if(calcMode == CM_ASN_BROWSER) {
         calcModeNormalGui();
         }
         else if(calcMode == CM_FONT_BROWSER) {
@@ -1131,7 +1140,7 @@ void doSave(uint16_t saveType) {
   }
 
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n39\n"); //JM 16+23
+  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n41\n"); //JM 16+11+14
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1168,7 +1177,7 @@ void doSave(uint16_t saveType) {
 //Number 16: digit
 
 //11
-  sprintf(tmpString, "SigFigMode\n%"          PRIu8 "\n",       SigFigMode);                   save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "SigFigMode\n%"          PRIu8 "\n",       SigFigMode);                   save(tmpString, strlen(tmpString), BACKUP);      
   sprintf(tmpString, "eRPN\n%"                PRIu8 "\n",       (uint8_t)eRPN);                save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "HOME3\n%"               PRIu8 "\n",       (uint8_t)HOME3);               save(tmpString, strlen(tmpString), BACKUP); 
   sprintf(tmpString, "ShiftTimoutMode\n%"     PRIu8 "\n",       (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString), BACKUP);           
@@ -1206,37 +1215,37 @@ void doSave(uint16_t saveType) {
   int8_t PLOT_ZMX;
   int8_t PLOT_ZMY;
 
-  sprintf(tmpString, "graph_xmin\n%"                            graph_xmin);                   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "graph_xmax\n%"                            graph_xmax);                   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "graph_ymin\n%"                            graph_ymin);                   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "graph_ymax\n%"                            graph_ymax);                   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "graph_dx\n%"                              graph_dx);                     save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "graph_dy\n%"                              graph_dy);                     save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "roundedTicks\n%"                          roundedTicks);                 save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "extentx\n%"                               extentx);                      save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "extenty\n%"                               extenty);                      save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "PLOT_VECT\n%"                             PLOT_VECT);                    save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "PLOT_NVECT\n%"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "PLOT_SCALE\n%"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "Aspect_Square\n%"                         Aspect_Square);                save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "PLOT_LINE\n%"                             PLOT_LINE);                    save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "PLOT_CROSS\n%"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "PLOT_BOX\n%"                              PLOT_BOX);                     save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "PLOT_INTG\n%"                             PLOT_INTG);                    save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "PLOT_DIFF\n%"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "PLOT_RMS\n%"                              PLOT_RMS);                     save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "PLOT_SHADE\n%"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "PLOT_AXIS\n%"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "PLOT_ZMX\n%"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "PLOT_ZMY\n%"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "graph_xmin\n%"                            graph_xmin);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "graph_xmax\n%"                            graph_xmax);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "graph_ymin\n%"                            graph_ymin);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "graph_ymax\n%"                            graph_ymax);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "graph_dx\n%"                              graph_dx);                     save(tmpString, strlen(tmpString), BACKUP);    
+  sprintf(tmpString, "graph_dy\n%"                              graph_dy);                     save(tmpString, strlen(tmpString), BACKUP);    
+  sprintf(tmpString, "roundedTicks\n%"                          roundedTicks);                 save(tmpString, strlen(tmpString), BACKUP);        
+  sprintf(tmpString, "extentx\n%"                               extentx);                      save(tmpString, strlen(tmpString), BACKUP);   
+  sprintf(tmpString, "extenty\n%"                               extenty);                      save(tmpString, strlen(tmpString), BACKUP);   
+  sprintf(tmpString, "PLOT_VECT\n%"                             PLOT_VECT);                    save(tmpString, strlen(tmpString), BACKUP);     
+  sprintf(tmpString, "PLOT_NVECT\n%"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "PLOT_SCALE\n%"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "Aspect_Square\n%"                         Aspect_Square);                save(tmpString, strlen(tmpString), BACKUP);         
+  sprintf(tmpString, "PLOT_LINE\n%"                             PLOT_LINE);                    save(tmpString, strlen(tmpString), BACKUP);     
+  sprintf(tmpString, "PLOT_CROSS\n%"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "PLOT_BOX\n%"                              PLOT_BOX);                     save(tmpString, strlen(tmpString), BACKUP);    
+  sprintf(tmpString, "PLOT_INTG\n%"                             PLOT_INTG);                    save(tmpString, strlen(tmpString), BACKUP);     
+  sprintf(tmpString, "PLOT_DIFF\n%"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString), BACKUP);     
+  sprintf(tmpString, "PLOT_RMS\n%"                              PLOT_RMS);                     save(tmpString, strlen(tmpString), BACKUP);    
+  sprintf(tmpString, "PLOT_SHADE\n%"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "PLOT_AXIS\n%"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString), BACKUP);     
+  sprintf(tmpString, "PLOT_ZMX\n%"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString), BACKUP);    
+  sprintf(tmpString, "PLOT_ZMY\n%"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
 */
 
 //12
-  sprintf(tmpString, "jm_HOME_SUM\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_SUM);         save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "jm_LARGELI\n%"            PRIu8 "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "constantFractions\n%"     PRIu8 "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "constantFractionsMode\n%" PRIu8 "\n",     constantFractionsMode);        save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "constantFractionsOn\n%"   PRIu8 "\n",     (uint8_t)constantFractionsOn); save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "jm_HOME_SUM\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_SUM);         save(tmpString, strlen(tmpString), BACKUP);       
+  sprintf(tmpString, "jm_LARGELI\n%"            PRIu8 "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString), BACKUP);                 
+  sprintf(tmpString, "constantFractions\n%"     PRIu8 "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString), BACKUP);                 
+  sprintf(tmpString, "constantFractionsMode\n%" PRIu8 "\n",     constantFractionsMode);        save(tmpString, strlen(tmpString), BACKUP);                 
+  sprintf(tmpString, "constantFractionsOn\n%"   PRIu8 "\n",     (uint8_t)constantFractionsOn); save(tmpString, strlen(tmpString), BACKUP);               
   sprintf(tmpString, "displayStackSHOIDISP\n%"  PRIu8 "\n",     displayStackSHOIDISP);         save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "bcdDisplay\n%"            PRIu8 "\n",     (uint8_t)bcdDisplay);          save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "topHex\n%"                PRIu8 "\n",     (uint8_t)topHex);              save(tmpString, strlen(tmpString), BACKUP);
@@ -1244,7 +1253,8 @@ void doSave(uint16_t saveType) {
   sprintf(tmpString, "DRG_Cycling\n%"           PRIu8 "\n",     DRG_Cycling);                  save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "DM_Cycling\n%"            PRIu8 "\n",     DM_Cycling);                   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "SI_All\n%"                PRIu8 "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString), BACKUP);
-
+  sprintf(tmpString, "LongPressM\n%"            PRIu8 "\n",     (uint8_t)LongPressM);          save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "LongPressF\n%"            PRIu8 "\n",     (uint8_t)LongPressF);          save(tmpString, strlen(tmpString), BACKUP);
 
 
 
@@ -2113,9 +2123,9 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "SigFigMode"                  ) == 0) { SigFigMode            = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "eRPN"                        ) == 0) { eRPN                  = (bool_t)stringToUint8(tmpString) != 0; }
         else if(strcmp(aimBuffer, "HOME3"                       ) == 0) { HOME3                 = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "ShiftTimoutMode"             ) == 0) { ShiftTimoutMode       = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "UNITDisplay"                 ) == 0) { UNITDisplay           = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "SH_BASE_HOME"                ) == 0) { SH_BASE_HOME          = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "ShiftTimoutMode"             ) == 0) { ShiftTimoutMode       = (bool_t)stringToUint8(tmpString) != 0; }          
+        else if(strcmp(aimBuffer, "UNITDisplay"                 ) == 0) { UNITDisplay           = (bool_t)stringToUint8(tmpString) != 0; }      
+        else if(strcmp(aimBuffer, "SH_BASE_HOME"                ) == 0) { SH_BASE_HOME          = (bool_t)stringToUint8(tmpString) != 0; }   
         else if(strcmp(aimBuffer, "Norm_Key_00_VAR"             ) == 0) { Norm_Key_00_VAR       = stringToUint16(tmpString); }
         else if(strcmp(aimBuffer, "Input_Default"               ) == 0) { Input_Default         = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "jm_FG_LINE"                  ) == 0) { jm_FG_LINE            = (bool_t)stringToUint8(tmpString) != 0; }
@@ -2123,36 +2133,36 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "jm_G_DOUBLETAP"              ) == 0) { jm_G_DOUBLETAP        = (bool_t)stringToUint8(tmpString) != 0; }
 
 /*
-        else if(strcmp(aimBuffer, "graph_xmin\n"                            graph_xmin);                   save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "graph_xmax\n"                            graph_xmax);                   save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "graph_ymin\n"                            graph_ymin);                   save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "graph_ymax\n"                            graph_ymax);                   save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "graph_dx\n"                              graph_dx);                     save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "graph_dy\n"                              graph_dy);                     save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "roundedTicks\n"                          roundedTicks);                 save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "extentx\n"                               extentx);                      save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "extenty\n"                               extenty);                      save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "PLOT_VECT\n"                             PLOT_VECT);                    save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "PLOT_NVECT\n"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "PLOT_SCALE\n"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "Aspect_Square\n"                         Aspect_Square);                save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "PLOT_LINE\n"                             PLOT_LINE);                    save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "PLOT_CROSS\n"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "PLOT_BOX\n"                              PLOT_BOX);                     save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "PLOT_INTG\n"                             PLOT_INTG);                    save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "PLOT_DIFF\n"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "PLOT_RMS\n"                              PLOT_RMS);                     save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "PLOT_SHADE\n"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "PLOT_AXIS\n"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "PLOT_ZMX\n"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString), BACKUP);
-        else if(strcmp(aimBuffer, "PLOT_ZMY\n"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);
+        else if(strcmp(aimBuffer, "graph_xmin\n"                            graph_xmin);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "graph_xmax\n"                            graph_xmax);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "graph_ymin\n"                            graph_ymin);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "graph_ymax\n"                            graph_ymax);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "graph_dx\n"                              graph_dx);                     save(tmpString, strlen(tmpString), BACKUP);    
+        else if(strcmp(aimBuffer, "graph_dy\n"                              graph_dy);                     save(tmpString, strlen(tmpString), BACKUP);    
+        else if(strcmp(aimBuffer, "roundedTicks\n"                          roundedTicks);                 save(tmpString, strlen(tmpString), BACKUP);        
+        else if(strcmp(aimBuffer, "extentx\n"                               extentx);                      save(tmpString, strlen(tmpString), BACKUP);   
+        else if(strcmp(aimBuffer, "extenty\n"                               extenty);                      save(tmpString, strlen(tmpString), BACKUP);   
+        else if(strcmp(aimBuffer, "PLOT_VECT\n"                             PLOT_VECT);                    save(tmpString, strlen(tmpString), BACKUP);     
+        else if(strcmp(aimBuffer, "PLOT_NVECT\n"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "PLOT_SCALE\n"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "Aspect_Square\n"                         Aspect_Square);                save(tmpString, strlen(tmpString), BACKUP);         
+        else if(strcmp(aimBuffer, "PLOT_LINE\n"                             PLOT_LINE);                    save(tmpString, strlen(tmpString), BACKUP);     
+        else if(strcmp(aimBuffer, "PLOT_CROSS\n"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "PLOT_BOX\n"                              PLOT_BOX);                     save(tmpString, strlen(tmpString), BACKUP);    
+        else if(strcmp(aimBuffer, "PLOT_INTG\n"                             PLOT_INTG);                    save(tmpString, strlen(tmpString), BACKUP);     
+        else if(strcmp(aimBuffer, "PLOT_DIFF\n"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString), BACKUP);     
+        else if(strcmp(aimBuffer, "PLOT_RMS\n"                              PLOT_RMS);                     save(tmpString, strlen(tmpString), BACKUP);    
+        else if(strcmp(aimBuffer, "PLOT_SHADE\n"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString), BACKUP);      
+        else if(strcmp(aimBuffer, "PLOT_AXIS\n"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString), BACKUP);     
+        else if(strcmp(aimBuffer, "PLOT_ZMX\n"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString), BACKUP);    
+        else if(strcmp(aimBuffer, "PLOT_ZMY\n"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
 */
         else if(strcmp(aimBuffer, "jm_HOME_SUM"                 ) == 0) { jm_HOME_SUM           = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "jm_LARGELI"                  ) == 0) { jm_LARGELI            = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "constantFractions"           ) == 0) { constantFractions     = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "constantFractionsMode"       ) == 0) { constantFractionsMode = stringToUint8(tmpString); }
-        else if(strcmp(aimBuffer, "constantFractionsOn"         ) == 0) { constantFractionsOn   = (bool_t)stringToUint8(tmpString) != 0; }
-
+        else if(strcmp(aimBuffer, "jm_LARGELI"                  ) == 0) { jm_LARGELI            = (bool_t)stringToUint8(tmpString) != 0; }         
+        else if(strcmp(aimBuffer, "constantFractions"           ) == 0) { constantFractions     = (bool_t)stringToUint8(tmpString) != 0; }             
+        else if(strcmp(aimBuffer, "constantFractionsMode"       ) == 0) { constantFractionsMode = stringToUint8(tmpString); }      
+        else if(strcmp(aimBuffer, "constantFractionsOn"         ) == 0) { constantFractionsOn   = (bool_t)stringToUint8(tmpString) != 0; }            
+  
 
         else if(strcmp(aimBuffer, "displayStackSHOIDISP"        ) == 0) { displayStackSHOIDISP = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "bcdDisplay"                  ) == 0) { bcdDisplay           = (bool_t)stringToUint8(tmpString) != 0; }
@@ -2161,6 +2171,8 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "DRG_Cycling"                 ) == 0) { DRG_Cycling          = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "DM_Cycling"                  ) == 0) { DM_Cycling           = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "SI_All"                      ) == 0) { SI_All               = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "LongPressM"                  ) == 0) { LongPressM           = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "LongPressF"                  ) == 0) { LongPressF           = (bool_t)stringToUint8(tmpString) != 0; }
 
       }
     }
@@ -2253,10 +2265,12 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
 
 void fnLoad(uint16_t loadMode) {
   doLoad(loadMode, 0, 0, 0, manualLoad);
+  fnClearFlag(FLAG_USER);
 }
 
 void fnLoadAuto(void) {
   doLoad(LM_ALL, 0, 0, 0, autoLoad);
+  fnClearFlag(FLAG_USER);
 }
 
 

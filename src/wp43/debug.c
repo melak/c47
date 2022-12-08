@@ -748,6 +748,9 @@ void debugNIM(void) {
       case CM_REGISTER_BROWSER: {
         return "reg.bro";
       }
+      case CM_ASN_BROWSER: {
+        return "asn.bro";
+      }
       case CM_FLAG_BROWSER: {
         return "flg.bro";
       }
@@ -1420,6 +1423,12 @@ void debugNIM(void) {
 
       if(row < DEBUG_LINES) {
         sprintf(string, "currentFntScr                             = %6u",         currentFntScr);
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
+        gtk_widget_show(lbl1[row++]);
+      }
+
+      if(row < DEBUG_LINES) {
+        sprintf(string, "currentAsnScr                             = %6u",         currentAsnScr);
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }

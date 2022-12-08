@@ -39,6 +39,7 @@
         case CM_PEM:
         case CM_REGISTER_BROWSER:
         case CM_FLAG_BROWSER:
+        case CM_ASN_BROWSER:
         case CM_FONT_BROWSER:
         case CM_PLOT_STAT:
         case CM_CONFIRMATION:
@@ -405,6 +406,7 @@ void showFracMode(void) {
         case CM_PEM:
         case CM_REGISTER_BROWSER:
         case CM_FLAG_BROWSER:
+        case CM_ASN_BROWSER:
         case CM_FONT_BROWSER:
         case CM_PLOT_STAT:
         case CM_CONFIRMATION:

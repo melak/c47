@@ -233,6 +233,8 @@ typedef struct {
   uint8_t DRG_Cycling;
   uint8_t DM_Cycling;
   bool_t SI_All;
+  bool_t LongPressM;
+  bool_t LongPressF;
 
 } dtConfigDescriptor_t;
 

@@ -1949,7 +1949,7 @@
 #define ITM_USER_DD43               1894
 #define ITM_USER_N43                1895
 #define ITM_USER_C43ALTA            1896
-#define ITM_1897                    1897
+#define ITM_ASNVIEWER               1897
 #define ITM_N_KEY_ALPHA             1898
 #define ITM_N_KEY_CC                1899
 #define ITM_N_KEY_GSH               1900
@@ -2113,16 +2113,21 @@
 #define ITM_T_ROOTF                 2058
 #define ITM_RSTF                    2059
 #define ITM_EXFRAC                  2060
-#define MNU_2061                    2061
-#define MNU_2062                    2062
-#define MNU_2063                    2063
-#define ITM_LG_SIGN                 2064
-#define ITM_LN_SIGN                 2065
-#define ITM_SIN_SIGN                2066
-#define ITM_COS_SIGN                2067
-#define ITM_TAN_SIGN                2068
+#define ITM_F1234                   2061
+#define ITM_M1234                   2062
+#define ITM_F14                     2063
+#define ITM_M14                     2064
+#define ITM_F124                    2065
+#define MNU_2066                    2066
+#define MNU_2067                    2067
+#define MNU_2068                    2068
+#define ITM_LG_SIGN                 2069
+#define ITM_LN_SIGN                 2070
+#define ITM_SIN_SIGN                2071
+#define ITM_COS_SIGN                2072
+#define ITM_TAN_SIGN                2073
 
-#define LAST_ITEM                   2069
+#define LAST_ITEM                   2074
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
