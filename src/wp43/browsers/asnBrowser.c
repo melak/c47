@@ -20,6 +20,7 @@
 
 #include "browsers/registerBrowser.h"
 
+#include "items.h"
 #include "flags.h"
 #include "c43Extensions/radioButtonCatalog.h"
 #include "screen.h"
@@ -33,17 +34,20 @@
 #if !defined(TESTSUITE_BUILD)
   #ifndef SAVE_SPACE_DM42_8
   static void fnAsnDisplay(uint8_t page) {                // Heavily modified by JM from the original fnShow
+  #define YOFF 32
     int xx,yy;
     int kk = 0;
     int16_t key;
     int16_t pixelsPerSoftKey;
+    char Name[15];
     xx = 0;
     yy = 1;
     clearScreen();
+    showSoftmenuCurrentPart();
         switch(page) {
-          case 1:   showString("primary key assignment schedule", &standardFont, 30, 20, vmNormal, false, false); break;
-          case 2:   showString("f-key assignment schedule", &standardFont, 30, 20, vmNormal, false, false); break;
-          case 3:   showString("g-key assignment schedule", &standardFont, 30, 20, vmNormal, false, false); break;
+          case 1:   showString("unshifted keyboard mapping", &standardFont, 30, YOFF, vmNormal, false, false); break;
+          case 3:   showString("f-shift keyboard mapping", &standardFont, 30, YOFF, vmNormal, false, false); break;
+          case 2:   showString("g-shift keyboard mapping", &standardFont, 30, YOFF, vmNormal, false, false); break;
           default:break;
         }
 
@@ -59,27 +63,32 @@
       if(getSystemFlag(FLAG_USER)) {
         switch(page) {
           case 1: kk = kbd_usr[key].primary; break;
-          case 2: kk = kbd_usr[key].fShifted; break;
-          case 3: kk = kbd_usr[key].gShifted; break;
+          case 3: kk = kbd_usr[key].fShifted; break;
+          case 2: kk = kbd_usr[key].gShifted; break;
           default:break;
         }
       } else {
         switch(page) {
           case 1: kk = kbd_std[key].primary; break;
-          case 2: kk = kbd_std[key].fShifted; break;
-          case 3: kk = kbd_std[key].gShifted; break;
+          case 3: kk = kbd_std[key].fShifted; break;
+          case 2: kk = kbd_std[key].gShifted; break;
           default:break;
         }
       }
 
-      showKey(indexOfItems[max(kk,-kk)].itemSoftmenuName, xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, 20+yy*SOFTMENU_HEIGHT, 20+(yy+1)*SOFTMENU_HEIGHT, xx == 5, kk > 0 ? vmNormal : vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
+      strcpy(Name, indexOfItems[max(kk,-kk)].itemSoftmenuName);
+      if(strcmp(Name, "0000") == 0) {
+        Name[0]=0;
+      }
+      showKey(Name, xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, YOFF+yy*SOFTMENU_HEIGHT, YOFF+(yy+1)*SOFTMENU_HEIGHT, xx == 5, (kk > 0 || Name[0] == 0) ? vmNormal : vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
 
       if(getSystemFlag(FLAG_USER) && 
           ( ((page == 1) && (kbd_std[key].primary == kbd_usr[key].primary)  ) || 
-            ((page == 2) && (kbd_std[key].fShifted == kbd_usr[key].fShifted)) || 
-            ((page == 3) && (kbd_std[key].gShifted == kbd_usr[key].gShifted))    )
+            ((page == 3) && (kbd_std[key].fShifted == kbd_usr[key].fShifted)) || 
+            ((page == 2) && (kbd_std[key].gShifted == kbd_usr[key].gShifted))  
+           )
         ) {
-          greyOutBox(xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, 20+yy*SOFTMENU_HEIGHT, 20+(yy+1)*SOFTMENU_HEIGHT);
+        greyOutBox(xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, YOFF+yy*SOFTMENU_HEIGHT, YOFF+(yy+1)*SOFTMENU_HEIGHT);
       }
     xx++;
     }
@@ -98,6 +107,7 @@ void fnAsnViewer(int16_t unusedButMandatoryParameter) {
       previousCalcMode = calcMode;
       calcMode = CM_ASN_BROWSER;
       clearSystemFlag(FLAG_ALPHA);
+      currentAsnScr = 1;
       return;
     }
   fnAsnDisplay(currentAsnScr);

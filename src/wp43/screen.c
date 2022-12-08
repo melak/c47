@@ -3440,7 +3440,6 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
   switch(calcMode) {
       case CM_ASN_BROWSER: {
         last_CM = calcMode;
-        clearScreen();
         fnAsnViewer(NOPARAM);
         refreshStatusBar();
         break;
