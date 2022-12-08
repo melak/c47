@@ -264,6 +264,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 #endif // !TESTSUITE_BUILD && !GENERATE_CATALOGS
 
 #if defined(GENERATE_CATALOGS)
+  void fnAsnViewer                 (uint16_t unusedButMandatoryParameter) {}
   void registerBrowser             (uint16_t unusedButMandatoryParameter) {}
   void flagBrowser                 (uint16_t unusedButMandatoryParameter) {}
   void fontBrowser                 (uint16_t unusedButMandatoryParameter) {}
@@ -954,9 +955,10 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void graph_stat                 (uint16_t unusedButMandatoryParameter) {}
   void fnSafeReset                (uint16_t unusedButMandatoryParameter) {}
   void fnSetBCD                   (uint16_t unusedButMandatoryParameter) {}
+  void fnLongPressSwitches        (uint16_t unusedButMandatoryParameter) {} 
   void fnSetSI_All                (uint16_t unusedButMandatoryParameter) {}
-  void fnJulianToDateTime          (uint16_t unusedButMandatoryParameter) {}
-  void fnDateTimeToJulian          (uint16_t unusedButMandatoryParameter) {}
+  void fnJulianToDateTime         (uint16_t unusedButMandatoryParameter) {}
+  void fnDateTimeToJulian         (uint16_t unusedButMandatoryParameter) {}
 
                                                                               //JM ^^
 #endif // GENERATE_CATALOGS
@@ -2902,7 +2904,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1894 */  { fnUserJM,                     USER_D43,                    "",                                            "D43",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM USER
 /* 1895 */  { fnUserJM,                     USER_N43,                    "",                                            "N43",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//J=V43
 /* 1896 */  { fnUserJM,                     USER_C43ALTA,                "",                                            "C43AltA",                                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM USER
-/* 1897 */  { itemToBeCoded,                NOPARAM,                     "1897",                                        "1897",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1897 */  { fnAsnViewer,                  NOPARAM,                     "",                                            "ASNVIEW",                                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//J=V43
 /* 1898 */  { fnSigmaAssign,                16384+ITM_AIM,               "",                                            STD_SIGMA STD_alpha,                           (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1899 */  { fnSigmaAssign,                16384+ITM_CC,                "",                                            STD_SIGMA "CC",                                (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1900 */  { fnSigmaAssign,                16384+ITM_SHIFTg,            "",                                            STD_SIGMA "g",                                 (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
@@ -3066,14 +3068,19 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2058 */  { fnCurveFitting_T,             CF_ROOT_FITTING_EX,          "RootF",                                       "RootF",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
 /* 2059 */  { fnCurveFittingReset,          NOPARAM,                     "ResetF",                                      "ResetF",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
 /* 2060 */  { fnSetSetJM,                   JC_EXFRAC,                   "EXFRAC",                                      "EXFRAC",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2061 */  { itemToBeCoded,                NOPARAM,                     "2061",                                        "2061",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2062 */  { itemToBeCoded,                NOPARAM,                     "2062",                                        "2062",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2063 */  { itemToBeCoded,                NOPARAM,                     "2063",                                        "2063",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2064 */  { addItemToBuffer,              ITM_LG_SIGN,                 "LOG",                                         "LOG",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2065 */  { addItemToBuffer,              ITM_LN_SIGN,                 "LN",                                          "LN",                                          (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2066 */  { addItemToBuffer,              ITM_SIN_SIGN,                "SIN",                                         "SIN",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2067 */  { addItemToBuffer,              ITM_COS_SIGN,                "COS",                                         "COS",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2068 */  { addItemToBuffer,              ITM_TAN_SIGN,                "TAN",                                         "TAN",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2061 */  { fnLongPressSwitches,          RB_F1234,                    "",                                            "F.1234",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 2062 */  { fnLongPressSwitches,          RB_M1234,                    "",                                            "M.1234",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 2063 */  { fnLongPressSwitches,          RB_F14,                      "",                                            "F.14",                                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 2064 */  { fnLongPressSwitches,          RB_M14,                      "",                                            "M.14",                                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 2065 */  { fnLongPressSwitches,          RB_F124,                     "",                                            "F.124",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 2066 */  { itemToBeCoded,                NOPARAM,                     "2066",                                        "2066",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2067 */  { itemToBeCoded,                NOPARAM,                     "2067",                                        "2067",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2068 */  { itemToBeCoded,                NOPARAM,                     "2068",                                        "2068",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2069 */  { addItemToBuffer,              ITM_LG_SIGN,                 "LOG",                                         "LOG",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2070 */  { addItemToBuffer,              ITM_LN_SIGN,                 "LN",                                          "LN",                                          (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2071 */  { addItemToBuffer,              ITM_SIN_SIGN,                "SIN",                                         "SIN",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2072 */  { addItemToBuffer,              ITM_COS_SIGN,                "COS",                                         "COS",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2073 */  { addItemToBuffer,              ITM_TAN_SIGN,                "TAN",                                         "TAN",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 
-/* 2069 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
+/* 2074 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
 };

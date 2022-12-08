@@ -834,44 +834,70 @@ void underline_softkey(int16_t xSoftkey, int16_t ySoftKey, bool_t dontclear) {
 
 
 
-void FN_handler() {                          //JM FN LONGPRESS vv Handler FN Key shift longpress handler
-                                             //   Processing cycles here while the key is pressed, that is, after PRESS #1, waiting for RELEASE #2
-  if((FN_state == ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !(softmenuStack[0].softmenuId == 0 && !jm_BASE_SCREEN) ) {
-
-    if(fnTimerGetStatus(TO_FN_LONG) == TMR_COMPLETED) {
-      FN_handle_timed_out_to_EXEC = false;
-      if(!shiftF && !shiftG) {                            //   Current shift state
+void FN_handler_StepToF(uint32_t time) {
         shiftF = true;        //S_shF();                  //   New shift state
         showShiftState();
         refreshRegisterLine(REGISTER_T); //clearRegisterLine(Y_POSITION_OF_REGISTER_T_LINE - 4, REGISTER_LINE_HEIGHT); //JM FN clear the previous shift function name
         showFunctionName(nameFunction(FN_key_pressed-37,6),0);
         FN_timed_out_to_RELEASE_EXEC = true;
         underline_softkey(FN_key_pressed-38,1, false);
-        fnTimerStart(TO_FN_LONG, TO_FN_LONG, JM_TO_FN_LONG);          //dr
-        #ifdef FN_TIME_DEBUG1
-          printf("Handler 1, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37,6));
-        #endif
-      }
-      else if(shiftF && !shiftG) {
-        shiftG = true;                  
-        shiftF = false;                 
+        fnTimerStart(TO_FN_LONG, TO_FN_LONG, time);          //dr
+}
+
+void FN_handler_StepToG(uint32_t time) {
+        shiftG = true;
+        shiftF = false;
         showShiftState();
         refreshRegisterLine(REGISTER_T); //clearRegisterLine(Y_POSITION_OF_REGISTER_T_LINE - 4, REGISTER_LINE_HEIGHT); //JM FN clear the previous shift function name
         showFunctionName(nameFunction(FN_key_pressed-37,12),0);
         FN_timed_out_to_RELEASE_EXEC = true;
         underline_softkey(FN_key_pressed-38,2, false);
-        fnTimerStart(TO_FN_LONG, TO_FN_LONG, JM_TO_FN_LONG);          //dr
-        #ifdef FN_TIME_DEBUG1
-          printf("Handler 2, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37,12));
-        #endif
-      }
-      else if((!shiftF && shiftG) || (shiftF && shiftG)) {
+        fnTimerStart(TO_FN_LONG, TO_FN_LONG, time);          //dr 
+}
+
+void FN_handler_StepToNOP(void) {
         refreshRegisterLine(REGISTER_T); //clearRegisterLine(Y_POSITION_OF_REGISTER_T_LINE - 4, REGISTER_LINE_HEIGHT); //JM FN clear the previous shift function name
         showFunctionName(ITM_NOP, 0);
         FN_timed_out_to_NOP = true;
         underline_softkey(FN_key_pressed-38,3, false);   //  Purposely select row 3 which does not exist, just to activate the 'clear previous line'
         FN_timeouts_in_progress = false;
         fnTimerStop(TO_FN_LONG);                                      //dr
+}
+
+
+void FN_handler() {                          //JM FN LONGPRESS vv Handler FN Key shift longpress handler
+                                             //   Processing cycles here while the key is pressed, that is, after PRESS #1, waiting for RELEASE #2
+  if((FN_state == ST_1_PRESS1) && FN_timeouts_in_progress && (FN_key_pressed != 0) && !(softmenuStack[0].softmenuId == 0 && !jm_BASE_SCREEN) ) {
+
+    if(fnTimerGetStatus(TO_FN_LONG) == TMR_COMPLETED) {
+      FN_handle_timed_out_to_EXEC = false;
+      if(!shiftF && !shiftG) {                              //From No_Shift State 1
+        if(LongPressF == RB_F1234) {
+          FN_handler_StepToF(JM_TO_FN_LONG);                //To F State 2
+        } else
+        if(LongPressF == RB_F124) {
+          FN_handler_StepToF(JM_TO_FN_LONG * 2);            //To F State 2
+        } else
+        if(LongPressF == RB_F14) {
+          FN_handler_StepToNOP();                           //To NOP State 4
+        }
+        #ifdef FN_TIME_DEBUG1
+          printf("Handler 1, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37,6));
+        #endif
+      }
+      else if(shiftF && !shiftG) {                          //From F State 2
+        if(LongPressF == RB_F1234) {
+          FN_handler_StepToG(JM_TO_FN_LONG);                //To G State 3
+        } else
+        if(LongPressF == RB_F124) {
+          FN_handler_StepToNOP();                           //To NOP State 4
+        }
+        #ifdef FN_TIME_DEBUG1
+          printf("Handler 2, KEY=%d =%i\n",FN_key_pressed,nameFunction(FN_key_pressed-37,12));
+        #endif
+      }
+      else if((!shiftF && shiftG) || (shiftF && shiftG)) {  //From G: 3 (or illegal state FG)
+        FN_handler_StepToNOP();                             //To NOP State 4
         #ifdef FN_TIME_DEBUG1
           printf("Handler 3, KEY=%d \n",FN_key_pressed);
         #endif
@@ -3412,6 +3438,14 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
   if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {last_CM = 254;}  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S 
 
   switch(calcMode) {
+      case CM_ASN_BROWSER: {
+        last_CM = calcMode;
+        clearScreen();
+        fnAsnViewer(NOPARAM);
+        refreshStatusBar();
+        break;
+      }
+
       case CM_FLAG_BROWSER: {
         last_CM = calcMode;
         clearScreen();

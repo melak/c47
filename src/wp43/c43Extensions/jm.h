@@ -65,6 +65,13 @@ Modes available in the mode menu:
 #define BCDu                    0
 #define BCD9c                   1
 #define BCD10c                  2
+//Longpress Options
+#define RB_F14                  0
+#define RB_F124                 1
+#define RB_F1234                2
+#define RB_M14                  10
+#define RB_M1234                11
+
 
 void jm_show_calc_state(char comment[]);
 void jm_show_comment   (char comment[]);

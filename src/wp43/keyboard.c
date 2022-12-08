@@ -605,7 +605,7 @@ printf(">>>>Z 0011 btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0
       #pragma GCC diagnostic pop
         _closeCatalog();
       }
-      else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
+      else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER) {
 #ifdef VERBOSEKEYS
 printf(">>>>Z 0012 btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
 #endif //VERBOSEKEYS
@@ -753,7 +753,7 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
       screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
       return;
     }
-    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
+    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER) {
       if(tam.mode == TM_KEY && !tam.keyInputFinished) {
         if(tam.digitsSoFar == 0) {
           switch(((char *)data)[0]) {
@@ -819,7 +819,7 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
    ***********************************************/
   void executeFunction(const char *data, int16_t item_) {
     int16_t item = ITM_NOP;
-    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
+    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER) {
   
       if(data[0] == 0) { item = item_; 
 
@@ -1209,7 +1209,7 @@ bool_t allowShiftsToClearError = false;
     else if(tam.mode) {
       result = key->primaryTam; // No shifted function in TAM
     }
-    else if(calcMode == CM_NORMAL || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_FONT_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_REGISTER_BROWSER || calcMode == CM_BUG_ON_SCREEN || calcMode == CM_CONFIRMATION || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_TIMER  || calcMode == CM_LISTXY) {
+    else if(calcMode == CM_NORMAL || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_FONT_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_ASN_BROWSER || calcMode == CM_REGISTER_BROWSER || calcMode == CM_BUG_ON_SCREEN || calcMode == CM_CONFIRMATION || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_TIMER  || calcMode == CM_LISTXY) {
       result = shiftF ? key->fShifted :
                shiftG ? key->gShifted :
                         key->primary;
@@ -1767,7 +1767,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           }
           keyActionProcessed = true;
         }
-        else if(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_FONT_BROWSER || calcMode == CM_TIMER) {
+        else if(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_ASN_BROWSER || calcMode == CM_FONT_BROWSER || calcMode == CM_TIMER) {
           keyActionProcessed = true;
         }
         else if(calcMode == CM_PEM && item == ITM_dotD && aimBuffer[0] == 0) {
@@ -1803,7 +1803,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           }
           keyActionProcessed = true;
         }
-        else if(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_FONT_BROWSER) {
+        else if(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_ASN_BROWSER || calcMode == CM_FONT_BROWSER) {
           keyActionProcessed = true;
         }
         else if(tam.mode) {
@@ -2079,6 +2079,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
             }
 
             case CM_FLAG_BROWSER:
+            case CM_ASN_BROWSER:
             case CM_FONT_BROWSER:
             case CM_ERROR_MESSAGE:
             case CM_BUG_ON_SCREEN: {
@@ -2477,6 +2478,7 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
 
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
+      case CM_ASN_BROWSER:
       case CM_FONT_BROWSER:
       case CM_ERROR_MESSAGE:
       case CM_BUG_ON_SCREEN:
@@ -2566,6 +2568,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
     switch(calcMode) {
         case CM_REGISTER_BROWSER:
         case CM_FLAG_BROWSER:
+        case CM_ASN_BROWSER:
         case CM_FONT_BROWSER:
         case CM_CONFIRMATION:
         case CM_ERROR_MESSAGE:
@@ -2616,6 +2619,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
     switch(calcMode) {
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
+      case CM_ASN_BROWSER:
       case CM_FONT_BROWSER:
       case CM_CONFIRMATION:
       case CM_ERROR_MESSAGE:
@@ -2759,6 +2763,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
+      case CM_ASN_BROWSER:
       case CM_FONT_BROWSER: {
         rbr1stDigit = true;
         calcMode = previousCalcMode;
@@ -2916,6 +2921,7 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
       case CM_EIM:
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
+      case CM_ASN_BROWSER:
       case CM_FONT_BROWSER:
       case CM_PLOT_STAT:
       case CM_TIMER:
@@ -3030,6 +3036,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
+      case CM_ASN_BROWSER:
       case CM_FONT_BROWSER: {
         calcMode = previousCalcMode;
         break;
@@ -3329,6 +3336,14 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         break;
       }
 
+      case CM_ASN_BROWSER: {
+        currentAsnScr--;
+        if(currentAsnScr == 0 || currentAsnScr >= 4) {
+          currentAsnScr = 3;
+        }
+        break;
+      }
+
       case CM_FONT_BROWSER: {
         if(currentFntScr >= 2) {
           currentFntScr--;
@@ -3527,6 +3542,14 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         break;
       }
 
+    case CM_ASN_BROWSER: {
+        currentAsnScr++;                          //JM removed the 3-x part
+        if(currentAsnScr >= 4) {
+          currentAsnScr = 1;
+        }
+        break;
+      }
+
       case CM_FONT_BROWSER: {
         if(currentFntScr < numScreensNumericFont + numScreensStandardFont) {
           currentFntScr++;
@@ -3633,6 +3656,7 @@ void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
 
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
+      case CM_ASN_BROWSER:
       case CM_FONT_BROWSER:
       case CM_PLOT_STAT:
       case CM_GRAPH:

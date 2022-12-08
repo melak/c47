@@ -407,6 +407,7 @@ void fnTo_ms(uint16_t unusedButMandatoryParameter) {
     break;
 
   case CM_REGISTER_BROWSER:
+  case CM_ASN_BROWSER:
   case CM_FLAG_BROWSER:
   case CM_FONT_BROWSER:
   case CM_PLOT_STAT:
@@ -2116,6 +2117,29 @@ void fnSetBCD (uint16_t bcd) {
     default:break;
   }
 }
+
+
+void fnLongPressSwitches (uint16_t option) {
+  switch (option) {
+    case RB_F14   :
+    case RB_F124  : 
+    case RB_F1234 : {
+      LongPressF = option;
+      break;
+    } 
+    case RB_M14   : 
+    case RB_M1234 :  {
+      LongPressM = option;
+      break;
+    } 
+    default: {
+      LongPressM = RB_M1234;
+      LongPressF = RB_F124;      
+      break;
+    }
+  }
+}
+
 
 
 void fnSetSI_All (uint16_t unusedButMandatoryParameter) {
