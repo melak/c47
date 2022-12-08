@@ -3846,16 +3846,10 @@ static void calculateEigenvalues22(const real_t *mat, uint16_t size, real_t *t1r
     realZero(&detI);
   }
   else {
-    //   a d =   Re(a) Re(d) - Im(a) Im(d) + (  Re(a) Im(d) + Im(a) Re(d)) i
-    // - b c = - Re(b) Re(c) + Im(b) Im(c) + (- Re(b) Im(c) - Im(b) Re(c)) i
-
-    abmcd(ar, dr, ai, di, &trR, realContext);
-    abmcd(bi, ci, br, cr, &trI, realContext);
-    realAdd(&trR, &trI, &detR, realContext);
-
-    abmcd(ar, di, br, ci, &trR, realContext);
-    abmcd(ai, dr, bi, cr, &trI, realContext);
-    realAdd(&trR, &trI, &detI, realContext);
+    mulComplexComplex(ar, ai, dr, di, &detR, &detI, realContext);
+    mulComplexComplex(br, bi, cr, ci, &trR,  &trI,  realContext);
+    realSubtract(&detR, &trR, &detR, realContext);
+    realSubtract(&detI, &trI, &detI, realContext);
   }
 
   // trace
