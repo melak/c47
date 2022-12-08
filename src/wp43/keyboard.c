@@ -605,7 +605,7 @@ printf(">>>>Z 0011 btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0
       #pragma GCC diagnostic pop
         _closeCatalog();
       }
-      else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
+      else if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER) {
 #ifdef VERBOSEKEYS
 printf(">>>>Z 0012 btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
 #endif //VERBOSEKEYS
@@ -635,7 +635,7 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
           btnFnPressed_StateMachine(NULL, data);    //JM This calls original state analysing btnFnPressed routing, which is now renamed to "statemachine" in keyboardtweaks
                                                     // JM never allow a function key to directly enter into a buffer - always via the key detection btnFnPressed_StateMachine
 /*
-          if(calcMode != CM_ASSIGN && indexOfItems[item].func == addItemToBuffer) {
+          if(calcMode != CM_ASSIGN && indexOfItems[item].func == addItemToBuffer) {           
             // If we are in the catalog then a normal key press should affect the Alpha Selection Buffer to choose
             // an item from the catalog, but a function key press should put the item in the AIM (or TAM) buffer
             // Use this variable to distinguish between the two
@@ -753,7 +753,7 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
       screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
       return;
     }
-    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
+    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER) {
       if(tam.mode == TM_KEY && !tam.keyInputFinished) {
         if(tam.digitsSoFar == 0) {
           switch(((char *)data)[0]) {
@@ -819,9 +819,9 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
    ***********************************************/
   void executeFunction(const char *data, int16_t item_) {
     int16_t item = ITM_NOP;
-    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER) {
-
-      if(data[0] == 0) { item = item_;
+    if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER) {
+  
+      if(data[0] == 0) { item = item_; 
 
       }
       else {
@@ -935,7 +935,7 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
           else if(tam.mode && (!tam.alpha || isAlphabeticSoftmenu())) {
 
             bool_t isInConfig = tam.mode == TM_FLAGW && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SYSFL;   //JM Do not drop out of SYSFLG
-
+            
             addItemToBuffer(item);
 
             if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MODE && isInConfig && item != ITM_EXIT1 && item != ITM_BACKSPACE) { //JM do not drop out of SYSFLG
@@ -965,7 +965,7 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
             addItemToBuffer(item);
           }
           else if(item > 0) { // function
-            if(calcMode == CM_NIM && item != ITM_CC && item!=ITM_HASH_JM && item!=ITM_toHMS && item!=ITM_ms) {  //JMNIM Allow NIM not closed, so that JMNIM can change the bases without ierrors thrown
+            if(calcMode == CM_NIM && item != ITM_CC && item!=ITM_HASH_JM && item!=ITM_toHMS && item!=ITM_ms) {  //JMNIM Allow NIM not closed, so that JMNIM can change the bases without ierrors thrown 
               closeNim();
               if(calcMode != CM_NIM) {
                 if(indexOfItems[item].func == fnConstant) {
@@ -1078,7 +1078,7 @@ bool_t allowShiftsToClearError = false;
     switch(key->primary) {                              //JMSHOW vv
       case      ITM_UP1:
       case      ITM_DOWN1: break;                       //JM SHOWregis unchanged
-      default:  SHOWregis = 9999; break;
+      default:  SHOWregis = 9999; break;     
     }                                                   //JMSHOW ^^
     //printf("###\n"); //JMEXEC
 
@@ -1106,7 +1106,7 @@ bool_t allowShiftsToClearError = false;
 
       fnTimerStop(TO_FG_LONG);                                //dr
       fnTimerStop(TO_FG_TIMR);                                //dr
-
+  
       shiftF = !shiftF;
       shiftG = false;                                         //JM no shifted menu on g-shift-key as in WP43S
       lastshiftF = shiftF;
@@ -1184,7 +1184,7 @@ bool_t allowShiftsToClearError = false;
       #endif
 
       return ITM_NOP;
-    }
+    }  
 
   #ifdef PC_BUILD
     sprintf(tmp,"^^^^^^^keyboard.c: determineitem: key->primary3: %d:",key->primary); jm_show_comment(tmp);
@@ -1196,7 +1196,7 @@ bool_t allowShiftsToClearError = false;
                shiftG ? key->gShifted :
                         key->primaryAim;
       //printf(">>> ±±±§§§ keys key:%d result:%d Calmode:%d, nimbuffer:%s, lastbase:%d, nimnumberpart:%d\n",key_no, result, calcMode,nimBuffer,lastIntegerBase, nimNumberPart);
-      return result;
+      return result;  
     }
     else                                                                                                                        //JM^^
 
@@ -1209,7 +1209,7 @@ bool_t allowShiftsToClearError = false;
     else if(tam.mode) {
       result = key->primaryTam; // No shifted function in TAM
     }
-    else if(calcMode == CM_NORMAL || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_FONT_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_REGISTER_BROWSER || calcMode == CM_BUG_ON_SCREEN || calcMode == CM_CONFIRMATION || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_TIMER  || calcMode == CM_LISTXY) {
+    else if(calcMode == CM_NORMAL || calcMode == CM_NIM || calcMode == CM_MIM || calcMode == CM_FONT_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_ASN_BROWSER || calcMode == CM_REGISTER_BROWSER || calcMode == CM_BUG_ON_SCREEN || calcMode == CM_CONFIRMATION || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_TIMER  || calcMode == CM_LISTXY) {
       result = shiftF ? key->fShifted :
                shiftG ? key->gShifted :
                         key->primary;
@@ -1352,13 +1352,13 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         #if defined (PC_BUILD_TELLTALE)
           sprintf(tmp,"keyboard.c: btnPressed 1--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
         #endif //PC_BUILD_TELLTALE
-
+  
         processKeyAction(item);
-
+  
         #if defined (PC_BUILD_TELLTALE)
           sprintf(tmp,"keyboard.c: btnPressed 2--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
         #endif //PC_BUILD_TELLTALE
-
+  
         if(!keyActionProcessed) {
           showFunctionName(item, 1000); // 1000ms = 1s
         }
@@ -1697,7 +1697,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       case ITM_BACKSPACE: {
         if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_EIM) {
           refreshRegisterLine(NIM_REGISTER_LINE); }
-        else {
+        else {  
           //JM No if needed, it does nothing if not in NIM. TO DISPLAY NUMBER KEYPRESS DIRECTLY AFTER PRESS, NOT ONLY UPON RELEASE          break;
           keyActionProcessed = true;   //JM move this to before fnKeyBackspace to allow fnKeyBackspace to cancel it if needed to allow this function via timing out to NOP, and this is incorporated with the CLRDROP
           fnKeyBackspace(NOPARAM);
@@ -1767,7 +1767,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           }
           keyActionProcessed = true;
         }
-        else if(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_FONT_BROWSER || calcMode == CM_TIMER) {
+        else if(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_ASN_BROWSER || calcMode == CM_FONT_BROWSER || calcMode == CM_TIMER) {
           keyActionProcessed = true;
         }
         else if(calcMode == CM_PEM && item == ITM_dotD && aimBuffer[0] == 0) {
@@ -1803,7 +1803,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           }
           keyActionProcessed = true;
         }
-        else if(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_FONT_BROWSER) {
+        else if(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_ASN_BROWSER || calcMode == CM_FONT_BROWSER) {
           keyActionProcessed = true;
         }
         else if(tam.mode) {
@@ -1824,13 +1824,13 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
 
       case CHR_numL: {                                            //JMvv
-        if(!numLock)  { processKeyAction(CHR_num); }
+        if(!numLock)  { processKeyAction(CHR_num); } 
         keyActionProcessed = true;
         break;
       }
 
       case CHR_numU: {
-        if(numLock)  { processKeyAction(CHR_num); }
+        if(numLock)  { processKeyAction(CHR_num); } 
         keyActionProcessed = true;
         break;
       }
@@ -1855,7 +1855,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
       case CHR_caseDN: {
         if(numLock)  { alphaCase = AC_UPPER; processKeyAction(CHR_numU); } else
-        if(alphaCase == AC_UPPER)  { processKeyAction(CHR_case); }
+        if(alphaCase == AC_UPPER)  { processKeyAction(CHR_case); } 
         nextChar = NC_NORMAL;
         keyActionProcessed = true;
         break;
@@ -1879,7 +1879,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         }
         showAlphaModeonGui(); //dr JM, see keyboardtweaks
         keyActionProcessed = true;
-        break;
+        break;  
         }                                                                                                             //JM^^
 
 
@@ -2079,6 +2079,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
             }
 
             case CM_FLAG_BROWSER:
+            case CM_ASN_BROWSER:
             case CM_FONT_BROWSER:
             case CM_ERROR_MESSAGE:
             case CM_BUG_ON_SCREEN: {
@@ -2283,7 +2284,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       if((softmenuStack[0].firstItem + itemShift) < (menuId < NUMBER_OF_DYNAMIC_SOFTMENUS ? dynamicSoftmenu[menuId].numItems : softmenu[menuId].numItems)) {
         softmenuStack[0].firstItem += itemShift;
         //JM Include or exclude HOME menu screens  //JMHOME
-        if(!jm_HOME_SUM && sm == -MNU_HOME && softmenuStack[0].firstItem == B1*18) {softmenuStack[0].firstItem = (B2+1)*18;}
+        if(!jm_HOME_SUM && sm == -MNU_HOME && softmenuStack[0].firstItem == B1*18) {softmenuStack[0].firstItem = (B2+1)*18;} 
         //printf("^^--2:      menuId:%d item:%d  \n",sm,softmenuStack[softmenuStackPointer].firstItem/18);
       }
       else {
@@ -2320,7 +2321,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       if((softmenuStack[0].firstItem - itemShift) >= 0) {
         softmenuStack[0].firstItem -= itemShift;
         //JM Include or exclude HOME menu screens  //JMHOME
-        if(!jm_HOME_SUM && sm == -MNU_HOME && softmenuStack[0].firstItem == B2*18) {softmenuStack[0].firstItem = (B1-1)*18;}
+        if(!jm_HOME_SUM && sm == -MNU_HOME && softmenuStack[0].firstItem == B2*18) {softmenuStack[0].firstItem = (B1-1)*18;} 
         //printf("vv--2:      menuId:%d item:%d  \n",sm,softmenuStack[0].firstItem/18);
       }
       else if((softmenuStack[0].firstItem - itemShift) >= -5) {
@@ -2430,7 +2431,7 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
         break;
       }
 
-//       43S code not in use: PHM.
+//       43S code not in use: PHM. 
 //       JM Keeping the structure like in 43S, to be able to pick up changes
 //JM: 2022-09-04:
 //JM: This code does not seem to be "not-used" See bug report Gitlab #80. code seems needed.
@@ -2477,6 +2478,7 @@ void fnKeyEnter(uint16_t unusedButMandatoryParameter) {
 
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
+      case CM_ASN_BROWSER:
       case CM_FONT_BROWSER:
       case CM_ERROR_MESSAGE:
       case CM_BUG_ON_SCREEN:
@@ -2536,7 +2538,7 @@ ram_full:
     #if defined(PC_BUILD) && (SCREEN_800X480 == 0) //JM
     if((calcMode == CM_AIM    || calcMode == CM_EIM) && !tam.mode) calcModeAimGui(); else   //JM refreshModeGui
     if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
-    #endif // PC_BUILD && (SCREEN_800X480 == 0)    //JM
+    #endif // PC_BUILD && (SCREEN_800X480 == 0)    //JM  
   }
 #endif // !TESTSUITE_BUILD
 
@@ -2558,7 +2560,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
     }
 
     doRefreshSoftMenu = true;     //dr
-
+  
   #ifdef PC_BUILD
     jm_show_calc_state("fnKeyExit");
   #endif
@@ -2566,6 +2568,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
     switch(calcMode) {
         case CM_REGISTER_BROWSER:
         case CM_FLAG_BROWSER:
+        case CM_ASN_BROWSER:
         case CM_FONT_BROWSER:
         case CM_CONFIRMATION:
         case CM_ERROR_MESSAGE:
@@ -2573,7 +2576,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
             // Browser or message should be closed first
             break;
       }
-
+            
       default: {
             if(catalog) {
                 if(lastErrorCode != 0) {
@@ -2616,6 +2619,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
     switch(calcMode) {
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
+      case CM_ASN_BROWSER:
       case CM_FONT_BROWSER:
       case CM_CONFIRMATION:
       case CM_ERROR_MESSAGE:
@@ -2759,6 +2763,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
+      case CM_ASN_BROWSER:
       case CM_FONT_BROWSER: {
         rbr1stDigit = true;
         calcMode = previousCalcMode;
@@ -2916,6 +2921,7 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
       case CM_EIM:
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
+      case CM_ASN_BROWSER:
       case CM_FONT_BROWSER:
       case CM_PLOT_STAT:
       case CM_TIMER:
@@ -2940,7 +2946,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 #ifndef SAVE_SPACE_DM42_10
     uint8_t *nextStep;
 #endif //SAVE_SPACE_DM42_10
-
+    
     if(tam.mode) {
       tamProcessInput(ITM_BACKSPACE);
       return;
@@ -2953,7 +2959,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         }
         else {
 //          runFunction(ITM_CLX);          //JM old
-          showFunctionName(ITM_CLX, 1000); //JM 1000ms = 1s
+          showFunctionName(ITM_CLX, 1000); //JM 1000ms = 1s        
         }
         break;
       }
@@ -2985,7 +2991,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
           //printf("newXCursor=%d  T_cursorPos=%d  stringLastGlyph(aimBuffer)=%d\n",newXCursor,T_cursorPos,stringLastGlyph(aimBuffer));
           if(T_cursorPos <= 1 + stringLastGlyph(aimBuffer)) {
             fnT_ARROW(ITM_T_LEFT_ARROW);                               //move cursor one left
-          }
+          }          
 //JMCURSOR^^
 #else
           lg = stringLastGlyph(aimBuffer);
@@ -3030,6 +3036,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
+      case CM_ASN_BROWSER:
       case CM_FONT_BROWSER: {
         calcMode = previousCalcMode;
         break;
@@ -3191,17 +3198,17 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
 }
 
 
-#ifndef TESTSUITE_BUILD
+#ifndef TESTSUITE_BUILD  
 static bool_t activatescroll(void) { //jm
    //This is the portion that allows the arrows shortcut to SHOW in NORMAL MODE
    int16_t menuId = softmenuStack[0].softmenuId; //JM
-   return (calcMode == CM_NORMAL) &&
+   return (calcMode == CM_NORMAL) && 
           (temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) &&
-          (softmenu[menuId].menuItem != -MNU_EQN) &&
+          (softmenu[menuId].menuItem != -MNU_EQN) && 
           (
             ((menuId == 0) && !jm_BASE_SCREEN) ||
             ((menuId == 0) && (softmenu[menuId].numItems<=18)) ||
-            ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18))
+            ((menuId >= NUMBER_OF_DYNAMIC_SOFTMENUS) && (softmenu[menuId].numItems<=18)) 
           );
  }
  #endif // !TESTSUITE_BUILD
@@ -3214,7 +3221,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
     int16_t menuId = softmenuStack[0].softmenuId; //JM
 
     if(activatescroll() && !tam.mode) { //JMSHOW vv
-      fnShow_SCROLL(1);
+      fnShow_SCROLL(1); 
       refreshScreen();
       return;
     }                              //JMSHOW ^^
@@ -3260,7 +3267,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       case CM_GRAPH: {
         doRefreshSoftMenu = true;     //jm
         resetAlphaSelectionBuffer();
-
+      
         //JM Arrow up and down if no menu other than AHOME of MyA       //JMvv
         if(!arrowCasechange && calcMode == CM_AIM && isJMAlphaSoftmenu(menuId)) {
           fnT_ARROW(ITM_UP1);
@@ -3326,6 +3333,14 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
 
       case CM_FLAG_BROWSER: {
         currentFlgScr--;                          //JM removed the 3-x part
+        break;
+      }
+
+      case CM_ASN_BROWSER: {
+        currentAsnScr--;
+        if(currentAsnScr == 0 || currentAsnScr >= 4) {
+          currentAsnScr = 3;
+        }
         break;
       }
 
@@ -3527,6 +3542,14 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         break;
       }
 
+    case CM_ASN_BROWSER: {
+        currentAsnScr++;                          //JM removed the 3-x part
+        if(currentAsnScr >= 4) {
+          currentAsnScr = 1;
+        }
+        break;
+      }
+
       case CM_FONT_BROWSER: {
         if(currentFntScr < numScreensNumericFont + numScreensStandardFont) {
           currentFntScr++;
@@ -3559,7 +3582,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
         ListXYposition -= 10;
         break;
       }                                     //JM ^^
-
+          
       case CM_MIM: {
         #ifdef NOMATRIXCURSORS
           if(currentSoftmenuScrolls()) {   //JM remove to allow normal arrows to work as cursors
@@ -3633,6 +3656,7 @@ void fnKeyDotD(uint16_t unusedButMandatoryParameter) {
 
       case CM_REGISTER_BROWSER:
       case CM_FLAG_BROWSER:
+      case CM_ASN_BROWSER:
       case CM_FONT_BROWSER:
       case CM_PLOT_STAT:
       case CM_GRAPH:

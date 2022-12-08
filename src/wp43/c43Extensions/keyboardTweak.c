@@ -119,7 +119,7 @@ void showShiftState(void) {
 #ifdef PC_BUILD_TELLTALE
   printf("    >>> showShiftState: calcMode=%d\n", calcMode);
 #endif //PC_BUILD_TELLTALE
-  if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER &&
+  if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER &&
      temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL && temporaryInformation != TI_SHOW_REGISTER) {
     if(shiftF) {                        //SEE screen.c:refreshScreen
       showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);   // f is pixel 4+8+3 wide
@@ -352,20 +352,12 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   longpressDelayedkey3 = 0;                                           //To Store the next timed stage
   int16_t tmpi;
 
-  if(calcMode == CM_NORMAL || calcMode == CM_NIM) {                   //longpress yellow math functions on the first two rows, excluding any menus
-    if(key_no >= 0 && key_no < 14) {
+  if(calcMode == CM_NORMAL || calcMode == CM_NIM) {                   //longpress yellow math functions on the first two rows, menus allowed provided it is within keys 00-14
+    if(key_no >= 0 && key_no < 15 && LongPressM == RB_M1234) {
       tmpi = getSystemFlag(FLAG_USER) ? kbd_usr[key_no].fShifted : kbd_std[key_no].fShifted;
-      if (tmpi > 0) {
-        longpressDelayedkey1 = tmpi;
-      } else {
-        longpressDelayedkey1 = 0;
-      }
+      longpressDelayedkey1 = tmpi;
       tmpi = getSystemFlag(FLAG_USER) ? kbd_usr[key_no].gShifted : kbd_std[key_no].gShifted;
-      if (tmpi > 0) {
-        longpressDelayedkey3 = tmpi;
-      } else {
-        longpressDelayedkey3 = 0;
-      }
+      longpressDelayedkey3 = tmpi;
     }
   }                                                                   //yellow and blue function keys ^^
 
@@ -681,7 +673,7 @@ printf(">>>>Z 0050 btnFnReleased_StateMachine ------------------ Start TO_FN_EXE
       btnFnClicked(unused, charKey);                                             //Execute
     }
 
-   if (!(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_FONT_BROWSER || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH  || calcMode == CM_LISTXY)) {
+   if (!(calcMode == CM_REGISTER_BROWSER || calcMode == CM_FLAG_BROWSER || calcMode == CM_ASN_BROWSER || calcMode == CM_FONT_BROWSER || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH  || calcMode == CM_LISTXY)) {
      if(FN_timed_out_to_NOP) showSoftmenuCurrentPart();                           //Clear any possible underline residues
    }
 

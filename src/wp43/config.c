@@ -982,6 +982,7 @@ void fnReset(uint16_t confirmation) {
     displayStack = cachedDisplayStack = 4;
 
     initFontBrowser();
+    currentAsnScr = 1;
     currentFlgScr = 0;
     lastFlgScr = 0;
     currentRegisterBrowserScreen = 9999;

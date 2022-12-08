@@ -294,9 +294,9 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(PLOT_VECT);
     recallFromDtConfigDescriptor(PLOT_NVECT);
     recallFromDtConfigDescriptor(PLOT_SCALE);
-    recallFromDtConfigDescriptor(Aspect_Square);
-    recallFromDtConfigDescriptor(PLOT_LINE);
-    recallFromDtConfigDescriptor(PLOT_CROSS);
+    recallFromDtConfigDescriptor(Aspect_Square);          
+    recallFromDtConfigDescriptor(PLOT_LINE);          
+    recallFromDtConfigDescriptor(PLOT_CROSS);          
     recallFromDtConfigDescriptor(PLOT_BOX);
     recallFromDtConfigDescriptor(PLOT_INTG);
     recallFromDtConfigDescriptor(PLOT_DIFF);
@@ -306,17 +306,19 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(PLOT_ZMX );
     recallFromDtConfigDescriptor(PLOT_ZMY );
     recallFromDtConfigDescriptor(jm_HOME_SUM);
-    recallFromDtConfigDescriptor(jm_LARGELI);                                  //JMCFG^^
+    recallFromDtConfigDescriptor(jm_LARGELI);                                  //JMCFG^^         
     recallFromDtConfigDescriptor(constantFractions);                           //JM
     recallFromDtConfigDescriptor(constantFractionsMode);
     recallFromDtConfigDescriptor(constantFractionsOn);
-    recallFromDtConfigDescriptor(displayStackSHOIDISP);                                  //JMCFG^^
-    recallFromDtConfigDescriptor(bcdDisplay);                                  //JMCFG^^
-    recallFromDtConfigDescriptor(topHex);                                  //JMCFG^^
-    recallFromDtConfigDescriptor(bcdDisplaySign);                                  //JMCFG^^
+    recallFromDtConfigDescriptor(displayStackSHOIDISP);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(bcdDisplay);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(topHex);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(bcdDisplaySign);                                  //JMCFG^^         
     recallFromDtConfigDescriptor(DRG_Cycling);                                   //JM
     recallFromDtConfigDescriptor(DM_Cycling);                                   //JM
-    recallFromDtConfigDescriptor(SI_All);                                  //JMCFG^^
+    recallFromDtConfigDescriptor(SI_All);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(LongPressM);                                  //JMCFG^^         
+    recallFromDtConfigDescriptor(LongPressF);                                  //JMCFG^^         
 
   }
 

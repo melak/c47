@@ -15,13 +15,17 @@
  */
 
 /********************************************//**
- * \file browsers.h
+ * \file asnBrowser.h
  ***********************************************/
-#if !defined(BROWSERS_H)
-  #define BROWSERS_H
+#if !defined(ASNBROWSER_H)
+  #define ASNBROWSER_H
 
-  #include "asnBrowser.h"
-  #include "flagBrowser.h"
-  #include "fontBrowser.h"
-  #include "registerBrowser.h"
-#endif // !BROWSERS_H
+  #include <stdint.h>
+    /********************************************//**
+     * \brief The assigned key browser
+     *
+     * \param[in] unusedButMandatoryParameter uint16_t
+     * \return void
+     ***********************************************/
+    void fnAsnViewer(uint16_t unusedButMandatoryParameter);
+#endif // !REGISTERBROWSER_H

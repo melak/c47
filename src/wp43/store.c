@@ -441,6 +441,8 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(DRG_Cycling);                                   //JM
   storeToDtConfigDescriptor(DM_Cycling);                                   //JM
   storeToDtConfigDescriptor(SI_All);                                   //JM
+  storeToDtConfigDescriptor(LongPressM);                                   //JM
+  storeToDtConfigDescriptor(LongPressF);                                   //JM
 }
 
 
