@@ -3226,7 +3226,6 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       return;
     }                              //JMSHOW ^^
 
-
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {
       if(tam.digitsSoFar == 0) {
         tamProcessInput(ITM_1);
@@ -3281,8 +3280,8 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuUp();
         }
-      else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
-           screenUpdatingMode = SCRUPD_AUTO;
+        else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
+          screenUpdatingMode = SCRUPD_AUTO;
           if(calcMode == CM_NIM) {
             closeNim();
           }
@@ -3432,6 +3431,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
   doRefreshSoftMenu = true;     //dr
   #if !defined(TESTSUITE_BUILD)
     int16_t menuId = softmenuStack[0].softmenuId; //JM
+
     if(activatescroll() && !tam.mode) { //JMSHOW vv
       fnShow_SCROLL(2);
       refreshScreen();
@@ -3501,6 +3501,11 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
             closeAim();
           }
           fnSst(NOPARAM);
+          #if defined(DMCP_BUILD)
+            lcd_refresh();
+          #else // !DMCP_BUILD
+            refreshLcd(NULL);
+          #endif // DMCP_BUILD
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
           strcpy(plotStatMx, "STATS");
