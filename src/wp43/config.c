@@ -696,7 +696,7 @@ void restoreStats(void){
       {0,USER_C43,     "C43: Final classic single shift (DM42 mould)"    },
       {0,USER_D43,     "D43: Exp 2 shifts R (43S mould) /x-+ R"          },
       {0,USER_E43,     "E43: Exp 2 shifts L /x-+ R"                      },
-      {0,USER_N43,     "N43: Exp 2 shft L (32 mould) /x-+ R " STD_LEFT_ARROW STD_UP_ARROW STD_DOWN_ARROW STD_RIGHT_ARROW " top"  },
+      {0,USER_N43,     "N43: Exp 2 shft L (32 mould) /x-+ R " STD_UP_ARROW STD_DOWN_ARROW " top"  },
       {0,USER_V43,     "V43: Exp Vintage 2 shifts TopR -+x/ L"           },
       {0,USER_C43ALTA, "C43AltA: OLD 2 shift (43S mould) Allschwil alt." },
       {0,USER_C43ALT,  "C43 ALT: Final 2 shift (43S mould) alternative"  },
