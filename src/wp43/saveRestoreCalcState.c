@@ -1987,7 +1987,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 
     if(loadMode == LM_PROGRAMS) { // .END. to END
       freeProgramBytes += oldFreeProgramBytes;
-      if((oldFirstFreeProgramByte >= (beginOfProgramMemory + 2)) && (*(oldFirstFreeProgramByte - 2) == ((ITM_END >> 8) | 0x80)) && (*(oldFirstFreeProgramByte - 1) == (ITM_END & 0xff))) {
+      if((oldFirstFreeProgramByte >= (beginOfProgramMemory + 2)) && isAtEndOfProgram(oldFirstFreeProgramByte - 2)) {
       }
       else {
         if(oldFreeProgramBytes + freeProgramBytes < 2) {

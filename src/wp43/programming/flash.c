@@ -92,7 +92,7 @@ static void _addSpaceAfterPrograms(uint16_t size) {
 void fnPRcl(uint16_t unusedButMandatoryParameter) {
   uint32_t pgmSize = endOfCurrentProgram.any - beginOfCurrentProgram.any;
 
-  if((*(firstFreeProgramByte - 2) != ((ITM_END >> 8) | 0x80)) || (*(firstFreeProgramByte - 1) != (ITM_END & 0xff))) {
+  if(!isAtEndOfProgram(firstFreeProgramByte - 2)) {
     _addSpaceAfterPrograms(2);
     *(firstFreeProgramByte - 2) = (ITM_END >> 8) | 0x80;
     *(firstFreeProgramByte - 1) =  ITM_END       & 0xff;
@@ -144,7 +144,7 @@ void fnPSto(uint16_t unusedButMandatoryParameter) {
     }
 
     // Check for END before .END.
-    if((*(firstFreeProgramByte - 2) != ((ITM_END >> 8) | 0x80)) || (*(firstFreeProgramByte - 1) != (ITM_END & 0xff))) {
+    if(!isAtEndOfProgram(firstFreeProgramByte - 2)) {
       _addSpaceAfterPrograms(2);
       *(firstFreeProgramByte - 2) = (ITM_END >> 8) | 0x80;
       *(firstFreeProgramByte - 1) =  ITM_END       & 0xff;
@@ -333,11 +333,11 @@ void scanFlashPgmLibrary(void) {
   numberOfProgramsInFlash = 1;
 
   load(tmpString, FLASH_PGM_PAGE_SIZE + 32, LIBDATA);
-  while(*step != 255 || *(step + 1) != 255) { // .END.
+  while(!isAtEndOfPrograms(step)) { // .END.
     if(*step == ITM_LBL) { // LBL
       numberOfLabelsInFlash++;
     }
-    if((*step & 0x7f) == (ITM_END >> 8) && *(step + 1) == (ITM_END & 0xff)) { // END
+    if(isAtEndOfProgram(step)) { // END
       numberOfProgramsInFlash++;
     }
     step = findNextStep_ram(step);
@@ -376,9 +376,9 @@ void scanFlashPgmLibrary(void) {
 
   numberOfProgramsInFlash = 1;
   stepNumber = 1;
-  while(*step != 255 || *(step + 1) != 255) { // .END.
+  while(!isAtEndOfPrograms(step)) { // .END.
     nextStep = findNextStep_ram(step);
-    if(*step == 1) { // LBL
+    if(checkOpCodeOfStep(step, ITM_LBL)) { // LBL
       flashLabelList[numberOfLabelsInFlash].program = -numberOfProgramsInFlash;
       if(*(step + 1) <= 104) { // Local label
         flashLabelList[numberOfLabelsInFlash].step = -stepNumber;
@@ -393,7 +393,7 @@ void scanFlashPgmLibrary(void) {
       numberOfLabelsInFlash++;
     }
 
-    if((*step & 0x7f) == (ITM_END >> 8) && *(step + 1) == (ITM_END & 0xff)) { // END
+    if(isAtEndOfProgram(step)) { // END
       flashProgramList[numberOfProgramsInFlash].instructionPointer.flash = step - (uint8_t *)tmpString + 2 + seekPos + 1;
       flashProgramList[numberOfProgramsInFlash].step = -(stepNumber + 1);
       numberOfProgramsInFlash++;
