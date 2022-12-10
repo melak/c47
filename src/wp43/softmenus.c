@@ -263,6 +263,7 @@ TO_QSPI const int16_t menu_PFN2[]        = { ITM_MENU,                      ITM_
 TO_QSPI const int16_t menu_STAT[]        = { ITM_SIGMAPLUS,                 ITM_XBAR,                   ITM_STDDEVWEIGHTED,       ITM_STDDEV,            ITM_SM,                      ITM_SUM,
                                              ITM_SIGMAMINUS,                ITM_XW,                     ITM_SW,                   ITM_STDDEVPOP,         ITM_SMW,                     ITM_NSIGMA,                         //JM added ITM_NSIGMA
                                              ITM_CLSIGMA,                   ITM_XG,                     ITM_SCATTFACT,            ITM_SCATTFACTp,        ITM_SCATTFACTm,              ITM_NULL,
+
                                              ITM_LR,                        ITM_CORR,                   ITM_SXY,                  ITM_COV,               ITM_XCIRC,                   ITM_YCIRC,
                                              ITM_SA,                        ITM_XH,                     ITM_XRMS,                 ITM_XMAX,              ITM_XMIN,                    ITM_NULL,
                                              ITM_PLOT_LR,                   ITM_PLOT_STAT,              ITM_NULL,                 ITM_NULL,             -MNU_HIST,                    ITM_PLOT,
@@ -270,11 +271,6 @@ TO_QSPI const int16_t menu_STAT[]        = { ITM_SIGMAPLUS,                 ITM_
                                              ITM_NULL,                      ITM_MEDIAN,                 ITM_MAD,                  ITM_IQR,               ITM_SIGMARANGE,              ITM_NULL,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
-/*WP43S
-                                             ITM_LINF,                      ITM_EXPF,                   ITM_LOGF,                 ITM_POWERF,            ITM_NULL,                    ITM_ORTHOF,
-                                             ITM_PARABF,                    ITM_HYPF,                   ITM_ROOTF,                ITM_NULL,              ITM_NULL,                    ITM_NULL,
-                                             ITM_GAUSSF,                    ITM_CAUCHF,                 ITM_NULL,                 ITM_BESTF,             ITM_NULL,                    ITM_NULL,
-*/
 
                                              ITM_T_LINF,                    ITM_T_EXPF,                ITM_T_LOGF,                ITM_T_POWERF,          ITM_T_ROOTF,                 ITM_PLOT_LR,
                                              ITM_T_HYPF,                    ITM_T_PARABF,              ITM_T_CAUCHF,              ITM_T_GAUSSF,          ITM_T_ORTHOF,                ITM_PLOT_LRALL,

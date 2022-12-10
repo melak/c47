@@ -30,6 +30,7 @@
 #include "registerValueConversions.h"
 #include "stack.h"
 #include "stats.h"
+#include <string.h>
 
 #include "wp43.h"
 
@@ -53,7 +54,7 @@ static void computeMedian(real_t *vals, unsigned int numVals, real_t *median) {
   qsort(vals, numVals, sizeof(*vals), &medianCompare);
   if (numVals & 1) {  // Odd number of values
     realCopy(vals + numVals / 2, median);
-  } else {            // Even number of vlaues
+  } else {            // Even number of values
     realAdd(vals + numVals / 2 - 1, vals + numVals / 2, median, &ctxtReal39);
     realMultiply(median, const_1on2, median, &ctxtReal39);
   }
