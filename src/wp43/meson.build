@@ -119,6 +119,7 @@ wp43_src = files(
   'mathematics/matrix.c',
   'mathematics/max.c',
   'mathematics/mean.c',
+  'mathematics/median.c',
   'mathematics/min.c',
   'mathematics/minusOnePow.c',
   'mathematics/modulo.c',
