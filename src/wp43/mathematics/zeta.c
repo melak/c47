@@ -25,10 +25,12 @@
 #include "error.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/division.h"
+#include "mathematics/matrix.h"
 #include "mathematics/multiplication.h"
 #include "mathematics/power.h"
 #include "mathematics/toRect.h"
 #include "mathematics/wp34s.h"
+#include "realType.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 

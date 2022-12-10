@@ -22,6 +22,7 @@
 
 #include "debug.h"
 #include "error.h"
+#include "mathematics/matrix.h"
 #include "mathematics/wp34s.h"
 #include "registers.h"
 #include "registerValueConversions.h"

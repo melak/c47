@@ -29,8 +29,8 @@
 #include "c43Extensions/jm.h"
 #include "mathematics/compare.h"
 #include "mathematics/comparisonReals.h"
+#include "mathematics/matrix.h"
 #include "mathematics/rsd.h"
-#include "matrix.h"
 #include "memory.h"
 #include "c43Extensions/radioButtonCatalog.h"
 #include "registerValueConversions.h"
@@ -498,7 +498,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
 
     // All the new local registers are real34s initialized to 0.0
     for(r=FIRST_LOCAL_REGISTER; r<FIRST_LOCAL_REGISTER+numberOfRegistersToAllocate; r++) {
-      bool_t isMemIssue = false; 
+      bool_t isMemIssue = false;
 
       if((lastIntegerBase == 0) && (Input_Default == ID_43S || Input_Default == ID_DP)) {                 //JM defaults JMZERO
         void *newMem = allocWp43(REAL34_SIZE);
@@ -550,7 +550,7 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
 
 
     }                                                   //JM defaults ^^
-   
+
 
 
     }
@@ -1285,7 +1285,7 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
   }
 
   if(setCpxRes && oneArgumentIsComplex && resultDataType != dtString) {
-    fnSetFlag(FLAG_CPXRES);    
+    fnSetFlag(FLAG_CPXRES);
     fnRefreshState();                                 //drJM
   }
 
@@ -1976,7 +1976,7 @@ void fnToReal(uint16_t unusedButMandatoryParameter) {
           temporaryInformation = TI_FROM_DMS;
 //          convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amDMS, amDegree);
 //          setRegisterAngularMode(REGISTER_X, amDegree);                        //JM added amDegree: prevent stripping the tag if it was amDMS, to force an interim step to decimal degrees.
-        } 
+        }
 //        else                                                                  //JM added else: prevent stripping the tag if it was amDMS, to force an interim step to decimal degrees.
         setRegisterAngularMode(REGISTER_X, amNone);
       }

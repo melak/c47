@@ -40,8 +40,8 @@
 #include "c43Extensions/keyboardTweak.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/incDec.h"
-#include "matrix.h"
 #include "memory.h"
+#include "mathematics/matrix.h"
 #include "plotstat.h"
 #include "programming/manage.h"
 #include "registers.h"
@@ -50,6 +50,7 @@
 #include "stack.h"
 #include "statusBar.h"
 #include "timer.h"
+#include "ui/matrixEditor.h"
 #include "version.h"
 #include <string.h>
 
