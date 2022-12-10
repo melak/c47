@@ -325,19 +325,19 @@ TO_QSPI const calcKey_t kbd_std_D47[37] = {
 {55,                  ITM_DIV,              -MNU_STAT,            -MNU_SUMS,            ITM_OBELUS,           ITM_Q,                ITM_q,                ITM_OBELUS,           ITM_DIV             },
 {61,                  ITM_UP1,              ITM_BST,              ITM_RBR,              ITM_UP1,              ITM_UP1,              CHR_caseUP,           ITM_UP_ARROW,         ITM_UP1             },
 {62,                  ITM_4,                -MNU_BASE,            -MNU_CLK,             ITM_4,                ITM_R,                ITM_r,                ITM_4,                ITM_4               },
-{63,                  ITM_5,                -MNU_EQN,             -MNU_UNITCONV,        ITM_5,                ITM_S,                ITM_s,                ITM_5,                ITM_5               },
+{63,                  ITM_5,                -MNU_SETUP,           -MNU_UNITCONV,        ITM_5,                ITM_S,                ITM_s,                ITM_5,                ITM_5               },
 {64,                  ITM_6,                -MNU_FLAGS,           -MNU_BITS,            ITM_6,                ITM_T,                ITM_t,                ITM_6,                ITM_6               },
 {65,                  ITM_MULT,             -MNU_PROB,            -MNU_INTS,            ITM_CROSS,            ITM_U,                ITM_u,                ITM_CROSS,            ITM_MULT            },
 {71,                  ITM_DOWN1,            ITM_SST,              ITM_FLGSV,            ITM_DOWN1,            ITM_DOWN1,            CHR_caseDN,           ITM_DOWN_ARROW,       ITM_DOWN1           },
 {72,                  ITM_1,                ITM_ASSIGN,           -MNU_ASN,             ITM_1,                ITM_V,                ITM_v,                ITM_1,                ITM_1               },
-{73,                  ITM_2,                -MNU_SETUP,           -MNU_LOOP,            ITM_2,                ITM_W,                ITM_w,                ITM_2,                ITM_2               },
+{73,                  ITM_2,                -MNU_EQN,             -MNU_LOOP,            ITM_2,                ITM_W,                ITM_w,                ITM_2,                ITM_2               },
 {74,                  ITM_3,                -MNU_PARTS,           -MNU_TEST,            ITM_3,                ITM_X,                ITM_x,                ITM_3,                ITM_3               },
 {75,                  ITM_SUB,              -MNU_FIN,             -MNU_ALPHAFN,         ITM_MINUS,            ITM_Y,                ITM_y,                ITM_MINUS,            ITM_SUB             },
-{81,                  ITM_EXIT1,            ITM_OFF,              -MNU_IO,              ITM_EXIT1,            ITM_EXIT1,            ITM_OFF,              ITM_PRN,              ITM_EXIT1           },
+{81,                  ITM_EXIT1,            ITM_OFF,              ITM_PRN,              ITM_EXIT1,            ITM_EXIT1,            ITM_OFF,              ITM_PRN,              ITM_EXIT1           },
 {82,                  ITM_0,                ITM_VIEW,             ITM_TIMER,            ITM_0,                ITM_Z,                ITM_z,                ITM_0,                ITM_0               },
 {83,                  ITM_PERIOD,           ITM_SHOW,             -MNU_INFO,            ITM_PERIOD,           ITM_COMMA,            ITM_PERIOD,           ITM_PERIOD,           ITM_PERIOD          },
 {84,                  ITM_RS,               ITM_PR,               -MNU_PFN,             ITM_NULL,             ITM_QUESTION_MARK,    ITM_SLASH,            ITM_SLASH,            ITM_NULL            },
-{85,                  ITM_ADD,              -MNU_CATALOG,         ITM_PRN,              ITM_PLUS,             ITM_SPACE,            ITM_PLUS,             ITM_PLUS,             ITM_ADD             }
+{85,                  ITM_ADD,              -MNU_CATALOG,         -MNU_IO,              ITM_PLUS,             ITM_SPACE,            ITM_PLUS,             ITM_PLUS,             ITM_ADD             }
 //keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
 };
 #endif //SAVE_SPACE_DM42 

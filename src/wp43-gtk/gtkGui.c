@@ -1920,6 +1920,10 @@ void labelCaptionNormal(const calcKey_t *key, GtkWidget *button, GtkWidget *lblF
     lbl[3] = 0;
   }
 
+  if(key->primary == ITM_SHIFTg) {
+    strcpy((char *)lbl,"      "); //blank the dots above the shift g key, if it is shit g specifically instead of shift f/g
+  }
+
   gtk_label_set_label(GTK_LABEL(lblF), (gchar *)lbl);
   if(key->fShifted < 0) gtk_widget_set_name(lblF, "fShiftedUnderline"); else  gtk_widget_set_name(lblF, "fShifted");
 
