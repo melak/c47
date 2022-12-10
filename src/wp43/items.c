@@ -42,7 +42,7 @@
 #include "logicalOps/logicalOps.h"
 #include "mathematics/mathematics.h"
 #include "mathematics/median.h"
-#include "matrix.h"
+#include "mathematics/matrix.h"
 #include "plotstat.h"
 #include "programming/programming.h"
 #include "recall.h"
