@@ -24,7 +24,7 @@
 #include "items.h"
 #include "c43Extensions/jm.h"
 #include "keyboard.h"
-#include "matrix.h"
+#include "mathematics/matrix.h"
 #include "registers.h"
 #include "saveRestoreCalcState.h"
 #include "screen.h"

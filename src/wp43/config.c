@@ -36,7 +36,7 @@
 #include "c43Extensions/jm.h"
 #include "c43Extensions/addons.h"
 #include "keyboard.h"
-#include "matrix.h"
+#include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
 #include "programming/flash.h"
@@ -134,7 +134,7 @@ void fnConfigUsa(uint16_t unusedButMandatoryParameter) {
 
 void fnIntegerMode(uint16_t mode) {
   shortIntegerMode = mode;
-  
+
   fnRefreshState();                            //dr
 
 }
@@ -1044,7 +1044,7 @@ void fnReset(uint16_t confirmation) {
 
 
 
-      
+
         clearSystemFlag(FLAG_DENANY);                              //JM Default
         fnDenMax(0);                                               //JM Default
         clearSystemFlag(FLAG_ASLIFT);  //JM??
@@ -1052,21 +1052,21 @@ void fnReset(uint16_t confirmation) {
         setSystemFlag(FLAG_SSIZE8);                                //JM Default
         setSystemFlag(FLAG_CPXRES);                                //JM Default
         clearSystemFlag(FLAG_FRCSRN);  //JM??                      //JM Default
-            
+
     #ifndef TESTSUITE_BUILD
       mm_MNU_HOME       = mm(-MNU_HOME);     //printf("####BB> %i \n",mm_MNU_HOME);                      //JM
       mm_MNU_ALPHA      = mm(-MNU_ALPHA);    //printf("####CC> %i \n",mm_MNU_ALPHA);                      //JM
 
       calcModeNormal();
       if(SH_BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
-    #endif // TESTSUITE_BUILD      
+    #endif // TESTSUITE_BUILD
 
-      reset_jm_defaults(true); 
+      reset_jm_defaults(true);
 
 //********** JM CHECKQQ
 
-      
-      
+
+
     //JM Default USER
     fnUserJM(USER_ARESET);                                      //JM USER
     fnUserJM(USER_MRESET);                                      //JM USER
@@ -1135,7 +1135,7 @@ void fnReset(uint16_t confirmation) {
         fnStrtoX(indexOfStrings[i].itemName);
       } else
       if( indexOfStrings[i].itemType== 1) {
-        fnStrInputLongint(indexOfStrings[i].itemName);        
+        fnStrInputLongint(indexOfStrings[i].itemName);
       }
       fnStore(indexOfStrings[i].count);
       fnDrop(0);

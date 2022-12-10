@@ -29,7 +29,7 @@
 #include "items.h"
 #include "c43Extensions/xeqm.h"
 #include "mathematics/addition.h"
-#include "matrix.h"
+#include "mathematics/matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 #include "rsd.h"

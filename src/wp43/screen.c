@@ -40,8 +40,8 @@
 #include "c43Extensions/keyboardTweak.h"
 #include "mathematics/comparisonReals.h"
 #include "mathematics/incDec.h"
-#include "matrix.h"
 #include "memory.h"
+#include "mathematics/matrix.h"
 #include "plotstat.h"
 #include "programming/manage.h"
 #include "registers.h"
@@ -50,6 +50,7 @@
 #include "stack.h"
 #include "statusBar.h"
 #include "timer.h"
+#include "ui/matrixEditor.h"
 #include "version.h"
 #include <string.h>
 
@@ -1607,7 +1608,7 @@ void force_refresh(void) {
 
   void showFunctionName(int16_t item, int16_t delayInMs) {
     uint32_t fcol, frow, gcol, grow;
-    char *functionName;
+    const char *functionName;
     char padding[20];                                          //JM
 
 //FIX //REMOVE DISPLAYING TEMP STRING as in C43 the tmpstring does NOT show the last keystroke or whatever this tempstr is needed for. It gets executed from timers
@@ -2403,6 +2404,50 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
            }
+
+          else if(temporaryInformation == TI_MEDIANX_MEDIANY) {
+            if(regist == REGISTER_X) {
+              strcpy(prefix, "md" STD_SUB_x " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_Y) {
+              strcpy(prefix, "md" STD_SUB_y " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
+          else if(temporaryInformation == TI_MADX_MADY) {
+            if(regist == REGISTER_X) {
+              strcpy(prefix, "mad" STD_SUB_x " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_Y) {
+              strcpy(prefix, "mad" STD_SUB_y " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
+          else if(temporaryInformation == TI_IQRX_IQRY) {
+            if(regist == REGISTER_X) {
+              strcpy(prefix, "iqr" STD_SUB_x " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_Y) {
+              strcpy(prefix, "iqr" STD_SUB_y " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
+          else if(temporaryInformation == TI_RANGEX_RANGEY) {
+            if(regist == REGISTER_X) {
+              strcpy(prefix, "rg" STD_SUB_x " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_Y) {
+              strcpy(prefix, "rg" STD_SUB_y " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
 
           else if(temporaryInformation == TI_SAMPLSTDDEV) {
             if(regist == REGISTER_X) {

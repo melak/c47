@@ -15,28 +15,15 @@
  */
 
 /********************************************//**
- * \file dot.h
+ * \file mean.h
  ***********************************************/
-#if !defined(DOT_H)
-  #define DOT_H
+#if !defined(MEDIAN_H)
+  #define MEDIAN_H
 
-  #include "realType.h"
   #include <stdint.h>
 
-  void fnDot(uint16_t unusedButMandatoryParameter);
+  void fnMedianXY           (uint16_t unusedButMandatoryParameter);
+  void fnMADXY              (uint16_t unusedButMandatoryParameter);
+  void fnIQRXY              (uint16_t unusedButMandatoryParameter);
 
-  void dotRealCplx(void);
-  void dotLonICplx(void);
-  void dotShoICplx(void);
-  void dotCplxCplx(void);
-  void dotCplxReal(void);
-  void dotCplxLonI(void);
-  void dotCplxShoI(void);
-
-  void dotRemaRema(void);
-  void dotCpmaRema(void);
-  void dotRemaCpma(void);
-  void dotCpmaCpma(void);
-
-  void dotCplx    (const real_t *xReal, const real_t *xImag, const real_t *yReal, const real_t *yImag, real_t *rReal, realContext_t *realContext);
-#endif // !DOT_H
+#endif // !MEDIAN_H

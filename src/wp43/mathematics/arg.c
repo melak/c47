@@ -25,8 +25,8 @@
 #include "debug.h"
 #include "error.h"
 #include "conversionAngles.h"
+#include "mathematics/matrix.h"
 #include "mathematics/toPolar.h"
-#include "matrix.h"
 #include "registerValueConversions.h"
 #include "registers.h"
 
