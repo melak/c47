@@ -41,6 +41,7 @@
 #include "c43Extensions/keyboardTweak.h"
 #include "logicalOps/logicalOps.h"
 #include "mathematics/mathematics.h"
+#include "mathematics/median.h"
 #include "matrix.h"
 #include "plotstat.h"
 #include "programming/programming.h"
@@ -622,6 +623,9 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnSampleCovariance          (uint16_t unusedButMandatoryParameter) {}
   void fnCoefficientDetermination  (uint16_t unusedButMandatoryParameter) {}
   void fnMinExpStdDev              (uint16_t unusedButMandatoryParameter) {}
+  void fnMedianXY                  (uint16_t unusedButMandatoryParameter) {}
+  void fnMADXY                     (uint16_t unusedButMandatoryParameter) {}
+  void fnIQRXY                     (uint16_t unusedButMandatoryParameter) {}
   void fnPlotCloseSmi              (uint16_t unusedButMandatoryParameter) {}
   void fnMaskl                     (uint16_t unusedButMandatoryParameter) {}
   void fnMaskr                     (uint16_t unusedButMandatoryParameter) {}
@@ -679,6 +683,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnUndo                      (uint16_t unusedButMandatoryParameter) {}
   void fnXmax                      (uint16_t unusedButMandatoryParameter) {}
   void fnXmin                      (uint16_t unusedButMandatoryParameter) {}
+  void fnRangeXY                   (uint16_t unusedButMandatoryParameter) {}
   void fnFib                       (uint16_t unusedButMandatoryParameter) {}
   void fnGd                        (uint16_t unusedButMandatoryParameter) {}
   void fnInvGd                     (uint16_t unusedButMandatoryParameter) {}
@@ -3081,6 +3086,10 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2071 */  { addItemToBuffer,              ITM_SIN_SIGN,                "SIN",                                         "SIN",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2072 */  { addItemToBuffer,              ITM_COS_SIGN,                "COS",                                         "COS",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2073 */  { addItemToBuffer,              ITM_TAN_SIGN,                "TAN",                                         "TAN",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2074 */  { fnMedianXY,                   NOPARAM,                     "MEDIAN",                                      "MEDIAN",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 2075 */  { fnMADXY,                      NOPARAM,                     "MAD",                                         "MAD",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 2076 */  { fnIQRXY,                      NOPARAM,                     "IQR",                                         "IQR",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 2077 */  { fnRangeXY,                    NOPARAM,                     STD_SIGMA "RANGE",                             STD_SIGMA "RANGE",                             (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 
-/* 2074 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
+/* 2078 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
 };
