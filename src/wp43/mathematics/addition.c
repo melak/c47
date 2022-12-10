@@ -47,7 +47,7 @@ TO_QSPI void (* const addition[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS][NUMBER_OF_
 /*  3 Complex34     */ {addLonICplx, addRealCplx, addCplxCplx, addError,    addError,    addStriCplx, addRemaCplx, addCxmaCplx, addShoICplx,  addError},
 /*  4 Time          */ {addLonITime, addRealTime, addError,    addTimeTime, addError,    addStriTime, addError,    addError,    addError,     addError},
 /*  5 Date          */ {addLonIDate, addRealDate, addError,    addError,    addError,    addStriDate, addError,    addError,    addError,     addError},
-/*  6 String        */ {addRegYStri, addRegYStri, addRegYStri, addRegYStri, addRegYStri, addStriStri, addError,    addError,    addRegYStri,  addError},   //JM added addRegYStri
+/*  6 String        */ {addRegYStri, addRegYStri, addRegYStri, addRegYStri, addRegYStri, addStriStri, addError,    addError,    addRegYStri,  addError},
 /*  7 Real34 mat    */ {addLonIRema, addRealRema, addCplxRema, addError,    addError,    addStriRema, addRemaRema, addCxmaRema, addShoIRema,  addError},
 /*  8 Complex34 mat */ {addLonICxma, addRealCxma, addCplxCxma, addError,    addError,    addStriCxma, addRemaCxma, addCxmaCxma, addShoICxma,  addError},
 /*  9 Short integer */ {addLonIShoI, addRealShoI, addCplxShoI, addError,    addError,    addStriShoI, addRemaShoI, addCxmaShoI, addShoIShoI,  addError},
@@ -94,7 +94,7 @@ void fnAdd(uint16_t unusedButMandatoryParameter) {
 
 
 
-void addRegYStri(void) {                                                       //JM vv Add number + string
+void addRegYStri(void) {
   copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
   copySourceRegisterToDestRegister(REGISTER_Y, REGISTER_X);
   
@@ -111,7 +111,7 @@ void addRegYStri(void) {                                                       /
 
   addition[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 
-}                                                                             //JM ^^
+}
 
 
 
@@ -500,7 +500,7 @@ static void _addString(const char *stringToAppend) {
  * \return void
  ***********************************************/
 void addStriLonI(void) {
-  longIntegerRegisterToDisplayString(REGISTER_X, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION, false);   //JM added last parameter: Allow LARGELI
+  longIntegerRegisterToDisplayString(REGISTER_X, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH, 50, STD_SPACE_PUNCTUATION, false);
   _addString(tmpString);
 }
 
