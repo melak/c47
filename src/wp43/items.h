@@ -1851,7 +1851,7 @@
 #define ITM_FG_LINE                 1795
 #define ITM_BASE_SCREEN             1796
 #define ITM_G_DOUBLETAP             1797
-#define ITM_PLOT_LRALL              1798
+#define ITM_SETALLF                 1798
 #define ITM_P_ALLREGS               1799
 #define ITM_SI_f                    1800
 #define ITM_SI_p                    1801
@@ -2133,8 +2133,10 @@
 #define ITM_MAD                     2077
 #define ITM_IQR                     2078
 #define ITM_SIGMARANGE              2079
+#define MNU_REGR                    2080
+#define MNU_MODEL                   2081
 
-#define LAST_ITEM                   2080
+#define LAST_ITEM                   2082
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

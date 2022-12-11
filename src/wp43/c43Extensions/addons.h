@@ -28,8 +28,6 @@
 
 
 
-void fnPlotStatJM   (uint16_t mode);
-
 void fneRPN         (uint16_t unusedButMandatoryParameter);
 void fnCFGsettings  (uint16_t unusedButMandatoryParameter);
 void fnShoiXRepeats (uint16_t numberOfRepeats);

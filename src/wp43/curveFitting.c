@@ -110,9 +110,23 @@ void fnCurveFitting(uint16_t curveFitting) {
 
 
 
-void fnCurveFittingReset(uint16_t curveFitting) {     // JM vv
-  lrSelection = CF_LINEAR_FITTING;
-  lrChosen = 0;                               // lrChosen    is used to indicate if there was a L.R. selection. Can be only one bit.
+void fnCurveFittingReset(uint16_t control) {     // JM vv
+  if(control == 0) {
+    lrSelection = CF_LINEAR_FITTING;
+    lrChosen = 0;                               // lrChosen    is used to indicate if there was a L.R. selection. Can be only one bit.
+  } else {
+    lrSelection =
+      CF_LINEAR_FITTING      +
+      CF_EXPONENTIAL_FITTING +
+      CF_LOGARITHMIC_FITTING +
+      CF_POWER_FITTING       +
+      CF_ROOT_FITTING        +
+      CF_HYPERBOLIC_FITTING  +
+      CF_PARABOLIC_FITTING   +
+      CF_CAUCHY_FITTING      +
+      CF_GAUSS_FITTING;
+    lrChosen = 0;                               // lrChosen    is used to indicate if there was a L.R. selection. Can be only one bit.
+  }
 }
 
 
