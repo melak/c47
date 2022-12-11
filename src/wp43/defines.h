@@ -838,9 +838,11 @@ typedef enum {
 #define TI_2ND_DERIVATIVE                         55
 #define TI_KEYS                                   56
 #define TI_MEDIANX_MEDIANY                        57
-#define TI_MADX_MADY                              58
-#define TI_IQRX_IQRY                              59
-#define TI_RANGEX_RANGEY                          60
+#define TI_Q1X_Q1Y                                58
+#define TI_Q3X_Q3Y                                59
+#define TI_MADX_MADY                              60
+#define TI_IQRX_IQRY                              61
+#define TI_RANGEX_RANGEY                          62
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed

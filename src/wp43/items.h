@@ -2127,11 +2127,13 @@
 #define ITM_COS_SIGN                2072
 #define ITM_TAN_SIGN                2073
 #define ITM_MEDIAN                  2074
-#define ITM_MAD                     2075
-#define ITM_IQR                     2076
-#define ITM_SIGMARANGE              2077
+#define ITM_LOWER_QUARTILE          2075
+#define ITM_UPPER_QUARTILE          2076
+#define ITM_MAD                     2077
+#define ITM_IQR                     2078
+#define ITM_SIGMARANGE              2079
 
-#define LAST_ITEM                   2078
+#define LAST_ITEM                   2080
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
