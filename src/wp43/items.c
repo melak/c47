@@ -973,6 +973,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
 TO_QSPI const item_t indexOfItems[] = {
 
+//This list is generated (manually) from items3.xlsx, EXPORT.C
+
 //            function                      parameter                    item in catalog                                item in softmenu                               TAM min                 max  CATALOG    stackLift       UNDO status    EIM status     In program
 /*    0 */  { itemToBeCoded,                NOPARAM,                     "",                                            "0000",                                        (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         }, // ITM_NULL
 
