@@ -2431,14 +2431,16 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
     }
 
     case dtString: {
+      char *remainingString;
       offset = 0;
       thereIsANextLine = true;
       bytesProcessed = 0;
       while(thereIsANextLine) {
         xcopy(tmpString + offset, REGISTER_STRING_DATA(REGISTER_X) + bytesProcessed, stringByteLength(REGISTER_STRING_DATA(REGISTER_X) + bytesProcessed) + 1);
         thereIsANextLine = false;
-        while(stringWidth(tmpString + offset, &standardFont, false, true) >= SCREEN_WIDTH) {
-          tmpString[offset + stringLastGlyph(tmpString + offset)] = 0;
+        remainingString = stringAfterPixels(tmpString + offset, &standardFont, SCREEN_WIDTH - 1, false, true);
+        if(*remainingString != 0) {
+          *remainingString = 0;
           thereIsANextLine = true;
         }
         bytesProcessed += stringByteLength(tmpString + offset);
@@ -3135,13 +3137,15 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
           uint32_t tmp2 = 0;
         #endif //VERBOSE_SCREEN
         while(thereIsANextLine) {
+          char *remainingString;
           xcopy(tmpString + offset, tmpString + bytesProcessed, stringByteLength(tmpString + bytesProcessed) + 1);
           thereIsANextLine = false;
           #if defined (VERBOSE_SCREEN) && defined (PC_BUILD)
             tmp =0;
           #endif //VERBOSE_SCREEN
-          while(stringWidth(tmpString + offset, &standardFont, false, true) >= SCREEN_WIDTH) {
-            tmpString[offset + stringLastGlyph(tmpString + offset)] = 0;
+          remainingString = stringAfterPixels(tmpString + offset, &standardFont, SCREEN_WIDTH, false, true);
+          if(*remainingString != 0) {
+            *remainingString = 0;
             thereIsANextLine = true;
             #if defined (VERBOSE_SCREEN) && defined (PC_BUILD)
               printf("^^^B %4u %4u",tmp2, tmp++);
