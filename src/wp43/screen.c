@@ -2256,7 +2256,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             *aimw = 0;
 
             if(stringWidth(tmpString + 1500 + w, &standardFont, true, true) >= SCREEN_WIDTH - 8) { // 8 is the standard font cursor width
-              btnClicked(NULL, "16"); // back space
+              fnKeyBackspace(0); // back space
             }
             else {
               showString(tmpString, &standardFont, 1, Y_POSITION_OF_NIM_LINE - 3, vmNormal, true, true);
@@ -3432,7 +3432,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
       *nimw = 0;
 
       if(stringWidth(tmpString + 1500 + w, &standardFont, true, true) + wLastBaseStandard > SCREEN_WIDTH - 8) { // 8 is the standard font cursor width
-        btnClicked(NULL, "16"); // back space
+        addItemToNimBuffer(ITM_BACKSPACE);
       }
       else {
         showString(tmpString, &standardFont, 0, Y_POSITION_OF_NIM_LINE - 3, vmNormal, true, true);
