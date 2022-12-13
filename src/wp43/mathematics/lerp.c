@@ -140,7 +140,7 @@ void fnLERP(uint16_t unusedButMandatoryParameter) {
     }
 
     case dtShortInteger: {
-      convertShortIntegerRegisterToReal(REGISTER_Y, &aReal, &ctxtReal39);
+      convertShortIntegerRegisterToReal(REGISTER_Z, &aReal, &ctxtReal39);
       break;
     }
 
@@ -169,6 +169,7 @@ void fnLERP(uint16_t unusedButMandatoryParameter) {
   if (!saveLastX())
     return;
 
+  adjustResult(REGISTER_X, false, true, REGISTER_X, REGISTER_Y, REGISTER_Z);
   fnDrop(0);
   fnDrop(0);
 
