@@ -86,6 +86,7 @@
   #include "log2.h"
   #include "logxy.h"
   #include "lnbeta.h"
+  #include "lerp.h"
   #include "beta.h"
   #include "magnitude.h"
   #include "mant.h"

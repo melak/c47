@@ -40,6 +40,7 @@
 #include "keyboard.h"
 #include "c43Extensions/keyboardTweak.h"
 #include "logicalOps/logicalOps.h"
+#include "mathematics/lerp.h"
 #include "mathematics/mathematics.h"
 #include "mathematics/median.h"
 #include "mathematics/matrix.h"
@@ -629,6 +630,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnUpperQuartileXY           (uint16_t unusedButMandatoryParameter) {}
   void fnMADXY                     (uint16_t unusedButMandatoryParameter) {}
   void fnIQRXY                     (uint16_t unusedButMandatoryParameter) {}
+  void fnLERP                      (uint16_t unusedButMandatoryParameter) {}
   void fnPlotCloseSmi              (uint16_t unusedButMandatoryParameter) {}
   void fnMaskl                     (uint16_t unusedButMandatoryParameter) {}
   void fnMaskr                     (uint16_t unusedButMandatoryParameter) {}
