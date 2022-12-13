@@ -2136,7 +2136,7 @@
 #define MNU_REGR                    2080
 #define MNU_MODEL                   2081
 #define ITM_PERCENTILE              2082
-#define ITM_INTERPOLATE             2083
+#define ITM_LERP                    2083
 
 #define LAST_ITEM                   2084
 
