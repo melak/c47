@@ -126,7 +126,7 @@ void crossRealCplx(void) {
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
-  real34ToReal(const34_0, &yImag);
+  realZero(&yImag);
 
   crossCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
 
@@ -149,7 +149,7 @@ void crossLonICplx(void) {
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
   convertLongIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal39);
-  real34ToReal(const34_0, &yImag);
+  realZero(&yImag);
 
   crossCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
 
@@ -172,7 +172,7 @@ void crossShoICplx(void) {
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
   convertShortIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal39);
-  real34ToReal(const34_0, &yImag);
+  realZero(&yImag);
 
   crossCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
 
@@ -215,7 +215,7 @@ void crossCplxReal(void) {
   real_t rReal;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
-  real34ToReal(const34_0, &xImag);
+  realZero(&xImag);
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &yImag);
@@ -237,7 +237,7 @@ void crossCplxLonI(void) {
   real_t rReal;
 
   convertLongIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal39);
-  real34ToReal(const34_0, &xImag);
+  realZero(&xImag);
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &yImag);
@@ -260,7 +260,7 @@ void crossCplxShoI(void) {
   real_t rReal;
 
   convertShortIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal39);
-  real34ToReal(const34_0, &xImag);
+  realZero(&xImag);
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &yImag);
