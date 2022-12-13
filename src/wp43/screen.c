@@ -1541,7 +1541,7 @@ void findOffset(void){             //C43 JM
         ) 
      {
        if((int32_t)stringWidthC43(aimBuffer + displayAIMbufferoffset, combinationFonts ,nocompress, true, true) 
-        > SCREEN_WIDTH * lines - 25) {
+        > SCREEN_WIDTH * lines - 45) {
          displayAIMbufferoffset = stringNextGlyph(aimBuffer, displayAIMbufferoffset);
        //printf(">>> displayAIMbufferoffset: %d, stringByteLength(aimBuffer)=%d\n",displayAIMbufferoffset,stringByteLength(aimBuffer));
        }
@@ -1552,7 +1552,7 @@ void findOffset(void){             //C43 JM
 void incOffset(void){             //C43 JM
    if( (int32_t)stringWidthC43(aimBuffer + displayAIMbufferoffset, combinationFonts ,nocompress, true, true) -
        (int32_t)stringWidthC43(aimBuffer + T_cursorPos, combinationFonts ,nocompress, true, true) 
-       > SCREEN_WIDTH * lines - 25
+       > SCREEN_WIDTH * lines - 45
       )
    {
      displayAIMbufferoffset = stringNextGlyph(aimBuffer, displayAIMbufferoffset);
