@@ -2133,8 +2133,9 @@
 #define ITM_MAD                     2077
 #define ITM_IQR                     2078
 #define ITM_SIGMARANGE              2079
+#define ITM_LERP                    2080
 
-#define LAST_ITEM                   2080
+#define LAST_ITEM                   2081
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

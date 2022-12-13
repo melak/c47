@@ -108,6 +108,7 @@ wp43_src = files(
   'mathematics/iteration.c',
   'mathematics/ixyz.c',
   'mathematics/lcm.c',
+  'mathematics/lerp.c',
   'mathematics/ln.c',
   'mathematics/lnPOne.c',
   'mathematics/lnbeta.c',

@@ -40,6 +40,7 @@
 #include "keyboard.h"
 #include "c43Extensions/keyboardTweak.h"
 #include "logicalOps/logicalOps.h"
+#include "mathematics/lerp.h"
 #include "mathematics/mathematics.h"
 #include "mathematics/median.h"
 #include "mathematics/matrix.h"
@@ -629,6 +630,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnUpperQuartileXY           (uint16_t unusedButMandatoryParameter) {}
   void fnMADXY                     (uint16_t unusedButMandatoryParameter) {}
   void fnIQRXY                     (uint16_t unusedButMandatoryParameter) {}
+  void fnLERP                      (uint16_t unusedButMandatoryParameter) {}
   void fnPlotCloseSmi              (uint16_t unusedButMandatoryParameter) {}
   void fnMaskl                     (uint16_t unusedButMandatoryParameter) {}
   void fnMaskr                     (uint16_t unusedButMandatoryParameter) {}
@@ -3097,6 +3099,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2077 */  { fnMADXY,                      NOPARAM,                     "MAD",                                         "MAD",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2078 */  { fnIQRXY,                      NOPARAM,                     "IQR",                                         "IQR",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2079 */  { fnRangeXY,                    NOPARAM,                     STD_SIGMA "RANGE",                             STD_SIGMA "RANGE",                             (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 2080 */  { fnLERP,                       NOPARAM,                     "LERP",                                        "LERP",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 
-/* 2080 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
+/* 2081 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
 };
