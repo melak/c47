@@ -3101,7 +3101,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2080 */  { itemToBeCoded,                NOPARAM,                     "REGR",                                        "REGR",                                        (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2081 */  { itemToBeCoded,                NOPARAM,                     "MODEL",                                       "MODEL",                                       (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2082 */  { itemToBeCoded,                NOPARAM,                     "x%" STD_SUB_I STD_SUB_L STD_SUB_E,            "x%" STD_SUB_I STD_SUB_L STD_SUB_E,            (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 2083 */  { itemToBeCoded,                NOPARAM,                     "LERP",                                        "LERP",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 2083 */  { fnLERP,                       NOPARAM,                     "LINPOL",                                      "LINPOL",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 
 /* 2084 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
 };
