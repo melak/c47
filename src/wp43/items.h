@@ -2135,8 +2135,10 @@
 #define ITM_SIGMARANGE              2079
 #define MNU_REGR                    2080
 #define MNU_MODEL                   2081
+#define ITM_PERCENTILE              2082
+#define ITM_INTERPOLATE             2083
 
-#define LAST_ITEM                   2082
+#define LAST_ITEM                   2084
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

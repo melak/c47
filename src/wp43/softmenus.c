@@ -136,7 +136,8 @@ TO_QSPI const int16_t menu_TRG[]         = { ITM_DEG,                       ITM_
 //D47 ^^
 
 TO_QSPI const int16_t menu_FIN[]         = { ITM_PC,                        ITM_PCMRR,                  ITM_PCT,                  ITM_PCSIGMA,           ITM_PCPMG,                   -MNU_TVM,                     
-                                             ITM_DELTAPC,                   ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };    //JM Added D%
+                                             ITM_DELTAPC,                   ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                          //JM Added D%
+                                             ITM_INTERPOLATE,               ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_CLFALL                    };
 
 /*      Menu name                           <----------------------------------------------------------------------------- 6 functions ---------------------------------------------------------------------------->  */
 /*                                          <---------------------------------------------------------------------- 6 f shifted functions ------------------------------------------------------------------------->  */
@@ -288,10 +289,10 @@ TO_QSPI const int16_t menu_PFN2[]        = { ITM_MENU,                      ITM_
 
 TO_QSPI const int16_t menu_STAT[]        = { ITM_SIGMAPLUS,                 ITM_XBAR,                   ITM_STDDEVWEIGHTED,       ITM_STDDEV,            ITM_SM,                      ITM_NSIGMA,
                                              ITM_SIGMAMINUS,                ITM_XW,                     ITM_SW,                   ITM_STDDEVPOP,         ITM_SMW,                     ITM_XH,
-                                             ITM_CLSIGMA,                   ITM_XG,                     ITM_SCATTFACT,            ITM_SCATTFACTp,        ITM_SCATTFACTm,              ITM_XRMS,                                                                           
+                                             ITM_CLSIGMA,                   ITM_XG,                     ITM_SCATTFACT,            ITM_SCATTFACTp,        ITM_SCATTFACTm,              ITM_XRMS,
 
                                              ITM_XMIN,                      ITM_LOWER_QUARTILE,         ITM_MEDIAN,               ITM_UPPER_QUARTILE,    ITM_XMAX,                    ITM_NSIGMA,
-                                             ITM_NULL,                      ITM_MAD,                    ITM_IQR,                  ITM_SIGMARANGE,        ITM_NULL,                    ITM_SUM,
+                                             ITM_PERCENTILE,                ITM_MAD,                    ITM_IQR,                  ITM_NULL,              ITM_SIGMARANGE,              ITM_SUM,
                                             -MNU_REGR,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_PLOT_STAT,              -MNU_HIST               };
 
 
