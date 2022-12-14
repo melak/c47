@@ -265,43 +265,17 @@ TO_QSPI const int16_t menu_PFN2[]        = { ITM_MENU,                      ITM_
                                              ITM_SDL,                       ITM_SDR,                    ITM_MSG,                  ITM_NOP,               ITM_NULL,                    ITM_RTNP1,
                                              ITM_BACK,                      ITM_CASE,                   ITM_SKIP,                 ITM_AGRAPH,            ITM_PIXEL,                   ITM_POINT                     };
 
-
-#if defined SAVE_SPACE_DM42
-  #define ITM_D0 ITM_NULL
-  #define ITM_D1 ITM_NULL
-  #define ITM_D2 ITM_NULL
-#else
-  #define ITM_D0 ITM_STATDEMO0
-  #define ITM_D1 ITM_STATDEMO1
-  #define ITM_D2 ITM_STATDEMO2
-#endif
-#if defined SAVE_SPACE_DM42_1
-  #define ITM_D3 ITM_NULL
-  #define ITM_D4 ITM_NULL
-  #define ITM_D5 ITM_NULL
-#else
-  #define ITM_D3 ITM_STATDEM105
-  #define ITM_D4 ITM_STATDEM107
-  #define ITM_D5 ITM_STATDEM109
-#endif
-
-
 TO_QSPI const int16_t menu_STAT[]        = { ITM_SIGMAPLUS,                 ITM_XBAR,                   ITM_STDDEVWEIGHTED,       ITM_STDDEV,            ITM_SM,                      ITM_NSIGMA,
                                              ITM_SIGMAMINUS,                ITM_XW,                     ITM_SW,                   ITM_STDDEVPOP,         ITM_SMW,                     ITM_XH,
                                              ITM_CLSIGMA,                   ITM_XG,                     ITM_SCATTFACT,            ITM_SCATTFACTp,        ITM_SCATTFACTm,              ITM_XRMS,
 
                                              ITM_XMIN,                      ITM_LOWER_QUARTILE,         ITM_MEDIAN,               ITM_UPPER_QUARTILE,    ITM_XMAX,                    ITM_NSIGMA,
                                              ITM_PERCENTILE,                ITM_MAD,                    ITM_IQR,                  ITM_NULL,              ITM_SIGMARANGE,              ITM_SUM,
-                                            -MNU_REGR,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_PLOT_STAT,              -MNU_HIST               };
-
+                                            -MNU_REGR,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_PLOT_STAT,              -MNU_HIST                      };
 
 TO_QSPI const int16_t menu_REGR[]        = { ITM_LR,                        ITM_CORR,                   ITM_SXY,                  ITM_COV,               ITM_XCIRC,                   ITM_YCIRC,
-                                             ITM_SA,                        ITM_NULL,                   ITM_NULL,                 -MNU_MODEL,            ITM_PLOT_LR,                 ITM_PLOT
+                                             ITM_SA,                        ITM_NULL,                   ITM_NULL,                 -MNU_MODEL,            ITM_PLOT_LR,                 ITM_PLOT                      };
 
-#if !(defined(SAVE_SPACE_DM42) && defined (SAVE_SPACE_DM42_1))
-                                            , ITM_D0,                        ITM_D1,                     ITM_D2,                   ITM_D3,                ITM_D4,                      ITM_D5
-#endif
-                                                                                                                                                                                                                    };
 TO_QSPI const int16_t menu_MODEL[]       = { ITM_T_LINF,                    ITM_T_EXPF,                ITM_T_LOGF,                ITM_T_POWERF,          ITM_T_ROOTF,                 ITM_PLOT_LR,
                                              ITM_T_HYPF,                    ITM_T_PARABF,              ITM_T_CAUCHF,              ITM_T_GAUSSF,          ITM_T_ORTHOF,                ITM_LR,
                                              ITM_RSTF,                      ITM_SETALLF,               ITM_BESTF,                 ITM_BESTFQ,            ITM_NULL,                    ITM_NULL                      };

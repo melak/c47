@@ -112,12 +112,6 @@ int16_t screen_window_y(float y_min, float y, float y_max);
   #endif // !TESTSUITE_BUILD
 
 void    statGraphReset     (void);
-void    fnStatDemo0        (uint16_t unusedButMandatoryParameter);
-void    fnStatDemo1        (uint16_t unusedButMandatoryParameter);
-void    fnStatDemo2        (uint16_t unusedButMandatoryParameter);
-void    fnStatDemo105      (uint16_t unusedButMandatoryParameter);
-void    fnStatDemo107      (uint16_t unusedButMandatoryParameter);
-void    fnStatDemo109      (uint16_t unusedButMandatoryParameter);
 void    graphPlotstat      (uint16_t selection);
 void    graphDrawLRline    (uint16_t selection);
 //void    fnPlotClose        (uint16_t unusedButMandatoryParameter);
