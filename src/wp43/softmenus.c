@@ -1321,11 +1321,8 @@ void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, 
     lcd_fill_rect(x1 + 1, y1 + 1, min(x2, SCREEN_WIDTH) - x1 - 1, min(y2, SCREEN_HEIGHT) - y1 - 1, (videoMode == vmNormal ? LCD_SET_VALUE : LCD_EMPTY_VALUE));
 
     xcopy(l, label, stringByteLength(label) + 1);
-    w = stringWidth(l, &standardFont, false, false);
-    while(w > (rightMostSlot ? 65 : 66)) {
-      l[stringLastGlyph(l)] = 0;
-      w = stringWidth(l, &standardFont, false, false);
-    }
+    char *lw = stringAfterPixels(l, &standardFont, (rightMostSlot ? 65 : 66), false, false);
+    *lw = 0;
 
 //continue with trimmed label
   w = stringWidth(figlabel(l, showText,showValue), &standardFont, false, false);                      //JM & dr vv
