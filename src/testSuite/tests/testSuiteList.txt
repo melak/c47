@@ -369,4 +369,4 @@ ellipticFphi
 ellipticEphi
 jacobi_zeta
 
-LERP
+LINPOL
