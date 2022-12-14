@@ -15,10 +15,10 @@
  */
 
 /********************************************//**
- * \file lerp.c
+ * \file linpol.c
  ***********************************************/
 
-#include "mathematics/lerp.h"
+#include "mathematics/linpol.h"
 
 #include "constantPointers.h"
 #include "debug.h"
@@ -37,11 +37,11 @@
  * p = 0 returns a, p = 1 returns b.
  *
  * There are two basic formulae for this but both have issues.
- *     lerp = a + p * (b - a) has cancellation issues but is monotonic
- *     lerp = (1 - p) * a + p * b is only monotonic if a * b < 0
+ *     linpol = a + p * (b - a) has cancellation issues but is monotonic
+ *     linpol = (1 - p) * a + p * b is only monotonic if a * b < 0
  * we work in high precision and special case both
  */
-void lerp(const real_t *a, const real_t *b, const real_t *p, real_t *res) {
+void linpol(const real_t *a, const real_t *b, const real_t *p, real_t *res) {
   real_t x;
 
   if (realIsNaN(a) || realIsNaN(b) || realIsNaN(p) || realIsInfinite(p)) {
@@ -59,13 +59,13 @@ void lerp(const real_t *a, const real_t *b, const real_t *p, real_t *res) {
   } else if (realCompareEqual(a, b)) {
     realCopy(a, res);           // both same, return one
   } else if (realIsNegative(a) != realIsNegative(b)) {
-    /* a * b < 0, use lerp = (1 - p) * a + p * b */
+    /* a * b < 0, use linpol = (1 - p) * a + p * b */
     realCopy(p, &x);
     realChangeSign(&x);
     realFMA(&x, a, a, &x, &ctxtReal75);   // a - p * a
     realFMA(p, b, &x, res, &ctxtReal75);  // p * b + (a - p * a)
   } else {
-    /* a * b > 0, use lerp = a + p * (b - a) */
+    /* a * b > 0, use linpol = a + p * (b - a) */
     realSubtract(b, a, &x, &ctxtReal75);
     realFMA(&x, p, a, res, &ctxtReal75);
   }
@@ -78,7 +78,7 @@ void lerp(const real_t *a, const real_t *b, const real_t *p, real_t *res) {
  * \param[in] unusedButMandatoryParameter uint16_t
  * \return void
  ***********************************************/
-void fnLERP(uint16_t unusedButMandatoryParameter) {
+void fnLINPOL(uint16_t unusedButMandatoryParameter) {
   real_t aReal, bReal, aImag, bImag, p, rReal, rImag;
   bool_t realCoefs = true;
 
@@ -94,8 +94,8 @@ void fnLERP(uint16_t unusedButMandatoryParameter) {
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "cannot LERP with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
-        moreInfoOnError("In function fnLERP:", errorMessage, NULL, NULL);
+        sprintf(errorMessage, "cannot LINPOL with %s in X", getRegisterDataTypeName(REGISTER_X, true, false));
+        moreInfoOnError("In function fnLINPOL:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
@@ -127,8 +127,8 @@ void fnLERP(uint16_t unusedButMandatoryParameter) {
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Y);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "cannot LERP with %s in Y", getRegisterDataTypeName(REGISTER_Y, true, false));
-        moreInfoOnError("In function fnLERP:", errorMessage, NULL, NULL);
+        sprintf(errorMessage, "cannot LINPOL with %s in Y", getRegisterDataTypeName(REGISTER_Y, true, false));
+        moreInfoOnError("In function fnLINPOL:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
@@ -160,8 +160,8 @@ void fnLERP(uint16_t unusedButMandatoryParameter) {
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_Z);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "cannot LERP with %s in Z", getRegisterDataTypeName(REGISTER_Z, true, false));
-        moreInfoOnError("In function fnLERP:", errorMessage, NULL, NULL);
+        sprintf(errorMessage, "cannot LINPOL with %s in Z", getRegisterDataTypeName(REGISTER_Z, true, false));
+        moreInfoOnError("In function fnLINPOL:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
@@ -174,12 +174,12 @@ void fnLERP(uint16_t unusedButMandatoryParameter) {
   fnDrop(NOPARAM);
   fnDrop(NOPARAM);
 
-  lerp(&aReal, &bReal, &p, &rReal);
+  linpol(&aReal, &bReal, &p, &rReal);
   if (realCoefs) {
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   } else {
-    lerp(&aImag, &bImag, &p, &rImag);
+    linpol(&aImag, &bImag, &p, &rImag);
     reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
     convertRealToReal34ResultRegister(&rReal, REGISTER_X);
     convertRealToImag34ResultRegister(&rImag, REGISTER_X);

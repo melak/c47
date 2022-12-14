@@ -26,7 +26,7 @@
 #include "flags.h"
 #include "items.h"
 #include "mathematics/comparisonReals.h"
-#include "mathematics/lerp.h"
+#include "mathematics/linpol.h"
 #include "matrix.h"
 #include "memory.h"
 #include "registers.h"
@@ -72,7 +72,7 @@ static void computePercentileSorted(real_t *data, uint16_t n, const real_t *per,
     realCopy(data, percentile);
   else {
     realSubtract(&t, &p, &c, &ctxtReal39);  // FP(position)
-    lerp(data + posn, data + posn + 1, &c, percentile);
+    linpol(data + posn, data + posn + 1, &c, percentile);
   }
 }
 
