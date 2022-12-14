@@ -3108,10 +3108,12 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
           printf("^^^^$$ %s %d\n",tmpString + 2100,stringWidthC43(tmpString + 2100, stdnumEnlarge, nocompress, false, true));
         #endif //VERBOSE_SCREEN
         while(thereIsANextLine) {
+          char *strw;
           xcopy(tmpString + offset, tmpString + bytesProcessed, stringByteLength(tmpString + bytesProcessed) + 1);
           thereIsANextLine = false;
-          while(stringWidthC43(tmpString + offset, stdnumEnlarge, nocompress, false, true) >= SCREEN_WIDTH) {
-            tmpString[offset + stringLastGlyph(tmpString + offset)] = 0;
+          strw = stringAfterPixelsC43(tmpString + offset, stdnumEnlarge, nocompress, SCREEN_WIDTH - 1, false, true);
+          if(*strw != 0) {
+            *strw = 0;
             thereIsANextLine = true;
             #if defined (VERBOSE_SCREEN) && defined (PC_BUILD)
               printf("^^^A %4u",tmp++);

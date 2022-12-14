@@ -1224,9 +1224,10 @@ uint8_t  displaymode = stdNoEnlarge;
   uint8_t  compressString = 0;                                                              //JM compressString
   uint8_t  raiseString = 0;                                                                 //JM compressString
 
-  uint32_t showString(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
+  static uint32_t _doShowString(const char *string, const font_t *font, uint32_t x, uint32_t y, char **resStr, uint32_t width, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
     uint16_t ch, lg;
     bool_t   slc, sec;
+    uint32_t prevX = x;
 
     lg = stringByteLength(string);
 
@@ -1250,10 +1251,36 @@ uint8_t  displaymode = stdNoEnlarge;
       }
 
       x = showGlyphCode(charCodeFromString(string, &ch), font, x, y - raiseString, videoMode, slc, sec) - compressString;
+      if(resStr) { // for stringAfterPixelsC43
+        if(x > width) {
+          if(!showEndingCols) {
+            ch = *resStr - string;
+            x = showGlyphCode(charCodeFromString(string, &ch), font, prevX, y - raiseString, videoMode, true, false) - compressString;
+            if(x <= width) {
+              *resStr = (char *)(string + ch);
+            }
+          }
+          break;
+        }
+        else {
+          *resStr = (char *)(string + ch);
+          prevX = x;
+        }
+      }
     }
     compressString = 0;        //JM compressString
     raiseString = 0;
     return x;
+  }
+
+  uint32_t showString(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
+    return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols);
+  }
+
+  static char *_stringAfterPixels(const char *string, const font_t *font, uint32_t width, bool_t showLeadingCols, bool_t showEndingCols) {
+    char *resStr = (char *)string;
+    _doShowString(string, font, 0, 0, &resStr, width, vmNormal, showLeadingCols, showEndingCols);
+    return resStr;
   }
 
 
@@ -1299,6 +1326,25 @@ uint8_t  displaymode = stdNoEnlarge;
     
     miniC = 0; maxiC = 0; combinationFonts = combinationFontsM; compressString = 0; noShow = false; displaymode = stdNoEnlarge;
     return x;
+  }
+
+  char *stringAfterPixelsC43(const char *string, int mode, int comp, uint32_t width, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows) {
+    int combinationFontsM = combinationFonts;
+    char *resStr = (char *)string;
+    if(combinationFontsDefault == 0) mode = stdNoEnlarge;
+    
+    noShow = true;
+    compressString = comp;
+    displaymode = mode;             // miniC and maxiC to be depreciated in favour of displaymode
+    if(mode == stdNoEnlarge)         { miniC = 0 ; maxiC = 0; combinationFonts = combinationFontsDefault; resStr = _stringAfterPixels(string, &standardFont, width, withLeadingEmptyRows, withEndingEmptyRows );    } else
+      if(mode == stdEnlarge)         { miniC = 0 ; maxiC = 1; combinationFonts = stdEnlarge;              resStr = _stringAfterPixels(string, &standardFont, width, withLeadingEmptyRows, withEndingEmptyRows );    } else
+        if(mode == stdnumEnlarge)    { miniC = 0 ; maxiC = 1; combinationFonts = stdnumEnlarge;           resStr = _stringAfterPixels(string, &numericFont , width, withLeadingEmptyRows, withEndingEmptyRows );    } else
+           if(mode == numSmall)      { miniC = 1 ; maxiC = 0; combinationFonts = combinationFontsDefault; resStr = _stringAfterPixels(string, &numericFont , width, withLeadingEmptyRows, withEndingEmptyRows );    } else
+             if(mode == numHalf)     { miniC = 0 ; maxiC = 1; combinationFonts = numHalf;                 resStr = _stringAfterPixels(string, &numericFont , width, withLeadingEmptyRows, withEndingEmptyRows );    } else
+               resStr = (char *)string;
+    
+    miniC = 0; maxiC = 0; combinationFonts = combinationFontsM; compressString = 0; noShow = false; displaymode = stdNoEnlarge;
+    return resStr;
   }
 
 
@@ -1533,20 +1579,15 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
 
 
 void findOffset(void){             //C43 JM
-   displayAIMbufferoffset = 0;
-   int16_t cnt = 0;
-   while(
-        displayAIMbufferoffset < stringByteLength(aimBuffer) &&
-        cnt++ < 150
-        ) 
-     {
-       if((int32_t)stringWidthC43(aimBuffer + displayAIMbufferoffset, combinationFonts ,nocompress, true, true) 
-        > SCREEN_WIDTH * lines - 45) {
-         displayAIMbufferoffset = stringNextGlyph(aimBuffer, displayAIMbufferoffset);
-       //printf(">>> displayAIMbufferoffset: %d, stringByteLength(aimBuffer)=%d\n",displayAIMbufferoffset,stringByteLength(aimBuffer));
-       }
-     }
+   int32_t strWidth = (int32_t)stringWidthC43(aimBuffer, combinationFonts, nocompress, true, true);
+   strWidth -= SCREEN_WIDTH * lines - 45;
+   if(strWidth < 0) {
+      strWidth = 0;
    }
+   char *offset = stringAfterPixelsC43(aimBuffer, combinationFonts, nocompress, strWidth, true, true);
+   displayAIMbufferoffset = offset - aimBuffer;
+   incOffset();
+}
 
 
 void incOffset(void){             //C43 JM
