@@ -954,14 +954,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnPlotReset                (uint16_t unusedButMandatoryParameter) {}
   void fnCurveFittingReset        (uint16_t unusedButMandatoryParameter) {}
   void fnCurveFitting_T           (uint16_t unusedButMandatoryParameter) {}
-  void fnStatDemo0                (uint16_t unusedButMandatoryParameter) {} //Temporary
-  void fnStatDemo1                (uint16_t unusedButMandatoryParameter) {} //Temporary
-  void fnStatDemo2                (uint16_t unusedButMandatoryParameter) {} //Temporary
-  void fnStatDemo105              (uint16_t unusedButMandatoryParameter) {} //Temporary
-  void fnStatDemo107              (uint16_t unusedButMandatoryParameter) {} //Temporary
-  void fnStatDemo109              (uint16_t unusedButMandatoryParameter) {} //Temporary
-  void fnSHIFTf                   (uint16_t unusedButMandatoryParameter) {} //Temporary
-  void fnSHIFTg                   (uint16_t unusedButMandatoryParameter) {} //Temporary
+  void fnSHIFTf                   (uint16_t unusedButMandatoryParameter) {}
+  void fnSHIFTg                   (uint16_t unusedButMandatoryParameter) {}
   void graph_stat                 (uint16_t unusedButMandatoryParameter) {}
   void fnSafeReset                (uint16_t unusedButMandatoryParameter) {}
   void fnSetBCD                   (uint16_t unusedButMandatoryParameter) {}
@@ -3062,12 +3056,12 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2040 */  { graph_stat,                   NOPARAM,                     "PLSTAT",                                      "PLSTAT",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2041 */  { fnJM,                         47,                          "",                                            "M" STD_RIGHT_ARROW "zyx",                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2042 */  { fnPlotReset,                  NOPARAM,                     "PLTRST",                                      "PLTRST",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 2043 */  { fnStatDemo0,                  NOPARAM,                     "",                                             "DEMO0"                ,                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
-/* 2044 */  { fnStatDemo1,                  NOPARAM,                     "",                                             "DEMO1"                ,                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
-/* 2045 */  { fnStatDemo2,                  NOPARAM,                     "",                                             "DEMO2"                ,                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
-/* 2046 */  { fnStatDemo105,                NOPARAM,                     "",                                            "DEM105",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2047 */  { fnStatDemo107,                NOPARAM,                     "",                                            "DEM107",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2048 */  { fnStatDemo109,                NOPARAM,                     "",                                            "DEM109",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2043 */  { itemToBeCoded,                NOPARAM,                     "2043",                                        "2043",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2044 */  { itemToBeCoded,                NOPARAM,                     "2044",                                        "2044",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2045 */  { itemToBeCoded,                NOPARAM,                     "2045",                                        "2045",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2046 */  { itemToBeCoded,                NOPARAM,                     "2046",                                        "2046",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2047 */  { itemToBeCoded,                NOPARAM,                     "2047",                                        "2047",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2048 */  { itemToBeCoded,                NOPARAM,                     "2048",                                        "2048",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2049 */  { fnCurveFitting_T,             CF_EXPONENTIAL_FITTING_EX,   "ExpF",                                        "ExpF",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
 /* 2050 */  { fnCurveFitting_T,             CF_LINEAR_FITTING_EX,        "LinF",                                        "LinF",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
 /* 2051 */  { fnCurveFitting_T,             CF_LOGARITHMIC_FITTING_EX,   "LogF",                                        "LogF",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
