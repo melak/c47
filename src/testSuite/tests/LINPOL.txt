@@ -1,17 +1,17 @@
 ;*************************************************************
 ;*************************************************************
 ;**                                                         **
-;**                        LERP                           **
+;**                        LINPOL                           **
 ;**                                                         **
 ;*************************************************************
 ;*************************************************************
 In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
-Func: fnLERP
+Func: fnLINPOL
 
 
 
 ;=======================================
-; LERP(Long Integer, Long Integer, Real) --> Real
+; LINPOL(Long Integer, Long Integer, Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RZ=LonI:"10" RY=LonI:"20" RX=Real:"0.5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.5" RX=Real:"15.0"
@@ -22,19 +22,19 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-0.5" RX=Real:"5.0"
 
 
 ;=======================================
-; LERP(Time)
+; LINPOL(Time)
 ;=======================================
 
 
 
 ;=======================================
-; LERP(Date)
+; LINPOL(Date)
 ;=======================================
 
 
 
 ;=======================================
-; LERP(String) --> Error24
+; LINPOL(String) --> Error24
 ;=======================================
 In:  FL_ASLIFT=0 RX=Stri:"String test"
 Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
@@ -42,39 +42,39 @@ Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
 
 
 ;=======================================
-; LERP(Real Matrix)
+; LINPOL(Real Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; LERP(Complex Matrix)
+; LINPOL(Complex Matrix)
 ;=======================================
 
 
 
 ;=======================================
-; LERP(Short Integer, Short Integer, Real) --> Real
+; LINPOL(Short Integer, Short Integer, Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RZ=ShoI:"10#10" RY=ShoI:"20#10" RX=Real:"0.5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.5" RX=Real:"15.0"
 
 
 ;=======================================
-; LERP(Short Integer, Long Integer, Real) --> Real
+; LINPOL(Short Integer, Long Integer, Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RZ=ShoI:"10#10" RY=LonI:"20" RX=Real:"0.5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.5" RX=Real:"15.0"
 
 ;=======================================
-; LERP(Long Integer, Short Integer, Real) --> Real
+; LINPOL(Long Integer, Short Integer, Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RZ=LonI:"10" RY=ShoI:"20#10" RX=Real:"0.5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.5" RX=Real:"15.0"
 
 
 ;=======================================
-; LERP(Real) --> Real
+; LINPOL(Real) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RZ=Real:"10" RY=Real:"20" RX=Real:"0.5"
 Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"0.5" RX=Real:"15.0"
@@ -104,7 +104,7 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"-89.999999999988888888" RX=Real:"inf"
 
 
 ;=======================================
-; LERP(Complex, Complex, Real) --> Complex
+; LINPOL(Complex, Complex, Real) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RZ=Cplx:"10 i -10" RY=Cplx:"-10 i +10" RX=Real:"0.75"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"0.75" RX=Cplx:"-5 i 5"
@@ -115,14 +115,14 @@ Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"0.5" RX=Cplx:"0 i 0"
 
 
 ;=======================================
-; LERP(Complex, Real, Real) --> Complex
+; LINPOL(Complex, Real, Real) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RZ=Cplx:"10 i -10" RY=Real:"-10" RX=Real:"0.5"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"0.5" RX=Cplx:"0 i -5"
 
 
 ;=======================================
-; LERP(Real, Complex, Real) --> Complex
+; LINPOL(Real, Complex, Real) --> Complex
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RZ=Real:"10" RY=Cplx:"-10 i -10" RX=Real:"0.5"
 Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"0.5" RX=Cplx:"0 i -5"

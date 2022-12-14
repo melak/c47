@@ -15,17 +15,17 @@
  */
 
 /********************************************//**
- * \file lerp.h
+ * \file linpol.h
  ***********************************************/
  
-#if !defined(LERP_H)
-  #define LERP_H
+#if !defined(LINPOL_H)
+  #define LINPOL_H
 
   #include <stdint.h>
   #include "realType.h"
 
-  void lerp(const real_t *a, const real_t *b, const real_t *p, real_t *res);
+  void linpol(const real_t *a, const real_t *b, const real_t *p, real_t *res);
 
-  void fnLERP               (uint16_t unusedButMandatoryParameter);
+  void fnLINPOL             (uint16_t unusedButMandatoryParameter);
 
-#endif // !LERP_H
+#endif // !LINPOL_H

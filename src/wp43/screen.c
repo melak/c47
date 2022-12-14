@@ -1224,9 +1224,10 @@ uint8_t  displaymode = stdNoEnlarge;
   uint8_t  compressString = 0;                                                              //JM compressString
   uint8_t  raiseString = 0;                                                                 //JM compressString
 
-  uint32_t showString(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
+  static uint32_t _doShowString(const char *string, const font_t *font, uint32_t x, uint32_t y, char **resStr, uint32_t width, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
     uint16_t ch, lg;
     bool_t   slc, sec;
+    uint32_t prevX = x;
 
     lg = stringByteLength(string);
 
@@ -1250,10 +1251,43 @@ uint8_t  displaymode = stdNoEnlarge;
       }
 
       x = showGlyphCode(charCodeFromString(string, &ch), font, x, y - raiseString, videoMode, slc, sec) - compressString;
+      if(resStr) { // for stringAfterPixelsC43
+        if(x > width) {
+          if(!showEndingCols) {
+            uint32_t tmpX = x;
+            ch = *resStr - string;
+            x = showGlyphCode(charCodeFromString(string, &ch), font, prevX, y - raiseString, videoMode, true, false) - compressString;
+            if(x <= width) {
+              *resStr = (char *)(string + ch);
+            }
+            x = tmpX;
+          }
+          break;
+        }
+        else {
+          *resStr = (char *)(string + ch);
+          prevX = x;
+        }
+      }
     }
     compressString = 0;        //JM compressString
     raiseString = 0;
     return x;
+  }
+
+  uint32_t showString(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
+    return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols);
+  }
+
+  static char *_stringAfterPixels(const char *string, const font_t *font, uint32_t width, bool_t showLeadingCols, bool_t showEndingCols) {
+    char *resStr = (char *)string;
+    _doShowString(string, font, 0, 0, &resStr, width, vmNormal, showLeadingCols, showEndingCols);
+    return resStr;
+  }
+
+  static uint32_t _showStringWithLimit(const char *string, const font_t *font, uint32_t limitWidth, bool_t showLeadingCols, bool_t showEndingCols) {
+    char *resStr = (char *)string;
+    return _doShowString(string, font, 0, 0, &resStr, limitWidth, vmNormal, showLeadingCols, showEndingCols);
   }
 
 
@@ -1284,20 +1318,75 @@ uint8_t  displaymode = stdNoEnlarge;
 #endif //CLEARNAME
   
 
+  static void _setStringMode(int mode, int comp, const font_t **fontPtr) {
+    compressString = comp;
+    displaymode = mode;             // miniC and maxiC to be depreciated in favour of displaymode
+    switch(mode) {
+      case stdNoEnlarge:  { miniC = 0 ; maxiC = 0; combinationFonts = combinationFontsDefault; *fontPtr = &standardFont; break;}
+      case stdEnlarge:    { miniC = 0 ; maxiC = 1; combinationFonts = stdEnlarge;              *fontPtr = &standardFont; break;}
+      case stdnumEnlarge: { miniC = 0 ; maxiC = 1; combinationFonts = stdnumEnlarge;           *fontPtr = &numericFont;  break;}
+      case numSmall:      { miniC = 1 ; maxiC = 0; combinationFonts = combinationFontsDefault; *fontPtr = &numericFont;  break;}
+      case numHalf:       { miniC = 0 ; maxiC = 1; combinationFonts = numHalf;                 *fontPtr = &numericFont;  break;}
+      default:            {                                                                    *fontPtr = NULL;          break;}
+    }
+  }
+
+  static void _resetStringMode(void) {
+    miniC = 0; maxiC = 0; compressString = 0; noShow = false; displaymode = stdNoEnlarge;
+  }
+
   uint32_t showStringC43(const char *string, int mode, int comp, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols ) {
     int combinationFontsM = combinationFonts;
     if(combinationFontsDefault == 0) mode = stdNoEnlarge;
     
-    compressString = comp;
-    displaymode = mode;             // miniC and maxiC to be depreciated in favour of displaymode
-    if(mode == stdNoEnlarge)         { miniC = 0 ; maxiC = 0; combinationFonts = combinationFontsDefault; x = showString(string, &standardFont, x, y, videoMode, showLeadingCols, showEndingCols );    } else
-      if(mode == stdEnlarge)         { miniC = 0 ; maxiC = 1; combinationFonts = stdEnlarge;              x = showString(string, &standardFont, x, y, videoMode, showLeadingCols, showEndingCols );    } else
-        if(mode == stdnumEnlarge)    { miniC = 0 ; maxiC = 1; combinationFonts = stdnumEnlarge;           x = showString(string, &numericFont , x, y, videoMode, showLeadingCols, showEndingCols );    } else
-           if(mode == numSmall)      { miniC = 1 ; maxiC = 0; combinationFonts = combinationFontsDefault; x = showString(string, &numericFont , x, y, videoMode, showLeadingCols, showEndingCols );    } else
-             if(mode == numHalf)     { miniC = 0 ; maxiC = 1; combinationFonts = numHalf;                 x = showString(string, &numericFont , x, y, videoMode, showLeadingCols, showEndingCols );    } else
-               x = 0;
+    const font_t *font;
+    _setStringMode(mode, comp, &font);
+    if(font) {
+      x = showString(string, font, x, y, videoMode, showLeadingCols, showEndingCols );
+    }
+    else {
+      x = 0;
+    }
     
-    miniC = 0; maxiC = 0; combinationFonts = combinationFontsM; compressString = 0; noShow = false; displaymode = stdNoEnlarge;
+    combinationFonts = combinationFontsM; _resetStringMode();
+    return x;
+  }
+
+  char *stringAfterPixelsC43(const char *string, int mode, int comp, uint32_t width, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows) {
+    int combinationFontsM = combinationFonts;
+    char *resStr = (char *)string;
+    if(combinationFontsDefault == 0) mode = stdNoEnlarge;
+    
+    const font_t *font;
+    noShow = true;
+    _setStringMode(mode, comp, &font);
+    if(font) {
+      resStr = _stringAfterPixels(string, font, width, withLeadingEmptyRows, withEndingEmptyRows );
+    }
+    else {
+      resStr = (char *)string;
+    }
+    
+    combinationFonts = combinationFontsM; _resetStringMode();
+    return resStr;
+  }
+
+  uint32_t stringWidthWithLimitC43(const char *string, int mode, int comp, uint32_t limitWidth, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows) {
+    int combinationFontsM = combinationFonts;
+    uint32_t x = 0;
+    if(combinationFontsDefault == 0) mode = stdNoEnlarge;
+    
+    const font_t *font;
+    noShow = true;
+    _setStringMode(mode, comp, &font);
+    if(font) {
+      x = _showStringWithLimit(string, font, limitWidth, withLeadingEmptyRows, withEndingEmptyRows );
+    }
+    else {
+      x = 0;
+    }
+    
+    combinationFonts = combinationFontsM; _resetStringMode();
     return x;
   }
 
@@ -1314,31 +1403,31 @@ uint8_t  displaymode = stdNoEnlarge;
   #define line_h1 38
   const uint32_t line_h_offset = Y_POSITION_OF_REGISTER_T_LINE - 3;
 
-        uint32_t w = stringWidthC43(tmpString + offset, stdnumEnlarge, nocompress, true, true);
+        uint32_t w = stringWidthWithLimitC43(tmpString + offset, stdnumEnlarge, nocompress, SCREEN_WIDTH, true, true);
         if(w < SCREEN_WIDTH) {
           showStringC43(tmpString + offset, stdnumEnlarge, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
           goto gotoReturn;
         }
 
-        w = stringWidthC43(tmpString + offset, stdEnlarge, nocompress, true, true);
+        w = stringWidthWithLimitC43(tmpString + offset, stdEnlarge, nocompress, SCREEN_WIDTH, true, true);
         if(w < SCREEN_WIDTH) {
           showStringC43(tmpString + offset, stdEnlarge, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
           goto gotoReturn;
         }
 
-        w = stringWidthC43(tmpString + offset, stdNoEnlarge, nocompress, true, true);
+        w = stringWidthWithLimitC43(tmpString + offset, stdNoEnlarge, nocompress, SCREEN_WIDTH, true, true);
         if(w < SCREEN_WIDTH) {
           showStringC43(tmpString + offset, stdNoEnlarge, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
           goto gotoReturn;
         }
 
-        w = stringWidthC43(tmpString + offset, numSmall, nocompress, true, true);
+        w = stringWidthWithLimitC43(tmpString + offset, numSmall, nocompress, SCREEN_WIDTH, true, true);
         if(w < SCREEN_WIDTH) {
           showStringC43(tmpString + offset, numSmall, nocompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
           goto gotoReturn;
         }
 
-        w = stringWidthC43(tmpString + offset, numSmall, stdcompress, true, true);
+        w = stringWidthWithLimitC43(tmpString + offset, numSmall, stdcompress, SCREEN_WIDTH, true, true);
         if(w < SCREEN_WIDTH) {
           showStringC43(tmpString + offset, numSmall, stdcompress,  SCREEN_WIDTH - w, line_h_offset + line_h1 * _h1, vmNormal, true, true);
           goto gotoReturn;
@@ -1533,26 +1622,21 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
 
 
 void findOffset(void){             //C43 JM
-   displayAIMbufferoffset = 0;
-   int16_t cnt = 0;
-   while(
-        displayAIMbufferoffset < stringByteLength(aimBuffer) &&
-        cnt++ < 150
-        ) 
-     {
-       if((int32_t)stringWidthC43(aimBuffer + displayAIMbufferoffset, combinationFonts ,nocompress, true, true) 
-        > SCREEN_WIDTH * lines - 25) {
-         displayAIMbufferoffset = stringNextGlyph(aimBuffer, displayAIMbufferoffset);
-       //printf(">>> displayAIMbufferoffset: %d, stringByteLength(aimBuffer)=%d\n",displayAIMbufferoffset,stringByteLength(aimBuffer));
-       }
-     }
+   int32_t strWidth = (int32_t)stringWidthC43(aimBuffer, combinationFonts, nocompress, true, true);
+   strWidth -= SCREEN_WIDTH * lines - 45;
+   if(strWidth < 0) {
+      strWidth = 0;
    }
+   char *offset = stringAfterPixelsC43(aimBuffer, combinationFonts, nocompress, strWidth, true, true);
+   displayAIMbufferoffset = offset - aimBuffer;
+   incOffset();
+}
 
 
 void incOffset(void){             //C43 JM
    if( (int32_t)stringWidthC43(aimBuffer + displayAIMbufferoffset, combinationFonts ,nocompress, true, true) -
        (int32_t)stringWidthC43(aimBuffer + T_cursorPos, combinationFonts ,nocompress, true, true) 
-       > SCREEN_WIDTH * lines - 25
+       > SCREEN_WIDTH * lines - 45
       )
    {
      displayAIMbufferoffset = stringNextGlyph(aimBuffer, displayAIMbufferoffset);
@@ -2247,16 +2331,16 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             cursorFont = &standardFont;
           }
           else {
+            char *aimw;
             w = stringByteLength(aimBuffer) + 1;
             xcopy(tmpString,        aimBuffer, w);
             xcopy(tmpString + 1500, aimBuffer, w);
-            while(stringWidth(tmpString, &standardFont, true, true) >= SCREEN_WIDTH - 1) {
-              w = stringLastGlyph(tmpString);
-              tmpString[w] = 0;
-            }
+            aimw = stringAfterPixels(tmpString, &standardFont, SCREEN_WIDTH - 2, true, true);
+            w = aimw - tmpString;
+            *aimw = 0;
 
             if(stringWidth(tmpString + 1500 + w, &standardFont, true, true) >= SCREEN_WIDTH - 8) { // 8 is the standard font cursor width
-              btnClicked(NULL, "16"); // back space
+              fnKeyBackspace(0); // back space
             }
             else {
               showString(tmpString, &standardFont, 1, Y_POSITION_OF_NIM_LINE - 3, vmNormal, true, true);
@@ -2404,6 +2488,17 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
            }
+
+          else if(temporaryInformation == TI_PCTILEX_PCTILEY) {
+            if(regist == REGISTER_X) {
+              strcpy(prefix, "pctile" STD_SUB_x " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_Y) {
+              strcpy(prefix, "pctile" STD_SUB_y " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
 
           else if(temporaryInformation == TI_MEDIANX_MEDIANY) {
             if(regist == REGISTER_X) {
@@ -3046,7 +3141,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
        //JM REGISTER STRING LARGE FONTS
         #ifdef STACK_X_STR_LRG_FONT
           //This is for X
-          w = stringWidthC43(REGISTER_STRING_DATA(regist), stdnumEnlarge, nocompress, false, true);
+          w = stringWidthWithLimitC43(REGISTER_STRING_DATA(regist), stdnumEnlarge, nocompress, SCREEN_WIDTH, false, true);
           if(regist == REGISTER_X && w<SCREEN_WIDTH) {
             lineWidth = w; //slighly incorrect if special characters are there as well.
             showStringC43(REGISTER_STRING_DATA(regist), stdnumEnlarge, nocompress, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, false, true);
@@ -3055,8 +3150,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
           #ifdef STACK_X_STR_MED_FONT
             //This is for X
-            if(regist == REGISTER_X && stringWidthC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, false, true) < SCREEN_WIDTH) {
-              w = stringWidthC43(REGISTER_STRING_DATA(regist), numHalf,    nocompress, false, true);
+            if(regist == REGISTER_X && (w = stringWidthWithLimitC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH, false, true)) < SCREEN_WIDTH) {
               lineWidth = w;
               showStringC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, false, true);
             } else                                                                   //JM
@@ -3064,8 +3158,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
             #ifdef STACK_STR_MED_FONT
               //This is for Y, Z & T
-              if(regist >= REGISTER_Y && regist <= REGISTER_T && stringWidthC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, false, true) < SCREEN_WIDTH) {
-                w = stringWidthC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, false, true);
+              if(regist >= REGISTER_Y && regist <= REGISTER_T && (w = stringWidthWithLimitC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH, false, true)) < SCREEN_WIDTH) {
                 lineWidth = w;
                 showStringC43(REGISTER_STRING_DATA(regist), numHalf, nocompress, SCREEN_WIDTH - w, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, false, true);
               } else                                                                   //JM
@@ -3077,12 +3170,12 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
           w = stringWidth(REGISTER_STRING_DATA(regist), &standardFont, false, true);
 
           if(w >= SCREEN_WIDTH - prefixWidth) {
+            char *tmpStrW;
             if(regist == REGISTER_X || (temporaryInformation == TI_VIEW && origRegist == REGISTER_T)) {
               xcopy(tmpString, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
-              do {
-                tmpString[stringLastGlyph(tmpString)] = 0;
-                w = stringWidth(tmpString, &standardFont, false, true);
-              } while(w >= SCREEN_WIDTH - prefixWidth);
+              tmpStrW = stringAfterPixels(tmpString, &standardFont, SCREEN_WIDTH - prefixWidth - 1, false, true);
+              *tmpStrW = 0;
+              w = stringWidth(tmpString, &standardFont, false, true);
               if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
                 showString(tmpString, &standardFont, prefixWidth     , Y_POSITION_OF_REGISTER_T_LINE - 3, vmNormal, false, true);
               }
@@ -3094,12 +3187,9 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
               xcopy(tmpString, REGISTER_STRING_DATA(regist) + w, stringByteLength(REGISTER_STRING_DATA(regist) + w) + 1);
               w = stringWidth(tmpString, &standardFont, false, true);
               if(w >= SCREEN_WIDTH - prefixWidth) {
-                do {
-                  tmpString[stringLastGlyph(tmpString)] = 0;
-                  w = stringWidth(tmpString, &standardFont, false, true);
-                } while(w >= SCREEN_WIDTH - prefixWidth - 14); // 14 is the width of STD_ELLIPSIS
-                xcopy(tmpString + stringByteLength(tmpString), STD_ELLIPSIS, 3);
-                w += 14;
+                tmpStrW = stringAfterPixels(tmpString, &standardFont, SCREEN_WIDTH - prefixWidth - 14 - 1, false, true); // 14 is the width of STD_ELLIPSIS
+                xcopy(tmpStrW, STD_ELLIPSIS, 3);
+                w = stringWidth(tmpString, &standardFont, false, true);
               }
               if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) {
                 showString(tmpString, &standardFont, prefixWidth     , Y_POSITION_OF_REGISTER_T_LINE + 18, vmNormal, false, true);
@@ -3110,12 +3200,9 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             }
             else {
               xcopy(tmpString, REGISTER_STRING_DATA(regist), stringByteLength(REGISTER_STRING_DATA(regist)) + 1);
-              do {
-                tmpString[stringLastGlyph(tmpString)] = 0;
-                w = stringWidth(tmpString, &standardFont, false, true);
-              } while(w >= SCREEN_WIDTH - prefixWidth - 14); // 14 is the width of STD_ELLIPSIS
-              xcopy(tmpString + stringByteLength(tmpString), STD_ELLIPSIS, 3);
-              w += 14;
+              tmpStrW = stringAfterPixels(tmpString, &standardFont, SCREEN_WIDTH - prefixWidth - 14 - 1, false, true); // 14 is the width of STD_ELLIPSIS
+              xcopy(tmpStrW, STD_ELLIPSIS, 3);
+              w = stringWidth(tmpString, &standardFont, false, true);
               lineWidth = w;
               showString(tmpString, &standardFont, SCREEN_WIDTH - w, baseY + 6, vmNormal, false, true);
             }
@@ -3423,16 +3510,16 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
       }
     }
     else {
+      char *nimw;
       w = stringByteLength(nim) + 1;
       xcopy(tmpString,        nim, w);
       xcopy(tmpString + 1500, nim, w);
-      while(stringWidth(tmpString, &standardFont, true, true) >= SCREEN_WIDTH) {
-        w = stringLastGlyph(tmpString);
-        tmpString[w] = 0;
-      }
+      nimw = stringAfterPixels(tmpString, &standardFont, SCREEN_WIDTH - 1, true, true);
+      w = nimw - tmpString;
+      *nimw = 0;
 
       if(stringWidth(tmpString + 1500 + w, &standardFont, true, true) + wLastBaseStandard > SCREEN_WIDTH - 8) { // 8 is the standard font cursor width
-        btnClicked(NULL, "16"); // back space
+        addItemToNimBuffer(ITM_BACKSPACE);
       }
       else {
         showString(tmpString, &standardFont, 0, Y_POSITION_OF_NIM_LINE - 3, vmNormal, true, true);

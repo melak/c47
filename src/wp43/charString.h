@@ -77,6 +77,18 @@ int32_t  stringGlyphLength(const char *str);
  ***********************************************/
 int16_t  stringWidth      (const char *str, const font_t *font, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows);
 
+/********************************************//**
+ * \brief Calculates the first character which does not fit to specified width using a certain font
+ *
+ * \param[in] str const char*             String
+ * \param[in] font font_t*                Font
+ * \param[in] width int16_t               Width of where to show the string
+ * \param[in] withLeadingEmptyRows bool_t With the leading empty rows
+ * \param[in] withEndingEmptyRows bool_t  With the ending empty rows
+ * \return char*                          Width in pixel of the string
+ ***********************************************/
+char    *stringAfterPixels(const char *str, const font_t *font, int16_t width, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows);
+
 
 /********************************************//**
  * \brief Converts an unicode code point to utf8
