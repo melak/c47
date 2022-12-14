@@ -1133,6 +1133,8 @@ void fnUserJM(uint16_t jmUser) {
         fnUserJM(USER_C43ALTA);
         fnShowVersion(USER_C43ALT);
         kbd_usr[ 0].primary       = ITM_SIGMAPLUS;
+        kbd_usr[ 9].gShifted      = ITM_GTO;
+        kbd_usr[ 9].fShifted      = ITM_SNAP;
         kbd_usr[10].primary       = ITM_SHIFTf;
         kbd_usr[27].primary       = KEY_fg;
         kbd_usr[27].fShifted      = ITM_NULL;

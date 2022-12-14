@@ -2799,7 +2799,12 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         restoreStats();
         if(calcMode == CM_PLOT_STAT) {
           for(int16_t ii = 0; ii < 3; ii++) {
-            if( (softmenuStack[0].softmenuId > 1) && !((-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_HIST) || (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_STAT))) {
+            if( (softmenuStack[0].softmenuId > 1) && !(
+              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_HIST) || 
+              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_STAT) || 
+              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_MODEL) ||
+              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_REGR)
+               )) {
               popSoftmenu();
             }
           }
