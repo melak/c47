@@ -41,15 +41,14 @@
 /*
 Variables maintained here
 
-TO_QSPI const calcKey_t kbd_std_WP43[37] = {
-TO_QSPI const calcKey_t kbd_std[37] = {
-TO_QSPI const calcKey_t kbd_std_C43AltA[37] = {
-TO_QSPI const calcKey_t kbd_std_DM42[37] = {
-
-
+TO_QSPI const calcKey_t kbd_std_WP43[37]
+TO_QSPI const calcKey_t kbd_std[37]
+TO_QSPI const calcKey_t kbd_std_C43AltA[37]
+TO_QSPI const calcKey_t kbd_std_DM42[37]
 */
 
 
+//SOURCE: WP43 code
 //This variable is to store in flash memory       //JM Copy of WP43S For KEYS menu
 TO_QSPI const calcKey_t kbd_std_WP43[37] = {
 //keyId primary          fShifted         gShifted         keyLblAim        primaryAim         fShiftedAim            gShiftedAim    primaryTam
@@ -100,6 +99,8 @@ TO_QSPI const calcKey_t kbd_std_WP43[37] = {
 };
 
 
+//SOURCE: Spreadsheet: Do not modify manually
+
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std[37] = {
 //keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
@@ -144,6 +145,8 @@ TO_QSPI const calcKey_t kbd_std[37] = {
 //keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
 };
 
+
+//SOURCE: Spreadsheet: Do not modify manually
 
 //This variable is to store in flash memory
 TO_QSPI const calcKey_t kbd_std_C43AltA[37] = {

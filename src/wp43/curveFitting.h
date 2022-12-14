@@ -26,7 +26,7 @@
   #include "wp43.h"
 
   extern   realContext_t              *realContext;
-void     fnCurveFittingReset     (uint16_t curveFitting);
+void     fnCurveFittingReset     (uint16_t control);
 void     fnCurveFitting_T        (uint16_t curveFitting);
 void     fnCurveFitting          (uint16_t curveFitting);
   void     processCurvefitSelection   (uint16_t selection, real_t *RR_, real_t *SMI_, real_t *aa0, real_t *aa1, real_t *aa2);

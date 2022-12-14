@@ -115,13 +115,6 @@ All the below: because both Last x and savestack does not work due to multiple s
 #include "wp43.h"
 
 
-
-void fnPlotStatJM(uint16_t mode) {
-  fnCurveFitting(0);
-  fnPlotStat(mode);
-}
-
-
 void fneRPN(uint16_t state) {
   if(state == 1)
     eRPN = true;
