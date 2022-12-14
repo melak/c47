@@ -146,6 +146,8 @@ void       fnAGraph                           (uint16_t regist);
 
   uint32_t showStringC43                      (const char *string, int mode, int comp, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols );
   uint32_t stringWidthC43                     (const char *str,    int mode, int comp,                                                bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows);
+  char *stringAfterPixelsC43                  (const char *str,    int mode, int comp, uint32_t width,                                bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows);
+  uint32_t stringWidthWithLimitC43            (const char *str,    int mode, int comp, uint32_t limitWidth,                           bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows); // like stringWidthC43 but don't check anymore after once exceeded limitWidth
 #ifdef TEXT_MULTILINE_EDIT
   uint32_t showStringEdC43                    (uint32_t lastline, int16_t offset, int16_t edcursor, const char *string, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, bool_t noshow);
   void findOffset(void);

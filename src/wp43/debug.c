@@ -1127,9 +1127,7 @@ void debugNIM(void) {
       sprintf(string + n, "data type %s not supported for now!", getRegisterDataTypeName(regist, false, false));
     }
 
-    while(stringWidth(string, &standardFont, true, true) > 961) {
-      string[stringLastGlyph(string)] = 0;
-    }
+    *(stringAfterWidth(string, &standardFont, 961, true, true)) = 0;
 
     stringToUtf8(string, (uint8_t *)tmpStr);
 
