@@ -362,7 +362,7 @@ void kill_ASB_icon(void) {
           }
         }
         else if (stringByteLength(aimBuffer) <= AIM_BUFFER_LENGTH-1 &&
-                 stringWidthC43(aimBuffer, 0 ,nocompress, true, true) < SCREEN_WIDTH * MAXLINES - 16 //0 means small standard font
+                 stringWidthWithLimitC43(aimBuffer, stdNoEnlarge, nocompress, SCREEN_WIDTH * MAXLINES - 16, true, true) < SCREEN_WIDTH * MAXLINES - 16 //0 means small standard font
         ) {    //JM
 #ifdef TEXT_MULTILINE_EDIT
           //JMCURSOR vv ADD THE CHARACTER MID-STRING =======================================================
