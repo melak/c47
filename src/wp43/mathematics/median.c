@@ -318,6 +318,6 @@ void fnPercentileXY(uint16_t unusedButMandatoryParameter) {
   else if (!realIsNaN(&p))
     realCopy(const_1, &p);
   fnDrop(NOPARAM);
-  doStatsOperation(&computePercentileUnsorted, const_1, &p, TI_MEDIANX_MEDIANY);
+  doStatsOperation(&computePercentileUnsorted, const_1, &p, TI_PCTILEX_PCTILEY);
 }
 

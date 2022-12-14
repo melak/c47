@@ -2405,6 +2405,17 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             }
            }
 
+          else if(temporaryInformation == TI_PCTILEX_PCTILEY) {
+            if(regist == REGISTER_X) {
+              strcpy(prefix, "pctile" STD_SUB_x " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_Y) {
+              strcpy(prefix, "pctile" STD_SUB_y " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
           else if(temporaryInformation == TI_MEDIANX_MEDIANY) {
             if(regist == REGISTER_X) {
               strcpy(prefix, "md" STD_SUB_x " =");
