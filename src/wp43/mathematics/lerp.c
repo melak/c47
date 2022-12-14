@@ -24,6 +24,7 @@
 #include "debug.h"
 #include "error.h"
 #include "flags.h"
+#include "items.h"
 #include "mathematics/comparisonReals.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -170,8 +171,8 @@ void fnLERP(uint16_t unusedButMandatoryParameter) {
     return;
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, REGISTER_Y, REGISTER_Z);
-  fnDrop(0);
-  fnDrop(0);
+  fnDrop(NOPARAM);
+  fnDrop(NOPARAM);
 
   lerp(&aReal, &bReal, &p, &rReal);
   if (realCoefs) {
