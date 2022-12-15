@@ -57,22 +57,22 @@ static int statsRealCompare(const void *v1, const void *v2)
  * Compute an arbitrary percentile.
  * Note that per is [0, 1] rather than a percentage.
  */
-static void computePercentileSorted(real_t *data, uint16_t n, const real_t *per, real_t *percentile) {
-  real_t c, p, t;
-  int posn;
+static void computePercentileSorted(real_t *data, uint16_t n, const real_t *p, real_t *percentile) {
+  real_t d, t;
+  int k;
 
-  uInt32ToReal(n - 1, &c);
-  realMultiply(&c, per, &t, &ctxtReal39);
-  realToIntegralValue(&t, &p, DEC_ROUND_DOWN, &ctxtReal39);
-  realToInt32(&p, posn);
+  uInt32ToReal(n + 1, &d);
+  realMultiply(&d, p, &t, &ctxtReal39);
+  realToIntegralValue(&t, &d, DEC_ROUND_DOWN, &ctxtReal39);
+  realToInt32(&d, k);
 
-  if (posn >= n - 1)
+  if (k >= n)
     realCopy(data + n - 1, percentile);
-  else if (posn < 0)
+  else if (k < 1)
     realCopy(data, percentile);
   else {
-    realSubtract(&t, &p, &c, &ctxtReal39);  // FP(position)
-    linpol(data + posn, data + posn + 1, &c, percentile);
+    realSubtract(&t, &d, &d, &ctxtReal39);   // d = FP(position)
+    linpol(data + k - 1, data + k, &d, percentile);
   }
 }
 
