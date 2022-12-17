@@ -24,6 +24,7 @@
 #include "defines.h"
 #include "error.h"
 #include "flags.h"
+#include "integers.h"
 #include "items.h"
 #include "mathematics/integerPart.h"
 #include "mathematics/iteration.h"
@@ -32,6 +33,7 @@
 #include "programming/nextStep.h"
 #include "realType.h"
 #include "registers.h"
+#include "registerValueConversions.h"
 #include "solver/solve.h"
 #include "stack.h"
 #include "wp43.h"
@@ -39,19 +41,28 @@
 #if !defined(TESTSUITE_BUILD)
   static void _programmableSumProd(uint16_t label, bool_t prod) {
     real34_t counter, result;
+    longInteger_t resultLi, xLi;
     bool_t finished = false;
+    bool_t isInteger = getRegisterDataType(REGISTER_X) == dtLongInteger;
 
     real34Copy(prod ? const34_1 : const34_0, &result);
+    longIntegerInit(resultLi);
+    longIntegerInit(xLi);
+    uIntToLongInteger(prod ? 1 : 0, resultLi);
+    uIntToLongInteger(0, xLi);
+
 
     ++currentSolverNestingDepth;
     setSystemFlag(FLAG_SOLVING);
 
     while(1) {
+
       fnToReal(NOPARAM);
       if(lastErrorCode != ERROR_NONE) {
         break;
       }
       real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter);
+
       fnIp(NOPARAM);
       fnFillStack(NOPARAM);
 
@@ -61,17 +72,38 @@
         break;
       }
 
-      fnToReal(NOPARAM);
-      if(lastErrorCode != ERROR_NONE) {
-        break;
+      if(isInteger && getRegisterDataType(REGISTER_X) == dtReal34) {  //latch over to Real once any Real is calculated
+        isInteger = false;
+        real_t xReal;
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+        convertLongIntegerToReal(resultLi, &xReal, &ctxtReal34);
+        realToReal34(&xReal, &result);
       }
-      if(prod) {
-        real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
+
+      if(!isInteger) {
+        fnToReal(NOPARAM);
+        if(lastErrorCode != ERROR_NONE) {
+          break;
+        }
+        if(prod) {
+          real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
+        }
+        else {
+          real34Add(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
+        }
+      } else {
+        if(prod) {
+          convertLongIntegerRegisterToLongInteger(REGISTER_X, xLi);
+          longIntegerMultiply(resultLi, xLi, resultLi);
+        }
+        else {
+          convertLongIntegerRegisterToLongInteger(REGISTER_X, xLi);
+          longIntegerAdd(resultLi, xLi, resultLi);
+        }
       }
-      else {
-        real34Add(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
-      }
+      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
+
 
       if(finished) {
         break;
@@ -81,9 +113,16 @@
     }
 
     if(lastErrorCode == ERROR_NONE) {
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      real34Copy(&result, REGISTER_REAL34_DATA(REGISTER_X));
+      if(!isInteger) {
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+        real34Copy(&result, REGISTER_REAL34_DATA(REGISTER_X));
+      } else {
+        convertLongIntegerToLongIntegerRegister(resultLi, REGISTER_X);
+      }
     }
+
+    longIntegerFree(resultLi);
+    longIntegerFree(xLi);
 
     temporaryInformation = TI_NO_INFO;
     if(programRunStop == PGM_WAITING) {
