@@ -331,7 +331,7 @@ void print_inlinestr(const char *line1, bool_t endline) {
       t_line_y += 20;
       t_line_x = 0;
     }
-    force_refresh();
+    force_refresh(force);
 #endif
 }
 

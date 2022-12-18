@@ -142,15 +142,18 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
         fnReturn(0); // 1 more time to clean local registers
       }
 
+/* Full refresh included in showHideHourGlass above, so removinf it here to save time
       #if defined(DMCP_BUILD)
         lcd_refresh();
       #else // !DMCP_BUILD
         refreshLcd(NULL);
       #endif // DMCP_BUILD
+*/
 
     screenUpdatingMode = SCRUPD_AUTO;
     } 
     else {
+      force_refresh(timed); //Added this to enable 0.5 second refresh during running
       #if defined (PC_BUILD) && VERBOSE_LEVEL > -1
         printf("   >>>   reallyRunFunction: §%s§%s§\n",indexOfItems[abs(func)].itemCatalogName, indexOfItems[abs(func)].itemSoftmenuName);
       #endif // PC_BUILD

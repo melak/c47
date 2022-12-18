@@ -1645,7 +1645,7 @@ void incOffset(void){             //C43 JM
 
 
 
-void refresh_gui(void) {                                        //JM vv
+void refresh_gui(void) {
 #ifdef PC_BUILD
   while(gtk_events_pending()) {
     gtk_main_iteration();
@@ -1654,23 +1654,27 @@ void refresh_gui(void) {                                        //JM vv
 }
 
 
-void force_refresh(void) {
-#ifdef PC_BUILD
-  gtk_widget_queue_draw(screen);
 
-//FULL UPDATE (UGLY)
-#ifdef FULLUPDATE
-   refresh_gui();
-#endif
+bool_t halfSecTick = false;
+void force_refresh(uint8_t mode) {
 
-#endif
-#if DMCP_BUILD
-  lcd_forced_refresh ();
-#endif
+  if(mode == force || ((((uint16_t)getUptimeMs()) & 0x0200) == 0x0200) == halfSecTick) {  //Restrict refresh to once per half second. Use this minimally, due to extreme slow response.
+    halfSecTick = !halfSecTick;
 
-//printf(">>> screenc:force_refresh\n");
+    #ifdef PC_BUILD
+      gtk_widget_queue_draw(screen);
 
-}                                                              //JM ^^
+    //FULL UPDATE (UGLY)
+    #ifdef FULLUPDATE
+       refresh_gui();
+    #endif
+
+    #endif
+    #if DMCP_BUILD
+      lcd_forced_refresh();
+    #endif
+  }
+}
 
 
 

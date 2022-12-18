@@ -157,7 +157,10 @@ void       fnAGraph                           (uint16_t regist);
                                                                                                                //JM ^^
   void     underline_softkey                  (int16_t xSoftkey, int16_t ySoftKey, bool_t dontclear);          //JM LONGPRESS
   void     refresh_gui                        (void);                                                          //JM
-  void     force_refresh                      (void);                                                          //JM SCREEN
+
+  #define  force 1
+  #define  timed 2
+  void     force_refresh(uint8_t mode);                                                          //JM SCREEN
 //JM^^
 
   void     refreshScreen                      (void);

@@ -16,6 +16,7 @@
 
 #include "plotstat.h"
 
+#include "c43Extensions/addons.h"
 #include "charString.h"
 #include "constantPointers.h"
 #include "config.h"
@@ -127,6 +128,9 @@ void statGraphReset(void){
 
 #if !defined(TESTSUITE_BUILD)
   float grf_x(int i) {
+    if(keyWaiting()) {
+       return 0;
+    }
     float xf=0;
     real_t xr;
 
@@ -146,6 +150,9 @@ void statGraphReset(void){
 
 
   float grf_y(int i) {
+    if(keyWaiting()) {
+       return 0;
+    }
     float yf=0;
     real_t yr;
 
@@ -396,19 +403,6 @@ void pixelline(uint16_t xo, uint8_t yo, uint16_t xn, uint8_t yn, bool_t vmNormal
 }
 
 
-void force_refresh1(void) {
-  #if defined(PC_BUILD)
-  gtk_widget_queue_draw(screen);
-  //FULL UPDATE (UGLY)
-    #if defined(FULLUPDATE)
-    refresh_gui();
-  #endif //FULLUPDATE
-#endif //PC_BUILD
-#if DMCP_BUILD
-  lcd_forced_refresh();
-  #endif // DMCP_BUILD
-}
-
 
 void graphAxisDraw (void){
 #if !defined(SAVE_SPACE_DM42_13GRF)
@@ -468,7 +462,7 @@ void graphAxisDraw (void){
       cnt++;
     }
 
-   force_refresh1();
+   force_refresh(timed);
 
    if(0<x_max && 0>x_min) {
      for(x=0; x<=x_max; x+=tick_int_x) {                         //draw x ticks
@@ -539,7 +533,7 @@ void graphAxisDraw (void){
     //DRAW YAXIS
     lcd_fill_rect(xzero,minny,1,SCREEN_HEIGHT_GRAPH-minny,0xFF);
 
-    force_refresh1();
+    force_refresh(timed);
     if(0<y_max && 0>y_min) {
       for(y=0; y<=y_max; y+=tick_int_y) {                     //draw y ticks
           #if defined(STATDEBUG) && defined(PC_BUILD)
@@ -598,7 +592,7 @@ void graphAxisDraw (void){
       }
     }
   }
-  force_refresh1();
+  force_refresh(timed);
   #endif
 #endif //SAVE_SPACE_DM42_13GRF
 }
