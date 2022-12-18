@@ -44,8 +44,7 @@
 
 #if !defined(TESTSUITE_BUILD)
   static void _programmableSumProd(uint16_t label, bool_t prod) {
-    real34_t counter;
-    real_t result;
+    real34_t counter, result;
     longInteger_t resultLi, xLi;
     bool_t finished = false;
     bool_t isInteger = getRegisterDataType(REGISTER_X) == dtLongInteger;   //Set processing to real, if counter is not long integer. A way to force a real result.
