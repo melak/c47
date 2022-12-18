@@ -78,6 +78,10 @@
         break;
       }
 
+      if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
+        convertShortIntegerRegisterToLongIntegerRegister(REGISTER_X,REGISTER_X);
+      }
+
       if(isInteger && getRegisterDataType(REGISTER_X) == dtReal34) {       //Latch method over to Real once any Real is calculated by the function
         isInteger = false;
         real_t xReal;
