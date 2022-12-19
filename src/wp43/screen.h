@@ -126,7 +126,8 @@ void       fnAGraph                           (uint16_t regist);
   extern uint16_t current_cursor_x;
   extern uint16_t current_cursor_y;
   extern uint8_t  displayStack_m;
-
+  bool_t   noShow;                                                         //JM
+  
   //Stack string large font display
   #define STACK_X_STR_LRG_FONT
   #define STACK_STR_MED_FONT
