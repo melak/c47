@@ -154,7 +154,7 @@
     showHideHourGlass();
   }
 
-  void _checkArgument(uint16_t label, bool_t prod) {
+  static void _checkArgument(uint16_t label, bool_t prod) {
     if(label >= FIRST_LABEL && label <= LAST_LABEL) {
       _programmableSumProd(label, prod);
     }
@@ -188,7 +188,7 @@
         displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "string '%s' is not a named label", buf);
-          moreInfoOnError("In function fnPgmSlv:", errorMessage, NULL, NULL);
+          moreInfoOnError("In function _checkArgument:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
       else {
@@ -199,7 +199,7 @@
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "unexpected parameter %u", label);
-        moreInfoOnError("In function fnPgmSlv:", errorMessage, NULL, NULL);
+        moreInfoOnError("In function _checkArgument:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }

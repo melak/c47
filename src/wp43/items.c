@@ -859,6 +859,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnEqCalc                    (uint16_t unusedButMandatoryParameter) {}
   void fnProgrammableSum           (uint16_t unusedButMandatoryParameter) {}
   void fnProgrammableProduct       (uint16_t unusedButMandatoryParameter) {}
+  void fnProgrammableiSum          (uint16_t unusedButMandatoryParameter) {}
+  void fnProgrammableiProduct      (uint16_t unusedButMandatoryParameter) {}
   void fnTvmVar                    (uint16_t unusedButMandatoryParameter) {}
   void fnTvmBeginMode              (uint16_t unusedButMandatoryParameter) {}
   void fnTvmEndMode                (uint16_t unusedButMandatoryParameter) {}
@@ -2766,8 +2768,8 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1751 */  { fnDeterminant,                NOPARAM,                     "DET",                                         "DET",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1752 */  { fnInvertMatrix,               NOPARAM,                     "INVRT",                                       "INVRT",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1753 */  { fnTranspose,                  NOPARAM,                     "TRANS",                                       "TRANS",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 1754 */  { itemToBeCoded,                NOPARAM,                     "1754",                                        "1754",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
-/* 1755 */  { itemToBeCoded,                NOPARAM,                     "1755",                                        "1755",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },
+/* 1754 */  { fnProgrammableiProduct,       TM_LABEL,                    "i" STD_PI STD_SUB_n,                          "i" STD_PI STD_SUB_n,                          (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_LABEL        },
+/* 1755 */  { fnProgrammableiSum,           TM_LABEL,                    "i" STD_SIGMA STD_SUB_n,                       "i" STD_SIGMA STD_SUB_n,                       (0 << TAM_MAX_BITS) |    99, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_LABEL        },
 /* 1756 */  { fnPlotStat,                   PLOT_ORTHOF,                 "",                                            "CENTRL",                                      (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1757 */  { fnHide,                       NOPARAM,                     "HIDE",                                        "HIDE",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1758 */  { fnPlotCloseSmi,               NOPARAM,                     "s" STD_SUB_m STD_SUB_i,                       "s" STD_SUB_m STD_SUB_i,                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
