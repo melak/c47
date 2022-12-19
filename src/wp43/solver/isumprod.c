@@ -62,7 +62,7 @@
     
     longIntegerSubtract(paramY, paramZ, xLi);
     longIntegerModulo(xLi, paramX, xLi);
-  printLongIntegerToConsole(xLi,"MOD: "," \n");
+    //printLongIntegerToConsole(xLi,"MOD: "," \n");
 
 
     if((longIntegerCompare(paramY, paramZ) > 0 && longIntegerCompareUInt(paramX, 0) <=0) || (longIntegerCompare(paramY, paramZ) < 0 && longIntegerCompareUInt(paramX, 0) >=0)) {
