@@ -44,6 +44,7 @@
 #include "softmenus.h"
 #include "sort.h"
 #include "stack.h"
+#include "statusBar.h"
 #include "timer.h"
 #include "ui/matrixEditor.h"
 #include "ui/tam.h"
@@ -259,20 +260,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
 
 
-
-#ifndef TESTSUITE_BUILD                          //JMvv
-void light_ASB_icon(void) {
-  lcd_fill_rect(X_ALPHA_MODE,18,9,2,0xFF);
-  force_refresh();
-}
-
-void kill_ASB_icon(void) {
-  lcd_fill_rect(X_ALPHA_MODE,18,9,2,0);
-  force_refresh();
-}
-#endif                                           //JM^^
-
-
   void resetAlphaSelectionBuffer(void) {
     lgCatalogSelection = 0;
     asmBuffer[0] = 0;
@@ -282,7 +269,6 @@ void kill_ASB_icon(void) {
       kill_ASB_icon();
     #endif // TESTSUITE_BUILD                       //JM^^
   }
-
 
 
 

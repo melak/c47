@@ -778,7 +778,7 @@ void print_linestr(const char *line1, bool_t line_init) {
       g_line_y = 40;
       g_line_x += 4;
     }
-    force_refresh();
+    force_refresh(timed);
 #endif
 }
 
@@ -796,7 +796,7 @@ void print_numberstr(const char *line1, bool_t line_init) {     //ONLY N=ASCII N
     }
     g_line_y += 20;
     g_line_x = 0;
-    force_refresh();
+    force_refresh(timed);
 #endif
 }
 
