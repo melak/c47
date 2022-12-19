@@ -1388,21 +1388,11 @@ void showKey2(const char *label0, const char *label1, int16_t x1, int16_t x2, in
   float   space0=0;
   float   space1=0;
 
-  compressString = CS;       //JM compressString
-  noShow = true;
-  int16_t w1 = showString(label0, &standardFont, 0, y1+YY, videoMode, false, false);
-  compressString = CS;       //JM compressString
-  noShow = true;
-  int16_t w2 = showString(STD_RIGHT_ARROW, &standardFont, 0, y1+YY, videoMode, false, false);
-  compressString = CS;       //JM compressString
-  noShow = true;
-  int16_t w3 = showString(STD_LEFT_ARROW, &standardFont, 0, y1+YY, videoMode, false, false);
-  compressString = CS;       //JM compressString
-  noShow = true;
-  int16_t w4 = showString(label1, &standardFont, 0, y1+YY, videoMode, false, false);
-  compressString = 0;       //JM compressString
-  noShow = false;
 
+  int16_t w1 = showStringEnhanced(label0,          &standardFont, 0, y1+YY, videoMode, false, false, CS, 0, 1);
+  int16_t w2 = showStringEnhanced(STD_RIGHT_ARROW, &standardFont, 0, y1+YY, videoMode, false, false, CS, 0, 1);
+  int16_t w3 = showStringEnhanced(STD_LEFT_ARROW,  &standardFont, 0, y1+YY, videoMode, false, false, CS, 0, 1);
+  int16_t w4 = showStringEnhanced(label1,          &standardFont, 0, y1+YY, videoMode, false, false, CS, 0, 1);
 
 
   midpoint = (x2 - x1) / 2;
@@ -1431,22 +1421,10 @@ void showKey2(const char *label0, const char *label1, int16_t x1, int16_t x2, in
   // Clear inside the frame
   lcd_fill_rect(x1 + 1, y1 + 1, min(x2, SCREEN_WIDTH) - x1 - 1, min(y2, SCREEN_HEIGHT) - y1 - 1, (videoMode == vmNormal ? LCD_SET_VALUE : LCD_EMPTY_VALUE));
 
-
-  compressString = CS;       //JM compressString
-  showString(label0, &standardFont, Text0 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false);
-  compressString = 0;       //JM compressString
-
-  compressString = CS;       //JM compressString
-  showString(STD_RIGHT_ARROW, &standardFont, Arr0 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false);
-  compressString = 0;       //JM compressString
-
-  compressString = CS;       //JM compressString
-  showString(label1, &standardFont, Text1 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false);
-  compressString = 0;       //JM compressString
-
-  compressString = CS;       //JM compressString
-  showString(STD_LEFT_ARROW, &standardFont, Arr1 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false);
-  compressString = 0;       //JM compressString
+  showStringEnhanced(label0,          &standardFont, Text0 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, CS, 0, 0);
+  showStringEnhanced(STD_RIGHT_ARROW, &standardFont, Arr0 +  (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, CS, 0, 0);
+  showStringEnhanced(label1,          &standardFont, Text1 + (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, CS, 0, 0);
+  showStringEnhanced(STD_LEFT_ARROW,  &standardFont, Arr1 +  (rightMostSlot ? 0 : 1), y1 + 1, videoMode, false, false, CS, 0, 0);
 
 
   // Draw the frame
@@ -1472,7 +1450,7 @@ void showKey2(const char *label0, const char *label1, int16_t x1, int16_t x2, in
 
   //   Mid line
   if(x1 >= 0) {
-    lcd_fill_rect(x1 + midpoint, y1+4, 1, min(y2, SCREEN_HEIGHT - 1) + 1 - y1 - 2*5, (videoMode == vmNormal ? LCD_EMPTY_VALUE : LCD_SET_VALUE));
+    lcd_fill_rect(x1 + midpoint, y1+5, 1, min(y2, SCREEN_HEIGHT - 1) + 1 - y1 - 2*5, (videoMode == vmNormal ? LCD_EMPTY_VALUE : LCD_SET_VALUE));
   }
 }
 
