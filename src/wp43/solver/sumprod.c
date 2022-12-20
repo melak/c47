@@ -45,15 +45,9 @@
 #if !defined(TESTSUITE_BUILD)
   static void _programmableSumProd(uint16_t label, bool_t prod) {
     real34_t counter, result;
-    longInteger_t resultLi, xLi;
     bool_t finished = false;
-    bool_t isInteger = getRegisterDataType(REGISTER_X) == dtLongInteger;   //Set processing to real, if counter is not long integer. A way to force a real result.
 
     real34Copy(prod ? const34_1 : const34_0, &result);                     //Initialize real accumulator
-    longIntegerInit(resultLi);
-    longIntegerInit(xLi);
-    uIntToLongInteger(prod ? 1 : 0, resultLi);                             //Initialize long integer accumulator
-    uIntToLongInteger(0, xLi);
 
 
     ++currentSolverNestingDepth;
@@ -82,15 +76,6 @@
         convertShortIntegerRegisterToLongIntegerRegister(REGISTER_X,REGISTER_X);
       }
 
-      if(isInteger && getRegisterDataType(REGISTER_X) == dtReal34) {       //Latch method over to Real once any Real is calculated by the function
-        isInteger = false;
-        real_t xReal;
-        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        convertLongIntegerToReal(resultLi, &xReal, &ctxtReal75);
-        realToReal34(&xReal, &result);
-      }
-
-      if(!isInteger) {
         fnToReal(NOPARAM);
         if(lastErrorCode != ERROR_NONE) {
           break;
@@ -101,16 +86,7 @@
         else {
           real34Add(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
         }
-      } else {
-        if(prod) {
-          convertLongIntegerRegisterToLongInteger(REGISTER_X, xLi);
-          longIntegerMultiply(resultLi, xLi, resultLi);
-        }
-        else {
-          convertLongIntegerRegisterToLongInteger(REGISTER_X, xLi);
-          longIntegerAdd(resultLi, xLi, resultLi);
-        }
-      }
+
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
 
@@ -129,16 +105,9 @@
     }
 
     if(lastErrorCode == ERROR_NONE) {
-      if(!isInteger) {
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
         real34Copy(&result, REGISTER_REAL34_DATA(REGISTER_X));
-      } else {
-        convertLongIntegerToLongIntegerRegister(resultLi, REGISTER_X);
-      }
     }
-
-    longIntegerFree(resultLi);
-    longIntegerFree(xLi);
 
     temporaryInformation = TI_NO_INFO;
     if(programRunStop == PGM_WAITING) {
