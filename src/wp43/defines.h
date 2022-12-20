@@ -101,7 +101,7 @@
 #define VERBOSE_LEVEL -1              //JM -1 no text   0 = very little text; 1 = essential text; 2 = extra debugging: on calc screen
 
 #define VERBOSE_COUNTER               //PI and SIGMA functions
-//#undef  VERBOSE_COUNTER
+#undef  VERBOSE_COUNTER
 
 #define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
 #undef  PC_BUILD_TELLTALE
