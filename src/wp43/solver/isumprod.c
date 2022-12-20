@@ -43,9 +43,6 @@
 #include "wp43.h"
 
 
-//#define VERBOSE_COUNTER
-
-
 #if !defined(TESTSUITE_BUILD)
   static void _programmableiSumProd(uint16_t label, bool_t prod) {
     longInteger_t resultLi, xLi;

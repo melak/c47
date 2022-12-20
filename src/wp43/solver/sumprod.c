@@ -42,71 +42,105 @@
 #include "timer.h"
 #include "wp43.h"
 
+
+
 #if !defined(TESTSUITE_BUILD)
   static void _programmableSumProd(uint16_t label, bool_t prod) {
-    real34_t counter, result;
     bool_t finished = false;
+    uint32_t tmpi, loopFff, loopNn;
+    longInteger_t iCounter;
+    longIntegerInit(iCounter);
+    longInteger_t iLoopFff;
+    longIntegerInit(iLoopFff);
+    real34_t counter, tmp2;
+    real_t resultX, resultR;
 
-    real34Copy(prod ? const34_1 : const34_0, &result);                     //Initialize real accumulator
+    fnToReal(NOPARAM);                                                                  // Convert Counter to Real ccccc.00000
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter);                             //       ccccc.fffii
+    convertReal34ToLongInteger(REGISTER_REAL34_DATA(REGISTER_X), iCounter, DEC_ROUND_DOWN);//    ccccc
+                                                                                        // loop control number in the form ccccc.fffii, with 
+                                                                                        // ccccc being the current counter value, 
+                                                                                        // fff the final counter value, 
+                                                                                        // ii the DECREMENT size (default is 1).
+    real34ToIntegralValue(REGISTER_REAL34_DATA(REGISTER_X), &tmp2, DEC_ROUND_DOWN);     //       ccccc
+    real34Subtract(REGISTER_REAL34_DATA(REGISTER_X), &tmp2, &tmp2);                     //           0.fffii
+    real34Multiply(&tmp2, const34_1e6, &tmp2);                                          //      fffii0.
+    tmpi = (uint32_t)(real34ToUInt32(&tmp2) / 10);                                      //       fffii
+    loopFff = (uint16_t)(tmpi / 100);                                                   //         fff
+    loopNn  = (uint16_t)(tmpi - (loopFff * 100));                                       //          ii
+    if(loopNn == 0) {
+      loopNn = 1;
+    }
 
+    uIntToLongInteger(loopFff, iLoopFff);
+
+    realCopy(prod ? const_1 : const_0, &resultR);                                       // Initialize real accumulator
 
     ++currentSolverNestingDepth;
     setSystemFlag(FLAG_SOLVING);
 
+
     while(1) {
-      hourGlassIconEnabled = true;
-      showHideHourGlass();
 
-      fnToReal(NOPARAM);                                                   //Force counter in X to real. I don't think the counter will change type after the loop started, so this could be moved to just before the loop start
-      if(lastErrorCode != ERROR_NONE) {
-        break;
-      }
-      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter);
-      fnIp(NOPARAM);
-      finished = longIntegerIsZeroRegister(REGISTER_X);                    //Prepare the finished flag if it is entered with zero
-      fnFillStack(NOPARAM);
+        hourGlassIconEnabled = true;
+        showHideHourGlass();
 
-      dynamicMenuItem = -1;
-      execProgram(label);
-      if(lastErrorCode != ERROR_NONE) {
-        break;
-      }
-
-      if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-        convertShortIntegerRegisterToLongIntegerRegister(REGISTER_X,REGISTER_X);
-      }
+        convertLongIntegerToLongIntegerRegister(iCounter, REGISTER_X);
+        finished = longIntegerCompare(iCounter, iLoopFff) <= 0;                    //Prepare the finished flag if it is entered with zero
+        #if defined(VERBOSE_COUNTER)
+          printLongIntegerToConsole(iCounter," iCounter: "," ");
+          printLongIntegerToConsole(iLoopFff," iLoopFff: "," ");
+        #endif //VERBOSE_COUNTER
 
         fnToReal(NOPARAM);
         if(lastErrorCode != ERROR_NONE) {
           break;
         }
-        if(prod) {
-          real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
-        }
-        else {
-          real34Add(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
-        }
-
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
-
-      #if defined(DMCP_BUILD)
-        if(keyWaiting()) {
-            showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
+        fnFillStack(NOPARAM);
+        dynamicMenuItem = -1;
+        execProgram(label);
+        if(lastErrorCode != ERROR_NONE) {
           break;
         }
-      #endif //DMCP_BUILD
+        fnToReal(NOPARAM);
 
-      if(finished) {
-        break;
-      }
-      fnDse(REGISTER_X);
-      finished = (temporaryInformation != TI_TRUE);
+
+        if(lastErrorCode != ERROR_NONE) {
+          break;
+        }
+        if(prod) {
+          real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX);
+          realMultiply(&resultR, &resultX, &resultR, &ctxtReal75);
+        }
+        else {
+          real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX);
+          realAdd(&resultR, &resultX, &resultR, &ctxtReal75);
+        }
+
+        #if defined(VERBOSE_COUNTER)
+          printRealToConsole(&resultX," X: ", " ");
+          printRealToConsole(&resultR," X: ", "\n");
+        #endif //VERBOSE_COUNTER
+
+
+        #if defined(DMCP_BUILD)
+          if(keyWaiting()) {
+              showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
+            break;
+          }
+        #endif //DMCP_BUILD
+
+        if(finished) {
+          break;
+        }
+
+        longIntegerSubtractUInt(iCounter, loopNn, iCounter);
     }
+
 
     if(lastErrorCode == ERROR_NONE) {
         reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        real34Copy(&result, REGISTER_REAL34_DATA(REGISTER_X));
+        realToReal34(&resultR, REGISTER_REAL34_DATA(REGISTER_X));
     }
 
     temporaryInformation = TI_NO_INFO;
@@ -119,9 +153,16 @@
       clearSystemFlag(FLAG_SOLVING);
     }
 
+    
+    longIntegerFree(iLoopFff);
+    longIntegerFree(iCounter);
+
+
     hourGlassIconEnabled = false;
     showHideHourGlass();
   }
+
+
 
   static void _checkArgument(uint16_t label, bool_t prod) {
     if(label >= FIRST_LABEL && label <= LAST_LABEL) {
