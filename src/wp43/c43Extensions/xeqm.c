@@ -1106,7 +1106,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
   	                                if(exec) {
   	                              	  go = true; 
   	                              	  gotoinprogress = 1;
-  	                                  force_refresh();
+  	                                  force_refresh(timed);
   	                                }
                               } else
                                if (strcompare(commandnumber,"GSB"   ))    {
@@ -1117,7 +1117,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                                       go = true; 
                                       gotoinprogress = 1; 
                                       ix_m = ix;
-                                      force_refresh();
+                                      force_refresh(timed);
                                       #ifdef PC_BUILD
                                         printf("   >>> Sub  GSB Jump %d:go storing return address %d\n",loopnumber++, ix_m);
                                       #endif
@@ -1127,7 +1127,7 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
                                     if(exec) {
                                       ix = ix_m+2; 
                                       ix_m = 0;
-                                      force_refresh();
+                                      force_refresh(timed);
                                       #ifdef PC_BUILD
                                         printf("   >>> Sub  RTN to return address %d\n", ix);
                                       #endif

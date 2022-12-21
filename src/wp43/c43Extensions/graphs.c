@@ -520,7 +520,7 @@ void graph_text(void){
   }
 
 
-  force_refresh();
+  force_refresh(timed);
 
 
   #endif

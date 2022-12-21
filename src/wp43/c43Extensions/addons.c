@@ -124,6 +124,15 @@ void fneRPN(uint16_t state) {
 
 
 
+bool_t keyWaiting(void) {
+  #if defined(DMCP_BUILD)
+    return key_empty() == 0;   //key_tail() != -1;
+  #endif //DMCP_BUILD
+  return false;
+}
+
+
+
 
 void fnShoiXRepeats(uint16_t numberOfRepeats) {           //JM SHOIDISP
   displayStackSHOIDISP = numberOfRepeats;                 //   0-3

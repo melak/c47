@@ -28,10 +28,10 @@
   #include <gdk/gdk.h>
   #endif // PC_BUILD
 
-  //#define displayStackSHOIDISP 2                  //JMSHOIDISP  displayStackSHOIDISP=1: 3 lines of X-repeats
-                                                    //JMSHOIDISP  displayStackSHOIDISP=2: 2 lines of X-repeats
-                                                    //JMSHOIDISP  displayStackSHOIDISP=3: 1 lines of X-repeats
-                                                    //JMSHOIDISP  displayStackSHOIDISP=4: 0 lines of X-repeats
+//#define displayStackSHOIDISP 2                  //JMSHOIDISP  displayStackSHOIDISP=1: 3 lines of X-repeats
+                                                  //JMSHOIDISP  displayStackSHOIDISP=2: 2 lines of X-repeats
+                                                  //JMSHOIDISP  displayStackSHOIDISP=3: 1 lines of X-repeats
+                                                  //JMSHOIDISP  displayStackSHOIDISP=4: 0 lines of X-repeats
 
   extern bool_t   doRefreshSoftMenu;                                                                              //dr  
   void     FN_handler();                                                                                          //JM LONGPRESS
@@ -43,12 +43,12 @@
   void     clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys);               //JMOLD
   void     fnScreenDump                       (uint16_t unusedButMandatoryParameter);
 
-  void     fnClLcd                            (uint16_t unusedButMandatoryParameter);
-  void     fnPixel                            (uint16_t unusedButMandatoryParameter);
-  void     fnPoint                            (uint16_t unusedButMandatoryParameter);
-  void     fnAGraph                           (uint16_t regist);
+void       fnClLcd                            (uint16_t unusedButMandatoryParameter);
+void       fnPixel                            (uint16_t unusedButMandatoryParameter);
+void       fnPoint                            (uint16_t unusedButMandatoryParameter);
+void       fnAGraph                           (uint16_t regist);
 
-#if defined(PC_BUILD)
+  #if defined(PC_BUILD)
   /**
    * Draws the calc's screen on the PC window widget.
    *
@@ -79,15 +79,11 @@
   gboolean refreshLcd                         (gpointer unusedData);
 #endif // PC_BUILD
 
-
-#if defined(DMCP_BUILD)
-
+  #if defined(DMCP_BUILD)
   void     copyRegisterToClipboardString      (calcRegister_t regist, char *clipboardString);                   //JMCSV Added for textfiles 
   void     refreshLcd                         (void);
-
 #else // !DMCP_BUILD
-
-  void     lcd_fill_rect                      (uint32_t x, uint32_t y, uint32_t dx, uint32_t dy, int val); // clone from the DMCP function
+    void     lcd_fill_rect                      (uint32_t x, uint32_t y, uint32_t dx, uint32_t dy, int val); // clone from the DMCP function
     
     /**
      * Sets a black pixel on the screen.
@@ -113,7 +109,6 @@
      * \param[in] y y coordinate from 0 (top) to 239 (bottom)
      */
   void     flipPixel                          (uint32_t x, uint32_t y);
-
 #endif // DMCP_BUILD
 
   void     execTimerApp                         (uint16_t timerType);
@@ -128,7 +123,7 @@
   extern uint16_t current_cursor_x;
   extern uint16_t current_cursor_y;
   extern uint8_t  displayStack_m;
-  
+
   //Stack string large font display
   #define STACK_X_STR_LRG_FONT
   #define STACK_STR_MED_FONT
@@ -159,7 +154,10 @@
                                                                                                                //JM ^^
   void     underline_softkey                  (int16_t xSoftkey, int16_t ySoftKey, bool_t dontclear);          //JM LONGPRESS
   void     refresh_gui                        (void);                                                          //JM
-  void     force_refresh                      (void);                                                          //JM SCREEN
+
+  #define  force 1
+  #define  timed 2
+  void     force_refresh(uint8_t mode);                                                          //JM SCREEN
 
   void     refreshScreen                      (void);
   //void     invertPixel                        (uint32_t x, uint32_t y);
