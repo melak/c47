@@ -439,6 +439,20 @@ void showFracMode(void) {
         }
       }
     }
+    force_refresh(timed);
+  }
+
+
+
+  void light_ASB_icon(void) {
+    lcd_fill_rect(X_ALPHA_MODE,18,9,2,0xFF);
+    force_refresh(force);
+  }
+
+
+  void kill_ASB_icon(void) {
+    lcd_fill_rect(X_ALPHA_MODE,18,9,2,0);
+    force_refresh(force);
   }
 
 

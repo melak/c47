@@ -20,10 +20,12 @@
 
 #include "solver/sumprod.h"
 
+#include "c43Extensions/addons.h"
 #include "constantPointers.h"
 #include "defines.h"
 #include "error.h"
 #include "flags.h"
+#include "integers.h"
 #include "items.h"
 #include "mathematics/integerPart.h"
 #include "mathematics/iteration.h"
@@ -32,27 +34,42 @@
 #include "programming/nextStep.h"
 #include "realType.h"
 #include "registers.h"
+#include "registerValueConversions.h"
+#include "screen.h"
 #include "solver/solve.h"
+#include "statusBar.h"
 #include "stack.h"
+#include "timer.h"
 #include "wp43.h"
 
 #if !defined(TESTSUITE_BUILD)
   static void _programmableSumProd(uint16_t label, bool_t prod) {
     real34_t counter, result;
+    longInteger_t resultLi, xLi;
     bool_t finished = false;
+    bool_t isInteger = getRegisterDataType(REGISTER_X) == dtLongInteger;   //Set processing to real, if counter is not long integer. A way to force a real result.
 
-    real34Copy(prod ? const34_1 : const34_0, &result);
+    real34Copy(prod ? const34_1 : const34_0, &result);                     //Initialize real accumulator
+    longIntegerInit(resultLi);
+    longIntegerInit(xLi);
+    uIntToLongInteger(prod ? 1 : 0, resultLi);                             //Initialize long integer accumulator
+    uIntToLongInteger(0, xLi);
+
 
     ++currentSolverNestingDepth;
     setSystemFlag(FLAG_SOLVING);
 
     while(1) {
-      fnToReal(NOPARAM);
+      hourGlassIconEnabled = true;
+      showHideHourGlass();
+
+      fnToReal(NOPARAM);                                                   //Force counter in X to real. I don't think the counter will change type after the loop started, so this could be moved to just before the loop start
       if(lastErrorCode != ERROR_NONE) {
         break;
       }
       real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter);
       fnIp(NOPARAM);
+      finished = longIntegerIsZeroRegister(REGISTER_X);                    //Prepare the finished flag if it is entered with zero
       fnFillStack(NOPARAM);
 
       dynamicMenuItem = -1;
@@ -61,17 +78,48 @@
         break;
       }
 
-      fnToReal(NOPARAM);
-      if(lastErrorCode != ERROR_NONE) {
-        break;
+      if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
+        convertShortIntegerRegisterToLongIntegerRegister(REGISTER_X,REGISTER_X);
       }
-      if(prod) {
-        real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
+
+      if(isInteger && getRegisterDataType(REGISTER_X) == dtReal34) {       //Latch method over to Real once any Real is calculated by the function
+        isInteger = false;
+        real_t xReal;
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+        convertLongIntegerToReal(resultLi, &xReal, &ctxtReal75);
+        realToReal34(&xReal, &result);
       }
-      else {
-        real34Add(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
+
+      if(!isInteger) {
+        fnToReal(NOPARAM);
+        if(lastErrorCode != ERROR_NONE) {
+          break;
+        }
+        if(prod) {
+          real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
+        }
+        else {
+          real34Add(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
+        }
+      } else {
+        if(prod) {
+          convertLongIntegerRegisterToLongInteger(REGISTER_X, xLi);
+          longIntegerMultiply(resultLi, xLi, resultLi);
+        }
+        else {
+          convertLongIntegerRegisterToLongInteger(REGISTER_X, xLi);
+          longIntegerAdd(resultLi, xLi, resultLi);
+        }
       }
+      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
+
+      #if defined(DMCP_BUILD)
+        if(keyWaiting()) {
+            showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
+          break;
+        }
+      #endif //DMCP_BUILD
 
       if(finished) {
         break;
@@ -81,9 +129,16 @@
     }
 
     if(lastErrorCode == ERROR_NONE) {
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      real34Copy(&result, REGISTER_REAL34_DATA(REGISTER_X));
+      if(!isInteger) {
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+        real34Copy(&result, REGISTER_REAL34_DATA(REGISTER_X));
+      } else {
+        convertLongIntegerToLongIntegerRegister(resultLi, REGISTER_X);
+      }
     }
+
+    longIntegerFree(resultLi);
+    longIntegerFree(xLi);
 
     temporaryInformation = TI_NO_INFO;
     if(programRunStop == PGM_WAITING) {
@@ -94,6 +149,9 @@
     if((--currentSolverNestingDepth) == 0) {
       clearSystemFlag(FLAG_SOLVING);
     }
+
+    hourGlassIconEnabled = false;
+    showHideHourGlass();
   }
 
   void _checkArgument(uint16_t label, bool_t prod) {

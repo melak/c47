@@ -81,6 +81,16 @@
    * Shows or hides the hourglass icon in the status bar.
    */
   void showHideHourGlass      (void);
+
+  /**
+   * Shows ASB icon in the status bar.
+   */
+  void light_ASB_icon         (void);
+
+  /**
+   * Hides ASB icon in the status bar.
+   */
+  void kill_ASB_icon          (void);
     
   /**
    * Shows or hides the watch icon in the status bar.

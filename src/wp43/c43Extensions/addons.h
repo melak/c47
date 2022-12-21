@@ -27,7 +27,7 @@
 #include <stdint.h>
 
 
-
+bool_t keyWaiting(void);
 void fneRPN         (uint16_t unusedButMandatoryParameter);
 void fnCFGsettings  (uint16_t unusedButMandatoryParameter);
 void fnShoiXRepeats (uint16_t numberOfRepeats);
