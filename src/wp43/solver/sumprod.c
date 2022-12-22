@@ -27,6 +27,7 @@
 #include "flags.h"
 #include "integers.h"
 #include "items.h"
+#include "mathematics/comparisonReals.h"
 #include "mathematics/integerPart.h"
 #include "mathematics/iteration.h"
 #include "programming/lblGtoXeq.h"
@@ -46,118 +47,115 @@
 
 #if !defined(TESTSUITE_BUILD)
   static void _programmableSumProd(uint16_t label, bool_t prod) {
-    bool_t finished = false;
-    uint32_t tmpi, loopFff, loopNn;
-    longInteger_t iCounter;
-    longIntegerInit(iCounter);
-    longInteger_t iLoopFff;
-    longIntegerInit(iLoopFff);
-    real34_t counter, tmp2;
+    int16_t finished = 0;
+
+    real34_t loopStep, loopTo, loopFrom, counter, compare, sign;
     real_t resultX, resultR;
 
-    fnToReal(NOPARAM);                                                                  // Convert Counter to Real ccccc.00000
-    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter);                             //       ccccc.fffii
-    convertReal34ToLongInteger(REGISTER_REAL34_DATA(REGISTER_X), iCounter, DEC_ROUND_DOWN);//    ccccc
-                                                                                        // loop control number in the form ccccc.fffii, with 
-                                                                                        // ccccc being the current counter value, 
-                                                                                        // fff the final counter value, 
-                                                                                        // ii the DECREMENT size (default is 1).
-    real34ToIntegralValue(REGISTER_REAL34_DATA(REGISTER_X), &tmp2, DEC_ROUND_DOWN);     //       ccccc
-    real34Subtract(REGISTER_REAL34_DATA(REGISTER_X), &tmp2, &tmp2);                     //           0.fffii
-    real34Multiply(&tmp2, const34_1e6, &tmp2);                                          //      fffii0.
-    tmpi = (uint32_t)(real34ToUInt32(&tmp2) / 10);                                      //       fffii
-    loopFff = (uint16_t)(tmpi / 100);                                                   //         fff
-    loopNn  = (uint16_t)(tmpi - (loopFff * 100));                                       //          ii
-    if(loopNn == 0) {
-      loopNn = 1;
-    }
-
-    uIntToLongInteger(loopFff, iLoopFff);
-
+    fnToReal(NOPARAM);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loopStep);
+    fnDrop(NOPARAM);
+    fnToReal(NOPARAM);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loopTo);
+    fnDrop(NOPARAM);
+    fnToReal(NOPARAM);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loopFrom);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter);
     realCopy(prod ? const_1 : const_0, &resultR);                                       // Initialize real accumulator
 
-    ++currentSolverNestingDepth;
-    setSystemFlag(FLAG_SOLVING);
+    if(real34IsZero(&loopStep) || (real34CompareGreaterThan(&loopTo, &loopFrom) && real34CompareLessEqual(&loopStep, const34_0)) || (real34CompareLessThan(&loopTo, &loopFrom) && real34CompareGreaterEqual(&loopStep, const34_0))) {
+      displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "Counter will not count to destination");
+        moreInfoOnError("In function _programmableiSumProd:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    } else {
+
+      ++currentSolverNestingDepth;
+      setSystemFlag(FLAG_SOLVING);
 
 
-    while(1) {
+      while(lastErrorCode == ERROR_NONE) {
+          hourGlassIconEnabled = true;
+          showHideHourGlass();
 
-        hourGlassIconEnabled = true;
-        showHideHourGlass();
-
-        convertLongIntegerToLongIntegerRegister(iCounter, REGISTER_X);
-        finished = longIntegerCompare(iCounter, iLoopFff) <= 0;                    //Prepare the finished flag if it is entered with zero
-        #if defined(VERBOSE_COUNTER)
-          printLongIntegerToConsole(iCounter," iCounter: "," ");
-          printLongIntegerToConsole(iLoopFff," iLoopFff: "," ");
-        #endif //VERBOSE_COUNTER
-
-        fnToReal(NOPARAM);
-        if(lastErrorCode != ERROR_NONE) {
-          break;
-        }
-        fnFillStack(NOPARAM);
-        dynamicMenuItem = -1;
-        execProgram(label);
-        if(lastErrorCode != ERROR_NONE) {
-          break;
-        }
-        fnToReal(NOPARAM);
-
-
-        if(lastErrorCode != ERROR_NONE) {
-          break;
-        }
-        if(prod) {
-          real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX);
-          realMultiply(&resultR, &resultX, &resultR, &ctxtReal75);
-        }
-        else {
-          real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX);
-          realAdd(&resultR, &resultX, &resultR, &ctxtReal75);
-        }
-
-        #if defined(VERBOSE_COUNTER)
-          printRealToConsole(&resultX," X: ", " ");
-          printRealToConsole(&resultR," X: ", "\n");
-        #endif //VERBOSE_COUNTER
-
-
-        #if defined(DMCP_BUILD)
-          if(keyWaiting()) {
-              showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
+          real34Compare(&counter, &loopTo, &compare);
+          real34Compare(&loopStep, const34_0, &sign);
+          real34Multiply(&compare, &sign, &compare);
+          finished = real34ToInt32(&compare);                       //0 means equal
+          if(finished > 0) {
             break;
           }
-        #endif //DMCP_BUILD
+          real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
+          fnFillStack(NOPARAM);
 
-        if(finished) {
-          break;
-        }
+          dynamicMenuItem = -1;
+          execProgram(label);
+          if(lastErrorCode != ERROR_NONE) {
+            break;
+          }
+          fnToReal(NOPARAM);
+          if(lastErrorCode != ERROR_NONE) {
+            break;
+          }
 
-        longIntegerSubtractUInt(iCounter, loopNn, iCounter);
-    }
+
+          real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX); //Result accumulated
+          if(prod) {
+            realMultiply(&resultR, &resultX, &resultR, &ctxtReal75);
+          }
+          else {
+            realAdd(&resultR, &resultX, &resultR, &ctxtReal75);
+          }
+
+          #if defined(VERBOSE_COUNTER)
+            printf(">>> Finished: %d ", finished);
+            printReal34ToConsole(&counter," Cnt: ", " ");
+            printRealToConsole(&resultX," X: ", " ");
+            printRealToConsole(&resultR," SUM: ", "\n");
+          #endif //VERBOSE_COUNTER
+
+          real34Add(&counter, &loopStep, &counter);
+
+          #if defined(DMCP_BUILD)
+            if(keyWaiting()) {
+                showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
+              break;
+            }
+          #endif //DMCP_BUILD
+
+          if(finished == 0) {
+            break;
+          }
+      } //WHILE
 
 
-    if(lastErrorCode == ERROR_NONE) {
-        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        realToReal34(&resultR, REGISTER_REAL34_DATA(REGISTER_X));
-    }
 
-    temporaryInformation = TI_NO_INFO;
-    if(programRunStop == PGM_WAITING) {
-      programRunStop = PGM_STOPPED;
-    }
-    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 
+
+
+
+      if(lastErrorCode == ERROR_NONE) {
+          reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+          convertRealToReal34ResultRegister(&resultR, REGISTER_X);
+          //realToReal34(&resultR, REGISTER_REAL34_DATA(REGISTER_X));
+      } else {
+        displayCalcErrorMessage(lastErrorCode, ERR_REGISTER_LINE, REGISTER_X);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          sprintf(errorMessage, "Error while calculating");
+          moreInfoOnError("In function _programmableSumProd:", errorMessage, NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      }
+
+      temporaryInformation = TI_NO_INFO;
+      if(programRunStop == PGM_WAITING) {
+        programRunStop = PGM_STOPPED;
+      }
+      adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+    } //MAIN IF
     if((--currentSolverNestingDepth) == 0) {
       clearSystemFlag(FLAG_SOLVING);
     }
-
-    
-    longIntegerFree(iLoopFff);
-    longIntegerFree(iCounter);
-
-
     hourGlassIconEnabled = false;
     showHideHourGlass();
   }

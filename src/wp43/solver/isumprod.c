@@ -46,38 +46,24 @@
 #if !defined(TESTSUITE_BUILD)
   static void _programmableiSumProd(uint16_t label, bool_t prod) {
     longInteger_t resultLi, xLi;
-    longInteger_t paramX, paramY, paramZ, iCounter;
-    longIntegerInit(paramX);
-    longIntegerInit(paramY);
-    longIntegerInit(paramZ);
-    convertLongIntegerRegisterToLongInteger(REGISTER_Z, paramZ); //From
-    convertLongIntegerRegisterToLongInteger(REGISTER_Y, paramY); //To
-    convertLongIntegerRegisterToLongInteger(REGISTER_X, paramX); //Step
+    longInteger_t loopStep, loopTo, loopFrom, iCounter;
+    longIntegerInit(loopStep);
+    longIntegerInit(loopTo);
+    longIntegerInit(loopFrom);
+    convertLongIntegerRegisterToLongInteger(REGISTER_Z, loopFrom);
+    convertLongIntegerRegisterToLongInteger(REGISTER_Y, loopTo);
+    convertLongIntegerRegisterToLongInteger(REGISTER_X, loopStep);
     longIntegerInit(iCounter);
     convertLongIntegerRegisterToLongInteger(REGISTER_Z, iCounter); //Counter iniitial value = From
     longIntegerInit(xLi);
     longIntegerInit(resultLi);
     uIntToLongInteger(prod ? 1 : 0, resultLi);                             //Initialize long integer accumulator
-    bool_t finished = false;
-    
-    longIntegerSubtract(paramY, paramZ, xLi);
-    longIntegerModulo(xLi, paramX, xLi);
-    #if defined(VERBOSE_COUNTER)
-      printLongIntegerToConsole(xLi,"(TO-FROM) MOD (STEP) = "," \n");
-    #endif //VERBOSE_COUNTER
+    int16_t finished = 0;
 
-
-    if(longIntegerIsZero(paramX) || (longIntegerCompare(paramY, paramZ) > 0 && longIntegerCompareUInt(paramX, 0) <=0) || (longIntegerCompare(paramY, paramZ) < 0 && longIntegerCompareUInt(paramX, 0) >=0)) {
+    if(longIntegerIsZero(loopStep) || (longIntegerCompare(loopTo, loopFrom) > 0 && longIntegerCompareUInt(loopStep, 0) <=0) || (longIntegerCompare(loopTo, loopFrom) < 0 && longIntegerCompareUInt(loopStep, 0) >=0)) {
       displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Counter will not count to destination");
-        moreInfoOnError("In function _programmableiSumProd:", errorMessage, NULL, NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    } else
-    if(!longIntegerIsZero(xLi)) {
-      displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "Destination is not a multiple of the counter");
         moreInfoOnError("In function _programmableiSumProd:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     } else {
@@ -90,7 +76,11 @@
         hourGlassIconEnabled = true;
         showHideHourGlass();
 
-        finished = longIntegerCompare(iCounter, paramY) == 0;
+        finished = longIntegerCompare(iCounter, loopTo);            // 0 mean equal
+        finished = finished * longIntegerCompareUInt(loopStep, 0);
+        if(finished > 0) {
+          break;
+        }
 
         convertLongIntegerToLongIntegerRegister(iCounter, REGISTER_X);
         fnFillStack(NOPARAM);
@@ -98,6 +88,7 @@
         #if defined(VERBOSE_COUNTER)
           printRegisterToConsole(REGISTER_X,"[f(",") ");
         #endif //VERBOSE_COUNTER
+
 
         dynamicMenuItem = -1;
         execProgram(label);
@@ -116,7 +107,7 @@
         }
 
 
-        convertLongIntegerRegisterToLongInteger(REGISTER_X, xLi); //Result
+        convertLongIntegerRegisterToLongInteger(REGISTER_X, xLi); //Result accumulated
         if(prod) {
           longIntegerMultiply(resultLi, xLi, resultLi);
         }
@@ -128,7 +119,7 @@
           printLongIntegerToConsole(resultLi,"= "," \n");
         #endif //VERBOSE_COUNTER
 
-        longIntegerAdd(iCounter, paramX, iCounter);
+        longIntegerAdd(iCounter, loopStep, iCounter);
               
 
         #if defined(DMCP_BUILD)
@@ -138,10 +129,14 @@
           }
         #endif //DMCP_BUILD
 
-        if(finished) {
+        if(finished == 0) {
           break;
         }
-      }
+      } //WHILE
+
+
+
+
 
       if(lastErrorCode == ERROR_NONE) {
         convertLongIntegerToLongIntegerRegister(resultLi, REGISTER_X);
@@ -151,30 +146,24 @@
           sprintf(errorMessage, "Error while calculating");
           moreInfoOnError("In function _programmableiSumProd:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-
       }
 
-
-      longIntegerFree(paramX);
-      longIntegerFree(paramY);
-      longIntegerFree(paramZ);
+      longIntegerFree(loopStep);
+      longIntegerFree(loopTo);
+      longIntegerFree(loopFrom);
       longIntegerFree(iCounter);
       longIntegerInit(xLi);
       longIntegerFree(resultLi);
-
-
 
       temporaryInformation = TI_NO_INFO;
       if(programRunStop == PGM_WAITING) {
         programRunStop = PGM_STOPPED;
       }
       adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
-    }
-
+    } //MAIN IF
     if((--currentSolverNestingDepth) == 0) {
       clearSystemFlag(FLAG_SOLVING);
     }
-
     hourGlassIconEnabled = false;
     showHideHourGlass();
   }
