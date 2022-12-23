@@ -33,7 +33,6 @@
                                                   //JMSHOIDISP  displayStackSHOIDISP=3: 1 lines of X-repeats
                                                   //JMSHOIDISP  displayStackSHOIDISP=4: 0 lines of X-repeats
 
-//JMvv
   extern bool_t   doRefreshSoftMenu;                                                                              //dr  
   void     FN_handler();                                                                                          //JM LONGPRESS
   void     Shft_handler();                                                                                        //JM LONGPRESS f/g
@@ -42,9 +41,7 @@
   void     underline(int16_t y);                                                                                  //JM SHIFT LINE
   void     clear_ul(void);                                                                                        //JMUL
   void     clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys);               //JMOLD
-//JM^^
-
-  void       fnScreenDump                       (uint16_t unusedButMandatoryParameter);
+  void     fnScreenDump                       (uint16_t unusedButMandatoryParameter);
 
 void       fnClLcd                            (uint16_t unusedButMandatoryParameter);
 void       fnPixel                            (uint16_t unusedButMandatoryParameter);
@@ -116,7 +113,7 @@ void       fnAGraph                           (uint16_t regist);
 
   void     execTimerApp                         (uint16_t timerType);
   #if !defined(TESTSUITE_BUILD)
-//JM vv
+
   void     refreshFn                            (uint16_t timerType);                                           //dr - general timeout handler 
 //  uint8_t  combinationFonts;    //TO REMOVE from .h
 //  uint8_t  maxiC;               //TO REMOVE from .h                                                                                            //JM global flags for character control:  enlarged letters
@@ -148,12 +145,12 @@ void       fnAGraph                           (uint16_t regist);
   uint32_t stringWidthC43                     (const char *str,    int mode, int comp,                                                bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows);
   char *stringAfterPixelsC43                  (const char *str,    int mode, int comp, uint32_t width,                                bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows);
   uint32_t stringWidthWithLimitC43            (const char *str,    int mode, int comp, uint32_t limitWidth,                           bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows); // like stringWidthC43 but don't check anymore after once exceeded limitWidth
-#ifdef TEXT_MULTILINE_EDIT
-  uint32_t showStringEdC43                    (uint32_t lastline, int16_t offset, int16_t edcursor, const char *string, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, bool_t noshow);
-  void findOffset(void);
-  void incOffset(void);
-
-#endif //TEXT_MULTILINE_EDIT
+  
+  #ifdef TEXT_MULTILINE_EDIT
+    uint32_t showStringEdC43                    (uint32_t lastline, int16_t offset, int16_t edcursor, const char *string, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, bool_t noshow1);
+    void findOffset(void);
+    void incOffset(void);
+  #endif //TEXT_MULTILINE_EDIT
                                                                                                                //JM ^^
   void     underline_softkey                  (int16_t xSoftkey, int16_t ySoftKey, bool_t dontclear);          //JM LONGPRESS
   void     refresh_gui                        (void);                                                          //JM
@@ -161,7 +158,6 @@ void       fnAGraph                           (uint16_t regist);
   #define  force 1
   #define  timed 2
   void     force_refresh(uint8_t mode);                                                          //JM SCREEN
-//JM^^
 
   void     refreshScreen                      (void);
   //void     invertPixel                        (uint32_t x, uint32_t y);
@@ -178,6 +174,7 @@ void       fnAGraph                           (uint16_t regist);
    * \param[in] showEndingCols  Display the ending empty columns
    * \return x coordinate for the next glyph
    */
+  uint32_t showStringEnhanced                 (const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, uint8_t compress1, uint8_t raise1, uint8_t noShow1);
   uint32_t showString                         (const char *str,   const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols);
     
   /**
