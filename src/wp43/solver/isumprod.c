@@ -46,21 +46,19 @@
 #if !defined(TESTSUITE_BUILD)
   static void _programmableiSumProd(uint16_t label, bool_t prod) {
     longInteger_t resultLi, xLi;
-    longInteger_t loopStep, loopTo, loopFrom, iCounter;
+    longInteger_t loopStep, loopTo, iCounter;
     longIntegerInit(loopStep);
     longIntegerInit(loopTo);
-    longIntegerInit(loopFrom);
-    convertLongIntegerRegisterToLongInteger(REGISTER_Z, loopFrom);
+    longIntegerInit(iCounter);
     convertLongIntegerRegisterToLongInteger(REGISTER_Y, loopTo);
     convertLongIntegerRegisterToLongInteger(REGISTER_X, loopStep);
-    longIntegerInit(iCounter);
-    convertLongIntegerRegisterToLongInteger(REGISTER_Z, iCounter); //Counter iniitial value = From
+    convertLongIntegerRegisterToLongInteger(REGISTER_Z, iCounter); //Loopfrom //Counter initial value = From
     longIntegerInit(xLi);
     longIntegerInit(resultLi);
     uIntToLongInteger(prod ? 1 : 0, resultLi);                             //Initialize long integer accumulator
     int16_t finished = 0;
 
-    if(longIntegerIsZero(loopStep) || (longIntegerCompare(loopTo, loopFrom) > 0 && longIntegerCompareUInt(loopStep, 0) <=0) || (longIntegerCompare(loopTo, loopFrom) < 0 && longIntegerCompareUInt(loopStep, 0) >=0)) {
+    if(longIntegerIsZero(loopStep) || (longIntegerCompare(loopTo, iCounter) > 0 && longIntegerCompareUInt(loopStep, 0) <=0) || (longIntegerCompare(loopTo, iCounter) < 0 && longIntegerCompareUInt(loopStep, 0) >=0)) {
       displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Counter will not count to destination");
@@ -150,7 +148,6 @@
 
       longIntegerFree(loopStep);
       longIntegerFree(loopTo);
-      longIntegerFree(loopFrom);
       longIntegerFree(iCounter);
       longIntegerInit(xLi);
       longIntegerFree(resultLi);
