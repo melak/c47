@@ -15,16 +15,20 @@
  */
 
 /********************************************//**
- * \file solver.h
+ * \file isumprod.h
  ***********************************************/
-#if !defined(SOLVER_H)
-  #define SOLVER_H
+#if !defined(ISUMPROD_H)
+  #define ISUMPROD_H
 
-  #include "differentiate.h"
-  #include "equation.h"
-  #include "integrate.h"
-  #include "solve.h"
-  #include "sumprod.h"
-  #include "isumprod.h"
-  #include "tvm.h"
-#endif // !SOLVER_H
+  #include <stdint.h>
+
+//====================================
+// Triadic function integer only sum and product functions
+// Z : Longinteger counter step increment
+// Y : Longinteger start value (inclusive)
+// X : Longinteger end value (inclusive)
+//====================================
+
+  void fnProgrammableiSum    (uint16_t label);
+  void fnProgrammableiProduct(uint16_t label);
+#endif // !ISUMPROD_H

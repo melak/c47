@@ -202,6 +202,7 @@ wp43_src = files(
   'solver/integrate.c',
   'solver/solve.c',
   'solver/sumprod.c',
+  'solver/isumprod.c',
   'solver/tvm.c',
   'sort.c',
   'stack.c',
