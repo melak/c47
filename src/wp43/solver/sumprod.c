@@ -49,7 +49,7 @@
   static void _programmableSumProd(uint16_t label, bool_t prod) {
     int16_t finished = 0;
 
-    real34_t loopStep, loopTo, loopFrom, counter, compare, sign;
+    real34_t loopStep, loopTo, counter, compare, sign;
     real_t resultX, resultR;
 
     fnToReal(NOPARAM);
@@ -59,11 +59,10 @@
     real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loopTo);
     fnDrop(NOPARAM);
     fnToReal(NOPARAM);
-    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loopFrom);
-    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter); //Loopfrom
     realCopy(prod ? const_1 : const_0, &resultR);                                       // Initialize real accumulator
 
-    if(real34IsZero(&loopStep) || (real34CompareGreaterThan(&loopTo, &loopFrom) && real34CompareLessEqual(&loopStep, const34_0)) || (real34CompareLessThan(&loopTo, &loopFrom) && real34CompareGreaterEqual(&loopStep, const34_0))) {
+    if(real34IsZero(&loopStep) || (real34CompareGreaterThan(&loopTo, &counter) && real34CompareLessEqual(&loopStep, const34_0)) || (real34CompareLessThan(&loopTo, &counter) && real34CompareGreaterEqual(&loopStep, const34_0))) {
       displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Counter will not count to destination");
