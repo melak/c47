@@ -27,6 +27,7 @@
 #include "flags.h"
 #include "integers.h"
 #include "items.h"
+#include "mathematics/comparisonReals.h"
 #include "mathematics/integerPart.h"
 #include "mathematics/iteration.h"
 #include "programming/lblGtoXeq.h"
@@ -42,119 +43,126 @@
 #include "timer.h"
 #include "wp43.h"
 
+
+
 #if !defined(TESTSUITE_BUILD)
   static void _programmableSumProd(uint16_t label, bool_t prod) {
-    real34_t counter, result;
-    longInteger_t resultLi, xLi;
-    bool_t finished = false;
-    bool_t isInteger = getRegisterDataType(REGISTER_X) == dtLongInteger;   //Set processing to real, if counter is not long integer. A way to force a real result.
+    int16_t finished = 0;
 
-    real34Copy(prod ? const34_1 : const34_0, &result);                     //Initialize real accumulator
-    longIntegerInit(resultLi);
-    longIntegerInit(xLi);
-    uIntToLongInteger(prod ? 1 : 0, resultLi);                             //Initialize long integer accumulator
-    uIntToLongInteger(0, xLi);
+    real34_t loopStep, loopTo, loopFrom, counter, compare, sign;
+    real_t resultX, resultR;
+
+    fnToReal(NOPARAM);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loopStep);
+    fnDrop(NOPARAM);
+    fnToReal(NOPARAM);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loopTo);
+    fnDrop(NOPARAM);
+    fnToReal(NOPARAM);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loopFrom);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter);
+    realCopy(prod ? const_1 : const_0, &resultR);                                       // Initialize real accumulator
+
+    if(real34IsZero(&loopStep) || (real34CompareGreaterThan(&loopTo, &loopFrom) && real34CompareLessEqual(&loopStep, const34_0)) || (real34CompareLessThan(&loopTo, &loopFrom) && real34CompareGreaterEqual(&loopStep, const34_0))) {
+      displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "Counter will not count to destination");
+        moreInfoOnError("In function _programmableiSumProd:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    } else {
+
+      ++currentSolverNestingDepth;
+      setSystemFlag(FLAG_SOLVING);
 
 
-    ++currentSolverNestingDepth;
-    setSystemFlag(FLAG_SOLVING);
+      while(lastErrorCode == ERROR_NONE) {
+          hourGlassIconEnabled = true;
+          showHideHourGlass();
 
-    while(1) {
-      hourGlassIconEnabled = true;
-      showHideHourGlass();
+          real34Compare(&counter, &loopTo, &compare);
+          real34Compare(&loopStep, const34_0, &sign);
+          real34Multiply(&compare, &sign, &compare);
+          finished = real34ToInt32(&compare);                       //0 means equal
+          if(finished > 0) {
+            break;
+          }
+          real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
+          fnFillStack(NOPARAM);
 
-      fnToReal(NOPARAM);                                                   //Force counter in X to real. I don't think the counter will change type after the loop started, so this could be moved to just before the loop start
-      if(lastErrorCode != ERROR_NONE) {
-        break;
-      }
-      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter);
-      fnIp(NOPARAM);
-      finished = longIntegerIsZeroRegister(REGISTER_X);                    //Prepare the finished flag if it is entered with zero
-      fnFillStack(NOPARAM);
+          dynamicMenuItem = -1;
+          execProgram(label);
+          if(lastErrorCode != ERROR_NONE) {
+            break;
+          }
+          fnToReal(NOPARAM);
+          if(lastErrorCode != ERROR_NONE) {
+            break;
+          }
 
-      dynamicMenuItem = -1;
-      execProgram(label);
-      if(lastErrorCode != ERROR_NONE) {
-        break;
-      }
 
-      if(getRegisterDataType(REGISTER_X) == dtShortInteger) {
-        convertShortIntegerRegisterToLongIntegerRegister(REGISTER_X,REGISTER_X);
-      }
+          real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX); //Result accumulated
+          if(prod) {
+            realMultiply(&resultR, &resultX, &resultR, &ctxtReal75);
+          }
+          else {
+            realAdd(&resultR, &resultX, &resultR, &ctxtReal75);
+          }
 
-      if(isInteger && getRegisterDataType(REGISTER_X) == dtReal34) {       //Latch method over to Real once any Real is calculated by the function
-        isInteger = false;
-        real_t xReal;
-        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        convertLongIntegerToReal(resultLi, &xReal, &ctxtReal75);
-        realToReal34(&xReal, &result);
-      }
+          #if defined(VERBOSE_COUNTER)
+            printf(">>> Finished: %d ", finished);
+            printReal34ToConsole(&counter," Cnt: ", " ");
+            printRealToConsole(&resultX," X: ", " ");
+            printRealToConsole(&resultR," SUM: ", "\n");
+          #endif //VERBOSE_COUNTER
 
-      if(!isInteger) {
-        fnToReal(NOPARAM);
-        if(lastErrorCode != ERROR_NONE) {
-          break;
-        }
-        if(prod) {
-          real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
-        }
-        else {
-          real34Add(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
-        }
+          real34Add(&counter, &loopStep, &counter);
+
+          #if defined(DMCP_BUILD)
+            if(keyWaiting()) {
+                showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
+              break;
+            }
+          #endif //DMCP_BUILD
+
+          if(finished == 0) {
+            break;
+          }
+      } //WHILE
+
+
+
+
+
+
+
+      if(lastErrorCode == ERROR_NONE) {
+          reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+          convertRealToReal34ResultRegister(&resultR, REGISTER_X);
+          //realToReal34(&resultR, REGISTER_REAL34_DATA(REGISTER_X));
       } else {
-        if(prod) {
-          convertLongIntegerRegisterToLongInteger(REGISTER_X, xLi);
-          longIntegerMultiply(resultLi, xLi, resultLi);
-        }
-        else {
-          convertLongIntegerRegisterToLongInteger(REGISTER_X, xLi);
-          longIntegerAdd(resultLi, xLi, resultLi);
-        }
+        displayCalcErrorMessage(lastErrorCode, ERR_REGISTER_LINE, REGISTER_X);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          sprintf(errorMessage, "Error while calculating");
+          moreInfoOnError("In function _programmableSumProd:", errorMessage, NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
 
-      #if defined(DMCP_BUILD)
-        if(keyWaiting()) {
-            showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
-          break;
-        }
-      #endif //DMCP_BUILD
-
-      if(finished) {
-        break;
+      temporaryInformation = TI_NO_INFO;
+      if(programRunStop == PGM_WAITING) {
+        programRunStop = PGM_STOPPED;
       }
-      fnDse(REGISTER_X);
-      finished = (temporaryInformation != TI_TRUE);
-    }
-
-    if(lastErrorCode == ERROR_NONE) {
-      if(!isInteger) {
-        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        real34Copy(&result, REGISTER_REAL34_DATA(REGISTER_X));
-      } else {
-        convertLongIntegerToLongIntegerRegister(resultLi, REGISTER_X);
-      }
-    }
-
-    longIntegerFree(resultLi);
-    longIntegerFree(xLi);
-
-    temporaryInformation = TI_NO_INFO;
-    if(programRunStop == PGM_WAITING) {
-      programRunStop = PGM_STOPPED;
-    }
-    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
-
+      adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+    } //MAIN IF
     if((--currentSolverNestingDepth) == 0) {
       clearSystemFlag(FLAG_SOLVING);
     }
-
     hourGlassIconEnabled = false;
     showHideHourGlass();
   }
 
-  void _checkArgument(uint16_t label, bool_t prod) {
+
+
+  static void _checkArgument(uint16_t label, bool_t prod) {
     if(label >= FIRST_LABEL && label <= LAST_LABEL) {
       _programmableSumProd(label, prod);
     }
@@ -188,7 +196,7 @@
         displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "string '%s' is not a named label", buf);
-          moreInfoOnError("In function fnPgmSlv:", errorMessage, NULL, NULL);
+          moreInfoOnError("In function _checkArgument:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
       else {
@@ -199,7 +207,7 @@
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "unexpected parameter %u", label);
-        moreInfoOnError("In function fnPgmSlv:", errorMessage, NULL, NULL);
+        moreInfoOnError("In function _checkArgument:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }
