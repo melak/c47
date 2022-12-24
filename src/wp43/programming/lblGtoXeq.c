@@ -839,11 +839,11 @@ void runProgram(bool_t singleStep, uint16_t menuLabel) {
       if(!nestedEngine) {
         int key = key_pop();
         key = convertKeyCode(key);
-        if(key == 36 || key == 37) {
+        if(key == 36 || key == 33) {  //JM
           programRunStop = PGM_WAITING;
           refreshScreen();
           lcd_refresh();
-          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, 60000);
+          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, PROGRAM_KB_ACTV);
           wait_for_key_release(0);
           key_pop();
           break;
@@ -875,7 +875,7 @@ stopProgram:
     showHideHourGlass();
       #if defined(DMCP_BUILD)
       lcd_refresh();
-      fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, FAST_SCREEN_REFRESH_PERIOD+50);
+      fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, PROGRAM_STOP);
     #else // !DMCP_BUILD
       refreshLcd(NULL);
     #endif // DMCP_BUILD

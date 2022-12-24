@@ -1275,6 +1275,17 @@ uint8_t  displaymode = stdNoEnlarge;
     return x;
   }
 
+
+  uint32_t showStringEnhanced(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, uint8_t compress1, uint8_t raise1, uint8_t noShow1) {
+    compressString = compress1;
+    raiseString = raise1;
+    noShow = noShow1;    
+    return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols);
+    compressString = 0;
+    raiseString = 0;
+    noShow = 0;    
+  }
+
   uint32_t showString(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
     return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols);
   }
@@ -1456,7 +1467,7 @@ uint8_t x_offset;      //pixels 40
 uint16_t current_cursor_x = 0;
 uint16_t current_cursor_y = 0;
 #ifdef TEXT_MULTILINE_EDIT
-uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, const char *string, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, bool_t noshow) {
+uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, const char *string, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, bool_t noshow1) {
    uint16_t ch, charCode, lg;
   int16_t  glyphId;
   bool_t   slc, sec;
@@ -1515,7 +1526,7 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
   orglastlines = lastline;
 
   if(lastline > y_offset) {
-    if(!noshow) clearScreen_old(false, true,false);
+    if(!noshow1) clearScreen_old(false, true,false);
     x = x_offset; 
     y = (yincr-1) + y_offset * (yincr-1);
   }
@@ -1549,8 +1560,8 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
        current_cursor_y = y;
        tmpxy = y-1;
        while (tmpxy < y + (yincr+1)) {
-         if(!noshow) setBlackPixel(x,tmpxy);
-         if(!noshow) setBlackPixel(x+1,tmpxy);
+         if(!noshow1) setBlackPixel(x,tmpxy);
+         if(!noshow1) setBlackPixel(x+1,tmpxy);
          tmpxy++;
        }
        x+=2;
@@ -1658,17 +1669,14 @@ void refresh_gui(void) {
 bool_t halfSecTick = false;
 void force_refresh(uint8_t mode) {
 
-  if(mode == force || ((((uint16_t)getUptimeMs()) & 0x0200) == 0x0200) == halfSecTick) {  //Restrict refresh to once per half second. Use this minimally, due to extreme slow response.
+  if(mode == force || ((((uint16_t)(getUptimeMs()) >> 4) & 0x0020) == 0x0020) == halfSecTick) {  //Restrict refresh to once per half second. Use this minimally, due to extreme slow response.
     halfSecTick = !halfSecTick;
 
     #ifdef PC_BUILD
       gtk_widget_queue_draw(screen);
-
-    //FULL UPDATE (UGLY)
-    #ifdef FULLUPDATE
-       refresh_gui();
-    #endif
-
+      #ifdef FULLUPDATE // (UGLY)
+         refresh_gui();
+      #endif //FULLUPDATE (UGLY)
     #endif
     #if DMCP_BUILD
       lcd_forced_refresh();
@@ -1677,6 +1685,32 @@ void force_refresh(uint8_t mode) {
 }
 
 
+
+char tmps[30];
+uint16_t old_time = 0;
+void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {  
+
+  uint16_t new_time = (uint16_t)(getUptimeMs());
+  if((mode != timed) || (((new_time - old_time) & 0xFE00) != 0 )) { //0x0200 || 0.512 second refresh interval
+    old_time = new_time;
+
+    refreshScreen();
+    //  lcd_refresh();
+    fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV); //PROGRAM_KB_ACTV
+    sprintf(tmps, "%s %6d ",txt,loop);
+    showString(tmps, &standardFont, 20, 145-mode*20, vmNormal, false, false);  //note: 1 line up for "force"
+
+    #ifdef PC_BUILD
+      gtk_widget_queue_draw(screen);
+      #ifdef FULLUPDATE // (UGLY)
+         refresh_gui();
+      #endif //FULLUPDATE (UGLY)
+    #endif
+    #if DMCP_BUILD
+      lcd_forced_refresh();
+    #endif
+  }
+}
 
 
 
