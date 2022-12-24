@@ -57,7 +57,7 @@
 /*                                          <---------------------------------------------------------------------- 6 f shifted functions ------------------------------------------------------------------------->  */
 /*                                          <---------------------------------------------------------------------- 6 g shifted functions ------------------------------------------------------------------------->  */
 TO_QSPI const int16_t menu_ADV[]         = { ITM_SOLVE,                     ITM_SLVQ,                   ITM_FQX,                  ITM_PIn,               ITM_SIGMAn,                  -MNU_Sfdx,
-                                             ITM_PGMSLV,                    ITM_NULL,                   ITM_FDQX,                 ITM_NULL,              ITM_NULL,                    ITM_PGMINT                    };
+                                             ITM_PGMSLV,                    ITM_NULL,                   ITM_FDQX,                 ITM_iPIn,              ITM_iSIGMAn,                 ITM_PGMINT                    };
 
 TO_QSPI const int16_t menu_Sfdx[]        = { ITM_NULL,                      ITM_DRAW,                   VAR_ACC,                  VAR_LLIM,              VAR_ULIM,                    ITM_INTEGRAL                  };
 
@@ -479,20 +479,8 @@ TO_QSPI const int16_t menu_Eim[]         = { ITM_EQ_LEFT,                   ITM_
                                              ITM_ALOG_SYMBOL,               ITM_ROOT_SIGN,              ITM_LEFT_PARENTHESIS,     ITM_RIGHT_PARENTHESIS, ITM_EQUAL,                  -MNU_CATALOG,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                     
 
-                                             ITM_VERTICAL_BAR,   
-                                             ITM_DELTA,          
-                                             ITM_pi,             
-                                             ITM_SIN_SIGN,       
-                                             ITM_COS_SIGN,
-                                             ITM_TAN_SIGN,
-                                             
-                                             ITM_SIGMA,     
-                                             ITM_CIRCUMFLEX,
-                                             ITM_ROOT_SIGN, 
-                                             ITM_LG_SIGN,   
-                                             ITM_LN_SIGN,   
-                                             ITM_alpha
-                                         };
+                                             ITM_VERTICAL_BAR,              ITM_DELTA,                  ITM_pi,                   ITM_SIN_SIGN,          ITM_COS_SIGN,                ITM_TAN_SIGN,
+                                             ITM_SIGMA,                     ITM_CIRCUMFLEX,             ITM_ROOT_SIGN,            ITM_LG_SIGN,           ITM_LN_SIGN,                 ITM_alpha                     };
 
 TO_QSPI const int16_t menu_Timer[]       = { ITM_TIMER_ADD,                 ITM_NULL,                   ITM_NULL,                 ITM_TIMER_0_1S,        ITM_NULL,                    ITM_TIMER_RESET               };
 
@@ -581,7 +569,7 @@ TO_QSPI const int16_t menu_HOME[]     = { //JM
                                              ITM_SF,              ITM_CF,          ITM_RL,            ITM_RR,           ITM_RMD,         ITM_IDIV,                           //JM HOME
 /*HOME-2*/                                                                                                                                                                     //JM HOME
 /*2*18*/                                     ITM_DRG,             ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,         ITM_CC,                         //JM HOME
-                                             -MNU_CONST,         -MNU_CPX,        -MNU_EXP,          -MNU_XEQ,         -MNU_MyMenu,      CC_EE,                            //JM HOME
+                                             -MNU_CONST,         -MNU_CPX,        -MNU_EXP,          -MNU_XXEQ,        -MNU_MyMenu,      CC_EE,                            //JM HOME
                                              ITM_DEG2,            ITM_RAD2,        ITM_GRAD2,         ITM_op_j,         ITM_RECT,        ITM_POLAR, 
 
 
