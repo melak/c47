@@ -53,7 +53,7 @@
 void fnGoto(uint16_t label) {
   if(tam.mode || calcMode != CM_PEM) {
     if(dynamicMenuItem >= 0) {
-      fnGotoDot(label);
+      goToGlobalStep(label);
       return;
     }
 
@@ -67,14 +67,14 @@ void fnGoto(uint16_t label) {
             currentStep.any = labelList[lbl].labelPointer.any - 1;
           }
           else {
-            fnGotoDot(-labelList[lbl].step);
+            goToGlobalStep(-labelList[lbl].step);
           }
           return;
         }
         else if(labelList[lbl].program == -currentProgramNumber && labelList[lbl].step < 0) { // Is in the current program and is a local label and is the searched label
           readStepInFlashPgmLibrary((uint8_t *)(tmpString + 1600), 400, labelList[lbl].labelPointer.flash);
           if(*((uint8_t *)(tmpString + 1600)) == label) {
-            fnGotoDot(labelList[lbl].step);
+            goToGlobalStep(labelList[lbl].step);
             return;
           }
         }
@@ -93,7 +93,7 @@ void fnGoto(uint16_t label) {
     }
     else if(label >= FIRST_LABEL && label <= LAST_LABEL) { // Global named label
       if((label - FIRST_LABEL) < numberOfLabels) {
-        fnGotoDot((uint16_t)((int16_t)labelList[label - FIRST_LABEL].step * (labelList[label - FIRST_LABEL].program < 0 ? -1 : 1)));
+        goToGlobalStep((int16_t)labelList[label - FIRST_LABEL].step * (labelList[label - FIRST_LABEL].program < 0 ? -1 : 1));
         return;
       }
       else {
@@ -119,7 +119,7 @@ void fnGoto(uint16_t label) {
 
 
 
-void fnGotoDot(uint16_t globalStepNumber) {
+void goToGlobalStep(int32_t step) {
   if(dynamicMenuItem >= 0) {
     uint8_t *labelName = (uint8_t *)dynmenuGetLabel(dynamicMenuItem);
 
@@ -152,10 +152,10 @@ void fnGotoDot(uint16_t globalStepNumber) {
         }
         if(c == len) {
           if(labelList[lbl].program < 0) {
-            globalStepNumber = (uint16_t)(-labelList[lbl].step);
+            step = -labelList[lbl].step;
           }
           else {
-            globalStepNumber = labelList[lbl].step;
+            step = labelList[lbl].step;
           }
           break;
         }
@@ -163,19 +163,19 @@ void fnGotoDot(uint16_t globalStepNumber) {
     }
   }
 
-  defineCurrentProgramFromGlobalStepNumber((int16_t)globalStepNumber);
-  currentLocalStepNumber = abs((int16_t)globalStepNumber) - abs(programList[currentProgramNumber - 1].step) + 1;
+  defineCurrentProgramFromGlobalStepNumber(step);
+  currentLocalStepNumber = abs(step) - abs(programList[currentProgramNumber - 1].step) + 1;
 
   pgmPtr_t stepPointer = beginOfCurrentProgram;
-  globalStepNumber = 1;
+  step = 1;
   while(true) {
-    if(globalStepNumber == currentLocalStepNumber) {
+    if(step == currentLocalStepNumber) {
       currentStep.any = stepPointer.any;
       break;
     }
 
     stepPointer = findNextStep(stepPointer);
-    globalStepNumber++;
+    step++;
   }
 
   if(currentLocalStepNumber >= 3) {
@@ -195,6 +195,25 @@ void fnGotoDot(uint16_t globalStepNumber) {
     firstDisplayedStep.any = beginOfCurrentProgram.any;
   }
 }
+
+
+
+void goToPgmStep(uint16_t program, uint16_t step) {
+  int32_t globalStepNumber = programList[program - 1].step;
+  if(globalStepNumber < 0) { // flash memory
+    goToGlobalStep(globalStepNumber - step + 1);
+  }
+  else { // RAM
+    goToGlobalStep(globalStepNumber + step - 1);
+  }
+}
+
+
+
+void fnGotoDot(uint16_t globalStepNumber) {
+  goToGlobalStep((int16_t)globalStepNumber);
+}
+
 
 
 
@@ -259,7 +278,7 @@ void fnReturn(uint16_t skip) {
     }
     else {
       uint16_t returnGlobalStepNumber = currentReturnLocalStep + programList[currentReturnProgramNumber - 1].step; // the next step
-      fnGotoDot(returnGlobalStepNumber);
+      goToGlobalStep(returnGlobalStepNumber);
     }
 
     if(skip > 0 && (*currentStep.ram != ((ITM_END >> 8) | 0x80) || *(currentStep.ram + 1) != (ITM_END & 0xff)) && (*currentStep.ram != 255 || *(currentStep.ram + 1) != 255)) {
@@ -282,7 +301,7 @@ void fnReturn(uint16_t skip) {
 
   /* Not in a subroutine */
   else {
-    fnGotoDot(programList[currentProgramNumber - 1].step);
+    goToPgmStep(currentProgramNumber, 1);
     if(currentNumberOfLocalRegisters > 0) {
       allocateLocalRegisters(0);
     }
