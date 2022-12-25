@@ -100,6 +100,9 @@
 
 #define VERBOSE_LEVEL -1              //JM -1 no text   0 = very little text; 1 = essential text; 2 = extra debugging: on calc screen
 
+#define VERBOSE_COUNTER               //PI and SIGMA functions
+#undef  VERBOSE_COUNTER
+
 #define PC_BUILD_TELLTALE            //JM verbose on PC: jm_show_comment
 #undef  PC_BUILD_TELLTALE
 
@@ -143,7 +146,7 @@
 #undef BUFFER_KEY_COUNT
 
 #define BUFFER_SIZE 2             //dr muss 2^n betragen (8, 16, 32, 64 ...)
-//* Longpress repeat 
+//* Longpress repeat
 #define FUNCTION_NOPTIME   800   //JM SCREEN NOP TIMEOUT FOR FIRST 15 FUNCTIONS
 
 #define JM_SHIFT_TIMER     4000  //ms TO_FG_TIMR
@@ -172,7 +175,7 @@
 
 //wrapping editor
 #define  combinationFontsDefault 2  //JM 0 = no large font; 1 = enlarged standardfont; 2 = combination font enlargement
-                                    //JM for text wrapping editor. 
+                                    //JM for text wrapping editor.
                                     //JM Combintionfonts uses large numericfont characters, and if glyph not available then takes standardfont and enlarges it
                                     //JM Otherwise, full enlarged standardfont is used.
 
@@ -647,7 +650,7 @@ typedef enum {
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
 
 // Number of constants
-#define NUMBER_OF_CONSTANTS_39                   201+1   //JM 2 additionalconstants
+#define NUMBER_OF_CONSTANTS_39                   202+1   //JM 2 additionalconstants
 #define NUMBER_OF_CONSTANTS_51                    39
 #define NUMBER_OF_CONSTANTS_1071                   1
 #define NUMBER_OF_CONSTANTS_34                    44
@@ -837,6 +840,13 @@ typedef enum {
 #define TI_1ST_DERIVATIVE                         54
 #define TI_2ND_DERIVATIVE                         55
 #define TI_KEYS                                   56
+#define TI_MEDIANX_MEDIANY                        57
+#define TI_Q1X_Q1Y                                58
+#define TI_Q3X_Q3Y                                59
+#define TI_MADX_MADY                              60
+#define TI_IQRX_IQRY                              61
+#define TI_RANGEX_RANGEY                          62
+#define TI_PCTILEX_PCTILEY                        63
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed

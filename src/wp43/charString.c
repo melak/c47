@@ -30,7 +30,7 @@
 
 
 
-int16_t stringWidth(const char *str, const font_t *font, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows) {
+static void _calculateStringWidth(const char *str, const font_t *font, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows, int16_t *width, const char **resultStr) {
   int16_t ch, numPixels, charCode, glyphId;
   const glyph_t *glyph;
   bool_t  firstChar;
@@ -88,7 +88,8 @@ int16_t stringWidth(const char *str, const font_t *font, bool_t withLeadingEmpty
         sprintf(errorMessage, commonBugScreenMessages[bugMsgValueReturnedByFindGlyph], "stringWidth", glyphId);
         displayBugScreen(errorMessage);
       #endif // GENERATE_CATALOGS
-      return 0;
+      *width = 0;
+      return;
     }
 
     numPixels += glyph->colsGlyph + glyph->colsAfterGlyph;
@@ -101,12 +102,44 @@ int16_t stringWidth(const char *str, const font_t *font, bool_t withLeadingEmpty
     else {
       numPixels += glyph->colsBeforeGlyph;
     }
+
+    if(resultStr != NULL) { // for stringAfterPixels
+      if(numPixels > *width) {
+        break;
+      }
+      else {
+        *resultStr = str + ch;
+      }
+    }
   }
 
   if(glyph != NULL && withEndingEmptyRows == false) {
     numPixels -= glyph->colsAfterGlyph;
+    if(resultStr != NULL && numPixels <= *width) { // for stringAfterPixels
+      if((**resultStr) & 0x80) {
+        *resultStr += 2;
+      }
+      else if((**resultStr) != 0) {
+        *resultStr += 1;
+      }
+    }
   }
-  return numPixels;
+  *width = numPixels;
+  return;
+}
+
+
+int16_t stringWidth(const char *str, const font_t *font, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows) {
+  int16_t width = 0;
+  _calculateStringWidth(str, font, withLeadingEmptyRows, withEndingEmptyRows, &width, NULL);
+  return width;
+}
+
+
+char *stringAfterPixels(const char *str, const font_t *font, int16_t width, bool_t withLeadingEmptyRows, bool_t withEndingEmptyRows) {
+  const char *resultStr = str;
+  _calculateStringWidth(str, font, withLeadingEmptyRows, withEndingEmptyRows, &width, &resultStr);
+  return (char *)resultStr;
 }
 
 

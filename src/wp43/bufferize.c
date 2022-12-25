@@ -32,9 +32,9 @@
 #include "c43Extensions/jm.h"
 #include "c43Extensions/keyboardTweak.h"
 #include "mathematics/comparisonReals.h"
+#include "mathematics/matrix.h"
 #include "mathematics/toRect.h"
 #include "mathematics/wp34s.h"
-#include "matrix.h"
 #include "programming/manage.h"
 #include "c43Extensions/radioButtonCatalog.h"
 #include "registers.h"
@@ -44,7 +44,9 @@
 #include "softmenus.h"
 #include "sort.h"
 #include "stack.h"
+#include "statusBar.h"
 #include "timer.h"
+#include "ui/matrixEditor.h"
 #include "ui/tam.h"
 #include <string.h>
 
@@ -258,20 +260,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
 
 
-
-#ifndef TESTSUITE_BUILD                          //JMvv
-void light_ASB_icon(void) {
-  lcd_fill_rect(X_ALPHA_MODE,18,9,2,0xFF);
-  force_refresh();
-}
-
-void kill_ASB_icon(void) {
-  lcd_fill_rect(X_ALPHA_MODE,18,9,2,0);
-  force_refresh();
-}
-#endif                                           //JM^^
-
-
   void resetAlphaSelectionBuffer(void) {
     lgCatalogSelection = 0;
     asmBuffer[0] = 0;
@@ -281,7 +269,6 @@ void kill_ASB_icon(void) {
       kill_ASB_icon();
     #endif // TESTSUITE_BUILD                       //JM^^
   }
-
 
 
 
@@ -361,20 +348,20 @@ void kill_ASB_icon(void) {
           }
         }
         else if (stringByteLength(aimBuffer) <= AIM_BUFFER_LENGTH-1 &&
-                 stringWidthC43(aimBuffer, 0 ,nocompress, true, true) < SCREEN_WIDTH * MAXLINES - 16 //0 means small standard font
+                 stringWidthWithLimitC43(aimBuffer, stdNoEnlarge, nocompress, SCREEN_WIDTH * MAXLINES - 16, true, true) < SCREEN_WIDTH * MAXLINES - 16 //0 means small standard font
         ) {    //JM
 #ifdef TEXT_MULTILINE_EDIT
           //JMCURSOR vv ADD THE CHARACTER MID-STRING =======================================================
-          uint16_t ix = 0; 
+          uint16_t ix = 0;
           uint16_t in = 0;
           while (ix<T_cursorPos && in<T_cursorPos) {              //search the ix position in aimBuffer before the cursor
             in = stringNextGlyphNoEndCheck_JM(aimBuffer, in);                  //find the in position in aimBuffer which is then the cursor position
-            ix++;  
+            ix++;
           }
           T_cursorPos = in;
           char ixaa[AIM_BUFFER_LENGTH];                           //prepare temporary aimBuffer
           xcopy(ixaa, aimBuffer,in);                              //copy everything up to the cursor position
-          ixaa[in]=0;                                             //stop new buffer at cursor position to be able to insert new character 
+          ixaa[in]=0;                                             //stop new buffer at cursor position to be able to insert new character
 
           //          strcat(ixaa,indexOfItems[item].itemSoftmenuName);       //add new character
           uint16_t nq = stringByteLength(indexOfItems[item].itemSoftmenuName);
@@ -934,7 +921,7 @@ void kill_ASB_icon(void) {
           case ITM_Kk :
           case ITM_Ek:
           case ITM_ARG:
-#endif //SAVE_SPACE_DM42_11          
+#endif //SAVE_SPACE_DM42_11
           case ITM_op_a :                //C43
           case ITM_op_a2:                //C43
           case ITM_op_j :                //C43
@@ -1634,7 +1621,7 @@ void kill_ASB_icon(void) {
       }
 
       //JM Only works in direct NIM, that is only when the input buffer already contains #
-      case ITM_1ONX: { // B for binary base    
+      case ITM_1ONX: { // B for binary base
         if(nimNumberPart == NP_INT_BASE && aimBuffer[strlen(aimBuffer) - 1] == '#') {
           strcat(aimBuffer, "2");
           goto addItemToNimBuffer_exit;
@@ -1660,7 +1647,7 @@ void kill_ASB_icon(void) {
       }
 
       //JM See abovr "BASE OCT", O for octal base
-      
+
 
 
       case ITM_DMS: {
@@ -1743,7 +1730,7 @@ void kill_ASB_icon(void) {
       case ITM_DMS2:                       //JM
         if(nimNumberPart == NP_INT_10 || nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
           done = true;
-          closeNim(); 
+          closeNim();
           fnAngularModeJM(amDMS); //it cannot be an angle at this point. If closed input, it is only real or longint
         }
         break;
@@ -2202,11 +2189,11 @@ void kill_ASB_icon(void) {
   void closeNim(void) {
     setSystemFlag(FLAG_ASLIFT);
   //printf("closeNim\n");
-    
+
     if(nimNumberPart == NP_INT_10) {                //JM Input default type vv
       switch (Input_Default) {
       case ID_43S:                                 //   Do nothing, this is default LI/DP
-      case ID_LI:                                  //   Do nothing, because default is LI/DP 
+      case ID_LI:                                  //   Do nothing, because default is LI/DP
         break;
       case ID_DP:                                  //   Do Real default for DP
       case ID_CPXDP:                               //                       CPX
@@ -2415,7 +2402,7 @@ void kill_ASB_icon(void) {
             longIntegerFree(value);
           }
           else if(nimNumberPart == NP_REAL_FLOAT_PART || nimNumberPart == NP_REAL_EXPONENT) {
-          
+
               if(Input_Default == ID_CPXDP) {                                         //JM Input default type
                 reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone); //JM Input default type
                 stringToReal34(aimBuffer, REGISTER_REAL34_DATA(REGISTER_X));          //JM Input default type

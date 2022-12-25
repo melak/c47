@@ -26,7 +26,7 @@
 #include "items.h"
 #include "c43Extensions/xeqm.h"
 #include "c43Extensions/jm.h"
-#include "matrix.h"
+#include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
 #include "programming/flash.h"
@@ -687,7 +687,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       defineCurrentProgramFromGlobalStepNumber((programList[currentProgramNumber - 1].step < 0 ? -1 : 1) * (currentLocalStepNumber + abs(programList[currentProgramNumber - 1].step) - 1));
       if(programList[currentProgramNumber - 1].step < 0) {
         dynamicMenuItem = -1;
-        fnGotoDot(-(currentLocalStepNumber + abs(programList[currentProgramNumber - 1].step) - 1));
+        goToPgmStep(currentProgramNumber, currentLocalStepNumber);
       }
       defineCurrentStep();
       defineFirstDisplayedStep();
@@ -1240,7 +1240,7 @@ void doSave(uint16_t saveType) {
   sprintf(tmpString, "PLOT_ZMY\n%"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
 */
 
-//14
+//12
   sprintf(tmpString, "jm_HOME_SUM\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_SUM);         save(tmpString, strlen(tmpString), BACKUP);       
   sprintf(tmpString, "jm_LARGELI\n%"            PRIu8 "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString), BACKUP);                 
   sprintf(tmpString, "constantFractions\n%"     PRIu8 "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString), BACKUP);                 

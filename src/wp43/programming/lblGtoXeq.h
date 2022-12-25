@@ -44,4 +44,7 @@
   int16_t executeOneStep(pgmPtr_t step);
   void    runProgram    (bool_t singleStep, uint16_t menuLabel);
   void    execProgram   (uint16_t label);
+
+  void    goToGlobalStep(int32_t step);
+  void    goToPgmStep   (uint16_t program, uint16_t step);
 #endif // !LBLGTOXEQ_H

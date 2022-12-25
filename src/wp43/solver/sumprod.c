@@ -20,11 +20,14 @@
 
 #include "solver/sumprod.h"
 
+#include "c43Extensions/addons.h"
 #include "constantPointers.h"
 #include "defines.h"
 #include "error.h"
 #include "flags.h"
+#include "integers.h"
 #include "items.h"
+#include "mathematics/comparisonReals.h"
 #include "mathematics/integerPart.h"
 #include "mathematics/iteration.h"
 #include "programming/lblGtoXeq.h"
@@ -32,71 +35,133 @@
 #include "programming/nextStep.h"
 #include "realType.h"
 #include "registers.h"
+#include "registerValueConversions.h"
+#include "screen.h"
 #include "solver/solve.h"
+#include "statusBar.h"
 #include "stack.h"
+#include "timer.h"
 #include "wp43.h"
+
+
 
 #if !defined(TESTSUITE_BUILD)
   static void _programmableSumProd(uint16_t label, bool_t prod) {
-    real34_t counter, result;
-    bool_t finished = false;
+    int16_t finished = 0;
 
-    real34Copy(prod ? const34_1 : const34_0, &result);
+    real34_t loopStep, loopTo, counter, compare, sign;
+    real_t resultX, resultR;
 
-    ++currentSolverNestingDepth;
-    setSystemFlag(FLAG_SOLVING);
+    fnToReal(NOPARAM);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loopStep);
+    fnDrop(NOPARAM);
+    fnToReal(NOPARAM);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loopTo);
+    fnDrop(NOPARAM);
+    fnToReal(NOPARAM);
+    real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter); //Loopfrom
+    realCopy(prod ? const_1 : const_0, &resultR);                                       // Initialize real accumulator
 
-    while(1) {
-      fnToReal(NOPARAM);
-      if(lastErrorCode != ERROR_NONE) {
-        break;
+    if(real34IsZero(&loopStep) || (real34CompareGreaterThan(&loopTo, &counter) && real34CompareLessEqual(&loopStep, const34_0)) || (real34CompareLessThan(&loopTo, &counter) && real34CompareGreaterEqual(&loopStep, const34_0))) {
+      displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        sprintf(errorMessage, "Counter will not count to destination");
+        moreInfoOnError("In function _programmableiSumProd:", errorMessage, NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    } else {
+
+      ++currentSolverNestingDepth;
+      setSystemFlag(FLAG_SOLVING);
+
+
+      while(lastErrorCode == ERROR_NONE) {
+          hourGlassIconEnabled = true;
+          showHideHourGlass();
+
+          real34Compare(&counter, &loopTo, &compare);
+          real34Compare(&loopStep, const34_0, &sign);
+          real34Multiply(&compare, &sign, &compare);
+          finished = real34ToInt32(&compare);                       //0 means equal
+          if(finished > 0) {
+            break;
+          }
+          real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
+          fnFillStack(NOPARAM);
+
+          dynamicMenuItem = -1;
+          execProgram(label);
+          if(lastErrorCode != ERROR_NONE) {
+            break;
+          }
+          fnToReal(NOPARAM);
+          if(lastErrorCode != ERROR_NONE) {
+            break;
+          }
+
+
+          real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX); //Result accumulated
+          if(prod) {
+            realMultiply(&resultR, &resultX, &resultR, &ctxtReal75);
+          }
+          else {
+            realAdd(&resultR, &resultX, &resultR, &ctxtReal75);
+          }
+
+          #if defined(VERBOSE_COUNTER)
+            printf(">>> Finished: %d ", finished);
+            printReal34ToConsole(&counter," Cnt: ", " ");
+            printRealToConsole(&resultX," X: ", " ");
+            printRealToConsole(&resultR," SUM: ", "\n");
+          #endif //VERBOSE_COUNTER
+
+          real34Add(&counter, &loopStep, &counter);
+
+          #if defined(DMCP_BUILD)
+            if(keyWaiting()) {
+                showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
+              break;
+            }
+          #endif //DMCP_BUILD
+
+          if(finished == 0) {
+            break;
+          }
+      } //WHILE
+
+
+
+
+
+
+
+      if(lastErrorCode == ERROR_NONE) {
+          reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+          convertRealToReal34ResultRegister(&resultR, REGISTER_X);
+          //realToReal34(&resultR, REGISTER_REAL34_DATA(REGISTER_X));
+      } else {
+        displayCalcErrorMessage(lastErrorCode, ERR_REGISTER_LINE, REGISTER_X);
+        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+          sprintf(errorMessage, "Error while calculating");
+          moreInfoOnError("In function _programmableSumProd:", errorMessage, NULL, NULL);
+        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
-      real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter);
-      fnIp(NOPARAM);
-      fnFillStack(NOPARAM);
 
-      dynamicMenuItem = -1;
-      execProgram(label);
-      if(lastErrorCode != ERROR_NONE) {
-        break;
+      temporaryInformation = TI_NO_INFO;
+      if(programRunStop == PGM_WAITING) {
+        programRunStop = PGM_STOPPED;
       }
-
-      fnToReal(NOPARAM);
-      if(lastErrorCode != ERROR_NONE) {
-        break;
-      }
-      if(prod) {
-        real34Multiply(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
-      }
-      else {
-        real34Add(REGISTER_REAL34_DATA(REGISTER_X), &result, &result);
-      }
-      real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
-
-      if(finished) {
-        break;
-      }
-      fnDse(REGISTER_X);
-      finished = (temporaryInformation != TI_TRUE);
-    }
-
-    if(lastErrorCode == ERROR_NONE) {
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      real34Copy(&result, REGISTER_REAL34_DATA(REGISTER_X));
-    }
-
-    temporaryInformation = TI_NO_INFO;
-    if(programRunStop == PGM_WAITING) {
-      programRunStop = PGM_STOPPED;
-    }
-    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
-
+      adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+    } //MAIN IF
     if((--currentSolverNestingDepth) == 0) {
       clearSystemFlag(FLAG_SOLVING);
     }
+    hourGlassIconEnabled = false;
+    showHideHourGlass();
   }
 
-  void _checkArgument(uint16_t label, bool_t prod) {
+
+
+  static void _checkArgument(uint16_t label, bool_t prod) {
     if(label >= FIRST_LABEL && label <= LAST_LABEL) {
       _programmableSumProd(label, prod);
     }
@@ -130,7 +195,7 @@
         displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "string '%s' is not a named label", buf);
-          moreInfoOnError("In function fnPgmSlv:", errorMessage, NULL, NULL);
+          moreInfoOnError("In function _checkArgument:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
       else {
@@ -141,7 +206,7 @@
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "unexpected parameter %u", label);
-        moreInfoOnError("In function fnPgmSlv:", errorMessage, NULL, NULL);
+        moreInfoOnError("In function _checkArgument:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
   }

@@ -555,7 +555,6 @@ int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode
 
   sprintf(tmpString,"%s%s",line1,CSV_NEWLINE);
   fr = fputs(tmpString, outfile);
-  //printf(">>> %d\n",fr);
   if (fr == 0) {
     sprintf(line,"Write error ID009 --> %d    \n",fr);            
     //print_linestr(line,false);
@@ -692,7 +691,6 @@ int16_t export_append_line(char *inputstring){  //PC_BUILD
   }
 
 
-  #if !defined(__MINGW64__)
     uint16_t fr = 0;
     char line[200];               /* Line buffer */
     fr = fputs(inputstring, outfile);
@@ -702,15 +700,12 @@ int16_t export_append_line(char *inputstring){  //PC_BUILD
       printf("%s",line);
       fclose(outfile);
       return (int)fr;
-    } 
-    else
-  #endif
-  {
-    printf("Exported to %s: %s\n",filename_csv,inputstring);
-    fclose(outfile);
+    } else {
+      printf("Exported to %s: %s\n",filename_csv,inputstring);
+      fclose(outfile);
+    }
+    return 0;  
   }
-  return 0;  
-}
 
 
 // PC_BUILD
@@ -783,7 +778,7 @@ void print_linestr(const char *line1, bool_t line_init) {
       g_line_y = 40;
       g_line_x += 4;
     }
-    force_refresh();
+    force_refresh(timed);
 #endif
 }
 
@@ -801,7 +796,7 @@ void print_numberstr(const char *line1, bool_t line_init) {     //ONLY N=ASCII N
     }
     g_line_y += 20;
     g_line_x = 0;
-    force_refresh();
+    force_refresh(timed);
 #endif
 }
 

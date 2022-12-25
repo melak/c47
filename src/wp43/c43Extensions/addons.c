@@ -115,18 +115,20 @@ All the below: because both Last x and savestack does not work due to multiple s
 #include "wp43.h"
 
 
-
-void fnPlotStatJM(uint16_t mode) {
-  fnCurveFitting(0);
-  fnPlotStat(mode);
-}
-
-
 void fneRPN(uint16_t state) {
   if(state == 1)
     eRPN = true;
   else if(state == 0)
     eRPN = false;
+}
+
+
+
+bool_t keyWaiting(void) {
+  #if defined(DMCP_BUILD)
+    return key_empty() == 0;   //key_tail() != -1;
+  #endif //DMCP_BUILD
+  return false;
 }
 
 

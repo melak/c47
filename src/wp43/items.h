@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 
+//This list is generated (manually) from items3.xlsx, EXPORT.H
 
 #define ITM_NULL                       0
 
@@ -1447,7 +1448,7 @@
 #define MNU_TIMERF                  1400
 #define MNU_HIST                    1401
 #define MNU_HPLOT                   1402
-#define MNU_1403                    1403
+#define MNU_PFN1                    1403
 
 
 #define ITM_1COMPL                  1404
@@ -1802,8 +1803,8 @@
 #define ITM_DET                     1751
 #define ITM_INVRT                   1752
 #define ITM_TRANS                   1753
-#define ITM_1754                    1754
-#define ITM_1755                    1755
+#define ITM_iPIn                    1754
+#define ITM_iSIGMAn                 1755
 #define ITM_PLOT_CENTRL             1756
 #define ITM_HIDE                    1757
 #define ITM_SMI                     1758
@@ -1850,7 +1851,7 @@
 #define ITM_FG_LINE                 1795
 #define ITM_BASE_SCREEN             1796
 #define ITM_G_DOUBLETAP             1797
-#define ITM_PLOT_LRALL              1798
+#define ITM_SETALLF                 1798
 #define ITM_P_ALLREGS               1799
 #define ITM_SI_f                    1800
 #define ITM_SI_p                    1801
@@ -2088,19 +2089,19 @@
 #define ITM_CLGRF                   2033
 #define ITM_PZOOMX                  2034
 #define ITM_PZOOMY                  2035
-#define MNU_2036                    2036
-#define ITM_2037                    2037
+#define MNU_TRG                     2036
+#define MNU_SETUP                   2037
 #define ITM_SAFERESET               2038
 #define ITM_PRN                     2039
 #define ITM_PLOT_STAT               2040
 #define ITM_3x1TOSTK                2041
 #define ITM_PLOTRST                 2042
-#define ITM_STATDEMO0               2043
-#define ITM_STATDEMO1               2044
-#define ITM_STATDEMO2               2045
-#define ITM_STATDEM105              2046
-#define ITM_STATDEM107              2047
-#define ITM_STATDEM109              2048
+#define MNU_2043                    2043
+#define MNU_2044                    2044
+#define MNU_2045                    2045
+#define MNU_2046                    2046
+#define MNU_2047                    2047
+#define MNU_2048                    2048
 #define ITM_T_EXPF                  2049
 #define ITM_T_LINF                  2050
 #define ITM_T_LOGF                  2051
@@ -2126,8 +2127,18 @@
 #define ITM_SIN_SIGN                2071
 #define ITM_COS_SIGN                2072
 #define ITM_TAN_SIGN                2073
+#define ITM_MEDIAN                  2074
+#define ITM_LOWER_QUARTILE          2075
+#define ITM_UPPER_QUARTILE          2076
+#define ITM_MAD                     2077
+#define ITM_IQR                     2078
+#define ITM_SIGMARANGE              2079
+#define MNU_REGR                    2080
+#define MNU_MODEL                   2081
+#define ITM_PERCENTILE              2082
+#define ITM_LINPOL                  2083
 
-#define LAST_ITEM                   2074
+#define LAST_ITEM                   2084
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

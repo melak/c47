@@ -9,6 +9,7 @@ endif
 
 clean:
 	rm -f wp43$(EXE)
+	rm -f c43$(EXE)
 	rm -rf wp43-windows* wp43-macos* wp43-dm42*
 	rm -rf c43-windows* c43-macos* c43-dm42*
 	rm -rf build build.sim build.dmcp build.rel
@@ -49,10 +50,12 @@ ifeq ($(CI_COMMIT_TAG),)
   WIN_DIST_DIR = wp43-windows
   MAC_DIST_DIR = wp43-macos
   DM_DIST_DIR = wp43-dm42
+  DM_DIST_DIR2 = c43-dm42
 else
   WIN_DIST_DIR = wp43-windows-$(CI_COMMIT_TAG)
   MAC_DIST_DIR = wp43-macos-$(CI_COMMIT_TAG)
   DM_DIST_DIR = wp43-dm42-$(CI_COMMIT_TAG)
+  DM_DIST_DIR2 = c43-dm42
 endif
 
 dist_windows: testPgms build.rel/wiki
@@ -85,12 +88,15 @@ dist_macos: testPgms build.rel
 
 dist_dm42: dmcp testPgms build.rel/wiki
 	mkdir -p $(DM_DIST_DIR)
+	mkdir -p $(DM_DIST_DIR2)
 	mv build.dmcp/src/wp43-dmcp/WP43.pgm build.dmcp/src/wp43-dmcp/C43.pgm
 	mv build.dmcp/src/wp43-dmcp/WP43_qspi.bin build.dmcp/src/wp43-dmcp/C43_qspi.bin
-	cp build.dmcp/src/wp43-dmcp/C43.pgm build.dmcp/src/wp43-dmcp/C43_qspi.bin $(DM_DIST_DIR)
-	cp -r res/offimg $(DM_DIST_DIR)
-	cp -r res/PROGRAMS $(DM_DIST_DIR)
-	cp res/dmcp/original_DM42_keymap.bin res/dmcp/testPgms.bin $(DM_DIST_DIR)
-	cp build.rel/wiki/Installation-on-a-DM42.md $(DM_DIST_DIR)/readme.txt
-	zip -r c43-dm42.zip $(DM_DIST_DIR)
+	cp build.dmcp/src/wp43-dmcp/C43.pgm build.dmcp/src/wp43-dmcp/C43_qspi.bin $(DM_DIST_DIR2)
+	cp -r res/offimg $(DM_DIST_DIR2)
+	cp -r res/PROGRAMS $(DM_DIST_DIR2)
+	cp res/dmcp/original_DM42_keymap.bin res/dmcp/testPgms.bin $(DM_DIST_DIR2)
+	cp build.rel/wiki/Installation-on-a-DM42.md $(DM_DIST_DIR2)/readme.txt
+	zip -r c43-dm42.zip $(DM_DIST_DIR2)
 	rm -rf $(DM_DIST_DIR)
+	rm -rf $(DM_DIST_DIR2)
+

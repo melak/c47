@@ -28,9 +28,9 @@
 #include "flags.h"
 #include "hal/gui.h"
 #include "items.h"
-#include "matrix.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/keyboardTweak.h"
+#include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
 #include "programming/manage.h"
@@ -899,7 +899,7 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
             screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
           }
-          else if(calcMode == CM_PEM && catalog && catalog != CATALOG_MVAR) { // TODO: is that correct
+          else if(calcMode == CM_PEM && catalog && catalog != CATALOG_MVAR && (!tam.mode || tam.function != ITM_CLP)) { // TODO: is that correct
             if(indexOfItems[item].func == fnGetSystemFlag && (tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && !tam.indirect) {
               tam.value = (indexOfItems[item].param & 0xff);
               tam.alpha = true;
@@ -2796,10 +2796,14 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
 
       case CM_GRAPH:
       case CM_PLOT_STAT: {
-        restoreStats();
         if(calcMode == CM_PLOT_STAT) {
           for(int16_t ii = 0; ii < 3; ii++) {
-            if( (softmenuStack[0].softmenuId > 1) && !((-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_HIST) || (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_STAT))) {
+            if( (softmenuStack[0].softmenuId > 1) && !(
+              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_HIST) || 
+              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_STAT) || 
+              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_MODEL) ||
+              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_REGR)
+               )) {
               popSoftmenu();
             }
           }
@@ -2816,6 +2820,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         #endif // DEBUGUNDO
         fnUndo(NOPARAM);
         fnClDrawMx();
+        restoreStats();
         break;
       }
 
@@ -3045,7 +3050,6 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
       case CM_BUG_ON_SCREEN:
       case CM_PLOT_STAT:
       case CM_GRAPH: {
-        restoreStats();
         if(calcMode == CM_PLOT_STAT) {
           for(int16_t ii = 0; ii < 3; ii++) {
             if( (softmenuStack[0].softmenuId > 1) && !((-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_HIST) || (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_STAT))) {
@@ -3065,6 +3069,7 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
         #endif // DEBUGUNDO
         fnUndo(NOPARAM);
         fnClDrawMx();
+        restoreStats();
         break;
       }
 
@@ -3226,7 +3231,6 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       return;
     }                              //JMSHOW ^^
 
-
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {
       if(tam.digitsSoFar == 0) {
         tamProcessInput(ITM_1);
@@ -3281,8 +3285,8 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
         if(currentSoftmenuScrolls()) {
           menuUp();
         }
-      else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
-           screenUpdatingMode = SCRUPD_AUTO;
+        else if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && (numberOfFormulae < 2 || softmenu[softmenuStack[0].softmenuId].menuItem != -MNU_EQN)) {
+          screenUpdatingMode = SCRUPD_AUTO;
           if(calcMode == CM_NIM) {
             closeNim();
           }
@@ -3432,6 +3436,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
   doRefreshSoftMenu = true;     //dr
   #if !defined(TESTSUITE_BUILD)
     int16_t menuId = softmenuStack[0].softmenuId; //JM
+
     if(activatescroll() && !tam.mode) { //JMSHOW vv
       fnShow_SCROLL(2);
       refreshScreen();
@@ -3501,6 +3506,11 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
             closeAim();
           }
           fnSst(NOPARAM);
+          #if defined(DMCP_BUILD)
+            lcd_refresh();
+          #else // !DMCP_BUILD
+            refreshLcd(NULL);
+          #endif // DMCP_BUILD
         }
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_LR){
           strcpy(plotStatMx, "STATS");

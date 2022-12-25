@@ -25,5 +25,6 @@
   #include "integrate.h"
   #include "solve.h"
   #include "sumprod.h"
+  #include "isumprod.h"
   #include "tvm.h"
 #endif // !SOLVER_H

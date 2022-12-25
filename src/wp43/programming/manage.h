@@ -29,7 +29,7 @@
   void defineCurrentProgramFromCurrentStep     (void);
   void deleteStepsFromTo                       (uint8_t *from, uint8_t *to);
   void fnClPAll                                (uint16_t confirmation);
-  void fnClP                                   (uint16_t unusedButMandatoryParameter);
+  void fnClP                                   (uint16_t label);
   void fnPem                                   (uint16_t unusedButMandatoryParameter);
   void scrollPemBackwards                      (void);
   void scrollPemForwards                       (void);

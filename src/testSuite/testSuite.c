@@ -211,6 +211,7 @@ const funcTest_t funcTestNoParam[] = {
   {"fnLaguerreAlpha",        fnLaguerreAlpha       },
   {"fnLcm",                  fnLcm                 },
   {"fnLegendre",             fnLegendre            },
+  {"fnLINPOL",               fnLINPOL              },
   {"fnLn",                   fnLn                  },
   {"fnLnP1",                 fnLnP1                },
   {"fnLnGamma",              fnLnGamma             },

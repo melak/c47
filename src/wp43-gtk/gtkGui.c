@@ -26,7 +26,7 @@
 #include "c43Extensions/xeqm.h"
 #include "keyboard.h"
 #include "c43Extensions/keyboardTweak.h"
-#include "matrix.h"
+#include "mathematics/matrix.h"
 #include "registers.h"
 #include "saveRestoreCalcState.h"
 #include "screen.h"
@@ -69,7 +69,7 @@ GtkWidget *lbl21Fa, *lbl22Fa, *lbl23Fa, *lbl24Fa, *lbl25Fa, *lbl26Fa;           
     GtkWidget *btn31,   *btn32,   *btn33,   *btn34,   *btn35,   *btn36;
 GtkWidget *lbl31F,  *lbl32F,  *lbl33F,  *lbl34F,  *lbl35F,  *lbl36F;
 GtkWidget *lbl31G,  *lbl32G,  *lbl33G,  *lbl34G,  *lbl35G,  *lbl36G;
-GtkWidget *lbl31L,  *lbl32L,  *lbl33L,  *lbl34L,  *lbl35L,  *lbl36L; 
+GtkWidget *lbl31L,  *lbl32L,  *lbl33L,  *lbl34L,  *lbl35L,  *lbl36L;
 //GtkWidget                     *lbl33H;                                  //JMALPHA2 Removed lbl34H, to be replaced with lbl34Fa
 GtkWidget *lbl31Gr, *lbl32Gr, *lbl33Gr, *lbl34Gr, *lbl35Gr, *lbl36Gr;
 GtkWidget *btn31A,  *btn32A,  *btn33A,  *btn34A,  *btn35A,  *btn36A;    //dr - new AIM
@@ -285,12 +285,12 @@ uint32_t event_keyval = 99999999;
 
 gboolean keyPressed(GtkWidget *w, GdkEventKey *event, gpointer data) {
   //printf("Pressed %d\n", event->keyval);                                  //JM
-  bool_t AlphaArrowsOffAndUpDn = (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SYSFL || 
-                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_VAR || 
-                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PROG || 
-                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA_OMEGA || 
+  bool_t AlphaArrowsOffAndUpDn = (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SYSFL ||
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_VAR ||
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PROG ||
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHA_OMEGA ||
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_alpha_omega ||
-                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHADOT || 
+                                  softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHADOT ||
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAMATH ||
                                   softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_ALPHAINTL );
   if (event_keyval ==  event->keyval + CTRL_State) {
@@ -338,7 +338,7 @@ case 61:
     case 65362:                                               //JM     // CursorUp //JM
       if(AlphaArrowsOffAndUpDn)
         btnClicked(w, "17");   //Up
-      else        
+      else
       if(calcMode == CM_EIM)
         btnClicked(w, "17");   //Up
       else
@@ -354,7 +354,7 @@ case 61:
         btnFnClicked(w, "2");  //F2
       break;
     case 65361:                                               //JM     // CursorLt BST //JM Left
-      if(AlphaArrowsOffAndUpDn) 
+      if(AlphaArrowsOffAndUpDn)
       {}
       else
       if(calcMode == CM_EIM)
@@ -1478,7 +1478,7 @@ void moveLabels(void) {
   gtk_fixed_move(GTK_FIXED(grid), lbl23Gr, xPos+KEY_WIDTH_1*2/3,                              yPos - Y_OFFSET_GREEK);
   gtk_widget_get_preferred_size(  lbl23Fa, NULL, &lblF);                                                                        //vv dr - new AIM
   gtk_fixed_move(GTK_FIXED(grid), lbl23Fa, (2*xPos+KEY_WIDTH_2-lblF.width-GAP-lblG.width+2)/2, yPos - Y_OFFSET_SHIFTED_LABEL);  //^^
- 
+
   xPos += DELTA_KEYS_X;
   gtk_widget_get_preferred_size(  lbl24F, NULL, &lblF);
   gtk_widget_get_preferred_size(  lbl24G, NULL, &lblG);
@@ -1920,6 +1920,10 @@ void labelCaptionNormal(const calcKey_t *key, GtkWidget *button, GtkWidget *lblF
     lbl[3] = 0;
   }
 
+  if(key->primary == ITM_SHIFTg) {
+    strcpy((char *)lbl,"      "); //blank the dots above the shift g key, if it is shit g specifically instead of shift f/g
+  }
+
   gtk_label_set_label(GTK_LABEL(lblF), (gchar *)lbl);
   if(key->fShifted < 0) gtk_widget_set_name(lblF, "fShiftedUnderline"); else  gtk_widget_set_name(lblF, "fShifted");
 
@@ -1976,7 +1980,7 @@ void labelCaptionAimFa(const calcKey_t* key, GtkWidget* lblF) {
 
   if(key->primaryAim == ITM_NULL) {
     lbl[0] = 0;
-  } 
+  }
   else {
     if( (ITM_A <= key->primaryAim && key->primaryAim <= ITM_Z)) {             //if in upper case, show lower case on yellow
       stringToUtf8(indexOfItems[((max(key->primaryAim, -key->primaryAim)) + ((alphaCase == AC_UPPER) ? 26:0 ))].itemSoftmenuName, lbl);
@@ -1996,7 +2000,7 @@ void labelCaptionAimFa(const calcKey_t* key, GtkWidget* lblF) {
   } else
 
   //JM Exception, to change 0 to ";", when !NL & SHFT-0
-  if(numlockReplacements(3,max(key->fShiftedAim, -key->fShiftedAim),numLock,true,false) != max(key->fShiftedAim, -key->fShiftedAim)) { 
+  if(numlockReplacements(3,max(key->fShiftedAim, -key->fShiftedAim),numLock,true,false) != max(key->fShiftedAim, -key->fShiftedAim)) {
     stringToUtf8(indexOfItems[numlockReplacements(4,max(key->fShiftedAim, -key->fShiftedAim),numLock,true,false)].itemSoftmenuName, lbl);
   }
 
@@ -2031,7 +2035,7 @@ void labelCaptionAim(const calcKey_t *key, GtkWidget *button, GtkWidget *lblGree
 
   if(key->primaryAim == ITM_NULL) {
     lbl[0] = 0;
-  } 
+  }
   else {
 
     if( shiftG && (ITM_A <= key->primaryAim && key->primaryAim <= ITM_Z)) {
@@ -2072,7 +2076,7 @@ void labelCaptionAim(const calcKey_t *key, GtkWidget *button, GtkWidget *lblGree
   else if(key->keyLblAim == ITM_SHIFTg) {
     gtk_widget_set_name(button, "calcKeyG");
   }
-  else if(key->keyLblAim == KEY_fg) {                                 //JM 
+  else if(key->keyLblAim == KEY_fg) {                                 //JM
     gtk_widget_set_name(button, "calcKeyFG");                          //JM
   }
   else {
@@ -2594,7 +2598,7 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
   gtk_widget_show(lbl24Fa);    //JM AIM2
   gtk_widget_show(lbl25Fa);    //JM AIM2
   gtk_widget_show(lbl26Fa);    //JM AIM2
-  
+
 //  gtk_widget_show(lbl21H); //JMALPHA temporary remove A from Sigma+
 /*gtk_widget_show(lbl21L);
   gtk_widget_show(lbl22L);
@@ -2793,7 +2797,7 @@ void labelCaptionTam(const calcKey_t *key, GtkWidget *button) {
       const calcKey_t *keys;
 
   if(running_program_jm) return;                        //JM faster during program excution
-  
+
   keys = getSystemFlag(FLAG_USER) ? kbd_usr : kbd_std;
 
   hideAllWidgets();
@@ -3009,7 +3013,7 @@ void setupUI(void) {
 
 
   // Frame around the f key
-  lblFKey2 = gtk_label_new("");  
+  lblFKey2 = gtk_label_new("");
   gtk_widget_set_name(lblFKey2, "fSoftkeyArea");
   if(kbd_usr[10].primary == ITM_SHIFTf) {                        //JM only draw the thin lines under the expansion f/g keys if the origianl fg key is used.
     gtk_widget_set_size_request(lblFKey2, 61-8-2-2,  5-2);

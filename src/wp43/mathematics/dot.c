@@ -25,7 +25,7 @@
 #include "error.h"
 #include "fonts.h"
 #include "items.h"
-#include "matrix.h"
+#include "mathematics/matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
 
@@ -106,7 +106,7 @@ void fnDot(uint16_t unusedButMandatoryParameter) {
 //-----------------------------------------------------------------------------
 
 // Numerically stable dot product funtion.  Slower but accurate.
-static void dotCplx(const real_t *xReal, const real_t *xImag, const real_t *yReal, const real_t *yImag, real_t *rReal, realContext_t *realContext) {
+void dotCplx(const real_t *xReal, const real_t *xImag, const real_t *yReal, const real_t *yImag, real_t *rReal, realContext_t *realContext) {
   real_t p, t;
 
   realMultiply(xReal, yReal, &p, realContext);
@@ -130,7 +130,7 @@ void dotRealCplx(void) {
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
-  real34ToReal(const34_0, &yImag);
+  realZero(&yImag);
 
   dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
 
@@ -153,7 +153,7 @@ void dotLonICplx(void) {
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
   convertLongIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal75);
-  real34ToReal(const34_0, &yImag);
+  realZero(&yImag);
 
   dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal75);
 
@@ -176,7 +176,7 @@ void dotShoICplx(void) {
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
 
   convertShortIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal39);
-  real34ToReal(const34_0, &yImag);
+  realZero(&yImag);
 
   dotCplx(&xReal, &xImag, &yReal, &yImag, &rReal, &ctxtReal39);
 
@@ -219,7 +219,7 @@ void dotCplxReal(void) {
   real_t rReal;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
-  real34ToReal(const34_0, &xImag);
+  realZero(&xImag);
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &yImag);
@@ -241,7 +241,7 @@ void dotCplxLonI(void) {
   real_t rReal;
 
   convertLongIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal75);
-  real34ToReal(const34_0, &xImag);
+  realZero(&xImag);
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &yImag);
@@ -264,7 +264,7 @@ void dotCplxShoI(void) {
   real_t rReal;
 
   convertShortIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal39);
-  real34ToReal(const34_0, &xImag);
+  realZero(&xImag);
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &yImag);

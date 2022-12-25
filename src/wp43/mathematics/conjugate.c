@@ -23,7 +23,7 @@
 #include "debug.h"
 #include "error.h"
 #include "items.h"
-#include "matrix.h"
+#include "mathematics/matrix.h"
 #include "registers.h"
 
 #include "wp43.h"

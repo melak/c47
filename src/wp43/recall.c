@@ -24,7 +24,7 @@
 #include "items.h"
 #include "c43Extensions/jm.h"
 #include "mathematics/compare.h"
-#include "matrix.h"
+#include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
 #include "registerValueConversions.h"
@@ -32,6 +32,7 @@
 #include "stack.h"
 #include "store.h"
 #include "typeDefinitions.h"
+#include "ui/matrixEditor.h"
 
 #include "wp43.h"
 

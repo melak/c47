@@ -368,3 +368,5 @@ ellipticE
 ellipticFphi
 ellipticEphi
 jacobi_zeta
+
+LINPOL

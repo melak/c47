@@ -31,9 +31,9 @@
 #include "mathematics/division.h"
 #include "mathematics/integerPart.h"
 #include "mathematics/ln.h"
+#include "mathematics/matrix.h"
 #include "mathematics/power.h"
 #include "mathematics/wp34s.h"
-#include "matrix.h"
 #include "realType.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -210,7 +210,7 @@ void logxyCplxLonI(void) {
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &yImag);
 
   convertLongIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal39);
-  real34ToReal(const34_0, &xImag);
+  realZero(&xImag);
 
   if(checkArgs(&xReal, &xImag, &yReal, &yImag)) {
     logXYComplex(&xReal, &xImag, &yReal, &yImag, &rReal, &rImag, &ctxtReal39);
@@ -279,7 +279,7 @@ void logxyCplxReal(void) {
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &yImag);
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
-  real34ToReal(const34_0, &xImag);
+  realZero(&xImag);
 
   if(checkArgs(&xReal, &xImag, &yReal, &yImag)) {
     logXYComplex(&xReal, &xImag, &yReal, &yImag, &rReal, &rImag, &ctxtReal39);
@@ -323,7 +323,7 @@ void logxyLonICplx(void) {
   real_t xReal, xImag, yReal, yImag, rReal, rImag;
 
   convertLongIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal39);
-  real34ToReal(const34_0, &yImag);
+  realZero(&yImag);
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
@@ -342,7 +342,7 @@ void logxyRealCplx(void) {
   real_t xReal, xImag, yReal, yImag, rReal, rImag;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
-  real34ToReal(const34_0, &yImag);
+  realZero(&yImag);
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
@@ -380,7 +380,7 @@ void logxyShoICplx(void) {
   real_t xReal, xImag, yReal, yImag, rReal, rImag;
 
   convertShortIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal39);
-  real34ToReal(const34_0, &yImag);
+  realZero(&yImag);
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &xImag);
@@ -420,7 +420,7 @@ void logxyCplxShoI(void) {
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &yImag);
 
   convertShortIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal39);
-  real34ToReal(const34_0, &xImag);
+  realZero(&xImag);
 
   if(checkArgs(&xReal, &xImag, &yReal, &yImag)) {
     logXYComplex(&xReal, &xImag, &yReal, &yImag, &rReal, &rImag, &ctxtReal39);

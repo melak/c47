@@ -58,6 +58,14 @@
    */
   void   fnXmax                (uint16_t unusedButMandatoryParameter);
 
+  /**
+   * Xrange ==> regX, regY.
+   * regX = max x - min x, regY = max y - min y
+   *
+   * \param[in] unusedButMandatoryParameter
+   */
+  void   fnRangeXY             (uint16_t unusedButMandatoryParameter);
+
   void   fnClSigma             (uint16_t unusedButMandatoryParameter);
 
   /**
