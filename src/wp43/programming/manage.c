@@ -231,10 +231,10 @@ static int _clearProgram(void) {
     scanLabelsAndPrograms();
 
     if(savedCurrentProgramNumber >= numberOfPrograms) { // The last program
-      fnGotoDot(programList[numberOfPrograms - 2].step);
+      goToPgmStep(numberOfPrograms - 1, 1);
     }
     else { // Not the last program
-      fnGotoDot(programList[savedCurrentProgramNumber - 1].step);
+      goToPgmStep(savedCurrentProgramNumber, 1);
     }
     return 2;
   }
@@ -250,10 +250,10 @@ static int _clearProgram(void) {
     // unlikely fails
 
     if(savedCurrentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) { // The last program
-      fnGotoDot(programList[numberOfPrograms - numberOfProgramsInFlash - 2].step);
+      goToPgmStep(numberOfPrograms - numberOfProgramsInFlash - 1, 1);
     }
     else { // Not the last program
-      fnGotoDot(programList[savedCurrentProgramNumber - 1].step);
+      goToPgmStep(savedCurrentProgramNumber, 1);
     }
     return 0;
   }
@@ -262,24 +262,26 @@ static int _clearProgram(void) {
 
 
 void fnClP(uint16_t label) {
+  uint16_t savedCurrentLocalStepNumber = currentLocalStepNumber;
+  uint16_t savedCurrentProgramNumber = currentProgramNumber;
+
+  while(currentSubroutineLevel > 0) { // drop subroutine stack before deleting a program
+    fnReturn(0);
+  }
+  fnReturn(0); // 1 more time to clean local registers
+
+  goToPgmStep(savedCurrentProgramNumber, savedCurrentLocalStepNumber);
+
   if(label == 0 && !tam.alpha && tam.digitsSoFar == 0) {
     _clearProgram();
   }
   else if(label >= FIRST_LABEL && label <= LAST_LABEL) {
-    const uint16_t savedCurrentLocalStepNumber = currentLocalStepNumber;
-    uint16_t savedCurrentProgramNumber = currentProgramNumber;
     fnGoto(label);
     const uint16_t programNumberToDelete = currentProgramNumber;
     const int result = _clearProgram();
     switch(result) {
       case 2: {
-        int32_t globalStepNumber = programList[savedCurrentProgramNumber - 1].step;
-        if(globalStepNumber < 0) { // flash memory
-          fnGotoDot(programList[savedCurrentProgramNumber - 1].step - savedCurrentLocalStepNumber + 1);
-        }
-        else { // RAM
-          fnGotoDot(programList[savedCurrentProgramNumber - 1].step + savedCurrentLocalStepNumber - 1);
-        }
+        goToPgmStep(savedCurrentProgramNumber, savedCurrentLocalStepNumber);
         break;
       }
       case 0: {
@@ -287,13 +289,7 @@ void fnClP(uint16_t label) {
           if(programNumberToDelete < savedCurrentProgramNumber) {
             --savedCurrentProgramNumber;
           }
-          int32_t globalStepNumber = programList[savedCurrentProgramNumber - 1].step;
-          if(globalStepNumber < 0) { // flash memory
-            fnGotoDot(programList[savedCurrentProgramNumber - 1].step - savedCurrentLocalStepNumber + 1);
-          }
-          else { // RAM
-            fnGotoDot(programList[savedCurrentProgramNumber - 1].step + savedCurrentLocalStepNumber - 1);
-          }
+          goToPgmStep(savedCurrentProgramNumber, savedCurrentLocalStepNumber);
           break;
         }
         break;
@@ -636,7 +632,7 @@ static void _insertInProgram(const uint8_t *dat, uint16_t size) {
   globalStepNumber = currentLocalStepNumber + programList[currentProgramNumber - 1].step - 1;
   scanLabelsAndPrograms();
   dynamicMenuItem = -1;
-  fnGotoDot(globalStepNumber);
+  goToGlobalStep(globalStepNumber);
   dynamicMenuItem = _dynamicMenuItem;
 }
 
