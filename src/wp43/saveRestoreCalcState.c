@@ -687,7 +687,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       defineCurrentProgramFromGlobalStepNumber((programList[currentProgramNumber - 1].step < 0 ? -1 : 1) * (currentLocalStepNumber + abs(programList[currentProgramNumber - 1].step) - 1));
       if(programList[currentProgramNumber - 1].step < 0) {
         dynamicMenuItem = -1;
-        fnGotoDot(-(currentLocalStepNumber + abs(programList[currentProgramNumber - 1].step) - 1));
+        goToPgmStep(currentProgramNumber, currentLocalStepNumber);
       }
       defineCurrentStep();
       defineFirstDisplayedStep();

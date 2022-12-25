@@ -725,7 +725,7 @@
             if(value == 0) {
               value = 1;
             }
-            reallyRunFunction(tamOperation(), value + programList[currentProgramNumber - 1].step - 1);
+            goToPgmStep(currentProgramNumber, value);
           }
         }
         else if(run) {
@@ -815,7 +815,7 @@
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         }
       }
-      if(calcMode == CM_PEM) {
+      if(calcMode == CM_PEM && tam.function != ITM_CLP) {
         addStepInProgram(tamOperation());
       }
       if(tam.mode != TM_NEWMENU) {
@@ -832,7 +832,10 @@
           mimRunFunction(tamOperation(), value);
         }
         else if(tam.function == ITM_GTOP) {
-          reallyRunFunction(ITM_GTOP, labelList[value - FIRST_LABEL].step);
+          goToGlobalStep(labelList[value - FIRST_LABEL].step);
+        }
+        else if(tam.function == ITM_CLP) {
+          reallyRunFunction(ITM_CLP, value);
         }
         else if(calcMode == CM_PEM) {
           // already done
