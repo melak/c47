@@ -899,7 +899,7 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
             screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
             return;
           }
-          else if(calcMode == CM_PEM && catalog && catalog != CATALOG_MVAR) { // TODO: is that correct
+          else if(calcMode == CM_PEM && catalog && catalog != CATALOG_MVAR && (!tam.mode || tam.function != ITM_CLP)) { // TODO: is that correct
             if(indexOfItems[item].func == fnGetSystemFlag && (tam.mode == TM_FLAGR || tam.mode == TM_FLAGW) && !tam.indirect) {
               tam.value = (indexOfItems[item].param & 0xff);
               tam.alpha = true;

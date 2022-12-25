@@ -238,7 +238,7 @@ void fnClPAll(uint16_t confirmation) {
 
 
 
-void fnClP(uint16_t unusedButMandatoryParameter) {
+static int _clearProgram(void) {
   if(programList[currentProgramNumber - 1].step < 0) { // flash memory
     uint16_t savedCurrentProgramNumber = currentProgramNumber;
 
@@ -248,14 +248,16 @@ void fnClP(uint16_t unusedButMandatoryParameter) {
     scanLabelsAndPrograms();
 
     if(savedCurrentProgramNumber >= numberOfPrograms) { // The last program
-      fnGotoDot(programList[numberOfPrograms - 2].step);
+      goToPgmStep(numberOfPrograms - 1, 1);
     }
     else { // Not the last program
-      fnGotoDot(programList[savedCurrentProgramNumber - 1].step);
+      goToPgmStep(savedCurrentProgramNumber, 1);
     }
+    return 2;
   }
   else if(beginOfCurrentProgram.ram == beginOfProgramMemory && *endOfCurrentProgram.ram == 255 && *(endOfCurrentProgram.ram + 1) == 255) { // There is only one program in memory
     fnClPAll(CONFIRMED);
+    return 1;
   }
   else {
     uint16_t savedCurrentProgramNumber = currentProgramNumber;
@@ -265,11 +267,61 @@ void fnClP(uint16_t unusedButMandatoryParameter) {
     // unlikely fails
 
     if(savedCurrentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) { // The last program
-      fnGotoDot(programList[numberOfPrograms - numberOfProgramsInFlash - 2].step);
+      goToPgmStep(numberOfPrograms - numberOfProgramsInFlash - 1, 1);
     }
     else { // Not the last program
-      fnGotoDot(programList[savedCurrentProgramNumber - 1].step);
+      goToPgmStep(savedCurrentProgramNumber, 1);
     }
+    return 0;
+  }
+}
+
+
+
+void fnClP(uint16_t label) {
+  uint16_t savedCurrentLocalStepNumber = currentLocalStepNumber;
+  uint16_t savedCurrentProgramNumber = currentProgramNumber;
+
+  while(currentSubroutineLevel > 0) { // drop subroutine stack before deleting a program
+    fnReturn(0);
+  }
+  fnReturn(0); // 1 more time to clean local registers
+
+  goToPgmStep(savedCurrentProgramNumber, savedCurrentLocalStepNumber);
+
+  if(label == 0 && !tam.alpha && tam.digitsSoFar == 0) {
+    _clearProgram();
+  }
+  else if(label >= FIRST_LABEL && label <= LAST_LABEL) {
+    fnGoto(label);
+    const uint16_t programNumberToDelete = currentProgramNumber;
+    const int result = _clearProgram();
+    switch(result) {
+      case 2: {
+        goToPgmStep(savedCurrentProgramNumber, savedCurrentLocalStepNumber);
+        break;
+      }
+      case 0: {
+        if(programNumberToDelete != savedCurrentProgramNumber) {
+          if(programNumberToDelete < savedCurrentProgramNumber) {
+            --savedCurrentProgramNumber;
+          }
+          goToPgmStep(savedCurrentProgramNumber, savedCurrentLocalStepNumber);
+          break;
+        }
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  }
+  else {
+    displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "label %" PRIu16 " is not a global label", label);
+      moreInfoOnError("In function fnClP:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
@@ -597,7 +649,7 @@ static void _insertInProgram(const uint8_t *dat, uint16_t size) {
   globalStepNumber = currentLocalStepNumber + programList[currentProgramNumber - 1].step - 1;
   scanLabelsAndPrograms();
   dynamicMenuItem = -1;
-  fnGotoDot(globalStepNumber);
+  goToGlobalStep(globalStepNumber);
   dynamicMenuItem = _dynamicMenuItem;
 }
 
@@ -1020,10 +1072,10 @@ void insertStepInProgram(int16_t func) {
           break;
         }
 
-        case ITM_CLP: {          // 1425
-          fnClP(NOPARAM);
-          break;
-        }
+        //case ITM_CLP: {          // 1425
+        //  fnClP(NOPARAM);
+        //  break;
+        //}
 
         case ITM_CLPALL: {       // 1426
           fnClPAll(NOT_CONFIRMED);
@@ -1140,12 +1192,12 @@ void insertStepInProgram(int16_t func) {
 
 void addStepInProgram(int16_t func) {
   if(programList[currentProgramNumber - 1].step < 0) { // attempt to modify a program in the flash memory
-    if(func == ITM_CLP) {
-      fnClP(NOPARAM);
-    }
-    else {
+    //if(func == ITM_CLP) {
+    //  fnClP(NOPARAM);
+    //}
+    //else {
       displayCalcErrorMessage(ERROR_FLASH_MEMORY_WRITE_PROTECTED, ERR_REGISTER_LINE, REGISTER_X);
-    }
+    //}
     aimBuffer[0] = 0;
     return;
   }
