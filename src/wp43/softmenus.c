@@ -1781,8 +1781,19 @@ void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, 
               else if(item%10000 == ITM_op_j && !getSystemFlag(FLAG_CPXj)) {
                 showSoftkey(STD_i, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
               }                                                                                //JM ^^
-              else if(item == ITM_PLOT || item == ITM_PLOT_LR || item == ITM_HPLOT  || item == ITM_DRAW || item == ITM_CFG || item == ITM_PLOT_STAT /*|| (item == ITM_TIMER)*/) {       //JMvv colour PLOT in reverse font to appear to be menus
-                showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
+              else if(item == ITM_PLOT      || 
+                      item == ITM_PLOT_LR   || 
+                      item == ITM_HPLOT     || 
+                      item == ITM_DRAW      || 
+                      item == ITM_CFG       || 
+                      item == ITM_PLOT_STAT ||
+                      item == ITM_EQ_NEW    ||
+                      item == ITM_VARMNU    ||
+                      item == ITM_SIM_EQ    ||
+                      item == ITM_M_EDI
+                      /*item == ITM_PLOT_CENTRL ||  CENTRL does not bring up a new menu - it is the same menu therefore not inverted */
+                      /*|| (item == ITM_TIMER)*/) {       //JMvv colour PLOT in reverse font to appear to be menus
+                        showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
               }                                                                                //JM^^
 
               else if( softmenu[m].menuItem  == -MNU_CONVE || softmenu[m].menuItem  == -MNU_CONVP || softmenu[m].menuItem  == -MNU_CONVFP || softmenu[m].menuItem  == -MNU_CONVM || softmenu[m].menuItem  == -MNU_CONVX || softmenu[m].menuItem  == -MNU_CONVV || softmenu[m].menuItem  == -MNU_CONVA || softmenu[m].menuItem  == -MNU_UNITCONV || softmenu[m].menuItem  == -MNU_MISC) { 
