@@ -736,7 +736,7 @@ void resetOtherConfigurationStuff(void) {
   displayFormat = DF_ALL;
   displayFormatDigits = 3;
   timeDisplayFormatDigits = 0;
-    clearSystemFlag(FLAG_FRACT);                              //Not saved in file, but restored:  fnDisplayFormatAll(3);
+    clearSystemFlag(FLAG_FRACT);                              //Not saved in file, but restored here:  fnDisplayFormatAll(3);
 
   shortIntegerMode = SIM_2COMPL;                              //64:2
   fnSetWordSize(64);

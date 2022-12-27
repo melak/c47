@@ -32,6 +32,9 @@
 
 #include "wp43.h"
 
+static char statusMessage[100];     //Use a static global to prevent time wastage when a overlong string needs to be created at each function instance below
+
+
 #if !defined(TESTSUITE_BUILD)
   void refreshStatusBar(void) {
     if(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR) {
@@ -56,8 +59,8 @@
       }
     }
     #if (DEBUG_INSTEAD_STATUS_BAR == 1)
-      sprintf(tmpString, "%s%d %s/%s  mnu:%s fi:%d", catalog ? "asm:" : "", catalog, tam.mode ? "/tam" : "", getCalcModeName(calcMode),indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemCatalogName, softmenuStack[0].firstItem);
-      showString(tmpString, &standardFont, X_DATE, 0, vmNormal, true, true);
+      sprintf(statusMessage, "%s%d %s/%s  mnu:%s fi:%d", catalog ? "asm:" : "", catalog, tam.mode ? "/tam" : "", getCalcModeName(calcMode),indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemCatalogName, softmenuStack[0].firstItem);
+      showString(statusMessage, &standardFont, X_DATE, 0, vmNormal, true, true);
     #else // DEBUG_INSTEAD_STATUS_BAR != 1
       if(calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) lcd_fill_rect(0, 0, 158, 20, 0);
       showDateTime();
@@ -244,13 +247,13 @@ void showFracMode(void) {
 
 
     if(getSystemFlag(FLAG_DENANY) && denMax == MAX_DENMAX) {
-      sprintf(errorMessage,"%smax",divStr);
-      x = showString(errorMessage, &standardFont, x, 0, vmNormal, true, true);
+      sprintf(statusMessage,"%smax",divStr);
+      x = showString(statusMessage, &standardFont, x, 0, vmNormal, true, true);
     }
     else {
       if((getSystemFlag(FLAG_DENANY) && denMax != MAX_DENMAX) || !getSystemFlag(FLAG_DENANY)) {
-        sprintf(errorMessage, "%s%" PRIu32, divStr,denMax);
-        x = showString(errorMessage, &standardFont, x, 0, vmNormal, true, true);
+        sprintf(statusMessage, "%s%" PRIu32, divStr,denMax);
+        x = showString(statusMessage, &standardFont, x, 0, vmNormal, true, true);
       }
 
       if(constantFractions && constantFractionsOn && !getSystemFlag(FLAG_FRACT)) {
@@ -276,39 +279,39 @@ void showFracMode(void) {
 
   void showIntegerMode(void) {
     if(shortIntegerWordSize <= 9) {
-      sprintf(errorMessage, " %" PRIu8 ":%c", shortIntegerWordSize, shortIntegerMode==SIM_1COMPL?'1':(shortIntegerMode==SIM_2COMPL?'2':(shortIntegerMode==SIM_UNSIGN?'u':(shortIntegerMode==SIM_SIGNMT?'s':'?'))));
+      sprintf(statusMessage, " %" PRIu8 ":%c", shortIntegerWordSize, shortIntegerMode==SIM_1COMPL?'1':(shortIntegerMode==SIM_2COMPL?'2':(shortIntegerMode==SIM_UNSIGN?'u':(shortIntegerMode==SIM_SIGNMT?'s':'?'))));
     }
     else {
-      sprintf(errorMessage, "%" PRIu8 ":%c", shortIntegerWordSize, shortIntegerMode==SIM_1COMPL?'1':(shortIntegerMode==SIM_2COMPL?'2':(shortIntegerMode==SIM_UNSIGN?'u':(shortIntegerMode==SIM_SIGNMT?'s':'?'))));
+      sprintf(statusMessage, "%" PRIu8 ":%c", shortIntegerWordSize, shortIntegerMode==SIM_1COMPL?'1':(shortIntegerMode==SIM_2COMPL?'2':(shortIntegerMode==SIM_UNSIGN?'u':(shortIntegerMode==SIM_SIGNMT?'s':'?'))));
     }
 
-    showString(errorMessage, &standardFont, X_INTEGER_MODE, 0, vmNormal, true, true);
+    showString(statusMessage, &standardFont, X_INTEGER_MODE, 0, vmNormal, true, true);
   }
 
 
 
   void showMatrixMode(void) {
     if(getSystemFlag(FLAG_GROW)) {
-      sprintf(errorMessage, "grow");
+      sprintf(statusMessage, "grow");
     }
     else {
-      sprintf(errorMessage, "wrap");
+      sprintf(statusMessage, "wrap");
     }
 
-    showString(errorMessage, &standardFont, X_INTEGER_MODE - 2, 0, vmNormal, true, true);
+    showString(statusMessage, &standardFont, X_INTEGER_MODE - 2, 0, vmNormal, true, true);
   }
 
 
 
   void showTvmMode(void) {
     if(getSystemFlag(FLAG_ENDPMT)) {
-      sprintf(errorMessage, "END");
+      sprintf(statusMessage, "END");
     }
     else {
-      sprintf(errorMessage, "BEG");
+      sprintf(statusMessage, "BEG");
     }
 
-    showString(errorMessage, &standardFont, X_INTEGER_MODE, 0, vmNormal, true, true);
+    showString(statusMessage, &standardFont, X_INTEGER_MODE, 0, vmNormal, true, true);
   }
 
 
