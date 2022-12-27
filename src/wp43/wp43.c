@@ -446,7 +446,7 @@ char                   plotStatMx[8];
 
   lcd_clear_buf();
 #endif //NOKEYMAP                                           //^^
-    fnReset(CONFIRMED);
+    doFnReset(CONFIRMED, loadAutoSav);
     refreshScreen();
 
   #ifdef JMSHOWCODES                                        //JM test

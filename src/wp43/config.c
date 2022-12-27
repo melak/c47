@@ -42,7 +42,9 @@
 #include "programming/flash.h"
 #include "programming/manage.h"
 #include "programming/programmableMenu.h"
+#include "c43Extensions/graphs.h"
 #include "c43Extensions/radioButtonCatalog.h"
+#include "c43Extensions/xeqm.h"
 #include "recall.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -726,7 +728,65 @@ void fnShowVersion(uint8_t option) {  //KEYS VERSION LOADED
 }
 
 
+
+
+void resetOtherConfigurationStuff(void) {
+  firstGregorianDay = 2361222 /* 14 Sept 1752 */;
+  denMax = 64;                                               //JM changed default from MAX_DENMAX default
+  displayFormat = DF_ALL;
+  displayFormatDigits = 3;
+  timeDisplayFormatDigits = 0;
+    clearSystemFlag(FLAG_FRACT);                              //Not saved in file, but restored:  fnDisplayFormatAll(3);
+
+  shortIntegerMode = SIM_2COMPL;                              //64:2
+  fnSetWordSize(64);
+
+  significantDigits = 0;
+  currentAngularMode = amDegree;
+  groupingGap = 3;
+  roundingMode = RM_HALF_EVEN;
+  displayStack = cachedDisplayStack = 4;
+  pcg32_srandom(0x1963073019931121ULL, 0x1995062319981019ULL); // RNG initialisation
+  exponentLimit = 6145;
+  exponentHideLimit = 0;
+  lrSelection = CF_LINEAR_FITTING;
+  lrSelectionUndo = lrSelection;                               //Not saved in file, but reset
+
+  SigFigMode = 0;
+  eRPN = true;
+  HOME3 = true;
+  ShiftTimoutMode = true;
+  UNITDisplay = false;
+  SH_BASE_HOME   = false;
+  Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM NORM MODE SIGMA REPLACEMENT KEY
+  Input_Default =  ID_43S;
+  jm_FG_LINE = true;
+  jm_G_DOUBLETAP = true;
+  jm_BASE_SCREEN = true;                                       //"MyM" setting, set as part of USER_MRESET
+  jm_HOME_SUM = false;                                         //Summary in HOME menu
+  jm_LARGELI = true;                                           //Large font for long integers on stack
+  constantFractions = false;                                   //Extended fractions
+  constantFractionsMode = CF_NORMAL;                           //Extended fractions
+  constantFractionsOn=false;                                   //Extended fractions
+  displayStackSHOIDISP = 2;            //See if the refresh is needed. fnShoiXRepeats(2); //displayStackSHOIDISP
+  bcdDisplay = false;
+  topHex = true;                                               //Hex keys enabled
+  bcdDisplaySign = BCDu;
+  DRG_Cycling = 0;
+  DM_Cycling = 0;
+  SI_All = false;                                              //UNIT display full SI prefix display range
+  LongPressM = RB_M1234;
+  LongPressF = RB_F124;
+  lastIntegerBase = 0;
+}
+
+
+
 void fnReset(uint16_t confirmation) {
+  doFnReset(confirmation, doNotLoadAutoSav);
+}
+
+void doFnReset(uint16_t confirmation, bool_t autoSav) {
   if(confirmation == NOT_CONFIRMED) {
     setConfirmationMode(fnReset);
   }
@@ -914,11 +974,10 @@ void fnReset(uint16_t confirmation) {
     //ctxtReal2139.digits = 2139;
     //ctxtReal2139.traps  = 0;
 
+    resetOtherConfigurationStuff();
 
     statisticalSumsPointer = NULL;
     savedStatisticalSumsPointer = NULL;
-    lrSelection = CF_LINEAR_FITTING;
-    lrSelectionUndo = lrSelection;
     lrChosen    = 0;
     lrChosenUndo = 0;
     lastPlotMode = PLOT_NOTHING;
@@ -941,20 +1000,10 @@ void fnReset(uint16_t confirmation) {
     y_min = 0;
     y_max = 1;
 
-    shortIntegerMode = SIM_2COMPL;
-    fnSetWordSize(64);
-    fnIntegerMode(SIM_2COMPL);                       //JM
 
-    groupingGap = 3;
 
     systemFlags = 0;
-    displayFormat = DF_ALL;
-    displayFormatDigits = 3;                             //JM Set to ALL 3
-    timeDisplayFormatDigits = 0;
-    currentAngularMode = amDegree;
-    DRG_Cycling = 0;                                     //JM
-    DM_Cycling = 0;  //JM
-    denMax = MAX_DENMAX;
+
     setSystemFlag(FLAG_DENANY);
     setSystemFlag(FLAG_MULTx);
     setSystemFlag(FLAG_DECIMP);
@@ -976,10 +1025,7 @@ void fnReset(uint16_t confirmation) {
     shiftF = false;
     shiftG = false;
 
-    significantDigits = 0;
-    roundingMode = RM_HALF_EVEN;
     ctxtReal34.round = DEC_ROUND_HALF_EVEN;
-    displayStack = cachedDisplayStack = 4;
 
     initFontBrowser();
     currentAsnScr = 1;
@@ -1014,16 +1060,10 @@ void fnReset(uint16_t confirmation) {
       debugMemAllocation = true;
     #endif // PC_BUILD || TESTSUITE_BUILD
 
-    // RNG initialisation
-    pcg32_srandom(0x1963073019931121ULL, 0x1995062319981019ULL);
 
     tam.mode = 0;
     catalog = CATALOG_NONE;
     memset(lastCatalogPosition, 0, NUMBER_OF_CATALOGS * sizeof(lastCatalogPosition[0]));
-    firstGregorianDay = 2361222 /* 14 Sept 1752 */;
-    exponentLimit = 6145;
-    exponentHideLimit = 0;
-    lastIntegerBase = 0;
     temporaryInformation = TI_RESET;
 
     currentInputVariable = INVALID_VARIABLE;
@@ -1046,9 +1086,7 @@ void fnReset(uint16_t confirmation) {
 
 
         clearSystemFlag(FLAG_DENANY);                              //JM Default
-        fnDenMax(0);                                               //JM Default
         clearSystemFlag(FLAG_ASLIFT);  //JM??
-        fnDisplayFormatAll(3);                                     //JM Default
         setSystemFlag(FLAG_SSIZE8);                                //JM Default
         setSystemFlag(FLAG_CPXRES);                                //JM Default
         clearSystemFlag(FLAG_FRCSRN);  //JM??                      //JM Default
@@ -1061,7 +1099,54 @@ void fnReset(uint16_t confirmation) {
       if(SH_BASE_HOME) showSoftmenu(mm_MNU_HOME); //JM Reset to BASE MENU HOME;
     #endif // TESTSUITE_BUILD
 
-      reset_jm_defaults(true);
+
+
+    SHOWregis = 9999;                                          //JMSHOW
+
+
+    //JM defaults vv: CONFIG STO/RCL
+
+    graph_xmin = -3*3.14159265;                                //JM GRAPH
+    graph_xmax = -graph_xmin;                                  //JM GRAPH
+    graph_ymin = -2;                                           //JM GRAPH
+    graph_ymax = +2;                                           //JM GRAPH
+
+    graph_reset();
+
+    running_program_jm=false;                                  //JM program is running flag
+    indic_x=0;                                                 //JM program progress indicators
+    indic_y=0;                                                 //JM program progress indicators
+
+    setSystemFlag(FLAG_SPCRES);                                //JM default infinity etc.
+    clearSystemFlag(FLAG_DENFIX);                              //JM default
+
+    ListXYposition = 0;
+
+
+     //JM defaults ^^
+
+                                                               //Find fnXEQMENU in the indexOfItems array
+    fnXEQMENUpos = 0;
+    while(indexOfItems[fnXEQMENUpos].func != fnXEQMENU) {
+       fnXEQMENUpos++;
+    }
+
+                                                               //Reset XEQM
+    uint16_t ix;
+    ix = 0;
+    while(ix<18) {
+      indexOfItemsXEQM[+8*ix]=0;
+      strcpy(indexOfItemsXEQM +8*ix, indexOfItems[fnXEQMENUpos+ix].itemSoftmenuName);
+      ix++;    
+    }
+
+
+    fnClrMod(0);
+    XEQMENU_loadAllfromdisk();
+
+    displayAIMbufferoffset = 0;
+    T_cursorPos = 0;
+
 
 //********** JM CHECKQQ
 
@@ -1143,7 +1228,9 @@ void fnReset(uint16_t confirmation) {
 
     //Autoloading of C43Auto.sav
     #if defined(DMCP_BUILD)
-      fnLoadAuto();
+      if (autoSav == loadAutoSav) {
+        fnLoadAuto();
+      }
     #endif
 
     doRefreshSoftMenu = true;     //jm dr
