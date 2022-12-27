@@ -76,11 +76,11 @@ void fnPause(uint16_t duration) {
         int key = key_pop();
         key = convertKeyCode(key);
         if(key > 0) {
-          if((key == 36 || key == 37) && previousProgramRunStop == PGM_RUNNING) {
+          if((key == 36 || key == 33) && previousProgramRunStop == PGM_RUNNING) { //JM
             previousProgramRunStop = programRunStop = PGM_WAITING;
           }
           setLastKeyCode(key);
-          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, 60000);
+          fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, PROGRAM_KB_ACTV);
           wait_for_key_release(0);
           key_pop();
           break;

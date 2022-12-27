@@ -21,11 +21,13 @@
   #define ASSIGN_H
 
   #include <stdint.h>
+  #include "typeDefinitions.h"
 
   void fnAssign             (uint16_t mode);
 
   void updateAssignTamBuffer(void);
 
+  void _assignItem          (userMenuItem_t *menuItem);
   void assignToMyMenu       (uint16_t position);
   void assignToMyAlpha      (uint16_t position);
   void assignToUserMenu     (uint16_t position);
