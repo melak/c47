@@ -26,6 +26,7 @@
 #include "items.h"
 #include "c43Extensions/xeqm.h"
 #include "c43Extensions/jm.h"
+#include "c43Extensions/radioButtonCatalog.h"
 #include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
@@ -39,6 +40,7 @@
 #include "softmenus.h"
 #include "solver/equation.h"
 #include "solver/graph.h"
+#include "statusBar.h"
 #include "sort.h"
 #include "stats.h"
 #include <string.h>
@@ -50,25 +52,43 @@
 #include "wp43.h"
 
 #define BACKUP_VERSION       779  // LongPressF M
-#define configFileVersion    10000003 // arbitrary starting point version 10 000 001
+#define configFileVersion    10000004 // arbitrary starting point version 10 000 001
+
+/*
+10000001 // arbitrary starting point version 10 000 001
+10000002 // 2022-12-05 First release, version 108_08f
+10000003 // 2022-12-06 version 108_08h, added LongPressM & LongPressF
+10000004 // 2022-12-26 version 108_08n, added lastIntegerBase
+
+Current version default all non-loaded settings from previous version files correctly
+*/
+
+
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
-
 static uint32_t loadedVersion = 0;
-static char *tmpRegisterString = NULL;
 
-static void save(const void *buffer, uint32_t size, void *stream) {
-  #if defined(DMCP_BUILD)
-    UINT bytesWritten;
-    f_write(stream, buffer, size, &bytesWritten);
-  #else // !DMCP_BUILD
-    fwrite(buffer, 1, size, stream);
-  #endif // DMCP_BUILD
-}
-
+#if !defined(TESTSUITE_BUILD)
+  static char     *tmpRegisterString = NULL;
+  static uint32_t totalBytesWritten = 0;
+  static char     fileName[40];
+  static void save(const void *buffer, uint32_t size, void *stream) {
+    hourGlassIconEnabled = true;
+    showHideHourGlass();
+    #if defined(DMCP_BUILD)
+      UINT bytesWritten;
+      f_write(stream, buffer, size, &bytesWritten);
+    #else // !DMCP_BUILD
+      fwrite(buffer, 1, size, stream);
+    #endif // DMCP_BUILD
+    totalBytesWritten += size;
+  }
+#endif //TESTSUITE_BUILD
 
 
 static uint32_t restore(void *buffer, uint32_t size, void *stream) {
+  hourGlassIconEnabled = true;
+  showHideHourGlass();
   #if defined(DMCP_BUILD)
     UINT bytesRead;
     f_read(stream, buffer, size, &bytesRead);
@@ -77,6 +97,50 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     return(fread(buffer, 1, size, stream));
   #endif // DMCP_BUILD
 }
+
+
+#if !defined(TESTSUITE_BUILD)
+  uint16_t flushBufferCnt = 0;
+  uint16_t bufferMax = 0;
+  static bool_t flushBuffer(char * fileName, void *stream) {
+    //  sys_delay(10);
+    //  usleep(2000);
+    flushBufferCnt++;
+    #if defined(DMCP_BUILD)
+      FRESULT result = FR_OK;
+      if(totalBytesWritten > 500) {       //Problems occurred around 0x0200 sometimes, and 0x0600 bytes; use 1/3 of that
+        printHalfSecUpdate_Integer(timed, "Percentage:",(int)(100-flushBufferCnt/4117.0*100.0));
+        f_close(stream);
+        if(result != FR_OK) {
+          sys_disk_write_enable(0);
+          start_buzzer_freq(1000000);
+          sys_delay(500);
+          stop_buzzer();
+          return true;                //error
+        }      
+        f_open(stream, fileName, FA_OPEN_APPEND | FA_WRITE);
+        if(result != FR_OK) {
+          sys_disk_write_enable(0);
+          start_buzzer_freq(1000000);
+          sys_delay(500);
+          stop_buzzer();
+          return true;                //error
+        }
+  //      result = f_lseek(stream, f_size(&stream)); //THIS LSEEK DOES NOT WORK. f_size fails to compile
+  //      if(result != FR_OK) {
+  //        sys_disk_write_enable(0);
+  //        return true;                //error
+  //      }
+        stop_buzzer();
+        totalBytesWritten = 0;
+      }
+    #else
+      printHalfSecUpdate_Integer(timed, "Percentage:",(int)(100-flushBufferCnt/4117.0*100.0));
+      totalBytesWritten = 0;
+    #endif // DMCP_BUILD
+  return false;
+  }
+#endif //TESTSUITE_BUILD
 
 
 
@@ -384,7 +448,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     FILE *ppgm_fp;
     uint8_t *loadedScreen = malloc(SCREEN_WIDTH * SCREEN_HEIGHT / 8);
 
-    fnReset(CONFIRMED);
+    doFnReset(CONFIRMED, loadAutoSav);
     BACKUP = fopen("backup.bin", "rb");
     if(BACKUP == NULL) {
       printf("Cannot restore calc's memory from file backup.bin! Performing RESET\n");
@@ -773,146 +837,165 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 #endif // PC_BUILD
 
 
-static void registerToSaveString(calcRegister_t regist) {
-  longInteger_t lgInt;
-  int16_t sign;
-  uint64_t value;
-  char *str;
-  uint8_t *cfg;
+#if !defined(TESTSUITE_BUILD)
+  static void registerToSaveString(calcRegister_t regist) {
+    longInteger_t lgInt;
+    int16_t sign;
+    uint64_t value;
+    uint32_t base; 
+    char *str;
+    uint8_t *cfg;
 
-  tmpRegisterString = tmpString + START_REGISTER_VALUE;
+    tmpRegisterString = tmpString + START_REGISTER_VALUE;
 
-  switch(getRegisterDataType(regist)) {
-    case dtLongInteger: {
-      convertLongIntegerRegisterToLongInteger(regist, lgInt);
-      longIntegerToAllocatedString(lgInt, tmpRegisterString, TMP_STR_LENGTH - START_REGISTER_VALUE - 1);
-      longIntegerFree(lgInt);
-      strcpy(aimBuffer, "LonI");
-      break;
-    }
-
-    case dtString: {
-      stringToUtf8(REGISTER_STRING_DATA(regist), (uint8_t *)(tmpRegisterString));
-      strcpy(aimBuffer, "Stri");
-      break;
-    }
-
-    case dtShortInteger: {
-      convertShortIntegerRegisterToUInt64(regist, &sign, &value);
-      sprintf(tmpRegisterString, "%c%" PRIu64 " %" PRIu32, sign ? '-' : '+', value, getRegisterShortIntegerBase(regist));
-      strcpy(aimBuffer, "ShoI");
-      break;
-    }
-
-    case dtReal34: {
-      real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
-      switch(getRegisterAngularMode(regist)) {
-        case amDegree: {
-          strcpy(aimBuffer, "Real:DEG");
-          break;
-        }
-
-        case amDMS: {
-          strcpy(aimBuffer, "Real:DMS");
-          break;
-        }
-
-        case amRadian: {
-          strcpy(aimBuffer, "Real:RAD");
-          break;
-        }
-
-        case amMultPi: {
-          strcpy(aimBuffer, "Real:MULTPI");
-          break;
-        }
-
-        case amGrad: {
-          strcpy(aimBuffer, "Real:GRAD");
-          break;
-        }
-
-        case amNone: {
-          strcpy(aimBuffer, "Real");
-          break;
-        }
-
-        default: {
-          strcpy(aimBuffer, "Real:???");
-          break;
+    switch(getRegisterDataType(regist)) {
+      case dtLongInteger: {
+        convertLongIntegerRegisterToLongInteger(regist, lgInt);
+        longIntegerToAllocatedString(lgInt, tmpRegisterString, TMP_STR_LENGTH - START_REGISTER_VALUE - 1);
+        longIntegerFree(lgInt);
+        strcpy(aimBuffer, "LonI");
+        break;
       }
+
+      case dtString: {
+        stringToUtf8(REGISTER_STRING_DATA(regist), (uint8_t *)(tmpRegisterString));
+        strcpy(aimBuffer, "Stri");
+        break;
       }
-      break;
-    }
 
-    case dtComplex34: {
-      real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
-      strcat(tmpRegisterString, " ");
-      real34ToString(REGISTER_IMAG34_DATA(regist), tmpRegisterString + strlen(tmpRegisterString));
-      strcpy(aimBuffer, "Cplx");
-      break;
-    }
-
-    case dtTime: {
-      real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
-      strcpy(aimBuffer, "Time");
-      break;
-    }
-
-    case dtDate: {
-      real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
-      strcpy(aimBuffer, "Date");
-      break;
-    }
-
-    case dtReal34Matrix: {
-      sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns);
-      strcpy(aimBuffer, "Rema");
-      break;
-    }
-
-    case dtComplex34Matrix: {
-      sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns);
-      strcpy(aimBuffer, "Cxma");
-      break;
-    }
-
-    case dtConfig: {
-      for(str=tmpRegisterString, cfg=(uint8_t *)REGISTER_CONFIG_DATA(regist), value=0; value<sizeof(dtConfigDescriptor_t); value++, cfg++, str+=2) {
-        sprintf(str, "%02X", *cfg);
+      case dtShortInteger: { //must be: sign value base
+        convertShortIntegerRegisterToUInt64(regist, &sign, &value);
+        base = getRegisterShortIntegerBase(regist);
+        //      sprintf(tmpRegisterString, "%c%" PRIu64 " %" PRIu32, sign ? '-' : '+', value, base);  //Original line. 64 bit does not work. See workaround below
+        uint32_t v0,v1,v2;
+        v2 =  value /      1000000000000000000;
+        v1 = (value - v2 * 1000000000000000000) /      1000000000;
+        v0 = (value - v2 * 1000000000000000000) - v1 * 1000000000;
+        if(v2 == 0 && v1 == 0) {
+          sprintf(tmpRegisterString,"%c%" PRIu32 " %" PRIu32, sign ? '-' : '+', v0, base);
+        } else if (v2 == 0) {
+          sprintf(tmpRegisterString,"%c%" PRIu32 "%" PRIu32 " %" PRIu32, sign ? '-' : '+', v1,v0, base);
+        } else {
+          sprintf(tmpRegisterString,"%c%" PRIu32 "%" PRIu32 "%" PRIu32 " %" PRIu32, sign ? '-' : '+', v2,v1,v0, base);
+        }
+        strcpy(aimBuffer, "ShoI");
+        break;
       }
-      strcpy(aimBuffer, "Conf");
-      break;
-    }
 
-    default: {
-      strcpy(tmpRegisterString, "???");
-      strcpy(aimBuffer, "????");
-  }
-}
-}
+      case dtReal34: {
+        real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
+        switch(getRegisterAngularMode(regist)) {
+          case amDegree: {
+            strcpy(aimBuffer, "Real:DEG");
+            break;
+          }
 
+          case amDMS: {
+            strcpy(aimBuffer, "Real:DMS");
+            break;
+          }
 
-static void saveMatrixElements(calcRegister_t regist, void *stream) {
-  #if !defined(TESTSUITE_BUILD)
-  if(getRegisterDataType(regist) == dtReal34Matrix) {
-    for(uint32_t element = 0; element < REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
-      real34ToString(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + element, tmpString);
-      strcat(tmpString, "\n");
-      save(tmpString, strlen(tmpString), stream);
-    }
-  }
-  else if(getRegisterDataType(regist) == dtComplex34Matrix) {
-    for(uint32_t element = 0; element < REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
-      real34ToString(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString);
-      strcat(tmpString, " ");
-      real34ToString(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString + strlen(tmpString));
-      strcat(tmpString, "\n");
-      save(tmpString, strlen(tmpString), stream);
+          case amRadian: {
+            strcpy(aimBuffer, "Real:RAD");
+            break;
+          }
+
+          case amMultPi: {
+            strcpy(aimBuffer, "Real:MULTPI");
+            break;
+          }
+
+          case amGrad: {
+            strcpy(aimBuffer, "Real:GRAD");
+            break;
+          }
+
+          case amNone: {
+            strcpy(aimBuffer, "Real");
+            break;
+          }
+
+          default: {
+            strcpy(aimBuffer, "Real:???");
+            break;
+        }
+        }
+        break;
+      }
+
+      case dtComplex34: {
+        real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
+        strcat(tmpRegisterString, " ");
+        real34ToString(REGISTER_IMAG34_DATA(regist), tmpRegisterString + strlen(tmpRegisterString));
+        strcpy(aimBuffer, "Cplx");
+        break;
+      }
+
+      case dtTime: {
+        real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
+        strcpy(aimBuffer, "Time");
+        break;
+      }
+
+      case dtDate: {
+        real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
+        strcpy(aimBuffer, "Date");
+        break;
+      }
+
+      case dtReal34Matrix: {
+        sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns);
+        strcpy(aimBuffer, "Rema");
+        break;
+      }
+
+      case dtComplex34Matrix: {
+        sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns);
+        strcpy(aimBuffer, "Cxma");
+        break;
+      }
+
+      case dtConfig: {
+        for(str=tmpRegisterString, cfg=(uint8_t *)REGISTER_CONFIG_DATA(regist), value=0; value<sizeof(dtConfigDescriptor_t); value++, cfg++, str+=2) {
+          sprintf(str, "%02X", *cfg);
+        }
+        strcpy(aimBuffer, "Conf");
+        break;
+      }
+
+      default: {
+        strcpy(tmpRegisterString, "???");
+        strcpy(aimBuffer, "????");
+      }
     }
   }
-  #endif // !TESTSUITE_BUILD
-}
+
+
+  static void saveMatrixElements(calcRegister_t regist, void *stream) {
+    if(getRegisterDataType(regist) == dtReal34Matrix) {
+      for(uint32_t element = 0; element < REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
+        real34ToString(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + element, tmpString);
+        strcat(tmpString, "\n");
+        save(tmpString, strlen(tmpString), stream);
+        if(flushBuffer(fileName, stream)) {
+          return;
+        }
+      }
+    }
+    else if(getRegisterDataType(regist) == dtComplex34Matrix) {
+      for(uint32_t element = 0; element < REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows * REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns; ++element) {
+        real34ToString(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString);
+        strcat(tmpString, " ");
+        real34ToString(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString + strlen(tmpString));
+        strcat(tmpString, "\n");
+        save(tmpString, strlen(tmpString), stream);
+        if(flushBuffer(fileName, stream)) {
+          return;
+        }
+      }
+    }
+  }
+#endif // !TESTSUITE_BUILD
 
 
 static void doSave(uint16_t saveType);
@@ -925,15 +1008,14 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
   doSave(manualSave);
 }
 
-
 void doSave(uint16_t saveType) {
+#if !defined(TESTSUITE_BUILD)
   calcRegister_t regist;
   uint32_t i;
+  fileName[0] = 0;
 
   #if defined(DMCP_BUILD)
     FRESULT result;
-    char fileName[30];
-    fileName[0] = 0;
     if(saveType == manualSave) {
       strcpy(fileName, "SAVFILES\\C43.sav");
     } else if(saveType == autoSave) {
@@ -956,6 +1038,9 @@ void doSave(uint16_t saveType) {
     }
   #endif // DMCP_BUILD
   // SAV file version number
+  printHalfSecUpdate_Integer(force+1, "Version",configFileVersion);
+  hourGlassIconEnabled = true;
+  showHideHourGlass();
 
   sprintf(tmpString, "SAVE_FILE_REVISION\n%" PRIu8 "\n", (uint8_t)0);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -970,6 +1055,9 @@ void doSave(uint16_t saveType) {
     registerToSaveString(regist);
     sprintf(tmpString, "R%03" PRId16 "\n%s\n%s\n", regist, aimBuffer, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
+    if(flushBuffer(fileName, BACKUP)) {
+      return;
+    }
     saveMatrixElements(regist, BACKUP);
   }
 
@@ -993,6 +1081,9 @@ void doSave(uint16_t saveType) {
     registerToSaveString(FIRST_LOCAL_REGISTER + i);
     sprintf(tmpString, "R.%02" PRIu32 "\n%s\n%s\n", i, aimBuffer, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
+    if(flushBuffer(fileName, BACKUP)) {
+      return;
+    }
     saveMatrixElements(FIRST_LOCAL_REGISTER + i, BACKUP);
   }
 
@@ -1009,6 +1100,9 @@ void doSave(uint16_t saveType) {
     registerToSaveString(FIRST_NAMED_VARIABLE + i);
     sprintf(tmpString, "%s\n%s\n%s\n", "name", aimBuffer, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
+    if(flushBuffer(fileName, BACKUP)) {
+      return;
+    }
     saveMatrixElements(FIRST_NAMED_VARIABLE + i, BACKUP);
   }
 
@@ -1019,6 +1113,9 @@ void doSave(uint16_t saveType) {
     realToString(statisticalSumsPointer + REAL_SIZE * i , tmpRegisterString);
     sprintf(tmpString, "%s\n", tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
+    if(flushBuffer(fileName, BACKUP)) {
+      return;
+    }
   }
 
   // System flags
@@ -1039,7 +1136,10 @@ void doSave(uint16_t saveType) {
                                                                                                  kbd_usr[i].fShiftedAim,
                                                                                                              kbd_usr[i].gShiftedAim,
                                                                                                                          kbd_usr[i].primaryTam);
-  save(tmpString, strlen(tmpString), BACKUP);
+    save(tmpString, strlen(tmpString), BACKUP);
+    if(flushBuffer(fileName, BACKUP)) {
+      return;
+    }
   }
 
   // Keyboard arguments
@@ -1063,6 +1163,9 @@ void doSave(uint16_t saveType) {
       save(tmpString, strlen(tmpString), BACKUP);
     }
   }
+  if(flushBuffer(fileName, BACKUP)) {
+    return;
+  }
 
   // MyMenu
   sprintf(tmpString, "MYMENU\n18\n");
@@ -1076,6 +1179,9 @@ void doSave(uint16_t saveType) {
     strcat(tmpString, "\n");
     save(tmpString, strlen(tmpString), BACKUP);
   }
+  if(flushBuffer(fileName, BACKUP)) {
+    return;
+  }
 
   // MyAlpha
   sprintf(tmpString, "MYALPHA\n18\n");
@@ -1088,6 +1194,9 @@ void doSave(uint16_t saveType) {
     }
     strcat(tmpString, "\n");
     save(tmpString, strlen(tmpString), BACKUP);
+  }
+  if(flushBuffer(fileName, BACKUP)) {
+    return;
   }
 
   // User menus
@@ -1109,6 +1218,9 @@ void doSave(uint16_t saveType) {
       save(tmpString, strlen(tmpString), BACKUP);
     }
   }
+  if(flushBuffer(fileName, BACKUP)) {
+    return;
+  }
 
   // Programs
   uint16_t currentSizeInBlocks = RAM_SIZE - freeMemoryRegions[numberOfFreeMemoryRegions - 1].address - freeMemoryRegions[numberOfFreeMemoryRegions - 1].sizeInBlocks;
@@ -1127,8 +1239,11 @@ void doSave(uint16_t saveType) {
   for(i=0; i<currentSizeInBlocks; i++) {
     sprintf(tmpString, "%" PRIu32 "\n", *(((uint32_t *)(beginOfProgramMemory)) + i));
     save(tmpString, strlen(tmpString), BACKUP);
+    if(flushBuffer(fileName, BACKUP)) {
+      return;
+    }
   }
-
+  
   // Equations
   sprintf(tmpString, "EQUATIONS\n%" PRIu16 "\n", numberOfFormulae);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1137,10 +1252,13 @@ void doSave(uint16_t saveType) {
     stringToUtf8(TO_PCMEMPTR(allFormulae[i].pointerToFormulaData), (uint8_t *)tmpString);
     strcat(tmpString, "\n");
     save(tmpString, strlen(tmpString), BACKUP);
+    if(flushBuffer(fileName, BACKUP)) {
+      return;
+    }
   }
 
   // Other configuration stuff
-  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n41\n"); //JM 16+11+14
+  sprintf(tmpString, "OTHER_CONFIGURATION_STUFF\n42\n"); //JM 16+11+14+1
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1175,6 +1293,9 @@ void doSave(uint16_t saveType) {
   sprintf(tmpString, "notBestF\n%" PRIu16 "\n", lrSelection);
   save(tmpString, strlen(tmpString), BACKUP);
 //Number 16: digit
+  if(flushBuffer(fileName, BACKUP)) {
+    return;
+  }
 
 //11
   sprintf(tmpString, "SigFigMode\n%"          PRIu8 "\n",       SigFigMode);                   save(tmpString, strlen(tmpString), BACKUP);      
@@ -1188,6 +1309,9 @@ void doSave(uint16_t saveType) {
   sprintf(tmpString, "jm_FG_LINE\n%"          PRIu8 "\n",       (uint8_t)jm_FG_LINE);          save(tmpString, strlen(tmpString), BACKUP);      
   sprintf(tmpString, "jm_BASE_SCREEN\n%"      PRIu8 "\n",       (uint8_t)jm_BASE_SCREEN);      save(tmpString, strlen(tmpString), BACKUP);             
   sprintf(tmpString, "jm_G_DOUBLETAP\n%"      PRIu8 "\n",       (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString), BACKUP);          
+  if(flushBuffer(fileName, BACKUP)) {
+    return;
+  }
 
 
 /*
@@ -1255,8 +1379,16 @@ void doSave(uint16_t saveType) {
   sprintf(tmpString, "SI_All\n%"                PRIu8 "\n",     (uint8_t)SI_All);              save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "LongPressM\n%"            PRIu8 "\n",     (uint8_t)LongPressM);          save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "LongPressF\n%"            PRIu8 "\n",     (uint8_t)LongPressF);          save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "lastIntegerBase\n%"       PRIu8 "\n",     (uint8_t)lastIntegerBase);     save(tmpString, strlen(tmpString), BACKUP);
+//42
+  if(flushBuffer(fileName, BACKUP)) {
+    return;
+  }
 
-
+//To check the number of loops for the percentage completion
+//sprintf(tmpString,"flushBufferCnt %d",flushBufferCnt);
+//printHalfSecUpdate_Integer(force+1, tmpString,0);
+//usleep(10000000);
 
   #if defined(DMCP_BUILD)
     f_close(BACKUP);
@@ -1265,7 +1397,10 @@ void doSave(uint16_t saveType) {
     fclose(BACKUP);
   #endif // DMCP_BUILD
 
+  hourGlassIconEnabled = false;
+  showHideHourGlass();
   temporaryInformation = TI_SAVED;
+#endif //TESTSUITE_BUILD
 }
 
 
@@ -1515,7 +1650,7 @@ static void restoreRegister(calcRegister_t regist, char *type, char *value) {
   }
 
   else {
-    sprintf(errorMessage, "In function restoreRegister: Date type %s is to be coded!", type);
+    sprintf(errorMessage, "In function restoreRegister: Data: Reg %d, type %s, value %s to be coded!", (int16_t)regist, type, value);
     displayBugScreen(errorMessage);
   }
 }
@@ -2054,12 +2189,15 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
   }
 
   else if(strcmp(tmpString, "OTHER_CONFIGURATION_STUFF") == 0) {
+    resetOtherConfigurationStuff(); //Ensure all the configuration stuff below is reset prior to loading.
+                                    //That ensures if missing settings, that the proper defaults are set.
     readLine(stream, tmpString); // Number params
     numberOfRegs = stringToInt16(tmpString);
     for(i=0; i<numberOfRegs; i++) {
       readLine(stream, aimBuffer); // param
       readLine(stream, tmpString); // value
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+
         if(strcmp(aimBuffer, "firstGregorianDay") == 0) {
           firstGregorianDay = stringToUint32(tmpString);
         }
@@ -2171,8 +2309,9 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "DRG_Cycling"                 ) == 0) { DRG_Cycling          = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "DM_Cycling"                  ) == 0) { DM_Cycling           = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "SI_All"                      ) == 0) { SI_All               = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "LongPressM"                  ) == 0) { LongPressM           = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "LongPressF"                  ) == 0) { LongPressF           = (bool_t)stringToUint8(tmpString) != 0; }
+        else if(strcmp(aimBuffer, "LongPressM"                  ) == 0) { LongPressM           = (bool_t)stringToUint8(tmpString) != 0; }     //10000003
+        else if(strcmp(aimBuffer, "LongPressF"                  ) == 0) { LongPressF           = (bool_t)stringToUint8(tmpString) != 0; }     //10000003
+        else if(strcmp(aimBuffer, "lastIntegerBase"             ) == 0) { lastIntegerBase      = (bool_t)stringToUint8(tmpString) != 0; }     //10000004
 
       }
     }
@@ -2186,7 +2325,6 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 
 void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t loadType) {
   #if defined(DMCP_BUILD)
-    char fileName[30];
     fileName[0] = 0;
     if(loadType == manualLoad) {
       strcpy(fileName, "SAVFILES\\C43.sav");
@@ -2222,7 +2360,13 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
   }
 
 
-  //Tentatively insist on perfect version match for autoloaded sav file
+
+  // SAVE_FILE_REVISION
+  // 0
+  // C43_save_file_00
+  // 10000003
+
+  // Allow older versions for autoloaded sav file
   //  while doing no check on manual loading. This may allow manual loading of older files at risk
   loadedVersion = 0;
   if(loadType == autoLoad && loadMode == LM_ALL) {
@@ -2233,11 +2377,14 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
       readLine(BACKUP, tmpString); // value
       if(strcmp(aimBuffer, "C43_save_file_00") == 0) {
         loadedVersion = stringToUint32(tmpString);
+        if(loadedVersion < 10000000 || loadedVersion > 20000000) {
+          loadedVersion = 0;
+        }
       }    
     }
   }
 
-  if(loadType == manualLoad || (loadType == autoLoad && loadedVersion == configFileVersion)) {
+  if(loadType == manualLoad || ((loadType == autoLoad) && (loadedVersion <= configFileVersion))) {
     while(restoreOneSection(BACKUP, loadMode, s, n, d)) {
     }
   }
@@ -2251,11 +2398,14 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
     fclose(BACKUP);
   #endif //DMCP_BUILD
 
+  fnRefreshState();
+  refreshScreen();
+
   #if !defined(TESTSUITE_BUILD)
     if(loadType == manualLoad && loadMode == LM_ALL) {
       temporaryInformation = TI_BACKUP_RESTORED;
     } else
-    if(loadType == autoLoad && loadedVersion == configFileVersion && loadMode == LM_ALL) {
+    if((loadType == autoLoad) && (loadedVersion >= 10000000) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL)) {
       temporaryInformation = TI_BACKUP_RESTORED;
     }
   #endif // !TESTSUITE_BUILD

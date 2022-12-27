@@ -1777,20 +1777,21 @@ void fnSafeReset (uint16_t unusedButMandatoryParameter) {
 
 
 
-
-static void assignToMyMenu_(uint16_t position) {
-  if(position < 18) {
-    _assignItem(&userMenuItems[position]);
+#ifndef TESTSUITE_BUILD
+  static void assignToMyMenu_(uint16_t position) {
+    if(position < 18) {
+      _assignItem(&userMenuItems[position]);
+    }
+    cachedDynamicMenu = 0;
   }
-  cachedDynamicMenu = 0;
-}
 
-static void assignToMyAlpha_(uint16_t position) {
-  if(position < 18) {
-    _assignItem(&userAlphaItems[position]);
+  static void assignToMyAlpha_(uint16_t position) {
+    if(position < 18) {
+      _assignItem(&userAlphaItems[position]);
+    }
+    cachedDynamicMenu = 0;
   }
-  cachedDynamicMenu = 0;
-}
+#endif //TESTSUITE_BUILD
 
 
 void fnRESET_MyM(void){

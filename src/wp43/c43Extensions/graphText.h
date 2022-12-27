@@ -43,6 +43,9 @@ void         create_filename(char *fn);
 
 int16_t      export_append_line(char *inputstring);
 int16_t      export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode, char *dirname, char *filename);
+#ifdef DMCP_BUILD
+  int16_t      export_append_string_to_file(const char line1[TMP_STR_LENGTH], uint8_t mode, const char filedir[40]);
+#endif
 
 #define      filenamelen 40
 extern char         filename_csv[filenamelen]; //JMMAX                //JM_CSV
