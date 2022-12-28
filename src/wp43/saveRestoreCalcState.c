@@ -27,6 +27,7 @@
 #include "c43Extensions/xeqm.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/radioButtonCatalog.h"
+#include "c43Extensions/graphText.h"
 #include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
@@ -67,6 +68,8 @@ Current version default all non-loaded settings from previous version files corr
 #define START_REGISTER_VALUE 1000  // was 1522, why?
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 static uint32_t loadedVersion = 0;
+uint16_t flushBufferCnt = 0;
+
 
 #if !defined(TESTSUITE_BUILD)
   static char     *tmpRegisterString = NULL;
@@ -74,21 +77,20 @@ static uint32_t loadedVersion = 0;
   static char     fileName[40];
   static void save(const void *buffer, uint32_t size, void *stream) {
     hourGlassIconEnabled = true;
-    showHideHourGlass();
+    printHalfSecUpdate_Integer(timed, "Status:",(int)flushBufferCnt++);
     #if defined(DMCP_BUILD)
-      UINT bytesWritten;
-      f_write(stream, buffer, size, &bytesWritten);
+      save_text(buffer, NOACTION, WRITE, NOACTION, (int16_t)size, fileName);
     #else // !DMCP_BUILD
       fwrite(buffer, 1, size, stream);
     #endif // DMCP_BUILD
     totalBytesWritten += size;
   }
-#endif //TESTSUITE_BUILD
+//#endif //TESTSUITE_BUILD
 
 
 static uint32_t restore(void *buffer, uint32_t size, void *stream) {
   hourGlassIconEnabled = true;
-  showHideHourGlass();
+  printHalfSecUpdate_Integer(timed, "Status:",(int)flushBufferCnt++);
   #if defined(DMCP_BUILD)
     UINT bytesRead;
     f_read(stream, buffer, size, &bytesRead);
@@ -97,49 +99,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     return(fread(buffer, 1, size, stream));
   #endif // DMCP_BUILD
 }
-
-
-#if !defined(TESTSUITE_BUILD)
-  uint16_t flushBufferCnt = 0;
-  uint16_t bufferMax = 0;
-  static bool_t flushBuffer(char * fileName, void *stream) {
-    //  sys_delay(10);
-    //  usleep(2000);
-    flushBufferCnt++;
-    #if defined(DMCP_BUILD)
-      FRESULT result = FR_OK;
-      if(totalBytesWritten > 500) {       //Problems occurred around 0x0200 sometimes, and 0x0600 bytes; use 1/3 of that
-        printHalfSecUpdate_Integer(timed, "Percentage:",(int)(100-flushBufferCnt/4117.0*100.0));
-        f_close(stream);
-        if(result != FR_OK) {
-          sys_disk_write_enable(0);
-          start_buzzer_freq(1000000);
-          sys_delay(500);
-          stop_buzzer();
-          return true;                //error
-        }      
-        f_open(stream, fileName, FA_OPEN_APPEND | FA_WRITE);
-        if(result != FR_OK) {
-          sys_disk_write_enable(0);
-          start_buzzer_freq(1000000);
-          sys_delay(500);
-          stop_buzzer();
-          return true;                //error
-        }
-  //      result = f_lseek(stream, f_size(&stream)); //THIS LSEEK DOES NOT WORK. f_size fails to compile
-  //      if(result != FR_OK) {
-  //        sys_disk_write_enable(0);
-  //        return true;                //error
-  //      }
-        stop_buzzer();
-        totalBytesWritten = 0;
-      }
-    #else
-      printHalfSecUpdate_Integer(timed, "Percentage:",(int)(100-flushBufferCnt/4117.0*100.0));
-      totalBytesWritten = 0;
-    #endif // DMCP_BUILD
-  return false;
-  }
 #endif //TESTSUITE_BUILD
 
 
@@ -741,7 +700,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       MY_ALPHA_MENU = mm_MNU_ALPHA;
 
       if(temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) 
-        temporaryInformation = TI_NO_INFO;                                                                  //JM
+        temporaryInformation = TI_NO_INFO;
 
       if(currentProgramNumber >= (numberOfPrograms - numberOfProgramsInFlash)) {
         currentStep.flash = 1;
@@ -806,10 +765,10 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         else if(calcMode == CM_PLOT_STAT) {
         calcModeNormalGui();
         }
-        else if(calcMode == CM_GRAPH) {   //JM
+        else if(calcMode == CM_GRAPH) {
         calcModeNormalGui();
         }
-        else if(calcMode == CM_LISTXY) {   //JM
+        else if(calcMode == CM_LISTXY) {
         calcModeNormalGui();
         }
         else if(calcMode == CM_MIM) {
@@ -863,10 +822,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         break;
       }
 
-      case dtShortInteger: { //must be: sign value base
+      case dtShortInteger: {
         convertShortIntegerRegisterToUInt64(regist, &sign, &value);
         base = getRegisterShortIntegerBase(regist);
-        //      sprintf(tmpRegisterString, "%c%" PRIu64 " %" PRIu32, sign ? '-' : '+', value, base);  //Original line. 64 bit does not work. See workaround below
         uint32_t v0,v1,v2;
         v2 =  value /      1000000000000000000;
         v1 = (value - v2 * 1000000000000000000) /      1000000000;
@@ -977,9 +935,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         real34ToString(REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + element, tmpString);
         strcat(tmpString, "\n");
         save(tmpString, strlen(tmpString), stream);
-        if(flushBuffer(fileName, stream)) {
-          return;
-        }
       }
     }
     else if(getRegisterDataType(regist) == dtComplex34Matrix) {
@@ -989,9 +944,6 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         real34ToString(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + element), tmpString + strlen(tmpString));
         strcat(tmpString, "\n");
         save(tmpString, strlen(tmpString), stream);
-        if(flushBuffer(fileName, stream)) {
-          return;
-        }
       }
     }
   }
@@ -1015,19 +967,13 @@ void doSave(uint16_t saveType) {
   fileName[0] = 0;
 
   #if defined(DMCP_BUILD)
-    FRESULT result;
     if(saveType == manualSave) {
       strcpy(fileName, "SAVFILES\\C43.sav");
     } else if(saveType == autoSave) {
       strcpy(fileName, "SAVFILES\\C43auto.sav");
     } 
-    sys_disk_write_enable(1);
-    check_create_dir("SAVFILES");
-    result = f_open(BACKUP, fileName, FA_CREATE_ALWAYS | FA_WRITE);
-    if(result != FR_OK) {
-      sys_disk_write_enable(0);
-      return;
-    }
+    open_text("SAVFILES", fileName);
+
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
@@ -1038,7 +984,7 @@ void doSave(uint16_t saveType) {
     }
   #endif // DMCP_BUILD
   // SAV file version number
-  printHalfSecUpdate_Integer(force+1, "Version",configFileVersion);
+  //printHalfSecUpdate_Integer(force+1, "Version",configFileVersion);
   hourGlassIconEnabled = true;
   showHideHourGlass();
 
@@ -1055,9 +1001,6 @@ void doSave(uint16_t saveType) {
     registerToSaveString(regist);
     sprintf(tmpString, "R%03" PRId16 "\n%s\n%s\n", regist, aimBuffer, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
-    if(flushBuffer(fileName, BACKUP)) {
-      return;
-    }
     saveMatrixElements(regist, BACKUP);
   }
 
@@ -1081,9 +1024,6 @@ void doSave(uint16_t saveType) {
     registerToSaveString(FIRST_LOCAL_REGISTER + i);
     sprintf(tmpString, "R.%02" PRIu32 "\n%s\n%s\n", i, aimBuffer, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
-    if(flushBuffer(fileName, BACKUP)) {
-      return;
-    }
     saveMatrixElements(FIRST_LOCAL_REGISTER + i, BACKUP);
   }
 
@@ -1100,9 +1040,6 @@ void doSave(uint16_t saveType) {
     registerToSaveString(FIRST_NAMED_VARIABLE + i);
     sprintf(tmpString, "%s\n%s\n%s\n", "name", aimBuffer, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
-    if(flushBuffer(fileName, BACKUP)) {
-      return;
-    }
     saveMatrixElements(FIRST_NAMED_VARIABLE + i, BACKUP);
   }
 
@@ -1113,9 +1050,6 @@ void doSave(uint16_t saveType) {
     realToString(statisticalSumsPointer + REAL_SIZE * i , tmpRegisterString);
     sprintf(tmpString, "%s\n", tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
-    if(flushBuffer(fileName, BACKUP)) {
-      return;
-    }
   }
 
   // System flags
@@ -1137,9 +1071,6 @@ void doSave(uint16_t saveType) {
                                                                                                              kbd_usr[i].gShiftedAim,
                                                                                                                          kbd_usr[i].primaryTam);
     save(tmpString, strlen(tmpString), BACKUP);
-    if(flushBuffer(fileName, BACKUP)) {
-      return;
-    }
   }
 
   // Keyboard arguments
@@ -1163,9 +1094,6 @@ void doSave(uint16_t saveType) {
       save(tmpString, strlen(tmpString), BACKUP);
     }
   }
-  if(flushBuffer(fileName, BACKUP)) {
-    return;
-  }
 
   // MyMenu
   sprintf(tmpString, "MYMENU\n18\n");
@@ -1179,9 +1107,6 @@ void doSave(uint16_t saveType) {
     strcat(tmpString, "\n");
     save(tmpString, strlen(tmpString), BACKUP);
   }
-  if(flushBuffer(fileName, BACKUP)) {
-    return;
-  }
 
   // MyAlpha
   sprintf(tmpString, "MYALPHA\n18\n");
@@ -1194,9 +1119,6 @@ void doSave(uint16_t saveType) {
     }
     strcat(tmpString, "\n");
     save(tmpString, strlen(tmpString), BACKUP);
-  }
-  if(flushBuffer(fileName, BACKUP)) {
-    return;
   }
 
   // User menus
@@ -1218,9 +1140,6 @@ void doSave(uint16_t saveType) {
       save(tmpString, strlen(tmpString), BACKUP);
     }
   }
-  if(flushBuffer(fileName, BACKUP)) {
-    return;
-  }
 
   // Programs
   uint16_t currentSizeInBlocks = RAM_SIZE - freeMemoryRegions[numberOfFreeMemoryRegions - 1].address - freeMemoryRegions[numberOfFreeMemoryRegions - 1].sizeInBlocks;
@@ -1239,9 +1158,6 @@ void doSave(uint16_t saveType) {
   for(i=0; i<currentSizeInBlocks; i++) {
     sprintf(tmpString, "%" PRIu32 "\n", *(((uint32_t *)(beginOfProgramMemory)) + i));
     save(tmpString, strlen(tmpString), BACKUP);
-    if(flushBuffer(fileName, BACKUP)) {
-      return;
-    }
   }
   
   // Equations
@@ -1252,9 +1168,6 @@ void doSave(uint16_t saveType) {
     stringToUtf8(TO_PCMEMPTR(allFormulae[i].pointerToFormulaData), (uint8_t *)tmpString);
     strcat(tmpString, "\n");
     save(tmpString, strlen(tmpString), BACKUP);
-    if(flushBuffer(fileName, BACKUP)) {
-      return;
-    }
   }
 
   // Other configuration stuff
@@ -1293,9 +1206,6 @@ void doSave(uint16_t saveType) {
   sprintf(tmpString, "notBestF\n%" PRIu16 "\n", lrSelection);
   save(tmpString, strlen(tmpString), BACKUP);
 //Number 16: digit
-  if(flushBuffer(fileName, BACKUP)) {
-    return;
-  }
 
 //11
   sprintf(tmpString, "SigFigMode\n%"          PRIu8 "\n",       SigFigMode);                   save(tmpString, strlen(tmpString), BACKUP);      
@@ -1309,9 +1219,6 @@ void doSave(uint16_t saveType) {
   sprintf(tmpString, "jm_FG_LINE\n%"          PRIu8 "\n",       (uint8_t)jm_FG_LINE);          save(tmpString, strlen(tmpString), BACKUP);      
   sprintf(tmpString, "jm_BASE_SCREEN\n%"      PRIu8 "\n",       (uint8_t)jm_BASE_SCREEN);      save(tmpString, strlen(tmpString), BACKUP);             
   sprintf(tmpString, "jm_G_DOUBLETAP\n%"      PRIu8 "\n",       (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString), BACKUP);          
-  if(flushBuffer(fileName, BACKUP)) {
-    return;
-  }
 
 
 /*
@@ -1381,18 +1288,9 @@ void doSave(uint16_t saveType) {
   sprintf(tmpString, "LongPressF\n%"            PRIu8 "\n",     (uint8_t)LongPressF);          save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "lastIntegerBase\n%"       PRIu8 "\n",     (uint8_t)lastIntegerBase);     save(tmpString, strlen(tmpString), BACKUP);
 //42
-  if(flushBuffer(fileName, BACKUP)) {
-    return;
-  }
-
-//To check the number of loops for the percentage completion
-//sprintf(tmpString,"flushBufferCnt %d",flushBufferCnt);
-//printHalfSecUpdate_Integer(force+1, tmpString,0);
-//usleep(10000000);
 
   #if defined(DMCP_BUILD)
-    f_close(BACKUP);
-    sys_disk_write_enable(0);
+    close_text(fileName);
   #else // !DMCP_BUILD
     fclose(BACKUP);
   #endif // DMCP_BUILD
@@ -1406,6 +1304,7 @@ void doSave(uint16_t saveType) {
 
 
 static void readLine(void *stream, char *line) {
+#ifndef TESTSUITE_BUILD
   restore(line, 1, stream);
   while(*line == '\n' || *line == '\r') {
     restore(line, 1, stream);
@@ -1416,6 +1315,7 @@ static void readLine(void *stream, char *line) {
   }
 
   *line = 0;
+#endif //TESTSUITE_BUILD
 }
 
 
