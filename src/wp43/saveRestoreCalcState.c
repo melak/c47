@@ -962,6 +962,11 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
 
 void doSave(uint16_t saveType) {
 #if !defined(TESTSUITE_BUILD)
+char tmpString[3000];             //The concurrent use of the global tmpString 
+                                  //as target does not work while the source is at
+                                  //tmpRegisterString = tmpString + START_REGISTER_VALUE;
+                                  //Temporary solution is to use a local variable of sufficient length for the target.
+ 
   calcRegister_t regist;
   uint32_t i;
   fileName[0] = 0;
@@ -1027,12 +1032,15 @@ void doSave(uint16_t saveType) {
     saveMatrixElements(FIRST_LOCAL_REGISTER + i, BACKUP);
   }
 
+/* TODO
   // Local flags
   if(currentLocalRegisters) {
     sprintf(tmpString, "LOCAL_FLAGS\n%" PRIu32 "\n", currentLocalFlags->localFlags);
     save(tmpString, strlen(tmpString), BACKUP);
   }
+*/
 
+/* TODO
   // Named variables
   sprintf(tmpString, "NAMED_VARIABLES\n%" PRIu16 "\n", numberOfNamedVariables);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1042,7 +1050,7 @@ void doSave(uint16_t saveType) {
     save(tmpString, strlen(tmpString), BACKUP);
     saveMatrixElements(FIRST_NAMED_VARIABLE + i, BACKUP);
   }
-
+*/
   // Statistical sums
   sprintf(tmpString, "STATISTICAL_SUMS\n%" PRIu16 "\n", (uint16_t)(statisticalSumsPointer ? NUMBER_OF_STATISTICAL_SUMS : 0));
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1051,11 +1059,11 @@ void doSave(uint16_t saveType) {
     sprintf(tmpString, "%s\n", tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
   }
-
+/* TODO
   // System flags
   sprintf(tmpString, "SYSTEM_FLAGS\n%" PRIu64 "\n", systemFlags);
   save(tmpString, strlen(tmpString), BACKUP);
-
+*/
   // Keyboard assignments
   sprintf(tmpString, "KEYBOARD_ASSIGNMENTS\n37\n");
   save(tmpString, strlen(tmpString), BACKUP);
