@@ -1698,7 +1698,7 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
     //  lcd_refresh();
     fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV); //PROGRAM_KB_ACTV
     sprintf(tmps, "%s %6d ",txt,loop);
-    showString(tmps, &standardFont, 20, 145-mode*20, vmNormal, false, false);  //note: 1 line up for "force"
+    showString(tmps, &standardFont, 20, 145-7-mode*20, vmNormal, false, false);  //note: 1 line up for "force"
 
     #ifdef PC_BUILD
       gtk_widget_queue_draw(screen);

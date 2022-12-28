@@ -27,7 +27,6 @@
 #include "c43Extensions/xeqm.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/radioButtonCatalog.h"
-#include "c43Extensions/graphText.h"
 #include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
@@ -79,7 +78,8 @@ uint16_t flushBufferCnt = 0;
     hourGlassIconEnabled = true;
     printHalfSecUpdate_Integer(timed, "Status:",(int)flushBufferCnt++);
     #if defined(DMCP_BUILD)
-      save_text(buffer, NOACTION, WRITE, NOACTION, (int16_t)size, fileName);
+      UINT bytesWritten;
+      f_write(stream, buffer, size, &bytesWritten);
     #else // !DMCP_BUILD
       fwrite(buffer, 1, size, stream);
     #endif // DMCP_BUILD
@@ -972,12 +972,19 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   fileName[0] = 0;
 
   #if defined(DMCP_BUILD)
+    FRESULT result;
     if(saveType == manualSave) {
       strcpy(fileName, "SAVFILES\\C43.sav");
     } else if(saveType == autoSave) {
       strcpy(fileName, "SAVFILES\\C43auto.sav");
     } 
-    open_text("SAVFILES", fileName);
+    sys_disk_write_enable(1);
+    check_create_dir("SAVFILES");
+    result = f_open(BACKUP, fileName, FA_CREATE_ALWAYS | FA_WRITE);
+    if(result != FR_OK) {
+      sys_disk_write_enable(0);
+      return;
+    }
 
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
@@ -1298,7 +1305,8 @@ char tmpString[3000];             //The concurrent use of the global tmpString
 //42
 
   #if defined(DMCP_BUILD)
-    close_text(fileName);
+    f_close(BACKUP);
+    sys_disk_write_enable(0);
   #else // !DMCP_BUILD
     fclose(BACKUP);
   #endif // DMCP_BUILD
