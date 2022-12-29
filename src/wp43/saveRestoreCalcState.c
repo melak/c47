@@ -1313,7 +1313,6 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   #endif // DMCP_BUILD
 
   hourGlassIconEnabled = false;
-  showHideHourGlass();
   temporaryInformation = TI_SAVED;
 #endif //TESTSUITE_BUILD
 }
@@ -1658,6 +1657,8 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     char line[100];
   #endif //LOADDEBUG
 
+  hourGlassIconEnabled = true;
+  showHideHourGlass();
   readLine(stream, tmpString);
   #if defined (LOADDEBUG)
     sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
@@ -2369,13 +2370,17 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "LongPressF"                  ) == 0) { LongPressF           = stringToUint8(tmpString); }                  //10000003
         else if(strcmp(aimBuffer, "lastIntegerBase"             ) == 0) { lastIntegerBase      = stringToUint8(tmpString); }                  //10000004
 
+        hourGlassIconEnabled = false;
+
       }
     }
+    hourGlassIconEnabled = false;
     return false; //Signal that this was the last section loaded and no more sections to follow
     #if defined (LOADDEBUG)
       debugPrintf(17, "END1", "");
     #endif //LOADDEBUG
   }
+  hourGlassIconEnabled = false;
   return true; //Signal to continue loading the next section
   #if defined (LOADDEBUG)
     debugPrintf(18, "END2", "");
