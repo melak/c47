@@ -795,13 +795,13 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
   }
 #endif // PC_BUILD
 
-static void UI64toString(uint64_t value, char * tmpRegisterString);
 
 char aimBuffer1[400];             //The concurrent use of the global aimBuffer 
                                   //does not work. See tmpString.
                                   //Temporary solution is to use a local variable of sufficient length for the target.
 
 #if !defined(TESTSUITE_BUILD)
+  static void UI64toString(uint64_t value, char * tmpRegisterString);
   static void registerToSaveString(calcRegister_t regist) {
     longInteger_t lgInt;
     int16_t sign;
@@ -1338,6 +1338,7 @@ static void readLine(void *stream, char *line) {
 
 
 
+#ifndef TESTSUITE_BUILD
 static void UI64toString(uint64_t value, char * tmpRegisterString) {
   uint32_t v0,v1,v2;
   v2 =  value /      1000000000000000000;
@@ -1351,6 +1352,7 @@ static void UI64toString(uint64_t value, char * tmpRegisterString) {
     sprintf(tmpRegisterString,"%" PRIu32 "%" PRIu32 "%" PRIu32, v2,v1,v0);
   }
 }
+#endif //TESTSUITE_BUILD
 
 
 

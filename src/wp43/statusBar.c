@@ -32,10 +32,10 @@
 
 #include "wp43.h"
 
-static char statusMessage[100];     //Use a static global to prevent time wastage when a overlong string needs to be created at each function instance below
-
 
 #if !defined(TESTSUITE_BUILD)
+  static char statusMessage[100];     //Use a static global to prevent time wastage when a overlong string needs to be created at each function instance below
+  
   void refreshStatusBar(void) {
     if(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR) {
       switch(calcMode) {
