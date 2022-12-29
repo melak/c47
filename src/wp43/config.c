@@ -810,9 +810,9 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
          errorMessage     = (char *)malloc(WRITE_BUFFER_LEN);
        #endif // DMCP_BUILD
 
-       aimBuffer        = errorMessage + ERROR_MESSAGE_LENGTH;
-       nimBufferDisplay = aimBuffer + AIM_BUFFER_LENGTH;
-       tamBuffer        = nimBufferDisplay + NIM_BUFFER_LENGTH;
+       aimBuffer        = errorMessage + ERROR_MESSAGE_LENGTH;    // + 512
+       nimBufferDisplay = aimBuffer + AIM_BUFFER_LENGTH;          // + 400
+       tamBuffer        = nimBufferDisplay + NIM_BUFFER_LENGTH;   // + 200 + 32
 
        tmpStringLabelOrVariableName = tmpString + 1000;
     }

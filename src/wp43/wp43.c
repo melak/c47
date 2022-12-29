@@ -590,7 +590,7 @@ char                   plotStatMx[8];
             refreshLcd();
             lcd_refresh_wait();
           }
-#endif
+#endif //TMR_OBSERVE
 
           sys_sleep();
         }
@@ -607,7 +607,7 @@ char                   plotStatMx[8];
               itoa(timeoutTime - nextTimerRefresh, snum, 10);
               showString(snum, &standardFont, 20, 120, vmNormal, false, false);
             }
-#endif
+#endif //TMR_OBSERVE
             timeoutTime = 1;
           }
 
@@ -633,7 +633,7 @@ char                   plotStatMx[8];
             }
             showString(snum, &standardFont, 20, 40, vmNormal, false, false);
           }
-#endif
+#endif //TMR_OBSERVE
 
           sys_sleep();
           sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
@@ -662,7 +662,7 @@ char                   plotStatMx[8];
           if(fnTestBitIsSet(1) == true) {
             showString("CLK_WKUP_FLAG", &standardFont, 20, 40, vmNormal, false, false);
           }
-#endif
+#endif //TMR_OBSERVE
 
           refreshLcd();
           lcd_refresh_wait();
