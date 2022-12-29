@@ -1913,7 +1913,7 @@
 #define ITM_CB_LEADING_ZERO         1857
 #define CHR_case                    1858   //JM CAPS
 #define ITM_BASE_HOME               1859
-#define ITM_1860                    1860
+#define MNU_MISC                    1860
 #define ITM_H_SUMRY                 1861
 #define ITM_DTtoJ                   1862
 #define ITM_JtoDT                   1863
