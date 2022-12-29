@@ -1046,17 +1046,17 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   }
 */
 
-/* TODO
   // Named variables
   sprintf(tmpString, "NAMED_VARIABLES\n%" PRIu16 "\n", numberOfNamedVariables);
   save(tmpString, strlen(tmpString), BACKUP);
   for(i=0; i<numberOfNamedVariables; i++) {
     registerToSaveString(FIRST_NAMED_VARIABLE + i);
-    sprintf(tmpString, "%s\n%s\n%s\n", "name", aimBuffer1, tmpRegisterString);
+    stringToUtf8((char *)allNamedVariables[i].variableName + 1, (uint8_t *)tmpString);
+    sprintf(tmpString + strlen(tmpString), "\n%s\n%s\n", aimBuffer1, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
     saveMatrixElements(FIRST_NAMED_VARIABLE + i, BACKUP);
   }
-*/
+
   // Statistical sums
   sprintf(tmpString, "STATISTICAL_SUMS\n%" PRIu16 "\n", (uint16_t)(statisticalSumsPointer ? NUMBER_OF_STATISTICAL_SUMS : 0));
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1800,7 +1800,6 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     }
   }
 
-/* TODO
   else if(strcmp(tmpString, "NAMED_VARIABLES") == 0) {
     readLine(stream, tmpString); // Number of named variables
     numberOfRegs = stringToInt16(tmpString);
@@ -1810,15 +1809,23 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
       readLine(stream, tmpString); // Variable value
 
       if(loadMode == LM_ALL || loadMode == LM_NAMED_VARIABLES) {
-        //printf("Variable %s ", errorMessage);
-        //printf("%s = ", aimBuffer);
-        //printf("%s\n", tmpString);
+        char *varName = errorMessage + strlen(errorMessage) + 1;
+        utf8ToString((uint8_t *)errorMessage, varName);
+        regist = findOrAllocateNamedVariable(varName);
+        if(regist != INVALID_VARIABLE) {
+          restoreRegister(regist, aimBuffer, tmpString);
+          restoreMatrixData(regist, stream);
+        }
+        else {
+          skipMatrixData(aimBuffer, tmpString, stream);
+        }
       }
-      skipMatrixData(aimBuffer, tmpString, stream);
+      else {
+        skipMatrixData(aimBuffer, tmpString, stream);
+      }
     }
   }
 
-*/
 
   else if(strcmp(tmpString, "STATISTICAL_SUMS") == 0) {
     readLine(stream, tmpString); // Number of statistical sums
