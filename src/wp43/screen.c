@@ -1694,10 +1694,10 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
   if((mode != timed) || (((new_time - old_time) & 0xFE00) != 0 )) { //0x0200 || 0.512 second refresh interval
     old_time = new_time;
 
-    refreshScreen();
+    refreshScreen();   //to update stack
     //  lcd_refresh();
     fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV); //PROGRAM_KB_ACTV
-    sprintf(tmps, "%s %6d ",txt,loop);
+    sprintf(tmps, "%s %6d      ",txt,loop);
     showString(tmps, &standardFont, 20, 145-7-mode*20, vmNormal, false, false);  //note: 1 line up for "force"
 
     #ifdef PC_BUILD

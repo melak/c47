@@ -27,6 +27,7 @@
 #include "c43Extensions/xeqm.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/radioButtonCatalog.h"
+#include "c43Extensions/graphText.h"
 #include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
@@ -43,6 +44,7 @@
 #include "statusBar.h"
 #include "sort.h"
 #include "stats.h"
+#include "timer.h"
 #include <string.h>
 #if defined(PC_BUILD)
 #include <stdio.h>
@@ -76,7 +78,7 @@ uint16_t flushBufferCnt = 0;
   static char     fileName[40];
   static void save(const void *buffer, uint32_t size, void *stream) {
     hourGlassIconEnabled = true;
-    printHalfSecUpdate_Integer(timed, "Status:",(int)flushBufferCnt++);
+    printHalfSecUpdate_Integer(timed, "Status: ",(int)flushBufferCnt++);
     #if defined(DMCP_BUILD)
       UINT bytesWritten;
       f_write(stream, buffer, size, &bytesWritten);
@@ -90,8 +92,12 @@ uint16_t flushBufferCnt = 0;
 
 static uint32_t restore(void *buffer, uint32_t size, void *stream) {
   hourGlassIconEnabled = true;
-  printHalfSecUpdate_Integer(timed, "Status:",(int)flushBufferCnt++);
+//  printHalfSecUpdate_Integer(timed, "Status:",(int)flushBufferCnt++);
   #if defined(DMCP_BUILD)
+//    sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
+//    sys_timer_start(TIMER_IDX_REFRESH_SLEEP,1000);
+//    fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV); //PROGRAM_KB_ACTV
+
     UINT bytesRead;
     f_read(stream, buffer, size, &bytesRead);
     return(bytesRead);
@@ -795,6 +801,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
   }
 #endif // PC_BUILD
 
+static void UI64toString(uint64_t value, char * tmpRegisterString);
+
+char aimBuffer1[400];
 
 #if !defined(TESTSUITE_BUILD)
   static void registerToSaveString(calcRegister_t regist) {
@@ -812,31 +821,24 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         convertLongIntegerRegisterToLongInteger(regist, lgInt);
         longIntegerToAllocatedString(lgInt, tmpRegisterString, TMP_STR_LENGTH - START_REGISTER_VALUE - 1);
         longIntegerFree(lgInt);
-        strcpy(aimBuffer, "LonI");
+        strcpy(aimBuffer1, "LonI");
         break;
       }
 
       case dtString: {
         stringToUtf8(REGISTER_STRING_DATA(regist), (uint8_t *)(tmpRegisterString));
-        strcpy(aimBuffer, "Stri");
+        strcpy(aimBuffer1, "Stri");
         break;
       }
 
       case dtShortInteger: {
         convertShortIntegerRegisterToUInt64(regist, &sign, &value);
         base = getRegisterShortIntegerBase(regist);
-        uint32_t v0,v1,v2;
-        v2 =  value /      1000000000000000000;
-        v1 = (value - v2 * 1000000000000000000) /      1000000000;
-        v0 = (value - v2 * 1000000000000000000) - v1 * 1000000000;
-        if(v2 == 0 && v1 == 0) {
-          sprintf(tmpRegisterString,"%c%" PRIu32 " %" PRIu32, sign ? '-' : '+', v0, base);
-        } else if (v2 == 0) {
-          sprintf(tmpRegisterString,"%c%" PRIu32 "%" PRIu32 " %" PRIu32, sign ? '-' : '+', v1,v0, base);
-        } else {
-          sprintf(tmpRegisterString,"%c%" PRIu32 "%" PRIu32 "%" PRIu32 " %" PRIu32, sign ? '-' : '+', v2,v1,v0, base);
-        }
-        strcpy(aimBuffer, "ShoI");
+
+        char yy[25];
+        UI64toString(value, yy);
+        sprintf(tmpRegisterString, "%c%s %" PRIu32, sign ? '-' : '+', yy, base);
+        strcpy(aimBuffer1, "ShoI");
         break;
       }
 
@@ -844,39 +846,39 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
         switch(getRegisterAngularMode(regist)) {
           case amDegree: {
-            strcpy(aimBuffer, "Real:DEG");
+            strcpy(aimBuffer1, "Real:DEG");
             break;
           }
 
           case amDMS: {
-            strcpy(aimBuffer, "Real:DMS");
+            strcpy(aimBuffer1, "Real:DMS");
             break;
           }
 
           case amRadian: {
-            strcpy(aimBuffer, "Real:RAD");
+            strcpy(aimBuffer1, "Real:RAD");
             break;
           }
 
           case amMultPi: {
-            strcpy(aimBuffer, "Real:MULTPI");
+            strcpy(aimBuffer1, "Real:MULTPI");
             break;
           }
 
           case amGrad: {
-            strcpy(aimBuffer, "Real:GRAD");
+            strcpy(aimBuffer1, "Real:GRAD");
             break;
           }
 
           case amNone: {
-            strcpy(aimBuffer, "Real");
+            strcpy(aimBuffer1, "Real");
             break;
           }
 
           default: {
-            strcpy(aimBuffer, "Real:???");
+            strcpy(aimBuffer1, "Real:???");
             break;
-        }
+          }
         }
         break;
       }
@@ -885,31 +887,31 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
         strcat(tmpRegisterString, " ");
         real34ToString(REGISTER_IMAG34_DATA(regist), tmpRegisterString + strlen(tmpRegisterString));
-        strcpy(aimBuffer, "Cplx");
+        strcpy(aimBuffer1, "Cplx");
         break;
       }
 
       case dtTime: {
         real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
-        strcpy(aimBuffer, "Time");
+        strcpy(aimBuffer1, "Time");
         break;
       }
 
       case dtDate: {
         real34ToString(REGISTER_REAL34_DATA(regist), tmpRegisterString);
-        strcpy(aimBuffer, "Date");
+        strcpy(aimBuffer1, "Date");
         break;
       }
 
       case dtReal34Matrix: {
         sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns);
-        strcpy(aimBuffer, "Rema");
+        strcpy(aimBuffer1, "Rema");
         break;
       }
 
       case dtComplex34Matrix: {
         sprintf(tmpRegisterString, "%" PRIu16 " %" PRIu16, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows, REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns);
-        strcpy(aimBuffer, "Cxma");
+        strcpy(aimBuffer1, "Cxma");
         break;
       }
 
@@ -917,13 +919,13 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
         for(str=tmpRegisterString, cfg=(uint8_t *)REGISTER_CONFIG_DATA(regist), value=0; value<sizeof(dtConfigDescriptor_t); value++, cfg++, str+=2) {
           sprintf(str, "%02X", *cfg);
         }
-        strcpy(aimBuffer, "Conf");
+        strcpy(aimBuffer1, "Conf");
         break;
       }
 
       default: {
         strcpy(tmpRegisterString, "???");
-        strcpy(aimBuffer, "????");
+        strcpy(aimBuffer1, "????");
       }
     }
   }
@@ -961,6 +963,7 @@ void fnSave(uint16_t unusedButMandatoryParameter) {
 }
 
 void doSave(uint16_t saveType) {
+flushBufferCnt = 0;
 #if !defined(TESTSUITE_BUILD)
 char tmpString[3000];             //The concurrent use of the global tmpString 
                                   //as target does not work while the source is at
@@ -1011,7 +1014,7 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   save(tmpString, strlen(tmpString), BACKUP);
   for(regist=0; regist<FIRST_LOCAL_REGISTER; regist++) {
     registerToSaveString(regist);
-    sprintf(tmpString, "R%03" PRId16 "\n%s\n%s\n", regist, aimBuffer, tmpRegisterString);
+    sprintf(tmpString, "R%03" PRId16 "\n%s\n%s\n", regist, aimBuffer1, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
     saveMatrixElements(regist, BACKUP);
   }
@@ -1034,7 +1037,7 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   save(tmpString, strlen(tmpString), BACKUP);
   for(i=0; i<currentNumberOfLocalRegisters; i++) {
     registerToSaveString(FIRST_LOCAL_REGISTER + i);
-    sprintf(tmpString, "R.%02" PRIu32 "\n%s\n%s\n", i, aimBuffer, tmpRegisterString);
+    sprintf(tmpString, "R.%02" PRIu32 "\n%s\n%s\n", i, aimBuffer1, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
     saveMatrixElements(FIRST_LOCAL_REGISTER + i, BACKUP);
   }
@@ -1053,7 +1056,7 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   save(tmpString, strlen(tmpString), BACKUP);
   for(i=0; i<numberOfNamedVariables; i++) {
     registerToSaveString(FIRST_NAMED_VARIABLE + i);
-    sprintf(tmpString, "%s\n%s\n%s\n", "name", aimBuffer, tmpRegisterString);
+    sprintf(tmpString, "%s\n%s\n%s\n", "name", aimBuffer1, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
     saveMatrixElements(FIRST_NAMED_VARIABLE + i, BACKUP);
   }
@@ -1212,7 +1215,10 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "displayStack\n%" PRIu8 "\n", displayStack);
   save(tmpString, strlen(tmpString), BACKUP);
-  sprintf(tmpString, "rngState\n%" PRIu64 " %" PRIu64 "\n", pcg32_global.state, pcg32_global.inc);
+  char yy1[25], yy2[25];
+        UI64toString(pcg32_global.state, yy1);
+        UI64toString(pcg32_global.inc, yy2);
+  sprintf(tmpString, "rngState\n%s %s\n", yy1, yy2);
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "exponentLimit\n%" PRId16 "\n", exponentLimit);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1332,6 +1338,22 @@ static void readLine(void *stream, char *line) {
 
   *line = 0;
 #endif //TESTSUITE_BUILD
+}
+
+
+
+static void UI64toString(uint64_t value, char * tmpRegisterString) {
+  uint32_t v0,v1,v2;
+  v2 =  value /      1000000000000000000;
+  v1 = (value - v2 * 1000000000000000000) /      1000000000;
+  v0 = (value - v2 * 1000000000000000000) - v1 * 1000000000;
+  if(v2 == 0 && v1 == 0) {
+    sprintf(tmpRegisterString,"%" PRIu32, v0);
+  } else if (v2 == 0) {
+    sprintf(tmpRegisterString,"%" PRIu32 "%" PRIu32, v1,v0);
+  } else {
+    sprintf(tmpRegisterString,"%" PRIu32 "%" PRIu32 "%" PRIu32, v2,v1,v0);
+  }
 }
 
 
@@ -1631,13 +1653,19 @@ static void skipMatrixData(char *type, char *value, void *stream) {
 }
 
 
-
 static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
   int16_t i, numberOfRegs;
   calcRegister_t regist;
   char *str;
+  #if defined (LOADDEBUG)
+    char line[100];
+  #endif //LOADDEBUG
 
   readLine(stream, tmpString);
+  #if defined (LOADDEBUG)
+    sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+    debugPrintf(0, "-", tmpString);
+  #endif //LOADDEBUG
 
   if(strcmp(tmpString, "GLOBAL_REGISTERS") == 0) {
     readLine(stream, tmpString); // Number of global registers
@@ -1649,6 +1677,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
       readLine(stream, tmpString); // Register value
 
       if(loadMode == LM_ALL || (loadMode == LM_REGISTERS && regist < REGISTER_X) || (loadMode == LM_REGISTERS_PARTIAL && regist >= s && regist < (s + n))) {
+        #if defined (LOADDEBUG)
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(1, "-", tmpString);
+        #endif //LOADDEBUG
         restoreRegister(loadMode == LM_REGISTERS_PARTIAL ? (regist - s + d) : regist, aimBuffer, tmpString);
         restoreMatrixData(loadMode == LM_REGISTERS_PARTIAL ? (regist - s + d) : regist, stream);
       }
@@ -1661,6 +1693,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
   else if(strcmp(tmpString, "GLOBAL_FLAGS") == 0) {
     readLine(stream, tmpString); // Global flags
     if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+      #if defined (LOADDEBUG)
+        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+        debugPrintf(2, "-", tmpString);
+      #endif //LOADDEBUG
       str = tmpString;
       globalFlags[0] = stringToInt16(str);
 
@@ -1718,10 +1754,18 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     readLine(stream, tmpString); // Number of local registers
     numberOfRegs = stringToInt16(tmpString);
     if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
+      #if defined (LOADDEBUG)
+        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+        debugPrintf(3, "A", tmpString);
+      #endif //LOADDEBUG
       allocateLocalRegisters(numberOfRegs);
     }
 
     if((loadMode != LM_ALL && loadMode != LM_REGISTERS) || lastErrorCode == ERROR_NONE) {
+      #if defined (LOADDEBUG)
+        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+        debugPrintf(3, "B", tmpString);
+      #endif //LOADDEBUG
       for(i=0; i<numberOfRegs; i++) {
         readLine(stream, tmpString); // Register number
         regist = stringToInt16(tmpString + 2) + FIRST_LOCAL_REGISTER;
@@ -1729,6 +1773,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         readLine(stream, tmpString); // Register value
 
         if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
+          #if defined (LOADDEBUG)
+            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            debugPrintf(3, "C", tmpString);
+          #endif //LOADDEBUG
           restoreRegister(regist, aimBuffer, tmpString);
           restoreMatrixData(regist, stream);
         }
@@ -1740,12 +1788,21 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
   }
 
   else if(strcmp(tmpString, "LOCAL_FLAGS") == 0) {
+    #if defined (LOADDEBUG)
+      sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+      debugPrintf(4, "A", tmpString);
+    #endif //LOADDEBUG
     readLine(stream, tmpString); // LOCAL_FLAGS
     if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
+      #if defined (LOADDEBUG)
+        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+        debugPrintf(4, "B", tmpString);
+      #endif //LOADDEBUG
       currentLocalFlags->localFlags = stringToUint32(tmpString);
     }
   }
 
+/* TODO
   else if(strcmp(tmpString, "NAMED_VARIABLES") == 0) {
     readLine(stream, tmpString); // Number of named variables
     numberOfRegs = stringToInt16(tmpString);
@@ -1763,18 +1820,29 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     }
   }
 
+*/
+
   else if(strcmp(tmpString, "STATISTICAL_SUMS") == 0) {
     readLine(stream, tmpString); // Number of statistical sums
     numberOfRegs = stringToInt16(tmpString);
     if(numberOfRegs > 0 && (loadMode == LM_ALL || loadMode == LM_SUMS)) {
-      initStatisticalSums();
-    }
+      #if defined (LOADDEBUG)
+        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+        debugPrintf(6, "A", tmpString);
+      #endif //LOADDEBUG
 
-    for(i=0; i<numberOfRegs; i++) {
-      readLine(stream, tmpString); // statistical sum
-      if(statisticalSumsPointer) { // likely
-        if(loadMode == LM_ALL || loadMode == LM_SUMS) {
-          stringToReal(tmpString, (real_t *)(statisticalSumsPointer + REAL_SIZE * i), &ctxtReal75);
+      initStatisticalSums();
+
+      for(i=0; i<numberOfRegs; i++) {
+        readLine(stream, tmpString); // statistical sum
+        if(statisticalSumsPointer) { // likely
+          if(loadMode == LM_ALL || loadMode == LM_SUMS) {
+            #if defined (LOADDEBUG)
+              sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+              debugPrintf(6, "B", tmpString);
+            #endif //LOADDEBUG
+            stringToReal(tmpString, (real_t *)(statisticalSumsPointer + REAL_SIZE * i), &ctxtReal75);
+          }
         }
       }
     }
@@ -1783,6 +1851,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
   else if(strcmp(tmpString, "SYSTEM_FLAGS") == 0) {
     readLine(stream, tmpString); // Global flags
     if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+      #if defined (LOADDEBUG)
+        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+        debugPrintf(7, "-", tmpString);
+      #endif //LOADDEBUG
       systemFlags = stringToUint64(tmpString);
     }
   }
@@ -1793,6 +1865,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     for(i=0; i<numberOfRegs; i++) {
       readLine(stream, tmpString); // key
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+        #if defined (LOADDEBUG)
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(8, "-", tmpString);
+        #endif //LOADDEBUG
         str = tmpString;
         kbd_usr[i].keyId = stringToInt16(str);
 
@@ -1867,6 +1943,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     readLine(stream, tmpString); // Number of keys
     numberOfRegs = stringToInt16(tmpString);
     if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+      #if defined (LOADDEBUG)
+        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+        debugPrintf(9, "A", tmpString);
+      #endif //LOADDEBUG
       freeWp43(userKeyLabel, TO_BLOCKS(userKeyLabelSize));
       userKeyLabelSize = 37/*keys*/ * 6/*states*/ * 1/*byte terminator*/ + 1/*byte sentinel*/;
       userKeyLabel = allocWp43(TO_BLOCKS(userKeyLabelSize));
@@ -1875,6 +1955,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     for(i=0; i<numberOfRegs; i++) {
       readLine(stream, tmpString); // key
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+        #if defined (LOADDEBUG)
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(9, "B", tmpString);
+        #endif //LOADDEBUG
         str = tmpString;
         uint16_t key = stringToUint16(str);
         userMenuItems[i].argumentName[0] = 0;
@@ -1901,6 +1985,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     for(i=0; i<numberOfRegs; i++) {
       readLine(stream, tmpString); // key
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+        #if defined (LOADDEBUG)
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(10, "-", tmpString);
+        #endif //LOADDEBUG
         str = tmpString;
         userMenuItems[i].item            = stringToInt16(str);
         userMenuItems[i].argumentName[0] = 0;
@@ -1926,6 +2014,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     for(i=0; i<numberOfRegs; i++) {
       readLine(stream, tmpString); // key
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+        #if defined (LOADDEBUG)
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(11, "-", tmpString);
+        #endif //LOADDEBUG
         str = tmpString;
         userAlphaItems[i].item            = stringToInt16(str);
         userAlphaItems[i].argumentName[0] = 0;
@@ -1952,6 +2044,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
       readLine(stream, tmpString);
       int16_t target = -1;
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+        #if defined (LOADDEBUG)
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(12, "-", tmpString);
+        #endif //LOADDEBUG
         utf8ToString((uint8_t *)tmpString, tmpString + TMP_STR_LENGTH / 2);
         for(i = 0; i < numberOfUserMenus; ++i) {
           if(compareString(tmpString + TMP_STR_LENGTH / 2, userMenus[i].menuName, CMP_NAME) == 0) {
@@ -1969,6 +2065,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
       for(i=0; i<numberOfRegs; i++) {
         readLine(stream, tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+          #if defined (LOADDEBUG)
+            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            debugPrintf(13, "-", tmpString);
+          #endif //LOADDEBUG
           str = tmpString;
           userMenus[target].menuItem[i].item            = stringToInt16(str);
           userMenus[target].menuItem[i].argumentName[0] = 0;
@@ -1990,6 +2090,12 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
   }
 
   else if(strcmp(tmpString, "PROGRAMS") == 0) {
+    #if defined (LOADDEBUG)
+      if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+        debugPrintf(14, "-", tmpString);
+      }
+    #endif //LOADDEBUG
     uint16_t numberOfBlocks;
     uint16_t oldSizeInBlocks = RAM_SIZE - freeMemoryRegions[numberOfFreeMemoryRegions - 1].address - freeMemoryRegions[numberOfFreeMemoryRegions - 1].sizeInBlocks;
     uint8_t *oldFirstFreeProgramByte = firstFreeProgramByte;
@@ -2078,6 +2184,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     uint16_t formulae;
 
     if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+      #if defined (LOADDEBUG)
+        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+        debugPrintf(15, "A", tmpString);
+      #endif //LOADDEBUG
       for(i = numberOfFormulae; i > 0; --i) {
         deleteEquation(i - 1);
       }
@@ -2086,6 +2196,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     readLine(stream, tmpString); // Number of formulae
     formulae = stringToUint16(tmpString);
     if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+      #if defined (LOADDEBUG)
+        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+        debugPrintf(15, "B", tmpString);
+      #endif //LOADDEBUG
       allFormulae = allocWp43(TO_BLOCKS(sizeof(formulaHeader_t)) * formulae);
       numberOfFormulae = formulae;
       currentFormula = 0;
@@ -2098,6 +2212,10 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     for(i = 0; i < formulae; i++) {
       readLine(stream, tmpString); // One formula
       if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+        #if defined (LOADDEBUG)
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(15, "C", tmpString);
+        #endif //LOADDEBUG
         utf8ToString((uint8_t *)tmpString, tmpString + TMP_STR_LENGTH / 2);
         setEquation(i, tmpString + TMP_STR_LENGTH / 2);
       }
@@ -2105,14 +2223,24 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
   }
 
   else if(strcmp(tmpString, "OTHER_CONFIGURATION_STUFF") == 0) {
-    resetOtherConfigurationStuff(); //Ensure all the configuration stuff below is reset prior to loading.
-                                    //That ensures if missing settings, that the proper defaults are set.
+    if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+      #if defined (LOADDEBUG)
+        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+        debugPrintf(16, "A", tmpString);
+      #endif //LOADDEBUG
+      resetOtherConfigurationStuff(); //Ensure all the configuration stuff below is reset prior to loading.
+                                      //That ensures if missing settings, that the proper defaults are set.
+    }
     readLine(stream, tmpString); // Number params
     numberOfRegs = stringToInt16(tmpString);
     for(i=0; i<numberOfRegs; i++) {
       readLine(stream, aimBuffer); // param
       readLine(stream, tmpString); // value
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+        #if defined (LOADDEBUG)
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(16, "B", tmpString);
+        #endif //LOADDEBUG
 
         if(strcmp(aimBuffer, "firstGregorianDay") == 0) {
           firstGregorianDay = stringToUint32(tmpString);
@@ -2232,14 +2360,42 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
       }
     }
     return false; //Signal that this was the last section loaded and no more sections to follow
+    #if defined (LOADDEBUG)
+      debugPrintf(17, "END1", "");
+    #endif //LOADDEBUG
   }
-
   return true; //Signal to continue loading the next section
+  #if defined (LOADDEBUG)
+    debugPrintf(18, "END2", "");
+  #endif //LOADDEBUG
 }
 
 
+#define LOADDEBUG
+#if defined (LOADDEBUG)
+  static void debugPrintf(int s1, const char * s2, const char * s3) {
+    #if defined (PC_BUILD)
+      printf("%i %s %s\n", s1, s2, s3);
+    #else
+      char yy[100];
+      sprintf(yy,"%i %s %s\n", s1, s2, s3);
+//      printHalfSecUpdate_Integer(force+1, yy, 0);
+      print_linestr(yy,false);
+
+    #endif //!PC_BUILD
+  }
+#endif //LOADDEBUG
+
 
 void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t loadType) {
+  sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
+  temporaryInformation = TI_NO_INFO;
+  flushBufferCnt = 0;
+  #if defined (LOADDEBUG)
+    char yy[10];
+    sprintf(yy, "%d",loadMode);
+    debugPrintf(-1, "LoadMode", yy);
+  #endif //PC_BUILD
   #if defined(DMCP_BUILD)
     fileName[0] = 0;
     if(loadType == manualLoad) {
@@ -2314,8 +2470,12 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
     fclose(BACKUP);
   #endif //DMCP_BUILD
 
-  fnRefreshState();
-  refreshScreen();
+//  fnRefreshState();
+//  refreshScreen();
+    sys_timer_start(TIMER_IDX_REFRESH_SLEEP,1000);
+    //sys_sleep();
+    fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV); //PROGRAM_KB_ACTV
+    //printHalfSecUpdate_Integer(force+2, "END OF", 0);
 
   #if !defined(TESTSUITE_BUILD)
     if(loadType == manualLoad && loadMode == LM_ALL) {

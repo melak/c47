@@ -447,7 +447,9 @@ char                   plotStatMx[8];
   lcd_clear_buf();
 #endif //NOKEYMAP                                           //^^
     doFnReset(CONFIRMED, loadAutoSav);
+printHalfSecUpdate_Integer(force+2, "RESET1", 0);
     refreshScreen();
+printHalfSecUpdate_Integer(force+2, "RESET1A", 0);
 
   #ifdef JMSHOWCODES                                        //JM test
     telltale_lastkey = 0;                                   //JM test
@@ -566,6 +568,7 @@ char                   plotStatMx[8];
     fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV);
 //--fnTimerConfig(TO_SHOW_NOP, execNOPTimeout, TO_SHOW_NOP);
     nextTimerRefresh = 0;
+printHalfSecUpdate_Integer(force+2, "RESET2", 0);
 
     // Status flags:
     //   ST(STAT_PGM_END)   - Indicates that program should go to off state (set by auto off timer)
@@ -576,6 +579,7 @@ char                   plotStatMx[8];
     SET_ST(STAT_CLK_WKUP_ENABLE); // Enable wakeup each minute (for clock update)
 
     while(!backToDMCP) {
+printHalfSecUpdate_Integer(force+2, "RESET3", 0);
       if(ST(STAT_PGM_END) && ST(STAT_SUSPENDED)) { // Already in off mode and suspended
         CLR_ST(STAT_RUNNING);
         sys_sleep();
@@ -590,7 +594,7 @@ char                   plotStatMx[8];
             refreshLcd();
             lcd_refresh_wait();
           }
-#endif
+#endif //TMR_OBSERVE
 
           sys_sleep();
         }
@@ -607,7 +611,7 @@ char                   plotStatMx[8];
               itoa(timeoutTime - nextTimerRefresh, snum, 10);
               showString(snum, &standardFont, 20, 120, vmNormal, false, false);
             }
-#endif
+#endif //TMR_OBSERVE
             timeoutTime = 1;
           }
 
@@ -633,7 +637,7 @@ char                   plotStatMx[8];
             }
             showString(snum, &standardFont, 20, 40, vmNormal, false, false);
           }
-#endif
+#endif //TMR_OBSERVE
 
           sys_sleep();
           sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
@@ -662,7 +666,7 @@ char                   plotStatMx[8];
           if(fnTestBitIsSet(1) == true) {
             showString("CLK_WKUP_FLAG", &standardFont, 20, 40, vmNormal, false, false);
           }
-#endif
+#endif //TMR_OBSERVE
 
           refreshLcd();
           lcd_refresh_wait();
