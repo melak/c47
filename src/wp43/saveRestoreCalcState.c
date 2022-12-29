@@ -27,7 +27,7 @@
 #include "c43Extensions/xeqm.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/radioButtonCatalog.h"
-#include "c43Extensions/graphText.h"
+//#include "c43Extensions/graphText.h"
 #include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
@@ -78,7 +78,6 @@ uint16_t flushBufferCnt = 0;
   static char     fileName[40];
   static void save(const void *buffer, uint32_t size, void *stream) {
     hourGlassIconEnabled = true;
-    printHalfSecUpdate_Integer(timed, "Status: ",(int)flushBufferCnt++);
     #if defined(DMCP_BUILD)
       UINT bytesWritten;
       f_write(stream, buffer, size, &bytesWritten);
@@ -92,12 +91,7 @@ uint16_t flushBufferCnt = 0;
 
 static uint32_t restore(void *buffer, uint32_t size, void *stream) {
   hourGlassIconEnabled = true;
-//  printHalfSecUpdate_Integer(timed, "Status:",(int)flushBufferCnt++);
   #if defined(DMCP_BUILD)
-//    sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
-//    sys_timer_start(TIMER_IDX_REFRESH_SLEEP,1000);
-//    fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV); //PROGRAM_KB_ACTV
-
     UINT bytesRead;
     f_read(stream, buffer, size, &bytesRead);
     return(bytesRead);
@@ -803,7 +797,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 
 static void UI64toString(uint64_t value, char * tmpRegisterString);
 
-char aimBuffer1[400];
+char aimBuffer1[400];             //The concurrent use of the global aimBuffer 
+                                  //does not work. See tmpString.
+                                  //Temporary solution is to use a local variable of sufficient length for the target.
 
 #if !defined(TESTSUITE_BUILD)
   static void registerToSaveString(calcRegister_t regist) {
@@ -2355,7 +2351,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "SI_All"                      ) == 0) { SI_All               = (bool_t)stringToUint8(tmpString) != 0; }
         else if(strcmp(aimBuffer, "LongPressM"                  ) == 0) { LongPressM           = (bool_t)stringToUint8(tmpString) != 0; }     //10000003
         else if(strcmp(aimBuffer, "LongPressF"                  ) == 0) { LongPressF           = (bool_t)stringToUint8(tmpString) != 0; }     //10000003
-        else if(strcmp(aimBuffer, "lastIntegerBase"             ) == 0) { lastIntegerBase      = (bool_t)stringToUint8(tmpString) != 0; }     //10000004
+        else if(strcmp(aimBuffer, "lastIntegerBase"             ) == 0) { lastIntegerBase      = stringToUint8(tmpString); }                  //10000004
 
       }
     }
@@ -2371,7 +2367,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 }
 
 
-#define LOADDEBUG
+#undef LOADDEBUG
 #if defined (LOADDEBUG)
   static void debugPrintf(int s1, const char * s2, const char * s3) {
     #if defined (PC_BUILD)
@@ -2380,7 +2376,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
       char yy[100];
       sprintf(yy,"%i %s %s\n", s1, s2, s3);
 //      printHalfSecUpdate_Integer(force+1, yy, 0);
-      print_linestr(yy,false);
+//      print_linestr(yy,false);
 
     #endif //!PC_BUILD
   }
@@ -2388,8 +2384,6 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 
 
 void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t loadType) {
-  sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
-  temporaryInformation = TI_NO_INFO;
   flushBufferCnt = 0;
   #if defined (LOADDEBUG)
     char yy[10];
@@ -2466,16 +2460,13 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
 
   #if defined(DMCP_BUILD)
     f_close(BACKUP);
+    sys_timer_disable(TIMER_IDX_REFRESH_SLEEP);
+    sys_timer_start(TIMER_IDX_REFRESH_SLEEP,1000);
+    fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV); //PROGRAM_KB_ACTV
   #else // !DMCP_BUILD
     fclose(BACKUP);
   #endif //DMCP_BUILD
 
-//  fnRefreshState();
-//  refreshScreen();
-    sys_timer_start(TIMER_IDX_REFRESH_SLEEP,1000);
-    //sys_sleep();
-    fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV); //PROGRAM_KB_ACTV
-    //printHalfSecUpdate_Integer(force+2, "END OF", 0);
 
   #if !defined(TESTSUITE_BUILD)
     if(loadType == manualLoad && loadMode == LM_ALL) {

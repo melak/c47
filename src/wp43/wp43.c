@@ -447,9 +447,7 @@ char                   plotStatMx[8];
   lcd_clear_buf();
 #endif //NOKEYMAP                                           //^^
     doFnReset(CONFIRMED, loadAutoSav);
-printHalfSecUpdate_Integer(force+2, "RESET1", 0);
     refreshScreen();
-printHalfSecUpdate_Integer(force+2, "RESET1A", 0);
 
   #ifdef JMSHOWCODES                                        //JM test
     telltale_lastkey = 0;                                   //JM test
@@ -568,7 +566,6 @@ printHalfSecUpdate_Integer(force+2, "RESET1A", 0);
     fnTimerConfig(TO_KB_ACTV, fnTimerDummyTest, TO_KB_ACTV);
 //--fnTimerConfig(TO_SHOW_NOP, execNOPTimeout, TO_SHOW_NOP);
     nextTimerRefresh = 0;
-printHalfSecUpdate_Integer(force+2, "RESET2", 0);
 
     // Status flags:
     //   ST(STAT_PGM_END)   - Indicates that program should go to off state (set by auto off timer)
@@ -579,7 +576,6 @@ printHalfSecUpdate_Integer(force+2, "RESET2", 0);
     SET_ST(STAT_CLK_WKUP_ENABLE); // Enable wakeup each minute (for clock update)
 
     while(!backToDMCP) {
-printHalfSecUpdate_Integer(force+2, "RESET3", 0);
       if(ST(STAT_PGM_END) && ST(STAT_SUSPENDED)) { // Already in off mode and suspended
         CLR_ST(STAT_RUNNING);
         sys_sleep();

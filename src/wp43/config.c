@@ -1236,7 +1236,6 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     doRefreshSoftMenu = true;     //jm dr
     last_CM = 253;
     refreshScreen();
-printHalfSecUpdate_Integer(force+2, "RESET00", 0);
   }
 }
 
