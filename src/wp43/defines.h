@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "108_08i"
+ #define VERSION1 "108_08p"
 
 
   #undef SAVE_SPACE_DM42
@@ -44,11 +44,12 @@
   #undef SAVE_SPACE_DM42_13GRF_JM
   #undef SAVE_SPACE_DM42_14
   #undef SAVE_SPACE_DM42_15
+  #undef SAVE_SPACE_DM42_16
   #undef SAVE_SPACE_DM42_20
   #undef SAVE_SPACE_DM42_21
 
 
-#if defined(DMCP_BUILD) || (SCREEN_800X480 == 1)
+#if (defined(DMCP_BUILD) || (SCREEN_800X480 == 1))
 
   #define TWO_FILE_PGM                 //JM Normally NOT have TWO_FILE. TWO_FILE means that QSPI is used.
 
@@ -73,6 +74,7 @@
     #define SAVE_SPACE_DM42_13GRF_JM //        JM graphics
   //#define SAVE_SPACE_DM42_14    //           programming sample programs
     #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
+    #define SAVE_SPACE_DM42_16    //           without all distributions, i.e. binomial, cauchy, chi
   #endif
 
   #ifdef TWO_FILE_PGM //---------THESE ARE THE EXCLUSIONS TO MAKE IT FIT INTO AVAILABLE FLASH EVEN WHILE USING QSPI
@@ -81,6 +83,7 @@
 //    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
 //    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
     #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
+//   #define SAVE_SPACE_DM42_16   //           without Norml
   #endif
 #endif
 

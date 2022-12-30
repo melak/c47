@@ -32,7 +32,7 @@
 #include "wp43.h"
 
 
-#ifdef SAVE_SPACE_DM42_15
+#ifdef SAVE_SPACE_DM42_16
   void fnNormalP   (uint16_t unusedButMandatoryParameter){}
   void fnNormalL   (uint16_t unusedButMandatoryParameter){}
   void fnNormalR   (uint16_t unusedButMandatoryParameter){}
@@ -437,5 +437,5 @@ void WP34S_Qf_Q(const real_t *x, real_t *res, realContext_t *realContext) {
   realCopy(&p, res);
 }
 
-#endif //SAVE_SPACE_DM42_15
+#endif //SAVE_SPACE_DM42_16
 
