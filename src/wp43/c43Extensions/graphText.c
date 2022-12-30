@@ -371,10 +371,11 @@ int16_t save_text(const char *line1, uint8_t mode1, uint8_t mode2, uint8_t mode3
       default: break;
     }
 
+    int16_t ii,jj;
     switch(mode2) {
       case WRITE:
-        int16_t ii = min(nn,(int16_t)(strlen(line1)));
-        int16_t jj = ii;
+        ii = min(nn,(int16_t)(strlen(line1)));
+        jj = ii;
         while(ii!=0) {
           rr[0]=line1[jj-ii];
           if(export_append_string_to_file_n(rr, mode2, dirfile) != 0) return 1;
