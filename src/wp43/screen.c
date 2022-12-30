@@ -1275,6 +1275,17 @@ uint8_t  displaymode = stdNoEnlarge;
     return x;
   }
 
+
+  uint32_t showStringEnhanced(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, uint8_t compress1, uint8_t raise1, uint8_t noShow1) {
+    compressString = compress1;
+    raiseString = raise1;
+    noShow = noShow1;    
+    return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols);
+    compressString = 0;
+    raiseString = 0;
+    noShow = 0;    
+  }
+
   uint32_t showString(const char *string, const font_t *font, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols) {
     return _doShowString(string, font, x, y, NULL, 0, videoMode, showLeadingCols, showEndingCols);
   }
@@ -1456,7 +1467,7 @@ uint8_t x_offset;      //pixels 40
 uint16_t current_cursor_x = 0;
 uint16_t current_cursor_y = 0;
 #ifdef TEXT_MULTILINE_EDIT
-uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, const char *string, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, bool_t noshow) {
+uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, const char *string, uint32_t x, uint32_t y, videoMode_t videoMode, bool_t showLeadingCols, bool_t showEndingCols, bool_t noshow1) {
    uint16_t ch, charCode, lg;
   int16_t  glyphId;
   bool_t   slc, sec;
@@ -1515,7 +1526,7 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
   orglastlines = lastline;
 
   if(lastline > y_offset) {
-    if(!noshow) clearScreen_old(false, true,false);
+    if(!noshow1) clearScreen_old(false, true,false);
     x = x_offset; 
     y = (yincr-1) + y_offset * (yincr-1);
   }
@@ -1549,8 +1560,8 @@ uint32_t showStringEdC43(uint32_t lastline, int16_t offset, int16_t edcursor, co
        current_cursor_y = y;
        tmpxy = y-1;
        while (tmpxy < y + (yincr+1)) {
-         if(!noshow) setBlackPixel(x,tmpxy);
-         if(!noshow) setBlackPixel(x+1,tmpxy);
+         if(!noshow1) setBlackPixel(x,tmpxy);
+         if(!noshow1) setBlackPixel(x+1,tmpxy);
          tmpxy++;
        }
        x+=2;
