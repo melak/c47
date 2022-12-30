@@ -54,7 +54,7 @@
 #include "wp43.h"
 
 #define BACKUP_VERSION       779  // LongPressF M
-#define configFileVersion    10000004 // arbitrary starting point version 10 000 001
+#define configFileVersion    10000004 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
 
 /*
 10000001 // arbitrary starting point version 10 000 001
@@ -969,6 +969,7 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   calcRegister_t regist;
   uint32_t i;
   fileName[0] = 0;
+  char yy1[35], yy2[35];
 
   #if defined(DMCP_BUILD)
     FRESULT result;
@@ -1038,25 +1039,23 @@ char tmpString[3000];             //The concurrent use of the global tmpString
     saveMatrixElements(FIRST_LOCAL_REGISTER + i, BACKUP);
   }
 
-/* TODO
   // Local flags
   if(currentLocalRegisters) {
     sprintf(tmpString, "LOCAL_FLAGS\n%" PRIu32 "\n", currentLocalFlags->localFlags);
     save(tmpString, strlen(tmpString), BACKUP);
   }
-*/
 
-/* TODO
   // Named variables
   sprintf(tmpString, "NAMED_VARIABLES\n%" PRIu16 "\n", numberOfNamedVariables);
   save(tmpString, strlen(tmpString), BACKUP);
   for(i=0; i<numberOfNamedVariables; i++) {
     registerToSaveString(FIRST_NAMED_VARIABLE + i);
-    sprintf(tmpString, "%s\n%s\n%s\n", "name", aimBuffer1, tmpRegisterString);
+    stringToUtf8((char *)allNamedVariables[i].variableName + 1, (uint8_t *)tmpString);
+    sprintf(tmpString + strlen(tmpString), "\n%s\n%s\n", aimBuffer1, tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
     saveMatrixElements(FIRST_NAMED_VARIABLE + i, BACKUP);
   }
-*/
+
   // Statistical sums
   sprintf(tmpString, "STATISTICAL_SUMS\n%" PRIu16 "\n", (uint16_t)(statisticalSumsPointer ? NUMBER_OF_STATISTICAL_SUMS : 0));
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1065,11 +1064,12 @@ char tmpString[3000];             //The concurrent use of the global tmpString
     sprintf(tmpString, "%s\n", tmpRegisterString);
     save(tmpString, strlen(tmpString), BACKUP);
   }
-/* TODO
+
   // System flags
-  sprintf(tmpString, "SYSTEM_FLAGS\n%" PRIu64 "\n", systemFlags);
+  UI64toString(systemFlags, yy1);
+  sprintf(tmpString, "SYSTEM_FLAGS\n%s\n", yy1);
   save(tmpString, strlen(tmpString), BACKUP);
-*/
+
   // Keyboard assignments
   sprintf(tmpString, "KEYBOARD_ASSIGNMENTS\n37\n");
   save(tmpString, strlen(tmpString), BACKUP);
@@ -1211,9 +1211,8 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "displayStack\n%" PRIu8 "\n", displayStack);
   save(tmpString, strlen(tmpString), BACKUP);
-  char yy1[25], yy2[25];
-        UI64toString(pcg32_global.state, yy1);
-        UI64toString(pcg32_global.inc, yy2);
+  UI64toString(pcg32_global.state, yy1);
+  UI64toString(pcg32_global.inc, yy2);
   sprintf(tmpString, "rngState\n%s %s\n", yy1, yy2);
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "exponentLimit\n%" PRId16 "\n", exponentLimit);
@@ -1314,7 +1313,6 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   #endif // DMCP_BUILD
 
   hourGlassIconEnabled = false;
-  showHideHourGlass();
   temporaryInformation = TI_SAVED;
 #endif //TESTSUITE_BUILD
 }
@@ -1659,6 +1657,8 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     char line[100];
   #endif //LOADDEBUG
 
+  hourGlassIconEnabled = true;
+  showHideHourGlass();
   readLine(stream, tmpString);
   #if defined (LOADDEBUG)
     sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
@@ -1800,8 +1800,11 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
     }
   }
 
-/* TODO
   else if(strcmp(tmpString, "NAMED_VARIABLES") == 0) {
+    #if defined (LOADDEBUG)
+      sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+      debugPrintf(20, "A", tmpString);
+    #endif //LOADDEBUG
     readLine(stream, tmpString); // Number of named variables
     numberOfRegs = stringToInt16(tmpString);
     for(i=0; i<numberOfRegs; i++) {
@@ -1810,15 +1813,27 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
       readLine(stream, tmpString); // Variable value
 
       if(loadMode == LM_ALL || loadMode == LM_NAMED_VARIABLES) {
-        //printf("Variable %s ", errorMessage);
-        //printf("%s = ", aimBuffer);
-        //printf("%s\n", tmpString);
+        #if defined (LOADDEBUG)
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(20, "B", tmpString);
+        #endif //LOADDEBUG
+        char *varName = errorMessage + strlen(errorMessage) + 1;
+        utf8ToString((uint8_t *)errorMessage, varName);
+        regist = findOrAllocateNamedVariable(varName);
+        if(regist != INVALID_VARIABLE) {
+          restoreRegister(regist, aimBuffer, tmpString);
+          restoreMatrixData(regist, stream);
+        }
+        else {
+          skipMatrixData(aimBuffer, tmpString, stream);
+        }
       }
-      skipMatrixData(aimBuffer, tmpString, stream);
+      else {
+        skipMatrixData(aimBuffer, tmpString, stream);
+      }
     }
   }
 
-*/
 
   else if(strcmp(tmpString, "STATISTICAL_SUMS") == 0) {
     readLine(stream, tmpString); // Number of statistical sums
@@ -2351,17 +2366,21 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
         else if(strcmp(aimBuffer, "DRG_Cycling"                 ) == 0) { DRG_Cycling          = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "DM_Cycling"                  ) == 0) { DM_Cycling           = stringToUint8(tmpString); }
         else if(strcmp(aimBuffer, "SI_All"                      ) == 0) { SI_All               = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "LongPressM"                  ) == 0) { LongPressM           = (bool_t)stringToUint8(tmpString) != 0; }     //10000003
-        else if(strcmp(aimBuffer, "LongPressF"                  ) == 0) { LongPressF           = (bool_t)stringToUint8(tmpString) != 0; }     //10000003
+        else if(strcmp(aimBuffer, "LongPressM"                  ) == 0) { LongPressM           = stringToUint8(tmpString); }                  //10000003
+        else if(strcmp(aimBuffer, "LongPressF"                  ) == 0) { LongPressF           = stringToUint8(tmpString); }                  //10000003
         else if(strcmp(aimBuffer, "lastIntegerBase"             ) == 0) { lastIntegerBase      = stringToUint8(tmpString); }                  //10000004
+
+        hourGlassIconEnabled = false;
 
       }
     }
+    hourGlassIconEnabled = false;
     return false; //Signal that this was the last section loaded and no more sections to follow
     #if defined (LOADDEBUG)
       debugPrintf(17, "END1", "");
     #endif //LOADDEBUG
   }
+  hourGlassIconEnabled = false;
   return true; //Signal to continue loading the next section
   #if defined (LOADDEBUG)
     debugPrintf(18, "END2", "");
@@ -2452,8 +2471,9 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
     }
   }
 
-  if(loadType == manualLoad || ((loadType == autoLoad) && (loadedVersion <= configFileVersion))) {
-    while(restoreOneSection(BACKUP, loadMode, s, n, d)) {
+  if((loadType == manualLoad && loadMode == LM_ALL) || 
+    ((loadType == autoLoad) && (loadedVersion >= 10000004) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL) )) {
+      while(restoreOneSection(BACKUP, loadMode, s, n, d)) {
     }
   }
 
@@ -2474,7 +2494,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
     if(loadType == manualLoad && loadMode == LM_ALL) {
       temporaryInformation = TI_BACKUP_RESTORED;
     } else
-    if((loadType == autoLoad) && (loadedVersion >= 10000000) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL)) {
+    if((loadType == autoLoad) && (loadedVersion >= 10000004) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL)) {
       temporaryInformation = TI_BACKUP_RESTORED;
     }
   #endif // !TESTSUITE_BUILD

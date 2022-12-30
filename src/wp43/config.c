@@ -1156,6 +1156,9 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     fnUserJM(USER_ARESET);                                      //JM USER
     fnUserJM(USER_MRESET);                                      //JM USER
     fnUserJM(USER_KRESET);                                      //JM USER
+    temporaryInformation = TI_NO_INFO;
+    refreshScreen();
+    
 //    kbd_usr[0].primary     = ITM_CC;                         //JM CPX TEMP DEFAULT        //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].fShifted    = KEY_TYPCON_DN;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
