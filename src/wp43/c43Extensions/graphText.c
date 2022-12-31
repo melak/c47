@@ -370,8 +370,8 @@ int16_t save_text(const char *line1, uint8_t mode1, uint8_t mode2, uint8_t mode3
         break;
       default: break;
     }
-
-    int16_t ii,jj;
+    
+    int16_t ii, jj;
     switch(mode2) {
       case WRITE:
         ii = min(nn,(int16_t)(strlen(line1)));
