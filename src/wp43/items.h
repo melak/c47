@@ -409,10 +409,10 @@
 #define ITM_MtoZHANGb                385
 #define ITM_FENtoM                   386
 #define ITM_MtoFEN                   387
-#define ITM_0388                     388
-#define ITM_0389                     389
-#define ITM_0390                     390
-#define ITM_0391                     391
+#define ITM_MI2toKM2                 388
+#define ITM_KM2toMI2                 389
+#define ITM_NMI2toKM2                390
+#define ITM_KM2toNMI2                391
 #define ITM_0392                     392
 #define ITM_0393                     393
 #define ITM_0394                     394
