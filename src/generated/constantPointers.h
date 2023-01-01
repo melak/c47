@@ -181,7 +181,9 @@
   extern const real_t * const const_YardToM;
   extern const real_t * const const_FathomToM;
   extern const real_t * const const_MiToKm;
+  extern const real_t * const const_MiSqToKmSq;
   extern const real_t * const const_NmiToKm;
+  extern const real_t * const const_NmiSqToKmSq;
   extern const real_t * const const_AuToM;
   extern const real_t * const const_LyToM;
   extern const real_t * const const_PcToM;
