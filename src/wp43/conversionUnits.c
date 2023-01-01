@@ -419,13 +419,11 @@ void fnCvtLbfftNm(uint16_t multiplyDivide) {
 }
 
 void fnCvtMi2Km2 (uint16_t multiplyDivide) {
-  unitConversion(const_MiToKm, multiplyDivide);
-  unitConversion(const_MiToKm, multiplyDivide);
+  unitConversion(const_MiSqToKmSq, multiplyDivide);
 }
   
 void fnCvtNmi2Km2(uint16_t multiplyDivide) {
-  unitConversion(const_NmiToKm, multiplyDivide);
-  unitConversion(const_NmiToKm, multiplyDivide);
+  unitConversion(const_NmiSqToKmSq, multiplyDivide);
 }
 
 
