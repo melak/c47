@@ -851,6 +851,7 @@ typedef enum {
 #define TI_IQRX_IQRY                              61
 #define TI_RANGEX_RANGEY                          62
 #define TI_PCTILEX_PCTILEY                        63
+#define TI_STR                                    64
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed

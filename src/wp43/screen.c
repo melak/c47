@@ -2991,6 +2991,15 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             viewRegName(prefix, &prefixWidth);
           }
 
+          else if(temporaryInformation == TI_STR && regist == REGISTER_X) {
+                strcpy(prefix," ");
+                strcat(prefix, errorMessage);
+                strcat(prefix, ":");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+          }
+
+
+
             else if(temporaryInformation == TI_ABC) {                             //JM EE \/
               if(regist == REGISTER_X) {
                 strcpy(prefix, "c" STD_SPACE_FIGURE "=");
