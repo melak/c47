@@ -2638,22 +2638,22 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
           else if(temporaryInformation == TI_GEOMPOPLSTDDEV) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_epsilon STD_SUB_m STD_SUB_x " =");
+              strcpy(prefix, STD_epsilon STD_SUB_p STD_SUB_x " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_epsilon STD_SUB_m STD_SUB_y " =");
+              strcpy(prefix, STD_epsilon STD_SUB_p STD_SUB_y " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_GEOMSTDERR) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_epsilon STD_SUB_p STD_SUB_x " =");
+              strcpy(prefix, STD_epsilon STD_SUB_m STD_SUB_x " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_epsilon STD_SUB_p STD_SUB_y " =");
+              strcpy(prefix, STD_epsilon STD_SUB_m STD_SUB_y " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
