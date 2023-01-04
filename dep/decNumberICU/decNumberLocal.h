@@ -138,11 +138,11 @@
       static uint8_t res[4];
       int n = x/4;
 
-      res[4] = (res[2] = n % 10) != 0;
+      res[3] = (res[2] = n % 10) != 0;
       if ((res[1] = n / 10 % 10) != 0)
-          res[4] = 2;
+          res[3] = 2;
       if ((res[0] = n / 100) != 0)
-          res[4] = 3;
+          res[3] = 3;
       return res + x%4;
   }
   static inline const uint8_t *BIN2BCD8(int n) { return DPD2BCD8(n); }
