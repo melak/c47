@@ -25,6 +25,7 @@
 #include "charString.h"
 #include "constantPointers.h"
 #include "error.h"
+#include "c43Extensions/addons.h"
 #include "c43Extensions/graphText.h"
 #include "items.h"
 #include "math.h"
@@ -649,6 +650,9 @@ void graph_plotmem(void) {
 /**/
 /**/            }
 /**/          } 
+              if(keyWaiting()) {
+                 return;
+              }
 /**/        }
 /**/      }
 //#################################################### ^^^ SCALING LOOP ^^^ #########################
@@ -670,6 +674,9 @@ void graph_plotmem(void) {
 /**/          #ifdef STATDEBUG
 /**/          printf("Axis0b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);   
 /**/          #endif
+              if(keyWaiting()) {
+                 return;
+              }
 /**/        }
 /**/      }
 /**/    } 
@@ -684,6 +691,9 @@ void graph_plotmem(void) {
 /**/        if(sx > x_max) {x_max = sx;}
 /**/        if(sy < y_min) {y_min = sy;}
 /**/        if(sy > y_max) {y_max = sy;}
+            if(keyWaiting()) {
+               return;
+            }
 /**/      }      
 /**/    }
 //#################################################### ^^^ SCALING LOOP ^^^ #########################
@@ -949,6 +959,9 @@ void graph_plotmem(void) {
           if(!(yN>minN_y            )) printf("NOT yN>minN_y; ");
                     printf("Not plotted: xN=%d<SCREEN_WIDTH_GRAPH=%d && xN=%d>minN_x=%d && yN=%d<SCREEN_HEIGHT_GRAPH=%d && yN=%d>minN_y=%d\n",xN,SCREEN_WIDTH_GRAPH,xN,minN_x,yN,SCREEN_HEIGHT_GRAPH,yN,minN_y);
         #endif
+      }
+      if(keyWaiting()) {
+         return;
       }
     }
 //#################################################### ^^^ MAIN GRAPH LOOP ^^^ #########################
