@@ -1005,7 +1005,7 @@ void graphPlotstat(uint16_t selection){
         printf("Axis0b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
         #endif // STATDEBUG && PC_BUILD
       if(keyWaiting()) {
-         return 0;
+         return;
       }
     }
     //##  ################################################## ^^^ SCALING LOOP ^^^
@@ -1225,7 +1225,7 @@ void graphPlotstat(uint16_t selection){
           #endif // PC_BUILD
       }
       if(keyWaiting()) {
-         return 0;
+         return;
       }
     }
     //#################################################### ^^^ MAIN GRAPH LOOP ^^^
