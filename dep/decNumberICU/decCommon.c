@@ -508,8 +508,8 @@ static decFloat * decFinalize(decFloat *df, bcdnum *num,
   // [and there may be a partial triad]
   #define getDPDt(dpd, n) ub=ulsd-(3*(n))-2;                          \
     if (ub<umsd-2) dpd=0;                                             \
-     else if (ub>=umsd) dpd=BCD2DPD[(*ub*256)+(*(ub+1)*16)+*(ub+2)];  \
-     else {dpd=*(ub+2); if (ub+1==umsd) dpd+=*(ub+1)*16; dpd=BCD2DPD[dpd];}
+     else if (ub>=umsd) dpd=BCD2DPD((*ub*256)+(*(ub+1)*16)+*(ub+2));  \
+     else {dpd=*(ub+2); if (ub+1==umsd) dpd+=*(ub+1)*16; dpd=BCD2DPD(dpd);}
 
   // place the declets in the encoding words and copy to result (df),
   // according to endianness; in all cases complete the sign word
@@ -597,7 +597,7 @@ decFloat * decFloatFromBCD(decFloat *df, Int exp, const uByte *bcdar,
   // Use of a working pointer, uInt *ub, is assumed.
 
   #define getDPDb(dpd, n) ub=bcdar+DECPMAX-1-(3*(n))-2;     \
-    dpd=BCD2DPD[(*ub*256)+(*(ub+1)*16)+*(ub+2)];
+    dpd=BCD2DPD((*ub*256)+(*(ub+1)*16)+*(ub+2));
 
   // place the declets in the encoding words and copy to result (df),
   // according to endianness; in all cases complete the sign word
@@ -1287,7 +1287,7 @@ char * decFloatToEngString(const decFloat *df, char *string){
   // in at least two compilers.  (The copies are length 4 for speed
   // and are safe because the last item in the array is of length
   // three and has the length byte following.)
-  #define dpd2char(dpdin) u=&DPD2BCD8[((dpdin)&0x3ff)*4];        \
+  #define dpd2char(dpdin) u=DPD2BCD8(((dpdin)&0x3ff)*4);        \
          if (c!=cstart) {UBFROMUI(c, UBTOUI(u)|CHARMASK); c+=3;} \
           else if (*(u+3)) {                                     \
            UBFROMUI(c, UBTOUI(u+3-*(u+3))|CHARMASK); c+=*(u+3);}
@@ -1412,14 +1412,14 @@ char * decFloatToEngString(const decFloat *df, char *string){
     c++;
     // Three-character exponents are easy; 4-character a little trickier
     #if DECEMAXD<=3
-      u=&BIN2BCD8[e*4];                 // -> 3 digits + length byte
+      u=BIN2BCD8(e*4);                 // -> 3 digits + length byte
       // copy fixed 4 characters [is safe], starting at non-zero
       // and with character mask to convert BCD to char
       UBFROMUI(c, UBTOUI(u+3-*(u+3))|CHARMASK);
       c+=*(u+3);                        // bump pointer appropriately
     #elif DECEMAXD==4
       if (e<1000) {                     // 3 (or fewer) digits case
-        u=&BIN2BCD8[e*4];               // -> 3 digits + length byte
+        u=BIN2BCD8(e*4);               // -> 3 digits + length byte
         UBFROMUI(c, UBTOUI(u+3-*(u+3))|CHARMASK); // [as above]
         c+=*(u+3);                      // bump pointer appropriately
         }
@@ -1427,7 +1427,7 @@ char * decFloatToEngString(const decFloat *df, char *string){
         Int thou=((e>>3)*1049)>>17;     // e/1000
         Int rem=e-(1000*thou);          // e%1000
         *c++=(char)('0'+(char)thou);    // the thousands digit
-        u=&BIN2BCD8[rem*4];             // -> 3 digits + length byte
+        u=BIN2BCD8(rem*4);             // -> 3 digits + length byte
         UBFROMUI(c, UBTOUI(u)|CHARMASK);// copy fixed 3+1 characters [is safe]
         c+=3;                           // bump pointer, always 3 digits
         }
@@ -1566,7 +1566,7 @@ char * decFloatToString(const decFloat *df, char *string){
   // in at least two compilers.  (The copies are length 4 for speed
   // and are safe because the last item in the array is of length
   // three and has the length byte following.)
-  #define dpd2char(dpdin) u=&DPD2BCD8[((dpdin)&0x3ff)*4];        \
+  #define dpd2char(dpdin) u=DPD2BCD8(((dpdin)&0x3ff)*4);        \
          if (c!=cstart) {UBFROMUI(c, UBTOUI(u)|CHARMASK); c+=3;} \
           else if (*(u+3)) {                                     \
            UBFROMUI(c, UBTOUI(u+3-*(u+3))|CHARMASK); c+=*(u+3);}
@@ -1640,14 +1640,14 @@ char * decFloatToString(const decFloat *df, char *string){
       c++;
       // Three-character exponents are easy; 4-character a little trickier
       #if DECEMAXD<=3
-        u=&BIN2BCD8[e*4];               // -> 3 digits + length byte
+        u=BIN2BCD8(e*4);               // -> 3 digits + length byte
         // copy fixed 4 characters [is safe], starting at non-zero
         // and with character mask to convert BCD to char
         UBFROMUI(c, UBTOUI(u+3-*(u+3))|CHARMASK);
         c+=*(u+3);                      // bump pointer appropriately
       #elif DECEMAXD==4
         if (e<1000) {                   // 3 (or fewer) digits case
-          u=&BIN2BCD8[e*4];             // -> 3 digits + length byte
+          u=BIN2BCD8(e*4);             // -> 3 digits + length byte
           UBFROMUI(c, UBTOUI(u+3-*(u+3))|CHARMASK); // [as above]
           c+=*(u+3);                    // bump pointer appropriately
           }
@@ -1655,7 +1655,7 @@ char * decFloatToString(const decFloat *df, char *string){
           Int thou=((e>>3)*1049)>>17;   // e/1000
           Int rem=e-(1000*thou);        // e%1000
           *c++=(char)('0'+(char)thou);  // the thousands digit
-          u=&BIN2BCD8[rem*4];           // -> 3 digits + length byte
+          u=BIN2BCD8(rem*4);           // -> 3 digits + length byte
           UBFROMUI(c, UBTOUI(u)|CHARMASK); // copy fixed 3+1 characters [is safe]
           c+=3;                         // bump pointer, always 3 digits
           }
@@ -1809,7 +1809,7 @@ decFloat * decFloatZero(decFloat *df){
      #endif
      if (e==0) *c++='0';                // 0-length case
       else if (e<1000) {                // 3 (or fewer) digits case
-       u=&BIN2BCD8[e*4];                // -> 3 digits + length byte
+       u=BIN2BCD8(e*4);                // -> 3 digits + length byte
        UBFROMUI(c, UBTOUI(u+3-*(u+3))|CHARMASK); // [as above]
        c+=*(u+3);                       // bump pointer appropriately
        }
@@ -1817,7 +1817,7 @@ decFloat * decFloatZero(decFloat *df){
        Int thou=((e>>3)*1049)>>17;      // e/1000
        Int rem=e-(1000*thou);           // e%1000
        *c++=(char)('0'+(char)thou);     // the thousands digit
-       u=&BIN2BCD8[rem*4];              // -> 3 digits + length byte
+       u=BIN2BCD8(rem*4);              // -> 3 digits + length byte
        UBFROMUI(c, UBTOUI(u)|CHARMASK); // copy fixed 3+1 characters [is safe]
        c+=3;                            // bump pointer, always 3 digits
        }

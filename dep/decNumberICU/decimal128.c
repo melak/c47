@@ -29,20 +29,21 @@
 #include <string.h>           // [for memset/memcpy]
 #include <stdio.h>            // [for printf]
 
-#define  DECNUMDIGITS 34      // make decNumbers with space for 34
-#include "decNumber.h"        // base number library
-#include "decNumberLocal.h"   // decNumber local types, etc.
-#include "decimal128.h"       // our primary include
-
 /* Utility routines and tables [in decimal64.c] */
 // DPD2BIN and the reverse are renamed to prevent link-time conflict
 // if decQuad is also built in the same executable
 #define DPD2BIN DPD2BINx
 #define BIN2DPD BIN2DPDx
+
+#define  DECNUMDIGITS 34      // make decNumbers with space for 34
+#include "decNumber.h"        // base number library
+#include "decNumberLocal.h"   // decNumber local types, etc.
+#include "decimal128.h"       // our primary include
+
 extern const uInt   COMBEXP[32], COMBMSD[32];
-extern const uShort DPD2BIN[1024];
+//extern const uShort DPD2BIN[1024];
 //extern const uShort BIN2DPD[1000];      // [not used]
-extern const uByte  BIN2CHAR[4001];
+//extern const uByte  BIN2CHAR[4001];
 
 extern void decDigitsFromDPD(decNumber *, const uInt *, Int);
 extern void decDigitsToDPD(const decNumber *, uInt *, Int);
@@ -342,7 +343,7 @@ char * decimal128ToString(const decimal128 *d128, char *string){
   // length.  We use fixed-length memcpys because variable-length
   // causes a subroutine call in GCC.  (These are length 4 for speed
   // and are safe because the array has an extra terminator byte.)
-  #define dpd2char u=&BIN2CHAR[DPD2BIN[dpd]*4];                   \
+  #define dpd2char u=BIN2CHAR(DPD2BIN(dpd)*4);                   \
                    if (c!=cstart) {memcpy(c, u+1, 4); c+=3;}      \
                     else if (*u)  {memcpy(c, u+4-*u, 4); c+=*u;}
   dpd=(sourhi>>4)&0x3ff;                     // declet 1
@@ -405,7 +406,7 @@ char * decimal128ToString(const decimal128 *d128, char *string){
         e=-e;                      // uInt, please
         }
       if (e<1000) {                // 3 (or fewer) digits case
-        u=&BIN2CHAR[e*4];          // -> length byte
+        u=BIN2CHAR(e*4);          // -> length byte
         memcpy(c, u+4-*u, 4);      // copy fixed 4 characters [is safe]
         c+=*u;                     // bump pointer appropriately
         }
@@ -413,7 +414,7 @@ char * decimal128ToString(const decimal128 *d128, char *string){
         Int thou=((e>>3)*1049)>>17; // e/1000
         Int rem=e-(1000*thou);      // e%1000
         *c++='0'+(char)thou;
-        u=&BIN2CHAR[rem*4];        // -> length byte
+        u=BIN2CHAR(rem*4);        // -> length byte
         memcpy(c, u+1, 4);         // copy fixed 3+1 characters [is safe]
         c+=3;                      // bump pointer, always 3 digits
         }

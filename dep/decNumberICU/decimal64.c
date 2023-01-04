@@ -29,16 +29,17 @@
 #include <string.h>           // [for memset/memcpy]
 #include <stdio.h>            // [for printf]
 
+/* Utility routines and tables [in decimal64.c]; externs for C++ */
+// DPD2BIN and the reverse are renamed to prevent link-time conflict
+// if decQuad is also built in the same executable
+#define _DPD2BIN _DPD2BINx
+#define _BIN2DPD _BIN2DPDx
+
 #define  DECNUMDIGITS 16      // make decNumbers with space for 16
 #include "decNumber.h"        // base number library
 #include "decNumberLocal.h"   // decNumber local types, etc.
 #include "decimal64.h"        // our primary include
 
-/* Utility routines and tables [in decimal64.c]; externs for C++ */
-// DPD2BIN and the reverse are renamed to prevent link-time conflict
-// if decQuad is also built in the same executable
-#define DPD2BIN DPD2BINx
-#define BIN2DPD BIN2DPDx
 extern const uInt COMBEXP[32], COMBMSD[32];
 //extern const uShort DPD2BIN[1024];
 //extern const uShort BIN2DPD[1000];
@@ -154,7 +155,7 @@ decimal64 * decimal64FromNumber(decimal64 *d64, const decNumber *dn,
         uInt dpd[6]={0,0,0,0,0,0};
         uInt i;
         Int d=dn->digits;
-        for (i=0; d>0; i++, d-=3) dpd[i]=BIN2DPD[dn->lsu[i]];
+        for (i=0; d>0; i++, d-=3) dpd[i]=BIN2DPD(dn->lsu[i]);
         targlo =dpd[0];
         targlo|=dpd[1]<<10;
         targlo|=dpd[2]<<20;
@@ -350,7 +351,7 @@ char * decimal64ToString(const decimal64 *d64, char *string){
   // length.  We use fixed-length memcpys because variable-length
   // causes a subroutine call in GCC.  (These are length 4 for speed
   // and are safe because the array has an extra terminator byte.)
-  #define dpd2char u=&BIN2CHAR[DPD2BIN[dpd]*4];                   \
+  #define dpd2char u=BIN2CHAR(DPD2BIN(dpd)*4);                   \
                    if (c!=cstart) {memcpy(c, u+1, 4); c+=3;}      \
                     else if (*u)  {memcpy(c, u+4-*u, 4); c+=*u;}
 
@@ -401,7 +402,7 @@ char * decimal64ToString(const decimal64 *d64, char *string){
         *(c-1)='-';                // oops, need '-'
         e=-e;                      // uInt, please
         }
-      u=&BIN2CHAR[e*4];            // -> length byte
+      u=BIN2CHAR(e*4);            // -> length byte
       memcpy(c, u+4-*u, 4);        // copy fixed 4 characters [is safe]
       c+=*u;                       // bump pointer appropriately
       }
@@ -696,7 +697,7 @@ void decDigitsToDPD(const decNumber *dn, uInt *targ, Int shift) {
     #endif
     // here there are 3 digits in bin, or have used all input digits
 
-    dpd=BIN2DPD[bin];
+    dpd=BIN2DPD(bin);
 
     // write declet to uInt array
     *uout|=dpd<<uoff;
@@ -765,7 +766,7 @@ void decDigitsFromDPD(decNumber *dn, const uInt *sour, Int declets) {
   #if DECDPUN==3
     if (dpd==0) *uout=0;
      else {
-      *uout=DPD2BIN[dpd];          // convert 10 bits to binary 0-999
+      *uout=DPD2BIN(dpd);          // convert 10 bits to binary 0-999
       last=uout;                   // record most significant unit
       }
     uout++;
@@ -784,7 +785,7 @@ void decDigitsFromDPD(decNumber *dn, const uInt *sour, Int declets) {
       continue;
       }
 
-    bcd=DPD2BCD[dpd];              // convert 10 bits to 12 bits BCD
+    bcd=DPD2BCD(dpd);              // convert 10 bits to 12 bits BCD
 
     // now accumulate the 3 BCD nibbles into units
     nibble=bcd & 0x00f;
