@@ -111,6 +111,7 @@
   /* Shared lookup tables                                             */
   extern const uByte  DECSTICKYTAB[10]; /* re-round digits if sticky  */
   extern const uInt   DECPOWERS[10];    /* powers of ten table        */
+#ifdef USE_TABLES
   /* The following are included from decDPD.h                         */
   extern const uShort _DPD2BIN[1024];    /* DPD -> 0-999               */
   extern const uShort _BIN2DPD[1000];    /* 0-999 -> DPD               */
@@ -130,8 +131,40 @@
 
   static inline const uint8_t *BIN2CHAR(int n) {
       extern const uint8_t _BIN2CHAR[4001];
-      return _BIN2CHAR+n;
+      return _BIN2CHAR + 4 * n;
   }
+#else
+  static inline const uint8_t *DPD2BCD8(int x) {
+      static uint8_t res[4];
+      int n = x/4;
+
+      res[4] = (res[2] = n % 10) != 0;
+      if ((res[1] = n / 10 % 10) != 0)
+          res[4] = 2;
+      if ((res[0] = n / 100) != 0)
+          res[4] = 3;
+      return res + x%4;
+  }
+  static inline const uint8_t *BIN2BCD8(int n) { return DPD2BCD8(n); }
+  static inline uShort DPD2BIN(int n) { return n; }
+  static inline uShort BIN2DPD(int n) { return n; }
+  static inline uInt   DPD2BINK(int n) { return n * 1000; }
+  static inline uInt   DPD2BINM(int n) { return n * 1000000; }
+  static inline uShort BCD2DPD(int n) {
+      return (n % 16) + 10 * (n / 16 % 16) + 100 * (n / 256);
+  }
+
+  static inline const uint8_t *BIN2CHAR(int n) {
+      static uint8_t res[4];
+
+      res[0] = (res[3] = n % 10 + '0') != '0';
+      if ((res[2] = (n/10)%10 + '0') != '0')
+          res[0] = 2;
+      if ((res[1] = (n/100)%10 + '0') != '0')
+          res[0] = 3;
+      return res;
+  }
+#endif
 
   /* LONGMUL32HI -- set w=(u*v)>>32, where w, u, and v are uInts      */
   /* (that is, sets w to be the high-order word of the 64-bit result; */

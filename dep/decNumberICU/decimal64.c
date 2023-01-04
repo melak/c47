@@ -351,7 +351,7 @@ char * decimal64ToString(const decimal64 *d64, char *string){
   // length.  We use fixed-length memcpys because variable-length
   // causes a subroutine call in GCC.  (These are length 4 for speed
   // and are safe because the array has an extra terminator byte.)
-  #define dpd2char u=BIN2CHAR(DPD2BIN(dpd)*4);                   \
+  #define dpd2char u=BIN2CHAR(DPD2BIN(dpd));                   \
                    if (c!=cstart) {memcpy(c, u+1, 4); c+=3;}      \
                     else if (*u)  {memcpy(c, u+4-*u, 4); c+=*u;}
 
@@ -402,7 +402,7 @@ char * decimal64ToString(const decimal64 *d64, char *string){
         *(c-1)='-';                // oops, need '-'
         e=-e;                      // uInt, please
         }
-      u=BIN2CHAR(e*4);            // -> length byte
+      u=BIN2CHAR(e);            // -> length byte
       memcpy(c, u+4-*u, 4);        // copy fixed 4 characters [is safe]
       c+=*u;                       // bump pointer appropriately
       }

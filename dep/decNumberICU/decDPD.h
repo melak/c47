@@ -31,6 +31,8 @@
 /* This mechanism allows software to only include tables that are needed.   */
 /* ------------------------------------------------------------------------ */
  
+#ifdef USE_TABLES
+
 #if defined(DEC_BCD2DPD) && DEC_BCD2DPD==1 && !defined(DECBCD2DPD)
 #define DECBCD2DPD
  
@@ -1184,3 +1186,4 @@ const uint8_t _BIN2BCD8[4000]={
 
 #endif
  
+#endif /* USE_TABLES */
