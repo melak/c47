@@ -58,7 +58,6 @@ void press_key(void) {
     #endif
 }
 
-#define XEQ_STR_LENGTH_SHORT 300
 #define XEQ_STR_LENGTH_LONG  3000 //note the limit is the tmpString limit
 
 void capture_sequence(char *origin, uint16_t item) {
@@ -352,7 +351,8 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_PARALLEL,                  "||"},
               {ITM_PRINTERSTK,                "PRN"},
               {ITM_UNIT,                      "UNIT"},
-
+              {ITM_M_NEW,                     "M.NEW"},
+              
               {ITM_ADD,                       "PLUS"},
               {ITM_SUB,                       "MIN"},
               {ITM_MULT,                      "MULT"},
