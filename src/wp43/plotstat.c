@@ -1004,6 +1004,9 @@ void graphPlotstat(uint16_t selection){
         #if defined(STATDEBUG) && defined(PC_BUILD)
         printf("Axis0b: x: %f -> %f y: %f -> %f   \n",x_min, x_max, y_min, y_max);
         #endif // STATDEBUG && PC_BUILD
+      if(keyWaiting()) {
+         return;
+      }
     }
     //##  ################################################## ^^^ SCALING LOOP ^^^
       #if defined(STATDEBUG) && defined(PC_BUILD)
@@ -1220,6 +1223,9 @@ void graphPlotstat(uint16_t selection){
           printf("\n");
           //printf("Not plotted: xN=%d<SCREEN_WIDTH_GRAPH=%d && xN=%d>minN_x=%d && yN=%d<SCREEN_HEIGHT_GRAPH=%d && yN=%d>1+minN_y=%d\n",xN,SCREEN_WIDTH_GRAPH,xN,minN_x,yN,SCREEN_HEIGHT_GRAPH,yN,1+minN_y);
           #endif // PC_BUILD
+      }
+      if(keyWaiting()) {
+         return;
       }
     }
     //#################################################### ^^^ MAIN GRAPH LOOP ^^^
