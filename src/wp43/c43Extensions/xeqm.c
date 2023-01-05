@@ -27,6 +27,7 @@
 #include "charString.h"
 #include "flags.h"
 #include "hal/gui.h"
+#include "c43Extensions/addons.h"
 #include "c43Extensions/graphText.h"
 #include "items.h"
 #include "c43Extensions/jm.h"
@@ -57,7 +58,6 @@ void press_key(void) {
     #endif
 }
 
-#define XEQ_STR_LENGTH_SHORT 300
 #define XEQ_STR_LENGTH_LONG  3000 //note the limit is the tmpString limit
 
 void capture_sequence(char *origin, uint16_t item) {
@@ -351,7 +351,8 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_PARALLEL,                  "||"},
               {ITM_PRINTERSTK,                "PRN"},
               {ITM_UNIT,                      "UNIT"},
-
+              {ITM_M_NEW,                     "M.NEW"},
+              
               {ITM_ADD,                       "PLUS"},
               {ITM_SUB,                       "MIN"},
               {ITM_MULT,                      "MULT"},
@@ -798,11 +799,17 @@ void execute_string(const char *inputstring, bool_t exec1, bool_t namescan) {
           }
           ix++;
         }
-
+        if(keyWaiting()) {
+           break;
+        }
       } //while
 
       gotlabels = true;                              //allow to run only once, unless
       if(!exec) exec = exec1; else exec = false;     //exec must run, and ensure it runs only once.
+
+      if(keyWaiting()) {
+         goto exec_exit;
+      }
     }
     #ifdef PC_BUILD_VERBOSE0
       #ifdef PC_BUILD
