@@ -134,28 +134,28 @@
       return _BIN2CHAR + 4 * n;
   }
 #else
-  static inline const uint8_t *DPD2BCD8(int x) {
-      static uint8_t res[4];
-      int n = x/4;
+  static uint8_t table_replacement_result[4];
+  static __attribute__ ((unused)) const uint8_t *DPD2BCD8(int n) {
+      uint8_t *const res = table_replacement_result;
 
       res[3] = (res[2] = n % 10) != 0;
       if ((res[1] = n / 10 % 10) != 0)
           res[3] = 2;
       if ((res[0] = n / 100) != 0)
           res[3] = 3;
-      return res + x%4;
+      return res;
   }
   static inline const uint8_t *BIN2BCD8(int n) { return DPD2BCD8(n); }
   static inline uShort DPD2BIN(int n) { return n; }
   static inline uShort BIN2DPD(int n) { return n; }
   static inline uInt   DPD2BINK(int n) { return n * 1000; }
   static inline uInt   DPD2BINM(int n) { return n * 1000000; }
-  static inline uShort BCD2DPD(int n) {
+  static __attribute__ ((unused)) uShort BCD2DPD(int n) {
       return (n % 16) + 10 * (n / 16 % 16) + 100 * (n / 256);
   }
 
-  static inline const uint8_t *BIN2CHAR(int n) {
-      static uint8_t res[4];
+  static __attribute__ ((unused)) const uint8_t *BIN2CHAR(int n) {
+      uint8_t *const res = table_replacement_result;
 
       res[0] = (res[3] = n % 10 + '0') != '0';
       if ((res[2] = (n/10)%10 + '0') != '0')
@@ -214,8 +214,8 @@
 
   /* X10 and X100 -- multiply integer i by 10 or 100                  */
   /* [shifts are usually faster than multiply; could be conditional]  */
-  #define X10(i)  (((i)<<1)+((i)<<3))
-  #define X100(i) (((i)<<2)+((i)<<5)+((i)<<6))
+  #define X10(i)  ((i) * 10) /* (((i)<<1)+((i)<<3)) */
+  #define X100(i) ((i) * 100) /* (((i)<<2)+((i)<<5)+((i)<<6)) */
 
   /* MAXI and MINI -- general max & min (not in ANSI) for integers    */
   #define MAXI(x,y) ((x)<(y)?(y):(x))
@@ -550,8 +550,8 @@
     /* extra byte is written to the right of the three digits because */
     /* four bytes are moved at a time for speed; the alternative      */
     /* macro moves exactly three bytes (usually slower).              */
-    #define dpd2bcd8(u, dpd)  memcpy(u, DPD2BCD8(((dpd)&0x3ff)*4), 4)
-    #define dpd2bcd83(u, dpd) memcpy(u, DPD2BCD8(((dpd)&0x3ff)*4), 3)
+    #define dpd2bcd8(u, dpd)  memcpy(u, DPD2BCD8((dpd)&0x3ff), 4)
+    #define dpd2bcd83(u, dpd) memcpy(u, DPD2BCD8((dpd)&0x3ff), 3)
 
     /* Decode the declets.  After extracting each one, it is decoded  */
     /* to BCD8 using a table lookup (also used for variable-length    */

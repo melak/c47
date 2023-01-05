@@ -545,9 +545,9 @@ static decFloat * decDivide(decFloat *result, const decFloat *dfl,
     mid=rem/divsplit6;
     rem=rem%divsplit6;
     // lay out the nine BCD digits (plus one unwanted byte)
-    UBFROMUI(ub,   UBTOUI(BIN2BCD8(top*4)));
-    UBFROMUI(ub+3, UBTOUI(BIN2BCD8(mid*4)));
-    UBFROMUI(ub+6, UBTOUI(BIN2BCD8(rem*4)));
+    UBFROMUI(ub,   UBTOUI(BIN2BCD8(top)));
+    UBFROMUI(ub+3, UBTOUI(BIN2BCD8(mid)));
+    UBFROMUI(ub+6, UBTOUI(BIN2BCD8(rem)));
     } // BCD conversion loop
   ub--;                                 // -> lsu
 
@@ -1034,9 +1034,9 @@ static void decFiniteMultiply(bcdnum *num, uByte *bcdacc,
       mid=rem/mulsplit6;
       rem=rem%mulsplit6;
       // lay out the nine BCD digits (plus one unwanted byte)
-      UBFROMUI(ub,   UBTOUI(BIN2BCD8(top*4)));
-      UBFROMUI(ub+3, UBTOUI(BIN2BCD8(mid*4)));
-      UBFROMUI(ub+6, UBTOUI(BIN2BCD8(rem*4)));
+      UBFROMUI(ub,   UBTOUI(BIN2BCD8(top)));
+      UBFROMUI(ub+3, UBTOUI(BIN2BCD8(mid)));
+      UBFROMUI(ub+6, UBTOUI(BIN2BCD8(rem)));
       }
      else {                             // *pa==0
       UBFROMUI(ub, 0);                  // clear 9 BCD8s
@@ -1885,12 +1885,12 @@ decFloat * decFloatCopySign(decFloat *result,
 // depending on the declet number (n), where n=0 for the most
 // significant declet; uses uInt dpd for work
 #define dpdlenchk(n, form)  dpd=(form)&0x3ff;     \
-  if (dpd) return (DECPMAX-1-3*(n))-(3-*DPD2BCD8(dpd*4+3))
+  if (dpd) return (DECPMAX-1-3*(n))-(3-DPD2BCD8(dpd)[3])
 // next one is used when it is known that the declet must be
 // non-zero, or is the final zero declet
 #define dpdlendun(n, form)  dpd=(form)&0x3ff;     \
   if (dpd==0) return 1;                           \
-  return (DECPMAX-1-3*(n))-(3-*DPD2BCD8(dpd*4+3))
+  return (DECPMAX-1-3*(n))-(3-DPD2BCD8(dpd)[3])
 
 uInt decFloatDigits(const decFloat *df) {
   uInt dpd;                        // work
