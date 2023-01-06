@@ -2281,6 +2281,89 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
           inputRegName(prefix, &prefixWidth);
         }
 
+
+        // STATISTICAL DISTR
+        if(regist == REGISTER_X && (getRegisterDataType(REGISTER_I) == dtReal34 || getRegisterDataType(REGISTER_I) == dtLongInteger) && (getRegisterDataType(REGISTER_J) == dtReal34 || getRegisterDataType(REGISTER_J) == dtLongInteger) ) {
+          char r_i[5];
+          char r_j[5];
+          char r_k[5];
+          r_i[0]=0;
+          r_j[0]=0;
+          r_k[0]=0;
+          switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
+            case -MNU_NORML:
+            case -MNU_LGNRM: sprintf(r_i, "" STD_mu);
+                             sprintf(r_j, "" STD_sigma);
+                             break;
+            case -MNU_NBIN:
+            case -MNU_BINOM: sprintf(r_i, "" STD_p);
+                             sprintf(r_j, "" STD_n);
+                             break;
+            case -MNU_HYPER: sprintf(r_i, "" STD_p);
+                             sprintf(r_j, "" STD_n);
+                             sprintf(r_k, "" STD_N);
+                             break;
+            default: break;
+          }
+          if(r_i[0] != 0) {
+//              mem_displayStack = display_stack;
+//              fnDisplayStack(2);
+              strcpy(prefix, "    I = ");
+              strcat(prefix, r_i);
+              strcat(prefix, " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
+              if(getRegisterDataType(REGISTER_I) == dtLongInteger) {
+                longInteger_t lll;
+                convertLongIntegerRegisterToLongInteger(REGISTER_I, lll);
+                longIntegerToAllocatedString(lll, tmpString, TMP_STR_LENGTH);
+                longIntegerFree(lll);
+              } else if(getRegisterDataType(REGISTER_I) == dtReal34) {
+                real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_I), getRegisterAngularMode(REGISTER_I), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
+              }
+              showString(tmpString, &numericFont, SCREEN_WIDTH - stringWidth(tmpString, &numericFont, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X), vmNormal, false, true);
+
+              strcpy(prefix, "    J = ");
+              strcat(prefix, r_j);
+              strcat(prefix, " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
+              if(getRegisterDataType(REGISTER_J) == dtLongInteger) {
+                longInteger_t lll;
+                convertLongIntegerRegisterToLongInteger(REGISTER_J, lll);
+                longIntegerToAllocatedString(lll, tmpString, TMP_STR_LENGTH);
+                longIntegerFree(lll);
+              } else if(getRegisterDataType(REGISTER_J) == dtReal34) {
+                real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_J), getRegisterAngularMode(REGISTER_J), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
+              }
+              showString(tmpString, &numericFont, SCREEN_WIDTH - stringWidth(tmpString, &numericFont, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X), vmNormal, false, true);
+
+              if(r_k[0]!=0) {
+                strcpy(prefix, "    K = ");
+                strcat(prefix, r_k);
+                strcat(prefix, " =");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
+                if(getRegisterDataType(REGISTER_K) == dtLongInteger) {
+                  longInteger_t lll;
+                  convertLongIntegerRegisterToLongInteger(REGISTER_K, lll);
+                  longIntegerToAllocatedString(lll, tmpString, TMP_STR_LENGTH);
+                  longIntegerFree(lll);
+                } else if(getRegisterDataType(REGISTER_K) == dtReal34) {
+                  real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_K), getRegisterAngularMode(REGISTER_K), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
+                }
+                showString(tmpString, &numericFont, SCREEN_WIDTH - stringWidth(tmpString, &numericFont, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X), vmNormal, false, true);
+              }
+
+
+              prefix[0]=0;
+              tmpString[0]=0;
+              lcd_fill_rect(0, (r_k[0] == 0 ? Y_POSITION_OF_REGISTER_Y_LINE : Y_POSITION_OF_REGISTER_X_LINE) - 2, SCREEN_WIDTH, 1, 0xFF); 
+//              fnDisplayStack(4);
+          }
+        }
+        
+
         if(lastErrorCode != 0 && regist == errorMessageRegisterLine) {
           if(stringWidth(errorMessages[lastErrorCode], &standardFont, true, true) <= SCREEN_WIDTH - 1) {
             showString(errorMessages[lastErrorCode], &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
@@ -3033,6 +3116,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
               }
             }
 
+
             if(prefixWidth > 0) {
               if(regist == REGISTER_X) {
                 showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
@@ -3249,6 +3333,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         }
 */
 //  //JM
+
         else if(getRegisterDataType(regist) == dtShortInteger) {
 //          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
           shortIntegerToDisplayString(regist, tmpString, true);
