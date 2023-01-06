@@ -1316,11 +1316,11 @@
 #define ITM_chi2x                   1274
 #define ITM_chi2ux                  1275
 #define ITM_chi2M1                  1276
-#define ITM_1277                    1277
-#define ITM_1278                    1278
-#define ITM_1279                    1279
-#define ITM_1280                    1280
-#define ITM_1281                    1281
+#define MNU_STDNORML                1277
+#define ITM_STDNORMLP               1278
+#define ITM_STDNORML                1279
+#define ITM_STDNORMLU               1280
+#define ITM_STDNORMLM1              1281
 #define ITM_1282                    1282
 #define ITM_1283                    1283
 #define ITM_1284                    1284
