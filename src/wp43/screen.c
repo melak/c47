@@ -1703,6 +1703,34 @@ void force_refresh(uint8_t mode) {
     }
   }
 
+  static int stats_param_check(const char *name, int reg) {
+    int type;
+
+    return name == NULL
+           || (type = getRegisterDataType(reg)) == dtReal34
+           || type == dtLongInteger;
+  }
+
+  static void stats_param_display(const char *name, int reg, char *prefix, char *tmpString, unsigned int rowReg) {
+    int prefixWidth;
+    longInteger_t lll;
+
+    if (name == NULL)
+      return;
+
+    sprintf(prefix, "  %s =", name);
+    prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+    showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
+
+    if(getRegisterDataType(reg) == dtLongInteger) {
+      convertLongIntegerRegisterToLongInteger(reg, lll);
+      longIntegerToAllocatedString(lll, tmpString, TMP_STR_LENGTH);
+      longIntegerFree(lll);
+    } else if(getRegisterDataType(reg) == dtReal34) {
+      real34ToDisplayString(REGISTER_REAL34_DATA(reg), getRegisterAngularMode(reg), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
+    }
+    showString(tmpString, &numericFont, SCREEN_WIDTH - stringWidth(tmpString, &numericFont, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X), vmNormal, false, true);
+  }
 
 
   void showFunctionName(int16_t item, int16_t delayInMs) {
@@ -2283,82 +2311,66 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
 
         // STATISTICAL DISTR
-        if(regist == REGISTER_X && (getRegisterDataType(REGISTER_I) == dtReal34 || getRegisterDataType(REGISTER_I) == dtLongInteger) && (getRegisterDataType(REGISTER_J) == dtReal34 || getRegisterDataType(REGISTER_J) == dtLongInteger) ) {
-          char r_i[5];
-          char r_j[5];
-          char r_k[5];
-          r_i[0]=0;
-          r_j[0]=0;
-          r_k[0]=0;
+        if(regist == REGISTER_X) {
+          const char *r_i = NULL, *r_j = NULL, *r_k = NULL;
+
           switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
-            case -MNU_NORML:
-            case -MNU_LGNRM: sprintf(r_i, "" STD_mu);
-                             sprintf(r_j, "" STD_sigma);
-                             break;
             case -MNU_NBIN:
-            case -MNU_BINOM: sprintf(r_i, "" STD_p);
-                             sprintf(r_j, "" STD_n);
-                             break;
-            case -MNU_HYPER: sprintf(r_i, "" STD_p);
-                             sprintf(r_j, "" STD_n);
-                             sprintf(r_k, "" STD_N);
-                             break;
+            case -MNU_BINOM:
+              r_i = STD_p;
+              r_j = STD_n;
+              break;
+            case -MNU_CAUCH:
+              r_i = STD_x STD_SUB_0;
+              r_j = STD_gamma;
+              break;
+            case -MNU_WEIBL:
+              r_j = STD_lambda;
+              /* fall through */
+            case -MNU_CHI2:
+              r_i = STD_k;
+              break;
+            case -MNU_EXPON:
+              r_i = STD_lambda;
+              break;
+            case -MNU_F:
+              r_i = STD_d STD_SUB_1;
+              r_j = STD_d STD_SUB_2;
+              break;
+            case -MNU_GEOM:
+            case -MNU_POISS:
+              r_i = STD_p;
+              break;
+            case -MNU_HYPER:
+              r_i = STD_p;  /* TODO: hypergeometric parameters */
+              r_j = STD_n;
+              r_k = STD_N;
+              break;
+            case -MNU_LOGIS:
+              r_j = STD_s;
+              r_i = STD_mu;
+              break;
+            case -MNU_NORML:
+            case -MNU_LGNRM:
+              r_j = STD_sigma;
+              r_i = STD_mu;
+              break;
+            case -MNU_T:
+              r_i = STD_nu;
+              break;
             default: break;
           }
-          if(r_i[0] != 0) {
-//              mem_displayStack = display_stack;
-//              fnDisplayStack(2);
-              strcpy(prefix, "    I = ");
-              strcat(prefix, r_i);
-              strcat(prefix, " =");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
-              showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
-              if(getRegisterDataType(REGISTER_I) == dtLongInteger) {
-                longInteger_t lll;
-                convertLongIntegerRegisterToLongInteger(REGISTER_I, lll);
-                longIntegerToAllocatedString(lll, tmpString, TMP_STR_LENGTH);
-                longIntegerFree(lll);
-              } else if(getRegisterDataType(REGISTER_I) == dtReal34) {
-                real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_I), getRegisterAngularMode(REGISTER_I), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
-              }
-              showString(tmpString, &numericFont, SCREEN_WIDTH - stringWidth(tmpString, &numericFont, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_T - REGISTER_X), vmNormal, false, true);
 
-              strcpy(prefix, "    J = ");
-              strcat(prefix, r_j);
-              strcat(prefix, " =");
-              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
-              showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
-              if(getRegisterDataType(REGISTER_J) == dtLongInteger) {
-                longInteger_t lll;
-                convertLongIntegerRegisterToLongInteger(REGISTER_J, lll);
-                longIntegerToAllocatedString(lll, tmpString, TMP_STR_LENGTH);
-                longIntegerFree(lll);
-              } else if(getRegisterDataType(REGISTER_J) == dtReal34) {
-                real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_J), getRegisterAngularMode(REGISTER_J), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
-              }
-              showString(tmpString, &numericFont, SCREEN_WIDTH - stringWidth(tmpString, &numericFont, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Z - REGISTER_X), vmNormal, false, true);
+          if (stats_param_check(r_i, REGISTER_I)
+              && stats_param_check(r_j, REGISTER_J)
+              && stats_param_check(r_k, REGISTER_K)) {
+            stats_param_display(r_i, REGISTER_I, prefix, tmpString, REGISTER_T);
+            stats_param_display(r_j, REGISTER_J, prefix, tmpString, REGISTER_Z);
+            stats_param_display(r_k, REGISTER_K, prefix, tmpString, REGISTER_Y);
 
-              if(r_k[0]!=0) {
-                strcpy(prefix, "    K = ");
-                strcat(prefix, r_k);
-                strcat(prefix, " =");
-                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
-                showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
-                if(getRegisterDataType(REGISTER_K) == dtLongInteger) {
-                  longInteger_t lll;
-                  convertLongIntegerRegisterToLongInteger(REGISTER_K, lll);
-                  longIntegerToAllocatedString(lll, tmpString, TMP_STR_LENGTH);
-                  longIntegerFree(lll);
-                } else if(getRegisterDataType(REGISTER_K) == dtReal34) {
-                  real34ToDisplayString(REGISTER_REAL34_DATA(REGISTER_K), getRegisterAngularMode(REGISTER_K), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
-                }
-                showString(tmpString, &numericFont, SCREEN_WIDTH - stringWidth(tmpString, &numericFont, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(REGISTER_Y - REGISTER_X), vmNormal, false, true);
-              }
-
-
-              prefix[0]=0;
-              tmpString[0]=0;
-              lcd_fill_rect(0, (r_k[0] == 0 ? Y_POSITION_OF_REGISTER_Y_LINE : Y_POSITION_OF_REGISTER_X_LINE) - 2, SCREEN_WIDTH, 1, 0xFF); 
+            prefix[0]=0;
+            tmpString[0]=0;
+            lcd_fill_rect(0, (r_k == NULL ? Y_POSITION_OF_REGISTER_Y_LINE : Y_POSITION_OF_REGISTER_X_LINE) - 2, SCREEN_WIDTH, 1, 0xFF); 
 //              fnDisplayStack(4);
           }
         }
