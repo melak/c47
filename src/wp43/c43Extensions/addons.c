@@ -182,13 +182,7 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
       ix++;
     }
 
-    if(displayStack_m >= 1 && displayStack_m <= 4 /*&& displayStack_m != 255*/) { //JMSHOI
-      fnDisplayStack(displayStack_m);     //JMSHOI
-      displayStack_m = 255;               //JMSHOI
-    }
-    else {
-      fnDisplayStack(4);                  //removed because it clamps DSTACK to 4
-    }                                     //JMSHOI
+    fnDisplayStack(4);                    //Restore to default DSTACK 4
 
     calcModeNormal();
     refreshScreen();
