@@ -1967,6 +1967,7 @@ uint8_t   displayStack_m = 255;                                                 
     bool_t prefixPre = true;
     bool_t prefixPost = true;
     const uint8_t origDisplayStack = displayStack;
+    bool_t distModeActive = false;
 
     char prefix[200], lastBase[4];
 
@@ -2374,11 +2375,26 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             prefix[0]=0;
             tmpString[0]=0;
             uint8_t ii = 255;
-            if(r_i != NULL) ii = Y_POSITION_OF_REGISTER_Z_LINE;
-            if(r_j != NULL) ii = Y_POSITION_OF_REGISTER_Y_LINE;
-            if(r_k != NULL) ii = Y_POSITION_OF_REGISTER_X_LINE;
-            if(ii != 255) {
+            if(r_i != NULL) { 
+              ii = Y_POSITION_OF_REGISTER_Z_LINE;
+              fnDisplayStack(3);
+              distModeActive = true;
+            }
+            if(r_j != NULL) { 
+              ii = Y_POSITION_OF_REGISTER_Y_LINE;
+              fnDisplayStack(2);
+              distModeActive = true;
+            }
+            if(r_k != NULL) { 
+              ii = Y_POSITION_OF_REGISTER_X_LINE;
+              fnDisplayStack(1);
+              distModeActive = true;
+            }
+            if(distModeActive) {
               lcd_fill_rect(0, ii - 2, SCREEN_WIDTH, 1, 0xFF);
+              if(displayStack != origDisplayStack) {
+                refreshScreen();                                //recurse into refreshScreen
+              }
             }
           }
         }
@@ -3611,7 +3627,10 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
       }
     }
 
-    if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || getRegisterDataType(REGISTER_X) == dtComplex34Matrix || calcMode == CM_MIM) {
+    if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || 
+       getRegisterDataType(REGISTER_X) == dtComplex34Matrix || 
+       calcMode == CM_MIM ||
+       distModeActive) {
       displayStack = origDisplayStack;
     }
   }
