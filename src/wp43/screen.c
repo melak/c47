@@ -1713,27 +1713,25 @@ void force_refresh(uint8_t mode) {
 
   static void stats_param_display(const char *name, calcRegister_t reg, char *prefix, char *tmpString, calcRegister_t rowReg) {
     int prefixWidth;
-    longInteger_t lll;
-    char regS[2];
+    char regS[5];
 
     if (name == NULL)
       return;
     clearRegisterLine(rowReg, true, true);
 
-    strcpy(regS, "I");
-    regS[0] += reg - REGISTER_I;
+    strcpy(regS, "RegI");
+    regS[3] += reg - REGISTER_I;
     showString(regS, &standardFont, 19, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
     sprintf(prefix, "= %s =", name);
-    prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
-    showString(prefix, &standardFont, 19 + 17, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
+    prefixWidth = showString(prefix, &standardFont, 19 + (17+28), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
 
     if(getRegisterDataType(reg) == dtLongInteger) {
-      convertLongIntegerRegisterToLongInteger(reg, lll);
-      longIntegerToAllocatedString(lll, tmpString, TMP_STR_LENGTH);
-      longIntegerFree(lll);
+      longIntegerRegisterToDisplayString(reg, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - prefixWidth, 50, STD_SPACE_PUNCTUATION, true);
     } else if(getRegisterDataType(reg) == dtReal34) {
       real34ToDisplayString(REGISTER_REAL34_DATA(reg), getRegisterAngularMode(reg), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
     }
+
+
     showString(tmpString, &numericFont, SCREEN_WIDTH - stringWidth(tmpString, &numericFont, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X), vmNormal, false, true);
   }
 
