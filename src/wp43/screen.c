@@ -1686,11 +1686,11 @@ void force_refresh(uint8_t mode) {
 
 
 
-char tmps[30];
 uint16_t old_time = 0;
 void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {  
-
+  char tmps[30];
   uint16_t new_time = (uint16_t)(getUptimeMs());
+
   if((mode != timed) || (((new_time - old_time) & 0xFE00) != 0 )) { //0x0200 || 0.512 second refresh interval
     old_time = new_time;
 
