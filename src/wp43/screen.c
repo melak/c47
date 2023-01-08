@@ -1726,6 +1726,39 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
     }
   }
 
+  static int stats_param_check(const char *name, calcRegister_t reg) {
+    int type;
+
+    return name == NULL
+           || (type = getRegisterDataType(reg)) == dtReal34
+           || type == dtLongInteger;
+  }
+
+  static void stats_param_display(const char *name, calcRegister_t reg, char *prefix, char *tmpString, calcRegister_t rowReg) {
+    int prefixWidth;
+    longInteger_t lll;
+    char regS[2];
+
+    if (name == NULL)
+      return;
+    clearRegisterLine(rowReg, true, true);
+
+    strcpy(regS, "I");
+    regS[0] += reg - REGISTER_I;
+    showString(regS, &standardFont, 19, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
+    sprintf(prefix, "= %s =", name);
+    prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+    showString(prefix, &standardFont, 19 + 17, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
+
+    if(getRegisterDataType(reg) == dtLongInteger) {
+      convertLongIntegerRegisterToLongInteger(reg, lll);
+      longIntegerToAllocatedString(lll, tmpString, TMP_STR_LENGTH);
+      longIntegerFree(lll);
+    } else if(getRegisterDataType(reg) == dtReal34) {
+      real34ToDisplayString(REGISTER_REAL34_DATA(reg), getRegisterAngularMode(reg), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
+    }
+    showString(tmpString, &numericFont, SCREEN_WIDTH - stringWidth(tmpString, &numericFont, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X), vmNormal, false, true);
+  }
 
 
   void showFunctionName(int16_t item, int16_t delayInMs) {
@@ -2303,6 +2336,78 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         if(regist == REGISTER_X && currentInputVariable != INVALID_VARIABLE) {
           inputRegName(prefix, &prefixWidth);
         }
+
+
+        // STATISTICAL DISTR
+        if(regist == REGISTER_X) {
+          const char *r_i = NULL, *r_j = NULL, *r_k = NULL;
+
+          switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
+            case -MNU_NBIN:
+            case -MNU_BINOM:
+              r_i = STD_p;
+              r_j = STD_n;
+              break;
+            case -MNU_CAUCH:
+              r_i = STD_x STD_SUB_0;
+              r_j = STD_gamma;
+              break;
+            case -MNU_WEIBL:
+              r_j = STD_lambda;
+              /* fall through */
+            case -MNU_CHI2:
+              r_i = STD_k;
+              break;
+            case -MNU_EXPON:
+              r_i = STD_lambda;
+              break;
+            case -MNU_F:
+              r_i = STD_d STD_SUB_1;
+              r_j = STD_d STD_SUB_2;
+              break;
+            case -MNU_GEOM:
+            case -MNU_POISS:
+              r_i = STD_p;
+              break;
+            case -MNU_HYPER:
+              r_i = STD_p;  /* TODO: hypergeometric parameters */
+              r_j = STD_n;
+              r_k = STD_N;
+              break;
+            case -MNU_LOGIS:
+              r_j = STD_s;
+              r_i = STD_mu;
+              break;
+            case -MNU_NORML:
+            case -MNU_LGNRM:
+              r_j = STD_sigma;
+              r_i = STD_mu;
+              break;
+            case -MNU_T:
+              r_i = STD_nu;
+              break;
+            default: break;
+          }
+
+          if (stats_param_check(r_i, REGISTER_I)
+              && stats_param_check(r_j, REGISTER_J)
+              && stats_param_check(r_k, REGISTER_K)) {
+            stats_param_display(r_i, REGISTER_I, prefix, tmpString, REGISTER_T);
+            stats_param_display(r_j, REGISTER_J, prefix, tmpString, REGISTER_Z);
+            stats_param_display(r_k, REGISTER_K, prefix, tmpString, REGISTER_Y);
+
+            prefix[0]=0;
+            tmpString[0]=0;
+            uint8_t ii = 255;
+            if(r_i != NULL) ii = Y_POSITION_OF_REGISTER_Z_LINE;
+            if(r_j != NULL) ii = Y_POSITION_OF_REGISTER_Y_LINE;
+            if(r_k != NULL) ii = Y_POSITION_OF_REGISTER_X_LINE;
+            if(ii != 255) {
+              lcd_fill_rect(0, ii - 2, SCREEN_WIDTH, 1, 0xFF);
+            }
+          }
+        }
+        
 
         if(lastErrorCode != 0 && regist == errorMessageRegisterLine) {
           if(stringWidth(errorMessages[lastErrorCode], &standardFont, true, true) <= SCREEN_WIDTH - 1) {
@@ -3065,6 +3170,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
               }
             }
 
+
             if(prefixWidth > 0) {
               if(regist == REGISTER_X) {
                 showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
@@ -3281,6 +3387,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         }
 */
 //  //JM
+
         else if(getRegisterDataType(regist) == dtShortInteger) {
 //          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
           shortIntegerToDisplayString(regist, tmpString, true);
