@@ -34,7 +34,6 @@
 
 
 #if !defined(TESTSUITE_BUILD)
-  static char statusMessage[100];     //Use a static global to prevent time wastage when a overlong string needs to be created at each function instance below
   
   void refreshStatusBar(void) {
     if(screenUpdatingMode & SCRUPD_MANUAL_STATUSBAR) {
@@ -59,6 +58,7 @@
       }
     }
     #if (DEBUG_INSTEAD_STATUS_BAR == 1)
+      static char statusMessage[100];
       sprintf(statusMessage, "%s%d %s/%s  mnu:%s fi:%d", catalog ? "asm:" : "", catalog, tam.mode ? "/tam" : "", getCalcModeName(calcMode),indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemCatalogName, softmenuStack[0].firstItem);
       showString(statusMessage, &standardFont, X_DATE, 0, vmNormal, true, true);
     #else // DEBUG_INSTEAD_STATUS_BAR != 1
@@ -198,6 +198,7 @@
 
 
 void showFracMode(void) {
+    static char statusMessage[20];
     char str20[20];                                   //JM vv KEYS
     char str40[40];
 
@@ -278,6 +279,7 @@ void showFracMode(void) {
 
 
   void showIntegerMode(void) {
+    static char statusMessage[10];
     if(shortIntegerWordSize <= 9) {
       sprintf(statusMessage, " %" PRIu8 ":%c", shortIntegerWordSize, shortIntegerMode==SIM_1COMPL?'1':(shortIntegerMode==SIM_2COMPL?'2':(shortIntegerMode==SIM_UNSIGN?'u':(shortIntegerMode==SIM_SIGNMT?'s':'?'))));
     }
@@ -291,6 +293,7 @@ void showFracMode(void) {
 
 
   void showMatrixMode(void) {
+    static char statusMessage[5];
     if(getSystemFlag(FLAG_GROW)) {
       sprintf(statusMessage, "grow");
     }
@@ -304,6 +307,7 @@ void showFracMode(void) {
 
 
   void showTvmMode(void) {
+    static char statusMessage[5];
     if(getSystemFlag(FLAG_ENDPMT)) {
       sprintf(statusMessage, "END");
     }
@@ -333,18 +337,6 @@ void showFracMode(void) {
   void showHideAlphaMode(void) {
     int status=0;
     if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha)) {
-
-
-//WP43S    if(calcMode == CM_AIM || calcMode == CM_EIM || (catalog && catalog != CATALOG_MVAR) || (tam.mode != 0 && tam.alpha) || ((calcMode == CM_PEM || calcMode == CM_ASSIGN) && getSystemFlag(FLAG_ALPHA))) {
-//      if(alphaCase == AC_UPPER) {
-//        showString(STD_ALPHA, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_ALPHA is 0+9+2 pixel wide
-//        setSystemFlag(FLAG_alphaCAP);
-//      }
-//      else {
-//        showString(STD_alpha, &standardFont, X_ALPHA_MODE, 0, vmNormal, true, false); // STD_alpha is 0+9+2 pixel wide
-//        clearSystemFlag(FLAG_alphaCAP);
-
-
       if(numLock && !shiftF && !shiftG) {
           if(alphaCase == AC_UPPER)                  { status = 3 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); } else
           if(alphaCase == AC_LOWER)                  { status = 6 - (nextChar == NC_SUBSCRIPT ? 2 : nextChar == NC_SUPERSCRIPT ? 1:0); }
