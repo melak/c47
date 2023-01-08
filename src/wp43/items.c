@@ -64,6 +64,8 @@
 #include "ui/tone.h"
 #include "c43Extensions/xeqm.h"
 
+#include <string.h>
+
 #include "wp43.h"
 
 void itemToBeCoded(uint16_t unusedButMandatoryParameter) {
@@ -161,6 +163,45 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
 
 
     indexOfItems[func].func(param);
+
+
+    if(lastErrorCode == ERROR_NONE) {
+      switch (softmenu[softmenuStack[0].softmenuId].menuItem) {
+    	  case -MNU_CONVE :
+    		case -MNU_CONVP :
+    		case -MNU_CONVFP:
+    		case -MNU_CONVM :
+    		case -MNU_CONVX :
+    		case -MNU_CONVV :
+    		case -MNU_CONVA :
+    		case -MNU_UNITCONV : 
+    		case -MNU_MISC : { 
+          errorMessage[0]=0;
+          strcat(errorMessage,indexOfItems[func].itemCatalogName);
+          temporaryInformation = TI_NO_INFO;
+          char sample[4];
+          strcpy(sample, STD_RIGHT_ARROW);
+          int16_t i = 0;
+          while (errorMessage[i+1] != 0) {
+            if(sample[0] == errorMessage[i] && sample[1] == errorMessage[i+1]) {
+              temporaryInformation = TI_STR;
+              errorMessage[i++] = 0;
+              errorMessage[i++] = 0;
+              break;
+            }
+            i++;
+          }
+          int16_t j = 0;
+          while (errorMessage[i] != 0) {
+            errorMessage[j++] =  errorMessage[i++];
+          }
+          errorMessage[j] = 0;
+          break;
+        default: break;
+      	}
+      }
+    }
+
 
     if(lastErrorCode != 0) {
       if(getSystemFlag(FLAG_IGN1ER)) {
@@ -572,6 +613,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnCvtFenM                   (uint16_t unusedButMandatoryParameter) {}
   void fnCvtMileM                  (uint16_t unusedButMandatoryParameter) {}
   void fnCvtNMiM                   (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtMi2Km2                 (uint16_t unusedButMandatoryParameter) {}
+  void fnCvtNmi2Km2                (uint16_t unusedButMandatoryParameter) {}
   void addItemToBuffer             (uint16_t unusedButMandatoryParameter) {}
   void fnOff                       (uint16_t unusedButMandatoryParameter) {}
   void fnAim                       (uint16_t unusedButMandatoryParameter) {}
@@ -968,6 +1011,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnSetSI_All                (uint16_t unusedButMandatoryParameter) {}
   void fnJulianToDateTime         (uint16_t unusedButMandatoryParameter) {}
   void fnDateTimeToJulian         (uint16_t unusedButMandatoryParameter) {}
+
 
                                                                               //JM ^^
 #endif // GENERATE_CATALOGS
@@ -1374,10 +1418,10 @@ TO_QSPI const item_t indexOfItems[] = {
 /*  385 */  { fnCvtZhangM,                  multiply,                    "m" STD_RIGHT_ARROW "zh" STD_a_GRAVE "n",      "zh" STD_a_GRAVE "ng",                         (0 << TAM_MAX_BITS) |     0, CAT_DUPL | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /*  386 */  { fnCvtFenM,                    divide,                      "f" STD_e_MACRON "n" STD_RIGHT_ARROW "m",      "f" STD_e_MACRON "n" STD_RIGHT_ARROW "m",      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /*  387 */  { fnCvtFenM,                    multiply,                    "m" STD_RIGHT_ARROW "f" STD_e_MACRON "n",      "m" STD_RIGHT_ARROW "f" STD_e_MACRON "n",      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/*  388 */  { itemToBeCoded,                NOPARAM,                     "0388",                                        "0388",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/*  389 */  { itemToBeCoded,                NOPARAM,                     "0389",                                        "0389",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/*  390 */  { itemToBeCoded,                NOPARAM,                     "0390",                                        "0390",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/*  391 */  { itemToBeCoded,                NOPARAM,                     "0391",                                        "0391",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/*  388 */  { fnCvtMi2Km2,                  multiply,                    "mi" STD_SUP_2 STD_RIGHT_ARROW "km" STD_SUP_2, "mi" STD_SUP_2 STD_RIGHT_ARROW "km" STD_SUP_2, (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/*  389 */  { fnCvtMi2Km2,                  divide,                      "km" STD_SUP_2 STD_RIGHT_ARROW "mi" STD_SUP_2, "km" STD_SUP_2 STD_RIGHT_ARROW "mi" STD_SUP_2, (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/*  390 */  { fnCvtNmi2Km2,                 multiply,                    "nmi" STD_SUP_2 STD_RIGHT_ARROW "km" STD_SUP_2, "nmi" STD_SUP_2 STD_RIGHT_ARROW "km" STD_SUP_2, (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/*  391 */  { fnCvtNmi2Km2,                 divide,                      "km" STD_SUP_2 STD_RIGHT_ARROW "nmi" STD_SUP_2, "km" STD_SUP_2 STD_RIGHT_ARROW "nmi" STD_SUP_2, (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /*  392 */  { itemToBeCoded,                NOPARAM,                     "0392",                                        "0392",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /*  393 */  { itemToBeCoded,                NOPARAM,                     "0393",                                        "0393",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /*  394 */  { itemToBeCoded,                NOPARAM,                     "0394",                                        "0394",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },

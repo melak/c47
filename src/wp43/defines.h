@@ -653,7 +653,7 @@ typedef enum {
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
 
 // Number of constants
-#define NUMBER_OF_CONSTANTS_39                   202+1   //JM 2 additionalconstants
+#define NUMBER_OF_CONSTANTS_39                   205
 #define NUMBER_OF_CONSTANTS_51                    39
 #define NUMBER_OF_CONSTANTS_1071                   1
 #define NUMBER_OF_CONSTANTS_34                    44
@@ -850,6 +850,7 @@ typedef enum {
 #define TI_IQRX_IQRY                              61
 #define TI_RANGEX_RANGEY                          62
 #define TI_PCTILEX_PCTILEY                        63
+#define TI_STR                                    64
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed
