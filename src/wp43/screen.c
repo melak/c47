@@ -1815,9 +1815,6 @@ void hideFunctionName(void) {
   }
 
 
-uint8_t   displayStack_m = 255;                                                  //JMSHOIDISP
-
-
   static void viewRegName(char *prefix, int16_t *prefixWidth) {
     if(currentViewRegister < REGISTER_X) {
       sprintf(prefix, "R%02" PRIu16 STD_SPACE_4_PER_EM "=" STD_SPACE_4_PER_EM, currentViewRegister);
@@ -1968,21 +1965,16 @@ uint8_t   displayStack_m = 255;                                                 
     bool_t prefixPost = true;
     const uint8_t origDisplayStack = displayStack;
     bool_t distModeActive = false;
+    bool_t baseModeActive = false;    
 
     char prefix[200], lastBase[4];
 
-if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGISTER_X) == dtShortInteger) { //JMSHOI                   
-  if(displayStack != 4-displayStackSHOIDISP) {displayStack_m = displayStack;}   //JMSHOI
-  fnDisplayStack(4-displayStackSHOIDISP);                                       //JMSHOI             
-} else {                                                                        //JMSHOI 
-  if(displayStack_m != 255) {                                                   //JMSHOI
-    fnDisplayStack(displayStack_m);                                             //JMSHOI
-    displayStack_m = 255;                                                       //JMSHOI
-  } else {
-    //fnDisplayStack(4);  //removed because it clamps DSTACK to 4
-                                                                                //displayStack_m = 255;//is already 255
-  }                                                                             //JMSHOI
-}                                                                               //JMSHOI
+    baseModeActive = displayStackSHOIDISP != 0 && (lastIntegerBase != 0 || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_BASE);
+    if(baseModeActive && getRegisterDataType(REGISTER_X) == dtShortInteger) { //JMSHOI                   
+      if(displayStack != 4-displayStackSHOIDISP) {                            //JMSHOI
+        fnDisplayStack(4-displayStackSHOIDISP);                               //JMSHOI             
+      }                                                                       //JMSHOI
+    }
 
     #if (DEBUG_PANEL == 1)
       if(programRunStop != PGM_RUNNING) {
@@ -3385,7 +3377,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
           showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
   
           //JM SHOIDISP // use the top part of the screen for HEX and BIN    //JM vv SHOIDISP
-          if(displayStack == 4-displayStackSHOIDISP && lastIntegerBase != 0 && lastErrorCode == 0) {
+          if(baseModeActive && lastErrorCode == 0) {
             if(displayStack == 1){
               copySourceRegisterToDestRegister(REGISTER_Y,TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X,REGISTER_Y);
@@ -3630,7 +3622,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
     if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || 
        getRegisterDataType(REGISTER_X) == dtComplex34Matrix || 
        calcMode == CM_MIM ||
-       distModeActive) {
+       distModeActive || baseModeActive) {
       displayStack = origDisplayStack;
     }
   }
