@@ -1714,14 +1714,18 @@ void force_refresh(uint8_t mode) {
   static void stats_param_display(const char *name, calcRegister_t reg, char *prefix, char *tmpString, calcRegister_t rowReg) {
     int prefixWidth;
     longInteger_t lll;
+    char regS[2];
 
     if (name == NULL)
       return;
     clearRegisterLine(rowReg, true, true);
 
-    sprintf(prefix, "  %s =", name);
+    strcpy(regS, "I");
+    regS[0] += reg - REGISTER_I;
+    showString(regS, &standardFont, 19, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
+    sprintf(prefix, "= %s =", name);
     prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
-    showString(prefix, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
+    showString(prefix, &standardFont, 19 + 17, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
 
     if(getRegisterDataType(reg) == dtLongInteger) {
       convertLongIntegerRegisterToLongInteger(reg, lll);
