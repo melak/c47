@@ -790,6 +790,10 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnChi2L                     (uint16_t unusedButMandatoryParameter) {}
   void fnChi2R                     (uint16_t unusedButMandatoryParameter) {}
   void fnChi2I                     (uint16_t unusedButMandatoryParameter) {}
+  void fnStdNormalP                (uint16_t unusedButMandatoryParameter) {}
+  void fnStdNormalL                (uint16_t unusedButMandatoryParameter) {}
+  void fnStdNormalR                (uint16_t unusedButMandatoryParameter) {}
+  void fnStdNormalI                (uint16_t unusedButMandatoryParameter) {}
   void fnF_P                       (uint16_t unusedButMandatoryParameter) {}
   void fnF_L                       (uint16_t unusedButMandatoryParameter) {}
   void fnF_R                       (uint16_t unusedButMandatoryParameter) {}
@@ -2325,11 +2329,11 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1274 */  { fnChi2L,                      NOPARAM,                     STD_chi STD_SUP_2 STD_GAUSS_BLACK_L STD_GAUSS_WHITE_R "(x)", STD_chi STD_SUP_2 STD_GAUSS_BLACK_L STD_GAUSS_WHITE_R "(x)", (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1275 */  { fnChi2R,                      NOPARAM,                     STD_chi STD_SUP_2 STD_GAUSS_WHITE_L STD_GAUSS_BLACK_R "(x)", STD_chi STD_SUP_2 STD_GAUSS_WHITE_L STD_GAUSS_BLACK_R "(x)", (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1276 */  { fnChi2I,                      NOPARAM,                     "(" STD_chi STD_SUP_2 ")" STD_SUP_MINUS_1,     "(" STD_chi STD_SUP_2 ")" STD_SUP_MINUS_1,     (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 1277 */  { itemToBeCoded,                NOPARAM,                     "1277",                                        "1277",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 1278 */  { itemToBeCoded,                NOPARAM,                     "1278",                                        "1278",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 1279 */  { itemToBeCoded,                NOPARAM,                     "1279",                                        "1279",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 1280 */  { itemToBeCoded,                NOPARAM,                     "1280",                                        "1280",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 1281 */  { itemToBeCoded,                NOPARAM,                     "1281",                                        "1281",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1277 */  { itemToBeCoded,                NOPARAM,                     STD_PHI ":",                                   STD_PHI ":",                                   (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1278 */  { fnStdNormalP,                 NOPARAM,                     STD_phi STD_SUB_p,                             STD_phi STD_SUB_p,                             (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1279 */  { fnStdNormalL,                 NOPARAM,                     STD_PHI STD_GAUSS_BLACK_L STD_GAUSS_WHITE_R,   STD_PHI STD_GAUSS_BLACK_L STD_GAUSS_WHITE_R,   (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1280 */  { fnStdNormalR,                 NOPARAM,                     STD_PHI STD_GAUSS_WHITE_L STD_GAUSS_BLACK_R,   STD_PHI STD_GAUSS_WHITE_L STD_GAUSS_BLACK_R,   (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1281 */  { fnStdNormalI,                 NOPARAM,                     STD_PHI STD_SUP_MINUS_1,                       STD_PHI STD_SUP_MINUS_1,                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1282 */  { itemToBeCoded,                NOPARAM,                     "1282",                                        "1282",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1283 */  { itemToBeCoded,                NOPARAM,                     "1283",                                        "1283",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1284 */  { itemToBeCoded,                NOPARAM,                     "1284",                                        "1284",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },

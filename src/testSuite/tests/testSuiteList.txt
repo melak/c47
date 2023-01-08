@@ -286,6 +286,11 @@ toHms
 toReal
 
 ;Distributions
+stdnormal_p
+stdnormal_l
+stdnormal_r
+stdnormal_i
+
 normal_p
 normal_l
 normal_r
