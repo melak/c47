@@ -446,7 +446,7 @@ void updateAssignTamBuffer(void) {
 
 
 
-static void _assignItem(userMenuItem_t *menuItem) {
+void _assignItem(userMenuItem_t *menuItem) {
   const uint8_t *lblPtr = NULL;
   uint32_t l = 0;
   if(itemToBeAssigned == ASSIGN_CLEAR) {
