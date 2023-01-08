@@ -54,13 +54,15 @@
 #include "wp43.h"
 
 #define BACKUP_VERSION       779  // LongPressF M
-#define configFileVersion    10000004 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
+#define configFileVersion    10000005 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
+#define VersionAllowed       10000005 // This code will not autoload versions earlier than this
 
 /*
 10000001 // arbitrary starting point version 10 000 001
 10000002 // 2022-12-05 First release, version 108_08f
 10000003 // 2022-12-06 version 108_08h, added LongPressM & LongPressF
 10000004 // 2022-12-26 version 108_08n, added lastIntegerBase
+10000005 // 2022-01-08 version 108_08q, Pauli changed the real number saver representaiton
 
 Current version default all non-loaded settings from previous version files correctly
 */
@@ -2472,7 +2474,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
   }
 
   if((loadType == manualLoad && loadMode == LM_ALL) || 
-    ((loadType == autoLoad) && (loadedVersion >= 10000004) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL) )) {
+    ((loadType == autoLoad) && (loadedVersion >= VersionAllowed) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL) )) {
       while(restoreOneSection(BACKUP, loadMode, s, n, d)) {
     }
   }
@@ -2494,7 +2496,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
     if(loadType == manualLoad && loadMode == LM_ALL) {
       temporaryInformation = TI_BACKUP_RESTORED;
     } else
-    if((loadType == autoLoad) && (loadedVersion >= 10000004) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL)) {
+    if((loadType == autoLoad) && (loadedVersion >= VersionAllowed) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL)) {
       temporaryInformation = TI_BACKUP_RESTORED;
     }
   #endif // !TESTSUITE_BUILD
