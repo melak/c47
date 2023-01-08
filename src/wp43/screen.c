@@ -1703,6 +1703,39 @@ void force_refresh(uint8_t mode) {
     }
   }
 
+  static int stats_param_check(const char *name, calcRegister_t reg) {
+    int type;
+
+    return name == NULL
+           || (type = getRegisterDataType(reg)) == dtReal34
+           || type == dtLongInteger;
+  }
+
+  static void stats_param_display(const char *name, calcRegister_t reg, char *prefix, char *tmpString, calcRegister_t rowReg) {
+    int prefixWidth;
+    longInteger_t lll;
+    char regS[2];
+
+    if (name == NULL)
+      return;
+    clearRegisterLine(rowReg, true, true);
+
+    strcpy(regS, "I");
+    regS[0] += reg - REGISTER_I;
+    showString(regS, &standardFont, 19, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
+    sprintf(prefix, "= %s =", name);
+    prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+    showString(prefix, &standardFont, 19 + 17, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
+
+    if(getRegisterDataType(reg) == dtLongInteger) {
+      convertLongIntegerRegisterToLongInteger(reg, lll);
+      longIntegerToAllocatedString(lll, tmpString, TMP_STR_LENGTH);
+      longIntegerFree(lll);
+    } else if(getRegisterDataType(reg) == dtReal34) {
+      real34ToDisplayString(REGISTER_REAL34_DATA(reg), getRegisterAngularMode(reg), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
+    }
+    showString(tmpString, &numericFont, SCREEN_WIDTH - stringWidth(tmpString, &numericFont, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X), vmNormal, false, true);
+  }
 
 
   void showFunctionName(int16_t item, int16_t delayInMs) {
@@ -2281,6 +2314,78 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
           inputRegName(prefix, &prefixWidth);
         }
 
+
+        // STATISTICAL DISTR
+        if(regist == REGISTER_X) {
+          const char *r_i = NULL, *r_j = NULL, *r_k = NULL;
+
+          switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
+            case -MNU_NBIN:
+            case -MNU_BINOM:
+              r_i = STD_p;
+              r_j = STD_n;
+              break;
+            case -MNU_CAUCH:
+              r_i = STD_x STD_SUB_0;
+              r_j = STD_gamma;
+              break;
+            case -MNU_WEIBL:
+              r_j = STD_lambda;
+              /* fall through */
+            case -MNU_CHI2:
+              r_i = STD_k;
+              break;
+            case -MNU_EXPON:
+              r_i = STD_lambda;
+              break;
+            case -MNU_F:
+              r_i = STD_d STD_SUB_1;
+              r_j = STD_d STD_SUB_2;
+              break;
+            case -MNU_GEOM:
+            case -MNU_POISS:
+              r_i = STD_p;
+              break;
+            case -MNU_HYPER:
+              r_i = STD_p;  /* TODO: hypergeometric parameters */
+              r_j = STD_n;
+              r_k = STD_N;
+              break;
+            case -MNU_LOGIS:
+              r_j = STD_s;
+              r_i = STD_mu;
+              break;
+            case -MNU_NORML:
+            case -MNU_LGNRM:
+              r_j = STD_sigma;
+              r_i = STD_mu;
+              break;
+            case -MNU_T:
+              r_i = STD_nu;
+              break;
+            default: break;
+          }
+
+          if (stats_param_check(r_i, REGISTER_I)
+              && stats_param_check(r_j, REGISTER_J)
+              && stats_param_check(r_k, REGISTER_K)) {
+            stats_param_display(r_i, REGISTER_I, prefix, tmpString, REGISTER_T);
+            stats_param_display(r_j, REGISTER_J, prefix, tmpString, REGISTER_Z);
+            stats_param_display(r_k, REGISTER_K, prefix, tmpString, REGISTER_Y);
+
+            prefix[0]=0;
+            tmpString[0]=0;
+            uint8_t ii = 255;
+            if(r_i != NULL) ii = Y_POSITION_OF_REGISTER_Z_LINE;
+            if(r_j != NULL) ii = Y_POSITION_OF_REGISTER_Y_LINE;
+            if(r_k != NULL) ii = Y_POSITION_OF_REGISTER_X_LINE;
+            if(ii != 255) {
+              lcd_fill_rect(0, ii - 2, SCREEN_WIDTH, 1, 0xFF);
+            }
+          }
+        }
+        
+
         if(lastErrorCode != 0 && regist == errorMessageRegisterLine) {
           if(stringWidth(errorMessages[lastErrorCode], &standardFont, true, true) <= SCREEN_WIDTH - 1) {
             showString(errorMessages[lastErrorCode], &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
@@ -2440,11 +2545,11 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
           else if(temporaryInformation == TI_RE_IM) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "Im =");
+              strcpy(prefix, "Im" STD_SPACE_FIGURE ":");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, "Re =");
+              strcpy(prefix, "Re" STD_SPACE_FIGURE ":");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
@@ -2638,22 +2743,22 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
           else if(temporaryInformation == TI_GEOMPOPLSTDDEV) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_epsilon STD_SUB_m STD_SUB_x " =");
+              strcpy(prefix, STD_epsilon STD_SUB_p STD_SUB_x " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_epsilon STD_SUB_m STD_SUB_y " =");
+              strcpy(prefix, STD_epsilon STD_SUB_p STD_SUB_y " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_GEOMSTDERR) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, STD_epsilon STD_SUB_p STD_SUB_x " =");
+              strcpy(prefix, STD_epsilon STD_SUB_m STD_SUB_x " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, STD_epsilon STD_SUB_p STD_SUB_y " =");
+              strcpy(prefix, STD_epsilon STD_SUB_m STD_SUB_y " =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
@@ -2688,15 +2793,15 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
           else if(temporaryInformation == TI_STATISTIC_HISTO) {
             if(regist == REGISTER_X) {
-              strcpy(prefix,STD_UP_ARROW "BIN" " =");
+              strcpy(prefix,STD_UP_ARROW "BIN" STD_SPACE_FIGURE ":");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             } else
             if(regist == REGISTER_Y) {
-              strcpy(prefix,STD_DOWN_ARROW "BIN" " =");
+              strcpy(prefix,STD_DOWN_ARROW "BIN" STD_SPACE_FIGURE ":");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Z) {
-              strcpy(prefix,"nBINS" " =");
+              strcpy(prefix,"nBINS" STD_SPACE_FIGURE ":");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
@@ -2924,21 +3029,21 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
           else if(temporaryInformation == TI_ACC) {
             if(regist == REGISTER_X) {
-              sprintf(prefix, "ACC =");
+              sprintf(prefix, "ACC" STD_SPACE_FIGURE ":");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_ULIM) {
             if(regist == REGISTER_X) {
-              sprintf(prefix, STD_UP_ARROW "Lim =");
+              sprintf(prefix, STD_UP_ARROW "Lim" STD_SPACE_FIGURE ":");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
 
           else if(temporaryInformation == TI_LLIM) {
             if(regist == REGISTER_X) {
-              sprintf(prefix, STD_DOWN_ARROW "Lim =");
+              sprintf(prefix, STD_DOWN_ARROW "Lim" STD_SPACE_FIGURE ":");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
@@ -2968,70 +3073,80 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             viewRegName(prefix, &prefixWidth);
           }
 
+          else if(temporaryInformation == TI_STR && regist == REGISTER_X) {
+                strcpy(prefix," ");
+                strcat(prefix, errorMessage);
+                strcat(prefix, ":");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+          }
+
+
+
             else if(temporaryInformation == TI_ABC) {                             //JM EE \/
               if(regist == REGISTER_X) {
-                strcpy(prefix, "c" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "c" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
               else if(regist == REGISTER_Y) {
-                strcpy(prefix, "b" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "b" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
               else if(regist == REGISTER_Z) {
-                strcpy(prefix, "a" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "a" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
             }
 
             else if(temporaryInformation == TI_ABBCCA) {
               if(regist == REGISTER_X) {
-                strcpy(prefix, "ca" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "ca" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
               else if(regist == REGISTER_Y) {
-                strcpy(prefix, "bc" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "bc" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
               else if(regist == REGISTER_Z) {
-                strcpy(prefix, "ab" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "ab" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
             }
 
             else if(temporaryInformation == TI_012) {
               if(regist == REGISTER_X) {
-                strcpy(prefix, "sym2" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "sym2" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
               else if(regist == REGISTER_Y) {
-                strcpy(prefix, "sym1" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "sym1" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
               else if(regist == REGISTER_Z) {
-                strcpy(prefix, "sym0" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "sym0" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
             }
 
             else if(temporaryInformation == TI_FROM_DMS) {
               if(regist == REGISTER_X) {
-                strcpy(prefix, "decimal" STD_DEGREE STD_SPACE_FIGURE "=");
+                strcpy(prefix, "decimal" STD_DEGREE STD_SPACE_FIGURE " :");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
             }
 
             else if(temporaryInformation == TI_FROM_MS_TIME) {
               if(regist == REGISTER_X) {
-                strcpy(prefix, "hh.mmss" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "hh.mmss" STD_SPACE_FIGURE " :");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
             }
             else if(temporaryInformation == TI_FROM_MS_DEG) {
               if(regist == REGISTER_X) {
-                strcpy(prefix, "dd.mmss" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "dd.mmss" STD_SPACE_FIGURE " :");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
             }
+
 
             if(prefixWidth > 0) {
               if(regist == REGISTER_X) {
@@ -3077,45 +3192,45 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
           }
            else  if(temporaryInformation == TI_ABC) {                             //JM EE \/
               if(regist == REGISTER_X) {
-                strcpy(prefix, "c" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "c" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
               else if(regist == REGISTER_Y) {
-                strcpy(prefix, "b" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "b" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
               else if(regist == REGISTER_Z) {
-                strcpy(prefix, "a" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "a" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
             }
 
             else if(temporaryInformation == TI_ABBCCA) {
               if(regist == REGISTER_X) {
-                strcpy(prefix, "ca" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "ca" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
               else if(regist == REGISTER_Y) {
-                strcpy(prefix, "bc" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "bc" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
               else if(regist == REGISTER_Z) {
-                strcpy(prefix, "ab" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "ab" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
             }
 
             else if(temporaryInformation == TI_012) {
               if(regist == REGISTER_X) {
-                strcpy(prefix, "sym2" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "sym2" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
               else if(regist == REGISTER_Y) {
-                strcpy(prefix, "sym1" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "sym1" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
               else if(regist == REGISTER_Z) {
-                strcpy(prefix, "sym0" STD_SPACE_FIGURE "=");
+                strcpy(prefix, "sym0" STD_SPACE_FIGURE ":");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
             }
@@ -3249,6 +3364,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         }
 */
 //  //JM
+
         else if(getRegisterDataType(regist) == dtShortInteger) {
 //          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
           shortIntegerToDisplayString(regist, tmpString, true);

@@ -27,20 +27,21 @@
 #include <string.h>           // [for memset/memcpy]
 #include <stdio.h>            // [for printf]
 
+/* Utility tables and routines [in decimal64.c] */
+// DPD2BIN and the reverse are renamed to prevent link-time conflict
+// if decQuad is also built in the same executable
+//#define DPD2BIN DPD2BINx
+//#define BIN2DPD BIN2DPDx
+
 #define  DECNUMDIGITS  7      // make decNumbers with space for 7
 #include "decNumber.h"        // base number library
 #include "decNumberLocal.h"   // decNumber local types, etc.
 #include "decimal32.h"        // our primary include
 
-/* Utility tables and routines [in decimal64.c] */
-// DPD2BIN and the reverse are renamed to prevent link-time conflict
-// if decQuad is also built in the same executable
-#define DPD2BIN DPD2BINx
-#define BIN2DPD BIN2DPDx
 extern const uInt   COMBEXP[32], COMBMSD[32];
-extern const uShort DPD2BIN[1024];
-extern const uShort BIN2DPD[1000];
-extern const uByte  BIN2CHAR[4001];
+//extern const uShort DPD2BIN[1024];
+//extern const uShort BIN2DPD[1000];
+//extern const uByte  BIN2CHAR[4001];
 
 extern void decDigitsToDPD(const decNumber *, uInt *, Int);
 extern void decDigitsFromDPD(decNumber *, const uInt *, Int);
@@ -141,8 +142,8 @@ decimal32 * decimal32FromNumber(decimal32 *d32, const decNumber *dn,
 
       // fastpath common case
       if (DECDPUN==3 && pad==0) {
-        targ=BIN2DPD[dn->lsu[0]];
-        if (dn->digits>3) targ|=(uInt)(BIN2DPD[dn->lsu[1]])<<10;
+        targ=BIN2DPD(dn->lsu[0]);
+        if (dn->digits>3) targ|=(uInt)(BIN2DPD(dn->lsu[1]))<<10;
         msd=(dn->digits==7 ? dn->lsu[2] : 0);
         }
        else { // general case
@@ -294,7 +295,7 @@ char * decimal32ToString(const decimal32 *d32, char *string){
   // length.  We use fixed-length memcpys because variable-length
   // causes a subroutine call in GCC.  (These are length 4 for speed
   // and are safe because the array has an extra terminator byte.)
-  #define dpd2char u=&BIN2CHAR[DPD2BIN[dpd]*4];                   \
+  #define dpd2char u=BIN2CHAR(DPD2BIN(dpd));                   \
                    if (c!=cstart) {memcpy(c, u+1, 4); c+=3;}      \
                     else if (*u)  {memcpy(c, u+4-*u, 4); c+=*u;}
 
@@ -339,7 +340,7 @@ char * decimal32ToString(const decimal32 *d32, char *string){
         *(c-1)='-';                // oops, need '-'
         e=-e;                      // uInt, please
         }
-      u=&BIN2CHAR[e*4];            // -> length byte
+      u=BIN2CHAR(e);            // -> length byte
       memcpy(c, u+4-*u, 4);        // copy fixed 4 characters [is safe]
       c+=*u;                       // bump pointer appropriately
       }

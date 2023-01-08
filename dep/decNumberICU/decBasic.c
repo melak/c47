@@ -128,7 +128,7 @@ static decFloat * decCanonical(decFloat *result, const decFloat *df) {
       }
     dpd&=0x3ff;                    // clear uninteresting bits
     if (dpd<0x16e) continue;       // must be canonical
-    canon=BIN2DPD[DPD2BIN[dpd]];   // determine canonical declet
+    canon=BIN2DPD(DPD2BIN(dpd));   // determine canonical declet
     if (canon==dpd) continue;      // have canonical declet
     // need to replace declet
     if (uoff>=10) {                // all within current word
@@ -545,9 +545,9 @@ static decFloat * decDivide(decFloat *result, const decFloat *dfl,
     mid=rem/divsplit6;
     rem=rem%divsplit6;
     // lay out the nine BCD digits (plus one unwanted byte)
-    UBFROMUI(ub,   UBTOUI(&BIN2BCD8[top*4]));
-    UBFROMUI(ub+3, UBTOUI(&BIN2BCD8[mid*4]));
-    UBFROMUI(ub+6, UBTOUI(&BIN2BCD8[rem*4]));
+    UBFROMUI(ub,   UBTOUI(BIN2BCD8(top)));
+    UBFROMUI(ub+3, UBTOUI(BIN2BCD8(mid)));
+    UBFROMUI(ub+6, UBTOUI(BIN2BCD8(rem)));
     } // BCD conversion loop
   ub--;                                 // -> lsu
 
@@ -1034,9 +1034,9 @@ static void decFiniteMultiply(bcdnum *num, uByte *bcdacc,
       mid=rem/mulsplit6;
       rem=rem%mulsplit6;
       // lay out the nine BCD digits (plus one unwanted byte)
-      UBFROMUI(ub,   UBTOUI(&BIN2BCD8[top*4]));
-      UBFROMUI(ub+3, UBTOUI(&BIN2BCD8[mid*4]));
-      UBFROMUI(ub+6, UBTOUI(&BIN2BCD8[rem*4]));
+      UBFROMUI(ub,   UBTOUI(BIN2BCD8(top)));
+      UBFROMUI(ub+3, UBTOUI(BIN2BCD8(mid)));
+      UBFROMUI(ub+6, UBTOUI(BIN2BCD8(rem)));
       }
      else {                             // *pa==0
       UBFROMUI(ub, 0);                  // clear 9 BCD8s
@@ -1188,31 +1188,31 @@ decFloat * decFloatAdd(decFloat *result,
       // the fastpath test earlier
 
       // construct the result; low word is the same for both formats
-      encode =BIN2DPD[tac[0]];
-      encode|=BIN2DPD[tac[1]]<<10;
-      encode|=BIN2DPD[tac[2]]<<20;
-      encode|=BIN2DPD[tac[3]]<<30;
+      encode =BIN2DPD(tac[0]);
+      encode|=BIN2DPD(tac[1])<<10;
+      encode|=BIN2DPD(tac[2])<<20;
+      encode|=BIN2DPD(tac[3])<<30;
       DFWORD(result, (DECBYTES/4)-1)=encode;
 
       // collect next two declets (all that remains, for Double)
-      encode =BIN2DPD[tac[3]]>>2;
-      encode|=BIN2DPD[tac[4]]<<8;
+      encode =BIN2DPD(tac[3])>>2;
+      encode|=BIN2DPD(tac[4])<<8;
 
       #if QUAD
       // complete and lay out middling words
-      encode|=BIN2DPD[tac[5]]<<18;
-      encode|=BIN2DPD[tac[6]]<<28;
+      encode|=BIN2DPD(tac[5])<<18;
+      encode|=BIN2DPD(tac[6])<<28;
       DFWORD(result, 2)=encode;
 
-      encode =BIN2DPD[tac[6]]>>4;
-      encode|=BIN2DPD[tac[7]]<<6;
-      encode|=BIN2DPD[tac[8]]<<16;
-      encode|=BIN2DPD[tac[9]]<<26;
+      encode =BIN2DPD(tac[6])>>4;
+      encode|=BIN2DPD(tac[7])<<6;
+      encode|=BIN2DPD(tac[8])<<16;
+      encode|=BIN2DPD(tac[9])<<26;
       DFWORD(result, 1)=encode;
 
       // and final two declets
-      encode =BIN2DPD[tac[9]]>>6;
-      encode|=BIN2DPD[tac[10]]<<4;
+      encode =BIN2DPD(tac[9])>>6;
+      encode|=BIN2DPD(tac[10])<<4;
       #endif
 
       // add exponent continuation and sign (from either argument)
@@ -1885,12 +1885,12 @@ decFloat * decFloatCopySign(decFloat *result,
 // depending on the declet number (n), where n=0 for the most
 // significant declet; uses uInt dpd for work
 #define dpdlenchk(n, form)  dpd=(form)&0x3ff;     \
-  if (dpd) return (DECPMAX-1-3*(n))-(3-DPD2BCD8[dpd*4+3])
+  if (dpd) return (DECPMAX-1-3*(n))-(3-DPD2BCD8(dpd)[3])
 // next one is used when it is known that the declet must be
 // non-zero, or is the final zero declet
 #define dpdlendun(n, form)  dpd=(form)&0x3ff;     \
   if (dpd==0) return 1;                           \
-  return (DECPMAX-1-3*(n))-(3-DPD2BCD8[dpd*4+3])
+  return (DECPMAX-1-3*(n))-(3-DPD2BCD8(dpd)[3])
 
 uInt decFloatDigits(const decFloat *df) {
   uInt dpd;                        // work
@@ -2290,11 +2290,11 @@ decFloat * decFloatFromInt32(decFloat *result, Int n) {
     }
   // Since the maximum value of u now is 2**31, only the low word of
   // result is affected
-  encode=BIN2DPD[u%1000];
+  encode=BIN2DPD(u%1000);
   u/=1000;
-  encode|=BIN2DPD[u%1000]<<10;
+  encode|=BIN2DPD(u%1000)<<10;
   u/=1000;
-  encode|=BIN2DPD[u%1000]<<20;
+  encode|=BIN2DPD(u%1000)<<20;
   u/=1000;                              // now 0, 1, or 2
   encode|=u<<30;
   DFWORD(result, DECWORDS-1)=encode;
@@ -2317,11 +2317,11 @@ decFloat * decFloatFromUInt32(decFloat *result, uInt u) {
     DFWORD(result, 1)=0;
     DFWORD(result, 2)=0;
   #endif
-  encode=BIN2DPD[u%1000];
+  encode=BIN2DPD(u%1000);
   u/=1000;
-  encode|=BIN2DPD[u%1000]<<10;
+  encode|=BIN2DPD(u%1000)<<10;
   u/=1000;
-  encode|=BIN2DPD[u%1000]<<20;
+  encode|=BIN2DPD(u%1000)<<20;
   u/=1000;                              // now 0 -> 4
   encode|=u<<30;
   DFWORD(result, DECWORDS-1)=encode;
@@ -2499,12 +2499,12 @@ decFloat * decFloatLogB(decFloat *result, const decFloat *df,
     ae=-ae;
     }
   #if DOUBLE
-    DFWORD(result, 1)=BIN2DPD[ae];      // a single declet
+    DFWORD(result, 1)=BIN2DPD(ae);      // a single declet
   #elif QUAD
     DFWORD(result, 1)=0;
     DFWORD(result, 2)=0;
     DFWORD(result, 3)=(ae/1000)<<10;    // is <10, so need no DPD encode
-    DFWORD(result, 3)|=BIN2DPD[ae%1000];
+    DFWORD(result, 3)|=BIN2DPD(ae%1000);
   #endif
   return result;
   } // decFloatLogB
@@ -3142,7 +3142,7 @@ decFloat * decFloatQuantize(decFloat *result,
   // private macro to encode a declet; this version can be used
   // because all coefficient digits exist
   #define getDPD3q(dpd, n) ub=ulsd-(3*(n))-2;                   \
-    dpd=BCD2DPD[(*ub*256)+(*(ub+1)*16)+*(ub+2)];
+    dpd=BCD2DPD((*ub*256)+(*(ub+1)*16)+*(ub+2));
 
   #if DOUBLE
     getDPD3q(dpd, 4); encode|=dpd<<8;
@@ -3282,7 +3282,7 @@ decFloat * decFloatRotate(decFloat *result,
   if (!DFISINT(dfr)) return decInvalid(result, set);
   digits=decFloatDigits(dfr);                    // calculate digits
   if (digits>2) return decInvalid(result, set);  // definitely out of range
-  rotate=DPD2BIN[DFWORD(dfr, DECWORDS-1)&0x3ff]; // is in bottom declet
+  rotate=DPD2BIN(DFWORD(dfr, DECWORDS-1)&0x3ff); // is in bottom declet
   if (rotate>DECPMAX) return decInvalid(result, set); // too big
   // [from here on no error or status change is possible]
   if (DFISINF(dfl)) return decInfinity(result, dfl);  // canonical
@@ -3366,11 +3366,11 @@ decFloat * decFloatScaleB(decFloat *result,
 
   #if DOUBLE
   if (digits>3) return decInvalid(result, set);   // definitely out of range
-  expr=DPD2BIN[DFWORD(dfr, 1)&0x3ff];             // must be in bottom declet
+  expr=DPD2BIN(DFWORD(dfr, 1)&0x3ff);             // must be in bottom declet
   #elif QUAD
   if (digits>5) return decInvalid(result, set);   // definitely out of range
-  expr=DPD2BIN[DFWORD(dfr, 3)&0x3ff]              // in bottom 2 declets ..
-      +DPD2BIN[(DFWORD(dfr, 3)>>10)&0x3ff]*1000;  // ..
+  expr=DPD2BIN(DFWORD(dfr, 3)&0x3ff)              // in bottom 2 declets ..
+      +DPD2BIN((DFWORD(dfr, 3)>>10)&0x3ff)*1000;  // ..
   #endif
   if (expr>SCALEBMAX) return decInvalid(result, set);  // oops
   // [from now on no error possible]
@@ -3412,7 +3412,7 @@ decFloat * decFloatShift(decFloat *result,
   if (!DFISINT(dfr)) return decInvalid(result, set);
   digits=decFloatDigits(dfr);                     // calculate digits
   if (digits>2) return decInvalid(result, set);   // definitely out of range
-  shift=DPD2BIN[DFWORD(dfr, DECWORDS-1)&0x3ff];   // is in bottom declet
+  shift=DPD2BIN(DFWORD(dfr, DECWORDS-1)&0x3ff);   // is in bottom declet
   if (shift>DECPMAX) return decInvalid(result, set);   // too big
   // [from here on no error or status change is possible]
 
@@ -3839,11 +3839,11 @@ static uInt decToInt32(const decFloat *df, decContext *set,
   // get last twelve digits of the coefficent into hi & ho, base
   // 10**9 (see GETCOEFFBILL):
   sourlo=DFWORD(&result, DECWORDS-1);
-  lo=DPD2BIN0[sourlo&0x3ff]
-    +DPD2BINK[(sourlo>>10)&0x3ff]
-    +DPD2BINM[(sourlo>>20)&0x3ff];
+  lo=DPD2BIN0(sourlo&0x3ff)
+    +DPD2BINK((sourlo>>10)&0x3ff)
+    +DPD2BINM((sourlo>>20)&0x3ff);
   sourpen=DFWORD(&result, DECWORDS-2);
-  hi=DPD2BIN0[((sourpen<<2) | (sourlo>>30))&0x3ff];
+  hi=DPD2BIN0(((sourpen<<2) | (sourlo>>30))&0x3ff);
 
   // according to request, check range carefully
   if (unsign) {

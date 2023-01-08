@@ -31,8 +31,7 @@
 
 #include "wp43.h"
 
-
-#ifdef SAVE_SPACE_DM42_15
+#ifdef SAVE_SPACE_DM42_16
   void fnNormalP   (uint16_t unusedButMandatoryParameter){}
   void fnNormalL   (uint16_t unusedButMandatoryParameter){}
   void fnNormalR   (uint16_t unusedButMandatoryParameter){}
@@ -48,38 +47,43 @@
   void WP34S_Qf_Q    (const real_t *x, real_t *res, realContext_t *realContext){}
 #else
 
-static bool_t checkParamNormal(real_t *x, real_t *i, real_t *j) {
-  if(   ((getRegisterDataType(REGISTER_X) != dtReal34) && (getRegisterDataType(REGISTER_X) != dtLongInteger))
-     || ((getRegisterDataType(REGISTER_I) != dtReal34) && (getRegisterDataType(REGISTER_I) != dtLongInteger))
-     || ((getRegisterDataType(REGISTER_J) != dtReal34) && (getRegisterDataType(REGISTER_J) != dtLongInteger))) {
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
-      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "Values in register X, I and J must be of the real or long integer type");
-        moreInfoOnError("In function checkParamNormal:", errorMessage, NULL, NULL);
-      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      return false;
-  }
+enum normalType {
+    stdNormal, paramNormal, logNormal
+};
 
-  if(getRegisterDataType(REGISTER_X) == dtReal34) {
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), x);
+#if (EXTRA_INFO_ON_CALC_ERROR == 1)
+#define loadParamNormal(v, reg, regName) loadParamNormal_(v, reg, regName)
+static bool_t loadParamNormal_(real_t *v, int reg, const char *regName)
+#else
+#define loadParamNormal(v, reg, regName) loadParamNormal_(v, reg)
+static bool_t loadParamNormal_(real_t *v, int reg)
+#endif
+{
+  if(getRegisterDataType(reg) == dtReal34) {
+    real34ToReal(REGISTER_REAL34_DATA(reg), v);
   }
-  else { // long integer
-    convertLongIntegerRegisterToReal(REGISTER_X, x, &ctxtReal39);
+  else if (getRegisterDataType(reg) == dtLongInteger) { // long integer
+    convertLongIntegerRegisterToReal(reg, v, &ctxtReal39);
+  } else {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "Value in register %s must be of the real or long integer type", regName);
+      moreInfoOnError("In function checkParamNormal:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    return false;
   }
+  return true;
+}
 
-  if(getRegisterDataType(REGISTER_I) == dtReal34) {
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_I), i);
-  }
-  else { // long integer
-    convertLongIntegerRegisterToReal(REGISTER_I, i, &ctxtReal39);
-  }
 
-  if(getRegisterDataType(REGISTER_J) == dtReal34) {
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_J), j);
-  }
-  else { // long integer
-    convertLongIntegerRegisterToReal(REGISTER_J, j, &ctxtReal39);
-  }
+static bool_t checkParamNormal(enum normalType type, real_t *x, real_t *i, real_t *j) {
+  if (!loadParamNormal(x, REGISTER_X, "X"))
+    return false;
+  if (type == stdNormal)
+    return true;
+  if (!loadParamNormal(i, REGISTER_I, "I")
+      || !loadParamNormal(j, REGISTER_J, "J"))
+    return false;
 
   if(getSystemFlag(FLAG_SPCRES)) {
     return true;
@@ -95,32 +99,36 @@ static bool_t checkParamNormal(real_t *x, real_t *i, real_t *j) {
 }
 
 
-static void normalP(bool_t logNormal) {
+static void normalP(enum normalType type) {
   real_t val, alval, mu, sigma, ans;
+  const int stdn = type == stdNormal;
+  const int logn = type == logNormal;
 
   if(!saveLastX()) {
     return;
   }
 
-  if(checkParamNormal(&val, &mu, &sigma)) {
-    if(logNormal && realIsZero(&val)) {
+  if(checkParamNormal(type, &val, &mu, &sigma)) {
+    if(logn && realIsZero(&val)) {
       realZero(&ans);
     }
-    else if(logNormal && realIsNegative(&val)) {
+    else if(logn && realIsNegative(&val)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnLogNormalP:", "cannot calculate for x < 0", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      if(logNormal) {
-        realCopy(&val, &alval);
-        WP34S_Ln(&alval, &val, &ctxtReal39);
+      if(!stdn) {
+        if(logn) {
+          realCopy(&val, &alval);
+          WP34S_Ln(&alval, &val, &ctxtReal39);
+        }
+        realSubtract(&val, &mu, &val, &ctxtReal39);
+        realDivide(&val, &sigma, &val, &ctxtReal39);
       }
-      realSubtract(&val, &mu, &val, &ctxtReal39);
-      realDivide(&val, &sigma, &val, &ctxtReal39);
       WP34S_Pdf_Q(&val, &ans, &ctxtReal39);
-      if(logNormal) {
+      if(logn) {
         realDivide(&ans, &sigma, &ans, &ctxtReal39);
         realDivide(&ans, &alval, &ans, &ctxtReal39);
       }
@@ -133,29 +141,33 @@ static void normalP(bool_t logNormal) {
 }
 
 
-static void normalL(bool_t logNormal) {
+static void normalL(enum normalType type) {
   real_t val, mu, sigma, ans;
+  const int stdn = type == stdNormal;
+  const int logn = type == logNormal;
 
   if(!saveLastX()) {
     return;
   }
 
-  if(checkParamNormal(&val, &mu, &sigma)) {
-    if(logNormal && realIsZero(&val)) {
+  if(checkParamNormal(type, &val, &mu, &sigma)) {
+    if(logn && realIsZero(&val)) {
       realZero(&ans);
     }
-    else if(logNormal && realIsNegative(&val)) {
+    else if(logn && realIsNegative(&val)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnLogNormalP:", "cannot calculate for x < 0", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      if(logNormal) {
-        WP34S_Ln(&val, &val, &ctxtReal39);
+      if(!stdn) {
+        if(logn) {
+          WP34S_Ln(&val, &val, &ctxtReal39);
+        }
+        realSubtract(&val, &mu, &val, &ctxtReal39);
+        realDivide(&val, &sigma, &val, &ctxtReal39);
       }
-      realSubtract(&val, &mu, &val, &ctxtReal39);
-      realDivide(&val, &sigma, &val, &ctxtReal39);
       WP34S_Cdf_Q(&val, &ans, &ctxtReal39);
     }
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
@@ -166,29 +178,33 @@ static void normalL(bool_t logNormal) {
 }
 
 
-static void normalR(bool_t logNormal) {
+static void normalR(enum normalType type) {
   real_t val, mu, sigma, ans;
+  const int stdn = type == stdNormal;
+  const int logn = type == logNormal;
 
   if(!saveLastX()) {
     return;
   }
 
-  if(checkParamNormal(&val, &mu, &sigma)) {
-    if(logNormal && realIsZero(&val)) {
+  if(checkParamNormal(type, &val, &mu, &sigma)) {
+    if(logn && realIsZero(&val)) {
       realCopy(const_1, &ans);
     }
-    else if(logNormal && realIsNegative(&val)) {
+    else if(logn && realIsNegative(&val)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnLogNormalP:", "cannot calculate for x < 0", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     }
     else {
-      if(logNormal) {
-        WP34S_Ln(&val, &val, &ctxtReal39);
+      if(!stdn) {
+        if(logn) {
+          WP34S_Ln(&val, &val, &ctxtReal39);
+        }
+        realSubtract(&val, &mu, &val, &ctxtReal39);
+        realDivide(&val, &sigma, &val, &ctxtReal39);
       }
-      realSubtract(&val, &mu, &val, &ctxtReal39);
-      realDivide(&val, &sigma, &val, &ctxtReal39);
       WP34S_Cdfu_Q(&val, &ans, &ctxtReal39);
     }
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
@@ -199,14 +215,16 @@ static void normalR(bool_t logNormal) {
 }
 
 
-static void normalI(bool_t logNormal) {
+static void normalI(enum normalType type) {
   real_t val, mu, sigma, ans;
+  const int stdn = type == stdNormal;
+  const int logn = type == logNormal;
 
   if(!saveLastX()) {
     return;
   }
 
-  if(checkParamNormal(&val, &mu, &sigma)) {
+  if(checkParamNormal(type, &val, &mu, &sigma)) {
     if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -215,10 +233,12 @@ static void normalI(bool_t logNormal) {
     }
     else {
       WP34S_Qf_Q(&val, &ans, &ctxtReal39);
-      realMultiply(&ans, &sigma, &ans, &ctxtReal39);
-      realAdd(&ans, &mu, &ans, &ctxtReal39);
-      if(logNormal) {
-        realExp(&ans, &ans, &ctxtReal39);
+      if(!stdn) {
+        realMultiply(&ans, &sigma, &ans, &ctxtReal39);
+        realAdd(&ans, &mu, &ans, &ctxtReal39);
+        if(logn) {
+          realExp(&ans, &ans, &ctxtReal39);
+        }
       }
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       convertRealToReal34ResultRegister(&ans, REGISTER_X);
@@ -230,38 +250,56 @@ static void normalI(bool_t logNormal) {
 
 
 
+void fnStdNormalP(uint16_t unusedButMandatoryParameter) {
+  normalP(stdNormal);
+}
+
+void fnStdNormalL(uint16_t unusedButMandatoryParameter) {
+  normalL(stdNormal);
+}
+
+void fnStdNormalR(uint16_t unusedButMandatoryParameter) {
+  normalR(stdNormal);
+}
+
+void fnStdNormalI(uint16_t unusedButMandatoryParameter) {
+  normalI(stdNormal);
+}
+
+
+
 void fnNormalP(uint16_t unusedButMandatoryParameter) {
-  normalP(false);
+  normalP(paramNormal);
 }
 
 void fnNormalL(uint16_t unusedButMandatoryParameter) {
-  normalL(false);
+  normalL(paramNormal);
 }
 
 void fnNormalR(uint16_t unusedButMandatoryParameter) {
-  normalR(false);
+  normalR(paramNormal);
 }
 
 void fnNormalI(uint16_t unusedButMandatoryParameter) {
-  normalI(false);
+  normalI(paramNormal);
 }
 
 
 
 void fnLogNormalP(uint16_t unusedButMandatoryParameter) {
-  normalP(true);
+  normalP(logNormal);
 }
 
 void fnLogNormalL(uint16_t unusedButMandatoryParameter) {
-  normalL(true);
+  normalL(logNormal);
 }
 
 void fnLogNormalR(uint16_t unusedButMandatoryParameter) {
-  normalR(true);
+  normalR(logNormal);
 }
 
 void fnLogNormalI(uint16_t unusedButMandatoryParameter) {
-  normalI(true);
+  normalI(logNormal);
 }
 
 
@@ -437,5 +475,5 @@ void WP34S_Qf_Q(const real_t *x, real_t *res, realContext_t *realContext) {
   realCopy(&p, res);
 }
 
-#endif //SAVE_SPACE_DM42_15
+#endif //SAVE_SPACE_DM42_16
 
