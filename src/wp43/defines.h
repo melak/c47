@@ -82,7 +82,7 @@
 //    #define SAVE_SPACE_DM42_0  //001032 bytes: Startup test values in registers; 
 //    #define SAVE_SPACE_DM42_1  //001568 bytes: STAT DEMOS 105-107-109
 //    #define SAVE_SPACE_DM42_13GRF_JM //           JM graphics
-    #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
+//    #define SAVE_SPACE_DM42_15    //           without all distributions, i.e. binomial, cauchy, chi
 //   #define SAVE_SPACE_DM42_16   //           without Norml
   #endif
 #endif
