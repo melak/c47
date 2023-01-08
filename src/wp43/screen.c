@@ -1703,7 +1703,7 @@ void force_refresh(uint8_t mode) {
     }
   }
 
-  static int stats_param_check(const char *name, int reg) {
+  static int stats_param_check(const char *name, calcRegister_t reg) {
     int type;
 
     return name == NULL
@@ -1711,12 +1711,13 @@ void force_refresh(uint8_t mode) {
            || type == dtLongInteger;
   }
 
-  static void stats_param_display(const char *name, int reg, char *prefix, char *tmpString, unsigned int rowReg) {
+  static void stats_param_display(const char *name, calcRegister_t reg, char *prefix, char *tmpString, calcRegister_t rowReg) {
     int prefixWidth;
     longInteger_t lll;
 
     if (name == NULL)
       return;
+    clearRegisterLine(rowReg, true, true);
 
     sprintf(prefix, "  %s =", name);
     prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
@@ -2370,8 +2371,13 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
 
             prefix[0]=0;
             tmpString[0]=0;
-            lcd_fill_rect(0, (r_k == NULL ? Y_POSITION_OF_REGISTER_Y_LINE : Y_POSITION_OF_REGISTER_X_LINE) - 2, SCREEN_WIDTH, 1, 0xFF); 
-//              fnDisplayStack(4);
+            uint8_t ii = 255;
+            if(r_i != NULL) ii = Y_POSITION_OF_REGISTER_Z_LINE;
+            if(r_j != NULL) ii = Y_POSITION_OF_REGISTER_Y_LINE;
+            if(r_k != NULL) ii = Y_POSITION_OF_REGISTER_X_LINE;
+            if(ii != 255) {
+              lcd_fill_rect(0, ii - 2, SCREEN_WIDTH, 1, 0xFF);
+            }
           }
         }
         
