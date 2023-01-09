@@ -496,6 +496,10 @@ void showMatrixEditor() {
       refreshRegisterLine(REGISTER_Z);
     }
   }
+
+  if(lastErrorCode != ERROR_NONE) {
+    refreshRegisterLine(errorMessageRegisterLine);
+  }
 }
 
 void mimEnter(bool_t commit) {
@@ -706,9 +710,9 @@ void mimRunFunction(int16_t func, uint16_t param) {
     real34Zero(&im1);
   }
 
-  lastErrorCode = ERROR_NONE;
   mimEnter(true);
   clearSystemFlag(FLAG_ASLIFT);
+  lastErrorCode = ERROR_NONE;
 
   if(isComplex) {
     real34Copy(VARIABLE_REAL34_DATA(&openMatrixMIMPointer.complexMatrix.matrixElements[i * openMatrixMIMPointer.header.matrixColumns + j]), &re);

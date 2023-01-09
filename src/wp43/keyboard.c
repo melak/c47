@@ -2691,7 +2691,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_MIM: {
-        if(temporaryInformation == TI_SHOW_REGISTER) {
+        if(lastErrorCode != 0) {
+          lastErrorCode = 0;
+        }
+        else if(temporaryInformation == TI_SHOW_REGISTER) {
           temporaryInformation = TI_NO_INFO;
         }
         else {
@@ -2711,6 +2714,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_PEM: {
+        if(lastErrorCode != 0) {
+          lastErrorCode = 0;
+          break;
+        }
         if(getSystemFlag(FLAG_ALPHA) && aimBuffer[0] == 0 && !tam.mode) {
           pemAlpha(ITM_BACKSPACE);
           fnBst(NOPARAM); // Set the PGM pointer to the original position
@@ -3013,7 +3020,12 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_MIM: {
-        mimAddNumber(ITM_BACKSPACE);
+        if(lastErrorCode != 0) {
+          lastErrorCode = 0;
+        }
+        else {
+          mimAddNumber(ITM_BACKSPACE);
+        }
         break;
       }
 
@@ -3091,6 +3103,10 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
       case CM_PEM: {
         #ifndef SAVE_SPACE_DM42_10
 
+        if(lastErrorCode != 0) {
+          lastErrorCode = 0;
+          return;
+        }
         if(programList[currentProgramNumber - 1].step < 0) {
           // attempt to modify a program in the flash memory
           displayCalcErrorMessage(ERROR_FLASH_MEMORY_WRITE_PROTECTED, ERR_REGISTER_LINE, REGISTER_X);
