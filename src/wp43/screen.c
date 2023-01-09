@@ -1669,17 +1669,14 @@ void refresh_gui(void) {
 bool_t halfSecTick = false;
 void force_refresh(uint8_t mode) {
 
-  if(mode == force || ((((uint16_t)getUptimeMs()) & 0x0200) == 0x0200) == halfSecTick) {  //Restrict refresh to once per half second. Use this minimally, due to extreme slow response.
+  if(mode == force || ((((uint16_t)(getUptimeMs()) >> 4) & 0x0020) == 0x0020) == halfSecTick) {  //Restrict refresh to once per half second. Use this minimally, due to extreme slow response.
     halfSecTick = !halfSecTick;
 
     #ifdef PC_BUILD
       gtk_widget_queue_draw(screen);
-
-    //FULL UPDATE (UGLY)
-    #ifdef FULLUPDATE
-       refresh_gui();
-    #endif
-
+      #ifdef FULLUPDATE // (UGLY)
+         refresh_gui();
+      #endif //FULLUPDATE (UGLY)
     #endif
     #if DMCP_BUILD
       lcd_forced_refresh();
@@ -1688,6 +1685,32 @@ void force_refresh(uint8_t mode) {
 }
 
 
+
+uint16_t old_time = 0;
+void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {  
+  char tmps[30];
+  uint16_t new_time = (uint16_t)(getUptimeMs());
+
+  if((mode != timed) || (((new_time - old_time) & 0xFE00) != 0 )) { //0x0200 || 0.512 second refresh interval
+    old_time = new_time;
+
+    refreshScreen();   //to update stack
+    //  lcd_refresh();
+    fnTimerStart(TO_KB_ACTV, TO_KB_ACTV, JM_TO_KB_ACTV); //PROGRAM_KB_ACTV
+    sprintf(tmps, "%s %6d      ",txt,loop);
+    showString(tmps, &standardFont, 20, 145-7-mode*20, vmNormal, false, false);  //note: 1 line up for "force"
+
+    #ifdef PC_BUILD
+      gtk_widget_queue_draw(screen);
+      #ifdef FULLUPDATE // (UGLY)
+         refresh_gui();
+      #endif //FULLUPDATE (UGLY)
+    #endif
+    #if DMCP_BUILD
+      lcd_forced_refresh();
+    #endif
+  }
+}
 
 
 
@@ -1703,6 +1726,37 @@ void force_refresh(uint8_t mode) {
     }
   }
 
+  static int stats_param_check(const char *name, calcRegister_t reg) {
+    int type;
+
+    return name == NULL
+           || (type = getRegisterDataType(reg)) == dtReal34
+           || type == dtLongInteger;
+  }
+
+  static void stats_param_display(const char *name, calcRegister_t reg, char *prefix, char *tmpString, calcRegister_t rowReg) {
+    int prefixWidth;
+    char regS[5];
+
+    if (name == NULL)
+      return;
+    clearRegisterLine(rowReg, true, true);
+
+    strcpy(regS, "RegI");
+    regS[3] += reg - REGISTER_I;
+    showString(regS, &standardFont, 19, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
+    sprintf(prefix, "= %s =", name);
+    prefixWidth = showString(prefix, &standardFont, 19 + (17+28), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X) + TEMPORARY_INFO_OFFSET, vmNormal, true, true);
+
+    if(getRegisterDataType(reg) == dtLongInteger) {
+      longIntegerRegisterToDisplayString(reg, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - prefixWidth, 50, STD_SPACE_PUNCTUATION, true);
+    } else if(getRegisterDataType(reg) == dtReal34) {
+      real34ToDisplayString(REGISTER_REAL34_DATA(reg), getRegisterAngularMode(reg), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION, true);
+    }
+
+
+    showString(tmpString, &numericFont, SCREEN_WIDTH - stringWidth(tmpString, &numericFont, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(rowReg - REGISTER_X), vmNormal, false, true);
+  }
 
 
   void showFunctionName(int16_t item, int16_t delayInMs) {
@@ -1782,9 +1836,6 @@ void hideFunctionName(void) {
       lcd_fill_rect(0, yStart, SCREEN_WIDTH, height, LCD_SET_VALUE);
     }
   }
-
-
-uint8_t   displayStack_m = 255;                                                  //JMSHOIDISP
 
 
   static void viewRegName(char *prefix, int16_t *prefixWidth) {
@@ -1936,21 +1987,17 @@ uint8_t   displayStack_m = 255;                                                 
     bool_t prefixPre = true;
     bool_t prefixPost = true;
     const uint8_t origDisplayStack = displayStack;
+    bool_t distModeActive = false;
+    bool_t baseModeActive = false;    
 
     char prefix[200], lastBase[4];
 
-if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGISTER_X) == dtShortInteger) { //JMSHOI                   
-  if(displayStack != 4-displayStackSHOIDISP) {displayStack_m = displayStack;}   //JMSHOI
-  fnDisplayStack(4-displayStackSHOIDISP);                                       //JMSHOI             
-} else {                                                                        //JMSHOI 
-  if(displayStack_m != 255) {                                                   //JMSHOI
-    fnDisplayStack(displayStack_m);                                             //JMSHOI
-    displayStack_m = 255;                                                       //JMSHOI
-  } else {
-    //fnDisplayStack(4);  //removed because it clamps DSTACK to 4
-                                                                                //displayStack_m = 255;//is already 255
-  }                                                                             //JMSHOI
-}                                                                               //JMSHOI
+    baseModeActive = displayStackSHOIDISP != 0 && (lastIntegerBase != 0 || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_BASE);
+    if(baseModeActive && getRegisterDataType(REGISTER_X) == dtShortInteger) { //JMSHOI                   
+      if(displayStack != 4-displayStackSHOIDISP) {                            //JMSHOI
+        fnDisplayStack(4-displayStackSHOIDISP);                               //JMSHOI             
+      }                                                                       //JMSHOI
+    }
 
     #if (DEBUG_PANEL == 1)
       if(programRunStop != PGM_RUNNING) {
@@ -2280,6 +2327,93 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         if(regist == REGISTER_X && currentInputVariable != INVALID_VARIABLE) {
           inputRegName(prefix, &prefixWidth);
         }
+
+
+        // STATISTICAL DISTR
+        if(regist == REGISTER_X) {
+          const char *r_i = NULL, *r_j = NULL, *r_k = NULL;
+
+          switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
+            case -MNU_NBIN:
+            case -MNU_BINOM:
+              r_i = STD_p;
+              r_j = STD_n;
+              break;
+            case -MNU_CAUCH:
+              r_i = STD_x STD_SUB_0;
+              r_j = STD_gamma;
+              break;
+            case -MNU_WEIBL:
+              r_j = STD_lambda;
+              /* fall through */
+            case -MNU_CHI2:
+              r_i = STD_k;
+              break;
+            case -MNU_EXPON:
+              r_i = STD_lambda;
+              break;
+            case -MNU_F:
+              r_i = STD_d STD_SUB_1;
+              r_j = STD_d STD_SUB_2;
+              break;
+            case -MNU_GEOM:
+            case -MNU_POISS:
+              r_i = STD_p;
+              break;
+            case -MNU_HYPER:
+              r_i = STD_p;  /* TODO: hypergeometric parameters */
+              r_j = STD_n;
+              r_k = STD_N;
+              break;
+            case -MNU_LOGIS:
+              r_j = STD_s;
+              r_i = STD_mu;
+              break;
+            case -MNU_NORML:
+            case -MNU_LGNRM:
+              r_j = STD_sigma;
+              r_i = STD_mu;
+              break;
+            case -MNU_T:
+              r_i = STD_nu;
+              break;
+            default: break;
+          }
+
+          if (stats_param_check(r_i, REGISTER_I)
+              && stats_param_check(r_j, REGISTER_J)
+              && stats_param_check(r_k, REGISTER_K)) {
+            stats_param_display(r_i, REGISTER_I, prefix, tmpString, REGISTER_T);
+            stats_param_display(r_j, REGISTER_J, prefix, tmpString, REGISTER_Z);
+            stats_param_display(r_k, REGISTER_K, prefix, tmpString, REGISTER_Y);
+
+            prefix[0]=0;
+            tmpString[0]=0;
+            uint8_t ii = 255;
+            if(r_i != NULL) { 
+              ii = Y_POSITION_OF_REGISTER_Z_LINE;
+              fnDisplayStack(3);
+              distModeActive = true;
+            }
+            if(r_j != NULL) { 
+              ii = Y_POSITION_OF_REGISTER_Y_LINE;
+              fnDisplayStack(2);
+              distModeActive = true;
+            }
+            if(r_k != NULL) { 
+              ii = Y_POSITION_OF_REGISTER_X_LINE;
+              fnDisplayStack(1);
+              distModeActive = true;
+            }
+            if(distModeActive) {
+              lcd_fill_rect(0, ii - 2, SCREEN_WIDTH, 1, 0xFF);
+              if(displayStack != origDisplayStack) {
+                refreshScreen();                                //recurse into refreshScreen
+              }
+            }
+          }
+        }
+        
 
         if(lastErrorCode != 0 && regist == errorMessageRegisterLine) {
           if(stringWidth(errorMessages[lastErrorCode], &standardFont, true, true) <= SCREEN_WIDTH - 1) {
@@ -2968,6 +3102,15 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
             viewRegName(prefix, &prefixWidth);
           }
 
+          else if(temporaryInformation == TI_STR && regist == REGISTER_X) {
+                strcpy(prefix," ");
+                strcat(prefix, errorMessage);
+                strcat(prefix, ":");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+          }
+
+
+
             else if(temporaryInformation == TI_ABC) {                             //JM EE \/
               if(regist == REGISTER_X) {
                 strcpy(prefix, "c" STD_SPACE_FIGURE ":");
@@ -3032,6 +3175,7 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
             }
+
 
             if(prefixWidth > 0) {
               if(regist == REGISTER_X) {
@@ -3249,13 +3393,14 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
         }
 */
 //  //JM
+
         else if(getRegisterDataType(regist) == dtShortInteger) {
 //          if(temporaryInformation == TI_VIEW && origRegist == REGISTER_T) viewRegName(prefix, &prefixWidth);
           shortIntegerToDisplayString(regist, tmpString, true);
           showString(tmpString, fontForShortInteger, SCREEN_WIDTH - stringWidth(tmpString, fontForShortInteger, false, true), Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + (fontForShortInteger == &standardFont ? 6 : 0), vmNormal, false, true);
   
           //JM SHOIDISP // use the top part of the screen for HEX and BIN    //JM vv SHOIDISP
-          if(displayStack == 4-displayStackSHOIDISP && lastIntegerBase != 0 && lastErrorCode == 0) {
+          if(baseModeActive && lastErrorCode == 0) {
             if(displayStack == 1){
               copySourceRegisterToDestRegister(REGISTER_Y,TEMP_REGISTER_1);
               copySourceRegisterToDestRegister(REGISTER_X,REGISTER_Y);
@@ -3497,7 +3642,10 @@ if(displayStackSHOIDISP != 0 && lastIntegerBase != 0 && getRegisterDataType(REGI
       }
     }
 
-    if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || getRegisterDataType(REGISTER_X) == dtComplex34Matrix || calcMode == CM_MIM) {
+    if(getRegisterDataType(REGISTER_X) == dtReal34Matrix || 
+       getRegisterDataType(REGISTER_X) == dtComplex34Matrix || 
+       calcMode == CM_MIM ||
+       distModeActive || baseModeActive) {
       displayStack = origDisplayStack;
     }
   }

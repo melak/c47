@@ -47,11 +47,11 @@
 
 #if !defined(TESTSUITE_BUILD)
   static void _programmableSumProd(uint16_t label, bool_t prod) {
-    int16_t finished = 0;
-
-    real34_t loopStep, loopTo, counter, compare, sign;
-    real_t resultX, resultR;
-
+    uint32_t      loop = 0;
+    int16_t       finished = 0;
+    real_t        resultX, resultR;
+    real34_t      loopStep, loopTo, counter, compare, sign, rLoop;
+    longInteger_t iLoop;
     fnToReal(NOPARAM);
     real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loopStep);
     fnDrop(NOPARAM);
@@ -60,7 +60,15 @@
     fnDrop(NOPARAM);
     fnToReal(NOPARAM);
     real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter); //Loopfrom
-    realCopy(prod ? const_1 : const_0, &resultR);                                       // Initialize real accumulator
+    realCopy(prod ? const_1 : const_0, &resultR);           //Initialize real accumulator
+
+    
+    real34Subtract(&loopTo, &counter, &rLoop);              //calculate the remaining iteration counter
+    real34Divide(&rLoop, &loopStep, &rLoop);
+    longIntegerInit(iLoop);
+    convertReal34ToLongInteger(&rLoop, iLoop, DEC_ROUND_DOWN);
+    loop = longIntegerModuloUInt(iLoop, 100000);
+    longIntegerFree(iLoop);
 
     if(real34IsZero(&loopStep) || (real34CompareGreaterThan(&loopTo, &counter) && real34CompareLessEqual(&loopStep, const34_0)) || (real34CompareLessThan(&loopTo, &counter) && real34CompareGreaterEqual(&loopStep, const34_0))) {
       displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
@@ -115,10 +123,12 @@
           #endif //VERBOSE_COUNTER
 
           real34Add(&counter, &loopStep, &counter);
+          printHalfSecUpdate_Integer(timed, "Loop: ",loop--); //timed
 
           #if defined(DMCP_BUILD)
             if(keyWaiting()) {
                 showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
+                printHalfSecUpdate_Integer(force+1, "Interrupted: ",loop);
               break;
             }
           #endif //DMCP_BUILD
@@ -157,6 +167,8 @@
     }
     hourGlassIconEnabled = false;
     showHideHourGlass();
+
+    printHalfSecUpdate_Integer(force+0, "Loop complete: ",loop);
   }
 
 

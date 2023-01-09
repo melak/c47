@@ -122,7 +122,6 @@ void       fnAGraph                           (uint16_t regist);
   extern uint8_t  lines;
   extern uint16_t current_cursor_x;
   extern uint16_t current_cursor_y;
-  extern uint8_t  displayStack_m;
 
   //Stack string large font display
   #define STACK_X_STR_LRG_FONT
@@ -156,8 +155,9 @@ void       fnAGraph                           (uint16_t regist);
   void     refresh_gui                        (void);                                                          //JM
 
   #define  force 1
-  #define  timed 2
+  #define  timed 0
   void     force_refresh(uint8_t mode);                                                          //JM SCREEN
+  void     printHalfSecUpdate_Integer(uint8_t mode, char * txt, int loop);
 
   void     refreshScreen                      (void);
   //void     invertPixel                        (uint32_t x, uint32_t y);

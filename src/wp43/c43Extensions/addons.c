@@ -182,13 +182,7 @@ void fnClrMod(uint16_t unusedButMandatoryParameter) {        //clear input buffe
       ix++;
     }
 
-    if(displayStack_m >= 1 && displayStack_m <= 4 /*&& displayStack_m != 255*/) { //JMSHOI
-      fnDisplayStack(displayStack_m);     //JMSHOI
-      displayStack_m = 255;               //JMSHOI
-    }
-    else {
-      fnDisplayStack(4);                  //removed because it clamps DSTACK to 4
-    }                                     //JMSHOI
+    fnDisplayStack(4);                    //Restore to default DSTACK 4
 
     calcModeNormal();
     refreshScreen();
@@ -1776,19 +1770,38 @@ void fnSafeReset (uint16_t unusedButMandatoryParameter) {
 }
 
 
+
+#ifndef TESTSUITE_BUILD
+  static void assignToMyMenu_(uint16_t position) {
+    if(position < 18) {
+      _assignItem(&userMenuItems[position]);
+    }
+    cachedDynamicMenu = 0;
+  }
+
+  static void assignToMyAlpha_(uint16_t position) {
+    if(position < 18) {
+      _assignItem(&userAlphaItems[position]);
+    }
+    cachedDynamicMenu = 0;
+  }
+#endif //TESTSUITE_BUILD
+
+
 void fnRESET_MyM(void){
 //Pre-assign the MyMenu                   //JM
     #ifndef TESTSUITE_BUILD
     jm_BASE_SCREEN = false;                                           //JM prevent slow updating of 6 menu items
     for(int8_t fn = 1; fn <= 6; fn++) {
       itemToBeAssigned = menu_HOME[fn -1];  //Function key follows if the yellow key
-      assignToMyMenu(fn - 1);
+      assignToMyMenu_(fn - 1);
       itemToBeAssigned = ASSIGN_CLEAR;
-      assignToMyMenu(6 + fn - 1);
+      assignToMyMenu_(6 + fn - 1);
       itemToBeAssigned = ASSIGN_CLEAR;
-      assignToMyMenu(12 + fn - 1);
+      assignToMyMenu_(12 + fn - 1);
       }
     jm_BASE_SCREEN = true;                                           //JM Menu system default (removed from reset_jm_defaults)
+    refreshScreen();
     #endif // TESTSUITE_BUILD
 }
 
@@ -1798,14 +1811,15 @@ void fnRESET_Mya(void){
     #ifndef TESTSUITE_BUILD
     for(int8_t fn = 1; fn <= 6; fn++) {
       itemToBeAssigned = ASSIGN_CLEAR;
-      assignToMyAlpha(fn - 1);
+      assignToMyAlpha_(fn - 1);
       itemToBeAssigned = ASSIGN_CLEAR;
-      assignToMyAlpha(6 + fn - 1);
+      assignToMyAlpha_(6 + fn - 1);
       itemToBeAssigned = ASSIGN_CLEAR;
-      assignToMyAlpha(12 + fn - 1);
+      assignToMyAlpha_(12 + fn - 1);
       }
     itemToBeAssigned = -MNU_ALPHA;
-    assignToMyAlpha(5);
+    assignToMyAlpha_(5);
+    refreshScreen();
     #endif // TESTSUITE_BUILD
 }
 
