@@ -273,6 +273,131 @@ char line[200];               /* Line buffer */
   }
 
 
+static FIL fil;               /* File object */
+int16_t export_append_string_to_file_n(const char *line1, uint8_t mode, const char filedir[40]) { //DMCP_BUILD 
+char line[200];               /* Line buffer */
+    int fr;                   /* FatFs return code */
+
+  switch (mode) {
+    case OPEN:
+    case APPEND:
+      /* Prepare to write */
+      sys_disk_write_enable(1);
+      fr = sys_is_disk_write_enable();
+      if (fr==0) {
+        sprintf(line,"Write error ID001--> %d    \n",fr);    print_linestr(line,true);
+        f_close(&fil);
+        sys_disk_write_enable(0);
+        return (int)fr;
+      }
+      /* Opens an existing file. If not exist, creates a new file. */
+      if(mode == APPEND) {
+        fr = f_open(&fil, filedir, FA_OPEN_APPEND | FA_WRITE); 
+      } else {
+        fr = f_open(&fil, filedir, FA_WRITE|FA_CREATE_ALWAYS);
+      }
+      if (fr) {
+        sprintf(line,"File open error ID002--> %d    \n",fr);       print_linestr(line,false);
+        f_close(&fil);
+        sys_disk_write_enable(0);
+        return (int)fr;
+      }
+      /* Seek to end of the file to append data */
+      if(mode == APPEND) {
+        fr = f_lseek(&fil, f_size(&fil));
+        if (fr) {
+          sprintf(line,"Seek error ID003--> %d    \n",fr);            print_linestr(line,false);
+          f_close(&fil);
+          sys_disk_write_enable(0);
+          return (int)fr;
+        }
+      }
+      break;
+
+    case WRITE:   
+      /* Create string and output */
+      fr = f_puts(line1, &fil);
+      if (fr == EOF) {
+        sprintf(line,"Write error ID004--> %d    \n",fr);            print_linestr(line,false);
+        f_close(&fil);
+        sys_disk_write_enable(0);
+        return (int)fr;
+      }
+      break;
+
+    case CLOSE: 
+      /* close the file */
+      fr = f_close(&fil);
+      if (fr) {
+        sprintf(line,"Close error ID005--> %d    \n",fr);     print_linestr(line,false);
+        f_close(&fil);
+        sys_disk_write_enable(0);
+        return (int)fr;
+      }
+      sys_disk_write_enable(0);
+      break;
+
+    default: 
+       break;
+    } 
+ 
+    return 0;
+  }
+
+
+int16_t open_text(const char *dirname, const char *dirfile) { //DMCP_BUILD 
+    char rr[2];
+    rr[0]=0;
+    check_create_dir(dirname);      
+    if(export_append_string_to_file_n(rr, OPEN, dirfile)) return 1;
+    return 0;
+}
+
+int16_t close_text(const char *dirfile) { //DMCP_BUILD 
+    char rr[2];
+    rr[0]=0;
+    if(export_append_string_to_file_n(rr, CLOSE, dirfile)) return 1;
+    return 0;
+}
+
+int16_t save_text(const char *line1, uint8_t mode1, uint8_t mode2, uint8_t mode3, int16_t  nn, const char *dirfile) { //DMCP_BUILD 
+    char rr[2];
+    rr[1]=0;
+    switch(mode1) {
+      case OPEN:
+      case APPEND:
+        if(export_append_string_to_file_n(rr, mode1, dirfile)) return 1;
+        break;
+      default: break;
+    }
+    
+    int16_t ii, jj;
+    switch(mode2) {
+      case WRITE:
+        ii = min(nn,(int16_t)(strlen(line1)));
+        jj = ii;
+        while(ii!=0) {
+          rr[0]=line1[jj-ii];
+          if(export_append_string_to_file_n(rr, mode2, dirfile) != 0) return 1;
+        ii--;
+        }
+        break;
+      default: break;
+    }
+
+    switch(mode3) {
+      case CLOSE:
+        if(export_append_string_to_file_n(rr, mode3, dirfile)) return 1;
+        break;
+      default: break;
+    }
+
+
+    return 0;
+}
+
+
+
 //DMCP_BUILD
 int16_t export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode, char *dirname, char *filename) { //DMCP_BUILD 
 char dirfile[40];
