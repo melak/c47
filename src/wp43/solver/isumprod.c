@@ -45,18 +45,24 @@
 
 #if !defined(TESTSUITE_BUILD)
   static void _programmableiSumProd(uint16_t label, bool_t prod) {
+    uint32_t      loop = 0;
+    int16_t       finished = 0;
     longInteger_t resultLi, xLi;
-    longInteger_t loopStep, loopTo, iCounter;
+    longInteger_t loopStep, loopTo, iCounter, iLoop;
     longIntegerInit(loopStep);
     longIntegerInit(loopTo);
     longIntegerInit(iCounter);
-    convertLongIntegerRegisterToLongInteger(REGISTER_Y, loopTo);
-    convertLongIntegerRegisterToLongInteger(REGISTER_X, loopStep);
-    convertLongIntegerRegisterToLongInteger(REGISTER_Z, iCounter); //Loopfrom //Counter initial value = From
+    longIntegerInit(iLoop);
     longIntegerInit(xLi);
     longIntegerInit(resultLi);
-    uIntToLongInteger(prod ? 1 : 0, resultLi);                             //Initialize long integer accumulator
-    int16_t finished = 0;
+    convertLongIntegerRegisterToLongInteger(REGISTER_Y, loopTo);
+    convertLongIntegerRegisterToLongInteger(REGISTER_X, loopStep);
+    convertLongIntegerRegisterToLongInteger(REGISTER_Z, iCounter); //Loopfrom counter initial value = From
+    uIntToLongInteger(prod ? 1 : 0, resultLi);                     //Initialize long integer accumulator
+
+    longIntegerSubtract(loopTo, iCounter, iLoop);                  //calculate the remaining iteration counter
+    longIntegerDivide(iLoop, loopStep, iLoop);
+    loop = longIntegerModuloUInt(iLoop, 100000);
 
     if(longIntegerIsZero(loopStep) || (longIntegerCompare(loopTo, iCounter) > 0 && longIntegerCompareUInt(loopStep, 0) <=0) || (longIntegerCompare(loopTo, iCounter) < 0 && longIntegerCompareUInt(loopStep, 0) >=0)) {
       displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
@@ -112,17 +118,18 @@
         else {
           longIntegerAdd(resultLi, xLi, resultLi);
         }
-    
+
         #if defined(VERBOSE_COUNTER)
           printLongIntegerToConsole(resultLi,"= "," \n");
         #endif //VERBOSE_COUNTER
 
         longIntegerAdd(iCounter, loopStep, iCounter);
-              
+        printHalfSecUpdate_Integer(timed, "Loop: ",loop--); //timed
 
         #if defined(DMCP_BUILD)
           if(keyWaiting()) {
               showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
+              printHalfSecUpdate_Integer(force+1, "Interrupted: ",loop);
             break;
           }
         #endif //DMCP_BUILD
@@ -131,9 +138,6 @@
           break;
         }
       } //WHILE
-
-
-
 
 
       if(lastErrorCode == ERROR_NONE) {
@@ -146,23 +150,27 @@
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }
 
-      longIntegerFree(loopStep);
-      longIntegerFree(loopTo);
-      longIntegerFree(iCounter);
-      longIntegerInit(xLi);
       longIntegerFree(resultLi);
+      longIntegerFree(xLi);
+      longIntegerFree(iLoop);
+      longIntegerFree(iCounter);
+      longIntegerFree(loopTo);
+      longIntegerFree(loopStep);
 
       temporaryInformation = TI_NO_INFO;
       if(programRunStop == PGM_WAITING) {
         programRunStop = PGM_STOPPED;
       }
-      adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
+
     } //MAIN IF
     if((--currentSolverNestingDepth) == 0) {
       clearSystemFlag(FLAG_SOLVING);
     }
     hourGlassIconEnabled = false;
     showHideHourGlass();
+
+    printHalfSecUpdate_Integer(force+0, "Loop complete: ",loop);
+
   }
 
 
