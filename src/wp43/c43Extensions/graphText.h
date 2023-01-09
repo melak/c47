@@ -38,11 +38,20 @@
 #define      T_CR        "\x0D"
 #define      APPEND      0
 #define      OVERWRITE   1
+#define      OPEN        2
+#define      CLOSE       3
+#define      WRITE       4
+#define      NOACTION    5
 
 void         create_filename(char *fn);
 
 int16_t      export_append_line(char *inputstring);
 int16_t      export_string_to_filename(const char line1[TMP_STR_LENGTH], uint8_t mode, char *dirname, char *filename);
+#ifdef DMCP_BUILD
+  int16_t open_text(const char *dirname, const char *dirfile);
+  int16_t close_text(const char *dirfile);
+  int16_t save_text(const char *line1, uint8_t mode1, uint8_t mode2, uint8_t mode3, int16_t  nn, const char *dirfile);
+#endif
 
 #define      filenamelen 40
 extern char         filename_csv[filenamelen]; //JMMAX                //JM_CSV

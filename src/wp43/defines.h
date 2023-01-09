@@ -169,7 +169,8 @@
 #endif
 
 #define JM_TO_KB_ACTV      6000  //ms TO_KB_ACTV
-
+#define PROGRAM_KB_ACTV   60000  //ms TO_KB_ACTV
+#define PROGRAM_STOP      FAST_SCREEN_REFRESH_PERIOD+50 //ms TO_KB_ACTV
 
 
 

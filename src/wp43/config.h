@@ -23,6 +23,7 @@
 #include "decContext.h"
 #include "defines.h"
 #include <stdint.h>
+#include "typeDefinitions.h"
 
 void     showSoftmenu          (int16_t id);  //JM repeat here to make DMCP compile
 void     fnShowVersion         (uint8_t option); 
@@ -191,8 +192,13 @@ void     fnAngularMode         (uint16_t angularMode);
  ***********************************************/
 void     fnFractionType        (uint16_t unusedButMandatoryParameter);
 
-  void     restoreStats          (void);
+#define  loadAutoSav           true
+#define  doNotLoadAutoSav      false
+void     resetOtherConfigurationStuff(void);
 void     fnReset               (uint16_t confirmation);
+void     doFnReset             (uint16_t confirmation, bool_t autoSav);
+
+void     restoreStats          (void);
 void     setConfirmationMode   (void (*func)(uint16_t));
 void     fnClAll               (uint16_t confirmation);
 void     backToSystem          (uint16_t confirmation);
