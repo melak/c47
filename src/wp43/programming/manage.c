@@ -574,6 +574,10 @@ void fnPem(uint16_t unusedButMandatoryParameter) {
       step = nextStep;
     }
 
+    if(lastErrorCode != ERROR_NONE) {
+      refreshRegisterLine(errorMessageRegisterLine);
+    }
+
     if(programList[currentProgramNumber - 1].step < 0) { // Flash
       freeWp43(tmpSteps, 400 * 7);
     }
