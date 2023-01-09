@@ -2691,7 +2691,10 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_MIM: {
-        if(temporaryInformation == TI_SHOW_REGISTER) {
+        if(lastErrorCode != 0) {
+          lastErrorCode = 0;
+        }
+        else if(temporaryInformation == TI_SHOW_REGISTER) {
           temporaryInformation = TI_NO_INFO;
         }
         else {
@@ -3017,7 +3020,12 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
       }
 
       case CM_MIM: {
-        mimAddNumber(ITM_BACKSPACE);
+        if(lastErrorCode != 0) {
+          lastErrorCode = 0;
+        }
+        else {
+          mimAddNumber(ITM_BACKSPACE);
+        }
         break;
       }
 
