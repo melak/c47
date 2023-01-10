@@ -2361,7 +2361,7 @@ void hideFunctionName(void) {
               r_i = STD_p;
               break;
             case -MNU_HYPER:
-              r_i = STD_p;  /* TODO: hypergeometric parameters */
+              r_i = STD_K;
               r_j = STD_n;
               r_k = STD_N;
               break;
