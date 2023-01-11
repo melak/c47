@@ -2347,7 +2347,8 @@ void hideFunctionName(void) {
               r_j = STD_lambda;
               /* fall through */
             case -MNU_CHI2:
-              r_i = STD_k;
+            case -MNU_T:
+              r_i = STD_nu;
               break;
             case -MNU_EXPON:
               r_i = STD_lambda;
@@ -2361,9 +2362,9 @@ void hideFunctionName(void) {
               r_i = STD_p;
               break;
             case -MNU_HYPER:
-              r_i = STD_K;
+              r_i = STD_N;
               r_j = STD_n;
-              r_k = STD_N;
+              r_k = STD_K;
               break;
             case -MNU_LOGIS:
               r_j = STD_s;
@@ -2373,9 +2374,6 @@ void hideFunctionName(void) {
             case -MNU_LGNRM:
               r_j = STD_sigma;
               r_i = STD_mu;
-              break;
-            case -MNU_T:
-              r_i = STD_nu;
               break;
             default: break;
           }
