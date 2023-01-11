@@ -48,7 +48,7 @@
 #else
 
 
-static bool_t checkParamHyper(real_t *x, real_t *i, real_t *j, real_t *k) {
+static bool_t checkParamHyper(real_t *x, real_t *k, real_t *j, real_t *i) {
   real_t xmin, xmax;
 
   if(   ((getRegisterDataType(REGISTER_X) != dtReal34) && (getRegisterDataType(REGISTER_X) != dtLongInteger))
@@ -92,17 +92,17 @@ static bool_t checkParamHyper(real_t *x, real_t *i, real_t *j, real_t *k) {
   }
 
   //realMultiply(i, k, &ik, &ctxtReal39), realToIntegralValue(&ik, &ik, DEC_ROUND_HALF_EVEN, &ctxtReal39);
-  realAdd(j, i, &xmin, &ctxtReal39);
-  realSubtract(&xmin, k, &xmin, &ctxtReal39);
+  realAdd(j, k, &xmin, &ctxtReal39);
+  realSubtract(&xmin, i, &xmin, &ctxtReal39);
   if(realIsNegative(&xmin)) {
     realCopy(const_0, &xmin);
   }
-  realCopy(realCompareLessThan(i, j) ? i : j, &xmax);
+  realCopy(realCompareLessThan(k, j) ? k : j, &xmax);
 
   if((!checkRegisterNoFP(REGISTER_I)) || (!checkRegisterNoFP(REGISTER_J)) || (!checkRegisterNoFP(REGISTER_K))) {
     displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      moreInfoOnError("In function checkParamHyper:", "k0, n and/or N is not an integer", NULL, NULL);
+      moreInfoOnError("In function checkParamHyper:", "N, n and/or K is not an integer", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return false;
   }
@@ -112,14 +112,14 @@ static bool_t checkParamHyper(real_t *x, real_t *i, real_t *j, real_t *k) {
   else if(realIsNegative(x) || realCompareLessThan(x, &xmin) || realCompareGreaterThan(x, &xmax)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      moreInfoOnError("In function checkParamHyper:", "cannot calculate for x < max(0, n + pN - N) or x > min(n, pN)", NULL, NULL);
+      moreInfoOnError("In function checkParamHyper:", "cannot calculate for x < max(0, n + K - N) or x > min(n, K)", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return false;
   }
-  else if(realIsNegative(i) || realCompareGreaterThan(i, k) || realIsNegative(j) || realCompareGreaterThan(j, k) || realIsNegative(k)) {
+  else if(realIsNegative(k) || realCompareGreaterThan(k, i) || realIsNegative(j) || realCompareGreaterThan(j, i) || realIsNegative(i)) {
     displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      moreInfoOnError("In function checkParamHyper:", "the parameters must be integer, and 0 " STD_LESS_EQUAL " k0 " STD_LESS_EQUAL " N, 0 " STD_LESS_EQUAL " n " STD_LESS_EQUAL " N, and N " STD_GREATER_EQUAL " 0", NULL, NULL);
+      moreInfoOnError("In function checkParamHyper:", "the parameters must be integer, and 0 " STD_LESS_EQUAL " K " STD_LESS_EQUAL " N, 0 " STD_LESS_EQUAL " n " STD_LESS_EQUAL " N, and N " STD_GREATER_EQUAL " 0", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return false;
   }
@@ -240,7 +240,7 @@ void fnHypergeometricI(uint16_t unusedButMandatoryParameter) {
 }
 
 
-// PDF(k; n, k0, N) = (k0 C k) ((N-k0) C (n-k)) / (N C n)
+// PDF(k; n, K, N) = (K C k) ((N-K) C (n-k)) / (N C n)
 void pdf_Hypergeometric(const real_t *x, const real_t *k0, const real_t *n, const real_t *n0, real_t *res, realContext_t *realContext) {
   real_t a, b, c, q;
 
