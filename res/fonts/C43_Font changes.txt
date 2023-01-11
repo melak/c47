@@ -138,3 +138,7 @@ C43 Font:
            Ϡ  GREEK LETTER SAMPI
            ϡ  GREEK SMALL LETTER SAMPI
 
+
+----
+
+2023-10-11 Add "U+21D2", Rightwards Double Arrow to StandardFont only
