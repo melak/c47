@@ -2351,6 +2351,7 @@ void hideFunctionName(void) {
               r_i = STD_nu;
               break;
             case -MNU_EXPON:
+            case -MNU_POISS:
               r_i = STD_lambda;
               break;
             case -MNU_F:
@@ -2358,7 +2359,6 @@ void hideFunctionName(void) {
               r_j = STD_d STD_SUB_2;
               break;
             case -MNU_GEOM:
-            case -MNU_POISS:
               r_i = STD_p;
               break;
             case -MNU_HYPER:
