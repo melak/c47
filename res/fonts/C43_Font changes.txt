@@ -142,3 +142,5 @@ C43 Font:
 ----
 
 2023-10-11 Add "U+21D2", Rightwards Double Arrow to StandardFont only
+2023-01-15 Add "U+267A", Recycling Symbol For Generic Materials to both fonts
+2023-01-15 Copied "U+21D2", Rightwards Double Arrow to Numericfont to try keep them the same, even for just the additions
