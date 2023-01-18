@@ -1124,15 +1124,15 @@ void WP34S_Mod(const real_t *x, const real_t *y, real_t *res, realContext_t *rea
 }
 
 
-//void WP34S_BigMod(const real_t *x, const real_t *y, real_t *res, realContext_t *realContext) {
-//  /* Declare a structure large enough to hold a really long number.
-//   * This structure is likely to be larger than is required.
-//   */
-//  real2139_t out;
-//
-//  realDivideRemainder(x, y, &out, &ctxtReal2139);
-//  realPlus((real_t *)&out, res, realContext);
-//}
+void WP34S_BigMod(const real_t *x, const real_t *y, real_t *res, realContext_t *realContext) {
+  /* Declare a structure large enough to hold a really long number.
+   * This structure is likely to be larger than is required.
+   */
+  real2139_t out;
+
+  realDivideRemainder(x, y, (real_t *)&out, &ctxtReal2139);
+  realPlus((real_t *)&out, res, realContext);
+}
 
 
 static void gser(const real_t *a, const real_t *x, const real_t *gln, real_t *res, realContext_t *realContext) {

@@ -68,14 +68,14 @@
   } real1071_t; // used for radian angle reduction
 
 
-  //typedef struct {
-  //  int32_t digits;      // Count of digits in the coefficient; >0
-  //  int32_t exponent;    // Unadjusted exponent, unbiased, in
-  //                       // range: -1999999997 through 999999999
-  //  uint8_t bits;        // Indicator bits (see above)
-  //                       // Coefficient, from least significant unit
-  //  decNumberUnit lsu[(2139+DECDPUN-1)/DECDPUN]; // 2139 = 39 + 175*12
-  //} real2139_t;
+  typedef struct {
+    int32_t digits;      // Count of digits in the coefficient; >0
+    int32_t exponent;    // Unadjusted exponent, unbiased, in
+                         // range: -1999999997 through 999999999
+    uint8_t bits;        // Indicator bits (see above)
+                         // Coefficient, from least significant unit
+    decNumberUnit lsu[(2139+DECDPUN-1)/DECDPUN]; // 2139 = 39 + 175*12
+  } real2139_t;
 
   typedef decContext realContext_t;
   typedef decQuad    real34_t; // 34 digits and 128 bits = 16 bytes
