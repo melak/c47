@@ -928,6 +928,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnSetNBins                  (uint16_t unusedButMandatoryParameter) {}
   void fnConvertStatsToHisto       (uint16_t unusedButMandatoryParameter) {}
   void fnSqrt1Px2                  (uint16_t unusedButMandatoryParameter) {}
+  void fnDeleteVariable            (uint16_t unusedButMandatoryParameter) {}
 
   void fnJM                       (uint16_t unusedButMandatoryParameter) {}           //vv JM
   void fnSetSetJM                 (uint16_t unusedButMandatoryParameter) {}
@@ -2518,7 +2519,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1452 */  { fnCvtDmsToCurrentAngularMode, NOPARAM,                     "D.MS" STD_RIGHT_ARROW,                        "D.MS" STD_RIGHT_ARROW,                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1453 */  { fnSetDateFormat,              ITM_DMY,                     "DMY",                                         "DMY",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1454 */  { fnDateToJulian,               NOPARAM,                     "D" STD_RIGHT_ARROW "J",                       "D" STD_RIGHT_ARROW "J",                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 1455 */  { itemToBeCoded,                NOPARAM,                     "DELITM",                                      "DELITM",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_LABEL        },
+/* 1455 */  { fnDeleteVariable,             TM_DELITM,                   "DELITM",                                      "DELITM",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_CANCEL    | EIM_DISABLED | PTP_LABEL        },
 /* 1456 */  { fnEigenvalues,                NOPARAM,                     "EIGVAL",                                      "EIGVAL",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1457 */  { fnEigenvectors,               NOPARAM,                     "EIGVEC",                                      "EIGVEC",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1458 */  { fnReturn,                     0,                           "END",                                         "END",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },

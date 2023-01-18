@@ -971,6 +971,11 @@
         break;
       }
 
+      case TM_DELITM: {
+        showSoftmenu(-ITM_DELITM);
+        break;
+      }
+
       default: {
         sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "calcModeTam", tam.mode, "tam.mode");
         displayBugScreen(errorMessage);
