@@ -124,6 +124,9 @@
           case MNU_FLASH: {
             return ITM_DELITM_PROG;
           }
+          case MNU_MENUS: {
+            return ITM_DELITM_MENU;
+          }
           default: {
             return ITM_DELITM;
           }
@@ -825,6 +828,9 @@
             moreInfoOnError("In function _tamProcessInput:", errorMessage, NULL, NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         }
+      }
+      else if(tam.mode == TM_DELITM && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MENUS) {
+        value = tam.value;
       }
       else if(tryAllocate) {
         value = findOrAllocateNamedVariable(buffer);

@@ -1176,7 +1176,7 @@
 #define ITM_SUB_y                   1140
 #define ITM_SUB_z                   1141
 #define ITM_DELITM_PROG             1142
-#define VAR_1143                    1143
+#define ITM_DELITM_MENU             1143
 #define VAR_1144                    1144
 #define VAR_1145                    1145
 #define VAR_1146                    1146

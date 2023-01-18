@@ -201,7 +201,8 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
           for(uint32_t i = 0; softmenu[i].menuItem < 0; ++i) {
             if(compareString((char *)getNthString(dynamicSoftmenu[menuId].menuContent, dynamicMenuItem), indexOfItems[-softmenu[i].menuItem].itemCatalogName, CMP_NAME) == 0) {
               if(tam.mode == TM_DELITM) {
-                item = ITM_NULL; /* TODO: implement this */
+                item = MNU_DYNAMIC;
+                tam.value = numberOfUserMenus;
               }
               else {
                 item = softmenu[i].menuItem;
@@ -211,8 +212,8 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
           for(uint32_t i = 0; i < numberOfUserMenus; ++i) {
             if(compareString((char *)getNthString(dynamicSoftmenu[menuId].menuContent, dynamicMenuItem), userMenus[i].menuName, CMP_NAME) == 0) {
               if(tam.mode == TM_DELITM) {
-                item = ITM_NULL; /* TODO: implement this */
-                currentUserMenu = i;
+                item = MNU_DYNAMIC;
+                tam.value = i;
               }
               else {
                 item = -MNU_DYNAMIC;
