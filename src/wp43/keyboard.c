@@ -190,7 +190,7 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
       case MNU_RAM:
       case MNU_FLASH: {
         dynamicMenuItem = firstItem + itemShift + fn;
-        item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : (tam.mode == TM_DELITM) ? ITM_NULL /* TODO: implement this */ : ITM_XEQ);
+        item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : (tam.mode == TM_DELITM) ? MNU_DYNAMIC : ITM_XEQ);
         break;
       }
 
