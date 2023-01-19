@@ -139,7 +139,7 @@
   extern realContext_t          ctxtReal51;   //   51 digits: used for 34 digits intermediate calculations
   extern realContext_t          ctxtReal75;   //   75 digits: used in SLVQ
   extern realContext_t          ctxtReal1071; // 1071 digits: used in radian angle reduction
-  //extern realContext_t          ctxtReal2139; // 2139 digits: used for really big modulo
+  extern realContext_t          ctxtReal2139; // 2139 digits: used for really big modulo
 
   extern registerHeader_t       globalRegister[NUMBER_OF_GLOBAL_REGISTERS];
   extern registerHeader_t       savedStackRegister[NUMBER_OF_SAVED_STACK_REGISTERS + NUMBER_OF_TEMP_REGISTERS];

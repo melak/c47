@@ -219,12 +219,13 @@ void modLonIReal(void) {
     return;
   }
 
-  real_t y, x, r;
+  real_t x, r;
+  real1071_t y;
 
-  convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+  convertLongIntegerRegisterToReal(REGISTER_Y, (real_t *)&y, &ctxtReal1071);
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
 
-  WP34S_Mod(&y, &x, &r, &ctxtReal39);
+  WP34S_BigMod((real_t *)&y, &x, &r, &ctxtReal39);
   if(!realIsZero(&r) && realGetSign(&y) != realGetSign(&x)) {
     realAdd(&r, &x, &r, &ctxtReal39);
   }
@@ -242,9 +243,9 @@ void modLonIReal(void) {
  * \return void
  ***********************************************/
 void modRealLonI(void) {
-  real_t x;
+  real1071_t x;
 
-  convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+  convertLongIntegerRegisterToReal(REGISTER_X, (real_t *)&x, &ctxtReal1071);
   if(realIsZero(&x)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -256,9 +257,9 @@ void modRealLonI(void) {
   real_t y, r;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
-  WP34S_Mod(&y, &x, &r, &ctxtReal39);
+  WP34S_BigMod(&y, (real_t *)&x, &r, &ctxtReal39);
   if(!realIsZero(&r) && realGetSign(&y) != realGetSign(&x)) {
-    realAdd(&r, &x, &r, &ctxtReal39);
+    realAdd(&r, (real_t *)&x, &r, &ctxtReal39);
   }
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
@@ -400,7 +401,7 @@ void modRealReal(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
 
-  WP34S_Mod(&y, &x, &r, &ctxtReal39);
+  WP34S_BigMod(&y, &x, &r, &ctxtReal39);
   if(!realIsZero(&r) && realGetSign(&y) != realGetSign(&x)) {
     realAdd(&r, &x, &r, &ctxtReal39);
   }
