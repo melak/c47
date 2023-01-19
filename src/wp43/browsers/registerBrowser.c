@@ -264,8 +264,7 @@
             // register number
             registerNameWidth = showString(tmpString, &standardFont, 1, 219 - 22 * row, vmNormal, true, true);
 
-            if(   (regist <  REGISTER_X && regist % 5 == 4)
-               || (regist >= REGISTER_X && regist % 4 == 3)) {
+            if(regist % 5 == 1) {
               lcd_fill_rect(0, 218 - 22 * row, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
             }
 
@@ -280,6 +279,45 @@
         registerBrowser(NOPARAM);
       }
     }
-    #endif //SAVE_SPACE_DM42_8
+
+    else if(rbrMode == RBR_NAMED) { // Named variables
+      for(int16_t row=0; row<10; row++) {
+        calcRegister_t regist = currentRegisterBrowserScreen + row;
+        if(regist < FIRST_NAMED_VARIABLE + numberOfNamedVariables) { // Named variables
+          sprintf(tmpString, "%s:", (char *)allNamedVariables[regist - FIRST_NAMED_VARIABLE].variableName + 1);
+
+          // variable name
+          registerNameWidth = showString(tmpString, &standardFont, 1, 219 - 22 * row, vmNormal, true, true);
+
+          if((regist % 5 == 1) || (regist == FIRST_NAMED_VARIABLE + numberOfNamedVariables - 1)) {
+            lcd_fill_rect(0, 218 - 22 * row, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
+          }
+
+          _showRegisterInRbr(regist, registerNameWidth);
+
+          showString(tmpString, &standardFont, SCREEN_WIDTH - stringWidth(tmpString, &standardFont, false, true), 219 - 22 * row, vmNormal, false, true);
+        }
+        else { // Reserved variables
+          regist -= FIRST_NAMED_VARIABLE + numberOfNamedVariables;
+          regist += FIRST_RESERVED_VARIABLE + 12;
+
+          if(regist <= LAST_RESERVED_VARIABLE) { // Named variables
+            sprintf(tmpString, "%s:", (char *)allReservedVariables[regist - FIRST_RESERVED_VARIABLE].reservedVariableName + 1);
+
+            // variable name
+            registerNameWidth = showString(tmpString, &standardFont, 1, 219 - 22 * row, vmNormal, true, true);
+
+            if(regist % 5 == 1) {
+              lcd_fill_rect(0, 218 - 22 * row, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
+            }
+
+            _showRegisterInRbr(regist, registerNameWidth);
+
+            showString(tmpString, &standardFont, SCREEN_WIDTH - stringWidth(tmpString, &standardFont, false, true), 219 - 22 * row, vmNormal, false, true);
+          }
+        }
+      }
+    }
+  #endif //SAVE_SPACE_DM42_8
 }
 #endif // !TESTSUITE_BUILD
