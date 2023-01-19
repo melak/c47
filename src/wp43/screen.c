@@ -2330,7 +2330,7 @@ void hideFunctionName(void) {
 
 
         // STATISTICAL DISTR
-        if(regist == REGISTER_X) {
+        if(regist == REGISTER_X && lastErrorCode == 0) {
           const char *r_i = NULL, *r_j = NULL, *r_k = NULL;
 
           switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
