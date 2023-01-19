@@ -1250,6 +1250,44 @@ bool_t allowShiftsToClearError = false;
       result = ITM_LBL;
     }
 
+    if(calcMode == CM_REGISTER_BROWSER) {
+      switch(key->primary) {
+        case ITM_0:
+        case ITM_1:
+        case ITM_2:
+        case ITM_3:
+        case ITM_4:
+        case ITM_5:
+        case ITM_6:
+        case ITM_7:
+        case ITM_8:
+        case ITM_9:
+        case ITM_PERIOD:
+        case ITM_RS:
+        case ITM_UP1:
+        case ITM_DOWN1:
+        case ITM_EXIT1:
+        case ITM_ENTER:
+        case ITM_RCL: {
+          break;
+        }
+        default: {
+          switch(key->primaryAim) {
+            case ITM_A:
+            case ITM_B:
+            case ITM_C:
+            case ITM_D:
+            case ITM_L:
+            case ITM_I:
+            case ITM_J:
+            case ITM_K: {
+              result = key->primaryAim;
+            }
+          }
+        }
+      }
+    }
+
     return result;
   }
 
@@ -2056,7 +2094,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
                   setSystemFlag(FLAG_ASLIFT);
                 }
               }
-              else if(ITM_0 <= item && item <= ITM_9 && (rbrMode == RBR_GLOBAL || rbrMode == RBR_LOCAL)) {
+              else if(ITM_0 <= item && item <= ITM_9) {
                 if(rbr1stDigit) {
                   rbr1stDigit = false;
                   rbrRegister = item - ITM_0;
@@ -2065,14 +2103,38 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
                   rbr1stDigit = true;
                   rbrRegister = rbrRegister*10 + item - ITM_0;
 
-                  if(rbrMode == RBR_GLOBAL) {
-                    currentRegisterBrowserScreen = rbrRegister;
-                  }
-                  else {
-                    rbrRegister = (rbrRegister >= currentNumberOfLocalRegisters ? 0 : rbrRegister);
-                    currentRegisterBrowserScreen = FIRST_LOCAL_REGISTER + rbrRegister;
+                  switch(rbrMode) {
+                    case RBR_GLOBAL: {
+                      currentRegisterBrowserScreen = rbrRegister;
+                      break;
+                    }
+                    case RBR_LOCAL: {
+                      rbrRegister = (rbrRegister >= currentNumberOfLocalRegisters ? 0 : rbrRegister);
+                      currentRegisterBrowserScreen = FIRST_LOCAL_REGISTER + rbrRegister;
+                      break;
+                    }
+                    case RBR_NAMED: {
+                      rbrMode = RBR_GLOBAL;
+                      currentRegisterBrowserScreen = rbrRegister;
+                      break;
+                    }
                   }
                 }
+              }
+              else if(ITM_A <= item && item <= ITM_D) {
+                rbrMode = RBR_GLOBAL;
+                rbr1stDigit = true;
+                currentRegisterBrowserScreen = item - ITM_A + REGISTER_A;
+              }
+              else if(ITM_I <= item && item <= ITM_K) {
+                rbrMode = RBR_GLOBAL;
+                rbr1stDigit = true;
+                currentRegisterBrowserScreen = item - ITM_I + REGISTER_I;
+              }
+              else if(item == ITM_L) {
+                rbrMode = RBR_GLOBAL;
+                rbr1stDigit = true;
+                currentRegisterBrowserScreen = REGISTER_L;
               }
 
               keyActionProcessed = true;
