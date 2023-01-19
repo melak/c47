@@ -1250,6 +1250,44 @@ bool_t allowShiftsToClearError = false;
       result = ITM_LBL;
     }
 
+    if(calcMode == CM_REGISTER_BROWSER) {
+      switch(key->primary) {
+        case ITM_0:
+        case ITM_1:
+        case ITM_2:
+        case ITM_3:
+        case ITM_4:
+        case ITM_5:
+        case ITM_6:
+        case ITM_7:
+        case ITM_8:
+        case ITM_9:
+        case ITM_PERIOD:
+        case ITM_RS:
+        case ITM_UP1:
+        case ITM_DOWN1:
+        case ITM_EXIT1:
+        case ITM_ENTER:
+        case ITM_RCL: {
+          break;
+        }
+        default: {
+          switch(key->primaryAim) {
+            case ITM_A:
+            case ITM_B:
+            case ITM_C:
+            case ITM_D:
+            case ITM_L:
+            case ITM_I:
+            case ITM_J:
+            case ITM_K: {
+              result = key->primaryAim;
+            }
+          }
+        }
+      }
+    }
+
     return result;
   }
 
@@ -2021,20 +2059,14 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
                     rbrMode = RBR_LOCAL;
                     currentRegisterBrowserScreen = FIRST_LOCAL_REGISTER;
                   }
-                  else if(numberOfNamedVariables > 0) {
+                  else {
                     rbrMode = RBR_NAMED;
                     currentRegisterBrowserScreen = FIRST_NAMED_VARIABLE;
                   }
                 }
                 else if(rbrMode == RBR_LOCAL) {
-                  if(numberOfNamedVariables > 0) {
-                    rbrMode = RBR_NAMED;
-                    currentRegisterBrowserScreen = FIRST_NAMED_VARIABLE;
-                  }
-                  else {
-                    rbrMode = RBR_GLOBAL;
-                    currentRegisterBrowserScreen = REGISTER_X;
-                  }
+                  rbrMode = RBR_NAMED;
+                  currentRegisterBrowserScreen = FIRST_NAMED_VARIABLE;
                 }
                 else if(rbrMode == RBR_NAMED) {
                   rbrMode = RBR_GLOBAL;
@@ -2053,9 +2085,16 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
                   setSystemFlag(FLAG_ASLIFT);
                 }
                 else if(rbrMode == RBR_NAMED) {
+                  calcMode = previousCalcMode;
+                  if(currentRegisterBrowserScreen >= FIRST_NAMED_VARIABLE + numberOfNamedVariables) { // Reserved variables
+                    currentRegisterBrowserScreen -= FIRST_NAMED_VARIABLE + numberOfNamedVariables;
+                    currentRegisterBrowserScreen += FIRST_RESERVED_VARIABLE + 12;
+                  }
+                  fnRecall(currentRegisterBrowserScreen);
+                  setSystemFlag(FLAG_ASLIFT);
                 }
               }
-              else if(ITM_0 <= item && item <= ITM_9 && (rbrMode == RBR_GLOBAL || rbrMode == RBR_LOCAL)) {
+              else if(ITM_0 <= item && item <= ITM_9) {
                 if(rbr1stDigit) {
                   rbr1stDigit = false;
                   rbrRegister = item - ITM_0;
@@ -2064,14 +2103,38 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
                   rbr1stDigit = true;
                   rbrRegister = rbrRegister*10 + item - ITM_0;
 
-                  if(rbrMode == RBR_GLOBAL) {
-                    currentRegisterBrowserScreen = rbrRegister;
-                  }
-                  else {
-                    rbrRegister = (rbrRegister >= currentNumberOfLocalRegisters ? 0 : rbrRegister);
-                    currentRegisterBrowserScreen = FIRST_LOCAL_REGISTER + rbrRegister;
+                  switch(rbrMode) {
+                    case RBR_GLOBAL: {
+                      currentRegisterBrowserScreen = rbrRegister;
+                      break;
+                    }
+                    case RBR_LOCAL: {
+                      rbrRegister = (rbrRegister >= currentNumberOfLocalRegisters ? 0 : rbrRegister);
+                      currentRegisterBrowserScreen = FIRST_LOCAL_REGISTER + rbrRegister;
+                      break;
+                    }
+                    case RBR_NAMED: {
+                      rbrMode = RBR_GLOBAL;
+                      currentRegisterBrowserScreen = rbrRegister;
+                      break;
+                    }
                   }
                 }
+              }
+              else if(ITM_A <= item && item <= ITM_D) {
+                rbrMode = RBR_GLOBAL;
+                rbr1stDigit = true;
+                currentRegisterBrowserScreen = item - ITM_A + REGISTER_A;
+              }
+              else if(ITM_I <= item && item <= ITM_K) {
+                rbrMode = RBR_GLOBAL;
+                rbr1stDigit = true;
+                currentRegisterBrowserScreen = item - ITM_I + REGISTER_I;
+              }
+              else if(item == ITM_L) {
+                rbrMode = RBR_GLOBAL;
+                rbr1stDigit = true;
+                currentRegisterBrowserScreen = REGISTER_L;
               }
 
               keyActionProcessed = true;
@@ -3342,7 +3405,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER + RBR_INCDEC1, currentNumberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
         }
         else if(rbrMode == RBR_NAMED) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_NAMED_VARIABLE + RBR_INCDEC1, numberOfNamedVariables) + FIRST_NAMED_VARIABLE;
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_NAMED_VARIABLE + RBR_INCDEC1, numberOfNamedVariables + LAST_RESERVED_VARIABLE - FIRST_RESERVED_VARIABLE - 11) + FIRST_NAMED_VARIABLE;
         }
         else {
           sprintf(errorMessage, commonBugScreenMessages[bugMsgRbrMode], "fnKeyUp", "UP", rbrMode);
@@ -3554,7 +3617,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
           currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_LOCAL_REGISTER - RBR_INCDEC1, currentNumberOfLocalRegisters) + FIRST_LOCAL_REGISTER;
         }
         else if(rbrMode == RBR_NAMED) {
-          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - 1000 - RBR_INCDEC1, numberOfNamedVariables) + 1000;
+          currentRegisterBrowserScreen = modulo(currentRegisterBrowserScreen - FIRST_NAMED_VARIABLE - RBR_INCDEC1, numberOfNamedVariables + LAST_RESERVED_VARIABLE - FIRST_RESERVED_VARIABLE - 11) + FIRST_NAMED_VARIABLE;
         }
         else {
           sprintf(errorMessage, commonBugScreenMessages[bugMsgRbrMode], "fnKeyDown", "DOWN", rbrMode);
