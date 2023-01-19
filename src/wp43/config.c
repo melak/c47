@@ -973,9 +973,11 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     ctxtReal1071.emin   = -99999;
     ctxtReal1071.traps  = 0;
 
-    //decContextDefault(&ctxtReal2139,  DEC_INIT_DECQUAD);
-    //ctxtReal2139.digits = 2139;
-    //ctxtReal2139.traps  = 0;
+    decContextDefault(&ctxtReal2139,  DEC_INIT_DECQUAD);
+    ctxtReal2139.digits = 2139;
+    ctxtReal2139.emax   = 99999;
+    ctxtReal2139.emin   = -99999;
+    ctxtReal2139.traps  = 0;
 
     resetOtherConfigurationStuff();
 
