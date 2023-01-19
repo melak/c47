@@ -127,8 +127,6 @@
     gtk_init(&argc, &argv);
     setupUI();
 
-    restoreCalc();
-
     // Without the following 8 lines of code
     // the f- and g-shifted labels are
     // miss aligned! I dont know why!
@@ -140,6 +138,8 @@
     while(gtk_events_pending()) {
       gtk_main_iteration();
     }
+
+    restoreCalc();
    
     //#ifdef INIT_RAMDUMP
     //ramDump();

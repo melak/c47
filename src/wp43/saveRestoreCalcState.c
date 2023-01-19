@@ -738,43 +738,49 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       }
       free(loadedScreen);
 
-        if(calcMode == CM_NORMAL) {
-        calcModeNormalGui();
+        if(tam.mode && !tam.alpha) {
+          calcModeTamGui();
+        }
+        else if(tam.mode && tam.alpha) {
+          calcModeAimGui();
+        }
+        else if(calcMode == CM_NORMAL) {
+          calcModeNormalGui();
         }
         else if(calcMode == CM_AIM) {
-        calcModeAimGui();
+          calcModeAimGui();
           cursorEnabled = true;
         }
         else if(calcMode == CM_NIM) {
-        calcModeNormalGui();
+          calcModeNormalGui();
           cursorEnabled = true;
         }
         else if(calcMode == CM_REGISTER_BROWSER) {
-        calcModeNormalGui();
+          calcModeNormalGui();
         }
         else if(calcMode == CM_FLAG_BROWSER) {
-        calcModeNormalGui();
+          calcModeNormalGui();
         }
         else if(calcMode == CM_ASN_BROWSER) {
-        calcModeNormalGui();
+          calcModeNormalGui();
         }
         else if(calcMode == CM_FONT_BROWSER) {
-        calcModeNormalGui();
+          calcModeNormalGui();
         }
         else if(calcMode == CM_PEM) {
-        calcModeNormalGui();
+          calcModeNormalGui();
         }
         else if(calcMode == CM_PLOT_STAT) {
-        calcModeNormalGui();
+          calcModeNormalGui();
         }
         else if(calcMode == CM_GRAPH) {
-        calcModeNormalGui();
+          calcModeNormalGui();
         }
         else if(calcMode == CM_LISTXY) {
-        calcModeNormalGui();
+          calcModeNormalGui();
         }
         else if(calcMode == CM_MIM) {
-        calcModeNormalGui();
+          calcModeNormalGui();
           mimRestore();
         }
         else if(calcMode == CM_EIM) {

@@ -2137,8 +2137,10 @@
 #define MNU_MODEL                   2081
 #define ITM_PERCENTILE              2082
 #define ITM_LINPOL                  2083
+#define MNU_TAMLBLALPHA             2084
+#define MNU_TAMSRALPHA              2085
 
-#define LAST_ITEM                   2084
+#define LAST_ITEM                   2086
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL

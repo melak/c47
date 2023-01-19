@@ -278,7 +278,7 @@ void fg_processing_jm(void) {
               popSoftmenu();                                                    //JM shifts
             }
             else {
-              if(calcMode == CM_AIM || calcMode == CM_EIM) {                                          //JM shifts
+              if(calcMode == CM_AIM || calcMode == CM_EIM) {                    //JM shifts
                 processKeyAction(CHR_num);
               }
               else {                                                            //JM SHIFTS
@@ -326,10 +326,10 @@ void  Check_SigmaPlus_Assigned(int16_t * result, int16_t tempkey) {
 
 
 
-void Setup_MultiPresses(int16_t result) {                         //Setup and start double press for DROP timer, and check for second press
+void Setup_MultiPresses(int16_t result) {                            //Setup and start double press for DROP timer, and check for second press
   JM_auto_doublepress_autodrop_enabled = 0;                          //JM TIMER CLRDROP. Autodrop means double click normal key.
   int16_t tmp = 0;
-  if(calcMode == CM_NORMAL && result == ITM_BACKSPACE) {             //Set up backspace double click to DROP
+  if(calcMode == CM_NORMAL && result == ITM_BACKSPACE && tam.mode == 0) {             //Set up backspace double click to DROP
     tmp = ITM_DROP;
   }
 
@@ -352,7 +352,7 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   longpressDelayedkey3 = 0;                                           //To Store the next timed stage
   int16_t tmpi;
 
-  if(calcMode == CM_NORMAL || calcMode == CM_NIM) {                   //longpress yellow math functions on the first two rows, menus allowed provided it is within keys 00-14
+  if((calcMode == CM_NORMAL || calcMode == CM_NIM) && tam.mode==0) {  //longpress yellow math functions on the first two rows, menus allowed provided it is within keys 00-14
     if(key_no >= 0 && key_no < 15 && LongPressM == RB_M1234) {
       tmpi = getSystemFlag(FLAG_USER) ? kbd_usr[key_no].fShifted : kbd_std[key_no].fShifted;
       longpressDelayedkey1 = tmpi;
@@ -363,39 +363,81 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
 
   if(calcMode == CM_NORMAL) {                                         //longpress special keys
     switch(*result) {
-      case ITM_XEQ      : longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ; break;    //XEQ longpress to XEQMENU 
-      case ITM_BACKSPACE: longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = ITM_CLSTK; break;    //backspace longpress to CLSTK
-      case ITM_EXIT1    :  longpressDelayedkey2=-MNU_MyMenu;          longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
+      case ITM_XEQ      : 
+        if(tam.mode == 0) {
+          longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ;    //XEQ longpress to XEQMENU 
+        }
+        break;
+      case ITM_BACKSPACE: 
+        if(tam.mode == 0) {
+          longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = ITM_CLSTK;    //backspace longpress to CLSTK
+        }
+        break;
+      case ITM_EXIT1    : 
+        longpressDelayedkey2=-MNU_MyMenu;           longpressDelayedkey1 = ITM_CLRMOD;     //EXIT longpress DOES CLRMOD
+        break;
       default:;
     }
   }
   else if(calcMode == CM_NIM) {
     switch(*result) {
-      case ITM_XEQ      : longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ; break;    //XEQ longpress to XEQMENU 
-      case ITM_BACKSPACE:                                             longpressDelayedkey1 = ITM_CLN;   break;    //BACKSPACE longpress clears input buffer
-      case ITM_EXIT1    :  longpressDelayedkey2=-MNU_MyMenu;          longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
+      case ITM_XEQ      : 
+        if(tam.mode == 0) {
+          longpressDelayedkey2=longpressDelayedkey1;  longpressDelayedkey1 = -MNU_XXEQ;    //XEQ longpress to XEQMENU 
+        }
+        break;
+      case ITM_BACKSPACE: 
+        if(tam.mode == 0) {
+                                                      longpressDelayedkey1 = ITM_CLN;      //BACKSPACE longpress clears input buffer
+        }
+        break;
+      case ITM_EXIT1    : 
+          longpressDelayedkey2=-MNU_MyMenu;           longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
+          break;
       default:;
     }
   }
   else if(calcMode == CM_AIM) {
     switch(*result) {
-      case ITM_BACKSPACE:                                             longpressDelayedkey1 = ITM_CLA;   break;    //BACKSPACE longpress clears input buffer
-      case ITM_EXIT1    :  longpressDelayedkey2=-MNU_MyAlpha;         longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
-      case ITM_ENTER    :                                             longpressDelayedkey1 = ITM_XEDIT; break;
+      case ITM_BACKSPACE: 
+        if(tam.mode == 0) {
+                                                      longpressDelayedkey1 = ITM_CLA;      //BACKSPACE longpress clears input buffer
+          }
+          break;
+      case ITM_EXIT1    : 
+          longpressDelayedkey2=-MNU_MyAlpha;          longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
+          break;
+      case ITM_ENTER    : 
+        if(tam.mode == 0) {
+                                                      longpressDelayedkey1 = ITM_XEDIT;
+          }
+          break;
       default:;
     }
   }
   else if(calcMode == CM_EIM) {
     switch(*result) {
-      case ITM_BACKSPACE:                                             longpressDelayedkey1 = ITM_CLA;   break;    //BACKSPACE longpress clears input buffer
-      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
-      case ITM_ENTER    :                                             longpressDelayedkey1 = ITM_XEDIT; break;
+      case ITM_BACKSPACE: 
+        if(tam.mode == 0) {
+                                                      longpressDelayedkey1 = ITM_CLA;      //BACKSPACE longpress clears input buffer
+        }
+        break;
+      case ITM_EXIT1    : 
+                                                      longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
+          break;
+      case ITM_ENTER    : 
+        if(tam.mode == 0) {
+                                                      longpressDelayedkey1 = ITM_XEDIT;
+        }
+        break;
       default:;
     }
   }
   else {
     switch(*result) {
-      case ITM_EXIT1    :                                             longpressDelayedkey1 = ITM_CLRMOD; break;    //EXIT longpress DOES CLRMOD
+      case ITM_EXIT1    : 
+                                                      longpressDelayedkey1 = ITM_CLRMOD;   //EXIT longpress DOES CLRMOD
+          break;
       default:;
     }
   }
@@ -403,14 +445,12 @@ void Check_MultiPresses(int16_t *result, int8_t key_no) { //Set up longpress
   if(longpressDelayedkey1 != 0) {       //if activated key pressed
     JM_auto_longpress_enabled = longpressDelayedkey1;
     fnTimerStart(TO_CL_LONG, TO_CL_LONG, JM_TO_CL_LONG);    //dr
-printf("Timer start %d %d %d %d \n",JM_auto_longpress_enabled, longpressDelayedkey1, longpressDelayedkey2, longpressDelayedkey3);
-
 
     //JM TIMER CLRDROP. Autodrop means double click normal key.
     if(JM_auto_doublepress_autodrop_enabled != 0) {
       hideFunctionName();
       undo();
-      showFunctionName(JM_auto_doublepress_autodrop_enabled, FUNCTION_NOPTIME);          //JM CLRDROP
+      showFunctionName(JM_auto_doublepress_autodrop_enabled, FUNCTION_NOPTIME);            //JM CLRDROP
       *result = JM_auto_doublepress_autodrop_enabled;
       fnTimerStop(TO_CL_DROP);          //JM TIMER CLRDROP ON DOUBLE BACKSPACE
       setSystemFlag(FLAG_ASLIFT);       //JM TIMER CLRDROP ON DOUBLE BACKSPACE
@@ -634,6 +674,9 @@ void btnFnReleased_StateMachine(void *unused, void *data) {
 //#ifdef INLINE_TEST
 //  if(testEnabled) { fnSwStart(2); }     //dr
 //#endif
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0050A btnFnReleased_StateMachine ------------------ FN_state=%d\n",FN_state);
+#endif //VERBOSEKEYS
 
   if(FN_state == ST_3_PRESS2) {
     FN_state =  ST_4_REL2;
@@ -641,8 +684,11 @@ void btnFnReleased_StateMachine(void *unused, void *data) {
   else {
     FN_state =  ST_2_REL1;
   }
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0050B btnFnReleased_StateMachine ------------------ FN_state=%d\n",FN_state);
+#endif //VERBOSEKEYS
   int mI = softmenu[softmenuStack[0].softmenuId].menuItem;
-  if((jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ mI != -MNU_ALPHA) && FN_state == ST_2_REL1 && FN_handle_timed_out_to_EXEC) {
+  if(jm_G_DOUBLETAP && /*calcMode != CM_AIM*/ mI != -MNU_ALPHA && FN_state == ST_2_REL1 && FN_handle_timed_out_to_EXEC) {
     uint8_t                      offset =  0;
     if(shiftF && !shiftG)      { offset =  6; }
     else if(!shiftF && shiftG) { offset = 12; }
