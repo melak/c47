@@ -786,7 +786,7 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
               tamProcessInput(     (shiftG || shiftF) ? ITM_1 : ITM_0);
               tamProcessInput(shiftG ? ITM_8 : shiftF ? ITM_2 : ITM_6);
               break;
-          }
+            }
           }
           shiftF = shiftG = false;
           refreshScreen();

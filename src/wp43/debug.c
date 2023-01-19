@@ -846,7 +846,7 @@ void debugNIM(void) {
    * \return char*          Name of the system flag
    ***********************************************/
   char * getSystemFlagName(uint16_t sf) {
-    return indexOfItems[SFL_TDM24 + (sf & 0x3fff)].itemCatalogName;
+    return (char *) indexOfItems[SFL_TDM24 + (sf & 0x3fff)].itemCatalogName;
   }
 
 
@@ -1127,7 +1127,7 @@ void debugNIM(void) {
       sprintf(string + n, "data type %s not supported for now!", getRegisterDataTypeName(regist, false, false));
     }
 
-    *(stringAfterWidth(string, &standardFont, 961, true, true)) = 0;
+    *(stringAfterPixels(string, &standardFont, 961, true, true)) = 0;
 
     stringToUtf8(string, (uint8_t *)tmpStr);
 
