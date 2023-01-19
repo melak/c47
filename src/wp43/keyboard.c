@@ -2021,20 +2021,14 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
                     rbrMode = RBR_LOCAL;
                     currentRegisterBrowserScreen = FIRST_LOCAL_REGISTER;
                   }
-                  else if(numberOfNamedVariables > 0) {
+                  else {
                     rbrMode = RBR_NAMED;
                     currentRegisterBrowserScreen = FIRST_NAMED_VARIABLE;
                   }
                 }
                 else if(rbrMode == RBR_LOCAL) {
-                  if(numberOfNamedVariables > 0) {
-                    rbrMode = RBR_NAMED;
-                    currentRegisterBrowserScreen = FIRST_NAMED_VARIABLE;
-                  }
-                  else {
-                    rbrMode = RBR_GLOBAL;
-                    currentRegisterBrowserScreen = REGISTER_X;
-                  }
+                  rbrMode = RBR_NAMED;
+                  currentRegisterBrowserScreen = FIRST_NAMED_VARIABLE;
                 }
                 else if(rbrMode == RBR_NAMED) {
                   rbrMode = RBR_GLOBAL;
@@ -2053,6 +2047,13 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
                   setSystemFlag(FLAG_ASLIFT);
                 }
                 else if(rbrMode == RBR_NAMED) {
+                  calcMode = previousCalcMode;
+                  if(currentRegisterBrowserScreen >= FIRST_NAMED_VARIABLE + numberOfNamedVariables) { // Reserved variables
+                    currentRegisterBrowserScreen -= FIRST_NAMED_VARIABLE + numberOfNamedVariables;
+                    currentRegisterBrowserScreen += FIRST_RESERVED_VARIABLE + 12;
+                  }
+                  fnRecall(currentRegisterBrowserScreen);
+                  setSystemFlag(FLAG_ASLIFT);
                 }
               }
               else if(ITM_0 <= item && item <= ITM_9 && (rbrMode == RBR_GLOBAL || rbrMode == RBR_LOCAL)) {

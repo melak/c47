@@ -275,7 +275,7 @@
         }
       }
       else { // no local register allocated
-        rbrMode = RBR_GLOBAL;
+        rbrMode = RBR_NAMED;
         registerBrowser(NOPARAM);
       }
     }
