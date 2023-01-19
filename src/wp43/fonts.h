@@ -663,4 +663,5 @@
   #define STD_SUB_Z                     "\xa4\xe9"
   #define STD_CHECK_MARK                "\xa7\x13"
   #define STD_RIGHT_DOUBLE_ARROW        "\xa1\xD2"
+  #define STD_RECYCLE                   "\xa6\x7A"
 #endif // !FONTS_H
