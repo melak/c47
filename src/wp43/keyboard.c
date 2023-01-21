@@ -2055,7 +2055,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
               if(item == ITM_PERIOD) {
                 rbr1stDigit = true;
                 if(rbrMode == RBR_GLOBAL) {
-                  if(currentLocalRegisters != NULL) {
+                  if(currentNumberOfLocalRegisters != 0) {
                     rbrMode = RBR_LOCAL;
                     currentRegisterBrowserScreen = FIRST_LOCAL_REGISTER;
                   }
