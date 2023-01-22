@@ -307,8 +307,10 @@
           showString(tmpString, &standardFont, SCREEN_WIDTH - stringWidth(tmpString, &standardFont, false, true), 219 - 22 * row, vmNormal, false, true);
         }
         else { // Reserved variables
-          regist -= FIRST_NAMED_VARIABLE + numberOfNamedVariables;
-          regist += FIRST_RESERVED_VARIABLE + 12;
+          if(regist < FIRST_RESERVED_VARIABLE) {
+            regist -= FIRST_NAMED_VARIABLE + numberOfNamedVariables;
+            regist += FIRST_RESERVED_VARIABLE + 12;
+          }
 
           if(regist <= LAST_RESERVED_VARIABLE) { // Named variables
             sprintf(tmpString, "%s:", (char *)allReservedVariables[regist - FIRST_RESERVED_VARIABLE].reservedVariableName + 1);
