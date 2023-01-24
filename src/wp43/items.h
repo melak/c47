@@ -2119,8 +2119,8 @@
 #define ITM_F14                     2063
 #define ITM_M14                     2064
 #define ITM_F124                    2065
-#define MNU_2066                    2066
-#define MNU_2067                    2067
+#define MNU_TAMLBLALPHA             2066
+#define MNU_TAMSRALPHA              2067
 #define MNU_2068                    2068
 #define ITM_LG_SIGN                 2069
 #define ITM_LN_SIGN                 2070
