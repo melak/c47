@@ -480,7 +480,7 @@
       }
       return;
     }
-    else if(tam.function == ITM_toINT && item == ITM_REG_I) {
+    else if((tam.function == ITM_toINT || tam.function == ITM_HASH_JM) && item == ITM_REG_I) {
       if(calcMode == CM_PEM) {
         addStepInProgram(ITM_IP);
       }
@@ -490,7 +490,7 @@
       tamLeaveMode();
       return;
     }
-    else if(tam.function == ITM_toINT && item == ITM_alpha) {
+    else if((tam.function == ITM_toINT || tam.function == ITM_HASH_JM)  && item == ITM_alpha) {
       if(calcMode == CM_PEM) {
         addStepInProgram(ITM_FP);
       }
@@ -500,19 +500,19 @@
       tamLeaveMode();
       return;
     }
-    else if(tam.function == ITM_toINT && (item == ITM_REG_D || item == ITM_ENTER)) {   //JM BASE
+    else if((tam.function == ITM_toINT || tam.function == ITM_HASH_JM) && (item == ITM_REG_D || item == ITM_ENTER)) {   //JM BASE
       tam.value = 10;
       forceTry = true;
     }
-    else if(tam.function == ITM_toINT && item == ITM_REG_B) {
+    else if((tam.function == ITM_toINT  || tam.function == ITM_HASH_JM) && item == ITM_REG_B) {
       tam.value = 2;
       forceTry = true;
     }
-    else if(tam.function == ITM_toINT && item == ITM_HEX) {
+    else if((tam.function == ITM_toINT  || tam.function == ITM_HASH_JM) && item == ITM_HEX) {
       tam.value = 16;
       forceTry = true;
     }
-    else if(tam.function == ITM_toINT && item == ITM_OCT) {     //JM BASE added OCT
+    else if((tam.function == ITM_toINT  || tam.function == ITM_HASH_JM) && item == ITM_OCT) {     //JM BASE added OCT
       tam.value = 8;
       forceTry = true;
     }
