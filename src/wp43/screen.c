@@ -2330,7 +2330,7 @@ void hideFunctionName(void) {
 
 
         // STATISTICAL DISTR
-        if(regist == REGISTER_X) {
+        if(regist == REGISTER_X && lastErrorCode == 0) {
           const char *r_i = NULL, *r_j = NULL, *r_k = NULL;
 
           switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
@@ -4130,14 +4130,14 @@ void fnScreenDump(uint16_t unusedButMandatoryParameter) {
 
 
 #if !defined(TESTSUITE_BUILD)
-static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue) {
+static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValuePlusOne) {
   int32_t value;
 
   if(getRegisterDataType(regist) == dtReal34) {
     real34_t maxValue34;
 
-    int32ToReal34(maxValue, &maxValue34);
-    if(real34CompareLessThan(REGISTER_REAL34_DATA(regist), const34_0) || real34CompareLessThan(&maxValue34, REGISTER_REAL34_DATA(regist))) {
+    int32ToReal34(maxValuePlusOne, &maxValue34);
+    if(real34CompareLessThan(REGISTER_REAL34_DATA(regist), const34_0) || real34CompareLessEqual(&maxValue34, REGISTER_REAL34_DATA(regist))) {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
         #if defined(PC_BUILD)
         real34ToString(REGISTER_REAL34_DATA(regist), errorMessage);
@@ -4153,7 +4153,7 @@ static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue)
     longInteger_t lgInt;
 
     convertLongIntegerRegisterToLongInteger(regist, lgInt);
-    if(longIntegerCompareUInt(lgInt, 0) < 0 || longIntegerCompareUInt(lgInt, maxValue) > 0) {
+    if(longIntegerCompareUInt(lgInt, 0) < 0 || longIntegerCompareUInt(lgInt, maxValuePlusOne) >= 0) {
       displayCalcErrorMessage(ERROR_OUT_OF_RANGE, ERR_REGISTER_LINE, REGISTER_X);
         #if defined(PC_BUILD)
         longIntegerToAllocatedString(lgInt, errorMessage, ERROR_MESSAGE_LENGTH);
@@ -4180,8 +4180,8 @@ static int32_t _getPositionFromRegister(calcRegister_t regist, int16_t maxValue)
 }
 
 static void getPixelPos(int32_t *x, int32_t *y) {
-  *x = _getPositionFromRegister(REGISTER_X, SCREEN_WIDTH  - 1);
-  *y = _getPositionFromRegister(REGISTER_Y, SCREEN_HEIGHT - 1);
+  *x = _getPositionFromRegister(REGISTER_X, SCREEN_WIDTH);
+  *y = _getPositionFromRegister(REGISTER_Y, SCREEN_HEIGHT);
 }
 #endif // !TESTSUITE_BUILD
 

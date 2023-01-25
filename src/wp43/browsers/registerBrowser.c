@@ -60,7 +60,11 @@
 
       case dtLongInteger: {
         if(showContent) {
-          if(getRegisterLongIntegerSign(regist) == LI_NEGATIVE) {
+          if(regist >= FIRST_RESERVED_VARIABLE) {
+            copySourceRegisterToDestRegister(regist, TEMP_REGISTER_1);
+            longIntegerRegisterToDisplayString(TEMP_REGISTER_1, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, STD_SPACE_4_PER_EM, false);
+          }
+          else if(getRegisterLongIntegerSign(regist) == LI_NEGATIVE) {
             longIntegerRegisterToDisplayString(regist, tmpString, TMP_STR_LENGTH, SCREEN_WIDTH - 1 - registerNameWidth, 50, STD_SPACE_4_PER_EM, false);   //JM added last parameter: Allow LARGELI
           }
           else {
@@ -68,7 +72,12 @@
           }
         }
         else {
-          sprintf(tmpString, "%" PRIu32 " bits " STD_CORRESPONDS_TO " 4+%" PRIu32 " bytes", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)) * 8, (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+          if(regist >= FIRST_RESERVED_VARIABLE) {
+            sprintf(tmpString, "4 bytes");
+          }
+          else {
+            sprintf(tmpString, "%" PRIu32 " bits " STD_CORRESPONDS_TO " 4+%" PRIu32 " bytes", (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)) * 8, (uint32_t)TO_BYTES(getRegisterMaxDataLength(regist)));
+          }
         }
         break;
       }
@@ -264,8 +273,7 @@
             // register number
             registerNameWidth = showString(tmpString, &standardFont, 1, 219 - 22 * row, vmNormal, true, true);
 
-            if(   (regist <  REGISTER_X && regist % 5 == 4)
-               || (regist >= REGISTER_X && regist % 4 == 3)) {
+            if(regist % 5 == 1) {
               lcd_fill_rect(0, 218 - 22 * row, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
             }
 
@@ -276,10 +284,51 @@
         }
       }
       else { // no local register allocated
-        rbrMode = RBR_GLOBAL;
+        rbrMode = RBR_NAMED;
         registerBrowser(NOPARAM);
       }
     }
-    #endif //SAVE_SPACE_DM42_8
+
+    else if(rbrMode == RBR_NAMED) { // Named variables
+      for(int16_t row=0; row<10; row++) {
+        calcRegister_t regist = currentRegisterBrowserScreen + row;
+        if(regist < FIRST_NAMED_VARIABLE + numberOfNamedVariables) { // Named variables
+          sprintf(tmpString, "%s:", (char *)allNamedVariables[regist - FIRST_NAMED_VARIABLE].variableName + 1);
+
+          // variable name
+          registerNameWidth = showString(tmpString, &standardFont, 1, 219 - 22 * row, vmNormal, true, true);
+
+          if((regist % 5 == 1) || (regist == FIRST_NAMED_VARIABLE + numberOfNamedVariables - 1)) {
+            lcd_fill_rect(0, 218 - 22 * row, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
+          }
+
+          _showRegisterInRbr(regist, registerNameWidth);
+
+          showString(tmpString, &standardFont, SCREEN_WIDTH - stringWidth(tmpString, &standardFont, false, true), 219 - 22 * row, vmNormal, false, true);
+        }
+        else { // Reserved variables
+          if(regist < FIRST_RESERVED_VARIABLE) {
+            regist -= FIRST_NAMED_VARIABLE + numberOfNamedVariables;
+            regist += FIRST_RESERVED_VARIABLE + 12;
+          }
+
+          if(regist <= LAST_RESERVED_VARIABLE) { // Named variables
+            sprintf(tmpString, "%s:", (char *)allReservedVariables[regist - FIRST_RESERVED_VARIABLE].reservedVariableName + 1);
+
+            // variable name
+            registerNameWidth = showString(tmpString, &standardFont, 1, 219 - 22 * row, vmNormal, true, true);
+
+            if(regist % 5 == 1) {
+              lcd_fill_rect(0, 218 - 22 * row, SCREEN_WIDTH, 1, LCD_EMPTY_VALUE);
+            }
+
+            _showRegisterInRbr(regist, registerNameWidth);
+
+            showString(tmpString, &standardFont, SCREEN_WIDTH - stringWidth(tmpString, &standardFont, false, true), 219 - 22 * row, vmNormal, false, true);
+          }
+        }
+      }
+    }
+  #endif //SAVE_SPACE_DM42_8
 }
 #endif // !TESTSUITE_BUILD

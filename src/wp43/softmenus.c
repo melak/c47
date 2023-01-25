@@ -127,13 +127,9 @@ TO_QSPI const int16_t menu_TRI[]         = { ITM_DEG2,                      ITM_
 //D47 vv
 TO_QSPI const int16_t menu_TRG[]         = { ITM_DEG,                       ITM_RAD,                    ITM_GRAD,                 ITM_sinc,              ITM_sincpi,                  ITM_atan2,
                                              ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_DMS2,              ITM_MULPI2,                  ITM_msTo,                   
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
-
-                                             ITM_sinh,                      ITM_cosh,                   ITM_tanh,                 ITM_sin,               ITM_cos,                     ITM_tan,
-                                             ITM_arsinh,                    ITM_arcosh,                 ITM_artanh,               ITM_arcsin,            ITM_arccos,                  ITM_arctan,
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                     };
-
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 //D47 ^^
+
 
 TO_QSPI const int16_t menu_FIN[]         = { ITM_PC,                        ITM_PCMRR,                  ITM_PCT,                  ITM_PCSIGMA,           ITM_PCPMG,                   -MNU_TVM,                     
                                              ITM_DELTAPC,                   ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };    //JM Added D%
@@ -373,9 +369,9 @@ TO_QSPI const int16_t menu_alpha_omega[] = { ITM_alpha,                     ITM_
 
                                              ITM_iota_DIALYTIKA,            ITM_omicron_TONOS,          ITM_upsilon_TONOS,        ITM_upsilon_DIALYTIKA, ITM_upsilon_DIALYTIKA_TONOS, ITM_omega_TONOS               };
 
-TO_QSPI const int16_t menu_AngleConv[]   = {ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_DMS2,              ITM_MULPI2,                 -MNU_TRI,
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,               ITM_NULL,            ITM_dotD,                    ITM_msTo                      };   //JM test new MPI stuff
-
+TO_QSPI const int16_t menu_AngleConv[]   = { ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_DMS2,              ITM_MULPI2,                 -MNU_TRI,
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_dotD,                    ITM_msTo,
+                                             ITM_DEG,                       ITM_RAD,                    ITM_GRAD,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 
 
 
