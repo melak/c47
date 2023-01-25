@@ -643,7 +643,10 @@ void fnIsConverged(uint16_t mode) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
     realCopy(const_1, &tol);
     tol.exponent -= ((mode & 0x03) == 0) ? 14 : ((mode & 0x03) == 1) ? 24 : 32;
-    if(realIsSpecial(&x) || realIsSpecial(&y)) {
+    if(realIsNaN(&x) || realIsNaN(&y)) {
+      temporaryInformation = (mode & 0x20) ? TI_FALSE : TI_TRUE;
+    }
+    else if(realIsInfinite(&x) || realIsInfinite(&y)) {
       temporaryInformation = (mode & 0x10) ? TI_FALSE : TI_TRUE;
     }
     else if(mode & 0x04) {
