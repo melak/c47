@@ -6753,26 +6753,7 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = 0;
 
     *(currentStep++) = ITM_CONVG;
-    *(currentStep++) = 99;
-
-    *(currentStep++) = ITM_CONVG;
-    *(currentStep++) = REGISTER_X;
-
-    *(currentStep++) = ITM_CONVG;
-    *(currentStep++) = REGISTER_K;
-
-    *(currentStep++) = ITM_CONVG;
-    *(currentStep++) = FIRST_LOCAL_REGISTER;
-
-    *(currentStep++) = ITM_CONVG;
-    *(currentStep++) = LAST_LOCAL_REGISTER;
-
-    *(currentStep++) = ITM_CONVG;
-    *(currentStep++) = STRING_LABEL_VARIABLE;
-    *(currentStep++) = 3;
-    *(currentStep++) = 'V';
-    *(currentStep++) = 'a';
-    *(currentStep++) = 'r';
+    *(currentStep++) = 7;
 
     *(currentStep++) = ITM_CONVG;
     *(currentStep++) = INDIRECT_REGISTER;
