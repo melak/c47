@@ -136,8 +136,10 @@ void magnitudeCplx(void) {
 }
 
 void complexMagnitude(const real_t *a, const real_t *b, real_t *c, realContext_t *realContext) {
-  realMultiply(a, a, c, realContext);
-  realFMA(b, b, c, c, realContext);
-  realSquareRoot(c, c, realContext);
+  real_t t, u;
+
+  realMultiply(a, a, &t, realContext);
+  realFMA(b, b, &t, &u, realContext);
+  realSquareRoot(&u, c, realContext);
 }
 

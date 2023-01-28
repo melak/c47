@@ -43,7 +43,7 @@
   void   WP34S_Logxy           (const real_t *yin, const real_t *xin, real_t *res, realContext_t *realContext);
   void   WP34S_SinhCosh        (const real_t *x, real_t *sinOut, real_t *cosOut, realContext_t *realContext);
   void   WP34S_Tanh            (const real_t *x, real_t *res, realContext_t *realContext);
-  //void   WP34S_ArcSinh         (const real_t *x, real_t *res, realContext_t *realContext); never used
+  void   WP34S_ArcSinh         (const real_t *x, real_t *res, realContext_t *realContext);
   //void   WP34S_ArcCosh         (const real_t *x, real_t *res, realContext_t *realContext); never used
   void   WP34S_ArcTanh         (const real_t *x, real_t *res, realContext_t *realContext);
   void   WP34S_Ln1P            (const real_t *x, real_t *res, realContext_t *realContext);
@@ -54,6 +54,7 @@
   void   WP34S_BigMod          (const real_t *x, const real_t *y, real_t *res, realContext_t *realContext);
   bool_t WP34S_RelativeError   (const real_t *x, const real_t *y, const real_t *tol, realContext_t *realContext);
   bool_t WP34S_AbsoluteError   (const real_t *x, const real_t *y, const real_t *tol, realContext_t *realContext);
+  bool_t WP34S_ComplexRelativeError (const real_t *xReal, const real_t *xImag, const real_t *yReal, const real_t *yImag, const real_t *tol, realContext_t *realContext);
   bool_t WP34S_ComplexAbsError (const real_t *xReal, const real_t *xImag, const real_t *yReal, const real_t *yImag, const real_t *tol, realContext_t *realContext);
   void   WP34S_GammaP          (const real_t *x, const real_t *a, real_t *res, realContext_t *realContext, bool_t upper, bool_t regularised);
   void   WP34S_Erf             (const real_t *x, real_t *res, realContext_t *realContext);

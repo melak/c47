@@ -28,6 +28,7 @@
 #include "mathematics/exp.h"
 #include "mathematics/ln.h"
 #include "mathematics/lnbeta.h"
+#include "mathematics/magnitude.h"
 #include "mathematics/multiplication.h"
 #include "mathematics/sin.h"
 #include "mathematics/toPolar.h"
@@ -790,7 +791,7 @@ void WP34S_Logxy(const real_t *yin, const real_t *xin, real_t *res, realContext_
 bool_t WP34S_RelativeError(const real_t *x, const real_t *y, const real_t *tol, realContext_t *realContext) {
   real_t a;
 
-  if(realCompareEqual(x, const_0)) {
+  if(realIsZero(x)) {
     realCopyAbs(y, &a);
     return realCompareLessThan(&a, tol);
   }
@@ -806,6 +807,21 @@ bool_t WP34S_AbsoluteError(const real_t *x, const real_t *y, const real_t *tol, 
   real_t a;
   realSubtract(x, y, &a, realContext);
   return realCompareAbsLessThan(&a, tol);
+}
+
+
+bool_t WP34S_ComplexRelativeError(const real_t *xReal, const real_t *xImag, const real_t *yReal, const real_t *yImag, const real_t *tol, realContext_t *realContext) {
+  real_t a, b;
+
+  if(realIsZero(xReal) && realIsZero(xImag)) {
+    complexMagnitude(yReal, yImag, &a, realContext);
+  } else {
+    realSubtract(xReal, yReal, &a, realContext);
+    realSubtract(xImag, yImag, &b, realContext);
+    divComplexComplex(&a, &b, xReal, xImag, &a, &b, realContext);
+    complexMagnitude(&a, &b, &a, realContext);
+  }
+  return realCompareLessThan(&a, tol);
 }
 
 
@@ -881,7 +897,6 @@ void WP34S_Tanh(const real_t *x, real_t *res, realContext_t *realContext) {
 }
 
 
-/* never used
 void WP34S_ArcSinh(const real_t *x, real_t *res, realContext_t *realContext) {
   real_t a;
 
@@ -894,7 +909,7 @@ void WP34S_ArcSinh(const real_t *x, real_t *res, realContext_t *realContext) {
   realMultiply(x, &a, &a, realContext);  // y = x * (x / (sqrt(x²+1)+1) + 1)
   WP34S_Ln1P(&a, res, realContext);      // res = ln(1 + (x * (x / (sqrt(x²+1)+1) + 1)))
 }
-*/
+
 
 
 /* never used

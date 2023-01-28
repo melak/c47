@@ -635,28 +635,49 @@ void fnXAlmostEqual(uint16_t regist) {
 #undef COMPARE_MODE_GREATER_EQUAL
 
 
+static int getAsComplex(calcRegister_t reg, real_t *re, real_t *im, int *isComplex) {
+  uint32_t type = getRegisterDataType(reg);
+
+  if (type == dtReal34) {
+    real34ToReal(REGISTER_REAL34_DATA(reg), re);
+    realZero(im);
+    return 1;
+  } else if (type == dtComplex34) {
+    real34ToReal(REGISTER_REAL34_DATA(reg), re);
+    real34ToReal(REGISTER_IMAG34_DATA(reg), im);
+    *isComplex |= 1;
+    return 1;
+  }
+  return 0;
+}
 
 void fnIsConverged(uint16_t mode) {
-  real_t x, y, tol;
-  if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterDataType(REGISTER_Y) == dtReal34) {
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
-    real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
-    realCopy(const_1, &tol);
-    tol.exponent -= ((mode & 0x03) == 0) ? 14 : ((mode & 0x03) == 1) ? 24 : 32;
-    if(realIsNaN(&x) || realIsNaN(&y)) {
-      temporaryInformation = (mode & 0x20) ? TI_FALSE : TI_TRUE;
-    }
-    else if(realIsInfinite(&x) || realIsInfinite(&y)) {
-      temporaryInformation = (mode & 0x10) ? TI_FALSE : TI_TRUE;
-    }
-    else if(mode & 0x04) {
-      temporaryInformation = WP34S_AbsoluteError(&x, &y, &tol, &ctxtReal39) ? TI_TRUE : TI_FALSE;
-    }
-    else {
-      temporaryInformation = WP34S_RelativeError(&x, &y, &tol, &ctxtReal39) ? TI_TRUE : TI_FALSE;
-    }
+  real_t xReal, xImag, yReal, yImag, tol;
+  int isComplex = 0;
+
+  convergenceTolerence(&tol);
+  if (!getAsComplex(REGISTER_X, &xReal, &xImag, &isComplex) || !getAsComplex(REGISTER_Y, &yReal, &yImag, &isComplex)) {
+    comparisonTypeError(REGISTER_Y);
+    return;
+  }
+
+  if(realIsNaN(&xReal) || realIsNaN(&yReal) || realIsNaN(&xImag) || realIsNaN(&yImag)) {
+    temporaryInformation = (mode & 0x4) ? TI_TRUE : TI_FALSE;
+  }
+  else if(realIsInfinite(&xReal) || realIsInfinite(&yReal) || realIsInfinite(&xImag) || realIsInfinite(&yImag)) {
+    temporaryInformation = (mode & 0x2) ? TI_TRUE : TI_FALSE;
+  }
+  else if(mode & 0x01) {
+    if (isComplex)
+      temporaryInformation = WP34S_ComplexAbsError(&xReal, &xImag, &yReal, &yImag, &tol, &ctxtReal39) ? TI_TRUE : TI_FALSE;
+    else
+      temporaryInformation = WP34S_AbsoluteError(&xReal, &yReal, &tol, &ctxtReal39) ? TI_TRUE : TI_FALSE;
   }
   else {
-    comparisonTypeError(REGISTER_Y);
+    if (isComplex)
+      temporaryInformation = WP34S_ComplexRelativeError(&xReal, &xImag, &yReal, &yImag, &tol, &ctxtReal39) ? TI_TRUE : TI_FALSE;
+    else
+      temporaryInformation = WP34S_RelativeError(&xReal, &yReal, &tol, &ctxtReal39) ? TI_TRUE : TI_FALSE;
   }
 }
+
