@@ -1311,6 +1311,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         break;
       }
 
+      case ITM_HASH_JM:
       case ITM_toINT: { // #
         done = true;
 

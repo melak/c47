@@ -1790,7 +1790,7 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
     getGlyphBounds(STD_SUP_g, 0, &numericFont, &gcol, &grow);
     lcd_fill_rect(0, Y_POSITION_OF_REGISTER_T_LINE, (fcol > gcol ? fcol : gcol), (frow > grow ? frow : grow), LCD_SET_VALUE);
   
-  showString(padding, &standardFont, /*1*/ 20, Y_POSITION_OF_REGISTER_T_LINE /*+ 6*/, vmNormal, true, true);      //JM
+  showString(padding, &standardFont, /*1*/ 16, Y_POSITION_OF_REGISTER_T_LINE /*+ 6*/, vmNormal, true, true);      //JM
 }
 
 
