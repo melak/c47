@@ -578,45 +578,6 @@ void fnJM_2SI(uint16_t unusedButMandatoryParameter) { //Convert Real to Longint;
 }
 
 
-/********************************************//**
- * \Set SIGFIG mode
- *
- * FROM DISPLAY.C
- ***********************************************/
-void fnDisplayFormatSigFig(uint16_t displayFormatN) { //DONE          //JM SIGFIG
-  displayFormat = DF_FIX;
-  displayFormatDigits = displayFormatN;
-  clearSystemFlag(FLAG_FRACT);
-  constantFractionsOn = false; //JM
-  SigFigMode = displayFormatN; //JM SIGFIG
-  UNITDisplay = false;         //JM SIGFIG display Reset
-  DM_Cycling = 0;
-
-  fnRefreshState();
-} //JM SIGFIG
-
-/********************************************//**
- * \Set UNIT mode
- *
- * FROM DISPLAY.C
- ***********************************************/
-void fnDisplayFormatUnit(uint16_t displayFormatN) { //DONE           //JM UNIT
-  displayFormat = DF_ENG;
-  displayFormatDigits = displayFormatN;
-  clearSystemFlag(FLAG_FRACT);
-  constantFractionsOn = false; //JM
-  SigFigMode = 0;     //JM UNIT Sigfig works in FIX mode and it makes not sense in UNIT (ENG) mode
-  UNITDisplay = true; //JM UNIT display
-  DM_Cycling = 0;
-
-
-  fnRefreshState();
-  // Convert longint to real, to force UNIT to work.
-//if (getRegisterDataType(REGISTER_X) == dtLongInteger) {
-//  convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
-//}
-} //JM UNIT
-
 /* JM UNIT********************************************//**                                                JM UNIT
  * \brief Adds the power of 10 using numeric font to displayString                                        JM UNIT
  *        Converts to units like m, M, k, etc.                                                            JM UNIT

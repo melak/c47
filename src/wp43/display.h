@@ -31,6 +31,8 @@ void fnDisplayFormatAll                (uint16_t displayFormatN);
 void fnDisplayFormatDsp                (uint16_t displayFormatN);
 void fnDisplayFormatGap                (uint16_t gap);
 void fnDisplayFormatTime               (uint16_t displayFormatN);
+void fnDisplayFormatSigFig             (uint16_t displayFormatN);
+void fnDisplayFormatUnit               (uint16_t displayFormatN);
 void fnShow                            (uint16_t unusedButMandatoryParameter);
 void mimShowElement                    (void);
 void fnView                            (uint16_t regist);

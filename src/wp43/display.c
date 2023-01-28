@@ -47,7 +47,14 @@
 
 #include "wp43.h"
 
-
+static void fnDisplayFormatReset(uint16_t displayFormatN) {
+  displayFormatDigits = displayFormatN > DSP_MAX ? DSP_MAX : displayFormatN;
+  clearSystemFlag(FLAG_FRACT);
+  constantFractionsOn = false;
+  SigFigMode = 0;
+  UNITDisplay = false;
+  DM_Cycling = 0;
+}
 
 /********************************************//**
  * \brief Sets the display format FIX and refreshes the stack
@@ -56,13 +63,8 @@
  * \return void
  ***********************************************/
 void fnDisplayFormatFix(uint16_t displayFormatN) {
+  fnDisplayFormatReset(displayFormatN);
   displayFormat = DF_FIX;
-  displayFormatDigits = displayFormatN;
-  clearSystemFlag(FLAG_FRACT);
-  constantFractionsOn = false; //JM
-  SigFigMode = 0;                                                //JM SIGFIG Reset SIGFIG
-  UNITDisplay = false;                                           //JM UNIT display Reset
-  DM_Cycling = 0;  //JM
   if(getRegisterDataType(REGISTER_X) == dtTime || getRegisterDataType(REGISTER_Y) == dtTime || getRegisterDataType(REGISTER_Z) == dtTime || getRegisterDataType(REGISTER_T) == dtTime) {     //JM let FIX operate on time as well
     fnDisplayFormatTime(displayFormatN);
   }
@@ -79,14 +81,8 @@ void fnDisplayFormatFix(uint16_t displayFormatN) {
  * \return void
  ***********************************************/
 void fnDisplayFormatSci(uint16_t displayFormatN) {
+  fnDisplayFormatReset(displayFormatN);
   displayFormat = DF_SCI;
-  displayFormatDigits = displayFormatN;
-  clearSystemFlag(FLAG_FRACT);
-  constantFractionsOn = false; //JM
-  SigFigMode = 0;                                                //JM SIGFIG Reset SIGFIG
-  UNITDisplay = false;                                           //JM UNIT display Reset
-  DM_Cycling = 0;  //JM
-
   fnRefreshState();                              //drJM
 }
 
@@ -99,14 +95,8 @@ void fnDisplayFormatSci(uint16_t displayFormatN) {
  * \return void
  ***********************************************/
 void fnDisplayFormatEng(uint16_t displayFormatN) {
+  fnDisplayFormatReset(displayFormatN);
   displayFormat = DF_ENG;
-  displayFormatDigits = displayFormatN;
-  clearSystemFlag(FLAG_FRACT);
-  constantFractionsOn = false; //JM
-  SigFigMode = 0;                                                //JM SIGFIG Reset SIGFIG
-  UNITDisplay = false;                                           //JM UNIT display Reset
-  DM_Cycling = 0;  //JM
-
   fnRefreshState();                              //drJM
 }
 
@@ -119,16 +109,35 @@ void fnDisplayFormatEng(uint16_t displayFormatN) {
  * \return void
  ***********************************************/
 void fnDisplayFormatAll(uint16_t displayFormatN) {
-  //if(0 <= displayFormatN && displayFormatN <= 15) {
+  fnDisplayFormatReset(displayFormatN);
   displayFormat = DF_ALL;
-  displayFormatDigits = displayFormatN;
-  clearSystemFlag(FLAG_FRACT);
-  constantFractionsOn = false; //JM
-  SigFigMode = 0;                                                //JM SIGFIG Reset SIGFIG
-  UNITDisplay = false;                                           //JM UNIT display Reset
-  DM_Cycling = 0;  //JM
-
   fnRefreshState();                              //drJM
+}
+
+
+/********************************************//**
+ * \Set SIGFIG mode
+ *
+ * FROM DISPLAY.C
+ ***********************************************/
+void fnDisplayFormatSigFig(uint16_t displayFormatN) {
+  fnDisplayFormatReset(displayFormatN);
+  displayFormat = DF_FIX;
+  SigFigMode = displayFormatN > DSP_MAX ? DSP_MAX : displayFormatN;
+  fnRefreshState();
+}
+
+
+/********************************************//**
+ * \Set UNIT mode
+ *
+ * FROM DISPLAY.C
+ ***********************************************/
+void fnDisplayFormatUnit(uint16_t displayFormatN) {
+  fnDisplayFormatReset(displayFormatN);
+  displayFormat = DF_ENG;
+  UNITDisplay = true;
+  fnRefreshState();
 }
 
 
@@ -140,10 +149,9 @@ void fnDisplayFormatAll(uint16_t displayFormatN) {
  * \return void
  ***********************************************/
 void fnDisplayFormatDsp(uint16_t displayFormatN) {
+  displayFormatN = displayFormatN > DSP_MAX ? DSP_MAX : displayFormatN;
   displayFormatDigits = displayFormatN;
   clearSystemFlag(FLAG_FRACT);
-//  constantFractionsOn = false; //JM
-
 
   if(SigFigMode != 0) {             //JM
     SigFigMode = displayFormatN;    //JM
@@ -174,7 +182,7 @@ void fnDisplayFormatGap(uint16_t gap) {
  * \return void
  ***********************************************/
 void fnDisplayFormatTime(uint16_t displayFormatN) {
-  timeDisplayFormatDigits = (uint8_t)displayFormatN;
+  timeDisplayFormatDigits = displayFormatN > DSP_MAX ? DSP_MAX : displayFormatN;
 }
 
 

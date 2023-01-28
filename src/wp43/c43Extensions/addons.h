@@ -70,8 +70,6 @@ void fnByte             (uint16_t command);                 //JM POC BASE2 ^^
 
 
 //for display.c
-void fnDisplayFormatSigFig      (uint16_t displayFormatN);
-void fnDisplayFormatUnit        (uint16_t displayFormatN);
 void exponentToUnitDisplayString(int32_t exponent, char *displayString, char *displayValueString, bool_t nimMode, const char *separator);
 
 
