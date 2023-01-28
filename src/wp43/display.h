@@ -21,6 +21,9 @@
 #include "typeDefinitions.h"
 #include <stdint.h>
 
+// The maximum argument to FIX, SCI, ...
+#define DSP_MAX     33
+
 void fnDisplayFormatFix                (uint16_t displayFormatN);
 void fnDisplayFormatSci                (uint16_t displayFormatN);
 void fnDisplayFormatEng                (uint16_t displayFormatN);
