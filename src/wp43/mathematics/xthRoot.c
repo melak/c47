@@ -31,6 +31,7 @@
 #include "mathematics/comparisonReals.h"
 #include "mathematics/division.h"
 #include "mathematics/matrix.h"
+#include "mathematics/power.h"
 #include "mathematics/toPolar.h"
 #include "mathematics/toRect.h"
 #include "mathematics/wp34s.h"
@@ -238,7 +239,7 @@ void xthRootReal(real_t *yy, real_t *xx, realContext_t *realContext) {
   if(realIsPositive(&y)) {                                         //positive base, no problem, get the power function y^(1/x)
     realDivide(const_1, &x, &x, realContext);
 
-    realPower(&y, &x, &x, realContext);
+    PowerReal(&y, &x, &x, realContext);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertRealToReal34ResultRegister(&x, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone);
@@ -266,7 +267,7 @@ void xthRootReal(real_t *yy, real_t *xx, realContext_t *realContext) {
           realDivide(const_1,&x, &x, realContext);
 
           realSetPositiveSign(&y);
-          realPower(&y, &x, &x, realContext);
+          PowerReal(&y, &x, &x, realContext);
           realSetNegativeSign(&x);
 
           reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
