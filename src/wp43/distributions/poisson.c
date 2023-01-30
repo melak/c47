@@ -185,7 +185,7 @@
     real_t p, q, r;
 
     WP34S_qf_q_est(prob, &p, NULL, realContext);
-    realPower(&p, const_2, &q, realContext);
+    realMultiply(&p, &p, &q, realContext);
     realSubtract(&q, const_1, &q, realContext);
     int32ToReal(6, &r);
     realDivide(&q, &r, &q, realContext);

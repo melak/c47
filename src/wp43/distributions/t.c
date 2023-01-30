@@ -178,8 +178,8 @@
   void WP34S_Pdf_T(const real_t *x, const real_t *nu, real_t *res, realContext_t *realContext) {
     real_t p, q, r, s, i;
 
-    realPower(x, const_2, &p, realContext);
-    realDivide(nu, const_2, &q, realContext);
+    realMultiply(x, x, &p, realContext);
+    realMultiply(nu, const_1on2, &q, realContext);
     WP34S_LnGamma(&q, &r, realContext);
     realAdd(const_1on2, &q, &i, realContext);
     WP34S_LnGamma(&i, &s, realContext);
@@ -215,20 +215,20 @@
       invert = true;
     }
 
-    realPower(&p, const_2, &p, realContext);
+    realMultiply(&p, &p, &p, realContext);
     if(realCompareGreaterEqual(&p, const_1)) {
       realAdd(&p, nu, &p, realContext);
       realDivide(nu, &p, &p, realContext);
-      realDivide(nu, const_2, &q, realContext);
+      realMultiply(nu, const_1on2, &q, realContext);
       WP34S_betai(const_1on2, &q, &p, &r, realContext);
-      realDivide(&r, const_2, res, realContext);
+      realMultiply(&r, const_1on2, res, realContext);
     }
     else { // cdf_t_small
       realAdd(&p, nu, &q, realContext);
       realDivide(&p, &q, &p, realContext);
-      realDivide(nu, const_2, &q, realContext);
+      realMultiply(nu, const_1on2, &q, realContext);
       WP34S_betai(&p, const_1on2, &q, &r, realContext);
-      realDivide(&r, const_2, &r, realContext);
+      realMultiply(&r, const_1on2, &r, realContext);
       realChangeSign(&r);
       realAdd(&r, const_1on2, res, realContext);
     }
@@ -265,7 +265,7 @@
     realAdd(&p, &q, &p, realContext);
     realMultiply(nu, const__1, &q, realContext);
     realPower(&p, &q, &p, realContext);
-    realDivide(&p, const_4, &a, realContext);
+    realMultiply(&p, const_1on4, &a, realContext);
     if(realCompareLessEqual(&reg0, &a)) {
       realMultiply(nu, const_2, &p, realContext);
       realMultiply(&reg0, &p, &q, realContext);
@@ -281,7 +281,7 @@
     }
     else { // qf_t_tail
       WP34S_qf_q_est(&reg0, &p, NULL, realContext);
-      realPower(&p, const_2, &p, realContext);
+      realMultiply(&p, &p, &p, realContext);
       realMultiply(const_eE, nu, &r, realContext);
       realDivide(const_1, &r, &r, realContext);
       realAdd(&r, const_1, &r, realContext);
@@ -293,7 +293,7 @@
       realSquareRoot(&p, &p, realContext);
     }
     do { // qf_t_loop
-      realPower(&p, const_2, &q, realContext);
+      realMultiply(&p, &p, &q, realContext);
       if(realCompareGreaterEqual(&q, const_1)) {
         WP34S_Cdfu_T(&p, nu, &q, realContext);
         realSubtract(&q, &reg0, &q, realContext);
@@ -301,9 +301,9 @@
       else { // qf_t_small
         realAdd(&q, nu, &r, realContext);
         realDivide(&q, &r, &q, realContext);
-        realDivide(nu, const_2, &r, realContext);
+        realMultiply(nu, const_1on2, &r, realContext);
         WP34S_betai(&r, const_1on2, &q, &s, realContext);
-        realDivide(&s, const_2, &s, realContext);
+        realMultiply(&s, const_1on2, &s, realContext);
         realChangeSign(&s);
         realSubtract(const_1on2, &reg0, &q, realContext);
         realAdd(&s, &q, &q, realContext);
@@ -314,7 +314,7 @@
       realMultiply(&q, &r, &r, realContext);
       realAdd(nu, const_1, &s, realContext);
       realMultiply(&r, &s, &r, realContext);
-      realPower(&p, const_2, &s, realContext);
+      realMultiply(&p, &p, &s, realContext);
       realAdd(&s, nu, &s, realContext);
       realMultiply(&s, const_2, &s, realContext);
       realDivide(&r, &s, &r, realContext);

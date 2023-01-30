@@ -177,7 +177,7 @@
 
     WP34S_Tanh(x, &p, realContext);
     realAdd(&p, const_1, &p, realContext);
-    realDivide(&p, const_2, res, realContext);
+    realMultiply(&p, const_1on2, res, realContext);
   }
 
   /* Extra the logistic rescaled parameter (x-J) / 2K */
@@ -197,7 +197,7 @@
       return;
     }
     WP34S_SinhCosh(&xx, NULL, &p, realContext);
-    realPower(&p, const_2, &p, realContext);
+    realMultiply(&p, &p, &p, realContext);
     realMultiply(&p, s, &p, realContext);
     realMultiply(&p, const_4, &p, realContext);
     realDivide(const_1, &p, res, realContext);
