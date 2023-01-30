@@ -21,6 +21,7 @@
   #define FILE_10POW_H
 
   #include "defines.h"
+  #include "realType.h"
   #include <stdint.h>
 
   void fn10Pow    (uint16_t unusedButMandatoryParameter);
@@ -37,4 +38,6 @@
   void tenPowShoI (void);
   void tenPowReal (void);
   void tenPowCplx (void);
+
+  void realPower10(const real_t *x, real_t *res, realContext_t *realContext);
 #endif // !FILE_10POW_H

@@ -21,6 +21,7 @@
   #define FILE_2POW_H
 
   #include "defines.h"
+  #include "realType.h"
   #include <stdint.h>
 
   void fn2Pow     (uint16_t unusedButMandatoryParameter);
@@ -37,4 +38,6 @@
   void twoPowShoI (void);
   void twoPowReal (void);
   void twoPowCplx (void);
+
+  void realPower2 (const real_t *x, real_t *res, realContext_t *realContext);
 #endif // !FILE_2POW_H
