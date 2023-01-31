@@ -55,7 +55,7 @@ static bool_t checkParamHyper(real_t *x, real_t *k, real_t *j, real_t *i) {
      || ((getRegisterDataType(REGISTER_I) != dtReal34) && (getRegisterDataType(REGISTER_I) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_J) != dtReal34) && (getRegisterDataType(REGISTER_J) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_K) != dtReal34) && (getRegisterDataType(REGISTER_K) != dtLongInteger))) {
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Values in register X, I, J and K must be of the real or long integer type");
         moreInfoOnError("In function checkParamNegBinom:", errorMessage, NULL, NULL);
@@ -100,24 +100,21 @@ static bool_t checkParamHyper(real_t *x, real_t *k, real_t *j, real_t *i) {
   realCopy(realCompareLessThan(k, j) ? k : j, &xmax);
 
   if((!checkRegisterNoFP(REGISTER_I)) || (!checkRegisterNoFP(REGISTER_J)) || (!checkRegisterNoFP(REGISTER_K))) {
-    displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+    displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamHyper:", "N, n and/or K is not an integer", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return false;
   }
-  else if(getSystemFlag(FLAG_SPCRES)) {
-    return true;
-  }
-  else if(realIsNegative(x) || realCompareLessThan(x, &xmin) || realCompareGreaterThan(x, &xmax)) {
-    displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+  if(realIsNegative(x) || realCompareLessThan(x, &xmin) || realCompareGreaterThan(x, &xmax)) {
+    displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamHyper:", "cannot calculate for x < max(0, n + K - N) or x > min(n, K)", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
     return false;
   }
-  else if(realIsNegative(k) || realCompareGreaterThan(k, i) || realIsNegative(j) || realCompareGreaterThan(j, i) || realIsNegative(i)) {
-    displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+  if(realIsNegative(k) || realCompareGreaterThan(k, i) || realIsNegative(j) || realCompareGreaterThan(j, i) || realIsNegative(i)) {
+    displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamHyper:", "the parameters must be integer, and 0 " STD_LESS_EQUAL " K " STD_LESS_EQUAL " N, 0 " STD_LESS_EQUAL " n " STD_LESS_EQUAL " N, and N " STD_GREATER_EQUAL " 0", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -142,7 +139,7 @@ void fnHypergeometricP(uint16_t unusedButMandatoryParameter) {
       realZero(&ans);
     }
     if(realIsNaN(&ans)) {
-      displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnHypergeometricP:", "a parameter is invalid", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -151,9 +148,8 @@ void fnHypergeometricP(uint16_t unusedButMandatoryParameter) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       convertRealToReal34ResultRegister(&ans, REGISTER_X);
     }
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -167,7 +163,7 @@ void fnHypergeometricL(uint16_t unusedButMandatoryParameter) {
   if(checkParamHyper(&val, &spec, &samp, &batch)) {
     cdf_Hypergeometric(&val, &spec, &samp, &batch, &ans, &ctxtReal75);
     if(realIsNaN(&ans)) {
-      displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnNegBinomialL:", "a parameter is invalid", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -176,9 +172,8 @@ void fnHypergeometricL(uint16_t unusedButMandatoryParameter) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       convertRealToReal34ResultRegister(&ans, REGISTER_X);
     }
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -192,7 +187,7 @@ void fnHypergeometricR(uint16_t unusedButMandatoryParameter) {
   if(checkParamHyper(&val, &spec, &samp, &batch)) {
     cdfu_Hypergeometric(&val, &spec, &samp, &batch, &ans, &ctxtReal75);
     if(realIsNaN(&ans)) {
-      displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnHypergeometricR:", "a parameter is invalid", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -201,9 +196,8 @@ void fnHypergeometricR(uint16_t unusedButMandatoryParameter) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       convertRealToReal34ResultRegister(&ans, REGISTER_X);
     }
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -215,28 +209,29 @@ void fnHypergeometricI(uint16_t unusedButMandatoryParameter) {
   }
 
   if(checkParamHyper(&val, &spec, &samp, &batch)) {
-    if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
-      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+    if(realCompareLessThan(&val, const_0) || realCompareGreaterThan(&val, const_1)) {
+      displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        moreInfoOnError("In function fnNegBinomialI:", "the argument must be 0 < x < 1", NULL, NULL);
+        moreInfoOnError("In function fnNegBinomialI:", "the argument must be 0 " STD_LESS_EQUAL " x " STD_LESS_EQUAL " 1", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      if (getSystemFlag(FLAG_SPCRES))
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+      return;
     }
-    else {
-      qf_Hypergeometric(&val, &spec, &samp, &batch, &ans, &ctxtReal75);
-      if(realIsNaN(&ans)) {
-        displayCalcErrorMessage(ERROR_NO_ROOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          moreInfoOnError("In function fnNegBinomialI:", "WP34S_Qf_Binomial did not converge", NULL, NULL);
-        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      }
-      else {
-        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        convertRealToReal34ResultRegister(&ans, REGISTER_X);
-      }
+    qf_Hypergeometric(&val, &spec, &samp, &batch, &ans, &ctxtReal75);
+    if(realIsNaN(&ans)) {
+      displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        moreInfoOnError("In function fnNegBinomialI:", "WP34S_Qf_Binomial did not converge", NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      if (getSystemFlag(FLAG_SPCRES))
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+      return;
     }
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    convertRealToReal34ResultRegister(&ans, REGISTER_X);
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 

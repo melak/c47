@@ -56,7 +56,7 @@ static bool_t checkParamF(real_t *x, real_t *i, real_t *j) {
   if(   ((getRegisterDataType(REGISTER_X) != dtReal34) && (getRegisterDataType(REGISTER_X) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_I) != dtReal34) && (getRegisterDataType(REGISTER_I) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_J) != dtReal34) && (getRegisterDataType(REGISTER_J) != dtLongInteger))) {
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Values in register X, I, and J must be of the real or long integer type");
         moreInfoOnError("In function checkParamChi2:", errorMessage, NULL, NULL);
@@ -86,30 +86,32 @@ static bool_t checkParamF(real_t *x, real_t *i, real_t *j) {
   }
 
   if(!(checkRegisterNoFP(REGISTER_I) || checkRegisterNoFP(REGISTER_J))) {
-    displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+    displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamF:", "d1 or d2 is not an integer", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
+    goto err;
   }
-  else if(getSystemFlag(FLAG_SPCRES)) {
-    return true;
-  }
-  else if(realIsNegative(x)) {
-    displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+  if(realIsNegative(x)) {
+    displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamF:", "cannot calculate for x < 0", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
+    goto err;
   }
-  else if(realIsZero(i) || realIsNegative(i) || realIsZero(j) || realIsNegative(j)) {
-    displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+  if(realIsZero(i) || realIsNegative(i) || realIsZero(j) || realIsNegative(j)) {
+    displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamF:", "cannot calculate for d1 " STD_LESS_EQUAL " 0 or d2 " STD_LESS_EQUAL " 0", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
+    goto err;
   }
   return true;
+
+err:
+  if (getSystemFlag(FLAG_SPCRES))
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+  return false;
 }
 
 
@@ -172,25 +174,27 @@ void fnF_I(uint16_t unusedButMandatoryParameter) {
   }
 
   if(checkParamF(&val, &d1, &d2)) {
-    if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
-      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+    if(realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1)) {
+      displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnF_I:", "the argument must be 0 < x < 1", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      if (getSystemFlag(FLAG_SPCRES))
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+      return;
     }
-    else {
-      WP34S_Qf_F(&val, &d1, &d2, &ans, &ctxtReal39);
-      if(realIsNaN(&ans)) {
-        displayCalcErrorMessage(ERROR_NO_ROOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          moreInfoOnError("In function fnF_I:", "WP34S_Qf_F did not converge", NULL, NULL);
-        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      }
-      else {
-        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        convertRealToReal34ResultRegister(&ans, REGISTER_X);
-      }
+    WP34S_Qf_F(&val, &d1, &d2, &ans, &ctxtReal39);
+    if(realIsNaN(&ans)) {
+      displayDomainErrorMessage(ERROR_NO_ROOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        moreInfoOnError("In function fnF_I:", "WP34S_Qf_F did not converge", NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      if (getSystemFlag(FLAG_SPCRES))
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+      return;
     }
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    convertRealToReal34ResultRegister(&ans, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);

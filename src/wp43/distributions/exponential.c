@@ -45,12 +45,12 @@
 static bool_t checkParamExponential(real_t *x, real_t *i) {
   if(   ((getRegisterDataType(REGISTER_X) != dtReal34) && (getRegisterDataType(REGISTER_X) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_I) != dtReal34) && (getRegisterDataType(REGISTER_I) != dtLongInteger))) {
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Values in register X and I must be of the real or long integer type");
         moreInfoOnError("In function checkParamExponential:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      return false;
+      goto err;
   }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {
@@ -67,24 +67,26 @@ static bool_t checkParamExponential(real_t *x, real_t *i) {
     convertLongIntegerRegisterToReal(REGISTER_I, i, &ctxtReal39);
   }
 
-  if(getSystemFlag(FLAG_SPCRES)) {
-    return true;
-  }
-  else if(realIsNegative(x)) {
-    displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+  if(realIsNegative(x)) {
+    displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamExponential:", "cannot calculate for x < 0", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
+    goto err;
   }
   else if(realIsZero(i) || realIsNegative(i)) {
-    displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+    displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamExponential:", "cannot calculate for " STD_lambda " " STD_LESS_EQUAL " 0", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
+    goto err;
   }
   return true;
+
+err:
+  if (getSystemFlag(FLAG_SPCRES))
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+  return false;
 }
 
 
@@ -99,9 +101,8 @@ void fnExponentialP(uint16_t unusedButMandatoryParameter) {
     WP34S_Pdf_Expon(&val, &dof, &ans, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertRealToReal34ResultRegister(&ans, REGISTER_X);
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -116,9 +117,8 @@ void fnExponentialL(uint16_t unusedButMandatoryParameter) {
     WP34S_Cdf_Expon(&val, &dof, &ans, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertRealToReal34ResultRegister(&ans, REGISTER_X);
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -133,9 +133,8 @@ void fnExponentialR(uint16_t unusedButMandatoryParameter) {
     WP34S_Cdfu_Expon(&val, &dof, &ans, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertRealToReal34ResultRegister(&ans, REGISTER_X);
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -147,28 +146,29 @@ void fnExponentialI(uint16_t unusedButMandatoryParameter) {
   }
 
   if(checkParamExponential(&val, &dof)) {
-    if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
-      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+    if(realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1)) {
+      displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnExponentialI:", "the argument must be 0 < x < 1", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      if (getSystemFlag(FLAG_SPCRES))
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+      return;
     }
-    else {
-      WP34S_Qf_Expon(&val, &dof, &ans, &ctxtReal39);
-      if(realIsNaN(&ans)) {
-        displayCalcErrorMessage(ERROR_NO_ROOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+    WP34S_Qf_Expon(&val, &dof, &ans, &ctxtReal39);
+    if(realIsNaN(&ans)) {
+        displayDomainErrorMessage(ERROR_NO_ROOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           moreInfoOnError("In function fnExponentialI:", "WP34S_Qf_Expon did not converge", NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        if (getSystemFlag(FLAG_SPCRES))
+          convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+        return;
       }
-      else {
-        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        convertRealToReal34ResultRegister(&ans, REGISTER_X);
-      }
-    }
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    convertRealToReal34ResultRegister(&ans, REGISTER_X);
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 

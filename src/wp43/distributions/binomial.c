@@ -53,7 +53,7 @@ static bool_t checkParamBinomial(real_t *x, real_t *i, real_t *j) {
   if(   ((getRegisterDataType(REGISTER_X) != dtReal34) && (getRegisterDataType(REGISTER_X) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_I) != dtReal34) && (getRegisterDataType(REGISTER_I) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_J) != dtReal34) && (getRegisterDataType(REGISTER_J) != dtLongInteger))) {
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Values in register X, I and J must be of the real or long integer type");
         moreInfoOnError("In function checkParamBinomial:", errorMessage, NULL, NULL);
@@ -83,30 +83,32 @@ static bool_t checkParamBinomial(real_t *x, real_t *i, real_t *j) {
   }
 
   if(!checkRegisterNoFP(REGISTER_J)) {
-    displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+    displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamBinomial:", "n is not an integer", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
-  }
-  else if(getSystemFlag(FLAG_SPCRES)) {
-    return true;
+    goto err;
   }
   else if(realIsNegative(x)) {
-    displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+    displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamBinomial:", "cannot calculate for x < 0", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
+    goto err;
   }
   else if(realIsNegative(i) || realCompareGreaterThan(i, const_1) || realIsNegative(j)) {
-    displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+    displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamBinomial:", "the parameters must be 0 " STD_LESS_EQUAL " p " STD_LESS_EQUAL " 1 and n > 0", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
+    goto err;
   }
   return true;
+
+err:
+  if (getSystemFlag(FLAG_SPCRES))
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+  return false;
 }
 
 
@@ -125,7 +127,7 @@ void fnBinomialP(uint16_t unusedButMandatoryParameter) {
       realZero(&ans);
     }
     if(realIsNaN(&ans)) {
-      displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnBinomialP:", "a parameter is invalid", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -134,9 +136,8 @@ void fnBinomialP(uint16_t unusedButMandatoryParameter) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       convertRealToReal34ResultRegister(&ans, REGISTER_X);
     }
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -150,7 +151,7 @@ void fnBinomialL(uint16_t unusedButMandatoryParameter) {
   if(checkParamBinomial(&val, &prob, &num)) {
     WP34S_Cdf_Binomial(&val, &prob, &num, &ans, &ctxtReal39);
     if(realIsNaN(&ans)) {
-      displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnBinomialL:", "a parameter is invalid", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -159,9 +160,8 @@ void fnBinomialL(uint16_t unusedButMandatoryParameter) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       convertRealToReal34ResultRegister(&ans, REGISTER_X);
     }
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -175,7 +175,7 @@ void fnBinomialR(uint16_t unusedButMandatoryParameter) {
   if(checkParamBinomial(&val, &prob, &num)) {
     WP34S_Cdfu_Binomial(&val, &prob, &num, &ans, &ctxtReal39);
     if(realIsNaN(&ans)) {
-      displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnBinomialR:", "a parameter is invalid", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -184,9 +184,8 @@ void fnBinomialR(uint16_t unusedButMandatoryParameter) {
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       convertRealToReal34ResultRegister(&ans, REGISTER_X);
     }
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -198,28 +197,29 @@ void fnBinomialI(uint16_t unusedButMandatoryParameter) {
   }
 
   if(checkParamBinomial(&val, &prob, &num)) {
-    if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
-      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+    if(realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1)) {
+      displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnBinomialI:", "the argument must be 0 < x < 1", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      if (getSystemFlag(FLAG_SPCRES))
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+      return;
     }
-    else {
-      WP34S_Qf_Binomial(&val, &prob, &num, &ans, &ctxtReal39);
-      if(realIsNaN(&ans)) {
-        displayCalcErrorMessage(ERROR_NO_ROOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          moreInfoOnError("In function fnBinomialI:", "WP34S_Qf_Binomial did not converge", NULL, NULL);
-        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      }
-      else {
-        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        convertRealToReal34ResultRegister(&ans, REGISTER_X);
-      }
+    WP34S_Qf_Binomial(&val, &prob, &num, &ans, &ctxtReal39);
+    if(realIsNaN(&ans)) {
+      displayDomainErrorMessage(ERROR_NO_ROOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        moreInfoOnError("In function fnBinomialI:", "WP34S_Qf_Binomial did not converge", NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      if (getSystemFlag(FLAG_SPCRES))
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+      return;
     }
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    convertRealToReal34ResultRegister(&ans, REGISTER_X);
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 

@@ -1174,6 +1174,18 @@ void fnGetLocR(uint16_t unusedButMandatoryParameter) {
 }
 
 
+/* Given a real register/value, check for NaNs, infinities and sign correct zeroes */
+static void adjustRealRegister(calcRegister_t reg, real34_t *val) {
+  if(real34IsInfinite(val)) {
+    displayCalcErrorMessage(real34IsPositive(val) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF , ERR_REGISTER_LINE, reg);
+  }
+  else if (0&&real34IsNaN(val)) {
+    displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, reg);
+  }
+  else if(real34IsZero(val)) {
+    real34SetPositiveSign(val);
+  }
+}
 
 void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegister_t op1, calcRegister_t op2, calcRegister_t op3) {
   uint32_t resultDataType;
@@ -1193,34 +1205,17 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
 
   resultDataType = getRegisterDataType(res);
   if(getSystemFlag(FLAG_SPCRES) == false && lastErrorCode == 0) {
-    // D is clear: test infinite values and -0 values
     switch(resultDataType) {
       case dtReal34:
       case dtTime:
       case dtDate: {
-        if(real34IsInfinite(REGISTER_REAL34_DATA(res))) {
-          displayCalcErrorMessage(real34IsPositive(REGISTER_REAL34_DATA(res)) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF , ERR_REGISTER_LINE, res);
-        }
-        else if(real34IsZero(REGISTER_REAL34_DATA(res))) {
-          real34SetPositiveSign(REGISTER_REAL34_DATA(res));
-        }
+        adjustRealRegister(res, REGISTER_REAL34_DATA(res));
         break;
       }
 
       case dtComplex34: {
-        if(real34IsInfinite(REGISTER_REAL34_DATA(res))) {
-          displayCalcErrorMessage(real34IsPositive(REGISTER_REAL34_DATA(res)) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF , ERR_REGISTER_LINE, res);
-        }
-        else if(real34IsZero(REGISTER_REAL34_DATA(res))) {
-          real34SetPositiveSign(REGISTER_REAL34_DATA(res));
-        }
-
-        if(real34IsInfinite(REGISTER_IMAG34_DATA(res))) {
-          displayCalcErrorMessage(real34IsPositive(REGISTER_IMAG34_DATA(res)) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF , ERR_REGISTER_LINE, res);
-        }
-        else if(real34IsZero(REGISTER_IMAG34_DATA(res))) {
-          real34SetPositiveSign(REGISTER_IMAG34_DATA(res));
-        }
+        adjustRealRegister(res, REGISTER_REAL34_DATA(res));
+        adjustRealRegister(res, REGISTER_IMAG34_DATA(res));
         break;
       }
 
@@ -1229,12 +1224,7 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
           real34Matrix_t matrix;
           linkToRealMatrixRegister(res, &matrix);
           for(uint32_t i = 0; i < matrix.header.matrixRows * matrix.header.matrixColumns; i++) {
-            if(real34IsInfinite(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]))) {
-              displayCalcErrorMessage(real34IsPositive(VARIABLE_REAL34_DATA(&matrix.matrixElements[i])) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF , ERR_REGISTER_LINE, res);
-            }
-            else if(real34IsZero(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]))) {
-              real34SetPositiveSign(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]));
-            }
+            adjustRealRegister(res, VARIABLE_REAL34_DATA(&matrix.matrixElements[i]));
           }
         break;
         }
@@ -1243,19 +1233,8 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
           complex34Matrix_t matrix;
           linkToComplexMatrixRegister(res, &matrix);
           for(uint32_t i = 0; i < matrix.header.matrixRows * matrix.header.matrixColumns; i++) {
-            if(real34IsInfinite(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]))) {
-              displayCalcErrorMessage(real34IsPositive(VARIABLE_REAL34_DATA(&matrix.matrixElements[i])) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF , ERR_REGISTER_LINE, res);
-            }
-            else if(real34IsZero(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]))) {
-              real34SetPositiveSign(VARIABLE_REAL34_DATA(&matrix.matrixElements[i]));
-            }
-
-            if(real34IsInfinite(VARIABLE_IMAG34_DATA(&matrix.matrixElements[i]))) {
-              displayCalcErrorMessage(real34IsPositive(VARIABLE_IMAG34_DATA(&matrix.matrixElements[i])) ? ERROR_OVERFLOW_PLUS_INF : ERROR_OVERFLOW_MINUS_INF , ERR_REGISTER_LINE, res);
-            }
-            else if(real34IsZero(VARIABLE_IMAG34_DATA(&matrix.matrixElements[i]))) {
-              real34SetPositiveSign(VARIABLE_IMAG34_DATA(&matrix.matrixElements[i]));
-            }
+            adjustRealRegister(res, VARIABLE_REAL34_DATA(&matrix.matrixElements[i]));
+            adjustRealRegister(res, VARIABLE_IMAG34_DATA(&matrix.matrixElements[i]));
           }
         break;
         }

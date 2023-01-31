@@ -50,12 +50,12 @@
 static bool_t checkParamPoisson(real_t *x, real_t *i) {
   if(   ((getRegisterDataType(REGISTER_X) != dtReal34) && (getRegisterDataType(REGISTER_X) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_I) != dtReal34) && (getRegisterDataType(REGISTER_I) != dtLongInteger))) {
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Values in register X and I must be of the real or long integer type");
         moreInfoOnError("In function checkParamPoisson:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      return false;
+      goto err;
   }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {
@@ -72,24 +72,26 @@ static bool_t checkParamPoisson(real_t *x, real_t *i) {
     convertLongIntegerRegisterToReal(REGISTER_I, i, &ctxtReal39);
   }
 
-  if(getSystemFlag(FLAG_SPCRES)) {
-    return true;
-  }
-  else if(realIsNegative(x)) {
-    displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+  if(realIsNegative(x)) {
+    displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamPoisson:", "cannot calculate for x < 0", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
+    goto err;
   }
   else if(realIsZero(i) || realIsNegative(i)) {
-    displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+    displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamPoisson:", "the parameter must be " STD_lambda " > 0", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
+    goto err;
   }
   return true;
+
+err:
+  if (getSystemFlag(FLAG_SPCRES))
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+  return false;
 }
 
 
@@ -152,17 +154,18 @@ void fnPoissonI(uint16_t unusedButMandatoryParameter) {
   }
 
   if(checkParamPoisson(&val, &prob)) {
-    if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
-      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+    if(realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1)) {
+      displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnGeometricI:", "the argument must be 0 < x < 1", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      if (getSystemFlag(FLAG_SPCRES))
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+      return;
     }
-    else {
-      WP34S_Qf_Poisson(&val, &prob, &ans, &ctxtReal39);
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      convertRealToReal34ResultRegister(&ans, REGISTER_X);
-    }
+    WP34S_Qf_Poisson(&val, &prob, &ans, &ctxtReal39);
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    convertRealToReal34ResultRegister(&ans, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
