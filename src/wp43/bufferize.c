@@ -64,6 +64,7 @@ TO_QSPI static const char bugScreenNoParam[] = "In function addItemToBuffer:item
     calcModeAim(NOPARAM); // Alpha Input Mode
     if(programRunStop != PGM_RUNNING) {
       entryStatus |= 0x01;
+      setSystemFlag(FLAG_ALPIN);
     }
   }
 
@@ -1028,6 +1029,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 
       if(programRunStop != PGM_RUNNING) {
         entryStatus |= 0x01;
+        setSystemFlag(FLAG_NUMIN);
       }
 
       //debugNIM();
