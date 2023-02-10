@@ -778,7 +778,7 @@ void divRemaRema(void) {
         realMatrixFree(&res);
       }
       else {
-        displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+        displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "cannot divide by a singular matrix");
           moreInfoOnError("In function divRemaRema:", errorMessage, NULL, NULL);
@@ -1071,7 +1071,7 @@ void divCxmaCxma(void) {
         complexMatrixFree(&res);
       }
       else {
-        displayCalcErrorMessage(ERROR_MATRIX_MISMATCH, ERR_REGISTER_LINE, REGISTER_X);
+        displayCalcErrorMessage(ERROR_SINGULAR_MATRIX, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "cannot divide by a singular matrix");
           moreInfoOnError("In function divRemaRema:", errorMessage, NULL, NULL);
