@@ -1638,6 +1638,7 @@ void getMatrixFromRegister(calcRegister_t regist) {
     return;
   }
 }
+#endif // !TESTSUITE_BUILD
 
 
 bool_t initMatrixRegister(calcRegister_t regist, uint16_t rows, uint16_t cols, bool_t complex) {
@@ -1653,7 +1654,7 @@ bool_t initMatrixRegister(calcRegister_t regist, uint16_t rows, uint16_t cols, b
     if(complex) {
       for(uint16_t i = 0; i < rows * cols; ++i) {
         real34Zero(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
-        real34Zero(VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+        real34Zero(VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
       }
     }
     else {
@@ -1669,6 +1670,7 @@ bool_t initMatrixRegister(calcRegister_t regist, uint16_t rows, uint16_t cols, b
 }
 
 
+#if !defined(TESTSUITE_BUILD)
 bool_t redimMatrixRegister(calcRegister_t regist, uint16_t rows, uint16_t cols) {
   const uint16_t origRows = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows, origCols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
   if(regist == INVALID_VARIABLE) {

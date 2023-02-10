@@ -293,6 +293,7 @@
                                              int16_t *rPadWidth_r, int16_t *rPadWidth_i, int16_t *digits, uint16_t maxCols);
 
     void     getMatrixFromRegister          (calcRegister_t regist);
+  #endif // !TESTSUITE_BUILD
 
     /**
      * Creates a zero matrix at given register.
@@ -305,6 +306,7 @@
      */
     bool_t   initMatrixRegister             (calcRegister_t regist, uint16_t rows, uint16_t cols, bool_t complex);
 
+  #if !defined(TESTSUITE_BUILD)
     /**
      * Redimentions the matrix at given register.
      * Shrinking the matrix is in situ while enlarging the matrix is not.
