@@ -2101,7 +2101,6 @@ void subtractComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t
 }
 
 
-#if !defined(TESTSUITE_BUILD)
 /* Multiplication */
 void multiplyRealMatrix(const real34Matrix_t *matrix, const real34_t *x, real34Matrix_t *res) {
   const uint16_t rows = matrix->header.matrixRows;
@@ -2113,10 +2112,10 @@ void multiplyRealMatrix(const real34Matrix_t *matrix, const real34_t *x, real34M
       real34Multiply(&matrix->matrixElements[i], x, &res->matrixElements[i]);
     }
   }
-    else {
-      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    }
+  else {
+    displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
   }
+}
 
 
 void _multiplyRealMatrix(const real34Matrix_t *matrix, const real_t *x, real34Matrix_t *res, realContext_t *realContext) {
@@ -2132,10 +2131,10 @@ void _multiplyRealMatrix(const real34Matrix_t *matrix, const real_t *x, real34Ma
       realToReal34(&y, &res->matrixElements[i]);
     }
   }
-    else {
-      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    }
+  else {
+    displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
   }
+}
 
 
 void multiplyRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res) {
@@ -2166,10 +2165,10 @@ void multiplyRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real
       }
     }
   }
-    else {
-      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    }
+  else {
+    displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
   }
+}
 
 
 void multiplyComplexMatrix(const complex34Matrix_t *matrix, const real34_t *xr, const real34_t *xi, complex34Matrix_t *res) {
@@ -2195,12 +2194,13 @@ void _multiplyComplexMatrix(const complex34Matrix_t *matrix, const real_t *xr, c
       realToReal34(&yi, VARIABLE_IMAG34_DATA(&res->matrixElements[i]));
     }
   }
-    else {
-      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    }
+  else {
+    displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
   }
+}
 
 
+#if !defined(TESTSUITE_BUILD)
   static void mulCpxMat(const real_t *y, const real_t *x, uint16_t sizeY, uint16_t sizeYX, uint16_t sizeX, real_t *res, realContext_t *realContext) {
     int32_t i, j, k;
     real_t *sumr, prodr;
@@ -2227,15 +2227,16 @@ void _multiplyComplexMatrix(const complex34Matrix_t *matrix, const real_t *xr, c
       }
     }
   }
+#endif // !TESTSUITE_BUILD
 
 
-  void multiplyComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res) {
-    const uint16_t rows = y->header.matrixRows;
-    const uint16_t iter = y->header.matrixColumns;
-    const uint16_t cols = x->header.matrixColumns;
-    int32_t i, j, k;
-    real_t sumr, prodr, pr, qr;
-    real_t sumi, prodi, pi, qi;
+void multiplyComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res) {
+  const uint16_t rows = y->header.matrixRows;
+  const uint16_t iter = y->header.matrixColumns;
+  const uint16_t cols = x->header.matrixColumns;
+  int32_t i, j, k;
+  real_t sumr, prodr, pr, qr;
+  real_t sumi, prodi, pi, qi;
 
   if(y->header.matrixColumns != x->header.matrixRows) {
     res->matrixElements = NULL; // Matrix mismatch
@@ -2262,12 +2263,13 @@ void _multiplyComplexMatrix(const complex34Matrix_t *matrix, const real_t *xr, c
       }
     }
   }
-    else {
-      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    }
+  else {
+    displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
   }
+}
 
 
+#if !defined(TESTSUITE_BUILD)
 /* Euclidean (Frobenius) norm */
 static void _euclideanNormRealMatrix(const real34Matrix_t *matrix, real_t *res, realContext_t *realContext) {
   real_t elem;
