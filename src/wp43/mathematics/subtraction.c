@@ -769,6 +769,7 @@ void subLonICxma(void) {
       realSubtract(&y, &x, &x, &ctxtReal39);
       roundToSignificantDigits(&x, &x, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
       realToReal34(&x, VARIABLE_REAL34_DATA(&xm.matrixElements[i]));
+      real34ChangeSign(VARIABLE_IMAG34_DATA(&xm.matrixElements[i]));
     }
   #endif // !TESTSUITE_BUILD
 }
@@ -861,6 +862,7 @@ void subShoICxma(void) {
       realSubtract(&y, &x, &x, &ctxtReal39);
       roundToSignificantDigits(&x, &x, significantDigits == 0 ? 34 : significantDigits, &ctxtReal39);
       realToReal34(&x, VARIABLE_REAL34_DATA(&xm.matrixElements[i]));
+      real34ChangeSign(VARIABLE_IMAG34_DATA(&xm.matrixElements[i]));
     }
   #endif // !TESTSUITE_BUILD
 }
@@ -920,6 +922,7 @@ void subRealCxma(void) {
 
       for(i = 0; i < cols * rows; ++i) {
         real34Subtract(REGISTER_REAL34_DATA(REGISTER_Y), VARIABLE_REAL34_DATA(&x.matrixElements[i]), VARIABLE_REAL34_DATA(&x.matrixElements[i]));
+        real34ChangeSign(VARIABLE_IMAG34_DATA(&x.matrixElements[i]));
       }
     }
     else {
