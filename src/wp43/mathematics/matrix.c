@@ -1458,7 +1458,6 @@ void fnEigenvectors(uint16_t unusedParamButMandatory) {
 }
 
 
-#if !defined(TESTSUITE_BUILD)
 bool_t realMatrixInit(real34Matrix_t *matrix, uint16_t rows, uint16_t cols) {
   //Allocate Memory for Matrix
   const size_t neededSize = TO_BLOCKS((rows * cols) * sizeof(real34_t));
@@ -1490,6 +1489,7 @@ void realMatrixFree(real34Matrix_t *matrix) {
 }
 
 
+#if !defined(TESTSUITE_BUILD)
 void realMatrixIdentity(real34Matrix_t *matrix, uint16_t size) {
   if(realMatrixInit(matrix, size, size)) {
     for(uint16_t i = 0; i < size; ++i) {
@@ -1523,6 +1523,7 @@ void realMatrixRedim(real34Matrix_t *matrix, uint16_t rows, uint16_t cols) {
       displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
     }
 }
+#endif // !TESTSUITE_BUILD
 
 
 bool_t complexMatrixInit(complex34Matrix_t *matrix, uint16_t rows, uint16_t cols) {
@@ -1557,6 +1558,7 @@ void complexMatrixFree(complex34Matrix_t *matrix) {
 }
 
 
+#if !defined(TESTSUITE_BUILD)
 void complexMatrixIdentity(complex34Matrix_t *matrix, uint16_t size) {
   if(complexMatrixInit(matrix, size, size)) {
     for(uint16_t i = 0; i < size; ++i) {
@@ -2018,6 +2020,7 @@ void transposeComplexMatrix(const complex34Matrix_t *matrix, complex34Matrix_t *
       }
     }
   }
+#endif // !TESTSUITE_BUILD
 
 
 /* Addition and subtraction */
@@ -2054,9 +2057,11 @@ void addRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real34Mat
 }
 
 
+#if !defined(TESTSUITE_BUILD)
 void subtractRealMatrices(const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res) {
   addSubRealMatrices(y, x, true, res);
 }
+#endif // !TESTSUITE_BUILD
 
 
 static void addSubComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, bool_t subtraction, complex34Matrix_t *res) {
@@ -2093,6 +2098,7 @@ void addComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, 
 }
 
 
+#if !defined(TESTSUITE_BUILD)
 void subtractComplexMatrices(const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res) {
   addSubComplexMatrices(y, x, true, res);
 }

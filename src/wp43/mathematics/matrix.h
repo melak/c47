@@ -171,24 +171,24 @@
    */
   bool_t   recallStatsMatrix              (void);
 
+  /**
+   * Initialize a real matrix.
+   *
+   * \param[out] matrix
+   * \param[in] rows
+   * \param[in] cols
+   * \return true if succeeded, false otherwise
+   */
+  bool_t   realMatrixInit                 (real34Matrix_t *matrix, uint16_t rows, uint16_t cols);
+
+  /**
+   * Free a real matrix.
+   *
+   * \param[in] matrix
+   */
+  void     realMatrixFree                 (real34Matrix_t *matrix);
+
   #if !defined(TESTSUITE_BUILD)
-    /**
-     * Initialize a real matrix.
-     *
-     * \param[out] matrix
-     * \param[in] rows
-     * \param[in] cols
-     * \return true if succeeded, false otherwise
-     */
-    bool_t   realMatrixInit                 (real34Matrix_t *matrix, uint16_t rows, uint16_t cols);
-
-    /**
-     * Free a real matrix.
-     *
-     * \param[in] matrix
-     */
-    void     realMatrixFree                 (real34Matrix_t *matrix);
-
     /**
      * Returns identity matrix of given size.
      *
@@ -202,24 +202,26 @@
      * \param[in] matrix
      */
     void     realMatrixRedim                (real34Matrix_t *matrix, uint16_t rows, uint16_t cols);
+  #endif // !TESTSUITE_BUILD
 
-    /**
-     * Initialize a complex matrix.
-     *
-     * \param[out] matrix
-     * \param[in] rows
-     * \param[in] cols
-     * \return true if succeeded, false otherwise
-     */
-    bool_t   complexMatrixInit              (complex34Matrix_t *matrix, uint16_t rows, uint16_t cols);
+  /**
+   * Initialize a complex matrix.
+   *
+   * \param[out] matrix
+   * \param[in] rows
+   * \param[in] cols
+   * \return true if succeeded, false otherwise
+   */
+  bool_t   complexMatrixInit              (complex34Matrix_t *matrix, uint16_t rows, uint16_t cols);
 
-    /**
-     * Free a complex matrix.
-     *
-     * \param[in] matrix
-     */
-    void     complexMatrixFree              (complex34Matrix_t *matrix);
+  /**
+   * Free a complex matrix.
+   *
+   * \param[in] matrix
+   */
+  void     complexMatrixFree              (complex34Matrix_t *matrix);
 
+  #if !defined(TESTSUITE_BUILD)
     /**
      * Returns identity matrix of given size in complex34Matrix_t.
      *
@@ -295,16 +297,16 @@
     void     getMatrixFromRegister          (calcRegister_t regist);
   #endif // !TESTSUITE_BUILD
 
-    /**
-     * Creates a zero matrix at given register.
-     *
-     * \param[in] regist
-     * \param[in] rows
-     * \param[in] cols
-     * \param[in] complex  true for complex matrix, false for real matrix.
-     * \return true if succeeded, false otherwise
-     */
-    bool_t   initMatrixRegister             (calcRegister_t regist, uint16_t rows, uint16_t cols, bool_t complex);
+  /**
+   * Creates a zero matrix at given register.
+   *
+   * \param[in] regist
+   * \param[in] rows
+   * \param[in] cols
+   * \param[in] complex  true for complex matrix, false for real matrix.
+   * \return true if succeeded, false otherwise
+   */
+  bool_t   initMatrixRegister             (calcRegister_t regist, uint16_t rows, uint16_t cols, bool_t complex);
 
   #if !defined(TESTSUITE_BUILD)
     /**
@@ -354,11 +356,15 @@
     void     insRowComplexMatrix            (complex34Matrix_t *matrix, uint16_t beforeRowNo);
     void     delRowComplexMatrix            (complex34Matrix_t *matrix, uint16_t beforeRowNo);
     void     transposeComplexMatrix         (const complex34Matrix_t *matrix, complex34Matrix_t *res);
+  #endif // !TESTSUITE_BUILD
 
-    void     addRealMatrices                (const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res);
+  void     addRealMatrices                (const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res);
+  #if !defined(TESTSUITE_BUILD)
     void     subtractRealMatrices           (const real34Matrix_t *y, const real34Matrix_t *x, real34Matrix_t *res);
+  #endif // !TESTSUITE_BUILD
 
-    void     addComplexMatrices             (const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res);
+  void     addComplexMatrices             (const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res);
+  #if !defined(TESTSUITE_BUILD)
     void     subtractComplexMatrices        (const complex34Matrix_t *y, const complex34Matrix_t *x, complex34Matrix_t *res);
 
     void     multiplyRealMatrix             (const real34Matrix_t *matrix, const real34_t *x, real34Matrix_t *res);
