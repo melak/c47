@@ -4453,7 +4453,6 @@ void complexEigenvectors(const complex34Matrix_t *matrix, complex34Matrix_t *res
 }
 
 
-#if !defined(TESTSUITE_BUILD)
 static void elementwiseRemaGetResult(bool_t *complex, real34Matrix_t *x, complex34Matrix_t *xc, int i) {
   if((!(*complex)) && (getRegisterDataType(REGISTER_X) != dtComplex34)) {
       if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
@@ -4483,7 +4482,6 @@ static void elementwiseRemaGetResult(bool_t *complex, real34Matrix_t *x, complex
     }
   }
 }
-#endif // !TESTSUITE_BUILD
 
 
 /* Elementwise function call */
@@ -4521,7 +4519,6 @@ void elementwiseRema(void (*f)(void)) {
 
 
 void elementwiseRema_UInt16(void (*f)(uint16_t), uint16_t param) {
-  #if !defined(TESTSUITE_BUILD)
   real34Matrix_t x;
   complex34Matrix_t xc;
   bool_t complex = false;
@@ -4549,7 +4546,6 @@ void elementwiseRema_UInt16(void (*f)(uint16_t), uint16_t param) {
     convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
     realMatrixFree(&x);
   }
-  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -4591,7 +4587,6 @@ void elementwiseRemaLonI(void (*f)(void)) {
 
 
 void elementwiseRemaReal(void (*f)(void)) {
-  #if !defined(TESTSUITE_BUILD)
   real34Matrix_t y;
   complex34Matrix_t yc;
   real34_t x;
@@ -4623,7 +4618,6 @@ void elementwiseRemaReal(void (*f)(void)) {
     convertReal34MatrixToReal34MatrixRegister(&y, REGISTER_X);
     realMatrixFree(&y);
   }
-  #endif // !TESTSUITE_BUILD
 }
 
 
@@ -4667,7 +4661,6 @@ void elementwiseRemaShoI(void (*f)(void)) {
 
 
 void elementwiseRealRema(void (*f)(void)) {
-  #if !defined(TESTSUITE_BUILD)
     real34Matrix_t x;
     complex34Matrix_t xc;
     real34_t y;
@@ -4699,11 +4692,9 @@ void elementwiseRealRema(void (*f)(void)) {
       convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
       realMatrixFree(&x);
     }
-  #endif // !TESTSUITE_BUILD
 }
 
 
-#if !defined(TESTSUITE_BUILD)
 static void elementwiseCxmaGetResult(complex34Matrix_t *x, int i) {
   if(getRegisterDataType(REGISTER_X) == dtComplex34) {
     complex34Copy(REGISTER_COMPLEX34_DATA(REGISTER_X), &x->matrixElements[i]);
@@ -4718,7 +4709,6 @@ static void elementwiseCxmaGetResult(complex34Matrix_t *x, int i) {
     }
   }
 }
-#endif // !TESTSUITE_BUILD
 
 
 void elementwiseCxma(void (*f)(void)) {
@@ -4742,7 +4732,6 @@ void elementwiseCxma(void (*f)(void)) {
 
 
 void elementwiseCxma_UInt16(void (*f)(uint16_t), uint16_t param) {
-  #if !defined(TESTSUITE_BUILD)
   complex34Matrix_t x;
 
   convertComplex34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
@@ -4757,7 +4746,6 @@ void elementwiseCxma_UInt16(void (*f)(uint16_t), uint16_t param) {
   convertComplex34MatrixToComplex34MatrixRegister(&x, REGISTER_X);
 
   complexMatrixFree(&x);
-  #endif // !TESTSUITE_BUILD
 }
 
 
