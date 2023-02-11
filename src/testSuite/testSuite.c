@@ -724,6 +724,14 @@ void setParameter(char *p) {
           setSystemFlag(FLAG_DMY);
         }
       }
+      else if(!strcmp(l+3, "TDM24")) {
+        if(r[0] == '0') {
+          clearSystemFlag(FLAG_TDM24);
+        }
+        else {
+          setSystemFlag(FLAG_TDM24);
+        }
+      }
       else {
         printf("\nMissformed numbered flag setting. After FL_ there shall be a number from 0 to 111, a lettered, or a system flag.\n");
         abortTest();
@@ -2075,7 +2083,7 @@ void checkExpectedOutParameter(char *p) {
        || (r[0] >= '0' && r[0] <= '9' && r[1] >= '0' && r[1] <= '9' && r[2] == 0)) {
       uint16_t ec = atoi(r);
 
-      if(ec <= 28) {
+      if(ec <= NUMBER_OF_ERROR_CODES) {
         if(lastErrorCode != ec) {
           printf("\nLast error code should be %u (%s) but it is %u (%s)!\n", ec, errorMessages[ec], lastErrorCode, errorMessages[lastErrorCode]);
           abortTest();
