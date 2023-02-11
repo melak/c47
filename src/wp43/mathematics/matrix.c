@@ -2691,10 +2691,10 @@ void complex_LU_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t
           complexMatrixFree(lu);
         }
       }
-    }
       else {
         displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
       }
+    }
 
       freeWp43(tmpMat, m * n * REAL_SIZE * 2);
   }
