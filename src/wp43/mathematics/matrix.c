@@ -2687,6 +2687,9 @@ void complex_LU_decomposition(const complex34Matrix_t *matrix, complex34Matrix_t
             realToReal34(&tmpMat[(i * n + j) * 2 + 1], VARIABLE_IMAG34_DATA(&lu->matrixElements[i * n + j]));
           }
         }
+        else {
+          complexMatrixFree(lu);
+        }
       }
     }
       else {
