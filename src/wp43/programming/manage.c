@@ -982,6 +982,10 @@ void insertStepInProgram(int16_t func) {
   }
 
   if(func == ITM_AIM || (!tam.mode && getSystemFlag(FLAG_ALPHA))) {
+    if(aimBuffer[0] != 0 && !getSystemFlag(FLAG_ALPHA)) {
+      pemCloseNumberInput();
+      aimBuffer[0] = 0;
+    }
     pemAlpha(func);
     pemCursorIsZerothStep = false;
     return;
