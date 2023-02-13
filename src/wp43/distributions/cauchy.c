@@ -48,12 +48,12 @@ static bool_t checkParamCauchy(real_t *x, real_t *i, real_t *j) {
   if(   ((getRegisterDataType(REGISTER_X) != dtReal34) && (getRegisterDataType(REGISTER_X) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_I) != dtReal34) && (getRegisterDataType(REGISTER_I) != dtLongInteger))
      || ((getRegisterDataType(REGISTER_J) != dtReal34) && (getRegisterDataType(REGISTER_J) != dtLongInteger))) {
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Values in register X, I and J must be of the real or long integer type");
         moreInfoOnError("In function checkParamCauchy:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      return false;
+      goto err;
   }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {
@@ -76,18 +76,19 @@ static bool_t checkParamCauchy(real_t *x, real_t *i, real_t *j) {
   else { // long integer
     convertLongIntegerRegisterToReal(REGISTER_J, j, &ctxtReal39);
   }
-
-  if(getSystemFlag(FLAG_SPCRES)) {
-    return true;
-  }
-  else if(realIsZero(j) || realIsNegative(j)) {
-    displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+  if(realIsZero(j) || realIsNegative(j)) {
+    displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamCauchy:", "cannot calculate for " STD_gamma " " STD_LESS_EQUAL " 0", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
+    goto err;
   }
   return true;
+
+err:
+  if (getSystemFlag(FLAG_SPCRES))
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+  return false;
 }
 
 
@@ -102,9 +103,8 @@ void fnCauchyP(uint16_t unusedButMandatoryParameter) {
     WP34S_Pdf_Cauchy(&val, &x0, &gamma, &ans, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertRealToReal34ResultRegister(&ans, REGISTER_X);
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -119,9 +119,8 @@ void fnCauchyL(uint16_t unusedButMandatoryParameter) {
     WP34S_Cdf_Cauchy(&val, &x0, &gamma, &ans, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertRealToReal34ResultRegister(&ans, REGISTER_X);
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -136,9 +135,8 @@ void fnCauchyR(uint16_t unusedButMandatoryParameter) {
     WP34S_Cdfu_Cauchy(&val, &x0, &gamma, &ans, &ctxtReal39);
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertRealToReal34ResultRegister(&ans, REGISTER_X);
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 
@@ -150,28 +148,29 @@ void fnCauchyI(uint16_t unusedButMandatoryParameter) {
   }
 
   if(checkParamCauchy(&val, &x0, &gamma)) {
-    if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
-      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+    if(realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1)) {
+      displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnCauchyI:", "the argument must be 0 < x < 1", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      if (getSystemFlag(FLAG_SPCRES))
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+      return;
     }
-    else {
-      WP34S_Qf_Cauchy(&val, &x0, &gamma, &ans, &ctxtReal39);
-      if(realIsNaN(&ans)) {
-        displayCalcErrorMessage(ERROR_NO_ROOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          moreInfoOnError("In function fnCauchyI:", "WP34S_Qf_Chi2 did not converge", NULL, NULL);
-        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-      }
-      else {
-        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        convertRealToReal34ResultRegister(&ans, REGISTER_X);
-      }
+    WP34S_Qf_Cauchy(&val, &x0, &gamma, &ans, &ctxtReal39);
+    if(realIsNaN(&ans)) {
+      displayDomainErrorMessage(ERROR_NO_ROOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
+      #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+        moreInfoOnError("In function fnCauchyI:", "WP34S_Qf_Chi2 did not converge", NULL, NULL);
+      #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      if (getSystemFlag(FLAG_SPCRES))
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+      return;
     }
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    convertRealToReal34ResultRegister(&ans, REGISTER_X);
+    adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
   }
-
-  adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
 }
 
 

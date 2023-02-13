@@ -65,37 +65,44 @@ static bool_t loadParamNormal_(real_t *v, int reg)
   else if (getRegisterDataType(reg) == dtLongInteger) { // long integer
     convertLongIntegerRegisterToReal(reg, v, &ctxtReal39);
   } else {
-    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+    displayDomainErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "Value in register %s must be of the real or long integer type", regName);
       moreInfoOnError("In function checkParamNormal:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
+    goto err;
   }
   return true;
+
+err:
+  if (getSystemFlag(FLAG_SPCRES))
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+  return false;
 }
 
 
 static bool_t checkParamNormal(enum normalType type, real_t *x, real_t *i, real_t *j) {
   if (!loadParamNormal(x, REGISTER_X, "X"))
-    return false;
+    goto err;
   if (type == stdNormal)
     return true;
   if (!loadParamNormal(i, REGISTER_I, "I")
       || !loadParamNormal(j, REGISTER_J, "J"))
-    return false;
+    goto err;
 
-  if(getSystemFlag(FLAG_SPCRES)) {
-    return true;
-  }
-  else if(realIsZero(j) || realIsNegative(j)) {
-    displayCalcErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
+  if(realIsZero(j) || realIsNegative(j)) {
+    displayDomainErrorMessage(ERROR_INVALID_DISTRIBUTION_PARAM, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       moreInfoOnError("In function checkParamNormal:", "cannot calculate for " STD_sigma " " STD_LESS_EQUAL " 0", NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    return false;
+    goto err;
   }
   return true;
+
+err:
+  if (getSystemFlag(FLAG_SPCRES))
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+  return false;
 }
 
 
@@ -113,7 +120,7 @@ static void normalP(enum normalType type) {
       realZero(&ans);
     }
     else if(logn && realIsNegative(&val)) {
-      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnLogNormalP:", "cannot calculate for x < 0", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -155,7 +162,7 @@ static void normalL(enum normalType type) {
       realZero(&ans);
     }
     else if(logn && realIsNegative(&val)) {
-      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnLogNormalP:", "cannot calculate for x < 0", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -192,7 +199,7 @@ static void normalR(enum normalType type) {
       realCopy(const_1, &ans);
     }
     else if(logn && realIsNegative(&val)) {
-      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+      displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnLogNormalP:", "cannot calculate for x < 0", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
@@ -225,24 +232,25 @@ static void normalI(enum normalType type) {
   }
 
   if(checkParamNormal(type, &val, &mu, &sigma)) {
-    if((!getSystemFlag(FLAG_SPCRES)) && (realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1))) {
-      displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
+    if(realCompareLessEqual(&val, const_0) || realCompareGreaterEqual(&val, const_1)) {
+      displayDomainErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnNormalI:", "the argument must be 0 < x < 1", NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+      if (getSystemFlag(FLAG_SPCRES))
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+      return;
     }
-    else {
-      WP34S_Qf_Q(&val, &ans, &ctxtReal39);
-      if(!stdn) {
-        realMultiply(&ans, &sigma, &ans, &ctxtReal39);
-        realAdd(&ans, &mu, &ans, &ctxtReal39);
-        if(logn) {
-          realExp(&ans, &ans, &ctxtReal39);
-        }
+    WP34S_Qf_Q(&val, &ans, &ctxtReal39);
+    if(!stdn) {
+      realMultiply(&ans, &sigma, &ans, &ctxtReal39);
+      realAdd(&ans, &mu, &ans, &ctxtReal39);
+      if(logn) {
+        realExp(&ans, &ans, &ctxtReal39);
       }
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-      convertRealToReal34ResultRegister(&ans, REGISTER_X);
     }
+    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+    convertRealToReal34ResultRegister(&ans, REGISTER_X);
   }
 
   adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);

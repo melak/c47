@@ -24,16 +24,17 @@
   #include "typeDefinitions.h"
   #include <stdint.h>
 
-  void fnRaiseError           (uint16_t errorCode);
-  void fnErrorMessage         (uint16_t unusedButMandatoryParameter);
+  void fnRaiseError             (uint16_t errorCode);
+  void fnErrorMessage           (uint16_t unusedButMandatoryParameter);
 
   #if !defined(TESTSUITE_BUILD)
     void displayBugScreen     (const char *msg);
   #endif // TESTSUITE_BUILD
 
-  void displayCalcErrorMessage(uint8_t errorCode, calcRegister_t errMessageRegisterLine, calcRegister_t errRegisterLine);
-  void moreInfoOnError        (const char *m1, const char *m2, const char *m3, const char *m4);
+  void displayCalcErrorMessage  (uint8_t errorCode, calcRegister_t errMessageRegisterLine, calcRegister_t errRegisterLine);
+  void displayDomainErrorMessage(uint8_t errorCode, calcRegister_t errMessageRegisterLine, calcRegister_t errRegisterLine);
+  void moreInfoOnError          (const char *m1, const char *m2, const char *m3, const char *m4);
   #if (EXTRA_INFO_ON_CALC_ERROR != 1)
-    void typeError            (void);
+    void typeError              (void);
   #endif // (EXTRA_INFO_ON_CALC_ERROR != 1)
 #endif // !ERROR_H

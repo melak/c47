@@ -225,6 +225,16 @@ void displayCalcErrorMessage(uint8_t errorCode, calcRegister_t errMessageRegiste
 }
 
 
+void displayDomainErrorMessage(uint8_t errorCode, calcRegister_t errMessageRegisterLine, calcRegister_t errRegisterLine) {
+  const int running = programRunStop == PGM_RUNNING;
+  const int spcres = getSystemFlag(FLAG_SPCRES);
+
+  if (!spcres || !running)
+    displayCalcErrorMessage(errorCode, errMessageRegisterLine, errRegisterLine);
+  if (spcres)
+    convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
+}
+
 
 #if !defined(TESTSUITE_BUILD)
   void nextWord(const char *str, int16_t *pos, char *word) {
