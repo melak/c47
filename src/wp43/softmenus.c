@@ -1961,6 +1961,13 @@ void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, 
 
     enterAsmModeIfMenuIsACatalog(softmenu[softmenuStack[0].softmenuId].menuItem);
 
+    if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MVAR) {
+      setSystemFlag(FLAG_VMDISP);
+    }
+    else {
+      clearSystemFlag(FLAG_VMDISP);
+    }
+
     #ifdef PC_BUILD
       jm_show_calc_state("popped");
       char tmp[300]; sprintf(tmp,">>> ...... popped into [0]: Id:%d Name:%s\n",softmenuStack[0].softmenuId, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName); jm_show_comment(tmp);
@@ -2055,6 +2062,12 @@ void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, 
         numberOfTamMenusToPop++;
       }
       pushSoftmenu(m);
+      if(id == -MNU_MVAR) {
+        setSystemFlag(FLAG_VMDISP);
+      }
+      else {
+        clearSystemFlag(FLAG_VMDISP);
+      }
     }
   }
 
