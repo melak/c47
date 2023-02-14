@@ -475,8 +475,10 @@ void graph_stat(uint16_t unusedButMandatoryParameter) {
     convertDoubleToReal34RegisterPush(1E-1, REGISTER_X);
     fnStore(SREG_DX);                                    // initial value for difference comparison must be larger than tolerance
     fnStore(SREG_DY);                                    // initial value for difference comparison must be larger than tolerance
-    convertDoubleToReal34RegisterPush(1E-30, REGISTER_X);
-    fnStore(SREG_TOL);                                   // tolerance
+
+    real_t tol;
+    convergenceTolerence(&tol);
+    realToReal34(&tol,REGISTER_REAL34_DATA(SREG_TOL));   // tolerance
 
     fnRCL(SREG_X0);          //determined third starting point using the slope or secant
     execute_rpn_function();

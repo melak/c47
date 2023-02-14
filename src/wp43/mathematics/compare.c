@@ -638,7 +638,15 @@ void fnXAlmostEqual(uint16_t regist) {
 static int getAsComplex(calcRegister_t reg, real_t *re, real_t *im, int *isComplex) {
   uint32_t type = getRegisterDataType(reg);
 
-  if (type == dtReal34) {
+  if (type == dtLongInteger) {
+    convertLongIntegerRegisterToReal(reg, re, &ctxtReal39);
+    realZero(im);
+    return 1;
+  } else   if (type == dtShortInteger) {
+    convertShortIntegerRegisterToReal(reg, re, &ctxtReal39);
+    realZero(im);
+    return 1;
+  } else   if (type == dtReal34) {
     real34ToReal(REGISTER_REAL34_DATA(reg), re);
     realZero(im);
     return 1;
