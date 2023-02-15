@@ -1556,6 +1556,7 @@ void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, 
   void showSoftmenuCurrentPart(void) {
 
 //JMTOCHECK: Removed exceptions for underline removal. 
+    char tmp1[15];
     int16_t x, y, yDotted=0, currentFirstItem, item, numberOfItems, m = softmenuStack[0].softmenuId;
     bool_t dottedTopLine;
     #ifdef PC_BUILD
@@ -1567,7 +1568,15 @@ void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, 
     if(tam.mode == TM_KEY && !tam.keyInputFinished) {
       for(y=0; y<=2; y++) {
         for(x=0; x<6; x++) {
-          showSoftkey("", x, y, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
+          strcpy(tmp1," ");
+          if(1+x+y*6>9) {
+            tmp1[0]='1';
+            strcat(tmp1," ");
+            tmp1[1] = (int)(48+(1+x+y*6) % 10);
+          } else {
+            tmp1[0] = (int)((48+1+x+y*6));            
+          }
+          showSoftkey(tmp1, x, y, vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
         }
       }
       return;
