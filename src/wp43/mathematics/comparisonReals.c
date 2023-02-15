@@ -26,6 +26,12 @@
 #include "wp43.h"
 
 
+void convergenceTolerence(real_t *tol)
+{
+  realCopy(const_1, tol);
+  tol->exponent -= (significantDigits == 0 || significantDigits >= 32) ? 32 : significantDigits;
+}
+
 
 bool_t real34CompareAbsGreaterThan(const real34_t *number1, const real34_t *number2) {
   real34_t num1, num2;

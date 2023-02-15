@@ -338,8 +338,7 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
     int result = SOLVER_RESULT_NORMAL;
     bool_t was_inting = getSystemFlag(FLAG_INTING);
 
-    realCopy(const_1, &tol);
-    tol.exponent -= (significantDigits == 0 || significantDigits >= 32) ? 32 : significantDigits;
+    convergenceTolerence(&tol);
 
     ++currentSolverNestingDepth;
     setSystemFlag(FLAG_SOLVING);
