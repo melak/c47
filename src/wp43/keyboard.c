@@ -1971,7 +1971,12 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         }
         else if(tam.mode) {
           if(tam.alpha) {
-            processAimInput(item);
+            if(indexOfItems[item].func == addItemToBuffer || item < 0) {
+              processAimInput(item);
+            }
+            else {
+              keyActionProcessed = true;
+            }
           }
           else {
             addItemToBuffer(item);

@@ -287,7 +287,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     else {
       screenUpdatingMode &= ~(SCRUPD_MANUAL_STACK | SCRUPD_MANUAL_SHIFT_STATUS);
       currentSolverStatus &= ~SOLVER_STATUS_READY_TO_EXECUTE;
-      if(calcMode == CM_NORMAL && fnKeyInCatalog && (isAlphabeticSoftmenu() || isJMAlphaOnlySoftmenu())) {
+      if(calcMode == CM_NORMAL && fnKeyInCatalog && (isAlphabeticSoftmenu() || isJMAlphaOnlySoftmenu()) && !tam.mode) {
         fnAim(NOPARAM);
       }
       if((fnKeyInCatalog || !catalog || catalog == CATALOG_MVAR) && (((calcMode == CM_AIM || calcMode == CM_EIM) && !tam.mode) || tam.alpha)) {
