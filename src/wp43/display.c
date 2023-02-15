@@ -311,7 +311,7 @@ void real34ToDisplayString(const real34_t *real34, uint32_t tag, char *displaySt
     angle34ToDisplayString2(real34, tag, displayString, displayHasNDigits, limitExponent, separator, frontSpace);
   }
 
-  while(/*!SigFigMode &&*/ stringWidth(displayString, font, true, true) > maxWidth) {
+  while(stringWidth(displayString, font, true, true) > maxWidth) {
     if(displayFormat == DF_ALL) {
       if(displayHasNDigits == 2) {
         break;
