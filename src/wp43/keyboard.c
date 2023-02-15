@@ -2696,13 +2696,16 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
         break;
       }
 
-      default: {
+      case CM_NORMAL: {
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
           dynamicMenuItem = 20;
           fnProgrammableMenu(NOPARAM);
           return;
         }
-    }
+      }
+
+      default: {
+      }
     }
 
     switch(calcMode) {
@@ -3340,7 +3343,7 @@ void fnKeyUp(uint16_t unusedButMandatoryParameter) {
       return;
     }
 
-    if(softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
+    if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
       dynamicMenuItem = 18;
       fnProgrammableMenu(NOPARAM);
       return;
@@ -3552,7 +3555,7 @@ void fnKeyDown(uint16_t unusedButMandatoryParameter) {
       return;
     }
 
-    if(softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
+    if((calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM) && softmenu[softmenuStack[0].softmenuId].menuItem == -ITM_MENU) {
       dynamicMenuItem = 19;
       fnProgrammableMenu(NOPARAM);
       return;
