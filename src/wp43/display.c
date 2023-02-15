@@ -123,7 +123,7 @@ void fnDisplayFormatAll(uint16_t displayFormatN) {
 void fnDisplayFormatSigFig(uint16_t displayFormatN) {
   fnDisplayFormatReset(displayFormatN);
   displayFormat = DF_FIX;
-  SigFigMode = displayFormatN > DSP_MAX ? DSP_MAX : displayFormatN;
+  SigFigMode = min(18,displayFormatDigits);
   fnRefreshState();
 }
 
@@ -135,6 +135,7 @@ void fnDisplayFormatSigFig(uint16_t displayFormatN) {
  ***********************************************/
 void fnDisplayFormatUnit(uint16_t displayFormatN) {
   fnDisplayFormatReset(displayFormatN);
+  displayFormatDigits = min(20, displayFormatDigits);
   displayFormat = DF_ENG;
   UNITDisplay = true;
   fnRefreshState();
@@ -310,7 +311,7 @@ void real34ToDisplayString(const real34_t *real34, uint32_t tag, char *displaySt
     angle34ToDisplayString2(real34, tag, displayString, displayHasNDigits, limitExponent, separator, frontSpace);
   }
 
-  while(stringWidth(displayString, font, true, true) > maxWidth) {
+  while(/*!SigFigMode &&*/ stringWidth(displayString, font, true, true) > maxWidth) {
     if(displayFormat == DF_ALL) {
       if(displayHasNDigits == 2) {
         break;
@@ -404,56 +405,56 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
 
 
-
+  //sigfig
   //printReal34ToConsole(real34," ------- 001 >>>>>"," <<<<<\n");   //JM
-  if(SigFigMode!=0) {                             //vvJM convert real34 to string, eat away all zeroes from the right and give back to FIX as a real
-    char tmpString100[100];
+  if(SigFigMode!=0) {                                 //convert real34 to string, eat away all zeroes from the right and give back to FIX as a real
+    char tmpString100[100];                           //cleaning up the REAL
+    real34_t reduced;
+    real34Reduce(real34, &reduced);
+    //printReal34ToConsole(&reduced," ------- 002 >>>>>"," <<<<<\n");   //JM
+    real34ToString(&reduced, tmpString100);
+    //printf("------- 003 >>>>>%s\n",tmpString100);
+    int8_t ii=0;
+    while(tmpString100[ii]!=0) {                       //skip all zeroes
+      while(tmpString100[ii] == '0') {
+        if(tmpString100[ii] == 0) break;
+        ii++;
+      }                                                //counter at first non-'0' or at end
+      if(tmpString100[ii] == '.') {
+      //printf("------- 004 >>>>%s|, %i\n",tmpString100, ii);
 
-    //Try this out for cleaning up the REAL instead of manually searching for the
-      real34_t reduced;
-      real34Reduce(real34, &reduced);
-      real34ToString(&reduced, tmpString100);
-      stringToReal(tmpString100,&value,&ctxtReal39);
-/*
-    real34ToString(real34, tmpString100);
+          ii++;                                        //move to first non-'.' ans skip all zeroes
+          while(tmpString100[ii] == '0') {
+            if(tmpString100[ii] == 0) break;
+            ii++;
+          }                                            //counter at first non-'0' or end
 
-    //printf(" ------- 002 >>>%s<<<\n",tmpString100);
-    int16_t ii, tmp_i;
-    tmp_i = ii = stringByteLength(tmpString100)-1;
-    while(tmp_i > 0) {
-      if(tmpString100[tmp_i]=='E') {
-        ii = tmp_i;                   //prevent eating trailing zeroes to the right of E
-      }
-      if(tmpString100[tmp_i]!='.' && tmpString100[tmp_i]!=',') {
-        tmp_i--;
-      } else {
-        break;                        //break with the position of the decimal in tmp_i
-      }
-    }
-    char tmpString10[10];
-    tmpString10[0]=0;
-    if(ii != stringByteLength(tmpString100)-1 && ii > 0) {
-       strcpy(tmpString10, tmpString100 + ii);
-       tmpString100[ii]=0;
-    }
-    //printf("   EXP:%s:\n",tmpString10);
-    //printf("   MANT:%s:\n",tmpString100);
-    //printf("### ---- 003 decimal=%d, E=%d\n",tmp_i,ii);
-    ii = stringByteLength(tmpString100)-1;
-    while(ii > tmp_i) {            //only consider decimals trailing the decimal
-      if(tmpString100[ii] == 48) { //eat if 0
-        tmpString100[ii] = 0;      //break if trailing 0 stream is interrupted
-      } else {
+          if(tmpString100[ii] != 0) {
+            ii = ii + SigFigMode; 
+            int8_t jj = ii;
+            while(tmpString100[jj] != 0 && tmpString100[jj] != 'E') {
+              jj++;
+            }
+            if(tmpString100[jj] == 'E') {
+              while(tmpString100[jj] != 0) {
+                tmpString100[ii] = tmpString100[jj];
+                jj++; ii++;
+              }
+              tmpString100[ii] = 0; 
+            }
+          }
+        //printf("------- 005 >>>>%s|\n",tmpString100);
         break;
+      } 
+      else {
+        ii++;        
       }
-      ii--;
+
     }
-    //printf(" ------- 004 >>>%s<<<\n",tmpString100);
-    strcat(tmpString100,tmpString10);
-    //printf(" ------- 005 >>>%s<<<\n",tmpString100);
+
     stringToReal(tmpString100,&value,&ctxtReal39);
-*/
-  }                                               //^^JM
+    //printRealToConsole(&value," ------- 006 >>>>>"," <<<<<\n\n");   //JM
+  }
   else {
     real34ToReal(real34, &value);
   }
@@ -736,11 +737,11 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
       uint8_t displayFormatDigits_Active;                                    //JM SIGFIGNEW vv
       if(SigFigMode !=0 ) {
-        displayFormatDigits_Active =  min(max((SigFigMode+1)-exponent-1,0),255);  //Convert SIG to FIX.
+        displayFormatDigits_Active =  min(max(((int16_t)SigFigMode+1)-exponent-1,0),255); // min(max(((int16_t)SigFigMode+1)-exponent-1,0),255);  //Convert SIG to FIX.
       } else {
         displayFormatDigits_Active = displayFormatDigits;
       }                                                                  //JM SIGFIGNEW ^^
-      //printf(">>>## %u %u %u\n",displayFormatDigits_Active,displayFormatDigits, numDigits);
+      //printf(">>>## displayFormatDigits_Active=%u displayFormatDigits=%u numDigits=%u exponent=%i\n",displayFormatDigits_Active,displayFormatDigits, numDigits, exponent);
       digitsToTruncate = max(numDigits - (int16_t)displayFormatDigits_Active - exponent - 1, 0);   //JM SIGFIGNEW hackpoint
       numDigits -= digitsToTruncate;
       lastDigit -= digitsToTruncate;
