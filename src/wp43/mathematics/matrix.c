@@ -2307,7 +2307,6 @@ static void _dotRealVectors(const real34Matrix_t *y, const real34Matrix_t *x, re
 }
 
 
-#if !defined(TESTSUITE_BUILD)
 void dotRealVectors(const real34Matrix_t *y, const real34Matrix_t *x, real34_t *res) {
   real_t p;
 
@@ -2348,12 +2347,13 @@ void crossRealVectors(const real34Matrix_t *y, const real34Matrix_t *x, real34Ma
     realMultiply(&a1, &b2, &p, &ctxtReal39); realMultiply(&a2, &b1, &q, &ctxtReal39);
     realSubtract(&p, &q, &p, &ctxtReal39); realToReal34(&p, &res->matrixElements[2]);
   }
-    else {
-      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    }
+  else {
+    displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
   }
+}
 
 
+#if !defined(TESTSUITE_BUILD)
 uint16_t complexVectorSize(const complex34Matrix_t *matrix) {
   return realVectorSize((const real34Matrix_t *)matrix);
 }
@@ -4452,7 +4452,6 @@ static void elementwiseRemaGetResult(bool_t *complex, real34Matrix_t *x, complex
 
 /* Elementwise function call */
 void elementwiseRema(void (*f)(void)) {
-  #if !defined(TESTSUITE_BUILD)
   real34Matrix_t x;
   complex34Matrix_t xc;
   bool_t complex = false;
@@ -4480,7 +4479,6 @@ void elementwiseRema(void (*f)(void)) {
     convertReal34MatrixToReal34MatrixRegister(&x, REGISTER_X);
     realMatrixFree(&x);
   }
-  #endif // !TESTSUITE_BUILD
 }
 
 
