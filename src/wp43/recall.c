@@ -252,8 +252,10 @@ void fnRecallMax(uint16_t regist) {
 
 
 void fnRecallConfig(uint16_t regist) {
-    uint8_t  compatibility_u8;        //defaults to use when settings are removed
-    bool_t   compatibility_bool;      //defaults to use when settings are removed
+    uint8_t compatibility_u8;        //defaults to use when settings are removed
+    (void)  compatibility_u8;
+    bool_t  compatibility_bool;      //defaults to use when settings are removed
+    (void)  compatibility_bool;
   if(getRegisterDataType(regist) == dtConfig) {
     dtConfigDescriptor_t *configToRecall = REGISTER_CONFIG_DATA(regist);
 
