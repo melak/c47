@@ -92,7 +92,11 @@ dist_dm42: dmcp testPgms build.rel/wiki
 	mv build.dmcp/src/wp43-dmcp/WP43.pgm build.dmcp/src/wp43-dmcp/C43.pgm
 	mv build.dmcp/src/wp43-dmcp/WP43_qspi.bin build.dmcp/src/wp43-dmcp/C43_qspi.bin
 	cp build.dmcp/src/wp43-dmcp/C43.pgm build.dmcp/src/wp43-dmcp/C43_qspi.bin $(DM_DIST_DIR2)
-	cp -r res/offimg $(DM_DIST_DIR2)
+	cp -r res/offimg/Egypt/ $(DM_DIST_DIR2)/offimg
+	cp -r res/offimg/From\ WP43/ $(DM_DIST_DIR2)/offimg
+	cp -r res/offimg/General/ $(DM_DIST_DIR2)/offimg
+	cp -r res/offimg/HP\ related/ $(DM_DIST_DIR2)/offimg
+	cp -r res/offimg/C43/ $(DM_DIST_DIR2)/offimg
 	cp -r res/PROGRAMS $(DM_DIST_DIR2)
 	cp res/dmcp/original_DM42_keymap.bin res/dmcp/testPgms.bin $(DM_DIST_DIR2)
 	cp build.rel/wiki/Installation-on-a-DM42.md $(DM_DIST_DIR2)/readme.txt

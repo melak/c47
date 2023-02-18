@@ -3151,5 +3151,5 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2082 */  { fnPercentileXY,               NOPARAM,                     "x%" STD_SUB_I STD_SUB_L STD_SUB_E,            "x%" STD_SUB_I STD_SUB_L STD_SUB_E,            (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2083 */  { fnLINPOL,                     NOPARAM,                     "LINPOL",                                      "LINPOL",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 
-/* 2086 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
+/* 2084 */  { itemToBeCoded,                NOPARAM,                     "",                                            "Last item",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED},
 };
