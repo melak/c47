@@ -86,11 +86,9 @@ void jm_show_comment   (char comment[]);
 
 
 // Define variables that are saved with the config
-extern uint8_t SigFigMode;                                           //JM SIGFIG 
 extern bool_t eRPN;                                                  //JM eRPN Create a flag to enable or disable eRPN. See bufferize.c
 extern bool_t HOME3;                                                 //JM HOME Create a flag to enable or disable triple shift HOME3; enable or disable TRIPLE SHIFT TIMER FOR HOME.
 extern bool_t ShiftTimoutMode;                                       //JM HOME Create a flag to enable or disable SHIFT TIMER CANCEL.
-extern bool_t UNITDisplay;                                           //JM UNIT Create a flag to enable or disable unit display 
 extern bool_t SH_BASE_HOME;                                          //JM BASEHOME Create a flag to enable or disable triple shift
 extern int16_t Norm_Key_00_VAR;                                      //JM USER NORMAL
 extern uint8_t Input_Default;                                        //JM Input Default

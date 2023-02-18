@@ -186,11 +186,11 @@ typedef struct {
   calcKey_t     kbd_usr[37];
 
   //                                                                         //JMCFGvv
-  uint8_t SigFigMode;
+  uint8_t compatibility_u8;
   bool_t eRPN;
   bool_t HOME3;
   bool_t ShiftTimoutMode;
-  bool_t UNITDisplay;
+  bool_t compatibility_bool;
   bool_t SH_BASE_HOME;
   bool_t SH_BASE_AHOME;
   int16_t Norm_Key_00_VAR;
