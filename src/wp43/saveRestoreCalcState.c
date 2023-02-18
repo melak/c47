@@ -107,6 +107,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 
 #if defined(PC_BUILD)
   void saveCalc(void) {
+    uint8_t  compatibility_u8 = 0;           //defaults to use when settings are removed
+    bool_t   compatibility_bool = false;     //defaults to use when settings are removed
     uint32_t backupVersion = BACKUP_VERSION;
     uint32_t ramSize       = RAM_SIZE;
     uint32_t ramPtr;
@@ -357,8 +359,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&eRPN,                               sizeof(eRPN),                               BACKUP);    //JM vv
     save(&HOME3,                              sizeof(HOME3),                              BACKUP);
     save(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode),                    BACKUP);
-    save(&UNITDisplay,                        sizeof(UNITDisplay),                        BACKUP);
-    save(&SigFigMode,                         sizeof(SigFigMode),                         BACKUP);
+    save(&compatibility_bool,                 sizeof(compatibility_bool),                 BACKUP);
+    save(&compatibility_u8,                   sizeof(compatibility_u8),                   BACKUP);
     save(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     BACKUP);
     save(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
     save(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
@@ -405,6 +407,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 
 
   void restoreCalc(void) {
+    uint8_t  compatibility_u8;        //defaults to use when settings are removed
+    bool_t   compatibility_bool;      //defaults to use when settings are removed
     uint32_t backupVersion, ramSize, ramPtr;
     FILE *ppgm_fp;
     uint8_t *loadedScreen = malloc(SCREEN_WIDTH * SCREEN_HEIGHT / 8);
@@ -655,8 +659,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&eRPN,                               sizeof(eRPN),                               BACKUP);    //JM vv
       restore(&HOME3,                              sizeof(HOME3),                              BACKUP);
       restore(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode),                    BACKUP);
-      restore(&UNITDisplay,                        sizeof(UNITDisplay),                        BACKUP);
-      restore(&SigFigMode,                         sizeof(SigFigMode),                         BACKUP);
+      restore(&compatibility_bool,                 sizeof(compatibility_bool),                 BACKUP);
+      restore(&compatibility_u8,                   sizeof(compatibility_u8),                   BACKUP);
       restore(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     BACKUP);
       restore(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
       restore(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
@@ -1232,11 +1236,11 @@ char tmpString[3000];             //The concurrent use of the global tmpString
 //Number 16: digit
 
 //11
-  sprintf(tmpString, "SigFigMode\n%"          PRIu8 "\n",       SigFigMode);                   save(tmpString, strlen(tmpString), BACKUP);      
+  sprintf(tmpString, "Compatibility\n%"       PRIu8 "\n",       (uint8_t)0);                   save(tmpString, strlen(tmpString), BACKUP);      //keep save file format by keeping the old setting
   sprintf(tmpString, "eRPN\n%"                PRIu8 "\n",       (uint8_t)eRPN);                save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "HOME3\n%"               PRIu8 "\n",       (uint8_t)HOME3);               save(tmpString, strlen(tmpString), BACKUP); 
   sprintf(tmpString, "ShiftTimoutMode\n%"     PRIu8 "\n",       (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString), BACKUP);           
-  sprintf(tmpString, "UNITDisplay\n%"         PRIu8 "\n",       (uint8_t)UNITDisplay);         save(tmpString, strlen(tmpString), BACKUP);       
+  sprintf(tmpString, "Compatibility\n%"       PRIu8 "\n",       (uint8_t)0);                   save(tmpString, strlen(tmpString), BACKUP);      //keep save file format by keeping the old setting
   sprintf(tmpString, "SH_BASE_HOME\n%"        PRIu8 "\n",       (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString), BACKUP);        
   sprintf(tmpString, "Norm_Key_00_VAR\n%"     PRId16 "\n",      Norm_Key_00_VAR);              save(tmpString, strlen(tmpString), BACKUP);           
   sprintf(tmpString, "Input_Default\n%"       PRIu8 "\n",       Input_Default);                save(tmpString, strlen(tmpString), BACKUP);         
@@ -2323,11 +2327,12 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
           lrSelection = stringToUint16(tmpString);
         }
 
-        else if(strcmp(aimBuffer, "SigFigMode"                  ) == 0) { SigFigMode            = stringToUint8(tmpString); }
+        else if(strcmp(aimBuffer, "Compatibility"               ) == 0) { }                     //keep save file format by keeping the old setting
+        else if(strcmp(aimBuffer, "SigFigMode"                  ) == 0) { }                     //keep save file format by keeping the old setting
         else if(strcmp(aimBuffer, "eRPN"                        ) == 0) { eRPN                  = (bool_t)stringToUint8(tmpString) != 0; }
         else if(strcmp(aimBuffer, "HOME3"                       ) == 0) { HOME3                 = (bool_t)stringToUint8(tmpString) != 0; }
         else if(strcmp(aimBuffer, "ShiftTimoutMode"             ) == 0) { ShiftTimoutMode       = (bool_t)stringToUint8(tmpString) != 0; }          
-        else if(strcmp(aimBuffer, "UNITDisplay"                 ) == 0) { UNITDisplay           = (bool_t)stringToUint8(tmpString) != 0; }      
+        else if(strcmp(aimBuffer, "UNITDisplay"                 ) == 0) { }                     //keep save file format by keeping the old setting
         else if(strcmp(aimBuffer, "SH_BASE_HOME"                ) == 0) { SH_BASE_HOME          = (bool_t)stringToUint8(tmpString) != 0; }   
         else if(strcmp(aimBuffer, "Norm_Key_00_VAR"             ) == 0) { Norm_Key_00_VAR       = stringToUint16(tmpString); }
         else if(strcmp(aimBuffer, "Input_Default"               ) == 0) { Input_Default         = stringToUint8(tmpString); }

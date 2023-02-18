@@ -646,19 +646,19 @@ void fnDisplayFormatCycle (uint16_t unusedButMandatoryParameter) {
   if(displayFormat == DF_ALL) {
     fnDisplayFormatSigFig(displayFormatDigits);
   } else
-  if(displayFormat == DF_FIX && SigFigMode != 0 ) { //DF_SF)
+  if(displayFormat == DF_SF ) {
     fnDisplayFormatUnit(displayFormatDigits);
   } else
-  if(displayFormat == DF_ENG && UNITDisplay) { //DF_UN)
+  if(displayFormat == DF_UN) {
     fnDisplayFormatFix(displayFormatDigits);
   } else
-  if(displayFormat == DF_FIX && SigFigMode == 0) {
+  if(displayFormat == DF_FIX) {
     fnDisplayFormatSci(displayFormatDigits);
   } else
   if(displayFormat == DF_SCI) {
     fnDisplayFormatEng(displayFormatDigits); 
   } else
-  if(displayFormat == DF_ENG && !UNITDisplay) {
+  if(displayFormat == DF_ENG) {
     fnDisplayFormatAll(displayFormatDigits);
   }
   DM_Cycling = 1;
