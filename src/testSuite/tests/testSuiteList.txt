@@ -180,6 +180,7 @@ lnPOne
 arccos
 arcsin
 arctan
+atan2
 
 cos
 sin
