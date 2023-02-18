@@ -2353,7 +2353,6 @@ void crossRealVectors(const real34Matrix_t *y, const real34Matrix_t *x, real34Ma
 }
 
 
-#if !defined(TESTSUITE_BUILD)
 uint16_t complexVectorSize(const complex34Matrix_t *matrix) {
   return realVectorSize((const real34Matrix_t *)matrix);
 }
@@ -2427,11 +2426,10 @@ void crossComplexVectors(const complex34Matrix_t *y, const complex34Matrix_t *x,
     realToReal34(&pr, VARIABLE_REAL34_DATA(&res->matrixElements[2]));
     realToReal34(&pi, VARIABLE_IMAG34_DATA(&res->matrixElements[2]));
   }
-    else {
-      displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-    }
+  else {
+    displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
   }
-#endif // !TESTSUITE_BUILD
+}
 
 
 void vectorAngle(const real34Matrix_t *y, const real34Matrix_t *x, real34_t *radians) {
@@ -4676,7 +4674,6 @@ static void elementwiseCxmaGetResult(complex34Matrix_t *x, int i) {
 
 
 void elementwiseCxma(void (*f)(void)) {
-  #if !defined(TESTSUITE_BUILD)
   complex34Matrix_t x;
 
   convertComplex34MatrixRegisterToComplex34Matrix(REGISTER_X, &x);
@@ -4691,7 +4688,6 @@ void elementwiseCxma(void (*f)(void)) {
   convertComplex34MatrixToComplex34MatrixRegister(&x, REGISTER_X);
 
   complexMatrixFree(&x);
-  #endif // !TESTSUITE_BUILD
 }
 
 
