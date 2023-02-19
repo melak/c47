@@ -123,11 +123,7 @@ const funcTest_t funcTestNoParam[] = {
   {"fnCubeRoot",             fnCubeRoot            },
   {"fnCxToRe",               fnCxToRe              },
   {"fnCvtCToF",              fnCvtCToF             },
-  {"fnCvtDegToDms",          fnCvtDegToDms         },
-  {"fnCvtDegToRad",          fnCvtDegToRad         },
-  {"fnCvtDmsToDeg",          fnCvtDmsToDeg         },
   {"fnCvtFToC",              fnCvtFToC             },
-  {"fnCvtRadToDeg",          fnCvtRadToDeg         },
   {"fnCyx",                  fnCyx                 },
   {"fnDateTo",               fnDateTo              },
   {"fnDateToJulian",         fnDateToJulian        },
@@ -280,10 +276,8 @@ const funcTest_t funcTestNoParam[] = {
   {"fnRmd",                  fnRmd                 },
   {"fnRollDown",             fnRollDown            },
   {"fnRollUp",               fnRollUp              },
-  {"fnRound",                fnRound               },
-  {"fnRoundi",               fnRoundi              },
-  {"fnRound2",               fnRound               }, //JM
-  {"fnRoundi2",              fnRoundi              }, //JM
+  {"fnRound2",               fnRound2              },
+  {"fnRoundi2",              fnRoundi2             },
   {"fnSign",                 fnSign                },
   {"fnSin",                  fnSin                 },
   {"fnSinc",                 fnSinc                },
@@ -305,8 +299,8 @@ const funcTest_t funcTestNoParam[] = {
   {"fnToPolar",              fnToPolar             },
   {"fnToReal",               fnToReal              },
   {"fnToRect",               fnToRect              },
-  {"fnToPolar2",             fnToPolar2            },     //JM
-  {"fnToRect2",              fnToRect2             },     //JM
+  {"fnToPolar2",             fnToPolar2            },
+  {"fnToRect2",              fnToRect2             },
   {"fnT_I",                  fnT_I                 },
   {"fnT_L",                  fnT_L                 },
   {"fnT_P",                  fnT_P                 },

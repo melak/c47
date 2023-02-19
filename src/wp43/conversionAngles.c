@@ -123,6 +123,7 @@ void fnCvtFromCurrentAngularMode(uint16_t toAngularMode) {          //JM convert
   fnCvtFromCurrentAngularModeRegister(REGISTER_X, toAngularMode);
 }
 
+/*
 void fnCvtDegToRad(uint16_t unusedButMandatoryParameter) {
   if(!saveLastX()) {
     return;
@@ -161,7 +162,6 @@ void fnCvtDegToRad(uint16_t unusedButMandatoryParameter) {
   }
 }
 }
-
 
 
 void fnCvtRadToDeg(uint16_t unusedButMandatoryParameter) {
@@ -407,6 +407,7 @@ void fnCvtDmsToCurrentAngularMode(uint16_t unusedButMandatoryParameter) {
 }
 }
 
+*/
 
 
 void convertAngle34FromTo(real34_t *angle34, angularMode_t fromAngularMode, angularMode_t toAngularMode) {
