@@ -155,7 +155,7 @@ void realPolarToRectangular(const real_t *mag, const real_t *the, real_t *real, 
   //  |+∞  |+∞  |             |NaN   |NaN   | 30
 
   real_t sin, cos, magnitude, theta;
-  bool negativeAngle;
+  bool_t negativeAngle;
 
   // Testing NaNs and infinities
   if(realIsNaN(mag) || realIsNaN(the) || realIsInfinite(the)) {
