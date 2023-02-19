@@ -90,12 +90,12 @@ void decompReal(void) {
   liftStack();
 
   if(real34IsNaN(&x)) {
-    convertRealToReal34ResultRegister(const_NaN, REGISTER_X); // Denominator = NaN
-    convertRealToReal34ResultRegister(const_NaN, REGISTER_Y); // Numerator = NaN
+    convertRealToLongIntegerRegister(const_0, REGISTER_X, DEC_ROUND_HALF_DOWN); // Denominator = 0
+    convertRealToLongIntegerRegister(const_0, REGISTER_Y, DEC_ROUND_HALF_DOWN); // Numerator = 0
   }
   else if(real34IsInfinite(&x)) {
-    convertRealToReal34ResultRegister(const_0, REGISTER_X); // Denominator = 0
-    realToReal34(real34IsNegative(REGISTER_REAL34_DATA(REGISTER_X)) ? const__1 : const_1, REGISTER_REAL34_DATA(REGISTER_Y)); // Numerator = +/- 1
+    convertRealToLongIntegerRegister(const_0, REGISTER_X, DEC_ROUND_HALF_DOWN); // Denominator = 0
+    convertRealToLongIntegerRegister(real34IsNegative(&x) ? const__1 : const_1, REGISTER_Y, DEC_ROUND_HALF_DOWN); // Numerator = +/- 1
   }
   else {
     uint32_t savedDenMax = denMax;
