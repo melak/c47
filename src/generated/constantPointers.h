@@ -230,6 +230,7 @@
   extern const real_t * const const__108;
   extern const real_t * const const__4;
   extern const real_t * const const__1;
+  extern const real_t * const const__1oneE;
   extern const real_t * const const_1e_49;
   extern const real_t * const const_1e_37;
   extern const real_t * const const_1e_24;
