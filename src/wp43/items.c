@@ -557,7 +557,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnCvtCalJ                   (uint16_t unusedButMandatoryParameter) {}
   void fnCvtCwtKg                  (uint16_t unusedButMandatoryParameter) {}
   void fnCvtFtM                    (uint16_t unusedButMandatoryParameter) {}
-  void fnCvtDegToRad               (uint16_t unusedButMandatoryParameter) {}
   void fnCvtSfeetM                 (uint16_t unusedButMandatoryParameter) {}
   void fnCvtFlozukMl               (uint16_t unusedButMandatoryParameter) {}
   void fnCvtFlozusMl               (uint16_t unusedButMandatoryParameter) {}
@@ -591,19 +590,16 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnCvtPsiPa                  (uint16_t unusedButMandatoryParameter) {}
   void fnCvtShortcwtKg             (uint16_t unusedButMandatoryParameter) {}
   void fnCvtLbfftNm                (uint16_t unusedButMandatoryParameter) {}
-  void fnCvtRadToDeg               (uint16_t unusedButMandatoryParameter) {}
   void fnCvtFromCurrentAngularMode (uint16_t unusedButMandatoryParameter) {}
   void fnCvtYearS                  (uint16_t unusedButMandatoryParameter) {}
   void fnCvtCaratG                 (uint16_t unusedButMandatoryParameter) {}
   void fnCvtJinKg                  (uint16_t unusedButMandatoryParameter) {}
   void fnCvtLiangKg                (uint16_t unusedButMandatoryParameter) {}
   void fnCvtQuartL                 (uint16_t unusedButMandatoryParameter) {}
-  void fnCvtDmsToDeg               (uint16_t unusedButMandatoryParameter) {}
   void fnCvtDmsToCurrentAngularMode(uint16_t unusedButMandatoryParameter) {}
   void fnCvtFathomM                (uint16_t unusedButMandatoryParameter) {}
   void fnCvtBarrelM3               (uint16_t unusedButMandatoryParameter) {}
   void fnCvtHectareM2              (uint16_t unusedButMandatoryParameter) {}
-  void fnCvtDegToDms               (uint16_t unusedButMandatoryParameter) {}
   void fnCvtMuM2                   (uint16_t unusedButMandatoryParameter) {}
   void fnCvtLiM                    (uint16_t unusedButMandatoryParameter) {}
   void fnCvtChiM                   (uint16_t unusedButMandatoryParameter) {}
@@ -876,8 +872,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnQrDecomposition           (uint16_t unusedButMandatoryParameter) {}
   void fnEigenvalues               (uint16_t unusedButMandatoryParameter) {}
   void fnEigenvectors              (uint16_t unusedButMandatoryParameter) {}
-  void fnCvtMultPiToRad            (uint16_t unusedButMandatoryParameter) {}
-  void fnCvtRadToMultPi            (uint16_t unusedButMandatoryParameter) {}
   void fnJacobiSn                  (uint16_t unusedButMandatoryParameter) {}
   void fnJacobiCn                  (uint16_t unusedButMandatoryParameter) {}
   void fnJacobiDn                  (uint16_t unusedButMandatoryParameter) {}
