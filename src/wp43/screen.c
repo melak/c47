@@ -3954,6 +3954,16 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
           refreshStatusBar();
           //graphPlotstat(plotSelection);
           graph_plotmem();
+          if(lastErrorCode != ERROR_NONE) {
+            //printf("lastErrorCode1=%d\n", lastErrorCode); 
+            //printf(">>>> %d\n",softmenu[softmenuStack[0].softmenuId].menuItem);
+            if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_GRAPH) {
+              popSoftmenu();
+              calcMode = CM_NORMAL;
+              refreshScreen();
+            }
+          }
+
           hourGlassIconEnabled = false;
           showHideHourGlass();
           refreshStatusBar();
