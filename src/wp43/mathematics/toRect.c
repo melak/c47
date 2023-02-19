@@ -155,6 +155,7 @@ void realPolarToRectangular(const real_t *mag, const real_t *the, real_t *real, 
   //  |+∞  |+∞  |             |NaN   |NaN   | 30
 
   real_t sin, cos, magnitude, theta;
+  bool negativeAngle;
 
   // Testing NaNs and infinities
   if(realIsNaN(mag) || realIsNaN(the) || realIsInfinite(the)) {
@@ -178,9 +179,14 @@ void realPolarToRectangular(const real_t *mag, const real_t *the, real_t *real, 
 
   realCopy(mag, &magnitude);
   WP34S_Mod(the, const1071_2pi, &theta, &ctxtReal75);  // here   0 ≤ theta < 2pi
+  negativeAngle = realIsNegative(&theta);
 
   // Magnitude is infinite
   if(realIsInfinite(&magnitude)) {
+    if(negativeAngle) {
+      realChangeSign(&theta);
+    }
+
     if(realIsZero(&theta)) { // theta = 0
       //  +----+----+-------------+------+------+
       //  | ρ  | θ  | Condition   | Re   | Im   |
@@ -284,6 +290,10 @@ void realPolarToRectangular(const real_t *mag, const real_t *the, real_t *real, 
       if(!realIsNaN(imag) && !realIsZero(imag)) {
         realChangeSign(imag);
       }
+    }
+
+    if(negativeAngle && !realIsNaN(imag) && !realIsZero(imag)) {
+      realChangeSign(imag);
     }
 
     return;
