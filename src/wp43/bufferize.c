@@ -530,8 +530,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_SDL :
           case ITM_SDR :
           case ITM_RDP :
-          case ITM_RM :
-          case ITM_RMODE ://JM
+          case ITM_RMODE :
           case ITM_RSD :
           case ITM_DEG :
           case ITM_GRAD :
@@ -549,7 +548,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_CUBEROOT :
           case ITM_2X :
           case ITM_EXP :
-          case ITM_ROUND :
+          case ITM_ROUND2 :
           case ITM_10x :
           case ITM_LOG2 :
           case ITM_LN :
@@ -878,10 +877,9 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_RAN :
           case ITM_RE :
           case ITM_REexIM :
-          case ITM_RMQ :
-          case ITM_RMODEQ : //JM
+          case ITM_RMODEQ :
           case ITM_EX1 :
-          case ITM_ROUNDI :
+          case ITM_ROUNDI2 :
           case ITM_SDIGS :
           case ITM_SIGN :
           case ITM_ISM :
