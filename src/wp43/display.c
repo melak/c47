@@ -51,8 +51,6 @@ static void fnDisplayFormatReset(uint16_t displayFormatN) {
   displayFormatDigits = displayFormatN > DSP_MAX ? DSP_MAX : displayFormatN;
   clearSystemFlag(FLAG_FRACT);
   constantFractionsOn = false;
-  SigFigMode = 0;
-  UNITDisplay = false;
   DM_Cycling = 0;
 }
 
@@ -122,8 +120,8 @@ void fnDisplayFormatAll(uint16_t displayFormatN) {
  ***********************************************/
 void fnDisplayFormatSigFig(uint16_t displayFormatN) {
   fnDisplayFormatReset(displayFormatN);
-  displayFormat = DF_FIX;
-  SigFigMode = min(18,displayFormatDigits);
+  displayFormat = DF_SF;
+  displayFormatDigits = min(18,displayFormatDigits);
   fnRefreshState();
 }
 
@@ -136,8 +134,7 @@ void fnDisplayFormatSigFig(uint16_t displayFormatN) {
 void fnDisplayFormatUnit(uint16_t displayFormatN) {
   fnDisplayFormatReset(displayFormatN);
   displayFormatDigits = min(20, displayFormatDigits);
-  displayFormat = DF_ENG;
-  UNITDisplay = true;
+  displayFormat = DF_UN;
   fnRefreshState();
 }
 
@@ -153,10 +150,6 @@ void fnDisplayFormatDsp(uint16_t displayFormatN) {
   displayFormatN = displayFormatN > DSP_MAX ? DSP_MAX : displayFormatN;
   displayFormatDigits = displayFormatN;
   clearSystemFlag(FLAG_FRACT);
-
-  if(SigFigMode != 0) {             //JM
-    SigFigMode = displayFormatN;    //JM
-  }                                 //JM
   fnRefreshState();                              //drJM
 }
 
@@ -407,7 +400,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
   //sigfig
   //printReal34ToConsole(real34," ------- 001 >>>>>"," <<<<<\n");   //JM
-  if(SigFigMode!=0) {                                 //convert real34 to string, eat away all zeroes from the right and give back to FIX as a real
+  if(displayFormat == DF_SF) {                                 //convert real34 to string, eat away all zeroes from the right and give back to FIX as a real
     char tmpString100[100];                           //cleaning up the REAL
     real34_t reduced;
     real34Reduce(real34, &reduced);
@@ -430,7 +423,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
           }                                            //counter at first non-'0' or end
 
           if(tmpString100[ii] != 0) {
-            ii = ii + SigFigMode; 
+            ii = ii + displayFormatDigits; 
             int8_t jj = ii;
             while(tmpString100[jj] != 0 && tmpString100[jj] != 'E') {
               jj++;
@@ -725,7 +718,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
   //////////////
   // FIX mode //
   //////////////
-  if(displayFormat == DF_FIX) {
+  if(displayFormat == DF_FIX || displayFormat == DF_SF) {
     if(noFix || exponent >= displayHasNDigits || exponent < -(int32_t)displayFormatDigits) { // Display in SCI or ENG format
       digitsToDisplay = displayFormatDigits;
       digitToRound    = min(firstDigit + digitsToDisplay, lastDigit);
@@ -735,23 +728,22 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
     else { // display fix number of digits without ten exponent factor
       // Number of digits to truncate
 
-      uint8_t displayFormatDigits_Active;                                    //JM SIGFIGNEW vv
-      if(SigFigMode !=0 ) {
-        displayFormatDigits_Active =  min(max(((int16_t)SigFigMode+1)-exponent-1,0),255); // min(max(((int16_t)SigFigMode+1)-exponent-1,0),255);  //Convert SIG to FIX.
+      uint8_t displayFormatDigits_Active;
+      if(displayFormat == DF_SF) {
+        displayFormatDigits_Active =  min(max(((int16_t)displayFormatDigits+1)-exponent-1,0),255); //Convert SIG to FIX.
       } else {
         displayFormatDigits_Active = displayFormatDigits;
-      }                                                                  //JM SIGFIGNEW ^^
+      }
       //printf(">>>## displayFormatDigits_Active=%u displayFormatDigits=%u numDigits=%u exponent=%i\n",displayFormatDigits_Active,displayFormatDigits, numDigits, exponent);
-      digitsToTruncate = max(numDigits - (int16_t)displayFormatDigits_Active - exponent - 1, 0);   //JM SIGFIGNEW hackpoint
+      digitsToTruncate = max(numDigits - (int16_t)displayFormatDigits_Active - exponent - 1, 0);   //SIGFIGNEW hackpoint
       numDigits -= digitsToTruncate;
       lastDigit -= digitsToTruncate;
 
-      if(SigFigMode != 0 && firstDigit + SigFigMode <= 34) {                                              //JM SIGFIGNEW vv
-        digitToRound = firstDigit + SigFigMode;
+      if(displayFormat == DF_SF && firstDigit + displayFormatDigits <= 34) {
+        digitToRound = firstDigit + displayFormatDigits;
       } else {
         digitToRound = lastDigit;
-      }                                                                  //JM SIGFIGNEW ^^
-
+      }
       //printf(">>> ###A %d %d %d %d %d |",numDigits, firstDigit, lastDigit, digitToRound, exponent); for(i=firstDigit; i<=lastDigit; i++) {printf("%c",48+bcd[i]);} printf("\n");
 
       // Round the displayed number
@@ -762,7 +754,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
       // Transfert the carry
       while(bcd[digitToRound] == 10) {
         bcd[digitToRound--] = 0;
-        if(SigFigMode == 0) numDigits--;
+        if(displayFormat == DF_SF) numDigits--;
         bcd[digitToRound]++;
       }
 
@@ -773,15 +765,15 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
         firstDigit--;
         lastDigit = firstDigit;
         numDigits = 1;
-        if(SigFigMode != 0) displayFormatDigits_Active--;
+        if(displayFormat == DF_SF) displayFormatDigits_Active--;
         exponent++;
       }
 
 
       //JM SIGFIG - blank out non-sig digits to the right                 //JM SIGFIGNEW vv
-      if(SigFigMode != 0) {
-        if((SigFigMode+1)-exponent-1 < 0) {
-           for (digitCount = firstDigit + (SigFigMode+1); digitCount <= 34; digitCount++) {
+      if(displayFormat == DF_SF) {
+        if((displayFormatDigits+1)-exponent-1 < 0) {
+           for (digitCount = firstDigit + (displayFormatDigits+1); digitCount <= 34; digitCount++) {
             bcd[digitCount] = 0;
             }
         }
@@ -998,7 +990,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
   //////////////
   // ENG mode //
   //////////////
-  if(ovrENG || displayFormat == DF_ENG) {
+  if(ovrENG || displayFormat == DF_ENG || displayFormat == DF_UN) {
     // Round the displayed number
     if(!ovrENG) {
       digitsToDisplay = displayFormatDigits;
@@ -1104,7 +1096,7 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
     }
 
     if(exponent != 0) {
-      if(UNITDisplay == false) {                                                        //JM UNIT
+      if(displayFormat != DF_UN) {                                                        //JM UNIT
         if(updateDisplayValueX) {
           exponentToDisplayString(exponent, displayString + charIndex, displayValueX + valueIndex, false, separator);
         }
@@ -2359,17 +2351,12 @@ static void _complex34ToShowTmpString(const real34_t *r, const real34_t *i) {
 
 void fnShow(uint16_t unusedButMandatoryParameter) {
   uint8_t savedDisplayFormat = displayFormat, savedDisplayFormatDigits = displayFormatDigits;
-  uint8_t savedSigFigMode = SigFigMode;           //JM
-  bool_t savedUNITDisplay = UNITDisplay;          //JM
-
   int16_t source, dest, last, d, maxWidth, offset, bytesProcessed;
   char *separator;
   bool_t thereIsANextLine;
 
   displayFormat = DF_ALL;
   displayFormatDigits = 0;
-  SigFigMode = 0;                                //JM SIGFIG
-  UNITDisplay = false;                           //JM SIGFIG
 
   tmpString[   0] = 0; // L1
   tmpString[ 300] = 0; // L2
@@ -2480,8 +2467,6 @@ void fnShow(uint16_t unusedButMandatoryParameter) {
 
   displayFormat = savedDisplayFormat;
   displayFormatDigits = savedDisplayFormatDigits;
-  SigFigMode = savedSigFigMode;                            //JM SIGFIG
-  UNITDisplay = savedUNITDisplay;                          //JM SIGFIG
 }
 
 void mimShowElement(void) {
@@ -2609,8 +2594,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
 #ifndef SAVE_SPACE_DM42_9
 
   #ifndef TESTSUITE_BUILD
-    uint8_t savedDisplayFormat = displayFormat, savedDisplayFormatDigits = displayFormatDigits, savedSigFigMode = SigFigMode;
-    bool_t savedUNITDisplay = UNITDisplay;
+    uint8_t savedDisplayFormat = displayFormat, savedDisplayFormatDigits = displayFormatDigits;
     bool_t thereIsANextLine;
     int16_t source, dest, last, d, maxWidth, i, offset, bytesProcessed, aa, bb, cc, dd, aa2=0, aa3=0, aa4=0;
     uint64_t nn;
@@ -3203,8 +3187,6 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
 
     displayFormat = savedDisplayFormat;
     displayFormatDigits = savedDisplayFormatDigits;
-    SigFigMode = savedSigFigMode;                            //JM SIGFIG
-    UNITDisplay = savedUNITDisplay;                          //JM SIGFIG
     #if defined (VERBOSE_SCREEN) && defined (PC_BUILD)
       printf("SHOW:Done |%s|\n",tmpString);
     #endif

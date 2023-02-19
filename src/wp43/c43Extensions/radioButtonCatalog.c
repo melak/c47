@@ -205,8 +205,6 @@ int8_t fnCbIsSet(int16_t item) {
 
       case RB_DI: {
         rb_param = displayFormat;
-        if(rb_param == DF_FIX && SigFigMode != 0) { rb_param = DF_SF; }
-        if(rb_param == DF_ENG && UNITDisplay) {     rb_param = DF_UN; }
       }
       break;
 
@@ -536,25 +534,25 @@ int16_t fnItemShowValue(int16_t item) {
     break;
 
   case ITM_FIX:     //  185
-    if(displayFormat == DF_FIX && SigFigMode == 0) {
+    if(displayFormat == DF_FIX) {
       result = displayFormatDigits;
     }
     break;
 
   case ITM_SIGFIG:  // 1682
-    if(displayFormat == DF_FIX && SigFigMode != 0) {
+    if(displayFormat == DF_SF) {
       result = displayFormatDigits;
     }
     break;
 
   case ITM_ENG:     //  145
-    if(displayFormat == DF_ENG && !UNITDisplay) {
+    if(displayFormat == DF_ENG) {
       result = displayFormatDigits;
     }
     break;
 
   case ITM_UNIT:    // 1693
-    if(displayFormat == DF_ENG && UNITDisplay) {
+    if(displayFormat == DF_UN) {
       result = displayFormatDigits;
     }
     break;
@@ -597,13 +595,6 @@ int16_t fnItemShowValue(int16_t item) {
 
   case ITM_DSPCYCLE:     //
     result = 32700 + displayFormat;
-    switch (displayFormat) {
-      case DF_ALL: break;
-      case DF_FIX: result += SigFigMode == 0 ? 0 : 3; break;
-      case DF_SCI: break;
-      case DF_ENG: result += UNITDisplay ? 2 : 0; break;
-      default: break;
-    }    
     break;
 
   case ITM_DSP:     //

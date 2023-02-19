@@ -132,23 +132,25 @@ static void logxy(const real_t *xReal, const real_t *yReal, realContext_t *realC
    * Log(0, y) = NaN  y!=0
    */
   if(checkArgs(xReal, NULL, yReal, NULL)) {
-    if(realIsNegative(xReal)) {
-      if(getFlag(FLAG_CPXRES)) {
-        logXYComplex(xReal, const_0, yReal, const_0, &rReal, &rImag, realContext);
+    if(realIsNegative(xReal) || realIsNegative(yReal)) {
+      logXYComplex(xReal, const_0, yReal, const_0, &rReal, &rImag, realContext);
 
-        if(realIsZero(&rImag)) {
-          reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-          convertRealToReal34ResultRegister(&rReal, REGISTER_X);
-        }
-        else {
-          reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
-          convertRealToReal34ResultRegister(&rReal, REGISTER_X);
-          convertRealToImag34ResultRegister(&rImag, REGISTER_X);
-        }
+      if(realIsZero(&rImag)) {
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+        convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+      }
+      else if(getFlag(FLAG_CPXRES)) {
+        reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+        convertRealToReal34ResultRegister(&rReal, REGISTER_X);
+        convertRealToImag34ResultRegister(&rImag, REGISTER_X);
+      }
+      else if(getFlag(FLAG_SPCRES)) {
+        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+        convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
       }
       else {
         displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
-        EXTRA_INFO_MESSAGE("logxy", "cannot calculate LogXY with x<0 when flag I is not set");
+        EXTRA_INFO_MESSAGE("logxy", "cannot calculate LogXY with x<0 or y<0 when flag I is not set");
       }
     }
     else {

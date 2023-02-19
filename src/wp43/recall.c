@@ -252,6 +252,10 @@ void fnRecallMax(uint16_t regist) {
 
 
 void fnRecallConfig(uint16_t regist) {
+    uint8_t compatibility_u8;        //defaults to use when settings are removed
+    (void)  compatibility_u8;
+    bool_t  compatibility_bool;      //defaults to use when settings are removed
+    (void)  compatibility_bool;
   if(getRegisterDataType(regist) == dtConfig) {
     dtConfigDescriptor_t *configToRecall = REGISTER_CONFIG_DATA(regist);
 
@@ -271,11 +275,11 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(systemFlags);
     synchronizeLetteredFlags();
 
-    recallFromDtConfigDescriptor(SigFigMode);      
+    recallFromDtConfigDescriptor(compatibility_u8);      
     recallFromDtConfigDescriptor(eRPN);             
     recallFromDtConfigDescriptor(HOME3);            
     recallFromDtConfigDescriptor(ShiftTimoutMode);  
-    recallFromDtConfigDescriptor(UNITDisplay);      
+    recallFromDtConfigDescriptor(compatibility_bool);      
     recallFromDtConfigDescriptor(SH_BASE_HOME);     
     recallFromDtConfigDescriptor(Norm_Key_00_VAR); 
     recallFromDtConfigDescriptor(Input_Default);   
