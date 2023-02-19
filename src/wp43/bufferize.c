@@ -576,13 +576,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_MAGNITUDE :
           case ITM_NEXTP :
           case ITM_XFACT :
-          case ITM_toDEG :
-          case ITM_toDMS :
-          case ITM_toGRAD :
-          case ITM_toMULpi :
-          case ITM_toRAD :
-          case ITM_DtoR :
-          case ITM_RtoD :
           case ITM_LOGICALNOT :
           case CST_01 :
           case CST_02 :
@@ -864,8 +857,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_COV :
           case ITM_BESTFQ :
           case ITM_DAY :
-          case ITM_DEGto :
-          case ITM_DMSto :
           case ITM_DtoJ :
           case ITM_DTtoJ :
           case ITM_ERF :
@@ -875,7 +866,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_FLASH :
           case ITM_GD :
           case ITM_GDM1 :
-          case ITM_GRADto :
           case ITM_IM :
           case ITM_JtoDT :
           case ITM_LASTX :
@@ -885,7 +875,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_MEM :
           case ITM_MONTH :
           case ITM_sincpi :
-          case ITM_RADto :
           case ITM_RAN :
           case ITM_RE :
           case ITM_REexIM :
@@ -914,11 +903,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_STDDEVPOP :
           case ITM_M1X :
           case ITM_toHMS :
-          case ITM_MPItoR :
-          case ITM_RtoMPI :
           case ITM_toREAL :
-          case ITM_DtoDMS :
-          case ITM_MULPIto :
           case ITM_Kk :
           case ITM_Ek:
           case ITM_ARG:
