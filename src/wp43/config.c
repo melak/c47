@@ -755,11 +755,9 @@ void resetOtherConfigurationStuff(void) {
   lrSelection = CF_LINEAR_FITTING;
   lrSelectionUndo = lrSelection;                               //Not saved in file, but reset
 
-  SigFigMode = 0;
   eRPN = true;
   HOME3 = true;
   ShiftTimoutMode = true;
-  UNITDisplay = false;
   SH_BASE_HOME   = false;
   Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM NORM MODE SIGMA REPLACEMENT KEY
   Input_Default =  ID_43S;
