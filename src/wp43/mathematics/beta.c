@@ -195,7 +195,7 @@ void betaCplxLonI(void) {
   convertLongIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal39);
   realZero(&xImag);
 
-  _betaComplex(&xReal, &xImag, &yImag, &yImag, &ctxtReal39);
+  _betaComplex(&xReal, &xImag, &yReal, &yImag, &ctxtReal39);
 #endif
 }
 
@@ -237,7 +237,7 @@ void betaCplxReal(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
   realZero(&xImag);
 
-  _betaComplex(&xReal, &xImag, &yImag, &yImag, &ctxtReal39);
+  _betaComplex(&xReal, &xImag, &yReal, &yImag, &ctxtReal39);
 #endif
 }
 
