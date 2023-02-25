@@ -52,10 +52,10 @@
 #endif
 
 #include "wp43.h"
-
-#define BACKUP_VERSION       779  // LongPressF M
-#define configFileVersion    10000005 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
-#define VersionAllowed       10000005 // This code will not autoload versions earlier than this
+#define BACKUP_VERSION                     780  // save lastDenominator
+#define OLDEST_COMPATIBLE_BACKUP_VERSION   779  // save running app
+#define configFileVersion                  10000005 // arbitrary starting point version 10 000 001. Allowable values are 10000000 to 20000000
+#define VersionAllowed                     10000005 // This code will not autoload versions earlier than this
 
 /*
 10000001 // arbitrary starting point version 10 000 001
@@ -184,6 +184,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&yCursor,                            sizeof(yCursor),                            BACKUP);
     save(&firstGregorianDay,                  sizeof(firstGregorianDay),                  BACKUP);
     save(&denMax,                             sizeof(denMax),                             BACKUP);
+    save(&lastDenominator,                    sizeof(lastDenominator),                    BACKUP);
     save(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen),       BACKUP);
     save(&currentFntScr,                      sizeof(currentFntScr),                      BACKUP);
     save(&currentFlgScr,                      sizeof(currentFlgScr),                      BACKUP);
@@ -423,11 +424,11 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 
     restore(&backupVersion,                      sizeof(backupVersion),                      BACKUP);
     restore(&ramSize,                            sizeof(ramSize),                            BACKUP);
-    if(backupVersion != BACKUP_VERSION || ramSize != RAM_SIZE) {
+    if(backupVersion > BACKUP_VERSION || backupVersion < OLDEST_COMPATIBLE_BACKUP_VERSION || ramSize != RAM_SIZE) {
       fclose(BACKUP);
       refreshScreen();
 
-      printf("Cannot restore calc's memory from file backup.bin! File backup.bin is from another backup version.\n");
+      printf("Cannot restore calc's memory from file backup.bin! File backup.bin is from incompatible backup version.\n");
       printf("               Backup file      Program\n");
       printf("backupVersion  %6u           %6d\n", backupVersion, BACKUP_VERSION);
       printf("ramSize blocks %6u           %6d\n", ramSize, RAM_SIZE);
@@ -492,6 +493,9 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&yCursor,                            sizeof(yCursor),                            BACKUP);
       restore(&firstGregorianDay,                  sizeof(firstGregorianDay),                  BACKUP);
       restore(&denMax,                             sizeof(denMax),                             BACKUP);
+      if(backupVersion >= 780) {
+        restore(&lastDenominator,                  sizeof(lastDenominator),                    BACKUP);
+      }
       restore(&currentRegisterBrowserScreen,       sizeof(currentRegisterBrowserScreen),       BACKUP);
       restore(&currentFntScr,                      sizeof(currentFntScr),                      BACKUP);
       restore(&currentFlgScr,                      sizeof(currentFlgScr),                      BACKUP);
@@ -1202,6 +1206,8 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   sprintf(tmpString, "firstGregorianDay\n%" PRIu32 "\n", firstGregorianDay);
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "denMax\n%" PRIu32 "\n", denMax);
+  save(tmpString, strlen(tmpString), BACKUP);
+  sprintf(tmpString, "lastDenominator\n%" PRIu32 "\n", lastDenominator);
   save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "displayFormat\n%" PRIu8 "\n", displayFormat);
   save(tmpString, strlen(tmpString), BACKUP);
@@ -2274,6 +2280,12 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
           denMax = stringToUint32(tmpString);
           if(denMax < 1 || denMax > MAX_DENMAX) {
             denMax = MAX_DENMAX;
+          }
+        }
+        else if(strcmp(aimBuffer, "lastDenominator") == 0) {
+          lastDenominator = stringToUint32(tmpString);
+          if(lastDenominator < 1 || lastDenominator > MAX_DENMAX) {
+            lastDenominator = 4;
           }
         }
         else if(strcmp(aimBuffer, "displayFormat") == 0) {
