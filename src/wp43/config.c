@@ -1067,6 +1067,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     tam.mode = 0;
     catalog = CATALOG_NONE;
     memset(lastCatalogPosition, 0, NUMBER_OF_CATALOGS * sizeof(lastCatalogPosition[0]));
+    lastDenominator = 4;
     temporaryInformation = TI_RESET;
 
     currentInputVariable = INVALID_VARIABLE;

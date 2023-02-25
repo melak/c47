@@ -2114,13 +2114,15 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       }
     }
 
-    for(i=posSlash+1; i<lg; i++) {
-      if(aimBuffer[i]<'0' || aimBuffer[i]>'9') {
-        displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
-        #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-          moreInfoOnError("In function parseNimString:", "there is a non numeric character in the denominator part of the fraction!", NULL, NULL);
-        #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-        return;
+    if(aimBuffer[posSlash + 1] != 0) {
+      for(i=posSlash+1; i<lg; i++) {
+        if(aimBuffer[i]<'0' || aimBuffer[i]>'9') {
+          displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
+          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+            moreInfoOnError("In function parseNimString:", "there is a non numeric character in the denominator part of the fraction!", NULL, NULL);
+          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+          return;
+        }
       }
     }
 
@@ -2128,7 +2130,15 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
     aimBuffer[posSlash] = 0;
     integer = stringToInt32(aimBuffer + 1);
     numer   = stringToInt32(aimBuffer + posSpace + 1);
-    denom   = stringToInt32(aimBuffer + posSlash + 1);
+    if(aimBuffer[posSlash + 1] == 0) {
+      denom = lastDenominator;
+    }
+    else {
+      denom = stringToInt32(aimBuffer + posSlash + 1);
+      if(denom != 0) {
+        lastDenominator = denom;
+      }
+    }
 
     if(denom == 0 && !getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
