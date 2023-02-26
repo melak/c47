@@ -606,7 +606,7 @@ static void getLastRowStatsMatrix(real_t *x, real_t *y) {
 #endif // !TESTSUITE_BUILD
 
 
-static calcRegister_t fnClHisto(void){
+static calcRegister_t fnClHisto(bool_t deleteVariable) {
   #if !defined(TESTSUITE_BUILD)
     calcRegister_t regHisto = findNamedVariable("HISTO");
     if(regHisto == INVALID_VARIABLE) {
@@ -621,16 +621,22 @@ static calcRegister_t fnClHisto(void){
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return INVALID_VARIABLE;
     }
-    clearRegister(regHisto);                  // this should change to delete the named variable HISTO once the delete function is available. Until then write 0.0 into STATS.
-    return regHisto;
-#else
+    if(deleteVariable) {
+      fnDeleteVariable(regHisto);
+      return INVALID_VARIABLE;
+    }
+    else {
+      clearRegister(regHisto);
+      return regHisto;
+    }
+  #else
     return INVALID_VARIABLE;
-#endif //TESTSUITE_BUILD
+  #endif //TESTSUITE_BUILD
 }
 
 
 void fnClSigma(uint16_t unusedButMandatoryParameter) {
-  fnClHisto();
+  fnClHisto(true);
   strcpy(statMx,"STATS");                     //any stats operation restores the stats matrix. The purpose of the changed names are just to be able to exchange the matrixes for reading and graphing
   calcRegister_t regStats = findNamedVariable(statMx);
   if(regStats == INVALID_VARIABLE) {
@@ -644,7 +650,7 @@ void fnClSigma(uint16_t unusedButMandatoryParameter) {
       moreInfoOnError("In function fnClSigma:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
-  clearRegister(regStats);                  // this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
+  fnDeleteVariable(regStats);
   lrChosen = 0;                             // linear regression selection
   lastPlotMode = PLOT_NOTHING;              // last selected  plotmode
   plotSelection = 0;                        // Currently selected linear regression mode
@@ -1066,7 +1072,7 @@ static void convertStatsMatrixToHistoMatrix(uint16_t statsVariableToHistogram) {
     }
 
     calcRegister_t regStats = findNamedVariable(statMx);              //connect to STATS matrix
-    calcRegister_t regHisto = fnClHisto();                            //clear and connect to HISTO matrix
+    calcRegister_t regHisto = fnClHisto(false);                       //clear and connect to HISTO matrix
 
     if(isStatsMatrix(&i, statMx) && regStats != INVALID_VARIABLE && regHisto != INVALID_VARIABLE) {
 

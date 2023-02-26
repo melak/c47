@@ -799,8 +799,11 @@ void debugNIM(void) {
       case TM_REGISTER: {
         return "Register";
       }
-      case TM_CMP: {
-        return "Compare ";
+      case TM_FLAGR: {
+        return "FlagR   ";
+      }
+      case TM_FLAGW: {
+        return "FlagW   ";
       }
       case TM_STORCL: {
         return "STORCL  ";
@@ -808,9 +811,33 @@ void debugNIM(void) {
       case TM_M_DIM: {
         return "M_DIM   ";
       }
+      case TM_SHUFFLE: {
+        return "Shuffle ";
+      }
+      case TM_LABEL: {
+        return "Label   ";
+      }
+      case TM_SOLVE: {
+        return "Solve   ";
+      }
+      case TM_NEWMENU: {
+        return "NewMenu ";
+      }
+      case TM_KEY: {
+        return "Key     ";
+      }
+      case TM_INTEGRATE: {
+        return "Integrat";
+      }
+      case TM_DELITM: {
+        return "DelItem ";
+      }
+      case TM_CMP: {
+        return "Compare ";
+      }
       default: {
-    return "???     ";
-  }
+        return "???     ";
+      }
     }
   }
 
