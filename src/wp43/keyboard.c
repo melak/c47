@@ -183,14 +183,14 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
       case MNU_REALS:
       case MNU_CPXS: {
         dynamicMenuItem = firstItem + itemShift + fn;
-        item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_RCL);
+        item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : (tam.mode == TM_DELITM) ? MNU_DYNAMIC : ITM_RCL);
         break;
       }
 
       case MNU_RAM:
       case MNU_FLASH: {
         dynamicMenuItem = firstItem + itemShift + fn;
-        item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : ITM_XEQ);
+        item = (dynamicMenuItem >= dynamicSoftmenu[menuId].numItems ? ITM_NOP : (tam.mode == TM_DELITM) ? MNU_DYNAMIC : ITM_XEQ);
         break;
       }
 
@@ -200,13 +200,25 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
         if(dynamicMenuItem < dynamicSoftmenu[menuId].numItems) {
           for(uint32_t i = 0; softmenu[i].menuItem < 0; ++i) {
             if(compareString((char *)getNthString(dynamicSoftmenu[menuId].menuContent, dynamicMenuItem), indexOfItems[-softmenu[i].menuItem].itemCatalogName, CMP_NAME) == 0) {
-              item = softmenu[i].menuItem;
+              if(tam.mode == TM_DELITM) {
+                item = MNU_DYNAMIC;
+                tam.value = numberOfUserMenus;
+              }
+              else {
+                item = softmenu[i].menuItem;
+              }
             }
           }
           for(uint32_t i = 0; i < numberOfUserMenus; ++i) {
             if(compareString((char *)getNthString(dynamicSoftmenu[menuId].menuContent, dynamicMenuItem), userMenus[i].menuName, CMP_NAME) == 0) {
-              item = -MNU_DYNAMIC;
-              currentUserMenu = i;
+              if(tam.mode == TM_DELITM) {
+                item = MNU_DYNAMIC;
+                tam.value = i;
+              }
+              else {
+                item = -MNU_DYNAMIC;
+                currentUserMenu = i;
+              }
             }
           }
         }
@@ -382,11 +394,12 @@ printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)dat
           case MNU_TAMSTORCL:
           case MNU_TAMFLAG:
           case MNU_TAMSHUFFLE:
-        case MNU_TAMLABEL: {
+          case MNU_TAMLABEL:
+          case ITM_DELITM: {
             // TAM menus are processed elsewhere
             break;
-        }
-        default: {
+          }
+          default: {
             leaveAsmMode();
             popSoftmenu();
         }

@@ -773,7 +773,8 @@ typedef enum {
 #define TM_NEWMENU                             10011
 #define TM_KEY                                 10012
 #define TM_INTEGRATE                           10013
-#define TM_CMP                                 10014 // TM_CMP must be the last in this list
+#define TM_DELITM                              10014
+#define TM_CMP                                 10015 // TM_CMP must be the last in this list
 
 // NIM number part
 #define NP_EMPTY                                   0
