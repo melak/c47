@@ -202,6 +202,8 @@ void     restoreStats          (void);
 void     setConfirmationMode   (void (*func)(uint16_t));
 void     fnClAll               (uint16_t confirmation);
 void     backToSystem          (uint16_t confirmation);
+void     runDMCPmenu           (uint16_t confirmation);
+void     activateUSBdisk       (uint16_t confirmation);
 void     fnRange               (uint16_t unusedButMandatoryParameter);
 void     fnGetRange            (uint16_t unusedButMandatoryParameter);
 void     fnHide                (uint16_t digits);

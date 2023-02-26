@@ -184,33 +184,37 @@ TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_
 
 #ifdef DMCP_BUILD
   #define ITM_SYS ITM_SYSTEM
+  #define ITM_SYS2 ITM_SYSTEM2
+  #define ITM_DMCP ITM_ACTUSB
 #else
   #define ITM_SYS ITM_RESERVE
+  #define ITM_SYS2 ITM_RESERVE
+  #define ITM_DMCP ITM_RESERVE
 #endif
 
 TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_RAD,                    ITM_GRAD,                 ITM_ERPN,              ITM_RECT,                    ITM_POLAR,
-                                             ITM_SYS,                       ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_CFG,              //JM
+                                             ITM_SYS,                       ITM_SYS2,                   ITM_DMCP,                 ITM_NULL,              ITM_NULL,                    ITM_CFG,              //JM
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                                       //JM
 
                                              ITM_SSIZE4,                    ITM_SSIZE8,                 ITM_CB_CPXRES,            ITM_CB_SPCRES,         ITM_DENMAX2,                 ITM_CFG,                           //JM
                                              ITM_SETSIG2,                   ITM_RMODE,                  ITM_EXFRAC,               ITM_DENANY,            ITM_DENFIX,                  ITM_NULL,        //JM
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_NULL,                    ITM_NULL,                          //JM
 
-                                             ITM_BASE_SCREEN,               ITM_BASE_HOME,             ITM_HOMEx3,                ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
-                                             ITM_SAFERESET,                 ITM_H_SUMRY,               ITM_TST,                   ITM_M1234,             ITM_M14,                     ITM_NULL,                        //JM
-                                             ITM_SYS,                       ITM_NULL,                  ITM_NULL,                  ITM_F1234,             ITM_F14,                     ITM_F124                  };
+                                             ITM_BASE_SCREEN,               ITM_BASE_HOME,              ITM_HOMEx3,               ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
+                                             ITM_SAFERESET,                 ITM_H_SUMRY,                ITM_TST,                  ITM_M1234,             ITM_M14,                     ITM_NULL,                        //JM
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_F1234,             ITM_F14,                     ITM_F124                  };
 // D47 vv
 TO_QSPI const int16_t menu_SETUP[]       = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_ERPN,              ITM_RECT,                    ITM_POLAR,
-                                             ITM_SYS,                       ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_CFG,              //JM
+                                             ITM_SYS,                       ITM_SYS2,                   ITM_DMCP,                 ITM_NULL,              ITM_NULL,                    ITM_CFG,              //JM
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                                       //JM
 
                                              ITM_SSIZE4,                    ITM_SSIZE8,                 ITM_CB_CPXRES,            ITM_CB_SPCRES,         ITM_DENMAX2,                 ITM_CFG,                           //JM
                                              ITM_SETSIG2,                   ITM_RMODE,                  ITM_EXFRAC,               ITM_DENANY,            ITM_DENFIX,                  ITM_NULL,        //JM
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_NULL,                    ITM_NULL,                          //JM
 
-                                             ITM_BASE_SCREEN,               ITM_BASE_HOME,             ITM_HOMEx3,                ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
-                                             ITM_SAFERESET,                 ITM_H_SUMRY,               ITM_TST,                   ITM_M1234,             ITM_M14,                     ITM_NULL,                        //JM
-                                             ITM_SYS,                       ITM_NULL,                  ITM_NULL,                  ITM_F1234,             ITM_F14,                     ITM_F124                  };
+                                             ITM_BASE_SCREEN,               ITM_BASE_HOME,              ITM_HOMEx3,               ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
+                                             ITM_SAFERESET,                 ITM_H_SUMRY,                ITM_TST,                  ITM_M1234,             ITM_M14,                     ITM_NULL,                        //JM
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_F1234,             ITM_F14,                     ITM_F124                  };
 // D47 ^^
 
 

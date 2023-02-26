@@ -1262,3 +1262,29 @@ void backToSystem(uint16_t confirmation) {
     #endif // DMCP_BUILD
   }
 }
+
+void runDMCPmenu(uint16_t confirmation) {
+  if(confirmation == NOT_CONFIRMED) {
+    setConfirmationMode(runDMCPmenu);
+  }
+  else {
+    #if defined(PC_BUILD)  //for consistency with backToSystem
+      fnOff(NOPARAM);
+    #endif // PC_BUILD
+
+    #if defined(DMCP_BUILD)
+      run_menu_item_sys(MI_DMCP_MENU);
+    #endif // DMCP_BUILD
+  }
+}
+
+void activateUSBdisk(uint16_t confirmation) {
+  if(confirmation == NOT_CONFIRMED) {
+    setConfirmationMode(activateUSBdisk);
+  }
+  else {
+    #if defined(DMCP_BUILD)
+      run_menu_item_sys(MI_MSC);
+    #endif // DMCP_BUILD
+  }
+}
