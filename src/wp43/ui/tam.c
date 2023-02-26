@@ -118,6 +118,21 @@
         }
       }
 
+      case ITM_DELITM: {
+        switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
+          case MNU_RAM:
+          case MNU_FLASH: {
+            return ITM_DELITM_PROG;
+          }
+          case MNU_MENUS: {
+            return ITM_DELITM_MENU;
+          }
+          default: {
+            return ITM_DELITM;
+          }
+        }
+      }
+
       default: {
         return tam.function;
       }
@@ -804,7 +819,7 @@
           }
         }
       }
-      else if(tam.mode == TM_LABEL || tam.mode == TM_SOLVE || (tam.mode == TM_KEY && tam.keyInputFinished)) {
+      else if(tam.mode == TM_LABEL || tam.mode == TM_SOLVE || (tam.mode == TM_KEY && tam.keyInputFinished) || (tam.mode == TM_DELITM && (softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_RAM || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_FLASH))) {
         value = findNamedLabel(buffer);
         if(value == INVALID_VARIABLE && tam.function != ITM_LBL && tam.function != ITM_LBLQ) {
           displayCalcErrorMessage(ERROR_LABEL_NOT_FOUND, ERR_REGISTER_LINE, REGISTER_X);
@@ -813,6 +828,9 @@
             moreInfoOnError("In function _tamProcessInput:", errorMessage, NULL, NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         }
+      }
+      else if(tam.mode == TM_DELITM && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_MENUS) {
+        value = tam.value;
       }
       else if(tryAllocate) {
         value = findOrAllocateNamedVariable(buffer);
@@ -968,6 +986,11 @@
       }
 
       case TM_NEWMENU: {
+        break;
+      }
+
+      case TM_DELITM: {
+        showSoftmenu(-ITM_DELITM);
         break;
       }
 

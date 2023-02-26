@@ -1175,8 +1175,8 @@
 #define ITM_SUB_x                   1139
 #define ITM_SUB_y                   1140
 #define ITM_SUB_z                   1141
-#define VAR_1142                    1142
-#define VAR_1143                    1143
+#define ITM_DELITM_PROG             1142
+#define ITM_DELITM_MENU             1143
 #define VAR_1144                    1144
 #define VAR_1145                    1145
 #define VAR_1146                    1146
@@ -2096,8 +2096,8 @@
 #define ITM_PLOT_STAT               2040
 #define ITM_3x1TOSTK                2041
 #define ITM_PLOTRST                 2042
-#define MNU_2043                    2043
-#define MNU_2044                    2044
+#define ITM_SYSTEM2                 2043
+#define ITM_ACTUSB                  2044
 #define MNU_2045                    2045
 #define MNU_2046                    2046
 #define MNU_2047                    2047

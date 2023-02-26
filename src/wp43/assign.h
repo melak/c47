@@ -25,6 +25,8 @@
 
   void fnAssign             (uint16_t mode);
 
+  void fnDeleteMenu         (uint16_t id);
+
   void updateAssignTamBuffer(void);
 
   void _assignItem          (userMenuItem_t *menuItem);

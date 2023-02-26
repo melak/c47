@@ -1990,7 +1990,7 @@ void hideFunctionName(void) {
     bool_t distModeActive = false;
     bool_t baseModeActive = false;    
 
-    char prefix[200], lastBase[4];
+    char prefix[200], lastBase[12];
 
     baseModeActive = displayStackSHOIDISP != 0 && (lastIntegerBase != 0 || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_BASE);
     if(baseModeActive && getRegisterDataType(REGISTER_X) == dtShortInteger) { //JMSHOI                   
@@ -2440,6 +2440,26 @@ void hideFunctionName(void) {
               lastBase[1] = '0' + lastIntegerBase;
               lastBase[2] = 0;
             }
+            wLastBaseNumeric  = stringWidth(lastBase, &numericFont,  true, true);
+            wLastBaseStandard = stringWidth(lastBase, &standardFont, true, true);
+          }
+          else if(aimBuffer[0] != 0 && aimBuffer[strlen(aimBuffer)-1]=='/') {
+            char *lb = lastBase;
+            if(lastDenominator >= 1000) {
+              *(lb++) = STD_SUB_0[0];
+              *(lb++) = STD_SUB_0[1] + (lastDenominator / 1000);
+            }
+            if(lastDenominator >= 100) {
+              *(lb++) = STD_SUB_0[0];
+              *(lb++) = STD_SUB_0[1] + (lastDenominator % 1000 / 100);
+            }
+            if(lastDenominator >= 10) {
+              *(lb++) = STD_SUB_0[0];
+              *(lb++) = STD_SUB_0[1] + (lastDenominator % 100 / 10);
+            }
+            *(lb++) = STD_SUB_0[0];
+            *(lb++) = STD_SUB_0[1] + (lastDenominator % 10);
+            *(lb++) = 0;
             wLastBaseNumeric  = stringWidth(lastBase, &numericFont,  true, true);
             wLastBaseStandard = stringWidth(lastBase, &standardFont, true, true);
           }
@@ -3657,7 +3677,7 @@ void hideFunctionName(void) {
       yCursor = Y_POSITION_OF_NIM_LINE;
       cursorFont = &numericFont;
 
-      if(lastIntegerBase != 0) {
+      if(lastIntegerBase != 0 || (aimBuffer[0] != 0 && aimBuffer[strlen(aimBuffer)-1]=='/')) {
         showString(lastBase, &numericFont, xCursor + 16, Y_POSITION_OF_NIM_LINE, vmNormal, true, true);
       }
     }
@@ -3666,7 +3686,7 @@ void hideFunctionName(void) {
       yCursor = Y_POSITION_OF_NIM_LINE + 6;
       cursorFont = &standardFont;
 
-      if(lastIntegerBase != 0) {
+      if(lastIntegerBase != 0 || (aimBuffer[0] != 0 && aimBuffer[strlen(aimBuffer)-1]=='/')) {
         showString(lastBase, &standardFont, xCursor + 8, Y_POSITION_OF_NIM_LINE + 6, vmNormal, true, true);
       }
     }
@@ -3689,7 +3709,7 @@ void hideFunctionName(void) {
         yCursor = Y_POSITION_OF_NIM_LINE + 18;
         cursorFont = &standardFont;
 
-        if(lastIntegerBase != 0) {
+        if(lastIntegerBase != 0 || (aimBuffer[0] != 0 && aimBuffer[strlen(aimBuffer)-1]=='/')) {
           showString(lastBase, &standardFont, xCursor + 8, Y_POSITION_OF_NIM_LINE + 18, vmNormal, true, true);
         }
       }
@@ -3954,6 +3974,16 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
           refreshStatusBar();
           //graphPlotstat(plotSelection);
           graph_plotmem();
+          if(lastErrorCode != ERROR_NONE) {
+            //printf("lastErrorCode1=%d\n", lastErrorCode); 
+            //printf(">>>> %d\n",softmenu[softmenuStack[0].softmenuId].menuItem);
+            if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_GRAPH) {
+              popSoftmenu();
+              calcMode = CM_NORMAL;
+              refreshScreen();
+            }
+          }
+
           hourGlassIconEnabled = false;
           showHideHourGlass();
           refreshStatusBar();
