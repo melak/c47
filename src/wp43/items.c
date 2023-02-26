@@ -493,6 +493,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnChangeSign                (uint16_t unusedButMandatoryParameter) {}
   void fnM1Pow                     (uint16_t unusedButMandatoryParameter) {}
   void backToSystem                (uint16_t unusedButMandatoryParameter) {}
+  void runDMCPmenu                 (uint16_t unusedButMandatoryParameter) {}
   void fnMultiply                  (uint16_t unusedButMandatoryParameter) {}
   void fnDblDivide                 (uint16_t unusedButMandatoryParameter) {}
   void fnDblDivideRemainder        (uint16_t unusedButMandatoryParameter) {}
@@ -924,6 +925,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnSqrt1Px2                  (uint16_t unusedButMandatoryParameter) {}
   void fnDeleteVariable            (uint16_t unusedButMandatoryParameter) {}
   void fnDeleteMenu                (uint16_t unusedButMandatoryParameter) {}
+  void activateUSBdisk             (uint16_t unusedButMandatoryParameter) {}
 
   void fnJM                       (uint16_t unusedButMandatoryParameter) {}           //vv JM
   void fnSetSetJM                 (uint16_t unusedButMandatoryParameter) {}
@@ -3108,8 +3110,8 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2040 */  { graph_stat,                   NOPARAM,                     "PLSTAT",                                      "PLSTAT",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2041 */  { fnJM,                         47,                          "M" STD_RIGHT_ARROW "zyx",                     "M" STD_RIGHT_ARROW "zyx",                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 2042 */  { fnPlotReset,                  NOPARAM,                     "PLTRST",                                      "PLTRST",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 2043 */  { itemToBeCoded,                NOPARAM,                     "2043",                                        "2043",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2044 */  { itemToBeCoded,                NOPARAM,                     "2044",                                        "2044",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2043 */  { runDMCPmenu,                  NOT_CONFIRMED  /*#JM#*/,     "DMCP",                                        "DMCP",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2044 */  { activateUSBdisk,              NOT_CONFIRMED  /*#JM#*/,     "ActUSB",                                      "ActUSB",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2045 */  { itemToBeCoded,                NOPARAM,                     "2045",                                        "2045",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2046 */  { itemToBeCoded,                NOPARAM,                     "2046",                                        "2046",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2047 */  { itemToBeCoded,                NOPARAM,                     "2047",                                        "2047",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
