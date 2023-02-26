@@ -14796,8 +14796,8 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_PRINTERX >> 8) | 0x80;
     *(currentStep++) =  ITM_PRINTERX       & 0xff;
 
-    *(currentStep++) = (ITM_RANGE >> 8) | 0x80;
-    *(currentStep++) =  ITM_RANGE       & 0xff;
+    *(currentStep++) = (ITM_RNG >> 8) | 0x80;
+    *(currentStep++) =  ITM_RNG       & 0xff;
 
     *(currentStep++) = (ITM_GETRANGE >> 8) | 0x80;
     *(currentStep++) =  ITM_GETRANGE       & 0xff;
