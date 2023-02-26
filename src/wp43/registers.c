@@ -1213,15 +1213,15 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
   bool_t oneArgumentIsComplex = false;
 
   if(op1 >= 0) {
-    oneArgumentIsComplex = oneArgumentIsComplex || getRegisterDataType(op1) == dtComplex34;
+    oneArgumentIsComplex = oneArgumentIsComplex || getRegisterDataType(op1) == dtComplex34 || getRegisterDataType(op1) == dtComplex34Matrix;
   }
 
   if(op2 >= 0) {
-    oneArgumentIsComplex = oneArgumentIsComplex || getRegisterDataType(op2) == dtComplex34;
+    oneArgumentIsComplex = oneArgumentIsComplex || getRegisterDataType(op2) == dtComplex34 || getRegisterDataType(op2) == dtComplex34Matrix;
   }
 
   if(op3 >= 0) {
-    oneArgumentIsComplex = oneArgumentIsComplex || getRegisterDataType(op3) == dtComplex34;
+    oneArgumentIsComplex = oneArgumentIsComplex || getRegisterDataType(op3) == dtComplex34 || getRegisterDataType(op3) == dtComplex34Matrix;
   }
 
   resultDataType = getRegisterDataType(res);
@@ -1240,26 +1240,24 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
         break;
       }
 
-      #if !defined(TESTSUITE_BUILD)
-        case dtReal34Matrix: {
-          real34Matrix_t matrix;
-          linkToRealMatrixRegister(res, &matrix);
-          for(uint32_t i = 0; i < matrix.header.matrixRows * matrix.header.matrixColumns; i++) {
-            adjustRealRegister(res, VARIABLE_REAL34_DATA(&matrix.matrixElements[i]));
-          }
-        break;
+      case dtReal34Matrix: {
+        real34Matrix_t matrix;
+        linkToRealMatrixRegister(res, &matrix);
+        for(uint32_t i = 0; i < matrix.header.matrixRows * matrix.header.matrixColumns; i++) {
+          adjustRealRegister(res, VARIABLE_REAL34_DATA(&matrix.matrixElements[i]));
         }
+        break;
+      }
 
-        case dtComplex34Matrix: {
-          complex34Matrix_t matrix;
-          linkToComplexMatrixRegister(res, &matrix);
-          for(uint32_t i = 0; i < matrix.header.matrixRows * matrix.header.matrixColumns; i++) {
-            adjustRealRegister(res, VARIABLE_REAL34_DATA(&matrix.matrixElements[i]));
-            adjustRealRegister(res, VARIABLE_IMAG34_DATA(&matrix.matrixElements[i]));
-          }
-        break;
+      case dtComplex34Matrix: {
+        complex34Matrix_t matrix;
+        linkToComplexMatrixRegister(res, &matrix);
+        for(uint32_t i = 0; i < matrix.header.matrixRows * matrix.header.matrixColumns; i++) {
+          adjustRealRegister(res, VARIABLE_REAL34_DATA(&matrix.matrixElements[i]));
+          adjustRealRegister(res, VARIABLE_IMAG34_DATA(&matrix.matrixElements[i]));
         }
-      #endif // !TESTSUITE_BUILD
+        break;
+      }
 
       default: {
         break;
@@ -1267,11 +1265,13 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
   }
   }
 
-  if(resultDataType == dtTime) {
-    checkTimeRange(REGISTER_REAL34_DATA(res));
-  }
-  if(resultDataType == dtDate) {
-    checkDateRange(REGISTER_REAL34_DATA(res));
+  if(lastErrorCode == 0) {
+    if(resultDataType == dtTime) {
+      checkTimeRange(REGISTER_REAL34_DATA(res));
+    }
+    if(resultDataType == dtDate) {
+      checkDateRange(REGISTER_REAL34_DATA(res));
+    }
   }
 
   if(lastErrorCode != 0) {
@@ -1315,29 +1315,27 @@ void adjustResult(calcRegister_t res, bool_t dropY, bool_t setCpxRes, calcRegist
       break;
     }
 
-    #if !defined(TESTSUITE_BUILD)
-      case dtReal34Matrix: {
+    case dtReal34Matrix: {
       if(significantDigits == 0 || significantDigits >= 34) {
         break;
       }
 
       rsdRema(significantDigits);
       break;
-      }
+    }
 
-      case dtComplex34Matrix: {
+    case dtComplex34Matrix: {
       if(significantDigits == 0 || significantDigits >= 34) {
         break;
       }
 
       rsdCxma(significantDigits);
       break;
-      }
-    #endif // !TESTSUITE_BUILD
+    }
 
     default: {
       break;
-  }
+    }
   }
 
   if(dropY) {
