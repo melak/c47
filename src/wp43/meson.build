@@ -84,6 +84,7 @@ wp43_src = files(
   'mathematics/elliptic.c',
   'mathematics/erf.c',
   'mathematics/erfc.c',
+  'mathematics/eulersFormula.c',
   'mathematics/exp.c',
   'mathematics/expMOne.c',
   'mathematics/expt.c',
