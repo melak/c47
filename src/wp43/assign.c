@@ -80,7 +80,7 @@ TO_QSPI const calcKey_t kbd_std_WP43[37] = {
 
  {61,   ITM_MULT,        ITM_XFACT,      -MNU_PROB,        ITM_CROSS,       ITM_R,             ITM_PROD_SIGN,         ITM_RHO,       ITM_MULT     },
  {62,   ITM_4,          -MNU_SUMS,       -MNU_STAT,        ITM_4,           ITM_S,             ITM_4,                 ITM_SIGMA,     ITM_4        },
- {63,   ITM_5,           ITM_toREC,       ITM_toPOL,       ITM_5,           ITM_T,             ITM_5,                 ITM_TAU,       ITM_5        },
+ {63,   ITM_5,           ITM_toREC2,      ITM_toPOL2,      ITM_5,           ITM_T,             ITM_5,                 ITM_TAU,       ITM_5        },
  {64,   ITM_6,           ITM_TIMER,      -MNU_CLK,         ITM_6,           ITM_U,             ITM_6,                 ITM_THETA,     ITM_6        },
  {65,   ITM_UP1,         ITM_BST,         ITM_SF,          ITM_UP1,         ITM_UP1,           ITM_BST,               ITM_SF,        ITM_UP1      },
 
