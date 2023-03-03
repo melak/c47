@@ -1,0 +1,118 @@
+;*************************************************************
+;*************************************************************
+;**                                                         **
+;**                          eulersFormula                  **
+;**                                                         **
+;*************************************************************
+;*************************************************************
+In: FL_SPCRES=0 FL_CPXRES=0 SD=0 RM=0 IM=2compl SS=4 WS=64
+Func: fnEulersFormula
+
+
+;=======================================
+; eulersFormula(Long Integer) --> Complex
+;=======================================
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=LonI:"1"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=LonI:"1" RX=Cplx:"0.5403023058681397174009366074429766 i +0.841470984807896506652502321630299"
+
+
+;=======================================
+; exp(Time)
+;=======================================
+
+
+
+;=======================================
+; exp(Date)
+;=======================================
+
+
+
+;=======================================
+; exp(String) --> Error24
+;=======================================
+In:  FL_ASLIFT=0 RX=Stri:"String test"
+Out: EC=24 FL_ASLIFT=0 RX=Stri:"String test"
+
+
+
+;=======================================
+; exp(Real Matrix)
+;=======================================
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=ReMa:"M2,3[0,-1,0.2,3,-4,0.5]"
+Out: EC=24 FL_ASLIFT=0 RX=ReMa:"M2,3[0,-1,0.2,3,-4,0.5]"
+
+
+
+;=======================================
+; exp(Complex Matrix)
+;=======================================
+In:  AM=RAD FL_ASLIFT=0 FL_CPXRES=0 RX=CxMa:"M2,3[0,0i-1,2i-1,-3i2,4i3,-5i-4]"
+Out: EC=24 FL_ASLIFT=0 RX=CxMa:"M2,3[0,0i-1,2i-1,-3i2,4i3,-5i-4]"
+
+
+
+;=======================================
+; exp(Short Integer) --> Error24
+;=======================================
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=ShoI:"-919#10"
+Out: EC=24 FL_CPXRES=0 FL_ASLIFT=0 RX=ShoI:"-919#10" 
+
+
+
+;=======================================
+; exp(Real) --> Real
+;=======================================
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"3.1415926535897932384626433832795028841971693993751058209749446"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"3.1415926535897932384626433832795028841971693993751058209749446" RX=Cplx:"-1.0 i -1.1580283060062489E-34"
+
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"1.570796326794896619231321691639752"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"1.570796326794896619231321691639752" RX=Cplx:"-5.5790141530031245E-34 i +1.0"
+
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"0.7853981633974483096156608458198758"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"0.7853981633974483096156608458198758" RX=Cplx:"0.707106781186547524400844362104849 i +0.7071067811865475244008443621048491"
+
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"-0.7853981633974483096156608458198758"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"-0.7853981633974483096156608458198758" RX=Cplx:"0.707106781186547524400844362104849 i -0.7071067811865475244008443621048491"
+
+
+
+; NaN
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"NaN":RAD
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"NaN":RAD RX=Cplx:"NaN i NaN"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 RX=Real:"NaN"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"NaN" RX=Cplx:"NaN i NaN"
+
+; Infinity
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"inf" RX=Cplx:"NaN i NaN"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"inf"
+Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"inf"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"-inf"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"-inf" RX=Cplx:"NaN i NaN"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"-inf"
+Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-inf"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"inf":DEG
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"inf":DEG RX=Cplx:"NaN i NaN"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"inf":RAD
+Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"inf":RAD
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=1 RX=Real:"-inf":MULTPI
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Real:"-inf":MULTPI RX=Cplx:"NaN i NaN"
+
+In:  FL_ASLIFT=0 FL_CPXRES=0 FL_SPCRES=0 RX=Real:"-inf":GRAD
+Out: EC=1 FL_CPXRES=0 FL_ASLIFT=0 RX=Real:"-inf":GRAD
+
+
+
+;=======================================
+; exp(Complex) --> Complex
+;=======================================
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
+Out: EC=0 FL_CPXRES=1 FL_ASLIFT=1 RL=Cplx:"6.2 i -7.6" RX=Cplx:"1991.286327570242807966908574943716 i -166.0289036365741953941569561328917"

@@ -566,15 +566,6 @@ void fnJM(uint16_t JM_OPCODE) {
   }
   else
 
-  if(JM_OPCODE == 10) {                                         //e^theta.j j
-    saveForUndo();
-    if(!saveLastX()) return;                                    // STO TMP
-    fn_cnst_op_j(0);
-    fnMultiply(0);                                              // * aa
-    fnExp(0);
-  }
-  else
-
   if(JM_OPCODE == 11) {                                         //STO Z
     saveForUndo();
     setSystemFlag(FLAG_ASLIFT);                                          //  Registers: Z:90-92  V:93-95  I:96-98  XYZ
