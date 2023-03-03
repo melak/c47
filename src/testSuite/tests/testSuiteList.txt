@@ -70,8 +70,6 @@ sign
 not
 mirror
 
-conversionAngles
-
 addition_longInteger
 addition_time
 addition_date
@@ -139,17 +137,14 @@ specialResults
 ;Answer to the Ultimate Question of Life
 ultimateQuestionOfLife
 
-rectangularToPolar
-polarToRectangular
-;jm
 rectangularToPolarB
 polarToRectangularB
 
 ceil
 floor
-;round
-;roundB        /jmreplaced, but original also does not work
-roundi
+
+;round never worked from WP43
+roundB
 roundiB
 
 idiv
