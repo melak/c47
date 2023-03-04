@@ -104,4 +104,16 @@
   void fnCvtRatioDb   (uint16_t tenOrTwenty);
   void fnCvtDbRatio   (uint16_t tenOrTwenty);
   void fnCvtLbfftNm   (uint16_t multiplyDivide);
+
+  // Speed
+  void fnCvtKmphmps   (uint16_t multiplyDivide);
+  void fnCvtRpmDegps  (uint16_t multiplyDivide);
+  void fnCvtMphmps    (uint16_t multiplyDivide);
+  void fnCvtRpmRadps  (uint16_t multiplyDivide);
+
+  // Angle
+  void fnCvtDegRad    (uint16_t multiplyDivide);
+  void fnCvtDegGrad   (uint16_t multiplyDivide);
+  void fnCvtGradRad   (uint16_t multiplyDivide);
+
 #endif // !CONVERSIONUNITS_H
