@@ -35,5 +35,7 @@ void eulersFormulaError  (void);
 void eulersFormulaCplx       (void);
 void eulersFormulaReal       (void);
 void eulersFormulaLongint    (void);
+void eulersFormulaRema       (void);
+void eulersFormulaCxma       (void);
 
 #endif // !EULERSFORMULA_H

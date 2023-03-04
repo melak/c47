@@ -26,7 +26,9 @@
 #include "flags.h"
 #include "fonts.h"
 #include "items.h"
+#include "matrix.h"
 #include "registers.h"
+#include "realType.h"
 #include "registerValueConversions.h"
 #include "mathematics/multiplication.h"
 #include "mathematics/exp.h"
@@ -39,7 +41,7 @@
 TO_QSPI void (* const eulersFormula[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
 // regX ==> 1                     2                  3                  4                   5                   6                   7                   8                   9                   10
 //          Long integer          Real34             complex34          Time                Date                String              Real34 mat          Complex34 m         Short integer       Config data
-            eulersFormulaLongint, eulersFormulaReal, eulersFormulaCplx, eulersFormulaError, eulersFormulaError, eulersFormulaError, eulersFormulaError, eulersFormulaError, eulersFormulaError, eulersFormulaError          //JM
+            eulersFormulaLongint, eulersFormulaReal, eulersFormulaCplx, eulersFormulaError, eulersFormulaError, eulersFormulaError, eulersFormulaRema,  eulersFormulaCxma,  eulersFormulaError, eulersFormulaError
 };
 
 
@@ -59,6 +61,20 @@ void fnEulersFormula(uint16_t unusedButMandatoryParameter) {
   }
   eulersFormula[getRegisterDataType(REGISTER_X)]();
 }
+
+
+
+void eulersFormulaRema(void) {
+  elementwiseRema(eulersFormulaReal);
+}
+
+
+
+void eulersFormulaCxma(void) {
+  elementwiseCxma(eulersFormulaCplx);
+}
+
+
 
 
 void eulersFormulaCplx(void) {
@@ -85,7 +101,7 @@ void eulersFormulaCplx(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &zReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &zImag);
 
-  mulComplexComplex(&zReal, &zImag, const_0, const_1, &zReal, &zImag, &ctxtReal39);
+  mulComplexi(&zReal, &zImag);
   expComplex(&zReal, &zImag, &zReal, &zImag, &ctxtReal39);
 
   convertRealToReal34ResultRegister(&zReal, REGISTER_X);
