@@ -26,6 +26,8 @@
 #include "flags.h"
 #include "fonts.h"
 #include "mathematics/comparisonReals.h"
+#include "mathematics/gamma.h"
+#include "mathematics/ln.h"
 #include "mathematics/wp34s.h"
 #include "registers.h"
 #include "registerValueConversions.h"
@@ -171,8 +173,8 @@ static void _lnBetaComplex(real_t *xReal, real_t *xImag, real_t *yReal, real_t *
   // LnBeta(x, y) := LnGamma(x) + LnGamma(y) - LnGamma(x+y)
   real_t tReal, tImag;
 
-  WP34S_ComplexLnGamma(xReal, xImag, &tReal, &tImag, realContext); // t = LnGamma(x)
-  WP34S_ComplexLnGamma(yReal, yImag, rReal, rImag, realContext);   // r = LnGamma(y)
+  complexLnGamma(xReal, xImag, &tReal, &tImag, realContext); // t = LnGamma(x)
+  complexLnGamma(yReal, yImag, rReal, rImag, realContext);   // r = LnGamma(y)
 
   realAdd(rReal, &tReal, rReal, realContext); // r = LnGamma(x) + LnGamma(y)
   realAdd(rImag, &tImag, rImag, realContext);
@@ -180,7 +182,7 @@ static void _lnBetaComplex(real_t *xReal, real_t *xImag, real_t *yReal, real_t *
   realAdd(xReal, yReal, &tReal, realContext); // t = x + y
   realAdd(xImag, yImag, &tImag, realContext);
 
-  WP34S_ComplexLnGamma(&tReal, &tImag, &tReal, &tImag, realContext); // t = LnGamma(x + y);
+  complexLnGamma(&tReal, &tImag, &tReal, &tImag, realContext); // t = LnGamma(x + y);
 
   realSubtract(rReal, &tReal, rReal, realContext); // r = LnGamma(x) + LnGamma(y) - LnGamma(x + y);
   realSubtract(rImag, &tImag, rImag, realContext);

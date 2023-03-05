@@ -194,13 +194,6 @@
   extern const real_t * const const_FenToM;
   extern const real_t * const const_MiToM;
   extern const real_t * const const_NmiToM;
-  extern const real_t * const const_Kmphmps;
-  extern const real_t * const const_RpmDegps;
-  extern const real_t * const const_Mphmps;
-  extern const real_t * const const_RpmRadps;
-  extern const real_t * const const_DegRad;
-  extern const real_t * const const_DegGrad;
-  extern const real_t * const const_GradRad;
   extern const real_t * const const_AccreToHa;
   extern const real_t * const const_AccreusToHa;
   extern const real_t * const const_MuToM2;
@@ -253,6 +246,7 @@
   extern const real_t * const const_piOn4;
   extern const real_t * const const_root3on2;
   extern const real_t * const const_9on10;
+  extern const real_t * const const_ln2piOn2;
   extern const real_t * const const_1;
   extern const real_t * const const_3on2;
   extern const real_t * const const_piOn2;
@@ -291,6 +285,8 @@
   extern const real_t * const const_400;
   extern const real_t * const const_600;
   extern const real_t * const const_1000;
+  extern const real_t * const const_1260;
+  extern const real_t * const const_1680;
   extern const real_t * const const_2100;
   extern const real_t * const const_2520;
   extern const real_t * const const_3600;
