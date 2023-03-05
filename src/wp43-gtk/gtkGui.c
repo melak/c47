@@ -1937,6 +1937,9 @@ void labelCaptionNormal(const calcKey_t *key, GtkWidget *button, GtkWidget *lblF
   else if(strcmp((char *)lbl, "i") == 0) {
     if(getSystemFlag(FLAG_CPXj)) strcpy((char *)lbl,"j");
   }
+  else if(strcmp((char *)lbl, "LINPOL") == 0) {
+    strcpy((char *)lbl,"LIN");
+  }
 
 
   gtk_label_set_label(GTK_LABEL(lblG), (gchar *)lbl);
