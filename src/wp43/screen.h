@@ -42,6 +42,8 @@
   void     clear_ul(void);                                                                                        //JMUL
   void     clearScreen_old(bool_t clearStatusBar, bool_t clearRegisterLines, bool_t clearSoftkeys);               //JMOLD
   void     fnScreenDump                       (uint16_t unusedButMandatoryParameter);
+  void     fnSNAP                             (uint16_t unusedButMandatoryParameter);
+
 
 void       fnClLcd                            (uint16_t unusedButMandatoryParameter);
 void       fnPixel                            (uint16_t unusedButMandatoryParameter);

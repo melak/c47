@@ -29,6 +29,7 @@
 #include "error.h"
 #include "flags.h"
 #include "fonts.h"
+#include "c43Extensions/addons.h"
 #include "c43Extensions/graphs.h"
 #include "c43Extensions/graphText.h"
 #include "c43Extensions/inlineTest.h"
@@ -4032,6 +4033,15 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
     #endif // !DMCP_BUILD
   }
 #endif // !TESTSUITE_BUILD
+
+
+
+
+void fnSNAP(uint16_t unusedButMandatoryParameter) {
+  fnScreenDump(0);
+  fnP_All_Regs(1); //print stack
+}
+
 
 
 

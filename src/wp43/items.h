@@ -1945,10 +1945,10 @@
 #define ITM_INP_DEF_CPXDP           1889
 #define ITM_INP_DEF_SI              1890
 #define ITM_INP_DEF_LI              1891
-#define ITM_USER_V43                1892
+#define ITM_USER_V47                1892
 #define KEY_fg                      1893
-#define ITM_USER_DD43               1894
-#define ITM_USER_N43                1895
+#define ITM_USER_DD47               1894
+#define ITM_USER_N47                1895
 #define ITM_USER_C43ALTA            1896
 #define ITM_ASNVIEWER               1897
 #define ITM_N_KEY_ALPHA             1898
@@ -1966,11 +1966,11 @@
 #define ITM_msTo                    1910
 #define ITM_INP_DEF_43S             1911
 #define ITM_XXEQ                    1912
-#define ITM_USER_EE43               1913
+#define ITM_USER_EE47               1913
 #define ITM_USER_COPY               1914
 #define ITM_USER_WP43S              1915
 #define ITM_USER_DM42               1916
-#define ITM_USER_C43                1917
+#define ITM_USER_C47                1917
 #define ITM_GET_NORM_E              1918
 #define ITM_RESERVE                 1919
 #define MNU_ASN_N                   1920
@@ -2155,8 +2155,8 @@
 #define ITM_GRADtoDEG               2099
 #define ITM_GRADtoRAD               2100
 #define ITM_RADtoGRAD               2101
-#define MNU_2102                    2102
-#define MNU_2103                    2103
+#define MNU_TRG_C47                 2102
+#define ITM_TRG_C47_MORE            2103
 #define MNU_2104                    2104
 #define MNU_2105                    2105
 

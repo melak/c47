@@ -748,9 +748,9 @@ void fnUserJM(uint16_t jmUser) {
 
 
   #ifndef SAVE_SPACE_DM42 
-    case USER_E43:
+    case USER_E47:
         fnUserJM(USER_KRESET);
-        fnShowVersion(USER_E43);
+        fnShowVersion(USER_E47);
 
         kbd_usr[ 0].primary       = ITM_STO;
         kbd_usr[ 1].primary       = ITM_RCL;
@@ -836,9 +836,9 @@ void fnUserJM(uint16_t jmUser) {
 
 
     #ifndef SAVE_SPACE_DM42 
-      case USER_V43:          //USER
+      case USER_V47:          //USER
         fnUserJM(USER_KRESET);
-        fnShowVersion(USER_V43);
+        fnShowVersion(USER_V47);
 
         kbd_usr[ 0].primary       = ITM_1ONX;
         kbd_usr[ 0].fShifted      = ITM_YX;
@@ -966,9 +966,9 @@ void fnUserJM(uint16_t jmUser) {
 
 
     #ifndef SAVE_SPACE_DM42 
-      case USER_N43:          //USER
+      case USER_N47:          //USER
         fnUserJM(USER_KRESET);
-        fnShowVersion(USER_N43);
+        fnShowVersion(USER_N47);
         #ifndef SAVE_SPACE_DM42 
           xcopy(kbd_usr, kbd_std_N43, sizeof(kbd_std_N43));
         #endif //SAVE_SPACE_DM42 
@@ -981,9 +981,9 @@ void fnUserJM(uint16_t jmUser) {
 
 
     #ifndef SAVE_SPACE_DM42 
-      case USER_D43:          //USER
+      case USER_D47:          //USER
         fnUserJM(USER_KRESET);
-        fnShowVersion(USER_D43);
+        fnShowVersion(USER_D47);
         #ifndef SAVE_SPACE_DM42 
           xcopy(kbd_usr, kbd_std_D47, sizeof(kbd_std_D47));
         #endif //SAVE_SPACE_DM42 
@@ -996,9 +996,12 @@ void fnUserJM(uint16_t jmUser) {
 //---KEYS PROFILE: C43
 //------------------------
   #ifndef SAVE_SPACE_DM42 
-    case USER_C43:          //USER
+    case USER_C47:          //USER
         fnUserJM(USER_KRESET);
-        fnShowVersion(USER_C43);
+        fnShowVersion(USER_C47);
+        #ifndef SAVE_SPACE_DM42 
+          xcopy(kbd_usr, kbd_std_C47, sizeof(kbd_std_C47));
+        #endif //SAVE_SPACE_DM42 
         fnSetFlag(FLAG_USER);
     break;
   #endif //SAVE_SPACE_DM42 

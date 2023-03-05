@@ -125,6 +125,10 @@ TO_QSPI const int16_t menu_TRI[]         = { ITM_DEG2,                      ITM_
                                              ITM_sinc,                      ITM_sincpi,                 ITM_atan2,                ITM_arcsin,            ITM_arccos,                  ITM_arctan,                         //JM re-arranged menu TRIG menu
                                              ITM_sinh,                      ITM_cosh,                   ITM_tanh,                 ITM_arsinh,            ITM_arcosh,                  ITM_artanh                    };    //JM re-arranged menu TRIG menu
 
+TO_QSPI const int16_t menu_TRG_C47[]     = { ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_DMS2,              ITM_MULPI2,                  ITM_TRG_C47_MORE,
+                                             ITM_sinc,                      ITM_sincpi,                 ITM_atan2,                ITM_ms,                ITM_dotD,                    ITM_msTo                      };                   
+
+
 //D47 vv
 TO_QSPI const int16_t menu_TRG[]         = { ITM_DEG,                       ITM_RAD,                    ITM_GRAD,                 ITM_sinc,              ITM_sincpi,                  ITM_atan2,
                                              ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_DMS2,              ITM_MULPI2,                  ITM_msTo,                   
@@ -194,7 +198,7 @@ TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_
 
 TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_RAD,                    ITM_GRAD,                 ITM_ERPN,              ITM_RECT,                    ITM_POLAR,
                                              ITM_SYS,                       ITM_SYS2,                   ITM_DMCP,                 ITM_NULL,              ITM_NULL,                    ITM_CFG,              //JM
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                                       //JM
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    -MNU_TRG_C47,                                       //JM
 
                                              ITM_SSIZE4,                    ITM_SSIZE8,                 ITM_CB_CPXRES,            ITM_CB_SPCRES,         ITM_DENMAX2,                 ITM_CFG,                           //JM
                                              ITM_SETSIG2,                   ITM_RMODE,                  ITM_EXFRAC,               ITM_DENANY,            ITM_DENFIX,                  ITM_NULL,        //JM
@@ -568,11 +572,11 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
   #define CC_D43  ITM_NULL
   #define CC_N43  ITM_NULL
 #else
-  #define CC_C43  ITM_USER_C43
-  #define CC_V43  ITM_USER_V43
-  #define CC_E43  ITM_USER_EE43
-  #define CC_D43  ITM_USER_DD43
-  #define CC_N43  ITM_USER_N43
+  #define CC_C43  ITM_USER_C47
+  #define CC_V43  ITM_USER_V47
+  #define CC_E43  ITM_USER_EE47
+  #define CC_D43  ITM_USER_DD47
+  #define CC_N43  ITM_USER_N47
 #endif                                             
 
 #ifdef SAVE_SPACE_DM42_7
@@ -789,6 +793,7 @@ TO_QSPI const softmenu_t softmenu[] = {
 /* 124 */  {.menuItem = -MNU_STDNORML,    .numItems = sizeof(menu_StdNorml   )/sizeof(int16_t), .softkeyItem = menu_StdNorml    },
 /* 125 */  {.menuItem = -MNU_TAMLBLALPHA, .numItems = sizeof(menu_TamLblAlpha)/sizeof(int16_t), .softkeyItem = menu_TamLblAlpha },
 /* 126 */  {.menuItem = -MNU_TAMSRALPHA,  .numItems = sizeof(menu_TamStoRclAlpha)/sizeof(int16_t), .softkeyItem = menu_TamStoRclAlpha },
+/* 127 */  {.menuItem = -MNU_TRG_C47,     .numItems = sizeof(menu_TRG_C47    )/sizeof(int16_t), .softkeyItem = menu_TRG_C47     },
 #ifdef INLINE_TEST                                                              //vv dr
 /*     */  {.menuItem= -MNU_INL_TST,     .numItems = sizeof(menu_Inl_Tst    )/sizeof(int16_t), .softkeyItem = menu_Inl_Tst     },
 #endif                                                                          //^^
@@ -1824,7 +1829,8 @@ void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, 
                       item == ITM_EQ_NEW    ||
                       item == ITM_VARMNU    ||
                       item == ITM_SIM_EQ    ||
-                      item == ITM_M_EDI
+                      item == ITM_M_EDI     ||
+                      item == ITM_TRG_C47_MORE
                       /*item == ITM_PLOT_CENTRL ||  CENTRL does not bring up a new menu - it is the same menu therefore not inverted */
                       /*|| (item == ITM_TIMER)*/) {       //JMvv colour PLOT in reverse font to appear to be menus
                         showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
@@ -2163,6 +2169,15 @@ void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, 
 
 
 #endif // !TESTSUITE_BUILD
+
+
+  void   fnShowSoftmenu(uint16_t param) { // note the parameter is +16384 offset
+    #if !defined TESTSUITE_BUILD
+      showSoftmenu( ((int16_t)(param)) - 16384);
+    #endif // !TESTSUITE_BUILD
+  }
+
+
 
 char *dynmenuGetLabel(int16_t menuitem) {
   if(menuitem < 0 || menuitem >= dynamicSoftmenu[softmenuStack[0].softmenuId].numItems) {
