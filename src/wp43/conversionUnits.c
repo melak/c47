@@ -39,7 +39,7 @@ static void unitConversion(const real_t * const coefficient, uint16_t multiplyDi
     return;
   }
 
-  if(getRegisterDataType(REGISTER_X) == dtReal34) {
+  if(getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone) {
     real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &reX);
   }
   else if(getRegisterDataType(REGISTER_X) == dtLongInteger) {
@@ -425,6 +425,47 @@ void fnCvtMi2Km2 (uint16_t multiplyDivide) {
 void fnCvtNmi2Km2(uint16_t multiplyDivide) {
   unitConversion(const_NmiSqToKmSq, multiplyDivide);
 }
+
+void fnCvtKmphmps(uint16_t multiplyDivide) {
+  unitConversion(const_Kmphmps, multiplyDivide);
+}
+
+void fnCvtRpmDegps(uint16_t multiplyDivide) {
+  unitConversion(const_RpmDegps, multiplyDivide);
+}
+
+void fnCvtMphmps(uint16_t multiplyDivide) {
+  unitConversion(const_Mphmps, multiplyDivide);
+}
+
+void fnCvtRpmRadps(uint16_t multiplyDivide) {
+  unitConversion(const_RpmRadps, multiplyDivide);
+}
+
+void fnCvtDegRad(uint16_t multiplyDivide) {
+  if(getRegisterDataType(REGISTER_X) == dtReal34 && ( 
+    ((getRegisterAngularMode(REGISTER_X) == amDegree) && multiplyDivide == multiply) || ((getRegisterAngularMode(REGISTER_X) == amRadian) && multiplyDivide == divide) )) {
+    setRegisterAngularMode(REGISTER_X, amNone);
+  }
+  unitConversion(const_DegRad, multiplyDivide);
+}
+
+void fnCvtDegGrad(uint16_t multiplyDivide) {
+  if(getRegisterDataType(REGISTER_X) == dtReal34 && ( 
+    ((getRegisterAngularMode(REGISTER_X) == amDegree) && multiplyDivide == multiply) || ((getRegisterAngularMode(REGISTER_X) == amGrad) && multiplyDivide == divide) )) {
+    setRegisterAngularMode(REGISTER_X, amNone);
+  }
+  unitConversion(const_DegGrad, multiplyDivide);
+}
+
+void fnCvtGradRad(uint16_t multiplyDivide) {
+  if(getRegisterDataType(REGISTER_X) == dtReal34 && ( 
+    ((getRegisterAngularMode(REGISTER_X) == amGrad) && multiplyDivide == multiply) || ((getRegisterAngularMode(REGISTER_X) == amRadian) && multiplyDivide == divide) )) {
+    setRegisterAngularMode(REGISTER_X, amNone);
+  }
+  unitConversion(const_GradRad, multiplyDivide);
+}
+
 
 
 /********************************************//**

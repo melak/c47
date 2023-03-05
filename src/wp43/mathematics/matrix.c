@@ -4114,8 +4114,8 @@ static void calculateEigenvectors(const any34Matrix_t *matrix, bool_t isComplex,
     }
     for(k = 0; k < size; k++) {
       // Round to 34 digits
-      realAdd(eig + (k * size + k) * 2,     const_0, eig + (k * size + k) * 2,     &ctxtReal34);
-      realAdd(eig + (k * size + k) * 2 + 1, const_0, eig + (k * size + k) * 2 + 1, &ctxtReal34);
+      realPlus(eig + (k * size + k) * 2,     eig + (k * size + k) * 2,     &ctxtReal34);
+      realPlus(eig + (k * size + k) * 2 + 1, eig + (k * size + k) * 2 + 1, &ctxtReal34);
     }
 
     for(k = 0; k < size; k++) {
