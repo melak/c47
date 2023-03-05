@@ -21,6 +21,7 @@
 #include "mathematics/eulersFormula.h"
 
 #include "constantPointers.h"
+#include "conversionAngles.h"
 #include "debug.h"
 #include "error.h"
 #include "flags.h"
@@ -123,6 +124,10 @@ void eulersFormulaReal(void) {
 
   fnSetFlag(FLAG_CPXRES);
   fnRefreshState();
+  if(getRegisterAngularMode(REGISTER_X) != amNone) {
+    fnCvtFromCurrentAngularMode(amRadian);
+    setRegisterAngularMode(REGISTER_X, amNone);
+  }
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &c);
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
   convertRealToReal34ResultRegister(&c, REGISTER_X);
