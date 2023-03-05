@@ -2098,8 +2098,8 @@
 #define ITM_PLOTRST                 2042
 #define ITM_SYSTEM2                 2043
 #define ITM_ACTUSB                  2044
-#define MNU_2045                    2045
-#define MNU_2046                    2046
+#define MNU_CONVS                   2045
+#define MNU_CONVANG                 2046
 #define MNU_2047                    2047
 #define MNU_2048                    2048
 #define ITM_2049                    2049
@@ -2137,8 +2137,30 @@
 #define MNU_MODEL                   2081
 #define ITM_PERCENTILE              2082
 #define ITM_LINPOL                  2083
+#define ITM_KNOTtoKMH               2084
+#define ITM_KMHtoKNOT               2085
+#define ITM_KMHtoMPS                2086
+#define ITM_MPStoKMH                2087
+#define ITM_RPMtoDEGPS              2088
+#define ITM_DEGPStoRPM              2089
+#define ITM_MPHtoKMH                2090
+#define ITM_KMHtoMPH                2091
+#define ITM_MPHtoMPS                2092
+#define ITM_MPStoMPH                2093
+#define ITM_RPMtoRADPS              2094
+#define ITM_RADPStoRPM              2095
+#define ITM_DEGtoRAD                2096
+#define ITM_RADtoDEG                2097
+#define ITM_DEGtoGRAD               2098
+#define ITM_GRADtoDEG               2099
+#define ITM_GRADtoRAD               2100
+#define ITM_RADtoGRAD               2101
+#define MNU_2102                    2102
+#define MNU_2103                    2103
+#define MNU_2104                    2104
+#define MNU_2105                    2105
 
-#define LAST_ITEM                   2084
+#define LAST_ITEM                   2106
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
