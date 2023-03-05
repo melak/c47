@@ -35,7 +35,7 @@ static bool_t convertRegisterToReal(calcRegister_t regist, real_t *r) {
 
   switch(getRegisterDataType(regist)) {
     case dtLongInteger: {
-      convertLongIntegerRegisterToReal(regist, r, &ctxtReal34);
+      convertLongIntegerRegisterToReal(regist, r, &ctxtReal75);
       break;
     }
 
@@ -118,11 +118,11 @@ static void percentMRR() {
     }
   }
 
-  realDivide(&xReal, &yReal, &q, &ctxtReal39);        // q = x/y
-  realDivide(const_1, &zReal, &zReal, &ctxtReal39);   // z = 1/z
-  realPower(&q, &zReal, &q, &ctxtReal39);             // q = pow(x/y, 1/z)
-  realSubtract(&q, const_1, &q, &ctxtReal39);         // q = pow(x/y, 1/z) - 1
-  realMultiply(&q, const_100, &q, &ctxtReal39);       // q = 100 * ( pow(x/y, 1/z) - 1 )
+  realDivide(&xReal, &yReal, &q, &ctxtReal75);        // q = x/y
+  realDivide(const_1, &zReal, &zReal, &ctxtReal75);   // z = 1/z
+  realPower(&q, &zReal, &q, &ctxtReal75);             // q = pow(x/y, 1/z)
+  realSubtract(&q, const_1, &q, &ctxtReal75);         // q = pow(x/y, 1/z) - 1
+  realMultiply(&q, const_100, &q, &ctxtReal75);       // q = 100 * ( pow(x/y, 1/z) - 1 )
 
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
   convertRealToReal34ResultRegister(&q, REGISTER_X);

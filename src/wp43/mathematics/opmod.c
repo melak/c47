@@ -154,7 +154,7 @@ static void parseReal(calcRegister_t regist, longInteger_t longIntVal, int32_t *
 static void toRealResult(longInteger_t longIntVal, int32_t exponent) {
   real_t r;
 
-  convertLongIntegerToReal(longIntVal, &r, &ctxtReal34);
+  convertLongIntegerToReal(longIntVal, &r, &ctxtReal75);
   r.exponent -= exponent;
   reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
   convertRealToReal34ResultRegister(&r, REGISTER_X);

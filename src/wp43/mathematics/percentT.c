@@ -137,10 +137,10 @@ void percentTLonILonI(void) {
   real_t xReal, yReal;
   real_t rReal;
 
-  convertLongIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal39);
-  convertLongIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal39);
+  convertLongIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal75);
+  convertLongIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal75);
 
-  if(percentTReal(&xReal, &yReal, &rReal, &ctxtReal34)) {
+  if(percentTReal(&xReal, &yReal, &rReal, &ctxtReal75)) {
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertRealToReal34ResultRegister(&rReal, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone);
@@ -158,9 +158,9 @@ void percentTLonIReal(void) {
   real_t rReal;
 
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
-  convertLongIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal39);
+  convertLongIntegerRegisterToReal(REGISTER_Y, &yReal, &ctxtReal75);
 
-  if(percentTReal(&xReal, &yReal, &rReal, &ctxtReal34)) {
+  if(percentTReal(&xReal, &yReal, &rReal, &ctxtReal75)) {
     convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   }
 }
@@ -175,10 +175,10 @@ void percentTRealLonI(void) {
   real_t xReal, yReal;
   real_t rReal;
 
-  convertLongIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal39);
+  convertLongIntegerRegisterToReal(REGISTER_X, &xReal, &ctxtReal75);
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
 
-  if(percentTReal(&xReal, &yReal, &rReal, &ctxtReal34)) {
+  if(percentTReal(&xReal, &yReal, &rReal, &ctxtReal75)) {
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
     convertRealToReal34ResultRegister(&rReal, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone);
@@ -198,7 +198,7 @@ void percentTRealReal(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &xReal);
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &yReal);
 
-  if(percentTReal(&xReal, &yReal, &rReal, &ctxtReal34)) {
+  if(percentTReal(&xReal, &yReal, &rReal, &ctxtReal39)) {
     convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   }
 }
