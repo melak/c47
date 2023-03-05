@@ -89,13 +89,14 @@ void fnMultiply(uint16_t unusedButMandatoryParameter) {
 
 
 void mulComplexi(real_t *productReal, real_t *productImag) {
-  real_t tmpR, tmpI;
-  realCopy(productReal, &tmpR);
+  real_t tmpI;
   realCopy(productImag, &tmpI);
   realChangeSign(&tmpI);
+  realCopy(productReal, productImag);
   realCopy(&tmpI, productReal);
-  realCopy(&tmpR, productImag);
 }
+
+
 
 
 
