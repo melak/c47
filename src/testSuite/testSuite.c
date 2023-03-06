@@ -154,6 +154,7 @@ const funcTest_t funcTestNoParam[] = {
   {"fnErf",                  fnErf                 },
   {"fnErfc",                 fnErfc                },
   {"fnEuclideanNorm",        fnEuclideanNorm       },
+  {"fnEulersFormula",        fnEulersFormula       },
   {"fnExp",                  fnExp                 },
   {"fnExpM1",                fnExpM1               },
   {"fnExpMod",               fnExpMod              },

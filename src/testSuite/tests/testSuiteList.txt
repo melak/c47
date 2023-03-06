@@ -171,6 +171,7 @@ log10
 log2
 ln
 lnPOne
+eulersFormula
 
 arccos
 arcsin
