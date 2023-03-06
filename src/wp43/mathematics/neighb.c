@@ -74,7 +74,7 @@ void fnNeighb(uint16_t unusedButMandatoryParameter) {
         }
 
         case dtReal34: {
-          convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+          convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal75);
           real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
           longIntegerInit(lgIntY);
           intToLongInteger(realCompareEqual(&y, &x) ? 0 : (realCompareGreaterThan(&y, &x) ? 1 : -1), lgIntY);
@@ -132,11 +132,11 @@ void fnNeighb(uint16_t unusedButMandatoryParameter) {
       real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
       switch(dataTypeY) {
         case dtLongInteger: {
-          convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+          convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal75);
           break;
         }
         case dtShortInteger: {
-          convertShortIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+          convertShortIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal34);
           break;
         }
         case dtReal34: {

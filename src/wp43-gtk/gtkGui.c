@@ -1931,9 +1931,16 @@ void labelCaptionNormal(const calcKey_t *key, GtkWidget *button, GtkWidget *lblF
   if(key->gShifted == 0) {
     lbl[0] = 0;
   }
-  else if(strcmp((char *)lbl, "MODE#") == 0 && key->keyId == 22) {          //JM MODE#
-    strcpy((char *)lbl,"#");                                                //JM MODE#
+  else if(strcmp((char *)lbl, "MODE#") == 0 && key->keyId == 22) {
+    strcpy((char *)lbl,"#");
   }
+  else if(strcmp((char *)lbl, "i") == 0) {
+    if(getSystemFlag(FLAG_CPXj)) strcpy((char *)lbl,"j");
+  }
+  else if(strcmp((char *)lbl, "LINPOL") == 0) {
+    strcpy((char *)lbl,"LIN");
+  }
+
 
   gtk_label_set_label(GTK_LABEL(lblG), (gchar *)lbl);
   if(key->gShifted < 0 /*|| key->gShifted == ITM_TIMER*/) gtk_widget_set_name(lblG, "gShiftedUnderline"); else  gtk_widget_set_name(lblG, "gShifted");
