@@ -21,6 +21,7 @@
   #define GAMMA_H
 
   #include "defines.h"
+  #include "realType.h"
   #include <stdint.h>
 
   void fnGamma     (uint16_t unusedButMandatoryParameter);
@@ -41,4 +42,7 @@
   void lnGammaLonI (void);
   void lnGammaReal (void);
   void lnGammaCplx (void);
+
+  void complexLnGamma(const real_t *xReal, const real_t *xImag, real_t *rReal, real_t *rImag, realContext_t *realContext);
+
 #endif // !GAMMA_H

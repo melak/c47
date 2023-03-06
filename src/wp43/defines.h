@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "108_08u6"
+ #define VERSION1 "108_08u7"
 
 
   #undef SAVE_SPACE_DM42
@@ -655,7 +655,7 @@ typedef enum {
 #define NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS     10
 
 // Number of constants
-#define NUMBER_OF_CONSTANTS_39                   214
+#define NUMBER_OF_CONSTANTS_39                   217
 #define NUMBER_OF_CONSTANTS_51                    39
 #define NUMBER_OF_CONSTANTS_1071                   1
 #define NUMBER_OF_CONSTANTS_34                    44
