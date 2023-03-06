@@ -171,7 +171,7 @@ TO_QSPI const calcKey_t kbd_std_C47[37] = {
 {45,                  ITM_BACKSPACE,        ITM_UNDO,             -MNU_CLR,             ITM_BACKSPACE,        ITM_BACKSPACE,        ITM_CLA,              ITM_CLA,              ITM_BACKSPACE       },
 {51,                  ITM_UP1,              ITM_BST,              ITM_RBR,              ITM_UP1,              ITM_UP1,              CHR_caseUP,           ITM_UP_ARROW,         ITM_UP1             },
 {52,                  ITM_7,                -MNU_EQN,             -MNU_HOME,            ITM_7,                ITM_P,                ITM_p,                ITM_7,                ITM_7               },
-{53,                  ITM_8,                -MNU_ADV,             -MNU_CONST,           ITM_8,                ITM_Q,                ITM_q,                ITM_8,                ITM_8               },
+{53,                  ITM_8,                -MNU_ADV,             -MNU_FIN,             ITM_8,                ITM_Q,                ITM_q,                ITM_8,                ITM_8               },
 {54,                  ITM_9,                -MNU_MATX,            -MNU_XFN,             ITM_9,                ITM_R,                ITM_r,                ITM_9,                ITM_9               },
 {55,                  ITM_DIV,              -MNU_STAT,            -MNU_SUMS,            ITM_OBELUS,           ITM_S,                ITM_s,                ITM_OBELUS,           ITM_DIV             },
 {61,                  ITM_DOWN1,            ITM_SST,              ITM_FLGSV,            ITM_DOWN1,            ITM_DOWN1,            CHR_caseDN,           ITM_DOWN_ARROW,       ITM_DOWN1           },
@@ -181,17 +181,16 @@ TO_QSPI const calcKey_t kbd_std_C47[37] = {
 {65,                  ITM_MULT,             -MNU_PROB,            -MNU_INTS,            ITM_CROSS,            ITM_W,                ITM_w,                ITM_CROSS,            ITM_MULT            },
 {71,                  KEY_fg,               ITM_NULL,             ITM_NULL,             KEY_fg,               KEY_fg,               ITM_NULL,             ITM_NULL,             KEY_fg              },
 {72,                  ITM_1,                ITM_ASSIGN,           -MNU_ASN,             ITM_1,                ITM_X,                ITM_x,                ITM_1,                ITM_1               },
-{73,                  ITM_2,                ITM_USERMODE,         -MNU_FIN,             ITM_2,                ITM_Y,                ITM_y,                ITM_2,                ITM_2               },
+{73,                  ITM_2,                ITM_USERMODE,         -MNU_ALPHAFN,         ITM_2,                ITM_Y,                ITM_y,                ITM_2,                ITM_2               },
 {74,                  ITM_3,                -MNU_PFN,             -MNU_LOOP,            ITM_3,                ITM_Z,                ITM_z,                ITM_3,                ITM_3               },
 {75,                  ITM_SUB,              -MNU_PRINT,           -MNU_IO,              ITM_MINUS,            ITM_UNDERSCORE,       ITM_MINUS,            ITM_MINUS,            ITM_SUB             },
 {81,                  ITM_EXIT1,            ITM_OFF,              ITM_SNAP,             ITM_EXIT1,            ITM_EXIT1,            ITM_OFF,              ITM_SNAP,             ITM_EXIT1           },
 {82,                  ITM_0,                ITM_VIEW,             ITM_TIMER,            ITM_0,                ITM_COLON,            ITM_0,                ITM_0,                ITM_0               },
 {83,                  ITM_PERIOD,           ITM_SHOW,             -MNU_INFO,            ITM_PERIOD,           ITM_COMMA,            ITM_PERIOD,           ITM_PERIOD,           ITM_PERIOD          },
 {84,                  ITM_RS,               ITM_PR,               -MNU_TEST,            ITM_NULL,             ITM_QUESTION_MARK,    ITM_SLASH,            ITM_SLASH,            ITM_NULL            },
-{85,                  ITM_ADD,              -MNU_CATALOG,         -MNU_ALPHAFN,         ITM_PLUS,             ITM_SPACE,            ITM_PLUS,             ITM_PLUS,             ITM_ADD             }
+{85,                  ITM_ADD,              -MNU_CATALOG,         -MNU_CONST,           ITM_PLUS,             ITM_SPACE,            ITM_PLUS,             ITM_PLUS,             ITM_ADD             }
 //keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
 };
-
 
 
 //This variable is to store in flash memory
