@@ -1024,7 +1024,6 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnDateTimeToJulian         (uint16_t unusedButMandatoryParameter) {}
   void fnEulersFormula            (uint16_t unusedButMandatoryParameter) {}
   void fnSNAP                     (uint16_t unusedButMandatoryParameter) {}
-  void fnShowSoftmenu             (uint16_t unusedButMandatoryParameter) {}
 
 
 
@@ -3184,7 +3183,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2100 */  { fnCvtGradRad,                 multiply,                    "gd" STD_RIGHT_ARROW "rd",                     "grad" STD_RIGHT_ARROW "rad",                  (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2101 */  { fnCvtGradRad,                 divide,                      "rd" STD_RIGHT_ARROW "gd",                     "rad" STD_RIGHT_ARROW "grad",                  (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2102 */  { itemToBeCoded,                NOPARAM,                     "TRG",                                         "TRG",                                         (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2103 */  { fnShowSoftmenu,               16384-MNU_TRI,               "TRG" STD_ELLIPSIS,                            "TRG" STD_ELLIPSIS,                            (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2103 */  { itemToBeCoded,                NOPARAM,                     "TRG" STD_ELLIPSIS,                            "TRG" STD_ELLIPSIS,                            (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2104 */  { itemToBeCoded,                NOPARAM,                     "PART",                                        "PART",                                        (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2105 */  { itemToBeCoded,                NOPARAM,                     "UNIT",                                        "UNIT",                                        (0 << TAM_MAX_BITS) |     0, CAT_MENU | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM Change U> arrow to CONV. Changed again to UNIT
 

@@ -90,6 +90,10 @@ void fnLINPOL(uint16_t unusedButMandatoryParameter) {
       real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &p);
       break;
     }
+    case dtLongInteger: {
+      convertLongIntegerRegisterToReal(REGISTER_X, &p, &ctxtReal75);
+      break;
+    }
 
     default: {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);

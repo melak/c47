@@ -2156,7 +2156,7 @@
 #define ITM_GRADtoRAD               2100
 #define ITM_RADtoGRAD               2101
 #define MNU_TRG_C47                 2102
-#define ITM_TRG_C47_MORE            2103
+#define MNU_TRG_C47_MORE            2103
 #define MNU_PARTS_C43               2104
 #define MNU_UNITCONV_C43            2105
 

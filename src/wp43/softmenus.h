@@ -71,7 +71,6 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
   extern TO_QSPI const int16_t menu_HOME[];                //JM
 
 #endif // !TESTSUITE_BUILD
-void    fnShowSoftmenu         (uint16_t unusedButMandatoryParameter); // note the parameter is +16384 offset
 char    *dynmenuGetLabel        (int16_t menuitem);
 void     fnDumpMenus            (uint16_t unusedButMandatoryParameter);  //JM
 #endif // !SOFTMENUS_H
