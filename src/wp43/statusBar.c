@@ -441,12 +441,14 @@ void showFracMode(void) {
 
   void light_ASB_icon(void) {
     lcd_fill_rect(X_ALPHA_MODE,18,9,2,0xFF);
+    showString(asmBuffer, &standardFont, X_ALPHA_MODE+20, 0, vmNormal, true, false); 
     force_refresh(force);
   }
 
 
   void kill_ASB_icon(void) {
     lcd_fill_rect(X_ALPHA_MODE,18,9,2,0);
+    showString("    ", &standardFont, X_ALPHA_MODE+20, 0, vmNormal, true, false); 
     force_refresh(force);
   }
 
