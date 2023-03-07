@@ -785,7 +785,7 @@ void fnUserJM(uint16_t jmUser) {
         kbd_usr[13].gShifted      = -MNU_STK;
         kbd_usr[14].fShifted      = ITM_MAGNITUDE;
         kbd_usr[14].gShifted      = ITM_ARG;
-        kbd_usr[15].fShifted      = -MNU_ANGLECONV;
+        kbd_usr[15].fShifted      = -MNU_ANGLECONV_C43;
         kbd_usr[24].fShifted      = -MNU_MODE; //ITM_NULL;
 
         kbd_usr[17].primary       = ITM_XEQ;
@@ -874,7 +874,7 @@ void fnUserJM(uint16_t jmUser) {
 
         kbd_usr[17].primary       = ITM_SUB;
         kbd_usr[17].fShifted      = -MNU_STAT;
-        kbd_usr[17].gShifted      = -MNU_SUMS;
+        kbd_usr[17].gShifted      = -MNU_PLOT;
         kbd_usr[17].keyLblAim     = ITM_MINUS;
         kbd_usr[17].fShiftedAim   = ITM_MINUS;
         kbd_usr[17].primaryTam    = ITM_SUB;

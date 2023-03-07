@@ -296,13 +296,25 @@ TO_QSPI const int16_t menu_MODEL[]       = { ITM_T_LINF,                    ITM_
                                              ITM_T_HYPF,                    ITM_T_PARABF,              ITM_T_CAUCHF,              ITM_T_GAUSSF,          ITM_T_ORTHOF,                ITM_LR,
                                              ITM_RSTF,                      ITM_SETALLF,               ITM_BESTF,                 ITM_BESTFQ,            ITM_NULL,                    ITM_NULL                      };
 
-TO_QSPI const int16_t menu_SUMS[]        = { ITM_SIGMAPLUS,                 ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NSIGMA,
+
+//vvvvvvvvvvv
+TO_QSPI const int16_t menu_SUMS_C43[]    = { ITM_SIGMAPLUS,                 ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NSIGMA,
                                              ITM_SIGMAMINUS,                ITM_SIGMAx,                 ITM_SIGMAx2,              ITM_SIGMAxy,           ITM_SIGMAy2,                 ITM_SIGMAy,
                                              ITM_CLSIGMA,                   ITM_SIGMAx3,                ITM_SIGMAx4,             -MNU_REGR,              ITM_PLOT_STAT,              -MNU_HIST,
 
                                              ITM_SIGMAlnx,                  ITM_SIGMAln2x,              ITM_SIGMAlnxy,            ITM_SIGMAln2y,         ITM_SIGMAlny,                ITM_NSIGMA,                      
                                              ITM_SIGMAx2y,                  ITM_SIGMAxlny,              ITM_SIGMAx2lny,           ITM_SIGMAlnyonx,       ITM_NULL,                    ITM_SIGMAylnx,
                                              ITM_SIGMAx2ony,                ITM_SIGMA1onx,              ITM_SIGMA1onx2,           ITM_SIGMAxony,         ITM_SIGMA1ony2,              ITM_SIGMA1ony                 };
+
+TO_QSPI const int16_t menu_PLOTTING[]    = { ITM_SIGMAPLUS,                 ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NSIGMA,
+                                             ITM_SIGMAMINUS,                ITM_SIGMAx,                 ITM_SIGMAx2,              ITM_SIGMAxy,           ITM_SIGMAy2,                 ITM_SIGMAy,
+                                             ITM_CLSIGMA,                   ITM_SIGMAx3,                ITM_SIGMAx4,             -MNU_REGR,              ITM_PLOT_STAT,              -MNU_HIST,
+
+                                             ITM_SIGMAlnx,                  ITM_SIGMAln2x,              ITM_SIGMAlnxy,            ITM_SIGMAln2y,         ITM_SIGMAlny,                ITM_NSIGMA,                      
+                                             ITM_SIGMAx2y,                  ITM_SIGMAxlny,              ITM_SIGMAx2lny,           ITM_SIGMAlnyonx,       ITM_NULL,                    ITM_SIGMAylnx,
+                                             ITM_SIGMAx2ony,                ITM_SIGMA1onx,              ITM_SIGMA1onx2,           ITM_SIGMAxony,         ITM_SIGMA1ony2,              ITM_SIGMA1ony                 };
+//^^^^^^^^^^^^
+
 
 TO_QSPI const int16_t menu_GRAPH[]   = {
                                              ITM_REPLT,                     ITM_PLOTZOOM,               ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
@@ -391,7 +403,7 @@ TO_QSPI const int16_t menu_alpha_omega[] = { ITM_alpha,                     ITM_
 
                                              ITM_iota_DIALYTIKA,            ITM_omicron_TONOS,          ITM_upsilon_TONOS,        ITM_upsilon_DIALYTIKA, ITM_upsilon_DIALYTIKA_TONOS, ITM_omega_TONOS               };
 
-TO_QSPI const int16_t menu_AngleConv[]   = { ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_DMS2,              ITM_MULPI2,                 -MNU_TRI,
+TO_QSPI const int16_t menu_AngleConv_C43[]= {ITM_DEG2,                      ITM_RAD2,                   ITM_GRAD2,                ITM_DMS2,              ITM_MULPI2,                 -MNU_TRI,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_dotD,                    ITM_msTo,
                                              ITM_DEG,                       ITM_RAD,                    ITM_GRAD,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 
@@ -477,6 +489,10 @@ TO_QSPI const int16_t menu_ConvAng[]        = {
 
 
 
+
+TO_QSPI const int16_t menu_alphaFN_C43[] = { ITM_XtoALPHA,                  ITM_ALPHARL,                ITM_ALPHARR,              ITM_ALPHASL,           ITM_ALPHASR,                 ITM_ALPHAtoX,
+                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_ALPHALENG,               ITM_ALPHAPOS,
+                                             ITM_FBR,                       ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 
 TO_QSPI const int16_t menu_alphaFN[]     = { ITM_XtoALPHA,                  ITM_ALPHARL,                ITM_ALPHARR,              ITM_ALPHASL,           ITM_ALPHASR,                 ITM_ALPHAtoX,
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_ALPHALENG,               ITM_ALPHAPOS,
@@ -638,7 +654,7 @@ TO_QSPI const int16_t menu_HOME[]     = { //JM
 
 
 // 10 - 11 NIGEL SUGGESTED 36 CELLS OF ALL THE BLUE ONES                                                                                                                                                                         //JM HOME
-/* g       */                                ITM_TIMER,            ITM_RBR,          -MNU_INFO,        -MNU_CONST,       -MNU_XFN,         -MNU_SUMS,     
+/* g       */                                ITM_TIMER,            ITM_RBR,          -MNU_INFO,        -MNU_CONST,       -MNU_XFN,         -MNU_PLOT,     
 /* g       */                                ITM_VIEW,             ITM_STATUS,       -MNU_FIN,         -MNU_UNITCONV,    -MNU_BITS,        -MNU_INTS,    
 /* g       */                                -MNU_CLK,             -MNU_PARTS,       -MNU_ASN,         -MNU_LOOP,        -MNU_TEST,        -MNU_ALPHAFN,  
          
@@ -747,7 +763,8 @@ TO_QSPI const softmenu_t softmenu[] = {
 /* 65  */  {.menuItem = -MNU_PFN1,        .numItems = sizeof(menu_PFN1          )/sizeof(int16_t), .softkeyItem = menu_PFN1           },
 /* 66  */  {.menuItem = -MNU_PFN2,        .numItems = sizeof(menu_PFN2          )/sizeof(int16_t), .softkeyItem = menu_PFN2           },
 /* 67  */  {.menuItem = -MNU_STAT,        .numItems = sizeof(menu_STAT          )/sizeof(int16_t), .softkeyItem = menu_STAT           },
-/* 68  */  {.menuItem = -MNU_SUMS,        .numItems = sizeof(menu_SUMS          )/sizeof(int16_t), .softkeyItem = menu_SUMS           },
+/* 68  */  {.menuItem = -MNU_PLOTTING,    .numItems = sizeof(menu_PLOTTING      )/sizeof(int16_t), .softkeyItem = menu_PLOTTING       },
+/* 68  */  {.menuItem = -MNU_SUMS_C43,    .numItems = sizeof(menu_SUMS_C43      )/sizeof(int16_t), .softkeyItem = menu_SUMS_C43       },
 /* 69  */  {.menuItem = -MNU_GRAPH,       .numItems = sizeof(menu_GRAPH         )/sizeof(int16_t), .softkeyItem = menu_GRAPH          },
 /* 70  */  {.menuItem = -MNU_PLOT_STAT,   .numItems = sizeof(menu_PLOT_STAT     )/sizeof(int16_t), .softkeyItem = menu_PLOT_STAT      },
 /* 71  */  {.menuItem = -MNU_PLOT_LR,     .numItems = sizeof(menu_PLOT_LR       )/sizeof(int16_t), .softkeyItem = menu_PLOT_LR        },
@@ -768,7 +785,8 @@ TO_QSPI const softmenu_t softmenu[] = {
 /* 86  */  {.menuItem = -MNU_ALPHAMATH,   .numItems = sizeof(menu_alphaMATH     )/sizeof(int16_t), .softkeyItem = menu_alphaMATH      },
 /* 87  */  {.menuItem = -MNU_ALPHADOT,    .numItems = sizeof(menu_alphaDot      )/sizeof(int16_t), .softkeyItem = menu_alphaDot       },
 /* 88  */  {.menuItem = -MNU_ALPHAFN,     .numItems = sizeof(menu_alphaFN       )/sizeof(int16_t), .softkeyItem = menu_alphaFN        },
-/* 89  */  {.menuItem = -MNU_ANGLECONV,   .numItems = sizeof(menu_AngleConv     )/sizeof(int16_t), .softkeyItem = menu_AngleConv      },
+/* 88  */  {.menuItem = -MNU_ALPHAFN_C43, .numItems = sizeof(menu_alphaFN_C43   )/sizeof(int16_t), .softkeyItem = menu_alphaFN_C43    },
+/* 89  */  {.menuItem = -MNU_ANGLECONV_C43,.numItems = sizeof(menu_AngleConv_C43)/sizeof(int16_t), .softkeyItem = menu_AngleConv_C43  },
 /* 90  */  {.menuItem = -MNU_UNITCONV,    .numItems = sizeof(menu_UnitConv      )/sizeof(int16_t), .softkeyItem = menu_UnitConv       },
 /* 91  */  {.menuItem = -MNU_UNITCONV_C43,.numItems = sizeof(menu_UnitConv_C43  )/sizeof(int16_t), .softkeyItem = menu_UnitConv_C43   },
 /* 92  */  {.menuItem = -MNU_CONVE,       .numItems = sizeof(menu_ConvE         )/sizeof(int16_t), .softkeyItem = menu_ConvE          },
