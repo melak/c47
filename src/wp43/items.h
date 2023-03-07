@@ -1427,13 +1427,13 @@
 #define MNU_SYSFL                   1379
 #define MNU_Sf                      1380
 #define MNU_Sfdx                    1381
-#define MNU_ANGLECONV               1382
+#define MNU_ANGLECONV_C43           1382
 #define MNU_alpha_omega             1383
 #define MNU_ALPHAintl               1384
 #define MNU_TAM                     1385
 #define MNU_TAMCMP                  1386
 #define MNU_TAMSTORCL               1387
-#define MNU_SUMS                    1388
+#define MNU_SUMS_C43                1388
 #define MNU_VAR                     1389
 #define MNU_TAMFLAG                 1390
 #define MNU_TAMSHUFFLE              1391
@@ -2159,8 +2159,10 @@
 #define MNU_TRG_C47_MORE            2103
 #define MNU_PARTS_C43               2104
 #define MNU_UNITCONV_C43            2105
+#define MNU_ALPHAFN_C43             2106
+#define MNU_PLOTTING                2107
 
-#define LAST_ITEM                   2106
+#define LAST_ITEM                   2108
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
