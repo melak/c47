@@ -20,6 +20,7 @@
 
 #include "solver/solve.h"
 
+#include "c43Extensions/addons.h"
 #include "charString.h"
 #include "constantPointers.h"
 #include "defines.h"
