@@ -180,7 +180,6 @@ void fnSolve(uint16_t labelOrVariable) {
           break;
         }
       }
-      saveForUndo();
       adjustResult(REGISTER_X, false, false, REGISTER_X, REGISTER_Y, -1);
 
       //manipulate the graph minimuma and maximum points based on the solver result, part 2
@@ -341,6 +340,7 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
     bool_t was_inting = getSystemFlag(FLAG_INTING);
     int loop = 0;
 
+    saveForUndo();
     convergenceTolerence(&tol);
 
     ++currentSolverNestingDepth;
