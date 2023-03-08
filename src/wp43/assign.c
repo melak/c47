@@ -42,7 +42,8 @@
 Variables maintained here
 
 TO_QSPI const calcKey_t kbd_std_WP43[37]
-TO_QSPI const calcKey_t kbd_std[37]
+TO_QSPI const calcKey_t kbd_std[37]        //C47
+TO_QSPI const calcKey_t kbd_std_C43[37]
 TO_QSPI const calcKey_t kbd_std_C43AltA[37]
 TO_QSPI const calcKey_t kbd_std_DM42[37]
 */
