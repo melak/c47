@@ -99,7 +99,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
     }
 
     if((indexOfItems[func].status & US_STATUS) == US_ENABLED || (indexOfItems[func].status & US_STATUS) == US_ENABL_XEQ) {
-      if((programRunStop != PGM_RUNNING || getSystemFlag(FLAG_IGN1ER)) && calcMode != CM_GRAPH && calcMode != CM_NO_UNDO) {
+      if((programRunStop != PGM_RUNNING || getSystemFlag(FLAG_IGN1ER)) && calcMode != CM_GRAPH && calcMode != CM_NO_UNDO && !getSystemFlag(FLAG_SOLVING)) {
         #if defined(DEBUGUNDO)
           printf(">>> saveForUndo from reallyRunFunction: %s, calcMode = %i ",indexOfItems[func].itemCatalogName, calcMode);
         #endif // DEBUGUNDO
