@@ -138,6 +138,7 @@ void fnUserJM(uint16_t jmUser);
 #define USER_MRESET      49
 #define USER_KRESET      50
 #define USER_N47         51
+#define USER_C43         52
  //last number
 
 
