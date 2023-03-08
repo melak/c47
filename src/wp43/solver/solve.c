@@ -20,6 +20,7 @@
 
 #include "solver/solve.h"
 
+#include "c43Extensions/addons.h"
 #include "charString.h"
 #include "constantPointers.h"
 #include "defines.h"
@@ -35,6 +36,7 @@
 #include "programming/nextStep.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "screen.h"
 #include "softmenus.h"
 #include "solver/equation.h"
 #include "solver/graph.h"
@@ -337,6 +339,7 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
     bool_t extremum = false;
     int result = SOLVER_RESULT_NORMAL;
     bool_t was_inting = getSystemFlag(FLAG_INTING);
+    int loop = 0;
 
     convergenceTolerence(&tol);
 
@@ -551,6 +554,18 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
       real34ToReal(&b, &bb);
       real34ToReal(&b1, &bb1);
 
+
+            printHalfSecUpdate_Integer(timed, "Iter: ",loop++); //timed
+
+            #if defined(DMCP_BUILD)
+              if(keyWaiting()) {
+                  showString("key Waiting ...", &standardFont, 20, 40, vmNormal, false, false);
+                  printHalfSecUpdate_Integer(force+1, "Interrupted Iter:",loop);
+                break;
+              }
+            #endif //DMCP_BUILD
+
+
     } while(result == SOLVER_RESULT_NORMAL &&
             (real34IsSpecial(&b2) || !real34CompareEqual(&b1, &b2) || !(extendRange || extremum || WP34S_RelativeError(&bb, &bb1, &tol, &ctxtReal39))) &&
             (originallyLevel || !((!extendRange && WP34S_RelativeError(&bb, &bb1, &tol, &ctxtReal39)) || real34CompareEqual(&b, &b1) || real34CompareEqual(&fb, const34_0)))
@@ -577,6 +592,7 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
     real34Copy(&b, resX);
 
     if(result == SOLVER_RESULT_EXTREMUM) { // Check if the result is really an extremum
+      setSystemFlag(FLAG_SOLVING);
       real34Copy(const34_1e_32, &tmp);
       while(true) {
         real34Add(resX, &tmp, &a);
@@ -601,6 +617,7 @@ int solver(calcRegister_t variable, const real34_t *y, const real34_t *x, real34
         }
       }
     }
+    clearSystemFlag(FLAG_SOLVING);
 
     if(result == SOLVER_RESULT_NORMAL && real34IsInfinite(REGISTER_REAL34_DATA(variable)) && extendRange && real34IsZero(resZ)) {
       result = SOLVER_RESULT_CONSTANT;
