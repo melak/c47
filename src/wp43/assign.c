@@ -104,7 +104,7 @@ TO_QSPI const calcKey_t kbd_std_WP43[37] = {
 //_C43
 // C43 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
-TO_QSPI const calcKey_t kbd_std[37] = {
+TO_QSPI const calcKey_t kbd_std_C43[37] = {
 //keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
 {21,                  ITM_SIGMAPLUS,        ITM_RI,               ITM_TGLFRT,           ITM_NULL,             ITM_A,                ITM_a,                ITM_SIGMA,            ITM_REG_A           },
 {22,                  ITM_1ONX,             ITM_YX,               ITM_HASH_JM,          ITM_NUMBER_SIGN,      ITM_B,                ITM_b,                ITM_CIRCUMFLEX,       ITM_REG_B           },
@@ -151,7 +151,7 @@ TO_QSPI const calcKey_t kbd_std[37] = {
 
 // C47 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
-TO_QSPI const calcKey_t kbd_std_C47[37] = {
+TO_QSPI const calcKey_t kbd_std[37] = {
 //keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
 {21,                  ITM_SIGMAPLUS,        ITM_RI,               ITM_TGLFRT,           ITM_NULL,             ITM_A,                ITM_a,                ITM_SIGMA,            ITM_REG_A           },
 {22,                  ITM_1ONX,             ITM_YX,               ITM_HASH_JM,          ITM_NUMBER_SIGN,      ITM_B,                ITM_b,                ITM_CIRCUMFLEX,       ITM_REG_B           },

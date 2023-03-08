@@ -595,17 +595,15 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
   
 
 #ifdef SAVE_SPACE_DM42
-  #define CC_C43  ITM_NULL
-  #define CC_V43  ITM_NULL
-  #define CC_E43  ITM_NULL
-  #define CC_D43  ITM_NULL
-  #define CC_N43  ITM_NULL
+  #define CC_V47  ITM_NULL
+  #define CC_E47  ITM_NULL
+  #define CC_D47  ITM_NULL
+  #define CC_N47  ITM_NULL
 #else
-  #define CC_C43  ITM_USER_C47
-  #define CC_V43  ITM_USER_V47
-  #define CC_E43  ITM_USER_EE47
-  #define CC_D43  ITM_USER_DD47
-  #define CC_N43  ITM_USER_N47
+  #define CC_V47  ITM_USER_V47
+  #define CC_E47  ITM_USER_E47
+  #define CC_D47  ITM_USER_D47
+  #define CC_N47  ITM_USER_N47
 #endif                                             
 
 #ifdef SAVE_SPACE_DM42_7
@@ -619,8 +617,8 @@ TO_QSPI const int16_t menu_ASN_N[]       = { ITM_N_KEY_ALPHA,               ITM_
 #endif                                             
 
 
-TO_QSPI const int16_t menu_ASN[]         = { CC_DM42,                       CC_USER_SHIFTSA,            CC_USER_SHIFTS,           ITM_USER_WP43S,        ITM_NULL,                   ITM_ASSIGN,
-                                             CC_C43,                        CC_D43,                     CC_E43,                   CC_N43,                CC_V43,                     ITM_USERMODE,
+TO_QSPI const int16_t menu_ASN[]         = { ITM_USER_C43,                  CC_USER_SHIFTSA,            CC_USER_SHIFTS,           ITM_USER_WP43S,        CC_DM42,               ITM_ASSIGN,
+                                             ITM_USER_C47,                  CC_D47,                     CC_E47,                   CC_N47,                CC_V47,                     ITM_USERMODE,
                                             -MNU_ASN_N,                     ITM_NULL,                   ITM_ASNVIEWER,            ITM_USER_ARESET,       ITM_USER_MRESET,            ITM_USER_KRESET    };
 
 TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_X_P2,                   ITM_X_P3,                 ITM_X_P4,              ITM_X_P5,                    ITM_X_P6,
