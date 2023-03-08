@@ -151,14 +151,14 @@ TO_QSPI const calcKey_t kbd_std_C43[37] = {
 
 // C47 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
-TO_QSPI const calcKey_t kbd_std[37] = {
+TO_QSPI const calcKey_t kbd_std[37] = { //C47 Layout, in the default position without suffix, kbd_std
 //keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
 {21,                  ITM_SIGMAPLUS,        ITM_RI,               ITM_TGLFRT,           ITM_NULL,             ITM_A,                ITM_a,                ITM_SIGMA,            ITM_REG_A           },
 {22,                  ITM_1ONX,             ITM_YX,               ITM_HASH_JM,          ITM_NUMBER_SIGN,      ITM_B,                ITM_b,                ITM_CIRCUMFLEX,       ITM_REG_B           },
 {23,                  ITM_SQUAREROOTX,      ITM_SQUARE,           ITM_ms,               ITM_ROOT_SIGN,        ITM_C,                ITM_c,                ITM_ROOT_SIGN,        ITM_REG_C           },
 {24,                  ITM_LOG10,            ITM_10x,              ITM_dotD,             ITM_NULL,             ITM_D,                ITM_d,                ITM_LG_SIGN,          ITM_REG_D           },
 {25,                  ITM_LN,               ITM_EXP,              ITM_LBL,              ITM_NULL,             ITM_E,                ITM_e,                ITM_LN_SIGN,          ITM_E               },
-{26,                  ITM_XEQ,              ITM_AIM,              ITM_GTO,              ITM_NULL,             ITM_F,                ITM_f,                ITM_NULL,             ITM_NULL            },
+{26,                  ITM_XEQ,              ITM_AIM,              ITM_GTO,              ITM_NULL,             ITM_F,                ITM_f,                ITM_alpha,            ITM_alpha           },
 {31,                  ITM_STO,              ITM_MAGNITUDE,        ITM_ARG,              ITM_NULL,             ITM_G,                ITM_g,                ITM_VERTICAL_BAR,     ITM_NULL            },
 {32,                  ITM_RCL,              ITM_PC,               ITM_XTHROOT,          ITM_NULL,             ITM_H,                ITM_h,                ITM_DELTA,            ITM_HEX             },
 {33,                  ITM_Rdown,            ITM_CONSTpi,          ITM_op_j,             ITM_NULL,             ITM_I,                ITM_i,                ITM_pi,               ITM_REG_I           },
