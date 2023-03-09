@@ -57,8 +57,9 @@ else
   WIN_DIST_DIR = wp43-windows-$(CI_COMMIT_TAG)
   WIN_DIST_DIR2 = c47-windows-$(CI_COMMIT_TAG)
   MAC_DIST_DIR = wp43-macos-$(CI_COMMIT_TAG)
+  MAC_DIST_DIR2 = c47-macos-$(CI_COMMIT_TAG)
   DM_DIST_DIR = wp43-dm42-$(CI_COMMIT_TAG)
-  DM_DIST_DIR2 = c47-dm42
+  DM_DIST_DIR2 = c47-dm42-$(CI_COMMIT_TAG)
 endif
 
 dist_windows: testPgms build.rel/wiki
