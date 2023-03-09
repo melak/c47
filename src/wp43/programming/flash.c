@@ -36,9 +36,9 @@
 
 #if defined(DMCP_BUILD)
   #define FLASH_PGM_DIR  "LIBRARY"
-  #define FLASH_PGM_FILE "C43.dat"
+  #define FLASH_PGM_FILE "C47.dat"
 #else // !DMCP_BUILD
-  #define FLASH_PGM_FILE "C43.dat"
+  #define FLASH_PGM_FILE "C47.dat"
 #endif // DMCP_BUILD
 
 static void save(const void *buffer, uint32_t size, void *stream) {

@@ -415,7 +415,7 @@ typedef enum {
 
 
 // PC GUI
-#define CSSFILE "res/c43_pre.css"
+#define CSSFILE "res/c47_pre.css"
 
 #define GAP                                        6 //JM original GUI legacy
 #define Y_OFFSET_LETTER                           18 //JM original GUI legacy
