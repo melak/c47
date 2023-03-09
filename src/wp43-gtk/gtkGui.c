@@ -2974,7 +2974,7 @@ void setupUI(void) {
 
   gtk_widget_set_name(frmCalc, "mainWindow");
   gtk_window_set_resizable (GTK_WINDOW(frmCalc), FALSE);
-  gtk_window_set_title(GTK_WINDOW(frmCalc), "C43");                   //JM NAME
+  gtk_window_set_title(GTK_WINDOW(frmCalc), "C47");                   //JM NAME
   g_signal_connect(frmCalc, "destroy", G_CALLBACK(destroyCalc), NULL);
   g_signal_connect(frmCalc, "key_press_event", G_CALLBACK(keyPressed), NULL);
   g_signal_connect(frmCalc, "key_release_event", G_CALLBACK(keyReleased), NULL);  //JM CTRL
