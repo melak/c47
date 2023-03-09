@@ -50,6 +50,7 @@ ifeq ($(CI_COMMIT_TAG),)
   WIN_DIST_DIR = wp43-windows
   WIN_DIST_DIR2 = c47-windows
   MAC_DIST_DIR = wp43-macos
+  MAC_DIST_DIR2 = wp47-macos
   DM_DIST_DIR = wp43-dm42
   DM_DIST_DIR2 = c47-dm42
 else
@@ -79,14 +80,14 @@ dist_windows: testPgms build.rel/wiki
 
 dist_macos: testPgms build.rel
 	cd build.rel && ninja sim
-	mkdir -p $(MAC_DIST_DIR)/res/dmcp
-	cp build.rel/src/wp43-gtk/wp43 $(MAC_DIST_DIR)/
-	cp res/dmcp/testPgms.bin $(MAC_DIST_DIR)/res/dmcp/
-	cp res/c43_pre.css $(MAC_DIST_DIR)/res/
-	cp res/dm42l_L1.png $(MAC_DIST_DIR)/res/
-	cp res/fonts/C43__StandardFont.ttf $(MAC_DIST_DIR)/
-	zip -r c43-macos.zip $(MAC_DIST_DIR)
-	rm -rf $(MAC_DIST_DIR)
+	mkdir -p $(MAC_DIST_DIR2)/res/dmcp
+	cp build.rel/src/wp43-gtk/wp43 $(MAC_DIST_DIR2)/
+	cp res/dmcp/testPgms.bin $(MAC_DIST_DIR2)/res/dmcp/
+	cp res/c47_pre.css $(MAC_DIST_DIR2)/res/
+	cp res/dm42l_L1.png $(MAC_DIST_DIR2)/res/
+	cp res/fonts/C43__StandardFont.ttf $(MAC_DIST_DIR2)/
+	zip -r c47-macos.zip $(MAC_DIST_DIR2)
+	rm -rf $(MAC_DIST_DIR2)
 
 dist_dm42: dmcp testPgms build.rel/wiki
 	mkdir -p $(DM_DIST_DIR2)
