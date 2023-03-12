@@ -1560,19 +1560,21 @@ void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, 
     lcd_fill_rect(x1 + 1, y1 + 1, min(x2, SCREEN_WIDTH) - x1 - 1, min(y2, SCREEN_HEIGHT) - y1 - 1, (videoMode == vmNormal ? LCD_SET_VALUE : LCD_EMPTY_VALUE));
 
     xcopy(l, label, stringByteLength(label) + 1);
-    char *lw = stringAfterPixels(l, &standardFont, (rightMostSlot ? 65 : 66), false, false);
-    *lw = 0;
-
+//    char *lw = stringAfterPixels(l, &standardFont, (rightMostSlot ? 65 : 66), false, false);
+//    *lw = 0;
 //continue with trimmed label
   w = stringWidth(figlabel(l, showText,showValue), &standardFont, false, false);                      //JM & dr vv
-  if((showCb >= 0) || (w >= 50)) {
+  if((showCb >= 0) || (w >= ((min(x2, SCREEN_WIDTH) - max(0, x1))*3)/4 )) {
     w = stringWidth(figlabel(l, showText, showValue), &standardFont, false, false);
     if(showCb >= 0) { w = w + 8; }
     compressString = 1;       //JM compressString
+    char *lw = stringAfterPixels(l, &standardFont, rightMostSlot ? 65 + (compressString==1?3:0) : 66 + (compressString==1?3:0), false, false);
+    *lw = 0;
     showString(figlabel(l, showText, showValue), &standardFont, compressString + x1 + (rightMostSlot ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
     compressString = 0;       //JM compressString
   }
   else {
+     //clearly short enough so no trimming was needed anyway
      showString(figlabel(l, showText, showValue), &standardFont, x1 + (rightMostSlot ? 33 : 34) - w/2, y1 + 2, videoMode, false, false);
   }                                                                                              //JM & dr ^^
 
