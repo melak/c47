@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "108_09"
+ #define VERSION1 "108_09a"
 
 
   #undef SAVE_SPACE_DM42
@@ -854,6 +854,7 @@ typedef enum {
 #define TI_RANGEX_RANGEY                          62
 #define TI_PCTILEX_PCTILEY                        63
 #define TI_STR                                    64
+#define TI_PERC                                   65
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed

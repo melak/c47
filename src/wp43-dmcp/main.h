@@ -45,7 +45,7 @@
 
 #include "version.h"
 
-#define PROGRAM_NAME    "C43"
+#define PROGRAM_NAME    "C47"
 #define PROGRAM_VERSION VERSION_SHORT
 
 #endif // __PGM_MAIN_H__

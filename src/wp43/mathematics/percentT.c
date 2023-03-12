@@ -85,6 +85,8 @@ void fnPercentT(uint16_t unusedButMandatoryParameter) {
   percentT[getRegisterDataType(REGISTER_X)][getRegisterDataType(REGISTER_Y)]();
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
+
+  temporaryInformation = TI_PERC;
 }
 
 //=============================================================================
