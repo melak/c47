@@ -85,6 +85,8 @@ void fnPercentSigma(uint16_t unusedButMandatoryParameter) {
     PercentSigma[getRegisterDataType(REGISTER_X)]();
 
     adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
+
+    temporaryInformation = TI_PERC;
   }
 }
 

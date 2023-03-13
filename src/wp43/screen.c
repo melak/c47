@@ -2569,13 +2569,20 @@ void hideFunctionName(void) {
             }
           }
 
-          if(temporaryInformation == TI_RADIUS_THETA) {
+          else if(temporaryInformation == TI_RADIUS_THETA) {
             if(regist == REGISTER_X) {
               strcpy(prefix, "r =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
               strcpy(prefix, STD_theta " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
+          else if(temporaryInformation == TI_PERC) {
+            if(regist == REGISTER_X) {
+              strcpy(prefix, " % :");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }

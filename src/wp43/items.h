@@ -959,7 +959,7 @@
 #define ITM_PROPORTIONAL             923
 #define ITM_INFINITY                 924
 #define ITM_RIGHT_ANGLE              925
-#define ITM_ANGLE_SIGN               926
+#define VAR_0926                     926
 #define ITM_MEASURED_ANGLE           927
 #define ITM_DIVIDES                  928
 #define ITM_DOES_NOT_DIVIDE          929
