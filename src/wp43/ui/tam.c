@@ -942,6 +942,8 @@
     switch(tam.mode) {
       case TM_VALUE:
       case TM_VALUE_CHB:
+        showSoftmenu(-MNU_TAMNONREG);
+        break;
       case TM_REGISTER:
       case TM_M_DIM:
       case TM_KEY: {
