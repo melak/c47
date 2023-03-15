@@ -390,6 +390,7 @@ printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)dat
       if(inCatalog || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_CONST) {
         switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
           case MNU_TAM:
+          case MNU_TAMNONREG:
           case MNU_TAMCMP:
           case MNU_TAMSTORCL:
           case MNU_TAMFLAG:
@@ -1862,10 +1863,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         }
         else if(tam.mode) {
           tamProcessInput(ITM_ENTER);
-//          if(tamFunction == ITM_toINT && item == ITM_ENTER) {     //JMvv
-//            //addItemToBuffer(item);
-//            tamTransitionSystem(TT_CHB10);
-//          }                                                       //JM^^
           keyActionProcessed = true;
         }
         else if(calcMode == CM_NIM) {                             //JMvv
