@@ -1087,7 +1087,7 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
               else {
                 #ifdef VERBOSEKEYS
                   printf("keyboard.c: executeFunction (before runfunction): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
-                #endif VERBOSEKEYS
+                #endif //VERBOSEKEYS
                 runFunction(item);
               }
             }
@@ -1104,7 +1104,7 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
     screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
     #ifdef VERBOSEKEYS
       printf("keyboard.c: executeFunction (end): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
-    #endif VERBOSEKEYS
+    #endif //VERBOSEKEYS
   }
 
 
@@ -1908,6 +1908,8 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         }
         else if(tam.mode) {
           tamProcessInput(ITM_ENTER);
+printf("EEE %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
+
           keyActionProcessed = true;
         }
         else if(calcMode == CM_NIM) {                             //JMvv
