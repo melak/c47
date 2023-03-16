@@ -379,6 +379,42 @@ printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)dat
     }
 
 
+    //Closing catalog menu only if it is a real catalog entry.
+    //  The previous system closes a normal menu if the CAT main menu happens to be in one of the older menu slots in the menu stack
+    //    and that happens if you call CAT and then say CLK or any other menu and runn a command from there. Then CAT is present and the menu closed after the command executed.
+
+    static void closeAllCatalogMenus(void) {
+        switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
+          //          case MNU_CATALOG :  //option to include if we need to close the actual CAT menu too, i.e. jump back to before CAT (like 42S does
+          case MNU_VARS :
+          case MNU_PROGS :
+          case MNU_CHARS :
+          case MNU_ANGLES :
+          case MNU_CPXS :
+          case MNU_DATES :
+          case MNU_FCNS :
+          case MNU_FLASH :
+          case MNU_LINTS :
+          case MNU_MATRS :
+          case MNU_MENUS :
+          case MNU_RAM :
+          case MNU_REALS :
+          case MNU_SINTS :
+          case MNU_STRINGS :
+          case MNU_TIMES :
+          case MNU_ALPHA_OMEGA :
+          case MNU_ALPHADOT :
+          case MNU_ALPHA :
+          case MNU_CONST : {
+            popSoftmenu();
+            //         closeAllCatalogMenus(); //Option to recurse and close more than one menu level until all the CAT related menus are out
+          }
+          default: break;
+        }
+      }
+
+
+
     static void _closeCatalog(void) {
       bool_t inCatalog = false;
       for(int i = 0; i < SOFTMENU_STACK_SIZE; ++i) {
@@ -402,7 +438,9 @@ printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)dat
           }
           default: {
             leaveAsmMode();
-            popSoftmenu();
+            //popSoftmenu();        //removed in favour of the more selective closing
+            closeAllCatalogMenus();
+
         }
       }
     }
@@ -1047,6 +1085,9 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
                 }
               }
               else {
+                #ifdef VERBOSEKEYS
+                  printf("keyboard.c: executeFunction (before runfunction): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
+                #endif VERBOSEKEYS
                 runFunction(item);
               }
             }
@@ -1061,6 +1102,9 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
   #endif
     refreshScreen();
     screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
+    #ifdef VERBOSEKEYS
+      printf("keyboard.c: executeFunction (end): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
+    #endif VERBOSEKEYS
   }
 
 
@@ -1409,6 +1453,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         #endif //PC_BUILD_TELLTALE
   
         processKeyAction(item);
+        _closeCatalog(); //JM1
   
         #if defined (PC_BUILD_TELLTALE)
           sprintf(tmp,"keyboard.c: btnPressed 2--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
