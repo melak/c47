@@ -893,6 +893,9 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
             }
             else {
               showSoftmenu(item);
+              if(item == -MNU_ALPHA) {
+                fnAim(0);
+              }
               if((item == -MNU_Solver || item == -MNU_Sf || item == -MNU_1STDERIV || item == -MNU_2NDDERIV) && lastErrorCode != 0) {
                 popSoftmenu();
                 currentSolverStatus &= ~SOLVER_STATUS_INTERACTIVE;

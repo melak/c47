@@ -708,7 +708,7 @@ void restoreStats(void){
       {0,USER_C43ALT,  "C43 ALT: 2-shift (43S mould, discon.) Altern."   },
       {0,USER_DM42,    "DM42: Final Compatibility layout"                },
       {0,USER_43S,     "WP 43S Pilot: Final Compatibility layout"        },
-      {0,USER_KRESET,  "C43 All USER keys cleaned"                       },
+      {0,USER_KRESET,  "C47 All USER keys cleaned"                       },
       {0,USER_MRESET,  "MyMenu menu cleaned"                             },
       {0,USER_ARESET,  "My" STD_alpha " menu cleaned"                    },
       {0,100,"Error List"}
