@@ -1908,8 +1908,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         }
         else if(tam.mode) {
           tamProcessInput(ITM_ENTER);
-printf("EEE %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
-
           keyActionProcessed = true;
         }
         else if(calcMode == CM_NIM) {                             //JMvv
