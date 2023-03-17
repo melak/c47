@@ -39,7 +39,7 @@
 
 
 
-TO_QSPI void (* const eulersFormula[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
+TO_QSPI void (* const dispatch_eulersFormula[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
 // regX ==> 1                     2                  3                  4                   5                   6                   7                   8                   9                   10
 //          Long integer          Real34             complex34          Time                Date                String              Real34 mat          Complex34 m         Short integer       Config data
             eulersFormulaLongint, eulersFormulaReal, eulersFormulaCplx, eulersFormulaError, eulersFormulaError, eulersFormulaError, eulersFormulaRema,  eulersFormulaCxma,  eulersFormulaError, eulersFormulaError
@@ -60,7 +60,7 @@ void fnEulersFormula(uint16_t unusedButMandatoryParameter) {
   if(!saveLastX()) {
     return;
   }
-  eulersFormula[getRegisterDataType(REGISTER_X)]();
+  dispatch_eulersFormula[getRegisterDataType(REGISTER_X)]();
 }
 
 
@@ -77,6 +77,12 @@ void eulersFormulaCxma(void) {
 
 
 
+void eulersFormula(const real_t *inReal, const real_t *inImag, real_t *outReal, real_t *outImag, realContext_t *ctxt) {
+  real_t zReal, zImag;
+
+  mulComplexi(inReal, inImag, &zReal, &zImag);
+  expComplex(&zReal, &zImag, outReal, outImag, ctxt);
+}
 
 void eulersFormulaCplx(void) {
 
@@ -102,8 +108,7 @@ void eulersFormulaCplx(void) {
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &zReal);
   real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &zImag);
 
-  mulComplexi(&zReal, &zImag);
-  expComplex(&zReal, &zImag, &zReal, &zImag, &ctxtReal39);
+  eulersFormula(&zReal, &zImag, &zReal, &zImag, &ctxtReal39);
 
   convertRealToReal34ResultRegister(&zReal, REGISTER_X);
   convertRealToImag34ResultRegister(&zImag, REGISTER_X);
@@ -120,7 +125,7 @@ void eulersFormulaReal(void) {
     return;
   }
 
-  real_t c;
+  real_t c, i;
 
   fnSetFlag(FLAG_CPXRES);
   fnRefreshState();
@@ -130,20 +135,24 @@ void eulersFormulaReal(void) {
   }
   real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &c);
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+
+  eulersFormula(&c, const_0, &c, &i, &ctxtReal39);
+
   convertRealToReal34ResultRegister(&c, REGISTER_X);
-  convertRealToImag34ResultRegister(const_0, REGISTER_X);
-  eulersFormulaCplx();
+  convertRealToImag34ResultRegister(&i, REGISTER_X);
 }
 
 
 void eulersFormulaLongint(void) {
-  real_t c;
+  real_t c, i;
 
   fnSetFlag(FLAG_CPXRES);
   fnRefreshState();
   convertLongIntegerRegisterToReal(REGISTER_X, &c, &ctxtReal39);
   reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+
+  eulersFormula(&c, const_0, &c, &i, &ctxtReal39);
+
   convertRealToReal34ResultRegister(&c, REGISTER_X);
-  convertRealToImag34ResultRegister(const_0, REGISTER_X);
-  eulersFormulaCplx();
+  convertRealToImag34ResultRegister(&i, REGISTER_X);
 }

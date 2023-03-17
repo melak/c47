@@ -22,6 +22,7 @@
 #define EULERSFORMULA_H
 
 #include "defines.h"
+#include "realType.h"
 #include <stdint.h>
 
 void fnEulersFormula(uint16_t unusedButMandatoryParameter);
@@ -37,5 +38,7 @@ void eulersFormulaReal       (void);
 void eulersFormulaLongint    (void);
 void eulersFormulaRema       (void);
 void eulersFormulaCxma       (void);
+
+void eulersFormula(const real_t *inReal, const real_t *inImag, real_t *outReal, real_t *outImag, realContext_t *ctxt);
 
 #endif // !EULERSFORMULA_H
