@@ -990,9 +990,9 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   #if defined(DMCP_BUILD)
     FRESULT result;
     if(saveType == manualSave) {
-      strcpy(fileName, "SAVFILES\\C43.sav");
+      strcpy(fileName, "SAVFILES\\C47.sav");
     } else if(saveType == autoSave) {
-      strcpy(fileName, "SAVFILES\\C43auto.sav");
+      strcpy(fileName, "SAVFILES\\C47auto.sav");
     } 
     sys_disk_write_enable(1);
     check_create_dir("SAVFILES");
@@ -1005,9 +1005,9 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
-    BACKUP = fopen("C43.sav", "wb");
+    BACKUP = fopen("C47.sav", "wb");
     if(BACKUP == NULL) {
-      printf("Cannot SAVE in file C43.sav!\n");
+      printf("Cannot SAVE in file C47.sav!\n");
       return;
     }
   #endif // DMCP_BUILD
@@ -2439,9 +2439,9 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
   #if defined(DMCP_BUILD)
     fileName[0] = 0;
     if(loadType == manualLoad) {
-      strcpy(fileName, "SAVFILES\\C43.sav");
+      strcpy(fileName, "SAVFILES\\C47.sav");
     } else if(loadType == autoLoad) {
-      strcpy(fileName, "SAVFILES\\C43auto.sav");
+      strcpy(fileName, "SAVFILES\\C47auto.sav");
     }
     if(f_open(BACKUP, fileName, FA_READ) != FR_OK) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
@@ -2456,10 +2456,10 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
-    if((BACKUP = fopen("C43.sav", "rb")) == NULL) {
+    if((BACKUP = fopen("C47.sav", "rb")) == NULL) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        moreInfoOnError("In function fnLoad: cannot find or read backup data file C43.sav", NULL, NULL, NULL);
+        moreInfoOnError("In function fnLoad: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
     }
@@ -2554,17 +2554,17 @@ void fnDeleteBackup(uint16_t confirmation) {
     #if defined(DMCP_BUILD)
       FRESULT result;
       sys_disk_write_enable(1);
-      result = f_unlink("SAVFILES\\C43.sav");
+      result = f_unlink("SAVFILES\\C47.sav");
       if(result != FR_OK && result != FR_NO_FILE && result != FR_NO_PATH) {
         displayCalcErrorMessage(ERROR_IO, ERR_REGISTER_LINE, REGISTER_X);
       }
-      result = f_unlink("SAVFILES\\C43auto.sav");
+      result = f_unlink("SAVFILES\\C47auto.sav");
       if(result != FR_OK && result != FR_NO_FILE && result != FR_NO_PATH) {
         displayCalcErrorMessage(ERROR_IO, ERR_REGISTER_LINE, REGISTER_X);
       }
       sys_disk_write_enable(0);
     #else // !DMCP_BUILD
-      int result = remove("C43.sav");
+      int result = remove("C47.sav");
       if(result == -1) {
         #if !defined(TESTSUITE_BUILD)
           int e = errno;

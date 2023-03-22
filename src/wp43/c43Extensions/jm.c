@@ -966,7 +966,7 @@ void fnUserJM(uint16_t jmUser) {
         fnUserJM(USER_KRESET);
         fnShowVersion(USER_N47);
         #ifndef SAVE_SPACE_DM42 
-          xcopy(kbd_usr, kbd_std_N43, sizeof(kbd_std_N43));
+          xcopy(kbd_usr, kbd_std_N47, sizeof(kbd_std_N47));
         #endif //SAVE_SPACE_DM42 
         fnSetFlag(FLAG_USER);
       break;
@@ -978,7 +978,7 @@ void fnUserJM(uint16_t jmUser) {
         fnUserJM(USER_KRESET);
         fnShowVersion(USER_D47);
         #ifndef SAVE_SPACE_DM42 
-          xcopy(kbd_usr, kbd_std, sizeof(kbd_std));
+          xcopy(kbd_usr, kbd_std_D47, sizeof(kbd_std_D47));
         #endif //SAVE_SPACE_DM42 
         fnSetFlag(FLAG_USER);
       break;

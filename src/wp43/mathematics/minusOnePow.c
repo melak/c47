@@ -20,6 +20,7 @@
 
 #include "mathematics/minusOnePow.h"
 
+#include "conversionAngles.h"
 #include "constantPointers.h"
 #include "debug.h"
 #include "error.h"
@@ -27,11 +28,15 @@
 #include "fonts.h"
 #include "integers.h"
 #include "items.h"
-#include "mathematics/cos.h"
+#include "mathematics/comparisonReals.h"
+#include "mathematics/eulersFormula.h"
+#include "mathematics/magnitude.h"
+#include "mathematics/multiplication.h"
 #include "mathematics/matrix.h"
 #include "mathematics/wp34s.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "c43Extensions/radioButtonCatalog.h"
 
 #include "wp43.h"
 
@@ -132,43 +137,72 @@ void m1PowShoI(void) {
   *(REGISTER_SHORT_INTEGER_DATA(REGISTER_X)) = WP34S_build_value((uint64_t)1, odd);
 }
 
-
-
 void m1PowReal(void) {
-  if(real34IsInfinite(REGISTER_REAL34_DATA(REGISTER_X))) {
+  const real34_t *stk = REGISTER_REAL34_DATA(REGISTER_X);
+  real_t x, y;
+
+  setRegisterAngularMode(REGISTER_X, amNone);
+  if(real34IsInfinite(stk) || real34IsNaN(stk)) {
     convertRealToReal34ResultRegister(const_NaN, REGISTER_X);
-    setRegisterAngularMode(REGISTER_X, amNone);
     return;
   }
 
-  real_t x;
+  real34ToReal(stk, &x);
+  WP34S_Mod(&x, const_2, &x, &ctxtReal39);
+  if (realIsZero(&x)) {
+    convertRealToReal34ResultRegister(const_1, REGISTER_X);
+  } else if (realCompareEqual(&x, const_1)) {
+    convertRealToReal34ResultRegister(const__1, REGISTER_X);
+  } else { /* Complex result */
+    fnSetFlag(FLAG_CPXRES);
+    fnRefreshState();
 
-  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+    angularMode_t savedAngularMode = currentAngularMode;
+    currentAngularMode = amRadian;
 
-  realMultiply(const_pi, &x, &x, &ctxtReal39);
-  WP34S_Cvt2RadSinCosTan(&x, amRadian, NULL, &x, NULL, &ctxtReal39);
+    reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
 
-  convertRealToReal34ResultRegister(&x, REGISTER_X);
-  setRegisterAngularMode(REGISTER_X, amNone);
+    realMultiply(&x, const_pi, &x, &ctxtReal75);
+    eulersFormula(&x, const_0, &x, &y, &ctxtReal39);
+
+    convertRealToReal34ResultRegister(&x, REGISTER_X);
+    convertRealToImag34ResultRegister(&y, REGISTER_X);
+    currentAngularMode = savedAngularMode;
+  }
 }
 
 
 
 void m1PowCplx(void) {
-  real_t real, imag;
+  real_t zReal, zImag;
 
-  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &real);
-  realMultiply(const_pi, &real, &real, &ctxtReal39);
+  fnSetFlag(FLAG_CPXRES);
+  fnRefreshState();
+  setRegisterAngularMode(REGISTER_X, amNone);
 
-  real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &imag);
-  realMultiply(const_pi, &imag, &imag, &ctxtReal39);
+  real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &zReal);
+  WP34S_Mod(&zReal, const_2, &zReal, &ctxtReal39);
 
+  real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &zImag);
+  if (realIsZero(&zImag)) {
+    if (realIsZero(&zReal)) {
+      convertRealToReal34ResultRegister(const_1, REGISTER_X);
+      convertRealToImag34ResultRegister(const_0, REGISTER_X);
+      return;
+    } else if (realCompareEqual(&zReal, const_1)) {
+      convertRealToReal34ResultRegister(const__1, REGISTER_X);
+      convertRealToImag34ResultRegister(const_0, REGISTER_X);
+      return;
+    }
+  }
   angularMode_t savedAngularMode = currentAngularMode;
   currentAngularMode = amRadian;
 
-  cosComplex(&real, &imag, &real, &imag, &ctxtReal39);
-  convertRealToReal34ResultRegister(&real, REGISTER_X);
-  convertRealToImag34ResultRegister(&imag, REGISTER_X);
+  realMultiply(&zReal, const_pi, &zReal, &ctxtReal75);
+  realMultiply(&zImag, const_pi, &zImag, &ctxtReal75);
+  eulersFormula(&zReal, &zImag, &zReal, &zImag, &ctxtReal75);
 
+  convertRealToReal34ResultRegister(&zReal, REGISTER_X);
+  convertRealToImag34ResultRegister(&zImag, REGISTER_X);
   currentAngularMode = savedAngularMode;
 }

@@ -297,9 +297,9 @@ TO_QSPI const calcKey_t kbd_std_DM42[37] = {
 
 
 #ifndef SAVE_SPACE_DM42 
-// N43 Layout from Layout_template_automation template: Do not change manually
+// N47 Layout from Layout_template_automation template: Do not change manually
 //This variable is to store in flash memory
-TO_QSPI const calcKey_t kbd_std_N43[37] = {
+TO_QSPI const calcKey_t kbd_std_N47[37] = {
 //keyID,              primary,              fShifted,             gShifted,             keyLblAim,            primaryAim,           fShiftedAim,          gShiftedAim,          primaryTam         
 {21,                  ITM_sin,              ITM_arcsin,           ITM_TGLFRT,           ITM_NULL,             ITM_A,                ITM_a,                ITM_NULL,             ITM_REG_A           },
 {22,                  ITM_cos,              ITM_arccos,           ITM_HASH_JM,          ITM_NUMBER_SIGN,      ITM_B,                ITM_b,                ITM_NULL,             ITM_REG_B           },

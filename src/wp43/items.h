@@ -134,7 +134,7 @@
 #define ITM_GRAD2                    117
 #define ITM_MULPI2                   118
 #define ITM_RAD2                     119
-#define ITM_HMS2                     120
+#define ITM_0120                     120
 #define ITM_RMODE                    121
 #define ITM_RMD                      122
 #define ITM_LOGICALNOT               123

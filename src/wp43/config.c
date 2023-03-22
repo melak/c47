@@ -1234,7 +1234,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
       fnDrop(0);
     }
 
-    //Autoloading of C43Auto.sav
+    //Autoloading of C47Auto.sav
     #if defined(DMCP_BUILD)
       if (autoSav == loadAutoSav) {
         fnLoadAuto();

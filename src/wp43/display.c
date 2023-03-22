@@ -454,11 +454,14 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
   //printRealToConsole(&value," ------- 006 >>>>>"," <<<<<\n\n");   //JM
 
 
-  ctxtReal39.digits =  (displayFormat == DF_FIX ? 24 : displayHasNDigits); // This line is for FIX n displaying more than 16 digits. e.g. in FIX 15: 123 456.789 123 456 789 123
+  ctxtReal39.digits =  ((displayFormat == DF_FIX || displayFormat == DF_SF) ? 24 : displayHasNDigits); // This line is for FIX n displaying more than 16 digits. e.g. in FIX 15: 123 456.789 123 456 789 123
   //ctxtReal39.digits =  displayHasNDigits; // This line is for fixed number of displayed digits, e.g. in FIX 15: 123 456.789 123 456 8
   realPlus(&value, &value, &ctxtReal39);
   ctxtReal39.digits = 39;
   realToReal34(&value, &value34);
+  if(displayFormat == DF_SF) {
+    real34Reduce(&value34, &value34);  //JM NEW SIG 2023-03-18
+  }
   if(real34IsNegative(real34)) {
     real34SetNegativeSign(&value34);
   }
@@ -2593,6 +2596,7 @@ static void printXAngle(int16_t cc, int16_t d, char *separator) {
 void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified by JM from the original fnShow
 #ifndef SAVE_SPACE_DM42_9
 
+  //printRegisterToConsole(REGISTER_X,"","");
   #ifndef TESTSUITE_BUILD
     uint8_t savedDisplayFormat = displayFormat, savedDisplayFormatDigits = displayFormatDigits;
     bool_t thereIsANextLine;
@@ -2602,7 +2606,7 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
     char *separator;
 
     displayFormat = DF_ALL;
-    displayFormatDigits = 3;
+    displayFormatDigits = 0;
 
     #define lowest_SHOW REGISTER_X //0                // Lowest register. Change to 0 for all registers, or use REGISTER_X
     switch(fnShow_param) {

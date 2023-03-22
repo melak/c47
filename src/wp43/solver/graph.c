@@ -268,7 +268,7 @@ uint8_t DXR = 0, DYR = 0, DXI = 0, DYI = 0;
       allocateNamedVariable(plotStatMx, dtReal34, REAL34_SIZE);
       regStats = findNamedVariable(plotStatMx);
     }
-    clearRegister(regStats);                  // this should change to delete the named variable STATS once the delete function is available. Until then write 0.0 into STATS.
+    fnDeleteVariable(regStats);
     if(regStats == INVALID_VARIABLE) {
       displayCalcErrorMessage(ERROR_NO_MATRIX_INDEXED, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)

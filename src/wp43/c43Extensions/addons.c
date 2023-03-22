@@ -710,22 +710,28 @@ void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
 
 
 void fnDRG(uint16_t unusedButMandatoryParameter) {
-  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-    goto to_return;
+  
+  switch(getRegisterDataType(REGISTER_X)) {
+    case dtComplex34      :
+    case dtTime           :
+    case dtDate           :
+    case dtString         :
+    case dtReal34Matrix   :
+    case dtComplex34Matrix:
+    case dtConfig         : goto to_return_noLastX; break;
+    default: break;
   } 
-  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-    printf("@@@@\n");
-  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+
   copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
   uint16_t dest = 9999;
 
   if(getRegisterDataType(REGISTER_X) == dtShortInteger) {                  // If shortinteger in X, convert to real
     convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
-    setRegisterAngularMode(REGISTER_X, amNone); //is probably none already
-  } else if(getRegisterDataType(REGISTER_X) == dtLongInteger) {                   // If longinteger in X, convert to real
-      convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
-      setRegisterAngularMode(REGISTER_X, amNone); //is probably none already
-    }
+    setRegisterAngularMode(REGISTER_X, amNone);                            //is probably none already
+  } else if(getRegisterDataType(REGISTER_X) == dtLongInteger) {            // If longinteger in X, convert to real
+    convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
+    setRegisterAngularMode(REGISTER_X, amNone);                            //is probably none already
+  }
 
   if(getRegisterDataType(REGISTER_X) == dtReal34) {                        // if real
     dest = getRegisterAngularMode(REGISTER_X);
@@ -749,41 +755,13 @@ void fnDRG(uint16_t unusedButMandatoryParameter) {
     //currentAngularMode = dest;          //remove setting of ADM!
   }
 
-/* Remove complex number support and cycling 8-level stack support
-  else //if(getRegisterDataType(REGISTER_X) == dtComplex34)
-  {
-    dest = currentAngularMode;
-    switch(dest) {
-      case amNone:      dest = currentAngularMode;  break; //converts from to the same, i.e. get to current angle mode
-      case amRadian:    dest = amGrad;              break;
-      case amGrad:      dest = amDegree;            break;
-      case amDegree:    dest = amRadian;            break;
-      case amDMS:       dest = amDegree;            break;
-      case amMultPi:    dest = amRadian;            break; //do not support Mulpi but at least get out of it
-      default:      break;
-    }
-    currentAngularMode = dest;
-  }
-
-  if(dest != 9999) {
-    if(getRegisterDataType(REGISTER_Y) == dtReal34 && getRegisterAngularMode(REGISTER_Y) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_Y, dest);
-    if(getRegisterDataType(REGISTER_Z) == dtReal34 && getRegisterAngularMode(REGISTER_Z) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_Z, dest);
-    if(getRegisterDataType(REGISTER_T) == dtReal34 && getRegisterAngularMode(REGISTER_T) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_T, dest);
-    if(getRegisterDataType(REGISTER_A) == dtReal34 && getRegisterAngularMode(REGISTER_A) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_A, dest);
-    if(getRegisterDataType(REGISTER_B) == dtReal34 && getRegisterAngularMode(REGISTER_B) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_B, dest);
-    if(getRegisterDataType(REGISTER_C) == dtReal34 && getRegisterAngularMode(REGISTER_C) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_C, dest);
-    if(getRegisterDataType(REGISTER_D) == dtReal34 && getRegisterAngularMode(REGISTER_D) != amNone) fnCvtFromCurrentAngularModeRegister(REGISTER_D, dest);
-  }
-*/
   to_return:
-    copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_L);
+  copySourceRegisterToDestRegister(TEMP_REGISTER_1, REGISTER_L);
+  to_return_noLastX:
+  return;
 }
 
 
-void fnDRGto(uint16_t unusedButMandatoryParameter) {
-  fnDRG(0);
-  fnAngularMode(getRegisterAngularMode(REGISTER_X));
-}
 
 void shrinkNimBuffer(void) {                      //JMNIM vv
   int16_t lastChar; //if digits in NIMBUFFER, ensure switch to NIM,
