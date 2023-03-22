@@ -458,7 +458,7 @@ bool_t recallStatsMatrix(void) {
         #if defined(DEBUGUNDO)
         printf("Clearing STATS\n");
         #endif // DEBUGUNDO
-      clearRegister(regStats);
+      fnDeleteVariable(regStats);
 
       //Initialize Memory for Matrix
       if(initMatrixRegister(regStats, rows, cols, false)) {
@@ -466,7 +466,7 @@ bool_t recallStatsMatrix(void) {
           printf(">>>    restoring STATS matrix containing %i rows and %i columns\n",rows, cols);
           #endif // DEBUGUNDO
         copySourceRegisterToDestRegister(TEMP_REGISTER_2_SAVED_STATS, regStats);
-        clearRegister(TEMP_REGISTER_2_SAVED_STATS);
+        fnDeleteVariable(TEMP_REGISTER_2_SAVED_STATS);
         return true; //restored
       }
       else {
