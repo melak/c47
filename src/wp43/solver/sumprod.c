@@ -64,13 +64,20 @@
 
     
     real34Subtract(&loopTo, &counter, &rLoop);              //calculate the remaining iteration counter
-    real34Divide(&rLoop, &loopStep, &rLoop);
+    if(!real34IsZero(&loopStep)) {
+      real34Divide(&rLoop, &loopStep, &rLoop);
+    }
     longIntegerInit(iLoop);
     convertReal34ToLongInteger(&rLoop, iLoop, DEC_ROUND_DOWN);
     loop = longIntegerModuloUInt(iLoop, 100000);
     longIntegerFree(iLoop);
 
-    if(real34IsZero(&loopStep) || (real34CompareGreaterThan(&loopTo, &counter) && real34CompareLessEqual(&loopStep, const34_0)) || (real34CompareLessThan(&loopTo, &counter) && real34CompareGreaterEqual(&loopStep, const34_0))) {
+    if( !real34CompareEqual(&loopTo, &counter) &&
+        (  real34IsZero(&loopStep) || 
+          (real34CompareGreaterThan(&loopTo, &counter) && real34CompareLessEqual(&loopStep, const34_0)) || 
+          (real34CompareLessThan(&loopTo, &counter) && real34CompareGreaterEqual(&loopStep, const34_0))    
+        )
+      ) {
       displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Counter will not count to destination");

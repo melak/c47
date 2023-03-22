@@ -61,10 +61,16 @@
     uIntToLongInteger(prod ? 1 : 0, resultLi);                     //Initialize long integer accumulator
 
     longIntegerSubtract(loopTo, iCounter, iLoop);                  //calculate the remaining iteration counter
-    longIntegerDivide(iLoop, loopStep, iLoop);
+    if(!longIntegerIsZero(loopStep)) {
+      longIntegerDivide(iLoop, loopStep, iLoop);
+    }
     loop = longIntegerModuloUInt(iLoop, 100000);
 
-    if(longIntegerIsZero(loopStep) || (longIntegerCompare(loopTo, iCounter) > 0 && longIntegerCompareUInt(loopStep, 0) <=0) || (longIntegerCompare(loopTo, iCounter) < 0 && longIntegerCompareUInt(loopStep, 0) >=0)) {
+    if(longIntegerCompare(loopTo, iCounter) != 0 &&
+        (longIntegerIsZero(loopStep) || 
+          (longIntegerCompare(loopTo, iCounter) > 0 && longIntegerCompareUInt(loopStep, 0) <=0) || 
+          (longIntegerCompare(loopTo, iCounter) < 0 && longIntegerCompareUInt(loopStep, 0) >=0) )
+    ) {
       displayCalcErrorMessage(ERROR_BAD_INPUT, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "Counter will not count to destination");
