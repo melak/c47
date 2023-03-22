@@ -27,15 +27,17 @@
 #include "mathematics/matrix.h"
 #include "registers.h"
 #include "registerValueConversions.h"
+#include "stats.h"
 
 #include "wp43.h"
 
 static void dataTypeError(void);
+static void percentSigmaRema(void);
 
 TO_QSPI void (* const PercentSigma[NUMBER_OF_DATA_TYPES_FOR_CALCULATIONS])(void) = {
-// regX ==> 1                 2                 3              4              5              6              7              8              9              10
-//          Long integer      Real34            complex34      Time           Date           String         Real34 mat     Complex34 mat  Short integer  Config data
-            percentSigmaLonI, percentSigmaReal, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError, dataTypeError
+// regX ==> 1                 2                 3              4              5              6              7                 8              9              10
+//          Long integer      Real34            complex34      Time           Date           String         Real34 mat        Complex34 mat  Short integer  Config data
+            percentSigmaLonI, percentSigmaReal, dataTypeError, dataTypeError, dataTypeError, dataTypeError, percentSigmaRema, dataTypeError, dataTypeError, dataTypeError
 };
 
 //=============================================================================
@@ -70,7 +72,8 @@ static void dataTypeError(void) {
  * \return void
  ***********************************************/
 void fnPercentSigma(uint16_t unusedButMandatoryParameter) {
-  if(statisticalSumsPointer == NULL) {
+
+  if(!checkMinimumDataPoints(const_1)) {
     displayCalcErrorMessage(ERROR_NO_SUMMATION_DATA, ERR_REGISTER_LINE, REGISTER_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
       sprintf(errorMessage, "There is no statistical data available!");
@@ -95,8 +98,7 @@ void fnPercentSigma(uint16_t unusedButMandatoryParameter) {
 //-----------------------------------------------------------------------------
 
 static bool_t percentSigma(real_t *xReal, real_t *rReal, realContext_t *realContext) {
-  real34ToReal(SIGMA_X, rReal);    // r = Sum(x)
-
+  realCopy(SIGMA_X, rReal);    // r = Sum(x)
   if(realIsZero(rReal)) {
     if(getSystemFlag(FLAG_SPCRES)) {
       realCopy((realIsPositive(rReal) ? const_plusInfinity : const_minusInfinity), rReal);
@@ -148,4 +150,10 @@ void percentSigmaReal(void) {
   if(percentSigma(&xReal, &rReal, &ctxtReal39)) {
     convertRealToReal34ResultRegister(&rReal, REGISTER_X);
   }
+}
+
+
+
+void percentSigmaRema(void) {
+  elementwiseRema(percentSigmaReal);
 }
