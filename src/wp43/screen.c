@@ -2586,6 +2586,22 @@ void hideFunctionName(void) {
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
+          else if(temporaryInformation == TI_PERCD) {
+            if(regist == REGISTER_X) {
+              strcpy(prefix, STD_DELTA "% :");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+          else if(temporaryInformation == TI_PERCD2) {
+            if(regist == REGISTER_Y) {
+              strcpy(prefix, " % :");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            if(regist == REGISTER_X) {
+              strcpy(prefix, STD_DELTA "% :");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
 
           else if(temporaryInformation == TI_X_Y) {
             if(regist == REGISTER_X) {
