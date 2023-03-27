@@ -1024,7 +1024,8 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnDateTimeToJulian         (uint16_t unusedButMandatoryParameter) {}
   void fnEulersFormula            (uint16_t unusedButMandatoryParameter) {}
   void fnSNAP                     (uint16_t unusedButMandatoryParameter) {}
-
+  void fnPcSigmaDeltaPcXmean      (uint16_t unusedButMandatoryParameter) {}
+  void fnDeltaPercentXmean        (uint16_t unusedButMandatoryParameter) {}
 
 
 
@@ -2766,8 +2767,8 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1689 */  { itemToBeCoded,                NOPARAM,                     "1689",                                        "1689",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1690 */  { itemToBeCoded,                NOPARAM,                     "1690",                                        "1690",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1691 */  { fnToReal,                     NOPARAM,                     STD_RIGHT_ARROW "REAL",                        ".d",                                          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 1692 */  { itemToBeCoded,                NOPARAM,                     "1692",                                        "1692",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 1693 */  { itemToBeCoded,                NOPARAM,                     "1693",                                        "1693",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1692 */  { fnPcSigmaDeltaPcXmean,        NOPARAM,                     "%" STD_SIGMA "," STD_DELTA "%" STD_x_BAR,     "%" STD_SIGMA "," STD_DELTA "%" STD_x_BAR,     (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/* 1693 */  { fnDeltaPercentXmean,          NOPARAM,                     STD_DELTA "%" STD_x_BAR,                       STD_DELTA "%" STD_x_BAR,                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1694 */  { fnShuffle,                    TM_SHUFFLE,                  STD_LEFT_RIGHT_ARROWS,                         STD_LEFT_RIGHT_ARROWS,                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_SHUFFLE      },
 /* 1695 */  { fnPercent,                    NOPARAM,                     "%",                                           "%",                                           (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1696 */  { fnPercentMRR,                 NOPARAM,                     "%MRR",                                        "%MRR",                                        (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
