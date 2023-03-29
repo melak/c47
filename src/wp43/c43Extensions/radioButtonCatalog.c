@@ -115,6 +115,8 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   { ITM_SSIZE8,           SS_8,                   RB_SS },  //fnSetSetJM          /*  584 */ //fnStackSize
   { ITM_CLK12,            TF_H12,                 RB_TF },  //fnSetSetJM          /*   75 */ //fnTimeFormat
   { ITM_CLK24,            TF_H24,                 RB_TF },  //fnSetSetJM          /*   76 */ //fnTimeFormat
+  { ITM_BEGINP,           FN_BEG,                 RB_TV },  //fnSetSetJM
+  { ITM_ENDP,             FN_END,                 RB_TV },  //fnSetSetJM
 
   { ITM_BASE_HOME,        JC_BASE_HOME,           CB_JC },  //fnSetSetJM
   { ITM_CB_CPXRES,        JC_BCR,                 CB_JC },  //fnSetSetJM
@@ -245,6 +247,12 @@ int8_t fnCbIsSet(int16_t item) {
       case RB_TF: {
         if(getSystemFlag(FLAG_TDM24)) { rb_param = TF_H24;  }
         else {                          rb_param = TF_H12;  }
+      }
+      break;
+
+      case RB_TV: {
+        if(getSystemFlag(FLAG_ENDPMT)) { rb_param = FN_END;  }
+        else {                           rb_param = FN_BEG;  }
       }
       break;
 

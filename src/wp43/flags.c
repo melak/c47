@@ -215,6 +215,7 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
       case FLAG_DECIMP:  fnRefreshState (); break;
       case FLAG_MULTx:   fnRefreshState (); break;
       case FLAG_ALLENG:  fnRefreshState (); break;
+      case FLAG_ENDPMT:  fnRefreshState (); break;
       default:;
     }
 }

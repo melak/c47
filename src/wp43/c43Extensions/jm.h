@@ -61,6 +61,12 @@ Modes available in the mode menu:
 // Display override 1 bit
 #define DO_SCI                  115
 #define DO_ENG                  116
+
+#define FN_BEG                  117
+#define FN_END                  118
+
+
+
 //BCD options
 #define BCDu                    0
 #define BCD9c                   1
