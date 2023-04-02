@@ -30,6 +30,7 @@
 #include "mathematics/comparisonReals.h"
 #include "mathematics/integerPart.h"
 #include "mathematics/iteration.h"
+#include "mathematics/multiplication.h"
 #include "programming/lblGtoXeq.h"
 #include "programming/manage.h"
 #include "programming/nextStep.h"
@@ -45,12 +46,18 @@
 
 
 
+//Complex operation:
+//  The counter is always Real34.
+//  The result of f(n) can be complex, in which case if CPXRES is set, operation continues in complex.
+//  If not set, an error is raised.
+
 #if !defined(TESTSUITE_BUILD)
   static void _programmableSumProd(uint16_t label, bool_t prod) {
     uint32_t      loop = 0;
     int16_t       finished = 0;
-    real_t        resultX, resultR;
+    real_t        resultX, resultXi, resultR, resultRi;
     real34_t      loopStep, loopTo, counter, compare, sign, rLoop;
+    bool_t        changedOverToComplex = false;
     longInteger_t iLoop;
     fnToReal(NOPARAM);
     real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &loopStep);
@@ -61,8 +68,8 @@
     fnToReal(NOPARAM);
     real34Copy(REGISTER_REAL34_DATA(REGISTER_X), &counter); //Loopfrom
     realCopy(prod ? const_1 : const_0, &resultR);           //Initialize real accumulator
+    realCopy(const_0, &resultRi);                           //Initialize complex accumulator
 
-    
     real34Subtract(&loopTo, &counter, &rLoop);              //calculate the remaining iteration counter
     if(!real34IsZero(&loopStep)) {
       real34Divide(&rLoop, &loopStep, &rLoop);
@@ -100,6 +107,10 @@
           if(finished > 0) {
             break;
           }
+
+          if(getRegisterDataType(REGISTER_X) != dtReal34) {
+            reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+          }
           real34Copy(&counter, REGISTER_REAL34_DATA(REGISTER_X));
           fnFillStack(NOPARAM);
 
@@ -108,25 +119,45 @@
           if(lastErrorCode != ERROR_NONE) {
             break;
           }
-          fnToReal(NOPARAM);
-          if(lastErrorCode != ERROR_NONE) {
-            break;
+
+          if(getFlag(FLAG_CPXRES) && (getRegisterDataType(REGISTER_X) == dtComplex34 || !realIsZero(&resultRi))) {
+              changedOverToComplex = true;     //Only latch over to complex operation if CPXRES is true, as well as either sum or new f(n) is complex
+          }
+
+          if(!changedOverToComplex) {
+            fnToReal(NOPARAM);
+            if(lastErrorCode != ERROR_NONE) {
+              break;
+            }
+            real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX); //Result accumulated
+            if(prod) {
+              realMultiply(&resultR, &resultX, &resultR, &ctxtReal75);
+            }
+            else {
+              realAdd(&resultR, &resultX, &resultR, &ctxtReal75);
+            }
+          } else { //dtComplex34
+            real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX);  //Result accumulated
+            real34ToReal(REGISTER_IMAG34_DATA(REGISTER_X), &resultXi); //Result accumulated
+            if(prod) {
+              mulComplexComplex(&resultR, &resultRi, &resultX, &resultXi, &resultR, &resultRi, &ctxtReal75);
+            }
+            else {
+              realAdd(&resultR, &resultX, &resultR, &ctxtReal75);
+              realAdd(&resultRi, &resultXi, &resultRi, &ctxtReal75);
+            }            
           }
 
 
-          real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &resultX); //Result accumulated
-          if(prod) {
-            realMultiply(&resultR, &resultX, &resultR, &ctxtReal75);
-          }
-          else {
-            realAdd(&resultR, &resultX, &resultR, &ctxtReal75);
-          }
 
           #if defined(VERBOSE_COUNTER)
-            printf(">>> Finished: %d ", finished);
+            printf(">>> Fin: %d, Cpx: %d ", finished, changedOverToComplex);
             printReal34ToConsole(&counter," Cnt: ", " ");
             printRealToConsole(&resultX," X: ", " ");
-            printRealToConsole(&resultR," SUM: ", "\n");
+            if(changedOverToComplex) printRealToConsole(&resultXi," Xi: ", " ");
+            printRealToConsole(&resultR," SUM: ", "");
+            if(changedOverToComplex) printRealToConsole(&resultRi," SUMii: ", " ");
+            printf("\n");
           #endif //VERBOSE_COUNTER
 
           real34Add(&counter, &loopStep, &counter);
@@ -146,28 +177,33 @@
       } //WHILE
 
 
-
-
-
-
-
       if(lastErrorCode == ERROR_NONE) {
-          reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+        if(!changedOverToComplex) {
+          if(getRegisterDataType(REGISTER_X) != dtReal34) {
+            reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+          }
           convertRealToReal34ResultRegister(&resultR, REGISTER_X);
-          //realToReal34(&resultR, REGISTER_REAL34_DATA(REGISTER_X));
+        } else {
+          if(getRegisterDataType(REGISTER_X) != dtComplex34) {
+            reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+          }
+          convertRealToReal34ResultRegister(&resultR, REGISTER_X);
+          convertRealToImag34ResultRegister(&resultRi, REGISTER_X);
+        }
+      adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
       } else {
         displayCalcErrorMessage(lastErrorCode, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "Error while calculating");
           moreInfoOnError("In function _programmableSumProd:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        fnUndo(0);
       }
 
       temporaryInformation = TI_NO_INFO;
       if(programRunStop == PGM_WAITING) {
         programRunStop = PGM_STOPPED;
       }
-      adjustResult(REGISTER_X, false, false, REGISTER_X, -1, -1);
     } //MAIN IF
     if((--currentSolverNestingDepth) == 0) {
       clearSystemFlag(FLAG_SOLVING);
