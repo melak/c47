@@ -286,7 +286,13 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
         return;
       }
       else if(tam.mode == 0 && TM_VALUE <= indexOfItems[func].param && indexOfItems[func].param <= TM_CMP) {
+        #ifdef VERBOSEKEYS
+          printf("itmes.c: runfunction (before tamEnterMode): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
+        #endif //VERBOSEKEYS
         tamEnterMode(func);
+        #ifdef VERBOSEKEYS
+          printf("itmes.c: runfunction (after tamEnterMode): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
+        #endif //VERBOSEKEYS
         return;
       }
 
@@ -3148,7 +3154,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 2065 */  { fnLongPressSwitches,          RB_F124,                     "F.124",                                       "F.124",                                       (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 2066 */  { itemToBeCoded,                NOPARAM,                     "",                                            "TamLTxt",                                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2067 */  { itemToBeCoded,                NOPARAM,                     "",                                            "TamVTxt",                                     (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
-/* 2068 */  { itemToBeCoded,                NOPARAM,                     "2068",                                        "2068",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 2068 */  { itemToBeCoded,                NOPARAM,                     "",                                            "TamNoReg",                                    (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2069 */  { addItemToBuffer,              ITM_LG_SIGN,                 "LOG",                                         "LOG",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2070 */  { addItemToBuffer,              ITM_LN_SIGN,                 "LN",                                          "LN",                                          (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 2071 */  { addItemToBuffer,              ITM_SIN_SIGN,                "SIN",                                         "SIN",                                         (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
