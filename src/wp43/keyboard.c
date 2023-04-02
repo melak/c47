@@ -1453,7 +1453,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         #endif //PC_BUILD_TELLTALE
   
         processKeyAction(item);
-        _closeCatalog(); //JM1
   
         #if defined (PC_BUILD_TELLTALE)
           sprintf(tmp,"keyboard.c: btnPressed 2--> processKeyAction(%d) which is str:%s\n",item,(char *)data); jm_show_calc_state(tmp);
