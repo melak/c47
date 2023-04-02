@@ -799,8 +799,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_BARRELtoM3b :
           case ITM_M3toBARREL :
           case ITM_M3toBARRELb :
-          case ITM_ATMtoPAb :
-          case ITM_PAtoATMb :
           case ITM_HECTAREtoM2 :
           case ITM_M2toHECTARE :
           case ITM_MUtoM2 :
