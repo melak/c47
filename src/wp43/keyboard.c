@@ -248,11 +248,14 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
             item = (getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS);
           }
         }
-    }
+      #ifdef VERBOSEKEYS
+      printf(">>>>Z 0094 Fallthrough item=%d \n",item);
+      #endif //VERBOSEKEYS
+      }
     }
 
 #ifdef VERBOSEKEYS
-printf(">>>>Z 0094 if(calcMode == CM_ASSIGN       data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
+printf(">>>>Z 0094B if(calcMode == CM_ASSIGN       data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
 printf(">>>>  0095     dynamicMenuItem=%d\n",dynamicMenuItem);
 printf(">>>>  0096     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn);
 #endif //VERBOSEKEYS
@@ -414,6 +417,7 @@ printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)dat
       }
 
 
+
     static void _closeCatalog(void) {
       bool_t inCatalog = false;
       for(int i = 0; i < SOFTMENU_STACK_SIZE; ++i) {
@@ -425,6 +429,7 @@ printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)dat
       if(inCatalog || softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_CONST) {
         switch(-softmenu[softmenuStack[0].softmenuId].menuItem) {
           case MNU_TAM:
+          case MNU_TAMNONREG:
           case MNU_TAMCMP:
           case MNU_TAMSTORCL:
           case MNU_TAMFLAG:
@@ -1086,6 +1091,9 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
                 }
               }
               else {
+                #ifdef VERBOSEKEYS
+                  printf("keyboard.c: executeFunction (before runfunction): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
+                #endif //VERBOSEKEYS
                 runFunction(item);
               }
             }
@@ -1100,6 +1108,9 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
   #endif
     refreshScreen();
     screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
+    #ifdef VERBOSEKEYS
+      printf("keyboard.c: executeFunction (end): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
+    #endif //VERBOSEKEYS
   }
 
 
@@ -1902,10 +1913,6 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         }
         else if(tam.mode) {
           tamProcessInput(ITM_ENTER);
-//          if(tamFunction == ITM_toINT && item == ITM_ENTER) {     //JMvv
-//            //addItemToBuffer(item);
-//            tamTransitionSystem(TT_CHB10);
-//          }                                                       //JM^^
           keyActionProcessed = true;
         }
         else if(calcMode == CM_NIM) {                             //JMvv

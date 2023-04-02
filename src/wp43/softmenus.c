@@ -503,7 +503,7 @@ TO_QSPI const int16_t menu_alphaFN[]     = { ITM_XtoALPHA,                  ITM_
 /*                                          <---------------------------------------------------------------------- 6 g shifted functions ------------------------------------------------------------------------->  */
 TO_QSPI const int16_t menu_alphaMATH[]   = { ITM_LESS_THAN,                 ITM_LESS_EQUAL,             ITM_EQUAL,                ITM_ALMOST_EQUAL,      ITM_GREATER_EQUAL,           ITM_GREATER_THAN,
                                              ITM_LEFT_CURLY_BRACKET,        ITM_LEFT_SQUARE_BRACKET,    ITM_LEFT_PARENTHESIS,     ITM_RIGHT_PARENTHESIS, ITM_RIGHT_SQUARE_BRACKET,    ITM_RIGHT_CURLY_BRACKET,
-                                             ITM_PROD_SIGN,                 ITM_OBELUS,                 ITM_SLASH,                ITM_MULT,              ITM_MINUS,                   ITM_PLUS,        
+                                             ITM_PROD_SIGN,                 ITM_OBELUS,                 ITM_SLASH,                ITM_CROSS,             ITM_MINUS,                   ITM_PLUS,        
                                              ITM_NOT,                       ITM_AND,                    ITM_OR,                   ITM_NOT_EQUAL,         ITM_PIPE,                    ITM_AMPERSAND,
                                              ITM_MEASURED_ANGLE,            ITM_RIGHT_ANGLE,            ITM_PERPENDICULAR,        ITM_CUBE_ROOT,         ITM_SQUARE_ROOT,             ITM_xTH_ROOT,
                                              ITM_x_BAR,                     ITM_y_BAR,                  ITM_x_CIRC,               ITM_y_CIRC,            ITM_x_UNDER_ROOT,            ITM_y_UNDER_ROOT,
@@ -535,6 +535,7 @@ TO_QSPI const int16_t menu_Tam[]         = { ITM_INDIRECTION,               -MNU
 TO_QSPI const int16_t menu_TamCmp[]      = { ITM_INDIRECTION,               -MNU_VAR,                   ITM_REG_X,                ITM_REG_Y,             ITM_REG_Z,                   ITM_REG_T,
                                              ITM_0P,                        ITM_1P,                     ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 TO_QSPI const int16_t menu_TamFlag[]     = { ITM_INDIRECTION,               -MNU_SYSFL,                 ITM_REG_X,                ITM_REG_Y,             ITM_REG_Z,                   ITM_REG_T                     };
+TO_QSPI const int16_t menu_TamNonReg[]   = { ITM_INDIRECTION,               ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL                      };
 
 TO_QSPI const int16_t menu_TamStoRcl[]   = { ITM_INDIRECTION,               -MNU_VAR,                   ITM_REG_X,                ITM_REG_Y,             ITM_REG_Z,                   ITM_REG_T,
                                              ITM_Config,                    ITM_Stack,                  ITM_NULL,                 ITM_NULL,              ITM_Max,                     ITM_Min,
@@ -826,6 +827,7 @@ TO_QSPI const softmenu_t softmenu[] = {
 /* 128 */  {.menuItem = -MNU_TAMSRALPHA,  .numItems = sizeof(menu_TamStoRclAlpha)/sizeof(int16_t), .softkeyItem = menu_TamStoRclAlpha },
 /* 129 */  {.menuItem = -MNU_TRG_C47,     .numItems = sizeof(menu_TRG_C47       )/sizeof(int16_t), .softkeyItem = menu_TRG_C47        },
 /* 130 */  {.menuItem = -MNU_TRG_C47_MORE,.numItems = sizeof(menu_TRG_C47_MORE  )/sizeof(int16_t), .softkeyItem = menu_TRG_C47_MORE   },
+/* 131 */  {.menuItem = -MNU_TAMNONREG,   .numItems = sizeof(menu_TamNonReg     )/sizeof(int16_t), .softkeyItem = menu_TamNonReg      },
 #ifdef INLINE_TEST                                                              //vv dr
 /*     */  {.menuItem= -MNU_INL_TST,     .numItems = sizeof(menu_Inl_Tst        )/sizeof(int16_t), .softkeyItem = menu_Inl_Tst        },
 #endif                                                                          //^^
