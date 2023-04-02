@@ -414,6 +414,7 @@ printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)dat
       }
 
 
+
     static void _closeCatalog(void) {
       bool_t inCatalog = false;
       for(int i = 0; i < SOFTMENU_STACK_SIZE; ++i) {
