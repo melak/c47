@@ -248,11 +248,14 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
             item = (getSystemFlag(FLAG_MULTx) ? ITM_DOT : ITM_CROSS);
           }
         }
-    }
+      #ifdef VERBOSEKEYS
+      printf(">>>>Z 0094 Fallthrough item=%d \n",item);
+      #endif //VERBOSEKEYS
+      }
     }
 
 #ifdef VERBOSEKEYS
-printf(">>>>Z 0094 if(calcMode == CM_ASSIGN       data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
+printf(">>>>Z 0094B if(calcMode == CM_ASSIGN       data=|%s| data[0]=%d item=%d itemShift=%d (Global) FN_key_pressed=%d\n",data,data[0],item,itemShift, FN_key_pressed);
 printf(">>>>  0095     dynamicMenuItem=%d\n",dynamicMenuItem);
 printf(">>>>  0096     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn);
 #endif //VERBOSEKEYS
