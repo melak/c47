@@ -8247,9 +8247,6 @@ int main(int argc, char* argv[]) {
     *(currentStep++) = (ITM_M3toBARRELb >> 8) | 0x80;
     *(currentStep++) =  ITM_M3toBARRELb       & 0xff;
 
-    *(currentStep++) = (ITM_PAtoATMb >> 8) | 0x80;
-    *(currentStep++) =  ITM_PAtoATMb       & 0xff;
-
     *(currentStep++) = (ITM_HECTAREtoM2 >> 8) | 0x80;
     *(currentStep++) =  ITM_HECTAREtoM2       & 0xff;
 
