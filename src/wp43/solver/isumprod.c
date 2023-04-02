@@ -154,6 +154,7 @@
           sprintf(errorMessage, "Error while calculating");
           moreInfoOnError("In function _programmableiSumProd:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        fnUndo(0);
       }
 
       longIntegerFree(resultLi);
