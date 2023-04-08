@@ -895,6 +895,7 @@ void SetSetting(uint16_t jmConfig) {
     }
 
     case JC_UC: {    //call flip case
+      numLock = false;
       if(alphaCase == AC_LOWER) 
         alphaCase = AC_UPPER; 
       else
