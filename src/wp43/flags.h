@@ -40,4 +40,5 @@
   void   fnIsFlagClearFlip       (uint16_t flag);
   void   fnIsFlagSetFlip         (uint16_t flag);
   void   fnIsFlagSetFlip         (uint16_t flag);
+  void   SetSetting              (uint16_t jmConfig);
 #endif // !FLAGS_H

@@ -97,7 +97,7 @@ void fnPercentSigma(uint16_t unusedButMandatoryParameter) {
 // PercentSigma calculation functions
 //-----------------------------------------------------------------------------
 
-static bool_t percentSigma(real_t *xReal, real_t *rReal, realContext_t *realContext) {
+bool_t percentSigma(real_t *xReal, real_t *rReal, realContext_t *realContext) {
   realCopy(SIGMA_X, rReal);    // r = Sum(x)
   if(realIsZero(rReal)) {
     if(getSystemFlag(FLAG_SPCRES)) {

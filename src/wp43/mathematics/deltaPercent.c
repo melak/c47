@@ -60,9 +60,9 @@ static void dataTypeError(void) {
   displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
 
   #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-    sprintf(errorMessage, "cannot raise %s", getRegisterDataTypeName(REGISTER_Y, true, false));
-    sprintf(errorMessage + ERROR_MESSAGE_LENGTH/2, "to %s", getRegisterDataTypeName(REGISTER_X, true, false));
-    moreInfoOnError("In function fnDeltaPercent:", errorMessage, errorMessage + ERROR_MESSAGE_LENGTH/2, NULL);
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+    sprintf(errorMessage, "cannot calculate delta percentage for %s", getRegisterDataTypeName(REGISTER_X, true, false));
+    moreInfoOnError("In function fnDeltaPercent:", errorMessage, NULL, NULL);
   #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
 }
 
@@ -87,7 +87,7 @@ void fnDeltaPercent(uint16_t unusedButMandatoryParameter) {
 
   adjustResult(REGISTER_X, false, true, REGISTER_X, -1, -1);
 
-  temporaryInformation = TI_PERC;
+  temporaryInformation = TI_PERCD;
 }
 
 
