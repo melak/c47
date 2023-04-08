@@ -269,6 +269,7 @@ void fnSetSetJM(uint16_t jmConfig) {                //DONE        //JM Set/Reset
      break;
 
    case JC_UC:                                              //JM call flip case
+     numLock = false;
      if(alphaCase == AC_LOWER) 
        alphaCase = AC_UPPER; 
      else

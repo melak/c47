@@ -760,7 +760,7 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
         if(itemToBeAssigned < 0) {
           displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           #if defined(PC_BUILD)
-            moreInfoOnError("In function btnFnReleased:", "cannot assign submenu", indexOfItems[-itemToBeAssigned].itemCatalogName, "in user-created menu.");
+            moreInfoOnError("In function _assignToMenu:", "cannot assign submenu", indexOfItems[-itemToBeAssigned].itemCatalogName, "in user-created menu.");
           #endif // PC_BUILD
         }
         else {
@@ -785,7 +785,7 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
       default: {
         displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
         #if defined(PC_BUILD)
-          moreInfoOnError("In function btnFnReleased:", "the menu", indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemCatalogName, "is write-protected.");
+          moreInfoOnError("In function _assignToMenu:", "the menu", indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemCatalogName, "is write-protected.");
         #endif // PC_BUILD
         calcMode = previousCalcMode;
         shiftF = shiftG = false;
@@ -808,6 +808,7 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
       screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
       return;
     }
+
     if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER) {
       if(tam.mode == TM_KEY && !tam.keyInputFinished) {
         if(tam.digitsSoFar == 0) {
@@ -874,6 +875,12 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
    ***********************************************/
   void executeFunction(const char *data, int16_t item_) {
     int16_t item = ITM_NOP;
+
+      #ifdef VERBOSEKEYS
+        printf("keyboard.c: executeFunction %i (beginning of executeFunction): %i, %s tam.mode=%i\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
+      #endif //VERBOSEKEYS
+
+
     if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER) {
   
       if(data[0] == 0) { item = item_; 
@@ -882,22 +889,26 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
       else {
 
 #ifdef VERBOSEKEYS
-printf(">>>> R000A >>determineFunctionKeyItem_C43 %d |%s| shiftF=%d, shiftG=%d \n",item, data, shiftF, shiftG);
+printf(">>>> R000A >>determineFunctionKeyItem_C43 %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
 #endif //VERBOSEKEYS
 
         item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG); }
 
 #ifdef VERBOSEKEYS
-printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \n",item, data, shiftF, shiftG);
+printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
 #endif //VERBOSEKEYS
 
         #if defined (PC_BUILD)
-          printf(">>>Function selected: executeFunction |%s| %d %d \n",(char *)data, shiftF, shiftG);
+          printf(">>>Function selected: executeFunction |%s| %d %d tam.mode=%i\n",(char *)data, shiftF, shiftG, tam.mode);
           if(item<0)  printf("    item=%d=%s f=%d g=%d\n",item,indexOfItems[-item].itemCatalogName, shiftF, shiftG);
           if(item>=0) printf("    item=%d=%s f=%d g=%d\n",item,indexOfItems[item].itemCatalogName, shiftF, shiftG);
         #endif //PC_BUILD
 
       resetShiftState();                               //shift cancelling delayed to this point after state machine
+
+#ifdef VERBOSEKEYS
+printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
+#endif //VERBOSEKEYS
 
 
 //TOCHECK: JM Changed showFunctionNameItem to item below, due to something 43S did to the showfunction sequencing
@@ -986,6 +997,10 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
             return;
           }
 
+#ifdef VERBOSEKEYS
+printf(">>>> R000D                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
+#endif //VERBOSEKEYS
+
           // If we are in the catalog then a normal key press should affect the Alpha Selection Buffer to choose
           // an item from the catalog, but a function key press should put the item in the AIM (or TAM) buffer
           // Use this variable to distinguish between the two
@@ -994,7 +1009,6 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
             // disabled
           }
           else if(tam.mode && (!tam.alpha || isAlphabeticSoftmenu())) {
-
             bool_t isInConfig = tam.mode == TM_FLAGW && softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_SYSFL;   //JM Do not drop out of SYSFLG
             
             addItemToBuffer(item);
@@ -1037,9 +1051,13 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
             if(calcMode == CM_AIM && !(isAlphabeticSoftmenu() || isJMAlphaOnlySoftmenu())) {
               closeAim();
             }
-            if(tam.alpha && calcMode != CM_ASSIGN && tam.mode != TM_NEWMENU) {
+            if(tam.alpha && calcMode != CM_ASSIGN && tam.mode != TM_NEWMENU && !(tam.mode==TM_STORCL && (item == CHR_num || item == CHR_case)) ) {
               tamLeaveMode();
             }
+
+#ifdef VERBOSEKEYS
+printf(">>>> R000E                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
+#endif //VERBOSEKEYS
 
             if(lastErrorCode == 0) {
               if(temporaryInformation == TI_VIEW) {
@@ -1092,12 +1110,20 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d \
               }
               else {
                 #ifdef VERBOSEKEYS
-                  printf("keyboard.c: executeFunction (before runfunction): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
+                  printf("keyboard.c: executeFunction %i (before runfunction): %i, %s tam.mode=%i\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
                 #endif //VERBOSEKEYS
                 runFunction(item);
+                #ifdef VERBOSEKEYS
+                  printf("keyboard.c: executeFunction %i (after runfunction): %i, %s tam.mode=%i\n", item, softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName, tam.mode);
+                #endif //VERBOSEKEYS
               }
             }
           }
+
+#ifdef VERBOSEKEYS
+printf(">>>> R000F                                %d |%s| shiftF=%d, shiftG=%d tam.mode=%i\n",item, data, shiftF, shiftG, tam.mode);
+#endif //VERBOSEKEYS
+
           _closeCatalog();
           fnKeyInCatalog = 0;
         }
