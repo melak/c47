@@ -372,6 +372,11 @@
           showSoftmenu(-MNU_TAMLABEL);
           --numberOfTamMenusToPop;
         }
+        else if(tam.mode == TM_VALUE) {
+          popSoftmenu();
+          showSoftmenu(-MNU_TAMNONREG);
+          --numberOfTamMenusToPop;
+        }
       }
       else if(tam.currentOperation != tam.function) {
         tam.currentOperation = tam.function;
@@ -685,6 +690,11 @@
         if(!tam.indirect && (tam.mode == TM_FLAGR || tam.mode == TM_FLAGW || tam.mode == TM_LABEL)) {
           popSoftmenu();
           showSoftmenu(-MNU_TAM);
+          --numberOfTamMenusToPop;
+        }
+        if(!tam.indirect && tam.mode == TM_VALUE) {
+          popSoftmenu();
+          showSoftmenu(-MNU_TAMNONREGIND);
           --numberOfTamMenusToPop;
         }
         tam.indirect = true;
