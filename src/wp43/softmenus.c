@@ -549,7 +549,7 @@ TO_QSPI const int16_t menu_TamShuffle[]  = { ITM_REG_X,                     ITM_
 
 TO_QSPI const int16_t menu_TamLabel[]    = { ITM_INDIRECTION,               -MNU_PROG,                  ITM_REG_X,                ITM_REG_Y,             ITM_REG_Z,                   ITM_REG_T                     };
 TO_QSPI const int16_t menu_TamLblAlpha[] = { ITM_INDIRECTION,               -MNU_PROG,                  ITM_REG_X,                ITM_REG_Y,             ITM_REG_Z,                   ITM_REG_T,
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                          //JM
+                                             ITM_NULL,                      ITM_NULL,                   CHR_num,                  CHR_case,              ITM_NULL,                    ITM_NULL,                          //JM
                                              ITM_NULL,                      ITM_NULL,                  -MNU_MyAlpha,             -MNU_ALPHA_OMEGA,      -MNU_ALPHADOT,               -MNU_ALPHAMATH                 };   //JM
 
 
