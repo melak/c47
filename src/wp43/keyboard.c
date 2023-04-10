@@ -453,10 +453,7 @@ printf(">>>>Z 0070 btnFnClicked data=|%s| data[0]=%d\n",(char*)data, ((char*)dat
 
 bool_t lastshiftF = false;
 bool_t lastshiftG = false;
-
-
 bool_t lowercaseselected;
-#undef PAIMDEBUG
 
   static void processAimInput(int16_t item) {
     int16_t item1 = 0;
@@ -1949,20 +1946,34 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       }
 
 
-
-      case CHR_numL: {                                            //JMvv
-        if(!numLock)  { processKeyAction(CHR_num); } 
+      case CHR_caseUP: {                                                   //From keyboard: logic for Up/Dn case/num
+        if(numLock)  { } else
+        if(alphaCase == AC_LOWER)  { processKeyAction(CHR_case); } else
+          if(alphaCase == AC_UPPER)  { processKeyAction(CHR_numL); }
+        nextChar = NC_NORMAL;
+        keyActionProcessed = true;
+        break;
+      }
+      case CHR_caseDN: {                                                   //From keyboard: logic for Up/Dn case/num
+        if(numLock)  { alphaCase = AC_UPPER; processKeyAction(CHR_numU); } else
+          if(alphaCase == AC_UPPER)  { processKeyAction(CHR_case); } 
+        nextChar = NC_NORMAL;
         keyActionProcessed = true;
         break;
       }
 
+
+      case CHR_numL: {
+        if(!numLock)  { processKeyAction(CHR_num); } 
+        keyActionProcessed = true;
+        break;
+      }
       case CHR_numU: {
         if(numLock)  { processKeyAction(CHR_num); } 
         keyActionProcessed = true;
         break;
       }
-
-      case CHR_num: {
+      case CHR_num: {                                                      //Toggle numlock from shifted arrow shortcut
         alphaCase = AC_UPPER;
         numLock = !numLock;
         if(!numLock) { nextChar = NC_NORMAL;}
@@ -1971,26 +1982,10 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         break;
       }
 
-      case CHR_caseUP: {
-        if(numLock)  { } else
-        if(alphaCase == AC_LOWER)  { processKeyAction(CHR_case); } else
-        if(alphaCase == AC_UPPER)  { processKeyAction(CHR_numL); }
-        nextChar = NC_NORMAL;
-        keyActionProcessed = true;
-        break;
-      }
 
-      case CHR_caseDN: {
-        if(numLock)  { alphaCase = AC_UPPER; processKeyAction(CHR_numU); } else
-        if(alphaCase == AC_UPPER)  { processKeyAction(CHR_case); } 
-        nextChar = NC_NORMAL;
-        keyActionProcessed = true;
-        break;
-      }
-
-      case CHR_case: {
+      case CHR_case: {                                                      //Toggle capslock from shifted arrow shortcut
         numLock = false;
-        int16_t sm = softmenu[softmenuStack[0].softmenuId].menuItem;      //JMvv
+        int16_t sm = softmenu[softmenuStack[0].softmenuId].menuItem;
         nextChar = NC_NORMAL;
         if(alphaCase == AC_LOWER) {
           alphaCase = AC_UPPER;
@@ -2007,9 +2002,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         showAlphaModeonGui(); //dr JM, see keyboardtweaks
         keyActionProcessed = true;
         break;  
-        }                                                                                                             //JM^^
-
-
+        }
 
 
       default:

@@ -110,22 +110,6 @@
 
 
 
-
-/********************************************//**
- * \brief Sets/resets flag
- *
- * \param[in] jmConfig uint16_t
- * \return void
- ***********************************************/
-void fnSetSetJM(uint16_t jmConfig) {
-
-  SetSetting(jmConfig);
-
-}
-
-
-
-
 /********************************************//** XXX
  * \brief Set Norm_Key_00_VAR
  *

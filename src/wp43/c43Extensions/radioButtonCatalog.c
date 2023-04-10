@@ -101,42 +101,42 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   { ITM_T_GAUSSF,         JC_GAUSS_FITTING       ,CB_JC },  //fnCurveFitting
   { ITM_T_ORTHOF,         JC_ORTHOGONAL_FITTING  ,CB_JC },  //fnCurveFitting
 
-  { ITM_POLAR,            CM_POLAR,               RB_CM },  //fnSetSetJM          /*  464 */ //fnComplexMode
-  { ITM_RECT,             CM_RECTANGULAR,         RB_CM },  //fnSetSetJM          /*  507 */ //fnComplexMode
-  { ITM_CPXI,             CU_I,                   RB_CU },  //fnSetSetJM          /*   96 */ //fnComplexUnit
-  { ITM_CPXJ,             CU_J,                   RB_CU },  //fnSetSetJM          /*   97 */ //fnComplexUnit
-  { ITM_ENGOVR,           DO_ENG,                 RB_DO },  //fnSetSetJM          /*  146 */ //fnDisplayOvr
-  { ITM_SCIOVR,           DO_SCI,                 RB_DO },  //fnSetSetJM          /*  547 */ //fnDisplayOvr
-  { ITM_MULTCR,           PS_CROSS,               RB_PS },  //fnSetSetJM          /*  373 */ //fnProductSign
-  { ITM_MULTDOT,          PS_DOT,                 RB_PS },  //fnSetSetJM          /*  374 */ //fnProductSign
-  { ITM_RDXCOM,           RX_COMMA,               RB_RX },  //fnSetSetJM          /*  500 */ //fnRadixMark
-  { ITM_RDXPER,           RX_PERIOD,              RB_RX },  //fnSetSetJM          /*  501 */ //fnRadixMark
-  { ITM_SSIZE4,           SS_4,                   RB_SS },  //fnSetSetJM          /*  583 */ //fnStackSize
-  { ITM_SSIZE8,           SS_8,                   RB_SS },  //fnSetSetJM          /*  584 */ //fnStackSize
-  { ITM_CLK12,            TF_H12,                 RB_TF },  //fnSetSetJM          /*   75 */ //fnTimeFormat
-  { ITM_CLK24,            TF_H24,                 RB_TF },  //fnSetSetJM          /*   76 */ //fnTimeFormat
-  { ITM_BEGINP,           FN_BEG,                 RB_TV },  //fnSetSetJM
-  { ITM_ENDP,             FN_END,                 RB_TV },  //fnSetSetJM
+  { ITM_POLAR,            CM_POLAR,               RB_CM },  //SetSetting          /*  464 */ //fnComplexMode
+  { ITM_RECT,             CM_RECTANGULAR,         RB_CM },  //SetSetting          /*  507 */ //fnComplexMode
+  { ITM_CPXI,             CU_I,                   RB_CU },  //SetSetting          /*   96 */ //fnComplexUnit
+  { ITM_CPXJ,             CU_J,                   RB_CU },  //SetSetting          /*   97 */ //fnComplexUnit
+  { ITM_ENGOVR,           DO_ENG,                 RB_DO },  //SetSetting          /*  146 */ //fnDisplayOvr
+  { ITM_SCIOVR,           DO_SCI,                 RB_DO },  //SetSetting          /*  547 */ //fnDisplayOvr
+  { ITM_MULTCR,           PS_CROSS,               RB_PS },  //SetSetting          /*  373 */ //fnProductSign
+  { ITM_MULTDOT,          PS_DOT,                 RB_PS },  //SetSetting          /*  374 */ //fnProductSign
+  { ITM_RDXCOM,           RX_COMMA,               RB_RX },  //SetSetting          /*  500 */ //fnRadixMark
+  { ITM_RDXPER,           RX_PERIOD,              RB_RX },  //SetSetting          /*  501 */ //fnRadixMark
+  { ITM_SSIZE4,           SS_4,                   RB_SS },  //SetSetting          /*  583 */ //fnStackSize
+  { ITM_SSIZE8,           SS_8,                   RB_SS },  //SetSetting          /*  584 */ //fnStackSize
+  { ITM_CLK12,            TF_H12,                 RB_TF },  //SetSetting          /*   75 */ //fnTimeFormat
+  { ITM_CLK24,            TF_H24,                 RB_TF },  //SetSetting          /*   76 */ //fnTimeFormat
+  { ITM_BEGINP,           FN_BEG,                 RB_TV },  //SetSetting
+  { ITM_ENDP,             FN_END,                 RB_TV },  //SetSetting
 
-  { ITM_BASE_HOME,        JC_BASE_HOME,           CB_JC },  //fnSetSetJM
-  { ITM_CB_CPXRES,        JC_BCR,                 CB_JC },  //fnSetSetJM
-  { ITM_CB_SPCRES,        JC_BSR,                 CB_JC },  //fnSetSetJM
-  { ITM_CB_LEADING_ZERO,  JC_BLZ,                 CB_JC },  //fnSetSetJM
-  { ITM_CB_FRCSRN,        JC_FRC,                 CB_JC },  //fnSetSetJM
-  { ITM_ERPN,             JC_ERPN,                CB_JC },  //fnSetSetJM
-  { ITM_BASE_SCREEN,      JC_BASE_SCREEN,         CB_JC },  //fnSetSetJM
-  { ITM_FG_LINE,          JC_FG_LINE,             CB_JC },  //fnSetSetJM
-  { ITM_G_DOUBLETAP,      JC_G_DOUBLETAP,         CB_JC },  //fnSetSetJM
-  { ITM_HOMEx3,           JC_HOME_TRIPLE,         CB_JC },  //fnSetSetJM
-  { ITM_SHTIM,            JC_SHFT_4s,             CB_JC },  //fnSetSetJM
-  { ITM_VECT,             JC_VECT,                CB_JC },  //fnSetSetJM
-  { ITM_NVECT,            JC_NVECT,               CB_JC },  //fnSetSetJM
-  { ITM_SCALE,            JC_SCALE,               CB_JC },  //fnSetSetJM
-  { ITM_H_SUMRY,          JC_H_SUM,               CB_JC },  //fnSetSetJM
-  { ITM_LARGELI,          JC_LARGELI,             CB_JC },  //fnSetSetJM
-  { ITM_EXFRAC,           JC_EXFRAC,              CB_JC },  //fnSetSetJM
-  { ITM_EXTX,             JC_EXTENTX,             CB_JC },  //fnSetSetJM
-  { ITM_EXTY,             JC_EXTENTY,             CB_JC },  //fnSetSetJM
+  { ITM_BASE_HOME,        JC_BASE_HOME,           CB_JC },  //SetSetting
+  { ITM_CB_CPXRES,        JC_BCR,                 CB_JC },  //SetSetting
+  { ITM_CB_SPCRES,        JC_BSR,                 CB_JC },  //SetSetting
+  { ITM_CB_LEADING_ZERO,  JC_BLZ,                 CB_JC },  //SetSetting
+  { ITM_CB_FRCSRN,        JC_FRC,                 CB_JC },  //SetSetting
+  { ITM_ERPN,             JC_ERPN,                CB_JC },  //SetSetting
+  { ITM_BASE_SCREEN,      JC_BASE_SCREEN,         CB_JC },  //SetSetting
+  { ITM_FG_LINE,          JC_FG_LINE,             CB_JC },  //SetSetting
+  { ITM_G_DOUBLETAP,      JC_G_DOUBLETAP,         CB_JC },  //SetSetting
+  { ITM_HOMEx3,           JC_HOME_TRIPLE,         CB_JC },  //SetSetting
+  { ITM_SHTIM,            JC_SHFT_4s,             CB_JC },  //SetSetting
+  { ITM_VECT,             JC_VECT,                CB_JC },  //SetSetting
+  { ITM_NVECT,            JC_NVECT,               CB_JC },  //SetSetting
+  { ITM_SCALE,            JC_SCALE,               CB_JC },  //SetSetting
+  { ITM_H_SUMRY,          JC_H_SUM,               CB_JC },  //SetSetting
+  { ITM_LARGELI,          JC_LARGELI,             CB_JC },  //SetSetting
+  { ITM_EXFRAC,           JC_EXFRAC,              CB_JC },  //SetSetting
+  { ITM_EXTX,             JC_EXTENTX,             CB_JC },  //SetSetting
+  { ITM_EXTY,             JC_EXTENTY,             CB_JC },  //SetSetting
 
   { ITM_TEST,             JC_ITM_TST,             CB_JC },  //fnSetInlineTest
   { ITM_PLINE,            JC_PLINE,               CB_JC },  //

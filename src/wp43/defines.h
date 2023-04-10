@@ -101,6 +101,10 @@
 #define VERBOSEKEYS
 #undef VERBOSEKEYS
 
+#define PAIMDEBUG
+#undef PAIMDEBUG
+
+
 #define VERBOSE_LEVEL -1              //JM -1 no text   0 = very little text; 1 = essential text; 2 = extra debugging: on calc screen
 
 #define VERBOSE_COUNTER               //PI and SIGMA functions

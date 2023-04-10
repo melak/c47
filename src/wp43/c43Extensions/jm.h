@@ -115,9 +115,6 @@ extern uint32_t indic_y;                                            //JM program
 
 
 // Additional routines needed in jm.c
-//void fnSeteRPN(uint16_t unusedButMandatoryParameter);         //dr - unused
-//void fnSetHOME3(uint16_t unusedButMandatoryParameter);        //dr - unused
-void fnSetSetJM(uint16_t jmConfig);
 void fnSigmaAssign(uint16_t sigmaAssign);
 void fnGetSigmaAssignToX(uint16_t unusedButMandatoryParameter);
 
