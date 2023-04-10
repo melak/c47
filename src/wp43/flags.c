@@ -26,6 +26,8 @@
 #include "items.h"
 #include "softmenus.h"
 #include "solver/equation.h"
+#include "c43Extensions/jm.h"
+#include "c43Extensions/keyboardTweak.h"
 #include "c43Extensions/radioButtonCatalog.h"
 #include "ui/tam.h"
 #include <string.h>
@@ -197,7 +199,7 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
     default: {
     }
   }
-    switch (systemFlag) {                                      //JM vv
+    switch (systemFlag) {
       case FLAG_YMD:     fnRefreshState (); break;
       case FLAG_DMY:     fnRefreshState (); break;
       case FLAG_MDY:     fnRefreshState (); break;
@@ -213,8 +215,9 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
       case FLAG_DECIMP:  fnRefreshState (); break;
       case FLAG_MULTx:   fnRefreshState (); break;
       case FLAG_ALLENG:  fnRefreshState (); break;
+      case FLAG_ENDPMT:  fnRefreshState (); break;
       default:;
-    }                                                         //JM ^^
+    }
 }
 
 
@@ -701,3 +704,209 @@ void fnIsFlagSetFlip(uint16_t flag) {
   temporaryInformation = (getFlag(flag) ? TI_TRUE : TI_FALSE);
   fnFlipFlag(flag);
 }
+
+
+
+
+
+/********************************************//**
+ * \brief Sets/resets flag
+ *
+ * \param[in] jmConfig uint16_t
+ * \return void
+ ***********************************************/
+void SetSetting(uint16_t jmConfig) {
+  switch(jmConfig) {
+
+    case JC_ERPN:
+      eRPN = !eRPN;
+      fnRefreshState();
+      break;
+
+    case JC_FG_LINE:{
+      jm_FG_LINE = !jm_FG_LINE;
+      fnRefreshState();
+      break;
+    }
+
+    case JC_BASE_SCREEN: {
+      jm_BASE_SCREEN = !jm_BASE_SCREEN;
+      fnRefreshState();
+      break;
+    }
+
+    case JC_G_DOUBLETAP: {
+      jm_G_DOUBLETAP = !jm_G_DOUBLETAP;
+      fnRefreshState();
+      break;
+    }
+
+    case JC_HOME_TRIPLE: {
+      HOME3 = !HOME3;
+      fnRefreshState();
+      break;
+    }
+
+    case JC_SHFT_4s: {
+      ShiftTimoutMode = !ShiftTimoutMode;
+      fnRefreshState();
+      break;
+    }
+
+    case JC_BASE_HOME: {
+      SH_BASE_HOME = !SH_BASE_HOME;
+      fnRefreshState();
+      break;
+    }
+
+    case JC_H_SUM: {
+      jm_HOME_SUM = !jm_HOME_SUM;
+      fnRefreshState();
+      break;
+    }
+
+    case JC_LARGELI: {
+      jm_LARGELI = !jm_LARGELI;
+      fnRefreshState();
+      break;
+    }
+
+    case JC_EXFRAC: {
+      constantFractions = !constantFractions;
+      if(constantFractions) {
+        if(getSystemFlag(FLAG_FRACT)) {
+          clearSystemFlag(FLAG_FRACT);
+          constantFractionsOn = true;
+        }
+      } else {
+        if(constantFractionsOn) {
+          setSystemFlag(FLAG_FRACT);
+          constantFractionsOn = false;
+        }
+      }
+      fnRefreshState();
+      break;
+    }
+
+    case RX_COMMA: {
+      fnClearFlag(FLAG_DECIMP);
+      break;
+    }
+   
+    case RX_PERIOD: {
+      fnSetFlag(FLAG_DECIMP);
+      break;
+    }
+   
+    case TF_H12: {
+      fnClearFlag(FLAG_TDM24);
+      break;
+    }
+   
+    case TF_H24: {
+      fnSetFlag(FLAG_TDM24);
+      break;
+    }
+   
+    case CU_I: {
+      fnClearFlag(FLAG_CPXj);
+      break;
+    }
+   
+    case CU_J: {
+      fnSetFlag(FLAG_CPXj);
+      break;
+    }
+   
+    case PS_DOT: {
+      fnClearFlag(FLAG_MULTx);
+      break;
+    }
+   
+    case PS_CROSS: {
+      fnSetFlag(FLAG_MULTx);
+      break;
+    }
+
+    case SS_4: {
+      fnClearFlag(FLAG_SSIZE8);
+      break;
+    }
+   
+    case SS_8: {
+      fnSetFlag(FLAG_SSIZE8);
+      break;
+    }
+   
+    case CM_RECTANGULAR: {
+      fnClearFlag(FLAG_POLAR);
+      break;
+    }
+   
+    case CM_POLAR: {
+      fnSetFlag(FLAG_POLAR);
+      break;
+    }
+   
+    case DO_SCI: {
+      fnClearFlag(FLAG_ALLENG);
+      break;
+    }
+   
+    case DO_ENG: {
+      fnSetFlag(FLAG_ALLENG);
+      break;
+    }
+   
+    case DM_ANY: {
+      fnFlipFlag(FLAG_DENANY);
+      break;
+    }
+   
+    case DM_FIX: {
+      fnFlipFlag(FLAG_DENFIX);
+      break;
+    }
+   
+    case JC_BLZ: {    //bit LeadingZeros
+      fnFlipFlag(FLAG_LEAD0);
+      break;
+    }
+   
+    case JC_BCR: {    //bit ComplexResult
+      fnFlipFlag(FLAG_CPXRES);
+      break;
+    }
+   
+    case JC_BSR: {    //bit ComplexResult
+      fnFlipFlag(FLAG_SPCRES);
+      break;
+    }
+   
+    case JC_FRC: {    //bit ComplexResult
+      fnFlipFlag(FLAG_FRCSRN);
+      break;
+    }
+
+    case JC_NL: {    //call numlock
+      numLock = !numLock;
+      showAlphaModeonGui();
+      break;
+    }
+
+    case JC_UC: {    //call flip case
+      numLock = false;
+      if(alphaCase == AC_LOWER) 
+        alphaCase = AC_UPPER; 
+      else
+        alphaCase = AC_LOWER;
+       showAlphaModeonGui();
+       break;
+     }
+
+    default:
+    break;
+  }
+}
+
+

@@ -15,17 +15,15 @@
  */
 
 /********************************************//**
- * \file percentSigma.h
+ * \file percentSigmaDeltaPercentXmean.h
  ***********************************************/
-#if !defined(PERCENTSIGMA_H)
-  #define PERCENTSIGMA_H
+#if !defined(PCSIGMADPCMEAN_H)
+  #define PCSIGMADPCMEAN_H
 
   #include <stdint.h>
-  #include "typeDefinitions.h"
 
-  void fnPercentSigma(uint16_t unusedButMandatoryParameter);
+  void fnPcSigmaDeltaPcXmean(uint16_t unusedButMandatoryParameter);
 
-  bool_t percentSigma(real_t *xReal, real_t *rReal, realContext_t *realContext);
-  void   percentSigmaLonI(void);
-  void   percentSigmaReal(void);
-#endif // !PERCENTSIGMA_H
+  void pcSigmaDeltaPcXmeanLonI(void);
+  void pcSigmaDeltaPcXmeanReal(void);
+#endif // !PCSIGMADPCMEAN_H

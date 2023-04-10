@@ -10,8 +10,10 @@ endif
 clean:
 	rm -f wp43$(EXE)
 	rm -f c43$(EXE)
+	rm -f c47$(EXE)
 	rm -rf wp43-windows* wp43-macos* wp43-dm42*
 	rm -rf c43-windows* c43-macos* c43-dm42*
+	rm -rf c47-windows* c47-macos* c47-dm42*
 	rm -rf build build.sim build.dmcp build.rel
 
 build.sim:

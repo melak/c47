@@ -1168,8 +1168,6 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 //    kbd_usr[0].gShifted    = KEY_TYPCON_UP;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 //    kbd_usr[0].fShifted    = KEY_TYPCON_DN;                  //JM TEMP DEFAULT            //JM note. over-writing the content of setupdefaults
 
-    fnVersion(0);
-
     // The following lines are test data
   #ifndef SAVE_SPACE_DM42_14
     addTestPrograms();
@@ -1234,6 +1232,10 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
       fnDrop(0);
     }
 
+
+    runFunction(ITM_VERS);
+
+
     //Autoloading of C47Auto.sav
     #if defined(DMCP_BUILD)
       if (autoSav == loadAutoSav) {
@@ -1241,9 +1243,15 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
       }
     #endif
 
+    showSoftmenuCurrentPart();
     doRefreshSoftMenu = true;     //jm dr
     last_CM = 253;
     refreshScreen();
+
+    fnClearFlag(FLAG_USER);
+    fnRefreshState();
+
+  
   }
 }
 
