@@ -1233,7 +1233,9 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     }
 
 
-    runFunction(ITM_VERS);
+    #if !defined(TESTSUITE_BUILD)
+      runFunction(ITM_VERS);
+    #endif // !TESTSUITE_BUILD
 
 
     //Autoloading of C47Auto.sav
@@ -1243,7 +1245,9 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
       }
     #endif
 
-    showSoftmenuCurrentPart();
+    #if !defined(TESTSUITE_BUILD)
+      showSoftmenuCurrentPart();
+    #endif // !TESTSUITE_BUILD
     doRefreshSoftMenu = true;     //jm dr
     last_CM = 253;
     refreshScreen();
