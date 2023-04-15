@@ -30,6 +30,7 @@
 #include "items.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/keyboardTweak.h"
+#include "c43Extensions/radioButtonCatalog.h"
 #include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
@@ -794,6 +795,9 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
     }
   }
 
+bool_t lastUserMode = false;
+int16_t lastItem = 0;
+
   #if defined(PC_BUILD)
     void btnFnReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
   #endif // PC_BUILD
@@ -1130,6 +1134,8 @@ printf(">>>> R000F                                %d |%s| shiftF=%d, shiftG=%d t
     printf(">>>  refreshScreen3 from keyboard.c executeFunction\n");
   #endif
     refreshScreen();
+//TODO 2023-04-15 check here. It needs to be changed not to always refresh the screen.
+
     screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
     #ifdef VERBOSEKEYS
       printf("keyboard.c: executeFunction (end): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
@@ -1179,7 +1185,7 @@ bool_t allowShiftsToClearError = false;
   #endif //PC_BUILD
 
     // Shift f pressed and JM REMOVED shift g not active
-    if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN)) {   //JM shifts
+    if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) allowShiftsToClearError = true; //JM
       if(temporaryInformation == TI_VIEW) {
         temporaryInformation = TI_NO_INFO;
@@ -1212,7 +1218,7 @@ bool_t allowShiftsToClearError = false;
     }
 
     // Shift g pressed and JM REMOVED shift f not active
-    else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN)) {   //JM shifts
+    else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) allowShiftsToClearError = true; //JM
       if(temporaryInformation == TI_VIEW) {
         temporaryInformation = TI_NO_INFO;
@@ -1246,7 +1252,7 @@ bool_t allowShiftsToClearError = false;
 
     // JM Shift f pressed  //JM shifts change f/g to a single function key toggle to match DM42 keyboard
     // JM Inserted new section and removed old f and g key processing sections
-    else if(key->primary == KEY_fg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || (calcMode == CM_PLOT_STAT) || calcMode == CM_GRAPH || calcMode == CM_ASSIGN)) {   //JM shifts
+    else if(key->primary == KEY_fg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       Shft_timeouts = true;                         //JM SHIFT NEW
       fnTimerStart(TO_FG_LONG, TO_FG_LONG, JM_TO_FG_LONG);    //vv dr
       if(ShiftTimoutMode) {
@@ -1273,6 +1279,7 @@ bool_t allowShiftsToClearError = false;
         if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
       #endif
 
+      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
     }  
 
@@ -1661,6 +1668,12 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         return;
       }
 
+    if(calcMode == CM_ASN_BROWSER && lastItem == ITM_PERIOD && getSystemFlag(FLAG_USER) != lastUserMode) {
+      runFunction(ITM_USERMODE);
+//      refreshScreen();
+      return;
+    }
+
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
         assignToKey((char *)data);
         if(previousCalcMode == CM_AIM) {             //vv JM RETURN TO AIM MODE
@@ -1741,6 +1754,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
           jm_show_calc_state("      ##### keyboard.c: btnReleased end");
         #endif //PC_BUILD
         refreshScreen(); //JM PROBLEM. THIS MUST BE REMOVED FOR MOST CASES
+//TODO 2023-04-15 check here. It needs to be changed not to always refresh the screen.
       }
       screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
       allowShiftsToClearError = false;
@@ -2228,8 +2242,23 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
               break;
             }
 
+            case CM_ASN_BROWSER: {
+              lastItem = 0;
+              lastUserMode = false;
+              if(item == ITM_PERIOD) {
+                lastItem = item;
+                lastUserMode = getSystemFlag(FLAG_USER);
+                item = ITM_USERMODE;
+              }
+              if(item == ITM_USERMODE) {
+                runFunction(item);
+                keyActionProcessed = true;
+//                refreshScreen();
+              }
+              break;
+            }
+
             case CM_FLAG_BROWSER:
-            case CM_ASN_BROWSER:
             case CM_FONT_BROWSER:
             case CM_ERROR_MESSAGE:
             case CM_BUG_ON_SCREEN: {
@@ -2239,7 +2268,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
             case CM_GRAPH:
             case CM_PLOT_STAT:
-            case CM_LISTXY: {       //JM
+            case CM_LISTXY: {
               if(item == ITM_SNAP) {
                 runFunction(item);
                 keyActionProcessed = true;

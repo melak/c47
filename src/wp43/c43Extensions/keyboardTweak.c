@@ -119,7 +119,7 @@ void showShiftState(void) {
 #ifdef PC_BUILD_TELLTALE
   printf("    >>> showShiftState: calcMode=%d\n", calcMode);
 #endif //PC_BUILD_TELLTALE
-  if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_ASN_BROWSER && calcMode != CM_FONT_BROWSER &&
+  if(calcMode != CM_REGISTER_BROWSER && calcMode != CM_FLAG_BROWSER && calcMode != CM_FONT_BROWSER &&
      temporaryInformation != TI_SHOW_REGISTER_BIG && temporaryInformation != TI_SHOW_REGISTER_SMALL && temporaryInformation != TI_SHOW_REGISTER) {
     if(shiftF) {                        //SEE screen.c:refreshScreen
       showGlyph(STD_SUP_f, &numericFont, 0, Y_POSITION_OF_REGISTER_T_LINE, vmNormal, true, true);   // f is pixel 4+8+3 wide
@@ -206,7 +206,7 @@ void resetKeytimers(void) {
 void show_f_jm(void) {
 //showSoftmenuCurrentPart();                                                    //JM - Redraw boxes etc after shift is shown
 //JMTOCHECK2        if(softmenuStackPointer >= 0) {                             //JM - Display dot in the f - line
-    if(!FN_timeouts_in_progress) {
+    if(!FN_timeouts_in_progress && calcMode!=CM_ASN_BROWSER) {
       if(!ULFL) {
         underline(1);
         ULFL = !ULFL;
@@ -225,7 +225,7 @@ void show_f_jm(void) {
 void show_g_jm(void) {
 //showSoftmenuCurrentPart();                                                    //JM - Redraw boxes etc after shift is shown
 //JMTOCHECK2        if(softmenuStackPointer >= 0) {                             //JM - Display dot in the g - line
-    if(!FN_timeouts_in_progress) {
+    if(!FN_timeouts_in_progress && calcMode!=CM_ASN_BROWSER) {
       if(ULFL) {
         underline(1);
         ULFL = !ULFL;
