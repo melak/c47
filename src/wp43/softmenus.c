@@ -1611,6 +1611,20 @@ void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, 
 }
 
 
+bool_t isFunctionItemAMenu(int16_t item) {
+  return item == ITM_PLOT      || 
+         item == ITM_PLOT_LR   || 
+         item == ITM_HPLOT     || 
+         item == ITM_DRAW      || 
+         item == ITM_CFG       || 
+         item == ITM_PLOT_STAT ||
+         item == ITM_EQ_NEW    ||
+         item == ITM_VARMNU    ||
+         item == ITM_SIM_EQ    ||
+         item == ITM_M_EDI;
+         /*item == ITM_PLOT_CENTRL ||  CENTRL does not bring up a new menu - it is the same menu therefore not inverted */
+         /*|| (item == ITM_TIMER)*/       //JMvv colour PLOT in reverse font to appear to be menus
+}
 
   void showSoftmenuCurrentPart(void) {
 
@@ -1858,18 +1872,7 @@ void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, 
               else if(item%10000 == ITM_op_j && !getSystemFlag(FLAG_CPXj)) {
                 showSoftkey(STD_i, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
               }                                                                                //JM ^^
-              else if(item == ITM_PLOT      || 
-                      item == ITM_PLOT_LR   || 
-                      item == ITM_HPLOT     || 
-                      item == ITM_DRAW      || 
-                      item == ITM_CFG       || 
-                      item == ITM_PLOT_STAT ||
-                      item == ITM_EQ_NEW    ||
-                      item == ITM_VARMNU    ||
-                      item == ITM_SIM_EQ    ||
-                      item == ITM_M_EDI
-                      /*item == ITM_PLOT_CENTRL ||  CENTRL does not bring up a new menu - it is the same menu therefore not inverted */
-                      /*|| (item == ITM_TIMER)*/) {       //JMvv colour PLOT in reverse font to appear to be menus
+              else if(isFunctionItemAMenu(item)) {
                         showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
               }                                                                                //JM^^
 

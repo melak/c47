@@ -85,6 +85,9 @@ printf(">>>>Z 0090 determineFunctionKeyItem       data=|%s| data[0]=%d item=%d i
 
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0090a determineFunctionKeyItem       -softmenu[menuId].menuItem=%i\n",-softmenu[menuId].menuItem);
+#endif //VERBOSEKEYS
     switch(-softmenu[menuId].menuItem) {
       case MNU_MyMenu: {
         dynamicMenuItem = firstItem + itemShift + fn;
@@ -200,6 +203,9 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
         item = ITM_NOP;
         if(dynamicMenuItem < dynamicSoftmenu[menuId].numItems) {
           for(uint32_t i = 0; softmenu[i].menuItem < 0; ++i) {
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0093b determineFunctionKeyItem  case MNU_MENUS:     i=%i softmenu[i].menuItem=%i name:=%s\n",i,softmenu[i].menuItem, indexOfItems[-softmenu[i].menuItem].itemCatalogName);
+#endif //VERBOSEKEYS
             if(compareString((char *)getNthString(dynamicSoftmenu[menuId].menuContent, dynamicMenuItem), indexOfItems[-softmenu[i].menuItem].itemCatalogName, CMP_NAME) == 0) {
               if(tam.mode == TM_DELITM) {
                 item = MNU_DYNAMIC;
@@ -207,6 +213,9 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
               }
               else {
                 item = softmenu[i].menuItem;
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0093c determineFunctionKeyItem  item = %i:   name:=%s\n",item, indexOfItems[-item].itemCatalogName);
+#endif //VERBOSEKEYS
               }
             }
           }
@@ -900,7 +909,7 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d t
 #endif //VERBOSEKEYS
 
         #if defined (PC_BUILD)
-          printf(">>>Function selected: executeFunction |%s| %d %d tam.mode=%i\n",(char *)data, shiftF, shiftG, tam.mode);
+          printf(">>>Function selected: executeFunction data=|%s| f=%d g=%d tam.mode=%i\n",(char *)data, shiftF, shiftG, tam.mode);
           if(item<0)  printf("    item=%d=%s f=%d g=%d\n",item,indexOfItems[-item].itemCatalogName, shiftF, shiftG);
           if(item>=0) printf("    item=%d=%s f=%d g=%d\n",item,indexOfItems[item].itemCatalogName, shiftF, shiftG);
         #endif //PC_BUILD
@@ -946,6 +955,9 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
               itemToBeAssigned = item;
             }
             else {
+              #if defined (VERBOSEKEYS)
+                printf(">>>Function: executeFunction showSoftmenu(%d)\n",item);
+              #endif //VERBOSEKEYS
               showSoftmenu(item);
               if(item == -MNU_ALPHA) {
                 fnAim(0);
@@ -990,6 +1002,9 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
               hourGlassIconEnabled = false;
             }
             else {
+              #if defined (VERBOSEKEYS)
+                printf(">>>Function: executeFunction runFunction(%d)\n",item);
+              #endif //VERBOSEKEYS
               runFunction(item);
             }
             _closeCatalog();
