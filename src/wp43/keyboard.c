@@ -18,6 +18,7 @@
 
 #include "assign.h"
 #include "bufferize.h"
+#include "browsers/asnBrowser.h"
 #include "calcMode.h"
 #include "charString.h"
 #include "config.h"
@@ -1682,10 +1683,10 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
         return;
       }
-
-    if(calcMode == CM_ASN_BROWSER && lastItem == ITM_PERIOD && getSystemFlag(FLAG_USER) != lastUserMode) {
-      runFunction(ITM_USERMODE);
+    if(calcMode == CM_ASN_BROWSER && lastItem == ITM_PERIOD) {
+      fnAsnDisplayUSER = true;
 //      refreshScreen();
+      goto RELEASE_END;
       return;
     }
 
@@ -1763,6 +1764,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 //      }
 //  #endif // DMCP_BUILD
 
+RELEASE_END:
       if(allowShiftsToClearError || !checkShifts((char *)data)) {
         #ifdef PC_BUILD
           char tmp[200]; sprintf(tmp,">>> btnReleased (%s):   refreshScreen from keyboard.c  which is the main normal place for it.", (char *)data); jm_show_comment(tmp);
@@ -1850,6 +1852,10 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       item = ITM_CC;
     }
 
+    if(calcMode == CM_ASN_BROWSER && item != ITM_PERIOD && item != ITM_USERMODE && item != ITM_BACKSPACE && item != ITM_EXIT1) {
+      keyActionProcessed = true;
+    } else
+    
     switch(item) {
       case ITM_BACKSPACE: {
         if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_EIM) {
@@ -2261,10 +2267,11 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
               lastItem = 0;
               lastUserMode = false;
               if(item == ITM_PERIOD) {
+                fnAsnDisplayUSER = false;
+                keyActionProcessed = true;
                 lastItem = item;
-                lastUserMode = getSystemFlag(FLAG_USER);
-                item = ITM_USERMODE;
-              }
+                refreshScreen();
+              } else
               if(item == ITM_USERMODE) {
                 runFunction(item);
                 keyActionProcessed = true;

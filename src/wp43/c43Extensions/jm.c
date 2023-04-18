@@ -85,7 +85,7 @@
   void jm_show_calc_state(char comment[]) {
   #ifdef PC_BUILD_TELLTALE
     printf("\n%s--------------------------------------------------------------------------------\n",comment);
-    printf(".  calcMode: %s   last_CM=%s  AlphaCase=%s  doRefreshSoftMenu=%d    lastErrorCode=%d\n",getCalcModeName(calcMode), getCalcModeName(last_CM), getAlphaCaseName(alphaCase), doRefreshSoftMenu,lastErrorCode);
+    printf(".  calcMode: %s   last_CM=%s  AlphaCase=%s  doRefreshSoftMenu=%d    lastErrorCode=%d fnAsnDisplayUSER=%d\n",getCalcModeName(calcMode), getCalcModeName(last_CM), getAlphaCaseName(alphaCase), doRefreshSoftMenu,lastErrorCode, fnAsnDisplayUSER);
     printf(".  softmenuStack[0].softmenuId=%d       MY_ALPHA_MENU=%d    softmenu[softmenuStack[0].softmenuId].menuItem=%d -MNU_ALPHA=%d\n",softmenuStack[0].softmenuId,MY_ALPHA_MENU,softmenu[softmenuStack[0].softmenuId].menuItem, -MNU_ALPHA);
     printf(".  ");int8_t ix=0; while(ix<SOFTMENU_STACK_SIZE) {printf("(%d)=%5d ", ix, softmenuStack[ix].softmenuId); ix++;} printf("\n");
     printf(".  ");       ix=0; while(ix<SOFTMENU_STACK_SIZE) {printf("%9s ", indexOfItems[-softmenu[softmenuStack[ix].softmenuId].menuItem].itemSoftmenuName  ); ix++;} printf("\n");
