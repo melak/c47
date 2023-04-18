@@ -44,7 +44,7 @@
     yy = 1;
     clearScreen();
     showSoftmenuCurrentPart();
-        if(fnAsnDisplayUSER) showString("(USER KEYS)", &standardFont, 280, YOFF, vmNormal, false, false); else showString("(STD KEYS)", &standardFont, 280, YOFF, vmNormal, false, false); 
+        showString(fnAsnDisplayUSER ? "(USER KEYS)" : "(STD KEYS)", &standardFont, 280, YOFF, vmNormal, false, false);
         switch(page) {
           case 1:   showString("unshifted keyboard mapping", &standardFont, 30, YOFF, vmNormal, false, false); break;
           case 3:   showString("f-shift keyboard mapping", &standardFont, 30, YOFF, vmNormal, false, false); break;
