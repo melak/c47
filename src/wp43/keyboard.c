@@ -18,6 +18,7 @@
 
 #include "assign.h"
 #include "bufferize.h"
+#include "browsers/asnBrowser.h"
 #include "calcMode.h"
 #include "charString.h"
 #include "config.h"
@@ -30,6 +31,7 @@
 #include "items.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/keyboardTweak.h"
+#include "c43Extensions/radioButtonCatalog.h"
 #include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
@@ -84,6 +86,9 @@ printf(">>>>Z 0090 determineFunctionKeyItem       data=|%s| data[0]=%d item=%d i
 
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0090a determineFunctionKeyItem       -softmenu[menuId].menuItem=%i\n",-softmenu[menuId].menuItem);
+#endif //VERBOSEKEYS
     switch(-softmenu[menuId].menuItem) {
       case MNU_MyMenu: {
         dynamicMenuItem = firstItem + itemShift + fn;
@@ -199,6 +204,9 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
         item = ITM_NOP;
         if(dynamicMenuItem < dynamicSoftmenu[menuId].numItems) {
           for(uint32_t i = 0; softmenu[i].menuItem < 0; ++i) {
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0093b determineFunctionKeyItem  case MNU_MENUS:     i=%i softmenu[i].menuItem=%i name:=%s\n",i,softmenu[i].menuItem, indexOfItems[-softmenu[i].menuItem].itemCatalogName);
+#endif //VERBOSEKEYS
             if(compareString((char *)getNthString(dynamicSoftmenu[menuId].menuContent, dynamicMenuItem), indexOfItems[-softmenu[i].menuItem].itemCatalogName, CMP_NAME) == 0) {
               if(tam.mode == TM_DELITM) {
                 item = MNU_DYNAMIC;
@@ -206,6 +214,9 @@ printf(">>>>  0093     firstItem=%d itemShift=%d fn=%d",firstItem, itemShift, fn
               }
               else {
                 item = softmenu[i].menuItem;
+#ifdef VERBOSEKEYS
+printf(">>>>Z 0093c determineFunctionKeyItem  item = %i:   name:=%s\n",item, indexOfItems[-item].itemCatalogName);
+#endif //VERBOSEKEYS
               }
             }
           }
@@ -794,6 +805,9 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
     }
   }
 
+bool_t lastUserMode = false;
+int16_t lastItem = 0;
+
   #if defined(PC_BUILD)
     void btnFnReleased(GtkWidget *notUsed, GdkEvent *event, gpointer data) {
   #endif // PC_BUILD
@@ -896,7 +910,7 @@ printf(">>>> R000B                                %d |%s| shiftF=%d, shiftG=%d t
 #endif //VERBOSEKEYS
 
         #if defined (PC_BUILD)
-          printf(">>>Function selected: executeFunction |%s| %d %d tam.mode=%i\n",(char *)data, shiftF, shiftG, tam.mode);
+          printf(">>>Function selected: executeFunction data=|%s| f=%d g=%d tam.mode=%i\n",(char *)data, shiftF, shiftG, tam.mode);
           if(item<0)  printf("    item=%d=%s f=%d g=%d\n",item,indexOfItems[-item].itemCatalogName, shiftF, shiftG);
           if(item>=0) printf("    item=%d=%s f=%d g=%d\n",item,indexOfItems[item].itemCatalogName, shiftF, shiftG);
         #endif //PC_BUILD
@@ -942,6 +956,9 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
               itemToBeAssigned = item;
             }
             else {
+              #if defined (VERBOSEKEYS)
+                printf(">>>Function: executeFunction showSoftmenu(%d)\n",item);
+              #endif //VERBOSEKEYS
               showSoftmenu(item);
               if(item == -MNU_ALPHA) {
                 fnAim(0);
@@ -986,6 +1003,9 @@ printf(">>>> R000C                                %d |%s| shiftF=%d, shiftG=%d t
               hourGlassIconEnabled = false;
             }
             else {
+              #if defined (VERBOSEKEYS)
+                printf(">>>Function: executeFunction runFunction(%d)\n",item);
+              #endif //VERBOSEKEYS
               runFunction(item);
             }
             _closeCatalog();
@@ -1130,6 +1150,8 @@ printf(">>>> R000F                                %d |%s| shiftF=%d, shiftG=%d t
     printf(">>>  refreshScreen3 from keyboard.c executeFunction\n");
   #endif
     refreshScreen();
+//TODO 2023-04-15 check here. It needs to be changed not to always refresh the screen.
+
     screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
     #ifdef VERBOSEKEYS
       printf("keyboard.c: executeFunction (end): %i, %s\n", softmenu[softmenuStack[0].softmenuId].menuItem, indexOfItems[-softmenu[softmenuStack[0].softmenuId].menuItem].itemSoftmenuName);
@@ -1179,7 +1201,7 @@ bool_t allowShiftsToClearError = false;
   #endif //PC_BUILD
 
     // Shift f pressed and JM REMOVED shift g not active
-    if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN)) {   //JM shifts
+    if(key->primary == ITM_SHIFTf && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) allowShiftsToClearError = true; //JM
       if(temporaryInformation == TI_VIEW) {
         temporaryInformation = TI_NO_INFO;
@@ -1212,7 +1234,7 @@ bool_t allowShiftsToClearError = false;
     }
 
     // Shift g pressed and JM REMOVED shift f not active
-    else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN)) {   //JM shifts
+    else if(key->primary == ITM_SHIFTg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       if(temporaryInformation == TI_SHOW_REGISTER || temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) allowShiftsToClearError = true; //JM
       if(temporaryInformation == TI_VIEW) {
         temporaryInformation = TI_NO_INFO;
@@ -1246,7 +1268,7 @@ bool_t allowShiftsToClearError = false;
 
     // JM Shift f pressed  //JM shifts change f/g to a single function key toggle to match DM42 keyboard
     // JM Inserted new section and removed old f and g key processing sections
-    else if(key->primary == KEY_fg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || (calcMode == CM_PLOT_STAT) || calcMode == CM_GRAPH || calcMode == CM_ASSIGN)) {   //JM shifts
+    else if(key->primary == KEY_fg && (calcMode == CM_NORMAL || calcMode == CM_AIM || calcMode == CM_NIM  || calcMode == CM_MIM || calcMode == CM_EIM || calcMode == CM_PEM || calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH || calcMode == CM_ASSIGN || calcMode == CM_ASN_BROWSER)) {   //JM shifts
       Shft_timeouts = true;                         //JM SHIFT NEW
       fnTimerStart(TO_FG_LONG, TO_FG_LONG, JM_TO_FG_LONG);    //vv dr
       if(ShiftTimoutMode) {
@@ -1273,6 +1295,7 @@ bool_t allowShiftsToClearError = false;
         if((calcMode == CM_NORMAL || calcMode == CM_PEM) && !tam.mode) calcModeNormalGui();     //JM
       #endif
 
+      screenUpdatingMode &= ~SCRUPD_MANUAL_SHIFT_STATUS;
       return ITM_NOP;
     }  
 
@@ -1660,6 +1683,12 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
         screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
         return;
       }
+    if(calcMode == CM_ASN_BROWSER && lastItem == ITM_PERIOD) {
+      fnAsnDisplayUSER = true;
+//      refreshScreen();
+      goto RELEASE_END;
+      return;
+    }
 
       if(calcMode == CM_ASSIGN && itemToBeAssigned != 0 && tamBuffer[0] == 0) {
         assignToKey((char *)data);
@@ -1735,12 +1764,14 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 //      }
 //  #endif // DMCP_BUILD
 
+RELEASE_END:
       if(allowShiftsToClearError || !checkShifts((char *)data)) {
         #ifdef PC_BUILD
           char tmp[200]; sprintf(tmp,">>> btnReleased (%s):   refreshScreen from keyboard.c  which is the main normal place for it.", (char *)data); jm_show_comment(tmp);
           jm_show_calc_state("      ##### keyboard.c: btnReleased end");
         #endif //PC_BUILD
         refreshScreen(); //JM PROBLEM. THIS MUST BE REMOVED FOR MOST CASES
+//TODO 2023-04-15 check here. It needs to be changed not to always refresh the screen.
       }
       screenUpdatingMode &= ~SCRUPD_ONE_TIME_FLAGS;
       allowShiftsToClearError = false;
@@ -1821,6 +1852,10 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
       item = ITM_CC;
     }
 
+    if(calcMode == CM_ASN_BROWSER && item != ITM_PERIOD && item != ITM_USERMODE && item != ITM_BACKSPACE && item != ITM_EXIT1 && item != ITM_UP1 && item != ITM_DOWN1) {
+      keyActionProcessed = true;
+    } else
+    
     switch(item) {
       case ITM_BACKSPACE: {
         if(calcMode == CM_NIM || calcMode == CM_AIM || calcMode == CM_EIM) {
@@ -2228,8 +2263,24 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
               break;
             }
 
+            case CM_ASN_BROWSER: {
+              lastItem = 0;
+              lastUserMode = false;
+              if(item == ITM_PERIOD) {
+                fnAsnDisplayUSER = false;
+                keyActionProcessed = true;
+                lastItem = item;
+                refreshScreen();
+              } else
+              if(item == ITM_USERMODE) {
+                runFunction(item);
+                keyActionProcessed = true;
+//                refreshScreen();
+              }
+              break;
+            }
+
             case CM_FLAG_BROWSER:
-            case CM_ASN_BROWSER:
             case CM_FONT_BROWSER:
             case CM_ERROR_MESSAGE:
             case CM_BUG_ON_SCREEN: {
@@ -2239,7 +2290,7 @@ bool_t nimWhenButtonPressed = false;                  //PHM eRPN 2021-07
 
             case CM_GRAPH:
             case CM_PLOT_STAT:
-            case CM_LISTXY: {       //JM
+            case CM_LISTXY: {
               if(item == ITM_SNAP) {
                 runFunction(item);
                 keyActionProcessed = true;

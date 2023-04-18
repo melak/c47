@@ -19,6 +19,7 @@
 #include "assign.h"
 #include "browsers/browsers.h"
 #include "bufferize.h"
+#include "calcMode.h"
 #include "charString.h"
 #include "constantPointers.h"
 #include "curveFitting.h"
@@ -3802,13 +3803,6 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
   if(calcMode!=CM_AIM && calcMode!=CM_NIM && calcMode!=CM_PLOT_STAT && calcMode!=CM_GRAPH && calcMode!=CM_LISTXY) {last_CM = 254;}  //JM Force NON-CM_AIM and NON-CM_NIM to refresh to be compatible to 43S 
 
   switch(calcMode) {
-      case CM_ASN_BROWSER: {
-        last_CM = calcMode;
-        fnAsnViewer(NOPARAM);
-        refreshStatusBar();
-        break;
-      }
-
       case CM_FLAG_BROWSER: {
         last_CM = calcMode;
         clearScreen();
@@ -3842,6 +3836,7 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
       break;
       }
 
+      case CM_ASN_BROWSER:
       case CM_NORMAL:
       case CM_AIM:
       case CM_NIM:
@@ -3900,6 +3895,14 @@ if (running_program_jm) return;          //JM TEST PROGRAM!
 //	if(last_CM != calcMode) {
 //	  clearScreen_old(true,false,false); 
 //	}
+
+        if(calcMode == CM_ASN_BROWSER) {
+          last_CM = calcMode;
+          fnAsnViewer(NOPARAM);
+          calcModeNormal();
+          calcMode = last_CM;
+        }
+
 
         if(calcMode == CM_MIM) {
           showMatrixEditor();
