@@ -101,7 +101,7 @@ dist_dm42: dmcp testPgms build.rel/wiki
 	cp -r res/offimg/From\ WP43/ $(DM_DIST_DIR2)/offimg
 	cp -r res/offimg/General/ $(DM_DIST_DIR2)/offimg
 	cp -r res/offimg/HP\ related/ $(DM_DIST_DIR2)/offimg
-	cp -r res/offimg/C43/ $(DM_DIST_DIR2)/offimg
+	cp -r res/offimg/C47/ $(DM_DIST_DIR2)/offimg
 	cp -r res/PROGRAMS $(DM_DIST_DIR2)
 	cp res/dmcp/original_DM42_keymap.bin res/dmcp/testPgms.bin $(DM_DIST_DIR2)
 	cp build.rel/wiki/Installation-on-a-DM42.md $(DM_DIST_DIR2)/readme.txt
