@@ -47,6 +47,7 @@ void     fnExitAllMenus         (uint16_t unusedButMandatoryParameter);
 /**
    * Displays the current part of the displayed softmenu.
    */
+  bool_t isFunctionItemAMenu(int16_t item);
   void   showSoftmenuCurrentPart(void);
     
   /**

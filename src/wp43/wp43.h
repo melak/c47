@@ -117,6 +117,7 @@
   extern real51_t                 const *angle45;
 
   // Variables stored in RAM
+  extern bool_t                 fnAsnDisplayUSER;
   extern bool_t                 funcOK;
   extern bool_t                 keyActionProcessed;
   extern bool_t                 fnKeyInCatalog;

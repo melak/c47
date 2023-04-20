@@ -17,8 +17,8 @@
 /********************************************//**
  * \file asnBrowser.c The assign browser application
  ***********************************************/
-
-#include "browsers/registerBrowser.h"
+#include "browsers/asnBrowser.h"
+#include "typeDefinitions.h"
 
 #include "items.h"
 #include "flags.h"
@@ -44,6 +44,7 @@
     yy = 1;
     clearScreen();
     showSoftmenuCurrentPart();
+        showString(fnAsnDisplayUSER ? "(USER KEYS)" : "(STD KEYS)", &standardFont, 280, YOFF, vmNormal, false, false);
         switch(page) {
           case 1:   showString("unshifted keyboard mapping", &standardFont, 30, YOFF, vmNormal, false, false); break;
           case 3:   showString("f-shift keyboard mapping", &standardFont, 30, YOFF, vmNormal, false, false); break;
@@ -60,7 +61,7 @@
       if(key <  12) pixelsPerSoftKey = (int)((float)SCREEN_WIDTH / 6.0f + 0.5f); else
                     pixelsPerSoftKey = (int)((float)SCREEN_WIDTH / 5.0f + 0.5f);
 
-      if(getSystemFlag(FLAG_USER)) {
+        if(fnAsnDisplayUSER) {
         switch(page) {
           case 1: kk = kbd_usr[key].primary; break;
           case 3: kk = kbd_usr[key].fShifted; break;
@@ -82,7 +83,7 @@
       }
       showKey(Name, xx*pixelsPerSoftKey, xx*pixelsPerSoftKey+pixelsPerSoftKey, YOFF+yy*SOFTMENU_HEIGHT, YOFF+(yy+1)*SOFTMENU_HEIGHT, xx == 5, (kk > 0 || Name[0] == 0) ? vmNormal : vmReverse, true, true, NOVAL, NOVAL, NOTEXT);
 
-      if(getSystemFlag(FLAG_USER) && 
+      if(fnAsnDisplayUSER &&
           ( ((page == 1) && (kbd_std[key].primary == kbd_usr[key].primary)  ) || 
             ((page == 3) && (kbd_std[key].fShifted == kbd_usr[key].fShifted)) || 
             ((page == 2) && (kbd_std[key].gShifted == kbd_usr[key].gShifted))  
@@ -99,7 +100,7 @@
 #endif // !TESTSUITE_BUILD
 
 
-void fnAsnViewer(int16_t unusedButMandatoryParameter) {
+void fnAsnViewer(uint16_t unusedButMandatoryParameter) {
 #if !defined(TESTSUITE_BUILD)
   #ifndef SAVE_SPACE_DM42_8
     hourGlassIconEnabled = false;

@@ -658,25 +658,13 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_CtoF :
           case ITM_FtoC :
           case ITM_DBtoPR :
-          case ITM_DBtoPRb :
-          case ITM_DBtoPRc :
           case ITM_DBtoFR :
-          case ITM_DBtoFRb :
-          case ITM_DBtoFRc :
           case ITM_PRtoDB :
-          case ITM_PRtoDBb :
-          case ITM_PRtoDBc :
           case ITM_FRtoDB :
-          case ITM_FRtoDBb :
-          case ITM_FRtoDBc :
           case ITM_ACtoHA :
-          case ITM_ACtoHAb :
           case ITM_HAtoAC :
-          case ITM_HAtoACb :
           case ITM_ACUStoHA :
-          case ITM_ACUStoHAb :
           case ITM_HAtoACUS :
-          case ITM_HAtoACUSb :
           case ITM_PAtoATM :
           case ITM_ATMtoPA :
           case ITM_AUtoM :
@@ -688,27 +676,17 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_CALtoJ :
           case ITM_JtoCAL :
           case ITM_LBFFTtoNM :
-          case ITM_LBFFTtoNMb :
           case ITM_NMtoLBFFT :
-          case ITM_NMtoLBFFTb :
           case ITM_CWTtoKG :
           case ITM_KGtoCWT :
           case ITM_FTtoM :
           case ITM_MtoFT :
           case ITM_FTUStoM :
-          case ITM_FTUStoMb :
-          case ITM_FTUStoMc :
           case ITM_MtoFTUS :
-          case ITM_MtoFTUSb :
-          case ITM_MtoFTUSc :
           case ITM_FZUKtoML :
-          case ITM_FZUKtoMLb :
           case ITM_MLtoFZUK :
-          case ITM_MLtoFZUKb :
           case ITM_FZUStoML :
-          case ITM_FZUStoMLb :
           case ITM_MLtoFZUS :
-          case ITM_MLtoFZUSb :
           case ITM_GLUKtoL :
           case ITM_LtoGLUK :
           case ITM_GLUStoL :
@@ -720,9 +698,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_HPUKtoW :
           case ITM_WtoHPUK :
           case ITM_INCHHGtoPA :
-          case ITM_INCHHGtoPAb :
           case ITM_PAtoINCHHG :
-          case ITM_PAtoINCHHGb :
           case ITM_INCHtoMM :
           case ITM_MMtoINCH :
           case ITM_WHtoJ :
@@ -732,37 +708,23 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_GtoOZ :
           case ITM_OZtoG :
           case ITM_KGtoSCW :
-          case ITM_KGtoSCWb :
           case ITM_SCWtoKG :
-          case ITM_SCWtoKGb :
           case ITM_KGtoSTO :
-          case ITM_KGtoSTOb :
           case ITM_STOtoKG :
-          case ITM_STOtoKGb :
           case ITM_KGtoST :
-          case ITM_KGtoSTb :
-          case ITM_KGtoSTc :
           case ITM_STtoKG :
-          case ITM_STtoKGb :
-          case ITM_STtoKGc :
           case ITM_KGtoTON :
           case ITM_KGtoLIANG :
-          case ITM_KGtoLIANGb :
           case ITM_TONtoKG :
           case ITM_LIANGtoKG :
-          case ITM_LIANGtoKGb :
           case ITM_GtoTRZ :
-          case ITM_GtoTRZb :
           case ITM_TRZtoG :
-          case ITM_TRZtoGb :
           case ITM_LBFtoN :
           case ITM_NtoLBF :
           case ITM_LYtoM :
           case ITM_MtoLY :
           case ITM_MMHGtoPA :
-          case ITM_MMHGtoPAb :
           case ITM_PAtoMMHG :
-          case ITM_PAtoMMHGb :
           case ITM_MItoKM :
           case ITM_KMtoMI :
           case ITM_KMtoNMI :
@@ -770,35 +732,25 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           case ITM_MtoPC :
           case ITM_PCtoM :
           case ITM_MMtoPOINT :
-          case ITM_MMtoPOINTb :
           case ITM_POINTtoMM :
-          case ITM_POINTtoMMb :
           case ITM_MtoYD :
           case ITM_YDtoM :
           case ITM_PSItoPA :
           case ITM_PAtoPSI :
           case ITM_PAtoTOR :
-          case ITM_PAtoTORb :
           case ITM_TORtoPA :
-          case ITM_TORtoPAb :
           case ITM_StoYEAR :
           case ITM_YEARtoS :
           case ITM_CARATtoG :
-          case ITM_CARATtoGb :
           case ITM_JINtoKG :
           case ITM_GtoCARAT :
-          case ITM_GtoCARATb :
           case ITM_KGtoJIN :
           case ITM_QTtoL :
           case ITM_LtoQT :
           case ITM_FATHOMtoM :
-          case ITM_FATHOMtoMb :
           case ITM_MtoFATHOM :
-          case ITM_MtoFATHOMb :
           case ITM_BARRELtoM3 :
-          case ITM_BARRELtoM3b :
           case ITM_M3toBARREL :
-          case ITM_M3toBARRELb :
           case ITM_HECTAREtoM2 :
           case ITM_M2toHECTARE :
           case ITM_MUtoM2 :
