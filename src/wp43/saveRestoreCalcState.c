@@ -27,7 +27,6 @@
 #include "c43Extensions/xeqm.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/radioButtonCatalog.h"
-//#include "c43Extensions/graphText.h"
 #include "mathematics/matrix.h"
 #include "memory.h"
 #include "plotstat.h"
@@ -47,8 +46,14 @@
 #include "timer.h"
 #include <string.h>
 #if defined(PC_BUILD)
+#include <gtk/gtk.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
+#endif
+#if defined(DMCP_BUILD)
+#include <dmcp.h>
 #endif
 
 #include "wp43.h"
@@ -64,14 +69,126 @@
 10000004 // 2022-12-26 version 108_08n, added lastIntegerBase
 10000005 // 2022-01-08 version 108_08q, Pauli changed the real number saver representaiton
 
-Current version default all non-loaded settings from previous version files correctly
+Current version defaults all non-loaded settings from previous version files correctly
 */
 
+#if !defined(TESTSUITE_BUILD)
+  #define START_REGISTER_VALUE 1000  // was 1522, why?
+  #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
+  static uint32_t loadedVersion = 0;
+#endif //TESTSUITE_BUILD
+  uint16_t flushBufferCnt = 0;
 
-#define START_REGISTER_VALUE 1000  // was 1522, why?
-#define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
-static uint32_t loadedVersion = 0;
-uint16_t flushBufferCnt = 0;
+
+//DMCP file selection call back functions
+
+#if defined(DMCP_BUILD)
+//
+int save_statefile(const char * fpath, const char * fname, void * data) {
+
+  lcd_puts(t24,"Saving state ...");
+  lcd_puts(t24, fname);  lcd_refresh();
+
+  // Store the state file name
+  strcpy(data, fpath);
+  set_reset_state_file(fpath);
+
+  // Exit with appropriate code to save state file save
+  return MRET_SAVESTATE;
+}
+
+int load_statefile(const char * fpath, const char * fname, void * data) {
+
+  // 'Sure' dialog
+  lcd_puts(t24, "");
+  lcd_puts(t24, "WARNING: Current calculator state");
+  lcd_puts(t24, "will be lost.");
+  lcd_puts(t24, "");
+  lcd_puts(t24, "");
+  //lcd_puts(t24, "Are you sure to load this file?");
+  lcd_puts(t24, "Press [ENTER] to confirm.");
+  lcd_refresh();
+  
+  wait_for_key_release(-1);
+
+  for(;;) {
+    int k1 = runner_get_key(NULL);
+    if ( IS_EXIT_KEY(k1) )
+      return 0; // Continue the selection screen
+    if ( is_menu_auto_off() )
+      return MRET_EXIT; // Leave selection screen
+    if ( k1 == KEY_ENTER )
+      break; // Proceed with loadName
+  }
+
+  lcd_putsRAt(t24, 6, "  Loading ...");
+  lcd_refresh_wait();
+
+  // Store the state file name
+  strcpy(data, fpath);
+  set_reset_state_file(fpath);
+
+  // Exit with appropriate code to load state file
+  return MRET_LOADSTATE;
+}
+#endif // DMCP_BUILD
+
+
+//GTK file selection dialog function
+ 
+#if defined(PC_BUILD)
+int file_selection_screen(const char * title, const char * base_dir, const char * ext, int disp_save, int overwrite_check, void * data) {
+      GtkFileChooserNative *native;
+      gint res;
+
+      if (disp_save) {
+        GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+        native = gtk_file_chooser_native_new (title,
+                                              GTK_WINDOW(frmCalc),
+                                              action,
+                                              "_Save",
+                                              "_Cancel");
+      } else{
+        GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+        native = gtk_file_chooser_native_new (title,
+                                              GTK_WINDOW(frmCalc),
+                                              action,
+                                              "_Load",
+                                              "_Cancel");
+      }
+          
+      GtkFileChooser *chooser = GTK_FILE_CHOOSER (native);
+
+      if (overwrite_check) {
+          gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
+      }     
+      gtk_file_chooser_set_current_folder(chooser,base_dir);
+      if (disp_save) {
+        gtk_file_chooser_set_current_name (chooser,"untitled"STATE_EXT);
+      }
+      GtkFileFilter *filter = gtk_file_filter_new ();
+      gtk_file_filter_add_pattern (filter, ext);
+      gtk_file_chooser_add_filter(chooser, filter);
+      res = gtk_native_dialog_run (GTK_NATIVE_DIALOG (native));
+      if (res == GTK_RESPONSE_ACCEPT)
+      {
+        char *filename;
+        filename = gtk_file_chooser_get_filename (chooser);
+        strcpy(data, filename);
+        if (disp_save) {
+          char * fe = data+strlen(filename)-4;
+          const char * ee = ext+1;
+          if (strcmp(fe,ee) != 0) strcat(data,ee);     //filename doesn't have the expected extension 
+        }       
+        g_free(filename);   
+        g_object_unref (native);
+        return 1;
+      } else { 
+        g_object_unref (native);
+        return 0;
+      } 
+}
+#endif // PC_BUILD
 
 
 #if !defined(TESTSUITE_BUILD)
@@ -970,8 +1087,12 @@ void fnSaveAuto(void) {
   doSave(autoSave);
 }
 
-void fnSave(uint16_t unusedButMandatoryParameter) {
-  doSave(manualSave);
+void fnSave(uint16_t saveMode) {
+  if (saveMode == SM_MANUAL_SAVE) {
+    doSave(manualSave);
+  } else if (saveMode == SM_STATE_SAVE) {
+    doSave(stateSave);
+  }
 }
 
 void doSave(uint16_t saveType) {
@@ -988,14 +1109,26 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   char yy1[35], yy2[35];
 
   #if defined(DMCP_BUILD)
+    // Don't pass through if the power is insufficient  
+    if ( power_check_screen() ) return;
+    
     FRESULT result;
     if(saveType == manualSave) {
       strcpy(fileName, "SAVFILES\\C47.sav");
     } else if(saveType == autoSave) {
       strcpy(fileName, "SAVFILES\\C47auto.sav");
-    } 
+    } else if(saveType == stateSave) {
+      sys_disk_write_enable(1);
+      check_create_dir(STATE_DIR);
+      sys_disk_write_enable(0);
+      int ret = 0;
+      ret = file_selection_screen("Save Calculator State", STATE_DIR, STATE_EXT, save_statefile, 1, 1, fileName);
+      if (ret == MRET_EXIT) return;
+    }
     sys_disk_write_enable(1);
-    check_create_dir("SAVFILES");
+    if((saveType == manualSave)||(saveType == autoSave)) {
+      check_create_dir("SAVFILES");
+    }
     result = f_open(BACKUP, fileName, FA_CREATE_ALWAYS | FA_WRITE);
     if(result != FR_OK) {
       sys_disk_write_enable(0);
@@ -1005,11 +1138,22 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
-    BACKUP = fopen("C47.sav", "wb");
-    if(BACKUP == NULL) {
-      printf("Cannot SAVE in file C47.sav!\n");
-      return;
+    if(saveType == manualSave) {
+      strcpy(fileName,"C47.sav");
+    } else {
+      char * base_dir;
+      int ret = 0;
+      base_dir = g_get_current_dir();
+      ret = file_selection_screen("Save State File", base_dir, "*"STATE_EXT, 1, 1, fileName);
+      g_free(base_dir);
+      if (ret == 0) return;
     }
+    BACKUP = fopen(fileName, "wb");
+    if(BACKUP == NULL) {
+      printf("Cannot SAVE in file %s!\n", fileName);
+      return;
+	}	
+
   #endif // DMCP_BUILD
   // SAV file version number
   //printHalfSecUpdate_Integer(force+1, "Version",configFileVersion);
@@ -1337,20 +1481,20 @@ char tmpString[3000];             //The concurrent use of the global tmpString
 
 
 
-static void readLine(void *stream, char *line) {
 #ifndef TESTSUITE_BUILD
-  restore(line, 1, stream);
-  while(*line == '\n' || *line == '\r') {
+  static void readLine(void *stream, char *line) {
     restore(line, 1, stream);
-  }
+    while(*line == '\n' || *line == '\r') {
+      restore(line, 1, stream);
+    }
 
-  while(*line != '\n' && *line != '\r') {
-    restore(++line, 1, stream);
-  }
+    while(*line != '\n' && *line != '\r') {
+      restore(++line, 1, stream);
+    }
 
-  *line = 0;
+    *line = 0;
+  }
 #endif //TESTSUITE_BUILD
-}
 
 
 
@@ -1469,640 +1613,530 @@ int32_t stringToInt32(const char *str) {
 }
 
 
+#ifndef TESTSUITE_BUILD
+  static void restoreRegister(calcRegister_t regist, char *type, char *value) {
+    uint32_t tag = amNone;
 
-static void restoreRegister(calcRegister_t regist, char *type, char *value) {
-  uint32_t tag = amNone;
+    if(type[4] == ':') {
+      if(type[5] == 'R') {
+        tag = amRadian;
+      }
+      else if(type[5] == 'M') {
+        tag = amMultPi;
+      }
+      else if(type[5] == 'G') {
+        tag = amGrad;
+      }
+      else if(type[5] == 'D' && type[6] == 'E') {
+        tag = amDegree;
+      }
+      else if(type[5] == 'D' && type[6] == 'M') {
+        tag = amDMS;
+      }
+      else {
+        tag = amNone;
+      }
 
-  if(type[4] == ':') {
-    if(type[5] == 'R') {
-      tag = amRadian;
+      reallocateRegister(regist, dtReal34, REAL34_SIZE, tag);
+      stringToReal34(value, REGISTER_REAL34_DATA(regist));
     }
-    else if(type[5] == 'M') {
-      tag = amMultPi;
-    }
-    else if(type[5] == 'G') {
-      tag = amGrad;
-    }
-    else if(type[5] == 'D' && type[6] == 'E') {
-      tag = amDegree;
-    }
-    else if(type[5] == 'D' && type[6] == 'M') {
-      tag = amDMS;
-    }
-    else {
-      tag = amNone;
+
+    else if(strcmp(type, "Real") == 0) {
+      reallocateRegister(regist, dtReal34, REAL34_SIZE, tag);
+      stringToReal34(value, REGISTER_REAL34_DATA(regist));
     }
 
-    reallocateRegister(regist, dtReal34, REAL34_SIZE, tag);
-    stringToReal34(value, REGISTER_REAL34_DATA(regist));
-  }
-
-  else if(strcmp(type, "Real") == 0) {
-    reallocateRegister(regist, dtReal34, REAL34_SIZE, tag);
-    stringToReal34(value, REGISTER_REAL34_DATA(regist));
-  }
-
-  else if(strcmp(type, "Time") == 0) {
-    reallocateRegister(regist, dtTime, REAL34_SIZE, amNone);
-    stringToReal34(value, REGISTER_REAL34_DATA(regist));
-  }
-
-  else if(strcmp(type, "Date") == 0) {
-    reallocateRegister(regist, dtDate, REAL34_SIZE, amNone);
-    stringToReal34(value, REGISTER_REAL34_DATA(regist));
-  }
-
-  else if(strcmp(type, "LonI") == 0) {
-    longInteger_t lgInt;
-
-    longIntegerInit(lgInt);
-    stringToLongInteger(value, 10, lgInt);
-    convertLongIntegerToLongIntegerRegister(lgInt, regist);
-    longIntegerFree(lgInt);
-  }
-
-  else if(strcmp(type, "Stri") == 0) {
-    int32_t len;
-
-    utf8ToString((uint8_t *)value, errorMessage);
-    len = stringByteLength(errorMessage) + 1;
-    reallocateRegister(regist, dtString, TO_BLOCKS(len), amNone);
-    xcopy(REGISTER_STRING_DATA(regist), errorMessage, len);
-  }
-
-  else if(strcmp(type, "ShoI") == 0) {
-    uint16_t sign = (value[0] == '-' ? 1 : 0);
-    uint64_t val  = stringToUint64(value + 1);
-
-    while(*value != ' ') {
-      value++;
+    else if(strcmp(type, "Time") == 0) {
+      reallocateRegister(regist, dtTime, REAL34_SIZE, amNone);
+      stringToReal34(value, REGISTER_REAL34_DATA(regist));
     }
-    while(*value == ' ') {
-      value++;
+
+    else if(strcmp(type, "Date") == 0) {
+      reallocateRegister(regist, dtDate, REAL34_SIZE, amNone);
+      stringToReal34(value, REGISTER_REAL34_DATA(regist));
     }
-    uint32_t base = stringToUint32(value);
 
-    convertUInt64ToShortIntegerRegister(sign, val, base, regist);
-  }
+    else if(strcmp(type, "LonI") == 0) {
+      longInteger_t lgInt;
 
-  else if(strcmp(type, "Cplx") == 0) {
-    char *imaginaryPart;
-
-    reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, amNone);
-    imaginaryPart = value;
-    while(*imaginaryPart != ' ') {
-      imaginaryPart++;
+      longIntegerInit(lgInt);
+      stringToLongInteger(value, 10, lgInt);
+      convertLongIntegerToLongIntegerRegister(lgInt, regist);
+      longIntegerFree(lgInt);
     }
-    *(imaginaryPart++) = 0;
-    stringToReal34(value, REGISTER_REAL34_DATA(regist));
-    stringToReal34(imaginaryPart, REGISTER_IMAG34_DATA(regist));
-  }
 
-#if !defined(TESTSUITE_BUILD)
-  else if(strcmp(type, "Rema") == 0) {
-    char *numOfCols;
-    uint16_t rows, cols;
+    else if(strcmp(type, "Stri") == 0) {
+      int32_t len;
 
-    numOfCols = value;
-    while(*numOfCols != ' ') {
-      numOfCols++;
+      utf8ToString((uint8_t *)value, errorMessage);
+      len = stringByteLength(errorMessage) + 1;
+      reallocateRegister(regist, dtString, TO_BLOCKS(len), amNone);
+      xcopy(REGISTER_STRING_DATA(regist), errorMessage, len);
     }
-    *(numOfCols++) = 0;
-    rows = stringToUint16(value);
-    cols = stringToUint16(numOfCols);
-    reallocateRegister(regist, dtReal34Matrix, REAL34_SIZE * rows * cols, amNone);
-    REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows = rows;
-    REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns = cols;
-  }
 
-  else if(strcmp(type, "Cxma") == 0) {
-    char *numOfCols;
-    uint16_t rows, cols;
+    else if(strcmp(type, "ShoI") == 0) {
+      uint16_t sign = (value[0] == '-' ? 1 : 0);
+      uint64_t val  = stringToUint64(value + 1);
 
-    numOfCols = value;
-    while(*numOfCols != ' ') {
-      numOfCols++;
+      while(*value != ' ') {
+        value++;
+      }
+      while(*value == ' ') {
+        value++;
+      }
+      uint32_t base = stringToUint32(value);
+
+      convertUInt64ToShortIntegerRegister(sign, val, base, regist);
     }
-    *(numOfCols++) = 0;
-    rows = stringToUint16(value);
-    cols = stringToUint16(numOfCols);
-    reallocateRegister(regist, dtComplex34Matrix, COMPLEX34_SIZE * rows * cols, amNone);
-    REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows = rows;
-    REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns = cols;
-  }
-#endif // TESTSUITE_BUILD
 
-  else if(strcmp(type, "Conf") == 0) {
-    char *cfg;
-
-    reallocateRegister(regist, dtConfig, CONFIG_SIZE, amNone);
-    for(cfg=(char *)REGISTER_CONFIG_DATA(regist), tag=0; tag<sizeof(dtConfigDescriptor_t); tag++, value+=2, cfg++) {
-      *cfg = ((*value >= 'A' ? *value - 'A' + 10 : *value - '0') << 4) | (*(value + 1) >= 'A' ? *(value + 1) - 'A' + 10 : *(value + 1) - '0');
-    }
-  }
-
-  else {
-    sprintf(errorMessage, "In function restoreRegister: Data: Reg %d, type %s, value %s to be coded!", (int16_t)regist, type, value);
-    displayBugScreen(errorMessage);
-  }
-}
-
-
-static void restoreMatrixData(calcRegister_t regist, void *stream) {
-  #if !defined(TESTSUITE_BUILD)
-  uint16_t rows, cols;
-  uint32_t i;
-
-  if(getRegisterDataType(regist) == dtReal34Matrix) {
-    rows = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows;
-    cols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
-
-    for(i = 0; i < rows * cols; ++i) {
-      readLine(stream, tmpString);
-      stringToReal34(tmpString, REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i);
-    }
-  }
-
-  if(getRegisterDataType(regist) == dtComplex34Matrix) {
-    rows = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows;
-    cols = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns;
-
-    for(i = 0; i < rows * cols; ++i) {
+    else if(strcmp(type, "Cplx") == 0) {
       char *imaginaryPart;
 
-      readLine(stream, tmpString);
-      imaginaryPart = tmpString;
-        while(*imaginaryPart != ' ') {
-          imaginaryPart++;
-        }
+      reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, amNone);
+      imaginaryPart = value;
+      while(*imaginaryPart != ' ') {
+        imaginaryPart++;
+      }
       *(imaginaryPart++) = 0;
-      stringToReal34(tmpString,     VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
-      stringToReal34(imaginaryPart, VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+      stringToReal34(value, REGISTER_REAL34_DATA(regist));
+      stringToReal34(imaginaryPart, REGISTER_IMAG34_DATA(regist));
     }
-  }
-  #endif // !TESTSUITE_BUILD
-}
 
-
-static void skipMatrixData(char *type, char *value, void *stream) {
   #if !defined(TESTSUITE_BUILD)
-  uint16_t rows, cols;
-  uint32_t i;
-  char *numOfCols;
+    else if(strcmp(type, "Rema") == 0) {
+      char *numOfCols;
+      uint16_t rows, cols;
 
-  if(strcmp(type, "Rema") == 0 || strcmp(type, "Cxma") == 0) {
-    numOfCols = value;
+      numOfCols = value;
       while(*numOfCols != ' ') {
         numOfCols++;
       }
-    *(numOfCols++) = 0;
-    rows = stringToUint16(value);
-    cols = stringToUint16(numOfCols);
-
-    for(i = 0; i < rows * cols; ++i) {
-      readLine(stream, tmpString);
+      *(numOfCols++) = 0;
+      rows = stringToUint16(value);
+      cols = stringToUint16(numOfCols);
+      reallocateRegister(regist, dtReal34Matrix, REAL34_SIZE * rows * cols, amNone);
+      REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows = rows;
+      REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns = cols;
     }
-  }
-  #endif // !TESTSUITE_BUILD
-}
 
+    else if(strcmp(type, "Cxma") == 0) {
+      char *numOfCols;
+      uint16_t rows, cols;
 
-static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
-  int16_t i, numberOfRegs;
-  calcRegister_t regist;
-  char *str;
-  #if defined (LOADDEBUG)
-    char line[100];
-  #endif //LOADDEBUG
-
-  hourGlassIconEnabled = true;
-  showHideHourGlass();
-  readLine(stream, tmpString);
-  #if defined (LOADDEBUG)
-    sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-    debugPrintf(0, "-", tmpString);
-  #endif //LOADDEBUG
-
-  if(strcmp(tmpString, "GLOBAL_REGISTERS") == 0) {
-    readLine(stream, tmpString); // Number of global registers
-    numberOfRegs = stringToInt16(tmpString);
-    for(i=0; i<numberOfRegs; i++) {
-      readLine(stream, tmpString); // Register number
-      regist = stringToInt16(tmpString + 1);
-      readLine(stream, aimBuffer); // Register data type
-      readLine(stream, tmpString); // Register value
-
-      if(loadMode == LM_ALL || (loadMode == LM_REGISTERS && regist < REGISTER_X) || (loadMode == LM_REGISTERS_PARTIAL && regist >= s && regist < (s + n))) {
-        #if defined (LOADDEBUG)
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-          debugPrintf(1, "-", tmpString);
-        #endif //LOADDEBUG
-        restoreRegister(loadMode == LM_REGISTERS_PARTIAL ? (regist - s + d) : regist, aimBuffer, tmpString);
-        restoreMatrixData(loadMode == LM_REGISTERS_PARTIAL ? (regist - s + d) : regist, stream);
+      numOfCols = value;
+      while(*numOfCols != ' ') {
+        numOfCols++;
       }
-      else {
-        skipMatrixData(aimBuffer, tmpString, stream);
+      *(numOfCols++) = 0;
+      rows = stringToUint16(value);
+      cols = stringToUint16(numOfCols);
+      reallocateRegister(regist, dtComplex34Matrix, COMPLEX34_SIZE * rows * cols, amNone);
+      REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows = rows;
+      REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns = cols;
+    }
+  #endif // TESTSUITE_BUILD
+
+    else if(strcmp(type, "Conf") == 0) {
+      char *cfg;
+
+      reallocateRegister(regist, dtConfig, CONFIG_SIZE, amNone);
+      for(cfg=(char *)REGISTER_CONFIG_DATA(regist), tag=0; tag<sizeof(dtConfigDescriptor_t); tag++, value+=2, cfg++) {
+        *cfg = ((*value >= 'A' ? *value - 'A' + 10 : *value - '0') << 4) | (*(value + 1) >= 'A' ? *(value + 1) - 'A' + 10 : *(value + 1) - '0');
       }
+    }
+
+    else {
+      sprintf(errorMessage, "In function restoreRegister: Data: Reg %d, type %s, value %s to be coded!", (int16_t)regist, type, value);
+      displayBugScreen(errorMessage);
     }
   }
 
-  else if(strcmp(tmpString, "GLOBAL_FLAGS") == 0) {
-    readLine(stream, tmpString); // Global flags
-    if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-      #if defined (LOADDEBUG)
-        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-        debugPrintf(2, "-", tmpString);
-      #endif //LOADDEBUG
-      str = tmpString;
-      globalFlags[0] = stringToInt16(str);
 
-      while(*str != ' ') {
-        str++;
-      }
-      while(*str == ' ') {
-        str++;
-      }
-      globalFlags[1] = stringToInt16(str);
+  static void restoreMatrixData(calcRegister_t regist, void *stream) {
+    #if !defined(TESTSUITE_BUILD)
+    uint16_t rows, cols;
+    uint32_t i;
 
-      while(*str != ' ') {
-        str++;
-      }
-      while(*str == ' ') {
-        str++;
-      }
-      globalFlags[2] = stringToInt16(str);
+    if(getRegisterDataType(regist) == dtReal34Matrix) {
+      rows = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixRows;
+      cols = REGISTER_REAL34_MATRIX_DBLOCK(regist)->matrixColumns;
 
-      while(*str != ' ') {
-        str++;
+      for(i = 0; i < rows * cols; ++i) {
+        readLine(stream, tmpString);
+        stringToReal34(tmpString, REGISTER_REAL34_MATRIX_M_ELEMENTS(regist) + i);
       }
-      while(*str == ' ') {
-        str++;
-      }
-      globalFlags[3] = stringToInt16(str);
-
-      while(*str != ' ') {
-        str++;
-      }
-      while(*str == ' ') {
-        str++;
-      }
-      globalFlags[4] = stringToInt16(str);
-
-      while(*str != ' ') {
-        str++;
-      }
-      while(*str == ' ') {
-        str++;
-      }
-      globalFlags[5] = stringToInt16(str);
-
-      while(*str != ' ') {
-        str++;
-      }
-      while(*str == ' ') {
-        str++;
-      }
-      globalFlags[6] = stringToInt16(str);
     }
+
+    if(getRegisterDataType(regist) == dtComplex34Matrix) {
+      rows = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixRows;
+      cols = REGISTER_COMPLEX34_MATRIX_DBLOCK(regist)->matrixColumns;
+
+      for(i = 0; i < rows * cols; ++i) {
+        char *imaginaryPart;
+
+        readLine(stream, tmpString);
+        imaginaryPart = tmpString;
+          while(*imaginaryPart != ' ') {
+            imaginaryPart++;
+          }
+        *(imaginaryPart++) = 0;
+        stringToReal34(tmpString,     VARIABLE_REAL34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+        stringToReal34(imaginaryPart, VARIABLE_IMAG34_DATA(REGISTER_COMPLEX34_MATRIX_M_ELEMENTS(regist) + i));
+      }
+    }
+    #endif // !TESTSUITE_BUILD
   }
 
-  else if(strcmp(tmpString, "LOCAL_REGISTERS") == 0) {
-    readLine(stream, tmpString); // Number of local registers
-    numberOfRegs = stringToInt16(tmpString);
-    if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
-      #if defined (LOADDEBUG)
-        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-        debugPrintf(3, "A", tmpString);
-      #endif //LOADDEBUG
-      allocateLocalRegisters(numberOfRegs);
-    }
 
-    if((loadMode != LM_ALL && loadMode != LM_REGISTERS) || lastErrorCode == ERROR_NONE) {
-      #if defined (LOADDEBUG)
-        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-        debugPrintf(3, "B", tmpString);
-      #endif //LOADDEBUG
+  static void skipMatrixData(char *type, char *value, void *stream) {
+    #if !defined(TESTSUITE_BUILD)
+    uint16_t rows, cols;
+    uint32_t i;
+    char *numOfCols;
+
+    if(strcmp(type, "Rema") == 0 || strcmp(type, "Cxma") == 0) {
+      numOfCols = value;
+        while(*numOfCols != ' ') {
+          numOfCols++;
+        }
+      *(numOfCols++) = 0;
+      rows = stringToUint16(value);
+      cols = stringToUint16(numOfCols);
+
+      for(i = 0; i < rows * cols; ++i) {
+        readLine(stream, tmpString);
+      }
+    }
+    #endif // !TESTSUITE_BUILD
+  }
+
+
+  static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d) {
+    int16_t i, numberOfRegs;
+    calcRegister_t regist;
+    char *str;
+    #if defined (LOADDEBUG)
+      char line[100];
+    #endif //LOADDEBUG
+
+    hourGlassIconEnabled = true;
+    showHideHourGlass();
+    readLine(stream, tmpString);
+    #if defined (LOADDEBUG)
+      sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+      debugPrintf(0, "-", tmpString);
+    #endif //LOADDEBUG
+
+    if(strcmp(tmpString, "GLOBAL_REGISTERS") == 0) {
+      readLine(stream, tmpString); // Number of global registers
+      numberOfRegs = stringToInt16(tmpString);
       for(i=0; i<numberOfRegs; i++) {
         readLine(stream, tmpString); // Register number
-        regist = stringToInt16(tmpString + 2) + FIRST_LOCAL_REGISTER;
+        regist = stringToInt16(tmpString + 1);
         readLine(stream, aimBuffer); // Register data type
         readLine(stream, tmpString); // Register value
 
-        if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
+        if(loadMode == LM_ALL || (loadMode == LM_REGISTERS && regist < REGISTER_X) || (loadMode == LM_REGISTERS_PARTIAL && regist >= s && regist < (s + n))) {
           #if defined (LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-            debugPrintf(3, "C", tmpString);
+            debugPrintf(1, "-", tmpString);
           #endif //LOADDEBUG
-          restoreRegister(regist, aimBuffer, tmpString);
-          restoreMatrixData(regist, stream);
+          restoreRegister(loadMode == LM_REGISTERS_PARTIAL ? (regist - s + d) : regist, aimBuffer, tmpString);
+          restoreMatrixData(loadMode == LM_REGISTERS_PARTIAL ? (regist - s + d) : regist, stream);
         }
         else {
           skipMatrixData(aimBuffer, tmpString, stream);
         }
       }
     }
-  }
 
-  else if(strcmp(tmpString, "LOCAL_FLAGS") == 0) {
-    #if defined (LOADDEBUG)
-      sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-      debugPrintf(4, "A", tmpString);
-    #endif //LOADDEBUG
-    readLine(stream, tmpString); // LOCAL_FLAGS
-    if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
-      #if defined (LOADDEBUG)
-        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-        debugPrintf(4, "B", tmpString);
-      #endif //LOADDEBUG
-      currentLocalFlags->localFlags = stringToUint32(tmpString);
-    }
-  }
-
-  else if(strcmp(tmpString, "NAMED_VARIABLES") == 0) {
-    #if defined (LOADDEBUG)
-      sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-      debugPrintf(20, "A", tmpString);
-    #endif //LOADDEBUG
-    readLine(stream, tmpString); // Number of named variables
-    numberOfRegs = stringToInt16(tmpString);
-    for(i=0; i<numberOfRegs; i++) {
-      readLine(stream, errorMessage); // Variable name
-      readLine(stream, aimBuffer); // Variable data type
-      readLine(stream, tmpString); // Variable value
-
-      if(loadMode == LM_ALL || loadMode == LM_NAMED_VARIABLES) {
+    else if(strcmp(tmpString, "GLOBAL_FLAGS") == 0) {
+      readLine(stream, tmpString); // Global flags
+      if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
         #if defined (LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-          debugPrintf(20, "B", tmpString);
+          debugPrintf(2, "-", tmpString);
         #endif //LOADDEBUG
-        char *varName = errorMessage + strlen(errorMessage) + 1;
-        utf8ToString((uint8_t *)errorMessage, varName);
-        regist = findOrAllocateNamedVariable(varName);
-        if(regist != INVALID_VARIABLE) {
-          restoreRegister(regist, aimBuffer, tmpString);
-          restoreMatrixData(regist, stream);
+        str = tmpString;
+        globalFlags[0] = stringToInt16(str);
+
+        while(*str != ' ') {
+          str++;
         }
-        else {
-          skipMatrixData(aimBuffer, tmpString, stream);
+        while(*str == ' ') {
+          str++;
         }
-      }
-      else {
-        skipMatrixData(aimBuffer, tmpString, stream);
+        globalFlags[1] = stringToInt16(str);
+
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
+        globalFlags[2] = stringToInt16(str);
+
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
+        globalFlags[3] = stringToInt16(str);
+
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
+        globalFlags[4] = stringToInt16(str);
+
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
+        globalFlags[5] = stringToInt16(str);
+
+        while(*str != ' ') {
+          str++;
+        }
+        while(*str == ' ') {
+          str++;
+        }
+        globalFlags[6] = stringToInt16(str);
       }
     }
-  }
 
+    else if(strcmp(tmpString, "LOCAL_REGISTERS") == 0) {
+      readLine(stream, tmpString); // Number of local registers
+      numberOfRegs = stringToInt16(tmpString);
+      if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
+        #if defined (LOADDEBUG)
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(3, "A", tmpString);
+        #endif //LOADDEBUG
+        allocateLocalRegisters(numberOfRegs);
+      }
 
-  else if(strcmp(tmpString, "STATISTICAL_SUMS") == 0) {
-    readLine(stream, tmpString); // Number of statistical sums
-    numberOfRegs = stringToInt16(tmpString);
-    if(numberOfRegs > 0 && (loadMode == LM_ALL || loadMode == LM_SUMS)) {
-      #if defined (LOADDEBUG)
-        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-        debugPrintf(6, "A", tmpString);
-      #endif //LOADDEBUG
+      if((loadMode != LM_ALL && loadMode != LM_REGISTERS) || lastErrorCode == ERROR_NONE) {
+        #if defined (LOADDEBUG)
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(3, "B", tmpString);
+        #endif //LOADDEBUG
+        for(i=0; i<numberOfRegs; i++) {
+          readLine(stream, tmpString); // Register number
+          regist = stringToInt16(tmpString + 2) + FIRST_LOCAL_REGISTER;
+          readLine(stream, aimBuffer); // Register data type
+          readLine(stream, tmpString); // Register value
 
-      initStatisticalSums();
-
-      for(i=0; i<numberOfRegs; i++) {
-        readLine(stream, tmpString); // statistical sum
-        if(statisticalSumsPointer) { // likely
-          if(loadMode == LM_ALL || loadMode == LM_SUMS) {
+          if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
             #if defined (LOADDEBUG)
               sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-              debugPrintf(6, "B", tmpString);
+              debugPrintf(3, "C", tmpString);
             #endif //LOADDEBUG
-            stringToReal(tmpString, (real_t *)(statisticalSumsPointer + REAL_SIZE * i), &ctxtReal75);
+            restoreRegister(regist, aimBuffer, tmpString);
+            restoreMatrixData(regist, stream);
+          }
+          else {
+            skipMatrixData(aimBuffer, tmpString, stream);
           }
         }
       }
     }
-  }
 
-  else if(strcmp(tmpString, "SYSTEM_FLAGS") == 0) {
-    readLine(stream, tmpString); // Global flags
-    if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+    else if(strcmp(tmpString, "LOCAL_FLAGS") == 0) {
       #if defined (LOADDEBUG)
         sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-        debugPrintf(7, "-", tmpString);
+        debugPrintf(4, "A", tmpString);
       #endif //LOADDEBUG
-      systemFlags = stringToUint64(tmpString);
-    }
-  }
-
-  else if(strcmp(tmpString, "KEYBOARD_ASSIGNMENTS") == 0) {
-    readLine(stream, tmpString); // Number of keys
-    numberOfRegs = stringToInt16(tmpString);
-    for(i=0; i<numberOfRegs; i++) {
-      readLine(stream, tmpString); // key
-      if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+      readLine(stream, tmpString); // LOCAL_FLAGS
+      if(loadMode == LM_ALL || loadMode == LM_REGISTERS) {
         #if defined (LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-          debugPrintf(8, "-", tmpString);
+          debugPrintf(4, "B", tmpString);
         #endif //LOADDEBUG
-        str = tmpString;
-        kbd_usr[i].keyId = stringToInt16(str);
-
-        while(*str != ' ') {
-          str++;
-        }
-        while(*str == ' ') {
-          str++;
-        }
-        kbd_usr[i].primary = stringToInt16(str);
-
-        while(*str != ' ') {
-          str++;
-        }
-        while(*str == ' ') {
-          str++;
-        }
-        kbd_usr[i].fShifted = stringToInt16(str);
-
-        while(*str != ' ') {
-          str++;
-        }
-        while(*str == ' ') {
-          str++;
-        }
-        kbd_usr[i].gShifted = stringToInt16(str);
-
-        while(*str != ' ') {
-          str++;
-        }
-        while(*str == ' ') {
-          str++;
-        }
-        kbd_usr[i].keyLblAim = stringToInt16(str);
-
-        while(*str != ' ') {
-          str++;
-        }
-        while(*str == ' ') {
-          str++;
-        }
-        kbd_usr[i].primaryAim = stringToInt16(str);
-
-        while(*str != ' ') {
-          str++;
-        }
-        while(*str == ' ') {
-          str++;
-        }
-        kbd_usr[i].fShiftedAim = stringToInt16(str);
-
-        while(*str != ' ') {
-          str++;
-        }
-        while(*str == ' ') {
-          str++;
-        }
-        kbd_usr[i].gShiftedAim = stringToInt16(str);
-
-        while(*str != ' ') {
-          str++;
-        }
-        while(*str == ' ') {
-          str++;
-        }
-        kbd_usr[i].primaryTam = stringToInt16(str);
+        currentLocalFlags->localFlags = stringToUint32(tmpString);
       }
     }
-  }
 
-  else if(strcmp(tmpString, "KEYBOARD_ARGUMENTS") == 0) {
-    readLine(stream, tmpString); // Number of keys
-    numberOfRegs = stringToInt16(tmpString);
-    if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+    else if(strcmp(tmpString, "NAMED_VARIABLES") == 0) {
       #if defined (LOADDEBUG)
         sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-        debugPrintf(9, "A", tmpString);
+        debugPrintf(20, "A", tmpString);
       #endif //LOADDEBUG
-      freeWp43(userKeyLabel, TO_BLOCKS(userKeyLabelSize));
-      userKeyLabelSize = 37/*keys*/ * 6/*states*/ * 1/*byte terminator*/ + 1/*byte sentinel*/;
-      userKeyLabel = allocWp43(TO_BLOCKS(userKeyLabelSize));
-      memset(userKeyLabel,   0, TO_BYTES(TO_BLOCKS(userKeyLabelSize)));
+      readLine(stream, tmpString); // Number of named variables
+      numberOfRegs = stringToInt16(tmpString);
+      for(i=0; i<numberOfRegs; i++) {
+        readLine(stream, errorMessage); // Variable name
+        readLine(stream, aimBuffer); // Variable data type
+        readLine(stream, tmpString); // Variable value
+
+        if(loadMode == LM_ALL || loadMode == LM_NAMED_VARIABLES) {
+          #if defined (LOADDEBUG)
+            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            debugPrintf(20, "B", tmpString);
+          #endif //LOADDEBUG
+          char *varName = errorMessage + strlen(errorMessage) + 1;
+          utf8ToString((uint8_t *)errorMessage, varName);
+          regist = findOrAllocateNamedVariable(varName);
+          if(regist != INVALID_VARIABLE) {
+            restoreRegister(regist, aimBuffer, tmpString);
+            restoreMatrixData(regist, stream);
+          }
+          else {
+            skipMatrixData(aimBuffer, tmpString, stream);
+          }
+        }
+        else {
+          skipMatrixData(aimBuffer, tmpString, stream);
+        }
+      }
     }
-    for(i=0; i<numberOfRegs; i++) {
-      readLine(stream, tmpString); // key
-      if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+
+
+    else if(strcmp(tmpString, "STATISTICAL_SUMS") == 0) {
+      readLine(stream, tmpString); // Number of statistical sums
+      numberOfRegs = stringToInt16(tmpString);
+      if(numberOfRegs > 0 && (loadMode == LM_ALL || loadMode == LM_SUMS)) {
         #if defined (LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-          debugPrintf(9, "B", tmpString);
+          debugPrintf(6, "A", tmpString);
         #endif //LOADDEBUG
-        str = tmpString;
-        uint16_t key = stringToUint16(str);
-        userMenuItems[i].argumentName[0] = 0;
 
-        while((*str != ' ') && (*str != '\n') && (*str != 0)) {
-          str++;
-        }
-        if(*str == ' ') {
-          while(*str == ' ') {
-            str++;
-          }
-          if((*str != '\n') && (*str != 0)) {
-            utf8ToString((uint8_t *)str, tmpString + TMP_STR_LENGTH / 2);
-            setUserKeyArgument(key, tmpString + TMP_STR_LENGTH / 2);
+        initStatisticalSums();
+
+        for(i=0; i<numberOfRegs; i++) {
+          readLine(stream, tmpString); // statistical sum
+          if(statisticalSumsPointer) { // likely
+            if(loadMode == LM_ALL || loadMode == LM_SUMS) {
+              #if defined (LOADDEBUG)
+                sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+                debugPrintf(6, "B", tmpString);
+              #endif //LOADDEBUG
+              stringToReal(tmpString, (real_t *)(statisticalSumsPointer + REAL_SIZE * i), &ctxtReal75);
+            }
           }
         }
       }
     }
-  }
 
-  else if(strcmp(tmpString, "MYMENU") == 0) {
-    readLine(stream, tmpString); // Number of keys
-    numberOfRegs = stringToInt16(tmpString);
-    for(i=0; i<numberOfRegs; i++) {
-      readLine(stream, tmpString); // key
+    else if(strcmp(tmpString, "SYSTEM_FLAGS") == 0) {
+      readLine(stream, tmpString); // Global flags
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
         #if defined (LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-          debugPrintf(10, "-", tmpString);
+          debugPrintf(7, "-", tmpString);
         #endif //LOADDEBUG
-        str = tmpString;
-        userMenuItems[i].item            = stringToInt16(str);
-        userMenuItems[i].argumentName[0] = 0;
-
-        while((*str != ' ') && (*str != '\n') && (*str != 0)) {
-          str++;
-        }
-        if(*str == ' ') {
-          while(*str == ' ') {
-            str++;
-          }
-          if((*str != '\n') && (*str != 0)) {
-            utf8ToString((uint8_t *)str, userMenuItems[i].argumentName);
-          }
-        }
+        systemFlags = stringToUint64(tmpString);
       }
     }
-  }
 
-  else if(strcmp(tmpString, "MYALPHA") == 0) {
-    readLine(stream, tmpString); // Number of keys
-    numberOfRegs = stringToInt16(tmpString);
-    for(i=0; i<numberOfRegs; i++) {
-      readLine(stream, tmpString); // key
-      if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-        #if defined (LOADDEBUG)
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-          debugPrintf(11, "-", tmpString);
-        #endif //LOADDEBUG
-        str = tmpString;
-        userAlphaItems[i].item            = stringToInt16(str);
-        userAlphaItems[i].argumentName[0] = 0;
-
-        while((*str != ' ') && (*str != '\n') && (*str != 0)) {
-          str++;
-        }
-        if(*str == ' ') {
-          while(*str == ' ') {
-            str++;
-          }
-          if((*str != '\n') && (*str != 0)) {
-            utf8ToString((uint8_t *)str, userAlphaItems[i].argumentName);
-          }
-        }
-      }
-    }
-  }
-
-  else if(strcmp(tmpString, "USER_MENUS") == 0) {
-    readLine(stream, tmpString); // Number of keys
-    int16_t numberOfMenus = stringToInt16(tmpString);
-    for(int32_t j=0; j<numberOfMenus; j++) {
-      readLine(stream, tmpString);
-      int16_t target = -1;
-      if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-        #if defined (LOADDEBUG)
-          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-          debugPrintf(12, "-", tmpString);
-        #endif //LOADDEBUG
-        utf8ToString((uint8_t *)tmpString, tmpString + TMP_STR_LENGTH / 2);
-        for(i = 0; i < numberOfUserMenus; ++i) {
-          if(compareString(tmpString + TMP_STR_LENGTH / 2, userMenus[i].menuName, CMP_NAME) == 0) {
-            target = i;
-          }
-        }
-        if(target == -1) {
-          createMenu(tmpString + TMP_STR_LENGTH / 2);
-          target = numberOfUserMenus - 1;
-        }
-      }
-
-      readLine(stream, tmpString);
+    else if(strcmp(tmpString, "KEYBOARD_ASSIGNMENTS") == 0) {
+      readLine(stream, tmpString); // Number of keys
       numberOfRegs = stringToInt16(tmpString);
       for(i=0; i<numberOfRegs; i++) {
         readLine(stream, tmpString); // key
         if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
           #if defined (LOADDEBUG)
             sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-            debugPrintf(13, "-", tmpString);
+            debugPrintf(8, "-", tmpString);
           #endif //LOADDEBUG
           str = tmpString;
-          userMenus[target].menuItem[i].item            = stringToInt16(str);
-          userMenus[target].menuItem[i].argumentName[0] = 0;
+          kbd_usr[i].keyId = stringToInt16(str);
+
+          while(*str != ' ') {
+            str++;
+          }
+          while(*str == ' ') {
+            str++;
+          }
+          kbd_usr[i].primary = stringToInt16(str);
+
+          while(*str != ' ') {
+            str++;
+          }
+          while(*str == ' ') {
+            str++;
+          }
+          kbd_usr[i].fShifted = stringToInt16(str);
+
+          while(*str != ' ') {
+            str++;
+          }
+          while(*str == ' ') {
+            str++;
+          }
+          kbd_usr[i].gShifted = stringToInt16(str);
+
+          while(*str != ' ') {
+            str++;
+          }
+          while(*str == ' ') {
+            str++;
+          }
+          kbd_usr[i].keyLblAim = stringToInt16(str);
+
+          while(*str != ' ') {
+            str++;
+          }
+          while(*str == ' ') {
+            str++;
+          }
+          kbd_usr[i].primaryAim = stringToInt16(str);
+
+          while(*str != ' ') {
+            str++;
+          }
+          while(*str == ' ') {
+            str++;
+          }
+          kbd_usr[i].fShiftedAim = stringToInt16(str);
+
+          while(*str != ' ') {
+            str++;
+          }
+          while(*str == ' ') {
+            str++;
+          }
+          kbd_usr[i].gShiftedAim = stringToInt16(str);
+
+          while(*str != ' ') {
+            str++;
+          }
+          while(*str == ' ') {
+            str++;
+          }
+          kbd_usr[i].primaryTam = stringToInt16(str);
+        }
+      }
+    }
+
+    else if(strcmp(tmpString, "KEYBOARD_ARGUMENTS") == 0) {
+      readLine(stream, tmpString); // Number of keys
+      numberOfRegs = stringToInt16(tmpString);
+      if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+        #if defined (LOADDEBUG)
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(9, "A", tmpString);
+        #endif //LOADDEBUG
+        freeWp43(userKeyLabel, TO_BLOCKS(userKeyLabelSize));
+        userKeyLabelSize = 37/*keys*/ * 6/*states*/ * 1/*byte terminator*/ + 1/*byte sentinel*/;
+        userKeyLabel = allocWp43(TO_BLOCKS(userKeyLabelSize));
+        memset(userKeyLabel,   0, TO_BYTES(TO_BLOCKS(userKeyLabelSize)));
+      }
+      for(i=0; i<numberOfRegs; i++) {
+        readLine(stream, tmpString); // key
+        if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+          #if defined (LOADDEBUG)
+            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            debugPrintf(9, "B", tmpString);
+          #endif //LOADDEBUG
+          str = tmpString;
+          uint16_t key = stringToUint16(str);
+          userMenuItems[i].argumentName[0] = 0;
 
           while((*str != ' ') && (*str != '\n') && (*str != 0)) {
             str++;
@@ -2112,305 +2146,416 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
               str++;
             }
             if((*str != '\n') && (*str != 0)) {
-              utf8ToString((uint8_t *)str, userMenus[target].menuItem[i].argumentName);
+              utf8ToString((uint8_t *)str, tmpString + TMP_STR_LENGTH / 2);
+              setUserKeyArgument(key, tmpString + TMP_STR_LENGTH / 2);
             }
           }
         }
       }
     }
-  }
 
-  else if(strcmp(tmpString, "PROGRAMS") == 0) {
-    #if defined (LOADDEBUG)
-      if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-        debugPrintf(14, "-", tmpString);
-      }
-    #endif //LOADDEBUG
-    uint16_t numberOfBlocks;
-    uint16_t oldSizeInBlocks = RAM_SIZE - freeMemoryRegions[numberOfFreeMemoryRegions - 1].address - freeMemoryRegions[numberOfFreeMemoryRegions - 1].sizeInBlocks;
-    uint8_t *oldFirstFreeProgramByte = firstFreeProgramByte;
-    uint16_t oldFreeProgramBytes = freeProgramBytes;
+    else if(strcmp(tmpString, "MYMENU") == 0) {
+      readLine(stream, tmpString); // Number of keys
+      numberOfRegs = stringToInt16(tmpString);
+      for(i=0; i<numberOfRegs; i++) {
+        readLine(stream, tmpString); // key
+        if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+          #if defined (LOADDEBUG)
+            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            debugPrintf(10, "-", tmpString);
+          #endif //LOADDEBUG
+          str = tmpString;
+          userMenuItems[i].item            = stringToInt16(str);
+          userMenuItems[i].argumentName[0] = 0;
 
-    readLine(stream, tmpString); // Number of blocks
-    numberOfBlocks = stringToUint16(tmpString);
-    if(loadMode == LM_ALL) {
-      resizeProgramMemory(numberOfBlocks);
-    }
-    else if(loadMode == LM_PROGRAMS) {
-      resizeProgramMemory(oldSizeInBlocks + numberOfBlocks);
-      oldFirstFreeProgramByte = beginOfProgramMemory + TO_BYTES(oldSizeInBlocks) - oldFreeProgramBytes - 2;
-    }
-
-    readLine(stream, tmpString); // currentStep (pointer to block)
-    if(loadMode == LM_ALL) {
-      currentStep.ram = TO_PCMEMPTR(stringToUint32(tmpString));
-    }
-    readLine(stream, tmpString); // currentStep (offset in bytes within block)
-    if(loadMode == LM_ALL) {
-      currentStep.ram += stringToUint32(tmpString);
-    }
-    else if(loadMode == LM_PROGRAMS) {
-      if(programList[currentProgramNumber - 1].step > 0) {
-        currentStep.ram           -= TO_BYTES(numberOfBlocks);
-        firstDisplayedStep.ram    -= TO_BYTES(numberOfBlocks);
-        beginOfCurrentProgram.ram -= TO_BYTES(numberOfBlocks);
-        endOfCurrentProgram.ram   -= TO_BYTES(numberOfBlocks);
-      }
-    }
-
-    readLine(stream, tmpString); // firstFreeProgramByte (pointer to block)
-    if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-      firstFreeProgramByte = TO_PCMEMPTR(stringToUint32(tmpString));
-    }
-    readLine(stream, tmpString); // firstFreeProgramByte (offset in bytes within block)
-    if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-      firstFreeProgramByte += stringToUint32(tmpString);
-    }
-
-    readLine(stream, tmpString); // freeProgramBytes
-    if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-      freeProgramBytes = stringToUint16(tmpString);
-    }
-
-    if(loadMode == LM_PROGRAMS) { // .END. to END
-      freeProgramBytes += oldFreeProgramBytes;
-      if((oldFirstFreeProgramByte >= (beginOfProgramMemory + 2)) && isAtEndOfProgram(oldFirstFreeProgramByte - 2)) {
-      }
-      else {
-        if(oldFreeProgramBytes + freeProgramBytes < 2) {
-          uint16_t tmpFreeProgramBytes = freeProgramBytes;
-          resizeProgramMemory(oldSizeInBlocks + numberOfBlocks + 1);
-          oldFirstFreeProgramByte -= 4;
-          freeProgramBytes = tmpFreeProgramBytes + 4;
-          if(programList[currentProgramNumber - 1].step > 0) {
-            currentStep.ram           -= 4;
-            firstDisplayedStep.ram    -= 4;
-            beginOfCurrentProgram.ram -= 4;
-            endOfCurrentProgram.ram   -= 4;
+          while((*str != ' ') && (*str != '\n') && (*str != 0)) {
+            str++;
+          }
+          if(*str == ' ') {
+            while(*str == ' ') {
+              str++;
+            }
+            if((*str != '\n') && (*str != 0)) {
+              utf8ToString((uint8_t *)str, userMenuItems[i].argumentName);
+            }
           }
         }
-        *(oldFirstFreeProgramByte    ) = (ITM_END >> 8) | 0x80;
-        *(oldFirstFreeProgramByte + 1) =  ITM_END       & 0xff;
-        freeProgramBytes -= 2;
-        oldFirstFreeProgramByte += 2;
       }
     }
 
-    for(i=0; i<numberOfBlocks; i++) {
-      readLine(stream, tmpString); // One block
+    else if(strcmp(tmpString, "MYALPHA") == 0) {
+      readLine(stream, tmpString); // Number of keys
+      numberOfRegs = stringToInt16(tmpString);
+      for(i=0; i<numberOfRegs; i++) {
+        readLine(stream, tmpString); // key
+        if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+          #if defined (LOADDEBUG)
+            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            debugPrintf(11, "-", tmpString);
+          #endif //LOADDEBUG
+          str = tmpString;
+          userAlphaItems[i].item            = stringToInt16(str);
+          userAlphaItems[i].argumentName[0] = 0;
+
+          while((*str != ' ') && (*str != '\n') && (*str != 0)) {
+            str++;
+          }
+          if(*str == ' ') {
+            while(*str == ' ') {
+              str++;
+            }
+            if((*str != '\n') && (*str != 0)) {
+              utf8ToString((uint8_t *)str, userAlphaItems[i].argumentName);
+            }
+          }
+        }
+      }
+    }
+
+    else if(strcmp(tmpString, "USER_MENUS") == 0) {
+      readLine(stream, tmpString); // Number of keys
+      int16_t numberOfMenus = stringToInt16(tmpString);
+      for(int32_t j=0; j<numberOfMenus; j++) {
+        readLine(stream, tmpString);
+        int16_t target = -1;
+        if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+          #if defined (LOADDEBUG)
+            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            debugPrintf(12, "-", tmpString);
+          #endif //LOADDEBUG
+          utf8ToString((uint8_t *)tmpString, tmpString + TMP_STR_LENGTH / 2);
+          for(i = 0; i < numberOfUserMenus; ++i) {
+            if(compareString(tmpString + TMP_STR_LENGTH / 2, userMenus[i].menuName, CMP_NAME) == 0) {
+              target = i;
+            }
+          }
+          if(target == -1) {
+            createMenu(tmpString + TMP_STR_LENGTH / 2);
+            target = numberOfUserMenus - 1;
+          }
+        }
+
+        readLine(stream, tmpString);
+        numberOfRegs = stringToInt16(tmpString);
+        for(i=0; i<numberOfRegs; i++) {
+          readLine(stream, tmpString); // key
+          if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+            #if defined (LOADDEBUG)
+              sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+              debugPrintf(13, "-", tmpString);
+            #endif //LOADDEBUG
+            str = tmpString;
+            userMenus[target].menuItem[i].item            = stringToInt16(str);
+            userMenus[target].menuItem[i].argumentName[0] = 0;
+
+            while((*str != ' ') && (*str != '\n') && (*str != 0)) {
+              str++;
+            }
+            if(*str == ' ') {
+              while(*str == ' ') {
+                str++;
+              }
+              if((*str != '\n') && (*str != 0)) {
+                utf8ToString((uint8_t *)str, userMenus[target].menuItem[i].argumentName);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    else if(strcmp(tmpString, "PROGRAMS") == 0) {
+      #if defined (LOADDEBUG)
+        if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(14, "-", tmpString);
+        }
+      #endif //LOADDEBUG
+      uint16_t numberOfBlocks;
+      uint16_t oldSizeInBlocks = RAM_SIZE - freeMemoryRegions[numberOfFreeMemoryRegions - 1].address - freeMemoryRegions[numberOfFreeMemoryRegions - 1].sizeInBlocks;
+      uint8_t *oldFirstFreeProgramByte = firstFreeProgramByte;
+      uint16_t oldFreeProgramBytes = freeProgramBytes;
+
+      readLine(stream, tmpString); // Number of blocks
+      numberOfBlocks = stringToUint16(tmpString);
       if(loadMode == LM_ALL) {
-        *(((uint32_t *)(beginOfProgramMemory)) + i) = stringToUint32(tmpString);
+        resizeProgramMemory(numberOfBlocks);
       }
       else if(loadMode == LM_PROGRAMS) {
-        uint32_t tmpBlock = stringToUint32(tmpString);
-        xcopy(oldFirstFreeProgramByte + TO_BYTES(i), (uint8_t *)(&tmpBlock), 4);
+        resizeProgramMemory(oldSizeInBlocks + numberOfBlocks);
+        oldFirstFreeProgramByte = beginOfProgramMemory + TO_BYTES(oldSizeInBlocks) - oldFreeProgramBytes - 2;
       }
+
+      readLine(stream, tmpString); // currentStep (pointer to block)
+      if(loadMode == LM_ALL) {
+        currentStep.ram = TO_PCMEMPTR(stringToUint32(tmpString));
+      }
+      readLine(stream, tmpString); // currentStep (offset in bytes within block)
+      if(loadMode == LM_ALL) {
+        currentStep.ram += stringToUint32(tmpString);
+      }
+      else if(loadMode == LM_PROGRAMS) {
+        if(programList[currentProgramNumber - 1].step > 0) {
+          currentStep.ram           -= TO_BYTES(numberOfBlocks);
+          firstDisplayedStep.ram    -= TO_BYTES(numberOfBlocks);
+          beginOfCurrentProgram.ram -= TO_BYTES(numberOfBlocks);
+          endOfCurrentProgram.ram   -= TO_BYTES(numberOfBlocks);
+        }
+      }
+
+      readLine(stream, tmpString); // firstFreeProgramByte (pointer to block)
+      if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+        firstFreeProgramByte = TO_PCMEMPTR(stringToUint32(tmpString));
+      }
+      readLine(stream, tmpString); // firstFreeProgramByte (offset in bytes within block)
+      if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+        firstFreeProgramByte += stringToUint32(tmpString);
+      }
+
+      readLine(stream, tmpString); // freeProgramBytes
+      if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+        freeProgramBytes = stringToUint16(tmpString);
+      }
+
+      if(loadMode == LM_PROGRAMS) { // .END. to END
+        freeProgramBytes += oldFreeProgramBytes;
+        if((oldFirstFreeProgramByte >= (beginOfProgramMemory + 2)) && isAtEndOfProgram(oldFirstFreeProgramByte - 2)) {
+        }
+        else {
+          if(oldFreeProgramBytes + freeProgramBytes < 2) {
+            uint16_t tmpFreeProgramBytes = freeProgramBytes;
+            resizeProgramMemory(oldSizeInBlocks + numberOfBlocks + 1);
+            oldFirstFreeProgramByte -= 4;
+            freeProgramBytes = tmpFreeProgramBytes + 4;
+            if(programList[currentProgramNumber - 1].step > 0) {
+              currentStep.ram           -= 4;
+              firstDisplayedStep.ram    -= 4;
+              beginOfCurrentProgram.ram -= 4;
+              endOfCurrentProgram.ram   -= 4;
+            }
+          }
+          *(oldFirstFreeProgramByte    ) = (ITM_END >> 8) | 0x80;
+          *(oldFirstFreeProgramByte + 1) =  ITM_END       & 0xff;
+          freeProgramBytes -= 2;
+          oldFirstFreeProgramByte += 2;
+        }
+      }
+
+      for(i=0; i<numberOfBlocks; i++) {
+        readLine(stream, tmpString); // One block
+        if(loadMode == LM_ALL) {
+          *(((uint32_t *)(beginOfProgramMemory)) + i) = stringToUint32(tmpString);
+        }
+        else if(loadMode == LM_PROGRAMS) {
+          uint32_t tmpBlock = stringToUint32(tmpString);
+          xcopy(oldFirstFreeProgramByte + TO_BYTES(i), (uint8_t *)(&tmpBlock), 4);
+        }
+      }
+
+      scanLabelsAndPrograms();
     }
 
-    scanLabelsAndPrograms();
-  }
+    else if(strcmp(tmpString, "EQUATIONS") == 0) {
+      uint16_t formulae;
 
-  else if(strcmp(tmpString, "EQUATIONS") == 0) {
-    uint16_t formulae;
-
-    if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-      #if defined (LOADDEBUG)
-        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-        debugPrintf(15, "A", tmpString);
-      #endif //LOADDEBUG
-      for(i = numberOfFormulae; i > 0; --i) {
-        deleteEquation(i - 1);
-      }
-    }
-
-    readLine(stream, tmpString); // Number of formulae
-    formulae = stringToUint16(tmpString);
-    if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
-      #if defined (LOADDEBUG)
-        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-        debugPrintf(15, "B", tmpString);
-      #endif //LOADDEBUG
-      allFormulae = allocWp43(TO_BLOCKS(sizeof(formulaHeader_t)) * formulae);
-      numberOfFormulae = formulae;
-      currentFormula = 0;
-      for(i = 0; i < formulae; i++) {
-        allFormulae[i].pointerToFormulaData = WP43_NULL;
-        allFormulae[i].sizeInBlocks = 0;
-      }
-    }
-
-    for(i = 0; i < formulae; i++) {
-      readLine(stream, tmpString); // One formula
       if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
         #if defined (LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-          debugPrintf(15, "C", tmpString);
+          debugPrintf(15, "A", tmpString);
         #endif //LOADDEBUG
-        utf8ToString((uint8_t *)tmpString, tmpString + TMP_STR_LENGTH / 2);
-        setEquation(i, tmpString + TMP_STR_LENGTH / 2);
+        for(i = numberOfFormulae; i > 0; --i) {
+          deleteEquation(i - 1);
+        }
+      }
+
+      readLine(stream, tmpString); // Number of formulae
+      formulae = stringToUint16(tmpString);
+      if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+        #if defined (LOADDEBUG)
+          sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+          debugPrintf(15, "B", tmpString);
+        #endif //LOADDEBUG
+        allFormulae = allocWp43(TO_BLOCKS(sizeof(formulaHeader_t)) * formulae);
+        numberOfFormulae = formulae;
+        currentFormula = 0;
+        for(i = 0; i < formulae; i++) {
+          allFormulae[i].pointerToFormulaData = WP43_NULL;
+          allFormulae[i].sizeInBlocks = 0;
+        }
+      }
+
+      for(i = 0; i < formulae; i++) {
+        readLine(stream, tmpString); // One formula
+        if(loadMode == LM_ALL || loadMode == LM_PROGRAMS) {
+          #if defined (LOADDEBUG)
+            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            debugPrintf(15, "C", tmpString);
+          #endif //LOADDEBUG
+          utf8ToString((uint8_t *)tmpString, tmpString + TMP_STR_LENGTH / 2);
+          setEquation(i, tmpString + TMP_STR_LENGTH / 2);
+        }
       }
     }
-  }
 
-  else if(strcmp(tmpString, "OTHER_CONFIGURATION_STUFF") == 0) {
-    if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
-      #if defined (LOADDEBUG)
-        sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-        debugPrintf(16, "A", tmpString);
-      #endif //LOADDEBUG
-      resetOtherConfigurationStuff(); //Ensure all the configuration stuff below is reset prior to loading.
-                                      //That ensures if missing settings, that the proper defaults are set.
-    }
-    readLine(stream, tmpString); // Number params
-    numberOfRegs = stringToInt16(tmpString);
-    for(i=0; i<numberOfRegs; i++) {
-      readLine(stream, aimBuffer); // param
-      readLine(stream, tmpString); // value
+    else if(strcmp(tmpString, "OTHER_CONFIGURATION_STUFF") == 0) {
       if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
         #if defined (LOADDEBUG)
           sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
-          debugPrintf(16, "B", tmpString);
+          debugPrintf(16, "A", tmpString);
         #endif //LOADDEBUG
-
-        if(strcmp(aimBuffer, "firstGregorianDay") == 0) {
-          firstGregorianDay = stringToUint32(tmpString);
-        }
-        else if(strcmp(aimBuffer, "denMax") == 0) {
-          denMax = stringToUint32(tmpString);
-          if(denMax < 1 || denMax > MAX_DENMAX) {
-            denMax = MAX_DENMAX;
-          }
-        }
-        else if(strcmp(aimBuffer, "lastDenominator") == 0) {
-          lastDenominator = stringToUint32(tmpString);
-          if(lastDenominator < 1 || lastDenominator > MAX_DENMAX) {
-            lastDenominator = 4;
-          }
-        }
-        else if(strcmp(aimBuffer, "displayFormat") == 0) {
-          displayFormat = stringToUint8(tmpString);
-        }
-        else if(strcmp(aimBuffer, "displayFormatDigits") == 0) {
-          displayFormatDigits = stringToUint8(tmpString);
-        }
-        else if(strcmp(aimBuffer, "timeDisplayFormatDigits") == 0) {
-          timeDisplayFormatDigits = stringToUint8(tmpString);
-        }
-        else if(strcmp(aimBuffer, "shortIntegerWordSize") == 0) {
-          shortIntegerWordSize = stringToUint8(tmpString);
-        }
-        else if(strcmp(aimBuffer, "shortIntegerMode") == 0) {
-          shortIntegerMode = stringToUint8(tmpString);
-        }
-        else if(strcmp(aimBuffer, "significantDigits") == 0) {
-          significantDigits = stringToUint8(tmpString);
-        }
-        else if(strcmp(aimBuffer, "currentAngularMode") == 0) {
-          currentAngularMode = stringToUint8(tmpString);
-        }
-        else if(strcmp(aimBuffer, "groupingGap") == 0) {
-          groupingGap = stringToUint8(tmpString);
-        }
-        else if(strcmp(aimBuffer, "roundingMode") == 0) {
-          roundingMode = stringToUint8(tmpString);
-        }
-        else if(strcmp(aimBuffer, "displayStack") == 0) {
-          displayStack = stringToUint8(tmpString);
-        }
-        else if(strcmp(aimBuffer, "rngState") == 0) {
-          pcg32_global.state = stringToUint64(tmpString);
-          str = tmpString;
-          while(*str != ' ') {
-            str++;
-          }
-          while(*str == ' ') {
-            str++;
-          }
-          pcg32_global.inc = stringToUint64(str);
-        }
-        else if(strcmp(aimBuffer, "exponentLimit") == 0) {
-          exponentLimit = stringToInt16(tmpString);
-        }
-        else if(strcmp(aimBuffer, "exponentHideLimit") == 0) {
-          exponentHideLimit = stringToInt16(tmpString);
-        }
-        else if(strcmp(aimBuffer, "notBestF") == 0) {
-          lrSelection = stringToUint16(tmpString);
-        }
-
-        else if(strcmp(aimBuffer, "Compatibility"               ) == 0) { }                     //keep save file format by keeping the old setting
-        else if(strcmp(aimBuffer, "SigFigMode"                  ) == 0) { }                     //keep save file format by keeping the old setting
-        else if(strcmp(aimBuffer, "eRPN"                        ) == 0) { eRPN                  = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "HOME3"                       ) == 0) { HOME3                 = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "ShiftTimoutMode"             ) == 0) { ShiftTimoutMode       = (bool_t)stringToUint8(tmpString) != 0; }          
-        else if(strcmp(aimBuffer, "UNITDisplay"                 ) == 0) { }                     //keep save file format by keeping the old setting
-        else if(strcmp(aimBuffer, "SH_BASE_HOME"                ) == 0) { SH_BASE_HOME          = (bool_t)stringToUint8(tmpString) != 0; }   
-        else if(strcmp(aimBuffer, "Norm_Key_00_VAR"             ) == 0) { Norm_Key_00_VAR       = stringToUint16(tmpString); }
-        else if(strcmp(aimBuffer, "Input_Default"               ) == 0) { Input_Default         = stringToUint8(tmpString); }
-        else if(strcmp(aimBuffer, "jm_FG_LINE"                  ) == 0) { jm_FG_LINE            = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "jm_BASE_SCREEN"              ) == 0) { jm_BASE_SCREEN        = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "jm_G_DOUBLETAP"              ) == 0) { jm_G_DOUBLETAP        = (bool_t)stringToUint8(tmpString) != 0; }
-
-/*
-        else if(strcmp(aimBuffer, "graph_xmin\n"                            graph_xmin);                   save(tmpString, strlen(tmpString), BACKUP);      
-        else if(strcmp(aimBuffer, "graph_xmax\n"                            graph_xmax);                   save(tmpString, strlen(tmpString), BACKUP);      
-        else if(strcmp(aimBuffer, "graph_ymin\n"                            graph_ymin);                   save(tmpString, strlen(tmpString), BACKUP);      
-        else if(strcmp(aimBuffer, "graph_ymax\n"                            graph_ymax);                   save(tmpString, strlen(tmpString), BACKUP);      
-        else if(strcmp(aimBuffer, "graph_dx\n"                              graph_dx);                     save(tmpString, strlen(tmpString), BACKUP);    
-        else if(strcmp(aimBuffer, "graph_dy\n"                              graph_dy);                     save(tmpString, strlen(tmpString), BACKUP);    
-        else if(strcmp(aimBuffer, "roundedTicks\n"                          roundedTicks);                 save(tmpString, strlen(tmpString), BACKUP);        
-        else if(strcmp(aimBuffer, "extentx\n"                               extentx);                      save(tmpString, strlen(tmpString), BACKUP);   
-        else if(strcmp(aimBuffer, "extenty\n"                               extenty);                      save(tmpString, strlen(tmpString), BACKUP);   
-        else if(strcmp(aimBuffer, "PLOT_VECT\n"                             PLOT_VECT);                    save(tmpString, strlen(tmpString), BACKUP);     
-        else if(strcmp(aimBuffer, "PLOT_NVECT\n"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString), BACKUP);      
-        else if(strcmp(aimBuffer, "PLOT_SCALE\n"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString), BACKUP);      
-        else if(strcmp(aimBuffer, "Aspect_Square\n"                         Aspect_Square);                save(tmpString, strlen(tmpString), BACKUP);         
-        else if(strcmp(aimBuffer, "PLOT_LINE\n"                             PLOT_LINE);                    save(tmpString, strlen(tmpString), BACKUP);     
-        else if(strcmp(aimBuffer, "PLOT_CROSS\n"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString), BACKUP);      
-        else if(strcmp(aimBuffer, "PLOT_BOX\n"                              PLOT_BOX);                     save(tmpString, strlen(tmpString), BACKUP);    
-        else if(strcmp(aimBuffer, "PLOT_INTG\n"                             PLOT_INTG);                    save(tmpString, strlen(tmpString), BACKUP);     
-        else if(strcmp(aimBuffer, "PLOT_DIFF\n"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString), BACKUP);     
-        else if(strcmp(aimBuffer, "PLOT_RMS\n"                              PLOT_RMS);                     save(tmpString, strlen(tmpString), BACKUP);    
-        else if(strcmp(aimBuffer, "PLOT_SHADE\n"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString), BACKUP);      
-        else if(strcmp(aimBuffer, "PLOT_AXIS\n"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString), BACKUP);     
-        else if(strcmp(aimBuffer, "PLOT_ZMX\n"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString), BACKUP);    
-        else if(strcmp(aimBuffer, "PLOT_ZMY\n"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
-*/
-        else if(strcmp(aimBuffer, "jm_HOME_SUM"                 ) == 0) { jm_HOME_SUM           = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "jm_LARGELI"                  ) == 0) { jm_LARGELI            = (bool_t)stringToUint8(tmpString) != 0; }         
-        else if(strcmp(aimBuffer, "constantFractions"           ) == 0) { constantFractions     = (bool_t)stringToUint8(tmpString) != 0; }             
-        else if(strcmp(aimBuffer, "constantFractionsMode"       ) == 0) { constantFractionsMode = stringToUint8(tmpString); }      
-        else if(strcmp(aimBuffer, "constantFractionsOn"         ) == 0) { constantFractionsOn   = (bool_t)stringToUint8(tmpString) != 0; }            
-  
-
-        else if(strcmp(aimBuffer, "displayStackSHOIDISP"        ) == 0) { displayStackSHOIDISP = stringToUint8(tmpString); }
-        else if(strcmp(aimBuffer, "bcdDisplay"                  ) == 0) { bcdDisplay           = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "topHex"                      ) == 0) { topHex               = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "bcdDisplaySign"              ) == 0) { bcdDisplaySign       = stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "DRG_Cycling"                 ) == 0) { DRG_Cycling          = stringToUint8(tmpString); }
-        else if(strcmp(aimBuffer, "DM_Cycling"                  ) == 0) { DM_Cycling           = stringToUint8(tmpString); }
-        else if(strcmp(aimBuffer, "SI_All"                      ) == 0) { SI_All               = (bool_t)stringToUint8(tmpString) != 0; }
-        else if(strcmp(aimBuffer, "LongPressM"                  ) == 0) { LongPressM           = stringToUint8(tmpString); }                  //10000003
-        else if(strcmp(aimBuffer, "LongPressF"                  ) == 0) { LongPressF           = stringToUint8(tmpString); }                  //10000003
-        else if(strcmp(aimBuffer, "lastIntegerBase"             ) == 0) { lastIntegerBase      = stringToUint8(tmpString); }                  //10000004
-
-        hourGlassIconEnabled = false;
-
+        resetOtherConfigurationStuff(); //Ensure all the configuration stuff below is reset prior to loading.
+                                        //That ensures if missing settings, that the proper defaults are set.
       }
+      readLine(stream, tmpString); // Number params
+      numberOfRegs = stringToInt16(tmpString);
+      for(i=0; i<numberOfRegs; i++) {
+        readLine(stream, aimBuffer); // param
+        readLine(stream, tmpString); // value
+        if(loadMode == LM_ALL || loadMode == LM_SYSTEM_STATE) {
+          #if defined (LOADDEBUG)
+            sprintf(line,"n:%d, loadMode:%d, %s\n",loadMode,tmpString);
+            debugPrintf(16, "B", tmpString);
+          #endif //LOADDEBUG
+
+          if(strcmp(aimBuffer, "firstGregorianDay") == 0) {
+            firstGregorianDay = stringToUint32(tmpString);
+          }
+          else if(strcmp(aimBuffer, "denMax") == 0) {
+            denMax = stringToUint32(tmpString);
+            if(denMax < 1 || denMax > MAX_DENMAX) {
+              denMax = MAX_DENMAX;
+            }
+          }
+          else if(strcmp(aimBuffer, "lastDenominator") == 0) {
+            lastDenominator = stringToUint32(tmpString);
+            if(lastDenominator < 1 || lastDenominator > MAX_DENMAX) {
+              lastDenominator = 4;
+            }
+          }
+          else if(strcmp(aimBuffer, "displayFormat") == 0) {
+            displayFormat = stringToUint8(tmpString);
+          }
+          else if(strcmp(aimBuffer, "displayFormatDigits") == 0) {
+            displayFormatDigits = stringToUint8(tmpString);
+          }
+          else if(strcmp(aimBuffer, "timeDisplayFormatDigits") == 0) {
+            timeDisplayFormatDigits = stringToUint8(tmpString);
+          }
+          else if(strcmp(aimBuffer, "shortIntegerWordSize") == 0) {
+            shortIntegerWordSize = stringToUint8(tmpString);
+          }
+          else if(strcmp(aimBuffer, "shortIntegerMode") == 0) {
+            shortIntegerMode = stringToUint8(tmpString);
+          }
+          else if(strcmp(aimBuffer, "significantDigits") == 0) {
+            significantDigits = stringToUint8(tmpString);
+          }
+          else if(strcmp(aimBuffer, "currentAngularMode") == 0) {
+            currentAngularMode = stringToUint8(tmpString);
+          }
+          else if(strcmp(aimBuffer, "groupingGap") == 0) {
+            groupingGap = stringToUint8(tmpString);
+          }
+          else if(strcmp(aimBuffer, "roundingMode") == 0) {
+            roundingMode = stringToUint8(tmpString);
+          }
+          else if(strcmp(aimBuffer, "displayStack") == 0) {
+            displayStack = stringToUint8(tmpString);
+          }
+          else if(strcmp(aimBuffer, "rngState") == 0) {
+            pcg32_global.state = stringToUint64(tmpString);
+            str = tmpString;
+            while(*str != ' ') {
+              str++;
+            }
+            while(*str == ' ') {
+              str++;
+            }
+            pcg32_global.inc = stringToUint64(str);
+          }
+          else if(strcmp(aimBuffer, "exponentLimit") == 0) {
+            exponentLimit = stringToInt16(tmpString);
+          }
+          else if(strcmp(aimBuffer, "exponentHideLimit") == 0) {
+            exponentHideLimit = stringToInt16(tmpString);
+          }
+          else if(strcmp(aimBuffer, "notBestF") == 0) {
+            lrSelection = stringToUint16(tmpString);
+          }
+
+          else if(strcmp(aimBuffer, "Compatibility"               ) == 0) { }                     //keep save file format by keeping the old setting
+          else if(strcmp(aimBuffer, "SigFigMode"                  ) == 0) { }                     //keep save file format by keeping the old setting
+          else if(strcmp(aimBuffer, "eRPN"                        ) == 0) { eRPN                  = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "HOME3"                       ) == 0) { HOME3                 = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "ShiftTimoutMode"             ) == 0) { ShiftTimoutMode       = (bool_t)stringToUint8(tmpString) != 0; }          
+          else if(strcmp(aimBuffer, "UNITDisplay"                 ) == 0) { }                     //keep save file format by keeping the old setting
+          else if(strcmp(aimBuffer, "SH_BASE_HOME"                ) == 0) { SH_BASE_HOME          = (bool_t)stringToUint8(tmpString) != 0; }   
+          else if(strcmp(aimBuffer, "Norm_Key_00_VAR"             ) == 0) { Norm_Key_00_VAR       = stringToUint16(tmpString); }
+          else if(strcmp(aimBuffer, "Input_Default"               ) == 0) { Input_Default         = stringToUint8(tmpString); }
+          else if(strcmp(aimBuffer, "jm_FG_LINE"                  ) == 0) { jm_FG_LINE            = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "jm_BASE_SCREEN"              ) == 0) { jm_BASE_SCREEN        = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "jm_G_DOUBLETAP"              ) == 0) { jm_G_DOUBLETAP        = (bool_t)stringToUint8(tmpString) != 0; }
+
+  /*
+          else if(strcmp(aimBuffer, "graph_xmin\n"                            graph_xmin);                   save(tmpString, strlen(tmpString), BACKUP);      
+          else if(strcmp(aimBuffer, "graph_xmax\n"                            graph_xmax);                   save(tmpString, strlen(tmpString), BACKUP);      
+          else if(strcmp(aimBuffer, "graph_ymin\n"                            graph_ymin);                   save(tmpString, strlen(tmpString), BACKUP);      
+          else if(strcmp(aimBuffer, "graph_ymax\n"                            graph_ymax);                   save(tmpString, strlen(tmpString), BACKUP);      
+          else if(strcmp(aimBuffer, "graph_dx\n"                              graph_dx);                     save(tmpString, strlen(tmpString), BACKUP);    
+          else if(strcmp(aimBuffer, "graph_dy\n"                              graph_dy);                     save(tmpString, strlen(tmpString), BACKUP);    
+          else if(strcmp(aimBuffer, "roundedTicks\n"                          roundedTicks);                 save(tmpString, strlen(tmpString), BACKUP);        
+          else if(strcmp(aimBuffer, "extentx\n"                               extentx);                      save(tmpString, strlen(tmpString), BACKUP);   
+          else if(strcmp(aimBuffer, "extenty\n"                               extenty);                      save(tmpString, strlen(tmpString), BACKUP);   
+          else if(strcmp(aimBuffer, "PLOT_VECT\n"                             PLOT_VECT);                    save(tmpString, strlen(tmpString), BACKUP);     
+          else if(strcmp(aimBuffer, "PLOT_NVECT\n"                            PLOT_NVECT);                   save(tmpString, strlen(tmpString), BACKUP);      
+          else if(strcmp(aimBuffer, "PLOT_SCALE\n"                            PLOT_SCALE);                   save(tmpString, strlen(tmpString), BACKUP);      
+          else if(strcmp(aimBuffer, "Aspect_Square\n"                         Aspect_Square);                save(tmpString, strlen(tmpString), BACKUP);         
+          else if(strcmp(aimBuffer, "PLOT_LINE\n"                             PLOT_LINE);                    save(tmpString, strlen(tmpString), BACKUP);     
+          else if(strcmp(aimBuffer, "PLOT_CROSS\n"                            PLOT_CROSS);                   save(tmpString, strlen(tmpString), BACKUP);      
+          else if(strcmp(aimBuffer, "PLOT_BOX\n"                              PLOT_BOX);                     save(tmpString, strlen(tmpString), BACKUP);    
+          else if(strcmp(aimBuffer, "PLOT_INTG\n"                             PLOT_INTG);                    save(tmpString, strlen(tmpString), BACKUP);     
+          else if(strcmp(aimBuffer, "PLOT_DIFF\n"                             PLOT_DIFF);                    save(tmpString, strlen(tmpString), BACKUP);     
+          else if(strcmp(aimBuffer, "PLOT_RMS\n"                              PLOT_RMS);                     save(tmpString, strlen(tmpString), BACKUP);    
+          else if(strcmp(aimBuffer, "PLOT_SHADE\n"                            PLOT_SHADE);                   save(tmpString, strlen(tmpString), BACKUP);      
+          else if(strcmp(aimBuffer, "PLOT_AXIS\n"                             PLOT_AXIS);                    save(tmpString, strlen(tmpString), BACKUP);     
+          else if(strcmp(aimBuffer, "PLOT_ZMX\n"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString), BACKUP);    
+          else if(strcmp(aimBuffer, "PLOT_ZMY\n"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
+  */
+          else if(strcmp(aimBuffer, "jm_HOME_SUM"                 ) == 0) { jm_HOME_SUM           = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "jm_LARGELI"                  ) == 0) { jm_LARGELI            = (bool_t)stringToUint8(tmpString) != 0; }         
+          else if(strcmp(aimBuffer, "constantFractions"           ) == 0) { constantFractions     = (bool_t)stringToUint8(tmpString) != 0; }             
+          else if(strcmp(aimBuffer, "constantFractionsMode"       ) == 0) { constantFractionsMode = stringToUint8(tmpString); }      
+          else if(strcmp(aimBuffer, "constantFractionsOn"         ) == 0) { constantFractionsOn   = (bool_t)stringToUint8(tmpString) != 0; }            
+    
+
+          else if(strcmp(aimBuffer, "displayStackSHOIDISP"        ) == 0) { displayStackSHOIDISP = stringToUint8(tmpString); }
+          else if(strcmp(aimBuffer, "bcdDisplay"                  ) == 0) { bcdDisplay           = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "topHex"                      ) == 0) { topHex               = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "bcdDisplaySign"              ) == 0) { bcdDisplaySign       = stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "DRG_Cycling"                 ) == 0) { DRG_Cycling          = stringToUint8(tmpString); }
+          else if(strcmp(aimBuffer, "DM_Cycling"                  ) == 0) { DM_Cycling           = stringToUint8(tmpString); }
+          else if(strcmp(aimBuffer, "SI_All"                      ) == 0) { SI_All               = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "LongPressM"                  ) == 0) { LongPressM           = stringToUint8(tmpString); }                  //10000003
+          else if(strcmp(aimBuffer, "LongPressF"                  ) == 0) { LongPressF           = stringToUint8(tmpString); }                  //10000003
+          else if(strcmp(aimBuffer, "lastIntegerBase"             ) == 0) { lastIntegerBase      = stringToUint8(tmpString); }                  //10000004
+
+          hourGlassIconEnabled = false;
+
+        }
+      }
+      hourGlassIconEnabled = false;
+      return false; //Signal that this was the last section loaded and no more sections to follow
+      #if defined (LOADDEBUG)
+        debugPrintf(17, "END1", "");
+      #endif //LOADDEBUG
     }
     hourGlassIconEnabled = false;
-    return false; //Signal that this was the last section loaded and no more sections to follow
+    return true; //Signal to continue loading the next section
     #if defined (LOADDEBUG)
-      debugPrintf(17, "END1", "");
+      debugPrintf(18, "END2", "");
     #endif //LOADDEBUG
   }
-  hourGlassIconEnabled = false;
-  return true; //Signal to continue loading the next section
-  #if defined (LOADDEBUG)
-    debugPrintf(18, "END2", "");
-  #endif //LOADDEBUG
-}
+#endif //TESTSUITE_BUILD
 
 
 #undef LOADDEBUG
@@ -2431,6 +2576,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 
 void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t loadType) {
   flushBufferCnt = 0;
+ #if !defined (TESTSUITE_BUILD)
   #if defined (LOADDEBUG)
     char yy[10];
     sprintf(yy, "%d",loadMode);
@@ -2442,6 +2588,10 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
       strcpy(fileName, "SAVFILES\\C47.sav");
     } else if(loadType == autoLoad) {
       strcpy(fileName, "SAVFILES\\C47auto.sav");
+    } else if(loadType == stateLoad) {
+      int ret = 0;
+      ret = file_selection_screen("Load Calculator State", STATE_DIR, STATE_EXT, load_statefile, 0, 0, fileName);
+      if (ret == MRET_EXIT) return;
     }
     if(f_open(BACKUP, fileName, FA_READ) != FR_OK) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
@@ -2455,8 +2605,18 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
     }
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
+    if(loadType == manualLoad) {
+      strcpy(fileName,"C47.sav");
+    } else {
+      char * base_dir;
+      int ret = 0;
+      base_dir = g_get_current_dir();
+      ret = file_selection_screen("Load State File", base_dir, "*"STATE_EXT, 0, 0, fileName);
+      g_free(base_dir);
+      if (ret == 0) return;
+    }
 
-    if((BACKUP = fopen("C47.sav", "rb")) == NULL) {
+    if((BACKUP = fopen(fileName, "rb")) == NULL) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnLoad: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
@@ -2496,7 +2656,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
     }
   }
 
-  if((loadType == manualLoad && loadMode == LM_ALL) || 
+  if((((loadType == manualLoad) || (loadType == stateLoad)) && loadMode == LM_ALL) || 
     ((loadType == autoLoad) && (loadedVersion >= VersionAllowed) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL) )) {
       while(restoreOneSection(BACKUP, loadMode, s, n, d)) {
     }
@@ -2521,14 +2681,21 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
     } else
     if((loadType == autoLoad) && (loadedVersion >= VersionAllowed) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL)) {
       temporaryInformation = TI_BACKUP_RESTORED;
+    } else if(loadType == stateLoad) {
+      temporaryInformation = TI_STATEFILE_RESTORED;
     }
   #endif // !TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
 
 void fnLoad(uint16_t loadMode) {
-  doLoad(loadMode, 0, 0, 0, manualLoad);
+  if (loadMode == LM_STATE_LOAD) {
+    doLoad(LM_ALL, 0, 0, 0, stateLoad);
+  } else {
+    doLoad(loadMode, 0, 0, 0, manualLoad);
+  }
   fnClearFlag(FLAG_USER);
   doRefreshSoftMenu = true;
   refreshScreen();
@@ -2543,7 +2710,6 @@ void fnLoadAuto(void) {
 
 
 #undef BACKUP
-
 
 
 void fnDeleteBackup(uint16_t confirmation) {
@@ -2580,3 +2746,4 @@ void fnDeleteBackup(uint16_t confirmation) {
     #endif // DMCP_BUILD
   }
 }
+

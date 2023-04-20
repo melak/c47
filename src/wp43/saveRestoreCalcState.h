@@ -22,10 +22,22 @@
 
   #include <stdint.h>
 
+// State files dir
+#define STATE_DIR      "/STATE"
+#define STATE_EXT      ".s47"
+// --------------------------------
+
+#define MRET_SAVESTATE   777
+#define MRET_LOADSTATE   888
+
+// --------------------------------
+
 #define autoLoad   0
 #define manualLoad 1
-#define autoSave   2
-#define manualSave 3
+#define stateLoad  2
+#define autoSave   3
+#define manualSave 4
+#define stateSave  5
 
   #if defined(PC_BUILD) || defined(DMCP_BUILD)
     void   saveCalc      (void);
@@ -46,4 +58,29 @@
   void     doLoad        (uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t loadType);
 
   void     fnDeleteBackup(uint16_t confirmation);
+  
+   /**
+   * Callback function for Save State File selected file.
+   * Called from the DMCP file_selection_screen() dialog.
+   *
+   * \param[in] path file selected
+   * \param[in] file name selected
+   * \param[in] data - unsused 
+   * \param[out] set tmpFileName with the path file selected
+   * \return MRET_SAVESTATE
+   */
+  int save_statefile(const char * fpath, const char * fname, void * data);
+  
+   /**
+   * Callback function for Load State File selected file.
+   * Called from the DMCP file_selection_screen() dialog.
+   *
+   * \param[in] path file selected
+   * \param[in] file name selected
+   * \param[in] data - unsused 
+   * \param[out] set tmpFileName with the path file selected
+   * \return MRET_LOADSTATE
+   */
+  int load_statefile(const char * fpath, const char * fname, void * data);
+
 #endif // !SAVERESTORECALCSTATE_H
