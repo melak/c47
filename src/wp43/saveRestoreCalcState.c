@@ -47,6 +47,8 @@
 #include "timer.h"
 #include <string.h>
 #if defined(PC_BUILD)
+#include <gtk/gtk.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -115,7 +117,7 @@ int load_statefile(const char * fpath, const char * fname, void * data) {
     if ( is_menu_auto_off() )
       return MRET_EXIT; // Leave selection screen
     if ( k1 == KEY_ENTER )
-      break; // Proceed with load
+      break; // Proceed with loadName
   }
 
   lcd_putsRAt(t24, 6, "  Loading ...");
@@ -132,7 +134,7 @@ int load_statefile(const char * fpath, const char * fname, void * data) {
 
 
 //GTK file selection dialog function
-
+ 
 #if defined(PC_BUILD)
 int file_selection_screen(const char * title, const char * base_dir, const char * ext, int disp_save, int overwrite_check, void * data) {
       GtkFileChooserNative *native;
@@ -2571,6 +2573,7 @@ static bool_t restoreOneSection(void *stream, uint16_t loadMode, uint16_t s, uin
 
 void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t loadType) {
   flushBufferCnt = 0;
+ #if !defined (TESTSUITE_BUILD)
   #if defined (LOADDEBUG)
     char yy[10];
     sprintf(yy, "%d",loadMode);
@@ -2679,6 +2682,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
       temporaryInformation = TI_STATEFILE_RESTORED;
     }
   #endif // !TESTSUITE_BUILD
+#endif // !TESTSUITE_BUILD
 }
 
 
