@@ -1363,9 +1363,9 @@ static void UI64toString(uint64_t value, char * tmpRegisterString) {
   if(v2 == 0 && v1 == 0) {
     sprintf(tmpRegisterString,"%" PRIu32, v0);
   } else if (v2 == 0) {
-    sprintf(tmpRegisterString,"%" PRIu32 "%" PRIu32, v1,v0);
+    sprintf(tmpRegisterString,"%" PRIu32 "%0" PRIu32, v1,v0);
   } else {
-    sprintf(tmpRegisterString,"%" PRIu32 "%" PRIu32 "%" PRIu32, v2,v1,v0);
+    sprintf(tmpRegisterString,"%" PRIu32 "%0" PRIu32 "%0" PRIu32, v2,v1,v0);
   }
 }
 #endif //TESTSUITE_BUILD
