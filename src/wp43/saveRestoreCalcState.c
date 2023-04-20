@@ -49,6 +49,10 @@
 #if defined(PC_BUILD)
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
+#endif
+#if defined(DMCP_BUILD)
+#include <dmcp.h>
 #endif
 
 #include "wp43.h"
@@ -72,6 +76,115 @@ Current version default all non-loaded settings from previous version files corr
 #define BACKUP               ppgm_fp // The FIL *ppgm_fp pointer is provided by DMCP
 static uint32_t loadedVersion = 0;
 uint16_t flushBufferCnt = 0;
+
+//DMCP file selection call back functions
+
+#if defined(DMCP_BUILD)
+//
+int save_statefile(const char * fpath, const char * fname, void * data) {
+
+  lcd_puts(t24,"Saving state ...");
+  lcd_puts(t24, fname);  lcd_refresh();
+
+  // Store the state file name
+  strcpy(data, fpath);
+  set_reset_state_file(fpath);
+
+  // Exit with appropriate code to save state file save
+  return MRET_SAVESTATE;
+}
+
+int load_statefile(const char * fpath, const char * fname, void * data) {
+
+  // 'Sure' dialog
+  lcd_puts(t24, "");
+  lcd_puts(t24, "WARNING: Current calculator state");
+  lcd_puts(t24, "will be lost.");
+  lcd_puts(t24, "");
+  lcd_puts(t24, "");
+  //lcd_puts(t24, "Are you sure to load this file?");
+  lcd_puts(t24, "Press [ENTER] to confirm.");
+  lcd_refresh();
+  
+  wait_for_key_release(-1);
+
+  for(;;) {
+    int k1 = runner_get_key(NULL);
+    if ( IS_EXIT_KEY(k1) )
+      return 0; // Continue the selection screen
+    if ( is_menu_auto_off() )
+      return MRET_EXIT; // Leave selection screen
+    if ( k1 == KEY_ENTER )
+      break; // Proceed with load
+  }
+
+  lcd_putsRAt(t24, 6, "  Loading ...");
+  lcd_refresh_wait();
+
+  // Store the state file name
+  strcpy(data, fpath);
+  set_reset_state_file(fpath);
+
+  // Exit with appropriate code to load state file
+  return MRET_LOADSTATE;
+}
+#endif // DMCP_BUILD
+
+
+//GTK file selection dialog function
+
+#if defined(PC_BUILD)
+int file_selection_screen(const char * title, const char * base_dir, const char * ext, int disp_save, int overwrite_check, void * data) {
+      GtkFileChooserNative *native;
+      gint res;
+
+      if (disp_save) {
+        GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+        native = gtk_file_chooser_native_new (title,
+                                              GTK_WINDOW(frmCalc),
+                                              action,
+                                              "_Save",
+                                              "_Cancel");
+      } else{
+        GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+        native = gtk_file_chooser_native_new (title,
+                                              GTK_WINDOW(frmCalc),
+                                              action,
+                                              "_Load",
+                                              "_Cancel");
+      }
+          
+      GtkFileChooser *chooser = GTK_FILE_CHOOSER (native);
+
+      if (overwrite_check) {
+          gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
+      }
+      
+      gtk_file_chooser_set_current_folder(chooser,base_dir);
+      gtk_file_chooser_set_current_name (chooser,"untitled"STATE_EXT);
+      GtkFileFilter *filter = gtk_file_filter_new ();
+      gtk_file_filter_add_pattern (filter, ext);
+      gtk_file_chooser_add_filter(chooser, filter);
+      res = gtk_native_dialog_run (GTK_NATIVE_DIALOG (native));
+      if (res == GTK_RESPONSE_ACCEPT)
+      {
+        char *filename;
+        filename = gtk_file_chooser_get_filename (chooser);
+        strcpy(data, filename);
+        if (disp_save) {
+          char * fe = data+strlen(filename)-4;
+          const char * ee = ext+1;
+          if (strcmp(fe,ee) != 0) strcat(data,ee);     //filename doesn't have the expected extension 
+        }       
+        g_free(filename);   
+        g_object_unref (native);
+        return 1;
+      } else { 
+        g_object_unref (native);
+        return 0;
+      } 
+}
+#endif // PC_BUILD
 
 
 #if !defined(TESTSUITE_BUILD)
@@ -970,8 +1083,12 @@ void fnSaveAuto(void) {
   doSave(autoSave);
 }
 
-void fnSave(uint16_t unusedButMandatoryParameter) {
-  doSave(manualSave);
+void fnSave(uint16_t saveMode) {
+  if (saveMode == SM_MANUAL_SAVE) {
+    doSave(manualSave);
+  } else if (saveMode == SM_STATE_SAVE) {
+    doSave(stateSave);
+  }
 }
 
 void doSave(uint16_t saveType) {
@@ -988,14 +1105,26 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   char yy1[35], yy2[35];
 
   #if defined(DMCP_BUILD)
+    // Don't pass through if the power is insufficient  
+    if ( power_check_screen() ) return;
+    
     FRESULT result;
     if(saveType == manualSave) {
       strcpy(fileName, "SAVFILES\\C47.sav");
     } else if(saveType == autoSave) {
       strcpy(fileName, "SAVFILES\\C47auto.sav");
-    } 
+    } else if(saveType == stateSave) {
+      sys_disk_write_enable(1);
+      check_create_dir(STATE_DIR);
+      sys_disk_write_enable(0);
+      int ret = 0;
+      ret = file_selection_screen("Save Calculator State", STATE_DIR, STATE_EXT, save_statefile, 1, 1, fileName);
+      if (ret == MRET_EXIT) return;
+    }
     sys_disk_write_enable(1);
-    check_create_dir("SAVFILES");
+    if((saveType == manualSave)||(saveType == autoSave)) {
+      check_create_dir("SAVFILES");
+    }
     result = f_open(BACKUP, fileName, FA_CREATE_ALWAYS | FA_WRITE);
     if(result != FR_OK) {
       sys_disk_write_enable(0);
@@ -1005,11 +1134,22 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
 
-    BACKUP = fopen("C47.sav", "wb");
-    if(BACKUP == NULL) {
-      printf("Cannot SAVE in file C47.sav!\n");
-      return;
+    if(saveType == manualSave) {
+      strcpy(fileName,"C47.sav");
+    } else {
+      char * base_dir;
+      int ret = 0;
+      base_dir = g_get_current_dir();
+      ret = file_selection_screen("Save State File", base_dir, "*"STATE_EXT, 1, 1, fileName);
+      g_free(base_dir);
+      if (ret == 0) return;
     }
+    BACKUP = fopen(fileName, "wb");
+    if(BACKUP == NULL) {
+      printf("Cannot SAVE in file %s!\n", fileName);
+      return;
+	}	
+
   #endif // DMCP_BUILD
   // SAV file version number
   //printHalfSecUpdate_Integer(force+1, "Version",configFileVersion);
@@ -2442,6 +2582,10 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
       strcpy(fileName, "SAVFILES\\C47.sav");
     } else if(loadType == autoLoad) {
       strcpy(fileName, "SAVFILES\\C47auto.sav");
+    } else if(loadType == stateLoad) {
+      int ret = 0;
+      ret = file_selection_screen("Load Calculator State", STATE_DIR, STATE_EXT, load_statefile, 0, 0, fileName);
+      if (ret == MRET_EXIT) return;
     }
     if(f_open(BACKUP, fileName, FA_READ) != FR_OK) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
@@ -2455,8 +2599,18 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
     }
   #else // !DMCP_BUILD
     FILE *ppgm_fp;
+    if(loadType == manualLoad) {
+      strcpy(fileName,"C47.sav");
+    } else {
+      char * base_dir;
+      int ret = 0;
+      base_dir = g_get_current_dir();
+      ret = file_selection_screen("Load State File", base_dir, "*"STATE_EXT, 0, 0, fileName);
+      g_free(base_dir);
+      if (ret == 0) return;
+    }
 
-    if((BACKUP = fopen("C47.sav", "rb")) == NULL) {
+    if((BACKUP = fopen(fileName, "rb")) == NULL) {
       displayCalcErrorMessage(ERROR_NO_BACKUP_DATA, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         moreInfoOnError("In function fnLoad: cannot find or read backup data file C47.sav", NULL, NULL, NULL);
@@ -2496,7 +2650,7 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
     }
   }
 
-  if((loadType == manualLoad && loadMode == LM_ALL) || 
+  if((((loadType == manualLoad) || (loadType == stateLoad)) && loadMode == LM_ALL) || 
     ((loadType == autoLoad) && (loadedVersion >= VersionAllowed) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL) )) {
       while(restoreOneSection(BACKUP, loadMode, s, n, d)) {
     }
@@ -2521,6 +2675,8 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
     } else
     if((loadType == autoLoad) && (loadedVersion >= VersionAllowed) && (loadedVersion <= configFileVersion) && (loadMode == LM_ALL)) {
       temporaryInformation = TI_BACKUP_RESTORED;
+    } else if(loadType == stateLoad) {
+      temporaryInformation = TI_STATEFILE_RESTORED;
     }
   #endif // !TESTSUITE_BUILD
 }
@@ -2528,7 +2684,11 @@ void doLoad(uint16_t loadMode, uint16_t s, uint16_t n, uint16_t d, uint16_t load
 
 
 void fnLoad(uint16_t loadMode) {
-  doLoad(loadMode, 0, 0, 0, manualLoad);
+  if (loadMode == LM_STATE_LOAD) {
+    doLoad(LM_ALL, 0, 0, 0, stateLoad);
+  } else {
+    doLoad(loadMode, 0, 0, 0, manualLoad);
+  }
   fnClearFlag(FLAG_USER);
   doRefreshSoftMenu = true;
   refreshScreen();
@@ -2543,7 +2703,6 @@ void fnLoadAuto(void) {
 
 
 #undef BACKUP
-
 
 
 void fnDeleteBackup(uint16_t confirmation) {
@@ -2580,3 +2739,4 @@ void fnDeleteBackup(uint16_t confirmation) {
     #endif // DMCP_BUILD
   }
 }
+

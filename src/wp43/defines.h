@@ -861,6 +861,8 @@ typedef enum {
 #define TI_PERC                                   65
 #define TI_PERCD                                  66
 #define TI_PERCD2                                 67
+#define TI_STATEFILE_RESTORED                     68
+
 
 // Register browser mode
 #define RBR_GLOBAL                                 0 // Global registers are browsed
@@ -925,6 +927,10 @@ typedef enum {
 #define PGM_KEY_PRESSED_WHILE_PAUSED               4
 #define PGM_RESUMING                               5
 
+// Save mode
+#define SM_MANUAL_SAVE                             0
+#define SM_STATE_SAVE                              1
+
 // Load mode
 #define LM_ALL                                     0
 #define LM_PROGRAMS                                1
@@ -933,6 +939,7 @@ typedef enum {
 #define LM_SUMS                                    4
 #define LM_SYSTEM_STATE                            5
 #define LM_REGISTERS_PARTIAL                       6
+#define LM_STATE_LOAD                              7
 
 // Screen updating mode
 #define SCRUPD_AUTO                             0x00

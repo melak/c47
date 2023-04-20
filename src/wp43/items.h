@@ -2162,8 +2162,10 @@
 #define MNU_ALPHAFN_C43             2106
 #define MNU_PLOTTING                2107
 #define MNU_TAMNONREGIND            2108
+#define ITM_SAVEST                  2109
+#define ITM_LOADST                  2110
 
-#define LAST_ITEM                   2109
+#define LAST_ITEM                   2111
 
 #define NOPARAM                       9876 // Item for function who don't need an item
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
