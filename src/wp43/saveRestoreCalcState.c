@@ -1370,56 +1370,49 @@ static void UI64toString(uint64_t value, char * tmpRegisterString) {
 }
 #endif //TESTSUITE_BUILD
 
-
-
-uint8_t stringToUint8(const char *str) {
-  uint8_t value = 0;
-
-
-  while('0' <= *str && *str <= '9') {
-    value = value*10 + (*(str++) - '0');
+static unsigned int getBase(const char **str) {
+  unsigned int base = 10;
+fprintf(stderr,"\nget base\n");fflush(stderr);
+  if (**str == '0' && (*str)[1] != '\0') {
+      base = 8;
+      ++*str;
+      if (**str == 'x') {
+          base = 16;
+          ++*str;
+      }
   }
-
-  return value;
+  return base;
 }
 
-
-
-uint16_t stringToUint16(const char *str) {
-  uint16_t value = 0;
-
-
-  while('0' <= *str && *str <= '9') {
-    value = value*10 + (*(str++) - '0');
+static unsigned int getDigit(const char *str) {
+  if ('0' <= *str && *str <= '9') {
+    return *str - '0';
+  } else if ('a' <= *str && *str <= 'f') {
+    return *str - 'a' + 10;
+  } else if ('A' <= *str && *str <= 'F') {
+    return *str - 'A' + 10;
   }
-
-  return value;
+  return 1000000;
 }
 
+#define stringToUintFunc(name, type)                \
+    type name(const char *str) {                    \
+      type value = 0;                               \
+      unsigned int digit, base = getBase(&str);     \
+                                                    \
+      for (;;) {                                    \
+        digit = getDigit(str++);                    \
+        if (digit > base)                           \
+          break;                                    \
+        value = value * base + digit;               \
+      }                                             \
+      return value;                                 \
+    }
 
-
-uint32_t stringToUint32(const char *str) {
-  uint32_t value = 0;
-
-  while('0' <= *str && *str <= '9') {
-    value = value*10 + (*(str++) - '0');
-  }
-
-  return value;
-}
-
-
-
-uint64_t stringToUint64(const char *str) {
-  uint64_t value = 0;
-
-  while('0' <= *str && *str <= '9') {
-    value = value*10 + (*(str++) - '0');
-  }
-
-  return value;
-}
-
+stringToUintFunc(stringToUint8, uint8_t)
+stringToUintFunc(stringToUint16, uint16_t)
+stringToUintFunc(stringToUint32, uint32_t)
+stringToUintFunc(stringToUint64, uint64_t)
 
 
 int16_t stringToInt16(const char *str) {
