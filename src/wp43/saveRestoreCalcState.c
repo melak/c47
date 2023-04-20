@@ -1356,17 +1356,14 @@ static void readLine(void *stream, char *line) {
 
 #ifndef TESTSUITE_BUILD
 static void UI64toString(uint64_t value, char * tmpRegisterString) {
-  uint32_t v0,v1,v2;
-  v2 =  value /      1000000000000000000;
-  v1 = (value - v2 * 1000000000000000000) /      1000000000;
-  v0 = (value - v2 * 1000000000000000000) - v1 * 1000000000;
-  if(v2 == 0 && v1 == 0) {
-    sprintf(tmpRegisterString,"%" PRIu32, v0);
-  } else if (v2 == 0) {
-    sprintf(tmpRegisterString,"%" PRIu32 "%0" PRIu32, v1,v0);
-  } else {
-    sprintf(tmpRegisterString,"%" PRIu32 "%0" PRIu32 "%0" PRIu32, v2,v1,v0);
-  }
+  uint32_t v0,v1;
+
+  v0 = value & 0xffffffff;
+  v1 = value >> 32;
+  if (v1 != 0)
+    sprintf(tmpRegisterString, "0x%" PRIx32 "%0" PRIx32, v1, v0);
+  else
+    sprintf(tmpRegisterString, "0x%" PRIx32, v0);
 }
 #endif //TESTSUITE_BUILD
 
