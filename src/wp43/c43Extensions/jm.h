@@ -127,6 +127,7 @@ void fnUserJM(uint16_t jmUser);
 
 //fnUserJM
 #define USER_C43ALTA     25
+#define USER_C43ALTB     225
 #define USER_C43ALT      26
 #define JM_ASSIGN        28
 #define USER_COPY        29

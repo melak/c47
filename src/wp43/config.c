@@ -705,6 +705,7 @@ void restoreStats(void){
       {0,USER_V47,     "V47: Exp Vintage 2 shifts TopR -+x/ L"           },
       {0,USER_C43,     "C43: Org. classic 1-shift (DM42 mould, discon.)" },
       {0,USER_C43ALTA, "C43AltA: 2-shift (43S mould, discon.) Allschwil" },
+      {0,USER_C43ALTB, "C43AltB: 2-shift (43S mould, discon.) Allschwil" },
       {0,USER_C43ALT,  "C43 ALT: 2-shift (43S mould, discon.) Altern."   },
       {0,USER_DM42,    "DM42: Final Compatibility layout"                },
       {0,USER_43S,     "WP 43S Pilot: Final Compatibility layout"        },

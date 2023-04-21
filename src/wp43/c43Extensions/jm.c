@@ -876,6 +876,25 @@ void fnUserJM(uint16_t jmUser) {
     break;
 
 
+//---KEYS PROFILE: C43-ALTB
+//-------------------------
+  case USER_C43ALTB:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu
+    #ifndef SAVE_SPACE_DM42_7
+      fnUserJM(USER_C43);  
+      kbd_usr[0].primary     = ITM_DRG;
+
+      kbd_usr[7].gShifted    = ITM_XTHROOT;
+      kbd_usr[8].gShifted    = ITM_Rup;
+      kbd_usr[13].gShifted   = -MNU_STK;
+      kbd_usr[14].gShifted   = -MNU_TRI;
+      
+      Norm_Key_00_VAR        = ITM_DRG;
+      fnRefreshState();                                 //drJM
+      fnSetFlag(FLAG_USER);
+    #endif
+    break;
+
+
 //---KEYS PROFILE: C43-ALT
 //-------------------------
   case USER_C43ALT:                                             //USER_SHIFTS 25          //JM Sectioon to be put on a menu

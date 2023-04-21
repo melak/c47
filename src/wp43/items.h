@@ -1948,7 +1948,7 @@
 #define MNU_1892                    1892
 #define KEY_fg                      1893
 #define MNU_1894                    1894
-#define MNU_1895                    1895
+#define ITM_USER_C43ALTB            1895
 #define ITM_USER_C43ALTA            1896
 #define ITM_ASNVIEWER               1897
 #define ITM_N_KEY_ALPHA             1898
