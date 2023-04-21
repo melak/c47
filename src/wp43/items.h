@@ -1402,7 +1402,7 @@
 #define MNU_PROB                    1354
 #define MNU_PROGS                   1355
 #define MNU_PFN                     1356
-#define MNU_PFN2                    1357
+#define MNU_PFN_MORE                1357
 #define MNU_CONVP                   1358
 #define MNU_RAM                     1359
 #define MNU_REALS                   1360
@@ -1448,7 +1448,7 @@
 #define MNU_TIMERF                  1400
 #define MNU_HIST                    1401
 #define MNU_HPLOT                   1402
-#define MNU_PFN1                    1403
+#define ITM_1403                    1403
 
 
 #define ITM_1COMPL                  1404
