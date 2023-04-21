@@ -1513,7 +1513,7 @@ static void UI64toString(uint64_t value, char * tmpRegisterString) {
 
 static unsigned int getBase(const char **str) {
   unsigned int base = 10;
-fprintf(stderr,"\nget base\n");fflush(stderr);
+  //fprintf(stderr,"\nget base\n");fflush(stderr);
   if (**str == '0' && (*str)[1] != '\0') {
       base = 8;
       ++*str;
