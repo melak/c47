@@ -15122,9 +15122,9 @@ int main(int argc, char* argv[]) {
 
 
 
-//-----JACO GENERATED FROM SPREADSHEET
-  
-{ // DEMO OM p 111 (Gilileo's example from HP-27 OH)
+//-----JACO GENERATED FROM SPREADSHEET vvvvvvvvvv
+
+{ // JACO EX DEMO OM p 111 (Gilileo's example from HP-27 OH)
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
     *(currentStep++) = 7; //String Length 
@@ -15238,7 +15238,7 @@ int main(int argc, char* argv[]) {
 }  // 
 
 
-{ // DEMO OM p113 (Hephaestus example from various HP sources as per Walter
+{ // JACO EX DEMO OM p113 (Hephaestus example from various HP sources as per Walter
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
     *(currentStep++) = 7; //String Length 
@@ -15440,7 +15440,7 @@ int main(int argc, char* argv[]) {
 
 
 
-{ //  DEMO OM p115 (Silas example from the HP-15C OH
+{ //  JACO EX DEMO OM p115 (Silas example from the HP-15C OH
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
     *(currentStep++) = 7; //String Length 
@@ -15557,7 +15557,7 @@ int main(int argc, char* argv[]) {
 
 
 
-{ // DEMO0 is a 100 point Gaussian perfect distribution.
+{ // JACO EX DEMO0 is a 100 point Gaussian perfect distribution.
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
     *(currentStep++) = 7; //String Length 
@@ -19091,7 +19091,7 @@ int main(int argc, char* argv[]) {
 }  // 
 
 
-{ // DEMO2 is a 4 sample example which produces valid values for L.R. to be Gaussian peak, Cauchy and parabolic.
+{ // JACO EX DEMO2 is a 4 sample example which produces valid values for L.R. to be Gaussian peak, Cauchy and parabolic.
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
     *(currentStep++) = 7; //String Length 
@@ -19201,7 +19201,7 @@ int main(int argc, char* argv[]) {
 }  // 
 
 
-{ // DEMO1 is the 100 pair 11 000 V instrumentation example.
+{ // JACO EX DEMO1 is the 100 pair 11 000 V instrumentation example.
     *(currentStep++) = ITM_LBL;
     *(currentStep++) = STRING_LABEL_VARIABLE;
     *(currentStep++) = 7; //String Length 
@@ -19312,6 +19312,9 @@ int main(int argc, char* argv[]) {
 }  // 
 
 
+//JACO DEMO END  
+
+//-----JACO GENERATED FROM SPREADSHEET ^^^^^^^^^^
 
 
 
