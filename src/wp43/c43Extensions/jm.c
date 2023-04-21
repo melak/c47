@@ -828,8 +828,8 @@ void fnUserJM(uint16_t jmUser) {
     case USER_C47:          //USER
         fnUserJM(USER_KRESET);
         fnShowVersion(USER_C47);
-        xcopy(kbd_usr, kbd_std, sizeof(kbd_std));
-        fnSetFlag(FLAG_USER);
+//        xcopy(kbd_usr, kbd_std, sizeof(kbd_std));         //Removed from the default profile. Return on other defaults like D47
+//        fnSetFlag(FLAG_USER);                             //Removed from the default profile. Return on other defaults like D47
     break;
 
 
