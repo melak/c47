@@ -46,6 +46,12 @@ void fnInput(uint16_t regist) {
     programRunStop = PGM_WAITING;
     currentInputVariable = regist;
     fnRecall(regist);
+    refreshScreen();
+    #if defined(DMCP_BUILD)
+      lcd_refresh();
+    #else // !DMCP_BUILD
+      refreshLcd(NULL);
+    #endif // DMCP_BUILD
   }
 }
 

@@ -269,6 +269,17 @@ void fnReturn(uint16_t skip) {
   dataBlock_t *_currentSubroutineLevelData = currentSubroutineLevelData;
   uint16_t sizeToBeFreedInBlocks;
 
+  /* Cancel INPUT */
+  if(currentInputVariable != INVALID_VARIABLE) {
+    currentInputVariable = INVALID_VARIABLE;
+    refreshScreen();
+    #if defined(DMCP_BUILD)
+      lcd_refresh();
+    #else // !DMCP_BUILD
+      refreshLcd(NULL);
+    #endif // DMCP_BUILD
+  }
+
   /* A subroutine is running */
   if(currentSubroutineLevel > 0) {
     if(programRunStop == PGM_RUNNING) {
