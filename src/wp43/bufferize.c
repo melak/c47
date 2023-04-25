@@ -858,7 +858,6 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
 #endif //SAVE_SPACE_DM42_11
           case ITM_op_a :                //C43
           case ITM_op_a2:                //C43
-          case ITM_op_j :                //C43
           case ITM_EE_EXP_TH: {           //C43
             mimRunFunction(item, indexOfItems[item].param);
             break;
@@ -1324,9 +1323,9 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       }
 
 
-        case ITM_i :                         //JM HP35 compatible, in NIM
+        case ITM_op_j :                         //JM HP35s compatible, in NIM
         case ITM_CC: {
-        if (item == ITM_i) resetShiftState();    //JM HP35 compatible, in NIM
+        if (item == ITM_op_j) resetShiftState();    //JM HP35s compatible, in NIM
         lastChar = strlen(aimBuffer) - 1;
 
         done = true;
