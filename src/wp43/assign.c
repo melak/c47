@@ -632,13 +632,76 @@ static int _typeOfFunction(int16_t func) {
     case ITM_I:
     case ITM_J:
     case ITM_K:
-    case ITM_L: {
+    case ITM_L:
+    case ITM_O: {
       return 3;
     }
 
     default: {
       return 4;
     }
+  }
+}
+
+static bool_t _assignTamAlpha(calcKey_t *key, uint16_t item) {
+  switch(item) {
+    case ITM_A: {
+      key->primaryTam = ITM_REG_A;
+      return true;
+    }
+    case ITM_B: {
+      key->primaryTam = ITM_REG_B;
+      return true;
+    }
+    case ITM_C: {
+      key->primaryTam = ITM_REG_C;
+      return true;
+    }
+    case ITM_D: {
+      key->primaryTam = ITM_REG_D;
+      return true;
+    }
+    case ITM_E: {
+      key->primaryTam = ITM_E;
+      return true;
+    }
+    case ITM_H: {
+      key->primaryTam = ITM_HEX;
+      return true;
+    }
+    case ITM_I: {
+      key->primaryTam = ITM_REG_I;
+      return true;
+    }
+    case ITM_J: {
+      key->primaryTam = ITM_REG_J;
+      return true;
+    }
+    case ITM_K: {
+      key->primaryTam = ITM_REG_K;
+      return true;
+    }
+    case ITM_L: {
+      key->primaryTam = ITM_REG_L;
+      return true;
+    }
+    case ITM_O: {
+      key->primaryTam = ITM_OCT;
+      return true;
+    }
+    default: {
+      return false;
+    }
+  }
+}
+
+static bool_t _assignTamNum(calcKey_t *key, uint16_t item) {
+  if(_typeOfFunction(item) == 2) {
+    key->primaryTam = item;
+    return true;
+  }
+  else {
+    return false;
   }
 }
 
@@ -663,6 +726,7 @@ void assignToKey(const char *data) {
         }
         case 3: {
           key->primaryAim  = stdKey->primaryAim;
+          key->primaryTam  = stdKey->primaryTam;
           break;
         }
         case 2: {
@@ -676,6 +740,7 @@ void assignToKey(const char *data) {
         case 0: {
           key->primary     = stdKey->primary;
           key->primaryTam  = stdKey->primaryTam;
+          _assignTamAlpha(key, key->primaryAim);
         }
       }
       break;
@@ -709,31 +774,32 @@ void assignToKey(const char *data) {
            break;
         }
         case 4: {
-           key->fShiftedAim = tmpMenuItem.item;
-                switch(tmpMenuItem.item) {
-             case ITM_PLUS: {
-               key->primary = ITM_ADD;
-               break;
-             }
-             case ITM_MINUS: {
-               key->primary = ITM_SUB;
-               break;
-             }
-                  case ITM_CROSS:
-                  case ITM_DOT:
-             case ITM_PROD_SIGN: {
-               key->primary = ITM_MULT;
-               break;
-             }
-             case ITM_SLASH: {
-               key->primary = ITM_DIV;
-               break;
-             }
-             default: {
-               key->primary = tmpMenuItem.item;
-             }
-           }
-           break;
+          key->fShiftedAim = tmpMenuItem.item;
+          switch(tmpMenuItem.item) {
+            case ITM_PLUS: {
+              key->primary = ITM_ADD;
+              break;
+            }
+            case ITM_MINUS: {
+              key->primary = ITM_SUB;
+              break;
+            }
+            case ITM_CROSS:
+            case ITM_DOT:
+            case ITM_PROD_SIGN: {
+              key->primary = ITM_MULT;
+              break;
+            }
+            case ITM_SLASH: {
+              key->primary = ITM_DIV;
+              break;
+            }
+            default: {
+              key->primary = tmpMenuItem.item;
+            }
+          }
+          _assignTamNum(key, key->primary);
+          break;
         }
         case 3: {
           key->primaryAim = tmpMenuItem.item;
@@ -787,48 +853,7 @@ void assignToKey(const char *data) {
         }
         case 3: {
           key->primaryAim  = tmpMenuItem.item;
-          switch(tmpMenuItem.item) {
-            case ITM_A: {
-              key->primaryTam = ITM_REG_A;
-              break;
-            }
-            case ITM_B: {
-              key->primaryTam = ITM_REG_B;
-              break;
-            }
-            case ITM_C: {
-              key->primaryTam = ITM_REG_C;
-              break;
-            }
-            case ITM_D: {
-              key->primaryTam = ITM_REG_D;
-              break;
-            }
-            case ITM_E: {
-              key->primaryTam = ITM_E;
-              break;
-            }
-            case ITM_H: {
-              key->primaryTam = ITM_HEX;
-              break;
-            }
-            case ITM_I: {
-              key->primaryTam = ITM_REG_I;
-              break;
-            }
-            case ITM_J: {
-              key->primaryTam = ITM_REG_J;
-              break;
-            }
-            case ITM_K: {
-              key->primaryTam = ITM_REG_K;
-              break;
-            }
-            case ITM_L: {
-              key->primaryTam = ITM_REG_L;
-              break;
-            }
-          }
+          _assignTamAlpha(key, tmpMenuItem.item);
           break;
         }
         case 2: {
@@ -841,6 +866,7 @@ void assignToKey(const char *data) {
         }
         case 0: {
           key->primary     = tmpMenuItem.item;
+          _assignTamAlpha(key, key->primaryAim) || (key->primaryTam = ITM_NULL);
         }
       }
       break;
@@ -858,10 +884,8 @@ void assignToKey(const char *data) {
         }
         case 3: {
           key->primaryAim  = tmpMenuItem.item;
-                if(_typeOfFunction(key->primary) != 2) {
-                  key->primaryTam  = ITM_NULL;
-                }
-                break;
+          _assignTamAlpha(key, key->primaryAim) || _assignTamNum(key, key->primary) || (key->primaryTam = ITM_NULL);
+          break;
         }
         case 2: {
           key->gShifted = tmpMenuItem.item;
@@ -873,13 +897,12 @@ void assignToKey(const char *data) {
         }
         case 0: {
           key->primary = tmpMenuItem.item;
-                if(_typeOfFunction(key->primary) != 3) {
-                  key->primaryTam  = ITM_NULL;
-                }
+          _assignTamNum(key, key->primary) || _assignTamAlpha(key, key->primaryAim) || (key->primaryTam = ITM_NULL);
+        }
       }
-  }
     }
   }
+
   if(keyCode == 5) { // alpha
     key->primaryTam  = stdKey->primaryTam;
   }
