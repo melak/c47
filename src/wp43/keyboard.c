@@ -765,7 +765,7 @@ printf(">>>>Z 0013 btnFnPressed >>btnFnPressed_StateMachine; data=|%s| data[0]=%
         return true;
       }
       case MNU_DYNAMIC: {
-        if(itemToBeAssigned < 0) {
+        if(itemToBeAssigned != ASSIGN_CLEAR && itemToBeAssigned < 0) {
           displayCalcErrorMessage(ERROR_CANNOT_ASSIGN_HERE, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
           #if defined(PC_BUILD)
             moreInfoOnError("In function _assignToMenu:", "cannot assign submenu", indexOfItems[-itemToBeAssigned].itemCatalogName, "in user-created menu.");
@@ -1950,7 +1950,6 @@ RELEASE_END:
             }
             else {
               itemToBeAssigned = ASSIGN_CLEAR;
-              popSoftmenu();              //JM
               if (previousCalcMode == CM_AIM) {
                 showSoftmenu(-MNU_MyAlpha); //JM push MyAlpha in case ALPHA is up (likely)
               }
