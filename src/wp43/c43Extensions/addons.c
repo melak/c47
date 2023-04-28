@@ -219,24 +219,67 @@ void fnArg_all(uint16_t unusedButMandatoryParameter) {
 }
 
 
+//#define i_evolution2 true
+
 void fnToPolar2(uint16_t unusedButMandatoryParameter) {
+bool_t i_evolution2 = jm_HOME_SUM;
   if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-    //    fnComplexMode(CM_POLAR);
-    fnSetFlag(FLAG_POLAR);
+    setComplexRegisterPolarMode(REGISTER_X, amPolar);
+    if(getComplexRegisterAngularMode(REGISTER_X) == amNone) {
+      setComplexRegisterAngularMode(REGISTER_X, currentAngularMode);
+    }
   }
-  else
+  else {
+
+//i_evolution2 vv
+    if(i_evolution2) {  //i_evolution2
+      if( (getRegisterDataType(REGISTER_Y) == dtComplex34 && real34IsZero(REGISTER_REAL34_DATA(REGISTER_Y)) ) &&   //Y = Complex with no Real only Imag
+          (getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone)            //X = Real but not an angle
+        ) {
+        real_t b;                                                        //convert imag.i in Y to Real in Y
+        real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &b);
+        reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);
+        convertRealToReal34ResultRegister(&b, REGISTER_Y);
+      }
+    } //i_evolution2
+//i_evolution2 ^^
+
     fnToPolar(0);
+  }
 }
 
 
 void fnToRect2(uint16_t unusedButMandatoryParameter) {
+bool_t i_evolution2 = jm_HOME_SUM;
   if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-    //     fnComplexMode(CM_RECTANGULAR);
-    fnClearFlag(FLAG_POLAR);
+    setComplexRegisterPolarMode(REGISTER_X, ~amPolar);
+    setComplexRegisterAngularMode(REGISTER_X, amNone);
   }
-  else
-    fnToRect(0);
+  else {
+
+//i_evolution2 vv
+    if(i_evolution2) {  //i_evolution2
+      if( (((getRegisterDataType(REGISTER_Y) == dtReal34 && getRegisterAngularMode(REGISTER_Y) == amNone) || getRegisterDataType(REGISTER_Y) == dtLongInteger)) &&   // if Y iReal but no angle (or longinteger)
+          (  getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) != amNone) ) {                                                        // if X is angle
+        fnSwapXY(0);                                                                                            //If X is angle, and Y is Real/Int then assume the sequence was wrong and swap it
+      }
+      fnToRect(0);
+      real_t b;                                                        //convert imag.i in Y to Real in Y
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &b);
+      reallocateRegister(REGISTER_Y, dtComplex34, COMPLEX34_SIZE, amNone);
+      setComplexRegisterPolarMode(REGISTER_Y, ~amPolar);
+      convertRealToImag34ResultRegister(&b, REGISTER_Y);
+      convertRealToReal34ResultRegister(const_0, REGISTER_Y);
+    } else //i_evolution2
+//i_evolution2 ^^
+
+    {
+      fnToRect(0);
+    }
+  }
 }
+
+
 
 void fnRoundi2(uint16_t unusedButMandatoryParameter) {
   if(getRegisterDataType(REGISTER_X) == dtLongInteger || getRegisterDataType(REGISTER_X) == dtShortInteger) {
@@ -489,7 +532,7 @@ static void cpxToStk(const real_t *real1, const real_t *real2) {
 
 void fn_cnst_op_j(uint16_t unusedButMandatoryParameter) {
   if(calcMode == CM_NIM || calcMode == CM_MIM) {
-    fnKeyCC(NOPARAM);
+    fnKeyCC(ITM_op_j);
   }
   else {
     cpxToStk(const_0, const_1);
@@ -657,25 +700,33 @@ void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
       fnCvtFromCurrentAngularMode(amDegree);
     fnKeyDotD(0);
     fnToHms(0); //covers longint & real
-  }
-  else {
+  } else { 
     if(getRegisterDataType(REGISTER_X) == dtTime) {
       fnToHr(0); //covers time
       setRegisterAngularMode(REGISTER_X, amDegree);
       fnCvtFromCurrentAngularMode(AMODE);
       //fnAngularMode(AMODE);                             Remove updating of ADM to the same mode
     }
+    
+    if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+        //printf("###AA fnAngularModeJM (%i)<= %i\n",REGISTER_X, AMODE);
+        //printf("###BB fnAngularModeJM (%i)=> %i\n",REGISTER_X, getRegisterTag(REGISTER_X));
 
-    if((getRegisterDataType(REGISTER_X) != dtReal34) || ((getRegisterDataType(REGISTER_X) == dtReal34) && getRegisterAngularMode(REGISTER_X) == amNone)) {
+      setComplexRegisterAngularMode(REGISTER_X, AMODE);
+      setComplexRegisterPolarMode(REGISTER_X, amPolar);
+        //printf("###CC fnAngularModeJM (%i)=> %i\n",REGISTER_X, getRegisterTag(REGISTER_X));
+
+    } else { 
+      if((getRegisterDataType(REGISTER_X) != dtReal34) || ((getRegisterDataType(REGISTER_X) == dtReal34) && getRegisterAngularMode(REGISTER_X) == amNone)) {
       fnKeyDotD(0); //convert longint, and strip all angles to real.
       uint16_t currentAngularModeOld = currentAngularMode;
       fnAngularMode(AMODE);
       fnCvtFromCurrentAngularMode(currentAngularMode);
       currentAngularMode = currentAngularModeOld;       //Remove updating of ADM to the same mode
-    }
-    else { //convert existing tagged angle, and set the ADM
-      fnCvtFromCurrentAngularMode(AMODE);
-      //fnAngularMode(AMODE);                             Remove updating of ADM to the same mode
+      } else { //convert existing tagged angle, and set the ADM
+        fnCvtFromCurrentAngularMode(AMODE);
+        //fnAngularMode(AMODE);                             Remove updating of ADM to the same mode
+      }
     }
   }
 #ifndef TESTSUITE_BUILD
@@ -691,7 +742,6 @@ void fnAngularModeJM(uint16_t AMODE) { //Setting to HMS does not change AM
 void fnDRG(uint16_t unusedButMandatoryParameter) {
   
   switch(getRegisterDataType(REGISTER_X)) {
-    case dtComplex34      :
     case dtTime           :
     case dtDate           :
     case dtString         :
@@ -704,7 +754,22 @@ void fnDRG(uint16_t unusedButMandatoryParameter) {
   copySourceRegisterToDestRegister(REGISTER_X, TEMP_REGISTER_1);
   uint16_t dest = 9999;
 
-  if(getRegisterDataType(REGISTER_X) == dtShortInteger) {                  // If shortinteger in X, convert to real
+  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+    setComplexRegisterPolarMode(REGISTER_X, amPolar);      //re-set it to Polar iven if it was there already
+    dest = getComplexRegisterAngularMode(REGISTER_X);
+    DRG_Cycling = 1;
+    switch(dest) {
+      case amNone:      dest = currentAngularMode;  break; //converts from to the same, i.e. get to current angle mode
+      case amRadian:    dest = amGrad;              break;
+      case amGrad:      dest = amDegree;            break;
+      case amDegree:    dest = amRadian;            break;
+      case amDMS:       dest = amDegree;            break;
+      case amMultPi:    dest = amRadian;            break; //do not support Mulpi but at least get out of it
+      default:      break;
+    }
+    setComplexRegisterAngularMode(REGISTER_X,dest);
+
+  } else if(getRegisterDataType(REGISTER_X) == dtShortInteger) {                  // If shortinteger in X, convert to real
     convertShortIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);
     setRegisterAngularMode(REGISTER_X, amNone);                            //is probably none already
   } else if(getRegisterDataType(REGISTER_X) == dtLongInteger) {            // If longinteger in X, convert to real
@@ -2078,6 +2143,11 @@ void fnLongPressSwitches (uint16_t option) {
 
 void fnSetSI_All (uint16_t unusedButMandatoryParameter) {
   SI_All = !SI_All;
+}
+
+
+void fnSetCPXMULT (uint16_t unusedButMandatoryParameter) {
+  CPXMULT = !CPXMULT;
 }
 
 

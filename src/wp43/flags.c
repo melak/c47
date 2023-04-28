@@ -771,6 +771,12 @@ void SetSetting(uint16_t jmConfig) {
       break;
     }
 
+    case JC_CPXMULT: {
+      CPXMULT = !CPXMULT;
+      fnRefreshState();
+      break;
+    }
+
     case JC_EXFRAC: {
       constantFractions = !constantFractions;
       if(constantFractions) {

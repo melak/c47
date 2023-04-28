@@ -1116,14 +1116,16 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
 
 
-void complex34ToDisplayString(const complex34_t *complex34, char *displayString, const font_t *font, int16_t maxWidth, int16_t displayHasNDigits, bool_t limitExponent, const char *separator, bool_t frontSpace) {
+void complex34ToDisplayString(const complex34_t *complex34, char *displayString, const font_t *font, int16_t maxWidth, int16_t displayHasNDigits, bool_t limitExponent, const char *separator, bool_t frontSpace, const uint16_t tagAngle, const bool_t tagPolar) {
   uint8_t savedDisplayFormatDigits = displayFormatDigits;
 
   if(updateDisplayValueX) {
     displayValueX[0] = 0;
   }
 
-  complex34ToDisplayString2(complex34, displayString, displayHasNDigits, limitExponent, separator, frontSpace);
+  //printf("###B complex34ToDisplayString tagAngle=%i, tagPolar=%i\n",tagAngle, tagPolar);
+
+  complex34ToDisplayString2(complex34, displayString, displayHasNDigits, limitExponent, separator, frontSpace, tagAngle, tagPolar);
   while(stringWidth(displayString, font, true, true) > maxWidth) {
     if(displayFormat == DF_ALL) {
       if(displayHasNDigits == 2) {
@@ -1142,23 +1144,25 @@ void complex34ToDisplayString(const complex34_t *complex34, char *displayString,
       displayValueX[0] = 0;
     }
 
-    complex34ToDisplayString2(complex34, displayString, displayHasNDigits, limitExponent, separator, frontSpace);
+    complex34ToDisplayString2(complex34, displayString, displayHasNDigits, limitExponent, separator, frontSpace, tagAngle, tagPolar);
   }
   displayFormatDigits = savedDisplayFormatDigits;
 }
 
 
 
-void complex34ToDisplayString2(const complex34_t *complex34, char *displayString, int16_t displayHasNDigits, bool_t limitExponent, const char *separator, bool_t frontSpace) {
+void complex34ToDisplayString2(const complex34_t *complex34, char *displayString, int16_t displayHasNDigits, bool_t limitExponent, const char *separator, bool_t frontSpace, const uint16_t tagAngle, const bool_t tagPolar) {
   int16_t i = 100;
-  real34_t real34, imag34;
+  real34_t real34, imag34, absimag34;
   real_t real, imagIc;
 
-  if(getSystemFlag(FLAG_POLAR)) { // polar mode
+  //printf("###W complex34ToDisplayString2 tagAngle=%i, tagPolar=%i\n",tagAngle, tagPolar);
+
+  if(tagPolar) { // polar mode
     real34ToReal(VARIABLE_REAL34_DATA(complex34), &real);
     real34ToReal(VARIABLE_IMAG34_DATA(complex34), &imagIc);
     realRectangularToPolar(&real, &imagIc, &real, &imagIc, &ctxtReal39); // imagIc in radian
-    convertAngleFromTo(&imagIc, amRadian, currentAngularMode, &ctxtReal39);
+    convertAngleFromTo(&imagIc, amRadian, tagAngle == amNone ? currentAngularMode : tagAngle, &ctxtReal39);
     realToReal34(&real, &real34);
     realToReal34(&imagIc, &imag34);
   }
@@ -1170,8 +1174,8 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
   constantFractionsMode = CF_COMPLEX1;  //JM
   real34ToDisplayString2(&real34, displayString, displayHasNDigits, limitExponent, separator, false, frontSpace);
 
-  if(updateDisplayValueX) {
-    if(getSystemFlag(FLAG_POLAR)) {
+  if(updateDisplayValueX) {                //This is used by ROUND only and it does not seem to work.
+    if(tagPolar) {
       strcat(displayValueX, "j");
     }
     else {
@@ -1182,26 +1186,53 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
   constantFractionsMode = CF_COMPLEX2;  //JM
   real34ToDisplayString2(&imag34, displayString + i, displayHasNDigits, limitExponent, separator, false, false);
 
-  if(getSystemFlag(FLAG_POLAR)) { // polar mode
+  if(tagPolar) { // polar mode
     strcat(displayString, STD_SPACE_4_PER_EM STD_MEASURED_ANGLE STD_SPACE_4_PER_EM);
-    angle34ToDisplayString2(&imag34, currentAngularMode, displayString + stringByteLength(displayString), displayHasNDigits, limitExponent, separator, false);
+    angle34ToDisplayString2(&imag34, tagAngle == amNone ? currentAngularMode : tagAngle, displayString + stringByteLength(displayString), displayHasNDigits, limitExponent, separator, false);
   }
   else { // rectangular mode
     if(strncmp(displayString + stringByteLength(displayString) - 2, STD_SPACE_HAIR, 2) != 0) {
       strcat(displayString, STD_SPACE_HAIR);
     }
 
-    if(displayString[i] == '-') {
-      strcat(displayString, "-");
-      i++;
+    if(real34IsZero(&real34)) {       //JM 
+      if(displayString[i] == '-') {
+        displayString[0]=0;           // force a zero real not to display the real part
+        strcat(displayString, "-");   // re-add the - which could be trailing the real value. Do ot add the +, it is not needed
+        i++;
+      }
+      else {
+        displayString[0]=0;           // force a zero real not to display the real part
+      }
     }
-    else {
-      strcat(displayString, "+");
+    else {                            // JM normal full display of the full imag part, + and - shown
+      if(displayString[i] == '-') {
+        strcat(displayString, "-");
+        i++;
+      }
+      else {
+        strcat(displayString, "+");
+      }
     }
 
-    strcat(displayString, COMPLEX_UNIT);
-    strcat(displayString, PRODUCT_SIGN);
-    xcopy(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
+    if(CPXMULT) {                  // i x 1.0
+      strcat(displayString, COMPLEX_UNIT);
+      real34CopyAbs(&imag34, &absimag34);
+//      if(!real34CompareEqual(&absimag34, const34_1)) {     //JM force a |imag|=1 not to display. Maybe make it part of Exfrac.
+        strcat(displayString, PRODUCT_SIGN);
+        xcopy(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
+//      }
+    }
+      
+    if(!CPXMULT) {                   // 1.0 i
+      real34CopyAbs(&imag34, &absimag34);
+//      if(!real34CompareEqual(&absimag34, const34_1)) {     //JM force a |imag|=1 not to display.  Maybe make it part of Exfrac.
+        xcopy(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
+//      }
+      strcat(displayString, STD_SPACE_HAIR);
+      strcat(displayString, STD_SPACE_HAIR);
+      strcat(displayString, COMPLEX_UNIT);
+    }
   }
 }
 

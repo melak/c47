@@ -1032,6 +1032,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnSNAP                     (uint16_t unusedButMandatoryParameter) {}
   void fnPcSigmaDeltaPcXmean      (uint16_t unusedButMandatoryParameter) {}
   void fnDeltaPercentXmean        (uint16_t unusedButMandatoryParameter) {}
+  void fnSetCPXmult               (uint16_t unusedButMandatoryParameter) {}
 
 
 
@@ -2885,7 +2886,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1795 */  { SetSetting,                   JC_FG_LINE,                  "fg" STD_SPACE_3_PER_EM "LINE",                "fg" STD_SPACE_3_PER_EM "LINE",                (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM UNDERLINING
 /* 1796 */  { SetSetting,                   JC_BASE_SCREEN,              "MyM",                                         "MyM",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM NOBASE MENU SETTING
 /* 1797 */  { SetSetting,                   JC_G_DOUBLETAP,              "g.2Tp",                                       "g.2Tp",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },//JM KEY TAP DOUBLE SETTING
-/* 1798 */  { itemToBeCoded,                NOPARAM,                     "1798",                                        "1798",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_ENABLED   | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1798 */  { SetSetting,                   JC_CPXMULT,                  "CPXmul",                                      "CPXmul",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
 /* 1799 */  { fnP_All_Regs,                 0,                           STD_PRINTER "ALLr",                            STD_PRINTER "ALLr",                            (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_NONE         },
 /* 1800 */  { fnMultiplySI,                 85,                          STD_DOT "f",                                   STD_DOT "f",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },//JM PRE UNIT
 /* 1801 */  { fnMultiplySI,                 88,                          STD_DOT "p",                                   STD_DOT "p",                                   (0 << TAM_MAX_BITS) |     0, CAT_NONE | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_DISABLED     },//JM PRE UNIT

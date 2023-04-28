@@ -1984,6 +1984,7 @@ void hideFunctionName(void) {
   }
 
   void refreshRegisterLine(calcRegister_t regist) {
+printf("###A refreshRegisterLine (%i)= %i\n",regist, getRegisterTag(regist));
     int32_t w;
     int16_t wLastBaseNumeric, wLastBaseStandard, prefixWidth = 0, lineWidth = 0;
     bool_t prefixPre = true;
@@ -2615,11 +2616,11 @@ void hideFunctionName(void) {
 
           else if(temporaryInformation == TI_X_Y) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "x =");
+              strcpy(prefix, "real =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, "y =");
+              strcpy(prefix, "imag =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
@@ -3260,6 +3261,9 @@ void hideFunctionName(void) {
           //JM else if(getRegisterDataType(regist) == dtComplex34) {                                                                                                      //JM EE Removed and replaced with the below
           //JM complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION);   //JM EE Removed and replaced with the below
         else if(getRegisterDataType(regist) == dtComplex34) { 
+
+        printf("#### (%i)= %i\n",regist, getRegisterTag(regist));
+
           if(temporaryInformation == TI_SOLVER_VARIABLE) {
             if(regist == REGISTER_X) {
               memcpy(prefix, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0]);
@@ -3330,8 +3334,9 @@ void hideFunctionName(void) {
                                                                        //JM EE ^
 
 
+printf("###AA refreshRegisterLine (%i)= %i, getComplexRegisterAngularMode=%i, getComplexRegisterPolarMode=%i\n",regist, getRegisterTag(regist), getComplexRegisterAngularMode(regist), getComplexRegisterPolarMode(regist));
 
-              complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS,true, STD_SPACE_PUNCTUATION, true);
+              complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS,true, STD_SPACE_PUNCTUATION, true, getComplexRegisterAngularMode(regist), getComplexRegisterPolarMode(regist));
 
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;

@@ -26,6 +26,7 @@
 #include "typeDefinitions.h"
 #include <stdint.h>
 
+bool_t temporaryFlagRect;
 
 bool_t keyWaiting(void);
 void fneRPN         (uint16_t unusedButMandatoryParameter);
@@ -116,5 +117,6 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy);
 void fnSetBCD (uint16_t bcd);
 void fnLongPressSwitches (uint16_t option);
 void fnSetSI_All (uint16_t unusedButMandatoryParameter);
+void fnSetCPXmult (uint16_t unusedButMandatoryParameter);
 
 #endif //ADDONS_H

@@ -3120,6 +3120,12 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
       return;                            //JM
     }
 
+    if(complex_Type == ITM_op_j) {
+      temporaryFlagRect = true;
+    } else {
+     temporaryFlagRect = false;
+    }
+
     switch(calcMode) {                     //JM
       case CM_NIM: {
         addItemToNimBuffer(ITM_CC);

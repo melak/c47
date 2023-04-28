@@ -105,8 +105,8 @@ TO_QSPI const int16_t menu_DISP[]        = { ITM_FIX,                       ITM_
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,
 
 
-                                             ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_DSTACK,               ITM_SHOIREP,           ITM_MULTCR,                  ITM_MULTDOT,                        //JM 
-                                             ITM_SI_All,                    ITM_NULL,                   ITM_NULL,                 ITM_LARGELI,           ITM_CPXI,                    ITM_CPXJ,                           //JM 
+                                             ITM_SCIOVR,                    ITM_ENGOVR,                 ITM_DSTACK,               ITM_CPXMULT,           ITM_MULTCR,                  ITM_MULTDOT,                        //JM 
+                                             ITM_SI_All,                    ITM_SHOIREP,                ITM_LARGELI,              ITM_NULL,              ITM_CPXI,                    ITM_CPXJ,                           //JM 
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM 
 
                                              ITM_SETCHN,                    ITM_SETEUR,                 ITM_SETIND,               ITM_SETJPN,            ITM_SETUK,                   ITM_SETUSA,                    

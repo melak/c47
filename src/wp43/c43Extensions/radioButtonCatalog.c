@@ -155,6 +155,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   { ITM_TOPHEX,           JC_TOPHEX,              CB_JC },  //
 
   { ITM_SI_All,           JC_SI_All,              CB_JC },  //
+  { ITM_CPXMULT,          JC_CPXMULT,             CB_JC },  //
 
   { ITM_2BIN,             2,                      RB_HX  }, //fnChangeBaseJM
   { ITM_2OCT,             8,                      RB_HX  }, //fnChangeBaseJM
@@ -470,6 +471,11 @@ int8_t fnCbIsSet(int16_t item) {
 
         case JC_SI_All: {
           cb_param = SI_All;
+        }
+        break;
+
+        case JC_CPXMULT: {
+          cb_param = CPXMULT;
         }
         break;
 

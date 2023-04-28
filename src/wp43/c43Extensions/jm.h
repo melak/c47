@@ -228,6 +228,7 @@ void fnRCL          (int16_t inp);
 #define JC_TOPHEX              68
 
 #define JC_SI_All              69
+#define JC_CPXMULT             70
 
 #ifdef PC_BUILD
 //keyboard.c

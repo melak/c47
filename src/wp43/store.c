@@ -401,7 +401,7 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(eRPN);
   storeToDtConfigDescriptor(HOME3);
   storeToDtConfigDescriptor(ShiftTimoutMode);
-  storeToDtConfigDescriptor(compatibility_bool);
+  storeToDtConfigDescriptor(CPXMULT);                                   //JM  ; replaced compatibility_bool 
   storeToDtConfigDescriptor(SH_BASE_HOME);
   storeToDtConfigDescriptor(Norm_Key_00_VAR);
   storeToDtConfigDescriptor(Input_Default);

@@ -236,7 +236,7 @@ static void _setCaption(uint16_t keyNum) {
         }
 
         case dtComplex34: {
-        complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_K), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true);
+        complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_K), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true, getComplexRegisterAngularMode(REGISTER_K), getComplexRegisterPolarMode(REGISTER_K));
         break;
         }
 

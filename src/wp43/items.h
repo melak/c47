@@ -1851,7 +1851,7 @@
 #define ITM_FG_LINE                 1795
 #define ITM_BASE_SCREEN             1796
 #define ITM_G_DOUBLETAP             1797
-#define ITM_1798                    1798
+#define ITM_CPXMULT                 1798
 #define ITM_P_ALLREGS               1799
 #define ITM_SI_f                    1800
 #define ITM_SI_p                    1801
