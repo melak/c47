@@ -1108,7 +1108,9 @@ printf(">>>> R000E                                %d |%s| shiftF=%d, shiftG=%d t
                       case MNU_ALPHA_OMEGA:
                       case MNU_ALPHAMATH:
                       case MNU_MyAlpha:
-                      case MNU_ALPHADOT: {
+                      case MNU_ALPHADOT:
+                      case MNU_alpha_omega:
+                      case MNU_ALPHAintl: {
                         popSoftmenu();
                         showSoftmenu(-MNU_MyAlpha); //push MyAlpha in case ALPHA is up (likely)
                       }
