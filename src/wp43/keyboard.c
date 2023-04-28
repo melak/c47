@@ -23,6 +23,7 @@
 #include "charString.h"
 #include "config.h"
 #include "constants.h"
+#include "constantPointers.h"
 #include "debug.h"
 #include "display.h"
 #include "error.h"
@@ -40,6 +41,7 @@
 #include "programming/programmableMenu.h"
 #include "recall.h"
 #include "registers.h"
+#include "registerValueConversions.h"
 #include "screen.h"
 #include "softmenus.h"
 #include "solver/equation.h"
@@ -3082,7 +3084,12 @@ undo_disabled:
 
 
 
+//The SUMRY flag on: switched the imag part = imag.i on
+//The MULTx flag on: switches auto swaps on
+
 void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter' complex_Type=KEY_COMPLEX
+  bool_t i_evolution2 = jm_HOME_SUM;
+  bool_t i_swaps = !getSystemFlag(FLAG_MULTx);
   doRefreshSoftMenu = true;     //dr
   #if !defined(TESTSUITE_BUILD)
     uint32_t dataTypeX;
@@ -3097,12 +3104,40 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
       dataTypeX = getRegisterDataType(REGISTER_X);
       dataTypeY = getRegisterDataType(REGISTER_Y);
 
-      if(   (dataTypeX == dtReal34 || dataTypeX == dtLongInteger)
-         && (dataTypeY == dtReal34 || dataTypeY == dtLongInteger)) {
+
+      //i_swaps vv If the angle is found in Y, with no angle in X, swap X<>Y before conversion, and if in POLAR
+      if(i_swaps) {  //i_swaps
+        if(   ( (getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone) || getRegisterDataType(REGISTER_X) == dtLongInteger  ) // if X iReal but no angle (or longinteger)
+            &&( (getRegisterDataType(REGISTER_Y) == dtReal34 && getRegisterAngularMode(REGISTER_Y) != amNone)  ) // if Y is angle
+            && getSystemFlag(FLAG_POLAR)         ) {  
+          fnSwapXY(0);    //If Y is angle, and X is Real/Int then assume the sequence was wrong and swap it
+        }
+      } //i_swaps
+
+
+      //CC needs in POLAR mode Y=r, X=ϑ;  
+      //CC needs in RECT mode, Y=real, X=imag
+      if ( (( dataTypeY == dtLongInteger || (dataTypeY == dtReal34 && getRegisterAngularMode(REGISTER_Y) == amNone  ))                                      //radius not allowed to be an angle if polar entry
+         && ( dataTypeX == dtLongInteger || (dataTypeX == dtReal34    /*can be angle or not */                      )) && getSystemFlag(FLAG_POLAR) )       //real not allowed to be an angle if rect entry
+         ||(( dataTypeY == dtLongInteger || (dataTypeY == dtReal34 && getRegisterAngularMode(REGISTER_Y) == amNone  ))                                      //real not allowed to be an angle if rect entry
+         && ( dataTypeX == dtLongInteger || (dataTypeX == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone  )) && !getSystemFlag(FLAG_POLAR) ) ) {  //imag not allowed to be an angle if rect entry
         runFunction(ITM_REtoCX);
+
       }
       else if(dataTypeX == dtComplex34) {
         runFunction(ITM_CXtoRE);
+
+        //i_evolution2 vv //output imag as 0 + imag.i
+        if(i_evolution2 && getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterDataType(REGISTER_Y) == dtReal34) {  //i_evolution2
+          real_t b;                                                        //convert X to iX
+          real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &b);
+          reallocateRegister(REGISTER_X, dtComplex34, COMPLEX34_SIZE, amNone);
+          setComplexRegisterPolarMode(REGISTER_Y, ~amPolar);
+          convertRealToImag34ResultRegister(&b, REGISTER_X);
+          convertRealToReal34ResultRegister(const_0, REGISTER_X);
+        }  //i_evolution2
+
+
       }
       else if(dataTypeX == dtReal34Matrix && dataTypeY == dtReal34Matrix) {
         runFunction(ITM_REtoCX);
@@ -3113,7 +3148,7 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
       else {
         displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-        sprintf(errorMessage, "You cannot use CC with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
+        sprintf(errorMessage, "You cannot use CC or COMPLEX with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
         moreInfoOnError("In function fnKeyCC:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       }

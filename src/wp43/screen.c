@@ -2615,11 +2615,11 @@ void hideFunctionName(void) {
 
           else if(temporaryInformation == TI_X_Y) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "real =");
+              strcpy(prefix, "x : Re =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, "imag =");
+              strcpy(prefix, "y : Im =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
