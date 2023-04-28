@@ -312,6 +312,8 @@ real34_t               hiBinR;
 char                   statMx[8];
 char                   plotStatMx[8];
 
+bool_t temporaryFlagRect;
+
 
 #if defined(DMCP_BUILD)
   #ifdef JMSHOWCODES                                        //JM Test
@@ -327,6 +329,7 @@ char                   plotStatMx[8];
   uint32_t             nextTimerRefresh;
   uint32_t             nextScreenRefresh; // timer substitute for refreshLcd(), which does cursor blinking and other stuff
   bool_t               wp43KbdLayout;
+
 
   int convertKeyCode(int key) {
     if(wp43KbdLayout) {

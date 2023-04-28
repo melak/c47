@@ -26,8 +26,6 @@
 #include "typeDefinitions.h"
 #include <stdint.h>
 
-bool_t temporaryFlagRect;
-
 bool_t keyWaiting(void);
 void fneRPN         (uint16_t unusedButMandatoryParameter);
 void fnCFGsettings  (uint16_t unusedButMandatoryParameter);

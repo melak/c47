@@ -3123,7 +3123,7 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
     if(complex_Type == ITM_op_j) {
       temporaryFlagRect = true;
     } else {
-     temporaryFlagRect = false;
+      temporaryFlagRect = false;
     }
 
     switch(calcMode) {                     //JM

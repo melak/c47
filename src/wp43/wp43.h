@@ -361,6 +361,9 @@
   extern char                   statMx[8];
   extern char                   plotStatMx[8];
 
+  extern bool_t                 temporaryFlagRect;
+
+
   #if defined(DMCP_BUILD)
     extern bool_t              backToDMCP;
   #ifdef BUFFER_CLICK_DETECTION

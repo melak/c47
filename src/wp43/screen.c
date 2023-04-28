@@ -1984,7 +1984,6 @@ void hideFunctionName(void) {
   }
 
   void refreshRegisterLine(calcRegister_t regist) {
-printf("###A refreshRegisterLine (%i)= %i\n",regist, getRegisterTag(regist));
     int32_t w;
     int16_t wLastBaseNumeric, wLastBaseStandard, prefixWidth = 0, lineWidth = 0;
     bool_t prefixPre = true;
@@ -3261,9 +3260,6 @@ printf("###A refreshRegisterLine (%i)= %i\n",regist, getRegisterTag(regist));
           //JM else if(getRegisterDataType(regist) == dtComplex34) {                                                                                                      //JM EE Removed and replaced with the below
           //JM complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, true, STD_SPACE_PUNCTUATION);   //JM EE Removed and replaced with the below
         else if(getRegisterDataType(regist) == dtComplex34) { 
-
-        printf("#### (%i)= %i\n",regist, getRegisterTag(regist));
-
           if(temporaryInformation == TI_SOLVER_VARIABLE) {
             if(regist == REGISTER_X) {
               memcpy(prefix, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName + 1, allNamedVariables[currentSolverVariable - FIRST_NAMED_VARIABLE].variableName[0]);
@@ -3334,9 +3330,7 @@ printf("###A refreshRegisterLine (%i)= %i\n",regist, getRegisterTag(regist));
                                                                        //JM EE ^
 
 
-printf("###AA refreshRegisterLine (%i)= %i, getComplexRegisterAngularMode=%i, getComplexRegisterPolarMode=%i\n",regist, getRegisterTag(regist), getComplexRegisterAngularMode(regist), getComplexRegisterPolarMode(regist));
-
-              complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS,true, STD_SPACE_PUNCTUATION, true, getComplexRegisterAngularMode(regist), getComplexRegisterPolarMode(regist));
+          complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS,true, STD_SPACE_PUNCTUATION, true, getComplexRegisterAngularMode(regist), getComplexRegisterPolarMode(regist));
 
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;

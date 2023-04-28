@@ -278,10 +278,6 @@ uint32_t getRegisterTag(calcRegister_t regist) {
 
 
 void setRegisterDataType(calcRegister_t regist, uint16_t dataType, uint32_t tag) {
-if(dataType == dtComplex34) {
-        printf("###Y1 setRegisterDataType (%i)<<= %i  ",regist, tag);
-      }
-
   if(regist <= LAST_GLOBAL_REGISTER) { // Global register
     globalRegister[regist].dataType = dataType;
     globalRegister[regist].tag = tag;
@@ -347,12 +343,6 @@ if(dataType == dtComplex34) {
     sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "setRegisterDataType", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
-
-if(getRegisterDataType(regist) == dtComplex34) {
-        printf("###Y2 setRegisterDataType (%i)<<= %i  ",regist, getRegisterTag(regist));
-        printRegisterToConsole(regist,"-->", "<--\n");
-      }
-
 }
 
 
@@ -422,12 +412,6 @@ void setRegisterDataPointer(calcRegister_t regist, void *memPtr) {
 
 
 void setRegisterTag(calcRegister_t regist, uint32_t tag) {
-
-if(getRegisterDataType(regist) == dtComplex34) {
-        printf("###X1 setRegisterTag (%i)<<= %i  ",regist, tag);
-        printRegisterToConsole(regist,"-->", "<--\n");
-      }
-
   if(regist <= LAST_GLOBAL_REGISTER) { // Global register
     globalRegister[regist].tag = tag;
   }
@@ -484,9 +468,6 @@ if(getRegisterDataType(regist) == dtComplex34) {
     sprintf(errorMessage, commonBugScreenMessages[bugMsgRegistMustBeLessThan], "setRegisterDataInfo", regist, LAST_RESERVED_VARIABLE + 1);
     displayBugScreen(errorMessage);
   }
-if(getRegisterDataType(regist) == dtComplex34) {
-        printf("###X2 setRegisterTag (%i)= %i\n",regist, getRegisterTag(regist));
-      }
 }
 
 
@@ -1926,15 +1907,6 @@ int16_t indirectAddressing(calcRegister_t regist, uint16_t parameterType, int16_
 
 
 void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataSizeWithoutDataLenBlocks, uint32_t tag) { // dataSize without data length in blocks, this includes the trailing 0 for strings
-
-if(getRegisterDataType(regist) == dtComplex34) {
-        printf("###Z1 reallocateRegister OLD = COMPLEX (%i)<<= %i  ",regist, tag);
-        printRegisterToConsole(regist,"-->", "<--\n");
-      }
-if(dataType == dtComplex34) {
-        printf("###Z1 reallocateRegister NEW = COMPLEX (%i)<<= %i  ",regist, tag);
-      }
-
   uint16_t dataSizeWithDataLenBlocks = dataSizeWithoutDataLenBlocks;
 
   //printf("reallocateRegister: %d to %s tag=%u (%u bytes excluding maxSize) begin\n", regist, getDataTypeName(dataType, false, false), tag, dataSizeWithoutDataLenBlocks);
@@ -1996,13 +1968,6 @@ if(dataType == dtComplex34) {
 
 //sprintf(tmpString, "reallocateRegister %d to %s tag=%u (%u bytes including dataLen) done", regist, getDataTypeName(dataType, false, false), tag, dataSizeWithDataLenBlocks);
 //memoryDump(tmpString);
-
-if(getRegisterDataType(regist) == dtComplex34) {
-        printf("###Z2 reallocateRegister NEW = COMPLEX (%i)<<= %i  ",regist, getRegisterTag(regist));
-        printRegisterToConsole(regist,"-->", "<--\n");
-      }
-
-
 }
 
 

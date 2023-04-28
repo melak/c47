@@ -225,7 +225,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 #if defined(PC_BUILD)
   void saveCalc(void) {
     uint8_t  compatibility_u8 = 0;           //defaults to use when settings are removed
-    bool_t   compatibility_bool = false;     //defaults to use when settings are removed
+    //bool_t   compatibility_bool = false;     //defaults to use when settings are removed
     uint32_t backupVersion = BACKUP_VERSION;
     uint32_t ramSize       = RAM_SIZE;
     uint32_t ramPtr;
@@ -526,7 +526,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 
   void restoreCalc(void) {
     uint8_t  compatibility_u8;        //defaults to use when settings are removed
-    bool_t   compatibility_bool;      //defaults to use when settings are removed
+    //bool_t   compatibility_bool;      //defaults to use when settings are removed
     uint32_t backupVersion, ramSize, ramPtr;
     FILE *ppgm_fp;
     uint8_t *loadedScreen = malloc(SCREEN_WIDTH * SCREEN_HEIGHT / 8);
