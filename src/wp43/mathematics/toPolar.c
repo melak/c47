@@ -32,20 +32,23 @@
 
 
 void fnToPolar2(uint16_t unusedButMandatoryParameter) {
-    uint32_t dataTypeX;
-    uint32_t dataTypeY;
+    uint32_t dataTypeX, dataTypeY, dataAtagX, dataAtagY;
     if(getRegisterDataType(REGISTER_X) == dtComplex34) {
       setComplexRegisterPolarMode(REGISTER_X, amPolar);
       if(getComplexRegisterAngularMode(REGISTER_X) == amNone) {
         setComplexRegisterAngularMode(REGISTER_X, currentAngularMode);
       }
     } else {
- 
-    dataTypeX = getRegisterDataType(REGISTER_X); //original, at the check the swapping makes no difference, hence no swapping
+
+    //X and Y are both only checked for REAL - symmetrical. Therefore clasRP does not play a role in the type checking even when swapped
+    dataTypeX = getRegisterDataType(REGISTER_X);
+    dataAtagX  = getRegisterAngularMode(REGISTER_X);
     dataTypeY = getRegisterDataType(REGISTER_Y);      
+    dataAtagY  = getRegisterAngularMode(REGISTER_Y);
+
     // >P needs rectangular coords, i.e. X=real and Y=real
-    if ( (( dataTypeX == dtLongInteger || (dataTypeX == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone  ))         //radius not allowed to be an angle if polar entry
-       && ( dataTypeY == dtLongInteger || (dataTypeY == dtReal34 && getRegisterAngularMode(REGISTER_Y) == amNone  )) )       //real not allowed to be an angle if rect entry
+    if ( (( dataTypeX == dtLongInteger || (dataTypeX == dtReal34 && dataAtagX == amNone  ))         //radius not allowed to be an angle if polar entry
+       && ( dataTypeY == dtLongInteger || (dataTypeY == dtReal34 && dataAtagY == amNone  )) )       //real not allowed to be an angle if rect entry
         ) {  //imag not allowed to be an angle if rect entry
       fnToPolar(0);
     }
@@ -62,15 +65,19 @@ void fnToPolar2(uint16_t unusedButMandatoryParameter) {
 
 void fnToPolar(uint16_t unusedButMandatoryParameter) {
   uint32_t dataTypeX, dataTypeY;
+  calcRegister_t REG_X, REG_Y;
   real_t x, y;
 
-  if(getSystemFlag(FLAG_CLASSICPR)) {
-    dataTypeX = getRegisterDataType(REGISTER_X); //original
-    dataTypeY = getRegisterDataType(REGISTER_Y);      
+  if(getSystemFlag(FLAG_CLASSICRP)) {
+    REG_X = REGISTER_X;
+    REG_Y = REGISTER_Y;
   } else {
-    dataTypeY = getRegisterDataType(REGISTER_X); //swapped
-    dataTypeX = getRegisterDataType(REGISTER_Y);
+    REG_X = REGISTER_Y;
+    REG_Y = REGISTER_X;    
   }
+
+  dataTypeX = getRegisterDataType(REG_X);
+  dataTypeY = getRegisterDataType(REG_Y);      
 
   if((dataTypeX == dtReal34 || dataTypeX == dtLongInteger) && (dataTypeY == dtReal34 || dataTypeY == dtLongInteger)) {
     if(!saveLastX()) {
@@ -79,11 +86,11 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
 
     switch(dataTypeX) {
       case dtLongInteger: {
-        convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+        convertLongIntegerRegisterToReal(REG_X, &x, &ctxtReal39);
         break;
       }
       case dtReal34: {
-        real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+        real34ToReal(REGISTER_REAL34_DATA(REG_X), &x);
         break;
       }
       default: {
@@ -94,11 +101,11 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
 
     switch(dataTypeY) {
       case dtLongInteger: {
-        convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+        convertLongIntegerRegisterToReal(REG_Y, &y, &ctxtReal39);
         break;
       }
       case dtReal34: {
-        real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
+        real34ToReal(REGISTER_REAL34_DATA(REG_Y), &y);
         break;
       }
       default: {
@@ -110,25 +117,21 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
     realRectangularToPolar(&x, &y, &x, &y, &ctxtReal39);
     convertAngleFromTo(&y, amRadian, currentAngularMode, &ctxtReal39);
 
-    if(getSystemFlag(FLAG_CLASSICPR)) {
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);              //original
-      reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, currentAngularMode);
-      convertRealToReal34ResultRegister(&x, REGISTER_X);
-      convertRealToReal34ResultRegister(&y, REGISTER_Y);
+    reallocateRegister(REG_X, dtReal34, REAL34_SIZE, amNone);              //original
+    reallocateRegister(REG_Y, dtReal34, REAL34_SIZE, currentAngularMode);
+    convertRealToReal34ResultRegister(&x, REG_X);
+    convertRealToReal34ResultRegister(&y, REG_Y);
+
+    if(getSystemFlag(FLAG_CLASSICRP)) {
       temporaryInformation = TI_RADIUS_THETA;
     } else {
-      reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);              //swapped
-      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, currentAngularMode);
-      convertRealToReal34ResultRegister(&x, REGISTER_Y);
-      convertRealToReal34ResultRegister(&y, REGISTER_X);
       temporaryInformation = TI_RADIUS_THETA_SWAPPED;
     }
-
   }
   else {
-    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REG_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "cannot convert (%s, %s) to polar coordinates!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false), getDataTypeName(getRegisterDataType(REGISTER_Y), false, false));
+      sprintf(errorMessage, "cannot convert (%s, %s) to polar coordinates!", getDataTypeName(getRegisterDataType(REG_X), false, false), getDataTypeName(getRegisterDataType(REG_Y), false, false));
       moreInfoOnError("In function fnToPolar:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }

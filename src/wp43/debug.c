@@ -1218,7 +1218,7 @@ void debugNIM(void) {
       }
 
       if(row < DEBUG_LINES) {
-        sprintf(string, "FLAG_CLASSICPR                            = %s = %s",     getBooleanName(getSystemFlag(FLAG_CLASSICPR)), getFractionDenom1ModeName(getSystemFlag(FLAG_CLASSICPR)));
+        sprintf(string, "FLAG_CLASSICRP                            = %s = %s",     getBooleanName(getSystemFlag(FLAG_CLASSICRP)), getFractionDenom1ModeName(getSystemFlag(FLAG_CLASSICRP)));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }

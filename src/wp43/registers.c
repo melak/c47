@@ -1973,17 +1973,19 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
 
 
 void fnToReal(uint16_t unusedButMandatoryParameter) {
-  switch(getRegisterDataType(REGISTER_X)) {
-    case dtComplex34: {
-      real_t b;
-      if(real34IsZero(REGISTER_IMAG34_DATA(REGISTER_X))) {
-        real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &b);
-        reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-        convertRealToReal34ResultRegister(&b, REGISTER_X);
-      }      
-      break;
-    }
 
+  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+    real_t b;
+    if(real34IsZero(REGISTER_IMAG34_DATA(REGISTER_X))) {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &b);
+      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+      convertRealToReal34ResultRegister(&b, REGISTER_X);
+      return;
+    }      
+  }
+//  else           //JM Remove comment if we don't want the usual data type error if the complex real part is not 0
+
+  switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger: {
       copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
       convertLongIntegerRegisterToReal34Register(REGISTER_X, REGISTER_X);

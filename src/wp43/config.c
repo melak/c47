@@ -1019,7 +1019,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     setSystemFlag(FLAG_ASLIFT);
     setSystemFlag(FLAG_PROPFR);
     setSystemFlag(FLAG_ENDPMT);// TVM application = END mode
-    setSystemFlag(FLAG_CLASSICPR);
+    setSystemFlag(FLAG_CLASSICRP);
 
     hourGlassIconEnabled = false;
     watchIconEnabled = false;

@@ -216,7 +216,7 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
       case FLAG_MULTx:    fnRefreshState (); break;
       case FLAG_ALLENG:   fnRefreshState (); break;
       case FLAG_ENDPMT:   fnRefreshState (); break;
-      case FLAG_CLASSICPR:fnRefreshState (); break;
+      case FLAG_CLASSICRP:fnRefreshState (); break;
       default:;
     }
 }
@@ -866,7 +866,7 @@ void SetSetting(uint16_t jmConfig) {
     }
    
     case PR_CLS: {
-      fnFlipFlag(FLAG_CLASSICPR);
+      fnFlipFlag(FLAG_CLASSICRP);
       break;
     }
 

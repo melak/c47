@@ -536,7 +536,7 @@
 #define SFL_USB                      503
 #define SFL_TVMBGN                   504
 #define SFL_FRCSRN                   505
-#define SFL_CLASSICPR                506
+#define SFL_CLASSICRP                506
 #define ITM_0507                     507
 #define ITM_0508                     508
 #define ITM_0509                     509
@@ -1970,7 +1970,7 @@
 #define ITM_USER_COPY               1914
 #define ITM_USER_WP43S              1915
 #define ITM_USER_DM42               1916
-#define ITM_CLASSICPR               1917
+#define ITM_CLASSICRP               1917
 #define ITM_GET_NORM_E              1918
 #define ITM_RESERVE                 1919
 #define MNU_ASN_N                   1920
