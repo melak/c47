@@ -200,22 +200,23 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
     }
   }
     switch (systemFlag) {
-      case FLAG_YMD:     fnRefreshState (); break;
-      case FLAG_DMY:     fnRefreshState (); break;
-      case FLAG_MDY:     fnRefreshState (); break;
-      case FLAG_TDM24:   fnRefreshState (); break;
-      case FLAG_CPXRES:  fnRefreshState (); break;
-      case FLAG_SPCRES:  fnRefreshState (); break;
-      case FLAG_CPXj:    fnRefreshState (); break;
-      case FLAG_POLAR:   fnRefreshState (); break;
-      case FLAG_LEAD0:   fnRefreshState (); break;
-      case FLAG_DENANY:  fnRefreshState (); break;
-      case FLAG_DENFIX:  fnRefreshState (); break;
-      case FLAG_SSIZE8:  fnRefreshState (); break;
-      case FLAG_DECIMP:  fnRefreshState (); break;
-      case FLAG_MULTx:   fnRefreshState (); break;
-      case FLAG_ALLENG:  fnRefreshState (); break;
-      case FLAG_ENDPMT:  fnRefreshState (); break;
+      case FLAG_YMD:      fnRefreshState (); break;
+      case FLAG_DMY:      fnRefreshState (); break;
+      case FLAG_MDY:      fnRefreshState (); break;
+      case FLAG_TDM24:    fnRefreshState (); break;
+      case FLAG_CPXRES:   fnRefreshState (); break;
+      case FLAG_SPCRES:   fnRefreshState (); break;
+      case FLAG_CPXj:     fnRefreshState (); break;
+      case FLAG_POLAR:    fnRefreshState (); break;
+      case FLAG_LEAD0:    fnRefreshState (); break;
+      case FLAG_DENANY:   fnRefreshState (); break;
+      case FLAG_DENFIX:   fnRefreshState (); break;
+      case FLAG_SSIZE8:   fnRefreshState (); break;
+      case FLAG_DECIMP:   fnRefreshState (); break;
+      case FLAG_MULTx:    fnRefreshState (); break;
+      case FLAG_ALLENG:   fnRefreshState (); break;
+      case FLAG_ENDPMT:   fnRefreshState (); break;
+      case FLAG_CLASSICPR:fnRefreshState (); break;
       default:;
     }
 }
@@ -864,6 +865,11 @@ void SetSetting(uint16_t jmConfig) {
       break;
     }
    
+    case PR_CLS: {
+      fnFlipFlag(FLAG_CLASSICPR);
+      break;
+    }
+
     case DM_ANY: {
       fnFlipFlag(FLAG_DENANY);
       break;

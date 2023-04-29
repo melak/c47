@@ -2590,6 +2590,17 @@ void hideFunctionName(void) {
             }
           }
 
+          else if(temporaryInformation == TI_RADIUS_THETA_SWAPPED) {
+            if(regist == REGISTER_Y) {
+              strcpy(prefix, "r =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_X) {
+              strcpy(prefix, STD_theta " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
           else if(temporaryInformation == TI_PERC) {
             if(regist == REGISTER_X) {
               strcpy(prefix, " % :");
@@ -2619,6 +2630,17 @@ void hideFunctionName(void) {
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
+              strcpy(prefix, "y : Im =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
+          else if(temporaryInformation == TI_X_Y_SWAPPED) {
+            if(regist == REGISTER_Y) {
+              strcpy(prefix, "x : Re =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_X) {
               strcpy(prefix, "y : Im =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }

@@ -283,7 +283,12 @@ const char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
       }
       }
 
-    case dtComplex34:
+    case dtComplex34: {
+      if (getRegisterTag(regist) & amPolar)
+        return "Polar   "; else
+        return "Rect    "; 
+    }
+    
     case dtString:
     case dtReal34Matrix:
     case dtComplex34Matrix:
@@ -1208,6 +1213,12 @@ void debugNIM(void) {
 
       if(row < DEBUG_LINES) {
         sprintf(string, "FLAG_PROPFR                               = %s = %s",     getBooleanName(getSystemFlag(FLAG_PROPFR)), getFractionTypeName(getSystemFlag(FLAG_PROPFR)));
+        gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
+        gtk_widget_show(lbl1[row++]);
+      }
+
+      if(row < DEBUG_LINES) {
+        sprintf(string, "FLAG_CLASSICPR                            = %s = %s",     getBooleanName(getSystemFlag(FLAG_CLASSICPR)), getFractionDenom1ModeName(getSystemFlag(FLAG_CLASSICPR)));
         gtk_label_set_label(GTK_LABEL(lbl1[row]), string);
         gtk_widget_show(lbl1[row++]);
       }

@@ -33,11 +33,6 @@ Math changes:
 2. bufferize.c: closenim: changed the default for (0 CC EXIT to 0) instead of i. 
    (testSuite not ifluenced).
 
-3. addon.c: Added functions fnToPolar2 and fnToRect2 which uses the original 
-   fnToPolar and fnToRect but first checks if X is a complex value, if it is,
-   it does a POLAR or RECT command to change the display mode, and if not, 
-   it calls R>P or P>R, using both standard functions.
-
 Todo 
 
 
@@ -95,8 +90,6 @@ All the below: because both Last x and savestack does not work due to multiple s
 #include "mathematics/multiplication.h"
 #include "mathematics/round.h"
 #include "mathematics/roundi.h"
-#include "mathematics/toPolar.h"
-#include "mathematics/toRect.h"
 #include "plotstat.h"
 #include "c43Extensions/radioButtonCatalog.h"
 #include "c43Extensions/keyboardTweak.h"
@@ -217,98 +210,6 @@ void fnArg_all(uint16_t unusedButMandatoryParameter) {
   else
     fnArg(0);
 }
-
-
-
-void fnToPolar2(uint16_t unusedButMandatoryParameter) {
-  bool_t i_evolution2 = jm_HOME_SUM;
-    if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-      setComplexRegisterPolarMode(REGISTER_X, amPolar);
-      if(getComplexRegisterAngularMode(REGISTER_X) == amNone) {
-        setComplexRegisterAngularMode(REGISTER_X, currentAngularMode);
-      }
-    } else {
- 
-    //i_evolution2 vv If Y=imag is found to be in complex with real = 0,
-    if(i_evolution2) {  //i_evolution2    Rect needs X=real  and  Y=imag
-      if( (getRegisterDataType(REGISTER_Y) == dtComplex34 && real34IsZero(REGISTER_REAL34_DATA(REGISTER_Y)) ) &&  //if swapped, i.e. Y = Real but no angle OR Complex with no Real only Imag
-          (getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone) ) {       //            and  X = Real but not an angle
-        real_t b;                                                        //convert imag.i in Y to Real in Y
-        real34ToReal(REGISTER_IMAG34_DATA(REGISTER_Y), &b);
-        reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);
-        convertRealToReal34ResultRegister(&b, REGISTER_Y);
-      }
-    } //i_evolution2
-
-
-    uint32_t dataTypeX = getRegisterDataType(REGISTER_X);
-    uint32_t dataTypeY = getRegisterDataType(REGISTER_Y);
-    // >P needs rectangular coords, i.e. X=real and Y=real
-    if ( (( dataTypeX == dtLongInteger || (dataTypeX == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone  ))         //radius not allowed to be an angle if polar entry
-       && ( dataTypeY == dtLongInteger || (dataTypeY == dtReal34 && getRegisterAngularMode(REGISTER_Y) == amNone  )) )       //real not allowed to be an angle if rect entry
-        ) {  //imag not allowed to be an angle if rect entry
-      fnToPolar(0);
-    }
-    else {
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "You cannot use >R or >P with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
-      moreInfoOnError("In function fnToPolar2:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    }
-  }
-}
-
-
-
-
-
-
-void fnToRect2(uint16_t unusedButMandatoryParameter) {
-  bool_t i_evolution2 = jm_HOME_SUM;
-  bool_t i_swaps = !getSystemFlag(FLAG_MULTx);
-    if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-      setComplexRegisterPolarMode(REGISTER_X, ~amPolar);
-      setComplexRegisterAngularMode(REGISTER_X, amNone);
-    } else {
-
-    //i_swaps vv If the angle is found in X, with no angle in Y, swap X<>Y before conversion
-    //                After conversion, change Y=imag
-    if(i_swaps) {  //i_swaps
-      if( ( (getRegisterDataType(REGISTER_Y) == dtReal34 && getRegisterAngularMode(REGISTER_Y) == amNone) || getRegisterDataType(REGISTER_Y) == dtLongInteger  ) // if Y iReal but no angle (or longinteger)
-        &&( (getRegisterDataType(REGISTER_X) == dtReal34 && getRegisterAngularMode(REGISTER_X) != amNone)  )     ) {  // if X is angle
-        fnSwapXY(0);    //If X is angle, and Y is Real/Int then assume the sequence was wrong and swap it
-      }
-    } //i_swaps
-
-
-    uint32_t dataTypeX = getRegisterDataType(REGISTER_X);
-    uint32_t dataTypeY = getRegisterDataType(REGISTER_Y);
-    // >R needs polar coords, i.e. X=r and Y=angle                                                                          //imag not allowed to be an angle if rect entry:
-    if((( dataTypeX == dtLongInteger || (dataTypeX == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone  ))         //radius not allowed to be an angle if polar entry
-      &&( dataTypeY == dtLongInteger || (dataTypeY == dtReal34    /*can be angle or not */                      )) )  ) {  //real not allowed to be an angle if rect entry
-    fnToRect(0);
-    }
-    else {
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "You cannot use >R or >P with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
-      moreInfoOnError("In function fnToRect2:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    }
-
-
-    if(i_evolution2) {  //i_evolution2
-      real_t b;                                                        //convert Y imag to Y=0 + imag.i
-      real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &b);
-      reallocateRegister(REGISTER_Y, dtComplex34, COMPLEX34_SIZE, amNone);
-      setComplexRegisterPolarMode(REGISTER_Y, ~amPolar);
-      convertRealToImag34ResultRegister(&b, REGISTER_Y);
-      convertRealToReal34ResultRegister(const_0, REGISTER_Y);
-    } //i_evolution2
-  }
-}
-
 
 
 void fnRoundi2(uint16_t unusedButMandatoryParameter) {

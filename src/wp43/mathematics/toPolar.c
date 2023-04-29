@@ -31,13 +31,46 @@
 #include "wp43.h"
 
 
+void fnToPolar2(uint16_t unusedButMandatoryParameter) {
+    uint32_t dataTypeX;
+    uint32_t dataTypeY;
+    if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+      setComplexRegisterPolarMode(REGISTER_X, amPolar);
+      if(getComplexRegisterAngularMode(REGISTER_X) == amNone) {
+        setComplexRegisterAngularMode(REGISTER_X, currentAngularMode);
+      }
+    } else {
+ 
+    dataTypeX = getRegisterDataType(REGISTER_X); //original, at the check the swapping makes no difference, hence no swapping
+    dataTypeY = getRegisterDataType(REGISTER_Y);      
+    // >P needs rectangular coords, i.e. X=real and Y=real
+    if ( (( dataTypeX == dtLongInteger || (dataTypeX == dtReal34 && getRegisterAngularMode(REGISTER_X) == amNone  ))         //radius not allowed to be an angle if polar entry
+       && ( dataTypeY == dtLongInteger || (dataTypeY == dtReal34 && getRegisterAngularMode(REGISTER_Y) == amNone  )) )       //real not allowed to be an angle if rect entry
+        ) {  //imag not allowed to be an angle if rect entry
+      fnToPolar(0);
+    }
+    else {
+      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+      sprintf(errorMessage, "You cannot use >R or >P with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
+      moreInfoOnError("In function fnToPolar2:", errorMessage, NULL, NULL);
+    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+    }
+  }
+}
+
 
 void fnToPolar(uint16_t unusedButMandatoryParameter) {
   uint32_t dataTypeX, dataTypeY;
   real_t x, y;
 
-  dataTypeX = getRegisterDataType(REGISTER_X);
-  dataTypeY = getRegisterDataType(REGISTER_Y);
+  if(getSystemFlag(FLAG_CLASSICPR)) {
+    dataTypeX = getRegisterDataType(REGISTER_X); //original
+    dataTypeY = getRegisterDataType(REGISTER_Y);      
+  } else {
+    dataTypeY = getRegisterDataType(REGISTER_X); //swapped
+    dataTypeX = getRegisterDataType(REGISTER_Y);
+  }
 
   if((dataTypeX == dtReal34 || dataTypeX == dtLongInteger) && (dataTypeY == dtReal34 || dataTypeY == dtLongInteger)) {
     if(!saveLastX()) {
@@ -77,12 +110,20 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
     realRectangularToPolar(&x, &y, &x, &y, &ctxtReal39);
     convertAngleFromTo(&y, amRadian, currentAngularMode, &ctxtReal39);
 
-    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, currentAngularMode);
-    convertRealToReal34ResultRegister(&x, REGISTER_X);
-    convertRealToReal34ResultRegister(&y, REGISTER_Y);
+    if(getSystemFlag(FLAG_CLASSICPR)) {
+      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);              //original
+      reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, currentAngularMode);
+      convertRealToReal34ResultRegister(&x, REGISTER_X);
+      convertRealToReal34ResultRegister(&y, REGISTER_Y);
+      temporaryInformation = TI_RADIUS_THETA;
+    } else {
+      reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);              //swapped
+      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, currentAngularMode);
+      convertRealToReal34ResultRegister(&x, REGISTER_Y);
+      convertRealToReal34ResultRegister(&y, REGISTER_X);
+      temporaryInformation = TI_RADIUS_THETA_SWAPPED;
+    }
 
-    temporaryInformation = TI_RADIUS_THETA;
   }
   else {
     displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);

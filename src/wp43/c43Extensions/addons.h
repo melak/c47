@@ -32,8 +32,6 @@ void fnCFGsettings  (uint16_t unusedButMandatoryParameter);
 void fnShoiXRepeats (uint16_t numberOfRepeats);
 void fnClrMod       (uint16_t unusedButMandatoryParameter);
 void fnArg_all      (uint16_t unusedButMandatoryParameter);
-void fnToPolar2     (uint16_t unusedButMandatoryParameter);
-void fnToRect2      (uint16_t unusedButMandatoryParameter);
 void fnTo_ms        (uint16_t unusedButMandatoryParameter);
 void fnFrom_ms      (uint16_t unusedButMandatoryParameter);
 void fnMultiplySI   (uint16_t multiplier);
