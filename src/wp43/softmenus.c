@@ -1353,7 +1353,7 @@ char label0[30];
   }
 
 
-  void showSoftkey2(const char *labelSM1, const char *labelSM2, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {     //dr
+  void showSoftkey2(const char *labelSM1, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {     //dr
     int16_t x1, y1;
     int16_t x2, y2;
 
@@ -1391,10 +1391,6 @@ if(xSoftkey == 0 || xSoftkey == 2 || xSoftkey == 4) {
   xx1 = x1; xx2 = x2;
   label0[0]=0;
   strcat(label0,labelSM1);
-  strcat(label0,labelSM2);
-//    printf("#####A %s\n",labelSM1);
-//    printf("#####B %s\n",labelSM2);
-//    printf("#####C %s\n",label0);
 
 }
   char sample[4];
@@ -1424,7 +1420,6 @@ if(xSoftkey == 0 || xSoftkey == 2 || xSoftkey == 4) {
 if(xSoftkey == 1 || xSoftkey == 3 || xSoftkey == 5) {
   label1[0]=0;
   strcat(label1,labelSM1);
-  strcat(label1,labelSM2);
 
 
   strcpy(sample, STD_RIGHT_ARROW);
@@ -1876,7 +1871,7 @@ bool_t isFunctionItemAMenu(int16_t item) {
               }                                                                                //JM^^
 
               else if( softmenu[m].menuItem  == -MNU_CONVS || softmenu[m].menuItem  == -MNU_CONVANG || softmenu[m].menuItem  == -MNU_CONVE || softmenu[m].menuItem  == -MNU_CONVP || softmenu[m].menuItem  == -MNU_CONVFP || softmenu[m].menuItem  == -MNU_CONVM || softmenu[m].menuItem  == -MNU_CONVX || softmenu[m].menuItem  == -MNU_CONVV || softmenu[m].menuItem  == -MNU_CONVA || softmenu[m].menuItem  == -MNU_UNITCONV || softmenu[m].menuItem  == -MNU_MISC) { 
-                showSoftkey2(indexOfItems[item%10000].itemSoftmenuName, indexOfItems[item%10000+1].itemSoftmenuName, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText); 
+                showSoftkey2(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText); 
               }
  
               else if((softmenu[m].menuItem  == -MNU_IO || softmenu[m].menuItem  == -MNU_PFN ) && (item == ITM_STOCFG || item == ITM_RCLCFG)) { //do not display "Config"
