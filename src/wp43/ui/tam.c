@@ -847,12 +847,21 @@
       }
       else {
         value = findNamedVariable(buffer);
-        if(value == INVALID_VARIABLE) {
-          displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
-          #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-            sprintf(errorMessage, "string '%s' is not a named variable", buffer);
-            moreInfoOnError("In function _tamProcessInput:", errorMessage, NULL, NULL);
-          #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+        if(value == INVALID_VARIABLE && calcMode != CM_PEM) {
+          if(getSystemFlag(FLAG_IGN1ER)) {
+            clearSystemFlag(FLAG_IGN1ER);
+            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+              sprintf(errorMessage, "string '%s' is not a named variable", buffer);
+              moreInfoOnError("In function _tamProcessInput:", errorMessage, "ignored since IGN1ER system flag was set", NULL);
+            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+          }
+          else {
+            displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
+            #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+              sprintf(errorMessage, "string '%s' is not a named variable", buffer);
+              moreInfoOnError("In function _tamProcessInput:", errorMessage, NULL, NULL);
+            #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+          }
         }
       }
       if(calcMode == CM_PEM && tam.function != ITM_CLP) {
