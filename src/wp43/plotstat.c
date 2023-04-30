@@ -1630,8 +1630,11 @@ void graphDrawLRline(uint16_t selection) {
         if(softmenu[softmenuStack[0].softmenuId].menuItem == -MNU_PLOT_STAT) {
           if(n>=30) {
             eformat_eng2(ss, "", smi, 3, "");
-            showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  +1 +autoshift, vmNormal, false, false);
+          } else {
+            strcpy(ss,"  | n < 30");
           }
+
+          showString(padEquals(ss), &standardFont, horOffsetR - stringWidth(ss, &standardFont, false, false), Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index  +1 +autoshift, vmNormal, false, false);
           strcpy(ss,"s" STD_SUB_m STD_SUB_i "=");
           showString(padEquals(ss), &standardFont, horOffset, Y_POSITION_OF_REGISTER_Z_LINE + autoinc*index++   +1 +autoshift, vmNormal, false, false);
         }

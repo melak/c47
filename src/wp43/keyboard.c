@@ -1854,6 +1854,10 @@ RELEASE_END:
       item = ITM_CC;
     }
 
+    if((calcMode == CM_GRAPH || calcMode == CM_PLOT_STAT) && item != ITM_BACKSPACE && item != ITM_EXIT1 && item != ITM_UP1 && item != ITM_DOWN1) {
+      keyActionProcessed = true;
+    } else
+
     if(calcMode == CM_ASN_BROWSER && item != ITM_PERIOD && item != ITM_USERMODE && item != ITM_BACKSPACE && item != ITM_EXIT1 && item != ITM_UP1 && item != ITM_DOWN1) {
       keyActionProcessed = true;
     } else
@@ -3016,7 +3020,7 @@ void fnKeyExit(uint16_t unusedButMandatoryParameter) {
           for(int16_t ii = 0; ii < 3; ii++) {
             if( (softmenuStack[0].softmenuId > 1) && !(
               (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_HIST) || 
-              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_STAT) || 
+              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_PLOTTING) || 
               (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_MODEL) ||
               (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_REGR)
                )) {
@@ -3273,7 +3277,12 @@ void fnKeyBackspace(uint16_t unusedButMandatoryParameter) {
       case CM_GRAPH: {
         if(calcMode == CM_PLOT_STAT) {
           for(int16_t ii = 0; ii < 3; ii++) {
-            if( (softmenuStack[0].softmenuId > 1) && !((-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_HIST) || (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_STAT))) {
+            if( (softmenuStack[0].softmenuId > 1) && !(
+              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_HIST) || 
+              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_PLOTTING) || 
+              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_MODEL) ||
+              (-softmenu[softmenuStack[0].softmenuId].menuItem == MNU_REGR)
+              )) {
               popSoftmenu();
             }
           }
