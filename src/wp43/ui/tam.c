@@ -847,7 +847,7 @@
       }
       else {
         value = findNamedVariable(buffer);
-        if(value == INVALID_VARIABLE) {
+        if(value == INVALID_VARIABLE && calcMode != CM_PEM) {
           displayCalcErrorMessage(ERROR_UNDEF_SOURCE_VAR, ERR_REGISTER_LINE, REGISTER_X);
           #if (EXTRA_INFO_ON_CALC_ERROR == 1)
             sprintf(errorMessage, "string '%s' is not a named variable", buffer);
