@@ -1,3 +1,4 @@
+
 /* This file is part of 43S.
  *
  * 43S is free software: you can redistribute it and/or modify
@@ -2633,7 +2634,6 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
     bool_t thereIsANextLine;
     int16_t source, dest, last, d, maxWidth, i, offset, bytesProcessed, aa, bb, cc, dd, aa2=0, aa3=0, aa4=0;
     uint64_t nn;
-    real34_t real34;
     char *separator;
 
     displayFormat = DF_ALL;
@@ -2848,117 +2848,60 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
         #endif
         temporaryInformation = TI_SHOW_REGISTER_BIG;
 
-        // Real part into +0
         separator = STD_SPACE_4_PER_EM;
-        real34ToDisplayString(REGISTER_REAL34_DATA(SHOWregis), amNone, tmpString, &numericFont, 2000, 34, false, separator,false);
+        complex34ToDisplayString(REGISTER_COMPLEX34_DATA(SHOWregis), tmpString, &numericFont,2000, 34 ,true, separator, true, getComplexRegisterAngularMode(SHOWregis), getComplexRegisterPolarMode(SHOWregis));
         for(i=stringByteLength(tmpString) - 1; i>0; i--) {
           if(tmpString[i] == 0x08) {
             tmpString[i] = 0x05;
           }
         }
 
-        // +/- i× into +300
-        real34Copy(REGISTER_IMAG34_DATA(SHOWregis), &real34);
-        last = 300;
-        while(tmpString[last]) last++;
-        xcopy(tmpString + last++, (real34IsNegative(&real34) ? "-" : "+"), 1);
-        xcopy(tmpString + last++, COMPLEX_UNIT, 1);
-        xcopy(tmpString + last,   PRODUCT_SIGN, 3);
 
-        // Imaginary part into +600
-        real34SetPositiveSign(&real34);
-        real34ToDisplayString(&real34, amNone, tmpString + 600, &numericFont, 2000, 34, false, separator,false);
-        for(i=stringByteLength(tmpString + 600) - 1; i>0; i--) {
-          if(tmpString[600 + i] == 0x08) {
-            tmpString[600 + i] = 0x05;
-          }
-        }
-
-  //vv      strncat(tmpString + 300, tmpString +  600, 299); //add +i. and imag
-  //vv      tmpString[600] = 0;
-
-        //Concatenate +ix and IMAG into 300
-        last = 300;
-        while(tmpString[last]) last++;
-        xcopy(tmpString + last, tmpString + 600,  strlen(tmpString + 600) + 1);
-        tmpString[600] = 0;
-  //^^
-        //Check if REAL + IMAG fits into two lines
-        if(stringWidth(tmpString, &numericFont, true, true) + stringWidth(tmpString + 300, &numericFont, true, true) <= 2*SCREEN_WIDTH) {
-        //  if it fits, copy all into +0
-          int xx = stringByteLength(tmpString) + stringByteLength(tmpString + 300);
-  //        strncat(tmpString, tmpString +  300, 299);
-          xcopy(tmpString + stringByteLength(tmpString), tmpString + 300,stringByteLength(tmpString + 300));
-          tmpString[xx] = 0;
-          tmpString[300] = 0;
-        }
-
-  //vv      strncat(tmpString + 2103, tmpString + 0, 299-3);  //COPY REAL
-  //vv      tmpString[0] = 0;
-
-
-        //copy +0 REAL or REAL+IMAG result into destination 2100 (label already in 2100-2102)
+        //copy result into destination 2100 (label already in 2100-2102)
         last = 2100;
         while(tmpString[last]) last++;
         xcopy(tmpString + last, tmpString + 0,  strlen(tmpString + 0) + 1);
         tmpString[0] = 0;
-  //^^
 
-  //vv      strcpy(tmpString + 2400, tmpString + 300);        //COPY IMAG
-  //vv      tmpString[300] = 0;
-  //new
-
-        //copy IMAG result into +2400
-        last = 2400;
-  //      while(tmpString[last]) last++;
-        xcopy(tmpString + last, tmpString + 300,  strlen(tmpString + 300) + 1);
-        tmpString[300] = 0;
-  //^^
-
-
-        //write 2100+ into two lines, 0+ and 300+
+        //write 2100+ into four lines, 0+ to 900+
         last = 2100 + stringByteLength(tmpString + 2100);
         source = 2100;
-        for(d=0; d<=300 ; d+=300) {
+        for(d=0; d<=900 ; d+=300) {
           dest = d;
-          while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
+          while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2-5) {
             tmpString[dest] = tmpString[source];
             if(tmpString[dest] & 0x80) {
               tmpString[++dest] = tmpString[++source];
             }
             source++;
             tmpString[++dest] = 0;
-          }
-        }
-
-        //write 2400+ into two lines, 300+ and 900+
-        last = 2400 + stringByteLength(tmpString + 2400);
-        source = 2400;
-        for(d=600; d<=900 ; d+=300) {
-          dest = d;
-          while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
-            tmpString[dest] = tmpString[source];
-            if(tmpString[dest] & 0x80) {
-              tmpString[++dest] = tmpString[++source];
+             
+            if(stringWidth(tmpString + d, &numericFont, true, true) >= SCREEN_WIDTH -60 && (uint8_t)tmpString[source-2] == 160 && tmpString[source-1]==5) break;
+            if(d>0 && 
+              (    ( !(getComplexRegisterPolarMode(SHOWregis) & amPolar) && (tmpString[source]=='+' || tmpString[source]=='-')) || 
+                   ( (uint8_t)tmpString[source]==162)
+              ) ) {
+              break;
             }
-            source++;
-            tmpString[++dest] = 0;
           }
         }
 
-        if (tmpString[300]==0) {                          //shift up if line is empty
-          //vv new       strcpy(tmpString + 300, tmpString + 600);
-          xcopy(tmpString + 300, tmpString + 600,  min(300,strlen(tmpString + 600) + 1));
-          //vv new        strcpy(tmpString + 600, tmpString + 900);
-          xcopy(tmpString + 600, tmpString + 900,  min(300,strlen(tmpString + 900) + 1));
-          tmpString[900] = 0;
-        }
 
-        if (tmpString[600]==0) {                          //shift up if line is empty
-          //vv new        strcpy(tmpString + 600, tmpString + 900);
-          xcopy(tmpString + 600, tmpString + 900,  min(300,strlen(tmpString + 900) + 1));
-          tmpString[900] = 0;
-        }
+   //     if (tmpString[300]==0) {                          //shift up if line is empty
+   //       //vv new       strcpy(tmpString + 300, tmpString + 600);
+   //       xcopy(tmpString + 300, tmpString + 600,  min(300,strlen(tmpString + 600) + 1));
+   //       //vv new        strcpy(tmpString + 600, tmpString + 900);
+   //       xcopy(tmpString + 600, tmpString + 900,  min(300,strlen(tmpString + 900) + 1));
+   //       tmpString[900] = 0;
+   //     }
+//
+   //     if (tmpString[600]==0) {                          //shift up if line is empty
+   //       //vv new        strcpy(tmpString + 600, tmpString + 900);
+   //       xcopy(tmpString + 600, tmpString + 900,  min(300,strlen(tmpString + 900) + 1));
+   //       tmpString[900] = 0;
+   //     }
+
+
         break;
 
 

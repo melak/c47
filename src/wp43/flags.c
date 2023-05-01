@@ -24,6 +24,7 @@
 #include "config.h"
 #include "error.h"
 #include "items.h"
+#include "registers.h"
 #include "softmenus.h"
 #include "solver/equation.h"
 #include "c43Extensions/jm.h"
@@ -216,7 +217,7 @@ void systemFlagAction(uint16_t systemFlag, uint16_t action) {
       case FLAG_MULTx:    fnRefreshState (); break;
       case FLAG_ALLENG:   fnRefreshState (); break;
       case FLAG_ENDPMT:   fnRefreshState (); break;
-      case FLAG_CLASSICRP:fnRefreshState (); break;
+      case FLAG_HPRP:     fnRefreshState (); break;
       default:;
     }
 }
@@ -847,11 +848,21 @@ void SetSetting(uint16_t jmConfig) {
    
     case CM_RECTANGULAR: {
       fnClearFlag(FLAG_POLAR);
+      if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+        setComplexRegisterPolarMode(REGISTER_X, ~amPolar);
+        setComplexRegisterAngularMode(REGISTER_X, amNone);
+      }
       break;
     }
    
     case CM_POLAR: {
       fnSetFlag(FLAG_POLAR);
+      if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+        setComplexRegisterPolarMode(REGISTER_X, amPolar);
+        if(getComplexRegisterAngularMode(REGISTER_X) == amNone) {
+          setComplexRegisterAngularMode(REGISTER_X, currentAngularMode);
+        }
+      }
       break;
     }
    
@@ -865,8 +876,8 @@ void SetSetting(uint16_t jmConfig) {
       break;
     }
    
-    case PR_CLS: {
-      fnFlipFlag(FLAG_CLASSICRP);
+    case PR_HPRP: {
+      fnFlipFlag(FLAG_HPRP);
       break;
     }
 

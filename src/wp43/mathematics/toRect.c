@@ -39,7 +39,7 @@ void fnToRect2(uint16_t unusedButMandatoryParameter) {
       setComplexRegisterAngularMode(REGISTER_X, amNone);
     } else {
 
-    if(getSystemFlag(FLAG_CLASSICRP)) {
+    if(getSystemFlag(FLAG_HPRP)) {
       dataTypeX = getRegisterDataType(REGISTER_X); //original
       dataAtagX = getRegisterAngularMode(REGISTER_X);
       dataTypeY = getRegisterDataType(REGISTER_Y);      
@@ -70,7 +70,7 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
   calcRegister_t REG_X, REG_Y;
   real_t x, y;
 
-  if(getSystemFlag(FLAG_CLASSICRP)) {
+  if(getSystemFlag(FLAG_HPRP)) {
     REG_X = REGISTER_X;
     REG_Y = REGISTER_Y;
   } else {
@@ -134,7 +134,7 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
     convertRealToReal34ResultRegister(&x, REG_X);
     convertRealToReal34ResultRegister(&y, REG_Y);
 
-    if(getSystemFlag(FLAG_CLASSICRP)) {
+    if(getSystemFlag(FLAG_HPRP)) {
       temporaryInformation = TI_X_Y;
     } else {
       temporaryInformation = TI_X_Y_SWAPPED;

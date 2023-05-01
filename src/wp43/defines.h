@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "108_09l"
+ #define VERSION1 "108_09m"
 
 
   #undef SAVE_SPACE_DM42
@@ -408,7 +408,7 @@
 #define FLAG_USB                              0xc028
 #define FLAG_ENDPMT                           0xc029
 #define FLAG_FRCSRN                           0x802a
-#define FLAG_CLASSICRP                        0x802b
+#define FLAG_HPRP                             0x802b
 #define NUMBER_OF_SYSTEM_FLAGS                    44
 
 typedef enum {

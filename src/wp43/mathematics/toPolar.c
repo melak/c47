@@ -68,7 +68,7 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
   calcRegister_t REG_X, REG_Y;
   real_t x, y;
 
-  if(getSystemFlag(FLAG_CLASSICRP)) {
+  if(getSystemFlag(FLAG_HPRP)) {
     REG_X = REGISTER_X;
     REG_Y = REGISTER_Y;
   } else {
@@ -122,7 +122,7 @@ void fnToPolar(uint16_t unusedButMandatoryParameter) {
     convertRealToReal34ResultRegister(&x, REG_X);
     convertRealToReal34ResultRegister(&y, REG_Y);
 
-    if(getSystemFlag(FLAG_CLASSICRP)) {
+    if(getSystemFlag(FLAG_HPRP)) {
       temporaryInformation = TI_RADIUS_THETA;
     } else {
       temporaryInformation = TI_RADIUS_THETA_SWAPPED;

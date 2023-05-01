@@ -87,7 +87,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   { ITM_BCD9,             BCD9c,                  RB_BCD },  //
   { ITM_BCD10,            BCD10c,                 RB_BCD },  //
 
-  { ITM_CLASSICRP,        PR_CLS,                 CB_JC },  //  --
+  { ITM_HPRP,             PR_HPRP,                CB_JC },  //  --
   { ITM_DENANY,           DM_ANY,                 CB_JC },  //  --fnDenMode
   { ITM_DENFIX,           DM_FIX,                 CB_JC },  //  --fnDenMode
 
@@ -330,8 +330,8 @@ int8_t fnCbIsSet(int16_t item) {
         }
         break;
 
-        case PR_CLS: {
-          cb_param = getSystemFlag(FLAG_CLASSICRP);
+        case PR_HPRP: {
+          cb_param = getSystemFlag(FLAG_HPRP);
         }
         break;
 
