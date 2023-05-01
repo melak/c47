@@ -94,7 +94,12 @@ Out: EC=0 FL_CPXRES=0 FL_ASLIFT=1 RL=Real:"12.3456789":DMS RX=Real:"12.3456789"
 
 
 ;=======================================
-; toReal(Complex) --> Error24
+; toReal(Complex) --> Real
 ;=======================================
 In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i -7.6"
 Out: EC=24 FL_ASLIFT=0 RX=Cplx:"6.2 i -7.6"
+
+In:  AM=DEG FL_ASLIFT=0 FL_CPXRES=0 RX=Cplx:"6.2 i 0"
+Out: EC=0 FL_ASLIFT=1 RL=Real:"12.3456789":DMS RX=Real:"6.2"
+
+

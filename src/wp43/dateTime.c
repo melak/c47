@@ -732,7 +732,7 @@ void fnToDate(uint16_t unusedButMandatoryParameter) {
         displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
         #if (EXTRA_INFO_ON_CALC_ERROR == 1)
           sprintf(errorMessage, "data type %s cannot be converted to a real34!", getRegisterDataTypeName(r[i], false, false));
-          moreInfoOnError("In function fnToReal:", errorMessage, NULL, NULL);
+          moreInfoOnError("In function fnToDate:", errorMessage, NULL, NULL);
         #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
         return;
     }
@@ -783,7 +783,7 @@ void fnToHr(uint16_t unusedButMandatoryParameter) {
       displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         sprintf(errorMessage, "data type %s cannot be converted to a real34!", getRegisterDataTypeName(REGISTER_X, false, false));
-        moreInfoOnError("In function fnToReal:", errorMessage, NULL, NULL);
+        moreInfoOnError("In function fnToHr:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
       return;
   }
@@ -829,7 +829,7 @@ void fnToHms(uint16_t unusedButMandatoryParameter) {
           displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
           #if (EXTRA_INFO_ON_CALC_ERROR == 1)
             sprintf(errorMessage, "data type %s cannot be converted to time!", getRegisterDataTypeName(REGISTER_X, false, false));
-            moreInfoOnError("In function fnToReal:", errorMessage, NULL, NULL);
+            moreInfoOnError("In function fnToHms:", errorMessage, NULL, NULL);
           #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
           return;
           }

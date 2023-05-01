@@ -139,7 +139,10 @@ typedef enum {
   amMultPi =  4,
   amNone   =  5,
   amSecond =  6, // not an angular but a time unit: for the routine unified with the real type
-  TM_HMS   =  7  // JM not an angular but a time unit: for the C43 usage
+  TM_HMS   =  7, // JM not an angular but a time unit: for the C43 usage
+  amAngleMask = 15,
+  amPolar = 16   // JM bit 4 of the 5 bits is used for Polar
+
 } angularMode_t;
 //#define TM_HMS    7   //JM
 
@@ -190,7 +193,7 @@ typedef struct {
   bool_t eRPN;
   bool_t HOME3;
   bool_t ShiftTimoutMode;
-  bool_t compatibility_bool;
+  bool_t CPXMULT;
   bool_t SH_BASE_HOME;
   bool_t SH_BASE_AHOME;
   int16_t Norm_Key_00_VAR;
@@ -248,7 +251,7 @@ typedef union {
   struct {
     uint32_t pointerToRegisterData : 16; ///< Memory block number
     uint32_t dataType              :  4; ///< dtLongInteger, dtReal34, ...
-    uint32_t tag                   :  5; ///< Short integer base, real34 angular mode, or long integer sign
+    uint32_t tag                   :  5; ///< Short integer base, real34 angular mode, or long integer sign; complex34 angle mode + Polar
     uint32_t readOnly              :  1; ///< The register or variable is readOnly if this field is 1 (used for system named variables)
     uint32_t notUsed               :  6; ///< 6 bits free
   };
