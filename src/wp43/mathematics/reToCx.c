@@ -47,6 +47,7 @@
  * \return void
  ***********************************************/
 void fnReToCx(uint16_t unusedButMandatoryParameter) {
+  angularMode_t tempAngle = currentAngularMode;
   uint32_t dataTypeX = getRegisterDataType(REGISTER_X);
   uint32_t dataTypeY = getRegisterDataType(REGISTER_Y);
   bool_t xIsAReal;
@@ -63,6 +64,7 @@ void fnReToCx(uint16_t unusedButMandatoryParameter) {
     xIsAReal = true;
     if(getSystemFlag(FLAG_POLAR)) { // polar mode
       if(dataTypeX == dtReal34 && getRegisterAngularMode(REGISTER_X) != amNone) {
+        tempAngle = getRegisterAngularMode(REGISTER_X);
         convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), getRegisterAngularMode(REGISTER_X), amRadian);
         setRegisterAngularMode(REGISTER_X, amNone);
         xIsAReal = false;
@@ -104,6 +106,7 @@ void fnReToCx(uint16_t unusedButMandatoryParameter) {
         realPolarToRectangular(&magnitude, &theta, &magnitude, &theta, &ctxtReal39); // theta in radian
         convertRealToReal34ResultRegister(&magnitude, REGISTER_X);
         realToReal34(&theta,     REGISTER_IMAG34_DATA(REGISTER_X));
+        setComplexRegisterAngularMode(REGISTER_X, tempAngle);
       }
     }
     else { // rectangular mode
