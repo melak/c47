@@ -2648,11 +2648,11 @@ void hideFunctionName(void) {
 
           else if(temporaryInformation == TI_RE_IM) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "Im" STD_SPACE_FIGURE ":");
+              strcpy(prefix, "Im" STD_SPACE_FIGURE "=");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, "Re" STD_SPACE_FIGURE ":");
+              strcpy(prefix, "Re" STD_SPACE_FIGURE "=");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
