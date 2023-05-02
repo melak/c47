@@ -1972,16 +1972,14 @@ void fnToReal(uint16_t unusedButMandatoryParameter) {
       if(getRegisterAngularMode(REGISTER_X) != amNone) {
         if(getRegisterAngularMode(REGISTER_X) == amDMS) {
           temporaryInformation = TI_FROM_DMS;
-//          convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amDMS, amDegree);
-//          setRegisterAngularMode(REGISTER_X, amDegree);                        //JM added amDegree: prevent stripping the tag if it was amDMS, to force an interim step to decimal degrees.
         }
-//        else                                                                  //JM added else: prevent stripping the tag if it was amDMS, to force an interim step to decimal degrees.
         setRegisterAngularMode(REGISTER_X, amNone);
       }
       break;
     }
 
     case dtTime: {
+      temporaryInformation = TI_FROM_HMS;
       copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
       convertTimeRegisterToReal34Register(REGISTER_X, REGISTER_X);
       break;

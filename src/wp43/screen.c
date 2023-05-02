@@ -3215,6 +3215,13 @@ void hideFunctionName(void) {
               }
             }
 
+            else if(temporaryInformation == TI_FROM_HMS) {
+              if(regist == REGISTER_X) {
+                strcpy(prefix, "decimal h" STD_SPACE_FIGURE " :");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              }
+            }
+
             else if(temporaryInformation == TI_FROM_MS_TIME) {
               if(regist == REGISTER_X) {
                 strcpy(prefix, "hh.mmss" STD_SPACE_FIGURE " :");
