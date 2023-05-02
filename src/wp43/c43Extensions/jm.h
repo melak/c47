@@ -153,16 +153,6 @@ void fnStrInputReal34 (char inp1[]);
 void fnStrInputLongint(char inp1[]);
 void fnRCL          (int16_t inp);
 
-#define TI_ABC                  96    //JM EE
-#define TI_ABBCCA               97    //JM EE
-#define TI_012                  98    //JM EE
-#define TI_SHOW_REGISTER_BIG    99    //JM_SHOW
-#define TI_SHOW_REGISTER_SMALL 100
-#define TI_ms                  101    //JMms
-#define TI_FROM_DMS            102
-#define TI_FROM_MS_TIME        103
-#define TI_FROM_MS_DEG         104
-
 #define ID_43S                  0    //JM Input Default
 #define ID_DP                   2    //JM Input Default
 #define ID_CPXDP                4    //JM Input Default

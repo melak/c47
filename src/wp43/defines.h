@@ -862,6 +862,17 @@ typedef enum {
 #define TI_PERCD                                  66
 #define TI_PERCD2                                 67
 #define TI_STATEFILE_RESTORED                     68
+#define TI_ABC                                    96    //JM EE
+#define TI_ABBCCA                                 97    //JM EE
+#define TI_012                                    98    //JM EE
+#define TI_SHOW_REGISTER_BIG                      99    //JM_SHOW
+#define TI_SHOW_REGISTER_SMALL                   100
+#define TI_ms                                    101    //JMms
+#define TI_FROM_DMS                              102
+#define TI_FROM_MS_TIME                          103
+#define TI_FROM_MS_DEG                           104
+#define TI_FROM_HMS                              105
+
 
 
 // Register browser mode
