@@ -282,6 +282,7 @@
   extern bool_t                 bcdDisplay;
   extern bool_t                 topHex;
   extern bool_t                 SI_All;
+  extern bool_t                 CPXMULT;
   extern uint8_t                bcdDisplaySign;
   extern uint8_t                LongPressM;
   extern uint8_t                LongPressF;
@@ -359,6 +360,9 @@
   extern real34_t               hiBinR;
   extern char                   statMx[8];
   extern char                   plotStatMx[8];
+
+  extern bool_t                 temporaryFlagRect;
+
 
   #if defined(DMCP_BUILD)
     extern bool_t              backToDMCP;

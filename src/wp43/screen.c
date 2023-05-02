@@ -2590,6 +2590,17 @@ void hideFunctionName(void) {
             }
           }
 
+          else if(temporaryInformation == TI_RADIUS_THETA_SWAPPED) {
+            if(regist == REGISTER_Y) {
+              strcpy(prefix, "r =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_X) {
+              strcpy(prefix, STD_theta " =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
           else if(temporaryInformation == TI_PERC) {
             if(regist == REGISTER_X) {
               strcpy(prefix, " % :");
@@ -2615,11 +2626,22 @@ void hideFunctionName(void) {
 
           else if(temporaryInformation == TI_X_Y) {
             if(regist == REGISTER_X) {
-              strcpy(prefix, "x =");
+              strcpy(prefix, "x : Re =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
             else if(regist == REGISTER_Y) {
-              strcpy(prefix, "y =");
+              strcpy(prefix, "y : Im =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+          }
+
+          else if(temporaryInformation == TI_X_Y_SWAPPED) {
+            if(regist == REGISTER_Y) {
+              strcpy(prefix, "x : Re =");
+              prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+            }
+            else if(regist == REGISTER_X) {
+              strcpy(prefix, "y : Im =");
               prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
             }
           }
@@ -3330,8 +3352,7 @@ void hideFunctionName(void) {
                                                                        //JM EE ^
 
 
-
-              complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS,true, STD_SPACE_PUNCTUATION, true);
+          complex34ToDisplayString(REGISTER_COMPLEX34_DATA(regist), tmpString, &numericFont, SCREEN_WIDTH - prefixWidth, NUMBER_OF_DISPLAY_DIGITS,true, STD_SPACE_PUNCTUATION, true, getComplexRegisterAngularMode(regist), getComplexRegisterPolarMode(regist));
 
           w = stringWidth(tmpString, &numericFont, false, true);
           lineWidth = w;

@@ -42,6 +42,7 @@
  ***********************************************/
 void fnCxToRe(uint16_t unusedButMandatoryParameter) {
   uint32_t dataTypeX = getRegisterDataType(REGISTER_X);
+  angularMode_t tempAngle = currentAngularMode;
 
   if(dataTypeX == dtComplex34) {
     if(!saveLastX()) {
@@ -50,12 +51,15 @@ void fnCxToRe(uint16_t unusedButMandatoryParameter) {
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
 
     setSystemFlag(FLAG_ASLIFT);
-    if(getSystemFlag(FLAG_POLAR)) { // polar mode
+    if(getComplexRegisterPolarMode(REGISTER_L) & amPolar) { // polar mode
+      if(getComplexRegisterAngularMode(REGISTER_L) != amNone) {
+        tempAngle = getComplexRegisterAngularMode(REGISTER_L);
+      }
       liftStack();
       reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
       real34RectangularToPolar(REGISTER_REAL34_DATA(REGISTER_L), REGISTER_IMAG34_DATA(REGISTER_L), REGISTER_REAL34_DATA(REGISTER_Y), REGISTER_REAL34_DATA(REGISTER_X)); // X in radians
-      convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amRadian, currentAngularMode);
-      setRegisterAngularMode(REGISTER_X, currentAngularMode);
+      convertAngle34FromTo(REGISTER_REAL34_DATA(REGISTER_X), amRadian, tempAngle);
+      setRegisterAngularMode(REGISTER_X, tempAngle);
       temporaryInformation = TI_THETA_RADIUS;
     }
     else { // rectangular mode

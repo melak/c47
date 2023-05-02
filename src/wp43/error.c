@@ -101,7 +101,8 @@ TO_QSPI const char errorMessages[NUMBER_OF_ERROR_CODES][SIZE_OF_EACH_ERROR_MESSA
 /* 49 */  "Too many variables",
 /* 50 */  "Non-programmable command, please remove",
 /* 51 */  "No global label in this program",
-/* 52 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
+/* 52 */  "Invalid input data type for polar/rect mode",
+/* 53 */  "Bad input", // This error is not in ReM and cannot occur (theoretically).
 };
 
 

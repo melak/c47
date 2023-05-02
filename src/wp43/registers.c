@@ -512,6 +512,9 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
         void *newMem = allocWp43(TO_BYTES(COMPLEX34_SIZE));
         if(newMem) {
           setRegisterDataType(r, dtComplex34, amNone);
+          if(getSystemFlag(FLAG_POLAR)) {
+            setRegisterTag(r, currentAngularMode | amPolar);
+          }
           setRegisterDataPointer(r, newMem);
           real34Zero(REGISTER_REAL34_DATA(r));
           real34Zero(REGISTER_IMAG34_DATA(r));
@@ -585,6 +588,9 @@ void allocateLocalRegisters(uint16_t numberOfRegistersToAllocate) {
           void *newMem = allocWp43(TO_BYTES(COMPLEX34_SIZE));
           if(newMem) {
             setRegisterDataType(r, dtComplex34, amNone);
+            if(getSystemFlag(FLAG_POLAR)) {
+              setRegisterTag(r, currentAngularMode | amPolar);
+            }
             setRegisterDataPointer(r, allocWp43(TO_BYTES(COMPLEX34_SIZE)));
             real34Zero(REGISTER_REAL34_DATA(r));
             real34Zero(REGISTER_IMAG34_DATA(r));
@@ -1124,10 +1130,18 @@ void clearRegister(calcRegister_t regist) {
     if(getRegisterDataType(regist) == dtComplex34) {
       real34Zero(REGISTER_REAL34_DATA(regist));
       real34Zero(REGISTER_IMAG34_DATA(regist));
-      setRegisterTag(regist, amNone);
+      if(getSystemFlag(FLAG_POLAR)) {
+        setRegisterTag(regist, currentAngularMode | amPolar);
+      } else {
+        setRegisterTag(regist, amNone);
+      }
     }
     else{
-      reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, amNone);
+      if(getSystemFlag(FLAG_POLAR)) {
+        reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, currentAngularMode | amPolar);
+      } else {
+        reallocateRegister(regist, dtComplex34, COMPLEX34_SIZE, amNone);        
+      }
       real34Zero(REGISTER_REAL34_DATA(regist));
       real34Zero(REGISTER_IMAG34_DATA(regist));
     }
@@ -1468,6 +1482,9 @@ void copySourceRegisterToDestRegister(calcRegister_t sourceRegister, calcRegiste
     }
     }
     reallocateRegister(destRegister, getRegisterDataType(sourceRegister), sizeInBlocks, amNone);
+
+//busy checking all re-allocate to see if we can do a bit of fuzzy logic determination of POLAR/RECR
+
     if(lastErrorCode == ERROR_RAM_FULL) {
       return;
     }
@@ -1622,7 +1639,7 @@ int16_t indirectAddressing(calcRegister_t regist, uint16_t parameterType, int16_
       sprintf(registerContent, "real34 %s %s", str, getAngularModeName(getRegisterAngularMode(regist)));
     }
 
-    else if(getRegisterDataType(regist) == dtComplex34) {
+    else if(getRegisterDataType(regist) == dtComplex34) {    //This needs to change to use the standard complex to string function
       real34ToString(REGISTER_REAL34_DATA(regist), str);
       sprintf(registerContent, "complex34 %s ", str);
 
@@ -1922,8 +1939,8 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
   if(getRegisterDataType(regist) != dataType || ((getRegisterDataType(regist) == dtString || getRegisterDataType(regist) == dtLongInteger || getRegisterDataType(regist) == dtReal34Matrix || getRegisterDataType(regist) == dtComplex34Matrix) && getRegisterMaxDataLength(regist) != dataSizeWithoutDataLenBlocks)) {
     if(!isMemoryBlockAvailable(dataSizeWithDataLenBlocks)) {
       #if defined(PC_BUILD)
-      printf("In function reallocateRegister: required %" PRIu16 " blocks for register #%" PRId16 " but no data blocks with enough size are available!\n", dataSizeWithoutDataLenBlocks, regist); fflush(stdout);
-#endif // PC_BUILD
+        printf("In function reallocateRegister: required %" PRIu16 " blocks for register #%" PRId16 " but no data blocks with enough size are available!\n", dataSizeWithoutDataLenBlocks, regist); fflush(stdout);
+      #endif // PC_BUILD
       displayCalcErrorMessage(ERROR_RAM_FULL, ERR_REGISTER_LINE, NIM_REGISTER_LINE);
       return;
     }
@@ -1942,9 +1959,13 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
       setRegisterMaxDataLength(regist, dataSizeWithoutDataLenBlocks);
     }
   }
-  else {
-    setRegisterTag(regist, tag);
+
+  if((dataType == dtComplex34) && getSystemFlag(FLAG_POLAR)) {
+    setRegisterTag(regist, currentAngularMode | amPolar);
+  } else {
+    setRegisterTag(regist, tag);    
   }
+
 //sprintf(tmpString, "reallocateRegister %d to %s tag=%u (%u bytes including dataLen) done", regist, getDataTypeName(dataType, false, false), tag, dataSizeWithDataLenBlocks);
 //memoryDump(tmpString);
 }
@@ -1952,6 +1973,18 @@ void reallocateRegister(calcRegister_t regist, uint32_t dataType, uint16_t dataS
 
 
 void fnToReal(uint16_t unusedButMandatoryParameter) {
+
+  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+    real_t b;
+    if(real34IsZero(REGISTER_IMAG34_DATA(REGISTER_X))) {
+      real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &b);
+      reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
+      convertRealToReal34ResultRegister(&b, REGISTER_X);
+      return;
+    }      
+  }
+//  else           //JM Remove comment if we don't want the usual data type error if the complex real part is not 0
+
   switch(getRegisterDataType(REGISTER_X)) {
     case dtLongInteger: {
       copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
