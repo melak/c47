@@ -3133,11 +3133,11 @@ void fnKeyCC(uint16_t complex_Type) {    //JM Using 'unusedButMandatoryParameter
         }
       #if (EXTRA_INFO_ON_CALC_ERROR == 1)
         if(!polarOk && getSystemFlag(FLAG_POLAR)) {
-          sprintf(errorMessage, "You cannot use CC or COMPLEX to create a Polar complex number with %s(%s) in X and %s(%s) in Y!",       getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getRegisterTagName((REGISTER_X), 0), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false), getRegisterTagName((REGISTER_Y), 0)); else
-        }
+          sprintf(errorMessage, "You cannot use CC or COMPLEX to create a Polar complex number with %s(%s) in X and %s(%s) in Y!",       getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getRegisterTagName((REGISTER_X), 0), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false), getRegisterTagName((REGISTER_Y), 0));
+        } else
         if(!rectOk && !getSystemFlag(FLAG_POLAR)) {
-          sprintf(errorMessage, "You cannot use CC or COMPLEX to create a Rectangular complex number with %s(%s) in X and %s(%s) in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getRegisterTagName((REGISTER_X), 0), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false), getRegisterTagName((REGISTER_Y), 0)); else
-        }
+          sprintf(errorMessage, "You cannot use CC or COMPLEX to create a Rectangular complex number with %s(%s) in X and %s(%s) in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getRegisterTagName((REGISTER_X), 0), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false), getRegisterTagName((REGISTER_Y), 0));
+        } else
         sprintf(errorMessage, "You cannot use CC or COMPLEX with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
         moreInfoOnError("In function fnKeyCC:", errorMessage, NULL, NULL);
       #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
