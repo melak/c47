@@ -32,33 +32,32 @@
 
 
 void fnToPolar2(uint16_t unusedButMandatoryParameter) {
-    uint32_t dataTypeX, dataTypeY, dataAtagX, dataAtagY;
-    if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-      setComplexRegisterPolarMode(REGISTER_X, amPolar);
-      if(getComplexRegisterAngularMode(REGISTER_X) == amNone) {
-        setComplexRegisterAngularMode(REGISTER_X, currentAngularMode);
-      }
-    } else {
-
-    //X and Y are both only checked for REAL - symmetrical. Therefore clasRP does not play a role in the type checking even when swapped
-    dataTypeX = getRegisterDataType(REGISTER_X);
-    dataAtagX  = getRegisterAngularMode(REGISTER_X);
-    dataTypeY = getRegisterDataType(REGISTER_Y);      
-    dataAtagY  = getRegisterAngularMode(REGISTER_Y);
-
-    // >P needs rectangular coords, i.e. X=real and Y=real
-    if ( (( dataTypeX == dtLongInteger || (dataTypeX == dtReal34 && dataAtagX == amNone  ))         //radius not allowed to be an angle if polar entry
-       && ( dataTypeY == dtLongInteger || (dataTypeY == dtReal34 && dataAtagY == amNone  )) )       //real not allowed to be an angle if rect entry
-        ) {  //imag not allowed to be an angle if rect entry
-      fnToPolar(0);
+  uint32_t dataTypeX, dataTypeY, dataAtagX, dataAtagY;
+  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+    setComplexRegisterPolarMode(REGISTER_X, amPolar);
+    if(getComplexRegisterAngularMode(REGISTER_X) == amNone) {
+      setComplexRegisterAngularMode(REGISTER_X, currentAngularMode);
     }
-    else {
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "You cannot use >R or >P with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
-      moreInfoOnError("In function fnToPolar2:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    }
+    return;
+  }
+  //X and Y are both only checked for REAL - symmetrical. Therefore clasRP does not play a role in the type checking even when swapped
+  dataTypeX = getRegisterDataType(REGISTER_X);
+  dataAtagX  = getRegisterAngularMode(REGISTER_X);
+  dataTypeY = getRegisterDataType(REGISTER_Y);      
+  dataAtagY  = getRegisterAngularMode(REGISTER_Y);
+
+  // >P needs rectangular coords, i.e. X=real and Y=real
+  if ( (( dataTypeX == dtLongInteger || (dataTypeX == dtReal34 && dataAtagX == amNone  ))         //radius not allowed to be an angle if polar entry
+     && ( dataTypeY == dtLongInteger || (dataTypeY == dtReal34 && dataAtagY == amNone  )) )       //real not allowed to be an angle if rect entry
+      ) {  //imag not allowed to be an angle if rect entry
+    fnToPolar(0);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    sprintf(errorMessage, "You cannot use >R or >P with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
+    moreInfoOnError("In function fnToPolar2:", errorMessage, NULL, NULL);
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 

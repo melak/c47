@@ -33,33 +33,32 @@
 
 
 void fnToRect2(uint16_t unusedButMandatoryParameter) {
-    uint32_t dataTypeX, dataTypeY, dataAtagX;
-    if(getRegisterDataType(REGISTER_X) == dtComplex34) {
-      setComplexRegisterPolarMode(REGISTER_X, ~amPolar);
-      setComplexRegisterAngularMode(REGISTER_X, amNone);
-    } else {
-
-    if(getSystemFlag(FLAG_HPRP)) {
-      dataTypeX = getRegisterDataType(REGISTER_X); //original
-      dataAtagX = getRegisterAngularMode(REGISTER_X);
-      dataTypeY = getRegisterDataType(REGISTER_Y);      
-    } else {
-      dataTypeY = getRegisterDataType(REGISTER_X); //swapped
-      dataTypeX = getRegisterDataType(REGISTER_Y);
-      dataAtagX  = getRegisterAngularMode(REGISTER_Y);
-    }
-    // >R needs polar coords, i.e. X=r and Y=angle                                                 //imag not allowed to be an angle if rect entry:
-    if((( dataTypeX == dtLongInteger || (dataTypeX == dtReal34 && dataAtagX == amNone   ))         //radius not allowed to be an angle if polar entry
-      &&( dataTypeY == dtLongInteger || (dataTypeY == dtReal34 /*can be angle or not */ )) )  ) {  //real not allowed to be an angle if rect entry
-    fnToRect(0);
-    }
-    else {
-      displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
-    #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "You cannot use >R or >P with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
-      moreInfoOnError("In function fnToRect2:", errorMessage, NULL, NULL);
-    #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
-    }
+  uint32_t dataTypeX, dataTypeY, dataAtagX;
+  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+    setComplexRegisterPolarMode(REGISTER_X, ~amPolar);
+    setComplexRegisterAngularMode(REGISTER_X, amNone);
+    return;
+  }
+  if(getSystemFlag(FLAG_HPRP)) {
+    dataTypeX = getRegisterDataType(REGISTER_X); //original
+    dataAtagX = getRegisterAngularMode(REGISTER_X);
+    dataTypeY = getRegisterDataType(REGISTER_Y);      
+  } else {
+    dataTypeY = getRegisterDataType(REGISTER_X); //swapped
+    dataTypeX = getRegisterDataType(REGISTER_Y);
+    dataAtagX  = getRegisterAngularMode(REGISTER_Y);
+  }
+  // >R needs polar coords, i.e. X=r and Y=angle                                                 //imag not allowed to be an angle if rect entry:
+  if((( dataTypeX == dtLongInteger || (dataTypeX == dtReal34 && dataAtagX == amNone   ))         //radius not allowed to be an angle if polar entry
+    &&( dataTypeY == dtLongInteger || (dataTypeY == dtReal34 /*can be angle or not */ )) )  ) {  //real not allowed to be an angle if rect entry
+  fnToRect(0);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    sprintf(errorMessage, "You cannot use >R or >P with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
+    moreInfoOnError("In function fnToRect2:", errorMessage, NULL, NULL);
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }
 }
 
