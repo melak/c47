@@ -338,50 +338,13 @@ void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
 
 
 void fnRoundingMode(uint16_t RM) {
-  roundingMode = RM;
-
-  switch(RM) {
-    case 0: {
-      ctxtReal34.round = DEC_ROUND_HALF_EVEN;
-      break;
-    }
-
-    case 1: {
-      ctxtReal34.round = DEC_ROUND_HALF_UP;
-      break;
-    }
-
-    case 2: {
-      ctxtReal34.round = DEC_ROUND_HALF_DOWN;
-      break;
-    }
-
-    case 3: {
-      ctxtReal34.round = DEC_ROUND_UP;
-      break;
-    }
-
-    case 4: {
-      ctxtReal34.round = DEC_ROUND_DOWN;
-      break;
-    }
-
-    case 5: {
-      ctxtReal34.round = DEC_ROUND_CEILING;
-      break;
-    }
-
-    case 6: {
-      ctxtReal34.round = DEC_ROUND_FLOOR;
-      break;
-    }
-
-    default: {
-      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "fnRoundingMode", RM, "RM");
-      sprintf(errorMessage + strlen(errorMessage), "Must be from 0 to 6");
-      displayBugScreen(errorMessage);
-      break;
-    }
+  if (RM < sizeof(roundingModeTable) / sizeof(*roundingModeTable)) {
+    roundingMode = RM;
+    ctxtReal34.round = roundingModeTable[RM];
+  } else {
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "fnRoundingMode", RM, "RM");
+    sprintf(errorMessage + strlen(errorMessage), "Must be from 0 to 6");
+    displayBugScreen(errorMessage);
   }
 }
 
