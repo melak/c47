@@ -51,7 +51,7 @@ void fnCxToRe(uint16_t unusedButMandatoryParameter) {
     reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
 
     setSystemFlag(FLAG_ASLIFT);
-    if(getComplexRegisterPolarMode(REGISTER_L) & amPolar) { // polar mode
+    if(getComplexRegisterPolarMode(REGISTER_L)) { // polar mode
       if(getComplexRegisterAngularMode(REGISTER_L) != amNone) {
         tempAngle = getComplexRegisterAngularMode(REGISTER_L);
       }

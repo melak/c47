@@ -284,9 +284,12 @@ const char * getRegisterTagName(calcRegister_t regist, bool_t padWithBlanks) {
       }
 
     case dtComplex34: {
-      if (getRegisterTag(regist) & amPolar)
-        return "Polar   "; else
+      if (getComplexRegisterPolarMode(regist)) {
+        return "Polar   "; 
+      }
+      else {
         return "Rect    "; 
+      }
     }
     
     case dtString:

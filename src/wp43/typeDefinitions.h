@@ -132,20 +132,17 @@ typedef enum {
  * Angular units.
  */
 typedef enum {
-  amRadian =  0, // radian must be 0  | This is because of the tables angle45,
-  amGrad   =  1, // grad   must be 1  | angle90, and angle180 for angle reduction
-  amDegree =  2, // degree must be 2  | before Taylor trig computation.
-  amDMS    =  3,
-  amMultPi =  4,
-  amNone   =  5,
-  amSecond =  6, // not an angular but a time unit: for the routine unified with the real type
-  TM_HMS   =  7, // JM not an angular but a time unit: for the C43 usage
+  amRadian    =  0, // radian must be 0  | This is because of the tables angle45,
+  amGrad      =  1, // grad   must be 1  | angle90, and angle180 for angle reduction
+  amDegree    =  2, // degree must be 2  | before Taylor trig computation.
+  amDMS       =  3,
+  amMultPi    =  4,
+  amNone      =  5,
+  amSecond    =  6, // not an angular but a time unit: for the routine unified with the real type
+  TM_HMS      =  7, // JM not an angular but a time unit: for the C43 usage
   amAngleMask = 15,
-  amPolar = 16   // JM bit 4 of the 5 bits is used for Polar
-
+  amPolar     = 16   // JM bit 4 of the 5 bits is used for Polar
 } angularMode_t;
-//#define TM_HMS    7   //JM
-
 
 
 /**
