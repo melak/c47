@@ -1945,7 +1945,7 @@
 #define ITM_INP_DEF_CPXDP           1889
 #define ITM_INP_DEF_SI              1890
 #define ITM_INP_DEF_LI              1891
-#define MNU_1892                    1892
+#define ITM_SI_P                    1892
 #define KEY_fg                      1893
 #define MNU_1894                    1894
 #define ITM_USER_C43ALTB            1895
