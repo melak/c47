@@ -102,6 +102,10 @@ static void configCommon(int idx) {
   firstGregorianDay = configSettings[idx].gregorianDay;
 }
 
+void fnConfigDefault(uint16_t unusedButMandatoryParameter) {
+  configCommon(CFG_DFLT);
+}
+
 void fnConfigChina(uint16_t unusedButMandatoryParameter) {
   configCommon(CFG_CHINA);
 }

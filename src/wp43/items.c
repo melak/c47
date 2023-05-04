@@ -450,6 +450,7 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   void fnConfigEurope              (uint16_t unusedButMandatoryParameter) {}
   void fnConfigIndia               (uint16_t unusedButMandatoryParameter) {}
   void fnConfigJapan               (uint16_t unusedButMandatoryParameter) {}
+  void fnConfigDefault             (uint16_t unusedButMandatoryParameter) {}
   void fnSetTime                   (uint16_t unusedButMandatoryParameter) {}
   void fnConfigUk                  (uint16_t unusedButMandatoryParameter) {}
   void fnConfigUsa                 (uint16_t unusedButMandatoryParameter) {}
@@ -2677,7 +2678,7 @@ TO_QSPI const item_t indexOfItems[] = {
 /* 1593 */  { fnConfigEurope,               NOPARAM,                     "SETEUR",                                      "EUROPE",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1594 */  { fnConfigIndia,                NOPARAM,                     "SETIND",                                      "INDIA",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1595 */  { fnConfigJapan,                NOPARAM,                     "SETJPN",                                      "JAPAN",                                       (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/* 1596 */  { itemToBeCoded,                NOPARAM,                     "1596",                                        "1596",                                        (0 << TAM_MAX_BITS) |     0, CAT_FREE | SLS_UNCHANGED | US_UNCHANGED | EIM_DISABLED | PTP_DISABLED     },
+/* 1596 */  { fnConfigDefault,              NOPARAM,                     "SETDFLT",                                     "SETDFLT",                                     (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1597 */  { fnSetTime,                    NOPARAM,                     "SETTIM",                                      "SETTIM",                                      (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1598 */  { fnConfigUk,                   NOPARAM,                     "SETUK",                                       "UK",                                          (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /* 1599 */  { fnConfigUsa,                  NOPARAM,                     "SETUSA",                                      "USA",                                         (0 << TAM_MAX_BITS) |     0, CAT_FNCT | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
