@@ -1787,7 +1787,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
           nimNumberPart = savedNimNumberPart;
 
           // Complex "separator"
-          if(getSystemFlag(FLAG_POLAR)) { // polar mode
+          if(getSystemFlag(FLAG_POLAR) && !temporaryFlagRect) { // polar mode
             strcat(nimBufferDisplay, STD_SPACE_4_PER_EM STD_MEASURED_ANGLE STD_SPACE_4_PER_EM);
             if(aimBuffer[imaginaryMantissaSignLocation] == '-') {
               strcat(nimBufferDisplay, "-");
@@ -2108,7 +2108,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
       real34SetNegativeSign(dest_i);
     }
 
-    if(getSystemFlag(FLAG_POLAR)) { // polar mode
+    if(getSystemFlag(FLAG_POLAR) && !temporaryFlagRect) { // polar mode
       if(real34CompareEqual(dest_r, const34_0)) {
         real34Zero(dest_i);
       }
@@ -2128,6 +2128,7 @@ uint16_t convertItemToSubOrSup(uint16_t item, int16_t subOrSup) {
         realToReal34(&theta,     dest_i);
       }
     }
+    temporaryFlagRect = false;
     fnSetFlag(FLAG_CPXRES);
   }
 

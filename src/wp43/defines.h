@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "108_09k"
+ #define VERSION1 "108_09m"
 
 
   #undef SAVE_SPACE_DM42
@@ -334,9 +334,10 @@
 #define ERROR_TOO_MANY_VARIABLES                  49 // unlikely
 #define ERROR_NON_PROGRAMMABLE_COMMAND            50
 #define ERROR_NO_GLOBAL_LABEL                     51
-#define ERROR_BAD_INPUT                           52 // This error is not in ReM and cannot occur (theoretically).
+#define ERROR_INVALID_DATA_TYPE_FOR_POLAR_RECT    52
+#define ERROR_BAD_INPUT                           53 // This error is not in ReM and cannot occur (theoretically).
 
-#define NUMBER_OF_ERROR_CODES                     53
+#define NUMBER_OF_ERROR_CODES                     54
 #define SIZE_OF_EACH_ERROR_MESSAGE                48
 
 #define NUMBER_OF_BUG_SCREEN_MESSAGES             10
@@ -407,7 +408,8 @@
 #define FLAG_USB                              0xc028
 #define FLAG_ENDPMT                           0xc029
 #define FLAG_FRCSRN                           0x802a
-#define NUMBER_OF_SYSTEM_FLAGS                    43
+#define FLAG_HPRP                             0x802b
+#define NUMBER_OF_SYSTEM_FLAGS                    44
 
 typedef enum {
   LI_ZERO     = 0, // Long integer sign 0

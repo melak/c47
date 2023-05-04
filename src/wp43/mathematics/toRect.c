@@ -32,15 +32,56 @@
 
 
 
+void fnToRect2(uint16_t unusedButMandatoryParameter) {
+  uint32_t dataTypeX, dataTypeY, dataAtagX;
+  if(getRegisterDataType(REGISTER_X) == dtComplex34) {
+    setComplexRegisterPolarMode(REGISTER_X, ~amPolar);
+    setComplexRegisterAngularMode(REGISTER_X, amNone);
+    return;
+  }
+  if(getSystemFlag(FLAG_HPRP)) {
+    dataTypeX = getRegisterDataType(REGISTER_X); //original
+    dataAtagX = getRegisterAngularMode(REGISTER_X);
+    dataTypeY = getRegisterDataType(REGISTER_Y);      
+  } else {
+    dataTypeY = getRegisterDataType(REGISTER_X); //swapped
+    dataTypeX = getRegisterDataType(REGISTER_Y);
+    dataAtagX  = getRegisterAngularMode(REGISTER_Y);
+  }
+  // >R needs polar coords, i.e. X=r and Y=angle                                                 //imag not allowed to be an angle if rect entry:
+  if((( dataTypeX == dtLongInteger || (dataTypeX == dtReal34 && dataAtagX == amNone   ))         //radius not allowed to be an angle if polar entry
+    &&( dataTypeY == dtLongInteger || (dataTypeY == dtReal34 /*can be angle or not */ )) )  ) {  //real not allowed to be an angle if rect entry
+  fnToRect(0);
+  }
+  else {
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X); // Invalid input data type for this operation
+  #if (EXTRA_INFO_ON_CALC_ERROR == 1)
+    sprintf(errorMessage, "You cannot use >R or >P with %s in X and %s in Y!", getDataTypeName(getRegisterDataType(REGISTER_X), true, false), getDataTypeName(getRegisterDataType(REGISTER_Y), true, false));
+    moreInfoOnError("In function fnToRect2:", errorMessage, NULL, NULL);
+  #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
+  }
+}
+
+
+
 void fnToRect(uint16_t unusedButMandatoryParameter) {
   uint32_t dataTypeX, dataTypeY;
+  calcRegister_t REG_X, REG_Y;
   real_t x, y;
 
-  dataTypeX = getRegisterDataType(REGISTER_X);
-  dataTypeY = getRegisterDataType(REGISTER_Y);
+  if(getSystemFlag(FLAG_HPRP)) {
+    REG_X = REGISTER_X;
+    REG_Y = REGISTER_Y;
+  } else {
+    REG_X = REGISTER_Y;
+    REG_Y = REGISTER_X;    
+  }
+
+  dataTypeX = getRegisterDataType(REG_X);
+  dataTypeY = getRegisterDataType(REG_Y);      
 
   if((dataTypeX == dtReal34 || dataTypeX == dtLongInteger) && (dataTypeY == dtReal34 || dataTypeY == dtLongInteger)) {
-    angularMode_t yAngularMode = getRegisterAngularMode(REGISTER_Y);
+    angularMode_t yAngularMode = getRegisterAngularMode(REG_Y);
 
     if(!saveLastX()) {
     return;
@@ -48,11 +89,11 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
 
     switch(dataTypeX) {
       case dtLongInteger: {
-        convertLongIntegerRegisterToReal(REGISTER_X, &x, &ctxtReal39);
+        convertLongIntegerRegisterToReal(REG_X, &x, &ctxtReal39);
         break;
       }
       case dtReal34: {
-        real34ToReal(REGISTER_REAL34_DATA(REGISTER_X), &x);
+        real34ToReal(REGISTER_REAL34_DATA(REG_X), &x);
         break;
       }
       default: {
@@ -67,13 +108,13 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
 
     switch(dataTypeY) {
       case dtLongInteger: {
-        convertLongIntegerRegisterToReal(REGISTER_Y, &y, &ctxtReal39);
+        convertLongIntegerRegisterToReal(REG_Y, &y, &ctxtReal39);
         convertAngleFromTo(&y, currentAngularMode, amRadian, &ctxtReal39);
         break;
       }
 
       case dtReal34: {
-        real34ToReal(REGISTER_REAL34_DATA(REGISTER_Y), &y);
+        real34ToReal(REGISTER_REAL34_DATA(REG_Y), &y);
         convertAngleFromTo(&y, yAngularMode, amRadian, &ctxtReal39);
         break;
       }
@@ -86,17 +127,22 @@ void fnToRect(uint16_t unusedButMandatoryParameter) {
 
     realPolarToRectangular(&x, &y, &x, &y, &ctxtReal39);
 
-    reallocateRegister(REGISTER_X, dtReal34, REAL34_SIZE, amNone);
-    reallocateRegister(REGISTER_Y, dtReal34, REAL34_SIZE, amNone);
-    convertRealToReal34ResultRegister(&x, REGISTER_X);
-    convertRealToReal34ResultRegister(&y, REGISTER_Y);
+    reallocateRegister(REG_X, dtReal34, REAL34_SIZE, amNone);
+    reallocateRegister(REG_Y, dtReal34, REAL34_SIZE, amNone);
 
-    temporaryInformation = TI_X_Y;
+    convertRealToReal34ResultRegister(&x, REG_X);
+    convertRealToReal34ResultRegister(&y, REG_Y);
+
+    if(getSystemFlag(FLAG_HPRP)) {
+      temporaryInformation = TI_X_Y;
+    } else {
+      temporaryInformation = TI_X_Y_SWAPPED;
+    }
   }
   else {
-    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REGISTER_X);
+    displayCalcErrorMessage(ERROR_INVALID_DATA_TYPE_FOR_OP, ERR_REGISTER_LINE, REG_X);
     #if (EXTRA_INFO_ON_CALC_ERROR == 1)
-      sprintf(errorMessage, "cannot convert (%s, %s) to rectangular coordinates!", getDataTypeName(getRegisterDataType(REGISTER_X), false, false), getDataTypeName(getRegisterDataType(REGISTER_Y), false, false));
+      sprintf(errorMessage, "cannot convert (%s, %s) to rectangular coordinates!", getDataTypeName(getRegisterDataType(REG_X), false, false), getDataTypeName(getRegisterDataType(REG_Y), false, false));
       moreInfoOnError("In function fnToRect:", errorMessage, NULL, NULL);
     #endif // (EXTRA_INFO_ON_CALC_ERROR == 1)
   }

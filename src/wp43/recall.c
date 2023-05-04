@@ -279,7 +279,7 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(eRPN);             
     recallFromDtConfigDescriptor(HOME3);            
     recallFromDtConfigDescriptor(ShiftTimoutMode);  
-    recallFromDtConfigDescriptor(compatibility_bool);      
+    recallFromDtConfigDescriptor(CPXMULT);                                  //JMCFG^^         ; replaced compatibility_bool 
     recallFromDtConfigDescriptor(SH_BASE_HOME);     
     recallFromDtConfigDescriptor(Norm_Key_00_VAR); 
     recallFromDtConfigDescriptor(Input_Default);   

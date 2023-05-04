@@ -87,6 +87,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   { ITM_BCD9,             BCD9c,                  RB_BCD },  //
   { ITM_BCD10,            BCD10c,                 RB_BCD },  //
 
+  { ITM_HPRP,             PR_HPRP,                CB_JC },  //  --
   { ITM_DENANY,           DM_ANY,                 CB_JC },  //  --fnDenMode
   { ITM_DENFIX,           DM_FIX,                 CB_JC },  //  --fnDenMode
 
@@ -155,6 +156,7 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   { ITM_TOPHEX,           JC_TOPHEX,              CB_JC },  //
 
   { ITM_SI_All,           JC_SI_All,              CB_JC },  //
+  { ITM_CPXMULT,          JC_CPXMULT,             CB_JC },  //
 
   { ITM_2BIN,             2,                      RB_HX  }, //fnChangeBaseJM
   { ITM_2OCT,             8,                      RB_HX  }, //fnChangeBaseJM
@@ -328,6 +330,11 @@ int8_t fnCbIsSet(int16_t item) {
         }
         break;
 
+        case PR_HPRP: {
+          cb_param = getSystemFlag(FLAG_HPRP);
+        }
+        break;
+
         case DM_ANY: {
           cb_param = getSystemFlag(FLAG_DENANY);
         }
@@ -470,6 +477,11 @@ int8_t fnCbIsSet(int16_t item) {
 
         case JC_SI_All: {
           cb_param = SI_All;
+        }
+        break;
+
+        case JC_CPXMULT: {
+          cb_param = CPXMULT;
         }
         break;
 
