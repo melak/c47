@@ -1986,6 +1986,7 @@ void fnToReal(uint16_t unusedButMandatoryParameter) {
     }
 
     case dtDate: {
+      temporaryInformation = TI_FROM_DATEX;
       copySourceRegisterToDestRegister(REGISTER_X, REGISTER_L);
       convertDateRegisterToReal34Register(REGISTER_X, REGISTER_X);
       break;

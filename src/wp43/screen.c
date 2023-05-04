@@ -2155,6 +2155,16 @@ void hideFunctionName(void) {
         showString(versionStr2, &standardFont, 1, Y_POSITION_OF_REGISTER_Y_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
       }
 
+      else if(temporaryInformation == TI_DISP_JULIAN) {
+          real34_t j;
+          char tmpStr2[20];
+          uInt32ToReal34(firstGregorianDay, &j);
+          julianDayToInternalDate(&j,REGISTER_REAL34_DATA(TEMP_REGISTER_1));
+          dateToDisplayString(TEMP_REGISTER_1, tmpStr2);
+          sprintf(tmpString, "1st Gregorian day set: %s (JD %" PRId32 ")", tmpStr2, firstGregorianDay);
+          showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + TEMPORARY_INFO_OFFSET + 6, vmNormal, true, true);
+      }
+
       else if(temporaryInformation == TI_KEYS && regist == REGISTER_X) {
         showString(errorMessage, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE - REGISTER_LINE_HEIGHT*(regist - REGISTER_X) + 6, vmNormal, true, true);
       }
@@ -3231,6 +3241,20 @@ void hideFunctionName(void) {
             else if(temporaryInformation == TI_FROM_MS_DEG) {
               if(regist == REGISTER_X) {
                 strcpy(prefix, "dd.mmss" STD_SPACE_FIGURE " :");
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              }
+            }
+            else if(temporaryInformation == TI_FROM_DATEX) {
+              if(regist == REGISTER_X) {
+                if(getSystemFlag(FLAG_DMY)) {
+                  strcpy(prefix, "dd.mmyyyy" STD_SPACE_FIGURE " :");
+                }
+                else if(getSystemFlag(FLAG_MDY)) {
+                  strcpy(prefix, "mm.ddyyyy" STD_SPACE_FIGURE " :");
+                }
+                else { // YMD
+                  strcpy(prefix, "yyyy.mmdd" STD_SPACE_FIGURE " :");
+                }
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
             }

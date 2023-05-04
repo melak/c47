@@ -60,29 +60,7 @@
 
 #include "wp43.h"
 
-enum {
-    CFG_DFLT,
-    CFG_CHINA, CFG_EUROPE, CFG_INDIA, CFG_JAPAN, CFG_UK, CFG_USA
-};
 
-TO_QSPI static const struct {
-    unsigned grouping : 3;
-    unsigned decimalDot : 1;
-    unsigned tdm24 : 1;
-    unsigned dmy : 1;
-    unsigned mdy : 1;
-    unsigned ymd : 1;
-    unsigned gregorianDay : 22;
-} configSettings[] = {
-                /*   G  . 24  D M Y  Gregorian */
-    [CFG_DFLT  ] = { 3, 1, 1, 0,0,1, 2361222 },    /* 14 Sept 1752 */
-    [CFG_CHINA ] = { 4, 1, 1, 0,0,1, 2433191 },    /* 1 Oct 1949 */
-    [CFG_EUROPE] = { 3, 0, 1, 1,0,0, 2299161 },    /* 15 Oct 1582 */
-    [CFG_INDIA ] = { 3, 1, 1, 1,0,0, 2361222 },    /* 14 Sept 1752 */
-    [CFG_JAPAN ] = { 3, 1, 1, 0,0,1, 2405160 },    /* 1 Jan 1873 */
-    [CFG_UK    ] = { 3, 1, 0, 1,0,0, 2361222 },    /* 14 Sept 1752 */
-    [CFG_USA   ] = { 3, 1, 0, 0,1,0, 2361222 },    /* 14 Sept 1752 */
-};
 
 static void setFlag(int f, int v) {
   if (v) {
@@ -92,7 +70,7 @@ static void setFlag(int f, int v) {
   }
 }
 
-static void configCommon(int idx) {
+void configCommon(uint16_t idx) {
   groupingGap = configSettings[idx].grouping;
   setFlag(FLAG_DECIMP, configSettings[idx].decimalDot);
   setFlag(FLAG_TDM24, configSettings[idx].tdm24);
@@ -100,34 +78,7 @@ static void configCommon(int idx) {
   setFlag(FLAG_MDY, configSettings[idx].mdy);
   setFlag(FLAG_YMD, configSettings[idx].ymd);
   firstGregorianDay = configSettings[idx].gregorianDay;
-}
-
-void fnConfigDefault(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_DFLT);
-}
-
-void fnConfigChina(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_CHINA);
-}
-
-void fnConfigEurope(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_EUROPE);
-}
-
-void fnConfigIndia(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_INDIA);
-}
-
-void fnConfigJapan(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_JAPAN);
-}
-
-void fnConfigUk(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_UK);
-}
-
-void fnConfigUsa(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_USA);
+  temporaryInformation = TI_DISP_JULIAN;
 }
 
 

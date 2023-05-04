@@ -1643,7 +1643,7 @@
 #define ITM_SETEUR                  1593
 #define ITM_SETIND                  1594
 #define ITM_SETJPN                  1595
-#define MNU_1596                    1596
+#define ITM_SETDFLT                 1596
 #define ITM_SETTIM                  1597
 #define ITM_SETUK                   1598
 #define ITM_SETUSA                  1599
