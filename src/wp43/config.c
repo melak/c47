@@ -61,6 +61,24 @@
 #include "wp43.h"
 
 
+TO_QSPI static const struct {
+    unsigned grouping : 3;
+    unsigned decimalDot : 1;
+    unsigned tdm24 : 1;
+    unsigned dmy : 1;
+    unsigned mdy : 1;
+    unsigned ymd : 1;
+    unsigned gregorianDay : 22;
+} configSettings[] = {
+                /*   G  . 24  D M Y  Gregorian */
+    [CFG_DFLT  ] = { 3, 1, 1, 0,0,1, 2361222 },    /* 14 Sept 1752 */
+    [CFG_CHINA ] = { 4, 1, 1, 0,0,1, 2433191 },    /* 1 Oct 1949 */
+    [CFG_EUROPE] = { 3, 0, 1, 1,0,0, 2299161 },    /* 15 Oct 1582 */
+    [CFG_INDIA ] = { 3, 1, 1, 1,0,0, 2361222 },    /* 14 Sept 1752 */
+    [CFG_JAPAN ] = { 3, 1, 1, 0,0,1, 2405160 },    /* 1 Jan 1873 */
+    [CFG_UK    ] = { 3, 1, 0, 1,0,0, 2361222 },    /* 14 Sept 1752 */
+    [CFG_USA   ] = { 3, 1, 0, 0,1,0, 2361222 },    /* 14 Sept 1752 */
+};
 
 static void setFlag(int f, int v) {
   if (v) {
