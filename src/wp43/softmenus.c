@@ -654,13 +654,14 @@ TO_QSPI const int16_t menu_HOME[]     = { //JM
 
 
 // 10 - 11 NIGEL SUGGESTED 36 CELLS OF ALL THE BLUE ONES                                                                                                                                                                         //JM HOME
-/* g       */                                ITM_TIMER,            ITM_RBR,          -MNU_INFO,        -MNU_CONST,       -MNU_XFN,         -MNU_PLOT,     
-/* g       */                                ITM_VIEW,             ITM_STATUS,       -MNU_FIN,         -MNU_UNITCONV,    -MNU_BITS,        -MNU_INTS,    
-/* g       */                                -MNU_CLK,             -MNU_PARTS,       -MNU_ASN,         -MNU_LOOP,        -MNU_TEST,        -MNU_ALPHAFN,  
-         
-/* g       */                                ITM_TGLFRT,           ITM_HASH_JM,      ITM_ms,           ITM_dotD,         ITM_toREC2,       ITM_toPOL2,    
-/* g       */                                ITM_MAGNITUDE,        ITM_ARG,          ITM_XTHROOT,      ITM_CC,           ITM_LBL,          ITM_RTN,      
-/* g       */                                -MNU_PRINT,           -MNU_CPX,         ITM_Rup,          -MNU_STK,         -MNU_EXP,         ITM_UNDO,       
+                                             ITM_SNAP,         -MNU_ASN,         -MNU_ALPHAFN,     -MNU_LOOP,        -MNU_IO,              -MNU_TEST,
+                                             ITM_FLGSV,        -MNU_BITS,        -MNU_CLK,         -MNU_PARTS,       -MNU_INTS,            -MNU_INFO,
+                                             ITM_RBR,          -MNU_HOME,        -MNU_FIN,         -MNU_XFN,         -MNU_PLOTTING,        ITM_TIMER,
+
+                                             -MNU_CONST,           -MNU_CPX,         -MNU_STK,         -MNU_TRG_C47,     -MNU_EXP,         -MNU_CLR,      
+                                             ITM_ARG,              ITM_DELTAPC,      ITM_XTHROOT,      ITM_op_j,         ITM_toREC2,       ITM_toPOL2,    
+                                             ITM_TGLFRT,           ITM_HASH_JM,      ITM_ms,           ITM_dotD,         ITM_LBL,          ITM_GTO,       
+
 
 
 /*HOME+1*/
