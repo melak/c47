@@ -72,6 +72,13 @@ void     fnConfigUk            (uint16_t unusedButMandatoryParameter);
 void     fnConfigUsa           (uint16_t unusedButMandatoryParameter);
 
 /********************************************//**
+ * \brief Sets the calc to back to default standards
+ *
+ * \param[in] unusedButMandatoryParameter uint16_t
+ ***********************************************/
+void     fnConfigDefault       (uint16_t unusedButMandatoryParameter);
+
+/********************************************//**
  * \brief Sets the integer mode
  *
  * \param[in] mode uint16_t Integer mode

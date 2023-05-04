@@ -60,76 +60,74 @@
 
 #include "wp43.h"
 
+enum {
+    CFG_DFLT,
+    CFG_CHINA, CFG_EUROPE, CFG_INDIA, CFG_JAPAN, CFG_UK, CFG_USA
+};
 
+TO_QSPI static const struct {
+    unsigned grouping : 3;
+    unsigned decimalDot : 1;
+    unsigned tdm24 : 1;
+    unsigned dmy : 1;
+    unsigned mdy : 1;
+    unsigned ymd : 1;
+    unsigned gregorianDay : 22;
+} configSettings[] = {
+                /*   G  . 24  D M Y  Gregorian */
+    [CFG_DFLT  ] = { 3, 1, 1, 0,0,1, 2361222 },    /* 14 Sept 1752 */
+    [CFG_CHINA ] = { 4, 1, 1, 0,0,1, 2433191 },    /* 1 Oct 1949 */
+    [CFG_EUROPE] = { 3, 0, 1, 1,0,0, 2299161 },    /* 15 Oct 1582 */
+    [CFG_INDIA ] = { 3, 1, 1, 1,0,0, 2361222 },    /* 14 Sept 1752 */
+    [CFG_JAPAN ] = { 3, 1, 1, 0,0,1, 2405160 },    /* 1 Jan 1873 */
+    [CFG_UK    ] = { 3, 1, 0, 1,0,0, 2361222 },    /* 14 Sept 1752 */
+    [CFG_USA   ] = { 3, 1, 0, 0,1,0, 2361222 },    /* 14 Sept 1752 */
+};
+
+static void setFlag(int f, int v) {
+  if (v) {
+    setSystemFlag(f);
+  } else {
+    clearSystemFlag(f);
+  }
+}
+
+static void configCommon(int idx) {
+  groupingGap = configSettings[idx].grouping;
+  setFlag(FLAG_DECIMP, configSettings[idx].decimalDot);
+  setFlag(FLAG_TDM24, configSettings[idx].tdm24);
+  setFlag(FLAG_DMY, configSettings[idx].dmy);
+  setFlag(FLAG_MDY, configSettings[idx].mdy);
+  setFlag(FLAG_YMD, configSettings[idx].ymd);
+  firstGregorianDay = configSettings[idx].gregorianDay;
+}
+
+void fnConfigDefault(uint16_t unusedButMandatoryParameter) {
+  configCommon(CFG_DFLT);
+}
 
 void fnConfigChina(uint16_t unusedButMandatoryParameter) {
-  setSystemFlag(FLAG_DECIMP);
-  groupingGap = 4;
-  setSystemFlag(FLAG_TDM24); // time format = 24H
-  clearSystemFlag(FLAG_DMY); // date format
-  clearSystemFlag(FLAG_MDY); // date format
-  setSystemFlag(FLAG_YMD);   // date format
-  firstGregorianDay = 2433191 /* 1 Oct 1949 */;  // JDN of the first day in the Gregorian calendar
+  configCommon(CFG_CHINA);
 }
-
-
 
 void fnConfigEurope(uint16_t unusedButMandatoryParameter) {
-  clearSystemFlag(FLAG_DECIMP);
-  groupingGap = 3;
-  setSystemFlag(FLAG_TDM24); // time format = 24H
-  clearSystemFlag(FLAG_MDY); // date format
-  clearSystemFlag(FLAG_YMD); // date format
-  setSystemFlag(FLAG_DMY);   // date format
-  firstGregorianDay = 2299161 /* 15 Oct 1582 */; // JDN of the first day in the Gregorian calendar
+  configCommon(CFG_EUROPE);
 }
-
-
 
 void fnConfigIndia(uint16_t unusedButMandatoryParameter) {
-  setSystemFlag(FLAG_DECIMP);
-  groupingGap = 3;
-  setSystemFlag(FLAG_TDM24); // time format = 24H
-  clearSystemFlag(FLAG_MDY); // date format
-  clearSystemFlag(FLAG_YMD); // date format
-  setSystemFlag(FLAG_DMY);   // date format
-  firstGregorianDay = 2361222 /* 14 Sept 1752 */; // JDN of the first day in the Gregorian calendar
+  configCommon(CFG_INDIA);
 }
-
-
 
 void fnConfigJapan(uint16_t unusedButMandatoryParameter) {
-  setSystemFlag(FLAG_DECIMP);
-  groupingGap = 3;
-  setSystemFlag(FLAG_TDM24); // time format = 24H
-  clearSystemFlag(FLAG_MDY); // date format
-  clearSystemFlag(FLAG_DMY); // date format
-  setSystemFlag(FLAG_YMD);   // date format
-  firstGregorianDay = 2405160 /* 1 Jan 1873 */; // JDN of the first day in the Gregorian calendar
+  configCommon(CFG_JAPAN);
 }
-
-
 
 void fnConfigUk(uint16_t unusedButMandatoryParameter) {
-  setSystemFlag(FLAG_DECIMP);
-  groupingGap = 3;
-  clearSystemFlag(FLAG_TDM24); // time format = 12H
-  clearSystemFlag(FLAG_MDY);   // date format
-  clearSystemFlag(FLAG_YMD);   // date format
-  setSystemFlag(FLAG_DMY);     // date format
-  firstGregorianDay = 2361222 /* 14 Sept 1752 */; // JDN of the first day in the Gregorian calendar
+  configCommon(CFG_UK);
 }
 
-
-
 void fnConfigUsa(uint16_t unusedButMandatoryParameter) {
-  setSystemFlag(FLAG_DECIMP);
-  groupingGap = 3;
-  clearSystemFlag(FLAG_TDM24); // time format = 12H
-  clearSystemFlag(FLAG_YMD);   // date format
-  clearSystemFlag(FLAG_DMY);   // date format
-  setSystemFlag(FLAG_MDY);     // date format
-  firstGregorianDay = 2361222 /* 14 Sept 1752 */; // JDN of the first day in the Gregorian calendar
+  configCommon(CFG_USA);
 }
 
 
@@ -338,50 +336,13 @@ void fnSetSignificantDigits(uint16_t unusedButMandatoryParameter) {
 
 
 void fnRoundingMode(uint16_t RM) {
-  roundingMode = RM;
-
-  switch(RM) {
-    case 0: {
-      ctxtReal34.round = DEC_ROUND_HALF_EVEN;
-      break;
-    }
-
-    case 1: {
-      ctxtReal34.round = DEC_ROUND_HALF_UP;
-      break;
-    }
-
-    case 2: {
-      ctxtReal34.round = DEC_ROUND_HALF_DOWN;
-      break;
-    }
-
-    case 3: {
-      ctxtReal34.round = DEC_ROUND_UP;
-      break;
-    }
-
-    case 4: {
-      ctxtReal34.round = DEC_ROUND_DOWN;
-      break;
-    }
-
-    case 5: {
-      ctxtReal34.round = DEC_ROUND_CEILING;
-      break;
-    }
-
-    case 6: {
-      ctxtReal34.round = DEC_ROUND_FLOOR;
-      break;
-    }
-
-    default: {
-      sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "fnRoundingMode", RM, "RM");
-      sprintf(errorMessage + strlen(errorMessage), "Must be from 0 to 6");
-      displayBugScreen(errorMessage);
-      break;
-    }
+  if (RM < sizeof(roundingModeTable) / sizeof(*roundingModeTable)) {
+    roundingMode = RM;
+    ctxtReal34.round = roundingModeTable[RM];
+  } else {
+    sprintf(errorMessage, commonBugScreenMessages[bugMsgValueFor], "fnRoundingMode", RM, "RM");
+    sprintf(errorMessage + strlen(errorMessage), "Must be from 0 to 6");
+    displayBugScreen(errorMessage);
   }
 }
 
@@ -1009,12 +970,11 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
     systemFlags = 0;
 
+    configCommon(CFG_DFLT);
+
     setSystemFlag(FLAG_DENANY);
     setSystemFlag(FLAG_MULTx);
-    setSystemFlag(FLAG_DECIMP);
     setSystemFlag(FLAG_AUTOFF);
-    setSystemFlag(FLAG_TDM24); // time format = 24H
-    setSystemFlag(FLAG_YMD);   // date format = yyyy-mm-dd
     setSystemFlag(FLAG_ASLIFT);
     setSystemFlag(FLAG_PROPFR);
     setSystemFlag(FLAG_ENDPMT);// TVM application = END mode
