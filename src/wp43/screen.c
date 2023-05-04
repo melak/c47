@@ -2161,7 +2161,8 @@ void hideFunctionName(void) {
           uInt32ToReal34(firstGregorianDay, &j);
           julianDayToInternalDate(&j,REGISTER_REAL34_DATA(TEMP_REGISTER_1));
           dateToDisplayString(TEMP_REGISTER_1, tmpStr2);
-          sprintf(tmpString, "1st Gregorian day set: %s (JD %" PRId32 ")", tmpStr2, firstGregorianDay);
+          sprintf(tmpString, "First Gregorian day set: %s", tmpStr2);
+          //sprintf(tmpString, "1st Gregorian day set: %s (JD %" PRId32 ")", tmpStr2, firstGregorianDay);
           showString(tmpString, &standardFont, 1, Y_POSITION_OF_REGISTER_X_LINE + TEMPORARY_INFO_OFFSET + 6, vmNormal, true, true);
       }
 
