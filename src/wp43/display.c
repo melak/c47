@@ -1,3 +1,4 @@
+
 /* This file is part of 43S.
  *
  * 43S is free software: you can redistribute it and/or modify
@@ -1116,14 +1117,16 @@ void real34ToDisplayString2(const real34_t *real34, char *displayString, int16_t
 
 
 
-void complex34ToDisplayString(const complex34_t *complex34, char *displayString, const font_t *font, int16_t maxWidth, int16_t displayHasNDigits, bool_t limitExponent, const char *separator, bool_t frontSpace) {
+void complex34ToDisplayString(const complex34_t *complex34, char *displayString, const font_t *font, int16_t maxWidth, int16_t displayHasNDigits, bool_t limitExponent, const char *separator, bool_t frontSpace, const uint16_t tagAngle, const bool_t tagPolar) {
   uint8_t savedDisplayFormatDigits = displayFormatDigits;
 
   if(updateDisplayValueX) {
     displayValueX[0] = 0;
   }
 
-  complex34ToDisplayString2(complex34, displayString, displayHasNDigits, limitExponent, separator, frontSpace);
+  //printf("###B complex34ToDisplayString tagAngle=%i, tagPolar=%i\n",tagAngle, tagPolar);
+
+  complex34ToDisplayString2(complex34, displayString, displayHasNDigits, limitExponent, separator, frontSpace, tagAngle, tagPolar);
   while(stringWidth(displayString, font, true, true) > maxWidth) {
     if(displayFormat == DF_ALL) {
       if(displayHasNDigits == 2) {
@@ -1142,23 +1145,25 @@ void complex34ToDisplayString(const complex34_t *complex34, char *displayString,
       displayValueX[0] = 0;
     }
 
-    complex34ToDisplayString2(complex34, displayString, displayHasNDigits, limitExponent, separator, frontSpace);
+    complex34ToDisplayString2(complex34, displayString, displayHasNDigits, limitExponent, separator, frontSpace, tagAngle, tagPolar);
   }
   displayFormatDigits = savedDisplayFormatDigits;
 }
 
 
 
-void complex34ToDisplayString2(const complex34_t *complex34, char *displayString, int16_t displayHasNDigits, bool_t limitExponent, const char *separator, bool_t frontSpace) {
+void complex34ToDisplayString2(const complex34_t *complex34, char *displayString, int16_t displayHasNDigits, bool_t limitExponent, const char *separator, bool_t frontSpace, const uint16_t tagAngle, const bool_t tagPolar) {
   int16_t i = 100;
-  real34_t real34, imag34;
+  real34_t real34, imag34, absimag34;
   real_t real, imagIc;
 
-  if(getSystemFlag(FLAG_POLAR)) { // polar mode
+  //printf("###W complex34ToDisplayString2 tagAngle=%i, tagPolar=%i\n",tagAngle, tagPolar);
+
+  if(tagPolar) { // polar mode
     real34ToReal(VARIABLE_REAL34_DATA(complex34), &real);
     real34ToReal(VARIABLE_IMAG34_DATA(complex34), &imagIc);
     realRectangularToPolar(&real, &imagIc, &real, &imagIc, &ctxtReal39); // imagIc in radian
-    convertAngleFromTo(&imagIc, amRadian, currentAngularMode, &ctxtReal39);
+    convertAngleFromTo(&imagIc, amRadian, tagAngle == amNone ? currentAngularMode : tagAngle, &ctxtReal39);
     realToReal34(&real, &real34);
     realToReal34(&imagIc, &imag34);
   }
@@ -1170,8 +1175,8 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
   constantFractionsMode = CF_COMPLEX1;  //JM
   real34ToDisplayString2(&real34, displayString, displayHasNDigits, limitExponent, separator, false, frontSpace);
 
-  if(updateDisplayValueX) {
-    if(getSystemFlag(FLAG_POLAR)) {
+  if(updateDisplayValueX) {                //This is used by ROUND only and it does not seem to work.
+    if(tagPolar) {
       strcat(displayValueX, "j");
     }
     else {
@@ -1182,26 +1187,53 @@ void complex34ToDisplayString2(const complex34_t *complex34, char *displayString
   constantFractionsMode = CF_COMPLEX2;  //JM
   real34ToDisplayString2(&imag34, displayString + i, displayHasNDigits, limitExponent, separator, false, false);
 
-  if(getSystemFlag(FLAG_POLAR)) { // polar mode
+  if(tagPolar) { // polar mode
     strcat(displayString, STD_SPACE_4_PER_EM STD_MEASURED_ANGLE STD_SPACE_4_PER_EM);
-    angle34ToDisplayString2(&imag34, currentAngularMode, displayString + stringByteLength(displayString), displayHasNDigits, limitExponent, separator, false);
+    angle34ToDisplayString2(&imag34, tagAngle == amNone ? currentAngularMode : tagAngle, displayString + stringByteLength(displayString), displayHasNDigits, limitExponent, separator, false);
   }
   else { // rectangular mode
     if(strncmp(displayString + stringByteLength(displayString) - 2, STD_SPACE_HAIR, 2) != 0) {
       strcat(displayString, STD_SPACE_HAIR);
     }
 
-    if(displayString[i] == '-') {
-      strcat(displayString, "-");
-      i++;
+    if(real34IsZero(&real34)) {       //JM 
+      if(displayString[i] == '-') {
+        displayString[0]=0;           // force a zero real not to display the real part
+        strcat(displayString, "-");   // re-add the - which could be trailing the real value. Do ot add the +, it is not needed
+        i++;
+      }
+      else {
+        displayString[0]=0;           // force a zero real not to display the real part
+      }
     }
-    else {
-      strcat(displayString, "+");
+    else {                            // JM normal full display of the full imag part, + and - shown
+      if(displayString[i] == '-') {
+        strcat(displayString, "-");
+        i++;
+      }
+      else {
+        strcat(displayString, "+");
+      }
     }
 
-    strcat(displayString, COMPLEX_UNIT);
-    strcat(displayString, PRODUCT_SIGN);
-    xcopy(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
+    if(CPXMULT) {                  // i x 1.0
+      strcat(displayString, COMPLEX_UNIT);
+      real34CopyAbs(&imag34, &absimag34);
+//      if(!real34CompareEqual(&absimag34, const34_1)) {     //JM force a |imag|=1 not to display. Maybe make it part of Exfrac.
+        strcat(displayString, PRODUCT_SIGN);
+        xcopy(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
+//      }
+    }
+      
+    if(!CPXMULT) {                   // 1.0 i
+      real34CopyAbs(&imag34, &absimag34);
+//      if(!real34CompareEqual(&absimag34, const34_1)) {     //JM force a |imag|=1 not to display.  Maybe make it part of Exfrac.
+        xcopy(strchr(displayString, '\0'), displayString + i, strlen(displayString + i) + 1);
+//      }
+      strcat(displayString, STD_SPACE_HAIR);
+      strcat(displayString, STD_SPACE_HAIR);
+      strcat(displayString, COMPLEX_UNIT);
+    }
   }
 }
 
@@ -2602,7 +2634,6 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
     bool_t thereIsANextLine;
     int16_t source, dest, last, d, maxWidth, i, offset, bytesProcessed, aa, bb, cc, dd, aa2=0, aa3=0, aa4=0;
     uint64_t nn;
-    real34_t real34;
     char *separator;
 
     displayFormat = DF_ALL;
@@ -2817,117 +2848,60 @@ void fnShow_SCROLL(uint16_t fnShow_param) {                // Heavily modified b
         #endif
         temporaryInformation = TI_SHOW_REGISTER_BIG;
 
-        // Real part into +0
         separator = STD_SPACE_4_PER_EM;
-        real34ToDisplayString(REGISTER_REAL34_DATA(SHOWregis), amNone, tmpString, &numericFont, 2000, 34, false, separator,false);
+        complex34ToDisplayString(REGISTER_COMPLEX34_DATA(SHOWregis), tmpString, &numericFont,2000, 34 ,true, separator, true, getComplexRegisterAngularMode(SHOWregis), getComplexRegisterPolarMode(SHOWregis));
         for(i=stringByteLength(tmpString) - 1; i>0; i--) {
           if(tmpString[i] == 0x08) {
             tmpString[i] = 0x05;
           }
         }
 
-        // +/- i× into +300
-        real34Copy(REGISTER_IMAG34_DATA(SHOWregis), &real34);
-        last = 300;
-        while(tmpString[last]) last++;
-        xcopy(tmpString + last++, (real34IsNegative(&real34) ? "-" : "+"), 1);
-        xcopy(tmpString + last++, COMPLEX_UNIT, 1);
-        xcopy(tmpString + last,   PRODUCT_SIGN, 3);
 
-        // Imaginary part into +600
-        real34SetPositiveSign(&real34);
-        real34ToDisplayString(&real34, amNone, tmpString + 600, &numericFont, 2000, 34, false, separator,false);
-        for(i=stringByteLength(tmpString + 600) - 1; i>0; i--) {
-          if(tmpString[600 + i] == 0x08) {
-            tmpString[600 + i] = 0x05;
-          }
-        }
-
-  //vv      strncat(tmpString + 300, tmpString +  600, 299); //add +i. and imag
-  //vv      tmpString[600] = 0;
-
-        //Concatenate +ix and IMAG into 300
-        last = 300;
-        while(tmpString[last]) last++;
-        xcopy(tmpString + last, tmpString + 600,  strlen(tmpString + 600) + 1);
-        tmpString[600] = 0;
-  //^^
-        //Check if REAL + IMAG fits into two lines
-        if(stringWidth(tmpString, &numericFont, true, true) + stringWidth(tmpString + 300, &numericFont, true, true) <= 2*SCREEN_WIDTH) {
-        //  if it fits, copy all into +0
-          int xx = stringByteLength(tmpString) + stringByteLength(tmpString + 300);
-  //        strncat(tmpString, tmpString +  300, 299);
-          xcopy(tmpString + stringByteLength(tmpString), tmpString + 300,stringByteLength(tmpString + 300));
-          tmpString[xx] = 0;
-          tmpString[300] = 0;
-        }
-
-  //vv      strncat(tmpString + 2103, tmpString + 0, 299-3);  //COPY REAL
-  //vv      tmpString[0] = 0;
-
-
-        //copy +0 REAL or REAL+IMAG result into destination 2100 (label already in 2100-2102)
+        //copy result into destination 2100 (label already in 2100-2102)
         last = 2100;
         while(tmpString[last]) last++;
         xcopy(tmpString + last, tmpString + 0,  strlen(tmpString + 0) + 1);
         tmpString[0] = 0;
-  //^^
 
-  //vv      strcpy(tmpString + 2400, tmpString + 300);        //COPY IMAG
-  //vv      tmpString[300] = 0;
-  //new
-
-        //copy IMAG result into +2400
-        last = 2400;
-  //      while(tmpString[last]) last++;
-        xcopy(tmpString + last, tmpString + 300,  strlen(tmpString + 300) + 1);
-        tmpString[300] = 0;
-  //^^
-
-
-        //write 2100+ into two lines, 0+ and 300+
+        //write 2100+ into four lines, 0+ to 900+
         last = 2100 + stringByteLength(tmpString + 2100);
         source = 2100;
-        for(d=0; d<=300 ; d+=300) {
+        for(d=0; d<=900 ; d+=300) {
           dest = d;
-          while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
+          while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2-5) {
             tmpString[dest] = tmpString[source];
             if(tmpString[dest] & 0x80) {
               tmpString[++dest] = tmpString[++source];
             }
             source++;
             tmpString[++dest] = 0;
-          }
-        }
-
-        //write 2400+ into two lines, 300+ and 900+
-        last = 2400 + stringByteLength(tmpString + 2400);
-        source = 2400;
-        for(d=600; d<=900 ; d+=300) {
-          dest = d;
-          while(source < last && stringWidth(tmpString + d, &numericFont, true, true) <= SCREEN_WIDTH - 8*2) {
-            tmpString[dest] = tmpString[source];
-            if(tmpString[dest] & 0x80) {
-              tmpString[++dest] = tmpString[++source];
+             
+            if(stringWidth(tmpString + d, &numericFont, true, true) >= SCREEN_WIDTH -60 && (uint8_t)tmpString[source-2] == 160 && tmpString[source-1]==5) break;
+            if(d>0 && 
+              (    ( !getComplexRegisterPolarMode(SHOWregis) && (tmpString[source]=='+' || tmpString[source]=='-')) || 
+                   ( (uint8_t)tmpString[source]==162)
+              ) ) {
+              break;
             }
-            source++;
-            tmpString[++dest] = 0;
           }
         }
 
-        if (tmpString[300]==0) {                          //shift up if line is empty
-          //vv new       strcpy(tmpString + 300, tmpString + 600);
-          xcopy(tmpString + 300, tmpString + 600,  min(300,strlen(tmpString + 600) + 1));
-          //vv new        strcpy(tmpString + 600, tmpString + 900);
-          xcopy(tmpString + 600, tmpString + 900,  min(300,strlen(tmpString + 900) + 1));
-          tmpString[900] = 0;
-        }
 
-        if (tmpString[600]==0) {                          //shift up if line is empty
-          //vv new        strcpy(tmpString + 600, tmpString + 900);
-          xcopy(tmpString + 600, tmpString + 900,  min(300,strlen(tmpString + 900) + 1));
-          tmpString[900] = 0;
-        }
+   //     if (tmpString[300]==0) {                          //shift up if line is empty
+   //       //vv new       strcpy(tmpString + 300, tmpString + 600);
+   //       xcopy(tmpString + 300, tmpString + 600,  min(300,strlen(tmpString + 600) + 1));
+   //       //vv new        strcpy(tmpString + 600, tmpString + 900);
+   //       xcopy(tmpString + 600, tmpString + 900,  min(300,strlen(tmpString + 900) + 1));
+   //       tmpString[900] = 0;
+   //     }
+//
+   //     if (tmpString[600]==0) {                          //shift up if line is empty
+   //       //vv new        strcpy(tmpString + 600, tmpString + 900);
+   //       xcopy(tmpString + 600, tmpString + 900,  min(300,strlen(tmpString + 900) + 1));
+   //       tmpString[900] = 0;
+   //     }
+
+
         break;
 
 

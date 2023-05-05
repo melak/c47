@@ -604,7 +604,7 @@ void addStriReal(void) {
  * \return void
  ***********************************************/
 void addStriCplx(void) {
-  complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true);
+  complex34ToDisplayString(REGISTER_COMPLEX34_DATA(REGISTER_X), tmpString, &numericFont, SCREEN_WIDTH, NUMBER_OF_DISPLAY_DIGITS, false, STD_SPACE_PUNCTUATION, true, currentAngularMode, getSystemFlag(FLAG_POLAR));
   _addString(tmpString);
 }
 

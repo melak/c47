@@ -262,6 +262,12 @@
   #define getRegisterLongIntegerSign(reg)        getRegisterTag(reg)
   #define setRegisterLongIntegerSign(reg, sign)  setRegisterTag(reg, sign)
 
+  #define getComplexRegisterAngularMode(reg)     (getRegisterTag(reg) & amAngleMask)
+  #define setComplexRegisterAngularMode(reg, am) setRegisterTag(reg, (am & amAngleMask) | (getRegisterTag(reg) & amPolar))
+  #define getComplexRegisterPolarMode(reg)       (getRegisterTag(reg) & amPolar)
+  #define setComplexRegisterPolarMode(reg, am)   setRegisterTag(reg, (getRegisterTag(reg) & amAngleMask) | (am & amPolar))
+
+
   /********************************************//**
    * \brief Prints the content of a register to a string
    *

@@ -172,6 +172,7 @@ void fnRCL          (int16_t inp);
 #define DM_ANY                 16    // DENANY
 #define DM_FIX                 17    // DENFIX
 #define JC_FRC                 18    // CB FRACTION MODE
+#define PR_HPRP                19    // POLAR RECT CLASSIC MODE
 
 #define JC_FG_LINE             20    // screen setup
 #define JC_BASE_SCREEN         21    // screen setup
@@ -218,6 +219,7 @@ void fnRCL          (int16_t inp);
 #define JC_TOPHEX              68
 
 #define JC_SI_All              69
+#define JC_CPXMULT             70
 
 #ifdef PC_BUILD
 //keyboard.c

@@ -708,6 +708,7 @@ void resetOtherConfigurationStuff(void) {
   DRG_Cycling = 0;
   DM_Cycling = 0;
   SI_All = false;                                              //UNIT display full SI prefix display range
+  CPXMULT = false;                                             //defaults to the new complex notation with space
   LongPressM = RB_M1234;
   LongPressF = RB_F124;
   lastIntegerBase = 0;
@@ -947,6 +948,7 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
     setSystemFlag(FLAG_ASLIFT);
     setSystemFlag(FLAG_PROPFR);
     setSystemFlag(FLAG_ENDPMT);// TVM application = END mode
+    setSystemFlag(FLAG_HPRP);
 
     hourGlassIconEnabled = false;
     watchIconEnabled = false;
