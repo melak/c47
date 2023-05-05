@@ -60,10 +60,6 @@
 
 #include "wp43.h"
 
-enum {
-    CFG_DFLT,
-    CFG_CHINA, CFG_EUROPE, CFG_INDIA, CFG_JAPAN, CFG_UK, CFG_USA
-};
 
 TO_QSPI static const struct {
     unsigned grouping : 3;
@@ -92,7 +88,7 @@ static void setFlag(int f, int v) {
   }
 }
 
-static void configCommon(int idx) {
+void configCommon(uint16_t idx) {
   groupingGap = configSettings[idx].grouping;
   setFlag(FLAG_DECIMP, configSettings[idx].decimalDot);
   setFlag(FLAG_TDM24, configSettings[idx].tdm24);
@@ -100,34 +96,7 @@ static void configCommon(int idx) {
   setFlag(FLAG_MDY, configSettings[idx].mdy);
   setFlag(FLAG_YMD, configSettings[idx].ymd);
   firstGregorianDay = configSettings[idx].gregorianDay;
-}
-
-void fnConfigDefault(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_DFLT);
-}
-
-void fnConfigChina(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_CHINA);
-}
-
-void fnConfigEurope(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_EUROPE);
-}
-
-void fnConfigIndia(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_INDIA);
-}
-
-void fnConfigJapan(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_JAPAN);
-}
-
-void fnConfigUk(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_UK);
-}
-
-void fnConfigUsa(uint16_t unusedButMandatoryParameter) {
-  configCommon(CFG_USA);
+  temporaryInformation = TI_DISP_JULIAN;
 }
 
 
