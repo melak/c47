@@ -727,7 +727,6 @@ void resetOtherConfigurationStuff(void) {
   jm_FG_LINE = true;
   jm_G_DOUBLETAP = true;
   jm_BASE_SCREEN = true;                                       //"MyM" setting, set as part of USER_MRESET
-  jm_HOME_SUM = false;                                         //Summary in HOME menu
   jm_LARGELI = true;                                           //Large font for long integers on stack
   constantFractions = false;                                   //Extended fractions
   constantFractionsMode = CF_NORMAL;                           //Extended fractions
