@@ -637,9 +637,9 @@ TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_
 
 TO_QSPI const int16_t menu_HOME[]     = { //JM
 /*HOME0 */           
-/*0x18*/                                     ITM_DRG,             ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,         ITM_CC,                    //JM HOME
-                                             ITM_MAGNITUDE,       ITM_ARG,         ITM_PARALLEL,      ITM_XFACT,        ITM_toREC2,       ITM_toPOL2,                    //JM HOME
-                                             ITM_DEG2,            ITM_RAD2,        ITM_EE_EXP_TH,     ITM_op_j,         ITM_RECT,         ITM_POLAR,                          //JM HOME
+/*0x18*/                                     ITM_DRG,             ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,          ITM_op_j,                          //JM HOME
+                                             ITM_MOD,             ITM_RMD,         ITM_IDIV,          ITM_XFACT,        ITM_EE_EXP_TH,    ITM_LINPOL,                    //JM HOME
+                                             ITM_FP,              ITM_IP,          ITM_DEG2,          ITM_RAD2,         ITM_RECT,         ITM_POLAR,                          //JM HOME
 /*HOME-1*/                                                                                                                                                                     //JM HOME
 /*1*18*/                                     ITM_DRG,             ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,         ITM_CC,                        //JM HOME
                                              ITM_FP,              ITM_IP,          ITM_NULL,          ITM_NULL,       -MNU_BASE,       -MNU_INTS,                          //JM HOME
@@ -656,16 +656,16 @@ TO_QSPI const int16_t menu_HOME[]     = { //JM
 // 10 - 11 NIGEL SUGGESTED 36 CELLS OF ALL THE BLUE ONES                                                                                                                                                                         //JM HOME
                                              ITM_SNAP,            -MNU_ASN,         -MNU_ALPHAFN,     -MNU_LOOP,        -MNU_IO,          -MNU_TEST,
                                              ITM_FLGSV,           -MNU_BITS,        -MNU_CLK,         -MNU_PARTS,       -MNU_INTS,        -MNU_INFO,
-                                             ITM_RBR,             -MNU_HOME,        -MNU_FIN,         -MNU_XFN,         -MNU_PLOTTING,     ITM_TIMER,
+                                             ITM_RBR,             -MNU_HOME,        -MNU_FIN,         -MNU_XFN,         -MNU_PLOTTING,    -MNU_CONST,
 
-                                             -MNU_CONST,          -MNU_CPX,         -MNU_STK,         -MNU_TRG_C47,     -MNU_EXP,         -MNU_CLR,      
+                                             ITM_TIMER,          -MNU_CPX,         -MNU_STK,         -MNU_TRG_C47,     -MNU_EXP,         -MNU_CLR,      
                                              ITM_ARG,             ITM_DELTAPC,      ITM_XTHROOT,      ITM_op_j,         ITM_toREC2,       ITM_toPOL2,    
                                              ITM_TGLFRT,          ITM_HASH_JM,      ITM_ms,           ITM_dotD,         ITM_LBL,          ITM_GTO,       
 
 /*HOME+1*/
-                                             ITM_DSP,                 ITM_SI_k,                ITM_SI_M,                ITM_SI_G,                ITM_SI_T,                 ITM_SI_P,                         
-                                             ITM_DSPCYCLE,            ITM_SI_f,                ITM_SI_p,                ITM_SI_n,                ITM_SI_u,                 ITM_SI_m,                                       
-                                             ITM_DEG2,                ITM_RAD2,                ITM_PARALLEL,           -MNU_EE,                   ITM_RECT,              ITM_POLAR                        //JM UNITS SI
+                                             ITM_SI_k,                ITM_SI_M,                ITM_SI_G,                ITM_SI_T,                 ITM_SI_P,              ITM_DSPCYCLE,                           
+                                             ITM_SI_f,                ITM_SI_p,                ITM_SI_n,                ITM_SI_u,                 ITM_SI_m,              ITM_DSP,                                    
+                                            -MNU_EE,                  ITM_PARALLEL,            ITM_DEG2,                ITM_RAD2,                 ITM_RECT,              ITM_POLAR                        //JM UNITS SI
 
 //##################################################################################################################################################################################################################################
 
@@ -1024,7 +1024,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       else if(menuData[i].item == ITM_NOP || menuData[i].item == ITM_NULL) {
         numberOfBytes += 1;
       }
-      else if(indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0) {
+      else if(indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0 || (menuData[i].item == ITM_op_j || menuData[i].item == ITM_op_a || menuData[i].item == ITM_op_a2)) {
         numberOfBytes += stringByteLength(indexOfItems[abs(menuData[i].item)].itemSoftmenuName) + 1;
       }
       else {
@@ -1041,7 +1041,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       else if(menuData[i].item == ITM_NULL) {
         lbl = "";
       }
-      else if(indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0) {
+      else if(indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0 || (menuData[i].item == ITM_op_j || menuData[i].item == ITM_op_a || menuData[i].item == ITM_op_a2)) {
         lbl = indexOfItems[abs(menuData[i].item)].itemSoftmenuName;
       }
       else {
@@ -1884,10 +1884,8 @@ bool_t isFunctionItemAMenu(int16_t item) {
               if(jm_G_DOUBLETAP && softmenu[m].menuItem == -MNU_ALPHA && y == 0 ){  // Indicate disabled double tap
                 int16_t yStrokeA = SCREEN_HEIGHT - (y-currentFirstItem/6)*23 - 1;
                 int16_t xStrokeA=x*67 + 66 -12;                                     //JM mod Show double press which does not work anymore
-//                showString(STD_EMPTY_SET, &standardFont, xStrokeA +2, yStrokeA -16-3, vmNormal, false, false);
                 plotline(xStrokeA +2+4, yStrokeA -16-3, xStrokeA +2+4+5, yStrokeA -16-3+5);
               }
-
 
               if(indexOfItems[item%10000].func == itemToBeCoded) {
                 // Strike out non coded functions
