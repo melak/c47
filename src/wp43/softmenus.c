@@ -628,9 +628,9 @@ TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_
                                              ITM_X_g1,                      ITM_X_g2,                   ITM_X_g3,                 ITM_X_g4,              ITM_X_g5,                    ITM_X_g6   };
 
 
-TO_QSPI const int16_t menu_BLUE_C47[]    = { ITM_MAGNITUDE,       -MNU_CPX,         -MNU_STK,         -MNU_TRG_C47,     -MNU_EXP,         -MNU_CLR,      
+TO_QSPI const int16_t menu_BLUE_C47[]    = { ITM_MAGNITUDE,       -MNU_CPX,         -MNU_STK,         -MNU_TRG_C47,     -MNU_EXP,         ITM_UNDO,      
                                              ITM_ARG,             ITM_DELTAPC,      ITM_XTHROOT,      ITM_op_j,         ITM_toREC2,       ITM_toPOL2,    
-                                             ITM_TGLFRT,          ITM_HASH_JM,      ITM_ms,           ITM_dotD,         ITM_LBL,          ITM_GTO,       
+                                             ITM_TGLFRT,          ITM_HASH_JM,      ITM_ms,           ITM_dotD,         ITM_LBL,          ITM_RTN,       
 
                                              ITM_RI,              ITM_VIEW,         ITM_USERMODE,     ITM_NULL,         ITM_NULL,         ITM_NULL,
                                              ITM_SNAP,            ITM_TIMER,       -MNU_INFO,        -MNU_TEST,        -MNU_CONST,        ITM_NULL,
@@ -649,6 +649,7 @@ TO_QSPI const int16_t menu_BLUE_C47[]    = { ITM_MAGNITUDE,       -MNU_CPX,     
 TO_QSPI const int16_t menu_HOME[]        = { ITM_DRG,                       ITM_YX,                     ITM_SQUARE,               ITM_10x,               ITM_EXP,                     ITM_op_j,                          //JM HOME
                                              ITM_MOD,                       ITM_RMD,                    ITM_IDIV,                 ITM_XFACT,             ITM_EE_EXP_TH,               ITM_LINPOL,                    //JM HOME
                                              ITM_FP,                        ITM_IP,                     ITM_DEG2,                 ITM_RAD2,              ITM_RECT,                    ITM_POLAR,                          //JM HOME
+
                                              ITM_SI_k,                      ITM_SI_M,                   ITM_SI_G,                 ITM_SI_T,              ITM_SI_P,                    ITM_DSPCYCLE,                           
                                              ITM_SI_f,                      ITM_SI_p,                   ITM_SI_n,                 ITM_SI_u,              ITM_SI_m,                    ITM_DSP,                                    
                                             -MNU_EE,                        ITM_PARALLEL,               ITM_DEG2,                 ITM_RAD2,              ITM_RECT,                    ITM_POLAR      };                                                                                                                                                                                   //JM HOME
