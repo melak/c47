@@ -876,6 +876,8 @@ typedef enum {
 #define TI_FROM_MS_TIME                           78
 #define TI_FROM_MS_DEG                            79
 #define TI_FROM_HMS                               80
+#define TI_DISP_JULIAN                            81
+#define TI_FROM_DATEX                             82
 
 
 
