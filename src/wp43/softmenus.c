@@ -209,7 +209,7 @@ TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_NULL,                    ITM_NULL,                          //JM
 
                                              ITM_BASE_SCREEN,               ITM_BASE_HOME,              ITM_HOMEx3,               ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
-                                             ITM_SAFERESET,                 ITM_NULL,                   ITM_TST,                  ITM_M1234,             ITM_M14,                     ITM_NULL,                        //JM
+                                             ITM_SAFERESET,                 ITM_NULL,                   ITM_NULL,                  ITM_M1234,             ITM_M14,                     ITM_TST,                        //JM
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_F1234,             ITM_F14,                     ITM_F124                  };
 // D47 vv
 TO_QSPI const int16_t menu_SETUP[]       = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_HPRP,              ITM_RECT,                    ITM_POLAR,
@@ -1603,6 +1603,23 @@ bool_t isFunctionItemAMenu(int16_t item) {
          /*|| (item == ITM_TIMER)*/       //JMvv colour PLOT in reverse font to appear to be menus
 }
 
+
+static  char FF[12];
+static char *changeItoJ(int16_t item) {
+  strcpy(FF, indexOfItems[item%10000].itemSoftmenuName);
+  if (getSystemFlag(FLAG_CPXj)) {
+    if (item == ITM_op_j && FF[0] == STD_i[0]) {
+      FF[0]++;
+    }
+    if (item == ITM_EE_EXP_TH && FF[2] == STD_SUP_i[1]) {
+      FF[2]++;
+    }
+  }
+  return FF;
+}
+
+
+
   void showSoftmenuCurrentPart(void) {
 
 //JMTOCHECK: Removed exceptions for underline removal. 
@@ -1703,13 +1720,34 @@ bool_t isFunctionItemAMenu(int16_t item) {
             if(x + 6*y + currentFirstItem < numberOfItems) {
               if(*ptr != 0) {
                 videoMode_t vm = vmNormal;
+                char itemName[12];
+                strcpy(itemName,(char *)ptr);
+                int8_t showCb = NOVAL;
+                int16_t showValue = NOVAL;
+                char showText[10];
+                showText[0]=0;                                  //strcat(showText, NOTEXT); not working, hence clearing the string
+
                 switch(-softmenu[m].menuItem) {
                   case MNU_MENUS: {
                     vm = vmReverse;
                     break;
                   }
                   case MNU_MyMenu: {
-                    vm = (userMenuItems[x + 6*y].item < 0) ? vmReverse : vmNormal;
+                    int16_t itemNr = userMenuItems[x + 6*y].item;
+                    strcpy(itemName, changeItoJ(itemNr));
+                    vm = (itemNr < 0) ? vmReverse : vmNormal;
+
+                    showCb = fnCbIsSet(itemNr);
+                    showValue = fnItemShowValue(itemNr);
+                    switch (showValue) {
+                      case 32700 : strcat(showText, "ALL" ); showValue = NOVAL; break;
+                      case 32701 : strcat(showText, "FIX" ); showValue = NOVAL; break;
+                      case 32702 : strcat(showText, "SCI" ); showValue = NOVAL; break;
+                      case 32703 : strcat(showText, "ENG" ); showValue = NOVAL; break;
+                      case 32704 : strcat(showText, "SIG" ); showValue = NOVAL; break; 
+                      case 32705 : strcat(showText, "UNIT"); showValue = NOVAL; break;
+                      default: break;
+                    }
                     break;
                   }
                   case MNU_MyAlpha: {
@@ -1733,7 +1771,7 @@ bool_t isFunctionItemAMenu(int16_t item) {
                     break;
                   }
                 }
-                showSoftkey((char *)ptr, x, y, vm, true, true, NOVAL, NOVAL, NOTEXT);
+                showSoftkey(itemName, x, y, vm, true, true, showCb, showValue, showText);
               }
               ptr += stringByteLength((char *)ptr) + 1;
             }
@@ -1843,14 +1881,12 @@ bool_t isFunctionItemAMenu(int16_t item) {
               }
 
               else                                                                            //JM vv display i or j properly on display
-              if(item%10000 == ITM_op_j && getSystemFlag(FLAG_CPXj)) {
-                showSoftkey(STD_j, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
-              }
-              else if(item%10000 == ITM_op_j && !getSystemFlag(FLAG_CPXj)) {
-                showSoftkey(STD_i, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
-              }                                                                                //JM ^^
+                if(item%10000 == ITM_op_j || item%10000 == ITM_EE_EXP_TH) {
+                  showSoftkey(changeItoJ(item%10000), x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
+                }
+
               else if(isFunctionItemAMenu(item)) {
-                        showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
+                showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
               }                                                                                //JM^^
 
               else if( softmenu[m].menuItem  == -MNU_CONVS || softmenu[m].menuItem  == -MNU_CONVANG || softmenu[m].menuItem  == -MNU_CONVE || softmenu[m].menuItem  == -MNU_CONVP || softmenu[m].menuItem  == -MNU_CONVFP || softmenu[m].menuItem  == -MNU_CONVM || softmenu[m].menuItem  == -MNU_CONVX || softmenu[m].menuItem  == -MNU_CONVV || softmenu[m].menuItem  == -MNU_CONVA || softmenu[m].menuItem  == -MNU_UNITCONV || softmenu[m].menuItem  == -MNU_MISC) { 
