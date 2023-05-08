@@ -1089,9 +1089,15 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
 
     //JM Default USER
+    #if defined(PC_BUILD)
+      printf("Doing A.RESET, M.RESET & K.RESET\n");
+    #endif
+    //    calcMode = CM_BUG_ON_SCREEN; this also removes the false start on MyMenu error
+
     fnUserJM(USER_ARESET);                                      //JM USER
     fnUserJM(USER_MRESET);                                      //JM USER
-    fnUserJM(USER_KRESET);                                      //JM USER
+    showSoftmenu(MNU_MyMenu);                                   //this removes the false start on MyMenu error
+    fnUserJM(USER_KRESET);                                      //JM USER    
     temporaryInformation = TI_NO_INFO;
     refreshScreen();
     

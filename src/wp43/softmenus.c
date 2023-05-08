@@ -1044,6 +1044,9 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     int16_t i, numberOfBytes, numberOfGlobalLabels;
     uint8_t *ptr;
 
+    #ifdef PC_BUILD
+      printf("initvariableSoftMenu (cachedDynamicMenu=%i)",cachedDynamicMenu);
+    #endif //PC_BUILD
     free(dynamicSoftmenu[menu].menuContent);
 
     switch(-dynamicSoftmenu[menu].menuItem) {
@@ -1650,6 +1653,9 @@ static char *changeItoJ(int16_t item) {
     }
 
     if(m < NUMBER_OF_DYNAMIC_SOFTMENUS) { // Dynamic softmenu
+      #ifdef PC_BUILD
+        printf("Dynamic menu: m=%i cachedDynamicMenu=%i softmenu[m].menuItem= %i \n",m, cachedDynamicMenu, softmenu[m].menuItem);
+      #endif //PC_BUILD
       if(softmenu[m].menuItem != cachedDynamicMenu || softmenu[m].menuItem == -MNU_DYNAMIC) {
         initVariableSoftmenu(m);
         cachedDynamicMenu = softmenu[m].menuItem;
@@ -1708,12 +1714,18 @@ static char *changeItoJ(int16_t item) {
     }
 
     if(m < NUMBER_OF_DYNAMIC_SOFTMENUS) { // Dynamic softmenu
+      #ifdef PC_BUILD
+        printf("Dynamic menu: m=%i cachedDynamicMenu=%i softmenu[m].menuItem= %i \n",m, cachedDynamicMenu, softmenu[m].menuItem);
+      #endif //PC_BUILD
       if(numberOfItems == 0) {
         for(x=0; x<6; x++) {
           showSoftkey("", x, 0, vmNormal, true, true, NOVAL, NOVAL, NOTEXT);
         }
       }
       else {
+        #ifdef PC_BUILD
+          printf("Dynamic menu: populate\n");
+        #endif //PC_BUILD
         uint8_t *ptr = getNthString(dynamicSoftmenu[m].menuContent, currentFirstItem);
         for(y=0; y<3; y++) {
           for(x=0; x<6; x++) {

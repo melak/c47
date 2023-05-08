@@ -525,6 +525,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 
 
   void restoreCalc(void) {
+    printf("RestoreCalc\n");
     uint8_t  compatibility_u8;        //defaults to use when settings are removed
     //bool_t   compatibility_bool;      //defaults to use when settings are removed
     uint32_t backupVersion, ramSize, ramPtr;
