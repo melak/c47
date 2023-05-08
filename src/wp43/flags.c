@@ -761,12 +761,6 @@ void SetSetting(uint16_t jmConfig) {
       break;
     }
 
-    case JC_H_SUM: {
-      jm_HOME_SUM = !jm_HOME_SUM;
-      fnRefreshState();
-      break;
-    }
-
     case JC_LARGELI: {
       jm_LARGELI = !jm_LARGELI;
       fnRefreshState();

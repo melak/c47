@@ -25,7 +25,7 @@
 #include "typeDefinitions.h"
 #include <stdint.h> 
 
-#ifdef INLINE_TEST
+//#ifdef INLINE_TEST
 extern bool_t   testEnabled;
 extern uint16_t testBitset;
 
@@ -39,6 +39,6 @@ void fnGetInlineTestBsToX     (uint16_t unusedButMandatoryParameter);
 void fnSetInlineTestXToBs     (uint16_t unusedButMandatoryParameter);
 void fnSysFreeMem             (uint16_t unusedButMandatoryParameter);
 bool_t fnTestBitIsSet         (uint8_t bit);
-#endif
+//#endif
 
 #endif // INLINETEST_H

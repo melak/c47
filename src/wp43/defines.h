@@ -24,7 +24,7 @@
 // JM VARIOUS OPTIONS
 //*********************************
 
- #define VERSION1 "108_09m"
+ #define VERSION1 "108_09o"
 
 
   #undef SAVE_SPACE_DM42
@@ -126,7 +126,7 @@
 #undef  VERBOSE_SCREEN
 
 #define INLINE_TEST                     //vv dr
-//#undef INLINE_TEST                    //^^
+#undef INLINE_TEST                    //^^
 
 
 

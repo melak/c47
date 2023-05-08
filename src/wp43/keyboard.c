@@ -641,6 +641,9 @@ printf(">>>>Z 0010 btnFnPressed SET FN_key_pressed            ; data=|%s| data[0
 printf(">>>>Z 0011 btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
 #endif //VERBOSEKEYS
         int16_t item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG);
+#ifdef VERBOSEKEYS
+printf(">>>>Z 011a btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
+#endif //VERBOSEKEYS
 
       #pragma GCC diagnostic push
       #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
@@ -2467,9 +2470,6 @@ RELEASE_END:
   }
 
 
-   #define B1 3  //NIGEL  //jm_HOME_SUM
-   #define B2 4  //NIGEL
-
   static void menuUp(void) {
     int16_t menuId = softmenuStack[0].softmenuId;
     int16_t sm = softmenu[menuId].menuItem;
@@ -2492,9 +2492,6 @@ RELEASE_END:
 
       if((softmenuStack[0].firstItem + itemShift) < (menuId < NUMBER_OF_DYNAMIC_SOFTMENUS ? dynamicSoftmenu[menuId].numItems : softmenu[menuId].numItems)) {
         softmenuStack[0].firstItem += itemShift;
-        //JM Include or exclude HOME menu screens  //JMHOME
-        if(!jm_HOME_SUM && sm == -MNU_HOME && softmenuStack[0].firstItem == B1*18) {softmenuStack[0].firstItem = (B2+1)*18;} 
-        //printf("^^--2:      menuId:%d item:%d  \n",sm,softmenuStack[softmenuStackPointer].firstItem/18);
       }
       else {
         softmenuStack[0].firstItem = 0;
@@ -2529,9 +2526,6 @@ RELEASE_END:
 
       if((softmenuStack[0].firstItem - itemShift) >= 0) {
         softmenuStack[0].firstItem -= itemShift;
-        //JM Include or exclude HOME menu screens  //JMHOME
-        if(!jm_HOME_SUM && sm == -MNU_HOME && softmenuStack[0].firstItem == B2*18) {softmenuStack[0].firstItem = (B1-1)*18;} 
-        //printf("vv--2:      menuId:%d item:%d  \n",sm,softmenuStack[0].firstItem/18);
       }
       else if((softmenuStack[0].firstItem - itemShift) >= -5) {
         softmenuStack[0].firstItem = 0;

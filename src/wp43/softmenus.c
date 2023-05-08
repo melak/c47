@@ -209,7 +209,7 @@ TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_NULL,                    ITM_NULL,                          //JM
 
                                              ITM_BASE_SCREEN,               ITM_BASE_HOME,              ITM_HOMEx3,               ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
-                                             ITM_SAFERESET,                 ITM_H_SUMRY,                ITM_TST,                  ITM_M1234,             ITM_M14,                     ITM_NULL,                        //JM
+                                             ITM_SAFERESET,                 ITM_NULL,                   ITM_NULL,                  ITM_M1234,             ITM_M14,                     ITM_TST,                        //JM
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_F1234,             ITM_F14,                     ITM_F124                  };
 // D47 vv
 TO_QSPI const int16_t menu_SETUP[]       = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_HPRP,              ITM_RECT,                    ITM_POLAR,
@@ -221,7 +221,7 @@ TO_QSPI const int16_t menu_SETUP[]       = { ITM_NULL,                      ITM_
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_NULL,                    ITM_NULL,                          //JM
 
                                              ITM_BASE_SCREEN,               ITM_BASE_HOME,              ITM_HOMEx3,               ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
-                                             ITM_SAFERESET,                 ITM_H_SUMRY,                ITM_TST,                  ITM_M1234,             ITM_M14,                     ITM_NULL,                        //JM
+                                             ITM_SAFERESET,                 ITM_NULL,                   ITM_TST,                  ITM_M1234,             ITM_M14,                     ITM_NULL,                        //JM
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_F1234,             ITM_F14,                     ITM_F124                  };
 // D47 ^^
 
@@ -628,50 +628,31 @@ TO_QSPI const int16_t menu_XEQ[]         = { ITM_X_P1,                      ITM_
                                              ITM_X_g1,                      ITM_X_g2,                   ITM_X_g3,                 ITM_X_g4,              ITM_X_g5,                    ITM_X_g6   };
 
 
+TO_QSPI const int16_t menu_BLUE_C47[]    = { ITM_MAGNITUDE,       -MNU_CPX,         -MNU_STK,         -MNU_TRG_C47,     -MNU_EXP,         ITM_UNDO,      
+                                             ITM_ARG,             ITM_DELTAPC,      ITM_XTHROOT,      ITM_op_j,         ITM_toREC2,       ITM_toPOL2,    
+                                             ITM_TGLFRT,          ITM_HASH_JM,      ITM_ms,           ITM_dotD,         ITM_LBL,          ITM_RTN,       
+
+                                             ITM_RI,              ITM_VIEW,         ITM_USERMODE,     ITM_NULL,         ITM_NULL,         ITM_NULL,
+                                             ITM_SNAP,            ITM_TIMER,       -MNU_INFO,        -MNU_TEST,        -MNU_CONST,        ITM_NULL,
+                                             ITM_NULL,            ITM_NULL,         ITM_NULL,         ITM_NULL,         ITM_NULL,         ITM_NULL,
+
+                                             ITM_NULL,            -MNU_ASN,         -MNU_ALPHAFN,     -MNU_LOOP,        -MNU_IO,          ITM_NULL,
+                                             ITM_FLGSV,           -MNU_BITS,        -MNU_CLK,         -MNU_PARTS,       -MNU_INTS,        ITM_NULL,
+                                             ITM_RBR,             -MNU_HOME,        -MNU_FIN,         -MNU_XFN,         -MNU_PLOTTING,    ITM_NULL };
+
 #ifdef SAVE_SPACE_DM42_6
   #define CC_EE  ITM_NULL
 #else
   #define CC_EE  -MNU_EE
 #endif                                             
 
+TO_QSPI const int16_t menu_HOME[]        = { ITM_DRG,                       ITM_YX,                     ITM_SQUARE,               ITM_10x,               ITM_EXP,                     ITM_op_j,                          //JM HOME
+                                             ITM_MOD,                       ITM_RMD,                    ITM_IDIV,                 ITM_XFACT,             ITM_EE_EXP_TH,               ITM_LINPOL,                    //JM HOME
+                                             ITM_FP,                        ITM_IP,                     ITM_DEG2,                 ITM_RAD2,              ITM_RECT,                    ITM_POLAR,                          //JM HOME
 
-TO_QSPI const int16_t menu_HOME[]     = { //JM
-/*HOME0 */           
-/*0x18*/                                     ITM_DRG,              ITM_YX,         ITM_SQUARE,        ITM_10x,          ITM_EXP,         ITM_CC,                    //JM HOME
-                                             ITM_MAGNITUDE,       ITM_ARG,         ITM_PARALLEL,      ITM_XFACT,        ITM_toREC2,       ITM_toPOL2,                    //JM HOME
-                                             ITM_DEG2,            ITM_RAD2,        ITM_EE_EXP_TH,     ITM_op_j,         ITM_RECT,         ITM_POLAR,                          //JM HOME
-/*HOME-1*/                                                                                                                                                                     //JM HOME
-/*1*18*/                                     ITM_DRG,             ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,         ITM_CC,                        //JM HOME
-                                             ITM_FP,              ITM_IP,          ITM_PARALLEL,      ITM_XFACT,       -MNU_BASE,       -MNU_INTS,                          //JM HOME
-                                             ITM_SF,              ITM_CF,          ITM_RL,            ITM_RR,           ITM_RMD,         ITM_IDIV,                           //JM HOME
-/*HOME-2*/                                                                                                                                                                     //JM HOME
-/*2*18*/                                     ITM_DRG,             ITM_YX,          ITM_SQUARE,        ITM_10x,          ITM_EXP,         ITM_CC,                         //JM HOME
-                                             -MNU_CONST,         -MNU_CPX,        -MNU_EXP,          -MNU_XXEQ,        -MNU_MyMenu,      CC_EE,                            //JM HOME
-                                             ITM_DEG2,            ITM_RAD2,        ITM_GRAD2,         ITM_op_j,         ITM_RECT,        ITM_POLAR, 
-
-
-
-
-
-// 10 - 11 NIGEL SUGGESTED 36 CELLS OF ALL THE BLUE ONES                                                                                                                                                                         //JM HOME
-                                             ITM_SNAP,         -MNU_ASN,         -MNU_ALPHAFN,     -MNU_LOOP,        -MNU_IO,              -MNU_TEST,
-                                             ITM_FLGSV,        -MNU_BITS,        -MNU_CLK,         -MNU_PARTS,       -MNU_INTS,            -MNU_INFO,
-                                             ITM_RBR,          -MNU_HOME,        -MNU_FIN,         -MNU_XFN,         -MNU_PLOTTING,        ITM_TIMER,
-
-                                             -MNU_CONST,           -MNU_CPX,         -MNU_STK,         -MNU_TRG_C47,     -MNU_EXP,         -MNU_CLR,      
-                                             ITM_ARG,              ITM_DELTAPC,      ITM_XTHROOT,      ITM_op_j,         ITM_toREC2,       ITM_toPOL2,    
-                                             ITM_TGLFRT,           ITM_HASH_JM,      ITM_ms,           ITM_dotD,         ITM_LBL,          ITM_GTO,       
-
-
-
-/*HOME+1*/
-                                           ITM_SI_p,                  ITM_SI_n,                ITM_SI_u,                 ITM_SI_m,                 ITM_SI_k,              ITM_SI_M,                         //JM HOME
-                                           ITM_SI_f,                  ITM_DSPCYCLE,            ITM_DSP,                  ITM_XFACT,                ITM_SI_G,              ITM_SI_T,                         //JM HOME                                    
-                                           ITM_DEG2,                  ITM_RAD2,                ITM_GRAD2,                ITM_PARALLEL,             ITM_RECT,              ITM_POLAR,                        //JM UNITS SI
-
-//##################################################################################################################################################################################################################################
-
-                                     };                                                                                                                                                                                   //JM HOME
+                                             ITM_SI_k,                      ITM_SI_M,                   ITM_SI_G,                 ITM_SI_T,              ITM_SI_P,                    ITM_DSPCYCLE,                           
+                                             ITM_SI_f,                      ITM_SI_p,                   ITM_SI_n,                 ITM_SI_u,              ITM_SI_m,                    ITM_DSP,                                    
+                                            -MNU_EE,                        ITM_PARALLEL,               ITM_DEG2,                 ITM_RAD2,              ITM_RECT,                    ITM_POLAR      };                                                                                                                                                                                   //JM HOME
 
 TO_QSPI const int16_t menu_PLOT[]        = { ITM_PLINE,                     ITM_SCALE,                  ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM GRAPH
                                              ITM_DIFF,                      ITM_INTG,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    ITM_NULL,                           //JM GRAPH
@@ -830,6 +811,7 @@ TO_QSPI const softmenu_t softmenu[] = {
 /* 129 */  {.menuItem = -MNU_TRG_C47_MORE,.numItems = sizeof(menu_TRG_C47_MORE  )/sizeof(int16_t), .softkeyItem = menu_TRG_C47_MORE   },
 /* 130 */  {.menuItem = -MNU_TAMNONREG,   .numItems = sizeof(menu_TamNonReg     )/sizeof(int16_t), .softkeyItem = menu_TamNonReg      },
 /* 131 */  {.menuItem = -MNU_TAMNONREGIND,.numItems = sizeof(menu_TamNonRegInd  )/sizeof(int16_t), .softkeyItem = menu_TamNonRegInd   },
+/* 132 */  {.menuItem = -MNU_BLUE_C47,    .numItems = sizeof(menu_BLUE_C47      )/sizeof(int16_t), .softkeyItem = menu_BLUE_C47       },
 #ifdef INLINE_TEST                                                              //vv dr
 /*     */  {.menuItem= -MNU_INL_TST,     .numItems = sizeof(menu_Inl_Tst        )/sizeof(int16_t), .softkeyItem = menu_Inl_Tst        },
 #endif                                                                          //^^
@@ -1026,7 +1008,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       else if(menuData[i].item == ITM_NOP || menuData[i].item == ITM_NULL) {
         numberOfBytes += 1;
       }
-      else if(indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0) {
+      else if(indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0 || (menuData[i].item == ITM_op_j || menuData[i].item == ITM_op_a || menuData[i].item == ITM_op_a2)) {
         numberOfBytes += stringByteLength(indexOfItems[abs(menuData[i].item)].itemSoftmenuName) + 1;
       }
       else {
@@ -1043,7 +1025,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       else if(menuData[i].item == ITM_NULL) {
         lbl = "";
       }
-      else if(indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0) {
+      else if(indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0 || (menuData[i].item == ITM_op_j || menuData[i].item == ITM_op_a || menuData[i].item == ITM_op_a2)) {
         lbl = indexOfItems[abs(menuData[i].item)].itemSoftmenuName;
       }
       else {
@@ -1062,6 +1044,9 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
     int16_t i, numberOfBytes, numberOfGlobalLabels;
     uint8_t *ptr;
 
+    #ifdef PC_BUILD
+      printf("initvariableSoftMenu (cachedDynamicMenu=%i)",cachedDynamicMenu);
+    #endif //PC_BUILD
     free(dynamicSoftmenu[menu].menuContent);
 
     switch(-dynamicSoftmenu[menu].menuItem) {
@@ -1308,7 +1293,14 @@ char label0[30];
     int16_t xx1;
     int16_t xx2;
 
+int8_t maxfLines = 0;
+int8_t maxgLines = 0;
 
+bool_t maxfgLines(int16_t y) {
+  if(((maxfLines & 1) == 1) && ((maxgLines & 1) == 1)) return (2 == y) || (1 == y); else  //if any bit set in the f and g-line, allow fgline on f and g
+  if(((maxfLines & 1) == 1) && ((maxgLines & 1) == 0)) return (1 == y); else              //if any bit set in the f-line, allow fgline on f 
+  return false;
+}
 
   /********************************************//**
    * \brief Displays one softkey
@@ -1325,6 +1317,16 @@ char label0[30];
   void showSoftkey(const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {     //dr
     int16_t x1, y1;
     int16_t x2, y2;
+
+    if(label[0]!=0) {
+      if(ySoftKey==1) {
+        maxfLines |= 1; //set bit 0 for any non-blank softkey in f
+      }
+      if(ySoftKey==2) {
+        maxgLines |= 1; //set bit 0 for any non-blank softkey in g
+        maxfLines |= 1; //set bit 0 for any non-blank softkey in g (add f, for a g softkey otherwise g cannot be reached)
+      }
+    }
 
     if((calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) && xSoftkey >= 2) {           //prevent softkeys columns 3-6 from displaying over the graph
         return;
@@ -1621,9 +1623,29 @@ bool_t isFunctionItemAMenu(int16_t item) {
          /*|| (item == ITM_TIMER)*/       //JMvv colour PLOT in reverse font to appear to be menus
 }
 
+
+static  char FF[12];
+static char *changeItoJ(int16_t item) {
+  strcpy(FF, indexOfItems[item%10000].itemSoftmenuName);
+  if (getSystemFlag(FLAG_CPXj)) {
+    if (item == ITM_op_j && FF[0] == STD_i[0]) {
+      FF[0]++;
+    }
+    if (item == ITM_EE_EXP_TH && FF[2] == STD_SUP_i[1]) {
+      FF[2]++;
+    }
+  }
+  return FF;
+}
+
+
+
   void showSoftmenuCurrentPart(void) {
 
 //JMTOCHECK: Removed exceptions for underline removal. 
+
+    maxfLines = 0;
+    maxgLines = 0;
     char tmp1[15];
     int16_t x, y, yDotted=0, currentFirstItem, item, numberOfItems, m = softmenuStack[0].softmenuId;
     bool_t dottedTopLine;
@@ -1651,6 +1673,9 @@ bool_t isFunctionItemAMenu(int16_t item) {
     }
 
     if(m < NUMBER_OF_DYNAMIC_SOFTMENUS) { // Dynamic softmenu
+      #ifdef PC_BUILD
+        printf("Dynamic menu: m=%i cachedDynamicMenu=%i softmenu[m].menuItem= %i \n",m, cachedDynamicMenu, softmenu[m].menuItem);
+      #endif //PC_BUILD
       if(softmenu[m].menuItem != cachedDynamicMenu || softmenu[m].menuItem == -MNU_DYNAMIC) {
         initVariableSoftmenu(m);
         cachedDynamicMenu = softmenu[m].menuItem;
@@ -1709,25 +1734,52 @@ bool_t isFunctionItemAMenu(int16_t item) {
     }
 
     if(m < NUMBER_OF_DYNAMIC_SOFTMENUS) { // Dynamic softmenu
+      #ifdef PC_BUILD
+        printf("Dynamic menu: m=%i cachedDynamicMenu=%i softmenu[m].menuItem= %i \n",m, cachedDynamicMenu, softmenu[m].menuItem);
+      #endif //PC_BUILD
       if(numberOfItems == 0) {
         for(x=0; x<6; x++) {
           showSoftkey("", x, 0, vmNormal, true, true, NOVAL, NOVAL, NOTEXT);
         }
       }
       else {
+        #ifdef PC_BUILD
+          printf("Dynamic menu: populate\n");
+        #endif //PC_BUILD
         uint8_t *ptr = getNthString(dynamicSoftmenu[m].menuContent, currentFirstItem);
         for(y=0; y<3; y++) {
           for(x=0; x<6; x++) {
             if(x + 6*y + currentFirstItem < numberOfItems) {
               if(*ptr != 0) {
                 videoMode_t vm = vmNormal;
+                char itemName[12];
+                strcpy(itemName,(char *)ptr);
+                int8_t showCb = NOVAL;
+                int16_t showValue = NOVAL;
+                char showText[10];
+                showText[0]=0;                                  //strcat(showText, NOTEXT); not working, hence clearing the string
+
                 switch(-softmenu[m].menuItem) {
                   case MNU_MENUS: {
                     vm = vmReverse;
                     break;
                   }
                   case MNU_MyMenu: {
-                    vm = (userMenuItems[x + 6*y].item < 0) ? vmReverse : vmNormal;
+                    int16_t itemNr = userMenuItems[x + 6*y].item;
+                    strcpy(itemName, changeItoJ(itemNr));
+                    vm = (itemNr < 0) ? vmReverse : vmNormal;
+
+                    showCb = fnCbIsSet(itemNr);
+                    showValue = fnItemShowValue(itemNr);
+                    switch (showValue) {
+                      case 32700 : strcat(showText, "ALL" ); showValue = NOVAL; break;
+                      case 32701 : strcat(showText, "FIX" ); showValue = NOVAL; break;
+                      case 32702 : strcat(showText, "SCI" ); showValue = NOVAL; break;
+                      case 32703 : strcat(showText, "ENG" ); showValue = NOVAL; break;
+                      case 32704 : strcat(showText, "SIG" ); showValue = NOVAL; break; 
+                      case 32705 : strcat(showText, "UNIT"); showValue = NOVAL; break;
+                      default: break;
+                    }
                     break;
                   }
                   case MNU_MyAlpha: {
@@ -1751,7 +1803,7 @@ bool_t isFunctionItemAMenu(int16_t item) {
                     break;
                   }
                 }
-                showSoftkey((char *)ptr, x, y, vm, true, true, NOVAL, NOVAL, NOTEXT);
+                showSoftkey(itemName, x, y, vm, true, true, showCb, showValue, showText);
               }
               ptr += stringByteLength((char *)ptr) + 1;
             }
@@ -1861,14 +1913,12 @@ bool_t isFunctionItemAMenu(int16_t item) {
               }
 
               else                                                                            //JM vv display i or j properly on display
-              if(item%10000 == ITM_op_j && getSystemFlag(FLAG_CPXj)) {
-                showSoftkey(STD_j, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
-              }
-              else if(item%10000 == ITM_op_j && !getSystemFlag(FLAG_CPXj)) {
-                showSoftkey(STD_i, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
-              }                                                                                //JM ^^
-              else if(isFunctionItemAMenu(item)) {
-                        showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
+                if(item%10000 == ITM_op_j || item%10000 == ITM_EE_EXP_TH) {
+                  showSoftkey(changeItoJ(item%10000), x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
+                }
+
+              else if(isFunctionItemAMenu(item%10000)) {
+                showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
               }                                                                                //JM^^
 
               else if( softmenu[m].menuItem  == -MNU_CONVS || softmenu[m].menuItem  == -MNU_CONVANG || softmenu[m].menuItem  == -MNU_CONVE || softmenu[m].menuItem  == -MNU_CONVP || softmenu[m].menuItem  == -MNU_CONVFP || softmenu[m].menuItem  == -MNU_CONVM || softmenu[m].menuItem  == -MNU_CONVX || softmenu[m].menuItem  == -MNU_CONVV || softmenu[m].menuItem  == -MNU_CONVA || softmenu[m].menuItem  == -MNU_UNITCONV || softmenu[m].menuItem  == -MNU_MISC) { 
@@ -1886,10 +1936,8 @@ bool_t isFunctionItemAMenu(int16_t item) {
               if(jm_G_DOUBLETAP && softmenu[m].menuItem == -MNU_ALPHA && y == 0 ){  // Indicate disabled double tap
                 int16_t yStrokeA = SCREEN_HEIGHT - (y-currentFirstItem/6)*23 - 1;
                 int16_t xStrokeA=x*67 + 66 -12;                                     //JM mod Show double press which does not work anymore
-//                showString(STD_EMPTY_SET, &standardFont, xStrokeA +2, yStrokeA -16-3, vmNormal, false, false);
                 plotline(xStrokeA +2+4, yStrokeA -16-3, xStrokeA +2+4+5, yStrokeA -16-3+5);
               }
-
 
               if(indexOfItems[item%10000].func == itemToBeCoded) {
                 // Strike out non coded functions
