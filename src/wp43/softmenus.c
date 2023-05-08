@@ -1293,7 +1293,14 @@ char label0[30];
     int16_t xx1;
     int16_t xx2;
 
+int8_t maxfLines = 0;
+int8_t maxgLines = 0;
 
+bool_t maxfgLines(int16_t y) {
+  if(((maxfLines & 1) == 1) && ((maxgLines & 1) == 1)) return (2 == y) || (1 == y); else  //if any bit set in the f and g-line, allow fgline on f and g
+  if(((maxfLines & 1) == 1) && ((maxgLines & 1) == 0)) return (1 == y); else              //if any bit set in the f-line, allow fgline on f 
+  return false;
+}
 
   /********************************************//**
    * \brief Displays one softkey
@@ -1310,6 +1317,16 @@ char label0[30];
   void showSoftkey(const char *label, int16_t xSoftkey, int16_t ySoftKey, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {     //dr
     int16_t x1, y1;
     int16_t x2, y2;
+
+    if(label[0]!=0) {
+      if(ySoftKey==1) {
+        maxfLines |= 1; //set bit 0 for any non-blank softkey in f
+      }
+      if(ySoftKey==2) {
+        maxgLines |= 1; //set bit 0 for any non-blank softkey in g
+        maxfLines |= 1; //set bit 0 for any non-blank softkey in g (add f, for a g softkey otherwise g cannot be reached)
+      }
+    }
 
     if((calcMode == CM_PLOT_STAT || calcMode == CM_GRAPH) && xSoftkey >= 2) {           //prevent softkeys columns 3-6 from displaying over the graph
         return;
@@ -1626,6 +1643,9 @@ static char *changeItoJ(int16_t item) {
   void showSoftmenuCurrentPart(void) {
 
 //JMTOCHECK: Removed exceptions for underline removal. 
+
+    maxfLines = 0;
+    maxgLines = 0;
     char tmp1[15];
     int16_t x, y, yDotted=0, currentFirstItem, item, numberOfItems, m = softmenuStack[0].softmenuId;
     bool_t dottedTopLine;
@@ -1897,7 +1917,7 @@ static char *changeItoJ(int16_t item) {
                   showSoftkey(changeItoJ(item%10000), x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
                 }
 
-              else if(isFunctionItemAMenu(item)) {
+              else if(isFunctionItemAMenu(item%10000)) {
                 showSoftkey(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmReverse, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
               }                                                                                //JM^^
 
