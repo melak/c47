@@ -1707,8 +1707,10 @@ void fnRESET_MyM(void){
     #ifndef TESTSUITE_BUILD
     jm_BASE_SCREEN = false;                                           //JM prevent slow updating of 6 menu items
     for(int8_t fn = 1; fn <= 6; fn++) {
-      itemToBeAssigned = menu_HOME[fn -1];  //Function key follows if the yellow key
+
+      itemToBeAssigned = menu_HOME[fn -1];                            //Function key follows if the yellow key: Copy the default f-shofted to the primaries of MyMenu
       assignToMyMenu_(fn - 1);
+
       itemToBeAssigned = ASSIGN_CLEAR;
       assignToMyMenu_(6 + fn - 1);
       itemToBeAssigned = ASSIGN_CLEAR;

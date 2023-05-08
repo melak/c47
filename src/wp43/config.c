@@ -696,7 +696,6 @@ void resetOtherConfigurationStuff(void) {
   jm_FG_LINE = true;
   jm_G_DOUBLETAP = true;
   jm_BASE_SCREEN = true;                                       //"MyM" setting, set as part of USER_MRESET
-  jm_HOME_SUM = false;                                         //Summary in HOME menu
   jm_LARGELI = true;                                           //Large font for long integers on stack
   constantFractions = false;                                   //Extended fractions
   constantFractionsMode = CF_NORMAL;                           //Extended fractions
@@ -1090,9 +1089,17 @@ void doFnReset(uint16_t confirmation, bool_t autoSav) {
 
 
     //JM Default USER
+    #if defined(PC_BUILD)
+      printf("Doing A.RESET, M.RESET & K.RESET\n");
+    #endif
+    //    calcMode = CM_BUG_ON_SCREEN; this also removes the false start on MyMenu error
+
     fnUserJM(USER_ARESET);                                      //JM USER
     fnUserJM(USER_MRESET);                                      //JM USER
-    fnUserJM(USER_KRESET);                                      //JM USER
+    #if !defined(TESTSUITE_BUILD)
+      showSoftmenu(-MNU_MyMenu);                                   //this removes the false start on MyMenu error
+    #endif // !TESTSUITE_BUILD
+    fnUserJM(USER_KRESET);                                      //JM USER    
     temporaryInformation = TI_NO_INFO;
     refreshScreen();
     

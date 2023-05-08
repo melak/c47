@@ -133,7 +133,6 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   { ITM_VECT,             JC_VECT,                CB_JC },  //SetSetting
   { ITM_NVECT,            JC_NVECT,               CB_JC },  //SetSetting
   { ITM_SCALE,            JC_SCALE,               CB_JC },  //SetSetting
-  { ITM_H_SUMRY,          JC_H_SUM,               CB_JC },  //SetSetting
   { ITM_LARGELI,          JC_LARGELI,             CB_JC },  //SetSetting
   { ITM_EXFRAC,           JC_EXFRAC,              CB_JC },  //SetSetting
   { ITM_EXTX,             JC_EXTENTX,             CB_JC },  //SetSetting
@@ -387,11 +386,6 @@ int8_t fnCbIsSet(int16_t item) {
 
         case JC_SCALE: {
           cb_param = PLOT_SCALE;
-        }
-        break;
-
-        case JC_H_SUM: {
-          cb_param = jm_HOME_SUM;
         }
         break;
 

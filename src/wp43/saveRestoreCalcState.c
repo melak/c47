@@ -485,7 +485,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);
     save(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN),                     BACKUP);
     save(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
-    save(&jm_HOME_SUM,                        sizeof(jm_HOME_SUM),                        BACKUP);
+    save(&jm_temporary,                       sizeof(jm_temporary),                        BACKUP);
     save(&graph_xmin,                         sizeof(graph_xmin),                         BACKUP);
     save(&graph_xmax,                         sizeof(graph_xmax),                         BACKUP);
     save(&graph_ymin,                         sizeof(graph_ymin),                         BACKUP);
@@ -525,6 +525,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 
 
   void restoreCalc(void) {
+    printf("RestoreCalc\n");
     uint8_t  compatibility_u8;        //defaults to use when settings are removed
     //bool_t   compatibility_bool;      //defaults to use when settings are removed
     uint32_t backupVersion, ramSize, ramPtr;
@@ -788,7 +789,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);
       restore(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN),                     BACKUP);
       restore(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
-      restore(&jm_HOME_SUM,                        sizeof(jm_HOME_SUM),                        BACKUP);
+      restore(&jm_temporary,                       sizeof(jm_temporary),                       BACKUP);
       restore(&graph_xmin,                         sizeof(graph_xmin),                         BACKUP);
       restore(&graph_xmax,                         sizeof(graph_xmax),                         BACKUP);
       restore(&graph_ymin,                         sizeof(graph_ymin),                         BACKUP);
@@ -1450,7 +1451,7 @@ char tmpString[3000];             //The concurrent use of the global tmpString
 */
 
 //12
-  sprintf(tmpString, "jm_HOME_SUM\n%"           PRIu8 "\n",     (uint8_t)jm_HOME_SUM);         save(tmpString, strlen(tmpString), BACKUP);       
+  sprintf(tmpString, "jm_temporary\n%"          PRIu8 "\n",     (uint8_t)jm_temporary);        save(tmpString, strlen(tmpString), BACKUP);       
   sprintf(tmpString, "jm_LARGELI\n%"            PRIu8 "\n",     (uint8_t)jm_LARGELI);          save(tmpString, strlen(tmpString), BACKUP);                 
   sprintf(tmpString, "constantFractions\n%"     PRIu8 "\n",     (uint8_t)constantFractions);   save(tmpString, strlen(tmpString), BACKUP);                 
   sprintf(tmpString, "constantFractionsMode\n%" PRIu8 "\n",     constantFractionsMode);        save(tmpString, strlen(tmpString), BACKUP);                 
@@ -2512,7 +2513,7 @@ int32_t stringToInt32(const char *str) {
           else if(strcmp(aimBuffer, "PLOT_ZMX\n"                              PLOT_ZMX);                     save(tmpString, strlen(tmpString), BACKUP);    
           else if(strcmp(aimBuffer, "PLOT_ZMY\n"                              PLOT_ZMY);                     save(tmpString, strlen(tmpString), BACKUP);    
   */
-          else if(strcmp(aimBuffer, "jm_HOME_SUM"                 ) == 0) { jm_HOME_SUM           = (bool_t)stringToUint8(tmpString) != 0; }
+          else if(strcmp(aimBuffer, "jm_temporary"                ) == 0) { jm_temporary          = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "jm_LARGELI"                  ) == 0) { jm_LARGELI            = (bool_t)stringToUint8(tmpString) != 0; }         
           else if(strcmp(aimBuffer, "constantFractions"           ) == 0) { constantFractions     = (bool_t)stringToUint8(tmpString) != 0; }             
           else if(strcmp(aimBuffer, "constantFractionsMode"       ) == 0) { constantFractionsMode = stringToUint8(tmpString); }      

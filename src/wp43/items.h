@@ -1495,7 +1495,7 @@
 #define ITM_DEG                     1445
 #define ITM_1446                    1446
 #define ITM_SA                      1447
-#define MNU_1448                    1448
+#define MNU_BLUE_C47                1448
 #define ITM_DOT_PROD                1449
 #define ITM_DSTACK                  1450
 #define ITM_DMS                     1451
@@ -1914,7 +1914,7 @@
 #define CHR_case                    1858
 #define ITM_BASE_HOME               1859
 #define MNU_MISC                    1860
-#define ITM_H_SUMRY                 1861
+#define MNU_1861                    1861
 #define ITM_DTtoJ                   1862
 #define ITM_JtoDT                   1863
 #define ITM_DSPCYCLE                1864
@@ -1945,7 +1945,7 @@
 #define ITM_INP_DEF_CPXDP           1889
 #define ITM_INP_DEF_SI              1890
 #define ITM_INP_DEF_LI              1891
-#define MNU_1892                    1892
+#define ITM_SI_P                    1892
 #define KEY_fg                      1893
 #define MNU_1894                    1894
 #define ITM_USER_C43ALTB            1895
