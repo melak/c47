@@ -641,6 +641,9 @@ printf(">>>>Z 0010 btnFnPressed SET FN_key_pressed            ; data=|%s| data[0
 printf(">>>>Z 0011 btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
 #endif //VERBOSEKEYS
         int16_t item = determineFunctionKeyItem_C43((char *)data, shiftF, shiftG);
+#ifdef VERBOSEKEYS
+printf(">>>>Z 011a btnFnPressed >>determineFunctionKeyItem_C43; data=|%s| data[0]=%d shiftF=%d shiftG=%d\n",(char*)data, ((char*)data)[0],shiftF, shiftG);
+#endif //VERBOSEKEYS
 
       #pragma GCC diagnostic push
       #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"

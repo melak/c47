@@ -33,6 +33,24 @@
 #include "wp43.h"
 
 
+
+#ifndef INLINE_TEST
+//extern bool_t   testEnabled;
+//extern uint16_t testBitset;
+void     fnSwStart            (uint8_t nr) {}
+void     fnSwStop             (uint8_t nr) {}
+void fnSetInlineTest          (uint16_t drConfig) {}
+void fnGetInlineTestBsToX     (uint16_t unusedButMandatoryParameter) {}
+void fnSetInlineTestXToBs     (uint16_t unusedButMandatoryParameter) {}
+void fnSysFreeMem             (uint16_t unusedButMandatoryParameter) {}
+bool_t fnTestBitIsSet         (uint8_t bit) { return false; }
+#endif
+
+
+
+
+
+
 #ifdef INLINE_TEST
 uint32_t swStart[4];
 uint32_t swStop[4];
@@ -222,4 +240,5 @@ bool_t fnTestBitIsSet(uint8_t bit) {
 
   return (new_num & 1);
 }
+
 #endif

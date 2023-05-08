@@ -126,7 +126,7 @@
 #undef  VERBOSE_SCREEN
 
 #define INLINE_TEST                     //vv dr
-//#undef INLINE_TEST                    //^^
+#undef INLINE_TEST                    //^^
 
 
 
