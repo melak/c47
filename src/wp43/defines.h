@@ -878,7 +878,7 @@ typedef enum {
 #define TI_FROM_HMS                               80
 #define TI_DISP_JULIAN                            81
 #define TI_FROM_DATEX                             82
-
+#define TI_LAST_CONST_CATNAME                     83
 
 
 // Register browser mode

@@ -1008,7 +1008,7 @@ void fnDynamicMenu(uint16_t unusedButMandatoryParameter) {
       else if(menuData[i].item == ITM_NOP || menuData[i].item == ITM_NULL) {
         numberOfBytes += 1;
       }
-      else if(indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0 || (menuData[i].item == ITM_op_j || menuData[i].item == ITM_op_a || menuData[i].item == ITM_op_a2)) {
+      else if( indexOfItems[abs(menuData[i].item)].itemCatalogName[0] == 0 || (menuData[i].item == ITM_op_j || menuData[i].item == ITM_op_a || menuData[i].item == ITM_op_a2)) {
         numberOfBytes += stringByteLength(indexOfItems[abs(menuData[i].item)].itemSoftmenuName) + 1;
       }
       else {
@@ -1534,7 +1534,7 @@ void showKey2(const char *label0, const char *label1, int16_t x1, int16_t x2, in
 
 void showKey(const char *label, int16_t x1, int16_t x2, int16_t y1, int16_t y2, bool_t rightMostSlot, videoMode_t videoMode, bool_t topLine, bool_t bottomLine, int8_t showCb, int16_t showValue, const char *showText) {
     int16_t w;
-    char l[15];
+    char l[16];
 
     // Draw the frame
     //   Top line
@@ -1624,7 +1624,7 @@ bool_t isFunctionItemAMenu(int16_t item) {
 }
 
 
-static  char FF[12];
+static  char FF[16];
 static char *changeItoJ(int16_t item) {
   strcpy(FF, indexOfItems[item%10000].itemSoftmenuName);
   if (getSystemFlag(FLAG_CPXj)) {
@@ -1646,7 +1646,7 @@ static char *changeItoJ(int16_t item) {
 
     maxfLines = 0;
     maxgLines = 0;
-    char tmp1[15];
+    char tmp1[16];
     int16_t x, y, yDotted=0, currentFirstItem, item, numberOfItems, m = softmenuStack[0].softmenuId;
     bool_t dottedTopLine;
     #ifdef PC_BUILD
@@ -1752,11 +1752,11 @@ static char *changeItoJ(int16_t item) {
             if(x + 6*y + currentFirstItem < numberOfItems) {
               if(*ptr != 0) {
                 videoMode_t vm = vmNormal;
-                char itemName[12];
+                char itemName[16];
                 strcpy(itemName,(char *)ptr);
                 int8_t showCb = NOVAL;
                 int16_t showValue = NOVAL;
-                char showText[10];
+                char showText[16];
                 showText[0]=0;                                  //strcat(showText, NOTEXT); not working, hence clearing the string
 
                 switch(-softmenu[m].menuItem) {
@@ -1827,7 +1827,7 @@ static char *changeItoJ(int16_t item) {
 
             int8_t showCb = fnCbIsSet(item%10000);                 //JM vv          //dr
             int16_t showValue = fnItemShowValue(item%10000);                        //dr
-            char showText[10];
+            char showText[16];
             showText[0] = 0;
             switch (showValue) {
               case 32700 : strcat(showText, "ALL" ); showValue = NOVAL; break;
@@ -1908,9 +1908,11 @@ static char *changeItoJ(int16_t item) {
               // item : +10000 -> no top line
               //        +20000 -> no bottom line
               //        +30000 -> neither top nor bottom line
-              if(softmenu[m].menuItem == -MNU_FCNS) {
+              if(softmenu[m].menuItem == -MNU_FCNS || softmenu[m].menuItem  == -MNU_CONST) {
                 showSoftkey(indexOfItems[item%10000].itemCatalogName,  x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
-              }
+              }  //CONST is a normal menu not a catalog, but we expect the catalog to be treated as a catalog.
+                 //The same could be a problem with any of the generated catalogs (MNU_SYSFL, MNU_alpha_INTL, MNU_alpha_intl, )
+
 
               else                                                                            //JM vv display i or j properly on display
                 if(item%10000 == ITM_op_j || item%10000 == ITM_EE_EXP_TH) {
@@ -1925,7 +1927,7 @@ static char *changeItoJ(int16_t item) {
                 showSoftkey2(indexOfItems[item%10000].itemSoftmenuName, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText); 
               }
  
-              else if((softmenu[m].menuItem  == -MNU_IO || softmenu[m].menuItem  == -MNU_PFN ) && (item == ITM_STOCFG || item == ITM_RCLCFG)) { //do not display "Config"
+              else if((softmenu[m].menuItem  == -MNU_IO || softmenu[m].menuItem  == -MNU_PFN) && (item == ITM_STOCFG || item == ITM_RCLCFG)) { //do not display "Config"
                 showSoftkey(indexOfItems[item%10000].itemCatalogName, x, y-currentFirstItem/6, vmNormal, (item/10000)==0 || (item/10000)==2, (item/10000)==0 || (item/10000)==1, showCb, showValue, showText);
               }
 

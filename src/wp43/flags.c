@@ -895,12 +895,32 @@ void SetSetting(uint16_t jmConfig) {
       break;
     }
    
-    case JC_BSR: {    //bit ComplexResult
+    case ITM_CPXRES1: {    //bit ComplexResult
+      fnSetFlag(FLAG_CPXRES);
+      break;
+    }
+   
+    case ITM_CPXRES0: {    //bit ComplexResult
+      fnClearFlag(FLAG_CPXRES);
+      break;
+    }
+   
+    case JC_BSR: {    //bit SpecialResult
       fnFlipFlag(FLAG_SPCRES);
       break;
     }
    
-    case JC_FRC: {    //bit ComplexResult
+    case ITM_SPCRES1: {    //bit SpecialResult
+      fnSetFlag(FLAG_SPCRES);
+      break;
+    }
+   
+    case ITM_SPCRES0: {    //bit SpecialResult
+      fnClearFlag(FLAG_SPCRES);
+      break;
+    }
+   
+    case JC_FRC: {    //bit
       fnFlipFlag(FLAG_FRCSRN);
       break;
     }
@@ -924,6 +944,7 @@ void SetSetting(uint16_t jmConfig) {
     default:
     break;
   }
+fnRefreshState();
 }
 
 

@@ -1303,34 +1303,6 @@ uint8_t  displaymode = stdNoEnlarge;
     return _doShowString(string, font, 0, 0, &resStr, limitWidth, vmNormal, showLeadingCols, showEndingCols);
   }
 
-
-
-#ifdef CLEARNAME
-  /********************************************//**
-   * \brief Finds the cols and rows for a string if showing leading and ending columns
-   *
-   * \param[in]  ch   const char*   String to find the bounds of
-   * \param[in]  font const font_t* Font to use
-   * \param[out] col  uint32_t*     Number of columns for the string
-   * \param[out] row  uint32_t*     Number of rows for the string
-   */
-  static void getStringBounds(const char *string, const font_t *font, uint32_t *col, uint32_t *row) {
-    uint16_t ch = 0;
-    uint32_t lcol, lrow;
-    *col = 0;
-    *row = 0;
-
-    while(string[ch] != 0) {
-      getGlyphBounds(string, &ch, font, &lcol, &lrow);
-      *col += lcol;
-      if(lrow > *row) {
-        *row = lrow;
-      }
-    }
-  }
-#endif //CLEARNAME
-  
-
   static void _setStringMode(int mode, int comp, const font_t **fontPtr) {
     compressString = comp;
     displaymode = mode;             // miniC and maxiC to be depreciated in favour of displaymode
@@ -1772,7 +1744,11 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
 //    }
 //    else 
       if(item != MNU_DYNAMIC) {
-      functionName = indexOfItems[abs(item)].itemCatalogName;
+        if(item >= CST_01 && item <= CST_79) {
+          functionName = indexOfItems[abs(item)].itemSoftmenuName;
+        } else {
+          functionName = indexOfItems[abs(item)].itemCatalogName;
+        }
     }
     else {
       functionName = dynmenuGetLabel(dynamicMenuItem);
@@ -1798,18 +1774,6 @@ void printHalfSecUpdate_Integer(uint8_t mode, char *txt, int loop) {
 
 
 void hideFunctionName(void) {
-#ifdef CLEARNAME
-// JM Removed the partial cleaning
-
-  if(!running_program_jm && tmpString[0] != 0) {
-    uint32_t col, row;
-
-    getStringBounds(tmpString[0] != 0 ? tmpString : indexOfItems[abs(showFunctionNameItem)].itemCatalogName, &standardFont, &col, &row);
-    lcd_fill_rect(1, Y_POSITION_OF_REGISTER_T_LINE+6, col, row, LCD_SET_VALUE);
-    showFunctionNameItem = 0;
-  }
-#endif //CLEARNAME
-
   if(!running_program_jm && (tmpString[0] != 0 || calcMode!=CM_AIM)) refreshRegisterLine(REGISTER_T);      //JM DO NOT CHANGE BACK TO CLEARING ONLY A SHORT PIECE. CHANGED IN TWEAKED AS WELL>
                                                                                     //Added the tempstring isea, not sure why it is used, but I stay compatible
   showFunctionNameItem = 0;
@@ -3278,6 +3242,15 @@ void hideFunctionName(void) {
                 else { // YMD
                   strcpy(prefix, "yyyy.mmdd" STD_SPACE_FIGURE " :");
                 }
+                prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
+              }
+            }
+            else if(temporaryInformation == TI_LAST_CONST_CATNAME) {
+              if(regist == REGISTER_X) {
+                strcpy(prefix, lastFuncSoftmenuName());
+                strcat(prefix,  " ");
+                strcat(prefix, lastFuncCatalogName());
+                strcat(prefix,  " = ");
                 prefixWidth = stringWidth(prefix, &standardFont, true, true) + 1;
               }
             }
