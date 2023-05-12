@@ -492,6 +492,9 @@ void updateAssignTamBuffer(void) {
   else if(itemToBeAssigned < 0) {
     tbPtr = stpcpy(tbPtr, indexOfItems[-itemToBeAssigned].itemCatalogName);
   }
+  else if(itemToBeAssigned >= ITM_X_P1 && itemToBeAssigned <= ITM_X_g6) {
+    tbPtr = stpcpy(tbPtr, indexOfItemsXEQM + 8*(itemToBeAssigned-fnXEQMENUpos));
+  }
   else if(indexOfItems[itemToBeAssigned].itemCatalogName[0] == 0) {
     tbPtr = stpcpy(tbPtr, indexOfItems[itemToBeAssigned].itemSoftmenuName);
   }

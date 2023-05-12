@@ -293,7 +293,7 @@ void generateAllConstants(void) {
    
   generateConstantArray("Z0",            "+3.767303134617706554681984004203193082686235083524186552e+02"); c++;   // cnst054 mu0 * c
   generateConstantArray("alpha",         "+7.297352569300000000000000000000000000000000000000000000e-03"); c++;   // cnst055
-  generateConstantArray("gamma",         "+9.806650000000000000000000000000000000000000000000000000e+00"); c++;   // cnst056 gamma = gEarth --> is this duplicate constant needed?
+  generateConstantArray("gamma",         "+6.674300000000000000000000000000000000000000000000000000e-11"); c++;   // cnst056 gamma = gEarth --> is this duplicate constant needed?
   generateConstantArray("gammaEM",       "+5.772156649015328606065120900824024310421593359399235988e-01"); c++;   // cnst057 math constant Euler-Mascheroni
   generateConstantArray("gammap",        "+2.675221874400000000000000000000000000000000000000000000e+08"); c++;   // cnst058
   generateConstantArray("DELTAvcs",      "+9.192631770000000000000000000000000000000000000000000000e+09"); c++;   // cnst059 per definition
