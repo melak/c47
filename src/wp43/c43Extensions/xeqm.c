@@ -378,7 +378,6 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_F124,                      "F124"},
               {ITM_CF,                        "CF"},
               {ITM_SF,                        "SF"},
-              {ITM_FG_LINE,                   "FGLINE"},
               {ITM_BASE_SCREEN,               "BASESCR"},
               {ITM_G_DOUBLETAP,               "G2TP"},
               {ITM_HOMEx3,                    "HOMEX3"},
@@ -392,7 +391,9 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_CPXRES0,                   "CPXRES0"},
               {ITM_SPCRES0,                   "SPCRES0"},
 
-
+              {ITM_FGLNOFF,                   "FGLINE0"},
+              {ITM_FGLNLIM,                   "FGLINE1"},
+              {ITM_FGLNFUL,                   "FGLINE2"},
 
 
 #endif //SAVE_SPACE_DM42_2
