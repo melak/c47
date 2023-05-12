@@ -24,6 +24,7 @@
 #include "flags.h"
 #include "hal/gui.h"
 #include "items.h"
+#include "c43Extensions/addons.h"
 #include "c43Extensions/xeqm.h"
 #include "c43Extensions/jm.h"
 #include "c43Extensions/radioButtonCatalog.h"
@@ -224,8 +225,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 
 #if defined(PC_BUILD)
   void saveCalc(void) {
-    uint8_t  compatibility_u8 = 0;           //defaults to use when settings are removed
-    //bool_t   compatibility_bool = false;     //defaults to use when settings are removed
+    //uint8_t  compatibility_u8 = 0;           //defaults to use when settings are removed
+    bool_t   compatibility_bool = false;     //defaults to use when settings are removed
     uint32_t backupVersion = BACKUP_VERSION;
     uint32_t ramSize       = RAM_SIZE;
     uint32_t ramPtr;
@@ -478,14 +479,14 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
     save(&HOME3,                              sizeof(HOME3),                              BACKUP);
     save(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode),                    BACKUP);
     save(&CPXMULT,                            sizeof(CPXMULT),                            BACKUP);   //JM
-    save(&compatibility_u8,                   sizeof(compatibility_u8),                   BACKUP);
+    save(&fgLN,                               sizeof(fgLN),                               BACKUP);
     save(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     BACKUP);
     save(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
     save(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
-    save(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);
+    save(&compatibility_bool,                 sizeof(compatibility_bool),                 BACKUP);              //EXTRA
     save(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN),                     BACKUP);
     save(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
-    save(&jm_temporary,                       sizeof(jm_temporary),                        BACKUP);
+    save(&jm_temporary,                       sizeof(jm_temporary),                       BACKUP);              //EXTRA
     save(&graph_xmin,                         sizeof(graph_xmin),                         BACKUP);
     save(&graph_xmax,                         sizeof(graph_xmax),                         BACKUP);
     save(&graph_ymin,                         sizeof(graph_ymin),                         BACKUP);
@@ -526,8 +527,8 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
 
   void restoreCalc(void) {
     printf("RestoreCalc\n");
-    uint8_t  compatibility_u8;        //defaults to use when settings are removed
-    //bool_t   compatibility_bool;      //defaults to use when settings are removed
+    //uint8_t  compatibility_u8;        //defaults to use when settings are removed
+      bool_t   compatibility_bool;      //defaults to use when settings are removed
     uint32_t backupVersion, ramSize, ramPtr;
     FILE *ppgm_fp;
     uint8_t *loadedScreen = malloc(SCREEN_WIDTH * SCREEN_HEIGHT / 8);
@@ -782,11 +783,11 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       restore(&HOME3,                              sizeof(HOME3),                              BACKUP);
       restore(&ShiftTimoutMode,                    sizeof(ShiftTimoutMode),                    BACKUP);
       restore(&CPXMULT,                            sizeof(CPXMULT),                            BACKUP);   //JM
-      restore(&compatibility_u8,                   sizeof(compatibility_u8),                   BACKUP);
+      restore(&fgLN,                               sizeof(fgLN),                               BACKUP);
       restore(&SH_BASE_HOME,                       sizeof(SH_BASE_HOME  ),                     BACKUP);
       restore(&Norm_Key_00_VAR,                    sizeof(Norm_Key_00_VAR),                    BACKUP);
       restore(&Input_Default,                      sizeof(Input_Default),                      BACKUP);
-      restore(&jm_FG_LINE,                         sizeof(jm_FG_LINE),                         BACKUP);
+      restore(&compatibility_bool,                 sizeof(compatibility_bool),                 BACKUP);
       restore(&jm_BASE_SCREEN,                     sizeof(jm_BASE_SCREEN),                     BACKUP);
       restore(&jm_G_DOUBLETAP,                     sizeof(jm_G_DOUBLETAP),                     BACKUP);
       restore(&jm_temporary,                       sizeof(jm_temporary),                       BACKUP);
@@ -826,6 +827,7 @@ static uint32_t restore(void *buffer, uint32_t size, void *stream) {
       printf("End of calc's restoration\n");
 
       MY_ALPHA_MENU = mm_MNU_ALPHA;
+      setFGLSettings(fgLN);
 
       if(temporaryInformation == TI_SHOW_REGISTER_BIG || temporaryInformation == TI_SHOW_REGISTER_SMALL) 
         temporaryInformation = TI_NO_INFO;
@@ -1387,7 +1389,7 @@ char tmpString[3000];             //The concurrent use of the global tmpString
 //Number 16: digit
 
 //11
-  sprintf(tmpString, "Compatibility\n%"       PRIu8 "\n",       (uint8_t)0);                   save(tmpString, strlen(tmpString), BACKUP);      //keep save file format by keeping the old setting
+  sprintf(tmpString, "fgLN\n%"                PRIu8 "\n",       (uint8_t)fgLN);                save(tmpString, strlen(tmpString), BACKUP);      //keep save file format by keeping the old setting
   sprintf(tmpString, "eRPN\n%"                PRIu8 "\n",       (uint8_t)eRPN);                save(tmpString, strlen(tmpString), BACKUP);
   sprintf(tmpString, "HOME3\n%"               PRIu8 "\n",       (uint8_t)HOME3);               save(tmpString, strlen(tmpString), BACKUP); 
   sprintf(tmpString, "ShiftTimoutMode\n%"     PRIu8 "\n",       (uint8_t)ShiftTimoutMode);     save(tmpString, strlen(tmpString), BACKUP);           
@@ -1395,7 +1397,6 @@ char tmpString[3000];             //The concurrent use of the global tmpString
   sprintf(tmpString, "SH_BASE_HOME\n%"        PRIu8 "\n",       (uint8_t)SH_BASE_HOME);        save(tmpString, strlen(tmpString), BACKUP);        
   sprintf(tmpString, "Norm_Key_00_VAR\n%"     PRId16 "\n",      Norm_Key_00_VAR);              save(tmpString, strlen(tmpString), BACKUP);           
   sprintf(tmpString, "Input_Default\n%"       PRIu8 "\n",       Input_Default);                save(tmpString, strlen(tmpString), BACKUP);         
-  sprintf(tmpString, "jm_FG_LINE\n%"          PRIu8 "\n",       (uint8_t)jm_FG_LINE);          save(tmpString, strlen(tmpString), BACKUP);      
   sprintf(tmpString, "jm_BASE_SCREEN\n%"      PRIu8 "\n",       (uint8_t)jm_BASE_SCREEN);      save(tmpString, strlen(tmpString), BACKUP);             
   sprintf(tmpString, "jm_G_DOUBLETAP\n%"      PRIu8 "\n",       (uint8_t)jm_G_DOUBLETAP);      save(tmpString, strlen(tmpString), BACKUP);          
 
@@ -2474,17 +2475,17 @@ int32_t stringToInt32(const char *str) {
             lrSelection = stringToUint16(tmpString);
           }
 
-          else if(strcmp(aimBuffer, "Compatibility"               ) == 0) { }                     //keep save file format by keeping the old setting
-          else if(strcmp(aimBuffer, "SigFigMode"                  ) == 0) { }                     //keep save file format by keeping the old setting
+          else if(strcmp(aimBuffer, "fgLN"                        ) == 0) { fgLN                  = stringToUint8(tmpString); }
+          else if(strcmp(aimBuffer, "jm_FG_LINE"                  ) == 0) { fgLN                  = stringToUint8(tmpString); }                       //Keep compatible with old setting
+//        else if(strcmp(aimBuffer, "SigFigMode"                  ) == 0) { }                     //keep save file format by keeping the old setting
           else if(strcmp(aimBuffer, "eRPN"                        ) == 0) { eRPN                  = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "HOME3"                       ) == 0) { HOME3                 = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "ShiftTimoutMode"             ) == 0) { ShiftTimoutMode       = (bool_t)stringToUint8(tmpString) != 0; }          
-          else if(strcmp(aimBuffer, "UNITDisplay"                 ) == 0) { }                     //keep save file format by keeping the old setting
+//        else if(strcmp(aimBuffer, "UNITDisplay"                 ) == 0) { }                     //keep save file format by keeping the old setting
           else if(strcmp(aimBuffer, "CPXMult"                     ) == 0) { CPXMULT               = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "SH_BASE_HOME"                ) == 0) { SH_BASE_HOME          = (bool_t)stringToUint8(tmpString) != 0; }   
           else if(strcmp(aimBuffer, "Norm_Key_00_VAR"             ) == 0) { Norm_Key_00_VAR       = stringToUint16(tmpString); }
           else if(strcmp(aimBuffer, "Input_Default"               ) == 0) { Input_Default         = stringToUint8(tmpString); }
-          else if(strcmp(aimBuffer, "jm_FG_LINE"                  ) == 0) { jm_FG_LINE            = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "jm_BASE_SCREEN"              ) == 0) { jm_BASE_SCREEN        = (bool_t)stringToUint8(tmpString) != 0; }
           else if(strcmp(aimBuffer, "jm_G_DOUBLETAP"              ) == 0) { jm_G_DOUBLETAP        = (bool_t)stringToUint8(tmpString) != 0; }
 

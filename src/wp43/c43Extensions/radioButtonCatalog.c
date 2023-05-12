@@ -83,6 +83,10 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   { ITM_M14  ,             RB_M14,                RB_M },  //
   { ITM_F124 ,             RB_F124,               RB_F },  //
 
+  { ITM_FGLNOFF,           RB_FGLNOFF,            RB_FG},  //
+  { ITM_FGLNLIM,           RB_FGLNLIM,            RB_FG},  //
+  { ITM_FGLNFUL,           RB_FGLNFUL,            RB_FG},  //
+
   { ITM_BCDU,             BCDu,                   RB_BCD },  //
   { ITM_BCD9,             BCD9c,                  RB_BCD },  //
   { ITM_BCD10,            BCD10c,                 RB_BCD },  //
@@ -126,7 +130,6 @@ TO_QSPI const radiocb_t indexOfRadioCbEepromItems[] = {
   { ITM_CB_FRCSRN,        JC_FRC,                 CB_JC },  //SetSetting
   { ITM_ERPN,             JC_ERPN,                CB_JC },  //SetSetting
   { ITM_BASE_SCREEN,      JC_BASE_SCREEN,         CB_JC },  //SetSetting
-  { ITM_FG_LINE,          JC_FG_LINE,             CB_JC },  //SetSetting
   { ITM_G_DOUBLETAP,      JC_G_DOUBLETAP,         CB_JC },  //SetSetting
   { ITM_HOMEx3,           JC_HOME_TRIPLE,         CB_JC },  //SetSetting
   { ITM_SHTIM,            JC_SHFT_4s,             CB_JC },  //SetSetting
@@ -267,6 +270,11 @@ int8_t fnCbIsSet(int16_t item) {
       }
       break;
 
+      case RB_FG: {
+        rb_param = fgLN;
+      }
+      break;
+
       case RB_BCD: {
         rb_param = bcdDisplaySign;
       }
@@ -351,11 +359,6 @@ int8_t fnCbIsSet(int16_t item) {
 
         case JC_BASE_SCREEN: {
           cb_param = jm_BASE_SCREEN;
-        }
-        break;
-
-        case JC_FG_LINE: {
-          cb_param = jm_FG_LINE;
         }
         break;
 

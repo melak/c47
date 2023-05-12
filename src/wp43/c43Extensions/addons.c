@@ -1669,14 +1669,16 @@ void fnConstantR(uint16_t constantAddr, uint16_t *constNr, real_t *rVal) {
 
 
 void fnSafeReset (uint16_t unusedButMandatoryParameter) {
-  if(!jm_FG_LINE && !jm_G_DOUBLETAP && !ShiftTimoutMode && !HOME3) {
-    jm_FG_LINE     = true;
+  if(!jm_G_DOUBLETAP && !ShiftTimoutMode && !HOME3) {
+    fgLN           = RB_FGLNFUL;  //not in conditional clear
+
     jm_G_DOUBLETAP = true;
     ShiftTimoutMode= true;
     HOME3          = true;
   } else
   {
-    jm_FG_LINE     = false;
+    fgLN           = RB_FGLNOFF;  //not in conditional clear
+
     jm_G_DOUBLETAP = false;
     ShiftTimoutMode= false;
     HOME3          = false;    
@@ -2048,6 +2050,23 @@ void fnSetBCD (uint16_t bcd) {
     case JC_TOPHEX : topHex = !topHex;
     default:break;
   }
+}
+
+
+
+void setFGLSettings(uint16_t option) {
+  switch (option) {
+    case RB_FGLNOFF : 
+    case RB_FGLNLIM : 
+    case RB_FGLNFUL : {
+      fgLN = (uint8_t)option;
+      break;
+    }
+    default: {
+      fgLN = RB_FGLNFUL;
+      break;
+    }
+  }  
 }
 
 

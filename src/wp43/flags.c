@@ -725,12 +725,6 @@ void SetSetting(uint16_t jmConfig) {
       fnRefreshState();
       break;
 
-    case JC_FG_LINE:{
-      jm_FG_LINE = !jm_FG_LINE;
-      fnRefreshState();
-      break;
-    }
-
     case JC_BASE_SCREEN: {
       jm_BASE_SCREEN = !jm_BASE_SCREEN;
       fnRefreshState();
