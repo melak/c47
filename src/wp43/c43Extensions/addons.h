@@ -111,6 +111,7 @@ void CB_UNCHECKED(uint32_t xx, uint32_t yy);
 
 
 void fnSetBCD (uint16_t bcd);
+void setFGLSettings(uint16_t option);
 void fnLongPressSwitches (uint16_t option);
 void fnSetSI_All (uint16_t unusedButMandatoryParameter);
 void fnSetCPXmult (uint16_t unusedButMandatoryParameter);

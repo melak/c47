@@ -789,7 +789,7 @@ void underline_softkey(int16_t xSoftkey, int16_t ySoftKey, bool_t dontclear) {
   if(xSoftkey < 0 || xSoftkey > 5) return;
 
 
-  if(jm_FG_LINE) {
+  if(fgLN != RB_FGLNOFF) {
 
 //JMUL all changed  vv  
     if(!dontclear) {                            //JM Recursively call the same routine to clear the previous line

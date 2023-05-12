@@ -200,6 +200,9 @@ TO_QSPI const int16_t menu_M_EDIT[]      = { ITM_LEFT_ARROW,                ITM_
   #define ITM_DMCP ITM_RESERVE
 #endif
 
+
+
+
 TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_RAD,                    ITM_GRAD,                 ITM_HPRP,              ITM_RECT,                    ITM_POLAR,
                                              ITM_SYS,                       ITM_SYS2,                   ITM_DMCP,                 ITM_ERPN,              ITM_NULL,                    ITM_CFG,              //JM
                                              ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_NULL,              ITM_NULL,                    -MNU_TRG_C47,                                       //JM
@@ -208,9 +211,10 @@ TO_QSPI const int16_t menu_MODE[]        = { ITM_DEG,                       ITM_
                                              ITM_SETSIG2,                   ITM_RMODE,                  ITM_EXFRAC,               ITM_DENANY,            ITM_DENFIX,                  ITM_NULL,        //JM
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_NULL,                    ITM_NULL,                          //JM
 
-                                             ITM_BASE_SCREEN,               ITM_BASE_HOME,              ITM_HOMEx3,               ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
-                                             ITM_SAFERESET,                 ITM_NULL,                   ITM_NULL,                  ITM_M1234,             ITM_M14,                     ITM_TST,                        //JM
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_F1234,             ITM_F14,                     ITM_F124                  };
+                                             ITM_BASE_SCREEN  ,             ITM_BASE_HOME    ,          ITM_HOMEx3       ,        ITM_G_DOUBLETAP  ,     ITM_SHTIM        ,           ITM_SAFERESET ,
+                                             ITM_F14          ,             ITM_F124         ,          ITM_F1234        ,        ITM_TST          ,     ITM_M14          ,           ITM_M1234          ,       
+                                             ITM_FGLNOFF      ,             ITM_FGLNLIM      ,          ITM_FGLNFUL      ,        ITM_NULL         ,     ITM_NULL         ,           ITM_NULL           };            
+
 // D47 vv
 TO_QSPI const int16_t menu_SETUP[]       = { ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_HPRP,              ITM_RECT,                    ITM_POLAR,
                                              ITM_SYS,                       ITM_SYS2,                   ITM_DMCP,                 ITM_ERPN,              ITM_NULL,                    ITM_CFG,              //JM
@@ -220,9 +224,9 @@ TO_QSPI const int16_t menu_SETUP[]       = { ITM_NULL,                      ITM_
                                              ITM_SETSIG2,                   ITM_RMODE,                  ITM_EXFRAC,               ITM_DENANY,            ITM_DENFIX,                  ITM_NULL,        //JM
                                              ITM_INP_DEF_43S,               ITM_INP_DEF_DP,             ITM_INP_DEF_CPXDP,        ITM_INP_DEF_LI,        ITM_NULL,                    ITM_NULL,                          //JM
 
-                                             ITM_BASE_SCREEN,               ITM_BASE_HOME,              ITM_HOMEx3,               ITM_G_DOUBLETAP,       ITM_SHTIM,                   ITM_FG_LINE,                    //JM
-                                             ITM_SAFERESET,                 ITM_NULL,                   ITM_TST,                  ITM_M1234,             ITM_M14,                     ITM_NULL,                        //JM
-                                             ITM_NULL,                      ITM_NULL,                   ITM_NULL,                 ITM_F1234,             ITM_F14,                     ITM_F124                  };
+                                             ITM_BASE_SCREEN  ,             ITM_BASE_HOME    ,          ITM_HOMEx3       ,        ITM_G_DOUBLETAP  ,     ITM_SHTIM        ,           ITM_SAFERESET ,
+                                             ITM_F14          ,             ITM_F124         ,          ITM_F1234        ,        ITM_TST          ,     ITM_M14          ,           ITM_M1234          ,       
+                                             ITM_FGLNOFF      ,             ITM_FGLNLIM      ,          ITM_FGLNFUL      ,        ITM_NULL         ,     ITM_NULL         ,           ITM_NULL           };            
 // D47 ^^
 
 

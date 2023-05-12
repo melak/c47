@@ -186,7 +186,7 @@ typedef struct {
   calcKey_t     kbd_usr[37];
 
   //                                                                         //JMCFGvv
-  uint8_t compatibility_u8;
+  uint8_t fgLN;
   bool_t eRPN;
   bool_t HOME3;
   bool_t ShiftTimoutMode;
@@ -195,7 +195,7 @@ typedef struct {
   bool_t SH_BASE_AHOME;
   int16_t Norm_Key_00_VAR;
   uint8_t Input_Default;
-  bool_t jm_FG_LINE;
+  bool_t compatibility_bool;      //
   bool_t jm_BASE_SCREEN;
   bool_t jm_G_DOUBLETAP;
   float  graph_xmin;

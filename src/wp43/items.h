@@ -1848,7 +1848,7 @@
 
 
 //Jaymos C43 extensions
-#define ITM_FG_LINE                 1795
+#define MNU_1795                    1795
 #define ITM_BASE_SCREEN             1796
 #define ITM_G_DOUBLETAP             1797
 #define ITM_CPXMULT                 1798
@@ -2110,9 +2110,9 @@
 #define ITM_2054                    2054
 #define ITM_2055                    2055
 #define ITM_2056                    2056
-#define ITM_2057                    2057
-#define ITM_2058                    2058
-#define ITM_2059                    2059
+#define ITM_FGLNOFF                 2057
+#define ITM_FGLNLIM                 2058
+#define ITM_FGLNFUL                 2059
 #define ITM_EXFRAC                  2060
 #define ITM_F1234                   2061
 #define ITM_M1234                   2062
