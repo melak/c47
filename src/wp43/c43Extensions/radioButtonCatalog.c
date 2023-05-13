@@ -642,7 +642,7 @@ int16_t fnItemShowValue(int16_t item) {
 
 
 
-char tmp[12];
+char tmp[16];
 
 void add_digitglyph_to_tmp2(char* tmp2, int16_t xx) {
   tmp2[0] = 0;
@@ -672,7 +672,7 @@ void add_digitglyph_to_tmp2(char* tmp2, int16_t xx) {
 
 
 void use_base_glyphs(char* tmp1, int16_t xx) {              // Needs non-local variable tmp2
-  char tmp2[12];
+  char tmp2[16];
   tmp1[0] = 0;
   
   if(xx <= 16) {
@@ -704,7 +704,7 @@ void use_base_glyphs(char* tmp1, int16_t xx) {              // Needs non-local v
 
 
 char *figlabel(const char *label, const char* showText, int16_t showValue) {      //JM
-  char tmp1[12];
+  char tmp1[16];
   tmp[0] = 0;
 
   if(strlen(label) <= 12) {

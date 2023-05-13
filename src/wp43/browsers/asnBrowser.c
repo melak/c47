@@ -39,7 +39,7 @@
     int kk = 0;
     int16_t key;
     int16_t pixelsPerSoftKey;
-    char Name[15];
+    char Name[16];
     xx = 0;
     yy = 1;
     clearScreen();

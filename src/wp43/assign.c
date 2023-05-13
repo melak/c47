@@ -158,7 +158,7 @@ TO_QSPI const calcKey_t kbd_std[37] = { //C47 Layout, in the default position wi
 {22,                  ITM_1ONX,             ITM_YX,               ITM_HASH_JM,          ITM_NUMBER_SIGN,      ITM_B,                ITM_b,                ITM_CIRCUMFLEX,       ITM_REG_B           },
 {23,                  ITM_SQUAREROOTX,      ITM_SQUARE,           ITM_ms,               ITM_ROOT_SIGN,        ITM_C,                ITM_c,                ITM_ROOT_SIGN,        ITM_REG_C           },
 {24,                  ITM_LOG10,            ITM_10x,              ITM_dotD,             ITM_NULL,             ITM_D,                ITM_d,                ITM_LG_SIGN,          ITM_REG_D           },
-{25,                  ITM_LN,               ITM_EXP,              ITM_LBL,              ITM_NULL,             ITM_E,                ITM_e,                ITM_LN_SIGN,          ITM_E               },
+{25,                  ITM_LN,               ITM_EXP,              ITM_LBL,              ITM_NULL,             ITM_E,                ITM_e,                ITM_LN_SIGN,          ITM_NULL            },
 {26,                  ITM_XEQ,              ITM_AIM,              ITM_GTO,              ITM_NULL,             ITM_F,                ITM_f,                ITM_alpha,            ITM_alpha           },
 {31,                  ITM_STO,              ITM_MAGNITUDE,        ITM_ARG,              ITM_NULL,             ITM_G,                ITM_g,                ITM_VERTICAL_BAR,     ITM_NULL            },
 {32,                  ITM_RCL,              ITM_PC,               ITM_DELTAPC,          ITM_NULL,             ITM_H,                ITM_h,                ITM_DELTA,            ITM_HEX             },
@@ -252,7 +252,7 @@ TO_QSPI const calcKey_t kbd_std_DM42[37] = {
       {22,   ITM_1ONX,          ITM_YX,            ITM_HASH_JM,       ITM_NUMBER_SIGN,   ITM_B,             ITM_b,             ITM_CIRCUMFLEX,     ITM_REG_B          },
       {23,   ITM_SQUAREROOTX,   ITM_SQUARE,        ITM_ms,            ITM_ROOT_SIGN,     ITM_C,             ITM_c,             ITM_ROOT_SIGN,      ITM_REG_C          },
       {24,   ITM_LOG10,         ITM_10x,           ITM_dotD,          ITM_NULL,          ITM_D,             ITM_d,             ITM_LG_SIGN,        ITM_REG_D          },
-      {25,   ITM_LN,            ITM_EXP,           ITM_LBL,           ITM_NULL,          ITM_E,             ITM_e,             ITM_LN_SIGN,        ITM_E              },
+      {25,   ITM_LN,            ITM_EXP,           ITM_LBL,           ITM_NULL,          ITM_E,             ITM_e,             ITM_LN_SIGN,        ITM_NULL           },
       {26,   ITM_XEQ,           ITM_GTO,           ITM_RTN,           ITM_NULL,          ITM_F,             ITM_f,             ITM_alpha,          ITM_alpha          },
 
       {31,   ITM_STO,           KEY_COMPLEX,       ITM_ARG,           ITM_NULL,          ITM_G,             ITM_g,             ITM_VERTICAL_BAR,   ITM_NULL           },
@@ -276,11 +276,11 @@ TO_QSPI const calcKey_t kbd_std_DM42[37] = {
 
       {61,   ITM_DOWN1,         ITM_SST,           ITM_FLGSV,         ITM_DOWN1,         ITM_DOWN1,         CHR_caseDN,        ITM_DOWN_ARROW,     ITM_DOWN1          },
       {62,   ITM_4,             -MNU_BASE,         -MNU_BITS,         ITM_4,             ITM_T,             ITM_t,             ITM_4,              ITM_4              },
-      {63,   ITM_5,             -MNU_ANGLECONV_C43,-MNU_CLK,          ITM_5,             ITM_U,             ITM_u,             ITM_5,              ITM_5              },
+      {63,   ITM_5,             -MNU_UNITCONV,     -MNU_CLK,          ITM_5,             ITM_U,             ITM_u,             ITM_5,              ITM_5              },
       {64,   ITM_6,             -MNU_FLAGS,        -MNU_PARTS,        ITM_6,             ITM_V,             ITM_v,             ITM_6,              ITM_6              },
       {65,   ITM_MULT,          -MNU_PROB,         -MNU_INTS,         ITM_CROSS,         ITM_W,             ITM_w,             ITM_CROSS,          ITM_MULT           },
 
-      {71,   KEY_fg,            ITM_NULL,          ITM_NULL,          KEY_fg,            KEY_fg,            ITM_NULL,          KEY_fg,             KEY_fg             },
+      {71,   KEY_fg,            ITM_NULL,          ITM_NULL,          KEY_fg,            KEY_fg,            ITM_NULL,          ITM_NULL,           KEY_fg             },
       {72,   ITM_1,             ITM_ASSIGN,        -MNU_ASN,          ITM_1,             ITM_X,             ITM_x,             ITM_1,              ITM_1              },
       {73,   ITM_2,             ITM_USERMODE,      -MNU_ALPHAFN,      ITM_2,             ITM_Y,             ITM_y,             ITM_2,              ITM_2              },
       {74,   ITM_3,             -MNU_PFN,          -MNU_LOOP,         ITM_3,             ITM_Z,             ITM_z,             ITM_3,              ITM_3              },
@@ -491,6 +491,9 @@ void updateAssignTamBuffer(void) {
   }
   else if(itemToBeAssigned < 0) {
     tbPtr = stpcpy(tbPtr, indexOfItems[-itemToBeAssigned].itemCatalogName);
+  }
+  else if(itemToBeAssigned >= ITM_X_P1 && itemToBeAssigned <= ITM_X_g6) {
+    tbPtr = stpcpy(tbPtr, indexOfItemsXEQM + 8*(itemToBeAssigned-fnXEQMENUpos));
   }
   else if(indexOfItems[itemToBeAssigned].itemCatalogName[0] == 0) {
     tbPtr = stpcpy(tbPtr, indexOfItems[itemToBeAssigned].itemSoftmenuName);

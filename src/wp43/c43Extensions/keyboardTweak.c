@@ -947,7 +947,7 @@ uint8_t inKeyBuffer(uint8_t byte)
 // EXPERIMENT Do not allow the same key to be stored multiple times. Only key changes stored.
   if(buffer.data[(buffer.write - 1) & BUFFER_MASK] == byte) {
   #ifdef JMSHOWCODES_KB0
-    char aaa[12];
+    char aaa[16];
     sprintf   (aaa,"%2d ",byte);
     showString(aaa,&standardFont, tmpxx++, 1, vmNormal, true, true);
   #endif       

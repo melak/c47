@@ -2100,10 +2100,10 @@
 #define ITM_ACTUSB                  2044
 #define MNU_CONVS                   2045
 #define MNU_CONVANG                 2046
-#define MNU_2047                    2047
-#define MNU_2048                    2048
-#define ITM_2049                    2049
-#define ITM_2050                    2050
+#define ITM_CPXRES1                 2047
+#define ITM_SPCRES1                 2048
+#define ITM_CPXRES0                 2049
+#define ITM_SPCRES0                 2050
 #define ITM_2051                    2051
 #define ITM_2052                    2052
 #define ITM_2053                    2053
@@ -2171,6 +2171,9 @@
 #define CONFIRMED                     9877 // Confirmation for RESET, CLPALL, CLALL
 #define NOT_CONFIRMED                 9878 // Confirmation for RESET, CLPALL, CLALL
 #define ITM_PROD_SIGN                 9999 // Multiplication sign × or ·
+
+char *lastFuncCatalogName(void);
+char *lastFuncSoftmenuName(void);
 
 void reallyRunFunction(int16_t func, uint16_t param);
   
