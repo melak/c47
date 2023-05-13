@@ -63,6 +63,16 @@ else
   conf_data.set('CI_COMMIT_TAG', '')
 endif
 
+cvs_version_info = run_command('python3', 'tag2ver.py')
+if cvs_version_info.returncode() == 0
+  version_data = cvs_version_info.stdout().strip().split(';')
+  conf_data.set('VERSION_WINRS',  version_data[0])
+  conf_data.set('VERSION_MODDED', version_data[1])
+else
+  conf_data.set('VERSION_WINRS', '0,0,0,0')
+  conf_data.set('VERSION_MODDED', 0)
+endif
+
 subdir('docs/code')
 subdir('dep')
 subdir('src/wp43')
