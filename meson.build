@@ -63,7 +63,7 @@ else
   conf_data.set('CI_COMMIT_TAG', '')
 endif
 
-cvs_version_info = run_command('python', 'tag2ver.py')
+cvs_version_info = run_command('python3', 'tag2ver.py')
 if cvs_version_info.returncode() == 0
   version_data = cvs_version_info.stdout().strip().split(';')
   conf_data.set('VERSION_WINRS',  version_data[0])
