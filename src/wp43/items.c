@@ -94,11 +94,28 @@ void fnNop(uint16_t unusedButMandatoryParameter) {
   int16_t lastParam = 0;
   char    lastTemp[16];
   char *lastFuncCatalogName(void) {
-    strcpy(lastTemp, indexOfItems[lastFunc == ITM_CNST ? lastParam + 128 : lastFunc].itemCatalogName);
+    if(lastFunc == ITM_CNST) {
+      if(lastParam < 79) {
+        strcpy(lastTemp, indexOfItems[lastParam + 128].itemCatalogName);
+      } else {
+        lastTemp[0]=0;
+      }
+    } else {
+      strcpy(lastTemp, indexOfItems[lastFunc].itemCatalogName);
+    } 
     return lastTemp;
   }
+
   char *lastFuncSoftmenuName(void) {
-    strcpy(lastTemp, indexOfItems[lastFunc == ITM_CNST ? lastParam + 128 : lastFunc].itemSoftmenuName);
+    if(lastFunc == ITM_CNST) {
+      if(lastParam < 79) {
+        strcpy(lastTemp, indexOfItems[lastParam + 128].itemSoftmenuName);
+      } else {
+        lastTemp[0]=0;
+      }
+    } else {
+      strcpy(lastTemp, indexOfItems[lastFunc].itemSoftmenuName);
+    } 
     return lastTemp;
   }
 
@@ -1211,8 +1228,8 @@ TO_QSPI const item_t indexOfItems[] = {
 /*  135 */  { fnConstant,                   7,                           "e",                                           "charge.elem",                                 (0 << TAM_MAX_BITS) |     0, CAT_CNST | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /*  136 */  { fnConstant,                   8,                           "e" STD_SUB_E,                                 "e.euler",                                     (0 << TAM_MAX_BITS) |     0, CAT_CNST | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /*  137 */  { fnConstant,                   9,                           "F",                                           "c.faraday",                                   (0 << TAM_MAX_BITS) |     0, CAT_CNST | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/*  138 */  { fnConstant,                   10,                          "F" STD_SUB_alpha,                             "α.feigenbm",                                  (0 << TAM_MAX_BITS) |     0, CAT_CNST | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
-/*  139 */  { fnConstant,                   11,                          "F" STD_SUB_delta,                             "δ.feigenbm",                                  (0 << TAM_MAX_BITS) |     0, CAT_CNST | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/*  138 */  { fnConstant,                   10,                          "F" STD_SUB_alpha,                             STD_alpha ".feigenbm",                                  (0 << TAM_MAX_BITS) |     0, CAT_CNST | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
+/*  139 */  { fnConstant,                   11,                          "F" STD_SUB_delta,                             STD_delta ".feigenbm",                                  (0 << TAM_MAX_BITS) |     0, CAT_CNST | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /*  140 */  { fnConstant,                   12,                          "G",                                           "c.grav.nwt",                                  (0 << TAM_MAX_BITS) |     0, CAT_CNST | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /*  141 */  { fnConstant,                   13,                          "G" STD_SUB_0,                                 "cond.quant",                                  (0 << TAM_MAX_BITS) |     0, CAT_CNST | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },
 /*  142 */  { fnConstant,                   14,                          "G" STD_SUB_C,                                 "c.catalan",                                   (0 << TAM_MAX_BITS) |     0, CAT_CNST | SLS_ENABLED   | US_ENABLED   | EIM_DISABLED | PTP_NONE         },

@@ -391,9 +391,9 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_CPXRES0,                   "CPXRES0"},
               {ITM_SPCRES0,                   "SPCRES0"},
 
-              {ITM_FGLNOFF,                   "FGLINE0"},
-              {ITM_FGLNLIM,                   "FGLINE1"},
-              {ITM_FGLNFUL,                   "FGLINE2"},
+              {ITM_FGLNOFF,                   "FGOFF"},
+              {ITM_FGLNLIM,                   "FGLIM"},
+              {ITM_FGLNFUL,                   "FGFUL"},
 
 
 #endif //SAVE_SPACE_DM42_2
