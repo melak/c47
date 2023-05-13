@@ -33,6 +33,8 @@
   #define FF_DEBUG VS_FF_DEBUG
 #endif // defined(NDEBUG)
 
+1 ICON "../../res/c47.ico"
+
 1 VERSIONINFO
 
 FILEVERSION     VERSION_WINRS
