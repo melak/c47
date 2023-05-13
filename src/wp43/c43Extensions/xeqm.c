@@ -351,8 +351,49 @@ TO_QSPI const function_t indexOfFunctions[] = {
               {ITM_ADD,                       "PLUS"},
               {ITM_SUB,                       "MIN"},
               {ITM_MULT,                      "MULT"},
-              {ITM_DIV,                       "DIV"}
+              {ITM_DIV,                       "DIV"},
 
+
+//NEW 2023-05-10
+              {ITM_GAP,                       "GAP"},
+              {ITM_RDXCOM,                    "RDXCOM"},
+              {ITM_RDXPER,                    "RDXPER"},
+              {ITM_MULTCR,                    "MULTCR "},
+              {ITM_MULTDOT,                   "MULTDOT"},
+              {ITM_DMY,                       "DMY"},
+              {ITM_YMD,                       "YMD"},
+              {ITM_MDY,                       "MDY"},
+              {ITM_SSIZE4,                    "SSIZE4"},
+              {ITM_SSIZE8,                    "SSIZE8"},
+              {ITM_CPXI,                      "CPXI"},
+              {ITM_CPXJ,                      "CPXJ"},
+              {ITM_CLK12,                     "CLK12"},
+              {ITM_CLK24,                     "CLK24"},
+              {ITM_SCIOVR,                    "SCIOVR"},
+              {ITM_ENGOVR,                    "ENGOVR"},
+              {ITM_F1234,                     "F1234"},
+              {ITM_M1234,                     "M1234"},
+              {ITM_F14,                       "F14"},
+              {ITM_M14,                       "M14"},
+              {ITM_F124,                      "F124"},
+              {ITM_CF,                        "CF"},
+              {ITM_SF,                        "SF"},
+              {ITM_BASE_SCREEN,               "BASESCR"},
+              {ITM_G_DOUBLETAP,               "G2TP"},
+              {ITM_HOMEx3,                    "HOMEX3"},
+              {ITM_SHTIM,                     "SHIFTT"},
+              {ITM_EXFRAC,                    "EXFRAC"},
+              {ITM_BASE_HOME,                 "BASEHOM"},
+              {ITM_LARGELI,                   "LARGELI"},
+
+              {ITM_CPXRES1,                   "CPXRES1"},
+              {ITM_SPCRES1,                   "SPCRES1"},
+              {ITM_CPXRES0,                   "CPXRES0"},
+              {ITM_SPCRES0,                   "SPCRES0"},
+
+              {ITM_FGLNOFF,                   "FGLINE0"},
+              {ITM_FGLNLIM,                   "FGLINE1"},
+              {ITM_FGLNFUL,                   "FGLINE2"},
 
 
 #endif //SAVE_SPACE_DM42_2
