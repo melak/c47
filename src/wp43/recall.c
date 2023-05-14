@@ -1,4 +1,4 @@
-/* This file is part of 43S.
+  /* This file is part of 43S.
  *
  * 43S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -252,8 +252,8 @@ void fnRecallMax(uint16_t regist) {
 
 
 void fnRecallConfig(uint16_t regist) {
-    uint8_t compatibility_u8;        //defaults to use when settings are removed
-    (void)  compatibility_u8;
+//    uint8_t compatibility_u8;        //defaults to use when settings are removed
+//    (void)  compatibility_u8;
     bool_t  compatibility_bool;      //defaults to use when settings are removed
     (void)  compatibility_bool;
   if(getRegisterDataType(regist) == dtConfig) {
@@ -275,15 +275,15 @@ void fnRecallConfig(uint16_t regist) {
     recallFromDtConfigDescriptor(systemFlags);
     synchronizeLetteredFlags();
 
-    recallFromDtConfigDescriptor(compatibility_u8);      
+    recallFromDtConfigDescriptor(fgLN);      
     recallFromDtConfigDescriptor(eRPN);             
     recallFromDtConfigDescriptor(HOME3);            
     recallFromDtConfigDescriptor(ShiftTimoutMode);  
-    recallFromDtConfigDescriptor(CPXMULT);                                  //JMCFG^^         ; replaced compatibility_bool 
+    recallFromDtConfigDescriptor(CPXMULT);
     recallFromDtConfigDescriptor(SH_BASE_HOME);     
     recallFromDtConfigDescriptor(Norm_Key_00_VAR); 
     recallFromDtConfigDescriptor(Input_Default);   
-    recallFromDtConfigDescriptor(jm_FG_LINE);       
+    recallFromDtConfigDescriptor(compatibility_bool);   //removed but compat       
     recallFromDtConfigDescriptor(jm_BASE_SCREEN);       
     recallFromDtConfigDescriptor(jm_G_DOUBLETAP);   
     recallFromDtConfigDescriptor(graph_xmin);        

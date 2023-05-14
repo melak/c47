@@ -170,7 +170,6 @@ int16_t                showFunctionNameItem;
 uint8_t               displayStackSHOIDISP;          //JM SHOIDISP
 bool_t                numLock;                       //JM
 bool_t                doRefreshSoftMenu;                       //dr
-bool_t                jm_FG_LINE;                              //JM Screen / keyboard operation setup
 bool_t                jm_BASE_SCREEN;                          //JM Screen / keyboard operation setup
 bool_t                jm_G_DOUBLETAP;                          //JM Screen / keyboard operation setup
 bool_t                jm_temporary;                             //JMHOME
@@ -223,6 +222,7 @@ bool_t                 fnAsnDisplayUSER = true;
 uint8_t                bcdDisplaySign = 0;
 uint8_t                LongPressM = 0;
 uint8_t                LongPressF = 0;
+uint8_t                fgLN = 0;
 char                   indexOfItemsXEQM[18*8];       //JMXEQ
 int16_t                fnXEQMENUpos;                 //JMXEQ
 uint8_t                last_CM = 255;                //Do extern !!

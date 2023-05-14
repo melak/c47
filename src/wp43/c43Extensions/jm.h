@@ -65,8 +65,6 @@ Modes available in the mode menu:
 #define FN_BEG                  117
 #define FN_END                  118
 
-
-
 //BCD options
 #define BCDu                    0
 #define BCD9c                   1
@@ -77,6 +75,10 @@ Modes available in the mode menu:
 #define RB_F1234                2
 #define RB_M14                  10
 #define RB_M1234                11
+//fgLine options
+#define RB_FGLNOFF              0
+#define RB_FGLNFUL              1
+#define RB_FGLNLIM              2
 
 
 void jm_show_calc_state(char comment[]);
@@ -98,7 +100,6 @@ extern bool_t ShiftTimoutMode;                                       //JM HOME C
 extern bool_t SH_BASE_HOME;                                          //JM BASEHOME Create a flag to enable or disable triple shift
 extern int16_t Norm_Key_00_VAR;                                      //JM USER NORMAL
 extern uint8_t Input_Default;                                        //JM Input Default
-extern bool_t jm_FG_LINE;                                            //JM Screen / keyboard operation setup
 extern bool_t jm_BASE_SCREEN;                                        //JM Screen / keyboard operation setup
 extern bool_t jm_G_DOUBLETAP;                                        //JM Screen / keyboard operation setup
 extern float graph_xmin;                                             //JM Graph
@@ -174,7 +175,6 @@ void fnRCL          (int16_t inp);
 #define JC_FRC                 18    // CB FRACTION MODE
 #define PR_HPRP                19    // POLAR RECT CLASSIC MODE
 
-#define JC_FG_LINE             20    // screen setup
 #define JC_BASE_SCREEN         21    // screen setup
 #define JC_G_DOUBLETAP         22    // screen setup
 

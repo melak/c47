@@ -693,7 +693,6 @@ void resetOtherConfigurationStuff(void) {
   SH_BASE_HOME   = false;
   Norm_Key_00_VAR  = ITM_SIGMAPLUS;                            //JM NORM MODE SIGMA REPLACEMENT KEY
   Input_Default =  ID_43S;
-  jm_FG_LINE = true;
   jm_G_DOUBLETAP = true;
   jm_BASE_SCREEN = true;                                       //"MyM" setting, set as part of USER_MRESET
   jm_LARGELI = true;                                           //Large font for long integers on stack
@@ -710,6 +709,7 @@ void resetOtherConfigurationStuff(void) {
   CPXMULT = false;                                             //defaults to the new complex notation with space
   LongPressM = RB_M1234;
   LongPressF = RB_F124;
+  fgLN = RB_FGLNFUL;
   lastIntegerBase = 0;
 }
 

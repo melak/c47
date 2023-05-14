@@ -377,7 +377,7 @@ void fnStoreMax(uint16_t regist) {
 
 
 void fnStoreConfig(uint16_t regist) {
-    uint8_t  compatibility_u8 = 0;            //defaults to use when settings are removed
+    //uint8_t  compatibility_u8 = 0;            //defaults to use when settings are removed
     //bool_t   compatibility_bool = false;      //defaults to use when settings are removed
   reallocateRegister(regist, dtConfig, CONFIG_SIZE, amNone);
   dtConfigDescriptor_t *configToStore = REGISTER_CONFIG_DATA(regist);
@@ -397,15 +397,14 @@ void fnStoreConfig(uint16_t regist) {
   storeToDtConfigDescriptor(systemFlags);
   xcopy(configToStore->kbd_usr, kbd_usr, sizeof(kbd_usr));
 
-  storeToDtConfigDescriptor(compatibility_u8);
+  storeToDtConfigDescriptor(fgLN);
   storeToDtConfigDescriptor(eRPN);
   storeToDtConfigDescriptor(HOME3);
   storeToDtConfigDescriptor(ShiftTimoutMode);
-  storeToDtConfigDescriptor(CPXMULT);                                   //JM  ; replaced compatibility_bool 
+  storeToDtConfigDescriptor(CPXMULT);
   storeToDtConfigDescriptor(SH_BASE_HOME);
   storeToDtConfigDescriptor(Norm_Key_00_VAR);
   storeToDtConfigDescriptor(Input_Default);
-  storeToDtConfigDescriptor(jm_FG_LINE);
   storeToDtConfigDescriptor(jm_BASE_SCREEN);
   storeToDtConfigDescriptor(jm_G_DOUBLETAP);
   storeToDtConfigDescriptor(graph_xmin);

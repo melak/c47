@@ -765,7 +765,7 @@ void refreshFn(uint16_t timerType) {                        //vv dr - general ti
 void underline(int16_t y) {                     //JM
   int16_t i;
    for( i = 0; i < 6; i++ ){
-     if( maxfgLines(y) && ((calcMode != CM_GRAPH && calcMode != CM_PLOT_STAT) || ((calcMode == CM_GRAPH || calcMode == CM_PLOT_STAT) && (i <= 1))))
+     if( (maxfgLines(y) || (fgLN == RB_FGLNFUL)) && ((calcMode != CM_GRAPH && calcMode != CM_PLOT_STAT) || ((calcMode == CM_GRAPH || calcMode == CM_PLOT_STAT) && (i <= 1))))
        underline_softkey(i, y, true);
    }
 }                                               //JM
@@ -789,7 +789,7 @@ void underline_softkey(int16_t xSoftkey, int16_t ySoftKey, bool_t dontclear) {
   if(xSoftkey < 0 || xSoftkey > 5) return;
 
 
-  if(jm_FG_LINE) {
+  if(fgLN != RB_FGLNOFF) {
 
 //JMUL all changed  vv  
     if(!dontclear) {                            //JM Recursively call the same routine to clear the previous line
