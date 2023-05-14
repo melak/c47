@@ -332,13 +332,16 @@
           tam.alpha = false;
           clearSystemFlag(FLAG_ALPHA);
           calcModeTamGui();
-        switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
-          case -MNU_TAMCMPALPHA: popSoftmenu(); break;
-          case -MNU_TAMALPHA   : popSoftmenu(); break;
-          case -MNU_TAMLBLALPHA: popSoftmenu(); break;
-          case -MNU_TAMSRALPHA : popSoftmenu(); break;
-          default: break;
-        }
+          switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
+            case -MNU_TAMCMPALPHA:
+            case -MNU_TAMALPHA   :
+            case -MNU_TAMLBLALPHA:
+            case -MNU_TAMSRALPHA : {
+              popSoftmenu(); 
+              break;
+            }
+            default: break;
+          }
 
 
         }
@@ -440,7 +443,7 @@
         calcModeAim(NOPARAM);
         if(beginWithLowercase) {
           alphaCase = AC_LOWER;
-        }
+        } 
         switch(softmenu[softmenuStack[0].softmenuId].menuItem) {
           case -MNU_TAMCMP    : showSoftmenu(-MNU_TAMCMPALPHA); break;
           case -MNU_TAMLABEL  : showSoftmenu(-MNU_TAMLBLALPHA); break;
