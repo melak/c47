@@ -1073,7 +1073,10 @@ printf(">>>> R000D                                %d |%s| shiftF=%d, shiftG=%d t
             if(calcMode == CM_AIM && !(isAlphabeticSoftmenu() || isJMAlphaOnlySoftmenu())) {
               closeAim();
             }
-            if(tam.alpha && calcMode != CM_ASSIGN && tam.mode != TM_NEWMENU && !(tam.mode==TM_STORCL && (item == CHR_num || item == CHR_case)) && !(tam.mode==TM_LABEL && (item == CHR_num || item == CHR_case))) {
+            if(tam.alpha && calcMode != CM_ASSIGN && tam.mode != TM_NEWMENU && 
+              !( (tam.mode==TM_STORCL || tam.mode==TM_LABEL || tam.mode == TM_M_DIM || tam.mode == TM_REGISTER || tam.mode == TM_CMP) 
+                  && (item == CHR_num || item == CHR_case) ) 
+              ) {
               tamLeaveMode();
             }
 
