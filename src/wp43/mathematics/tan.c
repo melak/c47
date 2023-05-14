@@ -119,7 +119,10 @@ void tanLonI(void) {
   else {
     longIntegerAngleReduction(REGISTER_X, currentAngularMode, &tan);
   }
-   WP34S_Cvt2RadSinCosTan(&tan, currentAngularMode, &sin, &cos, &tan, &ctxtReal39);
+  WP34S_Cvt2RadSinCosTan(&tan, currentAngularMode, &sin, &cos, &tan, &ctxtReal39);
+  if(realIsZero(&sin)) {
+     realSetPositiveSign(&tan);
+  }
 
   if(realIsZero(&cos) && !getSystemFlag(FLAG_SPCRES)) {
     displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
@@ -167,6 +170,9 @@ void tanReal(void) {
     }
 
     WP34S_Cvt2RadSinCosTan(&tan, (xAngularMode == amNone ? currentAngularMode : xAngularMode), &sin, &cos, &tan, &ctxtReal39);
+    if(realIsZero(&sin)) {
+       realSetPositiveSign(&tan);
+    }
 
     if(realIsZero(&cos) && !getSystemFlag(FLAG_SPCRES)) {
       displayCalcErrorMessage(ERROR_ARG_EXCEEDS_FUNCTION_DOMAIN, ERR_REGISTER_LINE, REGISTER_X);
